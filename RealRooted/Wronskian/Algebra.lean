@@ -477,7 +477,7 @@ theorem natDegree_wronskian_le_two_mul_sub_two_of_sameDegree
     rw [leadingCoeff_mul, leadingCoeff_mul, leadingCoeff_derivative,
       leadingCoeff_derivative, hp, hq]
     ring
-  have hltdeg := degree_sub_lt hdegree hleft0 hlc
+  have hltdeg := degree_sub_lt_left hdegree hleft0 hlc
   have hlt : (wronskian p q).natDegree < 2 * n - 1 := by
     apply (natDegree_lt_iff_degree_lt hW).2
     rw [wronskian]

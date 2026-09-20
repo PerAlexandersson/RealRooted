@@ -133,8 +133,9 @@ private lemma aswGap_lastColumn_apply {R : Type*} [Zero R] (u : ℕ → R) (k : 
           simpa using h
         have := i.isLt
         lia
-      simp only [aswGapRow]
-      rw [ite_eq_right (by lia)]
+      dsimp only [aswGapRow]
+      simp only [ite_eq_right (show (i : ℕ) + 1 ≠ k + 2 by lia),
+        ite_eq_right (show ¬ k + 1 ≤ (i : ℕ) + 1 by lia)]
 
 /-- Under cubic support, the gap minors are a two-term combination of
 shift-one contiguous minors. -/

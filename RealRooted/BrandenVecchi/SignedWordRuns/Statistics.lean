@@ -84,7 +84,8 @@ theorem adjacentCount_append_singleton {α : Type*}
         adjacentCount relation word +
           if relation (word.getLast hword) x then 1 else 0
   | [], hword => (hword rfl).elim
-  | [a], _ => by simp
+  | [a], _ => by
+      by_cases h : relation a x <;> simp [h]
   | a :: b :: rest, _ => by
       have htail := adjacentCount_append_singleton relation x
         (b :: rest) (by simp)

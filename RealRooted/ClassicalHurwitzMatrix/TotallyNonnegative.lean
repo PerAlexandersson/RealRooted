@@ -114,9 +114,10 @@ theorem IsTotallyNonneg.hurwitz_odd_coeff_eq_zero_of_coeff_one_eq_zero
       have hminor := h hrows hcols
       have hcoeff : 0 ≤ c (2 * (n + 1) + 1) :=
         h.hurwitz_coeff_nonneg _
-      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, submatrix_cons_row,
+      rw [Matrix.det_fin_two] at hminor
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.submatrix_apply,
         hurwitz_apply, Order.lt_two_iff, zero_le, le_mul_iff_one_le_right,
-        submatrix_empty, Matrix.det_fin_two, Fin.isValue, cons_val',
+        Fin.isValue, cons_val',
         cons_val_zero, mul_one, Nat.one_le_ofNat, ↓reduceIte,
         Nat.add_one_sub_one, h1, Std.le_refl, tsub_self, cons_val_fin_one,
         cons_val_one, Nat.reduceLeDiff, zero_mul, ite_mul, zero_sub,
@@ -241,9 +242,10 @@ theorem IsTotallyNonneg.hurwitz_routhReducedOddPart_coeff_nonneg
     intro i j hij
     fin_cases i <;> fin_cases j <;> simp_all
   have hminor := h hrows hcols
-  simp only [submatrix_cons_row, hurwitz_apply, Order.lt_two_iff, zero_le,
-    le_mul_iff_one_le_right, submatrix_empty, Matrix.det_fin_two, Fin.isValue,
-    cons_val', cons_val_zero, mul_one, Nat.one_le_ofNat, ↓reduceIte,
+  rw [Matrix.det_fin_two] at hminor
+  simp only [Matrix.submatrix_apply, hurwitz_apply, Order.lt_two_iff, zero_le,
+    le_mul_iff_one_le_right, Fin.isValue,
+    cons_val_zero, mul_one, Nat.one_le_ofNat, ↓reduceIte,
     Nat.add_one_sub_one, Std.le_refl, tsub_self, cons_val_fin_one,
     cons_val_one, Nat.reduceLeDiff] at hminor
   rw [ite_eq_left (by lia : 1 ≤ 2 * (n + 2))] at hminor

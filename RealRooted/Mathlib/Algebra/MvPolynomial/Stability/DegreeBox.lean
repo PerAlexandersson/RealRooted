@@ -136,7 +136,7 @@ noncomputable instance degreeOfLEIndexFintype [Fintype σ] (κ : σ → ℕ) :
 
 noncomputable instance degreeOfLE_moduleFinite [Finite σ] (κ : σ → ℕ) :
     Module.Finite R (degreeOfLE σ R κ) := by
-  letI := Fintype.ofFinite σ
+  let := Fintype.ofFinite σ
   exact Module.Finite.of_basis (basisDegreeOfLE (R := R) κ)
 
 end DegreeOfLE

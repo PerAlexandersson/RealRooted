@@ -2,7 +2,7 @@ import RealRooted.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 import RealRooted.MultivariateStability
 import Mathlib.Algebra.MvPolynomial.Equiv
-import Mathlib.Data.Complex.Basic
+import Mathlib.Basic.Complex.Basic
 
 /-!
 # Foundational Hermite--Biehler definitions

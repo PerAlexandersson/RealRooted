@@ -302,7 +302,7 @@ theorem degree_sub_c₀_mul_lt {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0
   have hf : f.leadingCoeff ≠ 0 := hflc.ne'
   have hc : g.leadingCoeff / f.leadingCoeff ≠ 0 :=
     div_ne_zero (leadingCoeff_ne_zero.mpr hg₀) hf
-  have h := degree_sub_lt (p := g) (q := C (g.leadingCoeff / f.leadingCoeff) * f)
+  have h := degree_sub_lt_left (p := g) (q := C (g.leadingCoeff / f.leadingCoeff) * f)
     (by rw [degree_C_mul hc, degree_eq_natDegree hg₀, degree_eq_natDegree hf₀, hdeg])
     hg₀ (by simp [hf])
   rwa [degree_eq_natDegree hg₀, hdeg] at h

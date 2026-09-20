@@ -154,6 +154,7 @@ theorem strictCompositionBlockEnumerator_single (N m : ℕ) (hN : 0 < N) :
     strictCompositionBlockEnumerator (Composition.single N hN) m =
       MvPolynomial.esymm (Fin m) ℤ N := by
   rw [strictCompositionBlockEnumerator_eq_prod_esymm]
+  change (∏ _i : Fin 1, MvPolynomial.esymm (Fin m) ℤ N) = _
   simp
 
 @[simp]

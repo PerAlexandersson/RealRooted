@@ -38,10 +38,10 @@ theorem degreeOf_algebraicSymbol_inr_le
     (algebraicSymbol κ T).degreeOf (Sum.inr i) ≤ κ i := by
   classical
   rcases subsingleton_or_nontrivial R with hR | hR
-  · letI := hR
+  · let := hR
     rw [Subsingleton.elim (algebraicSymbol κ T) 0]
     simp
-  · letI := hR
+  · let := hR
     rw [algebraicSymbol_eq_sum]
     refine (degreeOf_sum_le (Sum.inr i) Finset.univ fun m =>
       C (boxChoose κ m.1 : R) *

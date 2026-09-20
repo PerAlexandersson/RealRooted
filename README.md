@@ -42,6 +42,14 @@ lake build RealRooted.Production
 lake build RealRooted.Tactic.Examples
 ```
 
+In the Lean 4.34 port, the local list operation is named
+`List.interleaveRight`: it starts with the right list and truncates when that
+list is empty. Batteries now provides a different `List.interleave`, which
+starts with the left list and retains leftovers. The `List.Interleaves`
+relation keeps its existing meaning; operation-specific helper lemmas use
+the `interleaveRight` spelling. List sign variations now use Mathlib's
+identical definition instead of a duplicate local declaration.
+
 Useful focused checks for recent theorem areas are:
 
 ```bash

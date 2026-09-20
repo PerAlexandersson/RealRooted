@@ -32,8 +32,8 @@ common nonzero factor in a field fraction).
 
 -- Standard simplex is nonempty when ι is nonempty
 theorem stdSimplex_nonempty {ι : Type*} [Fintype ι] [Nonempty ι] :
-    (stdSimplex ℝ ι).Nonempty := by
-  exact ⟨(Fintype.card ι : ℝ)⁻¹ • 1, by simp [stdSimplex, Finset.sum_const, nsmul_eq_mul]⟩
+    (RealRooted.standardSimplex ℝ ι).Nonempty := by
+  exact ⟨(Fintype.card ι : ℝ)⁻¹ • 1, by simp [RealRooted.standardSimplex, Finset.sum_const, nsmul_eq_mul]⟩
 
 /-!
 ## Helper Lemmas for Continuity
@@ -195,7 +195,7 @@ lemma Finset.inf'_eq_ciInf {α β} [ConditionallyCompleteLinearOrder β] {s : Fi
   simp [Set.mem_image, Set.mem_range]
 
 /-- The standard simplex is a closed set. -/
-lemma isClosed_stdSimplex' {n : Type*} [Fintype n] : IsClosed (stdSimplex ℝ n) := by
+lemma isClosed_stdSimplex' {n : Type*} [Fintype n] : IsClosed (RealRooted.standardSimplex ℝ n) := by
   have h₁ : IsClosed (⋂ i, {x : n → ℝ | 0 ≤ x i}) :=
     isClosed_iInter (fun i ↦ isClosed_le continuous_const (continuous_apply i))
   have h_set_eq : {x : n → ℝ | ∀ i, 0 ≤ x i} = ⋂ i, {x | 0 ≤ x i} := by ext; simp
@@ -225,7 +225,7 @@ lemma Finset.disjoint_compl_right {n : Type*} [Fintype n] [DecidableEq n] {s : F
   rw [@inter_sdiff_self]
 
 /-- The standard simplex is bounded. -/
-lemma bounded_stdSimplex' {n : Type*} [Fintype n] [DecidableEq n] : Bornology.IsBounded (stdSimplex ℝ n) := by
+lemma bounded_stdSimplex' {n : Type*} [Fintype n] [DecidableEq n] : Bornology.IsBounded (RealRooted.standardSimplex ℝ n) := by
   rw [Metric.isBounded_iff_subset_closedBall 0]
   use 1
   intro v hv
@@ -244,7 +244,7 @@ variable {n : Type*}
 
 /-- For a vector on the standard simplex, if the sum of a subset of its components is 1,
     then the components outside that subset must be zero. -/
-lemma mem_supp_of_sum_eq_one [Fintype n] [DecidableEq n] {v : n → ℝ} (hv : v ∈ stdSimplex ℝ n) (S : Finset n)
+lemma mem_supp_of_sum_eq_one [Fintype n] [DecidableEq n] {v : n → ℝ} (hv : v ∈ RealRooted.standardSimplex ℝ n) (S : Finset n)
     (h_sum : ∑ i ∈ S, v i = 1) :
     ∀ i, v i ≠ 0 → i ∈ S := by
   intro i hi_ne_zero
@@ -451,8 +451,8 @@ lemma smul_sum (α : Type*) [Fintype α] (r : ℝ) (f : α → ℝ) :
   simp only [smul_eq_mul, Finset.mul_sum]
 
 lemma ones_norm_mem_simplex [Fintype n] [Nonempty n] :
-  (fun _ => (Fintype.card n : ℝ)⁻¹) ∈ stdSimplex ℝ n := by
-  dsimp [stdSimplex]; constructor
+  (fun _ => (Fintype.card n : ℝ)⁻¹) ∈ RealRooted.standardSimplex ℝ n := by
+  dsimp [RealRooted.standardSimplex]; constructor
   · intro i; apply inv_nonneg.2; norm_cast; exact Nat.cast_nonneg _
   · simp [Finset.sum_const, Finset.card_univ];
 
@@ -477,7 +477,7 @@ the zero vector sum to `0`.
 -/
 lemma ne_zero_of_mem_stdSimplex
     {n : Type*} [Fintype n] [Nonempty n] {x : n → ℝ}
-    (hx : x ∈ stdSimplex ℝ n) :
+    (hx : x ∈ RealRooted.standardSimplex ℝ n) :
     x ≠ 0 := by
   intro h_zero
   have h_sum_zero : (∑ i, x i) = 0 := by

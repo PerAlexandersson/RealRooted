@@ -178,8 +178,7 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
     have hq_coeff0 : q2.coeff (g.natDegree - j - 1) = q1.coeff 2 := by
       rw [Polynomial.coeff_reverse]
       rw [show q1.natDegree = g.natDegree - (j - 1) from ?_, ← revAtFun_eq, revAtFun]
-      ·
-        rw [ite_eq_left (by lia)]
+      · rw [ite_eq_left (by lia)]
         rw [show g.natDegree - (j - 1) - (g.natDegree - j - 1) = 2 by lia]
       · have := iterate_derivative_rr hg (j - 1)
         aesop

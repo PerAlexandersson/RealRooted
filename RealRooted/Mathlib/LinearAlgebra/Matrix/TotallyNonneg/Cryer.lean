@@ -156,7 +156,9 @@ theorem HasNonnegInitialColumnMinors.pivot_pos_and_trailing_det_ne_zero
   rw [det_eq_firstEntry_mul_det_trailing A hzero] at hdet
   obtain ⟨hpivot, htrailing⟩ := mul_ne_zero_iff.mp hdet
   have hnonneg : 0 ≤ A 0 0 := by
-    simpa using hA (m := 1) (by simp) ![0] (by simp)
+    have hminor := hA (m := 1) (by simp) ![0] (by simp)
+    rw [Matrix.det_fin_one] at hminor
+    simpa using hminor
   exact ⟨lt_of_le_of_ne hnonneg (Ne.symm hpivot), htrailing⟩
 
 /-- Upper-zero shape, nonnegative initial-column flag minors, and a nonzero

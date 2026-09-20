@@ -171,7 +171,7 @@ macro_rules
                   rr_sign_side_term
                   rr_sign_side_term
             | exact
-                RealRooted.eval_C_mul_one_add_X_mul_one_add_two_mul_X_nonpos_of_nonneg_of_mem_interval
+                eval_C_mul_one_add_X_mul_one_add_two_mul_X_nonpos_of_nonneg_of_mem_interval
                   rr_sign_side_term
                   rr_sign_side_term
                   rr_sign_side_term

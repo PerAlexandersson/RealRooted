@@ -115,7 +115,7 @@ private theorem blocksToRuns_representatives_ne {α : Type*} :
       have hblock : block ≠ [] := fun h => hnil (by simp [h])
       have hnext : next ≠ [] := fun h => hnil (by simp [h])
       have hhead : block.head hblock ≠ next.head hnext := by
-        obtain ⟨hblock', hnext', hne⟩ := hseparated.rel_head
+        obtain ⟨hblock', hnext', hne⟩ := hseparated.rel
         rw [head_eq_getLast_of_isChain_eq hblock
           (hconstant block (by simp))]
         exact hne
@@ -374,7 +374,7 @@ theorem isSignedList_expand_iff {q p : ℕ}
     obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le' htwo
     rw [hk] at hchain
     have hadjacent : SignedAdjacent run.1 run.1 := by
-      simpa [List.replicate_succ] using hchain.rel_head
+      simpa [List.replicate_succ] using hchain.rel
     have hnegative := (signedAdjacent_self_iff run.1).mp hadjacent
     exact SignedLetter.not_isNegative_and_isPositive run.1
       ⟨hnegative, hpositive⟩

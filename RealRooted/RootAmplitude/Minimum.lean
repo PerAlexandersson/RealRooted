@@ -74,7 +74,7 @@ theorem amp_le_amp_of_sum (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
   have hupper : ∏ j ∈ Ico (k + 2) n, (1 + D / (g j - g (k + 1)))
       ≤ Real.exp (∑ j ∈ Ico (k + 2) n, D / (g j - g (k + 1))) := by
     rw [Real.exp_sum]
-    refine Finset.prod_le_prod ?_ ?_
+    refine Finset.prod_le_prod₀ ?_ ?_
     · intro j hj
       have hdivision := div_nonneg hDpos (le_of_lt (ha j hj))
       linarith
@@ -89,7 +89,7 @@ theorem amp_le_amp_of_sum (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
   have hlower : Real.exp (∑ j ∈ range k, D / (g (k + 1) - g j))
       ≤ ∏ j ∈ range k, (1 + D / (g k - g j)) := by
     rw [Real.exp_sum]
-    refine Finset.prod_le_prod ?_ ?_
+    refine Finset.prod_le_prod₀ ?_ ?_
     · intro j _
       exact le_of_lt (Real.exp_pos _)
     · intro j hj

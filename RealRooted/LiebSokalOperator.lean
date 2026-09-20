@@ -111,7 +111,7 @@ private theorem foldl_iteratedPDerivAt_single
 def applyNegDifferential
     {R sigma : Type*} [CommRing R] [Fintype sigma]
     (F G : MvPolynomial sigma R) : MvPolynomial sigma R :=
-  F.sum fun d c =>
+  F.coeff.sum fun d c =>
     MvPolynomial.C ((-1 : R) ^ (d.sum fun _ n => n) * c) *
       applyMonomialDifferential d G
 
@@ -683,7 +683,7 @@ theorem contractVariablePairs_pairedProduct
   apply Finset.sum_congr rfl
   intro d hd
   change contractVariablePairs (differentialVariableOrder sigma)
-      (pairedProduct (MvPolynomial.monomial d (MvPolynomial.coeff d F)) G) = _
+      (pairedProduct (MvPolynomial.monomial d (F.coeff d)) G) = _
   rw [contractVariablePairs_pairedProduct_monomial
     (differentialVariableOrder sigma)
     (nodup_differentialVariableOrder sigma) d

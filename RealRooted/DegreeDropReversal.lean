@@ -300,7 +300,7 @@ theorem splits_reflect_iff {p : K[X]} {N : ℕ} (hN : p.natDegree ≤ N) :
 theorem isRoot_reflect_inv_iff {p : K[X]} {b : K} (hb : b ≠ 0)
     {N : ℕ} (hN : p.natDegree ≤ N) :
     (reflect N p).IsRoot b⁻¹ ↔ p.IsRoot b := by
-  letI : Invertible b := invertibleOfNonzero hb
+  let : Invertible b := invertibleOfNonzero hb
   change eval b⁻¹ (reflect N p) = 0 ↔ eval b p = 0
   simpa [Polynomial.eval₂_id, invOf_eq_inv] using
     (Polynomial.eval₂_reflect_eq_zero_iff (RingHom.id K) b N p hN)

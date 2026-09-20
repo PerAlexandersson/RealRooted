@@ -8,6 +8,7 @@ Ported into RealRooted from https://github.com/or4nge19/MCMC
 adaptations to the pinned Mathlib.  Original path: MCMC/PF/LinearAlgebra/Matrix/Spectrum.lean
 -/
 import Mathlib.Algebra.Lie.OfAssociative
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.Normed.Algebra.Spectrum
 import Mathlib.Analysis.RCLike.Lemmas
@@ -147,16 +148,16 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 -/
 
 omit [DecidableEq n] in
-lemma stdSimplex_nonempty [Nonempty n] : (stdSimplex ℝ n).Nonempty :=
-  ⟨(Fintype.card n : ℝ)⁻¹ • 1, by simp [stdSimplex, Finset.sum_const, nsmul_eq_mul]⟩
+lemma stdSimplex_nonempty [Nonempty n] : (RealRooted.standardSimplex ℝ n).Nonempty :=
+  ⟨(Fintype.card n : ℝ)⁻¹ • 1, by simp [RealRooted.standardSimplex, Finset.sum_const, nsmul_eq_mul]⟩
 
 omit [DecidableEq n] in
-lemma isCompact_stdSimplex : IsCompact (stdSimplex ℝ n) :=
-  _root_.isCompact_stdSimplex ℝ n
+lemma isCompact_stdSimplex : IsCompact (RealRooted.standardSimplex ℝ n) :=
+  RealRooted.isCompact_standardSimplex n
 
 omit [DecidableEq n] in
-lemma convex_stdSimplex : Convex ℝ (stdSimplex ℝ n) :=
-  _root_.convex_stdSimplex ℝ n
+lemma convex_stdSimplex : Convex ℝ (RealRooted.standardSimplex ℝ n) :=
+  RealRooted.convex_standardSimplex n
 
 /-!
 ## Spectral Properties of Matrices

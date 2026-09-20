@@ -44,11 +44,11 @@ lemma dropLast_append_singleton {l : List α} {a : α} (h : l.length > 0) :
   | nil => simp at h
   | cons hd tl ih =>
     cases tl with
-    | nil => simp only [concat_eq_append, cons_append, nil_append, dropLast_cons₂,
+    | nil => simp only [concat_eq_append, cons_append, nil_append, dropLast_cons_cons,
       dropLast_singleton]
     | cons tl_hd tl_tl => simp_all only [List.length_cons, gt_iff_lt, lt_add_iff_pos_left, add_pos_iff, Nat.lt_one_iff,
       pos_of_gt, or_true, _root_.List.concat_eq_append, List.cons_append, forall_const, Nat.ofNat_pos,
-      List.dropLast_cons₂]
+      List.dropLast_cons_cons]
 
 lemma length_pos_of_append_singleton (l : List α) (a : α) : (l ++ [a]).length > 0 := by
   simp only [length_append, length_cons, length_nil, zero_add, gt_iff_lt, lt_add_iff_pos_left,
@@ -216,7 +216,7 @@ lemma count_ge_two_of_mem_head_and_tail {l : List α} {x : α}
 
 omit [DecidableEq α] in
 /-- A list with its head not in its tail has no duplicates if its tail has no duplicates -/
-lemma nodup_of_head_not_mem_tail   {l : List α} {x : α}
+lemma nodup_of_head_not_mem_tail {l : List α} {x : α}
     (h_nonempty : l ≠ []) (h_head : l.head h_nonempty = x) (h_not_in_tail : x ∉ l.tail) (h_nodup_tail : l.tail.Nodup) : l.Nodup := by
   cases l with
   | nil => contradiction
@@ -230,7 +230,7 @@ lemma nodup_of_head_not_mem_tail   {l : List α} {x : α}
     · simpa using h_nodup_tail
 
 /-- The index of an element in a prefix equals the index in the whole list -/
-lemma idxOf_eq_of_isPrefix{l₁ l₂ : List α} (h_prefix : l₁.IsPrefix l₂) {x : α} (h_mem : x ∈ l₁) :
+lemma idxOf_eq_of_isPrefix {l₁ l₂ : List α} (h_prefix : l₁.IsPrefix l₂) {x : α} (h_mem : x ∈ l₁) :
     l₁.idxOf x = l₂.idxOf x := by
   rcases h_prefix with ⟨t, rfl⟩
   exact (idxOf_append_left h_mem).symm
@@ -296,8 +296,8 @@ lemma count_eq_one_of_idxOf_eq_length_sub_one [DecidableEq α] {l : List α} {x 
 @[simp] lemma idxOf_eq_length_sub_one_of_getLast
     {l : List α} {x : α}
     (h_nonempty : l ≠ [])
-    (h_last    : l.getLast h_nonempty = x)
-    (h_unique  : x ∉ l.dropLast) :
+    (h_last : l.getLast h_nonempty = x)
+    (h_unique : x ∉ l.dropLast) :
     l.idxOf x = l.length - 1 := by
   have hx : x ∈ l := by
     rw [← h_last]
@@ -395,10 +395,10 @@ lemma mem_of_idxOf_lt_length {l : List α} {x : α} (h : idxOf x l < l.length) :
     dsimp [idxOf, findIdx, length] at h
     simp only [findIdx.go] at h
     by_cases h_eq : hd == x
-    · simp only [h_eq, le_refl, zero_add, cond_true, Nat.eq_of_le_zero, lt_add_iff_pos_left] at h
+    · simp only [h_eq, le_refl, zero_add, Bool.cond_true, Nat.eq_of_le_zero, lt_add_iff_pos_left] at h
       rw [beq_iff_eq] at h_eq
       simp only [h_eq, mem_cons, true_or]
-    · simp only [h_eq, zero_add, cond_false] at h
+    · simp only [h_eq, zero_add, Bool.cond_false] at h
       have h_neq : hd ≠ x := by
         simp_all only [beq_iff_eq, ne_eq, not_false_eq_true]
       have h_tl : idxOf x tl < tl.length := by
@@ -460,9 +460,9 @@ lemma idxOf_le_of_get_eq [DecidableEq α] {l : List α} {x : α} {i : Fin l.leng
       dsimp only [idxOf, findIdx, length_cons, Fin.val_succ]
       simp only [findIdx.go]
       by_cases h_hd_eq : hd == x
-      · simp only [h_hd_eq, cond_true]
+      · simp only [h_hd_eq, Bool.cond_true]
         exact Nat.zero_le j.val.succ
-      · simp only [h_hd_eq, cond_false]
+      · simp only [h_hd_eq, Bool.cond_false]
         have h_tl : tl.get j = x := by
           simp only [get_eq_getElem] at h
           exact h
@@ -495,7 +495,7 @@ lemma idxOf_pos_of_ne_head {α} [DecidableEq α] {v : α} {l : List α}
       exact Nat.succ_pos _
 
 /-- If an element `x` is in the tail of a list `l` without duplicates, its first index in `l` must be positive. -/
-lemma idxOf_pos_of_mem_tail  {l : List α} (h_nodup : l.Nodup) {x : α} (h : x ∈ l.tail) : 0 < l.idxOf x := by
+lemma idxOf_pos_of_mem_tail {l : List α} (h_nodup : l.Nodup) {x : α} (h : x ∈ l.tail) : 0 < l.idxOf x := by
   cases l with
   | nil => simp only [tail_nil, not_mem_nil] at h
   | cons hd tl =>

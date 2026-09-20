@@ -179,8 +179,9 @@ theorem elementarySymmetricStepProduct_apply
         · have hlt : j.val < i.val := lt_of_le_of_ne hji
             (fun h => hij (Fin.ext h.symm))
           rw [ite_eq_left hji, Matrix.one_apply, ite_eq_right hij]
-          simp [elementarySymmetricPrefix, Multiset.esymm,
-            Multiset.powersetCard_eq_empty, hlt]
+          have hempty : Multiset.powersetCard (i.val - j.val) (0 : Multiset R) = 0 :=
+            Multiset.powersetCard_eq_empty _ (by simpa using Nat.sub_pos_of_lt hlt)
+          simp [elementarySymmetricPrefix, Multiset.esymm, hempty]
         · rw [ite_eq_right hji, Matrix.one_apply, ite_eq_right hij]
   | succ r ih =>
       rw [elementarySymmetricStepProduct, elementarySymmetricStep_mul_apply,

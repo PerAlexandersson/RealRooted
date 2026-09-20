@@ -297,7 +297,7 @@ even if the eigenvalue is not specified in advance. -/
 lemma stdSimplex_eigenvector_eq_of_primitive [Nonempty n]
     {A : Matrix n n ℝ} (hA_prim : IsPrimitive A) (hA_nonneg : ∀ i j, 0 ≤ A i j)
     {r s : ℝ} (hr_pos : 0 < r) (hs_pos : 0 < s)
-    {v w : stdSimplex ℝ n} (hv_eig : A *ᵥ v.1 = r • v.1)
+    {v w : RealRooted.standardSimplex ℝ n} (hv_eig : A *ᵥ v.1 = r • v.1)
     (hw_eig : A *ᵥ w.1 = s • w.1) :
     v = w := by
   have hv_pos := eigenvector_of_primitive_is_positive hA_prim hr_pos
@@ -318,11 +318,11 @@ theorem pft_primitive
     {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
     {A : Matrix n n ℝ} (hA_prim : IsPrimitive A)
     (hA_nonneg : ∀ i j, 0 ≤ A i j) :
-    ∃! (v : stdSimplex ℝ n), ∃ (r : ℝ) (_ : r > 0), A *ᵥ v.val = r • v.val := by
+    ∃! (v : RealRooted.standardSimplex ℝ n), ∃ (r : ℝ) (_ : r > 0), A *ᵥ v.val = r • v.val := by
   obtain ⟨r, v_raw, hr_pos, hv_raw_pos, hv_raw_eig⟩ :=
     exists_positive_eigenvector_of_primitive hA_prim hA_nonneg
   let v0 : n → ℝ := (∑ i, v_raw i)⁻¹ • v_raw
-  have hv0_simplex : v0 ∈ stdSimplex ℝ n := by
+  have hv0_simplex : v0 ∈ RealRooted.standardSimplex ℝ n := by
     simpa [v0] using inv_sum_smul_mem_stdSimplex_of_pos hv_raw_pos
   have hv0_pos : ∀ i, 0 < v0 i := by
     simpa [v0] using inv_sum_smul_pos_of_pos hv_raw_pos
@@ -349,7 +349,7 @@ even if the positive eigenvalue is not specified in advance. -/
 lemma stdSimplex_eigenvector_eq_of_irreducible [Nonempty n]
     {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
     {r s : ℝ} (hr_pos : 0 < r) (hs_pos : 0 < s)
-    {v w : stdSimplex ℝ n} (hv_eig : A *ᵥ v.1 = r • v.1)
+    {v w : RealRooted.standardSimplex ℝ n} (hv_eig : A *ᵥ v.1 = r • v.1)
     (hw_eig : A *ᵥ w.1 = s • w.1) :
     v = w := by
   let B : Matrix n n ℝ := 1 + A
@@ -366,7 +366,7 @@ lemma stdSimplex_eigenvector_eq_of_irreducible [Nonempty n]
 
 Let A : Matrix n n ℝ be an irreducible nonnegative matrix indexed by a finite nonempty type n.
 Then there exists a unique eigenpair (v, r) where
-  • v : stdSimplex ℝ n is a probability vector (i.e. v.val has nonnegative entries summing to 1),
+  • v : RealRooted.standardSimplex ℝ n is a probability vector (i.e. v.val has nonnegative entries summing to 1),
   • r : ℝ is a positive scalar,
 such that
   A *ᵥ v.val = r • v.val   and   r > 0.
@@ -375,7 +375,7 @@ is the Perron root of A.
 -/
 theorem pft_irreducible {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
   {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) :
-    ∃! (v : stdSimplex ℝ n), ∃ (r : ℝ), r > 0 ∧ A *ᵥ v.val = r • v.val := by
+    ∃! (v : RealRooted.standardSimplex ℝ n), ∃ (r : ℝ), r > 0 ∧ A *ᵥ v.val = r • v.val := by
   let B : Matrix n n ℝ := 1 + A
   have hB_nonneg : ∀ i j, 0 ≤ B i j := fun i j => Matrix.one_add_apply_nonneg hA_irred.nonneg i j
   have hB_prim : B.IsPrimitive :=

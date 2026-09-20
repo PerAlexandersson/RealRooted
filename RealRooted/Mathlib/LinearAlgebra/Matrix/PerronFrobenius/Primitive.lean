@@ -32,7 +32,7 @@ variable {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n] {A : Matrix n n �
 
 /-- Normalizing a strictly positive vector by its sum gives a point of the standard simplex. -/
 lemma inv_sum_smul_mem_stdSimplex_of_pos {x : n → ℝ} (hx_pos : ∀ i, 0 < x i) :
-    (∑ i, x i)⁻¹ • x ∈ stdSimplex ℝ n :=
+    (∑ i, x i)⁻¹ • x ∈ RealRooted.standardSimplex ℝ n :=
   CollatzWielandt.inv_sum_smul_mem_stdSimplex_of_nonneg_ne_zero
     (fun i => (hx_pos i).le) (Pi.ne_zero_of_pos hx_pos)
 
@@ -90,8 +90,8 @@ lemma exists_pos_vector_collatzWielandtFn_gt_of_residual
 
 /-- For a maximizer `v` of the Collatz-Wielandt function, `A * v = r • v`. -/
 theorem maximizer_is_eigenvector (hA_prim : IsPrimitive A)
-    (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ} (hv_max : IsMaxOn (collatzWielandtFn A) (stdSimplex ℝ n) v)
-    (hv_simplex : v ∈ stdSimplex ℝ n) (r : ℝ) (hr_def : r = collatzWielandtFn A v) :
+    (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ} (hv_max : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v)
+    (hv_simplex : v ∈ RealRooted.standardSimplex ℝ n) (r : ℝ) (hr_def : r = collatzWielandtFn A v) :
     A *ᵥ v = r • v := by
   have hv_nonneg : ∀ i, 0 ≤ v i := hv_simplex.1
   have hv_ne_zero : v ≠ 0 := ne_zero_of_mem_stdSimplex hv_simplex
@@ -148,10 +148,10 @@ lemma collatzWielandtFn_ones_norm_eq (A : Matrix n n ℝ) :
 /-- The Perron root `r = collatzWielandtFn A v` is positive. -/
 lemma perron_root_pos_of_primitive
   (hA_prim : IsPrimitive A) (hA_nonneg : ∀ i j, 0 ≤ A i j)
-  {v : n → ℝ} (_ : v ∈ stdSimplex ℝ n) (hvM : IsMaxOn (collatzWielandtFn A) (stdSimplex ℝ n) v) :
+  {v : n → ℝ} (_ : v ∈ RealRooted.standardSimplex ℝ n) (hvM : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v) :
   0 < collatzWielandtFn A v := by
   let ones_norm : n → ℝ := fun _ => (Fintype.card n : ℝ)⁻¹
-  have h₁ : ones_norm ∈ stdSimplex ℝ n := by
+  have h₁ : ones_norm ∈ RealRooted.standardSimplex ℝ n := by
     simpa [ones_norm] using ones_norm_mem_simplex
   have cw_one_pos : 0 < collatzWielandtFn A (fun _ => 1) :=
     collatzWielandtFn_of_ones_is_pos (Matrix.IsPrimitive.isIrreducible (A := A) hA_prim) hA_nonneg
@@ -166,7 +166,7 @@ lemma perron_root_pos_of_primitive
 theorem exists_positive_eigenvector_of_primitive
   (hA_prim : IsPrimitive A) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
   ∃ (r : ℝ) (v : n → ℝ), r > 0 ∧ (∀ i, v i > 0) ∧ A *ᵥ v = r • v := by
-  haveI : Nonempty (stdSimplex ℝ n) :=
+  haveI : Nonempty (RealRooted.standardSimplex ℝ n) :=
     ⟨⟨_, ones_norm_mem_simplex⟩⟩
   obtain ⟨v, hvS, hvM⟩ := CollatzWielandt.exists_maximizer (A := A)
   let r := collatzWielandtFn A v

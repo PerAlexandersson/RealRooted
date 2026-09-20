@@ -20,8 +20,8 @@ theorem Matrix.exists_ordered_minor_ne_zero_of_rank_eq
         (A.submatrix rows cols).det ≠ 0 := by
   obtain ⟨κ, a, ha, hspan, hli⟩ :=
     exists_linearIndependent' R A.col
-  letI : Finite κ := Finite.of_injective a ha
-  letI : Fintype κ := Fintype.ofFinite κ
+  let : Finite κ := Finite.of_injective a ha
+  let : Fintype κ := Fintype.ofFinite κ
   have hcard : Fintype.card κ = r := by
     calc
       Fintype.card κ =

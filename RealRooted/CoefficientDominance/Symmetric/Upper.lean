@@ -139,7 +139,7 @@ their additive corrections. -/
 theorem prod_one_add_le_exp {s : Finset ℕ} (u : ℕ → ℝ) (hu : ∀ i ∈ s, 0 ≤ u i) :
     ∏ i ∈ s, (1 + u i) ≤ Real.exp (∑ i ∈ s, u i) := by
   rw [Real.exp_sum]
-  refine Finset.prod_le_prod (fun i hi => by linarith [hu i hi]) (fun i _ => ?_)
+  refine Finset.prod_le_prod₀ (fun i hi => by linarith [hu i hi]) (fun i _ => ?_)
   rw [add_comm]
   exact Real.add_one_le_exp _
 

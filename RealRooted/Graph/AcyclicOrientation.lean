@@ -183,7 +183,7 @@ theorem acyclicSinkPolynomial_fin_zero
       dir_eq_false_of_not_adj := by intro i; exact Fin.elim0 i }
   let Q : Orientation.AcyclicOrientation G :=
     ⟨O, ⟨fun i ↦ Fin.elim0 i, by intro i; exact Fin.elim0 i⟩⟩
-  letI : Unique (Orientation.AcyclicOrientation G) :=
+  let : Unique (Orientation.AcyclicOrientation G) :=
     { default := Q
       uniq := by
         intro R

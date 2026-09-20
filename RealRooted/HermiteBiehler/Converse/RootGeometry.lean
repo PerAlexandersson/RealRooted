@@ -1,6 +1,6 @@
 import RealRooted.HermiteBiehler.ConverseLowDegree
 import RealRooted.HermiteBiehler.Forward
-import Mathlib.Data.Complex.Basic
+import Mathlib.Basic.Complex.Basic
 
 /-!
 # Root geometry for the converse Hermite--Biehler theorem

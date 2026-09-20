@@ -203,7 +203,7 @@ theorem exceptionalHistory_snoc {h : Nat} {c : DecoCode h}
     c.exceptionalStarts.map exceptionalStartHeightEmbedding
   rw [exceptionalStarts_snoc_of_ne_one c r hr]
   ext j
-  simp [exceptionalStartHeightEmbedding]
+  simp
 
 @[simp] theorem entryList_exceptionalExtension {h : Nat} (c : DecoCode h)
     (hh : 0 < h) :
@@ -294,6 +294,6 @@ theorem exceptionalHistory_exceptionalExtension {h : Nat} {c : DecoCode h}
     insert (h + 1) (c.exceptionalStarts.map exceptionalStartHeightEmbedding)
   rw [exceptionalStarts_exceptionalExtension c (by lia)]
   ext j
-  simp [exceptionalStartHeightEmbedding]
+  simp
 
 end RealRooted.Applications.OEIS.DecoCode

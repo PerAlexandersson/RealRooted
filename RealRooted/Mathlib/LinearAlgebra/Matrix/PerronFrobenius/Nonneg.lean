@@ -83,7 +83,7 @@ theorem exists_nonneg_mulVec_eq_perronRoot_smul [Nonempty n]
     simpa [hJ] using add_pos_of_nonneg_of_pos (hA_nonneg i j) h1
   set M : ℝ := ∑ i : n, ∑ j : n, (A i j + 1) with hM
   -- eigen-data for each perturbation, normalized to the standard simplex
-  have key : ∀ k : ℕ, ∃ (r : ℝ) (v : n → ℝ), v ∈ stdSimplex ℝ n ∧
+  have key : ∀ k : ℕ, ∃ (r : ℝ) (v : n → ℝ), v ∈ RealRooted.standardSimplex ℝ n ∧
       perronRoot A ≤ r ∧ r ≤ M ∧
       ∀ i, (A *ᵥ v) i + ((k : ℝ) + 1)⁻¹ = r * v i := by
     intro k
@@ -97,7 +97,7 @@ theorem exists_nonneg_mulVec_eq_perronRoot_smul [Nonempty n]
     have hv_sum : ∑ i, v i = 1 := by
       simp only [hv, Pi.smul_apply, smul_eq_mul, ← Finset.mul_sum, ← hs]
       exact inv_mul_cancel₀ hs_pos.ne'
-    have hv_mem : v ∈ stdSimplex ℝ n := by
+    have hv_mem : v ∈ RealRooted.standardSimplex ℝ n := by
       refine ⟨fun i => ?_, hv_sum⟩
       have := (hw_pos i).le
       simp only [hv, Pi.smul_apply, smul_eq_mul]
@@ -150,9 +150,9 @@ theorem exists_nonneg_mulVec_eq_perronRoot_smul [Nonempty n]
     rw [← h1, h2]
   choose r v hmem hge hle heq using key
   -- pass to a convergent subsequence by compactness
-  have hcompact : IsCompact (Set.Icc (perronRoot A) M ×ˢ stdSimplex ℝ n) :=
-    isCompact_Icc.prod (_root_.isCompact_stdSimplex ℝ n)
-  have hmemK : ∀ k, (r k, v k) ∈ Set.Icc (perronRoot A) M ×ˢ stdSimplex ℝ n :=
+  have hcompact : IsCompact (Set.Icc (perronRoot A) M ×ˢ RealRooted.standardSimplex ℝ n) :=
+    isCompact_Icc.prod (RealRooted.isCompact_standardSimplex n)
+  have hmemK : ∀ k, (r k, v k) ∈ Set.Icc (perronRoot A) M ×ˢ RealRooted.standardSimplex ℝ n :=
     fun k => ⟨⟨hge k, hle k⟩, hmem k⟩
   obtain ⟨⟨r₀, v₀⟩, hK, φ, hφ, hconv⟩ := hcompact.tendsto_subseq hmemK
   have hr_lim : Tendsto (fun m => r (φ m)) atTop (𝓝 r₀) :=
@@ -187,7 +187,7 @@ theorem exists_nonneg_mulVec_eq_perronRoot_smul [Nonempty n]
     have := tendsto_nhds_unique (hfun ▸ hLHS) hRHS
     simpa using this
   -- identify the limit eigenvalue with the Perron root
-  have hv₀_mem : v₀ ∈ stdSimplex ℝ n := hK.2
+  have hv₀_mem : v₀ ∈ RealRooted.standardSimplex ℝ n := hK.2
   have hv₀_ne : v₀ ≠ 0 := ne_zero_of_mem_stdSimplex hv₀_mem
   have h_le : r₀ ≤ perronRoot A :=
     (le_of_subinvariant hA_nonneg hv₀_mem.1 hv₀_ne (le_of_eq h_eig₀.symm)).trans

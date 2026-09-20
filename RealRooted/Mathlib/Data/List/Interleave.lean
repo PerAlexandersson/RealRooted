@@ -45,7 +45,8 @@ def interleaveRight : List α → List α → List α
   | l₁, a :: l₂ => a :: interleaveRight l₂ l₁
 termination_by l₁ l₂ => l₁.length + l₂.length
 
-@[simp] lemma interleaveRight_nil (l₁ : List α) : l₁.interleaveRight [] = [] := by rw [interleaveRight]
+@[simp] lemma interleaveRight_nil (l₁ : List α) : l₁.interleaveRight [] = [] := by
+  rw [interleaveRight]
 
 @[simp]
 lemma interleaveRight_cons (l₁ : List α) (a : α) (l₂ : List α) :
@@ -160,7 +161,8 @@ elements of `l₂`, except possibly when `i = l₁.length`.
 
 For example, `[1, 3]` `(· ≥ ·)`-interleaves `[0, 2, 4]`.
 
-See `interleaves_iff_length_isChain_interleaveRight` for the connection with `List.interleaveRight`. -/
+See `interleaves_iff_length_isChain_interleaveRight` for the connection with
+`List.interleaveRight`. -/
 @[mk_iff]
 inductive Interleaves : List α → List α → Prop
   /-- The empty list interleaves itself. -/
@@ -265,7 +267,8 @@ lemma interleaves_append_singleton_append_singleton_of_length_add_one_eq_length
 
 lemma interleaves_reverse_reverse_of_length_eq_length (h : l₁.length = l₂.length) :
     Interleaves r l₁.reverse l₂.reverse ↔ Interleaves (Function.swap r) l₂ l₁ := by
-  simp [interleaves_iff_length_isChain_interleaveRight, ← reverse_interleaveRight_of_length_eq_length,
+  simp [interleaves_iff_length_isChain_interleaveRight,
+    ← reverse_interleaveRight_of_length_eq_length,
     isChain_reverse, *]
 
 lemma interleaves_reverse_reverse_of_length_add_one_eq_length (h : l₁.length + 1 = l₂.length) :
@@ -278,7 +281,8 @@ lemma interleaves_ofFn {n : ℕ} {f g : Fin n → α} :
     Interleaves r (ofFn f) (ofFn g) ↔
       (∀ i, r (g i) (f i)) ∧
         ∀ (i : ℕ) (hi : i + 1 < n), r (f ⟨i, by lia⟩) (g ⟨i + 1, hi⟩) := by
-  simp only [interleaves_iff_length_isChain_interleaveRight, length_ofFn, Nat.succ_ne_self, or_false,
+  simp only [interleaves_iff_length_isChain_interleaveRight, length_ofFn,
+    Nat.succ_ne_self, or_false,
     interleaveRight_ofFn_ofFn, isChain_ofFn, true_and]
   refine ⟨fun h ↦ ?_, fun h i hi ↦ by have := h.1 ⟨i / 2, by lia⟩; grind⟩
   exact ⟨fun i ↦ by have := h (2 * i); grind, fun i hi ↦ by have := h (2 * i + 1); grind⟩

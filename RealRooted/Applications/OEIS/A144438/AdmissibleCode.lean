@@ -75,6 +75,10 @@ def exceptionalStartHeightEmbedding {h : Nat} : Fin h ↪ Nat where
     apply Fin.ext
     lia
 
+/-- The embedding assigns the one-based start height. -/
+@[simp] theorem exceptionalStartHeightEmbedding_apply {h : Nat} (j : Fin h) :
+    exceptionalStartHeightEmbedding j = j.val + 1 := rfl
+
 /-- The exceptional history underlying an admissible code of height at least
 two. -/
 def exceptionalHistory {h : Nat} (c : DecoCode h) (hc : c.IsAdmissible)

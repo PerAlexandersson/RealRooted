@@ -74,7 +74,7 @@ namespace CollatzWielandt
 
 /-- A vector in the standard simplex has nonempty positive support. -/
 private lemma pos_support_toFinset_nonempty_of_mem_stdSimplex {x : n → ℝ}
-    (hx : x ∈ stdSimplex ℝ n) :
+    (hx : x ∈ RealRooted.standardSimplex ℝ n) :
     ({i | 0 < x i}.toFinset).Nonempty := by
   obtain ⟨i, hi_pos⟩ := exists_pos_of_sum_one_of_nonneg hx.2 hx.1
   exact ⟨i, by simpa using hi_pos⟩
@@ -139,7 +139,7 @@ private lemma continuousOn_fixedSupportRatios (A : Matrix n n ℝ) {x : n → �
 
 private lemma collatzWielandtFn_le_fixedSupportRatios (A : Matrix n n ℝ)
     {x y : n → ℝ} (hx : ({i | 0 < x i}.toFinset).Nonempty)
-    (hy : y ∈ posSupportNeighborhood x ∩ stdSimplex ℝ n) :
+    (hy : y ∈ posSupportNeighborhood x ∩ RealRooted.standardSimplex ℝ n) :
     collatzWielandtFn A y ≤
       {i | 0 < x i}.toFinset.inf' hx (fun i => (A *ᵥ y) i / y i) := by
   have hy_supp : {i | 0 < y i}.toFinset.Nonempty :=
@@ -156,7 +156,7 @@ Seneta relies on this fact (p.15, Appendix C) to use the Extreme Value Theorem.
 The minimum of continuous functions is upper-semicontinuous.
 [Giaquinta-Modica, Definition 6.21, Exercise 6.28, pp: 235, 236] -/
 theorem upperSemicontinuousOn
-    (A : Matrix n n ℝ) : UpperSemicontinuousOn (collatzWielandtFn A) (stdSimplex ℝ n) := by
+    (A : Matrix n n ℝ) : UpperSemicontinuousOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) := by
   intro x₀ hx₀ c hc
   have supp_x₀ : {i | 0 < x₀ i}.toFinset.Nonempty :=
     pos_support_toFinset_nonempty_of_mem_stdSimplex hx₀
@@ -172,13 +172,13 @@ theorem upperSemicontinuousOn
   have lt_eventually : ∀ᶠ y in 𝓝 x₀, f y < c :=
     Filter.Tendsto.eventually_lt_const hc cont_at
   rcases eventually_to_open lt_eventually with ⟨V, V_open, x₀_in_V, hV⟩
-  let W := V ∩ posSupportNeighborhood x₀ ∩ stdSimplex ℝ n
+  let W := V ∩ posSupportNeighborhood x₀ ∩ RealRooted.standardSimplex ℝ n
   have VU_open : IsOpen (V ∩ posSupportNeighborhood x₀) :=
     IsOpen.inter V_open (isOpen_posSupportNeighborhood x₀)
   have VU_mem : x₀ ∈ V ∩ posSupportNeighborhood x₀ :=
     ⟨x₀_in_V, self_mem_posSupportNeighborhood x₀⟩
   have VU_nhds : V ∩ posSupportNeighborhood x₀ ∈ 𝓝 x₀ := VU_open.mem_nhds VU_mem
-  have W_nhdsWithin : W ∈ 𝓝[stdSimplex ℝ n] x₀ := by
+  have W_nhdsWithin : W ∈ 𝓝[RealRooted.standardSimplex ℝ n] x₀ := by
     rw [mem_nhdsWithin_iff_exists_mem_nhds_inter]
     exact ⟨V ∩ posSupportNeighborhood x₀, VU_nhds, by simp [W]⟩
   exact Filter.mem_of_superset W_nhdsWithin fun y hy => by
@@ -201,10 +201,10 @@ lemma nonnegNeZero_mem_const_one : (fun _ : n => (1 : ℝ)) ∈ nonnegNeZero := 
 /-- The Collatz-Wielandt function attains its maximum on the standard simplex.
     [Giaquinta-Modica, Theorem 6.24 (dual), p: 235] -/
 theorem exists_maximizer (A : Matrix n n ℝ) :
-    ∃ v ∈ stdSimplex ℝ n, IsMaxOn (collatzWielandtFn A) (stdSimplex ℝ n) v := by
-  have h_compact : IsCompact (stdSimplex ℝ n) := by exact _root_.isCompact_stdSimplex ℝ n
-  have h_nonempty : (stdSimplex ℝ n).Nonempty := stdSimplex_nonempty
-  have h_usc : UpperSemicontinuousOn (collatzWielandtFn A) (stdSimplex ℝ n) :=
+    ∃ v ∈ RealRooted.standardSimplex ℝ n, IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v := by
+  have h_compact : IsCompact (RealRooted.standardSimplex ℝ n) := by exact RealRooted.isCompact_standardSimplex n
+  have h_nonempty : (RealRooted.standardSimplex ℝ n).Nonempty := stdSimplex_nonempty
+  have h_usc : UpperSemicontinuousOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) :=
     upperSemicontinuousOn A
   exact IsCompact.exists_max_on_usco h_compact h_nonempty h_usc
 
@@ -216,7 +216,7 @@ lemma eq_iInf_of_nonempty (v : n → ℝ) (h : {i | 0 < v i}.toFinset.Nonempty) 
   rw [Finset.inf'_eq_ciInf h]
   let s : Set n := {i | 0 < v i}
   rw [← Set.toFinite_toFinset s]
-  simpa [s] using
+  simpa [s] using!
     ((Set.toFinite s).subtypeEquivToFinset.symm.iInf_congr
       (f := fun i : {i // i ∈ (Set.toFinite s).toFinset} => (A *ᵥ v) i / v i)
       (g := fun i : {i // i ∈ s} => (A *ᵥ v) i / v i) <| by
@@ -467,7 +467,8 @@ lemma row_sum_of_similarity_transformed_matrix [DecidableEq n]
   intro i
   let B := Matrix.diagonal (v⁻¹) * A * Matrix.diagonal v
   have row_sum_eq : ∑ j, B i j = (B *ᵥ (fun _ => 1)) i := by
-    simp only [mulVec_apply, mul_one]
+    change (∑ j, B i j) = ∑ j, B i j * 1
+    simp
   rw [row_sum_eq]
   have h_B_eig := ones_eigenvector_of_similarity_transform hv_pos h_eig
   rw [h_B_eig]
@@ -584,7 +585,7 @@ omit [Nonempty n] in
 /-- Normalize a nonnegative nonzero vector into the standard simplex. -/
 lemma inv_sum_smul_mem_stdSimplex_of_nonneg_ne_zero [DecidableEq n] {x : n → ℝ}
     (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne_zero : x ≠ 0) :
-    (∑ i, x i)⁻¹ • x ∈ stdSimplex ℝ n := by
+    (∑ i, x i)⁻¹ • x ∈ RealRooted.standardSimplex ℝ n := by
   have hs_pos := sum_pos_of_nonneg_ne_zero hx_nonneg hx_ne_zero
   constructor
   · intro i
@@ -602,7 +603,7 @@ lemma collatzWielandtFn_inv_sum_smul_of_nonneg_ne_zero [DecidableEq n] {x : n �
 
 omit [Nonempty n] in
 private lemma le_of_isMaxOn_stdSimplex [DecidableEq n] {v : n → ℝ}
-    (hv_max : IsMaxOn (collatzWielandtFn A) (stdSimplex ℝ n) v)
+    (hv_max : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v)
     {x : n → ℝ} (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne_zero : x ≠ 0) :
     collatzWielandtFn A x ≤ collatzWielandtFn A v := by
   have h_max := hv_max (inv_sum_smul_mem_stdSimplex_of_nonneg_ne_zero hx_nonneg hx_ne_zero)
@@ -611,8 +612,8 @@ private lemma le_of_isMaxOn_stdSimplex [DecidableEq n] {v : n → ℝ}
 /-- A simplex maximizer realizes the Perron root. -/
 lemma perronRoot_eq_of_isMaxOn_stdSimplex [DecidableEq n]
     (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ}
-    (hv_mem : v ∈ stdSimplex ℝ n)
-    (hv_max : IsMaxOn (collatzWielandtFn A) (stdSimplex ℝ n) v) :
+    (hv_mem : v ∈ RealRooted.standardSimplex ℝ n)
+    (hv_max : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v) :
     perronRoot A = collatzWielandtFn A v := by
   apply le_antisymm
   · dsimp [perronRoot]
@@ -627,7 +628,7 @@ omit [Fintype n] [Nonempty n] in
 lemma maximizer_satisfies_le_mulVec [Fintype n] [Nonempty n] [DecidableEq n]
     (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     let r := perronRoot A
-    ∃ v ∈ stdSimplex ℝ n, r • v ≤ A *ᵥ v := by
+    ∃ v ∈ RealRooted.standardSimplex ℝ n, r • v ≤ A *ᵥ v := by
   let r := perronRoot A
   obtain ⟨v, v_in_simplex, v_is_max⟩ := exists_maximizer (A := A)
   have r_eq := perronRoot_eq_of_isMaxOn_stdSimplex hA_nonneg v_in_simplex v_is_max
@@ -696,8 +697,8 @@ lemma collatzWielandtFn_of_ones_is_pos [DecidableEq n]
   rw [h_inf_eq]
   apply Finset.inf'_pos Finset.univ_nonempty
   intro i _
-  simp_rw [mulVec_apply, x_ones, mul_one, div_one]
-  exact row_sum_pos_of_irreducible_nonneg hA_irred hA_nonneg i
+  simpa [Matrix.mulVec, dotProduct, x_ones] using
+    row_sum_pos_of_irreducible_nonneg hA_irred hA_nonneg i
 
 /-- The Perron root is positive for an irreducible nonnegative matrix: the Collatz–Wielandt value at
 the all-ones vector is positive and lies below `perronRoot`. -/

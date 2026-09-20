@@ -50,9 +50,12 @@ pencil. -/
 theorem eval_detPencil (A : Matrix m m ℂ) (B : sigma → Matrix m m ℂ) (z : sigma → ℂ) :
     MvPolynomial.eval z (detPencil A B) = (A + ∑ k : sigma, z k • B k).det := by
   classical
-  rw [detPencil, RingHom.map_det]
+  unfold detPencil
+  erw [RingHom.map_det]
   congr 1
-  ext i j
+  apply Matrix.ext
+  intro i j
+  change MvPolynomial.eval z (C (A i j) + ∑ k : sigma, X k * C (B k i j)) = _
   simp [Matrix.add_apply, Matrix.sum_apply, Matrix.smul_apply, mul_comm]
 
 omit [DecidableEq m] in
@@ -112,7 +115,7 @@ theorem mulVec_eq_zero_of_pencil_mulVec_eq_zero
     exact Complex.ext hre (hq_im k)
   -- semidefiniteness upgrades this to the kernel
   have hBv : ∀ k, B k *ᵥ v = 0 := fun k =>
-    ((hB k).dotProduct_mulVec_zero_iff v).mp (hq_eq_zero k)
+    ((hB k).dotProduct_mulVec_zero_iff (x := v)).mp (hq_eq_zero k)
   refine ⟨?_, hBv⟩
   have : A *ᵥ v + ∑ k : sigma, z k • (B k *ᵥ v) = 0 := by
     rw [← pencil_mulVec]; exact hv
@@ -196,9 +199,13 @@ theorem complexifyMv_realDetPencil (A : Matrix m m ℝ) (B : sigma → Matrix m 
     complexifyMv (realDetPencil A B)
       = detPencil (A.map (Complex.ofReal)) (fun k => (B k).map (Complex.ofReal)) := by
   classical
-  rw [complexifyMv, realDetPencil, detPencil, RingHom.map_det]
+  unfold complexifyMv realDetPencil detPencil
+  erw [RingHom.map_det]
   congr 1
-  ext i j
+  apply Matrix.ext
+  intro i j
+  change MvPolynomial.map Complex.ofRealHom
+    (C (A i j) + ∑ k : sigma, X k * C (B k i j)) = _
   simp [map_sum]
 
 /-- **Determinantal stability, real symmetric case.**  For a real symmetric `A`
