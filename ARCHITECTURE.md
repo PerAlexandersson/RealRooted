@@ -1101,6 +1101,13 @@ matrix-valued divided difference identifies an adjugate tail exactly with the
 preceding ordered product. The remaining path/cofactor positivity argument
 also belongs in `SpectralProduct`.
 
+`JacobiDeformation.Basic` owns the finite coefficient formula, monicity,
+degree, coefficient positivity, and the `m = 0,1` boundary formulas for the
+general Jacobi deformation. The independent two-point determinant and scalar
+sign calculation used for exterior nodes is in
+`Mathlib.LinearAlgebra.Matrix.RankOneCompression`; its eventual spectral
+compression wrapper belongs in the higher Jacobi-deformation layer.
+
 Shifted-Jacobi orthogonality has a finite/analytic boundary. `Jacobi.Favard`
 owns the monic recurrence certificate without importing roots or analysis.
 The coefficient-ring self-adjointness criterion lives in the Jacobi moment

@@ -1285,6 +1285,8 @@ import RealRooted.Mathlib.Algebra.Polynomial.DividedDifference
 import RealRooted.CauchyInterlacing.Submatrix
 import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
 import RealRooted.SpectralProduct
+import RealRooted.JacobiDeformation.Basic
+import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 
 /-!
 # RealRooted production umbrella
