@@ -619,7 +619,7 @@ lemma toeplitz_one_coeff : toeplitz (fun n ↦ (1 : ℝ[X]).coeff n) = 1 := by
 
 lemma IsPolyaFreqSeq.one :
     IsPolyaFreqSeq (fun n ↦ (1 : ℝ[X]).coeff n) := by
-  simpa [IsPolyaFreqSeq, toeplitz_one_coeff] using IsTotallyNonneg.one
+  simp [IsPolyaFreqSeq, toeplitz_one_coeff, IsTotallyNonneg.one]
 
 def bidiagonal (a : ℝ) : Matrix ℕ ℕ ℝ :=
   .of fun i j ↦ if i = j then a else if i = j + 1 then 1 else 0
@@ -713,7 +713,7 @@ lemma toeplitz_const_coeff (c : ℝ) :
 lemma IsPolyaFreqSeq.const (c : ℝ) (hc : 0 ≤ c) :
     IsPolyaFreqSeq (fun n ↦ (C c : ℝ[X]).coeff n) := by
   simpa [IsPolyaFreqSeq, toeplitz_const_coeff] using
-    IsTotallyNonneg.smul IsTotallyNonneg.one c hc
+    IsTotallyNonneg.smul IsTotallyNonneg.one hc
 
 lemma toeplitz_const_mul (c : ℝ) (q : ℝ[X]) :
     toeplitz (fun n ↦ (C c * q).coeff n) = c • toeplitz q.coeff := by
@@ -724,7 +724,7 @@ lemma IsPolyaFreqSeq.const_mul (c : ℝ) (hc : 0 ≤ c) {q : ℝ[X]}
     (hq : IsPolyaFreqSeq q.coeff) :
     IsPolyaFreqSeq (fun n ↦ (C c * q).coeff n) := by
   rw [IsPolyaFreqSeq, toeplitz_const_mul]
-  exact IsTotallyNonneg.smul hq c hc
+  exact IsTotallyNonneg.smul hq hc
 
 lemma toeplitz_linear_coeff (r : ℝ) :
     toeplitz (fun n ↦ (X - C r : ℝ[X]).coeff n) = bidiagonal (-r) := by

@@ -24,7 +24,7 @@ theorem eval_zero_applyMonomialDifferential_oneBox
     (m : {m : sigma →₀ ℕ // ∀ i, m i ≤ 1}) :
     MvPolynomial.eval (fun _ : sigma => 0)
         (applyMonomialDifferential m.1 f.1) =
-      MvPolynomial.coeff m.1 f.1 := by
+      f.1.coeff m.1 := by
   classical
   let lhs :
       MvPolynomial.degreeOfLE sigma ℂ (fun _ => 1) →ₗ[ℂ] ℂ :=
@@ -39,7 +39,7 @@ theorem eval_zero_applyMonomialDifferential_oneBox
         simp [Algebra.smul_def, applyMonomialDifferential_C_mul] }
   let rhs :
       MvPolynomial.degreeOfLE sigma ℂ (fun _ => 1) →ₗ[ℂ] ℂ :=
-    { toFun := fun g => MvPolynomial.coeff m.1 g.1
+    { toFun := fun g => g.1.coeff m.1
       map_add' := by
         intro g h
         simp
@@ -54,9 +54,8 @@ theorem eval_zero_applyMonomialDifferential_oneBox
       (applyMonomialDifferential m.1
         (MvPolynomial.basisDegreeOfLE
           (R := ℂ) (fun _ : sigma => 1) n).1) =
-    MvPolynomial.coeff m.1
-      (MvPolynomial.basisDegreeOfLE
-        (R := ℂ) (fun _ : sigma => 1) n).1
+    (MvPolynomial.basisDegreeOfLE
+        (R := ℂ) (fun _ : sigma => 1) n).1.coeff m.1
   rw [MvPolynomial.coe_basisDegreeOfLE]
   by_cases hsupport : m.1.support = n.1.support
   · have hmn : m.1 = n.1 :=
@@ -79,7 +78,7 @@ theorem eval_zero_applyMonomialDifferential_oneBox
       intro h
       exact hsupport (congrArg Finsupp.support h)
     have hrhs :
-        MvPolynomial.coeff m.1 (MvPolynomial.monomial n.1 (1 : ℂ)) = 0 := by
+        (MvPolynomial.monomial n.1 (1 : ℂ)).coeff m.1 = 0 := by
       simp [MvPolynomial.coeff_monomial, Ne.symm hmn]
     rw [hrhs, finsupp_eq_indicator_support_of_le_one m.1 m.2,
       finsupp_eq_indicator_support_of_le_one n.1 n.2,

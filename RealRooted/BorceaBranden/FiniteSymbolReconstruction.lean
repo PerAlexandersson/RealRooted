@@ -57,7 +57,7 @@ theorem specializeRight_zero_paperDifferentialSum
     ∑ m : OneBox sigma,
         T (MvPolynomial.basisDegreeOfLE
             (R := ℂ) (fun _ : sigma => 1) m) *
-          MvPolynomial.C (MvPolynomial.coeff m.1 f.1) =
+          MvPolynomial.C (f.1.coeff m.1) =
       ∑ m : OneBox sigma,
         ((MvPolynomial.basisDegreeOfLE (R := ℂ)
             (fun _ : sigma => 1)).repr f m) •

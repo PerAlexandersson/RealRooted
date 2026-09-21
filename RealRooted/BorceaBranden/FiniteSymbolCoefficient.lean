@@ -175,8 +175,8 @@ theorem specializeRight_zero_monomial
       (by
         rw [Finsupp.mem_support_iff]
         simp only [Finsupp.add_apply]
-        rw [Finsupp.mapDomain_notin_range _ _ (by simp)]
-        rw [Finsupp.mapDomain_apply Sum.inr_injective]
+        rw [Finsupp.mapDomain_of_notMem_range _ _ (by simp)]
+        rw [Finsupp.mapDomain_apply_of_injective Sum.inr_injective]
         simpa using Finsupp.mem_support_iff.mp hj)
       (by simp)
 
@@ -243,13 +243,13 @@ theorem specializeRight_zero_applyMonomialDifferential_indicator_monomial
     cases x with
     | inl i =>
         simp only [Finsupp.add_apply]
-        rw [Finsupp.mapDomain_apply Sum.inl_injective]
-        rw [Finsupp.mapDomain_notin_range _ _ (by simp)]
+        rw [Finsupp.mapDomain_apply_of_injective Sum.inl_injective]
+        rw [Finsupp.mapDomain_of_notMem_range _ _ (by simp)]
         simp [eLeft, eRight]
     | inr j =>
         simp only [Finsupp.add_apply]
-        rw [Finsupp.mapDomain_notin_range _ _ (by simp)]
-        rw [Finsupp.mapDomain_apply Sum.inr_injective]
+        rw [Finsupp.mapDomain_of_notMem_range _ _ (by simp)]
+        rw [Finsupp.mapDomain_apply_of_injective Sum.inr_injective]
         simp [eLeft, eRight]
   rw [applyMonomialDifferential_indicator_monomial]
   by_cases hmn : m = n

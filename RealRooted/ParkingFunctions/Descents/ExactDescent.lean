@@ -143,8 +143,7 @@ theorem rename_exactDescentContentEnumerator {n : ℕ}
 literal words in that content fiber. -/
 theorem coeff_exactDescentContentEnumerator {n m : ℕ}
     (S : Finset (Fin n)) (μ : Multiset (Fin m)) :
-    MvPolynomial.coeff μ.toFinsupp
-        (exactDescentContentEnumerator S m) =
+    (exactDescentContentEnumerator S m).coeff μ.toFinsupp =
       (((contentFiber (n := n + 1) μ).filter fun w =>
         descentSet w = S).card : ℤ) := by
   classical
@@ -193,7 +192,7 @@ theorem card_contentFiber_descentSet_map_equiv {n m : ℕ}
   rw [← coeff_exactDescentContentEnumerator,
     ← coeff_exactDescentContentEnumerator, toFinsupp_map_equiv]
   have h := congrArg
-    (MvPolynomial.coeff (Finsupp.mapDomain e μ.toFinsupp))
+    (fun p => p.coeff (Finsupp.mapDomain e μ.toFinsupp))
     (rename_exactDescentContentEnumerator S m e)
   rw [MvPolynomial.coeff_rename_mapDomain e e.injective] at h
   exact h.symm

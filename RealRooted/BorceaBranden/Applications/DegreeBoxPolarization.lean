@@ -113,8 +113,7 @@ private theorem sumAlgEquiv_monomial
   classical
   rw [MvPolynomial.monomial_eq, MvPolynomial.monomial_eq,
     MvPolynomial.monomial_eq, Finsupp.prod_sumElim]
-  simp only [map_mul, MvPolynomial.sumAlgEquiv_apply,
-    MvPolynomial.sumToIter_C]
+  simp only [map_mul, MvPolynomial.sumAlgEquiv_C_inl]
   simp [Finsupp.prod]
   simp only [← map_pow, ← map_prod]
   simp only [MvPolynomial.prod_X_pow_eq_monomial]
@@ -126,21 +125,11 @@ theorem coeff_coeff_sumAlgEquiv
     {S₁ S₂ R : Type*} [CommSemiring R]
     (P : MvPolynomial (S₁ ⊕ S₂) R)
     (a : S₁ →₀ ℕ) (b : S₂ →₀ ℕ) :
-    MvPolynomial.coeff b
-        (MvPolynomial.coeff a (MvPolynomial.sumAlgEquiv R S₁ S₂ P)) =
-      MvPolynomial.coeff (a.sumElim b) P := by
+    ((MvPolynomial.sumAlgEquiv R S₁ S₂ P).coeff a).coeff b =
+      P.coeff (a.sumElim b) := by
   classical
   induction P using MvPolynomial.induction_on' with
   | add p q hp hq =>
-      change
-        MvPolynomial.coeff b
-            (MvPolynomial.coeff a (MvPolynomial.sumToIter R S₁ S₂ (p + q))) = _
-      change
-        MvPolynomial.coeff b
-            (MvPolynomial.coeff a (MvPolynomial.sumToIter R S₁ S₂ p)) = _ at hp
-      change
-        MvPolynomial.coeff b
-            (MvPolynomial.coeff a (MvPolynomial.sumToIter R S₁ S₂ q)) = _ at hq
       simp [hp, hq]
   | monomial d r =>
       let d₁ : S₁ →₀ ℕ :=
@@ -185,8 +174,8 @@ noncomputable def sourceCoefficient {τ : Type*}
 
 theorem coeff_sourceCoefficient {τ : Type*}
     (P : MvPolynomial (τ ⊕ Fin 1) ℂ) (d : τ →₀ ℕ) (k : ℕ) :
-    coeff d (sourceCoefficient P k) =
-      coeff (d.sumElim (Finsupp.single default k)) P := by
+    (sourceCoefficient P k).coeff d =
+      P.coeff (d.sumElim (Finsupp.single default k)) := by
   classical
   unfold sourceCoefficient
   rw [coeff_coeff_sumAlgEquiv]
@@ -222,7 +211,7 @@ private theorem degreeOf_rename_eq_zero_of_not_mem_range
   intro d hd
   obtain ⟨u, hu, _hcoeff⟩ := coeff_rename_ne_zero
     f P d (mem_support_iff.mp hd)
-  rw [← hu, Finsupp.mapDomain_notin_range u j hj]
+  rw [← hu, Finsupp.mapDomain_of_notMem_range u j hj]
 
 /-- Polarize only the single source variable of a polynomial whose output
 variables are indexed by `τ`.
@@ -475,7 +464,7 @@ theorem sourceCoefficient_sum {τ ι : Type*} (s : Finset ι)
     (f : ι → MvPolynomial (τ ⊕ Fin 1) ℂ) (k : ℕ) :
     sourceCoefficient (∑ i ∈ s, f i) k =
       ∑ i ∈ s, sourceCoefficient (f i) k := by
-  simp [sourceCoefficient, map_sum, coeff_sum]
+  simp [sourceCoefficient, map_sum]
 
 /-- Extract the source coefficient of an output polynomial times one source
 monomial. -/

@@ -221,7 +221,7 @@ theorem MvUpperHalfPlaneStable.specializeRight_zero_or_general
     MvUpperHalfPlaneStableOrZero
       (_root_.RealRooted.specializeRight (fun _ : sigma => 0) P) := by
   classical
-  letI := Fintype.ofFinite sigma
+  let := Fintype.ofFinite sigma
   let l : List (Sum tau sigma) :=
     Finset.univ.toList.map (Sum.inr : sigma → Sum tau sigma)
   let Q : MvPolynomial (Sum tau sigma) ℂ := specializeZeroList l P

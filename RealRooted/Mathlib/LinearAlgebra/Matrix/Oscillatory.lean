@@ -145,7 +145,7 @@ theorem isIrreducible_of_nonneg_of_adjacent_pos {n : ℕ}
     (hsub : ∀ i : Fin (n + 1), 0 < A i.succ i.castSucc) :
     A.IsIrreducible := by
   refine ⟨hA, ?_⟩
-  letI : Quiver (Fin (n + 2)) := toQuiver A
+  let : Quiver (Fin (n + 2)) := toQuiver A
   exact Quiver.isSStronglyConnected_fin_of_adjacent
     (fun i => ⟨PLift.up (hsuper i)⟩) (fun i => ⟨PLift.up (hsub i)⟩)
 
@@ -170,7 +170,7 @@ theorem IsTotallyNonneg.isIrreducible_of_det_ne_zero_of_adjacent_pos
         simpa [Matrix.det_fin_one] using hdet
       have hpos : 0 < A 0 0 :=
         lt_of_le_of_ne (hA.nonneg 0 0) hne.symm
-      letI : Quiver (Fin 1) := toQuiver A
+      let : Quiver (Fin 1) := toQuiver A
       exact ⟨(show (0 : Fin 1) ⟶ 0 from PLift.up hpos).toPath, by simp⟩
   | succ n =>
       exact isIrreducible_of_nonneg_of_adjacent_pos hA.nonneg hsuper hsub

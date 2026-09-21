@@ -228,7 +228,7 @@ theorem MvPolynomial.IsRayleigh.wronskian_eval_realAffineLineRestriction_pderiv_
       (realAffineLineRestriction a b (MvPolynomial.pderiv i P))
       (realAffineLineRestriction a b P)).eval t := by
   classical
-  letI := Fintype.ofFinite σ
+  let := Fintype.ofFinite σ
   rw [wronskian_realAffineLineRestriction_pderiv,
     eval_realAffineLineRestriction, map_sum]
   apply Finset.sum_nonneg
@@ -246,7 +246,7 @@ theorem MvPolynomial.IsRayleigh.laguerre_realAffineLineRestriction
       (realAffineLineRestriction a b P).eval t *
         (realAffineLineRestriction a b P).derivative.derivative.eval t := by
   classical
-  letI := Fintype.ofFinite σ
+  let := Fintype.ofFinite σ
   rw [eval_derivative_sq_sub_realAffineLineRestriction]
   apply Finset.sum_nonneg
   intro i hi

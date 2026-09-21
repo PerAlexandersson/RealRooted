@@ -200,7 +200,8 @@ def weightedSmirnovPolynomial {m : ℕ} (weight : Fin m → R)
 theorem weightedSmirnovPolynomial_zero {m : ℕ}
     (weight : Fin m → R) :
     weightedSmirnovPolynomial weight 0 = 1 := by
-  simp [weightedSmirnovPolynomial, smirnovWords, IsSmirnovWord]
+  have hzero : IsSmirnovWord (m := m) 0 = fun _ => True := rfl
+  simp [weightedSmirnovPolynomial, smirnovWords, hzero]
 
 @[simp]
 theorem weightedSmirnovPolynomial_zeroWeights {m : ℕ} (n : ℕ) :

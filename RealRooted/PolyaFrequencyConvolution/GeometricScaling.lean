@@ -44,8 +44,7 @@ protected theorem IsPolyaFreqSeq.geometricScale
           simp [toeplitz_apply, hji, geometricScale, hsub, hij]
         · simp [toeplitz_apply, hji, hij]
     rw [IsPolyaFreqSeq, htoeplitz]
-    exact Matrix.IsTotallyNonneg.smul Matrix.IsTotallyNonneg.one (a 0)
-      (ha.nonneg 0)
+    exact Matrix.IsTotallyNonneg.smul Matrix.IsTotallyNonneg.one (ha.nonneg 0)
   · have hcne : c ≠ 0 := ne_of_gt hcpos
     have htoeplitz : toeplitz (geometricScale c a) =
         Matrix.of fun i j => c ^ i * ((c⁻¹) ^ j * (toeplitz a) i j) := by

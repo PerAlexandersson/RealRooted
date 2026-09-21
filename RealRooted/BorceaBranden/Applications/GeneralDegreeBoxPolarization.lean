@@ -60,7 +60,8 @@ def sourcePolarizationStageIsolateEquiv
           SourcePolarizationStageVars κ S) = Sum.inr j
         congr 1
         exact Subtype.ext hji.symm
-      · simp [hji]
+      · simp only [dite_eq_right hji]
+        rfl
   right_inv x := by
     rcases x with x | k
     · rcases x with x | j
@@ -101,8 +102,10 @@ def sourcePolarizationStageInstallEquiv
       · rcases j with ⟨j, hj⟩
         dsimp at hji ⊢
         subst i
-        simp
-      · simp [hji]
+        simp only [dite_true, Fin.cast_refl]
+        rfl
+      · simp only [dite_eq_right hji]
+        rfl
     · rfl
   right_inv x := by
     rcases x with x | k
@@ -308,8 +311,8 @@ output/source coefficients of the original polynomial. -/
 theorem coeff_sourceCoefficientGeneral
     {σ τ : Type*} (P : MvPolynomial (τ ⊕ σ) ℂ)
     (u : τ →₀ ℕ) (r : σ →₀ ℕ) :
-    MvPolynomial.coeff u (sourceCoefficientGeneral P r) =
-      MvPolynomial.coeff (u.sumElim r) P := by
+    (sourceCoefficientGeneral P r).coeff u =
+      P.coeff (u.sumElim r) := by
   classical
   unfold sourceCoefficientGeneral
   rw [MvPolynomial.coeff_coeff_sumAlgEquiv]
@@ -454,7 +457,7 @@ private theorem rename_inl_monomial_mul_rename_inr_monomial
       MvPolynomial.monomial (u.sumElim a) c := by
   classical
   rw [MvPolynomial.rename_monomial, MvPolynomial.rename_monomial,
-    MvPolynomial.monomial_mul]
+    MvPolynomial.monomial_mul_monomial]
   have hsum :
       Finsupp.mapDomain (Sum.inl : τ → τ ⊕ σ) u +
           Finsupp.mapDomain (Sum.inr : σ → τ ⊕ σ) a =
@@ -638,7 +641,7 @@ theorem sourceBlockwisePolarizationGeneral_monomial_sumElim
 private theorem coeff_specializeLeft_eq_eval_sourceCoefficientGeneral
     {σ τ : Type*} (P : MvPolynomial (τ ⊕ σ) ℂ)
     (x : τ → ℂ) (r : σ →₀ ℕ) :
-    MvPolynomial.coeff r (_root_.RealRooted.specializeLeft x P) =
+    (_root_.RealRooted.specializeLeft x P).coeff r =
       MvPolynomial.eval x (sourceCoefficientGeneral P r) := by
   have hspecial :
       _root_.RealRooted.specializeLeft x P =
@@ -675,7 +678,7 @@ private theorem specializeLeft_mem_sourceDegreeBox
     intro hzero
     simp [hzero] at hcoeff
   obtain ⟨u, hu⟩ := MvPolynomial.exists_coeff_ne_zero hsource
-  have horig : MvPolynomial.coeff (u.sumElim r) P ≠ 0 := by
+  have horig : P.coeff (u.sumElim r) ≠ 0 := by
     rw [← coeff_sourceCoefficientGeneral]
     exact hu
   have hmonomial : (u.sumElim r) (Sum.inr i) ≤ P.degreeOf (Sum.inr i) :=
@@ -716,7 +719,7 @@ private theorem mapDomain_sigma_fst_le {σ : Type*} [Finite σ]
     (hm : ∀ a, m a ≤ 1) (i : σ) :
     (m.mapDomain Sigma.fst) i ≤ κ i := by
   classical
-  letI := Fintype.ofFinite σ
+  let := Fintype.ofFinite σ
   rw [Finsupp.mapDomain, Finsupp.sum_apply]
   simp only [Finsupp.single_apply]
   change (∑ x ∈ m.support, if x.fst = i then m x else 0) ≤ κ i
@@ -1140,8 +1143,7 @@ private theorem rename_stageInstall_sourcePolarizationStageRestBasis
       congr 1
     · have hjInsert : j ∉ insert i S := by simp [Finset.mem_insert, hji, hjS]
       simp only [hjS, hjInsert, ↓reduceDIte, map_pow, MvPolynomial.rename_X]
-      simp [stageRestRawEmbedding, stageRawEmbedding,
-        sourcePolarizationStageInstallEquiv]
+      rfl
   · simp only [Finset.mem_insert_self, ↓reduceDIte]
     congr 1
 
@@ -1207,8 +1209,7 @@ theorem rename_partialBlockwisePolarizationBasis_empty
   simp only [partialBlockwisePolarizationBasis, Finset.notMem_empty,
     ↓reduceDIte, map_prod]
   simp only [map_pow, MvPolynomial.rename_X]
-  simp only [stageRawEmbedding, sourcePolarizationStageEmptyEquiv,
-    Equiv.coe_fn_mk]
+  simp only [stageRawEmbedding, sourcePolarizationStageEmptyEquiv]
   change (∏ i, MvPolynomial.X i ^ m.1 i) = MvPolynomial.monomial m.1 1
   rw [← MvPolynomial.prod_X_pow_eq_monomial]
   symm
@@ -1501,7 +1502,7 @@ private theorem coe_blockwisePolarizationDegreeBoxGeneral_eq_sum
     (p : MvPolynomial.degreeOfLE σ ℂ κ) :
     (blockwisePolarizationDegreeBoxGeneral κ p).1 =
       ∑ r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i},
-        MvPolynomial.C (MvPolynomial.coeff r.1 p.1) *
+        MvPolynomial.C (p.1.coeff r.1) *
           blockwisePolarizationBasis κ r := by
   classical
   unfold blockwisePolarizationDegreeBoxGeneral
@@ -1517,7 +1518,7 @@ private theorem coe_blockwisePolarizationDegreeBoxGeneral_eq_normalized_sum
     (blockwisePolarizationDegreeBoxGeneral κ p).1 =
       ∑ r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i},
         MvPolynomial.C ((MvPolynomial.boxChoose κ r.1 : ℂ)⁻¹) *
-          MvPolynomial.C (MvPolynomial.coeff r.1 p.1) *
+          MvPolynomial.C (p.1.coeff r.1) *
             blockElementarySymmetric κ r.1 := by
   rw [coe_blockwisePolarizationDegreeBoxGeneral_eq_sum]
   apply Fintype.sum_congr

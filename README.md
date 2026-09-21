@@ -49,6 +49,10 @@ starts with the left list and retains leftovers. The `List.Interleaves`
 relation keeps its existing meaning; operation-specific helper lemmas use
 the `interleaveRight` spelling. List sign variations now use Mathlib's
 identical definition instead of a duplicate local declaration.
+The core `Matrix.IsTotallyNonneg` API likewise comes from Mathlib now; the
+local shim retains rectangular minors and the additional matrix lemmas.
+Its scalar-multiplication theorem infers the scalar from the positivity
+certificate, so callers use `hM.smul hc` rather than `hM.smul c hc`.
 
 Useful focused checks for recent theorem areas are:
 

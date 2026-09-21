@@ -224,11 +224,11 @@ lemma simsun_nonzero (n : Nat) :
 lemma interlaces_derivative_simsun_three :
     Interlaces (simsun 3).derivative (simsun 3) := by
   have hprec : StrictInterl (1 : ℝ[X]) (1 + C (4 : ℝ) * X) :=
-    (interlaces_one_linear (by simp [add_comm])).toStrictInterl
+    (interlaces_one_linear (by simp)).toStrictInterl
   have hprecC : StrictInterl (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
     StrictInterl.C_mul_left hprec (by simp)
   have hInter : Interlaces (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
-    hprecC.toInterlaces (by simp [add_comm])
+    hprecC.toInterlaces (by simp)
   simpa [simsun_three] using hInter
 
 lemma simsun_posLeadingCoeff (n : Nat) :

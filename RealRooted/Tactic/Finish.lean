@@ -570,14 +570,16 @@ macro_rules
         with_reducible_and_instances
           first
             $[ | (have hcertificate := $hs
-                  rr_exact_realrooted_sequence_or_projection hcertificate)]*)
+                  rr_exact_realrooted_sequence_or_projection hcertificate)]*
+            $[ | rr_exact_realrooted_sequence_or_projection $hs]*)
   | `(tactic| rr_first_exact_then_realrooted_sequence_or_projection $[$hs:term],*) =>
       `(tactic|
         with_reducible_and_instances
           solve
             $[ | apply $hs]*
             $[ | (have hcertificate := $hs
-                  rr_exact_realrooted_sequence_or_projection hcertificate)]*)
+                  rr_exact_realrooted_sequence_or_projection hcertificate)]*
+            $[ | rr_exact_realrooted_sequence_or_projection $hs]*)
   | `(tactic| rr_nonzero using $h:term) =>
       `(tactic|
         rr_first_exact

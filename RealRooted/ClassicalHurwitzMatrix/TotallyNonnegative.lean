@@ -117,7 +117,7 @@ theorem IsTotallyNonneg.hurwitz_odd_coeff_eq_zero_of_coeff_one_eq_zero
       rw [Matrix.det_fin_two] at hminor
       simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.submatrix_apply,
         hurwitz_apply, Order.lt_two_iff, zero_le, le_mul_iff_one_le_right,
-        Fin.isValue, cons_val',
+        Fin.isValue,
         cons_val_zero, mul_one, Nat.one_le_ofNat, ↓reduceIte,
         Nat.add_one_sub_one, h1, Std.le_refl, tsub_self, cons_val_fin_one,
         cons_val_one, Nat.reduceLeDiff, zero_mul, ite_mul, zero_sub,
@@ -208,7 +208,7 @@ totally nonnegative. -/
 theorem hurwitz_C_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
     (hurwitz (C a).coeff).IsTotallyNonneg := by
   have hscaled : (a • (1 : Matrix ℕ ℕ ℝ)).IsTotallyNonneg :=
-    IsTotallyNonneg.smul IsTotallyNonneg.one a ha
+    IsTotallyNonneg.smul IsTotallyNonneg.one ha
   have hdouble : StrictMono (fun j : ℕ ↦ 2 * j) := by
     intro i j hij
     lia

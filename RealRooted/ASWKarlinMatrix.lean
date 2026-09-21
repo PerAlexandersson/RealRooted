@@ -178,10 +178,12 @@ lemma aswKarlinMatrix_mulVec_extend (u : ℕ → ℝ) (degree order blocks : ℕ
   unfold aswKarlinExtend
   rw [Matrix.mulVec_sum _ Finset.univ]
   ext i
-  simp [Matrix.mulVec, dotProduct, aswKarlinPivotMatrix, mul_comm, mul_ite]
+  simp only [Matrix.mulVec_single, op_smul_eq_smul, Finset.sum_apply,
+    Pi.smul_apply, Matrix.col_apply, aswKarlinMatrix_apply,
+    aswKarlinSelectedCol_val, smul_eq_mul]
   apply Finset.sum_congr rfl
   intro j _
-  split_ifs with h <;> simp [h]
+  split_ifs with h <;> simp [aswKarlinPivotMatrix, h, mul_comm]
 
 /-- Positive constant coefficient makes Karlin's rectangular matrix
 surjective as a map from column vectors to row vectors. -/
