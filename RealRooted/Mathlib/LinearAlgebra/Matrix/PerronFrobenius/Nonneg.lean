@@ -31,13 +31,17 @@ open CollatzWielandt
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
+omit [Fintype n] [DecidableEq n] in
+open scoped Classical in
 /-- An entrywise positive matrix is irreducible. -/
 lemma isIrreducible_of_pos {A : Matrix n n ℝ} (hA : ∀ i j, 0 < A i j) :
     A.IsIrreducible := by
   refine ⟨fun i j => (hA i j).le, fun i j => ?_⟩
-  letI : Quiver n := toQuiver A
+  let _ : Quiver n := toQuiver A
   exact ⟨(show i ⟶ j from ⟨hA i j⟩).toPath, by simp [Quiver.Hom.toPath]⟩
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- `mulVec` is monotone in the matrix on nonnegative vectors. -/
 private lemma mulVec_le_mulVec_of_le {A B : Matrix n n ℝ} (hAB : ∀ i j, A i j ≤ B i j)
     {x : n → ℝ} (hx : ∀ i, 0 ≤ x i) : A *ᵥ x ≤ B *ᵥ x := by
@@ -45,6 +49,8 @@ private lemma mulVec_le_mulVec_of_le {A B : Matrix n n ℝ} (hAB : ∀ i j, A i 
   simp only [mulVec, dotProduct]
   exact Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_right (hAB i j) (hx j)
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- The Perron root is monotone in the matrix over nonnegative matrices. -/
 lemma perronRoot_le_perronRoot_of_le [Nonempty n] {A B : Matrix n n ℝ}
     (hA_nonneg : ∀ i j, 0 ≤ A i j) (hB_nonneg : ∀ i j, 0 ≤ B i j)
@@ -57,6 +63,8 @@ lemma perronRoot_le_perronRoot_of_le [Nonempty n] {A B : Matrix n n ℝ}
   exact (le_of_subinvariant hB_nonneg hx_nonneg hx_ne h_sub).trans
     (collatzWielandtFn_le_perronRoot hB_nonneg hx_nonneg hx_ne)
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- Every complex eigenvalue of a nonnegative real matrix has modulus at most the
 Perron root.  No irreducibility is needed. -/
 theorem norm_le_perronRoot_of_eigenvalue [Nonempty n] {A : Matrix n n ℝ}
