@@ -203,7 +203,7 @@ macro_rules
         | refine RealRooted.prec_mw_derivative_nonpos_sequence
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
-          have hnonpos : -(($hc n) * r ^ 2) ≤ 0 :=
+          have hnonpos :=
             neg_nonpos.mpr (mul_nonneg ($hc n) (sq_nonneg r))
           simpa [Polynomial.eval_mul, Polynomial.eval_neg, Polynomial.eval_C,
             Polynomial.eval_X, Polynomial.eval_pow, neg_mul, mul_neg, mul_assoc] using hnonpos)
@@ -250,7 +250,7 @@ macro_rules
           refine RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
-          have hnonpos : -(($hc n) * r ^ 2) ≤ 0 :=
+          have hnonpos :=
             neg_nonpos.mpr (mul_nonneg ($hc n) (sq_nonneg r))
           simpa [Polynomial.eval_mul, Polynomial.eval_neg, Polynomial.eval_C,
             Polynomial.eval_X, Polynomial.eval_pow, neg_mul, mul_neg, mul_assoc] using hnonpos))
@@ -268,7 +268,7 @@ macro_rules
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_
               (rr_mw_tail_degree_seq $hdeg) (rr_mw_tail_degree_seq $hdeg)
           intro n r hr
-          have hnonpos : -(($hc n) * r ^ 2) ≤ 0 :=
+          have hnonpos :=
             neg_nonpos.mpr (mul_nonneg ($hc n) (sq_nonneg r))
           simpa [Polynomial.eval_mul, Polynomial.eval_neg, Polynomial.eval_C,
             Polynomial.eval_X, Polynomial.eval_pow, neg_mul, mul_neg, mul_assoc] using hnonpos))
@@ -342,7 +342,7 @@ macro_rules
           intro n r hr
           have hroot_upper := $hroot_upper n r hr
           have hfactor : 1 + r ≤ 0 := by linarith
-          have hnonpos : (1 + r) * ($hc n) ≤ 0 :=
+          have hnonpos :=
             mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
           simpa [Polynomial.eval_mul, Polynomial.eval_add, Polynomial.eval_C,
             Polynomial.eval_X, mul_comm, mul_left_comm, mul_assoc] using hnonpos)
@@ -379,7 +379,7 @@ macro_rules
           intro n r hr
           have hroot_upper := $hroot_upper n r hr
           have hfactor : 1 + r ≤ 0 := by linarith
-          have hnonpos : (1 + r) * ($hc n) ≤ 0 :=
+          have hnonpos :=
             mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
           simpa [Polynomial.eval_mul, Polynomial.eval_add, Polynomial.eval_C,
             Polynomial.eval_X, mul_comm, mul_left_comm, mul_assoc] using hnonpos))
@@ -441,7 +441,7 @@ macro_rules
           intro n r hr
           have hroot_upper := $hroot_upper n r hr
           have hfactor : r - 1 ≤ 0 := by linarith
-          have hnonpos : (r - 1) * ($hc n) ≤ 0 :=
+          have hnonpos :=
             mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
           simpa [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_C,
             Polynomial.eval_X, mul_comm, mul_left_comm, mul_assoc] using hnonpos)
@@ -478,7 +478,7 @@ macro_rules
           intro n r hr
           have hroot_upper := $hroot_upper n r hr
           have hfactor : r - 1 ≤ 0 := by linarith
-          have hnonpos : (r - 1) * ($hc n) ≤ 0 :=
+          have hnonpos :=
             mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
           simpa [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_C,
             Polynomial.eval_X, mul_comm, mul_left_comm, mul_assoc] using hnonpos))
