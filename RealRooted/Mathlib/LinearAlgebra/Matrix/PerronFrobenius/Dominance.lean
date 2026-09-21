@@ -286,6 +286,8 @@ lemma eigenvalue_ne_zero_of_irreducible
     mulVec_pos_of_exists_pos_mul_pos i j (fun k => hA_irred.nonneg i k) h_x_abs_pos hAij_pos
   exact h_pos.ne' h_Axi
 
+omit [DecidableEq n] in
+open scoped Classical in
 theorem eigenvalue_is_perron_root_of_positive_eigenvector
     {r : ℝ} {v : n → ℝ}
     (_ : A.IsIrreducible)
@@ -306,6 +308,8 @@ theorem eigenvalue_is_perron_root_of_positive_eigenvector
     exact ⟨v, ⟨hv_nonneg, hv_ne_zero⟩, rfl⟩
   exact le_antisymm h_le h_ge
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- Positive right and left eigenvectors for a matrix have the same eigenvalue. -/
 lemma eigenvalue_eq_of_positive_right_left_eigenvectors
     {A : Matrix n n ℝ} {r s : ℝ} {v u : n → ℝ}
@@ -321,6 +325,8 @@ lemma eigenvalue_eq_of_positive_right_left_eigenvectors
     _ = (u ᵥ* A) ⬝ᵥ v := by simpa using dotProduct_mulVec u A v
     _ = s * (u ⬝ᵥ v) := by simp [hu_left_eig, smul_dotProduct, smul_eq_mul]
 
+omit [DecidableEq n] in
+open scoped Classical in
 theorem perronRoot_transpose_eq
     (A : Matrix n n ℝ) (hA_irred : A.IsIrreducible) :
     perronRoot A = perronRoot Aᵀ := by
@@ -346,6 +352,8 @@ theorem perronRoot_transpose_eq
     _                  = r'  := hr_eq_r'
     _                  = perronRoot Aᵀ := hr'_eq_perron
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- An irreducible nonnegative matrix has a positive left Perron eigenvector. -/
 lemma exists_positive_left_perron_eigenvector
     (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
@@ -369,6 +377,8 @@ lemma dotProduct_left_perron_sub_eq_zero
   rw [dotProduct_sub, dotProduct_mulVec, hu_left_eig, dotProduct_smul_left,
     dotProduct_smul, smul_eq_mul, sub_self]
 
+omit [DecidableEq n] in
+open scoped Classical in
 /--
 If for a non-negative, irreducible matrix `A`, there exists
 a non-negative, non-zero vector `y` and a positive scalar `s` such that `A *ᵥ y ≤ s • y`,
@@ -390,6 +400,8 @@ lemma perron_root_le_of_subinvariant
   have h_dot_pos : 0 < u ⬝ᵥ y := dotProduct_pos_of_pos_of_nonneg_ne_zero hu_pos hy_nonneg hy_ne_zero
   exact le_of_mul_le_mul_right h_dot_le h_dot_pos
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- If equality holds in the subinvariance inequality `r • v ≤ A *ᵥ v` for the Perron root `r`,
     then `v` must be an eigenvector. -/
 lemma subinvariant_equality_implies_eigenvector
@@ -415,6 +427,8 @@ lemma subinvariant_equality_implies_eigenvector
       eq_zero_of_dotProduct_eq_zero_of_nonneg_of_pos hz_nonneg hu_pos (by rwa [dotProduct_comm])
     exact (hz_zero h_z_eq_zero).elim
 
+omit [DecidableEq n] in
+open scoped Classical in
 /--
 The value of the Collatz-Wielandt function for any non-negative, non-zero vector
 is less than or equal to the Perron root.
@@ -450,6 +464,8 @@ theorem eigenvalue_abs_le_perron_root
     collatzWielandtFn_le_perronRoot hA_nonneg hx_abs_nonneg hx_abs_ne_zero
   exact le_trans h_le_collatz h_le_perron
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- For an irreducible, non-negative matrix, the Perron root (defined as the Collatz-Wielandt
 supremum) is equal to the unique positive eigenvalue `r` from the existence theorem. -/
 lemma perron_root_eq_positive_eigenvalue (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
@@ -573,6 +589,8 @@ theorem irreducible_nonnegative_matrix_has_positive_eigenvector_at_spectralRadiu
   rw [h_eq]
   exact ⟨by rw [Module.End.mem_eigenspace_iff, toLin'_apply]; exact h_eig,
          Pi.ne_zero_of_pos hv_pos⟩
+omit [Nonempty n] [DecidableEq n] in
+open scoped Classical in
 /-- If an eigenvalue `μ` has a norm equal to the Perron root `r`, then the triangle inequality
 for the eigenvector equation holds with equality. -/
 lemma triangle_equality_of_norm_eq_perron_root
@@ -596,6 +614,8 @@ lemma triangle_equality_of_norm_eq_perron_root
     _ = ∑ j, ‖(A i j : ℂ) * x j‖ := by
         simp_rw [x_abs, norm_mul, norm_ofReal, abs_of_nonneg (hA_nonneg _ _)]
 
+omit [DecidableEq n] in
+open scoped Classical in
 /--
 If `|x|` is a positive eigenvector of an irreducible non-negative matrix `A`, then for any `i`,
 the `i`-th component of `A * |x|` is positive.
@@ -614,6 +634,8 @@ lemma mulVec_x_abs_pos_of_irreducible {A : Matrix n n ℝ} (hA_irred : A.IsIrred
     mul_pos h_r_pos (h_x_abs_pos i)
   simpa [h_eq_i] using this
 
+omit [DecidableEq n] in
+open scoped Classical in
 /--
 If the triangle equality holds for an eigenvector `x` of a non-negative irreducible matrix `A`,
 then the sum `s = (A * x) i` is non-zero.
@@ -655,6 +677,8 @@ lemma norm_entries_pos_of_irreducible_abs_perron_eigenvector {x : n → ℂ}
   eigenvector_is_positive_of_irreducible hA_irred h_x_abs_eig (fun _ => norm_nonneg _)
     (normFun_complex_ne_zero_of_ne_zero hx_ne_zero)
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- For any row `k` of an irreducible matrix with triangle equality,
 all `x l` where `A k l > 0` have the same phase. -/
 lemma aligned_neighbors_of_triangle_eq {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
@@ -691,6 +715,8 @@ lemma reference_phase_norm_one {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
   simp_rw [norm_div, Complex.norm_ofReal, abs_of_nonneg (norm_nonneg _)]
   exact div_self h_pos.ne'
 
+omit [DecidableEq n] in
+open scoped Classical in
 /--
 All non-zero entries in the same row have aligned phases when triangle equality holds.
 -/
@@ -703,7 +729,8 @@ lemma row_entries_aligned_of_triangle_eq {A : Matrix n n ℝ} (hA_irred : A.IsIr
     ∀ l m, 0 < A k l → 0 < A k m → x l / ↑‖x l‖ = x m / ↑‖x m‖ :=
   aligned_neighbors_of_triangle_eq hA_irred hA_nonneg hx_ne_zero h_triangle_eq h_x_abs_eig k
 
-omit [DecidableEq n] in
+omit [Fintype n] [DecidableEq n] in
+open scoped Classical in
 /-- For an irreducible matrix, every row has at least one positive entry. -/
 lemma IsIrreducible.exists_pos_entry_in_row {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) (i : n) :
     ∃ j, 0 < A i j := by
@@ -712,7 +739,7 @@ lemma IsIrreducible.exists_pos_entry_in_row {A : Matrix n n ℝ} (hA_irred : A.I
   have h_row_zero : ∀ j, A i j = 0 := fun j =>
     le_antisymm (h_no_pos j) (hA_irred.nonneg i j)
   obtain ⟨_, j₀, _⟩ := Matrix.Irreducible.exists_pos_entry (A := A) hA_irred
-  letI : Quiver n := toQuiver A
+  let _ : Quiver n := toQuiver A
   have hconn := hA_irred.connected i j₀
   obtain ⟨p, hp_pos⟩ := hconn
   have h_pos : p.length > 0 := hp_pos
@@ -819,11 +846,12 @@ lemma sum_norm_weighted_row_eq_mulVec_norm
     _ = (A *ᵥ (fun j => ‖x j‖)) i := by
       rfl
 
+open scoped Classical in
 /-- In the specific context of the Perron-Frobenius theorem, if we have an irreducible
     non-negative matrix A with triangle equality for the eigenvector equation,
     then the complex sum equals the real Perron root times the phase-aligned eigenvector. -/
 lemma sum_eq_perron_root_times_phase_aligned_vector
-    {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
+    {n : Type*} [Fintype n] [Nonempty n]
     {A : Matrix n n ℝ} (hA_nonneg : ∀ i j, 0 ≤ A i j)
     {x : n → ℂ}
     (h_triangle_eq : ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖)
@@ -850,10 +878,11 @@ lemma sum_eq_perron_root_times_phase_aligned_vector
             Eq.symm (ofReal_sum Finset.univ fun i ↦ ‖z i‖)
         rw [h_sum_norms_cast]
 
+open scoped Classical in
 /-- When triangle equality holds for a complex eigenvector equation, the vector of component norms
     is an eigenvector of the real matrix with eigenvalue equal to the norm of the complex eigenvalue. -/
 lemma norm_vector_is_eigenvector_of_triangle_eq
-    {n : Type*} [Fintype n] [DecidableEq n]
+    {n : Type*} [Fintype n]
     {A : Matrix n n ℝ} (hA_nonneg : ∀ i j, 0 ≤ A i j)
     {μ : ℂ} {x : n → ℂ}
     (hx_eig : (A.map (algebraMap ℝ ℂ)) *ᵥ x = μ • x)
@@ -861,10 +890,11 @@ lemma norm_vector_is_eigenvector_of_triangle_eq
     A *ᵥ (fun i => ‖x i‖) = (‖μ‖ : ℝ) • (fun i => ‖x i‖) := by
   exact norm_eigenvector_is_eigenvector_of_triangle_eq hA_nonneg hx_eig h_triangle_eq
 
+open scoped Classical in
 /-- For an irreducible non-negative matrix, if the absolute values of a complex eigenvector form
     a real eigenvector, then the eigenvalue's norm equals the Perron root. -/
 lemma eigenvalue_norm_eq_perron_root_of_triangle_eq
-    {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
+    {n : Type*} [Fintype n] [Nonempty n]
     {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j)
     {μ : ℂ} {x : n → ℂ} (hx_ne_zero : x ≠ 0)
     (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (‖μ‖ : ℝ) • (fun i => ‖x i‖)) :
@@ -881,9 +911,10 @@ lemma eigenvalue_norm_eq_perron_root_of_triangle_eq
   exact eigenvalue_is_perron_root_of_positive_eigenvector
     hA_irred hA_nonneg h_mu_norm_pos hx_abs_pos h_x_abs_eig
 
+open scoped Classical in
 /-- In a matrix with triangle equality, vertices that share a common predecessor have aligned phases. -/
 lemma phase_aligned_within_row
-    {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
+    {n : Type*} [Fintype n] [Nonempty n]
     {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j)
     {x : n → ℂ} (hx_ne_zero : x ≠ 0)
     (h_triangle_eq : ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖)
@@ -893,10 +924,11 @@ lemma phase_aligned_within_row
   apply row_entries_aligned_of_triangle_eq hA_irred hA_nonneg hx_ne_zero
         h_triangle_eq h_x_abs_eig i j k h_ij_pos h_ik_pos
 
+open scoped Classical in
 /-- Phase propagation within a row: if vertices j and k both have incoming edges from i,
     then they share the same phase. This is already proven as `phase_aligned_within_row`. -/
 lemma phase_propagates_within_row
-    {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
+    {n : Type*} [Fintype n] [Nonempty n]
     {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j)
     {x : n → ℂ} (hx_ne_zero : x ≠ 0)
     (h_triangle_eq : ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖)
