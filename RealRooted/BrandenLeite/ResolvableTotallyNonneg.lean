@@ -156,9 +156,7 @@ theorem coefficientStage_isTotallyNonneg (N k : ℕ) (hk : k ≤ N) :
   induction hk using Nat.decreasingInduction with
   | self =>
       rw [resolution.coefficientStage_top]
-      simpa [Matrix.submatrix_one Fin.val Fin.val_injective] using
-        (Matrix.IsTotallyNonneg.one (R := ℝ)).submatrix
-          Fin.val_strictMono Fin.val_strictMono
+      simp
   | of_succ k hk ih =>
       rw [← resolution.restoreAux_final N k hk]
       exact resolution.restoreAux_isTotallyNonneg N k (N - k) hk le_rfl ih

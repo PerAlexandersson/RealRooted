@@ -415,8 +415,7 @@ private lemma prec0_hz_affine_add_one_mul_one_add_X
     exact isRealRooted_affine_factor (s := s) (t := t + 1) hs
   have hbase : StrictInterl (1 : ℝ[X]) (1 + X) := by
     have hdeg : (1 + X : ℝ[X]).natDegree = 1 := by
-      simpa [show (1 + X : ℝ[X]) = X + C (1 : ℝ) by grind] using
-        (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
+      simp [show (1 + X : ℝ[X]) = X + C (1 : ℝ) by grind]
     exact (interlaces_one_linear (p := (1 + X : ℝ[X])) hdeg).toStrictInterl
   have hmul := hbase.mul_common_factor hd_rr.1 hd_rr.2
   simpa using hmul.toInterl

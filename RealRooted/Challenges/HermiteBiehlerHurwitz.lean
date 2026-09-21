@@ -116,7 +116,7 @@ theorem classicalHurwitzLinearPair_isTotallyNonneg :
     @RealRooted.hermiteBiehlerStableToHurwitzOddEven
   · exact RealRooted.hasNonnegCoeffs_X_add_C (by norm_num)
   · exact RealRooted.hasNonnegCoeffs_X_add_C (by norm_num)
-  · rw [RealRooted.prec_X_add_C_iff]
+  · rw [RealRooted.StrictInterl.X_add_C_iff]
     norm_num
 
 /-- The corrected minor of the stored parity-swapped binomial sequence on

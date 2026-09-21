@@ -27,12 +27,12 @@ private lemma upperBidiagonalFin_charpoly (n : ℕ) (d s : ℕ → ℝ) :
     (Matrix.upperBidiagonalFin n d s).charpoly =
       ∏ i : Fin n, (X - C (d i)) := by
   simpa [Matrix.upperBidiagonalFin_apply] using
-    Matrix.charpoly_of_upperTriangular _
+    Matrix.charpoly_of_isUpperTriangular _
       (upperBidiagonalFin_blockTriangular n d s)
 
 private lemma charpoly_fin_one (A : Matrix (Fin 1) (Fin 1) ℝ) :
     A.charpoly = X - C (A 0 0) := by
-  rw [Matrix.charpoly_of_upperTriangular A]
+  rw [Matrix.charpoly_of_isUpperTriangular A]
   · simp
   · intro i j hji
     fin_cases i
@@ -74,7 +74,7 @@ theorem singularUpperShift_ne_zero : singularUpperShift ≠ 0 := by
     simpa [B, hB] using hle
 
 @[simp] theorem singularUpperShift_det : singularUpperShift.det = 0 := by
-  rw [singularUpperShift, Matrix.det_of_upperTriangular
+  rw [singularUpperShift, Matrix.det_of_isUpperTriangular
     (upperBidiagonalFin_blockTriangular 2 _ _)]
   norm_num [Matrix.upperBidiagonalFin_apply]
 
