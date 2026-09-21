@@ -131,5 +131,50 @@ theorem isPFPolynomial_polynomial_shift {m : ℕ} {δ c d U V : ℝ}
       (natDegree_polynomial_le m δ c d U V)
   simpa [theta] using hpolar.const_mul (inv_pos.mpr hb)
 
+/-- Iterating equation (25) transports a checked PF base through every
+nonnegative integral parameter increment. -/
+theorem isPFPolynomial_polynomial_nat_shift {m : ℕ} {δ c d U V : ℝ}
+    (hb : 0 < (m : ℝ) + c + d - 1 + δ)
+    (hp : IsPFPolynomial (polynomial m δ c d U V)) (n : ℕ) :
+    IsPFPolynomial (polynomial m (δ + n) c d U V) := by
+  induction n with
+  | zero => simpa using hp
+  | succ n ih =>
+      have hb' : 0 < (m : ℝ) + c + d - 1 + (δ + n) := by
+        have hn : (0 : ℝ) ≤ n := by positivity
+        linarith
+      have hstep := isPFPolynomial_polynomial_shift hb' ih
+      simpa only [Nat.cast_add, Nat.cast_one, add_assoc] using hstep
+
+/-- A positive-parameter PF base and equation (25) give split polynomials with
+strictly negative roots after every integral parameter shift. -/
+theorem polynomial_nat_shift_splits_roots_neg {m : ℕ} {δ c d U V : ℝ}
+    (hm : 1 ≤ m) (hδ : 0 ≤ δ) (hc : 0 < c) (hd : 0 < d)
+    (hU : 0 < U) (hV : 0 < V)
+    (hp : IsPFPolynomial (polynomial m δ c d U V)) (n : ℕ) :
+    (polynomial m (δ + n) c d U V).Splits ∧
+      ∀ r ∈ (polynomial m (δ + n) c d U V).roots, r < 0 := by
+  have hb : 0 < (m : ℝ) + c + d - 1 + δ :=
+    base_pos_of_one_le hm hδ hc hd
+  have hpf := isPFPolynomial_polynomial_nat_shift hb hp n
+  have hne : polynomial m (δ + n) c d U V ≠ 0 :=
+    (monic_polynomial m (δ + n) c d U V).ne_zero
+  refine ⟨(hpf.ne_zero_and_splits hne).2, ?_⟩
+  intro r hr
+  have hrle : r ≤ 0 := hpf.roots_nonpos r hr
+  have hδn : 0 ≤ δ + (n : ℝ) := by positivity
+  have hconst : 0 < (polynomial m (δ + n) c d U V).coeff 0 :=
+    coeff_zero_pos_of_pos hm hδn hc hd hU hV
+  have hrne : r ≠ 0 := by
+    intro hr0
+    subst r
+    have hroot : (polynomial m (δ + n) c d U V).IsRoot 0 :=
+      (mem_roots hne).mp hr
+    have hzero : (polynomial m (δ + n) c d U V).coeff 0 = 0 := by
+      rw [Polynomial.coeff_zero_eq_eval_zero]
+      simpa [Polynomial.IsRoot.def] using hroot
+    linarith
+  exact lt_of_le_of_ne hrle hrne
+
 end JacobiDeformation
 end RealRooted
