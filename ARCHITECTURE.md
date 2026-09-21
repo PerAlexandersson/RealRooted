@@ -1095,11 +1095,16 @@ consequences belong in higher matrix modules rather than this polynomial shim.
 
 `Mathlib.LinearAlgebra.Matrix.AdjugateExpansion` proves the noncommutative
 Newton-quotient identity used to expand a characteristic adjugate, while
+`Mathlib.LinearAlgebra.Matrix.AdjugatePath` owns the recursive off-diagonal
+cofactor identity whose iterates enumerate simple paths.  The identity is
+ring-generic; its characteristic-matrix specialization exposes positive edge
+weights.  Meanwhile,
 `CauchyInterlacing.Submatrix` supplies the arbitrary injective principal-
 submatrix eigenvalue bound. `SpectralProduct` combines these layers: its
 matrix-valued divided difference identifies an adjugate tail exactly with the
-preceding ordered product. The remaining path/cofactor positivity argument
-also belongs in `SpectralProduct`.
+preceding ordered product, evaluates every complementary-principal-submatrix
+leaf, and proves entrywise nonnegativity of the finite spectral product for an
+entrywise nonnegative Hermitian matrix with simple spectrum.
 
 `JacobiDeformation.Basic` owns the finite coefficient formula, monicity,
 degree, coefficient positivity, and the `m = 0,1` boundary formulas for the

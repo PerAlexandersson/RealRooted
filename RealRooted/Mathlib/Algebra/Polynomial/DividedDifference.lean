@@ -2,6 +2,7 @@ import Mathlib.Algebra.Polynomial.Eval.Defs
 import Mathlib.Algebra.Polynomial.Eval.SMul
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Fin.Basic
+import Mathlib.Order.Fin.Clamp
 import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
@@ -298,5 +299,52 @@ theorem dividedDifference_prod_X_sub_C_nonneg :
             simpa only [hcount] using H
           have hcount : (b + 1) + (n + 1) = b + (n + 1) + 1 := by lia
           simpa only [hcount] using add_nonneg (mul_nonneg hupper hfactor) hlower
+
+/-- Finite-vector form of `dividedDifference_prod_X_sub_C_nonneg`.  The
+polynomial has exactly `b + n + 1` ordered roots, and node `i` lies weakly to
+the right of root `b + i`. -/
+theorem dividedDifference_prod_fin_X_sub_C_nonneg
+    (n b : ℕ) (ν : Fin (b + n + 1) → ℝ) (v : Fin (n + 1) → ℝ)
+    (hν : Monotone ν) (hv : StrictMono v)
+    (hdom : ∀ i : Fin (n + 1),
+      ν ⟨b + (i : ℕ), by lia⟩ ≤ v i) :
+    0 ≤ dividedDifference n v (∏ i, (X - C (ν i))) := by
+  let ν' : ℕ → ℝ := fun i => ν (Fin.clamp i (b + n))
+  have hν' : Monotone ν' := hν.comp Fin.clamp_monotone
+  have hdom' : ∀ i : Fin (n + 1), ν' (b + (i : ℕ)) ≤ v i := by
+    intro i
+    have hclamp : Fin.clamp (b + (i : ℕ)) (b + n) =
+        (⟨b + (i : ℕ), by lia⟩ : Fin (b + n + 1)) := by
+      ext
+      simp only [Fin.clamp]
+      rw [Nat.min_eq_left]
+      lia
+    simpa only [ν', hclamp] using hdom i
+  have h := dividedDifference_prod_X_sub_C_nonneg n b ν' v hν' hv hdom'
+  rw [Finset.prod_range] at h
+  have hprod :
+      (∏ i : Fin (b + n + 1), (X - C (ν' i))) =
+        ∏ i : Fin (b + n + 1), (X - C (ν i)) := by
+    apply Finset.prod_congr rfl
+    intro i _
+    have hclamp : Fin.clamp (i : ℕ) (b + n) = i := by
+      ext
+      simp only [Fin.clamp]
+      rw [Nat.min_eq_left]
+      exact Nat.le_of_lt_succ i.isLt
+    simp only [ν', hclamp]
+  rwa [hprod] at h
+
+/-- Equality-indexed wrapper for
+`dividedDifference_prod_fin_X_sub_C_nonneg`, convenient when the root count is
+obtained arithmetically. -/
+theorem dividedDifference_prod_fin_X_sub_C_nonneg_of_card
+    {m : ℕ} (n b : ℕ) (ν : Fin m → ℝ) (v : Fin (n + 1) → ℝ)
+    (hm : m = b + n + 1) (hν : Monotone ν) (hv : StrictMono v)
+    (hdom : ∀ i : Fin (n + 1),
+      ν ⟨b + (i : ℕ), by lia⟩ ≤ v i) :
+    0 ≤ dividedDifference n v (∏ i, (X - C (ν i))) := by
+  subst m
+  exact dividedDifference_prod_fin_X_sub_C_nonneg n b ν v hν hv hdom
 
 end Polynomial
