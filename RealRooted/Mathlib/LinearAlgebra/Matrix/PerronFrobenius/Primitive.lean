@@ -31,6 +31,7 @@ open scoped Convex Pointwise
 variable {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n] {A : Matrix n n ℝ}
 
 omit [DecidableEq n] in
+open scoped Classical in
 /-- Normalizing a strictly positive vector by its sum gives a point of the standard simplex. -/
 lemma inv_sum_smul_mem_stdSimplex_of_pos {x : n → ℝ} (hx_pos : ∀ i, 0 < x i) :
     (∑ i, x i)⁻¹ • x ∈ RealRooted.standardSimplex ℝ n :=
@@ -38,6 +39,7 @@ lemma inv_sum_smul_mem_stdSimplex_of_pos {x : n → ℝ} (hx_pos : ∀ i, 0 < x 
     (fun i => (hx_pos i).le) (Pi.ne_zero_of_pos hx_pos)
 
 omit [DecidableEq n] in
+open scoped Classical in
 /-- Collatz-Wielandt is unchanged by normalizing a strictly positive vector by its sum. -/
 lemma collatzWielandtFn_inv_sum_smul_of_pos (A : Matrix n n ℝ)
     {x : n → ℝ} (hx_pos : ∀ i, 0 < x i) :
@@ -46,6 +48,7 @@ lemma collatzWielandtFn_inv_sum_smul_of_pos (A : Matrix n n ℝ)
     (fun i => (hx_pos i).le) (Pi.ne_zero_of_pos hx_pos)
 
 omit [DecidableEq n] in
+open scoped Classical in
 /-- Strict coordinate inequalities `r * xᵢ < (Ax)ᵢ` force `r < r(x)`. -/
 lemma lt_collatzWielandtFn_of_forall_mul_lt_mulVec
     {A : Matrix n n ℝ} {x : n → ℝ} {r : ℝ}
@@ -101,7 +104,9 @@ theorem maximizer_is_eigenvector (hA_prim : IsPrimitive A)
     simpa [hr_def] using CollatzWielandt.le_mulVec hA_nonneg hv_nonneg hv_ne_zero
   by_contra h_ne
   let z := A *ᵥ v - r • v
-  have hz_nonneg : ∀ i, 0 ≤ z i := fun i ↦ by simp [z, sub_nonneg]; exact h_fund_ineq i
+  have hz_nonneg : ∀ i, 0 ≤ z i := fun i ↦ by
+    change 0 ≤ (A *ᵥ v) i - (r • v) i
+    exact sub_nonneg.mpr (h_fund_ineq i)
   have hz_ne_zero : z ≠ 0 := by
     contrapose! h_ne
     ext i
@@ -130,6 +135,7 @@ lemma eigenvector_of_primitive_is_positive {r : ℝ} (hA_prim : IsPrimitive A) (
   exact (mul_pos_iff_of_pos_left (pow_pos hr_pos k)).mp (h_Ak_v_pos i)
 
 omit [DecidableEq n] in
+open scoped Classical in
 /-- Collatz-Wielandt is unchanged by normalizing the all-ones vector by `Fintype.card`. -/
 lemma collatzWielandtFn_ones_norm_eq (A : Matrix n n ℝ) :
     collatzWielandtFn A (fun _ => (Fintype.card n : ℝ)⁻¹) =
