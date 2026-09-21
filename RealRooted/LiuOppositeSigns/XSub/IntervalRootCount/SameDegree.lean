@@ -135,7 +135,7 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_same_degree_nonneg_of_noCommon
             have hbound :=
               hpair.right_natDegree_le_lower_sum_min_two_upper_of_roots_sort
                 hno (a := a) (xs := []) hrs_single
-            simpa [L, U] using hbound
+            exact hbound
           have hL_le : L ≤ 1 := by
             simpa [L] using
               hpair.card_right_roots_filter_lt_le_one_of_left_roots_ge_of_natDegree_eq

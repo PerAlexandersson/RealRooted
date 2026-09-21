@@ -46,7 +46,7 @@ def veroneseSectionPowerSeries (r k : ℕ) (A : PowerSeries ℝ) : PowerSeries �
 def veroneseSectionPolynomial (r k : ℕ) (p : ℝ[X]) : ℝ[X] :=
   if hr0 : r = 0 then 0 else
     Polynomial.ofFinsupp <|
-      Finsupp.onFinset (Finset.range (p.natDegree + 1))
+      ⟨Finsupp.onFinset (Finset.range (p.natDegree + 1))
         (fun n => p.coeff (k + r * n))
         (by
           intro n hn
@@ -61,7 +61,7 @@ def veroneseSectionPolynomial (r k : ℕ) (p : ℝ[X]) : ℝ[X] :=
           have hn_le : n ≤ k + r * n :=
             Nat.le_trans hn_le_mul (Nat.le_add_left (r * n) k)
           exact hn <|
-            Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_lt_of_le hpn hn_le))
+            Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_lt_of_le hpn hn_le))⟩
 
 @[simp] theorem coeff_veroneseSectionPolynomial {r k n : ℕ} {p : ℝ[X]}
     (hr : 0 < r) :
@@ -625,6 +625,7 @@ private theorem not_fullyInterlacingPair_X_add_C_two_one :
     ¬ FullyInterlacingPair (X + C (2 : ℝ)).coeff (X + C (1 : ℝ)).coeff := by
   intro hfull
   have hminor := hfull (rows := ![2, 3]) (cols := ![0, 1]) (by decide) (by decide)
+  erw [Matrix.det_fin_two] at hminor
   norm_num [FullyInterlacingPair, lacePair, toeplitz, Matrix.det_fin_two,
     Polynomial.coeff_add, Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one]
     at hminor

@@ -107,7 +107,6 @@ theorem IsLaguerrePolya.const_mul_real {f : ℂ → ℂ}
       simp only [Pi.mul_apply, Polynomial.map_mul, Polynomial.map_C,
         Polynomial.eval_mul, Polynomial.eval_C]
       rfl
-    · rfl
 
 /-- Precomposition by a real affine map preserves the zero-aware
 Laguerre--Pólya class. -/

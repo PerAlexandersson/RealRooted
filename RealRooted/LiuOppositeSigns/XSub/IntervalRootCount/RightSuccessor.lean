@@ -292,7 +292,7 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_right_successor_nonneg_of_noCo
             have hbound :=
               hpair.right_natDegree_le_lower_sum_min_two_upper_of_roots_sort
                 hno (a := a) (xs := []) hrs_single
-            simpa [L, U] using hbound
+            exact hbound
           have hL_le : L ≤ 2 := by
             simpa [L] using
               hpair.card_right_roots_filter_lt_le_two_of_roots_ge_of_right_successor

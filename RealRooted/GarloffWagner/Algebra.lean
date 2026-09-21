@@ -30,7 +30,7 @@ def gwSchurProduct (p q : ℝ[X]) : ℝ[X] :=
 theorem gwSchurProduct_comm (p q : ℝ[X]) :
     gwSchurProduct p q = gwSchurProduct q p := by
   ext k
-  simp [mul_comm, mul_left_comm, mul_assoc]
+  simp [mul_comm, mul_left_comm]
 
 theorem gwSchurProduct_assoc (p q r : ℝ[X]) :
     gwSchurProduct (gwSchurProduct p q) r =
@@ -63,7 +63,7 @@ theorem gwSchurProduct_add_right (p q r : ℝ[X]) :
 theorem gwSchurProduct_C_mul_left (a : ℝ) (p q : ℝ[X]) :
     gwSchurProduct (C a * p) q = C a * gwSchurProduct p q := by
   ext k
-  simp [mul_comm, mul_left_comm, mul_assoc]
+  simp [mul_comm, mul_left_comm]
 
 theorem gwSchurProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
     gwSchurProduct p (C a * q) = C a * gwSchurProduct p q := by

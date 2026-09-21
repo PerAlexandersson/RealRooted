@@ -58,6 +58,7 @@ def minimaEdgeWeight (G : _root_.SimpleGraph V) : G.edgeSet → ℝ :=
       dsimp
       rw [mul_comm]⟩ e.1
 
+omit [Fintype V] [DecidableEq V] in
 @[simp]
 theorem minimaEdgeWeight_mk (G : _root_.SimpleGraph V)
     (u v : V)
@@ -66,6 +67,7 @@ theorem minimaEdgeWeight_mk (G : _root_.SimpleGraph V)
       1 / ((minimaDegree G u : ℝ) * (minimaDegree G v : ℝ)) := by
   rfl
 
+omit [Fintype V] [DecidableEq V] in
 /-- Every root edge has nonnegative minima weight. -/
 theorem minimaEdgeWeight_nonneg (G : _root_.SimpleGraph V) (e : G.edgeSet) :
     0 ≤ minimaEdgeWeight G e := by
@@ -78,6 +80,7 @@ theorem minimaEdgeWeight_nonneg (G : _root_.SimpleGraph V) (e : G.edgeSet) :
         positivity
       simpa [minimaEdgeWeight] using (inv_nonneg.mpr hden)
 
+omit [DecidableEq V] in
 /-- The factorial normalization is strictly positive. -/
 theorem minimaNormalization_pos (G : _root_.SimpleGraph V) :
     0 < minimaNormalization G := by
@@ -135,6 +138,7 @@ matching recurrence for the same edge weights used above.  Identifying its
 terms with local orders or with forest acyclic sink orientations remains the
 separate combinatorial boundary described in the module header.
 -/
+omit [Fintype V] in
 /-- The empty-support base case for the weighted matching recurrence. -/
 theorem minimaWeightedMatchingSupport_empty
     (G : _root_.SimpleGraph V) [DecidableRel G.lineGraph.Adj] :
@@ -142,6 +146,7 @@ theorem minimaWeightedMatchingSupport_empty
       (minimaEdgeWeight G) = 1 := by
   exact weightedIndepPolyOn_empty G.lineGraph (minimaEdgeWeight G)
 
+omit [Fintype V] in
 theorem minimaWeightedMatchingSupport_erase
     (G : _root_.SimpleGraph V) [DecidableRel G.lineGraph.Adj]
     (S : Finset G.edgeSet) {e : G.edgeSet} (he : e ∈ S) :

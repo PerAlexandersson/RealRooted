@@ -112,6 +112,7 @@ The next two statements expose the exact recursively determining interface for
 the weighted model.  All weights use degrees in the same ambient graph `G`;
 they are not recomputed after the support is reduced.
 -/
+omit [Fintype V] in
 /-- The empty-support base case for the all-orientation weighted model. -/
 theorem allOrientationWeightedSupport_empty
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
@@ -119,6 +120,7 @@ theorem allOrientationWeightedSupport_empty
       (fun v => ((2 : ℝ)⁻¹) ^ allOrientationDegree G v) = 1 := by
   exact weightedIndepPolyOn_empty G _
 
+omit [Fintype V] in
 /-- The support deletion recurrence for the all-orientation weighted model. -/
 theorem allOrientationWeightedSupport_erase
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
@@ -132,6 +134,7 @@ theorem allOrientationWeightedSupport_erase
             (fun u => ((2 : ℝ)⁻¹) ^ allOrientationDegree G u) := by
   exact weightedIndepPolyOn_erase G _ hv
 
+omit [Fintype V] [DecidableEq V] in
 /-- The weights in the all-orientation model are nonnegative. -/
 theorem allOrientationSinkPolynomialWeight_nonneg
     (G : _root_.SimpleGraph V) (v : V) :
@@ -165,7 +168,7 @@ theorem allOrientationSinkPolynomial_splits_of_clawFree_of_indicatorIdentity
   unfold allOrientationSinkPolynomialIndicatorIdentity at hidentity
   apply (splits_iff_comp_splits_of_natDegree_eq_one
     (f := allOrientationSinkPolynomial G) (g := X + C 1)
-      (by simpa using (Polynomial.natDegree_X_add_C (x := (1 : ℝ))))).mpr
+      (by simp)).mpr
   rw [hidentity]
   exact allOrientationSinkPolynomialShiftedModel_splits_of_clawFree G hG
 

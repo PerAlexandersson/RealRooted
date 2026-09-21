@@ -75,7 +75,7 @@ abbrev DisjointEquivIndex (k : ℕ) :=
           B.card = k ∧ Disjoint A.1 B)},
       A.1 ≃ B.1
 
-def orientedKMatching_mem
+theorem orientedKMatching_mem
     {k : ℕ} (x : OrientedKMatching (V := V) k) :
     ∀ e (he : e ∈ x.1.1), (x.2 ⟨e, he⟩).1 ∈ e.1 := by
   intro e he
@@ -86,13 +86,13 @@ def orientedKMatchingOrientation
     ∀ e, e ∈ x.1.1 → V :=
   fun e he ↦ (x.2 ⟨e, he⟩).1
 
-def orientedKMatching_isMatching
+theorem orientedKMatching_isMatching
     {k : ℕ} (x : OrientedKMatching (V := V) k) :
     IsMatchingEdgeFinset (_root_.SimpleGraph.completeGraph V) x.1.1 := by
   classical
   exact (Finset.mem_filter.mp x.1.2).2.1
 
-def orientedKMatching_card
+theorem orientedKMatching_card
     {k : ℕ} (x : OrientedKMatching (V := V) k) : x.1.1.card = k := by
   classical
   exact (Finset.mem_filter.mp x.1.2).2.2
@@ -437,7 +437,7 @@ theorem disjointSelectionWeight_eq_disjointSubsetWeight
     disjointSelectionWeight a b k =
       RankTwoMatchingModel.disjointSubsetWeight a b k := by
   classical
-  letI : DecidableEq V := Classical.decEq V
+  let : DecidableEq V := Classical.decEq V
   simp only [disjointSelectionWeight,
     RankTwoMatchingModel.disjointSubsetWeight,
     Finset.powersetCard_eq_filter]

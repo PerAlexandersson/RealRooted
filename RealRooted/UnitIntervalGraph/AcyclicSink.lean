@@ -227,7 +227,7 @@ theorem mem_lastEarlierNeighbors_iff {m : ℕ} (a : Data (m + 1))
   rw [a.graph_adj_of_lt (by
     change i.val < m
     exact i.isLt)]
-  simp [prefixEmbedding]
+  rfl
 
 @[simp]
 theorem card_lastEarlierNeighbors {m : ℕ} (a : Data (m + 1)) :
@@ -514,7 +514,7 @@ theorem cutOfAcyclicOrientation_extendOrientation {m : ℕ}
       ⟨a.extendOrientation O cut, a.extendOrientation_isAcyclic hO cut⟩).lower =
       cut.lower := by
   ext x
-  rw [a.mem_cutOfAcyclicOrientation_lower]
+  erw [a.mem_cutOfAcyclicOrientation_lower]
   exact a.extendOrientation_directed_to_last O cut x
 
 /-- Re-extending the restriction and extracted cut recovers a full acyclic

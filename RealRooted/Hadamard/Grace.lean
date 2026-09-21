@@ -186,7 +186,8 @@ theorem core_squeeze {n : Nat} {f p : ℝ[X]}
       rw [← hF, coeff_binomialLift, ite_eq_left (le_refl n)]
     simp [*]
   have hcoeff0 : (binomialLift n (apolarTwist n z F₀)).coeff 0 ≠ 0 := by
-    rw [coeff_binomialLift, ite_eq_left (Nat.zero_le n), coeff_apolarTwist, ite_eq_left (Nat.zero_le n)]
+    rw [coeff_binomialLift, ite_eq_left (Nat.zero_le n), coeff_apolarTwist,
+      ite_eq_left (Nat.zero_le n)]
     simp [*]
   have hwne : w ≠ 0 := by
     rintro rfl

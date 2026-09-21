@@ -396,7 +396,8 @@ theorem a144696BernsteinImageRow_isInterlacingSeqNonneg (d : ℕ) :
       hasNonnegCoeffs_a144696BernsteinImage d k⟩
   · rw [isInterlacingSeq_iff_pairwise, List.pairwise_iff_get]
     intro i j hij
-    simp only [a144696BernsteinImageRow, List.get_ofFn]
+    dsimp only [a144696BernsteinImageRow] at i j ⊢
+    erw [List.get_ofFn, List.get_ofFn]
     exact a144696BernsteinImage_prec hij.le (by lia)
 
 end RealRooted

@@ -692,7 +692,7 @@ theorem cutOfAcyclicOrientation_extendOrientation {m : ℕ}
       ⟨P.extendOrientation O cut, P.extendOrientation_isAcyclic hO cut⟩).lower =
       cut.lower := by
   ext x
-  rw [P.mem_cutOfAcyclicOrientation_lower]
+  erw [P.mem_cutOfAcyclicOrientation_lower]
   exact P.extendOrientation_directed_to_last O cut x
 
 /-- Re-extending the restriction and extracted cut recovers the full
@@ -1563,8 +1563,7 @@ theorem ordinaryAcyclicSinkPolynomial_splits_of_clawFree
   apply (splits_iff_comp_splits_of_natDegree_eq_one
     (f := ordinaryAcyclicSinkPolynomial P.graph)
     (g := X + C 1)
-    (by simpa using
-      (Polynomial.natDegree_X_add_C (x := (1 : ℝ))))).mpr
+    (by simp)).mpr
   rw [hmodel]
   exact (clawFree_weightedIndepPoly_splits hG wt hwt).C_mul D
 
@@ -1593,7 +1592,7 @@ noncomputable def equivFin (P : ReversePerfectEliminationOrder G) :
 theorem equivFin_lt_iff (P : ReversePerfectEliminationOrder G)
     (i j : Fin (Fintype.card V)) :
     i < j ↔ P.order.lt (P.equivFin i) (P.equivFin j) := by
-  letI := P.order
+  let := P.order
   change i < j ↔ (monoEquivOfFin V rfl) i < (monoEquivOfFin V rfl) j
   exact (monoEquivOfFin V rfl).lt_iff_lt.symm
 

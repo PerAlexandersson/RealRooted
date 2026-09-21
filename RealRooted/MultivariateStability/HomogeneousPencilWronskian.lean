@@ -133,7 +133,7 @@ theorem MvRealStable.eval_coordinateWronskian_nonneg_of_homogeneous_affineExtens
     ∀ i x, 0 ≤ MvPolynomial.eval x
       (MvPolynomial.coordinateWronskian Q P i) := by
   classical
-  letI := Fintype.ofFinite σ
+  let := Fintype.ofFinite σ
   intro i x
   let A : σ → ℝ := fun j => MvPolynomial.eval x
     (MvPolynomial.coordinateWronskian Q P j)

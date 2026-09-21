@@ -341,7 +341,10 @@ macro_rules
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
           have hroot_upper := $hroot_upper n r hr
-          have hfactor : 1 + r ≤ 0 := by linarith
+          have hfactor : 1 + r ≤ 0 := by
+            calc
+              1 + r ≤ 1 + (-1 : ℝ) := add_le_add (le_refl 1) hroot_upper
+              _ = 0 := by norm_num
           have hnonpos :=
             mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
           simpa [Polynomial.eval_mul, Polynomial.eval_add, Polynomial.eval_C,
@@ -378,7 +381,10 @@ macro_rules
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
           have hroot_upper := $hroot_upper n r hr
-          have hfactor : 1 + r ≤ 0 := by linarith
+          have hfactor : 1 + r ≤ 0 := by
+            calc
+              1 + r ≤ 1 + (-1 : ℝ) := add_le_add (le_refl 1) hroot_upper
+              _ = 0 := by norm_num
           have hnonpos :=
             mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
           simpa [Polynomial.eval_mul, Polynomial.eval_add, Polynomial.eval_C,
@@ -440,7 +446,7 @@ macro_rules
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
           have hroot_upper := $hroot_upper n r hr
-          have hfactor : r - 1 ≤ 0 := by linarith
+          have hfactor : r - 1 ≤ 0 := sub_nonpos.mpr hroot_upper
           have hnonpos :=
             mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
           simpa [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_C,
@@ -477,7 +483,7 @@ macro_rules
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
           have hroot_upper := $hroot_upper n r hr
-          have hfactor : r - 1 ≤ 0 := by linarith
+          have hfactor : r - 1 ≤ 0 := sub_nonpos.mpr hroot_upper
           have hnonpos :=
             mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
           simpa [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_C,
