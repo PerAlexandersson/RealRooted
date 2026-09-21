@@ -218,7 +218,7 @@ nonzero (for `k ≤ j ≤ m` the smallest factor of `(m+delta-1)^{k falling}` is
 `m-k+delta ≥ delta > 0`). The hypothesis `delta < 1` was requested and is kept, but the
 proof does not need it. The boundary cases `j = 0` and `m = 0` are included. -/
 theorem sum_eq (m j : ℕ) (hjm : j ≤ m) (s delta : ℝ) (hs : 0 < s)
-    (hd0 : 0 < delta) (hd1 : delta < 1) :
+    (hd0 : 0 < delta) (_hd1 : delta < 1) :
     ∑ k ∈ Finset.range (j + 1),
         (rising (1 - delta) k * falling (j : ℝ) k * rising ((j : ℝ) + s - 1) k) /
           (falling ((m : ℝ) + delta - 1) k * rising ((m : ℝ) + s) k * (k.factorial : ℝ))

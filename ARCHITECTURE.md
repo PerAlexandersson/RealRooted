@@ -1135,13 +1135,18 @@ so every entry of the normalized collocation matrix is strictly positive. The
 elementary `JacobiDeformation.WeightNormalization` layer identifies the
 kernel-weight quotient used in equation (8), while
 `JacobiDeformation.MomentIdentity` provides the normalized mixed beta moments.
+`JacobiDeformation.NewtonIdentity` proves equation (8) by a denominator-safe
+finite Pfaff--Saalschutz identity. `JacobiDeformation.KernelSign` identifies
+the Jacobi Newton factors with the initial spectral products, proves the
+full-size factor vanishes by Cayley--Hamilton, and derives strict entrywise
+positivity of the weighted Newton matrix from its `k = 1` term.
 `JacobiDeformation.QuasiNodes` gives a strict, exhaustive root enumeration
 without incorrectly forcing every quasi-node into the open interval.
 `JacobiDeformation.RootGeometry`, `DerivativeSimple`, `CriticalThreshold`, and
 `CriticalSigns` package respectively the rational-image threshold geometry,
 derivative simplicity under a multiplicity-two bound, strict derivative-root
 control at a simple endpoint, and the final strict-sign interlacing step. The
-Pfaff--Saalschutz finite sum, kernel-sign specialization, and Jacobi-specific
+Jacobi-specific collocation diagonalization/kernel-basis adapter and
 three-case critical-point calculation remain in the higher deformation layer.
 
 Shifted-Jacobi orthogonality has a finite/analytic boundary. `Jacobi.Favard`

@@ -1418,4 +1418,6 @@ import RealRooted.JacobiDeformation.RootGeometry
 import RealRooted.JacobiDeformation.DerivativeSimple
 import RealRooted.JacobiDeformation.CriticalThreshold
 import RealRooted.JacobiDeformation.CriticalSigns
+import RealRooted.JacobiDeformation.NewtonIdentity
+import RealRooted.JacobiDeformation.KernelSign
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
