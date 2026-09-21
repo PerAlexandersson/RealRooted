@@ -57,13 +57,13 @@ theorem Irreducible.add_one (h_irred : A.IsIrreducible) : (1 + A).IsIrreducible 
   constructor
   · exact fun i j => Matrix.one_add_apply_nonneg h_irred.nonneg i j
   · intro i j
-    letI : Quiver n := toQuiver A
+    let : Quiver n := toQuiver A
     obtain ⟨pA, hpA_pos⟩ := h_irred.connected i j
     let pA' : @Quiver.Path n (toQuiver A) i j := pA
     obtain ⟨pB, hp_len⟩ := pathToQuiverOfForallPosImpPos
       (A := A) (B := B) (fun {u v} huv => by
         simpa [B] using one_add_pos_of_pos h_irred.nonneg huv) pA'
-    letI : Quiver n := toQuiver B
+    let : Quiver n := toQuiver B
     exact ⟨pB, by simpa [hp_len.down] using hpA_pos⟩
 
 /-
@@ -120,7 +120,7 @@ omit [Fintype n] [DecidableEq n] in
 /-- An irreducible matrix has a positive entry. -/
 lemma Irreducible.exists_pos_entry [Nonempty n] (hA_irred : A.IsIrreducible) :
     ∃ i j : n, 0 < A i j := by
-  letI : Quiver n := toQuiver A
+  let : Quiver n := toQuiver A
   obtain ⟨i₀⟩ := ‹Nonempty n›
   obtain ⟨p, hp_pos⟩ := hA_irred.connected i₀ i₀
   rcases Quiver.Path.path_decomposition_first_edge p hp_pos with
@@ -395,3 +395,5 @@ theorem pft_irreducible {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
   · intro v' ⟨r', hr'_pos, h_eig_A'⟩
     exact (stdSimplex_eigenvector_eq_of_irreducible
       (v := v) (w := v') hA_irred hr_pos hr'_pos h_eig_A h_eig_A').symm
+
+end Matrix

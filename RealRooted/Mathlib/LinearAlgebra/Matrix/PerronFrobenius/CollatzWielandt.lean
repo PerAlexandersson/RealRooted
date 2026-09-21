@@ -10,7 +10,8 @@ adaptations to the pinned Mathlib.  Original path: MCMC/PF/LinearAlgebra/Matrix/
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
 import Mathlib.Data.Matrix.Basic
-import Mathlib.Data.Real.Archimedean
+import Mathlib.Algebra.Order.AbsoluteValue.Basic
+import Mathlib.Data.Rat.Floor
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.ExtremeValueUSC
 
 -- Ported third-party code; keep original line layout.
@@ -51,7 +52,7 @@ Collatz–Wielandt, Perron–Frobenius, nonnegative matrix, spectral radius
 namespace Matrix
 section PerronFrobenius
 variable {n : Type*} [Fintype n] [Nonempty n] {A : Matrix n n ℝ}
-open LinearMap Set Filter Topology Finset Quiver Matrix IsCompact
+open Set Filter Topology Finset Quiver Matrix IsCompact
 open scoped Convex Pointwise
 
 /-- The Collatz-Wielandt function, `r(x)` in Seneta's notation.
@@ -182,7 +183,7 @@ theorem upperSemicontinuousOn
     rw [mem_nhdsWithin_iff_exists_mem_nhds_inter]
     exact ⟨V ∩ posSupportNeighborhood x₀, VU_nhds, by simp [W]⟩
   exact Filter.mem_of_superset W_nhdsWithin fun y hy => by
-    show collatzWielandtFn A y < c
+    change collatzWielandtFn A y < c
     apply lt_of_le_of_lt
     · exact collatzWielandtFn_le_fixedSupportRatios A supp_x₀ ⟨hy.1.2, hy.2⟩
     · exact hV y hy.1.1
@@ -355,7 +356,7 @@ theorem eq_eigenvalue_of_positive_eigenvector [DecidableEq n] [Nonempty n]
         rcases h_supp_nonempty with ⟨i, hi⟩
         exact ⟨i, by simpa [Set.mem_toFinset] using hi⟩
       letI : Nonempty {i | 0 < v i} := Set.Nonempty.to_subtype h_support_nonempty
-      show (⨅ _ : {i | 0 < v i}, r) = r
+      change (⨅ _ : {i | 0 < v i}, r) = r
       exact ciInf_const (ι := {i | 0 < v i}) (a := r)
 
 /-- Any eigenvalue with a strictly positive eigenvector is ≤ the Perron root. -/
@@ -561,9 +562,9 @@ theorem eigenvalue_is_ub_of_positive_eigenvector [DecidableEq n]
 theorem eq_perron_root_of_positive_eigenvector [DecidableEq n]
     {A : Matrix n n ℝ} {r : ℝ} {v : n → ℝ}
     (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    (hv_pos    : ∀ i, 0 < v i)
-    (hr_pos    : 0 < r)
-    (h_eig     : A *ᵥ v = r • v) :
+    (hv_pos : ∀ i, 0 < v i)
+    (hr_pos : 0 < r)
+    (h_eig : A *ᵥ v = r • v) :
     r = CollatzWielandt.perronRoot (A := A) := by
   have h₁ : r ≤ CollatzWielandt.perronRoot (A := A) :=
     CollatzWielandt.eigenvalue_le_perron_root_of_positive_eigenvector
@@ -717,3 +718,7 @@ lemma perronRoot_pos_of_irreducible [DecidableEq n]
   have r_ones_pos : 0 < collatzWielandtFn A x_ones :=
     collatzWielandtFn_of_ones_is_pos hA_irred hA_nonneg
   exact lt_of_lt_of_le r_ones_pos r_sup_ge_r_ones
+
+end PerronFrobenius
+
+end Matrix

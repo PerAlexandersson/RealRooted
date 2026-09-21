@@ -234,7 +234,6 @@ lemma sum_component_norms_eq_perron_power_norm
     _ = ∑ l, (A ^ k) m l * ‖x l‖ := by
       simp_rw [abs_of_pos (hAk_pos m _)]
     _ = ((A ^ k) *ᵥ (fun i ↦ ‖x i‖)) m := by
-      change (∑ l, (A ^ k) m l * ‖x l‖) = _
       rfl
     _ = ((perronRoot A) ^ k • (fun i ↦ ‖x i‖)) m := by rw [h_pow_eig]
     _ = (perronRoot A) ^ k * ‖x m‖ := by simp [Pi.smul_apply, smul_eq_mul]
@@ -259,7 +258,6 @@ theorem eigenvalue_abs_subinvariant
     _ = ∑ j, A i j * ‖x j‖ := by
       simp only [Complex.norm_mul, norm_real, Real.norm_eq_abs, abs_of_nonneg (hA_nonneg _ _)]
     _ = (A *ᵥ fun i => ‖x i‖) i := by
-      change (∑ j, A i j * ‖x j‖) = _
       rfl
 
 omit [DecidableEq n] in
@@ -819,7 +817,6 @@ lemma sum_norm_weighted_row_eq_mulVec_norm
       intro j _
       rw [norm_mul, norm_ofReal, abs_of_nonneg (hA_nonneg i j)]
     _ = (A *ᵥ (fun j => ‖x j‖)) i := by
-      change (∑ j, A i j * ‖x j‖) = _
       rfl
 
 /-- In the specific context of the Perron-Frobenius theorem, if we have an irreducible

@@ -30,12 +30,14 @@ open scoped Convex Pointwise
 
 variable {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n] {A : Matrix n n ℝ}
 
+omit [DecidableEq n] in
 /-- Normalizing a strictly positive vector by its sum gives a point of the standard simplex. -/
 lemma inv_sum_smul_mem_stdSimplex_of_pos {x : n → ℝ} (hx_pos : ∀ i, 0 < x i) :
     (∑ i, x i)⁻¹ • x ∈ RealRooted.standardSimplex ℝ n :=
   CollatzWielandt.inv_sum_smul_mem_stdSimplex_of_nonneg_ne_zero
     (fun i => (hx_pos i).le) (Pi.ne_zero_of_pos hx_pos)
 
+omit [DecidableEq n] in
 /-- Collatz-Wielandt is unchanged by normalizing a strictly positive vector by its sum. -/
 lemma collatzWielandtFn_inv_sum_smul_of_pos (A : Matrix n n ℝ)
     {x : n → ℝ} (hx_pos : ∀ i, 0 < x i) :
@@ -127,6 +129,7 @@ lemma eigenvector_of_primitive_is_positive {r : ℝ} (hA_prim : IsPrimitive A) (
   rw [h_Ak_v] at h_Ak_v_pos
   exact (mul_pos_iff_of_pos_left (pow_pos hr_pos k)).mp (h_Ak_v_pos i)
 
+omit [DecidableEq n] in
 /-- Collatz-Wielandt is unchanged by normalizing the all-ones vector by `Fintype.card`. -/
 lemma collatzWielandtFn_ones_norm_eq (A : Matrix n n ℝ) :
     collatzWielandtFn A (fun _ => (Fintype.card n : ℝ)⁻¹) =
@@ -162,11 +165,11 @@ lemma perron_root_pos_of_primitive
         (collatzWielandtFn_ones_norm_eq A).symm)
     _ ≤ collatzWielandtFn A v := cw_le_max
 
-/-- **Perron-Frobenius theorem for primitive matrices - Existence part**-/
+/-- **Perron-Frobenius theorem for primitive matrices - Existence part** -/
 theorem exists_positive_eigenvector_of_primitive
   (hA_prim : IsPrimitive A) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
   ∃ (r : ℝ) (v : n → ℝ), r > 0 ∧ (∀ i, v i > 0) ∧ A *ᵥ v = r • v := by
-  haveI : Nonempty (RealRooted.standardSimplex ℝ n) :=
+  have : Nonempty (RealRooted.standardSimplex ℝ n) :=
     ⟨⟨_, ones_norm_mem_simplex⟩⟩
   obtain ⟨v, hvS, hvM⟩ := CollatzWielandt.exists_maximizer (A := A)
   let r := collatzWielandtFn A v

@@ -99,8 +99,8 @@ lemma path_exists_in_support_of_irreducible {A : Matrix n n ℝ}
   letI : Quiver n := Matrix.toQuiver A
   letI : Quiver S := inducedQuiver S
     ∃ p : Quiver.Path i j, ∀ k, k ∈ p.activeVertices → k ∈ S := by
-  letI : Quiver n := Matrix.toQuiver A
-  letI : Quiver S := inducedQuiver S
+  let : Quiver n := Matrix.toQuiver A
+  let : Quiver S := inducedQuiver S
   let i' : S := ⟨i, hi⟩
   let j' : S := ⟨j, hj⟩
   obtain ⟨p_sub, _hp_sub_pos⟩ := hS.connected i' j'
