@@ -33,8 +33,7 @@ theorem exists_interior_coordinates_of_lt_neg_sqrt_threshold
       (Y - (Real.sqrt U + Real.sqrt V) ^ 2) *
         (Y - (Real.sqrt U - Real.sqrt V) ^ 2) := by
     dsimp [D, A]
-    rw [hUsq, hVsq]
-    ring
+    nlinarith [hUsq, hVsq]
   have hD : 0 < D := by
     rw [hDfactor]
     exact mul_pos (by linarith) (by linarith)
@@ -70,8 +69,8 @@ theorem exists_interior_coordinates_of_lt_neg_sqrt_threshold
     exact div_pos (sub_pos.mpr hsD_lt_A) hden
   have hrz : r < z := by
     dsimp [r, z]
-    rw [div_lt_div_iff₀ hden]
-    linarith
+    apply (div_lt_div_iff_of_pos_right hden).2
+    linarith [Real.sqrt_pos.2 hD]
   have hz : z < 1 := by
     dsimp [z]
     rw [div_lt_iff₀ hden]
@@ -83,9 +82,7 @@ theorem exists_interior_coordinates_of_lt_neg_sqrt_threshold
     rw [hXY]
     dsimp [r, z]
     field_simp [hY.ne']
-    rw [hsDsq]
-    dsimp [D, A]
-    ring
+    nlinarith [hA_sq]
   have hcomp : X * (1 - r) * (1 - z) = -V := by
     have hXY : X = -Y := by
       dsimp [Y]
@@ -93,9 +90,12 @@ theorem exists_interior_coordinates_of_lt_neg_sqrt_threshold
     rw [hXY]
     dsimp [r, z]
     field_simp [hY.ne']
-    rw [hsDsq]
-    dsimp [D, A, B]
-    ring
+    have hleft : Y * 2 - (A - Real.sqrt D) = B + Real.sqrt D := by
+      linarith [hA_add_B]
+    have hright : Y * 2 - (A + Real.sqrt D) = B - Real.sqrt D := by
+      linarith [hA_add_B]
+    rw [hleft, hright]
+    nlinarith [hB_sq]
   exact ⟨r, z, hr, hrz, hz, hprod, hcomp⟩
 
 /-- The two differentiated coordinate equations determine the scaled
@@ -131,7 +131,7 @@ theorem differentiated_coordinate_product_neg
     exact div_neg_of_pos_of_neg hr_one hden_neg
   have hXb_pos : 0 < X * b := by
     rw [hb]
-    exact div_pos_of_neg_of_neg (neg_neg_of_pos hz_one) hden_neg
+    exact div_pos_of_neg_of_neg (by nlinarith [hz_one]) hden_neg
   have hscaled_neg : (X * a) * (X * b) < 0 :=
     mul_neg_of_neg_of_pos hXa_neg hXb_pos
   have hXsq : 0 < X ^ 2 := sq_pos_of_ne_zero hX

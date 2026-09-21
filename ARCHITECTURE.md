@@ -1140,14 +1140,23 @@ finite Pfaff--Saalschutz identity. `JacobiDeformation.KernelSign` identifies
 the Jacobi Newton factors with the initial spectral products, proves the
 full-size factor vanishes by Cayley--Hamilton, and derives strict entrywise
 positivity of the weighted Newton matrix from its `k = 1` term.
+`JacobiDeformation.JacobiMoment` fixes the source normalization at zero and
+proves the exact vanishing branch of the normalized moment formula when the
+Jacobi degree exceeds the power; its complementary finite-sum branch remains
+open. `JacobiDeformation.CriticalCoordinates` constructs the two ordered
+interior coordinates below the sharp negative threshold and proves the
+opposite-sign differentiated-coordinate conclusion from the two exact
+coordinate equations. `JacobiDeformation.Boundary` closes the rank-zero and
+rank-one splitness, simplicity, and strict negative-root cases.
 `JacobiDeformation.QuasiNodes` gives a strict, exhaustive root enumeration
 without incorrectly forcing every quasi-node into the open interval.
 `JacobiDeformation.RootGeometry`, `DerivativeSimple`, `CriticalThreshold`, and
 `CriticalSigns` package respectively the rational-image threshold geometry,
 derivative simplicity under a multiplicity-two bound, strict derivative-root
 control at a simple endpoint, and the final strict-sign interlacing step. The
-Jacobi-specific collocation diagonalization/kernel-basis adapter and
-three-case critical-point calculation remain in the higher deformation layer.
+The complementary Jacobi moment finite sum, Jacobi-specific collocation
+diagonalization/kernel-basis adapter, and three-case critical-point sign
+calculation remain in the higher deformation layer.
 
 Shifted-Jacobi orthogonality has a finite/analytic boundary. `Jacobi.Favard`
 owns the monic recurrence certificate without importing roots or analysis.

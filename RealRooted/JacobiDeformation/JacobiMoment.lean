@@ -50,8 +50,9 @@ theorem normalizedJacobiFunctional_normalizedShiftedJacobi_one_sub_X_pow_eq_zero
     · linarith
     · linarith
     · rw [natDegree_pow]
-      simp
-      exact hkj
+      rw [show (1 - X : ℝ[X]).natDegree = 1 by
+        simp [sub_eq_add_neg]]
+      simpa only [Nat.mul_one] using hkj
   unfold normalizedJacobiFunctional normalizedShiftedJacobi
   change
     shiftedJacobiFunctional (c - 1) (d - 1)

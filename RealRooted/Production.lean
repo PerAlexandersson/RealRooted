@@ -1299,6 +1299,9 @@ import RealRooted.JacobiDeformation.CriticalThreshold
 import RealRooted.JacobiDeformation.CriticalSigns
 import RealRooted.JacobiDeformation.NewtonIdentity
 import RealRooted.JacobiDeformation.KernelSign
+import RealRooted.JacobiDeformation.JacobiMoment
+import RealRooted.JacobiDeformation.CriticalCoordinates
+import RealRooted.JacobiDeformation.Boundary
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 
 /-!
