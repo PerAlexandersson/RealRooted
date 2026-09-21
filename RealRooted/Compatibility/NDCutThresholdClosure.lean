@@ -66,7 +66,9 @@ theorem ndCutThresholdRows_has2x2 {m q : ℕ} :
   have hone : ∀ i : Fin (ndCutThresholdRows m).length,
       ((ndCutThresholdRows m).get i).2 = 1 := by
     intro i
-    simp [ndCutThresholdRows]
+    change ((List.map (fun t => (t, 1)) (ndCutThresholds m)).get
+      ⟨i.1, by simpa [ndCutThresholdRows] using i.2⟩).2 = 1
+    simp
   rw [hone i₁, hone i₂]
   exact has2x2_thresholdEntry_one ht hj
 
