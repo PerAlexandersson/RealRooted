@@ -90,7 +90,7 @@ theorem prod_powersetCard_comp_perm {q : ℕ} (π : Equiv.Perm (Fin n)) (μ : Fi
   · intro s _
     congr 2
     rw [prod_powersetEnum, prod_powersetEnum]
-    show ∏ i ∈ (s : Finset (Fin n)), μ (π i)
+    change ∏ i ∈ (s : Finset (Fin n)), μ (π i)
       = ∏ i ∈ (s : Finset (Fin n)).image π, μ i
     exact (Finset.prod_image fun x _ y _ h => π.injective h).symm
 
@@ -99,7 +99,7 @@ theorem prod_powersetCard_comp_perm {q : ℕ} (π : Equiv.Perm (Fin n)) (μ : Fi
 private lemma exists_pos_add_smul {ι : Type*} [Finite ι] [Nonempty ι]
     {v x : ι → ℝ} (hv : ∀ i, 0 < v i) :
     ∃ c : ℝ, 0 < c ∧ ∀ i, 0 < (x + c • v) i := by
-  letI := Fintype.ofFinite ι
+  let _ := Fintype.ofFinite ι
   let b := Finset.univ.sup' Finset.univ_nonempty (fun i => -x i / v i)
   refine ⟨max 0 b + 1, by positivity, ?_⟩
   intro i
@@ -358,7 +358,7 @@ theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
       compound q A with hB
     have hBprim := hprim q hq1 hqn
     have hBnn : ∀ s t, 0 ≤ B s t := hBprim.nonneg
-    haveI : Nonempty (Set.powersetCard (Fin n) q) :=
+    have _ : Nonempty (Set.powersetCard (Fin n) q) :=
       ⟨⟨topFinset n q, Set.powersetCard.mem_iff.mpr (topFinset_card hqn)⟩⟩
     have hρ_nonneg : 0 ≤ perronRoot B := perronRoot_nonneg hBnn
     -- the Perron root is a complex root of the factored charpoly
@@ -427,7 +427,7 @@ theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
     intro q hqn
     rcases Nat.eq_zero_or_pos q with rfl | hq1
     · simp [hR]
-    · haveI : Nonempty (Set.powersetCard (Fin n) q) :=
+    · have _ : Nonempty (Set.powersetCard (Fin n) q) :=
         ⟨⟨topFinset n q, Set.powersetCard.mem_iff.mpr (topFinset_card hqn)⟩⟩
       have hBprim := hprim q hq1 hqn
       simp only [hR, ite_eq_right hq1.ne']
@@ -511,7 +511,7 @@ theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
           (((perronRoot (compound q A) : ℝ) : ℂ)) := by
       rw [hroots, ← hg_top]
       exact two_le_count_map_univ_of_eq g hs_ne hg_eq
-    letI : Nonempty (Set.powersetCard (Fin n) q) := ⟨sTop⟩
+    let _ : Nonempty (Set.powersetCard (Fin n) q) := ⟨sTop⟩
     have hsimpleC :
         ((compound q A).charpoly.map (algebraMap ℝ ℂ)).rootMultiplicity
           (((perronRoot (compound q A) : ℝ) : ℂ)) = 1 := by
@@ -641,7 +641,7 @@ theorem charpoly_splits_of_forall_compound_primitive
   constructor
   · rw [Polynomial.splits_iff_card_roots, hroots]
     have hdeg : A.charpoly.natDegree = n := by
-      simpa using A.charpoly_natDegree_eq_dim
+      simp
     simp [hdeg]
   · intro t ht
     rw [hroots] at ht
