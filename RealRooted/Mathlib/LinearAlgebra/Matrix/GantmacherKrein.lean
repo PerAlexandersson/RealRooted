@@ -403,7 +403,7 @@ theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
         ‖∏ k, μc (powersetEnum s k)‖ ≤ ‖∏ i ∈ topFinset n q, μc i‖ := by
       intro s
       rw [htop_norm, norm_prod, norm_prod]
-      apply Finset.prod_le_prod (fun k _ => norm_nonneg _)
+      apply Finset.prod_le_prod₀ (fun k _ => norm_nonneg _)
       intro k _
       apply hanti
       have h1 := le_val_of_strictMono (strictMono_powersetEnum s) k
