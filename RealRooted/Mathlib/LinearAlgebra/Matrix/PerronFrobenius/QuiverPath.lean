@@ -953,10 +953,10 @@ lemma exists_positive_loop_shorter_than_p {a : V} {p : Path a a} (q : Path a a)
 
 section ClassicalCycleSelection
 
+open Classical in
 /-- For any two positive loops shorter than p, their minimum length equals
     the minimum length among all positive loops shorter than p, or there exists
     an even shorter loop. -/
-open Classical in
 lemma min_length_among_shorter_loops {a : V} {p : Path a a} (q r : Path a a)
     (h_q_pos : q.length > 0) (h_r_pos : r.length > 0)
     (h_q_shorter : q.length < p.length) (h_r_shorter : r.length < p.length) :
