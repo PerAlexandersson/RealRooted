@@ -246,12 +246,16 @@ private theorem det_borderAt_zero_zero_of_tail {q : ℕ}
   let M := borderAt A 0 0 b x a
   have hminor0 : M.submatrix (0 : Fin (q + 2)).succAbove Fin.succ = A := by
     ext i j
-    simp [M, borderAt]
+    change A i j = A i j
+    rfl
   have hminor1 : M.submatrix (1 : Fin (q + 2)).succAbove Fin.succ =
       A.updateRow 0 x := by
     ext i j
-    refine Fin.cases ?_ (fun i ↦ ?_) i <;>
-      simp [M, borderAt, Matrix.updateRow]
+    refine Fin.cases ?_ (fun i ↦ ?_) i
+    · change x j = (A.updateRow 0 x) 0 j
+      simp
+    · change A i.succ j = (A.updateRow 0 x) i.succ j
+      simp
   have hminor1' :
       M.submatrix (Fin.succ (0 : Fin (q + 1))).succAbove Fin.succ =
         A.updateRow 0 x := by
@@ -339,7 +343,7 @@ private theorem det_submatrix_whitneyEliminateFirst {m n q : ℕ}
     · have hrow : rows i ≠ s.succ := by
         intro h
         exact hi (hrows.injective (h.trans hp.symm))
-      simp [whitneyEliminateFirst, M, v, Matrix.updateRow, hi, hrow]
+      simp [whitneyEliminateFirst, M, v, Matrix.updateRow_apply, hi, hrow]
   have hreplace : M.updateRow p v =
       A.submatrix (Function.update rows p s.castSucc) cols := by
     ext i j
@@ -384,7 +388,7 @@ private theorem det_submatrix_whitneyEliminateAt {m n q : ℕ}
     · have hrow : rows i ≠ s.succ := by
         intro h
         exact hi (hrows.injective (h.trans hp.symm))
-      simp [whitneyEliminateAt, M, v, Matrix.updateRow, hi, hrow]
+      simp [whitneyEliminateAt, M, v, Matrix.updateRow_apply, hi, hrow]
   have hreplace : M.updateRow p v =
       A.submatrix (Function.update rows p s.castSucc) cols := by
     ext i j
@@ -407,7 +411,7 @@ private theorem submatrix_whitneyEliminateAt_eq_of_not_mem {m n q : ℕ}
     (whitneyEliminateAt A s c).submatrix rows cols =
       A.submatrix rows cols := by
   ext i j
-  simp [whitneyEliminateAt, Matrix.updateRow, hu i]
+  simp [whitneyEliminateAt, Matrix.updateRow_apply, hu i]
 
 private theorem det_submatrix_whitneyEliminateAt_eq_of_pivot_mem
     {m n q : ℕ} (A : Matrix (Fin (m + 1)) (Fin (n + 1)) ℝ)
@@ -572,11 +576,11 @@ private theorem det_submatrix_whitneyEliminateAt_eq_zero_of_initial_col
     have hne : rows k.succ ≠ s.succ := ne_of_gt hgt
     rcases hcol.eq_or_lt with hcolEq | hcolLt
     · have hc : cols 0 = c := hcolEq
-      simp [whitneyEliminateAt, hc, Matrix.updateRow, hne, htail _ hgt]
+      simp [whitneyEliminateAt, hc, Matrix.updateRow_apply, hne, htail _ hgt]
     · have hzero : A (rows k.succ) (cols 0) = 0 :=
         hleft (rows k.succ) (le_trans (Fin.le_def.mpr (by simp)) hgt.le)
           _ hcolLt
-      simp [whitneyEliminateAt, Matrix.updateRow, hne, hzero]
+      simp [whitneyEliminateAt, Matrix.updateRow_apply, hne, hzero]
 
 private theorem det_submatrix_whitneyEliminateAt_nonneg_of_first_row
     {m n q : ℕ} (A : Matrix (Fin (m + 1)) (Fin (n + 1)) ℝ)
@@ -1141,7 +1145,7 @@ theorem IsTotallyNonnegRect.whitneyRestoreFirst_nonneg {m n : ℕ}
       have hzero : (M.updateRow p v).det = 0 := by
         apply Matrix.det_zero_of_row_eq hrp
         funext j
-        simp [M, v, Matrix.updateRow, hrp, hr]
+        simp [M, v, Matrix.updateRow_apply, hrp, hr]
       rw [hzero, mul_zero, add_zero]
       exact hM
     · simp only [not_exists] at hprev
@@ -1166,7 +1170,7 @@ theorem IsTotallyNonnegRect.whitneyRestoreFirst_nonneg {m n : ℕ}
     have hsub : (Matrix.whitneyRestoreFirst A s c).submatrix rows cols =
         A.submatrix rows cols := by
       ext i j
-      simp [Matrix.whitneyRestoreFirst, Matrix.updateRow, hu i]
+      simp [Matrix.whitneyRestoreFirst, Matrix.updateRow_apply, hu i]
     rw [hsub]
     exact hA hrows hcols
 
@@ -1184,7 +1188,7 @@ theorem whitneyRestoreFirst_eq_transvection_mul {m n : ℕ}
     simp [Matrix.whitneyRestoreFirst]
   · rw [Matrix.transvection_mul_apply_of_ne (i := s.succ)
       (j := s.castSucc) i j hi c A]
-    simp [Matrix.whitneyRestoreFirst, Matrix.updateRow, hi]
+    simp [Matrix.whitneyRestoreFirst, Matrix.updateRow_apply, hi]
 
 /-- A nonnegative adjacent lower transvection is totally nonnegative. -/
 theorem isTotallyNonneg_transvection_succ_castSucc {m : ℕ}
@@ -1192,9 +1196,7 @@ theorem isTotallyNonneg_transvection_succ_castSucc {m : ℕ}
     (Matrix.transvection s.succ s.castSucc c).IsTotallyNonneg := by
   have hone : (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ).IsTotallyNonneg :=
     by
-      simpa [Matrix.submatrix_one Fin.val Fin.val_injective] using
-        (Matrix.IsTotallyNonneg.one (R := ℝ)).submatrix
-          Fin.val_strictMono Fin.val_strictMono
+      simp
   have hrestore := hone.toRect.whitneyRestoreFirst_nonneg s c hc
   rw [whitneyRestoreFirst_eq_transvection_mul, Matrix.mul_one] at hrestore
   exact hrestore.toSquare
@@ -1248,9 +1250,9 @@ theorem whitneyRestoreFirst_eliminate {m n : ℕ}
   · subst i
     have hne : s.castSucc ≠ s.succ := Fin.ne_of_lt s.castSucc_lt_succ
     simp [Matrix.whitneyRestoreFirst, whitneyEliminateFirst,
-      Matrix.updateRow, hne]
+      Matrix.updateRow_apply, hne]
   · simp [Matrix.whitneyRestoreFirst, whitneyEliminateFirst,
-      Matrix.updateRow, hi]
+      Matrix.updateRow_apply, hi]
 
 /-- Restoring with the selected-column pivot ratio reverses the corresponding
 Whitney elimination. -/
@@ -1264,9 +1266,9 @@ theorem whitneyRestoreFirst_eliminateAt {m n : ℕ}
   · subst i
     have hne : s.castSucc ≠ s.succ := Fin.ne_of_lt s.castSucc_lt_succ
     simp [Matrix.whitneyRestoreFirst, whitneyEliminateAt,
-      Matrix.updateRow, hne]
+      Matrix.updateRow_apply, hne]
   · simp [Matrix.whitneyRestoreFirst, whitneyEliminateAt,
-      Matrix.updateRow, hi]
+      Matrix.updateRow_apply, hi]
 
 /-- A Whitney row operation does not change the determinant. -/
 theorem det_whitneyEliminateFirst {m : ℕ}
@@ -1278,9 +1280,9 @@ theorem det_whitneyEliminateFirst {m : ℕ}
     ext i j
     by_cases hi : i = s.succ
     · subst i
-      simp [whitneyEliminateFirst, c, Matrix.updateRow]
+      simp [whitneyEliminateFirst, c, Matrix.updateRow_apply]
       ring
-    · simp [whitneyEliminateFirst, c, Matrix.updateRow, hi]
+    · simp [whitneyEliminateFirst, c, Matrix.updateRow_apply, hi]
   rw [hmatrix, Matrix.det_updateRow_add_smul_self]
   exact Fin.ne_of_gt s.castSucc_lt_succ
 
@@ -1295,9 +1297,9 @@ theorem det_whitneyEliminateAt {m : ℕ}
     ext i j
     by_cases hi : i = s.succ
     · subst i
-      simp [whitneyEliminateAt, ratio, Matrix.updateRow]
+      simp [whitneyEliminateAt, ratio, Matrix.updateRow_apply]
       ring
-    · simp [whitneyEliminateAt, ratio, Matrix.updateRow, hi]
+    · simp [whitneyEliminateAt, ratio, Matrix.updateRow_apply, hi]
   rw [hmatrix, Matrix.det_updateRow_add_smul_self]
   exact Fin.ne_of_gt s.castSucc_lt_succ
 
@@ -1552,9 +1554,7 @@ private theorem whitneyClearColumnLowerAux_spec {N : ℕ}
   | zero =>
       have hone :
           (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ).IsTotallyNonneg := by
-        simpa [Matrix.submatrix_one Fin.val Fin.val_injective] using
-          (Matrix.IsTotallyNonneg.one (R := ℝ)).submatrix
-            Fin.val_strictMono Fin.val_strictMono
+        simp
       exact ⟨hone, by
         simp [whitneyClearColumnLowerAux, whitneyClearColumnAux]⟩
   | succ t ih =>
@@ -2026,9 +2026,7 @@ private theorem whitneyClearFirstAux_spec {N : ℕ}
 
 private theorem isTotallyNonneg_one_fin (N : ℕ) :
     (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ).IsTotallyNonneg := by
-  simpa [Matrix.submatrix_one Fin.val Fin.val_injective] using
-    (Matrix.IsTotallyNonneg.one (R := ℝ)).submatrix
-      Fin.val_strictMono Fin.val_strictMono
+  simp
 
 private theorem whitneyClearLowerAux_spec {N : ℕ}
     (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
