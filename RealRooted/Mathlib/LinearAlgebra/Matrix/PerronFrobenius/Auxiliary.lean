@@ -276,7 +276,7 @@ lemma exists_pos_of_ne_zero {v : n → ℝ} (h_nonneg : ∀ i, 0 ≤ v i) (h_ne_
 lemma exists_pos_maximal_of_nonneg_ne_zero [Finite n] [Nonempty n] {v : n → ℝ}
     (h_nonneg : ∀ i, 0 ≤ v i) (h_ne_zero : v ≠ 0) :
     ∃ i, 0 < v i ∧ ∀ j, v j ≤ v i := by
-  letI := Fintype.ofFinite n
+  let _ : Fintype n := Fintype.ofFinite n
   obtain ⟨i, -, hi_max⟩ := Finset.exists_mem_eq_sup' Finset.univ_nonempty v
   obtain ⟨j, hj_pos⟩ := exists_pos_of_ne_zero h_nonneg h_ne_zero
   refine ⟨i, ?_, ?_⟩
@@ -288,8 +288,7 @@ lemma exists_pos_maximal_of_nonneg_ne_zero [Finite n] [Nonempty n] {v : n → �
     exact Finset.le_sup' v (Finset.mem_univ j)
 
 /-- A set is nonempty if and only if its finite conversion is nonempty. -/
-omit [Fintype α] [DecidableEq α] in
-lemma Set.toFinset_nonempty_iff {α : Type*} [Fintype α] [DecidableEq α] (s : Set α) [Finite s] [Fintype s] :
+lemma Set.toFinset_nonempty_iff {α : Type*} (s : Set α) [Finite s] [Fintype s] :
     s.toFinset.Nonempty ↔ s.Nonempty := by
   constructor
   · intro h
