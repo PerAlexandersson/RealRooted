@@ -44,6 +44,8 @@ theorem terminalPairMixReal_two_zero :
     decide
   have hle : ({x : Fin 2 | x ≤ (1 : Fin 2)} : Finset (Fin 2)).card = 2 := by
     decide
+  have hgt : ({x : Fin 2 | (1 : Fin 2) < x} : Finset (Fin 2)).card = 0 := by
+    decide
   funext j
   fin_cases j
   · norm_num [terminalPairMixReal, terminalNonDescentReal,
@@ -56,7 +58,7 @@ theorem terminalPairMixReal_two_zero :
       terminalDescentReal,
       literalWordWeakLeftPeakTerminalNonDescentRefined_zero,
       literalWordWeakLeftPeakTerminalDescentRefined_zero,
-      Fin.sum_univ_two, hlt, hle]
+      Fin.sum_univ_two, hlt, hle, hgt]
     simp only [Polynomial.C_ofNat]
 
 /-- The two-letter base marked pair family is `[X + 1, 2X]`. -/
@@ -66,6 +68,8 @@ theorem terminalXPairMixReal_two_zero :
     decide
   have hle : ({x : Fin 2 | x ≤ (1 : Fin 2)} : Finset (Fin 2)).card = 2 := by
     decide
+  have hgt : ({x : Fin 2 | (1 : Fin 2) < x} : Finset (Fin 2)).card = 0 := by
+    decide
   funext j
   fin_cases j
   · norm_num [terminalXPairMixReal, terminalNonDescentReal,
@@ -77,7 +81,7 @@ theorem terminalXPairMixReal_two_zero :
       terminalDescentReal,
       literalWordWeakLeftPeakTerminalNonDescentRefined_zero,
       literalWordWeakLeftPeakTerminalDescentRefined_zero,
-      Fin.sum_univ_two, hlt, hle]
+      Fin.sum_univ_two, hlt, hle, hgt]
     simp only [Polynomial.C_ofNat]
     ring
 

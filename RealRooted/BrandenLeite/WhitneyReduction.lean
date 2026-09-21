@@ -226,7 +226,7 @@ theorem det_principalSection_eq_one
   have hlower : (principalSection R N).BlockTriangular OrderDual.toDual := by
     intro i j hij
     exact hR.lower hij
-  rw [Matrix.det_of_lowerTriangular _ hlower]
+  rw [Matrix.det_of_isLowerTriangular _ hlower]
   simp [principalSection, hR.diagonal]
 
 theorem whitneyReduce_isTotallyNonneg
@@ -287,7 +287,9 @@ theorem firstColumn_zero_succ
     simpa [cols, Fin.strictMono_iff_lt_succ] using hnpos
   have hminor := hR hrows hcols
   have hentry := hR.nonneg (n + 1) 0
-  simp [rows, cols, Matrix.det_fin_two, hn, hunit.diagonal] at hminor
+  rw [Matrix.det_fin_two] at hminor
+  change 0 ≤ R n 0 * R (n + 1) n - R n n * R (n + 1) 0 at hminor
+  rw [hn, zero_mul, hunit.diagonal n, one_mul] at hminor
   exact le_antisymm (by linarith) hentry
 
 theorem firstColumnRatio_mul
