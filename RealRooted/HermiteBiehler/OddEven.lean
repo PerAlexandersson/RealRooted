@@ -53,7 +53,7 @@ lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
   · simp_all
   · intro m a
     simp only [monomial_comp_X_sq, Polynomial.coeff_monomial,
-      (by lia : 2 * m = 2 * n + 1 ↔ False), if_false]
+      (by lia : 2 * m = 2 * n + 1 ↔ False), ite_false]
 
 @[simp] lemma coeff_X_mul_comp_X_sq_even (p : ℝ[X]) (n : ℕ) :
     (X * p.comp (X ^ 2 : ℝ[X])).coeff (2 * n) = 0 := by

@@ -209,7 +209,7 @@ theorem natDegree_sub_comp_X_sub_C_lt {p : ℝ[X]} (hp : p.natDegree ≠ 0) :
   · rw [hq, natDegree_zero]
     exact Nat.pos_of_ne_zero hp
   rw [natDegree_lt_natDegree_iff hq]
-  apply degree_sub_lt
+  apply degree_sub_lt_left
   · symm
     rw [degree_comp (by rw [degree_X_sub_C]; decide), degree_X_sub_C, mul_one]
   · exact hp0

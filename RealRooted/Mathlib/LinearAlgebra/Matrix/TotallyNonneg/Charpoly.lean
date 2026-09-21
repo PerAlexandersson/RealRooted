@@ -1,4 +1,4 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
@@ -22,23 +22,21 @@ open Polynomial Finset
 
 namespace Matrix
 
-variable {m : Type*} [Fintype m] [DecidableEq m] [LinearOrder m]
+variable {m : Type*} [Fintype m] [LinearOrder m]
 
+omit [Fintype m] in
 /-- Principal minors of a totally nonnegative matrix are nonnegative. -/
 lemma IsTotallyNonneg.principalMinor_nonneg {A : Matrix m m ℝ}
     (hA : A.IsTotallyNonneg) (s : Finset m) :
     0 ≤ (A.submatrix (Subtype.val : s → m) (Subtype.val : s → m)).det := by
-  have hcoe : (Subtype.val : s → m) ∘ ⇑(s.orderIsoOfFin rfl)
-      = ⇑(s.orderEmbOfFin rfl) := by
-    funext x
-    exact s.coe_orderIsoOfFin_apply rfl x
+  classical
   calc (0 : ℝ)
       ≤ (A.submatrix (⇑(s.orderEmbOfFin rfl)) (⇑(s.orderEmbOfFin rfl))).det :=
         hA (s.orderEmbOfFin rfl).strictMono (s.orderEmbOfFin rfl).strictMono
     _ = ((A.submatrix (Subtype.val : s → m) Subtype.val).submatrix
           (⇑(s.orderIsoOfFin rfl).toEquiv) (⇑(s.orderIsoOfFin rfl).toEquiv)).det := by
         rw [submatrix_submatrix]
-        congr 1 <;> exact hcoe.symm
+        congr 1
     _ = (A.submatrix (Subtype.val : s → m) Subtype.val).det :=
         det_submatrix_equiv_self _ _
 

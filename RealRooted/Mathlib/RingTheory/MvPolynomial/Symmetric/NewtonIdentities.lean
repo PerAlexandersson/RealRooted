@@ -82,7 +82,7 @@ preserved by using the occurrence type of `s`, rather than `s.toFinset`. -/
 theorem powerSum_eq_mul_esymm_sub_sum
     (s : Multiset R) (k : ℕ) (hk : 0 < k) :
     s.powerSum k = (-1) ^ (k + 1) * k * s.esymm k -
-      ∑ a ∈ Finset.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
+      ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
         (-1) ^ a.1 * s.esymm a.1 * s.powerSum a.2 := by
   classical
   let f : s → R := fun x => x

@@ -255,12 +255,14 @@ lemma gsChoiceRows_data {choices : List (ℕ × Bool)}
     obtain ⟨p, _, rfl⟩ := hp
     cases p.2 <;> simp [gsChoiceMarker]
   · intro i j hij
+    dsimp only [gsChoiceRows] at i j ⊢
     let i' : Fin choices.length := ⟨i.1, by simpa using i.2⟩
     let j' : Fin choices.length := ⟨j.1, by simpa using j.2⟩
     have hij' : i' ≤ j' := hij
     have hkey := hmono i' j' hij'
     simpa [gsChoiceRows, List.get_eq_getElem, i', j'] using hkey
   · intro i j hij heq hdel
+    dsimp only [gsChoiceRows] at i j heq hdel ⊢
     let i' : Fin choices.length := ⟨i.1, by simpa using i.2⟩
     let j' : Fin choices.length := ⟨j.1, by simpa using j.2⟩
     have hij' : i' ≤ j' := hij

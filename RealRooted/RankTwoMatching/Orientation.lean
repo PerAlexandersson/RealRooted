@@ -235,7 +235,7 @@ theorem orientationWeightProduct
       obtain ⟨e, he, rfl⟩ := hi
       exact ⟨e, he, rfl⟩
     · simp
-  simp_rw [edgeOrientationWeight, dif_pos (ho _ _)]
+  simp_rw [edgeOrientationWeight, dite_eq_left (ho _ _)]
   rw [Finset.prod_mul_distrib, hleft, hright]
 
 end RealRooted.Graph.RankTwoInternal

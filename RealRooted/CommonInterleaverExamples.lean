@@ -119,8 +119,7 @@ lemma scaledLinearFamily_pairwiseCompatible_iff_familyCompatible_of_allComboBrid
 
 private lemma xAddOne_natDegree :
     (X + 1 : ℝ[X]).natDegree = 1 := by
-  simpa using
-    (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp))
+  simp
 
 private lemma xAddTwo_natDegree :
     (X + 2 : ℝ[X]).natDegree = 1 := by
@@ -349,7 +348,7 @@ lemma xAddOne_xAddTwo_allComboRealRooted :
   allComboRealRooted_of_natDegree_le_one
     xAddOne_hasPosLeadingCoeff
     xAddTwo_hasPosLeadingCoeff
-    (by simp [xAddOne_natDegree])
+    (by simp)
     (by simp [xAddTwo_natDegree])
 
 private lemma xAddOne_xAddTwo_badAffineSlice_eq :
@@ -502,8 +501,8 @@ lemma not_posComboNoCommonAffineFamilyStatement :
         xAddOne_hasNonnegCoeffs
         xAddTwo_hasNonnegCoeffs
         xAddOne_xAddTwo_posComboRealRooted
-        (by simp [xAddOne_natDegree, xAddTwo_natDegree])
-        (by simp [xAddOne_natDegree, xAddTwo_natDegree])
+        (by simp [xAddTwo_natDegree])
+        (by simp [xAddTwo_natDegree])
         xAddOne_xAddTwo_noCommon
         (show 0 < (1 : ℝ) by simp)
         (show 0 < (1 : ℝ) by simp)
@@ -531,7 +530,7 @@ lemma not_posComboNoCommonSameDegreeShiftedPairOrientationStatement :
         xAddOne_hasNonnegCoeffs
         xAddTwo_hasNonnegCoeffs
         xAddOne_xAddTwo_posComboRealRooted
-        (by simp [xAddOne_natDegree, xAddTwo_natDegree])
+        (by simp [xAddTwo_natDegree])
         xAddOne_xAddTwo_noCommon
   have hrr : ((((X + 2) + X * (X + 1)) : ℝ[X]) ≠ 0 ∧
     (((X + 2) + X * (X + 1)) : ℝ[X]).Splits) := hprec.2.1
@@ -550,7 +549,7 @@ lemma not_posComboNoCommonSameDegreeOrientationNonnegStatement :
         xAddOne_hasNonnegCoeffs
         xAddTwo_hasNonnegCoeffs
         xAddOne_xAddTwo_posComboRealRooted
-        (by simp [xAddOne_natDegree, xAddTwo_natDegree])
+        (by simp [xAddTwo_natDegree])
         xAddOne_xAddTwo_noCommon)
 
 /-- The honest succ-degree orientation target is false as well: the pair
@@ -567,7 +566,7 @@ lemma not_posComboNoCommonSuccDegreeOrientationNonnegStatement :
         xAddOne_hasNonnegCoeffs
         xSq_add_fiveX_add_six_hasNonnegCoeffs
         xAddOne_xSq_add_fiveX_add_six_posComboRealRooted
-        (by simp [xAddOne_natDegree, xSq_add_fiveX_add_six_natDegree])
+        (by simp [xSq_add_fiveX_add_six_natDegree])
         xAddOne_xSq_add_fiveX_add_six_noCommon)
 
 /-- The nonnegative-coefficient negative right-pencil target is false.  The
@@ -589,7 +588,7 @@ lemma not_compatibleSuccDegreeNegativeRightFamilyNonnegStatement :
       xSq_add_fiveX_add_six_hasPosLeadingCoeff
       xAddOne_hasNonnegCoeffs
       xSq_add_fiveX_add_six_hasNonnegCoeffs
-      (by simp [xAddOne_natDegree, xSq_add_fiveX_add_six_natDegree])
+      (by simp [xSq_add_fiveX_add_six_natDegree])
       xAddOne_isRealRooted.2
       (-1 : ℝ) (by norm_num)
   have hp_eq :
@@ -662,7 +661,7 @@ lemma not_compatibleSuccDegreePrecStatement :
       (hprec hcomp
         xAddOne_hasPosLeadingCoeff
         xSq_add_fiveX_add_six_hasPosLeadingCoeff
-        (by simp [xAddOne_natDegree, xSq_add_fiveX_add_six_natDegree])
+        (by simp [xSq_add_fiveX_add_six_natDegree])
         xAddOne_isRealRooted.2)
 
 /-! ### The general no-common orientation statement is false
@@ -848,7 +847,7 @@ private lemma xAddOne_xAddTwo_hasPosLeadingCoeff :
 
 private lemma xAddOne_xAddTwo_natDegree :
     (((X + 1) * (X + 2)) : ℝ[X]).natDegree = 2 := by
-  simp [natDegree_mul xAddOne_isRealRooted.1 xAddTwo_isRealRooted.1, xAddOne_natDegree,
+  simp [natDegree_mul xAddOne_isRealRooted.1 xAddTwo_isRealRooted.1,
     xAddTwo_natDegree]
 
 private lemma xAddOne_xAddTwo_roots :

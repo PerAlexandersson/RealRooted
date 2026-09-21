@@ -545,7 +545,7 @@ theorem isNonNestingPlacementBool_iff (B : FiniteSkewBoard)
     (P : Finset (ℕ × ℕ)) :
     isNonNestingPlacementBool B P ↔ B.IsNonNestingPlacement P := by
   simp only [isNonNestingPlacementBool, ne_eq, decide_implies, decide_not,
-    dite_eq_ite, Bool.if_true_right, Bool.not_or, Bool.not_not,
+    dite_eq_ite, Bool.ite_true_right, Bool.not_or, Bool.not_not,
     Bool.and_eq_true, finsetAllBool_iff, decide_eq_true_eq, Prod.forall,
     Bool.or_eq_true, Bool.not_eq_eq_eq_not, Bool.not_true,
     decide_eq_false_iff_not, not_lt, IsNonNestingPlacement,

@@ -71,17 +71,17 @@ theorem sum_powerset_neg_one_smul_upperZeta {α A : Type*}
             exact Finset.mem_sdiff.mpr ⟨hTU hxTS.1, hxTS.2⟩
           · intro x hxD
             exact (Finset.mem_sdiff.mp (hDTS hxD)).1
-      rw [if_pos hST, ← Finset.sum_filter, hfilter,
+      rw [ite_eq_left hST, ← Finset.sum_filter, hfilter,
         sum_zsmul_neg_one_pow_card_powerset]
       simp only [Finset.sdiff_eq_empty_iff_subset]
       by_cases hTS : T ⊆ S
-      · rw [if_pos hTS, if_pos (Finset.Subset.antisymm hTS hST)]
-      · rw [if_neg hTS, if_neg]
+      · rw [ite_eq_left hTS, ite_eq_left (Finset.Subset.antisymm hTS hST)]
+      · rw [ite_eq_right hTS, ite_eq_right]
         exact fun hTS' => hTS (hTS' ▸ Finset.Subset.rfl)
-    · simp only [if_neg hST]
+    · simp only [ite_eq_right hST]
       apply Finset.sum_eq_zero
       intro D hD
-      rw [if_neg]
+      rw [ite_eq_right]
       exact fun hSDT => hST (Finset.Subset.trans Finset.subset_union_left hSDT)
   calc
     (∑ T ∈ U.powerset, ∑ D ∈ (U \ S).powerset,
@@ -94,7 +94,7 @@ theorem sum_powerset_neg_one_smul_upperZeta {α A : Type*}
     _ = (if S ⊆ S then (if S = S then F S else 0) else 0) := by
       apply Finset.sum_eq_single S
       · intro T _ hTS
-        rw [if_neg hTS]
+        rw [ite_eq_right hTS]
         split <;> rfl
       · intro hS
         exact False.elim (hS (Finset.mem_powerset.mpr hSU))

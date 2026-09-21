@@ -8,7 +8,7 @@ namespace Matrix
 variable {n R : Type*} [DecidableEq n] [Fintype n] [CommRing R]
 
 -- TODO: Replace `det_zero`
-@[simp] lemma det_zero' [Nonempty n] : (0 : Matrix n n R).det = 0 := det_zero ‹_›
+@[simp] lemma det_zero' [Nonempty n] : (0 : Matrix n n R).det = 0 := det_zero
 
 /-- The Leibniz formula for a determinant, with rows indexed before columns. -/
 theorem det_apply_row (M : Matrix n n R) :

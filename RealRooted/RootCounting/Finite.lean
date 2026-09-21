@@ -1,6 +1,6 @@
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Data.Multiset.Card
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 
 /-!
 # Finite root counting

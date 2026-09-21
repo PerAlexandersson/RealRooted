@@ -199,7 +199,7 @@ private theorem cutPrefix_prec0_reverse {m : ℕ}
     · intro k _ l _
       by_cases hk : i < k ∧ k ≤ j
       · by_cases hl : l ≤ i
-        · simp only [hk, hl, if_true]
+        · simp only [hk, hl, ite_true]
           apply StrictInterl.toInterl
           exact prec_of_compatible_and_X_mul_left
             (h.p_pos k).ne_zero (h.p_pos l).ne_zero
@@ -231,7 +231,7 @@ private theorem cutPrefix_prec0_cutStrictSuffix {m : ℕ}
   · intro k _ l _
     by_cases hk : k ≤ i
     · by_cases hl : j < l
-      · simp only [hk, hl, if_true]
+      · simp only [hk, hl, ite_true]
         exact (prec_of_compatible_and_X_mul_left
           (h.p_pos k).ne_zero (h.q_pos l).ne_zero
           (h.p_nonneg k) (h.q_nonneg l) (h.pq k l) (h.xpq k l)).toInterl
@@ -256,7 +256,7 @@ private theorem cutStrictSuffix_prec0_forward {m : ℕ}
     · intro k _ l _
       by_cases hk : i < k ∧ k ≤ j
       · by_cases hl : j < l
-        · simp only [hk, hl, if_true]
+        · simp only [hk, hl, ite_true]
           exact (prec_of_compatible_and_X_mul_left
             (h.q_pos k).ne_zero (h.q_pos l).ne_zero
             (h.q_nonneg k) (h.q_nonneg l)

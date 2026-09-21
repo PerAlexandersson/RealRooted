@@ -84,7 +84,8 @@ lemma get_thresholdMatrix {q : ℕ} {rows : List (ℕ × ℝ[X])}
       thresholdRow q
         (rows.get ⟨i.1, by simpa using i.2⟩).1
         (rows.get ⟨i.1, by simpa using i.2⟩).2 := by
-  simp only [thresholdMatrix, List.get_eq_getElem, List.getElem_map]
+  dsimp only [thresholdMatrix] at i ⊢
+  simp only [List.get_eq_getElem, List.getElem_map]
 
 lemma mem_thresholdMatrix_length {q : ℕ} {rows : List (ℕ × ℝ[X])}
     (row : List ℝ[X]) (h : row ∈ thresholdMatrix q rows) :
@@ -110,8 +111,8 @@ lemma get_get_thresholdMatrix {q : ℕ} {rows : List (ℕ × ℝ[X])}
       thresholdEntry
         (rows.get ⟨i.1, by simpa using i.2⟩).1
         (rows.get ⟨i.1, by simpa using i.2⟩).2 j.1 := by
-  simp only [List.get_eq_getElem, thresholdMatrix, List.getElem_map,
-    thresholdRow, List.getElem_range]
+  dsimp only [thresholdMatrix, thresholdRow] at i ⊢
+  simp only [List.get_eq_getElem, List.getElem_map, List.getElem_range]
 
 lemma thresholdMatrix_has2x2_of_entry
     {q : ℕ} {rows : List (ℕ × ℝ[X])}

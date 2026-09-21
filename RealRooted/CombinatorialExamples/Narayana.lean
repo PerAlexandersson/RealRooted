@@ -97,8 +97,7 @@ private lemma narayanaCoeffA_leadingCoeff (n : Nat) :
 
 private lemma natDegree_one_sub_X :
     ((1 - X : ℝ[X])).natDegree = 1 := by
-  simpa [sub_eq_add_neg, add_comm] using
-    (Polynomial.natDegree_linear (a := (-1 : ℝ)) (b := (1 : ℝ)) (by simp))
+  simp [sub_eq_add_neg]
 
 private lemma leadingCoeff_one_sub_X :
     ((1 - X : ℝ[X])).leadingCoeff = -1 := by
@@ -211,7 +210,7 @@ private lemma natDegree_leadingCoeff_narayanaQuot :
   | 2, _ => by
       rw [narayanaQuot_two]
       exact
-        ⟨by simpa [add_comm] using Polynomial.natDegree_X_add_C (x := (1 : ℝ)),
+        ⟨by simp,
           by simpa [add_comm] using Polynomial.leadingCoeff_X_add_C (r := (1 : ℝ))⟩
   | n + 3, _ => by
       have hprev_succ := natDegree_leadingCoeff_narayanaQuot (n + 2) (by lia)

@@ -173,12 +173,12 @@ lemma left_root_le_singleton_root_of_positiveSplitRootCountPair_two_one
     rw [rootCountAtOrAbove, hfroots]
     simp only [Multiset.insert_eq_cons]
     rw [Multiset.filter_cons_of_pos ({b} : Multiset ℝ) hxa]
-    rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r), if_pos hxb]
+    rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r), ite_eq_left hxb]
     simp
   have hg_count : rootCountAtOrAbove g x = 0 := by
     rw [rootCountAtOrAbove, hgroots]
     rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r),
-      if_neg (by dsimp [x]; linarith)]
+      ite_eq_right (by dsimp [x]; linarith)]
     simp
   rw [hf_count, hg_count] at hcount
   norm_num at hcount

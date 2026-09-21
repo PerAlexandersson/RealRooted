@@ -186,7 +186,7 @@ theorem exceptionalize_apply_of_predecessor {h : ℕ}
     D.exceptionalize j = 0 := by
   change (if j ∈ D.starts then 1
     else if ∃ i ∈ D.starts, i.1 + 1 = j.1 then 0 else c j) = 0
-  rw [if_neg hj, if_pos hprevious]
+  rw [ite_eq_right hj, ite_eq_left hprevious]
 
 theorem exceptionalize_apply_of_not_mem_of_no_predecessor {h : ℕ}
     {c : DecoNormalizedCode h} (D : Decoration c) {j : Fin h}
@@ -194,7 +194,7 @@ theorem exceptionalize_apply_of_not_mem_of_no_predecessor {h : ℕ}
     D.exceptionalize j = c j := by
   change (if j ∈ D.starts then 1
     else if ∃ i ∈ D.starts, i.1 + 1 = j.1 then 0 else c j) = c j
-  rw [if_neg hj, if_neg hprevious]
+  rw [ite_eq_right hj, ite_eq_right hprevious]
 
 @[simp] theorem exceptionalize_apply_eq_one_iff {h : ℕ}
     {c : DecoNormalizedCode h} (D : Decoration c) (j : Fin h) :
@@ -219,7 +219,7 @@ theorem exceptionalize_apply_of_not_mem_of_no_predecessor {h : ℕ}
     change (if D.exceptionalize j = 1 then 0
       else if ∃ i : Fin h, i.1 + 1 = j.1 ∧ D.exceptionalize i = 1
       then 2 else D.exceptionalize j) = c j
-    rw [if_pos hjOne]
+    rw [ite_eq_left hjOne]
     exact hjZero.symm
   · by_cases hprevious : ∃ i ∈ D.starts, i.1 + 1 = j.1
     · obtain ⟨i, hi, hij⟩ := hprevious
@@ -233,11 +233,11 @@ theorem exceptionalize_apply_of_not_mem_of_no_predecessor {h : ℕ}
       have hjZero : D.exceptionalize j = 0 := by
         change (if j ∈ D.starts then 1
           else if ∃ i ∈ D.starts, i.1 + 1 = j.1 then 0 else c j) = 0
-        rw [if_neg hj, if_pos hprevious']
+        rw [ite_eq_right hj, ite_eq_left hprevious']
       change (if D.exceptionalize j = 1 then 0
         else if ∃ i : Fin h, i.1 + 1 = j.1 ∧ D.exceptionalize i = 1
         then 2 else D.exceptionalize j) = c j
-      rw [if_neg (by simp [hjZero]), if_pos ⟨i, hij, hiOne⟩]
+      rw [ite_eq_right (by simp [hjZero]), ite_eq_left ⟨i, hij, hiOne⟩]
       exact hiTwo.symm
     · have hnotOne : D.exceptionalize j ≠ 1 := by
         intro hjOne
@@ -253,7 +253,7 @@ theorem exceptionalize_apply_of_not_mem_of_no_predecessor {h : ℕ}
       change (if D.exceptionalize j = 1 then 0
         else if ∃ i : Fin h, i.1 + 1 = j.1 ∧ D.exceptionalize i = 1
         then 2 else D.exceptionalize j) = c j
-      rw [if_neg hnotOne, if_neg hnoPrevious, hjBase]
+      rw [ite_eq_right hnotOne, ite_eq_right hnoPrevious, hjBase]
 
 /-- The decorated code remembers exactly which eligible starts were selected. -/
 theorem exceptionalize_injective {h : ℕ} {c : DecoNormalizedCode h} :
@@ -283,7 +283,7 @@ namespace DecoNormalizedCode
     exact c.entry_ne_one i hiOne
   change (if c j = 1 then 0
     else if ∃ i : Fin h, i.1 + 1 = j.1 ∧ c i = 1 then 2 else c j) = c j
-  rw [if_neg hcurrent, if_neg hprevious]
+  rw [ite_eq_right hcurrent, ite_eq_right hprevious]
 
 end DecoNormalizedCode
 

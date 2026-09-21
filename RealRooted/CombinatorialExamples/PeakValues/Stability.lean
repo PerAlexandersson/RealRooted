@@ -42,7 +42,7 @@ theorem complexify_identifyLast_peakValueTranslated_succ
   simpa [liftOld, MvPolynomial.map_rename] using h
 
 theorem coeff_zero_complexify_peakValueTranslated (n : ℕ) :
-    coeff 0 (complexifyMv (peakValueTranslated n)) =
+    (complexifyMv (peakValueTranslated n)).coeff 0 =
       ((n.factorial : ℝ) : ℂ) := by
   rw [complexifyMv, coeff_map]
   change ((constantCoeff (peakValueTranslated n) : ℝ) : ℂ) = _

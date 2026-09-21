@@ -238,7 +238,7 @@ lemma Polynomial.splits_eq_C_mul_prod {n : ℕ} {q : ℝ[X]}
     (hinj : Function.Injective r) :
     q = C q.leadingCoeff * ∏ j : Fin n, (X - C (r j)) := by
   refine eq_of_degree_sub_lt_of_eval_finset_eq (Finset.image r Finset.univ) ?_ ?_
-  · refine lt_of_lt_of_eq (degree_sub_lt ?_ hq_ne ?_) ?_
+  · refine lt_of_lt_of_eq (degree_sub_lt_left ?_ hq_ne ?_) ?_
     · rw [degree_eq_natDegree hq_ne, hq_deg, degree_mul, degree_C (leadingCoeff_ne_zero.mpr hq_ne),
         zero_add, degree_prod]
       simp_all [degree_X_sub_C]

@@ -107,11 +107,11 @@ theorem eval_rectangularPolarization_eq_eval_polarization_leftSlice
   apply Finset.sum_congr rfl
   intro k hk
   have hkn : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-  simp only [Function.comp_apply, Sum.elim_inl, Sum.elim_inr]
   unfold binomialUnlift
   rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single k]
   · rw [Polynomial.coeff_monomial_same,
       coeff_rectangularLeftSlice_of_le m n p y hkn]
+    change _ * (Multiset.map x _).esymm k * (Multiset.map y _).esymm (m + k) = _
     ring
   · intro j hj hjk
     simp [Polynomial.coeff_monomial, hjk]
@@ -140,7 +140,7 @@ theorem coeff_rectangularRightSlice_eq_zero_of_lt (m n : ℕ) (p : ℂ[X])
   rw [Polynomial.finsetSum_coeff]
   apply Finset.sum_eq_zero
   intro k hk
-  rw [Polynomial.coeff_monomial, if_neg]
+  rw [Polynomial.coeff_monomial, ite_eq_right]
   exact (hj.trans_le (Nat.le_add_right m k)).ne'
 
 theorem natDegree_rectangularRightSlice_le (m n : ℕ) (p : ℂ[X]) (x : ℂ) :

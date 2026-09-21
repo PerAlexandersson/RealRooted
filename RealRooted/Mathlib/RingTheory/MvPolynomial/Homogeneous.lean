@@ -27,9 +27,9 @@ theorem homogeneousComponent_totalDegree_ne_zero
     rw [MvPolynomial.totalDegree, hfun]
     exact hdegree
   intro hzero
-  have hcoeff := congrArg (MvPolynomial.coeff m) hzero
-  rw [MvPolynomial.coeff_homogeneousComponent, if_pos htotal.symm] at hcoeff
-  simp only [MvPolynomial.coeff_zero] at hcoeff
+  have hcoeff := congrArg (fun Q : MvPolynomial σ R => Q.coeff m) hzero
+  rw [MvPolynomial.coeff_homogeneousComponent, ite_eq_left htotal.symm] at hcoeff
+  simp only [AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply] at hcoeff
   exact (MvPolynomial.mem_support_iff.mp hm) hcoeff
 
 end MvPolynomial

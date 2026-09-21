@@ -75,6 +75,10 @@ def exceptionalStartHeightEmbedding {h : Nat} : Fin h ↪ Nat where
     apply Fin.ext
     lia
 
+/-- The embedding assigns the one-based start height. -/
+@[simp] theorem exceptionalStartHeightEmbedding_apply {h : Nat} (j : Fin h) :
+    exceptionalStartHeightEmbedding j = j.val + 1 := rfl
+
 /-- The exceptional history underlying an admissible code of height at least
 two. -/
 def exceptionalHistory {h : Nat} (c : DecoCode h) (hc : c.IsAdmissible)
@@ -182,7 +186,7 @@ def toDecoration {h : Nat} (c : DecoCode h) (hc : c.IsAdmissible) :
     · change (if c ⟨j.1 + 1, hjBound⟩ = 1 then 0
         else if ∃ i : Fin h, i.1 + 1 = j.1 + 1 ∧ c i = 1
         then 2 else c ⟨j.1 + 1, hjBound⟩) = 2
-      rw [if_neg (by simp [hsuccZero]), if_pos]
+      rw [ite_eq_right (by simp [hsuccZero]), ite_eq_left]
       exact ⟨j, rfl, hjOne⟩
 
 @[simp] theorem toDecoration_starts {h : Nat} (c : DecoCode h)
@@ -215,7 +219,7 @@ def toDecoration {h : Nat} (c : DecoCode h) (hc : c.IsAdmissible) :
           (c.toDecoration hc) hjNotMem hprevious]
       change (if c j = 1 then 0
         else if ∃ i : Fin h, i.1 + 1 = j.1 ∧ c i = 1 then 2 else c j) = c j
-      rw [if_neg hjOne, if_neg]
+      rw [ite_eq_right hjOne, ite_eq_right]
       intro hexists
       obtain ⟨i, hij, hiOne⟩ := hexists
       apply hprevious

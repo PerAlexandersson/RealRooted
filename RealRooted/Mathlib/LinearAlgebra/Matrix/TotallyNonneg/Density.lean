@@ -82,7 +82,7 @@ theorem IsTotallyNonneg.rank_lt_tnRankStep {n k : ℕ}
     {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
     (hA : A.IsTotallyNonneg) (hrank : A.rank < n + 1) :
     A.rank < (Matrix.tnRankStep k A).rank := by
-  simp only [Matrix.tnRankStep, if_pos hrank]
+  simp only [Matrix.tnRankStep, ite_eq_left hrank]
   exact hA.rank_lt_rank_gaussianSandwich_add_single_zero_zero hrank
     (by positivity) (by positivity)
 

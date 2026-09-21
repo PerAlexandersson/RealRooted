@@ -110,7 +110,7 @@ theorem coeff_regularizedKernelRow
       simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjq]
     · exact fun hnot => (hnot hq).elim
   · have hNq : ¬q < N + 1 := by simpa using hq
-    rw [if_neg hNq]
+    rw [ite_eq_right hNq]
     apply Finset.sum_eq_zero
     intro j hj
     have hjq : j ≠ q := by
@@ -135,18 +135,18 @@ theorem regularizedKernelRow_eq
   | succ q =>
       rw [coeff_regularizedKernelRow]
       simp only [Polynomial.coeff_add, Polynomial.coeff_C,
-        if_neg (Nat.succ_ne_zero q), zero_add, Polynomial.coeff_X_mul,
+        ite_eq_right (Nat.succ_ne_zero q), zero_add, Polynomial.coeff_X_mul,
         Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul]
       by_cases hq : q < N + 1
-      · simp only [coeff_regularizedKernelRow, if_pos hq]
+      · simp only [coeff_regularizedKernelRow, ite_eq_left hq]
         have hsum :
             (∑ j : Fin (N + 1), L i j * (L ^ q * G) j 0) =
               (L ^ (q + 1) * G) i 0 := by
           rw [pow_succ', Matrix.mul_assoc, Matrix.mul_apply]
         rw [show Matrix.strictLowerPart (G * H) = L from rfl, hsum]
         by_cases hsucc : q + 1 < N + 1
-        · rw [if_pos hsucc]
-        · rw [if_neg hsucc]
+        · rw [ite_eq_left hsucc]
+        · rw [ite_eq_right hsucc]
           have hqeq : q + 1 = N + 1 := by lia
           rw [hqeq, Matrix.pow_card_eq_zero_of_strictLower L]
           · simp
@@ -260,7 +260,7 @@ theorem sourceBorderReducedChain_eq
       (j.succ.val) = (G * H) i j' := by
     unfold sourceBorderLowerTriangularMatrix Matrix.toLowerTriangularMatrix
     have hjcols : j.succ.val < N + 2 := by simpa using hjcol
-    rw [dif_pos hirow, dif_pos hjcols]
+    rw [dite_eq_left hirow, dite_eq_left hjcols]
     change sourceBorder δ G H ⟨i.val + 1, hirow⟩
       ⟨j.val + 1, hjcol⟩ = (G * H) i j'
     rw [show (⟨i.val + 1, hirow⟩ : Fin (N + 2)) = i.succ by

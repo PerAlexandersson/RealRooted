@@ -32,8 +32,8 @@ common nonzero factor in a field fraction).
 
 -- Standard simplex is nonempty when ι is nonempty
 theorem stdSimplex_nonempty {ι : Type*} [Fintype ι] [Nonempty ι] :
-    (stdSimplex ℝ ι).Nonempty := by
-  exact ⟨(Fintype.card ι : ℝ)⁻¹ • 1, by simp [stdSimplex, Finset.sum_const, nsmul_eq_mul]⟩
+    (RealRooted.standardSimplex ℝ ι).Nonempty := by
+  exact ⟨(Fintype.card ι : ℝ)⁻¹ • 1, by simp [RealRooted.standardSimplex, Finset.sum_const, nsmul_eq_mul]⟩
 
 /-!
 ## Helper Lemmas for Continuity
@@ -57,7 +57,7 @@ theorem eventually_to_open {α : Type*} [TopologicalSpace α] {p : α → Prop} 
 
 -- Continuous infimum over finset
 theorem continuousOn_finset_inf' {α β : Type*} [TopologicalSpace α] [LinearOrder β]
-    [TopologicalSpace β] [OrderTopology β] {ι : Type*} [Fintype ι]
+    [TopologicalSpace β] [OrderTopology β] {ι : Type*}
     {s : Finset ι} {U : Set α} (hs : s.Nonempty) {f : ι → α → β}
     (hf : ∀ i ∈ s, ContinuousOn (f i) U) :
     ContinuousOn (fun x => s.inf' hs (fun i => f i x)) U :=
@@ -88,7 +88,7 @@ theorem mulVec_nonneg {n : Type*} [Fintype n] {A : Matrix n n ℝ} (hA : ∀ i j
 theorem exists_pos_of_sum_one_of_nonneg {n : Type*} [Fintype n] [Nonempty n] {x : n → ℝ}
     (hsum : ∑ i, x i = 1) (hnonneg : ∀ i, 0 ≤ x i) : ∃ j, 0 < x j := by
   by_contra h
-  push_neg at h
+  push Not at h
   have h_all_zero : ∀ i, x i = 0 := by
     intro i
     exact le_antisymm (h i) (hnonneg i)
@@ -123,15 +123,16 @@ theorem mul_nonpos_of_nonpos_of_pos {α : Type*} [Ring α] [LinearOrder α] [IsS
 
 namespace Fintype
 
-lemma card_gt_one_of_nonempty_ne {α : Type*} [Fintype α] [DecidableEq α] [Nonempty α] :
+lemma card_gt_one_of_nonempty_ne {α : Type*} [Fintype α] [Nonempty α] :
     1 < Fintype.card α ↔ ∃ (i j : α), i ≠ j := by
+  classical
   constructor
   · intro h
     obtain ⟨i⟩ : Nonempty α := ‹Nonempty α›
     have h_card_ne_one : Fintype.card α ≠ 1 := ne_of_gt h
     have : ∃ j, j ≠ i := by
       by_contra h_all_eq
-      push_neg at h_all_eq
+      push Not at h_all_eq
       have : ∀ x : α, x = i := h_all_eq
       have h_card_eq_one : Fintype.card α = 1 := by
         rw [Fintype.card_eq_one_iff]
@@ -156,12 +157,13 @@ end Fintype
 
 -- Sum of non-negative terms is positive if at least one term is positive
 theorem sum_pos_of_mem {α : Type*} {s : Finset α} {f : α → ℝ}
-    [DecidableEq α] (h_nonneg : ∀ a ∈ s, 0 ≤ f a) (a : α) (ha_mem : a ∈ s) (ha_pos : 0 < f a) :
+    (h_nonneg : ∀ a ∈ s, 0 ≤ f a) (a : α) (ha_mem : a ∈ s) (ha_pos : 0 < f a) :
     0 < ∑ x ∈ s, f x := by
+  classical
   have h_sum_split : ∑ x ∈ s, f x = f a + ∑ x ∈ s.erase a, f x :=
     Eq.symm (add_sum_erase s f ha_mem)
   have h_erase_nonneg : 0 ≤ ∑ x ∈ s.erase a, f x :=
-    Finset.sum_nonneg (λ x hx => h_nonneg x (Finset.mem_of_mem_erase hx))
+    Finset.sum_nonneg (fun x hx => h_nonneg x (Finset.mem_of_mem_erase hx))
   rw [h_sum_split]
   exact add_pos_of_pos_of_nonneg ha_pos h_erase_nonneg
 
@@ -169,7 +171,7 @@ theorem sum_pos_of_mem {α : Type*} {s : Finset α} {f : α → ℝ}
 theorem exists_mem_of_sum_pos {α : Type*} {s : Finset α} {f : α → ℝ}
     (h_pos : 0 < ∑ a ∈ s, f a) (h_nonneg : ∀ a ∈ s, 0 ≤ f a) :
     ∃ a ∈ s, 0 < f a := by
-  by_contra h; push_neg at h
+  by_contra h; push Not at h
   have h_zero : ∀ a ∈ s, f a = 0 := fun a ha => le_antisymm (h a ha) (h_nonneg a ha)
   have h_sum_zero : ∑ a ∈ s, f a = 0 := by rw [sum_eq_zero_iff_of_nonneg h_nonneg]; exact h_zero
   linarith
@@ -195,13 +197,13 @@ lemma Finset.inf'_eq_ciInf {α β} [ConditionallyCompleteLinearOrder β] {s : Fi
   simp [Set.mem_image, Set.mem_range]
 
 /-- The standard simplex is a closed set. -/
-lemma isClosed_stdSimplex' {n : Type*} [Fintype n] : IsClosed (stdSimplex ℝ n) := by
+lemma isClosed_stdSimplex' {n : Type*} [Fintype n] : IsClosed (RealRooted.standardSimplex ℝ n) := by
   have h₁ : IsClosed (⋂ i, {x : n → ℝ | 0 ≤ x i}) :=
     isClosed_iInter (fun i ↦ isClosed_le continuous_const (continuous_apply i))
   have h_set_eq : {x : n → ℝ | ∀ i, 0 ≤ x i} = ⋂ i, {x | 0 ≤ x i} := by ext; simp
   rw [← h_set_eq] at h₁
   have h₂ : IsClosed {x : n → ℝ | ∑ i, x i = 1} :=
-    isClosed_eq (continuous_finset_sum _ (fun i _ ↦ continuous_apply i)) continuous_const
+    isClosed_eq (continuous_finsetSum _ (fun i _ ↦ continuous_apply i)) continuous_const
   exact IsClosed.inter h₁ h₂
 
 lemma abs_le_of_le_of_neg_le {x y : ℝ} (h_le : x ≤ y) (h_neg_le : -x ≤ y) : |x| ≤ y := by
@@ -225,7 +227,8 @@ lemma Finset.disjoint_compl_right {n : Type*} [Fintype n] [DecidableEq n] {s : F
   rw [@inter_sdiff_self]
 
 /-- The standard simplex is bounded. -/
-lemma bounded_stdSimplex' {n : Type*} [Fintype n] [DecidableEq n] : Bornology.IsBounded (stdSimplex ℝ n) := by
+lemma bounded_stdSimplex' {n : Type*} [Fintype n] : Bornology.IsBounded (RealRooted.standardSimplex ℝ n) := by
+  classical
   rw [Metric.isBounded_iff_subset_closedBall 0]
   use 1
   intro v hv
@@ -244,9 +247,10 @@ variable {n : Type*}
 
 /-- For a vector on the standard simplex, if the sum of a subset of its components is 1,
     then the components outside that subset must be zero. -/
-lemma mem_supp_of_sum_eq_one [Fintype n] [DecidableEq n] {v : n → ℝ} (hv : v ∈ stdSimplex ℝ n) (S : Finset n)
+lemma mem_supp_of_sum_eq_one [Fintype n] {v : n → ℝ} (hv : v ∈ RealRooted.standardSimplex ℝ n) (S : Finset n)
     (h_sum : ∑ i ∈ S, v i = 1) :
     ∀ i, v i ≠ 0 → i ∈ S := by
+  classical
   intro i hi_ne_zero
   by_contra hi_not_in_S
   have h_sum_all : ∑ j, v j = 1 := hv.2
@@ -261,7 +265,7 @@ lemma mem_supp_of_sum_eq_one [Fintype n] [DecidableEq n] {v : n → ℝ} (hv : v
   exact hi_ne_zero h_v_compl_zero
 
 /-- A non-negative, non-zero vector must have a positive component. -/
-lemma exists_pos_of_ne_zero [Fintype n] [DecidableEq n] {v : n → ℝ} (h_nonneg : ∀ i, 0 ≤ v i) (h_ne_zero : v ≠ 0) :
+lemma exists_pos_of_ne_zero {v : n → ℝ} (h_nonneg : ∀ i, 0 ≤ v i) (h_ne_zero : v ≠ 0) :
     ∃ i, 0 < v i := by
   by_contra h_all_nonpos
   apply h_ne_zero
@@ -269,9 +273,10 @@ lemma exists_pos_of_ne_zero [Fintype n] [DecidableEq n] {v : n → ℝ} (h_nonne
   exact le_antisymm (by simp_all) (h_nonneg i)
 
 /-- A non-negative, non-zero vector has a positive component that dominates all others. -/
-lemma exists_pos_maximal_of_nonneg_ne_zero [Fintype n] [Nonempty n] [DecidableEq n] {v : n → ℝ}
+lemma exists_pos_maximal_of_nonneg_ne_zero [Finite n] [Nonempty n] {v : n → ℝ}
     (h_nonneg : ∀ i, 0 ≤ v i) (h_ne_zero : v ≠ 0) :
     ∃ i, 0 < v i ∧ ∀ j, v j ≤ v i := by
+  let _ : Fintype n := Fintype.ofFinite n
   obtain ⟨i, -, hi_max⟩ := Finset.exists_mem_eq_sup' Finset.univ_nonempty v
   obtain ⟨j, hj_pos⟩ := exists_pos_of_ne_zero h_nonneg h_ne_zero
   refine ⟨i, ?_, ?_⟩
@@ -283,7 +288,7 @@ lemma exists_pos_maximal_of_nonneg_ne_zero [Fintype n] [Nonempty n] [DecidableEq
     exact Finset.le_sup' v (Finset.mem_univ j)
 
 /-- A set is nonempty if and only if its finite conversion is nonempty. -/
-lemma Set.toFinset_nonempty_iff {α : Type*} [Fintype α] [DecidableEq α] (s : Set α) [Finite s] [Fintype s] :
+lemma Set.toFinset_nonempty_iff {α : Type*} (s : Set α) [Finite s] [Fintype s] :
     s.toFinset.Nonempty ↔ s.Nonempty := by
   constructor
   · intro h
@@ -321,7 +326,7 @@ lemma lt_not_le {α : Type*} [PartialOrder α] (x y : α) : x < y → ¬ (x ≥ 
 
 section ConditionallyCompleteLinearOrder
 
-variable {α : Type*}  [ConditionallyCompleteLinearOrder α]
+variable {α : Type*} [ConditionallyCompleteLinearOrder α]
 /-- If y is an upper bound of a set s, and x is in s, then x ≤ y -/
 lemma le_of_mem_upperBounds {s : Set α} {x : α} {y : α} (hy : y ∈ upperBounds s) (hx : x ∈ s) : x ≤ y := by
   exact hy hx
@@ -381,7 +386,7 @@ lemma sup'_le_sup'_of_le {α β : Type*} [SemilatticeSup α] {s t : Finset β}
 -- A non-zero function must be non-zero at some point.
 lemma Function.exists_ne_zero_of_ne_zero {α β} [Zero β] {f : α → β} (h : f ≠ (fun _ => 0)) : ∃ i, f i ≠ 0 := by
   by_contra hf
-  push_neg at hf
+  push Not at hf
   apply h
   ext x
   exact hf x
@@ -431,7 +436,7 @@ lemma Nat.eq_one_or_one_lt (n : ℕ) (hn : n ≠ 0) : n = 1 ∨ 1 < n := by
   · exact Or.inr (Nat.succ_lt_succ (Nat.succ_pos _))
 
 /-- For a finite type, the infimum over the type is attained at some element. -/
-lemma exists_eq_iInf {α : Type*} [Fintype α] [Nonempty α] (f : α → ℝ) : ∃ i, f i = ⨅ j, f j :=
+lemma exists_eq_iInf {α : Type*} [Finite α] [Nonempty α] (f : α → ℝ) : ∃ i, f i = ⨅ j, f j :=
   exists_eq_ciInf_of_finite
 
 /-- An element of the image of a set is less than or equal to the supremum of that set. -/
@@ -451,8 +456,8 @@ lemma smul_sum (α : Type*) [Fintype α] (r : ℝ) (f : α → ℝ) :
   simp only [smul_eq_mul, Finset.mul_sum]
 
 lemma ones_norm_mem_simplex [Fintype n] [Nonempty n] :
-  (fun _ => (Fintype.card n : ℝ)⁻¹) ∈ stdSimplex ℝ n := by
-  dsimp [stdSimplex]; constructor
+  (fun _ => (Fintype.card n : ℝ)⁻¹) ∈ RealRooted.standardSimplex ℝ n := by
+  dsimp [RealRooted.standardSimplex]; constructor
   · intro i; apply inv_nonneg.2; norm_cast; exact Nat.cast_nonneg _
   · simp [Finset.sum_const, Finset.card_univ];
 
@@ -477,7 +482,7 @@ the zero vector sum to `0`.
 -/
 lemma ne_zero_of_mem_stdSimplex
     {n : Type*} [Fintype n] [Nonempty n] {x : n → ℝ}
-    (hx : x ∈ stdSimplex ℝ n) :
+    (hx : x ∈ RealRooted.standardSimplex ℝ n) :
     x ≠ 0 := by
   intro h_zero
   have h_sum_zero : (∑ i, x i) = 0 := by
@@ -511,20 +516,20 @@ namespace Matrix
 lemma dotProduct_pos_of_pos_of_pos {n : Type*} [Fintype n] [Nonempty n]
     {u v : n → ℝ} (hu_pos : ∀ i, 0 < u i) (hv_pos : ∀ i, 0 < v i) :
     0 < u ⬝ᵥ v := by
-  simp [dotProduct]
+  change 0 < ∑ i, u i * v i
   apply Finset.sum_pos
   · intro i _
     exact mul_pos (hu_pos i) (hv_pos i)
   · apply Finset.univ_nonempty
 
 /-- The dot product of a positive vector with a non-negative, non-zero vector is positive. -/
-lemma dotProduct_pos_of_pos_of_nonneg_ne_zero {n : Type*} [Fintype n] [DecidableEq n]
+lemma dotProduct_pos_of_pos_of_nonneg_ne_zero {n : Type*} [Fintype n]
     {u v : n → ℝ} (hu_pos : ∀ i, 0 < u i) (hv_nonneg : ∀ i, 0 ≤ v i) (hv_ne_zero : v ≠ 0) :
     0 < u ⬝ᵥ v := by
-  simp [dotProduct]
+  change 0 < ∑ i, u i * v i
   have h_exists_pos : ∃ i, 0 < v i := by
     by_contra h
-    push_neg at h
+    push Not at h
     have h_all_zero : ∀ i, v i = 0 := fun i =>
       le_antisymm (h i) (hv_nonneg i)
     have h_zero : v = 0 := funext h_all_zero
@@ -567,7 +572,7 @@ The dot product is "associative" with matrix-vector multiplication, in the sense
 that `v ⬝ᵥ (A *ᵥ w) = (Aᵀ *ᵥ v) ⬝ᵥ w`. This is a consequence of the definition of
 the matrix transpose and dot product.
 -/
-lemma dotProduct_mulVec_assoc {n : Type*} [Fintype n] [DecidableEq n]
+lemma dotProduct_mulVec_assoc {n : Type*} [Fintype n]
     (A : Matrix n n ℝ) (v w : n → ℝ) :
     v ⬝ᵥ (A *ᵥ w) = (Aᵀ *ᵥ v) ⬝ᵥ w := by
   simp only [dotProduct, mulVec, transpose_apply, Finset.mul_sum, Finset.sum_mul]
@@ -575,7 +580,7 @@ lemma dotProduct_mulVec_assoc {n : Type*} [Fintype n] [DecidableEq n]
   simp [mul_comm, mul_left_comm]
 
 -- Matrix-vector multiplication component
-theorem matrix_mulVec_component {n : Type*} [Fintype n] [DecidableEq n]
+theorem matrix_mulVec_component {n : Type*} [Fintype n]
     (A : Matrix n n ℝ) (v : n → ℝ) (j : n) :
     (A *ᵥ v) j = ∑ i, A j i * v i := by
   simp [Matrix.mulVec]; rfl
@@ -587,7 +592,7 @@ to the other argument, where it becomes its transpose `Aᵀ`.
 lemma transpose_mulVec {n : Type*} [Fintype n] (A : Matrix n n ℝ) (v w : n → ℝ) :
     v ⬝ᵥ (A *ᵥ w) = (Aᵀ *ᵥ v) ⬝ᵥ w := by
   classical
-  simp only [dotProduct, mulVec_apply, transpose_apply,
+  simp only [dotProduct, mulVec_apply,
         Finset.mul_sum, Finset.sum_mul];
   rw [Finset.sum_comm]
   simp [mul_comm, mul_left_comm]
@@ -602,12 +607,12 @@ lemma dotProduct_mulVec_comm {n : Type*} [Fintype n] (u v : n → ℝ) (A : Matr
   rw [dotProduct_mulVec, vecMul_eq_mulVec_transpose]
 
 -- This could be a general lemma in the Matrix API
-lemma diagonal_mulVec_ones [DecidableEq n][Fintype n] (d : n → ℝ) :
+lemma diagonal_mulVec_ones [DecidableEq n] [Fintype n] (d : n → ℝ) :
     diagonal d *ᵥ (fun _ => 1) = d := by
   ext i; simp [mulVec_diagonal]
 
 -- This could also be a general lemma
-lemma diagonal_inv_mulVec_self [DecidableEq n][Fintype n] {d : n → ℝ} (hd : ∀ i, d i ≠ 0) :
+lemma diagonal_inv_mulVec_self [DecidableEq n] [Fintype n] {d : n → ℝ} (hd : ∀ i, d i ≠ 0) :
     diagonal (d⁻¹) *ᵥ d = fun _ => 1 := by
   ext i
   simp [mulVec_diagonal]

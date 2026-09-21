@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1404
+      "max_modules": 1405
     },
     "RealRooted.Production": {
-      "max_modules": 1283
+      "max_modules": 1284
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 635
@@ -208,7 +208,7 @@
       "max_modules": 16
     },
     "RealRooted.MatrixInterlacing.PrincipalInterlacingExamples": {
-      "max_modules": 137
+      "max_modules": 138
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank": {
       "max_modules": 1
@@ -394,10 +394,10 @@
       "max_modules": 92
     },
     "RealRooted.BrandenLeite.NetworkTotallyNonneg": {
-      "max_modules": 117
+      "max_modules": 118
     },
     "RealRooted.BrandenLeite.NetworkWhitney": {
-      "max_modules": 116
+      "max_modules": 117
     },
     "RealRooted.BrandenLeite.Resolvable": {
       "max_modules": 91
@@ -928,19 +928,19 @@
       "max_modules": 2
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core": {
-      "max_modules": 25
+      "max_modules": 26
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix": {
       "max_modules": 1
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing": {
-      "max_modules": 26
+      "max_modules": 27
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation": {
       "max_modules": 4
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density": {
-      "max_modules": 43
+      "max_modules": 44
     },
     "RealRooted.InterlacingClosure": {
       "max_modules": 101
@@ -949,7 +949,7 @@
       "max_modules": 105
     },
     "RealRooted.TotallyNonnegInterlacing": {
-      "max_modules": 134
+      "max_modules": 135
     },
     "RealRooted.OscillatoryInterlacing": {
       "max_modules": 38

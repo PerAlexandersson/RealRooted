@@ -758,7 +758,7 @@ theorem firstColumnExtension_card
     have hrow : a.1 = b.1 := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hmap
     have hcol_add : a.2 + 1 = b.2 + 1 := by simpa using congrArg (fun x : ℕ × ℕ => x.2) hmap
     exact Prod.ext hrow (Nat.add_right_cancel hcol_add)
-  rw [Finset.card_insert_eq_ite, if_neg hnot, Finset.card_image_of_injOn hinj]
+  rw [Finset.card_insert_eq_ite, ite_eq_right hnot, Finset.card_image_of_injOn hinj]
 
 /-- The reinserted first-column rook is not already present in a shifted valid
 remainder. -/

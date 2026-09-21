@@ -13,7 +13,7 @@ positive.
 
 namespace RealRooted.Applications.OEIS
 
-open MvPolynomial
+open _root_.MvPolynomial
 
 noncomputable section
 
@@ -27,9 +27,9 @@ theorem decoBottomTotal_three :
         2 * MvPolynomial.X 2 * MvPolynomial.X 3 +
         MvPolynomial.X 1 * MvPolynomial.X 2 * MvPolynomial.X 3 := by
   norm_num [decoBottomTotal, decoNormalBottomStep, decoNormalBottomCore,
-    decoExceptionalBottomStep, decoLayerBottomEmbedding, Fin.sum_univ_succ,
+    decoExceptionalBottomStep, Fin.sum_univ_succ,
     map_ofNat, MvPolynomial.pderiv_C, MvPolynomial.pderiv_one,
-    MvPolynomial.pderiv_ofNat]
+    MvPolynomial.pderiv_ofNat, Pi.single_apply]
   ring
 
 /-- The rank-three Rayleigh difference in the first two coordinates. -/

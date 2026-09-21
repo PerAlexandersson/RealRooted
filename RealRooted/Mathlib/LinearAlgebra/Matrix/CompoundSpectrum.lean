@@ -53,11 +53,11 @@ theorem exists_charpoly_compound_eq_prod [IsAlgClosed K] {n : ℕ}
   set U : (Matrix (Fin n) (Fin n) K)ˣ := Matrix.permMatrixHom.toHomUnits σ⁻¹ with hUdef
   have hUval : U.val = σ.permMatrix K := by
     rw [hUdef]
-    show Matrix.permMatrixHom σ⁻¹ = σ.permMatrix K
+    change Matrix.permMatrixHom σ⁻¹ = σ.permMatrix K
     rw [permMatrixHom_apply, inv_inv]
   have hUinv : (U⁻¹).val = σ⁻¹.permMatrix K := by
     rw [hUdef, ← map_inv, inv_inv]
-    show Matrix.permMatrixHom σ = σ⁻¹.permMatrix K
+    change Matrix.permMatrixHom σ = σ⁻¹.permMatrix K
     rw [permMatrixHom_apply]
   have hT'conj : T' = U.val * T * (U⁻¹).val := by
     rw [hUval, hUinv, hT'def, Equiv.Perm.permMatrix, Equiv.Perm.permMatrix,
@@ -83,7 +83,7 @@ theorem exists_charpoly_compound_eq_prod [IsAlgClosed K] {n : ℕ}
       rw [hT'conj, Matrix.coe_units_inv]
       exact charpoly_units_conj U T
     rw [← hA_T, ← hT'_T]
-    exact charpoly_of_upperTriangular T' hT'tri
+    exact charpoly_of_isUpperTriangular T' hT'tri
   · intro q
     rw [← hchar q, charpoly_compound_of_blockTriangular hT'tri q]
 

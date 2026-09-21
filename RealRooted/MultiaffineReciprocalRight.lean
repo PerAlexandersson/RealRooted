@@ -56,7 +56,7 @@ def signedMultiaffineReciprocalRight
     {R tau sigma : Type*} [CommRing R] [Fintype sigma]
     (P : MvPolynomial (Sum tau sigma) R) :
     MvPolynomial (Sum tau sigma) R :=
-  P.sum fun d c =>
+  P.coeff.sum fun d c =>
     MvPolynomial.monomial (complementRightExponent d)
       ((-1 : R) ^ rightExponentSum d * c)
 
@@ -114,11 +114,11 @@ theorem degreeOf_signedMultiaffineReciprocalRight_inr_le_one
   rw [MvPolynomial.sum_def]
   refine (MvPolynomial.degreeOf_sum_le (Sum.inr i) P.support fun d =>
     MvPolynomial.monomial (complementRightExponent d)
-      ((-1 : R) ^ rightExponentSum d * MvPolynomial.coeff d P)).trans ?_
+      ((-1 : R) ^ rightExponentSum d * P.coeff d)).trans ?_
   apply Finset.sup_le
   intro d hd
   by_cases hc :
-      (-1 : R) ^ rightExponentSum d * MvPolynomial.coeff d P = 0
+      (-1 : R) ^ rightExponentSum d * P.coeff d = 0
   · simp [hc, MvPolynomial.degreeOf_zero]
   · rw [MvPolynomial.degreeOf_monomial_eq _ _ hc]
     simp
@@ -231,7 +231,7 @@ theorem eval_signedMultiaffineReciprocalRight
   intro d hd
   exact eval_signedMultiaffineReciprocalRight_term d
     (fun i => MvPolynomial.degreeOf_le_iff.mp (hP i) d hd)
-    (MvPolynomial.coeff d P) z hz
+    (P.coeff d) z hz
 
 /-- Signed reciprocal substitution in the right-hand block preserves
 upper-half-plane stability while leaving all left-hand coordinates unchanged. -/

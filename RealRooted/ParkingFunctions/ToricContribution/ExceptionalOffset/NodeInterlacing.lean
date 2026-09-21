@@ -322,8 +322,8 @@ private theorem exceptionalBasePolynomial_prec_exceptionalEulerInverse
     have hcoeff : U.leadingCoeff = F.leadingCoeff * (γ / (γ + m)) := by
       rw [Polynomial.leadingCoeff, hUdegree, Polynomial.leadingCoeff, hFdegree,
         coeff_exceptionalEulerInverse, coeff_exceptionalBasePolynomial,
-        if_pos le_rfl]
-      simp only [if_pos le_rfl]
+        ite_eq_left le_rfl]
+      simp only [ite_eq_left le_rfl]
       ring
     rw [hcoeff] at hUlead
     have heq : (-1 : ℝ) ^ m * (F.leadingCoeff * (γ / (γ + m))) =
@@ -982,7 +982,7 @@ theorem jPolynomial_interlaces_rPolynomial
 has the parity sign predicted by its terminating hypergeometric factor. -/
 theorem rPolynomial_top_signed_coeff_pos (m ε d : ℕ) :
     0 < (-1 : ℝ) ^ m * (rPolynomial m ε d).coeff m := by
-  rw [coeff_rPolynomial, if_pos le_rfl, rCoeff,
+  rw [coeff_rPolynomial, ite_eq_left le_rfl, rCoeff,
     exceptional_realRisingFactorial_neg_nat_eq_factorial_div m m le_rfl]
   have hleft : (-1 : ℝ) ^ m * (-1 : ℝ) ^ m = 1 := by
     rw [← pow_add, show m + m = 2 * m by lia, pow_mul]

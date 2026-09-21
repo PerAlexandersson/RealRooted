@@ -326,8 +326,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact RealRooted.prec_lw_negative_quadratic_lag_sequence
-          $hbase $hpos rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
-          rr_lw_negative_quadratic_side $hrec $hdeg_succ $hno)
+          (hrec := $hrec) $hbase $hpos
+          rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+          rr_lw_negative_quadratic_side $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_quadratic_sequence_realrooted_auto using
         base := $hbase:term,
@@ -336,10 +337,12 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_lw_negative_quadratic_lag_sequence
-            $hbase $hpos rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
-            rr_lw_negative_quadratic_side $hrec $hdeg_succ $hno))
+        (have hcertificate :=
+          RealRooted.isRealRooted_of_lw_negative_quadratic_lag_sequence
+            (hrec := $hrec) $hbase $hpos
+            rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+            rr_lw_negative_quadratic_side $hdeg_succ $hno
+         rr_exact_realrooted_sequence_or_projection hcertificate))
   | `(tactic|
       rr_lw_negative_quadratic_sequence_den_coeff_split using
         base := $hbase:term,

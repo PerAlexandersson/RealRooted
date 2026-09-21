@@ -33,7 +33,7 @@ theorem jensenPolynomial_polarThetaMultiplier (N : ℕ) :
   ext k
   rw [coeff_jensenPolynomial, coeff_C_mul, coeff_X_add_one_pow]
   by_cases hk : k ≤ N
-  · rw [if_pos hk]
+  · rw [ite_eq_left hk]
     simp only [polarThetaMultiplier]
     by_cases hN : N = 0
     · simp_all
@@ -49,7 +49,7 @@ theorem jensenPolynomial_polarThetaMultiplier (N : ℕ) :
     · have hchoose : (k - 1).choose k = 0 :=
         Nat.choose_eq_zero_of_lt (by lia)
       simp [hchoose]
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     have hchoose : (N - 1).choose k = 0 :=
       Nat.choose_eq_zero_of_lt (by lia)
     simp [hchoose]

@@ -361,7 +361,7 @@ This avoids separate shifted convolutions for the two differentiated terms
 and is useful when the coefficients of one input have a closed form. -/
 theorem coeff_wronskian (p q : ℝ[X]) (l : ℕ) :
     (wronskian p q).coeff l =
-      ∑ ij ∈ Finset.antidiagonal (l + 1),
+      ∑ ij ∈ Finset.HasAntidiagonal.antidiagonal (l + 1),
         (((ij.2 : ℝ) - (ij.1 : ℝ)) * p.coeff ij.1 * q.coeff ij.2) := by
   have hpoly : X * wronskian p q = p * theta q - theta p * q := by
     simp only [wronskian, theta]
@@ -371,9 +371,9 @@ theorem coeff_wronskian (p q : ℝ[X]) (l : ℕ) :
   simp only [coeff_theta] at hcoeff
   calc
     (wronskian p q).coeff l =
-        (∑ ij ∈ Finset.antidiagonal (l + 1),
+        (∑ ij ∈ Finset.HasAntidiagonal.antidiagonal (l + 1),
             p.coeff ij.1 * ((ij.2 : ℝ) * q.coeff ij.2)) -
-          ∑ ij ∈ Finset.antidiagonal (l + 1),
+          ∑ ij ∈ Finset.HasAntidiagonal.antidiagonal (l + 1),
             ((ij.1 : ℝ) * p.coeff ij.1) * q.coeff ij.2 := hcoeff
     _ = _ := by
       rw [← Finset.sum_sub_distrib]
@@ -477,7 +477,7 @@ theorem natDegree_wronskian_le_two_mul_sub_two_of_sameDegree
     rw [leadingCoeff_mul, leadingCoeff_mul, leadingCoeff_derivative,
       leadingCoeff_derivative, hp, hq]
     ring
-  have hltdeg := degree_sub_lt hdegree hleft0 hlc
+  have hltdeg := degree_sub_lt_left hdegree hleft0 hlc
   have hlt : (wronskian p q).natDegree < 2 * n - 1 := by
     apply (natDegree_lt_iff_degree_lt hW).2
     rw [wronskian]

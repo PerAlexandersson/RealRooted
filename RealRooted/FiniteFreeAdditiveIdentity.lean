@@ -70,7 +70,7 @@ private theorem diagonal_applyNegDifferential_term
   have hijd : i ≤ d - j := by lia
   rw [applyNegDifferential_C_mul_left,
     applyNegDifferential_C_mul_right,
-    applyNegDifferential_esymm i (d - j), if_pos hijd]
+    applyNegDifferential_esymm i (d - j), ite_eq_left hijd]
   simp only [Fintype.card_fin]
   rw [← MvPolynomial.smul_eq_C_mul, map_smul]
   rw [← MvPolynomial.smul_eq_C_mul, map_smul]
@@ -177,7 +177,7 @@ theorem diagonal_applyNegDifferential_signedPolarization
             Polynomial.X ^ (d - i - j)
         else 0 := by
     by_cases hij : i + j ≤ d
-    · rw [if_pos hij]
+    · rw [ite_eq_left hij]
       rw [diagonal_applyNegDifferential_term d i j hij]
       have hgamma :
           (finiteFreeAdditiveConvolutionGamma d i j : ℂ) =
@@ -192,13 +192,13 @@ theorem diagonal_applyNegDifferential_signedPolarization
       rw [hgamma]
       congr 1
       ring
-    · rw [if_neg hij]
+    · rw [ite_eq_right hij]
       have hijd : ¬ i ≤ d - j := by
         intro h
         exact hij ((Nat.le_sub_iff_add_le hj).mp h)
       rw [applyNegDifferential_C_mul_left,
         applyNegDifferential_C_mul_right,
-        applyNegDifferential_esymm i (d - j), if_neg hijd]
+        applyNegDifferential_esymm i (d - j), ite_eq_right hijd]
       simp
   have hsum :
       (∑ i ∈ Finset.range (d + 1),

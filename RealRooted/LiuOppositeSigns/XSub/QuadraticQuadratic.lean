@@ -37,7 +37,7 @@ lemma roots_overlap_of_positiveSplitRootCountPair_two_two
       rw [rootCountAtOrAbove, hfroots]
       simp only [Multiset.insert_eq_cons]
       rw [Multiset.filter_cons_of_pos ({b} : Multiset ℝ) hxa]
-      rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r), if_pos hxb]
+      rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r), ite_eq_left hxb]
       simp
     have hg_count : rootCountAtOrAbove g x = 0 := by
       rw [rootCountAtOrAbove, hgroots]
@@ -71,7 +71,7 @@ lemma roots_overlap_of_positiveSplitRootCountPair_two_two
       rw [rootCountAtOrAbove, hgroots]
       simp only [Multiset.insert_eq_cons]
       rw [Multiset.filter_cons_of_pos ({d} : Multiset ℝ) hxc]
-      rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r), if_pos hxd]
+      rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r), ite_eq_left hxd]
       simp
     rw [hf_count, hg_count] at hcount
     norm_num at hcount

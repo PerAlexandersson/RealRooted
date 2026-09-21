@@ -2,7 +2,7 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
 import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 import RealRooted.Multiaffine
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 
 /-!
 # Rayleigh differences of multiaffine polynomials

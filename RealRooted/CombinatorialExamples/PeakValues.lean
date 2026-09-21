@@ -1,5 +1,5 @@
 import Mathlib.Data.Fintype.Perm
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Algebra.MvPolynomial.Degrees
 import Mathlib.RingTheory.MvPolynomial.Basic
 import Mathlib.Tactic
@@ -223,7 +223,7 @@ theorem peakValueTranslated_hasNonnegCoeffs (n : ℕ) :
     (MvPolynomial.HasNonnegCoeffs.X v)
 
 theorem coeff_peakValueTranslated_nonneg (n : ℕ) (m : Fin n →₀ ℕ) :
-    0 ≤ MvPolynomial.coeff m (peakValueTranslated n) :=
+    0 ≤ (peakValueTranslated n).coeff m :=
   peakValueTranslated_hasNonnegCoeffs n m
 
 /-- The translated enumerator has degree at most the maximum possible number

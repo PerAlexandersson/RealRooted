@@ -111,7 +111,7 @@ private theorem foldl_iteratedPDerivAt_single
 def applyNegDifferential
     {R sigma : Type*} [CommRing R] [Fintype sigma]
     (F G : MvPolynomial sigma R) : MvPolynomial sigma R :=
-  F.sum fun d c =>
+  F.coeff.sum fun d c =>
     MvPolynomial.C ((-1 : R) ^ (d.sum fun _ n => n) * c) *
       applyMonomialDifferential d G
 
@@ -600,7 +600,7 @@ theorem contractVariablePairs_pairedProduct_monomial
         change contractVariablePairs l
             (contractVariables (Sum.inl i) (Sum.inr i)
               (pairedProduct (MvPolynomial.monomial d c) G)) = _
-        rw [contractVariables_pairedProduct_monomial i d c G (hdegree i), if_pos hdi]
+        rw [contractVariables_pairedProduct_monomial i d c G (hdegree i), ite_eq_left hdi]
         simpa [listExponentSum, applyMonomialDifferentialAlong, hdi,
           iteratedPDerivAt] using
           ih hlnodup d hsupportTail hdegree c G
@@ -638,7 +638,7 @@ theorem contractVariablePairs_pairedProduct_monomial
             (contractVariables (Sum.inl i) (Sum.inr i)
               (pairedProduct (MvPolynomial.monomial d c) G)) = _
         rw [contractVariables_pairedProduct_monomial i d c G (hdegree i),
-          if_neg (by simp [hdi])]
+          ite_eq_right (by simp [hdi])]
         have hrec := ih hlnodup e hsupportTail hedegree (-c)
           (MvPolynomial.pderiv i G)
         rw [hsum, hfold] at hrec
@@ -683,7 +683,7 @@ theorem contractVariablePairs_pairedProduct
   apply Finset.sum_congr rfl
   intro d hd
   change contractVariablePairs (differentialVariableOrder sigma)
-      (pairedProduct (MvPolynomial.monomial d (MvPolynomial.coeff d F)) G) = _
+      (pairedProduct (MvPolynomial.monomial d (F.coeff d)) G) = _
   rw [contractVariablePairs_pairedProduct_monomial
     (differentialVariableOrder sigma)
     (nodup_differentialVariableOrder sigma) d

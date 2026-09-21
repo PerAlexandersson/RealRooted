@@ -113,7 +113,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
       refine ⟨?_, ?_, ?_⟩
       · rintro (_ | m)
         · simp [simsun_zero]
-        · rw [simsun_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
+        · rw [simsun_zero, coeff_one, ite_eq_right (Nat.succ_ne_zero m)]
       · simp [simsun_zero]
       · intro m hm
         rw [simsun_zero, coeff_one]
@@ -122,7 +122,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
       refine ⟨?_, ?_, ?_⟩
       · rintro (_ | m)
         · simp [simsun_one]
-        · rw [simsun_one, coeff_one, if_neg (Nat.succ_ne_zero m)]
+        · rw [simsun_one, coeff_one, ite_eq_right (Nat.succ_ne_zero m)]
       · simp [simsun_one]
       · intro m hm
         rw [simsun_one, coeff_one]
@@ -224,15 +224,11 @@ lemma simsun_nonzero (n : Nat) :
 lemma interlaces_derivative_simsun_three :
     Interlaces (simsun 3).derivative (simsun 3) := by
   have hprec : StrictInterl (1 : ℝ[X]) (1 + C (4 : ℝ) * X) :=
-    (interlaces_one_linear (by
-      simpa [add_comm] using
-        (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by simp)))).toStrictInterl
+    (interlaces_one_linear (by simp)).toStrictInterl
   have hprecC : StrictInterl (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
     StrictInterl.C_mul_left hprec (by simp)
   have hInter : Interlaces (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
-    hprecC.toInterlaces (by
-      simpa [add_comm] using
-        (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by simp)).symm)
+    hprecC.toInterlaces (by simp)
   simpa [simsun_three] using hInter
 
 lemma simsun_posLeadingCoeff (n : Nat) :

@@ -57,13 +57,13 @@ theorem Irreducible.add_one (h_irred : A.IsIrreducible) : (1 + A).IsIrreducible 
   constructor
   · exact fun i j => Matrix.one_add_apply_nonneg h_irred.nonneg i j
   · intro i j
-    letI : Quiver n := toQuiver A
+    let : Quiver n := toQuiver A
     obtain ⟨pA, hpA_pos⟩ := h_irred.connected i j
     let pA' : @Quiver.Path n (toQuiver A) i j := pA
     obtain ⟨pB, hp_len⟩ := pathToQuiverOfForallPosImpPos
       (A := A) (B := B) (fun {u v} huv => by
         simpa [B] using one_add_pos_of_pos h_irred.nonneg huv) pA'
-    letI : Quiver n := toQuiver B
+    let : Quiver n := toQuiver B
     exact ⟨pB, by simpa [hp_len.down] using hpA_pos⟩
 
 /-
@@ -71,11 +71,13 @@ A non-zero, non-negative eigenvector of an irreducible matrix is
 in fact strictly positive.
 -/
 omit [DecidableEq n] in
-lemma exists_zero_to_pos_edge_of_irreducible [Fintype n]
+open scoped Classical in
+lemma exists_zero_to_pos_edge_of_irreducible [Finite n]
     (hA_irred : A.IsIrreducible) {v : n → ℝ}
     (hv_nonneg : ∀ i, 0 ≤ v i) (hv_ne_zero : v ≠ 0)
     {i₀ : n} (hi₀_zero : v i₀ = 0) :
     ∃ j i : n, v j = 0 ∧ 0 < v i ∧ 0 < A j i := by
+  let _ := Fintype.ofFinite n
   let T : Set n := {i | v i = 0}
   have hT_nonempty : T.Nonempty := ⟨i₀, by simp [T, hi₀_zero]⟩
   have hT_ne_univ : T ≠ Set.univ := by
@@ -95,7 +97,7 @@ lemma eigenvector_is_positive_of_irreducible_aux [Fintype n]
     (hv_nonneg : ∀ i, 0 ≤ v i) (hv_ne_zero : v ≠ 0) :
     ∀ i, 0 < v i := by
   by_contra h_has_zero
-  push_neg at h_has_zero
+  push Not at h_has_zero
   obtain ⟨i₀, hi₀_zero⟩ := h_has_zero
   have hi₀_eq_zero : v i₀ = 0 := le_antisymm hi₀_zero (hv_nonneg i₀)
   obtain ⟨j, i, vj_zero, vi_pos, h_Aji_pos⟩ :=
@@ -120,7 +122,7 @@ omit [Fintype n] [DecidableEq n] in
 /-- An irreducible matrix has a positive entry. -/
 lemma Irreducible.exists_pos_entry [Nonempty n] (hA_irred : A.IsIrreducible) :
     ∃ i j : n, 0 < A i j := by
-  letI : Quiver n := toQuiver A
+  let : Quiver n := toQuiver A
   obtain ⟨i₀⟩ := ‹Nonempty n›
   obtain ⟨p, hp_pos⟩ := hA_irred.connected i₀ i₀
   rcases Quiver.Path.path_decomposition_first_edge p hp_pos with
@@ -151,6 +153,8 @@ lemma one_lt_eigenvalue_one_add_of_irreducible [Nonempty n]
   have h_lt : v i < r * v i := by linarith
   exact (mul_lt_mul_iff_of_pos_right (hv_pos i)).1 (by simpa [one_mul] using h_lt)
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- **Perron–Frobenius, irreducible case (Existence part)**
 If `A` is a non-negative irreducible matrix, then there exists a strictly positive eigenvalue `r > 0`
 and a strictly positive eigenvector `v` (`∀ i, 0 < v i`) such that `A *ᵥ v = r • v`.
@@ -186,13 +190,14 @@ lemma eigenvector_is_positive_of_irreducible [Nonempty n] {r : ℝ}
   eigenvector_is_positive_of_irreducible_aux hA_irred h_eig hv_nonneg hv_ne_zero
 
 open Finset
+open scoped Classical in
 /--
 Given an irreducible non-negative matrix `A` and two strictly positive
 eigenvectors for the same positive eigenvalue, they differ by a positive
 scalar.
 -/
 theorem uniqueness_of_positive_eigenvector_gen
-    {n : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
+    {n : Type*} [Fintype n] [Nonempty n]
   {A : Matrix n n ℝ} {r : ℝ} (hA_irred : A.IsIrreducible) (hr_pos : 0 < r)
     {v w : n → ℝ}
     (hv_pos : ∀ i, 0 < v i) (hw_pos : ∀ i, 0 < w i)
@@ -297,7 +302,7 @@ even if the eigenvalue is not specified in advance. -/
 lemma stdSimplex_eigenvector_eq_of_primitive [Nonempty n]
     {A : Matrix n n ℝ} (hA_prim : IsPrimitive A) (hA_nonneg : ∀ i j, 0 ≤ A i j)
     {r s : ℝ} (hr_pos : 0 < r) (hs_pos : 0 < s)
-    {v w : stdSimplex ℝ n} (hv_eig : A *ᵥ v.1 = r • v.1)
+    {v w : RealRooted.standardSimplex ℝ n} (hv_eig : A *ᵥ v.1 = r • v.1)
     (hw_eig : A *ᵥ w.1 = s • w.1) :
     v = w := by
   have hv_pos := eigenvector_of_primitive_is_positive hA_prim hr_pos
@@ -318,11 +323,11 @@ theorem pft_primitive
     {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
     {A : Matrix n n ℝ} (hA_prim : IsPrimitive A)
     (hA_nonneg : ∀ i j, 0 ≤ A i j) :
-    ∃! (v : stdSimplex ℝ n), ∃ (r : ℝ) (_ : r > 0), A *ᵥ v.val = r • v.val := by
+    ∃! (v : RealRooted.standardSimplex ℝ n), ∃ (r : ℝ) (_ : r > 0), A *ᵥ v.val = r • v.val := by
   obtain ⟨r, v_raw, hr_pos, hv_raw_pos, hv_raw_eig⟩ :=
     exists_positive_eigenvector_of_primitive hA_prim hA_nonneg
   let v0 : n → ℝ := (∑ i, v_raw i)⁻¹ • v_raw
-  have hv0_simplex : v0 ∈ stdSimplex ℝ n := by
+  have hv0_simplex : v0 ∈ RealRooted.standardSimplex ℝ n := by
     simpa [v0] using inv_sum_smul_mem_stdSimplex_of_pos hv_raw_pos
   have hv0_pos : ∀ i, 0 < v0 i := by
     simpa [v0] using inv_sum_smul_pos_of_pos hv_raw_pos
@@ -344,12 +349,14 @@ lemma one_add_isPrimitive_of_irreducible [Nonempty n]
     (Irreducible.add_one (A := A) hA_irred)
     (fun i => Matrix.one_add_diag_pos (fun j => hA_irred.nonneg j j) i)
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- In the simplex, an irreducible nonnegative matrix has at most one positive eigenvector,
 even if the positive eigenvalue is not specified in advance. -/
 lemma stdSimplex_eigenvector_eq_of_irreducible [Nonempty n]
     {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
     {r s : ℝ} (hr_pos : 0 < r) (hs_pos : 0 < s)
-    {v w : stdSimplex ℝ n} (hv_eig : A *ᵥ v.1 = r • v.1)
+    {v w : RealRooted.standardSimplex ℝ n} (hv_eig : A *ᵥ v.1 = r • v.1)
     (hw_eig : A *ᵥ w.1 = s • w.1) :
     v = w := by
   let B : Matrix n n ℝ := 1 + A
@@ -361,21 +368,22 @@ lemma stdSimplex_eigenvector_eq_of_irreducible [Nonempty n]
     simp [B, add_mulVec, one_mulVec, add_smul, one_smul, hw_eig, add_comm]
   exact (hu.2 v ⟨r + 1, by linarith, hvB⟩).trans
     (hu.2 w ⟨s + 1, by linarith, hwB⟩).symm
+open scoped Classical in
 /--
 **Perron–Frobenius theorem for irreducible real matrices (Existence, positivity, uniqueness)**.
 
 Let A : Matrix n n ℝ be an irreducible nonnegative matrix indexed by a finite nonempty type n.
 Then there exists a unique eigenpair (v, r) where
-  • v : stdSimplex ℝ n is a probability vector (i.e. v.val has nonnegative entries summing to 1),
+  • v : RealRooted.standardSimplex ℝ n is a probability vector (i.e. v.val has nonnegative entries summing to 1),
   • r : ℝ is a positive scalar,
 such that
   A *ᵥ v.val = r • v.val   and   r > 0.
 Moreover, this eigenvector v in the standard simplex is unique, and the corresponding eigenvalue r
 is the Perron root of A.
 -/
-theorem pft_irreducible {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
+theorem pft_irreducible {n : Type*} [Fintype n] [Nonempty n]
   {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) :
-    ∃! (v : stdSimplex ℝ n), ∃ (r : ℝ), r > 0 ∧ A *ᵥ v.val = r • v.val := by
+    ∃! (v : RealRooted.standardSimplex ℝ n), ∃ (r : ℝ), r > 0 ∧ A *ᵥ v.val = r • v.val := by
   let B : Matrix n n ℝ := 1 + A
   have hB_nonneg : ∀ i j, 0 ≤ B i j := fun i j => Matrix.one_add_apply_nonneg hA_irred.nonneg i j
   have hB_prim : B.IsPrimitive :=
@@ -395,3 +403,5 @@ theorem pft_irreducible {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
   · intro v' ⟨r', hr'_pos, h_eig_A'⟩
     exact (stdSimplex_eigenvector_eq_of_irreducible
       (v := v) (w := v') hA_irred hr_pos hr'_pos h_eig_A h_eig_A').symm
+
+end Matrix

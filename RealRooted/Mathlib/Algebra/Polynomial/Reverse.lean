@@ -36,7 +36,7 @@ variable [CharZero K] {p : K[X]} {n : ℕ}
 theorem eval_neg_one_mul_neg_one_pow_of_reflect_eq_self
     (hdeg : p.natDegree ≤ n) (hreflect : p.reflect n = p) :
     p.eval (-1) * (-1 : K) ^ n = p.eval (-1) := by
-  letI : Invertible (-1 : K) := invertibleOfNonzero (by simp)
+  let : Invertible (-1 : K) := invertibleOfNonzero (by simp)
   simpa [hreflect] using
     (Polynomial.eval₂_reflect_mul_pow (i := RingHom.id K) (x := (-1 : K)) n p hdeg)
 

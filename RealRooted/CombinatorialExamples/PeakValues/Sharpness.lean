@@ -152,12 +152,11 @@ lemma prod_X_eq_monomial_sum_single {σ : Type*}
   | empty => simp
   | @insert a s ha ih =>
       rw [Finset.prod_insert ha, Finset.sum_insert ha, ih]
-      simp [MvPolynomial.X, MvPolynomial.monomial_mul]
+      simp [MvPolynomial.X, MvPolynomial.monomial_mul_monomial]
 
 lemma coeff_prod_one_add_X_nonneg {σ : Type*}
     (s : Finset σ) (m : σ →₀ ℕ) :
-    0 ≤ MvPolynomial.coeff m
-      (∏ v ∈ s, (1 + MvPolynomial.X v : MvPolynomial σ ℝ)) := by
+    0 ≤ (∏ v ∈ s, (1 + MvPolynomial.X v : MvPolynomial σ ℝ)).coeff m := by
   classical
   rw [Finset.prod_one_add]
   simp_rw [MvPolynomial.coeff_sum]
@@ -169,23 +168,20 @@ lemma coeff_prod_one_add_X_nonneg {σ : Type*}
 
 lemma one_le_coeff_prod_one_add_X {σ : Type*}
     (s : Finset σ) :
-    1 ≤ MvPolynomial.coeff (∑ v ∈ s, Finsupp.single v 1)
-      (∏ v ∈ s, (1 + MvPolynomial.X v : MvPolynomial σ ℝ)) := by
+    1 ≤ (∏ v ∈ s, (1 + MvPolynomial.X v : MvPolynomial σ ℝ)).coeff
+      (∑ v ∈ s, Finsupp.single v 1) := by
   classical
   rw [Finset.prod_one_add]
   simp_rw [MvPolynomial.coeff_sum]
   calc
-    1 = MvPolynomial.coeff (∑ v ∈ s, Finsupp.single v 1)
-        (∏ i ∈ s, (MvPolynomial.X i : MvPolynomial σ ℝ)) := by
+    1 = (∏ i ∈ s, (MvPolynomial.X i : MvPolynomial σ ℝ)).coeff (∑ v ∈ s, Finsupp.single v 1) := by
       rw [prod_X_eq_monomial_sum_single]
       simp
     _ ≤ ∑ t ∈ s.powerset,
-        MvPolynomial.coeff (∑ v ∈ s, Finsupp.single v 1)
-          (∏ i ∈ t, (MvPolynomial.X i : MvPolynomial σ ℝ)) := by
+        (∏ i ∈ t, (MvPolynomial.X i : MvPolynomial σ ℝ)).coeff (∑ v ∈ s, Finsupp.single v 1) := by
       refine Finset.single_le_sum
         (f := fun t : Finset σ =>
-          MvPolynomial.coeff (∑ v ∈ s, Finsupp.single v 1)
-            (∏ i ∈ t, (MvPolynomial.X i : MvPolynomial σ ℝ)))
+          (∏ i ∈ t, (MvPolynomial.X i : MvPolynomial σ ℝ)).coeff (∑ v ∈ s, Finsupp.single v 1))
         (s := s.powerset) (a := s) ?_ ?_
       · intro t ht
         rw [prod_X_eq_monomial_sum_single]
@@ -195,23 +191,19 @@ lemma one_le_coeff_prod_one_add_X {σ : Type*}
 
 lemma one_le_coeff_peakValueTranslated {n : ℕ}
     (π : Equiv.Perm (Fin n)) :
-    1 ≤ MvPolynomial.coeff
-      (∑ v ∈ peakValues π, Finsupp.single v 1)
-      (peakValueTranslated n) := by
+    1 ≤ (peakValueTranslated n).coeff (∑ v ∈ peakValues π, Finsupp.single v 1) := by
   let m := ∑ v ∈ peakValues π, Finsupp.single v 1
   calc
-    1 ≤ MvPolynomial.coeff m
-        (∏ v ∈ peakValues π,
-          (1 + MvPolynomial.X v : MvPolynomial (Fin n) ℝ)) :=
+    1 ≤ (∏ v ∈ peakValues π,
+          (1 + MvPolynomial.X v : MvPolynomial (Fin n) ℝ)).coeff m :=
       one_le_coeff_prod_one_add_X (peakValues π)
-    _ ≤ MvPolynomial.coeff m (peakValueTranslated n) := by
+    _ ≤ (peakValueTranslated n).coeff m := by
       unfold peakValueTranslated
       simp_rw [MvPolynomial.coeff_sum]
       refine Finset.single_le_sum
         (f := fun τ : Equiv.Perm (Fin n) =>
-          MvPolynomial.coeff m
-            (∏ v ∈ peakValues τ,
-              (1 + MvPolynomial.X v : MvPolynomial (Fin n) ℝ)))
+          (∏ v ∈ peakValues τ,
+              (1 + MvPolynomial.X v : MvPolynomial (Fin n) ℝ)).coeff m)
         (s := Finset.univ) (a := π) ?_ (Finset.mem_univ π)
       intro τ hτ
       exact coeff_prod_one_add_X_nonneg (peakValues τ) m
@@ -229,9 +221,9 @@ lemma card_peakValues_le_totalDegree {n : ℕ}
     (π : Equiv.Perm (Fin n)) :
     (peakValues π).card ≤ (peakValueTranslated n).totalDegree := by
   let m := ∑ v ∈ peakValues π, Finsupp.single v 1
-  have hcoeff : MvPolynomial.coeff m (peakValueTranslated n) ≠ 0 := by
+  have hcoeff : (peakValueTranslated n).coeff m ≠ 0 := by
     have h := one_le_coeff_peakValueTranslated π
-    change 1 ≤ MvPolynomial.coeff m (peakValueTranslated n) at h
+    change 1 ≤ (peakValueTranslated n).coeff m at h
     linarith
   have hm : m ∈ (peakValueTranslated n).support :=
     MvPolynomial.mem_support_iff.mpr hcoeff

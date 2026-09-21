@@ -1,6 +1,6 @@
 import Mathlib.Algebra.BigOperators.Field
 import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 

@@ -115,7 +115,7 @@ theorem twoSeedFactorRecurrenceCoefficient_hasNonnegCoeffs
   have hb : ∀ i, 0 ≤ (optionalRisePolynomial 1 ys).coeff i :=
     (optionalRisePolynomial_isPFPolynomial (by norm_num) hys).hasNonnegCoeffs
   by_cases hj2 : 2 ≤ j
-  · rw [if_pos hj2]
+  · rw [ite_eq_left hj2]
     have hfinite :=
       twoSeedRecurrenceCoefficient_hasNonnegCoeffs_of_finite_even_bound
         (a := fun i => (optionalRisePolynomial c xs).coeff i)
@@ -195,8 +195,8 @@ theorem shiftedRationalRodRow_eq_sub_sum
   have h := congrArg (fun p : ℝ[X] => p.comp (X + C γ))
     (rationalRodRow_eq_sub_sum ys c hr xs n)
   by_cases hn : n = 0
-  · simpa [hn, shiftedRationalRodRow, rationalRodDenominatorSeries,
-      coeff_polynomialLift, PowerSeries.coeff_C_mul] using h
+  · simp [hn, shiftedRationalRodRow, rationalRodDenominatorSeries,
+      coeff_polynomialLift, PowerSeries.coeff_C_mul] at h ⊢
   · simpa [hn, shiftedRationalRodRow, rationalRodDenominatorSeries,
       coeff_polynomialLift, PowerSeries.coeff_C_mul] using h
 

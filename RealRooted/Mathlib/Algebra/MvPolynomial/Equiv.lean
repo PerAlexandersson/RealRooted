@@ -61,7 +61,7 @@ theorem optionEquivLeft_coeff_succ_mul_X_none_add_new
     apply Polynomial.coeff_eq_zero_of_natDegree_lt
     rw [natDegree_optionEquivLeft]
     lia
-  rw [map_mul, map_add, optionEquivLeft_X_none,
+  rw [map_mul, map_add (optionEquivLeft R (Option σ)), optionEquivLeft_X_none,
     optionEquivLeft_X_some, optionEquivLeft_rename_option_map, add_mul,
     Polynomial.coeff_add, Polynomial.coeff_X_mul, Polynomial.coeff_C_mul,
     Polynomial.coeff_map, htop]

@@ -23,7 +23,7 @@ theorem toeplitz_causalFwdDiff (a : ℕ → ℝ) (i j : ℕ) :
     toeplitz (Function.causalFwdDiff a) i j =
       toeplitz a i j - toeplitz a i (j + 1) := by
   by_cases hji : j ≤ i
-  · rw [toeplitz_apply, if_pos hji, toeplitz_apply, if_pos hji]
+  · rw [toeplitz_apply, ite_eq_left hji, toeplitz_apply, ite_eq_left hji]
     by_cases hzero : i - j = 0
     · have hij : i = j := Nat.le_antisymm (Nat.sub_eq_zero_iff_le.mp hzero) hji
       subst i
@@ -31,7 +31,7 @@ theorem toeplitz_causalFwdDiff (a : ℕ → ℝ) (i j : ℕ) :
     · have hpos : 0 < i - j := Nat.pos_of_ne_zero hzero
       have hsucc : j + 1 ≤ i := by
         exact Nat.succ_le_iff.mpr (Nat.lt_of_sub_pos hpos)
-      rw [toeplitz_apply, if_pos hsucc]
+      rw [toeplitz_apply, ite_eq_left hsucc]
       have hindex : i - j = i - (j + 1) + 1 := by
         lia
       rw [hindex]

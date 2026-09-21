@@ -252,15 +252,15 @@ theorem swapSum_finsetMonomial
   by_cases hx : x ∈ A
   · by_cases hy : y ∈ A
     · rw [swapSum_finsetMonomial_of_mem_mem A x y hxy hx hy,
-        swapKernel, if_pos hx, if_pos hy]
+        swapKernel, ite_eq_left hx, ite_eq_left hy]
       simp only [mul_assoc, mul_left_comm, mul_comm]
     · rw [swapSum_finsetMonomial_of_mem_not_mem A x y hxy hx hy,
-        swapKernel, if_pos hx, if_neg hy]
+        swapKernel, ite_eq_left hx, ite_eq_right hy]
   · by_cases hy : y ∈ A
     · rw [swapSum_finsetMonomial_of_not_mem_mem A x y hxy hx hy,
-        swapKernel, if_neg hx, if_pos hy]
+        swapKernel, ite_eq_right hx, ite_eq_left hy]
     · rw [swapSum_finsetMonomial_of_not_mem_not_mem A x y hx hy,
-        swapKernel, if_neg hx, if_neg hy]
+        swapKernel, ite_eq_right hx, ite_eq_right hy]
       simp only [mul_comm]
 
 end MvPolynomial

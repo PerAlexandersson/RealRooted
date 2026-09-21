@@ -34,7 +34,7 @@ private theorem routhEliminatePrefix_succ {N t : ℕ}
       whitneyEliminateAt (routhEliminatePrefix A t)
         ⟨2 * t + 1, by lia⟩ ⟨t + 1, by lia⟩ := by
   rw [routhEliminatePrefix]
-  simp only [dif_pos ht]
+  simp only [dite_eq_left ht]
 
 private theorem routhExpand_hurwitz_eliminate_pair (c : ℝ) (a : ℕ → ℝ)
     (ha0 : a 0 ≠ 0) (k j : ℕ) :
@@ -54,11 +54,11 @@ private theorem routhExpand_hurwitz_eliminate_pair (c : ℝ) (a : ℕ → ℝ)
         hurwitz a (2 * k + 2) l :=
     routhExpand_odd_apply c (hurwitz a) k l
   have hpivot : hurwitz a (2 * k + 2) (k + 1) = a 0 := by
-    rw [hurwitz_apply, if_pos (by lia)]
+    rw [hurwitz_apply, ite_eq_left (by lia)]
     congr 1
     lia
   have htargetPivot : hurwitz a (2 * k + 3) (k + 1) = 0 := by
-    rw [hurwitz_apply, if_neg (by lia)]
+    rw [hurwitz_apply, ite_eq_right (by lia)]
   rw [htarget, htarget, hsource, hsource, hpivot, htargetPivot]
   field_simp [ha0]
   ring
@@ -91,7 +91,7 @@ private theorem routhEliminatePrefix_hurwitz_apply {N : ℕ} (c : ℝ)
       intro i j
       rw [routhEliminatePrefix]
       simp only [submatrix_apply]
-      rw [if_neg (by lia)]
+      rw [ite_eq_right (by lia)]
   | succ t ih =>
       have htN : t < N := by lia
       intro i j
@@ -106,8 +106,8 @@ private theorem routhEliminatePrefix_hurwitz_apply {N : ℕ} (c : ℝ)
           updateRow_self]
         rw [ih htN.le, ih htN.le, ih htN.le, ih htN.le]
         simp only [Fin.val_succ, Fin.val_castSucc]
-        rw [if_neg (by lia), if_neg (by lia), if_neg (by lia),
-          if_neg (by lia), if_pos (by lia)]
+        rw [ite_eq_right (by lia), ite_eq_right (by lia), ite_eq_right (by lia),
+          ite_eq_right (by lia), ite_eq_left (by lia)]
         simpa only [show 2 * t + 1 + 1 = 2 * t + 2 by lia,
           show 2 * t + 1 + 1 + 1 = 2 * t + 3 by lia] using
           routhExpand_hurwitz_eliminate_pair c a ha0 t j.val
@@ -122,7 +122,7 @@ private theorem routhEliminatePrefix_hurwitz_apply {N : ℕ} (c : ℝ)
         rw [ih htN.le]
         by_cases hisource : i.val = 2 * t + 1
         · have hiodd : i.val = 2 * t + 1 := hisource
-          rw [if_neg (by lia), if_pos (by lia)]
+          rw [ite_eq_right (by lia), ite_eq_left (by lia)]
           rw [hiodd, routhExpand_odd_apply]
         · have hiff :
               (0 < i.val ∧ i.val ≤ 2 * (t + 1)) ↔
@@ -133,8 +133,8 @@ private theorem routhEliminatePrefix_hurwitz_apply {N : ℕ} (c : ℝ)
               · lia
             · exact ⟨h.1, by lia⟩
           by_cases hold : 0 < i.val ∧ i.val ≤ 2 * t
-          · rw [if_pos hold, if_pos (hiff.mpr hold)]
-          · rw [if_neg hold, if_neg (fun hnew => hold (hiff.mp hnew))]
+          · rw [ite_eq_left hold, ite_eq_left (hiff.mpr hold)]
+          · rw [ite_eq_right hold, ite_eq_right (fun hnew => hold (hiff.mp hnew))]
 
 private theorem routhEliminatePrefix_hurwitz_isTotallyNonneg {N : ℕ}
     (c : ℝ) (a : ℕ → ℝ) (ha0 : 0 < a 0)
@@ -155,9 +155,9 @@ private theorem routhEliminatePrefix_hurwitz_isTotallyNonneg {N : ℕ}
       have hpivot : 0 < A s.castSucc p := by
         dsimp only [A]
         rw [routhEliminatePrefix_hurwitz_apply c a ha0.ne' t htN.le]
-        rw [if_neg (by simp [s])]
+        rw [ite_eq_right (by simp [s])]
         change 0 < routhExpand c (hurwitz a) (2 * t + 1) (t + 1)
-        rw [routhExpand_odd_apply, hurwitz_apply, if_pos (by lia)]
+        rw [routhExpand_odd_apply, hurwitz_apply, ite_eq_left (by lia)]
         rw [show 2 * (t + 1) - (2 * t + 2) = 0 by lia]
         exact ha0
       have htail : ∀ i, s.succ < i → A i p = 0 := by
@@ -168,7 +168,7 @@ private theorem routhEliminatePrefix_hurwitz_isTotallyNonneg {N : ℕ}
           lia
         dsimp only [A]
         rw [routhEliminatePrefix_hurwitz_apply c a ha0.ne' t htN.le]
-        rw [if_neg (by intro hcond; lia)]
+        rw [ite_eq_right (by intro hcond; lia)]
         apply routhExpand_hurwitz_eq_zero_of_two_mul_lt
         change 2 * (t + 1) < i.val
         lia
@@ -184,7 +184,7 @@ private theorem routhEliminatePrefix_hurwitz_isTotallyNonneg {N : ℕ}
           exact hj'
         dsimp only [A]
         rw [routhEliminatePrefix_hurwitz_apply c a ha0.ne' t htN.le]
-        rw [if_neg (by intro hcond; lia)]
+        rw [ite_eq_right (by intro hcond; lia)]
         apply routhExpand_hurwitz_eq_zero_of_two_mul_lt
         lia
       rw [routhEliminatePrefix_succ _ htN]
@@ -200,7 +200,7 @@ theorem IsTotallyNonneg.hurwitz_of_routhExpand
   have ha0pos : 0 < a 0 := by
     have hnonneg := h.nonneg 1 1
     rw [show (1 : ℕ) = 2 * 0 + 1 by rfl, routhExpand_odd_apply,
-      hurwitz_apply, if_pos (by lia)] at hnonneg
+      hurwitz_apply, ite_eq_left (by lia)] at hnonneg
     simpa using lt_of_le_of_ne hnonneg ha0.symm
   intro n rows cols hrows hcols
   cases n with
@@ -242,7 +242,7 @@ theorem IsTotallyNonneg.hurwitz_of_routhExpand
         ext i j
         simp only [submatrix_apply]
         rw [routhEliminatePrefix_hurwitz_apply c a ha0 N le_rfl]
-        rw [if_pos (by
+        rw [ite_eq_left (by
           have hir : rows i ≤ rows (Fin.last q) :=
             hrows.monotone (Fin.le_last i)
           have hrmax : rows (Fin.last q) ≤

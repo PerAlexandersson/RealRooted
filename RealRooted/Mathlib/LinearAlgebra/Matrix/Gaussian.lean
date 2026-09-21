@@ -58,7 +58,7 @@ theorem tendsto_gaussianMatrix_atTop (n : ℕ) :
   intro j
   by_cases hij : i = j
   · subst j
-    simp only [gaussianMatrix_apply_self, one_apply, if_pos]
+    simp only [gaussianMatrix_apply_self, one_apply, ite_eq_left]
     exact tendsto_const_nhds
   · have hcast :
         (((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)) ≠ 0 := by
@@ -171,7 +171,8 @@ theorem det_exponentialKernelMatrix_add_const_right {q : ℕ}
     simp only [exponentialKernelMatrix_apply, of_apply]
     rw [show x i * (y j + c) = x i * c + x i * y j by ring,
       Real.exp_add]
-  rw [hmatrix, det_mul_column]
+  rw [hmatrix]
+  exact det_mul_column (fun i => Real.exp (x i * c)) (exponentialKernelMatrix x y)
 
 theorem det_exponentialKernelMatrix_add_const_left_pos_iff {q : ℕ}
     (x y : Fin q → ℝ) (c : ℝ) :
@@ -263,7 +264,11 @@ theorem det_gaussianMatrix_submatrix_eq {n q : ℕ} (a : ℝ)
       (of fun i j => colFactor j * E i j).det =
         (∏ j, colFactor j) * E.det :=
     det_mul_row colFactor E
-  rw [hmatrix, det_mul_column]
+  have hrow :
+      (of fun i j => rowFactor i * (colFactor j * E i j)).det =
+        (∏ i, rowFactor i) * (of fun i j => colFactor j * E i j).det :=
+    det_mul_column rowFactor (of fun i j => colFactor j * E i j)
+  rw [hmatrix, hrow]
   change
     (∏ i, rowFactor i) *
         (of fun i j => colFactor j * E i j).det =

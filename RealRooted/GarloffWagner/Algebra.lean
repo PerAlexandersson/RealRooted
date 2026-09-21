@@ -30,7 +30,7 @@ def gwSchurProduct (p q : ℝ[X]) : ℝ[X] :=
 theorem gwSchurProduct_comm (p q : ℝ[X]) :
     gwSchurProduct p q = gwSchurProduct q p := by
   ext k
-  simp [mul_comm, mul_left_comm, mul_assoc]
+  simp [mul_comm, mul_left_comm]
 
 theorem gwSchurProduct_assoc (p q r : ℝ[X]) :
     gwSchurProduct (gwSchurProduct p q) r =
@@ -63,7 +63,7 @@ theorem gwSchurProduct_add_right (p q r : ℝ[X]) :
 theorem gwSchurProduct_C_mul_left (a : ℝ) (p q : ℝ[X]) :
     gwSchurProduct (C a * p) q = C a * gwSchurProduct p q := by
   ext k
-  simp [mul_comm, mul_left_comm, mul_assoc]
+  simp [mul_comm, mul_left_comm]
 
 theorem gwSchurProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
     gwSchurProduct p (C a * q) = C a * gwSchurProduct p q := by
@@ -347,7 +347,7 @@ theorem gwSchurProduct_X_sub_C_mul_right (f p : ℝ[X]) (u : ℝ) :
   | succ n =>
       rw [coeff_gwSchurProduct, coeff_X_sub_C_mul, coeff_sub, coeff_X_mul,
         coeff_C_mul, coeff_gwSchurProduct, coeff_gwD, coeff_gwSchurProduct]
-      rw [if_neg (Nat.succ_ne_zero n), Nat.succ_sub_one, Nat.factorial_succ]
+      rw [ite_eq_right (Nat.succ_ne_zero n), Nat.succ_sub_one, Nat.factorial_succ]
       norm_num only [Nat.cast_add, Nat.cast_mul]
       ring_nf
 

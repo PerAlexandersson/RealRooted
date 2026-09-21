@@ -26,7 +26,7 @@ theorem hurwitz_zero_row_apply (c : ℕ → R) (j : ℕ) :
 @[simp]
 theorem hurwitz_one_row_succ_apply (c : ℕ → R) (j : ℕ) :
     hurwitz c 1 (j + 1) = c (2 * j + 1) := by
-  rw [hurwitz_apply, if_pos (by lia)]
+  rw [hurwitz_apply, ite_eq_left (by lia)]
   congr 1
 
 /-- If the initial coefficient vanishes, deleting the first row and column of
@@ -37,14 +37,14 @@ theorem hurwitz_tail_of_zero {c : ℕ → R} (h0 : c 0 = 0) :
   ext i j
   simp only [hurwitz_apply, submatrix_apply]
   by_cases hij : i ≤ 2 * j
-  · rw [if_pos hij, if_pos (by lia)]
+  · rw [ite_eq_left hij, ite_eq_left (by lia)]
     congr 1
     lia
-  · rw [if_neg hij]
+  · rw [ite_eq_right hij]
     by_cases hborder : i = 2 * j + 1
-    · rw [hborder, if_pos (by lia)]
+    · rw [hborder, ite_eq_left (by lia)]
       rw [show 2 * (j + 1) - (2 * j + 1 + 1) = 0 by lia, h0]
-    · rw [if_neg (by lia)]
+    · rw [ite_eq_right (by lia)]
 
 end Entries
 
@@ -114,14 +114,15 @@ theorem IsTotallyNonneg.hurwitz_odd_coeff_eq_zero_of_coeff_one_eq_zero
       have hminor := h hrows hcols
       have hcoeff : 0 ≤ c (2 * (n + 1) + 1) :=
         h.hurwitz_coeff_nonneg _
-      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, submatrix_cons_row,
+      rw [Matrix.det_fin_two] at hminor
+      simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.submatrix_apply,
         hurwitz_apply, Order.lt_two_iff, zero_le, le_mul_iff_one_le_right,
-        submatrix_empty, Matrix.det_fin_two, Fin.isValue, cons_val',
+        Fin.isValue,
         cons_val_zero, mul_one, Nat.one_le_ofNat, ↓reduceIte,
         Nat.add_one_sub_one, h1, Std.le_refl, tsub_self, cons_val_fin_one,
         cons_val_one, Nat.reduceLeDiff, zero_mul, ite_mul, zero_sub,
         Left.nonneg_neg_iff] at hminor
-      rw [if_pos (by lia : 1 ≤ 2 * (n + 2))] at hminor
+      rw [ite_eq_left (by lia : 1 ≤ 2 * (n + 2))] at hminor
       rw [show 2 * (n + 2) - 1 = 2 * (n + 1) + 1 by lia] at hminor
       nlinarith
 
@@ -134,10 +135,10 @@ theorem hurwitz_even_submatrix_eq_toeplitz_transpose (c : ℕ → ℝ) :
   simp only [submatrix_apply, id_eq, transpose_apply,
     hurwitz_apply, RealRooted.toeplitz_apply]
   by_cases hij : i ≤ j
-  · rw [if_pos hij, if_pos (by lia)]
+  · rw [ite_eq_left hij, ite_eq_left (by lia)]
     congr 1
     lia
-  · rw [if_neg hij, if_neg (by lia)]
+  · rw [ite_eq_right hij, ite_eq_right (by lia)]
 
 /-- Total nonnegativity of a classical Hurwitz matrix makes its even-indexed
 coefficient subsequence Pólya-frequency. -/
@@ -160,10 +161,10 @@ theorem hurwitz_odd_submatrix_eq_toeplitz_transpose (c : ℕ → ℝ) :
   simp only [submatrix_apply, transpose_apply, hurwitz_apply,
     RealRooted.toeplitz_apply]
   by_cases hij : i ≤ j
-  · rw [if_pos hij, if_pos (by lia)]
+  · rw [ite_eq_left hij, ite_eq_left (by lia)]
     congr 1
     lia
-  · rw [if_neg hij, if_neg (by lia)]
+  · rw [ite_eq_right hij, ite_eq_right (by lia)]
 
 /-- Total nonnegativity of a classical Hurwitz matrix makes its odd-indexed
 coefficient subsequence Pólya-frequency. -/
@@ -207,7 +208,7 @@ totally nonnegative. -/
 theorem hurwitz_C_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
     (hurwitz (C a).coeff).IsTotallyNonneg := by
   have hscaled : (a • (1 : Matrix ℕ ℕ ℝ)).IsTotallyNonneg :=
-    IsTotallyNonneg.smul IsTotallyNonneg.one a ha
+    IsTotallyNonneg.smul IsTotallyNonneg.one ha
   have hdouble : StrictMono (fun j : ℕ ↦ 2 * j) := by
     intro i j hij
     lia
@@ -217,13 +218,13 @@ theorem hurwitz_C_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
   simp only [hurwitz_apply, coeff_C, submatrix_apply, smul_apply, one_apply,
     smul_eq_mul, id_eq]
   by_cases hle : i ≤ 2 * j
-  · rw [if_pos hle]
+  · rw [ite_eq_left hle]
     by_cases hij : i = 2 * j
     · subst i
       simp
     · have hdiff : 2 * j - i ≠ 0 := by lia
       simp [hdiff, hij]
-  · rw [if_neg hle]
+  · rw [ite_eq_right hle]
     have hij : i ≠ 2 * j := by lia
     simp [hij]
 
@@ -241,12 +242,13 @@ theorem IsTotallyNonneg.hurwitz_routhReducedOddPart_coeff_nonneg
     intro i j hij
     fin_cases i <;> fin_cases j <;> simp_all
   have hminor := h hrows hcols
-  simp only [submatrix_cons_row, hurwitz_apply, Order.lt_two_iff, zero_le,
-    le_mul_iff_one_le_right, submatrix_empty, Matrix.det_fin_two, Fin.isValue,
-    cons_val', cons_val_zero, mul_one, Nat.one_le_ofNat, ↓reduceIte,
+  rw [Matrix.det_fin_two] at hminor
+  simp only [Matrix.submatrix_apply, hurwitz_apply, Order.lt_two_iff, zero_le,
+    le_mul_iff_one_le_right, Fin.isValue,
+    cons_val_zero, mul_one, Nat.one_le_ofNat, ↓reduceIte,
     Nat.add_one_sub_one, Std.le_refl, tsub_self, cons_val_fin_one,
     cons_val_one, Nat.reduceLeDiff] at hminor
-  rw [if_pos (by lia : 1 ≤ 2 * (n + 2))] at hminor
+  rw [ite_eq_left (by lia : 1 ≤ 2 * (n + 2))] at hminor
   rw [show 2 * (n + 2) - 1 = 2 * (n + 1) + 1 by lia,
     show 2 * (n + 2) - 2 = 2 * (n + 1) by lia] at hminor
   rw [show (0 : ℕ) = 2 * 0 by rfl,

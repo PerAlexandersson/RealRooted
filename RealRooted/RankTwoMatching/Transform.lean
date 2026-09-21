@@ -32,7 +32,7 @@ theorem natDegree_rankTwoBinomialTransform_le (p : ℝ[X]) (M : ℕ) :
   intro k hk
   rw [coeff_rankTwoBinomialTransform]
   by_cases hkM : k ≤ M
-  · rw [if_pos hkM]
+  · rw [ite_eq_left hkM]
     apply mul_eq_zero_of_right
     apply Finset.sum_eq_zero
     intro j hj
@@ -40,7 +40,7 @@ theorem natDegree_rankTwoBinomialTransform_le (p : ℝ[X]) (M : ℕ) :
       simpa using Finset.mem_range.mp hj
     rw [Nat.choose_eq_zero_of_lt (by lia)]
     simp
-  · rw [if_neg hkM]
+  · rw [ite_eq_right hkM]
 
 /-- The rank-two binomial transform preserves PF polynomials with constant
 coefficient one when the ambient size bounds the degree. -/
@@ -72,9 +72,9 @@ theorem rankTwoBinomialTransform_isPF
   rw [coeff_rankTwoBinomialTransform, coeff_C_mul,
     coeff_weightedMatchingPolynomialByEdges]
   by_cases hk : k ≤ M
-  · rw [if_pos hk]
+  · rw [ite_eq_left hk]
     exact (hmoment k).symm
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     have hsum :
         ∑ j ∈ Finset.range (p.natDegree + 1),
             p.coeff j * (Nat.choose j k : ℝ) * (Nat.choose (M - j) k : ℝ) = 0 := by

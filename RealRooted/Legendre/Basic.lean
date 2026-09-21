@@ -75,6 +75,7 @@ binomial leading coefficient. -/
   ext (_ | _ | k) <;>
     norm_num [Polynomial.coeff_shiftedLegendre, coeff_sub, coeff_C_mul,
       coeff_one, Polynomial.coeff_X]
+  simp [Nat.choose_eq_zero_of_lt (show 1 < k + 1 + 1 by lia)]
 
 @[simp] theorem shiftedLegendreReal_two :
     shiftedLegendreReal 2 = 1 - 6 * X + 6 * X ^ 2 := by
@@ -88,7 +89,7 @@ binomial leading coefficient. -/
       Nat.choose]
   · norm_num [Polynomial.coeff_shiftedLegendre, coeff_sub, coeff_add,
       coeff_C_mul, coeff_one, Polynomial.coeff_X_pow, Polynomial.coeff_X]
-    lia
+    simp [Nat.choose_eq_zero_of_lt (show 2 < k + 3 by lia)]
 
 @[simp] theorem shiftedLegendreReal_one_comp_neg_X :
     (shiftedLegendreReal 1).comp (-X) = 1 + 2 * X := by

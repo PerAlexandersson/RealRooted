@@ -116,7 +116,13 @@ private lemma prec_of_slots_polyOfDescRoots
               (xs := rootSeqDesc f) (k := k) hk_root
           have hidx : (rootSeqDesc f).length - 1 - k = j := by rw [rootSeqDesc_length hf]
           lia
-        grind
+        have hget := CommonInterleaver.RootSlots.get_reverse_eq_get_sub
+          (xs := xs) (k := k) (by lia)
+        have hidx : xs.length - 1 - k = j := by
+          dsimp [j]
+          lia
+        rw [hss_get]
+        simpa only [rs, hget, hidx] using hlow
       · intro k hk
         have hk_deg : k + 1 < f.natDegree := by simpa [ss, rootSeqDesc_length hf] using hk
         let j : ℕ := f.natDegree - 1 - k
@@ -254,7 +260,13 @@ private lemma prec_of_slots_polyOfDescRoots
               (xs := rootSeqDesc f) (k := k) hk_root
           have hidx : (rootSeqDesc f).length - 1 - k = j := by rw [rootSeqDesc_length hf]
           lia
-        grind
+        have hget := CommonInterleaver.RootSlots.get_reverse_eq_get_sub
+          (xs := xs) (k := k + 1) (by lia)
+        have hidx : xs.length - 1 - (k + 1) = j := by
+          dsimp [j]
+          lia
+        rw [hss_get]
+        simpa only [rs, hget, hidx] using hlow
 
 private lemma prec_left_of_shifted_slots_polyOfDescRoots
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)

@@ -60,7 +60,7 @@ theorem bidiagonalOperator_affine_weights (p : ℝ[X]) (a b c d : ℝ) :
     | succ k =>
         simp only [coeff_add, coeff_C_mul, coeff_X_mul, coeff_derivative,
           coeff_X_pow_mul', coeff_bidiagonalOperator_succ]
-        rw [if_pos (by lia : 2 ≤ k + 1 + 1)]
+        rw [ite_eq_left (by lia : 2 ≤ k + 1 + 1)]
         push_cast
         ring
 

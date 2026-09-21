@@ -52,9 +52,11 @@ theorem chainPolynomial_toeplitz_eq_compositionRow
     {R : Type*} [CommSemiring R] (a : ℕ → R) (n : ℕ) :
     chainPolynomial (toeplitz a) n =
       compositionRow (positivePartSeries a) n := by
+  let A : LowerTriangularMatrix R := toeplitz a
+  change chainPolynomial A n = compositionRow (positivePartSeries a) n
   apply congrFun (eq_compositionRow_of_zero_and_succ
-    (constantCoeff_positivePartSeries a) (chainPolynomial (toeplitz a))
-    (chainPolynomial_zero (toeplitz a)) ?_) n
+    (constantCoeff_positivePartSeries a) (chainPolynomial A)
+    (chainPolynomial_zero A) ?_) n
   intro m
   rw [chainPolynomial_succ]
   apply congrArg (X * ·)
@@ -63,13 +65,13 @@ theorem chainPolynomial_toeplitz_eq_compositionRow
   exact Fintype.sum_equiv Fin.revPerm
     (fun j =>
       C (PowerSeries.coeff (j + 1) (positivePartSeries a)) *
-        chainPolynomial (toeplitz a) (m - j))
+        chainPolynomial A (m - j))
     (fun k =>
-      C (toeplitz a (m + 1) k) * chainPolynomial (toeplitz a) k)
+      C (A (m + 1) k) * chainPolynomial A k)
     (fun j => by
       simp only [coeff_positivePartSeries_of_pos a (Nat.succ_pos _),
-        Fin.revPerm_apply, toeplitz_apply]
-      rw [if_pos (by lia)]
+        Fin.revPerm_apply, A, toeplitz_apply]
+      rw [ite_eq_left (by lia)]
       have hsum := j.add_rev_cast
       have harg : m + 1 - (j.rev : ℕ) = (j : ℕ) + 1 := by
         calc

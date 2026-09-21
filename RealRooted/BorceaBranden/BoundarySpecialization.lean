@@ -93,8 +93,8 @@ theorem MvUpperHalfPlaneStable.specializeRight_zero_or
     MvUpperHalfPlaneStableOrZero
       (_root_.RealRooted.specializeRight (fun _ : tau => 0) P) := by
   classical
-  letI := Fintype.ofFinite sigma
-  letI := Fintype.ofFinite tau
+  let := Fintype.ofFinite sigma
+  let := Fintype.ofFinite tau
   let l : List (Sum sigma tau) :=
     (Finset.univ.toList.map (Sum.inr : tau → Sum sigma tau))
   let Q : MvPolynomial (Sum sigma tau) ℂ := specializeZeroList l P

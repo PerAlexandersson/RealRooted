@@ -74,7 +74,7 @@ theorem secondKind_mul_signedFirstKind_sum (z : R) (n j : ℕ) :
   | succ n ih =>
       cases j with
       | zero =>
-          rw [if_neg (by lia)]
+          rw [ite_eq_right (by lia)]
           apply Finset.sum_eq_zero
           intro k hk
           cases k with
@@ -206,7 +206,7 @@ theorem signedFirstKind_mul_secondKind_sum (z : R) (n j : ℕ) :
       rw [← Fin.sum_univ_eq_sum_range]
       exact hentry
     simpa [Fin.ext_iff, i, q] using hentry'
-  · rw [if_neg (by lia)]
+  · rw [ite_eq_right (by lia)]
     apply Finset.sum_eq_zero
     intro k hk
     have hkn : k ≤ n := by simp only [Finset.mem_range] at hk; lia

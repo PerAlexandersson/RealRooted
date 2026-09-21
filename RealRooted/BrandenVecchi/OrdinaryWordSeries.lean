@@ -122,10 +122,10 @@ theorem weightedWordEndingSummand_snoc {R : Type*} [CommSemiring R]
     RealRooted.ParkingFunctions.wordDescentNumber_snoc]
   simp only [Fin.snoc_last]
   by_cases hij : i < j
-  · rw [if_pos hij, if_pos hij, pow_succ]
+  · rw [ite_eq_left hij, ite_eq_left hij, pow_succ]
     simp
     ring
-  · rw [if_neg hij, if_neg hij]
+  · rw [ite_eq_right hij, ite_eq_right hij]
     simp
     ring
 

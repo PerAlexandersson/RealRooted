@@ -97,7 +97,7 @@ theorem natDegree_generalizedLaguerre_le (n : ℕ) (α : R) :
     (generalizedLaguerre n α).eval 0 =
       (ascPochhammer R n).eval (α + 1) := by
   rw [← coeff_zero_eq_eval_zero, coeff_generalizedLaguerre,
-    if_pos (Nat.zero_le _)]
+    ite_eq_left (Nat.zero_le _)]
   simp
 
 variable [Nontrivial R]
@@ -129,7 +129,7 @@ variable {S : Type v} [CommSemiring R] [CommSemiring S]
   ext k
   rw [coeff_map, coeff_generalizedLaguerre, coeff_generalizedLaguerre]
   by_cases hk : k ≤ n
-  · simp only [hk, if_pos, map_mul, map_natCast]
+  · simp only [hk, ite_eq_left, map_mul, map_natCast]
     rw [← eval_map_apply, ascPochhammer_map]
     simp
   · simp [hk]

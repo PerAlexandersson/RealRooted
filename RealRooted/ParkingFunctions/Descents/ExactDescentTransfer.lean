@@ -208,6 +208,17 @@ theorem succ_nsmul_parkingDescentSetWeightSum_eq_wordSum
   exact (wordDescentSetWeightSum_succ_eq_succ_nsmul_parkingWordSum
     n weight).symm
 
+/-- The zero-length parking-function family has its unique empty word. -/
+theorem parkingFunctions_zero_eq_singleton :
+    parkingFunctions 0 = {default} := by
+  classical
+  refine Finset.eq_singleton_iff_unique_mem.mpr ⟨?_, ?_⟩
+  · rw [show (default : Fin 0 → Fin 0) = zeroParkingWord 0 by
+      exact Subsingleton.elim _ _]
+    exact zeroParkingWord_mem_parkingFunctions 0
+  · intro w _
+    exact Subsingleton.elim _ _
+
 /-- Pollak transfer for every finite word length, including the empty word. -/
 theorem sum_wordDescentSetWeight_words_eq_succ_nsmul_parkingFunctions
     {M : Type*} [AddCommMonoid M] (n : ℕ) :
@@ -218,7 +229,8 @@ theorem sum_wordDescentSetWeight_words_eq_succ_nsmul_parkingFunctions
   cases n with
   | zero =>
       intro weight
-      simp [parkingFunctions, IsParkingFunction]
+      rw [parkingFunctions_zero_eq_singleton]
+      simp [wordDescentSet]
   | succ n =>
       simp only [wordDescentSet]
       intro weight
@@ -256,7 +268,8 @@ contain only the empty word. -/
 theorem card_parkingFunctions_zero_eq_card_words :
     (parkingFunctions 0).card =
       (Finset.univ : Finset (Fin 0 → Fin 1)).card := by
-  simp [parkingFunctions, IsParkingFunction]
+  rw [parkingFunctions_zero_eq_singleton]
+  simp
 
 end
 

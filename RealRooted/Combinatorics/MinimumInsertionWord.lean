@@ -370,7 +370,7 @@ theorem comparisonWord_step_zero {w : List Nat} (hw : IsPositive w) :
       have ha := hw a (by simp)
       simp only [step, raise, List.map_cons, List.insertIdx_zero,
         comparisonWord]
-      rw [if_neg (List.cons_ne_nil a w)]
+      rw [ite_eq_right (List.cons_ne_nil a w)]
       change decide (1 < a.succ) :: comparisonWord (raise (a :: w)) =
         true :: comparisonWord (a :: w)
       rw [comparisonWord_raise]

@@ -116,11 +116,11 @@ theorem exceptionalBasePolynomial_differentialEquation (m ε : ℕ) :
             exceptionalBaseCoeff m ε 1 := by
         rw [coeff_exceptionalBasePolynomial]
         by_cases hm : 1 ≤ m
-        · rw [if_pos hm]
+        · rw [ite_eq_left hm]
         · have hm0 : m = 0 := by lia
-          rw [if_neg hm, hm0, exceptionalBaseCoeff_succ_degree_eq_zero]
+          rw [ite_eq_right hm, hm0, exceptionalBaseCoeff_succ_degree_eq_zero]
       rw [hoperator, coeff_exceptionalBasePolynomial,
-        if_pos (Nat.zero_le m), exceptionalBaseCoeff_zero, hcoeffOne]
+        ite_eq_left (Nat.zero_le m), exceptionalBaseCoeff_zero, hcoeffOne]
       have hrec := exceptionalBaseCoeff_succ_mul m ε 0
       simp only [exceptionalBaseCoeff_zero] at hrec ⊢
       push_cast at hrec ⊢
@@ -133,15 +133,15 @@ theorem exceptionalBasePolynomial_differentialEquation (m ε : ℕ) :
       · have hcur :
             (exceptionalBasePolynomial m ε).coeff (k + 1) =
               exceptionalBaseCoeff m ε (k + 1) := by
-          rw [coeff_exceptionalBasePolynomial, if_pos hk]
+          rw [coeff_exceptionalBasePolynomial, ite_eq_left hk]
         have hnext :
             (exceptionalBasePolynomial m ε).coeff (k + 1 + 1) =
               exceptionalBaseCoeff m ε (k + 1 + 1) := by
           rw [coeff_exceptionalBasePolynomial]
           by_cases hle : k + 1 + 1 ≤ m
-          · rw [if_pos hle]
+          · rw [ite_eq_left hle]
           · have heq : k + 1 + 1 = m + 1 := by lia
-            rw [if_neg hle, heq,
+            rw [ite_eq_right hle, heq,
               exceptionalBaseCoeff_succ_degree_eq_zero]
         rw [hcur, hnext]
         have hrec := exceptionalBaseCoeff_succ_mul m ε (k + 1)
@@ -150,10 +150,10 @@ theorem exceptionalBasePolynomial_differentialEquation (m ε : ℕ) :
         linear_combination hrec
       · have hcur :
             (exceptionalBasePolynomial m ε).coeff (k + 1) = 0 := by
-          rw [coeff_exceptionalBasePolynomial, if_neg hk]
+          rw [coeff_exceptionalBasePolynomial, ite_eq_right hk]
         have hnext :
             (exceptionalBasePolynomial m ε).coeff (k + 1 + 1) = 0 := by
-          rw [coeff_exceptionalBasePolynomial, if_neg (by lia)]
+          rw [coeff_exceptionalBasePolynomial, ite_eq_right (by lia)]
         rw [hcur, hnext]
         ring
 
@@ -179,9 +179,9 @@ theorem exceptionalBasePolynomial_eq_C_mul_shiftedJacobi (m ε : ℕ) :
   · exact natDegree_exceptionalBasePolynomial_le m ε
   · rw [natDegree_C_mul (inv_ne_zero hchoose.ne'),
       natDegree_shiftedJacobi m hα (by norm_num)]
-  · rw [coeff_exceptionalBasePolynomial, if_pos (Nat.zero_le m),
+  · rw [coeff_exceptionalBasePolynomial, ite_eq_left (Nat.zero_le m),
       exceptionalBaseCoeff_zero, coeff_C_mul, coeff_shiftedJacobi,
-      if_pos (Nat.zero_le m)]
+      ite_eq_left (Nat.zero_le m)]
     simp [scale, hchoose.ne']
   · have hbase := exceptionalBasePolynomial_differentialEquation m ε
     dsimp only [insertionOperator, darbouxOperator, intervalWeight] at hbase ⊢
@@ -924,7 +924,7 @@ theorem natDegree_exceptionalEulerInverse
     (exceptionalEulerInverse m ε γ).natDegree = m := by
   apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
     (natDegree_exceptionalEulerInverse_le m ε γ)
-  rw [coeff_exceptionalEulerInverse, if_pos le_rfl]
+  rw [coeff_exceptionalEulerInverse, ite_eq_left le_rfl]
   exact div_ne_zero
     (mul_ne_zero (exceptionalBaseCoeff_ne_zero_of_le m ε m le_rfl)
       hγ.ne')
@@ -938,8 +938,8 @@ theorem exceptionalEulerInverse_topCoeff_ratio
       (exceptionalBaseCoeff m ε m /
           exceptionalBaseCoeff m ε (m - 1)) *
         (γ + (m : ℝ) - 1) / (γ + m) := by
-  rw [coeff_exceptionalEulerInverse, if_pos le_rfl,
-    coeff_exceptionalEulerInverse, if_pos (by lia)]
+  rw [coeff_exceptionalEulerInverse, ite_eq_left le_rfl,
+    coeff_exceptionalEulerInverse, ite_eq_left (by lia)]
   have hbasePrev := exceptionalBaseCoeff_ne_zero_of_le
     m ε (m - 1) (by lia)
   have hγm : γ + (m : ℝ) ≠ 0 := by positivity
@@ -971,7 +971,7 @@ theorem exceptionalEulerInverse_topCoeff_det_ne_zero
   let R₂ := exceptionalEulerInverse m ε γ₂
   have hb₁ : R₁.coeff (m - 1) ≠ 0 := by
     dsimp only [R₁]
-    rw [coeff_exceptionalEulerInverse, if_pos (by lia)]
+    rw [coeff_exceptionalEulerInverse, ite_eq_left (by lia)]
     exact div_ne_zero
       (mul_ne_zero
         (exceptionalBaseCoeff_ne_zero_of_le m ε (m - 1) (by lia))
@@ -979,7 +979,7 @@ theorem exceptionalEulerInverse_topCoeff_det_ne_zero
       (by positivity)
   have hb₂ : R₂.coeff (m - 1) ≠ 0 := by
     dsimp only [R₂]
-    rw [coeff_exceptionalEulerInverse, if_pos (by lia)]
+    rw [coeff_exceptionalEulerInverse, ite_eq_left (by lia)]
     exact div_ne_zero
       (mul_ne_zero
         (exceptionalBaseCoeff_ne_zero_of_le m ε (m - 1) (by lia))
@@ -1047,7 +1047,7 @@ theorem exceptionalEulerInverse_pencil_natDegree_ge_sub_one
       have ha : a = 0 := (mul_eq_zero.mp haDet).resolve_right hdetSub
       have hb₂ : R₂.coeff (m - 1) ≠ 0 := by
         dsimp only [R₂]
-        rw [coeff_exceptionalEulerInverse, if_pos (by lia)]
+        rw [coeff_exceptionalEulerInverse, ite_eq_left (by lia)]
         exact div_ne_zero
           (mul_ne_zero
             (exceptionalBaseCoeff_ne_zero_of_le m ε (m - 1) (by lia))
@@ -1085,7 +1085,7 @@ theorem neg_coeff_one_exceptionalEulerInverse
       ((m : ℝ) * ((ε : ℝ) + 1 / 2 + m) /
           ((ε : ℝ) + 1 / 2)) *
         (γ / (γ + 1)) := by
-  rw [coeff_exceptionalEulerInverse, if_pos (by lia : 1 ≤ m),
+  rw [coeff_exceptionalEulerInverse, ite_eq_left (by lia : 1 ≤ m),
     exceptionalBaseCoeff_one]
   ring
 

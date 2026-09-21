@@ -31,14 +31,14 @@ theorem coeff_sum_range_C_mul_X_pow_sub {R : Type*} [Semiring R] (a : ℕ → R)
   · rw [finsetSum_coeff]
     rw [Finset.sum_eq_single_of_mem (n - j)
         (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr (Nat.sub_le n j)))]
-    · rw [coeff_C_mul, coeff_X_pow, Nat.sub_sub_self hj, if_pos rfl, mul_one,
-        if_pos hj]
+    · rw [coeff_C_mul, coeff_X_pow, Nat.sub_sub_self hj, ite_eq_left rfl, mul_one,
+        ite_eq_left hj]
     · intro k hk hkne
       have hk' : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
-      rw [coeff_C_mul, coeff_X_pow, if_neg (fun h => hkne (by lia)), mul_zero]
-  · rw [finsetSum_coeff, if_neg hj]
+      rw [coeff_C_mul, coeff_X_pow, ite_eq_right (fun h => hkne (by lia)), mul_zero]
+  · rw [finsetSum_coeff, ite_eq_right hj]
     apply Finset.sum_eq_zero
     intro k hk
-    rw [coeff_C_mul, coeff_X_pow, if_neg (fun _ => by lia), mul_zero]
+    rw [coeff_C_mul, coeff_X_pow, ite_eq_right (fun _ => by lia), mul_zero]
 
 end Polynomial

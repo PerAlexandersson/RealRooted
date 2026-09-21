@@ -72,7 +72,10 @@ theorem gustafssonSolusMatrix_rect {m n : ℕ}
     ∀ row ∈ gustafssonSolusMatrix phi dropPivot, row.length = n := by
   intro row hrow
   obtain ⟨i, rfl⟩ := List.mem_iff_get.1 hrow
-  simp [gustafssonSolusMatrix, gustafssonSolusRow]
+  change ((List.ofFn fun i : Fin m =>
+    gustafssonSolusRow (phi i) (dropPivot i)).get
+      ⟨i.1, by simpa [gustafssonSolusMatrix] using i.2⟩).length = n
+  simp
 
 theorem isNonnegLinearForm_gustafssonSolusEntry {n : ℕ}
     (phi : Fin n) (dropPivot : Bool) (j : Fin n) :
@@ -92,7 +95,9 @@ theorem hasRowThreshold_gustafssonSolusRow {n : ℕ}
     have hget :
         (gustafssonSolusRow phi dropPivot).get j =
           gustafssonSolusEntry phi dropPivot j' := by
-      simp [j', gustafssonSolusRow]
+      change (List.ofFn fun j : Fin n => gustafssonSolusEntry phi dropPivot j).get
+        ⟨j.1, by simpa [gustafssonSolusRow] using j.2⟩ = _
+      simp [j']
     rw [hget]
     refine ⟨isNonnegLinearForm_gustafssonSolusEntry phi dropPivot j', ?_, ?_⟩
     · intro hcoeff
@@ -139,7 +144,10 @@ theorem hasRowThresholdLinearStructure_gustafssonSolusMatrix {m n : ℕ}
     have hget :
         (gustafssonSolusMatrix phi dropPivot).get i =
           gustafssonSolusRow (phi i') (dropPivot i') := by
-      simp [i', gustafssonSolusMatrix]
+      change (List.ofFn fun i : Fin m =>
+        gustafssonSolusRow (phi i) (dropPivot i)).get
+          ⟨i.1, by simpa [gustafssonSolusMatrix] using i.2⟩ = _
+      simp [i']
     rw [hget]
     exact hasRowThreshold_gustafssonSolusRow (phi i') (dropPivot i')
   · intro i j hij
@@ -158,13 +166,29 @@ def GustafssonSolusHas2x2 {m n : ℕ}
     i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty0
         (((gustafssonSolusMatrix phi dropPivot).get i₁).get
-          ⟨j₁.1, by simp [gustafssonSolusMatrix, gustafssonSolusRow]⟩)
+          ⟨j₁.1, by
+            have hrow := gustafssonSolusMatrix_rect phi dropPivot
+              ((gustafssonSolusMatrix phi dropPivot).get i₁) (List.get_mem _ i₁)
+            rw [hrow]
+            exact j₁.2⟩)
         (((gustafssonSolusMatrix phi dropPivot).get i₁).get
-          ⟨j₂.1, by simp [gustafssonSolusMatrix, gustafssonSolusRow]⟩)
+          ⟨j₂.1, by
+            have hrow := gustafssonSolusMatrix_rect phi dropPivot
+              ((gustafssonSolusMatrix phi dropPivot).get i₁) (List.get_mem _ i₁)
+            rw [hrow]
+            exact j₂.2⟩)
         (((gustafssonSolusMatrix phi dropPivot).get i₂).get
-          ⟨j₁.1, by simp [gustafssonSolusMatrix, gustafssonSolusRow]⟩)
+          ⟨j₁.1, by
+            have hrow := gustafssonSolusMatrix_rect phi dropPivot
+              ((gustafssonSolusMatrix phi dropPivot).get i₂) (List.get_mem _ i₂)
+            rw [hrow]
+            exact j₁.2⟩)
         (((gustafssonSolusMatrix phi dropPivot).get i₂).get
-          ⟨j₂.1, by simp [gustafssonSolusMatrix, gustafssonSolusRow]⟩)
+          ⟨j₂.1, by
+            have hrow := gustafssonSolusMatrix_rect phi dropPivot
+              ((gustafssonSolusMatrix phi dropPivot).get i₂) (List.get_mem _ i₂)
+            rw [hrow]
+            exact j₂.2⟩)
 
 /-- Gustafsson--Solus Lemma 3.4 in matrix-preserver form: once the concrete
 finite `2 × 2` affine checks are available, the row-threshold matrix sends a
@@ -221,8 +245,24 @@ theorem GustafssonSolus2x2FromNoSwitchStatement :
     have hdrop₂ : dropPivot i₂' = true := hdrop hi' hphiEq hdrop₁
     simp [α₂, GustafssonSolus.gsChoiceMarker, hdrop₂]
   have hentry := GustafssonSolus.gsEntry_has2x2 hα₁ hα₂ ht hj hcompat
-  simpa [gustafssonSolusMatrix, gustafssonSolusRow, i₁', i₂', α₁, α₂,
-    gustafssonSolusEntry_eq_thresholdEntry] using hentry
+  change Has2x2InterlacingProperty0
+    (((List.ofFn fun i : Fin m => List.ofFn fun j : Fin n =>
+      gustafssonSolusEntry (phi i) (dropPivot i) j).get
+        ⟨i₁.1, by simpa [gustafssonSolusMatrix] using i₁.2⟩).get
+        ⟨j₁.1, by simp⟩)
+    (((List.ofFn fun i : Fin m => List.ofFn fun j : Fin n =>
+      gustafssonSolusEntry (phi i) (dropPivot i) j).get
+        ⟨i₁.1, by simpa [gustafssonSolusMatrix] using i₁.2⟩).get
+        ⟨j₂.1, by simp⟩)
+    (((List.ofFn fun i : Fin m => List.ofFn fun j : Fin n =>
+      gustafssonSolusEntry (phi i) (dropPivot i) j).get
+        ⟨i₂.1, by simpa [gustafssonSolusMatrix] using i₂.2⟩).get
+        ⟨j₁.1, by simp⟩)
+    (((List.ofFn fun i : Fin m => List.ofFn fun j : Fin n =>
+      gustafssonSolusEntry (phi i) (dropPivot i) j).get
+        ⟨i₂.1, by simpa [gustafssonSolusMatrix] using i₂.2⟩).get
+        ⟨j₂.1, by simp⟩)
+  simpa [i₁', i₂', α₁, α₂, gustafssonSolusEntry_eq_thresholdEntry] using hentry
 
 /-- Named Lean-facing target for Gustafsson--Solus Lemma 3.4 in the
 zero-aware output convention used by this library. -/

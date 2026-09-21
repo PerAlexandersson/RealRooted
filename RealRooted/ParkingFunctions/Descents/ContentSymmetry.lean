@@ -56,9 +56,8 @@ coefficient of the universal weighted Smirnov polynomial. -/
 theorem coeff_fixedContentSmirnovPolynomial {n m k : ℕ}
     (μ : Multiset (Fin m)) :
     (fixedContentSmirnovPolynomial (n := n) μ).coeff k =
-      MvPolynomial.coeff μ.toFinsupp
-        ((BrandenVecchi.weightedSmirnovPolynomial
-          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) := by
+      ((BrandenVecchi.weightedSmirnovPolynomial
+          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff μ.toFinsupp := by
   classical
   unfold fixedContentSmirnovPolynomial fixedContentSmirnovWords
     BrandenVecchi.weightedSmirnovPolynomial
@@ -99,12 +98,10 @@ theorem map_universalWeightedSmirnovPolynomial {n m : ℕ}
 under simultaneous permutation of their exponent vector. -/
 theorem coeff_universalWeightedSmirnovPolynomial_mapDomain
     {n m k : ℕ} (e : Equiv.Perm (Fin m)) (d : Fin m →₀ ℕ) :
-    MvPolynomial.coeff (Finsupp.mapDomain e d)
-        ((BrandenVecchi.weightedSmirnovPolynomial
-          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) =
-      MvPolynomial.coeff d
-        ((BrandenVecchi.weightedSmirnovPolynomial
-          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) := by
+    ((BrandenVecchi.weightedSmirnovPolynomial
+          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff (Finsupp.mapDomain e d) =
+      ((BrandenVecchi.weightedSmirnovPolynomial
+          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff d := by
   have hmap := congrArg (fun p : Polynomial (MvPolynomial (Fin m) ℤ) =>
       p.coeff k) (map_universalWeightedSmirnovPolynomial (n := n) e)
   rw [Polynomial.coeff_map] at hmap
@@ -113,7 +110,7 @@ theorem coeff_universalWeightedSmirnovPolynomial_mapDomain
         (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) = _
     at hmap
   have hcoeff := congrArg
-    (MvPolynomial.coeff (Finsupp.mapDomain e d)) hmap
+    (fun p => p.coeff (Finsupp.mapDomain e d)) hmap
   rw [MvPolynomial.coeff_rename_mapDomain e e.injective] at hcoeff
   exact hcoeff.symm
 
@@ -159,7 +156,8 @@ theorem fixedContentSmirnovPolynomial_zero (m : ℕ) :
     fixedContentSmirnovPolynomial
       (n := 0) (0 : Multiset (Fin m)) = 1 := by
   simp [fixedContentSmirnovPolynomial, fixedContentSmirnovWords,
-    BrandenVecchi.smirnovWords, BrandenVecchi.IsSmirnovWord, wordContent]
+    BrandenVecchi.smirnovWords, Finset.filter_singleton,
+    BrandenVecchi.IsSmirnovWord, wordContent]
 
 /-! ## Ordinary words -/
 
@@ -197,9 +195,8 @@ coefficient of the universal weighted ordinary-word polynomial. -/
 theorem coeff_fixedContentWordDescentPolynomial {n m k : ℕ}
     (μ : Multiset (Fin m)) :
     (fixedContentWordDescentPolynomial (n := n) μ).coeff k =
-      MvPolynomial.coeff μ.toFinsupp
-        ((BrandenVecchi.weightedWordPolynomial
-          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) := by
+      ((BrandenVecchi.weightedWordPolynomial
+          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff μ.toFinsupp := by
   classical
   unfold fixedContentWordDescentPolynomial fixedContentWords
     contentFiber BrandenVecchi.weightedWordPolynomial
@@ -240,12 +237,10 @@ theorem map_universalWeightedWordPolynomial {n m : ℕ}
 invariant under simultaneous permutation of their exponent vector. -/
 theorem coeff_universalWeightedWordPolynomial_mapDomain
     {n m k : ℕ} (e : Equiv.Perm (Fin m)) (d : Fin m →₀ ℕ) :
-    MvPolynomial.coeff (Finsupp.mapDomain e d)
-        ((BrandenVecchi.weightedWordPolynomial
-          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) =
-      MvPolynomial.coeff d
-        ((BrandenVecchi.weightedWordPolynomial
-          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) := by
+    ((BrandenVecchi.weightedWordPolynomial
+          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff (Finsupp.mapDomain e d) =
+      ((BrandenVecchi.weightedWordPolynomial
+          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff d := by
   have hmap := congrArg (fun p : Polynomial (MvPolynomial (Fin m) ℤ) =>
       p.coeff k) (map_universalWeightedWordPolynomial (n := n) e)
   rw [Polynomial.coeff_map] at hmap
@@ -254,7 +249,7 @@ theorem coeff_universalWeightedWordPolynomial_mapDomain
         (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) = _
     at hmap
   have hcoeff := congrArg
-    (MvPolynomial.coeff (Finsupp.mapDomain e d)) hmap
+    (fun p => p.coeff (Finsupp.mapDomain e d)) hmap
   rw [MvPolynomial.coeff_rename_mapDomain e e.injective] at hcoeff
   exact hcoeff.symm
 

@@ -123,11 +123,11 @@ lemma prefixRowStage_zero {N : ℕ}
       · intro hk
         rw [Finset.mem_singleton.mp hk]
         exact Finset.mem_Iic.mpr le_rfl
-    simp only [prefixRowStage, Matrix.of_apply, Fin.val_zero, le_refl, if_pos]
+    simp only [prefixRowStage, Matrix.of_apply, Fin.val_zero, le_refl, ite_eq_left]
     rw [hIic]
     simp
   · have hi0 : ¬i.val ≤ 0 := Nat.not_le_of_lt (Nat.pos_of_ne_zero hi)
-    simp only [prefixRowStage, Matrix.of_apply, if_neg hi0]
+    simp only [prefixRowStage, Matrix.of_apply, ite_eq_right hi0]
 
 lemma prefixRowStage_succ {N s : ℕ} (hs : s < N)
     (M : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) :
@@ -158,10 +158,10 @@ lemma prefixRowStage_succ {N s : ℕ} (hs : s < N)
           lia
     simp only [addPreviousRow]
     simp only [prefixRowStage, Matrix.of_apply]
-    rw [if_pos (by simp [target]), updateRow_self]
+    rw [ite_eq_left (by simp [target]), updateRow_self]
     simp only [Pi.add_apply]
     simp only [Matrix.of_apply]
-    rw [if_neg (by simp), if_pos (by simp)]
+    rw [ite_eq_right (by simp), ite_eq_left (by simp)]
     change (∑ k ∈ Finset.Iic target, M k j) =
       M target j + ∑ k ∈ Finset.Iic ⟨s, by lia⟩, M k j
     rw [hIic, Finset.sum_insert]
@@ -169,12 +169,12 @@ lemma prefixRowStage_succ {N s : ℕ} (hs : s < N)
   · have hupdate : i ≠ Fin.succ ⟨s, hs⟩ := hi
     simp only [addPreviousRow, updateRow_ne hupdate, prefixRowStage, Matrix.of_apply]
     by_cases his : i.val ≤ s
-    · rw [if_pos his, if_pos (le_trans his (Nat.le_succ s))]
+    · rw [ite_eq_left his, ite_eq_left (le_trans his (Nat.le_succ s))]
     · have his' : ¬i.val ≤ s + 1 := by
         intro h
         have hieq : i.val = s + 1 := by lia
         exact hi (Fin.ext (by simpa [target] using hieq))
-      rw [if_neg his, if_neg his']
+      rw [ite_eq_right his, ite_eq_right his']
 
 /-- A finite matrix stays totally nonnegative after any bounded prefix-row stage. -/
 theorem prefixRowStage_isTotallyNonneg {N s : ℕ} (hs : s ≤ N)
@@ -217,9 +217,9 @@ lemma prefixRowStage_identity (N : ℕ) :
     prefixRowStage (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) N = lowerOnesFin N := by
   ext i j
   have hiN : i.val ≤ N := Nat.le_of_lt_succ i.isLt
-  simp only [prefixRowStage, Matrix.of_apply, if_pos hiN, lowerOnesFin, Matrix.one_apply]
+  simp only [prefixRowStage, Matrix.of_apply, ite_eq_left hiN, lowerOnesFin, Matrix.one_apply]
   by_cases hji : j ≤ i
-  · rw [if_pos hji]
+  · rw [ite_eq_left hji]
     have hfilter : {k ∈ Finset.Iic i | k = j} = {j} := by
       ext k
       constructor
@@ -231,7 +231,7 @@ lemma prefixRowStage_identity (N : ℕ) :
         exact Finset.mem_filter.mpr ⟨Finset.mem_Iic.mpr hji, rfl⟩
     rw [Finset.sum_boole, hfilter]
     simp
-  · rw [if_neg hji]
+  · rw [ite_eq_right hji]
     apply Finset.sum_eq_zero
     intro k hk
     simp only [ite_eq_right_iff]
@@ -256,18 +256,18 @@ theorem lowerLinearFin_isTotallyNonneg (N : ℕ) :
 lemma lowerLinearFin_apply (N : ℕ) (i j : Fin (N + 1)) :
     lowerLinearFin N i j = if j ≤ i then (i.val - j.val + 1 : ℕ) else 0 := by
   have hiN : i.val ≤ N := Nat.le_of_lt_succ i.isLt
-  simp only [lowerLinearFin, prefixRowStage, Matrix.of_apply, if_pos hiN, lowerOnesFin]
+  simp only [lowerLinearFin, prefixRowStage, Matrix.of_apply, ite_eq_left hiN, lowerOnesFin]
   rw [Finset.sum_boole]
   have hfilter : {k ∈ Finset.Iic i | j ≤ k} = Finset.Icc j i := by
     ext k
     simp [and_comm]
   rw [hfilter, Fin.card_Icc]
   by_cases hji : j ≤ i
-  · rw [if_pos hji]
+  · rw [ite_eq_left hji]
     norm_cast
     have hval := Fin.le_def.mp hji
     lia
-  · rw [if_neg hji]
+  · rw [ite_eq_right hji]
     have hlt : i.val + 1 ≤ j.val := by
       have := Fin.lt_def.mp (lt_of_not_ge hji)
       lia
@@ -290,8 +290,8 @@ theorem natSucc_isPolyaFreqSeq :
   intro N i j
   rw [lowerLinearFin_apply, toeplitz_apply]
   by_cases hji : j ≤ i
-  · rw [if_pos hji, if_pos (Fin.le_def.mp hji)]
-  · rw [if_neg hji, if_neg (fun h => hji (Fin.le_def.mpr h))]
+  · rw [ite_eq_left hji, ite_eq_left (Fin.le_def.mp hji)]
+  · rw [ite_eq_right hji, ite_eq_right (fun h => hji (Fin.le_def.mpr h))]
     norm_num
 
 /-- Finite truncation of the bidiagonal matrix with both diagonals equal to one. -/
@@ -315,10 +315,10 @@ lemma lowerOneThenTwoFin_apply (N : ℕ) (i j : Fin (N + 1)) :
     lowerOneThenTwoFin N i j =
       if j.val = i.val then 1 else if j.val < i.val then 2 else 0 := by
   have hiN : i.val ≤ N := Nat.le_of_lt_succ i.isLt
-  simp only [lowerOneThenTwoFin, prefixRowStage, Matrix.of_apply, if_pos hiN,
+  simp only [lowerOneThenTwoFin, prefixRowStage, Matrix.of_apply, ite_eq_left hiN,
     bidiagonalOneFin, submatrix_apply, bidiagonal_apply]
   rcases Nat.lt_trichotomy j.val i.val with hji | hji | hji
-  · rw [if_neg hji.ne, if_pos hji]
+  · rw [ite_eq_right hji.ne, ite_eq_left hji]
     let js : Fin (N + 1) := ⟨j.val + 1, by lia⟩
     have hjmem : j ∈ Finset.Iic i := Finset.mem_Iic.mpr (Fin.le_def.mpr hji.le)
     have hjsmem : js ∈ Finset.Iic i := Finset.mem_Iic.mpr (Fin.le_def.mpr (by
@@ -344,25 +344,25 @@ lemma lowerOneThenTwoFin_apply (N : ℕ) (i j : Fin (N + 1)) :
     simp_rw [hterm, Finset.sum_add_distrib]
     rw [Finset.sum_ite_eq', Finset.sum_ite_eq']
     norm_num [hjmem, hjsmem]
-  · rw [hji, if_pos rfl]
+  · rw [hji, ite_eq_left rfl]
     have hs := Finset.sum_eq_single i
       (s := Finset.Iic i)
       (f := fun k : Fin (N + 1) =>
         if k.val = i.val then (1 : ℝ) else if k.val = i.val + 1 then 1 else 0)
       (by
         intro k hk hki
-        rw [if_neg (fun h => hki (Fin.ext h))]
-        rw [if_neg (by
+        rw [ite_eq_right (fun h => hki (Fin.ext h))]
+        rw [ite_eq_right (by
           intro h
           have hki' := Fin.le_def.mp (Finset.mem_Iic.mp hk)
           lia)])
       (by simp)
     simpa using hs
-  · rw [if_neg hji.ne', if_neg (not_lt_of_ge hji.le)]
+  · rw [ite_eq_right hji.ne', ite_eq_right (not_lt_of_ge hji.le)]
     apply Finset.sum_eq_zero
     intro k hk
     have hki : k.val ≤ i.val := Fin.le_def.mp (Finset.mem_Iic.mp hk)
-    rw [if_neg (by lia), if_neg (by lia)]
+    rw [ite_eq_right (by lia), ite_eq_right (by lia)]
 
 /-- The sequence `1, 2, 2, ...` is Pólya-frequency. -/
 theorem oneThenTwo_isPolyaFreqSeq :
@@ -373,10 +373,10 @@ theorem oneThenTwo_isPolyaFreqSeq :
   intro N i j
   rw [lowerOneThenTwoFin_apply, toeplitz_apply]
   rcases Nat.lt_trichotomy j.val i.val with hji | hji | hji
-  · rw [if_neg hji.ne, if_pos hji, if_pos hji.le,
-      if_neg (by lia)]
+  · rw [ite_eq_right hji.ne, ite_eq_left hji, ite_eq_left hji.le,
+      ite_eq_right (by lia)]
   · simp [hji]
   · have hnle : ¬j.val ≤ i.val := Nat.not_le_of_lt hji
-    rw [if_neg hji.ne', if_neg (not_lt_of_ge hji.le), if_neg hnle]
+    rw [ite_eq_right hji.ne', ite_eq_right (not_lt_of_ge hji.le), ite_eq_right hnle]
 
 end RealRooted

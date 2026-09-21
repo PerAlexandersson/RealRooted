@@ -34,14 +34,14 @@ private lemma aswGapPenultimateCofactor_lastRow_apply {R : Type*} [Zero R] (u : 
   simp only [aswGapPenultimateCofactor, Matrix.submatrix_apply,
     aswGapToeplitzMatrix]
   rw [hrow]
-  simp only [aswGapRow, Fin.val_last, if_pos, Fin.val_castSucc,
+  simp only [aswGapRow, Fin.val_last, ite_eq_left, Fin.val_castSucc,
     toeplitz_apply]
   by_cases hj : j = Fin.last k
-  · rw [if_pos hj, hj]
-    rw [if_pos (by lia)]
+  · rw [ite_eq_left hj, hj]
+    rw [ite_eq_left (by lia)]
     simp only [Fin.val_last]
     rw [show k + 1 + 2 = k + 3 by lia, Nat.add_sub_cancel_left]
-  · rw [if_neg hj]
+  · rw [ite_eq_right hj]
     have hjlt : (j : ℕ) < k := by
       have := j.isLt
       have hjne : (j : ℕ) ≠ k := by
@@ -50,7 +50,7 @@ private lemma aswGapPenultimateCofactor_lastRow_apply {R : Type*} [Zero R] (u : 
         ext
         simpa using h
       lia
-    rw [if_pos (by lia)]
+    rw [ite_eq_left (by lia)]
     exact hu _ (by lia)
 
 private lemma aswGapPenultimateCofactor_lastCofactor {R : Type*} [Zero R] (u : ℕ → R) (k : ℕ) :
@@ -62,7 +62,7 @@ private lemma aswGapPenultimateCofactor_lastCofactor {R : Type*} [Zero R] (u : �
   rw [Fin.succAbove_castSucc_of_lt]
   · rw [show aswGapRow (k + 2) i.castSucc.castSucc = (i : ℕ) + 1 by
       simp only [aswGapRow, Fin.val_castSucc]
-      rw [if_neg (by have := i.isLt; lia)]]
+      rw [ite_eq_right (by have := i.isLt; lia)]]
   · simp
 
 private lemma aswGapPenultimateCofactor_det {R : Type*} [CommRing R] (u : ℕ → R)
@@ -84,7 +84,7 @@ private lemma aswGapPenultimateCofactor_det {R : Type*} [CommRing R] (u : ℕ �
     rw [aswGapPenultimateCofactor_lastRow_apply u hu]
     simp [Fin.castSucc_ne_last]
   rw [hsum, add_zero] at hdet
-  simp only [aswGapPenultimateCofactor_lastRow_apply u hu, if_pos,
+  simp only [aswGapPenultimateCofactor_lastRow_apply u hu, ite_eq_left,
     aswGapPenultimateCofactor_lastCofactor, Fin.val_last] at hdet
   have heven : (-1 : R) ^ (k + k) = 1 := by
     rw [show k + k = 2 * k by lia]
@@ -100,7 +100,7 @@ private lemma aswGap_last_cofactor {R : Type*} [Zero R] (u : ℕ → R) (k : ℕ
     Matrix.submatrix_apply, Fin.val_castSucc]
   rw [show aswGapRow (k + 2) i.castSucc = (i : ℕ) + 1 by
     simp only [aswGapRow, Fin.val_castSucc]
-    rw [if_neg (by have := i.isLt; lia)]]
+    rw [ite_eq_right (by have := i.isLt; lia)]]
 
 private lemma aswGap_lastColumn_apply {R : Type*} [Zero R] (u : ℕ → R) (k : ℕ)
     (i : Fin (k + 2)) :
@@ -110,16 +110,16 @@ private lemma aswGap_lastColumn_apply {R : Type*} [Zero R] (u : ℕ → R) (k : 
   simp only [aswGapToeplitzMatrix, Matrix.submatrix_apply, toeplitz_apply,
     Fin.val_last]
   by_cases hip : i = (Fin.last k).castSucc
-  · rw [if_pos hip, hip]
+  · rw [ite_eq_left hip, hip]
     simp [aswGapRow]
-  · rw [if_neg hip]
+  · rw [ite_eq_right hip]
     by_cases hil : i = Fin.last (k + 1)
-    · rw [if_pos hil, hil]
+    · rw [ite_eq_left hil, hil]
       simp only [aswGapRow, Fin.val_last]
-      rw [if_pos (by lia), if_pos (by lia)]
+      rw [ite_eq_left (by lia), ite_eq_left (by lia)]
       congr 1
       lia
-    · rw [if_neg hil]
+    · rw [ite_eq_right hil]
       have hivallt : (i : ℕ) < k := by
         have hnep : (i : ℕ) ≠ k := by
           intro h
@@ -133,8 +133,9 @@ private lemma aswGap_lastColumn_apply {R : Type*} [Zero R] (u : ℕ → R) (k : 
           simpa using h
         have := i.isLt
         lia
-      simp only [aswGapRow]
-      rw [if_neg (by lia)]
+      dsimp only [aswGapRow]
+      simp only [ite_eq_right (show (i : ℕ) + 1 ≠ k + 2 by lia),
+        ite_eq_right (show ¬ k + 1 ≤ (i : ℕ) + 1 by lia)]
 
 /-- Under cubic support, the gap minors are a two-term combination of
 shift-one contiguous minors. -/
@@ -155,7 +156,7 @@ lemma aswGapToeplitzMinor_cubic {R : Type*} [CommRing R] (u : ℕ → R)
               i.castSucc.succAbove Fin.castSucc).det) =
         -u 0 * u 3 * aswShiftedToeplitzMinor u 1 k := by
     rw [Finset.sum_eq_single (Fin.last k)]
-    · simp only [aswGap_lastColumn_apply, if_pos, Fin.val_castSucc, Fin.val_last]
+    · simp only [aswGap_lastColumn_apply, ite_eq_left, Fin.val_castSucc, Fin.val_last]
       rw [show (-1 : R) ^ (k + (k + 1)) = -1 by
         rw [show k + (k + 1) = 2 * k + 1 by lia, pow_add]
         simp [pow_mul]]
@@ -170,7 +171,7 @@ lemma aswGapToeplitzMinor_cubic {R : Type*} [CommRing R] (u : ℕ → R)
   rw [hsum] at hdet
   have hlastne : Fin.last (k + 1) ≠ (Fin.last k).castSucc :=
     (Fin.castSucc_ne_last _).symm
-  simp only [aswGap_lastColumn_apply, if_neg hlastne, if_pos,
+  simp only [aswGap_lastColumn_apply, ite_eq_right hlastne, ite_eq_left,
     aswGap_last_cofactor, Fin.val_last] at hdet
   have heven : (-1 : R) ^ ((k + 1) + (k + 1)) = 1 := by
     rw [show (k + 1) + (k + 1) = 2 * (k + 1) by lia]
@@ -220,7 +221,7 @@ lemma aswCubicReverse_eq_zero {R : Type*} [Zero R] (u : ℕ → R) {j : ℕ} (hj
 private lemma aswCubicReverse_sub_eq {R : Type*} [Zero R] (u : ℕ → R) (i j : ℕ)
     (hji : j ≤ i + 2) (hij : i ≤ j + 1) :
     aswCubicReverse u (j + 1 - i) = u (i + 2 - j) := by
-  rw [aswCubicReverse, if_pos (by lia)]
+  rw [aswCubicReverse, ite_eq_left (by lia)]
   congr 1
   grind
 
@@ -235,14 +236,14 @@ lemma aswShiftedToeplitzMatrix_two_eq_cubicReverse_transpose
   simp only [aswShiftedToeplitzMatrix, Matrix.submatrix_apply,
     Matrix.transpose_apply, toeplitz_apply]
   by_cases hji : (j : ℕ) ≤ (i : ℕ) + 2
-  · rw [if_pos hji]
+  · rw [ite_eq_left hji]
     by_cases hij : (i : ℕ) ≤ (j : ℕ) + 1
-    · rw [if_pos hij]
+    · rw [ite_eq_left hij]
       exact (aswCubicReverse_sub_eq u i j hji hij).symm
-    · rw [if_neg hij]
+    · rw [ite_eq_right hij]
       exact hu _ (by lia)
-  · rw [if_neg hji]
-    rw [if_pos (by lia)]
+  · rw [ite_eq_right hji]
+    rw [ite_eq_left (by lia)]
     exact (aswCubicReverse_eq_zero u (by lia)).symm
 
 lemma aswShiftedToeplitzMinor_two_eq_cubicReverse_one

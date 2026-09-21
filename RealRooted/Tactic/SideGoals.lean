@@ -249,12 +249,12 @@ macro_rules
       `(tactic|
         first
           | exact RealRooted.nonnegCoeffs_C_mul $ha $hp
-          | simpa [mul_comm] using RealRooted.nonnegCoeffs_C_mul $ha $hp)
+          | simpa only [mul_comm] using RealRooted.nonnegCoeffs_C_mul $ha $hp)
   | `(tactic| rr_nonneg_coeffs_X_mul using poly_nonneg := $hp:term) =>
       `(tactic|
         first
           | exact RealRooted.HasNonnegCoeffs.X_mul $hp
-          | simpa [mul_comm] using RealRooted.HasNonnegCoeffs.X_mul $hp)
+          | simpa only [mul_comm] using RealRooted.HasNonnegCoeffs.X_mul $hp)
   | `(tactic| rr_nonneg_coeffs_add using left := $hp:term, right := $hq:term) =>
       `(tactic|
         first
@@ -264,7 +264,7 @@ macro_rules
       `(tactic|
         first
           | exact RealRooted.HasNonnegCoeffs.mul $hp $hq
-          | simpa [mul_comm] using RealRooted.HasNonnegCoeffs.mul $hq $hp)
+          | simpa only [mul_comm] using RealRooted.HasNonnegCoeffs.mul $hq $hp)
   | `(tactic|
       rr_nonneg_coeffs_pow using poly_nonneg := $hp:term, exponent := $n:term) =>
       `(tactic| exact RealRooted.HasNonnegCoeffs.pow $hp $n)
@@ -285,28 +285,29 @@ macro_rules
         rr_nonneg_coeffs)
   | `(tactic| rr_nonneg_coeffs) =>
       `(tactic|
-        first
-          | assumption
-          | exact RealRooted.hasNonnegCoeffs_zero
-          | exact RealRooted.hasNonnegCoeffs_one
-          | exact RealRooted.hasNonnegCoeffs_X
-          | apply RealRooted.hasNonnegCoeffs_C
-            rr_side_nonneg
-          | apply RealRooted.hasNonnegCoeffs_X_add_C
-            rr_side_nonneg
-          | apply RealRooted.hasNonnegCoeffs_X_sub_C
-            rr_close_side
-          | apply RealRooted.HasNonnegCoeffs.derivative
-            rr_nonneg_coeffs
-          | apply RealRooted.nonnegCoeffs_C_mul
-            · rr_side_nonneg
-            · rr_nonneg_coeffs
-          | apply RealRooted.HasNonnegCoeffs.X_mul
-            rr_nonneg_coeffs
-          | apply RealRooted.HasNonnegCoeffs.add <;> rr_nonneg_coeffs
-          | apply RealRooted.HasNonnegCoeffs.mul <;> rr_nonneg_coeffs
-          | apply RealRooted.HasNonnegCoeffs.pow
-            rr_nonneg_coeffs)
+        with_reducible_and_instances
+          first
+            | assumption
+            | exact RealRooted.hasNonnegCoeffs_zero
+            | exact RealRooted.hasNonnegCoeffs_one
+            | exact RealRooted.hasNonnegCoeffs_X
+            | apply RealRooted.hasNonnegCoeffs_C
+              rr_side_nonneg
+            | apply RealRooted.hasNonnegCoeffs_X_add_C
+              rr_side_nonneg
+            | apply RealRooted.hasNonnegCoeffs_X_sub_C
+              rr_close_side
+            | apply RealRooted.HasNonnegCoeffs.derivative
+              rr_nonneg_coeffs
+            | apply RealRooted.nonnegCoeffs_C_mul
+              · rr_side_nonneg
+              · rr_nonneg_coeffs
+            | apply RealRooted.HasNonnegCoeffs.X_mul
+              rr_nonneg_coeffs
+            | apply RealRooted.HasNonnegCoeffs.add <;> rr_nonneg_coeffs
+            | apply RealRooted.HasNonnegCoeffs.mul <;> rr_nonneg_coeffs
+            | apply RealRooted.HasNonnegCoeffs.pow
+              rr_nonneg_coeffs)
   | `(tactic| rr_pos_lc_one) =>
       `(tactic| exact RealRooted.hasPosLeadingCoeff_one)
   | `(tactic| rr_pos_lc using nonneg := $hnn:term, nonzero := $hp0:term) =>
@@ -315,44 +316,48 @@ macro_rules
       `(tactic| exact RealRooted.HasNonnegCoeffs.pos_leadingCoeff (by rr_nonneg_coeffs) $hp0)
   | `(tactic| rr_pos_lc_C_mul using scalar_pos := $ha:term, pos_lc := $hp:term) =>
       `(tactic|
-        first
-          | exact RealRooted.hasPosLeadingCoeff_C_mul $ha $hp
-          | simpa [mul_comm] using RealRooted.hasPosLeadingCoeff_C_mul $ha $hp)
+        with_reducible_and_instances
+          first
+            | exact RealRooted.hasPosLeadingCoeff_C_mul $ha $hp
+            | simpa only [mul_comm] using RealRooted.hasPosLeadingCoeff_C_mul $ha $hp)
   | `(tactic| rr_pos_lc_mul using left := $hp:term, right := $hq:term) =>
       `(tactic|
-        first
-          | exact RealRooted.HasPosLeadingCoeff.mul $hp $hq
-          | simpa [mul_comm] using RealRooted.HasPosLeadingCoeff.mul $hq $hp)
+        with_reducible_and_instances
+          first
+            | exact RealRooted.HasPosLeadingCoeff.mul $hp $hq
+            | simpa only [mul_comm] using RealRooted.HasPosLeadingCoeff.mul $hq $hp)
   | `(tactic| rr_pos_lc_X_mul using pos_lc := $hp:term) =>
       `(tactic|
-        first
-          | exact RealRooted.HasPosLeadingCoeff.X_mul $hp
-          | simpa [mul_comm] using RealRooted.HasPosLeadingCoeff.X_mul $hp)
+        with_reducible_and_instances
+          first
+            | exact RealRooted.HasPosLeadingCoeff.X_mul $hp
+            | simpa only [mul_comm] using RealRooted.HasPosLeadingCoeff.X_mul $hp)
   | `(tactic| rr_pos_lc) =>
       `(tactic|
-        first
-          | assumption
-          | exact RealRooted.hasPosLeadingCoeff_one
-          | apply RealRooted.hasPosLeadingCoeff_C_mul
-            · rr_side_pos
-            · rr_pos_lc
-          | apply RealRooted.HasPosLeadingCoeff.X_mul
-            rr_pos_lc
-          | apply RealRooted.HasPosLeadingCoeff.derivative
-            · rr_pos_lc
-            · rr_close_side
-          | apply RealRooted.HasPosLeadingCoeff.mul <;> rr_pos_lc
-          | exact RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_left
-              (by assumption) (by rr_pos_lc)
-          | exact RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_right
-              (by assumption) (by rr_pos_lc)
-          | exact RealRooted.hasPosLeadingCoeff_add_of_same_natDegree
-              (by assumption) (by rr_pos_lc) (by rr_pos_lc)
-          | apply RealRooted.HasNonnegCoeffs.pos_leadingCoeff
-            · rr_nonneg_coeffs
-            · rr_close_side
-          | unfold RealRooted.HasPosLeadingCoeff
-            simp <;> try rr_side_pos)
+        with_reducible_and_instances
+          first
+            | assumption
+            | exact RealRooted.hasPosLeadingCoeff_one
+            | apply RealRooted.hasPosLeadingCoeff_C_mul
+              · rr_side_pos
+              · rr_pos_lc
+            | apply RealRooted.HasPosLeadingCoeff.X_mul
+              rr_pos_lc
+            | apply RealRooted.HasPosLeadingCoeff.derivative
+              · rr_pos_lc
+              · rr_close_side
+            | apply RealRooted.HasPosLeadingCoeff.mul <;> rr_pos_lc
+            | exact RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_left
+                (by assumption) (by rr_pos_lc)
+            | exact RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_right
+                (by assumption) (by rr_pos_lc)
+            | exact RealRooted.hasPosLeadingCoeff_add_of_same_natDegree
+                (by assumption) (by rr_pos_lc) (by rr_pos_lc)
+            | apply RealRooted.HasNonnegCoeffs.pos_leadingCoeff
+              · rr_nonneg_coeffs
+              · rr_close_side
+            | unfold RealRooted.HasPosLeadingCoeff
+              simp <;> try rr_side_pos)
   | `(tactic| rr_eval_simp) =>
       `(tactic|
         simp_all [

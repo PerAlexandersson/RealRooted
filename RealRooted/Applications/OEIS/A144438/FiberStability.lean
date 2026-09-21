@@ -149,7 +149,7 @@ private theorem partialFiberNormalForm_empty {R : Type*} [CommSemiring R]
     have hnot := j.2.leftLabel_not_mem_fixedBottomSupport
     apply hnot
     have hlabel : leftLabel h j.1 = x := by
-      simpa [leftLabelEmbedding] using hjx
+      exact hjx
     rw [hlabel]
     exact hfixed
   unfold MvPolynomial.finsetMonomial
@@ -240,7 +240,7 @@ private theorem rename_activeFactorProduct_of_mem
   rw [← Finset.mul_prod_erase c.activeEligibleStarts
     (activeFactor (R := R) s) hjactive, map_mul,
     rename_activeFactorProduct_erase]
-  rw [activeFactor, if_neg hj, MvPolynomial.rename_X,
+  rw [activeFactor, ite_eq_right hj, MvPolynomial.rename_X,
     j.2.finalSwap_leftLabel]
 
 /-- The partial normal form obeys the same one-swap recurrence as the
@@ -270,7 +270,7 @@ private theorem partialFiberNormalForm_insert {R : Type*} [CommSemiring R]
       rename_activeFactorProduct_of_mem c hj hjactive]
     rw [← Finset.mul_prod_erase c.activeEligibleStarts
       (activeFactor (R := R) s) hjactive]
-    rw [activeFactor, if_neg hj]
+    rw [activeFactor, ite_eq_right hj]
     ring
   · have hsdiff : (insert j s) \ c.activeEligibleStarts =
         insert j (s \ c.activeEligibleStarts) := by
@@ -338,7 +338,7 @@ theorem fiberPolynomial_eq_fiberNormalForm
       MvPolynomial.finsetMonomial c.fixedBottomSupport * q)
   apply Finset.prod_congr rfl
   intro i hi
-  rw [activeFactor, if_pos (mem_allEligibleStarts c i)]
+  rw [activeFactor, ite_eq_left (mem_allEligibleStarts c i)]
 
 /-- Exact factorization of a normalized decoration fiber into its inactive
 multiplicity, fixed monomial, and active linear factors. -/

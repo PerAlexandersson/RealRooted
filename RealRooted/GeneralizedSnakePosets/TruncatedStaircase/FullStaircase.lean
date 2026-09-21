@@ -462,8 +462,7 @@ theorem orderedSubsetPairFullStaircasePlacement_isNonNestingPlacement
       rw [hix, hjy]
       exact hrow_eq
     have hrow_i_j : rows[i] = rows[j] := by simpa [L, cols'] using hrow_L
-    have hij : i = j := (List.getElem_inj (A.sort_nodup (· ≤ ·))).mp (by
-      simpa [rows] using hrow_i_j)
+    have hij : i = j := (List.Nodup.getElem_inj (A.sort_nodup (· ≤ ·))).mp hrow_i_j
     subst j
     exact hne (by rw [← hix, ← hjy])
   · intro x hx y hy hrow_lt

@@ -84,7 +84,7 @@ lemma aswKarlinPivotMatrix_blockTriangular (u : ℕ → ℝ)
 `u 0`. -/
 theorem det_aswKarlinPivotMatrix (u : ℕ → ℝ) (degree order blocks : ℕ) :
     (aswKarlinPivotMatrix u degree order blocks).det = u 0 ^ (blocks * order) := by
-  rw [Matrix.det_of_upperTriangular
+  rw [Matrix.det_of_isUpperTriangular
     (aswKarlinPivotMatrix_blockTriangular u degree order blocks)]
   simp [aswKarlinPivotMatrix, toeplitz_apply]
 
@@ -178,7 +178,12 @@ lemma aswKarlinMatrix_mulVec_extend (u : ℕ → ℝ) (degree order blocks : ℕ
   unfold aswKarlinExtend
   rw [Matrix.mulVec_sum _ Finset.univ]
   ext i
-  simp [Matrix.mulVec, dotProduct, aswKarlinPivotMatrix, mul_comm]
+  simp only [Matrix.mulVec_single, op_smul_eq_smul, Finset.sum_apply,
+    Pi.smul_apply, Matrix.col_apply, aswKarlinMatrix_apply,
+    aswKarlinSelectedCol_val, smul_eq_mul]
+  apply Finset.sum_congr rfl
+  intro j _
+  split_ifs with h <;> simp [aswKarlinPivotMatrix, h, mul_comm]
 
 /-- Positive constant coefficient makes Karlin's rectangular matrix
 surjective as a map from column vectors to row vectors. -/

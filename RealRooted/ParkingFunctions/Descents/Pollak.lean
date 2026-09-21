@@ -272,8 +272,8 @@ theorem parkingWordEmbed_apply {n : ℕ} (w : Fin n → Fin n) (i : Fin n) :
 theorem isParkingWord_parkingWordEmbed_iff {n : ℕ} (w : Fin n → Fin n) :
     IsParkingWord (parkingWordEmbed w) ↔ IsParkingFunction w := by
   constructor <;> intro hw k hk
-  · simpa [IsParkingWord, parkingWordEmbed] using hw k hk
-  · simpa [IsParkingWord, parkingWordEmbed] using hw k hk
+  · simpa [IsParkingWord, parkingWordEmbed] using! hw k hk
+  · simpa [IsParkingWord, parkingWordEmbed] using! hw k hk
 
 /-- The alphabet embedding of parking words is injective. -/
 theorem parkingWordEmbed_injective {n : ℕ} :

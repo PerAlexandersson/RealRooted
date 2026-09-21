@@ -73,9 +73,9 @@ theorem coeff_schurSzegoComp (n k : Nat) (f g : ℝ[X]) :
       if k ≤ n then f.coeff k * g.coeff k / (Nat.choose n k : ℝ) else 0 := by
   rw [schurSzegoComp, finsetSum_coeff]
   by_cases hk : k ≤ n
-  · rw [if_pos hk]
+  · rw [ite_eq_left hk]
     simp [coeff_monomial, hk]
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     simp [coeff_monomial, Nat.not_lt.mpr (Nat.succ_le_of_lt (Nat.lt_of_not_le hk))]
 
 theorem coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
@@ -106,10 +106,10 @@ theorem schurSzegoComp_binomialLift (n : Nat) (f₀ g₀ : ℝ[X]) :
   ext k
   simp only [coeff_schurSzegoComp, coeff_binomialLift, coeff_hadamardProduct]
   by_cases hk : k ≤ n
-  · simp only [if_pos hk]
+  · simp only [ite_eq_left hk]
     have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by exact_mod_cast (Nat.choose_pos hk).ne'
     field_simp
-  · simp only [if_neg hk]
+  · simp only [ite_eq_right hk]
 
 /-- Evaluation form of `schurSzegoComp_binomialLift`. -/
 theorem schurSzegoComp_eval_eq_apolarEval (n : Nat) (f₀ g₀ : ℝ[X]) (z : ℝ) :
@@ -178,9 +178,9 @@ theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
   ext k
   rw [coeff_diagonalOperator, coeff_schurSzegoComp]
   by_cases hk : k ≤ n
-  · rw [if_pos hk]
+  · rw [ite_eq_left hk]
     ring
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
 
 /-- Coefficient expansion of the cubic discriminant of a fixed-degree
@@ -331,7 +331,7 @@ theorem jensenPolynomial_three_normalized_eq_reflect_iterate_derivative
       coeff_eq_zero_of_natDegree_lt <| lt_of_le_of_lt
         (Polynomial.natDegree_reflect_le.trans (by rw [max_eq_left hder_deg]))
         (Nat.lt_of_not_le hk)
-    rw [coeff_C_mul, hzero, mul_zero, coeff_jensenPolynomial, if_neg hk]
+    rw [coeff_C_mul, hzero, mul_zero, coeff_jensenPolynomial, ite_eq_right hk]
 
 /-- If the left factor has degree at most three, the fixed-degree
 Schur--Szego composition is the degree-three Jensen polynomial attached to the
@@ -348,7 +348,7 @@ theorem schurSzegoComp_eq_jensenPolynomial_three_normalized
   · have hchoose3 : (Nat.choose 3 k : ℝ) ≠ 0 :=
       Nat.cast_choose_ne_zero (R := ℝ) hk3
     by_cases hkn : k ≤ n
-    · simp only [hk3, hkn, if_true]
+    · simp only [hk3, hkn, ite_true]
       field_simp [hchoose3]
     · have hnlt : n < k := Nat.lt_of_not_le hkn
       simp [hk3, hkn, Nat.choose_eq_zero_of_lt hnlt]
@@ -684,7 +684,7 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
   rw [coeff_diagonalOperator, coeff_diagonalOperator, coeff_jensenPolynomial]
   by_cases hk : k ≤ n
   · have hchoose : (Nat.choose n k : ℝ) ≠ 0 := Nat.cast_choose_ne_zero (R := ℝ) hk
-    simp only [hk, if_true]
+    simp only [hk, ite_true]
     field_simp [hchoose]
   · have hk_lt : n < k := Nat.lt_of_not_le hk
     have hp_coeff : p.coeff k = 0 :=

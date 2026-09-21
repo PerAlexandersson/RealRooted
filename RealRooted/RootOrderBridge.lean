@@ -24,7 +24,29 @@ private theorem sorted_getElem_le_iff_lt_card_filter
     | cons hd tl ih =>
         rw [List.pairwise_cons] at hs
         rcases hs with ⟨hhd, htl⟩
-        rcases k with _ | k <;> grind
+        by_cases hh : hd ≤ x
+        · cases k with
+          | zero => simp [hh]
+          | succ k =>
+              simpa [hh] using ih htl k (by simpa using hk)
+        · have hnone : ∀ y ∈ tl, ¬y ≤ x := by
+            intro y hy hyx
+            exact hh ((hhd y hy).trans hyx)
+          have hf : (tl.filter (· ≤ x)).length = 0 := by
+            rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
+            intro y hy
+            simpa using hnone y hy
+          cases k with
+          | zero => simp [hh, hf]
+          | succ k =>
+              have hk' : k < tl.length := by simpa using hk
+              have hnot : ¬tl[k]! ≤ x := by
+                rw [getElem!_pos tl k hk']
+                exact hnone _ (List.getElem_mem hk')
+              have hlength : ((hd :: tl).filter (· ≤ x)).length = 0 := by
+                simp [hh, hf]
+              rw [List.getElem!_cons_succ, hlength]
+              exact iff_of_false hnot (Nat.not_lt_zero _)
   convert h_helper s hs x k hk using 1
   aesop (simp_config := { singlePass := true })
 

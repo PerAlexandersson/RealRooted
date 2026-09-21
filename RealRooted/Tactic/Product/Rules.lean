@@ -28,6 +28,10 @@ private inductive ScalarFactorKind where
   | scalar
   | scalarPow
 
+private inductive ProductOrientation where
+  | factorLeft
+  | factorRight
+
 private def appFnName? (e : Expr) : Option Name :=
   e.consumeMData.getAppFn.constName?
 
@@ -75,6 +79,88 @@ private partial def topMulFactors (e : Expr) : List Expr :=
       [e]
   else
     [e]
+
+private partial def containsAppHead (head : Expr) (e : Expr) : Bool :=
+  let e := e.consumeMData
+  e.getAppFn == head ||
+    e.getAppArgs.any (containsAppHead head) ||
+    match e with
+    | .forallE _ domain body _ =>
+        containsAppHead head domain || containsAppHead head body
+    | .lam _ domain body _ =>
+        containsAppHead head domain || containsAppHead head body
+    | .letE _ type value body _ =>
+        containsAppHead head type || containsAppHead head value || containsAppHead head body
+    | .proj _ _ body => containsAppHead head body
+    | _ => false
+
+private def productOrientationOfEquality? (e : Expr) : Option ProductOrientation :=
+  let e := e.consumeMData
+  if appFnName? e == some ``Eq then
+    let args := e.getAppArgs
+    if args.size > 1 then
+      let lhs := args[args.size - 2]!
+      let rhs := args[args.size - 1]!
+      match topMulFactors rhs, (topMulFactors rhs).reverse with
+      | first :: _, last :: _ =>
+          let sequence := lhs.consumeMData.getAppFn
+          if containsAppHead sequence last then
+            some .factorLeft
+          else if containsAppHead sequence first then
+            some .factorRight
+          else if containsPolynomialX first || containsAppFn ``Polynomial.C first then
+            some .factorLeft
+          else if containsPolynomialX last || containsAppFn ``Polynomial.C last then
+            some .factorRight
+          else
+            none
+      | _, _ => none
+    else
+      none
+  else
+    none
+
+private partial def findProductOrientation? (e : Expr) : Option ProductOrientation := Id.run do
+  let e := e.consumeMData
+  if let some orientation := productOrientationOfEquality? e then
+    return some orientation
+  for arg in e.getAppArgs do
+    if let some orientation := findProductOrientation? arg then
+      return some orientation
+  match e with
+  | .forallE _ domain body _ =>
+      findProductOrientation? domain <|> findProductOrientation? body
+  | .lam _ domain body _ =>
+      findProductOrientation? domain <|> findProductOrientation? body
+  | .letE _ type value body _ =>
+      findProductOrientation? type <|>
+        findProductOrientation? value <|> findProductOrientation? body
+  | .proj _ _ body => findProductOrientation? body
+  | _ => none
+
+private partial def identifierTerms (stx : Syntax) : Array Syntax :=
+  if stx.isIdent then
+    #[stx]
+  else
+    stx.getArgs.foldl (fun terms arg => terms ++ identifierTerms arg) #[]
+
+private def productOrientationsOfCandidate (candidate : Syntax) :
+    TacticM (List ProductOrientation) :=
+  withMainContext do
+    let localContext ← getLCtx
+    let mut orientations := []
+    for term in identifierTerms candidate do
+      if let some declaration := localContext.findFromUserName? term.getId then
+        let type ← instantiateMVars declaration.type
+        if let some orientation := findProductOrientation? type then
+          orientations := orientations ++ [orientation]
+    pure orientations
+
+private def productOrientationOfCandidate? (candidate : Syntax) :
+    TacticM (Option ProductOrientation) := do
+  match ← productOrientationsOfCandidate candidate with
+  | orientation :: _ => pure (some orientation)
+  | [] => pure none
 
 private def scalarKindOfTopProduct? (rhs : Expr) : Option ScalarFactorKind :=
   match topMulFactors rhs with
@@ -156,6 +242,21 @@ private partial def findAffinePowOrientation? (e : Expr) :
   | .proj _ _ body => findAffinePowOrientation? body
   | _ => none
 
+private partial def containsRootZeroPower (e : Expr) : Bool :=
+  let e := e.consumeMData
+  if appFnName? e == some ``HPow.hPow then
+    let args := e.getAppArgs
+    args.size > 5 && isPolynomialX args[4]!
+  else
+    e.getAppArgs.any containsRootZeroPower ||
+      match e with
+      | .forallE _ domain body _ => containsRootZeroPower domain || containsRootZeroPower body
+      | .lam _ domain body _ => containsRootZeroPower domain || containsRootZeroPower body
+      | .letE _ type value body _ =>
+          containsRootZeroPower type || containsRootZeroPower value || containsRootZeroPower body
+      | .proj _ _ body => containsRootZeroPower body
+      | _ => false
+
 private partial def findAffineLinearOrientation? (e : Expr) :
     Option AffinePowOrientation := Id.run do
   let e := e.consumeMData
@@ -213,6 +314,15 @@ private def scalarKindOfEvidence (label : String) (evidence : Syntax) :
   | none =>
       throwError "rr_product checked scalar auto: no scalar factor found in {label}"
 
+private def rootZeroPowerOfEvidence (label : String) (evidence : Syntax) :
+    TacticM Unit := withMainContext do
+  let evidenceExpr ← Lean.Elab.Tactic.elabTerm evidence none
+  let evidenceType ← instantiateMVars (← inferType evidenceExpr)
+  if containsRootZeroPower evidenceType then
+    pure ()
+  else
+    throwError "rr_product checked root-zero power auto: no root-zero power found in {label}"
+
 elab "rr_product_lift_checked_affine_sequence_auto" " using "
     "quotient_realrooted" ":=" hquot:term ","
     "factorization" ":=" hrow:term : tactic => do
@@ -417,12 +527,35 @@ elab "rr_product_checked_affine_pow_sequence_auto" " using "
           rr_product_affine_pow_sequence_auto using
             base := $hbase,
             recurrence := $hrec))
+
   | .constFirst =>
       evalTactic
         (← `(tactic|
           rr_product_const_first_affine_pow_sequence_auto using
             base := $hbase,
             recurrence := $hrec))
+
+elab "rr_product_checked_root_zero_pow_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "recurrence" ":=" hrec:term : tactic => do
+  rootZeroPowerOfEvidence "recurrence" hrec
+  evalTactic
+    (← `(tactic|
+      rr_product_X_pow_sequence using
+        base := $hbase,
+        recurrence := $hrec))
+
+elab "rr_product_checked_root_zero_pow_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "cutoff" ":=" N:term ","
+    "recurrence" ":=" hrec:term : tactic => do
+  rootZeroPowerOfEvidence "recurrence" hrec
+  evalTactic
+    (← `(tactic|
+      rr_product_X_pow_sequence using
+        base := $hbase,
+        cutoff := $N,
+        recurrence := $hrec))
 
 elab "rr_product_checked_affine_pow_sequence_auto" " using "
     "base" ":=" hbase:term ","
@@ -443,6 +576,32 @@ elab "rr_product_checked_affine_pow_sequence_auto" " using "
             base := $hbase,
             cutoff := $N,
             recurrence := $hrec))
+
+elab "rr_product_two_sequence_variants" hleft:term "," hright:term : tactic => do
+  match ← productOrientationOfCandidate? hleft with
+  | some .factorLeft =>
+      evalTactic
+        (← `(tactic| rr_first_realrooted_sequence_or_projection $hleft))
+  | some .factorRight =>
+      evalTactic
+        (← `(tactic| rr_first_realrooted_sequence_or_projection $hright))
+  | none =>
+      evalTactic
+        (← `(tactic| rr_first_realrooted_sequence_or_projection $hleft, $hright))
+
+elab "rr_product_four_sequence_variants" hleft:term "," hright:term ","
+    hscalarRight:term "," hfactorRight:term : tactic => do
+  match ← productOrientationsOfCandidate hleft with
+  | scalarOrientation :: factorOrientation :: _ =>
+      let chosen := match scalarOrientation, factorOrientation with
+        | .factorLeft, .factorLeft => hleft
+        | .factorLeft, .factorRight => hright
+        | .factorRight, .factorLeft => hscalarRight
+        | .factorRight, .factorRight => hfactorRight
+      evalTactic
+        (← `(tactic| rr_first_realrooted_sequence_or_projection $chosen))
+  | _ =>
+      throwError "rr_product parity dispatch: expected scalar and factor equalities"
 
 macro_rules
   | `(tactic| rr_product_nonzero) =>
@@ -462,15 +621,6 @@ macro_rules
   | `(tactic| rr_product_two_variants $hleft:term, $hright:term) =>
       `(tactic|
         rr_first_realrooted_or_projection $hleft, $hright)
-  | `(tactic| rr_product_two_sequence_variants $hleft:term, $hright:term) =>
-      `(tactic|
-        rr_first_realrooted_sequence_or_projection $hleft, $hright)
-  | `(tactic|
-      rr_product_four_sequence_variants
-        $hleft:term, $hright:term, $hscalar_right:term, $hfactor_right:term) =>
-      `(tactic|
-        rr_first_realrooted_sequence_or_projection
-          $hleft, $hright, $hscalar_right, $hfactor_right)
 
 macro_rules
   | `(tactic| rr_product_C using scalar_ne := $ha:term) =>
@@ -901,19 +1051,19 @@ macro_rules
         factorization := $hrow:term) =>
       `(tactic|
         first
-          | rr_product_lift_X_sequence using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_checked_scalar_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_C_sequence_auto using
+          | rr_product_lift_checked_affine_pow_sequence_auto using
               quotient_realrooted := $hquot,
               factorization := $hrow
           | rr_product_lift_checked_affine_sequence_auto using
               quotient_realrooted := $hquot,
               factorization := $hrow
-          | rr_product_lift_checked_affine_pow_sequence_auto using
+          | rr_product_lift_checked_scalar_sequence_auto using
+              quotient_realrooted := $hquot,
+              factorization := $hrow
+          | rr_product_lift_X_sequence using
+              quotient_realrooted := $hquot,
+              factorization := $hrow
+          | rr_product_lift_C_sequence_auto using
               quotient_realrooted := $hquot,
               factorization := $hrow
           | rr_product_lift_X_add_C_sequence using
@@ -945,17 +1095,7 @@ macro_rules
         factorization := $hrow:term) =>
       `(tactic|
         first
-          | rr_product_lift_X_sequence using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_checked_scalar_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_C_sequence_auto using
+          | rr_product_lift_checked_affine_pow_sequence_auto using
               base := $hbase,
               quotient_realrooted := $hquot,
               cutoff := $N,
@@ -965,7 +1105,17 @@ macro_rules
               quotient_realrooted := $hquot,
               cutoff := $N,
               factorization := $hrow
-          | rr_product_lift_checked_affine_pow_sequence_auto using
+          | rr_product_lift_checked_scalar_sequence_auto using
+              base := $hbase,
+              quotient_realrooted := $hquot,
+              cutoff := $N,
+              factorization := $hrow
+          | rr_product_lift_X_sequence using
+              base := $hbase,
+              quotient_realrooted := $hquot,
+              cutoff := $N,
+              factorization := $hrow
+          | rr_product_lift_C_sequence_auto using
               base := $hbase,
               quotient_realrooted := $hquot,
               cutoff := $N,

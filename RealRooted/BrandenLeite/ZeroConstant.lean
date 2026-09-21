@@ -78,9 +78,9 @@ theorem exists_pf_pos_zero_approximation
   have hf_eq : f = fun n => if r ≤ n then u (n - r) else 0 := by
     funext n
     by_cases hrn : r ≤ n
-    · rw [if_pos hrn]
+    · rw [ite_eq_left hrn]
       simp [u, Nat.sub_add_cancel hrn]
-    · rw [if_neg hrn]
+    · rw [ite_eq_right hrn]
       exact hzero n (Nat.lt_of_not_ge hrn)
   have hεpos : ∀ k, 0 < ε k := by
     intro k

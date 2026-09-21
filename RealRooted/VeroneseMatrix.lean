@@ -217,7 +217,7 @@ theorem zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_succ
         fs.get ⟨i.1 + 1, by lia⟩ := by
   subst r
   rw [veroneseLinearFactorRowDesc]
-  rw [dif_pos hi]
+  rw [dite_eq_left hi]
   rw [zipWith_mul_sum_zipWith_add_left]
   · have hscaled :
         ((((oneSupportSeq fs.length i).map fun q => C a * q).zipWith
@@ -240,7 +240,7 @@ theorem zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_last
         X * fs.get ⟨0, by lia⟩ := by
   subst r
   rw [veroneseLinearFactorRowDesc]
-  rw [dif_neg hi]
+  rw [dite_eq_right hi]
   rw [zipWith_mul_sum_zipWith_add_left]
   · have hscaled :
         ((((oneSupportSeq fs.length i).map fun q => C a * q).zipWith
@@ -462,12 +462,12 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
   · by_cases hj₂0 : j₂.1 = 0
     · have hj_eq : j₁ = j₂ := by lia
       subst j₂
-      rw [if_pos hj₁0]
+      rw [ite_eq_left hj₁0]
       let hrr :=
         isRealRooted_affine_mul_C_add_X
           (t := t) (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁) hs
       exact Interl.refl fun _ => hrr.2
-    · rw [if_pos hj₁0, if_neg hj₂0]
+    · rw [ite_eq_left hj₁0, ite_eq_right hj₂0]
       exact
         prec0_const_entry_affine_plus_const_to_affine_plus_X
           (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁)
@@ -475,7 +475,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
           (veroneseLinearFactorLastConstEntry_nonneg ha j₂)
           hs ht.le
   · have hj₂0 : ¬ j₂.1 = 0 := by lia
-    rw [if_neg hj₁0, if_neg hj₂0]
+    rw [ite_eq_right hj₁0, ite_eq_right hj₂0]
     exact
       prec0_const_entries_affine_of_det_nonneg
         (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁)
@@ -507,20 +507,20 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
   rw [get_veroneseLinearFactorRowDesc_of_last hr2 (hi := hrow₂)]
   by_cases hj₁0 : j₁.1 = 0
   · by_cases hj₂0 : j₂.1 = 0
-    · rw [if_pos hj₁0, if_pos hj₂0]
+    · rw [ite_eq_left hj₁0, ite_eq_left hj₂0]
       exact Interl.refl fun _ => (isRealRooted_affine_mul_X_add_X hs).2
     · by_cases hj₂last : j₂.1 = r - 1
-      · rw [if_pos hj₁0, if_neg hj₂0]
-        simp only [veroneseLinearFactorLastConstEntry, hj₂last, if_true]
+      · rw [ite_eq_left hj₁0, ite_eq_right hj₂0]
+        simp only [veroneseLinearFactorLastConstEntry, hj₂last, ite_true]
         rw [affine_mul_C_add_same_eq, affine_mul_X_add_X_eq]
         exact
           prec0_C_mul_affine_linear_X_mul_affine_linear
             (a := a) (u := s) (v := t + 1) hs (by grind)
       · simp [hj₁0, hj₂0, hj₂last,
           veroneseLinearFactorLastConstEntry, interl_zero_left]
-  · rw [if_neg hj₁0]
+  · rw [ite_eq_right hj₁0]
     have hj₂0 : ¬ j₂.1 = 0 := by lia
-    rw [if_neg hj₂0]
+    rw [ite_eq_right hj₂0]
     exact
       prec0_const_entries_affine_of_det_nonneg
         (veroneseLinearFactorLastConstEntry_nonneg ha j₁)
@@ -556,11 +556,11 @@ theorem hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
       ∀ {n : ℕ} {i : Fin n} {q : ℝ[X]},
         q ∈ oneSupportSeq n i → HasNonnegCoeffs q := by
     intro n i q hq
-    rcases List.mem_iff_get.1 hq with ⟨k, hk⟩
-    rw [← hk]
-    by_cases hki : (⟨k.1, by simpa [oneSupportSeq] using k.2⟩ : Fin n) = i
-    · simp [oneSupportSeq, hki, hasNonnegCoeffs_one]
-    · simp [oneSupportSeq, hki, hasNonnegCoeffs_zero]
+    rw [oneSupportSeq, List.mem_ofFn] at hq
+    rcases hq with ⟨k, rfl⟩
+    by_cases hki : k = i
+    · simp [hki, hasNonnegCoeffs_one]
+    · simp [hki, hasNonnegCoeffs_zero]
   have hzip :
       ∀ {xs ys : List ℝ[X]},
         (∀ q ∈ xs, HasNonnegCoeffs q) →
@@ -619,25 +619,21 @@ theorem isInterlacingSeq0Nonneg_veroneseSectionPolynomialListDesc_X_add_C_mul
       (veroneseSectionPolynomialListDesc r p)
       (length_veroneseSectionPolynomialListDesc r p) hseq
   · intro row hrow
-    rcases List.mem_iff_get.1 hrow with ⟨i, hi⟩
-    rw [← hi]
-    let i' : Fin r := ⟨i.1, by simpa [veroneseLinearFactorMatrixDesc] using i.2⟩
-    simp [veroneseLinearFactorMatrixDesc]
+    rw [veroneseLinearFactorMatrixDesc, List.mem_ofFn] at hrow
+    rcases hrow with ⟨i, rfl⟩
+    simp
   · intro row hrow q hq
-    rcases List.mem_iff_get.1 hrow with ⟨i, hi⟩
-    rw [← hi] at hq
-    let i' : Fin r := ⟨i.1, by simpa [veroneseLinearFactorMatrixDesc] using i.2⟩
-    have hq' : q ∈ veroneseLinearFactorRowDesc r a i' := by
-      simpa [veroneseLinearFactorMatrixDesc, i'] using hq
-    exact hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
-      (r := r) (a := a) ha i' hq'
+    rw [veroneseLinearFactorMatrixDesc, List.mem_ofFn] at hrow
+    rcases hrow with ⟨i, rfl⟩
+    exact hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry ha i hq
   · intro i₁ i₂ j₁ j₂ hi hij
     let i₁' : Fin r := ⟨i₁.1, by simpa [veroneseLinearFactorMatrixDesc] using i₁.2⟩
     let i₂' : Fin r := ⟨i₂.1, by simpa [veroneseLinearFactorMatrixDesc] using i₂.2⟩
     have hi' : i₁' ≤ i₂' := by grind
     have h := h2x2 i₁' i₂' j₁ j₂ hi' hij
-    simpa [VeroneseLinearFactorMatrixDescHas2x2, veroneseLinearFactorMatrixDesc,
-      i₁', i₂'] using h
+    dsimp only [veroneseLinearFactorMatrixDesc] at i₁ i₂ ⊢
+    simp only [List.get_eq_getElem, List.getElem_ofFn]
+    exact h
 
 /-- The cyclic matrix proof gives the Veronese-section linear-factor step:
 if the descending Veronese sections of `p` are nonnegative and interlacing,
@@ -672,25 +668,21 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_X_add
       (veroneseSectionPolynomialListDesc r p)
       (length_veroneseSectionPolynomialListDesc r p) hseq hreal
   · intro row hrow
-    rcases List.mem_iff_get.1 hrow with ⟨i, hi⟩
-    rw [← hi]
-    let i' : Fin r := ⟨i.1, by simpa [veroneseLinearFactorMatrixDesc] using i.2⟩
-    simp [veroneseLinearFactorMatrixDesc]
+    rw [veroneseLinearFactorMatrixDesc, List.mem_ofFn] at hrow
+    rcases hrow with ⟨i, rfl⟩
+    simp
   · intro row hrow q hq
-    rcases List.mem_iff_get.1 hrow with ⟨i, hi⟩
-    rw [← hi] at hq
-    let i' : Fin r := ⟨i.1, by simpa [veroneseLinearFactorMatrixDesc] using i.2⟩
-    have hq' : q ∈ veroneseLinearFactorRowDesc r a i' := by
-      simpa [veroneseLinearFactorMatrixDesc, i'] using hq
-    exact hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
-      (r := r) (a := a) ha i' hq'
+    rw [veroneseLinearFactorMatrixDesc, List.mem_ofFn] at hrow
+    rcases hrow with ⟨i, rfl⟩
+    exact hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry ha i hq
   · intro i₁ i₂ j₁ j₂ hi hij
     let i₁' : Fin r := ⟨i₁.1, by simpa [veroneseLinearFactorMatrixDesc] using i₁.2⟩
     let i₂' : Fin r := ⟨i₂.1, by simpa [veroneseLinearFactorMatrixDesc] using i₂.2⟩
     have hi' : i₁' ≤ i₂' := by grind
     have h := veroneseLinearFactorMatrixDesc_has2x2 ha i₁' i₂' j₁ j₂ hi' hij
-    simpa [VeroneseLinearFactorMatrixDescHas2x2, veroneseLinearFactorMatrixDesc,
-      i₁', i₂'] using h
+    dsimp only [veroneseLinearFactorMatrixDesc] at i₁ i₂ ⊢
+    simp only [List.get_eq_getElem, List.getElem_ofFn]
+    exact h
 
 /-- Product of monic nonnegative linear factors `∏ (X + a)`. -/
 def linearFactorProduct (as : List ℝ) : ℝ[X] :=

@@ -42,7 +42,7 @@ theorem binomialLift_binomialUnlift {n : ℕ} {p : ℂ[X]}
   ext k
   rw [coeff_binomialLift]
   by_cases hk : k ≤ n
-  · rw [if_pos hk]
+  · rw [ite_eq_left hk]
     unfold binomialUnlift
     rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single k]
     · simp only [Polynomial.coeff_monomial_same]
@@ -51,7 +51,7 @@ theorem binomialLift_binomialUnlift {n : ℕ} {p : ℂ[X]}
       simp [Polynomial.coeff_monomial, hjk]
     · intro hknot
       exact (hknot (by simpa [Finset.mem_range, Nat.lt_succ_iff] using hk)).elim
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     exact (Polynomial.coeff_eq_zero_of_natDegree_lt
       (lt_of_le_of_lt hp (Nat.lt_of_not_ge hk))).symm
 
@@ -427,7 +427,7 @@ theorem eval_reducedPolarization_eq_apolarPairing_of_binomialLift_eq_rootPolynom
   have hsub : n - k ≤ n := Nat.sub_le n k
   have hback : n - (n - k) = k := Nat.sub_sub_self hkn
   have hcoeff := congrArg (fun p : ℂ[X] => p.coeff (n - k)) hg
-  rw [coeff_binomialLift, if_pos hsub] at hcoeff
+  rw [coeff_binomialLift, ite_eq_left hsub] at hcoeff
   have hrootCoeff :
       (polarizationRootPolynomial z).coeff (n - k) =
         (-1 : ℂ) ^ k * (Finset.univ.val.map z).esymm k := by

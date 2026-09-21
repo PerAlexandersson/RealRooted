@@ -68,8 +68,8 @@ theorem elementarySymmetricTriangle_succ_succ
       simp [elementarySymmetricTriangle, elementarySymmetricPrefix_zero]
     · have hklt : k < n := lt_of_le_of_ne hk hkn
       have hdegree : n + 1 - (k + 1) = (n - (k + 1)) + 1 := by lia
-      simp only [elementarySymmetricTriangle_apply, if_pos hk,
-        if_pos (by lia : k + 1 ≤ n + 1), if_pos (by lia : k + 1 ≤ n)]
+      simp only [elementarySymmetricTriangle_apply, ite_eq_left hk,
+        ite_eq_left (by lia : k + 1 ≤ n + 1), ite_eq_left (by lia : k + 1 ≤ n)]
       rw [hdegree, elementarySymmetricPrefix_succ]
       congr 2
       lia
@@ -141,18 +141,18 @@ private theorem elementarySymmetricStep_mul_apply
       else 0 := by
       congr 1
       by_cases hri : r < i.val
-      · rw [if_pos hri]
+      · rw [ite_eq_left hri]
         let p : Fin (N + 1) := ⟨i.val - 1, by lia⟩
         have hip : i.val = p.val + 1 := by simp [p]; lia
         rw [Finset.sum_eq_single p]
-        · rw [if_pos hip, if_pos (by simp [p]; lia)]
+        · rw [ite_eq_left hip, ite_eq_left (by simp [p]; lia)]
         · intro b hb hbp
           by_cases hib : i.val = b.val + 1
           · have hval : b.val = p.val := by simp [p] at hib ⊢; lia
             exact (hbp (Fin.ext hval)).elim
           · simp [hib]
         · simp
-      · rw [if_neg hri]
+      · rw [ite_eq_right hri]
         apply Finset.sum_eq_zero
         intro x hx
         by_cases hix : i.val = x.val + 1
@@ -178,29 +178,30 @@ theorem elementarySymmetricStepProduct_apply
       · by_cases hji : j.val ≤ i.val
         · have hlt : j.val < i.val := lt_of_le_of_ne hji
             (fun h => hij (Fin.ext h.symm))
-          rw [if_pos hji, Matrix.one_apply, if_neg hij]
-          simp [elementarySymmetricPrefix, Multiset.esymm,
-            Multiset.powersetCard_eq_empty, hlt]
-        · rw [if_neg hji, Matrix.one_apply, if_neg hij]
+          rw [ite_eq_left hji, Matrix.one_apply, ite_eq_right hij]
+          have hempty : Multiset.powersetCard (i.val - j.val) (0 : Multiset R) = 0 :=
+            Multiset.powersetCard_eq_empty _ (by simpa using Nat.sub_pos_of_lt hlt)
+          simp [elementarySymmetricPrefix, Multiset.esymm, hempty]
+        · rw [ite_eq_right hji, Matrix.one_apply, ite_eq_right hij]
   | succ r ih =>
       rw [elementarySymmetricStepProduct, elementarySymmetricStep_mul_apply,
         ih (by lia)]
       by_cases hji : j.val ≤ i.val
-      · simp only [if_pos hji]
+      · simp only [ite_eq_left hji]
         by_cases hri : r < i.val
-        · rw [if_pos hri]
+        · rw [ite_eq_left hri]
           let p : Fin (N + 1) := ⟨i.val - 1, by lia⟩
           change elementarySymmetricPrefix w (min r i.val) (i.val - j.val) +
               w r * elementarySymmetricStepProduct w N r p j =
             elementarySymmetricPrefix w (min (r + 1) i.val) (i.val - j.val)
           by_cases hij : i = j
           · subst j
-            rw [ih (by lia), if_neg (by simp [p]; lia)]
+            rw [ih (by lia), ite_eq_right (by simp [p]; lia)]
             simp
           · have hji' : j.val < i.val := lt_of_le_of_ne hji
                 (fun h => hij (Fin.ext h.symm))
             have hjp : j.val ≤ p.val := by simp [p]; lia
-            rw [ih (by lia), if_pos hjp]
+            rw [ih (by lia), ite_eq_left hjp]
             have hmin : min r i.val = r := min_eq_left (Nat.le_of_lt hri)
             have hmin' : min r p.val = r := by
               rw [min_eq_left]
@@ -213,17 +214,17 @@ theorem elementarySymmetricStepProduct_apply
               simp [p]
               lia
             rw [hdegree, elementarySymmetricPrefix_succ]
-        · rw [if_neg hri]
+        · rw [ite_eq_right hri]
           have hir : i.val ≤ r := by lia
           rw [min_eq_right hir, min_eq_right (by lia : i.val ≤ r + 1)]
           simp
-      · simp only [if_neg hji]
+      · simp only [ite_eq_right hji]
         by_cases hri : r < i.val
-        · rw [if_pos hri]
+        · rw [ite_eq_left hri]
           have hpj : ¬j.val ≤ i.val - 1 := by lia
-          rw [ih (by lia), if_neg hpj]
+          rw [ih (by lia), ite_eq_right hpj]
           simp
-        · rw [if_neg hri]
+        · rw [ite_eq_right hri]
           simp
 
 /-- Exact bidiagonal factorization of every leading finite truncation. -/
@@ -234,9 +235,9 @@ theorem elementarySymmetricTriangleFin_eq_stepProduct
   ext i j
   rw [elementarySymmetricStepProduct_apply w N N (le_refl N)]
   by_cases hji : j.val ≤ i.val
-  · rw [elementarySymmetricTriangleFin_apply, if_pos hji, if_pos hji,
+  · rw [elementarySymmetricTriangleFin_apply, ite_eq_left hji, ite_eq_left hji,
       min_eq_right (by lia)]
-  · rw [elementarySymmetricTriangleFin_apply, if_neg hji, if_neg hji]
+  · rw [elementarySymmetricTriangleFin_apply, ite_eq_right hji, ite_eq_right hji]
 
 section Ordered
 
@@ -257,10 +258,7 @@ theorem elementarySymmetricStepProduct_isTotallyNonneg
     (elementarySymmetricStepProduct w N r).IsTotallyNonneg := by
   induction r with
   | zero =>
-      simpa [elementarySymmetricStepProduct,
-        Matrix.submatrix_one Fin.val Fin.val_injective] using
-        (Matrix.IsTotallyNonneg.one (R := R)).submatrix
-          Fin.val_strictMono Fin.val_strictMono
+      simp [elementarySymmetricStepProduct, Matrix.IsTotallyNonneg.one]
   | succ r ih =>
       rw [elementarySymmetricStepProduct]
       exact (elementarySymmetricStep_isTotallyNonneg hw N r).mul ih

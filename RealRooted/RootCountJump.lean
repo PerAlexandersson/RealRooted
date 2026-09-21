@@ -1,7 +1,7 @@
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Order.BigOperators.Group.List
 import Mathlib.Algebra.Order.BigOperators.Group.Multiset
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import RealRooted.RootContinuity
 
 /-!
@@ -182,7 +182,7 @@ theorem sum_card_filter_Ioo_zip_tail_add_card_filter_ge_getLast_le_card_filter_g
   induction xs generalizing a b with
   | nil =>
       have hab_lt : a < b := List.IsChain.rel hchain
-      simpa using
+      simpa using!
         (card_filter_Ioo_add_card_filter_ge_eq_card_filter_gt s hab_lt).le
   | cons c t ih =>
       have hab_lt : a < b := List.IsChain.rel hchain
@@ -299,7 +299,7 @@ theorem card_filter_lt_add_sum_card_filter_Ioo_zip_tail_add_card_filter_gt_getLa
   induction xs generalizing a with
   | nil =>
       have ha_not : a ∉ s := hnode a (by simp)
-      simpa using card_filter_lt_add_card_filter_gt_eq_card_of_not_mem s ha_not
+      simpa using! card_filter_lt_add_card_filter_gt_eq_card_of_not_mem s ha_not
   | cons b t ih =>
       have hab_lt : a < b := List.IsChain.rel hchain
       have htail : (b :: t).IsChain (· < ·) := List.IsChain.of_cons hchain

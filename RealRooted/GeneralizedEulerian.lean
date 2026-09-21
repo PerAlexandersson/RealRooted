@@ -99,7 +99,7 @@ lemma coeff_generalizedEulerian_succ (c : ℝ) (n k : ℕ) :
   · subst k
     norm_num [coeff_derivative]
     ring
-  · rw [if_pos (by lia : 2 ≤ k + 1), coeff_derivative]
+  · rw [ite_eq_left (by lia : 2 ≤ k + 1), coeff_derivative]
     rw [coeff_derivative]
     have hidx : k + 1 - 2 + 1 = k := by lia
     rw [hidx]
@@ -271,7 +271,7 @@ theorem generalizedEulerian_one_reflect (n : ℕ) :
 theorem eval_recip_generalizedEulerian_one (n : ℕ) {x : ℝ} (hx : x ≠ 0) :
     (generalizedEulerian 1 n).eval x =
       x ^ n * (generalizedEulerian 1 n).eval (1 / x) := by
-  letI : Invertible x := invertibleOfNonzero hx
+  let : Invertible x := invertibleOfNonzero hx
   have hdeg : (generalizedEulerian 1 n).natDegree ≤ n :=
     (generalizedEulerian_natDegree 1 n).le
   have heval := Polynomial.eval₂_reflect_mul_pow

@@ -77,7 +77,7 @@ theorem IsPolyaFreqSeq.const_mul_sequence
     {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) (C : ℝ) (hC : 0 ≤ C) :
     IsPolyaFreqSeq (fun d => C * a d) := by
   rw [IsPolyaFreqSeq, toeplitz_const_mul_sequence]
-  exact ha.smul C hC
+  exact ha.smul hC
 
 /-- A nonnegative scalar multiple of a finite zero prefix remains PF. -/
 theorem IsPolyaFreqSeq.scaledZeroPrefix
@@ -94,7 +94,7 @@ theorem toeplitz_scaledZeroPrefix_apply
       if j + N ≤ i then C * a (i - j - N) else 0 := by
   rw [toeplitz_apply]
   by_cases hji : j ≤ i
-  · rw [if_pos hji]
+  · rw [ite_eq_left hji]
     have hshift : N ≤ i - j ↔ j + N ≤ i := by lia
     simp only [scaledZeroPrefix, hshift]
   · have hshift : ¬j + N ≤ i := fun h => hji (by lia)
@@ -111,10 +111,15 @@ theorem toeplitz_scaledZeroPrefix_eq_zero_of_row_lt
 theorem chowPolynomial_scaledZeroPrefix_eq_zero_of_lt
     (C : ℝ) (N : ℕ) (a : ℕ → ℝ) {n : ℕ} (hn : n < N) :
     chowPolynomial (toeplitz (scaledZeroPrefix C N a)) n = 0 := by
+  let A : LowerTriangularMatrix ℝ := toeplitz (scaledZeroPrefix C N a)
+  change chowPolynomial A n = 0
   rw [chowPolynomial_eq]
   apply Finset.sum_eq_zero
   intro k hk
-  rw [toeplitz_scaledZeroPrefix_eq_zero_of_row_lt C N a hn]
+  have hentry : A n k = 0 := by
+    dsimp [A]
+    exact toeplitz_scaledZeroPrefix_eq_zero_of_row_lt C N a hn k
+  rw [hentry]
   simp
 
 /-- At the prefix rank, the Chow polynomial is exactly the first shifted
@@ -123,12 +128,27 @@ theorem chowPolynomial_scaledZeroPrefix_self
     (C : ℝ) (N : ℕ) (a : ℕ → ℝ) :
     chowPolynomial (toeplitz (scaledZeroPrefix C N a)) N =
       Polynomial.C (C * a 0) := by
+  let A : LowerTriangularMatrix ℝ := toeplitz (scaledZeroPrefix C N a)
+  change chowPolynomial A N = _
   rw [chowPolynomial_eq, Finset.sum_eq_single 0]
-  · simp
+  · have hentry : A N 0 = C * a 0 := by
+      dsimp [A]
+      exact scaledZeroPrefix_self C N a
+    rw [hentry]
+    simp
   · intro k hk hk0
-    have hkN : k ≤ N := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-    rw [toeplitz_apply, if_pos hkN,
-      scaledZeroPrefix_eq_zero_of_lt C N a (by lia)]
+    have hentry : A N k = 0 := by
+      dsimp [A]
+      rw [ite_eq_left (Nat.le_of_lt_succ (Finset.mem_range.mp hk))]
+      have hN : N ≠ 0 := by
+        intro hN
+        subst N
+        apply hk0
+        exact Nat.eq_zero_of_le_zero
+          (Nat.le_of_lt_succ (Finset.mem_range.mp hk))
+      exact scaledZeroPrefix_eq_zero_of_lt C N a
+        (Nat.sub_lt (Nat.pos_of_ne_zero hN) (Nat.pos_of_ne_zero hk0))
+    rw [hentry]
     simp
   · simp
 
@@ -182,7 +202,8 @@ theorem chowPolynomial_three_zero_prefix_six :
     chowPolynomial
         (toeplitz (scaledZeroPrefix 1 3 (fun _ : ℕ => (1 : ℝ)))) 6 =
       X ^ 2 + X + 1 := by
-  let A := toeplitz (scaledZeroPrefix 1 3 (fun _ : ℕ => (1 : ℝ)))
+  let A : LowerTriangularMatrix ℝ :=
+    toeplitz (scaledZeroPrefix 1 3 (fun _ : ℕ => (1 : ℝ)))
   have hd0 : chowDerangement A 0 = 1 := chowDerangement_zero A
   have hd1 : chowDerangement A 1 = 0 := by
     rw [chowDerangement_succ]

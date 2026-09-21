@@ -170,9 +170,9 @@ theorem coeff_degreeSignFlip_of_le {n j : ℕ} (p : ℝ[X]) (hj : j ≤ n) :
   unfold degreeSignFlip
   rw [Polynomial.finsetSum_coeff]
   rw [Finset.sum_eq_single_of_mem j (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hj))]
-  · rw [coeff_C_mul, coeff_X_pow, if_pos rfl, mul_one]
+  · rw [coeff_C_mul, coeff_X_pow, ite_eq_left rfl, mul_one]
   · intro k hk hkj
-    rw [coeff_C_mul, coeff_X_pow, if_neg (fun h => hkj h.symm), mul_zero]
+    rw [coeff_C_mul, coeff_X_pow, ite_eq_right (fun h => hkj h.symm), mul_zero]
 
 theorem coeff_degreeSignFlip_of_lt {n j : ℕ} (p : ℝ[X]) (hj : n < j) :
     (degreeSignFlip n p).coeff j = 0 := by
@@ -180,7 +180,7 @@ theorem coeff_degreeSignFlip_of_lt {n j : ℕ} (p : ℝ[X]) (hj : n < j) :
   rw [Polynomial.finsetSum_coeff]
   apply Finset.sum_eq_zero
   intro k hk
-  rw [coeff_C_mul, coeff_X_pow, if_neg (fun h => by
+  rw [coeff_C_mul, coeff_X_pow, ite_eq_right (fun h => by
     have hk_le : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
     lia), mul_zero]
 

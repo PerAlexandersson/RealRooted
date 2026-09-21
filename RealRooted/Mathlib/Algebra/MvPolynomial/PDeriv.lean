@@ -56,7 +56,7 @@ theorem pderiv_finsetProd_X {R σ : Type*} [CommSemiring R] [DecidableEq σ]
       · have hxa : x ≠ a := Ne.symm hax
         by_cases hxt : x ∈ t
         · simp only [Finset.prod_insert ha, pderiv_mul,
-            pderiv_X_of_ne hax, ih, hxt, if_pos, zero_mul,
+            pderiv_X_of_ne hax, ih, hxt, ite_eq_left, zero_mul,
             zero_add, Finset.mem_insert, hxa]
           split
           · have haerase : a ∉ t.erase x :=

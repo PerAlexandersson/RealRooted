@@ -35,27 +35,48 @@ def bMat : Matrix (Fin 3) (Fin 3) ℝ :=
 
 /-- The first witness matrix is totally nonnegative. -/
 theorem aMat_isTotallyNonneg : aMat.IsTotallyNonneg := fun n rows cols hrows hcols => by
+  change 0 ≤ (aMat.submatrix rows cols).det
   have hn : n ≤ 3 := strictMono_fin_three_le hrows
-  interval_cases n <;> norm_num [Matrix.det_fin_two, Matrix.det_fin_three]
-  · fin_cases rows <;> fin_cases cols <;> simp [aMat, Multiset.Pi.cons]
-  · unfold aMat
-    fin_cases rows <;> fin_cases cols <;>
-      norm_num [Multiset.Pi.cons] at hrows hcols ⊢ <;>
-      revert hrows hcols <;> decide
+  interval_cases n
+  · norm_num
+  · erw [Matrix.det_fin_one]
+    simp only [Matrix.submatrix_apply]
+    generalize rows 0 = r0, cols 0 = c0
+    fin_cases r0 <;> fin_cases c0 <;> norm_num [aMat]
+  · erw [Matrix.det_fin_two]
+    have hr := hrows (show (0 : Fin 2) < 1 by decide)
+    have hc := hcols (show (0 : Fin 2) < 1 by decide)
+    simp only [Matrix.submatrix_apply]
+    generalize rows 0 = r0, rows 1 = r1 at hr ⊢
+    generalize cols 0 = c0, cols 1 = c1 at hc ⊢
+    fin_cases r0 <;> fin_cases r1 <;> fin_cases c0 <;> fin_cases c1 <;>
+      (revert hr hc; norm_num [aMat])
   · obtain ⟨r0, r1, r2⟩ := strictMono_fin_three_eq hrows
     obtain ⟨c0, c1, c2⟩ := strictMono_fin_three_eq hcols
+    erw [Matrix.det_fin_three]
     simp [r0, r1, r2, c0, c1, c2, aMat]
 
 /-- The second witness matrix is totally nonnegative. -/
 theorem bMat_isTotallyNonneg : bMat.IsTotallyNonneg := fun n rows cols hrows hcols => by
+  change 0 ≤ (bMat.submatrix rows cols).det
   have hn : n ≤ 3 := strictMono_fin_three_le hrows
-  interval_cases n <;> norm_num [Matrix.det_fin_two, Matrix.det_fin_three]
-  · fin_cases rows <;> fin_cases cols <;> simp [bMat, Multiset.Pi.cons]
-  · fin_cases rows <;> fin_cases cols <;>
-      norm_num [bMat, Multiset.Pi.cons] at hrows hcols ⊢ <;>
-      revert hrows hcols <;> decide
+  interval_cases n
+  · norm_num
+  · erw [Matrix.det_fin_one]
+    simp only [Matrix.submatrix_apply]
+    generalize rows 0 = r0, cols 0 = c0
+    fin_cases r0 <;> fin_cases c0 <;> norm_num [bMat]
+  · erw [Matrix.det_fin_two]
+    have hr := hrows (show (0 : Fin 2) < 1 by decide)
+    have hc := hcols (show (0 : Fin 2) < 1 by decide)
+    simp only [Matrix.submatrix_apply]
+    generalize rows 0 = r0, rows 1 = r1 at hr ⊢
+    generalize cols 0 = c0, cols 1 = c1 at hc ⊢
+    fin_cases r0 <;> fin_cases r1 <;> fin_cases c0 <;> fin_cases c1 <;>
+      (revert hr hc; norm_num [bMat])
   · obtain ⟨r0, r1, r2⟩ := strictMono_fin_three_eq hrows
     obtain ⟨c0, c1, c2⟩ := strictMono_fin_three_eq hcols
+    erw [Matrix.det_fin_three]
     simp [r0, r1, r2, c0, c1, c2, bMat] ; norm_num
 
 /-- The Hadamard product of the two witness matrices has determinant `-2`. -/

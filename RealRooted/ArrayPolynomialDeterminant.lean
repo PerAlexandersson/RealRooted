@@ -54,7 +54,7 @@ one. -/
     (hd : ∀ i, d i ≠ 0) :
     (scaledLowerFin N d).det = 1 := by
   rw [← Matrix.det_transpose]
-  rw [Matrix.det_of_upperTriangular (scaledLowerFin_transpose_blockTriangular N d)]
+  rw [Matrix.det_of_isUpperTriangular (scaledLowerFin_transpose_blockTriangular N d)]
   simp [scaledLowerFin, hd]
 
 /-- The cumulative products of the lower-bidiagonal weights
@@ -123,7 +123,7 @@ lemma upperBidiagonalFin_blockTriangular (N : ℕ) (a : ℝ) :
 
 @[simp] theorem upperBidiagonalFin_det (N : ℕ) (a : ℝ) :
     (upperBidiagonalFin N a).det = a ^ (N + 1) := by
-  rw [Matrix.det_of_upperTriangular (upperBidiagonalFin_blockTriangular N a)]
+  rw [Matrix.det_of_isUpperTriangular (upperBidiagonalFin_blockTriangular N a)]
   simp [upperBidiagonalFin_apply]
 
 /-- The invertible perturbation of `B⁻¹ S` used before Gaussian

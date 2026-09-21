@@ -85,7 +85,7 @@ the characteristic polynomial of `compound q T`.
 open Polynomial in
 /-- A block triangular matrix with an *injective* block map is genuinely
 triangular: its determinant is the product of its diagonal.  This is
-`Matrix.det_of_upperTriangular` without asking for a linear order on the index
+`Matrix.det_of_isUpperTriangular` without asking for a linear order on the index
 type itself. -/
 theorem BlockTriangular.det_of_injective {m α : Type*} [DecidableEq m] [Fintype m]
     [LinearOrder α] {M : Matrix m m R} {b : m → α} (hb : Function.Injective b)
@@ -93,7 +93,7 @@ theorem BlockTriangular.det_of_injective {m α : Type*} [DecidableEq m] [Fintype
   classical
   rw [h.det, Finset.prod_image fun x _ y _ hxy => hb hxy]
   refine Finset.prod_congr rfl fun i _ => ?_
-  haveI : Unique {j // b j = b i} := ⟨⟨⟨i, rfl⟩⟩, fun j => Subtype.ext (hb j.prop)⟩
+  have : Unique {j // b j = b i} := ⟨⟨⟨i, rfl⟩⟩, fun j => Subtype.ext (hb j.prop)⟩
   have hd : (default : {j // b j = b i}) = ⟨i, rfl⟩ :=
     Subtype.ext (hb (default : {j // b j = b i}).prop)
   rw [Matrix.det_unique, hd]
@@ -189,7 +189,7 @@ theorem compound_apply_self_of_blockTriangular {n q : ℕ} {T : Matrix (Fin n) (
     compound q T s s = ∏ k, T (powersetEnum s k) (powersetEnum s k) := by
   have hsub : (T.submatrix (powersetEnum s) (powersetEnum s)).BlockTriangular id :=
     fun k l hlk => hT (strictMono_powersetEnum s hlk)
-  rw [compound_apply, Matrix.det_of_upperTriangular hsub]
+  rw [compound_apply, Matrix.det_of_isUpperTriangular hsub]
   rfl
 
 open Polynomial in

@@ -199,7 +199,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
         lia
       · -- Multiplicity: s = r₁ = r₂, use count argument via IH(B)
         have hr_eq : r₁ = r₂ := le_antisymm hr₁r₂ (not_lt.mp hlt)
-        have hs : s = r₁ := dif_neg hlt
+        have hs : s = r₁ := dite_eq_right hlt
         rw [Multiset.le_iff_count]; intro a
         rw [Multiset.count_cons]
         split_ifs with heq
@@ -229,11 +229,11 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
       rw [Multiset.count_cons, Multiset.count_cons]
       by_cases heq : a = s <;> by_cases hr₁a : a = r₁
       · -- a = s, a = r₁
-        rw [if_pos heq, if_pos hr₁a]
+        rw [ite_eq_left heq, ite_eq_left hr₁a]
         have hr_eq : r₁ = r₂ := by grind
         simp_all
       · -- a = s, a ≠ r₁: vacuous
-        rw [if_pos heq, if_neg hr₁a]; exfalso
+        rw [ite_eq_left heq, ite_eq_right hr₁a]; exfalso
         rcases ha with rfl | ha_tail
         · lia
         · by_cases hlt : r₁ < r₂
@@ -247,7 +247,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
             linarith
           · lia
       · -- a ≠ s, a = r₁
-        rw [if_neg heq, if_pos hr₁a]
+        rw [ite_eq_right heq, ite_eq_left hr₁a]
         by_cases ha2 : a ∈ (↑(r₂ :: rest) : Multiset ℝ)
         · grind
         · have hlt : r₁ < r₂ := by lia

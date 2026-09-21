@@ -36,7 +36,7 @@ theorem finiteToeplitz_mul {R : Type*} [CommSemiring R]
         (fun n => PowerSeries.coeff n (PowerSeries.mk a * PowerSeries.mk b)) N := by
   ext i j
   by_cases hji : j ≤ i
-  · rw [Matrix.mul_apply, finiteToeplitz_apply, if_pos hji]
+  · rw [Matrix.mul_apply, finiteToeplitz_apply, ite_eq_left hji]
     simp only [finiteToeplitz_apply]
     simp only [Fin.le_iff_val_le_val]
     change (∑ k : Fin (N + 1),
@@ -100,7 +100,7 @@ theorem finiteToeplitz_mul {R : Type*} [CommSemiring R]
         rw [PowerSeries.coeff_mul,
           Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
         simp [mul_comm]
-  · rw [finiteToeplitz_apply, if_neg hji, Matrix.mul_apply]
+  · rw [finiteToeplitz_apply, ite_eq_right hji, Matrix.mul_apply]
     apply Finset.sum_eq_zero
     intro k _
     by_cases hki : k ≤ i
@@ -163,7 +163,7 @@ theorem finiteToeplitz_kernelProduct_apply_zero
         (finiteToeplitz (fun n => PowerSeries.coeff n h) N *
           finiteToeplitz (fun n => PowerSeries.coeff n g) N) ^ q) i 0 =
       PowerSeries.coeff i.val (g ^ (q + 1) * h ^ q) := by
-  rw [finiteToeplitz_kernelProduct, finiteToeplitz_apply, if_pos (Fin.zero_le i)]
+  rw [finiteToeplitz_kernelProduct, finiteToeplitz_apply, ite_eq_left (Fin.zero_le i)]
   simp
 
 /-- The literal `n`th coefficient row of the two-kernel geometric series. -/
@@ -234,10 +234,10 @@ theorem twoKernelRow_eq_kernelRow_fin {R : Type*} [CommSemiring R]
   ext k
   rw [coeff_twoKernelRow hzero, coeff_kernelRow]
   by_cases hk : k < N + 1
-  · rw [if_pos hk]
+  · rw [ite_eq_left hk]
     symm
     exact finiteToeplitz_kernelProduct_apply_zero g h k i
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     exact coeff_twoKernelTerm_eq_zero_of_lt hzero (by lia)
 
 /-- A literal two-kernel row is the last row of its smallest finite Toeplitz

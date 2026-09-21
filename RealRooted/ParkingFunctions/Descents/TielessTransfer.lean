@@ -217,9 +217,18 @@ theorem parkingSmirnovDescentSum_eq_tielessParkingDescentPolynomial
       tielessParkingDescentPolynomial n := by
   cases n with
   | zero =>
-      simp [parkingSmirnovWords, BrandenVecchi.smirnovWords,
-        BrandenVecchi.IsSmirnovWord, IsParkingWord,
-        BrandenVecchi.smirnovDescentNumber]
+      have hzero : parkingSmirnovWords 0 = {default} := by
+        refine Finset.eq_singleton_iff_unique_mem.mpr ⟨?_, ?_⟩
+        · rw [mem_parkingSmirnovWords_iff]
+          constructor
+          · trivial
+          · intro k hk
+            have hk0 : k = 0 := Nat.eq_zero_of_le_zero hk
+            simp [hk0]
+        · intro w _
+          exact Subsingleton.elim _ _
+      rw [hzero]
+      simp [BrandenVecchi.smirnovDescentNumber]
   | succ n =>
       rw [tielessParkingDescentPolynomial]
       unfold descentGeneratingPolynomial

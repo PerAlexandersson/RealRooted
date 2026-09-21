@@ -120,7 +120,9 @@ theorem matrix_preserves_interlacing_seq
           hG_affine iG jG j₁ j₂ (by grind) hj)
         (hfs_len := hfs_len)
         (hfs := ⟨hfs_mem, hfs_int⟩)
-    simpa [matPolyAction, iG, jG] using hpair
+    dsimp only [matPolyAction] at i j ⊢
+    erw [List.get_eq_getElem, List.getElem_map, List.get_eq_getElem, List.getElem_map]
+    exact hpair
 
 /-- **Weak zero-aware forward direction**: if `G` has non-negative coefficients
 and satisfies the weak affine 2×2 condition `Has2x2InterlacingProperty0`, then
@@ -166,7 +168,9 @@ theorem matrix_preserves_interlacing_seq0_of_2x2
           hG_affine iG jG j₁ j₂ (by grind) hj)
         (hfs_len := hfs_len)
         (hfs := ⟨hfs_mem, hfs_int⟩)
-    simpa [matPolyAction, iG, jG] using hpair
+    dsimp only [matPolyAction] at i j ⊢
+    erw [List.get_eq_getElem, List.getElem_map, List.get_eq_getElem, List.getElem_map]
+    exact hpair
   · intro p hp
     rcases List.mem_map.mp hp with ⟨row, hrow_mem, rfl⟩
     exact
@@ -217,7 +221,9 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
           (hfs_len := hfs_len)
           (hfs := hfs)
           (hfs_real := hfs_real)
-      simpa [matPolyAction, iG, jG] using hpair
+      dsimp only [matPolyAction] at i j ⊢
+      erw [List.get_eq_getElem, List.getElem_map, List.get_eq_getElem, List.getElem_map]
+      exact hpair
     · intro p hp
       rcases List.mem_map.mp hp with ⟨row, hrow_mem, rfl⟩
       exact

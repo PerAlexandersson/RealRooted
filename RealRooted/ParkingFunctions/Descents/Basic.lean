@@ -1,6 +1,6 @@
 import Mathlib.Algebra.Polynomial.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 
 open Polynomial
 
@@ -176,14 +176,14 @@ theorem descentNumber_snoc {n : ℕ} {α : Type*} [LT α]
   unfold descentNumber
   rw [descentSet_snoc]
   by_cases h : x < w (Fin.last n)
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     have hdisjoint : Disjoint ((descentSet w).map Fin.castSuccEmb) {Fin.last n} := by
       rw [Finset.disjoint_singleton_right]
       simp
     rw [Finset.card_union_of_disjoint hdisjoint, Finset.card_map,
       Finset.card_singleton]
     simp [h]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     simp [h]
 
 @[simp]
@@ -203,7 +203,7 @@ theorem descentWeight_snoc {R : Type*} [Semiring R] {n : ℕ}
       (if x < w (Fin.last n) then X else 1) * X ^ descentNumber w := by
   rw [descentNumber_snoc]
   by_cases h : x < w (Fin.last n)
-  · simp only [if_pos h, pow_succ]
+  · simp only [ite_eq_left h, pow_succ]
     rw [Polynomial.X_mul]
   · simp [h]
 

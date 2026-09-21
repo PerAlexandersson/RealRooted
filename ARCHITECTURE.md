@@ -1522,6 +1522,12 @@ general derivative and dehomogenization closures remain in
 
 ## Import checks
 
+The Lean 4.34 migration adds one small `PerronFrobenius.Simplex` shim. It
+preserves the set-of-vectors interface used by the matrix theory after Mathlib
+replaced its standard simplex API with a bundled type. The shim imports only
+Mathlib. Its nine budgeted consumers gain exactly one local module; their
+closure budgets increase by one, with no new upward dependency edges.
+
 Run the architecture check with:
 
 ```bash

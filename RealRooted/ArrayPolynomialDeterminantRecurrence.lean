@@ -168,7 +168,7 @@ lemma lowerHessenbergTwoAntepenultimateCofactor_det {R : Type*}
       x ^ 2 * (lowerHessenbergTwo a b x n).det := by
   rw [det_eq_last_apply_mul_det_castSucc]
   · rw [lowerHessenbergTwoAntepenultimateCofactor_lastColumn]
-    simp only [if_pos]
+    simp only [ite_eq_left]
     change x *
       (lowerHessenbergTwoAntepenultimateInnerCofactor a b x n).det = _
     rw [lowerHessenbergTwoAntepenultimateInnerCofactor_det]

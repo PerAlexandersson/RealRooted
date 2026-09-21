@@ -148,8 +148,8 @@ theorem jPolynomial_differentialEquation (m ε : ℕ) :
                 rw [coeff_zero_eq_eval_zero, insertionOperator_eval_zero,
                   ← coeff_zero_eq_eval_zero, coeff_derivative]
                 ring
-              rw [hM0, coeff_jPolynomial, if_pos (by lia : 0 < n + 1 + 1),
-                coeff_jPolynomial, if_pos (by lia : 1 < n + 1 + 1)]
+              rw [hM0, coeff_jPolynomial, ite_eq_left (by lia : 0 < n + 1 + 1),
+                coeff_jPolynomial, ite_eq_left (by lia : 1 < n + 1 + 1)]
               have hrec := jCoeff_succ_mul (n + 1 + 1) ε 0
               simp only [jCoeff_zero] at hrec ⊢
               push_cast at hrec ⊢
@@ -162,15 +162,15 @@ theorem jPolynomial_differentialEquation (m ε : ℕ) :
               · have hcur :
                     (jPolynomial (n + 1 + 1) ε).coeff (k + 1) =
                       jCoeff (n + 1 + 1) ε (k + 1) := by
-                  rw [coeff_jPolynomial, if_pos hk]
+                  rw [coeff_jPolynomial, ite_eq_left hk]
                 have hnext :
                     (jPolynomial (n + 1 + 1) ε).coeff (k + 1 + 1) =
                       jCoeff (n + 1 + 1) ε (k + 1 + 1) := by
                   rw [coeff_jPolynomial]
                   by_cases hlt : k + 1 + 1 < n + 1 + 1
-                  · rw [if_pos hlt]
+                  · rw [ite_eq_left hlt]
                   · have heq : k + 1 + 1 = n + 1 + 1 := by lia
-                    rw [if_neg hlt, heq,
+                    rw [ite_eq_right hlt, heq,
                       jCoeff_self_eq_zero (n + 1 + 1) ε (by lia)]
                 rw [hcur, hnext]
                 have hrec := jCoeff_succ_mul (n + 1 + 1) ε (k + 1)
@@ -179,11 +179,11 @@ theorem jPolynomial_differentialEquation (m ε : ℕ) :
                 linear_combination hrec
               · have hcur :
                     (jPolynomial (n + 1 + 1) ε).coeff (k + 1) = 0 := by
-                  rw [coeff_jPolynomial, if_neg hk]
+                  rw [coeff_jPolynomial, ite_eq_right hk]
                 have hnext :
                     (jPolynomial (n + 1 + 1) ε).coeff (k + 1 + 1) = 0 := by
                   rw [coeff_jPolynomial,
-                    if_neg (by lia : ¬k + 1 + 1 < n + 1 + 1)]
+                    ite_eq_right (by lia : ¬k + 1 + 1 < n + 1 + 1)]
                 rw [hcur, hnext]
                 ring
 
@@ -319,7 +319,7 @@ theorem iterate_derivative_jPolynomial_eval_zero
     ((derivative^[d]) (jPolynomial m ε)).eval 0 =
       d.factorial * jCoeff m ε d := by
   rw [← coeff_zero_eq_eval_zero, coeff_iterate_derivative, zero_add,
-    nsmul_eq_mul, Nat.descFactorial_self, coeff_jPolynomial, if_pos hd]
+    nsmul_eq_mul, Nat.descFactorial_self, coeff_jPolynomial, ite_eq_left hd]
 
 /-- The terminating rising factorial `(1-m)_d` has sign `(-1)^d` before its
 zero at `d=m`. -/

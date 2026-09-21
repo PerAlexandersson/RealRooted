@@ -33,7 +33,8 @@ def smirnovSubstitutionFixed {m : ℕ} (t : A)
 theorem smirnovSubstitutionFixed_zero {m : ℕ} (t : A)
     (weight : Fin m → PowerSeries A) :
     smirnovSubstitutionFixed t weight 0 = 1 := by
-  simp [smirnovSubstitutionFixed, smirnovWords, IsSmirnovWord]
+  have hzero : IsSmirnovWord (m := m) 0 = fun _ => True := rfl
+  simp [smirnovSubstitutionFixed, smirnovWords, hzero]
 
 /-- Evaluation form of a fixed-length contribution. -/
 theorem smirnovSubstitutionFixed_eq_eval {m : ℕ} (t : A)
@@ -176,7 +177,7 @@ theorem coeff_smirnovSubstitutionEndingFixed_eq_zero_of_lt {m : ℕ}
   intro word _
   rw [weightedSmirnovEndingSummand]
   by_cases hword : IsSmirnovWord (k + 1) (Fin.snoc word i)
-  · rw [if_pos hword]
+  · rw [ite_eq_left hword]
     change PowerSeries.coeff n
       (Polynomial.eval (PowerSeries.C t)
         (C (smirnovWordWeight weight (Fin.snoc word i)) *
@@ -281,8 +282,8 @@ theorem smirnovSubstitutionSeries_eq_one_add_sum_ending {m : ℕ}
     smirnovSubstitutionSeries t weight =
       1 + ∑ i : Fin m,
         smirnovSubstitutionEndingSeries t weight i := by
-  letI : TopologicalSpace A := ⊥
-  letI : DiscreteTopology A := ⟨rfl⟩
+  let : TopologicalSpace A := ⊥
+  let : DiscreteTopology A := ⟨rfl⟩
   rw [smirnovSubstitutionSeries_eq_tsum t weight hweight]
   have hfixed : Summable (smirnovSubstitutionFixed t weight) :=
     (hasSum_smirnovSubstitutionFixed t weight hweight).summable
@@ -322,8 +323,8 @@ theorem smirnovSubstitutionEndingSeries_eq {m : ℕ}
           PowerSeries.C t *
             ∑ j ∈ Finset.Ioi i,
               smirnovSubstitutionEndingSeries t weight j) := by
-  letI : TopologicalSpace A := ⊥
-  letI : DiscreteTopology A := ⟨rfl⟩
+  let : TopologicalSpace A := ⊥
+  let : DiscreteTopology A := ⟨rfl⟩
   have hend (j : Fin m) :
       Summable (fun n ↦
         smirnovSubstitutionEndingFixed t weight n j) :=

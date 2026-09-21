@@ -25,7 +25,7 @@ theorem mem_lowerHalf_of_recip_avg {b : ℝ} {w ζ : ℂ}
   have hrad : (0 : ℝ) ≤ 1 / (2 * A) := by positivity
   have hKeq : K = Metric.closedBall (Complex.mk 0 (-(1 / (2 * A)))) (1 / (2 * A)) := by
     ext u
-    simp only [hK, Set.mem_setOf_eq, Metric.mem_closedBall, dist_eq_norm,
+    simp only [hK, Set.mem_ofPred_eq, Metric.mem_closedBall, dist_eq_norm,
       Complex.norm_def, Real.sqrt_le_left hrad, Complex.normSq_apply, Complex.sub_re,
       Complex.sub_im]
     rw [show (u.re - 0) * (u.re - 0)
@@ -48,7 +48,7 @@ theorem mem_lowerHalf_of_recip_avg {b : ℝ} {w ζ : ℂ}
     have hnsq : 0 < Complex.normSq (w - z) := Complex.normSq_pos.mpr hwz
     have himeq : (1 / (w - z)).im = -(w.im - z.im) / Complex.normSq (w - z) := by simp
     have hnsq_mk : Complex.normSq (1 / (w - z)) = 1 / Complex.normSq (w - z) := by simp
-    simp only [mem_lowerHalf, hK, Set.mem_setOf_eq]
+    simp only [mem_lowerHalf, hK, Set.mem_ofPred_eq]
     rw [himeq, hnsq_mk, mul_one_div]
     rw [← add_div, div_nonpos_iff]
     grind

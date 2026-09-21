@@ -182,9 +182,9 @@ If `u = ∑ i in s, v i`, `‖u‖ = ∑ i in s, ‖v i‖`, and `u ≠ 0`, then
 is a **nonnegative real** multiple of `u`.
 -/
 lemma each_term_is_nonneg_real_multiple_of_sum_of_triangle_eq {u : ℂ}
-  (h_eq  : u = ∑ i ∈ s, v i)
+  (h_eq : u = ∑ i ∈ s, v i)
   (h_sum : ‖u‖ = ∑ i ∈ s, ‖v i‖)
-  (h_ne  : u ≠ 0) :
+  (h_ne : u ≠ 0) :
   ∀ i ∈ s, ∃ k : ℝ, k ≥ 0 ∧ v i = (k : ℂ) * u := by
   have aligned := re_mul_star_eq_norm_mul_norm_of_triangle_eq h_eq h_sum
   have u_pos : 0 < ‖u‖ := norm_pos_iff.mpr h_ne
@@ -219,20 +219,21 @@ lemma coeff_of_aligned_vector {u vi : ℂ} {k : ℝ}
   by_cases hvi_zero : vi = 0
   · have k_zero : k = 0 := by
       rw [h_aligned, mul_eq_zero] at hvi_zero
-      cases hvi_zero
-      subst h_aligned
-      simp_all only [ge_iff_le, ne_eq, norm_eq_zero, not_false_eq_true, ofReal_eq_zero, ofReal_zero, zero_mul,
-        norm_zero]
-      rename_i h
-      subst h h_aligned
-      simp_all only [ge_iff_le, ne_eq, not_true_eq_false]
+      cases hvi_zero with
+      | inl h_zero =>
+          subst h_aligned
+          simp_all only [ge_iff_le, ne_eq, norm_eq_zero, not_false_eq_true, ofReal_eq_zero, ofReal_zero,
+            zero_mul, norm_zero]
+      | inr h_zero =>
+          subst h_zero h_aligned
+          simp_all only [ge_iff_le, ne_eq, not_true_eq_false]
     simp [k_zero, hvi_zero, norm_zero, zero_div]
   · exact eq_div_of_mul_eq u_norm_ne_zero (id (Eq.symm h_norm_eq))
 
 lemma sum_of_aligned_vectors_factors {u : ℂ} {v : ι → ℂ} {s : Finset ι}
-    (h_eq  : u = ∑ i ∈ s, v i)
+    (h_eq : u = ∑ i ∈ s, v i)
     (h_sum : ‖u‖ = ∑ i ∈ s, ‖v i‖)
-    (h_ne  : u ≠ 0) :
+    (h_ne : u ≠ 0) :
     ∑ i ∈ s, v i = (∑ i ∈ s, (‖v i‖ / ‖u‖ : ℂ)) * u := by
   have h_norm_ne : (‖u‖ : ℝ) ≠ 0 := by
     exact norm_ne_zero_iff.mpr h_ne
@@ -261,12 +262,12 @@ lemma sum_of_aligned_vectors_factors {u : ℂ} {v : ι → ℂ} {s : Finset ι}
     _ = (∑ i ∈ s, (‖v i‖ / ‖u‖ : ℂ)) * u := by
           simp [h_sum_div]
 
-/-- If equality holds in the triangle inequality, the sum of the non-negative real multiples is 1.-/
+/-- If equality holds in the triangle inequality, the sum of the non-negative real multiples is 1. -/
 lemma sum_of_multiples_is_one_of_triangle_eq
     {u : ℂ} {v : ι → ℂ} {s : Finset ι}
-    (_  : u = ∑ i ∈ s, v i)
+    (_ : u = ∑ i ∈ s, v i)
     (h_sum : ‖u‖ = ∑ i ∈ s, ‖v i‖)
-    (h_ne  : u ≠ 0) :
+    (h_ne : u ≠ 0) :
     ∑ i ∈ s, (‖v i‖ / ‖u‖) = 1 := by
   have h_norm_ne : (‖u‖ : ℝ) ≠ 0 := by
     exact norm_ne_zero_iff.mpr h_ne
@@ -365,8 +366,8 @@ then they are aligned (i.e., have the same phase).
 -/
 lemma aligned_of_mul_of_real_pos
     {z w : ℂ} {c : ℝ}
-    (hc_pos     : 0 < c)
-    (h          : z = (c : ℂ) * w)
+    (hc_pos : 0 < c)
+    (h : z = (c : ℂ) * w)
     (hw_ne_zero : w ≠ 0) :
     z / ↑‖z‖ = w / ↑‖w‖ := by
   have hz_ne_zero : z ≠ 0 := by

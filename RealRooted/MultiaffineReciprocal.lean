@@ -30,7 +30,7 @@ def complementExponent {sigma : Type*} [Fintype sigma] (d : sigma →₀ ℕ) :
 def signedMultiaffineReciprocal
     {R sigma : Type*} [CommRing R] [Fintype sigma]
     (P : MvPolynomial sigma R) : MvPolynomial sigma R :=
-  P.sum fun d c =>
+  P.coeff.sum fun d c =>
     MvPolynomial.monomial (complementExponent d)
       ((-1 : R) ^ (d.sum fun _ n => n) * c)
 
@@ -151,11 +151,11 @@ theorem isMultiaffine_signedMultiaffineReciprocal
   rw [MvPolynomial.sum_def]
   refine (MvPolynomial.degreeOf_sum_le i P.support fun d =>
     MvPolynomial.monomial (complementExponent d)
-      ((-1 : R) ^ (d.sum fun _ n => n) * MvPolynomial.coeff d P)).trans ?_
+      ((-1 : R) ^ (d.sum fun _ n => n) * P.coeff d)).trans ?_
   apply Finset.sup_le
   intro d hd
   by_cases hc :
-      (-1 : R) ^ (d.sum fun _ n => n) * MvPolynomial.coeff d P = 0
+      (-1 : R) ^ (d.sum fun _ n => n) * P.coeff d = 0
   · simp [hc, MvPolynomial.degreeOf_zero]
   · rw [MvPolynomial.degreeOf_monomial_eq _ i hc]
     simp
@@ -212,7 +212,7 @@ theorem eval_signedMultiaffineReciprocal
   intro d hd
   exact eval_signedMultiaffineReciprocal_term d
     (fun i => MvPolynomial.degreeOf_le_iff.mp (hP i) d hd)
-    (MvPolynomial.coeff d P) z hz
+    (P.coeff d) z hz
 
 /-- Signed reciprocation factors over products in disjoint variable blocks. -/
 theorem signedMultiaffineReciprocal_rename_mul_rename

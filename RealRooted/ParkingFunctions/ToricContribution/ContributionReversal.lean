@@ -221,9 +221,9 @@ theorem reversedContribution_eq_C_mul_rPolynomial
   ext k
   rw [coeff_reversedContribution, coeff_C_mul, coeff_rPolynomial]
   by_cases hk : k ≤ m
-  · rw [if_pos hk, if_pos hk,
+  · rw [ite_eq_left hk, ite_eq_left hk,
       reversedContributionCoeff_eq_mul_rCoeff m ε d k hε hk]
-  · rw [if_neg hk, if_neg hk, mul_zero]
+  · rw [ite_eq_right hk, ite_eq_right hk, mul_zero]
 
 theorem reversedContribution_scale_pos (m ε d : ℕ) :
     0 < ((Nat.choose (m + ε) m * catalan (d + ε) : ℕ) : ℝ) := by
@@ -307,7 +307,7 @@ theorem natDegree_shiftedToricContribution_le (m ε d : ℕ) :
     (shiftedToricContribution m ε d).natDegree ≤ m := by
   rw [natDegree_le_iff_coeff_eq_zero]
   intro k hk
-  rw [coeff_shiftedToricContribution, if_neg (by lia)]
+  rw [coeff_shiftedToricContribution, ite_eq_right (by lia)]
 
 /-- Reversing the shifted toric contribution gives the concrete normalized
 reciprocal contribution. -/
@@ -324,7 +324,7 @@ theorem reciprocalShift_shiftedToricContribution
     coeff_reversedContribution]
   by_cases hk : k ≤ m
   · rw [Polynomial.revAt_le hk, coeff_shiftedToricContribution,
-      if_pos (Nat.sub_le m k), if_pos hk]
+      ite_eq_left (Nat.sub_le m k), ite_eq_left hk]
     simp only [shiftedToricContributionCoeff, reversedContributionCoeff]
     have hchoose : 2 * m + ε - (m - k) = m + ε + k := by lia
     have hcatalan : m + ε + d - (m - k) = d + ε + k := by lia
@@ -335,7 +335,7 @@ theorem reciprocalShift_shiftedToricContribution
     ring
   · have hmk : m < k := Nat.lt_of_not_ge hk
     rw [Polynomial.revAt_eq_self_of_lt hmk,
-      coeff_shiftedToricContribution, if_neg hk, if_neg hk]
+      coeff_shiftedToricContribution, ite_eq_right hk, ite_eq_right hk]
     simp
 
 theorem normalizedReversedContribution_natDegree

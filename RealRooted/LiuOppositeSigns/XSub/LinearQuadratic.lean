@@ -33,13 +33,13 @@ lemma lower_quadratic_root_le_singleton_root_of_positiveSplitRootCountPair_one_t
   have hf_count : rootCountAtOrAbove f x = 0 := by
     rw [rootCountAtOrAbove, hfroots]
     rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r),
-      if_neg (not_le.mpr hcx)]
+      ite_eq_right (not_le.mpr hcx)]
     simp
   have hg_count : rootCountAtOrAbove g x = 2 := by
     rw [rootCountAtOrAbove, hgroots]
     simp only [Multiset.insert_eq_cons]
     rw [Multiset.filter_cons_of_pos ({b} : Multiset ℝ) hxa]
-    rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r), if_pos hxb]
+    rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r), ite_eq_left hxb]
     simp
   rw [hf_count, hg_count] at hcount
   norm_num at hcount

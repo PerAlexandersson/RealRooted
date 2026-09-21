@@ -24,7 +24,7 @@ theorem eval_zero_applyMonomialDifferential_oneBox
     (m : {m : sigma →₀ ℕ // ∀ i, m i ≤ 1}) :
     MvPolynomial.eval (fun _ : sigma => 0)
         (applyMonomialDifferential m.1 f.1) =
-      MvPolynomial.coeff m.1 f.1 := by
+      f.1.coeff m.1 := by
   classical
   let lhs :
       MvPolynomial.degreeOfLE sigma ℂ (fun _ => 1) →ₗ[ℂ] ℂ :=
@@ -39,7 +39,7 @@ theorem eval_zero_applyMonomialDifferential_oneBox
         simp [Algebra.smul_def, applyMonomialDifferential_C_mul] }
   let rhs :
       MvPolynomial.degreeOfLE sigma ℂ (fun _ => 1) →ₗ[ℂ] ℂ :=
-    { toFun := fun g => MvPolynomial.coeff m.1 g.1
+    { toFun := fun g => g.1.coeff m.1
       map_add' := by
         intro g h
         simp
@@ -54,9 +54,8 @@ theorem eval_zero_applyMonomialDifferential_oneBox
       (applyMonomialDifferential m.1
         (MvPolynomial.basisDegreeOfLE
           (R := ℂ) (fun _ : sigma => 1) n).1) =
-    MvPolynomial.coeff m.1
-      (MvPolynomial.basisDegreeOfLE
-        (R := ℂ) (fun _ : sigma => 1) n).1
+    (MvPolynomial.basisDegreeOfLE
+        (R := ℂ) (fun _ : sigma => 1) n).1.coeff m.1
   rw [MvPolynomial.coe_basisDegreeOfLE]
   by_cases hsupport : m.1.support = n.1.support
   · have hmn : m.1 = n.1 :=
@@ -66,26 +65,26 @@ theorem eval_zero_applyMonomialDifferential_oneBox
     subst n
     rw [finsupp_eq_indicator_support_of_le_one m.1 m.2,
       applyMonomialDifferential_indicator_monomial]
-    rw [MvPolynomial.eval_zero', if_pos Finset.Subset.rfl,
+    rw [MvPolynomial.eval_zero', ite_eq_left Finset.Subset.rfl,
       MvPolynomial.constantCoeff_monomial, MvPolynomial.coeff_monomial,
-      if_pos rfl, Finset.sdiff_self]
+      ite_eq_left rfl, Finset.sdiff_self]
     have hempty :
         Finsupp.indicator (∅ : Finset sigma) (fun _ _ => 1) =
           (0 : sigma →₀ ℕ) := by
       ext i
       simp
-    rw [if_pos hempty]
+    rw [ite_eq_left hempty]
   · have hmn : m.1 ≠ n.1 := by
       intro h
       exact hsupport (congrArg Finsupp.support h)
     have hrhs :
-        MvPolynomial.coeff m.1 (MvPolynomial.monomial n.1 (1 : ℂ)) = 0 := by
+        (MvPolynomial.monomial n.1 (1 : ℂ)).coeff m.1 = 0 := by
       simp [MvPolynomial.coeff_monomial, Ne.symm hmn]
     rw [hrhs, finsupp_eq_indicator_support_of_le_one m.1 m.2,
       finsupp_eq_indicator_support_of_le_one n.1 n.2,
       applyMonomialDifferential_indicator_monomial]
     by_cases hsubset : m.1.support ⊆ n.1.support
-    · rw [if_pos hsubset]
+    · rw [ite_eq_left hsubset]
       have hdiff : n.1.support \ m.1.support ≠ ∅ := by
         intro h
         have hnsub : n.1.support ⊆ m.1.support :=
@@ -99,8 +98,8 @@ theorem eval_zero_applyMonomialDifferential_oneBox
         have hvalue := congrArg (fun d : sigma →₀ ℕ => d i) hzero
         simp [Finsupp.indicator_of_mem hi] at hvalue
       rw [MvPolynomial.eval_zero', MvPolynomial.constantCoeff_monomial,
-        if_neg hindicator]
-    · rw [if_neg hsubset]
+        ite_eq_right hindicator]
+    · rw [ite_eq_right hsubset]
       simp
 
 /-- Specializing the right block to zero evaluates a polynomial supported in

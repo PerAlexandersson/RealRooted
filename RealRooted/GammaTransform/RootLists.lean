@@ -31,39 +31,39 @@ end GammaTransformInternal
 
 open GammaTransformInternal
 
-private lemma map_interleave (f : α → β) : ∀ l₁ l₂ : List α,
-    (l₁.interleave l₂).map f = (l₁.map f).interleave (l₂.map f)
+private lemma map_interleaveRight (f : α → β) : ∀ l₁ l₂ : List α,
+    (l₁.interleaveRight l₂).map f = (l₁.map f).interleaveRight (l₂.map f)
   | _, [] => by simp
   | l₁, b :: l₂ => by
-      simp only [List.interleave_cons, List.map_cons]
-      rw [map_interleave f l₂ l₁]
+      simp only [List.interleaveRight_cons, List.map_cons]
+      rw [map_interleaveRight f l₂ l₁]
 termination_by l₁ l₂ => l₁.length + l₂.length
 
-private lemma mem_interleave_of_lengths {x : α} : ∀ l₁ l₂ : List α,
+private lemma mem_interleaveRight_of_lengths {x : α} : ∀ l₁ l₂ : List α,
     (l₁.length = l₂.length ∨ l₁.length + 1 = l₂.length) →
-      x ∈ l₁.interleave l₂ → x ∈ l₁ ∨ x ∈ l₂
+      x ∈ l₁.interleaveRight l₂ → x ∈ l₁ ∨ x ∈ l₂
   | _, [], _, hx => by simp at hx
   | l₁, b :: l₂, hlen, hx => by
-      rw [List.interleave_cons, List.mem_cons] at hx
+      rw [List.interleaveRight_cons, List.mem_cons] at hx
       rcases hx with rfl | hx
       · exact Or.inr (by simp)
       · have htail : l₂.length = l₁.length ∨ l₂.length + 1 = l₁.length := by
           simp only [List.length_cons] at hlen
           lia
-        rcases mem_interleave_of_lengths l₂ l₁ htail hx with hx | hx
+        rcases mem_interleaveRight_of_lengths l₂ l₁ htail hx with hx | hx
         · exact Or.inr (by simp [hx])
         · exact Or.inl hx
 termination_by l₁ l₂ => l₁.length + l₂.length
 
-private lemma interleave_replicate_succ (m : ℕ) (a : α) :
-    (List.replicate m a).interleave (List.replicate (m + 1) a) =
+private lemma interleaveRight_replicate_succ (m : ℕ) (a : α) :
+    (List.replicate m a).interleaveRight (List.replicate (m + 1) a) =
       List.replicate (2 * m + 1) a := by
   induction m with
   | zero => simp
   | succ m ih =>
       rw [List.replicate_succ (n := m)]
       rw [List.replicate_succ (n := m + 1)]
-      rw [List.interleave_cons, List.interleave_cons]
+      rw [List.interleaveRight_cons, List.interleaveRight_cons]
       rw [ih]
       rw [show 2 * (m + 1) + 1 = (2 * m + 1) + 2 by lia]
       rfl
@@ -121,37 +121,37 @@ private lemma isChain_reverse_inv_center_iff
         linarith [(hlmem y hy).1]
     simpa [a, c, List.append_assoc] using hacl.isChain
 
-private lemma interleave_reciprocalCenterRoots_same
+private lemma interleaveRight_reciprocalCenterRoots_same
     {ss rs : List ℝ} (m : ℕ) (hlen : ss.length = rs.length) :
-    (reciprocalCenterRoots m ss).interleave
+    (reciprocalCenterRoots m ss).interleaveRight
         (reciprocalCenterRoots (m + 1) rs) =
-      ((rs.interleave ss).reverse.map fun x => x⁻¹) ++
-        (List.replicate (2 * m + 1) (-1) ++ rs.interleave ss) := by
+      ((rs.interleaveRight ss).reverse.map fun x => x⁻¹) ++
+        (List.replicate (2 * m + 1) (-1) ++ rs.interleaveRight ss) := by
   unfold reciprocalCenterRoots
-  rw [List.interleave_append_append_of_length_eq_length]
-  · rw [List.interleave_append_append_of_length_add_one_eq_length]
-    · rw [interleave_replicate_succ]
+  rw [List.interleaveRight_append_append_of_length_eq_length]
+  · rw [List.interleaveRight_append_append_of_length_add_one_eq_length]
+    · rw [interleaveRight_replicate_succ]
       congr 1
-      simpa only [map_interleave, List.map_reverse] using
-        (List.reverse_interleave_of_length_eq_length
+      simpa only [map_interleaveRight, List.map_reverse] using
+        (List.reverse_interleaveRight_of_length_eq_length
           (l₁ := rs.map fun x => x⁻¹) (l₂ := ss.map fun x => x⁻¹)
           (by simpa only [List.length_map] using hlen.symm)).symm
     · simp
   · simp [hlen]
 
-private lemma interleave_reciprocalCenterRoots_succ
+private lemma interleaveRight_reciprocalCenterRoots_succ
     {ss rs : List ℝ} (m : ℕ) (hlen : ss.length + 1 = rs.length) :
-    (reciprocalCenterRoots (m + 1) ss).interleave
+    (reciprocalCenterRoots (m + 1) ss).interleaveRight
         (reciprocalCenterRoots m rs) =
-      ((ss.interleave rs).reverse.map fun x => x⁻¹) ++
-        (List.replicate (2 * m + 1) (-1) ++ ss.interleave rs) := by
+      ((ss.interleaveRight rs).reverse.map fun x => x⁻¹) ++
+        (List.replicate (2 * m + 1) (-1) ++ ss.interleaveRight rs) := by
   unfold reciprocalCenterRoots
-  rw [List.interleave_append_append_of_length_add_one_eq_length]
-  · rw [List.interleave_append_append_of_length_add_one_eq_length]
-    · rw [interleave_replicate_succ]
+  rw [List.interleaveRight_append_append_of_length_add_one_eq_length]
+  · rw [List.interleaveRight_append_append_of_length_add_one_eq_length]
+    · rw [interleaveRight_replicate_succ]
       congr 1
-      simpa only [map_interleave, List.map_reverse] using
-        (List.reverse_interleave_of_length_add_one_eq_length
+      simpa only [map_interleaveRight, List.map_reverse] using
+        (List.reverse_interleaveRight_of_length_add_one_eq_length
           (l₁ := ss.map fun x => x⁻¹) (l₂ := rs.map fun x => x⁻¹)
           (by simpa only [List.length_map] using hlen)).symm
     · simp
@@ -175,25 +175,25 @@ lemma GammaTransformInternal.listInterlaces_reciprocalCenterRoots_same_iff
   rw [listInterlaces_iff_interleaves_of_length hfull_len]
   constructor
   · intro h
-    have hc := ((List.interleaves_iff_length_isChain_interleave).1 h).2
-    rw [interleave_reciprocalCenterRoots_same m hlen,
+    have hc := ((List.interleaves_iff_length_isChain_interleaveRight).1 h).2
+    rw [interleaveRight_reciprocalCenterRoots_same m hlen,
       isChain_reverse_inv_center_iff m] at hc
     · apply (listAlternates_iff_interleaves_of_length hlen).2
-      apply (List.interleaves_iff_length_isChain_interleave).2
+      apply (List.interleaves_iff_length_isChain_interleaveRight).2
       exact ⟨Or.inl hlen.symm, hc⟩
     · intro x hx
-      rcases mem_interleave_of_lengths rs ss (Or.inl hlen.symm) hx with hx | hx
+      rcases mem_interleaveRight_of_lengths rs ss (Or.inl hlen.symm) hx with hx | hx
       · exact hrs x hx
       · exact hss x hx
   · intro h
     have hi := (listAlternates_iff_interleaves_of_length hlen).1 h
-    apply (List.interleaves_iff_length_isChain_interleave).2
+    apply (List.interleaves_iff_length_isChain_interleaveRight).2
     refine ⟨Or.inr hfull_len, ?_⟩
-    rw [interleave_reciprocalCenterRoots_same m hlen,
+    rw [interleaveRight_reciprocalCenterRoots_same m hlen,
       isChain_reverse_inv_center_iff m]
-    · exact ((List.interleaves_iff_length_isChain_interleave).1 hi).2
+    · exact ((List.interleaves_iff_length_isChain_interleaveRight).1 hi).2
     · intro x hx
-      rcases mem_interleave_of_lengths rs ss (Or.inl hlen.symm) hx with hx | hx
+      rcases mem_interleaveRight_of_lengths rs ss (Or.inl hlen.symm) hx with hx | hx
       · exact hrs x hx
       · exact hss x hx
 
@@ -215,25 +215,25 @@ lemma GammaTransformInternal.listInterlaces_reciprocalCenterRoots_succ_iff
   rw [listInterlaces_iff_interleaves_of_length hfull_len]
   constructor
   · intro h
-    have hc := ((List.interleaves_iff_length_isChain_interleave).1 h).2
-    rw [interleave_reciprocalCenterRoots_succ m hlen,
+    have hc := ((List.interleaves_iff_length_isChain_interleaveRight).1 h).2
+    rw [interleaveRight_reciprocalCenterRoots_succ m hlen,
       isChain_reverse_inv_center_iff m] at hc
     · apply (listInterlaces_iff_interleaves_of_length hlen).2
-      apply (List.interleaves_iff_length_isChain_interleave).2
+      apply (List.interleaves_iff_length_isChain_interleaveRight).2
       exact ⟨Or.inr hlen, hc⟩
     · intro x hx
-      rcases mem_interleave_of_lengths ss rs (Or.inr hlen) hx with hx | hx
+      rcases mem_interleaveRight_of_lengths ss rs (Or.inr hlen) hx with hx | hx
       · exact hss x hx
       · exact hrs x hx
   · intro h
     have hi := (listInterlaces_iff_interleaves_of_length hlen).1 h
-    apply (List.interleaves_iff_length_isChain_interleave).2
+    apply (List.interleaves_iff_length_isChain_interleaveRight).2
     refine ⟨Or.inr hfull_len, ?_⟩
-    rw [interleave_reciprocalCenterRoots_succ m hlen,
+    rw [interleaveRight_reciprocalCenterRoots_succ m hlen,
       isChain_reverse_inv_center_iff m]
-    · exact ((List.interleaves_iff_length_isChain_interleave).1 hi).2
+    · exact ((List.interleaves_iff_length_isChain_interleaveRight).1 hi).2
     · intro x hx
-      rcases mem_interleave_of_lengths ss rs (Or.inr hlen) hx with hx | hx
+      rcases mem_interleaveRight_of_lengths ss rs (Or.inr hlen) hx with hx | hx
       · exact hss x hx
       · exact hrs x hx
 

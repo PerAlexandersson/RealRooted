@@ -140,7 +140,7 @@ private theorem applyNegDifferential_monomial_mul_monomial
         (MvPolynomial.monomial d c * MvPolynomial.monomial e a) G =
       applyNegDifferential (MvPolynomial.monomial d c)
         (applyNegDifferential (MvPolynomial.monomial e a) G) := by
-  rw [MvPolynomial.monomial_mul, applyNegDifferential_monomial,
+  rw [MvPolynomial.monomial_mul_monomial, applyNegDifferential_monomial,
     applyNegDifferential_monomial, applyNegDifferential_monomial,
     finsupp_totalDegree_add, pow_add,
     applyMonomialDifferential_comp,

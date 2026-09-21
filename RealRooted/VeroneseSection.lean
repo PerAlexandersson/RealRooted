@@ -46,7 +46,7 @@ def veroneseSectionPowerSeries (r k : ℕ) (A : PowerSeries ℝ) : PowerSeries �
 def veroneseSectionPolynomial (r k : ℕ) (p : ℝ[X]) : ℝ[X] :=
   if hr0 : r = 0 then 0 else
     Polynomial.ofFinsupp <|
-      Finsupp.onFinset (Finset.range (p.natDegree + 1))
+      ⟨Finsupp.onFinset (Finset.range (p.natDegree + 1))
         (fun n => p.coeff (k + r * n))
         (by
           intro n hn
@@ -61,7 +61,7 @@ def veroneseSectionPolynomial (r k : ℕ) (p : ℝ[X]) : ℝ[X] :=
           have hn_le : n ≤ k + r * n :=
             Nat.le_trans hn_le_mul (Nat.le_add_left (r * n) k)
           exact hn <|
-            Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_lt_of_le hpn hn_le))
+            Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_lt_of_le hpn hn_le))⟩
 
 @[simp] theorem coeff_veroneseSectionPolynomial {r k n : ℕ} {p : ℝ[X]}
     (hr : 0 < r) :
@@ -224,12 +224,12 @@ theorem veronesePairLace_even {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < r) :
   have hdiv : 2 * (k + r * n) / 2 = k + r * n :=
     Nat.mul_div_right (k + r * n) (by lia)
   dsimp [veronesePairLace, lacePair]
-  rw [if_pos hmod, hdiv]
+  rw [ite_eq_left hmod, hdiv]
   dsimp [toeplitz, veroneseSectionSeq]
   by_cases hc : c ≤ n
   · have hc' : r * c ≤ k + r * n :=
       Nat.le_trans (Nat.mul_le_mul_left r hc) (Nat.le_add_left (r * n) k)
-    rw [if_pos hc, if_pos hc']
+    rw [ite_eq_left hc, ite_eq_left hc']
     congr 1
     calc
       k + r * n - r * c = k + (r * n - r * c) :=
@@ -250,12 +250,12 @@ theorem veronesePairLace_odd {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < r) :
   have hmod_ne : ¬ (2 * (k + r * n) + 1) % 2 = 0 := by lia
   have hdiv : (2 * (k + r * n) + 1) / 2 = k + r * n := by lia
   dsimp [veronesePairLace, lacePair]
-  rw [if_neg hmod_ne, hdiv]
+  rw [ite_eq_right hmod_ne, hdiv]
   dsimp [toeplitz, veroneseSectionSeq]
   by_cases hc : c ≤ n
   · have hc' : r * c ≤ k + r * n :=
       Nat.le_trans (Nat.mul_le_mul_left r hc) (Nat.le_add_left (r * n) k)
-    rw [if_pos hc, if_pos hc']
+    rw [ite_eq_left hc, ite_eq_left hc']
     congr 1
     calc
       k + r * n - r * c = k + (r * n - r * c) :=
@@ -321,7 +321,7 @@ theorem lacePair_veroneseSectionSeq {a b : ℕ → ℝ} {r k row col : ℕ}
   unfold lacePair veronesePairSectionRowMap
   dsimp
   by_cases heven : row % 2 = 0
-  · rw [if_pos heven]
+  · rw [ite_eq_left heven]
     have hrowmap :
         2 * (k + r * (row / 2)) + row % 2 =
           2 * (k + r * (row / 2)) := by
@@ -329,7 +329,7 @@ theorem lacePair_veroneseSectionSeq {a b : ℕ → ℝ} {r k row col : ℕ}
     simpa [hrowmap] using
       (veronesePairLace_even (a := a) (b := b) (r := r) (k := k)
       (n := row / 2) (c := col) hk).symm
-  · rw [if_neg heven]
+  · rw [ite_eq_right heven]
     have hmod : row % 2 = 1 := by lia
     simpa [hmod] using
       (veronesePairLace_odd (a := a) (b := b) (r := r) (k := k)
@@ -388,14 +388,14 @@ theorem strictMono_veronesePairSelectRowMap {r i j : ℕ}
     have hblock : (2 * r) * (m / 2 + 1) ≤ (2 * r) * (n / 2) :=
       Nat.mul_le_mul_left (2 * r) hqsucc
     by_cases hm0 : m % 2 = 0
-    · rw [if_pos hm0]
+    · rw [ite_eq_left hm0]
       by_cases hn0 : n % 2 = 0
       · simp_all
-      · rw [if_neg hn0]
+      · rw [ite_eq_right hn0]
         lia
-    · rw [if_neg hm0]
+    · rw [ite_eq_right hm0]
       by_cases hn0 : n % 2 = 0
-      · rw [if_pos hn0]
+      · rw [ite_eq_left hn0]
         lia
       · simp_all
 
@@ -407,10 +407,10 @@ theorem lacePair_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col : ℕ
   unfold lacePair veronesePairSectionSeq veronesePairSelectRowMap
   dsimp
   by_cases hrow : row % 2 = 0
-  · rw [if_pos hrow]
+  · rw [ite_eq_left hrow]
     have hik : i / 2 < r := div_two_lt_of_lt_two_mul hi
     by_cases hi_even : i % 2 = 0
-    · rw [if_pos hi_even]
+    · rw [ite_eq_left hi_even]
       have hmap :
           i + (2 * r) * (row / 2) =
             2 * (i / 2 + r * (row / 2)) := by
@@ -418,7 +418,7 @@ theorem lacePair_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col : ℕ
       simpa [hrow, hmap] using
         (veronesePairLace_even (a := a) (b := b) (r := r)
         (k := i / 2) (n := row / 2) (c := col) hik).symm
-    · rw [if_neg hi_even]
+    · rw [ite_eq_right hi_even]
       have hmap :
           i + (2 * r) * (row / 2) =
             2 * (i / 2 + r * (row / 2)) + 1 := by
@@ -426,10 +426,10 @@ theorem lacePair_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col : ℕ
       simpa [hrow, hmap] using
         (veronesePairLace_odd (a := a) (b := b) (r := r)
         (k := i / 2) (n := row / 2) (c := col) hik).symm
-  · rw [if_neg hrow]
+  · rw [ite_eq_right hrow]
     have hjk : j / 2 < r := div_two_lt_of_lt_two_mul hj
     by_cases hj_even : j % 2 = 0
-    · rw [if_pos hj_even]
+    · rw [ite_eq_left hj_even]
       have hmap :
           j + (2 * r) * (row / 2) =
             2 * (j / 2 + r * (row / 2)) := by
@@ -437,7 +437,7 @@ theorem lacePair_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col : ℕ
       simpa [hrow, hmap] using
         (veronesePairLace_even (a := a) (b := b) (r := r)
         (k := j / 2) (n := row / 2) (c := col) hjk).symm
-    · rw [if_neg hj_even]
+    · rw [ite_eq_right hj_even]
       have hmap :
           j + (2 * r) * (row / 2) =
             2 * (j / 2 + r * (row / 2)) + 1 := by
@@ -625,6 +625,7 @@ private theorem not_fullyInterlacingPair_X_add_C_two_one :
     ¬ FullyInterlacingPair (X + C (2 : ℝ)).coeff (X + C (1 : ℝ)).coeff := by
   intro hfull
   have hminor := hfull (rows := ![2, 3]) (cols := ![0, 1]) (by decide) (by decide)
+  erw [Matrix.det_fin_two] at hminor
   norm_num [FullyInterlacingPair, lacePair, toeplitz, Matrix.det_fin_two,
     Polynomial.coeff_add, Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one]
     at hminor
@@ -1559,7 +1560,7 @@ protected theorem IsPolyaFreqSeq.veroneseSectionSeq {a : ℕ → ℝ}
     by_cases hle : cols j ≤ rows i
     · have hle' : r * cols j ≤ k + r * rows i :=
         Nat.le_trans (Nat.mul_le_mul_left r hle) (Nat.le_add_left (r * rows i) k)
-      rw [if_pos hle, if_pos hle']
+      rw [ite_eq_left hle, ite_eq_left hle']
       congr 1
       calc
         k + r * (rows i - cols j) =

@@ -1,5 +1,5 @@
 import Mathlib.Algebra.MvPolynomial.PDeriv
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 /-!
@@ -15,7 +15,7 @@ namespace MvPolynomial
 
 /-- Every coefficient of `P` is nonnegative. -/
 def HasNonnegCoeffs {σ : Type*} (P : MvPolynomial σ ℝ) : Prop :=
-  ∀ m, 0 ≤ coeff m P
+  ∀ m, 0 ≤ P.coeff m
 
 namespace HasNonnegCoeffs
 
@@ -73,7 +73,7 @@ theorem add {σ : Type*} {P Q : MvPolynomial σ ℝ}
     (hP : HasNonnegCoeffs P) (hQ : HasNonnegCoeffs Q) :
     HasNonnegCoeffs (P + Q) := by
   intro m
-  rw [coeff_add]
+  simp only [AddMonoidAlgebra.coeff_add, Finsupp.add_apply]
   exact add_nonneg (hP m) (hQ m)
 
 theorem mul {σ : Type*} {P Q : MvPolynomial σ ℝ}
@@ -96,7 +96,7 @@ theorem rename_of_injective {σ τ : Type*} {P : MvPolynomial σ ℝ}
     HasNonnegCoeffs (MvPolynomial.rename f P) := by
   classical
   intro m
-  by_cases hm : MvPolynomial.coeff m (MvPolynomial.rename f P) = 0
+  by_cases hm : (MvPolynomial.rename f P).coeff m = 0
   · simp [hm]
   · obtain ⟨u, rfl, _⟩ := MvPolynomial.coeff_rename_ne_zero f P m hm
     rw [MvPolynomial.coeff_rename_mapDomain f hf]

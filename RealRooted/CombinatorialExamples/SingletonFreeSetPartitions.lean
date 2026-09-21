@@ -202,9 +202,7 @@ lemma prec_singletonFreeSetPartitions_two_three :
 lemma prec_singletonFreeSetPartitions_three_four :
     StrictInterl (singletonFreeSetPartitions 3) (singletonFreeSetPartitions 4) := by
   have hlin : Interlaces (1 : ℝ[X]) (1 + C (3 : ℝ) * X) :=
-    interlaces_one_linear (by
-      simpa [add_comm] using
-        (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by simp)))
+    interlaces_one_linear (by simp)
   have hprec : StrictInterl (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toStrictInterl
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
     have hX_nonneg : HasNonnegCoeffs (X : ℝ[X]) := by rintro (_ | _ | m) <;> simp [coeff_X]

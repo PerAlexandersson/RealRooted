@@ -15,7 +15,7 @@ namespace RealRooted
 
 lemma eval_one_IdTransform {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     (IdTransform d p).eval 1 = p.eval 1 := by
-  letI : Invertible (1 : ℝ) := invertibleOne
+  let : Invertible (1 : ℝ) := invertibleOne
   simpa [IdTransform, one_pow] using
     (Polynomial.eval₂_reflect_mul_pow (i := RingHom.id ℝ) (x := (1 : ℝ)) d p hd)
 

@@ -59,7 +59,7 @@ theorem toeplitzChowSeries_eq_mul (a : ℕ → R) :
   rw [PowerSeries.coeff_mul]
   simp only [coeff_toeplitzChowSeries, coeff_toeplitzCoefficientSeries,
     coeff_toeplitzChowDerangementSeries]
-  rw [chowPolynomial_eq]
+  erw [chowPolynomial_eq]
   simp only [RealRooted.toeplitz_apply]
   rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
   rw [← Finset.sum_range_reflect
@@ -77,11 +77,12 @@ theorem reflect_chowPolynomial_toeplitz (a : ℕ → R) (n : ℕ) :
       ∑ k ∈ Finset.range (n + 1),
         C (a (n - k)) *
           (chowDerangement (RealRooted.toeplitz a) k * X ^ (n - k)) := by
-  rw [chowPolynomial_eq, Polynomial.reflect_finset_sum_C_mul]
+  erw [chowPolynomial_eq]
+  rw [Polynomial.reflect_finset_sum_C_mul]
   apply Finset.sum_congr rfl
   intro k hk
   have hkn : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-  rw [RealRooted.toeplitz_apply, if_pos hkn]
+  rw [RealRooted.toeplitz_apply, ite_eq_left hkn]
   congr 1
   simpa [Nat.add_sub_of_le hkn] using
     Polynomial.reflect_add_right_of_reflect (n - k)
@@ -101,9 +102,10 @@ theorem toeplitzChowDerangementSeries_mul_rescale
   cases n with
   | zero =>
       rw [PowerSeries.coeff_mul]
+      have hzero := chowDerangement_zero (RealRooted.toeplitz a)
       simp [ha0, toeplitzChowDerangementSeries,
         toeplitzCoefficientSeries, toeplitzChowSeries,
-        chowPolynomial, RealRooted.toeplitz_apply]
+        chowPolynomial, hzero, RealRooted.toeplitz_apply]
   | succ n =>
       rw [PowerSeries.coeff_mul]
       simp only [coeff_toeplitzChowDerangementSeries,

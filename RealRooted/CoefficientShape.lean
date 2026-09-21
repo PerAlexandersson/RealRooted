@@ -240,9 +240,11 @@ theorem IsPolyaFreqSeq.logConcaveUpTo {a : ℕ → ℝ} (hpf : IsPolyaFreqSeq a)
     (d : ℕ) :
     CoeffLogConcaveUpTo d a := by
   intro k hk0 hkd
-  simpa [toeplitz, Matrix.det_fin_two, show 1 ≤ k from hk0, pow_two] using
-    (hpf (by simp) (by simp) :
-      0 ≤ ((toeplitz a).submatrix ![k, k + 1] ![0, 1]).det)
+  have hminor := (hpf (by simp) (by simp) :
+    0 ≤ ((toeplitz a).submatrix ![k, k + 1] ![0, 1]).det)
+  erw [Matrix.det_fin_two] at hminor
+  simpa [Matrix.submatrix_apply, toeplitz_apply, show 1 ≤ k from hk0,
+    pow_two, sub_nonneg] using hminor
 
 /-! ## Polynomial coefficient wrappers -/
 

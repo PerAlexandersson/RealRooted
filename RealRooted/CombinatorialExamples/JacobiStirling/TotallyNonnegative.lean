@@ -1,4 +1,4 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.ElementarySymmetric
 
@@ -30,17 +30,17 @@ theorem firstKind_succ_succ_eq_elementarySymmetricTriangle
       Matrix.elementarySymmetricTriangle (firstKindWeight z) n k := by
   rw [firstKind_eq_ite_esym]
   by_cases hk : k ≤ n
-  · rw [if_pos (by lia), Matrix.elementarySymmetricTriangle_apply, if_pos hk]
+  · rw [ite_eq_left (by lia), Matrix.elementarySymmetricTriangle_apply, ite_eq_left hk]
     rw [show n + 1 - (k + 1) = n - k by lia]
     unfold RealRooted.CoefficientDominance.Symmetric.esym
       Matrix.elementarySymmetricPrefix
     rw [Finset.range_val]
     rfl
-  · rw [if_neg (by lia), Matrix.elementarySymmetricTriangle_apply, if_neg hk]
+  · rw [ite_eq_right (by lia), Matrix.elementarySymmetricTriangle_apply, ite_eq_right hk]
 
 private theorem firstKindTriangleWeight_zero_column (z : ℝ) (n : ℕ) :
     Matrix.elementarySymmetricTriangle (firstKindTriangleWeight z) (n + 1) 0 = 0 := by
-  rw [Matrix.elementarySymmetricTriangle_apply, if_pos (Nat.zero_le _)]
+  rw [Matrix.elementarySymmetricTriangle_apply, ite_eq_left (Nat.zero_le _)]
   simp only [Nat.sub_zero, Matrix.elementarySymmetricPrefix]
   let s := (Multiset.range (n + 1)).map (firstKindTriangleWeight z)
   change s.esymm (n + 1) = 0

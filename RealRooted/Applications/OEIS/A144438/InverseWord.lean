@@ -23,7 +23,8 @@ def entryList {h : Nat} (c : DecoCode h) : List Nat := List.ofFn c
 @[simp] theorem get_entryList {h : Nat} (c : DecoCode h)
     (i : Fin c.entryList.length) :
     c.entryList.get i = c ⟨i.1, by simpa using i.2⟩ := by
-  simp [entryList]
+  change (List.ofFn c.entry)[i.val]'_ = c.entry _
+  simp only [List.getElem_ofFn]
 
 /-- Every chronological deco code satisfies the insertion decoder's bounds. -/
 theorem validFrom_entryList {h : Nat} (c : DecoCode h) :
@@ -263,7 +264,7 @@ theorem singleton_entryList_take_eq {h : Nat} {c : DecoNormalizedCode h}
     have hk : k < j.1 := by simpa using hkLeft
     let kFin : Fin h := ⟨k, hk.trans j.2⟩
     change (Decoration.singleton j hj).exceptionalize kFin = c kFin
-    rw [Decoration.singleton_exceptionalize_apply]
+    erw [Decoration.singleton_exceptionalize_apply]
     have hkj : kFin ≠ j := by
       intro heq
       exact (Nat.ne_of_lt hk) (congrArg Fin.val heq)
@@ -285,7 +286,7 @@ theorem singleton_entryList_drop_eq {h : Nat} {c : DecoNormalizedCode h}
       simpa [DecoCode.length_entryList] using hkLeft
     let kFin : Fin h := ⟨j.1 + 2 + k, by lia⟩
     change (Decoration.singleton j hj).exceptionalize kFin = c kFin
-    rw [Decoration.singleton_exceptionalize_apply]
+    erw [Decoration.singleton_exceptionalize_apply]
     have hkj : kFin ≠ j := by
       intro heq
       have := congrArg Fin.val heq
@@ -309,9 +310,9 @@ theorem singleton_inverseWord_eq_map_swap {h : Nat}
       ⟨hjLower, hjBound, hjZero, hjTwo⟩
   · exact singleton_entryList_drop_eq j
       ⟨hjLower, hjBound, hjZero, hjTwo⟩
-  · rw [Decoration.singleton_exceptionalize_apply]
+  · erw [Decoration.singleton_exceptionalize_apply]
     simp
-  · rw [Decoration.singleton_exceptionalize_apply]
+  · erw [Decoration.singleton_exceptionalize_apply]
     have hne : (⟨j.1 + 1, hjBound⟩ : Fin h) ≠ j := by
       intro heq
       have heqVal := congrArg Fin.val heq
@@ -334,9 +335,9 @@ theorem singleton_inverseWord_comparisonWord_eq {h : Nat}
       ⟨hjLower, hjBound, hjZero, hjTwo⟩
   · exact singleton_entryList_drop_eq j
       ⟨hjLower, hjBound, hjZero, hjTwo⟩
-  · rw [Decoration.singleton_exceptionalize_apply]
+  · erw [Decoration.singleton_exceptionalize_apply]
     simp
-  · rw [Decoration.singleton_exceptionalize_apply]
+  · erw [Decoration.singleton_exceptionalize_apply]
     have hne : (⟨j.1 + 1, hjBound⟩ : Fin h) ≠ j := by
       intro heq
       have heqVal := congrArg Fin.val heq

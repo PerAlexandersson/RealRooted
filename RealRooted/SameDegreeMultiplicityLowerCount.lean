@@ -273,7 +273,7 @@ lemma coeff_taylor_eq_zero_of_lt_count {p : ℝ[X]} {a : ℝ} {j : ℕ}
   have htay : taylor a p = X ^ m * taylor a q := by
     conv_lhs => rw [hq]
     rw [taylor_apply, taylor_apply, mul_comp, pow_comp, hXa]
-  rw [htay, coeff_X_pow_mul', if_neg (not_le.mpr hj)]
+  rw [htay, coeff_X_pow_mul', ite_eq_right (not_le.mpr hj)]
 
 /-
 A uniform root bound: if every coefficient of `p` has absolute value at most

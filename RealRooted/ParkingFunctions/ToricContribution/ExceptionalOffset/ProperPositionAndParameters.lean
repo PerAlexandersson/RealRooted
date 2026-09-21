@@ -33,7 +33,7 @@ theorem negOnePow_mul_exceptionalEulerInverse_leadingCoeff_pos
       (exceptionalEulerInverse m ε γ).leadingCoeff := by
   have hdegree := natDegree_exceptionalEulerInverse m ε hγ
   rw [Polynomial.leadingCoeff, hdegree,
-    coeff_exceptionalEulerInverse, if_pos le_rfl,
+    coeff_exceptionalEulerInverse, ite_eq_left le_rfl,
     exceptionalBaseCoeff,
     exceptional_realRisingFactorial_neg_nat_eq_factorial_div m m le_rfl]
   have hc : 0 < (ε : ℝ) + 1 / 2 := by positivity
@@ -165,7 +165,7 @@ private theorem neg_coeff_one_eq_sum_roots_inv
     rw [Polynomial.reverse_leadingCoeff, Polynomial.trailingCoeff,
       htrail, hzero]
   have hrevNext : p.reverse.nextCoeff = p.coeff 1 := by
-    rw [Polynomial.nextCoeff, if_neg (by rw [hrevDegree]; lia),
+    rw [Polynomial.nextCoeff, ite_eq_right (by rw [hrevDegree]; lia),
       hrevDegree, Polynomial.coeff_reverse]
     have hindex : Polynomial.revAt p.natDegree
         (p.natDegree - 1) = 1 := by
@@ -621,7 +621,7 @@ private theorem exceptionalEulerInverse_lower_allComboRealRooted
         · have hmk : m < k := by lia
           dsimp only [Qn, R, U]
           simp only [coeff_add, coeff_C_mul,
-            coeff_exceptionalEulerInverse, if_neg (not_le.mpr hmk)]
+            coeff_exceptionalEulerInverse, ite_eq_right (not_le.mpr hmk)]
           ring
       · rw [hQnPrev]
         simpa only [Polynomial.leadingCoeff, hdrop] using hQlead

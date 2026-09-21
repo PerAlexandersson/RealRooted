@@ -29,7 +29,7 @@ private theorem pderiv_prod_X {R sigma : Type*} [CommSemiring R] [DecidableEq si
       · have hxa : x ≠ a := Ne.symm hax
         by_cases hxt : x ∈ t
         · simp only [Finset.prod_insert ha, MvPolynomial.pderiv_mul,
-            MvPolynomial.pderiv_X_of_ne hax, ih, hxt, if_pos, zero_mul,
+            MvPolynomial.pderiv_X_of_ne hax, ih, hxt, ite_eq_left, zero_mul,
             zero_add, Finset.mem_insert, hxa]
           split
           · have haerase : a ∉ t.erase x := fun h => ha (Finset.erase_subset x t h)
@@ -48,7 +48,7 @@ private theorem pderiv_esymmOn {R sigma : Type*} [CommSemiring R]
       if x ∈ u ∧ 0 < j then esymmOn (R := R) (u.erase x) (j - 1) else 0 := by
   by_cases hxu : x ∈ u
   · by_cases hj : 0 < j
-    · rw [if_pos ⟨hxu, hj⟩]
+    · rw [ite_eq_left ⟨hxu, hj⟩]
       unfold esymmOn
       simp only [map_sum, pderiv_prod_X]
       rw [← Finset.sum_filter]
@@ -78,11 +78,11 @@ private theorem pderiv_esymmOn {R sigma : Type*} [CommSemiring R]
         · simp [hxs]
       · intro t ht
         rfl
-    · rw [if_neg (by simp [hj])]
+    · rw [ite_eq_right (by simp [hj])]
       have : j = 0 := Nat.eq_zero_of_not_pos hj
       subst j
       simp [esymmOn]
-  · rw [if_neg (by simp [hxu])]
+  · rw [ite_eq_right (by simp [hxu])]
     unfold esymmOn
     simp only [map_sum, pderiv_prod_X]
     apply Finset.sum_eq_zero
@@ -123,16 +123,16 @@ private theorem listPDeriv_esymmOn {R sigma : Type*} [CommSemiring R]
       change listPDeriv l (MvPolynomial.pderiv x (esymmOn (R := R) u j)) = _
       rw [pderiv_esymmOn]
       by_cases hj : 0 < j
-      · rw [if_pos ⟨hxu, hj⟩, ih hl (u.erase x) hlu' (j - 1)]
+      · rw [ite_eq_left ⟨hxu, hj⟩, ih hl (u.erase x) hlu' (j - 1)]
         simp only [List.length_cons]
         by_cases hlen : l.length + 1 ≤ j
-        · rw [if_pos hlen, if_pos (by lia)]
+        · rw [ite_eq_left hlen, ite_eq_left (by lia)]
           have hset : (u.erase x) \ l.toFinset = u \ (x :: l).toFinset := by
             ext y
             simp [and_assoc, and_left_comm]
           have hnat : j - 1 - l.length = j - (l.length + 1) := by lia
           rw [hset, hnat]
-        · rw [if_neg hlen, if_neg (by
+        · rw [ite_eq_right hlen, ite_eq_right (by
             intro h
             apply hlen
             lia)]
@@ -260,7 +260,7 @@ theorem elementaryDifferential_esymm
   classical
   unfold elementaryDifferential
   by_cases hij : i ≤ j
-  · rw [if_pos hij]
+  · rw [ite_eq_left hij]
     calc
       ∑ s ∈ Finset.univ.powersetCard i,
           RealRooted.applyMonomialDifferential
@@ -271,7 +271,7 @@ theorem elementaryDifferential_esymm
               apply Finset.sum_congr rfl
               intro s hs
               have hcard : s.card = i := (Finset.mem_powersetCard.mp hs).2
-              rw [applyMonomialDifferential_indicator_esymm, if_pos (by lia), hcard]
+              rw [applyMonomialDifferential_indicator_esymm, ite_eq_left (by lia), hcard]
       _ = (Fintype.card sigma - (j - i)).choose i •
           MvPolynomial.esymm sigma R (j - i) :=
             sum_esymmOn_sdiff i (j - i)
@@ -279,11 +279,11 @@ theorem elementaryDifferential_esymm
           MvPolynomial.esymm sigma R (j - i) := by
             congr 2
             lia
-  · rw [if_neg hij]
+  · rw [ite_eq_right hij]
     apply Finset.sum_eq_zero
     intro s hs
     have hcard : s.card = i := (Finset.mem_powersetCard.mp hs).2
-    rw [applyMonomialDifferential_indicator_esymm, if_neg (by lia)]
+    rw [applyMonomialDifferential_indicator_esymm, ite_eq_right (by lia)]
 
 private theorem indicator_totalDegree {sigma : Type*}
     (s : Finset sigma) :
@@ -324,8 +324,8 @@ theorem applyNegDifferential_esymm
       else 0 := by
   rw [applyNegDifferential_esymm_left, elementaryDifferential_esymm]
   by_cases hij : i ≤ j
-  · rw [if_pos hij, if_pos hij]
-  · rw [if_neg hij, if_neg hij, mul_zero]
+  · rw [ite_eq_left hij, ite_eq_left hij]
+  · rw [ite_eq_right hij, ite_eq_right hij, mul_zero]
 
 end
 

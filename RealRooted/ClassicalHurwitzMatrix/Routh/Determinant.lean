@@ -50,12 +50,12 @@ theorem hurwitz_submatrix_det_eq_routhExpand_of_predecessor_closed
         intro hodd
         rcases hodd with ⟨m, hm⟩
         lia
-      rw [if_neg hnot]
+      rw [ite_eq_right hnot]
       rw [hk, show k + k + 1 = 2 * k + 1 by lia,
         show k + k + 2 = 2 * k + 2 by lia]
       simp
     · have hodd : Odd (rows i.succ) := ⟨k, hk⟩
-      rw [if_pos hodd]
+      rw [ite_eq_left hodd]
       have hp := hpred i hodd
       have hprev : rows i.castSucc = 2 * k := by lia
       rw [show rows i.succ + 2 = 2 * (k + 1) + 1 by lia,
@@ -118,7 +118,7 @@ private theorem routhTail_det (c : ℝ) (odd even : ℝ[X])
       rw [show 2 * (k + 1) + 2 = 2 * (k + 2) by ring]
       rw [show 2 * (k + 2) = (2 * k + 2) + 2 by ring]
       rw [hurwitz_add_two_add_one]
-      rw [if_neg (by simp)]
+      rw [ite_eq_right (by simp)]
       simp only [zero_mul, add_zero]
 
 /-- One algebraic Routh step removes the first leading Hurwitz factor. -/

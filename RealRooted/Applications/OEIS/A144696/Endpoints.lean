@@ -370,7 +370,7 @@ theorem a144696BernsteinImage_prec {d i j : ℕ}
         simp
       exact StrictInterl.refl hone0 honesplits
     · dsimp [H]
-      rw [if_pos (Nat.pos_of_ne_zero hd0), if_neg (by lia)]
+      rw [ite_eq_left (Nat.pos_of_ne_zero hd0), ite_eq_right (by lia)]
       rw [show 2 * d - d = d by lia, a144696BernsteinImage_diagonal]
       exact a144696Polynomial_reciprocal_prec d
   have hall := prec_chain_of_consecutive_of_endpoint H 0 (2 * d)
@@ -396,7 +396,8 @@ theorem a144696BernsteinImageRow_isInterlacingSeqNonneg (d : ℕ) :
       hasNonnegCoeffs_a144696BernsteinImage d k⟩
   · rw [isInterlacingSeq_iff_pairwise, List.pairwise_iff_get]
     intro i j hij
-    simp only [a144696BernsteinImageRow, List.get_ofFn]
+    dsimp only [a144696BernsteinImageRow] at i j ⊢
+    erw [List.get_ofFn, List.get_ofFn]
     exact a144696BernsteinImage_prec hij.le (by lia)
 
 end RealRooted

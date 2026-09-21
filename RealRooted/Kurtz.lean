@@ -211,7 +211,7 @@ private lemma sign_alternating_of_unimodal {m : ℕ → ℝ} {n j : ℕ}
     rw [hsb_val]
     by_cases hjlt : j < n
     · have : n + 1 - j = (n - j) + 1 := by lia
-      rw [this, if_pos hjlt]
+      rw [this, ite_eq_left hjlt]
       have : cu 0 - cu 1 ≤ ∑ i ∈ Finset.range (n - j + 1), (-1 : ℝ) ^ i * cu i :=
         alternating_sum_ge (fun i ↦ hnonneg (min (j + i) n)) hcu_anti (n - j)
       rw [hcu] at this
@@ -351,7 +351,7 @@ lemma sign_eval_neg_of_ratio_bounds {p : ℝ[X]} {x : ℝ} {k : ℕ}
     have hak : 0 < a k := hapos hkn
     have hak_pred : 0 < a (k - 1) := hapos ((Nat.sub_le k 1).trans hkn)
     by_cases hlt : k < n
-    · simp only [hlt, if_true]
+    · simp only [hlt, ite_true]
       have hak_succ : 0 < a (k + 1) := hapos hlt
       have : a (k - 1) + a (k + 1) * x ^ 2 < a k * x := by
         rw [hx_eq hlt]
@@ -410,7 +410,7 @@ theorem coefficient_criterion_card_roots {p : ℝ[X]}
     div_pos (hapos ((Nat.sub_le i 1).trans hin)) (hapos hin)
   have hxpt_between (k : ℕ) (hk₁ : 1 ≤ k) (hkn : k < n) :
       r k < xpt k ∧ xpt k < r (k + 1) := by
-    have heq : xpt k = Real.sqrt (a (k - 1) / a (k + 1)) := by simp only [hxpt, hkn, if_true]
+    have heq : xpt k = Real.sqrt (a (k - 1) / a (k + 1)) := by simp only [hxpt, hkn, ite_true]
     rw [heq]
     exact sqrt_ratio_between (fun i hi ↦ hapos hi) hlogconc k hk₁ hkn
   have hxpt_pos (k : ℕ) (hk₁ : 1 ≤ k) (hkn : k ≤ n) : 0 < xpt k := by grind
@@ -428,7 +428,7 @@ theorem coefficient_criterion_card_roots {p : ℝ[X]}
       exact hineq k hk₁ hlt
     · intro hlt
       unfold xpt
-      rw [if_pos hlt]
+      rw [ite_eq_left hlt]
   have hxpt_lt_succ (k : ℕ) (hk₁ : 1 ≤ k) (hkn : k < n) : xpt k < xpt (k + 1) := by grind
   set g : ℕ → ℝ := fun i ↦ - xpt (n - i) with hg
   set pts : List ℝ := (List.range n).map g with hpts

@@ -133,7 +133,7 @@ theorem MvRealStable.eval_coordinateWronskian_nonneg_of_homogeneous_affineExtens
     ∀ i x, 0 ≤ MvPolynomial.eval x
       (MvPolynomial.coordinateWronskian Q P i) := by
   classical
-  letI := Fintype.ofFinite σ
+  let := Fintype.ofFinite σ
   intro i x
   let A : σ → ℝ := fun j => MvPolynomial.eval x
     (MvPolynomial.coordinateWronskian Q P j)
@@ -166,13 +166,13 @@ theorem MvRealStable.eval_coordinateWronskian_nonneg_of_homogeneous_affineExtens
         (Finset.sum_erase_add Finset.univ (fun j => b j * A j)
           (Finset.mem_univ i)).symm
       _ = δ * S + A i := by
-        simp only [b, if_pos, one_mul]
+        simp only [b, ite_eq_left, one_mul]
         rw [Finset.mul_sum]
         apply congrArg (fun y => y + A i)
         apply Finset.sum_congr rfl
         intro j hj
         have hji : j ≠ i := Finset.ne_of_mem_erase hj
-        rw [if_neg hji]
+        rw [ite_eq_right hji]
       _ = A i + δ * S := by ring
   rw [hsum] at hw
   have hδ_nonneg : 0 ≤ δ := hδ.le

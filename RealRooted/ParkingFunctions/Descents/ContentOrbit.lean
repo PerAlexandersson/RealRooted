@@ -164,7 +164,7 @@ theorem card_contentTypeSmirnovWords_eq_succ_mul_card_parking {n : ℕ}
           {w : Fin n → Fin (n + 1) //
             HasContentType μ w ∧ BrandenVecchi.IsSmirnovWord n w} =
         (contentTypeSmirnovWords μ).card := by
-    letI := Fintype.subtype (contentTypeSmirnovWords μ)
+    let := Fintype.subtype (contentTypeSmirnovWords μ)
       (fun _ => mem_contentTypeSmirnovWords_iff)
     rw [@Nat.card_eq_fintype_card _ this]
     exact Fintype.subtype_card (contentTypeSmirnovWords μ)
@@ -175,7 +175,7 @@ theorem card_contentTypeSmirnovWords_eq_succ_mul_card_parking {n : ℕ}
             (HasContentType μ w ∧ BrandenVecchi.IsSmirnovWord n w) ∧
               IsParkingWord w} =
         (parkingContentTypeSmirnovWords μ).card := by
-    letI := Fintype.subtype (parkingContentTypeSmirnovWords μ)
+    let := Fintype.subtype (parkingContentTypeSmirnovWords μ)
       (fun _ => mem_parkingContentTypeSmirnovWords_iff)
     rw [@Nat.card_eq_fintype_card _ this]
     exact Fintype.subtype_card (parkingContentTypeSmirnovWords μ)
@@ -205,7 +205,8 @@ theorem card_parkingContentTypeSmirnovWords_zero :
     (parkingContentTypeSmirnovWords
       (n := 0) (0 : Multiset (Fin 1))).card = 1 := by
   simp [parkingContentTypeSmirnovWords, contentTypeSmirnovWords,
-    HasContentType, wordContent, BrandenVecchi.IsSmirnovWord, IsParkingWord]
+    HasContentType, wordContent, BrandenVecchi.IsSmirnovWord,
+    Finset.filter_singleton, IsParkingWord]
 
 end
 

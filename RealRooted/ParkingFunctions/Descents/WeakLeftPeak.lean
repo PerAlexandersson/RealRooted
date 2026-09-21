@@ -89,7 +89,7 @@ theorem weakLeftPeakNumberFromDescentSet_extend_last {r : ℕ}
   unfold weakLeftPeakNumberFromDescentSet
   rw [weakLeftPeakSetFromDescentSet_extend_last]
   by_cases hnew : h ∧ Fin.last r ∉ D
-  · simp only [if_pos hnew]
+  · simp only [ite_eq_left hnew]
     have hdisjoint : Disjoint
         ((weakLeftPeakSetFromDescentSet D).map Fin.castSuccEmb)
         {Fin.last (r + 1)} := by
@@ -97,7 +97,7 @@ theorem weakLeftPeakNumberFromDescentSet_extend_last {r : ℕ}
       simp [Fin.castSucc_ne_last]
     rw [Finset.card_union_of_disjoint hdisjoint, Finset.card_map,
       Finset.card_singleton]
-  · simp only [if_neg hnew, Finset.union_empty, Finset.card_map,
+  · simp only [ite_eq_right hnew, Finset.union_empty, Finset.card_map,
       Nat.add_zero]
 
 /-- Weak left peaks of a nonempty word. -/
@@ -191,8 +191,8 @@ theorem literalWordWeakLeftPeakPolynomialInt_eq_ofAlphabet (n : ℕ) :
 @[simp]
 theorem parkingWeakLeftPeakPolynomialInt_zero :
     parkingWeakLeftPeakPolynomialInt 0 = 1 := by
-  simp [parkingWeakLeftPeakPolynomialInt, parkingFunctions,
-    IsParkingFunction]
+  rw [parkingWeakLeftPeakPolynomialInt, parkingFunctions_zero_eq_singleton]
+  simp
 
 /-- Exact integral weak-left-peak transfer from ordinary parking functions to
 all words. -/

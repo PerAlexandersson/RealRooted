@@ -155,7 +155,7 @@ theorem IsHomogeneous.optionEquivLeft_coeff_eq_C_coeff_zero_dehomogenize
     {p : MvPolynomial (Option σ) R} {d : ℕ}
     (hp : p.IsHomogeneous d) :
     (optionEquivLeft R σ p).coeff d =
-      C (coeff 0 (dehomogenize p)) := by
+      C ((dehomogenize p).coeff 0) := by
   let q : Polynomial (MvPolynomial σ R) := optionEquivLeft R σ p
   have hqdeg : q.natDegree ≤ d := by
     calc
@@ -163,7 +163,7 @@ theorem IsHomogeneous.optionEquivLeft_coeff_eq_C_coeff_zero_dehomogenize
         natDegree_optionEquivLeft (R := R) (σ := σ) p
       _ ≤ p.totalDegree := degreeOf_le_totalDegree p none
       _ ≤ d := hp.totalDegree_le
-  have hconst : q.coeff d = C (coeff 0 (q.coeff d)) := by
+  have hconst : q.coeff d = C ((q.coeff d).coeff 0) := by
     rw [← totalDegree_eq_zero_iff_eq_C]
     rw [totalDegree_zero_iff_isHomogeneous]
     apply coeff_isHomogeneous_of_optionEquivLeft_symm
@@ -173,7 +173,7 @@ theorem IsHomogeneous.optionEquivLeft_coeff_eq_C_coeff_zero_dehomogenize
   rw [show optionEquivLeft R σ p = q by rfl, hconst]
   congr 1
   rw [dehomogenize_eq_optionEquivLeft_eval_one]
-  change coeff 0 (q.coeff d) = coeff 0 (q.eval 1)
+  change (q.coeff d).coeff 0 = (q.eval 1).coeff 0
   rw [Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hqdeg)]
   simp only [one_pow, mul_one]
   rw [coeff_sum]
@@ -250,7 +250,7 @@ theorem optionEquivLeft_ordinaryHomogenization_coeff
   rw [← Polynomial.lcoeff_apply, map_sum]
   simp only [Polynomial.lcoeff_apply]
   by_cases hi : i ≤ d
-  · rw [if_pos hi]
+  · rw [ite_eq_left hi]
     rw [Finset.sum_eq_single (d - i)]
     · rw [Nat.sub_sub_self hi]
       simp
@@ -262,7 +262,7 @@ theorem optionEquivLeft_ordinaryHomogenization_coeff
         lia
       simp [hne]
     · simp
-  · rw [if_neg hi]
+  · rw [ite_eq_right hi]
     apply Finset.sum_eq_zero
     intro k hk
     have hk_le : k ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)

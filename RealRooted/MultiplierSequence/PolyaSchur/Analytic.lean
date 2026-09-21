@@ -87,7 +87,7 @@ theorem tendsto_coeff_rescaledJensenPolynomial (gamma : ℕ → ℝ) (k : ℕ) :
   have heq : (fun n : ℕ => (rescaledJensenPolynomial n gamma).coeff k) =ᶠ[atTop]
       fun n => (n.choose k : ℝ) * gamma k * ((n : ℝ)⁻¹) ^ k := by
     filter_upwards [eventually_ge_atTop k] with n hn
-    rw [coeff_rescaledJensenPolynomial, if_pos hn]
+    rw [coeff_rescaledJensenPolynomial, ite_eq_left hn]
   refine Tendsto.congr' heq.symm ?_
   simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using
     (tendsto_choose_mul_inv_pow_atTop k).mul_const (gamma k)

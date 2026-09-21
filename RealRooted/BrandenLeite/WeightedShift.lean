@@ -1,4 +1,4 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.LinearAlgebra.Matrix.Transvection
 import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
@@ -85,23 +85,23 @@ theorem weightedLowerShift_pow_apply
       by_cases hj : j.val + 1 < N + 1
       · let k : Fin (N + 1) := ⟨j.val + 1, hj⟩
         rw [Finset.sum_eq_single k]
-        · rw [weightedLowerShift_apply, if_pos (by rfl), ih]
+        · rw [weightedLowerShift_apply, ite_eq_left (by rfl), ih]
           by_cases hi : i.val = j.val + (q + 1)
-          · rw [if_pos hi]
+          · rw [ite_eq_left hi]
             have hik : i.val = k.val + q := by
               simp only [k]
               lia
-            rw [if_pos hik, descendingWeightProduct,
+            rw [ite_eq_left hik, descendingWeightProduct,
               descendingWeightProduct, Finset.prod_range_succ]
             congr 1
             simp only [k]
             congr 1
             lia
-          · rw [if_neg hi]
+          · rw [ite_eq_right hi]
             have hik : i.val ≠ k.val + q := by
               simp only [k]
               lia
-            rw [if_neg hik, zero_mul]
+            rw [ite_eq_right hik, zero_mul]
         · intro k' _ hk'
           rw [weightedLowerShift_apply]
           have hne : k'.val ≠ j.val + 1 := by
@@ -115,7 +115,7 @@ theorem weightedLowerShift_pow_apply
           simp [show k.val ≠ j.val + 1 by lia]
         rw [Finset.sum_eq_zero (fun k _ => by rw [hzero k, mul_zero])]
         have hne : i.val ≠ j.val + (q + 1) := by lia
-        rw [if_neg hne]
+        rw [ite_eq_right hne]
 
 /-- On `N + 1` levels, every weighted lower shift is nilpotent at exponent
 `N + 1`. -/
@@ -208,7 +208,7 @@ theorem weightedLowerChip_mul_apply
   by_cases his : i = s.succ
   · subst i
     simp [weightedLowerChip]
-  · rw [if_neg his]
+  · rw [ite_eq_right his]
     exact Matrix.transvection_mul_apply_of_ne
       s.succ s.castSucc i j his (b (s.val + 1)) A
 
@@ -222,7 +222,7 @@ theorem weightedLowerShift_mul_apply_succ
   rw [Matrix.mul_apply, Finset.sum_eq_single s.castSucc]
   · simp [weightedLowerShift_apply]
   · intro k _ hks
-    rw [weightedLowerShift_apply, if_neg, zero_mul]
+    rw [weightedLowerShift_apply, ite_eq_right, zero_mul]
     intro heq
     apply hks
     exact Fin.ext (by simpa using heq.symm)
@@ -245,27 +245,27 @@ theorem weightedGreenKernel_apply
   rw [Matrix.sum_apply]
   simp_rw [weightedLowerShift_pow_apply]
   by_cases hji : j.val ≤ i.val
-  · rw [if_pos hji]
+  · rw [ite_eq_left hji]
     let q := i.val - j.val
     have hq : q ∈ Finset.range (N + 1) := by
       rw [Finset.mem_range]
       dsimp only [q]
       lia
     rw [Finset.sum_eq_single q]
-    · rw [if_pos]
+    · rw [ite_eq_left]
       dsimp only [q]
       lia
     · intro q' hq' hne
-      rw [if_neg]
+      rw [ite_eq_right]
       intro heq
       apply hne
       dsimp only [q]
       lia
     · exact fun h => (h hq).elim
-  · rw [if_neg hji]
+  · rw [ite_eq_right hji]
     apply Finset.sum_eq_zero
     intro q hq
-    rw [if_neg]
+    rw [ite_eq_right]
     intro heq
     exact hji (by lia)
 
@@ -274,7 +274,7 @@ theorem weightedGreenKernel_apply_eq_zero_of_lt
     {R : Type*} [CommSemiring R] (b : ℕ → R) (N : ℕ)
     {i j : Fin (N + 1)} (hij : i < j) :
     weightedGreenKernel b N i j = 0 := by
-  rw [weightedGreenKernel_apply, if_neg]
+  rw [weightedGreenKernel_apply, ite_eq_right]
   exact fun h => (not_le_of_gt (Fin.mk_lt_mk.mp hij)) h
 
 /-- Every finite Green kernel has diagonal one. -/
@@ -340,7 +340,7 @@ theorem weightedLowerChipPrefix_apply
       rw [weightedLowerChipPrefix]
       by_cases hi : i.val ≤ 0
       · have hi0 : i.val = 0 := by lia
-        rw [if_pos hi]
+        rw [ite_eq_left hi]
         by_cases hij : i = j
         · subst j
           simp
@@ -350,30 +350,30 @@ theorem weightedLowerChipPrefix_apply
           rw [weightedGreenKernel_apply_eq_zero_of_lt b N
             (Fin.mk_lt_mk.mpr (by lia))]
           simp [hij]
-      · rw [if_neg hi]
+      · rw [ite_eq_right hi]
   | succ k ih =>
       have hkN : k < N := Nat.lt_of_succ_le hk
-      rw [weightedLowerChipPrefix, dif_pos hkN,
+      rw [weightedLowerChipPrefix, dite_eq_left hkN,
         weightedLowerChip_mul_apply]
       let s : Fin N := ⟨k, hkN⟩
       by_cases his : i = s.succ
-      · rw [if_pos his]
+      · rw [ite_eq_left his]
         subst i
         have hs_le : s.succ.val ≤ k + 1 := by simp [s]
-        rw [if_pos hs_le, ih (Nat.le_of_lt hkN),
+        rw [ite_eq_left hs_le, ih (Nat.le_of_lt hkN),
           ih (Nat.le_of_lt hkN)]
         simp only [s, Fin.val_succ, Fin.val_castSucc]
-        rw [if_neg (by lia), if_pos (by lia)]
+        rw [ite_eq_right (by lia), ite_eq_left (by lia)]
         rw [Matrix.one_apply]
         simpa [s] using (weightedGreenKernel_apply_succ b s j).symm
-      · rw [if_neg his, ih (Nat.le_of_lt hkN)]
+      · rw [ite_eq_right his, ih (Nat.le_of_lt hkN)]
         by_cases hik : i.val ≤ k
-        · rw [if_pos hik, if_pos (by lia)]
+        · rw [ite_eq_left hik, ite_eq_left (by lia)]
         · have hnext : ¬i.val ≤ k + 1 := by
             intro hle
             have hieq : i.val = k + 1 := by lia
             exact his (Fin.ext (by simpa [s] using hieq))
-          rw [if_neg hik, if_neg hnext]
+          rw [ite_eq_right hik, ite_eq_right hnext]
 
 /-- Every bounded elementary-chip prefix is totally nonnegative. -/
 theorem weightedLowerChipPrefix_isTotallyNonneg
@@ -382,15 +382,10 @@ theorem weightedLowerChipPrefix_isTotallyNonneg
     (weightedLowerChipPrefix b N k).IsTotallyNonneg := by
   induction k with
   | zero =>
-      have h := (Matrix.IsTotallyNonneg.one (R := ℝ)).submatrix
-        (f := fun i : Fin (N + 1) => i.val)
-        (g := fun i : Fin (N + 1) => i.val)
-        Fin.val_strictMono Fin.val_strictMono
-      simpa [weightedLowerChipPrefix,
-        Matrix.submatrix_one Fin.val Fin.val_injective] using h
+      simp [weightedLowerChipPrefix, Matrix.IsTotallyNonneg.one]
   | succ k ih =>
       have hkN : k < N := Nat.lt_of_succ_le hk
-      rw [weightedLowerChipPrefix, dif_pos hkN]
+      rw [weightedLowerChipPrefix, dite_eq_left hkN]
       exact (weightedLowerChip_isTotallyNonneg hb ⟨k, hkN⟩).mul
         (ih (Nat.le_of_lt hkN))
 
@@ -407,7 +402,7 @@ theorem weightedGreenKernel_eq_weightedLowerChipProduct
   ext i j
   rw [weightedLowerChipProduct,
     weightedLowerChipPrefix_apply b N (le_refl N),
-    if_pos (Nat.le_of_lt_succ i.isLt)]
+    ite_eq_left (Nat.le_of_lt_succ i.isLt)]
 
 /-- Nonnegative weights make the finite Green kernel totally nonnegative. -/
 theorem weightedGreenKernel_isTotallyNonneg

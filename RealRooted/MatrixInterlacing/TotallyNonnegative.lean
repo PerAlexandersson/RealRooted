@@ -131,20 +131,32 @@ private lemma IsTotallyNonnegRect.constantPolynomialMatrix_has2x2
       i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty0
         (((constantPolynomialMatrix A).get i₁).get
-          ⟨j₁, by simp [constantPolynomialMatrix]⟩)
+          ⟨j₁, by
+            dsimp only [constantPolynomialMatrix] at i₁ ⊢
+            erw [List.get_ofFn]
+            simp⟩)
         (((constantPolynomialMatrix A).get i₁).get
-          ⟨j₂, by simp [constantPolynomialMatrix]⟩)
+          ⟨j₂, by
+            dsimp only [constantPolynomialMatrix] at i₁ ⊢
+            erw [List.get_ofFn]
+            simp⟩)
         (((constantPolynomialMatrix A).get i₂).get
-          ⟨j₁, by simp [constantPolynomialMatrix]⟩)
+          ⟨j₁, by
+            dsimp only [constantPolynomialMatrix] at i₂ ⊢
+            erw [List.get_ofFn]
+            simp⟩)
         (((constantPolynomialMatrix A).get i₂).get
-          ⟨j₂, by simp [constantPolynomialMatrix]⟩) := by
+          ⟨j₂, by
+            dsimp only [constantPolynomialMatrix] at i₂ ⊢
+            erw [List.get_ofFn]
+            simp⟩) := by
   intro i₁ i₂ j₁ j₂ hi hj
   let i₁' : Fin m := ⟨i₁, by simpa [constantPolynomialMatrix] using i₁.isLt⟩
   let i₂' : Fin m := ⟨i₂, by simpa [constantPolynomialMatrix] using i₂.isLt⟩
   have hi' : i₁' ≤ i₂' := by simpa [i₁', i₂'] using hi
-  simp only [constantPolynomialMatrix]
-  simpa [i₁', i₂'] using
-    hA.has2x2InterlacingProperty0 i₁' i₂' j₁ j₂ hi' hj
+  dsimp only [constantPolynomialMatrix] at i₁ i₂ ⊢
+  simp only [List.get_eq_getElem, List.getElem_ofFn]
+  exact hA.has2x2InterlacingProperty0 i₁' i₂' j₁ j₂ hi' hj
 
 /-- A rectangular totally nonnegative constant matrix sends a strict
 nonnegative interlacing sequence to a weak zero-aware one, in row order. -/

@@ -183,14 +183,14 @@ theorem signedWordEnumerator_one_zero_negative_eq_smirnov
   apply Fintype.sum_equiv (positiveWordEquiv m n)
   intro w
   by_cases hw : IsSignedWord n w
-  · rw [if_pos hw]
-    rw [if_pos ((isSignedWord_zero_negative_iff_isSmirnovWord w).mp hw)]
+  · rw [ite_eq_left hw]
+    rw [ite_eq_left ((isSignedWord_zero_negative_iff_isSmirnovWord w).mp hw)]
     rw [signedWordWeight_one]
     rw [signedCollisionNumber_eq_zero_of_isSignedWord_zero_negative hw]
     rw [signedDescentNumber_eq_smirnovDescentNumber_positiveWordEquiv]
     simp [smirnovWordWeight]
-  · rw [if_neg hw]
-    rw [if_neg (by
+  · rw [ite_eq_right hw]
+    rw [ite_eq_right (by
       simpa [isSignedWord_zero_negative_iff_isSmirnovWord] using hw)]
 
 /-- The list-based all-one positive specialization agrees with the literal

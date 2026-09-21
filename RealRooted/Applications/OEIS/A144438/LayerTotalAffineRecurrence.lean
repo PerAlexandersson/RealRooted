@@ -231,7 +231,7 @@ theorem coordinateWronskian_affineSlope_exceptionalBase_of_ne
       MvPolynomial.X 2 * MvPolynomial.coordinateWronskian
         (decoBottomTotalAffineSlope n)
         (decoBottomTotalAffineExceptionalCore n) i := by
-  rw [coordinateWronskian_affineSlope_exceptionalBase, if_neg hi, add_zero]
+  rw [coordinateWronskian_affineSlope_exceptionalBase, ite_eq_right hi, add_zero]
 
 /-- The new coordinate does not occur in the affine base. -/
 theorem one_notMem_vars_decoBottomTotalAffineBase (n : Nat) :

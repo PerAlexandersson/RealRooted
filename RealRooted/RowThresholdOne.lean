@@ -94,12 +94,14 @@ theorem has2x2_thresholdEntry_one {t₁ t₂ j₁ j₂ : ℕ}
   split_ifs <;>
     first
       | (exfalso; lia)
-      | exact case_XXXX hs
-      | exact case_X1XX hs ht0
-      | exact case_X1X1 hs ht0
-      | exact case_11XX hs
-      | exact case_11X1 hs ht0
-      | exact case_1111 hs
+      | with_reducible_and_instances
+          first
+            | exact case_XXXX hs
+            | exact case_X1XX hs ht0
+            | exact case_X1X1 hs ht0
+            | exact case_11XX hs
+            | exact case_11X1 hs ht0
+            | exact case_1111 hs
 
 /-! ### Marker-one threshold matrices -/
 
@@ -112,7 +114,8 @@ def thresholdOneRows (n : ℕ) : List (ℕ × ℝ[X]) :=
 
 theorem get_thresholdOneRows {n : ℕ} (i : Fin (thresholdOneRows n).length) :
     (thresholdOneRows n).get i = (i.1, (1 : ℝ[X])) := by
-  simp only [thresholdOneRows, List.get_eq_getElem, List.getElem_map, List.getElem_range]
+  dsimp only [thresholdOneRows] at i ⊢
+  simp only [List.get_eq_getElem, List.getElem_map, List.getElem_range]
 
 theorem thresholdOneRows_marker_nonneg {n : ℕ} :
     ∀ p ∈ thresholdOneRows n, HasNonnegCoeffs p.2 := by

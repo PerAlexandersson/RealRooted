@@ -61,17 +61,17 @@ theorem optionalRiseMatrixFactor_mul_apply
   rw [optionalRiseMatrixFactor, Matrix.add_mul,
     Matrix.one_mul, Matrix.add_apply]
   by_cases hi : 0 < i.val
-  · rw [if_pos hi]
+  · rw [ite_eq_left hi]
     let s : Fin N := ⟨i.val - 1, by lia⟩
     have his : s.succ = i := Fin.ext (by simp [s]; lia)
     rw [← his, weightedLowerShift_mul_apply_succ]
     simp [s]
-  · rw [if_neg hi, add_zero]
+  · rw [ite_eq_right hi, add_zero]
     have hsum : (weightedLowerShift a N * A) i j = 0 := by
       rw [Matrix.mul_apply]
       apply Finset.sum_eq_zero
       intro k hk
-      rw [weightedLowerShift_apply, if_neg, zero_mul]
+      rw [weightedLowerShift_apply, ite_eq_right, zero_mul]
       lia
     rw [hsum, add_zero]
 
@@ -99,9 +99,7 @@ theorem optionalRiseMatrix_isTotallyNonneg
     (optionalRiseMatrix as N).IsTotallyNonneg := by
   induction as with
   | nil =>
-      simpa [optionalRiseMatrix, weightedLowerChipPrefix] using
-        (weightedLowerChipPrefix_isTotallyNonneg
-          (b := fun _ => 0) (by simp) N (k := 0) (Nat.zero_le N))
+      simp [optionalRiseMatrix, Matrix.IsTotallyNonneg.one]
   | cons a as ih =>
       rw [optionalRiseMatrix_cons]
       exact (optionalRiseMatrixFactor_isTotallyNonneg
@@ -150,8 +148,8 @@ theorem orderedOptionalRiseCoefficient_eq_zero_of_length_lt
           have hj : as.length < j := by simp at h; lia
           rw [ih (by lia)]
           by_cases hn : 0 < n
-          · rw [if_pos hn, ih hj, mul_zero, add_zero]
-          · rw [if_neg hn, add_zero]
+          · rw [ite_eq_left hn, ih hj, mul_zero, add_zero]
+          · rw [ite_eq_right hn, add_zero]
 
 /-- One cannot make more strict rises than the starting level permits. -/
 theorem orderedOptionalRiseCoefficient_eq_zero_of_lt
@@ -168,8 +166,8 @@ theorem orderedOptionalRiseCoefficient_eq_zero_of_lt
       | succ j =>
           rw [orderedOptionalRiseCoefficient, ih h]
           by_cases hn : 0 < n
-          · rw [if_pos hn, ih (by lia), mul_zero, add_zero]
-          · rw [if_neg hn, add_zero]
+          · rw [ite_eq_left hn, ih (by lia), mul_zero, add_zero]
+          · rw [ite_eq_right hn, add_zero]
 
 /-- Positive-lag coefficients vanish when every optional-rise weight is zero. -/
 theorem orderedOptionalRiseCoefficient_eq_zero_of_weights
@@ -210,23 +208,23 @@ theorem orderedOptionalRiseCoefficient_eq_sum_sublistsLen
             ih]
           simp only [List.map_map]
           by_cases hn : 0 < n
-          · rw [if_pos hn, ih]
+          · rw [ite_eq_left hn, ih]
             congr 1
             change a n *
                 (List.map (fun bs => strictRiseSelectionWeight bs (n - 1))
                   (List.sublistsLen j as)).sum =
               (List.map (fun bs => strictRiseSelectionWeight (a :: bs) n)
                 (List.sublistsLen j as)).sum
-            simp_rw [strictRiseSelectionWeight, if_pos hn]
+            simp_rw [strictRiseSelectionWeight, ite_eq_left hn]
             rw [List.sum_map_mul_left]
-          · rw [if_neg hn]
+          · rw [ite_eq_right hn]
             have hsum : (List.map
                 ((fun bs => strictRiseSelectionWeight bs n) ∘ List.cons a)
                   (List.sublistsLen j as)).sum = 0 := by
               change (List.map
                 (fun bs => strictRiseSelectionWeight (a :: bs) n)
                   (List.sublistsLen j as)).sum = 0
-              simp_rw [strictRiseSelectionWeight, if_neg hn]
+              simp_rw [strictRiseSelectionWeight, ite_eq_right hn]
               simp
             rw [hsum, add_zero]
 
@@ -260,9 +258,9 @@ theorem optionalRiseMatrix_apply
         simp
       · have hval : i.val ≠ j.val := fun h => hij (Fin.ext h)
         rcases lt_or_gt_of_ne hval with hijlt | hjilt
-        · rw [if_neg (Nat.not_le_of_lt hijlt)]
+        · rw [ite_eq_right (Nat.not_le_of_lt hijlt)]
           simp [hij]
-        · rw [if_pos (Nat.le_of_lt hjilt)]
+        · rw [ite_eq_left (Nat.le_of_lt hjilt)]
           have hsub : 0 < i.val - j.val := Nat.sub_pos_of_lt hjilt
           obtain ⟨q, hq⟩ := Nat.exists_eq_succ_of_ne_zero hsub.ne'
           rw [hq]
@@ -271,35 +269,35 @@ theorem optionalRiseMatrix_apply
       rw [optionalRiseMatrix_cons,
         optionalRiseMatrixFactor_mul_apply]
       by_cases hji : j.val ≤ i.val
-      · rw [if_pos hji]
+      · rw [ite_eq_left hji]
         by_cases hij : i = j
         · subst j
-          rw [ih, if_pos (le_refl i.val)]
+          rw [ih, ite_eq_left (le_refl i.val)]
           by_cases hi : 0 < i.val
-          · rw [if_pos hi, ih, if_neg (by simp; lia)]
+          · rw [ite_eq_left hi, ih, ite_eq_right (by simp; lia)]
             simp
-          · rw [if_neg hi]
+          · rw [ite_eq_right hi]
             simp
         · have hji' : j.val < i.val := lt_of_le_of_ne hji (Ne.symm
             (fun h => hij (Fin.ext h)))
           have hi : 0 < i.val := lt_of_le_of_lt (Nat.zero_le j.val) hji'
           let p : Fin (N + 1) := ⟨i.val - 1, by lia⟩
           have hjp : j.val ≤ p.val := by simp only [p]; lia
-          rw [if_pos hi, ih, ih, if_pos hji, if_pos hjp]
+          rw [ite_eq_left hi, ih, ih, ite_eq_left hji, ite_eq_left hjp]
           have hlag : i.val - j.val = (i.val - j.val - 1) + 1 := by
             lia
           rw [hlag, orderedOptionalRiseCoefficient]
           congr 2
           · lia
-      · rw [if_neg hji]
+      · rw [ite_eq_right hji]
         have hijlt : i.val < j.val := Nat.lt_of_not_ge hji
-        rw [ih, if_neg (Nat.not_le_of_lt hijlt)]
+        rw [ih, ite_eq_right (Nat.not_le_of_lt hijlt)]
         by_cases hi : 0 < i.val
-        · rw [if_pos hi, ih, if_neg]
+        · rw [ite_eq_left hi, ih, ite_eq_right]
           · simp
           · simp
             lia
-        · rw [if_neg hi, add_zero]
+        · rw [ite_eq_right hi, add_zero]
 
 @[simp]
 theorem optionalRiseMatrix_apply_self
@@ -311,7 +309,7 @@ theorem optionalRiseMatrix_apply_eq_zero_of_lt
     (as : List (ℕ → ℝ)) (N : ℕ) {i j : Fin (N + 1)}
     (h : i.val < j.val) :
     optionalRiseMatrix as N i j = 0 := by
-  rw [optionalRiseMatrix_apply, if_neg (Nat.not_le_of_lt h)]
+  rw [optionalRiseMatrix_apply, ite_eq_right (Nat.not_le_of_lt h)]
 
 /-- Direct matrix-entry form of the ordered strict-selection formula. -/
 theorem optionalRiseMatrix_apply_eq_sum_sublistsLen
@@ -320,7 +318,7 @@ theorem optionalRiseMatrix_apply_eq_sum_sublistsLen
     optionalRiseMatrix as N i j =
       ((as.sublistsLen (i.val - j.val)).map fun bs =>
         strictRiseSelectionWeight bs i.val).sum := by
-  rw [optionalRiseMatrix_apply, if_pos h,
+  rw [optionalRiseMatrix_apply, ite_eq_left h,
     orderedOptionalRiseCoefficient_eq_sum_sublistsLen]
 
 /-- The ordered product is lower unitriangular, expressed by its two defining

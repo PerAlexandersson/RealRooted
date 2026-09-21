@@ -281,13 +281,13 @@ theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
   have hrm_eq_m : ∀ i : Fin (n + 1), (i : ℕ) = 0 → rm i = m := by
     intro i h
     simp only [hrm_def]
-    rw [dif_pos h]
+    rw [dite_eq_left h]
   have hrm_zero : rm 0 = m := hrm_eq_m 0 rfl
   have hrm_pos : ∀ (i : Fin (n + 1)) (h : (i : ℕ) ≠ 0),
       rm i = r ⟨(i : ℕ) - 1, by have := i.isLt; lia⟩ := by
     intro i h
     simp only [hrm_def]
-    rw [dif_neg h]
+    rw [dite_eq_right h]
   have hrm_mono : StrictMono rm := by
     intro i j hij
     have hj0 : (j : ℕ) ≠ 0 := by have := Fin.lt_def.mp hij; lia

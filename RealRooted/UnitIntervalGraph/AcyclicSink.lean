@@ -227,7 +227,7 @@ theorem mem_lastEarlierNeighbors_iff {m : ℕ} (a : Data (m + 1))
   rw [a.graph_adj_of_lt (by
     change i.val < m
     exact i.isLt)]
-  simp [prefixEmbedding]
+  rfl
 
 @[simp]
 theorem card_lastEarlierNeighbors {m : ℕ} (a : Data (m + 1)) :
@@ -459,11 +459,11 @@ theorem extendOrientation_isAcyclic {m : ℕ} (a : Data (m + 1))
           apply (Finset.sup_lt_iff (lt_of_le_of_lt (Nat.zero_le _) hxy)).2
           intro z hz
           exact hrank (cut.directed_across hz hyK hyB)
-        simp only [fullRank, if_pos hne', Fin.lastCases_last,
+        simp only [fullRank, ite_eq_left hne', Fin.lastCases_last,
           Fin.lastCases_castSucc]
         dsimp [lowerRank] at hlower ⊢
         lia
-      · simp only [fullRank, if_neg hne, Fin.lastCases_last,
+      · simp only [fullRank, ite_eq_right hne, Fin.lastCases_last,
           Fin.lastCases_castSucc]
         exact Nat.zero_lt_succ _
   · intro v
@@ -474,7 +474,7 @@ theorem extendOrientation_isAcyclic {m : ℕ} (a : Data (m + 1))
       have hxle : rank x ≤ lowerRank := Finset.le_sup hxB
       change fullRank x.castSucc < fullRank (Fin.last m)
       have hne : cut.lower.Nonempty := ⟨x, hxB⟩
-      simp only [fullRank, if_pos hne, Fin.lastCases_castSucc,
+      simp only [fullRank, ite_eq_left hne, Fin.lastCases_castSucc,
         Fin.lastCases_last]
       dsimp [lowerRank] at hxle ⊢
       lia
@@ -483,9 +483,9 @@ theorem extendOrientation_isAcyclic {m : ℕ} (a : Data (m + 1))
         hrank ((a.extendOrientation_directed_prefix O cut x y).mp huv)
       change fullRank x.castSucc < fullRank y.castSucc
       by_cases hne : cut.lower.Nonempty
-      · simp only [fullRank, if_pos hne, Fin.lastCases_castSucc]
+      · simp only [fullRank, ite_eq_left hne, Fin.lastCases_castSucc]
         exact (Nat.mul_lt_mul_left (by norm_num : 0 < 2)).2 hxy
-      · simp only [fullRank, if_neg hne, Fin.lastCases_castSucc]
+      · simp only [fullRank, ite_eq_right hne, Fin.lastCases_castSucc]
         exact Nat.add_lt_add_right hxy 1
 
 @[simp]
@@ -514,7 +514,7 @@ theorem cutOfAcyclicOrientation_extendOrientation {m : ℕ}
       ⟨a.extendOrientation O cut, a.extendOrientation_isAcyclic hO cut⟩).lower =
       cut.lower := by
   ext x
-  rw [a.mem_cutOfAcyclicOrientation_lower]
+  erw [a.mem_cutOfAcyclicOrientation_lower]
   exact a.extendOrientation_directed_to_last O cut x
 
 /-- Re-extending the restriction and extracted cut recovers a full acyclic
@@ -851,7 +851,7 @@ theorem sum_properInsertionCuts {m : ℕ} (a : Data (m + 1))
   rw [Fin.sum_univ_castSucc]
   simp only [Fin.val_castSucc, Fin.val_last]
   rw [Finset.sum_fin_eq_sum_range]
-  simp only [not_true_eq_false, if_false, add_zero]
+  simp only [not_true_eq_false, ite_false, add_zero]
   apply Finset.sum_congr rfl
   intro k hk
   have hklt : k < a.width (Fin.last m) := by
@@ -1194,7 +1194,7 @@ theorem sum_extensionMonomials {m : ℕ} (a : Data (m + 1))
           a.extendOrientation_sinkCount_of_fullCut_of_noSink O.1 fullCut
             hfullCut hnoSink,
           hfullCard]
-    rw [if_pos hnoSink, hfullTerm, Graph.orientationMonomial,
+    rw [ite_eq_left hnoSink, hfullTerm, Graph.orientationMonomial,
       a.card_lastEarlierNeighbors, qNat_succ, pow_add, map_mul, map_add,
       pow_succ]
     ring
@@ -1212,7 +1212,7 @@ theorem sum_extensionMonomials {m : ℕ} (a : Data (m + 1))
           a.extendOrientation_sinkCount_of_fullCut_of_hasSink O.1 fullCut
             hfullCut hhasSink,
           hfullCard]
-    rw [if_neg hnoSink, add_zero, hfullTerm, Graph.orientationMonomial,
+    rw [ite_eq_right hnoSink, add_zero, hfullTerm, Graph.orientationMonomial,
       a.card_lastEarlierNeighbors, qNat_succ, pow_add, map_mul, map_add]
     ring
 
@@ -1269,7 +1269,7 @@ theorem suffixFactor_succ_of_le {m k : ℕ} (a : Data (m + 1))
     a.suffixFactor k q =
       qNat q (a.width (Fin.last m)) * a.init.suffixFactor k q := by
   rw [suffixFactor, Fin.prod_univ_castSucc, suffixFactor]
-  simp only [Fin.val_castSucc, a.init_width, Fin.val_last, hk, if_true]
+  simp only [Fin.val_castSucc, a.init_width, Fin.val_last, hk, ite_true]
   ac_rfl
 
 theorem noSinkFrom_card {n : ℕ} (a : Data n)
@@ -1283,7 +1283,7 @@ theorem noSinkFromPolynomial_card {n : ℕ} (a : Data n) (q : ℝ) :
   unfold noSinkFromPolynomial Graph.acyclicSinkPolynomial
   apply Finset.sum_congr rfl
   intro O hO
-  rw [if_pos (a.noSinkFrom_card O.1)]
+  rw [ite_eq_left (a.noSinkFrom_card O.1)]
 
 /-- Extending a suffix with the condition that it remain sink-free contributes
 the q-integer of the new vertex width. -/
@@ -1321,7 +1321,7 @@ theorem noSinkFromPolynomial_succ {m k : ℕ} (a : Data (m + 1))
         apply Finset.sum_congr rfl
         intro cut hcut
         by_cases hproper : cut.lower ≠ a.lastEarlierNeighbors
-        · rw [if_pos hproper, if_pos hproper]
+        · rw [ite_eq_left hproper, ite_eq_left hproper]
           rw [Graph.orientationMonomial, Graph.orientationMonomial,
             a.extendOrientation_ascentCount,
             a.extendOrientation_sinkCount_of_properCut O.1 cut hproper,
@@ -1371,7 +1371,7 @@ theorem noSinkFromPolynomial_eq_suffixFactor_mul {n k : ℕ}
         have hfactor : a.suffixFactor (m + 1) q = 1 := by
           apply Finset.prod_eq_one
           intro i hi
-          rw [if_neg]
+          rw [ite_eq_right]
           exact Nat.not_le_of_gt i.isLt
         rw [htake, hfactor]
         simp

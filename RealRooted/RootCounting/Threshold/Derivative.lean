@@ -34,7 +34,7 @@ theorem prod_amp_sign {m : Multiset K} {ξ : K} (hm : ∀ r ∈ m, r < 0)
         field_simp
       rw [Multiset.map_cons, Multiset.prod_cons, Multiset.filter_cons]
       by_cases hlt : ξ < a
-      · rw [if_pos hlt, Multiset.card_add, Multiset.card_singleton]
+      · rw [ite_eq_left hlt, Multiset.card_add, Multiset.card_singleton]
         have hq : (0 : K) < (ξ - a) / a := div_pos_of_neg_of_neg (by linarith) haneg
         have hfac : 1 - ξ / a < 0 := by linarith [hid, hq]
         have hpow : (-1 : K) ^ (1 + Multiset.card (t.filter (fun r => ξ < r)))
@@ -43,7 +43,7 @@ theorem prod_amp_sign {m : Multiset K} {ξ : K} (hm : ∀ r ∈ m, r < 0)
           ring
         rw [hpow]
         nlinarith [hIH, hfac]
-      · rw [if_neg hlt]
+      · rw [ite_eq_right hlt]
         simp only [zero_add]
         have halt : a < ξ := lt_of_le_of_ne (not_lt.mp hlt) hane
         have hq : (ξ - a) / a < 0 := div_neg_of_pos_of_neg (by linarith) haneg
@@ -58,10 +58,10 @@ theorem filter_erase_eq {α : Type*} {m : Multiset α} {a : α} {P : α → Prop
   refine Multiset.ext.mpr (fun x => ?_)
   rw [Multiset.count_filter, Multiset.count_filter]
   by_cases hx : P x
-  · rw [if_pos hx, if_pos hx]
+  · rw [ite_eq_left hx, ite_eq_left hx]
     have hxa : x ≠ a := fun h => hPa (h ▸ hx)
     exact Multiset.count_erase_of_ne hxa m
-  · rw [if_neg hx, if_neg hx]
+  · rw [ite_eq_right hx, ite_eq_right hx]
 
 /-- The derivative at the `k`-th smallest negative root has sign `(-1)^k`. -/
 theorem deriv_sign_at_root {p : ℝ[X]} (hp : p.Splits) (hnd : p.roots.Nodup)

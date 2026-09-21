@@ -261,7 +261,7 @@ theorem comparisonBottomSupport_eq_fixed_union_active {h : Nat}
       · have hactive : j ∈ c.activeEligibleStarts := by
           rw [mem_activeEligibleStarts]
           simpa [← hleft] using hx
-        exact ⟨j, hactive, by simpa [leftLabelEmbedding] using hleft.symm⟩
+        exact ⟨j, hactive, by simpa [leftLabelEmbedding] using! hleft.symm⟩
       · exact
           (j.2.rightLabel_not_mem_comparisonBottomSupport (hright ▸ hx)).elim
     · rw [Finset.mem_union]
@@ -274,6 +274,6 @@ theorem comparisonBottomSupport_eq_fixed_union_active {h : Nat}
       obtain ⟨j, hj, hjx⟩ := hactive
       have hleft := (mem_activeEligibleStarts c j).mp hj
       rw [← hjx]
-      simpa [leftLabelEmbedding] using hleft
+      simpa [leftLabelEmbedding] using! hleft
 
 end RealRooted.Applications.OEIS.DecoNormalizedCode

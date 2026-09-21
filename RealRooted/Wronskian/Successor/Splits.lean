@@ -109,7 +109,7 @@ theorem splits_of_wronskian_neg_succ {n : ℕ}
         · intro k
           rw [Fin.cons_succ, Fin.snoc_castSucc]
           have hval : (k.castSucc.succ : Fin (n + 2)).val = k.val + 1 := rfl
-          rw [dif_neg (by simp), dif_neg (by grind)]
+          rw [dite_eq_right (by simp), dite_eq_right (by grind)]
           simp
     intro a b hab
     rw [hgr_val a, hgr_val b]

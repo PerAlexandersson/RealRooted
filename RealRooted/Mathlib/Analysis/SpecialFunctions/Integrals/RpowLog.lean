@@ -129,9 +129,7 @@ theorem integral_rpow_mul_log_zero_one {r : ℝ} (hr : -1 < r) :
     (∫ x : ℝ in 0..1, x ^ r * Real.log x) = -1 / (r + 1) ^ 2 := by
   have hint : IntervalIntegrable
       (fun x : ℝ => -(x ^ r * Real.log x)) volume 0 1 := by
-    convert (intervalIntegrable_rpow_mul_log hr).neg using 1
-    ext x
-    simp
+    exact (intervalIntegrable_rpow_mul_log hr).neg
   have hneg :
       (∫ x : ℝ in 0..1, -(x ^ r * Real.log x)) = (r + 1)⁻¹ ^ 2 := by
     rw [integral_eq_sub_of_hasDerivAt_of_tendsto

@@ -70,7 +70,7 @@ theorem coeff_finiteFreeMultiplicativeConvolution
   rw [finiteFreeMultiplicativeConvolution, coeff_C_mul,
     coeff_comp_neg_X, coeff_schurSzegoComp]
   by_cases hj : j ≤ d
-  · simp only [if_pos hj]
+  · simp only [ite_eq_left hj]
     calc
       (-1 : ℝ) ^ d *
           (p.coeff j * q.coeff j / (Nat.choose d j : ℝ) *
@@ -80,7 +80,7 @@ theorem coeff_finiteFreeMultiplicativeConvolution
       _ = (-1 : ℝ) ^ (d - j) *
             (p.coeff j * q.coeff j / (Nat.choose d j : ℝ)) := by
         rw [neg_one_pow_add_eq_sub hj]
-  · simp only [if_neg hj]
+  · simp only [ite_eq_right hj]
     simp
 
 /-- Signed reciprocal reversal does not leave a valid degree box. -/
@@ -101,7 +101,7 @@ theorem natDegree_finiteFreeMultiplicativeConvolution_le
     (finiteFreeMultiplicativeConvolution d p q).natDegree ≤ d := by
   rw [natDegree_le_iff_coeff_eq_zero]
   intro j hj
-  rw [coeff_finiteFreeMultiplicativeConvolution, if_neg (not_le_of_gt hj)]
+  rw [coeff_finiteFreeMultiplicativeConvolution, ite_eq_right (not_le_of_gt hj)]
 
 @[simp] theorem signedReciprocal_zero (d : ℕ) :
     signedReciprocal d (0 : ℝ[X]) = 0 := by
@@ -140,7 +140,7 @@ theorem finiteFreeMultiplicativeConvolution_C_mul_left
       C a * finiteFreeMultiplicativeConvolution d p q := by
   ext j
   by_cases hj : j ≤ d
-  · simp only [coeff_finiteFreeMultiplicativeConvolution, if_pos hj,
+  · simp only [coeff_finiteFreeMultiplicativeConvolution, ite_eq_left hj,
       coeff_C_mul]
     ring
   · simp [coeff_finiteFreeMultiplicativeConvolution, hj]
@@ -239,7 +239,7 @@ theorem finiteElementaryCoeff_finiteFreeMultiplicativeConvolution
       finiteElementaryCoeff d k p * finiteElementaryCoeff d k q := by
   unfold finiteElementaryCoeff
   rw [coeff_finiteFreeMultiplicativeConvolution,
-    if_pos (Nat.sub_le d k), Nat.sub_sub_self hk, Nat.choose_symm hk]
+    ite_eq_left (Nat.sub_le d k), Nat.sub_sub_self hk, Nat.choose_symm hk]
   let s : ℝ := (-1 : ℝ) ^ k
   have hs : s * s = 1 := by simpa [pow_two] using neg_one_pow_sq k
   have hchoose : (Nat.choose d k : ℝ) ≠ 0 :=
@@ -265,7 +265,7 @@ theorem finiteFreeMultiplicativeConvolution_monic
     exact hq.leadingCoeff
   have houtcoeff :
       (finiteFreeMultiplicativeConvolution d p q).coeff d = 1 := by
-    rw [coeff_finiteFreeMultiplicativeConvolution, if_pos le_rfl,
+    rw [coeff_finiteFreeMultiplicativeConvolution, ite_eq_left le_rfl,
       Nat.sub_self, pow_zero, one_mul, hpcoeff, hqcoeff]
     simp
   have houtdeg :
@@ -287,7 +287,7 @@ theorem signedReciprocal_schurSzegoComp
   · have hsub : d - j ≤ d := Nat.sub_le d j
     rw [coeff_signedReciprocal_of_le hj,
       coeff_schurSzegoComp_of_le hsub,
-      coeff_finiteFreeMultiplicativeConvolution, if_pos hj,
+      coeff_finiteFreeMultiplicativeConvolution, ite_eq_left hj,
       coeff_signedReciprocal_of_le hj,
       coeff_signedReciprocal_of_le hj, Nat.choose_symm hj]
     let s : ℝ := (-1 : ℝ) ^ (d - j)
@@ -306,7 +306,7 @@ theorem signedReciprocal_schurSzegoComp
           (Nat.choose d j : ℝ))
     rw [hprod]
   · have hjlt : d < j := Nat.lt_of_not_ge hj
-    rw [coeff_finiteFreeMultiplicativeConvolution, if_neg hj]
+    rw [coeff_finiteFreeMultiplicativeConvolution, ite_eq_right hj]
     rw [coeff_signedReciprocal, revAt_eq_self_of_lt hjlt,
       coeff_schurSzegoComp_eq_zero_of_lt hjlt]
     simp
@@ -321,7 +321,7 @@ theorem finiteFreeMultiplicativeConvolution_signedReciprocal_right
       schurSzegoComp d P (reflect d p) := by
   ext j
   by_cases hj : j ≤ d
-  · rw [coeff_finiteFreeMultiplicativeConvolution, if_pos hj,
+  · rw [coeff_finiteFreeMultiplicativeConvolution, ite_eq_left hj,
       coeff_signedReciprocal_of_le hj,
       coeff_schurSzegoComp_of_le hj, coeff_reflect, revAt_le hj]
     let s : ℝ := (-1 : ℝ) ^ (d - j)
@@ -339,7 +339,7 @@ theorem finiteFreeMultiplicativeConvolution_signedReciprocal_right
       _ = P.coeff j * p.coeff (d - j) /
           (Nat.choose d j : ℝ) := by rw [hs, one_mul]
   · have hjlt : d < j := Nat.lt_of_not_ge hj
-    rw [coeff_finiteFreeMultiplicativeConvolution, if_neg hj,
+    rw [coeff_finiteFreeMultiplicativeConvolution, ite_eq_right hj,
       coeff_schurSzegoComp_eq_zero_of_lt hjlt]
 
 end RealRooted

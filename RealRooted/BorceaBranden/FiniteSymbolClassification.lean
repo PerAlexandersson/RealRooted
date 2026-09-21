@@ -263,7 +263,7 @@ private theorem norm_eval_monomial_le_shiftedBox
   have hprod : (∏ i, ‖z i‖ ^ m i) ≤
       ∏ i, (1 + ‖W i‖ / (W i).im + 1 / (W i).im) ^ κ i *
         ‖z i + W i‖ ^ κ i := by
-    apply Finset.prod_le_prod
+    apply Finset.prod_le_prod₀
     · intro i _hi
       positivity
     · intro i _hi
@@ -292,7 +292,7 @@ theorem uniformlyDominatedByShiftedBox
   classical
   let A : ℝ :=
     ∏ i, (1 + ‖W i‖ / (W i).im + 1 / (W i).im) ^ κ i
-  let M : ℝ := (∑ m ∈ f.1.support, ‖MvPolynomial.coeff m f.1‖) * A
+  let M : ℝ := (∑ m ∈ f.1.support, ‖f.1.coeff m‖) * A
   have hA : 0 ≤ A := by
     dsimp only [A]
     apply Finset.prod_nonneg
@@ -315,19 +315,19 @@ theorem uniformlyDominatedByShiftedBox
   calc
     ‖∑ m ∈ f.1.support,
         MvPolynomial.eval z
-          (MvPolynomial.monomial m (MvPolynomial.coeff m f.1))‖ ≤
+          (MvPolynomial.monomial m (f.1.coeff m))‖ ≤
         ∑ m ∈ f.1.support,
           ‖MvPolynomial.eval z
-            (MvPolynomial.monomial m (MvPolynomial.coeff m f.1))‖ := by
+            (MvPolynomial.monomial m (f.1.coeff m))‖ := by
       exact norm_sum_le _ _
     _ ≤ ∑ m ∈ f.1.support,
-        ((‖MvPolynomial.coeff m f.1‖ * A) *
+        ((‖f.1.coeff m‖ * A) *
           ∏ i, ‖z i + W i‖ ^ κ i) := by
       apply Finset.sum_le_sum
       intro m hm_support
       exact norm_eval_monomial_le_shiftedBox κ W z hW
         (fun i => (hz i).le) m (hm m hm_support)
-          (MvPolynomial.coeff m f.1)
+          (f.1.coeff m)
     _ = M * ‖MvPolynomial.eval z (shiftedBoxPolynomial κ W).1‖ := by
       rw [hshiftNorm]
       simp only [A, M, Finset.sum_mul]

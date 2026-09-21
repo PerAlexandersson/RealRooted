@@ -2,7 +2,7 @@ import RealRooted.Mathlib.Data.List.Basic
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Data.List.GetD
 import Mathlib.Data.Multiset.Sort
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 
 /-!
 # Sorted negative-root magnitudes

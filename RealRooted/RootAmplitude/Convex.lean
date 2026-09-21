@@ -74,7 +74,7 @@ theorem prod_one_add_div_le_of_inj {ι κ : Type*}
     ∏ x ∈ A, (1 + D / a x) ≤ ∏ y ∈ B, (1 + D / b y) := by
   classical
   have hstep : ∏ x ∈ A, (1 + D / a x) ≤ ∏ x ∈ A, (1 + D / b (φ x)) := by
-    refine Finset.prod_le_prod ?_ ?_
+    refine Finset.prod_le_prod₀ ?_ ?_
     · intro x hx
       have hone := one_le_one_add_div hD (ha x hx)
       linarith
@@ -95,7 +95,7 @@ theorem prod_one_add_div_le_of_inj {ι κ : Type*}
       calc
         (1 : K) = ∏ _y ∈ B \ A.image φ, (1 : K) := by simp
         _ ≤ ∏ y ∈ B \ A.image φ, (1 + D / b y) := by
-            refine Finset.prod_le_prod (fun _ _ => zero_le_one) ?_
+            refine Finset.prod_le_prod₀ (fun _ _ => zero_le_one) ?_
             intro y hy
             exact one_le_one_add_div hD (hb y (Finset.mem_sdiff.mp hy).1)
     have hnonnegative : (0 : K) ≤ ∏ y ∈ A.image φ, (1 + D / b y) := by

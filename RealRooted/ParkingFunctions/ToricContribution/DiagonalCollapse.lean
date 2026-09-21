@@ -101,10 +101,10 @@ theorem eulerTransformedPolynomial_differentialEquation (m ε d : ℕ) :
             eulerTransformedCoeff m ε d 1 := by
         rw [coeff_eulerTransformedPolynomial]
         by_cases hm : 1 ≤ m
-        · rw [if_pos hm]
+        · rw [ite_eq_left hm]
         · have hm0 : m = 0 := by lia
-          rw [if_neg hm, hm0, eulerTransformedCoeff_succ_degree_eq_zero]
-      rw [hM0, coeff_eulerTransformedPolynomial, if_pos (Nat.zero_le m),
+          rw [ite_eq_right hm, hm0, eulerTransformedCoeff_succ_degree_eq_zero]
+      rw [hM0, coeff_eulerTransformedPolynomial, ite_eq_left (Nat.zero_le m),
         eulerTransformedCoeff_zero, hcoeff1]
       have hrec := eulerTransformedCoeff_succ_mul m ε d 0
       simp only [eulerTransformedCoeff_zero] at hrec ⊢
@@ -118,15 +118,15 @@ theorem eulerTransformedPolynomial_differentialEquation (m ε d : ℕ) :
       · have hcur :
             (eulerTransformedPolynomial m ε d).coeff (k + 1) =
               eulerTransformedCoeff m ε d (k + 1) := by
-          rw [coeff_eulerTransformedPolynomial, if_pos hk]
+          rw [coeff_eulerTransformedPolynomial, ite_eq_left hk]
         have hnext :
             (eulerTransformedPolynomial m ε d).coeff (k + 1 + 1) =
               eulerTransformedCoeff m ε d (k + 1 + 1) := by
           rw [coeff_eulerTransformedPolynomial]
           by_cases hle : k + 1 + 1 ≤ m
-          · rw [if_pos hle]
+          · rw [ite_eq_left hle]
           · have heq : k + 1 + 1 = m + 1 := by lia
-            rw [if_neg hle, heq, eulerTransformedCoeff_succ_degree_eq_zero]
+            rw [ite_eq_right hle, heq, eulerTransformedCoeff_succ_degree_eq_zero]
         rw [hcur, hnext]
         have hrec := eulerTransformedCoeff_succ_mul m ε d (k + 1)
         push_cast at hrec ⊢
@@ -134,10 +134,10 @@ theorem eulerTransformedPolynomial_differentialEquation (m ε d : ℕ) :
         linear_combination hrec
       · have hcur :
             (eulerTransformedPolynomial m ε d).coeff (k + 1) = 0 := by
-          rw [coeff_eulerTransformedPolynomial, if_neg hk]
+          rw [coeff_eulerTransformedPolynomial, ite_eq_right hk]
         have hnext :
             (eulerTransformedPolynomial m ε d).coeff (k + 1 + 1) = 0 := by
-          rw [coeff_eulerTransformedPolynomial, if_neg (by lia)]
+          rw [coeff_eulerTransformedPolynomial, ite_eq_right (by lia)]
         rw [hcur, hnext]
         ring
 
@@ -319,7 +319,7 @@ theorem one_sub_X_pow_mul_iterate_derivative_jPolynomial_eq
   · rw [coeff_zero_eq_eval_zero, coeff_zero_eq_eval_zero]
     have hE0 : (eulerTransformedPolynomial m ε d).eval 0 = 1 := by
       rw [← coeff_zero_eq_eval_zero, coeff_eulerTransformedPolynomial,
-        if_pos (Nat.zero_le m), eulerTransformedCoeff_zero]
+        ite_eq_left (Nat.zero_le m), eulerTransformedCoeff_zero]
     simp only [eval_mul, eval_pow, eval_sub, eval_one, eval_X, sub_zero,
       one_pow, hscaleEval, eval_C, hE0, mul_one]
     dsimp only [scale]
@@ -457,7 +457,7 @@ theorem one_sub_X_mul_triangleFamily_diagonal_eq_C_mul_rPolynomial
   rw [coeff_risingEulerOperator, coeff_C_mul, coeff_C_mul,
     coeff_eulerTransformedPolynomial, coeff_rPolynomial]
   by_cases hk : k ≤ m
-  · rw [if_pos hk, if_pos hk]
+  · rw [ite_eq_left hk, ite_eq_left hk]
     rw [show realRisingFactorial ((ε : ℝ) + 1 / 2 + k) d *
           ((d.factorial : ℝ) * jCoeff m ε d *
             eulerTransformedCoeff m ε d k) =
@@ -466,7 +466,7 @@ theorem one_sub_X_mul_triangleFamily_diagonal_eq_C_mul_rPolynomial
             eulerTransformedCoeff m ε d k) by ring,
       realRisingFactorial_mul_eulerTransformedCoeff]
     ring
-  · rw [if_neg hk, if_neg hk]
+  · rw [ite_eq_right hk, ite_eq_right hk]
     ring
 
 end ToricContribution

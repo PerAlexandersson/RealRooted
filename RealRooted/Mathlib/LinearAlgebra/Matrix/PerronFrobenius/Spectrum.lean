@@ -8,6 +8,7 @@ Ported into RealRooted from https://github.com/or4nge19/MCMC
 adaptations to the pinned Mathlib.  Original path: MCMC/PF/LinearAlgebra/Matrix/Spectrum.lean
 -/
 import Mathlib.Algebra.Lie.OfAssociative
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.Normed.Algebra.Spectrum
 import Mathlib.Analysis.RCLike.Lemmas
@@ -147,16 +148,16 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 -/
 
 omit [DecidableEq n] in
-lemma stdSimplex_nonempty [Nonempty n] : (stdSimplex ℝ n).Nonempty :=
-  ⟨(Fintype.card n : ℝ)⁻¹ • 1, by simp [stdSimplex, Finset.sum_const, nsmul_eq_mul]⟩
+lemma stdSimplex_nonempty [Nonempty n] : (RealRooted.standardSimplex ℝ n).Nonempty :=
+  ⟨(Fintype.card n : ℝ)⁻¹ • 1, by simp [RealRooted.standardSimplex, Finset.sum_const, nsmul_eq_mul]⟩
 
 omit [DecidableEq n] in
-lemma isCompact_stdSimplex : IsCompact (stdSimplex ℝ n) :=
-  _root_.isCompact_stdSimplex ℝ n
+lemma isCompact_stdSimplex : IsCompact (RealRooted.standardSimplex ℝ n) :=
+  RealRooted.isCompact_standardSimplex n
 
 omit [DecidableEq n] in
-lemma convex_stdSimplex : Convex ℝ (stdSimplex ℝ n) :=
-  _root_.convex_stdSimplex ℝ n
+lemma convex_stdSimplex : Convex ℝ (RealRooted.standardSimplex ℝ n) :=
+  RealRooted.convex_standardSimplex n
 
 /-!
 ## Spectral Properties of Matrices
@@ -231,7 +232,7 @@ lemma LinearMap.injective_of_isUnit {K V : Type*} [Field K] [AddCommGroup V] [Mo
 
 /-- If the kernel of a linear endomorphism on a finite-dimensional vector space is non-trivial,
     then its determinant is zero. -/
-lemma det_eq_zero_of_ker_ne_bot {K V : Type*} [Field K] [AddCommGroup V] [Module K V] [DecidableEq ↑(Module.Basis.ofVectorSpaceIndex K V)]
+lemma det_eq_zero_of_ker_ne_bot {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
     [FiniteDimensional K V] {f : V →ₗ[K] V} (h : LinearMap.ker f ≠ ⊥) :
     LinearMap.det f = 0 := by
   by_contra h_det_ne_zero
@@ -252,7 +253,7 @@ lemma det_eq_zero_of_ker_ne_bot {K V : Type*} [Field K] [AddCommGroup V] [Module
   exact h h_ker_eq_bot
 
 /-- If a non-zero vector `v` is in the kernel of a linear map `f`, then `det f` must be zero. -/
-lemma det_eq_zero_of_exists_mem_ker {K V} [Field K] [AddCommGroup V] [Module K V] [DecidableEq ↑(Module.Basis.ofVectorSpaceIndex K V)]
+lemma det_eq_zero_of_exists_mem_ker {K V} [Field K] [AddCommGroup V] [Module K V]
     [FiniteDimensional K V] {f : V →ₗ[K] V} (h : ∃ v, v ≠ 0 ∧ f v = 0) :
     LinearMap.det f = 0 := by
   apply det_eq_zero_of_ker_ne_bot
@@ -263,15 +264,16 @@ lemma det_eq_zero_of_exists_mem_ker {K V} [Field K] [AddCommGroup V] [Module K V
 
 /-- If a linear endomorphism on a finite-dimensional vector space is not injective,
     then its determinant is zero. -/
-lemma det_eq_zero_of_not_injective {K V : Type*} [Field K] [AddCommGroup V] [Module K V] [DecidableEq ↑(Module.Basis.ofVectorSpaceIndex K V)]
+lemma det_eq_zero_of_not_injective {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
     [FiniteDimensional K V] {f : V →ₗ[K] V} (h : ¬Function.Injective f) :
     LinearMap.det f = 0 := by
   apply det_eq_zero_of_ker_ne_bot
   exact ker_ne_bot_of_not_injective h
 
-omit [DecidableEq n] in
+omit [Fintype n] [DecidableEq n] in
 /-- If the determinant is zero, the linear map is not injective. -/
-lemma not_injective_of_det_eq_zero {f : (n → ℝ) →ₗ[ℝ] (n → ℝ)} (h : LinearMap.det f = 0) :
+lemma not_injective_of_det_eq_zero [Finite n]
+    {f : (n → ℝ) →ₗ[ℝ] (n → ℝ)} (h : LinearMap.det f = 0) :
     ¬Function.Injective f := by
   by_contra h_inj
   have h_unit : IsUnit f := by
@@ -310,7 +312,7 @@ lemma hasEigenvalue_toLin'_iff_det_sub_eq_zero (A : Matrix n n ℝ) (μ : ℝ) :
 
 /-! ## Spectral Radius Theory for Matrices -/
 
-lemma not_isUnit_iff_eq_zero {R : Type*} [Field R] [Nontrivial R] (a : R) :
+lemma not_isUnit_iff_eq_zero {R : Type*} [Field R] (a : R) :
     ¬IsUnit a ↔ a = 0 ∨ a ∈ nonunits R := by
   constructor
   · intro h
@@ -363,7 +365,6 @@ lemma injective_iff_bijective_toLin' (A : Matrix n n ℝ) :
 -- Bijective linear maps are units
 lemma bijective_iff_isUnit_toLin' (A : Matrix n n ℝ) :
     Function.Bijective (Matrix.toLin' A) ↔ IsUnit (Matrix.toLin' A) := by
-  haveI : FiniteDimensional ℝ (n → ℝ) := by infer_instance
   rw [LinearMap.bijective_iff_ker_eq_bot_and_range_eq_top]
   have h_equiv : LinearMap.range (Matrix.toLin' A) = ⊤ ↔ LinearMap.ker (Matrix.toLin' A) = ⊥ :=
     Iff.symm LinearMap.ker_eq_bot_iff_range_eq_top
@@ -443,15 +444,14 @@ lemma det_eq_zero_iff_exists_nontrivial_ker (A : Matrix n n ℝ) :
         rw [LinearMap.mem_ker, Matrix.toLin'_apply]
         exact hv_ker
       rw [h_ker_bot] at hv_in_ker
-      simp at hv_in_ker
-      exact hv_ne_zero hv_in_ker
+      exact hv_ne_zero (by simpa only [Submodule.mem_bot] using hv_in_ker)
     exact det_eq_zero_of_ker_ne_bot' A h_ker_ne_bot
 
 lemma spectralRadius_le_nnnorm_of_mem_spectrum {A : Matrix n n ℝ} {μ : ℝ}
     (hμ : μ ∈ spectrum ℝ A) : ‖μ‖₊ ≤ ‖(Matrix.toLin' A).toContinuousLinearMap‖₊ := by
   have h_eigenvalue : ∃ v : n → ℝ, v ≠ 0 ∧ Matrix.mulVec A v = μ • v := by
     rw [spectrum.mem_iff, Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero] at hμ
-    push_neg at hμ
+    push Not at hμ
     have : Matrix.det (algebraMap ℝ (Matrix n n ℝ) μ - A) = 0 := hμ
     rw [Algebra.algebraMap_eq_smul_one, Matrix.det_eq_zero_iff_exists_nontrivial_ker] at this
     obtain ⟨v, hv_ne_zero, hv_ker⟩ := this
@@ -469,9 +469,11 @@ lemma spectralRadius_le_nnnorm_of_mem_spectrum {A : Matrix n n ℝ} {μ : ℝ}
   rw [LinearMap.coe_toContinuousLinearMap', this] at h_bound
   exact le_of_mul_le_mul_right h_bound hv_norm_pos
 
+omit [DecidableEq n] in
 lemma spectralRadius_lt_top {A : Matrix n n ℝ} :
     spectralRadius ℝ A < ⊤ := by
-  rw [spectralRadius]
+  classical
+  rw [spectralRadius_eq_of_unital]
   apply iSup_lt_iff.mpr
   use ‖(Matrix.toLin' A).toContinuousLinearMap‖₊ + 1
   constructor
@@ -497,7 +499,7 @@ lemma spectrum.nnnorm_le_nnnorm_of_mem {𝕜 A : Type*}
 lemma vecMul_eq_mulVec_transpose {n : Type*} [Fintype n] (A : Matrix n n ℝ) (v : n → ℝ) :
     v ᵥ* A = Aᵀ *ᵥ v := by
   ext j
-  simp [vecMul, mulVec, transpose]
+  change v ⬝ᵥ (fun i => A i j) = (fun i => A i j) ⬝ᵥ v
   rw [@dotProduct_comm]
 
 lemma dotProduct_le_dotProduct_of_nonneg_left' {n : Type*} [Fintype n] {u x y : n → ℝ}
@@ -532,9 +534,10 @@ lemma Module.End.exists_eigenvector_of_mem_spectrum {K V : Type*}
 
 -- Core lemma: spectral radius is bounded by the operator norm
 lemma spectralRadius_le_nnnorm {𝕜 A : Type*} [NontriviallyNormedField 𝕜]
-     [NormedField 𝕜] [NormedRing A] [NormedAlgebra 𝕜 A] [CompleteSpace A] [NormOneClass A]
+     [NormedRing A] [NormedAlgebra 𝕜 A] [CompleteSpace A] [NormOneClass A]
     (a : A) :
     spectralRadius 𝕜 a ≤ ↑‖a‖₊ := by
+  rw [spectralRadius_eq_of_unital]
   apply iSup_le
   intro μ
   apply iSup_le
@@ -550,13 +553,15 @@ lemma spectralRadius_le_nnnorm_continuousLinearMap {E : Type*} [NormedAddCommGro
 
 omit [DecidableEq n] in
 /-- The spectral radii of a matrix and its transpose are equal. -/
-lemma spectralRadius_eq_spectralRadius_transpose [DecidableEq n] (A : Matrix n n ℝ) :
+lemma spectralRadius_eq_spectralRadius_transpose (A : Matrix n n ℝ) :
     spectralRadius ℝ A = spectralRadius ℝ Aᵀ := by
-  unfold spectralRadius
+  classical
+  rw [spectralRadius_eq_of_unital A, spectralRadius_eq_of_unital Aᵀ]
   rw [spectrum_eq_spectrum_transpose]
 
 lemma spectralRadius_le_opNorm (A : Matrix n n ℝ) :
     spectralRadius ℝ (Matrix.toLin' A) ≤ ↑‖(Matrix.toLin' A).toContinuousLinearMap‖₊ := by
+  rw [spectralRadius_eq_of_unital]
   apply iSup_le
   intro μ
   apply iSup_le
@@ -642,9 +647,9 @@ lemma support_nonempty_of_ne_zero {v : n → ℝ}
   have h_all_nonpos : ∀ i, v i ≤ 0 := by
     intro i
     by_contra hi_pos
-    push_neg at hi_pos
+    push Not at hi_pos
     have hi_in_support : i ∈ supportFinset v := by
-      simp [supportFinset, Finset.mem_filter]
+      simp only [supportFinset, Finset.mem_filter, Finset.mem_univ, true_and]
       exact hi_pos
     exact h ⟨i, hi_in_support⟩
   have : v = 0 := funext fun i =>
@@ -664,7 +669,7 @@ lemma exists_pos_of_sum_pos {ι : Type*} [Fintype ι] {f : ι → ℝ}
     (h_nonneg : ∀ i, 0 ≤ f i) (h_sum_pos : 0 < ∑ i, f i) :
     ∃ i, 0 < f i := by
   by_contra h_not_exists
-  push_neg at h_not_exists
+  push Not at h_not_exists
   have h_all_zero : ∀ i, f i = 0 := by
     intro i
     exact le_antisymm (h_not_exists i) (h_nonneg i)
@@ -675,13 +680,16 @@ lemma exists_pos_of_sum_pos {ι : Type*} [Fintype ι] {f : ι → ℝ}
 /-- For a non-negative `a`, `a * b` is positive iff both `a` and `b` are positive. -/
 lemma mul_pos_iff_of_nonneg_left {a b : ℝ} (ha_nonneg : 0 ≤ a) :
     0 < a * b ↔ 0 < a ∧ 0 < b := by
-  refine' ⟨fun h_mul_pos => _, fun ⟨ha_pos, hb_pos⟩ => mul_pos ha_pos hb_pos⟩
-  have ha_pos : 0 < a := by
-    refine' lt_of_le_of_ne ha_nonneg fun ha_zero => _
-    rw [ha_zero] at h_mul_pos
-    subst ha_zero
-    simp_all only [le_refl, zero_mul, lt_self_iff_false]
-  simp_all only [mul_pos_iff_of_pos_left, and_self]
+  constructor
+  · intro h_mul_pos
+    have ha_pos : 0 < a := by
+      refine lt_of_le_of_ne ha_nonneg fun ha_zero => ?_
+      rw [ha_zero] at h_mul_pos
+      subst ha_zero
+      simp_all only [le_refl, zero_mul, lt_self_iff_false]
+    simp_all only [mul_pos_iff_of_pos_left, and_self]
+  · rintro ⟨ha_pos, hb_pos⟩
+    exact mul_pos ha_pos hb_pos
 
 /-- If a scalar `μ` is an eigenvalue of a matrix `A`, then it is a root of its
 characteristic polynomial. -/

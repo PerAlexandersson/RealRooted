@@ -117,8 +117,7 @@ theorem source_lowerPartialSums_counterexample :
   have hrrr : IsSourceRealRooted lowDegreeCounterexampleRight := Or.inr hlr.2.1
   have hlm : SourcePrec lowDegreeCounterexampleLeft lowDegreeCounterexampleMiddle :=
     SourcePrec.of_lowDegree hlrr hmrr
-      (by simpa [lowDegreeCounterexampleLeft] using
-        (Polynomial.natDegree_X_add_C (1 : ℝ)).le)
+      (by simp [lowDegreeCounterexampleLeft])
       (by
         rw [lowDegreeCounterexampleMiddle,
           natDegree_mul (by norm_num)
