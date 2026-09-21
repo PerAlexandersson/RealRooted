@@ -240,7 +240,7 @@ theorem exists_charpoly_eq_prod_nonneg_of_rank_eq_of_compounds_primitive
           ‖∏ i ∈ rankPrefix n q, μC i‖ := by
       intro s
       rw [htopEnum, norm_prod, norm_prod]
-      apply Finset.prod_le_prod fun k _ => norm_nonneg _
+      apply Finset.prod_le_prod₀ (fun k _ => norm_nonneg _)
       intro k _
       apply hanti
       exact Fin.le_def.mpr

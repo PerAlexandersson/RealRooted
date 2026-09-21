@@ -208,7 +208,8 @@ theorem succ_nsmul_parkingDescentSetWeightSum_eq_wordSum
   exact (wordDescentSetWeightSum_succ_eq_succ_nsmul_parkingWordSum
     n weight).symm
 
-private theorem parkingFunctions_zero_eq_singleton :
+/-- The zero-length parking-function family has its unique empty word. -/
+theorem parkingFunctions_zero_eq_singleton :
     parkingFunctions 0 = {default} := by
   classical
   refine Finset.eq_singleton_iff_unique_mem.mpr ⟨?_, ?_⟩

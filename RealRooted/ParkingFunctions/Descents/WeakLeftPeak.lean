@@ -191,8 +191,8 @@ theorem literalWordWeakLeftPeakPolynomialInt_eq_ofAlphabet (n : ℕ) :
 @[simp]
 theorem parkingWeakLeftPeakPolynomialInt_zero :
     parkingWeakLeftPeakPolynomialInt 0 = 1 := by
-  simp [parkingWeakLeftPeakPolynomialInt, parkingFunctions,
-    IsParkingFunction]
+  rw [parkingWeakLeftPeakPolynomialInt, parkingFunctions_zero_eq_singleton]
+  simp
 
 /-- Exact integral weak-left-peak transfer from ordinary parking functions to
 all words. -/
