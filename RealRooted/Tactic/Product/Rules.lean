@@ -144,20 +144,20 @@ private partial def identifierTerms (stx : Syntax) : Array Syntax :=
   else
     stx.getArgs.foldl (fun terms arg => terms ++ identifierTerms arg) #[]
 
-private def productOrientationsOfCandidate (candidate : Syntax) : TacticM (List ProductOrientation) :=
+private def productOrientationsOfCandidate (candidate : Syntax) :
+    TacticM (List ProductOrientation) :=
   withMainContext do
+    let localContext ← getLCtx
     let mut orientations := []
     for term in identifierTerms candidate do
-      try
-        let expr ← Lean.Elab.Tactic.elabTerm term none
-        if expr.isFVar then
-          let type ← instantiateMVars (← inferType expr)
-          if let some orientation := findProductOrientation? type then
-            orientations := orientations ++ [orientation]
-      catch _ => pure ()
+      if let some declaration := localContext.findFromUserName? term.getId then
+        let type ← instantiateMVars declaration.type
+        if let some orientation := findProductOrientation? type then
+          orientations := orientations ++ [orientation]
     pure orientations
 
-private def productOrientationOfCandidate? (candidate : Syntax) : TacticM (Option ProductOrientation) := do
+private def productOrientationOfCandidate? (candidate : Syntax) :
+    TacticM (Option ProductOrientation) := do
   match ← productOrientationsOfCandidate candidate with
   | orientation :: _ => pure (some orientation)
   | [] => pure none
