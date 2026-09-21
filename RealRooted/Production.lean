@@ -1303,6 +1303,7 @@ import RealRooted.JacobiDeformation.JacobiMoment
 import RealRooted.JacobiDeformation.CriticalCoordinates
 import RealRooted.JacobiDeformation.Boundary
 import RealRooted.JacobiDeformation.CriticalProduct
+import RealRooted.JacobiDeformation.ShiftRecurrence
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 
 /-!

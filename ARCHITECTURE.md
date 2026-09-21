@@ -1153,6 +1153,10 @@ product independently of its later kernel identification. Distinct interior
 nodes give root multiplicity at most two, the sharp-threshold root is simple,
 and the derivative is nonzero, split, simple-rooted, and strictly below the
 negative sharp threshold.
+`JacobiDeformation.ShiftRecurrence` proves the exact unit-parameter operator
+identity (25), including a denominator-free form valid without a positivity
+hypothesis. It derives the identity coefficientwise from the finite defining
+sum and records every truncated-degree boundary explicitly.
 `JacobiDeformation.QuasiNodes` gives a strict, exhaustive root enumeration
 without incorrectly forcing every quasi-node into the open interval.
 `JacobiDeformation.RootGeometry`, `DerivativeSimple`, `CriticalThreshold`, and
