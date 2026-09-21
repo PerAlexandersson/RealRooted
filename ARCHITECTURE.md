@@ -1112,7 +1112,10 @@ general Jacobi deformation. `JacobiDeformation.Kernel` defines its quadratic
 differential spectrum, the associated Newton products, and the finite kernel
 weights. It proves the exact Newton-factor evaluations and strict positivity
 of every in-range weight and Newton coefficient, including the empty-product
-and `k = 1` strictness boundaries. The independent two-point determinant and
+and `k = 1` strictness boundaries. `JacobiDeformation.Quadrature` proves the
+finite polynomial-division/Lagrange quadrature theorem and positivity of its
+cardinal weights, then specializes both results to explicit distinct roots of
+the monic quasi-Jacobi polynomial. The independent two-point determinant and
 scalar sign calculation used for exterior nodes is in
 `Mathlib.LinearAlgebra.Matrix.RankOneCompression`; its eventual spectral
 compression wrapper belongs in the higher Jacobi-deformation layer.
