@@ -1,5 +1,6 @@
 import RealRooted.CauchyInterlacing.Submatrix
 import RealRooted.Mathlib.Algebra.Polynomial.DividedDifference
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
 
 /-!
@@ -17,6 +18,20 @@ open Matrix Polynomial
 namespace RealRooted
 
 namespace Matrix
+
+/-- A diagonal entry of the characteristic adjugate is the characteristic
+polynomial of the principal submatrix obtained by deleting that index.  This
+is the length-zero-path case of the path/cofactor expansion. -/
+theorem adjugate_charmatrix_apply_self {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) (i : Fin (N + 1)) :
+    adjugate (charmatrix A) i i =
+      (A.submatrix i.succAbove i.succAbove).charpoly := by
+  rw [adjugate_fin_succ_eq_det_submatrix]
+  rw [charmatrix_submatrix_self A i.succAbove i.succAbove_right_injective]
+  simp only [Matrix.charpoly]
+  rw [show (-1 : ℝ[X]) ^ ((i : ℕ) + (i : ℕ)) = 1 by
+    rw [← two_mul, Even.neg_one_pow (even_two_mul (i : ℕ))]]
+  simp
 
 /-- Take a scalar divided difference entrywise in a matrix of polynomials. -/
 noncomputable def polynomialDividedDifference {m n : Type*}
