@@ -953,17 +953,17 @@ lemma exists_positive_loop_shorter_than_p {a : V} {p : Path a a} (q : Path a a)
 
 section ClassicalCycleSelection
 
-open scoped Classical
-
 /-- For any two positive loops shorter than p, their minimum length equals
     the minimum length among all positive loops shorter than p, or there exists
     an even shorter loop. -/
+open Classical in
 lemma min_length_among_shorter_loops {a : V} {p : Path a a} (q r : Path a a)
     (h_q_pos : q.length > 0) (h_r_pos : r.length > 0)
     (h_q_shorter : q.length < p.length) (h_r_shorter : r.length < p.length) :
     min q.length r.length = Nat.find (exists_positive_loop_shorter_than_p q h_q_pos h_q_shorter) ∨
     ∃ (s : Path a a), s.length = Nat.find (exists_positive_loop_shorter_than_p q h_q_pos h_q_shorter) ∧
                      s.length > 0 ∧ s.length < p.length ∧ s.length < min q.length r.length := by
+  classical
   let min_len := Nat.find (exists_positive_loop_shorter_than_p q h_q_pos h_q_shorter)
   have h_min_spec := Nat.find_spec (exists_positive_loop_shorter_than_p q h_q_pos h_q_shorter)
   obtain ⟨s, hs_eq, hs_pos, hs_shorter⟩ := h_min_spec
@@ -992,6 +992,7 @@ lemma shortest_among_shorter_loops {a : V} {p : Path a a} (q : Path a a)
     (h_q_shorter : q.length < p.length)
     (h_q_minimal : ∀ r : Path a a, r.length > 0 → r.length < p.length → q.length ≤ r.length) :
     ∀ r : Path a a, r.length > 0 → q.length ≤ r.length := by
+  classical
   intro r h_r_pos
   by_cases h_r_shorter : r.length < p.length
   · exact h_q_minimal r h_r_pos h_r_shorter
@@ -1001,6 +1002,7 @@ lemma shortest_among_shorter_loops {a : V} {p : Path a a} (q : Path a a)
 /-- If there exists any positive-length loop at `a`, then there exists a shortest one. -/
 lemma exists_shortest_positive_loop {a : V} (q : Path a a) (hq_pos : q.length > 0) :
     ∃ (s : Path a a), s.length > 0 ∧ ∀ (r : Path a a), r.length > 0 → s.length ≤ r.length := by
+  classical
   let P := fun n => ∃ (r : Path a a), r.length = n ∧ r.length > 0
   have hP_nonempty : ∃ n, P n := ⟨q.length, q, rfl, hq_pos⟩
   let min_len := Nat.find hP_nonempty
@@ -1032,6 +1034,7 @@ lemma repeated_vertex_in_prefix_dropLast {a : V} (s : Path a a)
     (h_not_simple : ¬IsStrictlySimple s) :
     ∃ (v : V) (p₁ : Path a v) (p₂ : Path v a),
       v ∈ p₁.vertices.dropLast ∧ s = p₁.comp p₂ ∧ v ∉ p₂.vertices.tail := by
+  classical
   obtain ⟨v, hv_in, hv_ge₂⟩ := not_strictly_simple_iff_exists_repeated_vertex.mp h_not_simple
   obtain ⟨p₁, p₂, hp, hv_not_tail⟩ := exists_decomp_of_mem_vertices_prop s hv_in
   have hv_in_p1_dropLast : v ∈ p₁.vertices.dropLast := by
@@ -1110,6 +1113,7 @@ lemma extract_cycle_from_prefix' {a v : V} {p₁ : Path a v}
     (hv_in_p1_dropLast : v ∈ p₁.vertices.dropLast) :
     ∃ (q : Path a v) (c : Path v v),
       p₁ = q.comp c := by
+  classical
   obtain ⟨q, c, h_split⟩ :=
     exists_decomp_of_mem_vertices p₁ (List.mem_of_mem_dropLast hv_in_p1_dropLast)
   exact ⟨q, c, h_split⟩
@@ -1120,6 +1124,7 @@ lemma extracted_cycle_has_positive_length {a v : V}
     (h_p1_split : p₁ = q.comp c)
     (hv_in_p1_dropLast : v ∈ p₁.vertices.dropLast)
     (hv_not_in_q : v ∉ q.vertices.dropLast) : c.length > 0 := by
+  classical
   by_cases h_len_zero : c.length = 0
   · have hc_nil : c = Path.nil := (length_eq_zero_iff c).mp h_len_zero
     have h_p1_eq_q : p₁ = q := by
@@ -1134,6 +1139,7 @@ lemma extracted_cycle_has_positive_length {a v : V}
 lemma removing_cycle_gives_shorter_path {a v : V} {s : Path a a}
     {q : Path a v} {c : Path v v} {p₂ : Path v a}
     (hp : s = (q.comp c).comp p₂) (hc_pos : c.length > 0) : (q.comp p₂).length < s.length := by
+  classical
   have h_len_shorter : (q.comp p₂).length = q.length + p₂.length := by
     rw [length_comp]
   have h_len_s : s.length = q.length + c.length + p₂.length := by

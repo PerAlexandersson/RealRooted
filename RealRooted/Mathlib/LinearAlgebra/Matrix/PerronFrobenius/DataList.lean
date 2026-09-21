@@ -190,6 +190,7 @@ lemma eq_of_le_zero {n : ℕ} (h : n ≤ 0) : n = 0 :=
   le_antisymm h (Nat.zero_le _)
 end Nat
 
+omit [DecidableEq α] in
 /-- For a *non-empty* list the first element is not contained in the `tail`,
     provided the list has no duplicates. -/
 lemma head_not_mem_tail_of_nodup {l : List α} (h : l.Nodup) (h_nonempty : l ≠ []) :
@@ -254,7 +255,7 @@ lemma count_lt_of_mem_of_not_mem_tail {l : List α} {x : α}
       have hpos : ys.count x > 0 := Nat.pos_of_ne_zero h1
       have hmem' := (List.count_pos_iff).mp hpos
       exact h_not_in_tail hmem'
-    simp only [h0, Nat.eq_of_le_zero, zero_add, Nat.one_lt_ofNat]
+    simp only [h0, zero_add, Nat.one_lt_ofNat]
 
 omit [DecidableEq α] in
 /-- Count an element in a head-tail splitting of a list.
@@ -318,6 +319,7 @@ lemma count_eq_one_of_idxOf_eq_length_sub_one [DecidableEq α] {l : List α} {x 
 
 @[simp] lemma not_gt {n m : ℕ} : (¬ n > m) ↔ n ≤ m := Nat.not_lt
 
+omit [DecidableEq α] in
 @[simp] lemma head_not_mem_tail_of_first
     {l : List α} (h : l.Nodup) (hne : l ≠ []) :
     l.head hne ∉ l.tail := by
@@ -327,6 +329,7 @@ lemma count_eq_one_of_idxOf_eq_length_sub_one [DecidableEq α] {l : List α} {x 
     simp only [List.nodup_cons] at h
     exact h.1
 
+omit [DecidableEq α] in
 /-- If `x` is in the tail of a list, then `x` is not the head of the list.
 This is only true in general for lists without duplicates. -/
 lemma ne_of_mem_tail {l : List α} {x : α} (h_nodup : l.Nodup) (h_mem : x ∈ l.tail) (h_ne_nil : l ≠ []) :
@@ -388,7 +391,7 @@ lemma not_beq_eq_true_iff_ne {a b : α} : ¬(a == b) = true ↔ a ≠ b := by
 /-- If the index of `x` is less than the length of `l`, then `x` is in `l`. -/
 lemma mem_of_idxOf_lt_length {l : List α} {x : α} (h : idxOf x l < l.length) : x ∈ l := by
   induction l with
-  | nil => simp only [idxOf_nil, Nat.eq_of_le_zero, length_nil, lt_self_iff_false] at h
+  | nil => simp only [idxOf_nil, length_nil, lt_self_iff_false] at h
   | cons hd tl ih =>
     dsimp [idxOf, findIdx, length] at h
     simp only [findIdx.go] at h

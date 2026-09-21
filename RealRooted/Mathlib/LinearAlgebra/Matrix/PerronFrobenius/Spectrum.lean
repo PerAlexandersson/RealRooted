@@ -270,9 +270,10 @@ lemma det_eq_zero_of_not_injective {K V : Type*} [Field K] [AddCommGroup V] [Mod
   apply det_eq_zero_of_ker_ne_bot
   exact ker_ne_bot_of_not_injective h
 
-omit [DecidableEq n] in
+omit [Fintype n] [DecidableEq n] in
 /-- If the determinant is zero, the linear map is not injective. -/
-lemma not_injective_of_det_eq_zero {f : (n → ℝ) →ₗ[ℝ] (n → ℝ)} (h : LinearMap.det f = 0) :
+lemma not_injective_of_det_eq_zero [Finite n]
+    {f : (n → ℝ) →ₗ[ℝ] (n → ℝ)} (h : LinearMap.det f = 0) :
     ¬Function.Injective f := by
   by_contra h_inj
   have h_unit : IsUnit f := by
@@ -555,7 +556,8 @@ omit [DecidableEq n] in
 lemma spectralRadius_eq_spectralRadius_transpose (A : Matrix n n ℝ) :
     spectralRadius ℝ A = spectralRadius ℝ Aᵀ := by
   classical
-  exact (Matrix.spectralRadius_transpose A).symm
+  rw [spectralRadius_eq_of_unital A, spectralRadius_eq_of_unital Aᵀ]
+  rw [spectrum_eq_spectrum_transpose]
 
 lemma spectralRadius_le_opNorm (A : Matrix n n ℝ) :
     spectralRadius ℝ (Matrix.toLin' A) ≤ ↑‖(Matrix.toLin' A).toContinuousLinearMap‖₊ := by
