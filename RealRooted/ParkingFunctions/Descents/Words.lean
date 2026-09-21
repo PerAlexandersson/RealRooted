@@ -34,7 +34,8 @@ theorem length_wordDescentRows (m : ℕ) : (wordDescentRows m).length = m := by
 @[simp]
 theorem get_wordDescentRows_fst (m : ℕ) (i : Fin (wordDescentRows m).length) :
     ((wordDescentRows m).get i).1 = i.1 := by
-  simp only [wordDescentRows, List.get_eq_getElem, List.getElem_map]
+  change ((List.map (fun j => (j, 1)) (List.range m)).get
+    ⟨i.1, by simpa [wordDescentRows] using i.2⟩).1 = i.1
   grind
 
 private theorem wordDescentRows_data (m : ℕ) : HZData (wordDescentRows m) := by
@@ -47,7 +48,17 @@ private theorem wordDescentRows_data (m : ℕ) : HZData (wordDescentRows m) := b
     rw [get_wordDescentRows_fst, get_wordDescentRows_fst]
     exact hij
   · intro i j _ _ h
-    simp [wordDescentRows, List.get_eq_getElem, List.getElem_map] at h
+    have hi : ((wordDescentRows m).get i).2 = 1 := by
+      change ((List.map (fun j => (j, 1)) (List.range m)).get
+        ⟨i.1, by simpa [wordDescentRows] using i.2⟩).2 = 1
+      simp
+    have hj : ((wordDescentRows m).get j).2 = 1 := by
+      change ((List.map (fun j => (j, 1)) (List.range m)).get
+        ⟨j.1, by simpa [wordDescentRows] using j.2⟩).2 = 1
+      simp
+    rw [hi] at h
+    rw [hj]
+    exact h
 
 /-- Last-letter-refined descent enumerators for nonempty words on an alphabet
 of size `m`, with terminal letters in reverse order. -/
