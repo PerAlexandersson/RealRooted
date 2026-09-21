@@ -29,6 +29,10 @@ theorem risingFactorial_zero (a : ℝ) : risingFactorial a 0 = 1 := by
 theorem risingFactorial_one (a : ℝ) : risingFactorial a 1 = a := by
   simp [risingFactorial]
 
+theorem risingFactorial_succ (a : ℝ) (n : ℕ) :
+    risingFactorial a (n + 1) = risingFactorial a n * (a + n) := by
+  simpa [risingFactorial] using ascPochhammer_succ_eval n a
+
 theorem risingFactorial_pos {a : ℝ} (n : ℕ) (ha : 0 < a) :
     0 < risingFactorial a n := by
   simpa [risingFactorial] using ascPochhammer_pos n a ha

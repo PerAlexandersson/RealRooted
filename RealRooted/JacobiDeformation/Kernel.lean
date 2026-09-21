@@ -160,6 +160,51 @@ def weightNewtonPolynomial (m : ℕ) (δ s : ℝ) : ℝ[X] :=
   ∑ k ∈ Finset.range (m + 1),
     C (newtonCoefficient m δ s k) * newtonPolynomial s k
 
+/-- The `k`th summand in the finite Newton expansion (8), after evaluating
+at the spectral node `λ_j`. -/
+def newtonExpansionTerm (m : ℕ) (δ s : ℝ) (j k : ℕ) : ℝ :=
+  newtonCoefficient m δ s k *
+    (descPochhammer ℝ k).eval (j : ℝ) *
+      risingFactorial ((j : ℝ) + s - 1) k
+
+/-- Evaluation of the Newton polynomial reduces exactly to its nonvanishing
+lower-triangular summands. -/
+theorem eval_weightNewtonPolynomial_eq_sum_newtonExpansionTerm
+    {m j : ℕ} (hjm : j ≤ m) (δ s : ℝ) :
+    (weightNewtonPolynomial m δ s).eval (eigenvalue s j) =
+      ∑ k ∈ Finset.range (j + 1), newtonExpansionTerm m δ s j k := by
+  rw [weightNewtonPolynomial, eval_finsetSum]
+  have hsubset : Finset.range (j + 1) ⊆ Finset.range (m + 1) := by
+    exact Finset.range_mono (by lia)
+  rw [← Finset.sum_subset hsubset]
+  · apply Finset.sum_congr rfl
+    intro k hk
+    rw [eval_mul, eval_C, eval_newtonPolynomial]
+    simp only [newtonExpansionTerm, risingFactorial]
+    ring
+  · intro k hkm hkj
+    have hjk : j < k := by
+      exact Nat.lt_of_not_ge (by
+        simpa only [Finset.mem_range, Nat.lt_add_one_iff] using hkj)
+    rw [eval_mul, eval_C, eval_newtonPolynomial_eq_zero hjk, mul_zero]
+
+/-- The empty-product endpoint of equation (8). -/
+@[simp] theorem eval_weightNewtonPolynomial_eigenvalue_zero
+    (m : ℕ) (δ s : ℝ) :
+    (weightNewtonPolynomial m δ s).eval (eigenvalue s 0) = 1 := by
+  rw [eval_weightNewtonPolynomial_eq_sum_newtonExpansionTerm
+    (m := m) (j := 0) (by simp)]
+  simp [newtonExpansionTerm]
+
+/-- Equation (8) at its `j = 0` boundary, with the normalizing weight proved
+nonzero from the strict parameter hypotheses. -/
+theorem kernelWeight_div_zero_eq_eval_weightNewtonPolynomial
+    {m : ℕ} {δ s : ℝ} (hδ : 0 < δ) (hs : 0 < s) :
+    kernelWeight m δ s 0 / kernelWeight m δ s 0 =
+      (weightNewtonPolynomial m δ s).eval (eigenvalue s 0) := by
+  rw [eval_weightNewtonPolynomial_eigenvalue_zero,
+    div_self (kernelWeight_pos (j := 0) (by simp) hδ hs).ne']
+
 theorem eval_weightNewtonPolynomial_pos {m j : ℕ} {δ s : ℝ}
     (_hjm : j ≤ m) (hδ : 0 < δ) (hδ1 : δ < 1) (hs : 0 < s) :
     0 < (weightNewtonPolynomial m δ s).eval (eigenvalue s j) := by
