@@ -14,7 +14,7 @@ rank-two companion/successor-slope interface explicitly nonpositive.
 
 namespace RealRooted.Applications.OEIS
 
-open MvPolynomial
+open _root_.MvPolynomial
 
 noncomputable section
 
@@ -30,9 +30,9 @@ theorem decoBottomTotal_four :
         5 * X 1 * X 3 * X 4 + 2 * X 2 * X 3 * X 4 +
         X 1 * X 2 * X 3 * X 4 := by
   norm_num [decoBottomTotal, decoNormalBottomStep, decoNormalBottomCore,
-    decoExceptionalBottomStep, decoLayerBottomEmbedding, Fin.sum_univ_succ,
+    decoExceptionalBottomStep, Fin.sum_univ_succ,
     map_ofNat, MvPolynomial.pderiv_C, MvPolynomial.pderiv_one,
-    MvPolynomial.pderiv_ofNat, MvPolynomial.pderiv_mul]
+    MvPolynomial.pderiv_ofNat, MvPolynomial.pderiv_mul, Pi.single_apply]
   ring
 
 theorem decoBottomTotal_four_rayleighDifference_one_two :

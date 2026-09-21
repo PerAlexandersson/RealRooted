@@ -26,8 +26,7 @@ theorem eval_coordinateWronskian_affineSlope_exceptionalBase_two_rank_two :
   rw [decoBottomTotal_three]
   norm_num [decoNormalBottomCore, decoBottomTotal,
     decoNormalBottomStep, decoExceptionalBottomStep,
-    decoLayerBottomEmbedding, Fin.sum_univ_succ,
-    MvPolynomial.pderiv_mul]
+    Fin.sum_univ_succ, MvPolynomial.pderiv_mul, Pi.single_apply]
   simp [MvPolynomial.eval_rename]
   norm_num
 

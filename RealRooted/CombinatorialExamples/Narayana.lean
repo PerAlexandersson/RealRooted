@@ -97,7 +97,7 @@ private lemma narayanaCoeffA_leadingCoeff (n : Nat) :
 
 private lemma natDegree_one_sub_X :
     ((1 - X : ℝ[X])).natDegree = 1 := by
-  simp [sub_eq_add_neg, add_comm]
+  simp [sub_eq_add_neg]
 
 private lemma leadingCoeff_one_sub_X :
     ((1 - X : ℝ[X])).leadingCoeff = -1 := by

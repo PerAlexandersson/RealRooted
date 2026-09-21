@@ -1869,6 +1869,7 @@ theorem not_hurwitzMatrixSchurProductTNStatement_of_counterexamplePF
     hurwitz_isTotallyNonneg_of_odd_zero hurwitzSchurCounterexampleRight_odd_zero hright
   have hminor := H hleftTN hrightTN (n := 3) (rows := ![5, 7, 9])
     (cols := ![0, 1, 2]) (by decide) (by decide)
+  erw [Matrix.det_fin_three] at hminor
   norm_num [Matrix.det_fin_three, Matrix.submatrix_apply, Matrix.of_apply,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, hurwitz, toeplitz,
     hurwitzSchurCounterexampleLeft, hurwitzSchurCounterexampleRight] at hminor

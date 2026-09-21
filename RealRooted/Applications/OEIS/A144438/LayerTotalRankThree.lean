@@ -26,9 +26,8 @@ theorem decoBottomTotal_three :
         5 * MvPolynomial.X 1 * MvPolynomial.X 3 +
         2 * MvPolynomial.X 2 * MvPolynomial.X 3 +
         MvPolynomial.X 1 * MvPolynomial.X 2 * MvPolynomial.X 3 := by
-  have hemb (n : ℕ) (i : Fin n) : decoLayerBottomEmbedding n i = 1 + i.val := rfl
   norm_num [decoBottomTotal, decoNormalBottomStep, decoNormalBottomCore,
-    decoExceptionalBottomStep, hemb, Fin.sum_univ_succ,
+    decoExceptionalBottomStep, Fin.sum_univ_succ,
     map_ofNat, MvPolynomial.pderiv_C, MvPolynomial.pderiv_one,
     MvPolynomial.pderiv_ofNat, Pi.single_apply]
   ring
