@@ -99,9 +99,7 @@ theorem optionalRiseMatrix_isTotallyNonneg
     (optionalRiseMatrix as N).IsTotallyNonneg := by
   induction as with
   | nil =>
-      simpa [optionalRiseMatrix, weightedLowerChipPrefix] using
-        (weightedLowerChipPrefix_isTotallyNonneg
-          (b := fun _ => 0) (by simp) N (k := 0) (Nat.zero_le N))
+      simp [optionalRiseMatrix, Matrix.IsTotallyNonneg.one]
   | cons a as ih =>
       rw [optionalRiseMatrix_cons]
       exact (optionalRiseMatrixFactor_isTotallyNonneg

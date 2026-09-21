@@ -178,7 +178,7 @@ lengths three, two, and one. -/
 theorem truncatedStaircaseBottomRowExpansion_three_two :
     truncatedStaircaseBottomRowExpansion 3 2 := by
   dsimp [truncatedStaircaseBottomRowExpansion]
-  simp only [add_zero]
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
   rw [truncatedStaircaseRookPolynomial_three_three,
     truncatedStaircaseRookPolynomial_three_two,
     truncatedStaircaseRookPolynomial_two_two]

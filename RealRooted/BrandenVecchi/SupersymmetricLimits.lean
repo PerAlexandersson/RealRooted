@@ -123,7 +123,7 @@ theorem tendsto_coeff_inv_of_constantCoeff_one
           exact tendsto_const_nhds
       | succ d =>
           have hleft (a : ι) : PowerSeries.coeff (d + 1) (f a)⁻¹ =
-              -1 * ∑ x ∈ Finset.antidiagonal (d + 1),
+              -1 * ∑ x ∈ Finset.HasAntidiagonal.antidiagonal (d + 1),
                 if x.2 < d + 1 then
                   PowerSeries.coeff x.1 (f a) *
                     PowerSeries.coeff x.2 (f a)⁻¹
@@ -131,7 +131,7 @@ theorem tendsto_coeff_inv_of_constantCoeff_one
             rw [PowerSeries.coeff_inv, ite_eq_right (Nat.succ_ne_zero d), hf a]
             norm_num
           have hright : PowerSeries.coeff (d + 1) f₀⁻¹ =
-              -1 * ∑ x ∈ Finset.antidiagonal (d + 1),
+              -1 * ∑ x ∈ Finset.HasAntidiagonal.antidiagonal (d + 1),
                 if x.2 < d + 1 then
                   PowerSeries.coeff x.1 f₀ * PowerSeries.coeff x.2 f₀⁻¹
                 else 0 := by

@@ -258,10 +258,7 @@ theorem elementarySymmetricStepProduct_isTotallyNonneg
     (elementarySymmetricStepProduct w N r).IsTotallyNonneg := by
   induction r with
   | zero =>
-      simpa [elementarySymmetricStepProduct,
-        Matrix.submatrix_one Fin.val Fin.val_injective] using
-        (Matrix.IsTotallyNonneg.one (R := R)).submatrix
-          Fin.val_strictMono Fin.val_strictMono
+      simp [elementarySymmetricStepProduct, Matrix.IsTotallyNonneg.one]
   | succ r ih =>
       rw [elementarySymmetricStepProduct]
       exact (elementarySymmetricStep_isTotallyNonneg hw N r).mul ih

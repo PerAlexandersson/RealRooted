@@ -73,7 +73,7 @@ lemma rootSeqDesc_eq_reverse_of_pairwise
     (hrs : rs.Pairwise (· ≤ ·))
     (hrs_eq : (↑rs : Multiset ℝ) = f.roots) :
     rootSeqDesc f = rs.reverse := by
-  letI : Std.Antisymm ((· ≥ ·) : ℝ → ℝ → Prop) :=
+  let : Std.Antisymm ((· ≥ ·) : ℝ → ℝ → Prop) :=
     ⟨fun _ _ hab hba => le_antisymm hba hab⟩
   apply (List.Perm.eq_of_pairwise' (r := ((· ≥ ·) : ℝ → ℝ → Prop)))
   · simpa [rootSeqDesc] using (Multiset.pairwise_sort (s := f.roots) (r := (· ≤ ·))).reverse

@@ -306,7 +306,8 @@ theorem brandenBasisImageRow_isInterlacingSeqNonneg (n : ℕ) :
     have hjlt : j.val < n + 1 := by
       simpa [brandenBasisImageRow] using j.isLt
     have hj : j.val ≤ n := by lia
-    simp only [brandenBasisImageRow, List.get_ofFn]
+    dsimp only [brandenBasisImageRow] at i j ⊢
+    erw [List.get_ofFn, List.get_ofFn]
     exact brandenBasisImage_prec n i j hij.le hj
 
 end RealRooted

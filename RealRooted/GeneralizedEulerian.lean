@@ -271,7 +271,7 @@ theorem generalizedEulerian_one_reflect (n : ℕ) :
 theorem eval_recip_generalizedEulerian_one (n : ℕ) {x : ℝ} (hx : x ≠ 0) :
     (generalizedEulerian 1 n).eval x =
       x ^ n * (generalizedEulerian 1 n).eval (1 / x) := by
-  letI : Invertible x := invertibleOfNonzero hx
+  let : Invertible x := invertibleOfNonzero hx
   have hdeg : (generalizedEulerian 1 n).natDegree ≤ n :=
     (generalizedEulerian_natDegree 1 n).le
   have heval := Polynomial.eval₂_reflect_mul_pow

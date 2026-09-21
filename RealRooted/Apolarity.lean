@@ -400,7 +400,7 @@ complementary degrees summing to `n`. -/
 theorem apolarPairing_eq_sum_antidiagonal {R : Type*} [CommRing R]
     (n : Nat) (f g : R[X]) :
     apolarPairing n f g =
-      Finset.sum (Finset.antidiagonal n) fun p =>
+      Finset.sum (Finset.HasAntidiagonal.antidiagonal n) fun p =>
         (-1 : R) ^ p.1 * (Nat.choose n p.1 : R) * f.coeff p.1 * g.coeff p.2 := by
   rw [apolarPairing, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
 

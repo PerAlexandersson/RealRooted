@@ -76,7 +76,7 @@ theorem leadingCoeff_mul_roots_powerSum
     (k : ℕ) (hk : 0 < k) (hkdeg : k ≤ p.natDegree) :
     p.leadingCoeff * p.roots.powerSum k =
       -(k : K) * p.coeff (p.natDegree - k) -
-        ∑ a ∈ Finset.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
+        ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
           p.coeff (p.natDegree - a.1) * p.roots.powerSum a.2 := by
   have hn := Multiset.powerSum_eq_mul_esymm_sub_sum p.roots k hk
   have hlc : p.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hne
@@ -106,10 +106,10 @@ theorem leadingCoeff_mul_roots_powerSum
       _ = _ := by rw [hsign]; ring
   rw [hfirst] at hn
   have hsum :
-      (∑ a ∈ Finset.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
+      (∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
           (-1 : K) ^ a.1 * p.roots.esymm a.1 *
             p.roots.powerSum a.2) =
-        ∑ a ∈ Finset.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
+        ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
           (p.coeff (p.natDegree - a.1) * p.roots.powerSum a.2) /
             p.leadingCoeff := by
     apply Finset.sum_congr rfl
@@ -131,7 +131,7 @@ theorem coeff_zero_mul_reverse_roots_powerSum
     (k : ℕ) (hk : 0 < k) :
     p.coeff 0 * p.reverse.roots.powerSum k =
       -(k : K) * p.coeff k -
-        ∑ a ∈ Finset.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
+        ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
           p.coeff a.1 * p.reverse.roots.powerSum a.2 := by
   have hn := Multiset.powerSum_eq_mul_esymm_sub_sum
     p.reverse.roots k hk
@@ -175,7 +175,7 @@ theorem coeff_zero_mul_sum_inv_roots_pow
     (k : ℕ) (hk : 0 < k) :
     p.coeff 0 * (p.roots.map fun r => r⁻¹ ^ k).sum =
       -(k : K) * p.coeff k -
-        ∑ a ∈ Finset.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
+        ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
           p.coeff a.1 * (p.roots.map fun r => r⁻¹ ^ a.2).sum := by
   simpa only [reverse_roots_powerSum_eq_sum_inv_pow hp h0] using
     coeff_zero_mul_reverse_roots_powerSum hp h0 k hk

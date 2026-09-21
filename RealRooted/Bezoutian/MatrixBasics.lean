@@ -249,7 +249,7 @@ lemma bezoutMatrix.quadratic_eq_fin_two (a b c d : ℝ) :
     b * d - a * c, b + d - (a + c)] := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    norm_num [bezoutMatrix, bezoutEntry, coeff_add, coeff_mul, Finset.antidiagonal,
+    norm_num [bezoutMatrix, bezoutEntry, coeff_add, coeff_mul, Finset.HasAntidiagonal.antidiagonal,
       Finset.range, coeff_X, coeff_C]
 
 lemma bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two {p q : ℝ[X]}

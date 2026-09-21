@@ -156,7 +156,8 @@ theorem fixedContentSmirnovPolynomial_zero (m : ℕ) :
     fixedContentSmirnovPolynomial
       (n := 0) (0 : Multiset (Fin m)) = 1 := by
   simp [fixedContentSmirnovPolynomial, fixedContentSmirnovWords,
-    BrandenVecchi.smirnovWords, BrandenVecchi.IsSmirnovWord, wordContent]
+    BrandenVecchi.smirnovWords, Finset.filter_singleton,
+    BrandenVecchi.IsSmirnovWord, wordContent]
 
 /-! ## Ordinary words -/
 

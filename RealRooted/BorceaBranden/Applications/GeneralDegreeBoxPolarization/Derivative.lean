@@ -25,7 +25,7 @@ private theorem pderiv_rename_fst_eq_smul_clone
       (κ i : ℂ) • MvPolynomial.rename Sigma.fst
         (MvPolynomial.pderiv ⟨i, ⟨0, hki⟩⟩ Q) := by
   classical
-  letI := Fintype.ofFinite σ
+  let := Fintype.ofFinite σ
   rw [MvPolynomial.pderiv_rename_eq_sum_fiber]
   simp only [Finset.sum_filter, Fintype.sum_sigma]
   rw [Finset.sum_eq_single i]
@@ -65,7 +65,7 @@ theorem _root_.RealRooted.MvUpperHalfPlaneStable.pderiv_zero_or_of_finite
     MvPolynomial.pderiv i P = 0 ∨
       MvUpperHalfPlaneStable (MvPolynomial.pderiv i P) := by
   classical
-  letI := Fintype.ofFinite σ
+  let := Fintype.ofFinite σ
   let κ : σ → ℕ := fun j => P.degreeOf j
   let p : MvPolynomial.degreeOfLE σ ℂ κ :=
     ⟨P, (MvPolynomial.mem_degreeOfLE_iff_degreeOf P).2 fun _ => le_rfl⟩

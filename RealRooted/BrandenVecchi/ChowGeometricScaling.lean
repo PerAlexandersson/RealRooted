@@ -158,7 +158,9 @@ theorem toeplitz_geometricScale (c : ℝ) (a : ℕ → ℝ) :
   funext i j
   rw [toeplitz_apply]
   by_cases hji : j ≤ i
-  · simp [hji, geometricScale]
+  · change (if j ≤ i then geometricScale c a (i - j) else 0) =
+      c ^ (i - j) * toeplitz a i j
+    simp [hji, geometricScale]
   · simp [hji, LowerTriangularMatrix.geometricScale]
 
 /-- Toeplitz Chow rows scale by the rank under geometric scaling of their
@@ -167,8 +169,8 @@ theorem BrandenVecchi.chowPolynomial_toeplitz_geometricScale
     (c : ℝ) (a : ℕ → ℝ) (n : ℕ) :
     chowPolynomial (toeplitz (geometricScale c a)) n =
       C (c ^ n) * chowPolynomial (toeplitz a) n := by
-  rw [toeplitz_geometricScale,
-    BrandenVecchi.chowPolynomial_geometricScale]
+  rw [toeplitz_geometricScale]
+  exact BrandenVecchi.chowPolynomial_geometricScale c (toeplitz a) n
 
 end
 

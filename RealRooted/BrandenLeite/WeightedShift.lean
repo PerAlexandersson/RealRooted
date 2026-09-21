@@ -382,12 +382,7 @@ theorem weightedLowerChipPrefix_isTotallyNonneg
     (weightedLowerChipPrefix b N k).IsTotallyNonneg := by
   induction k with
   | zero =>
-      have h := (Matrix.IsTotallyNonneg.one (R := ℝ)).submatrix
-        (f := fun i : Fin (N + 1) => i.val)
-        (g := fun i : Fin (N + 1) => i.val)
-        Fin.val_strictMono Fin.val_strictMono
-      simpa [weightedLowerChipPrefix,
-        Matrix.submatrix_one Fin.val Fin.val_injective] using h
+      simp [weightedLowerChipPrefix, Matrix.IsTotallyNonneg.one]
   | succ k ih =>
       have hkN : k < N := Nat.lt_of_succ_le hk
       rw [weightedLowerChipPrefix, dite_eq_left hkN]

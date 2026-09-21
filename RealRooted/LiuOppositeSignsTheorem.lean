@@ -200,7 +200,7 @@ theorem not_allComboRealRooted_X_mul_quadratic_linear_example :
     cubicDiscr_nonneg_of_splits_natDegree_le_three hp_deg hp_splits
   have hdisc_neg : cubicDiscr p < 0 := by
     norm_num [p, cubicDiscr, coeff_add, coeff_C_mul, coeff_neg, coeff_mul,
-      Finset.antidiagonal, coeff_X, coeff_C, coeff_one]
+      Finset.HasAntidiagonal.antidiagonal, coeff_X, coeff_C, coeff_one]
   linarith
 
 /-- The branch-retaining deletion-pair common-interleaver theorem package

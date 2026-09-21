@@ -149,7 +149,7 @@ private theorem partialFiberNormalForm_empty {R : Type*} [CommSemiring R]
     have hnot := j.2.leftLabel_not_mem_fixedBottomSupport
     apply hnot
     have hlabel : leftLabel h j.1 = x := by
-      simpa [leftLabelEmbedding] using hjx
+      exact hjx
     rw [hlabel]
     exact hfixed
   unfold MvPolynomial.finsetMonomial

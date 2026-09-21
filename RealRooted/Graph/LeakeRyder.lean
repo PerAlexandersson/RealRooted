@@ -136,7 +136,7 @@ theorem clawFree_of_weightedIndepPoly_splits
   apply (not_splits_of_cubicDiscr_neg_of_natDegree_le_three
     (p := 1 + 4 * X + 3 * X ^ 2 + X ^ 3)
     (by compute_degree) ?_) hsplits
-  norm_num [cubicDiscr, coeff_add, coeff_mul, Finset.antidiagonal,
+  norm_num [cubicDiscr, coeff_add, coeff_mul, Finset.HasAntidiagonal.antidiagonal,
     coeff_X, coeff_C, coeff_one]
 
 /-- Same-phase stability of the multivariate independence polynomial forces
