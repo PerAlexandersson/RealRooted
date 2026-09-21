@@ -242,6 +242,21 @@ private partial def findAffinePowOrientation? (e : Expr) :
   | .proj _ _ body => findAffinePowOrientation? body
   | _ => none
 
+private partial def containsRootZeroPower (e : Expr) : Bool :=
+  let e := e.consumeMData
+  if appFnName? e == some ``HPow.hPow then
+    let args := e.getAppArgs
+    args.size > 5 && isPolynomialX args[4]!
+  else
+    e.getAppArgs.any containsRootZeroPower ||
+      match e with
+      | .forallE _ domain body _ => containsRootZeroPower domain || containsRootZeroPower body
+      | .lam _ domain body _ => containsRootZeroPower domain || containsRootZeroPower body
+      | .letE _ type value body _ =>
+          containsRootZeroPower type || containsRootZeroPower value || containsRootZeroPower body
+      | .proj _ _ body => containsRootZeroPower body
+      | _ => false
+
 private partial def findAffineLinearOrientation? (e : Expr) :
     Option AffinePowOrientation := Id.run do
   let e := e.consumeMData
@@ -298,6 +313,15 @@ private def scalarKindOfEvidence (label : String) (evidence : Syntax) :
   | some kind => pure kind
   | none =>
       throwError "rr_product checked scalar auto: no scalar factor found in {label}"
+
+private def rootZeroPowerOfEvidence (label : String) (evidence : Syntax) :
+    TacticM Unit := withMainContext do
+  let evidenceExpr ← Lean.Elab.Tactic.elabTerm evidence none
+  let evidenceType ← instantiateMVars (← inferType evidenceExpr)
+  if containsRootZeroPower evidenceType then
+    pure ()
+  else
+    throwError "rr_product checked root-zero power auto: no root-zero power found in {label}"
 
 elab "rr_product_lift_checked_affine_sequence_auto" " using "
     "quotient_realrooted" ":=" hquot:term ","
@@ -503,12 +527,35 @@ elab "rr_product_checked_affine_pow_sequence_auto" " using "
           rr_product_affine_pow_sequence_auto using
             base := $hbase,
             recurrence := $hrec))
+
   | .constFirst =>
       evalTactic
         (← `(tactic|
           rr_product_const_first_affine_pow_sequence_auto using
             base := $hbase,
             recurrence := $hrec))
+
+elab "rr_product_checked_root_zero_pow_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "recurrence" ":=" hrec:term : tactic => do
+  rootZeroPowerOfEvidence "recurrence" hrec
+  evalTactic
+    (← `(tactic|
+      rr_product_X_pow_sequence using
+        base := $hbase,
+        recurrence := $hrec))
+
+elab "rr_product_checked_root_zero_pow_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "cutoff" ":=" N:term ","
+    "recurrence" ":=" hrec:term : tactic => do
+  rootZeroPowerOfEvidence "recurrence" hrec
+  evalTactic
+    (← `(tactic|
+      rr_product_X_pow_sequence using
+        base := $hbase,
+        cutoff := $N,
+        recurrence := $hrec))
 
 elab "rr_product_checked_affine_pow_sequence_auto" " using "
     "base" ":=" hbase:term ","
@@ -1004,19 +1051,19 @@ macro_rules
         factorization := $hrow:term) =>
       `(tactic|
         first
-          | rr_product_lift_X_sequence using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_checked_scalar_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_C_sequence_auto using
+          | rr_product_lift_checked_affine_pow_sequence_auto using
               quotient_realrooted := $hquot,
               factorization := $hrow
           | rr_product_lift_checked_affine_sequence_auto using
               quotient_realrooted := $hquot,
               factorization := $hrow
-          | rr_product_lift_checked_affine_pow_sequence_auto using
+          | rr_product_lift_checked_scalar_sequence_auto using
+              quotient_realrooted := $hquot,
+              factorization := $hrow
+          | rr_product_lift_X_sequence using
+              quotient_realrooted := $hquot,
+              factorization := $hrow
+          | rr_product_lift_C_sequence_auto using
               quotient_realrooted := $hquot,
               factorization := $hrow
           | rr_product_lift_X_add_C_sequence using
@@ -1048,17 +1095,7 @@ macro_rules
         factorization := $hrow:term) =>
       `(tactic|
         first
-          | rr_product_lift_X_sequence using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_checked_scalar_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_C_sequence_auto using
+          | rr_product_lift_checked_affine_pow_sequence_auto using
               base := $hbase,
               quotient_realrooted := $hquot,
               cutoff := $N,
@@ -1068,7 +1105,17 @@ macro_rules
               quotient_realrooted := $hquot,
               cutoff := $N,
               factorization := $hrow
-          | rr_product_lift_checked_affine_pow_sequence_auto using
+          | rr_product_lift_checked_scalar_sequence_auto using
+              base := $hbase,
+              quotient_realrooted := $hquot,
+              cutoff := $N,
+              factorization := $hrow
+          | rr_product_lift_X_sequence using
+              base := $hbase,
+              quotient_realrooted := $hquot,
+              cutoff := $N,
+              factorization := $hrow
+          | rr_product_lift_C_sequence_auto using
               base := $hbase,
               quotient_realrooted := $hquot,
               cutoff := $N,

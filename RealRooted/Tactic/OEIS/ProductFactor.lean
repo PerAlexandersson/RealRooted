@@ -240,6 +240,9 @@ macro_rules
         certificate := auto) =>
       `(tactic|
         first
+          | rr_product_checked_root_zero_pow_sequence_auto using
+              base := $hbase,
+              recurrence := $hrec
           | rr_product_checked_scalar_sequence_auto using
               base := $hbase,
               recurrence := $hrec
@@ -256,9 +259,6 @@ macro_rules
               base := $hbase,
               recurrence := $hrec
           | rr_product_X_pow_sequence using
-              base := $hbase,
-              recurrence := $hrec
-          | rr_product_X_add_C_pow_sequence using
               base := $hbase,
               recurrence := $hrec
           | rr_product_C_add_X_pow_sequence using
@@ -272,6 +272,10 @@ macro_rules
         certificate := auto) =>
       `(tactic|
         first
+          | rr_product_checked_root_zero_pow_sequence_auto using
+              base := $hbase,
+              cutoff := $N,
+              recurrence := $hrec
           | rr_product_checked_scalar_sequence_auto using
               base := $hbase,
               cutoff := $N,
@@ -293,10 +297,6 @@ macro_rules
               cutoff := $N,
               recurrence := $hrec
           | rr_product_X_pow_sequence using
-              base := $hbase,
-              cutoff := $N,
-              recurrence := $hrec
-          | rr_product_X_add_C_pow_sequence using
               base := $hbase,
               cutoff := $N,
               recurrence := $hrec
