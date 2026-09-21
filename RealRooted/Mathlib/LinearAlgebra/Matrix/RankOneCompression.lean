@@ -28,8 +28,8 @@ theorem twoPointCompression_numerator_pos_of_right_exterior
   have hz' : 0 < z := lt_of_lt_of_le zero_lt_one hz
   have hfirst : 0 < r * z * detOneSubC := mul_pos (mul_pos hr hz') hdetOneSubC
   have hsecond : (1 - r) * (1 - z) * detC ≤ 0 :=
-    mul_nonpos_of_nonneg_of_nonpos
-      (mul_nonneg (sub_pos.mpr hr').le (sub_nonpos.mpr hz)) hdetC.le
+    mul_nonpos_of_nonpos_of_nonneg
+      (mul_nonpos_of_nonneg_of_nonpos (sub_pos.mpr hr').le (sub_nonpos.mpr hz)) hdetC.le
   have hright : 0 < r * z * detOneSubC - (1 - r) * (1 - z) * detC :=
     sub_pos.mpr (lt_of_le_of_lt hsecond hfirst)
   have hproduct : 0 < τ * (b * r * (1 - r) + a * z * (1 - z)) := hidentity.symm ▸ hright
@@ -68,7 +68,7 @@ theorem twoPointCompression_scalar_pos_of_right_exterior
     twoPointCompression_numerator_pos_of_right_exterior hr hr' hz hτ hdetC hdetOneSubC hidentity
   have hquotient : r * (1 - r) / a + z * (1 - z) / b =
       (b * r * (1 - r) + a * z * (1 - z)) / (a * b) := by
-    field_simp [ha.ne', hb.ne'] <;> ring
+    field_simp [ha.ne', hb.ne']
   rw [hquotient]
   exact div_pos hnumerator (mul_pos ha hb)
 
@@ -84,7 +84,7 @@ theorem twoPointCompression_scalar_pos_of_left_exterior
     twoPointCompression_numerator_pos_of_left_exterior hr hz hz' hτ hdetC hdetOneSubC hidentity
   have hquotient : r * (1 - r) / a + z * (1 - z) / b =
       (b * r * (1 - r) + a * z * (1 - z)) / (a * b) := by
-    field_simp [ha.ne', hb.ne'] <;> ring
+    field_simp [ha.ne', hb.ne']
   rw [hquotient]
   exact div_pos hnumerator (mul_pos ha hb)
 

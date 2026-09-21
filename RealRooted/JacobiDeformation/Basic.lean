@@ -67,7 +67,7 @@ theorem coeff_polynomial (m k : ℕ) (δ c d U V : ℝ) :
 theorem coeff_polynomial_self (m : ℕ) (δ c d U V : ℝ) :
     (polynomial m δ c d U V).coeff m = 1 := by
   rw [coeff_polynomial]
-  simp [summand]
+  norm_num [summand, Nat.factorial_ne_zero]
 
 /-- The finite Jacobi deformation has no terms above degree `m`. -/
 theorem natDegree_polynomial_le (m : ℕ) (δ c d U V : ℝ) :
@@ -118,7 +118,8 @@ theorem coeff_polynomial_pos {m k : ℕ} {δ c d U V : ℝ} (hk : k ≤ m)
     (hbase : 0 < (m : ℝ) + c + d - 1 + δ)
     (hc : 0 < c) (hd : 0 < d) (hU : 0 < U) (hV : 0 < V) :
     0 < (polynomial m δ c d U V).coeff k := by
-  rw [coeff_polynomial, if_pos hk]
+  rw [coeff_polynomial]
+  simp only [hk, ↓reduceIte]
   apply Finset.sum_pos
   · intro ij hij
     exact summand_pos m δ c d U V ij.1 ij.2 hbase hc hd hU hV
@@ -134,8 +135,7 @@ theorem hasNonnegCoeffs_polynomial (m : ℕ) (δ c d U V : ℝ)
   intro k
   by_cases hk : k ≤ m
   · exact (coeff_polynomial_pos hk hbase hc hd hU hV).le
-  · rw [coeff_polynomial, if_neg hk]
-    exact le_rfl
+  · simp [coeff_polynomial, hk]
 
 /-- The constant coefficient is positive in the positive parameter range. -/
 theorem coeff_zero_pos (m : ℕ) (δ c d U V : ℝ)
@@ -171,14 +171,26 @@ theorem coeff_zero_pos_of_pos {m : ℕ} {δ c d U V : ℝ}
 @[simp]
 theorem polynomial_zero (δ c d U V : ℝ) : polynomial 0 δ c d U V = 1 := by
   ext k
-  cases k <;> simp [coeff_polynomial, summand]
+  cases k <;> simp [coeff_polynomial, summand, Polynomial.coeff_one]
 
 @[simp]
 theorem polynomial_one (δ c d U V : ℝ) :
     polynomial 1 δ c d U V = X + C ((c + d + δ) * (U / c + V / d)) := by
-  simp [polynomial, summand, Finset.Nat.sum_antidiagonal_succ]
-  rw [← C_add]
-  congr 1
-  ring
+  ext k
+  rcases k with _ | k
+  · have hanti : Finset.antidiagonal 1 =
+        ({(0, 1), (1, 0)} : Finset (ℕ × ℕ)) := by decide
+    rw [coeff_polynomial]
+    simp only [Nat.zero_le, ↓reduceIte, hanti]
+    simp [summand]
+    ring
+  · rcases k with _ | k
+    · rw [coeff_polynomial_self, Polynomial.coeff_add, Polynomial.coeff_X,
+        Polynomial.coeff_C]
+      simp
+    · rw [coeff_polynomial]
+      simp only [show ¬k + 2 ≤ 1 by lia, ↓reduceIte, Polynomial.coeff_add,
+        Polynomial.coeff_X, Polynomial.coeff_C]
+      simp
 
 end RealRooted.JacobiDeformation
