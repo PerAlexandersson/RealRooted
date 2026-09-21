@@ -361,7 +361,7 @@ theorem eq_eigenvalue_of_positive_eigenvector [Nonempty n]
       have h_support_nonempty : ({i | 0 < v i} : Set n).Nonempty := by
         rcases h_supp_nonempty with ⟨i, hi⟩
         exact ⟨i, by simpa [Set.mem_toFinset] using hi⟩
-      letI : Nonempty {i | 0 < v i} := Set.Nonempty.to_subtype h_support_nonempty
+      let _ : Nonempty {i | 0 < v i} := Set.Nonempty.to_subtype h_support_nonempty
       change (⨅ _ : {i | 0 < v i}, r) = r
       exact ciInf_const (ι := {i | 0 < v i}) (a := r)
 
@@ -516,11 +516,12 @@ lemma nonneg_similarity_transform [DecidableEq n]
   rw [mul_diagonal, diagonal_mul]
   exact mul_nonneg (mul_nonneg (inv_nonneg.mpr (hv_pos i).le) (hA_nonneg i j)) (hv_pos j).le
 
+open scoped Classical in
 /--
 For any non-negative vector `w`, its Collatz–Wielandt value is bounded above by a
 positive eigenvalue `r` that has a strictly positive *right* eigenvector `v`.
 -/
-theorem le_eigenvalue_of_right_eigenvector [DecidableEq n]
+theorem le_eigenvalue_of_right_eigenvector
     (hA_nonneg : ∀ i j, 0 ≤ A i j) {r : ℝ} (_ : 0 < r)
     {v : n → ℝ} (hv_pos : ∀ i, 0 < v i) (h_eig : A *ᵥ v = r • v)
     {w : n → ℝ} (hw_nonneg : ∀ i, 0 ≤ w i) (hw_ne_zero : w ≠ 0) :
@@ -558,9 +559,10 @@ theorem le_eigenvalue_of_right_eigenvector [DecidableEq n]
       _ = B *ᵥ x := rfl
   exact le_of_max_le_row_sum hB_nonneg h_B_row_sum hx_nonneg hx_ne_zero h_le_Bx
 
+open scoped Classical in
 /-- Any positive eigenvalue `r` with a strictly positive right eigenvector `v` is an
   upper bound for the range of the Collatz-Wielandt function. -/
-theorem eigenvalue_is_ub_of_positive_eigenvector [DecidableEq n]
+theorem eigenvalue_is_ub_of_positive_eigenvector
     (hA_nonneg : ∀ i j, 0 ≤ A i j) {r : ℝ} (hr_pos : 0 < r)
     {v : n → ℝ} (hv_pos : ∀ i, 0 < v i) (h_eig : A *ᵥ v = r • v) :
     perronRoot A ≤ r := by
@@ -570,7 +572,8 @@ theorem eigenvalue_is_ub_of_positive_eigenvector [DecidableEq n]
   exact CollatzWielandt.le_eigenvalue_of_right_eigenvector
     hA_nonneg hr_pos hv_pos h_eig hw_nonneg hw_ne_zero
 
-theorem eq_perron_root_of_positive_eigenvector [DecidableEq n]
+open scoped Classical in
+theorem eq_perron_root_of_positive_eigenvector
     {A : Matrix n n ℝ} {r : ℝ} {v : n → ℝ}
     (hA_nonneg : ∀ i j, 0 ≤ A i j)
     (hv_pos : ∀ i, 0 < v i)
@@ -586,16 +589,18 @@ theorem eq_perron_root_of_positive_eigenvector [DecidableEq n]
   exact le_antisymm h₁ h₂
 
 omit [Nonempty n] in
+open scoped Classical in
 /-- A nonnegative nonzero vector has positive coordinate sum. -/
-lemma sum_pos_of_nonneg_ne_zero [DecidableEq n] {x : n → ℝ}
+lemma sum_pos_of_nonneg_ne_zero {x : n → ℝ}
     (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne_zero : x ≠ 0) :
     0 < ∑ i, x i := by
   obtain ⟨i, hi⟩ := exists_pos_of_ne_zero hx_nonneg hx_ne_zero
   exact Finset.sum_pos' (fun j _ => hx_nonneg j) ⟨i, Finset.mem_univ _, hi⟩
 
 omit [Nonempty n] in
+open scoped Classical in
 /-- Normalize a nonnegative nonzero vector into the standard simplex. -/
-lemma inv_sum_smul_mem_stdSimplex_of_nonneg_ne_zero [DecidableEq n] {x : n → ℝ}
+lemma inv_sum_smul_mem_stdSimplex_of_nonneg_ne_zero {x : n → ℝ}
     (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne_zero : x ≠ 0) :
     (∑ i, x i)⁻¹ • x ∈ RealRooted.standardSimplex ℝ n := by
   have hs_pos := sum_pos_of_nonneg_ne_zero hx_nonneg hx_ne_zero
@@ -606,23 +611,26 @@ lemma inv_sum_smul_mem_stdSimplex_of_nonneg_ne_zero [DecidableEq n] {x : n → �
     exact inv_mul_cancel₀ hs_pos.ne'
 
 omit [Nonempty n] in
+open scoped Classical in
 /-- Collatz-Wielandt is invariant under normalization by the coordinate sum. -/
-lemma collatzWielandtFn_inv_sum_smul_of_nonneg_ne_zero [DecidableEq n] {x : n → ℝ}
+lemma collatzWielandtFn_inv_sum_smul_of_nonneg_ne_zero {x : n → ℝ}
     (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne_zero : x ≠ 0) :
     collatzWielandtFn A ((∑ i, x i)⁻¹ • x) = collatzWielandtFn A x :=
   collatzWielandtFn_smul (inv_pos.mpr (sum_pos_of_nonneg_ne_zero hx_nonneg hx_ne_zero))
     hx_nonneg hx_ne_zero
 
 omit [Nonempty n] in
-private lemma le_of_isMaxOn_stdSimplex [DecidableEq n] {v : n → ℝ}
+open scoped Classical in
+private lemma le_of_isMaxOn_stdSimplex {v : n → ℝ}
     (hv_max : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v)
     {x : n → ℝ} (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne_zero : x ≠ 0) :
     collatzWielandtFn A x ≤ collatzWielandtFn A v := by
   have h_max := hv_max (inv_sum_smul_mem_stdSimplex_of_nonneg_ne_zero hx_nonneg hx_ne_zero)
   simpa [collatzWielandtFn_inv_sum_smul_of_nonneg_ne_zero (A := A) hx_nonneg hx_ne_zero] using h_max
 
+open scoped Classical in
 /-- A simplex maximizer realizes the Perron root. -/
-lemma perronRoot_eq_of_isMaxOn_stdSimplex [DecidableEq n]
+lemma perronRoot_eq_of_isMaxOn_stdSimplex
     (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ}
     (hv_mem : v ∈ RealRooted.standardSimplex ℝ n)
     (hv_max : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v) :
@@ -637,7 +645,8 @@ lemma perronRoot_eq_of_isMaxOn_stdSimplex [DecidableEq n]
       (Set.mem_image_of_mem _ ⟨hv_mem.1, ne_zero_of_mem_stdSimplex hv_mem⟩)
 
 omit [Fintype n] [Nonempty n] in
-lemma maximizer_satisfies_le_mulVec [Fintype n] [Nonempty n] [DecidableEq n]
+open scoped Classical in
+lemma maximizer_satisfies_le_mulVec [Fintype n] [Nonempty n]
     (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     let r := perronRoot A
     ∃ v ∈ RealRooted.standardSimplex ℝ n, r • v ≤ A *ᵥ v := by
@@ -650,8 +659,9 @@ lemma maximizer_satisfies_le_mulVec [Fintype n] [Nonempty n] [DecidableEq n]
   simpa [r] using h_le
 
 omit [Nonempty n] in
+open scoped Classical in
 /-- The Perron root of a non-negative matrix is non-negative. -/
-lemma perronRoot_nonneg [DecidableEq n] (hA_nonneg : ∀ i j, 0 ≤ A i j) :
+lemma perronRoot_nonneg (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     0 ≤ perronRoot A := by
   unfold perronRoot
   refine Real.sSup_nonneg ?_
@@ -666,20 +676,22 @@ lemma perronRoot_nonneg [DecidableEq n] (hA_nonneg : ∀ i j, 0 ≤ A i j) :
   · exact le_rfl
 
 omit [Nonempty n] in
+open scoped Classical in
 /--
 If an inequality lambda•w ≤ A•w holds for a non-negative non-zero vector w,
 then lambda is bounded by the Collatz-Wielandt function value for w.
 This is the property that the Collatz-Wielandt function gives
 the maximum lambda satisfying such an inequality.
 -/
-theorem le_of_subinvariant [DecidableEq n]
+theorem le_of_subinvariant
     {A : Matrix n n ℝ} (_ : ∀ i j, 0 ≤ A i j)
     {w : n → ℝ} (hw_nonneg : ∀ i, 0 ≤ w i) (hw_ne_zero : w ≠ 0)
     {lambda : ℝ} (h_sub : lambda • w ≤ A *ᵥ w) :
     lambda ≤ collatzWielandtFn A w := by
   obtain ⟨i, hi⟩ := exists_pos_of_ne_zero hw_nonneg hw_ne_zero
   let S := {j | 0 < w j}.toFinset
-  have hS_nonempty : S.Nonempty := ⟨i, by simp [S]; exact hi⟩
+  have hSi : i ∈ {j | 0 < w j}.toFinset := Set.mem_toFinset.mpr hi
+  have hS_nonempty : S.Nonempty := ⟨i, hSi⟩
   rw [collatzWielandtFn, dite_eq_left hS_nonempty]
   apply Finset.le_inf'
   intro j hj
@@ -688,10 +700,11 @@ theorem le_of_subinvariant [DecidableEq n]
 
 end CollatzWielandt
 
+open scoped Classical in
 /-- For an irreducible nonnegative matrix, the Collatz–Wielandt value at the all-ones vector is
 strictly positive: an irreducible nonnegative matrix has no zero row (the `Fintype.card n = 1`
 case uses a positive diagonal entry). -/
-lemma collatzWielandtFn_of_ones_is_pos [DecidableEq n]
+lemma collatzWielandtFn_of_ones_is_pos
     (hA_irred : IsIrreducible A) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     0 < collatzWielandtFn A (fun _ ↦ 1) := by
   let x_ones : n → ℝ := fun _ ↦ 1
@@ -712,9 +725,10 @@ lemma collatzWielandtFn_of_ones_is_pos [DecidableEq n]
   simpa [Matrix.mulVec, dotProduct, x_ones] using
     row_sum_pos_of_irreducible_nonneg hA_irred hA_nonneg i
 
+open scoped Classical in
 /-- The Perron root is positive for an irreducible nonnegative matrix: the Collatz–Wielandt value at
 the all-ones vector is positive and lies below `perronRoot`. -/
-lemma perronRoot_pos_of_irreducible [DecidableEq n]
+lemma perronRoot_pos_of_irreducible
     (hA_irred : IsIrreducible A) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     0 < CollatzWielandt.perronRoot A := by
   let x_ones : n → ℝ := fun _ ↦ 1
