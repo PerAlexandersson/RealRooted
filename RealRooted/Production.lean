@@ -1287,6 +1287,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
 import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
 import RealRooted.SpectralProduct
 import RealRooted.JacobiDeformation.Basic
+import RealRooted.JacobiDeformation.Kernel
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 
 /-!
