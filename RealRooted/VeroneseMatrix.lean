@@ -556,11 +556,11 @@ theorem hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
       ∀ {n : ℕ} {i : Fin n} {q : ℝ[X]},
         q ∈ oneSupportSeq n i → HasNonnegCoeffs q := by
     intro n i q hq
-    rcases List.mem_iff_get.1 hq with ⟨k, hk⟩
-    rw [← hk]
-    by_cases hki : (⟨k.1, by simpa [oneSupportSeq] using k.2⟩ : Fin n) = i
-    · simp [oneSupportSeq, hki, hasNonnegCoeffs_one]
-    · simp [oneSupportSeq, hki, hasNonnegCoeffs_zero]
+    rw [oneSupportSeq, List.mem_ofFn] at hq
+    rcases hq with ⟨k, rfl⟩
+    by_cases hki : k = i
+    · simp [hki, hasNonnegCoeffs_one]
+    · simp [hki, hasNonnegCoeffs_zero]
   have hzip :
       ∀ {xs ys : List ℝ[X]},
         (∀ q ∈ xs, HasNonnegCoeffs q) →
@@ -619,25 +619,21 @@ theorem isInterlacingSeq0Nonneg_veroneseSectionPolynomialListDesc_X_add_C_mul
       (veroneseSectionPolynomialListDesc r p)
       (length_veroneseSectionPolynomialListDesc r p) hseq
   · intro row hrow
-    rcases List.mem_iff_get.1 hrow with ⟨i, hi⟩
-    rw [← hi]
-    let i' : Fin r := ⟨i.1, by simpa [veroneseLinearFactorMatrixDesc] using i.2⟩
-    simp [veroneseLinearFactorMatrixDesc]
+    rw [veroneseLinearFactorMatrixDesc, List.mem_ofFn] at hrow
+    rcases hrow with ⟨i, rfl⟩
+    simp
   · intro row hrow q hq
-    rcases List.mem_iff_get.1 hrow with ⟨i, hi⟩
-    rw [← hi] at hq
-    let i' : Fin r := ⟨i.1, by simpa [veroneseLinearFactorMatrixDesc] using i.2⟩
-    have hq' : q ∈ veroneseLinearFactorRowDesc r a i' := by
-      simpa [veroneseLinearFactorMatrixDesc, i'] using hq
-    exact hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
-      (r := r) (a := a) ha i' hq'
+    rw [veroneseLinearFactorMatrixDesc, List.mem_ofFn] at hrow
+    rcases hrow with ⟨i, rfl⟩
+    exact hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry ha i hq
   · intro i₁ i₂ j₁ j₂ hi hij
     let i₁' : Fin r := ⟨i₁.1, by simpa [veroneseLinearFactorMatrixDesc] using i₁.2⟩
     let i₂' : Fin r := ⟨i₂.1, by simpa [veroneseLinearFactorMatrixDesc] using i₂.2⟩
     have hi' : i₁' ≤ i₂' := by grind
     have h := h2x2 i₁' i₂' j₁ j₂ hi' hij
-    simpa [VeroneseLinearFactorMatrixDescHas2x2, veroneseLinearFactorMatrixDesc,
-      i₁', i₂'] using h
+    dsimp only [veroneseLinearFactorMatrixDesc] at i₁ i₂ ⊢
+    simp only [List.get_eq_getElem, List.getElem_ofFn]
+    exact h
 
 /-- The cyclic matrix proof gives the Veronese-section linear-factor step:
 if the descending Veronese sections of `p` are nonnegative and interlacing,
@@ -672,25 +668,21 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_X_add
       (veroneseSectionPolynomialListDesc r p)
       (length_veroneseSectionPolynomialListDesc r p) hseq hreal
   · intro row hrow
-    rcases List.mem_iff_get.1 hrow with ⟨i, hi⟩
-    rw [← hi]
-    let i' : Fin r := ⟨i.1, by simpa [veroneseLinearFactorMatrixDesc] using i.2⟩
-    simp [veroneseLinearFactorMatrixDesc]
+    rw [veroneseLinearFactorMatrixDesc, List.mem_ofFn] at hrow
+    rcases hrow with ⟨i, rfl⟩
+    simp
   · intro row hrow q hq
-    rcases List.mem_iff_get.1 hrow with ⟨i, hi⟩
-    rw [← hi] at hq
-    let i' : Fin r := ⟨i.1, by simpa [veroneseLinearFactorMatrixDesc] using i.2⟩
-    have hq' : q ∈ veroneseLinearFactorRowDesc r a i' := by
-      simpa [veroneseLinearFactorMatrixDesc, i'] using hq
-    exact hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
-      (r := r) (a := a) ha i' hq'
+    rw [veroneseLinearFactorMatrixDesc, List.mem_ofFn] at hrow
+    rcases hrow with ⟨i, rfl⟩
+    exact hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry ha i hq
   · intro i₁ i₂ j₁ j₂ hi hij
     let i₁' : Fin r := ⟨i₁.1, by simpa [veroneseLinearFactorMatrixDesc] using i₁.2⟩
     let i₂' : Fin r := ⟨i₂.1, by simpa [veroneseLinearFactorMatrixDesc] using i₂.2⟩
     have hi' : i₁' ≤ i₂' := by grind
     have h := veroneseLinearFactorMatrixDesc_has2x2 ha i₁' i₂' j₁ j₂ hi' hij
-    simpa [VeroneseLinearFactorMatrixDescHas2x2, veroneseLinearFactorMatrixDesc,
-      i₁', i₂'] using h
+    dsimp only [veroneseLinearFactorMatrixDesc] at i₁ i₂ ⊢
+    simp only [List.get_eq_getElem, List.getElem_ofFn]
+    exact h
 
 /-- Product of monic nonnegative linear factors `∏ (X + a)`. -/
 def linearFactorProduct (as : List ℝ) : ℝ[X] :=
