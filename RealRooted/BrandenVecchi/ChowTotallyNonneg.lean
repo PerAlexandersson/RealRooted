@@ -118,8 +118,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     intro j hj
     rcases eq_or_lt_of_le (Nat.zero_le j) with rfl | hjpos
     · exact hdself 0 (Nat.zero_le n)
-    · let first : Fin (resolvedChowRow resolution n).length :=
-        ⟨0, by simp; lia⟩
+    · let first : Fin (resolvedChowRow resolution n).length := ⟨0, by simp⟩
       let current : Fin (resolvedChowRow resolution n).length :=
         ⟨j, by simpa using hj⟩
       simpa [first, current, d, resolvedChowRow] using

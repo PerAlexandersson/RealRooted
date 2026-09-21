@@ -48,7 +48,7 @@ theorem normalizeConstantDiagonal_isTotallyNonneg
     (hA : Matrix.IsTotallyNonneg A) :
     Matrix.IsTotallyNonneg (normalizeConstantDiagonal δ A) := by
   change Matrix.IsTotallyNonneg (δ⁻¹ • A)
-  exact hA.smul δ⁻¹ (inv_nonneg.mpr hδ.le)
+  exact hA.smul (inv_nonneg.mpr hδ.le)
 
 /-- Chain polynomials before and after scalar matrix normalization differ by
 the variable substitution X ↦ δ X. -/
