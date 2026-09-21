@@ -1,5 +1,7 @@
 import RealRooted.Hadamard.Grace
+import RealRooted.EulerOperator.Polar.Pencil
 import RealRooted.JacobiDeformation.ShiftRecurrence
+import RealRooted.SimpleRoots
 
 /-!
 # Real polar-shift preservation
@@ -175,6 +177,91 @@ theorem polynomial_nat_shift_splits_roots_neg {m : ℕ} {δ c d U V : ℝ}
       simpa [Polynomial.IsRoot.def] using hroot
     linarith
   exact lt_of_le_of_ne hrle hrne
+
+/-- For ranks at least two, one Jacobi parameter shift strictly interlaces its
+simple PF input and again has simple roots. -/
+theorem strictInterl_polynomial_shift {m : ℕ} {δ c d U V : ℝ}
+    (hm : 2 ≤ m) (hδ : 0 ≤ δ) (hc : 0 < c) (hd : 0 < d)
+    (hU : 0 < U) (hV : 0 < V)
+    (hp : IsPFPolynomial (polynomial m δ c d U V))
+    (hsimple : HasSimpleRoots (polynomial m δ c d U V)) :
+    StrictInterl (polynomial m (δ + 1) c d U V)
+        (polynomial m δ c d U V) ∧
+      HasSimpleRoots (polynomial m (δ + 1) c d U V) := by
+  let p : ℝ[X] := polynomial m δ c d U V
+  let b : ℝ := (m : ℝ) + c + d - 1 + δ
+  have hm1 : 1 ≤ m := by lia
+  have hb : 0 < b := by
+    dsimp [b]
+    exact base_pos_of_one_le hm1 hδ hc hd
+  have hpdeg : p.natDegree = m := natDegree_polynomial m δ c d U V
+  have hp0 : p ≠ 0 := (monic_polynomial m δ c d U V).ne_zero
+  have hconst : 0 < p.coeff 0 :=
+    coeff_zero_pos_of_pos hm1 hδ hc hd hU hV
+  have hreflect : 2 ≤ (reciprocalShift m p).natDegree := by
+    have htop : (reciprocalShift m p).coeff m ≠ 0 := by
+      simp [hconst.ne']
+    exact hm.trans (le_natDegree_of_ne_zero htop)
+  have hpolar : StrictInterl (polarTheta m p) p :=
+    prec_polarTheta_self hp hpdeg.le hreflect
+  have hpolarPos : HasPosLeadingCoeff (polarTheta m p) :=
+    (polarTheta_preserves_pf hp hpdeg.le).hasNonnegCoeffs.pos_leadingCoeff
+      hpolar.1.1
+  have hpPos : HasPosLeadingCoeff p :=
+    hp.hasNonnegCoeffs.pos_leadingCoeff hp0
+  have hcombo : StrictInterl (polarTheta m p + C b * p) p := by
+    simpa using prec_nonneg_combo_right hpolar hpolarPos hpPos
+      (a := 1) (b := b) zero_le_one hb.le (Or.inl zero_lt_one)
+  have hop : C (b + m) * p - theta p = polarTheta m p + C b * p := by
+    simp [polarTheta]
+    ring
+  have hstrict : StrictInterl (polynomial m (δ + 1) c d U V) p := by
+    rw [polynomial_shift m δ c d U V (by simpa [b] using hb.ne')]
+    change StrictInterl (C b⁻¹ * (C (b + m) * p - theta p)) p
+    rw [hop]
+    exact StrictInterl.C_mul_left hcombo (inv_ne_zero hb.ne')
+  have hrootsneg : ∀ r ∈ p.roots, r < 0 := by
+    simpa [p] using
+      (polynomial_nat_shift_splits_roots_neg hm1 hδ hc hd hU hV hp 0).2
+  have hno : ∀ r : ℝ,
+      ¬ ((polynomial m (δ + 1) c d U V).IsRoot r ∧ p.IsRoot r) := by
+    intro r hr
+    have hp_eval : p.eval r = 0 := hr.2
+    have hder_ne : p.derivative.eval r ≠ 0 := hsimple.eval_derivative_ne_zero hr.2
+    have hr_mem : r ∈ p.roots := (mem_roots hp0).mpr hr.2
+    have hr_ne : r ≠ 0 := ne_of_lt (hrootsneg r hr_mem)
+    have heval : (polynomial m (δ + 1) c d U V).eval r =
+        -b⁻¹ * r * p.derivative.eval r := by
+      rw [polynomial_shift m δ c d U V (by simpa [b] using hb.ne')]
+      simp only [eval_mul, eval_C, eval_sub, eval_X]
+      change b⁻¹ * ((b + m) * p.eval r - r * p.derivative.eval r) = _
+      rw [hp_eval]
+      ring
+    have hne : -b⁻¹ * r * p.derivative.eval r ≠ 0 :=
+      mul_ne_zero (mul_ne_zero (neg_ne_zero.mpr (inv_ne_zero hb.ne')) hr_ne)
+        hder_ne
+    apply hne
+    rw [← heval]
+    exact hr.1
+  exact ⟨hstrict, (hstrict.hasSimpleRoots_of_no_common_root hno).1⟩
+
+/-- Simple roots persist through every integral Jacobi parameter shift once
+the checked PF base is simple. -/
+theorem polynomial_nat_shift_hasSimpleRoots {m : ℕ} {δ c d U V : ℝ}
+    (hm : 2 ≤ m) (hδ : 0 ≤ δ) (hc : 0 < c) (hd : 0 < d)
+    (hU : 0 < U) (hV : 0 < V)
+    (hp : IsPFPolynomial (polynomial m δ c d U V))
+    (hsimple : HasSimpleRoots (polynomial m δ c d U V)) (n : ℕ) :
+    HasSimpleRoots (polynomial m (δ + n) c d U V) := by
+  induction n with
+  | zero => simpa using hsimple
+  | succ n ih =>
+      have hδn : 0 ≤ δ + (n : ℝ) := by positivity
+      have hb : 0 < (m : ℝ) + c + d - 1 + δ :=
+        base_pos_of_one_le (by lia) hδ hc hd
+      have hpf := isPFPolynomial_polynomial_nat_shift hb hp n
+      have hstep := strictInterl_polynomial_shift hm hδn hc hd hU hV hpf ih
+      simpa only [Nat.cast_add, Nat.cast_one, add_assoc] using hstep.2
 
 end JacobiDeformation
 end RealRooted

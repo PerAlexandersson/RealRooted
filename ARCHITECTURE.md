@@ -1161,7 +1161,9 @@ sum and records every truncated-degree boundary explicitly.
 polynomial PF cone whenever its real scalar exceeds the degree. Its finite
 Pólya--Schur certificate factors the Jensen polynomial explicitly, including
 degree zero and repeated-root inputs, and applies the result directly to one
-Jacobi parameter shift.
+Jacobi parameter shift. For ranks at least two it also proves strict
+interlacing and simple-root preservation from a simple PF base, and iterates
+both the PF and strict conclusions across arbitrary natural shifts.
 `JacobiDeformation.QuasiNodes` gives a strict, exhaustive root enumeration
 without incorrectly forcing every quasi-node into the open interval.
 `JacobiDeformation.RootGeometry`, `DerivativeSimple`, `CriticalThreshold`, and
