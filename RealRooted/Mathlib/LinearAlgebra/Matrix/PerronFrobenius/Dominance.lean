@@ -565,7 +565,7 @@ theorem irreducible_nonnegative_matrix_has_positive_eigenvector_at_spectralRadiu
       _ ≤ perronRoot A := h
   have h_spectral_ge : ‖(perronRoot A : ℝ)‖₊ ≤ spectralRadius ℝ A := by
     rw [spectralRadius_eq_of_unital]
-    exact le_iSup₂_of_le (perronRoot A) h_r_in_spec rfl
+    exact le_iSup₂_of_le (perronRoot A) h_r_in_spec le_rfl
   have h_spectral_eq : spectralRadius ℝ A = ‖(perronRoot A : ℝ)‖₊ := le_antisymm h_spectral_le h_spectral_ge
   have h_toReal_eq : (spectralRadius ℝ A).toReal = perronRoot A := by
     simp [h_spectral_eq, Real.norm_of_nonneg h_r_pos.le]
