@@ -444,6 +444,15 @@ elab "rr_product_checked_affine_pow_sequence_auto" " using "
             cutoff := $N,
             recurrence := $hrec))
 
+syntax (name := rr_product_commute_step)
+  "rr_product_commute_step" term : term
+
+syntax (name := rr_product_commute_step_from)
+  "rr_product_commute_step_from" term : term
+
+syntax (name := rr_product_sequence_variant)
+  "rr_product_sequence_variant" term : tactic
+
 macro_rules
   | `(tactic| rr_product_nonzero) =>
       `(tactic| rr_side_ne)
