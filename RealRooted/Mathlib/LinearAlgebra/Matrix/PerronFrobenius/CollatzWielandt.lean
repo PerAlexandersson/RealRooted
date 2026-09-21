@@ -225,8 +225,9 @@ lemma eq_iInf_of_nonempty (v : n → ℝ) (h : {i | 0 < v i}.toFinset.Nonempty) 
         rfl)
 
 omit [Nonempty n] in
+open scoped Classical in
 /-- If r ≤ 0 and r is the infimum of non-negative ratios, then r = 0. -/
-lemma val_eq_zero_of_nonpos [DecidableEq n]
+lemma val_eq_zero_of_nonpos
     (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ} (hv_nonneg : ∀ i, 0 ≤ v i)
     (S : Set n) (hS_def : S = {i | 0 < v i}) (hS_nonempty : S.Nonempty)
     (r : ℝ) (hr_def : r = collatzWielandtFn A v) (hr_nonpos : r ≤ 0) :
@@ -242,8 +243,9 @@ lemma val_eq_zero_of_nonpos [DecidableEq n]
   exact le_antisymm hr_nonpos r_ge_zero
 
 omit [Nonempty n] in
+open scoped Classical in
 /-- Each ratio is at least the Collatz-Wielandt value -/
-lemma le_ratio [DecidableEq n] {v : n → ℝ} (i : n) (hi_pos : 0 < v i) :
+lemma le_ratio {v : n → ℝ} (i : n) (hi_pos : 0 < v i) :
     collatzWielandtFn A v ≤ (A *ᵥ v) i / v i := by
   have h_support : {j | 0 < v j}.toFinset.Nonempty := ⟨i, by simpa using hi_pos⟩
   rw [collatzWielandtFn_eq_inf' A h_support]
@@ -251,10 +253,11 @@ lemma le_ratio [DecidableEq n] {v : n → ℝ} (i : n) (hi_pos : 0 < v i) :
   simpa using hi_pos
 
 omit [Nonempty n] in
+open scoped Classical in
 /-- For any non-negative, non-zero vector `v`, the Collatz-Wielandt value `r` satisfies
     `r • v ≤ A *ᵥ v`. This is the fundamental inequality derived from the definition of
     the Collatz-Wielandt function. -/
-lemma le_mulVec [DecidableEq n]
+lemma le_mulVec
     (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ} (hv_nonneg : ∀ i, 0 ≤ v i)
     (_ : v ≠ 0) :
     (collatzWielandtFn A v) • v ≤ A *ᵥ v := by
@@ -292,8 +295,9 @@ lemma exists_mulVec_eq_zero_on_support_of_nonpos [Fintype n]
   · exact hAv
   · exact absurd hb0 (ne_of_gt h_vb_pos)
 
+open scoped Classical in
 /-- The set of values from the Collatz-Wielandt function is bounded above by the maximum row sum of A. -/
-lemma bddAbove [DecidableEq n] (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
+lemma bddAbove (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     BddAbove (collatzWielandtFn A '' nonnegNeZero) := by
   use Finset.univ.sup' Finset.univ_nonempty (fun i ↦ ∑ j, A i j)
   rintro y ⟨x, ⟨hx_nonneg, hx_ne_zero⟩, rfl⟩
@@ -314,7 +318,8 @@ lemma set_nonempty :
   exact Set.Nonempty.image _ ⟨_, nonnegNeZero_mem_const_one⟩
 
 omit [Nonempty n] in
-lemma collatzWielandtFn_smul [DecidableEq n] {c : ℝ} (hc : 0 < c)
+open scoped Classical in
+lemma collatzWielandtFn_smul {c : ℝ} (hc : 0 < c)
   {x : n → ℝ} (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne : x ≠ 0) :
   collatzWielandtFn A (c • x) = collatzWielandtFn A x := by
   dsimp [collatzWielandtFn]
