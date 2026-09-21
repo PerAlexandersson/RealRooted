@@ -71,11 +71,13 @@ A non-zero, non-negative eigenvector of an irreducible matrix is
 in fact strictly positive.
 -/
 omit [DecidableEq n] in
-lemma exists_zero_to_pos_edge_of_irreducible [Fintype n]
+open scoped Classical in
+lemma exists_zero_to_pos_edge_of_irreducible [Finite n]
     (hA_irred : A.IsIrreducible) {v : n → ℝ}
     (hv_nonneg : ∀ i, 0 ≤ v i) (hv_ne_zero : v ≠ 0)
     {i₀ : n} (hi₀_zero : v i₀ = 0) :
     ∃ j i : n, v j = 0 ∧ 0 < v i ∧ 0 < A j i := by
+  let _ := Fintype.ofFinite n
   let T : Set n := {i | v i = 0}
   have hT_nonempty : T.Nonempty := ⟨i₀, by simp [T, hi₀_zero]⟩
   have hT_ne_univ : T ≠ Set.univ := by
@@ -151,6 +153,8 @@ lemma one_lt_eigenvalue_one_add_of_irreducible [Nonempty n]
   have h_lt : v i < r * v i := by linarith
   exact (mul_lt_mul_iff_of_pos_right (hv_pos i)).1 (by simpa [one_mul] using h_lt)
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- **Perron–Frobenius, irreducible case (Existence part)**
 If `A` is a non-negative irreducible matrix, then there exists a strictly positive eigenvalue `r > 0`
 and a strictly positive eigenvector `v` (`∀ i, 0 < v i`) such that `A *ᵥ v = r • v`.
@@ -186,13 +190,14 @@ lemma eigenvector_is_positive_of_irreducible [Nonempty n] {r : ℝ}
   eigenvector_is_positive_of_irreducible_aux hA_irred h_eig hv_nonneg hv_ne_zero
 
 open Finset
+open scoped Classical in
 /--
 Given an irreducible non-negative matrix `A` and two strictly positive
 eigenvectors for the same positive eigenvalue, they differ by a positive
 scalar.
 -/
 theorem uniqueness_of_positive_eigenvector_gen
-    {n : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
+    {n : Type*} [Fintype n] [Nonempty n]
   {A : Matrix n n ℝ} {r : ℝ} (hA_irred : A.IsIrreducible) (hr_pos : 0 < r)
     {v w : n → ℝ}
     (hv_pos : ∀ i, 0 < v i) (hw_pos : ∀ i, 0 < w i)
@@ -344,6 +349,8 @@ lemma one_add_isPrimitive_of_irreducible [Nonempty n]
     (Irreducible.add_one (A := A) hA_irred)
     (fun i => Matrix.one_add_diag_pos (fun j => hA_irred.nonneg j j) i)
 
+omit [DecidableEq n] in
+open scoped Classical in
 /-- In the simplex, an irreducible nonnegative matrix has at most one positive eigenvector,
 even if the positive eigenvalue is not specified in advance. -/
 lemma stdSimplex_eigenvector_eq_of_irreducible [Nonempty n]
@@ -361,6 +368,7 @@ lemma stdSimplex_eigenvector_eq_of_irreducible [Nonempty n]
     simp [B, add_mulVec, one_mulVec, add_smul, one_smul, hw_eig, add_comm]
   exact (hu.2 v ⟨r + 1, by linarith, hvB⟩).trans
     (hu.2 w ⟨s + 1, by linarith, hwB⟩).symm
+open scoped Classical in
 /--
 **Perron–Frobenius theorem for irreducible real matrices (Existence, positivity, uniqueness)**.
 
@@ -373,7 +381,7 @@ such that
 Moreover, this eigenvector v in the standard simplex is unique, and the corresponding eigenvalue r
 is the Perron root of A.
 -/
-theorem pft_irreducible {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
+theorem pft_irreducible {n : Type*} [Fintype n] [Nonempty n]
   {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) :
     ∃! (v : RealRooted.standardSimplex ℝ n), ∃ (r : ℝ), r > 0 ∧ A *ᵥ v.val = r • v.val := by
   let B : Matrix n n ℝ := 1 + A
