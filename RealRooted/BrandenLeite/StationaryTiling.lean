@@ -194,8 +194,12 @@ theorem coeff_rationalRodDenominatorSeries_singleton_succ
       (if j = 0 then C (-b) else 0) -
         X * C (PowerSeries.coeff (j + 1)
           (markedFactorSeries c r xs)) := by
-  simp [rationalRodDenominatorSeries, rationalBackgroundDenominator,
-    coeff_polynomialLift, PowerSeries.coeff_C_mul]
+  simp only [rationalRodDenominatorSeries, rationalBackgroundDenominator,
+    List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one,
+    polynomialLift_sub, polynomialLift_one, map_sub, PowerSeries.coeff_one,
+    Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓reduceIte,
+    coeff_polynomialLift, PowerSeries.coeff_succ_mul_X, zero_sub,
+    PowerSeries.coeff_C_mul, X_mul_C, map_neg, sub_left_inj]
   by_cases hj : j = 0
   · subst j
     simp
@@ -220,7 +224,8 @@ theorem monomerRodRow_succ
   rw [monomerRodRow, rationalRodRow_eq_sub_sum [b] c hr xs (n + 1)]
   simp_rw [coeff_rationalRodDenominatorSeries_singleton_succ,
     Nat.succ_sub_succ_eq_sub]
-  simp [monomerRodRow]
+  simp only [Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓reduceIte, map_neg,
+    X_mul_C, zero_sub, monomerRodRow]
   have hbackground :
       ∑ j ∈ Finset.range (n + 1),
           (if j = 0 then -C b else 0) *
