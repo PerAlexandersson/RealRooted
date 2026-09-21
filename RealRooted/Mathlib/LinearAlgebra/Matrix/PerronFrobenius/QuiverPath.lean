@@ -289,14 +289,14 @@ lemma mem_vertices_to_active {V : Type*} [Quiver V]
       aesop
   | cons p' e ih =>
       -- For (p'.cons e), vertices = p'.vertices.concat c and activeVertices = activeVertices p' ∪ {c}.
-      simp only [activeVertices_cons, Set.union_singleton, Set.mem_insert_iff] at hx
+      rw [mem_vertices_cons] at hx
       cases hx with
       | inl hx_in =>
-          have hx_act : x ∈ p'.activeVertices := ih hx_in
-          simp [activeVertices_cons, hx_act]
+          rw [activeVertices_cons]
+          exact Set.mem_union_left _ (ih hx_in)
       | inr hx_eq =>
-          subst hx_eq
-          simp [activeVertices_cons]
+          rw [activeVertices_cons]
+          exact Set.mem_union_right _ (Set.mem_singleton_iff.mpr hx_eq)
 
 end Quiver.Path
 
@@ -576,9 +576,7 @@ lemma vertex_in_path_cases {a b c : V} (p : Path a b) (h : c ∈ p.vertices) :
   c = b ∨ c ∈ p.vertices.dropLast := by
   induction p with
   | nil =>
-    simp only [vertices_nil, dropLast_singleton, not_mem_nil, or_false] at h
-    subst h
-    simp
+    exact Or.inl (List.mem_singleton.mp h)
   | cons p' e ih =>
     rename_i b'
     simp only [vertices_cons, List.mem_concat] at h
@@ -702,12 +700,13 @@ theorem exists_decomp_of_mem_vertices_prop
                           have h_drop_len_pos : q₂.vertices.dropLast.length > 0 :=
                             List.length_pos_of_ne_nil h_nil
                           have h_vert_len_ge_2 : q₂.vertices.length ≥ 2 := by
-                            subst h_eq_src h_prev
-                            simp_all only [vertices_length, ge_iff_le, Nat.reduceLeDiff]
-                            exact h_drop_len_pos
+                            rw [vertices_length]
+                            rw [List.length_dropLast, vertices_length,
+                              Nat.add_sub_cancel] at h_drop_len_pos
+                            exact Nat.succ_le_succ h_drop_len_pos
                           have h_path_len_ge_1 : q₂.length ≥ 1 := by
-                            subst h_eq_src h_prev
-                            simp_all
+                            rw [vertices_length] at h_vert_len_ge_2
+                            exact Nat.succ_le_succ_iff.mp h_vert_len_ge_2
                           exact h_path_len_ge_1
                         have h_q2_end : q₂.end = pPrev.end := by
                           have h : (q₁.comp q₂).end = pPrev.end := by rw [h_prev]
