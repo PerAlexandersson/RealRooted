@@ -340,10 +340,11 @@ noncomputable def perronRoot (A : Matrix n n ℝ) : ℝ :=
   sSup (collatzWielandtFn A '' nonnegNeZero)
 
 omit [Nonempty n] in
-theorem eq_eigenvalue_of_positive_eigenvector [DecidableEq n] [Nonempty n]
+theorem eq_eigenvalue_of_positive_eigenvector [Nonempty n]
     {r : ℝ} {v : n → ℝ}
     (hv_pos : ∀ i, 0 < v i) (h_eig : A *ᵥ v = r • v) :
     collatzWielandtFn A v = r := by
+  classical
   have h_supp_nonempty : ({i | 0 < v i}.toFinset).Nonempty := by
     obtain ⟨i⟩ := ‹Nonempty n›
     exact ⟨i, by simpa using hv_pos i⟩
@@ -366,10 +367,11 @@ theorem eq_eigenvalue_of_positive_eigenvector [DecidableEq n] [Nonempty n]
 
 /-- Any eigenvalue with a strictly positive eigenvector is ≤ the Perron root. -/
 theorem eigenvalue_le_perron_root_of_positive_eigenvector
-    {r : ℝ} {v : n → ℝ} [DecidableEq n]
+    {r : ℝ} {v : n → ℝ}
     (hA_nonneg : ∀ i j, 0 ≤ A i j) (_ : 0 < r)
     (hv_pos : ∀ i, 0 < v i) (h_eig : A *ᵥ v = r • v) :
     r ≤ perronRoot A := by
+  classical
   have hv_nonneg : ∀ i, 0 ≤ v i := fun i ↦ (hv_pos i).le
   have hv_ne_zero : v ≠ 0 := by
     exact Pi.ne_zero_of_pos hv_pos
@@ -393,11 +395,12 @@ lemma left_eigenvector_of_transpose {r : ℝ} {u : n → ℝ}
 
 omit [Nonempty n] in
 /-- For any non-negative vector `w`, its Collatz–Wielandt value … -/
-lemma le_eigenvalue_of_left_eigenvector [DecidableEq n]
+lemma le_eigenvalue_of_left_eigenvector
     (hA_nonneg : ∀ i j, 0 ≤ A i j) {r : ℝ} (_ : 0 < r)
     {u : n → ℝ} (hu_pos : ∀ i, 0 < u i) (h_eig : u ᵥ* A = r • u)
     {w : n → ℝ} (hw_nonneg : ∀ i, 0 ≤ w i) (hw_ne_zero : w ≠ 0) :
     collatzWielandtFn A w ≤ r := by
+  classical
   have h_le_mulVec := CollatzWielandt.le_mulVec hA_nonneg hw_nonneg hw_ne_zero
   have h_intermediate :
       u ⬝ᵥ ((collatzWielandtFn A w) • w) ≤ u ⬝ᵥ (A *ᵥ w) := by
@@ -415,10 +418,11 @@ If `u` is a strictly positive left eigenvector of `A` for eigenvalue `r > 0`,
 then the Perron root of `A` is less than or equal to `r`.
 That is, `perronRoot A ≤ r`.
 -/
-lemma perron_root_le_eigenvalue_of_left_eigenvector [DecidableEq n]
+lemma perron_root_le_eigenvalue_of_left_eigenvector
     (hA_nonneg : ∀ i j, 0 ≤ A i j) {r : ℝ} (hr_pos : 0 < r) {u : n → ℝ} (hu_pos : ∀ i, 0 < u i)
     (h_eig : u ᵥ* A = r • u) :
     perronRoot A ≤ r := by
+  classical
   dsimp [perronRoot]
   apply csSup_le
   · exact CollatzWielandt.set_nonempty
@@ -483,11 +487,12 @@ lemma row_sum_of_similarity_transformed_matrix [DecidableEq n]
 If a non-negative vector `x` satisfies `c • x ≤ B *ᵥ x` for a non-negative matrix `B`
 whose row sums are all equal to `r`, then `c ≤ r`.
 -/
-lemma le_of_max_le_row_sum [DecidableEq n]
+lemma le_of_max_le_row_sum
     {B : Matrix n n ℝ} {x : n → ℝ} {c r : ℝ}
     (hB_nonneg : ∀ i j, 0 ≤ B i j) (h_B_row_sum : ∀ i, ∑ j, B i j = r)
     (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne_zero : x ≠ 0) (h_le_Bx : c • x ≤ B *ᵥ x) :
     c ≤ r := by
+  classical
   obtain ⟨k, h_xk_pos, h_xk_max⟩ := exists_pos_maximal_of_nonneg_ne_zero hx_nonneg hx_ne_zero
   have h_le_k := h_le_Bx k
   simp only [Pi.smul_apply, smul_eq_mul] at h_le_k
@@ -506,6 +511,7 @@ lemma nonneg_similarity_transform [DecidableEq n]
     {A : Matrix n n ℝ} {v : n → ℝ}
     (hA_nonneg : ∀ i j, 0 ≤ A i j) (hv_pos : ∀ i, 0 < v i) :
     ∀ i j, 0 ≤ (Matrix.diagonal (v⁻¹) * A * Matrix.diagonal v) i j := by
+  classical
   intro i j
   rw [mul_diagonal, diagonal_mul]
   exact mul_nonneg (mul_nonneg (inv_nonneg.mpr (hv_pos i).le) (hA_nonneg i j)) (hv_pos j).le
