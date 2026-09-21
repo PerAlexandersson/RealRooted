@@ -755,7 +755,7 @@ lemma a358623Shifted_succ_succ (n : Nat) :
 /-- Concrete base certificate for the shifted `A358623` active family. -/
 lemma a358623Shifted_base : StrictInterl (a358623Shifted 0) (a358623Shifted 1) := by
   have hlin : Interlaces (1 : ℝ[X]) (1 + C (3 : ℝ) * X) :=
-    interlaces_one_linear (by simp [add_comm])
+    interlaces_one_linear (by simp)
   have hprec : StrictInterl (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toStrictInterl
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by rr_nonneg_coeffs
   have hmul : StrictInterl (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
