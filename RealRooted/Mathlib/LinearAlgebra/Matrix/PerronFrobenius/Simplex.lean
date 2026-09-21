@@ -21,7 +21,7 @@ theorem isCompact_standardSimplex (ι : Type*) [Fintype ι] :
     IsCompact (standardSimplex ℝ ι) := by
   apply (isCompact_Icc : IsCompact (Icc (0 : ι → ℝ) 1)).of_isClosed_subset
   · have hnonneg : IsClosed {f : ι → ℝ | ∀ i, 0 ≤ f i} := by
-      simpa only [Set.setOf_forall] using
+      simpa only [Set.ofPred_forall] using
         (isClosed_iInter fun i : ι =>
           isClosed_le (continuous_const (y := (0 : ℝ))) (continuous_apply i))
     have hsum : IsClosed {f : ι → ℝ | ∑ i, f i = 1} :=

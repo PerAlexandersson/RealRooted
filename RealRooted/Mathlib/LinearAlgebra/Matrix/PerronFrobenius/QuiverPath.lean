@@ -138,12 +138,14 @@ theorem exists_boundary_edge {a b : V} (p : Path a b) (S : Set V)
     (ha_not_in_S : a ∉ S) (hb_in_S : b ∈ S) :
     ∃ (u v : V) (e : u ⟶ v) (p₁ : Path a u) (p₂ : Path v b),
       u ∉ S ∧ v ∈ S ∧ p = p₁.comp (e.toPath.comp p₂) := by
-  induction h_len : p.length with n ih generalizing a b S ha_not_in_S hb_in_S
-  · -- Base case n = 0: Path must be nil, so a = b. Contradiction.
+  induction h_len : p.length generalizing a b S ha_not_in_S hb_in_S with
+  | zero =>
+    -- Base case n = 0: Path must be nil, so a = b. Contradiction.
     have hab : a = b := eq_of_length_zero p h_len
     subst hab
     exact (ha_not_in_S hb_in_S).elim
-  · -- Inductive step: Assume true for all paths of length < n+1.
+  | succ n ih =>
+    -- Inductive step: Assume true for all paths of length < n+1.
     have h_pos : 0 < p.length := by rw [h_len]; simp only [lt_add_iff_pos_left, add_pos_iff,
       Nat.lt_one_iff, pos_of_gt, or_true]
     obtain ⟨c, p', e, rfl⟩ := path_decomposition_last_edge p h_pos
@@ -318,6 +320,7 @@ namespace Quiver
 
 /-- The quiver structure on a subtype is induced by the quiver structure on the original type.
     An arrow from `a : S` to `b : S` exists if an arrow from `a.val` to `b.val` exists. -/
+@[instance_reducible]
 def inducedQuiver {V : Type*} [Quiver V] (S : Set V) : Quiver S :=
   ⟨fun a b => a.val ⟶ b.val⟩
 
@@ -945,6 +948,10 @@ lemma exists_positive_loop_shorter_than_p [DecidableEq V] {a : V} {p : Path a a}
     ∃ n, ∃ (r : Path a a), r.length = n ∧ r.length > 0 ∧ r.length < p.length := by
   exact ⟨q.length, q, rfl, h_q_pos, h_q_shorter⟩
 
+section ClassicalCycleSelection
+
+open scoped Classical
+
 /-- For any two positive loops shorter than p, their minimum length equals
     the minimum length among all positive loops shorter than p, or there exists
     an even shorter loop. -/
@@ -1138,3 +1145,8 @@ lemma removing_cycle_gives_shorter_path [DecidableEq V] {a v : V} {s : Path a a}
 /- `shortest_positive_loop_is_strictly_simple` from the original file is omitted:
 it was `sorry`d upstream and nothing in this port uses it. -/
 -/
+
+end ClassicalCycleSelection
+end Acyclic
+end Path
+end Quiver

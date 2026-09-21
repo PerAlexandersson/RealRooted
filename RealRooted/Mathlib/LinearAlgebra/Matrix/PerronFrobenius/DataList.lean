@@ -88,7 +88,6 @@ variable {α : Type*} {l m : List α} {n : ℕ}
 If `l.length ≤ n` and `n < (l ++ m).length`, then fetching the `n`-th element
 of `l ++ m` lands in `m`, at index `n - l.length`.
 -/
-
 theorem get_append_right {α : Type*} {l m : List α} {n : ℕ}
     (hl : l.length ≤ n) (hn : n < (l ++ m).length) :
   (l ++ m).get ⟨n, hn⟩ =
@@ -396,7 +395,7 @@ lemma mem_of_idxOf_lt_length {l : List α} {x : α} (h : idxOf x l < l.length) :
     dsimp [idxOf, findIdx, length] at h
     simp only [findIdx.go] at h
     by_cases h_eq : hd == x
-    · simp only [h_eq, le_refl, zero_add] at h
+    · simp only [h_eq, zero_add] at h
       rw [beq_iff_eq] at h_eq
       simp only [h_eq, mem_cons, true_or]
     · simp only [h_eq, zero_add] at h
@@ -604,7 +603,7 @@ lemma get_not_mem_take {l : List α} (h_nodup : l.Nodup)
       simp only [nodup_cons] at h_nodup
       cases i with
       | zero =>
-          simp only [le_refl, take_zero, length_cons, Fin.zero_eta, get_eq_getElem, Fin.val_zero,
+          simp only [take_zero, length_cons, Fin.zero_eta, get_eq_getElem, Fin.val_zero,
             getElem_cons_zero, not_mem_nil, not_false_eq_true]
       | succ i' =>
           have h_bounds' : i' < tl.length := by

@@ -35,7 +35,6 @@ lemma upperSemicontinuousOn_iff_upperSemicontinuous {s : Set α} :
   · intro h x hx c hc
     specialize h ⟨x, hx⟩ c hc
     rw [nhdsWithin_eq_map_subtype_coe]
-    have h_eventually : ∀ᶠ (x' : ↑s) in 𝓝 ⟨x, hx⟩, (s.domRestrict f) x' < c := by exact h
     exact h
 
 /--
