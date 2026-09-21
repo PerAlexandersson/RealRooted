@@ -239,11 +239,11 @@ macro_rules
       `(tactic|
         rr_first_exact
           (RealRooted.prec_pos_X_lag_combo_sequence
-            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec),
-          (RealRooted.prec_pos_X_lag_combo_sequence
               (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
               $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
-              (rr_wagner_recurrence_seq $hrec)))
+              (rr_wagner_recurrence_seq $hrec)),
+          (RealRooted.prec_pos_X_lag_combo_sequence
+            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_coeff_sequence_auto using
         current_coeff := $a:term,
@@ -275,11 +275,11 @@ macro_rules
       `(tactic|
         rr_first_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec),
-          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
             (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
             $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
-            (rr_wagner_recurrence_seq $hrec)))
+            (rr_wagner_recurrence_seq $hrec)),
+          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_coeff_sequence_realrooted_auto using
         current_coeff := $a:term,

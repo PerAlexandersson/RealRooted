@@ -259,10 +259,11 @@ example {P : Nat → ℝ[X]}
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  exact RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-    (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
-    hbase hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
-    (rr_wagner_recurrence_seq hrec)
+  rr_e_positive_t_lag_sequence_realrooted using
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    recurrence := hrec,
+    certificate := plateauX
 
 /-- Family E plateau-safe positive `t`-lag router, Wagner-X StrictInterl endpoint. -/
 example {P : Nat → ℝ[X]}
@@ -270,10 +271,11 @@ example {P : Nat → ℝ[X]}
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  exact RealRooted.prec_pos_X_lag_combo_sequence
-    (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
-    hbase hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
-    (rr_wagner_recurrence_seq hrec)
+  rr_e_positive_t_lag_sequence using
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    recurrence := hrec,
+    certificate := plateauX
 
 /-- Family E positive `t R_n(t)` lag router. -/
 example {P : Nat → ℝ[X]} {A R : Nat → ℝ[X]}
