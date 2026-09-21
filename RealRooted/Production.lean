@@ -1281,6 +1281,7 @@ import RealRooted.LGV.Toeplitz
 import RealRooted.LGV.TotallyNonnegative
 import RealRooted.LGV.PolyaFrequency
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
+import RealRooted.Mathlib.Algebra.Polynomial.DividedDifference
 
 /-!
 # RealRooted production umbrella

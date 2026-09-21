@@ -1086,6 +1086,13 @@ layers, and the historical insertion operator is only a compatibility alias
 for the neutral Darboux operator. The toric model definitions and finite-offset
 assembly remain in the application layer.
 
+`Mathlib.Algebra.Polynomial.DividedDifference` is the low-level finite
+divided-difference layer for the Jacobi-deformation spectral argument. It owns
+the recursive polynomial divided difference, the linear-factor product rule,
+the below-degree and top-degree product evaluations, and the ordered
+root/node positivity lemma. Matrix adjugate paths and spectral-product
+consequences belong in higher matrix modules rather than this polynomial shim.
+
 Shifted-Jacobi orthogonality has a finite/analytic boundary. `Jacobi.Favard`
 owns the monic recurrence certificate without importing roots or analysis.
 The coefficient-ring self-adjointness criterion lives in the Jacobi moment
