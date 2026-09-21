@@ -120,7 +120,7 @@ private def productOrientationOfEquality? (e : Expr) : Option ProductOrientation
   else
     none
 
-private partial def findProductOrientation? (e : Expr) : Option ProductOrientation :=
+private partial def findProductOrientation? (e : Expr) : Option ProductOrientation := Id.run do
   let e := e.consumeMData
   if let some orientation := productOrientationOfEquality? e then
     return some orientation
