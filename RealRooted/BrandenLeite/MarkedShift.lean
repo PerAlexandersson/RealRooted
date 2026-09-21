@@ -97,8 +97,7 @@ theorem regularizedLowerShift_pow_isTotallyNonneg
     (regularizedLowerShift ε N ^ r).IsTotallyNonneg := by
   induction r with
   | zero =>
-      simpa using optionalRiseMatrix_isTotallyNonneg
-        (as := []) (by simp) N
+      exact optionalRiseMatrix_isTotallyNonneg (as := []) (by simp) N
   | succ r ih =>
       rw [pow_succ]
       exact ih.mul (regularizedLowerShift_isTotallyNonneg hε N)

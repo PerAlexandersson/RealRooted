@@ -164,7 +164,7 @@ theorem binomialShiftedRecurrenceCoefficient_three
   · interval_cases j <;>
       norm_num [binomialShiftedRecurrenceCoefficient,
         twoSeedRecurrenceCoefficient, Nat.choose,
-        Polynomial.C_ofNat] <;> ring
+        Polynomial.C_ofNat] ; ring
   · have hj4 : 4 ≤ j := by lia
     have hB : Nat.choose 3 j = 0 := Nat.choose_eq_zero_of_lt (by lia)
     have hA : Nat.choose (3 - 2) (j - 2) = 0 :=
@@ -232,8 +232,8 @@ theorem binomialShiftedRodRow_three_add_three (n : ℕ) :
       by_cases h0 : j = 0
       · simp [h0]
       · by_cases h1 : j = 1
-        · simp [h0, h1]
-        · by_cases h2 : j = 2 <;> simp [h0, h1, h2]
+        · simp [h1]
+        · by_cases h2 : j = 2 <;> simp [h1, h2]
     simp_rw [hsplit, Finset.sum_add_distrib]
     rw [Finset.sum_ite_eq', Finset.sum_ite_eq', Finset.sum_ite_eq']
     simp [show 0 < n + 3 by lia, show 1 < n + 3 by lia,
@@ -289,7 +289,7 @@ theorem binomialShiftedRodRow_four_add_four (n : ℕ) :
       · by_cases h1 : j = 1
         · simp [h1]
         · by_cases h2 : j = 2
-          · simp [h0, h1, h2]
+          · simp [h2]
           · by_cases h3 : j = 3 <;> simp [h0, h1, h2, h3]
     simp_rw [hsplit, Finset.sum_add_distrib]
     rw [Finset.sum_ite_eq', Finset.sum_ite_eq',

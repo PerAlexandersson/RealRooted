@@ -195,8 +195,8 @@ theorem shiftedRationalRodRow_eq_sub_sum
   have h := congrArg (fun p : ℝ[X] => p.comp (X + C γ))
     (rationalRodRow_eq_sub_sum ys c hr xs n)
   by_cases hn : n = 0
-  · simpa [hn, shiftedRationalRodRow, rationalRodDenominatorSeries,
-      coeff_polynomialLift, PowerSeries.coeff_C_mul] using h
+  · simp [hn, shiftedRationalRodRow, rationalRodDenominatorSeries,
+      coeff_polynomialLift, PowerSeries.coeff_C_mul] at h ⊢
   · simpa [hn, shiftedRationalRodRow, rationalRodDenominatorSeries,
       coeff_polynomialLift, PowerSeries.coeff_C_mul] using h
 

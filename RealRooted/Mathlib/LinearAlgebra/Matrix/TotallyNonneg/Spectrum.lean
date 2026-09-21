@@ -185,7 +185,7 @@ theorem exists_charpoly_eq_prod_nonneg_of_rank_eq_of_compounds_primitive
     let sTop : Set.powersetCard (Fin n) q :=
       ⟨rankPrefix n q,
         Set.powersetCard.mem_iff.mpr (rankPrefix_card hqn)⟩
-    letI : Nonempty (Set.powersetCard (Fin n) q) := ⟨sTop⟩
+    let _ : Nonempty (Set.powersetCard (Fin n) q) := ⟨sTop⟩
     have hperron_nonneg : 0 ≤ CollatzWielandt.perronRoot B :=
       CollatzWielandt.perronRoot_nonneg hBnonneg
     obtain ⟨v, -, hvne, hveig⟩ :=
@@ -264,7 +264,7 @@ theorem exists_charpoly_eq_prod_nonneg_of_rank_eq_of_compounds_primitive
     rcases Nat.eq_zero_or_pos q with rfl | hq1
     · simp [R]
     · have hqn : q ≤ n := hqr.trans hrn
-      letI : Nonempty (Set.powersetCard (Fin n) q) :=
+      let _ : Nonempty (Set.powersetCard (Fin n) q) :=
         ⟨⟨rankPrefix n q,
           Set.powersetCard.mem_iff.mpr (rankPrefix_card hqn)⟩⟩
       simp only [R, ite_eq_right hq1.ne']
