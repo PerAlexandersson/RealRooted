@@ -31,7 +31,8 @@ theorem risingFactorial_sub_mul_descPochhammer (δ : ℝ) {m j : ℕ} (hjm : j �
     rw [Nat.cast_sub hjm]
     ring
   rw [harg]
-  simpa [Nat.sub_add_cancel hjm] using risingFactorial_mul_shift δ (m - j) j
+  simpa [risingFactorial, Nat.sub_add_cancel hjm] using
+    risingFactorial_mul_shift δ (m - j) j
 
 /-- The normalized Jacobi kernel weight has the finite Pochhammer quotient
 needed by the Newton expansion. -/
@@ -59,8 +60,8 @@ theorem kernelWeight_div_kernelWeight_zero {m j : ℕ} {δ s : ℝ}
   simp only [kernelWeight, descPochhammer_zero, eval_one, risingFactorial_zero,
     mul_one, one_mul, Nat.sub_zero]
   rw [← hsplit_delta, ← hsplit_s]
+  simp only [Nat.add_zero, add_comm s (m : ℝ)]
   field_simp [ne_of_gt htail_pos, ne_of_gt hfall_pos, ne_of_gt hbase_pos,
     ne_of_gt hhead_pos]
-  ring
 
 end RealRooted.JacobiDeformation

@@ -9,6 +9,8 @@ This file records only its elementary two-root and threshold geometry; no
 claim about simplicity of a derivative is made here.
 -/
 
+noncomputable section
+
 namespace RealRooted.JacobiDeformation
 
 /-- The rational image appearing in the factorization of `F₀`. -/
@@ -75,15 +77,14 @@ theorem imageValue_sub_sqrt_threshold_mul {U V t : ℝ}
   have h1t0 : 1 - t ≠ 0 := ne_of_gt (sub_pos.mpr ht')
   unfold imageValue
   field_simp [ht0, h1t0]
-  rw [Real.sq_sqrt hU.le, Real.sq_sqrt hV.le]
-  ring
+  nlinarith [Real.sq_sqrt hU.le, Real.sq_sqrt hV.le]
 
 /-- The sharp lower bound for the Jacobi image map on the open unit interval. -/
 theorem sqrt_threshold_le_imageValue {U V t : ℝ}
     (hU : 0 < U) (hV : 0 < V) (ht : 0 < t) (ht' : t < 1) :
     (Real.sqrt U + Real.sqrt V) ^ 2 ≤ imageValue U V t := by
   rw [← sub_nonneg]
-  apply nonneg_of_mul_nonneg_right
+  apply nonneg_of_mul_nonneg_left
     (show 0 ≤
       (imageValue U V t - (Real.sqrt U + Real.sqrt V) ^ 2) * (t * (1 - t)) by
         rw [imageValue_sub_sqrt_threshold_mul hU hV ht ht']

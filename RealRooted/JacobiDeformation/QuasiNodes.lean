@@ -1,4 +1,5 @@
 import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Jacobi
 import RealRooted.JacobiDeformation.Quadrature
 import RealRooted.ObreschkoffConverse
 
@@ -31,7 +32,9 @@ theorem quasiJacobiPolynomial_ne_zero_splits_hasSimpleRoots
     shiftedJacobiMonic_splits (q - 1) hα hβ
   have hpair : StrictInterl (shiftedJacobiMonic (q - 1) α β)
       (shiftedJacobiMonic q α β) :=
-    shiftedJacobiMonic_prec_succ (q - 1) hα hβ
+    by
+      simpa [Nat.sub_add_cancel hq] using
+        shiftedJacobiMonic_prec_succ (q - 1) hα hβ
   have hall : AllComboRealRooted (shiftedJacobiMonic (q - 1) α β)
       (shiftedJacobiMonic q α β) :=
     allComboRealRooted_of_prec hpair
@@ -45,21 +48,23 @@ theorem quasiJacobiPolynomial_ne_zero_splits_hasSimpleRoots
     exact hall (-τ) 1
   have hall_prev_quasi : AllComboRealRooted (shiftedJacobiMonic (q - 1) α β)
       (quasiJacobiPolynomial q α β τ) :=
-    allComboRealRooted_linear_recombination (by simp) hquasi_eq hall
+    allComboRealRooted_linear_recombination
+      (a := 1) (b := 0) (c := -τ) (d := 1) (by simp) hquasi_eq hall
   have hdegree : (shiftedJacobiMonic (q - 1) α β).natDegree + 1 =
       (quasiJacobiPolynomial q α β τ).natDegree := by
     rw [natDegree_shiftedJacobiMonic (q - 1) hα hβ, hmonic.natDegree_eq]
     exact Nat.sub_add_cancel hq
   have hprec : StrictInterl (shiftedJacobiMonic (q - 1) α β)
       (quasiJacobiPolynomial q α β τ) :=
-    StrictInterl.forward_of_orientation_of_succDegree hdegree <|
+    StrictInterl.forward_of_orientation_of_succDegree hdegree.symm <|
       prec_of_allComboRealRooted hprev_ne hprev_splits hq_ne hquasi_splits
         hall_prev_quasi (Or.inl hdegree)
   have hno : ∀ r : ℝ, ¬ ((shiftedJacobiMonic (q - 1) α β).IsRoot r ∧
       (quasiJacobiPolynomial q α β τ).IsRoot r) := by
     intro r hr
     have hnext : (shiftedJacobiMonic q α β).IsRoot r := by
-      simpa [quasiJacobiPolynomial, Polynomial.IsRoot.def, hr.1] using hr.2
+      have hprev_eval : (shiftedJacobiMonic (q - 1) α β).eval r = 0 := hr.1
+      simpa [quasiJacobiPolynomial, Polynomial.IsRoot.def, hprev_eval] using hr.2
     have hno_succ := noCommonRoot_succ_of_favard
       (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ)
       (fun n => shiftedJacobiSubdiag_pos (n + 1) (by lia) hα hβ)

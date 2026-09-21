@@ -39,7 +39,7 @@ theorem shiftedJacobiFunctional_X_pow_mul (α β : ℝ) (i : ℕ) (p : ℝ[X]) :
               shiftedJacobiFunctional_X_mul α β _
         _ = shiftedJacobiFunctional (α + 1 + i) β p := ih (α + 1)
         _ = shiftedJacobiFunctional (α + i.succ) β p := by
-              congr 2
+              congr 1
               push_cast
               ring
 
@@ -59,9 +59,9 @@ theorem shiftedJacobiFunctional_one_sub_X_pow_mul
         _ = shiftedJacobiFunctional α (β + 1) ((1 - X) ^ k * p) :=
               shiftedJacobiFunctional_one_sub_X_mul hα hβ _
         _ = shiftedJacobiFunctional α (β + 1 + k) p :=
-              ih hα (by linarith) _
+              ih (by linarith)
         _ = shiftedJacobiFunctional α (β + k.succ) p := by
-              congr 2
+              congr 1
               push_cast
               ring
 
@@ -74,7 +74,7 @@ theorem gamma_mul_risingFactorial (a : ℝ) (n : ℕ) (ha : 0 < a) :
       calc
         Real.Gamma a * risingFactorial a n.succ =
             (Real.Gamma a * risingFactorial a n) * (a + n) := by
-              rw [risingFactorial, ascPochhammer_succ_eval]
+              rw [risingFactorial_succ]
               ring
         _ = Real.Gamma (a + n) * (a + n) := by rw [ih]
         _ = Real.Gamma (a + n.succ) := by
@@ -105,21 +105,23 @@ theorem normalizedJacobiFunctional_mixed_moment
   have hrs : 0 < risingFactorial (c + d) (i + k) :=
     risingFactorial_pos _ hs
   rw [normalizedJacobiFunctional, shiftedJacobiFunctional_X_pow_mul]
-  rw [show (1 - X) ^ k = (1 - X) ^ k * 1 by ring]
+  rw [← mul_one ((1 - X) ^ k : ℝ[X])]
   rw [shiftedJacobiFunctional_one_sub_X_pow_mul (by linarith) (by linarith)]
   rw [shiftedJacobiFunctional_one_eq_gamma, shiftedJacobiMoment]
   rw [show c - 1 + (i : ℝ) + 1 = c + i by ring,
     show d - 1 + (k : ℝ) + 1 = d + k by ring,
-    show (c - 1 + (i : ℝ)) + (d - 1 + (k : ℝ)) + 2 = c + d + (i + k) by
-      push_cast
-      ring,
+    show (c - 1 + (i : ℝ)) + (d - 1 + (k : ℝ)) + 2 = c + d + (i + k) by ring,
     show c - 1 + (0 : ℕ) + 1 = c by norm_num,
     show d - 1 + 1 = d by ring,
-    show c - 1 + (d - 1) + (0 : ℕ) + 2 = c + d by norm_num]
+    show c - 1 + (d - 1) + (0 : ℕ) + 2 = c + d by
+      norm_num
+      ring]
+  rw [show c + d + ((i : ℝ) + (k : ℝ)) = c + d + ((i + k : ℕ) : ℝ) by
+    push_cast
+    ring]
   rw [← gamma_mul_risingFactorial c i hc,
     ← gamma_mul_risingFactorial d k hd,
     ← gamma_mul_risingFactorial (c + d) (i + k) hs]
   field_simp [hΓc.ne', hΓd.ne', hΓs.ne', hrs.ne']
-  ring
 
 end RealRooted.JacobiDeformation

@@ -57,7 +57,8 @@ theorem derivative_ne_zero_splits_hasSimpleRoots_of_rootMultiplicity_le_two
       have hxder_eval : f.derivative.derivative.eval x = 0 := by
         simpa [Polynomial.IsRoot.def] using hxder
       have hstrict := deriv2_mul_lt_deriv_sq_at_non_root hf (by lia) hfx_eval
-      nlinarith
+      rw [hx_eval, hxder_eval] at hstrict
+      norm_num at hstrict
   · lia
 
 end RealRooted.JacobiDeformation

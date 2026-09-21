@@ -1409,6 +1409,13 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
 import RealRooted.SpectralProduct
 import RealRooted.JacobiDeformation.Basic
 import RealRooted.JacobiDeformation.Kernel
+import RealRooted.JacobiDeformation.WeightNormalization
+import RealRooted.JacobiDeformation.MomentIdentity
 import RealRooted.JacobiDeformation.Quadrature
 import RealRooted.JacobiDeformation.Collocation
+import RealRooted.JacobiDeformation.QuasiNodes
+import RealRooted.JacobiDeformation.RootGeometry
+import RealRooted.JacobiDeformation.DerivativeSimple
+import RealRooted.JacobiDeformation.CriticalThreshold
+import RealRooted.JacobiDeformation.CriticalSigns
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression

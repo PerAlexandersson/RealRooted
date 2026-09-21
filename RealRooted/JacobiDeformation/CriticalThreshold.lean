@@ -32,8 +32,11 @@ theorem derivative_roots_lt_of_roots_le_of_root_simple_at_upper
       · exact (hfder0 hzero).elim
       · exact hsplit.2
     have hcard : f.derivative.roots.card = 0 := by
-      rw [card_roots_of_splits hfder_splits, f.natDegree_derivative, hdeg1]
-      simp
+      calc
+        f.derivative.roots.card = f.derivative.natDegree :=
+          card_roots_of_splits hfder_splits
+        _ = f.natDegree - 1 := f.natDegree_derivative
+        _ = 0 := by simp [hdeg1]
     intro r hr
     have hroots : f.derivative.roots = 0 := Multiset.card_eq_zero.mp hcard
     simp [hroots] at hr
@@ -46,7 +49,7 @@ theorem derivative_roots_lt_of_roots_le_of_root_simple_at_upper
     intro hrB
     subst r
     have hBder_root : f.derivative.IsRoot B :=
-      (mem_roots hfder0).mpr hr
+      (mem_roots hfder0).mp hr
     have hBder_ne : f.derivative.eval B ≠ 0 :=
       eval_derivative_ne_zero_of_rootMultiplicity_eq_one hBroot (hBsimple hBroot)
     exact hBder_ne (by simpa [Polynomial.IsRoot.def] using hBder_root)
@@ -55,7 +58,7 @@ theorem derivative_roots_lt_of_roots_le_of_root_simple_at_upper
       apply lt_of_le_of_ne (hbound r hr)
       intro hrB
       subst r
-      exact hBroot ((mem_roots hf0).mpr hr)
+      exact hBroot ((mem_roots hf0).mp hr)
     exact roots_derivative_lt_of_roots_lt hf hdeg2 hstrict
 
 end RealRooted.JacobiDeformation

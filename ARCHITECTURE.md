@@ -1132,9 +1132,17 @@ determinant identities in
 exterior-node configurations without a spectral certificate hypothesis. The
 finite Jacobi energy identity proves the diagonal entries strictly positive,
 so every entry of the normalized collocation matrix is strictly positive. The
-normalized-weight Pfaff--Saalschutz identity (8), the kernel spectral-product
-step, and the three-case critical-point assembly remain in the higher
-Jacobi-deformation layer.
+elementary `JacobiDeformation.WeightNormalization` layer identifies the
+kernel-weight quotient used in equation (8), while
+`JacobiDeformation.MomentIdentity` provides the normalized mixed beta moments.
+`JacobiDeformation.QuasiNodes` gives a strict, exhaustive root enumeration
+without incorrectly forcing every quasi-node into the open interval.
+`JacobiDeformation.RootGeometry`, `DerivativeSimple`, `CriticalThreshold`, and
+`CriticalSigns` package respectively the rational-image threshold geometry,
+derivative simplicity under a multiplicity-two bound, strict derivative-root
+control at a simple endpoint, and the final strict-sign interlacing step. The
+Pfaff--Saalschutz finite sum, kernel-sign specialization, and Jacobi-specific
+three-case critical-point calculation remain in the higher deformation layer.
 
 Shifted-Jacobi orthogonality has a finite/analytic boundary. `Jacobi.Favard`
 owns the monic recurrence certificate without importing roots or analysis.
