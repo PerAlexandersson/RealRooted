@@ -1423,4 +1423,5 @@ import RealRooted.JacobiDeformation.KernelSign
 import RealRooted.JacobiDeformation.JacobiMoment
 import RealRooted.JacobiDeformation.CriticalCoordinates
 import RealRooted.JacobiDeformation.Boundary
+import RealRooted.JacobiDeformation.CriticalProduct
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression

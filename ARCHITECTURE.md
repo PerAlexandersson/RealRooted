@@ -1148,6 +1148,11 @@ interior coordinates below the sharp negative threshold and proves the
 opposite-sign differentiated-coordinate conclusion from the two exact
 coordinate equations. `JacobiDeformation.Boundary` closes the rank-zero and
 rank-one splitness, simplicity, and strict negative-root cases.
+`JacobiDeformation.CriticalProduct` packages the equation-(18) image-factor
+product independently of its later kernel identification. Distinct interior
+nodes give root multiplicity at most two, the sharp-threshold root is simple,
+and the derivative is nonzero, split, simple-rooted, and strictly below the
+negative sharp threshold.
 `JacobiDeformation.QuasiNodes` gives a strict, exhaustive root enumeration
 without incorrectly forcing every quasi-node into the open interval.
 `JacobiDeformation.RootGeometry`, `DerivativeSimple`, `CriticalThreshold`, and
