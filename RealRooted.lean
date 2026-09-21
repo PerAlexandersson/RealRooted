@@ -1410,4 +1410,5 @@ import RealRooted.SpectralProduct
 import RealRooted.JacobiDeformation.Basic
 import RealRooted.JacobiDeformation.Kernel
 import RealRooted.JacobiDeformation.Quadrature
+import RealRooted.JacobiDeformation.Collocation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
