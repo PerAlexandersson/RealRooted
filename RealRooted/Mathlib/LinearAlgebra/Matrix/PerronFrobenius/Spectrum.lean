@@ -270,7 +270,7 @@ lemma det_eq_zero_of_not_injective {K V : Type*} [Field K] [AddCommGroup V] [Mod
   apply det_eq_zero_of_ker_ne_bot
   exact ker_ne_bot_of_not_injective h
 
-omit [Fintype n] [DecidableEq n] in
+omit [DecidableEq n] in
 /-- If the determinant is zero, the linear map is not injective. -/
 lemma not_injective_of_det_eq_zero {f : (n → ℝ) →ₗ[ℝ] (n → ℝ)} (h : LinearMap.det f = 0) :
     ¬Function.Injective f := by
@@ -471,6 +471,7 @@ lemma spectralRadius_le_nnnorm_of_mem_spectrum {A : Matrix n n ℝ} {μ : ℝ}
 omit [DecidableEq n] in
 lemma spectralRadius_lt_top {A : Matrix n n ℝ} :
     spectralRadius ℝ A < ⊤ := by
+  classical
   rw [spectralRadius_eq_of_unital]
   apply iSup_lt_iff.mpr
   use ‖(Matrix.toLin' A).toContinuousLinearMap‖₊ + 1
@@ -553,8 +554,8 @@ omit [DecidableEq n] in
 /-- The spectral radii of a matrix and its transpose are equal. -/
 lemma spectralRadius_eq_spectralRadius_transpose (A : Matrix n n ℝ) :
     spectralRadius ℝ A = spectralRadius ℝ Aᵀ := by
-  simp only [spectralRadius_eq_of_unital]
-  rw [spectrum_eq_spectrum_transpose]
+  classical
+  exact (Matrix.spectralRadius_transpose A).symm
 
 lemma spectralRadius_le_opNorm (A : Matrix n n ℝ) :
     spectralRadius ℝ (Matrix.toLin' A) ≤ ↑‖(Matrix.toLin' A).toContinuousLinearMap‖₊ := by
@@ -680,7 +681,7 @@ lemma mul_pos_iff_of_nonneg_left {a b : ℝ} (ha_nonneg : 0 ≤ a) :
   constructor
   · intro h_mul_pos
     have ha_pos : 0 < a := by
-      refine lt_of_le_of_ne ha_nonneg fun ha_zero => _
+      refine lt_of_le_of_ne ha_nonneg fun ha_zero => ?_
       rw [ha_zero] at h_mul_pos
       subst ha_zero
       simp_all only [le_refl, zero_mul, lt_self_iff_false]
