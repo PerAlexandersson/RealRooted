@@ -364,7 +364,6 @@ lemma injective_iff_bijective_toLin' (A : Matrix n n ℝ) :
 -- Bijective linear maps are units
 lemma bijective_iff_isUnit_toLin' (A : Matrix n n ℝ) :
     Function.Bijective (Matrix.toLin' A) ↔ IsUnit (Matrix.toLin' A) := by
-  haveI : FiniteDimensional ℝ (n → ℝ) := by infer_instance
   rw [LinearMap.bijective_iff_ker_eq_bot_and_range_eq_top]
   have h_equiv : LinearMap.range (Matrix.toLin' A) = ⊤ ↔ LinearMap.ker (Matrix.toLin' A) = ⊥ :=
     Iff.symm LinearMap.ker_eq_bot_iff_range_eq_top
@@ -444,8 +443,7 @@ lemma det_eq_zero_iff_exists_nontrivial_ker (A : Matrix n n ℝ) :
         rw [LinearMap.mem_ker, Matrix.toLin'_apply]
         exact hv_ker
       rw [h_ker_bot] at hv_in_ker
-      simp at hv_in_ker
-      exact hv_ne_zero hv_in_ker
+      exact hv_ne_zero (by simpa only [Submodule.mem_bot] using hv_in_ker)
     exact det_eq_zero_of_ker_ne_bot' A h_ker_ne_bot
 
 lemma spectralRadius_le_nnnorm_of_mem_spectrum {A : Matrix n n ℝ} {μ : ℝ}
@@ -499,7 +497,7 @@ lemma spectrum.nnnorm_le_nnnorm_of_mem {𝕜 A : Type*}
 lemma vecMul_eq_mulVec_transpose {n : Type*} [Fintype n] (A : Matrix n n ℝ) (v : n → ℝ) :
     v ᵥ* A = Aᵀ *ᵥ v := by
   ext j
-  simp [vecMul, mulVec, transpose]
+  change v ⬝ᵥ (fun i => A i j) = (fun i => A i j) ⬝ᵥ v
   rw [@dotProduct_comm]
 
 lemma dotProduct_le_dotProduct_of_nonneg_left' {n : Type*} [Fintype n] {u x y : n → ℝ}
@@ -648,7 +646,7 @@ lemma support_nonempty_of_ne_zero {v : n → ℝ}
     by_contra hi_pos
     push Not at hi_pos
     have hi_in_support : i ∈ supportFinset v := by
-      simp [supportFinset, Finset.mem_filter]
+      simp only [supportFinset, Finset.mem_filter, Finset.mem_univ, true_and]
       exact hi_pos
     exact h ⟨i, hi_in_support⟩
   have : v = 0 := funext fun i =>
