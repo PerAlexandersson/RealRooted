@@ -203,8 +203,10 @@ macro_rules
         | refine RealRooted.prec_mw_derivative_nonpos_sequence
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
-          have hc := $hc n
-          rr_sign)
+          have hnonpos : -(($hc n) * r ^ 2) ≤ 0 :=
+            neg_nonpos.mpr (mul_nonneg ($hc n) (sq_nonneg r))
+          simpa [Polynomial.eval_mul, Polynomial.eval_neg, Polynomial.eval_C,
+            Polynomial.eval_X, Polynomial.eval_pow, neg_mul, mul_neg, mul_assoc] using hnonpos)
   | `(tactic|
       rr_mw_derivative_neg_X_sq_sequence_auto using
         base := $hbase:term,
@@ -248,8 +250,10 @@ macro_rules
           refine RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
-          have hc := $hc n
-          rr_sign))
+          have hnonpos : -(($hc n) * r ^ 2) ≤ 0 :=
+            neg_nonpos.mpr (mul_nonneg ($hc n) (sq_nonneg r))
+          simpa [Polynomial.eval_mul, Polynomial.eval_neg, Polynomial.eval_C,
+            Polynomial.eval_X, Polynomial.eval_pow, neg_mul, mul_neg, mul_assoc] using hnonpos))
   | `(tactic|
       rr_mw_derivative_neg_X_sq_sequence_realrooted using
         base := $hbase:term,
@@ -264,8 +268,10 @@ macro_rules
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_
               (rr_mw_tail_degree_seq $hdeg) (rr_mw_tail_degree_seq $hdeg)
           intro n r hr
-          have hc := $hc n
-          rr_sign))
+          have hnonpos : -(($hc n) * r ^ 2) ≤ 0 :=
+            neg_nonpos.mpr (mul_nonneg ($hc n) (sq_nonneg r))
+          simpa [Polynomial.eval_mul, Polynomial.eval_neg, Polynomial.eval_C,
+            Polynomial.eval_X, Polynomial.eval_pow, neg_mul, mul_neg, mul_assoc] using hnonpos))
   | `(tactic|
       rr_mw_derivative_neg_X_sq_sequence_realrooted_auto using
         base := $hbase:term,
@@ -334,9 +340,12 @@ macro_rules
         | refine RealRooted.prec_mw_derivative_nonpos_sequence
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
-          have hc := $hc n
           have hroot_upper := $hroot_upper n r hr
-          rr_sign)
+          have hfactor : 1 + r ≤ 0 := by linarith
+          have hnonpos : (1 + r) * ($hc n) ≤ 0 :=
+            mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
+          simpa [Polynomial.eval_mul, Polynomial.eval_add, Polynomial.eval_C,
+            Polynomial.eval_X, mul_comm, mul_left_comm, mul_assoc] using hnonpos)
   | `(tactic|
       rr_mw_derivative_C_mul_one_add_X_sequence_auto using
         base := $hbase:term,
@@ -368,9 +377,12 @@ macro_rules
           refine RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
-          have hc := $hc n
           have hroot_upper := $hroot_upper n r hr
-          rr_sign))
+          have hfactor : 1 + r ≤ 0 := by linarith
+          have hnonpos : (1 + r) * ($hc n) ≤ 0 :=
+            mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
+          simpa [Polynomial.eval_mul, Polynomial.eval_add, Polynomial.eval_C,
+            Polynomial.eval_X, mul_comm, mul_left_comm, mul_assoc] using hnonpos))
   | `(tactic|
       rr_mw_derivative_C_mul_one_add_X_sequence_realrooted_auto using
         base := $hbase:term,
@@ -427,9 +439,12 @@ macro_rules
         | refine RealRooted.prec_mw_derivative_nonpos_sequence
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
-          have hc := $hc n
           have hroot_upper := $hroot_upper n r hr
-          rr_sign)
+          have hfactor : r - 1 ≤ 0 := by linarith
+          have hnonpos : (r - 1) * ($hc n) ≤ 0 :=
+            mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
+          simpa [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_C,
+            Polynomial.eval_X, mul_comm, mul_left_comm, mul_assoc] using hnonpos)
   | `(tactic|
       rr_mw_derivative_C_mul_X_sub_one_sequence_auto using
         base := $hbase:term,
@@ -461,9 +476,12 @@ macro_rules
           refine RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence
             (hrec := $hrec) $hbase $hpos $hdeg_two ?_ $hdeg_lo $hdeg_hi
           intro n r hr
-          have hc := $hc n
           have hroot_upper := $hroot_upper n r hr
-          rr_sign))
+          have hfactor : r - 1 ≤ 0 := by linarith
+          have hnonpos : (r - 1) * ($hc n) ≤ 0 :=
+            mul_nonpos_of_nonpos_of_nonneg hfactor ($hc n)
+          simpa [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_C,
+            Polynomial.eval_X, mul_comm, mul_left_comm, mul_assoc] using hnonpos))
   | `(tactic|
       rr_mw_derivative_C_mul_X_sub_one_sequence_realrooted_auto using
         base := $hbase:term,
