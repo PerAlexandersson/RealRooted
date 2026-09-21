@@ -246,10 +246,10 @@ example {P : Nat → ℝ[X]}
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_prec_pos_X_lag_sequence_auto using
-    base := hbase,
-    nonneg_coeffs := hnonneg,
-    recurrence := hrec
+  exact RealRooted.prec_pos_X_lag_combo_sequence
+    (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
+    hbase hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+    (rr_wagner_recurrence_seq hrec)
 
 /-- Explicit-coefficient form of the same positive-`X` lag shell. -/
 example {P : Nat → ℝ[X]}
@@ -300,10 +300,10 @@ example {P : Nat → ℝ[X]}
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_prec_pos_X_lag_sequence_realrooted_auto using
-    base := hbase,
-    nonneg_coeffs := hnonneg,
-    recurrence := hrec
+  exact RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+    (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
+    hbase hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+    (rr_wagner_recurrence_seq hrec)
 
 /-- Explicit-coefficient real-rootedness endpoint for the positive-`X` shell. -/
 example {P : Nat → ℝ[X]}
@@ -312,12 +312,10 @@ example {P : Nat → ℝ[X]}
     (hrec : ∀ n : Nat,
       P (n + 2) = C (1 : ℝ) * P (n + 1) + (C (1 : ℝ) * X) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_prec_pos_X_lag_sequence_realrooted using
-    base := hbase,
-    nonneg_coeffs := hnonneg,
-    current_coeff_pos := rr_side_pos_seq_term,
-    lag_coeff_nonneg := rr_side_nonneg_seq_term,
-    recurrence := hrec
+  exact RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+    (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
+    hbase hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+    (rr_wagner_recurrence_seq hrec)
 
 /-- Equal-base-degree positive-`X` lag sequences have the plateau profile
 `d, d, d+1, d+1, ...`. -/
@@ -439,10 +437,11 @@ example {P : Nat → ℝ[X]}
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
     ∀ n : Nat, P n ≠ 0 := by
-  rr_prec_pos_X_lag_sequence_realrooted_auto using
-    base := hbase,
-    nonneg_coeffs := hnonneg,
-    recurrence := hrec
+  intro n
+  exact (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+    (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
+    hbase hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+    (rr_wagner_recurrence_seq hrec) n).1
 
 /-- Full sequence shell for `A201701`: `P_{n+2}=2P_{n+1}+tP_n`. -/
 example {P : Nat → ℝ[X]}
