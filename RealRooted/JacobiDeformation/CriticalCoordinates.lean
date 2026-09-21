@@ -98,4 +98,48 @@ theorem exists_interior_coordinates_of_lt_neg_sqrt_threshold
     ring
   exact ⟨r, z, hr, hrz, hz, hprod, hcomp⟩
 
+/-- The two differentiated coordinate equations determine the scaled
+coordinates. -/
+theorem differentiated_coordinate_equations
+    {X r z a b : ℝ} (hrz : r ≠ z)
+    (hfirst : r * z + X * (a * z + r * b) = 0)
+    (hsecond : (1 - r) * (1 - z) - X * (a * (1 - z) + (1 - r) * b) = 0) :
+    X * a = r * (1 - r) / (r - z) ∧
+      X * b = -z * (1 - z) / (r - z) := by
+  have hden : r - z ≠ 0 := sub_ne_zero.mpr hrz
+  constructor
+  · apply (eq_div_iff hden).mpr
+    linear_combination -(1 - r) * hfirst - r * hsecond
+  · apply (eq_div_iff hden).mpr
+    linear_combination (1 - z) * hfirst + z * hsecond
+
+/-- Interior distinct coordinates force the two differentiated coordinates to
+have opposite signs. -/
+theorem differentiated_coordinate_product_neg
+    {X r z a b : ℝ} (hX : X ≠ 0) (hr : 0 < r) (hrz : r < z) (hz : z < 1)
+    (hfirst : r * z + X * (a * z + r * b) = 0)
+    (hsecond : (1 - r) * (1 - z) - X * (a * (1 - z) + (1 - r) * b) = 0) :
+    a * b < 0 := by
+  obtain ⟨ha, hb⟩ := differentiated_coordinate_equations hrz.ne hfirst hsecond
+  have hden_neg : r - z < 0 := sub_neg.mpr hrz
+  have hr_one : 0 < r * (1 - r) := by
+    exact mul_pos hr (sub_pos.mpr (lt_trans hrz hz))
+  have hz_one : 0 < z * (1 - z) := by
+    exact mul_pos (lt_trans hr hrz) (sub_pos.mpr hz)
+  have hXa_neg : X * a < 0 := by
+    rw [ha]
+    exact div_neg_of_pos_of_neg hr_one hden_neg
+  have hXb_pos : 0 < X * b := by
+    rw [hb]
+    exact div_pos_of_neg_of_neg (neg_neg_of_pos hz_one) hden_neg
+  have hscaled_neg : (X * a) * (X * b) < 0 :=
+    mul_neg_of_neg_of_pos hXa_neg hXb_pos
+  have hXsq : 0 < X ^ 2 := sq_pos_of_ne_zero hX
+  have hscale : (X * a) * (X * b) = X ^ 2 * (a * b) := by ring
+  by_contra h
+  have hab : 0 ≤ a * b := le_of_not_gt h
+  have hscaled_nonneg : 0 ≤ X ^ 2 * (a * b) := mul_nonneg hXsq.le hab
+  rw [← hscale] at hscaled_nonneg
+  exact (not_le_of_gt hscaled_neg) hscaled_nonneg
+
 end RealRooted.JacobiDeformation
