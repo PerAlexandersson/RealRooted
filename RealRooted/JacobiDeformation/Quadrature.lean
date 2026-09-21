@@ -148,6 +148,33 @@ theorem leadingCoeff_lagrangeBasis_eq_derivative_inv {q : ℕ}
   rw [← Lagrange.nodalWeight_eq_eval_derivative_nodal (mem_univ i)]
   simp [Lagrange.nodalWeight, Finset.prod_inv_distrib]
 
+/-- Multiplying a cardinal polynomial by its missing nodal factor recovers
+the monic nodal polynomial, scaled by the inverse nodal derivative. -/
+theorem X_sub_C_mul_lagrangeBasis {q : ℕ}
+    (x : Fin q → ℝ) (i : Fin q) :
+    (X - C (x i)) * Lagrange.basis Finset.univ x i =
+      C ((Lagrange.nodal Finset.univ x).derivative.eval (x i))⁻¹ *
+        Lagrange.nodal Finset.univ x := by
+  rw [Lagrange.basis_eq_prod_sub_inv_mul_nodal_div (mem_univ i),
+    ← Lagrange.nodal_erase_eq_nodal_div (mem_univ i),
+    Lagrange.nodalWeight_eq_eval_derivative_nodal (mem_univ i),
+    Lagrange.nodal_eq_mul_nodal_erase (mem_univ i)]
+  ring
+
+/-- Multiplication by `X` in cardinal coordinates is its nodal value plus a
+multiple of the monic nodal polynomial. -/
+theorem X_mul_lagrangeBasis {q : ℕ}
+    (x : Fin q → ℝ) (i : Fin q) :
+    X * Lagrange.basis Finset.univ x i =
+      C (x i) * Lagrange.basis Finset.univ x i +
+        C ((Lagrange.nodal Finset.univ x).derivative.eval (x i))⁻¹ *
+          Lagrange.nodal Finset.univ x := by
+  calc
+    X * Lagrange.basis Finset.univ x i =
+        C (x i) * Lagrange.basis Finset.univ x i +
+          (X - C (x i)) * Lagrange.basis Finset.univ x i := by ring
+    _ = _ := by rw [X_sub_C_mul_lagrangeBasis]
+
 /-- Distinct nodes make the derivative of their monic nodal polynomial
 nonzero at every node. -/
 theorem eval_derivative_nodal_ne_zero {q : ℕ}

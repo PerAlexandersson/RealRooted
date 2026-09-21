@@ -1124,10 +1124,17 @@ explicit evaluation eigenvectors and quadratic eigenvalues. Its signed
 quasi-Jacobi similarity is symmetric; the off-diagonal cardinal derivative
 calculation gives the exact rank-one residual formula and, after symmetry,
 formula (15). The formula is strictly positive for pairs of interior nodes.
-The independent two-point determinant and scalar sign calculation needed to
-extend this strictness to a possible exterior node is in
-`Mathlib.LinearAlgebra.Matrix.RankOneCompression`; its eventual spectral
-compression wrapper belongs in the higher Jacobi-deformation layer.
+Finite normalized-cardinal compressions identify multiplication by `X` with
+the two-point diagonal-minus-rank-one matrix and multiplication by `1 - X`
+with its complement. Their positive definiteness, together with the
+determinant identities in
+`Mathlib.LinearAlgebra.Matrix.RankOneCompression`, handles both possible
+exterior-node configurations without a spectral certificate hypothesis. The
+finite Jacobi energy identity proves the diagonal entries strictly positive,
+so every entry of the normalized collocation matrix is strictly positive. The
+normalized-weight Pfaff--Saalschutz identity (8), the kernel spectral-product
+step, and the three-case critical-point assembly remain in the higher
+Jacobi-deformation layer.
 
 Shifted-Jacobi orthogonality has a finite/analytic boundary. `Jacobi.Favard`
 owns the monic recurrence certificate without importing roots or analysis.

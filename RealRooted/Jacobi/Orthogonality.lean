@@ -58,6 +58,11 @@ def shiftedJacobiInner (α β : ℝ) (p q : ℝ[X]) : ℝ :=
       shiftedJacobiFunctional α β p + shiftedJacobiFunctional α β q := by
   simp [shiftedJacobiFunctional]
 
+@[simp] theorem shiftedJacobiFunctional_sub (α β : ℝ) (p q : ℝ[X]) :
+    shiftedJacobiFunctional α β (p - q) =
+      shiftedJacobiFunctional α β p - shiftedJacobiFunctional α β q := by
+  simp [shiftedJacobiFunctional]
+
 @[simp] theorem shiftedJacobiFunctional_sum {ι : Type*} (α β : ℝ)
     (s : Finset ι) (p : ι → ℝ[X]) :
     shiftedJacobiFunctional α β (∑ i ∈ s, p i) =
@@ -154,6 +159,84 @@ theorem shiftedJacobiMoment_succ
   rw [shiftedJacobiMoment, shiftedJacobiMoment, hnum', hden',
     Real.Gamma_add_one hnum.ne', Real.Gamma_add_one hden.ne']
   field_simp [(Real.Gamma_pos_of_pos hden).ne', hden.ne']
+
+/-- Multiplication by `X` shifts the first beta parameter of the shifted
+Jacobi moments. -/
+theorem shiftedJacobiMoment_succ_eq_shift_alpha (α β : ℝ) (k : ℕ) :
+    shiftedJacobiMoment α β (k + 1) = shiftedJacobiMoment (α + 1) β k := by
+  unfold shiftedJacobiMoment
+  congr 1 <;> push_cast <;> ring
+
+/-- Removing one factor of `1 - X` shifts the second beta parameter. -/
+theorem shiftedJacobiMoment_sub_succ_eq_shift_beta
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) (k : ℕ) :
+    shiftedJacobiMoment α β k - shiftedJacobiMoment α β (k + 1) =
+      shiftedJacobiMoment α (β + 1) k := by
+  have hk : 0 ≤ (k : ℝ) := by positivity
+  have ha : 0 < α + (k : ℝ) + 1 := by linarith
+  have hb : 0 < β + 1 := by linarith
+  have hab : 0 < α + β + (k : ℝ) + 2 := by linarith
+  rw [shiftedJacobiMoment, shiftedJacobiMoment, shiftedJacobiMoment]
+  rw [show α + ((k + 1 : ℕ) : ℝ) + 1 =
+      (α + (k : ℝ) + 1) + 1 by push_cast; ring,
+    show α + β + ((k + 1 : ℕ) : ℝ) + 2 =
+      (α + β + (k : ℝ) + 2) + 1 by push_cast; ring,
+    show β + 1 + 1 = (β + 1) + 1 by ring,
+    show α + (β + 1) + (k : ℝ) + 2 =
+      (α + β + (k : ℝ) + 2) + 1 by ring,
+    Real.Gamma_add_one ha.ne', Real.Gamma_add_one hab.ne',
+    Real.Gamma_add_one hb.ne']
+  field_simp [(Real.Gamma_pos_of_pos hab).ne', hab.ne']
+  ring
+
+/-- Multiplication by `X` shifts the first beta parameter of the finite
+shifted-Jacobi moment functional. -/
+theorem shiftedJacobiFunctional_X_mul (α β : ℝ) (p : ℝ[X]) :
+    shiftedJacobiFunctional α β (X * p) =
+      shiftedJacobiFunctional (α + 1) β p := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq => simp [mul_add, hp, hq]
+  | monomial k a =>
+      rw [X_mul_monomial, shiftedJacobiFunctional_monomial,
+        shiftedJacobiFunctional_monomial,
+        shiftedJacobiMoment_succ_eq_shift_alpha]
+
+/-- Multiplication by `1 - X` shifts the second beta parameter of the finite
+shifted-Jacobi moment functional. -/
+theorem shiftedJacobiFunctional_one_sub_X_mul
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) (p : ℝ[X]) :
+    shiftedJacobiFunctional α β ((1 - X) * p) =
+      shiftedJacobiFunctional α (β + 1) p := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq => simp [mul_add, hp, hq]
+  | monomial k a =>
+      rw [sub_mul, one_mul, X_mul_monomial,
+        shiftedJacobiFunctional_sub,
+        shiftedJacobiFunctional_monomial,
+        shiftedJacobiFunctional_monomial,
+        shiftedJacobiFunctional_monomial, ← mul_sub,
+        shiftedJacobiMoment_sub_succ_eq_shift_beta hα hβ]
+
+/-- The shifted-Jacobi pairing after multiplication by `X` is the pairing
+with its first beta parameter increased by one. -/
+theorem shiftedJacobiInner_mul_X_self (α β : ℝ) (p : ℝ[X]) :
+    shiftedJacobiInner α β p (X * p) =
+      shiftedJacobiInner (α + 1) β p p := by
+  change shiftedJacobiFunctional α β (p * (X * p)) =
+    shiftedJacobiFunctional (α + 1) β (p * p)
+  rw [show p * (X * p) = X * (p * p) by ring,
+    shiftedJacobiFunctional_X_mul]
+
+/-- The shifted-Jacobi pairing after multiplication by `1 - X` is the
+pairing with its second beta parameter increased by one. -/
+theorem shiftedJacobiInner_mul_one_sub_X_self
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) (p : ℝ[X]) :
+    shiftedJacobiInner α β p ((1 - X) * p) =
+      shiftedJacobiInner α (β + 1) p p := by
+  change shiftedJacobiFunctional α β (p * ((1 - X) * p)) =
+    shiftedJacobiFunctional α (β + 1) (p * p)
+  rw [show p * ((1 - X) * p) = (1 - X) * (p * p) by ring,
+    shiftedJacobiFunctional_one_sub_X_mul hα hβ]
 
 /-- At beta parameter zero, the Gamma moments reduce to reciprocal linear
 moments. -/
@@ -360,5 +443,29 @@ theorem shiftedJacobiMomentPairingBilinForm_posDef
   simpa only [LinearMap.BilinMap.toQuadraticMap_smul] using
     (shiftedJacobiMonic_favardPairing_posDef hα hβ).smul
       (shiftedJacobiMoment_zero_pos hα hβ)
+
+/-- Multiplication by `X` is strictly positive for the shifted-Jacobi moment
+pairing.  This is the algebraic finite-moment form of support in `(0, 1)`. -/
+theorem shiftedJacobiInner_mul_X_self_pos
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β)
+    {p : ℝ[X]} (hp : p ≠ 0) :
+    0 < shiftedJacobiInner α β p (X * p) := by
+  rw [shiftedJacobiInner_mul_X_self]
+  have hpos := shiftedJacobiMomentPairingBilinForm_posDef
+    (α := α + 1) (β := β) (by linarith) hβ p hp
+  simpa only [LinearMap.BilinMap.toQuadraticMap_apply,
+    Polynomial.momentPairingBilinForm_apply, shiftedJacobiInner] using hpos
+
+/-- Multiplication by `1 - X` is strictly positive for the shifted-Jacobi
+moment pairing. -/
+theorem shiftedJacobiInner_mul_one_sub_X_self_pos
+    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β)
+    {p : ℝ[X]} (hp : p ≠ 0) :
+    0 < shiftedJacobiInner α β p ((1 - X) * p) := by
+  rw [shiftedJacobiInner_mul_one_sub_X_self hα hβ]
+  have hpos := shiftedJacobiMomentPairingBilinForm_posDef
+    (α := α) (β := β + 1) hα (by linarith) p hp
+  simpa only [LinearMap.BilinMap.toQuadraticMap_apply,
+    Polynomial.momentPairingBilinForm_apply, shiftedJacobiInner] using hpos
 
 end RealRooted

@@ -17,6 +17,64 @@ theorem twoPointRankOneCompression_det_identity (r z τ u v : ℝ) :
   simp [twoPointRankOneCompression, Matrix.det_fin_two]
   ring
 
+/-- A rank-one update cannot make multiplication by `1 - X` positive
+definite at two points which are both on or beyond the right endpoint. -/
+theorem one_sub_twoPointRankOneCompression_not_posDef_of_one_le
+    {r z τ u v : ℝ} (hr : 1 ≤ r) (hz : 1 ≤ z) (huv : u ≠ 0 ∨ v ≠ 0) :
+    ¬(1 - twoPointRankOneCompression r z τ u v).PosDef := by
+  intro hpos
+  let y : Fin 2 → ℝ := ![v, -u]
+  have hy : y ≠ 0 := by
+    intro hyzero
+    have hv : v = 0 := by
+      have := congrFun hyzero 0
+      simpa [y] using this
+    have hu : u = 0 := by
+      have := congrFun hyzero 1
+      simpa [y] using this
+    exact huv.elim (fun h ↦ h hu) (fun h ↦ h hv)
+  have hquad := hpos.dotProduct_mulVec_pos hy
+  have hform :
+      dotProduct (star y)
+          (Matrix.mulVec (1 - twoPointRankOneCompression r z τ u v) y) =
+        (1 - r) * v ^ 2 + (1 - z) * u ^ 2 := by
+    simp [y, twoPointRankOneCompression, dotProduct, Matrix.mulVec]
+    ring
+  rw [hform] at hquad
+  have hnonpos : (1 - r) * v ^ 2 + (1 - z) * u ^ 2 ≤ 0 :=
+    add_nonpos (mul_nonpos_of_nonpos_of_nonneg (sub_nonpos.mpr hr) (sq_nonneg v))
+      (mul_nonpos_of_nonpos_of_nonneg (sub_nonpos.mpr hz) (sq_nonneg u))
+  linarith
+
+/-- A rank-one update cannot make multiplication by `X` positive definite at
+two points which are both on or beyond the left endpoint. -/
+theorem twoPointRankOneCompression_not_posDef_of_nonpos
+    {r z τ u v : ℝ} (hr : r ≤ 0) (hz : z ≤ 0) (huv : u ≠ 0 ∨ v ≠ 0) :
+    ¬(twoPointRankOneCompression r z τ u v).PosDef := by
+  intro hpos
+  let y : Fin 2 → ℝ := ![v, -u]
+  have hy : y ≠ 0 := by
+    intro hyzero
+    have hv : v = 0 := by
+      have := congrFun hyzero 0
+      simpa [y] using this
+    have hu : u = 0 := by
+      have := congrFun hyzero 1
+      simpa [y] using this
+    exact huv.elim (fun h ↦ h hu) (fun h ↦ h hv)
+  have hquad := hpos.dotProduct_mulVec_pos hy
+  have hform :
+      dotProduct (star y)
+          (Matrix.mulVec (twoPointRankOneCompression r z τ u v) y) =
+        r * v ^ 2 + z * u ^ 2 := by
+    simp [y, twoPointRankOneCompression, dotProduct, Matrix.mulVec]
+    ring
+  rw [hform] at hquad
+  have hnonpos : r * v ^ 2 + z * u ^ 2 ≤ 0 :=
+    add_nonpos (mul_nonpos_of_nonpos_of_nonneg hr (sq_nonneg v))
+      (mul_nonpos_of_nonpos_of_nonneg hz (sq_nonneg u))
+  linarith
+
 /-- A positive rank-one parameter gives the required numerator when the second point is on
 or to the right of `1`.  The weak inequality deliberately includes the boundary `z = 1`. -/
 theorem twoPointCompression_numerator_pos_of_right_exterior
