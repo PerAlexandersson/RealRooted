@@ -1403,3 +1403,6 @@ import RealRooted.LGV.TotallyNonnegative
 import RealRooted.LGV.PolyaFrequency
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
 import RealRooted.Mathlib.Algebra.Polynomial.DividedDifference
+import RealRooted.CauchyInterlacing.Submatrix
+import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
+import RealRooted.SpectralProduct

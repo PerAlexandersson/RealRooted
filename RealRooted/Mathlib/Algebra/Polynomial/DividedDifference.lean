@@ -1,4 +1,5 @@
 import Mathlib.Algebra.Polynomial.Eval.Defs
+import Mathlib.Algebra.Polynomial.Eval.SMul
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Fin.Basic
 import Mathlib.Basic.Real.Basic
@@ -44,6 +45,53 @@ theorem dividedDifference_succ (n : ℕ) (v : Fin (n + 2) → K) (p : K[X]) :
           dividedDifference n (fun i => v i.castSucc) p) /
         (v (Fin.last (n + 1)) - v 0) :=
   rfl
+
+@[simp]
+theorem dividedDifference_zero_polynomial (n : ℕ) (v : Fin (n + 1) → K) :
+    dividedDifference n v 0 = 0 := by
+  induction n with
+  | zero => simp
+  | succ n ih => simp [dividedDifference_succ, ih]
+
+theorem dividedDifference_add (n : ℕ) (v : Fin (n + 1) → K) (p q : K[X]) :
+    dividedDifference n v (p + q) =
+      dividedDifference n v p + dividedDifference n v q := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [dividedDifference_succ, dividedDifference_succ, dividedDifference_succ]
+      rw [ih, ih]
+      ring
+
+theorem dividedDifference_smul (n : ℕ) (v : Fin (n + 1) → K) (a : K) (p : K[X]) :
+    dividedDifference n v (a • p) = a * dividedDifference n v p := by
+  induction n with
+  | zero => exact Polynomial.eval_smul a p (v 0)
+  | succ n ih =>
+      rw [dividedDifference_succ, dividedDifference_succ]
+      rw [ih, ih]
+      ring
+
+theorem dividedDifference_finset_sum {ι : Type*} (s : Finset ι)
+    (n : ℕ) (v : Fin (n + 1) → K) (p : ι → K[X]) :
+    dividedDifference n v (∑ i ∈ s, p i) =
+      ∑ i ∈ s, dividedDifference n v (p i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert i s hi ih => simp [hi, ih, dividedDifference_add]
+
+/-- A divided difference vanishes when the polynomial vanishes at every one
+of its nodes. -/
+theorem dividedDifference_eq_zero_of_eval_eq_zero (n : ℕ)
+    (v : Fin (n + 1) → K) (p : K[X]) (hp : ∀ i, p.eval (v i) = 0) :
+    dividedDifference n v p = 0 := by
+  induction n with
+  | zero => simpa using hp 0
+  | succ n ih =>
+      rw [dividedDifference_succ]
+      rw [ih _ (fun i => hp i.succ), ih _ (fun i => hp i.castSucc)]
+      simp
 
 omit [Field K] in
 private theorem injective_succ {n : ℕ} {v : Fin (n + 2) → K}

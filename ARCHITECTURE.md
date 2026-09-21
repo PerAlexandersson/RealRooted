@@ -1093,6 +1093,14 @@ the below-degree and top-degree product evaluations, and the ordered
 root/node positivity lemma. Matrix adjugate paths and spectral-product
 consequences belong in higher matrix modules rather than this polynomial shim.
 
+`Mathlib.LinearAlgebra.Matrix.AdjugateExpansion` proves the noncommutative
+Newton-quotient identity used to expand a characteristic adjugate, while
+`CauchyInterlacing.Submatrix` supplies the arbitrary injective principal-
+submatrix eigenvalue bound. `SpectralProduct` combines these layers: its
+matrix-valued divided difference identifies an adjugate tail exactly with the
+preceding ordered product. The remaining path/cofactor positivity argument
+also belongs in `SpectralProduct`.
+
 Shifted-Jacobi orthogonality has a finite/analytic boundary. `Jacobi.Favard`
 owns the monic recurrence certificate without importing roots or analysis.
 The coefficient-ring self-adjointness criterion lives in the Jacobi moment
