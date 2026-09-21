@@ -107,6 +107,56 @@ theorem quadratureWeight_pos {q : ℕ} (hq : 2 ≤ q)
         ring
   rwa [hsum] at hpositive
 
+/-- Exact quadrature isolates a single weight when one factor is a Lagrange
+cardinal polynomial. -/
+theorem quadratureWeight_mul_eval {q : ℕ} (hq : 2 ≤ q)
+    (L : ℝ[X] →ₗ[ℝ] ℝ) (x : Fin q → ℝ) (hx : Function.Injective x)
+    (horth : ∀ g : ℝ[X], g.natDegree ≤ q - 2 →
+      L (Lagrange.nodal Finset.univ x * g) = 0)
+    (p : ℝ[X]) (hp : p.natDegree < q) (i : Fin q) :
+    quadratureWeight L x i * p.eval (x i) =
+      L (Lagrange.basis Finset.univ x i * p) := by
+  let b := Lagrange.basis Finset.univ x i
+  have hbdeg : b.natDegree = q - 1 := by
+    simpa [b] using Lagrange.natDegree_basis hx.injOn (mem_univ i)
+  have hproddeg : (b * p).natDegree ≤ 2 * q - 2 := by
+    calc
+      (b * p).natDegree ≤ b.natDegree + p.natDegree := natDegree_mul_le
+      _ ≤ (q - 1) + (q - 1) := by rw [hbdeg]; lia
+      _ = 2 * q - 2 := by lia
+  rw [quadrature_exact hq L x hx horth hproddeg]
+  symm
+  calc
+    (∑ j : Fin q, quadratureWeight L x j * (b * p).eval (x j)) =
+        quadratureWeight L x i * (b * p).eval (x i) := by
+      apply Fintype.sum_eq_single i
+      intro j hji
+      rw [eval_mul, show b.eval (x j) = 0 by
+        exact Lagrange.eval_basis_of_ne hji.symm (mem_univ j), zero_mul, mul_zero]
+    _ = quadratureWeight L x i * p.eval (x i) := by
+      rw [eval_mul, show b.eval (x i) = 1 by
+        exact Lagrange.eval_basis_self hx.injOn (mem_univ i)]
+      ring
+
+/-- The leading coefficient of a Lagrange cardinal polynomial is the inverse
+derivative of the monic nodal polynomial at its node. -/
+theorem leadingCoeff_lagrangeBasis_eq_derivative_inv {q : ℕ}
+    (x : Fin q → ℝ) (hx : Function.Injective x) (i : Fin q) :
+    (Lagrange.basis Finset.univ x i).leadingCoeff =
+      ((Lagrange.nodal Finset.univ x).derivative.eval (x i))⁻¹ := by
+  rw [Lagrange.leadingCoeff_basis hx.injOn (mem_univ i)]
+  rw [← Lagrange.nodalWeight_eq_eval_derivative_nodal (mem_univ i)]
+  simp [Lagrange.nodalWeight, Finset.prod_inv_distrib]
+
+/-- Distinct nodes make the derivative of their monic nodal polynomial
+nonzero at every node. -/
+theorem eval_derivative_nodal_ne_zero {q : ℕ}
+    (x : Fin q → ℝ) (hx : Function.Injective x) (i : Fin q) :
+    (Lagrange.nodal Finset.univ x).derivative.eval (x i) ≠ 0 := by
+  have hweight := Lagrange.nodalWeight_ne_zero hx.injOn (mem_univ i)
+  rw [Lagrange.nodalWeight_eq_eval_derivative_nodal (mem_univ i)] at hweight
+  simpa using hweight
+
 /-! ## Shifted-Jacobi specialization -/
 
 /-- The normalized monic shifted-Jacobi polynomial is orthogonal to every
@@ -248,5 +298,171 @@ theorem shiftedJacobi_quadratureWeight_pos_of_roots {q : ℕ} (hq : 2 ≤ q)
       (Polynomial.momentFunctionalLinearMap (shiftedJacobiMoment α β)) x i := by
   apply shiftedJacobi_quadratureWeight_pos hq hα hβ x hx
   exact nodal_eq_quasiJacobiPolynomial (by lia) hα hβ x hx hroot
+
+/-- Orthogonality identifies the cardinal pairing after multiplication by the
+nodal derivative. -/
+theorem shiftedJacobi_eval_derivative_nodal_mul_inner_basis
+    {q : ℕ} (hq : 2 ≤ q) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β)
+    (x : Fin q → ℝ) (hx : Function.Injective x) (i : Fin q) :
+    (Lagrange.nodal Finset.univ x).derivative.eval (x i) *
+        shiftedJacobiInner α β (Lagrange.basis Finset.univ x i)
+          (shiftedJacobiMonic (q - 1) α β) =
+      shiftedJacobiInner α β (shiftedJacobiMonic (q - 1) α β)
+        (shiftedJacobiMonic (q - 1) α β) := by
+  let v := Lagrange.nodal Finset.univ x
+  let b := Lagrange.basis Finset.univ x i
+  let p := shiftedJacobiMonic (q - 1) α β
+  let d := v.derivative.eval (x i)
+  have hpmono : p.IsMonicOfDegree (q - 1) := by
+    exact (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).isMonicOfDegree _
+  have hbdeg : b.natDegree = q - 1 := by
+    simpa [b] using Lagrange.natDegree_basis hx.injOn (mem_univ i)
+  have hdne : d ≠ 0 := by
+    exact eval_derivative_nodal_ne_zero x hx i
+  have hblc : b.leadingCoeff = d⁻¹ := by
+    exact leadingCoeff_lagrangeBasis_eq_derivative_inv x hx i
+  have hdbmono : (C d * b).IsMonicOfDegree (q - 1) := by
+    refine ⟨?_, ?_⟩
+    · rw [natDegree_C_mul hdne, hbdeg]
+    · rw [Monic.def, leadingCoeff_mul, leadingCoeff_C, hblc]
+      field_simp
+  have hremdeg : (C d * b - p).natDegree < q - 1 := by
+    exact hdbmono.natDegree_sub_lt (by lia) hpmono
+  have horthrem := shiftedJacobiMonicInner_eq_zero hα hβ
+    (C d * b - p) hremdeg
+  change shiftedJacobiInner α β p (C d * b - p) = 0 at horthrem
+  have hinner' :
+      d * shiftedJacobiInner α β p b = shiftedJacobiInner α β p p := by
+    simpa [shiftedJacobiInner_sub_right, shiftedJacobiInner_C_mul_right,
+      sub_eq_zero] using horthrem
+  have hinner :
+      d * shiftedJacobiInner α β b p = shiftedJacobiInner α β p p := by
+    rw [shiftedJacobiInner_comm α β b p]
+    exact hinner'
+  exact hinner
+
+/-- Exact quadrature identifies a quasi-Jacobi weight times the preceding
+Jacobi value with its cardinal pairing. -/
+theorem shiftedJacobi_quadratureWeight_mul_eval_prev
+    {q : ℕ} (hq : 2 ≤ q) {α β τ : ℝ}
+    (hα : -1 < α) (hβ : -1 < β)
+    (x : Fin q → ℝ) (hx : Function.Injective x)
+    (hroot : ∀ i, (quasiJacobiPolynomial q α β τ).IsRoot (x i))
+    (i : Fin q) :
+    quadratureWeight
+        (Polynomial.momentFunctionalLinearMap (shiftedJacobiMoment α β)) x i *
+        (shiftedJacobiMonic (q - 1) α β).eval (x i) =
+      shiftedJacobiInner α β (Lagrange.basis Finset.univ x i)
+        (shiftedJacobiMonic (q - 1) α β) := by
+  let L := Polynomial.momentFunctionalLinearMap (shiftedJacobiMoment α β)
+  let v := Lagrange.nodal Finset.univ x
+  let b := Lagrange.basis Finset.univ x i
+  let p := shiftedJacobiMonic (q - 1) α β
+  have hv : v = quasiJacobiPolynomial q α β τ :=
+    nodal_eq_quasiJacobiPolynomial (by lia) hα hβ x hx hroot
+  have hpdeg : p.natDegree < q := by
+    rw [show p.natDegree = q - 1 by
+      exact (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).natDegree_eq _]
+    lia
+  have hquad :
+      quadratureWeight L x i * p.eval (x i) =
+        shiftedJacobiInner α β b p := by
+    change quadratureWeight L x i * p.eval (x i) = L (b * p)
+    apply quadratureWeight_mul_eval hq L x hx
+    · intro g hg
+      change shiftedJacobiInner α β v g = 0
+      rw [hv]
+      exact shiftedJacobiInner_quasiJacobiPolynomial_eq_zero hq hα hβ g hg
+    · exact hpdeg
+  exact hquad
+
+/-- Exact Christoffel-weight identity at explicit quasi-Jacobi nodes.  It is
+stated without division: the nodal derivative, the quadrature weight, and the
+value of the preceding monic Jacobi polynomial multiply to its squared norm. -/
+theorem shiftedJacobi_derivative_mul_quadratureWeight_mul_eval_prev
+    {q : ℕ} (hq : 2 ≤ q) {α β τ : ℝ}
+    (hα : -1 < α) (hβ : -1 < β)
+    (x : Fin q → ℝ) (hx : Function.Injective x)
+    (hroot : ∀ i, (quasiJacobiPolynomial q α β τ).IsRoot (x i))
+    (i : Fin q) :
+    (quasiJacobiPolynomial q α β τ).derivative.eval (x i) *
+        quadratureWeight
+          (Polynomial.momentFunctionalLinearMap (shiftedJacobiMoment α β)) x i *
+        (shiftedJacobiMonic (q - 1) α β).eval (x i) =
+      shiftedJacobiInner α β (shiftedJacobiMonic (q - 1) α β)
+        (shiftedJacobiMonic (q - 1) α β) := by
+  have hv := nodal_eq_quasiJacobiPolynomial (by lia) hα hβ x hx hroot
+  rw [← hv, mul_assoc,
+    shiftedJacobi_quadratureWeight_mul_eval_prev hq hα hβ x hx hroot i]
+  exact shiftedJacobi_eval_derivative_nodal_mul_inner_basis hq hα hβ x hx i
+
+/-- The preceding monic Jacobi polynomial cannot vanish at a simple root of
+the quasi-Jacobi nodal polynomial. -/
+theorem shiftedJacobiMonic_eval_prev_ne_zero_of_roots
+    {q : ℕ} (hq : 2 ≤ q) {α β τ : ℝ}
+    (hα : -1 < α) (hβ : -1 < β)
+    (x : Fin q → ℝ) (hx : Function.Injective x)
+    (hroot : ∀ i, (quasiJacobiPolynomial q α β τ).IsRoot (x i))
+    (i : Fin q) :
+    (shiftedJacobiMonic (q - 1) α β).eval (x i) ≠ 0 := by
+  have hpmono :=
+    (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).isMonicOfDegree (q - 1)
+  have hnorm := shiftedJacobiMomentPairingBilinForm_posDef hα hβ
+    (shiftedJacobiMonic (q - 1) α β) hpmono.monic.ne_zero
+  have hnormpos :
+      0 < shiftedJacobiInner α β (shiftedJacobiMonic (q - 1) α β)
+        (shiftedJacobiMonic (q - 1) α β) := by
+    simpa only [LinearMap.BilinMap.toQuadraticMap_apply,
+      Polynomial.momentPairingBilinForm_apply, shiftedJacobiInner] using hnorm
+  intro heval
+  have hid := shiftedJacobi_derivative_mul_quadratureWeight_mul_eval_prev
+    hq hα hβ x hx hroot i
+  rw [heval, mul_zero] at hid
+  linarith
+
+/-- The positive ratio `v'(x_i) / p_{q-1}(x_i)` used to normalize the
+quasi-Jacobi collocation matrix. -/
+def quasiJacobiEta (q : ℕ) (α β τ : ℝ) (x : Fin q → ℝ)
+    (i : Fin q) : ℝ :=
+  (quasiJacobiPolynomial q α β τ).derivative.eval (x i) /
+    (shiftedJacobiMonic (q - 1) α β).eval (x i)
+
+theorem quasiJacobiEta_pos_of_roots
+    {q : ℕ} (hq : 2 ≤ q) {α β τ : ℝ}
+    (hα : -1 < α) (hβ : -1 < β)
+    (x : Fin q → ℝ) (hx : Function.Injective x)
+    (hroot : ∀ i, (quasiJacobiPolynomial q α β τ).IsRoot (x i))
+    (i : Fin q) :
+    0 < quasiJacobiEta q α β τ x i := by
+  let d := (quasiJacobiPolynomial q α β τ).derivative.eval (x i)
+  let p := (shiftedJacobiMonic (q - 1) α β).eval (x i)
+  let w := quadratureWeight
+    (Polynomial.momentFunctionalLinearMap (shiftedJacobiMoment α β)) x i
+  have hw : 0 < w := shiftedJacobi_quadratureWeight_pos_of_roots
+    hq hα hβ x hx hroot i
+  have hpmono :=
+    (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).isMonicOfDegree (q - 1)
+  have hnorm := shiftedJacobiMomentPairingBilinForm_posDef hα hβ
+    (shiftedJacobiMonic (q - 1) α β) hpmono.monic.ne_zero
+  have hnormpos :
+      0 < shiftedJacobiInner α β (shiftedJacobiMonic (q - 1) α β)
+        (shiftedJacobiMonic (q - 1) α β) := by
+    simpa only [LinearMap.BilinMap.toQuadraticMap_apply,
+      Polynomial.momentPairingBilinForm_apply, shiftedJacobiInner] using hnorm
+  have hid := shiftedJacobi_derivative_mul_quadratureWeight_mul_eval_prev
+    hq hα hβ x hx hroot i
+  have hdpw : 0 < (d * p) * w := by
+    rw [mul_assoc, mul_comm p w, ← mul_assoc]
+    rw [hid]
+    exact hnormpos
+  have hdp : 0 < d * p := by
+    rcases (mul_pos_iff.mp hdpw) with h | h
+    · exact h.1
+    · exact (not_lt_of_ge hw.le h.2).elim
+  change 0 < d / p
+  rcases (mul_pos_iff.mp hdp) with h | h
+  · exact div_pos h.1 h.2
+  · exact div_pos_of_neg_of_neg h.1 h.2
 
 end RealRooted.JacobiDeformation

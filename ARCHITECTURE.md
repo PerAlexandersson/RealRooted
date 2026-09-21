@@ -1115,12 +1115,17 @@ of every in-range weight and Newton coefficient, including the empty-product
 and `k = 1` strictness boundaries. `JacobiDeformation.Quadrature` proves the
 finite polynomial-division/Lagrange quadrature theorem and positivity of its
 cardinal weights, then specializes both results to explicit distinct roots of
-the monic quasi-Jacobi polynomial. `JacobiDeformation.Collocation` packages
-degree-preserving self-adjoint polynomial operators in Lagrange coordinates,
-proves weighted symmetry and positive diagonal symmetrization, and supplies
-the positive shifted-Jacobi operator with its explicit evaluation
-eigenvectors and quadratic eigenvalues. The independent two-point determinant
-and scalar sign calculation used for exterior nodes is in
+the monic quasi-Jacobi polynomial. It also proves the exact derivative-weight
+identity, nonvanishing of the preceding Jacobi polynomial at every node, and
+strict positivity of the resulting eta ratio. `JacobiDeformation.Collocation`
+packages degree-preserving self-adjoint polynomial operators in Lagrange
+coordinates and supplies the positive shifted-Jacobi operator with its
+explicit evaluation eigenvectors and quadratic eigenvalues. Its signed
+quasi-Jacobi similarity is symmetric; the off-diagonal cardinal derivative
+calculation gives the exact rank-one residual formula and, after symmetry,
+formula (15). The formula is strictly positive for pairs of interior nodes.
+The independent two-point determinant and scalar sign calculation needed to
+extend this strictness to a possible exterior node is in
 `Mathlib.LinearAlgebra.Matrix.RankOneCompression`; its eventual spectral
 compression wrapper belongs in the higher Jacobi-deformation layer.
 
