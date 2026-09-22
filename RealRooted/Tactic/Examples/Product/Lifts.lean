@@ -737,7 +737,7 @@ example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     cutoff := N,
     factorization := hrow
 
-/-- The generic lift router keeps right-oriented positive scalar factors. -/
+/-- The generic lift router keeps a positive scalar factor on the left. -/
 example {P Q : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hrow : ∀ n : Nat, P n = C ((n : ℝ) + 1) * Q n) :
@@ -746,7 +746,7 @@ example {P Q : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
-/-- The generic lift router keeps right-oriented positive scalar powers. -/
+/-- The generic lift router keeps a positive scalar-power factor on the left. -/
 example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hrow : ∀ n : Nat, P n = (C ((n : ℝ) + 1) : ℝ[X]) ^ (m n) * Q n) :
@@ -755,7 +755,7 @@ example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     quotient_realrooted := hquot,
     factorization := hrow
 
-/-- The generic lift router keeps right-oriented constant-first affine factors. -/
+/-- The generic lift router keeps a constant-first affine factor on the left. -/
 example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hrow : ∀ n : Nat,
