@@ -132,7 +132,9 @@ specialized route. Unsupported opaque and composite factors therefore fail with
 a bounded diagnostic instead of speculatively elaborating every route. The
 regression suite pins those diagnostics, complete quotient-operand matching,
 ordinary and cutoff factor orientation, and all supported scalar, power, and
-affine shapes within the existing heartbeat budget.
+affine shapes within the existing heartbeat budget. Separate generic-factor
+regressions ensure that ordinary, lag-two, and cutoff dispatch remain isolated
+even when local certificate names contain `_lift_`.
 
 Wronskian results have a focused package entry point:
 
