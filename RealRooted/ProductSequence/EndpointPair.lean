@@ -48,7 +48,7 @@ theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
   have hb_pos : HasPosLeadingCoeff b :=
     hb_nonneg.pos_leadingCoeff (right_ne_zero_of_prec hab)
   have hsum_prec_raw : StrictInterl (C (1 : ℝ) * a + C (1 : ℝ) * b) b :=
-    prec_nonneg_combo_right hab ha_pos hb_pos zero_le_one zero_le_one (Or.inl zero_lt_one)
+    hab.nonneg_combo_right ha_pos hb_pos zero_le_one zero_le_one (Or.inl zero_lt_one)
   have hsum_prec : StrictInterl (a + b) b := by simpa using hsum_prec_raw
   have hsum_nonneg : HasNonnegCoeffs (a + b) := ha_nonneg.add hb_nonneg
   have hsum_pos : HasPosLeadingCoeff (a + b) :=
@@ -95,7 +95,7 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
     hsum_nonneg.pos_leadingCoeff (right_ne_zero_of_prec ha_sum_prec)
   have hnext_raw :
       StrictInterl (C (1 : ℝ) * a + C (1 : ℝ) * (b + X * a)) (b + X * a) :=
-    prec_nonneg_combo_right ha_sum_prec ha_pos hsum_pos
+    ha_sum_prec.nonneg_combo_right ha_pos hsum_pos
       zero_le_one zero_le_one (Or.inl zero_lt_one)
   simpa [add_assoc] using hnext_raw
 

@@ -111,7 +111,7 @@ theorem posComboNoCommonAffineFamily_of_boundaryRightPairOrientation
       hprec_or hp_rr.1 hp_rr.2 hp_nn hno_right
   have hcombo_rr :
       ((C (1 : ℝ) * p + C s * (X * f)) ≠ 0 ∧ (C (1 : ℝ) * p + C s * (X * f)).Splits) :=
-    isRealRooted_nonneg_combo_of_prec
+    StrictInterl.isRealRooted_nonneg_combo
       hprec hp_pos hXf_pos (by simp) hs.le (Or.inl zero_lt_one)
   grind
 

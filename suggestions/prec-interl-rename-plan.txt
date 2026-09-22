@@ -18,11 +18,11 @@ file count, category, migration action, and top-level source clusters.
 Disposition counts
 
   717  Lean declarations requiring semantic review
-  256  tactic declarations requiring an alias-first migration
+  249  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    39  statement scaffolds requiring proof-status-preserving renames
-  105  deprecated compatibility identifiers with canonical targets
+  112  deprecated compatibility identifiers with canonical targets
    34  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -77,6 +77,14 @@ and the global `prec_weightedSum_left` compatibility alias both delegate to
 `StrictInterl.weightedSum_right_of_nonneg`, and `StrictInterl.sum_right`.
 The short token `prec` remains an aggregate inventory row because unrelated
 namespaces still have live declarations with that exact identifier.
+
+The generic `PosCombo` combination layer is canonicalized under
+`StrictInterl`: nonnegative left/right combinations, their two real-rootedness
+consequences, and the three convex-combination endpoints retain exact
+deprecated aliases.  `PosComboRealRooted.of_prec` now delegates to
+`PosComboRealRooted.of_strictInterl`; the short `of_prec` token remains an
+aggregate inventory row because other namespaces still own live declarations
+with that name.
 
 Execution order
 

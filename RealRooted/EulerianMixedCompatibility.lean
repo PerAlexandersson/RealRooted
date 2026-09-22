@@ -528,7 +528,7 @@ private theorem mixedEulerStep_prec_of_no_common_of_nontrivial_boundary
       simp [hzero] at heval_one
   have hh_pos : HasPosLeadingCoeff h := hh.pos_leadingCoeff hh_ne
   have hh_splits : h.Splits := by
-    have hrr := isRealRooted_pos_combo_of_prec
+    have hrr := StrictInterl.isRealRooted_pos_combo
       hgf hg_pos hf_pos hlam zero_lt_one
     simpa [h, add_comm] using hrr.2
   have hh_deg : h.natDegree = f.natDegree := by
@@ -555,7 +555,7 @@ private theorem mixedEulerStep_prec_of_no_common_of_nontrivial_boundary
       (hasPosLeadingCoeff_C_mul hlam hg_pos).ne_zero
       (hg_splits.C_mul lam) hscaled_no
   have hgh : StrictInterl g h := by
-    have hprec := prec_convex_left hgf hg_pos hf_pos hlam zero_lt_one
+    have hprec := hgf.convex_left hg_pos hf_pos hlam zero_lt_one
       (by simpa [h, add_comm] using hh_ne)
       (by simpa [h, add_comm] using hh_splits) (by simpa using hcop)
     simpa [h, add_comm] using hprec
@@ -782,7 +782,7 @@ private theorem mixedEulerStep_prec_of_no_common
     have hglc : 0 < g.leadingCoeff := hg_pos
     nlinarith
   have hh_splits : h.Splits := by
-    have hrr := isRealRooted_pos_combo_of_prec
+    have hrr := StrictInterl.isRealRooted_pos_combo
       hgf hg_pos hf_pos hlam zero_lt_one
     simpa [h, add_comm] using hrr.2
   let c : ℝ := (n : ℝ) + 1

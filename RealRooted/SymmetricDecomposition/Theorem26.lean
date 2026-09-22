@@ -162,7 +162,7 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
   have haxb : StrictInterl a (X * b) := prec_mul_X_of_prec_of_nonneg hba hb_nonneg ha_nonneg
   have hp_right : StrictInterl (a + X * b) (X * b) := by
     simpa using
-      (prec_nonneg_combo_right haxb ha_pos hXb_pos
+      (haxb.nonneg_combo_right ha_pos hXb_pos
         (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp) (by simp)
         (Or.inl (by simp)))
   have hp0 : p ≠ 0 := by simpa [hp_eq] using hp_right.1.1
@@ -190,7 +190,7 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
     exact prec_of_prec0_of_ne_zero hb_rr.1 hp0 (by simp_all)
   have hIda : StrictInterl (a + b) a := by
     simpa [add_comm, add_left_comm, add_assoc] using
-      (prec_nonneg_combo_right hba hb_pos ha_pos
+      (hba.nonneg_combo_right hb_pos ha_pos
         (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp) (by simp)
         (Or.inl (by simp)))
   have hIdp : StrictInterl (IdTransform d p) p := by

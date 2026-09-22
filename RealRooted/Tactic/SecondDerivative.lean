@@ -228,7 +228,7 @@ theorem isRealRooted_of_mw_then_const_add_derivative_plus_current_sequence
           have hcombo :
               (C (b n) * P (n + 1) + C (1 : ℝ) * H) ≠ 0 ∧
                 (C (b n) * P (n + 1) + C (1 : ℝ) * H).Splits :=
-            isRealRooted_nonneg_combo_of_prec
+            StrictInterl.isRealRooted_nonneg_combo
               (by simpa [H] using houter_prec n)
               (hcurrent_pos n) (by simpa [H] using houter_pos n)
               (hb n) rr_side_nonneg_term (Or.inr rr_side_pos_term)
