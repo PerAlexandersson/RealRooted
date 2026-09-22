@@ -185,7 +185,7 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
               exact mul_pos (sub_pos.mpr ha) (hnn.pos_leadingCoeff hf0)
             have hgnn : HasNonnegCoeffs g :=
               ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos
-                (left_splits_of_prec hgf)).mpr ⟨hgpos, hgroots⟩).1
+                (left_splits_of_strictInterl hgf)).mpr ⟨hgpos, hgroots⟩).1
             have hshift : StrictInterl f (X * g) :=
               prec_mul_X_of_prec_of_nonneg hgf hgnn hnn
             have hcombo := allComboRealRooted_of_prec hshift (1 : ℝ) c

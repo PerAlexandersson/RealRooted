@@ -23,7 +23,7 @@ theorem prec_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  refine prec_sequence_of_base_and_step hbase ?_
+  refine strictInterl_sequence_of_base_and_step hbase ?_
   intro n hprev
   have hInter : Interlaces (P n) (P (n + 1)) :=
     hprev.toInterlaces (hdeg_succ n)
@@ -44,7 +44,7 @@ theorem prec_lw_nonpos_lag_sequence_of_inductive_nonpos {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  refine prec_sequence_of_base_and_step hbase ?_
+  refine strictInterl_sequence_of_base_and_step hbase ?_
   intro n hprev
   have hInter : Interlaces (P n) (P (n + 1)) :=
     hprev.toInterlaces (hdeg_succ n)
@@ -65,7 +65,7 @@ theorem isRealRooted_of_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_nonpos_lag_sequence hbase hpos hB_nonpos hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for sequence-level nonpositive-lag Liu--Wang
@@ -80,7 +80,7 @@ theorem isRealRooted_of_lw_nonpos_lag_sequence_of_inductive_nonpos
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_nonpos_lag_sequence_of_inductive_nonpos
       hbase hpos hB_nonpos hrec hdeg_succ hno
 
@@ -119,7 +119,7 @@ theorem isRealRooted_of_lw_nonpos_lag_sequence_den {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_nonpos_lag_sequence_den hbase hpos hB_nonpos hden hraw hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for globally nonpositive negative
@@ -148,7 +148,7 @@ theorem isRealRooted_of_lw_negative_const_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_negative_const_lag_sequence hbase hpos hc hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for normalized `C (-c_n)` lag. -/
@@ -176,7 +176,7 @@ theorem isRealRooted_of_lw_negative_const_C_neg_lag_sequence {P : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_negative_const_C_neg_lag_sequence hbase hpos hc hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for globally nonpositive negative-square
@@ -207,7 +207,7 @@ theorem isRealRooted_of_lw_negative_square_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_negative_square_lag_sequence hbase hpos hc hrec hdeg_succ hno
 
 /-- Sequence-level negative-square lag with unit scalar coefficient.
@@ -237,7 +237,7 @@ theorem isRealRooted_of_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_negative_square_lag_sequence_unit hbase hpos hrec hdeg_succ hno
 
 /-- Denominator-fused negative-square Liu--Wang induction for split raw
@@ -288,7 +288,7 @@ theorem isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_negative_square_lag_sequence_den_coeff
       hbase hpos hc hden hcoeff hraw hdeg_succ hno
 
@@ -323,7 +323,7 @@ theorem isRealRooted_of_lw_negative_monic_quadratic_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_negative_monic_quadratic_lag_sequence hbase hpos hdisc hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for a globally nonpositive quadratic
@@ -362,7 +362,7 @@ theorem isRealRooted_of_lw_negative_quadratic_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_negative_quadratic_lag_sequence
       hbase hpos ha hc hdisc hrec hdeg_succ hno
 
@@ -436,7 +436,7 @@ theorem isRealRooted_of_lw_negative_quadratic_lag_sequence_den_coeff
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_negative_quadratic_lag_sequence_den_coeff
       hbase hpos ha hc hdisc hden ha_coeff hb_coeff hc_coeff hraw hdeg_succ hno
 

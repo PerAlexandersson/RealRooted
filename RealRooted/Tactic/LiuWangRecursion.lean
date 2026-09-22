@@ -426,7 +426,7 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.interlaces_of_prec_chain
+        exact RealRooted.interlaces_of_strictInterl_chain
           (RealRooted.prec_lw_derivative_lag_sequence
             $hbase $hpos $hdeg_two $hrec $hderivative_nonpos $hlag_nonpos
             $hdeg_succ $hno)
