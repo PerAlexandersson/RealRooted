@@ -149,11 +149,11 @@ theorem posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
       hfg hf0 hg0 hfnn hgnn
   by_cases hdeg : f.natDegree ≤ g.natDegree
   · have hdeg' : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
-    exact prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg'
+    exact strictInterl_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg'
   · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
     have hdeg'' : g.natDegree + 1 = f.natDegree ∨ g.natDegree = f.natDegree := by lia
     have hprec' : StrictInterl g f ∨ StrictInterl f g :=
-      prec_of_allComboRealRooted hg_rr.1 hg_rr.2 hf_rr.1 hf_rr.2
+      strictInterl_of_allComboRealRooted hg_rr.1 hg_rr.2 hf_rr.1 hf_rr.2
         (allComboRealRooted_comm hall) hdeg''
     exact Or.symm hprec'
 

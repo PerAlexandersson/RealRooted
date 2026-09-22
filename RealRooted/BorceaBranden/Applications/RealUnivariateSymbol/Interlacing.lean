@@ -55,7 +55,7 @@ theorem linearMap_prec0_or_revPrec0_of_finiteSymbol_stable
     Interl (T p) (T q) ∨ Interl (T q) (T p) := by
   apply prec0_or_revPrec0_of_allComboRealRooted
   exact linearMap_allComboRealRooted_of_finiteSymbol_stable
-    hSymbol hpdeg hqdeg (allComboRealRooted_of_prec hpq)
+    hSymbol hpdeg hqdeg (allComboRealRooted_of_strictInterl hpq)
 
 /-- A common degree bound controls the Hermite--Biehler combination. -/
 lemma hermiteBiehlerPolynomial_natDegree_le

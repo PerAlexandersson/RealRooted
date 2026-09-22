@@ -276,7 +276,7 @@ theorem exceptionalEulerInverse_prec
   have hsplit₁ : R₁.Splits := hall.left_splits
   have hsplit₂ : R₂.Splits := hall.right_splits
   have horient : StrictInterl R₁ R₂ ∨ StrictInterl R₂ R₁ :=
-    prec_of_allComboRealRooted hR₁ hsplit₁ hR₂ hsplit₂ hall
+    strictInterl_of_allComboRealRooted hR₁ hsplit₁ hR₂ hsplit₂ hall
       (Or.inr (hdeg₁.trans hdeg₂.symm))
   rcases horient with hforward | hreverse
   · have hzero₁ : R₁.coeff 0 = 1 := by
@@ -800,7 +800,7 @@ theorem exceptionalEulerInverse_upper_prec_lower
       exceptionalEulerInverse_lower_allComboRealRooted
         m ε hm (γ := B) (by dsimp only [B]; linarith)
   have horient : StrictInterl L U ∨ StrictInterl U L :=
-    prec_of_allComboRealRooted hL hall.left_splits hU hall.right_splits
+    strictInterl_of_allComboRealRooted hL hall.left_splits hU hall.right_splits
       hall (Or.inr (hLdegree.trans hUdegree.symm))
   rcases horient with hwrong | hright
   · have hLzero : L.coeff 0 = 1 := by

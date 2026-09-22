@@ -955,7 +955,7 @@ theorem compatibleSuccDegreePrec_of_allCombo
   have hg_rr : (g ≠ 0 ∧ g.Splits) :=
     hall.isRealRooted_right hg_pos.ne_zero
   have horient : StrictInterl f g ∨ StrictInterl g f :=
-    prec_of_allComboRealRooted
+    strictInterl_of_allComboRealRooted
       hf_pos.ne_zero hf_split hg_rr.1 hg_rr.2 hall (Or.inl hdeg.symm)
   exact StrictInterl.forward_of_orientation_of_succDegree hdeg horient
 

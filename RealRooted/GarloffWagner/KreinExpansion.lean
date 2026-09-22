@@ -103,7 +103,7 @@ theorem prec_self_X_sub_C_mul {r : ℝ[X]} (hr0 : r ≠ 0) (hrs : r.Splits)
     rw [natDegree_mul (X_sub_C_ne_zero u) hr0, natDegree_X_sub_C]
     exact (Nat.add_comm 1 r.natDegree).symm
   have hprec_or :=
-    prec_of_allComboRealRooted hr0 hrs hright0 hright_splits hall (Or.inl hdeg)
+    strictInterl_of_allComboRealRooted hr0 hrs hright0 hright_splits hall (Or.inl hdeg)
   exact StrictInterl.forward_of_orientation_of_succDegree hdeg.symm hprec_or
 
 /-- Sign input for the Krein coefficient: after stripping the common

@@ -59,7 +59,7 @@ theorem wangYehAffine_eq_zero_or_splits
   let H : ℝ[X] := A * f + D * g
   let K : ℝ[X] := A * g - D * f
   by_cases hbd : b = 0 ∧ d = 0
-  · have hall := allComboRealRooted_of_prec hgf
+  · have hall := allComboRealRooted_of_strictInterl hgf
     right
     simpa [A, D, H, hbd.1, hbd.2, add_comm] using hall c a
   have hfactor :

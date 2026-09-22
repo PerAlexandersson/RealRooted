@@ -157,7 +157,7 @@ protected lemma CommonInterleaver.PairBridge.prec_or_revPrec_of_allComboRealRoot
   have hf_rr : (f ≠ 0 ∧ f.Splits) := hall.isRealRooted_left hf0
   have hg_rr : (g ≠ 0 ∧ g.Splits) := hall.isRealRooted_right hg0
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
-  exact prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg
+  exact strictInterl_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg
 
 /-- The same affine-family bridge also yields the no-common orientation step,
 since `AllComboRealRooted` can be fed into the completed Obreschkoff converse.
