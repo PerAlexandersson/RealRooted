@@ -21,7 +21,7 @@ private theorem prec_X_X_mul_X_sub_C (r : ℝ) :
     StrictInterl X (X * (X - C r) : ℝ[X]) := by
   have hbase : StrictInterl (1 : ℝ[X]) (X - C r) :=
     (interlaces_one_linear (by simp)).toStrictInterl
-  simpa using prec_mul_X_sub_C_both (0 : ℝ) hbase
+  simpa using hbase.mul_X_sub_C_both (0 : ℝ)
 
 private theorem natDegree_X_mul_X_sub_C (r : ℝ) :
     (X * (X - C r) : ℝ[X]).natDegree = 2 := by

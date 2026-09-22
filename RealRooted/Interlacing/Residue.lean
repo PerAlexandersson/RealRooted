@@ -314,7 +314,7 @@ theorem StrictInterl.cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
     StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) := by
   have : (X - C r) * (f /ₘ (X - C r)) = f := mul_divByMonic_eq_iff_isRoot.mpr hrf
   have : (X - C r) * (g /ₘ (X - C r)) = g := mul_divByMonic_eq_iff_isRoot.mpr hrg
-  apply prec_of_prec_mul_X_sub_C_both r
+  apply StrictInterl.of_mul_X_sub_C_both (r := r)
   simp [*]
 
 theorem StrictInterl.of_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
@@ -322,7 +322,7 @@ theorem StrictInterl.of_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
     (hrf : f.IsRoot r) (hrg : g.IsRoot r) : StrictInterl g f := by
   have hff : (X - C r) * (f /ₘ (X - C r)) = f := mul_divByMonic_eq_iff_isRoot.mpr hrf
   have hgg : (X - C r) * (g /ₘ (X - C r)) = g := mul_divByMonic_eq_iff_isRoot.mpr hrg
-  have := prec_mul_X_sub_C_both r h
+  have := h.mul_X_sub_C_both r
   simp_all
 
 theorem leadingCoeff_divByMonic_X_sub_C {f : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) :
