@@ -276,7 +276,7 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
 
 /-- Wagner (2): If h precedes both f and g with positive leading coefficients,
     and f, g are coprime, then h precedes their sum. -/
-theorem prec_add_of_prec_left {f g h : ℝ[X]}
+theorem StrictInterl.add_of_left {f g h : ℝ[X]}
     (hhf : StrictInterl h f) (hhg : StrictInterl h g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfg_rr_ne : (f + g) ≠ 0) (hfg_rr_splits : (f + g).Splits)
@@ -686,7 +686,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
 /-- A common-factor version of Wagner (2). If `h', f', g'` satisfy the
 left-hand addition theorem, then multiplying the whole picture by a common
 real-rooted factor preserves the conclusion. -/
-theorem prec_add_of_prec_left_of_common_factor {d f g h : ℝ[X]}
+theorem StrictInterl.add_of_left_of_common_factor {d f g h : ℝ[X]}
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
@@ -697,7 +697,7 @@ theorem prec_add_of_prec_left_of_common_factor {d f g h : ℝ[X]}
     StrictInterl h (f + g) := by
   subst hf_def hg_def hh_def
   have hsum : StrictInterl h' (f' + g') :=
-    prec_add_of_prec_left hhf hhg hf'_pos hg'_pos hfg'_rr_ne hfg'_rr_splits hcop
+    StrictInterl.add_of_left hhf hhg hf'_pos hg'_pos hfg'_rr_ne hfg'_rr_splits hcop
   have hmul : StrictInterl (d * h') (d * (f' + g')) :=
     hsum.mul_common_factor hd_ne hd_splits
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
@@ -730,23 +730,30 @@ lemma hasPosLeadingCoeff_sum {h : ℝ[X]} :
       · simpa [List.sum_cons] using hasPosLeadingCoeff_add_of_same_natDegree heq hpos htail_pos
       · simpa using hasPosLeadingCoeff_add_of_natDegree_lt_left hgt hpos
 
-lemma prec_sum {h : ℝ[X]} :
+lemma toStrictInterl {h : ℝ[X]} :
     ∀ {l : List ℝ[X]}, SumCompatibleLeft h l → StrictInterl h l.sum
   | _, singleton hprec _ => by
       simp_all
   | _, @cons _ p l hprec hpos hl hrr_ne hrr_splits hcop =>
-      prec_add_of_prec_left hprec (prec_sum hl)
+      StrictInterl.add_of_left hprec (toStrictInterl hl)
         hpos (hasPosLeadingCoeff_sum hl) hrr_ne hrr_splits hcop
 
 end SumCompatibleLeft
 
-/-- Recursive Wagner (2): a nonempty list of pairwise-compatible summands,
-assembled one term at a time from the left, is interlaced by the common left
-bound. -/
-theorem prec_sum_of_compatible_left {h : ℝ[X]} {l : List ℝ[X]}
-    (hl : SumCompatibleLeft h l) :
-    StrictInterl h l.sum :=
-  hl.prec_sum
+/-! ## Deprecated Wagner sum names -/
+
+@[deprecated StrictInterl.add_of_left (since := "2026-09-18")]
+alias prec_add_of_prec_left := StrictInterl.add_of_left
+
+@[deprecated StrictInterl.add_of_left_of_common_factor (since := "2026-09-18")]
+alias prec_add_of_prec_left_of_common_factor :=
+  StrictInterl.add_of_left_of_common_factor
+
+@[deprecated SumCompatibleLeft.toStrictInterl (since := "2026-09-18")]
+alias SumCompatibleLeft.prec_sum := SumCompatibleLeft.toStrictInterl
+
+@[deprecated SumCompatibleLeft.toStrictInterl (since := "2026-09-18")]
+alias prec_sum_of_compatible_left := SumCompatibleLeft.toStrictInterl
 
 end
 end RealRooted

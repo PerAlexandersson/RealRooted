@@ -293,7 +293,7 @@ lemma Interl.finsetSum_right_of_nonneg {ι : Type}
         (hasNonnegCoeffs_finsetSum s f hnn_s).pos_leadingCoeff hs0
       have hfa_pos : HasPosLeadingCoeff (f a) := hnn_a.pos_leadingCoeff hfa0
       have hsum_strict : StrictInterl (f a + s.sum f) h :=
-        prec_add_of_prec_right_of_posLeadingCoeff
+        StrictInterl.add_of_right_of_posLeadingCoeff
           hprec_a_strict hprec_s_strict hfa_pos hs_pos
       simpa [Finset.sum_insert, ha] using hsum_strict.toInterl
 
@@ -1457,7 +1457,7 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
     · have hb_pos : 0 < b := by grind
       have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
       have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
-      exact prec_add_of_prec_left
+      exact StrictInterl.add_of_left
         (StrictInterl.C_mul_right (StrictInterl.refl hfg.1.1 hfg.1.2) ha_pos.ne')
         (StrictInterl.C_mul_right hfg hb_pos.ne')
         hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
@@ -1467,7 +1467,7 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
     · have ha_pos : 0 < a := by grind
       have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
       have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
-      exact prec_add_of_prec_left
+      exact StrictInterl.add_of_left
         (StrictInterl.C_mul_right (StrictInterl.refl hfg.1.1 hfg.1.2) ha_pos.ne')
         (StrictInterl.C_mul_right hfg hb_pos.ne')
         hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
@@ -1484,7 +1484,7 @@ theorem prec_convex_left {f g : ℝ[X]}
     StrictInterl f (C a * f + C b * g) := by
   have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha hf_pos
   have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb hg_pos
-  exact prec_add_of_prec_left
+  exact StrictInterl.add_of_left
     (StrictInterl.C_mul_right (StrictInterl.refl hfg.1.1 hfg.1.2) ha.ne')
     (StrictInterl.C_mul_right hfg hb.ne')
     hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop

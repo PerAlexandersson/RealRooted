@@ -498,7 +498,7 @@ lemma prec_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     hasPosLeadingCoeff_C_mul (by positivity) (sturmDerangementsExc_posLeadingCoeff (by lia))
   have haff_pos : HasPosLeadingCoeff (affineSturmDerangementsExc n) :=
     (affine_sturmDerangementsExc_nonnegCoeffs (by lia)).pos_leadingCoeff haff.1.1
-  exact prec_add_of_prec_right_of_posLeadingCoeff hlower haff hlower_pos haff_pos
+  exact StrictInterl.add_of_right_of_posLeadingCoeff hlower haff hlower_pos haff_pos
 
 /-- Once the recurrence core is known to precede `P_n`, the actual Sturm step
 `P_n ≪ P_{n+1}` follows immediately from the outer `X` factor in the recurrence. -/

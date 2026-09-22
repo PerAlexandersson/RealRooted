@@ -78,7 +78,7 @@ theorem orderNumeratorStep_isPF_tight
   have hderivPos : HasPosLeadingCoeff p.derivative :=
     (hp.hasNonnegCoeffs.pos_leadingCoeff hp0).derivative (by lia)
   have hcore : StrictInterl (polarTheta m p + p.derivative) p :=
-    prec_add_of_prec_right_of_posLeadingCoeff hpolar hderiv hpolarPos hderivPos
+    StrictInterl.add_of_right_of_posLeadingCoeff hpolar hderiv hpolarPos hderivPos
   have hcoreEq : polarTheta m p + p.derivative =
       C (m : ℝ) * p + (1 - X) * p.derivative := by
     simp [polarTheta, theta]

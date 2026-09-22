@@ -191,7 +191,7 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
         rw [natDegree_singletonFreeSetPartitions (n + 1) (by lia)]
         lia)
   exact
-    prec_add_of_prec_right_of_posLeadingCoeff
+    StrictInterl.add_of_right_of_posLeadingCoeff
       hlower hder.toStrictInterl hlower_pos hder_pos
 
 lemma prec_singletonFreeSetPartitions_two_three :

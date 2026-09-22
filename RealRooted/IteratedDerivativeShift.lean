@@ -398,7 +398,7 @@ theorem derivative_prec_TDeriv_of_nonpos_of_coprime {eps : ℝ} {p : ℝ[X]}
       rw [← hT_eq]
       exact splits_tderiv_all hp
     have hprec : StrictInterl p.derivative (p + C (-eps) * p.derivative) :=
-      prec_add_of_prec_left hder.toStrictInterl hscaled_prec hp_pos hscaled_pos
+      StrictInterl.add_of_left hder.toStrictInterl hscaled_prec hp_pos hscaled_pos
         hsum_ne hsum_splits (hcop heps_neg)
     simpa [hT_eq] using hprec
   · subst eps
@@ -449,7 +449,7 @@ theorem derivative_prec_TDeriv_of_nonpos_of_common_factor {eps : ℝ} {p d q r :
       hasPosLeadingCoeff_C_mul hcoef_pos hr_pos
     have hprec :
         StrictInterl p.derivative (p + C (-eps) * p.derivative) :=
-      prec_add_of_prec_left_of_common_factor
+      StrictInterl.add_of_left_of_common_factor
         hd_ne hd_splits hp_def hscaled_def hder_def
         hrq hscaled_prec hq_pos hscaled_pos hsum_ne hsum_splits (hcop heps_neg)
     simpa [hT_eq] using hprec

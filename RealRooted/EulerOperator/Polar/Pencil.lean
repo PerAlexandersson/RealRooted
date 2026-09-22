@@ -347,7 +347,7 @@ theorem prec_self_add_C_mul_theta_X_polarTheta_boundary
   have hbtheta_pos : HasPosLeadingCoeff (C b * theta p) :=
     hasPosLeadingCoeff_C_mul hb
       ((theta_preserves_pf hp).hasNonnegCoeffs.pos_leadingCoeff htheta0)
-  exact prec_add_of_prec_right_of_posLeadingCoeff
+  exact StrictInterl.add_of_right_of_posLeadingCoeff
     hp_right hbtheta_right hp_pos hbtheta_pos
 
 end RealRooted

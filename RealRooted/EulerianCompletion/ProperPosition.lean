@@ -35,7 +35,7 @@ theorem loweringEulerStep_prec_self_of_reflect {M : ℕ} {p : ℝ[X]}
   have hderivPos : HasPosLeadingCoeff p.derivative :=
     (hp.hasNonnegCoeffs.pos_leadingCoeff hp0).derivative (by lia)
   have hcore : StrictInterl (polarTheta M p + p.derivative) p :=
-    prec_add_of_prec_right_of_posLeadingCoeff hpolar hderiv hpolarPos hderivPos
+    StrictInterl.add_of_right_of_posLeadingCoeff hpolar hderiv hpolarPos hderivPos
   have heq : loweringEulerStep M p = polarTheta M p + p.derivative := by
     simp [loweringEulerStep, polarTheta, theta]
     ring

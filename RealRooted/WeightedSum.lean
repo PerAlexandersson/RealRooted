@@ -259,7 +259,7 @@ lemma prec {h : ℝ[X]} :
       simpa [weightedSum, weightedSum_cons, ha] using prec hl
   | _, @cons_pos _ a p l ha hprec hpos hl hrr_ne hrr_splits hcop => by
       have hCa_pos : HasPosLeadingCoeff (C a * p) := hasPosLeadingCoeff_C_mul ha hpos
-      exact prec_add_of_prec_left
+      exact StrictInterl.add_of_left
         (StrictInterl.C_mul_right hprec ha.ne')
         (prec hl)
         hCa_pos (hasPosLeadingCoeff hl) hrr_ne hrr_splits hcop
@@ -301,7 +301,8 @@ data is the `WeightedCompatibleLeft` condition on unit weights. -/
 theorem prec_sum_left {h : ℝ[X]} {l : List ℝ[X]}
     (hl : WeightedCompatibleLeft h (l.map (fun p => ((1 : ℝ), p)))) :
     StrictInterl h l.sum := by
-  simpa using prec_sum_of_compatible_left (WeightedCompatibleLeft.toSumCompatibleLeft_map_one hl)
+  simpa using
+    (WeightedCompatibleLeft.toSumCompatibleLeft_map_one hl).toStrictInterl
 
 /-- Finite weighted Wagner theorem on the right: if every polynomial in the list
 precedes the same right-hand bound `h`, has positive leading coefficient, and all
@@ -334,7 +335,7 @@ theorem prec_weightedSum_right :
           have htail_pos : HasPosLeadingCoeff (weightedSum l) :=
             hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
           simpa [weightedSum_cons] using
-            prec_add_of_prec_right_of_posLeadingCoeff hCp_prec htail_prec hCp_pos htail_pos
+            StrictInterl.add_of_right_of_posLeadingCoeff hCp_prec htail_prec hCp_pos htail_pos
         · have hzero_tail : weightedSum l = 0 :=
             weightedSum_eq_zero_of_forall_coeff_zero l
               (forall_weight_eq_zero_of_nonneg_of_not_exists_pos

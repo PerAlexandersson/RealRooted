@@ -187,12 +187,12 @@ macro_rules
         left_pos_lc := $hf_pos:term,
         right_pos_lc := $hg_pos:term) =>
       `(tactic|
-        exact RealRooted.prec_add_of_prec_right_of_posLeadingCoeff
+        exact RealRooted.StrictInterl.add_of_right_of_posLeadingCoeff
           $hfh $hgh $hf_pos $hg_pos)
   | `(tactic| rr_wagner_common_right_add_pos_lc) =>
       `(tactic|
         exact (by
-          apply RealRooted.prec_add_of_prec_right_of_posLeadingCoeff
+          apply RealRooted.StrictInterl.add_of_right_of_posLeadingCoeff
           case hfh => rr_lookup [rr_base_prec]
           case hgh => rr_lookup [rr_base_prec]
           case hf_pos => rr_lookup [rr_pos_lc]
