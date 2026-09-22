@@ -790,6 +790,16 @@ example {P Q F : Nat → ℝ[X]}
       factorization := hrow
   exact RealRooted.isRealRooted_of_product_lift_sequence hquot hfactor hrow
 
+/-- The checked affine router directly accepts a constant-first positive slope. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      P n = (C (t n) + C ((n : ℝ) + 1) * X) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_checked_affine_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 
 end Tactic
 end RealRooted
