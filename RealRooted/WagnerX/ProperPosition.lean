@@ -18,7 +18,7 @@ theorem prec_X_derivative_X_self_of_splits_nonneg {f : ℝ[X]}
     (hf : f.Splits) (hdeg : 2 ≤ f.natDegree) (hfnn : HasNonnegCoeffs f) :
     StrictInterl (X * f.derivative) (X * f) := by
   have hder : StrictInterl f.derivative f := (derivative_interlaces hf hdeg).toStrictInterl
-  exact prec_mul_X_both_of_roots_nonpos hder
+  exact hder.mul_X_both_of_roots_nonpos
     (roots_nonpos_of_nonneg_coeffs hder.1.2 hfnn.derivative)
     (roots_nonpos_of_nonneg_coeffs hf hfnn)
 

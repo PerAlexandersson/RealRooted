@@ -23,7 +23,7 @@ theorem prec_X_mul_derivative_X_mul_self_of_splits_nonneg {f : ℝ[X]}
     (hdeg : 2 ≤ f.natDegree)
     (hfnn : HasNonnegCoeffs f) :
     StrictInterl (X * f.derivative) (X * f) :=
-  prec_mul_X_both_of_prec_of_nonneg
+  StrictInterl.mul_X_both_of_nonneg
     (derivative_interlaces hf hdeg).toStrictInterl hfnn.derivative hfnn
 
 /-- Wagner derivative-gap-lag step.

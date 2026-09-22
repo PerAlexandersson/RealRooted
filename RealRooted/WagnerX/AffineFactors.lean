@@ -32,7 +32,7 @@ theorem StrictInterl.mul_X_sub_C_both_of_roots_le {f g : ℝ[X]}
     rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
     simp_all
   have hX' : StrictInterl (X * f') (X * g') :=
-    prec_mul_X_both_of_roots_nonpos hfg' hf'_nonpos hg'_nonpos
+    hfg'.mul_X_both_of_roots_nonpos hf'_nonpos hg'_nonpos
   have htranslated :
       StrictInterl (((X - C r) * f).comp (X + C r)) (((X - C r) * g).comp (X + C r)) := by
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
@@ -75,7 +75,7 @@ theorem StrictInterl.of_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} {r : ℝ}
     have hX' : StrictInterl (X * f') (X * g') := by
       simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using htranslated
-    exact prec_of_prec_mul_X_both_of_roots_nonpos hX' hf'_nonpos hg'_nonpos
+    exact hX'.of_mul_X_both_of_roots_nonpos hf'_nonpos hg'_nonpos
   exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
 @[deprecated StrictInterl.of_mul_X_sub_C_both_of_roots_le (since := "2026-09-18")]
