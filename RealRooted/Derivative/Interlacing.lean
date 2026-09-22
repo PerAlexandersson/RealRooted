@@ -404,7 +404,7 @@ theorem exists_derivative_root_eval_nonneg_of_four_le_natDegree
 
 /-- A nonzero degree-zero real-rooted polynomial precedes a nonzero
 degree-one real-rooted polynomial. -/
-lemma prec_degree_zero_right_of_degree_one
+lemma StrictInterl.of_degree_zero_right_of_degree_one
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hf_deg0 : f.natDegree = 0) (hg_deg1 : g.natDegree = 1) :
@@ -421,6 +421,10 @@ lemma prec_degree_zero_right_of_degree_one
   · simp [hr_eq]
   · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
 
+@[deprecated StrictInterl.of_degree_zero_right_of_degree_one (since := "2026-09-18")]
+alias prec_degree_zero_right_of_degree_one :=
+  StrictInterl.of_degree_zero_right_of_degree_one
+
 /-- The derivative of any nonconstant positive-leading real-rooted polynomial
 interlaces the original polynomial, including the degree-one boundary case. -/
 lemma interlaces_derivative_of_pos_natDegree
@@ -435,7 +439,7 @@ lemma interlaces_derivative_of_pos_natDegree
     have hf'_rr : f.derivative ≠ 0 ∧ f.derivative.Splits :=
       ⟨hf'_ne, Polynomial.Splits.of_natDegree_eq_zero hf'_deg0⟩
     exact
-      (prec_degree_zero_right_of_degree_one hf'_rr.1 hf'_rr.2 hf_ne hf_splits
+      (StrictInterl.of_degree_zero_right_of_degree_one hf'_rr.1 hf'_rr.2 hf_ne hf_splits
         hf'_deg0 hdeg1).toInterlaces (by lia)
   · exact derivative_interlaces hf_splits (by lia)
 

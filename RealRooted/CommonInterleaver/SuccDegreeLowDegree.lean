@@ -36,16 +36,19 @@ theorem prec_or_revPrec_of_natDegree_le_one
   · have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
     by_cases hg_deg0 : g.natDegree = 0
     · have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_deg_zero hg0 hg_deg0
-      exact Or.inl (prec_degree_zero_degree_zero hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_deg0 hg_deg0)
+      exact Or.inl (StrictInterl.of_degree_zero_degree_zero
+        hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_deg0 hg_deg0)
     · have hg_deg1 : g.natDegree = 1 := by lia
       have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
-      exact Or.inl (prec_degree_zero_right_of_degree_one hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2
+      exact Or.inl (StrictInterl.of_degree_zero_right_of_degree_one
+        hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2
         hf_deg0 hg_deg1)
   · have hf_deg1 : f.natDegree = 1 := by lia
     by_cases hg_deg0 : g.natDegree = 0
     · have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_deg_zero hg0 hg_deg0
       have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_degree_one hf_deg1
-      exact Or.inr (prec_degree_zero_right_of_degree_one hg_rr.1 hg_rr.2 hf_rr.1 hf_rr.2
+      exact Or.inr (StrictInterl.of_degree_zero_right_of_degree_one
+        hg_rr.1 hg_rr.2 hf_rr.1 hf_rr.2
         hg_deg0 hf_deg1)
     · have hg_deg1 : g.natDegree = 1 := by lia
       exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one (by lia) hf_deg1
@@ -322,7 +325,8 @@ theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
   have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
   have hg_deg1 : g.natDegree = 1 := by lia
   have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
-  exact prec_degree_zero_right_of_degree_one hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_deg0 hg_deg1
+  exact StrictInterl.of_degree_zero_right_of_degree_one
+    hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_deg0 hg_deg1
 
 /-- Any proof of the stronger fixed-orientation succ-degree statement can be
 used immediately as input for the corrected succ-degree pair bridge. -/

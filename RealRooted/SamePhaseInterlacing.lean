@@ -71,7 +71,7 @@ theorem prec_of_upperHalfPlaneStable_hermiteBiehler
     have hD0 : D.natDegree = 0 := by
       have hle := (natDegree_shape_of_stable hA hD hHB).1
       lia
-    exact prec_degree_zero_degree_zero hD.ne_zero
+    exact StrictInterl.of_degree_zero_degree_zero hD.ne_zero
       (isRealRooted_of_deg_zero hD.ne_zero hD0).2 hA.ne_zero
       (isRealRooted_of_deg_zero hA.ne_zero hA0).2 hD0 hA0
 

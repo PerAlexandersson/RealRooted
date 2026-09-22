@@ -157,7 +157,7 @@ def thetaPreservesPrec0Statement : Prop :=
     Interl (theta p) (theta q)
 
 theorem thetaPreservesPrec0_of_derivative
-    (hderiv : derivativePreservesPrec0Statement) : thetaPreservesPrec0Statement := by
+    (hderiv : derivativePreservesInterlStatement) : thetaPreservesPrec0Statement := by
   intro p q hp hq hpq
   simpa [theta] using
     prec0_X_mul_both_of_pf hp.derivative hq.derivative (hderiv hpq)
@@ -198,7 +198,7 @@ def thetaPlusOnePreservesPrec0Statement : Prop :=
     Interl (thetaPlusOne p) (thetaPlusOne q)
 
 theorem thetaPlusOnePreservesPrec0_of_derivative
-    (hderiv : derivativePreservesPrec0Statement) :
+    (hderiv : derivativePreservesInterlStatement) :
     thetaPlusOnePreservesPrec0Statement := by
   intro p q hp hq hpq
   simpa [thetaPlusOne_eq_derivative_X_mul] using hderiv (prec0_X_mul_both_of_pf hp hq hpq)

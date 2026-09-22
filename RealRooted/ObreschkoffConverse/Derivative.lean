@@ -121,7 +121,7 @@ private lemma prec0_C_mul_left_right {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0)
   · exact (StrictInterl.C_mul_right (StrictInterl.C_mul_left hprec ha) hb).toInterl
 
 /-- Degree-zero polynomials satisfy `StrictInterl` in both orientations. -/
-lemma prec_degree_zero_degree_zero
+lemma StrictInterl.of_degree_zero_degree_zero
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
@@ -137,6 +137,9 @@ lemma prec_degree_zero_degree_zero
   · simp [hroots_f]
   · simp [hroots_g]
   · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
+
+@[deprecated StrictInterl.of_degree_zero_degree_zero (since := "2026-09-18")]
+alias prec_degree_zero_degree_zero := StrictInterl.of_degree_zero_degree_zero
 
 /-- Degree-at-least-two same-degree branch of the standard fact that
 differentiation preserves oriented weak proper position. -/
@@ -327,7 +330,7 @@ theorem derivativePreservesPrecSameDegree_of_two_le_natDegree
       have hgder_rr : (g.derivative ≠ 0 ∧ g.derivative.Splits) :=
         isRealRooted_of_deg_zero hgder_ne hgder_deg0
       exact
-        (prec_degree_zero_degree_zero hfder_rr.1 hfder_rr.2 hgder_rr.1 hgder_rr.2
+        (StrictInterl.of_degree_zero_degree_zero hfder_rr.1 hfder_rr.2 hgder_rr.1 hgder_rr.2
           hfder_deg0 hgder_deg0).toInterl
 
 /-- The full zero-aware derivative-preservation statement follows from the
@@ -336,7 +339,7 @@ same-degree branch.  The differ-by-one branch is
 converse Obreschkoff theorems. -/
 theorem derivativePreservesPrec0_of_sameDegree
     (hsame : derivativePreservesPrecSameDegreeStatement) :
-    derivativePreservesPrec0Statement := by
+    derivativePreservesInterlStatement := by
   intro f g hfg
   rcases hfg with hfzero | hgzero | hfg'
   · rw [hfzero, derivative_zero]
@@ -355,8 +358,9 @@ theorem derivativePreservesPrecSameDegree :
       derivativePreservesPrecSameDegree_of_monic
         derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic
 
-/-- Differentiation preserves zero-aware weak proper position. -/
-theorem derivativePreservesPrec0 : derivativePreservesPrec0Statement :=
+/-- Differentiation preserves zero-aware weak proper position.  This is the
+witness for `derivativePreservesInterlStatement`. -/
+theorem derivativePreservesPrec0 : derivativePreservesInterlStatement :=
   derivativePreservesPrec0_of_sameDegree derivativePreservesPrecSameDegree
 
 /-!

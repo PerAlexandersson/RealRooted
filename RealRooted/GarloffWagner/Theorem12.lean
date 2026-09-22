@@ -25,7 +25,7 @@ theorem prec0_of_natDegree_eq_zero {p q : ℝ[X]}
   by_cases hq0 : q = 0
   · exact Or.inr (Or.inl hq0)
   exact
-    (prec_degree_zero_degree_zero hp0
+    (StrictInterl.of_degree_zero_degree_zero hp0
       (Polynomial.Splits.of_natDegree_eq_zero hpdeg) hq0
       (Polynomial.Splits.of_natDegree_eq_zero hqdeg) hpdeg hqdeg).toInterl
 
@@ -274,7 +274,7 @@ theorem IsPFPolynomial.derivative_prec0_self {p : ℝ[X]}
       Polynomial.derivative_ne_zero.mpr hdeg0
     have hder_deg0 : p.derivative.natDegree = 0 := by rw [p.natDegree_derivative, hdeg1]
     exact
-      (prec_degree_zero_right_of_degree_one hder_ne
+      (StrictInterl.of_degree_zero_right_of_degree_one hder_ne
         (Polynomial.Splits.of_natDegree_eq_zero hder_deg0) hp0 hps.2 hder_deg0
         hdeg1).toInterl
   · have hdeg2 : 2 ≤ p.natDegree := by lia

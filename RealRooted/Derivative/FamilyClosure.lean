@@ -228,9 +228,14 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
   · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact (derivative_interlaces hp_splits hdeg2).toStrictInterl.roots_le_of_right hroots
 
-/-- Standard Rolle--Obreschkoff input: differentiation preserves weak proper
-position in the oriented, zero-aware `Interl` convention. -/
-def derivativePreservesPrec0Statement : Prop :=
+/-- Statement interface for the Rolle--Obreschkoff fact that differentiation
+preserves weak proper position in the oriented, zero-aware `Interl` convention.
+The checked witness is `derivativePreservesPrec0` in
+`RealRooted.ObreschkoffConverse.Derivative`. -/
+def derivativePreservesInterlStatement : Prop :=
   ∀ {p q : ℝ[X]}, Interl p q → Interl p.derivative q.derivative
+
+@[deprecated derivativePreservesInterlStatement (since := "2026-09-18")]
+abbrev derivativePreservesPrec0Statement := derivativePreservesInterlStatement
 
 end RealRooted
