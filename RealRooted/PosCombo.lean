@@ -139,7 +139,8 @@ theorem prec_weightedSum_left_of_common_left
     · exact (prec_iff_prec_mul_X_sub_C_of_roots_le r
           hp.1.2 hp.2.1.2 hpos hp_pos hh_le hp_le hdeg.symm).mp hp
   have hweighted_right : StrictInterl (weightedSum l) H :=
-    prec_weightedSum_right l H hnonneg hprec_right hpoly_pos hex0
+    StrictInterl.weightedSum_right_of_nonneg
+      l H hnonneg hprec_right hpoly_pos hex0
   have hweighted_pos : HasPosLeadingCoeff (weightedSum l) :=
     hasPosLeadingCoeff_weightedSum l hnonneg hpoly_pos hex0
   have hH_deg : H.natDegree = h.natDegree + 1 := by
@@ -409,7 +410,7 @@ theorem prec_nonneg_combo_right {f g : ℝ[X]}
     (hab : 0 < a ∨ 0 < b) :
     StrictInterl (C a * f + C b * g) g := by
   have hweighted : StrictInterl (weightedSum [(a, f), (b, g)]) g := by
-    apply prec_weightedSum_right [(a, f), (b, g)] g
+    apply StrictInterl.weightedSum_right_of_nonneg [(a, f), (b, g)] g
     · simp_all
     · intro ap hap
       rcases List.mem_cons.mp hap with h | h
@@ -612,7 +613,7 @@ lemma of_commonInterleaver {f g h : ℝ[X]}
     PosComboRealRooted f g := by
   intro lam μ hlam hμ
   have hprec : StrictInterl (weightedSum [(lam, f), (μ, g)]) h := by
-    apply prec_weightedSum_right [(lam, f), (μ, g)] h
+    apply StrictInterl.weightedSum_right_of_nonneg [(lam, f), (μ, g)] h
     · simp [hlam.le, hμ.le]
     · simp [hfh, hgh]
     · simp [hf_pos, hg_pos]

@@ -665,7 +665,7 @@ theorem gwJL_prec_of_weightedCompatibleExpansion
         (l.map fun ap => (ap.1, gwJL k ap.2))) :
     StrictInterl (gwJL k f) (gwJL k g) := by
   rw [hg, gwJL_weightedSum]
-  exact prec_weightedSum_left hcomp
+  exact hcomp.toStrictInterl
 
 /-- Interface isolating the remaining Krein-expansion and Wagner-compatibility
 work for Garloff--Wagner, Theorem 11(c). -/
@@ -696,7 +696,7 @@ theorem gwJL_weightedExpansion_prec_right
     StrictInterl (gwJL k g) (gwJL k f) := by
   rw [hg, gwJL_weightedSum]
   exact
-    prec_weightedSum_right
+    StrictInterl.weightedSum_right_of_nonneg
       (l.map fun ap => (ap.1, gwJL k ap.2)) (gwJL k f)
       (by
         intro ap hap
@@ -746,7 +746,7 @@ theorem gwJL_prec_of_rightWeightedExpansion
     StrictInterl (gwJL k f) (gwJL k g) := by
   rw [hf, gwJL_weightedSum]
   exact
-    prec_weightedSum_right
+    StrictInterl.weightedSum_right_of_nonneg
       (l.map fun ap => (ap.1, gwJL k ap.2)) (gwJL k g)
       (by
         intro ap hap

@@ -251,17 +251,17 @@ lemma hasPosLeadingCoeff {h : ℝ[X]} {l : List (ℝ × ℝ[X])}
     HasPosLeadingCoeff (weightedSum l) :=
   hasPosLeadingCoeff_weightedSum l (nonneg hl) (pos hl) (exists_pos hl)
 
-lemma prec {h : ℝ[X]} :
+lemma toStrictInterl {h : ℝ[X]} :
     ∀ {l : List (ℝ × ℝ[X])}, WeightedCompatibleLeft h l → StrictInterl h (weightedSum l)
   | _, singleton ha hprec _ => by
       simpa [weightedSum, weightedSum_cons] using StrictInterl.C_mul_right hprec ha.ne'
   | _, cons_zero ha _ _ hl => by
-      simpa [weightedSum, weightedSum_cons, ha] using prec hl
+      simpa [weightedSum, weightedSum_cons, ha] using toStrictInterl hl
   | _, @cons_pos _ a p l ha hprec hpos hl hrr_ne hrr_splits hcop => by
       have hCa_pos : HasPosLeadingCoeff (C a * p) := hasPosLeadingCoeff_C_mul ha hpos
       exact StrictInterl.add_of_left
         (StrictInterl.C_mul_right hprec ha.ne')
-        (prec hl)
+        (toStrictInterl hl)
         hCa_pos (hasPosLeadingCoeff hl) hrr_ne hrr_splits hcop
 
 lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
@@ -289,16 +289,9 @@ lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
 
 end WeightedCompatibleLeft
 
-/-- Finite weighted Wagner theorem on the left, under recursive Wagner-2
-compatibility of the weighted list. -/
-theorem prec_weightedSum_left {h : ℝ[X]} {l : List (ℝ × ℝ[X])}
-    (hl : WeightedCompatibleLeft h l) :
-    StrictInterl h (weightedSum l) :=
-  hl.prec
-
 /-- Unweighted finite-sum Wagner theorem on the left. The required compatibility
 data is the `WeightedCompatibleLeft` condition on unit weights. -/
-theorem prec_sum_left {h : ℝ[X]} {l : List ℝ[X]}
+theorem WeightedCompatibleLeft.toStrictInterl_sum {h : ℝ[X]} {l : List ℝ[X]}
     (hl : WeightedCompatibleLeft h (l.map (fun p => ((1 : ℝ), p)))) :
     StrictInterl h l.sum := by
   simpa using
@@ -308,7 +301,7 @@ theorem prec_sum_left {h : ℝ[X]} {l : List ℝ[X]}
 precedes the same right-hand bound `h`, has positive leading coefficient, and all
 weights are nonnegative with at least one positive weight, then the weighted sum
 also precedes `h`. -/
-theorem prec_weightedSum_right :
+theorem StrictInterl.weightedSum_right_of_nonneg :
     ∀ (l : List (ℝ × ℝ[X])) (h : ℝ[X]),
       (∀ ap ∈ l, 0 ≤ ap.1) →
       (∀ ap ∈ l, StrictInterl ap.2 h) →
@@ -331,11 +324,13 @@ theorem prec_weightedSum_right :
           have hCp_pos : HasPosLeadingCoeff (C a * p) :=
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
           have htail_prec : StrictInterl (weightedSum l) h :=
-            prec_weightedSum_right l h hnonneg_tail hprec_tail hpos_tail htail
+            StrictInterl.weightedSum_right_of_nonneg
+              l h hnonneg_tail hprec_tail hpos_tail htail
           have htail_pos : HasPosLeadingCoeff (weightedSum l) :=
             hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
           simpa [weightedSum_cons] using
-            StrictInterl.add_of_right_of_posLeadingCoeff hCp_prec htail_prec hCp_pos htail_pos
+            StrictInterl.add_of_right_of_posLeadingCoeff
+              hCp_prec htail_prec hCp_pos htail_pos
         · have hzero_tail : weightedSum l = 0 :=
             weightedSum_eq_zero_of_forall_coeff_zero l
               (forall_weight_eq_zero_of_nonneg_of_not_exists_pos
@@ -344,20 +339,38 @@ theorem prec_weightedSum_right :
             StrictInterl.C_mul_left (hprec (a, p) (by simp)) ha.ne'
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by simp_all
         simpa [weightedSum_cons] using
-          prec_weightedSum_right l h hnonneg_tail hprec_tail hpos_tail htail
+          StrictInterl.weightedSum_right_of_nonneg
+            l h hnonneg_tail hprec_tail hpos_tail htail
 
 /-- Unweighted finite-sum Wagner theorem on the right. -/
-theorem prec_sum_right
+theorem StrictInterl.sum_right
     (l : List ℝ[X]) (h : ℝ[X])
     (hprec : ∀ p ∈ l, StrictInterl p h)
     (hpos : ∀ p ∈ l, HasPosLeadingCoeff p)
     (hne : l ≠ []) :
     StrictInterl l.sum h := by
   rw [← weightedSum_map_one l]
-  apply prec_weightedSum_right (l.map (fun p => ((1 : ℝ), p))) h
+  apply StrictInterl.weightedSum_right_of_nonneg (l.map (fun p => ((1 : ℝ), p))) h
   · simp
   · simp_all
   · simp_all
   · cases l <;> simp_all
+
+/-! ## Deprecated weighted-sum interlacing names -/
+
+@[deprecated WeightedCompatibleLeft.toStrictInterl (since := "2026-09-18")]
+alias WeightedCompatibleLeft.prec := WeightedCompatibleLeft.toStrictInterl
+
+@[deprecated WeightedCompatibleLeft.toStrictInterl (since := "2026-09-18")]
+alias prec_weightedSum_left := WeightedCompatibleLeft.toStrictInterl
+
+@[deprecated WeightedCompatibleLeft.toStrictInterl_sum (since := "2026-09-18")]
+alias prec_sum_left := WeightedCompatibleLeft.toStrictInterl_sum
+
+@[deprecated StrictInterl.weightedSum_right_of_nonneg (since := "2026-09-18")]
+alias prec_weightedSum_right := StrictInterl.weightedSum_right_of_nonneg
+
+@[deprecated StrictInterl.sum_right (since := "2026-09-18")]
+alias prec_sum_right := StrictInterl.sum_right
 
 end RealRooted
