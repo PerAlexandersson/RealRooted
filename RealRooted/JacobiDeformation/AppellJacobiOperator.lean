@@ -13,6 +13,8 @@ open scoped BigOperators
 
 namespace RealRooted.JacobiDeformation
 
+noncomputable section
+
 /-- The actual finite Appell kernel, viewed as a finite polynomial function of
 its two independent coordinates. -/
 def appellKernelValue (m : ℕ) (b c d x y : ℝ) : ℝ :=
@@ -51,5 +53,7 @@ theorem appellJacobi_chainResidual_eq_zero (m : ℕ) (b : ℝ) {c d r z : ℝ}
           appellYOperatorValue m b c d (r * z) ((1 - r) * (1 - z))) = 0 := by
   rw [appellXOperatorValue_eq_appellYOperatorValue m b hc hd]
   ring
+
+end
 
 end RealRooted.JacobiDeformation

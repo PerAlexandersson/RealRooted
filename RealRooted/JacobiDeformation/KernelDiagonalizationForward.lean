@@ -46,23 +46,23 @@ theorem eigenCoefficientCondition_of_action_eq {n : ℕ}
         unfold eigenKernelActionLeft eigenKernelActionRight
         simp_rw [hoperator]
         simp only [eval_mul, eval_C]
-        rw [Finset.sum_mul, ← Finset.sum_sub_distrib]
+        rw [← Finset.sum_sub_distrib]
         apply Finset.sum_congr rfl
         intro i _
+        rw [Finset.sum_mul]
         rw [← Finset.sum_sub_distrib]
         apply Finset.sum_congr rfl
         intro j _
         ring
-      rw [hrewrite, sub_eq_zero]
-      exact haction r z
+      simpa only [smul_eq_mul, eval_zero] using
+        hrewrite.trans (sub_eq_zero.mpr (haction r z))
     exact Fintype.linearIndependent_iff.mp hbasis _ hsum i
   have hinner (i : Fin n) :
       ∑ j, ((eigenvalue i - eigenvalue j) * coefficient i j) • basis j = 0 := by
     apply Polynomial.funext
     intro z
     rw [eval_finsetSum]
-    simp only [eval_smul]
-    exact houter z i
+    simpa only [eval_smul, smul_eq_mul, eval_zero] using houter z i
   exact Fintype.linearIndependent_iff.mp hbasis _ (hinner i) j
 
 /-- With distinct eigenvalues, equality of the two finite eigenbasis actions

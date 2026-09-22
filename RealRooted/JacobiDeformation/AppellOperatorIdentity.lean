@@ -11,6 +11,8 @@ smallest representation needed for the finite Appell calculation.
 
 namespace RealRooted.JacobiDeformation
 
+noncomputable section
+
 /-- The coefficient of `x^i y^j` in the finite Appell kernel from Section 2.
 It is zero outside the triangle `i + j ≤ m`. -/
 def appellKernelCoefficient (m : ℕ) (b c d : ℝ) (i j : ℕ) : ℝ :=
@@ -32,7 +34,6 @@ private theorem risingFactorial_succ' (a : ℝ) (n : ℕ) :
     risingFactorial a (n + 1) = risingFactorial a n * (a + n) := by
   simp only [risingFactorial]
   rw [ascPochhammer_succ_eval]
-  ring
 
 /-- The finite Appell coefficients satisfy the recurrence obtained by
 coefficientwise differentiation of the two-variable kernel. -/
@@ -46,8 +47,8 @@ theorem appellKernelCoefficient_recurrence {m i j : ℕ} {b c d : ℝ}
   have hdj : risingFactorial d j ≠ 0 := (risingFactorial_pos j hd).ne'
   have hci_add : (i : ℝ) + c ≠ 0 := by positivity
   have hdj_add : (j : ℝ) + d ≠ 0 := by positivity
-  rw [appellLeftOperatorCoefficient, appellRightOperatorCoefficient,
-    appellKernelCoefficient, if_pos hil, if_pos hjr]
+  simp only [appellLeftOperatorCoefficient, appellRightOperatorCoefficient,
+    appellKernelCoefficient, hil, hjr, if_true]
   rw [risingFactorial_succ' c i, risingFactorial_succ' d j]
   norm_num [Nat.factorial_succ]
   field_simp [hci, hdj, hci_add, hdj_add]
@@ -66,5 +67,7 @@ theorem appellKernel_operator_coefficient_identity (m : ℕ) (b : ℝ) {c d : �
     have hjr : ¬(i + (j + 1) ≤ m) := by lia
     simp [appellLeftOperatorCoefficient, appellRightOperatorCoefficient,
       appellKernelCoefficient, hil, hjr]
+
+end
 
 end RealRooted.JacobiDeformation

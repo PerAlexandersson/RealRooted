@@ -73,7 +73,7 @@ theorem eigenKernelAction_eq_of_diagonal {n : ℕ} {coefficient : Fin n → Fin 
   intro j _
   by_cases hij : i = j
   · subst j
-    rw [hoperator i, hoperator i]
+    rw [hoperator i]
     simp only [eval_mul, eval_C]
     ring
   · rw [hdiagonal i j hij]

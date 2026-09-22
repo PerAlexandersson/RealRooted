@@ -20,11 +20,12 @@ private theorem choose_mul_factorial_eq_risingFactorial
         (i.factorial : ℝ) =
       risingFactorial ((j : ℝ) + c + d - 1) i
   field_simp [Nat.factorial_ne_zero]
-  rw [show (descPochhammer ℤ i).smeval ((j : ℝ) + c + d - 2 + i) =
-      (descPochhammer ℝ i).eval ((j : ℝ) + c + d - 2 + i) by simp]
-  rw [descPochhammer_eval_eq_ascPochhammer]
-  congr 2
-  push_cast
+  rw [descPochhammer_smeval_eq_ascPochhammer,
+    ascPochhammer_smeval_eq_eval]
+  change (ascPochhammer ℝ i).eval
+      ((j : ℝ) + c + d - 2 + (i : ℝ) - (i : ℝ) + 1) =
+    (ascPochhammer ℝ i).eval ((j : ℝ) + c + d - 1)
+  congr 1
   ring
 
 /-- The in-range coefficient of the shifted Jacobi polynomial normalized at
@@ -45,10 +46,25 @@ theorem coeff_normalizedShiftedJacobi_of_le
       fallingFactorial (j : ℝ) i := by
     rw [Nat.cast_choose_eq_descPochhammer_div]
     field_simp [Nat.factorial_ne_zero]
+    rfl
   rw [normalizedShiftedJacobi, coeff_C_mul, coeff_shiftedJacobi,
     if_pos hij]
   field_simp [hnorm.ne', hrise.ne', Nat.factorial_ne_zero]
-  nlinarith [hfirst, hsecond, hnat]
+  calc
+    Ring.choose ((j : ℝ) + (c - 1)) (j - i) *
+          Ring.choose ((j : ℝ) + (c - 1) + (d - 1) + i) i *
+          risingFactorial c i =
+        Ring.choose ((j : ℝ) + (c - 1) + (d - 1) + i) i *
+          (Ring.choose ((j : ℝ) + c - 1) (j - i) *
+            risingFactorial c i) := by ring
+    _ = Ring.choose ((j : ℝ) + (c - 1) + (d - 1) + i) i *
+          (Ring.choose ((j : ℝ) + c - 1) j *
+            fallingFactorial (j : ℝ) i) := by rw [hfirst]
+    _ = Ring.choose ((j : ℝ) + c - 1) j * (j.choose i : ℝ) *
+          (Ring.choose ((j : ℝ) + c + d - 2 + i) i *
+            (i.factorial : ℝ)) := by rw [← hnat]; ring
+    _ = Ring.choose ((j : ℝ) + c - 1) j * (j.choose i : ℝ) *
+          risingFactorial ((j : ℝ) + c + d - 1) i := by rw [hsecond]
 
 /-- Coefficients above the Jacobi degree vanish after normalization. -/
 theorem coeff_normalizedShiftedJacobi_of_lt
