@@ -19,13 +19,15 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     (ha : 0 < a)
     (hc : 0 ≤ c) :
     StrictInterl g (C a * g + (C c * X) * f) := by
-  have hg_pos : HasPosLeadingCoeff g := by rr_pos_lc using nonzero := right_ne_zero_of_prec h
+  have hg_pos : HasPosLeadingCoeff g := by
+    rr_pos_lc using nonzero := right_ne_zero_of_strictInterl h
   have hXf_pos : HasPosLeadingCoeff (X * f) := by
-    have hf_pos : HasPosLeadingCoeff f := by rr_pos_lc using nonzero := left_ne_zero_of_prec h
+    have hf_pos : HasPosLeadingCoeff f := by
+      rr_pos_lc using nonzero := left_ne_zero_of_strictInterl h
     rr_pos_lc
   have hX : StrictInterl g (X * f) := prec_mul_X_of_prec_of_nonneg h hfnn hgnn
   have hself : StrictInterl g g :=
-    StrictInterl.refl (right_ne_zero_of_prec h) (right_splits_of_prec h)
+    StrictInterl.refl (right_ne_zero_of_strictInterl h) (right_splits_of_strictInterl h)
   have hnonneg : ∀ ap ∈ [(a, g), (c, X * f)], 0 ≤ ap.1 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
@@ -65,11 +67,11 @@ theorem prec_left_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     (hc : 0 ≤ c) :
     StrictInterl f (C a * g + (C c * X) * f) := by
   have hf_pos : HasPosLeadingCoeff f :=
-    hfnn.pos_leadingCoeff (left_ne_zero_of_prec h)
+    hfnn.pos_leadingCoeff (left_ne_zero_of_strictInterl h)
   have hg_pos : HasPosLeadingCoeff g :=
-    hgnn.pos_leadingCoeff (right_ne_zero_of_prec h)
+    hgnn.pos_leadingCoeff (right_ne_zero_of_strictInterl h)
   have hXf : StrictInterl f (X * f) :=
-    prec_self_mul_X_of_nonneg (left_ne_zero_of_prec h) (left_splits_of_prec h) hfnn
+    prec_self_mul_X_of_nonneg (left_ne_zero_of_strictInterl h) (left_splits_of_strictInterl h) hfnn
   have hXf_pos : HasPosLeadingCoeff (X * f) := hf_pos.X_mul
   have hnonneg : ∀ ap ∈ [(a, g), (c, X * f)], 0 ≤ ap.1 := by
     intro ap hap
@@ -111,7 +113,7 @@ theorem prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]} {a c : Nat → ℝ}
     (hrec : ∀ n : Nat,
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  refine prec_sequence_of_base_and_step hbase ?_
+  refine strictInterl_sequence_of_base_and_step hbase ?_
   intro n hprev
   have hstep :
       StrictInterl (P (n + 1)) (C (a n) * P (n + 1) + (C (c n) * X) * P n) :=
@@ -258,7 +260,7 @@ theorem isRealRooted_of_prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]}
     (hrec : ∀ n : Nat,
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_pos_X_lag_combo_sequence hbase hnonneg ha hc hrec
 
 
