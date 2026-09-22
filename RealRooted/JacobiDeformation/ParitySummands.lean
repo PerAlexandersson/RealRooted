@@ -92,7 +92,6 @@ theorem summand_even_factorial {m i j k : ℕ} (hijk : i + j + k = m) :
       rw [hsub, hparameter, risingFactorial_one_eq_factorial]
       norm_num [div_pow]
       field_simp [cast_factorial_ne_zero, hhalf_ne, hfour_ne]
-      ring
     _ = ((2 * m - k).factorial : ℝ) /
           ((k.factorial : ℝ) * (i.factorial : ℝ) ^ 2 * ((2 * j).factorial : ℝ)) := by
       rw [hbase, hhalf, htop]
@@ -109,8 +108,11 @@ theorem summand_odd_factorial {m i j k : ℕ} (hijk : i + j + k = m) :
     ring
   have hbase : ((m + 1).factorial : ℝ) * risingFactorial ((m : ℝ) + 2) (i + j) =
       ((m + 1 + (i + j)).factorial : ℝ) := by
-    simpa [risingFactorial, Nat.cast_add, Nat.cast_one, add_assoc] using
-      factorial_mul_ascPochhammer ℝ (m + 1) (i + j)
+    have harg : (m : ℝ) + 2 = ((m + 1 : ℕ) : ℝ) + 1 := by
+      push_cast
+      ring
+    rw [risingFactorial, harg]
+    exact factorial_mul_ascPochhammer ℝ (m + 1) (i + j)
   have hthree := risingFactorial_three_halves_mul_factorial_mul_four_pow j
   have hthree_ne : risingFactorial (3 / 2 : ℝ) j ≠ 0 :=
     (risingFactorial_pos j (by norm_num)).ne'
@@ -125,7 +127,6 @@ theorem summand_odd_factorial {m i j k : ℕ} (hijk : i + j + k = m) :
         Nat.factorial_succ]
       norm_num [div_pow]
       field_simp [cast_factorial_ne_zero, hthree_ne, hfour_ne]
-      ring
     _ = ((2 * m + 1 - k).factorial : ℝ) /
           ((k.factorial : ℝ) * (i.factorial : ℝ) ^ 2 *
             ((2 * j + 1).factorial : ℝ)) := by

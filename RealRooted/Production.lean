@@ -1321,6 +1321,11 @@ import RealRooted.JacobiDeformation.AppellJacobiDifferential
 import RealRooted.JacobiDeformation.AppellJacobiBoundary
 import RealRooted.JacobiDeformation.AppellBoundaryCoefficient
 import RealRooted.JacobiDeformation.SpectralKernelBridge
+import RealRooted.JacobiDeformation.DiagonalWeightIdentity
+import RealRooted.JacobiDeformation.JacobiFiniteExpansion
+import RealRooted.JacobiDeformation.JacobiNormalizationBridge
+import RealRooted.JacobiDeformation.ImageProductCoordinates
+import RealRooted.JacobiDeformation.ParitySummands
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 
 /-!

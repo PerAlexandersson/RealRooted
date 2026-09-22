@@ -21,8 +21,8 @@ theorem shiftedJacobiMonic_linearIndependent_fin
     LinearIndependent ℝ
       (fun i : Fin (m + 1) => shiftedJacobiMonic i alpha beta) := by
   let hrec := shiftedJacobiMonic_satisfiesFavardRecurrence alpha beta halpha hbeta
-  simpa only [SatisfiesFavardRecurrence.toSequence_apply, Function.comp_apply] using
-    hrec.toSequence.linearIndependent.comp Fin.val Fin.val_injective
+  change LinearIndependent ℝ (fun i : Fin (m + 1) => hrec.toSequence i)
+  exact hrec.toSequence.linearIndependent.comp Fin.val Fin.val_injective
 
 /-- Every polynomial of natural degree at most `m` has a finite expansion in
 the first `m + 1` monic shifted-Jacobi polynomials. -/

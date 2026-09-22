@@ -1,5 +1,7 @@
 import RealRooted.JacobiDeformation.Kernel
+import RealRooted.JacobiDeformation.JacobiMoment
 import RealRooted.JacobiDeformation.VandermondeIdentity
+import RealRooted.JacobiDeformation.WeightNormalization
 
 /-!
 # Finite diagonal Jacobi kernel-weight identity
@@ -117,7 +119,7 @@ private theorem diagonal_weight_factorial_identity
             risingFactorial b j / risingFactorial s (j + n + j)) *
           ((-1 : ℝ) ^ l * (n.choose l : ℝ) *
             risingFactorial (b + (j : ℝ)) l *
-            risingFactorial ((s + ((2 * j : ℕ) : ℝ)) + (l : ℝ)) (n - l) := by
+            risingFactorial ((s + ((2 * j : ℕ) : ℝ)) + (l : ℝ)) (n - l)) := by
     intro l hl
     have hln : l ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hl)
     have h1 : fallingFactorial ((j + l : ℕ) : ℝ) j =
@@ -136,6 +138,7 @@ private theorem diagonal_weight_factorial_identity
             ((j.factorial : ℝ) * ((j + n).choose (j + l) : ℝ)) *
               ((j + l).choose j : ℝ) := by
               rw [Nat.descFactorial_eq_factorial_mul_choose]
+              norm_num only [Nat.cast_mul]
               ring
         _ = (j.factorial : ℝ) *
             (((j + n).choose (j + l) : ℝ) * ((j + l).choose j : ℝ)) := by ring
@@ -146,7 +149,7 @@ private theorem diagonal_weight_factorial_identity
               ring
         _ = (((j + n).descFactorial j : ℕ) : ℝ) * (n.choose l : ℝ) := by
               rw [Nat.descFactorial_eq_factorial_mul_choose]
-              ring
+              norm_num only [Nat.cast_mul]
     have h3 : risingFactorial b (j + l) =
         risingFactorial b j * risingFactorial (b + (j : ℝ)) l := by
       simpa using (risingFactorial_mul_shift b j l).symm
@@ -196,7 +199,11 @@ private theorem diagonal_weight_factorial_identity
           ((-1 : ℝ) ^ j * (-1 : ℝ) ^ j) *
             ((-1 : ℝ) ^ n * (-1 : ℝ) ^ n) := by ring
       _ = 1 := by rw [h1, h2]; norm_num
-  linear_combination ((((j + n).descFactorial j : ℕ) : ℝ) *
+  have hfac := factorial_div_eq_fallingFactorial
+    (m := j + n) (j := j) (by lia)
+  rw [fallingFactorial_natCast, hsub] at hfac
+  rw [← hfac]
+  linear_combination (((j + n).factorial : ℝ) / (n.factorial : ℝ) *
     risingFactorial b j * risingFactorial delta n /
       risingFactorial s (j + n + j)) * hsign
 

@@ -31,7 +31,9 @@ theorem shiftedJacobiMonic_eval_zero_ne_zero
     rw [shiftedJacobiMonic, hzero, C_0, zero_mul]
   rw [shiftedJacobiMonic, eval_mul, eval_C, shiftedJacobi_eval_zero,
     show (j : ℝ) + (c - 1) = (j : ℝ) + c - 1 by ring]
-  exact mul_ne_zero hscale hchoose.ne'
+  apply mul_ne_zero
+  · convert hscale using 1 <;> ring
+  · exact hchoose.ne'
 
 /-- Multiplying the value-one-at-zero normalization by the monic polynomial's
 value at zero recovers that monic shifted-Jacobi polynomial. -/
@@ -49,6 +51,5 @@ theorem C_eval_zero_mul_normalizedShiftedJacobi
     ← mul_assoc, ← C_mul]
   congr 1
   field_simp [hchoose.ne']
-  ring
 
 end RealRooted.JacobiDeformation
