@@ -39,7 +39,7 @@ private lemma list_eq_of_forall₂_le_of_sum_eq :
 /-- Equality in the root-sum order of a same-degree proper-position pair,
 together with equality of leading coefficients, forces equality of the
 polynomials. -/
-theorem eq_of_prec_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
+theorem StrictInterl.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
     {f g : ℝ[X]}
     (hprec : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
     (hlc : f.leadingCoeff = g.leadingCoeff)
@@ -62,7 +62,7 @@ theorem eq_of_prec_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
 
 /-- At a root of the right polynomial in a positive-leading proper-position
 pair, the left value and right derivative have nonnegative product. -/
-theorem eval_mul_derivative_nonneg_of_prec_right_root
+theorem StrictInterl.eval_mul_derivative_nonneg_of_right_root
     {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : g.IsRoot r) :
@@ -100,14 +100,14 @@ theorem eval_mul_derivative_nonneg_of_prec_right_root
 /-- At a root of the right polynomial in a positive-leading coprime
 proper-position pair, the left value and right derivative have strictly the
 same sign. -/
-theorem eval_mul_derivative_pos_of_prec_right_root_of_isCoprime
+theorem StrictInterl.eval_mul_derivative_pos_of_right_root_of_isCoprime
     {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hcop : IsCoprime f g)
     {r : ℝ} (hr : g.IsRoot r) :
     0 < f.eval r * g.derivative.eval r := by
   have hnonneg :=
-    eval_mul_derivative_nonneg_of_prec_right_root hprec hf_pos hg_pos hr
+    hprec.eval_mul_derivative_nonneg_of_right_root hf_pos hg_pos hr
   have hsimple : HasSimpleRoots g :=
     (hprec.hasSimpleRoots_of_isCoprime hcop).2
   have hfroot : ¬f.IsRoot r := hcop.symm.not_isRoot_right hr
@@ -119,14 +119,14 @@ theorem eval_mul_derivative_pos_of_prec_right_root_of_isCoprime
 /-- At a root of the right polynomial in a positive-leading proper-position
 pair with no common real root, the left value and right derivative have
 strictly the same sign. -/
-theorem eval_mul_derivative_pos_of_prec_right_root_of_no_common
+theorem StrictInterl.eval_mul_derivative_pos_of_right_root_of_no_common
     {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ x, f.IsRoot x → ¬g.IsRoot x)
     {r : ℝ} (hr : g.IsRoot r) :
     0 < f.eval r * g.derivative.eval r := by
-  apply eval_mul_derivative_pos_of_prec_right_root_of_isCoprime
-      hprec hf_pos hg_pos ?_ hr
+  apply hprec.eval_mul_derivative_pos_of_right_root_of_isCoprime
+      hf_pos hg_pos ?_ hr
   exact isCoprime_of_no_common_real_root_of_isRealRooted
     hprec.1.1 hprec.1.2 hno
 
@@ -141,8 +141,8 @@ theorem interlaces_and_isCoprime_iff_eval_mul_derivative_pos
       ∀ r, f.IsRoot r → 0 < q.eval r * f.derivative.eval r := by
   constructor
   · rintro ⟨hinter, hcop⟩ r hr
-    exact eval_mul_derivative_pos_of_prec_right_root_of_isCoprime
-      hinter.toStrictInterl hq_pos hf_pos hcop hr
+    exact hinter.toStrictInterl.eval_mul_derivative_pos_of_right_root_of_isCoprime
+      hq_pos hf_pos hcop hr
   · intro hsign
     have hinter := interlaces_of_eval_mul_derivative_pos hf hf_pos hqdeg hsign
     refine ⟨hinter, ?_⟩
@@ -156,7 +156,7 @@ theorem interlaces_and_isCoprime_iff_eval_mul_derivative_pos
 
 /-- At a root of the left polynomial in a positive-leading proper-position
 pair, the right value and left derivative have nonpositive product. -/
-theorem eval_mul_derivative_nonpos_of_prec_left_root
+theorem StrictInterl.eval_mul_derivative_nonpos_of_left_root
     {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : f.IsRoot r) :
@@ -186,8 +186,8 @@ theorem eval_mul_derivative_nonpos_of_prec_left_root
   have hroot_pad : ((X - C b) * f).IsRoot r := by
     simp [Polynomial.IsRoot.def, Polynomial.IsRoot.def.mp hr]
   have hsign :=
-    eval_mul_derivative_nonneg_of_prec_right_root
-      hpad hg_pos hpad_pos hroot_pad
+    hpad.eval_mul_derivative_nonneg_of_right_root
+      hg_pos hpad_pos hroot_pad
   have hder_eval : ((X - C b) * f).derivative.eval r =
       (r - b) * f.derivative.eval r := by
     rw [derivative_mul]
@@ -198,14 +198,14 @@ theorem eval_mul_derivative_nonpos_of_prec_left_root
 /-- At a root of the left polynomial in a positive-leading coprime
 proper-position pair, the right value and left derivative have strictly
 opposite signs. -/
-theorem eval_mul_derivative_neg_of_prec_left_root_of_isCoprime
+theorem StrictInterl.eval_mul_derivative_neg_of_left_root_of_isCoprime
     {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hcop : IsCoprime f g)
     {r : ℝ} (hr : f.IsRoot r) :
     g.eval r * f.derivative.eval r < 0 := by
   have hnonpos :=
-    eval_mul_derivative_nonpos_of_prec_left_root hprec hf_pos hg_pos hr
+    hprec.eval_mul_derivative_nonpos_of_left_root hf_pos hg_pos hr
   have hsimple : HasSimpleRoots f :=
     (hprec.hasSimpleRoots_of_isCoprime hcop).1
   have hgeval : g.eval r ≠ 0 := by
@@ -216,20 +216,20 @@ theorem eval_mul_derivative_neg_of_prec_left_root_of_isCoprime
 /-- At a root of the left polynomial in a positive-leading proper-position
 pair with no common real root, the right value and left derivative have
 strictly opposite signs. -/
-theorem eval_mul_derivative_neg_of_prec_left_root_of_no_common
+theorem StrictInterl.eval_mul_derivative_neg_of_left_root_of_no_common
     {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ x, f.IsRoot x → ¬g.IsRoot x)
     {r : ℝ} (hr : f.IsRoot r) :
     g.eval r * f.derivative.eval r < 0 := by
-  apply eval_mul_derivative_neg_of_prec_left_root_of_isCoprime
-      hprec hf_pos hg_pos ?_ hr
+  apply hprec.eval_mul_derivative_neg_of_left_root_of_isCoprime
+      hf_pos hg_pos ?_ hr
   exact isCoprime_of_no_common_real_root_of_isRealRooted
     hprec.1.1 hprec.1.2 hno
 
 /-- Values of the two outer members of a positive-leading ordered triple have
 opposite-or-zero signs at every root of the middle member. -/
-theorem eval_mul_eval_nonpos_of_prec_sandwich
+theorem StrictInterl.eval_mul_eval_nonpos_of_sandwich
     {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hh_pos : HasPosLeadingCoeff h)
@@ -239,9 +239,9 @@ theorem eval_mul_eval_nonpos_of_prec_sandwich
   · have hder_ne : g.derivative.eval r ≠ 0 :=
       eval_derivative_ne_zero_of_rootMultiplicity_eq_one hr hsimple
     have hleft : 0 ≤ f.eval r * g.derivative.eval r :=
-      eval_mul_derivative_nonneg_of_prec_right_root hfg hf_pos hg_pos hr
+      hfg.eval_mul_derivative_nonneg_of_right_root hf_pos hg_pos hr
     have hright : h.eval r * g.derivative.eval r ≤ 0 :=
-      eval_mul_derivative_nonpos_of_prec_left_root hgh hg_pos hh_pos hr
+      hgh.eval_mul_derivative_nonpos_of_left_root hg_pos hh_pos hr
     rcases lt_or_gt_of_ne hder_ne with hneg | hpos
     · have hf_nonpos : f.eval r ≤ 0 := by nlinarith
       have hh_nonneg : 0 ≤ h.eval r := by nlinarith
@@ -265,7 +265,7 @@ theorem eval_mul_eval_nonpos_of_prec_sandwich
 /-- Values of the two outer members of a positive-leading ordered triple have
 strictly opposite signs at every root of the middle member when both adjacent
 pairs are coprime. -/
-theorem eval_mul_eval_neg_of_prec_sandwich_of_isCoprime
+theorem StrictInterl.eval_mul_eval_neg_of_sandwich_of_isCoprime
     {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hh_pos : HasPosLeadingCoeff h)
@@ -273,11 +273,11 @@ theorem eval_mul_eval_neg_of_prec_sandwich_of_isCoprime
     {r : ℝ} (hr : g.IsRoot r) :
     f.eval r * h.eval r < 0 := by
   have hleft : 0 < f.eval r * g.derivative.eval r :=
-    eval_mul_derivative_pos_of_prec_right_root_of_isCoprime
-      hfg hf_pos hg_pos hfg_cop hr
+    hfg.eval_mul_derivative_pos_of_right_root_of_isCoprime
+      hf_pos hg_pos hfg_cop hr
   have hright : h.eval r * g.derivative.eval r < 0 :=
-    eval_mul_derivative_neg_of_prec_left_root_of_isCoprime
-      hgh hg_pos hh_pos hgh_cop hr
+    hgh.eval_mul_derivative_neg_of_left_root_of_isCoprime
+      hg_pos hh_pos hgh_cop hr
   have hprod :
       (f.eval r * g.derivative.eval r) *
           (h.eval r * g.derivative.eval r) < 0 :=
@@ -300,7 +300,7 @@ theorem eval_mul_eval_neg_of_prec_sandwich_of_isCoprime
 /-- Values of the two outer members of a positive-leading ordered triple have
 strictly opposite signs at every root of the middle member when the adjacent
 pairs have no common real root. -/
-theorem eval_mul_eval_neg_of_prec_sandwich_of_no_common
+theorem StrictInterl.eval_mul_eval_neg_of_sandwich_of_no_common
     {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hh_pos : HasPosLeadingCoeff h)
@@ -308,15 +308,15 @@ theorem eval_mul_eval_neg_of_prec_sandwich_of_no_common
     (hgh_no : ∀ x, g.IsRoot x → ¬h.IsRoot x)
     {r : ℝ} (hr : g.IsRoot r) :
     f.eval r * h.eval r < 0 := by
-  apply eval_mul_eval_neg_of_prec_sandwich_of_isCoprime
-      hfg hgh hf_pos hg_pos hh_pos
+  apply hfg.eval_mul_eval_neg_of_sandwich_of_isCoprime
+      hgh hf_pos hg_pos hh_pos
   · exact isCoprime_of_no_common_real_root_of_isRealRooted
       hfg.1.1 hfg.1.2 hfg_no
   · exact isCoprime_of_no_common_real_root_of_isRealRooted
       hgh.1.1 hgh.1.2 hgh_no
   · exact hr
 
-private theorem natDegree_sub_lower_bound_of_prec_triple
+private theorem natDegree_sub_lower_bound_of_triple
     {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h) (hfh : StrictInterl f h)
     (hf_pos : HasPosLeadingCoeff f) (hh_pos : HasPosLeadingCoeff h)
     (hsub_pos : HasPosLeadingCoeff (h - f)) :
@@ -333,8 +333,8 @@ private theorem natDegree_sub_lower_bound_of_prec_triple
       · have hroots_le := hfh.roots_sum_le_of_sameDegree hdeg
         rcases eq_or_lt_of_le hroots_le with hroots_eq | hroots_lt
         · have hEq :=
-            eq_of_prec_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
-              hfh hdeg hlc_eq.symm hroots_eq
+            hfh.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
+              hdeg hlc_eq.symm hroots_eq
           rw [hEq, sub_self] at hsub_pos
           simp [HasPosLeadingCoeff] at hsub_pos
         · have hf_vieta :=
@@ -409,7 +409,7 @@ private theorem natDegree_sub_lower_bound_of_prec_triple
       rw [natDegree_sub_eq_left_of_natDegree_lt (by lia)]
     lia
 
-private theorem natDegree_sub_upper_bound_of_prec_triple
+private theorem natDegree_sub_upper_bound_of_triple
     {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h) :
     (h - f).natDegree ≤ g.natDegree + 1 := by
   have hf_le : f.natDegree ≤ g.natDegree := hfg.natDegree_bounds.1
@@ -425,7 +425,7 @@ The proof does not assume that `h - f` splits.  Splitting comes from the outer
 Obreschkoff pencil.  Repeated roots of the middle polynomial are removed
 recursively; in the simple-root case, derivative interlacing and the two
 endpoint sign lemmas give the Liu--Wang root certificate. -/
-theorem prec_sub_of_prec_triple_of_posLeadingCoeff
+theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
     {f g h : ℝ[X]} (hfg : StrictInterl f g) (hgh : StrictInterl g h) (hfh : StrictInterl f h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hh_pos : HasPosLeadingCoeff h)
@@ -493,10 +493,10 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
       have hall := allComboRealRooted_of_prec hfh
       simpa [sub_eq_add_neg, add_comm, mul_comm] using hall (-1) 1
     have hdeg_lo : g.natDegree ≤ (h - f).natDegree :=
-      natDegree_sub_lower_bound_of_prec_triple
+      natDegree_sub_lower_bound_of_triple
         hfg hgh hfh hf_pos hh_pos hsub_pos
     have hdeg_hi : (h - f).natDegree ≤ g.natDegree + 1 :=
-      natDegree_sub_upper_bound_of_prec_triple hfg hgh
+      natDegree_sub_upper_bound_of_triple hfg hgh
     by_cases hgzero : g.natDegree = 0
     · have hsub_cases : (h - f).natDegree = 0 ∨ (h - f).natDegree = 1 := by lia
       rcases hsub_cases with hsub_zero | hsub_one
@@ -561,14 +561,71 @@ theorem prec_sub_of_prec_triple_of_posLeadingCoeff
           (h - f).eval r * g.derivative.eval r ≤ 0 := by
         intro r hgr
         have hleft : 0 ≤ f.eval r * g.derivative.eval r :=
-          eval_mul_derivative_nonneg_of_prec_right_root hfg hf_pos hg_pos hgr
+          hfg.eval_mul_derivative_nonneg_of_right_root hf_pos hg_pos hgr
         have hright : h.eval r * g.derivative.eval r ≤ 0 :=
-          eval_mul_derivative_nonpos_of_prec_left_root hgh hg_pos hh_pos hgr
+          hgh.eval_mul_derivative_nonpos_of_left_root hg_pos hh_pos hgr
         rw [eval_sub]
         linarith
       exact
         prec_of_interlaces_eval_mul_nonpos_of_no_common
           hder_inter hgder_pos hsub_pos.ne_zero hsub_splits hsub_pos
           hdeg_lo hdeg_hi hno hroot_sign
+
+/-! ## Deprecated outer-difference interlacing names -/
+
+@[deprecated StrictInterl.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
+  (since := "2026-09-18")]
+alias eq_of_prec_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq :=
+  StrictInterl.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
+
+@[deprecated StrictInterl.eval_mul_derivative_nonneg_of_right_root
+  (since := "2026-09-18")]
+alias eval_mul_derivative_nonneg_of_prec_right_root :=
+  StrictInterl.eval_mul_derivative_nonneg_of_right_root
+
+@[deprecated StrictInterl.eval_mul_derivative_pos_of_right_root_of_isCoprime
+  (since := "2026-09-18")]
+alias eval_mul_derivative_pos_of_prec_right_root_of_isCoprime :=
+  StrictInterl.eval_mul_derivative_pos_of_right_root_of_isCoprime
+
+@[deprecated StrictInterl.eval_mul_derivative_pos_of_right_root_of_no_common
+  (since := "2026-09-18")]
+alias eval_mul_derivative_pos_of_prec_right_root_of_no_common :=
+  StrictInterl.eval_mul_derivative_pos_of_right_root_of_no_common
+
+@[deprecated StrictInterl.eval_mul_derivative_nonpos_of_left_root
+  (since := "2026-09-18")]
+alias eval_mul_derivative_nonpos_of_prec_left_root :=
+  StrictInterl.eval_mul_derivative_nonpos_of_left_root
+
+@[deprecated StrictInterl.eval_mul_derivative_neg_of_left_root_of_isCoprime
+  (since := "2026-09-18")]
+alias eval_mul_derivative_neg_of_prec_left_root_of_isCoprime :=
+  StrictInterl.eval_mul_derivative_neg_of_left_root_of_isCoprime
+
+@[deprecated StrictInterl.eval_mul_derivative_neg_of_left_root_of_no_common
+  (since := "2026-09-18")]
+alias eval_mul_derivative_neg_of_prec_left_root_of_no_common :=
+  StrictInterl.eval_mul_derivative_neg_of_left_root_of_no_common
+
+@[deprecated StrictInterl.eval_mul_eval_nonpos_of_sandwich
+  (since := "2026-09-18")]
+alias eval_mul_eval_nonpos_of_prec_sandwich :=
+  StrictInterl.eval_mul_eval_nonpos_of_sandwich
+
+@[deprecated StrictInterl.eval_mul_eval_neg_of_sandwich_of_isCoprime
+  (since := "2026-09-18")]
+alias eval_mul_eval_neg_of_prec_sandwich_of_isCoprime :=
+  StrictInterl.eval_mul_eval_neg_of_sandwich_of_isCoprime
+
+@[deprecated StrictInterl.eval_mul_eval_neg_of_sandwich_of_no_common
+  (since := "2026-09-18")]
+alias eval_mul_eval_neg_of_prec_sandwich_of_no_common :=
+  StrictInterl.eval_mul_eval_neg_of_sandwich_of_no_common
+
+@[deprecated StrictInterl.sub_of_triple_of_posLeadingCoeff
+  (since := "2026-09-18")]
+alias prec_sub_of_prec_triple_of_posLeadingCoeff :=
+  StrictInterl.sub_of_triple_of_posLeadingCoeff
 
 end RealRooted

@@ -139,8 +139,8 @@ theorem residueEulerStep_strict_package
     have hx_neg := hf_neg x hx
     have htail_sign :
         0 ≤ r.eval x * f.derivative.eval x :=
-      eval_mul_derivative_nonneg_of_prec_right_root
-        hrf.toStrictInterl hr_pos hf_pos hx
+      hrf.toStrictInterl.eval_mul_derivative_nonneg_of_right_root
+        hr_pos hf_pos hx
     have hweighted :
         b * x * (r.eval x * f.derivative.eval x) ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg

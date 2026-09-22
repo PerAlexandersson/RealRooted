@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  729  Lean declarations requiring semantic review
+  717  Lean declarations requiring semantic review
   260  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    39  statement scaffolds requiring proof-status-preserving renames
-   89  deprecated compatibility identifiers with canonical targets
+  101  deprecated compatibility identifiers with canonical targets
    34  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -81,8 +81,8 @@ Execution order
 
 2. Migrate generic foundational declaration families in bounded modules:
    WagnerX affine/common-factor transports, nonnegative-root X transports,
-   and Wagner left/right sums are now canonical receiver APIs.  Continue with
-   residue count APIs and remaining generic StrictInterl/Interl receiver
+   Wagner left/right sums, and the residue/outer-sign layer are now canonical
+   receiver APIs.  Continue with remaining generic StrictInterl/Interl receiver
    methods.  Keep deprecated wrappers with exact old signatures.
 
 3. Migrate concentrated zero-aware domain APIs by owner:
