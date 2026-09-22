@@ -59,20 +59,20 @@ theorem weightedCompatibleLeft_sequence_prec
     {H : Nat → ℝ[X]} {L : Nat → List (ℝ × ℝ[X])}
     (hl : ∀ i : Nat, WeightedCompatibleLeft (H i) (L i)) :
     ∀ i : Nat, StrictInterl (H i) (weightedSum (L i)) := fun i =>
-  RealRooted.WeightedCompatibleLeft.prec (hl i)
+  RealRooted.WeightedCompatibleLeft.toStrictInterl (hl i)
 
 theorem weightedSum_sequence_left_prec
     {H : Nat → ℝ[X]} {L : Nat → List (ℝ × ℝ[X])}
     (hl : ∀ i : Nat, WeightedCompatibleLeft (H i) (L i)) :
     ∀ i : Nat, StrictInterl (H i) (weightedSum (L i)) := fun i =>
-  RealRooted.prec_weightedSum_left (hl i)
+  RealRooted.WeightedCompatibleLeft.toStrictInterl (hl i)
 
 theorem sum_sequence_left_prec
     {H : Nat → ℝ[X]} {L : Nat → List ℝ[X]}
     (hl : ∀ i : Nat,
       WeightedCompatibleLeft (H i) ((L i).map (fun p => ((1 : ℝ), p)))) :
     ∀ i : Nat, StrictInterl (H i) (L i).sum := fun i =>
-  RealRooted.prec_sum_left (hl i)
+  RealRooted.WeightedCompatibleLeft.toStrictInterl_sum (hl i)
 
 theorem weightedSum_sequence_right_prec
     {L : Nat → List (ℝ × ℝ[X])} {H : Nat → ℝ[X]}
@@ -81,7 +81,8 @@ theorem weightedSum_sequence_right_prec
     (hpos : ∀ i : Nat, ∀ ap ∈ L i, HasPosLeadingCoeff ap.2)
     (hex : ∀ i : Nat, ∃ ap ∈ L i, 0 < ap.1) :
     ∀ i : Nat, StrictInterl (weightedSum (L i)) (H i) := fun i =>
-  RealRooted.prec_weightedSum_right _ _ (hnonneg i) (hprec i) (hpos i) (hex i)
+  RealRooted.StrictInterl.weightedSum_right_of_nonneg
+    _ _ (hnonneg i) (hprec i) (hpos i) (hex i)
 
 theorem sum_sequence_right_prec
     {L : Nat → List ℝ[X]} {H : Nat → ℝ[X]}
@@ -89,7 +90,7 @@ theorem sum_sequence_right_prec
     (hpos : ∀ i : Nat, ∀ p ∈ L i, HasPosLeadingCoeff p)
     (hne : ∀ i : Nat, L i ≠ []) :
     ∀ i : Nat, StrictInterl (L i).sum (H i) := fun i =>
-  RealRooted.prec_sum_right _ _ (hprec i) (hpos i) (hne i)
+  RealRooted.StrictInterl.sum_right _ _ (hprec i) (hpos i) (hne i)
 
 syntax (name := rr_weighted_sum_zero_named)
   "rr_weighted_sum_zero" " using " "weights_zero" ":=" term :
@@ -291,15 +292,15 @@ macro_rules
         exact RealRooted.Tactic.weightedCompatibleLeft_sequence_cons_pos
           $ha $hprec $hpos $hl $hne $hsplits $hcop)
   | `(tactic| rr_weighted_compatible_left_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.WeightedCompatibleLeft.prec $hl)
+      `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl $hl)
   | `(tactic| rr_weighted_compatible_left_sequence_prec using compatible := $hl:term) =>
       `(tactic| exact RealRooted.Tactic.weightedCompatibleLeft_sequence_prec $hl)
   | `(tactic| rr_weighted_sum_left_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.prec_weightedSum_left $hl)
+      `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl $hl)
   | `(tactic| rr_weighted_sum_sequence_left_prec using compatible := $hl:term) =>
       `(tactic| exact RealRooted.Tactic.weightedSum_sequence_left_prec $hl)
   | `(tactic| rr_sum_left_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.prec_sum_left $hl)
+      `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl_sum $hl)
   | `(tactic| rr_sum_sequence_left_prec using compatible := $hl:term) =>
       `(tactic| exact RealRooted.Tactic.sum_sequence_left_prec $hl)
   | `(tactic|
@@ -309,7 +310,8 @@ macro_rules
         terms_pos_lc := $hpos:term,
         some_weight_pos := $hex:term) =>
       `(tactic|
-        exact RealRooted.prec_weightedSum_right _ _ $hnonneg $hprec $hpos $hex)
+        exact RealRooted.StrictInterl.weightedSum_right_of_nonneg
+          _ _ $hnonneg $hprec $hpos $hex)
   | `(tactic|
       rr_weighted_sum_sequence_right_prec using
         weights_nonneg := $hnonneg:term,
@@ -324,7 +326,7 @@ macro_rules
         all_prec := $hprec:term,
         terms_pos_lc := $hpos:term,
         nonempty := $hne:term) =>
-      `(tactic| exact RealRooted.prec_sum_right _ _ $hprec $hpos $hne)
+      `(tactic| exact RealRooted.StrictInterl.sum_right _ _ $hprec $hpos $hne)
   | `(tactic|
       rr_sum_sequence_right_prec using
         all_prec := $hprec:term,

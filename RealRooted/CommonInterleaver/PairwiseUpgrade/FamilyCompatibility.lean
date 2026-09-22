@@ -42,7 +42,7 @@ theorem familyCompatible_of_commonInterleaver
   obtain ⟨h, hprec⟩ := hcommon
   intro l hmem hnonneg
   by_cases hex : ∃ ap ∈ l, 0 < ap.1
-  · exact Or.inr (prec_weightedSum_right l h hnonneg
+  · exact Or.inr (StrictInterl.weightedSum_right_of_nonneg l h hnonneg
       (fun ap hap => hprec ap.2 (hmem ap hap))
       (fun ap hap => hpos ap.2 (hmem ap hap)) hex).1
   · exact Or.inl (weightedSum_eq_zero_of_forall_coeff_zero l fun ap hap =>

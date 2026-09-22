@@ -70,7 +70,7 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
   have hex : ∃ ap ∈ [(c, g.derivative), (a, f)], 0 < ap.1 :=
     ⟨(c, g.derivative), by simp, hc⟩
   have hsum_prec : StrictInterl (weightedSum [(c, g.derivative), (a, f)]) g :=
-    prec_weightedSum_right [(c, g.derivative), (a, f)] g
+    StrictInterl.weightedSum_right_of_nonneg [(c, g.derivative), (a, f)] g
       hnonneg hprec hpoly_pos hex
   have hsum_nonneg : HasNonnegCoeffs (C c * g.derivative + C a * f) := by
     rr_nonneg_coeffs using hgnn.derivative, hfnn

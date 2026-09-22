@@ -57,7 +57,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       refine ⟨0, ?_⟩
       grind
     have hprefix_prec : StrictInterl (fs.take m).sum f :=
-      prec_sum_right (fs.take m) f
+      StrictInterl.sum_right (fs.take m) f
         (fun _ hp => hpair.rel_of_mem_take_of_mem_drop hp hf_mem_drop)
         (fun p hp => hfs.posLeadingCoeff p (List.mem_of_mem_take hp))
         htake_ne

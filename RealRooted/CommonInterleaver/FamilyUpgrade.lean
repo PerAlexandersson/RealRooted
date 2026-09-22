@@ -276,7 +276,7 @@ theorem isRealRooted_sum_of_commonInterleaver
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hne : fs ≠ []) : (fs.sum ≠ 0 ∧ fs.sum.Splits) := by
   rcases hcommon with ⟨h, hprec⟩
-  exact (prec_sum_right fs h hprec hpos hne).1
+  exact (StrictInterl.sum_right fs h hprec hpos hne).1
 
 /-- Left-oriented sum real-rootedness package used by the Brändén 7.8.3
 product family. This is the direct Chudnovsky--Seymour `3 ⇒ m` step for a
