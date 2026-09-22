@@ -125,13 +125,18 @@ theorem exists_eq_of_unit_down_crossing
     intro r
     induction r using Fin.induction with
     | zero =>
-        exact lt_of_le_of_ne hstart (Ne.symm fun hzero => h ⟨0, hzero⟩)
+        by_contra hnot
+        have hle : u 0 ≤ v 0 := Nat.le_of_not_gt hnot
+        exact h ⟨0, Nat.le_antisymm hle hstart⟩
     | succ r hr =>
         have hle : v r.succ ≤ u r.succ := by
           have h_u := hu r
           have h_v := hv r
           lia
-        exact lt_of_le_of_ne hle (Ne.symm fun heq => h ⟨r.succ, heq⟩)
-  exact (not_lt_of_ge hend) (hlt (Fin.last m))
+        by_contra hnot
+        have hreverse : u r.succ ≤ v r.succ := Nat.le_of_not_gt hnot
+        exact h ⟨r.succ, Nat.le_antisymm hreverse hle⟩
+  have hlast := hlt (Fin.last m)
+  lia
 
 end Fin
