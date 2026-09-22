@@ -26,7 +26,8 @@ theorem appellKernelCoefficient_zero_left (m j : ℕ) (b c d : ℝ) (hj : j ≤ 
     exact_mod_cast Nat.descFactorial_eq_factorial_mul_choose m j
   have hfactorial : (j.factorial : ℝ) ≠ 0 := by
     exact_mod_cast Nat.factorial_ne_zero j
-  rw [appellKernelCoefficient, if_pos (by simpa using hj)]
+  rw [appellKernelCoefficient]
+  simp only [show 0 + j ≤ m by simpa using hj, ↓reduceIte]
   simp only [zero_add, risingFactorial_zero, Nat.factorial_zero, Nat.cast_one,
     one_mul, mul_one]
   rw [risingFactorial_neg_nat, hdesc]

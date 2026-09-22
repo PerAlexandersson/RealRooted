@@ -42,7 +42,7 @@ theorem normalizedJacobiFunctional_normalizedShiftedJacobi_one_sub_X_pow_eq_sum
             risingFactorial ((j : ℝ) + c + d - 1) i /
               risingFactorial (c + d + k) i := by
   rw [normalizedShiftedJacobi_eq_sum_coeff hc hd j, Finset.sum_mul,
-    normalizedJacobiFunctional_sum, ← Finset.mul_sum]
+    normalizedJacobiFunctional_sum, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i hi
   have hij : i ≤ j := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)

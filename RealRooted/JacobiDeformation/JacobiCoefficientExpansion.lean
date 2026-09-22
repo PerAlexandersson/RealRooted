@@ -47,8 +47,8 @@ theorem coeff_normalizedShiftedJacobi_of_le
     rw [Nat.cast_choose_eq_descPochhammer_div]
     field_simp [Nat.factorial_ne_zero]
     rfl
-  rw [normalizedShiftedJacobi, coeff_C_mul, coeff_shiftedJacobi,
-    if_pos hij]
+  rw [normalizedShiftedJacobi, coeff_C_mul, coeff_shiftedJacobi]
+  simp only [hij, ↓reduceIte]
   field_simp [hnorm.ne', hrise.ne', Nat.factorial_ne_zero]
   calc
     Ring.choose ((j : ℝ) + (c - 1)) (j - i) *
@@ -70,7 +70,7 @@ theorem coeff_normalizedShiftedJacobi_of_le
 theorem coeff_normalizedShiftedJacobi_of_lt
     (j : ℕ) (c d : ℝ) {i : ℕ} (hji : j < i) :
     (normalizedShiftedJacobi j c d).coeff i = 0 := by
-  rw [normalizedShiftedJacobi, coeff_C_mul, coeff_shiftedJacobi,
-    if_neg (Nat.not_le.mpr hji), mul_zero]
+  rw [normalizedShiftedJacobi, coeff_C_mul, coeff_shiftedJacobi]
+  simp only [Nat.not_le.mpr hji, ↓reduceIte, mul_zero]
 
 end RealRooted.JacobiDeformation

@@ -48,7 +48,7 @@ theorem appellKernelCoefficient_recurrence {m i j : ℕ} {b c d : ℝ}
   have hci_add : (i : ℝ) + c ≠ 0 := by positivity
   have hdj_add : (j : ℝ) + d ≠ 0 := by positivity
   simp only [appellLeftOperatorCoefficient, appellRightOperatorCoefficient,
-    appellKernelCoefficient, hil, hjr, if_true]
+    appellKernelCoefficient, hil, hjr, ite_true]
   rw [risingFactorial_succ' c i, risingFactorial_succ' d j]
   norm_num [Nat.factorial_succ]
   field_simp [hci, hdj, hci_add, hdj_add]

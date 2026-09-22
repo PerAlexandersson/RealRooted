@@ -26,8 +26,7 @@ theorem risingFactorial_mixed_moment_cancel
   have hsplit := risingFactorial_mul_shift (c + d) k i
   rw [show (c + d : ℝ) + k = c + d + k by ring,
     Nat.add_comm] at hsplit
-  field_simp [hci.ne', hsk.ne', hski.ne']
   rw [← hsplit]
-  ring
+  field_simp [hci.ne', hsk.ne', hski.ne']
 
 end RealRooted.JacobiDeformation

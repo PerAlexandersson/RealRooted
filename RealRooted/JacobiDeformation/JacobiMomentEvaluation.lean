@@ -43,7 +43,7 @@ theorem normalizedJacobiFunctional_normalizedShiftedJacobi_one_sub_X_pow
         risingFactorial (c + d) (k + j) := by
   have hs : 0 < c + d := by linarith
   have hsum := normalizedJacobiMoment_vandermonde_sum j k (c + d) hs
-  rw [finiteVandermonde_rising_eq_risingFactorial,
+  simp_rw [finiteVandermonde_rising_eq_risingFactorial,
     finiteVandermonde_falling_eq_fallingFactorial] at hsum
   have hnum : (j : ℝ) + (c + d) - 1 = (j : ℝ) + c + d - 1 := by ring
   rw [hnum] at hsum
