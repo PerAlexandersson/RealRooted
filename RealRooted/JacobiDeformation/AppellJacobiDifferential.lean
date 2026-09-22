@@ -50,7 +50,8 @@ theorem jacobiDifferentialOperator_jacobiBernstein (c d : ℝ) (i j : ℕ) :
           | succ j =>
               cases j with
               | zero =>
-                  simp [jacobiBernstein, jacobiDifferentialOperator, derivative_mul]
+                  norm_num [jacobiBernstein, jacobiDifferentialOperator,
+                    derivative_mul]
                   rw [C_ofNat]
                   ring
               | succ j =>
