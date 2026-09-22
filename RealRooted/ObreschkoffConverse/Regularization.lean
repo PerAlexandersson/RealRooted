@@ -848,7 +848,8 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
     StrictInterl f g := by
   by_cases hdeg0 : f.natDegree = 0
   · have hgdeg1 : g.natDegree = 1 := by lia
-    exact prec_degree_zero_right_of_degree_one hf_ne hf_splits hg_ne hg_splits hdeg0 hgdeg1
+    exact StrictInterl.of_degree_zero_right_of_degree_one
+      hf_ne hf_splits hg_ne hg_splits hdeg0 hgdeg1
   have hf_deg_pos : 1 ≤ f.natDegree := by lia
   have hW_ne x : (wronskianPoly f g).eval x ≠ 0 :=
     wronskian_eval_ne_zero_of_eq_zero_or_simple_combo hf_ne hg_ne hg_splits

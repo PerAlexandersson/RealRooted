@@ -153,7 +153,7 @@ theorem prec_eulerInsertionStep
     eulerInsertionStep_degree_pos (c := c) hpdeg hp_pos
   by_cases hpdeg0 : p.natDegree = 0
   · have hout_deg1 : (eulerInsertionStep c d p).natDegree = 1 := by lia
-    exact prec_degree_zero_right_of_degree_one
+    exact StrictInterl.of_degree_zero_right_of_degree_one
       hp_pos.ne_zero hp_splits hout_pos.ne_zero
       (Polynomial.Splits.of_natDegree_le_one (by lia)) hpdeg0 hout_deg1
   · have hpdeg_pos : 1 ≤ p.natDegree := Nat.one_le_iff_ne_zero.mpr hpdeg0

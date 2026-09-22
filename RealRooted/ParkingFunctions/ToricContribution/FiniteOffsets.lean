@@ -116,7 +116,7 @@ theorem IntervalRootData.prec_neg_insertionOperator
         (-ToricContribution.insertionOperator a b p).Splits := by
       simpa using insertionOperator_splits_of_natDegree_zero
         a b hpDegree hpZero.ne' hb.ne'
-    exact prec_degree_zero_right_of_degree_one hpNe hp.splits
+    exact StrictInterl.of_degree_zero_right_of_degree_one hpNe hp.splits
       houtputNe houtputSplits hpDegree houtputDegree
   let sign : ℝ := (-1 : ℝ) ^ n
   have hsign : sign ≠ 0 := pow_ne_zero n (by norm_num)

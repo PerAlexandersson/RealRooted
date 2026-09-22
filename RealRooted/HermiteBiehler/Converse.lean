@@ -173,7 +173,8 @@ theorem prec_of_stable_general {f g : ℝ[X]}
                 ((f /ₘ (X - C r)) ≠ 0 ∧ (f /ₘ (X - C r)).Splits) :=
             ⟨isRealRooted_of_deg_zero hg₁.ne_zero hg₁d₀,
               isRealRooted_of_deg_zero hf₁.ne_zero hf₁d₀⟩
-          exact prec_degree_zero_degree_zero hg₁₀ hg₁s hf₁₀ hf₁s hg₁d₀ hf₁d₀
+          exact StrictInterl.of_degree_zero_degree_zero
+            hg₁₀ hg₁s hf₁₀ hf₁s hg₁d₀ hf₁d₀
         exact hcofactor.of_cofactor_of_common_root hrf hrg
     · push Not at hcom
       obtain ⟨hgle, hfle⟩ := natDegree_shape_of_stable hf hg hstab
