@@ -91,4 +91,42 @@ theorem sum_range_shift_of_boundary_zero (f : ℕ → ℝ) (n : ℕ)
   rw [sum_range_shift_aux, hzero, zero_add, Finset.sum_range_succ, htop,
     add_zero]
 
+private theorem jacobiDifferentialOperator_finset_sum (a s : ℝ)
+    (u : Finset ℕ) (f : ℕ → ℝ[X]) :
+    jacobiDifferentialOperator a s (∑ i ∈ u, f i) =
+      ∑ i ∈ u, jacobiDifferentialOperator a s (f i) := by
+  induction u using Finset.induction_on with
+  | empty => simp [jacobiDifferentialOperator_zero]
+  | insert i u hi ih =>
+      simp [hi, jacobiDifferentialOperator_add, ih]
+
+private theorem jacobiBernstein_succ_left (i j : ℕ) :
+    jacobiBernstein (i + 1) j = X * jacobiBernstein i j := by
+  simp [jacobiBernstein, pow_succ]
+  ring
+
+private theorem jacobiBernstein_succ_right (i j : ℕ) :
+    jacobiBernstein i (j + 1) = (1 - X) * jacobiBernstein i j := by
+  simp [jacobiBernstein, pow_succ]
+  ring
+
+/-- Applying the actual library Jacobi operator to the fixed-coordinate kernel
+is the finite sum of the three Bernstein action terms. -/
+theorem jacobiDifferentialOperator_appellJacobiKernel (m : ℕ) (b c d z : ℝ) :
+    jacobiDifferentialOperator c (c + d) (appellJacobiKernel m b c d z) =
+      ∑ i ∈ Finset.range (m + 1), ∑ j ∈ Finset.range (m + 1),
+        C (appellKernelCoefficient m b c d i j * z ^ i * (1 - z) ^ j) *
+          (C ((i : ℝ) * ((i : ℝ) + c - 1)) * jacobiBernstein (i - 1) j +
+            C ((j : ℝ) * ((j : ℝ) + d - 1)) * jacobiBernstein i (j - 1) -
+              C (((i + j : ℕ) : ℝ) * ((i + j : ℕ) + c + d - 1)) *
+                jacobiBernstein i j) := by
+  rw [appellJacobiKernel, jacobiDifferentialOperator_finset_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [jacobiDifferentialOperator_finset_sum]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [jacobiDifferentialOperator_C_mul,
+    jacobiDifferentialOperator_jacobiBernstein]
+
 end RealRooted.JacobiDeformation
