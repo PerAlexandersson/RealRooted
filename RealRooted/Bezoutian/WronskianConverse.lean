@@ -79,7 +79,7 @@ lemma Polynomial.roots_sort_eq_ofFn {n : ℕ} {p : ℝ[X]}
     List.getElem_finRange, Fin.cast_mk]
   exact fun i j hij ↦ hs.monotone hij.le
 
-lemma StrictPrecSameDegree.of_fin_interlacing {n : ℕ}
+lemma StrictInterlSameDegree.of_fin_interlacing {n : ℕ}
     (s r : Fin n → ℝ) (hs : StrictMono s) (hr : StrictMono r)
     (hint : ∀ k : Fin n, s k < r k)
     (hint' : ∀ (i j : Fin n), i < j → r i < s j)
@@ -90,7 +90,7 @@ lemma StrictPrecSameDegree.of_fin_interlacing {n : ℕ}
     (hp_roots_nodup : p.roots.Nodup) (hq_roots_nodup : q.roots.Nodup)
     (hs_surj : ∀ x ∈ p.roots, ∃ k, s k = x)
     (hr_surj : ∀ x ∈ q.roots, ∃ k, r k = x) :
-    StrictPrecSameDegree p q :=
+    StrictInterlSameDegree p q :=
   ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, hp_deg ▸ hq_deg ▸ rfl,
     Polynomial.roots_sort_eq_ofFn hp_ne hp_splits hp_deg hp_roots_nodup s hs hs_surj ▸
     Polynomial.roots_sort_eq_ofFn hq_ne hq_splits hq_deg hq_roots_nodup r hr hr_surj ▸
@@ -444,13 +444,13 @@ lemma Polynomial.roots_nodup_of_wronskian_pos {p q : ℝ[X]}
     have := hW r
     simp_all
 
-lemma StrictPrecSameDegree.of_wronskian_pos {n : ℕ}
+lemma StrictInterlSameDegree.of_wronskian_pos {n : ℕ}
     {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
     (hp_splits : p.Splits) (hq_splits : q.Splits)
     (hW : ∀ t : ℝ, 0 < q.derivative.eval t * p.eval t -
     q.eval t * p.derivative.eval t) :
-    StrictPrecSameDegree p q := by
+    StrictInterlSameDegree p q := by
   rcases n with (_ | n)
   · rw [eq_C_of_natDegree_eq_zero hp_deg] at hW ⊢
     rw [eq_C_of_natDegree_eq_zero hq_deg] at hW ⊢
@@ -472,7 +472,7 @@ lemma StrictPrecSameDegree.of_wronskian_pos {n : ℕ}
       hp_pos hq_pos hp_deg hq_deg hW
       r hr_mono hr_roots
     have h_inter' := StrictMono.fin_interlacing_of_root_between s r hs_mono ?_ ?_
-    · exact StrictPrecSameDegree.of_fin_interlacing s r hs_mono hr_mono
+    · exact StrictInterlSameDegree.of_fin_interlacing s r hs_mono hr_mono
         h_inter'.1 h_inter'.2 p q (leadingCoeff_ne_zero.mp hp_pos.ne')
         (leadingCoeff_ne_zero.mp hq_pos.ne') hp_splits hq_splits hp_deg hq_deg
         h_real_roots.1 h_real_roots.2 hs_surj hr_surj
@@ -673,12 +673,12 @@ lemma prec_of_wronskian_pos_succ {n : ℕ}
       have hle : t ⟨i.val, i.isLt⟩ ≤ t (⟨j.val, j.isLt⟩ : Fin n).castSucc :=
         ht_mono.monotone h_le_ij
       exact lt_of_le_of_lt hle hlt
-lemma StrictPrecSameDegree.of_splits_and_posDef {n : ℕ}
+lemma StrictInterlSameDegree.of_splits_and_posDef {n : ℕ}
     {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
     (hp_splits : p.Splits) (hq_splits : q.Splits)
     (hB : (bezoutMatrix n q p).PosDef) :
-    StrictPrecSameDegree p q :=
+    StrictInterlSameDegree p q :=
   match n with
   | 0 =>
     ⟨⟨leadingCoeff_ne_zero.mp hp_pos.ne', hp_splits⟩,
@@ -690,7 +690,18 @@ lemma StrictPrecSameDegree.of_splits_and_posDef {n : ℕ}
           Multiset.card_eq_zero.mp (hq_splits.natDegree_eq_card_roots.symm ▸ hq_deg)
         simp [hp_roots, hq_roots]⟩
   | m + 1 =>
-    StrictPrecSameDegree.of_wronskian_pos hp_pos hq_pos hp_deg hq_deg hp_splits hq_splits fun t ↦
-      bezoutMatrix.wronskian_pos_of_posDef hq_deg.le hp_deg.le hB t
+    StrictInterlSameDegree.of_wronskian_pos hp_pos hq_pos hp_deg hq_deg hp_splits hq_splits
+      fun t ↦ bezoutMatrix.wronskian_pos_of_posDef hq_deg.le hp_deg.le hB t
+
+/-! ## Deprecated strict same-degree interlacing names -/
+
+@[deprecated StrictInterlSameDegree.of_fin_interlacing (since := "2026-09-18")]
+alias StrictPrecSameDegree.of_fin_interlacing := StrictInterlSameDegree.of_fin_interlacing
+
+@[deprecated StrictInterlSameDegree.of_wronskian_pos (since := "2026-09-18")]
+alias StrictPrecSameDegree.of_wronskian_pos := StrictInterlSameDegree.of_wronskian_pos
+
+@[deprecated StrictInterlSameDegree.of_splits_and_posDef (since := "2026-09-18")]
+alias StrictPrecSameDegree.of_splits_and_posDef := StrictInterlSameDegree.of_splits_and_posDef
 
 end RealRooted

@@ -319,11 +319,11 @@ theorem shiftedJacobiMonic_noCommonRoot_alpha_add_one (n : ℕ) {α β : ℝ}
   exact hnoBeta (1 - r) hhi' hlo'
 
 /-- The first-parameter unit comparison is strictly interleaving. -/
-theorem shiftedJacobiMonic_strictPrec_alpha_add_one (n : ℕ) {α β : ℝ}
+theorem shiftedJacobiMonic_strictInterlSameDegree_alpha_add_one (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
-    StrictPrecSameDegree (shiftedJacobiMonic n α β)
+    StrictInterlSameDegree (shiftedJacobiMonic n α β)
       (shiftedJacobiMonic n (α + 1) β) := by
-  apply StrictPrecSameDegree.of_prec_of_no_common
+  apply StrictInterlSameDegree.of_strictInterl_of_no_common
     (shiftedJacobiMonic_prec_alpha_add_one n hα hβ)
   · rw [natDegree_shiftedJacobiMonic n hα hβ,
       natDegree_shiftedJacobiMonic n (by linarith) hβ]
@@ -458,8 +458,8 @@ theorem shiftedJacobiMonic_prec_alpha_add_two (n : ℕ) {α β : ℝ}
         exact natDegree_shiftedJacobiMonic (m + 1) (by linarith) hβ
       have hp₂_deg : p₂.natDegree = m + 1 := by
         exact natDegree_shiftedJacobiMonic (m + 1) (by linarith) hβ
-      have hstrict : StrictPrecSameDegree p₀ p₁ := by
-        exact shiftedJacobiMonic_strictPrec_alpha_add_one (m + 1) hα hβ
+      have hstrict : StrictInterlSameDegree p₀ p₁ := by
+        exact shiftedJacobiMonic_strictInterlSameDegree_alpha_add_one (m + 1) hα hβ
       have hroot_sign : ∀ x, p₀.IsRoot x → p₂.eval x * p₀.derivative.eval x < 0 := by
         intro x hx
         have hder_mid : p₀.derivative.eval x * p₁.eval x < 0 :=
@@ -488,11 +488,11 @@ theorem shiftedJacobiMonic_prec_alpha_add_two (n : ℕ) {α β : ℝ}
         (by rw [hp₂_deg, hp₀_deg]) hroot_sign
 
 /-- The two-unit first-parameter comparison is strictly interleaving. -/
-theorem shiftedJacobiMonic_strictPrec_alpha_add_two (n : ℕ) {α β : ℝ}
+theorem shiftedJacobiMonic_strictInterlSameDegree_alpha_add_two (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
-    StrictPrecSameDegree (shiftedJacobiMonic n α β)
+    StrictInterlSameDegree (shiftedJacobiMonic n α β)
       (shiftedJacobiMonic n (α + 2) β) := by
-  apply StrictPrecSameDegree.of_prec_of_no_common
+  apply StrictInterlSameDegree.of_strictInterl_of_no_common
     (shiftedJacobiMonic_prec_alpha_add_two n hα hβ)
   · rw [natDegree_shiftedJacobiMonic n hα hβ,
       natDegree_shiftedJacobiMonic n (by linarith) hβ]
@@ -503,16 +503,16 @@ theorem shiftedJacobiMonic_strictPrec_alpha_add_two (n : ℕ) {α β : ℝ}
 
 /-- In degree one, every positive increase in the first Jacobi parameter
 moves the unique shifted root strictly to the right. -/
-theorem shiftedJacobiMonic_strictPrec_alpha_add_degree_one
+theorem shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one
     {α β t : ℝ} (hα : -1 < α) (hβ : -1 < β) (ht : 0 < t) :
-    StrictPrecSameDegree (shiftedJacobiMonic 1 α β)
+    StrictInterlSameDegree (shiftedJacobiMonic 1 α β)
       (shiftedJacobiMonic 1 (α + t) β) := by
   have hden₀ : 0 < α + β + 2 := by linarith
   have hdenₜ : 0 < α + t + β + 2 := by linarith
   rw [shiftedJacobiMonic_one α β hden₀.ne',
     shiftedJacobiMonic_one (α + t) β hdenₜ.ne']
   simp only [sub_eq_add_neg, ← map_neg]
-  rw [StrictPrecSameDegree.X_add_C_iff]
+  rw [StrictInterlSameDegree.X_add_C_iff]
   rw [neg_lt_neg_iff, div_lt_div_iff₀ hden₀ hdenₜ]
   nlinarith [mul_pos ht (by linarith : 0 < β + 1)]
 
@@ -522,7 +522,7 @@ theorem shiftedJacobiMonic_prec_alpha_add_degree_one
     {α β t : ℝ} (hα : -1 < α) (hβ : -1 < β) (ht : 0 < t) :
     StrictInterl (shiftedJacobiMonic 1 α β)
       (shiftedJacobiMonic 1 (α + t) β) :=
-  (shiftedJacobiMonic_strictPrec_alpha_add_degree_one hα hβ ht).toStrictInterl
+  (shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one hα hβ ht).toStrictInterl
 
 private theorem shiftedJacobiMonic_two_neg_half_one :
     shiftedJacobiMonic 2 (-(1 / 2) : ℝ) 1 =
@@ -598,15 +598,15 @@ private theorem shiftedJacobiMonic_two_two_one :
 
 /-- In degree two, the fractional first-parameter comparison needed by the
 two parking-function parity classes is strictly interleaving. -/
-theorem shiftedJacobiMonic_strictPrec_three_halves_degree_two
+theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_two
     (ε : ℕ) (hε : ε < 2) :
-    StrictPrecSameDegree
+    StrictInterlSameDegree
       (shiftedJacobiMonic 2 ((ε : ℝ) - 1 / 2) 1)
       (shiftedJacobiMonic 2 ((ε : ℝ) + 1) 1) := by
   have hcases : ε = 0 ∨ ε = 1 := by lia
   rcases hcases with rfl | rfl
   · norm_num
-    apply StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
+    apply StrictInterlSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
       (shiftedJacobiMonic_splits 2 (by norm_num) (by norm_num))
       (shiftedJacobiMonic_splits 2 (by norm_num) (by norm_num))
       (hasPosLeadingCoeff_of_monic
@@ -622,7 +622,7 @@ theorem shiftedJacobiMonic_strictPrec_three_halves_degree_two
       Polynomial.coeff_X_pow, coeff_X, coeff_C]
     apply Matrix.posDef_fin_two_of_entries <;> norm_num
   · norm_num
-    apply StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
+    apply StrictInterlSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
       (shiftedJacobiMonic_splits 2 (by norm_num) (by norm_num))
       (shiftedJacobiMonic_splits 2 (by norm_num) (by norm_num))
       (hasPosLeadingCoeff_of_monic
@@ -644,7 +644,7 @@ theorem shiftedJacobiMonic_prec_three_halves_degree_two
     (ε : ℕ) (hε : ε < 2) :
     StrictInterl (shiftedJacobiMonic 2 ((ε : ℝ) - 1 / 2) 1)
       (shiftedJacobiMonic 2 ((ε : ℝ) + 1) 1) :=
-  (shiftedJacobiMonic_strictPrec_three_halves_degree_two ε hε).toStrictInterl
+  (shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_two ε hε).toStrictInterl
 
 private theorem shiftedJacobiMonic_three_neg_half_one :
     shiftedJacobiMonic 3 (-(1 / 2) : ℝ) 1 =
@@ -728,15 +728,15 @@ private theorem shiftedJacobiMonic_three_two_one :
 
 /-- In degree three, the fractional first-parameter comparison needed by the
 two parking-function parity classes is strictly interleaving. -/
-theorem shiftedJacobiMonic_strictPrec_three_halves_degree_three
+theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three
     (ε : ℕ) (hε : ε < 2) :
-    StrictPrecSameDegree
+    StrictInterlSameDegree
       (shiftedJacobiMonic 3 ((ε : ℝ) - 1 / 2) 1)
       (shiftedJacobiMonic 3 ((ε : ℝ) + 1) 1) := by
   have hcases : ε = 0 ∨ ε = 1 := by lia
   rcases hcases with rfl | rfl
   · norm_num
-    rw [strictPrecSameDegree_iff_bezoutMatrix_posDef
+    rw [strictInterlSameDegree_iff_bezoutMatrix_posDef
       (hasPosLeadingCoeff_of_monic
         (monic_shiftedJacobiMonic 3 (by norm_num) (by norm_num)))
       (hasPosLeadingCoeff_of_monic
@@ -768,7 +768,7 @@ theorem shiftedJacobiMonic_strictPrec_three_halves_degree_three
       (by norm_num) (by norm_num) (by norm_num) using 1
     norm_num
   · norm_num
-    rw [strictPrecSameDegree_iff_bezoutMatrix_posDef
+    rw [strictInterlSameDegree_iff_bezoutMatrix_posDef
       (hasPosLeadingCoeff_of_monic
         (monic_shiftedJacobiMonic 3 (by norm_num) (by norm_num)))
       (hasPosLeadingCoeff_of_monic
@@ -806,7 +806,7 @@ theorem shiftedJacobiMonic_prec_three_halves_degree_three
     (ε : ℕ) (hε : ε < 2) :
     StrictInterl (shiftedJacobiMonic 3 ((ε : ℝ) - 1 / 2) 1)
       (shiftedJacobiMonic 3 ((ε : ℝ) + 1) 1) :=
-  (shiftedJacobiMonic_strictPrec_three_halves_degree_three ε hε).toStrictInterl
+  (shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three ε hε).toStrictInterl
 
 /-- A beta-one shifted Jacobi polynomial and a positive first-parameter shift
 of at most two have no common root. -/
@@ -827,7 +827,7 @@ theorem shiftedJacobiMonic_noCommonRoot_alpha_add
     strictMonoOn_shiftedJacobiMonicRoot_alpha n i
       (a := α) (b := α + s) hα hαs hα_lt_αs
   by_cases hji : j < i
-  · have hendpoint := shiftedJacobiMonic_strictPrec_alpha_add_two n hα
+  · have hendpoint := shiftedJacobiMonic_strictInterlSameDegree_alpha_add_two n hα
       (by norm_num : (-1 : ℝ) < 1)
     have hinter := hendpoint.interlacing_fin
       (natDegree_shiftedJacobiMonic n (by linarith : -1 < α + 2)
@@ -896,9 +896,9 @@ theorem shiftedJacobiMonic_prec_alpha_add_of_no_crossing
       have htwo_pos : HasPosLeadingCoeff (p 2) := by
         exact hasPosLeadingCoeff_of_monic
           (monic_shiftedJacobiMonic (n + 1) (by linarith) hβ)
-      have hendpoint : StrictPrecSameDegree f (p 2) := by
+      have hendpoint : StrictInterlSameDegree f (p 2) := by
         simpa only [f, p] using
-          shiftedJacobiMonic_strictPrec_alpha_add_two (n + 1) hα hβ
+          shiftedJacobiMonic_strictInterlSameDegree_alpha_add_two (n + 1) hα hβ
       apply prec_of_interlaces_endpoint_sign_of_no_crossing
         hinter hder_pos hpt_pos hpt_deg ht_two
       · intro r hr
@@ -1144,5 +1144,32 @@ theorem shiftedJacobiMonic_prec_alpha_add_two_degree_pred (m : ℕ)
     StrictInterl (shiftedJacobiMonic m (α + 2) β)
       (shiftedJacobiMonic (m + 1) α β) :=
   (shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred m hα hβ).toStrictInterl
+
+/-! ## Deprecated strict same-degree interlacing names -/
+
+@[deprecated shiftedJacobiMonic_strictInterlSameDegree_alpha_add_one
+  (since := "2026-09-18")]
+alias shiftedJacobiMonic_strictPrec_alpha_add_one :=
+  shiftedJacobiMonic_strictInterlSameDegree_alpha_add_one
+
+@[deprecated shiftedJacobiMonic_strictInterlSameDegree_alpha_add_two
+  (since := "2026-09-18")]
+alias shiftedJacobiMonic_strictPrec_alpha_add_two :=
+  shiftedJacobiMonic_strictInterlSameDegree_alpha_add_two
+
+@[deprecated shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one
+  (since := "2026-09-18")]
+alias shiftedJacobiMonic_strictPrec_alpha_add_degree_one :=
+  shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one
+
+@[deprecated shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_two
+  (since := "2026-09-18")]
+alias shiftedJacobiMonic_strictPrec_three_halves_degree_two :=
+  shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_two
+
+@[deprecated shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three
+  (since := "2026-09-18")]
+alias shiftedJacobiMonic_strictPrec_three_halves_degree_three :=
+  shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three
 
 end RealRooted

@@ -481,9 +481,9 @@ theorem consecutive_signedTriangleFamily_prec
 
 /-- The consecutive signed-diagonal comparison is strict: adjacent
 diagonals have no common root. -/
-theorem consecutive_signedTriangleFamily_strictPrec
+theorem consecutive_signedTriangleFamily_strictInterlSameDegree
     (m ε d : ℕ) (hm : 2 ≤ m) (hd : d ≤ m - 2) :
-    StrictPrecSameDegree
+    StrictInterlSameDegree
       (signedTriangleFamily ((ε : ℝ) + 1 / 2)
         (jPolynomial m ε) (d + 1) (d + 1))
       (C ((((m - 1 : ℕ) : ℝ) - d) *
@@ -537,7 +537,7 @@ theorem consecutive_signedTriangleFamily_strictPrec
       push_cast
       ring
     rw [hparameter, insertionOperator_C_mul]
-  apply StrictPrecSameDegree.of_prec_of_no_common
+  apply StrictInterlSameDegree.of_strictInterl_of_no_common
     (consecutive_signedTriangleFamily_prec m ε d hm hd)
   · change B.natDegree = (C eigenvalue * A).natDegree
     rw [hB_data.natDegree_eq, natDegree_C_mul heigenvalue.ne',
@@ -616,7 +616,7 @@ theorem consecutive_signedDiagonalRoot_interlacing
     have hsecond : 0 < (((m - 1 : ℕ) : ℝ) + d + ε + 3) := by
       positivity
     exact mul_pos hfirst hsecond
-  have hstrict := consecutive_signedTriangleFamily_strictPrec m ε d hm hd
+  have hstrict := consecutive_signedTriangleFamily_strictInterlSameDegree m ε d hm hd
   have hq_degree : (C eigenvalue * A).natDegree = m - 1 := by
     rw [natDegree_C_mul heigenvalue.ne', hA_data.natDegree_eq]
   have hB_roots : ∀ i : Fin (m - 1),
@@ -640,9 +640,9 @@ theorem consecutive_signedDiagonalRoot_interlacing
 /-- The terminal signed diagonal strictly interleaves the Jacobi interlacer.
 This transports the all-degree fractional Jacobi comparison through the
 positive normalizations of the two polynomial models. -/
-theorem signedTriangleFamily_terminal_strictPrec_jPolynomial
+theorem signedTriangleFamily_terminal_strictInterlSameDegree_jPolynomial
     (m ε : ℕ) (hm : 0 < m) :
-    StrictPrecSameDegree
+    StrictInterlSameDegree
       (signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
         (m - 1) (m - 1))
       (jPolynomial m ε) := by
@@ -659,10 +659,10 @@ theorem signedTriangleFamily_terminal_strictPrec_jPolynomial
     convert hroot using 1
     ring_nf
   have hstrict_monic :
-      StrictPrecSameDegree
+      StrictInterlSameDegree
         (shiftedJacobiMonic (m - 1) ((ε : ℝ) - 1 / 2) 1)
         (shiftedJacobiMonic (m - 1) ((ε : ℝ) + 1) 1) := by
-    apply StrictPrecSameDegree.of_prec_of_no_common hprec
+    apply StrictInterlSameDegree.of_strictInterl_of_no_common hprec
     · rw [natDegree_shiftedJacobiMonic (m - 1) hα (by norm_num),
         natDegree_shiftedJacobiMonic (m - 1) hupper (by norm_num)]
     · exact hno
@@ -691,10 +691,10 @@ theorem signedTriangleFamily_terminal_strictPrec_jPolynomial
     change C v * shiftedJacobi (m - 1) ((ε : ℝ) + 1) 1 = 0
     rw [hv_zero, C_0, zero_mul]
   have hstrict_shifted :
-      StrictPrecSameDegree
+      StrictInterlSameDegree
         (shiftedJacobi (m - 1) ((ε : ℝ) - 1 / 2) 1)
         (shiftedJacobi (m - 1) ((ε : ℝ) + 1) 1) := by
-    apply (StrictPrecSameDegree.C_mul_C_mul_iff hu hv).mp
+    apply (StrictInterlSameDegree.C_mul_C_mul_iff hu hv).mp
     simpa only [shiftedJacobiMonic, u, v] using hstrict_monic
   obtain ⟨k, hk, hterminal⟩ :=
     exists_signedTriangleFamily_terminal_eq_C_mul_shiftedJacobi m ε hm
@@ -738,7 +738,7 @@ theorem signedDiagonalRoot_terminal_interlacing_jPolynomialRoot
     have hdata := jPolynomial_signedTriangleFamily_intervalRootData
       m ε 0 0 hm (by lia) le_rfl
     simpa [signedTriangleFamily] using hdata
-  have hstrict := signedTriangleFamily_terminal_strictPrec_jPolynomial m ε hm
+  have hstrict := signedTriangleFamily_terminal_strictInterlSameDegree_jPolynomial m ε hm
   have hinter := hstrict.interlacing_fin hJ_data.natDegree_eq
     (signedDiagonalRoot m ε (m - 1))
     (fun i => hT_data.orderedRoot_isRoot i)
@@ -966,6 +966,18 @@ theorem rPolynomial_eval_mul_jPolynomial_derivative_pos_of_isRoot
   rw [← hi]
   exact rPolynomial_eval_mul_jPolynomial_derivative_pos
     m ε d hm hd_pos hd i
+
+/-! ## Deprecated strict same-degree interlacing names -/
+
+@[deprecated consecutive_signedTriangleFamily_strictInterlSameDegree
+  (since := "2026-09-18")]
+alias consecutive_signedTriangleFamily_strictPrec :=
+  consecutive_signedTriangleFamily_strictInterlSameDegree
+
+@[deprecated signedTriangleFamily_terminal_strictInterlSameDegree_jPolynomial
+  (since := "2026-09-18")]
+alias signedTriangleFamily_terminal_strictPrec_jPolynomial :=
+  signedTriangleFamily_terminal_strictInterlSameDegree_jPolynomial
 
 end ToricContribution
 end ParkingFunctions

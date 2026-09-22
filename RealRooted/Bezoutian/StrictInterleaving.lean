@@ -230,17 +230,26 @@ private lemma interleaves_lt_of_le_of_forall_ne :
         exact (hne b hb a (by simp [ha])).symm
       · exact lt_of_le_of_ne hab (hne _ (by simp) _ (by simp)).symm
 
-/-- Strict same-degree proper position, stated on canonical sorted root lists. -/
-def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
+/-- Strict same-degree interlacing, stated on canonical sorted root lists.
+
+Unlike `StrictInterl`, which excludes the zero polynomial but permits weak root
+comparisons and common roots, this relation uses strict root interleaving and
+therefore excludes common roots. -/
+def StrictInterlSameDegree (p q : ℝ[X]) : Prop :=
   (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits) ∧ p.natDegree = q.natDegree ∧
     List.Interleaves (· > ·) (p.roots.sort (· ≤ ·)).reverse (q.roots.sort (· ≤ ·)).reverse
 
+/-- Deprecated compatibility name for `StrictInterlSameDegree`. -/
+@[deprecated StrictInterlSameDegree (since := "2026-09-18")]
+abbrev StrictPrecSameDegree := StrictInterlSameDegree
+
 /-- Equal-degree proper position is strict when the two polynomials have no
 common root. -/
-theorem StrictPrecSameDegree.of_prec_of_no_common {p q : ℝ[X]} (h : StrictInterl p q)
+theorem StrictInterlSameDegree.of_strictInterl_of_no_common {p q : ℝ[X]}
+    (h : StrictInterl p q)
     (hdeg : p.natDegree = q.natDegree)
     (hno : ∀ r, p.IsRoot r → ¬q.IsRoot r) :
-    StrictPrecSameDegree p q := by
+    StrictInterlSameDegree p q := by
   have hp : p ≠ 0 ∧ p.Splits := h.1
   have hq : q ≠ 0 ∧ q.Splits := h.2.1
   obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, hss_sorted, hrs_sorted, hss_eq, hrs_eq,
@@ -271,26 +280,26 @@ theorem StrictPrecSameDegree.of_prec_of_no_common {p q : ℝ[X]} (h : StrictInte
   rw [hssCanonical, hrsCanonical] at hreverse
   exact ⟨hp, hq, hdeg, hreverse⟩
 
-lemma StrictPrecSameDegree.C_mul_C_mul {p q : ℝ[X]} (h : StrictPrecSameDegree p q)
+lemma StrictInterlSameDegree.C_mul_C_mul {p q : ℝ[X]} (h : StrictInterlSameDegree p q)
     {u v : ℝ} (hu : u ≠ 0) (hv : v ≠ 0) :
-    StrictPrecSameDegree (C u * p) (C v * q) := by
+    StrictInterlSameDegree (C u * p) (C v * q) := by
   obtain ⟨hp, hq, hdeg, halt⟩ := h
   refine ⟨isRealRooted_C_mul hp.1 hp.2 hu, isRealRooted_C_mul hq.1 hq.2 hv, ?_, ?_⟩
   · exact (natDegree_C_mul hu).trans (hdeg.trans (natDegree_C_mul hv).symm)
   · simp_all
 
-lemma StrictPrecSameDegree.C_mul_C_mul_iff {p q : ℝ[X]} {u v : ℝ}
+lemma StrictInterlSameDegree.C_mul_C_mul_iff {p q : ℝ[X]} {u v : ℝ}
     (hu : u ≠ 0) (hv : v ≠ 0) :
-    StrictPrecSameDegree (C u * p) (C v * q) ↔ StrictPrecSameDegree p q := by
+    StrictInterlSameDegree (C u * p) (C v * q) ↔ StrictInterlSameDegree p q := by
   refine ⟨fun h ↦ ?_, fun h ↦ h.C_mul_C_mul hu hv⟩
   have h_mul := h.C_mul_C_mul (inv_ne_zero hu) (inv_ne_zero hv)
   rwa [← mul_assoc, ← C_mul, inv_mul_cancel₀ hu, C_1, one_mul,
     ← mul_assoc, ← C_mul, inv_mul_cancel₀ hv, C_1, one_mul] at h_mul
 
-/-- Strict same-degree proper position implies the legacy non-strict proper
-position predicate. -/
-theorem StrictPrecSameDegree.toStrictInterl {p q : ℝ[X]}
-    (h : StrictPrecSameDegree p q) : StrictInterl p q := by
+/-- Strict same-degree root interleaving implies the general nonzero
+interlacing relation. -/
+theorem StrictInterlSameDegree.toStrictInterl {p q : ℝ[X]}
+    (h : StrictInterlSameDegree p q) : StrictInterl p q := by
   obtain ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, hdeg, h_inter⟩ := h
   have h_len : (p.roots.sort (· ≤ ·)).length = (q.roots.sort (· ≤ ·)).length := by
     simp [card_roots_of_splits, *]
@@ -303,9 +312,33 @@ theorem StrictPrecSameDegree.toStrictInterl {p q : ℝ[X]}
       Multiset.sort_eq _ _, Multiset.sort_eq _ _,
       Or.inr ⟨h_len, (listAlternates_iff_interleaves_of_length h_len).2 h_le⟩⟩
 
-@[deprecated StrictPrecSameDegree.toStrictInterl (since := "2026-09-16")]
+@[deprecated StrictInterlSameDegree.of_strictInterl_of_no_common (since := "2026-09-18")]
+theorem StrictPrecSameDegree.of_prec_of_no_common {p q : ℝ[X]} (h : StrictInterl p q)
+    (hdeg : p.natDegree = q.natDegree)
+    (hno : ∀ r, p.IsRoot r → ¬q.IsRoot r) :
+    StrictInterlSameDegree p q :=
+  StrictInterlSameDegree.of_strictInterl_of_no_common h hdeg hno
+
+@[deprecated StrictInterlSameDegree.C_mul_C_mul (since := "2026-09-18")]
+lemma StrictPrecSameDegree.C_mul_C_mul {p q : ℝ[X]} (h : StrictInterlSameDegree p q)
+    {u v : ℝ} (hu : u ≠ 0) (hv : v ≠ 0) :
+    StrictInterlSameDegree (C u * p) (C v * q) :=
+  StrictInterlSameDegree.C_mul_C_mul h hu hv
+
+@[deprecated StrictInterlSameDegree.C_mul_C_mul_iff (since := "2026-09-18")]
+lemma StrictPrecSameDegree.C_mul_C_mul_iff {p q : ℝ[X]} {u v : ℝ}
+    (hu : u ≠ 0) (hv : v ≠ 0) :
+    StrictInterlSameDegree (C u * p) (C v * q) ↔ StrictInterlSameDegree p q :=
+  StrictInterlSameDegree.C_mul_C_mul_iff hu hv
+
+@[deprecated StrictInterlSameDegree.toStrictInterl (since := "2026-09-18")]
+theorem StrictPrecSameDegree.toStrictInterl {p q : ℝ[X]}
+    (h : StrictInterlSameDegree p q) : StrictInterl p q :=
+  StrictInterlSameDegree.toStrictInterl h
+
+@[deprecated StrictInterlSameDegree.toStrictInterl (since := "2026-09-16")]
 theorem StrictPrecSameDegree.to_prec {p q : ℝ[X]}
-    (h : StrictPrecSameDegree p q) : StrictInterl p q :=
-  StrictPrecSameDegree.toStrictInterl h
+    (h : StrictInterlSameDegree p q) : StrictInterl p q :=
+  StrictInterlSameDegree.toStrictInterl h
 
 end RealRooted

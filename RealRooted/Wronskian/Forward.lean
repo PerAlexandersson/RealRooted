@@ -4,13 +4,13 @@ import RealRooted.Bezoutian.LowDegree
 # Global forward Wronskian bridge
 
 The existing library proves the reverse direction (global Wronskian positivity implies
-interlacing: `StrictPrecSameDegree.of_wronskian_pos`, `prec_of_wronskian_pos_succ`)
+interlacing: `StrictInterlSameDegree.of_wronskian_pos`, `prec_of_wronskian_pos_succ`)
 and the forward direction at roots only
 (`Polynomial.wronskian_at_root_pos_of_interlacing`).
 
 This file provides the missing global forward bridge:
 
-* `RealRooted.wronskian_pos_of_strictPrecSameDegree`: for a strictly
+* `RealRooted.wronskian_pos_of_strictInterlSameDegree`: for a strictly
   interlacing same-degree pair (positive leading coefficients, degree at least
   one), the Wronskian `q' * p - q * p'` is positive everywhere on `ℝ`.
 * `RealRooted.wronskian_pos_of_prec_succ`: for a strict differ-by-one pair
@@ -18,7 +18,7 @@ This file provides the missing global forward bridge:
   Wronskian `p' * q - p * q'` is positive everywhere on `ℝ`.
 
 The same-degree case follows from the Bezoutian characterization
-`strictPrecSameDegree_iff_bezoutMatrix_posDef` combined with
+`strictInterlSameDegree_iff_bezoutMatrix_posDef` combined with
 `bezoutMatrix.wronskian_pos_of_posDef`.  The differ-by-one case reduces to the
 same-degree case by padding `q` with a linear factor whose root lies above
 (respectively below) every root of `p`, and adding the two resulting global
@@ -32,15 +32,15 @@ namespace RealRooted
 /-- **Global forward Wronskian bridge, same degree.**  If `p` strictly
 interlaces `q` (same degree at least one, both with positive leading
 coefficient), then the Wronskian `q' * p - q * p'` is positive everywhere. -/
-theorem wronskian_pos_of_strictPrecSameDegree {p q : ℝ[X]}
+theorem wronskian_pos_of_strictInterlSameDegree {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hq_deg_pos : 0 < q.natDegree)
-    (h : StrictPrecSameDegree p q) (t : ℝ) :
+    (h : StrictInterlSameDegree p q) (t : ℝ) :
     0 < q.derivative.eval t * p.eval t - q.eval t * p.derivative.eval t := by
   obtain ⟨n, hn⟩ : ∃ n, q.natDegree = n + 1 := ⟨q.natDegree - 1, by lia⟩
   have hp_deg : p.natDegree = n + 1 := h.2.2.1.trans hn
   exact bezoutMatrix.wronskian_pos_of_posDef hn.le hp_deg.le
-    ((strictPrecSameDegree_iff_bezoutMatrix_posDef hp_pos hq_pos hp_deg hn).mp h) t
+    ((strictInterlSameDegree_iff_bezoutMatrix_posDef hp_pos hq_pos hp_deg hn).mp h) t
 
 /-- A finite certificate for global Wronskian positivity. If `p` splits with
 degree `d + 1` and `q' * p - q * p'` is positive at every root of `p`, then it
@@ -240,8 +240,8 @@ theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
     · refine ⟨Fin.last n, ?_⟩
       rw [hrp_last (Fin.last n) (by simp)]
       exact (Multiset.mem_singleton.mp hx).symm
-  have hprec_up : StrictPrecSameDegree p (q * (X - C M)) := by
-    refine StrictPrecSameDegree.of_fin_interlacing s rp hs_mono hrp_mono ?_ ?_
+  have hprec_up : StrictInterlSameDegree p (q * (X - C M)) := by
+    refine StrictInterlSameDegree.of_fin_interlacing s rp hs_mono hrp_mono ?_ ?_
       p (q * (X - C M)) hp_ne hqp_ne hp_splits hqp_splits hp_deg hqp_deg
       hp_nodup hqp_nodup hs_surj hrp_surj
     · intro k
@@ -314,8 +314,8 @@ theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
       rw [hrm_pos k.succ (by simp)]
       simpa using hk
     · exact ⟨0, by rw [hrm_zero]; exact (Multiset.mem_singleton.mp hx).symm⟩
-  have hprec_lo : StrictPrecSameDegree (q * (X - C m)) p := by
-    refine StrictPrecSameDegree.of_fin_interlacing rm s hrm_mono hs_mono ?_ ?_
+  have hprec_lo : StrictInterlSameDegree (q * (X - C m)) p := by
+    refine StrictInterlSameDegree.of_fin_interlacing rm s hrm_mono hs_mono ?_ ?_
       (q * (X - C m)) p hqm_ne hp_ne hqm_splits hp_splits hqm_deg hp_deg
       hqm_nodup hp_nodup hrm_surj hs_surj
     · intro k
@@ -340,9 +340,9 @@ theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
             simp only [Fin.le_def]
             have := Fin.lt_def.mp hij; lia
   -- apply the same-degree bridge to both companions and combine
-  have hW_up := wronskian_pos_of_strictPrecSameDegree hp_pos hqp_pos
+  have hW_up := wronskian_pos_of_strictInterlSameDegree hp_pos hqp_pos
     (by lia) hprec_up t
-  have hW_lo := wronskian_pos_of_strictPrecSameDegree hqm_pos hp_pos
+  have hW_lo := wronskian_pos_of_strictInterlSameDegree hqm_pos hp_pos
     (by lia) hprec_lo t
   have e1 : (q * (X - C M)).derivative.eval t =
       q.derivative.eval t * (t - M) + q.eval t := by
@@ -359,5 +359,9 @@ theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
   rw [e1, e2] at hW_up
   rw [e3, e4] at hW_lo
   nlinarith [hW_up, hW_lo, htM, hmt]
+
+@[deprecated wronskian_pos_of_strictInterlSameDegree (since := "2026-09-18")]
+alias wronskian_pos_of_strictPrecSameDegree :=
+  wronskian_pos_of_strictInterlSameDegree
 
 end RealRooted

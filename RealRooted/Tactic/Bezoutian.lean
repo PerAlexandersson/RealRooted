@@ -4,7 +4,7 @@ import RealRooted.Bezoutian.LowDegree
 # Bezoutian tactic frontends
 
 Certificate-driven wrappers around the proved same-degree Bezoutian
-characterization.  The orientation is important: `StrictPrecSameDegree p q`
+characterization.  The orientation is important: `StrictInterlSameDegree p q`
 corresponds to positive definiteness of `bezoutMatrix n q p`.
 
 These tactics consume an explicit positive-definiteness certificate; they do
@@ -24,8 +24,8 @@ theorem bezout_realrooted_of_posDef
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
     (hpos : (bezoutMatrix n q p).PosDef) :
     (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits) := by
-  have hstrict : StrictPrecSameDegree p q :=
-    (strictPrecSameDegree_iff_bezoutMatrix_posDef hp_pos hq_pos hp_deg hq_deg).2 hpos
+  have hstrict : StrictInterlSameDegree p q :=
+    (strictInterlSameDegree_iff_bezoutMatrix_posDef hp_pos hq_pos hp_deg hq_deg).2 hpos
   exact ⟨hstrict.1, hstrict.2.1⟩
 
 theorem bezout_no_common_root_of_posDef
@@ -37,27 +37,37 @@ theorem bezout_no_common_root_of_posDef
   exact bezoutMatrix.no_common_real_root_of_posDef
     hn hq_deg hp_deg hpos r ⟨hq, hp⟩
 
-theorem bezout_sequence_posDef_of_strictPrecSameDegree
+theorem bezout_sequence_posDef_of_strictInterlSameDegree
     {d : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hP_pos : ∀ i : Nat, HasPosLeadingCoeff (P i))
     (hQ_pos : ∀ i : Nat, HasPosLeadingCoeff (Q i))
     (hP_deg : ∀ i : Nat, (P i).natDegree = d i)
     (hQ_deg : ∀ i : Nat, (Q i).natDegree = d i)
-    (hstrict : ∀ i : Nat, StrictPrecSameDegree (P i) (Q i)) :
+    (hstrict : ∀ i : Nat, StrictInterlSameDegree (P i) (Q i)) :
     ∀ i : Nat, (bezoutMatrix (d i) (Q i) (P i)).PosDef := fun i =>
-  (strictPrecSameDegree_iff_bezoutMatrix_posDef
+  (strictInterlSameDegree_iff_bezoutMatrix_posDef
     (hP_pos i) (hQ_pos i) (hP_deg i) (hQ_deg i)).1 (hstrict i)
 
-theorem bezout_sequence_strictPrecSameDegree_of_posDef
+theorem bezout_sequence_strictInterlSameDegree_of_posDef
     {d : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hP_pos : ∀ i : Nat, HasPosLeadingCoeff (P i))
     (hQ_pos : ∀ i : Nat, HasPosLeadingCoeff (Q i))
     (hP_deg : ∀ i : Nat, (P i).natDegree = d i)
     (hQ_deg : ∀ i : Nat, (Q i).natDegree = d i)
     (hpos : ∀ i : Nat, (bezoutMatrix (d i) (Q i) (P i)).PosDef) :
-    ∀ i : Nat, StrictPrecSameDegree (P i) (Q i) := fun i =>
-  (strictPrecSameDegree_iff_bezoutMatrix_posDef
+    ∀ i : Nat, StrictInterlSameDegree (P i) (Q i) := fun i =>
+  (strictInterlSameDegree_iff_bezoutMatrix_posDef
     (hP_pos i) (hQ_pos i) (hP_deg i) (hQ_deg i)).2 (hpos i)
+
+@[deprecated bezout_sequence_posDef_of_strictInterlSameDegree
+  (since := "2026-09-18")]
+alias bezout_sequence_posDef_of_strictPrecSameDegree :=
+  bezout_sequence_posDef_of_strictInterlSameDegree
+
+@[deprecated bezout_sequence_strictInterlSameDegree_of_posDef
+  (since := "2026-09-18")]
+alias bezout_sequence_strictPrecSameDegree_of_posDef :=
+  bezout_sequence_strictInterlSameDegree_of_posDef
 
 theorem bezout_sequence_prec_of_posDef
     {d : Nat → Nat} {P Q : Nat → ℝ[X]}
@@ -67,7 +77,7 @@ theorem bezout_sequence_prec_of_posDef
     (hQ_deg : ∀ i : Nat, (Q i).natDegree = d i)
     (hpos : ∀ i : Nat, (bezoutMatrix (d i) (Q i) (P i)).PosDef) :
     ∀ i : Nat, StrictInterl (P i) (Q i) := fun i =>
-  ((strictPrecSameDegree_iff_bezoutMatrix_posDef
+  ((strictInterlSameDegree_iff_bezoutMatrix_posDef
     (hP_pos i) (hQ_pos i) (hP_deg i) (hQ_deg i)).2 (hpos i)).toStrictInterl
 
 theorem bezout_sequence_realrooted_of_posDef
@@ -91,25 +101,25 @@ theorem bezout_sequence_no_common_root_of_posDef
     ∀ i : Nat, ∀ r : ℝ, (P i).IsRoot r → ¬ (Q i).IsRoot r := fun i =>
   bezout_no_common_root_of_posDef (hd i) (hP_deg i) (hQ_deg i) (hpos i)
 
-syntax (name := rr_bezout_strict_prec_same_degree_iff_named)
-  "rr_bezout_strict_prec_same_degree_iff" " using "
+syntax (name := rr_bezout_strict_interl_same_degree_iff_named)
+  "rr_bezout_strict_interl_same_degree_iff" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "left_degree" ":=" term ","
     "right_degree" ":=" term :
   tactic
 
-syntax (name := rr_bezout_pos_def_of_strict_prec_same_degree_named)
-  "rr_bezout_pos_def_of_strict_prec_same_degree" " using "
+syntax (name := rr_bezout_pos_def_of_strict_interl_same_degree_named)
+  "rr_bezout_pos_def_of_strict_interl_same_degree" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "left_degree" ":=" term ","
     "right_degree" ":=" term ","
-    "strict_prec_same_degree" ":=" term :
+    "strict_interl_same_degree" ":=" term :
   tactic
 
-syntax (name := rr_bezout_strict_prec_same_degree_of_pos_def_named)
-  "rr_bezout_strict_prec_same_degree_of_pos_def" " using "
+syntax (name := rr_bezout_strict_interl_same_degree_of_pos_def_named)
+  "rr_bezout_strict_interl_same_degree_of_pos_def" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "left_degree" ":=" term ","
@@ -143,17 +153,17 @@ syntax (name := rr_bezout_no_common_root_of_pos_def_named)
     "pos_def" ":=" term :
   tactic
 
-syntax (name := rr_bezout_sequence_pos_def_of_strict_prec_same_degree_named)
-  "rr_bezout_sequence_pos_def_of_strict_prec_same_degree" " using "
+syntax (name := rr_bezout_sequence_pos_def_of_strict_interl_same_degree_named)
+  "rr_bezout_sequence_pos_def_of_strict_interl_same_degree" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "left_degree" ":=" term ","
     "right_degree" ":=" term ","
-    "strict_prec_same_degree" ":=" term :
+    "strict_interl_same_degree" ":=" term :
   tactic
 
-syntax (name := rr_bezout_sequence_strict_prec_same_degree_of_pos_def_named)
-  "rr_bezout_sequence_strict_prec_same_degree_of_pos_def" " using "
+syntax (name := rr_bezout_sequence_strict_interl_same_degree_of_pos_def_named)
+  "rr_bezout_sequence_strict_interl_same_degree_of_pos_def" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "left_degree" ":=" term ","
@@ -187,35 +197,81 @@ syntax (name := rr_bezout_sequence_no_common_root_of_pos_def_named)
     "pos_def" ":=" term :
   tactic
 
+/-! Deprecated parser-compatible strict same-degree tactic names. -/
+
+syntax (name := rr_bezout_strict_prec_same_degree_iff_named)
+  "rr_bezout_strict_prec_same_degree_iff" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term :
+  tactic
+
+syntax (name := rr_bezout_pos_def_of_strict_prec_same_degree_named)
+  "rr_bezout_pos_def_of_strict_prec_same_degree" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term ","
+    "strict_prec_same_degree" ":=" term :
+  tactic
+
+syntax (name := rr_bezout_strict_prec_same_degree_of_pos_def_named)
+  "rr_bezout_strict_prec_same_degree_of_pos_def" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term ","
+    "pos_def" ":=" term :
+  tactic
+
+syntax (name := rr_bezout_sequence_pos_def_of_strict_prec_same_degree_named)
+  "rr_bezout_sequence_pos_def_of_strict_prec_same_degree" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term ","
+    "strict_prec_same_degree" ":=" term :
+  tactic
+
+syntax (name := rr_bezout_sequence_strict_prec_same_degree_of_pos_def_named)
+  "rr_bezout_sequence_strict_prec_same_degree_of_pos_def" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term ","
+    "pos_def" ":=" term :
+  tactic
+
 macro_rules
   | `(tactic|
-      rr_bezout_strict_prec_same_degree_iff using
+      rr_bezout_strict_interl_same_degree_iff using
         left_pos_lc := $hp_pos:term,
         right_pos_lc := $hq_pos:term,
         left_degree := $hp_deg:term,
         right_degree := $hq_deg:term) =>
       `(tactic|
-        exact strictPrecSameDegree_iff_bezoutMatrix_posDef
+        exact strictInterlSameDegree_iff_bezoutMatrix_posDef
           $hp_pos $hq_pos $hp_deg $hq_deg)
   | `(tactic|
-      rr_bezout_pos_def_of_strict_prec_same_degree using
+      rr_bezout_pos_def_of_strict_interl_same_degree using
         left_pos_lc := $hp_pos:term,
         right_pos_lc := $hq_pos:term,
         left_degree := $hp_deg:term,
         right_degree := $hq_deg:term,
-        strict_prec_same_degree := $hstrict:term) =>
+        strict_interl_same_degree := $hstrict:term) =>
       `(tactic|
-        exact (strictPrecSameDegree_iff_bezoutMatrix_posDef
+        exact (strictInterlSameDegree_iff_bezoutMatrix_posDef
           $hp_pos $hq_pos $hp_deg $hq_deg).1 $hstrict)
   | `(tactic|
-      rr_bezout_strict_prec_same_degree_of_pos_def using
+      rr_bezout_strict_interl_same_degree_of_pos_def using
         left_pos_lc := $hp_pos:term,
         right_pos_lc := $hq_pos:term,
         left_degree := $hp_deg:term,
         right_degree := $hq_deg:term,
         pos_def := $hpos:term) =>
       `(tactic|
-        exact (strictPrecSameDegree_iff_bezoutMatrix_posDef
+        exact (strictInterlSameDegree_iff_bezoutMatrix_posDef
           $hp_pos $hq_pos $hp_deg $hq_deg).2 $hpos)
   | `(tactic|
       rr_bezout_prec_of_pos_def using
@@ -225,7 +281,7 @@ macro_rules
         right_degree := $hq_deg:term,
         pos_def := $hpos:term) =>
       `(tactic|
-        exact ((strictPrecSameDegree_iff_bezoutMatrix_posDef
+        exact ((strictInterlSameDegree_iff_bezoutMatrix_posDef
           $hp_pos $hq_pos $hp_deg $hq_deg).2 $hpos).toStrictInterl)
   | `(tactic|
       rr_bezout_realrooted_of_pos_def using
@@ -247,24 +303,24 @@ macro_rules
         exact RealRooted.Tactic.bezout_no_common_root_of_posDef
           $hn $hp_deg $hq_deg $hpos)
   | `(tactic|
-      rr_bezout_sequence_pos_def_of_strict_prec_same_degree using
+      rr_bezout_sequence_pos_def_of_strict_interl_same_degree using
         left_pos_lc := $hP_pos:term,
         right_pos_lc := $hQ_pos:term,
         left_degree := $hP_deg:term,
         right_degree := $hQ_deg:term,
-        strict_prec_same_degree := $hstrict:term) =>
+        strict_interl_same_degree := $hstrict:term) =>
       `(tactic|
-        exact RealRooted.Tactic.bezout_sequence_posDef_of_strictPrecSameDegree
+        exact RealRooted.Tactic.bezout_sequence_posDef_of_strictInterlSameDegree
           $hP_pos $hQ_pos $hP_deg $hQ_deg $hstrict)
   | `(tactic|
-      rr_bezout_sequence_strict_prec_same_degree_of_pos_def using
+      rr_bezout_sequence_strict_interl_same_degree_of_pos_def using
         left_pos_lc := $hP_pos:term,
         right_pos_lc := $hQ_pos:term,
         left_degree := $hP_deg:term,
         right_degree := $hQ_deg:term,
         pos_def := $hpos:term) =>
       `(tactic|
-        exact RealRooted.Tactic.bezout_sequence_strictPrecSameDegree_of_posDef
+        exact RealRooted.Tactic.bezout_sequence_strictInterlSameDegree_of_posDef
           $hP_pos $hQ_pos $hP_deg $hQ_deg $hpos)
   | `(tactic|
       rr_bezout_sequence_prec_of_pos_def using
@@ -295,6 +351,76 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.bezout_sequence_no_common_root_of_posDef
           $hd $hP_deg $hQ_deg $hpos)
+
+macro_rules
+  | `(tactic|
+      rr_bezout_strict_prec_same_degree_iff using
+        left_pos_lc := $hp_pos:term,
+        right_pos_lc := $hq_pos:term,
+        left_degree := $hp_deg:term,
+        right_degree := $hq_deg:term) =>
+      `(tactic|
+        rr_bezout_strict_interl_same_degree_iff using
+          left_pos_lc := $hp_pos,
+          right_pos_lc := $hq_pos,
+          left_degree := $hp_deg,
+          right_degree := $hq_deg)
+  | `(tactic|
+      rr_bezout_pos_def_of_strict_prec_same_degree using
+        left_pos_lc := $hp_pos:term,
+        right_pos_lc := $hq_pos:term,
+        left_degree := $hp_deg:term,
+        right_degree := $hq_deg:term,
+        strict_prec_same_degree := $hstrict:term) =>
+      `(tactic|
+        rr_bezout_pos_def_of_strict_interl_same_degree using
+          left_pos_lc := $hp_pos,
+          right_pos_lc := $hq_pos,
+          left_degree := $hp_deg,
+          right_degree := $hq_deg,
+          strict_interl_same_degree := $hstrict)
+  | `(tactic|
+      rr_bezout_strict_prec_same_degree_of_pos_def using
+        left_pos_lc := $hp_pos:term,
+        right_pos_lc := $hq_pos:term,
+        left_degree := $hp_deg:term,
+        right_degree := $hq_deg:term,
+        pos_def := $hpos:term) =>
+      `(tactic|
+        rr_bezout_strict_interl_same_degree_of_pos_def using
+          left_pos_lc := $hp_pos,
+          right_pos_lc := $hq_pos,
+          left_degree := $hp_deg,
+          right_degree := $hq_deg,
+          pos_def := $hpos)
+  | `(tactic|
+      rr_bezout_sequence_pos_def_of_strict_prec_same_degree using
+        left_pos_lc := $hP_pos:term,
+        right_pos_lc := $hQ_pos:term,
+        left_degree := $hP_deg:term,
+        right_degree := $hQ_deg:term,
+        strict_prec_same_degree := $hstrict:term) =>
+      `(tactic|
+        rr_bezout_sequence_pos_def_of_strict_interl_same_degree using
+          left_pos_lc := $hP_pos,
+          right_pos_lc := $hQ_pos,
+          left_degree := $hP_deg,
+          right_degree := $hQ_deg,
+          strict_interl_same_degree := $hstrict)
+  | `(tactic|
+      rr_bezout_sequence_strict_prec_same_degree_of_pos_def using
+        left_pos_lc := $hP_pos:term,
+        right_pos_lc := $hQ_pos:term,
+        left_degree := $hP_deg:term,
+        right_degree := $hQ_deg:term,
+        pos_def := $hpos:term) =>
+      `(tactic|
+        rr_bezout_sequence_strict_interl_same_degree_of_pos_def using
+          left_pos_lc := $hP_pos,
+          right_pos_lc := $hQ_pos,
+          left_degree := $hP_deg,
+          right_degree := $hQ_deg,
+          pos_def := $hpos)
 
 end Tactic
 end RealRooted

@@ -179,13 +179,13 @@ private theorem shiftedJacobiMonicRoot_base_interlacing_jacobi
     exact hder heval
   let DM := shiftedJacobiMonic n (α + 1) 1
   let J := shiftedJacobiMonic n (α + 3 / 2) 1
-  have hDJ : StrictPrecSameDegree DM J := by
+  have hDJ : StrictInterlSameDegree DM J := by
     dsimp only [DM, J]
     have hprec := shiftedJacobiMonic_prec_alpha_add n
       (α := α + 1) (t := (1 / 2 : ℝ)) (by linarith)
       (by norm_num) (by norm_num)
     rw [show α + 3 / 2 = α + 1 + 1 / 2 by ring]
-    exact StrictPrecSameDegree.of_prec_of_no_common hprec
+    exact StrictInterlSameDegree.of_strictInterl_of_no_common hprec
       (by rw [natDegree_shiftedJacobiMonic n (by linarith) (by norm_num),
         natDegree_shiftedJacobiMonic n (by linarith) (by norm_num)])
       (shiftedJacobiMonic_noCommonRoot_alpha_add n
@@ -200,21 +200,21 @@ private theorem shiftedJacobiMonicRoot_base_interlacing_jacobi
     (strictMono_shiftedJacobiMonicRoot n (by linarith) (by norm_num))
   let K := shiftedJacobiMonic n (α + 2) 1
   let Q := shiftedJacobiMonic n (α + 2) 0
-  have hJK : StrictPrecSameDegree J K := by
+  have hJK : StrictInterlSameDegree J K := by
     dsimp only [J, K]
     have hprec := shiftedJacobiMonic_prec_alpha_add n
       (α := α + 3 / 2) (t := (1 / 2 : ℝ)) (by linarith)
       (by norm_num) (by norm_num)
     rw [show α + 2 = α + 3 / 2 + 1 / 2 by ring]
-    exact StrictPrecSameDegree.of_prec_of_no_common hprec
+    exact StrictInterlSameDegree.of_strictInterl_of_no_common hprec
       (by rw [natDegree_shiftedJacobiMonic n (by linarith) (by norm_num),
         natDegree_shiftedJacobiMonic n (by linarith) (by norm_num)])
       (shiftedJacobiMonic_noCommonRoot_alpha_add n
         (by linarith) (by norm_num) (by norm_num))
-  have hKQ : StrictPrecSameDegree K Q := by
+  have hKQ : StrictInterlSameDegree K Q := by
     have hprec := shiftedJacobiMonic_prec_beta_add_one n
       (α := α + 2) (β := 0) (by linarith) (by norm_num)
-    have hstrict := StrictPrecSameDegree.of_prec_of_no_common hprec
+    have hstrict := StrictInterlSameDegree.of_strictInterl_of_no_common hprec
       (by rw [natDegree_shiftedJacobiMonic n (by linarith) (by norm_num),
         natDegree_shiftedJacobiMonic n (by linarith) (by norm_num)])
       (shiftedJacobiMonic_noCommonRoot_beta_add_one n

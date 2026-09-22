@@ -264,8 +264,8 @@ lemma Polynomial.roots_sort_eq_of_isRoot {n : ℕ} {p : ℝ[X]} (hp_ne : p ≠ 0
     Fin.val_fin_le]
   grind
 
-lemma StrictPrecSameDegree.interlacing_fin {n : ℕ}
-    {p q : ℝ[X]} (h : StrictPrecSameDegree p q)
+lemma StrictInterlSameDegree.interlacing_fin {n : ℕ}
+    {p q : ℝ[X]} (h : StrictInterlSameDegree p q)
     (hq_deg : q.natDegree = n)
     (s : Fin n → ℝ) (hs_roots : ∀ k, p.IsRoot (s k)) (hs_sorted : StrictMono s)
     (r : Fin n → ℝ) (hr_roots : ∀ k, q.IsRoot (r k)) (hr_sorted : StrictMono r) :
@@ -286,8 +286,8 @@ lemma StrictPrecSameDegree.interlacing_fin {n : ℕ}
     have hj : j.val < (List.map s (List.finRange n)).length := by simp
     simpa only [List.getElem_map, List.getElem_finRange, Fin.cast_mk] using
       h_inter2 ⟨i.val, hi⟩ ⟨j.val, hj⟩ hij
-lemma StrictPrecSameDegree.roots_nodup {p q : ℝ[X]}
-    (h : StrictPrecSameDegree p q) :
+lemma StrictInterlSameDegree.roots_nodup {p q : ℝ[X]}
+    (h : StrictInterlSameDegree p q) :
     p.roots.Nodup ∧ q.roots.Nodup := by
   obtain ⟨_, _, _, h_interlacing⟩ := h
   rw [← Multiset.sort_eq p.roots (· ≤ ·), ← Multiset.sort_eq q.roots (· ≤ ·),
@@ -316,7 +316,7 @@ lemma Polynomial.eval_derivative_C_mul_prod_X_sub_C_univ_at_root {n : ℕ} (c : 
 lemma Polynomial.wronskian_at_root_pos_of_interlacing {n : ℕ}
     {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
-    (h : StrictPrecSameDegree p q)
+    (h : StrictInterlSameDegree p q)
     (r : Fin n → ℝ) (hr_roots : ∀ k, q.IsRoot (r k))
     (hr_sorted : StrictMono r)
     (k : Fin n) :
@@ -347,7 +347,7 @@ lemma Polynomial.wronskian_at_root_pos_of_interlacing {n : ℕ}
   have h_prod :
       0 < (∏ j : Fin n, (r k - s j)) * (∏ j ∈ Finset.univ.erase k, (r k - r j)) := by
     have h_interlacing :=
-      StrictPrecSameDegree.interlacing_fin h hq_deg s hs_roots hs_mono r
+      StrictInterlSameDegree.interlacing_fin h hq_deg s hs_roots hs_mono r
         hr_roots hr_sorted
     exact StrictMono.prod_sub_mul_prod_sub_pos_of_interlacing s r hr_sorted
       h_interlacing.1 h_interlacing.2 k
@@ -357,8 +357,8 @@ lemma Polynomial.wronskian_at_root_pos_of_interlacing {n : ℕ}
 /-- At every root of the left polynomial in a strict same-degree interleaving,
 the derivative of the left polynomial and the value of the right polynomial
 have opposite signs. -/
-theorem StrictPrecSameDegree.derivative_mul_eval_neg {n : ℕ}
-    {p q : ℝ[X]} (h : StrictPrecSameDegree p q)
+theorem StrictInterlSameDegree.derivative_mul_eval_neg {n : ℕ}
+    {p q : ℝ[X]} (h : StrictInterlSameDegree p q)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
     {x : ℝ} (hx : p.IsRoot x) :
@@ -408,11 +408,11 @@ theorem StrictPrecSameDegree.derivative_mul_eval_neg {n : ℕ}
           (∏ j : Fin n, (s k - r j))) := by ring
     _ < 0 := mul_neg_of_pos_of_neg (mul_pos hc₁ hc₂) hprod
 
-lemma StrictPrecSameDegree.bezoutMatrix_posDef_three_le
+lemma StrictInterlSameDegree.bezoutMatrix_posDef_three_le
     {p q : ℝ[X]} {n : ℕ}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n + 3) (hq_deg : q.natDegree = n + 3)
-    (h : StrictPrecSameDegree p q) :
+    (h : StrictInterlSameDegree p q) :
     (bezoutMatrix (n + 3) q p).PosDef := by
   obtain ⟨_, hq_nodup⟩ := h.roots_nodup
   have hq_splits := h.2.1.2
@@ -457,5 +457,21 @@ lemma bezoutMatrix.wronskian_pos_of_posDef
     simp_rw [bezoutMatrix, mul_assoc, ← pow_add]
     exact bezoutEntry.wronskian q p (n + 1) t hq_deg hp_deg
   simp_all
+
+/-! ## Deprecated strict same-degree interlacing names -/
+
+@[deprecated StrictInterlSameDegree.interlacing_fin (since := "2026-09-18")]
+alias StrictPrecSameDegree.interlacing_fin := StrictInterlSameDegree.interlacing_fin
+
+@[deprecated StrictInterlSameDegree.roots_nodup (since := "2026-09-18")]
+alias StrictPrecSameDegree.roots_nodup := StrictInterlSameDegree.roots_nodup
+
+@[deprecated StrictInterlSameDegree.derivative_mul_eval_neg (since := "2026-09-18")]
+alias StrictPrecSameDegree.derivative_mul_eval_neg :=
+  StrictInterlSameDegree.derivative_mul_eval_neg
+
+@[deprecated StrictInterlSameDegree.bezoutMatrix_posDef_three_le (since := "2026-09-18")]
+alias StrictPrecSameDegree.bezoutMatrix_posDef_three_le :=
+  StrictInterlSameDegree.bezoutMatrix_posDef_three_le
 
 end RealRooted

@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  754  Lean declarations requiring semantic review
-  264  tactic declarations requiring an alias-first migration
-  277  tactic references migrated with their owning tactic
+  744  Lean declarations requiring semantic review
+  261  tactic declarations requiring an alias-first migration
+  266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    39  statement scaffolds requiring proof-status-preserving renames
-   49  deprecated compatibility identifiers with canonical targets
+   73  deprecated compatibility identifiers with canonical targets
    34  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -60,18 +60,19 @@ keeps English or unrelated lexical matches unchanged, including deprecated,
 IsPreconnected, preconnected, preceding, precise, precision, precomposition,
 and precursor families.
 
-One proposed-name collision is intentional: the deprecated wrapper
-strictPrecSameDegree_toPrec and its current canonical target
-strictPrecSameDegree_toStrictInterl converge on
-strictInterlSameDegree_toStrictInterl.  During migration the deprecated wrapper
-keeps its old name and signature, so only the canonical declaration receives
-the new name.  The wrapper is removed only after the deprecation window.
+One proposed-name collision is intentional: the deprecated wrappers
+strictPrecSameDegree_toPrec and strictPrecSameDegree_toStrictInterl both
+target strictInterlSameDegree_toStrictInterl.  Both wrappers keep their old
+names and signatures; only the canonical declaration uses the new name.  The
+wrappers are removed only after the deprecation window.
 
 Execution order
 
-1. Rename vocabulary-defining predicates and structures:
-   StrictPrecSameDegree, SourcePrec, and relation-bearing Statement scaffolds.
-   Preserve proof-status language and add compatibility aliases where public.
+1. Rename vocabulary-defining predicates and structures.  The
+   StrictPrecSameDegree family is now canonicalized as StrictInterlSameDegree
+   with deprecated aliases and parser-compatible tactic wrappers.  Continue
+   with SourcePrec and relation-bearing Statement scaffolds, preserving
+   proof-status language and compatibility aliases where public.
 
 2. Migrate generic foundational declaration families in bounded modules:
    WagnerX affine/common-factor transports, nonnegative-root X transports,

@@ -13,14 +13,14 @@ noncomputable section
 
 namespace RealRooted
 
-lemma StrictPrecSameDegree.of_bezoutMatrix_posDef_three_le
+lemma StrictInterlSameDegree.of_bezoutMatrix_posDef_three_le
     {p q : ℝ[X]} {n : ℕ}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n + 3) (hq_deg : q.natDegree = n + 3)
     (h : (bezoutMatrix (n + 3) q p).PosDef) :
-    StrictPrecSameDegree p q :=
+    StrictInterlSameDegree p q :=
   let ⟨hp_s, hq_s⟩ := bezoutMatrix.splits_of_posDef hp_pos hq_pos hp_deg hq_deg h
-  StrictPrecSameDegree.of_splits_and_posDef hp_pos hq_pos hp_deg hq_deg hp_s hq_s h
+  StrictInterlSameDegree.of_splits_and_posDef hp_pos hq_pos hp_deg hq_deg hp_s hq_s h
 
 lemma _root_.Matrix.PosDef.det_pos_fin_two_entries {a b c : ℝ}
     (h : (!![a, b; b, c] : Matrix (Fin 2) (Fin 2) ℝ).PosDef) :
@@ -142,9 +142,9 @@ lemma bezoutMatrix.quadratic_posDef_two_of_const_strictInterleaves {a b c d : �
     have : 0 < d - a := by linarith
     simp_all
 
-lemma StrictPrecSameDegree.quadratic_of_const_strictInterleaves {a b c d : ℝ}
+lemma StrictInterlSameDegree.quadratic_of_const_strictInterleaves {a b c d : ℝ}
     (hab : a < b) (hbc : b < c) (hcd : c < d) :
-    StrictPrecSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c)) := by
+    StrictInterlSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c)) := by
   refine ⟨isRealRooted_mul (Polynomial.isRealRooted_X_add_C b).1
             (Polynomial.isRealRooted_X_add_C b).2
             (Polynomial.isRealRooted_X_add_C d).1
@@ -162,9 +162,9 @@ lemma StrictPrecSameDegree.quadratic_of_const_strictInterleaves {a b c d : ℝ}
     Polynomial.roots_sort_mul_X_add_C_X_add_C (by linarith : a ≤ c)]
   simp [*]
 
-lemma StrictPrecSameDegree.quadratic_iff_const_strictInterleaves {a b c d : ℝ}
+lemma StrictInterlSameDegree.quadratic_iff_const_strictInterleaves {a b c d : ℝ}
     (hac : a ≤ c) (hbd : b ≤ d) :
-    StrictPrecSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c)) ↔
+    StrictInterlSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c)) ↔
       a < b ∧ b < c ∧ c < d := by
   constructor
   · rintro ⟨_, _, _, halt⟩
@@ -172,30 +172,30 @@ lemma StrictPrecSameDegree.quadratic_iff_const_strictInterleaves {a b c d : ℝ}
       Polynomial.roots_sort_mul_X_add_C_X_add_C hac] at halt
     simp_all
   · exact fun ⟨hab, hbc, hcd⟩ ↦
-      StrictPrecSameDegree.quadratic_of_const_strictInterleaves hab hbc hcd
+      StrictInterlSameDegree.quadratic_of_const_strictInterleaves hab hbc hcd
 
-lemma StrictPrecSameDegree.of_bezoutMatrix_quadratic_posDef {a b c d : ℝ}
+lemma StrictInterlSameDegree.of_bezoutMatrix_quadratic_posDef {a b c d : ℝ}
     (hac : a ≤ c) (hbd : b ≤ d)
     (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
     ((X + C b) * (X + C d))).PosDef) :
-    StrictPrecSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c)) :=
+    StrictInterlSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c)) :=
   let ⟨hab, hbc, hcd⟩ := bezoutMatrix.const_strictInterleaves_of_quadratic_posDef hac hbd h
-  StrictPrecSameDegree.quadratic_of_const_strictInterleaves hab hbc hcd
+  StrictInterlSameDegree.quadratic_of_const_strictInterleaves hab hbc hcd
 
-lemma StrictPrecSameDegree.bezoutMatrix_quadratic_posDef {a b c d : ℝ}
+lemma StrictInterlSameDegree.bezoutMatrix_quadratic_posDef {a b c d : ℝ}
     (hac : a ≤ c) (hbd : b ≤ d)
-    (h : StrictPrecSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c))) :
+    (h : StrictInterlSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c))) :
     (bezoutMatrix 2 ((X + C a) * (X + C c))
     ((X + C b) * (X + C d))).PosDef :=
   let ⟨hab, hbc, hcd⟩ :=
-    (StrictPrecSameDegree.quadratic_iff_const_strictInterleaves hac hbd).mp h
+    (StrictInterlSameDegree.quadratic_iff_const_strictInterleaves hac hbd).mp h
   bezoutMatrix.quadratic_posDef_two_of_const_strictInterleaves hab hbc hcd
 
-lemma StrictPrecSameDegree.bezoutMatrix_posDef_quadratic
+lemma StrictInterlSameDegree.bezoutMatrix_posDef_quadratic
     {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2)
-    (hprec : StrictPrecSameDegree p q) :
+    (hprec : StrictInterlSameDegree p q) :
     (bezoutMatrix 2 q p).PosDef := by
   obtain ⟨hp_ne, hp_splits⟩ := hprec.1
   obtain ⟨hq_ne, hq_splits⟩ := hprec.2.1
@@ -211,21 +211,21 @@ lemma StrictPrecSameDegree.bezoutMatrix_posDef_quadratic
   have hv : 0 < v := hp_pos
   have hq_eq' : q = C u * mq := hq_eq
   have hp_eq' : p = C v * mp := hp_eq
-  have hprec_monic : StrictPrecSameDegree mp mq :=
-    (StrictPrecSameDegree.C_mul_C_mul_iff hv.ne' hu.ne').mp (by grind)
+  have hprec_monic : StrictInterlSameDegree mp mq :=
+    (StrictInterlSameDegree.C_mul_C_mul_iff hv.ne' hu.ne').mp (by grind)
   have hmonic : (bezoutMatrix 2 mq mp).PosDef :=
-    StrictPrecSameDegree.bezoutMatrix_quadratic_posDef hac hbd hprec_monic
+    StrictInterlSameDegree.bezoutMatrix_quadratic_posDef hac hbd hprec_monic
   have hscaled : (bezoutMatrix 2 (C u * mq) (C v * mp)).PosDef :=
     (bezoutMatrix.C_mul_C_mul_posDef_iff (n := 2) (u := u) (v := v) hu hv).mpr hmonic
   grind
 
-lemma StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
+lemma StrictInterlSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
     {p q : ℝ[X]}
     (hp_splits : p.Splits) (hq_splits : q.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2)
     (h : (bezoutMatrix 2 q p).PosDef) :
-    StrictPrecSameDegree p q := by
+    StrictInterlSameDegree p q := by
   obtain ⟨b, d, hbd, hp_eq⟩ :=
     Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp_splits hp_deg
   obtain ⟨a, c, hac, hq_eq⟩ :=
@@ -241,29 +241,29 @@ lemma StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
   have hscaled : (bezoutMatrix 2 (C u * mq) (C v * mp)).PosDef := hp_eq' ▸ hq_eq' ▸ h
   have hmonic : (bezoutMatrix 2 mq mp).PosDef :=
     (bezoutMatrix.C_mul_C_mul_posDef_iff (n := 2) (u := u) (v := v) hu hv).mp hscaled
-  have hprec_monic : StrictPrecSameDegree mp mq :=
-    StrictPrecSameDegree.of_bezoutMatrix_quadratic_posDef hac hbd hmonic
-  have hprec_scaled : StrictPrecSameDegree (C v * mp) (C u * mq) :=
+  have hprec_monic : StrictInterlSameDegree mp mq :=
+    StrictInterlSameDegree.of_bezoutMatrix_quadratic_posDef hac hbd hmonic
+  have hprec_scaled : StrictInterlSameDegree (C v * mp) (C u * mq) :=
     hprec_monic.C_mul_C_mul (ne_of_gt hv) (ne_of_gt hu)
   grind
 
-lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
+lemma StrictInterlSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
     {p q : ℝ[X]}
     (hp_splits : p.Splits) (hq_splits : q.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2) :
-    StrictPrecSameDegree p q ↔ (bezoutMatrix 2 q p).PosDef := by
+    StrictInterlSameDegree p q ↔ (bezoutMatrix 2 q p).PosDef := by
   constructor
-  · exact StrictPrecSameDegree.bezoutMatrix_posDef_quadratic
+  · exact StrictInterlSameDegree.bezoutMatrix_posDef_quadratic
       hp_pos hq_pos hp_deg hq_deg
-  · exact StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
+  · exact StrictInterlSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
       hp_splits hq_splits hp_pos hq_pos hp_deg hq_deg
 
-lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
+lemma StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
     {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 0) (hq_deg : q.natDegree = 0) :
-    StrictPrecSameDegree p q ↔ (bezoutMatrix 0 q p).PosDef := by
+    StrictInterlSameDegree p q ↔ (bezoutMatrix 0 q p).PosDef := by
   obtain ⟨hp_ne, hp_splits⟩ :=
     isRealRooted_of_deg_zero (leadingCoeff_ne_zero.mp hp_pos.ne') hp_deg
   obtain ⟨hq_ne, hq_splits⟩ :=
@@ -281,63 +281,124 @@ lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
       simp [Multiset.card_eq_zero.mp (hq_splits.natDegree_eq_card_roots.symm ▸ hq_deg)]
     simp_all
 
-lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_one
+lemma StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_one
     {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 1) (hq_deg : q.natDegree = 1) :
-    StrictPrecSameDegree p q ↔ (bezoutMatrix 1 q p).PosDef := by
+    StrictInterlSameDegree p q ↔ (bezoutMatrix 1 q p).PosDef := by
   rcases Polynomial.exists_pos_scalar_mul_X_add_C_of_natDegree_one hp_pos hp_deg with
     ⟨u, a, hu, hp_eq⟩
   rcases Polynomial.exists_pos_scalar_mul_X_add_C_of_natDegree_one hq_pos hq_deg with
     ⟨v, b, hv, hq_eq⟩
   rw [hp_eq, hq_eq]
   calc
-    StrictPrecSameDegree (C u * (X + C a)) (C v * (X + C b))
-        ↔ StrictPrecSameDegree (X + C a) (X + C b) :=
-      StrictPrecSameDegree.C_mul_C_mul_iff (ne_of_gt hu) (ne_of_gt hv)
+    StrictInterlSameDegree (C u * (X + C a)) (C v * (X + C b))
+        ↔ StrictInterlSameDegree (X + C a) (X + C b) :=
+      StrictInterlSameDegree.C_mul_C_mul_iff (ne_of_gt hu) (ne_of_gt hv)
     _ ↔ (bezoutMatrix 1 (X + C b) (X + C a)).PosDef :=
-      StrictPrecSameDegree.X_add_C_bezoutMatrix_posDef_iff_one (a := b) (b := a)
+      StrictInterlSameDegree.X_add_C_bezoutMatrix_posDef_iff_one (a := b) (b := a)
     _ ↔ (bezoutMatrix 1 (C v * (X + C b)) (C u * (X + C a))).PosDef :=
       (bezoutMatrix.C_mul_C_mul_posDef_iff (n := 1) (u := v) (v := u) hv hu).symm
 
-lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_two
+lemma StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_two
     {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2) :
-    StrictPrecSameDegree p q ↔ (bezoutMatrix 2 q p).PosDef :=
-  ⟨StrictPrecSameDegree.bezoutMatrix_posDef_quadratic hp_pos hq_pos hp_deg hq_deg, fun h ↦
+    StrictInterlSameDegree p q ↔ (bezoutMatrix 2 q p).PosDef :=
+  ⟨StrictInterlSameDegree.bezoutMatrix_posDef_quadratic hp_pos hq_pos hp_deg hq_deg, fun h ↦
     have hp_rr : p ≠ 0 ∧ p.Splits :=
       bezoutMatrix.right_isRealRooted_of_posDef_two_of_natDegree_two hp_deg hq_deg.le h
     have hq_rr : q ≠ 0 ∧ q.Splits :=
       bezoutMatrix.left_isRealRooted_of_posDef_two_of_natDegree_two hp_deg.le hq_deg h
-    (StrictPrecSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
+    (StrictInterlSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
       hp_rr.2 hq_rr.2 hp_pos hq_pos hp_deg hq_deg).mpr h⟩
 
 /--
 Strict same-degree Bezoutian characterization.
 
-The orientation is chosen so that `StrictPrecSameDegree p q` corresponds to
+The orientation is chosen so that `StrictInterlSameDegree p q` corresponds to
 positive definiteness of `bezoutMatrix n q p`.
 -/
-theorem strictPrecSameDegree_iff_bezoutMatrix_posDef
+theorem strictInterlSameDegree_iff_bezoutMatrix_posDef
     {p q : ℝ[X]} {n : ℕ}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n) :
-    StrictPrecSameDegree p q ↔ (bezoutMatrix n q p).PosDef :=
+    StrictInterlSameDegree p q ↔ (bezoutMatrix n q p).PosDef :=
   match n, hp_deg, hq_deg with
   | 0, hp_deg, hq_deg =>
-    StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
+    StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
       hp_pos hq_pos hp_deg hq_deg
   | 1, hp_deg, hq_deg =>
-    StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_one
+    StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_one
       hp_pos hq_pos hp_deg hq_deg
   | 2, hp_deg, hq_deg =>
-    StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_two
+    StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_two
       hp_pos hq_pos hp_deg hq_deg
   | _n + 3, hp_deg, hq_deg =>
-    ⟨StrictPrecSameDegree.bezoutMatrix_posDef_three_le
+    ⟨StrictInterlSameDegree.bezoutMatrix_posDef_three_le
        hp_pos hq_pos hp_deg hq_deg,
-      StrictPrecSameDegree.of_bezoutMatrix_posDef_three_le
+      StrictInterlSameDegree.of_bezoutMatrix_posDef_three_le
        hp_pos hq_pos hp_deg hq_deg⟩
+
+/-! ## Deprecated strict same-degree interlacing names -/
+
+@[deprecated StrictInterlSameDegree.of_bezoutMatrix_posDef_three_le
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.of_bezoutMatrix_posDef_three_le :=
+  StrictInterlSameDegree.of_bezoutMatrix_posDef_three_le
+
+@[deprecated StrictInterlSameDegree.quadratic_of_const_strictInterleaves
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.quadratic_of_const_strictInterleaves :=
+  StrictInterlSameDegree.quadratic_of_const_strictInterleaves
+
+@[deprecated StrictInterlSameDegree.quadratic_iff_const_strictInterleaves
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.quadratic_iff_const_strictInterleaves :=
+  StrictInterlSameDegree.quadratic_iff_const_strictInterleaves
+
+@[deprecated StrictInterlSameDegree.of_bezoutMatrix_quadratic_posDef
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.of_bezoutMatrix_quadratic_posDef :=
+  StrictInterlSameDegree.of_bezoutMatrix_quadratic_posDef
+
+@[deprecated StrictInterlSameDegree.bezoutMatrix_quadratic_posDef
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.bezoutMatrix_quadratic_posDef :=
+  StrictInterlSameDegree.bezoutMatrix_quadratic_posDef
+
+@[deprecated StrictInterlSameDegree.bezoutMatrix_posDef_quadratic
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.bezoutMatrix_posDef_quadratic :=
+  StrictInterlSameDegree.bezoutMatrix_posDef_quadratic
+
+@[deprecated StrictInterlSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic :=
+  StrictInterlSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
+
+@[deprecated StrictInterlSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic :=
+  StrictInterlSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
+
+@[deprecated StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_zero :=
+  StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
+
+@[deprecated StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_one
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_one :=
+  StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_one
+
+@[deprecated StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_two
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_two :=
+  StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_two
+
+@[deprecated strictInterlSameDegree_iff_bezoutMatrix_posDef (since := "2026-09-18")]
+alias strictPrecSameDegree_iff_bezoutMatrix_posDef :=
+  strictInterlSameDegree_iff_bezoutMatrix_posDef
 
 end RealRooted
