@@ -292,7 +292,7 @@ theorem interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs {f : ℝ[X]}
     apply Polynomial.Splits.of_natDegree_le_one
     compute_degree!
   have hprec : StrictInterl (f * 1) (C a * (f * 1) + C b * (f * X)) :=
-    prec_convex_left_of_common_factor (d := f) (f' := 1) (g' := X)
+    StrictInterl.convex_left_of_common_factor (d := f) (f' := 1) (g' := X)
       hne hsplits (by ring) (by ring) h1X hasPosLeadingCoeff_one hXpos ha hb
       hsum_ne hsum_splits hcop
   rw [mul_one] at hprec

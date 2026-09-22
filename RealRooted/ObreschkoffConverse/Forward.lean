@@ -36,7 +36,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
     · by_cases hα_nonpos : α ≤ 0
       · have hrr_neg :
             ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).Splits) :=
-          isRealRooted_nonneg_combo_of_prec
+          StrictInterl.isRealRooted_nonneg_combo
             hfg hf_pos hg_pos
             (by simp_all) (by grind) (Or.inr (by simp_all))
         have hrr :
@@ -93,7 +93,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
             isRealRooted_C_mul hfg.2.1.1 hfg.2.1.2 hβ0
           simp_all
         · exact
-            (isRealRooted_nonneg_combo_of_prec
+            (StrictInterl.isRealRooted_nonneg_combo
               hfg hf_pos hg_pos hα_nonneg (le_of_lt hβpos)
               (Or.inr hβpos)).2
       · have hαneg : α < 0 := lt_of_not_ge hα_nonneg
@@ -431,7 +431,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
     · by_cases hα_nonpos : α ≤ 0
       · have hrr_neg :
           ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).Splits) :=
-        isRealRooted_nonneg_combo_of_prec
+        StrictInterl.isRealRooted_nonneg_combo
           hfg hf_pos hg_pos (by simp_all) (by grind) (Or.inr (by simp_all))
         have hrr :
             ((C (-1 : ℝ) * (C (-α) * f + C (-β) * g)) ≠ 0 ∧
@@ -457,7 +457,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
         grind
     · by_cases hα_nonneg : 0 ≤ α
       · exact
-          (isRealRooted_nonneg_combo_of_prec
+          (StrictInterl.isRealRooted_nonneg_combo
             hfg hf_pos hg_pos hα_nonneg (le_of_lt hβpos)
             (Or.inr hβpos)).2
       · have hαneg : α < 0 := lt_of_not_ge hα_nonneg

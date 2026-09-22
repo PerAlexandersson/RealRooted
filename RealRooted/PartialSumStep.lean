@@ -30,7 +30,7 @@ propagate.
 The three ingredients are all already available: the degree shift
 `prec_to_prec_mul_X_of_nonneg`, the two-term right cone
 `prec0_add_left_of_common_right_of_nonneg`, and the positive-combination
-results `prec_nonneg_combo_left` / `prec_nonneg_combo_right`.
+results `StrictInterl.nonneg_combo_left` / `StrictInterl.nonneg_combo_right`.
 -/
 
 /-- **The partial-sum step.**  If the partial sum `S` interlaces both plain
@@ -39,7 +39,7 @@ real-rooted and precedes `X * S`.
 
 The other half of the sandwich, `A₁ + A₂ ≺ A₁ + A₂ + c * X * S`, is
 `partialSum_step_left` below; note that it needs a coprimality hypothesis, since
-`prec_nonneg_combo_left` does. -/
+`StrictInterl.nonneg_combo_left` does. -/
 theorem partialSum_step
     {S A₁ A₂ : ℝ[X]} (h₁ : StrictInterl S A₁) (h₂ : StrictInterl S A₂)
     (hSnn : HasNonnegCoeffs S) (h₁nn : HasNonnegCoeffs A₁) (h₂nn : HasNonnegCoeffs A₂)
@@ -69,12 +69,12 @@ theorem partialSum_step
   have hXS_nn : HasNonnegCoeffs (X * S) := hSnn.X_mul
   have hXS_pos : HasPosLeadingCoeff (X * S) := hXS_nn.pos_leadingCoeff hXS0
   refine ⟨?_, ?_⟩
-  · exact prec_nonneg_combo_right hcone hsum_pos hXS_pos zero_le_one hc.le (Or.inl zero_lt_one)
-  · exact isRealRooted_nonneg_combo_of_prec hcone hsum_pos hXS_pos zero_le_one hc.le
+  · exact hcone.nonneg_combo_right hsum_pos hXS_pos zero_le_one hc.le (Or.inl zero_lt_one)
+  · exact hcone.isRealRooted_nonneg_combo hsum_pos hXS_pos zero_le_one hc.le
       (Or.inl zero_lt_one)
 
 /-- The left half of the sandwich.  Unlike `partialSum_step` this needs the two
-summands to be coprime, which is the hypothesis `prec_nonneg_combo_left`
+summands to be coprime, which is the hypothesis `StrictInterl.nonneg_combo_left`
 carries; in applications it has to be supplied from the specific sequence. -/
 theorem partialSum_step_left
     {S A₁ A₂ : ℝ[X]} (h₁ : StrictInterl S A₁) (h₂ : StrictInterl S A₂)
@@ -98,10 +98,9 @@ theorem partialSum_step_left
     · exact h
   have hsum_pos : HasPosLeadingCoeff (A₁ + A₂) := (h₁nn.add h₂nn).pos_leadingCoeff hsum0
   have hXS_pos : HasPosLeadingCoeff (X * S) := hSnn.X_mul.pos_leadingCoeff hXS0
-  obtain ⟨hne, hsp⟩ := isRealRooted_nonneg_combo_of_prec hcone hsum_pos hXS_pos
+  obtain ⟨hne, hsp⟩ := hcone.isRealRooted_nonneg_combo hsum_pos hXS_pos
     zero_le_one hc.le (Or.inl zero_lt_one)
-  exact prec_nonneg_combo_left hcone hsum_pos hXS_pos zero_le_one hc.le
+  exact hcone.nonneg_combo_left hsum_pos hXS_pos zero_le_one hc.le
     (Or.inl zero_lt_one) hne hsp hcop
 
 end RealRooted
-

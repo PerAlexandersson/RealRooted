@@ -403,7 +403,7 @@ theorem prec_sameDegree_shift_left_of_roots_le
 /-- If `f ⊳ g` with positive leading coefficients and non-negative `λ, μ`,
     not both zero, then `λf + μg` interlaces `g` from the left:
     `StrictInterl (λf + μg) g`. -/
-theorem prec_nonneg_combo_right {f g : ℝ[X]}
+theorem StrictInterl.nonneg_combo_right {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
@@ -425,21 +425,21 @@ theorem prec_nonneg_combo_right {f g : ℝ[X]}
 
 /-- Forward Obreschkoff direction: if `f ⊳ g` with positive leading coefficients,
     then every nontrivial nonnegative linear combination `a f + b g` is real-rooted. -/
-theorem isRealRooted_nonneg_combo_of_prec {f g : ℝ[X]}
+theorem StrictInterl.isRealRooted_nonneg_combo {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     (hab : 0 < a ∨ 0 < b) : ((C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits) :=
-  (prec_nonneg_combo_right hfg hf_pos hg_pos ha hb hab).1
+  (hfg.nonneg_combo_right hf_pos hg_pos ha hb hab).1
 
 /-- Forward Obreschkoff direction, positive-coefficient special case:
     if `f ⊳ g`, then `a f + b g` is real-rooted for all `a, b > 0`. -/
-theorem isRealRooted_pos_combo_of_prec {f g : ℝ[X]}
+theorem StrictInterl.isRealRooted_pos_combo {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     ((C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits) :=
-  isRealRooted_nonneg_combo_of_prec hfg hf_pos hg_pos ha.le hb.le (Or.inl ha)
+  hfg.isRealRooted_nonneg_combo hf_pos hg_pos ha.le hb.le (Or.inl ha)
 
 namespace PosComboRealRooted
 
@@ -523,11 +523,11 @@ lemma isRealRooted_add_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
     {lam : ℝ} (hlam : 0 < lam) : ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by
   simpa [one_mul] using h hlam zero_lt_one
 
-lemma of_prec {f g : ℝ[X]} (hfg : StrictInterl f g)
+lemma of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g :=
   fun {_ _} hlam hμ =>
-    isRealRooted_pos_combo_of_prec hfg hf_pos hg_pos hlam hμ
+    hfg.isRealRooted_pos_combo hf_pos hg_pos hlam hμ
 
 lemma iff_add_right {f g : ℝ[X]} :
     PosComboRealRooted f g ↔
@@ -1430,18 +1430,18 @@ The correct Obreschkoff converse is: `PosComboRealRooted f g` implies
 
 /-- If `f ⊳ g` with positive leading coefficients and positive `λ, μ`,
     then `λf + μg` interlaces `g` from the left: `StrictInterl (λf + μg) g`.
-    This is the positive-coefficient special case of `prec_nonneg_combo_right`. -/
-theorem prec_convex_right {f g : ℝ[X]}
+    This is the positive-coefficient special case of `StrictInterl.nonneg_combo_right`. -/
+theorem StrictInterl.convex_right {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     StrictInterl (C a * f + C b * g) g :=
-  prec_nonneg_combo_right hfg hf_pos hg_pos ha.le hb.le (Or.inl ha)
+  hfg.nonneg_combo_right hf_pos hg_pos ha.le hb.le (Or.inl ha)
 
 /-- If `f ⊳ g` with positive leading coefficients and non-negative `a, b`,
     not both zero, then `f` interlaces `a·f + b·g` from the right provided
     the Wagner 2 hypotheses hold in the genuinely two-term case. -/
-theorem prec_nonneg_combo_left {f g : ℝ[X]}
+theorem StrictInterl.nonneg_combo_left {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
@@ -1476,7 +1476,7 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
 /-- If `f ⊳ g` with positive leading coefficients and positive `a, b`,
     then `f` interlaces `a·f + b·g` from the right: `StrictInterl f (a·f + b·g)`.
     (Wagner 2 applied to `C a * f` and `C b * g`, both interlaced by `f`.) -/
-theorem prec_convex_left {f g : ℝ[X]}
+theorem StrictInterl.convex_left {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
@@ -1490,10 +1490,10 @@ theorem prec_convex_left {f g : ℝ[X]}
     (StrictInterl.C_mul_right hfg hb.ne')
     hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
 
-/-- A common-factor version of `prec_convex_left`. If `f` and `g` share a
+/-- A common-factor version of `StrictInterl.convex_left`. If `f` and `g` share a
 real-rooted factor `d`, it is enough to verify the Wagner-2 hypotheses after
 factoring out `d`. -/
-theorem prec_convex_left_of_common_factor {d f g : ℝ[X]}
+theorem StrictInterl.convex_left_of_common_factor {d f g : ℝ[X]}
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g')
@@ -1505,9 +1505,35 @@ theorem prec_convex_left_of_common_factor {d f g : ℝ[X]}
     StrictInterl f (C a * f + C b * g) := by
   subst hf_def hg_def
   have hbase : StrictInterl f' (C a * f' + C b * g') :=
-    prec_convex_left hfg hf'_pos hg'_pos ha hb hfg'_rr_ne hfg'_rr_splits hcop
+    hfg.convex_left hf'_pos hg'_pos ha hb hfg'_rr_ne hfg'_rr_splits hcop
   have hmul : StrictInterl (d * f') (d * (C a * f' + C b * g')) :=
     hbase.mul_common_factor hd_ne hd_splits
   grind
+
+/-! ## Deprecated strict-interlacing combination names -/
+
+@[deprecated StrictInterl.nonneg_combo_right (since := "2026-09-18")]
+alias prec_nonneg_combo_right := StrictInterl.nonneg_combo_right
+
+@[deprecated StrictInterl.isRealRooted_nonneg_combo (since := "2026-09-18")]
+alias isRealRooted_nonneg_combo_of_prec := StrictInterl.isRealRooted_nonneg_combo
+
+@[deprecated StrictInterl.isRealRooted_pos_combo (since := "2026-09-18")]
+alias isRealRooted_pos_combo_of_prec := StrictInterl.isRealRooted_pos_combo
+
+@[deprecated PosComboRealRooted.of_strictInterl (since := "2026-09-18")]
+alias PosComboRealRooted.of_prec := PosComboRealRooted.of_strictInterl
+
+@[deprecated StrictInterl.nonneg_combo_left (since := "2026-09-18")]
+alias prec_nonneg_combo_left := StrictInterl.nonneg_combo_left
+
+@[deprecated StrictInterl.convex_right (since := "2026-09-18")]
+alias prec_convex_right := StrictInterl.convex_right
+
+@[deprecated StrictInterl.convex_left (since := "2026-09-18")]
+alias prec_convex_left := StrictInterl.convex_left
+
+@[deprecated StrictInterl.convex_left_of_common_factor (since := "2026-09-18")]
+alias prec_convex_left_of_common_factor := StrictInterl.convex_left_of_common_factor
 
 end RealRooted

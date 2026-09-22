@@ -569,7 +569,7 @@ theorem posComboRealRooted_fPolynomial_of_prec
   have hv_pos : HasPosLeadingCoeff v := hv_nonneg.pos_leadingCoeff h.2.1.1
   intro lam μ hlam hμ
   have hcombo_rr : ((C lam * u + C μ * v) ≠ 0 ∧ (C lam * u + C μ * v).Splits) :=
-    PosComboRealRooted.of_prec h hu_pos hv_pos hlam hμ
+    PosComboRealRooted.of_strictInterl h hu_pos hv_pos hlam hμ
   have hcombo_nonneg : HasNonnegCoeffs (C lam * u + C μ * v) :=
     (nonnegCoeffs_C_mul hlam.le hu_nonneg).add (nonnegCoeffs_C_mul hμ.le hv_nonneg)
   have hcombo_deg : (C lam * u + C μ * v).natDegree ≤ d := by

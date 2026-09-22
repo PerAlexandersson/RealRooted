@@ -21,7 +21,7 @@ theorem posCombo_sequence_nonneg_right_prec
     (hb : ∀ i : Nat, 0 ≤ b i)
     (hab : ∀ i : Nat, 0 < a i ∨ 0 < b i) :
     ∀ i : Nat, StrictInterl (C (a i) * F i + C (b i) * G i) (G i) := fun i =>
-  prec_nonneg_combo_right (hfg i) (hF i) (hG i) (ha i) (hb i) (hab i)
+  StrictInterl.nonneg_combo_right (hfg i) (hF i) (hG i) (ha i) (hb i) (hab i)
 
 theorem posCombo_sequence_nonneg_realrooted
     {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
@@ -34,7 +34,7 @@ theorem posCombo_sequence_nonneg_realrooted
     ∀ i : Nat,
       (C (a i) * F i + C (b i) * G i) ≠ 0 ∧
         (C (a i) * F i + C (b i) * G i).Splits := fun i =>
-  isRealRooted_nonneg_combo_of_prec
+  StrictInterl.isRealRooted_nonneg_combo
     (hfg i) (hF i) (hG i) (ha i) (hb i) (hab i)
 
 theorem posCombo_sequence_positive_realrooted
@@ -47,7 +47,7 @@ theorem posCombo_sequence_positive_realrooted
     ∀ i : Nat,
       (C (a i) * F i + C (b i) * G i) ≠ 0 ∧
         (C (a i) * F i + C (b i) * G i).Splits := fun i =>
-  isRealRooted_pos_combo_of_prec
+  StrictInterl.isRealRooted_pos_combo
     (hfg i) (hF i) (hG i) (ha i) (hb i)
 
 theorem posCombo_sequence_comm {F G : Nat → ℝ[X]}
@@ -81,7 +81,7 @@ theorem posCombo_sequence_of_prec {F G : Nat → ℝ[X]}
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i)) :
     ∀ i : Nat, PosComboRealRooted (F i) (G i) := fun i =>
-  PosComboRealRooted.of_prec (hfg i) (hF i) (hG i)
+  PosComboRealRooted.of_strictInterl (hfg i) (hF i) (hG i)
 
 theorem posCombo_sequence_of_common_left {F G H : Nat → ℝ[X]}
     (hHF : ∀ i : Nat, StrictInterl (H i) (F i))
@@ -622,7 +622,7 @@ macro_rules
         right_coeff_nonneg := $hb:term,
         some_coeff_pos := $hab:term) =>
       `(tactic|
-        exact RealRooted.prec_nonneg_combo_right
+        exact RealRooted.StrictInterl.nonneg_combo_right
           $hfg $hfpos $hgpos $ha $hb $hab)
   | `(tactic|
       rr_pos_combo_sequence_nonneg_right_prec using
@@ -644,7 +644,7 @@ macro_rules
         right_coeff_nonneg := $hb:term,
         some_coeff_pos := $hab:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_nonneg_combo_of_prec
+        exact RealRooted.StrictInterl.isRealRooted_nonneg_combo
           $hfg $hfpos $hgpos $ha $hb $hab)
   | `(tactic|
       rr_pos_combo_sequence_nonneg_realrooted using
@@ -665,7 +665,7 @@ macro_rules
         left_coeff_pos := $ha:term,
         right_coeff_pos := $hb:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_pos_combo_of_prec
+        exact RealRooted.StrictInterl.isRealRooted_pos_combo
           $hfg $hfpos $hgpos $ha $hb)
   | `(tactic|
       rr_pos_combo_sequence_positive_realrooted using
@@ -742,7 +742,7 @@ macro_rules
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term) =>
       `(tactic|
-        exact RealRooted.PosComboRealRooted.of_prec
+        exact RealRooted.PosComboRealRooted.of_strictInterl
           $hfg $hfpos $hgpos)
   | `(tactic|
       rr_pos_combo_sequence_of_prec using
@@ -947,7 +947,7 @@ macro_rules
         left_coeff_pos := $ha:term,
         right_coeff_pos := $hb:term) =>
       `(tactic|
-        exact RealRooted.prec_convex_right
+        exact RealRooted.StrictInterl.convex_right
           $hfg $hfpos $hgpos $ha $hb)
   | `(tactic|
       rr_pos_combo_nonneg_left_prec using
@@ -961,7 +961,7 @@ macro_rules
         combo_splits := $hsplits:term,
         coprime := $hcop:term) =>
       `(tactic|
-        exact RealRooted.prec_nonneg_combo_left
+        exact RealRooted.StrictInterl.nonneg_combo_left
           $hfg $hfpos $hgpos $ha $hb $hab $hne $hsplits $hcop)
   | `(tactic|
       rr_pos_combo_convex_left_prec using
@@ -974,7 +974,7 @@ macro_rules
         combo_splits := $hsplits:term,
         coprime := $hcop:term) =>
       `(tactic|
-        exact RealRooted.prec_convex_left
+        exact RealRooted.StrictInterl.convex_left
           $hfg $hfpos $hgpos $ha $hb $hne $hsplits $hcop)
   | `(tactic|
       rr_pos_combo_convex_left_common_factor_prec using
@@ -991,7 +991,7 @@ macro_rules
         reduced_combo_splits := $hsplits:term,
         reduced_coprime := $hcop:term) =>
       `(tactic|
-        exact RealRooted.prec_convex_left_of_common_factor
+        exact RealRooted.StrictInterl.convex_left_of_common_factor
           $hdne $hdsplits $hfdef $hgdef $hfg $hfpos $hgpos
           $ha $hb $hne $hsplits $hcop)
   | `(tactic|

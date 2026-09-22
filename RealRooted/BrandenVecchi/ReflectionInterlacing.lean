@@ -82,7 +82,7 @@ private theorem splits_add_of_prec0_of_nonneg {f g : ℝ[X]}
         have hf_ne : f ≠ 0 := by simpa [hg_zero] using hsum
         exact hfr hf_ne)
   · exact (PosComboRealRooted.isRealRooted_add
-      (PosComboRealRooted.of_prec hprec
+      (PosComboRealRooted.of_strictInterl hprec
         (hf.pos_leadingCoeff hprec.1.1)
         (hg.pos_leadingCoeff hprec.2.1.1))).2
 
