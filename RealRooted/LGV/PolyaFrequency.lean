@@ -36,6 +36,27 @@ theorem toeplitz_isTotallyNonneg_of_orderedCertificates
     exact certificate ⟨rows, cols, hrows, hcols⟩
   · exact hweight
 
+/-- Ordered cancellation certificates on minor-local networks make the
+Toeplitz matrix totally nonnegative.  The network for each strict minor may
+differ from the networks for all other minors. -/
+theorem toeplitz_isTotallyNonneg_of_minorOrderedCertificates
+    {a : ℕ → ℝ}
+    (network : ∀ {n : ℕ}, StrictToeplitzMinorIndex n →
+      LGV.FinitePathNetwork ℝ (Fin n))
+    (hmatrix : ∀ {n : ℕ} (I : StrictToeplitzMinorIndex n),
+      (network I).matrix = I.toeplitzSubmatrix a)
+    (certificate : ∀ {n : ℕ} (I : StrictToeplitzMinorIndex n),
+      LGV.FinitePathNetwork.OrderedCancellationCertificate (network I))
+    (hweight : ∀ {n : ℕ} (I : StrictToeplitzMinorIndex n)
+      {s t : Fin n} (p : (network I).Path s t),
+      0 ≤ (network I).weight p) :
+    (toeplitz a).IsTotallyNonneg := by
+  intro n rows cols hrows hcols
+  let I : StrictToeplitzMinorIndex n := ⟨rows, cols, hrows, hcols⟩
+  change 0 ≤ Matrix.det (I.toeplitzSubmatrix a)
+  rw [← hmatrix I]
+  exact (certificate I).det_nonneg (hweight I)
+
 /-- Ordered LGV cancellation certificates for all strict Toeplitz minors give
 the associated Pólya-frequency sequence. -/
 theorem isPolyaFreqSeq_of_orderedCertificates
@@ -46,6 +67,23 @@ theorem isPolyaFreqSeq_of_orderedCertificates
     (hweight : ∀ {s t : ℕ} (p : N.Path s t), 0 ≤ N.weight p) :
     IsPolyaFreqSeq a :=
   toeplitz_isTotallyNonneg_of_orderedCertificates N hN certificate hweight
+
+/-- Minor-local ordered cancellation certificates give the associated
+Pólya-frequency sequence. -/
+theorem isPolyaFreqSeq_of_minorOrderedCertificates
+    {a : ℕ → ℝ}
+    (network : ∀ {n : ℕ}, StrictToeplitzMinorIndex n →
+      LGV.FinitePathNetwork ℝ (Fin n))
+    (hmatrix : ∀ {n : ℕ} (I : StrictToeplitzMinorIndex n),
+      (network I).matrix = I.toeplitzSubmatrix a)
+    (certificate : ∀ {n : ℕ} (I : StrictToeplitzMinorIndex n),
+      LGV.FinitePathNetwork.OrderedCancellationCertificate (network I))
+    (hweight : ∀ {n : ℕ} (I : StrictToeplitzMinorIndex n)
+      {s t : Fin n} (p : (network I).Path s t),
+      0 ≤ (network I).weight p) :
+    IsPolyaFreqSeq a :=
+  toeplitz_isTotallyNonneg_of_minorOrderedCertificates
+    network hmatrix certificate hweight
 
 end
 
