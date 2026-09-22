@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  717  Lean declarations requiring semantic review
-  249  tactic declarations requiring an alias-first migration
+  711  Lean declarations requiring semantic review
+  248  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    39  statement scaffolds requiring proof-status-preserving renames
-  112  deprecated compatibility identifiers with canonical targets
+  119  deprecated compatibility identifiers with canonical targets
    34  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -85,6 +85,12 @@ deprecated aliases.  `PosComboRealRooted.of_prec` now delegates to
 `PosComboRealRooted.of_strictInterl`; the short `of_prec` token remains an
 aggregate inventory row because other namespaces still own live declarations
 with that name.
+
+The remaining foundational `PosCombo` cone layer is likewise canonicalized:
+the same-degree `X - C r` transports are receiver methods on `StrictInterl`,
+and the weighted/list common-left cone theorems live in the `StrictInterl`
+namespace.  All seven old public signatures remain as deprecated wrappers or
+aliases.
 
 Execution order
 
