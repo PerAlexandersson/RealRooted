@@ -60,10 +60,10 @@ theorem wronskian_eval_nonneg_of_prec {p q : ℝ[X]}
             rw [eq_C_of_natDegree_eq_zero hpdeg,
               eq_C_of_natDegree_eq_zero hqdeg]
             simp [wronskian]
-          · have hstrict : StrictPrecSameDegree q p :=
-              StrictPrecSameDegree.of_prec_of_no_common hprec hsame.symm
+          · have hstrict : StrictInterlSameDegree q p :=
+              StrictInterlSameDegree.of_strictInterl_of_no_common hprec hsame.symm
                 (fun r hrq hrp => hcommon r hrp hrq)
-            have hpos := wronskian_pos_of_strictPrecSameDegree
+            have hpos := wronskian_pos_of_strictInterlSameDegree
               hq_pos hp_pos (Nat.pos_of_ne_zero hpdeg) hstrict t
             rw [Polynomial.wronskian, eval_sub, eval_mul, eval_mul]
             nlinarith

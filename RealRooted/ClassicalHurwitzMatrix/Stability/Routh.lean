@@ -458,7 +458,7 @@ theorem IsStrictlyHurwitzStable.prec_parts_of_oddShape
           even.eval t * odd.derivative.eval t :=
       wronskian_pos_of_pos_at_roots hoddSplits hoddDegree
         (by rw [hdegree, hoddDegree]) hWRoots
-    exact (StrictPrecSameDegree.of_wronskian_pos hodd heven rfl hdegree
+    exact (StrictInterlSameDegree.of_wronskian_pos hodd heven rfl hdegree
       hoddSplits hevenSplits hW).toStrictInterl
 
 /-- The defining Routh recurrence after the `X ↦ -X²` rotation. -/

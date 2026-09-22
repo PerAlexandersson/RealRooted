@@ -186,14 +186,15 @@ lemma Polynomial.exists_pos_scalar_mul_X_add_C_of_natDegree_one {p : ℝ[X]}
       simpa [u] using Polynomial.eq_X_add_C_of_natDegree_le_one (p := p) hp_deg.le
     _ = C u * (X + C (p.coeff 0 / u)) := by rw [mul_add, ← C_mul, mul_div_cancel₀ _ hu_pos.ne']
 
-lemma StrictPrecSameDegree.X_add_C_iff {a b : ℝ} :
-    StrictPrecSameDegree (X + C b) (X + C a) ↔ a < b := by
-  simp [StrictPrecSameDegree, Polynomial.isRealRooted_X_add_C, List.interleaves_singleton_singleton]
+lemma StrictInterlSameDegree.X_add_C_iff {a b : ℝ} :
+    StrictInterlSameDegree (X + C b) (X + C a) ↔ a < b := by
+  simp [StrictInterlSameDegree, Polynomial.isRealRooted_X_add_C,
+    List.interleaves_singleton_singleton]
 
-lemma StrictPrecSameDegree.X_add_C_bezoutMatrix_posDef_iff_one {a b : ℝ} :
-    StrictPrecSameDegree (X + C b) (X + C a) ↔
+lemma StrictInterlSameDegree.X_add_C_bezoutMatrix_posDef_iff_one {a b : ℝ} :
+    StrictInterlSameDegree (X + C b) (X + C a) ↔
     (bezoutMatrix 1 (X + C a) (X + C b)).PosDef := by
-  rw [StrictPrecSameDegree.X_add_C_iff, bezoutMatrix.linear_posDef_one_iff]
+  rw [StrictInterlSameDegree.X_add_C_iff, bezoutMatrix.linear_posDef_one_iff]
 
 lemma Polynomial.isRealRooted_of_natDegree_two_of_isRoot {p : ℝ[X]} {x : ℝ}
     (hdeg : p.natDegree = 2) (hx : p.IsRoot x) :
@@ -468,5 +469,15 @@ lemma bezoutEntry.bilinear_mul_sub (p q : ℝ[X]) {n : ℕ} (t₁ t₂ : ℝ)
   simp_rw [Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hp),
     Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hq)]
   exact h_eq
+
+/-! ## Deprecated strict same-degree interlacing names -/
+
+@[deprecated StrictInterlSameDegree.X_add_C_iff (since := "2026-09-18")]
+alias StrictPrecSameDegree.X_add_C_iff := StrictInterlSameDegree.X_add_C_iff
+
+@[deprecated StrictInterlSameDegree.X_add_C_bezoutMatrix_posDef_iff_one
+  (since := "2026-09-18")]
+alias StrictPrecSameDegree.X_add_C_bezoutMatrix_posDef_iff_one :=
+  StrictInterlSameDegree.X_add_C_bezoutMatrix_posDef_iff_one
 
 end RealRooted

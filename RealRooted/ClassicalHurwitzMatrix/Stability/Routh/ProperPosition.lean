@@ -68,12 +68,12 @@ theorem IsStrictlyHurwitzStable.wronskian_parts_pos_of_oddShape
   obtain ⟨hoddnn, _⟩ :=
     h.hasNonnegCoeffs_parts_of_oddShape hodd heven hdegree
   have hprec := h.prec_parts_of_oddShape hodd heven hdegree
-  have hstrict : StrictPrecSameDegree odd even :=
-    StrictPrecSameDegree.of_prec_of_no_common hprec hdegree.symm
+  have hstrict : StrictInterlSameDegree odd even :=
+    StrictInterlSameDegree.of_strictInterl_of_no_common hprec hdegree.symm
       (fun r hoddRoot hevenRoot =>
         h.noCommonRoot_parts_of_hasNonnegCoeffs hodd.ne_zero hoddnn r
           ⟨hoddRoot, hevenRoot⟩)
-  exact wronskian_pos_of_strictPrecSameDegree hodd heven
+  exact wronskian_pos_of_strictInterlSameDegree hodd heven
     (by simpa only [hdegree] using hdegreePos) hstrict t
 
 /-- In a positive-degree odd-shape Routh step, the reduced input precedes the

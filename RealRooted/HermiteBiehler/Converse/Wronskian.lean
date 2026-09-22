@@ -112,7 +112,7 @@ theorem prec_of_stable_same_degree {f g : ℝ[X]}
     {w₀ : ℂ} (hw₀ : w₀ ∈ (hermiteBiehlerPolynomial f g).roots) (hneg : w₀.im < 0)
     (hdeg : f.natDegree = g.natDegree) : StrictInterl g f := by
   obtain ⟨hfs, hgs⟩ := splits_of_stable hf hg hstab
-  exact (StrictPrecSameDegree.of_wronskian_pos (n := f.natDegree) hg hf hdeg.symm rfl hgs hfs
+  exact (StrictInterlSameDegree.of_wronskian_pos (n := f.natDegree) hg hf hdeg.symm rfl hgs hfs
     (fun t => wronskian_pos_of_stable hstab hnoreal hw₀ hneg t)).toStrictInterl
 
 theorem hnoreal_of_no_common_real_root {f g : ℝ[X]}
