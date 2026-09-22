@@ -165,7 +165,7 @@ theorem thetaPreservesPrec0_of_derivative
 /-- `theta` preserves weak proper position on the polynomial PF cone, obtained
 from the derivative preservation theorem and multiplication by `X`. -/
 theorem thetaPreservesPrec0 : thetaPreservesPrec0Statement :=
-  thetaPreservesPrec0_of_derivative derivativePreservesPrec0
+  thetaPreservesPrec0_of_derivative derivativePreservesInterl
 
 /-- Classical Rolle input: `theta + 1` preserves real-rootedness and
 nonpositive roots on the polynomial PF cone. -/
@@ -207,7 +207,7 @@ theorem thetaPlusOnePreservesPrec0_of_derivative
 obtained from the derivative preservation theorem via
 `thetaPlusOnePreservesPrec0_of_derivative`. -/
 theorem thetaPlusOnePreservesPrec0 : thetaPlusOnePreservesPrec0Statement :=
-  thetaPlusOnePreservesPrec0_of_derivative derivativePreservesPrec0
+  thetaPlusOnePreservesPrec0_of_derivative derivativePreservesInterl
 
 /-- Classical Rolle input: a PF polynomial is in weak proper position with
 each of its iterates under `theta + 1`. -/

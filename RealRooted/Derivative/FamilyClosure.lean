@@ -230,7 +230,7 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
 
 /-- Statement interface for the Rolle--Obreschkoff fact that differentiation
 preserves weak proper position in the oriented, zero-aware `Interl` convention.
-The checked witness is `derivativePreservesPrec0` in
+The checked witness is `derivativePreservesInterl` in
 `RealRooted.ObreschkoffConverse.Derivative`. -/
 def derivativePreservesInterlStatement : Prop :=
   ∀ {p q : ℝ[X]}, Interl p q → Interl p.derivative q.derivative

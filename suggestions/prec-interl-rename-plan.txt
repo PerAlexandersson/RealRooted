@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  709  Lean declarations requiring semantic review
+  692  Lean declarations requiring semantic review
   248  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
-   38  statement scaffolds requiring proof-status-preserving renames
-  122  deprecated compatibility identifiers with canonical targets
+   33  statement scaffolds requiring proof-status-preserving renames
+  144  deprecated compatibility identifiers with canonical targets
    34  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -95,9 +95,13 @@ aliases.
 The two degree-zero boundary constructors now live under `StrictInterl` as
 `of_degree_zero_degree_zero` and `of_degree_zero_right_of_degree_one`.  The
 derivative statement interface is `derivativePreservesInterlStatement`; its
-checked witness remains `derivativePreservesPrec0` pending the larger
-derivative-family migration.  Application-only constructor callers may still
-use the deprecated alias until their owning application batch.
+checked witness is `derivativePreservesInterl`.  The same-degree reduction,
+degree-at-least-two statement interfaces, branch-selection helpers, and direct
+applied derivative APIs now use `StrictInterl` / `Interl` terminology; every
+old public signature remains as a deprecated compatibility declaration, while
+the private scalar-transport helper was renamed without a wrapper.
+Application-only constructor callers may still use the deprecated constructor
+alias until their owning application batch.
 
 Execution order
 
