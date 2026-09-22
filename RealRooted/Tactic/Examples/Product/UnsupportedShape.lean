@@ -98,6 +98,78 @@ example {P Q : Nat → ℝ[X]} {N : Nat}
     cutoff := N,
     factorization := hrow
 
+/-- Structured quotients are compared as complete pointwise operands. -/
+example {P Q0 Q1 : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q0 n + Q1 n ≠ 0 ∧ (Q0 n + Q1 n).Splits)
+    (hrow : ∀ n : Nat,
+      P n = (C (t n) + C ((n : ℝ) + 1) * X) * (Q0 n + Q1 n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Ordinary right root-zero powers retain the `X`-power route. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * X ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- A fixed exponent remains a supported `X + C` row-power instance. -/
+example {P Q : Nat → ℝ[X]}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (X + C (1 : ℝ)) ^ 3 * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Ordinary left row-dependent `X + C` powers retain their route. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (X + C (t n)) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Cutoff right `C + X` powers retain their route. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat} {t : Nat → ℝ} {N : Nat}
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * (C (t n) + X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
+/-- Cutoff left affine powers use the factor orientation, not quotient syntax. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat} {t : Nat → ℝ} {N : Nat}
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = (C ((n : ℝ) + 1) * X + C (t n)) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
+/-- error: rr_product lift auto: factorization does not expose quotient as an outer factor -/
+#guard_msgs in
+example {P Q : Nat → ℝ[X]}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = C ((n : ℝ) + 1) * Q (n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- error: rr_product lift auto: unsupported factor; use explicit factor_realrooted -/
 #guard_msgs in
 example {P Q F : Nat → ℝ[X]}

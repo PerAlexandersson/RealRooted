@@ -41,8 +41,10 @@ private inductive LiftAutoShape where
   | XPow
   | XAddCPow
   | CAddXPow
-  | affine
-  | affinePow
+  | affineMulXFirst
+  | affineConstFirst
+  | affinePowMulXFirst
+  | affinePowConstFirst
 
 private def appFnName? (e : Expr) : Option Name :=
   e.consumeMData.getAppFn.constName?
@@ -97,9 +99,6 @@ private def outerPowBase? (e : Expr) : Option Expr :=
       none
   else
     none
-
-private def sameApplicationHead (lhs rhs : Expr) : Bool :=
-  lhs.consumeMData.getAppFn == rhs.consumeMData.getAppFn
 
 private def containsPolynomialX (e : Expr) : Bool :=
   containsAppFn ``Polynomial.X e
@@ -302,6 +301,22 @@ private partial def findSplitsArgument? (e : Expr) : Option Expr := Id.run do
           return some p
       none
 
+/-- Remove the matching pointwise binders from the established lift certificates.
+
+The generic lift-auto router deliberately supports only a single pointwise
+certificate pair: `∀ n, ...` or `∀ n, N ≤ n → ...`, with the same binders in
+the quotient and row evidence.  The resulting operands retain those aligned
+bound variables, so they can be compared syntactically without unfolding or
+definitional equality on loose binders. -/
+private partial def pointwiseConclusion (e : Expr) : Expr :=
+  let e := e.consumeMData
+  match e with
+  | .forallE _ _ body _ => pointwiseConclusion body
+  | _ => e
+
+private def sameAlignedOperand (lhs rhs : Expr) : Bool :=
+  lhs.consumeMData == rhs.consumeMData
+
 private def directCMulX? (e : Expr) : Bool :=
   match outerMulArgs? e with
   | some (coefficient, variable) => isPolynomialC coefficient && isPolynomialX variable
@@ -335,8 +350,10 @@ private def liftAutoShapeOfFactor? (factor : Expr) : Option LiftAutoShape :=
     some .X
   else if isPolynomialC factor then
     some .scalar
-  else if let some _ := directAffineOrientation? factor then
-    some .affine
+  else if let some orientation := directAffineOrientation? factor then
+    match orientation with
+    | .mulXFirst => some .affineMulXFirst
+    | .constFirst => some .affineConstFirst
   else if let some orientation := unitSlopeOrientation? factor then
     match orientation with
     | .mulXFirst => some .XAddC
@@ -346,8 +363,10 @@ private def liftAutoShapeOfFactor? (factor : Expr) : Option LiftAutoShape :=
       some .XPow
     else if isPolynomialC base then
       some .scalarPow
-    else if let some _ := directAffineOrientation? base then
-      some .affinePow
+    else if let some orientation := directAffineOrientation? base then
+      match orientation with
+      | .mulXFirst => some .affinePowMulXFirst
+      | .constFirst => some .affinePowConstFirst
     else if let some orientation := unitSlopeOrientation? base then
       match orientation with
       | .mulXFirst => some .XAddCPow
@@ -362,7 +381,7 @@ private def liftAutoShapeOfEvidence (hquot hrow : Syntax) : TacticM LiftAutoShap
     let quotientEvidence ← Lean.Elab.Tactic.elabTerm hquot none
     let quotientType ← instantiateMVars (← inferType quotientEvidence)
     let quotient ←
-      match findSplitsArgument? quotientType with
+      match findSplitsArgument? (pointwiseConclusion quotientType) with
       | some quotient => pure quotient
       | none =>
           throwError
@@ -370,16 +389,16 @@ private def liftAutoShapeOfEvidence (hquot hrow : Syntax) : TacticM LiftAutoShap
     let rowEvidence ← Lean.Elab.Tactic.elabTerm hrow none
     let rowType ← instantiateMVars (← inferType rowEvidence)
     let rhs ←
-      match findEqualityRhs? rowType with
+      match findEqualityRhs? (pointwiseConclusion rowType) with
       | some rhs => pure rhs
       | none =>
           throwError "rr_product lift auto: no row equality found in factorization"
     let factor ←
       match outerMulArgs? rhs with
       | some (lhs, rhs) =>
-          if sameApplicationHead lhs quotient then
+          if sameAlignedOperand lhs quotient then
             pure rhs
-          else if sameApplicationHead rhs quotient then
+          else if sameAlignedOperand rhs quotient then
             pure lhs
           else
             throwError
@@ -673,16 +692,28 @@ elab "rr_product_lift_sequence_auto" " using "
           rr_product_lift_C_add_X_pow_sequence using
             quotient_realrooted := $hquot,
             factorization := $hrow))
-  | .affine =>
+  | .affineMulXFirst =>
       evalTactic
         (← `(tactic|
-          rr_product_lift_checked_affine_sequence_auto using
+          rr_product_lift_affine_sequence_auto using
             quotient_realrooted := $hquot,
             factorization := $hrow))
-  | .affinePow =>
+  | .affineConstFirst =>
       evalTactic
         (← `(tactic|
-          rr_product_lift_checked_affine_pow_sequence_auto using
+          rr_product_lift_const_first_sequence_auto using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .affinePowMulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_affine_pow_sequence_auto using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .affinePowConstFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_const_first_affine_pow_sequence_auto using
             quotient_realrooted := $hquot,
             factorization := $hrow))
 
@@ -756,18 +787,34 @@ elab "rr_product_lift_sequence_auto" " using "
             quotient_realrooted := $hquot,
             cutoff := $N,
             factorization := $hrow))
-  | .affine =>
+  | .affineMulXFirst =>
       evalTactic
         (← `(tactic|
-          rr_product_lift_checked_affine_sequence_auto using
+          rr_product_lift_affine_sequence_auto using
             base := $hbase,
             quotient_realrooted := $hquot,
             cutoff := $N,
             factorization := $hrow))
-  | .affinePow =>
+  | .affineConstFirst =>
       evalTactic
         (← `(tactic|
-          rr_product_lift_checked_affine_pow_sequence_auto using
+          rr_product_lift_const_first_sequence_auto using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .affinePowMulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_affine_pow_sequence_auto using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .affinePowConstFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_const_first_affine_pow_sequence_auto using
             base := $hbase,
             quotient_realrooted := $hquot,
             cutoff := $N,
