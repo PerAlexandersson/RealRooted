@@ -1531,6 +1531,15 @@ general derivative and dehomogenization closures remain in
 
 ## Import checks
 
+The generic LGV path-matrix foundation is isolated in `LGV.PathMatrix`. It
+identifies finite exact-length weighted path sums with powers of the
+edge-sum matrix over an arbitrary, possibly noncommutative semiring. It imports
+the pinned path and matrix APIs directly and does not depend on networks,
+chips, rank functions, positivity, or the higher Toeplitz/PF layers. The root
+and production umbrella budgets each rise by exactly one module; the tactic
+regression closure is unchanged. This identity is a prerequisite for the
+planned chip collocation bridge, not that bridge itself.
+
 The Lean 4.34 migration adds one small `PerronFrobenius.Simplex` shim. It
 preserves the set-of-vectors interface used by the matrix theory after Mathlib
 replaced its standard simplex API with a bundled type. The shim imports only

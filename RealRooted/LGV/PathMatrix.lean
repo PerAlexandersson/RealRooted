@@ -45,26 +45,28 @@ theorem sum_weight_exactLength_eq_edgeSumMatrix_pow
   | zero =>
       by_cases hab : a = b
       · subst b
-        letI : Unique (ExactLength a a 0) :=
+        let _ : Unique (ExactLength a a 0) :=
           { default := ⟨Path.nil, rfl⟩
             uniq := fun p ↦ by
               apply Subtype.ext
               exact p.1.eq_nil_of_length_zero p.2 }
         rw [Fintype.sum_unique]
+        have hdefault : (default : ExactLength a a 0) = ⟨Path.nil, rfl⟩ :=
+          Subsingleton.elim _ _
+        rw [hdefault]
         simp
-      · letI : IsEmpty (ExactLength a b 0) :=
+      · let _ : IsEmpty (ExactLength a b 0) :=
           ⟨fun p ↦ hab (p.1.eq_of_length_zero p.2)⟩
-        simp [Matrix.one_apply, hab]
+        simp [hab]
   | succ n ih =>
       calc
         ∑ p : ExactLength a b (n + 1), p.1.weight w =
             ∑ q : Σ c : V, ExactLength a c n × (c ⟶ b),
               q.2.1.1.weight w * w q.2.2 := by
-          refine Fintype.sum_equiv (exactLengthSuccEquiv a b n) _ _ ?_
-          rintro ⟨p, hp⟩
-          cases p with
-          | nil => simp at hp
-          | cons p e => rfl
+          symm
+          refine Fintype.sum_equiv (exactLengthSuccEquiv a b n).symm _ _ ?_
+          rintro ⟨c, ⟨⟨p, hp⟩, e⟩⟩
+          simp [exactLengthSuccEquiv, weight_cons]
         _ = ∑ c : V,
             (∑ p : ExactLength a c n, p.1.weight w) *
               (∑ e : c ⟶ b, w e) := by
