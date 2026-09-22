@@ -129,4 +129,181 @@ theorem jacobiDifferentialOperator_appellJacobiKernel (m : ℕ) (b c d z : ℝ) 
   rw [jacobiDifferentialOperator_C_mul,
     jacobiDifferentialOperator_jacobiBernstein]
 
+private theorem iLowering_fixed_second_coordinate (m : ℕ) (b c d r z : ℝ)
+    (j : ℕ) :
+    (∑ i ∈ Finset.range (m + 1),
+        appellKernelCoefficient m b c d i j * z ^ i * (1 - z) ^ j *
+          ((i : ℝ) * ((i : ℝ) + c - 1)) *
+            (jacobiBernstein (i - 1) j).eval r) -
+      (∑ i ∈ Finset.range (m + 1),
+        appellKernelCoefficient m b c d i j * r ^ i * (1 - r) ^ j *
+          ((i : ℝ) * ((i : ℝ) + c - 1)) *
+            (jacobiBernstein (i - 1) j).eval z) =
+      (z - r) * ∑ i ∈ Finset.range (m + 1),
+        appellLeftOperatorCoefficient m b c d i j * (r * z) ^ i *
+          ((1 - r) * (1 - z)) ^ j := by
+  let leftTerm : ℕ → ℝ := fun i =>
+    appellKernelCoefficient m b c d i j * z ^ i * (1 - z) ^ j *
+      ((i : ℝ) * ((i : ℝ) + c - 1)) * (jacobiBernstein (i - 1) j).eval r
+  let rightTerm : ℕ → ℝ := fun i =>
+    appellKernelCoefficient m b c d i j * r ^ i * (1 - r) ^ j *
+      ((i : ℝ) * ((i : ℝ) + c - 1)) * (jacobiBernstein (i - 1) j).eval z
+  have hleft_zero : leftTerm 0 = 0 := by simp [leftTerm]
+  have hright_zero : rightTerm 0 = 0 := by simp [rightTerm]
+  have hleft_top : leftTerm (m + 1) = 0 := by
+    rw [show appellKernelCoefficient m b c d (m + 1) j = 0 by
+      exact appellKernelCoefficient_eq_zero_of_lt (by lia)]
+    ring
+  have hright_top : rightTerm (m + 1) = 0 := by
+    rw [show appellKernelCoefficient m b c d (m + 1) j = 0 by
+      exact appellKernelCoefficient_eq_zero_of_lt (by lia)]
+    ring
+  have hleft := sum_range_shift_of_boundary_zero leftTerm m hleft_zero hleft_top
+  have hright := sum_range_shift_of_boundary_zero rightTerm m hright_zero hright_top
+  change (∑ i ∈ Finset.range (m + 1), leftTerm i) -
+      ∑ i ∈ Finset.range (m + 1), rightTerm i = _
+  rw [hleft, hright, ← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  simp only [leftTerm, rightTerm, appellLeftOperatorCoefficient,
+    Nat.add_sub_cancel, jacobiBernstein_succ_left, eval_mul, eval_X,
+    eval_pow, eval_sub, eval_one]
+  rw [mul_pow, mul_pow]
+  ring
+
+private theorem jLowering_fixed_first_coordinate (m : ℕ) (b c d r z : ℝ)
+    (i : ℕ) :
+    (∑ j ∈ Finset.range (m + 1),
+        appellKernelCoefficient m b c d i j * z ^ i * (1 - z) ^ j *
+          ((j : ℝ) * ((j : ℝ) + d - 1)) *
+            (jacobiBernstein i (j - 1)).eval r) -
+      (∑ j ∈ Finset.range (m + 1),
+        appellKernelCoefficient m b c d i j * r ^ i * (1 - r) ^ j *
+          ((j : ℝ) * ((j : ℝ) + d - 1)) *
+            (jacobiBernstein i (j - 1)).eval z) =
+      (r - z) * ∑ j ∈ Finset.range (m + 1),
+        appellRightOperatorCoefficient m b c d i j * (r * z) ^ i *
+          ((1 - r) * (1 - z)) ^ j := by
+  let leftTerm : ℕ → ℝ := fun j =>
+    appellKernelCoefficient m b c d i j * z ^ i * (1 - z) ^ j *
+      ((j : ℝ) * ((j : ℝ) + d - 1)) * (jacobiBernstein i (j - 1)).eval r
+  let rightTerm : ℕ → ℝ := fun j =>
+    appellKernelCoefficient m b c d i j * r ^ i * (1 - r) ^ j *
+      ((j : ℝ) * ((j : ℝ) + d - 1)) * (jacobiBernstein i (j - 1)).eval z
+  have hleft_zero : leftTerm 0 = 0 := by simp [leftTerm]
+  have hright_zero : rightTerm 0 = 0 := by simp [rightTerm]
+  have hleft_top : leftTerm (m + 1) = 0 := by
+    rw [show appellKernelCoefficient m b c d i (m + 1) = 0 by
+      exact appellKernelCoefficient_eq_zero_of_lt (by lia)]
+    ring
+  have hright_top : rightTerm (m + 1) = 0 := by
+    rw [show appellKernelCoefficient m b c d i (m + 1) = 0 by
+      exact appellKernelCoefficient_eq_zero_of_lt (by lia)]
+    ring
+  have hleft := sum_range_shift_of_boundary_zero leftTerm m hleft_zero hleft_top
+  have hright := sum_range_shift_of_boundary_zero rightTerm m hright_zero hright_top
+  change (∑ j ∈ Finset.range (m + 1), leftTerm j) -
+      ∑ j ∈ Finset.range (m + 1), rightTerm j = _
+  rw [hleft, hright, ← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro j _
+  simp only [leftTerm, rightTerm, appellRightOperatorCoefficient,
+    Nat.add_sub_cancel, jacobiBernstein_succ_right, eval_mul, eval_sub,
+    eval_one, eval_pow, eval_X]
+  rw [mul_pow, mul_pow]
+  ring
+
+private theorem iLowering_difference (m : ℕ) (b c d r z : ℝ) :
+    (∑ i ∈ Finset.range (m + 1), ∑ j ∈ Finset.range (m + 1),
+        appellKernelCoefficient m b c d i j * z ^ i * (1 - z) ^ j *
+          ((i : ℝ) * ((i : ℝ) + c - 1)) *
+            (jacobiBernstein (i - 1) j).eval r) -
+      (∑ i ∈ Finset.range (m + 1), ∑ j ∈ Finset.range (m + 1),
+        appellKernelCoefficient m b c d i j * r ^ i * (1 - r) ^ j *
+          ((i : ℝ) * ((i : ℝ) + c - 1)) *
+            (jacobiBernstein (i - 1) j).eval z) =
+      (z - r) * appellXOperatorValue m b c d (r * z) ((1 - r) * (1 - z)) := by
+  rw [Finset.sum_comm, Finset.sum_comm, ← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [iLowering_fixed_second_coordinate]
+  unfold appellXOperatorValue
+  rw [Finset.mul_sum, Finset.sum_comm]
+  ring
+
+private theorem jLowering_difference (m : ℕ) (b c d r z : ℝ) :
+    (∑ i ∈ Finset.range (m + 1), ∑ j ∈ Finset.range (m + 1),
+        appellKernelCoefficient m b c d i j * z ^ i * (1 - z) ^ j *
+          ((j : ℝ) * ((j : ℝ) + d - 1)) *
+            (jacobiBernstein i (j - 1)).eval r) -
+      (∑ i ∈ Finset.range (m + 1), ∑ j ∈ Finset.range (m + 1),
+        appellKernelCoefficient m b c d i j * r ^ i * (1 - r) ^ j *
+          ((j : ℝ) * ((j : ℝ) + d - 1)) *
+            (jacobiBernstein i (j - 1)).eval z) =
+      (r - z) * appellYOperatorValue m b c d (r * z) ((1 - r) * (1 - z)) := by
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [jLowering_fixed_first_coordinate]
+  unfold appellYOperatorValue
+  rw [Finset.mul_sum]
+  ring
+
+private theorem eval_jacobiDifferentialOperator_appellJacobiKernel
+    (m : ℕ) (b c d r z : ℝ) :
+    (jacobiDifferentialOperator c (c + d) (appellJacobiKernel m b c d z)).eval r =
+      ∑ i ∈ Finset.range (m + 1), ∑ j ∈ Finset.range (m + 1),
+        appellKernelCoefficient m b c d i j * z ^ i * (1 - z) ^ j *
+          (((i : ℝ) * ((i : ℝ) + c - 1)) *
+              (jacobiBernstein (i - 1) j).eval r +
+            ((j : ℝ) * ((j : ℝ) + d - 1)) *
+              (jacobiBernstein i (j - 1)).eval r -
+            (((i + j : ℕ) : ℝ) * ((i + j : ℕ) + c + d - 1)) *
+              (jacobiBernstein i j).eval r) := by
+  rw [jacobiDifferentialOperator_appellJacobiKernel]
+  rw [eval_finsetSum]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [eval_finsetSum]
+  apply Finset.sum_congr rfl
+  intro j _
+  simp only [eval_mul, eval_add, eval_sub, eval_C]
+  ring
+
+private theorem diagonal_action_difference (m : ℕ) (b c d r z : ℝ) :
+    (∑ i ∈ Finset.range (m + 1), ∑ j ∈ Finset.range (m + 1),
+        appellKernelCoefficient m b c d i j * z ^ i * (1 - z) ^ j *
+          (((i + j : ℕ) : ℝ) * ((i + j : ℕ) + c + d - 1)) *
+            (jacobiBernstein i j).eval r) -
+      (∑ i ∈ Finset.range (m + 1), ∑ j ∈ Finset.range (m + 1),
+        appellKernelCoefficient m b c d i j * r ^ i * (1 - r) ^ j *
+          (((i + j : ℕ) : ℝ) * ((i + j : ℕ) + c + d - 1)) *
+            (jacobiBernstein i j).eval z) = 0 := by
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro j _
+  simp only [jacobiBernstein, eval_mul, eval_pow, eval_X, eval_sub, eval_one]
+  rw [mul_pow, mul_pow]
+  ring
+
+/-- The actual finite Appell kernel has equal evaluated Jacobi differential
+actions in its two coordinates. -/
+theorem eval_jacobiDifferentialOperator_appellJacobiKernel_eq
+    (m : ℕ) (b : ℝ) {c d r z : ℝ} (hc : 0 < c) (hd : 0 < d) :
+    (jacobiDifferentialOperator c (c + d) (appellJacobiKernel m b c d z)).eval r =
+      (jacobiDifferentialOperator c (c + d) (appellJacobiKernel m b c d r)).eval z := by
+  have hi := iLowering_difference m b c d r z
+  have hj := jLowering_difference m b c d r z
+  have hdiag := diagonal_action_difference m b c d r z
+  have hres := appellJacobi_chainResidual_eq_zero m b hc hd (r := r) (z := z)
+  unfold appellXOperatorValue appellYOperatorValue at hi hj hres
+  rw [eval_jacobiDifferentialOperator_appellJacobiKernel,
+    eval_jacobiDifferentialOperator_appellJacobiKernel]
+  rw [← sub_eq_zero]
+  simp_rw [mul_add, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib]
+  linear_combination hi + hj - hdiag - hres
+
 end RealRooted.JacobiDeformation
