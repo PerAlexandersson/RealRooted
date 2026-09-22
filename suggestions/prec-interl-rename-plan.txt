@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  744  Lean declarations requiring semantic review
+  741  Lean declarations requiring semantic review
   261  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    39  statement scaffolds requiring proof-status-preserving renames
-   73  deprecated compatibility identifiers with canonical targets
+   76  deprecated compatibility identifiers with canonical targets
    34  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -69,10 +69,12 @@ wrappers are removed only after the deprecation window.
 Execution order
 
 1. Rename vocabulary-defining predicates and structures.  The
-   StrictPrecSameDegree family is now canonicalized as StrictInterlSameDegree
-   with deprecated aliases and parser-compatible tactic wrappers.  Continue
-   with SourcePrec and relation-bearing Statement scaffolds, preserving
-   proof-status language and compatibility aliases where public.
+   StrictPrecSameDegree family is now canonicalized as StrictInterlSameDegree,
+   and the source-faithful Hoster--Stump relation is now canonicalized from
+   SourcePrec to SourceInterl.  Both retain deprecated compatibility APIs; the
+   strict same-degree tactics also retain parser-compatible wrappers.  Continue
+   with relation-bearing Statement scaffolds, preserving proof-status language
+   and compatibility aliases where public.
 
 2. Migrate generic foundational declaration families in bounded modules:
    WagnerX affine/common-factor transports, nonnegative-root X transports,
