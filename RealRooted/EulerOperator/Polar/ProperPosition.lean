@@ -40,7 +40,7 @@ theorem polarTheta_preserves_prec0 : polarThetaPreservesPrec0Statement := by
       unfold reciprocalShift
       exact (Polynomial.natDegree_reflect_le).trans (max_le le_rfl hqd)
     have hstep₂ : Interl (reciprocalShift N q).derivative (reciprocalShift N p).derivative :=
-      derivativePreservesPrec0 hstep₁.toInterl
+      derivativePreservesInterl hstep₁.toInterl
     have hdq : IsPFPolynomial (reciprocalShift N q).derivative := hsq.derivative
     have hdp : IsPFPolynomial (reciprocalShift N p).derivative := hsp.derivative
     have hdqd : (reciprocalShift N q).derivative.natDegree ≤ N - 1 :=
