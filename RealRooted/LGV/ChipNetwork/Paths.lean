@@ -130,7 +130,7 @@ theorem start_level_le_end_add_length {v w : Vertex S N} (p : Quiver.Path v w) :
         _ ≤ (c.level + 1) + p.length :=
           Nat.add_le_add_right (arrow_level_le_succ e) _
         _ = c.level + p.length + 1 := Nat.add_right_comm _ _ _
-        _ = c.level + (p.length + 1) := (Nat.add_assoc _ _ _).symm
+        _ = c.level + (p.length + 1) := Nat.add_assoc _ _ _
 
 /-- The two elementary level bounds for a finite chip-strip path. -/
 theorem level_bounds {v w : Vertex S N} (p : Quiver.Path v w) :
