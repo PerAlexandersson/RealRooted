@@ -31,11 +31,11 @@ macro_rules
         left_nonneg := $hfnn:term,
         right_nonneg := $hgnn:term) =>
       `(tactic|
-        exact RealRooted.prec_mul_X_both_of_prec_of_nonneg $hprec $hfnn $hgnn)
+        exact RealRooted.StrictInterl.mul_X_both_of_nonneg $hprec $hfnn $hgnn)
   | `(tactic| rr_prec_mul_X_both) =>
       `(tactic|
         exact (by
-          apply RealRooted.prec_mul_X_both_of_prec_of_nonneg
+          apply RealRooted.StrictInterl.mul_X_both_of_nonneg
           case h => rr_lookup [rr_base_prec]
           case hfnn => rr_lookup [rr_nonneg]
           case hgnn => rr_lookup [rr_nonneg]))

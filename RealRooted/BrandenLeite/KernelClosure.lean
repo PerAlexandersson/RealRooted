@@ -104,7 +104,7 @@ theorem prec0_regularizedKernelRow_succ
       (g * η) G H i.castSucc,
     chainPolynomial_sourceBorder_eq_X_mul_regularizedKernelRow
       (g * η) G H i.succ] at hchain
-  apply prec0_of_prec0_mul_X_both_of_nonneg hchain
+  apply hchain.of_mul_X_both_of_nonneg
   · exact (regularizedKernelRow_isPFPolynomial hg hη hG hH hGlower
       hHlower hGdiag hHdiag i.castSucc).hasNonnegCoeffs
   · exact (regularizedKernelRow_isPFPolynomial hg hη hG hH hGlower

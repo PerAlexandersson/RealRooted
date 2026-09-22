@@ -312,7 +312,9 @@ theorem prec0_mul_X_of_prec0 {f g : ℝ[X]}
   · exact interl_zero_left (X * f)
   · exact (prec_mul_X_of_prec_of_nonneg hfg hfnn hgnn).toInterl
 
-theorem prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : StrictInterl f g)
+/-- Multiplying both polynomials by `X` preserves strict interlacing when all
+roots are nonpositive. -/
+theorem StrictInterl.mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : StrictInterl f g)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
     StrictInterl (X * f) (X * g) := by
@@ -344,7 +346,16 @@ theorem prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : StrictInterl f g)
     · exact Or.inr
         ⟨by simp_all, listAlternates_append_zero_both ss rs hlen halt hrs_nonpos⟩
 
-theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
+@[deprecated StrictInterl.mul_X_both_of_roots_nonpos (since := "2026-09-18")]
+theorem prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : StrictInterl f g)
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
+    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
+    StrictInterl (X * f) (X * g) :=
+  h.mul_X_both_of_roots_nonpos hf_nonpos hg_nonpos
+
+/-- Cancelling a common factor `X` preserves strict interlacing when all
+remaining roots are nonpositive. -/
+theorem StrictInterl.of_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     (h : StrictInterl (X * f) (X * g))
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
@@ -388,6 +399,14 @@ theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     exact ⟨hf, hg, ss_f, rs_g, hss_f_sorted, hrs_g_sorted, hss_f_eq, hrs_g_eq,
       Or.inr ⟨hlen', listAlternates_of_append_zero_both ss_f rs_g hlen' halt⟩⟩
 
+@[deprecated StrictInterl.of_mul_X_both_of_roots_nonpos (since := "2026-09-18")]
+theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
+    (h : StrictInterl (X * f) (X * g))
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
+    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
+    StrictInterl f g :=
+  h.of_mul_X_both_of_roots_nonpos hf_nonpos hg_nonpos
+
 /-! ## Wagner `X`-multiplication proper-position bridges -/
 
 /- The canonical names below are kept in this lower dependency layer so that
@@ -415,38 +434,62 @@ lemma prec_of_prec_X_mul_of_nonneg {f g : ℝ[X]}
   have hf : f ≠ 0 ∧ f.Splits :=
     isRealRooted_of_X_mul h.2.1.1 h.2.1.2
   exact
-    prec_of_prec_mul_X_both_of_roots_nonpos
-      (prec_mul_X_of_prec_of_nonneg h hgnn hfnn.X_mul)
+    (prec_mul_X_of_prec_of_nonneg h hgnn hfnn.X_mul).of_mul_X_both_of_roots_nonpos
       (roots_nonpos_of_nonneg_coeffs hf.2 hfnn)
       (roots_nonpos_of_nonneg_coeffs h.1.2 hgnn)
 
 /-- Nonnegative-coefficient form of the common-factor Wagner `X` bridge. -/
-theorem prec_mul_X_both_of_prec_of_nonneg {f g : ℝ[X]}
+theorem StrictInterl.mul_X_both_of_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     StrictInterl (X * f) (X * g) :=
-  prec_mul_X_both_of_roots_nonpos h
+  h.mul_X_both_of_roots_nonpos
     (roots_nonpos_of_nonneg_coeffs h.1.2 hfnn)
     (roots_nonpos_of_nonneg_coeffs h.2.1.2 hgnn)
 
+@[deprecated StrictInterl.mul_X_both_of_nonneg (since := "2026-09-18")]
+theorem prec_mul_X_both_of_prec_of_nonneg {f g : ℝ[X]}
+    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    StrictInterl (X * f) (X * g) :=
+  h.mul_X_both_of_nonneg hfnn hgnn
+
+/-- Multiplication by `X` on both sides is an equivalence on strict
+interlacing when all roots are nonpositive. -/
+theorem StrictInterl.mul_X_both_iff_of_roots_nonpos {f g : ℝ[X]}
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
+    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
+    StrictInterl f g ↔ StrictInterl (X * f) (X * g) :=
+  ⟨fun h => h.mul_X_both_of_roots_nonpos hf_nonpos hg_nonpos,
+    fun h => h.of_mul_X_both_of_roots_nonpos hf_nonpos hg_nonpos⟩
+
+@[deprecated StrictInterl.mul_X_both_iff_of_roots_nonpos (since := "2026-09-18")]
 theorem prec_iff_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
     StrictInterl f g ↔ StrictInterl (X * f) (X * g) :=
-  ⟨fun h => prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos,
-    fun h => prec_of_prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos⟩
+  StrictInterl.mul_X_both_iff_of_roots_nonpos hf_nonpos hg_nonpos
 
-theorem prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
+/-- Multiplying both polynomials by `X` preserves zero-aware interlacing for
+polynomials with nonnegative coefficients. -/
+theorem Interl.mul_X_both_of_nonneg {f g : ℝ[X]}
     (h : Interl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     Interl (X * f) (X * g) := by
   rcases h with rfl | rfl | hfg
   · simpa using interl_zero_left (X * g)
   · simpa using interl_zero_right (X * f)
   · exact
-      (prec_mul_X_both_of_roots_nonpos hfg
+      (hfg.mul_X_both_of_roots_nonpos
         (roots_nonpos_of_nonneg_coeffs hfg.1.2 hfnn)
         (roots_nonpos_of_nonneg_coeffs hfg.2.1.2 hgnn)).toInterl
 
-theorem prec0_of_prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
+@[deprecated Interl.mul_X_both_of_nonneg (since := "2026-09-18")]
+theorem prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
+    (h : Interl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    Interl (X * f) (X * g) :=
+  h.mul_X_both_of_nonneg hfnn hgnn
+
+/-- Cancelling a common factor `X` preserves zero-aware interlacing for
+polynomials with nonnegative coefficients. -/
+theorem Interl.of_mul_X_both_of_nonneg {f g : ℝ[X]}
     (h : Interl (X * f) (X * g)) (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g) :
     Interl f g := by
@@ -460,14 +503,29 @@ theorem prec0_of_prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
   have hf : f ≠ 0 ∧ f.Splits := isRealRooted_of_X_mul hstrict.1.1 hstrict.1.2
   have hg : g ≠ 0 ∧ g.Splits := isRealRooted_of_X_mul hstrict.2.1.1 hstrict.2.1.2
   exact
-    (prec_of_prec_mul_X_both_of_roots_nonpos hstrict
+    (hstrict.of_mul_X_both_of_roots_nonpos
       (roots_nonpos_of_nonneg_coeffs hf.2 hfnn)
       (roots_nonpos_of_nonneg_coeffs hg.2 hgnn)).toInterl
 
+@[deprecated Interl.of_mul_X_both_of_nonneg (since := "2026-09-18")]
+theorem prec0_of_prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
+    (h : Interl (X * f) (X * g)) (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g) :
+    Interl f g :=
+  h.of_mul_X_both_of_nonneg hfnn hgnn
+
+/-- Multiplication by `X` on both sides is an equivalence on zero-aware
+interlacing for polynomials with nonnegative coefficients. -/
+theorem Interl.mul_X_both_iff_of_nonneg {f g : ℝ[X]}
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    Interl f g ↔ Interl (X * f) (X * g) :=
+  ⟨fun h => h.mul_X_both_of_nonneg hfnn hgnn,
+    fun h => h.of_mul_X_both_of_nonneg hfnn hgnn⟩
+
+@[deprecated Interl.mul_X_both_iff_of_nonneg (since := "2026-09-18")]
 theorem prec0_iff_prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     Interl f g ↔ Interl (X * f) (X * g) :=
-  ⟨fun h => prec0_mul_X_both_of_nonneg h hfnn hgnn,
-    fun h => prec0_of_prec0_mul_X_both_of_nonneg h hfnn hgnn⟩
+  Interl.mul_X_both_iff_of_nonneg hfnn hgnn
 
 end RealRooted

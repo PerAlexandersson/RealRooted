@@ -475,7 +475,7 @@ theorem prec0_X_mul_both_of_pf {p q : ℝ[X]}
   rcases hpq with hp0 | hq0 | hpq'
   · simpa [hp0] using interl_zero_left (X * q)
   · simpa [hq0] using interl_zero_right (X * p)
-  · exact (prec_mul_X_both_of_roots_nonpos hpq' hp.roots_nonpos hq.roots_nonpos).toInterl
+  · exact (hpq'.mul_X_both_of_roots_nonpos hp.roots_nonpos hq.roots_nonpos).toInterl
 
 /-- Fixed-left cone closure in the two-summand form used downstream:
 if a polynomial is a common left interleaver for two nonnegative-coefficient

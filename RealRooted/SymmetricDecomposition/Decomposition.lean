@@ -179,13 +179,13 @@ theorem prec_iff_prec_mul_X_both_of_hasNonnegCoeffs {f g : ℝ[X]}
   · intro h
     have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs h.1.2 hfnn
     have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs h.2.1.2 hgnn
-    exact (prec_iff_prec_mul_X_both_of_roots_nonpos hf_nonpos hg_nonpos).1 h
+    exact (StrictInterl.mul_X_both_iff_of_roots_nonpos hf_nonpos hg_nonpos).1 h
   · intro h
     have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul h.1.1 h.1.2
     have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_X_mul h.2.1.1 h.2.1.2
     have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf_rr.2 hfnn
     have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hg_rr.2 hgnn
-    exact (prec_iff_prec_mul_X_both_of_roots_nonpos hf_nonpos hg_nonpos).2 h
+    exact (StrictInterl.mul_X_both_iff_of_roots_nonpos hf_nonpos hg_nonpos).2 h
 
 lemma hasNonnegCoeffs_of_eq_X_mul {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (h : p = X * q) :
