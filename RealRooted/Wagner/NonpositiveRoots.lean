@@ -35,7 +35,7 @@ theorem commonLeft_add {f g h : ℝ[X]}
     (hhf : StrictInterl h f) (hhg : StrictInterl h g) :
     StrictInterl h (f + g) := by
   have hprec : StrictInterl h ([f, g].sum) := by
-    grind [RealRooted.prec_sum_left_of_common_left_signed]
+    grind [RealRooted.StrictInterl.sum_left_of_common_left_signed]
   grind
 
 /-- The checked two-summand common-left form with explicit algebraic

@@ -647,10 +647,10 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     linarith
   have hbt : StrictInterl b t := by
     dsimp [t]
-    exact prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le (1 : ℝ)
-      (StrictInterl.refl hb_rr.1 hb_rr.2) rfl hb_pos hb_pos hb_le_one hb_le_one
+    exact (StrictInterl.refl hb_rr.1 hb_rr.2).mul_X_sub_C_of_sameDegree_of_roots_le
+      (1 : ℝ) rfl hb_pos hb_pos hb_le_one hb_le_one
   have hbp_sum : StrictInterl b [h, t].sum := by
-    refine prec_sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_ <;> simp_all
+    refine StrictInterl.sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_ <;> simp_all
   simp_all
 
 theorem brandenSolusTheorem26_third_converse_of_top_degree_of_right_top
@@ -1239,13 +1239,13 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
   have hht : StrictInterl h t :=
     StrictInterl.forward_of_orientation_of_succDegree ht_deg.symm hht_or
   have hbh : StrictInterl b h :=
-    prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le (1 : ℝ)
-      hht hh_deg.symm hb_pos hh_pos hb_le hh_le
+    hht.of_mul_X_sub_C_of_sameDegree_of_roots_le
+      hh_deg.symm hb_pos hh_pos hb_le hh_le
   have hbt : StrictInterl b t :=
-    prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le (1 : ℝ)
-      (StrictInterl.refl hb_rr.1 hb_rr.2) rfl hb_pos hb_pos hb_le hb_le
+    (StrictInterl.refl hb_rr.1 hb_rr.2).mul_X_sub_C_of_sameDegree_of_roots_le
+      (1 : ℝ) rfl hb_pos hb_pos hb_le hb_le
   have hbp_sum : StrictInterl b [h, t].sum := by
-    refine prec_sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_ <;> simp_all
+    refine StrictInterl.sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_ <;> simp_all
   simp_all
 
 /-- The ordered-degree converse bridge, packaged as a standalone statement so it

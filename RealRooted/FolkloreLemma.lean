@@ -301,7 +301,7 @@ theorem prec_right_shear_of_scaled_cancellation {f g : ℝ[X]} (c : ℝ)
     StrictInterl.C_mul_right hleft (ne_of_gt hinv_pos)
   have hsum : StrictInterl g
       ([C (1 - c⁻¹) * f, C c⁻¹ * (f - X * (C c * g))] : List ℝ[X]).sum := by
-    apply prec_sum_left_of_common_left_signed
+    apply StrictInterl.sum_left_of_common_left_signed
     · intro p hp
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
       rcases hp with rfl | rfl

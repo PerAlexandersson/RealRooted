@@ -130,7 +130,7 @@ theorem exists_largestRoot_le_of_common_left_pair
   have hsum_pos : HasPosLeadingCoeff (f + g) :=
     hasPosLeadingCoeff_add_of_same_natDegree hfg_deg hf_pos hg_pos
   have hsum_prec : StrictInterl h (f + g) := by
-    simpa using prec_sum_left_of_common_left_signed [f, g] h
+    simpa using StrictInterl.sum_left_of_common_left_signed [f, g] h
       (by simp [hfh, hgh]) (by simp [hf_pos, hg_pos]) (by simp)
   have hd_pos : 0 < d := by lia
   obtain ⟨rf, hrf⟩ :=
@@ -220,7 +220,7 @@ theorem exists_mem_largestRoot_le_weightedSum :
             exists_mem_largestRoot_le_weightedSum hh_deg hnonneg_tail
               hprec_tail hdeg_tail hpos_tail htail
           have htail_prec : StrictInterl h (weightedSum l) :=
-            prec_weightedSum_left_of_common_left_signed
+            StrictInterl.weightedSum_left_of_common_left_signed
               l h hnonneg_tail hprec_tail hpos_tail htail
           have htail_deg : (weightedSum l).natDegree = d :=
             natDegree_weightedSum_eq_of_nonneg_of_sameDegree

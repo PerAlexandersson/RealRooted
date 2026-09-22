@@ -48,7 +48,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       · exact hpair.rel_of_mem_take_of_mem_drop hf_mem_take hp'
     have hne : fs ≠ [] := by grind
     simpa [staircaseSum, f] using
-      prec_sum_left_of_common_left_signed fs f hprec hfs.posLeadingCoeff hne
+      StrictInterl.sum_left_of_common_left_signed fs f hprec hfs.posLeadingCoeff hne
   · have htake_ne : fs.take m ≠ [] := fun hnil => by
       have hlen : (fs.take m).length = 0 := by simp [hnil]
       grind
@@ -83,7 +83,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
           (right_ne_zero_of_mul hXprefix_prec.2.1.1)).X_mul
       · exact hfs.posLeadingCoeff p (List.mem_of_mem_drop hp)
     have hsum_prec : StrictInterl f (((X * (fs.take m).sum) :: fs.drop m).sum) :=
-      prec_sum_left_of_common_left_signed
+      StrictInterl.sum_left_of_common_left_signed
         ((X * (fs.take m).sum) :: fs.drop m) f hcommon_left hpos (by lia)
     simpa [staircaseSum, f, List.sum_cons] using hsum_prec
 

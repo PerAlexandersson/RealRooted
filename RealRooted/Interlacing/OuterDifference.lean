@@ -177,8 +177,8 @@ theorem StrictInterl.eval_mul_derivative_nonpos_of_left_root
     linarith [le_max_left bf bg]
   have hpad : StrictInterl g ((X - C b) * f) := by
     rcases hprec.natDegree_eq_or_eq_succ with hsame | hsucc
-    · exact prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le
-        b hprec hsame.symm hf_pos hg_pos hf_le hg_le
+    · exact hprec.mul_X_sub_C_of_sameDegree_of_roots_le
+        b hsame.symm hf_pos hg_pos hf_le hg_le
     · exact (prec_iff_prec_mul_X_sub_C_of_roots_le
         b hprec.1.2 hprec.2.1.2 hf_pos hg_pos hf_le hg_le (by lia)).mp hprec
   have hpad_pos : HasPosLeadingCoeff ((X - C b) * f) :=

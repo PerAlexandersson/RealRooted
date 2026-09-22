@@ -96,7 +96,7 @@ theorem Valid.polynomial_data {d : ℕ} {t : RootSelectionTree}
           hw_nonneg hw_deg hw_pos hw_exists
       rcases hcommon with ⟨h, hh_deg, hhprec⟩
       have hprec : StrictInterl h (children.map polynomial).sum :=
-        prec_sum_left_of_common_left_signed
+        StrictInterl.sum_left_of_common_left_signed
           (children.map polynomial) h hhprec hpos hchildren_ne
       exact ⟨by simpa [polynomial] using hsum_deg,
         by simpa [polynomial] using hsum_pos,

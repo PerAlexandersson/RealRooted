@@ -85,7 +85,7 @@ theorem prec_add_X_mul_of_prec
     StrictInterl A (A + X * D) := by
   have hXDpos : HasPosLeadingCoeff (X * D) := hDpos.X_mul
   have hsum : StrictInterl A ([A, X * D].sum) := by
-    apply prec_sum_left_of_common_left_signed
+    apply StrictInterl.sum_left_of_common_left_signed
     · intro p hp
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
       rcases hp with rfl | rfl

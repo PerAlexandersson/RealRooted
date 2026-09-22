@@ -138,7 +138,7 @@ theorem prec_shift_of_same_degree
   have ht_pos : HasPosLeadingCoeff t := by
     simpa [t] using hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ)) hh_pos
   have hsum : StrictInterl f ([f, t].sum) := by
-    apply prec_sum_left_of_common_left_signed
+    apply StrictInterl.sum_left_of_common_left_signed
     · intro p hp
       have hp' : p = f ∨ p = t := by simp_all
       rcases hp' with rfl | rfl
