@@ -166,7 +166,7 @@ theorem countP_eq_alternates_strict :
       (by simp_all) htail x hx hxss'
     simp [*]
 
-theorem prec_countP_eq {f g : ℝ[X]} (hpq : StrictInterl g f)
+theorem StrictInterl.roots_countP_eq {f g : ℝ[X]} (hpq : StrictInterl g f)
     (hfnd : f.roots.Nodup) (hgnd : g.roots.Nodup)
     (x : ℝ) (hxf : x ∈ f.roots) (hxg : x ∉ g.roots) :
     f.roots.countP (fun r => x < r) = g.roots.countP (fun r => x < r) := by
@@ -199,7 +199,7 @@ theorem residue_sign_pos {f g : ℝ[X]} (hpq : StrictInterl g f)
   have hcount : f.roots.count s = 1 := Multiset.count_eq_one_of_mem hfnd hsf
   have hf' := deriv_at_root_sign hfs hflc s hsf hcount
   have hg := eval_sign hgs hglc s hsg
-  have hcnt := prec_countP_eq hpq hfnd hgnd s hsf hsg
+  have hcnt := hpq.roots_countP_eq hfnd hgnd s hsf hsg
   rw [hcnt] at hf'
   set n := g.roots.countP (fun r ↦ s < r)
   set e := (-1 : ℝ) ^ n
@@ -338,7 +338,10 @@ lemma HasPosLeadingCoeff.divByMonic_X_sub_C {f : ℝ[X]}
     HasPosLeadingCoeff (f /ₘ (X - C r)) := by
   simpa only [HasPosLeadingCoeff, leadingCoeff_divByMonic_X_sub_C hr] using hf
 
-/-! ## Deprecated common-root cofactor names -/
+/-! ## Deprecated residue interlacing names -/
+
+@[deprecated StrictInterl.roots_countP_eq (since := "2026-09-18")]
+alias prec_countP_eq := StrictInterl.roots_countP_eq
 
 @[deprecated StrictInterl.cofactor_of_common_root (since := "2026-09-18")]
 theorem prec_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
