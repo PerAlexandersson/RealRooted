@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Combinatorics.Quiver.Path.Vertices
+public import Mathlib.Data.List.Chain
 
 /-!
 # Indexed vertices of quiver paths
