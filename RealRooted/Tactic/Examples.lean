@@ -33,6 +33,8 @@ import RealRooted.Tactic.Examples.MaWang.FactorWindows
 import RealRooted.Tactic.Examples.MaWang.LiuWang
 import RealRooted.Tactic.Examples.MaWang.NonnegativeDenominator
 import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences
+import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences.Affine
+import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences.Nonpositive
 import RealRooted.Tactic.Examples.MaWang.ScalarWindows
 import RealRooted.Tactic.Examples.MaWang.WeakSequences
 import RealRooted.Tactic.Examples.MaWang.XFactorSequences
