@@ -65,7 +65,10 @@ private def isPolynomialX (e : Expr) : Bool :=
   appFnName? e == some ``Polynomial.X
 
 private def isPolynomialC (e : Expr) : Bool :=
-  appFnName? e == some ``Polynomial.C
+  let e := e.consumeMData
+  appFnName? e == some ``Polynomial.C ||
+    (appFnName? e == some ``DFunLike.coe &&
+      e.getAppArgs.any (fun arg => appFnName? arg == some ``Polynomial.C))
 
 private def outerMulArgs? (e : Expr) : Option (Expr × Expr) :=
   let e := e.consumeMData
@@ -329,14 +332,21 @@ private def outerLiftFactorAndOrientation? (quotient rhs : Expr) :
         none
   | none => none
 
+private def mentionsLiftTheorem (candidate : Syntax) : Bool :=
+  (identifierTerms candidate).any fun term =>
+    let name := term.getId.toString
+    name.startsWith "RealRooted.isRealRooted_of_" && name.contains "_lift_"
+
 /-- Select a lift theorem variant from the exact quotient/row certificate pair.
 
-This only recognizes a candidate containing a pointwise `Polynomial.Splits`
-certificate and a row equality with that complete quotient as an outer product
-operand.  Other product families return `none` and retain their legacy
-orientation selector. -/
+This only recognizes a lift-theorem candidate containing a pointwise
+`Polynomial.Splits` certificate and a row equality with that complete quotient
+as an outer product operand. Other product families return `none` and retain
+their legacy orientation selector. -/
 private def liftProductOrientationOfCandidate? (candidate : Syntax) :
-    TacticM (Option ProductOrientation) :=
+    TacticM (Option ProductOrientation) := do
+  if !mentionsLiftTheorem candidate then
+    return none
   withMainContext do
     let localContext ← getLCtx
     let mut types := #[]
@@ -353,7 +363,7 @@ private def liftProductOrientationOfCandidate? (candidate : Syntax) :
 
 private def directCMulX? (e : Expr) : Bool :=
   match outerMulArgs? e with
-  | some (coefficient, variable) => isPolynomialC coefficient && isPolynomialX variable
+  | some (coefficient, xTerm) => isPolynomialC coefficient && isPolynomialX xTerm
   | none => false
 
 private def directAffineOrientation? (e : Expr) : Option AffinePowOrientation :=
@@ -392,16 +402,16 @@ private def liftAutoShapeOfFactor? (factor : Expr) : Option LiftAutoShape :=
     match orientation with
     | .mulXFirst => some .XAddC
     | .constFirst => some .CAddX
-  else if let some base := outerPowBase? factor then
-    if isPolynomialX base then
+  else if let some powBase := outerPowBase? factor then
+    if isPolynomialX powBase then
       some .XPow
-    else if isPolynomialC base then
+    else if isPolynomialC powBase then
       some .scalarPow
-    else if let some orientation := directAffineOrientation? base then
+    else if let some orientation := directAffineOrientation? powBase then
       match orientation with
       | .mulXFirst => some .affinePowMulXFirst
       | .constFirst => some .affinePowConstFirst
-    else if let some orientation := unitSlopeOrientation? base then
+    else if let some orientation := unitSlopeOrientation? powBase then
       match orientation with
       | .mulXFirst => some .XAddCPow
       | .constFirst => some .CAddXPow

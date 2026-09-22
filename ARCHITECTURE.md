@@ -121,18 +121,18 @@ toward the tactic umbrella.
 
 The product tactic's 150 parser declarations are now isolated in four files of
 314, 361, 95, and 292 lines behind a 10-line syntax facade. The checked
-elaborators and macro rules deliberately remain together in one 2,237-line
+elaborators and macro rules deliberately remain together in one 2,700-line
 unit: separating those imported environments made the affine-power auto-router
 exceed its established 200,000-heartbeat regression budget. This is a measured
 runtime boundary rather than a line-count exception by convenience. The public
 `Tactic.Product` path is a 9-line compatibility facade.
 
-Exhausting every arm of the generic lift router on an unsupported opaque factor
-also reaches that same fixed heartbeat budget. Regression coverage therefore
-pins the checked-affine rejection diagnostic and the supported generic shapes,
-but does not encode a timeout as a successful generic-refusal test. A future
-unsupported-factor regression first needs a bounded shape classifier or another
-implementation change that fails within the existing budget.
+The generic lift router now classifies the outer factor before selecting a
+specialized route. Unsupported opaque and composite factors therefore fail with
+a bounded diagnostic instead of speculatively elaborating every route. The
+regression suite pins those diagnostics, complete quotient-operand matching,
+ordinary and cutoff factor orientation, and all supported scalar, power, and
+affine shapes within the existing heartbeat budget.
 
 Wronskian results have a focused package entry point:
 
