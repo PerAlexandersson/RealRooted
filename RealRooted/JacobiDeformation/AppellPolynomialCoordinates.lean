@@ -28,15 +28,14 @@ private theorem sum_antidiagonal_triangle (m : ℕ) (f : ℕ → ℕ → ℕ →
       refine Finset.sum_bij (fun x _ => x.2) ?_ ?_ ?_ ?_
       · rintro ⟨l, ij⟩ h
         rcases Finset.mem_sigma.mp h with ⟨hl, hij⟩
+        have hl' := Finset.mem_range.mp hl
+        have hsum := Finset.mem_antidiagonal.mp hij
         apply Finset.mem_filter.mpr
         refine ⟨Finset.mem_product.mpr
           ⟨Finset.mem_range.mpr ?_, Finset.mem_range.mpr ?_⟩, ?_⟩
-        · have hsum := Finset.mem_antidiagonal.mp hij
-          exact by lia
-        · have hsum := Finset.mem_antidiagonal.mp hij
-          exact by lia
-        · have hsum := Finset.mem_antidiagonal.mp hij
-          exact by lia
+        · lia
+        · lia
+        · lia
       · rintro ⟨l, ij⟩ h ⟨l', ij'⟩ h' heq
         rcases Finset.mem_sigma.mp h with ⟨_, hij⟩
         rcases Finset.mem_sigma.mp h' with ⟨_, hij'⟩
@@ -44,6 +43,7 @@ private theorem sum_antidiagonal_triangle (m : ℕ) (f : ℕ → ℕ → ℕ →
         subst ij'
         have hsum := Finset.mem_antidiagonal.mp hij
         have hsum' := Finset.mem_antidiagonal.mp hij'
+        have hll : l = l' := by lia
         subst l'
         rfl
       · intro ij hij
@@ -62,7 +62,7 @@ private theorem sum_antidiagonal_triangle (m : ℕ) (f : ℕ → ℕ → ℕ →
       rw [Finset.sum_filter]
     _ = ∑ i ∈ range (m + 1), ∑ j ∈ range (m + 1),
           if i + j ≤ m then f i j (m - i - j) else 0 := by
-      rw [Finset.sum_product']
+      rw [Finset.sum_product]
 
 private theorem sum_range_reverse_antidiagonal (m : ℕ) (xi : ℝ)
     (f : ℕ → ℕ → ℝ) :
@@ -75,11 +75,10 @@ private theorem sum_range_reverse_antidiagonal (m : ℕ) (xi : ℝ)
       refine Finset.sum_congr rfl ?_
       intro k hk
       simp only [g]
-      congr 1
       have hkm : k ≤ m := by simpa only [Finset.mem_range, Nat.lt_succ_iff] using hk
-      lia
+      rw [Nat.sub_sub_self hkm]
     _ = ∑ l ∈ range (m + 1), g l := by
-      simpa only [Nat.succ_eq_add_one] using Finset.sum_range_reflect g (m + 1)
+      simpa only [Nat.add_sub_cancel] using Finset.sum_range_reflect g (m + 1)
     _ = ∑ l ∈ range (m + 1), ∑ ij ∈ antidiagonal l, f ij.1 ij.2 * xi ^ (m - l) := by
       rfl
 
@@ -100,7 +99,7 @@ theorem polynomial_eval_eq_appellJacobiKernel_coordinates (m : ℕ)
       refine Finset.sum_congr rfl ?_
       intro k _
       simp only [eval_mul, eval_C, eval_pow, eval_X]
-      ring
+      rw [Finset.sum_mul]
     _ = ∑ l ∈ range (m + 1), ∑ ij ∈ antidiagonal l,
           summand m δ c d U V ij.1 ij.2 * xi ^ (m - l) :=
       sum_range_reverse_antidiagonal m xi (summand m δ c d U V)
@@ -118,11 +117,12 @@ theorem polynomial_eval_eq_appellJacobiKernel_coordinates (m : ℕ)
       refine Finset.sum_congr rfl ?_
       intro j _
       by_cases hij : i + j ≤ m
-      · rw [if_pos hij]
-        convert appellKernelCoefficient_coordinate_eq_summand m i j δ c d U V xi r z hij hU hV
-          using 1 <;>
-          ring
-      · rw [if_neg hij, appellKernelCoefficient, if_neg hij]
+      · rw [ite_eq_left hij]
+        have h := appellKernelCoefficient_coordinate_eq_summand
+          m i j δ c d U V xi r z hij hU hV
+        ring_nf at h ⊢
+        exact h.symm
+      · rw [ite_eq_right hij, appellKernelCoefficient, ite_eq_right hij]
         ring
     _ = (-1 : ℝ) ^ m * xi ^ m *
           (appellJacobiKernel m ((m : ℝ) + c + d - 1 + δ) c d z).eval r := by

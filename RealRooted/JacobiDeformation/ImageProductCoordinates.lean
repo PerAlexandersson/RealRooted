@@ -65,7 +65,7 @@ theorem imageProduct_coordinate_identity
     xi ^ m * Finset.univ.prod (fun i : Fin m => r - t i) *
         Finset.univ.prod (fun i : Fin m => z - t i) =
         Finset.univ.prod (fun i : Fin m => xi * (r - t i) * (z - t i)) := by
-          simp [Finset.prod_mul_distrib, mul_assoc, mul_left_comm, mul_comm]
+          simp [Finset.prod_mul_distrib, mul_assoc]
     _ = Finset.univ.prod (fun i : Fin m =>
           -(t i * (1 - t i)) * (xi + U / t i + V / (1 - t i))) := hterms
     _ = Finset.univ.prod (fun i : Fin m =>

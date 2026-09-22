@@ -17,7 +17,7 @@ namespace RealRooted.JacobiDeformation
 private theorem natDegree_jacobiBernstein_le (i j : ℕ) :
     (jacobiBernstein i j).natDegree ≤ i + j := by
   have hX : (X ^ i : ℝ[X]).natDegree ≤ i := by
-    simpa using Polynomial.natDegree_pow_le_of_le i Polynomial.natDegree_X_le
+    simp
   have hOneSubX : (1 - X : ℝ[X]).natDegree ≤ 1 := by
     simp [sub_eq_add_neg]
   have hOneSubXPow : ((1 - X : ℝ[X]) ^ j).natDegree ≤ j := by
@@ -37,7 +37,7 @@ theorem natDegree_appellJacobiKernel_le (m : ℕ) (b c d z : ℝ) :
   by_cases hij : i + j ≤ m
   · exact (Polynomial.natDegree_C_mul_le _ _).trans
       ((natDegree_jacobiBernstein_le i j).trans hij)
-  · rw [appellKernelCoefficient, if_neg hij]
+  · rw [appellKernelCoefficient, ite_eq_right hij]
     simp
 
 /-- At `z = 0`, the actual Appell--Jacobi kernel retains exactly its

@@ -29,7 +29,7 @@ private theorem eval_derivative_prod_X_sub_C {m : ℕ} (t : Fin m → ℝ) (a : 
     (derivative (∏ i : Fin m, (X - C (t i)))).eval (t a) =
       ∏ i ∈ (univ : Finset (Fin m)).erase a, (t a - t i) := by
   classical
-  rw [derivative_prod_finset, eval_finset_sum, Finset.sum_eq_single a]
+  rw [derivative_prod_finset, eval_finsetSum, Finset.sum_eq_single a]
   · simp [eval_prod]
   · intro i _ hia
     simp only [eval_prod, eval_sub, eval_X, eval_C, derivative_sub, derivative_X,
@@ -64,6 +64,7 @@ private theorem imageProduct_eq_prod_X_add_C {m : ℕ} (U V : ℝ) (t : Fin m �
   apply Finset.prod_congr rfl
   intro i _
   unfold imageValue
+  rw [map_neg]
   ring
 
 /-- At a double image root, the second derivative of `imageProduct` has the
@@ -100,9 +101,6 @@ theorem imageProduct_double_root_sign {m : ℕ} (t : Fin m → ℝ) (U V xi : �
     Finset.mem_erase.mpr ⟨hab, mem_univ a⟩
   have himage : imageProduct U V t = ∏ i : Fin m, (X + C (c i)) := by
     rw [imageProduct_eq_prod_X_add_C]
-    apply Finset.prod_congr rfl
-    intro i _
-    simp only [hc]
   have hf : (∏ i : Fin m, (X + C (c i))) =
       (X - C xi) ^ 2 * ∏ i ∈ I, (X + C (c i)) := by
     rw [← Finset.mul_prod_erase (univ : Finset (Fin m)) (fun i => X + C (c i))

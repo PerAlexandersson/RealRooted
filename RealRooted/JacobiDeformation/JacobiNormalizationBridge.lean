@@ -32,7 +32,7 @@ theorem shiftedJacobiMonic_eval_zero_ne_zero
   rw [shiftedJacobiMonic, eval_mul, eval_C, shiftedJacobi_eval_zero,
     show (j : ℝ) + (c - 1) = (j : ℝ) + c - 1 by ring]
   apply mul_ne_zero
-  · convert hscale using 1 <;> ring
+  · convert hscale using 1; ring
   · exact hchoose.ne'
 
 /-- Multiplying the value-one-at-zero normalization by the monic polynomial's

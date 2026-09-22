@@ -20,13 +20,15 @@ noncomputable def T (n : ℕ) : ℝ :=
 
 /-- The factorial-form summand, with its support condition made explicit. -/
 private noncomputable def F (n k : ℕ) : ℝ :=
-  if 2 * k ≤ n then (n ! : ℝ) / ((k ! : ℝ) ^ 2 * ((n - 2 * k)! : ℝ)) else 0
+  if 2 * k ≤ n then
+    (n.factorial : ℝ) / ((k.factorial : ℝ) ^ 2 * ((n - 2 * k).factorial : ℝ))
+  else 0
 
 /-- The finite telescoping certificate. -/
 private noncomputable def G (n k : ℕ) : ℝ :=
   if 2 * k ≤ n + 2 then
-    -4 * ((n : ℝ) + 1) * (k : ℝ) ^ 2 * (n ! : ℝ) /
-      ((k ! : ℝ) ^ 2 * ((n + 2 - 2 * k)! : ℝ))
+    -4 * ((n : ℝ) + 1) * (k : ℝ) ^ 2 * (n.factorial : ℝ) /
+      ((k.factorial : ℝ) ^ 2 * ((n + 2 - 2 * k).factorial : ℝ))
   else 0
 
 /-! ### Factorial form -/
@@ -35,27 +37,29 @@ private theorem choose_mul_choose_eq_F (n i : ℕ) :
     (n.choose (2 * i) : ℝ) * ((2 * i).choose i : ℝ) = F n i := by
   unfold F
   by_cases h : 2 * i ≤ n
-  · rw [if_pos h, eq_div_iff (by positivity)]
-    have h2 : ((2 * i).choose i : ℝ) * (i ! : ℝ) ^ 2 = ((2 * i)! : ℝ) := by
+  · rw [ite_eq_left h, eq_div_iff (by positivity)]
+    have h2 : ((2 * i).choose i : ℝ) * (i.factorial : ℝ) ^ 2 =
+        ((2 * i).factorial : ℝ) := by
       have h2' := Nat.choose_mul_factorial_mul_factorial (show i ≤ 2 * i by lia)
       rw [show 2 * i - i = i from by lia] at h2'
-      have h2'' : (((2 * i).choose i * i ! * i ! : ℕ) : ℝ) =
-          (((2 * i)! : ℕ) : ℝ) := by
+      have h2'' : (((2 * i).choose i * i.factorial * i.factorial : ℕ) : ℝ) =
+          (((2 * i).factorial : ℕ) : ℝ) := by
         exact_mod_cast congrArg (fun m : ℕ => (m : ℝ)) h2'
       push_cast at h2''
       rw [← h2'']
       ring
-    have h1 : (n.choose (2 * i) : ℝ) * ((2 * i)! : ℝ) *
-        ((n - 2 * i)! : ℝ) = (n ! : ℝ) := by
+    have h1 : (n.choose (2 * i) : ℝ) * ((2 * i).factorial : ℝ) *
+        ((n - 2 * i).factorial : ℝ) = (n.factorial : ℝ) := by
       have h1' := Nat.choose_mul_factorial_mul_factorial h
-      have h1'' : ((n.choose (2 * i) * (2 * i)! * (n - 2 * i)! : ℕ) : ℝ) =
-          ((n ! : ℕ) : ℝ) := by
+      have h1'' :
+          ((n.choose (2 * i) * (2 * i).factorial * (n - 2 * i).factorial : ℕ) : ℝ) =
+            ((n.factorial : ℕ) : ℝ) := by
         exact_mod_cast congrArg (fun m : ℕ => (m : ℝ)) h1'
       push_cast at h1''
       rw [← h1'']
     rw [← h1, ← h2]
     ring
-  · rw [if_neg h, Nat.choose_eq_zero_of_lt (by lia)]
+  · rw [ite_eq_right h, Nat.choose_eq_zero_of_lt (by lia)]
     push_cast
     ring
 
@@ -63,7 +67,8 @@ private theorem choose_mul_choose_eq_F (n i : ℕ) :
 theorem T_eq_factorial_sum (n : ℕ) :
     T n = ∑ i ∈ range (n + 1),
       if 2 * i ≤ n then
-        (n ! : ℝ) / ((i ! : ℝ) ^ 2 * ((n - 2 * i)! : ℝ))
+        (n.factorial : ℝ) /
+          ((i.factorial : ℝ) ^ 2 * ((n - 2 * i).factorial : ℝ))
       else 0 := by
   refine sum_congr rfl (fun i _ => ?_)
   rw [choose_mul_choose_eq_F]
@@ -73,7 +78,7 @@ private theorem T_eq_sum_F (n : ℕ) : T n = ∑ i ∈ range (n + 1), F n i :=
   sum_congr rfl (fun i _ => choose_mul_choose_eq_F n i)
 
 private theorem F_eq_zero_of_lt {n k : ℕ} (h : n < 2 * k) : F n k = 0 :=
-  if_neg (by lia)
+  ite_eq_right (by lia)
 
 private theorem T_eq_sum_F_range {n M : ℕ} (h : n + 1 ≤ M) :
     T n = ∑ i ∈ range M, F n i := by
@@ -91,36 +96,38 @@ private theorem key_main {k m : ℕ} :
         - 3 * (((2 * k + m : ℕ) : ℝ) + 1) * F (2 * k + m) k
       = G (2 * k + m) (k + 1) - G (2 * k + m) k := by
   unfold F G
-  rw [if_pos (show 2 * k ≤ 2 * k + m + 2 by lia),
-    if_pos (show 2 * k ≤ 2 * k + m + 1 by lia),
-    if_pos (show 2 * k ≤ 2 * k + m by lia),
-    if_pos (show 2 * (k + 1) ≤ 2 * k + m + 2 by lia),
-    if_pos (show 2 * k ≤ 2 * k + m + 2 by lia),
+  rw [ite_eq_left (show 2 * k ≤ 2 * k + m + 2 by lia),
+    ite_eq_left (show 2 * k ≤ 2 * k + m + 1 by lia),
+    ite_eq_left (show 2 * k ≤ 2 * k + m by lia),
+    ite_eq_left (show 2 * (k + 1) ≤ 2 * k + m + 2 by lia),
+    ite_eq_left (show 2 * k ≤ 2 * k + m + 2 by lia),
     show 2 * k + m + 2 - 2 * k = m + 2 from by lia,
     show 2 * k + m + 1 - 2 * k = m + 1 from by lia,
     show 2 * k + m - 2 * k = m from by lia,
     show 2 * k + m + 2 - 2 * (k + 1) = m from by lia]
-  have e1 : (((2 * k + m + 1)! : ℕ) : ℝ) =
-      (2 * (k : ℝ) + m + 1) * (((2 * k + m)! : ℕ) : ℝ) := by
+  have e1 : (((2 * k + m + 1).factorial : ℕ) : ℝ) =
+      (2 * (k : ℝ) + m + 1) * (((2 * k + m).factorial : ℕ) : ℝ) := by
     rw [Nat.factorial_succ]
     push_cast
     ring
-  have e2 : (((2 * k + m + 2)! : ℕ) : ℝ) =
+  have e2 : (((2 * k + m + 2).factorial : ℕ) : ℝ) =
       (2 * (k : ℝ) + m + 2) * (2 * (k : ℝ) + m + 1) *
-        (((2 * k + m)! : ℕ) : ℝ) := by
+        (((2 * k + m).factorial : ℕ) : ℝ) := by
     rw [Nat.factorial_succ (2 * k + m + 1), Nat.factorial_succ (2 * k + m)]
     push_cast
     ring
-  have e3 : (((m + 1)! : ℕ) : ℝ) = ((m : ℝ) + 1) * ((m ! : ℕ) : ℝ) := by
+  have e3 : (((m + 1).factorial : ℕ) : ℝ) =
+      ((m : ℝ) + 1) * ((m.factorial : ℕ) : ℝ) := by
     rw [Nat.factorial_succ]
     push_cast
     ring
-  have e4 : (((m + 2)! : ℕ) : ℝ) =
-      ((m : ℝ) + 2) * ((m : ℝ) + 1) * ((m ! : ℕ) : ℝ) := by
+  have e4 : (((m + 2).factorial : ℕ) : ℝ) =
+      ((m : ℝ) + 2) * ((m : ℝ) + 1) * ((m.factorial : ℕ) : ℝ) := by
     rw [Nat.factorial_succ (m + 1), Nat.factorial_succ m]
     push_cast
     ring
-  have e5 : (((k + 1)! : ℕ) : ℝ) = ((k : ℝ) + 1) * ((k ! : ℕ) : ℝ) := by
+  have e5 : (((k + 1).factorial : ℕ) : ℝ) =
+      ((k : ℝ) + 1) * ((k.factorial : ℕ) : ℝ) := by
     rw [Nat.factorial_succ]
     push_cast
     ring
@@ -135,21 +142,21 @@ private theorem key_edge_one {j : ℕ} :
         - 3 * (((2 * j + 1 : ℕ) : ℝ) + 1) * F (2 * j + 1) (j + 1)
       = G (2 * j + 1) (j + 1 + 1) - G (2 * j + 1) (j + 1) := by
   unfold F G
-  rw [if_pos (show 2 * (j + 1) ≤ 2 * j + 1 + 2 by lia),
-    if_pos (show 2 * (j + 1) ≤ 2 * j + 1 + 1 by lia),
-    if_neg (show ¬ 2 * (j + 1) ≤ 2 * j + 1 by lia),
-    if_neg (show ¬ 2 * (j + 1 + 1) ≤ 2 * j + 1 + 2 by lia),
-    if_pos (show 2 * (j + 1) ≤ 2 * j + 1 + 2 by lia),
+  rw [ite_eq_left (show 2 * (j + 1) ≤ 2 * j + 1 + 2 by lia),
+    ite_eq_left (show 2 * (j + 1) ≤ 2 * j + 1 + 1 by lia),
+    ite_eq_right (show ¬ 2 * (j + 1) ≤ 2 * j + 1 by lia),
+    ite_eq_right (show ¬ 2 * (j + 1 + 1) ≤ 2 * j + 1 + 2 by lia),
+    ite_eq_left (show 2 * (j + 1) ≤ 2 * j + 1 + 2 by lia),
     show 2 * j + 1 + 2 - 2 * (j + 1) = 1 from by lia,
     show 2 * j + 1 + 1 - 2 * (j + 1) = 0 from by lia]
-  have e1 : (((2 * j + 1 + 1)! : ℕ) : ℝ) =
-      (2 * (j : ℝ) + 2) * (((2 * j + 1)! : ℕ) : ℝ) := by
+  have e1 : (((2 * j + 1 + 1).factorial : ℕ) : ℝ) =
+      (2 * (j : ℝ) + 2) * (((2 * j + 1).factorial : ℕ) : ℝ) := by
     rw [Nat.factorial_succ]
     push_cast
     ring
-  have e2 : (((2 * j + 1 + 2)! : ℕ) : ℝ) =
+  have e2 : (((2 * j + 1 + 2).factorial : ℕ) : ℝ) =
       (2 * (j : ℝ) + 3) * (2 * (j : ℝ) + 2) *
-        (((2 * j + 1)! : ℕ) : ℝ) := by
+        (((2 * j + 1).factorial : ℕ) : ℝ) := by
     rw [Nat.factorial_succ (2 * j + 1 + 1), Nat.factorial_succ (2 * j + 1)]
     push_cast
     ring
@@ -164,14 +171,15 @@ private theorem key_edge_two {j : ℕ} :
         - 3 * (((2 * j : ℕ) : ℝ) + 1) * F (2 * j) (j + 1)
       = G (2 * j) (j + 1 + 1) - G (2 * j) (j + 1) := by
   unfold F G
-  rw [if_pos (show 2 * (j + 1) ≤ 2 * j + 2 by lia),
-    if_neg (show ¬ 2 * (j + 1) ≤ 2 * j + 1 by lia),
-    if_neg (show ¬ 2 * (j + 1) ≤ 2 * j by lia),
-    if_neg (show ¬ 2 * (j + 1 + 1) ≤ 2 * j + 2 by lia),
-    if_pos (show 2 * (j + 1) ≤ 2 * j + 2 by lia),
+  rw [ite_eq_left (show 2 * (j + 1) ≤ 2 * j + 2 by lia),
+    ite_eq_right (show ¬ 2 * (j + 1) ≤ 2 * j + 1 by lia),
+    ite_eq_right (show ¬ 2 * (j + 1) ≤ 2 * j by lia),
+    ite_eq_right (show ¬ 2 * (j + 1 + 1) ≤ 2 * j + 2 by lia),
+    ite_eq_left (show 2 * (j + 1) ≤ 2 * j + 2 by lia),
     show 2 * j + 2 - 2 * (j + 1) = 0 from by lia]
-  have e2 : (((2 * j + 2)! : ℕ) : ℝ) =
-      (2 * (j : ℝ) + 2) * (2 * (j : ℝ) + 1) * (((2 * j)! : ℕ) : ℝ) := by
+  have e2 : (((2 * j + 2).factorial : ℕ) : ℝ) =
+      (2 * (j : ℝ) + 2) * (2 * (j : ℝ) + 1) *
+        (((2 * j).factorial : ℕ) : ℝ) := by
     rw [Nat.factorial_succ (2 * j + 1), Nat.factorial_succ (2 * j)]
     push_cast
     ring
@@ -201,21 +209,21 @@ private theorem key (n k : ℕ) :
         push_cast at hedge ⊢
         linarith [hedge]
     · unfold F G
-      rw [if_neg (show ¬ 2 * k ≤ n + 2 by lia),
-        if_neg (show ¬ 2 * k ≤ n + 1 by lia),
-        if_neg (show ¬ 2 * k ≤ n by lia),
-        if_neg (show ¬ 2 * (k + 1) ≤ n + 2 by lia),
-        if_neg (show ¬ 2 * k ≤ n + 2 by lia)]
+      rw [ite_eq_right (show ¬ 2 * k ≤ n + 2 by lia),
+        ite_eq_right (show ¬ 2 * k ≤ n + 1 by lia),
+        ite_eq_right (show ¬ 2 * k ≤ n by lia),
+        ite_eq_right (show ¬ 2 * (k + 1) ≤ n + 2 by lia),
+        ite_eq_right (show ¬ 2 * k ≤ n + 2 by lia)]
       ring
 
 /-! ### Boundary values and recurrence -/
 
 private theorem G_zero (n : ℕ) : G n 0 = 0 := by
   unfold G
-  rw [if_pos (by lia)]
+  rw [ite_eq_left (by lia)]
   norm_num
 
-private theorem G_top (n : ℕ) : G n (n + 3) = 0 := if_neg (by lia)
+private theorem G_top (n : ℕ) : G n (n + 3) = 0 := ite_eq_right (by lia)
 
 theorem T_zero : T 0 = 1 := by
   simp [T]

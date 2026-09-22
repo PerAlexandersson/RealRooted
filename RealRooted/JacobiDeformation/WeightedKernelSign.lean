@@ -106,6 +106,8 @@ theorem kernelWeight_quasiJacobi_sum_div_eval_prev_pos
   have hH : 0 < H := shiftedJacobiMonicNorm_pos hα hβ N
   have hwi : 0 < wi := kernelWeight_pos (j := 0) (by simp) hδ hs
   have hsum : T = S / wi := by
+    dsimp only [T, S]
+    rw [Finset.sum_div]
     apply Finset.sum_congr rfl
     intro l _
     rw [eval_weightNewtonPolynomial_eq_kernelWeight_div_zero hm hδ hδ1 hs l]
@@ -116,12 +118,15 @@ theorem kernelWeight_quasiJacobi_sum_div_eval_prev_pos
       (quasiJacobiCollocationScale (N + 1) α β τ x i *
         quasiJacobiCollocationScale (N + 1) α β τ x j) * T at hspectral
   rw [hsum] at hspectral
+  rw [quasiJacobiCollocationScale, quasiJacobiCollocationScale] at hspectral
+  change (aeval A (weightNewtonPolynomial m δ (α + β + 2))) i j =
+      H / ((Real.sqrt ηi * pi) * (Real.sqrt ηj * pj)) * (S / wi) at hspectral
   have hformula : S / (pi * pj) =
       (aeval A (weightNewtonPolynomial m δ (α + β + 2))) i j * wi *
         Real.sqrt ηi * Real.sqrt ηj / H := by
-    rw [quasiJacobiCollocationScale, quasiJacobiCollocationScale] at hspectral
     field_simp [hpi, hpj, hwi.ne', hH.ne', (Real.sqrt_pos.2 hηi).ne',
       (Real.sqrt_pos.2 hηj).ne'] at hspectral ⊢
+    ring_nf at hspectral ⊢
     nlinarith [hspectral]
   change 0 < S / (pi * pj)
   rw [hformula]

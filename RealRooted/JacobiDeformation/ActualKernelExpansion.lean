@@ -28,7 +28,7 @@ def truncatedJacobiBernstein (m i j : ℕ) : ℝ[X] :=
 private theorem natDegree_jacobiBernstein_le (i j : ℕ) :
     (jacobiBernstein i j).natDegree ≤ i + j := by
   have hX : (X ^ i : ℝ[X]).natDegree ≤ i := by
-    simpa using Polynomial.natDegree_pow_le_of_le i Polynomial.natDegree_X_le
+    simp
   have hOneSubX : (1 - X : ℝ[X]).natDegree ≤ 1 := by
     simp [sub_eq_add_neg]
   have hOneSubXPow : ((1 - X : ℝ[X]) ^ j).natDegree ≤ j := by
@@ -75,8 +75,8 @@ private theorem coefficient_mul_eval_truncated (m i j : ℕ) (b c d x : ℝ) :
       appellKernelCoefficient m b c d i j *
         (truncatedJacobiBernstein m i j).eval x := by
   by_cases hij : i + j ≤ m
-  · rw [truncatedJacobiBernstein, if_pos hij]
-  · rw [appellKernelCoefficient, if_neg hij]
+  · rw [truncatedJacobiBernstein, ite_eq_left hij]
+  · rw [appellKernelCoefficient, ite_eq_right hij]
     ring
 
 private theorem coefficient_mul_eval_truncated_two
@@ -88,8 +88,8 @@ private theorem coefficient_mul_eval_truncated_two
         (truncatedJacobiBernstein m i j).eval z := by
   rw [coefficient_mul_eval_truncated m i j b c d r]
   by_cases hij : i + j ≤ m
-  · rw [truncatedJacobiBernstein, if_pos hij]
-  · rw [appellKernelCoefficient, if_neg hij]
+  · rw [truncatedJacobiBernstein, ite_eq_left hij]
+  · rw [appellKernelCoefficient, ite_eq_right hij]
     ring
 
 private theorem appellKernelSummand_eq_truncated
@@ -100,10 +100,10 @@ private theorem appellKernelSummand_eq_truncated
         (truncatedJacobiBernstein m i j).eval r *
         (truncatedJacobiBernstein m i j).eval z := by
   by_cases hij : i + j ≤ m
-  · rw [truncatedJacobiBernstein, if_pos hij]
+  · rw [truncatedJacobiBernstein, ite_eq_left hij]
     simp only [jacobiBernstein, eval_mul, eval_pow, eval_X, eval_sub, eval_one]
     ring
-  · rw [appellKernelCoefficient, if_neg hij]
+  · rw [appellKernelCoefficient, ite_eq_right hij]
     ring
 
 private theorem sum_comm_four {α β γ ε : Type*}
@@ -367,12 +367,12 @@ private theorem normalizedJacobiFunctional_normalized_mul_monic
     normalizedJacobiFunctional_C_mul']
   by_cases hjk : j = k
   · subst k
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     simp only [eval_mul, eval_C]
     rw [normalizedShiftedJacobi_eval_zero hc]
     simp only [normalizedJacobiNorm]
     ring
-  · rw [if_neg hjk,
+  · rw [ite_eq_right hjk,
       normalizedJacobiFunctional_pairwise_orthogonal hc hd hjk]
     ring
 
@@ -405,7 +405,7 @@ private theorem normalizedJacobiFunctional_diagonal_term
     simp
     ring
   · have hval : (j : ℕ) ≠ (k : ℕ) := fun h => hjk (Fin.ext h)
-    rw [if_neg hjk, if_neg hval]
+    rw [ite_eq_right hjk, ite_eq_right hval]
     ring
 
 /-- The diagonal monic coefficient is determined by the concrete boundary
@@ -425,9 +425,9 @@ theorem actualKernelCoefficientMatrix_diagonal_weight
   simp_rw [normalizedJacobiFunctional_diagonal_term
     ((m : ℝ) + c + d - 1 + δ) hc hd a] at hprojection
   rw [Finset.sum_eq_single a] at hprojection
-  · simpa only [if_pos, eval_zero, pow_two, mul_assoc] using hprojection
+  · simpa only [ite_eq_left, eval_zero, pow_two, mul_assoc] using hprojection
   · intro k _ hka
-    rw [if_neg (Ne.symm hka)]
+    rw [ite_eq_right (Ne.symm hka)]
   · simp
 
 private theorem diagonal_monic_term_eq_normalized

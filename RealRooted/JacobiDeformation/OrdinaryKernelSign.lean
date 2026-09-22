@@ -56,7 +56,7 @@ theorem ordinaryJacobi_kernelWeight_sum_div_eval_top_pos
       (shiftedJacobiMonic (m - 1) α β).eval r =
         K * (shiftedJacobiMonic m α β).eval r := by
     dsimp only [K]
-    field_simp [hpr] <;> ring
+    field_simp [hpr]
   have hprev_z :
       (shiftedJacobiMonic (m - 1) α β).eval z =
         K * (shiftedJacobiMonic m α β).eval z := by
@@ -65,17 +65,19 @@ theorem ordinaryJacobi_kernelWeight_sum_div_eval_top_pos
           (shiftedJacobiMonic m α β).eval r) *
         (shiftedJacobiMonic m α β).eval z
     rw [hratio]
-    field_simp [hpz] <;> ring
+    field_simp [hpz]
   have hroot_r : (quasiJacobiPolynomial m α β τ).IsRoot r := by
     change (quasiJacobiPolynomial m α β τ).eval r = 0
     rw [quasiJacobiPolynomial, eval_sub, eval_mul, eval_C, hprev_r]
     dsimp only [τ]
-    field_simp [hKne] <;> ring
+    field_simp [hKne]
+    ring
   have hroot_z : (quasiJacobiPolynomial m α β τ).IsRoot z := by
     change (quasiJacobiPolynomial m α β τ).eval z = 0
     rw [quasiJacobiPolynomial, eval_sub, eval_mul, eval_C, hprev_z]
     dsimp only [τ]
-    field_simp [hKne] <;> ring
+    field_simp [hKne]
+    ring
   have hlower :
       0 < L /
         ((shiftedJacobiMonic (m - 1) α β).eval r *
@@ -105,7 +107,7 @@ theorem ordinaryJacobi_kernelWeight_sum_div_eval_top_pos
                 ((shiftedJacobiMonic m α β).eval r *
                   (shiftedJacobiMonic m α β).eval z))) *
             (K * K) := by
-      field_simp [hKne, hpr, hpz] <;> ring
+      field_simp [hKne, hpr, hpz]
     rw [hrewrite]
     exact mul_pos hlower hKsq
   have hs : 0 < α + β + 2 := by linarith
@@ -123,7 +125,7 @@ theorem ordinaryJacobi_kernelWeight_sum_div_eval_top_pos
           (shiftedJacobiMonic m α β).eval z) =
         kernelWeight m δ (α + β + 2) m /
           shiftedJacobiMonicNorm m α β := by
-    field_simp [hpr, hpz, (shiftedJacobiMonicNorm_pos hα hβ m).ne'] <;> ring
+    field_simp [hpr, hpz, (shiftedJacobiMonicNorm_pos hα hβ m).ne']
   have hsplit :
       (∑ l : Fin (m + 1),
           kernelWeight m δ (α + β + 2) l *
@@ -135,7 +137,7 @@ theorem ordinaryJacobi_kernelWeight_sum_div_eval_top_pos
               (shiftedJacobiMonic m α β).eval r *
                 (shiftedJacobiMonic m α β).eval z /
             shiftedJacobiMonicNorm m α β := by
-    rw [Fin.sum_univ_succ]
+    rw [Fin.sum_univ_castSucc]
     rfl
   rw [hsplit, add_div, htop_eq]
   exact add_pos hlower' htop

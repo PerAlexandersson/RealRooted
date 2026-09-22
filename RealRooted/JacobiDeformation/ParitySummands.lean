@@ -19,8 +19,6 @@ theorem risingFactorial_one_half_mul_factorial_mul_four_pow (j : ℕ) :
   induction j with
   | zero => norm_num [risingFactorial]
   | succ j ih =>
-    change risingFactorial (1 / 2 : ℝ) (j + 1) * ((j + 1).factorial : ℝ) *
-        4 ^ (j + 1) = ((2 * (j + 1)).factorial : ℝ)
     calc
       risingFactorial (1 / 2 : ℝ) (j + 1) * ((j + 1).factorial : ℝ) *
           4 ^ (j + 1) =
@@ -44,8 +42,6 @@ theorem risingFactorial_three_halves_mul_factorial_mul_four_pow (j : ℕ) :
   induction j with
   | zero => norm_num [risingFactorial]
   | succ j ih =>
-    change risingFactorial (3 / 2 : ℝ) (j + 1) * ((j + 1).factorial : ℝ) *
-        4 ^ (j + 1) = ((2 * (j + 1) + 1).factorial : ℝ)
     calc
       risingFactorial (3 / 2 : ℝ) (j + 1) * ((j + 1).factorial : ℝ) *
           4 ^ (j + 1) =
@@ -65,7 +61,7 @@ theorem risingFactorial_three_halves_mul_factorial_mul_four_pow (j : ℕ) :
 
 private theorem risingFactorial_one_eq_factorial (i : ℕ) :
     risingFactorial (1 : ℝ) i = (i.factorial : ℝ) := by
-  simpa [risingFactorial] using ascPochhammer_eval_one ℝ i
+  simp [risingFactorial]
 
 /-- The even parity specialization of the actual Jacobi summand. -/
 theorem summand_even_factorial {m i j k : ℕ} (hijk : i + j + k = m) :

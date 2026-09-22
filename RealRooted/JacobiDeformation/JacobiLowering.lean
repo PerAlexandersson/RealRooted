@@ -20,7 +20,7 @@ private theorem jacobiDifferentialOperator_X_mul_sub_X_mul
         X * jacobiDifferentialOperator c s p =
       2 * X * (1 - X) * p.derivative + (C c - C s * X) * p := by
   simp only [jacobiDifferentialOperator, derivative_mul, derivative_X,
-    one_mul, derivative_add, derivative_one, zero_mul, zero_add]
+    one_mul, derivative_add]
   ring
 
 private theorem jacobiDifferentialOperator_shiftedJacobiMonic
@@ -37,8 +37,8 @@ private theorem jacobiDifferentialOperator_shiftedJacobiMonic
 The successor presentation includes the degree-one case by taking `n = 0`. -/
 theorem shiftedJacobiMonic_lowering_succ (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
-    X * (1 - X) * (shiftedJacobiMonic (n + 1) α β).derivative =
-      (-C (n + 1) * X +
+    (X : ℝ[X]) * (1 - X) * (shiftedJacobiMonic (n + 1) α β).derivative =
+      (-C ((n + 1 : ℕ) : ℝ) * X +
           C (((2 * (n + 1) + (α + β + 2)) *
             shiftedJacobiDiag (n + 1) α β - (α + 1)) / 2)) *
           shiftedJacobiMonic (n + 1) α β +
@@ -94,8 +94,8 @@ theorem shiftedJacobiMonic_lowering_succ (n : ℕ) {α β : ℝ}
   rw [hLXP, hXL, hrec, hnext] at hcomm
   have hclear :
       C (2 : ℝ) *
-          (X * (1 - X) * (shiftedJacobiMonic (n + 1) α β).derivative) =
-        (-C (2 * (n + 1)) * X +
+          ((X : ℝ[X]) * (1 - X) * (shiftedJacobiMonic (n + 1) α β).derivative) =
+        (-C (2 * ((n + 1 : ℕ) : ℝ)) * X +
           C ((2 * (n + 1) + (α + β + 2)) *
             shiftedJacobiDiag (n + 1) α β - (α + 1))) *
           shiftedJacobiMonic (n + 1) α β +
@@ -103,15 +103,15 @@ theorem shiftedJacobiMonic_lowering_succ (n : ℕ) {α β : ℝ}
           shiftedJacobiSubdiag (n + 1) α β) *
           shiftedJacobiMonic n α β := by
     unfold eigenvalue at hcomm
-    push_cast at hcomm
-    simp only [map_add, map_sub, map_mul, map_neg, map_ofNat] at hcomm ⊢
+    norm_num [Nat.cast_add, Nat.cast_one, map_add, map_sub, map_mul, map_neg,
+      map_ofNat] at hcomm ⊢
     linear_combination -hcomm
   let A : ℝ := ((2 * (n + 1) + (α + β + 2)) *
     shiftedJacobiDiag (n + 1) α β - (α + 1)) / 2
   let B : ℝ := (2 * (n + 1) + (α + β + 2) - 1) *
     shiftedJacobiSubdiag (n + 1) α β
-  change X * (1 - X) * (shiftedJacobiMonic (n + 1) α β).derivative =
-    (-C (n + 1) * X + C A) * shiftedJacobiMonic (n + 1) α β +
+  change (X : ℝ[X]) * (1 - X) * (shiftedJacobiMonic (n + 1) α β).derivative =
+    (-C ((n + 1 : ℕ) : ℝ) * X + C A) * shiftedJacobiMonic (n + 1) α β +
       C B * shiftedJacobiMonic n α β
   have htwo : (C (2 : ℝ) : ℝ[X]) ≠ 0 := by norm_num
   apply (mul_left_cancel₀ htwo)
@@ -131,35 +131,37 @@ theorem shiftedJacobiMonic_lowering_succ (n : ℕ) {α β : ℝ}
     ring
   have hscale :
       C (2 : ℝ) *
-          ((-C (n + 1) * X + C A) * shiftedJacobiMonic (n + 1) α β +
+          ((-C ((n + 1 : ℕ) : ℝ) * X + C A) * shiftedJacobiMonic (n + 1) α β +
             C B * shiftedJacobiMonic n α β) =
-        (-C (2 * (n + 1)) * X +
+        (-C (2 * ((n + 1 : ℕ) : ℝ)) * X +
           C ((2 * (n + 1) + (α + β + 2)) *
             shiftedJacobiDiag (n + 1) α β - (α + 1))) *
           shiftedJacobiMonic (n + 1) α β +
         C (2 * (2 * (n + 1) + (α + β + 2) - 1) *
           shiftedJacobiSubdiag (n + 1) α β) *
           shiftedJacobiMonic n α β := by
-    have hN : C (2 : ℝ) * C (n + 1) = C (2 * (n + 1)) := by
+    have hN : C (2 : ℝ) * C ((n + 1 : ℕ) : ℝ) =
+        C (2 * ((n + 1 : ℕ) : ℝ)) := by
       rw [← C_mul]
     calc
-      _ = (C (2 : ℝ) * (-C (n + 1) * X + C A)) *
+      _ = (C (2 : ℝ) * (-C ((n + 1 : ℕ) : ℝ) * X + C A)) *
             shiftedJacobiMonic (n + 1) α β +
           (C (2 : ℝ) * C B) * shiftedJacobiMonic n α β := by ring
-      _ = (-C (2 * (n + 1)) * X +
+      _ = (-C (2 * ((n + 1 : ℕ) : ℝ)) * X +
             C ((2 * (n + 1) + (α + β + 2)) *
               shiftedJacobiDiag (n + 1) α β - (α + 1))) *
             shiftedJacobiMonic (n + 1) α β +
           C (2 * (2 * (n + 1) + (α + β + 2) - 1) *
             shiftedJacobiSubdiag (n + 1) α β) *
             shiftedJacobiMonic n α β := by
-        rw [show C (2 : ℝ) * (-C (n + 1) * X + C A) =
-            -C (2 * (n + 1)) * X +
+        rw [show C (2 : ℝ) * (-C ((n + 1 : ℕ) : ℝ) * X + C A) =
+            -C (2 * ((n + 1 : ℕ) : ℝ)) * X +
               C ((2 * (n + 1) + (α + β + 2)) *
                 shiftedJacobiDiag (n + 1) α β - (α + 1)) by
           calc
-            C (2 : ℝ) * (-C (n + 1) * X + C A) =
-                -(C (2 : ℝ) * C (n + 1)) * X + C (2 : ℝ) * C A := by
+            C (2 : ℝ) * (-C ((n + 1 : ℕ) : ℝ) * X + C A) =
+                -(C (2 : ℝ) * C ((n + 1 : ℕ) : ℝ)) * X +
+                  C (2 : ℝ) * C A := by
               ring
             _ = _ := by rw [hN, hA], hB]
   rw [hscale]
@@ -172,8 +174,7 @@ theorem shiftedJacobiMonic_lowering_succ_subdiag_pos (n : ℕ) {α β : ℝ}
     0 < (2 * (n + 1) + (α + β + 2) - 1) *
       shiftedJacobiSubdiag (n + 1) α β := by
   apply mul_pos
-  · push_cast
-    have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
+  · have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
     linarith
   · exact shiftedJacobiSubdiag_pos (n + 1) (by lia) hα hβ
 
@@ -181,23 +182,27 @@ theorem shiftedJacobiMonic_lowering_succ_subdiag_pos (n : ℕ) {α β : ℝ}
 degree. -/
 theorem shiftedJacobiMonic_lowering (n : ℕ) {α β : ℝ}
     (hn : n ≠ 0) (hα : -1 < α) (hβ : -1 < β) :
-    X * (1 - X) * (shiftedJacobiMonic n α β).derivative =
-      (-C n * X +
+    (X : ℝ[X]) * (1 - X) * (shiftedJacobiMonic n α β).derivative =
+      (-C (n : ℝ) * X +
           C (((2 * n + (α + β + 2)) * shiftedJacobiDiag n α β -
             (α + 1)) / 2)) *
           shiftedJacobiMonic n α β +
         C ((2 * n + (α + β + 2) - 1) * shiftedJacobiSubdiag n α β) *
           shiftedJacobiMonic (n - 1) α β := by
-  obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hn
-  simpa only [Nat.succ_eq_add_one, Nat.add_sub_cancel] using
-    shiftedJacobiMonic_lowering_succ m hα hβ
+  cases n with
+  | zero => exact (hn rfl).elim
+  | succ m =>
+      convert shiftedJacobiMonic_lowering_succ m hα hβ using 1;
+        norm_num [Nat.cast_succ]
 
 /-- The lower coefficient in `shiftedJacobiMonic_lowering` is positive. -/
 theorem shiftedJacobiMonic_lowering_subdiag_pos (n : ℕ) {α β : ℝ}
     (hn : n ≠ 0) (hα : -1 < α) (hβ : -1 < β) :
     0 < (2 * n + (α + β + 2) - 1) * shiftedJacobiSubdiag n α β := by
-  obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hn
-  simpa only [Nat.succ_eq_add_one] using
-    shiftedJacobiMonic_lowering_succ_subdiag_pos m hα hβ
+  cases n with
+  | zero => exact (hn rfl).elim
+  | succ m =>
+      norm_num [Nat.cast_succ]
+      exact shiftedJacobiMonic_lowering_succ_subdiag_pos m hα hβ
 
 end RealRooted.JacobiDeformation

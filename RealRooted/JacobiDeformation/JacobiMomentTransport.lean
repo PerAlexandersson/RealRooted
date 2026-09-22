@@ -45,7 +45,7 @@ theorem choose_mul_risingFactorial_eq_choose_mul_fallingFactorial
       ascPochhammer_smeval_eq_eval]
     change (ascPochhammer ℝ i).eval (c + (i : ℝ) - 1 - (i : ℝ) + 1) =
       (ascPochhammer ℝ i).eval c
-    congr 2 <;> ring_nf
+    congr 2; ring_nf
   rw [← hring, ← hnat]
   have hchoose' : (j.choose (j - i) : ℝ) * Ring.choose x j =
       Ring.choose x (j - i) * Ring.choose (c + i - 1) i := by

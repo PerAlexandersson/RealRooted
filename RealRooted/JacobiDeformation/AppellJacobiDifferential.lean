@@ -34,8 +34,7 @@ theorem jacobiDifferentialOperator_jacobiBernstein (c d : ℝ) (i j : ℕ) :
       | succ j =>
           cases j with
           | zero =>
-              simp [jacobiBernstein, jacobiDifferentialOperator, derivative_mul,
-                derivative_pow]
+              simp [jacobiBernstein, jacobiDifferentialOperator]
               ring
           | succ j =>
               simp [jacobiBernstein, jacobiDifferentialOperator, derivative_mul,
@@ -46,14 +45,12 @@ theorem jacobiDifferentialOperator_jacobiBernstein (c d : ℝ) (i j : ℕ) :
       | zero =>
           cases j with
           | zero =>
-              simp [jacobiBernstein, jacobiDifferentialOperator, derivative_mul,
-                derivative_pow]
+              simp [jacobiBernstein, jacobiDifferentialOperator]
               ring
           | succ j =>
               cases j with
               | zero =>
-                  simp [jacobiBernstein, jacobiDifferentialOperator, derivative_mul,
-                    derivative_pow]
+                  simp [jacobiBernstein, jacobiDifferentialOperator, derivative_mul]
                   rw [C_ofNat]
                   ring
               | succ j =>

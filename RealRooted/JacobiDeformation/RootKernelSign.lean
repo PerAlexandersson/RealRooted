@@ -73,7 +73,7 @@ theorem rootJacobi_kernelWeight_sum_div_eval_prev_pos
               (shiftedJacobiMonic m α β).eval r *
                 (shiftedJacobiMonic m α β).eval z /
               shiftedJacobiMonicNorm m α β := by
-    rw [Fin.sum_univ_succ]
+    rw [Fin.sum_univ_castSucc]
     rfl
   rw [hsplit, htop_zero, add_zero]
   exact hlower

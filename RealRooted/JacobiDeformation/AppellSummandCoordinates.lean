@@ -48,10 +48,19 @@ theorem appellKernelCoefficient_coordinate_eq_summand (m i j : ℕ)
         rw [show xi * ((1 - r) * (1 - z)) = xi * (1 - r) * (1 - z) by ring, hV]
   have hcoordinates : xi ^ (i + j) * (r * z) ^ i * ((1 - r) * (1 - z)) ^ j =
       (-1 : ℝ) ^ (i + j) * U ^ i * V ^ j := by
-    rw [pow_add, hU_pow, hV_pow]
-    simp only [neg_pow]
-    rw [← pow_add]
-    ring
+    calc
+      xi ^ (i + j) * (r * z) ^ i * ((1 - r) * (1 - z)) ^ j =
+          (xi ^ i * (r * z) ^ i) *
+            (xi ^ j * ((1 - r) * (1 - z)) ^ j) := by
+        rw [pow_add]
+        ring
+      _ = (-U) ^ i * (-V) ^ j := by rw [hU_pow, hV_pow]
+      _ = (-1 : ℝ) ^ (i + j) * U ^ i * V ^ j := by
+        rw [neg_pow U i, neg_pow V j]
+        calc
+          (-1 : ℝ) ^ i * U ^ i * ((-1 : ℝ) ^ j * V ^ j) =
+              ((-1 : ℝ) ^ i * (-1 : ℝ) ^ j) * U ^ i * V ^ j := by ring
+          _ = (-1 : ℝ) ^ (i + j) * U ^ i * V ^ j := by rw [pow_add]
   have hxi_coordinates : xi ^ m * (r * z) ^ i * ((1 - r) * (1 - z)) ^ j =
       (-1 : ℝ) ^ (i + j) * U ^ i * V ^ j * xi ^ (m - i - j) := by
     calc
@@ -109,8 +118,16 @@ theorem appellKernelCoefficient_coordinate_eq_summand (m i j : ℕ)
             (risingFactorial ((m : ℝ) + c + d - 1 + δ) (i + j) /
               (risingFactorial c i * risingFactorial d j)) *
             U ^ i * V ^ j * xi ^ (m - i - j) := by
-        rw [show (-1 : ℝ) ^ m * (-1 : ℝ) ^ m * (-1 : ℝ) ^ (i + j) *
-            (-1 : ℝ) ^ (i + j) = 1 by exact neg_one_pow_twice m (i + j)]
+        ring_nf
+        rw [show (-1 : ℝ) ^ (m * 2) = 1 by
+              rw [Nat.mul_comm, pow_mul]
+              norm_num,
+          show (-1 : ℝ) ^ (i * 2) = 1 by
+              rw [Nat.mul_comm, pow_mul]
+              norm_num,
+          show (-1 : ℝ) ^ (j * 2) = 1 by
+              rw [Nat.mul_comm, pow_mul]
+              norm_num]
         ring
   calc
     (-1 : ℝ) ^ m * xi ^ m *
@@ -120,11 +137,11 @@ theorem appellKernelCoefficient_coordinate_eq_summand (m i j : ℕ)
           (risingFactorial ((m : ℝ) + c + d - 1 + δ) (i + j) /
             (risingFactorial c i * risingFactorial d j)) *
           U ^ i * V ^ j * xi ^ (m - i - j) := by
-      rw [appellKernelCoefficient, if_pos hij, hnegative]
+      rw [appellKernelCoefficient, ite_eq_left hij, hnegative]
       exact hkernel
     _ = summand m δ c d U V i j * xi ^ (m - i - j) := by
       unfold summand
-      rw [hsub, ← hratio]
+      rw [hsub, hratio]
       ring
 
 end RealRooted.JacobiDeformation

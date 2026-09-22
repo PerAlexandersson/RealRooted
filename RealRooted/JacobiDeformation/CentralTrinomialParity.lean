@@ -22,25 +22,22 @@ theorem centralTrinomial_parity_antidiagonal_factorial (q e : ℕ) (he : e ≤ 1
           ((ij.1.factorial : ℝ) ^ 2 * ((2 * ij.2 + e).factorial : ℝ)) := by
   rw [CentralTrinomial.T_eq_factorial_sum]
   have hsub : range (q + 1) ⊆ range (2 * q + e + 1) := by
-    refine range_subset.2 ?_
-    intro i hi
-    rw [mem_range] at hi ⊢
-    lia
+    exact range_subset_range.mpr (by lia)
   calc
     ∑ i ∈ range (2 * q + e + 1),
-        if 2 * i ≤ 2 * q + e then
+        (if 2 * i ≤ 2 * q + e then
           ((2 * q + e).factorial : ℝ) /
             ((i.factorial : ℝ) ^ 2 * ((2 * q + e - 2 * i).factorial : ℝ))
-        else 0 =
+        else 0) =
         ∑ i ∈ range (q + 1),
-          if 2 * i ≤ 2 * q + e then
+          (if 2 * i ≤ 2 * q + e then
             ((2 * q + e).factorial : ℝ) /
               ((i.factorial : ℝ) ^ 2 * ((2 * q + e - 2 * i).factorial : ℝ))
-          else 0 := by
+          else 0) := by
       symm
       refine sum_subset hsub ?_
       intro i _ hi
-      rw [if_neg ?_]
+      rw [ite_eq_right ?_]
       simp only [mem_range, not_lt] at hi
       lia
     _ = ∑ i ∈ range (q + 1),
@@ -52,7 +49,7 @@ theorem centralTrinomial_parity_antidiagonal_factorial (q e : ℕ) (he : e ≤ 1
         simpa only [mem_range, Nat.lt_succ_iff] using hi
       have hsupport : 2 * i ≤ 2 * q + e := by lia
       have hindex : 2 * q + e - 2 * i = 2 * (q - i) + e := by lia
-      rw [if_pos hsupport, hindex]
+      rw [ite_eq_left hsupport, hindex]
     _ = ∑ ij ∈ antidiagonal q,
           ((2 * q + e).factorial : ℝ) /
             ((ij.1.factorial : ℝ) ^ 2 * ((2 * ij.2 + e).factorial : ℝ)) := by

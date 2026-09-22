@@ -50,7 +50,7 @@ theorem shiftedJacobiMonicNorm_eq_moment_zero_mul_eval_zero_sq_mul_normalized
       change p0 * p0 * shiftedJacobiFunctional (c - 1) (d - 1) (φ * φ) =
         H0 * p0 ^ 2 *
           (shiftedJacobiFunctional (c - 1) (d - 1) (φ * φ) / H0)
-      field_simp [hH0] <;> ring
+      field_simp [hH0]
 
 /-- One value-one normalized Jacobi kernel term is the corresponding raw
 monic kernel term, multiplied by the zeroth raw moment. -/
@@ -81,6 +81,8 @@ theorem normalizedJacobi_kernel_term_eq_moment_zero_mul_raw
   have hraw :=
     shiftedJacobiMonicNorm_eq_moment_zero_mul_eval_zero_sq_mul_normalized
       hc hd j
+  change shiftedJacobiMonicNorm j (c - 1) (d - 1) =
+    H0 * p0 ^ 2 * normalizedJacobiNorm c d j at hraw
   have heval (x : ℝ) : p.eval x = p0 * φ.eval x := by
     rw [← hp]
     simp
@@ -88,7 +90,7 @@ theorem normalizedJacobi_kernel_term_eq_moment_zero_mul_raw
     H0 * p.eval r * p.eval z /
       shiftedJacobiMonicNorm j (c - 1) (d - 1)
   rw [heval r, heval z, hraw]
-  field_simp [hp0, hH0, hnorm] <;> ring
+  field_simp [hp0, hH0, hnorm]
 
 /-- The literal value-one finite Jacobi kernel sum equals the raw monic
 finite kernel sum times the zeroth raw moment.  No sign condition on `δ` is

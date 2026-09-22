@@ -44,7 +44,10 @@ private theorem shiftedJacobiMonic_eval_succ_of_root
   rw [Polynomial.IsRoot.def] at hx
   simp only [eval_sub, eval_mul, eval_C, eval_X] at hrec
   rw [hx, mul_zero, zero_sub] at hrec
-  exact hrec
+  have hadd : n + 2 + 1 = n + 3 := by lia
+  have hsub : n + 2 - 1 = n + 1 := by lia
+  rw [hadd, hsub] at hrec
+  simpa only [neg_mul] using hrec
 
 private theorem shiftedJacobiMonic_eval_prev_ne_zero_of_next_root
     (n : ℕ) {α β x : ℝ} (hα : -1 < α) (hβ : -1 < β)
@@ -113,8 +116,12 @@ theorem exceptional_prev_root_kernel_sign
         term (Fin.last (n + 2)).castSucc + term (Fin.last (n + 3)) := by
     rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
   have hmiddle : term (Fin.last (n + 2)).castSucc = 0 := by
-    simp [term, Fin.val_last, Fin.val_castSucc, Polynomial.IsRoot.def] at hr hz
-    simp [term, Fin.val_last, Fin.val_castSucc, hr, hz]
+    simp only [Polynomial.IsRoot.def] at hr hz
+    have hr' : (shiftedJacobiMonic (n + 2) α β).eval r = 0 := by
+      simpa using hr
+    have hz' : (shiftedJacobiMonic (n + 2) α β).eval z = 0 := by
+      simpa using hz
+    simp [term, Fin.val_last, Fin.val_castSucc, hr', hz']
   have htop : 0 < kernelWeight (n + 3) δ (α + β + 2) (n + 3) /
       shiftedJacobiMonicNorm (n + 3) α β := by
     apply div_pos
@@ -144,7 +151,7 @@ theorem exceptional_prev_root_kernel_sign
             (shiftedJacobiMonic (n + 1) α β).eval z)) /
           shiftedJacobiSubdiag (n + 2) α β ^ 2 by
       field_simp [hprev_r, hprev_z, hsub.ne']
-      ring]
+      ]
     exact div_pos hsmall' hsq
   have htopterm :
       term (Fin.last (n + 3)) /
@@ -164,7 +171,7 @@ theorem exceptional_prev_root_kernel_sign
           kernelWeight (n + 3) δ (α + β + 2) (n + 3) /
             shiftedJacobiMonicNorm (n + 3) α β := by
     rw [hsplit, hmiddle]
-    rw [zero_add, add_div, htopterm]
+    rw [add_zero, add_div, htopterm]
   change 0 < (∑ l : Fin (n + 4), term l) /
     ((shiftedJacobiMonic (n + 3) α β).eval r *
       (shiftedJacobiMonic (n + 3) α β).eval z)

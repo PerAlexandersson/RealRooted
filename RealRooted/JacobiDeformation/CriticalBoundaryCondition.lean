@@ -23,7 +23,8 @@ theorem imageProduct_critical_boundary_condition
     (n : ℕ) {α β : ℝ} (hα : -1 < α) (hβ : -1 < β)
     (t : Fin (n + 1) → ℝ) (ht : ∀ i, 0 < t i ∧ t i < 1)
     {xi r z U V : ℝ}
-    (hnodes : shiftedJacobiMonic (n + 1) α β = ∏ i, X - C (t i))
+    (hnodes : shiftedJacobiMonic (n + 1) α β =
+      Finset.univ.prod (fun i : Fin (n + 1) => (X : ℝ[X]) - C (t i)))
     (hprod : xi * r * z = -U) (hcomp : xi * (1 - r) * (1 - z) = -V)
     (himage : (imageProduct U V t).eval xi ≠ 0)
     (hderivative : (imageProduct U V t).derivative.eval xi = 0) :
@@ -35,19 +36,21 @@ theorem imageProduct_critical_boundary_condition
           (shiftedJacobiMonic (n + 1) α β).eval z := by
   let p : ℝ[X] := shiftedJacobiMonic (n + 1) α β
   let prev : ℝ[X] := shiftedJacobiMonic n α β
-  let q : ℝ[X] := ∏ i, X - C (t i)
+  let q : ℝ[X] := Finset.univ.prod
+    (fun i : Fin (n + 1) => (X : ℝ[X]) - C (t i))
   let N : ℝ := (n : ℝ) + 1
   let A : ℝ := ((2 * N + (α + β + 2)) *
     shiftedJacobiDiag (n + 1) α β - (α + 1)) / 2
   let B : ℝ := (2 * N + (α + β + 2) - 1) *
     shiftedJacobiSubdiag (n + 1) α β
   change p = q at hnodes
-  have hqevalr : q.eval r = ∏ i, r - t i := by
-    simp [q]
-  have hqevalz : q.eval z = ∏ i, z - t i := by
-    simp [q]
+  have hqevalr : q.eval r = Finset.univ.prod (fun i : Fin (n + 1) => r - t i) := by
+    simp [q, Polynomial.eval_prod]
+  have hqevalz : q.eval z = Finset.univ.prod (fun i : Fin (n + 1) => z - t i) := by
+    simp [q, Polynomial.eval_prod]
   have hcoordinate_nonzero :
-      xi ^ (n + 1) * (∏ i, r - t i) * (∏ i, z - t i) ≠ 0 := by
+      xi ^ (n + 1) * Finset.univ.prod (fun i : Fin (n + 1) => r - t i) *
+        Finset.univ.prod (fun i : Fin (n + 1) => z - t i) ≠ 0 := by
     rw [imageProduct_coordinate_identity t ht hprod hcomp]
     exact mul_ne_zero
       (mul_ne_zero (pow_ne_zero _ (by norm_num))
@@ -106,7 +109,6 @@ theorem imageProduct_critical_boundary_condition
         rw [hlr']
       _ = _ := by
         field_simp [hpr]
-        ring
   have hlzdiv :
       z * (1 - z) * p.derivative.eval z / p.eval z =
         -N * z + A + B * (prev.eval z / p.eval z) := by
@@ -115,7 +117,6 @@ theorem imageProduct_critical_boundary_condition
         rw [hlz']
       _ = _ := by
         field_simp [hpz]
-        ring
   refine ⟨hpr, hpz, ?_⟩
   have hratio :
       B * (prev.eval r / p.eval r - prev.eval z / p.eval z) = 0 := by

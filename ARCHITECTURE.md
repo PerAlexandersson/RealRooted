@@ -1139,11 +1139,19 @@ kernel-weight quotient used in equation (8), while
 finite Pfaff--Saalschutz identity. `JacobiDeformation.KernelSign` identifies
 the Jacobi Newton factors with the initial spectral products, proves the
 full-size factor vanishes by Cayley--Hamilton, and derives strict entrywise
-positivity of the weighted Newton matrix from its `k = 1` term.
+positivity of the weighted Newton matrix from its `k = 1` term. Its
+`KernelSignRestriction`, `WeightedKernelSign`, and `QuasiKernelSign` children
+transport this positivity to every smaller collocation matrix, including the
+single possible exterior quasi-node.
 `JacobiDeformation.JacobiMoment` fixes the source normalization at zero and
 proves the exact vanishing branch of the normalized moment formula when the
-Jacobi degree exceeds the power; its complementary finite-sum branch remains
-open. `JacobiDeformation.CriticalCoordinates` constructs the two ordered
+Jacobi degree exceeds the power. `VandermondeIdentity`,
+`JacobiMomentCompletion`, `JacobiMomentTransport`, and the coefficient and
+finite-expansion layers prove the complementary finite-sum branch and the
+actual Appell action without a caller-supplied moment identity.
+`ActualKernelExpansion` then proves the normalized finite Jacobi kernel
+formula, while `JacobiNormBridge` converts it to the raw monic norms used by
+the sign calculation. `JacobiDeformation.CriticalCoordinates` constructs the two ordered
 interior coordinates below the sharp negative threshold and proves the
 opposite-sign differentiated-coordinate conclusion from the two exact
 coordinate equations. `JacobiDeformation.Boundary` closes the rank-zero and
@@ -1169,10 +1177,19 @@ without incorrectly forcing every quasi-node into the open interval.
 `JacobiDeformation.RootGeometry`, `DerivativeSimple`, `CriticalThreshold`, and
 `CriticalSigns` package respectively the rational-image threshold geometry,
 derivative simplicity under a multiplicity-two bound, strict derivative-root
-control at a simple endpoint, and the final strict-sign interlacing step. The
-The complementary Jacobi moment finite sum, Jacobi-specific collocation
-diagonalization/kernel-basis adapter, and three-case critical-point sign
-calculation remain in the higher deformation layer.
+control at a simple endpoint, and the final strict-sign interlacing step.
+`BaseProduct` identifies the delta-zero polynomial with its full image
+product. `CriticalKernelBridge` converts actual polynomial evaluation to the
+positive-coordinate raw kernel, and `CriticalCases` proves the strict sign at
+every derivative root, separately retaining the nonroot ordinary/exceptional
+split and inherited-double-root case. `Strict` assembles the checked generic
+theorem: for every positive rank and `0 < δ < 1`, the delta-zero derivative
+strictly interlaces the deformation, whose roots are simple and strictly
+negative; it also transports splitness and negative roots through every
+`δ ≥ 0`. Finally, the central-trinomial and parity layers identify the actual
+coefficient-sum polynomial in `Applications.OEIS.A132885` with the two
+half-integer Jacobi specializations and prove every nonconstant A132885 row
+has exactly its floor degree many simple negative roots.
 
 Shifted-Jacobi orthogonality has a finite/analytic boundary. `Jacobi.Favard`
 owns the monic recurrence certificate without importing roots or analysis.

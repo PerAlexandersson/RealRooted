@@ -49,8 +49,17 @@ private theorem image_node_log_derivative
   ring
 
 private theorem imageProduct_eq_prod_imageValue {m : ℕ} (U V : ℝ) (t : Fin m → ℝ) :
-    imageProduct U V t = ∏ i, X + C (imageValue U V (t i)) := by
-  simp [imageProduct, sub_eq_add_neg]
+    imageProduct U V t = Finset.univ.prod
+      (fun i : Fin m => (X : ℝ[X]) + C (imageValue U V (t i))) := by
+  unfold imageProduct
+  simp only [Multiset.map_map, Function.comp_apply]
+  rw [show ((Finset.univ : Finset (Fin m)).1.map (fun i =>
+      X - C (-(imageValue U V (t i))))).prod =
+        Finset.univ.prod (fun i : Fin m => X - C (-(imageValue U V (t i)))) by rfl]
+  apply Finset.prod_congr rfl
+  intro i _
+  rw [map_neg]
+  ring
 
 /-- The fixed-coordinate logarithmic derivative identity for the actual
 image product.  The hypotheses allow the empty family `Fin 0`. -/
@@ -58,16 +67,18 @@ theorem imageProduct_derivative_identity
     {m : ℕ} (t : Fin m → ℝ) (ht : ∀ i, 0 < t i ∧ t i < 1)
     {U V xi r z : ℝ}
     (hprod : xi * r * z = -U) (hcomp : xi * (1 - r) * (1 - z) = -V)
-    (hqr : (∏ i, (X - C (t i))).eval r ≠ 0)
-    (hqz : (∏ i, (X - C (t i))).eval z ≠ 0)
+    (hqr : (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval r ≠ 0)
+    (hqz : (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval z ≠ 0)
     (himage : (imageProduct U V t).eval xi ≠ 0) :
     xi * (r - z) * (imageProduct U V t).derivative.eval xi /
         (imageProduct U V t).eval xi =
       (m : ℝ) * (r - z) +
-        r * (1 - r) * (derivative (∏ i, X - C (t i))).eval r /
-          (∏ i, X - C (t i)).eval r -
-        z * (1 - z) * (derivative (∏ i, X - C (t i))).eval z /
-          (∏ i, X - C (t i)).eval z := by
+        r * (1 - r) *
+            (derivative (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i))).eval r /
+          (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval r -
+        z * (1 - z) *
+            (derivative (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i))).eval z /
+          (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval z := by
   let g : Fin m → ℝ[X] := fun i => X + C (imageValue U V (t i))
   have himageProduct : imageProduct U V t = ∏ i, g i := by
     simpa only [g] using imageProduct_eq_prod_imageValue U V t
@@ -89,23 +100,26 @@ theorem imageProduct_derivative_identity
     rw [himageProduct, Polynomial.eval_prod] at himage
     exact Finset.prod_ne_zero_iff.mp himage i hi
   have hqderr :
-      (derivative (∏ i, X - C (t i))).eval r / (∏ i, X - C (t i)).eval r =
+      (derivative (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i))).eval r /
+          (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval r =
         ∑ i, 1 / (r - t i) := by
     rw [eval_derivative_prod_div_eval_prod _ _ _ hfacr]
     exact Finset.sum_congr rfl fun i _ => by simp
   have hqderz :
-      (derivative (∏ i, X - C (t i))).eval z / (∏ i, X - C (t i)).eval z =
+      (derivative (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i))).eval z /
+          (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval z =
         ∑ i, 1 / (z - t i) := by
     rw [eval_derivative_prod_div_eval_prod _ _ _ hfacz]
     exact Finset.sum_congr rfl fun i _ => by simp
   have hgder :
-      (derivative (∏ i, g i)).eval xi / (∏ i, g i).eval xi =
+      (derivative (Finset.univ.prod g)).eval xi / (Finset.univ.prod g).eval xi =
         ∑ i, 1 / (xi + (U / t i + V / (1 - t i))) := by
     rw [eval_derivative_prod_div_eval_prod _ _ _ hfacxi]
     exact Finset.sum_congr rfl fun i _ => by simp [g, imageValue]
   rw [himageProduct]
   calc
-    xi * (r - z) * (derivative (∏ i, g i)).eval xi / (∏ i, g i).eval xi =
+    xi * (r - z) * (derivative (Finset.univ.prod g)).eval xi /
+        (Finset.univ.prod g).eval xi =
         ∑ i, xi * (r - z) / (xi + (U / t i + V / (1 - t i))) := by
           rw [mul_div_assoc, hgder, Finset.mul_sum]
           exact Finset.sum_congr rfl fun i _ => by rw [mul_one_div]
@@ -119,10 +133,14 @@ theorem imageProduct_derivative_identity
           · exact hprod
           · exact hcomp
     _ = (m : ℝ) * (r - z) +
-          r * (1 - r) * (derivative (∏ i, X - C (t i))).eval r /
-            (∏ i, X - C (t i)).eval r -
-          z * (1 - z) * (derivative (∏ i, X - C (t i))).eval z /
-            (∏ i, X - C (t i)).eval z := by
+          r * (1 - r) *
+              (derivative
+                (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i))).eval r /
+            (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval r -
+          z * (1 - z) *
+              (derivative
+                (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i))).eval z /
+            (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval z := by
           have e0 : ∑ _i : Fin m, (r - z) = (m : ℝ) * (r - z) := by
             rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
           have e1 : ∑ i : Fin m, r * (1 - r) / (r - t i) =
@@ -134,7 +152,8 @@ theorem imageProduct_derivative_identity
             rw [Finset.mul_sum]
             exact Finset.sum_congr rfl fun i _ => (mul_one_div _ _).symm
           rw [Finset.sum_sub_distrib, Finset.sum_add_distrib, e0, e1, e2,
-            mul_div_assoc, hqderr, hqderz]
+            ← hqderr, ← hqderz]
+          ring
 
 /-- At a zero of the image-product derivative, the fixed-coordinate right
 hand side of `imageProduct_derivative_identity` vanishes. -/
@@ -142,17 +161,18 @@ theorem imageProduct_derivative_identity_of_derivative_eval_zero
     {m : ℕ} (t : Fin m → ℝ) (ht : ∀ i, 0 < t i ∧ t i < 1)
     {U V xi r z : ℝ}
     (hprod : xi * r * z = -U) (hcomp : xi * (1 - r) * (1 - z) = -V)
-    (hqr : (∏ i, (X - C (t i))).eval r ≠ 0)
-    (hqz : (∏ i, (X - C (t i))).eval z ≠ 0)
+    (hqr : (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval r ≠ 0)
+    (hqz : (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval z ≠ 0)
     (himage : (imageProduct U V t).eval xi ≠ 0)
     (hderivative : (imageProduct U V t).derivative.eval xi = 0) :
     (m : ℝ) * (r - z) +
-        r * (1 - r) * (derivative (∏ i, X - C (t i))).eval r /
-          (∏ i, X - C (t i)).eval r -
-        z * (1 - z) * (derivative (∏ i, X - C (t i))).eval z /
-          (∏ i, X - C (t i)).eval z = 0 := by
+        r * (1 - r) *
+            (derivative (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i))).eval r /
+          (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval r -
+        z * (1 - z) *
+            (derivative (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i))).eval z /
+          (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval z = 0 := by
   rw [← imageProduct_derivative_identity t ht hprod hcomp hqr hqz himage,
     hderivative, mul_zero, zero_div]
-  ring
 
 end RealRooted.JacobiDeformation
