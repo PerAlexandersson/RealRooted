@@ -172,8 +172,8 @@ theorem chowS_nonnegCoeffs_and_prec_of_triple
     · exact (hS_ne hzero).elim
     · exact hpos
   have houter : StrictInterl g (fr - f) :=
-    prec_sub_of_prec_triple_of_posLeadingCoeff
-      hfg hgref hfref hf_pos hg_pos hfr_pos (by
+    hfg.sub_of_triple_of_posLeadingCoeff
+      hgref hfref hf_pos hg_pos hfr_pos (by
         have hmul := Polynomial.X_sub_one_mul_chowS n f hdegree
         have hfactor_pos : HasPosLeadingCoeff ((X - C 1) * S) :=
           hasPosLeadingCoeff_X_sub_C_mul hS_pos

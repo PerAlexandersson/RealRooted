@@ -64,7 +64,7 @@ theorem residue_nonneg_of_right_nodup
     0 ≤ g.eval s / f.derivative.eval s := by
   have hsroot : f.IsRoot s := isRoot_of_mem_roots hsf
   have hprod : 0 ≤ g.eval s * f.derivative.eval s :=
-    eval_mul_derivative_nonneg_of_prec_right_root hgf hglc hflc hsroot
+    hgf.eval_mul_derivative_nonneg_of_right_root hglc hflc hsroot
   have hmult : f.rootMultiplicity s = 1 := by
     simpa [count_roots] using Multiset.count_eq_one_of_mem hfnd hsf
   have hder_ne : f.derivative.eval s ≠ 0 :=
