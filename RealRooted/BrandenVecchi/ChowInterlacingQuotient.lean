@@ -215,8 +215,8 @@ theorem chowS_nonnegCoeffs_and_prec_of_triple
         1 hS_rr.2 hfg.2.1.2 hS_pos hg_pos hS_le_one hg_le_one hdeg).mpr
           hfactor_prec
     · have hdeg : S.natDegree = g.natDegree := by lia
-      exact prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le
-        1 hfactor_prec hdeg hS_pos hg_pos hS_le_one hg_le_one
+      exact hfactor_prec.of_mul_X_sub_C_of_sameDegree_of_roots_le
+        hdeg hS_pos hg_pos hS_le_one hg_le_one
   have hS_nonpos : ∀ r ∈ S.roots, r ≤ 0 :=
     hSg.roots_le_of_right hg_nonpos
   exact ⟨((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hS_rr.2).2

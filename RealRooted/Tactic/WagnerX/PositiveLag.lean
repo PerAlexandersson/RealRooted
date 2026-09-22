@@ -50,7 +50,7 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     · cases hap
   have hex : ∃ ap ∈ [(a, g), (c, X * f)], 0 < ap.1 := ⟨(a, g), by simp, ha⟩
   have hsum : StrictInterl g (weightedSum [(a, g), (c, X * f)]) :=
-    prec_weightedSum_left_of_common_left
+    StrictInterl.weightedSum_left_of_common_left
       [(a, g), (c, X * f)] g hnonneg hprec hg_pos hpoly_pos hex
   simpa [weightedSum, mul_assoc, add_assoc] using hsum
 
@@ -96,7 +96,7 @@ theorem prec_left_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
   have hex : ∃ ap ∈ [(a, g), (c, X * f)], 0 < ap.1 :=
     ⟨(a, g), by simp, ha⟩
   have hsum : StrictInterl f (weightedSum [(a, g), (c, X * f)]) :=
-    prec_weightedSum_left_of_common_left
+    StrictInterl.weightedSum_left_of_common_left
       [(a, g), (c, X * f)] f hnonneg hprec hf_pos hpoly_pos hex
   simpa [weightedSum, mul_assoc, add_assoc] using hsum
 

@@ -33,8 +33,8 @@ private lemma exists_common_root_upper_bound (h : ℝ[X]) (l : List (ℝ × ℝ[
       · intro ap' hap' r hr
         grind
 
-lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
-    (h : StrictInterl f g)
+lemma StrictInterl.mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]}
+    (h : StrictInterl f g) (r : ℝ)
     (hdeg : f.natDegree = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -70,7 +70,7 @@ lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
   exact
     (StrictInterl.comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).1 htranslated
 
-lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ)
+lemma StrictInterl.of_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} {r : ℝ}
     (h : StrictInterl g ((X - C r) * f))
     (hdeg : f.natDegree = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
@@ -115,7 +115,7 @@ if every polynomial in the family is interlaced on the left by the same `h`,
 all family members have positive leading coefficient, and the weights are
 nonnegative with at least one positive weight, then the weighted sum is also
 interlaced on the left by `h`. -/
-theorem prec_weightedSum_left_of_common_left
+theorem StrictInterl.weightedSum_left_of_common_left
     (l : List (ℝ × ℝ[X])) (h : ℝ[X])
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
     (hprec : ∀ ap ∈ l, StrictInterl h ap.2)
@@ -135,7 +135,8 @@ theorem prec_weightedSum_left_of_common_left
     have hp_pos := hpoly_pos ap hap
     have hp_le : ∀ s ∈ ap.2.roots, s ≤ r := hl_le ap hap
     rcases hp.natDegree_eq_or_eq_succ with hdeg | hdeg
-    · exact prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le r hp hdeg.symm hpos hp_pos hh_le hp_le
+    · exact hp.mul_X_sub_C_of_sameDegree_of_roots_le
+        r hdeg.symm hpos hp_pos hh_le hp_le
     · exact (prec_iff_prec_mul_X_sub_C_of_roots_le r
           hp.1.2 hp.2.1.2 hpos hp_pos hh_le hp_le hdeg.symm).mp hp
   have hweighted_right : StrictInterl (weightedSum l) H :=
@@ -155,12 +156,12 @@ theorem prec_weightedSum_left_of_common_left
         hpos hweighted_pos hh_le hweighted_le hdeg).mpr hweighted_right
   · have hdeg : h.natDegree = (weightedSum l).natDegree := by lia
     exact
-      prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le r hweighted_right hdeg
+      hweighted_right.of_mul_X_sub_C_of_sameDegree_of_roots_le hdeg
         hpos hweighted_pos hh_le hweighted_le
 
 /-- Sign-normalized weighted left cone: the common left polynomial need only
 be nonzero; its leading-coefficient sign is normalized internally. -/
-theorem prec_weightedSum_left_of_common_left_signed
+theorem StrictInterl.weightedSum_left_of_common_left_signed
     (l : List (ℝ × ℝ[X])) (h : ℝ[X])
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
     (hprec : ∀ ap ∈ l, StrictInterl h ap.2)
@@ -178,16 +179,16 @@ theorem prec_weightedSum_left_of_common_left_signed
       unfold h' HasPosLeadingCoeff
       simp_all
     have hsum' : StrictInterl h' (weightedSum l) :=
-      prec_weightedSum_left_of_common_left
+      StrictInterl.weightedSum_left_of_common_left
         l h' hnonneg hprec' h'_pos hpoly_pos ⟨ap0, hap0, ha0_pos⟩
     have hback : StrictInterl (C (-1 : ℝ) * h') (weightedSum l) :=
       StrictInterl.C_mul_left hsum' (by simp)
     grind
-  · exact prec_weightedSum_left_of_common_left
+  · exact StrictInterl.weightedSum_left_of_common_left
       l h hnonneg hprec hpos hpoly_pos ⟨ap0, hap0, ha0_pos⟩
 
 /-- Unweighted left-cone corollary. -/
-theorem prec_sum_left_of_common_left
+theorem StrictInterl.sum_left_of_common_left
     (l : List ℝ[X]) (h : ℝ[X])
     (hprec : ∀ p ∈ l, StrictInterl h p)
     (hpos : HasPosLeadingCoeff h)
@@ -195,7 +196,7 @@ theorem prec_sum_left_of_common_left
     (hne : l ≠ []) :
     StrictInterl h l.sum := by
   rw [← weightedSum_map_one l]
-  apply prec_weightedSum_left_of_common_left (l.map (fun p => ((1 : ℝ), p))) h
+  apply StrictInterl.weightedSum_left_of_common_left (l.map (fun p => ((1 : ℝ), p))) h
   · simp
   · simp_all
   · lia
@@ -210,14 +211,14 @@ theorem prec_sum_left_of_common_left
 left by the same nonzero real-rooted polynomial `h`, and the summands have
 positive leading coefficient, then their sum is interlaced on the left by `h`
 without needing to assume the sign of `h.leadingCoeff` in advance. -/
-theorem prec_sum_left_of_common_left_signed
+theorem StrictInterl.sum_left_of_common_left_signed
     (l : List ℝ[X]) (h : ℝ[X])
     (hprec : ∀ p ∈ l, StrictInterl h p)
     (hpoly_pos : ∀ p ∈ l, HasPosLeadingCoeff p)
     (hne : l ≠ []) :
     StrictInterl h l.sum := by
   rw [← weightedSum_map_one l]
-  apply prec_weightedSum_left_of_common_left_signed
+  apply StrictInterl.weightedSum_left_of_common_left_signed
   · simp
   · simp_all
   · simp_all
@@ -259,7 +260,7 @@ theorem Interl.sum_left_of_common_left_of_nonneg
       have hp_rr : (p ≠ 0 ∧ p.Splits) := (hprec' p hp).2.1
       exact (hnn p hp_mem).pos_leadingCoeff hp_ne
     have hstrict : StrictInterl h l'.sum :=
-      prec_sum_left_of_common_left_signed l' h hprec' hpos' hl'
+      StrictInterl.sum_left_of_common_left_signed l' h hprec' hpos' hl'
     exact Or.inr <| Or.inr <| by lia
 
 /-- Right cone for `Interl` over finite sums of nonnegative-coefficient polynomials. -/
@@ -374,9 +375,8 @@ lemma prec0_finsetSum_pairwise_of_nonneg {ι κ : Type}
 
 /-- Same-degree shift on the left: if `f ≪ g`, both have positive leading
 coefficient, and all roots lie at most `r`, then `g ≪ g + (X - C r) * f`. -/
-theorem prec_sameDegree_shift_left_of_roots_le
-    (r : ℝ) {f g : ℝ[X]}
-    (hfg : StrictInterl f g)
+theorem StrictInterl.add_of_sameDegree_shift_left_of_roots_le
+    {f g : ℝ[X]} (hfg : StrictInterl f g) (r : ℝ)
     (hdeg : f.natDegree = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -386,11 +386,11 @@ theorem prec_sameDegree_shift_left_of_roots_le
   let t : ℝ[X] := (X - C r) * f
   have hgt : StrictInterl g t := by
     simpa [t] using
-      prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le
-        (r := r) hfg hdeg hf_pos hg_pos hf_le hg_le
+      hfg.mul_X_sub_C_of_sameDegree_of_roots_le
+        r hdeg hf_pos hg_pos hf_le hg_le
   have ht_pos : HasPosLeadingCoeff t := hasPosLeadingCoeff_X_sub_C_mul hf_pos
   have hsum : StrictInterl g ([g, t].sum) := by
-    apply prec_sum_left_of_common_left_signed
+    apply StrictInterl.sum_left_of_common_left_signed
     · intro p hp
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
       rcases hp with rfl | rfl
@@ -599,7 +599,7 @@ lemma of_commonLeftInterleaver {f g h : ℝ[X]}
   have hμ_pos : HasPosLeadingCoeff (C μ * g) := hasPosLeadingCoeff_C_mul hμ hg_pos
   have hprec :
       StrictInterl h ([C lam * f, C μ * g].sum) := by
-    apply prec_sum_left_of_common_left_signed
+    apply StrictInterl.sum_left_of_common_left_signed
     · simp_all
     · simp_all
     · lia
@@ -1510,7 +1510,54 @@ theorem StrictInterl.convex_left_of_common_factor {d f g : ℝ[X]}
     hbase.mul_common_factor hd_ne hd_splits
   grind
 
-/-! ## Deprecated strict-interlacing combination names -/
+/-! ## Deprecated strict-interlacing cone and combination names -/
+
+@[deprecated StrictInterl.mul_X_sub_C_of_sameDegree_of_roots_le (since := "2026-09-18")]
+lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
+    (h : StrictInterl f g)
+    (hdeg : f.natDegree = g.natDegree)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_le : ∀ s ∈ f.roots, s ≤ r)
+    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
+    StrictInterl g ((X - C r) * f) :=
+  h.mul_X_sub_C_of_sameDegree_of_roots_le r hdeg hf_pos hg_pos hf_le hg_le
+
+@[deprecated StrictInterl.of_mul_X_sub_C_of_sameDegree_of_roots_le (since := "2026-09-18")]
+lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ)
+    (h : StrictInterl g ((X - C r) * f))
+    (hdeg : f.natDegree = g.natDegree)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_le : ∀ s ∈ f.roots, s ≤ r)
+    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
+    StrictInterl f g :=
+  h.of_mul_X_sub_C_of_sameDegree_of_roots_le hdeg hf_pos hg_pos hf_le hg_le
+
+@[deprecated StrictInterl.weightedSum_left_of_common_left (since := "2026-09-18")]
+alias prec_weightedSum_left_of_common_left := StrictInterl.weightedSum_left_of_common_left
+
+@[deprecated StrictInterl.weightedSum_left_of_common_left_signed (since := "2026-09-18")]
+alias prec_weightedSum_left_of_common_left_signed :=
+  StrictInterl.weightedSum_left_of_common_left_signed
+
+@[deprecated StrictInterl.sum_left_of_common_left (since := "2026-09-18")]
+alias prec_sum_left_of_common_left := StrictInterl.sum_left_of_common_left
+
+@[deprecated StrictInterl.sum_left_of_common_left_signed (since := "2026-09-18")]
+alias prec_sum_left_of_common_left_signed := StrictInterl.sum_left_of_common_left_signed
+
+@[deprecated StrictInterl.add_of_sameDegree_shift_left_of_roots_le (since := "2026-09-18")]
+theorem prec_sameDegree_shift_left_of_roots_le
+    (r : ℝ) {f g : ℝ[X]}
+    (hfg : StrictInterl f g)
+    (hdeg : f.natDegree = g.natDegree)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_le : ∀ s ∈ f.roots, s ≤ r)
+    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
+    StrictInterl g (g + (X - C r) * f) :=
+  hfg.add_of_sameDegree_shift_left_of_roots_le r hdeg hf_pos hg_pos hf_le hg_le
 
 @[deprecated StrictInterl.nonneg_combo_right (since := "2026-09-18")]
 alias prec_nonneg_combo_right := StrictInterl.nonneg_combo_right

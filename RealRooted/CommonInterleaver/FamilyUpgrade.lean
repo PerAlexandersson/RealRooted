@@ -289,7 +289,7 @@ theorem isRealRooted_sum_of_commonLeftInterleaver
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hne : fs ≠ []) : (fs.sum ≠ 0 ∧ fs.sum.Splits) := by
   rcases hcommon with ⟨h, hprec⟩
-  exact (prec_sum_left_of_common_left_signed fs h hprec hpos hne).2.1
+  exact (StrictInterl.sum_left_of_common_left_signed fs h hprec hpos hne).2.1
 
 end
 
