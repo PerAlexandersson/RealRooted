@@ -229,7 +229,7 @@ theorem brandenBasisImage_adjacent_prec
   have hnext_refl : StrictInterl (brandenEulerStep 0 q) (brandenEulerStep 0 q) :=
     StrictInterl.refl hqnext.2.1.1 hqnext.2.1.2
   have hsum : StrictInterl (q + brandenEulerStep 0 q) (brandenEulerStep 0 q) :=
-    prec_add_of_prec_right_of_posLeadingCoeff hqnext hnext_refl
+    StrictInterl.add_of_right_of_posLeadingCoeff hqnext hnext_refl
       (brandenBasisImage_degree_pos (n - 1) k hkq).2
       (brandenEulerStep_degree_pos (r := 0)
         (brandenBasisImage_degree_pos (n - 1) k hkq).2

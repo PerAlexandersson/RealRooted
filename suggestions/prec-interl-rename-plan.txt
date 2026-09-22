@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  741  Lean declarations requiring semantic review
-  261  tactic declarations requiring an alias-first migration
+  729  Lean declarations requiring semantic review
+  260  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    39  statement scaffolds requiring proof-status-preserving renames
-   76  deprecated compatibility identifiers with canonical targets
+   89  deprecated compatibility identifiers with canonical targets
    34  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -60,11 +60,14 @@ keeps English or unrelated lexical matches unchanged, including deprecated,
 IsPreconnected, preconnected, preceding, precise, precision, precomposition,
 and precursor families.
 
-One proposed-name collision is intentional: the deprecated wrappers
+Two proposed-name collisions are intentional.  The deprecated wrappers
 strictPrecSameDegree_toPrec and strictPrecSameDegree_toStrictInterl both
 target strictInterlSameDegree_toStrictInterl.  Both wrappers keep their old
 names and signatures; only the canonical declaration uses the new name.  The
-wrappers are removed only after the deprecation window.
+deprecated SumCompatibleLeft.prec_sum and global
+prec_sum_of_compatible_left likewise both target
+SumCompatibleLeft.toStrictInterl.  All wrappers are removed only after the
+deprecation window.
 
 Execution order
 
@@ -78,9 +81,9 @@ Execution order
 
 2. Migrate generic foundational declaration families in bounded modules:
    WagnerX affine/common-factor transports, nonnegative-root X transports,
-   Wagner left/right sums, residue count APIs, and remaining generic
-   StrictInterl/Interl receiver methods.  Keep deprecated wrappers with exact
-   old signatures.
+   and Wagner left/right sums are now canonical receiver APIs.  Continue with
+   residue count APIs and remaining generic StrictInterl/Interl receiver
+   methods.  Keep deprecated wrappers with exact old signatures.
 
 3. Migrate concentrated zero-aware domain APIs by owner:
    BrandenLeite, BrandenVecchi, PF-polynomial, matrix, and sequence families.

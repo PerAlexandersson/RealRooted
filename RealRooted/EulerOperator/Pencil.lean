@@ -39,7 +39,7 @@ theorem prec_thetac_X_mul {f : ℝ[X]} (hf : IsPFPolynomial f)
   have hCf_ne : C c * f ≠ 0 := mul_ne_zero hCc_ne hf0
   have hpos_right : HasPosLeadingCoeff (C c * f) :=
     (nonnegCoeffs_C_mul hc.le hnn).pos_leadingCoeff hCf_ne
-  exact prec_add_of_prec_right_of_posLeadingCoeff hleft hright hpos_left hpos_right
+  exact StrictInterl.add_of_right_of_posLeadingCoeff hleft hright hpos_left hpos_right
 
 /-- A polynomial-PF `f` precedes every positive Euler pencil of `f` when its
 degree is at least two. -/
@@ -74,7 +74,7 @@ theorem prec_thetaa_thetab {f : ℝ[X]} (hf : IsPFPolynomial f)
     HasNonnegCoeffs.add hnn.derivative.X_mul (nonnegCoeffs_C_mul hb.le hnn)
   have hpos_g : HasPosLeadingCoeff g := hnn_g.pos_leadingCoeff hg0
   have hsum : StrictInterl (C (a - b) * f + g) g :=
-    prec_add_of_prec_right_of_posLeadingCoeff hcf hgg hpos_cf hpos_g
+    StrictInterl.add_of_right_of_posLeadingCoeff hcf hgg hpos_cf hpos_g
   grind
 
 /-- A nonconstant polynomial PF member lies to the left of its Euler

@@ -64,7 +64,7 @@ theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
   have hrr : b + X * (a + b) ≠ 0 ∧ (b + X * (a + b)).Splits :=
     PosComboRealRooted.isRealRooted_add hcombo
   exact
-    prec_add_of_prec_left
+    StrictInterl.add_of_left
       hsum_prec hXsum_prec hb_pos hXsum_pos hrr.1 hrr.2 hcop
 
 /-- One endpoint-quotient transition with the parity reversed: first form
@@ -88,7 +88,7 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
   have hrr : b + X * a ≠ 0 ∧ (b + X * a).Splits :=
     PosComboRealRooted.isRealRooted_add hcombo
   have ha_sum_prec : StrictInterl a (b + X * a) :=
-    prec_add_of_prec_left hab hXa_prec hb_pos hXa_pos hrr.1 hrr.2 hcop
+    StrictInterl.add_of_left hab hXa_prec hb_pos hXa_pos hrr.1 hrr.2 hcop
   have hsum_nonneg : HasNonnegCoeffs (b + X * a) :=
     hb_nonneg.add (hasNonnegCoeffs_X.mul ha_nonneg)
   have hsum_pos : HasPosLeadingCoeff (b + X * a) :=
@@ -287,4 +287,3 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_swapped_sequence
 
 
 end RealRooted
-

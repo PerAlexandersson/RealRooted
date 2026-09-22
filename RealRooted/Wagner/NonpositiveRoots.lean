@@ -26,7 +26,7 @@ theorem commonRight_add {f g h : ℝ[X]}
     (hg : HasNonposRootsPosLeading g)
     (hfh : StrictInterl f h) (hgh : StrictInterl g h) :
     StrictInterl (f + g) h :=
-  RealRooted.prec_add_of_prec_right_of_posLeadingCoeff hfh hgh hf.2.2 hg.2.2
+  RealRooted.StrictInterl.add_of_right_of_posLeadingCoeff hfh hgh hf.2.2 hg.2.2
 
 /-- If `h` interlaces both `f` and `g`, then `h` interlaces `f + g`. -/
 theorem commonLeft_add {f g h : ℝ[X]}
@@ -47,7 +47,7 @@ theorem commonLeft_add_checked :
       (hfg_ne : (f + g) ≠ 0) → (hfg_splits : (f + g).Splits) →
       (hcop : IsCoprime f g) →
       StrictInterl h (f + g) :=
-  RealRooted.prec_add_of_prec_left
+  RealRooted.StrictInterl.add_of_left
 
 /-- `f` interlaces `g` if and only if `g` interlaces `X * f`, provided their
 degrees differ by one. -/

@@ -100,14 +100,14 @@ theorem isRealRooted_affine_combo_of_prec_nonneg {f g : ℝ[X]}
   have htf_pos : HasPosLeadingCoeff (C t * f) :=
     hasPosLeadingCoeff_C_mul ht (hfnn.pos_leadingCoeff hf.1)
   have hmid : StrictInterl (g + C s * (X * f)) (X * f) :=
-    prec_add_of_prec_right_of_posLeadingCoeff hg_Xf hsXf hg_pos hsXf_pos
+    StrictInterl.add_of_right_of_posLeadingCoeff hg_Xf hsXf hg_pos hsXf_pos
   have hmid_nonneg : HasNonnegCoeffs (g + C s * (X * f)) := by
     refine hgnn.add ?_
     exact (nonnegCoeffs_C_mul hs.le hfnn.X_mul)
   have hmid_pos : HasPosLeadingCoeff (g + C s * (X * f)) :=
     hmid_nonneg.pos_leadingCoeff hmid.1.1
   have hsum : StrictInterl (C t * f + (g + C s * (X * f))) (X * f) :=
-    prec_add_of_prec_right_of_posLeadingCoeff htf hmid htf_pos hmid_pos
+    StrictInterl.add_of_right_of_posLeadingCoeff htf hmid htf_pos hmid_pos
   simpa [left_distrib, right_distrib, mul_assoc, add_assoc, add_left_comm, add_comm] using hsum.1
 
 /-- The repeated-column `2 x 2` affine test follows from proper position and

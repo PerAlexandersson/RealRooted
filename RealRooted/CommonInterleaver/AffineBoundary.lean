@@ -50,7 +50,7 @@ theorem prec_boundary_right_pair_of_prec_nonneg
   have htf_pos : HasPosLeadingCoeff (C t * f) :=
     hasPosLeadingCoeff_C_mul ht (hfnn.pos_leadingCoeff hprec.1.1)
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hprec.2.1.1
-  exact prec_add_of_prec_right_of_posLeadingCoeff htfX hgfX htf_pos hg_pos
+  exact StrictInterl.add_of_right_of_posLeadingCoeff htfX hgfX htf_pos hg_pos
 
 /-- Once the fixed right-hand pair `(g, X * f)` is oriented, the polynomial
 `X * f` itself is already a common right interleaver for `f` and `g`. -/

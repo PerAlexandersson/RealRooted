@@ -53,7 +53,7 @@ theorem prec_positive_euler_lag_sequence
       have hsum : StrictInterl (P (n + 2)) (X * P (n + 1)) := by
         rw [hrec n]
         exact
-          prec_add_of_prec_right_of_posLeadingCoeff
+          StrictInterl.add_of_right_of_posLeadingCoeff
             hderivative hlag hderivative_pos hlag_pos
       exact
         prec_of_prec_mul_X_of_nonneg hsum (hnonneg (n + 1)) (hnonneg (n + 2))

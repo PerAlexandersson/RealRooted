@@ -406,7 +406,7 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
 
 /-- Wagner (1): If f and g both precede h with positive leading coefficients,
     and f + g is real-rooted, then (f + g) precedes h. -/
-theorem prec_add_of_prec_right {f g h : ℝ[X]}
+theorem StrictInterl.add_of_right {f g h : ℝ[X]}
     (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfg_rr_ne : (f + g) ≠ 0) (hfg_rr_splits : (f + g).Splits)
@@ -778,7 +778,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
     interval proof is a root of `f + g` landing exactly on a root of the common
     right-hand polynomial. If that does not happen, then common factors between
     `f` and `g` do not matter. -/
-theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
+theorem StrictInterl.add_of_right_of_no_common_right {f g h : ℝ[X]}
     (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ r : ℝ, h.IsRoot r → ¬ (f + g).IsRoot r) :
@@ -1206,7 +1206,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
     summands also satisfy it after multiplying back by `d`. This keeps the
     high-level proof closer to the human argument "factor out the shared part,
     add the quotients, then multiply back". -/
-theorem prec_add_of_prec_right_of_common_factor {d f g h : ℝ[X]}
+theorem StrictInterl.add_of_right_of_common_factor {d f g h : ℝ[X]}
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
@@ -1217,14 +1217,14 @@ theorem prec_add_of_prec_right_of_common_factor {d f g h : ℝ[X]}
     StrictInterl (f + g) h := by
   subst hf_def hg_def hh_def
   have hsum : StrictInterl (f' + g') h' :=
-    prec_add_of_prec_right hfh hgh hf'_pos hg'_pos hfg'_rr_ne hfg'_rr_splits hcop
+    StrictInterl.add_of_right hfh hgh hf'_pos hg'_pos hfg'_rr_ne hfg'_rr_splits hcop
   have hmul : StrictInterl (d * (f' + g')) (d * h') :=
     hsum.mul_common_factor hd_ne hd_splits
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 /-- A common-factor version of the no-common-right Wagner theorem. This is the
 factor-out-the-shared-part form of the boundary-collision argument. -/
-theorem prec_add_of_prec_right_of_common_factor_of_no_common_right {d f g h : ℝ[X]}
+theorem StrictInterl.add_of_right_of_common_factor_of_no_common_right {d f g h : ℝ[X]}
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
@@ -1234,7 +1234,7 @@ theorem prec_add_of_prec_right_of_common_factor_of_no_common_right {d f g h : �
     StrictInterl (f + g) h := by
   subst hf_def hg_def hh_def
   have hsum : StrictInterl (f' + g') h' :=
-    prec_add_of_prec_right_of_no_common_right hfh hgh hf'_pos hg'_pos hno
+    StrictInterl.add_of_right_of_no_common_right hfh hgh hf'_pos hg'_pos hno
   have hmul : StrictInterl (d * (f' + g')) (d * h') :=
     hsum.mul_common_factor hd_ne hd_splits
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
@@ -1243,7 +1243,7 @@ theorem prec_add_of_prec_right_of_common_factor_of_no_common_right {d f g h : �
 and a common right-hand interlacing bound already force `f + g` to precede `h`.
 The proof repeatedly cancels any shared root of `h` and `f + g`, then applies
 the sign-based no-common-right theorem to the reduced situation. -/
-theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
+theorem StrictInterl.add_of_right_of_posLeadingCoeff {f g h : ℝ[X]}
     (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     StrictInterl (f + g) h := by
@@ -1291,14 +1291,14 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
               (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
           grind
         · have hno : ∀ r : ℝ, h.IsRoot r → ¬ (f + g).IsRoot r := by grind
-          exact prec_add_of_prec_right_of_no_common_right hfh hgh hf_pos hg_pos hno)
+          exact StrictInterl.add_of_right_of_no_common_right hfh hgh hf_pos hg_pos hno)
   grind
 
 /-- A mixed-degree version of Wagner (1): if `f` precedes `h` with degree one less,
     `g` precedes `h` with the same degree, and `f` and `g` are coprime, then
     `f + g` precedes `h`. This packages the branch needed for the derangement
     recurrence, avoiding a separate `((f + g) ≠ 0 ∧ (f + g).Splits)` hypothesis. -/
-theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
+theorem StrictInterl.add_of_right_mixed_of_natDegree {f g h : ℝ[X]}
     (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfh_deg : f.natDegree + 1 = h.natDegree)
@@ -1413,7 +1413,7 @@ one less, `g` precedes `h` with the same degree, and the sum `f + g` has no
 root in common with `h`, then `f + g` also precedes `h`. This removes the
 artificial `IsCoprime f g` restriction from the mixed branch actually used in
 recurrences like the derangement-excedance sequence. -/
-theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : ℝ[X]}
+theorem StrictInterl.add_of_right_mixed_of_natDegree_of_no_common_right {f g h : ℝ[X]}
     (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfh_deg : f.natDegree + 1 = h.natDegree)
@@ -1518,7 +1518,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
     lia
 
 /-- A common-factor version of the mixed-degree Wagner addition theorem. -/
-theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor {d f g h : ℝ[X]}
+theorem StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor {d f g h : ℝ[X]}
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
@@ -1530,13 +1530,13 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor {d f g h : �
     StrictInterl (f + g) h := by
   subst hf_def hg_def hh_def
   have hsum : StrictInterl (f' + g') h' :=
-    prec_add_of_prec_right_mixed_of_natDegree hfh hgh hf'_pos hg'_pos hfh_deg hgh_deg hcop
+    StrictInterl.add_of_right_mixed_of_natDegree hfh hgh hf'_pos hg'_pos hfh_deg hgh_deg hcop
   have hmul : StrictInterl (d * (f' + g')) (d * h') :=
     hsum.mul_common_factor hd_ne hd_splits
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
 /-- A common-factor version of the mixed-degree no-common-right Wagner theorem. -/
-theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor_of_no_common_right
+theorem StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor_of_no_common_right
     {d f g h : ℝ[X]}
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' h' : ℝ[X]}
@@ -1549,11 +1549,53 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor_of_no_common_
     StrictInterl (f + g) h := by
   subst hf_def hg_def hh_def
   have hsum : StrictInterl (f' + g') h' :=
-    prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right
+    StrictInterl.add_of_right_mixed_of_natDegree_of_no_common_right
       hfh hgh hf'_pos hg'_pos hfh_deg hgh_deg hno
   have hmul : StrictInterl (d * (f' + g')) (d * h') :=
     hsum.mul_common_factor hd_ne hd_splits
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
+
+/-! ## Deprecated Wagner sum names -/
+
+@[deprecated StrictInterl.add_of_right (since := "2026-09-18")]
+alias prec_add_of_prec_right := StrictInterl.add_of_right
+
+@[deprecated StrictInterl.add_of_right_of_no_common_right (since := "2026-09-18")]
+alias prec_add_of_prec_right_of_no_common_right :=
+  StrictInterl.add_of_right_of_no_common_right
+
+@[deprecated StrictInterl.add_of_right_of_common_factor (since := "2026-09-18")]
+alias prec_add_of_prec_right_of_common_factor :=
+  StrictInterl.add_of_right_of_common_factor
+
+@[deprecated StrictInterl.add_of_right_of_common_factor_of_no_common_right
+  (since := "2026-09-18")]
+alias prec_add_of_prec_right_of_common_factor_of_no_common_right :=
+  StrictInterl.add_of_right_of_common_factor_of_no_common_right
+
+@[deprecated StrictInterl.add_of_right_of_posLeadingCoeff (since := "2026-09-18")]
+alias prec_add_of_prec_right_of_posLeadingCoeff :=
+  StrictInterl.add_of_right_of_posLeadingCoeff
+
+@[deprecated StrictInterl.add_of_right_mixed_of_natDegree (since := "2026-09-18")]
+alias prec_add_of_prec_right_mixed_of_natDegree :=
+  StrictInterl.add_of_right_mixed_of_natDegree
+
+@[deprecated StrictInterl.add_of_right_mixed_of_natDegree_of_no_common_right
+  (since := "2026-09-18")]
+alias prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right :=
+  StrictInterl.add_of_right_mixed_of_natDegree_of_no_common_right
+
+@[deprecated StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor
+  (since := "2026-09-18")]
+alias prec_add_of_prec_right_mixed_of_natDegree_of_common_factor :=
+  StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor
+
+@[deprecated
+  StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor_of_no_common_right
+  (since := "2026-09-18")]
+alias prec_add_of_prec_right_mixed_of_natDegree_of_common_factor_of_no_common_right :=
+  StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor_of_no_common_right
 
 end
 end RealRooted

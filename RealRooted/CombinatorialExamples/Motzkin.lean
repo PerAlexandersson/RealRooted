@@ -185,7 +185,7 @@ lemma prec_motzkin_shifted_succ {n : Nat}
         (C (motzkinCoeffA n) * motzkin (n + 1) +
           C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n))
         ((X - C motzkinShift) * motzkin (n + 1)) :=
-    prec_add_of_prec_right_of_posLeadingCoeff hleft hright hleft_pos hright_pos
+    StrictInterl.add_of_right_of_posLeadingCoeff hleft hright hleft_pos hright_pos
   simpa [motzkin_succ_succ, add_comm, add_left_comm, add_assoc, mul_assoc] using hsum
 
 lemma prec_motzkin_succ_of_shifted_even {n : Nat} (heven : n % 2 = 0)
