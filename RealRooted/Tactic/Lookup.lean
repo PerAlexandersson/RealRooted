@@ -113,14 +113,14 @@ private def certificateProvenanceTags (decl : Name) : TacticM (Array Name) := do
   for (attrName, attr) in rrCertificateAttributes do
     if (attr.getDecls env).contains decl then
       tags := tags.push attrName
-  return tags.qsort Name.quickLt
+  return tags.qsort Name.lt
 
 private def provenanceCandidates (found : Array (Name × Expr)) :
     TacticM (Array (Name × Array Name)) := do
   let mut candidates := #[]
   for (decl, _) in found do
     candidates := candidates.push (decl, ← certificateProvenanceTags decl)
-  return candidates.qsort fun left right => Name.quickLt left.1 right.1
+  return candidates.qsort fun left right => Name.lt left.1 right.1
 
 private def provenanceCandidatesString (candidates : Array (Name × Array Name)) : String :=
   String.intercalate ", " <| candidates.toList.map fun (decl, tags) =>
