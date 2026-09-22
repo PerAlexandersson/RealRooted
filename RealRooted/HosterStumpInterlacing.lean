@@ -16,18 +16,22 @@ def IsSourceRealRooted (f : ℝ[X]) : Prop :=
 /-- Hoster--Stump's Section 2 interlacing relation. Besides zero endpoints and
 ordinary oriented proper position, the source declares any two polynomials of
 degree at most one to interlace. -/
-def SourcePrec (f g : ℝ[X]) : Prop :=
+def SourceInterl (f g : ℝ[X]) : Prop :=
   IsSourceRealRooted f ∧ IsSourceRealRooted g ∧
     (f = 0 ∨ g = 0 ∨
       (f.natDegree ≤ 1 ∧ g.natDegree ≤ 1) ∨ StrictInterl f g)
 
-lemma SourcePrec.of_prec {f g : ℝ[X]} (h : StrictInterl f g) : SourcePrec f g :=
+/-- Deprecated compatibility name for `SourceInterl`. -/
+@[deprecated SourceInterl (since := "2026-09-18")]
+abbrev SourcePrec := SourceInterl
+
+lemma SourceInterl.of_strictInterl {f g : ℝ[X]} (h : StrictInterl f g) : SourceInterl f g :=
   ⟨Or.inr h.1, Or.inr h.2.1, Or.inr (Or.inr (Or.inr h))⟩
 
-lemma SourcePrec.of_lowDegree {f g : ℝ[X]}
+lemma SourceInterl.of_lowDegree {f g : ℝ[X]}
     (hf : IsSourceRealRooted f) (hg : IsSourceRealRooted g)
     (hfdeg : f.natDegree ≤ 1) (hgdeg : g.natDegree ≤ 1) :
-    SourcePrec f g :=
+    SourceInterl f g :=
   ⟨hf, hg, Or.inr (Or.inr (Or.inl ⟨hfdeg, hgdeg⟩))⟩
 
 /-- Source-faithful interlacing sequences from Hoster--Stump, Section 2 and
@@ -36,7 +40,7 @@ weak `IsInterlacingSeq0Nonneg`, singleton lists still record real-rootedness. -/
 structure IsInterlacingSeq (fs : List ℝ[X]) : Prop where
   nonneg : ∀ f ∈ fs, HasNonnegCoeffs f
   realRooted : ∀ f ∈ fs, IsSourceRealRooted f
-  pairwise : fs.Pairwise SourcePrec
+  pairwise : fs.Pairwise SourceInterl
 
 /-- Lower partial sums `[f_0, f_0 + f_1, ...]`, exactly as in Lemma 2.3(2). -/
 def lowerPartialSums : List ℝ[X] → List ℝ[X]
@@ -76,7 +80,7 @@ def lowDegreeCounterexampleMiddle : ℝ[X] := C 2 * (X + C 3)
 
 def lowDegreeCounterexampleRight : ℝ[X] := (X + C 1) * (X + C 3)
 
-private lemma lowDegreeCounterexample_left_prec_right :
+private lemma lowDegreeCounterexample_left_strictInterl_right :
     StrictInterl lowDegreeCounterexampleLeft lowDegreeCounterexampleRight := by
   have hbase : StrictInterl (1 : ℝ[X]) (X + C 3) :=
     (interlaces_one_linear (Polynomial.natDegree_X_add_C (3 : ℝ))).toStrictInterl
@@ -86,7 +90,7 @@ private lemma lowDegreeCounterexample_left_prec_right :
     (d := X + C 1) hlinear.1 hlinear.2
   simpa [lowDegreeCounterexampleLeft, lowDegreeCounterexampleRight] using hcommon
 
-private lemma lowDegreeCounterexample_middle_prec_right :
+private lemma lowDegreeCounterexample_middle_strictInterl_right :
     StrictInterl lowDegreeCounterexampleMiddle lowDegreeCounterexampleRight := by
   have hbase : StrictInterl (1 : ℝ[X]) (X + C 1) :=
     (interlaces_one_linear (Polynomial.natDegree_X_add_C (1 : ℝ))).toStrictInterl
@@ -110,13 +114,13 @@ theorem source_lowerPartialSums_counterexample :
         (lowerPartialSums
           [lowDegreeCounterexampleLeft, lowDegreeCounterexampleMiddle,
             lowDegreeCounterexampleRight]) := by
-  have hlr := lowDegreeCounterexample_left_prec_right
-  have hmr := lowDegreeCounterexample_middle_prec_right
+  have hlr := lowDegreeCounterexample_left_strictInterl_right
+  have hmr := lowDegreeCounterexample_middle_strictInterl_right
   have hlrr : IsSourceRealRooted lowDegreeCounterexampleLeft := Or.inr hlr.1
   have hmrr : IsSourceRealRooted lowDegreeCounterexampleMiddle := Or.inr hmr.1
   have hrrr : IsSourceRealRooted lowDegreeCounterexampleRight := Or.inr hlr.2.1
-  have hlm : SourcePrec lowDegreeCounterexampleLeft lowDegreeCounterexampleMiddle :=
-    SourcePrec.of_lowDegree hlrr hmrr
+  have hlm : SourceInterl lowDegreeCounterexampleLeft lowDegreeCounterexampleMiddle :=
+    SourceInterl.of_lowDegree hlrr hmrr
       (by simp [lowDegreeCounterexampleLeft])
       (by
         rw [lowDegreeCounterexampleMiddle,
@@ -124,10 +128,10 @@ theorem source_lowerPartialSums_counterexample :
             (isRealRooted_of_degree_one
               (Polynomial.natDegree_X_add_C (3 : ℝ))).1]
         simp)
-  have hlr' : SourcePrec lowDegreeCounterexampleLeft lowDegreeCounterexampleRight :=
-    SourcePrec.of_prec hlr
-  have hmr' : SourcePrec lowDegreeCounterexampleMiddle lowDegreeCounterexampleRight :=
-    SourcePrec.of_prec hmr
+  have hlr' : SourceInterl lowDegreeCounterexampleLeft lowDegreeCounterexampleRight :=
+    SourceInterl.of_strictInterl hlr
+  have hmr' : SourceInterl lowDegreeCounterexampleMiddle lowDegreeCounterexampleRight :=
+    SourceInterl.of_strictInterl hmr
   constructor
   · refine ⟨?_, ?_, ?_⟩
     · intro f hf
@@ -145,9 +149,9 @@ theorem source_lowerPartialSums_counterexample :
       · exact hmrr
       · exact hrrr
     · simpa using (show
-        (SourcePrec lowDegreeCounterexampleLeft lowDegreeCounterexampleMiddle ∧
-          SourcePrec lowDegreeCounterexampleLeft lowDegreeCounterexampleRight) ∧
-          SourcePrec lowDegreeCounterexampleMiddle lowDegreeCounterexampleRight from
+        (SourceInterl lowDegreeCounterexampleLeft lowDegreeCounterexampleMiddle ∧
+          SourceInterl lowDegreeCounterexampleLeft lowDegreeCounterexampleRight) ∧
+          SourceInterl lowDegreeCounterexampleMiddle lowDegreeCounterexampleRight from
         ⟨⟨hlm, hlr'⟩, hmr'⟩)
   · intro hout
     have hsum :
@@ -173,7 +177,7 @@ theorem source_lowerPartialSums_counterexample :
     have hpairs := hout.pairwise
     rw [hsum] at hpairs
     have hfirstLast :
-        SourcePrec lowDegreeCounterexampleLeft
+        SourceInterl lowDegreeCounterexampleLeft
           (lowDegreeCounterexampleLeft +
             (lowDegreeCounterexampleMiddle + lowDegreeCounterexampleRight)) :=
       (List.pairwise_cons.mp hpairs).1 _ (by simp)
@@ -228,13 +232,13 @@ lemma weakQuadratic_not_sourceRealRooted : ¬IsSourceRealRooted weakQuadratic :=
   · exact weakQuadratic_ne_zero hzero
   · exact weakQuadratic_not_splits hsplits
 
-lemma weakQuadratic_not_prec0_self : ¬Interl weakQuadratic weakQuadratic := by
+lemma weakQuadratic_not_interl_self : ¬Interl weakQuadratic weakQuadratic := by
   rintro (hzero | hzero | hprec)
   · exact weakQuadratic_ne_zero hzero
   · exact weakQuadratic_ne_zero hzero
   · exact weakQuadratic_not_splits hprec.1.2
 
-lemma weakQuadratic_not_prec0_X_mul : ¬Interl weakQuadratic (X * weakQuadratic) := by
+lemma weakQuadratic_not_interl_X_mul : ¬Interl weakQuadratic (X * weakQuadratic) := by
   rintro (hzero | hzero | hprec)
   · exact weakQuadratic_ne_zero hzero
   · exact (mul_ne_zero X_ne_zero weakQuadratic_ne_zero) hzero
@@ -265,7 +269,7 @@ theorem weak_lowerPartialSums_counterexample :
       simp [lowerPartialSums]
     rw [hout] at hp
     have hpair : Interl weakQuadratic weakQuadratic := by simpa using hp
-    exact weakQuadratic_not_prec0_self hpair
+    exact weakQuadratic_not_interl_self hpair
 
 /-- Checked counterexample for the false weak upper-partial-sum interface. -/
 theorem weak_upperPartialSums_counterexample :
@@ -282,7 +286,7 @@ theorem weak_upperPartialSums_counterexample :
       simp [upperPartialSums, lowerPartialSums]
     rw [hout] at hp
     have hpair : Interl weakQuadratic weakQuadratic := by simpa using hp
-    exact weakQuadratic_not_prec0_self hpair
+    exact weakQuadratic_not_interl_self hpair
 
 /-- Checked counterexample for the false weak moving-window interface. -/
 theorem weak_movingWindowSums_counterexample :
@@ -299,7 +303,7 @@ theorem weak_movingWindowSums_counterexample :
       norm_num [movingWindowSums, List.range_succ]
     rw [hout] at hp
     have hpair : Interl weakQuadratic weakQuadratic := by simpa using hp
-    exact weakQuadratic_not_prec0_self hpair
+    exact weakQuadratic_not_interl_self hpair
 
 /-- Checked counterexample for the false weak shifted-split-sum interface. -/
 theorem weak_xShiftedSplitSums_counterexample :
@@ -314,13 +318,27 @@ theorem weak_xShiftedSplitSums_counterexample :
       norm_num [xShiftedSplitSums, List.range_succ]
     rw [hout] at hp
     have hpair : Interl weakQuadratic (X * weakQuadratic) := by simpa using hp
-    exact weakQuadratic_not_prec0_X_mul hpair
+    exact weakQuadratic_not_interl_X_mul hpair
 
 /-- A singleton is non-vacuous for the source predicate. -/
 theorem weakQuadratic_not_sourceInterlacingSeq :
     ¬IsInterlacingSeq [weakQuadratic] := by
   intro h
   exact weakQuadratic_not_sourceRealRooted (h.realRooted weakQuadratic (by simp))
+
+/-! ## Deprecated source-interlacing names -/
+
+@[deprecated SourceInterl.of_strictInterl (since := "2026-09-18")]
+alias SourcePrec.of_prec := SourceInterl.of_strictInterl
+
+@[deprecated SourceInterl.of_lowDegree (since := "2026-09-18")]
+alias SourcePrec.of_lowDegree := SourceInterl.of_lowDegree
+
+@[deprecated weakQuadratic_not_interl_self (since := "2026-09-18")]
+alias weakQuadratic_not_prec0_self := weakQuadratic_not_interl_self
+
+@[deprecated weakQuadratic_not_interl_X_mul (since := "2026-09-18")]
+alias weakQuadratic_not_prec0_X_mul := weakQuadratic_not_interl_X_mul
 
 end HosterStump
 end RealRooted
