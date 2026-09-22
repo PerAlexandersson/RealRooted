@@ -127,6 +127,13 @@ exceed its established 200,000-heartbeat regression budget. This is a measured
 runtime boundary rather than a line-count exception by convenience. The public
 `Tactic.Product` path is a 9-line compatibility facade.
 
+Exhausting every arm of the generic lift router on an unsupported opaque factor
+also reaches that same fixed heartbeat budget. Regression coverage therefore
+pins the checked-affine rejection diagnostic and the supported generic shapes,
+but does not encode a timeout as a successful generic-refusal test. A future
+unsupported-factor regression first needs a bounded shape classifier or another
+implementation change that fails within the existing budget.
+
 Wronskian results have a focused package entry point:
 
 - `Wronskian.Algebra` owns polynomial identities, Laguerre inequalities, and

@@ -52,12 +52,12 @@ inductive RRLookupTaggedRel : Prop where
 
 @[rr_degree] theorem rr_lookup_degree_tag_smoke : RRLookupTaggedRel := .intro
 
-/-- Ambiguity lists each candidate once and reports all of its provenance tags. -/
+-- Ambiguity lists each candidate once and reports all of its provenance tags.
 /-- error: rr_lookup failed: ambiguous tagged certificates: RealRooted.Tactic.rr_lookup_degree_tag_smoke [rr_degree], RealRooted.Tactic.rr_lookup_dual_tag_smoke [rr_degree, rr_nonzero] -/
 #guard_msgs in
 example : RRLookupTaggedRel := by rr_lookup
 
-/-- A scoped ambiguity keeps the requested tag in the diagnostic. -/
+-- A scoped ambiguity keeps the requested tag in the diagnostic.
 /-- error: rr_lookup failed: ambiguous tagged certificates for [rr_degree]: RealRooted.Tactic.rr_lookup_degree_tag_smoke [rr_degree], RealRooted.Tactic.rr_lookup_dual_tag_smoke [rr_degree, rr_nonzero] -/
 #guard_msgs in
 example : RRLookupTaggedRel := by rr_lookup [rr_degree]

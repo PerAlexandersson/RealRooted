@@ -788,16 +788,12 @@ example {P Q : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
-/-- The generic router refuses an opaque factor, while supplied evidence proves it. -/
+/-- Supplied evidence proves an arbitrary-factor lift outside the generic router. -/
 example {P Q F : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hrow : ∀ n : Nat, P n = F n * Q n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  fail_if_success
-    rr_product_lift_sequence_auto using
-      quotient_realrooted := hquot,
-      factorization := hrow
   exact RealRooted.isRealRooted_of_product_lift_sequence hquot hfactor hrow
 
 /-- The checked affine router directly accepts a constant-first positive slope. -/

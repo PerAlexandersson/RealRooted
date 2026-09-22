@@ -136,15 +136,15 @@ private def closeWithTaggedMatches (found : Array (Name × Expr))
   let requestedSuffix := requestedAttributeSuffix requestedAttr?
   match found.toList with
   | [] =>
-      throwError <|
-        "rr_lookup failed: no local or tagged certificate matches the goal" ++ requestedSuffix
+      throwError
+        ("rr_lookup failed: no local or tagged certificate matches the goal" ++ requestedSuffix)
   | [(_, proof)] =>
       closeMainGoal `rr_lookup proof
   | xs =>
       let candidates ← provenanceCandidates xs.toArray
-      throwError <|
-        "rr_lookup failed: ambiguous tagged certificates" ++ requestedSuffix ++ ": " ++
-          provenanceCandidatesString candidates
+      throwError
+        ("rr_lookup failed: ambiguous tagged certificates" ++ requestedSuffix ++ ": " ++
+          provenanceCandidatesString candidates)
 
 syntax (name := rr_lookup) "rr_lookup" : tactic
 syntax (name := rr_lookup_attr) "rr_lookup" " [" ident "]" : tactic

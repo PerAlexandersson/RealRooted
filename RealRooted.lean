@@ -1082,6 +1082,9 @@ import RealRooted.Tactic.Examples.EndpointDerivative
 import RealRooted.Tactic.Examples.EulerOperator
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Finish
+import RealRooted.Tactic.Examples.Finish.Basic
+import RealRooted.Tactic.Examples.Finish.Interlacing
+import RealRooted.Tactic.Examples.Finish.Sequences
 import RealRooted.Tactic.Examples.FiniteSymbol
 import RealRooted.Tactic.Examples.FiniteSymbolPF
 import RealRooted.Tactic.Examples.GammaRealRoots

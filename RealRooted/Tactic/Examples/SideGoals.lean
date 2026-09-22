@@ -33,15 +33,21 @@ private theorem SideNeCertificate.unwrap {c : ℝ} : SideNeCertificate c → c �
   | .intro hc => hc
 
 example {c : ℝ} (hc : SideNonnegCertificate c) : 0 ≤ c := by
-  fail_if_success rr_side_nonneg
+  fail_if_success
+    solve
+    | rr_side_nonneg
   exact SideNonnegCertificate.unwrap hc
 
 example {c : ℝ} (hc : SidePosCertificate c) : 0 < c := by
-  fail_if_success rr_side_pos
+  fail_if_success
+    solve
+    | rr_side_pos
   exact SidePosCertificate.unwrap hc
 
 example {c : ℝ} (hc : SideNeCertificate c) : c ≠ 0 := by
-  fail_if_success rr_side_ne
+  fail_if_success
+    solve
+    | rr_side_ne
   exact SideNeCertificate.unwrap hc
 
 example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c := by rr_side_nonneg

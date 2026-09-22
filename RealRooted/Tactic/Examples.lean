@@ -11,6 +11,9 @@ import RealRooted.Tactic.Examples.SignAssembly
 import RealRooted.Tactic.Examples.ScalarDen
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.Finish
+import RealRooted.Tactic.Examples.Finish.Basic
+import RealRooted.Tactic.Examples.Finish.Interlacing
+import RealRooted.Tactic.Examples.Finish.Sequences
 import RealRooted.Tactic.Examples.StaircaseSum
 import RealRooted.Tactic.Examples.CommonInterleaver
 import RealRooted.Tactic.Examples.CoefficientShape
