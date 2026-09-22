@@ -45,9 +45,19 @@ a production caller.
 | Liu theorem with common roots | `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant` |
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFPrec0_of_nonnegPrec` |
 | Bounded-degree polar-theta proper-position preservation | `polarTheta_preserves_prec0` |
-| Derivative preservation statement interface | `derivativePreservesInterlStatement`, witnessed by `derivativePreservesPrec0`; deprecated compatibility abbrev `derivativePreservesPrec0Statement` |
+| Derivative preservation statement interface | `derivativePreservesInterlStatement`, witnessed by `derivativePreservesInterl`; deprecated compatibility declarations retain the legacy `Prec` / `Prec0` names |
 | Peak-value multivariate stability | `peakValuePolynomial_mvRealStable` |
 | Weighted consecutive peak-value interleaving | `peakValueWeightedDiagonal_consecutive_prec` |
+
+The deprecated derivative-statement compatibility layer consists of
+`derivativePreservesPrec0Statement`,
+`derivativePreservesPrecSameDegreeStatement`,
+`derivativePreservesPrecSameDegreeOfTwoLeNatDegreeStatement`,
+`derivativePreservesPrecSameDegreeOfTwoLeNatDegreePosLeadingStatement`,
+`derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement`, and
+`derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicPrecStatement`.  Their
+canonical `Interl` / `StrictInterl` targets above have checked witnesses; these
+abbreviations do not introduce new proof assumptions.
 
 ## Refuted interfaces retained as counterexamples
 
