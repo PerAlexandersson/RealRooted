@@ -317,6 +317,40 @@ private partial def pointwiseConclusion (e : Expr) : Expr :=
 private def sameAlignedOperand (lhs rhs : Expr) : Bool :=
   lhs.consumeMData == rhs.consumeMData
 
+private def outerLiftFactorAndOrientation? (quotient rhs : Expr) :
+    Option (Expr × ProductOrientation) :=
+  match outerMulArgs? rhs with
+  | some (lhs, rhs) =>
+      if sameAlignedOperand lhs quotient then
+        some (rhs, .factorRight)
+      else if sameAlignedOperand rhs quotient then
+        some (lhs, .factorLeft)
+      else
+        none
+  | none => none
+
+/-- Select a lift theorem variant from the exact quotient/row certificate pair.
+
+This only recognizes a candidate containing a pointwise `Polynomial.Splits`
+certificate and a row equality with that complete quotient as an outer product
+operand.  Other product families return `none` and retain their legacy
+orientation selector. -/
+private def liftProductOrientationOfCandidate? (candidate : Syntax) :
+    TacticM (Option ProductOrientation) :=
+  withMainContext do
+    let localContext ← getLCtx
+    let mut types := #[]
+    for term in identifierTerms candidate do
+      if let some declaration := localContext.findFromUserName? term.getId then
+        types := types.push (← instantiateMVars declaration.type)
+    for quotientType in types do
+      if let some quotient := findSplitsArgument? (pointwiseConclusion quotientType) then
+        for rowType in types do
+          if let some rhs := findEqualityRhs? (pointwiseConclusion rowType) then
+            if let some (_, orientation) := outerLiftFactorAndOrientation? quotient rhs then
+              return some orientation
+    pure none
+
 private def directCMulX? (e : Expr) : Bool :=
   match outerMulArgs? e with
   | some (coefficient, variable) => isPolynomialC coefficient && isPolynomialX variable
@@ -395,14 +429,12 @@ private def liftAutoShapeOfEvidence (hquot hrow : Syntax) : TacticM LiftAutoShap
           throwError "rr_product lift auto: no row equality found in factorization"
     let factor ←
       match outerMulArgs? rhs with
-      | some (lhs, rhs) =>
-          if sameAlignedOperand lhs quotient then
-            pure rhs
-          else if sameAlignedOperand rhs quotient then
-            pure lhs
-          else
-            throwError
-              "rr_product lift auto: factorization does not expose quotient as an outer factor"
+      | some _ =>
+          match outerLiftFactorAndOrientation? quotient rhs with
+          | some (factor, _) => pure factor
+          | none =>
+              throwError
+                "rr_product lift auto: factorization does not expose quotient as an outer factor"
       | none =>
           throwError "rr_product lift auto: factorization is not an outer product"
     match liftAutoShapeOfFactor? factor with
@@ -955,7 +987,11 @@ elab "rr_product_checked_affine_pow_sequence_auto" " using "
             recurrence := $hrec))
 
 elab "rr_product_two_sequence_variants" hleft:term "," hright:term : tactic => do
-  match ← productOrientationOfCandidate? hleft with
+  let orientation ←
+    match ← liftProductOrientationOfCandidate? hleft with
+    | some orientation => pure (some orientation)
+    | none => productOrientationOfCandidate? hleft
+  match orientation with
   | some .factorLeft =>
       evalTactic
         (← `(tactic| rr_first_realrooted_sequence_or_projection $hleft))

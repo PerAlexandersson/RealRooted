@@ -108,6 +108,29 @@ example {P Q0 Q1 : Nat → ℝ[X]} {t : Nat → ℝ}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- An ordinary structured quotient containing `X` leaves an affine factor right. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n + X ≠ 0 ∧ (Q n + X).Splits)
+    (hrow : ∀ n : Nat,
+      P n = (Q n + X) * (C (t n) + C ((n : ℝ) + 1) * X)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- The cutoff route preserves the same structured-quotient right-factor side. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {N : Nat}
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n + X ≠ 0 ∧ (Q n + X).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = (Q n + X) * (C (t n) + C ((n : ℝ) + 1) * X)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
 /-- Ordinary right root-zero powers retain the `X`-power route. -/
 example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
