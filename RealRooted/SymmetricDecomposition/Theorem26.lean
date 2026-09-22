@@ -867,10 +867,10 @@ lemma prec_iff_prec_mul_X_add_one_both {f g : ℝ[X]} :
   constructor
   · intro h
     have h' : StrictInterl ((X - C (-1)) * f) ((X - C (-1)) * g) := by simp_all
-    exact prec_of_prec_mul_X_sub_C_both (-1) h'
+    exact h'.of_mul_X_sub_C_both
   · intro h
     have h' : StrictInterl ((X - C (-1)) * f) ((X - C (-1)) * g) :=
-      prec_mul_X_sub_C_both (-1) h
+      h.mul_X_sub_C_both (-1)
     simp_all
 
 lemma prec_iff_prec_mul_X_add_one_pow_both {n : ℕ} {f g : ℝ[X]} :

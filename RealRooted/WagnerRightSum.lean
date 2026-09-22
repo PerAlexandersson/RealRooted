@@ -1267,10 +1267,10 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
           obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hfrg.2
           obtain ⟨qh, hqh⟩ := dvd_iff_isRoot.mpr hrh
           have hfh' : StrictInterl qf qh := by
-            apply prec_of_prec_mul_X_sub_C_both r
+            apply StrictInterl.of_mul_X_sub_C_both (r := r)
             lia
           have hgh' : StrictInterl qg qh := by
-            apply prec_of_prec_mul_X_sub_C_both r
+            apply StrictInterl.of_mul_X_sub_C_both (r := r)
             lia
           have hqf_pos : HasPosLeadingCoeff qf := by
             unfold HasPosLeadingCoeff at hf_pos ⊢
