@@ -45,6 +45,46 @@ example (_h : ∀ n : Nat, RRLookupFreshRel n) : True := by
   fail_if_success (apply rr_lookup_mvar_goal_smoke; rr_lookup)
   trivial
 
+inductive RRLookupTaggedRel : Prop where
+  | intro
+
+@[rr_degree, rr_nonzero] theorem rr_lookup_dual_tag_smoke : RRLookupTaggedRel := .intro
+
+@[rr_degree] theorem rr_lookup_degree_tag_smoke : RRLookupTaggedRel := .intro
+
+/-- Ambiguity lists each candidate once and reports all of its provenance tags. -/
+/-- error: rr_lookup failed: ambiguous tagged certificates: RealRooted.Tactic.rr_lookup_degree_tag_smoke [rr_degree], RealRooted.Tactic.rr_lookup_dual_tag_smoke [rr_degree, rr_nonzero] -/
+#guard_msgs in
+example : RRLookupTaggedRel := by rr_lookup
+
+/-- A scoped ambiguity keeps the requested tag in the diagnostic. -/
+/-- error: rr_lookup failed: ambiguous tagged certificates for [rr_degree]: RealRooted.Tactic.rr_lookup_degree_tag_smoke [rr_degree], RealRooted.Tactic.rr_lookup_dual_tag_smoke [rr_degree, rr_nonzero] -/
+#guard_msgs in
+example : RRLookupTaggedRel := by rr_lookup [rr_degree]
+
+/-- An ambiguous tagged search does not consume or corrupt the goal state. -/
+example : RRLookupTaggedRel := by
+  fail_if_success rr_lookup [rr_degree]
+  exact rr_lookup_dual_tag_smoke
+
+inductive RRLookupLocalPrecedenceRel : Prop where
+  | intro
+
+@[rr_nonneg] theorem rr_lookup_local_precedence_tag_one : RRLookupLocalPrecedenceRel := .intro
+
+@[rr_nonneg] theorem rr_lookup_local_precedence_tag_two : RRLookupLocalPrecedenceRel := .intro
+
+/-- A local exact certificate wins before the ambiguous scoped tagged search. -/
+example (h : RRLookupLocalPrecedenceRel) : RRLookupLocalPrecedenceRel := by
+  rr_lookup [rr_nonneg]
+
+inductive RRLookupNoCertificateRel : Prop where
+  | intro
+
+/-- error: rr_lookup failed: no local or tagged certificate matches the goal for [rr_root_bound] -/
+#guard_msgs in
+example : RRLookupNoCertificateRel := by rr_lookup [rr_root_bound]
+
 @[rr_matrix_rect] theorem rr_lookup_forall_smoke (m : ℕ) :
     ∀ n : ℕ, RRLookupSmokeRel (n + m) := by
   intro n
@@ -95,6 +135,11 @@ local macro_rules
 
 example : True := by rr_lookup_attr_macro_smoke
 
+/-- error: rr_lookup failed: unknown certificate attribute [rr_missing_attr] -/
+#guard_msgs in
+example : True := by rr_lookup [rr_missing_attr]
+
+/-- Failed lookup leaves the surrounding proof state usable. -/
 example (h : True) : True := by
   fail_if_success rr_lookup [rr_missing_attr]
   exact h
