@@ -778,6 +778,16 @@ example {P Q : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- error: rr_product checked affine auto: no affine factor found in factorization -/
+#guard_msgs in
+example {P Q : Nat → ℝ[X]}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = C ((n : ℝ) + 1) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_checked_affine_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- The generic router refuses an opaque factor, while supplied evidence proves it. -/
 example {P Q F : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
