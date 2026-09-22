@@ -37,7 +37,7 @@ def edgeSumMatrix [Semiring R] [Fintype V] [∀ a b : V, Fintype (a ⟶ b)]
 /-- The sum of the weights of paths of length `n` is the corresponding entry
 of the `n`th power of the weighted edge-sum matrix. -/
 theorem sum_weight_exactLength_eq_edgeSumMatrix_pow
-    [Semiring R] [Fintype V] [∀ a b : V, Fintype (a ⟶ b)]
+    [Semiring R] [Fintype V] [DecidableEq V] [∀ a b : V, Fintype (a ⟶ b)]
     (w : ∀ {a b : V}, (a ⟶ b) → R) (a b : V) (n : ℕ) :
     ∑ p : ExactLength a b n, p.1.weight w = (edgeSumMatrix w ^ n) a b := by
   classical
