@@ -1446,6 +1446,7 @@ import RealRooted.JacobiDeformation.DiagonalWeightIdentity
 import RealRooted.JacobiDeformation.JacobiFiniteExpansion
 import RealRooted.JacobiDeformation.JacobiNormalizationBridge
 import RealRooted.JacobiDeformation.BoundaryProjection
+import RealRooted.JacobiDeformation.ActualKernelExpansion
 import RealRooted.JacobiDeformation.ImageProductCoordinates
 import RealRooted.JacobiDeformation.ParitySummands
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
