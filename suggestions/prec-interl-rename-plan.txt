@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  520  Lean declarations requiring semantic review
+  504  Lean declarations requiring semantic review
   216  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
-   26  statement scaffolds requiring proof-status-preserving renames
-  331  deprecated compatibility identifiers with canonical targets
+   23  statement scaffolds requiring proof-status-preserving renames
+  350  deprecated compatibility identifiers with canonical targets
    58  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -135,6 +135,12 @@ root-multiplicity factors, `gwJL` transports, linear-factor bridge, expansion
 statement, checked witness, and Theorem 11 endpoint.  All ten public old names
 remain exact deprecated aliases or abbreviations, and the statement scaffold
 retains its existing assumption-free checked witness.
+
+The Garloff--Wagner iterative layer now uses `StrictInterl` throughout its
+derivative shift, factor transports, weighted-expansion reductions, and
+Theorem 11 interfaces.  All 19 public old names remain exact deprecated
+aliases or abbreviations.  The three renamed statement scaffolds keep their
+existing proof status, while production callers use the canonical names.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

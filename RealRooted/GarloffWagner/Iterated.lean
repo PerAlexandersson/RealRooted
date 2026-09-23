@@ -171,7 +171,7 @@ theorem gwJL_X_sub_C_mul_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
 /-- All-real derivative-shift form of Garloff--Wagner formula (3):
 if `p` is nonconstant and real-rooted, then `p'` precedes `p - ε p'` for
 every real `ε`. -/
-theorem derivative_prec_TDeriv_of_splits {eps : ℝ} {p : ℝ[X]}
+theorem derivative_strictInterl_TDeriv_of_splits {eps : ℝ} {p : ℝ[X]}
     (hp0 : p ≠ 0) (hp : p.Splits) (hdeg : 1 ≤ p.natDegree) :
     StrictInterl p.derivative (TDeriv eps p) := by
   by_cases hdeg1 : p.natDegree = 1
@@ -211,7 +211,7 @@ theorem derivative_prec_TDeriv_of_splits {eps : ℝ} {p : ℝ[X]}
 /-- Coprime/simple-root branch of Garloff--Wagner's formula (3):
 `J^k L f` precedes `J^k L ((X - u)f)` when `u ≤ 0`.  The remaining
 multiple-root case is the common-factor reduction used later in Theorem 11. -/
-theorem gwJL_factor_prec_of_nonpos_of_coprime {k : ℕ} {u : ℝ} {f : ℝ[X]}
+theorem gwJL_factor_strictInterl_of_nonpos_of_coprime {k : ℕ} {u : ℝ} {f : ℝ[X]}
     (hu : u ≤ 0) (hf0 : f ≠ 0) (hFs : (gwJL (k + 1) f).Splits)
     (hfpos : HasPosLeadingCoeff f)
     (hcop : u < 0 →
@@ -236,7 +236,8 @@ Wagner hypothesis for `q` and `-u r`.
 
 The remaining full formula (3) proof must construct this quotient data from
 the common roots of `F` and `F'`. -/
-theorem gwJL_factor_prec_of_nonpos_of_common_factor {k : ℕ} {u : ℝ} {f d q r : ℝ[X]}
+theorem gwJL_factor_strictInterl_of_nonpos_of_common_factor
+    {k : ℕ} {u : ℝ} {f d q r : ℝ[X]}
     (hu : u ≤ 0) (hf0 : f ≠ 0) (hFs : (gwJL (k + 1) f).Splits)
     (hF_def : gwJL (k + 1) f = d * q)
     (hFder_def : (gwJL (k + 1) f).derivative = d * r)
@@ -260,7 +261,7 @@ theorem gwJL_factor_prec_of_nonpos_of_common_factor {k : ℕ} {u : ℝ} {f d q r
 
 /-- Common-factor branch of formula (3), with quotient coprimality expressed
 as absence of common real roots. -/
-theorem gwJL_factor_prec_of_nonpos_of_common_factor_no_common
+theorem gwJL_factor_strictInterl_of_nonpos_of_common_factor_no_common
     {k : ℕ} {u : ℝ} {f d q r : ℝ[X]}
     (hu : u ≤ 0) (hf0 : f ≠ 0) (hFs : (gwJL (k + 1) f).Splits)
     (hF_def : gwJL (k + 1) f = d * q)
@@ -287,7 +288,7 @@ theorem gwJL_factor_prec_of_nonpos_of_common_factor_no_common
 If `F = J^(k+1)L f = (X - C a)^m q` and the remaining quotient `q` has simple
 roots with no further `X - C a` factor, then the formula (3) proper-position
 step follows. -/
-theorem gwJL_factor_prec_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
+theorem gwJL_factor_strictInterl_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
     {k : ℕ} {u a : ℝ} {m : ℕ} {f q : ℝ[X]}
     (hu : u ≤ 0) (hf0 : f ≠ 0) (hFs : (gwJL (k + 1) f).Splits)
     (hfpos : HasPosLeadingCoeff f)
@@ -307,7 +308,7 @@ theorem gwJL_factor_prec_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
 
 /-- Root-multiplicity squarefree-quotient branch of Garloff--Wagner's formula
 (3), using the canonical factorization of `F = J^(k+1)L f` at a root `a`. -/
-theorem gwJL_factor_prec_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
+theorem gwJL_factor_strictInterl_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
     {k : ℕ} {u a : ℝ} {f : ℝ[X]}
     (hu : u ≤ 0) (hf0 : f ≠ 0) (hFs : (gwJL (k + 1) f).Splits)
     (hfpos : HasPosLeadingCoeff f)
@@ -331,7 +332,7 @@ theorem gwJL_factor_prec_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
 /-- Formula (3) branch when `F = J^(k+1)L f` has simple roots away from the
 chosen exceptional root `a`.  For Garloff--Wagner Theorem 11(b), the intended
 choice is `a = 0`. -/
-theorem gwJL_factor_prec_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
+theorem gwJL_factor_strictInterl_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
     {k : ℕ} {u a : ℝ} {f : ℝ[X]}
     (hu : u ≤ 0) (hf0 : f ≠ 0) (hFs : (gwJL (k + 1) f).Splits)
     (hfpos : HasPosLeadingCoeff f)
@@ -429,7 +430,7 @@ theorem gwJL_splits_of_splits {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits) :
   exact hP f.natDegree rfl hf0 hfs
 
 /-- All-real Garloff--Wagner formula (3), in the local `J^k L` notation. -/
-theorem gwJL_factor_prec_of_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
+theorem gwJL_factor_strictInterl_of_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
     (hf0 : f ≠ 0) (hfs : f.Splits) :
     StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
@@ -439,7 +440,7 @@ theorem gwJL_factor_prec_of_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
     rw [natDegree_gwJL (k + 1) hf0]
     lia
   have hprec :=
-    derivative_prec_TDeriv_of_splits
+    derivative_strictInterl_TDeriv_of_splits
       (eps := u) (p := gwJL (k + 1) f) hF0 hFs hdeg
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
@@ -616,7 +617,7 @@ theorem gwTheorem11NonposSimpleExcept :
 
 /-- Garloff--Wagner formula (3) for a standard polynomial with nonpositive
 roots and simple roots except possibly at the origin. -/
-theorem gwJL_factor_prec_of_nonpos_of_hasSimpleRootsExcept_zero
+theorem gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
     {k : ℕ} {u : ℝ} {f : ℝ[X]}
     (hu : u ≤ 0) (hf0 : f ≠ 0) (hfs : f.Splits)
     (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
@@ -639,25 +640,25 @@ theorem gwJL_factor_prec_of_nonpos_of_hasSimpleRootsExcept_zero
 
 /-- Garloff--Wagner formula (3), packaged under the Theorem 11(b) hypotheses
 that will be available in the Theorem 11(c) induction. -/
-theorem gwJL_factor_prec_of_nonpos
+theorem gwJL_factor_strictInterl_of_nonpos
     {k : ℕ} {u : ℝ} {f : ℝ[X]}
     (hu : u ≤ 0) (hf0 : f ≠ 0) (hfs : f.Splits)
     (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
     (hfsimple : HasSimpleRootsExcept f 0) :
     StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) :=
-  gwJL_factor_prec_of_nonpos_of_hasSimpleRootsExcept_zero
+  gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
     hu hf0 hfs hfpos hfroots hfsimple
 
 /-- Theorem 11(c), in the local orientation:
 Garloff--Wagner's `g $ f` is represented by `StrictInterl f g`. -/
-def gwTheorem11PrecStatement : Prop :=
+def gwTheorem11StrictInterlStatement : Prop :=
   ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, StrictInterl (gwJL k f) (gwJL k g)
 
 /-- Reduction for the Lemma 7/Krein step in Garloff--Wagner, Theorem 11(c):
 once `g` is expressed as a weighted sum whose `J^k L` images are compatible
 with the common left bound `J^k L f`, Wagner's finite weighted-sum theorem
 gives the desired proper-position conclusion. -/
-theorem gwJL_prec_of_weightedCompatibleExpansion
+theorem gwJL_strictInterl_of_weightedCompatibleExpansion
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hg : g = weightedSum l)
     (hcomp :
@@ -669,24 +670,24 @@ theorem gwJL_prec_of_weightedCompatibleExpansion
 
 /-- Interface isolating the remaining Krein-expansion and Wagner-compatibility
 work for Garloff--Wagner, Theorem 11(c). -/
-def gwTheorem11PrecWeightedExpansionStatement : Prop :=
+def gwTheorem11StrictInterlWeightedExpansionStatement : Prop :=
   ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
     g = weightedSum l ∧
       WeightedCompatibleLeft (gwJL k f)
         (l.map fun ap => (ap.1, gwJL k ap.2))
 
-theorem gwTheorem11Prec_of_weightedCompatibleExpansion
-    (h : gwTheorem11PrecWeightedExpansionStatement) :
-    gwTheorem11PrecStatement := by
+theorem gwTheorem11StrictInterl_of_weightedCompatibleExpansion
+    (h : gwTheorem11StrictInterlWeightedExpansionStatement) :
+    gwTheorem11StrictInterlStatement := by
   intro f g hfg k
   rcases h hfg k with ⟨l, hg, hcomp⟩
-  exact gwJL_prec_of_weightedCompatibleExpansion hg hcomp
+  exact gwJL_strictInterl_of_weightedCompatibleExpansion hg hcomp
 
 /-- Variable-swapped common-right weighted reduction for the Lemma 7/Krein
 step.  If `g` is expanded in summands bounded on the right by `f`, Wagner's
 common-right finite-sum theorem gives the reverse conclusion
 `J^k L g ≪ J^k L f`. -/
-theorem gwJL_weightedExpansion_prec_right
+theorem gwJL_weightedExpansion_strictInterl_right
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hg : g = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
@@ -716,7 +717,8 @@ theorem gwJL_weightedExpansion_prec_right
 
 /-- Interface for the variable-swapped common-right Krein-expansion direction.
 This is not the final Theorem 11(c) orientation by itself; see
-`gwTheorem11PrecRightWeightedExpansionStatement` for the forward package. -/
+`gwTheorem11StrictInterlRightWeightedExpansionStatement` for the forward
+package. -/
 def gwTheorem11RightWeightedExpansionStatement : Prop :=
   ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
     g = weightedSum l ∧
@@ -725,18 +727,18 @@ def gwTheorem11RightWeightedExpansionStatement : Prop :=
       (∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2)) ∧
       ∃ ap ∈ l, 0 < ap.1
 
-theorem gwTheorem11RevPrec_of_rightWeightedExpansion
+theorem gwTheorem11ReverseStrictInterl_of_rightWeightedExpansion
     (h : gwTheorem11RightWeightedExpansionStatement) :
     ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, StrictInterl (gwJL k g) (gwJL k f) := by
   intro f g hfg k
   rcases h hfg k with ⟨l, hg, hnonneg, hprec, hpos, hex⟩
-  exact gwJL_weightedExpansion_prec_right hg hnonneg hprec hpos hex
+  exact gwJL_weightedExpansion_strictInterl_right hg hnonneg hprec hpos hex
 
 /-- Common-right weighted reduction in the forward Theorem 11(c) orientation.
 If the left input `f` is a nonnegative weighted sum whose `J^k L` images all
 precede the common right bound `J^k L g`, then the image of `f` also precedes
 the image of `g`. -/
-theorem gwJL_prec_of_rightWeightedExpansion
+theorem gwJL_strictInterl_of_rightWeightedExpansion
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
@@ -767,7 +769,7 @@ theorem gwJL_prec_of_rightWeightedExpansion
 /-- Forward Theorem 11(c) interface for the common-right Krein expansion:
 given `StrictInterl f g`, write the left input `f` as a nonnegative weighted sum of
 summands whose `J^k L` images precede `J^k L g`. -/
-def gwTheorem11PrecRightWeightedExpansionStatement : Prop :=
+def gwTheorem11StrictInterlRightWeightedExpansionStatement : Prop :=
   ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
     f = weightedSum l ∧
       (∀ ap ∈ l, 0 ≤ ap.1) ∧
@@ -775,11 +777,97 @@ def gwTheorem11PrecRightWeightedExpansionStatement : Prop :=
       (∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2)) ∧
       ∃ ap ∈ l, 0 < ap.1
 
-theorem gwTheorem11Prec_of_rightWeightedExpansion
-    (h : gwTheorem11PrecRightWeightedExpansionStatement) :
-    gwTheorem11PrecStatement := by
+theorem gwTheorem11StrictInterl_of_rightWeightedExpansion
+    (h : gwTheorem11StrictInterlRightWeightedExpansionStatement) :
+    gwTheorem11StrictInterlStatement := by
   intro f g hfg k
   rcases h hfg k with ⟨l, hf, hnonneg, hprec, hpos, hex⟩
-  exact gwJL_prec_of_rightWeightedExpansion hf hnonneg hprec hpos hex
+  exact gwJL_strictInterl_of_rightWeightedExpansion hf hnonneg hprec hpos hex
+
+@[deprecated derivative_strictInterl_TDeriv_of_splits (since := "2026-09-18")]
+alias derivative_prec_TDeriv_of_splits := derivative_strictInterl_TDeriv_of_splits
+
+@[deprecated gwJL_factor_strictInterl_of_nonpos_of_coprime
+  (since := "2026-09-18")]
+alias gwJL_factor_prec_of_nonpos_of_coprime :=
+  gwJL_factor_strictInterl_of_nonpos_of_coprime
+
+@[deprecated gwJL_factor_strictInterl_of_nonpos_of_common_factor
+  (since := "2026-09-18")]
+alias gwJL_factor_prec_of_nonpos_of_common_factor :=
+  gwJL_factor_strictInterl_of_nonpos_of_common_factor
+
+@[deprecated gwJL_factor_strictInterl_of_nonpos_of_common_factor_no_common
+  (since := "2026-09-18")]
+alias gwJL_factor_prec_of_nonpos_of_common_factor_no_common :=
+  gwJL_factor_strictInterl_of_nonpos_of_common_factor_no_common
+
+@[deprecated gwJL_factor_strictInterl_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
+  (since := "2026-09-18")]
+alias gwJL_factor_prec_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots :=
+  gwJL_factor_strictInterl_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
+
+@[deprecated gwJL_factor_strictInterl_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
+  (since := "2026-09-18")]
+alias gwJL_factor_prec_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots :=
+  gwJL_factor_strictInterl_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
+
+@[deprecated
+  gwJL_factor_strictInterl_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
+  (since := "2026-09-18")]
+alias gwJL_factor_prec_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept :=
+  gwJL_factor_strictInterl_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
+
+@[deprecated gwJL_factor_strictInterl_of_splits (since := "2026-09-18")]
+alias gwJL_factor_prec_of_splits := gwJL_factor_strictInterl_of_splits
+
+@[deprecated gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
+  (since := "2026-09-18")]
+alias gwJL_factor_prec_of_nonpos_of_hasSimpleRootsExcept_zero :=
+  gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
+
+@[deprecated gwJL_factor_strictInterl_of_nonpos (since := "2026-09-18")]
+alias gwJL_factor_prec_of_nonpos := gwJL_factor_strictInterl_of_nonpos
+
+@[deprecated gwTheorem11StrictInterlStatement (since := "2026-09-18")]
+abbrev gwTheorem11PrecStatement := gwTheorem11StrictInterlStatement
+
+@[deprecated gwJL_strictInterl_of_weightedCompatibleExpansion
+  (since := "2026-09-18")]
+alias gwJL_prec_of_weightedCompatibleExpansion :=
+  gwJL_strictInterl_of_weightedCompatibleExpansion
+
+@[deprecated gwTheorem11StrictInterlWeightedExpansionStatement
+  (since := "2026-09-18")]
+abbrev gwTheorem11PrecWeightedExpansionStatement :=
+  gwTheorem11StrictInterlWeightedExpansionStatement
+
+@[deprecated gwTheorem11StrictInterl_of_weightedCompatibleExpansion
+  (since := "2026-09-18")]
+alias gwTheorem11Prec_of_weightedCompatibleExpansion :=
+  gwTheorem11StrictInterl_of_weightedCompatibleExpansion
+
+@[deprecated gwJL_weightedExpansion_strictInterl_right (since := "2026-09-18")]
+alias gwJL_weightedExpansion_prec_right := gwJL_weightedExpansion_strictInterl_right
+
+@[deprecated gwTheorem11ReverseStrictInterl_of_rightWeightedExpansion
+  (since := "2026-09-18")]
+alias gwTheorem11RevPrec_of_rightWeightedExpansion :=
+  gwTheorem11ReverseStrictInterl_of_rightWeightedExpansion
+
+@[deprecated gwJL_strictInterl_of_rightWeightedExpansion
+  (since := "2026-09-18")]
+alias gwJL_prec_of_rightWeightedExpansion :=
+  gwJL_strictInterl_of_rightWeightedExpansion
+
+@[deprecated gwTheorem11StrictInterlRightWeightedExpansionStatement
+  (since := "2026-09-18")]
+abbrev gwTheorem11PrecRightWeightedExpansionStatement :=
+  gwTheorem11StrictInterlRightWeightedExpansionStatement
+
+@[deprecated gwTheorem11StrictInterl_of_rightWeightedExpansion
+  (since := "2026-09-18")]
+alias gwTheorem11Prec_of_rightWeightedExpansion :=
+  gwTheorem11StrictInterl_of_rightWeightedExpansion
 
 end RealRooted

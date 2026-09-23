@@ -383,7 +383,7 @@ theorem gwJL_strictInterl_of_kreinSummandExpansion
     (hsummand : ∀ ap ∈ l, IsGWKreinSummand g ap.2)
     (hex : ∃ ap ∈ l, 0 < ap.1) :
     StrictInterl (gwJL k f) (gwJL k g) :=
-  gwJL_prec_of_rightWeightedExpansion hf hnonneg
+  gwJL_strictInterl_of_rightWeightedExpansion hf hnonneg
     (fun ap hap => (hsummand ap hap).gwJL_strictInterl hg0 hgs)
     (fun ap hap => ((hsummand ap hap).hasPosLeadingCoeff hgpos).gwJL k)
     hex
@@ -451,7 +451,7 @@ def gwTheorem11StrictInterlKreinSummandExpansionStatement : Prop :=
 
 theorem gwTheorem11StrictInterl_of_kreinSummandExpansion
     (h : gwTheorem11StrictInterlKreinSummandExpansionStatement) :
-    gwTheorem11PrecStatement := by
+    gwTheorem11StrictInterlStatement := by
   intro f g hfg k
   let sf : ℝ := f.leadingCoeff⁻¹
   let sg : ℝ := g.leadingCoeff⁻¹
@@ -497,7 +497,7 @@ theorem gwTheorem11StrictInterlKreinSummandExpansion :
 
 /-- Garloff--Wagner, Theorem 11(c), in the local `StrictInterl` orientation. -/
 theorem gwTheorem11StrictInterl :
-    gwTheorem11PrecStatement :=
+    gwTheorem11StrictInterlStatement :=
   gwTheorem11StrictInterl_of_kreinSummandExpansion gwTheorem11StrictInterlKreinSummandExpansion
 
 @[deprecated strictInterl_self_X_sub_C_mul (since := "2026-09-18")]

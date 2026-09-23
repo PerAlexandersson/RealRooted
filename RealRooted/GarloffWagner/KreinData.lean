@@ -315,7 +315,7 @@ theorem gwJL_strictInterl {k : ℕ} {g q : ℝ[X]} (h : IsGWKreinSummand g q)
   · obtain ⟨hq0, hqs⟩ := ne_zero_and_splits (g := g) (q := q) (Or.inr ⟨u, hq⟩)
       hg0 hgs
     rw [hq]
-    exact gwJL_factor_prec_of_splits (k := k) (u := u) (f := q) hq0 hqs
+    exact gwJL_factor_strictInterl_of_splits (k := k) (u := u) (f := q) hq0 hqs
 
 @[deprecated IsGWKreinSummand.gwJL_strictInterl (since := "2026-09-18")]
 alias gwJL_prec := gwJL_strictInterl
