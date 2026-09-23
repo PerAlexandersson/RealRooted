@@ -63,7 +63,7 @@ private lemma rootSeqDesc_polyOfDescRoots_eq
       hroots
   simp_all
 
-private lemma prec_of_slots_polyOfDescRoots
+private lemma strictInterl_of_slots_polyOfDescRoots
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
     (hxs : xs.Pairwise (· ≥ ·))
     (hdeg_lo : f.natDegree ≤ xs.length)
@@ -268,7 +268,7 @@ private lemma prec_of_slots_polyOfDescRoots
         rw [hss_get]
         simpa only [rs, hget, hidx] using hlow
 
-private lemma prec_left_of_shifted_slots_polyOfDescRoots
+private lemma strictInterl_left_of_shifted_slots_polyOfDescRoots
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
     (hxs : xs.Pairwise (· ≥ ·))
     (hdeg_lo : xs.length ≤ f.natDegree)
@@ -632,7 +632,7 @@ protected lemma CommonInterleaver.rootSeqDesc_polyOfDescRoots_eq
   simpa [CommonInterleaver.polyOfDescRoots] using rootSeqDesc_polyOfDescRoots_eq hxs
 
 /-- Internal right-oriented slot-construction bridge. -/
-protected lemma CommonInterleaver.prec_of_slots_polyOfDescRoots
+protected lemma CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
     (hxs : xs.Pairwise (· ≥ ·))
     (hdeg_lo : f.natDegree ≤ xs.length)
@@ -644,10 +644,15 @@ protected lemma CommonInterleaver.prec_of_slots_polyOfDescRoots
           simpa [hf] using this⟩) :
     StrictInterl f (CommonInterleaver.polyOfDescRoots xs) := by
   simpa [CommonInterleaver.polyOfDescRoots] using
-    prec_of_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
+    strictInterl_of_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
+
+@[deprecated CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
+  (since := "2026-09-18")]
+protected alias CommonInterleaver.prec_of_slots_polyOfDescRoots :=
+  CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
 
 /-- Internal left-oriented shifted-slot-construction bridge. -/
-protected lemma CommonInterleaver.prec_left_of_shifted_slots_polyOfDescRoots
+protected lemma CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
     (hxs : xs.Pairwise (· ≥ ·))
     (hdeg_lo : xs.length ≤ f.natDegree)
@@ -659,6 +664,11 @@ protected lemma CommonInterleaver.prec_left_of_shifted_slots_polyOfDescRoots
           simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ this⟩) :
     StrictInterl (CommonInterleaver.polyOfDescRoots xs) f := by
   simpa [CommonInterleaver.polyOfDescRoots] using
-    prec_left_of_shifted_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
+    strictInterl_left_of_shifted_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
+
+@[deprecated CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
+  (since := "2026-09-18")]
+protected alias CommonInterleaver.prec_left_of_shifted_slots_polyOfDescRoots :=
+  CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
 
 end RealRooted

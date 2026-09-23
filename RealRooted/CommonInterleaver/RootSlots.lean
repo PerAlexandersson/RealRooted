@@ -425,7 +425,7 @@ private lemma mem_rootSlotInterval_of_prec_witness
   · simpa using mem_rootSlotInterval_reverse_of_listInterlaces hss hrs hlen hint j
   · simpa using mem_rootSlotInterval_reverse_of_listAlternates hss hrs hlen halt j
 
-protected lemma CommonInterleaver.RootSlots.mem_rootSlotInterval_of_prec
+protected lemma CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl
     {f g : ℝ[X]} (hfg : StrictInterl f g) (j : Fin g.natDegree) :
     (rootSeqDesc g).get ⟨j.1, by
       rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
@@ -453,6 +453,11 @@ protected lemma CommonInterleaver.RootSlots.mem_rootSlotInterval_of_prec
   have hmem_rev : rs.reverse.get jg_rev ∈ rootSlotInterval ss.reverse jf_rev :=
     mem_rootSlotInterval_of_prec_witness hss hrs hshape ⟨j.1, by lia⟩
   lia
+
+@[deprecated CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl
+  (since := "2026-09-18")]
+protected alias CommonInterleaver.RootSlots.mem_rootSlotInterval_of_prec :=
+  CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl
 
 private lemma mem_shifted_rootSlotInterval_reverse_of_listInterlaces
     {ss rs : List ℝ}
@@ -652,7 +657,7 @@ private lemma mem_shifted_rootSlotInterval_reverse_of_listAlternates
     rw [hslot, hss_rev, hrs_rev_lo, hrs_rev_hi]
     exact ⟨hlow', hup⟩
 
-protected lemma CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_prec
+protected lemma CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_strictInterl
     {h f : ℝ[X]} (hhf : StrictInterl h f) (j : Fin h.natDegree) :
     (rootSeqDesc h).get ⟨j.1, by
       rcases hhf with ⟨hh, _, _, _, _, _, _, _, _⟩
@@ -689,6 +694,11 @@ protected lemma CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_prec
     · exact mem_shifted_rootSlotInterval_reverse_of_listAlternates hlen halt
         ⟨j.1, by simp [hss_len, j.2]⟩
   lia
+
+@[deprecated CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_strictInterl
+  (since := "2026-09-18")]
+protected alias CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_prec :=
+  CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_strictInterl
 
 
 end

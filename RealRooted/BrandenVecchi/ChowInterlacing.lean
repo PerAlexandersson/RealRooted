@@ -68,7 +68,7 @@ private theorem isInterlacingSeqNonneg_of_getD_chain
     (hend : StrictInterl (fs.getD 0 0) (fs.getD (fs.length - 1) 0)) :
     IsInterlacingSeqNonneg fs := by
   let F : ℕ → ℝ[X] := fun k => fs.getD k 0
-  have hall := prec_chain_of_consecutive_of_endpoint F 0 (fs.length - 1)
+  have hall := strictInterl_chain_of_consecutive_of_endpoint F 0 (fs.length - 1)
     (fun k _ hk => hcons k hk) hend
   refine ⟨?_, ?_⟩
   · intro p hp

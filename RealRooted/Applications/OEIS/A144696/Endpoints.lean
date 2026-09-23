@@ -373,7 +373,7 @@ theorem a144696BernsteinImage_prec {d i j : ℕ}
       rw [ite_eq_left (Nat.pos_of_ne_zero hd0), ite_eq_right (by lia)]
       rw [show 2 * d - d = d by lia, a144696BernsteinImage_diagonal]
       exact a144696Polynomial_reciprocal_prec d
-  have hall := prec_chain_of_consecutive_of_endpoint H 0 (2 * d)
+  have hall := strictInterl_chain_of_consecutive_of_endpoint H 0 (2 * d)
     hcons hend
   have hresult := hall (d + i) (d + j) (by lia) (by lia) (by lia)
   simpa [H] using hresult

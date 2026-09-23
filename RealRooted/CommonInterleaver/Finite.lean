@@ -289,9 +289,11 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
     let x : ℝ := (rootSeqDesc h).get ⟨j, by
       simpa [hfh.2.1.2] using hjh⟩
     have hmem_f : x ∈ rootSlotInterval (rootSeqDesc f) jf := by
-      simpa [x, jf, jh] using (CommonInterleaver.RootSlots.mem_rootSlotInterval_of_prec hfh jh)
+      simpa [x, jf, jh] using
+        (CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl hfh jh)
     have hmem_g : x ∈ rootSlotInterval (rootSeqDesc g) jg := by
-      simpa [x, jg, jh] using (CommonInterleaver.RootSlots.mem_rootSlotInterval_of_prec hgh jh)
+      simpa [x, jg, jh] using
+        (CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl hgh jh)
     exact ⟨x, ⟨hmem_f, hmem_g⟩⟩
   · have hj_eq_h : j = h.natDegree := by lia
     have hf_eq_h : f.natDegree = h.natDegree := by lia

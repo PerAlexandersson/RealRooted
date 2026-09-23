@@ -17,13 +17,13 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  642  Lean declarations requiring semantic review
+  636  Lean declarations requiring semantic review
   229  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
-   30  statement scaffolds requiring proof-status-preserving renames
-  217  deprecated compatibility identifiers with canonical targets
-   33  other references or locals migrated with their owning declaration
+   29  statement scaffolds requiring proof-status-preserving renames
+  226  deprecated compatibility identifiers with canonical targets
+   31  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
 Naming rules
@@ -175,6 +175,14 @@ The #893 core-orientation batch canonicalizes `Compatible.of_strictInterl` and
 the four public PosComboRealRooted forward-or-reverse/root-asymmetry selectors.
 Exact deprecated aliases preserve every former public namespace and signature;
 all non-challenge callers use the explicit StrictInterl vocabulary.
+
+The #894 CommonInterleaver slot/root-sequence batch canonicalizes the two
+descending-root slot constructors, the two root-slot membership projections,
+the checked left shifted-slot statement and witness, the root-sequence
+characterization, and the endpoint-closed consecutive-chain theorem.  Exact
+deprecated declarations preserve all nine former public names.  The renamed
+shifted-slot proposition retains its existing checked witness and unchanged
+proof status.
 
 The #892 compatibility/right-pencil batch canonicalizes the failed succ-degree
 orientation statement interface and its seven checked conditional reductions.

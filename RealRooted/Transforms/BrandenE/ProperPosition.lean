@@ -266,7 +266,7 @@ theorem brandenBasisImage_prec
       subst i
       subst j
       exact brandenBasisImage_endpoint_prec 1 (by norm_num)
-  · exact prec_chain_of_consecutive_of_endpoint
+  · exact strictInterl_chain_of_consecutive_of_endpoint
       (fun k ↦ brandenBasisImage (R := ℝ) n k) 0 n
       (fun k _ hk ↦ brandenBasisImage_adjacent_prec n k (by lia) hk)
       (brandenBasisImage_endpoint_prec n (by lia)) i j (by lia) hij hj

@@ -143,7 +143,7 @@ theorem mem_rootSlotInterval_of_prec_desc
         have hdeg := hfg.natDegree_le_succ
         rcases hfg with ⟨hf, hg, _, _, _, _, _, _, _⟩
         simpa [hf, hg] using lt_of_lt_of_le j.2 hdeg⟩ :=
-  CommonInterleaver.RootSlots.mem_rootSlotInterval_of_prec hfg j
+  CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl hfg j
 
 /-- A common right interleaver gives matching shifted-slot intersections for a
 close-degree pair.  For all but the last shifted slot we use the corresponding
@@ -219,7 +219,8 @@ theorem prec_of_slots_polyOfDescRootsDesc
           simpa [hf] using this⟩) :
     StrictInterl f (polyOfDescRootsDesc xs) := by
   simpa [polyOfDescRootsDesc] using
-    CommonInterleaver.prec_of_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
+    CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
+      hf₀ hf hxs hdeg_lo hdeg_hi hslot
 
 /-- Shifted slot data against `rootSeqDesc f` reconstructs a left `StrictInterl` witness
 with the descending-root polynomial built from those slot choices. -/
@@ -235,7 +236,7 @@ theorem prec_left_of_shifted_slots_polyOfDescRootsDesc
           simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ this⟩) :
     StrictInterl (polyOfDescRootsDesc xs) f := by
   simpa [polyOfDescRootsDesc] using
-    CommonInterleaver.prec_left_of_shifted_slots_polyOfDescRoots
+    CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
       hf₀ hf hxs hdeg_lo hdeg_hi hslot
 
 private lemma prec_polyOfDescRootsDesc_of_ofFn_slots

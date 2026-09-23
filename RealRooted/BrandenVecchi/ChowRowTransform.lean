@@ -862,7 +862,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
       else if t = 3 then refs.get ⟨0, by simp [refs, hout_len]⟩
       else if t = 4 then refs.get j
       else refs.get ⟨refs.length - 1, by simp [refs, hout_len]⟩
-    have hchain := prec_chain_of_consecutive_of_endpoint F 0 5 (by
+    have hchain := strictInterl_chain_of_consecutive_of_endpoint F 0 5 (by
       intro t _ ht
       interval_cases t
       · simpa [F] using hdir_le ⟨0, by simp [hout_len]⟩ i

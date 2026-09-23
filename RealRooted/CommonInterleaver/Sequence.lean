@@ -140,10 +140,10 @@ theorem hasCommonLeftInterleaverSeq_of_pairwise_shiftedSlotIntersections
 /-- Atomic shifted-slot membership input for a left `StrictInterl` relation.
 
 This is the direct left-oriented analogue of
-`CommonInterleaver.RootSlots.mem_rootSlotInterval_of_prec`:
+`CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl`:
 if `StrictInterl h f`, then each descending root of the inner polynomial `h` lies in
 the shifted slot of the outer polynomial `f`. -/
-def PrecLeftShiftedSlotStatement : Prop :=
+def StrictInterlLeftShiftedSlotStatement : Prop :=
   ∀ {h f : ℝ[X]} (hhf : StrictInterl h f) (j : Fin h.natDegree),
     (rootSeqDesc h).get ⟨j.1, by
       simp [rootSeqDesc_length hhf.1.2, j.2]⟩ ∈
@@ -153,10 +153,16 @@ def PrecLeftShiftedSlotStatement : Prop :=
           have hjf : j.1 < f.natDegree := lt_of_lt_of_le j.2 hdeg
           simpa [rootSeqDesc_length hhf.2.1.2] using Nat.succ_lt_succ hjf⟩
 
+@[deprecated StrictInterlLeftShiftedSlotStatement (since := "2026-09-18")]
+abbrev PrecLeftShiftedSlotStatement := StrictInterlLeftShiftedSlotStatement
+
 /-- Atomic left `StrictInterl` shifted-slot membership. -/
-theorem precLeftShiftedSlot : PrecLeftShiftedSlotStatement := by
+theorem strictInterlLeftShiftedSlot : StrictInterlLeftShiftedSlotStatement := by
   intro h f hhf j
-  exact CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_prec hhf j
+  exact CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_strictInterl hhf j
+
+@[deprecated strictInterlLeftShiftedSlot (since := "2026-09-18")]
+alias precLeftShiftedSlot := strictInterlLeftShiftedSlot
 
 /-- Geometric shifted-slot consequence of a common left interleaver.
 
@@ -175,8 +181,8 @@ def CommonLeftInterleaverShiftedSlotStatement : Prop :=
 
 /-- The common-left-interleaver shifted-slot statement follows from the atomic
 left `StrictInterl` shifted-slot membership input. -/
-theorem commonLeftInterleaverShiftedSlot_of_precLeft
-    (hleft : PrecLeftShiftedSlotStatement) :
+theorem commonLeftInterleaverShiftedSlot_of_strictInterlLeft
+    (hleft : StrictInterlLeftShiftedSlotStatement) :
     CommonLeftInterleaverShiftedSlotStatement := by
   intro h f g hhf hhg j hjf hjg
   let jf : Fin ((rootSeqDesc f).length + 1) := ⟨j + 1, hjf⟩
@@ -223,10 +229,15 @@ theorem commonLeftInterleaverShiftedSlot_of_precLeft
           (rs := rootSeqDesc g) (List.reverse_ne_nil_iff.mp hrevg_ne)
     simp_all
 
+@[deprecated commonLeftInterleaverShiftedSlot_of_strictInterlLeft
+  (since := "2026-09-18")]
+alias commonLeftInterleaverShiftedSlot_of_precLeft :=
+  commonLeftInterleaverShiftedSlot_of_strictInterlLeft
+
 /-- Common-left-interleaver shifted-slot intersections. -/
 theorem commonLeftInterleaverShiftedSlot :
     CommonLeftInterleaverShiftedSlotStatement :=
-  commonLeftInterleaverShiftedSlot_of_precLeft precLeftShiftedSlot
+  commonLeftInterleaverShiftedSlot_of_strictInterlLeft strictInterlLeftShiftedSlot
 
 /-- A pairwise common-left-interleaver hypothesis gives the pairwise shifted
 root-slot intersections, assuming the geometric shifted-slot input. -/
