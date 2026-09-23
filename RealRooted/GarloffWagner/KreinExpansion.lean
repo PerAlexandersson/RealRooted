@@ -135,7 +135,7 @@ theorem kreinCoefficient_eval_div_nonneg
     rw [← hf_factor_m, ← hg_common]
     exact hfg
   have hsr_prec : StrictInterl s ((X - C u) * r) :=
-    prec_of_prec_mul_pow_X_sub_C_both u (m - 1) hprec_common
+    strictInterl_of_strictInterl_mul_pow_X_sub_C_both u (m - 1) hprec_common
   have hs_pos : HasPosLeadingCoeff s := by
     have hfpos' : HasPosLeadingCoeff ((X - C u) ^ (m - 1) * s) := by
       rw [← hf_factor_m]

@@ -351,7 +351,7 @@ theorem splits_tderiv_all {eps : ℝ} {p : ℝ[X]} (hp : p.Splits) :
     simpa [TDeriv] using hp
   · exact splits_tderiv heps hp
 
-theorem derivative_prec_TDeriv_of_natDegree_one {eps : ℝ} {p : ℝ[X]}
+theorem derivative_strictInterl_TDeriv_of_natDegree_one {eps : ℝ} {p : ℝ[X]}
     (hdeg : p.natDegree = 1) :
     StrictInterl p.derivative (TDeriv eps p) := by
   have hTdeg : (TDeriv eps p).natDegree = 1 := by rw [natDegree_TDeriv, hdeg]
@@ -376,13 +376,13 @@ theorem derivative_prec_TDeriv_of_natDegree_one {eps : ℝ} {p : ℝ[X]}
 no common factor with `p` in the strict case, then `p'` precedes
 `p - ε p'`.  This is the coprime/simple-root branch of the
 Garloff--Wagner Theorem 11 induction step. -/
-theorem derivative_prec_TDeriv_of_nonpos_of_coprime {eps : ℝ} {p : ℝ[X]}
+theorem derivative_strictInterl_TDeriv_of_nonpos_of_coprime {eps : ℝ} {p : ℝ[X]}
     (heps : eps ≤ 0) (hp0 : p ≠ 0) (hp : p.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hdeg : 1 ≤ p.natDegree)
     (hcop : eps < 0 → IsCoprime p (C (-eps) * p.derivative)) :
     StrictInterl p.derivative (TDeriv eps p) := by
   by_cases hdeg1 : p.natDegree = 1
-  · exact derivative_prec_TDeriv_of_natDegree_one hdeg1
+  · exact derivative_strictInterl_TDeriv_of_natDegree_one hdeg1
   have hdeg2 : 2 ≤ p.natDegree := by lia
   rcases lt_or_eq_of_le heps with heps_neg | heps_zero
   · have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
@@ -414,7 +414,7 @@ theorem derivative_prec_TDeriv_of_nonpos_of_coprime {eps : ℝ} {p : ℝ[X]}
 This is the formal multiple-root reduction needed in the
 Garloff--Wagner formula (3) proof.  A later step supplies the quotient data by
 factoring the common roots of `p` and `p'`. -/
-theorem derivative_prec_TDeriv_of_nonpos_of_common_factor {eps : ℝ} {p d q r : ℝ[X]}
+theorem derivative_strictInterl_TDeriv_of_nonpos_of_common_factor {eps : ℝ} {p d q r : ℝ[X]}
     (heps : eps ≤ 0) (hp0 : p ≠ 0) (hp : p.Splits) (hdeg : 1 ≤ p.natDegree)
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     (hp_def : p = d * q) (hder_def : p.derivative = d * r)
@@ -423,7 +423,7 @@ theorem derivative_prec_TDeriv_of_nonpos_of_common_factor {eps : ℝ} {p d q r :
     (hcop : eps < 0 → IsCoprime q (C (-eps) * r)) :
     StrictInterl p.derivative (TDeriv eps p) := by
   by_cases hdeg1 : p.natDegree = 1
-  · exact derivative_prec_TDeriv_of_natDegree_one hdeg1
+  · exact derivative_strictInterl_TDeriv_of_natDegree_one hdeg1
   have hdeg2 : 2 ≤ p.natDegree := by lia
   rcases lt_or_eq_of_le heps with heps_neg | heps_zero
   · have hcoef_pos : 0 < -eps := neg_pos.mpr heps_neg
@@ -460,7 +460,7 @@ theorem derivative_prec_TDeriv_of_nonpos_of_common_factor {eps : ℝ} {p d q r :
 
 /-- Common-factor derivative-shift step with the quotient coprimality
 hypothesis expressed as absence of common real roots. -/
-theorem derivative_prec_TDeriv_of_nonpos_of_common_factor_no_common
+theorem derivative_strictInterl_TDeriv_of_nonpos_of_common_factor_no_common
     {eps : ℝ} {p d q r : ℝ[X]}
     (heps : eps ≤ 0) (hp0 : p ≠ 0) (hp : p.Splits) (hdeg : 1 ≤ p.natDegree)
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
@@ -470,7 +470,7 @@ theorem derivative_prec_TDeriv_of_nonpos_of_common_factor_no_common
     (hno : ∀ x : ℝ, q.IsRoot x → ¬ r.IsRoot x) :
     StrictInterl p.derivative (TDeriv eps p) := by
   refine
-    derivative_prec_TDeriv_of_nonpos_of_common_factor
+    derivative_strictInterl_TDeriv_of_nonpos_of_common_factor
       heps hp0 hp hdeg hd_ne hd_splits hp_def hder_def
       hrq hq_pos hr_pos ?_
   intro heps_neg
@@ -528,7 +528,7 @@ lemma derivative_eq_common_factor_of_pow_X_sub_C_mul
   ring
 
 /-- Remove a shared power of a real linear factor from a `StrictInterl` relation. -/
-lemma prec_of_prec_mul_pow_X_sub_C_both (a : ℝ) :
+lemma strictInterl_of_strictInterl_mul_pow_X_sub_C_both (a : ℝ) :
     ∀ n : ℕ, ∀ {f g : ℝ[X]},
       StrictInterl ((X - C a) ^ n * f) ((X - C a) ^ n * g) → StrictInterl f g
   | 0, _f, _g, h => by simpa using h
@@ -537,12 +537,12 @@ lemma prec_of_prec_mul_pow_X_sub_C_both (a : ℝ) :
           ((X - C a) * ((X - C a) ^ n * g)) := by
         simpa [pow_succ, mul_assoc, mul_left_comm, mul_comm] using h
       exact
-        prec_of_prec_mul_pow_X_sub_C_both a n
+        strictInterl_of_strictInterl_mul_pow_X_sub_C_both a n
           hlin.of_mul_X_sub_C_both
 
 /-- Rolle's theorem for `p = (X - C a)^m q`, after removing the shared
 factor `(X - C a)^(m-1)` from `p' ≪ p`. -/
-lemma derivative_common_factor_quotient_prec
+lemma derivative_common_factor_quotient_strictInterl
     {a : ℝ} {m : ℕ} {q p : ℝ[X]}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
     (hm : 1 ≤ m) (hp_factor : p = (X - C a) ^ m * q) :
@@ -551,7 +551,7 @@ lemma derivative_common_factor_quotient_prec
   have hder_eq := derivative_eq_common_factor_of_pow_X_sub_C_mul hm hp_factor
   have hp_eq := eq_common_factor_of_pow_X_sub_C_mul hm hp_factor
   rw [hder_eq, hp_eq] at hder
-  exact prec_of_prec_mul_pow_X_sub_C_both a (m - 1) hder
+  exact strictInterl_of_strictInterl_mul_pow_X_sub_C_both a (m - 1) hder
 
 /-- At the peeled root `a`, the derivative quotient
 `m q + (X - a) q'` is nonzero if the remaining quotient is not divisible by
@@ -708,7 +708,7 @@ lemma hasPosLeadingCoeff_derivative_common_factor_quotient
 If `p = (X - C a)^m q`, then the common factor is
 `(X - C a)^(m-1)`, the right quotient is `(X - C a) q`, and the derivative
 quotient is `m q + (X - C a) q'`. -/
-theorem derivative_prec_TDeriv_of_nonpos_of_pow_X_sub_C_factor_no_common
+theorem derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_no_common
     {eps : ℝ} {p q : ℝ[X]} {a : ℝ} {m : ℕ}
     (heps : eps ≤ 0) (hp0 : p ≠ 0) (hp : p.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hdeg : 2 ≤ p.natDegree)
@@ -728,9 +728,9 @@ theorem derivative_prec_TDeriv_of_nonpos_of_pow_X_sub_C_factor_no_common
     hasPosLeadingCoeff_derivative_common_factor_quotient hm hq_pos
   have hprec :
       StrictInterl (C (m : ℝ) * q + (X - C a) * q.derivative) ((X - C a) * q) :=
-    derivative_common_factor_quotient_prec hp hdeg hm hp_factor
+    derivative_common_factor_quotient_strictInterl hp hdeg hm hp_factor
   exact
-    derivative_prec_TDeriv_of_nonpos_of_common_factor_no_common
+    derivative_strictInterl_TDeriv_of_nonpos_of_common_factor_no_common
       heps hp0 hp (by lia)
       (pow_ne_zero _ (X_sub_C_ne_zero a))
       ((isRealRooted_X_sub_C a).2.pow _)
@@ -740,14 +740,14 @@ theorem derivative_prec_TDeriv_of_nonpos_of_pow_X_sub_C_factor_no_common
 
 /-- Exact linear-factor derivative-shift step when the remaining quotient is
 already squarefree in the local `HasSimpleRoots` sense. -/
-theorem derivative_prec_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
+theorem derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
     {eps : ℝ} {p q : ℝ[X]} {a : ℝ} {m : ℕ}
     (heps : eps ≤ 0) (hp0 : p ≠ 0) (hp : p.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hdeg : 2 ≤ p.natDegree)
     (hm : 1 ≤ m) (hp_factor : p = (X - C a) ^ m * q)
     (hq_nodvd : ¬ (X - C a) ∣ q) (hq_simple : HasSimpleRoots q) :
     StrictInterl p.derivative (TDeriv eps p) :=
-  derivative_prec_TDeriv_of_nonpos_of_pow_X_sub_C_factor_no_common
+  derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_no_common
     heps hp0 hp hp_pos hdeg hm hp_factor
     (derivative_common_factor_quotient_no_common_of_hasSimpleRoots
       hm hq_nodvd hq_simple)
@@ -755,7 +755,7 @@ theorem derivative_prec_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
 /-- Root-multiplicity version of the exact squarefree-quotient branch.  This
 uses Mathlib's canonical factorization by `(X - C a)^(rootMultiplicity a p)`,
 so callers only need to prove that the remaining quotient has simple roots. -/
-theorem derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
+theorem derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
     {eps : ℝ} {p : ℝ[X]} {a : ℝ}
     (heps : eps ≤ 0) (hp0 : p ≠ 0) (hp : p.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hdeg : 2 ≤ p.natDegree)
@@ -767,19 +767,19 @@ theorem derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoo
   obtain ⟨q, hpq, hq_nodvd⟩ :=
     exists_eq_pow_rootMultiplicity_mul_and_not_dvd p hp0 a
   exact
-    derivative_prec_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
+    derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
       heps hp0 hp hp_pos hdeg hm hpq hq_nodvd (hsimple q hpq hq_nodvd)
 
 /-- Root-multiplicity derivative-shift branch using the literature-shaped
 "simple except at the exceptional root" hypothesis. -/
-theorem derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
+theorem derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
     {eps : ℝ} {p : ℝ[X]} {a : ℝ}
     (heps : eps ≤ 0) (hp0 : p ≠ 0) (hp : p.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hdeg : 2 ≤ p.natDegree)
     (hm : 1 ≤ p.rootMultiplicity a)
     (hsimple : HasSimpleRootsExcept p a) :
     StrictInterl p.derivative (TDeriv eps p) :=
-  derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
+  derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
     heps hp0 hp hp_pos hdeg hm fun _q hpq hq_nodvd =>
       hasSimpleRoots_of_pow_X_sub_C_factor_of_hasSimpleRootsExcept
         hpq hq_nodvd hsimple
@@ -788,18 +788,18 @@ theorem derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoo
 the origin.  This packages the two Garloff--Wagner formula (3) branches:
 if the origin is multiple, use the exact repeated-root quotient branch; if not,
 all roots are simple and the coprime branch applies. -/
-theorem derivative_prec_TDeriv_of_nonpos_of_hasSimpleRootsExcept_zero
+theorem derivative_strictInterl_TDeriv_of_nonpos_of_hasSimpleRootsExcept_zero
     {eps : ℝ} {p : ℝ[X]}
     (heps : eps ≤ 0) (hp0 : p ≠ 0) (hp : p.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hdeg : 1 ≤ p.natDegree)
     (hsimple : HasSimpleRootsExcept p 0) :
     StrictInterl p.derivative (TDeriv eps p) := by
   by_cases hdeg1 : p.natDegree = 1
-  · exact derivative_prec_TDeriv_of_natDegree_one hdeg1
+  · exact derivative_strictInterl_TDeriv_of_natDegree_one hdeg1
   have hdeg2 : 2 ≤ p.natDegree := by lia
   by_cases hmult2 : 2 ≤ p.rootMultiplicity 0
   · exact
-      derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
+      derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
         heps hp0 hp hp_pos hdeg2 (by lia) hsimple
   · have hsimple_all : HasSimpleRoots p := by
       intro x hx
@@ -813,7 +813,7 @@ theorem derivative_prec_TDeriv_of_nonpos_of_hasSimpleRootsExcept_zero
         have hge : 1 ≤ p.rootMultiplicity 0 := Nat.succ_le_of_lt hpos
         exact le_antisymm hle hge
       · exact hsimple x hx0 hx
-    refine derivative_prec_TDeriv_of_nonpos_of_coprime heps hp0 hp hp_pos hdeg ?_
+    refine derivative_strictInterl_TDeriv_of_nonpos_of_coprime heps hp0 hp hp_pos hdeg ?_
     intro heps_neg
     refine isCoprime_of_no_common_real_root_of_isRealRooted hp0 hp ?_
     intro x hx hxscaled
@@ -827,10 +827,10 @@ theorem derivative_prec_TDeriv_of_nonpos_of_hasSimpleRootsExcept_zero
     lia
 
 /-- For positive `eps`, `T_ε p` sits immediately to the right of `p` in the
-weak interlacing order. This is the interlacing content hidden inside the
+strict interlacing order. This is the interlacing content hidden inside the
 Ma--Wang proof of `isRealRooted_TDeriv`. Keeping it explicit is useful for the
 `iterateTDeriv` transport route in the Obreschkoff converse. -/
-theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
+theorem strictInterl_TDeriv {eps : ℝ} {p : ℝ[X]}
     (heps : 0 < eps) (hp₀ : p ≠ 0)
     (hp : p.Splits) :
     StrictInterl p (TDeriv eps p) := by
@@ -981,13 +981,14 @@ lemma splits_iterateTDeriv {eps : ℝ} {p : ℝ[X]} {k : ℕ} (heps : 0 < eps)
     exact splits_tderiv heps ih
 
 /-- Consecutive `iterateTDeriv` iterates form a generalized Sturm chain: every
-step weakly interlaces into the next one. This packages repeated applications
-of `prec_TDeriv` in the exact form needed for chain arguments. -/
-lemma prec_iterateTDeriv_succ {eps : ℝ} {p : ℝ[X]} {n : ℕ} (heps : 0 < eps) (hp₀ : p ≠ 0)
+step strictly interlaces into the next one. This packages repeated applications
+of `strictInterl_TDeriv` in the exact form needed for chain arguments. -/
+lemma strictInterl_iterateTDeriv_succ {eps : ℝ} {p : ℝ[X]} {n : ℕ}
+    (heps : 0 < eps) (hp₀ : p ≠ 0)
     (hp : p.Splits) :
     StrictInterl (iterateTDeriv eps n p) (iterateTDeriv eps (n + 1) p) := by
   simpa [iterateTDeriv_succ] using
-    prec_TDeriv heps (iterateTDeriv_ne_zero hp₀) (splits_iterateTDeriv heps hp)
+    strictInterl_TDeriv heps (iterateTDeriv_ne_zero hp₀) (splits_iterateTDeriv heps hp)
 
 /-! ## Main theorem -/
 
@@ -1741,5 +1742,69 @@ theorem hasSimpleRoots_iterateTDeriv_of_natDegree
       _ ≤ f.natDegree := card_roots' f
       _ = n := hdeg
   lia
+
+@[deprecated derivative_strictInterl_TDeriv_of_natDegree_one
+  (since := "2026-09-18")]
+alias derivative_prec_TDeriv_of_natDegree_one :=
+  derivative_strictInterl_TDeriv_of_natDegree_one
+
+@[deprecated derivative_strictInterl_TDeriv_of_nonpos_of_coprime
+  (since := "2026-09-18")]
+alias derivative_prec_TDeriv_of_nonpos_of_coprime :=
+  derivative_strictInterl_TDeriv_of_nonpos_of_coprime
+
+@[deprecated derivative_strictInterl_TDeriv_of_nonpos_of_common_factor
+  (since := "2026-09-18")]
+alias derivative_prec_TDeriv_of_nonpos_of_common_factor :=
+  derivative_strictInterl_TDeriv_of_nonpos_of_common_factor
+
+@[deprecated derivative_strictInterl_TDeriv_of_nonpos_of_common_factor_no_common
+  (since := "2026-09-18")]
+alias derivative_prec_TDeriv_of_nonpos_of_common_factor_no_common :=
+  derivative_strictInterl_TDeriv_of_nonpos_of_common_factor_no_common
+
+@[deprecated strictInterl_of_strictInterl_mul_pow_X_sub_C_both
+  (since := "2026-09-18")]
+alias prec_of_prec_mul_pow_X_sub_C_both :=
+  strictInterl_of_strictInterl_mul_pow_X_sub_C_both
+
+@[deprecated derivative_common_factor_quotient_strictInterl
+  (since := "2026-09-18")]
+alias derivative_common_factor_quotient_prec :=
+  derivative_common_factor_quotient_strictInterl
+
+@[deprecated derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_no_common
+  (since := "2026-09-18")]
+alias derivative_prec_TDeriv_of_nonpos_of_pow_X_sub_C_factor_no_common :=
+  derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_no_common
+
+@[deprecated
+  derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
+  (since := "2026-09-18")]
+alias derivative_prec_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots :=
+  derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
+
+@[deprecated
+  derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
+  (since := "2026-09-18")]
+alias derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots :=
+  derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
+
+@[deprecated
+  derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
+  (since := "2026-09-18")]
+alias derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept :=
+  derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
+
+@[deprecated derivative_strictInterl_TDeriv_of_nonpos_of_hasSimpleRootsExcept_zero
+  (since := "2026-09-18")]
+alias derivative_prec_TDeriv_of_nonpos_of_hasSimpleRootsExcept_zero :=
+  derivative_strictInterl_TDeriv_of_nonpos_of_hasSimpleRootsExcept_zero
+
+@[deprecated strictInterl_TDeriv (since := "2026-09-18")]
+alias prec_TDeriv := strictInterl_TDeriv
+
+@[deprecated strictInterl_iterateTDeriv_succ (since := "2026-09-18")]
+alias prec_iterateTDeriv_succ := strictInterl_iterateTDeriv_succ
 
 end RealRooted

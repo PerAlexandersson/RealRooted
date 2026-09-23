@@ -32,7 +32,7 @@ theorem TDeriv_sequence_prec {eps : Nat → ℝ} {P : Nat → ℝ[X]}
     (hP0 : ∀ i : Nat, P i ≠ 0)
     (hP : ∀ i : Nat, (P i).Splits) :
     ∀ i : Nat, StrictInterl (P i) (TDeriv (eps i) (P i)) := fun i =>
-  RealRooted.prec_TDeriv (heps i) (hP0 i) (hP i)
+  RealRooted.strictInterl_TDeriv (heps i) (hP0 i) (hP i)
 
 theorem iterateTDeriv_sequence_ne_zero
     {eps : Nat → ℝ} {P : Nat → ℝ[X]} (K : Nat → ℕ)
@@ -55,7 +55,7 @@ theorem iterateTDeriv_sequence_prec_succ
     ∀ i : Nat,
       StrictInterl (iterateTDeriv (eps i) (K i) (P i))
         (iterateTDeriv (eps i) (K i + 1) (P i)) := fun i =>
-  RealRooted.prec_iterateTDeriv_succ (heps i) (hP0 i) (hP i)
+  RealRooted.strictInterl_iterateTDeriv_succ (heps i) (hP0 i) (hP i)
 
 theorem iterateTDeriv_sequence_natDegree
     {eps : Nat → ℝ} {P : Nat → ℝ[X]} {K : Nat → ℕ} :
@@ -321,7 +321,7 @@ macro_rules
         eps_pos := $heps:term,
         nonzero := $hp0:term,
         splits := $hp:term) =>
-      `(tactic| exact RealRooted.prec_TDeriv $heps $hp0 $hp)
+      `(tactic| exact RealRooted.strictInterl_TDeriv $heps $hp0 $hp)
   | `(tactic|
       rr_TDeriv_sequence_prec using
         eps_pos := $heps:term,
@@ -352,7 +352,7 @@ macro_rules
         eps_pos := $heps:term,
         nonzero := $hp0:term,
         splits := $hp:term) =>
-      `(tactic| exact RealRooted.prec_iterateTDeriv_succ $heps $hp0 $hp)
+      `(tactic| exact RealRooted.strictInterl_iterateTDeriv_succ $heps $hp0 $hp)
   | `(tactic|
       rr_iterateTDeriv_sequence_prec_succ using
         eps_pos := $heps:term,

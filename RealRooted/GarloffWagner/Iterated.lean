@@ -175,7 +175,7 @@ theorem derivative_strictInterl_TDeriv_of_splits {eps : ℝ} {p : ℝ[X]}
     (hp0 : p ≠ 0) (hp : p.Splits) (hdeg : 1 ≤ p.natDegree) :
     StrictInterl p.derivative (TDeriv eps p) := by
   by_cases hdeg1 : p.natDegree = 1
-  · exact derivative_prec_TDeriv_of_natDegree_one hdeg1
+  · exact derivative_strictInterl_TDeriv_of_natDegree_one hdeg1
   have hdeg2 : 2 ≤ p.natDegree := by lia
   have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
   have hder_rr : p.derivative ≠ 0 ∧ p.derivative.Splits := hder.2.1
@@ -223,7 +223,7 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_coprime {k : ℕ} {u : ℝ} {f : �
     rw [natDegree_gwJL (k + 1) hf0]
     lia
   have hprec :=
-    derivative_prec_TDeriv_of_nonpos_of_coprime
+    derivative_strictInterl_TDeriv_of_nonpos_of_coprime
       (eps := u) (p := gwJL (k + 1) f) hu hF0 hFs hFpos hdeg hcop
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
@@ -251,7 +251,7 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_common_factor
     rw [natDegree_gwJL (k + 1) hf0]
     lia
   have hprec :=
-    derivative_prec_TDeriv_of_nonpos_of_common_factor
+    derivative_strictInterl_TDeriv_of_nonpos_of_common_factor
       (eps := u) (p := gwJL (k + 1) f) (d := d) (q := q) (r := r)
       hu hF0 hFs hdeg hd_ne hd_splits hF_def hFder_def
       hrq hq_pos hr_pos hcop
@@ -276,7 +276,7 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_common_factor_no_common
     rw [natDegree_gwJL (k + 1) hf0]
     lia
   have hprec :=
-    derivative_prec_TDeriv_of_nonpos_of_common_factor_no_common
+    derivative_strictInterl_TDeriv_of_nonpos_of_common_factor_no_common
       (eps := u) (p := gwJL (k + 1) f) (d := d) (q := q) (r := r)
       hu hF0 hFs hdeg hd_ne hd_splits hF_def hFder_def
       hrq hq_pos hr_pos hno
@@ -299,7 +299,7 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hFpos : HasPosLeadingCoeff (gwJL (k + 1) f) := hfpos.gwJL (k + 1)
   have hprec :=
-    derivative_prec_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
+    derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
       (eps := u) (p := gwJL (k + 1) f) (q := q) (a := a) (m := m)
       hu hF0 hFs hFpos hdeg hm hF_factor hq_nodvd hq_simple
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
@@ -322,7 +322,7 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_rootMultiplicity_factor_hasSimpleR
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hFpos : HasPosLeadingCoeff (gwJL (k + 1) f) := hfpos.gwJL (k + 1)
   have hprec :=
-    derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
+    derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
       (eps := u) (p := gwJL (k + 1) f) (a := a)
       hu hF0 hFs hFpos hdeg hm hsimple
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
@@ -343,7 +343,7 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_rootMultiplicity_factor_hasSimpleR
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hFpos : HasPosLeadingCoeff (gwJL (k + 1) f) := hfpos.gwJL (k + 1)
   have hprec :=
-    derivative_prec_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
+    derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
       (eps := u) (p := gwJL (k + 1) f) (a := a)
       hu hF0 hFs hFpos hdeg hm hsimple
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
@@ -631,7 +631,7 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
     rw [natDegree_gwJL (k + 1) hf0]
     lia
   have hprec :=
-    derivative_prec_TDeriv_of_nonpos_of_hasSimpleRootsExcept_zero
+    derivative_strictInterl_TDeriv_of_nonpos_of_hasSimpleRootsExcept_zero
       (eps := u) (p := gwJL (k + 1) f)
       hu hF0 hFs hFpos hdeg hFsimple
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
