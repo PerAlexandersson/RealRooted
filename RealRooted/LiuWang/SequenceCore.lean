@@ -34,7 +34,7 @@ theorem prec_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
 
 /-- Sequence-level Liu--Wang induction where lag nonpositivity may use the
 current row's real-rootedness certificate from the induction state. -/
-theorem prec_lw_nonpos_lag_sequence_of_inductive_nonpos {P : Nat → ℝ[X]}
+theorem strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos {P : Nat → ℝ[X]}
     {A B : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -81,7 +81,7 @@ theorem isRealRooted_of_lw_nonpos_lag_sequence_of_inductive_nonpos
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_nonpos_lag_sequence_of_inductive_nonpos
+    strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
       hbase hpos hB_nonpos hrec hdeg_succ hno
 
 /-- Denominator-fused Liu--Wang induction for a scalar left factor.
@@ -439,5 +439,10 @@ theorem isRealRooted_of_lw_negative_quadratic_lag_sequence_den_coeff
   isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_negative_quadratic_lag_sequence_den_coeff
       hbase hpos ha hc hdisc hden ha_coeff hb_coeff hc_coeff hraw hdeg_succ hno
+
+@[deprecated strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
+  (since := "2026-09-18")]
+alias prec_lw_nonpos_lag_sequence_of_inductive_nonpos :=
+  strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
 
 end RealRooted

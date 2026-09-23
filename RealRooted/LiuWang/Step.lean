@@ -159,7 +159,7 @@ theorem prec_lw_positive_X_lag_of_roots_nonpos {f g a : ℝ[X]}
 
 /-- Affine half-line lag `c t - a`, using an explicit nonpositive-root
 certificate for the current polynomial. -/
-theorem prec_lw_C_mul_X_sub_C_lag_of_roots_nonpos
+theorem strictInterl_lw_C_mul_X_sub_C_lag_of_roots_nonpos
     {f g A : ℝ[X]} {c a : ℝ}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -213,7 +213,7 @@ theorem prec_lw_positive_t_lag_of_nonneg_coeffs_of_recurrence
 
 /-- Affine half-line lag `c t - a`, deriving the root half-line certificate
 from nonnegative coefficients of the current row. -/
-theorem prec_lw_C_mul_X_sub_C_lag_of_nonneg_coeffs
+theorem strictInterl_lw_C_mul_X_sub_C_lag_of_nonneg_coeffs
     {f g A : ℝ[X]} {c a : ℝ}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -225,14 +225,14 @@ theorem prec_lw_C_mul_X_sub_C_lag_of_nonneg_coeffs
     (hdeg_hi : (A * f + (C c * X - C a) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     StrictInterl f (A * f + (C c * X - C a) * g) :=
-  prec_lw_C_mul_X_sub_C_lag_of_roots_nonpos hgf hg_pos
+  strictInterl_lw_C_mul_X_sub_C_lag_of_roots_nonpos hgf hg_pos
     (roots_nonpos_of_interlaces_of_nonneg_coeffs hgf hf_nonneg)
     hc ha hF_pos hdeg_lo hdeg_hi hno
 
 /-- Positive affine lag `c(a+t)`, using an explicit upper root bound
 `r <= -a` for the current polynomial.  This is the shifted-root-location
 version of the positive `t` lag. -/
-theorem prec_lw_positive_affine_lag_of_roots_upper
+theorem strictInterl_lw_positive_affine_lag_of_roots_upper
     {f g A : ℝ[X]} {c a : ℝ}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -250,7 +250,7 @@ theorem prec_lw_positive_affine_lag_of_roots_upper
 
 /-- Unit positive affine lag `a+t`, using an explicit upper root bound
 `r <= -a` for the current polynomial. -/
-theorem prec_lw_C_add_X_lag_of_roots_upper
+theorem strictInterl_lw_C_add_X_lag_of_roots_upper
     {f g A : ℝ[X]} {a : ℝ}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -261,7 +261,7 @@ theorem prec_lw_C_add_X_lag_of_roots_upper
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     StrictInterl f (A * f + (C a + X) * g) := by
   simpa using
-    (prec_lw_positive_affine_lag_of_roots_upper
+    (strictInterl_lw_positive_affine_lag_of_roots_upper
       (c := 1) hgf hg_pos hf_roots oneNonneg
       (by simpa using hF_pos)
       (by simpa using hdeg_lo)
@@ -339,7 +339,7 @@ theorem prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
 /-- Family E `t R(t)` Liu--Wang step with an explicit half-line root
 certificate.  This is a named alias for the existing `X * q` product-lag
 wrapper, using `q` as the factor `R`. -/
-theorem prec_lw_tR_lag_of_roots_nonpos {f g a R : ℝ[X]}
+theorem strictInterl_lw_tR_lag_of_roots_nonpos {f g a R : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
     (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
@@ -354,7 +354,7 @@ theorem prec_lw_tR_lag_of_roots_nonpos {f g a R : ℝ[X]}
 
 /-- Family E `t R(t)` Liu--Wang step, deriving the half-line root bound from
 nonnegative coefficients of the current row. -/
-theorem prec_lw_tR_lag_of_nonneg_coeffs {f g a R : ℝ[X]}
+theorem strictInterl_lw_tR_lag_of_nonneg_coeffs {f g a R : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
     (hf_nonneg : HasNonnegCoeffs f)
@@ -369,7 +369,7 @@ theorem prec_lw_tR_lag_of_nonneg_coeffs {f g a R : ℝ[X]}
 
 /-- Family E `t(1-t)` Liu--Wang step with an explicit half-line root
 certificate. -/
-theorem prec_lw_X_mul_one_sub_X_lag_of_roots_nonpos {f g a : ℝ[X]}
+theorem strictInterl_lw_X_mul_one_sub_X_lag_of_roots_nonpos {f g a : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
     (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
@@ -383,7 +383,7 @@ theorem prec_lw_X_mul_one_sub_X_lag_of_roots_nonpos {f g a : ℝ[X]}
 
 /-- Family E `t(1-t)` Liu--Wang step, deriving the half-line root bound from
 nonnegative coefficients of the current row. -/
-theorem prec_lw_X_mul_one_sub_X_lag_of_nonneg_coeffs {f g a : ℝ[X]}
+theorem strictInterl_lw_X_mul_one_sub_X_lag_of_nonneg_coeffs {f g a : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
     (hf_nonneg : HasNonnegCoeffs f)
@@ -392,13 +392,13 @@ theorem prec_lw_X_mul_one_sub_X_lag_of_nonneg_coeffs {f g a : ℝ[X]}
     (hdeg_hi : (a * f + (X * (1 - X)) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     StrictInterl f (a * f + (X * (1 - X)) * g) :=
-  prec_lw_X_mul_one_sub_X_lag_of_roots_nonpos hgf hg_pos
+  strictInterl_lw_X_mul_one_sub_X_lag_of_roots_nonpos hgf hg_pos
     (roots_nonpos_of_interlaces_of_nonneg_coeffs hgf hf_nonneg)
     hF_pos hdeg_lo hdeg_hi hno
 
 /-- Family E `t(a-bt)` Liu--Wang step with an explicit half-line root
 certificate. -/
-theorem prec_lw_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
+theorem strictInterl_lw_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
     {f g A : ℝ[X]} {a b : ℝ}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -418,7 +418,7 @@ theorem prec_lw_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
 
 /-- Family E `t(a-bt)` Liu--Wang step, deriving the half-line root bound from
 nonnegative coefficients of the current row. -/
-theorem prec_lw_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
+theorem strictInterl_lw_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
     {f g A : ℝ[X]} {a b : ℝ}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -431,13 +431,13 @@ theorem prec_lw_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
       (A * f + (X * (C a - C b * X)) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     StrictInterl f (A * f + (X * (C a - C b * X)) * g) :=
-  prec_lw_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hgf hg_pos ha hb
+  strictInterl_lw_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hgf hg_pos ha hb
     (roots_nonpos_of_interlaces_of_nonneg_coeffs hgf hf_nonneg)
     hF_pos hdeg_lo hdeg_hi hno
 
 /-- Family E `c t(a-bt)` Liu--Wang step with an explicit half-line root
 certificate. -/
-theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
+theorem strictInterl_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
     {f g A : ℝ[X]} {c a b : ℝ}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -458,7 +458,7 @@ theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
 
 /-- Family E `c t(a-bt)` Liu--Wang step, deriving the half-line root bound
 from nonnegative coefficients of the current row. -/
-theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
+theorem strictInterl_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
     {f g A : ℝ[X]} {c a b : ℝ}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -473,7 +473,7 @@ theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
       (A * f + (C c * X * (C a - C b * X)) * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     StrictInterl f (A * f + (C c * X * (C a - C b * X)) * g) :=
-  prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hgf hg_pos hc ha hb
+  strictInterl_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hgf hg_pos hc ha hb
     (roots_nonpos_of_interlaces_of_nonneg_coeffs hgf hf_nonneg)
     hF_pos hdeg_lo hdeg_hi hno
 
@@ -559,5 +559,61 @@ theorem prec_lw_negative_const_lag_C_neg {f g a : ℝ[X]} {c : ℝ}
       (by simpa using hdeg_lo)
       (by simpa using hdeg_hi)
       hno)
+
+@[deprecated strictInterl_lw_C_mul_X_sub_C_lag_of_roots_nonpos
+  (since := "2026-09-18")]
+alias prec_lw_C_mul_X_sub_C_lag_of_roots_nonpos :=
+  strictInterl_lw_C_mul_X_sub_C_lag_of_roots_nonpos
+
+@[deprecated strictInterl_lw_C_mul_X_sub_C_lag_of_nonneg_coeffs
+  (since := "2026-09-18")]
+alias prec_lw_C_mul_X_sub_C_lag_of_nonneg_coeffs :=
+  strictInterl_lw_C_mul_X_sub_C_lag_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_positive_affine_lag_of_roots_upper
+  (since := "2026-09-18")]
+alias prec_lw_positive_affine_lag_of_roots_upper :=
+  strictInterl_lw_positive_affine_lag_of_roots_upper
+
+@[deprecated strictInterl_lw_C_add_X_lag_of_roots_upper
+  (since := "2026-09-18")]
+alias prec_lw_C_add_X_lag_of_roots_upper :=
+  strictInterl_lw_C_add_X_lag_of_roots_upper
+
+@[deprecated strictInterl_lw_tR_lag_of_roots_nonpos (since := "2026-09-18")]
+alias prec_lw_tR_lag_of_roots_nonpos := strictInterl_lw_tR_lag_of_roots_nonpos
+
+@[deprecated strictInterl_lw_tR_lag_of_nonneg_coeffs (since := "2026-09-18")]
+alias prec_lw_tR_lag_of_nonneg_coeffs := strictInterl_lw_tR_lag_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_X_mul_one_sub_X_lag_of_roots_nonpos
+  (since := "2026-09-18")]
+alias prec_lw_X_mul_one_sub_X_lag_of_roots_nonpos :=
+  strictInterl_lw_X_mul_one_sub_X_lag_of_roots_nonpos
+
+@[deprecated strictInterl_lw_X_mul_one_sub_X_lag_of_nonneg_coeffs
+  (since := "2026-09-18")]
+alias prec_lw_X_mul_one_sub_X_lag_of_nonneg_coeffs :=
+  strictInterl_lw_X_mul_one_sub_X_lag_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
+  (since := "2026-09-18")]
+alias prec_lw_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos :=
+  strictInterl_lw_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
+
+@[deprecated strictInterl_lw_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
+  (since := "2026-09-18")]
+alias prec_lw_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs :=
+  strictInterl_lw_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
+  (since := "2026-09-18")]
+alias prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos :=
+  strictInterl_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
+
+@[deprecated strictInterl_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
+  (since := "2026-09-18")]
+alias prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs :=
+  strictInterl_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
 
 end RealRooted

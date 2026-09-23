@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  371  Lean declarations requiring semantic review
+  354  Lean declarations requiring semantic review
   203  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    20  statement scaffolds requiring proof-status-preserving renames
-  495  deprecated compatibility identifiers with canonical targets
+  512  deprecated compatibility identifiers with canonical targets
    62  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -252,6 +252,12 @@ The foundational sign/root utility layer now uses `StrictInterl` vocabulary
 for common-right evaluation signs, Ma--Wang simple-root constructors, and
 negative-root propagation.  All five old public names remain exact deprecated
 aliases, and all non-challenge callers use the canonical declarations.
+
+The theorem-level Liu--Wang step and sequence layer now uses `StrictInterl`
+vocabulary for its root-window, factor, coefficient, and inductive interfaces.
+All 17 old public names remain exact deprecated aliases, and theorem-library
+callers use the canonical declarations; tactic-owned spellings remain with
+their separate migration batch.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

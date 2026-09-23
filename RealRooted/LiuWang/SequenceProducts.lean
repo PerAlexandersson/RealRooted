@@ -25,7 +25,7 @@ theorem prec_lw_positive_X_mul_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
+  strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
     (B := fun n => X * Q n) hbase hpos
     (fun n hsource r hr =>
       eval_X_mul_nonpos_of_nonpos_of_nonneg
@@ -63,7 +63,7 @@ theorem prec_lw_positive_C_mul_X_mul_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
+  strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
     (B := fun n => C (c n) * X * Q n) hbase hpos
     (fun n hsource r hr =>
       eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
@@ -126,7 +126,7 @@ theorem isRealRooted_of_lw_tR_lag_sequence {P : Nat → ℝ[X]}
 
 /-- Scalar Family E sequence wrapper for strict-degree
 `c_n t R_n(t)` lag recurrences. -/
-theorem prec_lw_c_tR_lag_sequence {P : Nat → ℝ[X]}
+theorem strictInterl_lw_c_tR_lag_sequence {P : Nat → ℝ[X]}
     {A R : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -156,7 +156,7 @@ theorem isRealRooted_of_lw_c_tR_lag_sequence {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_c_tR_lag_sequence hbase hpos hnonneg hc hR_nonneg hrec hdeg_succ hno
+    strictInterl_lw_c_tR_lag_sequence hbase hpos hnonneg hc hR_nonneg hrec hdeg_succ hno
 
 /-- Sequence wrapper for strict-degree Family E `t(1-t)` lag recurrences. -/
 theorem prec_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
@@ -169,7 +169,7 @@ theorem prec_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
+  strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
     (B := fun _ => X * (1 - X)) hbase hpos
     (fun n hsource r hr =>
       eval_X_mul_one_sub_X_nonpos_of_nonpos
@@ -206,7 +206,7 @@ theorem prec_lw_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
+  strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
     (B := fun n => X * (C (a n) - C (b n) * X)) hbase hpos
     (fun n hsource r hr =>
       eval_X_mul_C_sub_C_mul_X_nonpos_of_nonneg_of_nonneg_of_nonpos
@@ -249,7 +249,7 @@ theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
+  strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
     (B := fun n => C (c n) * X * (C (a n) - C (b n) * X)) hbase hpos
     (fun n hsource r hr =>
       eval_C_mul_X_mul_C_sub_C_mul_X_nonpos
@@ -377,5 +377,7 @@ theorem isRealRooted_of_lw_current_one_add_X_positive_t_lag_sequence
     prec_lw_current_one_add_X_positive_t_lag_sequence
       hbase hpos hnonneg hc hrec hdeg_succ hno
 
+@[deprecated strictInterl_lw_c_tR_lag_sequence (since := "2026-09-18")]
+alias prec_lw_c_tR_lag_sequence := strictInterl_lw_c_tR_lag_sequence
 
 end RealRooted

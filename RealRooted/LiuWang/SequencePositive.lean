@@ -27,7 +27,7 @@ theorem prec_lw_positive_t_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
+  strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
     (B := fun n => C (c n) * X) hbase hpos
     (fun n hsource r hr =>
       eval_C_mul_X_nonpos_of_nonneg_of_nonpos (hc n)
@@ -99,7 +99,7 @@ theorem prec_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
+  strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
     (B := fun n => C (c n) * X - C (a n)) hbase hpos
     (fun n hsource r hr =>
       eval_C_mul_X_sub_C_nonpos_of_nonneg_of_nonneg_of_nonpos
@@ -182,7 +182,7 @@ theorem prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence_of_inductive_nonpos
+  strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
     (B := fun n => C (c n) * (C (a n) + X)) hbase hpos
     (fun n hsource _r hr =>
       eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg (hc n)
