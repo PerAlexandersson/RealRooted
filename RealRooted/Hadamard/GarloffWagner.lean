@@ -114,7 +114,7 @@ theorem garloffWagnerHadamardNonnegPrec {f g p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
     (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) := by
-  exact gwHadamardProductNonnegPrec hf hg hp hq hfg hpq
+  exact gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
 
 
 /-- Linear-factor sanity check for the orientation used in

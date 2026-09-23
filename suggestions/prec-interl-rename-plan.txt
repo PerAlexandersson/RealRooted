@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  470  Lean declarations requiring semantic review
+  460  Lean declarations requiring semantic review
   214  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    22  statement scaffolds requiring proof-status-preserving renames
-  388  deprecated compatibility identifiers with canonical targets
+  398  deprecated compatibility identifiers with canonical targets
    57  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -154,6 +154,12 @@ Hadamard endpoints.  All 27 old public names remain exact deprecated aliases
 or an abbreviation, and non-challenge callers use the canonical API.  The
 aggregate `prec` and `prec0` ledger rows remain open because other namespaces
 still own declarations with those exact short names.
+
+The Garloff--Wagner Hadamard endpoint now uses `Interl` for both
+double-deleted Schur terms, the Krein-summand receiver methods, the two
+weighted-expansion assemblers, and the PF/nonnegative two-pair endpoints.  All
+ten old public names remain exact deprecated aliases, and the downstream
+nonnegative Hadamard theorem uses the canonical endpoint.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

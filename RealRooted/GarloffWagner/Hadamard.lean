@@ -41,7 +41,7 @@ def gwHadamardProductDoubleDeletedKreinStatement : Prop :=
 
 /-- First Schur term in Garloff--Wagner's double-deleted paragraph: the base
 Hadamard product precedes the `X`-shifted term. -/
-theorem gwSchurProduct_firstDoubleDeletedTerm_prec0
+theorem gwSchurProduct_firstDoubleDeletedTerm_interl
     {f p : ℝ[X]} {u : ℝ}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hu : u ≤ 0) :
     Interl (gwSchurProduct f (gwL p))
@@ -61,7 +61,7 @@ theorem gwSchurProduct_firstDoubleDeletedTerm_prec0
 
 /-- Second Schur term in Garloff--Wagner's double-deleted paragraph: the base
 Hadamard product precedes the `JL` transported full right factor. -/
-theorem gwSchurProduct_secondDoubleDeletedTerm_prec0
+theorem gwSchurProduct_secondDoubleDeletedTerm_interl
     {f q p : ℝ[X]} {u : ℝ}
     (hf : IsPFPolynomial f) (hq : IsPFPolynomial q)
     (hq0 : q ≠ 0) (hfactor : q = (X - C u) * p) :
@@ -104,11 +104,11 @@ theorem gwHadamardProductDoubleDeletedKrein :
   have hfirst : Interl B (X * S₁) := by
     change Interl (gwSchurProduct f (gwL p))
       (X * gwSchurProduct f (gwL p - C v * gwD (gwL p)))
-    exact gwSchurProduct_firstDoubleDeletedTerm_prec0 hf hp hv
+    exact gwSchurProduct_firstDoubleDeletedTerm_interl hf hp hv
   have hsecond : Interl B S₂ := by
     change Interl (gwSchurProduct f (gwL p))
       (gwSchurProduct f (gwJ (gwL p) - C v * gwL p))
-    exact gwSchurProduct_secondDoubleDeletedTerm_prec0 hf hq hq0 hqfactor
+    exact gwSchurProduct_secondDoubleDeletedTerm_interl hf hq hq0 hqfactor
   have hS₁ : IsPFPolynomial S₁ := by
     change IsPFPolynomial (gwSchurProduct f (gwL p - C v * gwD (gwL p)))
     exact gwSchurProductPF hf (gwL_sub_C_mul_gwD_gwL_pf hp hv)
@@ -128,14 +128,14 @@ theorem gwHadamardProductDoubleDeletedKrein :
 namespace IsGWKreinSummand
 
 /-- Fixed-factor Schur products of a Krein summand precede the parent product. -/
-theorem gwSchurProduct_prec0 {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
+theorem gwSchurProduct_interl {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg : IsPFPolynomial g) (hp : IsPFPolynomial p) (hg0 : g ≠ 0) :
     Interl (gwSchurProduct q p) (gwSchurProduct g p) :=
   gwSchurProductInterl (h.isPFPolynomial hg) hg hp
     (h.interl hg0 (hg.ne_zero_and_splits hg0).2)
 
 /-- Two arbitrary Krein summands reduce to the genuinely double-deleted case. -/
-theorem gwSchurProduct_prec0_of_doubleDeleted
+theorem gwSchurProduct_interl_of_doubleDeleted
     (hDouble : gwSchurProductDoubleDeletedKreinStatement)
     {g q f p : ℝ[X]} (hf : IsGWKreinSummand g f)
     (hp : IsGWKreinSummand q p)
@@ -145,16 +145,16 @@ theorem gwSchurProduct_prec0_of_doubleDeleted
   rcases hf with hfg_self | ⟨u, hfg_factor⟩
   · rw [hfg_self]
     simpa [gwSchurProduct_comm p g, gwSchurProduct_comm q g] using
-      hp.gwSchurProduct_prec0 hq hg hq0
+      hp.gwSchurProduct_interl hq hg hq0
   rcases hp with hpq_self | ⟨v, hpq_factor⟩
   · rw [hpq_self]
-    exact (show IsGWKreinSummand g f from Or.inr ⟨u, hfg_factor⟩).gwSchurProduct_prec0
+    exact (show IsGWKreinSummand g f from Or.inr ⟨u, hfg_factor⟩).gwSchurProduct_interl
       hg hq hg0
   · exact hDouble hg hq hg0 hq0 hfg_factor hpq_factor
 
 /-- Fixed-factor ordinary Hadamard products of a Krein summand precede the
 parent product. -/
-theorem gwHadamardProduct_prec0 {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
+theorem gwHadamardProduct_interl {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg : IsPFPolynomial g) (hp : IsPFPolynomial p) (hg0 : g ≠ 0) :
     Interl (hadamardProduct q p) (hadamardProduct g p) :=
   gwHadamardProductInterl (h.isPFPolynomial hg) hg hp
@@ -162,7 +162,7 @@ theorem gwHadamardProduct_prec0 {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
 
 /-- Two arbitrary Krein summands reduce to the genuinely double-deleted
 ordinary-Hadamard case. -/
-theorem gwHadamardProduct_prec0_of_doubleDeleted
+theorem gwHadamardProduct_interl_of_doubleDeleted
     (hDouble : gwHadamardProductDoubleDeletedKreinStatement)
     {g q f p : ℝ[X]} (hf : IsGWKreinSummand g f)
     (hp : IsGWKreinSummand q p)
@@ -172,10 +172,10 @@ theorem gwHadamardProduct_prec0_of_doubleDeleted
   rcases hf with hfg_self | ⟨u, hfg_factor⟩
   · rw [hfg_self]
     simpa [hadamardProduct_comm p g, hadamardProduct_comm q g] using
-      hp.gwHadamardProduct_prec0 hq hg hq0
+      hp.gwHadamardProduct_interl hq hg hq0
   rcases hp with hpq_self | ⟨v, hpq_factor⟩
   · rw [hpq_self]
-    exact (show IsGWKreinSummand g f from Or.inr ⟨u, hfg_factor⟩).gwHadamardProduct_prec0
+    exact (show IsGWKreinSummand g f from Or.inr ⟨u, hfg_factor⟩).gwHadamardProduct_interl
       hg hq hg0
   · exact hDouble hg hq hg0 hq0 hfg_factor hpq_factor
 
@@ -207,7 +207,7 @@ theorem hadamardProduct_weightedSum_right :
 
 /-- If the left input is expanded into Krein summands and the right input is a
 single Krein summand, every Hadamard summand has the same right bound. -/
-theorem hadamardProduct_prec0_of_kreinSummandExpansion_left
+theorem hadamardProduct_interl_of_kreinSummandExpansion_left
     {f g p q : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
@@ -223,7 +223,7 @@ theorem hadamardProduct_prec0_of_kreinSummandExpansion_left
     exact hnonneg ap0 hap0
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
-    exact (hsummand ap0 hap0).gwHadamardProduct_prec0_of_doubleDeleted
+    exact (hsummand ap0 hap0).gwHadamardProduct_interl_of_doubleDeleted
       gwHadamardProductDoubleDeletedKrein hp hg hq hg0 hq0
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
@@ -232,7 +232,7 @@ theorem hadamardProduct_prec0_of_kreinSummandExpansion_left
         (hp.isPFPolynomial hq)).hasNonnegCoeffs
 
 /-- Two Krein expansions assemble the ordinary-Hadamard two-pair theorem. -/
-theorem hadamardProduct_prec0_of_kreinSummandExpansions
+theorem hadamardProduct_interl_of_kreinSummandExpansions
     {f g p q : ℝ[X]} {lf lp : List (ℝ × ℝ[X])}
     (hf : f = weightedSum lf) (hp : p = weightedSum lp)
     (hfnonneg : ∀ ap ∈ lf, 0 ≤ ap.1)
@@ -249,7 +249,7 @@ theorem hadamardProduct_prec0_of_kreinSummandExpansions
     exact hpnonneg ap0 hap0
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
-    exact hadamardProduct_prec0_of_kreinSummandExpansion_left
+    exact hadamardProduct_interl_of_kreinSummandExpansion_left
       hf hfnonneg hfsummand (hpsummand ap0 hap0) hg hq hg0 hq0
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
@@ -259,7 +259,7 @@ theorem hadamardProduct_prec0_of_kreinSummandExpansions
 
 /-- Garloff--Wagner, Theorem 4(b), for PF polynomials in the local
 orientation. -/
-theorem gwHadamardProductPrec0_of_prec {f g p q : ℝ[X]}
+theorem gwHadamardProductInterl_of_strictInterl {f g p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
@@ -276,21 +276,66 @@ theorem gwHadamardProductPrec0_of_prec {f g p q : ℝ[X]}
     ⟨lf, hfeq, hfnonneg, hfsummand, _⟩
   rcases gwTheorem11StrictInterlKreinSummandExpansion hpq hppos hqpos with
     ⟨lp, hpeq, hpnonneg, hpsummand, _⟩
-  exact hadamardProduct_prec0_of_kreinSummandExpansions
+  exact hadamardProduct_interl_of_kreinSummandExpansions
     hfeq hpeq hfnonneg hpnonneg hfsummand hpsummand
     hf hg hq hfg.2.1.1 hpq.2.1.1
 
 /-- Garloff--Wagner, Theorem 4(b), in the nonnegative-coefficient form used by
 the `Hadamard` module. -/
-theorem gwHadamardProductNonnegPrec {f g p q : ℝ[X]}
+theorem gwHadamardProductNonnegInterl {f g p q : ℝ[X]}
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
     (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) := by
-  exact gwHadamardProductPrec0_of_prec
+  exact gwHadamardProductInterl_of_strictInterl
     (IsPFPolynomial.of_realRooted_nonneg hf hfg.1.2)
     (IsPFPolynomial.of_realRooted_nonneg hg hfg.2.1.2)
     (IsPFPolynomial.of_realRooted_nonneg hp hpq.1.2)
     (IsPFPolynomial.of_realRooted_nonneg hq hpq.2.1.2)
     hfg hpq
+
+namespace IsGWKreinSummand
+
+@[deprecated gwSchurProduct_interl (since := "2026-09-18")]
+alias gwSchurProduct_prec0 := gwSchurProduct_interl
+
+@[deprecated gwSchurProduct_interl_of_doubleDeleted (since := "2026-09-18")]
+alias gwSchurProduct_prec0_of_doubleDeleted :=
+  gwSchurProduct_interl_of_doubleDeleted
+
+@[deprecated gwHadamardProduct_interl (since := "2026-09-18")]
+alias gwHadamardProduct_prec0 := gwHadamardProduct_interl
+
+@[deprecated gwHadamardProduct_interl_of_doubleDeleted (since := "2026-09-18")]
+alias gwHadamardProduct_prec0_of_doubleDeleted :=
+  gwHadamardProduct_interl_of_doubleDeleted
+
+end IsGWKreinSummand
+
+@[deprecated gwSchurProduct_firstDoubleDeletedTerm_interl
+  (since := "2026-09-18")]
+alias gwSchurProduct_firstDoubleDeletedTerm_prec0 :=
+  gwSchurProduct_firstDoubleDeletedTerm_interl
+
+@[deprecated gwSchurProduct_secondDoubleDeletedTerm_interl
+  (since := "2026-09-18")]
+alias gwSchurProduct_secondDoubleDeletedTerm_prec0 :=
+  gwSchurProduct_secondDoubleDeletedTerm_interl
+
+@[deprecated hadamardProduct_interl_of_kreinSummandExpansion_left
+  (since := "2026-09-18")]
+alias hadamardProduct_prec0_of_kreinSummandExpansion_left :=
+  hadamardProduct_interl_of_kreinSummandExpansion_left
+
+@[deprecated hadamardProduct_interl_of_kreinSummandExpansions
+  (since := "2026-09-18")]
+alias hadamardProduct_prec0_of_kreinSummandExpansions :=
+  hadamardProduct_interl_of_kreinSummandExpansions
+
+@[deprecated gwHadamardProductInterl_of_strictInterl (since := "2026-09-18")]
+alias gwHadamardProductPrec0_of_prec := gwHadamardProductInterl_of_strictInterl
+
+@[deprecated gwHadamardProductNonnegInterl (since := "2026-09-18")]
+alias gwHadamardProductNonnegPrec := gwHadamardProductNonnegInterl
+
 end RealRooted
