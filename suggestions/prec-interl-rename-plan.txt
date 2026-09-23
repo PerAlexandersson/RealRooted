@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  529  Lean declarations requiring semantic review
+  520  Lean declarations requiring semantic review
   216  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
-   27  statement scaffolds requiring proof-status-preserving renames
-  321  deprecated compatibility identifiers with canonical targets
+   26  statement scaffolds requiring proof-status-preserving renames
+  331  deprecated compatibility identifiers with canonical targets
    58  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -129,6 +129,12 @@ The private Obreschkoff converse implementation now uses `Interl` /
 rightmost-root, and no-common-root helpers.  Eight remaining declarations and
 their local callers were renamed directly, and the already-canonical private
 scalar helper is reconciled in the ledger; no public aliases are involved.
+
+The Garloff--Wagner Krein data/expansion layer now uses `StrictInterl` for its
+root-multiplicity factors, `gwJL` transports, linear-factor bridge, expansion
+statement, checked witness, and Theorem 11 endpoint.  All ten public old names
+remain exact deprecated aliases or abbreviations, and the statement scaffold
+retains its existing assumption-free checked witness.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

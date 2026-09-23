@@ -272,9 +272,9 @@ theorem gwHadamardProductPrec0_of_prec {f g p q : ℝ[X]}
     hp.hasNonnegCoeffs.pos_leadingCoeff hpq.1.1
   have hqpos : HasPosLeadingCoeff q :=
     hq.hasNonnegCoeffs.pos_leadingCoeff hpq.2.1.1
-  rcases gwTheorem11PrecKreinSummandExpansion hfg hfpos hgpos with
+  rcases gwTheorem11StrictInterlKreinSummandExpansion hfg hfpos hgpos with
     ⟨lf, hfeq, hfnonneg, hfsummand, _⟩
-  rcases gwTheorem11PrecKreinSummandExpansion hpq hppos hqpos with
+  rcases gwTheorem11StrictInterlKreinSummandExpansion hpq hppos hqpos with
     ⟨lp, hpeq, hpnonneg, hpsummand, _⟩
   exact hadamardProduct_prec0_of_kreinSummandExpansions
     hfeq hpeq hfnonneg hpnonneg hfsummand hpsummand

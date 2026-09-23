@@ -42,7 +42,7 @@ theorem prec {g q : ℝ[X]} (h : IsGWKreinSummand g q)
       (show IsGWKreinSummand g q from Or.inr ⟨u, hfactor⟩).ne_zero_and_splits
         hg0 hgs
     rw [hfactor]
-    exact prec_self_X_sub_C_mul hq0 hqs u
+    exact strictInterl_self_X_sub_C_mul hq0 hqs u
 
 /-- Zero-aware form of `IsGWKreinSummand.prec`. -/
 theorem prec0 {g q : ℝ[X]} (h : IsGWKreinSummand g q)
@@ -579,7 +579,7 @@ theorem gwSchurProductPFAndPrec :
             hf.hasNonnegCoeffs.pos_leadingCoeff hstrict.1.1
           have hgpos : HasPosLeadingCoeff g :=
             hg.hasNonnegCoeffs.pos_leadingCoeff hstrict.2.1.1
-          rcases gwTheorem11PrecKreinSummandExpansion hstrict hfpos hgpos with
+          rcases gwTheorem11StrictInterlKreinSummandExpansion hstrict hfpos hgpos with
             ⟨l, hfexp, hnonneg, hsummand, _hex⟩
           have hdeleted :
               ∀ (q : ℝ[X]) (u : ℝ), g = (X - C u) * q →
@@ -652,7 +652,7 @@ theorem gwL_pf {p : ℝ[X]} (hp : IsPFPolynomial p) :
 /-- The `L` operator preserves strict proper position. -/
 theorem gwL_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
     StrictInterl (gwL f) (gwL g) := by
-  simpa [gwJL_zero_apply] using gwTheorem11Prec hfg 0
+  simpa [gwJL_zero_apply] using gwTheorem11StrictInterl hfg 0
 
 /-- The `L` operator preserves zero-aware proper position. -/
 theorem gwL_prec0 {f g : ℝ[X]} (hfg : Interl f g) :

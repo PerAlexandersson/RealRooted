@@ -79,7 +79,7 @@ theorem exists_kreinRootDeletedExpansion_right {f g : ℝ[X]}
 
 /-- A nonzero splitting polynomial precedes the polynomial obtained by adding
 one real linear factor. -/
-theorem prec_self_X_sub_C_mul {r : ℝ[X]} (hr0 : r ≠ 0) (hrs : r.Splits)
+theorem strictInterl_self_X_sub_C_mul {r : ℝ[X]} (hr0 : r ≠ 0) (hrs : r.Splits)
     (u : ℝ) :
     StrictInterl r ((X - C u) * r) := by
   have hright0 : (X - C u) * r ≠ 0 := mul_ne_zero (X_sub_C_ne_zero u) hr0
@@ -146,7 +146,7 @@ theorem kreinCoefficient_eval_div_nonneg
       rw [← hg_factor_m]
       exact hgpos
     exact hasPosLeadingCoeff_of_pow_X_sub_C_mul hgpos'
-  have hrr_prec : StrictInterl r ((X - C u) * r) := prec_self_X_sub_C_mul hr0 hrs u
+  have hrr_prec : StrictInterl r ((X - C u) * r) := strictInterl_self_X_sub_C_mul hr0 hrs u
   have hroot_right : ((X - C u) * r).IsRoot u := by
     rw [Polynomial.IsRoot.def, eval_mul, eval_sub, eval_X, eval_C]
     ring
@@ -173,7 +173,7 @@ theorem kreinCoefficient_residual_eval_div_nonneg
     0 ≤ s.eval u / r.eval u := by
   let m : ℕ := g.rootMultiplicity u
   let d : ℝ[X] := (X - C u) ^ (m - 1)
-  rcases exists_precLeft_factor_of_right_isRoot hfg hu with ⟨t, hf_t, _, _, _⟩
+  rcases exists_strictInterlLeft_factor_of_right_isRoot hfg hu with ⟨t, hf_t, _, _, _⟩
   have hf_t_m : f = d * t := by simpa [d, m] using hf_t
   have hq_m : q = d * r := by simpa [d, m] using hq
   have hg_common : g = d * ((X - C u) * r) := by
@@ -218,7 +218,7 @@ theorem exists_kreinCoefficientData_nonneg_of_right_isRoot {f g : ℝ[X]}
           f - C c * g - C a * q := by
   rcases exists_kreinSummand_factor_of_isRoot hfg.2.1.1 hgs hu with
     ⟨q, r, hfactor, hq, _, hr_eval, _, _, hr0, hrs, hsummand⟩
-  rcases exists_precResidual_factor_of_right_rootMultiplicity hfg u c with
+  rcases exists_strictInterlResidual_factor_of_right_rootMultiplicity hfg u c with
     ⟨s, hres⟩
   refine ⟨s.eval u / r.eval u, q, ?_, hfactor, hsummand, ?_⟩
   · exact
@@ -375,7 +375,7 @@ lemma hasPosLeadingCoeff_C_inv_leadingCoeff_mul {p : ℝ[X]} (hp0 : p ≠ 0) :
 
 /-- A Lemma 7/Krein expansion in root-deleted summands supplies the weighted
 common-right hypotheses needed for the checked Theorem 11(c) package. -/
-theorem gwJL_prec_of_kreinSummandExpansion
+theorem gwJL_strictInterl_of_kreinSummandExpansion
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hg0 : g ≠ 0) (hgs : g.Splits) (hgpos : HasPosLeadingCoeff g)
@@ -384,7 +384,7 @@ theorem gwJL_prec_of_kreinSummandExpansion
     (hex : ∃ ap ∈ l, 0 < ap.1) :
     StrictInterl (gwJL k f) (gwJL k g) :=
   gwJL_prec_of_rightWeightedExpansion hf hnonneg
-    (fun ap hap => (hsummand ap hap).gwJL_prec hg0 hgs)
+    (fun ap hap => (hsummand ap hap).gwJL_strictInterl hg0 hgs)
     (fun ap hap => ((hsummand ap hap).hasPosLeadingCoeff hgpos).gwJL k)
     hex
 
@@ -441,7 +441,7 @@ theorem kreinSummandExpansion_of_weightedSum {f g : ℝ[X]} {l : List (ℝ × �
 /-- Lemma 7-facing interface for Theorem 11(c).  After normalizing the right
 polynomial to be standard, the left polynomial should expand as a nonnegative
 weighted sum of the right polynomial and its one-root-deleted factors. -/
-def gwTheorem11PrecKreinSummandExpansionStatement : Prop :=
+def gwTheorem11StrictInterlKreinSummandExpansionStatement : Prop :=
   ∀ {f g : ℝ[X]}, StrictInterl f g → HasPosLeadingCoeff f → HasPosLeadingCoeff g →
     ∃ l : List (ℝ × ℝ[X]),
       f = weightedSum l ∧
@@ -449,8 +449,8 @@ def gwTheorem11PrecKreinSummandExpansionStatement : Prop :=
         (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
         ∃ ap ∈ l, 0 < ap.1
 
-theorem gwTheorem11Prec_of_kreinSummandExpansion
-    (h : gwTheorem11PrecKreinSummandExpansionStatement) :
+theorem gwTheorem11StrictInterl_of_kreinSummandExpansion
+    (h : gwTheorem11StrictInterlKreinSummandExpansionStatement) :
     gwTheorem11PrecStatement := by
   intro f g hfg k
   let sf : ℝ := f.leadingCoeff⁻¹
@@ -469,7 +469,7 @@ theorem gwTheorem11Prec_of_kreinSummandExpansion
     ⟨l, hf, hnonneg, hsummand, hex⟩
   have hscaled :
       StrictInterl (gwJL k (C sf * f)) (gwJL k (C sg * g)) :=
-    gwJL_prec_of_kreinSummandExpansion hf hfg_scaled.2.1.1 hfg_scaled.2.1.2
+    gwJL_strictInterl_of_kreinSummandExpansion hf hfg_scaled.2.1.1 hfg_scaled.2.1.2
       hsg_pos hnonneg hsummand hex
   have hscaled' : StrictInterl (C sf * gwJL k f) (C sg * gwJL k g) := by
     simpa [gwJL_C_mul] using hscaled
@@ -486,8 +486,8 @@ theorem gwTheorem11Prec_of_kreinSummandExpansion
 
 /-- Garloff--Wagner, Theorem 11(c), reduced to the checked Krein expansion
 package. -/
-theorem gwTheorem11PrecKreinSummandExpansion :
-    gwTheorem11PrecKreinSummandExpansionStatement := by
+theorem gwTheorem11StrictInterlKreinSummandExpansion :
+    gwTheorem11StrictInterlKreinSummandExpansionStatement := by
   intro f g hfg hfpos hgpos
   by_cases hgdeg0 : g.natDegree = 0
   · exact exists_kreinSummandExpansion_nonneg_right_of_natDegree_eq_zero hfg hfpos
@@ -496,8 +496,31 @@ theorem gwTheorem11PrecKreinSummandExpansion :
       hgpos (Nat.pos_of_ne_zero hgdeg0)
 
 /-- Garloff--Wagner, Theorem 11(c), in the local `StrictInterl` orientation. -/
-theorem gwTheorem11Prec :
+theorem gwTheorem11StrictInterl :
     gwTheorem11PrecStatement :=
-  gwTheorem11Prec_of_kreinSummandExpansion gwTheorem11PrecKreinSummandExpansion
+  gwTheorem11StrictInterl_of_kreinSummandExpansion gwTheorem11StrictInterlKreinSummandExpansion
+
+@[deprecated strictInterl_self_X_sub_C_mul (since := "2026-09-18")]
+alias prec_self_X_sub_C_mul := strictInterl_self_X_sub_C_mul
+
+@[deprecated gwJL_strictInterl_of_kreinSummandExpansion (since := "2026-09-18")]
+alias gwJL_prec_of_kreinSummandExpansion := gwJL_strictInterl_of_kreinSummandExpansion
+
+@[deprecated gwTheorem11StrictInterlKreinSummandExpansionStatement
+  (since := "2026-09-18")]
+abbrev gwTheorem11PrecKreinSummandExpansionStatement :=
+  gwTheorem11StrictInterlKreinSummandExpansionStatement
+
+@[deprecated gwTheorem11StrictInterl_of_kreinSummandExpansion
+  (since := "2026-09-18")]
+alias gwTheorem11Prec_of_kreinSummandExpansion :=
+  gwTheorem11StrictInterl_of_kreinSummandExpansion
+
+@[deprecated gwTheorem11StrictInterlKreinSummandExpansion (since := "2026-09-18")]
+alias gwTheorem11PrecKreinSummandExpansion :=
+  gwTheorem11StrictInterlKreinSummandExpansion
+
+@[deprecated gwTheorem11StrictInterl (since := "2026-09-18")]
+alias gwTheorem11Prec := gwTheorem11StrictInterl
 
 end RealRooted

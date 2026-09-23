@@ -811,7 +811,7 @@ private theorem mixedEulerStep_prec_of_no_common
     rw [hPfactor0, hlinear]
     ring
   have hbase : StrictInterl h ((X - C u) * h) :=
-    prec_self_X_sub_C_mul hh_ne hh_splits u
+    strictInterl_self_X_sub_C_mul hh_ne hh_splits u
   have hscaled : StrictInterl h (C c * ((X - C u) * h)) :=
     StrictInterl.C_mul_right hbase hc_pos.ne'
   rw [← hPfactor] at hscaled
