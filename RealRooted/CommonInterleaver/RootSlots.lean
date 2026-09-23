@@ -411,7 +411,7 @@ private lemma mem_rootSlotInterval_reverse_of_listAlternates
 /-- Slot transport from an ascending `StrictInterl` witness to the descending
 Chudnovsky--Seymour interval language. This is the core bridge needed to turn
 pairwise common interleavers into pairwise-intersecting slot intervals. -/
-private lemma mem_rootSlotInterval_of_prec_witness
+private lemma mem_rootSlotInterval_of_strictInterl_witness
     {ss rs : List ℝ}
     (hss : ss.Pairwise (· ≤ ·)) (hrs : rs.Pairwise (· ≤ ·))
     (hshape : (ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
@@ -451,7 +451,7 @@ protected lemma CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl
   let jf_rev : Fin (ss.reverse.length + 1) := ⟨j.1, by
     grind⟩
   have hmem_rev : rs.reverse.get jg_rev ∈ rootSlotInterval ss.reverse jf_rev :=
-    mem_rootSlotInterval_of_prec_witness hss hrs hshape ⟨j.1, by lia⟩
+    mem_rootSlotInterval_of_strictInterl_witness hss hrs hshape ⟨j.1, by lia⟩
   lia
 
 @[deprecated CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl

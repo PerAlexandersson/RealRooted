@@ -17,13 +17,13 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  632  Lean declarations requiring semantic review
-  229  tactic declarations requiring an alias-first migration
+  625  Lean declarations requiring semantic review
+  224  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    29  statement scaffolds requiring proof-status-preserving renames
-  229  deprecated compatibility identifiers with canonical targets
-   32  other references, locals, or private declarations migrated directly
+  240  deprecated compatibility identifiers with canonical targets
+   33  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
 Naming rules
@@ -188,6 +188,12 @@ The #896 descending-root facade batch canonicalizes the three public
 `CommonInterleaverSeq` wrappers and their private `List.ofFn` helper.  Exact
 deprecated aliases preserve the public signatures; the private helper is
 renamed directly.
+
+The #897 succ-degree root-count batch canonicalizes the eleven public
+residual/`divX` root-count, root-crossing, and pair-interleaver bridges, plus
+the private root-slot witness.  Exact deprecated aliases preserve the public
+APIs; theorem-library and tactic backends now quote canonical declarations,
+while tactic syntax remains available for its later alias-first migration.
 
 The #892 compatibility/right-pencil batch canonicalizes the failed succ-degree
 orientation statement interface and its seven checked conditional reductions.
