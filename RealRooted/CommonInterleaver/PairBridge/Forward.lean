@@ -44,7 +44,7 @@ theorem posComboNoCommonSameDegreeOrientation_of_shiftedPairOrientation_and_nonn
   have hf0 : f ≠ 0 := hf_pos.ne_zero
   have hg0 : g ≠ 0 := hg_pos.ne_zero
   exact
-    prec_of_prec_shifted_pair_sameDegree_nonneg
+    strictInterl_of_strictInterl_shifted_pair_sameDegree_nonneg
       (hshift hf_pos hg_pos hfnn hgnn hfg hdeg hno)
       hf0 hg0 hfnn hgnn hdeg
 

@@ -17,13 +17,13 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  566  Lean declarations requiring semantic review
-  218  tactic declarations requiring an alias-first migration
+  538  Lean declarations requiring semantic review
+  216  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    27  statement scaffolds requiring proof-status-preserving renames
-  303  deprecated compatibility identifiers with canonical targets
-   37  other references, locals, or private declarations migrated directly
+  321  deprecated compatibility identifiers with canonical targets
+   49  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
 Naming rules
@@ -116,6 +116,13 @@ rightmost-factor, affine-family, and same-degree sign constructors with
 renamed directly because it is private.  The five public old names remain
 exact deprecated aliases, and all non-challenge callers use the canonical
 surface.
+
+The affine-family layer now consistently names its basic transports,
+high/low-degree converse internals, shifted-pair packages, segment/PF/TNN
+endpoints, Ma--Wang endpoint-sign constructors, and subtraction-by-`X`
+transport with `Interl` / `StrictInterl`.  All 18 public old names remain exact
+deprecated aliases; the 12 private helpers were renamed directly, and all
+non-challenge callers use the canonical names.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

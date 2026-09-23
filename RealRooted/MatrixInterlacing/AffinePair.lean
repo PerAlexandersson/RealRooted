@@ -494,10 +494,10 @@ theorem prec_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
       (h2x2 := by
         intro j₁ j₂ hj
         fin_cases j₁ <;> fin_cases j₂
-        · simpa using has2x2InterlacingProperty_sameColumn_of_prec_nonneg hp hp₁nn hp₂nn
+        · simpa using has2x2InterlacingProperty_sameColumn_of_strictInterl_nonneg hp hp₁nn hp₂nn
         · simpa using hoff
         · norm_num at hj
-        · simpa using has2x2InterlacingProperty_sameColumn_of_prec_nonneg hq hq₁nn hq₂nn)
+        · simpa using has2x2InterlacingProperty_sameColumn_of_strictInterl_nonneg hq hq₁nn hq₂nn)
       (hfs_len := by simp)
       (hfs := by
         refine ⟨?_, ?_⟩

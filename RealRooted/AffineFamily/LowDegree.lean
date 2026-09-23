@@ -403,7 +403,7 @@ private lemma rightmost_neg_root_quotient_posCombo_data_of_affine_family_succDeg
   have hqg_le : ∀ u ∈ qg.roots, u ≤ r := by simp_all
   grind
 
-private lemma prec_right_pair_sameDegree_of_sign_data
+private lemma strictInterl_right_pair_sameDegree_of_sign_data
     {f g : ℝ[X]}
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hgnn : HasNonnegCoeffs g)
@@ -425,7 +425,7 @@ private lemma prec_right_pair_sameDegree_of_sign_data
     PosComboRealRooted.strictInterl_same_of_root_sign_data
       (f := g) (g := X * f) hg_ne hg_splits hXf_pos hdeg hdeg_pos hsign hright
 
-private lemma prec_right_pair_succDegree_no_common_of_sign_data
+private lemma strictInterl_right_pair_succDegree_no_common_of_sign_data
     {f g : ℝ[X]}
     (hf0 : f ≠ 0)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
@@ -443,12 +443,12 @@ private lemma prec_right_pair_succDegree_no_common_of_sign_data
   have hdeg : (X * f).natDegree = g.natDegree := by simp_all
   have hdeg_pos : 1 ≤ g.natDegree := by lia
   exact
-    prec_right_pair_sameDegree_of_sign_data
+    strictInterl_right_pair_sameDegree_of_sign_data
       hg_ne hg_splits hgnn hXf_pos hdeg hdeg_pos
       (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg_root0)
       hsign
 
-private lemma prec_right_pair_sameDegree_no_common_of_end_sign_data
+private lemma strictInterl_right_pair_sameDegree_no_common_of_end_sign_data
     {f g : ℝ[X]}
     (hf0 : f ≠ 0)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
@@ -483,14 +483,14 @@ private lemma prec_right_pair_sameDegree_no_common_of_end_sign_data
   have hdeg : (X * f).natDegree = g.natDegree + 1 := by simp_all
   rcases hparity with ⟨hpar, hleft_sign⟩ | ⟨hpar, hleft_sign⟩
   · exact
-      prec_of_strict_signs_of_endSigns_even
+      strictInterl_of_strict_signs_of_endSigns_even
         (f := g) (F := X * f) (rs := rs)
         hg_ne hg_splits hXf_pos hrs_sorted hrs_eq hdeg hn hpar
         (by grind)
         (by lia)
         (by lia)
   · exact
-      prec_of_strict_signs_of_endSigns_odd
+      strictInterl_of_strict_signs_of_endSigns_odd
         (f := g) (F := X * f) (rs := rs)
         hg_ne hg_splits hXf_pos hrs_sorted hrs_eq hdeg hn hpar
         (by grind)
@@ -728,7 +728,7 @@ protected lemma AffineFamily.prec_right_pair_of_affine_family_degree_one
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf1 : f.natDegree = 1) :
     StrictInterl g (X * f) :=
-  prec_to_prec_mul_X_of_nonneg
+  strictInterl_to_strictInterl_mul_X_of_nonneg
     (AffineFamily.prec_of_affine_family_nonneg_degree_one hf0 hg0 hfnn hgnn haff hdegf1)
     hfnn hgnn
 
@@ -756,7 +756,7 @@ alias prec_right_pair_of_affine_family_nonneg_degree_one :=
 /-- If `g` has an explicit factor `X`, any orientation of `(qg, f)` lifts
 immediately to the affine right pair `(g, X * f)` by restoring the common
 factor `X`. -/
-private lemma prec_right_pair_of_root_zero_factor
+private lemma strictInterl_right_pair_of_root_zero_factor
     {f g qg : ℝ[X]}
     (hg : g = X * qg)
     (hprec_q : StrictInterl qg f) :

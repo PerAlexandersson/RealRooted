@@ -83,7 +83,7 @@ private lemma affine_family_common_root_reduction_data
         grind
       ⟩
 
-private lemma prec_right_pair_of_common_root_factor
+private lemma strictInterl_right_pair_of_common_root_factor
     {f g qf qg : ℝ[X]} {r : ℝ}
     (hf : f = (X - C r) * qf)
     (hg : g = (X - C r) * qg)
@@ -198,7 +198,7 @@ private lemma no_common_shifted_pair_of_no_common
     ∀ r, f.IsRoot r → ¬ (g + X * f).IsRoot r := by
   simp_all
 
-private lemma not_revPrec_of_shifted_pair_succDegree
+private lemma not_reverseStrictInterl_of_shifted_pair_succDegree
     {f s : ℝ[X]}
     (hdeg : s.natDegree = f.natDegree + 1) :
     ¬ StrictInterl s f := by
@@ -210,16 +210,16 @@ private lemma not_revPrec_of_shifted_pair_succDegree
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   lia
 
-private lemma prec_shifted_pair_of_prec_or_revPrec
+private lemma strictInterl_shifted_pair_of_strictInterl_or_reverse
     {f g : ℝ[X]}
     (h : StrictInterl f (g + X * f) ∨ StrictInterl (g + X * f) f)
     (hdeg : (g + X * f).natDegree = f.natDegree + 1) :
     StrictInterl f (g + X * f) := by
   rcases h with hfg | hgf
   · lia
-  · exact False.elim (not_revPrec_of_shifted_pair_succDegree hdeg hgf)
+  · exact False.elim (not_reverseStrictInterl_of_shifted_pair_succDegree hdeg hgf)
 
-private lemma prec_of_prec_shifted_pair_sameDegree
+private lemma strictInterl_of_strictInterl_shifted_pair_sameDegree
     {f g : ℝ[X]}
     (h : StrictInterl f (g + X * f))
     (hf0 : f ≠ 0)
@@ -271,7 +271,7 @@ private lemma prec_of_prec_shifted_pair_sameDegree
     have hdeg_scaled : (C a * f).natDegree + 1 = (C a * (g + X * f)).natDegree := by
       rw [natDegree_C_mul ha_ne, natDegree_C_mul ha_ne, hshift_deg]
     simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm, mul_assoc] using
-      prec_sub_X_mul_right
+      strictInterl_sub_X_mul_right
         (f := C a * (g + X * f)) (g := C a * f)
         hscaled hshift_monic hf_monic hdeg_scaled
         (by
@@ -299,7 +299,7 @@ private lemma prec_of_prec_shifted_pair_sameDegree
       _ = g := by simp_all
   lia
 
-private lemma prec_right_pair_of_prec_shifted_pair_sameDegree
+private lemma strictInterl_right_pair_of_strictInterl_shifted_pair_sameDegree
     {f g : ℝ[X]}
     (h : StrictInterl f (g + X * f))
     (hf0 : f ≠ 0)
@@ -308,8 +308,8 @@ private lemma prec_right_pair_of_prec_shifted_pair_sameDegree
     (hgnn : HasNonnegCoeffs g)
     (hdeg : g.natDegree = f.natDegree) :
     StrictInterl g (X * f) :=
-  prec_to_prec_mul_X_of_nonneg
-    (prec_of_prec_shifted_pair_sameDegree h hf0 hg0 hfnn hgnn hdeg)
+  strictInterl_to_strictInterl_mul_X_of_nonneg
+    (strictInterl_of_strictInterl_shifted_pair_sameDegree h hf0 hg0 hfnn hgnn hdeg)
     hfnn hgnn
 
 private lemma shifted_affine_family_of_affine_family
@@ -337,7 +337,7 @@ genuine no-shortcut core:
 
 The low-degree branches are handled separately in
 `strictInterl_of_affine_family_nonneg`. -/
-private lemma prec_right_pair_of_affine_family_high_degree_core
+private lemma strictInterl_right_pair_of_affine_family_high_degree_core
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
@@ -382,7 +382,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
     have hprec_f_shift : StrictInterl f (g + X * f) :=
       StrictInterl.forward_of_orientation_of_succDegree hshift_deg hprec_or
     exact
-      prec_right_pair_of_prec_shifted_pair_sameDegree
+      strictInterl_right_pair_of_strictInterl_shifted_pair_sameDegree
         hprec_f_shift hf0 hg0 hfnn hgnn hsame
   · -- Succ-degree case: apply AllCombo directly to (g, f).
     have hg_rr : (g ≠ 0 ∧ g.Splits) :=
@@ -397,13 +397,13 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
         (allComboRealRooted_comm hall) (Or.inl hsucc.symm)
     have hprec_fg : StrictInterl f g :=
       StrictInterl.forward_of_orientation_of_succDegree hsucc hprec_or
-    exact prec_to_prec_mul_X_of_nonneg hprec_fg hfnn hgnn
+    exact strictInterl_to_strictInterl_mul_X_of_nonneg hprec_fg hfnn hgnn
 
 /-- Wrapper matching the original high-degree target. The only genuinely hard
-branches are delegated to `prec_right_pair_of_affine_family_high_degree_core`,
+branches are delegated to `strictInterl_right_pair_of_affine_family_high_degree_core`,
 while the recursive shared-root succ-degree branch is handled in
-`prec_right_pair_of_affine_family_high_degree`. -/
-private lemma prec_right_pair_of_affine_family_high_degree_remaining
+`strictInterl_right_pair_of_affine_family_high_degree`. -/
+private lemma strictInterl_right_pair_of_affine_family_high_degree_remaining
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
@@ -413,10 +413,10 @@ private lemma prec_right_pair_of_affine_family_high_degree_remaining
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hno_common_fg : ¬ ∃ r, g.IsRoot r ∧ f.IsRoot r) :
     StrictInterl g (X * f) :=
-  prec_right_pair_of_affine_family_high_degree_core
+  strictInterl_right_pair_of_affine_family_high_degree_core
     hf0 hg0 hfnn hgnn haff hno_common_fg
 
-private lemma prec_right_pair_of_affine_family_high_degree
+private lemma strictInterl_right_pair_of_affine_family_high_degree
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
@@ -501,10 +501,10 @@ private lemma prec_right_pair_of_affine_family_high_degree
           (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
       -- Step back: StrictInterl f (g + X * f) from StrictInterl (g + X * f) (X * f).
       have hprec_f_shift : StrictInterl f (g + X * f) :=
-        prec_of_prec_mul_X_of_nonneg hprec_shift hfnn hshift_nonneg
+        strictInterl_of_strictInterl_mul_X_of_nonneg hprec_shift hfnn hshift_nonneg
       -- Conclude: StrictInterl g (X * f) from the shifted-pair StrictInterl.
       exact
-        prec_right_pair_of_prec_shifted_pair_sameDegree
+        strictInterl_right_pair_of_strictInterl_shifted_pair_sameDegree
           hprec_f_shift hf0 hg0 hfnn hgnn hsame
     · have hg_rr : (g ≠ 0 ∧ g.Splits) :=
         AffineFamily.isRealRooted_right_of_affine_family_succDegree
@@ -527,9 +527,9 @@ private lemma prec_right_pair_of_affine_family_high_degree
             AffineFamily.prec_right_pair_of_affine_family_degree_one
               hqf_ne hqg_ne hqf_nonneg hqg_nonneg hqaff hqf_deg1
         · grind
-      exact prec_right_pair_of_common_root_factor hqf hqg hprec_q
+      exact strictInterl_right_pair_of_common_root_factor hqf hqg hprec_q
   · exact
-      prec_right_pair_of_affine_family_high_degree_remaining
+      strictInterl_right_pair_of_affine_family_high_degree_remaining
         hf0 hg0 hfnn hgnn haff hcommon_fg
 
 /-- Converse affine-family step used in Brändén 7.8.5:
@@ -566,8 +566,8 @@ theorem strictInterl_of_affine_family_nonneg
   · exact AffineFamily.prec_of_affine_family_nonneg_degree_one hf0 hg0 hfnn hgnn haff hdegf1
   have hdegf2 : 2 ≤ f.natDegree := by lia
   have hprec_pair : StrictInterl g (X * f) :=
-    prec_right_pair_of_affine_family_high_degree hf0 hg0 hfnn hgnn haff hdegf2
-  exact prec_of_prec_mul_X_of_nonneg hprec_pair hfnn hgnn
+    strictInterl_right_pair_of_affine_family_high_degree hf0 hg0 hfnn hgnn haff hdegf2
+  exact strictInterl_of_strictInterl_mul_X_of_nonneg hprec_pair hfnn hgnn
 
 @[deprecated strictInterl_of_affine_family_nonneg (since := "2026-09-18")]
 alias prec_of_affine_family_nonneg := strictInterl_of_affine_family_nonneg
@@ -584,7 +584,7 @@ theorem strictInterl_right_pair_of_affine_family_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     StrictInterl g (X * f) :=
-  prec_to_prec_mul_X_of_nonneg
+  strictInterl_to_strictInterl_mul_X_of_nonneg
     (strictInterl_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
     hfnn hgnn
 
@@ -600,7 +600,7 @@ endpoints themselves are real-rooted.  Then every convex interpolation
 `Pβ=(1-β)P0+βP1`, `Hβ=(1-β)H0+βH1` satisfies `Pβ ≪ Hβ`, provided the
 usual nonzero and nonnegative-coefficient hypotheses for Branden's affine
 criterion hold. -/
-theorem prec_of_affine_segment_endpoints_nonneg
+theorem strictInterl_of_affine_segment_endpoints_nonneg
     {P0 P1 H0 H1 : ℝ[X]} {β : ℝ}
     (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
     (hPβ0 : C (1 - β) * P0 + C β * P1 ≠ 0)
@@ -630,10 +630,10 @@ theorem prec_of_affine_segment_endpoints_nonneg
       (hendpoint hs ht) (hleft hs ht).1 (hleft hs ht).2 (hright hs ht).1 (hright hs ht).2 hβ0 hβ1
   grind
 
-/-- Variant of `prec_of_affine_segment_endpoints_nonneg` where endpoint
+/-- Variant of `strictInterl_of_affine_segment_endpoints_nonneg` where endpoint
 real-rootedness is recovered from positive-combination real-rootedness plus
 equal degree and positive leading coefficients at every affine specialization. -/
-theorem prec_of_affine_segment_endpoints_sameDegree_nonneg
+theorem strictInterl_of_affine_segment_endpoints_sameDegree_nonneg
     {P0 P1 H0 H1 : ℝ[X]} {β : ℝ}
     (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
     (hPβ0 : C (1 - β) * P0 + C β * P1 ≠ 0)
@@ -668,7 +668,7 @@ theorem prec_of_affine_segment_endpoints_sameDegree_nonneg
   grind
 
 /--
-ASW/PF version of `prec_of_affine_segment_endpoints_nonneg`.
+ASW/PF version of `strictInterl_of_affine_segment_endpoints_nonneg`.
 
 For every positive affine factor `sX+t`, it is enough to prove Polya-frequency
 for the coefficient sequence of each nonzero endpoint pencil `F0 + z F1`,
@@ -676,7 +676,7 @@ for the coefficient sequence of each nonzero endpoint pencil `F0 + z F1`,
 `PosComboRealRooted`; the preceding affine-segment wrapper then gives the
 directed segment relation.
 -/
-theorem prec_of_affine_segment_endpoint_pf_nonneg
+theorem strictInterl_of_affine_segment_endpoint_pf_nonneg
     {P0 P1 H0 H1 : ℝ[X]} {β : ℝ}
     (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
     (hPβ0 : C (1 - β) * P0 + C β * P1 ≠ 0)
@@ -700,7 +700,7 @@ theorem prec_of_affine_segment_endpoint_pf_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
     StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
-  refine prec_of_affine_segment_endpoints_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn ?_
+  refine strictInterl_of_affine_segment_endpoints_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn ?_
     hleft hright
   intro s t hs ht
   exact PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil
@@ -710,14 +710,14 @@ theorem prec_of_affine_segment_endpoint_pf_nonneg
     (fun {z} hz => hpencil_pf hs ht hz)
 
 /--
-TNN-named version of `prec_of_affine_segment_endpoint_pf_nonneg`.
+TNN-named version of `strictInterl_of_affine_segment_endpoint_pf_nonneg`.
 
 The LGV certificate layer naturally produces Toeplitz total nonnegativity of
 the coefficient sequence.  Since `IsPolyaFreqSeq` is the same
 predicate here, this wrapper avoids a small definitional conversion at the
 final handoff.
 -/
-theorem prec_of_affine_segment_endpoint_tnn_nonneg
+theorem strictInterl_of_affine_segment_endpoint_tnn_nonneg
     {P0 P1 H0 H1 : ℝ[X]} {β : ℝ}
     (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
     (hPβ0 : C (1 - β) * P0 + C β * P1 ≠ 0)
@@ -741,7 +741,7 @@ theorem prec_of_affine_segment_endpoint_tnn_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
     StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
-  prec_of_affine_segment_endpoint_pf_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn
+  strictInterl_of_affine_segment_endpoint_pf_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn
     hpencil_ne
     (fun {_s _t _z} hs ht hz => hpencil_tnn hs ht hz)
     hleft hright
@@ -751,7 +751,7 @@ Same-degree ASW/PF endpoint wrapper.  This is the version to use when endpoint
 real-rootedness should be recovered from positive compatibility plus equal
 degree and positive leading coefficients.
 -/
-theorem prec_of_affine_segment_endpoint_pf_sameDegree_nonneg
+theorem strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg
     {P0 P1 H0 H1 : ℝ[X]} {β : ℝ}
     (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
     (hPβ0 : C (1 - β) * P0 + C β * P1 ≠ 0)
@@ -779,7 +779,7 @@ theorem prec_of_affine_segment_endpoint_pf_sameDegree_nonneg
         (((C s * X + C t) * P1) + H1).natDegree =
           (((C s * X + C t) * P0) + H0).natDegree) :
     StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
-  refine prec_of_affine_segment_endpoints_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
+  refine strictInterl_of_affine_segment_endpoints_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
     hHβnn ?_ hleft_pos hright_pos hdeg
   intro s t hs ht
   exact PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil
@@ -791,7 +791,7 @@ theorem prec_of_affine_segment_endpoint_pf_sameDegree_nonneg
 /--
 Same-degree TNN-named endpoint wrapper.
 -/
-theorem prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg
+theorem strictInterl_of_affine_segment_endpoint_tnn_sameDegree_nonneg
     {P0 P1 H0 H1 : ℝ[X]} {β : ℝ}
     (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
     (hPβ0 : C (1 - β) * P0 + C β * P1 ≠ 0)
@@ -819,7 +819,7 @@ theorem prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg
         (((C s * X + C t) * P1) + H1).natDegree =
           (((C s * X + C t) * P0) + H0).natDegree) :
     StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
-  prec_of_affine_segment_endpoint_pf_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
+  strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
     hHβnn hpencil_ne
     (fun {_s _t _z} hs ht hz => hpencil_tnn hs ht hz)
     hleft_pos hright_pos hdeg
@@ -865,7 +865,7 @@ theorem shifted_pair_data_of_affine_family_nonneg
 /-- A nonnegative affine family already orients the shifted pair:
 `f ≺ g + X * f`. This is the public corrected replacement for the earlier
 false attempt to orient every boundary pair `(C t * f + g, X * f)`. -/
-theorem prec_shifted_pair_of_affine_family_nonneg
+theorem strictInterl_shifted_pair_of_affine_family_nonneg
     {f g : ℝ[X]}
     (hf0 : f ≠ 0)
     (hfnn : HasNonnegCoeffs f)
@@ -887,7 +887,7 @@ theorem prec_shifted_pair_of_affine_family_nonneg
 /-- Same-degree affine families recover the fixed right pair `(g, X * f)` via
 the shifted-pair seam. This is the honest same-degree boundary theorem that
 survives the linear counterexample to the stronger false bridge. -/
-theorem prec_right_pair_of_affine_family_nonneg_sameDegree
+theorem strictInterl_right_pair_of_affine_family_nonneg_sameDegree
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
@@ -897,15 +897,15 @@ theorem prec_right_pair_of_affine_family_nonneg_sameDegree
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdeg : g.natDegree = f.natDegree) :
     StrictInterl g (X * f) :=
-  prec_right_pair_of_prec_shifted_pair_sameDegree
-    (prec_shifted_pair_of_affine_family_nonneg hf0 hfnn hgnn haff)
+  strictInterl_right_pair_of_strictInterl_shifted_pair_sameDegree
+    (strictInterl_shifted_pair_of_affine_family_nonneg hf0 hfnn hgnn haff)
     hf0 hg0 hfnn hgnn hdeg
 
 /-- Public shifted-pair reduction in the same-degree nonnegative regime:
 once the corrected shifted pair satisfies `f ≺ g + X * f`, the original pair
 already satisfies `f ≺ g`. This packages the internal subtraction step used in
 the affine-family same-degree branch. -/
-theorem prec_of_prec_shifted_pair_sameDegree_nonneg
+theorem strictInterl_of_strictInterl_shifted_pair_sameDegree_nonneg
     {f g : ℝ[X]}
     (h : StrictInterl f (g + X * f))
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
@@ -913,7 +913,7 @@ theorem prec_of_prec_shifted_pair_sameDegree_nonneg
     (hgnn : HasNonnegCoeffs g)
     (hdeg : g.natDegree = f.natDegree) :
     StrictInterl f g :=
-  prec_of_prec_shifted_pair_sameDegree
+  strictInterl_of_strictInterl_shifted_pair_sameDegree
     h hf0 hg0 hfnn hgnn hdeg
 
 /-- Public wrapper of the internal positive-family degree-gap obstruction:
@@ -977,11 +977,55 @@ lemma hasNonnegCoeffs_affine_linear {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
   have hCb : HasNonnegCoeffs (C b) := by rintro (_ | n) <;> simp [hb]
   exact (nonnegCoeffs_C_mul ha hasNonnegCoeffs_X).add hCb
 
-lemma prec0_one_affine_linear {a b : ℝ} (ha : 0 < a) :
+lemma interl_one_affine_linear {a b : ℝ} (ha : 0 < a) :
     Interl (1 : ℝ[X]) (C a * X + C b) := by
   have hInter : Interlaces (1 : ℝ[X]) (C a * X + C b) := by
     refine interlaces_one_linear ?_
     grind
   exact hInter.toStrictInterl.toInterl
+
+@[deprecated strictInterl_of_affine_segment_endpoints_nonneg (since := "2026-09-18")]
+alias prec_of_affine_segment_endpoints_nonneg :=
+  strictInterl_of_affine_segment_endpoints_nonneg
+
+@[deprecated strictInterl_of_affine_segment_endpoints_sameDegree_nonneg
+  (since := "2026-09-18")]
+alias prec_of_affine_segment_endpoints_sameDegree_nonneg :=
+  strictInterl_of_affine_segment_endpoints_sameDegree_nonneg
+
+@[deprecated strictInterl_of_affine_segment_endpoint_pf_nonneg (since := "2026-09-18")]
+alias prec_of_affine_segment_endpoint_pf_nonneg :=
+  strictInterl_of_affine_segment_endpoint_pf_nonneg
+
+@[deprecated strictInterl_of_affine_segment_endpoint_tnn_nonneg (since := "2026-09-18")]
+alias prec_of_affine_segment_endpoint_tnn_nonneg :=
+  strictInterl_of_affine_segment_endpoint_tnn_nonneg
+
+@[deprecated strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg
+  (since := "2026-09-18")]
+alias prec_of_affine_segment_endpoint_pf_sameDegree_nonneg :=
+  strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg
+
+@[deprecated strictInterl_of_affine_segment_endpoint_tnn_sameDegree_nonneg
+  (since := "2026-09-18")]
+alias prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg :=
+  strictInterl_of_affine_segment_endpoint_tnn_sameDegree_nonneg
+
+@[deprecated strictInterl_shifted_pair_of_affine_family_nonneg (since := "2026-09-18")]
+alias prec_shifted_pair_of_affine_family_nonneg :=
+  strictInterl_shifted_pair_of_affine_family_nonneg
+
+@[deprecated strictInterl_right_pair_of_affine_family_nonneg_sameDegree
+  (since := "2026-09-18")]
+alias prec_right_pair_of_affine_family_nonneg_sameDegree :=
+  strictInterl_right_pair_of_affine_family_nonneg_sameDegree
+
+@[deprecated strictInterl_of_strictInterl_shifted_pair_sameDegree_nonneg
+  (since := "2026-09-18")]
+alias prec_of_prec_shifted_pair_sameDegree_nonneg :=
+  strictInterl_of_strictInterl_shifted_pair_sameDegree_nonneg
+
+@[deprecated interl_one_affine_linear (since := "2026-09-18")]
+alias prec0_one_affine_linear := interl_one_affine_linear
 
 end RealRooted

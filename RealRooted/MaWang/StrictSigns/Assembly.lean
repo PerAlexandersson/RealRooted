@@ -648,7 +648,7 @@ lemma exists_isRoot_le_of_eval_nonneg_of_tendsto_atBot_atBot {p : ℝ[X]} {r : �
 positive leading coefficient and degree `deg(f)+1`, strictly alternates sign on
 consecutive `f`-roots, is positive at the leftmost `f`-root, and negative at
 the rightmost `f`-root, then `f ⊳ F`. -/
-theorem prec_of_strict_signs_of_endSigns_even
+theorem strictInterl_of_strict_signs_of_endSigns_even
     {f F : ℝ[X]} {rs : List ℝ}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hF_pos : HasPosLeadingCoeff F)
@@ -704,7 +704,7 @@ theorem prec_of_strict_signs_of_endSigns_even
 positive leading coefficient and degree `deg(f)+1`, strictly alternates sign on
 consecutive `f`-roots, and is negative at both extreme `f`-roots, then
 `f ⊳ F`. -/
-theorem prec_of_strict_signs_of_endSigns_odd
+theorem strictInterl_of_strict_signs_of_endSigns_odd
     {f F : ℝ[X]} {rs : List ℝ}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hF_pos : HasPosLeadingCoeff F)
@@ -755,6 +755,14 @@ theorem prec_of_strict_signs_of_endSigns_odd
   exact prec_of_strict_signs_of_strict_outer_roots hf_ne hf_splits hF_ne hrs_sorted hrs_eq hdeg hn
     hsign hleft hright
 
+@[deprecated strictInterl_of_strict_signs_of_endSigns_even (since := "2026-09-18")]
+alias prec_of_strict_signs_of_endSigns_even :=
+  strictInterl_of_strict_signs_of_endSigns_even
+
+@[deprecated strictInterl_of_strict_signs_of_endSigns_odd (since := "2026-09-18")]
+alias prec_of_strict_signs_of_endSigns_odd :=
+  strictInterl_of_strict_signs_of_endSigns_odd
+
 end RealRooted.MaWangInternal
 
 namespace RealRooted
@@ -771,6 +779,8 @@ export MaWangInternal
     exists_isRoot_ge_of_eval_nonneg_of_tendsto_atTop_atBot
     exists_isRoot_le_of_eval_nonpos_of_tendsto_atBot_atTop
     exists_isRoot_le_of_eval_nonneg_of_tendsto_atBot_atBot
+    strictInterl_of_strict_signs_of_endSigns_even
+    strictInterl_of_strict_signs_of_endSigns_odd
     prec_of_strict_signs_of_endSigns_even
     prec_of_strict_signs_of_endSigns_odd)
 

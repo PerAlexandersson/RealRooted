@@ -114,7 +114,7 @@ private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
     rw [Polynomial.natDegree_C_mul hc_ne, Polynomial.natDegree_C_mul hc_ne, hdeg]
   have hprec0 : Interl (C c * b) (C c * p - X * (C c * b)) := by
     simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm, mul_assoc] using
-      prec_sub_X_mul_right
+      strictInterl_sub_X_mul_right
         (f := C c * p) (g := C c * b)
         hscaled hp_monic hb_monic hdeg_scaled
         (by
@@ -280,7 +280,7 @@ private theorem prec_b_component_of_prec_left_of_natDegree_le
       (Or.inl hdeg_aXb)
   have hprec_aXb : StrictInterl a (X * b) :=
     StrictInterl.forward_of_orientation_of_succDegree hdeg_aXb.symm hprec_or
-  exact prec_of_prec_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
+  exact strictInterl_of_strictInterl_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
 
 private theorem natDegree_X_mul_component_eq_or_succ_of_prec_left_top
     {d : ℕ} {p a b : ℝ[X]}
@@ -390,7 +390,7 @@ private theorem prec_b_component_of_prec_left_top_of_sameDegree
       (f := X * b) (g := a) (c := c) (r := 0)
       (by lia)
       hac_le hXb_root0 hc_lt0
-  exact prec_of_prec_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
+  exact strictInterl_of_strictInterl_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
 
 private theorem prec_b_component_of_prec_left_top
     {d : ℕ} {p a b : ℝ[X]}
@@ -487,7 +487,7 @@ private theorem prec_b_component_of_prec_right_top
       (f := X * b) (g := a) (c := c) (r := 0)
       (by lia)
       hac_le hXb_root0 hc_lt0
-  exact prec_of_prec_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
+  exact strictInterl_of_strictInterl_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
 
 theorem brandenSolusTheorem26_first_equiv_of_top_degree
     {d : ℕ} {p a b : ℝ[X]}

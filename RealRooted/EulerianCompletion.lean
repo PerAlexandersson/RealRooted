@@ -387,7 +387,7 @@ theorem eulerInsertionStep_derivative_prec_zeroStep
     loweringEulerStep_nonneg htheta.hasNonnegCoeffs hthetaM
   have hshift : StrictInterl (loweringEulerStep M (theta p))
       (X * loweringEulerStep M p) :=
-    prec_to_prec_mul_X_of_nonneg hlower hlower_p_nn hlower_theta_nn
+    strictInterl_to_strictInterl_mul_X_of_nonneg hlower hlower_p_nn hlower_theta_nn
   rw [loweringEulerStep_theta_eq (by lia : 2 ≤ M),
     X_mul_loweringEulerStep_eq (by lia : 1 ≤ M)] at hshift
   exact hshift

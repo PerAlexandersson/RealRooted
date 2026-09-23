@@ -100,7 +100,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
 /-- If `g ⊳ f` (differ-by-1), monic, all roots ≤ 0, then `g ≪₀ (f - X*g)`.
 This zero-aware form is the right endpoint behavior when cancellation
 `f - X*g = 0` occurs. -/
-theorem prec_sub_X_mul_right {f g : ℝ[X]}
+theorem strictInterl_sub_X_mul_right {f g : ℝ[X]}
     (hgf : StrictInterl g f)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree + 1 = f.natDegree)
@@ -180,7 +180,7 @@ theorem prec_sub_X_mul_pair_of_posLeadingCoeff {f g : ℝ[X]}
     StrictInterl g (f - X * g) ∧ StrictInterl (f - X * g) f := by
   have hsub_ne : f - X * g ≠ 0 := hsub_pos.ne_zero
   constructor
-  · exact (prec_sub_X_mul_right hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
+  · exact (strictInterl_sub_X_mul_right hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
       |>.toStrictInterl_of_ne hgf.1.1 hsub_ne
   · exact (prec_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
       |>.toStrictInterl_of_ne hsub_ne hgf.2.1.1
@@ -458,5 +458,8 @@ theorem prec_component_of_prec_next_eq_add_X_mul
   exact
     prec_component_of_prec_mul_X_of_roots_nonpos
       hU_XV hU_pos hV_pos hU_nonpos hV_nonpos hdeg_VU
+
+@[deprecated strictInterl_sub_X_mul_right (since := "2026-09-18")]
+alias prec_sub_X_mul_right := strictInterl_sub_X_mul_right
 
 end RealRooted

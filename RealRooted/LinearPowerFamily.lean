@@ -25,7 +25,7 @@ theorem prec_X_pow_succ (n : ℕ) : StrictInterl ((X : ℝ[X]) ^ n) (X ^ (n + 1)
     intro m
     rw [coeff_X_pow]
     split <;> norm_num
-  have hprec := prec_self_mul_X_of_nonneg hne hsplits hnn
+  have hprec := strictInterl_self_mul_X_of_nonneg hne hsplits hnn
   rwa [show (X : ℝ[X]) * X ^ n = X ^ (n + 1) by ring] at hprec
 
 /-- Multiplying both members of a nonnegative proper-position pair by the same
@@ -53,7 +53,7 @@ theorem prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg {f g : ℝ[X]}
     (n : ℕ) :
     StrictInterl (X ^ n * f) (X ^ (n + 1) * g) := by
   have hbase : StrictInterl f (X * g) :=
-    prec_to_prec_mul_X_of_nonneg hgf hgnn hfnn
+    strictInterl_to_strictInterl_mul_X_of_nonneg hgf hgnn hfnn
   have hbase_nonneg : HasNonnegCoeffs (X * g) := hasNonnegCoeffs_X.mul hgnn
   simpa [pow_succ, mul_assoc] using
     prec_X_pow_mul_both_of_prec_nonneg hbase hfnn hbase_nonneg n
@@ -455,7 +455,7 @@ theorem monomial_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u : ℝ}
       have hnn :=
         monomial_tail_sequence_nonneg (A := A) hc.le ha hb.le hu.le h0 h1 hstep (n + 1)
       have hprecX : StrictInterl (A (n + 1)) (X * A (n + 1)) :=
-        prec_self_mul_X_of_nonneg hne hsplits hnn
+        strictInterl_self_mul_X_of_nonneg hne hsplits hnn
       have hprec : StrictInterl (A (n + 1)) ((C u * X) * A (n + 1)) := by
         have hscaled := StrictInterl.C_mul_right hprecX hu.ne'
         simpa [mul_assoc] using hscaled

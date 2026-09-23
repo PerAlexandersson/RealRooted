@@ -85,7 +85,9 @@ theorem strictInterl_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     have hF_right_neg : F.eval ((r₀ :: rs').getLast (by lia)) < 0 := by
       have hprod := hroot_sign ((r₀ :: rs').getLast (by lia)) hlast_root
       nlinarith
-    exact prec_of_strict_signs_of_endSigns_even hf.1 hf.2 hF_pos hrs_sorted hrs_eq hdeg hn hf_even
+    exact
+      strictInterl_of_strict_signs_of_endSigns_even
+        hf.1 hf.2 hF_pos hrs_sorted hrs_eq hdeg hn hf_even
       hsign hF_left_pos hF_right_neg
   · have hg_even : Even g.natDegree := by grind
     have hg_left_pos : 0 < g.eval r₀ :=
@@ -98,7 +100,9 @@ theorem strictInterl_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     have hF_right_neg : F.eval ((r₀ :: rs').getLast (by lia)) < 0 := by
       have hprod := hroot_sign ((r₀ :: rs').getLast (by lia)) hlast_root
       nlinarith
-    exact prec_of_strict_signs_of_endSigns_odd hf.1 hf.2 hF_pos hrs_sorted hrs_eq hdeg hn hf_odd
+    exact
+      strictInterl_of_strict_signs_of_endSigns_odd
+        hf.1 hf.2 hF_pos hrs_sorted hrs_eq hdeg hn hf_odd
       hsign hF_left_neg hF_right_neg
 
 /-- Liu--Wang same-degree form: if `g ⊳ f`, `F` has the same degree as `f`,

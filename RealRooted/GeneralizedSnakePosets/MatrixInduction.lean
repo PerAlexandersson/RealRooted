@@ -321,7 +321,7 @@ theorem theorem41StepOne_prec_of_prec_nonneg {f g : ℝ[X]}
     intro s t hs ht
     have ht_one : 0 < t + 1 := by linarith
     have hbase :=
-      isRealRooted_affine_combo_of_prec_nonneg
+      isRealRooted_affine_combo_of_strictInterl_nonneg
         hf_Xg hf_nonneg hg_nonneg.X_mul hs ht_one
     have hrew :
         ((C s * X + C t) * f + (f + X * g)) =
@@ -330,7 +330,7 @@ theorem theorem41StepOne_prec_of_prec_nonneg {f g : ℝ[X]}
       ring
     rwa [hrew]
   have hshift :=
-    prec_shifted_pair_of_affine_family_nonneg
+    strictInterl_shifted_pair_of_affine_family_nonneg
       (f := f) (g := f + X * g) hgf.2.1.1 hf_nonneg hsum_nonneg haff
   simpa [left_distrib, right_distrib, mul_assoc, add_assoc, add_left_comm,
     add_comm] using hshift

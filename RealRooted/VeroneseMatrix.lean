@@ -205,7 +205,7 @@ lemma prec0_C_mul_affine_linear_X_mul_affine_linear
     isRealRooted_affine_factor (s := u) (t := v) hu
   have hfnn : HasNonnegCoeffs (C u * X + C v : ℝ[X]) :=
     hasNonnegCoeffs_affine_linear hu.le hv
-  exact (StrictInterl.C_mul_left (prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn) ha0).toInterl
+  exact (StrictInterl.C_mul_left (strictInterl_self_mul_X_of_nonneg hf.1 hf.2 hfnn) ha0).toInterl
 
 /-! ## Matrix action formula -/
 
