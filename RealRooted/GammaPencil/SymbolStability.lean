@@ -132,7 +132,7 @@ theorem gammaSymbol_even_root_order (m : ℕ) (hm : 0 < m) :
   exact neg_lt_zero.mpr (one_div_pos.mpr (by positivity))
 
 /-- The even residual factors are in the required directed proper position. -/
-theorem gammaSymbol_even_prec (m : ℕ) (hm : 0 < m) :
+theorem gammaSymbol_even_strictInterl (m : ℕ) (hm : 0 < m) :
     StrictInterl (gammaSymbolQ (2 * m)) (gammaSymbolP (2 * m) m) := by
   rw [gammaSymbolP_even, gammaSymbolQ_even m hm]
   apply StrictInterl.C_mul_right
@@ -142,6 +142,9 @@ theorem gammaSymbol_even_prec (m : ℕ) (hm : 0 < m) :
           (by positivity))
     · positivity
   · positivity
+
+@[deprecated gammaSymbol_even_strictInterl (since := "2026-09-18")]
+alias gammaSymbol_even_prec := gammaSymbol_even_strictInterl
 
 /-- For odd rank, the two roots of the first residual factor are displayed
 explicitly by its positive scalar factorization. -/
@@ -208,7 +211,7 @@ theorem gammaSymbolQ_odd_isRoot (m : ℕ) :
   simp [Polynomial.IsRoot]
 
 /-- The odd residual factors are in the required directed proper position. -/
-theorem gammaSymbol_odd_prec (m : ℕ) (hm : 0 < m) :
+theorem gammaSymbol_odd_strictInterl (m : ℕ) (hm : 0 < m) :
     StrictInterl (gammaSymbolQ (2 * m + 1)) (gammaSymbolP (2 * m + 1) m) := by
   rw [gammaSymbolP_odd, gammaSymbolQ_odd]
   apply StrictInterl.C_mul_left
@@ -219,6 +222,9 @@ theorem gammaSymbol_odd_prec (m : ℕ) (hm : 0 < m) :
         (by norm_num) (gammaSymbol_odd_root_order m hm).1.le
         (gammaSymbol_odd_root_order m hm).2.le).toStrictInterl
   · positivity
+
+@[deprecated gammaSymbol_odd_strictInterl (since := "2026-09-18")]
+alias gammaSymbol_odd_prec := gammaSymbol_odd_strictInterl
 
 private theorem gammaSymbolP_even_pos (m : ℕ) :
     HasPosLeadingCoeff (gammaSymbolP (2 * m) m) := by
@@ -261,7 +267,7 @@ theorem finiteAlgebraicSymbol_gammaOperator_even_stable (m : ℕ) (hm : 0 < m) :
   rw [finiteAlgebraicSymbol_gammaOperator_factorization _ _ hm]
   have hresidual := gammaSymbol_residual_stable
     (gammaSymbolP_even_pos m) (gammaSymbolQ_even_pos m hm)
-    (gammaSymbol_even_prec m hm) (by rw [gammaSymbolP_even_natDegree])
+    (gammaSymbol_even_strictInterl m hm) (by rw [gammaSymbolP_even_natDegree])
   simpa [complexifyMv] using hresidual.mul_X_add_X_pow 0 1 (m - 1)
 
 /-- The odd finite algebraic gamma symbol is upper-half-plane stable. -/
@@ -272,7 +278,7 @@ theorem finiteAlgebraicSymbol_gammaOperator_odd_stable (m : ℕ) (hm : 0 < m) :
   rw [finiteAlgebraicSymbol_gammaOperator_factorization _ _ hm]
   have hresidual := gammaSymbol_residual_stable
     (gammaSymbolP_odd_pos m) (gammaSymbolQ_odd_pos m)
-    (gammaSymbol_odd_prec m hm) (by rw [gammaSymbolP_odd_natDegree]; norm_num)
+    (gammaSymbol_odd_strictInterl m hm) (by rw [gammaSymbolP_odd_natDegree]; norm_num)
   simpa [complexifyMv] using hresidual.mul_X_add_X_pow 0 1 (m - 1)
 
 /-- The finite algebraic gamma symbol in its canonical degree box is stable. -/

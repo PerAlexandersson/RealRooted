@@ -51,7 +51,7 @@ theorem gammaOperator_allComboRealRooted
 /-- Proper position is transported up to the two possible orientations and
 the zero-output boundary.  Coefficient invariants resolve this ambiguity for
 the recursive gamma components in the final pencil theorem. -/
-theorem gammaOperator_prec0_or_revPrec0
+theorem gammaOperator_interl_or_reverse
     {n : ℕ} (hn : 2 ≤ n) {p q : ℝ[X]}
     (hpdeg : p.natDegree ≤ n / 2)
     (hqdeg : q.natDegree ≤ n / 2)
@@ -63,5 +63,8 @@ theorem gammaOperator_prec0_or_revPrec0
   · exact hpdeg
   · exact hqdeg
   · exact hpq
+
+@[deprecated gammaOperator_interl_or_reverse (since := "2026-09-18")]
+alias gammaOperator_prec0_or_revPrec0 := gammaOperator_interl_or_reverse
 
 end RealRooted

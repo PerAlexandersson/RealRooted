@@ -72,7 +72,7 @@ private theorem gammaU_roots_neg (n : ℕ) (hn : 2 ≤ n) :
 
 /-- The gamma components occur in the directed proper position selected by
 the zero root of `gammaV n` and the nonzero constant term of `gammaU n`. -/
-theorem gammaU_prec_gammaV (n : ℕ) (hn : 2 ≤ n) :
+theorem gammaU_strictInterl_gammaV (n : ℕ) (hn : 2 ≤ n) :
     StrictInterl (gammaU n) (gammaV n) := by
   have hall := gammaUV_allComboRealRooted n hn
   have hUne := gammaU_ne_zero n hn
@@ -107,6 +107,9 @@ theorem gammaU_prec_gammaV (n : ℕ) (hn : 2 ≤ n) :
       roots_neg_of_interlaces_of_right_roots_neg
         (hreverse.toInterlaces hrevsucc) (gammaU_roots_neg n hn)
     exact ((lt_irrefl 0) (hVneg 0 hVroot)).elim
+
+@[deprecated gammaU_strictInterl_gammaV (since := "2026-09-18")]
+alias gammaU_prec_gammaV := gammaU_strictInterl_gammaV
 
 /-- Every displayed affine gamma-pencil member is nonzero. -/
 theorem gammaU_add_C_mul_gammaV_ne_zero (a : ℝ) (n : ℕ) (hn : 2 ≤ n) :
