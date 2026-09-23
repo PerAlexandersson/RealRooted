@@ -28,7 +28,7 @@ theorem interl_fPolynomial {d : ℕ} {p q : ℝ[X]}
   rcases hpq with rfl | rfl | hpq
   · simp [interl_zero_left]
   · simp [interl_zero_right]
-  · exact (precFPolynomialTransport hpdeg hqdeg hpnn hqnn).2 hpq |>.toInterl
+  · exact (strictInterlFPolynomialTransport hpdeg hqdeg hpnn hqnn).2 hpq |>.toInterl
 
 @[deprecated interl_fPolynomial (since := "2026-09-18")]
 alias prec0_fPolynomial := interl_fPolynomial
@@ -395,7 +395,7 @@ theorem interl_chainPolynomial_succ
       (hrow.nonnegCoeffs _ (hmem j hjn))
   have hFn : F n = chainPolynomial R n :=
     subdivisionOperator_resolutionPolynomial_diagonal resolution n
-  have hstep := prec0_mul_X_of_prec0 hSprec hSnn
+  have hstep := interl_mul_X_of_interl hSprec hSnn
     (hrow.nonnegCoeffs _ (hmem n le_rfl))
   rw [hFn] at hstep
   rw [chainPolynomial_succ_eq_resolution_sum resolution]

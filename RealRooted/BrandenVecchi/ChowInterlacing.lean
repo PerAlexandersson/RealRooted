@@ -245,7 +245,7 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     rw [hq_alt]
     exact (natDegree_add_le T gr).trans (max_le hTdegree hgrdegree)
   have hgq0 : Interl g q := by
-    have hgXT0 := prec0_mul_X_of_prec0 hTg0 hTnn hgnn
+    have hgXT0 := interl_mul_X_of_interl hTg0 hTnn hgnn
     have hgg0 := Interl.refl hgreal
     simpa [q] using
       prec0_add_right_of_common_left_of_nonneg hgXT0 hgg0 hXTnn hgnn
@@ -254,7 +254,7 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     rw [hq_alt]
     exact prec0_add_left_of_common_right_of_nonneg hTgr0 hgrgr0 hTnn hgrnn
   have hfrXS0 : Interl fr XS := by
-    simpa [XS] using prec0_mul_X_of_prec0 hSfr0 hSnn hfrnn
+    simpa [XS] using interl_mul_X_of_interl hSfr0 hSnn hfrnn
   have hSreal : S ≠ 0 → S.Splits := by
     intro hS_ne
     have hf_ne : f ≠ 0 := by
@@ -264,7 +264,7 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     exact (hSf0.toStrictInterl_of_ne hS_ne hf_ne).1.2
   have hSXS0 : Interl S XS := by
     have hSS0 := Interl.refl hSreal
-    simpa [XS] using prec0_mul_X_of_prec0 hSS0 hSnn hSnn
+    simpa [XS] using interl_mul_X_of_interl hSS0 hSnn hSnn
   have hqreal : q ≠ 0 → q.Splits := by
     intro hq_ne
     have hg_ne : g ≠ 0 := by

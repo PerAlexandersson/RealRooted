@@ -101,7 +101,7 @@ theorem gwSchurProduct_prec0_right_linearFactor_of_derivative_prec0
   have hX :
       Interl (gwSchurProduct f p)
         (X * gwSchurProduct (gwD f) p) :=
-    prec0_mul_X_of_prec0 hder hD.hasNonnegCoeffs hF.hasNonnegCoeffs
+    interl_mul_X_of_interl hder hD.hasNonnegCoeffs hF.hasNonnegCoeffs
   have hself : Interl (gwSchurProduct f p) (gwSchurProduct f p) :=
     hF.prec0_self
   have hcombo :

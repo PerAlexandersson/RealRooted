@@ -161,7 +161,7 @@ theorem compositionRows_positivePartSeries_pf_and_prec0
           (ha_pf k) (ha0pos k) n)
       exact tendsto_coeff_compositionRow_positivePartSeries halim n
     · intro n
-      apply prec0_of_pf_coeff_tendsto_of_natDegree_le
+      apply interl_of_pf_coeff_tendsto_of_natDegree_le
         (fun k => compositionRow_positivePartSeries_isPFPolynomial
           (ha_pf k) (ha0pos k) n)
         (fun k => compositionRow_positivePartSeries_isPFPolynomial

@@ -146,7 +146,7 @@ theorem kernelRows_pf_and_prec0_of_tendsto
     exact tendsto_coeff_regularizedKernelRow G hlim i
   · intro i
     rw [← hregularized_eq i.castSucc, ← hregularized_eq i.succ]
-    apply prec0_of_pf_coeff_tendsto_of_natDegree_le
+    apply interl_of_pf_coeff_tendsto_of_natDegree_le
       (fun m => regularizedKernelRow_isPFPolynomial hg (hη m) hG (hH m)
         hGlower (hHlower m) hGdiag (hHdiag m) i.castSucc)
       (fun m => regularizedKernelRow_isPFPolynomial hg (hη m) hG (hH m)

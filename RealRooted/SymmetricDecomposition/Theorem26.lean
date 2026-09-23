@@ -890,17 +890,21 @@ lemma prec_iff_prec_mul_X_add_one_pow_both {n : ℕ} {f g : ℝ[X]} :
 /-- Reduced transport target: it is enough to treat the minimal ambient degree
 `max u.natDegree v.natDegree`, since larger ambient degrees only add a common
 power of `X + 1` to both transformed polynomials. -/
-def precFPolynomialTransportMinimalStatement : Prop :=
+def strictInterlFPolynomialTransportMinimalStatement : Prop :=
   ∀ {d : ℕ} {u v : ℝ[X]},
     d = max u.natDegree v.natDegree →
     HasNonnegCoeffs u →
     HasNonnegCoeffs v →
     (StrictInterl (fPolynomial d u) (fPolynomial d v) ↔ StrictInterl u v)
 
+@[deprecated strictInterlFPolynomialTransportMinimalStatement (since := "2026-09-18")]
+abbrev precFPolynomialTransportMinimalStatement :=
+  strictInterlFPolynomialTransportMinimalStatement
+
 /-- Honest missing transport problem behind Brändén--Solus Theorem 2.6:
 the `f`-polynomial transform should preserve the oriented interlacing relation
 on nonnegative-coefficient pairs of degree at most `d`. -/
-def precFPolynomialTransportStatement : Prop :=
+def strictInterlFPolynomialTransportStatement : Prop :=
   ∀ {d : ℕ} {u v : ℝ[X]},
     u.natDegree ≤ d →
     v.natDegree ≤ d →
@@ -908,7 +912,11 @@ def precFPolynomialTransportStatement : Prop :=
     HasNonnegCoeffs v →
     (StrictInterl (fPolynomial d u) (fPolynomial d v) ↔ StrictInterl u v)
 
-theorem precFPolynomialTransportMinimal : precFPolynomialTransportMinimalStatement := by
+@[deprecated strictInterlFPolynomialTransportStatement (since := "2026-09-18")]
+abbrev precFPolynomialTransportStatement := strictInterlFPolynomialTransportStatement
+
+theorem strictInterlFPolynomialTransportMinimal :
+    strictInterlFPolynomialTransportMinimalStatement := by
   intro d u v hd hu_nonneg hv_nonneg
   constructor
   · intro h
@@ -923,9 +931,12 @@ theorem precFPolynomialTransportMinimal : precFPolynomialTransportMinimalStateme
   · intro h
     exact prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal hd h hu_nonneg hv_nonneg
 
-theorem precFPolynomialTransport_of_minimal
-    (hminimal : precFPolynomialTransportMinimalStatement) :
-    precFPolynomialTransportStatement := by
+@[deprecated strictInterlFPolynomialTransportMinimal (since := "2026-09-18")]
+alias precFPolynomialTransportMinimal := strictInterlFPolynomialTransportMinimal
+
+theorem strictInterlFPolynomialTransport_of_minimal
+    (hminimal : strictInterlFPolynomialTransportMinimalStatement) :
+    strictInterlFPolynomialTransportStatement := by
   intro d u v hud hvd hu_nonneg hv_nonneg
   let m := max u.natDegree v.natDegree
   have hum : u.natDegree ≤ m := le_max_left _ _
@@ -943,11 +954,17 @@ theorem precFPolynomialTransport_of_minimal
           prec_iff_prec_mul_X_add_one_pow_both
     _ ↔ StrictInterl u v := hminimal (d := m) rfl hu_nonneg hv_nonneg
 
-theorem precFPolynomialTransport : precFPolynomialTransportStatement :=
-  precFPolynomialTransport_of_minimal precFPolynomialTransportMinimal
+@[deprecated strictInterlFPolynomialTransport_of_minimal (since := "2026-09-18")]
+alias precFPolynomialTransport_of_minimal := strictInterlFPolynomialTransport_of_minimal
 
-theorem brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport
-    (htransport : precFPolynomialTransportStatement)
+theorem strictInterlFPolynomialTransport : strictInterlFPolynomialTransportStatement :=
+  strictInterlFPolynomialTransport_of_minimal strictInterlFPolynomialTransportMinimal
+
+@[deprecated strictInterlFPolynomialTransport (since := "2026-09-18")]
+alias precFPolynomialTransport := strictInterlFPolynomialTransport
+
+theorem brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
+    (htransport : strictInterlFPolynomialTransportStatement)
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -962,6 +979,11 @@ theorem brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport
     (u := IdTransform d p) (v := p)
     (IdTransform_natDegree_le hd) hd hId_nonneg hp_nonneg).symm
 
+@[deprecated brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
+  (since := "2026-09-18")]
+alias brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport :=
+  brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
+
 theorem brandenSolusTheorem26_last_equiv
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
@@ -970,8 +992,8 @@ theorem brandenSolusTheorem26_last_equiv
     (hb_nonneg : HasNonnegCoeffs b) :
     (StrictInterl (IdTransform d p) p ↔
       StrictInterl (RdTransform d (fPolynomial d p)) (fPolynomial d p)) :=
-  brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport
-    precFPolynomialTransport hd hid ha_nonneg hb_nonneg
+  brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
+    strictInterlFPolynomialTransport hd hid ha_nonneg hb_nonneg
 
 private theorem brandenSolusTheorem26_descend_of_lt_top
     {d : ℕ} {p a b : ℝ[X]}

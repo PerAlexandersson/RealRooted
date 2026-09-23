@@ -297,9 +297,9 @@ theorem chowRowTransform_prec0_of_lt
     (h₁₂.sublist (by simp) |>
       IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0_self_reflect).1
   have hh₁XS₀ : Interl h₁ (X * chowS n h₀) :=
-    prec0_mul_X_of_prec0 h₀₁.chowS_prec0 hS₀nn h₁nn
+    interl_mul_X_of_interl h₀₁.chowS_prec0 hS₀nn h₁nn
   have hh₁XS₁ : Interl h₁ (X * chowS n h₁) :=
-    prec0_mul_X_of_prec0
+    interl_mul_X_of_interl
       (h₁₁.chowS_nonnegCoeffs_and_prec0_self_reflect).2.1 hS₁nn h₁nn
   have hext := h₁₂.chowSExtension
   have hh₁q₂ : Interl h₁ (X * chowS n h₂ + h₂) := by

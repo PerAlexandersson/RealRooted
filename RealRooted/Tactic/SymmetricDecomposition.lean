@@ -38,7 +38,7 @@ theorem prec_fPolynomial_of_prec
     (hv_nonneg : HasNonnegCoeffs v)
     (h : StrictInterl u v) :
     StrictInterl (fPolynomial d u) (fPolynomial d v) :=
-  (precFPolynomialTransport hud hvd hu_nonneg hv_nonneg).mpr h
+  (strictInterlFPolynomialTransport hud hvd hu_nonneg hv_nonneg).mpr h
 
 /-- Backward `StrictInterl` transport through `fPolynomial` in any ambient degree. -/
 theorem prec_of_prec_fPolynomial
@@ -49,7 +49,7 @@ theorem prec_of_prec_fPolynomial
     (hv_nonneg : HasNonnegCoeffs v)
     (h : StrictInterl (fPolynomial d u) (fPolynomial d v)) :
     StrictInterl u v :=
-  (precFPolynomialTransport hud hvd hu_nonneg hv_nonneg).mp h
+  (strictInterlFPolynomialTransport hud hvd hu_nonneg hv_nonneg).mp h
 
 theorem isRealRooted_fPolynomial_sequence_of_isRealRooted_cert
     {d : Nat → Nat} {P : Nat → ℝ[X]}
@@ -253,7 +253,7 @@ macro_rules
         left_nonneg := $hu:term,
         right_nonneg := $hv:term) =>
       `(tactic|
-        exact RealRooted.precFPolynomialTransport $hud $hvd $hu $hv)
+        exact RealRooted.strictInterlFPolynomialTransport $hud $hvd $hu $hv)
   | `(tactic|
       rr_fPolynomial_pos_combo using
         prec := $hprec:term,

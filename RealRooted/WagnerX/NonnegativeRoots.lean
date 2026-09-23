@@ -304,13 +304,16 @@ theorem prec_C_mul_X_of_prec_of_nonneg {f g : ℝ[X]} {c : ℝ}
 
 /-- Zero-aware Wagner (3): if `f ≪₀ g` and both polynomials have nonnegative
 coefficients, then `g ≪₀ X * f`. -/
-theorem prec0_mul_X_of_prec0 {f g : ℝ[X]}
+theorem interl_mul_X_of_interl {f g : ℝ[X]}
     (h : Interl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     Interl g (X * f) := by
   rcases h with rfl | rfl | hfg
   · simpa using interl_zero_right g
   · exact interl_zero_left (X * f)
   · exact (prec_mul_X_of_prec_of_nonneg hfg hfnn hgnn).toInterl
+
+@[deprecated interl_mul_X_of_interl (since := "2026-09-18")]
+alias prec0_mul_X_of_prec0 := interl_mul_X_of_interl
 
 /-- Multiplying both polynomials by `X` preserves strict interlacing when all
 roots are nonpositive. -/

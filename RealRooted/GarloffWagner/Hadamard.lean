@@ -55,7 +55,7 @@ theorem gwSchurProduct_firstDoubleDeletedTerm_prec0
     gwSchurProductPrec0_left hf hT hpL
       (gwL_sub_C_mul_gwD_gwL_prec0_self hp hu)
   exact
-    prec0_mul_X_of_prec0 hprecT
+    interl_mul_X_of_interl hprecT
       (gwSchurProductPF hf hT).hasNonnegCoeffs
       (gwSchurProductPF hf hpL).hasNonnegCoeffs
 

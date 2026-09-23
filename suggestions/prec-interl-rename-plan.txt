@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  615  Lean declarations requiring semantic review
-  224  tactic declarations requiring an alias-first migration
+  610  Lean declarations requiring semantic review
+  223  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
-   29  statement scaffolds requiring proof-status-preserving renames
-  247  deprecated compatibility identifiers with canonical targets
+   27  statement scaffolds requiring proof-status-preserving renames
+  255  deprecated compatibility identifiers with canonical targets
    36  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -204,6 +204,12 @@ The #899 Branden--Leite chain-polynomial batch canonicalizes the zero-aware
 `fPolynomial` transport and the weak/strict consecutive-chain theorems,
 including their totally-nonnegative specializations.  Exact deprecated aliases
 preserve all five public signatures.
+
+The #900 shared transport batch canonicalizes the zero-aware `mul_X` theorem,
+the PF coefficient-limit theorem, and the full checked
+`strictInterlFPolynomialTransport` statement/minimal/witness family together
+with its Branden--Solus conditional consumer.  Exact deprecated compatibility
+declarations preserve all eight public names; proof status is unchanged.
 
 The #892 compatibility/right-pencil batch canonicalizes the failed succ-degree
 orientation statement interface and its seven checked conditional reductions.

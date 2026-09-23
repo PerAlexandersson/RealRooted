@@ -26,10 +26,10 @@ theorem prec0_linearFactorStep {D F : ℝ[X]} {r : ℝ}
     (hD : IsPFPolynomial D) (hF : IsPFPolynomial F) :
     Interl F (linearFactorStep r D F) := by
   have hX : Interl F (X * D) :=
-    prec0_mul_X_of_prec0 hDF hD.hasNonnegCoeffs hF.hasNonnegCoeffs
+    interl_mul_X_of_interl hDF hD.hasNonnegCoeffs hF.hasNonnegCoeffs
   have hself : Interl F F := hF.prec0_self
   have hXF : Interl F (X * F) :=
-    prec0_mul_X_of_prec0 hself hF.hasNonnegCoeffs hF.hasNonnegCoeffs
+    interl_mul_X_of_interl hself hF.hasNonnegCoeffs hF.hasNonnegCoeffs
   have hcomboX :
       Interl F (C (1 : ℝ) * (X * D) + C (1 : ℝ) * (X * F)) :=
     prec0_nonneg_combo_right_of_common_left_of_nonneg hX hXF
