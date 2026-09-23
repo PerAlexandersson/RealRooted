@@ -54,7 +54,7 @@ theorem ternaryRunPolynomial_prec (n : ℕ) :
               ternaryRunPolynomial m +
             (C (3 / ((m : ℝ) + 1)) * X * (1 - X)) *
               (ternaryRunPolynomial m).derivative) := by
-        apply prec_mw_derivative_of_nonpos_of_pos_natDegree ih'.2.1.2
+        apply strictInterl_mw_derivative_of_nonpos_of_pos_natDegree ih'.2.1.2
         · rw [natDegree_ternaryRunPolynomial]
           simp [m]
         · rw [← ternaryRunPolynomial_succ_eq_linear_add_derivative,

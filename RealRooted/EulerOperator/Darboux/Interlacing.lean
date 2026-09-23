@@ -40,7 +40,7 @@ theorem prec_neg_darbouxOperator_of_roots_mem_Icc
     simp [darbouxOperator]
     ring
   rw [hrecur] at houtput_pos hdeg_lo hdeg_hi ⊢
-  apply prec_mw_derivative_of_nonpos_of_pos_natDegree hp hdegp
+  apply strictInterl_mw_derivative_of_nonpos_of_pos_natDegree hp hdegp
       hdeg_lo hdeg_hi houtput_pos hp_pos
   intro r hr
   have hr_mem : r ∈ p.roots := (mem_roots hp_pos.ne_zero).mpr hr

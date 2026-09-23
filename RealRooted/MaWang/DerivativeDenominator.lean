@@ -99,7 +99,7 @@ theorem prec_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
+  strictInterl_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
     hbase hpos hnonneg hdeg_two
     (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)

@@ -15,7 +15,7 @@ namespace RealRooted
 /-- Weak Ma--Wang derivative step using the Liu--Wang sign criterion.  This is
 useful when the derivative coefficient can vanish at endpoint roots, so the
 strict Ma--Wang sign condition is too strong. -/
-theorem prec_mw_derivative_of_nonpos_of_pos_natDegree {f u v : ℝ[X]}
+theorem strictInterl_mw_derivative_of_nonpos_of_pos_natDegree {f u v : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 1 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
@@ -42,7 +42,7 @@ theorem prec_mw_derivative_of_nonpos {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
     StrictInterl f (u * f + v * f.derivative) :=
-  prec_mw_derivative_of_nonpos_of_pos_natDegree hf (by lia)
+  strictInterl_mw_derivative_of_nonpos_of_pos_natDegree hf (by lia)
     hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos
 
 /-- Ma--Wang derivative step where the target leading-coefficient and degree
@@ -176,5 +176,10 @@ theorem prec_mw_derivative_neg_C_mul_X_sq {f u : ℝ[X]} {c : ℝ}
     StrictInterl f (u * f + (-(C c) * X ^ 2) * f.derivative) :=
   prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
     (fun _ _ => eval_neg_C_mul_X_sq_nonpos_of_nonneg hc)
+
+@[deprecated strictInterl_mw_derivative_of_nonpos_of_pos_natDegree
+  (since := "2026-09-18")]
+alias prec_mw_derivative_of_nonpos_of_pos_natDegree :=
+  strictInterl_mw_derivative_of_nonpos_of_pos_natDegree
 
 end RealRooted

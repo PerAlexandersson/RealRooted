@@ -92,7 +92,7 @@ theorem prec_endpointDerivative {f : ℝ[X]} {a b : ℝ}
   have htarget_pos : HasPosLeadingCoeff (q * f.derivative) :=
     hasPosLeadingCoeff_endpointDerivative hf_pos hdeg
   have hprec : StrictInterl f (0 * f + q * f.derivative) :=
-    prec_mw_derivative_of_nonpos_of_pos_natDegree hf hdeg
+    strictInterl_mw_derivative_of_nonpos_of_pos_natDegree hf hdeg
       (by simp only [zero_mul, zero_add]; rw [htarget_deg]; lia)
       (by simp only [zero_mul, zero_add]; rw [htarget_deg])
       (by simpa using htarget_pos) hf_pos (by
@@ -143,7 +143,7 @@ theorem prec_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
     rw [← htarget_eq]
     exact hasPosLeadingCoeff_derivative_endpointProduct hf_pos
   have hprec : StrictInterl f (q.derivative * f + q * f.derivative) :=
-    prec_mw_derivative_of_nonpos_of_pos_natDegree hf hdeg
+    strictInterl_mw_derivative_of_nonpos_of_pos_natDegree hf hdeg
       (by rw [htarget_deg]; lia) (by rw [htarget_deg]) htarget_pos hf_pos (by
         intro r hr
         exact eval_endpointQuadratic_nonpos_of_mem_Icc (hroots r hr))

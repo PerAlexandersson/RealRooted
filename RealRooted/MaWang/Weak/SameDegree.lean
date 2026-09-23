@@ -149,7 +149,8 @@ theorem strictInterl_of_interlaces_evalCoeff_nonpos_same_of_no_common
             · simp
           lia
   simpa [F] using
-    prec_of_count_bounds_same hf.1 hf.2 hF.1 hF.2 hrs_sorted hts_sorted hrs_eq hts_eq hdeg hlt hle
+    strictInterl_of_count_bounds_same
+      hf.1 hf.2 hF.1 hF.2 hrs_sorted hts_sorted hrs_eq hts_eq hdeg hlt hle
 
 /-- Weak-sign Liu--Wang differ-by-1 theorem in the no-common-roots regime. -/
 theorem strictInterl_of_interlaces_evalCoeff_nonpos_succ_of_no_common
@@ -343,7 +344,7 @@ theorem strictInterl_of_interlaces_evalCoeff_nonpos_succ_of_no_common
           · simp
         lia
   simpa [F] using
-    prec_of_count_bounds_succ hf.1 hf.2 hF.1 hF.2 hrs_sorted
+    strictInterl_of_count_bounds_succ hf.1 hf.2 hF.1 hF.2 hrs_sorted
       hts_sorted hrs_eq hts_eq hdeg hhead hlt hle
 
 @[deprecated strictInterl_of_interlaces_evalCoeff_nonpos_same_of_no_common

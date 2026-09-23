@@ -531,7 +531,7 @@ lemma listInterlaces_with_outer :
 
 /-- Assemble a differ-by-1 `StrictInterl` statement from strict sign changes on a sorted
 root list together with one strict outer root on each side. -/
-theorem prec_of_strict_signs_of_strict_outer_roots
+theorem strictInterl_of_strict_signs_of_strict_outer_roots
     {f F : ℝ[X]} {rs : List ℝ}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hF_ne : F ≠ 0)
     (hrs_sorted : rs.Pairwise (· ≤ ·))
@@ -644,7 +644,7 @@ lemma exists_isRoot_le_of_eval_nonneg_of_tendsto_atBot_atBot {p : ℝ[X]} {r : �
   · exact exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot hpos ht
 
 /-- Even-left endpoint version of
-`prec_of_strict_signs_of_strict_outer_roots`: if `f` has even degree, `F` has
+`strictInterl_of_strict_signs_of_strict_outer_roots`: if `f` has even degree, `F` has
 positive leading coefficient and degree `deg(f)+1`, strictly alternates sign on
 consecutive `f`-roots, is positive at the leftmost `f`-root, and negative at
 the rightmost `f`-root, then `f ⊳ F`. -/
@@ -696,11 +696,11 @@ theorem strictInterl_of_strict_signs_of_endSigns_even
     refine ⟨uR, huR_root, ?_⟩
     intro r hr
     exact lt_of_le_of_lt (hrs_sorted.rel_getLast hr) hlast_lt_uR
-  exact prec_of_strict_signs_of_strict_outer_roots hf_ne hf_splits hF_ne hrs_sorted hrs_eq hdeg hn
-    hsign hleft hright
+  exact strictInterl_of_strict_signs_of_strict_outer_roots
+    hf_ne hf_splits hF_ne hrs_sorted hrs_eq hdeg hn hsign hleft hright
 
 /-- Odd-left endpoint version of
-`prec_of_strict_signs_of_strict_outer_roots`: if `f` has odd degree, `F` has
+`strictInterl_of_strict_signs_of_strict_outer_roots`: if `f` has odd degree, `F` has
 positive leading coefficient and degree `deg(f)+1`, strictly alternates sign on
 consecutive `f`-roots, and is negative at both extreme `f`-roots, then
 `f ⊳ F`. -/
@@ -752,8 +752,8 @@ theorem strictInterl_of_strict_signs_of_endSigns_odd
     refine ⟨uR, huR_root, ?_⟩
     intro r hr
     exact lt_of_le_of_lt (hrs_sorted.rel_getLast hr) hlast_lt_uR
-  exact prec_of_strict_signs_of_strict_outer_roots hf_ne hf_splits hF_ne hrs_sorted hrs_eq hdeg hn
-    hsign hleft hright
+  exact strictInterl_of_strict_signs_of_strict_outer_roots
+    hf_ne hf_splits hF_ne hrs_sorted hrs_eq hdeg hn hsign hleft hright
 
 @[deprecated strictInterl_of_strict_signs_of_endSigns_even (since := "2026-09-18")]
 alias prec_of_strict_signs_of_endSigns_even :=
@@ -762,6 +762,11 @@ alias prec_of_strict_signs_of_endSigns_even :=
 @[deprecated strictInterl_of_strict_signs_of_endSigns_odd (since := "2026-09-18")]
 alias prec_of_strict_signs_of_endSigns_odd :=
   strictInterl_of_strict_signs_of_endSigns_odd
+
+@[deprecated strictInterl_of_strict_signs_of_strict_outer_roots
+  (since := "2026-09-18")]
+alias prec_of_strict_signs_of_strict_outer_roots :=
+  strictInterl_of_strict_signs_of_strict_outer_roots
 
 end RealRooted.MaWangInternal
 
@@ -774,6 +779,7 @@ export MaWangInternal
     mul_neg_of_mul_neg_of_mul_neg
     strictInterl_same_of_strict_signs_of_right_root
     prec_same_of_strict_signs_of_right_root
+    strictInterl_of_strict_signs_of_strict_outer_roots
     prec_of_strict_signs_of_strict_outer_roots
     exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop
     exists_isRoot_ge_of_eval_nonneg_of_tendsto_atTop_atBot

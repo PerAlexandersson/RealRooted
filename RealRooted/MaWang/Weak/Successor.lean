@@ -136,7 +136,7 @@ theorem strictInterl_of_interlaces_eval_mul_nonpos_same_of_no_common
             · simp
           lia
   exact
-    prec_of_count_bounds_same hf.1 hf.2 hF_ne hF_splits hrs_sorted
+    strictInterl_of_count_bounds_same hf.1 hf.2 hF_ne hF_splits hrs_sorted
       hts_sorted hrs_eq hts_eq hdeg hlt hle
 
 /-- Generic weak-sign differ-by-1 theorem: if `g ⊳ f`, `F` is real-rooted with
@@ -315,7 +315,7 @@ theorem strictInterl_of_interlaces_eval_mul_nonpos_succ_of_no_common
           · simp
         lia
   exact
-    prec_of_count_bounds_succ hf.1 hf.2 hF_ne hF_splits hrs_sorted
+    strictInterl_of_count_bounds_succ hf.1 hf.2 hF_ne hF_splits hrs_sorted
       hts_sorted hrs_eq hts_eq hdeg hhead hlt hle
 
 /-- Degree-bounded generic weak-sign theorem in the no-common-roots regime. -/

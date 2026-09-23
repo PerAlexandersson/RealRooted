@@ -89,7 +89,7 @@ theorem brandenEulerStep_prec {r : ℝ} {p : ℝ[X]} {n : ℕ}
     (hroot_hi : ∀ x ∈ p.roots, x ≤ 0) :
     StrictInterl p (brandenEulerStep r p) := by
   have hstep := brandenEulerStep_degree_pos (r := r) hp_pos hdeg
-  apply prec_mw_derivative_of_nonpos_of_pos_natDegree
+  apply strictInterl_mw_derivative_of_nonpos_of_pos_natDegree
       (u := X + C r) (v := X * (1 + X)) hp_splits
   · simpa [hdeg] using hn
   · change p.natDegree ≤ (brandenEulerStep r p).natDegree
