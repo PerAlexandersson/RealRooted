@@ -163,7 +163,7 @@ theorem prec_eulerInsertionStep
     have hder_pos : HasPosLeadingCoeff p.derivative :=
       hp_pos.derivative hpdeg0
     rw [eulerInsertionStep_eq]
-    refine prec_of_interlaces_evalCoeff_nonpos
+    refine strictInterl_of_interlaces_evalCoeff_nonpos
       hder hder_pos ?_ ?_ ?_ ?_
     · rw [← eulerInsertionStep_eq]
       exact hout_pos

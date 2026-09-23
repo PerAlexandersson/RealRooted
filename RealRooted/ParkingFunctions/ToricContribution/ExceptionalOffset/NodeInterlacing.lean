@@ -285,7 +285,7 @@ private theorem prec_derivative_of_nonpos_of_pos_natDegree
     interlaces_derivative_of_pos_natDegree hpPos.ne_zero hp hpPos hdegree
   have hderivativePos : HasPosLeadingCoeff p.derivative :=
     hpPos.derivative (by lia)
-  exact prec_of_interlaces_evalCoeff_nonpos
+  exact strictInterl_of_interlaces_evalCoeff_nonpos
     (f := p) (g := p.derivative) (a := u) (b := v)
     hderivative hderivativePos houtputPos hdegreeLower hdegreeUpper hvNonpos
 

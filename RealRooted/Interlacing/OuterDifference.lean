@@ -567,7 +567,7 @@ theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
         rw [eval_sub]
         linarith
       exact
-        prec_of_interlaces_eval_mul_nonpos_of_no_common
+        strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
           hder_inter hgder_pos hsub_pos.ne_zero hsub_splits hsub_pos
           hdeg_lo hdeg_hi hno hroot_sign
 

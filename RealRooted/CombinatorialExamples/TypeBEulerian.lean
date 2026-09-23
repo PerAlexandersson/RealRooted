@@ -219,7 +219,7 @@ theorem prec_typeBEulerian_succ :
               ((mem_roots (prec_typeBEulerian_succ n).2.1.1).mpr hr)
         exact eval_typeBEulerianCoeffB_nonpos_of_nonpos hr_nonpos
       simpa [hNext_eq] using
-        prec_of_interlaces_evalCoeff_nonpos
+        strictInterl_of_interlaces_evalCoeff_nonpos
           (f := typeBEulerian (n + 1))
           (g := (typeBEulerian (n + 1)).derivative)
           (a := typeBEulerianCoeffA (n + 1))

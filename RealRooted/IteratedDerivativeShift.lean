@@ -242,7 +242,9 @@ private lemma isRealRooted_TDeriv_pos {eps : ℝ} {p : ℝ[X]}
     grind
   -- Apply Ma-Wang
   rw [hrewrite]
-  exact (prec_of_interlaces_evalCoeff_nonpos hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos).2.1
+  exact
+    (strictInterl_of_interlaces_evalCoeff_nonpos
+      hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos).2.1
 
 /-- T_ε is additive. -/
 lemma TDeriv_add (eps : ℝ) (p q : ℝ[X]) :
@@ -863,7 +865,9 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
           simp [eval_C]
           linarith
         rw [hrewrite_neg]
-        exact prec_of_interlaces_evalCoeff_nonpos hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos
+        exact
+          strictInterl_of_interlaces_evalCoeff_nonpos
+            hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos
       have hleft : StrictInterl p (TDeriv eps (-p)) := by
         simpa using StrictInterl.C_mul_left hprec_neg (by simp : (-1 : ℝ) ≠ 0)
       have hboth : StrictInterl p (TDeriv eps p) := by
@@ -887,7 +891,9 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
         simp [eval_C]
         linarith
       rw [hrewrite]
-      exact prec_of_interlaces_evalCoeff_nonpos hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos
+      exact
+        strictInterl_of_interlaces_evalCoeff_nonpos
+          hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos
   · push Not at hdeg2
     have hdeg01 : p.natDegree = 0 ∨ p.natDegree = 1 := by lia
     rcases hdeg01 with h0 | h1

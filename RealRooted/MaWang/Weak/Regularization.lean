@@ -8,7 +8,7 @@ namespace RealRooted.MaWangInternal
 
 /-- Weak-sign Liu--Wang perturbation step: subtracting a small positive constant from the
 coefficient of `g` makes the root-sign condition strict, so the strict mixed theorem applies. -/
-theorem prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
+theorem strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -54,7 +54,7 @@ theorem isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0)
     {δ : ℝ} (hδ : 0 < δ) :
     (((a * f + b * g) - C δ * g) ≠ 0 ∧ ((a * f + b * g) - C δ * g).Splits) :=
-  (prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
+  (strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     hgf hg_pos hF_pos hdeg_lo hdeg_hi hno hb_nonpos hδ).2.1
 lemma mem_range_of_mem_aroots_of_isRealRooted {p : ℝ[X]}
     (hp_splits : p.Splits)
@@ -345,13 +345,19 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
   rw [← hF_eq]
   simp_all [-hF_eq]
 
+@[deprecated strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
+  (since := "2026-09-18")]
+alias prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common :=
+  strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
+
 
 end RealRooted.MaWangInternal
 
 namespace RealRooted
 
 export MaWangInternal
-  (prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
+  (strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
+    prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
     isRealRooted_of_interlaces_sub_C_mul_of_forall_pos)

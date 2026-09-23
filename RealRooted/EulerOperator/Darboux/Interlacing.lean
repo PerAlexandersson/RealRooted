@@ -88,7 +88,7 @@ theorem darbouxOperator_shift_prec
     ring
   change StrictInterl shifted base
   rw [hrecur]
-  apply prec_of_interlaces_evalCoeff_nonpos
+  apply strictInterl_of_interlaces_evalCoeff_nonpos
   · exact hinter
   · exact hp_pos
   · simpa [hrecur, base] using hbase_pos

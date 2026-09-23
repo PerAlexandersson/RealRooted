@@ -182,7 +182,7 @@ theorem interlaces_of_derivative_linear_pos_const
           have := hroots_nonpos r hr
           simp only [eval_mul, eval_C, eval_X]
           nlinarith [le_of_lt hb_pos, this]
-        have := prec_of_interlaces_evalCoeff_nonpos
+        have := strictInterl_of_interlaces_evalCoeff_nonpos
           (f := P (n + 1)) (g := (P (n + 1)).derivative)
           (a := C a + C c * X) (b := C b * X)
           hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos

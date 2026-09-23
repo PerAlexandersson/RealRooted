@@ -109,7 +109,7 @@ lemma prec_step_of_quadratic_derivative_shift
       (C (1) * X + C (-1) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
     intro r hr
     exact quadratic_derivative_shift_v_nonpos_of_nonpos (hroots_nonpos r hr)
-  have := prec_of_interlaces_evalCoeff_nonpos
+  have := strictInterl_of_interlaces_evalCoeff_nonpos
     (f := P m) (g := (P m).derivative)
     (a := C 1 + C (s + (m : ℝ)) * X) (b := C (1) * X + C (-1) * X ^ 2)
     hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
@@ -169,7 +169,7 @@ theorem prec_of_quadratic_derivative_shift
           (hasNonnegCoeffs_of_quadratic_derivative_shift P s h0 hrec hs 1)
           r ((mem_roots hne).mpr hr)
         exact quadratic_derivative_shift_v_nonpos_of_nonpos this
-      have := prec_of_interlaces_evalCoeff_nonpos
+      have := strictInterl_of_interlaces_evalCoeff_nonpos
         (f := P 1) (g := (P 1).derivative)
         (a := C 1 + C (s + ((1 : ℕ) : ℝ)) * X) (b := C (1) * X + C (-1) * X ^ 2)
         hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos

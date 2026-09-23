@@ -28,7 +28,7 @@ theorem prec_mw_derivative_of_nonpos_of_pos_natDegree {f u v : ℝ[X]}
     interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
   have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
   exact
-    prec_of_interlaces_evalCoeff_nonpos
+    strictInterl_of_interlaces_evalCoeff_nonpos
       (f := f) (g := f.derivative) (a := u) (b := v)
       hder hf'_pos hF_pos hdeg_lo hdeg_hi hv_nonpos
 

@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  681  Lean declarations requiring semantic review
-  232  tactic declarations requiring an alias-first migration
+  675  Lean declarations requiring semantic review
+  231  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    33  statement scaffolds requiring proof-status-preserving renames
-  171  deprecated compatibility identifiers with canonical targets
+  178  deprecated compatibility identifiers with canonical targets
    34  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -120,6 +120,12 @@ endpoint transport, three structured coefficient-sign constructors, and the
 strict-step simple-root package all use `strictInterl` terminology.  Their old
 public names remain exact deprecated aliases, and non-challenge callers use
 the canonical declarations.
+
+The weak-sign Ma--Wang constructor layer now likewise uses `StrictInterl`
+terminology for its generic and structured same/successor/degree-bounded
+theorems and for the regularized `sub_C_mul` transport.  Exact deprecated
+aliases preserve the old API, while theorem-library and tactic callers use the
+canonical declarations.
 
 Execution order
 

@@ -61,7 +61,7 @@ theorem favardInterlacing :
         have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 :=
           fun _ _ => by simpa [bPoly] using neg_nonpos.mpr (hβ n).le
         have hPrec_step : StrictInterl f (aPoly * f + bPoly * g) :=
-          prec_of_interlaces_evalCoeff_nonpos
+          strictInterl_of_interlaces_evalCoeff_nonpos
             (f := f) (g := g) (a := aPoly) (b := bPoly)
             hInter hPos_n hF_pos (by lia) (by lia) hb_nonpos
         refine ⟨?_, hPos_n1, ?_⟩

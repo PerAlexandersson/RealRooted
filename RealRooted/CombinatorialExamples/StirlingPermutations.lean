@@ -207,7 +207,7 @@ lemma prec_stirlingPermutations_one_two :
       roots_nonpos_stirlingPermutations_of_isRealRooted hf.2 r ((mem_roots hf.1).mpr hr)
     exact eval_stirlingPermutationsCoeffB_nonpos_of_nonpos hr_nonpos
   simpa [hNext_eq] using
-    prec_of_interlaces_evalCoeff_nonpos
+    strictInterl_of_interlaces_evalCoeff_nonpos
       (f := stirlingPermutations 1)
       (g := (stirlingPermutations 1).derivative)
       (a := stirlingPermutationsCoeffA 1)
@@ -259,7 +259,7 @@ theorem prec_stirlingPermutations_succ :
             ((mem_roots (prec_stirlingPermutations_succ (n + 1)).2.1.1).mpr hr)
         exact eval_stirlingPermutationsCoeffB_nonpos_of_nonpos hr_nonpos
       simpa [hNext_eq] using
-        prec_of_interlaces_evalCoeff_nonpos
+        strictInterl_of_interlaces_evalCoeff_nonpos
           (f := stirlingPermutations (n + 2))
           (g := (stirlingPermutations (n + 2)).derivative)
           (a := stirlingPermutationsCoeffA (n + 2))

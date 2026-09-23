@@ -109,7 +109,7 @@ private theorem touchardFactorStep_preservesPF {r : ℝ} (hr : 0 ≤ r)
     · lia
     · exact hfirst_pos
   have hprec : StrictInterl f ((X + C r) * f + X * f.derivative) := by
-    apply prec_of_interlaces_evalCoeff_nonpos hder hder_pos hsum_pos
+    apply strictInterl_of_interlaces_evalCoeff_nonpos hder hder_pos hsum_pos
     · rw [hsum_deg]
       lia
     · rw [hsum_deg]

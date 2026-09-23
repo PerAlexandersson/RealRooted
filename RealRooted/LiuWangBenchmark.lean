@@ -606,7 +606,7 @@ private lemma weakPrec_liuWangRec_step (d n : Nat) (hn : 1 ≤ n)
     have : r * (1 - r) ≤ 0 := by nlinarith
     simp_all
   simpa [liuWangRec_succ_succ] using
-    (prec_of_interlaces_evalCoeff_nonpos
+    (strictInterl_of_interlaces_evalCoeff_nonpos
       (f := liuWangRec d (n + 1))
       (g := liuWangRec d n)
       (a := C (((d : ℝ) - n) / (n + 1 : ℝ)) + C (2 : ℝ) * X)

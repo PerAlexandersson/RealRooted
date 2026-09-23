@@ -42,7 +42,7 @@ theorem prec_shift_of_interlaces
     StrictInterl f (f + (X - C 1) * h) := by
   have hrewrite : f + (X - C 1) * h = C 1 * f + (X - C 1) * h := by simp [map_one]
   rw [hrewrite]
-  refine prec_of_interlaces_evalCoeff_nonpos hinterl hh_pos (by lia) (by lia) (by lia) ?_
+  refine strictInterl_of_interlaces_evalCoeff_nonpos hinterl hh_pos (by lia) (by lia) (by lia) ?_
   intro r hr
   simp [eval_sub, eval_X]
   have hf_ne : f ≠ 0 := hinterl.1.1

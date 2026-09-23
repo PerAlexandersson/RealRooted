@@ -352,7 +352,7 @@ theorem lemma34ModifiedNarayanaShiftedInterlacing_modified :
     lemma34ModifiedNarayanaShifted_prev_interlaces_left
       (m := m + 1) (by lia) hlam hmu
   refine
-    prec_of_interlaces_eval_mul_nonpos_of_no_common
+    strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
       hleft_interlaces
       (modifiedNarayanaPolynomial_posLeadingCoeff (m - 1))
       hright_interlaces.1.1 hright_interlaces.1.2
