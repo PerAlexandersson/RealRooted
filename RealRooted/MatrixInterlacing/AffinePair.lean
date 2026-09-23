@@ -329,7 +329,7 @@ family criterion above should then convert that real-rootedness statement to
 Note: in full generality this statement needs row-wise nondegeneracy input
 (at least enough to exclude zero-row counterexamples). The current proof body
 is the forward derivation up to the final affine-family-to-`StrictInterl` conversion. -/
-theorem prec_zipWith_sum_pair_of_2x2
+theorem strictInterl_zipWith_sum_pair_of_2x2
     {row₁ row₂ fs : List ℝ[X]}
     (hn : 0 < n)
     (hrow₁_len : row₁.length = n)
@@ -463,7 +463,7 @@ pair `u, v` is interlacing, and the cross affine `2 x 2` test holds, then the
 two row sums are in proper position.  The cross test is the convention
 `Has2x2InterlacingProperty p₁ q₁ p₂ q₂`, namely the affine combination of
 `q₁, q₂` is in proper position with the affine combination of `p₁, p₂`. -/
-theorem prec_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
+theorem strictInterl_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
     (hp : StrictInterl p₁ p₂) (hq : StrictInterl q₁ q₂)
     (hoff : Has2x2InterlacingProperty p₁ q₁ p₂ q₂)
     (huv : StrictInterl u v)
@@ -474,7 +474,7 @@ theorem prec_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
   have hrows :
       StrictInterl (([p₁, q₁].zipWith (· * ·) [u, v]).sum)
         (([p₂, q₂].zipWith (· * ·) [u, v]).sum) := by
-    refine prec_zipWith_sum_pair_of_2x2 (n := 2) (hn := by norm_num)
+    refine strictInterl_zipWith_sum_pair_of_2x2 (n := 2) (hn := by norm_num)
       (row₁ := [p₁, q₁]) (row₂ := [p₂, q₂]) (fs := [u, v])
       (hrow₁_len := by simp) (hrow₂_len := by simp)
       (hrow₁_head_ne := by simpa using hp.1.1)
@@ -514,7 +514,7 @@ theorem prec_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
 uses `Has2x2InterlacingProperty0` and returns `Interl`, so either output row sum
 may vanish. When both sums are nonzero, the proof filters zero auxiliary
 affine-row entries and reuses the strict product-family theorem. -/
-theorem prec0_zipWith_sum_pair_of_2x2
+theorem interl_zipWith_sum_pair_of_2x2
     {row₁ row₂ fs : List ℝ[X]}
     (hrow₁_len : row₁.length = n)
     (hrow₂_len : row₂.length = n)
@@ -606,7 +606,7 @@ theorem prec0_zipWith_sum_pair_of_2x2
 /-- Zero-aware fixed-row form with zero-aware input.  Besides weak
 interlacing and nonnegative coefficients, the input sequence is assumed to have
 real-rooted nonzero entries. -/
-theorem prec0_zipWith_sum_pair_of_2x2_weak
+theorem interl_zipWith_sum_pair_of_2x2_weak
     {row₁ row₂ fs : List ℝ[X]}
     (hrow₁_len : row₁.length = n)
     (hrow₂_len : row₂.length = n)
@@ -693,5 +693,17 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
       (f := F) (g := G) hF_zero hG_zero hF_nonneg hG_nonneg haff
   simpa [F, G] using hFG.toInterl
 
+@[deprecated strictInterl_zipWith_sum_pair_of_2x2 (since := "2026-09-18")]
+alias prec_zipWith_sum_pair_of_2x2 := strictInterl_zipWith_sum_pair_of_2x2
+
+@[deprecated strictInterl_add_mul_pair_of_2x2 (since := "2026-09-18")]
+alias prec_add_mul_pair_of_2x2 := strictInterl_add_mul_pair_of_2x2
+
+@[deprecated interl_zipWith_sum_pair_of_2x2 (since := "2026-09-18")]
+alias prec0_zipWith_sum_pair_of_2x2 := interl_zipWith_sum_pair_of_2x2
+
+@[deprecated interl_zipWith_sum_pair_of_2x2_weak (since := "2026-09-18")]
+alias prec0_zipWith_sum_pair_of_2x2_weak :=
+  interl_zipWith_sum_pair_of_2x2_weak
 
 end RealRooted

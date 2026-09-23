@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  402  Lean declarations requiring semantic review
+  397  Lean declarations requiring semantic review
   203  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    20  statement scaffolds requiring proof-status-preserving renames
-  469  deprecated compatibility identifiers with canonical targets
+  474  deprecated compatibility identifiers with canonical targets
    57  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -221,6 +221,11 @@ The shift-lemma layer now uses `StrictInterl` for its differ-by-one,
 same-degree, general, and application-variable interfaces.  All four public
 old names (including the primed wrapper represented by the aggregate ledger
 token) remain exact deprecated aliases.
+
+The matrix interlacing pair layer now uses `StrictInterl` / `Interl` for its
+2-by-2 zip/sum, add/multiply, weak, and sparse converse interfaces.  All five
+old public names remain exact deprecated aliases, and non-challenge callers use
+the canonical declarations.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

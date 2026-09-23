@@ -113,7 +113,7 @@ theorem theorem41Step_difference_prec_of_matrixClaim
   have hQ_ne : narayanaDifference P m ≠ 0 := by
     have hzero := hclaim (m := m) (lam := 0) (mu := 0) hm (by norm_num) (by norm_num)
     simpa using hzero.2.1.1
-  have hpair := prec_zipWith_sum_pair_of_2x2
+  have hpair := strictInterl_zipWith_sum_pair_of_2x2
     (n := 2) (row₁ := [P (m - 1), G (m - 1)])
     (row₂ := [narayanaDifference P m, auxiliaryDifference G m])
     (fs := [f, X * g])
@@ -175,7 +175,7 @@ theorem theorem41Step_prec_of_claim7
       (f * P m + X * g * G m) := by
   have hinput : StrictInterl f (X * g) :=
     strictInterl_mul_X_of_strictInterl_of_nonneg hgf hg_nonneg hf_nonneg
-  have hpair := prec_add_mul_pair_of_2x2
+  have hpair := strictInterl_add_mul_pair_of_2x2
     (p₁ := P (m - 1)) (q₁ := G (m - 1)) (p₂ := P m) (q₂ := G m)
     (u := f) (v := X * g)
     hP hG (theorem41ConsecutiveMatrix_cross_has2x2_of_claim7 hclaim hm) hinput
