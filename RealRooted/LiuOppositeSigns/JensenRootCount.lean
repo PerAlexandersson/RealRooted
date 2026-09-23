@@ -28,8 +28,8 @@ theorem rootCountAboveOriented_of_prec {p q : ℝ[X]} (hprec : StrictInterl p q)
     exact
       (sameDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
         (f := q) (g := p) hprec.2.1.2 hprec.1.2 hdeg.symm x).mpr
-        (sameDegreeRootCountOriented_of_prec hprec hdeg x)
-  · exact succDegreeRootCountAboveOriented_of_prec hprec hsucc
+        (sameDegreeRootCountOriented_of_strictInterl hprec hdeg x)
+  · exact succDegreeRootCountAboveOriented_of_strictInterl hprec hsucc
 
 namespace Compatible
 

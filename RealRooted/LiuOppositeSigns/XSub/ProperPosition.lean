@@ -19,11 +19,11 @@ theorem positiveSplitRootCountPair_of_prec
     hp.ne_zero hq.ne_zero
   intro x _ _
   rcases h.natDegree_eq_or_eq_succ with hdeg | hsucc
-  · have hlower := sameDegreeRootCountOriented_of_prec h hdeg x
+  · have hlower := sameDegreeRootCountOriented_of_strictInterl h hdeg x
     exact
       (sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
         h.1.2 h.2.1.2 hdeg x).2 ⟨by linarith, by linarith⟩
-  · exact succDegreeRootCountAbove_of_prec h hsucc x
+  · exact succDegreeRootCountAbove_of_strictInterl h hsucc x
 
 /-- Liu's proved `X`-subtraction theorem in the ordinary `StrictInterl` interface.
 The degree split required by the backend follows automatically from `StrictInterl`. -/

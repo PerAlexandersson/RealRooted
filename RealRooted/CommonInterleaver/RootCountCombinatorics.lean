@@ -733,7 +733,7 @@ For splitting real polynomials `f, g` with `g.natDegree = f.natDegree + 1`,
 the interlacing relation `StrictInterl f g` forces the succ-degree upper-threshold
 root-count inequalities: the numbers of roots strictly above each threshold
 differ by at most one in each direction. -/
-theorem succDegreeRootCountAbove_of_prec
+theorem succDegreeRootCountAbove_of_strictInterl
     {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hdeg : g.natDegree = f.natDegree + 1) :
     ∀ x : ℝ,
@@ -754,6 +754,9 @@ theorem succDegreeRootCountAbove_of_prec
   rw [hfcard, hgcard]
   constructor <;> lia
 
+@[deprecated succDegreeRootCountAbove_of_strictInterl (since := "2026-09-18")]
+alias succDegreeRootCountAbove_of_prec := succDegreeRootCountAbove_of_strictInterl
+
 /-- Rolle root-count bound in upper-threshold form.
 
 For a splitting real polynomial of degree at least two, the numbers of roots of
@@ -769,17 +772,20 @@ theorem rootCountAbove_derivative_diff_le_one_of_splits
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia
-  exact succDegreeRootCountAbove_of_prec hprec hdeg'
+  exact succDegreeRootCountAbove_of_strictInterl hprec hdeg'
 
 /-- `StrictInterl`-to-root-count bridge in lower-threshold form. -/
-theorem succDegreeRootCount_of_prec
+theorem succDegreeRootCount_of_strictInterl
     {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hdeg : g.natDegree = f.natDegree + 1) :
     ∀ x : ℝ,
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
   succDegreeRootCount_of_rootCountAbove hprec.1.2 hprec.2.1.2 hdeg
-    (succDegreeRootCountAbove_of_prec hprec hdeg)
+    (succDegreeRootCountAbove_of_strictInterl hprec hdeg)
+
+@[deprecated succDegreeRootCount_of_strictInterl (since := "2026-09-18")]
+alias succDegreeRootCount_of_prec := succDegreeRootCount_of_strictInterl
 
 /-- Rolle root-count bound in lower-threshold form.
 
@@ -797,14 +803,14 @@ theorem rootCount_derivative_diff_le_two_of_splits
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia
-  exact succDegreeRootCount_of_prec hprec hdeg'
+  exact succDegreeRootCount_of_strictInterl hprec hdeg'
 
 /-- Tight oriented lower-threshold `StrictInterl`-to-root-count bridge for the
 differ-by-one case.
 
 If `p ≺ q` and `q` has one more root than `p`, then every lower threshold
 contains at least as many roots of `q` as roots of `p`, but at most one more. -/
-theorem succDegreeRootCountLowerOriented_of_prec
+theorem succDegreeRootCountLowerOriented_of_strictInterl
     {p q : ℝ[X]} (hprec : StrictInterl p q)
     (hdeg : q.natDegree = p.natDegree + 1) :
     ∀ x : ℝ,
@@ -826,12 +832,16 @@ theorem succDegreeRootCountLowerOriented_of_prec
   rw [hpcard, hqcard]
   constructor <;> lia
 
+@[deprecated succDegreeRootCountLowerOriented_of_strictInterl (since := "2026-09-18")]
+alias succDegreeRootCountLowerOriented_of_prec :=
+  succDegreeRootCountLowerOriented_of_strictInterl
+
 /-- Tight oriented upper-threshold `StrictInterl`-to-root-count bridge for the
 differ-by-one case.
 
 If `p ≺ q` and `q` has one more root than `p`, then every upper threshold
 contains at least as many roots of `q` as roots of `p`, but at most one more. -/
-theorem succDegreeRootCountAboveOriented_of_prec
+theorem succDegreeRootCountAboveOriented_of_strictInterl
     {p q : ℝ[X]} (hprec : StrictInterl p q)
     (hdeg : q.natDegree = p.natDegree + 1) :
     ∀ x : ℝ,
@@ -840,7 +850,11 @@ theorem succDegreeRootCountAboveOriented_of_prec
         (p.roots.filter (x < ·)).card + 1 := fun x =>
   (succDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
     hprec.1.2 hprec.2.1.2 hdeg x).mpr
-    (succDegreeRootCountLowerOriented_of_prec hprec hdeg x)
+    (succDegreeRootCountLowerOriented_of_strictInterl hprec hdeg x)
+
+@[deprecated succDegreeRootCountAboveOriented_of_strictInterl (since := "2026-09-18")]
+alias succDegreeRootCountAboveOriented_of_prec :=
+  succDegreeRootCountAboveOriented_of_strictInterl
 
 /-- Oriented Rolle root-count bound in upper-threshold form. -/
 theorem rootCountAbove_derivative_oriented_of_splits
@@ -854,7 +868,7 @@ theorem rootCountAbove_derivative_oriented_of_splits
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia
-  exact succDegreeRootCountAboveOriented_of_prec hprec hdeg'
+  exact succDegreeRootCountAboveOriented_of_strictInterl hprec hdeg'
 
 /-- A forward upper-count gap of at least three propagates to a derivative gap
 of at least two. -/
@@ -963,7 +977,7 @@ For splitting real polynomials `p, q` of equal degree, the same-degree
 interlacing relation `StrictInterl p q` forces the oriented lower-threshold root-count
 inequalities: at each threshold `q` has at most as many roots at or below it as
 `p`, and `p` has at most one more than `q`. -/
-theorem sameDegreeRootCountOriented_of_prec
+theorem sameDegreeRootCountOriented_of_strictInterl
     {p q : ℝ[X]} (hprec : StrictInterl p q)
     (hdeg : q.natDegree = p.natDegree) :
     ∀ x : ℝ,
@@ -983,6 +997,9 @@ theorem sameDegreeRootCountOriented_of_prec
     rw [← hrs_eq, Multiset.filter_coe, Multiset.coe_card]
   rw [hpcard, hqcard]
   constructor <;> lia
+
+@[deprecated sameDegreeRootCountOriented_of_strictInterl (since := "2026-09-18")]
+alias sameDegreeRootCountOriented_of_prec := sameDegreeRootCountOriented_of_strictInterl
 
 /-- The succ-degree upper root-count target follows from its common-non-root
 variant. -/

@@ -1422,7 +1422,7 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_prec
   have hprec : StrictInterl f g :=
     hprecTarget hcomp hf_pos hg_pos hdeg hf_split
   obtain ⟨hfg_le, hgf_le⟩ :=
-    succDegreeRootCountLowerOriented_of_prec hprec hdeg x
+    succDegreeRootCountLowerOriented_of_strictInterl hprec hdeg x
   have hnot_even :
       ¬ Even (((f.roots.filter (· ≤ x)).card : ℤ) -
         (g.roots.filter (· ≤ x)).card) := by
