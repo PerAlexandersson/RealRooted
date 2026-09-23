@@ -82,7 +82,7 @@ private theorem prec_derivative_polarTheta_of_le
       strictInterl_self_X_mul_of_nonneg hder0
         (hp.derivative.ne_zero_and_splits hder0).2 hdernn
     simpa [theta] using hself
-  refine prec_of_affine_family_nonneg hder0 hpolar0 hdernn hpolar_nn ?_
+  refine strictInterl_of_affine_family_nonneg hder0 hpolar0 hdernn hpolar_nn ?_
   intro s t hs ht
   rcases lt_trichotomy s 1 with hs1 | rfl | hs1
   · set fs : List ℝ[X] :=

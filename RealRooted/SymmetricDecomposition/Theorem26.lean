@@ -643,7 +643,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     · have hr0 : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hb_rr.2 hb_nonneg r hr
       linarith
   have hbh : StrictInterl b h :=
-    (interlaces_of_prec_sameDegree_rightmost_factor
+    (interlaces_of_strictInterl_sameDegree_rightmost_factor
       (f := h) (g := t) (q := b) (uR := 1)
       hht hsame ht_le_one (by lia)).toStrictInterl
   have hb_le_one : ∀ r ∈ b.roots, r ≤ (1 : ℝ) := by

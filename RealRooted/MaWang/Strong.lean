@@ -177,7 +177,7 @@ theorem strictInterl_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
     refine ⟨uR, huR_root, ?_⟩
     intro r hr
     exact lt_of_le_of_lt (hrs_sorted.rel_getLast hr) hlast_lt_uR
-  exact prec_same_of_strict_signs_of_right_root hf.1 hf.2 hF_ne hrs_sorted hrs_eq
+  exact strictInterl_same_of_strict_signs_of_right_root hf.1 hf.2 hF_ne hrs_sorted hrs_eq
     hdeg hn hsign hright
 
 /-- Transport a same-degree Liu--Wang root-sign certificate backward through a

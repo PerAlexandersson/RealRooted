@@ -1329,7 +1329,7 @@ lemma family_root_sign_data_left_one_two {f g : ℝ[X]}
 on consecutive roots of `f` and one root of `g` strictly to the right of all
 roots of `f`. This repackages the final Ma--Wang assembly step in the form
 needed by the same-degree Obreschkoff converse. -/
-theorem prec_same_of_root_sign_data
+theorem strictInterl_same_of_root_sign_data
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hg_pos : HasPosLeadingCoeff g)
@@ -1353,10 +1353,13 @@ theorem prec_same_of_root_sign_data
   have hn : 1 ≤ rs.length := by lia
   have hg_ne : g ≠ 0 := hg_pos.ne_zero
   exact
-    prec_same_of_strict_signs_of_right_root
+    strictInterl_same_of_strict_signs_of_right_root
       hf_ne hf_splits hg_ne hrs_sorted hrs_eq hdeg hn
       (by grind)
       (by grind)
+
+@[deprecated strictInterl_same_of_root_sign_data (since := "2026-09-18")]
+alias prec_same_of_root_sign_data := strictInterl_same_of_root_sign_data
 
 /-- An equal-degree Obreschkoff alternative can be oriented once we know that
 `f` has a root strictly to the right of an upper bound for all roots of `g`. -/
@@ -1443,7 +1446,7 @@ but roots `{-4, -3, -1, 0}` don't interlace (pattern g, f, f, g).
 
 For strong interlacing `StrictInterl f g`, one needs the **affine family** hypothesis
 `(λx + μ)f + g` real-rooted for all `λ, μ > 0`, with nonneg coefficients.
-This is Brändén's Lemma 7.8.4, stated as `prec_of_affine_family_nonneg`
+This is Brändén's Lemma 7.8.4, stated as `strictInterl_of_affine_family_nonneg`
 in `InterlacingSequence.lean`.
 
 The correct Obreschkoff converse is: `PosComboRealRooted f g` implies

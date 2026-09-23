@@ -93,7 +93,7 @@ theorem strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_no
   have hFG_deg : F.natDegree = G.natDegree := by lia
   have hG_deg_pos : 1 ≤ G.natDegree := by lia
   obtain ⟨uR, q, hGq, huR_root, huR_max, hqF⟩ :=
-    exists_rightmost_factor_interlaces_of_prec_sameDegree
+    exists_rightmost_factor_interlaces_of_strictInterl_sameDegree
       (f := F) (g := G) hpair hFG_deg hG_deg_pos
   have hq_pos : HasPosLeadingCoeff q :=
     hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [G, hGq] using hG_pos)

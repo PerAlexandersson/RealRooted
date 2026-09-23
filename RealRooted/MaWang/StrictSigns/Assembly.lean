@@ -431,7 +431,7 @@ lemma listInterlaces_of_interlacing_append_right :
 /-- Same-degree assembly: strict sign changes on consecutive roots of `f`
 produce inner roots of `F`; if one additional root of `F` lies strictly to the
 right of all roots of `f`, then `f ≺ F` in the same-degree sense. -/
-theorem prec_same_of_strict_signs_of_right_root
+theorem strictInterl_same_of_strict_signs_of_right_root
     {f F : ℝ[X]} {rs : List ℝ}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hF_ne : F ≠ 0)
     (hrs_sorted : rs.Pairwise (· ≤ ·))
@@ -491,6 +491,10 @@ theorem prec_same_of_strict_signs_of_right_root
   have hlen_shape : (r :: rs').length = (us ++ [uR]).length := by lia
   exact ⟨⟨hf_ne, hf_splits⟩, hF, r :: rs', us ++ [uR], hrs_sorted, hws_sorted, hrs_eq, hws_eq,
     Or.inr ⟨hlen_shape, hshape⟩⟩
+
+@[deprecated strictInterl_same_of_strict_signs_of_right_root (since := "2026-09-18")]
+alias prec_same_of_strict_signs_of_right_root :=
+  strictInterl_same_of_strict_signs_of_right_root
 
 /-- Add one outer point on each side of a sorted interlacing layout. -/
 lemma listInterlaces_with_outer :
@@ -760,6 +764,7 @@ export MaWangInternal
     interlaces_of_consecutive_signs_of_natDegree_lt
     interlaces_of_eval_mul_derivative_pos
     mul_neg_of_mul_neg_of_mul_neg
+    strictInterl_same_of_strict_signs_of_right_root
     prec_same_of_strict_signs_of_right_root
     prec_of_strict_signs_of_strict_outer_roots
     exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop

@@ -115,7 +115,7 @@ end Compatible
 nonnegative-coefficient pair is directed as `f ≪ g`.
 
 The three pairwise compatibilities among `X * f`, `f`, and `g` give the
-positive affine family required by `prec_of_affine_family_nonneg`. -/
+positive affine family required by `strictInterl_of_affine_family_nonneg`. -/
 theorem prec_of_compatible_and_X_mul_left
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
@@ -128,7 +128,7 @@ theorem prec_of_compatible_and_X_mul_left
   have hg_rr : g ≠ 0 ∧ g.Splits := hfg.isRealRooted_right hg_pos
   have hXf_rr : X * f ≠ 0 ∧ (X * f).Splits :=
     hXfg.isRealRooted_left hf_pos.X_mul
-  apply prec_of_affine_family_nonneg hf0 hg0 hf_nonneg hg_nonneg
+  apply strictInterl_of_affine_family_nonneg hf0 hg0 hf_nonneg hg_nonneg
   intro s t hs ht
   have hcompat : Compatible (C s * (X * f) + C t * f) g :=
     Compatible.C_mul_add_C_mul_left_of_pairwise_three

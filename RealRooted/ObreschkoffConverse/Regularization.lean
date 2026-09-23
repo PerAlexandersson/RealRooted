@@ -834,7 +834,7 @@ private lemma leadingCoeff_wronskian_succ
     wronskian_coeff_top_succ hdeg hf_deg_pos]
   simp
 
-private theorem prec_of_eq_zero_or_simple_combo_succDegree
+private theorem strictInterl_of_eq_zero_or_simple_combo_succDegree
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hcombo :
@@ -970,7 +970,7 @@ theorem ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
     rcases hdeg₀ with hsucc | hsame
     · left
       exact
-        prec_of_eq_zero_or_simple_combo_succDegree
+        strictInterl_of_eq_zero_or_simple_combo_succDegree
           hf₀.1 hf₀.2 hg₀.1 hg₀.2 hcombo₀ hsucc.symm hf₀_pos hg₀_pos hno₀
     · exact
         strictInterl_or_reverse_of_eq_zero_or_simple_combo_sameDegree

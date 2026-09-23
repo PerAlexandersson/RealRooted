@@ -452,7 +452,7 @@ theorem prec_zipWith_sum_pair_of_2x2
         (hlen := hrow₂_len.trans hfs_len.symm)
         hrow₂_nonneg hfs_nonneg k0 hrow₂_head_ne hfs0_ne
   have hFG : StrictInterl F G :=
-    prec_of_affine_family_nonneg
+    strictInterl_of_affine_family_nonneg
       (f := F) (g := G) hF_ne hG_ne hF_nonneg hG_nonneg haff
   lia
 
@@ -599,7 +599,7 @@ theorem prec0_zipWith_sum_pair_of_2x2
         ((((C s * X + C t) * F) + G) ≠ 0 ∧ (((C s * X + C t) * F) + G).Splits) := by
     simp_all
   have hFG : StrictInterl F G :=
-    prec_of_affine_family_nonneg
+    strictInterl_of_affine_family_nonneg
       (f := F) (g := G) hF_zero hG_zero hF_nonneg hG_nonneg haff
   simpa [F, G] using hFG.toInterl
 
@@ -689,7 +689,7 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
         ((((C s * X + C t) * F) + G) ≠ 0 ∧ (((C s * X + C t) * F) + G).Splits) := by
     simp_all
   have hFG : StrictInterl F G :=
-    prec_of_affine_family_nonneg
+    strictInterl_of_affine_family_nonneg
       (f := F) (g := G) hF_zero hG_zero hF_nonneg hG_nonneg haff
   simpa [F, G] using hFG.toInterl
 

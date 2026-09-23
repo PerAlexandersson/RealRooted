@@ -417,7 +417,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
     exists_rightmost_root_of_isRealRooted hg.1 hg.2 (by lia)
   obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr huR_root
   have hqg_inter : Interlaces qg f :=
-    interlaces_of_prec_sameDegree_rightmost_factor hfg hdeg huR_max hqg
+    interlaces_of_strictInterl_sameDegree_rightmost_factor hfg hdeg huR_max hqg
   have hqg_no : ∀ r, f.IsRoot r → ¬ qg.IsRoot r := by simp_all
   have hroot_lt : ∀ r, f.IsRoot r → r < uR :=
     root_lt_rightmost_of_prec_sameDegree_no_common hfg huR_root huR_max hno

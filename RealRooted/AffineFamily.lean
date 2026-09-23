@@ -3,7 +3,7 @@
 
 Has2x2InterlacingProperty definition, affine-family criterion
 (Brändén Lemma 7.8.4), bridge from combo results to StrictInterl.
-The remaining live theorem here is `prec_of_affine_family_nonneg`.
+The remaining live theorem here is `strictInterl_of_affine_family_nonneg`.
 -/
 import RealRooted.ProductFamily
 import RealRooted.AffineDerivative
@@ -336,7 +336,7 @@ genuine no-shortcut core:
   `(g + X * f, f)` should absorb the common-root bookkeeping.
 
 The low-degree branches are handled separately in
-`prec_of_affine_family_nonneg`. -/
+`strictInterl_of_affine_family_nonneg`. -/
 private lemma prec_right_pair_of_affine_family_high_degree_core
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
@@ -537,7 +537,7 @@ if all positive affine combinations `((C s * X + C t) * f) + g` are real-rooted
 and both `f, g` are nonzero with nonnegative coefficients, then `f ≪ g`.
 
 This is exactly the remaining local blocker in the forward matrix argument. -/
-theorem prec_of_affine_family_nonneg
+theorem strictInterl_of_affine_family_nonneg
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
@@ -569,6 +569,9 @@ theorem prec_of_affine_family_nonneg
     prec_right_pair_of_affine_family_high_degree hf0 hg0 hfnn hgnn haff hdegf2
   exact prec_of_prec_mul_X_of_nonneg hprec_pair hfnn hgnn
 
+@[deprecated strictInterl_of_affine_family_nonneg (since := "2026-09-18")]
+alias prec_of_affine_family_nonneg := strictInterl_of_affine_family_nonneg
+
 /-- Right-pair form of the affine-family converse. This is the degree-free
 public API: the affine-family hypothesis gives `f ≪ g`, and nonnegative
 coefficients transport this to `g ≪ X * f`. -/
@@ -582,14 +585,14 @@ theorem strictInterl_right_pair_of_affine_family_nonneg
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     StrictInterl g (X * f) :=
   prec_to_prec_mul_X_of_nonneg
-    (prec_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
+    (strictInterl_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
     hfnn hgnn
 
 @[deprecated strictInterl_right_pair_of_affine_family_nonneg (since := "2026-09-18")]
 alias prec_right_pair_of_affine_family_nonneg :=
   strictInterl_right_pair_of_affine_family_nonneg
 
-/-- Closed affine-segment wrapper for `prec_of_affine_family_nonneg`.
+/-- Closed affine-segment wrapper for `strictInterl_of_affine_family_nonneg`.
 
 For each positive affine factor `sX+t`, assume the two endpoint polynomials
 `(sX+t)P0+H0` and `(sX+t)P1+H1` are positively compatible, and assume the
@@ -616,7 +619,7 @@ theorem prec_of_affine_segment_endpoints_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
     StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
-  refine prec_of_affine_family_nonneg hPβ0 hHβ0 hPβnn hHβnn ?_
+  refine strictInterl_of_affine_family_nonneg hPβ0 hHβ0 hPβnn hHβnn ?_
   intro s t hs ht
   have hseg :
       ((C (1 - β) * (((C s * X + C t) * P0) + H0) +
@@ -653,7 +656,7 @@ theorem prec_of_affine_segment_endpoints_sameDegree_nonneg
         (((C s * X + C t) * P1) + H1).natDegree =
           (((C s * X + C t) * P0) + H0).natDegree) :
     StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
-  refine prec_of_affine_family_nonneg hPβ0 hHβ0 hPβnn hHβnn ?_
+  refine strictInterl_of_affine_family_nonneg hPβ0 hHβ0 hPβnn hHβnn ?_
   intro s t hs ht
   have hseg :
       ((C (1 - β) * (((C s * X + C t) * P0) + H0) +
@@ -823,7 +826,7 @@ theorem prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg
 
 /-- Branden's affine-family converse immediately upgrades to the full
 Obreschkoff all-combinations conclusion in the nonnegative-coefficient regime:
-once `prec_of_affine_family_nonneg` gives `f ≪ g`, every real linear
+once `strictInterl_of_affine_family_nonneg` gives `f ≪ g`, every real linear
 combination of `f` and `g` is real-rooted. -/
 theorem allComboRealRooted_of_affine_family_nonneg
     {f g : ℝ[X]}
@@ -835,7 +838,7 @@ theorem allComboRealRooted_of_affine_family_nonneg
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     AllComboRealRooted f g :=
   allComboRealRooted_of_strictInterl
-    (prec_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
+    (strictInterl_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
 
 /-- Public shifted-pair package extracted from a nonnegative affine family.
 This is the corrected same-degree seam after the failed boundary-right-pair
@@ -877,7 +880,7 @@ theorem prec_shifted_pair_of_affine_family_nonneg
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
       hgnn hfnn.X_mul (mul_ne_zero X_ne_zero hf0)
   exact
-    prec_of_affine_family_nonneg
+    strictInterl_of_affine_family_nonneg
       hf0 hshift_ne hfnn hshift_nonneg
       (shifted_affine_family_of_affine_family haff)
 

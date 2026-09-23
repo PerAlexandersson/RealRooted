@@ -509,7 +509,7 @@ protected lemma AffineFamily.isRealRooted_iterate_derivative_of_lt_natDegree
 from `StrictInterl f g`, choose the rightmost root of `g`, factor it off, and retain a
 genuine differ-by-1 `Interlaces` witness for the quotient against `f`, together
 with the explicit rightmost-root bound. -/
-theorem exists_rightmost_factor_interlaces_of_prec_sameDegree
+theorem exists_rightmost_factor_interlaces_of_strictInterl_sameDegree
     {f g : ℝ[X]}
     (hprec : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
@@ -526,9 +526,14 @@ theorem exists_rightmost_factor_interlaces_of_prec_sameDegree
   obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr huR_root
   exact
     ⟨uR, q, hq, huR_root, huR_max,
-      interlaces_of_prec_sameDegree_rightmost_factor
+      interlaces_of_strictInterl_sameDegree_rightmost_factor
         (f := f) (g := g) (q := q) (uR := uR)
         hprec_keep hdeg huR_max hq⟩
+
+@[deprecated exists_rightmost_factor_interlaces_of_strictInterl_sameDegree
+  (since := "2026-09-18")]
+alias exists_rightmost_factor_interlaces_of_prec_sameDegree :=
+  exists_rightmost_factor_interlaces_of_strictInterl_sameDegree
 
 private lemma exists_strict_root_upper_bound_of_nonneg_of_not_isRoot_zero
     {p : ℝ[X]}

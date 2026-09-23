@@ -422,7 +422,7 @@ private lemma prec_right_pair_sameDegree_of_sign_data
       ∃ uR, (X * f).IsRoot uR ∧ ∀ r ∈ rs, r < uR := by
     simpa using exists_strict_right_root_of_X_mul_of_no_common hg_ne hg_splits hgnn hno
   exact
-    PosComboRealRooted.prec_same_of_root_sign_data
+    PosComboRealRooted.strictInterl_same_of_root_sign_data
       (f := g) (g := X * f) hg_ne hg_splits hXf_pos hdeg hdeg_pos hsign hright
 
 private lemma prec_right_pair_succDegree_no_common_of_sign_data
@@ -670,7 +670,7 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
   exact hq_noRoot x ((mem_roots hq_rr.1).mp hx_mem)
 
 /-- Linear left-hand branch of the affine converse. This extracts the
-`f.natDegree = 1` case from `prec_of_affine_family_nonneg` so it can later be
+`f.natDegree = 1` case from `strictInterl_of_affine_family_nonneg` so it can later be
 reused as the degree-one base case for right-pair recursion. -/
 protected lemma AffineFamily.prec_of_affine_family_nonneg_degree_one
     {f g : ℝ[X]}
