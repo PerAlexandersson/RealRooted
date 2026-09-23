@@ -22,7 +22,7 @@ theorem posComboNoCommonOrientation_of_allComboBridge
   have hall : AllComboRealRooted f g :=
     hallBridge hf_pos hg_pos hfg hdeg_lo hdeg_hi hno
   exact
-    CommonInterleaver.PairBridge.prec_or_revPrec_of_allComboRealRooted_ordered
+    CommonInterleaver.PairBridge.strictInterl_or_reverse_of_allComboRealRooted_ordered
       hf_pos hg_pos hall hdeg_lo hdeg_hi
 
 /-- Converse reduction: the no-common orientation core immediately yields the

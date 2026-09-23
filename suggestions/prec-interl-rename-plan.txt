@@ -17,13 +17,13 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  666  Lean declarations requiring semantic review
+  660  Lean declarations requiring semantic review
   231  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    33  statement scaffolds requiring proof-status-preserving renames
-  187  deprecated compatibility identifiers with canonical targets
-   34  other references or locals migrated with their owning declaration
+  194  deprecated compatibility identifiers with canonical targets
+   33  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
 Naming rules
@@ -170,6 +170,13 @@ Execution order
 7. Remove deprecated wrappers only in a later compatibility-removal issue.
 
 Replacement protocol
+
+The #889 CommonInterleaver orientation/boundary batch canonicalizes the seven
+tightly coupled low-degree orientation, ordered all-combinations, affine-family
+right-pair, and affine-boundary declarations.  Exact deprecated aliases retain
+the prior public signatures and namespaces; all non-challenge callers now use
+the explicit StrictInterl-based names.  The root-count/scaffold layer remains a
+separate dependency-ordered batch.
 
 - Use the TSV as an exact whole-identifier map; never replace substrings.
 - For rows marked manual_semantic_rename, inspect the theorem result and

@@ -1040,7 +1040,7 @@ theorem hermiteBiehlerConverse_of_natDegree_le_two {f g : ℝ[X]}
     StrictInterl g f ∨ StrictInterl f g := by
   obtain ⟨hgle, hfle⟩ := natDegree_shape_of_stable hf hg hstab
   rcases Nat.lt_or_ge f.natDegree 2 with hflt | hfge
-  · exact prec_or_revPrec_of_natDegree_le_one hg hf (by lia) (by lia)
+  · exact strictInterl_or_reverse_of_natDegree_le_one hg hf (by lia) (by lia)
   · have hf₂ : f.natDegree = 2 := by lia
     rcases Nat.lt_or_ge g.natDegree 2 with hglt | hgge
     · have hg₁ : g.natDegree = 1 := by lia
