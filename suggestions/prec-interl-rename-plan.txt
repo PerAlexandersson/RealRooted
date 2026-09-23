@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  460  Lean declarations requiring semantic review
-  214  tactic declarations requiring an alias-first migration
+  455  Lean declarations requiring semantic review
+  207  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
-   22  statement scaffolds requiring proof-status-preserving renames
-  398  deprecated compatibility identifiers with canonical targets
+   20  statement scaffolds requiring proof-status-preserving renames
+  412  deprecated compatibility identifiers with canonical targets
    57  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -160,6 +160,13 @@ double-deleted Schur terms, the Krein-summand receiver methods, the two
 weighted-expansion assemblers, and the PF/nonnegative two-pair endpoints.  All
 ten old public names remain exact deprecated aliases, and the downstream
 nonnegative Hadamard theorem uses the canonical endpoint.
+
+The Hadamard consequence layer now uses `Interl` / `StrictInterl` for its
+Garloff--Wagner interfaces, PF and real-rootedness consequences, fixed-factor
+transports, and reciprocal-cone closure.  All 14 old public names remain exact
+deprecated aliases or abbreviations, and the tactic backend uses the canonical
+declarations.  The Veronese-section bridge statements remain with their owner
+for a separate semantic batch.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and
