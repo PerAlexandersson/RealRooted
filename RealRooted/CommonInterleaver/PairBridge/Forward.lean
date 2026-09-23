@@ -69,7 +69,7 @@ theorem allComboRealRooted_of_sameDegreeShiftedPairOrientation_and_nonnegCoeffs
 forces the sum `f + g` to interlace `g` on the left in the high-degree
 same-degree nonnegative branch. This is the first concrete transport step
 behind the right-family reroute. -/
-theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
+theorem strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_nonneg
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -124,9 +124,14 @@ theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
       (by simp_all)
   lia
 
+@[deprecated strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_nonneg
+  (since := "2026-09-18")]
+alias prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg :=
+  strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_nonneg
+
 /-- Swapping the roles of `f` and `g` gives the symmetric forward transport for
 the left-family pair `(f + g, 2f + g)`. -/
-theorem prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg
+theorem strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_nonneg
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -139,12 +144,17 @@ theorem prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg
   have hno_swap : ∀ r, g.IsRoot r → ¬ f.IsRoot r := by grind
   have hf_deg_pos : 1 ≤ f.natDegree := by lia
   simpa [add_comm, add_left_comm, add_assoc, mul_comm, mul_left_comm, mul_assoc] using
-    prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
+    strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_nonneg
       (f := g) (g := f)
       hg_pos hf_pos (PosComboRealRooted.comm hfg) hdeg.symm hf_deg_pos
       hno_swap
       (by simpa [add_comm, add_left_comm, add_assoc, mul_comm, mul_left_comm, mul_assoc]
         using hpair)
+
+@[deprecated strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_nonneg
+  (since := "2026-09-18")]
+alias prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg :=
+  strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_nonneg
 
 /-- If both specialized one-step families point forward, then their common
 middle sum `f + g` is already a common left interleaver for `f` and `g`. This
@@ -162,10 +172,10 @@ theorem pairHasCommonLeftInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
   refine ⟨f + g, ?_, ?_⟩
   · exact
-      prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg
+      strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_nonneg
         hf_pos hg_pos hfg hdeg hdeg_pos hno hleft
   · exact
-      prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
+      strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_nonneg
         hf_pos hg_pos hfg hdeg hdeg_pos hno hright
 
 /-- The same forward one-two-family hypotheses already force the original pair

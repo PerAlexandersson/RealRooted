@@ -673,7 +673,7 @@ private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_right
     HasSimpleRoots g := by
   rcases hcombo 0 1 with hzero | ⟨_, hsimple⟩ <;> simp_all
 
-private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
+private theorem strictInterl_or_reverse_of_eq_zero_or_simple_combo_sameDegree
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hcombo :
@@ -973,7 +973,7 @@ theorem ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
         prec_of_eq_zero_or_simple_combo_succDegree
           hf₀.1 hf₀.2 hg₀.1 hg₀.2 hcombo₀ hsucc.symm hf₀_pos hg₀_pos hno₀
     · exact
-        prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
+        strictInterl_or_reverse_of_eq_zero_or_simple_combo_sameDegree
           hf₀.1 hf₀.2 hg₀.1 hg₀.2 hcombo₀ hsame.symm hf₀_pos hg₀_pos hno₀
   have hsf_inv_ne : sf⁻¹ ≠ 0 := inv_ne_zero hsf_ne
   have hsg_inv_ne : sg⁻¹ ≠ 0 := inv_ne_zero hsg_ne

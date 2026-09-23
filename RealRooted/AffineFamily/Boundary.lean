@@ -640,7 +640,7 @@ theorem exists_strict_right_root_of_X_mul_of_no_common_fg_of_not_isRoot_zero
 any future Obreschkoff alternative is automatically oriented the correct way:
 the distinguished root `0` of `X * f` sits strictly to the right of all roots
 of `g`. -/
-private lemma prec_right_pair_of_prec_or_revPrec_of_no_common
+private lemma strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common
     {f g : ℝ[X]}
     (h : StrictInterl g (X * f) ∨ StrictInterl (X * f) g)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
@@ -658,14 +658,15 @@ private lemma prec_right_pair_of_prec_or_revPrec_of_no_common
 /-- Orientation wrapper for the affine right pair under no-common `f/g` and
 `g(0) ≠ 0`: once an Obreschkoff alternative for `(g, X*f)` is available, the
 right direction is forced. -/
-private lemma prec_right_pair_of_prec_or_revPrec_of_no_common_fg_of_not_isRoot_zero
+private lemma
+    strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_fg_of_not_isRoot_zero
     {f g : ℝ[X]}
     (h : StrictInterl g (X * f) ∨ StrictInterl (X * f) g)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     (hg0 : ¬ g.IsRoot 0) :
     StrictInterl g (X * f) :=
-  prec_right_pair_of_prec_or_revPrec_of_no_common h hg_ne hg_splits hgnn
+  strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common h hg_ne hg_splits hgnn
     (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
 
 /-- Public orientation selector for the right-hand pair `(g, X * f)` in the
@@ -678,7 +679,8 @@ theorem strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
     StrictInterl g (X * f) :=
-  prec_right_pair_of_prec_or_revPrec_of_no_common h hg_ne hg_splits hgnn hno
+  strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common
+    h hg_ne hg_splits hgnn hno
 
 @[deprecated strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
   (since := "2026-09-18")]
