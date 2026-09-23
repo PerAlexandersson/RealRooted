@@ -665,7 +665,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_evenShape
       ⟨hqPos, fun r hr =>
         hqNonpos r ((Polynomial.mem_roots hqPos.ne_zero).mp hr)⟩).1
   have hredPrec : StrictInterl q.divX odd :=
-    prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
+    strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
       hprecQ hqnn hq0 (by lia)
   change StrictInterl q.divX odd ∧ HasNonnegCoeffs q.divX
   exact ⟨hredPrec, hqnn.divX⟩

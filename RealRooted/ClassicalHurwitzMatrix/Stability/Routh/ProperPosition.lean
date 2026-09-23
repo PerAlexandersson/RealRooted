@@ -156,7 +156,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
     roots_nonpos_of_prec_sameDegree_of_zero_root_of_left_roots_neg
       hprecQ hqDegree.symm hqRoot hoddNeg
   have hredPrec : StrictInterl q.divX odd :=
-    prec_divX_left_of_prec_sameDegree_of_roots_nonpos_coeff_zero hprecQ
+    strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero hprecQ
       (fun r hr => hqNonpos r ((Polynomial.mem_roots hqNe).mp hr))
       hq0 hqDegree
   have hdivNe : q.divX ≠ 0 := by

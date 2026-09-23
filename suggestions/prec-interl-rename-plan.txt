@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  444  Lean declarations requiring semantic review
+  427  Lean declarations requiring semantic review
   206  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    20  statement scaffolds requiring proof-status-preserving renames
-  423  deprecated compatibility identifiers with canonical targets
+  440  deprecated compatibility identifiers with canonical targets
    58  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -180,6 +180,13 @@ The implementation-facing Obreschkoff regularization endgame now uses
 regularized-orientation, and successor-degree declarations.  These three
 `ObreschkoffConverseInternal` declarations and all their internal callers were
 renamed directly without expanding the public compatibility surface.
+
+The foundational right-zero `divX` degree-drop layer now consistently uses
+`StrictInterl` / `Interl` for reductions, reconstructions, equivalences,
+root/splitting projections, and bundled successor-degree data.  All 17 old
+public names remain exact deprecated aliases, and every non-challenge caller
+uses the canonical declarations.  The legacy module filename remains unchanged
+so existing import paths continue to resolve.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and
