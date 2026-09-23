@@ -129,7 +129,7 @@ private theorem roots_sum_schurSzegoComp_scaled
 
 /-- A positive next-to-leading coefficient fixes the orientation left
 ambiguous by the generic operator theorem. -/
-private theorem schurSzegoComp_prec_of_pred_coeff_pos
+private theorem schurSzegoComp_strictInterl_of_pred_coeff_pos
     {d : ℕ} {f g p : ℝ[X]} (hd : d ≠ 0)
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree = d)
     (hp_pred : 0 < p.coeff (d - 1))
@@ -200,7 +200,7 @@ private theorem schurSzegoComp_prec_of_pred_coeff_pos
 
 /-- Positive constant and linear coefficients of the original PF factor
 orient Schur--Szegő composition with its ordinary reflection. -/
-private theorem schurSzegoComp_prec_of_reflect_pf_factor
+private theorem schurSzegoComp_strictInterl_of_reflect_pf_factor
     {d : ℕ} {f g p : ℝ[X]} (hd : d ≠ 0)
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ d)
     (hp0 : p.coeff 0 ≠ 0) (hp1 : 0 < p.coeff 1)
@@ -213,7 +213,7 @@ private theorem schurSzegoComp_prec_of_reflect_pf_factor
   have hrefpred : 0 < (reflect d p).coeff (d - 1) := by
     obtain ⟨d, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hd
     simpa using hp1
-  exact schurSzegoComp_prec_of_pred_coeff_pos hd
+  exact schurSzegoComp_strictInterl_of_pred_coeff_pos hd
     (isPFPolynomial_reflect hp hpdeg) hrefdeg hrefpred hfdeg hgdeg hfg
 
 /-! ## Ordered root lists -/
@@ -241,15 +241,15 @@ theorem rootPolynomial_splits (s : Multiset ℝ) : (rootPolynomial s).Splits := 
     (rootPolynomial s).natDegree = s.card := by
   rw [rootPolynomial, Polynomial.natDegree_multiset_prod_X_sub_C_eq_card]
 
-private theorem prec_linear_root_move {u v : ℝ} (huv : u ≤ v) :
+private theorem strictInterl_linear_root_move {u v : ℝ} (huv : u ≤ v) :
     StrictInterl (X - C u) (X - C v) := by
   simpa [sub_eq_add_neg] using
     (StrictInterl.X_add_C_iff (a := -v) (b := -u)).mpr (by linarith)
 
-private theorem prec_rootPolynomial_cons_move (s : Multiset ℝ) {u v : ℝ}
+private theorem strictInterl_rootPolynomial_cons_move (s : Multiset ℝ) {u v : ℝ}
     (huv : u ≤ v) :
     StrictInterl (rootPolynomial (u ::ₘ s)) (rootPolynomial (v ::ₘ s)) := by
-  have h := (prec_linear_root_move huv).mul_common_factor
+  have h := (strictInterl_linear_root_move huv).mul_common_factor
     (rootPolynomial_monic s).ne_zero (rootPolynomial_splits s)
   simpa [rootPolynomial, mul_comm] using h
 
@@ -448,7 +448,7 @@ private theorem rootwiseLE_map_rootPolynomial_of_forall₂
         simpa [s, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
       have hprec :
           StrictInterl (rootPolynomial (x ::ₘ s)) (rootPolynomial (y ::ₘ s)) :=
-        prec_rootPolynomial_cons_move s hxy
+        strictInterl_rootPolynomial_cons_move s hxy
       have hTprec := hT.2 hdegx hdegy hprec
       have hstep :
           RootwiseLE (T (rootPolynomial (x ::ₘ s)))
@@ -528,13 +528,13 @@ private theorem rootCountAbove_map_raiseSmallest_le
             rw [natDegree_rootPolynomial]
             simpa [s, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
           have hprec := hT.2 hdeg0 hdeg1
-            (prec_rootPolynomial_cons_move s haM)
+            (strictInterl_rootPolynomial_cons_move s haM)
           have hcoe : (↑(a :: xs) : Multiset ℝ) + fixed = a ::ₘ s := by
             change (a ::ₘ (↑xs : Multiset ℝ)) + fixed =
               a ::ₘ ((↑xs : Multiset ℝ) + fixed)
             exact Multiset.cons_add a (↑xs : Multiset ℝ) fixed
           intro t
-          have hstep := (rootCountAboveOriented_of_prec hprec t).2
+          have hstep := (rootCountAboveOriented_of_strictInterl hprec t).2
           have htotal' : xs.length + (M ::ₘ fixed).card = d := by
             simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
           have hrec := ih hell htailM htotal' t
@@ -627,7 +627,7 @@ private theorem schurSzegoComp_reflect_preservesFullDegreeRootMoves
     have href_top : (reflect d p).coeff d ≠ 0 := by simpa [coeff_reflect] using hp0
     exact natDegree_schurSzegoComp_eq_of_coeff_top_ne hf_top href_top
   · intro f g hfdeg hgdeg hfg
-    exact schurSzegoComp_prec_of_reflect_pf_factor
+    exact schurSzegoComp_strictInterl_of_reflect_pf_factor
       hd hp hpdeg hp0 hp1 hfdeg hgdeg hfg
 
 private def listMax : List ℝ → ℝ

@@ -18,7 +18,7 @@ namespace RealRooted
 
 /-- A `StrictInterl` witness orients strict upper-tail root counts, independently of
 whether its endpoints have equal degrees or degrees differing by one. -/
-theorem rootCountAboveOriented_of_prec {p q : ℝ[X]} (hprec : StrictInterl p q) :
+theorem rootCountAboveOriented_of_strictInterl {p q : ℝ[X]} (hprec : StrictInterl p q) :
     ∀ x : ℝ,
       ((p.roots.filter (x < ·)).card : ℤ) ≤ (q.roots.filter (x < ·)).card ∧
       ((q.roots.filter (x < ·)).card : ℤ) ≤
@@ -30,6 +30,9 @@ theorem rootCountAboveOriented_of_prec {p q : ℝ[X]} (hprec : StrictInterl p q)
         (f := q) (g := p) hprec.2.1.2 hprec.1.2 hdeg.symm x).mpr
         (sameDegreeRootCountOriented_of_strictInterl hprec hdeg x)
   · exact succDegreeRootCountAboveOriented_of_strictInterl hprec hsucc
+
+@[deprecated rootCountAboveOriented_of_strictInterl (since := "2026-09-18")]
+alias rootCountAboveOriented_of_prec := rootCountAboveOriented_of_strictInterl
 
 namespace Compatible
 
@@ -67,8 +70,8 @@ theorem RootCountCompatible.of_commonInterleaver {p q k : ℝ[X]}
   refine RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
     hpk.1.1 hqk.1.1 ?_
   intro x _hpx _hqx
-  obtain ⟨hpk_left, hpk_right⟩ := rootCountAboveOriented_of_prec hpk x
-  obtain ⟨hqk_left, hqk_right⟩ := rootCountAboveOriented_of_prec hqk x
+  obtain ⟨hpk_left, hpk_right⟩ := rootCountAboveOriented_of_strictInterl hpk x
+  obtain ⟨hqk_left, hqk_right⟩ := rootCountAboveOriented_of_strictInterl hqk x
   constructor <;> lia
 
 /-- A positive-leading compatible pair satisfies Liu root-count
