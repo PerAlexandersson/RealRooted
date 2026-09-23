@@ -289,7 +289,7 @@ theorem loweringEulerStep_prec
     hq.hasNonnegCoeffs.pos_leadingCoeff hpq.2.1.1
   have hpout := loweringEulerStep_degree_pos hM hpdeg hpPos
   have hqout := loweringEulerStep_degree_pos hM hqdeg hqPos
-  have hprec := BorceaBranden.linearMap_prec_of_finiteSymbol_stable
+  have hprec := BorceaBranden.linearMap_strictInterl_of_finiteSymbol_stable
     (BorceaBranden.loweringEulerSymbol_stable M D hD hM)
     hqdeg.le hpdeg.le hpq hqPos hpPos hqout.2 hpout.2
       (by
@@ -321,7 +321,7 @@ theorem eulerInsertionStep_one_prec
   rw [← heq q, ← heq p]
   rw [← heq p] at hpout
   rw [← heq q] at hqout
-  exact BorceaBranden.eulerBidiagonalStepWithConstant_prec
+  exact BorceaBranden.eulerBidiagonalStepWithConstant_strictInterl
     (by norm_num) hd hpdeg hqdeg hpq hpPos hqPos hpout.2 hqout.2
       (by rw [hpout.1]; lia)
 

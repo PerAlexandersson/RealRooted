@@ -643,7 +643,7 @@ theorem prec0_or_revPrec0_sequence_of_pencil
     (hP : ∀ j : ℕ, P (j + 1) = T j (P j))
     (hQ : ∀ j : ℕ, Q (j + 1) = T j (Q j)) :
     ∀ j : ℕ, Interl (P j) (Q j) ∨ Interl (Q j) (P j) := fun j =>
-  prec0_or_revPrec0_of_allComboRealRooted
+  interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_sequence_of_pencil hbase hT hP hQ j)
 
 /-- Unoriented `Interl` consequence of sequence-level pencil transport with a
@@ -658,7 +658,7 @@ theorem prec0_or_revPrec0_sequence_linear_change_of_pencil
     (hQ : ∀ j : ℕ,
       Q (j + 1) = C (c j) * T j (P j) + C (d j) * T j (Q j)) :
     ∀ j : ℕ, Interl (P j) (Q j) ∨ Interl (Q j) (P j) := fun j =>
-  prec0_or_revPrec0_of_allComboRealRooted
+  interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_sequence_linear_change_of_pencil hbase hT hP hQ j)
 
 /-- Unoriented `Interl` consequence of triangular Ore-shaped state transport. -/
@@ -676,7 +676,7 @@ theorem prec0_or_revPrec0_triangular_sequence_of_pencil
       K j (Q j) =
         C (c j) * T j (P j) + C (d j) * T j (Q j)) :
     ∀ j : ℕ, Interl (P j) (Q j) ∨ Interl (Q j) (P j) := fun j =>
-  prec0_or_revPrec0_of_allComboRealRooted
+  interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_triangular_sequence_of_pencil
       hbase hT hP hQ hPimage hQimage j)
 
@@ -688,7 +688,7 @@ theorem prec0_or_revPrec0_triangular_sequence_of_certificates
     (hP : ∀ j : ℕ, P (j + 1) = A j (P j) + Q j)
     (hQ : ∀ j : ℕ, Q (j + 1) = K j (Q j)) :
     ∀ j : ℕ, Interl (P j) (Q j) ∨ Interl (Q j) (P j) := fun j =>
-  prec0_or_revPrec0_of_allComboRealRooted
+  interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_triangular_sequence_of_certificates
       hbase hrow hP hQ j)
 

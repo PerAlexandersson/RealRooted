@@ -58,7 +58,7 @@ theorem gammaOperator_interl_or_reverse
     (hpq : StrictInterl p q) :
     Interl (gammaOperator n p) (gammaOperator n q) ∨
       Interl (gammaOperator n q) (gammaOperator n p) := by
-  apply BorceaBranden.linearMap_prec0_or_revPrec0_of_finiteSymbol_stable
+  apply BorceaBranden.linearMap_interl_or_reverse_of_finiteSymbol_stable
   · exact finiteAlgebraicSymbol_gammaOperator_stable n hn
   · exact hpdeg
   · exact hqdeg

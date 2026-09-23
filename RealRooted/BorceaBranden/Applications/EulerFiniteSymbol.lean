@@ -346,7 +346,7 @@ theorem eulerBidiagonalStepWithConstant_splits
     exact (hout.ne_zero hzero).elim
   · exact hsplits
 
-theorem eulerBidiagonalStepWithConstant_prec
+theorem eulerBidiagonalStepWithConstant_strictInterl
     {c : ℝ} (hc : 1 ≤ c) {d : ℕ} (hd : 1 ≤ d) {p q : ℝ[X]}
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpq : StrictInterl q p)
@@ -357,9 +357,14 @@ theorem eulerBidiagonalStepWithConstant_prec
     StrictInterl (eulerBidiagonalStepWithConstant c d q)
       (eulerBidiagonalStepWithConstant c d p) := by
   simp only [eulerBidiagonalStepWithConstant_eq_bidiagonalOperator] at hpout hqout hpoutdeg ⊢
-  exact bidiagonalOperator_prec_of_affineSymbol_stable
+  exact bidiagonalOperator_strictInterl_of_affineSymbol_stable
     (eulerAffineBidiagonalSymbolWithConstant_stable c hc d hd)
     hpdeg hqdeg hpq hp hq hpout hqout hpoutdeg
+
+@[deprecated eulerBidiagonalStepWithConstant_strictInterl
+  (since := "2026-09-18")]
+alias eulerBidiagonalStepWithConstant_prec :=
+  eulerBidiagonalStepWithConstant_strictInterl
 
 /-- The Euler derivative step preserves real-rootedness on its natural degree
 box.  The disjunction is the standard zero-output convention of finite-symbol
@@ -374,7 +379,7 @@ theorem eulerBidiagonalStep_eq_zero_or_splits
 
 /-- The Euler derivative step preserves an oriented interlacing pair whenever
 the degree-box inputs and nonzero output orientations are certified. -/
-theorem eulerBidiagonalStep_prec
+theorem eulerBidiagonalStep_strictInterl
     {d : ℕ} (hd : 1 ≤ d) {p q : ℝ[X]}
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpq : StrictInterl q p)
@@ -384,8 +389,11 @@ theorem eulerBidiagonalStep_prec
     (hpoutdeg : 1 ≤ (eulerBidiagonalStep d p).natDegree) :
     StrictInterl (eulerBidiagonalStep d q) (eulerBidiagonalStep d p) := by
   simp only [eulerBidiagonalStep_eq_bidiagonalOperator] at hpout hqout hpoutdeg ⊢
-  exact bidiagonalOperator_prec_of_affineSymbol_stable
+  exact bidiagonalOperator_strictInterl_of_affineSymbol_stable
     (eulerAffineBidiagonalSymbol_stable d hd)
     hpdeg hqdeg hpq hp hq hpout hqout hpoutdeg
+
+@[deprecated eulerBidiagonalStep_strictInterl (since := "2026-09-18")]
+alias eulerBidiagonalStep_prec := eulerBidiagonalStep_strictInterl
 
 end RealRooted.BorceaBranden

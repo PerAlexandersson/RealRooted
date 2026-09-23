@@ -70,7 +70,7 @@ theorem bidiagonalPFPreserver_of_affineSymbol
 
 /-- A genuine stable affine symbol preserves an oriented interlacing pair when
 the two nonzero outputs have positive leading coefficients. -/
-theorem bidiagonalOperator_prec_of_affineSymbol_stable
+theorem bidiagonalOperator_strictInterl_of_affineSymbol_stable
     {alpha beta : ℕ → ℝ} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv
@@ -83,8 +83,13 @@ theorem bidiagonalOperator_prec_of_affineSymbol_stable
     (hqout : HasPosLeadingCoeff (bidiagonalOperator alpha beta q))
     (hpoutdeg : 1 ≤ (bidiagonalOperator alpha beta p).natDegree) :
     StrictInterl (bidiagonalOperator alpha beta q) (bidiagonalOperator alpha beta p) :=
-  linearMap_prec_of_finiteSymbol_stable
+  linearMap_strictInterl_of_finiteSymbol_stable
     hSymbol hpdeg hqdeg hpq hp hq hpout hqout hpoutdeg
+
+@[deprecated bidiagonalOperator_strictInterl_of_affineSymbol_stable
+  (since := "2026-09-18")]
+alias bidiagonalOperator_prec_of_affineSymbol_stable :=
+  bidiagonalOperator_strictInterl_of_affineSymbol_stable
 
 end RealRooted.BorceaBranden
 

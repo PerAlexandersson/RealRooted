@@ -46,16 +46,21 @@ theorem linearMap_allComboRealRooted_of_finiteSymbol_stable
 
 /-- A stable finite symbol preserves an interlacing pair up to the order and
 zero ambiguities recorded by `Interl`. -/
-theorem linearMap_prec0_or_revPrec0_of_finiteSymbol_stable
+theorem linearMap_interl_or_reverse_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpq : StrictInterl p q) :
     Interl (T p) (T q) ∨ Interl (T q) (T p) := by
-  apply prec0_or_revPrec0_of_allComboRealRooted
+  apply interl_or_reverse_of_allComboRealRooted
   exact linearMap_allComboRealRooted_of_finiteSymbol_stable
     hSymbol hpdeg hqdeg (allComboRealRooted_of_strictInterl hpq)
+
+@[deprecated linearMap_interl_or_reverse_of_finiteSymbol_stable
+  (since := "2026-09-18")]
+alias linearMap_prec0_or_revPrec0_of_finiteSymbol_stable :=
+  linearMap_interl_or_reverse_of_finiteSymbol_stable
 
 /-- A common degree bound controls the Hermite--Biehler combination. -/
 lemma hermiteBiehlerPolynomial_natDegree_le
@@ -100,7 +105,7 @@ private lemma complexificationLinearMapDegreeBox_hermiteBiehler_value
 
 /-- A stable finite symbol preserves an oriented interlacing pair when the
 nonzero outputs retain positive leading coefficients. -/
-theorem linearMap_prec_of_finiteSymbol_stable
+theorem linearMap_strictInterl_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
@@ -146,5 +151,8 @@ theorem linearMap_prec_of_finiteSymbol_stable
         simp_all
       grind
     · grind
+
+@[deprecated linearMap_strictInterl_of_finiteSymbol_stable (since := "2026-09-18")]
+alias linearMap_prec_of_finiteSymbol_stable := linearMap_strictInterl_of_finiteSymbol_stable
 
 end RealRooted.BorceaBranden

@@ -56,7 +56,7 @@ theorem preservesAllComboPairs_of_preservesRealRootedOrZero
 
 /-- Order-insensitive Obreschkoff consequence, with zero polynomials absorbed
 by `Interl`. -/
-theorem prec0_or_revPrec0_of_allComboRealRooted {f g : ℝ[X]}
+theorem interl_or_reverse_of_allComboRealRooted {f g : ℝ[X]}
     (hall : AllComboRealRooted f g) :
     Interl f g ∨ Interl g f := by
   by_cases hf0 : f = 0
@@ -75,6 +75,9 @@ theorem prec0_or_revPrec0_of_allComboRealRooted {f g : ℝ[X]}
       (allComboRealRooted_comm hall) (Or.inl hrevsucc)).imp
         (·.toInterl) (·.toInterl)).symm
 
+@[deprecated interl_or_reverse_of_allComboRealRooted (since := "2026-09-18")]
+alias prec0_or_revPrec0_of_allComboRealRooted := interl_or_reverse_of_allComboRealRooted
+
 /-- Pencil-local version of the operator-preserver consequence.  If a linear
 map preserves real-rootedness on the pencil spanned by an all-combinations
 real-rooted pair, then the images interlace up to the orientation ambiguity
@@ -87,7 +90,7 @@ theorem prec0_or_revPrec0_map_of_pencil
         T (C α * f + C β * g) = 0 ∨
           (T (C α * f + C β * g)).Splits) :
     Interl (T f) (T g) ∨ Interl (T g) (T f) :=
-  prec0_or_revPrec0_of_allComboRealRooted
+  interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_map_of_pencil hall hT)
 
 /-- Real-rootedness-preserving linear operators preserve interlacing up to the
