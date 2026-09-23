@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  409  Lean declarations requiring semantic review
+  407  Lean declarations requiring semantic review
   203  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    20  statement scaffolds requiring proof-status-preserving renames
-  464  deprecated compatibility identifiers with canonical targets
+  466  deprecated compatibility identifiers with canonical targets
    55  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -210,6 +210,9 @@ The magnitude-dominated and upper-derivative criterion layer now uses
 derivative-evaluation interfaces.  All five old public names remain exact
 deprecated aliases, and both production and tactic-backend callers use the
 canonical declarations.
+
+The Wagner right-sum sign layer now names both boundary evaluation lemmas with
+`StrictInterl`; their old public names remain exact deprecated aliases.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

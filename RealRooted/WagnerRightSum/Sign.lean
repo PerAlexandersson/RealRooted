@@ -363,7 +363,7 @@ lemma eval_mul_eval_nonneg_of_prec_right {f g h : ℝ[X]}
 
 /-- At each root of the common right-hand polynomial, `f + g` has the same sign
 as `f`. -/
-lemma eval_add_mul_eval_left_nonneg_of_prec_right {f g h : ℝ[X]}
+lemma eval_add_mul_eval_left_nonneg_of_strictInterl_right {f g h : ℝ[X]}
     (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : h.IsRoot r) :
@@ -374,7 +374,7 @@ lemma eval_add_mul_eval_left_nonneg_of_prec_right {f g h : ℝ[X]}
 
 /-- At each root of the common right-hand polynomial, `f + g` has the same sign
 as `g`. -/
-lemma eval_add_mul_eval_right_nonneg_of_prec_right {f g h : ℝ[X]}
+lemma eval_add_mul_eval_right_nonneg_of_strictInterl_right {f g h : ℝ[X]}
     (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : h.IsRoot r) :
@@ -639,6 +639,16 @@ lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
     exact lt_irrefl r (hgt r ((mem_roots hp_ne).mpr hr_root))
   · obtain ⟨u, hu_le, hu_root⟩ := exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot hpos ht
     exact not_lt_of_ge hu_le (hgt u ((mem_roots hp_ne).mpr hu_root))
+
+@[deprecated eval_add_mul_eval_left_nonneg_of_strictInterl_right
+  (since := "2026-09-18")]
+alias eval_add_mul_eval_left_nonneg_of_prec_right :=
+  eval_add_mul_eval_left_nonneg_of_strictInterl_right
+
+@[deprecated eval_add_mul_eval_right_nonneg_of_strictInterl_right
+  (since := "2026-09-18")]
+alias eval_add_mul_eval_right_nonneg_of_prec_right :=
+  eval_add_mul_eval_right_nonneg_of_strictInterl_right
 
 end
 end RealRooted
