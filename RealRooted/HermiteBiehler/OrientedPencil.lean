@@ -19,7 +19,7 @@ noncomputable section
 
 /-- If every real combination of two positive-leading-coefficient polynomials
 splits or vanishes, nonnegativity of `W(g,f)` selects `StrictInterl g f`. -/
-theorem prec_of_allComboRealRooted_of_wronskian_nonneg
+theorem strictInterl_of_allComboRealRooted_of_wronskian_nonneg
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f)
     (hg : HasPosLeadingCoeff g) (hall : AllComboRealRooted f g)
     (hW : ∀ x : ℝ, 0 ≤ (wronskian g f).eval x) :
@@ -89,8 +89,8 @@ theorem isUpperHalfPlaneStablePencil_of_allComboRealRooted_of_wronskian_nonneg
     (hg : HasPosLeadingCoeff g) (hall : AllComboRealRooted f g)
     (hW : ∀ x : ℝ, 0 ≤ (wronskian g f).eval x) :
     IsUpperHalfPlaneStablePencil f g :=
-  isUpperHalfPlaneStablePencil_of_prec hf hg
-    (prec_of_allComboRealRooted_of_wronskian_nonneg hf hg hall hW)
+  isUpperHalfPlaneStablePencil_of_strictInterl hf hg
+    (strictInterl_of_allComboRealRooted_of_wronskian_nonneg hf hg hall hW)
 
 /-- Without sign assumptions on the leading coefficients, all-real-
 combination splitness and nonnegativity of `W(g,f)` still give a stable
@@ -182,5 +182,10 @@ theorem eq_zero_pair_or_isUpperHalfPlaneStablePencil_of_allComboRealRooted_of_wr
           hf0 hg0 hall hW
 
 end
+
+@[deprecated strictInterl_of_allComboRealRooted_of_wronskian_nonneg
+  (since := "2026-09-18")]
+alias prec_of_allComboRealRooted_of_wronskian_nonneg :=
+  strictInterl_of_allComboRealRooted_of_wronskian_nonneg
 
 end RealRooted

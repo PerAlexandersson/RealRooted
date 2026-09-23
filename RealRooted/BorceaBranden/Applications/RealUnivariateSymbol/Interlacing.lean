@@ -137,7 +137,7 @@ theorem linearMap_prec_of_finiteSymbol_stable
     have hz' := congrArg (fun r : ℂ[X] => r.coeff k) hz
     have hre := congrArg Complex.re hz'
     simpa [hermiteBiehlerPolynomial, complexify] using hre
-  · apply prec_of_stable_general hpout hqout
+  · apply strictInterl_of_stable_general hpout hqout
     · have hu : IsUpperHalfPlaneStable
           (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
             (complexUnivariateDegreeBoxOperator d (complexificationLinearMap T) f)) := by

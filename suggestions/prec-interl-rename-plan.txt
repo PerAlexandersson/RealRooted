@@ -17,13 +17,13 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  455  Lean declarations requiring semantic review
-  207  tactic declarations requiring an alias-first migration
+  444  Lean declarations requiring semantic review
+  206  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    20  statement scaffolds requiring proof-status-preserving renames
-  412  deprecated compatibility identifiers with canonical targets
-   57  other references, locals, or private declarations migrated directly
+  423  deprecated compatibility identifiers with canonical targets
+   58  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
 Naming rules
@@ -167,6 +167,13 @@ transports, and reciprocal-cone closure.  All 14 old public names remain exact
 deprecated aliases or abbreviations, and the tactic backend uses the canonical
 declarations.  The Veronese-section bridge statements remain with their owner
 for a separate semantic batch.
+
+The foundational Hermite--Biehler converse, stable-pencil, oriented-pencil,
+low-degree, and adjacent Wronskian/Bezoutian APIs now consistently name their
+proper-position conclusions with `StrictInterl`.  All 11 old public names
+remain exact deprecated aliases, all non-challenge production and tactic
+callers use the canonical declarations, and the private degree-one root helper
+was renamed directly.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

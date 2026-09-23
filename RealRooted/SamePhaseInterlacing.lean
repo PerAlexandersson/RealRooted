@@ -66,7 +66,7 @@ theorem prec_of_upperHalfPlaneStable_hermiteBiehler
     (hHB : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial A D)) :
     StrictInterl D A := by
   by_cases hAdeg : 1 ≤ A.natDegree
-  · exact prec_of_stable_general hA hD hHB hAdeg
+  · exact strictInterl_of_stable_general hA hD hHB hAdeg
   · have hA0 : A.natDegree = 0 := by lia
     have hD0 : D.natDegree = 0 := by
       have hle := (natDegree_shape_of_stable hA hD hHB).1

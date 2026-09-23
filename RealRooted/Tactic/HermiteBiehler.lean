@@ -49,7 +49,7 @@ theorem hermiteBiehlerPrec_sequence {F G : Nat → ℝ[X]}
       ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n)))
     (hdegree : ∀ n : Nat, 1 ≤ (F n).natDegree) :
     ∀ n : Nat, StrictInterl (G n) (F n) :=
-  fun n => RealRooted.prec_of_stable_general (hF n) (hG n) (hstable n) (hdegree n)
+  fun n => RealRooted.strictInterl_of_stable_general (hF n) (hG n) (hstable n) (hdegree n)
 
 theorem hermiteBiehlerOddEven_rightHalfPlaneStable_sequence {P Q : Nat → ℝ[X]}
     (hP : ∀ n : Nat, HasNonnegCoeffs (P n))
@@ -205,7 +205,7 @@ macro_rules
         stable := $hstable:term,
         real_degree_pos := $hdegree:term) =>
       `(tactic|
-        exact RealRooted.prec_of_stable_general $hf $hg $hstable $hdegree)
+        exact RealRooted.strictInterl_of_stable_general $hf $hg $hstable $hdegree)
   | `(tactic|
       rr_hermite_biehler_odd_even_hurwitz using
         odd_nonneg := $hp:term,

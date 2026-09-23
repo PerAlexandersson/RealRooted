@@ -232,7 +232,7 @@ theorem IsStrictlyHurwitzStable.prec_rotatedParts_of_posLeading
     (hodd : HasPosLeadingCoeff (hurwitzRotatedOddPart odd))
     (hdegree : 1 ≤ (hurwitzRotatedEvenPart even).natDegree) :
     StrictInterl (hurwitzRotatedOddPart odd) (hurwitzRotatedEvenPart even) :=
-  prec_of_stable_general heven hodd
+  strictInterl_of_stable_general heven hodd
     h.upperHalfPlaneStable_rotatedParts hdegree
 
 /-- With positive leading coefficients after multiplication by `i`, strict
@@ -245,7 +245,7 @@ theorem IsStrictlyHurwitzStable.prec_rotatedParts_swapped_of_posLeading
     (heven : HasPosLeadingCoeff (hurwitzRotatedEvenPart even))
     (hdegree : 1 ≤ (-hurwitzRotatedOddPart odd).natDegree) :
     StrictInterl (hurwitzRotatedEvenPart even) (-hurwitzRotatedOddPart odd) := by
-  apply prec_of_stable_general hodd heven _ hdegree
+  apply strictInterl_of_stable_general hodd heven _ hdegree
   rw [← C_I_mul_hermiteBiehlerPolynomial]
   exact h.upperHalfPlaneStable_rotatedParts.C_mul (by simp)
 
@@ -289,7 +289,7 @@ theorem IsStrictlyHurwitzStable.prec_rotatedParts_of_evenShape
   have hprec : StrictInterl
       (Polynomial.C s * hurwitzRotatedOddPart odd)
       (Polynomial.C s * hurwitzRotatedEvenPart even) :=
-    prec_of_stable_general heven' hodd' hstable hdegree'
+    strictInterl_of_stable_general heven' hodd' hstable hdegree'
   have hscaled := (hprec.C_mul_left hs0).C_mul_right hs0
   simpa [← mul_assoc, ← Polynomial.C_mul, hsquare] using hscaled
 
@@ -347,7 +347,7 @@ theorem IsStrictlyHurwitzStable.prec_rotatedParts_of_oddShape
   have hprec : StrictInterl
       (Polynomial.C s * hurwitzRotatedEvenPart even)
       (Polynomial.C s * -hurwitzRotatedOddPart odd) :=
-    prec_of_stable_general hodd' heven' hstable hdegree'
+    strictInterl_of_stable_general hodd' heven' hstable hdegree'
   have hscaled := (hprec.C_mul_left hs0).C_mul_right hs0
   have hneg : StrictInterl
       (hurwitzRotatedEvenPart even) (-hurwitzRotatedOddPart odd) := by
