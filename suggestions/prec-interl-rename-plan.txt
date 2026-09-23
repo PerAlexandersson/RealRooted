@@ -17,13 +17,13 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  636  Lean declarations requiring semantic review
+  632  Lean declarations requiring semantic review
   229  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    29  statement scaffolds requiring proof-status-preserving renames
-  226  deprecated compatibility identifiers with canonical targets
-   31  other references or locals migrated with their owning declaration
+  229  deprecated compatibility identifiers with canonical targets
+   32  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
 Naming rules
@@ -183,6 +183,11 @@ characterization, and the endpoint-closed consecutive-chain theorem.  Exact
 deprecated declarations preserve all nine former public names.  The renamed
 shifted-slot proposition retains its existing checked witness and unchanged
 proof status.
+
+The #896 descending-root facade batch canonicalizes the three public
+`CommonInterleaverSeq` wrappers and their private `List.ofFn` helper.  Exact
+deprecated aliases preserve the public signatures; the private helper is
+renamed directly.
 
 The #892 compatibility/right-pencil batch canonicalizes the failed succ-degree
 orientation statement interface and its seven checked conditional reductions.

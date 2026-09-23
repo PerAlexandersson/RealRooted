@@ -134,7 +134,7 @@ private lemma pairwise_ge_of_shifted_rootSlot_points
 
 /-- In a `StrictInterl` witness, the `j`th descending root of the right polynomial lies
 in the `j`th admissible slot of the left polynomial. -/
-theorem mem_rootSlotInterval_of_prec_desc
+theorem mem_rootSlotInterval_of_strictInterl_desc
     {f g : ℝ[X]} (hfg : StrictInterl f g) (j : Fin g.natDegree) :
     (rootSeqDesc g).get ⟨j.1, by
       rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
@@ -144,6 +144,9 @@ theorem mem_rootSlotInterval_of_prec_desc
         rcases hfg with ⟨hf, hg, _, _, _, _, _, _, _⟩
         simpa [hf, hg] using lt_of_lt_of_le j.2 hdeg⟩ :=
   CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl hfg j
+
+@[deprecated mem_rootSlotInterval_of_strictInterl_desc (since := "2026-09-18")]
+alias mem_rootSlotInterval_of_prec_desc := mem_rootSlotInterval_of_strictInterl_desc
 
 /-- A common right interleaver gives matching shifted-slot intersections for a
 close-degree pair.  For all but the last shifted slot we use the corresponding
@@ -177,9 +180,9 @@ theorem shiftedSlotIntersections_of_commonInterleaver
     let x : ℝ := (rootSeqDesc h).get ⟨j + 1, by
       simpa [rootSeqDesc_length hfh.2.1.2] using hjh⟩
     have hmem_f : x ∈ rootSlotInterval (rootSeqDesc f) jf := by
-      simpa [x, jf, jh] using mem_rootSlotInterval_of_prec_desc hfh jh
+      simpa [x, jf, jh] using mem_rootSlotInterval_of_strictInterl_desc hfh jh
     have hmem_g : x ∈ rootSlotInterval (rootSeqDesc g) jg := by
-      simpa [x, jg, jh] using mem_rootSlotInterval_of_prec_desc hgh jh
+      simpa [x, jg, jh] using mem_rootSlotInterval_of_strictInterl_desc hgh jh
     exact ⟨x, hmem_f, hmem_g⟩
   · have hjh_le : h.natDegree ≤ j + 1 := by exact Nat.le_of_not_gt hjh
     have hjh_ge : j + 1 ≤ h.natDegree := by exact (Nat.succ_le_iff.mpr hjf_nat).trans hfh_lower
@@ -207,7 +210,7 @@ theorem shiftedSlotIntersections_of_commonInterleaver
 
 /-- Slot data against `rootSeqDesc f` reconstructs a `StrictInterl` witness with the
 descending-root polynomial built from those slot choices. -/
-theorem prec_of_slots_polyOfDescRootsDesc
+theorem strictInterl_of_slots_polyOfDescRootsDesc
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
     (hxs : xs.Pairwise (· ≥ ·))
     (hdeg_lo : f.natDegree ≤ xs.length)
@@ -222,9 +225,12 @@ theorem prec_of_slots_polyOfDescRootsDesc
     CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
       hf₀ hf hxs hdeg_lo hdeg_hi hslot
 
+@[deprecated strictInterl_of_slots_polyOfDescRootsDesc (since := "2026-09-18")]
+alias prec_of_slots_polyOfDescRootsDesc := strictInterl_of_slots_polyOfDescRootsDesc
+
 /-- Shifted slot data against `rootSeqDesc f` reconstructs a left `StrictInterl` witness
 with the descending-root polynomial built from those slot choices. -/
-theorem prec_left_of_shifted_slots_polyOfDescRootsDesc
+theorem strictInterl_left_of_shifted_slots_polyOfDescRootsDesc
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
     (hxs : xs.Pairwise (· ≥ ·))
     (hdeg_lo : xs.length ≤ f.natDegree)
@@ -239,7 +245,12 @@ theorem prec_left_of_shifted_slots_polyOfDescRootsDesc
     CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
       hf₀ hf hxs hdeg_lo hdeg_hi hslot
 
-private lemma prec_polyOfDescRootsDesc_of_ofFn_slots
+@[deprecated strictInterl_left_of_shifted_slots_polyOfDescRootsDesc
+  (since := "2026-09-18")]
+alias prec_left_of_shifted_slots_polyOfDescRootsDesc :=
+  strictInterl_left_of_shifted_slots_polyOfDescRootsDesc
+
+private lemma strictInterl_polyOfDescRootsDesc_of_ofFn_slots
     {f : ℝ[X]} {n : ℕ} {x : Fin n → ℝ}
     (hf₀ : f ≠ 0) (hf : f.Splits)
     (hxs : (List.ofFn x).Pairwise (· ≥ ·))
@@ -252,7 +263,7 @@ private lemma prec_polyOfDescRootsDesc_of_ofFn_slots
           simpa [rootSeqDesc_length hf] using this⟩) :
     StrictInterl f (polyOfDescRootsDesc (List.ofFn x)) := by
   refine
-    prec_of_slots_polyOfDescRootsDesc hf₀ hf hxs
+    strictInterl_of_slots_polyOfDescRootsDesc hf₀ hf hxs
       (by simpa using hdeg_lo)
       (by simpa using hdeg_hi)
       ?_
@@ -287,13 +298,13 @@ theorem pairHasCommonInterleaver_of_slotIntersections
   let h : ℝ[X] := polyOfDescRootsDesc xs
   refine ⟨h, ?_, ?_⟩
   · simpa [h, xs] using
-      prec_polyOfDescRootsDesc_of_ofFn_slots hf₀ hf hxs_pair
+      strictInterl_polyOfDescRootsDesc_of_ofFn_slots hf₀ hf hxs_pair
         (by simp [n]) (by simp [n])
         (fun j hj => by
           have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).1
           simpa [x] using hraw)
   · simpa [h, xs] using
-      prec_polyOfDescRootsDesc_of_ofFn_slots hg₀ hg hxs_pair
+      strictInterl_polyOfDescRootsDesc_of_ofFn_slots hg₀ hg hxs_pair
         (by simp only [n]; lia) (by simp only [n]; lia)
         (fun j hj => by
           have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).2
@@ -328,14 +339,14 @@ theorem pairHasCommonLeftInterleaver_of_shiftedSlotIntersections
   let h : ℝ[X] := polyOfDescRootsDesc xs
   refine ⟨h, ?_, ?_⟩
   · simpa [h, xs] using
-      prec_left_of_shifted_slots_polyOfDescRootsDesc hf₀ hf hxs_pair
+      strictInterl_left_of_shifted_slots_polyOfDescRootsDesc hf₀ hf hxs_pair
         (by simp [xs, n]) (by simp [xs, n])
         (fun j hj => by
           have hjf : j < f.natDegree := by simpa [xs, n] using hj
           have hraw := (Classical.choose_spec (hslot j hjf)).1
           simpa [x, xs] using hraw)
   · simpa [h, xs] using
-      prec_left_of_shifted_slots_polyOfDescRootsDesc hg₀ hg hxs_pair
+      strictInterl_left_of_shifted_slots_polyOfDescRootsDesc hg₀ hg hxs_pair
         (by simpa [xs, n] using hdeg_lo) (by simpa [xs, n] using hdeg_hi)
         (fun j hj => by
           have hjf : j < f.natDegree := by simpa [xs, n] using hj
