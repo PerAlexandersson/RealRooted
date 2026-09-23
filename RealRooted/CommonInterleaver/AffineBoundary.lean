@@ -54,13 +54,18 @@ theorem prec_boundary_right_pair_of_prec_nonneg
 
 /-- Once the fixed right-hand pair `(g, X * f)` is oriented, the polynomial
 `X * f` itself is already a common right interleaver for `f` and `g`. -/
-theorem pairHasCommonInterleaver_of_prec_right_pair_nonneg
+theorem pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
     {f g : ℝ[X]}
     (hprec : StrictInterl g (X * f))
     (hfnn : HasNonnegCoeffs f) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hprec.2.1.1 hprec.2.1.2
   exact ⟨X * f, prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn, hprec⟩
+
+@[deprecated pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
+  (since := "2026-09-18")]
+alias pairHasCommonInterleaver_of_prec_right_pair_nonneg :=
+  pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
 
 /-- In the succ-degree branch, the boundary right pair is automatic as soon as
 the original no-common orientation statement is known: `StrictInterl g f` is ruled out

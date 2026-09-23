@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  675  Lean declarations requiring semantic review
+  666  Lean declarations requiring semantic review
   231  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    33  statement scaffolds requiring proof-status-preserving renames
-  178  deprecated compatibility identifiers with canonical targets
+  187  deprecated compatibility identifiers with canonical targets
    34  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -126,6 +126,12 @@ terminology for its generic and structured same/successor/degree-bounded
 theorems and for the regularized `sub_C_mul` transport.  Exact deprecated
 aliases preserve the old API, while theorem-library and tactic callers use the
 canonical declarations.
+
+The foundational CommonInterleaver pair bridge now names forward, reverse,
+and disjunctive orientations with `strictInterl` / `reverseStrictInterl`.
+This includes the all-combinations and compatibility endpoints, both common
+interleaver directions, and the nonnegative right-pair boundary constructor.
+All nine old public names remain exact deprecated aliases.
 
 Execution order
 

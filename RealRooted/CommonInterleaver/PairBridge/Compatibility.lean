@@ -31,7 +31,7 @@ theorem posComboAllComboBridge_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
     PosComboNoCommonToAllComboBridgeStatement :=
   fun _ _ hf_pos hg_pos hfg hdeg_lo hdeg_hi hno =>
-    allComboRealRooted_of_prec_or_revPrec <|
+    allComboRealRooted_of_strictInterl_or_reverse <|
     hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno
 
 /-- The two no-common bridge formulations are equivalent:
@@ -71,7 +71,7 @@ theorem compatiblePairHasCommonInterleaver_of_posComboOrientation
         StrictInterl f g ∨ StrictInterl g f) :
     CompatiblePairHasCommonInterleaverStatement :=
   fun {_ _} hf_pos hg_pos hfg =>
-    pairHasCommonInterleaver_of_prec_or_revPrec <|
+    pairHasCommonInterleaver_of_strictInterl_or_reverse <|
       horient hf_pos hg_pos (hfg.toPosComboRealRooted hf_pos hg_pos)
 
 /-- Compatibility-to-common-interleaver reduction through the positive-combo
@@ -101,14 +101,14 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
         (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
           hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
         hfg hf_pos hg_pos hfg_deg hclose.2
-    exact pairHasCommonInterleaver_of_prec_or_revPrec hprec_or
+    exact pairHasCommonInterleaver_of_strictInterl_or_reverse hprec_or
   · have hgf_deg : g.natDegree ≤ f.natDegree := le_of_not_ge hfg_deg
     have hprec_or : StrictInterl g f ∨ StrictInterl f g :=
       PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common
         (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
           hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
         (PosComboRealRooted.comm hfg) hg_pos hf_pos hgf_deg hclose.1
-    exact pairHasCommonInterleaver_of_prec_or_revPrec (Or.symm hprec_or)
+    exact pairHasCommonInterleaver_of_strictInterl_or_reverse (Or.symm hprec_or)
 
 /-- If one has both the no-common-roots orientation core and degree closeness
 for `PosComboRealRooted` pairs, then every positive-leading `PosComboRealRooted`
@@ -178,7 +178,7 @@ theorem posComboPairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  pairHasCommonInterleaver_of_prec_or_revPrec <|
+  pairHasCommonInterleaver_of_strictInterl_or_reverse <|
     posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg
 

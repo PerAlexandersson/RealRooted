@@ -61,7 +61,7 @@ theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_orientation
     (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
     PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno _hf_split
-  exact pairHasCommonLeftInterleaver_of_prec <|
+  exact pairHasCommonLeftInterleaver_of_strictInterl <|
     horient hf_pos hg_pos hfnn hgnn hfg hdeg hno
 
 /-- A common left interleaver gives the lower common-non-root succ-degree
