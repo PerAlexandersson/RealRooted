@@ -175,6 +175,12 @@ remain exact deprecated aliases, all non-challenge production and tactic
 callers use the canonical declarations, and the private degree-one root helper
 was renamed directly.
 
+The implementation-facing Obreschkoff regularization endgame now uses
+`StrictInterl` / `StrictInterlOrReverse` in its normalized simple-combination,
+regularized-orientation, and successor-degree declarations.  These three
+`ObreschkoffConverseInternal` declarations and all their internal callers were
+renamed directly without expanding the public compatibility surface.
+
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and
 left/right pair projections.  All 18 old public signatures remain as
