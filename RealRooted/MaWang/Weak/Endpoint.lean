@@ -7,7 +7,7 @@ noncomputable section
 namespace RealRooted.MaWangInternal
 
 /-- Degree-bounded structured Liu--Wang theorem in the weak-sign regime. -/
-theorem prec_of_interlaces_evalCoeff_nonpos
+theorem strictInterl_of_interlaces_evalCoeff_nonpos
     {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -38,10 +38,10 @@ theorem prec_of_interlaces_evalCoeff_nonpos
       lia
     rcases hcases with hsame | hsucc
     · exact
-        prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
+        strictInterl_of_interlaces_evalCoeff_nonpos_same_of_no_common
           hgf hg_pos hF_pos hsame hno hb_nonpos
     · exact
-        prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
+        strictInterl_of_interlaces_evalCoeff_nonpos_succ_of_no_common
           hgf hg_pos hF_pos hsucc hno hb_nonpos
   · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
@@ -58,12 +58,17 @@ theorem prec_of_interlaces_evalCoeff_nonpos
       prec_mul_X_sub_C_of_linearCombo_quotient (a := a) (b := b) (r := r) hprec_q
     lia
 
+@[deprecated strictInterl_of_interlaces_evalCoeff_nonpos (since := "2026-09-18")]
+alias prec_of_interlaces_evalCoeff_nonpos :=
+  strictInterl_of_interlaces_evalCoeff_nonpos
+
 
 end RealRooted.MaWangInternal
 
 namespace RealRooted
 
 export MaWangInternal
-  (prec_of_interlaces_evalCoeff_nonpos)
+  (strictInterl_of_interlaces_evalCoeff_nonpos
+    prec_of_interlaces_evalCoeff_nonpos)
 
 end RealRooted

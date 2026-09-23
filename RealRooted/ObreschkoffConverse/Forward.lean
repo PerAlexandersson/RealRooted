@@ -73,7 +73,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
           have hmix_hi : (C (-β) * g + C (-α) * f).natDegree ≤ g.natDegree + 1 := by lia
           have hprec_mix :
               StrictInterl g (C (-β) * g + C (-α) * f) :=
-            prec_of_interlaces_evalCoeff_nonpos
+            strictInterl_of_interlaces_evalCoeff_nonpos
               (f := g) (g := f) (a := C (-β)) (b := C (-α))
               hfg_inter hf_pos hmix_pos
               hmix_lo hmix_hi
@@ -121,7 +121,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
         have hmix_hi : (C β * g + C α * f).natDegree ≤ g.natDegree + 1 := by lia
         have hprec_mix :
             StrictInterl g (C β * g + C α * f) :=
-          prec_of_interlaces_evalCoeff_nonpos
+          strictInterl_of_interlaces_evalCoeff_nonpos
             (f := g) (g := f) (a := C β) (b := C α)
             hfg_inter hf_pos hmix_pos
             hmix_lo hmix_hi

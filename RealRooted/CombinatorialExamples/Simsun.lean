@@ -310,7 +310,7 @@ theorem prec_simsun_succ : ∀ n : Nat, StrictInterl (simsun n) (simsun (n + 1))
             ((mem_roots (prec_simsun_succ (n + 1)).2.1.1).mpr hr)
       exact eval_simsunCoeffB_nonpos_of_nonpos hr_nonpos
     simpa [hNext_eq] using
-      prec_of_interlaces_evalCoeff_nonpos
+      strictInterl_of_interlaces_evalCoeff_nonpos
         (f := simsun (n + 2))
         (g := (simsun (n + 2)).derivative)
         (a := simsunCoeffA (n + 2))

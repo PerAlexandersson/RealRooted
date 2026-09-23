@@ -9,7 +9,7 @@ namespace RealRooted.MaWangInternal
 /-- Generic weak-sign same-degree theorem: if `g ⊳ f`, `F` is real-rooted with
 the same degree as `f`, and at every root of `f` the value `F(r)` has
 nonpositive sign relative to `g(r)`, then `f ≺ F`. -/
-theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
+theorem strictInterl_of_interlaces_eval_mul_nonpos_same_of_no_common
     {f g F : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -142,7 +142,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
 /-- Generic weak-sign differ-by-1 theorem: if `g ⊳ f`, `F` is real-rooted with
 degree `deg(f)+1`, and at every root of `f` the value `F(r)` has nonpositive
 sign relative to `g(r)`, then `f ⊳ F`. -/
-theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
+theorem strictInterl_of_interlaces_eval_mul_nonpos_succ_of_no_common
     {f g F : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -319,7 +319,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
       hts_sorted hrs_eq hts_eq hdeg hhead hlt hle
 
 /-- Degree-bounded generic weak-sign theorem in the no-common-roots regime. -/
-theorem prec_of_interlaces_eval_mul_nonpos_of_no_common
+theorem strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
     {f g F : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -333,11 +333,26 @@ theorem prec_of_interlaces_eval_mul_nonpos_of_no_common
   have hcases : F.natDegree = f.natDegree ∨ F.natDegree = f.natDegree + 1 := by lia
   rcases hcases with hsame | hsucc
   · exact
-      prec_of_interlaces_eval_mul_nonpos_same_of_no_common
+      strictInterl_of_interlaces_eval_mul_nonpos_same_of_no_common
         hgf hg_pos hF_ne hF_splits hF_pos hsame hno hroot_nonpos
   · exact
-      prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
+      strictInterl_of_interlaces_eval_mul_nonpos_succ_of_no_common
         hgf hg_pos hF_ne hF_splits hF_pos hsucc hno hroot_nonpos
+
+@[deprecated strictInterl_of_interlaces_eval_mul_nonpos_same_of_no_common
+  (since := "2026-09-18")]
+alias prec_of_interlaces_eval_mul_nonpos_same_of_no_common :=
+  strictInterl_of_interlaces_eval_mul_nonpos_same_of_no_common
+
+@[deprecated strictInterl_of_interlaces_eval_mul_nonpos_succ_of_no_common
+  (since := "2026-09-18")]
+alias prec_of_interlaces_eval_mul_nonpos_succ_of_no_common :=
+  strictInterl_of_interlaces_eval_mul_nonpos_succ_of_no_common
+
+@[deprecated strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
+  (since := "2026-09-18")]
+alias prec_of_interlaces_eval_mul_nonpos_of_no_common :=
+  strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
 
 
 end RealRooted.MaWangInternal
@@ -345,7 +360,10 @@ end RealRooted.MaWangInternal
 namespace RealRooted
 
 export MaWangInternal
-  (prec_of_interlaces_eval_mul_nonpos_same_of_no_common
+  (strictInterl_of_interlaces_eval_mul_nonpos_same_of_no_common
+    strictInterl_of_interlaces_eval_mul_nonpos_succ_of_no_common
+    strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
+    prec_of_interlaces_eval_mul_nonpos_same_of_no_common
     prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
     prec_of_interlaces_eval_mul_nonpos_of_no_common)
 

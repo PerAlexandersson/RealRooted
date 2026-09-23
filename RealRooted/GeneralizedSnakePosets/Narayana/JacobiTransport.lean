@@ -569,7 +569,7 @@ theorem lemma34ModifiedNarayanaShifted_prev_interlaces_left
       intro r _hr
       simpa [b] using narayanaCoeffB_eval_nonpos (k + 1) r
     exact
-      prec_of_interlaces_evalCoeff_nonpos
+      strictInterl_of_interlaces_evalCoeff_nonpos
         (modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs k
           narayanaQuot_hasNonnegCoeffs)
         (modifiedNarayanaPolynomial_posLeadingCoeff k)

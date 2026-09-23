@@ -7,7 +7,7 @@ noncomputable section
 namespace RealRooted.MaWangInternal
 
 /-- Weak-sign Liu--Wang same-degree theorem in the no-common-roots regime. -/
-theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
+theorem strictInterl_of_interlaces_evalCoeff_nonpos_same_of_no_common
     {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -152,7 +152,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
     prec_of_count_bounds_same hf.1 hf.2 hF.1 hF.2 hrs_sorted hts_sorted hrs_eq hts_eq hdeg hlt hle
 
 /-- Weak-sign Liu--Wang differ-by-1 theorem in the no-common-roots regime. -/
-theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
+theorem strictInterl_of_interlaces_evalCoeff_nonpos_succ_of_no_common
     {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -346,12 +346,23 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
     prec_of_count_bounds_succ hf.1 hf.2 hF.1 hF.2 hrs_sorted
       hts_sorted hrs_eq hts_eq hdeg hhead hlt hle
 
+@[deprecated strictInterl_of_interlaces_evalCoeff_nonpos_same_of_no_common
+  (since := "2026-09-18")]
+alias prec_of_interlaces_evalCoeff_nonpos_same_of_no_common :=
+  strictInterl_of_interlaces_evalCoeff_nonpos_same_of_no_common
+
+@[deprecated strictInterl_of_interlaces_evalCoeff_nonpos_succ_of_no_common
+  (since := "2026-09-18")]
+alias prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common :=
+  strictInterl_of_interlaces_evalCoeff_nonpos_succ_of_no_common
+
 
 end RealRooted.MaWangInternal
 
 namespace RealRooted
 
 export MaWangInternal
-  (prec_of_interlaces_evalCoeff_nonpos_same_of_no_common)
+  (strictInterl_of_interlaces_evalCoeff_nonpos_same_of_no_common
+    prec_of_interlaces_evalCoeff_nonpos_same_of_no_common)
 
 end RealRooted

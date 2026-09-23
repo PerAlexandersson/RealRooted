@@ -211,7 +211,7 @@ lemma xSubCubicCubicSplits_of_interlacing_roots {a b c u v w μ : ℝ}
     intro r _
     simpa only [eval_neg, eval_C, Left.neg_nonpos_iff] using le_of_lt hμ
   have hprec : StrictInterl f ((1 : ℝ[X]) * f + (-C μ) * g) :=
-    prec_of_interlaces_evalCoeff_nonpos
+    strictInterl_of_interlaces_evalCoeff_nonpos
       hgf hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
   have hsplits : ((1 : ℝ[X]) * f + (-C μ) * g).Splits := hprec.2.1.2
   dsimp [f, g] at hsplits ⊢

@@ -128,7 +128,7 @@ macro_rules
         degree_upper := $hdeg_hi:term,
         coeff_nonpos := $hb_nonpos:term) =>
       `(tactic|
-        exact RealRooted.prec_of_interlaces_evalCoeff_nonpos
+        exact RealRooted.strictInterl_of_interlaces_evalCoeff_nonpos
           $hgf $hg_pos $hF_pos $hdeg_lo $hdeg_hi $hb_nonpos)
   | `(tactic|
       rr_prec_evalCoeff_nonpos using

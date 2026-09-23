@@ -711,7 +711,7 @@ protected lemma AffineFamily.prec_of_affine_family_nonneg_degree_one
     simp_all
   have hprec_lin :
       StrictInterl f (((g / f) * f) + (g % f) * (1 : ℝ[X])) :=
-    prec_of_interlaces_evalCoeff_nonpos
+    strictInterl_of_interlaces_evalCoeff_nonpos
       (f := f) (g := (1 : ℝ[X])) (a := g / f) (b := g % f)
       hInter h1_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
   simpa [EuclideanDomain.div_add_mod'] using hprec_lin

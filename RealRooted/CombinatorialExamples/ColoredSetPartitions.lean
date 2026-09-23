@@ -174,7 +174,7 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
         ((mem_roots <| by rintro h; simp [h] at hdeg).mpr hr)
     exact eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos m hr_nonpos
   simpa [hNext_eq] using
-    prec_of_interlaces_evalCoeff_nonpos
+    strictInterl_of_interlaces_evalCoeff_nonpos
       (f := coloredSetPartitions c m 1)
       (g := (coloredSetPartitions c m 1).derivative)
       (a := coloredSetPartitionsCoeffA c)
@@ -231,7 +231,7 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
             ((mem_roots hprev.2.1.1).mpr hr)
         exact eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos m hr_nonpos
       simpa [hNext_eq] using
-        prec_of_interlaces_evalCoeff_nonpos
+        strictInterl_of_interlaces_evalCoeff_nonpos
           (f := coloredSetPartitions c m (n + 2))
           (g := (coloredSetPartitions c m (n + 2)).derivative)
           (a := coloredSetPartitionsCoeffA c)

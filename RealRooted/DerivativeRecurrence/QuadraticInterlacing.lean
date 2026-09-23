@@ -122,7 +122,7 @@ lemma prec_step_of_quadratic_derivative_linear
       (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
     intro r hr
     exact quadratic_derivative_linear_v_nonpos_of_nonpos ha hb (hroots_nonpos r hr)
-  have := prec_of_interlaces_evalCoeff_nonpos
+  have := strictInterl_of_interlaces_evalCoeff_nonpos
     (f := P m) (g := (P m).derivative)
     (a := C c + C (s + t * (m : ℝ)) * X) (b := C a * X + C (-b) * X ^ 2)
     hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
@@ -181,7 +181,7 @@ theorem prec_of_quadratic_derivative_linear
           (hasNonnegCoeffs_of_quadratic_derivative_linear P a b c s t h0 hrec
             ha hb hc hs hbt 1) r ((mem_roots hne).mpr hr)
         exact quadratic_derivative_linear_v_nonpos_of_nonpos ha hb this
-      have := prec_of_interlaces_evalCoeff_nonpos
+      have := strictInterl_of_interlaces_evalCoeff_nonpos
         (f := P 1) (g := (P 1).derivative)
         (a := C c + C (s + t * ((1 : ℕ) : ℝ)) * X) (b := C a * X + C (-b) * X ^ 2)
         hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
@@ -306,7 +306,7 @@ lemma prec_step_of_quadratic_derivative_bilinear
       (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
     intro r hr
     exact quadratic_derivative_linear_v_nonpos_of_nonpos ha hb (hroots_nonpos r hr)
-  have := prec_of_interlaces_evalCoeff_nonpos
+  have := strictInterl_of_interlaces_evalCoeff_nonpos
     (f := P n) (g := (P n).derivative)
     (a := C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X)
     (b := C a * X + C (-b) * X ^ 2)
@@ -376,7 +376,7 @@ theorem prec_of_quadratic_derivative_bilinear
           (hasNonnegCoeffs_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
             ha hb hc hu hs hbt 1) r ((mem_roots hne).mpr hr)
         exact quadratic_derivative_linear_v_nonpos_of_nonpos ha hb hr_nonpos
-      have := prec_of_interlaces_evalCoeff_nonpos
+      have := strictInterl_of_interlaces_evalCoeff_nonpos
         (f := P 1) (g := (P 1).derivative)
         (a := C (c + u * ((1 : ℕ) : ℝ)) + C (s + t * ((1 : ℕ) : ℝ)) * X)
         (b := C a * X + C (-b) * X ^ 2)
@@ -499,7 +499,7 @@ lemma prec_step_of_quadratic_derivative_linear_offset
       (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
     intro r hr
     exact quadratic_derivative_linear_v_nonpos_of_nonpos ha hb (hroots_nonpos r hr)
-  have := prec_of_interlaces_evalCoeff_nonpos
+  have := strictInterl_of_interlaces_evalCoeff_nonpos
     (f := P m) (g := (P m).derivative)
     (a := C c + C (s + t * (m : ℝ)) * X) (b := C a * X + C (-b) * X ^ 2)
     hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos

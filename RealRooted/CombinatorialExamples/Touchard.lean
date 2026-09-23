@@ -112,7 +112,7 @@ lemma prec_touchard_one_two :
     simpa [touchard_one, Polynomial.IsRoot.def] using le_of_eq hr
   rw [← hF_eq]
   exact
-    prec_of_interlaces_evalCoeff_nonpos
+    strictInterl_of_interlaces_evalCoeff_nonpos
       (f := touchard 1)
       (g := touchard 0)
       (a := X)
@@ -154,7 +154,7 @@ theorem prec_touchard_succ : ∀ n : Nat, StrictInterl (touchard n) (touchard (n
           roots_nonpos_touchard_of_isRealRooted hprev.2.1.2 r ((mem_roots hprev.2.1.1).mpr hr)
         simpa using hr_nonpos
       simpa [hNext_eq] using
-        prec_of_interlaces_evalCoeff_nonpos
+        strictInterl_of_interlaces_evalCoeff_nonpos
           (f := touchard (n + 2))
           (g := (touchard (n + 2)).derivative)
           (a := X)

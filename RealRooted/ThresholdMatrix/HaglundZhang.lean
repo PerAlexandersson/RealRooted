@@ -219,7 +219,7 @@ private lemma prec0_hz_linear_to_quadratic_of_eval_nonpos
     intro r hr
     simpa using hroot_nonpos r hr
   exact
-    (prec_of_interlaces_eval_mul_nonpos_of_no_common
+    (strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
       hInter hasPosLeadingCoeff_one hF_ne hF_splits hF_pos
       (by lia) (by lia) hno hroot).toInterl
 

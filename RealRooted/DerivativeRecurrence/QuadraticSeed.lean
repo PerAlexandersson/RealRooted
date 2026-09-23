@@ -51,7 +51,7 @@ lemma prec_one_add_X_quadratic_of_two_le (u : ℝ) (hu : 2 ≤ u) :
       simp only [eval_add, eval_one, eval_X] at hr
       grind
     simp_all
-  have := prec_of_interlaces_evalCoeff_nonpos
+  have := strictInterl_of_interlaces_evalCoeff_nonpos
     (f := (1 + X : ℝ[X])) (g := (1 : ℝ[X]))
     (a := 1 + X) (b := C (u - 2) * X)
     hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos

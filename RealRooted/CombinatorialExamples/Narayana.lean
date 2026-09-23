@@ -281,7 +281,7 @@ private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     intro r _hr
     exact narayanaCoeffB_eval_nonpos n r
   simpa [narayanaQuot_succ_succ] using
-    (prec_of_interlaces_evalCoeff_nonpos
+    (strictInterl_of_interlaces_evalCoeff_nonpos
       (f := narayanaQuot (n + 1))
       (g := narayanaQuot n)
       (a := narayanaCoeffA n)
