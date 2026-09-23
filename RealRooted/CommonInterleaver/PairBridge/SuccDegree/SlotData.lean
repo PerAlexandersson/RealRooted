@@ -219,7 +219,7 @@ residual branch, the both-nonzero lead branch, and the right-zero `divX`
 orientation target. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_prec
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement)
     (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCount
@@ -231,9 +231,9 @@ residual orientation target, the both-nonzero lead branch, and the right-zero
 `divX` orientation target. -/
 theorem
     succDegreePairHasCommonInterleaver_nonneg_of_residualPrec_bothNonzero_divX_prec
-    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement)
+    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement)
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_residualPrec_bothNonzero_divX_prec

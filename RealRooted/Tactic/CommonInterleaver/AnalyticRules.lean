@@ -203,7 +203,8 @@ macro_rules
       rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec using
         orientation := $horient:term) =>
       `(tactic|
-        exact RealRooted.posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG
+        exact
+          posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG
           $horient)
   | `(tactic|
       rr_succDegree_rootCountLeadRightZero_of_divXPrec using

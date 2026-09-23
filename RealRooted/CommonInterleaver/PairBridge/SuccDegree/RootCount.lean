@@ -239,7 +239,7 @@ lower-threshold count comparison needed by
 This packages the whole right-zero lead branch from a checked orientation. -/
 theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
     (horient :
-      PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+      PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement := by
   apply posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x
@@ -256,7 +256,7 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
 the `divX` orientation target for the right-zero branch. -/
 theorem posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement :=
   posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_rightZero hboth
     (posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec hdivX)
@@ -264,7 +264,7 @@ theorem posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
 /-- The residual succ-degree root-count branch follows from an interlacing
 orientation in that branch. -/
 theorem posComboNoCommonSuccDegreeRootCountResidual_of_prec
-    (horient : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement) :
+    (horient : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement) :
     PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
   exact succDegreeRootCount_of_prec
@@ -307,7 +307,7 @@ residual branch, the both-nonzero lead branch, and the right-zero `divX`
 orientation target. -/
 theorem posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_prec
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement)
     (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
     PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
   posComboNoCommonSuccDegreeRootCount_of_residual_and_lead
@@ -320,7 +320,7 @@ residual branch, the both-nonzero lead branch, and the right-zero `divX`
 orientation target. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_of_residual_bothNonzero_divX_prec
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement)
     (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
     PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
   posComboNoCommonSuccDegreeRootCountAbove_of_residual_and_lead
@@ -332,7 +332,7 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_residual_bothNonzero_divX_pr
 both-nonzero lead branch, and the right-zero `divX` orientation target. -/
 theorem posComboNoCommonSuccDegreeRootCrossing_of_residual_bothNonzero_divX_prec
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement)
     (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
     PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
   posComboNoCommonSuccDegreeRootCrossing_of_residual_and_lead
@@ -344,9 +344,9 @@ theorem posComboNoCommonSuccDegreeRootCrossing_of_residual_bothNonzero_divX_prec
 residual orientation target, the both-nonzero lead branch, and the right-zero
 `divX` orientation target. -/
 theorem posComboNoCommonSuccDegreeRootCount_of_residualPrec_bothNonzero_divX_prec
-    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement)
+    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement)
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
   posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_prec
     hboth hdivX (posComboNoCommonSuccDegreeRootCountResidual_of_prec hresPrec)
@@ -356,9 +356,9 @@ orientation target, the both-nonzero lead branch, and the right-zero `divX`
 orientation target. -/
 theorem
     posComboNoCommonSuccDegreeRootCountAbove_of_residualPrec_bothNonzero_divX_prec
-    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement)
+    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement)
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
   posComboNoCommonSuccDegreeRootCountAbove_of_residual_bothNonzero_divX_prec
     hboth hdivX (posComboNoCommonSuccDegreeRootCountResidual_of_prec hresPrec)
@@ -368,9 +368,9 @@ target, the both-nonzero lead branch, and the right-zero `divX` orientation
 target. -/
 theorem
     posComboNoCommonSuccDegreeRootCrossing_of_residualPrec_bothNonzero_divX_prec
-    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement)
+    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement)
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
   posComboNoCommonSuccDegreeRootCrossing_of_residual_bothNonzero_divX_prec
     hboth hdivX (posComboNoCommonSuccDegreeRootCountResidual_of_prec hresPrec)

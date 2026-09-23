@@ -652,7 +652,7 @@ def PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement : Prop :=
 /-- Exact residual orientation target for the succ-degree branch: in the case
 where the lower-degree polynomial has zero constant term but the higher-degree
 polynomial does not, orient the original pair as `f ≺ g`. -/
-def PosComboNoCommonSuccDegreeRootCountResidualPrecStatement : Prop :=
+def PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
     HasPosLeadingCoeff f →
     HasPosLeadingCoeff g →
@@ -665,6 +665,11 @@ def PosComboNoCommonSuccDegreeRootCountResidualPrecStatement : Prop :=
     f.coeff 0 = 0 →
     g.coeff 0 ≠ 0 →
     StrictInterl f g
+
+@[deprecated PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement
+  (since := "2026-09-18")]
+abbrev PosComboNoCommonSuccDegreeRootCountResidualPrecStatement :=
+  PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement
 
 /-- Nonzero constant-term branch of the lower-threshold succ-degree no-common
 root-count statement.  This is the root-count analogue of the reflection route
@@ -723,7 +728,7 @@ def PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement : Prop :=
 /-- Exact residual orientation target for the right-zero lead branch: after
 removing the zero root from the higher-degree polynomial, orient the resulting
 same-degree pair as `g.divX ≺ f`. -/
-def PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement : Prop :=
+def PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
     HasPosLeadingCoeff f →
     HasPosLeadingCoeff g →
@@ -737,10 +742,15 @@ def PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement : Prop :=
     g.coeff 0 = 0 →
     StrictInterl (g.divX) f
 
+@[deprecated PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement
+  (since := "2026-09-18")]
+abbrev PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement :=
+  PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement
+
 /-- The right-zero `divX` orientation target follows from proving the original
 succ-degree orientation `StrictInterl f g` on this branch.  The degree-drop step is
 isolated in `prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero`. -/
-theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG
+theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG
     (hprecFG :
       ∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
@@ -754,22 +764,30 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG
         f.coeff 0 ≠ 0 →
         g.coeff 0 = 0 →
         StrictInterl f g) :
-    PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement := by
+    PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
   exact prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
     (hprecFG hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hgnn hg0 hdeg
 
-/-- Converse of `posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG`:
+@[deprecated
+  posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG
+  (since := "2026-09-18")]
+alias posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG :=
+  posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG
+
+/-- Converse of
+`posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG`:
 the sharper succ-degree orientation `StrictInterl f g` on the right-zero lead branch
 follows from the `divX` orientation target `StrictInterl (g.divX) f`.  The degree-drop
 reconstruction is isolated in
 `prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero`.
 
-Together with `posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG`
+Together with
+`posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG`
 this shows that on the right-zero lead branch the sharper orientation target and
 the `divX` orientation target are equivalent. -/
-theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroStrictInterlFG_of_divX
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     ∀ ⦃f g : ℝ[X]⦄,
       HasPosLeadingCoeff f →
       HasPosLeadingCoeff g →
@@ -786,9 +804,14 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX
   exact prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero
     (hdivX hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hfnn hgnn hg0 hdeg
 
+@[deprecated posComboNoCommonSuccDegreeRootCountLeadRightZeroStrictInterlFG_of_divX
+  (since := "2026-09-18")]
+alias posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX :=
+  posComboNoCommonSuccDegreeRootCountLeadRightZeroStrictInterlFG_of_divX
+
 /-- On the right-zero lead branch, the sharper succ-degree orientation
 `StrictInterl f g` is equivalent to the `divX` orientation target `StrictInterl (g.divX) f`. -/
-theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_iff_divXPrec :
+theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroStrictInterlFG_iff_divXStrictInterl :
     (∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
@@ -801,9 +824,16 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_iff_divXPrec :
         f.coeff 0 ≠ 0 →
         g.coeff 0 = 0 →
         StrictInterl f g) ↔
-      PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement := by
-  exact ⟨posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG,
-    posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX⟩
+      PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement := by
+  exact
+    ⟨posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG,
+      posComboNoCommonSuccDegreeRootCountLeadRightZeroStrictInterlFG_of_divX⟩
+
+@[deprecated
+  posComboNoCommonSuccDegreeRootCountLeadRightZeroStrictInterlFG_iff_divXStrictInterl
+  (since := "2026-09-18")]
+alias posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_iff_divXPrec :=
+  posComboNoCommonSuccDegreeRootCountLeadRightZeroStrictInterlFG_iff_divXStrictInterl
 
 /-- The lead root-count branch splits into the two possible constant-term
 cases for the higher-degree member. -/
