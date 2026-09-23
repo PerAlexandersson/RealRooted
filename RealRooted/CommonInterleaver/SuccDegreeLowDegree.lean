@@ -55,12 +55,16 @@ theorem prec_or_revPrec_of_natDegree_le_one
 
 /-- A symmetric `StrictInterl` orientation implies all real linear combinations are
 real-rooted, after commuting the pair in the reversed case. -/
-theorem allComboRealRooted_of_prec_or_revPrec
+theorem allComboRealRooted_of_strictInterl_or_reverse
     {f g : ℝ[X]} :
     StrictInterl f g ∨ StrictInterl g f →
     AllComboRealRooted f g
   | Or.inl hprec => allComboRealRooted_of_strictInterl hprec
   | Or.inr hprec => allComboRealRooted_comm (allComboRealRooted_of_strictInterl hprec)
+
+@[deprecated allComboRealRooted_of_strictInterl_or_reverse (since := "2026-09-18")]
+alias allComboRealRooted_of_prec_or_revPrec :=
+  allComboRealRooted_of_strictInterl_or_reverse
 
 namespace Compatible
 
@@ -81,9 +85,12 @@ lemma of_prec {f g : ℝ[X]} (h : StrictInterl f g) :
 
 /-- Either `StrictInterl` orientation implies Chudnovsky--Seymour nonnegative
 compatibility. -/
-lemma of_prec_or_revPrec {f g : ℝ[X]} (h : StrictInterl f g ∨ StrictInterl g f) :
+lemma of_strictInterl_or_reverse {f g : ℝ[X]} (h : StrictInterl f g ∨ StrictInterl g f) :
     Compatible f g :=
-  of_allComboRealRooted (allComboRealRooted_of_prec_or_revPrec h)
+  of_allComboRealRooted (allComboRealRooted_of_strictInterl_or_reverse h)
+
+@[deprecated of_strictInterl_or_reverse (since := "2026-09-18")]
+alias of_prec_or_revPrec := of_strictInterl_or_reverse
 
 end Compatible
 
@@ -96,20 +103,20 @@ theorem allComboRealRooted_of_natDegree_le_one
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
     AllComboRealRooted f g :=
-  allComboRealRooted_of_prec_or_revPrec <|
+  allComboRealRooted_of_strictInterl_or_reverse <|
     prec_or_revPrec_of_natDegree_le_one
       hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
 /-- A `StrictInterl` relation immediately gives a common right interleaver: use the
 right endpoint as the witness. -/
-theorem pairHasCommonInterleaver_of_prec
+theorem pairHasCommonInterleaver_of_strictInterl
     {f g : ℝ[X]} (hprec : StrictInterl f g) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   ⟨g, hprec, StrictInterl.refl hprec.2.1.1 hprec.2.1.2⟩
 
 /-- A reversed `StrictInterl` relation immediately gives a common right interleaver:
 use the left endpoint as the witness. -/
-theorem pairHasCommonInterleaver_of_revPrec
+theorem pairHasCommonInterleaver_of_reverseStrictInterl
     {f g : ℝ[X]} (hprec : StrictInterl g f) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   ⟨f, StrictInterl.refl hprec.2.1.1 hprec.2.1.2, hprec⟩
@@ -117,35 +124,62 @@ theorem pairHasCommonInterleaver_of_revPrec
 /-- A symmetric `StrictInterl` orientation immediately gives a common right
 interleaver: use the larger polynomial in the chosen orientation as the
 witness. -/
-theorem pairHasCommonInterleaver_of_prec_or_revPrec
+theorem pairHasCommonInterleaver_of_strictInterl_or_reverse
     {f g : ℝ[X]} :
     StrictInterl f g ∨ StrictInterl g f →
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h
-  | Or.inl hprec => pairHasCommonInterleaver_of_prec hprec
-  | Or.inr hprec => pairHasCommonInterleaver_of_revPrec hprec
+  | Or.inl hprec => pairHasCommonInterleaver_of_strictInterl hprec
+  | Or.inr hprec => pairHasCommonInterleaver_of_reverseStrictInterl hprec
 
 /-- A `StrictInterl` relation immediately gives a common left interleaver: use the
 left endpoint as the witness. -/
-theorem pairHasCommonLeftInterleaver_of_prec
+theorem pairHasCommonLeftInterleaver_of_strictInterl
     {f g : ℝ[X]} (hprec : StrictInterl f g) :
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   ⟨f, StrictInterl.refl hprec.1.1 hprec.1.2, hprec⟩
 
 /-- A reversed `StrictInterl` relation immediately gives a common left interleaver:
 use the right endpoint as the witness. -/
-theorem pairHasCommonLeftInterleaver_of_revPrec
+theorem pairHasCommonLeftInterleaver_of_reverseStrictInterl
     {f g : ℝ[X]} (hprec : StrictInterl g f) :
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   ⟨g, hprec, StrictInterl.refl hprec.1.1 hprec.1.2⟩
 
 /-- A symmetric `StrictInterl` orientation immediately gives a common left interleaver:
 use the smaller polynomial in the chosen orientation as the witness. -/
-theorem pairHasCommonLeftInterleaver_of_prec_or_revPrec
+theorem pairHasCommonLeftInterleaver_of_strictInterl_or_reverse
     {f g : ℝ[X]} :
     StrictInterl f g ∨ StrictInterl g f →
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g
-  | Or.inl hprec => pairHasCommonLeftInterleaver_of_prec hprec
-  | Or.inr hprec => pairHasCommonLeftInterleaver_of_revPrec hprec
+  | Or.inl hprec => pairHasCommonLeftInterleaver_of_strictInterl hprec
+  | Or.inr hprec => pairHasCommonLeftInterleaver_of_reverseStrictInterl hprec
+
+@[deprecated pairHasCommonInterleaver_of_strictInterl (since := "2026-09-18")]
+alias pairHasCommonInterleaver_of_prec :=
+  pairHasCommonInterleaver_of_strictInterl
+
+@[deprecated pairHasCommonInterleaver_of_reverseStrictInterl (since := "2026-09-18")]
+alias pairHasCommonInterleaver_of_revPrec :=
+  pairHasCommonInterleaver_of_reverseStrictInterl
+
+@[deprecated pairHasCommonInterleaver_of_strictInterl_or_reverse
+  (since := "2026-09-18")]
+alias pairHasCommonInterleaver_of_prec_or_revPrec :=
+  pairHasCommonInterleaver_of_strictInterl_or_reverse
+
+@[deprecated pairHasCommonLeftInterleaver_of_strictInterl (since := "2026-09-18")]
+alias pairHasCommonLeftInterleaver_of_prec :=
+  pairHasCommonLeftInterleaver_of_strictInterl
+
+@[deprecated pairHasCommonLeftInterleaver_of_reverseStrictInterl
+  (since := "2026-09-18")]
+alias pairHasCommonLeftInterleaver_of_revPrec :=
+  pairHasCommonLeftInterleaver_of_reverseStrictInterl
+
+@[deprecated pairHasCommonLeftInterleaver_of_strictInterl_or_reverse
+  (since := "2026-09-18")]
+alias pairHasCommonLeftInterleaver_of_prec_or_revPrec :=
+  pairHasCommonLeftInterleaver_of_strictInterl_or_reverse
 
 /-- Two-polynomial common-interleaver endpoint in degree at most one. This is
 the direct pair version used by the low-degree Chudnovsky--Seymour package. -/
@@ -156,7 +190,7 @@ theorem pairHasCommonInterleaver_of_natDegree_le_one
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  pairHasCommonInterleaver_of_prec_or_revPrec <|
+  pairHasCommonInterleaver_of_strictInterl_or_reverse <|
     prec_or_revPrec_of_natDegree_le_one
       hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
@@ -168,7 +202,7 @@ theorem pairHasCommonLeftInterleaver_of_natDegree_le_one
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
-  pairHasCommonLeftInterleaver_of_prec_or_revPrec <|
+  pairHasCommonLeftInterleaver_of_strictInterl_or_reverse <|
     prec_or_revPrec_of_natDegree_le_one
       hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
@@ -334,7 +368,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
     (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   fun {_ _} hf_pos hg_pos hfnn hgnn hfg hsucc hno =>
-    pairHasCommonInterleaver_of_prec <|
+    pairHasCommonInterleaver_of_strictInterl <|
       horient hf_pos hg_pos hfnn hgnn hfg hsucc hno
 
 /-- The corrected succ-degree pair bridge is already unconditional in the
@@ -346,7 +380,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
     (hf_deg0 : f.natDegree = 0)
     (hsucc : g.natDegree = f.natDegree + 1) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  pairHasCommonInterleaver_of_prec <|
+  pairHasCommonInterleaver_of_strictInterl <|
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
 
@@ -359,7 +393,7 @@ theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_degree_zero
     (hf_deg0 : f.natDegree = 0)
     (hsucc : g.natDegree = f.natDegree + 1) :
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
-  pairHasCommonLeftInterleaver_of_prec <|
+  pairHasCommonLeftInterleaver_of_strictInterl <|
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
 
@@ -413,7 +447,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degre
   have hright : StrictInterl g (X * f) :=
     prec_right_pair_of_affine_family_nonneg_degree_one
       hf0 hg0 hfnn hgnn haff hf_deg1
-  exact pairHasCommonInterleaver_of_prec_right_pair_nonneg hright hfnn
+  exact pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg hright hfnn
 
 /-- The affine-family bridge proves the full corrected succ-degree
 common-right-interleaver branch.  The affine-family right-pair theorem gives
@@ -433,7 +467,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
   have hright : StrictInterl g (X * f) :=
     prec_right_pair_of_affine_family_nonneg
       hf0 hg0 hfnn hgnn haff
-  exact pairHasCommonInterleaver_of_prec_right_pair_nonneg hright hfnn
+  exact pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg hright hfnn
 
 
 /-- Degree-two succ-degree root-order leaf.

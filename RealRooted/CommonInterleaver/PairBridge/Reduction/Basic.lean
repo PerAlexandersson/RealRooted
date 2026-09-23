@@ -49,7 +49,7 @@ theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     AllComboRealRooted f g :=
-  allComboRealRooted_of_prec_or_revPrec <|
+  allComboRealRooted_of_strictInterl_or_reverse <|
     posComboNoCommonOrientation_of_degreeSplit_and_nonnegCoeffs
       hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
 
