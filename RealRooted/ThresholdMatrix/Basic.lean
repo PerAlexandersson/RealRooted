@@ -234,7 +234,7 @@ theorem prec0_affine_to_X_mul_affine
     (hv : 0 ≤ v) (hV : 0 ≤ V) :
     Interl (C U * X + C V) (X * (C u * X + C v)) :=
   (strictInterl_to_strictInterl_mul_X_of_nonneg
-    (prec_affine_linear_affine_linear_of_cross hu hU hcross)
+    (strictInterl_affine_linear_affine_linear_of_cross hu hU hcross)
     (hasNonnegCoeffs_affine_linear hu.le hv)
     (hasNonnegCoeffs_affine_linear hU.le hV)).toInterl
 

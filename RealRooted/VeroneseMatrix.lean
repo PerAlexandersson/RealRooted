@@ -173,25 +173,25 @@ lemma prec0_const_entry_affine_plus_const_to_affine_plus_X
       ((C s * X + C t) * C A + X) := by
   by_cases hb0 : b = 0
   · refine
-      prec0_congr (p' := C d)
+      interl_congr (p' := C d)
         (q' := C (s * A + 1) * X + C (t * A)) ?_ ?_ ?_
     · simp [hb0]
     · grind
     · exact
-        prec0_C_affine_linear (c := d) (u := s * A + 1) (v := t * A)
+        interl_C_affine_linear (c := d) (u := s * A + 1) (v := t * A)
           (by positivity)
   · have hbpos : 0 < b := lt_of_le_of_ne hb (Ne.symm hb0)
     have hcross : (b * s) * (A * t) ≤ (A * s + 1) * (b * t + d) := by
       nlinarith [mul_nonneg hA hs.le, mul_nonneg hb ht, mul_nonneg hd hA,
         mul_nonneg hd hs.le]
     refine
-      prec0_congr
+      interl_congr
         (p' := C (b * s) * X + C (b * t + d))
         (q' := C (A * s + 1) * X + C (A * t)) ?_ ?_ ?_
     · grind
     · grind
     · exact
-        prec0_affine_linear_affine_linear_of_cross
+        interl_affine_linear_affine_linear_of_cross
           (u := b * s) (v := b * t + d) (U := A * s + 1) (V := A * t)
           (by simp_all) (by positivity) hcross
 
@@ -391,7 +391,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_nonlast
   rw [get_veroneseLinearFactorRowDesc_of_nonlast (hi := hrow₂)]
   rw [get_veroneseLinearFactorRowDesc_of_nonlast (hi := hrow₂)]
   exact
-    prec0_const_entries_affine_of_det_nonneg
+    interl_const_entries_affine_of_det_nonneg
       (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁)
       (veroneseLinearFactorConstEntry_nonneg ha i₁ j₂)
       (veroneseLinearFactorConstEntry_nonneg ha i₂ j₁)
@@ -477,7 +477,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
   · have hj₂0 : ¬ j₂.1 = 0 := by lia
     rw [ite_eq_right hj₁0, ite_eq_right hj₂0]
     exact
-      prec0_const_entries_affine_of_det_nonneg
+      interl_const_entries_affine_of_det_nonneg
         (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁)
         (veroneseLinearFactorConstEntry_nonneg ha i₁ j₂)
         (veroneseLinearFactorLastConstEntry_nonneg ha j₁)
@@ -522,7 +522,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
     have hj₂0 : ¬ j₂.1 = 0 := by lia
     rw [ite_eq_right hj₂0]
     exact
-      prec0_const_entries_affine_of_det_nonneg
+      interl_const_entries_affine_of_det_nonneg
         (veroneseLinearFactorLastConstEntry_nonneg ha j₁)
         (veroneseLinearFactorLastConstEntry_nonneg ha j₂)
         (veroneseLinearFactorLastConstEntry_nonneg ha j₁)

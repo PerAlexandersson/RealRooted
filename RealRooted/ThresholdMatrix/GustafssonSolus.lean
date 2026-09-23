@@ -63,14 +63,14 @@ private lemma prec0_gs_affine_add_X_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + X) X := by
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   simpa using
-    prec0_affine_linear_affine_linear_of_cross
+    interl_affine_linear_affine_linear_of_cross
       (u := s + 1) (v := t) (U := 1) (V := 0)
       (by positivity) zero_lt_one (by nlinarith [ht])
 
 private lemma prec0_gs_affine_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t) X := by
   simpa using
-    prec0_affine_linear_affine_linear_of_cross
+    interl_affine_linear_affine_linear_of_cross
       (u := s) (v := t) (U := 1) (V := 0)
       hs zero_lt_one (by nlinarith [ht])
 
@@ -79,13 +79,13 @@ private lemma prec0_gs_affine_add_one_X
     Interl (C s * X + C t + 1) X := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
   simpa using
-    prec0_affine_linear_affine_linear_of_cross
+    interl_affine_linear_affine_linear_of_cross
       (u := s) (v := t + 1) (U := 1) (V := 0)
       hs zero_lt_one (by nlinarith [ht])
 
 private lemma prec0_gs_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + X) (C s * X + C t + X) :=
-  prec0_affine_add_X_self hs
+  interl_affine_add_X_self hs
 
 private lemma prec0_gs_affine_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t) (C s * X + C t) :=
@@ -93,33 +93,33 @@ private lemma prec0_gs_affine_self {s t : ℝ} (hs : 0 < s) :
 
 private lemma prec0_gs_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + 1) (C s * X + C t + 1) :=
-  prec0_affine_add_one_self hs
+  interl_affine_add_one_self hs
 
 private lemma prec0_gs_X_X : Interl (X : ℝ[X]) X :=
   Interl.refl fun _ => isRealRooted_X.2
 
 private lemma prec0_gs_one_one : Interl (1 : ℝ[X]) 1 := by
-  simpa using prec0_C_C (1 : ℝ) (1 : ℝ)
+  simpa using interl_C_C (1 : ℝ) (1 : ℝ)
 
 private lemma prec0_gs_affine_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t) (C s * X + C t + X) := by
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   exact
-    prec0_affine_linear_affine_linear_of_cross
+    interl_affine_linear_affine_linear_of_cross
       (u := s) (v := t) (U := s + 1) (V := t)
       hs (by positivity) (by nlinarith [ht])
 
 private lemma prec0_gs_affine_add_one_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + 1) (C s * X + C t + X) := by
-  exact prec0_affine_add_one_affine_add_X hs ht
+  exact interl_affine_add_one_affine_add_X hs ht
 
 private lemma prec0_gs_affine_add_one_affine {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + 1) (C s * X + C t) := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
   exact
-    prec0_affine_linear_affine_linear_of_cross
+    interl_affine_linear_affine_linear_of_cross
       (u := s) (v := t + 1) (U := s) (V := t)
       hs hs (by nlinarith [hs])
 

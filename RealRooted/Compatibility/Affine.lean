@@ -34,7 +34,7 @@ theorem compatible_X_mul_affine_affine_of_cross
     (hv : 0 ≤ v) (hV : 0 ≤ V) (hcross : u * V ≤ U * v) :
     Compatible (X * (C u * X + C v)) (C U * X + C V) := by
   have hprec : StrictInterl (C u * X + C v) (C U * X + C V) :=
-    prec_affine_linear_affine_linear_of_cross hu hU hcross
+    strictInterl_affine_linear_affine_linear_of_cross hu hU hcross
   have hnn_left : HasNonnegCoeffs (C u * X + C v) :=
     (nonnegCoeffs_C_mul hu.le hasNonnegCoeffs_X).add
       (hasNonnegCoeffs_C hv)
