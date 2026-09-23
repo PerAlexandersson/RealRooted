@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  653  Lean declarations requiring semantic review
+  646  Lean declarations requiring semantic review
   230  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
-   31  statement scaffolds requiring proof-status-preserving renames
-  204  deprecated compatibility identifiers with canonical targets
+   30  statement scaffolds requiring proof-status-preserving renames
+  212  deprecated compatibility identifiers with canonical targets
    33  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -170,6 +170,11 @@ Execution order
 7. Remove deprecated wrappers only in a later compatibility-removal issue.
 
 Replacement protocol
+
+The #892 compatibility/right-pencil batch canonicalizes the failed succ-degree
+orientation statement interface and its seven checked conditional reductions.
+The statement remains an unproved target; its deprecated abbreviation and the
+seven exact theorem aliases preserve the old API without changing that boundary.
 
 The #891 root-count batch canonicalizes the five foundational same- and
 succ-degree theorems that turn StrictInterl geometry into oriented root-count

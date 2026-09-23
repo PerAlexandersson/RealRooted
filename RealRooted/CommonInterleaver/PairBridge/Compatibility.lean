@@ -44,11 +44,15 @@ theorem posComboNoCommonBridge_iff_orientation :
 
 /-- The all-combinations no-common bridge also implies the coefficient-free
 compatible succ-degree orientation target. -/
-theorem compatibleSuccDegreePrec_of_allComboBridge
+theorem compatibleSuccDegreeStrictInterl_of_allComboBridge
     (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
-    CompatibleSuccDegreePrecStatement :=
-  compatibleSuccDegreePrec_of_allCombo
+    CompatibleSuccDegreeStrictInterlStatement :=
+  compatibleSuccDegreeStrictInterl_of_allCombo
     (compatibleSuccDegreeAllCombo_of_allComboBridge hallBridge)
+
+@[deprecated compatibleSuccDegreeStrictInterl_of_allComboBridge (since := "2026-09-18")]
+alias compatibleSuccDegreePrec_of_allComboBridge :=
+  compatibleSuccDegreeStrictInterl_of_allComboBridge
 
 /-- The all-combinations no-common bridge implies the exact lower-count
 endpoint comparison used by the #42 no-gap reductions. -/
