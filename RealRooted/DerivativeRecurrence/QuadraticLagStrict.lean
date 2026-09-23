@@ -104,7 +104,7 @@ theorem prec_and_noCommonRoot_of_quadratic_lag
         exact (mul_eq_zero.mp hfactor).resolve_left hr0
       have hne : eval r (P n) ≠ 0 := fun hroot0 => ihno r hr1 hroot0
       have hsign : 0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-        eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toStrictInterl
+        eval_mul_eval_nonneg_of_strictInterl_right ihprec hderiv_inter.toStrictInterl
           (hpos n) hderiv_pos hr1
       have hpref : 0 < a - b * r := by nlinarith
       have hmul :
@@ -174,7 +174,7 @@ theorem prec_and_noCommonRoot_of_quadratic_lag_degree_step
         have hrneg := hroot (n + 1) r hr
         have hprevDeriv :
             0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-          eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toStrictInterl
+          eval_mul_eval_nonneg_of_strictInterl_right ihprec hderiv_inter.toStrictInterl
             (hpos n) hderiv_pos hr
         have hderivNe : eval r ((P (n + 1)).derivative) ≠ 0 :=
           hsimple.eval_derivative_ne_zero hr

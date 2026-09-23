@@ -96,7 +96,7 @@ theorem noCommonRoot_of_auxiliary_sign
 /-- A degree-raising recurrence through a strictly signed auxiliary and a
 weakly signed tail puts `f` in proper position with `F` and gives `F` simple
 roots. -/
-theorem prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
+theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     {f q t F u v : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
     (hF_pos : HasPosLeadingCoeff F) (hdegf : 1 ≤ f.natDegree)
@@ -125,9 +125,14 @@ theorem prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     fun r h ↦ hnoRoot r h.1 h.2
   exact ⟨hprec, (hprec.hasSimpleRoots_of_no_common_root hno).2⟩
 
+@[deprecated strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
+  (since := "2026-09-18")]
+alias prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail :=
+  strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
+
 /-- A degree-raising recurrence through a derivative-sign auxiliary puts `f`
 in proper position with `F` and gives `F` simple roots. -/
-theorem prec_and_hasSimpleRoots_of_auxiliary_sign_succ
+theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
     {f q F u v : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
     (hF_pos : HasPosLeadingCoeff F) (hdegf : 1 ≤ f.natDegree)
@@ -137,12 +142,17 @@ theorem prec_and_hasSimpleRoots_of_auxiliary_sign_succ
       0 < q.eval r * f.derivative.eval r)
     (hv_neg : ∀ r, f.IsRoot r → v.eval r < 0) :
     StrictInterl f F ∧ HasSimpleRoots F := by
-  apply prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
+  apply strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     hf hf_pos hF_pos hdegf hdeg (t := 0)
   · simpa using hrec
   · exact hq_sign
   · exact hv_neg
   · simp
+
+@[deprecated strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
+  (since := "2026-09-18")]
+alias prec_and_hasSimpleRoots_of_auxiliary_sign_succ :=
+  strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
 
 /-- A strict differ-by-one Ma--Wang step puts `f` in proper position with `F`
 and propagates simple real roots. -/

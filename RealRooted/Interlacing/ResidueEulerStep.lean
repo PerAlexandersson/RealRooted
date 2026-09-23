@@ -152,7 +152,7 @@ theorem residueEulerStep_strict_package
       ring
     rw [heval]
     exact hweighted
-  have hstep := prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
+  have hstep := strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     hhf.2.1.2 hf_pos hstep_pos hfdeg hdegree.1 hrec haux_sign hX_neg
       htail_nonpos
   have hprec : StrictInterl f (residueEulerStep a b f h r) := hstep.1

@@ -151,7 +151,7 @@ theorem kreinCoefficient_eval_div_nonneg
     rw [Polynomial.IsRoot.def, eval_mul, eval_sub, eval_X, eval_C]
     ring
   have hprod : 0 ≤ s.eval u * r.eval u :=
-    eval_mul_eval_nonneg_of_prec_right hsr_prec hrr_prec hs_pos hr_pos hroot_right
+    eval_mul_eval_nonneg_of_strictInterl_right hsr_prec hrr_prec hs_pos hr_pos hroot_right
   have hsq_pos : 0 < r.eval u * r.eval u := mul_self_pos.mpr hr_eval
   have hquot : 0 ≤ (s.eval u * r.eval u) / (r.eval u * r.eval u) :=
     div_nonneg hprod hsq_pos.le

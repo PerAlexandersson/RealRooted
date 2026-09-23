@@ -150,10 +150,10 @@ theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
         hqNe hqSplits hall (Or.inr hqDegree.symm) with hoddq | hqodd
     · exact hoddq
     · have hqNeg :=
-        roots_neg_of_prec_sameDegree_of_roots_neg hqodd hqDegree hoddNeg
+        roots_neg_of_strictInterl_sameDegree_of_roots_neg hqodd hqDegree hoddNeg
       exact False.elim ((ne_of_lt (hqNeg 0 hqRoot)) rfl)
   have hqNonpos : ∀ r, q.IsRoot r → r ≤ 0 :=
-    roots_nonpos_of_prec_sameDegree_of_zero_root_of_left_roots_neg
+    roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
       hprecQ hqDegree.symm hqRoot hoddNeg
   have hredPrec : StrictInterl q.divX odd :=
     strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero hprecQ

@@ -697,7 +697,7 @@ private lemma roots_neg_threshold_divX (d : Nat) :
   have hneg :
       ∀ r, (liuWangRec d (d + 1)).IsRoot r → r < 0 :=
     roots_neg_liuWangRec_of_lt_threshold d (d + 1) (by lia) (by lia)
-  exact roots_neg_of_prec_sameDegree_of_roots_neg hPrec hdeg hneg
+  exact roots_neg_of_strictInterl_sameDegree_of_roots_neg hPrec hdeg hneg
 
 /-- The recurrence family is real-rooted throughout the strict range
 `1 ≤ n ≤ d + 1`, and also at the threshold step `n = d + 2`. -/

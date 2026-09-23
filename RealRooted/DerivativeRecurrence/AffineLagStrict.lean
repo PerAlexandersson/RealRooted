@@ -54,7 +54,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_degree_step
             (hpos (n + 1)).ne_zero hr
         have hprevDeriv :
             0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-          eval_mul_eval_nonneg_of_prec_right ihprec hderivInter.toStrictInterl
+          eval_mul_eval_nonneg_of_strictInterl_right ihprec hderivInter.toStrictInterl
             (hpos n) hderivPos hr
         have hprevNe : eval r (P n) ≠ 0 := by
           intro hzero

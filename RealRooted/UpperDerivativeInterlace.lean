@@ -29,7 +29,7 @@ theorem strictInterl_deriv_eval_mul_deriv_nonneg
     0 ≤ d.eval r * f.derivative.eval r := by
   have hfpf : StrictInterl f.derivative f := (derivative_interlaces hf_splits hf_deg).toStrictInterl
   simpa [mul_comm] using
-    eval_mul_eval_nonneg_of_prec_right hdf hfpf hd_pos hfp_pos hr
+    eval_mul_eval_nonneg_of_strictInterl_right hdf hfpf hd_pos hfp_pos hr
 
 /-- Structural magnitude certificate when the lag polynomial also precedes the current row. -/
 theorem magnitude_cert_auto
@@ -44,7 +44,7 @@ theorem magnitude_cert_auto
   intro r hr
   have hg₁prec : StrictInterl g₁ f := hg₁f.toStrictInterl
   have hcross : 0 ≤ g₂.eval r * g₁.eval r :=
-    eval_mul_eval_nonneg_of_prec_right hg₂f hg₁prec hg₂_pos hg₁_pos hr
+    eval_mul_eval_nonneg_of_strictInterl_right hg₂f hg₁prec hg₂_pos hg₁_pos hr
   have hg₁sq : 0 < (g₁.eval r) ^ 2 := by
     have hne := hsimple r hr
     positivity

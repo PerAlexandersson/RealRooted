@@ -315,7 +315,7 @@ lemma eval_pos_of_all_roots_lt {p : ℝ[X]} {r : ℝ}
 /-- If two polynomials both precede the same right-hand polynomial with positive
 leading coefficients, then they have the same sign at every root of that common
 right-hand polynomial. -/
-lemma eval_mul_eval_nonneg_of_prec_right {f g h : ℝ[X]}
+lemma eval_mul_eval_nonneg_of_strictInterl_right {f g h : ℝ[X]}
     (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : h.IsRoot r) :
@@ -361,6 +361,9 @@ lemma eval_mul_eval_nonneg_of_prec_right {f g h : ℝ[X]}
   rw [hfactor]
   exact mul_nonneg hlead hprod
 
+@[deprecated eval_mul_eval_nonneg_of_strictInterl_right (since := "2026-09-18")]
+alias eval_mul_eval_nonneg_of_prec_right := eval_mul_eval_nonneg_of_strictInterl_right
+
 /-- At each root of the common right-hand polynomial, `f + g` has the same sign
 as `f`. -/
 lemma eval_add_mul_eval_left_nonneg_of_strictInterl_right {f g h : ℝ[X]}
@@ -369,7 +372,7 @@ lemma eval_add_mul_eval_left_nonneg_of_strictInterl_right {f g h : ℝ[X]}
     {r : ℝ} (hr : h.IsRoot r) :
     0 ≤ (f + g).eval r * f.eval r := by
   rw [Polynomial.eval_add]
-  have hsign := eval_mul_eval_nonneg_of_prec_right hfh hgh hf_pos hg_pos hr
+  have hsign := eval_mul_eval_nonneg_of_strictInterl_right hfh hgh hf_pos hg_pos hr
   nlinarith [sq_nonneg (f.eval r), hsign]
 
 /-- At each root of the common right-hand polynomial, `f + g` has the same sign
@@ -380,7 +383,7 @@ lemma eval_add_mul_eval_right_nonneg_of_strictInterl_right {f g h : ℝ[X]}
     {r : ℝ} (hr : h.IsRoot r) :
     0 ≤ (f + g).eval r * g.eval r := by
   rw [Polynomial.eval_add]
-  have hsign := eval_mul_eval_nonneg_of_prec_right hfh hgh hf_pos hg_pos hr
+  have hsign := eval_mul_eval_nonneg_of_strictInterl_right hfh hgh hf_pos hg_pos hr
   nlinarith [sq_nonneg (g.eval r), hsign]
 
 /-- If the sum `f + g` vanishes at a root of the common right-hand polynomial,
@@ -391,7 +394,7 @@ lemma isRoot_of_isRoot_right_of_isRoot_add {f g h : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : h.IsRoot r) (hadd : (f + g).IsRoot r) :
     f.IsRoot r ∧ g.IsRoot r := by
-  have hfg_nonneg := eval_mul_eval_nonneg_of_prec_right hfh hgh hf_pos hg_pos hr
+  have hfg_nonneg := eval_mul_eval_nonneg_of_strictInterl_right hfh hgh hf_pos hg_pos hr
   have hsum : f.eval r + g.eval r = 0 := by simp_all
   have hf0 : f.eval r = 0 := by nlinarith
   simp_all

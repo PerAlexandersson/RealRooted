@@ -94,7 +94,7 @@ theorem StrictInterl.eval_mul_derivative_nonneg_of_right_root
       simpa using StrictInterl.C_mul_left hbase (ne_of_gt hcoeff_pos)
     · exact (derivative_interlaces hprec.2.1.2 (by lia)).toStrictInterl
   exact
-    eval_mul_eval_nonneg_of_prec_right
+    eval_mul_eval_nonneg_of_strictInterl_right
       hprec hder_prec hf_pos hgder_pos hr
 
 /-- At a root of the right polynomial in a positive-leading coprime

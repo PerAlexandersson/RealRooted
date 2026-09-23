@@ -295,7 +295,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_la
         exact (mul_eq_zero.mp hfactor).resolve_left hr0
       have hne : eval r (P n) ≠ 0 := fun hroot => ihno r hr1 hroot
       have hsign : 0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-        eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toStrictInterl
+        eval_mul_eval_nonneg_of_strictInterl_right ihprec hderiv_inter.toStrictInterl
           (pos_leading_affine_lag_second_order_derivative h0 h1 hrec n) hderiv_pos hr1
       have hmul :
           0 ≤ a * (1 - r) *
