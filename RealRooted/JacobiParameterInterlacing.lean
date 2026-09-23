@@ -244,7 +244,7 @@ theorem shiftedJacobiMonic_prec_beta_add_one (n : ℕ) {α β : ℝ}
         intro r hf hg
         exact hcommon r hg hf
       have hproper : StrictInterl f (C a * f + C b * g) :=
-        prec_of_interlaces_evalCoeff_neg_same hgf hg_pos hsum_pos hsame hno
+        strictInterl_of_interlaces_evalCoeff_neg_same hgf hg_pos hsum_pos hsame hno
           (fun _ _ => by simpa using hb)
       rw [← hcombination] at hproper
       exact hproper
@@ -484,7 +484,7 @@ theorem shiftedJacobiMonic_prec_alpha_add_two (n : ℕ) {α β : ℝ}
             lia)
       have hder_pos : HasPosLeadingCoeff p₀.derivative :=
         hp₀_pos.derivative (by rw [hp₀_deg]; lia)
-      exact prec_of_interlaces_eval_mul_neg_same hinter hder_pos hp₂_pos
+      exact strictInterl_of_interlaces_eval_mul_neg_same hinter hder_pos hp₂_pos
         (by rw [hp₂_deg, hp₀_deg]) hroot_sign
 
 /-- The two-unit first-parameter comparison is strictly interleaving. -/
@@ -899,7 +899,7 @@ theorem shiftedJacobiMonic_prec_alpha_add_of_no_crossing
       have hendpoint : StrictInterlSameDegree f (p 2) := by
         simpa only [f, p] using
           shiftedJacobiMonic_strictInterlSameDegree_alpha_add_two (n + 1) hα hβ
-      apply prec_of_interlaces_endpoint_sign_of_no_crossing
+      apply strictInterl_of_interlaces_endpoint_sign_of_no_crossing
         hinter hder_pos hpt_pos hpt_deg ht_two
       · intro r hr
         have hbase := continuousOn_shiftedJacobiMonic_eval_alpha

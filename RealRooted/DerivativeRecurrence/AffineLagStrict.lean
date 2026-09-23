@@ -79,9 +79,9 @@ theorem prec_and_noCommonRoot_of_affine_lag_degree_step
         nlinarith
       have hprec : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rcases hstep (n + 1) with hsame | hsucc
-        · exact prec_of_interlaces_eval_mul_neg_same
+        · exact strictInterl_of_interlaces_eval_mul_neg_same
             hderivInter hderivPos (hpos (n + 2)) hsame hrootSign
-        · exact prec_of_interlaces_eval_mul_neg_succ
+        · exact strictInterl_of_interlaces_eval_mul_neg_succ
             hderivInter hderivPos (hpos (n + 2)) hsucc hrootSign
       refine ⟨hprec, ?_⟩
       intro r hr2 hr1

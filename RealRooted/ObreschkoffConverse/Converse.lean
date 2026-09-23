@@ -108,7 +108,7 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
 positive leading coefficient.
 
 The positive-leading branch is already Ma--Wang:
-`prec_of_interlaces_eval_mul_neg_same`. The genuinely new content here is the
+`strictInterl_of_interlaces_eval_mul_neg_same`. The genuinely new content here is the
 negative-leading branch: strict sign changes still force real-rootedness, but
 the extra root now comes from the left endpoint rather than the right. This is
 exactly the helper needed for the opposite-sign, non-cancel branch in the
@@ -121,7 +121,7 @@ theorem ObreschkoffConverseInternal.isRealRooted_of_interlaces_eval_mul_neg_same
     (hdeg_pos : 2 ≤ f.natDegree)
     (hroot_sign : ∀ r, f.IsRoot r → F.eval r * g.eval r < 0) : (F ≠ 0 ∧ F.Splits) := by
   by_cases hF_pos : HasPosLeadingCoeff F
-  · exact (prec_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg hroot_sign).2.1
+  · exact (strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg hroot_sign).2.1
   obtain ⟨hf, hg, hgdeg, rs0, ss, hrs0_sorted, hss_sorted, hrs0_eq, hss_eq, hint0⟩ := hgf
   let rs := f.roots.sort (· ≤ ·)
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..

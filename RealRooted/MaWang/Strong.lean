@@ -9,7 +9,7 @@ namespace RealRooted.MaWangInternal
 /-- Liu--Wang differ-by-1 form: if `g ⊳ f`, `F` has degree `deg(f)+1`, positive
 leading coefficient, and at every root `r` of `f` the value `F(r)` has the
 opposite sign from `g(r)`, then `f ⊳ F`. -/
-theorem prec_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
+theorem strictInterl_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
     (hF_pos : HasPosLeadingCoeff F)
@@ -104,7 +104,7 @@ theorem prec_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
 /-- Liu--Wang same-degree form: if `g ⊳ f`, `F` has the same degree as `f`,
 positive leading coefficient, and at every root `r` of `f` the value `F(r)`
 has the opposite sign from `g(r)`, then `f ≺ F` in the same-degree sense. -/
-theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
+theorem strictInterl_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
     (hF_pos : HasPosLeadingCoeff F)
@@ -183,7 +183,7 @@ theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
 /-- Transport a same-degree Liu--Wang root-sign certificate backward through a
 continuous polynomial family that never vanishes at a root of the fixed
 polynomial. -/
-theorem prec_of_interlaces_endpoint_sign_of_no_crossing
+theorem strictInterl_of_interlaces_endpoint_sign_of_no_crossing
     {f g : ℝ[X]} {p : ℝ → ℝ[X]} {a b : ℝ}
     (hgf : Interlaces g f) (hg_pos : HasPosLeadingCoeff g)
     (hpa_pos : HasPosLeadingCoeff (p a))
@@ -193,7 +193,7 @@ theorem prec_of_interlaces_endpoint_sign_of_no_crossing
     (hne : ∀ r, f.IsRoot r → ∀ t ∈ Set.Icc a b, (p t).eval r ≠ 0)
     (hend : ∀ r, f.IsRoot r → (p b).eval r * g.eval r < 0) :
     StrictInterl f (p a) := by
-  apply prec_of_interlaces_eval_mul_neg_same hgf hg_pos hpa_pos hdeg
+  apply strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hpa_pos hdeg
   intro r hr
   have hsame : 0 < (p a).eval r * (p b).eval r :=
     eval_endpoint_pos_of_forall_ne_zero hab (hcont r hr) (hne r hr)
@@ -250,7 +250,7 @@ lemma eval_mul_right_neg_of_isRoot_of_eval_neg_of_not_isRoot
 `a * f + b * g` has degree `deg(f)+1` and positive leading coefficient, `b` is
 strictly negative at roots of `f`, and `f` and `g` have no common roots, then
 `f ⊳ a * f + b * g`. -/
-theorem prec_of_interlaces_evalCoeff_neg_succ
+theorem strictInterl_of_interlaces_evalCoeff_neg_succ
     {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -259,7 +259,7 @@ theorem prec_of_interlaces_evalCoeff_neg_succ
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
     StrictInterl f (a * f + b * g) := by
-  refine prec_of_interlaces_eval_mul_neg_succ hgf hg_pos hF_pos hdeg ?_
+  refine strictInterl_of_interlaces_eval_mul_neg_succ hgf hg_pos hF_pos hdeg ?_
   intro r hr
   exact eval_mul_right_neg_of_isRoot_of_eval_neg_of_not_isRoot hr (hb_neg r hr) (hno r hr)
 
@@ -267,7 +267,7 @@ theorem prec_of_interlaces_evalCoeff_neg_succ
 `a * f + b * g` has the same degree as `f` and positive leading coefficient,
 `b` is strictly negative at roots of `f`, and `f` and `g` have no common
 roots, then `f ≺ a * f + b * g`. -/
-theorem prec_of_interlaces_evalCoeff_neg_same
+theorem strictInterl_of_interlaces_evalCoeff_neg_same
     {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -276,13 +276,13 @@ theorem prec_of_interlaces_evalCoeff_neg_same
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
     StrictInterl f (a * f + b * g) := by
-  refine prec_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg ?_
+  refine strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg ?_
   intro r hr
   exact eval_mul_right_neg_of_isRoot_of_eval_neg_of_not_isRoot hr (hb_neg r hr) (hno r hr)
 
 /-- Degree-bounded structured Liu--Wang theorem in the strict-sign/no-common
 regime. -/
-theorem prec_of_interlaces_evalCoeff_neg
+theorem strictInterl_of_interlaces_evalCoeff_neg
     {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -297,8 +297,8 @@ theorem prec_of_interlaces_evalCoeff_neg
         (a * f + b * g).natDegree = f.natDegree + 1 := by
     lia
   rcases hcases with hsame | hsucc
-  · exact prec_of_interlaces_evalCoeff_neg_same hgf hg_pos hF_pos hsame hno hb_neg
-  · exact prec_of_interlaces_evalCoeff_neg_succ hgf hg_pos hF_pos hsucc hno hb_neg
+  · exact strictInterl_of_interlaces_evalCoeff_neg_same hgf hg_pos hF_pos hsame hno hb_neg
+  · exact strictInterl_of_interlaces_evalCoeff_neg_succ hgf hg_pos hF_pos hsucc hno hb_neg
 
 lemma interlaces_of_interlaces_X_sub_C_mul {f g : ℝ[X]} {r : ℝ}
     (h : Interlaces ((X - C r) * g) ((X - C r) * f)) :
@@ -409,12 +409,42 @@ lemma hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound
   rw [leadingCoeff_sub_of_degree_lt hlt]
   lia
 
+@[deprecated strictInterl_of_interlaces_eval_mul_neg_succ (since := "2026-09-18")]
+alias prec_of_interlaces_eval_mul_neg_succ :=
+  strictInterl_of_interlaces_eval_mul_neg_succ
+
+@[deprecated strictInterl_of_interlaces_eval_mul_neg_same (since := "2026-09-18")]
+alias prec_of_interlaces_eval_mul_neg_same :=
+  strictInterl_of_interlaces_eval_mul_neg_same
+
+@[deprecated strictInterl_of_interlaces_endpoint_sign_of_no_crossing
+  (since := "2026-09-18")]
+alias prec_of_interlaces_endpoint_sign_of_no_crossing :=
+  strictInterl_of_interlaces_endpoint_sign_of_no_crossing
+
+@[deprecated strictInterl_of_interlaces_evalCoeff_neg_succ (since := "2026-09-18")]
+alias prec_of_interlaces_evalCoeff_neg_succ :=
+  strictInterl_of_interlaces_evalCoeff_neg_succ
+
+@[deprecated strictInterl_of_interlaces_evalCoeff_neg_same (since := "2026-09-18")]
+alias prec_of_interlaces_evalCoeff_neg_same :=
+  strictInterl_of_interlaces_evalCoeff_neg_same
+
+@[deprecated strictInterl_of_interlaces_evalCoeff_neg (since := "2026-09-18")]
+alias prec_of_interlaces_evalCoeff_neg := strictInterl_of_interlaces_evalCoeff_neg
+
 end RealRooted.MaWangInternal
 
 namespace RealRooted
 
 export MaWangInternal
-  (prec_of_interlaces_eval_mul_neg_succ
+  (strictInterl_of_interlaces_eval_mul_neg_succ
+    strictInterl_of_interlaces_eval_mul_neg_same
+    strictInterl_of_interlaces_endpoint_sign_of_no_crossing
+    strictInterl_of_interlaces_evalCoeff_neg_succ
+    strictInterl_of_interlaces_evalCoeff_neg_same
+    strictInterl_of_interlaces_evalCoeff_neg
+    prec_of_interlaces_eval_mul_neg_succ
     prec_of_interlaces_eval_mul_neg_same
     prec_of_interlaces_endpoint_sign_of_no_crossing
     prec_of_interlaces_evalCoeff_neg_succ

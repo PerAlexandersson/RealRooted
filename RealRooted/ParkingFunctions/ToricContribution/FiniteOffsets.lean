@@ -467,7 +467,7 @@ theorem consecutive_signedTriangleFamily_prec
     simp only [eval_neg, eval_mul, eval_C, eval_sub, eval_one, eval_X]
     norm_num
     nlinarith
-  have hprecPos := prec_of_interlaces_evalCoeff_neg_same
+  have hprecPos := strictInterl_of_interlaces_evalCoeff_neg_same
     hHBInterlaces hHLeading hcombinationLeading hcombinationDegree
     hnoCommon hcoefficientNeg
   rw [← hcombination] at hprecPos

@@ -726,7 +726,7 @@ private theorem mixedEulerStep_prec_of_no_common_of_nontrivial_boundary
           h.derivative.eval r =
         ((1 - r) * (r + lam * residue)) * (h.derivative.eval r) ^ 2 := by ring
       _ < 0 := mul_neg_of_neg_of_pos hprod (sq_pos_of_ne_zero hder_ne)
-  exact prec_of_interlaces_eval_mul_neg_succ hder hder_pos hP_pos hP_deg hroot_sign
+  exact strictInterl_of_interlaces_eval_mul_neg_succ hder hder_pos hP_pos hP_deg hroot_sign
 
 /-- No-common-root mixed step, including the exceptional linear/constant
 boundary where the mixed output has the input sum as an exact factor. -/

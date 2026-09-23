@@ -118,7 +118,7 @@ theorem prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
       eval_mul_derivative_neg_of_auxiliary_sign_add_tail
         hrec hq_sign hv_neg ht_nonpos hr
   have hprec : StrictInterl f F :=
-    prec_of_interlaces_eval_mul_neg_succ hder hder_pos hF_pos hdeg hroot_sign
+    strictInterl_of_interlaces_eval_mul_neg_succ hder hder_pos hF_pos hdeg hroot_sign
   have hnoRoot :=
     noCommonRoot_of_auxiliary_sign_add_tail hrec hq_sign hv_neg ht_nonpos
   have hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ F.IsRoot r) :=
@@ -146,7 +146,7 @@ theorem prec_and_hasSimpleRoots_of_auxiliary_sign_succ
 
 /-- A strict differ-by-one Ma--Wang step puts `f` in proper position with `F`
 and propagates simple real roots. -/
-theorem prec_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v : ℝ[X]}
+theorem strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
     (hF_pos : HasPosLeadingCoeff F) (hdegf : 1 ≤ f.natDegree)
     (hdeg : F.natDegree = f.natDegree + 1)
@@ -173,7 +173,7 @@ theorem prec_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v : ℝ[X
         ring
       _ < 0 := hstrict
   have hprec : StrictInterl f F :=
-    prec_of_interlaces_eval_mul_neg_succ hder hder_pos hF_pos hdeg hroot_sign
+    strictInterl_of_interlaces_eval_mul_neg_succ hder hder_pos hF_pos hdeg hroot_sign
   have hno : ∀ r, f.IsRoot r → ¬ F.IsRoot r := by
     intro r hfr hFr
     have hs := hroot_sign r hfr
@@ -185,5 +185,10 @@ theorem prec_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v : ℝ[X
     obtain ⟨r, hFr, hfr⟩ := exists_common_root_of_not_nodup hprec hnot
     exact hno r (isRoot_of_mem_roots hfr) (isRoot_of_mem_roots hFr)
   exact ⟨hprec, HasSimpleRoots.of_roots_nodup hF_pos.ne_zero hnodup⟩
+
+@[deprecated strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ
+  (since := "2026-09-18")]
+alias prec_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ :=
+  strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ
 
 end RealRooted

@@ -114,7 +114,7 @@ theorem prec_generalizedLiuWang_strict_same
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
     StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
-  refine prec_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg ?_
+  refine strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg ?_
   intro r hr
   have hl_prec : ∀ bg ∈ l, StrictInterl bg.2 f :=
     fun bg hmem => (hl_inter bg hmem).toStrictInterl
@@ -137,7 +137,7 @@ theorem prec_generalizedLiuWang_strict_succ
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
     StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
-  refine prec_of_interlaces_eval_mul_neg_succ hgf hg_pos hF_pos hdeg ?_
+  refine strictInterl_of_interlaces_eval_mul_neg_succ hgf hg_pos hF_pos hdeg ?_
   intro r hr
   have hl_prec : ∀ bg ∈ l, StrictInterl bg.2 f :=
     fun bg hmem => (hl_inter bg hmem).toStrictInterl
