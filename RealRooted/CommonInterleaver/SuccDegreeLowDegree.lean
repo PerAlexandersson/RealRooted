@@ -59,8 +59,8 @@ theorem allComboRealRooted_of_prec_or_revPrec
     {f g : ℝ[X]} :
     StrictInterl f g ∨ StrictInterl g f →
     AllComboRealRooted f g
-  | Or.inl hprec => allComboRealRooted_of_prec hprec
-  | Or.inr hprec => allComboRealRooted_comm (allComboRealRooted_of_prec hprec)
+  | Or.inl hprec => allComboRealRooted_of_strictInterl hprec
+  | Or.inr hprec => allComboRealRooted_comm (allComboRealRooted_of_strictInterl hprec)
 
 namespace Compatible
 
@@ -77,7 +77,7 @@ lemma of_allComboRealRooted {f g : ℝ[X]}
 /-- A `StrictInterl` relation implies Chudnovsky--Seymour nonnegative compatibility. -/
 lemma of_prec {f g : ℝ[X]} (h : StrictInterl f g) :
     Compatible f g :=
-  of_allComboRealRooted (allComboRealRooted_of_prec h)
+  of_allComboRealRooted (allComboRealRooted_of_strictInterl h)
 
 /-- Either `StrictInterl` orientation implies Chudnovsky--Seymour nonnegative
 compatibility. -/

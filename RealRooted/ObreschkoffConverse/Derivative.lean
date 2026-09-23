@@ -32,7 +32,7 @@ theorem derivative_interl_of_strictInterl_succDegree {f g : ℝ[X]}
   rcases derivative_eq_zero_or_ne_zero_and_splits hfg.2.1.2 with hgzero | hgrr
   · simp_all
   have hall : AllComboRealRooted f.derivative g.derivative :=
-    allComboRealRooted_derivative (allComboRealRooted_of_prec hfg)
+    allComboRealRooted_derivative (allComboRealRooted_of_strictInterl hfg)
   have hfdeg : f.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hfrr.1
   have hgdeg : g.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hgrr.1
   have hfgdeg' : f.derivative.natDegree + 1 = g.derivative.natDegree := by
@@ -42,7 +42,7 @@ theorem derivative_interl_of_strictInterl_succDegree {f g : ℝ[X]}
       f.derivative.natDegree = g.derivative.natDegree := Or.inl hfgdeg'
   exact
     (StrictInterl.forward_of_orientation_of_succDegree hfgdeg'.symm
-      (prec_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall hdeg')).toInterl
+      (strictInterl_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall hdeg')).toInterl
 
 @[deprecated derivative_interl_of_strictInterl_succDegree (since := "2026-09-18")]
 alias derivative_prec0_of_prec_succDegree := derivative_interl_of_strictInterl_succDegree
@@ -60,11 +60,11 @@ theorem derivative_interl_or_reverse_of_strictInterl_sameDegree {f g : ℝ[X]}
   rcases derivative_eq_zero_or_ne_zero_and_splits hfg.2.1.2 with hgzero | hgrr
   · simp_all
   have hall : AllComboRealRooted f.derivative g.derivative :=
-    allComboRealRooted_derivative (allComboRealRooted_of_prec hfg)
+    allComboRealRooted_derivative (allComboRealRooted_of_strictInterl hfg)
   have hfdeg : f.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hfrr.1
   have hgdeg : g.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hgrr.1
   have hdeg' : f.derivative.natDegree = g.derivative.natDegree := by simp_all
-  rcases prec_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall
+  rcases strictInterl_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall
     (Or.inr hdeg') with hprec | hrev
   · exact Or.inl hprec.toInterl
   · exact Or.inr hrev.toInterl

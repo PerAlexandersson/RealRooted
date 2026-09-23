@@ -595,7 +595,7 @@ theorem allComboRealRooted_routhNumerator {odd even : ℝ[X]}
     AllComboRealRooted odd (even - C c * odd) := by
   apply allComboRealRooted_linear_recombination
     (f := odd) (g := even) (a := 1) (b := 0) (c := -c) (d := 1)
-    (hall := allComboRealRooted_of_prec hprec)
+    (hall := allComboRealRooted_of_strictInterl hprec)
   · simp
   · simp [sub_eq_add_neg, mul_comm, add_comm]
 
@@ -641,7 +641,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_evenShape
     simpa only [q] using allComboRealRooted_routhNumerator hprec c
   have hqSplits : q.Splits := hall.right_splits
   have hprecQ : StrictInterl odd q := by
-    rcases prec_of_allComboRealRooted hodd.ne_zero hprec.1.2
+    rcases strictInterl_of_allComboRealRooted hodd.ne_zero hprec.1.2
         hqPos.ne_zero hqSplits hall (Or.inl (by lia)) with hoq | hqo
     · exact hoq
     · rcases hqo.natDegree_eq_or_eq_succ with hsame | hsucc <;> lia

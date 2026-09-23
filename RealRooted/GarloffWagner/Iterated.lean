@@ -204,7 +204,7 @@ theorem derivative_prec_TDeriv_of_splits {eps : ℝ} {p : ℝ[X]}
   have hprec_or :
       StrictInterl p.derivative (TDeriv eps p) ∨
         StrictInterl (TDeriv eps p) p.derivative :=
-    prec_of_allComboRealRooted hder_rr.1 hder_rr.2 hT_rr.1 hT_rr.2 hall
+    strictInterl_of_allComboRealRooted hder_rr.1 hder_rr.2 hT_rr.1 hT_rr.2 hall
       (Or.inl hsucc.symm)
   exact StrictInterl.forward_of_orientation_of_succDegree hsucc hprec_or
 

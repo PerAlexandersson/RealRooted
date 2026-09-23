@@ -49,7 +49,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
       (prec_iff_prec_mul_X_of_roots_nonpos
         (f := g) (g := f) hg.2 hf.2 hg_pos hf_pos hg_nonpos hf_nonpos hdeg).mp hgf
     have hall_fXg : AllComboRealRooted f (X * g) :=
-      allComboRealRooted_of_prec hprec_fXg
+      allComboRealRooted_of_strictInterl hprec_fXg
     have hall_qf : AllComboRealRooted q f := by
       intro α β
       have hrew :
@@ -84,7 +84,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
       lia
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by lia
     have hprec_or : StrictInterl q f ∨ StrictInterl f q :=
-      prec_of_allComboRealRooted hq.1 hq.2 hf.1 hf.2 hall_qf (Or.inl hdeg_qf)
+      strictInterl_of_allComboRealRooted hq.1 hq.2 hf.1 hf.2 hall_qf (Or.inl hdeg_qf)
     have hnot_prec_fq : ¬ StrictInterl f q := by
       intro hfq
       rcases hfq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
@@ -114,7 +114,7 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
       simpa [q] using prec_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos
     have hf0 : f ≠ 0 := hgf.2.1.1
     have hqf : StrictInterl q f := by rcases hleft0 with hqz | hfz | hqf <;> lia
-    have hall_qf : AllComboRealRooted q f := allComboRealRooted_of_prec hqf
+    have hall_qf : AllComboRealRooted q f := allComboRealRooted_of_strictInterl hqf
     have hall_qXg : AllComboRealRooted q (X * g) := by
       intro α β
       have hrew :
@@ -150,7 +150,7 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by lia
     have hdeg_qXg : q.natDegree + 1 = (X * g).natDegree := by simp_all
     have hprec_or : StrictInterl q (X * g) ∨ StrictInterl (X * g) q :=
-      prec_of_allComboRealRooted hq.1 hq.2 hXg.1 hXg.2 hall_qXg (Or.inl hdeg_qXg)
+      strictInterl_of_allComboRealRooted hq.1 hq.2 hXg.1 hXg.2 hall_qXg (Or.inl hdeg_qXg)
     have hnot_prec_Xgq : ¬ StrictInterl (X * g) q := by
       intro hXgq
       rcases hXgq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
@@ -376,7 +376,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le
         hW_nonpos hU_nonpos hsub_pos
     simpa [hmid_eq] using hpair.1
   have hall_U_mid : AllComboRealRooted U (U + X * V) :=
-    allComboRealRooted_of_prec hU_mid
+    allComboRealRooted_of_strictInterl hU_mid
   have hall_U_XV : AllComboRealRooted U (X * V) := by
     intro α β
     have hrew :
@@ -390,7 +390,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le
     rw [natDegree_mul X_ne_zero hV_pos.ne_zero, natDegree_X]
     lia
   have hprec_or : StrictInterl U (X * V) ∨ StrictInterl (X * V) U :=
-    prec_of_allComboRealRooted hUW.1.1 hUW.1.2 hXV_ne hXV_splits hall_U_XV
+    strictInterl_of_allComboRealRooted hUW.1.1 hUW.1.2 hXV_ne hXV_splits hall_U_XV
       (Or.inr hsame)
   have hU_XV : StrictInterl U (X * V) := by
     rcases hprec_or with hU_XV | hXV_U
@@ -431,7 +431,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul
         hW_nonpos hU_nonpos hsub_pos
     simpa [hmid_eq] using hpair.1
   have hall_U_mid : AllComboRealRooted U (U + X * V) :=
-    allComboRealRooted_of_prec hU_mid
+    allComboRealRooted_of_strictInterl hU_mid
   have hall_U_XV : AllComboRealRooted U (X * V) := by
     intro α β
     have hrew :
@@ -445,7 +445,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul
     rw [natDegree_mul X_ne_zero hV_pos.ne_zero, natDegree_X]
     lia
   have hprec_or : StrictInterl U (X * V) ∨ StrictInterl (X * V) U :=
-    prec_of_allComboRealRooted hUW.1.1 hUW.1.2 hXV_ne hXV_splits hall_U_XV
+    strictInterl_of_allComboRealRooted hUW.1.1 hUW.1.2 hXV_ne hXV_splits hall_U_XV
       (Or.inr hsame)
   obtain ⟨c, hU_le, hc_lt⟩ := hU_bound
   have hXV_root0 : (X * V).IsRoot 0 := by simp

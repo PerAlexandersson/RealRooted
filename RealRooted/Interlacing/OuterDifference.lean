@@ -490,7 +490,7 @@ theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
     simpa [hgfactor, hsub_factor] using hmul
   · have hg_nodup : g.roots.Nodup := not_not.mp hdup
     have hsub_splits : (h - f).Splits := by
-      have hall := allComboRealRooted_of_prec hfh
+      have hall := allComboRealRooted_of_strictInterl hfh
       simpa [sub_eq_add_neg, add_comm, mul_comm] using hall (-1) 1
     have hdeg_lo : g.natDegree ≤ (h - f).natDegree :=
       natDegree_sub_lower_bound_of_triple

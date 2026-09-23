@@ -188,7 +188,7 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
                 (left_splits_of_strictInterl hgf)).mpr ⟨hgpos, hgroots⟩).1
             have hshift : StrictInterl f (X * g) :=
               prec_mul_X_of_prec_of_nonneg hgf hgnn hnn
-            have hcombo := allComboRealRooted_of_prec hshift (1 : ℝ) c
+            have hcombo := allComboRealRooted_of_strictInterl hshift (1 : ℝ) c
             have hrewrite :
                 generalizedEulerian c (n + 2) = C 1 * f + C c * (X * g) := by
               rw [generalizedEulerian_succ]

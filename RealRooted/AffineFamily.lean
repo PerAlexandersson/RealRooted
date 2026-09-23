@@ -377,7 +377,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
         (shifted_affine_family_of_affine_family haff)
         hXf_rr hshift_deg hno_shift
     have hprec_or : StrictInterl f (g + X * f) ∨ StrictInterl (g + X * f) f :=
-      prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hshift_rr.1 hshift_rr.2
+      strictInterl_of_allComboRealRooted hf_rr.1 hf_rr.2 hshift_rr.1 hshift_rr.2
         (allComboRealRooted_comm hall_shift) (Or.inl hshift_deg.symm)
     have hprec_f_shift : StrictInterl f (g + X * f) :=
       StrictInterl.forward_of_orientation_of_succDegree hshift_deg hprec_or
@@ -393,7 +393,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
       AffineFamily.allComboRealRooted_of_affine_family_succDegree
         hf0 hg0 hfnn hgnn haff hXf_rr hsucc hno_fg_fun
     have hprec_or : StrictInterl f g ∨ StrictInterl g f :=
-      prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2
+      strictInterl_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2
         (allComboRealRooted_comm hall) (Or.inl hsucc.symm)
     have hprec_fg : StrictInterl f g :=
       StrictInterl.forward_of_orientation_of_succDegree hsucc hprec_or
@@ -830,7 +830,7 @@ theorem allComboRealRooted_of_affine_family_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     AllComboRealRooted f g :=
-  allComboRealRooted_of_prec
+  allComboRealRooted_of_strictInterl
     (prec_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
 
 /-- Public shifted-pair package extracted from a nonnegative affine family.
