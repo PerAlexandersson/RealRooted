@@ -136,7 +136,7 @@ theorem prec0_chainPolynomial_succ_of_pos_constantDiagonal
     normalizeConstantDiagonal_isTotallyNonneg hδ hA
   have hprec : Interl (chainPolynomial B n)
       (chainPolynomial B (n + 1)) :=
-    prec0_chainPolynomial_succ_of_isTotallyNonneg hunit hB n
+    interl_chainPolynomial_succ_of_isTotallyNonneg hunit hB n
   rw [chainPolynomial_comp_C_mul_X_normalizeConstantDiagonal hδ.ne' n,
     chainPolynomial_comp_C_mul_X_normalizeConstantDiagonal hδ.ne' (n + 1)]
   rcases hprec with hzero | hzero | hprec

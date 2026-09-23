@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  620  Lean declarations requiring semantic review
+  615  Lean declarations requiring semantic review
   224  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    29  statement scaffolds requiring proof-status-preserving renames
-  242  deprecated compatibility identifiers with canonical targets
+  247  deprecated compatibility identifiers with canonical targets
    36  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -199,6 +199,11 @@ The #898 foundational orientation-tail batch canonicalizes the two public
 forward one-two-family sum transports and directly renames the private
 Obreschkoff same-degree and affine right-pair orientation helpers.  Exact
 deprecated aliases preserve the two public CommonInterleaver signatures.
+
+The #899 Branden--Leite chain-polynomial batch canonicalizes the zero-aware
+`fPolynomial` transport and the weak/strict consecutive-chain theorems,
+including their totally-nonnegative specializations.  Exact deprecated aliases
+preserve all five public signatures.
 
 The #892 compatibility/right-pencil batch canonicalizes the failed succ-degree
 orientation statement interface and its seven checked conditional reductions.
