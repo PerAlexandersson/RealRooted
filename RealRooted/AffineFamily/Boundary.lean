@@ -672,12 +672,17 @@ private lemma prec_right_pair_of_prec_or_revPrec_of_no_common_fg_of_not_isRoot_z
 nonnegative-coefficient regime: if an Obreschkoff alternative is known and the
 pair has no common root, then the distinguished root `0` of `X * f` forces the
 orientation `g ≺ X * f`. -/
-theorem prec_right_pair_of_prec_or_revPrec_of_no_common_nonneg
+theorem strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
     {f g : ℝ[X]}
     (h : StrictInterl g (X * f) ∨ StrictInterl (X * f) g)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
     StrictInterl g (X * f) :=
   prec_right_pair_of_prec_or_revPrec_of_no_common h hg_ne hg_splits hgnn hno
+
+@[deprecated strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
+  (since := "2026-09-18")]
+alias prec_right_pair_of_prec_or_revPrec_of_no_common_nonneg :=
+  strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
 
 end RealRooted

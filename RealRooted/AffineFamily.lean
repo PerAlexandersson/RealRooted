@@ -572,7 +572,7 @@ theorem prec_of_affine_family_nonneg
 /-- Right-pair form of the affine-family converse. This is the degree-free
 public API: the affine-family hypothesis gives `f ≪ g`, and nonnegative
 coefficients transport this to `g ≪ X * f`. -/
-theorem prec_right_pair_of_affine_family_nonneg
+theorem strictInterl_right_pair_of_affine_family_nonneg
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
@@ -584,6 +584,10 @@ theorem prec_right_pair_of_affine_family_nonneg
   prec_to_prec_mul_X_of_nonneg
     (prec_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
     hfnn hgnn
+
+@[deprecated strictInterl_right_pair_of_affine_family_nonneg (since := "2026-09-18")]
+alias prec_right_pair_of_affine_family_nonneg :=
+  strictInterl_right_pair_of_affine_family_nonneg
 
 /-- Closed affine-segment wrapper for `prec_of_affine_family_nonneg`.
 

@@ -23,7 +23,7 @@ namespace RealRooted
 /-- Any two positive-leading polynomials of degree at most one already satisfy
 the Obreschkoff alternative. This is the unconditional low-degree endpoint for
 the current bridge search. -/
-theorem prec_or_revPrec_of_natDegree_le_one
+theorem strictInterl_or_reverse_of_natDegree_le_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -52,6 +52,10 @@ theorem prec_or_revPrec_of_natDegree_le_one
         hg_deg0 hf_deg1)
     · have hg_deg1 : g.natDegree = 1 := by lia
       exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one (by lia) hf_deg1
+
+@[deprecated strictInterl_or_reverse_of_natDegree_le_one (since := "2026-09-18")]
+alias prec_or_revPrec_of_natDegree_le_one :=
+  strictInterl_or_reverse_of_natDegree_le_one
 
 /-- A symmetric `StrictInterl` orientation implies all real linear combinations are
 real-rooted, after commuting the pair in the reversed case. -/
@@ -104,7 +108,7 @@ theorem allComboRealRooted_of_natDegree_le_one
     (hg_deg_le_one : g.natDegree ≤ 1) :
     AllComboRealRooted f g :=
   allComboRealRooted_of_strictInterl_or_reverse <|
-    prec_or_revPrec_of_natDegree_le_one
+    strictInterl_or_reverse_of_natDegree_le_one
       hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
 /-- A `StrictInterl` relation immediately gives a common right interleaver: use the
@@ -191,7 +195,7 @@ theorem pairHasCommonInterleaver_of_natDegree_le_one
     (hg_deg_le_one : g.natDegree ≤ 1) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_strictInterl_or_reverse <|
-    prec_or_revPrec_of_natDegree_le_one
+    strictInterl_or_reverse_of_natDegree_le_one
       hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
 /-- Two-polynomial common-left-interleaver endpoint in degree at most one. -/
@@ -203,7 +207,7 @@ theorem pairHasCommonLeftInterleaver_of_natDegree_le_one
     (hg_deg_le_one : g.natDegree ≤ 1) :
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   pairHasCommonLeftInterleaver_of_strictInterl_or_reverse <|
-    prec_or_revPrec_of_natDegree_le_one
+    strictInterl_or_reverse_of_natDegree_le_one
       hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
 /-- Same-degree specialization of the low-degree pair endpoint. -/
@@ -262,7 +266,7 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_le_one
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg_le_one : f.natDegree ≤ 1) :
     StrictInterl f g ∨ StrictInterl g f :=
-  prec_or_revPrec_of_natDegree_le_one
+  strictInterl_or_reverse_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one (by lia)
 
 /-- Degree-one base case for the honest same-degree branch: equal-degree linear
@@ -445,7 +449,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degre
     fun {s t} hs ht =>
       haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
   have hright : StrictInterl g (X * f) :=
-    prec_right_pair_of_affine_family_nonneg_degree_one
+    strictInterl_right_pair_of_affine_family_nonneg_degree_one
       hf0 hg0 hfnn hgnn haff hf_deg1
   exact pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg hright hfnn
 
@@ -465,7 +469,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
     fun {s t} hs ht =>
       haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
   have hright : StrictInterl g (X * f) :=
-    prec_right_pair_of_affine_family_nonneg
+    strictInterl_right_pair_of_affine_family_nonneg
       hf0 hg0 hfnn hgnn haff
   exact pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg hright hfnn
 

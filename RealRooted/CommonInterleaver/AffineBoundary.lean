@@ -37,7 +37,7 @@ private lemma no_common_boundary_right_pair_of_no_common_nonneg
 /-- If the original pair is already oriented as `f ≺ g`, then every boundary
 right pair `(C t * f + g, X * f)` inherits the correct orientation just by
 combining `g ≺ X * f` with the trivial self-orientation of `f`. -/
-theorem prec_boundary_right_pair_of_prec_nonneg
+theorem strictInterl_boundary_right_pair_of_strictInterl_nonneg
     {f g : ℝ[X]}
     (hprec : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
@@ -51,6 +51,11 @@ theorem prec_boundary_right_pair_of_prec_nonneg
     hasPosLeadingCoeff_C_mul ht (hfnn.pos_leadingCoeff hprec.1.1)
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hprec.2.1.1
   exact StrictInterl.add_of_right_of_posLeadingCoeff htfX hgfX htf_pos hg_pos
+
+@[deprecated strictInterl_boundary_right_pair_of_strictInterl_nonneg
+  (since := "2026-09-18")]
+alias prec_boundary_right_pair_of_prec_nonneg :=
+  strictInterl_boundary_right_pair_of_strictInterl_nonneg
 
 /-- Once the fixed right-hand pair `(g, X * f)` is oriented, the polynomial
 `X * f` itself is already a common right interleaver for `f` and `g`. -/
@@ -70,7 +75,7 @@ alias pairHasCommonInterleaver_of_prec_right_pair_nonneg :=
 /-- In the succ-degree branch, the boundary right pair is automatic as soon as
 the original no-common orientation statement is known: `StrictInterl g f` is ruled out
 by degree, so the previous transport theorem applies. -/
-theorem prec_boundary_right_pair_of_orientation_succDegree_nonneg
+theorem strictInterl_boundary_right_pair_of_orientation_succDegree_nonneg
     (horient : PosComboNoCommonOrientationStatement)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
@@ -86,7 +91,12 @@ theorem prec_boundary_right_pair_of_orientation_succDegree_nonneg
     horient hfg hf_pos hg_pos (by lia) (by lia) hno
   have hprec_fg : StrictInterl f g :=
     StrictInterl.forward_of_orientation_of_succDegree hsucc hprec_or
-  exact prec_boundary_right_pair_of_prec_nonneg hprec_fg hfnn hgnn ht
+  exact strictInterl_boundary_right_pair_of_strictInterl_nonneg hprec_fg hfnn hgnn ht
+
+@[deprecated strictInterl_boundary_right_pair_of_orientation_succDegree_nonneg
+  (since := "2026-09-18")]
+alias prec_boundary_right_pair_of_orientation_succDegree_nonneg :=
+  strictInterl_boundary_right_pair_of_orientation_succDegree_nonneg
 
 /-- Orienting each boundary pair `(C t * f + g, X * f)` is already enough to
 recover the full affine-family hypothesis. The no-common condition for the
@@ -112,7 +122,7 @@ theorem posComboNoCommonAffineFamily_of_boundaryRightPairOrientation
     dsimp [p]
     exact no_common_boundary_right_pair_of_no_common_nonneg hfnn hgnn hno ht
   have hprec : StrictInterl p (X * f) :=
-    prec_right_pair_of_prec_or_revPrec_of_no_common_nonneg
+    strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
       hprec_or hp_rr.1 hp_rr.2 hp_nn hno_right
   have hcombo_rr :
       ((C (1 : ℝ) * p + C s * (X * f)) ≠ 0 ∧ (C (1 : ℝ) * p + C s * (X * f)).Splits) :=

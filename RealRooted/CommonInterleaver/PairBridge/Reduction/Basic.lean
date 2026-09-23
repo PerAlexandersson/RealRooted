@@ -144,7 +144,7 @@ theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_allComboBridge
     (compatibleSuccDegreeAllCombo_of_allComboBridge hallBridge)
 
 /-- Internal all-combinations orientation bridge for the endpoint layer. -/
-protected lemma CommonInterleaver.PairBridge.prec_or_revPrec_of_allComboRealRooted_ordered
+protected lemma CommonInterleaver.PairBridge.strictInterl_or_reverse_of_allComboRealRooted_ordered
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -158,6 +158,11 @@ protected lemma CommonInterleaver.PairBridge.prec_or_revPrec_of_allComboRealRoot
   have hg_rr : (g ≠ 0 ∧ g.Splits) := hall.isRealRooted_right hg0
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
   exact strictInterl_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg
+
+@[deprecated CommonInterleaver.PairBridge.strictInterl_or_reverse_of_allComboRealRooted_ordered
+  (since := "2026-09-18")]
+protected alias CommonInterleaver.PairBridge.prec_or_revPrec_of_allComboRealRooted_ordered :=
+  CommonInterleaver.PairBridge.strictInterl_or_reverse_of_allComboRealRooted_ordered
 
 /-- The same affine-family bridge also yields the no-common orientation step,
 since `AllComboRealRooted` can be fed into the completed Obreschkoff converse.
@@ -178,7 +183,7 @@ theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
     allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
   exact
-    CommonInterleaver.PairBridge.prec_or_revPrec_of_allComboRealRooted_ordered
+    CommonInterleaver.PairBridge.strictInterl_or_reverse_of_allComboRealRooted_ordered
       hf_pos hg_pos hall hdeg_lo hdeg_hi
 
 end RealRooted

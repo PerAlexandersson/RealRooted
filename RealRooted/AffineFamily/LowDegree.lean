@@ -735,7 +735,7 @@ protected lemma AffineFamily.prec_right_pair_of_affine_family_degree_one
 /-- Public degree-one right-pair form of the affine-family converse.  If
 `f.natDegree = 1`, the affine-family hypothesis gives the stronger conclusion
 `g ≪ X * f`, not only `f ≪ g`. -/
-theorem prec_right_pair_of_affine_family_nonneg_degree_one
+theorem strictInterl_right_pair_of_affine_family_nonneg_degree_one
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
@@ -747,6 +747,11 @@ theorem prec_right_pair_of_affine_family_nonneg_degree_one
     StrictInterl g (X * f) :=
   AffineFamily.prec_right_pair_of_affine_family_degree_one
     hf0 hg0 hfnn hgnn haff hdegf1
+
+@[deprecated strictInterl_right_pair_of_affine_family_nonneg_degree_one
+  (since := "2026-09-18")]
+alias prec_right_pair_of_affine_family_nonneg_degree_one :=
+  strictInterl_right_pair_of_affine_family_nonneg_degree_one
 
 /-- If `g` has an explicit factor `X`, any orientation of `(qg, f)` lifts
 immediately to the affine right pair `(g, X * f)` by restoring the common
