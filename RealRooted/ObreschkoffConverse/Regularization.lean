@@ -707,7 +707,7 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
     · simp [hroots_g]
     · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
   by_cases hdeg1 : f.natDegree = 1
-  · exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one hdeg hdeg1
+  · exact PosComboRealRooted.strictInterl_or_reverse_of_same_degree_one hdeg hdeg1
   have hdeg_ge2 : 2 ≤ f.natDegree := by lia
   have hgdeg_ge2 : 2 ≤ g.natDegree := by lia
   have hW_ne x : (wronskianPoly f g).eval x ≠ 0 :=

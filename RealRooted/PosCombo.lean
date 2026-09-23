@@ -1009,7 +1009,7 @@ no-common-roots case. Shared roots can be factored out recursively.
 
 In the same-degree case the correct conclusion is the Obreschkoff alternative
 `StrictInterl f g ∨ StrictInterl g f`; the degree-`+1` case remains oriented. -/
-theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
+theorem strictInterl_or_reverse_of_posComboRealRooted_of_no_common
     (hstep :
       ∀ {f g : ℝ[X]},
         PosComboRealRooted f g →
@@ -1061,6 +1061,11 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
           (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
       lia
 end PosComboRealRooted
+
+@[deprecated PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
+  (since := "2026-09-18")]
+alias PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common :=
+  PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
 
 namespace PosComboRealRooted
 
@@ -1352,7 +1357,7 @@ theorem prec_same_of_root_sign_data
 
 /-- An equal-degree Obreschkoff alternative can be oriented once we know that
 `f` has a root strictly to the right of an upper bound for all roots of `g`. -/
-theorem prec_of_prec_or_revPrec_of_root_asymmetry
+theorem strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
     {f g : ℝ[X]} {c r : ℝ}
     (h : StrictInterl f g ∨ StrictInterl g f)
     (hg_le : ∀ s ∈ g.roots, s ≤ c)
@@ -1365,21 +1370,31 @@ theorem prec_of_prec_or_revPrec_of_root_asymmetry
     grind
   · lia
 
+@[deprecated strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
+  (since := "2026-09-18")]
+alias prec_of_prec_or_revPrec_of_root_asymmetry :=
+  strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
+
 /-- Symmetric orientation selector for the equal-degree Obreschkoff
 alternative. -/
-theorem revPrec_of_prec_or_revPrec_of_root_asymmetry
+theorem reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
     {f g : ℝ[X]} {c r : ℝ}
     (h : StrictInterl f g ∨ StrictInterl g f)
     (hf_le : ∀ s ∈ f.roots, s ≤ c)
     (hgr : g.IsRoot r)
     (hc_lt : c < r) :
     StrictInterl f g :=
-  prec_of_prec_or_revPrec_of_root_asymmetry
+  strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
     (f := g) (g := f) (c := c) (r := r) (by lia)
     hf_le hgr hc_lt
 
+@[deprecated reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
+  (since := "2026-09-18")]
+alias revPrec_of_prec_or_revPrec_of_root_asymmetry :=
+  reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
+
 /-- Linear equal-degree case of the same-degree Obreschkoff alternative. -/
-theorem prec_or_revPrec_of_same_degree_one
+theorem strictInterl_or_reverse_of_same_degree_one
     {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg1 : f.natDegree = 1) :
@@ -1408,6 +1423,9 @@ theorem prec_or_revPrec_of_same_degree_one
     · simp [hrg_eq]
     · simp [hrf_eq]
     · exact Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces, hge]⟩
+
+@[deprecated strictInterl_or_reverse_of_same_degree_one (since := "2026-09-18")]
+alias prec_or_revPrec_of_same_degree_one := strictInterl_or_reverse_of_same_degree_one
 
 end PosComboRealRooted
 

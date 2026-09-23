@@ -450,7 +450,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul
   obtain ⟨c, hU_le, hc_lt⟩ := hU_bound
   have hXV_root0 : (X * V).IsRoot 0 := by simp
   have hU_XV : StrictInterl U (X * V) :=
-    PosComboRealRooted.revPrec_of_prec_or_revPrec_of_root_asymmetry
+    PosComboRealRooted.reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := U) (g := X * V) (c := c) (r := 0)
       hprec_or hU_le hXV_root0 hc_lt
   have hV_splits : V.Splits := (isRealRooted_of_X_mul hXV_ne hXV_splits).2

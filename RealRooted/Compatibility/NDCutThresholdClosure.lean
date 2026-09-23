@@ -106,7 +106,7 @@ private theorem prec_of_prec0_of_pos {f g : ℝ[X]}
 private theorem compatible_X_left_of_prec_nonneg {f g : ℝ[X]}
     (hfg : StrictInterl f g) (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
     Compatible (X * f) g :=
-  (Compatible.of_prec (prec_mul_X_of_prec_of_nonneg hfg hf hg)).comm
+  (Compatible.of_strictInterl (prec_mul_X_of_prec_of_nonneg hfg hf hg)).comm
 
 /-- A zero-aware interlacing package on `reverse P ++ Q`, together with
 positive leading coefficients, supplies every field of the ordered cut
@@ -164,17 +164,17 @@ theorem orderedCutCompatible_of_stateInterlacing
       q_nonneg := hQ_nonneg
       pp_reverse := by
         intro i j hij
-        exact Compatible.of_prec (hPP hij)
+        exact Compatible.of_strictInterl (hPP hij)
       xpp_reverse := by
         intro i j hij
         exact compatible_X_left_of_prec_nonneg
           (hPP hij) (hP_nonneg j) (hP_nonneg i)
-      pq := fun i j ↦ Compatible.of_prec (hPQ i j)
+      pq := fun i j ↦ Compatible.of_strictInterl (hPQ i j)
       xpq := fun i j ↦
         compatible_X_left_of_prec_nonneg (hPQ i j) (hP_nonneg i) (hQ_nonneg j)
       qq_forward := by
         intro i j hij
-        exact Compatible.of_prec (hQQ hij)
+        exact Compatible.of_strictInterl (hQQ hij)
       xqq_forward := by
         intro i j hij
         exact compatible_X_left_of_prec_nonneg

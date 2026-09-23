@@ -42,7 +42,7 @@ theorem compatible_X_mul_affine_affine_of_cross
     (nonnegCoeffs_C_mul hU.le hasNonnegCoeffs_X).add
       (hasNonnegCoeffs_C hV)
   exact
-    (Compatible.of_prec <|
+    (Compatible.of_strictInterl <|
       prec_mul_X_of_prec_of_nonneg hprec hnn_left hnn_right).comm
 
 end RealRooted

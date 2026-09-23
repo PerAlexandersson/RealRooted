@@ -130,7 +130,7 @@ theorem IsInterlacingSeqNonneg.familyCompatible
   have hprec := isInterlacingSeq_iff_pairwise.mp hfs.2
   rw [List.pairwise_iff_get] at hprec
   intro i j hij
-  exact Compatible.of_prec (hprec i j hij)
+  exact Compatible.of_strictInterl (hprec i j hij)
 
 /-- Every nonnegative weighted sum drawn from a nonnegative interlacing
 sequence is a Pólya-frequency polynomial. -/

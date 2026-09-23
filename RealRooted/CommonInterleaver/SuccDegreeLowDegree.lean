@@ -51,7 +51,7 @@ theorem strictInterl_or_reverse_of_natDegree_le_one
         hg_rr.1 hg_rr.2 hf_rr.1 hf_rr.2
         hg_deg0 hf_deg1)
     · have hg_deg1 : g.natDegree = 1 := by lia
-      exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one (by lia) hf_deg1
+      exact PosComboRealRooted.strictInterl_or_reverse_of_same_degree_one (by lia) hf_deg1
 
 @[deprecated strictInterl_or_reverse_of_natDegree_le_one (since := "2026-09-18")]
 alias prec_or_revPrec_of_natDegree_le_one :=
@@ -83,9 +83,12 @@ lemma of_allComboRealRooted {f g : ℝ[X]}
   · exact Or.inr ⟨hzero, h α β⟩
 
 /-- A `StrictInterl` relation implies Chudnovsky--Seymour nonnegative compatibility. -/
-lemma of_prec {f g : ℝ[X]} (h : StrictInterl f g) :
+lemma of_strictInterl {f g : ℝ[X]} (h : StrictInterl f g) :
     Compatible f g :=
   of_allComboRealRooted (allComboRealRooted_of_strictInterl h)
+
+@[deprecated of_strictInterl (since := "2026-09-18")]
+alias of_prec := of_strictInterl
 
 /-- Either `StrictInterl` orientation implies Chudnovsky--Seymour nonnegative
 compatibility. -/
@@ -277,7 +280,7 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_one
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg1 : f.natDegree = 1) :
     StrictInterl f g ∨ StrictInterl g f :=
-  PosComboRealRooted.prec_or_revPrec_of_same_degree_one hdeg hf_deg1
+  PosComboRealRooted.strictInterl_or_reverse_of_same_degree_one hdeg hf_deg1
 
 /-- The old same-degree orientation alternative, when available, still feeds
 the repaired same-degree common-interleaver target. -/

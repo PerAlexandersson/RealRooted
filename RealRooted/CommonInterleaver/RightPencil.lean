@@ -1013,7 +1013,7 @@ theorem compatibleSuccDegreeStrictInterl_of_noCommonOrientation
   have hfg : PosComboRealRooted f g :=
     hcomp.toPosComboRealRooted hf_pos hg_pos
   have horient : StrictInterl f g ∨ StrictInterl g f :=
-    PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common
+    PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
       (hstep := fun {f g} hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
         hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
       hfg hf_pos hg_pos (by lia) (by lia)

@@ -384,7 +384,7 @@ private theorem prec_b_component_of_prec_left_top_of_sameDegree
       hap.1.1 hap.1.2 ha_nonneg ha_not_root0
   have hXb_root0 : (X * b).IsRoot 0 := by simp
   have hprec_aXb : StrictInterl a (X * b) :=
-    PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+    PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := X * b) (g := a) (c := c) (r := 0)
       (by lia)
       hac_le hXb_root0 hc_lt0
@@ -431,7 +431,7 @@ private theorem prec_b_component_of_prec_left_top
         hap.1.1 hap.1.2 ha_nonneg ha_not_root0
     have hXb_root0 : (X * b).IsRoot 0 := by simp
     have hbad : StrictInterl a (X * b) :=
-      PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+      PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
         (f := X * b) (g := a) (c := c) (r := 0)
         hprec_or hac_le hXb_root0 hc_lt0
     have hbound : a.natDegree ≤ (X * b).natDegree := hbad.natDegree_le
@@ -480,7 +480,7 @@ private theorem prec_b_component_of_prec_right_top
     strictInterl_of_allComboRealRooted ha_rr.1 ha_rr.2 hpxb.2.1.1 hpxb.2.1.2 hall_aXb
       (Or.inr hsame)
   have hprec_aXb : StrictInterl a (X * b) :=
-    PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+    PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := X * b) (g := a) (c := c) (r := 0)
       (by lia)
       hac_le hXb_root0 hc_lt0
@@ -627,7 +627,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     dsimp [t]
     simp
   have hht : StrictInterl h t :=
-    PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+    PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := t) (g := h) (c := 0) (r := 1)
       (by lia)
       hh_nonpos ht_root1 (by simp)

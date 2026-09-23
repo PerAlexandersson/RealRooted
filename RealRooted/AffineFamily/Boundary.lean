@@ -651,7 +651,7 @@ private lemma prec_right_pair_of_prec_or_revPrec_of_no_common
       intro hg0
       exact hno 0 hg0 (by simp [Polynomial.IsRoot.def]))
   exact
-    PosComboRealRooted.revPrec_of_prec_or_revPrec_of_root_asymmetry
+    PosComboRealRooted.reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := g) (g := X * f) (c := c) (r := 0)
       h hc_le (by simp [Polynomial.IsRoot.def]) (by lia)
 
