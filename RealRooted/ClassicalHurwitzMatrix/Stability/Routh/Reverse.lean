@@ -38,7 +38,7 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
         0 < red.coeff 0 ∧ 0 < odd.coeff 0 := by
     rcases hshape with hevenShape | hoddShape
     · have hprec :=
-        hred.prec_parts_of_evenShape hredPos hodd hevenShape
+        hred.strictInterl_parts_of_evenShape hredPos hodd hevenShape
       obtain ⟨hrednn, hoddnn⟩ :=
         hred.hasNonnegCoeffs_parts_of_evenShape
           hredPos hodd hevenShape
@@ -46,7 +46,7 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
         hred.coeff_zero_pos_parts_of_evenShape hredPos hodd hevenShape
       exact ⟨hprec, hrednn, hoddnn, hred0, hodd0⟩
     · have hprec :=
-        hred.prec_parts_of_oddShape hredPos hodd hoddShape
+        hred.strictInterl_parts_of_oddShape hredPos hodd hoddShape
       obtain ⟨hrednn, hoddnn⟩ :=
         hred.hasNonnegCoeffs_parts_of_oddShape
           hredPos hodd hoddShape

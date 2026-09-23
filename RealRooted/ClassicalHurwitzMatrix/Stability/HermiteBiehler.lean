@@ -225,7 +225,7 @@ theorem hermiteBiehlerPolynomial_C_mul (a : ℝ) (f g : ℝ[X]) :
 /-- With positive leading coefficients in the direct normalization, strict
 Hurwitz stability forces the rotated odd part to be in proper position with
 respect to the rotated even part. -/
-theorem IsStrictlyHurwitzStable.prec_rotatedParts_of_posLeading
+theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_posLeading
     {odd even : ℝ[X]}
     (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
     (heven : HasPosLeadingCoeff (hurwitzRotatedEvenPart even))
@@ -238,7 +238,7 @@ theorem IsStrictlyHurwitzStable.prec_rotatedParts_of_posLeading
 /-- With positive leading coefficients after multiplication by `i`, strict
 Hurwitz stability forces the rotated even part to be in proper position with
 respect to the negated rotated odd part. -/
-theorem IsStrictlyHurwitzStable.prec_rotatedParts_swapped_of_posLeading
+theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_swapped_of_posLeading
     {odd even : ℝ[X]}
     (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
     (hodd : HasPosLeadingCoeff (-hurwitzRotatedOddPart odd))
@@ -251,7 +251,7 @@ theorem IsStrictlyHurwitzStable.prec_rotatedParts_swapped_of_posLeading
 
 /-- In the even-degree parity shape, strict stability and positive leading
 coefficients force the rotated odd part to precede the rotated even part. -/
-theorem IsStrictlyHurwitzStable.prec_rotatedParts_of_evenShape
+theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_evenShape
     {odd even : ℝ[X]}
     (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
@@ -295,7 +295,7 @@ theorem IsStrictlyHurwitzStable.prec_rotatedParts_of_evenShape
 
 /-- In the odd-degree parity shape, strict stability and positive leading
 coefficients force the rotated even part to precede the rotated odd part. -/
-theorem IsStrictlyHurwitzStable.prec_rotatedParts_of_oddShape
+theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_oddShape
     {odd even : ℝ[X]}
     (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
@@ -362,7 +362,7 @@ theorem IsStrictlyHurwitzStable.splits_parts_of_evenShape
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree + 1) :
     odd.Splits ∧ even.Splits := by
-  have hprec := h.prec_rotatedParts_of_evenShape hodd heven hdegree
+  have hprec := h.strictInterl_rotatedParts_of_evenShape hodd heven hdegree
   exact
     ⟨Polynomial.Splits.of_hurwitzRotatedOddPart hprec.1.2,
       Polynomial.Splits.of_hurwitzRotatedEvenPart hprec.2.1.2⟩
@@ -375,9 +375,30 @@ theorem IsStrictlyHurwitzStable.splits_parts_of_oddShape
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree) :
     odd.Splits ∧ even.Splits := by
-  have hprec := h.prec_rotatedParts_of_oddShape hodd heven hdegree
+  have hprec := h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree
   exact
     ⟨Polynomial.Splits.of_hurwitzRotatedOddPart hprec.2.1.2,
       Polynomial.Splits.of_hurwitzRotatedEvenPart hprec.1.2⟩
+
+@[deprecated IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_posLeading
+  (since := "2026-09-18")]
+alias IsStrictlyHurwitzStable.prec_rotatedParts_of_posLeading :=
+  IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_posLeading
+
+@[deprecated
+  IsStrictlyHurwitzStable.strictInterl_rotatedParts_swapped_of_posLeading
+  (since := "2026-09-18")]
+alias IsStrictlyHurwitzStable.prec_rotatedParts_swapped_of_posLeading :=
+  IsStrictlyHurwitzStable.strictInterl_rotatedParts_swapped_of_posLeading
+
+@[deprecated IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_evenShape
+  (since := "2026-09-18")]
+alias IsStrictlyHurwitzStable.prec_rotatedParts_of_evenShape :=
+  IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_evenShape
+
+@[deprecated IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_oddShape
+  (since := "2026-09-18")]
+alias IsStrictlyHurwitzStable.prec_rotatedParts_of_oddShape :=
+  IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_oddShape
 
 end RealRooted
