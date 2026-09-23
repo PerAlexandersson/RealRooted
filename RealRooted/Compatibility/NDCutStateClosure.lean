@@ -220,7 +220,7 @@ private theorem cutPrefix_prec0_reverse {m : ℕ}
   have hself : Interl (cutPrefix P i) (cutPrefix P i) :=
     Interl.refl fun _ => hpre_rr.2
   rw [cutPrefix_eq_add_cutMiddle P hij]
-  exact prec0_add_left_of_common_right_of_nonneg hself hmid
+  exact interl_add_left_of_common_right_of_nonneg hself hmid
     (cutPrefix_nonneg h.p_nonneg i) (cutMiddle_nonneg h.p_nonneg i j)
 
 private theorem cutPrefix_prec0_cutStrictSuffix {m : ℕ}
@@ -275,7 +275,7 @@ private theorem cutStrictSuffix_prec0_forward {m : ℕ}
   have hself : Interl (cutStrictSuffix Q j) (cutStrictSuffix Q j) :=
     Interl.refl (cutStrictSuffix_splits_of_ne h j)
   rw [cutStrictSuffix_eq_cutMiddle_add Q hij]
-  exact prec0_add_left_of_common_right_of_nonneg hmid hself
+  exact interl_add_left_of_common_right_of_nonneg hmid hself
     (cutMiddle_nonneg h.q_nonneg i j) (cutStrictSuffix_nonneg h.q_nonneg j)
 
 /-- Ordered P/Q compatibility controls the exact zero-aware successor state

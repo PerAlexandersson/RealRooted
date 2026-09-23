@@ -106,7 +106,7 @@ private theorem prec_of_prec0_of_pos {f g : ℝ[X]}
 private theorem compatible_X_left_of_prec_nonneg {f g : ℝ[X]}
     (hfg : StrictInterl f g) (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
     Compatible (X * f) g :=
-  (Compatible.of_strictInterl (prec_mul_X_of_prec_of_nonneg hfg hf hg)).comm
+  (Compatible.of_strictInterl (strictInterl_mul_X_of_strictInterl_of_nonneg hfg hf hg)).comm
 
 /-- A zero-aware interlacing package on `reverse P ++ Q`, together with
 positive leading coefficients, supplies every field of the ordered cut

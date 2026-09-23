@@ -27,12 +27,12 @@ theorem prec0_linearFactorStep {D F : ℝ[X]} {r : ℝ}
     Interl F (linearFactorStep r D F) := by
   have hX : Interl F (X * D) :=
     interl_mul_X_of_interl hDF hD.hasNonnegCoeffs hF.hasNonnegCoeffs
-  have hself : Interl F F := hF.prec0_self
+  have hself : Interl F F := hF.interl_self
   have hXF : Interl F (X * F) :=
     interl_mul_X_of_interl hself hF.hasNonnegCoeffs hF.hasNonnegCoeffs
   have hcomboX :
       Interl F (C (1 : ℝ) * (X * D) + C (1 : ℝ) * (X * F)) :=
-    prec0_nonneg_combo_right_of_common_left_of_nonneg hX hXF
+    interl_nonneg_combo_right_of_common_left_of_nonneg hX hXF
       hD.X_mul.hasNonnegCoeffs hF.X_mul.hasNonnegCoeffs zero_le_one zero_le_one
   have hcomboXnn :
       HasNonnegCoeffs
@@ -43,7 +43,7 @@ theorem prec0_linearFactorStep {D F : ℝ[X]} {r : ℝ}
         (C (1 : ℝ) *
             (C (1 : ℝ) * (X * D) + C (1 : ℝ) * (X * F)) +
           C r * F) :=
-    prec0_nonneg_combo_right_of_common_left_of_nonneg hcomboX hself
+    interl_nonneg_combo_right_of_common_left_of_nonneg hcomboX hself
       hcomboXnn hF.hasNonnegCoeffs zero_le_one hr
   simp only [C_1, one_mul] at hcombo
   rw [linearFactorStep]

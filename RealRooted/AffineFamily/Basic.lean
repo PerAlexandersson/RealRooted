@@ -68,17 +68,17 @@ lemma isRealRooted_of_self_2x2 (p : ℝ[X])
 lemma prec_self_mul_X_of_nonneg {f : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hfnn : HasNonnegCoeffs f) :
     StrictInterl f (X * f) :=
-  prec_self_X_mul_of_nonneg hf_ne hf_splits hfnn
+  strictInterl_self_X_mul_of_nonneg hf_ne hf_splits hfnn
 
 lemma prec_to_prec_mul_X_of_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     StrictInterl g (X * f) :=
-  prec_to_X_mul_of_nonneg h hfnn hgnn
+  strictInterl_to_X_mul_of_nonneg h hfnn hgnn
 
 lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
     (h : StrictInterl g (X * f)) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     StrictInterl f g :=
-  prec_of_prec_X_mul_of_nonneg h hfnn hgnn
+  strictInterl_of_strictInterl_X_mul_of_nonneg h hfnn hgnn
 
 theorem isRealRooted_affine_combo_of_prec_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)

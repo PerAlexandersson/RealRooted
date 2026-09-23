@@ -387,8 +387,8 @@ theorem chowRowTransform_prec0_of_lt
       simp only [q₂]
       ring
     rw [hright_eq]
-    exact hsumpf.prec0_self
-  have hpair := prec0_add_left_of_common_right_of_nonneg
+    exact hsumpf.interl_self
+  have hpair := interl_add_left_of_common_right_of_nonneg
     hh₁right hrightself h₁nn hrightnn
   have htotal : fs.sum = h₀ + h₁ + h₂ := by
     have hsplit : fs.take k ++ (fs.drop k).take (l - k) ++ fs.drop l = fs := by
@@ -623,7 +623,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
       rcases lt_trichotomy i j with hij | rfl | hji
       · have hpq0 := hdirect.interlacingSeq0.prec0 hij
         have hpq := hpq0.toStrictInterl_of_ne hi_ne hj_ne
-        have hqXp := prec_mul_X_of_prec_of_nonneg hpq
+        have hqXp := strictInterl_mul_X_of_strictInterl_of_nonneg hpq
           (houtpf _ hi_mem).hasNonnegCoeffs
           (houtpf _ hj_mem).hasNonnegCoeffs
         have hipdeg := houtdeg _ hi_mem
@@ -647,12 +647,12 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
           simp
         rw [hrefXp, hrefout _ hj_mem] at hrev
         exact hrev.toInterl
-      · exact (prec_self_X_mul_of_nonneg hi_ne
+      · exact (strictInterl_self_X_mul_of_nonneg hi_ne
           ((houtpf _ hi_mem).ne_zero_and_splits hi_ne).2
           (houtpf _ hi_mem).hasNonnegCoeffs).toInterl
       · have hqp0 := hdirect.interlacingSeq0.prec0 hji
         have hqp := hqp0.toStrictInterl_of_ne hj_ne hi_ne
-        exact (prec_mul_X_of_prec_of_nonneg hqp
+        exact (strictInterl_mul_X_of_strictInterl_of_nonneg hqp
           (houtpf _ hj_mem).hasNonnegCoeffs
           (houtpf _ hi_mem).hasNonnegCoeffs).toInterl
     · intro p hp
@@ -793,7 +793,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
           X * out.get ⟨0, by simp [hout_len]⟩ := by
       rw [hfirst, hfirst_reflect]
     rw [href]
-    exact prec_self_X_mul_of_nonneg
+    exact strictInterl_self_X_mul_of_nonneg
       (hout_ne _ (List.get_mem _ _))
       ((hout_pf _ (List.get_mem _ _)).ne_zero_and_splits
         (hout_ne _ (List.get_mem _ _))).2

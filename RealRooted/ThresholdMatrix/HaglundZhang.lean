@@ -478,7 +478,7 @@ private lemma prec0_hz_middleQuadratic_XAffineAddOne
   have hlin_nn : HasNonnegCoeffs (C s * X + C t : ℝ[X]) :=
     hasNonnegCoeffs_affine_linear hs.le ht.le
   have hsum :=
-    prec0_add_left_of_common_right_of_nonneg hself hlin hq_nn hlin_nn
+    interl_add_left_of_common_right_of_nonneg hself hlin hq_nn hlin_nn
   rw [show ((C s * X + C t) * (1 + X) + X : ℝ[X]) =
       X * (C s * X + C t + 1) + (C s * X + C t) by grind]
   exact hsum

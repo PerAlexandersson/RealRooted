@@ -374,7 +374,7 @@ theorem eulerInsertionStep_derivative_prec_zeroStep
       (derivative_interlaces (hp.ne_zero_and_splits hp_ne).2
         (by rw [hpdeg]; exact hD)).toStrictInterl
     simpa [theta] using
-      prec_mul_X_of_prec_of_nonneg hder
+      strictInterl_mul_X_of_strictInterl_of_nonneg hder
         hp.hasNonnegCoeffs.derivative hp.hasNonnegCoeffs
   have hlower : StrictInterl (loweringEulerStep M p)
       (loweringEulerStep M (theta p)) :=

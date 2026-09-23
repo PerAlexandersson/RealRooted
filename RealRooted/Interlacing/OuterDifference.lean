@@ -179,7 +179,7 @@ theorem StrictInterl.eval_mul_derivative_nonpos_of_left_root
     rcases hprec.natDegree_eq_or_eq_succ with hsame | hsucc
     · exact hprec.mul_X_sub_C_of_sameDegree_of_roots_le
         b hsame.symm hf_pos hg_pos hf_le hg_le
-    · exact (prec_iff_prec_mul_X_sub_C_of_roots_le
+    · exact (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
         b hprec.1.2 hprec.2.1.2 hf_pos hg_pos hf_le hg_le (by lia)).mp hprec
   have hpad_pos : HasPosLeadingCoeff ((X - C b) * f) :=
     hasPosLeadingCoeff_X_sub_C_mul hf_pos

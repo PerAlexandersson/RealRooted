@@ -359,18 +359,18 @@ theorem risingFactorialStep_pf_shiftPrec
     IsPFPolynomial.of_realRooted_nonneg hfμnn hfμrr.2
   have hf_Xfμ : StrictInterl f (X * fμ) := by
     simpa [fμ] using
-      prec_mul_X_of_prec_of_nonneg hshift hfμ.hasNonnegCoeffs hf.hasNonnegCoeffs
+      strictInterl_mul_X_of_strictInterl_of_nonneg hshift hfμ.hasNonnegCoeffs hf.hasNonnegCoeffs
   have hfμ_Xfμ : StrictInterl fμ (X * fμ) :=
-    prec_mul_X_of_prec_of_nonneg (StrictInterl.refl hfμrr.1 hfμrr.2)
+    strictInterl_mul_X_of_strictInterl_of_nonneg (StrictInterl.refl hfμrr.1 hfμrr.2)
       hfμ.hasNonnegCoeffs hfμ.hasNonnegCoeffs
   have hXfμnn : HasNonnegCoeffs (X * fμ) := hfμ.X_mul.hasNonnegCoeffs
   have hrf_nn : HasNonnegCoeffs (C r * f) :=
     nonnegCoeffs_C_mul hr hf.hasNonnegCoeffs
   have hf_g0 : Interl f (X * fμ + C r * f) :=
-    prec0_add_right_of_common_left_of_nonneg hf_Xfμ.toInterl
-      (Interl.C_mul_right_of_nonneg hf.prec0_self hr) hXfμnn hrf_nn
+    interl_add_right_of_common_left_of_nonneg hf_Xfμ.toInterl
+      (Interl.C_mul_right_of_nonneg hf.interl_self hr) hXfμnn hrf_nn
   have hfμ_g0 : Interl fμ (X * fμ + C r * f) :=
-    prec0_add_right_of_common_left_of_nonneg hfμ_Xfμ.toInterl
+    interl_add_right_of_common_left_of_nonneg hfμ_Xfμ.toInterl
       (Interl.C_mul_right_of_nonneg hshift.toInterl hr) hXfμnn hrf_nn
   have hg0 : X * fμ + C r * f ≠ 0 := by
     intro hg

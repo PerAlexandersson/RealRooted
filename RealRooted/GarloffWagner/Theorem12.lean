@@ -103,12 +103,12 @@ theorem gwSchurProduct_prec0_right_linearFactor_of_derivative_prec0
         (X * gwSchurProduct (gwD f) p) :=
     interl_mul_X_of_interl hder hD.hasNonnegCoeffs hF.hasNonnegCoeffs
   have hself : Interl (gwSchurProduct f p) (gwSchurProduct f p) :=
-    hF.prec0_self
+    hF.interl_self
   have hcombo :
       Interl (gwSchurProduct f p)
         (C (1 : ℝ) * (X * gwSchurProduct (gwD f) p) +
           C (-u) * gwSchurProduct f p) :=
-    prec0_nonneg_combo_right_of_common_left_of_nonneg hX hself
+    interl_nonneg_combo_right_of_common_left_of_nonneg hX hself
       (hD.X_mul.hasNonnegCoeffs) hF.hasNonnegCoeffs zero_le_one (by linarith)
   rw [gwSchurProduct_X_sub_C_mul_right]
   simpa [sub_eq_add_neg] using hcombo
@@ -201,7 +201,7 @@ theorem prec0_weightedSum_right_of_nonneg :
       have htail_sum_nn : HasNonnegCoeffs (weightedSum l) :=
         HasNonnegCoeffs.weightedSum l htail_nonneg htail_nn
       simpa [weightedSum_cons] using
-        prec0_add_left_of_common_right_of_nonneg hhead_prec htail_prec_sum
+        interl_add_left_of_common_right_of_nonneg hhead_prec htail_prec_sum
           hhead_nn htail_sum_nn
 
 theorem gwSchurProduct_weightedSum_left :
@@ -298,7 +298,7 @@ theorem gwL_sub_C_mul_gwD_gwL_prec0_self {p : ℝ[X]} {u : ℝ}
     nonnegCoeffs_C_mul (by linarith : 0 ≤ -u) hDnn
   have hsum :
       Interl (gwL p + C (-u) * gwD (gwL p)) (gwL p) :=
-    prec0_add_left_of_common_right_of_nonneg hpL.prec0_self hscaled
+    interl_add_left_of_common_right_of_nonneg hpL.interl_self hscaled
       hpL.hasNonnegCoeffs hscaled_nn
   simpa [sub_eq_add_neg, C_neg, neg_mul] using hsum
 
@@ -350,7 +350,7 @@ theorem gwSchurProductPF_of_prec
   by_cases hf0 : f = 0
   · simpa [hf0] using IsPFPolynomial.zero
   have hfs := hf.ne_zero_and_splits hf0
-  exact IsPFPolynomial.of_prec0_self
+  exact IsPFPolynomial.of_interl_self
     (hf.hasNonnegCoeffs.gwSchurProduct hp.hasNonnegCoeffs)
     (h hf hf hp (StrictInterl.refl hfs.1 hfs.2))
 
@@ -428,7 +428,7 @@ theorem gwSchurProduct_prec0_of_derivative
     (hD : IsPFPolynomial (gwSchurProduct (gwD p) q)) :
     Interl (gwSchurProduct q p) (gwSchurProduct g p) := by
   rcases h with hself | ⟨u, hfactor⟩
-  · simpa [hself] using hgp.prec0_self
+  · simpa [hself] using hgp.interl_self
   · exact gwSchurProduct_prec0_of_kreinDeletedFactor hg hfactor hder hF hD
 
 end IsGWKreinSummand
@@ -456,7 +456,7 @@ theorem gwSchurProduct_prec0_of_kreinSummandExpansion_of_derivative
   gwSchurProduct_prec0_of_kreinSummandExpansion hf hnonneg hsummand
     (fun q hq => by
       rcases hq with hself | ⟨u, hfactor⟩
-      · simpa [hself] using hgp.prec0_self
+      · simpa [hself] using hgp.interl_self
       · exact gwSchurProduct_prec0_of_kreinDeletedFactor hg hfactor
           (hder q u hfactor) (hF q u hfactor) (hD q u hfactor))
     (fun q hq => by

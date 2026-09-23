@@ -159,7 +159,8 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
   have ha_pos : HasPosLeadingCoeff a := ha_nonneg.pos_leadingCoeff ha_rr.1
   have hXb_nonneg : HasNonnegCoeffs (X * b) := hb_nonneg.X_mul
   have hXb_pos : HasPosLeadingCoeff (X * b) := hb_pos.X_mul
-  have haxb : StrictInterl a (X * b) := prec_mul_X_of_prec_of_nonneg hba hb_nonneg ha_nonneg
+  have haxb : StrictInterl a (X * b) :=
+    strictInterl_mul_X_of_strictInterl_of_nonneg hba hb_nonneg ha_nonneg
   have hp_right : StrictInterl (a + X * b) (X * b) := by
     simpa using
       (haxb.nonneg_combo_right ha_pos hXb_pos
@@ -177,7 +178,8 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
       · simp_all
     exact prec_of_prec0_of_ne_zero ha_rr.1 hp0 (by simp_all)
   have hbXb : StrictInterl b (X * b) :=
-    prec_mul_X_of_prec_of_nonneg (StrictInterl.refl hb_rr.1 hb_rr.2) hb_nonneg hb_nonneg
+    strictInterl_mul_X_of_strictInterl_of_nonneg
+      (StrictInterl.refl hb_rr.1 hb_rr.2) hb_nonneg hb_nonneg
   have hbp : StrictInterl b p := by
     have hprec0 : Interl b ([a, X * b].sum) := by
       refine Interl.sum_left_of_common_left_of_nonneg [a, X * b] b ?_ ?_
@@ -450,7 +452,8 @@ private theorem prec_b_component_of_prec_right_top
     StrictInterl b a := by
   have hp_eq : p = a + X * b := hid.1
   have hp_nonneg : HasNonnegCoeffs p := by simpa [hp_eq] using ha_nonneg.add hb_nonneg.X_mul
-  have hpxb : StrictInterl p (X * b) := prec_mul_X_of_prec_of_nonneg hbp hb_nonneg hp_nonneg
+  have hpxb : StrictInterl p (X * b) :=
+    strictInterl_mul_X_of_strictInterl_of_nonneg hbp hb_nonneg hp_nonneg
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_right hp_eq hpxb
   have ha_rr : (a ≠ 0 ∧ a.Splits) := ⟨ha0, hall_aXb.left_splits⟩

@@ -109,15 +109,15 @@ private theorem pairwise_insertAdjacentAdd_of_nonneg
       · intro p hp
         simp only [List.mem_cons] at hp
         rcases hp with rfl | hp
-        · exact prec0_add_right_of_common_left_of_nonneg hff hfg hfnn hgnn
+        · exact interl_add_right_of_common_left_of_nonneg hff hfg hfnn hgnn
         · exact hf_tail p (by simpa using hp)
       · rw [List.pairwise_cons]
         refine ⟨?_, List.pairwise_cons.mpr ⟨hg_right, hright⟩⟩
         intro p hp
         simp only [List.mem_cons] at hp
         rcases hp with rfl | hp
-        · exact prec0_add_left_of_common_right_of_nonneg hfg hgg hfnn hgnn
-        · exact prec0_add_left_of_common_right_of_nonneg
+        · exact interl_add_left_of_common_right_of_nonneg hfg hgg hfnn hgnn
+        · exact interl_add_left_of_common_right_of_nonneg
             (hf_tail p (by simp [hp])) (hg_right p hp) hfnn hgnn
   | a :: left, hpair, hnonneg, hreal => by
       rw [List.cons_append, List.pairwise_cons] at hpair ⊢
@@ -131,7 +131,7 @@ private theorem pairwise_insertAdjacentAdd_of_nonneg
       · subst p
         exact hpair.1 f (by simp)
       · subst p
-        exact prec0_add_right_of_common_left_of_nonneg
+        exact interl_add_right_of_common_left_of_nonneg
           (hpair.1 f (by simp)) (hpair.1 g (by simp))
           (hnonneg f (by simp)) (hnonneg g (by simp))
       · subst p

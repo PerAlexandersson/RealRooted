@@ -79,7 +79,7 @@ private theorem prec_derivative_polarTheta_of_le
   have hp_theta : StrictInterl p (theta p) := prec_self_theta hp hpdeg
   have hder_theta : StrictInterl p.derivative (theta p) := by
     have hself : StrictInterl p.derivative (X * p.derivative) :=
-      prec_self_X_mul_of_nonneg hder0
+      strictInterl_self_X_mul_of_nonneg hder0
         (hp.derivative.ne_zero_and_splits hder0).2 hdernn
     simpa [theta] using hself
   refine prec_of_affine_family_nonneg hder0 hpolar0 hdernn hpolar_nn ?_
@@ -255,7 +255,7 @@ theorem prec_polarTheta_thetaPlusOne {N : ℕ} {p : ℝ[X]}
     rw [hq]
     exact (thetaPlusOne_eq_derivative_X_mul p).symm
   rw [hpolar, hderivative] at hstep
-  exact prec_of_prec_X_mul_of_nonneg hstep
+  exact strictInterl_of_strictInterl_X_mul_of_nonneg hstep
     (polarTheta_preserves_pf hp (le_of_lt hpN)).hasNonnegCoeffs
     (thetaPlusOne_preserves_pf hp).hasNonnegCoeffs
 
@@ -303,7 +303,7 @@ theorem prec_polarTheta_thetaPlusOne_boundary {N : ℕ} {p : ℝ[X]}
     StrictInterl (polarTheta N p) (thetaPlusOne p) := by
   have hstep :=
     prec_thetaPlusOne_X_polarTheta_boundary hp hpdeg hN hconst
-  exact prec_of_prec_X_mul_of_nonneg hstep
+  exact strictInterl_of_strictInterl_X_mul_of_nonneg hstep
     (polarTheta_preserves_pf hp (le_of_eq hpdeg)).hasNonnegCoeffs
     (thetaPlusOne_preserves_pf hp).hasNonnegCoeffs
 
@@ -328,7 +328,7 @@ theorem prec_self_add_C_mul_theta_X_polarTheta_boundary
   have hpolar_p : StrictInterl (polarTheta N p) p :=
     prec_polarTheta_self hp (le_of_eq hpdeg) hshift
   have hp_right : StrictInterl p (X * polarTheta N p) :=
-    prec_mul_X_of_prec_of_nonneg hpolar_p
+    strictInterl_mul_X_of_strictInterl_of_nonneg hpolar_p
       hpolar_pf.hasNonnegCoeffs hp.hasNonnegCoeffs
   have hder_polar : StrictInterl p.derivative (polarTheta N p) :=
     prec_derivative_polarTheta_boundary hp (by lia)

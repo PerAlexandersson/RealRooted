@@ -160,7 +160,7 @@ theorem thetaPreservesPrec0_of_derivative
     (hderiv : derivativePreservesInterlStatement) : thetaPreservesPrec0Statement := by
   intro p q hp hq hpq
   simpa [theta] using
-    prec0_X_mul_both_of_pf hp.derivative hq.derivative (hderiv hpq)
+    interl_X_mul_both_of_pf hp.derivative hq.derivative (hderiv hpq)
 
 /-- `theta` preserves weak proper position on the polynomial PF cone, obtained
 from the derivative preservation theorem and multiplication by `X`. -/
@@ -201,7 +201,7 @@ theorem thetaPlusOnePreservesPrec0_of_derivative
     (hderiv : derivativePreservesInterlStatement) :
     thetaPlusOnePreservesPrec0Statement := by
   intro p q hp hq hpq
-  simpa [thetaPlusOne_eq_derivative_X_mul] using hderiv (prec0_X_mul_both_of_pf hp hq hpq)
+  simpa [thetaPlusOne_eq_derivative_X_mul] using hderiv (interl_X_mul_both_of_pf hp hq hpq)
 
 /-- `theta + 1` preserves weak proper position on the polynomial PF cone,
 obtained from the derivative preservation theorem via

@@ -248,11 +248,11 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     have hgXT0 := interl_mul_X_of_interl hTg0 hTnn hgnn
     have hgg0 := Interl.refl hgreal
     simpa [q] using
-      prec0_add_right_of_common_left_of_nonneg hgXT0 hgg0 hXTnn hgnn
+      interl_add_right_of_common_left_of_nonneg hgXT0 hgg0 hXTnn hgnn
   have hqgr0 : Interl q gr := by
     have hgrgr0 := Interl.refl hgrreal
     rw [hq_alt]
-    exact prec0_add_left_of_common_right_of_nonneg hTgr0 hgrgr0 hTnn hgrnn
+    exact interl_add_left_of_common_right_of_nonneg hTgr0 hgrgr0 hTnn hgrnn
   have hfrXS0 : Interl fr XS := by
     simpa [XS] using interl_mul_X_of_interl hSfr0 hSnn hfrnn
   have hSreal : S ≠ 0 → S.Splits := by

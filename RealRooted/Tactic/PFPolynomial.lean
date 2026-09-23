@@ -159,7 +159,7 @@ theorem pf_sequence_prec0_self
     {P : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
     ∀ i : Nat, Interl (P i) (P i) := fun i =>
-  RealRooted.IsPFPolynomial.prec0_self (hP i)
+  RealRooted.IsPFPolynomial.interl_self (hP i)
 
 theorem pf_sequence_prec0_X_mul_both
     {P Q : Nat → ℝ[X]}
@@ -167,7 +167,7 @@ theorem pf_sequence_prec0_X_mul_both
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
     (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
     ∀ i : Nat, Interl (X * P i) (X * Q i) := fun i =>
-  RealRooted.prec0_X_mul_both_of_pf (hP i) (hQ i) (hPQ i)
+  RealRooted.interl_X_mul_both_of_pf (hP i) (hQ i) (hPQ i)
 
 syntax (name := rr_pf_zero_named) "rr_pf_zero" : tactic
 syntax (name := rr_pf_one_named) "rr_pf_one" : tactic
@@ -513,7 +513,7 @@ macro_rules
   | `(tactic| rr_pf_sequence_mul_X_add_one using pf := $hp:term) =>
       `(tactic| exact RealRooted.Tactic.pf_sequence_mul_X_add_one $hp)
   | `(tactic| rr_pf_prec0_self using pf := $hp:term) =>
-      `(tactic| exact RealRooted.IsPFPolynomial.prec0_self $hp)
+      `(tactic| exact RealRooted.IsPFPolynomial.interl_self $hp)
   | `(tactic| rr_pf_sequence_prec0_self using pf := $hp:term) =>
       `(tactic| exact RealRooted.Tactic.pf_sequence_prec0_self $hp)
   | `(tactic|
@@ -521,7 +521,7 @@ macro_rules
         left_pf := $hp:term,
         right_pf := $hq:term,
         prec0 := $hpq:term) =>
-      `(tactic| exact RealRooted.prec0_X_mul_both_of_pf $hp $hq $hpq)
+      `(tactic| exact RealRooted.interl_X_mul_both_of_pf $hp $hq $hpq)
   | `(tactic|
       rr_pf_sequence_prec0_X_mul_both using
         left_pf := $hp:term,

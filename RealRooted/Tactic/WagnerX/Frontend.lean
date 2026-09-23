@@ -17,11 +17,11 @@ macro_rules
         left_nonneg := $hfnn:term,
         right_nonneg := $hgnn:term) =>
       `(tactic|
-        exact RealRooted.prec_mul_X_of_prec_of_nonneg $hprec $hfnn $hgnn)
+        exact RealRooted.strictInterl_mul_X_of_strictInterl_of_nonneg $hprec $hfnn $hgnn)
   | `(tactic| rr_prec_mul_X) =>
       `(tactic|
         exact (by
-          apply RealRooted.prec_mul_X_of_prec_of_nonneg
+          apply RealRooted.strictInterl_mul_X_of_strictInterl_of_nonneg
           case h => rr_lookup [rr_base_prec]
           case hfnn => rr_lookup [rr_nonneg]
           case hgnn => rr_lookup [rr_nonneg]))
@@ -46,7 +46,7 @@ macro_rules
         right_nonneg := $hgnn:term,
         coeff_ne := $hc:term) =>
       `(tactic|
-        exact RealRooted.prec_C_mul_X_of_prec_of_nonneg $hprec $hfnn $hgnn $hc)
+        exact RealRooted.strictInterl_C_mul_X_of_strictInterl_of_nonneg $hprec $hfnn $hgnn $hc)
   | `(tactic|
       rr_prec_C_mul_X using
         proper := $hprec:term,
@@ -54,14 +54,14 @@ macro_rules
         right_nonneg := $hgnn:term,
         coeff_pos := $hc:term) =>
       `(tactic|
-        exact RealRooted.prec_C_mul_X_of_prec_of_nonneg
+        exact RealRooted.strictInterl_C_mul_X_of_strictInterl_of_nonneg
           $hprec $hfnn $hgnn ($hc).ne')
   | `(tactic|
       rr_prec_C_mul_X using
         coeff_ne := $hc:term) =>
       `(tactic|
         exact (by
-          apply RealRooted.prec_C_mul_X_of_prec_of_nonneg
+          apply RealRooted.strictInterl_C_mul_X_of_strictInterl_of_nonneg
           case h => rr_lookup [rr_base_prec]
           case hfnn => rr_lookup [rr_nonneg]
           case hgnn => rr_lookup [rr_nonneg]
@@ -71,7 +71,7 @@ macro_rules
         coeff_pos := $hc:term) =>
       `(tactic|
         exact (by
-          apply RealRooted.prec_C_mul_X_of_prec_of_nonneg
+          apply RealRooted.strictInterl_C_mul_X_of_strictInterl_of_nonneg
           case h => rr_lookup [rr_base_prec]
           case hfnn => rr_lookup [rr_nonneg]
           case hgnn => rr_lookup [rr_nonneg]

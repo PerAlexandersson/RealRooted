@@ -63,7 +63,8 @@ lemma StrictInterl.mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]}
   have hfg' : StrictInterl f' g' := by
     simpa [f', g'] using (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).2 h
   have hgxf' : StrictInterl g' (X * f') :=
-    prec_sameDegree_to_prec_mul_X_of_roots_nonpos hfg' hdeg' hf'_nonpos hg'_nonpos
+    strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos
+      hfg' hdeg' hf'_nonpos hg'_nonpos
   have htranslated : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hgxf'
@@ -107,7 +108,7 @@ lemma StrictInterl.of_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} {r : 
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
   have hfg' : StrictInterl f' g' :=
-    prec_of_prec_mul_X_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos
+    strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos
   exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
 /-- Borcea--Brändén left-cone lemma, weighted form:
@@ -137,7 +138,7 @@ theorem StrictInterl.weightedSum_left_of_common_left
     rcases hp.natDegree_eq_or_eq_succ with hdeg | hdeg
     · exact hp.mul_X_sub_C_of_sameDegree_of_roots_le
         r hdeg.symm hpos hp_pos hh_le hp_le
-    · exact (prec_iff_prec_mul_X_sub_C_of_roots_le r
+    · exact (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le r
           hp.1.2 hp.2.1.2 hpos hp_pos hh_le hp_le hdeg.symm).mp hp
   have hweighted_right : StrictInterl (weightedSum l) H :=
     StrictInterl.weightedSum_right_of_nonneg
@@ -152,8 +153,10 @@ theorem StrictInterl.weightedSum_left_of_common_left
     hweighted_right.roots_le_of_right hH_le
   rcases hweighted_right.natDegree_eq_or_eq_succ with hcase | hcase
   · have hdeg : h.natDegree + 1 = (weightedSum l).natDegree := by lia
-    exact (prec_iff_prec_mul_X_sub_C_of_roots_le r (hprec ap0 hap0).1.2 hweighted_right.1.2
-        hpos hweighted_pos hh_le hweighted_le hdeg).mpr hweighted_right
+    exact
+      (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
+        r (hprec ap0 hap0).1.2 hweighted_right.1.2 hpos hweighted_pos
+        hh_le hweighted_le hdeg).mpr hweighted_right
   · have hdeg : h.natDegree = (weightedSum l).natDegree := by lia
     exact
       hweighted_right.of_mul_X_sub_C_of_sameDegree_of_roots_le hdeg

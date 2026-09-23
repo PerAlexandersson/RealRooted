@@ -113,7 +113,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     exact hrow.natDegree_le (hmem j hj)
   have hdself : ∀ j, j ≤ n → Interl (d j) (d j) := by
     intro j hj
-    exact (hdpf j hj).prec0_self
+    exact (hdpf j hj).interl_self
   have hleft : ∀ j, j ≤ n → Interl (d 0) (d j) := by
     intro j hj
     rcases eq_or_lt_of_le (Nat.zero_le j) with rfl | hjpos

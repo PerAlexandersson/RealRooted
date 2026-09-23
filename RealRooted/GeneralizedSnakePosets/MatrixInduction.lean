@@ -83,7 +83,7 @@ theorem theorem41InputPair_interlacingSeqNonneg {f g : ℝ[X]}
     · exact ⟨⟨hgf.2.1.1, hgf.2.1.2⟩, hf_nonneg⟩
     · exact ⟨isRealRooted_X_mul hgf.1.1 hgf.1.2, hg_nonneg.X_mul⟩
   · rw [isInterlacingSeq_iff_pairwise]
-    simp [prec_mul_X_of_prec_of_nonneg hgf hg_nonneg hf_nonneg]
+    simp [strictInterl_mul_X_of_strictInterl_of_nonneg hgf hg_nonneg hf_nonneg]
 
 /-- Claim `(6)` is exactly the cross `2 x 2` affine test for the source matrix
 in Braun--Jal's proof of Theorem 4.1. -/
@@ -174,7 +174,7 @@ theorem theorem41Step_prec_of_claim7
     StrictInterl (f * P (m - 1) + X * g * G (m - 1))
       (f * P m + X * g * G m) := by
   have hinput : StrictInterl f (X * g) :=
-    prec_mul_X_of_prec_of_nonneg hgf hg_nonneg hf_nonneg
+    strictInterl_mul_X_of_strictInterl_of_nonneg hgf hg_nonneg hf_nonneg
   have hpair := prec_add_mul_pair_of_2x2
     (p₁ := P (m - 1)) (q₁ := G (m - 1)) (p₂ := P m) (q₂ := G m)
     (u := f) (v := X * g)
@@ -291,7 +291,7 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
     exact hstep_raw
   have hsum0 : Interl (M w.deleteFinal)
       (M w.deleteFinal + (M w - M w.deleteFinal)) :=
-    prec0_add_right_of_common_left_of_nonneg
+    interl_add_right_of_common_left_of_nonneg
       (Interl.refl fun _ => hstep.1.2) hstep.toInterl
       (hM_nonneg w.deleteFinal) hdiff_nonneg
   have hsum_ne : M w.deleteFinal + (M w - M w.deleteFinal) ≠ 0 :=
@@ -311,7 +311,7 @@ theorem theorem41StepOne_prec_of_prec_nonneg {f g : ℝ[X]}
     (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g) :
     StrictInterl f ((1 + X) * f + X * g) := by
   have hf_Xg : StrictInterl f (X * g) :=
-    prec_mul_X_of_prec_of_nonneg hgf hg_nonneg hf_nonneg
+    strictInterl_mul_X_of_strictInterl_of_nonneg hgf hg_nonneg hf_nonneg
   have hsum_nonneg : HasNonnegCoeffs (f + X * g) :=
     hf_nonneg.add hg_nonneg.X_mul
   have haff :

@@ -131,7 +131,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
             have hs := hsummand ap hap
             rcases hs with hself | ⟨u, hfactor⟩
             · simpa [hself] using
-                (hPF hg hgdeg).prec0_self
+                (hPF hg hgdeg).interl_self
             · have hq : IsPFPolynomial ap.2 :=
                 hg.of_X_sub_C_mul_factor hfactor
               have hq0 : ap.2 ≠ 0 := by

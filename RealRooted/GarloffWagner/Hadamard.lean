@@ -118,7 +118,7 @@ theorem gwHadamardProductDoubleDeletedKrein :
     simpa [hqfactor, gwL_X_sub_C_mul] using gwSchurProductPF hf hqL
   have hcombo :
       Interl B (C (1 : ℝ) * (X * S₁) + C (-u) * S₂) :=
-    prec0_nonneg_combo_right_of_common_left_of_nonneg hfirst hsecond
+    interl_nonneg_combo_right_of_common_left_of_nonneg hfirst hsecond
       hS₁.X_mul.hasNonnegCoeffs hS₂.hasNonnegCoeffs zero_le_one (by linarith)
   rw [← gwSchurProduct_gwL_right f p, hgfactor, hqfactor,
     hadamardProduct_X_sub_C_mul_X_sub_C_mul_eq]

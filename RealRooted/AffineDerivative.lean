@@ -1208,7 +1208,8 @@ theorem prec_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
     rw [f.natDegree_derivative]
     lia
   have hmain : StrictInterl f ((X - C 1) * f.derivative) :=
-    (prec_iff_prec_mul_X_sub_C_of_roots_le 1 hder.1.2 hf hf'_pos hf_pos hf'_le1 hf_le1 hdeg').mp
+    (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
+      1 hder.1.2 hf hf'_pos hf_pos hf'_le1 hf_le1 hdeg').mp
       hder
   have hscaled : StrictInterl f (C (-1) * ((X - C 1) * f.derivative)) :=
     StrictInterl.C_mul_right hmain (by simp)

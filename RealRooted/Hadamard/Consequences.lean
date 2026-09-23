@@ -120,9 +120,9 @@ theorem hadamardProduct_preserves_pf_of_garloffWagner
     (hGW : garloffWagnerHadamardPFPrec0Statement)
     {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) :=
-  IsPFPolynomial.of_prec0_self
+  IsPFPolynomial.of_interl_self
     (hp.hasNonnegCoeffs.hadamardProduct hq.hasNonnegCoeffs)
-    (hGW hp hp hq hq hp.prec0_self hq.prec0_self)
+    (hGW hp hp hq hq hp.interl_self hq.interl_self)
 
 theorem hadamardProduct_preserves_pf_of_nonnegPrec :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
@@ -170,7 +170,7 @@ theorem hadamardProduct_preserves_prec0_right
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
     (hfg : Interl f g) :
     Interl (hadamardProduct f p) (hadamardProduct g p) :=
-  hGW hf hg hp hp hfg hp.prec0_self
+  hGW hf hg hp hp hfg hp.interl_self
 
 /-- Fixed-left Hadamard multiplication preserves zero-aware proper position
 inside the PF cone. -/

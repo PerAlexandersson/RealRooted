@@ -316,17 +316,23 @@ theorem to_sequence
   · have hprr := hp.ne_zero_and_splits hp0
     exact aissenSchoenbergWhitney_reverse hp.hasNonnegCoeffs hprr.2 hp.roots_nonpos
 
-theorem prec0_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
+theorem interl_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Interl p p :=
   Interl.refl fun hp0 => (hp.ne_zero_and_splits hp0).2
 
-theorem of_prec0_self {p : ℝ[X]}
+theorem of_interl_self {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hpp : Interl p p) :
     IsPFPolynomial p := by
   rcases hpp with rfl | rfl | hpp'
   · exact IsPFPolynomial.zero
   · exact IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg hpnn hpp'.1.2
+
+@[deprecated IsPFPolynomial.interl_self (since := "2026-09-18")]
+alias prec0_self := interl_self
+
+@[deprecated IsPFPolynomial.of_interl_self (since := "2026-09-18")]
+alias of_prec0_self := of_interl_self
 
 end IsPFPolynomial
 
@@ -468,7 +474,7 @@ theorem IsPFPolynomial.reverse {p : ℝ[X]} (hp : IsPFPolynomial p) :
       (IsPFPolynomial.const_mul (p := (1 : ℝ[X])) hlc_pos isPFPolynomial_one)
   exact hlc_pf.mul (isPFPolynomial_reverse_prod_X_sub_C p.roots hp.roots_nonpos)
 
-theorem prec0_X_mul_both_of_pf {p q : ℝ[X]}
+theorem interl_X_mul_both_of_pf {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (X * p) (X * q) := by
@@ -480,7 +486,7 @@ theorem prec0_X_mul_both_of_pf {p q : ℝ[X]}
 /-- Fixed-left cone closure in the two-summand form used downstream:
 if a polynomial is a common left interleaver for two nonnegative-coefficient
 summands, it is also a common left interleaver for their sum. -/
-theorem prec0_add_right_of_common_left_of_nonneg {p q r : ℝ[X]}
+theorem interl_add_right_of_common_left_of_nonneg {p q r : ℝ[X]}
     (hpq : Interl p q) (hpr : Interl p r)
     (hq : HasNonnegCoeffs q) (hr : HasNonnegCoeffs r) :
     Interl p (q + r) := by
@@ -494,7 +500,7 @@ theorem prec0_add_right_of_common_left_of_nonneg {p q r : ℝ[X]}
 /-- Fixed-right cone closure in the two-summand form used downstream:
 if two nonnegative-coefficient summands have a common right interleaver, their
 sum has that same right interleaver. -/
-theorem prec0_add_left_of_common_right_of_nonneg {p q h : ℝ[X]}
+theorem interl_add_left_of_common_right_of_nonneg {p q h : ℝ[X]}
     (hph : Interl p h) (hqh : Interl q h)
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q) :
     Interl (p + q) h := by
@@ -509,24 +515,43 @@ theorem prec0_add_left_of_common_right_of_nonneg {p q h : ℝ[X]}
     cases b <;> simp [hpnn, hqnn]
 
 /-- Fixed-left cone closure for two nonnegative scalar multiples. -/
-theorem prec0_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}
+theorem interl_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}
     (hpq : Interl p q) (hpr : Interl p r)
     (hq : HasNonnegCoeffs q) (hr : HasNonnegCoeffs r)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     Interl p (C a * q + C b * r) :=
-  prec0_add_right_of_common_left_of_nonneg
+  interl_add_right_of_common_left_of_nonneg
     (Interl.C_mul_right_of_nonneg hpq ha)
     (Interl.C_mul_right_of_nonneg hpr hb)
     (nonnegCoeffs_C_mul ha hq) (nonnegCoeffs_C_mul hb hr)
 
 /-- Fixed-left cone closure in the polynomial PF notation. -/
-theorem prec0_nonneg_combo_right_of_common_left_of_pf {p q r : ℝ[X]}
+theorem interl_nonneg_combo_right_of_common_left_of_pf {p q r : ℝ[X]}
     (hpq : Interl p q) (hpr : Interl p r)
     (hq : IsPFPolynomial q) (hr : IsPFPolynomial r)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     Interl p (C a * q + C b * r) :=
-  prec0_nonneg_combo_right_of_common_left_of_nonneg hpq hpr
+  interl_nonneg_combo_right_of_common_left_of_nonneg hpq hpr
     hq.hasNonnegCoeffs hr.hasNonnegCoeffs ha hb
+
+@[deprecated interl_X_mul_both_of_pf (since := "2026-09-18")]
+alias prec0_X_mul_both_of_pf := interl_X_mul_both_of_pf
+
+@[deprecated interl_add_right_of_common_left_of_nonneg (since := "2026-09-18")]
+alias prec0_add_right_of_common_left_of_nonneg :=
+  interl_add_right_of_common_left_of_nonneg
+
+@[deprecated interl_add_left_of_common_right_of_nonneg (since := "2026-09-18")]
+alias prec0_add_left_of_common_right_of_nonneg :=
+  interl_add_left_of_common_right_of_nonneg
+
+@[deprecated interl_nonneg_combo_right_of_common_left_of_nonneg (since := "2026-09-18")]
+alias prec0_nonneg_combo_right_of_common_left_of_nonneg :=
+  interl_nonneg_combo_right_of_common_left_of_nonneg
+
+@[deprecated interl_nonneg_combo_right_of_common_left_of_pf (since := "2026-09-18")]
+alias prec0_nonneg_combo_right_of_common_left_of_pf :=
+  interl_nonneg_combo_right_of_common_left_of_pf
 
 /-- Shifted reciprocal `t^D p(1/t)`, represented by Mathlib's coefficient
 reflection operator. -/

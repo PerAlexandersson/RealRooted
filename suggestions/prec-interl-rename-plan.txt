@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  585  Lean declarations requiring semantic review
-  223  tactic declarations requiring an alias-first migration
+  571  Lean declarations requiring semantic review
+  219  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    27  statement scaffolds requiring proof-status-preserving renames
-  280  deprecated compatibility identifiers with canonical targets
+  298  deprecated compatibility identifiers with canonical targets
    36  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -102,6 +102,13 @@ old public signature remains as a deprecated compatibility declaration, while
 the private scalar-transport helper was renamed without a wrapper.
 Application-only constructor callers may still use the deprecated constructor
 alias until their owning application batch.
+
+The foundational PF/Wagner `X` layer now consistently uses `Interl` and
+`StrictInterl` vocabulary for PF self-relations, fixed-side cone addition,
+nonnegative combinations, `X`-multiplication, forward and reverse Wagner
+transports, and the translated `X - C r` equivalence.  All 18 public old names
+remain exact deprecated aliases; every non-challenge theorem caller and tactic
+backend quotation uses the canonical API.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

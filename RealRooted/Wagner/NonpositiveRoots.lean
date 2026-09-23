@@ -56,7 +56,7 @@ theorem mulX_iff {f g : ℝ[X]}
     (hg : HasNonposRootsPosLeading g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     StrictInterl f g ↔ StrictInterl g (X * f) :=
-  RealRooted.prec_iff_prec_mul_X_of_roots_nonpos
+  RealRooted.strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
     hf.1 hg.1 hf.2.2 hg.2.2 hf.2.1 hg.2.1 hdeg
 
 end Wagner
