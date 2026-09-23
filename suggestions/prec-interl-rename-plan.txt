@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  595  Lean declarations requiring semantic review
+  585  Lean declarations requiring semantic review
   223  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    27  statement scaffolds requiring proof-status-preserving renames
-  270  deprecated compatibility identifiers with canonical targets
+  280  deprecated compatibility identifiers with canonical targets
    36  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -220,6 +220,11 @@ The #902 Branden--Leite kernel/tiling batch canonicalizes the eight weak
 interlacing packages for finite and limiting kernel rows, two-kernel rows,
 weighted shift tilings, and the weighted-green/marked-shift specialization.
 Exact deprecated aliases preserve every public signature.
+
+The #903 final Branden--Leite package batch canonicalizes the ten remaining
+binomial, monomer, rational, shifted, and OEIS-labeled PF/interlacing package
+names.  Exact deprecated aliases preserve every public signature; no
+Branden--Leite-owned semantic declaration row remains in the ledger.
 
 The #892 compatibility/right-pencil batch canonicalizes the failed succ-degree
 orientation statement interface and its seven checked conditional reductions.

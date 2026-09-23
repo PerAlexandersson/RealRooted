@@ -116,12 +116,12 @@ def binomialShiftedRodRow (m n : ℕ) : ℝ[X] :=
 
 /-- Binomial shifted rows are PF and consecutive rows are in zero-aware
 proper position. -/
-theorem binomialShiftedRodRows_pf_and_prec0 (m : ℕ) :
+theorem binomialShiftedRodRows_pf_and_interl (m : ℕ) :
     (∀ n, IsPFPolynomial (binomialShiftedRodRow m n)) ∧
       ∀ n, Interl (binomialShiftedRodRow m n)
         (binomialShiftedRodRow m (n + 1)) := by
   simpa [binomialShiftedRodRow] using
-    (shiftedRationalRodRows_pf_and_prec0
+    (shiftedRationalRodRows_pf_and_interl
       (ys := List.replicate m 1) (xs := List.replicate (m - 2) 1)
       (by simp) (by norm_num) (by norm_num) (by simp)
       (show 0 ≤ (Nat.choose m 2 : ℝ) by positivity))
@@ -298,6 +298,9 @@ theorem binomialShiftedRodRow_four_add_four (n : ℕ) :
       show 2 < n + 4 by lia, show 3 < n + 4 by lia]
   rw [hsum] at h
   simpa [show n + 4 ≠ 0 by lia] using h
+
+@[deprecated binomialShiftedRodRows_pf_and_interl (since := "2026-09-18")]
+alias binomialShiftedRodRows_pf_and_prec0 := binomialShiftedRodRows_pf_and_interl
 
 end
 
