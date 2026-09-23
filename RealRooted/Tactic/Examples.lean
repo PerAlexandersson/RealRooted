@@ -11,6 +11,9 @@ import RealRooted.Tactic.Examples.SignAssembly
 import RealRooted.Tactic.Examples.ScalarDen
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.Finish
+import RealRooted.Tactic.Examples.Finish.Basic
+import RealRooted.Tactic.Examples.Finish.Interlacing
+import RealRooted.Tactic.Examples.Finish.Sequences
 import RealRooted.Tactic.Examples.StaircaseSum
 import RealRooted.Tactic.Examples.CommonInterleaver
 import RealRooted.Tactic.Examples.CoefficientShape
@@ -30,6 +33,8 @@ import RealRooted.Tactic.Examples.MaWang.FactorWindows
 import RealRooted.Tactic.Examples.MaWang.LiuWang
 import RealRooted.Tactic.Examples.MaWang.NonnegativeDenominator
 import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences
+import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences.Affine
+import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences.Nonpositive
 import RealRooted.Tactic.Examples.MaWang.ScalarWindows
 import RealRooted.Tactic.Examples.MaWang.WeakSequences
 import RealRooted.Tactic.Examples.MaWang.XFactorSequences
@@ -58,9 +63,11 @@ import RealRooted.Tactic.Examples.LiuWang.StrictProducts
 import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.Product.Basic
+import RealRooted.Tactic.Examples.Product.DispatchIsolation
 import RealRooted.Tactic.Examples.Product.EndpointPair
 import RealRooted.Tactic.Examples.Product.Families
 import RealRooted.Tactic.Examples.Product.Lifts
+import RealRooted.Tactic.Examples.Product.UnsupportedShape
 import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.ReciprocalShift
 import RealRooted.Tactic.Examples.OperatorPreservesInterlacing

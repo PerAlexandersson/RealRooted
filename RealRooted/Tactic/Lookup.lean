@@ -18,7 +18,8 @@ local context; `[attr]` restricts only the third step. A local match therefore
 takes precedence over tagged-certificate ambiguity.
 
 If no certificate is found, or if several tagged declarations match, the tactic
-fails with a short diagnostic.
+fails with a short diagnostic. Ambiguity diagnostics list each unique candidate
+with the `rr_*` tags through which it is available.
 -/
 
 open Lean
@@ -106,15 +107,44 @@ def findRRCertificateProofsByType (target : Expr) : TacticM (Array (Name × Expr
 private def certificateAttrByName? (attrName : Name) : Option Lean.TagAttribute :=
   (rrCertificateAttributes.find? fun (candidate, _) => candidate == attrName).map (·.2)
 
-private def closeWithTaggedMatches (found : Array (Name × Expr)) : TacticM Unit := do
+private def certificateProvenanceTags (decl : Name) : TacticM (Array Name) := do
+  let env ← getEnv
+  let mut tags := #[]
+  for (attrName, attr) in rrCertificateAttributes do
+    if (attr.getDecls env).contains decl then
+      tags := tags.push attrName
+  return tags.qsort Name.lt
+
+private def provenanceCandidates (found : Array (Name × Expr)) :
+    TacticM (Array (Name × Array Name)) := do
+  let mut candidates := #[]
+  for (decl, _) in found do
+    candidates := candidates.push (decl, ← certificateProvenanceTags decl)
+  return candidates.qsort fun left right => Name.lt left.1 right.1
+
+private def provenanceCandidatesString (candidates : Array (Name × Array Name)) : String :=
+  String.intercalate ", " <| candidates.toList.map fun (decl, tags) =>
+    s!"{toString decl} [{namesString tags}]"
+
+private def requestedAttributeSuffix (attrName? : Option Name) : String :=
+  match attrName? with
+  | none => ""
+  | some attrName => s!" for [{toString attrName}]"
+
+private def closeWithTaggedMatches (found : Array (Name × Expr))
+    (requestedAttr? : Option Name := none) : TacticM Unit := do
+  let requestedSuffix := requestedAttributeSuffix requestedAttr?
   match found.toList with
   | [] =>
-      throwError "rr_lookup failed: no local or tagged certificate matches the goal"
+      throwError
+        ("rr_lookup failed: no local or tagged certificate matches the goal" ++ requestedSuffix)
   | [(_, proof)] =>
       closeMainGoal `rr_lookup proof
   | xs =>
-      let names := xs.toArray.map (·.1)
-      throwError "rr_lookup failed: ambiguous tagged certificates: {namesString names}"
+      let candidates ← provenanceCandidates xs.toArray
+      throwError
+        ("rr_lookup failed: ambiguous tagged certificates" ++ requestedSuffix ++ ": " ++
+          provenanceCandidatesString candidates)
 
 syntax (name := rr_lookup) "rr_lookup" : tactic
 syntax (name := rr_lookup_attr) "rr_lookup" " [" ident "]" : tactic
@@ -137,7 +167,7 @@ elab_rules : tactic
         if let some proof ← findLocalProofByType? target then
           closeMainGoal `rr_lookup proof
           return
-        closeWithTaggedMatches (← findTaggedProofsByType attr target)
+        closeWithTaggedMatches (← findTaggedProofsByType attr target) (some attrName)
 
 end Tactic
 end RealRooted

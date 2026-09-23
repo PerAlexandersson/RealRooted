@@ -712,6 +712,7 @@ import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
+import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
 import RealRooted.Mathlib.Data.Fin.Basic
 import RealRooted.Mathlib.Order.Fin.Tuple
 import RealRooted.Mathlib.Data.Fintype.Card
@@ -1082,6 +1083,9 @@ import RealRooted.Tactic.Examples.EndpointDerivative
 import RealRooted.Tactic.Examples.EulerOperator
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Finish
+import RealRooted.Tactic.Examples.Finish.Basic
+import RealRooted.Tactic.Examples.Finish.Interlacing
+import RealRooted.Tactic.Examples.Finish.Sequences
 import RealRooted.Tactic.Examples.FiniteSymbol
 import RealRooted.Tactic.Examples.FiniteSymbolPF
 import RealRooted.Tactic.Examples.GammaRealRoots
@@ -1124,6 +1128,8 @@ import RealRooted.Tactic.Examples.MaWang.FactorWindows
 import RealRooted.Tactic.Examples.MaWang.LiuWang
 import RealRooted.Tactic.Examples.MaWang.NonnegativeDenominator
 import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences
+import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences.Affine
+import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences.Nonpositive
 import RealRooted.Tactic.Examples.MaWang.ScalarWindows
 import RealRooted.Tactic.Examples.MaWang.WeakSequences
 import RealRooted.Tactic.Examples.MaWang.XFactorSequences
@@ -1168,9 +1174,11 @@ import RealRooted.Tactic.Examples.PosCombo
 import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.Product.Basic
+import RealRooted.Tactic.Examples.Product.DispatchIsolation
 import RealRooted.Tactic.Examples.Product.EndpointPair
 import RealRooted.Tactic.Examples.Product.Families
 import RealRooted.Tactic.Examples.Product.Lifts
+import RealRooted.Tactic.Examples.Product.UnsupportedShape
 import RealRooted.Tactic.Examples.ReciprocalShift
 import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.RootBounds
@@ -1398,6 +1406,7 @@ import RealRooted.Applications.OEIS.InversePeaks
 import RealRooted.Applications.OEIS.InversePeaksTypeB
 import RealRooted.Applications.OEIS.LowerReentrantCorner
 import RealRooted.GammaPencil.Intertwining
+import RealRooted.LGV.PathMatrix
 import RealRooted.LGV.Toeplitz
 import RealRooted.LGV.TotallyNonnegative
 import RealRooted.LGV.PolyaFrequency

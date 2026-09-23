@@ -32,6 +32,20 @@ private inductive ProductOrientation where
   | factorLeft
   | factorRight
 
+private inductive LiftAutoShape where
+  | X
+  | scalar
+  | scalarPow
+  | XAddC
+  | CAddX
+  | XPow
+  | XAddCPow
+  | CAddXPow
+  | affineMulXFirst
+  | affineConstFirst
+  | affinePowMulXFirst
+  | affinePowConstFirst
+
 private def appFnName? (e : Expr) : Option Name :=
   e.consumeMData.getAppFn.constName?
 
@@ -49,6 +63,45 @@ private partial def containsAppFn (needle : Name) (e : Expr) : Bool :=
 
 private def isPolynomialX (e : Expr) : Bool :=
   appFnName? e == some ``Polynomial.X
+
+private def isPolynomialC (e : Expr) : Bool :=
+  let e := e.consumeMData
+  appFnName? e == some ``Polynomial.C ||
+    (appFnName? e == some ``DFunLike.coe &&
+      e.getAppArgs.any (fun arg => appFnName? arg == some ``Polynomial.C))
+
+private def outerMulArgs? (e : Expr) : Option (Expr × Expr) :=
+  let e := e.consumeMData
+  if appFnName? e == some ``HMul.hMul then
+    let args := e.getAppArgs
+    if args.size > 5 then
+      some (args[4]!, args[5]!)
+    else
+      none
+  else
+    none
+
+private def outerAddArgs? (e : Expr) : Option (Expr × Expr) :=
+  let e := e.consumeMData
+  if appFnName? e == some ``HAdd.hAdd then
+    let args := e.getAppArgs
+    if args.size > 5 then
+      some (args[4]!, args[5]!)
+    else
+      none
+  else
+    none
+
+private def outerPowBase? (e : Expr) : Option Expr :=
+  let e := e.consumeMData
+  if appFnName? e == some ``HPow.hPow then
+    let args := e.getAppArgs
+    if args.size > 5 then
+      some args[4]!
+    else
+      none
+  else
+    none
 
 private def containsPolynomialX (e : Expr) : Bool :=
   containsAppFn ``Polynomial.X e
@@ -212,6 +265,192 @@ private def affineOrientationOfBase? (e : Expr) : Option AffinePowOrientation :=
       none
   else
     none
+
+private partial def findEqualityRhs? (e : Expr) : Option Expr := Id.run do
+  let e := e.consumeMData
+  if appFnName? e == some ``Eq then
+    let args := e.getAppArgs
+    if args.size > 1 then
+      return some args[args.size - 1]!
+  match e with
+  | .forallE _ _ body _ =>
+      findEqualityRhs? body
+  | .letE _ _ value body _ =>
+      findEqualityRhs? value <|> findEqualityRhs? body
+  | .proj _ _ body =>
+      findEqualityRhs? body
+  | _ =>
+      for arg in e.getAppArgs do
+        if let some rhs := findEqualityRhs? arg then
+          return some rhs
+      none
+
+private partial def findSplitsArgument? (e : Expr) : Option Expr := Id.run do
+  let e := e.consumeMData
+  if appFnName? e == some ``Polynomial.Splits then
+    let args := e.getAppArgs
+    if args.size > 0 then
+      return some args[args.size - 1]!
+  match e with
+  | .forallE _ _ body _ =>
+      findSplitsArgument? body
+  | .letE _ _ value body _ =>
+      findSplitsArgument? value <|> findSplitsArgument? body
+  | .proj _ _ body =>
+      findSplitsArgument? body
+  | _ =>
+      for arg in e.getAppArgs do
+        if let some p := findSplitsArgument? arg then
+          return some p
+      none
+
+/-- Remove the matching pointwise binders from the established lift certificates.
+
+The generic lift-auto router deliberately supports only a single pointwise
+certificate pair: `∀ n, ...` or `∀ n, N ≤ n → ...`, with the same binders in
+the quotient and row evidence.  The resulting operands retain those aligned
+bound variables, so they can be compared syntactically without unfolding or
+definitional equality on loose binders. -/
+private partial def pointwiseConclusion (e : Expr) : Expr :=
+  let e := e.consumeMData
+  match e with
+  | .forallE _ _ body _ => pointwiseConclusion body
+  | _ => e
+
+private def sameAlignedOperand (lhs rhs : Expr) : Bool :=
+  lhs.consumeMData == rhs.consumeMData
+
+private def outerLiftFactorAndOrientation? (quotient rhs : Expr) :
+    Option (Expr × ProductOrientation) :=
+  match outerMulArgs? rhs with
+  | some (lhs, rhs) =>
+      if sameAlignedOperand lhs quotient then
+        some (rhs, .factorRight)
+      else if sameAlignedOperand rhs quotient then
+        some (lhs, .factorLeft)
+      else
+        none
+  | none => none
+
+private def mentionsLiftTheorem (candidate : Syntax) : Bool :=
+  (identifierTerms candidate).any fun term =>
+    let name := term.getId.toString
+    name.startsWith "RealRooted.isRealRooted_of_" && name.contains "_lift_"
+
+/-- Select a lift theorem variant from the exact quotient/row certificate pair.
+
+This only recognizes a lift-theorem candidate containing a pointwise
+`Polynomial.Splits` certificate and a row equality with that complete quotient
+as an outer product operand. Other product families return `none` and retain
+their legacy orientation selector. -/
+private def liftProductOrientationOfCandidate? (candidate : Syntax) :
+    TacticM (Option ProductOrientation) := do
+  if !mentionsLiftTheorem candidate then
+    return none
+  withMainContext do
+    let localContext ← getLCtx
+    let mut types := #[]
+    for term in identifierTerms candidate do
+      if let some declaration := localContext.findFromUserName? term.getId then
+        types := types.push (← instantiateMVars declaration.type)
+    for quotientType in types do
+      if let some quotient := findSplitsArgument? (pointwiseConclusion quotientType) then
+        for rowType in types do
+          if let some rhs := findEqualityRhs? (pointwiseConclusion rowType) then
+            if let some (_, orientation) := outerLiftFactorAndOrientation? quotient rhs then
+              return some orientation
+    pure none
+
+private def directCMulX? (e : Expr) : Bool :=
+  match outerMulArgs? e with
+  | some (coefficient, xTerm) => isPolynomialC coefficient && isPolynomialX xTerm
+  | none => false
+
+private def directAffineOrientation? (e : Expr) : Option AffinePowOrientation :=
+  match outerAddArgs? e with
+  | some (lhs, rhs) =>
+      if directCMulX? lhs && isPolynomialC rhs then
+        some .mulXFirst
+      else if isPolynomialC lhs && directCMulX? rhs then
+        some .constFirst
+      else
+        none
+  | none => none
+
+private def unitSlopeOrientation? (e : Expr) : Option AffinePowOrientation :=
+  match outerAddArgs? e with
+  | some (lhs, rhs) =>
+      if isPolynomialX lhs && isPolynomialC rhs then
+        some .mulXFirst
+      else if isPolynomialC lhs && isPolynomialX rhs then
+        some .constFirst
+      else
+        none
+  | none => none
+
+private def liftAutoShapeOfFactor? (factor : Expr) : Option LiftAutoShape :=
+  let factor := factor.consumeMData
+  if isPolynomialX factor then
+    some .X
+  else if isPolynomialC factor then
+    some .scalar
+  else if let some orientation := directAffineOrientation? factor then
+    match orientation with
+    | .mulXFirst => some .affineMulXFirst
+    | .constFirst => some .affineConstFirst
+  else if let some orientation := unitSlopeOrientation? factor then
+    match orientation with
+    | .mulXFirst => some .XAddC
+    | .constFirst => some .CAddX
+  else if let some powBase := outerPowBase? factor then
+    if isPolynomialX powBase then
+      some .XPow
+    else if isPolynomialC powBase then
+      some .scalarPow
+    else if let some orientation := directAffineOrientation? powBase then
+      match orientation with
+      | .mulXFirst => some .affinePowMulXFirst
+      | .constFirst => some .affinePowConstFirst
+    else if let some orientation := unitSlopeOrientation? powBase then
+      match orientation with
+      | .mulXFirst => some .XAddCPow
+      | .constFirst => some .CAddXPow
+    else
+      none
+  else
+    none
+
+private def liftAutoShapeOfEvidence (hquot hrow : Syntax) : TacticM LiftAutoShape :=
+  withMainContext do
+    let quotientEvidence ← Lean.Elab.Tactic.elabTerm hquot none
+    let quotientType ← instantiateMVars (← inferType quotientEvidence)
+    let quotient ←
+      match findSplitsArgument? (pointwiseConclusion quotientType) with
+      | some quotient => pure quotient
+      | none =>
+          throwError
+            "rr_product lift auto: could not identify quotient from quotient_realrooted"
+    let rowEvidence ← Lean.Elab.Tactic.elabTerm hrow none
+    let rowType ← instantiateMVars (← inferType rowEvidence)
+    let rhs ←
+      match findEqualityRhs? (pointwiseConclusion rowType) with
+      | some rhs => pure rhs
+      | none =>
+          throwError "rr_product lift auto: no row equality found in factorization"
+    let factor ←
+      match outerMulArgs? rhs with
+      | some _ =>
+          match outerLiftFactorAndOrientation? quotient rhs with
+          | some (factor, _) => pure factor
+          | none =>
+              throwError
+                "rr_product lift auto: factorization does not expose quotient as an outer factor"
+      | none =>
+          throwError "rr_product lift auto: factorization is not an outer product"
+    match liftAutoShapeOfFactor? factor with
+    | some shape => pure shape
+    | none =>
+        throwError "rr_product lift auto: unsupported factor; use explicit factor_realrooted"
 
 private partial def findAffinePowOrientation? (e : Expr) :
     Option AffinePowOrientation := Id.run do
@@ -443,6 +682,186 @@ elab "rr_product_lift_checked_scalar_sequence_auto" " using "
             cutoff := $N,
             factorization := $hrow))
 
+elab "rr_product_lift_sequence_auto" " using "
+    "quotient_realrooted" ":=" hquot:term ","
+    "factorization" ":=" hrow:term : tactic => do
+  match ← liftAutoShapeOfEvidence hquot hrow with
+  | .X =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_X_sequence using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .scalar =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_C_sequence_auto using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .scalarPow =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_C_pow_sequence_auto using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .XAddC =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_X_add_C_sequence using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .CAddX =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_C_add_X_sequence using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .XPow =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_X_pow_sequence using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .XAddCPow =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_X_add_C_row_pow_sequence using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .CAddXPow =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_C_add_X_pow_sequence using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .affineMulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_affine_sequence_auto using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .affineConstFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_const_first_sequence_auto using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .affinePowMulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_affine_pow_sequence_auto using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .affinePowConstFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_const_first_affine_pow_sequence_auto using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+
+elab "rr_product_lift_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "quotient_realrooted" ":=" hquot:term ","
+    "cutoff" ":=" N:term ","
+    "factorization" ":=" hrow:term : tactic => do
+  match ← liftAutoShapeOfEvidence hquot hrow with
+  | .X =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_X_sequence using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .scalar =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_C_sequence_auto using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .scalarPow =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_C_pow_sequence_auto using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .XAddC =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_X_add_C_sequence using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .CAddX =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_C_add_X_sequence using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .XPow =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_X_pow_sequence using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .XAddCPow =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_X_add_C_row_pow_sequence using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .CAddXPow =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_C_add_X_pow_sequence using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .affineMulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_affine_sequence_auto using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .affineConstFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_const_first_sequence_auto using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .affinePowMulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_affine_pow_sequence_auto using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .affinePowConstFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_const_first_affine_pow_sequence_auto using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+
 elab "rr_product_checked_affine_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "recurrence" ":=" hrec:term : tactic => do
@@ -578,7 +997,11 @@ elab "rr_product_checked_affine_pow_sequence_auto" " using "
             recurrence := $hrec))
 
 elab "rr_product_two_sequence_variants" hleft:term "," hright:term : tactic => do
-  match ← productOrientationOfCandidate? hleft with
+  let orientation ←
+    match ← liftProductOrientationOfCandidate? hleft with
+    | some orientation => pure (some orientation)
+    | none => productOrientationOfCandidate? hleft
+  match orientation with
   | some .factorLeft =>
       evalTactic
         (← `(tactic| rr_first_realrooted_sequence_or_projection $hleft))
@@ -1045,116 +1468,6 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_even_odd_scalar_monomial_lift_sequence
             $heven_model $hodd_model $hceven $hcodd $heven $hodd))
-  | `(tactic|
-      rr_product_lift_sequence_auto using
-        quotient_realrooted := $hquot:term,
-        factorization := $hrow:term) =>
-      `(tactic|
-        first
-          | rr_product_lift_checked_affine_pow_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_checked_affine_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_checked_scalar_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_X_sequence using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_C_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_X_add_C_sequence using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_C_add_X_sequence using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_X_pow_sequence using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_C_pow_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_X_add_C_pow_sequence using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_X_add_C_row_pow_sequence using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_C_add_X_pow_sequence using
-              quotient_realrooted := $hquot,
-              factorization := $hrow)
-  | `(tactic|
-      rr_product_lift_sequence_auto using
-        base := $hbase:term,
-        quotient_realrooted := $hquot:term,
-        cutoff := $N:term,
-        factorization := $hrow:term) =>
-      `(tactic|
-        first
-          | rr_product_lift_checked_affine_pow_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_checked_affine_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_checked_scalar_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_X_sequence using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_C_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_X_add_C_sequence using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_C_add_X_sequence using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_X_pow_sequence using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_C_pow_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_X_add_C_pow_sequence using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_X_add_C_row_pow_sequence using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_C_add_X_pow_sequence using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow)
   | `(tactic|
       rr_product_lift_X_sequence using
         quotient_realrooted := $hquot:term,

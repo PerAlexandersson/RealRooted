@@ -13,6 +13,43 @@ namespace Tactic
 
 @[rr_recurrence] lemma rr_side_attr_smoke : True := by trivial
 
+private inductive SideNonnegCertificate (c : ℝ) : Prop where
+  | intro : 0 ≤ c → SideNonnegCertificate c
+
+private theorem SideNonnegCertificate.unwrap {c : ℝ} :
+    SideNonnegCertificate c → 0 ≤ c
+  | .intro hc => hc
+
+private inductive SidePosCertificate (c : ℝ) : Prop where
+  | intro : 0 < c → SidePosCertificate c
+
+private theorem SidePosCertificate.unwrap {c : ℝ} : SidePosCertificate c → 0 < c
+  | .intro hc => hc
+
+private inductive SideNeCertificate (c : ℝ) : Prop where
+  | intro : c ≠ 0 → SideNeCertificate c
+
+private theorem SideNeCertificate.unwrap {c : ℝ} : SideNeCertificate c → c ≠ 0
+  | .intro hc => hc
+
+example {c : ℝ} (hc : SideNonnegCertificate c) : 0 ≤ c := by
+  fail_if_success
+    solve
+    | rr_side_nonneg
+  exact SideNonnegCertificate.unwrap hc
+
+example {c : ℝ} (hc : SidePosCertificate c) : 0 < c := by
+  fail_if_success
+    solve
+    | rr_side_pos
+  exact SidePosCertificate.unwrap hc
+
+example {c : ℝ} (hc : SideNeCertificate c) : c ≠ 0 := by
+  fail_if_success
+    solve
+    | rr_side_ne
+  exact SideNeCertificate.unwrap hc
+
 example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c := by rr_side_nonneg
 
 example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c :=

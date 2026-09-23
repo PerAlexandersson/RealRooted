@@ -110,4 +110,33 @@ theorem succAbove_last_of_interior
     lia)]
   exact Fin.ext rfl
 
+/-- Two finite level traces meet when the first starts weakly above the second,
+ends weakly below it, and the first falls by at most one per step while the
+second never rises. -/
+theorem exists_eq_of_unit_down_crossing
+    {m : ℕ} (u v : Fin (m + 1) → ℕ)
+    (hstart : v 0 ≤ u 0)
+    (hend : u (Fin.last m) ≤ v (Fin.last m))
+    (hu : ∀ r : Fin m, u r.castSucc ≤ u r.succ + 1)
+    (hv : ∀ r : Fin m, v r.succ ≤ v r.castSucc) :
+    ∃ r : Fin (m + 1), u r = v r := by
+  by_contra h
+  have hlt : ∀ r : Fin (m + 1), v r < u r := by
+    intro r
+    induction r using Fin.induction with
+    | zero =>
+        by_contra hnot
+        have hle : u 0 ≤ v 0 := Nat.le_of_not_gt hnot
+        exact h ⟨0, Nat.le_antisymm hle hstart⟩
+    | succ r hr =>
+        have hle : v r.succ ≤ u r.succ := by
+          have h_u := hu r
+          have h_v := hv r
+          lia
+        by_contra hnot
+        have hreverse : u r.succ ≤ v r.succ := Nat.le_of_not_gt hnot
+        exact h ⟨r.succ, Nat.le_antisymm hreverse hle⟩
+  have hlast := hlt (Fin.last m)
+  lia
+
 end Fin

@@ -121,11 +121,20 @@ toward the tactic umbrella.
 
 The product tactic's 150 parser declarations are now isolated in four files of
 314, 361, 95, and 292 lines behind a 10-line syntax facade. The checked
-elaborators and macro rules deliberately remain together in one 2,237-line
+elaborators and macro rules deliberately remain together in one 2,700-line
 unit: separating those imported environments made the affine-power auto-router
 exceed its established 200,000-heartbeat regression budget. This is a measured
 runtime boundary rather than a line-count exception by convenience. The public
 `Tactic.Product` path is a 9-line compatibility facade.
+
+The generic lift router now classifies the outer factor before selecting a
+specialized route. Unsupported opaque and composite factors therefore fail with
+a bounded diagnostic instead of speculatively elaborating every route. The
+regression suite pins those diagnostics, complete quotient-operand matching,
+ordinary and cutoff factor orientation, and all supported scalar, power, and
+affine shapes within the existing heartbeat budget. Separate generic-factor
+regressions ensure that ordinary, lag-two, and cutoff dispatch remain isolated
+even when local certificate names contain `_lift_`.
 
 Wronskian results have a focused package entry point:
 
@@ -1521,6 +1530,15 @@ general derivative and dehomogenization closures remain in
 `HomogeneousStability`.
 
 ## Import checks
+
+The generic LGV path-matrix foundation is isolated in `LGV.PathMatrix`. It
+identifies finite exact-length weighted path sums with powers of the
+edge-sum matrix over an arbitrary, possibly noncommutative semiring. It imports
+the pinned path and matrix APIs directly and does not depend on networks,
+chips, rank functions, positivity, or the higher Toeplitz/PF layers. The root
+and production umbrella budgets each rise by exactly one module; the tactic
+regression closure is unchanged. This identity is a prerequisite for the
+planned chip collocation bridge, not that bridge itself.
 
 The Lean 4.34 migration adds one small `PerronFrobenius.Simplex` shim. It
 preserves the set-of-vectors interface used by the matrix theory after Mathlib
