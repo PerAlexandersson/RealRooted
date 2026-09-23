@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  610  Lean declarations requiring semantic review
+  603  Lean declarations requiring semantic review
   223  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    27  statement scaffolds requiring proof-status-preserving renames
-  255  deprecated compatibility identifiers with canonical targets
+  262  deprecated compatibility identifiers with canonical targets
    36  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -210,6 +210,11 @@ the PF coefficient-limit theorem, and the full checked
 `strictInterlFPolynomialTransport` statement/minimal/witness family together
 with its Branden--Solus conditional consumer.  Exact deprecated compatibility
 declarations preserve all eight public names; proof status is unchanged.
+
+The #901 Branden--Leite composition-chain batch canonicalizes the seven weak
+interlacing packages for constant-diagonal chains, finite lower-triangular
+chains, positive-part/zero-constant composition rows, and inverse-power rows.
+Exact deprecated aliases preserve every public signature.
 
 The #892 compatibility/right-pencil batch canonicalizes the failed succ-degree
 orientation statement interface and its seven checked conditional reductions.

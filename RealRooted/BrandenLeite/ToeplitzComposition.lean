@@ -102,17 +102,21 @@ theorem compositionRow_positivePartSeries_isPFPolynomial
 
 /-- Consecutive positive-order composition rows of a PF sequence with positive
 zeroth entry are in zero-aware proper position. -/
-theorem prec0_compositionRow_positivePartSeries_succ
+theorem interl_compositionRow_positivePartSeries_succ
     {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) (ha0 : 0 < a 0) (n : ℕ) :
     Interl (compositionRow (positivePartSeries a) n)
       (compositionRow (positivePartSeries a) (n + 1)) := by
   rw [← chainPolynomial_toeplitz_eq_compositionRow,
     ← chainPolynomial_toeplitz_eq_compositionRow]
-  apply prec0_chainPolynomial_succ_of_pos_constantDiagonal ha0
+  apply interl_chainPolynomial_succ_of_pos_constantDiagonal ha0
   · intro i j hij
     simp [toeplitz_apply, Nat.not_le_of_lt hij]
   · intro i
     simp [toeplitz_apply]
   · exact ha
+
+@[deprecated interl_compositionRow_positivePartSeries_succ (since := "2026-09-18")]
+alias prec0_compositionRow_positivePartSeries_succ :=
+  interl_compositionRow_positivePartSeries_succ
 
 end RealRooted.BrandenLeite

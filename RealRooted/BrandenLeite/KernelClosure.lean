@@ -92,7 +92,7 @@ theorem prec0_regularizedKernelRow_succ
       (regularizedKernelRow G H i.succ) := by
   have hcert := sourceBorder_certificate hg hη hG hH hGlower hHlower
     hGdiag hHdiag
-  have hchain := prec0_chainPolynomial_toLowerTriangularMatrix_succ
+  have hchain := interl_chainPolynomial_toLowerTriangularMatrix_succ
     (n := i.val + 1) (mul_pos hg hη) hcert.1 hcert.2.1 hcert.2.2
     (show i.val + 1 + 1 < N + 2 by lia)
   change Interl

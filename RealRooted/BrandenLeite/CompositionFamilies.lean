@@ -77,7 +77,7 @@ theorem shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0
           (PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys)) n)
         (compositionRow
           (PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys)) (n + 1)) := by
-  exact compositionRows_mk_pf_and_prec0_of_zero
+  exact compositionRows_mk_pf_and_interl_of_zero
     (shiftedFiniteSupersymmetricCoeff_isPolyaFreqSeq hxs hys)
     (shiftedFiniteSupersymmetricCoeff_zero xs ys)
 
@@ -365,7 +365,7 @@ theorem inversePowerCompositionRow_exact_X
 
 /-- Inverse-power composition rows are PF and consecutive rows are in
 zero-aware proper position. -/
-theorem inversePowerCompositionRows_pf_and_prec0 (e : ℕ) :
+theorem inversePowerCompositionRows_pf_and_interl (e : ℕ) :
     (∀ n, IsPFPolynomial
       (compositionRow
         (PowerSeries.mk (inversePowerCompositionKernel e)) n)) ∧
@@ -378,6 +378,9 @@ theorem inversePowerCompositionRows_pf_and_prec0 (e : ℕ) :
     (shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0
       (xs := []) (ys := List.replicate e 1) (by simp) (by simp))
 
+@[deprecated inversePowerCompositionRows_pf_and_interl (since := "2026-09-18")]
+alias inversePowerCompositionRows_pf_and_prec0 := inversePowerCompositionRows_pf_and_interl
+
 /-- Every nonzero root of an inverse-power composition row is strictly
 negative. -/
 theorem inversePowerCompositionRow_nonzero_roots_neg
@@ -386,7 +389,7 @@ theorem inversePowerCompositionRow_nonzero_roots_neg
       (PowerSeries.mk (inversePowerCompositionKernel e)) n).roots)
     (hr0 : r ≠ 0) : r < 0 := by
   exact lt_of_le_of_ne
-    ((inversePowerCompositionRows_pf_and_prec0 e).1 n |>.roots_nonpos r hr)
+    ((inversePowerCompositionRows_pf_and_interl e).1 n |>.roots_nonpos r hr)
     hr0
 
 /-! ## The mixed quadratic/geometric family -/
@@ -747,7 +750,7 @@ theorem a206294Row_eq_sum_choose (n : ℕ) :
 theorem a206294Rows_pf_and_prec0 :
     (∀ n, IsPFPolynomial (a206294Row n)) ∧
       ∀ n, Interl (a206294Row n) (a206294Row (n + 1)) := by
-  exact inversePowerCompositionRows_pf_and_prec0 3
+  exact inversePowerCompositionRows_pf_and_interl 3
 
 /-- Every positive-index A206294 row has a simple zero. -/
 theorem a206294Row_exact_X {n : ℕ} (hn : 1 ≤ n) :
