@@ -237,7 +237,7 @@ theorem auxiliaryGPencil_splits_of_section3
     prec_sub_X_mul_pair_of_eq_posLeadingCoeff hUW hW_pos hWU_lc hdeg_UW
       hW_nonpos hU_nonpos (by simpa [hmid_eq] using hmid_pos)
   have hU_mid : StrictInterl U (U + X * V) := by simpa [hmid_eq] using hpair.left
-  have hall_U_mid := allComboRealRooted_of_prec hU_mid
+  have hall_U_mid := allComboRealRooted_of_strictInterl hU_mid
   have hall_U_XV : AllComboRealRooted U (X * V) := by
     intro alpha beta
     have hsplit := hall_U_mid (alpha - beta) beta

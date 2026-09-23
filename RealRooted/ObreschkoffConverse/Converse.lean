@@ -370,7 +370,7 @@ is real-rooted (or zero).
 
 Forward direction: interlacing → all combinations real-rooted.
 This follows from Wagner addition (already proved). -/
-theorem prec_of_allComboRealRooted {f g : ℝ[X]}
+theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hall : AllComboRealRooted f g)
@@ -527,5 +527,9 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
         ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
           hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inr hsame) hno
   lia
+
+@[deprecated strictInterl_of_allComboRealRooted (since := "2026-09-18")]
+alias prec_of_allComboRealRooted := strictInterl_of_allComboRealRooted
+
 end
 end RealRooted

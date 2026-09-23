@@ -61,7 +61,7 @@ theorem allComboRealRooted_of_sameDegreeShiftedPairOrientation_and_nonnegCoeffs
     (hdeg : g.natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     AllComboRealRooted f g :=
-  allComboRealRooted_of_prec
+  allComboRealRooted_of_strictInterl
     ((posComboNoCommonSameDegreeOrientation_of_shiftedPairOrientation_and_nonnegCoeffs
         hshift) hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 

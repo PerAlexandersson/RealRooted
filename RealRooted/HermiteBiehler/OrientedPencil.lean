@@ -29,7 +29,7 @@ theorem prec_of_allComboRealRooted_of_wronskian_nonneg
   rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted
       hall hf.ne_zero hg.ne_zero with hsame | hfsucc | hgsucc
   · have horient : StrictInterl g f ∨ StrictInterl f g :=
-      prec_of_allComboRealRooted hgrr.1 hgrr.2 hfrr.1 hfrr.2
+      strictInterl_of_allComboRealRooted hgrr.1 hgrr.2 hfrr.1 hfrr.2
         (allComboRealRooted_comm hall) (Or.inr hsame.symm)
     rcases horient with hgf | hfg
     · exact hgf
@@ -79,7 +79,7 @@ theorem prec_of_allComboRealRooted_of_wronskian_nonneg
     rw [hWcoeff] at hcoeff
     nlinarith [mul_pos hg hf]
   · apply StrictInterl.forward_of_orientation_of_succDegree hgsucc.symm
-    exact prec_of_allComboRealRooted hgrr.1 hgrr.2 hfrr.1 hfrr.2
+    exact strictInterl_of_allComboRealRooted hgrr.1 hgrr.2 hfrr.1 hfrr.2
       (allComboRealRooted_comm hall) (Or.inl hgsucc)
 
 /-- All-real-combination splitness and the oriented Wronskian sign imply

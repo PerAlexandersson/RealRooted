@@ -14,7 +14,7 @@ noncomputable section
 namespace RealRooted
 
 /-- Reduction of no-common orientation to the all-combinations bridge plus
-Obreschkoff converse (`prec_of_allComboRealRooted`). -/
+Obreschkoff converse (`strictInterl_of_allComboRealRooted`). -/
 theorem posComboNoCommonOrientation_of_allComboBridge
     (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
     PosComboNoCommonOrientationStatement := by
@@ -26,7 +26,7 @@ theorem posComboNoCommonOrientation_of_allComboBridge
       hf_pos hg_pos hall hdeg_lo hdeg_hi
 
 /-- Converse reduction: the no-common orientation core immediately yields the
-all-combinations bridge by passing through `allComboRealRooted_of_prec`. -/
+all-combinations bridge by passing through `allComboRealRooted_of_strictInterl`. -/
 theorem posComboAllComboBridge_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
     PosComboNoCommonToAllComboBridgeStatement :=

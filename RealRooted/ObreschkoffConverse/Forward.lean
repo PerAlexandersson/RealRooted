@@ -536,12 +536,15 @@ private theorem allComboRealRooted_of_prec_sameDegree
 
 /-- Forward direction of Obreschkoff: if `f ≪ g` then all real combinations
 `αf + βg` are real-rooted (or zero). Follows from Wagner addition. -/
-theorem allComboRealRooted_of_prec {f g : ℝ[X]}
+theorem allComboRealRooted_of_strictInterl {f g : ℝ[X]}
     (hfg : StrictInterl f g) :
     AllComboRealRooted f g := by
   rcases hfg.natDegree_eq_or_eq_succ with hsame | hsucc
   · exact allComboRealRooted_of_prec_sameDegree hfg hsame.symm
   · exact allComboRealRooted_of_prec_succDegree hfg hsucc.symm
+
+@[deprecated allComboRealRooted_of_strictInterl (since := "2026-09-18")]
+alias allComboRealRooted_of_prec := allComboRealRooted_of_strictInterl
 
 end
 end RealRooted

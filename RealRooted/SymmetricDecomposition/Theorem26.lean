@@ -231,7 +231,7 @@ private theorem allComboRealRooted_left_X_mul_component_of_prec_left
     (hp_eq : p = a + X * b)
     (hap : StrictInterl a p) :
     AllComboRealRooted a (X * b) := by
-  have hall_ap : AllComboRealRooted a p := allComboRealRooted_of_prec hap
+  have hall_ap : AllComboRealRooted a p := allComboRealRooted_of_strictInterl hap
   intro α β
   have hrew :
       C α * a + C β * (X * b) =
@@ -244,7 +244,7 @@ private theorem allComboRealRooted_left_X_mul_component_of_prec_right
     (hp_eq : p = a + X * b)
     (hpxb : StrictInterl p (X * b)) :
     AllComboRealRooted a (X * b) := by
-  have hall_pXb : AllComboRealRooted p (X * b) := allComboRealRooted_of_prec hpxb
+  have hall_pXb : AllComboRealRooted p (X * b) := allComboRealRooted_of_strictInterl hpxb
   intro α β
   have hrew :
       C α * a + C β * (X * b) =
@@ -274,7 +274,7 @@ private theorem prec_b_component_of_prec_left_of_natDegree_le
     ⟨mul_ne_zero X_ne_zero hb0, hall_aXb.right_splits⟩
   have hdeg_aXb : a.natDegree + 1 = (X * b).natDegree := by simp_all
   have hprec_or : StrictInterl a (X * b) ∨ StrictInterl (X * b) a :=
-    prec_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb
+    strictInterl_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb
       (Or.inl hdeg_aXb)
   have hprec_aXb : StrictInterl a (X * b) :=
     StrictInterl.forward_of_orientation_of_succDegree hdeg_aXb.symm hprec_or
@@ -374,7 +374,7 @@ private theorem prec_b_component_of_prec_left_top_of_sameDegree
     ⟨mul_ne_zero X_ne_zero hb0, hall_aXb.right_splits⟩
   have hsame : a.natDegree = (X * b).natDegree := by lia
   have hprec_or : StrictInterl a (X * b) ∨ StrictInterl (X * b) a :=
-    prec_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb
+    strictInterl_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb
       (Or.inr hsame)
   have ha_not_root0 : ¬ a.IsRoot 0 :=
     not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
@@ -420,7 +420,9 @@ private theorem prec_b_component_of_prec_left_top
       simpa [add_comm, add_left_comm, add_assoc] using hall_aXb β α
     have hprec_or : StrictInterl (X * b) a ∨ StrictInterl a (X * b) := by
       have hdeg : (X * b).natDegree + 1 = a.natDegree := by lia
-      exact prec_of_allComboRealRooted hXb_rr.1 hXb_rr.2 hap.1.1 hap.1.2 hall_Xba (Or.inl hdeg)
+      exact
+        strictInterl_of_allComboRealRooted
+          hXb_rr.1 hXb_rr.2 hap.1.1 hap.1.2 hall_Xba (Or.inl hdeg)
     have ha_not_root0 : ¬ a.IsRoot 0 :=
       not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
         hid.2.2.2.1 ha_top ha_nonneg ha0
@@ -475,7 +477,7 @@ private theorem prec_b_component_of_prec_right_top
       ha_rr.1 ha_rr.2 ha_nonneg ha_not_root0
   have hXb_root0 : (X * b).IsRoot 0 := by simp
   have hprec_or : StrictInterl a (X * b) ∨ StrictInterl (X * b) a :=
-    prec_of_allComboRealRooted ha_rr.1 ha_rr.2 hpxb.2.1.1 hpxb.2.1.2 hall_aXb
+    strictInterl_of_allComboRealRooted ha_rr.1 ha_rr.2 hpxb.2.1.1 hpxb.2.1.2 hall_aXb
       (Or.inr hsame)
   have hprec_aXb : StrictInterl a (X * b) :=
     PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
@@ -593,7 +595,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     rw [hId_eq]
     exact hasPosLeadingCoeff_add_of_natDegree_lt_left hdeg_lt ha_pos
   have hp_split : p = h + t := by grind
-  have hall_hp : AllComboRealRooted h p := allComboRealRooted_of_prec hIdp
+  have hall_hp : AllComboRealRooted h p := allComboRealRooted_of_strictInterl hIdp
   have hall_ht : AllComboRealRooted h t := by
     intro α β
     have hrew :
@@ -619,7 +621,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     rw [hh_deg, natDegree_mul (X_sub_C_ne_zero (1 : ℝ)) hb0, natDegree_X_sub_C]
     lia
   have hprec_or : StrictInterl h t ∨ StrictInterl t h :=
-    prec_of_allComboRealRooted hIdp.1.1 hIdp.1.2 ht_rr.1 ht_rr.2 hall_ht
+    strictInterl_of_allComboRealRooted hIdp.1.1 hIdp.1.2 ht_rr.1 ht_rr.2 hall_ht
       (Or.inr hsame)
   have ht_root1 : t.IsRoot 1 := by
     dsimp [t]
@@ -720,7 +722,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
   have hh_nonpos : ∀ r ∈ h.roots, r ≤ 0 :=
     roots_nonpos_of_nonneg_coeffs hIdp.1.2 hh_nonneg
   have hp_split : p = h + t := by grind
-  have hall_hp : AllComboRealRooted h p := allComboRealRooted_of_prec hIdp
+  have hall_hp : AllComboRealRooted h p := allComboRealRooted_of_strictInterl hIdp
   have hall_ht : AllComboRealRooted h t := by
     intro α β
     have hrew :
@@ -751,7 +753,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
       intro α β
       simpa [add_comm, add_left_comm, add_assoc] using hall_ht β α
     have hprec_or : StrictInterl t h ∨ StrictInterl h t :=
-      prec_of_allComboRealRooted ht_rr.1 ht_rr.2 hIdp.1.1 hIdp.1.2 hall_th
+      strictInterl_of_allComboRealRooted ht_rr.1 ht_rr.2 hIdp.1.1 hIdp.1.2 hall_th
         (Or.inl hgap)
     have hnot_th : ¬ StrictInterl t h := by
       intro hth
@@ -1207,7 +1209,7 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
     dsimp [t]
     exact hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ)) hb_pos
   have hp_split : p = h + t := by grind
-  have hall_hp : AllComboRealRooted h p := allComboRealRooted_of_prec hIdp
+  have hall_hp : AllComboRealRooted h p := allComboRealRooted_of_strictInterl hIdp
   have hall_ht : AllComboRealRooted h t := by
     intro α β
     have hrew :
@@ -1234,7 +1236,7 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
     rw [hh_deg, natDegree_mul (X_sub_C_ne_zero (1 : ℝ)) hb0, natDegree_X_sub_C]
     lia
   have hht_or : StrictInterl h t ∨ StrictInterl t h :=
-    prec_of_allComboRealRooted hh_rr.1 hh_rr.2 ht_rr.1 ht_rr.2 hall_ht
+    strictInterl_of_allComboRealRooted hh_rr.1 hh_rr.2 ht_rr.1 ht_rr.2 hall_ht
       (Or.inl ht_deg)
   have hht : StrictInterl h t :=
     StrictInterl.forward_of_orientation_of_succDegree ht_deg.symm hht_or

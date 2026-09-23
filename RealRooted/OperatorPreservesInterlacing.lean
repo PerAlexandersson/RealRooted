@@ -67,11 +67,11 @@ theorem prec0_or_revPrec0_of_allComboRealRooted {f g : ℝ[X]}
   have hg : g ≠ 0 ∧ g.Splits := hall.isRealRooted_right hg0
   rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted hall hf0 hg0 with
     hsame | hsucc | hrevsucc
-  · exact (prec_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2 hall
+  · exact (strictInterl_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2 hall
       (Or.inr hsame)).imp (·.toInterl) (·.toInterl)
-  · exact (prec_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2 hall
+  · exact (strictInterl_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2 hall
       (Or.inl hsucc)).imp (·.toInterl) (·.toInterl)
-  · exact ((prec_of_allComboRealRooted hg.1 hg.2 hf.1 hf.2
+  · exact ((strictInterl_of_allComboRealRooted hg.1 hg.2 hf.1 hf.2
       (allComboRealRooted_comm hall) (Or.inl hrevsucc)).imp
         (·.toInterl) (·.toInterl)).symm
 
@@ -97,7 +97,7 @@ theorem preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
     (hT : PreservesRealRootedOrZero T) :
     PreservesInterlacingPairsUpToOrder0 T := fun ⦃f g⦄ hfg =>
-  prec0_or_revPrec0_map_of_pencil (allComboRealRooted_of_prec hfg) fun α β hrr =>
+  prec0_or_revPrec0_map_of_pencil (allComboRealRooted_of_strictInterl hfg) fun α β hrr =>
     hT (C α * f + C β * g) hrr
 
 /-- Planning stub for the operator theorem mentioned in `INTERLACING.md`.

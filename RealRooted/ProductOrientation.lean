@@ -108,7 +108,7 @@ theorem prec_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
     (hcross : g.eval 0 * f.leadingCoeff <
       f.eval 0 * g.leadingCoeff) :
     StrictInterl f g := by
-  rcases prec_of_allComboRealRooted hf0 (hall.isRealRooted_left hf0).2
+  rcases strictInterl_of_allComboRealRooted hf0 (hall.isRealRooted_left hf0).2
       hg0 (hall.isRealRooted_right hg0).2 hall (Or.inr hdeg) with hfg | hgf
   · grind
   · have hle := eval_cross_le_of_prec_sameDegree_of_nonneg

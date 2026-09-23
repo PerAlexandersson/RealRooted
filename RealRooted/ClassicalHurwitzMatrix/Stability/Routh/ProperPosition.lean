@@ -134,7 +134,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
         q.natDegree + 1 = odd.natDegree := by lia
     rcases hor with heq | hsucc
     · exact heq
-    · have hprecOr := prec_of_allComboRealRooted hqNe hqSplits
+    · have hprecOr := strictInterl_of_allComboRealRooted hqNe hqSplits
           hodd.ne_zero hprec.1.2 (allComboRealRooted_comm hall)
           (Or.inl hsucc)
       have hqodd : StrictInterl q odd := by
@@ -146,7 +146,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
           (hqodd.toInterlaces hsucc) hoddNeg
       exact False.elim ((ne_of_lt (hqNeg 0 hqRoot)) rfl)
   have hprecQ : StrictInterl odd q := by
-    rcases prec_of_allComboRealRooted hodd.ne_zero hprec.1.2
+    rcases strictInterl_of_allComboRealRooted hodd.ne_zero hprec.1.2
         hqNe hqSplits hall (Or.inr hqDegree.symm) with hoddq | hqodd
     · exact hoddq
     · have hqNeg :=

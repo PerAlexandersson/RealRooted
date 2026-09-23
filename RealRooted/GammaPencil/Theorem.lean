@@ -94,12 +94,12 @@ theorem gammaU_prec_gammaV (n : ℕ) (hn : 2 ≤ n) :
     rw [← Polynomial.coeff_zero_eq_eval_zero,
       ← Polynomial.coeff_zero_eq_eval_zero, hUzero, hVzero]
     simpa only [zero_mul, one_mul, HasPosLeadingCoeff] using hVpos
-  · rcases prec_of_allComboRealRooted hUne hUsplits hVne hVsplits hall
+  · rcases strictInterl_of_allComboRealRooted hUne hUsplits hVne hVsplits hall
         (Or.inl hsucc) with hprec | hreverse
     · exact hprec
     · exact (hreverse.not_of_right_natDegree_lt_left (by lia)).elim
   · have hreverse : StrictInterl (gammaV n) (gammaU n) := by
-      rcases prec_of_allComboRealRooted hVne hVsplits hUne hUsplits
+      rcases strictInterl_of_allComboRealRooted hVne hVsplits hUne hUsplits
           (allComboRealRooted_comm hall) (Or.inl hrevsucc) with hprec | hprec
       · exact hprec
       · exact (hprec.not_of_right_natDegree_lt_left (by lia)).elim

@@ -46,7 +46,7 @@ theorem orderNumeratorStep_isPF_strict
   have hshift : StrictInterl p (X * (C a * p + (1 - X) * p.derivative)) :=
     prec_mul_X_of_prec_of_nonneg hcore hcoreNN hp.hasNonnegCoeffs
   have hsplits : (orderNumeratorStep c D p).Splits := by
-    have hcombo := allComboRealRooted_of_prec hshift c 1
+    have hcombo := allComboRealRooted_of_strictInterl hshift c 1
     simpa [orderNumeratorStep, a] using hcombo
   have hnn : HasNonnegCoeffs (orderNumeratorStep c D p) := by
     apply HasNonnegCoeffs.add
@@ -90,7 +90,7 @@ theorem orderNumeratorStep_isPF_tight
   have hshift : StrictInterl p (X * (C (m : ℝ) * p + (1 - X) * p.derivative)) :=
     prec_mul_X_of_prec_of_nonneg hcore hcoreNN hp.hasNonnegCoeffs
   have hsplits : (orderNumeratorStep c D p).Splits := by
-    have hcombo := allComboRealRooted_of_prec hshift c 1
+    have hcombo := allComboRealRooted_of_strictInterl hshift c 1
     simpa [orderNumeratorStep, hbound] using hcombo
   have hnn : HasNonnegCoeffs (orderNumeratorStep c D p) := by
     rw [orderNumeratorStep, hbound]

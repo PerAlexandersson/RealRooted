@@ -69,7 +69,7 @@ theorem interlaces_of_monic_of_coeff_tendsto
           hqDegree k, hq₀Degree]
       have hrSplits : ∀ k, (r k).Splits := by
         intro k
-        have hall := allComboRealRooted_of_prec (hInterlaces k).toStrictInterl
+        have hall := allComboRealRooted_of_strictInterl (hInterlaces k).toStrictInterl
         simpa [r, add_comm] using hall (α / β) 1
       have hrCoeff : ∀ i, Tendsto (fun k => (r k).coeff i) atTop
           (𝓝 (r₀.coeff i)) := by
@@ -89,7 +89,7 @@ theorem interlaces_of_monic_of_coeff_tendsto
   have hsucc : q₀.natDegree = p₀.natDegree + 1 := by
     rw [hp₀Degree, hq₀Degree]
   have hor : StrictInterl p₀ q₀ ∨ StrictInterl q₀ p₀ :=
-    prec_of_allComboRealRooted hp₀Monic.ne_zero hp₀Splits
+    strictInterl_of_allComboRealRooted hp₀Monic.ne_zero hp₀Splits
       hq₀Monic.ne_zero hAll.right_splits hAll (Or.inl hsucc.symm)
   exact (StrictInterl.forward_of_orientation_of_succDegree hsucc hor).toInterlaces hsucc.symm
 

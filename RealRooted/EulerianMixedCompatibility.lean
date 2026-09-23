@@ -322,7 +322,7 @@ private theorem regularized_prec_no_common
   let k := f.natDegree
   let fε : ℝ[X] := iterateTDeriv (-eps) k f
   let gε : ℝ[X] := iterateTDeriv (-eps) k g
-  have hall : AllComboRealRooted g f := allComboRealRooted_of_prec hgf
+  have hall : AllComboRealRooted g f := allComboRealRooted_of_strictInterl hgf
   have hallε : AllComboRealRooted gε fε := by
     dsimp [fε, gε, k]
     exact allComboRealRooted_iterateTDeriv_neg hall heps f.natDegree
@@ -338,7 +338,7 @@ private theorem regularized_prec_no_common
     dsimp [fε, gε]
     simpa using hdeg
   have hprecε : StrictInterl gε fε := by
-    rcases prec_of_allComboRealRooted hgε_ne hgε_splits hfε_ne hfε_splits
+    rcases strictInterl_of_allComboRealRooted hgε_ne hgε_splits hfε_ne hfε_splits
         hallε (Or.inl hdegε) with hforward | hreverse
     · exact hforward
     · exact False.elim <| hreverse.not_of_right_natDegree_lt_left (by lia)

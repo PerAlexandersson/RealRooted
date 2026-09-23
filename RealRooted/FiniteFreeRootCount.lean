@@ -56,7 +56,7 @@ private theorem schurSzegoComp_prec0_or_revPrec0
     Interl (schurSzegoComp d f p) (schurSzegoComp d g p) ∨
       Interl (schurSzegoComp d g p) (schurSzegoComp d f p) := by
   apply prec0_or_revPrec0_map_of_pencil (T := schurSzegoRightLinearMap d p)
-    (allComboRealRooted_of_prec hfg)
+    (allComboRealRooted_of_strictInterl hfg)
   intro a b hab
   apply schurSzegoRightLinearMap_preservesRealRootedOrZeroUpTo hp hpdeg
   · exact (Polynomial.natDegree_add_le _ _).trans <|
