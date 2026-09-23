@@ -204,7 +204,7 @@ private theorem inversePeakTypeB_base_prec :
       1 + X * C 6 + X ^ 2 := by
     ring
   rw [hpoly]
-  exact prec_one_add_X_quadratic_of_two_le 6 (by norm_num)
+  exact strictInterl_one_add_X_quadratic_of_two_le 6 (by norm_num)
 
 private theorem inversePeakTypeB_base_noCommon :
     ∀ r, (inversePeakTypeB 1).IsRoot r →
@@ -220,7 +220,7 @@ theorem inversePeakTypeB_prec_and_noCommonRoot (n : ℕ) :
     StrictInterl (inversePeakTypeB n) (inversePeakTypeB (n + 1)) ∧
       ∀ r, (inversePeakTypeB (n + 1)).IsRoot r →
         ¬ (inversePeakTypeB n).IsRoot r := by
-  apply prec_and_noCommonRoot_of_quadratic_lag_degree_step
+  apply strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
     (P := inversePeakTypeB) (a := 2) (b := 2) (c := 4)
     (Q := fun m => C 1 + C ((2 * m : ℕ) + 5 : ℝ) * X)
   · norm_num

@@ -263,7 +263,7 @@ private theorem lowerReentrantCorner_shifted_prec_and_noCommonRoot (n : ℕ) :
     StrictInterl (lowerReentrantCorner (n + 1)) (lowerReentrantCorner (n + 2)) ∧
       ∀ r, (lowerReentrantCorner (n + 2)).IsRoot r →
         ¬ (lowerReentrantCorner (n + 1)).IsRoot r := by
-  apply prec_and_noCommonRoot_of_affine_lag_degree_step
+  apply strictInterl_and_noCommonRoot_of_affine_lag_degree_step
     (P := fun m => lowerReentrantCorner (m + 1))
     (a := fun m => (m : ℝ) + 3) (b := fun m => (m : ℝ) + 2)
     (A := fun m => C ((m : ℝ) + 4))

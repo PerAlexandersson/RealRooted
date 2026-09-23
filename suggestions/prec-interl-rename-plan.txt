@@ -17,13 +17,13 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  347  Lean declarations requiring semantic review
+  316  Lean declarations requiring semantic review
   203  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    20  statement scaffolds requiring proof-status-preserving renames
-  519  deprecated compatibility identifiers with canonical targets
-   62  other references, locals, or private declarations migrated directly
+  548  deprecated compatibility identifiers with canonical targets
+   64  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
 Naming rules
@@ -264,6 +264,13 @@ derivative, count-bound, strict-sign, and quotient interfaces.  All seven old
 public names remain exact deprecated aliases, and non-challenge callers use the
 canonical declarations; tactic-owned spellings remain with their separate
 migration batch.
+
+The derivative-recurrence and transform layers now use `StrictInterl` /
+`Interl` vocabulary for quadratic-derivative induction, affine/quadratic-lag
+recurrences, Brändén basis images and weighted sums, and the reverse-Hermite
+transform.  All 29 old public names remain exact deprecated aliases; the two
+reverse-Hermite implementation helpers were renamed directly, and
+non-challenge callers use the canonical declarations.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

@@ -12,7 +12,7 @@ noncomputable section
 
 namespace RealRooted
 
-lemma prec_one_add_X_quadratic_of_two_le (u : ℝ) (hu : 2 ≤ u) :
+lemma strictInterl_one_add_X_quadratic_of_two_le (u : ℝ) (hu : 2 ≤ u) :
     StrictInterl (1 + X : ℝ[X]) (1 + X * C u + X ^ 2) := by
   have hInter : Interlaces (1 : ℝ[X]) (1 + X) :=
     interlaces_one_linear (p := 1 + X) (by compute_degree!)
@@ -91,7 +91,7 @@ theorem natDegree_of_quadratic_derivative_linear_quadratic_seed
         (fun m ↦ P (m + 2)) a b c s t 2
         hbase_top hbase_above hrecQ hsd hbt n
 
-theorem prec_of_quadratic_derivative_linear_quadratic_seed
+theorem strictInterl_of_quadratic_derivative_linear_quadratic_seed
     (P : ℕ → ℝ[X]) (u a b c s t : ℝ)
     (h0 : P 0 = 1)
     (h1 : P 1 = 1 + X)
@@ -109,7 +109,7 @@ theorem prec_of_quadratic_derivative_linear_quadratic_seed
       exact hInter.toStrictInterl
   | 1 => by
       rw [h1, h2]
-      exact prec_one_add_X_quadratic_of_two_le u hu
+      exact strictInterl_one_add_X_quadratic_of_two_le u hu
   | n + 2 => by
       have hbase_nonneg : HasNonnegCoeffs ((fun m => P (m + 2)) 0) := by
         change HasNonnegCoeffs (P 2)
@@ -133,14 +133,23 @@ theorem prec_of_quadratic_derivative_linear_quadratic_seed
       have hbase_splits : (((fun m ↦ P (m + 2)) 0)).Splits := by
         change (P 2).Splits
         rw [h2]
-        exact (prec_one_add_X_quadratic_of_two_le u hu).2.1.2
+        exact (strictInterl_one_add_X_quadratic_of_two_le u hu).2.1.2
       have hrecQ : ∀ n, (fun m ↦ P (m + 2)) (n + 1) =
           (C a * X + C (-b) * X ^ 2) * ((fun m ↦ P (m + 2)) n).derivative +
             (C c + C (s + t * (n : ℝ)) * X) * (fun m ↦ P (m + 2)) n := by assumption
-      exact prec_of_quadratic_derivative_linear_offset
+      exact strictInterl_of_quadratic_derivative_linear_offset
         (fun m ↦ P (m + 2)) a b c s t 2
         hbase_nonneg hbase_top hbase_above hbase_splits hrecQ
         ha hb hc hsd hbt (by norm_num) n
+
+@[deprecated strictInterl_one_add_X_quadratic_of_two_le (since := "2026-09-18")]
+alias prec_one_add_X_quadratic_of_two_le :=
+  strictInterl_one_add_X_quadratic_of_two_le
+
+@[deprecated strictInterl_of_quadratic_derivative_linear_quadratic_seed
+  (since := "2026-09-18")]
+alias prec_of_quadratic_derivative_linear_quadratic_seed :=
+  strictInterl_of_quadratic_derivative_linear_quadratic_seed
 
 
 end RealRooted

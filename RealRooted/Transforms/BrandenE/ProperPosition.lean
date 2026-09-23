@@ -81,7 +81,7 @@ private theorem brandenBasisImage_small_splits
 
 /-- The Euler step places a split polynomial properly before its image when
 all roots lie in `[-1, 0]`. -/
-theorem brandenEulerStep_prec {r : ℝ} {p : ℝ[X]} {n : ℕ}
+theorem brandenEulerStep_strictInterl {r : ℝ} {p : ℝ[X]} {n : ℕ}
     (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : p.natDegree = n)
     (hn : 1 ≤ n)
@@ -121,7 +121,7 @@ theorem brandenBasisImage_splits :
         cases k with
         | zero =>
             rw [brandenBasisImage_succ_zero]
-            exact (brandenEulerStep_prec (r := 1) (ih 0 (by lia))
+            exact (brandenEulerStep_strictInterl (r := 1) (ih 0 (by lia))
               (brandenBasisImage_degree_pos n 0 (by lia)).2
               (brandenBasisImage_degree_pos n 0 (by lia)).1 (by lia)
               (brandenBasisImage_roots_ge_neg_one n 0 (by lia))
@@ -129,7 +129,7 @@ theorem brandenBasisImage_splits :
         | succ k =>
             have hkn : k ≤ n := by lia
             rw [brandenBasisImage_succ_succ]
-            exact (brandenEulerStep_prec (r := 0) (ih k hkn)
+            exact (brandenEulerStep_strictInterl (r := 0) (ih k hkn)
               (brandenBasisImage_degree_pos n k hkn).2
               (brandenBasisImage_degree_pos n k hkn).1 (by lia)
               (brandenBasisImage_roots_ge_neg_one n k hkn)
@@ -179,7 +179,7 @@ theorem brandenBasisImage_endpoint_identity :
         norm_num [map_one]
         linear_combination X * (X + 1) * hder
 
-theorem brandenBasisImage_endpoint_prec (n : ℕ) (hn : 1 ≤ n) :
+theorem brandenBasisImage_endpoint_strictInterl (n : ℕ) (hn : 1 ≤ n) :
     StrictInterl (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n n) := by
   let g := brandenBasisImage (R := ℝ) n n
   let h := g.divX
@@ -214,13 +214,13 @@ theorem brandenBasisImage_endpoint_prec (n : ℕ) (hn : 1 ≤ n) :
 
 /-- Consecutive basis images are in proper position in ambient degree at
 least two. -/
-theorem brandenBasisImage_adjacent_prec
+theorem brandenBasisImage_adjacent_strictInterl
     (n k : ℕ) (hn : 2 ≤ n) (hk : k < n) :
     StrictInterl (brandenBasisImage (R := ℝ) n k) (brandenBasisImage n (k + 1)) := by
   let q := brandenBasisImage (R := ℝ) (n - 1) k
   have hkq : k ≤ n - 1 := by lia
   have hqnext : StrictInterl q (brandenEulerStep 0 q) :=
-    brandenEulerStep_prec (r := 0)
+    brandenEulerStep_strictInterl (r := 0)
       (brandenBasisImage_splits (n - 1) k hkq)
       (brandenBasisImage_degree_pos (n - 1) k hkq).2
       (brandenBasisImage_degree_pos (n - 1) k hkq).1 (by lia)
@@ -249,7 +249,7 @@ theorem brandenBasisImage_adjacent_prec
 /-- Every earlier in-range Brändén basis image is in proper position
 before every later one. The endpoint relation supplies the non-transitive
 closure of the adjacent chain. -/
-theorem brandenBasisImage_prec
+theorem brandenBasisImage_strictInterl
     (n i j : ℕ) (hij : i ≤ j) (hj : j ≤ n) :
     StrictInterl (brandenBasisImage (R := ℝ) n i) (brandenBasisImage n j) := by
   by_cases heq : i = j
@@ -265,25 +265,25 @@ theorem brandenBasisImage_prec
       have hj' : j = 1 := by lia
       subst i
       subst j
-      exact brandenBasisImage_endpoint_prec 1 (by norm_num)
+      exact brandenBasisImage_endpoint_strictInterl 1 (by norm_num)
   · exact strictInterl_chain_of_consecutive_of_endpoint
       (fun k ↦ brandenBasisImage (R := ℝ) n k) 0 n
-      (fun k _ hk ↦ brandenBasisImage_adjacent_prec n k (by lia) hk)
-      (brandenBasisImage_endpoint_prec n (by lia)) i j (by lia) hij hj
+      (fun k _ hk ↦ brandenBasisImage_adjacent_strictInterl n k (by lia) hk)
+      (brandenBasisImage_endpoint_strictInterl n (by lia)) i j (by lia) hij hj
 
 /-- The first basis image precedes every in-range image, without a lower
 bound on the ambient degree. -/
-theorem brandenBasisImage_zero_prec
+theorem brandenBasisImage_zero_strictInterl
     (n k : ℕ) (hk : k ≤ n) :
     StrictInterl (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
-  brandenBasisImage_prec n 0 k (by lia) hk
+  brandenBasisImage_strictInterl n 0 k (by lia) hk
 
 /-- The first basis image is in proper position before every in-range image
 in ambient degree at least three. -/
-theorem brandenBasisImage_first_prec
+theorem brandenBasisImage_first_strictInterl
     (n k : ℕ) (_hn : 3 ≤ n) (hk : k ≤ n) :
     StrictInterl (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
-  brandenBasisImage_zero_prec n k hk
+  brandenBasisImage_zero_strictInterl n k hk
 
 /-- The ordered ambient-degree row of Brändén basis images. -/
 def brandenBasisImageRow (n : ℕ) : List ℝ[X] :=
@@ -308,6 +308,24 @@ theorem brandenBasisImageRow_isInterlacingSeqNonneg (n : ℕ) :
     have hj : j.val ≤ n := by lia
     dsimp only [brandenBasisImageRow] at i j ⊢
     erw [List.get_ofFn, List.get_ofFn]
-    exact brandenBasisImage_prec n i j hij.le hj
+    exact brandenBasisImage_strictInterl n i j hij.le hj
+
+@[deprecated brandenEulerStep_strictInterl (since := "2026-09-18")]
+alias brandenEulerStep_prec := brandenEulerStep_strictInterl
+
+@[deprecated brandenBasisImage_endpoint_strictInterl (since := "2026-09-18")]
+alias brandenBasisImage_endpoint_prec := brandenBasisImage_endpoint_strictInterl
+
+@[deprecated brandenBasisImage_adjacent_strictInterl (since := "2026-09-18")]
+alias brandenBasisImage_adjacent_prec := brandenBasisImage_adjacent_strictInterl
+
+@[deprecated brandenBasisImage_strictInterl (since := "2026-09-18")]
+alias brandenBasisImage_prec := brandenBasisImage_strictInterl
+
+@[deprecated brandenBasisImage_zero_strictInterl (since := "2026-09-18")]
+alias brandenBasisImage_zero_prec := brandenBasisImage_zero_strictInterl
+
+@[deprecated brandenBasisImage_first_strictInterl (since := "2026-09-18")]
+alias brandenBasisImage_first_prec := brandenBasisImage_first_strictInterl
 
 end RealRooted

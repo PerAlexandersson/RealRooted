@@ -77,7 +77,7 @@ lemma quadratic_derivative_linear_v_nonpos_of_nonpos
   rw [hv]
   nlinarith [mul_nonneg ha (neg_nonneg.mpr hr), mul_nonneg hb (sq_nonneg r)]
 
-lemma prec_step_of_quadratic_derivative_linear
+lemma strictInterl_step_of_quadratic_derivative_linear
     (P : ℕ → ℝ[X]) (a b c s t : ℝ)
     (h0 : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
@@ -128,7 +128,7 @@ lemma prec_step_of_quadratic_derivative_linear
     hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
   simp_all
 
-theorem prec_of_quadratic_derivative_linear
+theorem strictInterl_of_quadratic_derivative_linear
     (P : ℕ → ℝ[X]) (a b c s t : ℝ)
     (h0 : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
@@ -187,9 +187,9 @@ theorem prec_of_quadratic_derivative_linear
         hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
       simp_all
   | n + 2 =>
-      prec_step_of_quadratic_derivative_linear P a b c s t h0 hrec
+      strictInterl_step_of_quadratic_derivative_linear P a b c s t h0 hrec
         ha hb hc hs hbt (n + 2) (by lia)
-        (prec_of_quadratic_derivative_linear P a b c s t h0 hrec
+        (strictInterl_of_quadratic_derivative_linear P a b c s t h0 hrec
           ha hb hc hs hbt (n + 1)).2.1.2
 
 lemma quadratic_derivative_bilinear_coeff_zero_succ
@@ -251,7 +251,7 @@ lemma hasPosLeadingCoeff_of_quadratic_derivative_bilinear
   exact (quadratic_derivative_bilinear_top_and_above
     P a b c u s t h0 hrec hs hbt n).1
 
-lemma prec_step_of_quadratic_derivative_bilinear
+lemma strictInterl_step_of_quadratic_derivative_bilinear
     (P : ℕ → ℝ[X]) (a b c u s t : ℝ)
     (h0 : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
@@ -314,7 +314,7 @@ lemma prec_step_of_quadratic_derivative_bilinear
   rw [hF_eq] at this
   exact this
 
-theorem prec_of_quadratic_derivative_bilinear
+theorem strictInterl_of_quadratic_derivative_bilinear
     (P : ℕ → ℝ[X]) (a b c u s t : ℝ)
     (h0 : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
@@ -384,9 +384,9 @@ theorem prec_of_quadratic_derivative_bilinear
       rw [hF_eq] at this
       exact this
   | n + 2 =>
-      prec_step_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
+      strictInterl_step_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
         ha hb hc hu hs hbt (n + 2) (by lia)
-        (prec_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
+        (strictInterl_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
           ha hb hc hu hs hbt (n + 1)).2.1.2
 
 lemma hasNonnegCoeffs_of_quadratic_derivative_linear_offset
@@ -441,7 +441,7 @@ lemma hasPosLeadingCoeff_of_quadratic_derivative_linear_offset
   exact (quadratic_derivative_linear_offset_top_and_above P a b c s t d
     hbase_top hbase_above hrec hsd hbt n).1
 
-lemma prec_step_of_quadratic_derivative_linear_offset
+lemma strictInterl_step_of_quadratic_derivative_linear_offset
     (P : ℕ → ℝ[X]) (a b c s t : ℝ) (d : ℕ)
     (hbase_nonneg : HasNonnegCoeffs (P 0))
     (hbase_top : 0 < Polynomial.coeff (P 0) d)
@@ -505,7 +505,7 @@ lemma prec_step_of_quadratic_derivative_linear_offset
     hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
   simp_all
 
-theorem prec_of_quadratic_derivative_linear_offset
+theorem strictInterl_of_quadratic_derivative_linear_offset
     (P : ℕ → ℝ[X]) (a b c s t : ℝ) (d : ℕ)
     (hbase_nonneg : HasNonnegCoeffs (P 0))
     (hbase_top : 0 < Polynomial.coeff (P 0) d)
@@ -518,14 +518,38 @@ theorem prec_of_quadratic_derivative_linear_offset
     (hbt : b ≤ t) (hd : 2 ≤ d) :
     ∀ n : ℕ, StrictInterl (P n) (P (n + 1))
   | 0 =>
-      prec_step_of_quadratic_derivative_linear_offset P a b c s t d
+      strictInterl_step_of_quadratic_derivative_linear_offset P a b c s t d
         hbase_nonneg hbase_top hbase_above hrec ha hb hc hsd hbt hd 0 hbase_splits
   | n + 1 =>
-      prec_step_of_quadratic_derivative_linear_offset P a b c s t d
+      strictInterl_step_of_quadratic_derivative_linear_offset P a b c s t d
         hbase_nonneg hbase_top hbase_above hrec ha hb hc hsd hbt hd (n + 1)
-        (prec_of_quadratic_derivative_linear_offset P a b c s t d
+        (strictInterl_of_quadratic_derivative_linear_offset P a b c s t d
           hbase_nonneg hbase_top hbase_above hbase_splits hrec
           ha hb hc hsd hbt hd n).2.1.2
+
+@[deprecated strictInterl_step_of_quadratic_derivative_linear (since := "2026-09-18")]
+alias prec_step_of_quadratic_derivative_linear :=
+  strictInterl_step_of_quadratic_derivative_linear
+
+@[deprecated strictInterl_of_quadratic_derivative_linear (since := "2026-09-18")]
+alias prec_of_quadratic_derivative_linear :=
+  strictInterl_of_quadratic_derivative_linear
+
+@[deprecated strictInterl_step_of_quadratic_derivative_bilinear (since := "2026-09-18")]
+alias prec_step_of_quadratic_derivative_bilinear :=
+  strictInterl_step_of_quadratic_derivative_bilinear
+
+@[deprecated strictInterl_of_quadratic_derivative_bilinear (since := "2026-09-18")]
+alias prec_of_quadratic_derivative_bilinear :=
+  strictInterl_of_quadratic_derivative_bilinear
+
+@[deprecated strictInterl_step_of_quadratic_derivative_linear_offset (since := "2026-09-18")]
+alias prec_step_of_quadratic_derivative_linear_offset :=
+  strictInterl_step_of_quadratic_derivative_linear_offset
+
+@[deprecated strictInterl_of_quadratic_derivative_linear_offset (since := "2026-09-18")]
+alias prec_of_quadratic_derivative_linear_offset :=
+  strictInterl_of_quadratic_derivative_linear_offset
 
 
 end RealRooted
