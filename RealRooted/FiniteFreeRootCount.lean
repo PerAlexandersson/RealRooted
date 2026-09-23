@@ -48,14 +48,14 @@ private theorem schurSzegoRightLinearMap_preservesRealRootedOrZeroUpTo
 
 /-- Fixed Schur--Szegő composition preserves a proper-position pair, up to
 the orientation ambiguity in the generic operator theorem. -/
-private theorem schurSzegoComp_prec0_or_revPrec0
+private theorem schurSzegoComp_interl_or_reverse
     {d : ℕ} {f g p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ d)
     (hfdeg : f.natDegree ≤ d) (hgdeg : g.natDegree ≤ d)
     (hfg : StrictInterl f g) :
     Interl (schurSzegoComp d f p) (schurSzegoComp d g p) ∨
       Interl (schurSzegoComp d g p) (schurSzegoComp d f p) := by
-  apply prec0_or_revPrec0_map_of_pencil (T := schurSzegoRightLinearMap d p)
+  apply interl_or_reverse_map_of_pencil (T := schurSzegoRightLinearMap d p)
     (allComboRealRooted_of_strictInterl hfg)
   intro a b hab
   apply schurSzegoRightLinearMap_preservesRealRootedOrZeroUpTo hp hpdeg
@@ -164,7 +164,7 @@ private theorem schurSzegoComp_prec_of_pred_coeff_pos
     rw [hzero] at hTgdeg
     simp at hTgdeg
     exact hd hTgdeg.symm
-  have hor := schurSzegoComp_prec0_or_revPrec0
+  have hor := schurSzegoComp_interl_or_reverse
     hp hpdeg.le hfdeg.le hgdeg.le hfg
   rcases hor with hforward | hreverse
   · rcases hforward with hzero | hzero | hprec
