@@ -17,13 +17,13 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  427  Lean declarations requiring semantic review
+  421  Lean declarations requiring semantic review
   206  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    20  statement scaffolds requiring proof-status-preserving renames
-  440  deprecated compatibility identifiers with canonical targets
-   58  other references, locals, or private declarations migrated directly
+  441  deprecated compatibility identifiers with canonical targets
+   63  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
 Naming rules
@@ -187,6 +187,11 @@ root/splitting projections, and bundled successor-degree data.  All 17 old
 public names remain exact deprecated aliases, and every non-challenge caller
 uses the canonical declarations.  The legacy module filename remains unchanged
 so existing import paths continue to resolve.
+
+The compatibility closure layer now uses `StrictInterl` / `Interl` in its
+X-multiplication endpoint and private cut/threshold helpers.  The public
+endpoint retains an exact deprecated alias; the five private declarations and
+all their callers were renamed directly.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

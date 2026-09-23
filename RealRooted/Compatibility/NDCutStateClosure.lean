@@ -34,13 +34,13 @@ theorem OrderedCutCompatible.pqInterlacing {m : ℕ}
     refine ⟨?_, ?_, ?_⟩
     · rw [List.pairwise_reverse, List.pairwise_ofFn]
       intro i j hij
-      exact prec_of_compatible_and_X_mul_left
+      exact strictInterl_of_compatible_and_X_mul_left
         (h.p_pos j).ne_zero (h.p_pos i).ne_zero
         (h.p_nonneg j) (h.p_nonneg i)
         (h.pp_reverse hij.le) (h.xpp_reverse hij.le)
     · rw [List.pairwise_ofFn]
       intro i j hij
-      exact prec_of_compatible_and_X_mul_left
+      exact strictInterl_of_compatible_and_X_mul_left
         (h.q_pos i).ne_zero (h.q_pos j).ne_zero
         (h.q_nonneg i) (h.q_nonneg j)
         (h.qq_forward hij.le) (h.xqq_forward hij.le)
@@ -49,7 +49,7 @@ theorem OrderedCutCompatible.pqInterlacing {m : ℕ}
       rw [List.mem_ofFn] at hq
       rcases hp with ⟨i, rfl⟩
       rcases hq with ⟨j, rfl⟩
-      exact prec_of_compatible_and_X_mul_left
+      exact strictInterl_of_compatible_and_X_mul_left
         (h.p_pos i).ne_zero (h.q_pos j).ne_zero
         (h.p_nonneg i) (h.q_nonneg j) (h.pq i j) (h.xpq i j)
 
@@ -189,7 +189,7 @@ private theorem cutStrictSuffix_eq_cutMiddle_add {m : ℕ}
   · have hnotjk : ¬j < k := fun hjk ↦ hik (hij.trans_lt hjk)
     simp [hik, hnotjk]
 
-private theorem cutPrefix_prec0_reverse {m : ℕ}
+private theorem cutPrefix_interl_reverse {m : ℕ}
     {P Q : Fin m → ℝ[X]} (h : OrderedCutCompatible P Q)
     {i j : Fin m} (hij : i ≤ j) :
     Interl (cutPrefix P j) (cutPrefix P i) := by
@@ -201,7 +201,7 @@ private theorem cutPrefix_prec0_reverse {m : ℕ}
       · by_cases hl : l ≤ i
         · simp only [hk, hl, ite_true]
           apply StrictInterl.toInterl
-          exact prec_of_compatible_and_X_mul_left
+          exact strictInterl_of_compatible_and_X_mul_left
             (h.p_pos k).ne_zero (h.p_pos l).ne_zero
             (h.p_nonneg k) (h.p_nonneg l)
             (h.pp_reverse (hl.trans hk.1.le))
@@ -223,7 +223,7 @@ private theorem cutPrefix_prec0_reverse {m : ℕ}
   exact interl_add_left_of_common_right_of_nonneg hself hmid
     (cutPrefix_nonneg h.p_nonneg i) (cutMiddle_nonneg h.p_nonneg i j)
 
-private theorem cutPrefix_prec0_cutStrictSuffix {m : ℕ}
+private theorem cutPrefix_interl_cutStrictSuffix {m : ℕ}
     {P Q : Fin m → ℝ[X]} (h : OrderedCutCompatible P Q)
     (i j : Fin m) : Interl (cutPrefix P i) (cutStrictSuffix Q j) := by
   unfold cutPrefix cutStrictSuffix
@@ -232,7 +232,7 @@ private theorem cutPrefix_prec0_cutStrictSuffix {m : ℕ}
     by_cases hk : k ≤ i
     · by_cases hl : j < l
       · simp only [hk, hl, ite_true]
-        exact (prec_of_compatible_and_X_mul_left
+        exact (strictInterl_of_compatible_and_X_mul_left
           (h.p_pos k).ne_zero (h.q_pos l).ne_zero
           (h.p_nonneg k) (h.q_nonneg l) (h.pq k l) (h.xpq k l)).toInterl
       · simp [hk, hl, interl_zero_right]
@@ -246,7 +246,7 @@ private theorem cutPrefix_prec0_cutStrictSuffix {m : ℕ}
     · simpa [hk] using h.q_nonneg k
     · simp [hk, hasNonnegCoeffs_zero]
 
-private theorem cutStrictSuffix_prec0_forward {m : ℕ}
+private theorem cutStrictSuffix_interl_forward {m : ℕ}
     {P Q : Fin m → ℝ[X]} (h : OrderedCutCompatible P Q)
     {i j : Fin m} (hij : i ≤ j) :
     Interl (cutStrictSuffix Q i) (cutStrictSuffix Q j) := by
@@ -257,7 +257,7 @@ private theorem cutStrictSuffix_prec0_forward {m : ℕ}
       by_cases hk : i < k ∧ k ≤ j
       · by_cases hl : j < l
         · simp only [hk, hl, ite_true]
-          exact (prec_of_compatible_and_X_mul_left
+          exact (strictInterl_of_compatible_and_X_mul_left
             (h.q_pos k).ne_zero (h.q_pos l).ne_zero
             (h.q_nonneg k) (h.q_nonneg l)
             (h.qq_forward (hk.2.trans hl.le))
@@ -289,16 +289,16 @@ theorem OrderedCutCompatible.ndCutStateInterlacing {m : ℕ}
     refine ⟨?_, ?_, ?_⟩
     · rw [List.pairwise_reverse, List.pairwise_ofFn]
       intro i j hij
-      exact cutPrefix_prec0_reverse h hij.le
+      exact cutPrefix_interl_reverse h hij.le
     · rw [List.pairwise_ofFn]
       intro i j hij
-      exact cutStrictSuffix_prec0_forward h hij.le
+      exact cutStrictSuffix_interl_forward h hij.le
     · intro p hp q hq
       rw [List.mem_reverse, List.mem_ofFn] at hp
       rw [List.mem_ofFn] at hq
       rcases hp with ⟨i, rfl⟩
       rcases hq with ⟨j, rfl⟩
-      exact cutPrefix_prec0_cutStrictSuffix h i j
+      exact cutPrefix_interl_cutStrictSuffix h i j
   · intro p hp
     rcases List.mem_append.mp hp with hp | hp
     · rw [List.mem_reverse, List.mem_ofFn] at hp

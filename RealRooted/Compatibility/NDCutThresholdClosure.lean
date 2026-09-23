@@ -95,7 +95,7 @@ theorem OrderedNDCutCompatible.cutOutputs_stateInterlacing
   exact ndCutThresholdMatrix_preserves_interlacing_weak
     m (ndCutStateOrder N D) h.stateInterlacing
 
-private theorem prec_of_prec0_of_pos {f g : ℝ[X]}
+private theorem strictInterl_of_interl_of_pos {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hfg : Interl f g) : StrictInterl f g := by
   rcases hfg with rfl | rfl | hfg
@@ -103,7 +103,7 @@ private theorem prec_of_prec0_of_pos {f g : ℝ[X]}
   · exact False.elim (hg.ne_zero rfl)
   · exact hfg
 
-private theorem compatible_X_left_of_prec_nonneg {f g : ℝ[X]}
+private theorem compatible_X_left_of_strictInterl_nonneg {f g : ℝ[X]}
     (hfg : StrictInterl f g) (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
     Compatible (X * f) g :=
   (Compatible.of_strictInterl (strictInterl_mul_X_of_strictInterl_of_nonneg hfg hf hg)).comm
@@ -146,16 +146,16 @@ theorem orderedCutCompatible_of_stateInterlacing
     rcases eq_or_lt_of_le hij with hij | hij
     · subst j
       exact StrictInterl.refl (hP_real i).1 (hP_real i).2
-    · exact prec_of_prec0_of_pos (hP_pos j) (hP_pos i) (hPP0 hij)
+    · exact strictInterl_of_interl_of_pos (hP_pos j) (hP_pos i) (hPP0 hij)
   have hQQ : ∀ ⦃i j⦄, i ≤ j → StrictInterl (Q i) (Q j) := by
     intro i j hij
     rcases eq_or_lt_of_le hij with hij | hij
     · subst j
       exact StrictInterl.refl (hQ_real i).1 (hQ_real i).2
-    · exact prec_of_prec0_of_pos (hQ_pos i) (hQ_pos j) (hQQ0 hij)
+    · exact strictInterl_of_interl_of_pos (hQ_pos i) (hQ_pos j) (hQQ0 hij)
   have hPQ : ∀ i j, StrictInterl (P i) (Q j) := by
     intro i j
-    apply prec_of_prec0_of_pos (hP_pos i) (hQ_pos j)
+    apply strictInterl_of_interl_of_pos (hP_pos i) (hQ_pos j)
     exact hparts.2.2 (P i) (by rw [List.mem_reverse]; simp) (Q j) (by simp)
   exact
     { p_pos := hP_pos
@@ -167,17 +167,17 @@ theorem orderedCutCompatible_of_stateInterlacing
         exact Compatible.of_strictInterl (hPP hij)
       xpp_reverse := by
         intro i j hij
-        exact compatible_X_left_of_prec_nonneg
+        exact compatible_X_left_of_strictInterl_nonneg
           (hPP hij) (hP_nonneg j) (hP_nonneg i)
       pq := fun i j ↦ Compatible.of_strictInterl (hPQ i j)
       xpq := fun i j ↦
-        compatible_X_left_of_prec_nonneg (hPQ i j) (hP_nonneg i) (hQ_nonneg j)
+        compatible_X_left_of_strictInterl_nonneg (hPQ i j) (hP_nonneg i) (hQ_nonneg j)
       qq_forward := by
         intro i j hij
         exact Compatible.of_strictInterl (hQQ hij)
       xqq_forward := by
         intro i j hij
-        exact compatible_X_left_of_prec_nonneg
+        exact compatible_X_left_of_strictInterl_nonneg
           (hQQ hij) (hQ_nonneg i) (hQ_nonneg j) }
 
 /-- The structural state-order field and the exact threshold representation
