@@ -17,7 +17,7 @@ consequences needed by the final two-pair argument.
 /-! ## Theorem 12 infrastructure -/
 
 /-- Degree-zero polynomials are in zero-aware proper position. -/
-theorem prec0_of_natDegree_eq_zero {p q : ℝ[X]}
+theorem interl_of_natDegree_eq_zero {p q : ℝ[X]}
     (hpdeg : p.natDegree = 0) (hqdeg : q.natDegree = 0) :
     Interl p q := by
   by_cases hp0 : p = 0
@@ -32,7 +32,7 @@ theorem prec0_of_natDegree_eq_zero {p q : ℝ[X]}
 namespace IsGWKreinSummand
 
 /-- Krein summands of a PF polynomial are in proper position with the parent. -/
-theorem prec {g q : ℝ[X]} (h : IsGWKreinSummand g q)
+theorem strictInterl {g q : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg0 : g ≠ 0) (hgs : g.Splits) :
     StrictInterl q g := by
   rcases h with hself | ⟨u, hfactor⟩
@@ -44,11 +44,11 @@ theorem prec {g q : ℝ[X]} (h : IsGWKreinSummand g q)
     rw [hfactor]
     exact strictInterl_self_X_sub_C_mul hq0 hqs u
 
-/-- Zero-aware form of `IsGWKreinSummand.prec`. -/
-theorem prec0 {g q : ℝ[X]} (h : IsGWKreinSummand g q)
+/-- Zero-aware form of `IsGWKreinSummand.strictInterl`. -/
+theorem interl {g q : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg0 : g ≠ 0) (hgs : g.Splits) :
     Interl q g :=
-  (h.prec hg0 hgs).toInterl
+  (h.strictInterl hg0 hgs).toInterl
 
 /-- Krein summands of a PF polynomial are PF. -/
 theorem isPFPolynomial {g q : ℝ[X]} (h : IsGWKreinSummand g q)
@@ -61,7 +61,7 @@ theorem isPFPolynomial {g q : ℝ[X]} (h : IsGWKreinSummand g q)
 end IsGWKreinSummand
 
 /-- Constant right input base case for Theorem 12(b). -/
-theorem gwSchurProduct_prec0_of_right_natDegree_eq_zero
+theorem gwSchurProduct_interl_of_right_natDegree_eq_zero
     (f g p : ℝ[X]) (hpdeg : p.natDegree = 0) :
     Interl (gwSchurProduct f p) (gwSchurProduct g p) := by
   have hfdeg : (gwSchurProduct f p).natDegree = 0 := by
@@ -72,7 +72,7 @@ theorem gwSchurProduct_prec0_of_right_natDegree_eq_zero
     exact le_antisymm
       ((natDegree_gwSchurProduct_le_right g p).trans (le_of_eq hpdeg))
       (Nat.zero_le _)
-  exact prec0_of_natDegree_eq_zero hfdeg hgdeg
+  exact interl_of_natDegree_eq_zero hfdeg hgdeg
 
 /-- Constant right input base case for Theorem 12(a). -/
 theorem gwSchurProduct_pf_of_right_natDegree_eq_zero {f p : ℝ[X]}
@@ -90,7 +90,7 @@ theorem gwSchurProduct_pf_of_right_natDegree_eq_zero {f p : ℝ[X]}
 `D f` with `p` precedes the Schur product of `f` with `p`, then multiplying
 the right input by a nonpositive linear factor keeps the previous product as a
 left interleaver. -/
-theorem gwSchurProduct_prec0_right_linearFactor_of_derivative_prec0
+theorem gwSchurProduct_interl_right_linearFactor_of_derivative_interl
     {f p : ℝ[X]} {u : ℝ}
     (hu : u ≤ 0)
     (hder :
@@ -115,8 +115,8 @@ theorem gwSchurProduct_prec0_right_linearFactor_of_derivative_prec0
 
 /-- PF-preservation form of
 
-`gwSchurProduct_prec0_right_linearFactor_of_derivative_prec0`. -/
-theorem gwSchurProduct_pf_right_linearFactor_of_derivative_prec0
+`gwSchurProduct_interl_right_linearFactor_of_derivative_interl`. -/
+theorem gwSchurProduct_pf_right_linearFactor_of_derivative_interl
     {f p : ℝ[X]} {u : ℝ}
     (hu : u ≤ 0)
     (hder :
@@ -128,7 +128,7 @@ theorem gwSchurProduct_pf_right_linearFactor_of_derivative_prec0
   let D : ℝ[X] := gwSchurProduct (gwD f) p
   have hprec :
       Interl F (gwSchurProduct f ((X - C u) * p)) :=
-    gwSchurProduct_prec0_right_linearFactor_of_derivative_prec0
+    gwSchurProduct_interl_right_linearFactor_of_derivative_interl
       hu hder hF hD
   have htarget_nn : HasNonnegCoeffs (gwSchurProduct f ((X - C u) * p)) := by
     rw [gwSchurProduct_X_sub_C_mul_right, sub_eq_add_neg]
@@ -174,7 +174,7 @@ theorem HasNonnegCoeffs.weightedSum :
           (HasNonnegCoeffs.weightedSum l htail_nonneg htail_nn)
 
 /-- Zero-aware weighted common-right cone closure. -/
-theorem prec0_weightedSum_right_of_nonneg :
+theorem interl_weightedSum_right_of_nonneg :
     ∀ (l : List (ℝ × ℝ[X])) (h : ℝ[X]),
       (∀ ap ∈ l, 0 ≤ ap.1) →
       (∀ ap ∈ l, Interl ap.2 h) →
@@ -195,7 +195,7 @@ theorem prec0_weightedSum_right_of_nonneg :
       have hhead_prec : Interl (C a * p) h :=
         Interl.C_mul_left_of_nonneg hp_prec ha
       have htail_prec_sum : Interl (weightedSum l) h :=
-        prec0_weightedSum_right_of_nonneg l h htail_nonneg htail_prec htail_nn
+        interl_weightedSum_right_of_nonneg l h htail_nonneg htail_prec htail_nn
       have hhead_nn : HasNonnegCoeffs (C a * p) :=
         nonnegCoeffs_C_mul ha hp_nn
       have htail_sum_nn : HasNonnegCoeffs (weightedSum l) :=
@@ -217,7 +217,7 @@ theorem gwSchurProduct_weightedSum_left :
 
 /-- Apply the Schur product to a nonnegative weighted expansion whose summands
 all precede the same right Schur product. -/
-theorem gwSchurProduct_prec0_of_weightedSum_right {f g p : ℝ[X]}
+theorem gwSchurProduct_interl_of_weightedSum_right {f g p : ℝ[X]}
     {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
@@ -226,7 +226,7 @@ theorem gwSchurProduct_prec0_of_weightedSum_right {f g p : ℝ[X]}
     (hnn : ∀ ap ∈ l, HasNonnegCoeffs (gwSchurProduct ap.2 p)) :
     Interl (gwSchurProduct f p) (gwSchurProduct g p) := by
   rw [hf, gwSchurProduct_weightedSum_left]
-  apply prec0_weightedSum_right_of_nonneg
+  apply interl_weightedSum_right_of_nonneg
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
     exact hnonneg ap0 hap0
@@ -239,7 +239,7 @@ theorem gwSchurProduct_prec0_of_weightedSum_right {f g p : ℝ[X]}
 
 /-- Theorem 12(b) reducer after Lemma 7 has expanded the left input into
 Krein summands of the right input. -/
-theorem gwSchurProduct_prec0_of_kreinSummandExpansion {f g p : ℝ[X]}
+theorem gwSchurProduct_interl_of_kreinSummandExpansion {f g p : ℝ[X]}
     {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
@@ -251,13 +251,13 @@ theorem gwSchurProduct_prec0_of_kreinSummandExpansion {f g p : ℝ[X]}
       ∀ q : ℝ[X], IsGWKreinSummand g q →
         HasNonnegCoeffs (gwSchurProduct q p)) :
     Interl (gwSchurProduct f p) (gwSchurProduct g p) :=
-  gwSchurProduct_prec0_of_weightedSum_right hf hnonneg
+  gwSchurProduct_interl_of_weightedSum_right hf hnonneg
     (fun ap hap => hprec ap.2 (hsummand ap hap))
     (fun ap hap => hnn ap.2 (hsummand ap hap))
 
 /-- A PF polynomial's derivative precedes the polynomial itself in the
 zero-aware orientation. -/
-theorem IsPFPolynomial.derivative_prec0_self {p : ℝ[X]}
+theorem IsPFPolynomial.derivative_interl_self {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     Interl p.derivative p := by
   by_cases hp0 : p = 0
@@ -282,13 +282,13 @@ theorem IsPFPolynomial.derivative_prec0_self {p : ℝ[X]}
 
 /-- The first one-variable relation in Garloff--Wagner's double-deleted
 paragraph: for `u <= 0`, `(1 - uD)Lp` precedes `Lp`. -/
-theorem gwL_sub_C_mul_gwD_gwL_prec0_self {p : ℝ[X]} {u : ℝ}
+theorem gwL_sub_C_mul_gwD_gwL_interl_self {p : ℝ[X]} {u : ℝ}
     (hp : IsPFPolynomial p) (hu : u ≤ 0) :
     Interl (gwL p - C u * gwD (gwL p)) (gwL p) := by
   have hpL : IsPFPolynomial (gwL p) := by simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
   have hder :
       Interl (gwD (gwL p)) (gwL p) := by
-    simpa [gwD] using hpL.derivative_prec0_self
+    simpa [gwD] using hpL.derivative_interl_self
   have hscaled :
       Interl (C (-u) * gwD (gwL p)) (gwL p) :=
     Interl.C_mul_left_of_nonneg hder (by linarith)
@@ -302,14 +302,14 @@ theorem gwL_sub_C_mul_gwD_gwL_prec0_self {p : ℝ[X]} {u : ℝ}
       hpL.hasNonnegCoeffs hscaled_nn
   simpa [sub_eq_add_neg, C_neg, neg_mul] using hsum
 
-/-- PF-cone form of `gwL_sub_C_mul_gwD_gwL_prec0_self`. -/
+/-- PF-cone form of `gwL_sub_C_mul_gwD_gwL_interl_self`. -/
 theorem gwL_sub_C_mul_gwD_gwL_pf {p : ℝ[X]} {u : ℝ}
     (hp : IsPFPolynomial p) (hu : u ≤ 0) :
     IsPFPolynomial (gwL p - C u * gwD (gwL p)) := by
   let T : ℝ[X] := gwL p - C u * gwD (gwL p)
   have hpL : IsPFPolynomial (gwL p) := by simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
   have hprec : Interl T (gwL p) :=
-    gwL_sub_C_mul_gwD_gwL_prec0_self hp hu
+    gwL_sub_C_mul_gwD_gwL_interl_self hp hu
   have hDnn : HasNonnegCoeffs (gwD (gwL p)) := by simpa [gwD] using hpL.derivative.hasNonnegCoeffs
   have hTnn : HasNonnegCoeffs T := by
     change HasNonnegCoeffs (gwL p - C u * gwD (gwL p))
@@ -335,7 +335,7 @@ def gwSchurProductPFStatement : Prop :=
     IsPFPolynomial (gwSchurProduct f p)
 
 /-- Theorem 12(b), one fixed Schur-product factor, in the local orientation. -/
-def gwSchurProductPrecStatement : Prop :=
+def gwSchurProductStrictInterlStatement : Prop :=
   ∀ {f g p : ℝ[X]},
     IsPFPolynomial f →
     IsPFPolynomial g →
@@ -343,8 +343,8 @@ def gwSchurProductPrecStatement : Prop :=
     StrictInterl f g →
     Interl (gwSchurProduct f p) (gwSchurProduct g p)
 
-theorem gwSchurProductPF_of_prec
-    (h : gwSchurProductPrecStatement) :
+theorem gwSchurProductPF_of_strictInterl
+    (h : gwSchurProductStrictInterlStatement) :
     gwSchurProductPFStatement := by
   intro f p hf hp
   by_cases hf0 : f = 0
@@ -354,8 +354,8 @@ theorem gwSchurProductPF_of_prec
     (hf.hasNonnegCoeffs.gwSchurProduct hp.hasNonnegCoeffs)
     (h hf hf hp (StrictInterl.refl hfs.1 hfs.2))
 
-theorem gwSchurProductPrec0_of_prec
-    (h : gwSchurProductPrecStatement) :
+theorem gwSchurProductInterl_of_strictInterl
+    (h : gwSchurProductStrictInterlStatement) :
     ∀ {f g p : ℝ[X]},
       IsPFPolynomial f →
       IsPFPolynomial g →
@@ -368,16 +368,16 @@ theorem gwSchurProductPrec0_of_prec
   · simpa [hg0] using interl_zero_right (gwSchurProduct f p)
   · exact h hf hg hp hstrict
 
-theorem gwSchurProduct_derivative_prec0_self_of_prec
-    (h : gwSchurProductPrecStatement) {f p : ℝ[X]}
+theorem gwSchurProduct_derivative_interl_self_of_strictInterl
+    (h : gwSchurProductStrictInterlStatement) {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) :
     Interl (gwSchurProduct (gwD f) p) (gwSchurProduct f p) := by
   simpa [gwD] using
-    gwSchurProductPrec0_of_prec h hf.derivative hf hp hf.derivative_prec0_self
+    gwSchurProductInterl_of_strictInterl h hf.derivative hf hp hf.derivative_interl_self
 
 /-- Symmetric form of the Theorem 12(a) linear-factor step, used for
 one-root-deleted Krein summands in Theorem 12(b). -/
-theorem gwSchurProduct_prec0_left_linearFactor_of_derivative_prec0
+theorem gwSchurProduct_interl_left_linearFactor_of_derivative_interl
     {q p : ℝ[X]} {u : ℝ}
     (hu : u ≤ 0)
     (hder :
@@ -386,13 +386,13 @@ theorem gwSchurProduct_prec0_left_linearFactor_of_derivative_prec0
     (hD : IsPFPolynomial (gwSchurProduct (gwD p) q)) :
     Interl (gwSchurProduct q p) (gwSchurProduct ((X - C u) * q) p) := by
   rw [gwSchurProduct_comm q p, gwSchurProduct_comm ((X - C u) * q) p]
-  exact gwSchurProduct_prec0_right_linearFactor_of_derivative_prec0
+  exact gwSchurProduct_interl_right_linearFactor_of_derivative_interl
     hu hder hF hD
 
 /-- If `q` is obtained from a PF polynomial `g` by deleting one linear root
 factor, then the Schur product with `q` precedes the Schur product with `g`,
 assuming the derivative-product recursive relation for the other factor. -/
-theorem gwSchurProduct_prec0_of_kreinDeletedFactor
+theorem gwSchurProduct_interl_of_kreinDeletedFactor
     {g q p : ℝ[X]} {u : ℝ}
     (hg : IsPFPolynomial g) (hfactor : g = (X - C u) * q)
     (hder :
@@ -412,13 +412,13 @@ theorem gwSchurProduct_prec0_of_kreinDeletedFactor
   have hu : u ≤ 0 :=
     hg.roots_nonpos u ((mem_roots hg0).mpr hu_root)
   simpa [hfactor] using
-    gwSchurProduct_prec0_left_linearFactor_of_derivative_prec0
+    gwSchurProduct_interl_left_linearFactor_of_derivative_interl
       (q := q) (p := p) (u := u) hu hder hF hD
 
 namespace IsGWKreinSummand
 
 /-- Per-summand Theorem 12(b) step for a Krein summand of the right input. -/
-theorem gwSchurProduct_prec0_of_derivative
+theorem gwSchurProduct_interl_of_derivative
     {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg : IsPFPolynomial g)
     (hgp : IsPFPolynomial (gwSchurProduct g p))
@@ -429,14 +429,14 @@ theorem gwSchurProduct_prec0_of_derivative
     Interl (gwSchurProduct q p) (gwSchurProduct g p) := by
   rcases h with hself | ⟨u, hfactor⟩
   · simpa [hself] using hgp.interl_self
-  · exact gwSchurProduct_prec0_of_kreinDeletedFactor hg hfactor hder hF hD
+  · exact gwSchurProduct_interl_of_kreinDeletedFactor hg hfactor hder hF hD
 
 end IsGWKreinSummand
 
 /-- Theorem 12(b) reducer in the exact form produced by the Lemma 7 expansion:
 it remains only to discharge the recursive derivative/PF obligations for each
 Krein summand. -/
-theorem gwSchurProduct_prec0_of_kreinSummandExpansion_of_derivative
+theorem gwSchurProduct_interl_of_kreinSummandExpansion_of_derivative
     {f g p : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
@@ -453,11 +453,11 @@ theorem gwSchurProduct_prec0_of_kreinSummandExpansion_of_derivative
       ∀ (q : ℝ[X]) (u : ℝ), g = (X - C u) * q →
         IsPFPolynomial (gwSchurProduct (gwD p) q)) :
     Interl (gwSchurProduct f p) (gwSchurProduct g p) :=
-  gwSchurProduct_prec0_of_kreinSummandExpansion hf hnonneg hsummand
+  gwSchurProduct_interl_of_kreinSummandExpansion hf hnonneg hsummand
     (fun q hq => by
       rcases hq with hself | ⟨u, hfactor⟩
       · simpa [hself] using hgp.interl_self
-      · exact gwSchurProduct_prec0_of_kreinDeletedFactor hg hfactor
+      · exact gwSchurProduct_interl_of_kreinDeletedFactor hg hfactor
           (hder q u hfactor) (hF q u hfactor) (hD q u hfactor))
     (fun q hq => by
       rcases hq with hself | ⟨u, hfactor⟩
@@ -472,8 +472,8 @@ arguments.  At each measure we first prove PF preservation, then use that
 same-measure result as the common-right PF input for the fixed-factor
 proper-position statement.  All derivative and one-root-deleted calls have
 strictly smaller total degree. -/
-theorem gwSchurProductPFAndPrec :
-    gwSchurProductPFStatement ∧ gwSchurProductPrecStatement := by
+theorem gwSchurProductPFAndStrictInterl :
+    gwSchurProductPFStatement ∧ gwSchurProductStrictInterlStatement := by
   classical
   let P : ℕ → Prop := fun n =>
     (∀ {f p : ℝ[X]},
@@ -538,12 +538,12 @@ theorem gwSchurProductPFAndPrec :
               exact hf.derivative
             have hprecD : Interl (gwD f) f := by
               change Interl f.derivative f
-              exact hf.derivative_prec0_self
+              exact hf.derivative_interl_self
             apply hB_lt hfD hf hq hprecD
             rw [← hmeasure]
             lia
           rw [hfactor]
-          exact gwSchurProduct_pf_right_linearFactor_of_derivative_prec0
+          exact gwSchurProduct_pf_right_linearFactor_of_derivative_interl
             hu hder hF hD
         have hB :
             ∀ {f g p : ℝ[X]},
@@ -557,7 +557,7 @@ theorem gwSchurProductPFAndPrec :
           · rw [hg0, gwSchurProduct_zero_left]
             exact interl_zero_right (gwSchurProduct f p)
           by_cases hpdeg0 : p.natDegree = 0
-          · exact gwSchurProduct_prec0_of_right_natDegree_eq_zero f g p hpdeg0
+          · exact gwSchurProduct_interl_of_right_natDegree_eq_zero f g p hpdeg0
           by_cases hgdeg0 : g.natDegree = 0
           · have hfdeg0 : f.natDegree = 0 := by
               have hstrict_le := hstrict.natDegree_le
@@ -572,7 +572,7 @@ theorem gwSchurProductPFAndPrec :
                 ((natDegree_gwSchurProduct_le_left g p).trans
                   (le_of_eq hgdeg0))
                 (Nat.zero_le _)
-            exact prec0_of_natDegree_eq_zero hleftdeg hrightdeg
+            exact interl_of_natDegree_eq_zero hleftdeg hrightdeg
           have hgp : IsPFPolynomial (gwSchurProduct g p) :=
             hA hg hp hmeasure
           have hfpos : HasPosLeadingCoeff f :=
@@ -595,7 +595,7 @@ theorem gwSchurProductPFAndPrec :
                 natDegree_X_sub_C]
               lia
             exact ⟨hq, hqdeg⟩
-          exact gwSchurProduct_prec0_of_kreinSummandExpansion_of_derivative
+          exact gwSchurProduct_interl_of_kreinSummandExpansion_of_derivative
             hfexp hnonneg hsummand hg hgp
             (fun q u hfactor => by
               have hq := (hdeleted q u hfactor).1
@@ -605,7 +605,7 @@ theorem gwSchurProductPFAndPrec :
                 exact hp.derivative
               have hprecD : Interl (gwD p) p := by
                 change Interl p.derivative p
-                exact hp.derivative_prec0_self
+                exact hp.derivative_interl_self
               apply hB_lt hpD hp hq hprecD
               rw [← hmeasure]
               lia)
@@ -634,7 +634,7 @@ theorem gwSchurProductPFAndPrec :
 
 theorem gwSchurProductPF :
     gwSchurProductPFStatement :=
-  gwSchurProductPFAndPrec.1
+  gwSchurProductPFAndStrictInterl.1
 
 /-- Ordinary Hadamard products preserve PF polynomials, obtained by applying
 the Schur-product theorem to the `L`-normalized left input. -/
@@ -650,58 +650,168 @@ theorem gwL_pf {p : ℝ[X]} (hp : IsPFPolynomial p) :
   simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
 
 /-- The `L` operator preserves strict proper position. -/
-theorem gwL_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
+theorem gwL_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     StrictInterl (gwL f) (gwL g) := by
   simpa [gwJL_zero_apply] using gwTheorem11StrictInterl hfg 0
 
 /-- The `L` operator preserves zero-aware proper position. -/
-theorem gwL_prec0 {f g : ℝ[X]} (hfg : Interl f g) :
+theorem gwL_interl {f g : ℝ[X]} (hfg : Interl f g) :
     Interl (gwL f) (gwL g) := by
   rcases hfg with hf0 | hg0 | hstrict
   · rw [hf0, gwL_zero]
     exact interl_zero_left (gwL g)
   · rw [hg0, gwL_zero]
     exact interl_zero_right (gwL f)
-  · exact (gwL_prec hstrict).toInterl
+  · exact (gwL_strictInterl hstrict).toInterl
 
-theorem gwSchurProductPrec :
-    gwSchurProductPrecStatement :=
-  gwSchurProductPFAndPrec.2
+theorem gwSchurProductStrictInterl :
+    gwSchurProductStrictInterlStatement :=
+  gwSchurProductPFAndStrictInterl.2
 
-theorem gwSchurProductPrec0 :
+theorem gwSchurProductInterl :
     ∀ {f g p : ℝ[X]},
       IsPFPolynomial f →
       IsPFPolynomial g →
       IsPFPolynomial p →
       Interl f g →
       Interl (gwSchurProduct f p) (gwSchurProduct g p) :=
-  gwSchurProductPrec0_of_prec gwSchurProductPrec
+  gwSchurProductInterl_of_strictInterl gwSchurProductStrictInterl
 
-/-- Symmetric fixed-factor form of `gwSchurProductPrec0`. -/
-theorem gwSchurProductPrec0_left {f p q : ℝ[X]}
+/-- Symmetric fixed-factor form of `gwSchurProductInterl`. -/
+theorem gwSchurProductInterl_left {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (gwSchurProduct f p) (gwSchurProduct f q) := by
   simpa [gwSchurProduct_comm f p, gwSchurProduct_comm f q] using
-    gwSchurProductPrec0 hp hq hf hpq
+    gwSchurProductInterl hp hq hf hpq
 
 /-- Ordinary Hadamard products preserve zero-aware proper position in a fixed
 right factor, via `L` and the checked Schur-product theorem. -/
-theorem gwHadamardProductPrec0 {f g p : ℝ[X]}
+theorem gwHadamardProductInterl {f g p : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
     (hfg : Interl f g) :
     Interl (hadamardProduct f p) (hadamardProduct g p) := by
   have hfL : IsPFPolynomial (gwL f) := gwL_pf hf
   have hgL : IsPFPolynomial (gwL g) := gwL_pf hg
-  have hfgL : Interl (gwL f) (gwL g) := gwL_prec0 hfg
+  have hfgL : Interl (gwL f) (gwL g) := gwL_interl hfg
   simpa [gwSchurProduct_gwL_left] using
-    gwSchurProductPrec0 hfL hgL hp hfgL
+    gwSchurProductInterl hfL hgL hp hfgL
 
-/-- Symmetric fixed-factor form of `gwHadamardProductPrec0`. -/
-theorem gwHadamardProductPrec0_left {f p q : ℝ[X]}
+/-- Symmetric fixed-factor form of `gwHadamardProductInterl`. -/
+theorem gwHadamardProductInterl_left {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (hadamardProduct f p) (hadamardProduct f q) := by
   simpa [hadamardProduct_comm f p, hadamardProduct_comm f q] using
-    gwHadamardProductPrec0 hp hq hf hpq
+    gwHadamardProductInterl hp hq hf hpq
+
+namespace IsGWKreinSummand
+
+@[deprecated strictInterl (since := "2026-09-18")]
+alias prec := strictInterl
+
+@[deprecated interl (since := "2026-09-18")]
+alias prec0 := interl
+
+end IsGWKreinSummand
+
+namespace IsPFPolynomial
+
+@[deprecated derivative_interl_self (since := "2026-09-18")]
+alias derivative_prec0_self := derivative_interl_self
+
+end IsPFPolynomial
+
+@[deprecated interl_of_natDegree_eq_zero (since := "2026-09-18")]
+alias prec0_of_natDegree_eq_zero := interl_of_natDegree_eq_zero
+
+@[deprecated gwSchurProduct_interl_of_right_natDegree_eq_zero
+  (since := "2026-09-18")]
+alias gwSchurProduct_prec0_of_right_natDegree_eq_zero :=
+  gwSchurProduct_interl_of_right_natDegree_eq_zero
+
+@[deprecated gwSchurProduct_interl_right_linearFactor_of_derivative_interl
+  (since := "2026-09-18")]
+alias gwSchurProduct_prec0_right_linearFactor_of_derivative_prec0 :=
+  gwSchurProduct_interl_right_linearFactor_of_derivative_interl
+
+@[deprecated gwSchurProduct_pf_right_linearFactor_of_derivative_interl
+  (since := "2026-09-18")]
+alias gwSchurProduct_pf_right_linearFactor_of_derivative_prec0 :=
+  gwSchurProduct_pf_right_linearFactor_of_derivative_interl
+
+@[deprecated interl_weightedSum_right_of_nonneg (since := "2026-09-18")]
+alias prec0_weightedSum_right_of_nonneg := interl_weightedSum_right_of_nonneg
+
+@[deprecated gwSchurProduct_interl_of_weightedSum_right
+  (since := "2026-09-18")]
+alias gwSchurProduct_prec0_of_weightedSum_right :=
+  gwSchurProduct_interl_of_weightedSum_right
+
+@[deprecated gwSchurProduct_interl_of_kreinSummandExpansion
+  (since := "2026-09-18")]
+alias gwSchurProduct_prec0_of_kreinSummandExpansion :=
+  gwSchurProduct_interl_of_kreinSummandExpansion
+
+@[deprecated gwL_sub_C_mul_gwD_gwL_interl_self (since := "2026-09-18")]
+alias gwL_sub_C_mul_gwD_gwL_prec0_self := gwL_sub_C_mul_gwD_gwL_interl_self
+
+@[deprecated gwSchurProductStrictInterlStatement (since := "2026-09-18")]
+abbrev gwSchurProductPrecStatement := gwSchurProductStrictInterlStatement
+
+@[deprecated gwSchurProductPF_of_strictInterl (since := "2026-09-18")]
+alias gwSchurProductPF_of_prec := gwSchurProductPF_of_strictInterl
+
+@[deprecated gwSchurProductInterl_of_strictInterl (since := "2026-09-18")]
+alias gwSchurProductPrec0_of_prec := gwSchurProductInterl_of_strictInterl
+
+@[deprecated gwSchurProduct_derivative_interl_self_of_strictInterl
+  (since := "2026-09-18")]
+alias gwSchurProduct_derivative_prec0_self_of_prec :=
+  gwSchurProduct_derivative_interl_self_of_strictInterl
+
+@[deprecated gwSchurProduct_interl_left_linearFactor_of_derivative_interl
+  (since := "2026-09-18")]
+alias gwSchurProduct_prec0_left_linearFactor_of_derivative_prec0 :=
+  gwSchurProduct_interl_left_linearFactor_of_derivative_interl
+
+@[deprecated gwSchurProduct_interl_of_kreinDeletedFactor
+  (since := "2026-09-18")]
+alias gwSchurProduct_prec0_of_kreinDeletedFactor :=
+  gwSchurProduct_interl_of_kreinDeletedFactor
+
+@[deprecated IsGWKreinSummand.gwSchurProduct_interl_of_derivative
+  (since := "2026-09-18")]
+alias IsGWKreinSummand.gwSchurProduct_prec0_of_derivative :=
+  IsGWKreinSummand.gwSchurProduct_interl_of_derivative
+
+@[deprecated gwSchurProduct_interl_of_kreinSummandExpansion_of_derivative
+  (since := "2026-09-18")]
+alias gwSchurProduct_prec0_of_kreinSummandExpansion_of_derivative :=
+  gwSchurProduct_interl_of_kreinSummandExpansion_of_derivative
+
+@[deprecated gwSchurProductPFAndStrictInterl (since := "2026-09-18")]
+alias gwSchurProductPFAndPrec := gwSchurProductPFAndStrictInterl
+
+@[deprecated gwL_strictInterl (since := "2026-09-18")]
+alias gwL_prec := gwL_strictInterl
+
+@[deprecated gwL_interl (since := "2026-09-18")]
+alias gwL_prec0 := gwL_interl
+
+@[deprecated gwSchurProductStrictInterl (since := "2026-09-18")]
+alias gwSchurProductPrec := gwSchurProductStrictInterl
+
+@[deprecated gwSchurProductInterl (since := "2026-09-18")]
+alias gwSchurProductPrec0 := gwSchurProductInterl
+
+@[deprecated gwSchurProductInterl_left (since := "2026-09-18")]
+alias gwSchurProductPrec0_left := gwSchurProductInterl_left
+
+@[deprecated gwHadamardProductInterl (since := "2026-09-18")]
+alias gwHadamardProductPrec0 := gwHadamardProductInterl
+
+@[deprecated gwHadamardProductInterl_left (since := "2026-09-18")]
+alias gwHadamardProductPrec0_left := gwHadamardProductInterl_left
+
 end RealRooted

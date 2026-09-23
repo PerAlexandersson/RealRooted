@@ -41,7 +41,7 @@ private theorem reverseHermiteTransform_prec0_of_weightedSum_right
     Interl (reverseHermiteTransform f)
       (reverseHermiteTransform g) := by
   rw [hf, reverseHermiteTransform_weightedSum]
-  apply prec0_weightedSum_right_of_nonneg
+  apply interl_weightedSum_right_of_nonneg
   · grind
   · grind
   · grind
@@ -92,7 +92,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
               Interl (reverseHermiteTransform q.derivative)
                 (reverseHermiteTransform q) := by
             exact (ih q.natDegree (by lia)).2 hqder hq
-              hq.derivative_prec0_self rfl
+              hq.derivative_interl_self rfl
           rw [hfactor, show X - C u = X + C (-u) by
             grind,
             reverseHermiteTransform_mul_X_add_C]
@@ -154,7 +154,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
                   Interl (reverseHermiteTransform ap.2.derivative)
                     (reverseHermiteTransform ap.2) :=
                 (ih ap.2.natDegree (by lia)).2 hqder hq
-                  hq.derivative_prec0_self rfl
+                  hq.derivative_interl_self rfl
               rw [hfactor, show X - C u = X + C (-u) by
                 grind,
                 reverseHermiteTransform_mul_X_add_C]

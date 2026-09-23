@@ -52,8 +52,8 @@ theorem gwSchurProduct_firstDoubleDeletedTerm_prec0
   have hprecT :
       Interl (gwSchurProduct f (gwL p - C u * gwD (gwL p)))
         (gwSchurProduct f (gwL p)) :=
-    gwSchurProductPrec0_left hf hT hpL
-      (gwL_sub_C_mul_gwD_gwL_prec0_self hp hu)
+    gwSchurProductInterl_left hf hT hpL
+      (gwL_sub_C_mul_gwD_gwL_interl_self hp hu)
   exact
     interl_mul_X_of_interl hprecT
       (gwSchurProductPF hf hT).hasNonnegCoeffs
@@ -72,11 +72,11 @@ theorem gwSchurProduct_secondDoubleDeletedTerm_prec0
   have hpL : IsPFPolynomial (gwL p) := gwL_pf hp
   have hqL : IsPFPolynomial (gwL q) := gwL_pf hq
   have hpq : Interl p q :=
-    hsummand.prec0 hq0 (hq.ne_zero_and_splits hq0).2
-  have hLpLq : Interl (gwL p) (gwL q) := gwL_prec0 hpq
+    hsummand.interl hq0 (hq.ne_zero_and_splits hq0).2
+  have hLpLq : Interl (gwL p) (gwL q) := gwL_interl hpq
   have hSchur :
       Interl (gwSchurProduct f (gwL p)) (gwSchurProduct f (gwL q)) :=
-    gwSchurProductPrec0_left hf hpL hqL hLpLq
+    gwSchurProductInterl_left hf hpL hqL hLpLq
   simpa [hfactor, gwL_X_sub_C_mul] using hSchur
 
 /-- Garloff--Wagner's double-deleted compatibility paragraph in Theorem 4(b),
@@ -131,8 +131,8 @@ namespace IsGWKreinSummand
 theorem gwSchurProduct_prec0 {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg : IsPFPolynomial g) (hp : IsPFPolynomial p) (hg0 : g ≠ 0) :
     Interl (gwSchurProduct q p) (gwSchurProduct g p) :=
-  gwSchurProductPrec0 (h.isPFPolynomial hg) hg hp
-    (h.prec0 hg0 (hg.ne_zero_and_splits hg0).2)
+  gwSchurProductInterl (h.isPFPolynomial hg) hg hp
+    (h.interl hg0 (hg.ne_zero_and_splits hg0).2)
 
 /-- Two arbitrary Krein summands reduce to the genuinely double-deleted case. -/
 theorem gwSchurProduct_prec0_of_doubleDeleted
@@ -157,8 +157,8 @@ parent product. -/
 theorem gwHadamardProduct_prec0 {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg : IsPFPolynomial g) (hp : IsPFPolynomial p) (hg0 : g ≠ 0) :
     Interl (hadamardProduct q p) (hadamardProduct g p) :=
-  gwHadamardProductPrec0 (h.isPFPolynomial hg) hg hp
-    (h.prec0 hg0 (hg.ne_zero_and_splits hg0).2)
+  gwHadamardProductInterl (h.isPFPolynomial hg) hg hp
+    (h.interl hg0 (hg.ne_zero_and_splits hg0).2)
 
 /-- Two arbitrary Krein summands reduce to the genuinely double-deleted
 ordinary-Hadamard case. -/
@@ -217,7 +217,7 @@ theorem hadamardProduct_prec0_of_kreinSummandExpansion_left
     (hg0 : g ≠ 0) (hq0 : q ≠ 0) :
     Interl (hadamardProduct f p) (hadamardProduct g q) := by
   rw [hf, hadamardProduct_weightedSum_left]
-  apply prec0_weightedSum_right_of_nonneg
+  apply interl_weightedSum_right_of_nonneg
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
     exact hnonneg ap0 hap0
@@ -243,7 +243,7 @@ theorem hadamardProduct_prec0_of_kreinSummandExpansions
     (hg0 : g ≠ 0) (hq0 : q ≠ 0) :
     Interl (hadamardProduct f p) (hadamardProduct g q) := by
   rw [hp, hadamardProduct_weightedSum_right]
-  apply prec0_weightedSum_right_of_nonneg
+  apply interl_weightedSum_right_of_nonneg
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
     exact hpnonneg ap0 hap0

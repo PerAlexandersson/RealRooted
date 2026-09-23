@@ -17,13 +17,13 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  493  Lean declarations requiring semantic review
+  470  Lean declarations requiring semantic review
   214  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
-   23  statement scaffolds requiring proof-status-preserving renames
-  363  deprecated compatibility identifiers with canonical targets
-   58  other references, locals, or private declarations migrated directly
+   22  statement scaffolds requiring proof-status-preserving renames
+  388  deprecated compatibility identifiers with canonical targets
+   57  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
 Naming rules
@@ -146,6 +146,14 @@ The generic iterated derivative-shift layer now names all derivative,
 common-factor, exact-root, `TDeriv`, and consecutive-iterate conclusions with
 `StrictInterl`.  All 13 public old names remain exact deprecated aliases, and
 both production and tactic-backend callers use the canonical API.
+
+The checked Garloff--Wagner Theorem 12 package now uses `Interl` /
+`StrictInterl` for its Krein-summand receiver methods, derivative relation,
+weighted reductions, factorial Schur-product statement and witness, and
+Hadamard endpoints.  All 27 old public names remain exact deprecated aliases
+or an abbreviation, and non-challenge callers use the canonical API.  The
+aggregate `prec` and `prec0` ledger rows remain open because other namespaces
+still own declarations with those exact short names.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and
