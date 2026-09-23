@@ -115,7 +115,7 @@ theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
   have htarget_eq' : -F + (X - C uR) * q = g := by simp_all
   have hprec :
       StrictInterl F (C (-1 : ℝ) * F + (X - C uR) * q) :=
-    prec_of_interlaces_evalCoeff_neg_same
+    strictInterl_of_interlaces_evalCoeff_neg_same
       (f := F) (g := q) (a := C (-1 : ℝ)) (b := X - C uR)
       hqF hq_pos
       (by lia)

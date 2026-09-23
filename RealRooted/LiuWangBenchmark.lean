@@ -477,7 +477,7 @@ private theorem strictData_liuWangRec (d : Nat) :
         rw [natDegree_liuWangRec d (n + 3) (by lia), natDegree_liuWangRec d (n + 2) (by lia)]
         lia
       have hPrec : StrictInterl (liuWangRec d (n + 2)) (liuWangRec d (n + 3)) :=
-        prec_of_interlaces_evalCoeff_neg_succ hInter
+        strictInterl_of_interlaces_evalCoeff_neg_succ hInter
           (liuWangRec_posLeadingCoeff d (n + 1) (by lia))
           (liuWangRec_posLeadingCoeff d (n + 3) (by lia))
           hdeg
@@ -554,7 +554,7 @@ lemma interlaces_liuWangRec_threshold (d : Nat) :
           natDegree_liuWangRec (d + 1) (d + 2) (by lia)]
         lia
       have hPrec : StrictInterl (liuWangRec (d + 1) (d + 2)) (liuWangRec (d + 1) (d + 3)) :=
-        prec_of_interlaces_evalCoeff_neg_succ hInter
+        strictInterl_of_interlaces_evalCoeff_neg_succ hInter
           (liuWangRec_posLeadingCoeff (d + 1) (d + 1) (by lia))
           (liuWangRec_posLeadingCoeff (d + 1) (d + 3) (by lia))
           hdeg

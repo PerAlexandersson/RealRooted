@@ -286,7 +286,7 @@ private lemma prec_of_right_factor_combo_of_natDegree_ge
   have hdeg_lo' : f.natDegree ≤ (C α * f + (C β * (X - C uR)) * q).natDegree := by lia
   have hprec :
       StrictInterl f (C α * f + (C β * (X - C uR)) * q) :=
-    prec_of_interlaces_evalCoeff_neg
+    strictInterl_of_interlaces_evalCoeff_neg
       (f := f) (g := q) (a := C α) (b := C β * (X - C uR))
       hqf hq_pos hF_pos' hdeg_lo' (by lia) hq_no hb_neg
   lia

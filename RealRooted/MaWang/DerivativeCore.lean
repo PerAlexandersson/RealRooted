@@ -19,7 +19,7 @@ theorem prec_ma_wang_succ {f u v : ℝ[X]} (hf : f.Splits)
   have hder : Interlaces f.derivative f :=
     interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
   have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
-  refine prec_of_interlaces_eval_mul_neg_succ hder hf'_pos hF_pos hdeg ?_
+  refine strictInterl_of_interlaces_eval_mul_neg_succ hder hf'_pos hF_pos hdeg ?_
   intro r hr
   rw [eval_mul_derivative_eq_of_isRoot hr]
   simp_all
@@ -37,7 +37,7 @@ theorem prec_ma_wang_same {f u v : ℝ[X]} (hf : f.Splits)
   have hder : Interlaces f.derivative f :=
     interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
   have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
-  refine prec_of_interlaces_eval_mul_neg_same hder hf'_pos hF_pos hdeg ?_
+  refine strictInterl_of_interlaces_eval_mul_neg_same hder hf'_pos hF_pos hdeg ?_
   intro r hr
   rw [eval_mul_derivative_eq_of_isRoot hr]
   simp_all

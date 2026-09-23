@@ -738,7 +738,7 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
       have hf_eval : f.eval r = 0 := by simp_all
       simpa [wronskian_eval, hf_eval] using hWneg r
     left
-    exact prec_of_interlaces_eval_mul_neg_same hder hf'_pos hg_pos hdeg hroot_sign
+    exact strictInterl_of_interlaces_eval_mul_neg_same hder hf'_pos hg_pos hdeg hroot_sign
   · have hWpos0 : 0 < (wronskianPoly f g).eval 0 := by grind
     have hWpos : ∀ x : ℝ, 0 < (wronskianPoly f g).eval x := by
       intro x
@@ -757,7 +757,7 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
         simpa [wronskian_eval, hg_eval] using hWpos r
       nlinarith
     right
-    exact prec_of_interlaces_eval_mul_neg_same hder hg'_pos hf_pos hdeg.symm hroot_sign
+    exact strictInterl_of_interlaces_eval_mul_neg_same hder hg'_pos hf_pos hdeg.symm hroot_sign
 
 private lemma wronskian_coeff_top_succ
     {f g : ℝ[X]}
@@ -892,7 +892,7 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
     intro r hr
     have hf_eval : f.eval r = 0 := by simp_all
     simpa [wronskian_eval, hf_eval] using hWneg r
-  exact prec_of_interlaces_eval_mul_neg_succ hder hf'_pos hg_pos hdeg hroot_sign
+  exact strictInterl_of_interlaces_eval_mul_neg_succ hder hf'_pos hg_pos hdeg hroot_sign
 
 /-- Handoff helper for the Obreschkoff converse.
 

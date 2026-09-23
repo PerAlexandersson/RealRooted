@@ -24,7 +24,7 @@ theorem prec_of_magnitude_dominated_succ
     (hcert : ∀ r, f.IsRoot r →
       b₁.eval r * (g₁.eval r) ^ 2 + b₂.eval r * (g₂.eval r * g₁.eval r) < 0) :
     StrictInterl f (a * f + b₁ * g₁ + b₂ * g₂) := by
-  refine prec_of_interlaces_eval_mul_neg_succ hg₁f hg₁_pos hF_pos hdeg ?_
+  refine strictInterl_of_interlaces_eval_mul_neg_succ hg₁f hg₁_pos hF_pos hdeg ?_
   intro r hr
   have hf0 : f.eval r = 0 := hr
   have hcert_r := hcert r hr
@@ -45,7 +45,7 @@ theorem prec_of_magnitude_dominated_same
     (hcert : ∀ r, f.IsRoot r →
       b₁.eval r * (g₁.eval r) ^ 2 + b₂.eval r * (g₂.eval r * g₁.eval r) < 0) :
     StrictInterl f (a * f + b₁ * g₁ + b₂ * g₂) := by
-  refine prec_of_interlaces_eval_mul_neg_same hg₁f hg₁_pos hF_pos hdeg ?_
+  refine strictInterl_of_interlaces_eval_mul_neg_same hg₁f hg₁_pos hF_pos hdeg ?_
   intro r hr
   have hf0 : f.eval r = 0 := hr
   have hcert_r := hcert r hr

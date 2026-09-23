@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  688  Lean declarations requiring semantic review
+  681  Lean declarations requiring semantic review
   232  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    33  statement scaffolds requiring proof-status-preserving renames
-  164  deprecated compatibility identifiers with canonical targets
+  171  deprecated compatibility identifiers with canonical targets
    34  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -113,6 +113,13 @@ The two foundational directions of the Obreschkoff all-combinations bridge
 are now `allComboRealRooted_of_strictInterl` and
 `strictInterl_of_allComboRealRooted`.  Their old public names remain exact
 deprecated aliases, and non-challenge callers use the canonical declarations.
+
+The strict-sign Ma--Wang constructor layer now consistently names its
+`StrictInterl` conclusions: the raw same/successor root-sign constructors,
+endpoint transport, three structured coefficient-sign constructors, and the
+strict-step simple-root package all use `strictInterl` terminology.  Their old
+public names remain exact deprecated aliases, and non-challenge callers use
+the canonical declarations.
 
 Execution order
 

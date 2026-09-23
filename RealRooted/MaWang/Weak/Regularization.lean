@@ -38,9 +38,9 @@ theorem prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     exact eval_mul_right_neg_of_isRoot_of_eval_neg_of_not_isRoot hr hbδ (hno r hr)
   rcases hcases with hsame | hsucc
   · have hdeg_same : (F - C δ * g).natDegree = f.natDegree := by lia
-    exact prec_of_interlaces_eval_mul_neg_same hgf hg_pos hFδ_pos hdeg_same hroot_sign
+    exact strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hFδ_pos hdeg_same hroot_sign
   · have hdeg_succ : (F - C δ * g).natDegree = f.natDegree + 1 := by lia
-    exact prec_of_interlaces_eval_mul_neg_succ hgf hg_pos hFδ_pos hdeg_succ hroot_sign
+    exact strictInterl_of_interlaces_eval_mul_neg_succ hgf hg_pos hFδ_pos hdeg_succ hroot_sign
 
 /-- Real-rootedness for the perturbed weak-sign Liu--Wang combination. -/
 theorem isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
