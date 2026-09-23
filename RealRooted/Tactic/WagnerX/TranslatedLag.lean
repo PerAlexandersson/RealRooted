@@ -128,7 +128,7 @@ theorem isRealRooted_of_prec_pos_X_sub_C_lag_combo_sequence
     (hrec : ∀ n : Nat,
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * (X - C r)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_pos_X_sub_C_lag_combo_sequence hbase hshift_nonneg ha hc hrec
 
 

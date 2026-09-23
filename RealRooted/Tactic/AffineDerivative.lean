@@ -34,7 +34,7 @@ theorem isRealRooted_of_prec_affine_derivative_sequence
     ∀ n : Nat,
       C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
         (C (c n) * P n + (1 - X) * (P n).derivative).Splits :=
-  left_isRealRooted_of_prec_sequence <|
+  left_isRealRooted_of_strictInterl_sequence <|
     prec_affine_derivative_sequence hsplits hdeg hpos hroots_nonpos hc
 
 theorem prec_affine_derivative_nonneg_sequence {P : Nat → ℝ[X]} {c : Nat → ℝ}
@@ -56,7 +56,7 @@ theorem isRealRooted_of_prec_affine_derivative_nonneg_sequence
     ∀ n : Nat,
       C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
         (C (c n) * P n + (1 - X) * (P n).derivative).Splits :=
-  left_isRealRooted_of_prec_sequence <|
+  left_isRealRooted_of_strictInterl_sequence <|
     prec_affine_derivative_nonneg_sequence hsplits hdeg hnn hc
 
 theorem coeff_affineDeriv_sequence

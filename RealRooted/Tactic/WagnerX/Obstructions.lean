@@ -45,9 +45,9 @@ theorem not_prec_X_sq_mul_derivative_left {f g : ℝ[X]}
     (hgc0 : g.coeff 0 ≠ 0) :
     ¬ StrictInterl (X ^ 2 * f.derivative) g := by
   intro h
-  have hg0 : g ≠ 0 := right_ne_zero_of_prec h
-  have hgs : g.Splits := right_splits_of_prec h
-  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := left_ne_zero_of_prec h
+  have hg0 : g ≠ 0 := right_ne_zero_of_strictInterl h
+  have hgs : g.Splits := right_splits_of_strictInterl h
+  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := left_ne_zero_of_strictInterl h
   have hfd : f.derivative ≠ 0 := by rr_nonzero
   have hXdeg : 2 ≤ (X ^ 2 * f.derivative).natDegree := by
     rw [natDegree_mul (pow_ne_zero 2 X_ne_zero) hfd, natDegree_pow, natDegree_X]
@@ -74,9 +74,9 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     (hgc0 : g.coeff 0 ≠ 0) :
     ¬ StrictInterl g (X ^ 2 * f.derivative) := by
   intro h
-  have hg0 : g ≠ 0 := left_ne_zero_of_prec h
-  have hgs : g.Splits := left_splits_of_prec h
-  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := right_ne_zero_of_prec h
+  have hg0 : g ≠ 0 := left_ne_zero_of_strictInterl h
+  have hgs : g.Splits := left_splits_of_strictInterl h
+  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := right_ne_zero_of_strictInterl h
   have hfd : f.derivative ≠ 0 := by rr_nonzero
   have hXf_deg : (X ^ 2 * f.derivative).natDegree = g.natDegree := by
     rw [natDegree_mul (pow_ne_zero 2 X_ne_zero) hfd, natDegree_pow, natDegree_X,
@@ -92,7 +92,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     have hrw : X ^ 2 * f.derivative = X * (X * f.derivative) := by ring
     rw [hrw]
     rr_nonneg_coeffs using hfnn.derivative
-  have hXf_splits : (X ^ 2 * f.derivative).Splits := right_splits_of_prec h
+  have hXf_splits : (X ^ 2 * f.derivative).Splits := right_splits_of_strictInterl h
   have huR_mem : uR ∈ (X ^ 2 * f.derivative).roots :=
     (mem_roots hXf_ne).mpr huR_root
   have huR_le : uR ≤ 0 :=

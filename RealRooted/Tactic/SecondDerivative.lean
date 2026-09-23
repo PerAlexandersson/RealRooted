@@ -24,7 +24,7 @@ theorem splits_mw_derivative_of_nonpos {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
     (u * f + v * f.derivative).Splits :=
-  right_splits_of_prec
+  right_splits_of_strictInterl
     (prec_mw_derivative_of_nonpos
       hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos)
 

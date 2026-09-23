@@ -480,14 +480,14 @@ macro_rules
           (RealRooted.isRealRooted_mul_of_isRealRooted
             (RealRooted.right_isRealRooted_of_isRealRooted_pair $h)
             (RealRooted.left_isRealRooted_of_isRealRooted_pair $h)),
-          RealRooted.left_isRealRooted_of_prec $h,
-          RealRooted.right_isRealRooted_of_prec $h,
-          RealRooted.left_ne_zero_of_prec $h,
-          RealRooted.right_ne_zero_of_prec $h,
-          RealRooted.left_splits_of_prec $h,
-          RealRooted.right_splits_of_prec $h,
-          RealRooted.left_eq_zero_or_splits_of_prec $h,
-          RealRooted.right_eq_zero_or_splits_of_prec $h,
+          RealRooted.left_isRealRooted_of_strictInterl $h,
+          RealRooted.right_isRealRooted_of_strictInterl $h,
+          RealRooted.left_ne_zero_of_strictInterl $h,
+          RealRooted.right_ne_zero_of_strictInterl $h,
+          RealRooted.left_splits_of_strictInterl $h,
+          RealRooted.right_splits_of_strictInterl $h,
+          RealRooted.left_eq_zero_or_splits_of_strictInterl $h,
+          RealRooted.right_eq_zero_or_splits_of_strictInterl $h,
           RealRooted.right_isRealRooted_of_interlaces $h,
           RealRooted.left_isRealRooted_of_interlaces $h,
           RealRooted.right_ne_zero_of_interlaces $h,
@@ -589,21 +589,21 @@ macro_rules
           (RealRooted.ne_zero_of_isRealRooted_sequence
             (fun n => RealRooted.left_isRealRooted_of_interlaces ($h n)) _),
           (RealRooted.ne_zero_of_isRealRooted_sequence
-            (RealRooted.left_isRealRooted_of_prec_sequence $h)),
+            (RealRooted.left_isRealRooted_of_strictInterl_sequence $h)),
           (RealRooted.ne_zero_of_isRealRooted_sequence
-            (RealRooted.left_isRealRooted_of_prec_sequence $h) _),
+            (RealRooted.left_isRealRooted_of_strictInterl_sequence $h) _),
           (RealRooted.ne_zero_of_isRealRooted_sequence
-            (RealRooted.right_isRealRooted_of_prec_sequence $h)),
+            (RealRooted.right_isRealRooted_of_strictInterl_sequence $h)),
           (RealRooted.ne_zero_of_isRealRooted_sequence
-            (RealRooted.right_isRealRooted_of_prec_sequence $h) _),
+            (RealRooted.right_isRealRooted_of_strictInterl_sequence $h) _),
           RealRooted.ne_zero_of_isRealRooted_sequence $h,
           (RealRooted.ne_zero_of_isRealRooted_sequence $h _),
           RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h,
           (RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h _),
           RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h,
           (RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h _),
-          RealRooted.left_ne_zero_of_prec $h,
-          RealRooted.right_ne_zero_of_prec $h,
+          RealRooted.left_ne_zero_of_strictInterl $h,
+          RealRooted.right_ne_zero_of_strictInterl $h,
           RealRooted.right_ne_zero_of_interlaces $h,
           RealRooted.left_ne_zero_of_interlaces $h,
           RealRooted.ne_zero_of_isRealRooted $h,
@@ -639,13 +639,13 @@ macro_rules
           (RealRooted.splits_of_isRealRooted_sequence
             (fun n => RealRooted.left_isRealRooted_of_interlaces ($h n)) _),
           (RealRooted.splits_of_isRealRooted_sequence
-            (RealRooted.left_isRealRooted_of_prec_sequence $h)),
+            (RealRooted.left_isRealRooted_of_strictInterl_sequence $h)),
           (RealRooted.splits_of_isRealRooted_sequence
-            (RealRooted.left_isRealRooted_of_prec_sequence $h) _),
+            (RealRooted.left_isRealRooted_of_strictInterl_sequence $h) _),
           (RealRooted.splits_of_isRealRooted_sequence
-            (RealRooted.right_isRealRooted_of_prec_sequence $h)),
+            (RealRooted.right_isRealRooted_of_strictInterl_sequence $h)),
           (RealRooted.splits_of_isRealRooted_sequence
-            (RealRooted.right_isRealRooted_of_prec_sequence $h) _),
+            (RealRooted.right_isRealRooted_of_strictInterl_sequence $h) _),
           RealRooted.splits_of_isRealRooted_sequence $h,
           (RealRooted.splits_of_isRealRooted_sequence $h _),
           RealRooted.left_splits_of_isRealRooted_pair_sequence $h,
@@ -656,8 +656,8 @@ macro_rules
           (RealRooted.splits_mul_sequence_of_isRealRooted_pair_sequence $h _),
           RealRooted.splits_swap_mul_sequence_of_isRealRooted_pair_sequence $h,
           (RealRooted.splits_swap_mul_sequence_of_isRealRooted_pair_sequence $h _),
-          RealRooted.left_splits_of_prec $h,
-          RealRooted.right_splits_of_prec $h,
+          RealRooted.left_splits_of_strictInterl $h,
+          RealRooted.right_splits_of_strictInterl $h,
           RealRooted.right_splits_of_interlaces $h,
           RealRooted.left_splits_of_interlaces $h,
           RealRooted.splits_of_isRealRooted $h,
@@ -751,13 +751,13 @@ macro_rules
           (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence
             (fun n => RealRooted.left_isRealRooted_of_interlaces ($h n)) _),
           (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence
-            (RealRooted.left_isRealRooted_of_prec_sequence $h)),
+            (RealRooted.left_isRealRooted_of_strictInterl_sequence $h)),
           (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence
-            (RealRooted.left_isRealRooted_of_prec_sequence $h) _),
+            (RealRooted.left_isRealRooted_of_strictInterl_sequence $h) _),
           (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence
-            (RealRooted.right_isRealRooted_of_prec_sequence $h)),
+            (RealRooted.right_isRealRooted_of_strictInterl_sequence $h)),
           (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence
-            (RealRooted.right_isRealRooted_of_prec_sequence $h) _),
+            (RealRooted.right_isRealRooted_of_strictInterl_sequence $h) _),
           RealRooted.eq_zero_or_splits_of_isRealRooted $h,
           RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair $h,
           RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair $h,
@@ -771,8 +771,8 @@ macro_rules
           RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair $h,
           RealRooted.mul_eq_zero_or_splits_of_isRealRooted_pair $h,
           RealRooted.swap_mul_eq_zero_or_splits_of_isRealRooted_pair $h,
-          RealRooted.left_eq_zero_or_splits_of_prec $h,
-          RealRooted.right_eq_zero_or_splits_of_prec $h,
+          RealRooted.left_eq_zero_or_splits_of_strictInterl $h,
+          RealRooted.right_eq_zero_or_splits_of_strictInterl $h,
           RealRooted.right_eq_zero_or_splits_of_interlaces $h,
           RealRooted.left_eq_zero_or_splits_of_interlaces $h,
           RealRooted.eq_zero_or_splits_of_isRealRooted_sequence $h,
@@ -872,10 +872,10 @@ macro_rules
           $h,
           (fun n => RealRooted.left_isRealRooted_of_interlaces ($h n)),
           (RealRooted.left_isRealRooted_of_interlaces ($h _)),
-          (RealRooted.left_isRealRooted_of_prec_sequence $h),
-          (RealRooted.left_isRealRooted_of_prec_sequence $h _),
-          (RealRooted.right_isRealRooted_of_prec_sequence $h),
-          (RealRooted.right_isRealRooted_of_prec_sequence $h _),
+          (RealRooted.left_isRealRooted_of_strictInterl_sequence $h),
+          (RealRooted.left_isRealRooted_of_strictInterl_sequence $h _),
+          (RealRooted.right_isRealRooted_of_strictInterl_sequence $h),
+          (RealRooted.right_isRealRooted_of_strictInterl_sequence $h _),
           (RealRooted.at_of_isRealRooted_sequence $h _),
           (RealRooted.at_of_isRealRooted_pair_sequence $h _),
           RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h,
@@ -887,8 +887,8 @@ macro_rules
           RealRooted.isRealRooted_swap_mul_sequence_of_isRealRooted_pair_sequence $h,
           (RealRooted.isRealRooted_swap_mul_sequence_of_isRealRooted_pair_sequence
             $h _),
-          RealRooted.left_isRealRooted_of_prec $h,
-          RealRooted.right_isRealRooted_of_prec $h,
+          RealRooted.left_isRealRooted_of_strictInterl $h,
+          RealRooted.right_isRealRooted_of_strictInterl $h,
           RealRooted.right_isRealRooted_of_interlaces $h,
           RealRooted.left_isRealRooted_of_interlaces $h,
           RealRooted.left_isRealRooted_of_isRealRooted_pair $h,
@@ -1008,14 +1008,14 @@ macro_rules
         base := $hbase:term,
         step := $hstep:term) =>
       `(tactic|
-        exact RealRooted.prec_sequence_of_base_and_step $hbase $hstep)
+        exact RealRooted.strictInterl_sequence_of_base_and_step $hbase $hstep)
   | `(tactic|
       rr_prec_sequence_realrooted using
         base := $hbase:term,
         step := $hstep:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_sequence $hbase $hstep))
+          (RealRooted.isRealRooted_of_strictInterl_sequence $hbase $hstep))
   | `(tactic|
       rr_finish_sequence using
         base := $hbase:term,
@@ -1029,7 +1029,7 @@ macro_rules
         prec := $hprec:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_chain_from_step $hprec))
+          (RealRooted.isRealRooted_of_strictInterl_chain_from_step $hprec))
   | `(tactic|
       rr_finish_sequence using
         prec := $hprec:term,
@@ -1037,13 +1037,13 @@ macro_rules
       `(tactic|
         with_reducible_and_instances
           first
-            | exact RealRooted.interlaces_of_prec_chain $hprec $hdegree
-            | exact RealRooted.interlaces_of_prec_chain $hprec (fun n => ($hdegree n).symm)
-            | exact (RealRooted.interlaces_of_prec_chain $hprec $hdegree _)
-            | exact (RealRooted.interlaces_of_prec_chain
+            | exact RealRooted.interlaces_of_strictInterl_chain $hprec $hdegree
+            | exact RealRooted.interlaces_of_strictInterl_chain $hprec (fun n => ($hdegree n).symm)
+            | exact (RealRooted.interlaces_of_strictInterl_chain $hprec $hdegree _)
+            | exact (RealRooted.interlaces_of_strictInterl_chain
                 $hprec (fun n => ($hdegree n).symm) _)
             | rr_exact_realrooted_sequence_or_projection
-                (RealRooted.isRealRooted_of_prec_chain_from_step $hprec))
+                (RealRooted.isRealRooted_of_strictInterl_chain_from_step $hprec))
   | `(tactic|
       rr_prec_sequence_branches using
         base := $hbase:term,
@@ -1051,7 +1051,7 @@ macro_rules
         same := $hsame:term,
         successor := $hsucc:term) =>
       `(tactic|
-        exact RealRooted.prec_sequence_of_base_and_degree_branches
+        exact RealRooted.strictInterl_sequence_of_base_and_degree_branches
           $hbase $hbranch $hsame $hsucc)
   | `(tactic|
       rr_prec_sequence_branches using
@@ -1060,7 +1060,7 @@ macro_rules
         same := $hsame:term,
         successor := $hsucc:term) =>
       `(tactic|
-        exact RealRooted.prec_sequence_of_base_and_degree_branches
+        exact RealRooted.strictInterl_sequence_of_base_and_degree_branches
           $hbase $hbranch $hsame $hsucc)
   | `(tactic|
       rr_prec_sequence_branches_realrooted using
@@ -1070,7 +1070,7 @@ macro_rules
         successor := $hsucc:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_sequence_degree_branches
+          (RealRooted.isRealRooted_of_strictInterl_sequence_degree_branches
             $hbase $hbranch $hsame $hsucc))
   | `(tactic|
       rr_prec_sequence_branches_realrooted using
@@ -1080,7 +1080,7 @@ macro_rules
         successor := $hsucc:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_sequence_degree_branches
+          (RealRooted.isRealRooted_of_strictInterl_sequence_degree_branches
             $hbase $hbranch $hsame $hsucc))
   | `(tactic|
       rr_finish_sequence_branches using
@@ -1114,9 +1114,9 @@ macro_rules
             | exact RealRooted.derivative_interlaces $h (by rr_close_side)
             | exact (RealRooted.derivative_interlaces $h (by rr_close_side)).toStrictInterl
             | rr_exact_realrooted_sequence_or_projection
-                (RealRooted.left_isRealRooted_of_prec_sequence $h)
+                (RealRooted.left_isRealRooted_of_strictInterl_sequence $h)
             | rr_exact_realrooted_sequence_or_projection
-                (RealRooted.right_isRealRooted_of_prec_sequence $h)
+                (RealRooted.right_isRealRooted_of_strictInterl_sequence $h)
             | rr_exact_realrooted_sequence_or_projection
                 (fun n => RealRooted.left_isRealRooted_of_interlaces ($h n))
             | rr_exact_realrooted_sequence_or_projection $h
@@ -1135,18 +1135,18 @@ macro_rules
   | `(tactic| rr_finish using $hprec:term, $hdeg:term) =>
       `(tactic|
         first
-          | exact RealRooted.interlaces_of_prec_chain $hprec $hdeg
-          | exact RealRooted.interlaces_of_prec_chain $hprec (fun n => ($hdeg n).symm)
-          | exact (RealRooted.interlaces_of_prec_chain $hprec $hdeg _)
-          | exact (RealRooted.interlaces_of_prec_chain
+          | exact RealRooted.interlaces_of_strictInterl_chain $hprec $hdeg
+          | exact RealRooted.interlaces_of_strictInterl_chain $hprec (fun n => ($hdeg n).symm)
+          | exact (RealRooted.interlaces_of_strictInterl_chain $hprec $hdeg _)
+          | exact (RealRooted.interlaces_of_strictInterl_chain
               $hprec (fun n => ($hdeg n).symm) _)
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_prec_chain_from_step $hprec)
+              (RealRooted.isRealRooted_of_strictInterl_chain_from_step $hprec)
           | exact RealRooted.StrictInterl.toInterlaces $hprec $hdeg
           | exact RealRooted.StrictInterl.toInterlaces $hprec ($hdeg).symm
-          | exact RealRooted.prec_sequence_of_base_and_step $hprec $hdeg
+          | exact RealRooted.strictInterl_sequence_of_base_and_step $hprec $hdeg
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_prec_sequence $hprec $hdeg)
+              (RealRooted.isRealRooted_of_strictInterl_sequence $hprec $hdeg)
           | simpa [RealRooted.IsGeneralizedSturmSeq] using
               And.intro $hprec $hdeg
           | simpa [RealRooted.IsSturmSeq] using And.intro $hprec $hdeg)
@@ -1156,10 +1156,10 @@ macro_rules
       `(tactic|
         with_reducible_and_instances
           first
-            | exact RealRooted.prec_sequence_of_base_and_degree_branches
+            | exact RealRooted.strictInterl_sequence_of_base_and_degree_branches
                 $hbase $hbranch $hsame $hsucc
             | rr_exact_realrooted_sequence_or_projection
-                (RealRooted.isRealRooted_of_prec_sequence_degree_branches
+                (RealRooted.isRealRooted_of_strictInterl_sequence_degree_branches
                   $hbase $hbranch $hsame $hsucc))
   | `(tactic| rr_finish) =>
       `(tactic|
@@ -1167,9 +1167,9 @@ macro_rules
           | rr_lookup
           | assumption
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_prec_chain_from_step rr_lookup_term)
-          | exact RealRooted.interlaces_of_prec_chain rr_lookup_term rr_lookup_term
-          | exact RealRooted.interlaces_of_prec_chain
+              (RealRooted.isRealRooted_of_strictInterl_chain_from_step rr_lookup_term)
+          | exact RealRooted.interlaces_of_strictInterl_chain rr_lookup_term rr_lookup_term
+          | exact RealRooted.interlaces_of_strictInterl_chain
               rr_lookup_term (fun n => (rr_lookup_term n).symm)
           | rr_exact_realrooted_sequence_or_projection rr_lookup_term
           | rr_exact_realrooted_pair_sequence_or_projection rr_lookup_term

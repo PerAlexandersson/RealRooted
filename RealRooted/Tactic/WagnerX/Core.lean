@@ -40,11 +40,12 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
     (ha : 0 < a)
     (hc : 0 < c) :
     StrictInterl g (X * (C c * g.derivative + C a * f)) := by
-  have hg_pos : HasPosLeadingCoeff g := by rr_pos_lc using nonzero := right_ne_zero_of_prec h
-  have hf_pos : HasPosLeadingCoeff f := by rr_pos_lc using nonzero := left_ne_zero_of_prec h
+  have hg_pos : HasPosLeadingCoeff g := by
+    rr_pos_lc using nonzero := right_ne_zero_of_strictInterl h
+  have hf_pos : HasPosLeadingCoeff f := by rr_pos_lc using nonzero := left_ne_zero_of_strictInterl h
   have hg_der_pos : HasPosLeadingCoeff g.derivative := hg_pos.derivative (by lia)
   have hder : StrictInterl g.derivative g :=
-    (derivative_interlaces (right_splits_of_prec h) hdeg).toStrictInterl
+    (derivative_interlaces (right_splits_of_strictInterl h) hdeg).toStrictInterl
   have hnonneg : ∀ ap ∈ [(c, g.derivative), (a, f)], 0 ≤ ap.1 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
@@ -119,7 +120,7 @@ theorem prec_wagner_derivative_gap_lag_sequence {P : Nat → ℝ[X]} {a c : Nat 
     (hrec : ∀ n : Nat,
       P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  refine prec_sequence_of_base_and_step hbase ?_
+  refine strictInterl_sequence_of_base_and_step hbase ?_
   intro n hprev
   have hstep :
       StrictInterl (P (n + 1))
@@ -139,7 +140,7 @@ theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
     (hrec : ∀ n : Nat,
       P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_wagner_derivative_gap_lag_sequence hbase hnonneg hdeg ha hc hrec
 
 /-- Sequence induction for scalar-left active Wagner derivative-gap-lag recurrences. -/
@@ -155,7 +156,7 @@ theorem prec_wagner_derivative_gap_lag_sequence_den
       C (d n) * P (n + 2) =
         X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  refine prec_sequence_of_base_and_step hbase ?_
+  refine strictInterl_sequence_of_base_and_step hbase ?_
   intro n hprev
   exact
     prec_wagner_derivative_gap_lag_step_den
@@ -175,7 +176,7 @@ theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
       C (d n) * P (n + 2) =
         X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_wagner_derivative_gap_lag_sequence_den hbase hnonneg hdeg ha hc hd hrec
 
 

@@ -48,7 +48,7 @@ theorem isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_inner_window_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hroot_lower hB_nonpos hrec hdeg_succ hno
 
@@ -82,7 +82,7 @@ theorem isRealRooted_of_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
@@ -119,7 +119,7 @@ theorem isRealRooted_of_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
@@ -154,7 +154,7 @@ theorem isRealRooted_of_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
@@ -195,7 +195,7 @@ theorem isRealRooted_of_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_n
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
@@ -228,7 +228,7 @@ theorem isRealRooted_of_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
@@ -265,7 +265,7 @@ theorem isRealRooted_of_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
@@ -300,7 +300,7 @@ theorem isRealRooted_of_lw_interval_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_interval_lag_sequence
       hbase hpos hroot_lower hroot_upper hB_nonpos hrec hdeg_succ hno
 
@@ -338,7 +338,7 @@ theorem isRealRooted_of_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
       hbase hpos hroot_lower hroot_upper hrec hdeg_succ hno
 
@@ -379,7 +379,7 @@ theorem isRealRooted_of_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
       hbase hpos hc hroot_lower hroot_upper hrec hdeg_succ hno
 
@@ -424,7 +424,7 @@ theorem isRealRooted_of_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hb hba hroot_lower hrec hdeg_succ hno
 
@@ -460,7 +460,7 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
@@ -519,7 +519,7 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
       (A := A) hbase hpos hnonneg hc hroot_lower hden hcoeff hraw hdeg_succ hno
 
@@ -563,7 +563,7 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_co
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
@@ -597,7 +597,7 @@ theorem isRealRooted_of_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
@@ -634,7 +634,7 @@ theorem isRealRooted_of_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 

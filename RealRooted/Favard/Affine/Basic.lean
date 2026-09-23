@@ -226,7 +226,7 @@ theorem isRealRooted_of_favard_affine_const_coeff {P : Nat → ℝ[X]} {s α β 
     (hP1 : P 1 = C s * X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (C s * X - C α) * P (n + 1) - C β * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     favardInterlacing_affine_const_coeff hs hβ hP0 hP1 hstep
 
 /-- Nonzero consequence of the positive-slope affine Favard wrapper. -/
@@ -285,7 +285,7 @@ theorem isRealRooted_of_favard_affine_param_coeff
         (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     favardInterlacing_affine_param_coeff hs hβ hP0 hP1 hstep
 
 /-- Nonzero consequence of the positive-slope parameterized affine Favard

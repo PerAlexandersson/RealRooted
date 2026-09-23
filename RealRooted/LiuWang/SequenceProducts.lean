@@ -46,7 +46,7 @@ theorem isRealRooted_of_lw_positive_X_mul_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_positive_X_mul_lag_sequence
       hbase hpos hnonneg hQ_nonneg hrec hdeg_succ hno
 
@@ -87,7 +87,7 @@ theorem isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence {P : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_positive_C_mul_X_mul_lag_sequence
       hbase hpos hnonneg hc hQ_nonneg hrec hdeg_succ hno
 
@@ -121,7 +121,7 @@ theorem isRealRooted_of_lw_tR_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_tR_lag_sequence hbase hpos hnonneg hR_nonneg hrec hdeg_succ hno
 
 /-- Scalar Family E sequence wrapper for strict-degree
@@ -155,7 +155,7 @@ theorem isRealRooted_of_lw_c_tR_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_c_tR_lag_sequence hbase hpos hnonneg hc hR_nonneg hrec hdeg_succ hno
 
 /-- Sequence wrapper for strict-degree Family E `t(1-t)` lag recurrences. -/
@@ -189,7 +189,7 @@ theorem isRealRooted_of_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_X_mul_one_sub_X_lag_sequence hbase hpos hnonneg hrec hdeg_succ hno
 
 /-- Sequence wrapper for strict-degree Family E `t(a_n-b_n t)` lag
@@ -229,7 +229,7 @@ theorem isRealRooted_of_lw_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_X_mul_C_sub_C_mul_X_lag_sequence
       hbase hpos hnonneg ha hb hrec hdeg_succ hno
 
@@ -274,7 +274,7 @@ theorem isRealRooted_of_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
       hbase hpos hnonneg hc ha hb hrec hdeg_succ hno
 
@@ -308,7 +308,7 @@ theorem isRealRooted_of_lw_current_CX_positive_t_lag_sequence {P : Nat → ℝ[X
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_current_CX_positive_t_lag_sequence
       hbase hpos hnonneg hc hrec hdeg_succ hno
 
@@ -342,7 +342,7 @@ theorem isRealRooted_of_lw_current_X_positive_t_lag_sequence {P : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_current_X_positive_t_lag_sequence hbase hpos hnonneg hc hrec hdeg_succ hno
 
 /-- Sequence-level positive `t`-lag induction for current factor `1+X`. -/
@@ -373,7 +373,7 @@ theorem isRealRooted_of_lw_current_one_add_X_positive_t_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     prec_lw_current_one_add_X_positive_t_lag_sequence
       hbase hpos hnonneg hc hrec hdeg_succ hno
 

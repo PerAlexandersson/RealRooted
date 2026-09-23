@@ -79,53 +79,68 @@ theorem sequence_of_base_interval_and_step_two_from {Q : Nat → Prop}
 
 This is the plateau-safe sequence shell: the step only needs the previous
 `StrictInterl` certificate, not a degree-increasing `Interlaces` certificate. -/
-theorem prec_sequence_of_base_and_step {P : Nat → ℝ[X]}
+theorem strictInterl_sequence_of_base_and_step {P : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hstep : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   sequence_of_base_and_step hbase hstep
 
+@[deprecated strictInterl_sequence_of_base_and_step (since := "2026-09-18")]
+alias prec_sequence_of_base_and_step := strictInterl_sequence_of_base_and_step
+
 /-- Real-rootedness corollary of a generic `StrictInterl`-chain induction. -/
-theorem isRealRooted_of_prec_sequence {P : Nat → ℝ[X]}
+theorem isRealRooted_of_strictInterl_sequence {P : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hstep : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n => (prec_sequence_of_base_and_step hbase hstep n).1
+  fun n => (strictInterl_sequence_of_base_and_step hbase hstep n).1
+
+@[deprecated isRealRooted_of_strictInterl_sequence (since := "2026-09-18")]
+alias isRealRooted_of_prec_sequence := isRealRooted_of_strictInterl_sequence
 
 /-- A consecutive `StrictInterl` chain gives rowwise nonzero real-rootedness. -/
-theorem isRealRooted_of_prec_chain {P : Nat → ℝ[X]}
+theorem isRealRooted_of_strictInterl_chain {P : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_sequence hbase (fun n _ => hprec (n + 1))
+  isRealRooted_of_strictInterl_sequence hbase (fun n _ => hprec (n + 1))
+
+@[deprecated isRealRooted_of_strictInterl_chain (since := "2026-09-18")]
+alias isRealRooted_of_prec_chain := isRealRooted_of_strictInterl_chain
 
 /-- A consecutive `StrictInterl` chain gives rowwise nonzero real-rootedness, using
 the first step as the base certificate. -/
-theorem isRealRooted_of_prec_chain_from_step {P : Nat → ℝ[X]}
+theorem isRealRooted_of_strictInterl_chain_from_step {P : Nat → ℝ[X]}
     (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain (hprec 0) hprec
+  isRealRooted_of_strictInterl_chain (hprec 0) hprec
+
+@[deprecated isRealRooted_of_strictInterl_chain_from_step (since := "2026-09-18")]
+alias isRealRooted_of_prec_chain_from_step := isRealRooted_of_strictInterl_chain_from_step
 
 /-- A consecutive `Interlaces` chain gives rowwise nonzero real-rootedness. -/
 theorem isRealRooted_of_interlaces_chain {P : Nat → ℝ[X]}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step fun n => (hinter n).toStrictInterl
+  isRealRooted_of_strictInterl_chain_from_step fun n => (hinter n).toStrictInterl
 
 /-- A consecutive `StrictInterl` chain gives consecutive interlacing once the degree
 increments are supplied. -/
-theorem interlaces_of_prec_chain {P : Nat → ℝ[X]}
+theorem interlaces_of_strictInterl_chain {P : Nat → ℝ[X]}
     (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) :=
   fun n => (hprec n).toInterlaces (hdegree n)
+
+@[deprecated interlaces_of_strictInterl_chain (since := "2026-09-18")]
+alias interlaces_of_prec_chain := interlaces_of_strictInterl_chain
 
 /-- Generic `StrictInterl`-chain induction with a same-degree/successor-degree branch.
 
 This wraps plateau recurrences such as degree patterns `1,1,2,2,3,3,...`.
 The theorem does not prove either branch; it carries the induction hypothesis
 and dispatches to the sequence-specific same-degree or successor-degree step. -/
-theorem prec_sequence_of_base_and_degree_branches {P : Nat → ℝ[X]}
+theorem strictInterl_sequence_of_base_and_degree_branches {P : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hbranch : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
@@ -135,14 +150,18 @@ theorem prec_sequence_of_base_and_degree_branches {P : Nat → ℝ[X]}
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
       StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  refine prec_sequence_of_base_and_step hbase ?_
+  refine strictInterl_sequence_of_base_and_step hbase ?_
   intro n hprev
   rcases hbranch n with hsame_degree | hsucc_degree
   · exact hsame n hsame_degree hprev
   · exact hsucc n hsucc_degree hprev
 
+@[deprecated strictInterl_sequence_of_base_and_degree_branches (since := "2026-09-18")]
+alias prec_sequence_of_base_and_degree_branches :=
+  strictInterl_sequence_of_base_and_degree_branches
+
 /-- Real-rootedness corollary of a branched generic `StrictInterl`-chain induction. -/
-theorem isRealRooted_of_prec_sequence_degree_branches {P : Nat → ℝ[X]}
+theorem isRealRooted_of_strictInterl_sequence_degree_branches {P : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hbranch : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
@@ -152,7 +171,12 @@ theorem isRealRooted_of_prec_sequence_degree_branches {P : Nat → ℝ[X]}
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
       StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := fun n =>
-  (prec_sequence_of_base_and_degree_branches hbase hbranch hsame hsucc n).1
+  (strictInterl_sequence_of_base_and_degree_branches hbase hbranch hsame hsucc n).1
+
+@[deprecated isRealRooted_of_strictInterl_sequence_degree_branches
+  (since := "2026-09-18")]
+alias isRealRooted_of_prec_sequence_degree_branches :=
+  isRealRooted_of_strictInterl_sequence_degree_branches
 
 /-- Project the nonvanishing half of a real-rootedness certificate. -/
 theorem ne_zero_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
@@ -404,44 +428,68 @@ theorem right_eq_zero_or_splits_of_isRealRooted_pair {p q : ℝ[X]}
   eq_zero_or_splits_of_isRealRooted (right_isRealRooted_of_isRealRooted_pair hpq)
 
 /-- Project real-rootedness of the left argument from a `StrictInterl` certificate. -/
-theorem left_isRealRooted_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
+theorem left_isRealRooted_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     f ≠ 0 ∧ f.Splits :=
   hfg.1
 
+@[deprecated left_isRealRooted_of_strictInterl (since := "2026-09-18")]
+alias left_isRealRooted_of_prec := left_isRealRooted_of_strictInterl
+
 /-- Project real-rootedness of the right argument from a `StrictInterl` certificate. -/
-theorem right_isRealRooted_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
+theorem right_isRealRooted_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     g ≠ 0 ∧ g.Splits :=
   hfg.2.1
 
+@[deprecated right_isRealRooted_of_strictInterl (since := "2026-09-18")]
+alias right_isRealRooted_of_prec := right_isRealRooted_of_strictInterl
+
 /-- Project left-argument nonvanishing from a `StrictInterl` certificate. -/
-theorem left_ne_zero_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
+theorem left_ne_zero_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     f ≠ 0 :=
-  (left_isRealRooted_of_prec hfg).1
+  (left_isRealRooted_of_strictInterl hfg).1
+
+@[deprecated left_ne_zero_of_strictInterl (since := "2026-09-18")]
+alias left_ne_zero_of_prec := left_ne_zero_of_strictInterl
 
 /-- Project left-argument splitting from a `StrictInterl` certificate. -/
-theorem left_splits_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
+theorem left_splits_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     f.Splits :=
-  (left_isRealRooted_of_prec hfg).2
+  (left_isRealRooted_of_strictInterl hfg).2
+
+@[deprecated left_splits_of_strictInterl (since := "2026-09-18")]
+alias left_splits_of_prec := left_splits_of_strictInterl
 
 /-- Project left-argument zero-aware splitting from a `StrictInterl` certificate. -/
-theorem left_eq_zero_or_splits_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
+theorem left_eq_zero_or_splits_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     f = 0 ∨ f.Splits :=
-  eq_zero_or_splits_of_isRealRooted (left_isRealRooted_of_prec hfg)
+  eq_zero_or_splits_of_isRealRooted (left_isRealRooted_of_strictInterl hfg)
+
+@[deprecated left_eq_zero_or_splits_of_strictInterl (since := "2026-09-18")]
+alias left_eq_zero_or_splits_of_prec := left_eq_zero_or_splits_of_strictInterl
 
 /-- Project right-argument nonvanishing from a `StrictInterl` certificate. -/
-theorem right_ne_zero_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
+theorem right_ne_zero_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     g ≠ 0 :=
-  (right_isRealRooted_of_prec hfg).1
+  (right_isRealRooted_of_strictInterl hfg).1
+
+@[deprecated right_ne_zero_of_strictInterl (since := "2026-09-18")]
+alias right_ne_zero_of_prec := right_ne_zero_of_strictInterl
 
 /-- Project right-argument splitting from a `StrictInterl` certificate. -/
-theorem right_splits_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
+theorem right_splits_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     g.Splits :=
-  (right_isRealRooted_of_prec hfg).2
+  (right_isRealRooted_of_strictInterl hfg).2
+
+@[deprecated right_splits_of_strictInterl (since := "2026-09-18")]
+alias right_splits_of_prec := right_splits_of_strictInterl
 
 /-- Project right-argument zero-aware splitting from a `StrictInterl` certificate. -/
-theorem right_eq_zero_or_splits_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
+theorem right_eq_zero_or_splits_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     g = 0 ∨ g.Splits :=
-  eq_zero_or_splits_of_isRealRooted (right_isRealRooted_of_prec hfg)
+  eq_zero_or_splits_of_isRealRooted (right_isRealRooted_of_strictInterl hfg)
+
+@[deprecated right_eq_zero_or_splits_of_strictInterl (since := "2026-09-18")]
+alias right_eq_zero_or_splits_of_prec := right_eq_zero_or_splits_of_strictInterl
 
 /-- Project real-rootedness of the right argument from an `Interlaces` certificate. -/
 theorem right_isRealRooted_of_interlaces {g f : ℝ[X]} (hgf : Interlaces g f) :
@@ -520,24 +568,35 @@ theorem at_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
   hP n
 
 /-- Project row-wise pair real-rootedness from a `StrictInterl` sequence. -/
-theorem isRealRooted_pair_sequence_of_prec_sequence {A B : Nat → ℝ[X]}
+theorem isRealRooted_pair_sequence_of_strictInterl_sequence {A B : Nat → ℝ[X]}
     (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits) :=
   fun n =>
-    ⟨left_isRealRooted_of_prec (hprec n), right_isRealRooted_of_prec (hprec n)⟩
+    ⟨left_isRealRooted_of_strictInterl (hprec n),
+      right_isRealRooted_of_strictInterl (hprec n)⟩
+
+@[deprecated isRealRooted_pair_sequence_of_strictInterl_sequence (since := "2026-09-18")]
+alias isRealRooted_pair_sequence_of_prec_sequence :=
+  isRealRooted_pair_sequence_of_strictInterl_sequence
 
 /-- Project left row-wise real-rootedness from a `StrictInterl` sequence. -/
-theorem left_isRealRooted_of_prec_sequence {A B : Nat → ℝ[X]}
+theorem left_isRealRooted_of_strictInterl_sequence {A B : Nat → ℝ[X]}
     (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, A n ≠ 0 ∧ (A n).Splits :=
-  fun n => left_isRealRooted_of_prec (hprec n)
+  fun n => left_isRealRooted_of_strictInterl (hprec n)
+
+@[deprecated left_isRealRooted_of_strictInterl_sequence (since := "2026-09-18")]
+alias left_isRealRooted_of_prec_sequence := left_isRealRooted_of_strictInterl_sequence
 
 /-- Project right row-wise real-rootedness from a `StrictInterl` sequence. -/
-theorem right_isRealRooted_of_prec_sequence {A B : Nat → ℝ[X]}
+theorem right_isRealRooted_of_strictInterl_sequence {A B : Nat → ℝ[X]}
     (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, B n ≠ 0 ∧ (B n).Splits :=
-  fun n => right_isRealRooted_of_prec (hprec n)
+  fun n => right_isRealRooted_of_strictInterl (hprec n)
+
+@[deprecated right_isRealRooted_of_strictInterl_sequence (since := "2026-09-18")]
+alias right_isRealRooted_of_prec_sequence := right_isRealRooted_of_strictInterl_sequence
 
 /-- Project left row-wise real-rootedness from a pair-sequence certificate. -/
 theorem left_isRealRooted_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}

@@ -44,18 +44,19 @@ theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
     (hcop : IsCoprime b (X * (a + b))) :
     StrictInterl (a + b) (b + X * (a + b)) := by
   have ha_pos : HasPosLeadingCoeff a :=
-    ha_nonneg.pos_leadingCoeff (left_ne_zero_of_prec hab)
+    ha_nonneg.pos_leadingCoeff (left_ne_zero_of_strictInterl hab)
   have hb_pos : HasPosLeadingCoeff b :=
-    hb_nonneg.pos_leadingCoeff (right_ne_zero_of_prec hab)
+    hb_nonneg.pos_leadingCoeff (right_ne_zero_of_strictInterl hab)
   have hsum_prec_raw : StrictInterl (C (1 : ℝ) * a + C (1 : ℝ) * b) b :=
     hab.nonneg_combo_right ha_pos hb_pos zero_le_one zero_le_one (Or.inl zero_lt_one)
   have hsum_prec : StrictInterl (a + b) b := by simpa using hsum_prec_raw
   have hsum_nonneg : HasNonnegCoeffs (a + b) := ha_nonneg.add hb_nonneg
   have hsum_pos : HasPosLeadingCoeff (a + b) :=
-    hsum_nonneg.pos_leadingCoeff (left_ne_zero_of_prec hsum_prec)
+    hsum_nonneg.pos_leadingCoeff (left_ne_zero_of_strictInterl hsum_prec)
   have hXsum_prec : StrictInterl (a + b) (X * (a + b)) :=
     prec_mul_X_of_prec_of_nonneg
-      (StrictInterl.refl (left_ne_zero_of_prec hsum_prec) (left_splits_of_prec hsum_prec))
+      (StrictInterl.refl
+        (left_ne_zero_of_strictInterl hsum_prec) (left_splits_of_strictInterl hsum_prec))
       hsum_nonneg hsum_nonneg
   have hXsum_pos : HasPosLeadingCoeff (X * (a + b)) := hsum_pos.X_mul
   have hcombo : PosComboRealRooted b (X * (a + b)) :=
@@ -75,12 +76,12 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
     (hcop : IsCoprime b (X * a)) :
     StrictInterl (a + (b + X * a)) (b + X * a) := by
   have ha_pos : HasPosLeadingCoeff a :=
-    ha_nonneg.pos_leadingCoeff (left_ne_zero_of_prec hab)
+    ha_nonneg.pos_leadingCoeff (left_ne_zero_of_strictInterl hab)
   have hb_pos : HasPosLeadingCoeff b :=
-    hb_nonneg.pos_leadingCoeff (right_ne_zero_of_prec hab)
+    hb_nonneg.pos_leadingCoeff (right_ne_zero_of_strictInterl hab)
   have hXa_prec : StrictInterl a (X * a) :=
     prec_mul_X_of_prec_of_nonneg
-      (StrictInterl.refl (left_ne_zero_of_prec hab) (left_splits_of_prec hab))
+      (StrictInterl.refl (left_ne_zero_of_strictInterl hab) (left_splits_of_strictInterl hab))
       ha_nonneg ha_nonneg
   have hXa_pos : HasPosLeadingCoeff (X * a) := ha_pos.X_mul
   have hcombo : PosComboRealRooted b (X * a) :=
@@ -92,7 +93,7 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
   have hsum_nonneg : HasNonnegCoeffs (b + X * a) :=
     hb_nonneg.add (hasNonnegCoeffs_X.mul ha_nonneg)
   have hsum_pos : HasPosLeadingCoeff (b + X * a) :=
-    hsum_nonneg.pos_leadingCoeff (right_ne_zero_of_prec ha_sum_prec)
+    hsum_nonneg.pos_leadingCoeff (right_ne_zero_of_strictInterl ha_sum_prec)
   have hnext_raw :
       StrictInterl (C (1 : ℝ) * a + C (1 : ℝ) * (b + X * a)) (b + X * a) :=
     ha_sum_prec.nonneg_combo_right ha_pos hsum_pos
@@ -149,7 +150,7 @@ theorem isRealRooted_of_endpoint_sum_then_X_pair_sequence
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1))
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1))) :
     ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
-  isRealRooted_pair_sequence_of_prec_sequence <|
+  isRealRooted_pair_sequence_of_strictInterl_sequence <|
     prec_endpoint_sum_then_X_pair_sequence
       hbase hA0_nonneg hB0_nonneg hstepA hstepB hcop
 
@@ -193,7 +194,7 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_sequence
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n)) :
     ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
-  isRealRooted_pair_sequence_of_prec_sequence <|
+  isRealRooted_pair_sequence_of_strictInterl_sequence <|
     prec_endpoint_X_then_sum_pair_sequence
       hbase hA0_nonneg hB0_nonneg hstepB hstepA hcop
 

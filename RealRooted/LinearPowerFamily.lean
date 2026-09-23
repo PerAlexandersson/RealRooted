@@ -42,8 +42,8 @@ theorem prec_X_pow_mul_both_of_prec_nonneg {f g : ℝ[X]}
       have hright_nonneg : HasNonnegCoeffs (X ^ n * g) :=
         (hasNonnegCoeffs_X.pow n).mul hgnn
       have hnext := ih.mul_X_both_of_roots_nonpos
-        (roots_nonpos_of_nonneg_coeffs (left_splits_of_prec ih) hleft_nonneg)
-        (roots_nonpos_of_nonneg_coeffs (right_splits_of_prec ih) hright_nonneg)
+        (roots_nonpos_of_nonneg_coeffs (left_splits_of_strictInterl ih) hleft_nonneg)
+        (roots_nonpos_of_nonneg_coeffs (right_splits_of_strictInterl ih) hright_nonneg)
       simpa [pow_succ', mul_assoc] using hnext
 
 /-- A reverse proper-position pair with nonnegative coefficients remains in

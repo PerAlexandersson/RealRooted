@@ -78,7 +78,7 @@ theorem isRealRooted_of_favard_affine_const_coeff_rowSign
     (hstep : ∀ n : Nat,
       P (n + 2) = -(C s * X - C α) * P (n + 1) - C β * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     favardInterlacing_affine_const_coeff_rowSign hs hβ hP0 hP1 hstep
 
 /-- Nonzero consequence of row-sign normalized affine Favard. -/
@@ -151,7 +151,7 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign
         -(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     favardInterlacing_affine_param_coeff_rowSign hs hβ hP0 hP1 hstep
 
 /-- Nonzero consequence of parameterized row-sign affine Favard. -/
@@ -201,7 +201,7 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign_den
           (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
             C (β (n + 1)) * P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     favardInterlacing_affine_param_coeff_rowSign_den hs hβ hP0 hP1 hden hraw
 
 /-- Nonzero consequence of scalar-denominator row-sign Favard. -/
@@ -252,7 +252,7 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign_den_split
         C (d n) * (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (d n * β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     favardInterlacing_affine_param_coeff_rowSign_den_split hs hβ hP0 hP1 hden hraw
 
 /-- Nonzero consequence of distributed scalar-denominator row-sign Favard. -/
@@ -305,7 +305,7 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign_den_split_rev
         C (d n) * (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (β (n + 1) * d n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     favardInterlacing_affine_param_coeff_rowSign_den_split_rev
       hs hβ hP0 hP1 hden hraw
 
@@ -378,7 +378,7 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw
       C (d n) * P (n + 2) =
         (C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     favardInterlacing_affine_param_coeff_rowSign_den_raw
       hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw
 
@@ -443,7 +443,7 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw_prod
         (C (aleft n) * C (aright n) * X + C (braw n)) * P (n + 1) +
           C (cleft n) * C (cright n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain_from_step <|
+  isRealRooted_of_strictInterl_chain_from_step <|
     favardInterlacing_affine_param_coeff_rowSign_den_raw_prod
       hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw
 

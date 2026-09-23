@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  692  Lean declarations requiring semantic review
-  248  tactic declarations requiring an alias-first migration
+  690  Lean declarations requiring semantic review
+  232  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    33  statement scaffolds requiring proof-status-preserving renames
-  144  deprecated compatibility identifiers with canonical targets
+  162  deprecated compatibility identifiers with canonical targets
    34  other references or locals migrated with their owning declaration
    24  lexical false positives kept unchanged
 
@@ -102,6 +102,12 @@ old public signature remains as a deprecated compatibility declaration, while
 the private scalar-transport helper was renamed without a wrapper.
 Application-only constructor callers may still use the deprecated constructor
 alias until their owning application batch.
+
+The foundational sequence-closure layer now uses `StrictInterl` terminology
+for chain induction, degree-branch dispatch, real-rootedness projections, and
+left/right pair projections.  All 18 old public signatures remain as
+deprecated compatibility aliases, while non-application callers and tactic
+backend quotations use the canonical declarations.
 
 Execution order
 
