@@ -17,13 +17,13 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  538  Lean declarations requiring semantic review
+  529  Lean declarations requiring semantic review
   216  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    27  statement scaffolds requiring proof-status-preserving renames
   321  deprecated compatibility identifiers with canonical targets
-   49  other references, locals, or private declarations migrated directly
+   58  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
 Naming rules
@@ -123,6 +123,12 @@ endpoints, Ma--Wang endpoint-sign constructors, and subtraction-by-`X`
 transport with `Interl` / `StrictInterl`.  All 18 public old names remain exact
 deprecated aliases; the 12 private helpers were renamed directly, and all
 non-challenge callers use the canonical names.
+
+The private Obreschkoff converse implementation now uses `Interl` /
+`StrictInterl` throughout its scalar, successor-degree, same-degree,
+rightmost-root, and no-common-root helpers.  Eight remaining declarations and
+their local callers were renamed directly, and the already-canonical private
+scalar helper is reconciled in the ledger; no public aliases are involved.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

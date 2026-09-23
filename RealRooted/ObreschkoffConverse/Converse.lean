@@ -303,7 +303,7 @@ theorem ObreschkoffConverseInternal.isRealRooted_of_interlaces_eval_mul_neg_same
     isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
       hf.1 hf.2 hF_ne hdeg (by lia) hsign (Or.inl hleft)
 
-private theorem prec_of_allComboRealRooted_of_no_common
+private theorem strictInterl_of_allComboRealRooted_of_no_common
     (hstep :
       ∀ {f g : ℝ[X]},
         (f ≠ 0 ∧ f.Splits) → (g ≠ 0 ∧ g.Splits) →
@@ -376,7 +376,9 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
     (hall : AllComboRealRooted f g)
     (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree) :
     StrictInterl f g ∨ StrictInterl g f := by
-  refine prec_of_allComboRealRooted_of_no_common ?_ hf_ne hf_splits hg_ne hg_splits hall hdeg
+  refine
+    strictInterl_of_allComboRealRooted_of_no_common
+      ?_ hf_ne hf_splits hg_ne hg_splits hall hdeg
   intro f g hf hg hall hdeg hno
   let eps : ℝ := 1
   have heps : 0 < eps := by grind

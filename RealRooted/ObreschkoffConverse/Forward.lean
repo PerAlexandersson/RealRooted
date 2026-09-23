@@ -17,7 +17,7 @@ namespace RealRooted
 
 section
 
-private theorem allComboRealRooted_of_prec_succDegree_pos
+private theorem allComboRealRooted_of_strictInterl_succDegree_pos
     {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree)
@@ -131,7 +131,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
               grind)
         simpa [add_comm, add_left_comm, add_assoc] using hprec_mix.2.1.2
 
-private theorem allComboRealRooted_of_prec_succDegree
+private theorem allComboRealRooted_of_strictInterl_succDegree
     {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
@@ -169,7 +169,7 @@ private theorem allComboRealRooted_of_prec_succDegree
     unfold HasPosLeadingCoeff g₀
     simp_all
   have hall₀ : AllComboRealRooted f₀ g₀ :=
-    allComboRealRooted_of_prec_succDegree_pos hfg₀ hdeg₀ hf₀_pos hg₀_pos
+    allComboRealRooted_of_strictInterl_succDegree_pos hfg₀ hdeg₀ hf₀_pos hg₀_pos
   intro α β
   have hEq_f : C α * C sf * (C sf * f) = C α * f := by grind
   have hEq_g : C β * C sg * (C sg * g) = C β * g := by grind
@@ -180,7 +180,7 @@ handle the no-common-roots case. Shared roots can be factored out recursively,
 and `AllComboRealRooted` is rebuilt using
 `allComboRealRooted_mul_common_factor`. This mirrors the converse reduction but
 keeps the orientation fixed. -/
-private theorem allComboRealRooted_of_prec_sameDegree_of_no_common
+private theorem allComboRealRooted_of_strictInterl_sameDegree_of_no_common
     (hstep :
       ∀ {f g : ℝ[X]},
         StrictInterl f g →
@@ -234,7 +234,7 @@ private lemma no_common_with_right_factor_quotient
     ∀ r, f.IsRoot r → ¬ q.IsRoot r := by
   simp_all
 
-private lemma root_lt_rightmost_of_prec_sameDegree_no_common
+private lemma root_lt_rightmost_of_strictInterl_sameDegree_no_common
     {f g : ℝ[X]} {uR : ℝ}
     (hfg : StrictInterl f g)
     (huR_root : g.IsRoot uR)
@@ -246,7 +246,7 @@ private lemma root_lt_rightmost_of_prec_sameDegree_no_common
     hfg.roots_le_of_right huR_max r ((mem_roots hfg.1.1).mpr hr)
   grind
 
-private lemma prec_of_right_factor_combo_of_natDegree_ge
+private lemma strictInterl_of_right_factor_combo_of_natDegree_ge
     {f q : ℝ[X]} {uR α β : ℝ}
     (hqf : Interlaces q f)
     (hq_pos : HasPosLeadingCoeff q)
@@ -379,7 +379,7 @@ the honest same-degree core: same-sign combinations are covered by Wagner
 addition, while opposite-sign combinations are routed through the rightmost
 root factorization `g = (X - C uR) * qg` and the helper
 `isRealRooted_of_right_factor_combo_posβ`. -/
-private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
+private theorem allComboRealRooted_of_strictInterl_sameDegree_pos_of_no_common
     {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
@@ -420,7 +420,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
     interlaces_of_strictInterl_sameDegree_rightmost_factor hfg hdeg huR_max hqg
   have hqg_no : ∀ r, f.IsRoot r → ¬ qg.IsRoot r := by simp_all
   have hroot_lt : ∀ r, f.IsRoot r → r < uR :=
-    root_lt_rightmost_of_prec_sameDegree_no_common hfg huR_root huR_max hno
+    root_lt_rightmost_of_strictInterl_sameDegree_no_common hfg huR_root huR_max hno
   have hqg_pos : HasPosLeadingCoeff qg := by
     apply hasPosLeadingCoeff_of_X_sub_C_mul (r := uR)
     simp_all
@@ -477,12 +477,12 @@ coefficient does not have the sign needed to orient a `StrictInterl` witness dir
 The proof splits into the genuine degree-drop case, where the combination
 becomes a left interlacer of `f`, and the same-degree case, where strict sign
 changes plus one outer root are enough to force real-rootedness. -/
-private theorem allComboRealRooted_of_prec_sameDegree
+private theorem allComboRealRooted_of_strictInterl_sameDegree
     {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree) :
     AllComboRealRooted f g := by
-  refine allComboRealRooted_of_prec_sameDegree_of_no_common ?_ hfg hdeg
+  refine allComboRealRooted_of_strictInterl_sameDegree_of_no_common ?_ hfg hdeg
   intro f g hfg hdeg hno
   have hf : (f ≠ 0 ∧ f.Splits) := hfg.1
   have hg : (g ≠ 0 ∧ g.Splits) := hfg.2.1
@@ -528,7 +528,7 @@ private theorem allComboRealRooted_of_prec_sameDegree
       simp_all
     simp_all
   have hall₀ : AllComboRealRooted f₀ g₀ :=
-    allComboRealRooted_of_prec_sameDegree_pos_of_no_common hfg₀ hdeg₀ hf₀_pos hg₀_pos hno₀
+    allComboRealRooted_of_strictInterl_sameDegree_pos_of_no_common hfg₀ hdeg₀ hf₀_pos hg₀_pos hno₀
   intro α β
   have hEq_f : C α * C sf * (C sf * f) = C α * f := by grind
   have hEq_g : C β * C sg * (C sg * g) = C β * g := by grind
@@ -540,8 +540,8 @@ theorem allComboRealRooted_of_strictInterl {f g : ℝ[X]}
     (hfg : StrictInterl f g) :
     AllComboRealRooted f g := by
   rcases hfg.natDegree_eq_or_eq_succ with hsame | hsucc
-  · exact allComboRealRooted_of_prec_sameDegree hfg hsame.symm
-  · exact allComboRealRooted_of_prec_succDegree hfg hsucc.symm
+  · exact allComboRealRooted_of_strictInterl_sameDegree hfg hsame.symm
+  · exact allComboRealRooted_of_strictInterl_succDegree hfg hsucc.symm
 
 @[deprecated allComboRealRooted_of_strictInterl (since := "2026-09-18")]
 alias allComboRealRooted_of_prec := allComboRealRooted_of_strictInterl
