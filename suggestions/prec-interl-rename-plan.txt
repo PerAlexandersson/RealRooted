@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  411  Lean declarations requiring semantic review
-  206  tactic declarations requiring an alias-first migration
+  409  Lean declarations requiring semantic review
+  203  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    20  statement scaffolds requiring proof-status-preserving renames
-  459  deprecated compatibility identifiers with canonical targets
+  464  deprecated compatibility identifiers with canonical targets
    55  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -204,6 +204,12 @@ The foundational affine proper-position helper layer now uses `StrictInterl` /
 linear-pair lemmas.  All nine old public names remain exact deprecated aliases,
 and callers across compatibility, threshold, matrix, row-threshold, and
 Veronese modules use the canonical declarations.
+
+The magnitude-dominated and upper-derivative criterion layer now uses
+`StrictInterl` for its same-degree, successor-degree, combined, automatic, and
+derivative-evaluation interfaces.  All five old public names remain exact
+deprecated aliases, and both production and tactic-backend callers use the
+canonical declarations.
 
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and

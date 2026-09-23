@@ -16,7 +16,7 @@ noncomputable section
 namespace RealRooted
 
 /-- Magnitude-dominated lag interlacing criterion in the successor-degree case. -/
-theorem prec_of_magnitude_dominated_succ
+theorem strictInterl_of_magnitude_dominated_succ
     {f g₁ g₂ a b₁ b₂ : ℝ[X]}
     (hg₁f : Interlaces g₁ f) (hg₁_pos : HasPosLeadingCoeff g₁)
     (hF_pos : HasPosLeadingCoeff (a * f + b₁ * g₁ + b₂ * g₂))
@@ -37,7 +37,7 @@ theorem prec_of_magnitude_dominated_succ
     _ < 0 := hcert_r
 
 /-- Magnitude-dominated lag interlacing criterion in the same-degree case. -/
-theorem prec_of_magnitude_dominated_same
+theorem strictInterl_of_magnitude_dominated_same
     {f g₁ g₂ a b₁ b₂ : ℝ[X]}
     (hg₁f : Interlaces g₁ f) (hg₁_pos : HasPosLeadingCoeff g₁)
     (hF_pos : HasPosLeadingCoeff (a * f + b₁ * g₁ + b₂ * g₂))
@@ -58,7 +58,7 @@ theorem prec_of_magnitude_dominated_same
     _ < 0 := hcert_r
 
 /-- Degree-bounded magnitude-dominated criterion. -/
-theorem prec_of_magnitude_dominated
+theorem strictInterl_of_magnitude_dominated
     {f g₁ g₂ a b₁ b₂ : ℝ[X]}
     (hg₁f : Interlaces g₁ f) (hg₁_pos : HasPosLeadingCoeff g₁)
     (hF_pos : HasPosLeadingCoeff (a * f + b₁ * g₁ + b₂ * g₂))
@@ -70,8 +70,8 @@ theorem prec_of_magnitude_dominated
   rcases (by
       lia : (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree ∨
         (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree + 1) with hsame | hsucc
-  · exact prec_of_magnitude_dominated_same hg₁f hg₁_pos hF_pos hsame hcert
-  · exact prec_of_magnitude_dominated_succ hg₁f hg₁_pos hF_pos hsucc hcert
+  · exact strictInterl_of_magnitude_dominated_same hg₁f hg₁_pos hF_pos hsame hcert
+  · exact strictInterl_of_magnitude_dominated_succ hg₁f hg₁_pos hF_pos hsucc hcert
 
 /-- Build the pointwise magnitude certificate from an absolute-value domination bound. -/
 theorem magnitude_cert_of_abs_dominated
@@ -86,5 +86,19 @@ theorem magnitude_cert_of_abs_dominated
       |b₂.eval r * (g₂.eval r * g₁.eval r)| :=
     le_abs_self _
   linarith [h₂, hdom, h₁]
+
+@[deprecated strictInterl_of_magnitude_dominated_succ
+  (since := "2026-09-18")]
+alias prec_of_magnitude_dominated_succ :=
+  strictInterl_of_magnitude_dominated_succ
+
+@[deprecated strictInterl_of_magnitude_dominated_same
+  (since := "2026-09-18")]
+alias prec_of_magnitude_dominated_same :=
+  strictInterl_of_magnitude_dominated_same
+
+@[deprecated strictInterl_of_magnitude_dominated
+  (since := "2026-09-18")]
+alias prec_of_magnitude_dominated := strictInterl_of_magnitude_dominated
 
 end RealRooted
