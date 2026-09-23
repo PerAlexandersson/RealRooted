@@ -79,7 +79,7 @@ theorem regularizedKernelRow_isPFPolynomial
 
 /-- Consecutive regularized rows in a positive finite approximation are in
 zero-aware proper position. -/
-theorem prec0_regularizedKernelRow_succ
+theorem interl_regularizedKernelRow_succ
     {N : ℕ} {g η : ℝ}
     {G H : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
     (hg : 0 < g) (hη : 0 < η)
@@ -112,7 +112,7 @@ theorem prec0_regularizedKernelRow_succ
 
 /-- Strictly lower entrywise limits of positive-diagonal TN approximations
 have PF kernel rows and consecutive zero-aware proper position. -/
-theorem kernelRows_pf_and_prec0_of_tendsto
+theorem kernelRows_pf_and_interl_of_tendsto
     {N : ℕ} {g : ℝ} {η : ℕ → ℝ}
     {G : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
     {H : ℕ → Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
@@ -151,13 +151,19 @@ theorem kernelRows_pf_and_prec0_of_tendsto
         hGlower (hHlower m) hGdiag (hHdiag m) i.castSucc)
       (fun m => regularizedKernelRow_isPFPolynomial hg (hη m) hG (hH m)
         hGlower (hHlower m) hGdiag (hHdiag m) i.succ)
-      (fun m => prec0_regularizedKernelRow_succ hg (hη m) hG (hH m)
+      (fun m => interl_regularizedKernelRow_succ hg (hη m) hG (hH m)
         hGlower (hHlower m) hGdiag (hHdiag m) i)
       (fun m => (natDegree_regularizedKernelRow_le_row G (H m) hGlower
         i.castSucc).trans (Nat.le_succ i.val))
       (fun m => natDegree_regularizedKernelRow_le_row G (H m) hGlower i.succ)
       (tendsto_coeff_regularizedKernelRow G hlim i.castSucc)
       (tendsto_coeff_regularizedKernelRow G hlim i.succ)
+
+@[deprecated interl_regularizedKernelRow_succ (since := "2026-09-18")]
+alias prec0_regularizedKernelRow_succ := interl_regularizedKernelRow_succ
+
+@[deprecated kernelRows_pf_and_interl_of_tendsto (since := "2026-09-18")]
+alias kernelRows_pf_and_prec0_of_tendsto := kernelRows_pf_and_interl_of_tendsto
 
 end
 

@@ -17,12 +17,12 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  603  Lean declarations requiring semantic review
+  595  Lean declarations requiring semantic review
   223  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
    27  statement scaffolds requiring proof-status-preserving renames
-  262  deprecated compatibility identifiers with canonical targets
+  270  deprecated compatibility identifiers with canonical targets
    36  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
@@ -214,6 +214,11 @@ declarations preserve all eight public names; proof status is unchanged.
 The #901 Branden--Leite composition-chain batch canonicalizes the seven weak
 interlacing packages for constant-diagonal chains, finite lower-triangular
 chains, positive-part/zero-constant composition rows, and inverse-power rows.
+Exact deprecated aliases preserve every public signature.
+
+The #902 Branden--Leite kernel/tiling batch canonicalizes the eight weak
+interlacing packages for finite and limiting kernel rows, two-kernel rows,
+weighted shift tilings, and the weighted-green/marked-shift specialization.
 Exact deprecated aliases preserve every public signature.
 
 The #892 compatibility/right-pencil batch canonicalizes the failed succ-degree

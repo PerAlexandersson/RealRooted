@@ -83,7 +83,7 @@ theorem rationalRodRows_pf_and_prec0
     rw [PowerSeries.coeff_zero_eq_constantCoeff]
     exact constantCoeff_markedFactorSeries c hr xs
   simpa [rationalRodRow] using
-    (twoKernelRows_pf_and_prec0 hg hh hg0 hh0)
+    (twoKernelRows_pf_and_interl hg hh hg0 hh0)
 
 /-- Multiplication by the literal rational denominator recovers one. -/
 theorem rationalRodDenominator_mul_generatingSeries
