@@ -35,8 +35,8 @@ example {r k : ℕ} {p : ℝ[X]}
     k_lt_r := hk
 
 example {p q : ℝ[X]} {r k : ℕ}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec0 : FullyInterlacingPairToInterlStatement)
     (hpq : StrictInterl p q) (hr : 0 < r) (hk : k < r) :
     Interl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
   rr_veronese_section_prec0 using
@@ -47,8 +47,8 @@ example {p q : ℝ[X]} {r k : ℕ}
     k_lt_r := hk
 
 example {p q : ℝ[X]} {r k : ℕ}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec : FullyInterlacingPairToPrecStatement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec : FullyInterlacingPairToStrictInterlStatement)
     (hpq : StrictInterl p q) (hr : 0 < r) (hk : k < r) :
     StrictInterl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
   rr_veronese_section_prec using
@@ -59,8 +59,8 @@ example {p q : ℝ[X]} {r k : ℕ}
     k_lt_r := hk
 
 example {p q : ℝ[X]} {r i j : ℕ}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec0 : FullyInterlacingPairToInterlStatement)
     (hpq : StrictInterl p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
     Interl (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
@@ -73,8 +73,8 @@ example {p q : ℝ[X]} {r i j : ℕ}
     right_lt_bound := hj
 
 example {p q : ℝ[X]} {r i j : ℕ}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec : FullyInterlacingPairToPrecStatement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec : FullyInterlacingPairToStrictInterlStatement)
     (hpq : StrictInterl p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
     StrictInterl (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
@@ -87,8 +87,8 @@ example {p q : ℝ[X]} {r i j : ℕ}
     right_lt_bound := hj
 
 example {p q : ℝ[X]} {r : ℕ}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec0 : FullyInterlacingPairToInterlStatement)
     (hpq : StrictInterl p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
     Interl (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
@@ -102,8 +102,8 @@ example {p q : ℝ[X]} {r : ℕ}
     index_lt := hij
 
 example {p q : ℝ[X]} {r : ℕ}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec : FullyInterlacingPairToPrecStatement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec : FullyInterlacingPairToStrictInterlStatement)
     (hpq : StrictInterl p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
     StrictInterl (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
@@ -162,8 +162,8 @@ example {r k : Nat → Nat} {P : Nat → ℝ[X]}
     k_lt_r := hk
 
 example {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec0 : FullyInterlacingPairToInterlStatement)
     (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hk : ∀ n : Nat, k n < r n) :
@@ -178,8 +178,8 @@ example {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
     k_lt_r := hk
 
 example {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec : FullyInterlacingPairToPrecStatement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec : FullyInterlacingPairToStrictInterlStatement)
     (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hk : ∀ n : Nat, k n < r n) :
@@ -194,8 +194,8 @@ example {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
     k_lt_r := hk
 
 example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec0 : FullyInterlacingPairToInterlStatement)
     (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hij : ∀ n : Nat, i n < j n)
@@ -212,8 +212,8 @@ example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
     right_lt_bound := hj
 
 example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec : FullyInterlacingPairToPrecStatement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec : FullyInterlacingPairToStrictInterlStatement)
     (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hij : ∀ n : Nat, i n < j n)
@@ -230,8 +230,8 @@ example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
     right_lt_bound := hj
 
 example {r : Nat → Nat} {P Q : Nat → ℝ[X]}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec0 : FullyInterlacingPairToInterlStatement)
     (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (i j : ∀ n : Nat, Fin (2 * r n))
@@ -249,8 +249,8 @@ example {r : Nat → Nat} {P Q : Nat → ℝ[X]}
     index_lt := hij
 
 example {r : Nat → Nat} {P Q : Nat → ℝ[X]}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec : FullyInterlacingPairToPrecStatement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec : FullyInterlacingPairToStrictInterlStatement)
     (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (i j : ∀ n : Nat, Fin (2 * r n))

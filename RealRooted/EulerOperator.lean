@@ -149,23 +149,23 @@ theorem thetaPreservesRealRootedOrZero : thetaPreservesRealRootedOrZeroStatement
 
 /-- Classical Rolle input: `theta` preserves weak proper position on the
 polynomial PF cone. -/
-def thetaPreservesPrec0Statement : Prop :=
+def thetaPreservesInterlStatement : Prop :=
   ∀ {p q : ℝ[X]},
     IsPFPolynomial p →
     IsPFPolynomial q →
     Interl p q →
     Interl (theta p) (theta q)
 
-theorem thetaPreservesPrec0_of_derivative
-    (hderiv : derivativePreservesInterlStatement) : thetaPreservesPrec0Statement := by
+theorem thetaPreservesInterl_of_derivative
+    (hderiv : derivativePreservesInterlStatement) : thetaPreservesInterlStatement := by
   intro p q hp hq hpq
   simpa [theta] using
     interl_X_mul_both_of_pf hp.derivative hq.derivative (hderiv hpq)
 
 /-- `theta` preserves weak proper position on the polynomial PF cone, obtained
 from the derivative preservation theorem and multiplication by `X`. -/
-theorem thetaPreservesPrec0 : thetaPreservesPrec0Statement :=
-  thetaPreservesPrec0_of_derivative derivativePreservesInterl
+theorem thetaPreservesInterl : thetaPreservesInterlStatement :=
+  thetaPreservesInterl_of_derivative derivativePreservesInterl
 
 /-- Classical Rolle input: `theta + 1` preserves real-rootedness and
 nonpositive roots on the polynomial PF cone. -/
@@ -190,28 +190,28 @@ theorem thetaPlusOne_preserves_pf : thetaPlusOnePreservesPFStatement := by
 
 /-- Classical Rolle input: `theta + 1` preserves weak proper position on the
 polynomial PF cone. -/
-def thetaPlusOnePreservesPrec0Statement : Prop :=
+def thetaPlusOnePreservesInterlStatement : Prop :=
   ∀ {p q : ℝ[X]},
     IsPFPolynomial p →
     IsPFPolynomial q →
     Interl p q →
     Interl (thetaPlusOne p) (thetaPlusOne q)
 
-theorem thetaPlusOnePreservesPrec0_of_derivative
+theorem thetaPlusOnePreservesInterl_of_derivative
     (hderiv : derivativePreservesInterlStatement) :
-    thetaPlusOnePreservesPrec0Statement := by
+    thetaPlusOnePreservesInterlStatement := by
   intro p q hp hq hpq
   simpa [thetaPlusOne_eq_derivative_X_mul] using hderiv (interl_X_mul_both_of_pf hp hq hpq)
 
 /-- `theta + 1` preserves weak proper position on the polynomial PF cone,
 obtained from the derivative preservation theorem via
-`thetaPlusOnePreservesPrec0_of_derivative`. -/
-theorem thetaPlusOnePreservesPrec0 : thetaPlusOnePreservesPrec0Statement :=
-  thetaPlusOnePreservesPrec0_of_derivative derivativePreservesInterl
+`thetaPlusOnePreservesInterl_of_derivative`. -/
+theorem thetaPlusOnePreservesInterl : thetaPlusOnePreservesInterlStatement :=
+  thetaPlusOnePreservesInterl_of_derivative derivativePreservesInterl
 
 /-- Classical Rolle input: a PF polynomial is in weak proper position with
 each of its iterates under `theta + 1`. -/
-def iterateThetaPlusOneSelfPrec0Statement : Prop :=
+def iterateThetaPlusOneSelfInterlStatement : Prop :=
   ∀ {p : ℝ[X]} (l : ℕ),
     IsPFPolynomial p →
     Interl p (iterateThetaPlusOne l p)
@@ -297,8 +297,8 @@ theorem polarThetaPreservesPF_of_realRootedOrZero
     ⟨hp.hasNonnegCoeffs.polarTheta hdeg, (hNθ hp hdeg).1, (hNθ hp hdeg).2⟩
 
 /-- Polar-theta proper-position target. A checked witness is
-`RealRooted.polarTheta_preserves_prec0` in `EulerOperator.Polar.ProperPosition`. -/
-def polarThetaPreservesPrec0Statement : Prop :=
+`RealRooted.polarTheta_preserves_interl` in `EulerOperator.Polar.ProperPosition`. -/
+def polarThetaPreservesInterlStatement : Prop :=
   ∀ {N : ℕ} {p q : ℝ[X]},
     IsPFPolynomial p →
     IsPFPolynomial q →
@@ -317,9 +317,9 @@ theorem iterateThetaPlusOne_preserves_pf
   | succ l ih =>
       simpa [iterateThetaPlusOne_succ] using hθ (ih hp)
 
-theorem iterateThetaPlusOne_preserves_prec0
+theorem iterateThetaPlusOne_preserves_interl
     (hθpf : thetaPlusOnePreservesPFStatement)
-    (hθprec : thetaPlusOnePreservesPrec0Statement)
+    (hθprec : thetaPlusOnePreservesInterlStatement)
     (l : ℕ) {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
     Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q) := by
@@ -331,5 +331,38 @@ theorem iterateThetaPlusOne_preserves_prec0
         (iterateThetaPlusOne_preserves_pf hθpf l hp)
         (iterateThetaPlusOne_preserves_pf hθpf l hq)
         (ih hp hq hpq)
+
+/-! Deprecated aliases for the pre-canonical theta interlacing APIs. -/
+
+@[deprecated thetaPreservesInterlStatement (since := "2026-09-24")]
+abbrev thetaPreservesPrec0Statement : Prop := thetaPreservesInterlStatement
+
+@[deprecated thetaPreservesInterl_of_derivative (since := "2026-09-24")]
+alias thetaPreservesPrec0_of_derivative := thetaPreservesInterl_of_derivative
+
+@[deprecated thetaPreservesInterl (since := "2026-09-24")]
+alias thetaPreservesPrec0 := thetaPreservesInterl
+
+@[deprecated thetaPlusOnePreservesInterlStatement (since := "2026-09-24")]
+abbrev thetaPlusOnePreservesPrec0Statement : Prop :=
+  thetaPlusOnePreservesInterlStatement
+
+@[deprecated thetaPlusOnePreservesInterl_of_derivative (since := "2026-09-24")]
+alias thetaPlusOnePreservesPrec0_of_derivative :=
+  thetaPlusOnePreservesInterl_of_derivative
+
+@[deprecated thetaPlusOnePreservesInterl (since := "2026-09-24")]
+alias thetaPlusOnePreservesPrec0 := thetaPlusOnePreservesInterl
+
+@[deprecated iterateThetaPlusOneSelfInterlStatement (since := "2026-09-24")]
+abbrev iterateThetaPlusOneSelfPrec0Statement : Prop :=
+  iterateThetaPlusOneSelfInterlStatement
+
+@[deprecated polarThetaPreservesInterlStatement (since := "2026-09-24")]
+abbrev polarThetaPreservesPrec0Statement : Prop :=
+  polarThetaPreservesInterlStatement
+
+@[deprecated iterateThetaPlusOne_preserves_interl (since := "2026-09-24")]
+alias iterateThetaPlusOne_preserves_prec0 := iterateThetaPlusOne_preserves_interl
 
 end RealRooted

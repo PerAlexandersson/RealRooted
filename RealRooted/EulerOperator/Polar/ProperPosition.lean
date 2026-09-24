@@ -17,7 +17,7 @@ namespace RealRooted
 
 /-- The polar-theta operator preserves weak proper position on the bounded
 degree PF cone. -/
-theorem polarTheta_preserves_prec0 : polarThetaPreservesPrec0Statement := by
+theorem polarTheta_preserves_interl : polarThetaPreservesInterlStatement := by
   intro N p q hp hq hpd hqd hpq
   rcases hpq with hpzero | hqzero | hpq
   · left
@@ -61,5 +61,8 @@ theorem polarTheta_preserves_prec0 : polarThetaPreservesPrec0Statement := by
       rw [polarTheta_eq_reciprocalShift_derivative_reciprocalShift N p hpd,
         polarTheta_eq_reciprocalShift_derivative_reciprocalShift N q hqd]
       exact hstep₃.toInterl
+
+@[deprecated polarTheta_preserves_interl (since := "2026-09-24")]
+alias polarTheta_preserves_prec0 := polarTheta_preserves_interl
 
 end RealRooted
