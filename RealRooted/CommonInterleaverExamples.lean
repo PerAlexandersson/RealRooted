@@ -201,7 +201,7 @@ private lemma xSq_add_fiveX_add_six_roots :
     xAddTwo_roots, xAddThree_roots]
   grind
 
-private lemma xAddFiveHalves_prec_xAddOne :
+private lemma xAddFiveHalves_strictInterl_xAddOne :
     StrictInterl (X + C (5 / 2 : ℝ) : ℝ[X]) (X + 1) := by
   refine
     ⟨xAddFiveHalves_isRealRooted, xAddOne_isRealRooted, [(-(5 / 2 : ℝ))], [(-1 : ℝ)],
@@ -210,7 +210,7 @@ private lemma xAddFiveHalves_prec_xAddOne :
   · simpa using xAddOne_roots.symm
   · exact Or.inr ⟨by simp, by norm_num [ListAlternates, ListInterlaces]⟩
 
-private lemma xAddFiveHalves_prec_xSq_add_fiveX_add_six :
+private lemma xAddFiveHalves_strictInterl_xSq_add_fiveX_add_six :
     StrictInterl (X + C (5 / 2 : ℝ) : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) := by
   refine
     ⟨xAddFiveHalves_isRealRooted, xSq_add_fiveX_add_six_isRealRooted, [(-(5 / 2 : ℝ))],
@@ -225,8 +225,8 @@ private lemma xAddFiveHalves_prec_xSq_add_fiveX_add_six :
 to the naive succ-degree orientation target. -/
 lemma xAddOne_xSq_add_fiveX_add_six_commonLeftInterleaver :
     ∃ h : ℝ[X], StrictInterl h (X + 1) ∧ StrictInterl h (((X + 2) * (X + 3)) : ℝ[X]) :=
-  ⟨X + C (5 / 2 : ℝ), xAddFiveHalves_prec_xAddOne,
-    xAddFiveHalves_prec_xSq_add_fiveX_add_six⟩
+  ⟨X + C (5 / 2 : ℝ), xAddFiveHalves_strictInterl_xAddOne,
+    xAddFiveHalves_strictInterl_xSq_add_fiveX_add_six⟩
 
 /-- The quadratic pair `(X + 1, (X + 2)(X + 3))` still satisfies the positive-
 combination hypothesis: the common left interleaver `X + 5/2` witnesses the
@@ -234,8 +234,8 @@ restricted Obreschkoff condition directly. -/
 lemma xAddOne_xSq_add_fiveX_add_six_posComboRealRooted :
     PosComboRealRooted (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) :=
   PosComboRealRooted.of_commonLeftInterleaver
-    xAddFiveHalves_prec_xAddOne
-    xAddFiveHalves_prec_xSq_add_fiveX_add_six
+    xAddFiveHalves_strictInterl_xAddOne
+    xAddFiveHalves_strictInterl_xSq_add_fiveX_add_six
       xAddOne_hasPosLeadingCoeff
       xSq_add_fiveX_add_six_hasPosLeadingCoeff
 
@@ -245,7 +245,7 @@ private lemma xAddOne_xSq_add_fiveX_add_six_noCommon :
   simp_all
   grind
 
-private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
+private lemma xAddOne_xSq_add_fiveX_add_six_not_strictInterl :
     ¬ StrictInterl (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) := by
   intro hprec
   rcases hprec with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
@@ -440,7 +440,7 @@ private lemma xSq_add_twoX_add_two_not_isRealRooted :
     positivity
   norm_num [discrim] at hdisc_nonneg
 
-private lemma xAddOne_xAddTwo_not_prec :
+private lemma xAddOne_xAddTwo_not_strictInterl :
     ¬ StrictInterl (X + 1 : ℝ[X]) (X + 2) := by
   intro hprec
   rcases hprec with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
@@ -542,7 +542,7 @@ same linear example, the correct orientation is not `StrictInterl (X + 1) (X + 2
 lemma not_posComboNoCommonSameDegreeOrientationNonnegStatement :
     ¬ PosComboNoCommonSameDegreeOrientationNonnegStatement :=
   fun hsame =>
-    xAddOne_xAddTwo_not_prec
+    xAddOne_xAddTwo_not_strictInterl
       (hsame
         xAddOne_hasPosLeadingCoeff
         xAddTwo_hasPosLeadingCoeff
@@ -559,7 +559,7 @@ strictly to the left of `-1`, so `StrictInterl (X + 1) ((X + 2)(X + 3))` fails. 
 lemma not_posComboNoCommonSuccDegreeOrientationNonnegStatement :
     ¬ PosComboNoCommonSuccDegreeOrientationNonnegStatement :=
   fun hsucc =>
-    xAddOne_xSq_add_fiveX_add_six_not_prec
+    xAddOne_xSq_add_fiveX_add_six_not_strictInterl
       (hsucc
         xAddOne_hasPosLeadingCoeff
         xSq_add_fiveX_add_six_hasPosLeadingCoeff
@@ -648,7 +648,7 @@ lemma not_compatibleSuccDegreeAllComboStatement :
 /-- The forced compatible succ-degree `StrictInterl` shortcut is false.  The same
 linear/quadratic pair is compatible, but both quadratic roots lie to the left
 of the linear root. -/
-lemma not_compatibleSuccDegreePrecStatement :
+lemma not_compatibleSuccDegreeStrictInterlStatement :
     ¬ CompatibleSuccDegreePrecStatement := by
   intro hprec
   have hcomp : Compatible (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) :=
@@ -657,7 +657,7 @@ lemma not_compatibleSuccDegreePrecStatement :
       xAddOne_isRealRooted
       xSq_add_fiveX_add_six_isRealRooted
   exact
-    xAddOne_xSq_add_fiveX_add_six_not_prec
+    xAddOne_xSq_add_fiveX_add_six_not_strictInterl
       (hprec hcomp
         xAddOne_hasPosLeadingCoeff
         xSq_add_fiveX_add_six_hasPosLeadingCoeff
@@ -769,7 +769,7 @@ private lemma sorted_pair_eq {a b : ℝ} (hab : a < b) {l : List ℝ}
     have hcount := congrArg (Multiset.count a) hcoe
     simp [hne] at hcount
 
-private lemma orientCex_not_prec :
+private lemma orientCex_not_strictInterl :
     ¬ (StrictInterl orientCexF orientCexG ∨ StrictInterl orientCexG orientCexF) := by
   rintro (h | h)
   · obtain ⟨-, -, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := h
@@ -803,7 +803,7 @@ private lemma orientCex_not_prec :
 lemma not_posComboNoCommonOrientationStatement :
     ¬ PosComboNoCommonOrientationStatement := by
   intro horient
-  refine orientCex_not_prec ?_
+  refine orientCex_not_strictInterl ?_
   exact horient orientCex_posComboRealRooted
     orientCexF_hasPosLeadingCoeff orientCexG_hasPosLeadingCoeff
     (by have h1 := orientCexF_natDegree; have h2 := orientCexG_natDegree; lia)
@@ -862,7 +862,7 @@ private lemma xAddThreeHalves_isRealRooted :
     ((X + C (3 / 2 : ℝ) : ℝ[X]) ≠ 0 ∧ (X + C (3 / 2 : ℝ) : ℝ[X]).Splits) := by
   simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-(3 / 2 : ℝ))
 
-private lemma xAddThreeHalves_prec_X :
+private lemma xAddThreeHalves_strictInterl_X :
     StrictInterl (X + C (3 / 2 : ℝ) : ℝ[X]) (X : ℝ[X]) := by
   refine
     ⟨xAddThreeHalves_isRealRooted, X_isRealRooted, [(-(3 / 2 : ℝ))], [(0 : ℝ)],
@@ -871,7 +871,7 @@ private lemma xAddThreeHalves_prec_X :
   · simp
   · exact Or.inr ⟨by simp, by norm_num [ListAlternates, ListInterlaces]⟩
 
-private lemma xAddThreeHalves_prec_xAddOne_xAddTwo :
+private lemma xAddThreeHalves_strictInterl_xAddOne_xAddTwo :
     StrictInterl (X + C (3 / 2 : ℝ) : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) := by
   refine
     ⟨xAddThreeHalves_isRealRooted, xAddOne_xAddTwo_isRealRooted,
@@ -886,15 +886,15 @@ private lemma xAddThreeHalves_prec_xAddOne_xAddTwo :
 private lemma X_xAddOne_xAddTwo_posComboRealRooted :
     PosComboRealRooted (X : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) :=
   PosComboRealRooted.of_commonLeftInterleaver
-    xAddThreeHalves_prec_X
-    xAddThreeHalves_prec_xAddOne_xAddTwo
+    xAddThreeHalves_strictInterl_X
+    xAddThreeHalves_strictInterl_xAddOne_xAddTwo
     X_hasPosLeadingCoeff
     xAddOne_xAddTwo_hasPosLeadingCoeff
 
 private lemma X_xAddOne_xAddTwo_noCommon :
     ∀ r, (X : ℝ[X]).IsRoot r → ¬ (((X + 1) * (X + 2)) : ℝ[X]).IsRoot r := by simp
 
-private lemma X_not_prec_xAddOne_xAddTwo :
+private lemma X_not_strictInterl_xAddOne_xAddTwo :
     ¬ StrictInterl (X : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) := by
   intro hprec
   have hg_le : ∀ r ∈ (((X + 1) * (X + 2)) : ℝ[X]).roots, r ≤ (-1 : ℝ) := by
@@ -909,10 +909,10 @@ private lemma X_not_prec_xAddOne_xAddTwo :
 /-- The residual succ-degree orientation target
 `PosComboNoCommonSuccDegreeRootCountResidualPrecStatement` is false.
 Witnessed by `f = X`, `g = (X + 1)(X + 2)`. -/
-lemma not_posComboNoCommonSuccDegreeRootCountResidualPrecStatement :
+lemma not_posComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement :
     ¬ PosComboNoCommonSuccDegreeRootCountResidualPrecStatement :=
   fun hres =>
-    X_not_prec_xAddOne_xAddTwo
+    X_not_strictInterl_xAddOne_xAddTwo
       (hres
         X_hasPosLeadingCoeff
         xAddOne_xAddTwo_hasPosLeadingCoeff
@@ -924,6 +924,16 @@ lemma not_posComboNoCommonSuccDegreeRootCountResidualPrecStatement :
         X_isRealRooted.2
         X_coeff_zero
         xAddOne_xAddTwo_coeff_zero_ne)
+
+@[deprecated not_compatibleSuccDegreeStrictInterlStatement
+  (since := "2026-09-24")]
+alias not_compatibleSuccDegreePrecStatement :=
+  not_compatibleSuccDegreeStrictInterlStatement
+
+@[deprecated not_posComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement
+  (since := "2026-09-24")]
+alias not_posComboNoCommonSuccDegreeRootCountResidualPrecStatement :=
+  not_posComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement
 
 end CommonInterleaverExamples
 

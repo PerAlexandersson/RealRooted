@@ -23,12 +23,12 @@ latter three are pre-existing interfaces from `RealRooted.VeroneseSection`):
 * `hadamardPreservesHurwitzStableStatement` — Garloff--Wagner Theorem 1
   (Hadamard products of Hurwitz-stable polynomials are Hurwitz stable when the
   coefficientwise product is nonzero);
-* `NonnegPrecToHurwitzOddEvenStatement` — the forward Hermite--Biehler bridge
+* `NonnegStrictInterlToHurwitzOddEvenStatement` — the forward Hermite--Biehler bridge
   from proper position `StrictInterl f g` of nonnegative-coefficient polynomials to
   Hurwitz stability of `oddEvenPolynomial f g = g(x²) + x·f(x²)`;
 * `LegacyHurwitzOddEvenToFullyInterlacingPairStatement` — the legacy row-oriented
   Hurwitz-to-Lace bridge, now known false as a general theorem; and
-* `FullyInterlacingPairToPrec0Statement` — the converse lace-to-interlacing
+* `FullyInterlacingPairToInterlStatement` — the converse lace-to-interlacing
   bridge back to zero-aware proper position.
 
 The bridge between the two-pair and single-polynomial worlds is the proven
@@ -46,9 +46,9 @@ single-polynomial real-rootedness fact
 `garloffWagnerHadamardNonnegRealRootedStatement`. -/
 theorem garloffWagnerHadamardNonnegInterl_of_oddEven
     (hThm1 : hadamardPreservesHurwitzStableStatement)
-    (hPrecToHurwitz : NonnegPrecToHurwitzOddEvenStatement)
+    (hPrecToHurwitz : NonnegStrictInterlToHurwitzOddEvenStatement)
     (hHurwitzToFull : LegacyHurwitzOddEvenToFullyInterlacingPairStatement)
-    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    (hFullToPrec0 : FullyInterlacingPairToInterlStatement) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       StrictInterl f g → StrictInterl p q →
@@ -131,16 +131,16 @@ theorem hadamardProduct_preserves_pf_of_nonnegStrictInterl :
     garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
 
 theorem hadamardProduct_preserves_pf_of_matrixHadamardBridges
-    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
+    (_hToFull : LegacyNonnegStrictInterlToFullyInterlacingPairStatement)
     (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    (_hFullToPrec0 : FullyInterlacingPairToInterlStatement) :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
     IsPFPolynomial (hadamardProduct p q) :=
   hadamardProduct_preserves_pf_of_nonnegStrictInterl
 
 theorem hadamardProduct_preserves_pf_of_hurwitzSchur
-    (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
-    (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    (_hToFull : LegacyNonnegStrictInterlToFullyInterlacingPairStatement)
+    (_hFullToPrec0 : FullyInterlacingPairToInterlStatement) :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
     IsPFPolynomial (hadamardProduct p q) :=
   hadamardProduct_preserves_pf_of_nonnegStrictInterl

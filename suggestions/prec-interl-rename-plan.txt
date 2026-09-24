@@ -436,3 +436,18 @@ Validation of this ledger
 - No accidental proposed-name collisions remain beyond the documented
   deprecated-wrapper convergence.
 - The 24 false-positive rows map exactly to themselves.
+
+Next coherent integration batch — relation-bearing statement interfaces
+(2026-09-24)
+
+The first post-#935 integration batch is bounded to the 20 relation-bearing
+statement-scaffold rows and the checked declarations/witness references in
+their Veronese-section, Euler/Polar, CommonInterleaver example, and owned
+caller modules.  It canonicalizes `Prec0`/`Prec` to `Interl`/`StrictInterl`
+without changing proof status or assumption boundaries, and retains exact
+deprecated public aliases for the former names.  Private examples are renamed
+directly.  Tactic parser/client declarations, local-hypothesis style cleanup,
+lexical matches, and other compatibility families remain later batches.  The
+source review logs for this boundary are `/tmp/realrooted-prec-statement-batch-inventory.log`,
+`/tmp/realrooted-prec-statement-batch-residual.log`, and
+`/tmp/realrooted-prec-statement-batch-guards.log`.

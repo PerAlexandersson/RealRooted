@@ -111,7 +111,7 @@ theorem classicalHurwitzLinearPair_isTotallyNonneg :
         (Polynomial.X + Polynomial.C (2 : ℝ))
         (Polynomial.X + Polynomial.C (1 : ℝ))).coeff).IsTotallyNonneg := by
   apply Matrix.hurwitz_isTotallyNonneg_of_hurwitzStable
-  apply RealRooted.nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos
+  apply RealRooted.nonnegStrictInterlToHurwitzOddEven_of_hermiteBiehlerPos
     @RealRooted.hermiteBiehlerForwardPos
     @RealRooted.hermiteBiehlerStableToHurwitzOddEven
   · exact RealRooted.hasNonnegCoeffs_X_add_C (by norm_num)

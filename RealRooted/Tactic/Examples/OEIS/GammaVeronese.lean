@@ -57,8 +57,8 @@ example {r k : Nat → Nat} {P : Nat → ℝ[X]}
 
 /-- Veronese pair-section row-family `StrictInterl` exit exposed through the OEIS facade. -/
 example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
-    (hPrecToFull : LegacyPrecToFullyInterlacingPairStatement)
-    (hFullToPrec : FullyInterlacingPairToPrecStatement)
+    (hPrecToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
+    (hFullToPrec : FullyInterlacingPairToStrictInterlStatement)
     (hpq : ∀ n : Nat, StrictInterl (P n) (Q n))
     (hr : ∀ n : Nat, 0 < r n)
     (hij : ∀ n : Nat, i n < j n)
