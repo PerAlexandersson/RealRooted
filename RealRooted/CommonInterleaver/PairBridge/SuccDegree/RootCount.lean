@@ -78,8 +78,8 @@ theorem posComboNoCommonSuccDegreeRootCountNonRoot_of_commonLeftInterleaver
   have hhg_le_succ := hhg.natDegree_le_succ
   have hdh : f.natDegree = h.natDegree := by lia
   have hdg : g.natDegree = h.natDegree + 1 := by lia
-  obtain ⟨hA1, hA2⟩ := sameDegreeRootCountOriented_of_prec hhf hdh x
-  obtain ⟨hB1, hB2⟩ := succDegreeRootCountLowerOriented_of_prec hhg hdg x
+  obtain ⟨hA1, hA2⟩ := sameDegreeRootCountOriented_of_strictInterl hhf hdh x
+  obtain ⟨hB1, hB2⟩ := succDegreeRootCountLowerOriented_of_strictInterl hhg hdg x
   exact ⟨by lia, by lia⟩
 
 /-- The honest common-non-root upper-count succ-degree leaf, reduced to the
@@ -180,7 +180,7 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_orientation
     (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
     PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno _hf_split
-  exact succDegreeRootCountAbove_of_prec
+  exact succDegreeRootCountAbove_of_strictInterl
     (horient hf_pos hg_pos hfnn hgnn hfg hdeg hno) hdeg
 
 /-- The fixed-orientation succ-degree endpoint implies the lower-threshold
@@ -250,7 +250,7 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
   have hdeg' : f.natDegree = g.divX.natDegree := by
     rw [hgdivX]
     lia
-  exact sameDegreeRootCountOriented_of_prec hprec hdeg' x
+  exact sameDegreeRootCountOriented_of_strictInterl hprec hdeg' x
 
 /-- The full lead root-count branch follows from the both-nonzero branch and
 the `divX` orientation target for the right-zero branch. -/
@@ -267,7 +267,7 @@ theorem posComboNoCommonSuccDegreeRootCountResidual_of_prec
     (horient : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement) :
     PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
-  exact succDegreeRootCount_of_prec
+  exact succDegreeRootCount_of_strictInterl
     (horient hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hdeg
 
 /-- The succ-degree no-common root-count target splits into exactly two
