@@ -67,7 +67,7 @@ theorem IsStrictlyHurwitzStable.wronskian_parts_pos_of_oddShape
       even.eval t * odd.derivative.eval t := by
   obtain ⟨hoddnn, _⟩ :=
     h.hasNonnegCoeffs_parts_of_oddShape hodd heven hdegree
-  have hprec := h.prec_parts_of_oddShape hodd heven hdegree
+  have hprec := h.strictInterl_parts_of_oddShape hodd heven hdegree
   have hstrict : StrictInterlSameDegree odd even :=
     StrictInterlSameDegree.of_strictInterl_of_no_common hprec hdegree.symm
       (fun r hoddRoot hevenRoot =>
@@ -78,7 +78,7 @@ theorem IsStrictlyHurwitzStable.wronskian_parts_pos_of_oddShape
 
 /-- In a positive-degree odd-shape Routh step, the reduced input precedes the
 old odd input and has nonnegative coefficients. -/
-theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
+theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
     {odd even : ℝ[X]}
     (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
@@ -91,7 +91,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
     h.hasNonnegCoeffs_parts_of_oddShape hodd heven hdegree
   obtain ⟨hodd0, _⟩ :=
     h.coeff_zero_pos_parts_of_oddShape hodd heven hdegree
-  have hprec := h.prec_parts_of_oddShape hodd heven hdegree
+  have hprec := h.strictInterl_parts_of_oddShape hodd heven hdegree
   let c := routhCoefficient odd even
   let q := even - Polynomial.C c * odd
   have hq0 : q.coeff 0 = 0 := by
@@ -150,13 +150,13 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape
         hqNe hqSplits hall (Or.inr hqDegree.symm) with hoddq | hqodd
     · exact hoddq
     · have hqNeg :=
-        roots_neg_of_prec_sameDegree_of_roots_neg hqodd hqDegree hoddNeg
+        roots_neg_of_strictInterl_sameDegree_of_roots_neg hqodd hqDegree hoddNeg
       exact False.elim ((ne_of_lt (hqNeg 0 hqRoot)) rfl)
   have hqNonpos : ∀ r, q.IsRoot r → r ≤ 0 :=
-    roots_nonpos_of_prec_sameDegree_of_zero_root_of_left_roots_neg
+    roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
       hprecQ hqDegree.symm hqRoot hoddNeg
   have hredPrec : StrictInterl q.divX odd :=
-    prec_divX_left_of_prec_sameDegree_of_roots_nonpos_coeff_zero hprecQ
+    strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero hprecQ
       (fun r hr => hqNonpos r ((Polynomial.mem_roots hqNe).mp hr))
       hq0 hqDegree
   have hdivNe : q.divX ≠ 0 := by
@@ -225,7 +225,7 @@ theorem IsStrictlyHurwitzStable.natDegree_routhReducedOddPart_add_one_of_oddShap
     (routhReducedOddPart (routhCoefficient odd even) odd even).natDegree + 1 =
       odd.natDegree := by
   have hprec :=
-    (h.prec_routhReducedOddPart_of_oddShape
+    (h.strictInterl_routhReducedOddPart_of_oddShape
       hodd heven hdegree hdegreePos).1
   have hle := natDegree_routhReducedOddPart_le_pred_of_oddShape
     (routhCoefficient odd even) hdegree
@@ -271,7 +271,7 @@ theorem IsStrictlyHurwitzStable.routhReducedPolynomial_of_evenShape
   obtain ⟨hodd0, _⟩ :=
     h.coeff_zero_pos_parts_of_evenShape hodd heven hdegree
   obtain ⟨hprec, hrednn⟩ :=
-    h.prec_routhReducedOddPart_of_evenShape hodd heven hdegree
+    h.strictInterl_routhReducedOddPart_of_evenShape hodd heven hdegree
   have hredPos : HasPosLeadingCoeff
       (routhReducedOddPart (routhCoefficient odd even) odd even) :=
     hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hrednn hprec.1.1
@@ -318,7 +318,7 @@ theorem IsStrictlyHurwitzStable.routhReducedPolynomial_of_oddShape
     exact (IsStrictlyHurwitzStable.C (odd.coeff 0)).2 hodd0.ne'
   · have hdegreePos : 0 < odd.natDegree := Nat.pos_of_ne_zero hdegreeZero
     obtain ⟨hprec, hrednn⟩ :=
-      h.prec_routhReducedOddPart_of_oddShape
+      h.strictInterl_routhReducedOddPart_of_oddShape
         hodd heven hdegree hdegreePos
     have hredPos : HasPosLeadingCoeff
         (routhReducedOddPart (routhCoefficient odd even) odd even) :=
@@ -330,5 +330,11 @@ theorem IsStrictlyHurwitzStable.routhReducedPolynomial_of_oddShape
     exact isStrictlyHurwitzStable_oddEvenPolynomial_of_rightHalfPlaneStable
       hright hodd0.ne'
         (h.noCommonRoot_routhReducedOddPart hoddnn hodd0.ne')
+
+@[deprecated
+  IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
+  (since := "2026-09-18")]
+alias IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape :=
+  IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
 
 end RealRooted

@@ -27,7 +27,7 @@ theorem finiteToeplitz_isTotallyNonneg
 
 /-- The finite Toeplitz kernels satisfy the complete PF and consecutive
 zero-aware proper-position conclusion of the matrix-limit theorem. -/
-theorem finiteToeplitz_kernelRows_pf_and_prec0
+theorem finiteToeplitz_kernelRows_pf_and_interl
     {g h : ℕ → ℝ} (hg : IsPolyaFreqSeq g) (hh : IsPolyaFreqSeq h)
     (hg0 : 0 < g 0) (hh0 : h 0 = 0) (N : ℕ) :
     (∀ i : Fin (N + 1),
@@ -79,14 +79,14 @@ theorem finiteToeplitz_kernelRows_pf_and_prec0
     (∀ i : Fin (N + 1), IsPFPolynomial (kernelRow G K i)) ∧
       ∀ i : Fin N, Interl (kernelRow G K i.castSucc)
         (kernelRow G K i.succ)
-  exact kernelRows_pf_and_prec0_of_tendsto hg0 ha0pos hG hH
+  exact kernelRows_pf_and_interl_of_tendsto hg0 ha0pos hG hH
     hGlower hHlower hKstrict hGdiag hHdiag hlim
 
 /-- Literal two-kernel specialization of the Brändén--Saud Leite theorem.
 For PF coefficient sequences `g,h`, with positive `g(0)` and zero `h(0)`,
 every coefficient row of `g(z)/(1-X*g(z)*h(z))` is PF and consecutive rows
 are in zero-aware proper position. -/
-theorem twoKernelRows_pf_and_prec0
+theorem twoKernelRows_pf_and_interl
     {g h : ℕ → ℝ} (hg : IsPolyaFreqSeq g) (hh : IsPolyaFreqSeq h)
     (hg0 : 0 < g 0) (hh0 : h 0 = 0) :
     (∀ n, IsPFPolynomial
@@ -98,7 +98,7 @@ theorem twoKernelRows_pf_and_prec0
     simpa [PowerSeries.coeff_zero_eq_constantCoeff] using hh0
   constructor
   · intro n
-    have hfinite := finiteToeplitz_kernelRows_pf_and_prec0 hg hh hg0 hh0 n
+    have hfinite := finiteToeplitz_kernelRows_pf_and_interl hg hh hg0 hh0 n
     have heq :
         twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) n =
           kernelRow (finiteToeplitz g n) (finiteToeplitz h n)
@@ -109,7 +109,7 @@ theorem twoKernelRows_pf_and_prec0
     exact hfinite.1 (Fin.last n)
   · intro n
     have hfinite :=
-      finiteToeplitz_kernelRows_pf_and_prec0 hg hh hg0 hh0 (n + 1)
+      finiteToeplitz_kernelRows_pf_and_interl hg hh hg0 hh0 (n + 1)
     have heqLeft :
         twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) n =
           kernelRow (finiteToeplitz g (n + 1)) (finiteToeplitz h (n + 1))
@@ -130,16 +130,25 @@ theorem twoKernelRow_isPFPolynomial
     {g h : ℕ → ℝ} (hg : IsPolyaFreqSeq g) (hh : IsPolyaFreqSeq h)
     (hg0 : 0 < g 0) (hh0 : h 0 = 0) (n : ℕ) :
     IsPFPolynomial (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) n) :=
-  (twoKernelRows_pf_and_prec0 hg hh hg0 hh0).1 n
+  (twoKernelRows_pf_and_interl hg hh hg0 hh0).1 n
 
 /-- Consecutive literal two-kernel rows are in zero-aware proper position. -/
-theorem prec0_twoKernelRow_succ
+theorem interl_twoKernelRow_succ
     {g h : ℕ → ℝ} (hg : IsPolyaFreqSeq g) (hh : IsPolyaFreqSeq h)
     (hg0 : 0 < g 0) (hh0 : h 0 = 0) (n : ℕ) :
     Interl
       (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) n)
       (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) (n + 1)) :=
-  (twoKernelRows_pf_and_prec0 hg hh hg0 hh0).2 n
+  (twoKernelRows_pf_and_interl hg hh hg0 hh0).2 n
+
+@[deprecated finiteToeplitz_kernelRows_pf_and_interl (since := "2026-09-18")]
+alias finiteToeplitz_kernelRows_pf_and_prec0 := finiteToeplitz_kernelRows_pf_and_interl
+
+@[deprecated twoKernelRows_pf_and_interl (since := "2026-09-18")]
+alias twoKernelRows_pf_and_prec0 := twoKernelRows_pf_and_interl
+
+@[deprecated interl_twoKernelRow_succ (since := "2026-09-18")]
+alias prec0_twoKernelRow_succ := interl_twoKernelRow_succ
 
 end
 

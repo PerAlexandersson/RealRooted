@@ -44,11 +44,15 @@ theorem posComboNoCommonBridge_iff_orientation :
 
 /-- The all-combinations no-common bridge also implies the coefficient-free
 compatible succ-degree orientation target. -/
-theorem compatibleSuccDegreePrec_of_allComboBridge
+theorem compatibleSuccDegreeStrictInterl_of_allComboBridge
     (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
-    CompatibleSuccDegreePrecStatement :=
-  compatibleSuccDegreePrec_of_allCombo
+    CompatibleSuccDegreeStrictInterlStatement :=
+  compatibleSuccDegreeStrictInterl_of_allCombo
     (compatibleSuccDegreeAllCombo_of_allComboBridge hallBridge)
+
+@[deprecated compatibleSuccDegreeStrictInterl_of_allComboBridge (since := "2026-09-18")]
+alias compatibleSuccDegreePrec_of_allComboBridge :=
+  compatibleSuccDegreeStrictInterl_of_allComboBridge
 
 /-- The all-combinations no-common bridge implies the exact lower-count
 endpoint comparison used by the #42 no-gap reductions. -/
@@ -97,14 +101,14 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   by_cases hfg_deg : f.natDegree ≤ g.natDegree
   · have hprec_or : StrictInterl f g ∨ StrictInterl g f :=
-      PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common
+      PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
         (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
           hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
         hfg hf_pos hg_pos hfg_deg hclose.2
     exact pairHasCommonInterleaver_of_strictInterl_or_reverse hprec_or
   · have hgf_deg : g.natDegree ≤ f.natDegree := le_of_not_ge hfg_deg
     have hprec_or : StrictInterl g f ∨ StrictInterl f g :=
-      PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common
+      PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
         (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
           hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
         (PosComboRealRooted.comm hfg) hg_pos hf_pos hgf_deg hclose.1

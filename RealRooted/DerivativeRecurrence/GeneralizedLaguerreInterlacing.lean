@@ -52,7 +52,7 @@ theorem prec_of_generalized_laguerre_second_derivative
           C (m ^ 2) * X * (P n).derivative.derivative)
     (hm : 0 ≤ m) (hc : 0 ≤ c) :
     ∀ n, StrictInterl (P n) (P (n + 1)) := by
-  exact prec_of_quadratic_derivative_bilinear P m 0 c m 1 0 hzero
+  exact strictInterl_of_quadratic_derivative_bilinear P m 0 c m 1 0 hzero
     (generalized_laguerre_second_derivative_bilinear hzero hrec)
     hm (by norm_num) hc hm (by norm_num) (by norm_num)
 

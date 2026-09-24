@@ -243,7 +243,7 @@ theorem a144696BernsteinImage_shifted_step
     rw [eval_X]
     apply roots_neg_a144696BernsteinImage hk r
     exact (mem_roots hfpos.ne_zero).mpr hr
-  have hstep := prec_and_hasSimpleRoots_of_auxiliary_sign_succ
+  have hstep := strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
     hsplits hfpos hFpos (by rw [hfdeg]; exact hd)
       (by rw [hFdeg, hfdeg]) hrec hauxSign hXneg
   exact ⟨hstep.1,

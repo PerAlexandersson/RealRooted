@@ -32,7 +32,7 @@ def PosComboNatDegreeCloseStatement : Prop :=
 
 /-- No-common-roots orientation core for the positive-combination converse.
 This matches the local step parameter in
-`PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common`. -/
+`PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common`. -/
 def PosComboNoCommonOrientationStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
     PosComboRealRooted f g →

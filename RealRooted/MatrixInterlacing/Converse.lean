@@ -33,7 +33,7 @@ theorem matrix_preserves_interlacing_seq0_nonneg_entries
     List.mem_map.2 ⟨row, hrow, rfl⟩
   simpa [hrow_eval] using himage.2 _ hmem_eval
 
-theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
+theorem matrix_preserves_interlacing_seq0_sparse_pair_interl
     (G : List (List ℝ[X]))
     (hG_rect : ∀ row ∈ G, row.length = n)
     (hpres0 : ∀ (fs : List ℝ[X]), fs.length = n → IsInterlacingSeq0Nonneg fs →
@@ -100,8 +100,12 @@ theorem matrix_preserves_interlacing_seq0_necessary_conditions
             simp_all⟩))) :=
   ⟨matrix_preserves_interlacing_seq0_nonneg_entries (n := n) G hG_rect hpres0,
     fun i₁ i₂ j₁ j₂ hi hj _a _b ha hb =>
-      matrix_preserves_interlacing_seq0_sparse_pair_prec0
+      matrix_preserves_interlacing_seq0_sparse_pair_interl
         (n := n) G hG_rect hpres0 i₁ i₂ j₁ j₂ hi hj ha hb⟩
 
+@[deprecated matrix_preserves_interlacing_seq0_sparse_pair_interl
+  (since := "2026-09-18")]
+alias matrix_preserves_interlacing_seq0_sparse_pair_prec0 :=
+  matrix_preserves_interlacing_seq0_sparse_pair_interl
 
 end RealRooted

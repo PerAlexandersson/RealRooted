@@ -38,7 +38,7 @@ lemma polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
       have hg_pos : HasPosLeadingCoeff g := hpos (b, g) (by simp)
       have hb_nonpos : b.eval r ≤ 0 := hcoeff (b, g) (by simp) r hr
       have hgg_nonneg : 0 ≤ g.eval r * g₀.eval r :=
-        eval_mul_eval_nonneg_of_prec_right hgf hg₀f hg_pos hg₀_pos hr
+        eval_mul_eval_nonneg_of_strictInterl_right hgf hg₀f hg_pos hg₀_pos hr
       have hterm_nonpos : (b * g).eval r * g₀.eval r ≤ 0 := by
         calc
           (b * g).eval r * g₀.eval r

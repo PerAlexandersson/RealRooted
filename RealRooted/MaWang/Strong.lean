@@ -85,7 +85,9 @@ theorem strictInterl_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     have hF_right_neg : F.eval ((r₀ :: rs').getLast (by lia)) < 0 := by
       have hprod := hroot_sign ((r₀ :: rs').getLast (by lia)) hlast_root
       nlinarith
-    exact prec_of_strict_signs_of_endSigns_even hf.1 hf.2 hF_pos hrs_sorted hrs_eq hdeg hn hf_even
+    exact
+      strictInterl_of_strict_signs_of_endSigns_even
+        hf.1 hf.2 hF_pos hrs_sorted hrs_eq hdeg hn hf_even
       hsign hF_left_pos hF_right_neg
   · have hg_even : Even g.natDegree := by grind
     have hg_left_pos : 0 < g.eval r₀ :=
@@ -98,7 +100,9 @@ theorem strictInterl_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     have hF_right_neg : F.eval ((r₀ :: rs').getLast (by lia)) < 0 := by
       have hprod := hroot_sign ((r₀ :: rs').getLast (by lia)) hlast_root
       nlinarith
-    exact prec_of_strict_signs_of_endSigns_odd hf.1 hf.2 hF_pos hrs_sorted hrs_eq hdeg hn hf_odd
+    exact
+      strictInterl_of_strict_signs_of_endSigns_odd
+        hf.1 hf.2 hF_pos hrs_sorted hrs_eq hdeg hn hf_odd
       hsign hF_left_neg hF_right_neg
 
 /-- Liu--Wang same-degree form: if `g ⊳ f`, `F` has the same degree as `f`,
@@ -177,7 +181,7 @@ theorem strictInterl_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
     refine ⟨uR, huR_root, ?_⟩
     intro r hr
     exact lt_of_le_of_lt (hrs_sorted.rel_getLast hr) hlast_lt_uR
-  exact prec_same_of_strict_signs_of_right_root hf.1 hf.2 hF_ne hrs_sorted hrs_eq
+  exact strictInterl_same_of_strict_signs_of_right_root hf.1 hf.2 hF_ne hrs_sorted hrs_eq
     hdeg hn hsign hright
 
 /-- Transport a same-degree Liu--Wang root-sign certificate backward through a
@@ -327,7 +331,7 @@ lemma add_mul_factor_X_sub_C {a b qf qg : ℝ[X]} {r : ℝ} :
 /-- If a structured Liu--Wang quotient already satisfies the desired `StrictInterl`
 conclusion, multiplying everything by a common linear factor preserves it. This
 is the multiplication-back step for common-root reductions. -/
-lemma prec_mul_X_sub_C_of_linearCombo_quotient
+lemma strictInterl_mul_X_sub_C_of_linearCombo_quotient
     {qf qg a b : ℝ[X]} {r : ℝ}
     (hprec : StrictInterl qf (a * qf + b * qg)) :
     StrictInterl ((X - C r) * qf) (a * ((X - C r) * qf) + b * ((X - C r) * qg)) := by
@@ -432,6 +436,11 @@ alias prec_of_interlaces_evalCoeff_neg_same :=
 
 @[deprecated strictInterl_of_interlaces_evalCoeff_neg (since := "2026-09-18")]
 alias prec_of_interlaces_evalCoeff_neg := strictInterl_of_interlaces_evalCoeff_neg
+
+@[deprecated strictInterl_mul_X_sub_C_of_linearCombo_quotient
+  (since := "2026-09-18")]
+alias prec_mul_X_sub_C_of_linearCombo_quotient :=
+  strictInterl_mul_X_sub_C_of_linearCombo_quotient
 
 end RealRooted.MaWangInternal
 

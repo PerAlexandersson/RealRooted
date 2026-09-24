@@ -29,7 +29,7 @@ theorem reverseHermiteTransform_weightedSum :
         reverseHermiteTransform_weightedSum l]
       simp
 
-private theorem reverseHermiteTransform_prec0_of_weightedSum_right
+private theorem reverseHermiteTransform_interl_of_weightedSum_right
     {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
@@ -41,12 +41,12 @@ private theorem reverseHermiteTransform_prec0_of_weightedSum_right
     Interl (reverseHermiteTransform f)
       (reverseHermiteTransform g) := by
   rw [hf, reverseHermiteTransform_weightedSum]
-  apply prec0_weightedSum_right_of_nonneg
+  apply interl_weightedSum_right_of_nonneg
   · grind
   · grind
   · grind
 
-private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
+private theorem reverseHermiteTransform_preserves_pf_and_interl :
     (∀ {p : ℝ[X]}, IsPFPolynomial p →
       IsPFPolynomial (reverseHermiteTransform p)) ∧
     (∀ {f g : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g →
@@ -92,7 +92,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
               Interl (reverseHermiteTransform q.derivative)
                 (reverseHermiteTransform q) := by
             exact (ih q.natDegree (by lia)).2 hqder hq
-              hq.derivative_prec0_self rfl
+              hq.derivative_interl_self rfl
           rw [hfactor, show X - C u = X + C (-u) by
             grind,
             reverseHermiteTransform_mul_X_add_C]
@@ -123,15 +123,15 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
             hf.hasNonnegCoeffs.pos_leadingCoeff hstrict.1.1
           have hgpos : HasPosLeadingCoeff g :=
             hg.hasNonnegCoeffs.pos_leadingCoeff hstrict.2.1.1
-          rcases gwTheorem11PrecKreinSummandExpansion hstrict hfpos hgpos with
+          rcases gwTheorem11StrictInterlKreinSummandExpansion hstrict hfpos hgpos with
             ⟨l, hfexp, hnonneg, hsummand, _⟩
-          apply reverseHermiteTransform_prec0_of_weightedSum_right
+          apply reverseHermiteTransform_interl_of_weightedSum_right
             hfexp hnonneg
           · intro ap hap
             have hs := hsummand ap hap
             rcases hs with hself | ⟨u, hfactor⟩
             · simpa [hself] using
-                (hPF hg hgdeg).prec0_self
+                (hPF hg hgdeg).interl_self
             · have hq : IsPFPolynomial ap.2 :=
                 hg.of_X_sub_C_mul_factor hfactor
               have hq0 : ap.2 ≠ 0 := by
@@ -154,7 +154,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
                   Interl (reverseHermiteTransform ap.2.derivative)
                     (reverseHermiteTransform ap.2) :=
                 (ih ap.2.natDegree (by lia)).2 hqder hq
-                  hq.derivative_prec0_self rfl
+                  hq.derivative_interl_self rfl
               rw [hfactor, show X - C u = X + C (-u) by
                 grind,
                 reverseHermiteTransform_mul_X_add_C]
@@ -189,22 +189,30 @@ private theorem reverseHermiteTransform_preserves_pf_and_prec0 :
 theorem reverseHermiteTransform_preserves_pf {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial (reverseHermiteTransform p) :=
-  reverseHermiteTransform_preserves_pf_and_prec0.1 hp
+  reverseHermiteTransform_preserves_pf_and_interl.1 hp
 
 /-- The reverse-Hermite transform preserves zero-aware proper position between
 PF polynomials. -/
-theorem reverseHermiteTransform_preserves_prec0 {f g : ℝ[X]}
+theorem reverseHermiteTransform_preserves_interl {f g : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
     (hfg : Interl f g) :
     Interl (reverseHermiteTransform f) (reverseHermiteTransform g) :=
-  reverseHermiteTransform_preserves_pf_and_prec0.2 hf hg hfg
+  reverseHermiteTransform_preserves_pf_and_interl.2 hf hg hfg
 
 /-- Strict proper position between PF polynomials is transported to the
 zero-aware relation by the reverse-Hermite transform. -/
-theorem reverseHermiteTransform_prec_to_prec0 {f g : ℝ[X]}
+theorem reverseHermiteTransform_strictInterl_to_interl {f g : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
     (hfg : StrictInterl f g) :
     Interl (reverseHermiteTransform f) (reverseHermiteTransform g) :=
-  reverseHermiteTransform_preserves_prec0 hf hg hfg.toInterl
+  reverseHermiteTransform_preserves_interl hf hg hfg.toInterl
+
+@[deprecated reverseHermiteTransform_preserves_interl (since := "2026-09-18")]
+alias reverseHermiteTransform_preserves_prec0 :=
+  reverseHermiteTransform_preserves_interl
+
+@[deprecated reverseHermiteTransform_strictInterl_to_interl (since := "2026-09-18")]
+alias reverseHermiteTransform_prec_to_prec0 :=
+  reverseHermiteTransform_strictInterl_to_interl
 
 end RealRooted

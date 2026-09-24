@@ -31,7 +31,7 @@ private lemma hasPosLeadingCoeff_C_mul_X_sub_C {s t : ℝ} (hs : 0 < s) :
   rw [C_mul_X_sub_C_eq_C_mul_X_sub_C_div hs.ne']
   exact hasPosLeadingCoeff_C_mul hs (hasPosLeadingCoeff_X_sub_C _)
 
-private theorem prec_affine_favard_step {f g aPoly bPoly : ℝ[X]}
+private theorem strictInterl_affine_favard_step {f g aPoly bPoly : ℝ[X]}
     (hInter : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
     (hf_pos : HasPosLeadingCoeff f)
@@ -67,7 +67,7 @@ private def affineFavardChainPackage (P : Nat → ℝ[X]) (n : Nat) : Prop :=
     HasPosLeadingCoeff (P n) ∧
     HasPosLeadingCoeff (P (n + 1))
 
-private theorem prec_sequence_of_affineFavardChainPackage {P : Nat → ℝ[X]}
+private theorem strictInterl_sequence_of_affineFavardChainPackage {P : Nat → ℝ[X]}
     (hQ : ∀ n : Nat, affineFavardChainPackage P n) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   fun n => (hQ n).1.toStrictInterl
@@ -119,7 +119,7 @@ private theorem affineFavardChainPackage_of_param_coeff
       have hb_le : 0 ≤ β (n + 1) := (hβ n).le
       simpa [bPoly] using (neg_nonpos.mpr hb_le)
     have hFavardStep :=
-      prec_affine_favard_step hInter hPos_n hPos_n1 hA_deg hA_pos hA_ne
+      strictInterl_affine_favard_step hInter hPos_n hPos_n1 hA_deg hA_pos hA_ne
         hBg_le hb_nonpos
     have hInter_step : Interlaces f (aPoly * f + bPoly * g) := hFavardStep.2.1
     have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := hFavardStep.2.2
@@ -212,7 +212,7 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
     (hP1 : P 1 = C s * X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (C s * X - C α) * P (n + 1) - C β * P n) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_sequence_of_affineFavardChainPackage <|
+  strictInterl_sequence_of_affineFavardChainPackage <|
     affineFavardChainPackage_of_param_coeff
       (P := P) (s := fun _ => s) (α := fun _ => α) (β := fun _ => β)
       (fun _ => hs) (fun _ => hβ) hP0 (by simpa using hP1)

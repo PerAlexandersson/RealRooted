@@ -42,7 +42,7 @@ theorem IsStrictlyHurwitzStable.hasNonnegCoeffs_parts_of_evenShape
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree + 1) :
     HasNonnegCoeffs odd ∧ HasNonnegCoeffs even := by
-  have hprec := h.prec_rotatedParts_of_evenShape hodd heven hdegree
+  have hprec := h.strictInterl_rotatedParts_of_evenShape hodd heven hdegree
   exact
     ⟨hasNonnegCoeffs_of_posLeading_of_splits_hurwitzRotatedOddPart
         hodd hprec.1.2,
@@ -57,7 +57,7 @@ theorem IsStrictlyHurwitzStable.hasNonnegCoeffs_parts_of_oddShape
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree) :
     HasNonnegCoeffs odd ∧ HasNonnegCoeffs even := by
-  have hprec := h.prec_rotatedParts_of_oddShape hodd heven hdegree
+  have hprec := h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree
   exact
     ⟨hasNonnegCoeffs_of_posLeading_of_splits_hurwitzRotatedOddPart
         hodd hprec.2.1.2,
@@ -97,7 +97,7 @@ Indeed, a zero constant in the odd input would give the rotated odd part at
 least two zero factors: its explicit `-X` and one from composition. The rotated
 even part has no zero root, contradicting the multiplicity-one gap forced by
 proper position. -/
-theorem coeff_zero_ne_of_prec_rotatedParts
+theorem coeff_zero_ne_of_strictInterl_rotatedParts
     {odd even : ℝ[X]}
     (hprec :
       StrictInterl (hurwitzRotatedOddPart odd) (hurwitzRotatedEvenPart even) ∨
@@ -156,8 +156,8 @@ theorem IsStrictlyHurwitzStable.coeff_zero_pos_parts_of_evenShape
     have hzero := h.coeff_zero_pos hfull
     rw [← coeff_oddEvenPolynomial_even odd even 0]
     simpa using hzero
-  have hodd0ne := coeff_zero_ne_of_prec_rotatedParts
-    (Or.inl (h.prec_rotatedParts_of_evenShape hodd heven hdegree))
+  have hodd0ne := coeff_zero_ne_of_strictInterl_rotatedParts
+    (Or.inl (h.strictInterl_rotatedParts_of_evenShape hodd heven hdegree))
       heven0.ne'
   exact ⟨lt_of_le_of_ne (hparts.1 0) hodd0ne.symm, heven0⟩
 
@@ -175,8 +175,8 @@ theorem IsStrictlyHurwitzStable.coeff_zero_pos_parts_of_oddShape
     have hzero := h.coeff_zero_pos hfull
     rw [← coeff_oddEvenPolynomial_even odd even 0]
     simpa using hzero
-  have hodd0ne := coeff_zero_ne_of_prec_rotatedParts
-    (Or.inr (h.prec_rotatedParts_of_oddShape hodd heven hdegree))
+  have hodd0ne := coeff_zero_ne_of_strictInterl_rotatedParts
+    (Or.inr (h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree))
       heven0.ne'
   exact ⟨lt_of_le_of_ne (hparts.1 0) hodd0ne.symm, heven0⟩
 
@@ -203,5 +203,10 @@ theorem IsStrictlyHurwitzStable.routhCoefficient_pos_of_oddShape
   obtain ⟨hodd0, heven0⟩ :=
     h.coeff_zero_pos_parts_of_oddShape hodd heven hdegree
   exact routhCoefficient_pos hodd0 heven0
+
+@[deprecated coeff_zero_ne_of_strictInterl_rotatedParts
+  (since := "2026-09-18")]
+alias coeff_zero_ne_of_prec_rotatedParts :=
+  coeff_zero_ne_of_strictInterl_rotatedParts
 
 end RealRooted

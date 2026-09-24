@@ -172,7 +172,7 @@ theorem hadamardProduct_sequence_pf {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i)) :
     ∀ i : Nat, IsPFPolynomial (hadamardProduct (P i) (Q i)) := fun i =>
-  hadamardProduct_preserves_pf_of_nonnegPrec (hP i) (hQ i)
+  hadamardProduct_preserves_pf_of_nonnegStrictInterl (hP i) (hQ i)
 
 /-- A nonzero scalar multiple of each rowwise Hadamard product of PF
 polynomials is nonzero and real-rooted. -/
@@ -201,7 +201,7 @@ theorem hadamardProduct_sequence_nonneg_realrooted {P Q : Nat → ℝ[X]}
           (hadamardProduct (P i) (Q i)).Splits) ∧
         HasNonnegCoeffs (hadamardProduct (P i) (Q i)) ∧
         ∀ r ∈ (hadamardProduct (P i) (Q i)).roots, r ≤ 0 := fun i =>
-  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
+  garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl
     (hPnonneg i) (hQnonneg i) (hP i) (hQ i)
 
 theorem hadamardProduct_sequence_nonneg_coeffs {P Q : Nat → ℝ[X]}
@@ -218,7 +218,7 @@ theorem hadamardProduct_prec0_of_nonneg_prec {f g p q : ℝ[X]}
     (hfg : StrictInterl f g)
     (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  garloffWagnerHadamardNonnegPrec hf hg hp hq hfg hpq
+  garloffWagnerHadamardNonnegInterl hf hg hp hq hfg hpq
 
 theorem hadamardProduct_sequence_prec0 {F G P Q : Nat → ℝ[X]}
     (hF : ∀ i : Nat, HasNonnegCoeffs (F i))
@@ -536,9 +536,9 @@ macro_rules
         exact RealRooted.pfCubicDiscrDiagonalNonnegStatement_of_schurSzego
           $hSZ)
   | `(tactic| rr_hadamard_pf_statement) =>
-      `(tactic| exact RealRooted.schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec)
+      `(tactic| exact RealRooted.schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegStrictInterl)
   | `(tactic| rr_hadamard_nonneg_realrooted_statement) =>
-      `(tactic| exact RealRooted.garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec)
+      `(tactic| exact RealRooted.garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl)
   | `(tactic|
       rr_schur_szego using
         pf_factor := $hf:term,
@@ -778,7 +778,7 @@ macro_rules
         left_pf := $hp:term,
         right_pf := $hq:term) =>
       `(tactic|
-        exact RealRooted.hadamardProduct_preserves_pf_of_nonnegPrec $hp $hq)
+        exact RealRooted.hadamardProduct_preserves_pf_of_nonnegStrictInterl $hp $hq)
   | `(tactic|
       rr_hadamard_nonneg_realrooted using
         left_nonneg := $hpnn:term,
@@ -786,7 +786,7 @@ macro_rules
         left_realrooted := $hp:term,
         right_realrooted := $hq:term) =>
       `(tactic|
-        exact RealRooted.garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
+        exact RealRooted.garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl
           $hpnn $hqnn $hp $hq)
   | `(tactic|
       rr_hadamard_nonneg_coeffs using
@@ -808,13 +808,13 @@ macro_rules
   | `(tactic| rr_hadamard_pf_prec0) =>
       `(tactic|
         first
-          | exact RealRooted.hadamardProduct_preserves_prec0_right
-              RealRooted.garloffWagnerHadamardPFPrec0_of_nonnegPrec
+          | exact RealRooted.hadamardProduct_preserves_interl_right
+              RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
-          | exact RealRooted.hadamardProduct_preserves_prec0_left
-              RealRooted.garloffWagnerHadamardPFPrec0_of_nonnegPrec
+          | exact RealRooted.hadamardProduct_preserves_interl_left
+              RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
-          | exact RealRooted.garloffWagnerHadamardPFPrec0_of_nonnegPrec
+          | exact RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
               rr_lookup_term rr_lookup_term)
   | `(tactic|

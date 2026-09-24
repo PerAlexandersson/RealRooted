@@ -54,7 +54,7 @@ theorem chainPolynomial_toLowerTriangularMatrix_isPFPolynomial
     (hA.diagonalTail hδ.le) n
 
 /-- Consecutive finite chain polynomials are in zero-aware proper position. -/
-theorem prec0_chainPolynomial_toLowerTriangularMatrix_succ
+theorem interl_chainPolynomial_toLowerTriangularMatrix_succ
     {N n : ℕ} {δ : ℝ} {A : Matrix (Fin N) (Fin N) ℝ}
     (hδ : 0 < δ) (hA : A.IsTotallyNonneg)
     (hlower : ∀ i j, i < j → A i j = 0)
@@ -64,9 +64,14 @@ theorem prec0_chainPolynomial_toLowerTriangularMatrix_succ
   rw [← chainPolynomial_diagonalTail_eq_toLowerTriangularMatrix δ A
       (lt_trans (Nat.lt_succ_self n) hn),
     ← chainPolynomial_diagonalTail_eq_toLowerTriangularMatrix δ A hn]
-  exact prec0_chainPolynomial_succ_of_pos_constantDiagonal hδ
+  exact interl_chainPolynomial_succ_of_pos_constantDiagonal hδ
     (diagonalTail_isLowerTriangular hlower)
     (fun i => Matrix.diagonalTail_apply_diagonal δ A hdiag)
     (hA.diagonalTail hδ.le) n
+
+@[deprecated interl_chainPolynomial_toLowerTriangularMatrix_succ
+  (since := "2026-09-18")]
+alias prec0_chainPolynomial_toLowerTriangularMatrix_succ :=
+  interl_chainPolynomial_toLowerTriangularMatrix_succ
 
 end RealRooted.BrandenLeite

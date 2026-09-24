@@ -66,7 +66,7 @@ theorem shiftedFiniteSupersymmetricCoeff_isPolyaFreqSeq
 
 /-- All composition rows of a positive-order finite supersymmetric product
 are PF, and consecutive rows are in zero-aware proper position. -/
-theorem shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0
+theorem shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) :
     (∀ n, IsPFPolynomial
@@ -77,7 +77,7 @@ theorem shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0
           (PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys)) n)
         (compositionRow
           (PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys)) (n + 1)) := by
-  exact compositionRows_mk_pf_and_prec0_of_zero
+  exact compositionRows_mk_pf_and_interl_of_zero
     (shiftedFiniteSupersymmetricCoeff_isPolyaFreqSeq hxs hys)
     (shiftedFiniteSupersymmetricCoeff_zero xs ys)
 
@@ -237,7 +237,7 @@ theorem binomialCompositionRow_exact_X_power
 
 /-- Binomial composition rows are PF and consecutive rows are in zero-aware
 proper position. -/
-theorem binomialCompositionRows_pf_and_prec0 (d : ℕ) :
+theorem binomialCompositionRows_pf_and_interl (d : ℕ) :
     (∀ n, IsPFPolynomial
       (compositionRow (PowerSeries.mk (binomialCompositionKernel d)) n)) ∧
       ∀ n, Interl
@@ -245,7 +245,7 @@ theorem binomialCompositionRows_pf_and_prec0 (d : ℕ) :
         (compositionRow
           (PowerSeries.mk (binomialCompositionKernel d)) (n + 1)) := by
   simpa [binomialCompositionKernel] using
-    (shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0
+    (shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
       (xs := List.replicate d 1) (ys := []) (by simp) (by simp))
 
 /-- Every nonzero root of a binomial composition row is strictly negative. -/
@@ -255,7 +255,7 @@ theorem binomialCompositionRow_nonzero_roots_neg
       (PowerSeries.mk (binomialCompositionKernel d)) n).roots)
     (hr0 : r ≠ 0) : r < 0 := by
   exact lt_of_le_of_ne
-    ((binomialCompositionRows_pf_and_prec0 d).1 n |>.roots_nonpos r hr)
+    ((binomialCompositionRows_pf_and_interl d).1 n |>.roots_nonpos r hr)
     hr0
 
 /-! ## Negative-binomial denominator families -/
@@ -365,7 +365,7 @@ theorem inversePowerCompositionRow_exact_X
 
 /-- Inverse-power composition rows are PF and consecutive rows are in
 zero-aware proper position. -/
-theorem inversePowerCompositionRows_pf_and_prec0 (e : ℕ) :
+theorem inversePowerCompositionRows_pf_and_interl (e : ℕ) :
     (∀ n, IsPFPolynomial
       (compositionRow
         (PowerSeries.mk (inversePowerCompositionKernel e)) n)) ∧
@@ -375,8 +375,11 @@ theorem inversePowerCompositionRows_pf_and_prec0 (e : ℕ) :
         (compositionRow
           (PowerSeries.mk (inversePowerCompositionKernel e)) (n + 1)) := by
   simpa [inversePowerCompositionKernel] using
-    (shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0
+    (shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
       (xs := []) (ys := List.replicate e 1) (by simp) (by simp))
+
+@[deprecated inversePowerCompositionRows_pf_and_interl (since := "2026-09-18")]
+alias inversePowerCompositionRows_pf_and_prec0 := inversePowerCompositionRows_pf_and_interl
 
 /-- Every nonzero root of an inverse-power composition row is strictly
 negative. -/
@@ -386,7 +389,7 @@ theorem inversePowerCompositionRow_nonzero_roots_neg
       (PowerSeries.mk (inversePowerCompositionKernel e)) n).roots)
     (hr0 : r ≠ 0) : r < 0 := by
   exact lt_of_le_of_ne
-    ((inversePowerCompositionRows_pf_and_prec0 e).1 n |>.roots_nonpos r hr)
+    ((inversePowerCompositionRows_pf_and_interl e).1 n |>.roots_nonpos r hr)
     hr0
 
 /-! ## The mixed quadratic/geometric family -/
@@ -422,11 +425,11 @@ def a207327Row (n : ℕ) : ℝ[X] :=
 
 /-- A207327 rows are PF and consecutive rows are in zero-aware proper
 position. -/
-theorem a207327Rows_pf_and_prec0 :
+theorem a207327Rows_pf_and_interl :
     (∀ n, IsPFPolynomial (a207327Row n)) ∧
       ∀ n, Interl (a207327Row n) (a207327Row (n + 1)) := by
   simpa [a207327Row, a207327Kernel] using
-    (shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0
+    (shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
       (xs := [1, 1]) (ys := [1]) (by simp) (by simp))
 
 /-- Every nonzero root of an A207327 row is strictly negative. -/
@@ -434,7 +437,7 @@ theorem a207327Row_nonzero_roots_neg
     (n : ℕ) {r : ℝ} (hr : r ∈ (a207327Row n).roots)
     (hr0 : r ≠ 0) : r < 0 := by
   exact lt_of_le_of_ne
-    ((a207327Rows_pf_and_prec0.1 n).roots_nonpos r hr) hr0
+    ((a207327Rows_pf_and_interl.1 n).roots_nonpos r hr) hr0
 
 /-- The polynomial-valued denominator
 `(1-z) - X*z*(1+z)^2` for the A207327 row series. -/
@@ -682,10 +685,10 @@ theorem a116088Row_eq_sum_choose (n : ℕ) :
   exact compositionRow_binomialCompositionKernel 2 n
 
 /-- A116088 rows are PF and consecutively in zero-aware proper position. -/
-theorem a116088Rows_pf_and_prec0 :
+theorem a116088Rows_pf_and_interl :
     (∀ n, IsPFPolynomial (a116088Row n)) ∧
       ∀ n, Interl (a116088Row n) (a116088Row (n + 1)) := by
-  exact binomialCompositionRows_pf_and_prec0 2
+  exact binomialCompositionRows_pf_and_interl 2
 
 /-- The zero root of a positive A116088 row has multiplicity
 `ceil(n/3)`. -/
@@ -713,10 +716,10 @@ theorem a116089Row_eq_sum_choose (n : ℕ) :
   exact compositionRow_binomialCompositionKernel 3 n
 
 /-- A116089 rows are PF and consecutively in zero-aware proper position. -/
-theorem a116089Rows_pf_and_prec0 :
+theorem a116089Rows_pf_and_interl :
     (∀ n, IsPFPolynomial (a116089Row n)) ∧
       ∀ n, Interl (a116089Row n) (a116089Row (n + 1)) := by
-  exact binomialCompositionRows_pf_and_prec0 3
+  exact binomialCompositionRows_pf_and_interl 3
 
 /-- The zero root of a positive A116089 row has multiplicity
 `ceil(n/4)`. -/
@@ -744,10 +747,10 @@ theorem a206294Row_eq_sum_choose (n : ℕ) :
   exact compositionRow_inversePowerCompositionKernel (by norm_num) n
 
 /-- A206294 rows are PF and consecutively in zero-aware proper position. -/
-theorem a206294Rows_pf_and_prec0 :
+theorem a206294Rows_pf_and_interl :
     (∀ n, IsPFPolynomial (a206294Row n)) ∧
       ∀ n, Interl (a206294Row n) (a206294Row (n + 1)) := by
-  exact inversePowerCompositionRows_pf_and_prec0 3
+  exact inversePowerCompositionRows_pf_and_interl 3
 
 /-- Every positive-index A206294 row has a simple zero. -/
 theorem a206294Row_exact_X {n : ℕ} (hn : 1 ≤ n) :
@@ -759,6 +762,26 @@ theorem a206294Row_nonzero_roots_neg
     (n : ℕ) {r : ℝ} (hr : r ∈ (a206294Row n).roots)
     (hr0 : r ≠ 0) : r < 0 := by
   exact inversePowerCompositionRow_nonzero_roots_neg 3 n hr hr0
+
+@[deprecated shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
+  (since := "2026-09-18")]
+alias shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0 :=
+  shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
+
+@[deprecated binomialCompositionRows_pf_and_interl (since := "2026-09-18")]
+alias binomialCompositionRows_pf_and_prec0 := binomialCompositionRows_pf_and_interl
+
+@[deprecated a207327Rows_pf_and_interl (since := "2026-09-18")]
+alias a207327Rows_pf_and_prec0 := a207327Rows_pf_and_interl
+
+@[deprecated a116088Rows_pf_and_interl (since := "2026-09-18")]
+alias a116088Rows_pf_and_prec0 := a116088Rows_pf_and_interl
+
+@[deprecated a116089Rows_pf_and_interl (since := "2026-09-18")]
+alias a116089Rows_pf_and_prec0 := a116089Rows_pf_and_interl
+
+@[deprecated a206294Rows_pf_and_interl (since := "2026-09-18")]
+alias a206294Rows_pf_and_prec0 := a206294Rows_pf_and_interl
 
 end
 

@@ -51,17 +51,20 @@ theorem gammaOperator_allComboRealRooted
 /-- Proper position is transported up to the two possible orientations and
 the zero-output boundary.  Coefficient invariants resolve this ambiguity for
 the recursive gamma components in the final pencil theorem. -/
-theorem gammaOperator_prec0_or_revPrec0
+theorem gammaOperator_interl_or_reverse
     {n : ℕ} (hn : 2 ≤ n) {p q : ℝ[X]}
     (hpdeg : p.natDegree ≤ n / 2)
     (hqdeg : q.natDegree ≤ n / 2)
     (hpq : StrictInterl p q) :
     Interl (gammaOperator n p) (gammaOperator n q) ∨
       Interl (gammaOperator n q) (gammaOperator n p) := by
-  apply BorceaBranden.linearMap_prec0_or_revPrec0_of_finiteSymbol_stable
+  apply BorceaBranden.linearMap_interl_or_reverse_of_finiteSymbol_stable
   · exact finiteAlgebraicSymbol_gammaOperator_stable n hn
   · exact hpdeg
   · exact hqdeg
   · exact hpq
+
+@[deprecated gammaOperator_interl_or_reverse (since := "2026-09-18")]
+alias gammaOperator_prec0_or_revPrec0 := gammaOperator_interl_or_reverse
 
 end RealRooted

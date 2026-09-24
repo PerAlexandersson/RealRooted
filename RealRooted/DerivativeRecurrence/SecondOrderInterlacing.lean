@@ -198,7 +198,7 @@ private theorem derivative_pos_affine_lag_second_order_derivative
 /-- Adjacent members of an affine-lagged second-order derivative recurrence
 with an independent nonnegative lag are in proper position and have no common
 real root. -/
-theorem prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
+theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
     (P : ℕ → ℝ[X]) (a c : ℝ) (ha : 0 < a) (hc : 0 ≤ c)
     (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : ∀ n, P (n + 2) =
@@ -295,7 +295,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_la
         exact (mul_eq_zero.mp hfactor).resolve_left hr0
       have hne : eval r (P n) ≠ 0 := fun hroot => ihno r hr1 hroot
       have hsign : 0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-        eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toStrictInterl
+        eval_mul_eval_nonneg_of_strictInterl_right ihprec hderiv_inter.toStrictInterl
           (pos_leading_affine_lag_second_order_derivative h0 h1 hrec n) hderiv_pos hr1
       have hmul :
           0 ≤ a * (1 - r) *
@@ -332,7 +332,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_la
 
 /-- The original tied-lag theorem is the specialization `c = a` of the
 independent-lag result. -/
-theorem prec_and_noCommonRoot_of_affine_lag_second_order_derivative
+theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative
     (P : ℕ → ℝ[X]) (a : ℝ) (ha : 0 < a)
     (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : ∀ n, P (n + 2) =
@@ -341,7 +341,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_second_order_derivative
         (C a * X) * P n) :
     ∀ n, StrictInterl (P n) (P (n + 1)) ∧
       ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r :=
-  prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
+  strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
     P a a ha ha.le h0 h1 hrec
 
 /-- The rankwise invariants supplied by the independent-lag recurrence
@@ -379,7 +379,7 @@ theorem affine_lag_second_order_derivative_certificate_of_nonneg_lag
     ∀ n, AffineLagSecondOrderCertificate P n := by
   intro n
   have hpair :=
-    prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
+    strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
       P a c ha hc h0 h1 hrec n
   have hinter : Interlaces (P n) (P (n + 1)) :=
     hpair.1.toInterlaces (by
@@ -453,14 +453,14 @@ theorem isSturmSeq_affine_lag_second_order_derivative_of_nonneg_lag
 
 /-- Unit derivative parameter and zero lag, including the boundary `c = 0`.
 -/
-theorem prec_and_noCommonRoot_of_unit_affine_zero_lag
+theorem strictInterl_and_noCommonRoot_of_unit_affine_zero_lag
     (P : ℕ → ℝ[X]) (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : ∀ n, P (n + 2) =
       (X - X ^ 2) * (P (n + 1)).derivative +
         (C 1 + C ((2 : ℝ) + n) * X) * P (n + 1)) :
     ∀ n, StrictInterl (P n) (P (n + 1)) ∧
       ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
-  apply prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
+  apply strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
     P 1 0 (by norm_num) (by norm_num) h0 h1
   intro n
   rw [hrec n]
@@ -468,18 +468,36 @@ theorem prec_and_noCommonRoot_of_unit_affine_zero_lag
   ring_nf
 
 /-- Unit derivative parameter and unit lag. -/
-theorem prec_and_noCommonRoot_of_unit_affine_unit_lag
+theorem strictInterl_and_noCommonRoot_of_unit_affine_unit_lag
     (P : ℕ → ℝ[X]) (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : ∀ n, P (n + 2) =
       (X - X ^ 2) * (P (n + 1)).derivative +
         (C 1 + C ((2 : ℝ) + n) * X) * P (n + 1) + X * P n) :
     ∀ n, StrictInterl (P n) (P (n + 1)) ∧
       ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
-  apply prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
+  apply strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
     P 1 1 (by norm_num) (by norm_num) h0 h1
   intro n
   rw [hrec n]
   simp only [map_one, map_neg]
   ring_nf
+
+@[deprecated strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
+  (since := "2026-09-18")]
+alias prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag :=
+  strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
+
+@[deprecated strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative
+  (since := "2026-09-18")]
+alias prec_and_noCommonRoot_of_affine_lag_second_order_derivative :=
+  strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative
+
+@[deprecated strictInterl_and_noCommonRoot_of_unit_affine_zero_lag (since := "2026-09-18")]
+alias prec_and_noCommonRoot_of_unit_affine_zero_lag :=
+  strictInterl_and_noCommonRoot_of_unit_affine_zero_lag
+
+@[deprecated strictInterl_and_noCommonRoot_of_unit_affine_unit_lag (since := "2026-09-18")]
+alias prec_and_noCommonRoot_of_unit_affine_unit_lag :=
+  strictInterl_and_noCommonRoot_of_unit_affine_unit_lag
 
 end RealRooted

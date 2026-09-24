@@ -217,7 +217,7 @@ theorem normalizedDecoratedCycleEulerian_prec_and_noCommonRoot
         (normalizedDecoratedCycleEulerian q (n + 1)) ∧
       ∀ r : ℝ, (normalizedDecoratedCycleEulerian q (n + 1)).IsRoot r →
         ¬ (normalizedDecoratedCycleEulerian q n).IsRoot r := by
-  exact prec_and_noCommonRoot_of_quadratic_lag
+  exact strictInterl_and_noCommonRoot_of_quadratic_lag
     (normalizedDecoratedCycleEulerian q) 1 1 q
       (fun m => C q + C ((2 : ℝ) + m) * X) (by norm_num) (by norm_num) hq.le
       (normalizedDecoratedCycleEulerian_natDegree q)

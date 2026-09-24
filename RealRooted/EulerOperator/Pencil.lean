@@ -26,7 +26,7 @@ theorem prec_thetac_X_mul {f : ℝ[X]} (hf : IsPFPolynomial f)
   have hnn : HasNonnegCoeffs f := hf.hasNonnegCoeffs
   have hleft : StrictInterl (X * f.derivative) (X * f) :=
     prec_X_derivative_X_self_of_splits_nonneg hfs.2 hdeg hnn
-  have hself : StrictInterl f (X * f) := prec_self_X_mul_of_nonneg hfs.1 hfs.2 hnn
+  have hself : StrictInterl f (X * f) := strictInterl_self_X_mul_of_nonneg hfs.1 hfs.2 hnn
   have hright : StrictInterl (C c * f) (X * f) := StrictInterl.C_mul_left hself hc.ne'
   have hfd_ne : f.derivative ≠ 0 :=
     derivative_ne_zero_of_natDegree_ne_zero (by lia)
@@ -49,7 +49,7 @@ theorem prec_self_thetac {f : ℝ[X]} (hf : IsPFPolynomial f)
   have hnn : HasNonnegCoeffs f := hf.hasNonnegCoeffs
   have hnn_thc : HasNonnegCoeffs (X * f.derivative + C c * f) :=
     HasNonnegCoeffs.add hnn.derivative.X_mul (nonnegCoeffs_C_mul hc.le hnn)
-  exact prec_of_prec_X_mul_of_nonneg (prec_thetac_X_mul hf hdeg hc) hnn hnn_thc
+  exact strictInterl_of_strictInterl_X_mul_of_nonneg (prec_thetac_X_mul hf hdeg hc) hnn hnn_thc
 
 /-- Positive Euler pencils are ordered by the scalar shift. -/
 theorem prec_thetaa_thetab {f : ℝ[X]} (hf : IsPFPolynomial f)
@@ -89,7 +89,7 @@ theorem prec_self_theta_of_natDegree_ne_zero {p : ℝ[X]}
     hp.hasNonnegCoeffs.pos_leadingCoeff hp_ne
   have hder : StrictInterl p.derivative p :=
     (interlaces_derivative_of_pos_natDegree hp_ne hp_splits hp_pos (by lia)).toStrictInterl
-  have hmul := prec_mul_X_of_prec_of_nonneg
+  have hmul := strictInterl_mul_X_of_strictInterl_of_nonneg
     hder hp.hasNonnegCoeffs.derivative hp.hasNonnegCoeffs
   simpa [theta] using hmul
 

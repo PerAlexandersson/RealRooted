@@ -25,7 +25,7 @@ theorem magnitude_dominated_sequence_succ
       (B1 i).eval r * ((G1 i).eval r) ^ 2 +
         (B2 i).eval r * ((G2 i).eval r * (G1 i).eval r) < 0) :
     ∀ i : Nat, StrictInterl (F i) (A i * F i + B1 i * G1 i + B2 i * G2 i) := fun i =>
-  RealRooted.prec_of_magnitude_dominated_succ
+  RealRooted.strictInterl_of_magnitude_dominated_succ
     (hinter i) (hinterpos i) (htargetpos i) (hdeg i) (hcert i)
 
 theorem magnitude_dominated_sequence_same
@@ -41,7 +41,7 @@ theorem magnitude_dominated_sequence_same
       (B1 i).eval r * ((G1 i).eval r) ^ 2 +
         (B2 i).eval r * ((G2 i).eval r * (G1 i).eval r) < 0) :
     ∀ i : Nat, StrictInterl (F i) (A i * F i + B1 i * G1 i + B2 i * G2 i) := fun i =>
-  RealRooted.prec_of_magnitude_dominated_same
+  RealRooted.strictInterl_of_magnitude_dominated_same
     (hinter i) (hinterpos i) (htargetpos i) (hdeg i) (hcert i)
 
 theorem magnitude_dominated_sequence
@@ -59,7 +59,7 @@ theorem magnitude_dominated_sequence
       (B1 i).eval r * ((G1 i).eval r) ^ 2 +
         (B2 i).eval r * ((G2 i).eval r * (G1 i).eval r) < 0) :
     ∀ i : Nat, StrictInterl (F i) (A i * F i + B1 i * G1 i + B2 i * G2 i) := fun i =>
-  RealRooted.prec_of_magnitude_dominated
+  RealRooted.strictInterl_of_magnitude_dominated
     (hinter i) (hinterpos i) (htargetpos i) (hdeglo i) (hdeghi i) (hcert i)
 
 theorem magnitude_sequence_cert_of_abs_dominated
@@ -151,7 +151,7 @@ macro_rules
         degree := $hdeg:term,
         certificate := $hcert:term) =>
       `(tactic|
-        exact RealRooted.prec_of_magnitude_dominated_succ
+        exact RealRooted.strictInterl_of_magnitude_dominated_succ
           $hinter $hinterpos $htargetpos $hdeg $hcert)
   | `(tactic|
       rr_magnitude_dominated_sequence_succ using
@@ -171,7 +171,7 @@ macro_rules
         degree := $hdeg:term,
         certificate := $hcert:term) =>
       `(tactic|
-        exact RealRooted.prec_of_magnitude_dominated_same
+        exact RealRooted.strictInterl_of_magnitude_dominated_same
           $hinter $hinterpos $htargetpos $hdeg $hcert)
   | `(tactic|
       rr_magnitude_dominated_sequence_same using
@@ -192,7 +192,7 @@ macro_rules
         degree_upper := $hhi:term,
         certificate := $hcert:term) =>
       `(tactic|
-        exact RealRooted.prec_of_magnitude_dominated
+        exact RealRooted.strictInterl_of_magnitude_dominated
           $hinter $hinterpos $htargetpos $hlo $hhi $hcert)
   | `(tactic|
       rr_magnitude_dominated_sequence using

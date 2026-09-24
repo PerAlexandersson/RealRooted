@@ -642,7 +642,7 @@ The derivative term is handled as an additional generalized Liu--Wang
 interlacer of the current row, while the lag term `P_n` is the distinguished
 interlacer that supplies the no-common-roots hypothesis.  The sign side
 conditions may use the already-established current-row real-rootedness data. -/
-theorem prec_mw_lw_derivative_lag_sequence_of_root_signs
+theorem strictInterl_mw_lw_derivative_lag_sequence_of_root_signs
     {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -679,7 +679,7 @@ theorem prec_mw_lw_derivative_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_lw_derivative_lag_sequence_of_root_signs
+  strictInterl_mw_lw_derivative_lag_sequence_of_root_signs
     hbase hpos hdeg_two hrec
     (fun n _ r hr => hV_nonpos n r hr)
     (fun n _ r hr => hW_nonpos n r hr)
@@ -730,7 +730,7 @@ theorem prec_mw_lw_derivative_lag_sequence_of_nonneg_coeffs_on_roots
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_lw_derivative_lag_sequence_of_root_signs
+  strictInterl_mw_lw_derivative_lag_sequence_of_root_signs
     hbase hpos hdeg_two hrec
     (fun n hsource r hr => by
       have hr_nonpos : r ≤ 0 :=
@@ -744,7 +744,7 @@ theorem prec_mw_lw_derivative_lag_sequence_of_nonneg_coeffs_on_roots
 
 /-- Combined Ma--Wang/Liu--Wang sequence induction with half-line sign
 side conditions independent of the current-root proof. -/
-theorem prec_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
+theorem strictInterl_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -887,5 +887,15 @@ theorem isRealRooted_of_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
     (fun n r _ hr_nonpos => hV_nonpos n r hr_nonpos)
     (fun n r _ hr_nonpos => hW_nonpos n r hr_nonpos)
     hdeg_succ hno
+
+@[deprecated strictInterl_mw_lw_derivative_lag_sequence_of_root_signs
+  (since := "2026-09-18")]
+alias prec_mw_lw_derivative_lag_sequence_of_root_signs :=
+  strictInterl_mw_lw_derivative_lag_sequence_of_root_signs
+
+@[deprecated strictInterl_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
+  (since := "2026-09-18")]
+alias prec_mw_lw_derivative_lag_sequence_of_nonneg_coeffs :=
+  strictInterl_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
 
 end RealRooted

@@ -225,7 +225,7 @@ private lemma prec0_hz_linear_to_quadratic_of_eval_nonpos
 
 private lemma prec0_hz_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + 1) (C s * X + C t + 1) :=
-  prec0_affine_add_one_self hs
+  interl_affine_add_one_self hs
 
 private lemma prec0_hz_affine_add_one_affine_add_one_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
@@ -234,7 +234,7 @@ private lemma prec0_hz_affine_add_one_affine_add_one_add_X
   rw [show (C s * X + C t + (1 + X) : ℝ[X]) =
     C (s + 1) * X + C (t + 1) by grind]
   exact
-    prec0_affine_linear_affine_linear_of_cross
+    interl_affine_linear_affine_linear_of_cross
       (u := s) (v := t + 1) (U := s + 1) (V := t + 1)
       hs (by positivity) (by nlinarith [ht])
 
@@ -248,7 +248,7 @@ private lemma prec0_hz_affine_add_one_add_X_self {s t : ℝ} (hs : 0 < s) :
 private lemma prec0_hz_affine_add_one_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + 1) (C s * X + C t + X) := by
-  exact prec0_affine_add_one_affine_add_X hs ht
+  exact interl_affine_add_one_affine_add_X hs ht
 
 private lemma prec0_hz_affine_add_one_add_X_affine_add_X
     {s t : ℝ} (hs : 0 < s) :
@@ -257,13 +257,13 @@ private lemma prec0_hz_affine_add_one_add_X_affine_add_X
     C (s + 1) * X + C (t + 1) by grind]
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   exact
-    prec0_affine_linear_affine_linear_of_cross
+    interl_affine_linear_affine_linear_of_cross
       (u := s + 1) (v := t + 1) (U := s + 1) (V := t)
       (by positivity) (by positivity) (by nlinarith)
 
 private lemma prec0_hz_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + X) (C s * X + C t + X) :=
-  prec0_affine_add_X_self hs
+  interl_affine_add_X_self hs
 
 private lemma prec0_hz_affine_add_one_middleQuadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
@@ -341,7 +341,7 @@ private lemma prec0_hz_affine_add_one_XAffineAddOne
   have hf_nn : HasNonnegCoeffs (C s * X + C t + 1 : ℝ[X]) := by
     rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
     exact hasNonnegCoeffs_affine_linear hs.le (by nlinarith)
-  simpa using (prec_self_mul_X_of_nonneg hf_rr.1 hf_rr.2 hf_nn).toInterl
+  simpa using (strictInterl_self_mul_X_of_nonneg hf_rr.1 hf_rr.2 hf_nn).toInterl
 
 private lemma prec0_hz_affine_add_one_add_X_XAffineAddOne
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
@@ -451,7 +451,7 @@ private lemma prec0_hz_mul_one_add_X_XAffineAddOne
   have hbase : StrictInterl (1 + X : ℝ[X]) X := by
     rw [show (1 + X : ℝ[X]) = X + 1 by grind]
     simpa using
-      prec_affine_linear_affine_linear_of_cross
+      strictInterl_affine_linear_affine_linear_of_cross
         (u := 1) (v := 1) (U := 1) (V := 0)
         zero_lt_one zero_lt_one (by norm_num)
   have hmul := hbase.mul_common_factor hd_rr.1 hd_rr.2
@@ -478,7 +478,7 @@ private lemma prec0_hz_middleQuadratic_XAffineAddOne
   have hlin_nn : HasNonnegCoeffs (C s * X + C t : ℝ[X]) :=
     hasNonnegCoeffs_affine_linear hs.le ht.le
   have hsum :=
-    prec0_add_left_of_common_right_of_nonneg hself hlin hq_nn hlin_nn
+    interl_add_left_of_common_right_of_nonneg hself hlin hq_nn hlin_nn
   rw [show ((C s * X + C t) * (1 + X) + X : ℝ[X]) =
       X * (C s * X + C t + 1) + (C s * X + C t) by grind]
   exact hsum

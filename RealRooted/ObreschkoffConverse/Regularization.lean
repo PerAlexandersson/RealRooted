@@ -673,7 +673,7 @@ private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_right
     HasSimpleRoots g := by
   rcases hcombo 0 1 with hzero | ⟨_, hsimple⟩ <;> simp_all
 
-private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
+private theorem strictInterl_or_reverse_of_eq_zero_or_simple_combo_sameDegree
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hcombo :
@@ -707,7 +707,7 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
     · simp [hroots_g]
     · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
   by_cases hdeg1 : f.natDegree = 1
-  · exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one hdeg hdeg1
+  · exact PosComboRealRooted.strictInterl_or_reverse_of_same_degree_one hdeg hdeg1
   have hdeg_ge2 : 2 ≤ f.natDegree := by lia
   have hgdeg_ge2 : 2 ≤ g.natDegree := by lia
   have hW_ne x : (wronskianPoly f g).eval x ≠ 0 :=
@@ -834,7 +834,7 @@ private lemma leadingCoeff_wronskian_succ
     wronskian_coeff_top_succ hdeg hf_deg_pos]
   simp
 
-private theorem prec_of_eq_zero_or_simple_combo_succDegree
+private theorem strictInterl_of_eq_zero_or_simple_combo_succDegree
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hcombo :
@@ -907,7 +907,7 @@ real-rooted with simple roots, the remaining proof is only bookkeeping:
 This isolates the still-missing bridge in `strictInterl_of_allComboRealRooted`:
 producing the `hcombo` hypothesis for the *original* pair from
 `AllComboRealRooted` plus the no-common-roots assumption. -/
-theorem ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
+theorem ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hcombo :
@@ -970,10 +970,10 @@ theorem ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
     rcases hdeg₀ with hsucc | hsame
     · left
       exact
-        prec_of_eq_zero_or_simple_combo_succDegree
+        strictInterl_of_eq_zero_or_simple_combo_succDegree
           hf₀.1 hf₀.2 hg₀.1 hg₀.2 hcombo₀ hsucc.symm hf₀_pos hg₀_pos hno₀
     · exact
-        prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
+        strictInterl_or_reverse_of_eq_zero_or_simple_combo_sameDegree
           hf₀.1 hf₀.2 hg₀.1 hg₀.2 hcombo₀ hsame.symm hf₀_pos hg₀_pos hno₀
   have hsf_inv_ne : sf⁻¹ ≠ 0 := inv_ne_zero hsf_ne
   have hsg_inv_ne : sg⁻¹ ≠ 0 := inv_ne_zero hsg_ne
@@ -991,7 +991,7 @@ theorem ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
 This packages the exact simple-pair/Wronskian endgame that the main converse
 uses after regularization, leaving the remaining `ε → 0` transport as the only
 unfinished step. -/
-theorem ObreschkoffConverseInternal.precOrRevPrecRegularized
+theorem ObreschkoffConverseInternal.strictInterlOrReverseRegularized
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
@@ -1043,12 +1043,13 @@ theorem ObreschkoffConverseInternal.precOrRevPrecRegularized
         hf_ne hg_ne hf_splits hg_splits hall hdeg heps hno
   rcases hsimple_data with ⟨_, hf_iter, hg_iter, _, _, hdeg_iter⟩
   exact
-    prec_of_eq_zero_or_simple_combo_of_no_common
+    strictInterl_of_eq_zero_or_simple_combo_of_no_common
       hf_iter.1 hf_iter.2 hg_iter.1 hg_iter.2 hcombo_simple hdeg_iter hno_simple
 
 /-- In the succ-degree branch, the regularized pair has forced orientation by
 degree, so the converse endgame returns the left orientation outright. -/
-theorem ObreschkoffConverseInternal.prec_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
+theorem
+    ObreschkoffConverseInternal.strictInterl_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
@@ -1063,7 +1064,7 @@ theorem ObreschkoffConverseInternal.prec_iterateTDeriv_of_allComboRealRooted_suc
           (iterateTDeriv eps (max f.natDegree g.natDegree) g) ∨
         StrictInterl (iterateTDeriv eps (max f.natDegree g.natDegree) g)
           (iterateTDeriv eps (max f.natDegree g.natDegree) f) :=
-    precOrRevPrecRegularized
+    strictInterlOrReverseRegularized
       hf_ne hf_splits hg_ne hg_splits hall (Or.inl hsucc) heps hno
   have hdeg_iter_succ :
       (iterateTDeriv eps (max f.natDegree g.natDegree) f).natDegree + 1 =

@@ -289,7 +289,7 @@ theorem loweringEulerStep_prec
     hq.hasNonnegCoeffs.pos_leadingCoeff hpq.2.1.1
   have hpout := loweringEulerStep_degree_pos hM hpdeg hpPos
   have hqout := loweringEulerStep_degree_pos hM hqdeg hqPos
-  have hprec := BorceaBranden.linearMap_prec_of_finiteSymbol_stable
+  have hprec := BorceaBranden.linearMap_strictInterl_of_finiteSymbol_stable
     (BorceaBranden.loweringEulerSymbol_stable M D hD hM)
     hqdeg.le hpdeg.le hpq hqPos hpPos hqout.2 hpout.2
       (by
@@ -321,7 +321,7 @@ theorem eulerInsertionStep_one_prec
   rw [← heq q, ← heq p]
   rw [← heq p] at hpout
   rw [← heq q] at hqout
-  exact BorceaBranden.eulerBidiagonalStepWithConstant_prec
+  exact BorceaBranden.eulerBidiagonalStepWithConstant_strictInterl
     (by norm_num) hd hpdeg hqdeg hpq hpPos hqPos hpout.2 hqout.2
       (by rw [hpout.1]; lia)
 
@@ -374,7 +374,7 @@ theorem eulerInsertionStep_derivative_prec_zeroStep
       (derivative_interlaces (hp.ne_zero_and_splits hp_ne).2
         (by rw [hpdeg]; exact hD)).toStrictInterl
     simpa [theta] using
-      prec_mul_X_of_prec_of_nonneg hder
+      strictInterl_mul_X_of_strictInterl_of_nonneg hder
         hp.hasNonnegCoeffs.derivative hp.hasNonnegCoeffs
   have hlower : StrictInterl (loweringEulerStep M p)
       (loweringEulerStep M (theta p)) :=
@@ -387,7 +387,7 @@ theorem eulerInsertionStep_derivative_prec_zeroStep
     loweringEulerStep_nonneg htheta.hasNonnegCoeffs hthetaM
   have hshift : StrictInterl (loweringEulerStep M (theta p))
       (X * loweringEulerStep M p) :=
-    prec_to_prec_mul_X_of_nonneg hlower hlower_p_nn hlower_theta_nn
+    strictInterl_to_strictInterl_mul_X_of_nonneg hlower hlower_p_nn hlower_theta_nn
   rw [loweringEulerStep_theta_eq (by lia : 2 ≤ M),
     X_mul_loweringEulerStep_eq (by lia : 1 ≤ M)] at hshift
   exact hshift

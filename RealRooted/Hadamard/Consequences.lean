@@ -44,7 +44,7 @@ real-rooted (e.g. `f = 1`, `g = X + 1` gives `X² + X + 1`), which is why the
 reduction goes through `IsHurwitzStable` (Theorem 1) rather than the
 single-polynomial real-rootedness fact
 `garloffWagnerHadamardNonnegRealRootedStatement`. -/
-theorem garloffWagnerHadamardNonnegPrec_of_oddEven
+theorem garloffWagnerHadamardNonnegInterl_of_oddEven
     (hThm1 : hadamardPreservesHurwitzStableStatement)
     (hPrecToHurwitz : NonnegPrecToHurwitzOddEvenStatement)
     (hHurwitzToFull : LegacyHurwitzOddEvenToFullyInterlacingPairStatement)
@@ -69,7 +69,7 @@ theorem garloffWagnerHadamardNonnegPrec_of_oddEven
 
 /-- PF-polynomial wrapper around the checked nonnegative
 Garloff--Wagner two-pair theorem. -/
-def garloffWagnerHadamardPFPrecStatement : Prop :=
+def garloffWagnerHadamardPFStrictInterlStatement : Prop :=
   ∀ {f g p q : ℝ[X]},
     IsPFPolynomial f →
     IsPFPolynomial g →
@@ -79,15 +79,15 @@ def garloffWagnerHadamardPFPrecStatement : Prop :=
     StrictInterl p q →
     Interl (hadamardProduct f p) (hadamardProduct g q)
 
-theorem garloffWagnerHadamardPFPrec_of_nonnegPrec :
-    garloffWagnerHadamardPFPrecStatement :=
+theorem garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl :
+    garloffWagnerHadamardPFStrictInterlStatement :=
   fun hf hg hp hq hfg hpq =>
-    garloffWagnerHadamardNonnegPrec hf.hasNonnegCoeffs hg.hasNonnegCoeffs
+    garloffWagnerHadamardNonnegInterl hf.hasNonnegCoeffs hg.hasNonnegCoeffs
       hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
 
 /-- Zero-aware PF-polynomial wrapper around the checked Garloff--Wagner
 two-pair theorem. -/
-def garloffWagnerHadamardPFPrec0Statement : Prop :=
+def garloffWagnerHadamardPFInterlStatement : Prop :=
   ∀ {f g p q : ℝ[X]},
     IsPFPolynomial f →
     IsPFPolynomial g →
@@ -97,9 +97,9 @@ def garloffWagnerHadamardPFPrec0Statement : Prop :=
     Interl p q →
     Interl (hadamardProduct f p) (hadamardProduct g q)
 
-theorem garloffWagnerHadamardPFPrec0_of_prec
-    (hGW : garloffWagnerHadamardPFPrecStatement) :
-    garloffWagnerHadamardPFPrec0Statement := by
+theorem garloffWagnerHadamardPFInterl_of_strictInterl
+    (hGW : garloffWagnerHadamardPFStrictInterlStatement) :
+    garloffWagnerHadamardPFInterlStatement := by
   intro f g p q hf hg hp hq hfg hpq
   rcases hfg with rfl | rfl | hfg'
   · simpa using interl_zero_left (hadamardProduct g q)
@@ -109,26 +109,26 @@ theorem garloffWagnerHadamardPFPrec0_of_prec
   · simpa using interl_zero_right (hadamardProduct f p)
   exact hGW hf hg hp hq hfg' hpq'
 
-theorem garloffWagnerHadamardPFPrec0_of_nonnegPrec :
-    garloffWagnerHadamardPFPrec0Statement :=
-  garloffWagnerHadamardPFPrec0_of_prec
-    garloffWagnerHadamardPFPrec_of_nonnegPrec
+theorem garloffWagnerHadamardPFInterl_of_nonnegStrictInterl :
+    garloffWagnerHadamardPFInterlStatement :=
+  garloffWagnerHadamardPFInterl_of_strictInterl
+    garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl
 
 /-- PF-polynomial closure under Hadamard product, stated directly from the
 zero-aware Garloff--Wagner PF wrapper. -/
 theorem hadamardProduct_preserves_pf_of_garloffWagner
-    (hGW : garloffWagnerHadamardPFPrec0Statement)
+    (hGW : garloffWagnerHadamardPFInterlStatement)
     {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) :=
-  IsPFPolynomial.of_prec0_self
+  IsPFPolynomial.of_interl_self
     (hp.hasNonnegCoeffs.hadamardProduct hq.hasNonnegCoeffs)
-    (hGW hp hp hq hq hp.prec0_self hq.prec0_self)
+    (hGW hp hp hq hq hp.interl_self hq.interl_self)
 
-theorem hadamardProduct_preserves_pf_of_nonnegPrec :
+theorem hadamardProduct_preserves_pf_of_nonnegStrictInterl :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
     IsPFPolynomial (hadamardProduct p q) :=
   hadamardProduct_preserves_pf_of_garloffWagner
-    garloffWagnerHadamardPFPrec0_of_nonnegPrec
+    garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
 
 theorem hadamardProduct_preserves_pf_of_matrixHadamardBridges
     (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
@@ -136,52 +136,52 @@ theorem hadamardProduct_preserves_pf_of_matrixHadamardBridges
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
     IsPFPolynomial (hadamardProduct p q) :=
-  hadamardProduct_preserves_pf_of_nonnegPrec
+  hadamardProduct_preserves_pf_of_nonnegStrictInterl
 
 theorem hadamardProduct_preserves_pf_of_hurwitzSchur
     (_hToFull : LegacyNonnegPrecToFullyInterlacingPairStatement)
     (_hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
     IsPFPolynomial (hadamardProduct p q) :=
-  hadamardProduct_preserves_pf_of_nonnegPrec
+  hadamardProduct_preserves_pf_of_nonnegStrictInterl
 
 /-- The nonnegative two-pair Garloff--Wagner theorem gives PF closure under
 Hadamard products through the zero-aware PF wrapper. -/
-theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec :
+theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegStrictInterl :
     schurPolyaWagnerHadamardPFStatement :=
-  hadamardProduct_preserves_pf_of_nonnegPrec
+  hadamardProduct_preserves_pf_of_nonnegStrictInterl
 
 /-- The checked PF Hadamard theorem gives the one-polynomial
 real-rootedness statement directly. -/
-theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec :
+theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl :
     garloffWagnerHadamardNonnegRealRootedStatement := by
   intro p q hpnn hqnn hprr hqrr
   have hp : IsPFPolynomial p := IsPFPolynomial.of_realRooted_nonneg hpnn hprr.2
   have hq : IsPFPolynomial q := IsPFPolynomial.of_realRooted_nonneg hqnn hqrr.2
   have hpf : IsPFPolynomial (hadamardProduct p q) :=
-    hadamardProduct_preserves_pf_of_nonnegPrec hp hq
+    hadamardProduct_preserves_pf_of_nonnegStrictInterl hp hq
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
 
 /-- Fixed-right Hadamard multiplication preserves zero-aware proper position
 inside the PF cone. -/
-theorem hadamardProduct_preserves_prec0_right
-    (hGW : garloffWagnerHadamardPFPrec0Statement)
+theorem hadamardProduct_preserves_interl_right
+    (hGW : garloffWagnerHadamardPFInterlStatement)
     {f g p : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
     (hfg : Interl f g) :
     Interl (hadamardProduct f p) (hadamardProduct g p) :=
-  hGW hf hg hp hp hfg hp.prec0_self
+  hGW hf hg hp hp hfg hp.interl_self
 
 /-- Fixed-left Hadamard multiplication preserves zero-aware proper position
 inside the PF cone. -/
-theorem hadamardProduct_preserves_prec0_left
-    (hGW : garloffWagnerHadamardPFPrec0Statement)
+theorem hadamardProduct_preserves_interl_left
+    (hGW : garloffWagnerHadamardPFInterlStatement)
     {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (hadamardProduct f p) (hadamardProduct f q) := by
   simpa [hadamardProduct_comm] using
-    hadamardProduct_preserves_prec0_right hGW hp hq hf hpq
+    hadamardProduct_preserves_interl_right hGW hp hq hf hpq
 
 theorem reciprocalShift_hadamardProduct (D : ℕ) (p q : ℝ[X]) :
     reciprocalShift D (hadamardProduct p q) =
@@ -201,8 +201,8 @@ def hadamardReciprocalConeClosureStatement : Prop :=
 
 /-- Hadamard closure for the reciprocal-interlacing cone, obtained from the
 zero-aware PF two-pair Garloff--Wagner wrapper. -/
-theorem hadamardReciprocalConeClosure_of_garloffWagner_prec0
-    (hGW : garloffWagnerHadamardPFPrec0Statement) :
+theorem hadamardReciprocalConeClosure_of_garloffWagner_interl
+    (hGW : garloffWagnerHadamardPFInterlStatement) :
     hadamardReciprocalConeClosureStatement := by
   intro D p q hp hq hprec_p hprec_q
   have hp_shift : IsPFPolynomial (reciprocalShift D p) :=
@@ -212,11 +212,11 @@ theorem hadamardReciprocalConeClosure_of_garloffWagner_prec0
   simpa [reciprocalShift_hadamardProduct] using
     hGW hp hp_shift hq hq_shift hprec_p.toInterl hprec_q.toInterl
 
-theorem hadamardReciprocalConeClosure_of_garloffWagner_prec
-    (hGW : garloffWagnerHadamardPFPrecStatement) :
+theorem hadamardReciprocalConeClosure_of_garloffWagner_strictInterl
+    (hGW : garloffWagnerHadamardPFStrictInterlStatement) :
     hadamardReciprocalConeClosureStatement :=
-  hadamardReciprocalConeClosure_of_garloffWagner_prec0
-    (garloffWagnerHadamardPFPrec0_of_prec hGW)
+  hadamardReciprocalConeClosure_of_garloffWagner_interl
+    (garloffWagnerHadamardPFInterl_of_strictInterl hGW)
 
 /-- Polynomial-coefficient form of Polya-frequency closure under termwise
 products. This is finite-sequence closure packaged through coefficient
@@ -234,5 +234,67 @@ theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner
   fun hp hq =>
     (hSPW (IsPFPolynomial.of_sequence hASW hp)
       (IsPFPolynomial.of_sequence hASW hq)).to_sequence
+
+@[deprecated garloffWagnerHadamardNonnegInterl_of_oddEven
+  (since := "2026-09-18")]
+alias garloffWagnerHadamardNonnegPrec_of_oddEven :=
+  garloffWagnerHadamardNonnegInterl_of_oddEven
+
+@[deprecated garloffWagnerHadamardPFStrictInterlStatement
+  (since := "2026-09-18")]
+abbrev garloffWagnerHadamardPFPrecStatement :=
+  garloffWagnerHadamardPFStrictInterlStatement
+
+@[deprecated garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl
+  (since := "2026-09-18")]
+alias garloffWagnerHadamardPFPrec_of_nonnegPrec :=
+  garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl
+
+@[deprecated garloffWagnerHadamardPFInterlStatement (since := "2026-09-18")]
+abbrev garloffWagnerHadamardPFPrec0Statement :=
+  garloffWagnerHadamardPFInterlStatement
+
+@[deprecated garloffWagnerHadamardPFInterl_of_strictInterl
+  (since := "2026-09-18")]
+alias garloffWagnerHadamardPFPrec0_of_prec :=
+  garloffWagnerHadamardPFInterl_of_strictInterl
+
+@[deprecated garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
+  (since := "2026-09-18")]
+alias garloffWagnerHadamardPFPrec0_of_nonnegPrec :=
+  garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
+
+@[deprecated hadamardProduct_preserves_pf_of_nonnegStrictInterl
+  (since := "2026-09-18")]
+alias hadamardProduct_preserves_pf_of_nonnegPrec :=
+  hadamardProduct_preserves_pf_of_nonnegStrictInterl
+
+@[deprecated schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegStrictInterl
+  (since := "2026-09-18")]
+alias schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec :=
+  schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegStrictInterl
+
+@[deprecated garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl
+  (since := "2026-09-18")]
+alias garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec :=
+  garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl
+
+@[deprecated hadamardProduct_preserves_interl_right (since := "2026-09-18")]
+alias hadamardProduct_preserves_prec0_right :=
+  hadamardProduct_preserves_interl_right
+
+@[deprecated hadamardProduct_preserves_interl_left (since := "2026-09-18")]
+alias hadamardProduct_preserves_prec0_left :=
+  hadamardProduct_preserves_interl_left
+
+@[deprecated hadamardReciprocalConeClosure_of_garloffWagner_interl
+  (since := "2026-09-18")]
+alias hadamardReciprocalConeClosure_of_garloffWagner_prec0 :=
+  hadamardReciprocalConeClosure_of_garloffWagner_interl
+
+@[deprecated hadamardReciprocalConeClosure_of_garloffWagner_strictInterl
+  (since := "2026-09-18")]
+alias hadamardReciprocalConeClosure_of_garloffWagner_prec :=
+  hadamardReciprocalConeClosure_of_garloffWagner_strictInterl
 
 end RealRooted

@@ -237,7 +237,7 @@ theorem markedShiftKernel_eq_zero_of_lt
 /-- The weighted Green background and marked optional-rise kernel satisfy the
 complete finite kernel-limit package: every kernel row is PF and consecutive
 rows are in zero-aware proper position. -/
-theorem weightedGreenKernel_markedShiftKernel_pf_and_prec0
+theorem weightedGreenKernel_markedShiftKernel_pf_and_interl
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
     (N : ℕ) {r : ℕ} (hr : 0 < r) :
@@ -249,7 +249,7 @@ theorem weightedGreenKernel_markedShiftKernel_pf_and_prec0
           i.castSucc)
         (kernelRow (weightedGreenKernel b N) (markedShiftKernel as N r)
           i.succ) := by
-  apply kernelRows_pf_and_prec0_of_tendsto
+  apply kernelRows_pf_and_interl_of_tendsto
     (g := 1)
     (η := fun m => markedShiftEpsilon m ^ r)
     (G := weightedGreenKernel b N)
@@ -274,6 +274,11 @@ theorem weightedGreenKernel_markedShiftKernel_pf_and_prec0
   · intro m
     exact markedShiftApproximation_apply_self as N r (markedShiftEpsilon m)
   · exact tendsto_markedShiftApproximation as N r
+
+@[deprecated weightedGreenKernel_markedShiftKernel_pf_and_interl
+  (since := "2026-09-18")]
+alias weightedGreenKernel_markedShiftKernel_pf_and_prec0 :=
+  weightedGreenKernel_markedShiftKernel_pf_and_interl
 
 end
 

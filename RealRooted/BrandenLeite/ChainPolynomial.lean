@@ -20,7 +20,7 @@ namespace RealRooted.BrandenLeite
 
 /-! ### Zero-aware `fPolynomial` and finite-row helpers -/
 
-theorem prec0_fPolynomial {d : ℕ} {p q : ℝ[X]}
+theorem interl_fPolynomial {d : ℕ} {p q : ℝ[X]}
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
     (hpq : Interl p q) :
@@ -28,7 +28,10 @@ theorem prec0_fPolynomial {d : ℕ} {p q : ℝ[X]}
   rcases hpq with rfl | rfl | hpq
   · simp [interl_zero_left]
   · simp [interl_zero_right]
-  · exact (precFPolynomialTransport hpdeg hqdeg hpnn hqnn).2 hpq |>.toInterl
+  · exact (strictInterlFPolynomialTransport hpdeg hqdeg hpnn hqnn).2 hpq |>.toInterl
+
+@[deprecated interl_fPolynomial (since := "2026-09-18")]
+alias prec0_fPolynomial := interl_fPolynomial
 
 theorem isInterlacingSeq0NonnegRealRooted_map_fPolynomial
     {d : ℕ} {fs : List ℝ[X]}
@@ -45,7 +48,7 @@ theorem isInterlacingSeq0NonnegRealRooted_map_fPolynomial
     have hj : fs.get j' ∈ fs := List.get_mem _ _
     have hij' : i' < j' := by simpa [i', j'] using hij
     have hpq := hfs.interlacingSeq0.prec0 hij'
-    simpa [i', j'] using prec0_fPolynomial (hdeg _ hi) (hdeg _ hj)
+    simpa [i', j'] using interl_fPolynomial (hdeg _ hi) (hdeg _ hj)
       (hfs.nonnegCoeffs _ hi) (hfs.nonnegCoeffs _ hj) hpq
   · intro p hp
     rcases List.mem_map.mp hp with ⟨q, hq, rfl⟩
@@ -353,7 +356,7 @@ theorem roots_chainPolynomial_mem_Icc
 /-- Zero-aware conditional Brändén--Saud Leite Theorem 3.7.  This is the
 correct general statement for nonnegative resolution weights: some weights,
 and hence some chain polynomials, may vanish. -/
-theorem prec0_chainPolynomial_succ
+theorem interl_chainPolynomial_succ
     {R : LowerTriangularMatrix ℝ} (resolution : Resolution R) (n : ℕ) :
     Interl (chainPolynomial R n) (chainPolynomial R (n + 1)) := by
   let F : ℕ → ℝ[X] := fun j =>
@@ -392,18 +395,24 @@ theorem prec0_chainPolynomial_succ
       (hrow.nonnegCoeffs _ (hmem j hjn))
   have hFn : F n = chainPolynomial R n :=
     subdivisionOperator_resolutionPolynomial_diagonal resolution n
-  have hstep := prec0_mul_X_of_prec0 hSprec hSnn
+  have hstep := interl_mul_X_of_interl hSprec hSnn
     (hrow.nonnegCoeffs _ (hmem n le_rfl))
   rw [hFn] at hstep
   rw [chainPolynomial_succ_eq_resolution_sum resolution]
   simpa [S, F] using hstep
 
+@[deprecated interl_chainPolynomial_succ (since := "2026-09-18")]
+alias prec0_chainPolynomial_succ := interl_chainPolynomial_succ
+
 /-- Strict form of Theorem 3.7 when both adjacent chain polynomials are
 nonzero. -/
-theorem prec_chainPolynomial_succ_of_ne
+theorem strictInterl_chainPolynomial_succ_of_ne
     {R : LowerTriangularMatrix ℝ} (resolution : Resolution R) (n : ℕ)
     (hn : chainPolynomial R n ≠ 0) (hsucc : chainPolynomial R (n + 1) ≠ 0) :
     StrictInterl (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
-  (prec0_chainPolynomial_succ resolution n).toStrictInterl_of_ne hn hsucc
+  (interl_chainPolynomial_succ resolution n).toStrictInterl_of_ne hn hsucc
+
+@[deprecated strictInterl_chainPolynomial_succ_of_ne (since := "2026-09-18")]
+alias prec_chainPolynomial_succ_of_ne := strictInterl_chainPolynomial_succ_of_ne
 
 end RealRooted.BrandenLeite

@@ -38,7 +38,7 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
         0 < red.coeff 0 ∧ 0 < odd.coeff 0 := by
     rcases hshape with hevenShape | hoddShape
     · have hprec :=
-        hred.prec_parts_of_evenShape hredPos hodd hevenShape
+        hred.strictInterl_parts_of_evenShape hredPos hodd hevenShape
       obtain ⟨hrednn, hoddnn⟩ :=
         hred.hasNonnegCoeffs_parts_of_evenShape
           hredPos hodd hevenShape
@@ -46,7 +46,7 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
         hred.coeff_zero_pos_parts_of_evenShape hredPos hodd hevenShape
       exact ⟨hprec, hrednn, hoddnn, hred0, hodd0⟩
     · have hprec :=
-        hred.prec_parts_of_oddShape hredPos hodd hoddShape
+        hred.strictInterl_parts_of_oddShape hredPos hodd hoddShape
       obtain ⟨hrednn, hoddnn⟩ :=
         hred.hasNonnegCoeffs_parts_of_oddShape
           hredPos hodd hoddShape
@@ -67,7 +67,7 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
     hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hevennn fun hevenZero =>
       heven0 (by simp [hevenZero])
   have hoddXred : StrictInterl odd (X * red) :=
-    prec_to_X_mul_of_nonneg hprec hrednn hoddnn
+    strictInterl_to_X_mul_of_nonneg hprec hrednn hoddnn
   have hscaled : StrictInterl (Polynomial.C c * odd) (X * red) :=
     hoddXred.C_mul_left hc.ne'
   have hsum : StrictInterl (Polynomial.C c * odd)

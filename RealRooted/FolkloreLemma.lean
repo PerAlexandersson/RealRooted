@@ -46,7 +46,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
     have hg_pos : HasPosLeadingCoeff g := hasPosLeadingCoeff_of_monic hg_monic
     have hf_pos : HasPosLeadingCoeff f := hasPosLeadingCoeff_of_monic hf_monic
     have hprec_fXg : StrictInterl f (X * g) :=
-      (prec_iff_prec_mul_X_of_roots_nonpos
+      (strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
         (f := g) (g := f) hg.2 hf.2 hg_pos hf_pos hg_nonpos hf_nonpos hdeg).mp hgf
     have hall_fXg : AllComboRealRooted f (X * g) :=
       allComboRealRooted_of_strictInterl hprec_fXg
@@ -100,7 +100,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
 /-- If `g ⊳ f` (differ-by-1), monic, all roots ≤ 0, then `g ≪₀ (f - X*g)`.
 This zero-aware form is the right endpoint behavior when cancellation
 `f - X*g = 0` occurs. -/
-theorem prec_sub_X_mul_right {f g : ℝ[X]}
+theorem strictInterl_sub_X_mul_right {f g : ℝ[X]}
     (hgf : StrictInterl g f)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree + 1 = f.natDegree)
@@ -162,7 +162,7 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
     have hprec_qXg : StrictInterl q (X * g) := by lia
     have hdeg_gq : g.natDegree = q.natDegree := by lia
     exact
-      (prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos
+      (strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos
         (f := g) (g := q) hprec_qXg hdeg_gq hg_nonpos).toInterl
 
 /-- Brändén--Saud minus-sign step in the nonzero `StrictInterl` convention.
@@ -180,7 +180,7 @@ theorem prec_sub_X_mul_pair_of_posLeadingCoeff {f g : ℝ[X]}
     StrictInterl g (f - X * g) ∧ StrictInterl (f - X * g) f := by
   have hsub_ne : f - X * g ≠ 0 := hsub_pos.ne_zero
   constructor
-  · exact (prec_sub_X_mul_right hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
+  · exact (strictInterl_sub_X_mul_right hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
       |>.toStrictInterl_of_ne hgf.1.1 hsub_ne
   · exact (prec_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
       |>.toStrictInterl_of_ne hsub_ne hgf.2.1.1
@@ -340,7 +340,7 @@ theorem prec_component_of_prec_mul_X_of_roots_nonpos
     StrictInterl V U := by
   have hV_splits : V.Splits := (isRealRooted_of_X_mul hU_XV.2.1.1 hU_XV.2.1.2).2
   exact
-    (prec_iff_prec_mul_X_of_roots_nonpos
+    (strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
       (f := V) (g := U) hV_splits hU_XV.1.2 hV_pos hU_pos
       hV_nonpos hU_nonpos hdeg_VU).mpr hU_XV
 
@@ -450,7 +450,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul
   obtain ⟨c, hU_le, hc_lt⟩ := hU_bound
   have hXV_root0 : (X * V).IsRoot 0 := by simp
   have hU_XV : StrictInterl U (X * V) :=
-    PosComboRealRooted.revPrec_of_prec_or_revPrec_of_root_asymmetry
+    PosComboRealRooted.reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := U) (g := X * V) (c := c) (r := 0)
       hprec_or hU_le hXV_root0 hc_lt
   have hV_splits : V.Splits := (isRealRooted_of_X_mul hXV_ne hXV_splits).2
@@ -458,5 +458,8 @@ theorem prec_component_of_prec_next_eq_add_X_mul
   exact
     prec_component_of_prec_mul_X_of_roots_nonpos
       hU_XV hU_pos hV_pos hU_nonpos hV_nonpos hdeg_VU
+
+@[deprecated strictInterl_sub_X_mul_right (since := "2026-09-18")]
+alias prec_sub_X_mul_right := strictInterl_sub_X_mul_right
 
 end RealRooted

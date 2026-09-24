@@ -21,7 +21,7 @@ namespace RealRooted
 /-- A quadratic derivative recurrence with an arbitrary middle multiplier has
 strict adjacent proper position once its elementary rankwise invariants and
 base pair are known. -/
-theorem prec_and_noCommonRoot_of_quadratic_lag
+theorem strictInterl_and_noCommonRoot_of_quadratic_lag
     (P : ℕ → ℝ[X]) (a b c : ℝ) (Q : ℕ → ℝ[X])
     (ha : 0 < a) (hb : 0 ≤ b) (hc : 0 ≤ c)
     (hdeg : ∀ n, (P n).natDegree = n)
@@ -104,7 +104,7 @@ theorem prec_and_noCommonRoot_of_quadratic_lag
         exact (mul_eq_zero.mp hfactor).resolve_left hr0
       have hne : eval r (P n) ≠ 0 := fun hroot0 => ihno r hr1 hroot0
       have hsign : 0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-        eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toStrictInterl
+        eval_mul_eval_nonneg_of_strictInterl_right ihprec hderiv_inter.toStrictInterl
           (hpos n) hderiv_pos hr1
       have hpref : 0 < a - b * r := by nlinarith
       have hmul :
@@ -140,7 +140,7 @@ theorem prec_and_noCommonRoot_of_quadratic_lag
 one has strict adjacent proper position.  This version uses the derivative as
 the strict Liu--Wang interlacer, so the lag polynomial may have the same degree
 as the current row. -/
-theorem prec_and_noCommonRoot_of_quadratic_lag_degree_step
+theorem strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
     (P : ℕ → ℝ[X]) (a b c : ℝ) (Q : ℕ → ℝ[X])
     (ha : 0 < a) (hb : 0 ≤ b) (hc : 0 ≤ c)
     (hstep : ∀ n, (P (n + 1)).natDegree = (P n).natDegree ∨
@@ -174,7 +174,7 @@ theorem prec_and_noCommonRoot_of_quadratic_lag_degree_step
         have hrneg := hroot (n + 1) r hr
         have hprevDeriv :
             0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-          eval_mul_eval_nonneg_of_prec_right ihprec hderiv_inter.toStrictInterl
+          eval_mul_eval_nonneg_of_strictInterl_right ihprec hderiv_inter.toStrictInterl
             (hpos n) hderiv_pos hr
         have hderivNe : eval r ((P (n + 1)).derivative) ≠ 0 :=
           hsimple.eval_derivative_ne_zero hr
@@ -207,5 +207,14 @@ theorem prec_and_noCommonRoot_of_quadratic_lag_degree_step
       rw [Polynomial.IsRoot.def] at hr2
       rw [hr2, zero_mul] at hsign
       exact (lt_irrefl 0 hsign).elim
+
+@[deprecated strictInterl_and_noCommonRoot_of_quadratic_lag (since := "2026-09-18")]
+alias prec_and_noCommonRoot_of_quadratic_lag :=
+  strictInterl_and_noCommonRoot_of_quadratic_lag
+
+@[deprecated strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
+  (since := "2026-09-18")]
+alias prec_and_noCommonRoot_of_quadratic_lag_degree_step :=
+  strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
 
 end RealRooted

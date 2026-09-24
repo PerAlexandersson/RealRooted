@@ -87,7 +87,7 @@ theorem isUpperHalfPlaneStable_of_tendsto_eval_of_natDegree_le
 
 /-- Uniformly bounded-degree coefficientwise limits preserve zero-aware
 proper position for Pólya-frequency polynomial pairs. -/
-theorem prec0_of_pf_coeff_tendsto_of_natDegree_le
+theorem interl_of_pf_coeff_tendsto_of_natDegree_le
     {p q : ℕ → ℝ[X]} {p₀ q₀ : ℝ[X]} {N : ℕ}
     (hp : ∀ k, IsPFPolynomial (p k))
     (hq : ∀ k, IsPFPolynomial (q k))
@@ -194,5 +194,9 @@ theorem prec0_of_pf_coeff_tendsto_of_natDegree_le
         Polynomial.tendsto_eval_of_coeff_tendsto_of_natDegree_le
           hHdeg hH₀deg hHcoeff z
   exact prec_of_upperHalfPlaneStable_hermiteBiehler hq₀pos hp₀pos hH₀stable
+
+@[deprecated interl_of_pf_coeff_tendsto_of_natDegree_le (since := "2026-09-18")]
+alias prec0_of_pf_coeff_tendsto_of_natDegree_le :=
+  interl_of_pf_coeff_tendsto_of_natDegree_le
 
 end RealRooted

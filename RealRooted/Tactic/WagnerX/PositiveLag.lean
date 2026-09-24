@@ -25,7 +25,7 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     have hf_pos : HasPosLeadingCoeff f := by
       rr_pos_lc using nonzero := left_ne_zero_of_strictInterl h
     rr_pos_lc
-  have hX : StrictInterl g (X * f) := prec_mul_X_of_prec_of_nonneg h hfnn hgnn
+  have hX : StrictInterl g (X * f) := strictInterl_mul_X_of_strictInterl_of_nonneg h hfnn hgnn
   have hself : StrictInterl g g :=
     StrictInterl.refl (right_ne_zero_of_strictInterl h) (right_splits_of_strictInterl h)
   have hnonneg : ∀ ap ∈ [(a, g), (c, X * f)], 0 ≤ ap.1 := by
@@ -71,7 +71,8 @@ theorem prec_left_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
   have hg_pos : HasPosLeadingCoeff g :=
     hgnn.pos_leadingCoeff (right_ne_zero_of_strictInterl h)
   have hXf : StrictInterl f (X * f) :=
-    prec_self_mul_X_of_nonneg (left_ne_zero_of_strictInterl h) (left_splits_of_strictInterl h) hfnn
+    strictInterl_self_mul_X_of_nonneg
+      (left_ne_zero_of_strictInterl h) (left_splits_of_strictInterl h) hfnn
   have hXf_pos : HasPosLeadingCoeff (X * f) := hf_pos.X_mul
   have hnonneg : ∀ ap ∈ [(a, g), (c, X * f)], 0 ≤ ap.1 := by
     intro ap hap

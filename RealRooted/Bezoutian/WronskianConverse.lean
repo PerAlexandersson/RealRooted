@@ -595,7 +595,7 @@ lemma exists_strictMono_u_of_bounds {α : Type*} [LinearOrder α] {n : ℕ} (hn 
   · exact h_xh_P
   · exact h_xb_P ⟨i.val - 1, by lia⟩
 
-lemma prec_of_wronskian_pos_succ {n : ℕ}
+lemma strictInterl_of_wronskian_pos_succ {n : ℕ}
     {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n + 1) (hq_deg : q.natDegree = n)
     (hp_splits : p.Splits) (hq_splits : q.Splits)
@@ -703,5 +703,8 @@ alias StrictPrecSameDegree.of_wronskian_pos := StrictInterlSameDegree.of_wronski
 
 @[deprecated StrictInterlSameDegree.of_splits_and_posDef (since := "2026-09-18")]
 alias StrictPrecSameDegree.of_splits_and_posDef := StrictInterlSameDegree.of_splits_and_posDef
+
+@[deprecated strictInterl_of_wronskian_pos_succ (since := "2026-09-18")]
+alias prec_of_wronskian_pos_succ := strictInterl_of_wronskian_pos_succ
 
 end RealRooted

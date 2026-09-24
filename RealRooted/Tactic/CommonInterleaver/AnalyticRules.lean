@@ -210,7 +210,8 @@ macro_rules
       rr_succDegree_rootCountLeadRightZero_of_divXPrec using
         divX_prec := $hdivX:term) =>
       `(tactic|
-        exact RealRooted.posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
+        exact
+          RealRooted.posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_strictInterl
           $hdivX)
   | `(tactic|
       rr_succDegree_rootCountLead_of_bothNonzero_and_rightZero using
@@ -224,13 +225,14 @@ macro_rules
         both_nonzero := $hboth:term,
         divX_prec := $hdivX:term) =>
       `(tactic|
-        exact RealRooted.posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
+        exact
+          RealRooted.posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_strictInterl
           $hboth $hdivX)
   | `(tactic|
       rr_succDegree_rootCountResidual_of_prec using
         orientation := $horient:term) =>
       `(tactic|
-        exact RealRooted.posComboNoCommonSuccDegreeRootCountResidual_of_prec
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountResidual_of_strictInterl
           $horient)
   | `(tactic|
       rr_succDegree_rootCount_of_residual_and_lead using
@@ -267,7 +269,7 @@ macro_rules
         residual := $hres:term) =>
       `(tactic|
         exact
-          RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_prec
+          succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_strictInterl
             $hboth $hdivX $hres)
   | `(tactic|
       rr_succDegree_pair_common_interleaver_residualPrec_bothNonzero_divXPrec using
@@ -275,9 +277,9 @@ macro_rules
         both_nonzero := $hboth:term,
         divX_prec := $hdivX:term) =>
       `(tactic|
-        exact
-          RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_residualPrec_bothNonzero_divX_prec
-            $hres $hboth $hdivX)
+        exact (
+    succDegreePairHasCommonInterleaver_nonneg_of_residualStrictInterl_bothNonzero_divX_strictInterl
+      $hres $hboth $hdivX))
   | `(tactic|
       rr_compatible_pair_common_interleaver_degree_split_nonnegShift using
         same_degree := $hsame:term,

@@ -253,7 +253,7 @@ theorem inversePeakEulerian_prec_and_noCommonRoot (n : ℕ) :
     StrictInterl (inversePeakEulerian n) (inversePeakEulerian (n + 1)) ∧
       ∀ r, (inversePeakEulerian (n + 1)).IsRoot r →
         ¬ (inversePeakEulerian n).IsRoot r := by
-  apply prec_and_noCommonRoot_of_quadratic_lag_degree_step
+  apply strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
     (P := inversePeakEulerian) (a := 2) (b := 2) (c := 1)
     (Q := fun m => C 1 + C ((m : ℝ) + 2) * X)
   · norm_num

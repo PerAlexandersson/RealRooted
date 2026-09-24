@@ -373,7 +373,7 @@ lemma listInterlaces_of_listAlternates_append_right
 /-- In the same-degree `StrictInterl` case, removing a rightmost root of the right-hand
 polynomial turns the quotient into an honest differ-by-1 interlacer for the
 left-hand polynomial. -/
-lemma interlaces_of_prec_sameDegree_rightmost_factor
+lemma interlaces_of_strictInterl_sameDegree_rightmost_factor
     {f g q : ℝ[X]} {uR : ℝ}
     (hfg : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
@@ -424,6 +424,11 @@ lemma interlaces_of_prec_sameDegree_rightmost_factor
     have hshape_qs_rs : ListInterlaces qs ss :=
       listInterlaces_of_listAlternates_append_right hlen_qs halt_right
     exact ⟨hf, hq, hq_deg, ss, qs, hss_sorted, hqs_sorted, hss_eq, hqs_eq, hshape_qs_rs⟩
+
+@[deprecated interlaces_of_strictInterl_sameDegree_rightmost_factor
+  (since := "2026-09-18")]
+alias interlaces_of_prec_sameDegree_rightmost_factor :=
+  interlaces_of_strictInterl_sameDegree_rightmost_factor
 
 lemma listInterlaces_append_zero_both :
     ∀ (ss rs : List ℝ),

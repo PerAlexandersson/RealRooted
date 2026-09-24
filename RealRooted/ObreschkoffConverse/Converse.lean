@@ -303,7 +303,7 @@ theorem ObreschkoffConverseInternal.isRealRooted_of_interlaces_eval_mul_neg_same
     isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
       hf.1 hf.2 hF_ne hdeg (by lia) hsign (Or.inl hleft)
 
-private theorem prec_of_allComboRealRooted_of_no_common
+private theorem strictInterl_of_allComboRealRooted_of_no_common
     (hstep :
       ∀ {f g : ℝ[X]},
         (f ≠ 0 ∧ f.Splits) → (g ≠ 0 ∧ g.Splits) →
@@ -376,7 +376,9 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
     (hall : AllComboRealRooted f g)
     (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree) :
     StrictInterl f g ∨ StrictInterl g f := by
-  refine prec_of_allComboRealRooted_of_no_common ?_ hf_ne hf_splits hg_ne hg_splits hall hdeg
+  refine
+    strictInterl_of_allComboRealRooted_of_no_common
+      ?_ hf_ne hf_splits hg_ne hg_splits hall hdeg
   intro f g hf hg hall hdeg hno
   let eps : ℝ := 1
   have heps : 0 < eps := by grind
@@ -396,7 +398,7 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
       StrictInterl (iterateTDeriv eps n f) (iterateTDeriv eps n g) ∨
         StrictInterl (iterateTDeriv eps n g) (iterateTDeriv eps n f) := by
     simpa [n] using
-      ObreschkoffConverseInternal.precOrRevPrecRegularized
+      ObreschkoffConverseInternal.strictInterlOrReverseRegularized
         hf.1 hf.2 hg.1 hg.2 hall hdeg heps hno
   have hlead_f_iter :
       (iterateTDeriv eps n f).leadingCoeff = f.leadingCoeff := by
@@ -415,7 +417,7 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
         StrictInterl (iterateTDeriv eps n f) (iterateTDeriv eps n g) := by
     intro hsucc
     simpa [n] using
-      ObreschkoffConverseInternal.prec_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
+      ObreschkoffConverseInternal.strictInterl_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
         hf.1 hf.2 hg.1 hg.2 hall hsucc heps hno
   have hcombo_original :
       ∀ α β : ℝ,
@@ -519,12 +521,12 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
     · intro hsucc
       have hprec_or :
           StrictInterl f g ∨ StrictInterl g f :=
-        ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
+        ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
           hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inl hsucc) hno
       exact StrictInterl.forward_of_orientation_of_succDegree hsucc.symm hprec_or
     · intro hsame
       exact
-        ObreschkoffConverseInternal.prec_of_eq_zero_or_simple_combo_of_no_common
+        ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
           hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inr hsame) hno
   lia
 

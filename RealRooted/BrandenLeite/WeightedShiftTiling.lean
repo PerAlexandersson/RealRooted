@@ -99,17 +99,17 @@ theorem weightedShiftTilingRow_isPFPolynomial
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
     (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin (N + 1)) :
     IsPFPolynomial (weightedShiftTilingRow b as N r i) := by
-  exact (weightedGreenKernel_markedShiftKernel_pf_and_prec0
+  exact (weightedGreenKernel_markedShiftKernel_pf_and_interl
     hb has N hr).1 i
 
 /-- Consecutive nonstationary tiling rows are in zero-aware proper position. -/
-theorem prec0_weightedShiftTilingRow_succ
+theorem interl_weightedShiftTilingRow_succ
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
     (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin N) :
     Interl (weightedShiftTilingRow b as N r i.castSucc)
       (weightedShiftTilingRow b as N r i.succ) := by
-  exact (weightedGreenKernel_markedShiftKernel_pf_and_prec0
+  exact (weightedGreenKernel_markedShiftKernel_pf_and_interl
     hb has N hr).2 i
 
 /-- The constant coefficient of a tiling row is the unique descending Green-
@@ -364,7 +364,7 @@ theorem weightedShiftTilingRow_separated_isPFPolynomial
   exact mul_nonneg (halphas a ha) (hw n)
 
 /-- Consecutive rows of nonnegative separated data remain in proper position. -/
-theorem prec0_weightedShiftTilingRow_separated_succ
+theorem interl_weightedShiftTilingRow_separated_succ
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {alphas : List ℝ} (halphas : ∀ a ∈ alphas, 0 ≤ a)
     {w : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
@@ -374,7 +374,7 @@ theorem prec0_weightedShiftTilingRow_separated_succ
         N r i.castSucc)
       (weightedShiftTilingRow b (alphas.map fun a n => a * w n)
         N r i.succ) := by
-  refine prec0_weightedShiftTilingRow_succ hb ?_ N hr i
+  refine interl_weightedShiftTilingRow_succ hb ?_ N hr i
   intro f hf n
   simp only [List.mem_map] at hf
   obtain ⟨a, ha, rfl⟩ := hf
@@ -591,6 +591,13 @@ theorem weightedShiftTilingRow_roots_neg
   exact (weightedShiftTilingRow_isPFPolynomial (fun n => (hb n).le)
     has N hr i).roots_neg_of_coeff_zero_ne
       (ne_of_gt (coeff_zero_weightedShiftTilingRow_pos hb as N r i)) x hx
+
+@[deprecated interl_weightedShiftTilingRow_succ (since := "2026-09-18")]
+alias prec0_weightedShiftTilingRow_succ := interl_weightedShiftTilingRow_succ
+
+@[deprecated interl_weightedShiftTilingRow_separated_succ (since := "2026-09-18")]
+alias prec0_weightedShiftTilingRow_separated_succ :=
+  interl_weightedShiftTilingRow_separated_succ
 
 end
 

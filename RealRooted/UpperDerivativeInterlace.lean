@@ -20,7 +20,7 @@ noncomputable section
 namespace RealRooted
 
 /-- Derivative sign-agreement at a root, reduced to a supplied `StrictInterl d f`. -/
-theorem prec_deriv_eval_mul_deriv_nonneg
+theorem strictInterl_deriv_eval_mul_deriv_nonneg
     {f d : ℝ[X]}
     (hf_splits : f.Splits) (hf_deg : 2 ≤ f.natDegree)
     (hfp_pos : HasPosLeadingCoeff f.derivative)
@@ -29,7 +29,7 @@ theorem prec_deriv_eval_mul_deriv_nonneg
     0 ≤ d.eval r * f.derivative.eval r := by
   have hfpf : StrictInterl f.derivative f := (derivative_interlaces hf_splits hf_deg).toStrictInterl
   simpa [mul_comm] using
-    eval_mul_eval_nonneg_of_prec_right hdf hfpf hd_pos hfp_pos hr
+    eval_mul_eval_nonneg_of_strictInterl_right hdf hfpf hd_pos hfp_pos hr
 
 /-- Structural magnitude certificate when the lag polynomial also precedes the current row. -/
 theorem magnitude_cert_auto
@@ -44,7 +44,7 @@ theorem magnitude_cert_auto
   intro r hr
   have hg₁prec : StrictInterl g₁ f := hg₁f.toStrictInterl
   have hcross : 0 ≤ g₂.eval r * g₁.eval r :=
-    eval_mul_eval_nonneg_of_prec_right hg₂f hg₁prec hg₂_pos hg₁_pos hr
+    eval_mul_eval_nonneg_of_strictInterl_right hg₂f hg₁prec hg₂_pos hg₁_pos hr
   have hg₁sq : 0 < (g₁.eval r) ^ 2 := by
     have hne := hsimple r hr
     positivity
@@ -55,7 +55,7 @@ theorem magnitude_cert_auto
   linarith
 
 /-- Drop-in composition of `magnitude_cert_auto` with the successor-degree criterion. -/
-theorem prec_of_magnitude_dominated_auto
+theorem strictInterl_of_magnitude_dominated_auto
     {f g₁ g₂ a b₁ b₂ : ℝ[X]}
     (hg₁f : Interlaces g₁ f) (hg₁_pos : HasPosLeadingCoeff g₁)
     (hg₂f : StrictInterl g₂ f) (hg₂_pos : HasPosLeadingCoeff g₂)
@@ -65,7 +65,7 @@ theorem prec_of_magnitude_dominated_auto
     (hF_pos : HasPosLeadingCoeff (a * f + b₁ * g₁ + b₂ * g₂))
     (hdeg : (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree + 1) :
     StrictInterl f (a * f + b₁ * g₁ + b₂ * g₂) :=
-  prec_of_magnitude_dominated_succ hg₁f hg₁_pos hF_pos hdeg
+  strictInterl_of_magnitude_dominated_succ hg₁f hg₁_pos hF_pos hdeg
     (magnitude_cert_auto hg₁f hg₁_pos hg₂f hg₂_pos hsimple hb₁ hb₂)
 
 /-- Orient an all-combinations real-rooted pair in the successor-degree case. -/
@@ -80,5 +80,15 @@ theorem interlaces_of_allComboRealRooted_succDegree
   have hor : StrictInterl f g ∨ StrictInterl g f :=
     strictInterl_of_allComboRealRooted hf_ne hf_splits hg_ne hg_splits hall (Or.inl hsucc.symm)
   exact (StrictInterl.forward_of_orientation_of_succDegree hsucc hor).toInterlaces hsucc.symm
+
+@[deprecated strictInterl_deriv_eval_mul_deriv_nonneg
+  (since := "2026-09-18")]
+alias prec_deriv_eval_mul_deriv_nonneg :=
+  strictInterl_deriv_eval_mul_deriv_nonneg
+
+@[deprecated strictInterl_of_magnitude_dominated_auto
+  (since := "2026-09-18")]
+alias prec_of_magnitude_dominated_auto :=
+  strictInterl_of_magnitude_dominated_auto
 
 end RealRooted

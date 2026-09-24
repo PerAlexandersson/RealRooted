@@ -76,7 +76,7 @@ theorem isUpperHalfPlaneStablePencil_zero_left
 
 /-- Positive-leading-coefficient proper position orients the corresponding
 nonconstant polynomial pencil away from the product of upper half-planes. -/
-theorem isUpperHalfPlaneStablePencil_of_prec_of_natDegree_pos
+theorem isUpperHalfPlaneStablePencil_of_strictInterl_of_natDegree_pos
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f)
     (hg : HasPosLeadingCoeff g) (hgf : StrictInterl g f)
     (hfdeg : 1 ≤ f.natDegree) :
@@ -110,12 +110,12 @@ theorem isUpperHalfPlaneStablePencil_of_prec_of_natDegree_pos
 
 /-- Positive-leading-coefficient proper position gives a stable pencil in all
 degrees, including the constant boundary case. -/
-theorem isUpperHalfPlaneStablePencil_of_prec
+theorem isUpperHalfPlaneStablePencil_of_strictInterl
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f)
     (hg : HasPosLeadingCoeff g) (hgf : StrictInterl g f) :
     IsUpperHalfPlaneStablePencil f g := by
   by_cases hfdeg : 1 ≤ f.natDegree
-  · exact isUpperHalfPlaneStablePencil_of_prec_of_natDegree_pos hf hg hgf hfdeg
+  · exact isUpperHalfPlaneStablePencil_of_strictInterl_of_natDegree_pos hf hg hgf hfdeg
   · have hfdeg0 : f.natDegree = 0 := by lia
     have hgdeg0 : g.natDegree = 0 := by
       have hgfdeg := hgf.natDegree_le
@@ -141,5 +141,15 @@ theorem isUpperHalfPlaneStablePencil_of_prec
     nlinarith
 
 end
+
+@[deprecated isUpperHalfPlaneStablePencil_of_strictInterl_of_natDegree_pos
+  (since := "2026-09-18")]
+alias isUpperHalfPlaneStablePencil_of_prec_of_natDegree_pos :=
+  isUpperHalfPlaneStablePencil_of_strictInterl_of_natDegree_pos
+
+@[deprecated isUpperHalfPlaneStablePencil_of_strictInterl
+  (since := "2026-09-18")]
+alias isUpperHalfPlaneStablePencil_of_prec :=
+  isUpperHalfPlaneStablePencil_of_strictInterl
 
 end RealRooted

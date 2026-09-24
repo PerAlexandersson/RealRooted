@@ -211,7 +211,7 @@ theorem chowS_nonnegCoeffs_and_prec_of_triple
   have hSg : StrictInterl S g := by
     rcases hfactor_prec.natDegree_eq_or_eq_succ with hsame | hsucc
     · have hdeg : S.natDegree + 1 = g.natDegree := by lia
-      exact (prec_iff_prec_mul_X_sub_C_of_roots_le
+      exact (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
         1 hS_rr.2 hfg.2.1.2 hS_pos hg_pos hS_le_one hg_le_one hdeg).mpr
           hfactor_prec
     · have hdeg : S.natDegree = g.natDegree := by lia

@@ -749,7 +749,7 @@ abbrev PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement :=
 
 /-- The right-zero `divX` orientation target follows from proving the original
 succ-degree orientation `StrictInterl f g` on this branch.  The degree-drop step is
-isolated in `prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero`. -/
+isolated in `strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero`. -/
 theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG
     (hprecFG :
       ∀ ⦃f g : ℝ[X]⦄,
@@ -766,7 +766,7 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_stri
         StrictInterl f g) :
     PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
-  exact prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
+  exact strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
     (hprecFG hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hgnn hg0 hdeg
 
 @[deprecated
@@ -780,7 +780,7 @@ alias posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG :=
 the sharper succ-degree orientation `StrictInterl f g` on the right-zero lead branch
 follows from the `divX` orientation target `StrictInterl (g.divX) f`.  The degree-drop
 reconstruction is isolated in
-`prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero`.
+`strictInterl_of_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero`.
 
 Together with
 `posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG`
@@ -801,7 +801,7 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroStrictInterlFG_of_divX
       g.coeff 0 = 0 →
       StrictInterl f g := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
-  exact prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero
+  exact strictInterl_of_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
     (hdivX hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hfnn hgnn hg0 hdeg
 
 @[deprecated posComboNoCommonSuccDegreeRootCountLeadRightZeroStrictInterlFG_of_divX

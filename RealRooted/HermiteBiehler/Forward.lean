@@ -124,7 +124,8 @@ private theorem im_ratio_deg1_deg0 (f g : ℝ[X]) (z : ℂ) (hz : 0 < z.im)
   refine im_real_mul_nonpos _ _ ?_ (le_of_lt (inv_sub_real_im_neg s hz))
   exact le_of_lt (div_pos hlg hlf)
 
-private theorem prec_roots_deg1 (f g : ℝ[X]) (hpq : StrictInterl g f) (hd : f.natDegree = 1) :
+private theorem strictInterl_roots_deg1 (f g : ℝ[X]) (hpq : StrictInterl g f)
+    (hd : f.natDegree = 1) :
     g.roots = 0 ∨ ∃ r s, f.roots = {s} ∧ g.roots = {r} ∧ r ≤ s := by
   obtain ⟨⟨hg₀, hgs⟩, ⟨hf₀, hfs⟩, ss, rs, hss, hrs, hsseq, hrseq, hshape⟩ := hpq
   have hfcard : f.roots.card = 1 := by rw [card_roots_of_splits hfs, hd]
@@ -170,7 +171,7 @@ theorem hermiteBiehlerForwardPos_of_natDegree_le_one {f g : ℝ[X]}
   · have hd₁ : f.natDegree = 1 := by lia
     apply stable_of_im_ratio_nonpos hf₀ hfs
     intro z hz
-    rcases prec_roots_deg1 f g hpq hd₁ with hgr | ⟨r, s, hfr, hgr, hrs⟩
+    rcases strictInterl_roots_deg1 f g hpq hd₁ with hgr | ⟨r, s, hfr, hgr, hrs⟩
     · obtain ⟨s, hfr⟩ := Multiset.card_eq_one.mp (by rw [card_roots_of_splits hfs, hd₁])
       exact im_ratio_deg1_deg0 f g z hz hfs hgs hf hg s hfr hgr
     · exact im_ratio_deg1_deg1 f g z hz hfs hgs hf hg s r hfr hgr hrs

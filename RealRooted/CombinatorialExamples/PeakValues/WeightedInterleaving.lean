@@ -238,7 +238,7 @@ theorem peakValueWeightedDiagonal_consecutive_prec_of_stable
       (identifyLast_peakValuePolynomial_isMultiaffine n)
       none w hwpos hApos hDpos
   have hAXD : StrictInterl A (Polynomial.X * D) :=
-    prec_mul_X_of_prec_of_nonneg hDA hDnn hAnn
+    strictInterl_mul_X_of_strictInterl_of_nonneg hDA hDnn hAnn
   have hAfull : StrictInterl A (A + Polynomial.X * D) :=
     prec_add_X_mul_of_prec hAXD hApos hDpos
   have hdecomp :

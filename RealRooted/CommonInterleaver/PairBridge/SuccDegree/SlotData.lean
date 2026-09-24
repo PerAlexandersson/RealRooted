@@ -217,27 +217,39 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_and_lead
 /-- The repaired succ-degree pair-interleaver endpoint follows from the
 residual branch, the both-nonzero lead branch, and the right-zero `divX`
 orientation target. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_prec
+theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_strictInterl
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
     (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement)
     (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCount
-    (posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_prec
+    (posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_strictInterl
       hboth hdivX hres)
 
 /-- The repaired succ-degree pair-interleaver endpoint follows from the
 residual orientation target, the both-nonzero lead branch, and the right-zero
 `divX` orientation target. -/
 theorem
-    succDegreePairHasCommonInterleaver_nonneg_of_residualPrec_bothNonzero_divX_prec
+    succDegreePairHasCommonInterleaver_nonneg_of_residualStrictInterl_bothNonzero_divX_strictInterl
     (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement)
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
     (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCount
-    (posComboNoCommonSuccDegreeRootCount_of_residualPrec_bothNonzero_divX_prec
+    (posComboNoCommonSuccDegreeRootCount_of_residualStrictInterl_bothNonzero_divX_strictInterl
       hresPrec hboth hdivX)
+
+@[deprecated
+  succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_strictInterl
+  (since := "2026-09-18")]
+alias succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_prec :=
+  succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_strictInterl
+
+@[deprecated
+  succDegreePairHasCommonInterleaver_nonneg_of_residualStrictInterl_bothNonzero_divX_strictInterl
+  (since := "2026-09-18")]
+alias succDegreePairHasCommonInterleaver_nonneg_of_residualPrec_bothNonzero_divX_prec :=
+  succDegreePairHasCommonInterleaver_nonneg_of_residualStrictInterl_bothNonzero_divX_strictInterl
 
 /-- Succ-degree slot data from the PF/ASW left-endpoint route and the
 descending-root crossing inequalities. -/

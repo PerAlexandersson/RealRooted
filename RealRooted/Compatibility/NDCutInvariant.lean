@@ -46,7 +46,7 @@ theorem isInterlacingSeq0NonnegRealRooted_of_mem_C_nonneg
     obtain ⟨a, _, ha⟩ := hfs _ (List.get_mem fs i)
     obtain ⟨b, _, hb⟩ := hfs _ (List.get_mem fs j)
     rw [ha, hb]
-    exact prec0_C_C a b
+    exact interl_C_C a b
   · intro p hp
     obtain ⟨a, ha, rfl⟩ := hfs p hp
     exact hasNonnegCoeffs_C ha

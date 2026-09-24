@@ -183,7 +183,7 @@ lemma interlacing_shape_of_desc_bounds (ss rs : List ℝ)
 largest root of `f`, `f ≪ g` holds exactly when both are real-rooted, the
 degrees differ by at most one (with `g` the larger), and the descending root
 sequences satisfy `f⟨l⟩ ≤ g⟨l⟩` and `g⟨l+1⟩ ≤ f⟨l⟩`. -/
-theorem prec_iff_rootSeqDesc {f g : ℝ[X]} :
+theorem strictInterl_iff_rootSeqDesc {f g : ℝ[X]} :
     StrictInterl f g ↔
       (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
         (g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1) ∧
@@ -233,15 +233,18 @@ theorem prec_iff_rootSeqDesc {f g : ℝ[X]} :
       have := h2 l (by lia) (by lia)
       rwa [hSf, hSg] at this
 
+@[deprecated strictInterl_iff_rootSeqDesc (since := "2026-09-18")]
+alias prec_iff_rootSeqDesc := strictInterl_iff_rootSeqDesc
+
 /-- **Chain lemma.**  If `F a ≪ F (a+1) ≪ ⋯ ≪ F b` is a chain of consecutive
 interlacings and additionally the two extremes satisfy `F a ≪ F b`, then every
 pair `F i ≪ F j` with `a ≤ i ≤ j ≤ b` interlaces.  This is the substitute for
 transitivity of `≪`, which fails in general. -/
-theorem prec_chain_of_consecutive_of_endpoint (F : ℕ → ℝ[X]) (a b : ℕ)
+theorem strictInterl_chain_of_consecutive_of_endpoint (F : ℕ → ℝ[X]) (a b : ℕ)
     (hcons : ∀ k, a ≤ k → k < b → StrictInterl (F k) (F (k + 1)))
     (hext : StrictInterl (F a) (F b)) :
     ∀ i j, a ≤ i → i ≤ j → j ≤ b → StrictInterl (F i) (F j) := by
-  obtain ⟨-, -, hdab, -, hextD⟩ := prec_iff_rootSeqDesc.1 hext
+  obtain ⟨-, -, hdab, -, hextD⟩ := strictInterl_iff_rootSeqDesc.1 hext
   have hdab' : (F b).natDegree ≤ (F a).natDegree + 1 := by rcases hdab with h | h <;> lia
   have hrr : ∀ k, a ≤ k → k ≤ b → (F k ≠ 0 ∧ (F k).Splits) := by
     intro k hak hkb
@@ -254,7 +257,7 @@ theorem prec_chain_of_consecutive_of_endpoint (F : ℕ → ℝ[X]) (a b : ℕ)
         (∀ l, l < (F k).natDegree →
           (rootSeqDesc (F k)).getD l 0 ≤ (rootSeqDesc (F (k + 1))).getD l 0) := by
     intro k hak hkb
-    obtain ⟨-, -, hd, hr, -⟩ := prec_iff_rootSeqDesc.1 (hcons k hak hkb)
+    obtain ⟨-, -, hd, hr, -⟩ := strictInterl_iff_rootSeqDesc.1 (hcons k hak hkb)
     exact ⟨by rcases hd with h | h <;> lia, hr⟩
   have hmono : ∀ i j, a ≤ i → i ≤ j → j ≤ b →
       (F i).natDegree ≤ (F j).natDegree ∧
@@ -275,13 +278,17 @@ theorem prec_chain_of_consecutive_of_endpoint (F : ℕ → ℝ[X]) (a b : ℕ)
   obtain ⟨hdij, hrij⟩ := hmono i j hai hij hjb
   obtain ⟨hdai, hrai⟩ := hmono a i le_rfl hai hib
   obtain ⟨hdjb, hrjb⟩ := hmono j b (by lia) hjb le_rfl
-  refine prec_iff_rootSeqDesc.2 ⟨hrr i hai hib, hrr j (by lia) hjb, by lia, hrij, ?_⟩
+  refine strictInterl_iff_rootSeqDesc.2
+    ⟨hrr i hai hib, hrr j (by lia) hjb, by lia, hrij, ?_⟩
   intro l hl hl2
   have hla : l < (F a).natDegree := by lia
   calc (rootSeqDesc (F j)).getD (l + 1) 0
       ≤ (rootSeqDesc (F b)).getD (l + 1) 0 := hrjb (l + 1) hl2
     _ ≤ (rootSeqDesc (F a)).getD l 0 := hextD l hla (by lia)
     _ ≤ (rootSeqDesc (F i)).getD l 0 := hrai l hla
+
+@[deprecated strictInterl_chain_of_consecutive_of_endpoint (since := "2026-09-18")]
+alias prec_chain_of_consecutive_of_endpoint := strictInterl_chain_of_consecutive_of_endpoint
 
 end
 end RealRooted

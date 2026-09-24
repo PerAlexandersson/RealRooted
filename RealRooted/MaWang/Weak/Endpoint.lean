@@ -55,7 +55,7 @@ theorem strictInterl_of_interlaces_evalCoeff_nonpos
     have hprec_q : StrictInterl qf (a * qf + b * qg) := by grind
     have hprec_mul :
         StrictInterl ((X - C r) * qf) (a * ((X - C r) * qf) + b * ((X - C r) * qg)) :=
-      prec_mul_X_sub_C_of_linearCombo_quotient (a := a) (b := b) (r := r) hprec_q
+      strictInterl_mul_X_sub_C_of_linearCombo_quotient (a := a) (b := b) (r := r) hprec_q
     lia
 
 @[deprecated strictInterl_of_interlaces_evalCoeff_nonpos (since := "2026-09-18")]

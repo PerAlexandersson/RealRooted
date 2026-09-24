@@ -448,7 +448,7 @@ lemma recurrenceCoreSturmDerangementsExc_ne_zero {n : Nat} (hn : 2 ≤ n) :
 lemma prec_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
     StrictInterl (sturmDerangementsExc n) (X * affineSturmDerangementsExc n) :=
-  prec_mul_X_of_prec_of_nonneg
+  strictInterl_mul_X_of_strictInterl_of_nonneg
     (prec_affine_sturmDerangementsExc hn hrr)
     (affine_sturmDerangementsExc_nonnegCoeffs hn)
     (sturmDerangementsExc_nonnegCoeffs n)
@@ -507,7 +507,7 @@ lemma prec_sturmDerangementsExc_succ_of_prec_recurrenceCore {n : Nat} (hn : 2 �
     StrictInterl (sturmDerangementsExc n) (sturmDerangementsExc (n + 1)) := by
   have hmain :
       StrictInterl (sturmDerangementsExc n) (X * recurrenceCoreSturmDerangementsExc n) :=
-    prec_mul_X_of_prec_of_nonneg hcore
+    strictInterl_mul_X_of_strictInterl_of_nonneg hcore
       (recurrenceCoreSturmDerangementsExc_nonnegCoeffs hn)
       (sturmDerangementsExc_nonnegCoeffs n)
   simpa [sturmDerangementsExc_succ_eq_X_mul_recurrenceCore n hn] using hmain

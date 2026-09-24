@@ -152,7 +152,8 @@ theorem hermiteBiehlerStableToHurwitzOddEven_upperHalfSubstitution :
   by_cases h_q_deg : 1 ≤ q.natDegree
   · have h_p_ne : p ≠ 0 := by rintro rfl; simp [complexify] at hpw
     have h_p_pos : HasPosLeadingCoeff p := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero h_p h_p_ne
-    have h_prec : StrictInterl p q := prec_of_stable_general h_q_pos h_p_pos h_stable h_q_deg
+    have h_prec : StrictInterl p q :=
+      strictInterl_of_stable_general h_q_pos h_p_pos h_stable h_q_deg
     have h_ratio : ((complexify p).eval w / (complexify q).eval w).im ≤ 0 :=
       im_ratio_nonpos_general h_q_pos h_p_pos h_prec h_q_deg hwim
     have h_qw : (complexify q).eval w ≠ 0 := by

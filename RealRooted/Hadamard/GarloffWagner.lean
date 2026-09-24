@@ -109,18 +109,21 @@ keeps the historical `Hadamard` API used by downstream theorem bundles.
 -/
 /-- Hadamard product preserves proper position in the nonnegative setting
 (Garloff--Wagner, Theorem 4(b)). -/
-theorem garloffWagnerHadamardNonnegPrec {f g p q : ℝ[X]}
+theorem garloffWagnerHadamardNonnegInterl {f g p q : ℝ[X]}
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
     (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) := by
-  exact gwHadamardProductNonnegPrec hf hg hp hq hfg hpq
+  exact gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
 
 
 /-- Linear-factor sanity check for the orientation used in
-`garloffWagnerHadamardNonnegPrec`. -/
+`garloffWagnerHadamardNonnegInterl`. -/
 theorem garloffWagnerHadamard_linear_orientation_sanity {a b : ℝ} :
     StrictInterl (X + C b) (X + C a) ↔ a ≤ b :=
   StrictInterl.X_add_C_iff
+
+@[deprecated garloffWagnerHadamardNonnegInterl (since := "2026-09-18")]
+alias garloffWagnerHadamardNonnegPrec := garloffWagnerHadamardNonnegInterl
 
 end RealRooted

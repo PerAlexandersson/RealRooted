@@ -31,7 +31,7 @@ lemma eval_shift_at_root {f h : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) :
 /-! ## Differ-by-one case via Ma-Wang -/
 
 /-- The shift lemma when `h` has degree one less than `f`. -/
-theorem prec_shift_of_interlaces
+theorem strictInterl_shift_of_interlaces
     {f h : ℝ[X]}
     (hinterl : Interlaces h f)
     (hh_pos : HasPosLeadingCoeff h)
@@ -91,7 +91,7 @@ lemma shift_natDegree_of_same_degree {f h : ℝ[X]}
 /-! ## Same-degree case -/
 
 /-- The shift lemma when `h` and `f` have the same degree. -/
-theorem prec_shift_of_same_degree
+theorem strictInterl_shift_of_same_degree
     {f h : ℝ[X]}
     (hprec : StrictInterl h f)
     (hdeg : h.natDegree = f.natDegree)
@@ -129,7 +129,8 @@ theorem prec_shift_of_same_degree
       simpa [h', f'] using
         (StrictInterl.comp_X_add_C_iff (f := h) (g := f) 1).2 hprec
     have hfX' : StrictInterl f' (X * h') :=
-      prec_sameDegree_to_prec_mul_X_of_roots_nonpos hprec' hdeg' hh'_nonpos hf'_nonpos
+      strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos
+        hprec' hdeg' hh'_nonpos hf'_nonpos
     have htranslated : StrictInterl f' (t.comp (X + C 1)) := by
       simpa [t, h', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using hfX'
@@ -156,7 +157,7 @@ If `f` and `h` are real-rooted with nonpositive roots and positive leading
 coefficients, `h ≪ f`, and `h(0) ≤ f(0)`, then
 `f ≪ f + (X - 1) * h`.
 -/
-theorem prec_shift
+theorem strictInterl_shift
     {f h : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hh_ne : h ≠ 0) (hh_splits : h.Splits)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
@@ -178,16 +179,16 @@ theorem prec_shift
         ⟨⟨hh_ne, hh_splits⟩, ⟨hf_ne, hf_splits⟩, ss, rs, hss_sorted,
           hrs_sorted, hss_eq, hrs_eq, Or.inl ⟨hdiffby1, hint⟩⟩ hdeg
     obtain ⟨hndeg, hpos⟩ := shift_natDegree_of_interlaces hf_pos hh_pos hdeg hh_ne
-    exact prec_shift_of_interlaces hinterl hh_pos hf_nonpos hpos
+    exact strictInterl_shift_of_interlaces hinterl hh_pos hf_nonpos hpos
       (by lia) (by lia)
   · have hdeg : h.natDegree = f.natDegree := by lia
-    exact prec_shift_of_same_degree
+    exact strictInterl_shift_of_same_degree
       ⟨⟨hh_ne, hh_splits⟩, ⟨hf_ne, hf_splits⟩, ss, rs, hss_sorted, hrs_sorted,
         hss_eq, hrs_eq, Or.inr ⟨hsamedeg, halt⟩⟩
       hdeg hf_pos hh_pos hf_nonpos hh_nonpos heval
 
 /-- Shift lemma with variables named for applications. -/
-theorem prec_shift' {F H : ℝ[X]}
+theorem strictInterl_shift' {F H : ℝ[X]}
     (hF_ne : F ≠ 0) (hF_splits : F.Splits) (hH_ne : H ≠ 0) (hH_splits : H.Splits)
     (hF_nonpos : ∀ r ∈ F.roots, r ≤ 0)
     (hH_nonpos : ∀ r ∈ H.roots, r ≤ 0)
@@ -196,6 +197,18 @@ theorem prec_shift' {F H : ℝ[X]}
     (hinterl : StrictInterl H F)
     (heval : H.eval 0 ≤ F.eval 0) :
     StrictInterl F (F + (X - C 1) * H) :=
-  prec_shift hF_ne hF_splits hH_ne hH_splits hF_nonpos hH_nonpos hF_pos hH_pos hinterl heval
+  strictInterl_shift hF_ne hF_splits hH_ne hH_splits hF_nonpos hH_nonpos hF_pos hH_pos hinterl heval
+
+@[deprecated strictInterl_shift_of_interlaces (since := "2026-09-18")]
+alias prec_shift_of_interlaces := strictInterl_shift_of_interlaces
+
+@[deprecated strictInterl_shift_of_same_degree (since := "2026-09-18")]
+alias prec_shift_of_same_degree := strictInterl_shift_of_same_degree
+
+@[deprecated strictInterl_shift (since := "2026-09-18")]
+alias prec_shift := strictInterl_shift
+
+@[deprecated strictInterl_shift' (since := "2026-09-18")]
+alias prec_shift' := strictInterl_shift'
 
 end RealRooted

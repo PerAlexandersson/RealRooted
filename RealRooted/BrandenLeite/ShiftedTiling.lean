@@ -131,14 +131,14 @@ theorem twoSeedFactorRecurrenceCoefficient_hasNonnegCoeffs
 
 /-- Nonnegative translation preserves PF rows and consecutive zero-aware
 proper position. -/
-theorem shiftedRationalRodRows_pf_and_prec0
+theorem shiftedRationalRodRows_pf_and_interl
     {ys xs : List ℝ} (hys : ∀ y ∈ ys, 0 ≤ y)
     {c : ℝ} (hc : 0 < c) {r : ℕ} (hr : r ≠ 0)
     (hxs : ∀ x ∈ xs, 0 ≤ x) {γ : ℝ} (hγ : 0 ≤ γ) :
     (∀ n, IsPFPolynomial (shiftedRationalRodRow ys c r xs γ n)) ∧
       ∀ n, Interl (shiftedRationalRodRow ys c r xs γ n)
         (shiftedRationalRodRow ys c r xs γ (n + 1)) := by
-  obtain ⟨hpf, hprec⟩ := rationalRodRows_pf_and_prec0 hys hc hr hxs
+  obtain ⟨hpf, hprec⟩ := rationalRodRows_pf_and_interl hys hc hr hxs
   constructor
   · intro n
     simpa [shiftedRationalRodRow] using
@@ -173,7 +173,7 @@ theorem shiftedRationalRodRow_roots_lt_neg
   intro x hx
   rw [shiftedRationalRodRow, roots_comp_X_add_C] at hx
   rcases Multiset.mem_map.mp hx with ⟨y, hy, rfl⟩
-  have hpf := (rationalRodRows_pf_and_prec0 hys hc hr hxs).1 n
+  have hpf := (rationalRodRows_pf_and_interl hys hc hr hxs).1 n
   have hcoeff : (rationalRodRow ys c r xs n).coeff 0 ≠ 0 := by
     rw [coeff_zero_rationalRodRow ys c hr xs n]
     exact hbackground
@@ -236,6 +236,9 @@ theorem shiftedRationalRodRow_two_seed_recurrence
   intro j hj
   simp [twoSeedRecurrenceCoefficient]
   ring
+
+@[deprecated shiftedRationalRodRows_pf_and_interl (since := "2026-09-18")]
+alias shiftedRationalRodRows_pf_and_prec0 := shiftedRationalRodRows_pf_and_interl
 
 end
 

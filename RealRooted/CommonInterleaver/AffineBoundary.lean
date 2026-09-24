@@ -44,8 +44,8 @@ theorem strictInterl_boundary_right_pair_of_strictInterl_nonneg
     (hgnn : HasNonnegCoeffs g)
     {t : ℝ} (ht : 0 < t) :
     StrictInterl (C t * f + g) (X * f) := by
-  have hgfX : StrictInterl g (X * f) := prec_to_prec_mul_X_of_nonneg hprec hfnn hgnn
-  have hfX : StrictInterl f (X * f) := prec_self_mul_X_of_nonneg hprec.1.1 hprec.1.2 hfnn
+  have hgfX : StrictInterl g (X * f) := strictInterl_to_strictInterl_mul_X_of_nonneg hprec hfnn hgnn
+  have hfX : StrictInterl f (X * f) := strictInterl_self_mul_X_of_nonneg hprec.1.1 hprec.1.2 hfnn
   have htfX : StrictInterl (C t * f) (X * f) := StrictInterl.C_mul_left hfX ht.ne'
   have htf_pos : HasPosLeadingCoeff (C t * f) :=
     hasPosLeadingCoeff_C_mul ht (hfnn.pos_leadingCoeff hprec.1.1)
@@ -65,7 +65,7 @@ theorem pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
     (hfnn : HasNonnegCoeffs f) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hprec.2.1.1 hprec.2.1.2
-  exact ⟨X * f, prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn, hprec⟩
+  exact ⟨X * f, strictInterl_self_mul_X_of_nonneg hf.1 hf.2 hfnn, hprec⟩
 
 @[deprecated pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
   (since := "2026-09-18")]

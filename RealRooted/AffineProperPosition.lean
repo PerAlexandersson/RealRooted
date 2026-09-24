@@ -15,7 +15,7 @@ noncomputable section
 namespace RealRooted
 
 /-- Any two constant polynomials are in zero-aware proper position. -/
-lemma prec0_C_C (a b : ℝ) : Interl (C a : ℝ[X]) (C b : ℝ[X]) := by
+lemma interl_C_C (a b : ℝ) : Interl (C a : ℝ[X]) (C b : ℝ[X]) := by
   by_cases ha : a = 0
   · left
     simp [ha]
@@ -61,7 +61,7 @@ lemma affineLinear_root_le_of_cross {u v U V : ℝ}
 
 /-- Positive-slope affine polynomials are in proper position when their
 coefficient cross product has the corresponding order. -/
-lemma prec_affine_linear_affine_linear_of_cross
+lemma strictInterl_affine_linear_affine_linear_of_cross
     {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
     (hcross : u * V ≤ U * v) :
     StrictInterl (C u * X + C v) (C U * X + C V) := by
@@ -87,14 +87,14 @@ lemma prec_affine_linear_affine_linear_of_cross
   · exact Or.inr ⟨by simp, by simpa [ListAlternates, ListInterlaces] using hroot⟩
 
 /-- Zero-aware form of
-`prec_affine_linear_affine_linear_of_cross`. -/
-lemma prec0_affine_linear_affine_linear_of_cross
+`strictInterl_affine_linear_affine_linear_of_cross`. -/
+lemma interl_affine_linear_affine_linear_of_cross
     {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
     (hcross : u * V ≤ U * v) :
     Interl (C u * X + C v) (C U * X + C V) :=
-  (prec_affine_linear_affine_linear_of_cross hu hU hcross).toInterl
+  (strictInterl_affine_linear_affine_linear_of_cross hu hU hcross).toInterl
 
-lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
+lemma interl_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
     Interl (C c : ℝ[X]) (C u * X + C v) := by
   by_cases hc : c = 0
   · left
@@ -116,7 +116,7 @@ lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
       (Polynomial.roots_degree_eq_one (p := (C u * X + C v : ℝ[X])) hlin_deg).symm
   · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
 
-lemma prec0_congr {p q p' q' : ℝ[X]} (hp : p = p') (hq : q = q')
+lemma interl_congr {p q p' q' : ℝ[X]} (hp : p = p') (hq : q = q')
     (h : Interl p' q') : Interl p q := by
   lia
 
@@ -125,7 +125,7 @@ lemma affine_mul_C_add_C (s t b d : ℝ) :
       C (s * b) * X + C (t * b + d) := by
   grind
 
-lemma prec0_const_entries_affine_of_det_nonneg
+lemma interl_const_entries_affine_of_det_nonneg
     {A b c d s t : ℝ}
     (hA : 0 ≤ A) (hb : 0 ≤ b) (hc : 0 ≤ c) (hd : 0 ≤ d)
     (hs : 0 < s) (hdet : b * c ≤ A * d) :
@@ -134,57 +134,92 @@ lemma prec0_const_entries_affine_of_det_nonneg
   by_cases hb0 : b = 0
   · by_cases hA0 : A = 0
     · refine
-        prec0_congr (p' := C d) (q' := C c) ?_ ?_
-          (prec0_C_C d c)
+        interl_congr (p' := C d) (q' := C c) ?_ ?_
+          (interl_C_C d c)
       · simp [hb0]
       · simp [hA0]
     · have hApos : 0 < A := lt_of_le_of_ne hA (Ne.symm hA0)
       refine
-        prec0_congr (p' := C d)
+        interl_congr (p' := C d)
           (q' := C (s * A) * X + C (t * A + c)) ?_ ?_ ?_
       · simp [hb0]
       · grind
       · exact
-          prec0_C_affine_linear (c := d) (u := s * A) (v := t * A + c)
+          interl_C_affine_linear (c := d) (u := s * A) (v := t * A + c)
             (by simp_all)
   · have hbpos : 0 < b := lt_of_le_of_ne hb (Ne.symm hb0)
     by_cases hA0 : A = 0
     · have hc0 : c = 0 := by nlinarith [hdet, hbpos, hc]
-      refine prec0_congr (q' := 0) rfl ?_ (interl_zero_right _)
+      refine interl_congr (q' := 0) rfl ?_ (interl_zero_right _)
       simp_all
     · have hApos : 0 < A := lt_of_le_of_ne hA (Ne.symm hA0)
       have hcross : (b * s) * (A * t + c) ≤ (A * s) * (b * t + d) := by
         nlinarith [hdet, hs]
       refine
-        prec0_congr
+        interl_congr
           (p' := C (b * s) * X + C (b * t + d))
           (q' := C (A * s) * X + C (A * t + c)) ?_ ?_ ?_
       · grind
       · grind
       · exact
-          prec0_affine_linear_affine_linear_of_cross
+          interl_affine_linear_affine_linear_of_cross
             (u := b * s) (v := b * t + d) (U := A * s) (V := A * t + c)
             (by simp_all) (by simp_all) hcross
 
-lemma prec0_affine_add_one_affine_add_X
+lemma interl_affine_add_one_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + 1) (C s * X + C t + X) := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   exact
-    prec0_affine_linear_affine_linear_of_cross
+    interl_affine_linear_affine_linear_of_cross
       (u := s) (v := t + 1) (U := s + 1) (V := t)
       hs (by positivity) (by nlinarith [hs, ht])
 
-lemma prec0_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
+lemma interl_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + X) (C s * X + C t + X) := by
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  exact prec0_affine_linear_affine_linear_of_cross
+  exact interl_affine_linear_affine_linear_of_cross
     (by positivity) (by positivity) le_rfl
 
-lemma prec0_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
+lemma interl_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + 1) (C s * X + C t + 1) := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  exact prec0_affine_linear_affine_linear_of_cross hs hs le_rfl
+  exact interl_affine_linear_affine_linear_of_cross hs hs le_rfl
+
+@[deprecated interl_C_C (since := "2026-09-18")]
+alias prec0_C_C := interl_C_C
+
+@[deprecated strictInterl_affine_linear_affine_linear_of_cross
+  (since := "2026-09-18")]
+alias prec_affine_linear_affine_linear_of_cross :=
+  strictInterl_affine_linear_affine_linear_of_cross
+
+@[deprecated interl_affine_linear_affine_linear_of_cross
+  (since := "2026-09-18")]
+alias prec0_affine_linear_affine_linear_of_cross :=
+  interl_affine_linear_affine_linear_of_cross
+
+@[deprecated interl_C_affine_linear (since := "2026-09-18")]
+alias prec0_C_affine_linear := interl_C_affine_linear
+
+@[deprecated interl_congr (since := "2026-09-18")]
+alias prec0_congr := interl_congr
+
+@[deprecated interl_const_entries_affine_of_det_nonneg
+  (since := "2026-09-18")]
+alias prec0_const_entries_affine_of_det_nonneg :=
+  interl_const_entries_affine_of_det_nonneg
+
+@[deprecated interl_affine_add_one_affine_add_X
+  (since := "2026-09-18")]
+alias prec0_affine_add_one_affine_add_X :=
+  interl_affine_add_one_affine_add_X
+
+@[deprecated interl_affine_add_X_self (since := "2026-09-18")]
+alias prec0_affine_add_X_self := interl_affine_add_X_self
+
+@[deprecated interl_affine_add_one_self (since := "2026-09-18")]
+alias prec0_affine_add_one_self := interl_affine_add_one_self
 
 end RealRooted

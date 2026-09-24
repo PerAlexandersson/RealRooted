@@ -17,13 +17,13 @@ file count, category, migration action, and top-level source clusters.
 
 Disposition counts
 
-  653  Lean declarations requiring semantic review
-  230  tactic declarations requiring an alias-first migration
+  316  Lean declarations requiring semantic review
+  203  tactic declarations requiring an alias-first migration
   266  tactic references migrated with their owning tactic
    93  local hypotheses reserved for a later style-only pass
-   31  statement scaffolds requiring proof-status-preserving renames
-  204  deprecated compatibility identifiers with canonical targets
-   33  other references or locals migrated with their owning declaration
+   20  statement scaffolds requiring proof-status-preserving renames
+  548  deprecated compatibility identifiers with canonical targets
+   64  other references, locals, or private declarations migrated directly
    24  lexical false positives kept unchanged
 
 Naming rules
@@ -103,6 +103,175 @@ the private scalar-transport helper was renamed without a wrapper.
 Application-only constructor callers may still use the deprecated constructor
 alias until their owning application batch.
 
+The foundational PF/Wagner `X` layer now consistently uses `Interl` and
+`StrictInterl` vocabulary for PF self-relations, fixed-side cone addition,
+nonnegative combinations, `X`-multiplication, forward and reverse Wagner
+transports, and the translated `X - C r` equivalence.  All 18 public old names
+remain exact deprecated aliases; every non-challenge theorem caller and tactic
+backend quotation uses the canonical API.
+
+The affine-converse and root-sign layer now names its five public
+rightmost-factor, affine-family, and same-degree sign constructors with
+`StrictInterl`; the successor-degree Obreschkoff regularization helper is
+renamed directly because it is private.  The five public old names remain
+exact deprecated aliases, and all non-challenge callers use the canonical
+surface.
+
+The affine-family layer now consistently names its basic transports,
+high/low-degree converse internals, shifted-pair packages, segment/PF/TNN
+endpoints, Ma--Wang endpoint-sign constructors, and subtraction-by-`X`
+transport with `Interl` / `StrictInterl`.  All 18 public old names remain exact
+deprecated aliases; the 12 private helpers were renamed directly, and all
+non-challenge callers use the canonical names.
+
+The private Obreschkoff converse implementation now uses `Interl` /
+`StrictInterl` throughout its scalar, successor-degree, same-degree,
+rightmost-root, and no-common-root helpers.  Eight remaining declarations and
+their local callers were renamed directly, and the already-canonical private
+scalar helper is reconciled in the ledger; no public aliases are involved.
+
+The Garloff--Wagner Krein data/expansion layer now uses `StrictInterl` for its
+root-multiplicity factors, `gwJL` transports, linear-factor bridge, expansion
+statement, checked witness, and Theorem 11 endpoint.  All ten public old names
+remain exact deprecated aliases or abbreviations, and the statement scaffold
+retains its existing assumption-free checked witness.
+
+The Garloff--Wagner iterative layer now uses `StrictInterl` throughout its
+derivative shift, factor transports, weighted-expansion reductions, and
+Theorem 11 interfaces.  All 19 public old names remain exact deprecated
+aliases or abbreviations.  The three renamed statement scaffolds keep their
+existing proof status, while production callers use the canonical names.
+
+The generic iterated derivative-shift layer now names all derivative,
+common-factor, exact-root, `TDeriv`, and consecutive-iterate conclusions with
+`StrictInterl`.  All 13 public old names remain exact deprecated aliases, and
+both production and tactic-backend callers use the canonical API.
+
+The checked Garloff--Wagner Theorem 12 package now uses `Interl` /
+`StrictInterl` for its Krein-summand receiver methods, derivative relation,
+weighted reductions, factorial Schur-product statement and witness, and
+Hadamard endpoints.  All 27 old public names remain exact deprecated aliases
+or an abbreviation, and non-challenge callers use the canonical API.  The
+aggregate `prec` and `prec0` ledger rows remain open because other namespaces
+still own declarations with those exact short names.
+
+The Garloff--Wagner Hadamard endpoint now uses `Interl` for both
+double-deleted Schur terms, the Krein-summand receiver methods, the two
+weighted-expansion assemblers, and the PF/nonnegative two-pair endpoints.  All
+ten old public names remain exact deprecated aliases, and the downstream
+nonnegative Hadamard theorem uses the canonical endpoint.
+
+The Hadamard consequence layer now uses `Interl` / `StrictInterl` for its
+Garloff--Wagner interfaces, PF and real-rootedness consequences, fixed-factor
+transports, and reciprocal-cone closure.  All 14 old public names remain exact
+deprecated aliases or abbreviations, and the tactic backend uses the canonical
+declarations.  The Veronese-section bridge statements remain with their owner
+for a separate semantic batch.
+
+The foundational Hermite--Biehler converse, stable-pencil, oriented-pencil,
+low-degree, and adjacent Wronskian/Bezoutian APIs now consistently name their
+proper-position conclusions with `StrictInterl`.  All 11 old public names
+remain exact deprecated aliases, all non-challenge production and tactic
+callers use the canonical declarations, and the private degree-one root helper
+was renamed directly.
+
+The implementation-facing Obreschkoff regularization endgame now uses
+`StrictInterl` / `StrictInterlOrReverse` in its normalized simple-combination,
+regularized-orientation, and successor-degree declarations.  These three
+`ObreschkoffConverseInternal` declarations and all their internal callers were
+renamed directly without expanding the public compatibility surface.
+
+The foundational right-zero `divX` degree-drop layer now consistently uses
+`StrictInterl` / `Interl` for reductions, reconstructions, equivalences,
+root/splitting projections, and bundled successor-degree data.  All 17 old
+public names remain exact deprecated aliases, and every non-challenge caller
+uses the canonical declarations.  The legacy module filename remains unchanged
+so existing import paths continue to resolve.
+
+The compatibility closure layer now uses `StrictInterl` / `Interl` in its
+X-multiplication endpoint and private cut/threshold helpers.  The public
+endpoint retains an exact deprecated alias; the five private declarations and
+all their callers were renamed directly.
+
+The classical Hurwitz stability layer now uses `StrictInterl` for its parity-
+part, rotated-part, coefficient-boundary, and Routh-reduction interfaces.  All
+nine old public names, including the `IsStrictlyHurwitzStable` receiver methods,
+remain exact deprecated aliases, and every non-challenge caller uses the
+canonical declarations.
+
+The foundational affine proper-position helper layer now uses `StrictInterl` /
+`Interl` for constant, affine-linear, determinant, congruence, and translated
+linear-pair lemmas.  All nine old public names remain exact deprecated aliases,
+and callers across compatibility, threshold, matrix, row-threshold, and
+Veronese modules use the canonical declarations.
+
+The magnitude-dominated and upper-derivative criterion layer now uses
+`StrictInterl` for its same-degree, successor-degree, combined, automatic, and
+derivative-evaluation interfaces.  All five old public names remain exact
+deprecated aliases, and both production and tactic-backend callers use the
+canonical declarations.
+
+The Wagner right-sum sign layer now names both boundary evaluation lemmas with
+`StrictInterl`; their old public names remain exact deprecated aliases.
+
+The two private affine Favard step/sequence helpers now use `StrictInterl`
+terminology and were renamed directly with their callers.
+
+The shift-lemma layer now uses `StrictInterl` for its differ-by-one,
+same-degree, general, and application-variable interfaces.  All four public
+old names (including the primed wrapper represented by the aggregate ledger
+token) remain exact deprecated aliases.
+
+The matrix interlacing pair layer now uses `StrictInterl` / `Interl` for its
+2-by-2 zip/sum, add/multiply, weak, and sparse converse interfaces.  All five
+old public names remain exact deprecated aliases, and non-challenge callers use
+the canonical declarations.
+
+The gamma-pencil symbol and all-rank theorem layers now use `StrictInterl` /
+`Interl` for their residual-factor, operator-orientation, and component-pair
+interfaces.  All four old public names remain exact deprecated aliases, and
+the stable-symbol callers use the canonical declarations.
+
+The foundational operator-preserver spine now uses `StrictInterl` / `Interl`
+for the all-combinations orientation theorem, finite-symbol linear-map
+consequences, affine-symbol bidiagonal specialization, and Euler wrappers.  All
+six old public names remain exact deprecated aliases, and non-challenge callers
+use the canonical declarations.
+
+The operator-orientation facade layer now uses `Interl` vocabulary for the
+pencil-map theorem and the homogeneous sequence/triangular wrappers.  All five
+old public names remain exact deprecated aliases; the private Schur--Szego
+specialization and its caller were renamed directly.
+
+The finite-free root-count layer now uses `StrictInterl` vocabulary for its
+Schur--Szego orientation helpers, ordered root moves, and upper-tail root-count
+theorem.  The public root-count theorem retains an exact deprecated alias; all
+four private helpers and their callers were renamed directly.
+
+The foundational sign/root utility layer now uses `StrictInterl` vocabulary
+for common-right evaluation signs, Ma--Wang simple-root constructors, and
+negative-root propagation.  All five old public names remain exact deprecated
+aliases, and all non-challenge callers use the canonical declarations.
+
+The theorem-level Liu--Wang step and sequence layer now uses `StrictInterl`
+vocabulary for its root-window, factor, coefficient, and inductive interfaces.
+All 17 old public names remain exact deprecated aliases, and theorem-library
+callers use the canonical declarations; tactic-owned spellings remain with
+their separate migration batch.
+
+The theorem-level Ma--Wang layer now uses `StrictInterl` vocabulary for its
+derivative, count-bound, strict-sign, and quotient interfaces.  All seven old
+public names remain exact deprecated aliases, and non-challenge callers use the
+canonical declarations; tactic-owned spellings remain with their separate
+migration batch.
+
+The derivative-recurrence and transform layers now use `StrictInterl` /
+`Interl` vocabulary for quadratic-derivative induction, affine/quadratic-lag
+recurrences, Brändén basis images and weighted sums, and the reverse-Hermite
+transform.  All 29 old public names remain exact deprecated aliases; the two
+reverse-Hermite implementation helpers were renamed directly, and
+non-challenge callers use the canonical declarations.
+
 The foundational sequence-closure layer now uses `StrictInterl` terminology
 for chain induction, degree-branch dispatch, real-rootedness projections, and
 left/right pair projections.  All 18 old public signatures remain as
@@ -170,6 +339,66 @@ Execution order
 7. Remove deprecated wrappers only in a later compatibility-removal issue.
 
 Replacement protocol
+
+The #893 core-orientation batch canonicalizes `Compatible.of_strictInterl` and
+the four public PosComboRealRooted forward-or-reverse/root-asymmetry selectors.
+Exact deprecated aliases preserve every former public namespace and signature;
+all non-challenge callers use the explicit StrictInterl vocabulary.
+
+The #894 CommonInterleaver slot/root-sequence batch canonicalizes the two
+descending-root slot constructors, the two root-slot membership projections,
+the checked left shifted-slot statement and witness, the root-sequence
+characterization, and the endpoint-closed consecutive-chain theorem.  Exact
+deprecated declarations preserve all nine former public names.  The renamed
+shifted-slot proposition retains its existing checked witness and unchanged
+proof status.
+
+The #896 descending-root facade batch canonicalizes the three public
+`CommonInterleaverSeq` wrappers and their private `List.ofFn` helper.  Exact
+deprecated aliases preserve the public signatures; the private helper is
+renamed directly.
+
+The #897 succ-degree root-count batch canonicalizes the eleven public
+residual/`divX` root-count, root-crossing, and pair-interleaver bridges, plus
+the private root-slot witness.  Exact deprecated aliases preserve the public
+APIs; theorem-library and tactic backends now quote canonical declarations,
+while tactic syntax remains available for its later alias-first migration.
+
+The #898 foundational orientation-tail batch canonicalizes the two public
+forward one-two-family sum transports and directly renames the private
+Obreschkoff same-degree and affine right-pair orientation helpers.  Exact
+deprecated aliases preserve the two public CommonInterleaver signatures.
+
+The #899 Branden--Leite chain-polynomial batch canonicalizes the zero-aware
+`fPolynomial` transport and the weak/strict consecutive-chain theorems,
+including their totally-nonnegative specializations.  Exact deprecated aliases
+preserve all five public signatures.
+
+The #900 shared transport batch canonicalizes the zero-aware `mul_X` theorem,
+the PF coefficient-limit theorem, and the full checked
+`strictInterlFPolynomialTransport` statement/minimal/witness family together
+with its Branden--Solus conditional consumer.  Exact deprecated compatibility
+declarations preserve all eight public names; proof status is unchanged.
+
+The #901 Branden--Leite composition-chain batch canonicalizes the seven weak
+interlacing packages for constant-diagonal chains, finite lower-triangular
+chains, positive-part/zero-constant composition rows, and inverse-power rows.
+Exact deprecated aliases preserve every public signature.
+
+The #902 Branden--Leite kernel/tiling batch canonicalizes the eight weak
+interlacing packages for finite and limiting kernel rows, two-kernel rows,
+weighted shift tilings, and the weighted-green/marked-shift specialization.
+Exact deprecated aliases preserve every public signature.
+
+The #903 final Branden--Leite package batch canonicalizes the ten remaining
+binomial, monomer, rational, shifted, and OEIS-labeled PF/interlacing package
+names.  Exact deprecated aliases preserve every public signature; no
+Branden--Leite-owned semantic declaration row remains in the ledger.
+
+The #892 compatibility/right-pencil batch canonicalizes the failed succ-degree
+orientation statement interface and its seven checked conditional reductions.
+The statement remains an unproved target; its deprecated abbreviation and the
+seven exact theorem aliases preserve the old API without changing that boundary.
 
 The #891 root-count batch canonicalizes the five foundational same- and
 succ-degree theorems that turn StrictInterl geometry into oriented root-count

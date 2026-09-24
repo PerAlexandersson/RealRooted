@@ -87,7 +87,7 @@ lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
   have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
   exact roots_nonpos_of_nonneg_coeffs hp_splits hpnn r ((mem_roots hp_ne).mpr hrp)
 
-theorem prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
+theorem strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     (h : StrictInterl g (X * f))
     (hdeg : f.natDegree = g.natDegree)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
@@ -124,7 +124,7 @@ theorem prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
 
 /-! ## Wagner (3): f ≪ g ↔ g ≪ X·f -/
 
-theorem prec_iff_prec_mul_X {f g : ℝ[X]}
+theorem strictInterl_iff_strictInterl_mul_X {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hf₀ : f ≠ 0) (hf : f.Splits) (hg₀ : g ≠ 0) (hg : g.Splits)
     (hdeg : f.natDegree + 1 = g.natDegree) :
@@ -184,7 +184,7 @@ theorem prec_iff_prec_mul_X {f g : ℝ[X]}
           hss_g_eq,
           Or.inl ⟨by lia, listInterlaces_of_listAlternates_append_zero ss_f ss_g hlen' halt⟩⟩
 
-theorem prec_sameDegree_to_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
+theorem strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos {f g : ℝ[X]}
     (h : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
@@ -215,7 +215,7 @@ theorem prec_sameDegree_to_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
     · intro r hr
       exact hg_nonpos r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
 
-theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
+theorem strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     (h : StrictInterl g (X * f))
     (hdeg : f.natDegree = g.natDegree)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
@@ -252,7 +252,8 @@ theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
       Or.inr ⟨hlen_fg, halt⟩⟩
   · simp_all
 
-theorem prec_iff_prec_mul_X_of_roots_nonpos {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+theorem strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0)
@@ -262,12 +263,12 @@ theorem prec_iff_prec_mul_X_of_roots_nonpos {f g : ℝ[X]} (hf : f.Splits) (hg :
     ⟨hf_pos, hf_nonpos⟩
   have ⟨hgnn, hg₀⟩ := (hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hg).mpr
     ⟨hg_pos, hg_nonpos⟩
-  exact prec_iff_prec_mul_X hfnn hgnn hf₀ hf hg₀ hg hdeg
+  exact strictInterl_iff_strictInterl_mul_X hfnn hgnn hf₀ hf hg₀ hg hdeg
 
 /-- Nonnegative-coefficients form of Wagner (3): if `f ≪ g` and both
 polynomials have nonnegative coefficients, then `g ≪ X * f`. This packages
 the differ-by-1 and same-degree cases under one theorem. -/
-theorem prec_mul_X_of_prec_of_nonneg {f g : ℝ[X]}
+theorem strictInterl_mul_X_of_strictInterl_of_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     StrictInterl g (X * f) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
@@ -280,8 +281,10 @@ theorem prec_mul_X_of_prec_of_nonneg {f g : ℝ[X]}
       have hrs_len : rs.length = g.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
       lia
-    exact (prec_iff_prec_mul_X_of_roots_nonpos hf.2 hg.2 (hfnn.pos_leadingCoeff hf.1)
-      (hgnn.pos_leadingCoeff hg.1) hf_nonpos hg_nonpos hdeg).mp
+    exact
+      (strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
+        hf.2 hg.2 (hfnn.pos_leadingCoeff hf.1) (hgnn.pos_leadingCoeff hg.1)
+        hf_nonpos hg_nonpos hdeg).mp
         ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inl ⟨hlen, hint⟩⟩
   · have hdeg : f.natDegree = g.natDegree := by
       have hss_len : ss.length = f.natDegree := by
@@ -290,27 +293,59 @@ theorem prec_mul_X_of_prec_of_nonneg {f g : ℝ[X]}
         rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
       lia
     exact
-      prec_sameDegree_to_prec_mul_X_of_roots_nonpos
+      strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos
         ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inr ⟨hlen, halt⟩⟩
         hdeg hf_nonpos hg_nonpos
 
 /-- Nonzero scalar form of the Wagner `X`-shift bridge. -/
-theorem prec_C_mul_X_of_prec_of_nonneg {f g : ℝ[X]} {c : ℝ}
+theorem strictInterl_C_mul_X_of_strictInterl_of_nonneg {f g : ℝ[X]} {c : ℝ}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hc : c ≠ 0) :
     StrictInterl g ((C c * X) * f) := by
   simpa [mul_assoc] using
-    (StrictInterl.C_mul_right (prec_mul_X_of_prec_of_nonneg h hfnn hgnn) hc)
+    (StrictInterl.C_mul_right (strictInterl_mul_X_of_strictInterl_of_nonneg h hfnn hgnn) hc)
+
+@[deprecated strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos
+  (since := "2026-09-18")]
+alias prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos :=
+  strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos
+
+@[deprecated strictInterl_iff_strictInterl_mul_X (since := "2026-09-18")]
+alias prec_iff_prec_mul_X := strictInterl_iff_strictInterl_mul_X
+
+@[deprecated strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos
+  (since := "2026-09-18")]
+alias prec_sameDegree_to_prec_mul_X_of_roots_nonpos :=
+  strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos
+
+@[deprecated strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos
+  (since := "2026-09-18")]
+alias prec_of_prec_mul_X_sameDegree_of_roots_nonpos :=
+  strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos
+
+@[deprecated strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
+  (since := "2026-09-18")]
+alias prec_iff_prec_mul_X_of_roots_nonpos :=
+  strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
+
+@[deprecated strictInterl_mul_X_of_strictInterl_of_nonneg (since := "2026-09-18")]
+alias prec_mul_X_of_prec_of_nonneg := strictInterl_mul_X_of_strictInterl_of_nonneg
+
+@[deprecated strictInterl_C_mul_X_of_strictInterl_of_nonneg (since := "2026-09-18")]
+alias prec_C_mul_X_of_prec_of_nonneg := strictInterl_C_mul_X_of_strictInterl_of_nonneg
 
 /-- Zero-aware Wagner (3): if `f ≪₀ g` and both polynomials have nonnegative
 coefficients, then `g ≪₀ X * f`. -/
-theorem prec0_mul_X_of_prec0 {f g : ℝ[X]}
+theorem interl_mul_X_of_interl {f g : ℝ[X]}
     (h : Interl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     Interl g (X * f) := by
   rcases h with rfl | rfl | hfg
   · simpa using interl_zero_right g
   · exact interl_zero_left (X * f)
-  · exact (prec_mul_X_of_prec_of_nonneg hfg hfnn hgnn).toInterl
+  · exact (strictInterl_mul_X_of_strictInterl_of_nonneg hfg hfnn hgnn).toInterl
+
+@[deprecated interl_mul_X_of_interl (since := "2026-09-18")]
+alias prec0_mul_X_of_prec0 := interl_mul_X_of_interl
 
 /-- Multiplying both polynomials by `X` preserves strict interlacing when all
 roots are nonpositive. -/
@@ -414,29 +449,38 @@ the affine-family API can reuse them without importing derivative results. -/
 
 /-- A split polynomial with nonnegative coefficients precedes its product with
 `X`. -/
-lemma prec_self_X_mul_of_nonneg {f : ℝ[X]}
+lemma strictInterl_self_X_mul_of_nonneg {f : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hfnn : HasNonnegCoeffs f) :
     StrictInterl f (X * f) :=
-  prec_mul_X_of_prec_of_nonneg (StrictInterl.refl hf_ne hf_splits) hfnn hfnn
+  strictInterl_mul_X_of_strictInterl_of_nonneg (StrictInterl.refl hf_ne hf_splits) hfnn hfnn
 
 /-- If `f` precedes `g`, then nonnegative coefficients transport the relation
 to `g` and `X * f`. -/
-lemma prec_to_X_mul_of_nonneg {f g : ℝ[X]}
+lemma strictInterl_to_X_mul_of_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     StrictInterl g (X * f) :=
-  prec_mul_X_of_prec_of_nonneg h hfnn hgnn
+  strictInterl_mul_X_of_strictInterl_of_nonneg h hfnn hgnn
 
 /-- The reverse Wagner transport recovers `StrictInterl f g` from `StrictInterl g (X * f)`
 when both polynomials have nonnegative coefficients. -/
-lemma prec_of_prec_X_mul_of_nonneg {f g : ℝ[X]}
+lemma strictInterl_of_strictInterl_X_mul_of_nonneg {f g : ℝ[X]}
     (h : StrictInterl g (X * f)) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     StrictInterl f g := by
   have hf : f ≠ 0 ∧ f.Splits :=
     isRealRooted_of_X_mul h.2.1.1 h.2.1.2
   exact
-    (prec_mul_X_of_prec_of_nonneg h hgnn hfnn.X_mul).of_mul_X_both_of_roots_nonpos
+    (strictInterl_mul_X_of_strictInterl_of_nonneg h hgnn hfnn.X_mul).of_mul_X_both_of_roots_nonpos
       (roots_nonpos_of_nonneg_coeffs hf.2 hfnn)
       (roots_nonpos_of_nonneg_coeffs h.1.2 hgnn)
+
+@[deprecated strictInterl_self_X_mul_of_nonneg (since := "2026-09-18")]
+alias prec_self_X_mul_of_nonneg := strictInterl_self_X_mul_of_nonneg
+
+@[deprecated strictInterl_to_X_mul_of_nonneg (since := "2026-09-18")]
+alias prec_to_X_mul_of_nonneg := strictInterl_to_X_mul_of_nonneg
+
+@[deprecated strictInterl_of_strictInterl_X_mul_of_nonneg (since := "2026-09-18")]
+alias prec_of_prec_X_mul_of_nonneg := strictInterl_of_strictInterl_X_mul_of_nonneg
 
 /-- Nonnegative-coefficient form of the common-factor Wagner `X` bridge. -/
 theorem StrictInterl.mul_X_both_of_nonneg {f g : ℝ[X]}

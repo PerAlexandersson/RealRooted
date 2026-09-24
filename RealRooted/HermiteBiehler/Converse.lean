@@ -65,10 +65,10 @@ theorem hermiteBiehlerConverse_general :
       · push Not at hc
         obtain ⟨hgle, hfle⟩ := natDegree_shape_of_stable hf hg hstab
         rcases Nat.lt_or_ge g.natDegree f.natDegree with h_g_lt | h_g_ge
-        · exact Or.inl (prec_of_stable_succ_degree hf hg hstab (by
+        · exact Or.inl (strictInterl_of_stable_succ_degree hf hg hstab (by
             simp_all) (by lia))
         · have h_deg : f.natDegree = g.natDegree := by lia
-          exact Or.inl (prec_of_stable_same_degree_no_common hf hg hstab
+          exact Or.inl (strictInterl_of_stable_same_degree_no_common hf hg hstab
             (by simp_all) h_deg (by lia))
 
 theorem hermiteBiehlerConverse {f g : ℝ[X]}
@@ -138,7 +138,7 @@ theorem im_ratio_nonpos_general {f g : ℝ[X]}
         simp_all
       exact im_ratio_nonpos hpq hf hg hfnd hgnd (fun s hsf hsg ↦ hcom s hsf hsg) h_deg₁ hz
 
-theorem prec_of_stable_general {f g : ℝ[X]}
+theorem strictInterl_of_stable_general {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
     (h_deg₁ : 1 ≤ f.natDegree) : StrictInterl g f := by
@@ -179,9 +179,12 @@ theorem prec_of_stable_general {f g : ℝ[X]}
     · push Not at hcom
       obtain ⟨hgle, hfle⟩ := natDegree_shape_of_stable hf hg hstab
       rcases Nat.lt_or_ge g.natDegree f.natDegree with hglt | hgge
-      · exact prec_of_stable_succ_degree hf hg hstab
+      · exact strictInterl_of_stable_succ_degree hf hg hstab
           (fun ⟨r, hrf, hrg⟩ => hcom r hrf hrg) (by lia)
-      · exact prec_of_stable_same_degree_no_common hf hg hstab
+      · exact strictInterl_of_stable_same_degree_no_common hf hg hstab
           (fun ⟨r, hrf, hrg⟩ => hcom r hrf hrg) (by lia) h_deg₁
+
+@[deprecated strictInterl_of_stable_general (since := "2026-09-18")]
+alias prec_of_stable_general := strictInterl_of_stable_general
 
 end RealRooted

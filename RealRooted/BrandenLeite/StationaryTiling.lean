@@ -67,7 +67,7 @@ theorem rationalBackgroundDenominator_mul_series (ys : List ℝ) :
 
 /-- All stationary rational rod rows are PF and consecutive rows are in
 zero-aware proper position. -/
-theorem rationalRodRows_pf_and_prec0
+theorem rationalRodRows_pf_and_interl
     {ys xs : List ℝ} (hys : ∀ y ∈ ys, 0 ≤ y)
     {c : ℝ} (hc : 0 < c) {r : ℕ} (hr : r ≠ 0)
     (hxs : ∀ x ∈ xs, 0 ≤ x) :
@@ -83,7 +83,7 @@ theorem rationalRodRows_pf_and_prec0
     rw [PowerSeries.coeff_zero_eq_constantCoeff]
     exact constantCoeff_markedFactorSeries c hr xs
   simpa [rationalRodRow] using
-    (twoKernelRows_pf_and_prec0 hg hh hg0 hh0)
+    (twoKernelRows_pf_and_interl hg hh hg0 hh0)
 
 /-- Multiplication by the literal rational denominator recovers one. -/
 theorem rationalRodDenominator_mul_generatingSeries
@@ -177,14 +177,14 @@ def monomerRodRow (b c : ℝ) (r : ℕ) (xs : List ℝ) (n : ℕ) : ℝ[X] :=
   rationalRodRow [b] c r xs n
 
 /-- Monomer rod rows inherit PF and consecutive zero-aware proper position. -/
-theorem monomerRodRows_pf_and_prec0
+theorem monomerRodRows_pf_and_interl
     {b c : ℝ} (hb : 0 ≤ b) (hc : 0 < c) {r : ℕ} (hr : r ≠ 0)
     {xs : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x) :
     (∀ n, IsPFPolynomial (monomerRodRow b c r xs n)) ∧
       ∀ n, Interl (monomerRodRow b c r xs n)
         (monomerRodRow b c r xs (n + 1)) := by
   simpa [monomerRodRow] using
-    (rationalRodRows_pf_and_prec0 (ys := [b]) (by simpa) hc hr hxs)
+    (rationalRodRows_pf_and_interl (ys := [b]) (by simpa) hc hr hxs)
 
 /-- Positive-degree coefficients of the one-background denominator. -/
 theorem coeff_rationalRodDenominatorSeries_singleton_succ
@@ -343,9 +343,15 @@ theorem monomerRodRow_roots_neg
     {b c : ℝ} (hb : 0 < b) (hc : 0 < c) {r : ℕ} (hr : r ≠ 0)
     {xs : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x) (n : ℕ) :
     ∀ x ∈ (monomerRodRow b c r xs n).roots, x < 0 := by
-  have hpf := (monomerRodRows_pf_and_prec0 hb.le hc hr hxs).1 n
+  have hpf := (monomerRodRows_pf_and_interl hb.le hc hr hxs).1 n
   apply hpf.roots_neg_of_coeff_zero_ne
   simp [hr, pow_ne_zero _ hb.ne']
+
+@[deprecated rationalRodRows_pf_and_interl (since := "2026-09-18")]
+alias rationalRodRows_pf_and_prec0 := rationalRodRows_pf_and_interl
+
+@[deprecated monomerRodRows_pf_and_interl (since := "2026-09-18")]
+alias monomerRodRows_pf_and_prec0 := monomerRodRows_pf_and_interl
 
 end
 

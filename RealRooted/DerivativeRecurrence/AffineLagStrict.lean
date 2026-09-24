@@ -19,7 +19,7 @@ namespace RealRooted
 /-- An affine lag that is strictly negative on the nonpositive half-line gives
 strict adjacent proper position when every adjacent degree stays fixed or rises
 by one. -/
-theorem prec_and_noCommonRoot_of_affine_lag_degree_step
+theorem strictInterl_and_noCommonRoot_of_affine_lag_degree_step
     (P : ℕ → ℝ[X]) (a b : ℕ → ℝ) (A : ℕ → ℝ[X])
     (ha : ∀ n, 0 ≤ a n) (hb : ∀ n, 0 < b n)
     (hstep : ∀ n, (P (n + 1)).natDegree = (P n).natDegree ∨
@@ -54,7 +54,7 @@ theorem prec_and_noCommonRoot_of_affine_lag_degree_step
             (hpos (n + 1)).ne_zero hr
         have hprevDeriv :
             0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-          eval_mul_eval_nonneg_of_prec_right ihprec hderivInter.toStrictInterl
+          eval_mul_eval_nonneg_of_strictInterl_right ihprec hderivInter.toStrictInterl
             (hpos n) hderivPos hr
         have hprevNe : eval r (P n) ≠ 0 := by
           intro hzero
@@ -89,5 +89,10 @@ theorem prec_and_noCommonRoot_of_affine_lag_degree_step
       rw [Polynomial.IsRoot.def] at hr2
       rw [hr2, zero_mul] at hsign
       exact (lt_irrefl 0 hsign).elim
+
+@[deprecated strictInterl_and_noCommonRoot_of_affine_lag_degree_step
+  (since := "2026-09-18")]
+alias prec_and_noCommonRoot_of_affine_lag_degree_step :=
+  strictInterl_and_noCommonRoot_of_affine_lag_degree_step
 
 end RealRooted

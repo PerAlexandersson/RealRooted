@@ -4,7 +4,7 @@ import RealRooted.Bezoutian.LowDegree
 # Global forward Wronskian bridge
 
 The existing library proves the reverse direction (global Wronskian positivity implies
-interlacing: `StrictInterlSameDegree.of_wronskian_pos`, `prec_of_wronskian_pos_succ`)
+interlacing: `StrictInterlSameDegree.of_wronskian_pos`, `strictInterl_of_wronskian_pos_succ`)
 and the forward direction at roots only
 (`Polynomial.wronskian_at_root_pos_of_interlacing`).
 

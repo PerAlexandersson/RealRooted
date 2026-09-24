@@ -124,7 +124,7 @@ theorem chainPolynomial_isPFPolynomial_of_pos_constantDiagonal
 
 /-- Consecutive chain polynomials of a totally nonnegative lower-triangular
 matrix with positive constant diagonal are in zero-aware proper position. -/
-theorem prec0_chainPolynomial_succ_of_pos_constantDiagonal
+theorem interl_chainPolynomial_succ_of_pos_constantDiagonal
     {δ : ℝ} {A : LowerTriangularMatrix ℝ} (hδ : 0 < δ)
     (hlower : LowerTriangularMatrix.IsLowerTriangular A)
     (hdiag : ∀ n, A n n = δ) (hA : Matrix.IsTotallyNonneg A) (n : ℕ) :
@@ -136,7 +136,7 @@ theorem prec0_chainPolynomial_succ_of_pos_constantDiagonal
     normalizeConstantDiagonal_isTotallyNonneg hδ hA
   have hprec : Interl (chainPolynomial B n)
       (chainPolynomial B (n + 1)) :=
-    prec0_chainPolynomial_succ_of_isTotallyNonneg hunit hB n
+    interl_chainPolynomial_succ_of_isTotallyNonneg hunit hB n
   rw [chainPolynomial_comp_C_mul_X_normalizeConstantDiagonal hδ.ne' n,
     chainPolynomial_comp_C_mul_X_normalizeConstantDiagonal hδ.ne' (n + 1)]
   rcases hprec with hzero | hzero | hprec
@@ -154,5 +154,10 @@ theorem prec0_chainPolynomial_succ_of_pos_constantDiagonal
   · right
     right
     exact hprec.comp_C_mul_X hδ
+
+@[deprecated interl_chainPolynomial_succ_of_pos_constantDiagonal
+  (since := "2026-09-18")]
+alias prec0_chainPolynomial_succ_of_pos_constantDiagonal :=
+  interl_chainPolynomial_succ_of_pos_constantDiagonal
 
 end RealRooted.BrandenLeite

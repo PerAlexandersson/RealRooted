@@ -44,19 +44,28 @@ theorem roots_chainPolynomial_mem_Icc_of_isTotallyNonneg
 
 /-- The zero-aware form is the unconditional interlacing conclusion: for the
 identity matrix, some chain polynomials vanish. -/
-theorem prec0_chainPolynomial_succ_of_isTotallyNonneg
+theorem interl_chainPolynomial_succ_of_isTotallyNonneg
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)
     (hR : Matrix.IsTotallyNonneg R) (n : ℕ) :
     Interl (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
-  prec0_chainPolynomial_succ (resolutionOfTotallyNonneg R hunit hR) n
+  interl_chainPolynomial_succ (resolutionOfTotallyNonneg R hunit hR) n
 
-theorem prec_chainPolynomial_succ_of_isTotallyNonneg_of_ne
+@[deprecated interl_chainPolynomial_succ_of_isTotallyNonneg (since := "2026-09-18")]
+alias prec0_chainPolynomial_succ_of_isTotallyNonneg :=
+  interl_chainPolynomial_succ_of_isTotallyNonneg
+
+theorem strictInterl_chainPolynomial_succ_of_isTotallyNonneg_of_ne
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)
     (hR : Matrix.IsTotallyNonneg R) (n : ℕ)
     (hn : chainPolynomial R n ≠ 0)
     (hsucc : chainPolynomial R (n + 1) ≠ 0) :
     StrictInterl (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
-  prec_chainPolynomial_succ_of_ne
+  strictInterl_chainPolynomial_succ_of_ne
     (resolutionOfTotallyNonneg R hunit hR) n hn hsucc
+
+@[deprecated strictInterl_chainPolynomial_succ_of_isTotallyNonneg_of_ne
+  (since := "2026-09-18")]
+alias prec_chainPolynomial_succ_of_isTotallyNonneg_of_ne :=
+  strictInterl_chainPolynomial_succ_of_isTotallyNonneg_of_ne
 
 end RealRooted.BrandenLeite

@@ -127,8 +127,9 @@ lemma prec_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
     lia
   have hself : StrictInterl ((X - C r) * f) ((X - C r) * f) :=
     StrictInterl.refl (by simp_all [hf_pos.ne_zero, sub_eq_zero]) (by simp_all)
-  exact (prec_iff_prec_mul_X_sub_C_of_roots_le r hf (by simp_all [hf_pos.ne_zero]) hf_pos hXf_pos
-    hf_le hXf_le hdeg).mpr hself
+  exact
+    (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
+      r hf (by simp_all [hf_pos.ne_zero]) hf_pos hXf_pos hf_le hXf_le hdeg).mpr hself
 
 lemma motzkin_bound_zero :
     ∀ r ∈ (motzkin 0).roots, r ≤ motzkinShift := by
@@ -200,7 +201,7 @@ lemma prec_motzkin_succ_of_shifted_even {n : Nat} (heven : n % 2 = 0)
     rw [natDegree_motzkin, natDegree_motzkin]
     lia
   exact
-    (prec_iff_prec_mul_X_sub_C_of_roots_le motzkinShift
+    (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le motzkinShift
       hf.2 hshift.1.2 (motzkin_posLeadingCoeff n) (motzkin_posLeadingCoeff (n + 1))
       hle_n hle_succ hdeg).mpr hshift
 
@@ -226,7 +227,7 @@ lemma prec_motzkin_succ_of_shifted_odd {n : Nat} (hodd : n % 2 = 1)
     lia
   have hprec' :
       StrictInterl f' g' :=
-    prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos hshift' hdeg' hf'_nonpos
+    strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos hshift' hdeg' hf'_nonpos
   exact
     (StrictInterl.comp_X_add_C_iff (f := motzkin n) (g := motzkin (n + 1))
       motzkinShift).1 hprec'

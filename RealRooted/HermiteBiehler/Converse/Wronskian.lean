@@ -105,7 +105,7 @@ theorem wronskian_pos_of_stable {f g : ℝ[X]}
   rw [im_hb_deriv_mul_conj] at him
   linarith
 
-theorem prec_of_stable_same_degree {f g : ℝ[X]}
+theorem strictInterl_of_stable_same_degree {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
     (hnoreal : ∀ t : ℝ, (hermiteBiehlerPolynomial f g).eval (t : ℂ) ≠ 0)
@@ -146,7 +146,7 @@ theorem exists_neg_root_of_stable_no_real {f g : ℝ[X]}
     rw [hreal] at hroot
     exact hnoreal w₀.re hroot
 
-theorem prec_of_stable_same_degree_no_common {f g : ℝ[X]}
+theorem strictInterl_of_stable_same_degree_no_common {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
     (hnc : ¬ ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r)
@@ -157,9 +157,9 @@ theorem prec_of_stable_same_degree_no_common {f g : ℝ[X]}
     (hermiteBiehler_natDegree_of_posLead hlead rfl hdeg.symm).1
   have hpos : 0 < (hermiteBiehlerPolynomial f g).natDegree := by simp_all
   obtain ⟨w₀, hw₀mem, hw₀neg⟩ := exists_neg_root_of_stable_no_real hstab hnoreal hpos
-  exact prec_of_stable_same_degree hf hg hstab hnoreal hw₀mem hw₀neg hdeg
+  exact strictInterl_of_stable_same_degree hf hg hstab hnoreal hw₀mem hw₀neg hdeg
 
-theorem prec_of_stable_succ_degree {f g : ℝ[X]}
+theorem strictInterl_of_stable_succ_degree {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
     (hnc : ¬ ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r)
@@ -170,7 +170,18 @@ theorem prec_of_stable_succ_degree {f g : ℝ[X]}
   have hpos : 0 < (hermiteBiehlerPolynomial f g).natDegree := by simp [*]
   obtain ⟨w₀, hw₀mem, hw₀neg⟩ := exists_neg_root_of_stable_no_real hstab hnoreal hpos
   obtain ⟨hfs, hgs⟩ := splits_of_stable hf hg hstab
-  exact prec_of_wronskian_pos_succ hf hg hdeg rfl hfs hgs
+  exact strictInterl_of_wronskian_pos_succ hf hg hdeg rfl hfs hgs
     (fun t => wronskian_pos_of_stable hstab hnoreal hw₀mem hw₀neg t)
+
+@[deprecated strictInterl_of_stable_same_degree (since := "2026-09-18")]
+alias prec_of_stable_same_degree := strictInterl_of_stable_same_degree
+
+@[deprecated strictInterl_of_stable_same_degree_no_common
+  (since := "2026-09-18")]
+alias prec_of_stable_same_degree_no_common :=
+  strictInterl_of_stable_same_degree_no_common
+
+@[deprecated strictInterl_of_stable_succ_degree (since := "2026-09-18")]
+alias prec_of_stable_succ_degree := strictInterl_of_stable_succ_degree
 
 end RealRooted

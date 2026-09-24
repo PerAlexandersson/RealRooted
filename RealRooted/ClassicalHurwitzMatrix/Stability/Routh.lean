@@ -139,7 +139,8 @@ theorem IsStrictlyHurwitzStable.hasSimpleRoots_rotatedParts_of_evenShape
     (hdegree : even.natDegree = odd.natDegree + 1) :
     HasSimpleRoots (hurwitzRotatedOddPart odd) ∧
       HasSimpleRoots (hurwitzRotatedEvenPart even) := by
-  exact (h.prec_rotatedParts_of_evenShape hodd heven hdegree).hasSimpleRoots_of_no_common_root
+  exact
+    (h.strictInterl_rotatedParts_of_evenShape hodd heven hdegree).hasSimpleRoots_of_no_common_root
     (fun r hr ↦ h.noCommonRoot_rotatedParts r ⟨hr.2, hr.1⟩)
 
 /-- In the odd-degree parity shape, both rotated parts of a strictly stable
@@ -151,7 +152,8 @@ theorem IsStrictlyHurwitzStable.hasSimpleRoots_rotatedParts_of_oddShape
     (hdegree : even.natDegree = odd.natDegree) :
     HasSimpleRoots (hurwitzRotatedEvenPart even) ∧
       HasSimpleRoots (hurwitzRotatedOddPart odd) := by
-  exact (h.prec_rotatedParts_of_oddShape hodd heven hdegree).hasSimpleRoots_of_no_common_root
+  exact
+    (h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree).hasSimpleRoots_of_no_common_root
     h.noCommonRoot_rotatedParts
 
 /-- In the even-degree parity shape, both unrotated parity inputs of a
@@ -226,7 +228,7 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_evenShape
   have hsign : s = -((-1 : ℝ) ^ odd.natDegree) := by
     simp only [s, hdegree, pow_succ]
     ring
-  have hprec := h.prec_rotatedParts_of_evenShape hodd heven hdegree
+  have hprec := h.strictInterl_rotatedParts_of_evenShape hodd heven hdegree
   have hprecScaled := (hprec.C_mul_left hs0).C_mul_right hs0
   have hevenPos : HasPosLeadingCoeff
       (Polynomial.C s * hurwitzRotatedEvenPart even) :=
@@ -297,7 +299,7 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_oddShape
     dsimp [s]
     rw [← pow_add]
     simp [← two_mul]
-  have hprec := h.prec_rotatedParts_of_oddShape hodd heven hdegree
+  have hprec := h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree
   have hprecScaled := (hprec.C_mul_left hs0).C_mul_right ht0
   have hevenPos : HasPosLeadingCoeff
       (Polynomial.C s * hurwitzRotatedEvenPart even) := by
@@ -354,7 +356,7 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_oddShape
 /-- In the even-degree parity shape, strict stability descends from the
 rotated Hermite--Biehler pair to strict interlacing of the original parity
 inputs. -/
-theorem IsStrictlyHurwitzStable.prec_parts_of_evenShape
+theorem IsStrictlyHurwitzStable.strictInterl_parts_of_evenShape
     {odd even : ℝ[X]}
     (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
@@ -398,7 +400,7 @@ theorem IsStrictlyHurwitzStable.prec_parts_of_evenShape
 /-- In the odd-degree parity shape, strict stability descends from the
 rotated Hermite--Biehler pair to strict same-degree proper position of the
 original parity inputs. -/
-theorem IsStrictlyHurwitzStable.prec_parts_of_oddShape
+theorem IsStrictlyHurwitzStable.strictInterl_parts_of_oddShape
     {odd even : ℝ[X]}
     (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
@@ -601,7 +603,7 @@ theorem allComboRealRooted_routhNumerator {odd even : ℝ[X]}
 
 /-- In an even-shape Routh step, the reduced input precedes the old odd
 input and has nonnegative coefficients. -/
-theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_evenShape
+theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
     {odd even : ℝ[X]}
     (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
@@ -613,7 +615,7 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_evenShape
     h.hasNonnegCoeffs_parts_of_evenShape hodd heven hdegree
   obtain ⟨hodd0, _⟩ :=
     h.coeff_zero_pos_parts_of_evenShape hodd heven hdegree
-  have hprec := h.prec_parts_of_evenShape hodd heven hdegree
+  have hprec := h.strictInterl_parts_of_evenShape hodd heven hdegree
   let c := routhCoefficient odd even
   let q := even - Polynomial.C c * odd
   have hlt : (Polynomial.C c * odd).natDegree < even.natDegree := by
@@ -665,9 +667,25 @@ theorem IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_evenShape
       ⟨hqPos, fun r hr =>
         hqNonpos r ((Polynomial.mem_roots hqPos.ne_zero).mp hr)⟩).1
   have hredPrec : StrictInterl q.divX odd :=
-    prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
+    strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
       hprecQ hqnn hq0 (by lia)
   change StrictInterl q.divX odd ∧ HasNonnegCoeffs q.divX
   exact ⟨hredPrec, hqnn.divX⟩
+
+@[deprecated IsStrictlyHurwitzStable.strictInterl_parts_of_evenShape
+  (since := "2026-09-18")]
+alias IsStrictlyHurwitzStable.prec_parts_of_evenShape :=
+  IsStrictlyHurwitzStable.strictInterl_parts_of_evenShape
+
+@[deprecated IsStrictlyHurwitzStable.strictInterl_parts_of_oddShape
+  (since := "2026-09-18")]
+alias IsStrictlyHurwitzStable.prec_parts_of_oddShape :=
+  IsStrictlyHurwitzStable.strictInterl_parts_of_oddShape
+
+@[deprecated
+  IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
+  (since := "2026-09-18")]
+alias IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_evenShape :=
+  IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
 
 end RealRooted

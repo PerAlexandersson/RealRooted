@@ -63,7 +63,8 @@ lemma StrictInterl.mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]}
   have hfg' : StrictInterl f' g' := by
     simpa [f', g'] using (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).2 h
   have hgxf' : StrictInterl g' (X * f') :=
-    prec_sameDegree_to_prec_mul_X_of_roots_nonpos hfg' hdeg' hf'_nonpos hg'_nonpos
+    strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos
+      hfg' hdeg' hf'_nonpos hg'_nonpos
   have htranslated : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hgxf'
@@ -107,7 +108,7 @@ lemma StrictInterl.of_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} {r : 
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
   have hfg' : StrictInterl f' g' :=
-    prec_of_prec_mul_X_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos
+    strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos
   exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
 /-- Borcea--Brändén left-cone lemma, weighted form:
@@ -137,7 +138,7 @@ theorem StrictInterl.weightedSum_left_of_common_left
     rcases hp.natDegree_eq_or_eq_succ with hdeg | hdeg
     · exact hp.mul_X_sub_C_of_sameDegree_of_roots_le
         r hdeg.symm hpos hp_pos hh_le hp_le
-    · exact (prec_iff_prec_mul_X_sub_C_of_roots_le r
+    · exact (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le r
           hp.1.2 hp.2.1.2 hpos hp_pos hh_le hp_le hdeg.symm).mp hp
   have hweighted_right : StrictInterl (weightedSum l) H :=
     StrictInterl.weightedSum_right_of_nonneg
@@ -152,8 +153,10 @@ theorem StrictInterl.weightedSum_left_of_common_left
     hweighted_right.roots_le_of_right hH_le
   rcases hweighted_right.natDegree_eq_or_eq_succ with hcase | hcase
   · have hdeg : h.natDegree + 1 = (weightedSum l).natDegree := by lia
-    exact (prec_iff_prec_mul_X_sub_C_of_roots_le r (hprec ap0 hap0).1.2 hweighted_right.1.2
-        hpos hweighted_pos hh_le hweighted_le hdeg).mpr hweighted_right
+    exact
+      (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
+        r (hprec ap0 hap0).1.2 hweighted_right.1.2 hpos hweighted_pos
+        hh_le hweighted_le hdeg).mpr hweighted_right
   · have hdeg : h.natDegree = (weightedSum l).natDegree := by lia
     exact
       hweighted_right.of_mul_X_sub_C_of_sameDegree_of_roots_le hdeg
@@ -1009,7 +1012,7 @@ no-common-roots case. Shared roots can be factored out recursively.
 
 In the same-degree case the correct conclusion is the Obreschkoff alternative
 `StrictInterl f g ∨ StrictInterl g f`; the degree-`+1` case remains oriented. -/
-theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
+theorem strictInterl_or_reverse_of_posComboRealRooted_of_no_common
     (hstep :
       ∀ {f g : ℝ[X]},
         PosComboRealRooted f g →
@@ -1061,6 +1064,11 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
           (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
       lia
 end PosComboRealRooted
+
+@[deprecated PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
+  (since := "2026-09-18")]
+alias PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common :=
+  PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
 
 namespace PosComboRealRooted
 
@@ -1321,7 +1329,7 @@ lemma family_root_sign_data_left_one_two {f g : ℝ[X]}
 on consecutive roots of `f` and one root of `g` strictly to the right of all
 roots of `f`. This repackages the final Ma--Wang assembly step in the form
 needed by the same-degree Obreschkoff converse. -/
-theorem prec_same_of_root_sign_data
+theorem strictInterl_same_of_root_sign_data
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hg_pos : HasPosLeadingCoeff g)
@@ -1345,14 +1353,17 @@ theorem prec_same_of_root_sign_data
   have hn : 1 ≤ rs.length := by lia
   have hg_ne : g ≠ 0 := hg_pos.ne_zero
   exact
-    prec_same_of_strict_signs_of_right_root
+    strictInterl_same_of_strict_signs_of_right_root
       hf_ne hf_splits hg_ne hrs_sorted hrs_eq hdeg hn
       (by grind)
       (by grind)
 
+@[deprecated strictInterl_same_of_root_sign_data (since := "2026-09-18")]
+alias prec_same_of_root_sign_data := strictInterl_same_of_root_sign_data
+
 /-- An equal-degree Obreschkoff alternative can be oriented once we know that
 `f` has a root strictly to the right of an upper bound for all roots of `g`. -/
-theorem prec_of_prec_or_revPrec_of_root_asymmetry
+theorem strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
     {f g : ℝ[X]} {c r : ℝ}
     (h : StrictInterl f g ∨ StrictInterl g f)
     (hg_le : ∀ s ∈ g.roots, s ≤ c)
@@ -1365,21 +1376,31 @@ theorem prec_of_prec_or_revPrec_of_root_asymmetry
     grind
   · lia
 
+@[deprecated strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
+  (since := "2026-09-18")]
+alias prec_of_prec_or_revPrec_of_root_asymmetry :=
+  strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
+
 /-- Symmetric orientation selector for the equal-degree Obreschkoff
 alternative. -/
-theorem revPrec_of_prec_or_revPrec_of_root_asymmetry
+theorem reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
     {f g : ℝ[X]} {c r : ℝ}
     (h : StrictInterl f g ∨ StrictInterl g f)
     (hf_le : ∀ s ∈ f.roots, s ≤ c)
     (hgr : g.IsRoot r)
     (hc_lt : c < r) :
     StrictInterl f g :=
-  prec_of_prec_or_revPrec_of_root_asymmetry
+  strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
     (f := g) (g := f) (c := c) (r := r) (by lia)
     hf_le hgr hc_lt
 
+@[deprecated reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
+  (since := "2026-09-18")]
+alias revPrec_of_prec_or_revPrec_of_root_asymmetry :=
+  reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
+
 /-- Linear equal-degree case of the same-degree Obreschkoff alternative. -/
-theorem prec_or_revPrec_of_same_degree_one
+theorem strictInterl_or_reverse_of_same_degree_one
     {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg1 : f.natDegree = 1) :
@@ -1409,6 +1430,9 @@ theorem prec_or_revPrec_of_same_degree_one
     · simp [hrf_eq]
     · exact Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces, hge]⟩
 
+@[deprecated strictInterl_or_reverse_of_same_degree_one (since := "2026-09-18")]
+alias prec_or_revPrec_of_same_degree_one := strictInterl_or_reverse_of_same_degree_one
+
 end PosComboRealRooted
 
 /-! ### Note on PosComboRealRooted and interlacing
@@ -1422,7 +1446,7 @@ but roots `{-4, -3, -1, 0}` don't interlace (pattern g, f, f, g).
 
 For strong interlacing `StrictInterl f g`, one needs the **affine family** hypothesis
 `(λx + μ)f + g` real-rooted for all `λ, μ > 0`, with nonneg coefficients.
-This is Brändén's Lemma 7.8.4, stated as `prec_of_affine_family_nonneg`
+This is Brändén's Lemma 7.8.4, stated as `strictInterl_of_affine_family_nonneg`
 in `InterlacingSequence.lean`.
 
 The correct Obreschkoff converse is: `PosComboRealRooted f g` implies

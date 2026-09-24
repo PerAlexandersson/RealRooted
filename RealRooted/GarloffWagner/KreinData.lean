@@ -13,7 +13,7 @@ noncomputable section
 
 namespace RealRooted
 
-theorem rootMultiplicity_sub_one_le_of_prec_right {f g : ℝ[X]} (h : StrictInterl f g)
+theorem rootMultiplicity_sub_one_le_of_strictInterl_right {f g : ℝ[X]} (h : StrictInterl f g)
     (u : ℝ) :
     g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u := by
   exact (h.rootMultiplicity_bounds u).2
@@ -21,7 +21,7 @@ theorem rootMultiplicity_sub_one_le_of_prec_right {f g : ℝ[X]} (h : StrictInte
 /-- If `f ≪ g` and `u` is a root of `g`, then `f` is divisible by all but
 one copy of the `u`-factor of `g`.  This is the quotient of the left input
 used before defining the Krein coefficient at `u`. -/
-theorem exists_precLeft_factor_of_right_isRoot {f g : ℝ[X]} (h : StrictInterl f g)
+theorem exists_strictInterlLeft_factor_of_right_isRoot {f g : ℝ[X]} (h : StrictInterl f g)
     {u : ℝ} (hu : g.IsRoot u) :
     ∃ s : ℝ[X],
       f = (X - C u) ^ (g.rootMultiplicity u - 1) * s ∧
@@ -30,7 +30,7 @@ theorem exists_precLeft_factor_of_right_isRoot {f g : ℝ[X]} (h : StrictInterl 
   have hf0 : f ≠ 0 := h.1.1
   have hfs : f.Splits := h.1.2
   have hmul : g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u :=
-    rootMultiplicity_sub_one_le_of_prec_right h u
+    rootMultiplicity_sub_one_le_of_strictInterl_right h u
   have hdvd : (X - C u) ^ (g.rootMultiplicity u - 1) ∣ f :=
     (le_rootMultiplicity_iff hf0).mp hmul
   obtain ⟨s, hs⟩ := hdvd
@@ -46,7 +46,7 @@ theorem exists_precLeft_factor_of_right_isRoot {f g : ℝ[X]} (h : StrictInterl 
 
 /-- For the coefficient construction, every residual `f - c g` is divisible by
 the same one-less-than-full `u`-factor measured from the right input `g`. -/
-theorem exists_precResidual_factor_of_right_rootMultiplicity {f g : ℝ[X]}
+theorem exists_strictInterlResidual_factor_of_right_rootMultiplicity {f g : ℝ[X]}
     (h : StrictInterl f g) (u : ℝ) (c : ℝ) :
     ∃ s : ℝ[X],
       f - C c * g = (X - C u) ^ (g.rootMultiplicity u - 1) * s := by
@@ -54,7 +54,7 @@ theorem exists_precResidual_factor_of_right_rootMultiplicity {f g : ℝ[X]}
   have hdvd_f : d ∣ f := by
     have hf0 : f ≠ 0 := h.1.1
     have hmul : g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u :=
-      rootMultiplicity_sub_one_le_of_prec_right h u
+      rootMultiplicity_sub_one_le_of_strictInterl_right h u
     dsimp [d]
     exact (le_rootMultiplicity_iff hf0).mp hmul
   have hg0 : g ≠ 0 := h.2.1.1
@@ -305,7 +305,7 @@ theorem hasPosLeadingCoeff {g q : ℝ[X]} (h : IsGWKreinSummand g q)
   · have hmul : HasPosLeadingCoeff ((X - C u) * q) := by simpa [hq] using hgpos
     exact hasPosLeadingCoeff_of_X_sub_C_mul hmul
 
-theorem gwJL_prec {k : ℕ} {g q : ℝ[X]} (h : IsGWKreinSummand g q)
+theorem gwJL_strictInterl {k : ℕ} {g q : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg0 : g ≠ 0) (hgs : g.Splits) :
     StrictInterl (gwJL k q) (gwJL k g) := by
   rcases h with hself | ⟨u, hq⟩
@@ -315,7 +315,10 @@ theorem gwJL_prec {k : ℕ} {g q : ℝ[X]} (h : IsGWKreinSummand g q)
   · obtain ⟨hq0, hqs⟩ := ne_zero_and_splits (g := g) (q := q) (Or.inr ⟨u, hq⟩)
       hg0 hgs
     rw [hq]
-    exact gwJL_factor_prec_of_splits (k := k) (u := u) (f := q) hq0 hqs
+    exact gwJL_factor_strictInterl_of_splits (k := k) (u := u) (f := q) hq0 hqs
+
+@[deprecated IsGWKreinSummand.gwJL_strictInterl (since := "2026-09-18")]
+alias gwJL_prec := gwJL_strictInterl
 
 end IsGWKreinSummand
 
@@ -374,7 +377,7 @@ theorem exists_kreinCoefficientData_of_right_isRoot {f g : ℝ[X]}
           f - C c * g - C a * q := by
   rcases exists_kreinSummand_factor_of_isRoot hfg.2.1.1 hgs hu with
     ⟨q, r, hfactor, hq, _, hr_eval, _, _, _, _, hsummand⟩
-  rcases exists_precResidual_factor_of_right_rootMultiplicity hfg u c with
+  rcases exists_strictInterlResidual_factor_of_right_rootMultiplicity hfg u c with
     ⟨s, hres⟩
   exact ⟨s.eval u / r.eval u, q, hfactor, hsummand,
     kreinCoefficient_sub_dvd_rightRootMultiplicity hfg hu hres hq hr_eval⟩
@@ -573,5 +576,19 @@ theorem eq_zero_of_dvd_of_natDegree_lt {g h : ℝ[X]}
   · exfalso
     rw [natDegree_mul hg0 hr0] at hlt
     lia
+
+@[deprecated rootMultiplicity_sub_one_le_of_strictInterl_right
+  (since := "2026-09-18")]
+alias rootMultiplicity_sub_one_le_of_prec_right :=
+  rootMultiplicity_sub_one_le_of_strictInterl_right
+
+@[deprecated exists_strictInterlLeft_factor_of_right_isRoot (since := "2026-09-18")]
+alias exists_precLeft_factor_of_right_isRoot :=
+  exists_strictInterlLeft_factor_of_right_isRoot
+
+@[deprecated exists_strictInterlResidual_factor_of_right_rootMultiplicity
+  (since := "2026-09-18")]
+alias exists_precResidual_factor_of_right_rootMultiplicity :=
+  exists_strictInterlResidual_factor_of_right_rootMultiplicity
 
 end RealRooted

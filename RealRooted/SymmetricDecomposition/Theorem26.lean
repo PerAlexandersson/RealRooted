@@ -114,7 +114,7 @@ private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
     rw [Polynomial.natDegree_C_mul hc_ne, Polynomial.natDegree_C_mul hc_ne, hdeg]
   have hprec0 : Interl (C c * b) (C c * p - X * (C c * b)) := by
     simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm, mul_assoc] using
-      prec_sub_X_mul_right
+      strictInterl_sub_X_mul_right
         (f := C c * p) (g := C c * b)
         hscaled hp_monic hb_monic hdeg_scaled
         (by
@@ -159,7 +159,8 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
   have ha_pos : HasPosLeadingCoeff a := ha_nonneg.pos_leadingCoeff ha_rr.1
   have hXb_nonneg : HasNonnegCoeffs (X * b) := hb_nonneg.X_mul
   have hXb_pos : HasPosLeadingCoeff (X * b) := hb_pos.X_mul
-  have haxb : StrictInterl a (X * b) := prec_mul_X_of_prec_of_nonneg hba hb_nonneg ha_nonneg
+  have haxb : StrictInterl a (X * b) :=
+    strictInterl_mul_X_of_strictInterl_of_nonneg hba hb_nonneg ha_nonneg
   have hp_right : StrictInterl (a + X * b) (X * b) := by
     simpa using
       (haxb.nonneg_combo_right ha_pos hXb_pos
@@ -177,7 +178,8 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
       · simp_all
     exact prec_of_prec0_of_ne_zero ha_rr.1 hp0 (by simp_all)
   have hbXb : StrictInterl b (X * b) :=
-    prec_mul_X_of_prec_of_nonneg (StrictInterl.refl hb_rr.1 hb_rr.2) hb_nonneg hb_nonneg
+    strictInterl_mul_X_of_strictInterl_of_nonneg
+      (StrictInterl.refl hb_rr.1 hb_rr.2) hb_nonneg hb_nonneg
   have hbp : StrictInterl b p := by
     have hprec0 : Interl b ([a, X * b].sum) := by
       refine Interl.sum_left_of_common_left_of_nonneg [a, X * b] b ?_ ?_
@@ -278,7 +280,7 @@ private theorem prec_b_component_of_prec_left_of_natDegree_le
       (Or.inl hdeg_aXb)
   have hprec_aXb : StrictInterl a (X * b) :=
     StrictInterl.forward_of_orientation_of_succDegree hdeg_aXb.symm hprec_or
-  exact prec_of_prec_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
+  exact strictInterl_of_strictInterl_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
 
 private theorem natDegree_X_mul_component_eq_or_succ_of_prec_left_top
     {d : ℕ} {p a b : ℝ[X]}
@@ -384,11 +386,11 @@ private theorem prec_b_component_of_prec_left_top_of_sameDegree
       hap.1.1 hap.1.2 ha_nonneg ha_not_root0
   have hXb_root0 : (X * b).IsRoot 0 := by simp
   have hprec_aXb : StrictInterl a (X * b) :=
-    PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+    PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := X * b) (g := a) (c := c) (r := 0)
       (by lia)
       hac_le hXb_root0 hc_lt0
-  exact prec_of_prec_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
+  exact strictInterl_of_strictInterl_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
 
 private theorem prec_b_component_of_prec_left_top
     {d : ℕ} {p a b : ℝ[X]}
@@ -431,7 +433,7 @@ private theorem prec_b_component_of_prec_left_top
         hap.1.1 hap.1.2 ha_nonneg ha_not_root0
     have hXb_root0 : (X * b).IsRoot 0 := by simp
     have hbad : StrictInterl a (X * b) :=
-      PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+      PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
         (f := X * b) (g := a) (c := c) (r := 0)
         hprec_or hac_le hXb_root0 hc_lt0
     have hbound : a.natDegree ≤ (X * b).natDegree := hbad.natDegree_le
@@ -450,7 +452,8 @@ private theorem prec_b_component_of_prec_right_top
     StrictInterl b a := by
   have hp_eq : p = a + X * b := hid.1
   have hp_nonneg : HasNonnegCoeffs p := by simpa [hp_eq] using ha_nonneg.add hb_nonneg.X_mul
-  have hpxb : StrictInterl p (X * b) := prec_mul_X_of_prec_of_nonneg hbp hb_nonneg hp_nonneg
+  have hpxb : StrictInterl p (X * b) :=
+    strictInterl_mul_X_of_strictInterl_of_nonneg hbp hb_nonneg hp_nonneg
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_right hp_eq hpxb
   have ha_rr : (a ≠ 0 ∧ a.Splits) := ⟨ha0, hall_aXb.left_splits⟩
@@ -480,11 +483,11 @@ private theorem prec_b_component_of_prec_right_top
     strictInterl_of_allComboRealRooted ha_rr.1 ha_rr.2 hpxb.2.1.1 hpxb.2.1.2 hall_aXb
       (Or.inr hsame)
   have hprec_aXb : StrictInterl a (X * b) :=
-    PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+    PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := X * b) (g := a) (c := c) (r := 0)
       (by lia)
       hac_le hXb_root0 hc_lt0
-  exact prec_of_prec_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
+  exact strictInterl_of_strictInterl_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
 
 theorem brandenSolusTheorem26_first_equiv_of_top_degree
     {d : ℕ} {p a b : ℝ[X]}
@@ -627,7 +630,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     dsimp [t]
     simp
   have hht : StrictInterl h t :=
-    PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+    PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := t) (g := h) (c := 0) (r := 1)
       (by lia)
       hh_nonpos ht_root1 (by simp)
@@ -640,7 +643,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     · have hr0 : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hb_rr.2 hb_nonneg r hr
       linarith
   have hbh : StrictInterl b h :=
-    (interlaces_of_prec_sameDegree_rightmost_factor
+    (interlaces_of_strictInterl_sameDegree_rightmost_factor
       (f := h) (g := t) (q := b) (uR := 1)
       hht hsame ht_le_one (by lia)).toStrictInterl
   have hb_le_one : ∀ r ∈ b.roots, r ≤ (1 : ℝ) := by
@@ -890,17 +893,21 @@ lemma prec_iff_prec_mul_X_add_one_pow_both {n : ℕ} {f g : ℝ[X]} :
 /-- Reduced transport target: it is enough to treat the minimal ambient degree
 `max u.natDegree v.natDegree`, since larger ambient degrees only add a common
 power of `X + 1` to both transformed polynomials. -/
-def precFPolynomialTransportMinimalStatement : Prop :=
+def strictInterlFPolynomialTransportMinimalStatement : Prop :=
   ∀ {d : ℕ} {u v : ℝ[X]},
     d = max u.natDegree v.natDegree →
     HasNonnegCoeffs u →
     HasNonnegCoeffs v →
     (StrictInterl (fPolynomial d u) (fPolynomial d v) ↔ StrictInterl u v)
 
+@[deprecated strictInterlFPolynomialTransportMinimalStatement (since := "2026-09-18")]
+abbrev precFPolynomialTransportMinimalStatement :=
+  strictInterlFPolynomialTransportMinimalStatement
+
 /-- Honest missing transport problem behind Brändén--Solus Theorem 2.6:
 the `f`-polynomial transform should preserve the oriented interlacing relation
 on nonnegative-coefficient pairs of degree at most `d`. -/
-def precFPolynomialTransportStatement : Prop :=
+def strictInterlFPolynomialTransportStatement : Prop :=
   ∀ {d : ℕ} {u v : ℝ[X]},
     u.natDegree ≤ d →
     v.natDegree ≤ d →
@@ -908,7 +915,11 @@ def precFPolynomialTransportStatement : Prop :=
     HasNonnegCoeffs v →
     (StrictInterl (fPolynomial d u) (fPolynomial d v) ↔ StrictInterl u v)
 
-theorem precFPolynomialTransportMinimal : precFPolynomialTransportMinimalStatement := by
+@[deprecated strictInterlFPolynomialTransportStatement (since := "2026-09-18")]
+abbrev precFPolynomialTransportStatement := strictInterlFPolynomialTransportStatement
+
+theorem strictInterlFPolynomialTransportMinimal :
+    strictInterlFPolynomialTransportMinimalStatement := by
   intro d u v hd hu_nonneg hv_nonneg
   constructor
   · intro h
@@ -923,9 +934,12 @@ theorem precFPolynomialTransportMinimal : precFPolynomialTransportMinimalStateme
   · intro h
     exact prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal hd h hu_nonneg hv_nonneg
 
-theorem precFPolynomialTransport_of_minimal
-    (hminimal : precFPolynomialTransportMinimalStatement) :
-    precFPolynomialTransportStatement := by
+@[deprecated strictInterlFPolynomialTransportMinimal (since := "2026-09-18")]
+alias precFPolynomialTransportMinimal := strictInterlFPolynomialTransportMinimal
+
+theorem strictInterlFPolynomialTransport_of_minimal
+    (hminimal : strictInterlFPolynomialTransportMinimalStatement) :
+    strictInterlFPolynomialTransportStatement := by
   intro d u v hud hvd hu_nonneg hv_nonneg
   let m := max u.natDegree v.natDegree
   have hum : u.natDegree ≤ m := le_max_left _ _
@@ -943,11 +957,17 @@ theorem precFPolynomialTransport_of_minimal
           prec_iff_prec_mul_X_add_one_pow_both
     _ ↔ StrictInterl u v := hminimal (d := m) rfl hu_nonneg hv_nonneg
 
-theorem precFPolynomialTransport : precFPolynomialTransportStatement :=
-  precFPolynomialTransport_of_minimal precFPolynomialTransportMinimal
+@[deprecated strictInterlFPolynomialTransport_of_minimal (since := "2026-09-18")]
+alias precFPolynomialTransport_of_minimal := strictInterlFPolynomialTransport_of_minimal
 
-theorem brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport
-    (htransport : precFPolynomialTransportStatement)
+theorem strictInterlFPolynomialTransport : strictInterlFPolynomialTransportStatement :=
+  strictInterlFPolynomialTransport_of_minimal strictInterlFPolynomialTransportMinimal
+
+@[deprecated strictInterlFPolynomialTransport (since := "2026-09-18")]
+alias precFPolynomialTransport := strictInterlFPolynomialTransport
+
+theorem brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
+    (htransport : strictInterlFPolynomialTransportStatement)
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -962,6 +982,11 @@ theorem brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport
     (u := IdTransform d p) (v := p)
     (IdTransform_natDegree_le hd) hd hId_nonneg hp_nonneg).symm
 
+@[deprecated brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
+  (since := "2026-09-18")]
+alias brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport :=
+  brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
+
 theorem brandenSolusTheorem26_last_equiv
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
@@ -970,8 +995,8 @@ theorem brandenSolusTheorem26_last_equiv
     (hb_nonneg : HasNonnegCoeffs b) :
     (StrictInterl (IdTransform d p) p ↔
       StrictInterl (RdTransform d (fPolynomial d p)) (fPolynomial d p)) :=
-  brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport
-    precFPolynomialTransport hd hid ha_nonneg hb_nonneg
+  brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
+    strictInterlFPolynomialTransport hd hid ha_nonneg hb_nonneg
 
 private theorem brandenSolusTheorem26_descend_of_lt_top
     {d : ℕ} {p a b : ℝ[X]}

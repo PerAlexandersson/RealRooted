@@ -97,7 +97,7 @@ theorem IsTotallyNonnegRect.has2x2InterlacingProperty0
     Has2x2InterlacingProperty0
       (C (A i₁ j₁)) (C (A i₁ j₂)) (C (A i₂ j₁)) (C (A i₂ j₂)) := by
   intro s t hs _ht
-  apply prec0_const_entries_affine_of_det_nonneg
+  apply interl_const_entries_affine_of_det_nonneg
   · exact hA.nonneg i₁ j₁
   · exact hA.nonneg i₁ j₂
   · exact hA.nonneg i₂ j₁

@@ -79,7 +79,7 @@ theorem matrix_preserves_interlacing_seq
     have hself :
         StrictInterl (((G.get iG).zipWith (· * ·) fs).sum)
           (((G.get iG).zipWith (· * ·) fs).sum) :=
-      prec_zipWith_sum_pair_of_2x2
+      strictInterl_zipWith_sum_pair_of_2x2
         (n := n)
         (hn := hn)
         (row₁ := G.get iG)
@@ -104,7 +104,7 @@ theorem matrix_preserves_interlacing_seq
     have hpair :
         StrictInterl (((G.get iG).zipWith (· * ·) fs).sum)
           (((G.get jG).zipWith (· * ·) fs).sum) :=
-      prec_zipWith_sum_pair_of_2x2
+      strictInterl_zipWith_sum_pair_of_2x2
         (n := n)
         (hn := hn)
         (row₁ := G.get iG)
@@ -155,7 +155,7 @@ theorem matrix_preserves_interlacing_seq0_of_2x2
     have hpair :
         Interl (((G.get iG).zipWith (· * ·) fs).sum)
           (((G.get jG).zipWith (· * ·) fs).sum) :=
-      prec0_zipWith_sum_pair_of_2x2
+      interl_zipWith_sum_pair_of_2x2
         (n := n)
         (row₁ := G.get iG)
         (row₂ := G.get jG)
@@ -207,7 +207,7 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
       have hpair :
           Interl (((G.get iG).zipWith (· * ·) fs).sum)
             (((G.get jG).zipWith (· * ·) fs).sum) :=
-        prec0_zipWith_sum_pair_of_2x2_weak
+        interl_zipWith_sum_pair_of_2x2_weak
           (n := n)
           (row₁ := G.get iG)
           (row₂ := G.get jG)
@@ -238,7 +238,7 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
     have hself0 :
         Interl (((G.get iG).zipWith (· * ·) fs).sum)
           (((G.get iG).zipWith (· * ·) fs).sum) :=
-      prec0_zipWith_sum_pair_of_2x2_weak
+      interl_zipWith_sum_pair_of_2x2_weak
         (n := n)
         (row₁ := G.get iG)
         (row₂ := G.get iG)

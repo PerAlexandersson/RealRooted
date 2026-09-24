@@ -79,7 +79,7 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
       HasNonnegCoeffs (weightedSum [(c, g.derivative), (a, f)]) := by
     simpa [weightedSum, add_assoc] using hsum_nonneg
   simpa [weightedSum, add_assoc] using
-    (prec_mul_X_of_prec_of_nonneg hsum_prec hsum_nonneg_weighted hgnn)
+    (strictInterl_mul_X_of_strictInterl_of_nonneg hsum_prec hsum_nonneg_weighted hgnn)
 
 /-- Scalar-left Wagner derivative-gap-lag step.
 

@@ -308,7 +308,7 @@ lemma hermiteBiehler_vieta_two {f g : ℝ[X]}
     simp [Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im] at this
     linarith
 
-theorem prec_of_stable_monic_two {f g : ℝ[X]}
+theorem strictInterl_of_stable_monic_two {f g : ℝ[X]}
     (hf : f.Monic) (hg : g.Monic) (hf₂ : f.natDegree = 2) (hg₂ : g.natDegree = 2)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
     StrictInterl g f := by
@@ -582,7 +582,7 @@ lemma interlace_core_posLead {a b u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ}
     nlinarith [sq_nonneg a, sq_nonneg b]
   · rw [hb₁, hb₂]; ring
 
-theorem prec_of_stable_two {f g : ℝ[X]}
+theorem strictInterl_of_stable_two {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hf₂ : f.natDegree = 2) (hg₂ : g.natDegree = 2)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
@@ -966,7 +966,7 @@ lemma hermiteBiehler_vieta_two_one {f g : ℝ[X]}
     ring_nf at this ⊢
     assumption
 
-theorem prec_of_stable_two_one {f g : ℝ[X]}
+theorem strictInterl_of_stable_two_one {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hf₂ : f.natDegree = 2) (hg₁ : g.natDegree = 1)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) : StrictInterl g f := by
@@ -1044,8 +1044,17 @@ theorem hermiteBiehlerConverse_of_natDegree_le_two {f g : ℝ[X]}
   · have hf₂ : f.natDegree = 2 := by lia
     rcases Nat.lt_or_ge g.natDegree 2 with hglt | hgge
     · have hg₁ : g.natDegree = 1 := by lia
-      exact Or.inl (prec_of_stable_two_one hf hg hf₂ hg₁ hstab)
+      exact Or.inl (strictInterl_of_stable_two_one hf hg hf₂ hg₁ hstab)
     · have hg₂ : g.natDegree = 2 := by lia
-      exact Or.inl (prec_of_stable_two hf hg hf₂ hg₂ hstab)
+      exact Or.inl (strictInterl_of_stable_two hf hg hf₂ hg₂ hstab)
+
+@[deprecated strictInterl_of_stable_monic_two (since := "2026-09-18")]
+alias prec_of_stable_monic_two := strictInterl_of_stable_monic_two
+
+@[deprecated strictInterl_of_stable_two (since := "2026-09-18")]
+alias prec_of_stable_two := strictInterl_of_stable_two
+
+@[deprecated strictInterl_of_stable_two_one (since := "2026-09-18")]
+alias prec_of_stable_two_one := strictInterl_of_stable_two_one
 
 end RealRooted

@@ -30,7 +30,7 @@ theorem IsStrictlyHurwitzStable.natDegree_routhReducedPolynomial_add_one_of_oddS
     h.natDegree_routhReducedOddPart_add_one_of_oddShape
       hodd heven hdegree hdegreePos
   have hredData :=
-    h.prec_routhReducedOddPart_of_oddShape
+    h.strictInterl_routhReducedOddPart_of_oddShape
       hodd heven hdegree hdegreePos
   have hredPos : HasPosLeadingCoeff
       (routhReducedOddPart (routhCoefficient odd even) odd even) :=
@@ -66,7 +66,7 @@ theorem hurwitzLeadingPrincipal_oddEvenPolynomial_det_pos_of_strictlyStable
       · obtain ⟨hodd0, heven0⟩ :=
           h.coeff_zero_pos_parts_of_evenShape hodd heven hevenShape
         obtain ⟨hredPrec, hrednn⟩ :=
-          h.prec_routhReducedOddPart_of_evenShape hodd heven hevenShape
+          h.strictInterl_routhReducedOddPart_of_evenShape hodd heven hevenShape
         have hredPos : HasPosLeadingCoeff
             (routhReducedOddPart (routhCoefficient odd even) odd even) :=
           hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero
@@ -105,7 +105,7 @@ theorem hurwitzLeadingPrincipal_oddEvenPolynomial_det_pos_of_strictlyStable
         · have hdegreePos : 0 < odd.natDegree :=
             Nat.pos_of_ne_zero hdegreeZero
           obtain ⟨hredPrec, hrednn⟩ :=
-            h.prec_routhReducedOddPart_of_oddShape
+            h.strictInterl_routhReducedOddPart_of_oddShape
               hodd heven hoddShape hdegreePos
           have hredPos : HasPosLeadingCoeff
               (routhReducedOddPart (routhCoefficient odd even) odd even) :=
@@ -143,7 +143,7 @@ theorem hurwitz_oddEvenPolynomial_isTotallyNonneg_of_strictlyStable
   · obtain ⟨hodd0, heven0⟩ :=
       h.coeff_zero_pos_parts_of_evenShape hodd heven hevenShape
     obtain ⟨hredPrec, hrednn⟩ :=
-      h.prec_routhReducedOddPart_of_evenShape hodd heven hevenShape
+      h.strictInterl_routhReducedOddPart_of_evenShape hodd heven hevenShape
     have hredPos : HasPosLeadingCoeff
         (routhReducedOddPart (routhCoefficient odd even) odd even) :=
       hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hrednn hredPrec.1.1
@@ -189,7 +189,7 @@ theorem hurwitz_oddEvenPolynomial_isTotallyNonneg_of_strictlyStable
     · have hdegreePos : 0 < odd.natDegree :=
         Nat.pos_of_ne_zero hdegreeZero
       obtain ⟨hredPrec, hrednn⟩ :=
-        h.prec_routhReducedOddPart_of_oddShape
+        h.strictInterl_routhReducedOddPart_of_oddShape
           hodd heven hoddShape hdegreePos
       have hredPos : HasPosLeadingCoeff
           (routhReducedOddPart (routhCoefficient odd even) odd even) :=

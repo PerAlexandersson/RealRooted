@@ -68,7 +68,7 @@ private theorem isInterlacingSeqNonneg_of_getD_chain
     (hend : StrictInterl (fs.getD 0 0) (fs.getD (fs.length - 1) 0)) :
     IsInterlacingSeqNonneg fs := by
   let F : ℕ → ℝ[X] := fun k => fs.getD k 0
-  have hall := prec_chain_of_consecutive_of_endpoint F 0 (fs.length - 1)
+  have hall := strictInterl_chain_of_consecutive_of_endpoint F 0 (fs.length - 1)
     (fun k _ hk => hcons k hk) hend
   refine ⟨?_, ?_⟩
   · intro p hp
@@ -245,16 +245,16 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     rw [hq_alt]
     exact (natDegree_add_le T gr).trans (max_le hTdegree hgrdegree)
   have hgq0 : Interl g q := by
-    have hgXT0 := prec0_mul_X_of_prec0 hTg0 hTnn hgnn
+    have hgXT0 := interl_mul_X_of_interl hTg0 hTnn hgnn
     have hgg0 := Interl.refl hgreal
     simpa [q] using
-      prec0_add_right_of_common_left_of_nonneg hgXT0 hgg0 hXTnn hgnn
+      interl_add_right_of_common_left_of_nonneg hgXT0 hgg0 hXTnn hgnn
   have hqgr0 : Interl q gr := by
     have hgrgr0 := Interl.refl hgrreal
     rw [hq_alt]
-    exact prec0_add_left_of_common_right_of_nonneg hTgr0 hgrgr0 hTnn hgrnn
+    exact interl_add_left_of_common_right_of_nonneg hTgr0 hgrgr0 hTnn hgrnn
   have hfrXS0 : Interl fr XS := by
-    simpa [XS] using prec0_mul_X_of_prec0 hSfr0 hSnn hfrnn
+    simpa [XS] using interl_mul_X_of_interl hSfr0 hSnn hfrnn
   have hSreal : S ≠ 0 → S.Splits := by
     intro hS_ne
     have hf_ne : f ≠ 0 := by
@@ -264,7 +264,7 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     exact (hSf0.toStrictInterl_of_ne hS_ne hf_ne).1.2
   have hSXS0 : Interl S XS := by
     have hSS0 := Interl.refl hSreal
-    simpa [XS] using prec0_mul_X_of_prec0 hSS0 hSnn hSnn
+    simpa [XS] using interl_mul_X_of_interl hSS0 hSnn hSnn
   have hqreal : q ≠ 0 → q.Splits := by
     intro hq_ne
     have hg_ne : g ≠ 0 := by

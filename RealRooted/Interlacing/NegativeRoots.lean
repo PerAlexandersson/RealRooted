@@ -202,7 +202,7 @@ lemma listAlternates_dropLast_right_lt_zero_of_left_lt_zero :
 /-- In a same-degree proper-position pair, a zero root of the right
 polynomial must be its rightmost root when every root of the left polynomial
 is strictly negative; hence all right roots are nonpositive. -/
-theorem roots_nonpos_of_prec_sameDegree_of_zero_root_of_left_roots_neg
+theorem roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
     {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree)
@@ -239,9 +239,14 @@ theorem roots_nonpos_of_prec_sameDegree_of_zero_root_of_left_roots_neg
   · exact (hrs_drop_neg r
       (List.mem_dropLast_of_mem_of_ne_getLast hr_mem hr_last)).le
 
+@[deprecated roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
+  (since := "2026-09-18")]
+alias roots_nonpos_of_prec_sameDegree_of_zero_root_of_left_roots_neg :=
+  roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
+
 /-- In a same-degree proper-position pair, strict negativity of every root of
 the right polynomial implies strict negativity of every root of the left. -/
-theorem roots_neg_of_prec_sameDegree_of_roots_neg {g f : ℝ[X]}
+theorem roots_neg_of_strictInterl_sameDegree_of_roots_neg {g f : ℝ[X]}
     (hgf : StrictInterl g f)
     (hdeg : g.natDegree = f.natDegree)
     (hf_neg : ∀ r, f.IsRoot r → r < 0) :
@@ -264,5 +269,10 @@ theorem roots_neg_of_prec_sameDegree_of_roots_neg {g f : ℝ[X]}
     apply hss_neg r
     apply Multiset.mem_coe.mp
     simp_all
+
+@[deprecated roots_neg_of_strictInterl_sameDegree_of_roots_neg
+  (since := "2026-09-18")]
+alias roots_neg_of_prec_sameDegree_of_roots_neg :=
+  roots_neg_of_strictInterl_sameDegree_of_roots_neg
 
 end RealRooted

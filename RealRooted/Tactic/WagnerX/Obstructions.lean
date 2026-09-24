@@ -87,7 +87,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     rw [hXf_deg]
     lia
   obtain ⟨uR, q, hq_eq, huR_root, huR_max, hint⟩ :=
-    exists_rightmost_factor_interlaces_of_prec_sameDegree h hdeg_eq hdeg_pos
+    exists_rightmost_factor_interlaces_of_strictInterl_sameDegree h hdeg_eq hdeg_pos
   have hXf_nn : HasNonnegCoeffs (X ^ 2 * f.derivative) := by
     have hrw : X ^ 2 * f.derivative = X * (X * f.derivative) := by ring
     rw [hrw]

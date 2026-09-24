@@ -242,7 +242,7 @@ theorem prec_mul_common_factor {d f g : ℝ[X]} (hd_ne : d ≠ 0) (hd_splits : d
     StrictInterl (d * f) (d * g) :=
   h.mul_common_factor hd_ne hd_splits
 
-theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
+theorem strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (hf : f.Splits) (hg : g.Splits)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
@@ -270,7 +270,8 @@ theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
   have hdeg' : f'.natDegree + 1 = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
   have hshift :
       StrictInterl f' g' ↔ StrictInterl g' (X * f') :=
-    prec_iff_prec_mul_X_of_roots_nonpos hf'.2 hg'.2 hf'_pos hg'_pos hf'_nonpos hg'_nonpos hdeg'
+    strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
+      hf'.2 hg'.2 hf'_pos hg'_pos hf'_nonpos hg'_nonpos hdeg'
   constructor
   · intro hfg
     have hfg' : StrictInterl f' g' := by
@@ -290,5 +291,10 @@ theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
         comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
     have hfg' : StrictInterl f' g' := hshift.mpr hgxf'
     exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
+
+@[deprecated strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
+  (since := "2026-09-18")]
+alias prec_iff_prec_mul_X_sub_C_of_roots_le :=
+  strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
 
 end RealRooted
