@@ -11,7 +11,7 @@ output into the frozen JSON report consumed by the Pages renderer.
 Typical integrator commands are::
 
     python3 scripts/audit_challenge_catalog.py --generate /tmp/catalog-audit.lean
-    lake-workspace env lean /tmp/catalog-audit.lean > /tmp/catalog-audit.raw
+    lake-workspace lean /tmp/catalog-audit.lean > /tmp/catalog-audit.raw
     python3 scripts/audit_challenge_catalog.py --collect /tmp/catalog-audit.raw \
       --report /tmp/catalog-audit.json
 
