@@ -1540,6 +1540,15 @@ and production umbrella budgets each rise by exactly one module; the tactic
 regression closure is unchanged. This identity is a prerequisite for the
 planned chip collocation bridge, not that bridge itself.
 
+The repeated-chip LGV consumer is split into four small `LGV.ChipNetwork`
+modules for the ranked quiver, path geometry, transfer matrices, and finite
+words, with `LGV.RepeatedChip` as the public endpoint. The endpoint depends on
+the standalone LeanLGV cancellation certificate and on RealRooted's Toeplitz
+and finite-kernel-row APIs; the chip foundations do not import the PF layer.
+The root and production closures each gain exactly these five modules, so
+their budgets rise to 1419 and 1291. The tactic regression closure is
+unchanged.
+
 The Lean 4.34 migration adds one small `PerronFrobenius.Simplex` shim. It
 preserves the set-of-vectors interface used by the matrix theory after Mathlib
 replaced its standard simplex API with a bundled type. The shim imports only

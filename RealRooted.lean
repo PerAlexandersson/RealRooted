@@ -1410,4 +1410,9 @@ import RealRooted.LGV.PathMatrix
 import RealRooted.LGV.Toeplitz
 import RealRooted.LGV.TotallyNonnegative
 import RealRooted.LGV.PolyaFrequency
+import RealRooted.LGV.RepeatedChip
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
+import RealRooted.LGV.ChipNetwork.Basic
+import RealRooted.LGV.ChipNetwork.Matrix
+import RealRooted.LGV.ChipNetwork.Paths
+import RealRooted.LGV.ChipNetwork.Word

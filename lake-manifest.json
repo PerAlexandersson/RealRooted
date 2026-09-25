@@ -19,10 +19,10 @@
       "type": "git",
       "subDir": null,
       "scope": "",
-      "rev": "622b13799d990b5a9f4a89ebb02858e504ee566a",
+      "rev": "acf9f6694c1169e9773aaf9d1d594709c0926eb8",
       "name": "LeanLGV",
       "manifestFile": "lake-manifest.json",
-      "inputRev": "622b13799d990b5a9f4a89ebb02858e504ee566a",
+      "inputRev": "acf9f6694c1169e9773aaf9d1d594709c0926eb8",
       "inherited": false,
       "configFile": "lakefile.toml"
     },

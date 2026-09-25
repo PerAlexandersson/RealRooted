@@ -93,6 +93,13 @@ emulation. These scripts complement `lake build`; they do not replace it.
 - `RealRooted/AissenSchoenbergWhitney.lean`, `PFPolynomial.lean`,
   `VeroneseSection.lean`, and `VeroneseMatrix.lean` contain the PF, Toeplitz,
   and Veronese-section material.
+- `RealRooted/LGV/` connects finite ranked-path networks to strict Toeplitz
+  minors and Pólya-frequency sequences without duplicating LeanLGV's checked
+  path-cancellation engine. Its repeated-chip endpoint certifies finite
+  `G * (K * G) ^ q` kernel rows directly from nonnegative lower-bidiagonal
+  factorizations. `RealRooted/BrandenLeite/` packages the corresponding finite
+  kernel rows, two-kernel composition rows, and stationary or
+  position-dependent tiling specializations.
 - `VeroneseSectionPair.lean` gives strict proper position for two nonzero
   ordered residues; its `HermiteBiehler` child gives the induced
   upper-half-plane and Hurwitz stability certificates.
@@ -435,6 +442,23 @@ re-exports both APIs.
   specialization.
 - `aissenSchoenbergWhitneyForward`: the target theorem for the opposite ASW
   direction.
+- `Quiver.Path.sum_weight_exactLength_eq_edgeSumMatrix_pow`: exact-length
+  weighted path sums are entries of powers of the edge-sum matrix.
+- `StrictToeplitzMinorIndex.pathNetwork_matrix_eq_toeplitzSubmatrix` and
+  `isPolyaFreqSeq_of_minorOrderedCertificates`: the source-row/sink-column
+  orientation bridge and minor-local ordered-LGV endpoint for proving a
+  sequence Pólya-frequency.
+- `BrandenLeite.coeff_kernelRow` and
+  `BrandenLeite.natDegree_kernelRow_le_row`: the exact coefficients and sharp
+  row support of the finite kernel polynomial
+  `G * (K * G) ^ q` for lower `G` and strictly lower `K`.
+- `LGV.RepeatedChip.kernelSequence_isPolyaFreqSeq` and
+  `LGV.RepeatedChip.kernelRow_isPFPolynomial`: ordered-LGV certificates for
+  nonnegative repeated chip words; `natDegree_kernelRow_le_div` records the
+  sharper bound when every marked pass drops at least `r` levels.
+- `BrandenLeite.twoKernelRows_pf_and_interl` and
+  `BrandenLeite.rationalRodRows_pf_and_interl`: checked PF/interlacing
+  endpoints for composition rows and factored stationary rod-tiling kernels.
 - `IsPolyaFreqSeq.veroneseSectionSeq` and
   `IsPolyaFreqSeq_veroneseSectionPolynomial_coeff`: Veronese subsequences and
   Veronese section coefficients preserve Toeplitz total nonnegativity.

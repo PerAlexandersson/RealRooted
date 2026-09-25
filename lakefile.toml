@@ -19,7 +19,7 @@ rev = "v4.34.0"
 [[require]]
 name = "LeanLGV"
 git = "https://github.com/PerAlexandersson/LeanLGV.git"
-rev = "622b13799d990b5a9f4a89ebb02858e504ee566a"
+rev = "acf9f6694c1169e9773aaf9d1d594709c0926eb8"
 
 [[lean_lib]]
 name = "RealRooted"
