@@ -3,6 +3,45 @@ import RealRooted.AissenSchoenbergWhitney
 /-!
 # Aissen--Schoenberg--Whitney challenge entry point
 
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "aissen-schoenberg-whitney"
+
+[[definitions]]
+name = "RealRooted.Challenges.AissenSchoenbergWhitney.CoefficientsPolyaFrequency"
+
+[[definitions]]
+name = "RealRooted.Challenges.AissenSchoenbergWhitney.HasRealNonposRoots"
+
+[[theorems]]
+name = "RealRooted.Challenges.AissenSchoenbergWhitney.forwardTheorem"
+
+[[theorems]]
+name = "RealRooted.Challenges.AissenSchoenbergWhitney.reverseTheorem"
+-->
+
+<!-- realrooted-catalog-content -->
+# Aissen–Schoenberg–Whitney
+
+For a real polynomial `p`, `CoefficientsPolyaFrequency p` abbreviates the
+Pólya-frequency condition on its coefficient sequence.  `HasRealNonposRoots p`
+packages real splitting together with the assertion that every root is
+nonpositive.  The forward theorem proves that Pólya-frequency coefficients
+force this real nonpositive-root property.  The reverse theorem proves the
+converse under the explicit nonnegative-coefficient hypothesis used by the
+formalization.
+
+The catalogue intentionally selects the checked forward and reverse theorems;
+the internal `forwardTarget` spelling is not itself a catalogue entry.
+
+## References
+
+M. Aissen, I. J. Schoenberg, and A. M. Whitney, “On the generating functions
+of totally positive sequences. I,” *Journal of Analyse Mathématique* 2 (1952),
+93–103.
+<!-- /realrooted-catalog-content -->
+
 Human statement:
 https://www.symmetricfunctions.com/polyaFrequency.htm#aissenSchoenbergWhitney
 
@@ -10,8 +49,8 @@ Original publication: M. Aissen, I. J. Schoenberg, and A. M. Whitney,
 "On the generating functions of totally positive sequences. I",
 J. Analyse Math. 2 (1952), 93--103.
 
-This module exposes the forward Aissen--Schoenberg--Whitney target and the
-proved reverse direction.  The Toeplitz/PF infrastructure remains in
+This module exposes the proved forward and reverse Aissen--Schoenberg--Whitney
+directions.  The Toeplitz/PF infrastructure remains in
 `RealRooted.AissenSchoenbergWhitney`.
 -/
 
@@ -30,11 +69,11 @@ abbrev CoefficientsPolyaFrequency (p : ℝ[X]) : Prop :=
 abbrev HasRealNonposRoots (p : ℝ[X]) : Prop :=
   p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
 
-/-- Forward ASW target: PF coefficients imply real non-positive roots. -/
+/-- Compatibility proposition for the forward ASW implication. -/
 abbrev forwardTarget : Prop :=
   ∀ {p : ℝ[X]}, CoefficientsPolyaFrequency p → HasRealNonposRoots p
 
-/-- Forward ASW theorem: PF coefficients imply real non-positive roots. -/
+/-- Checked forward ASW theorem: PF coefficients imply real non-positive roots. -/
 theorem forwardTheorem : forwardTarget :=
   fun hpf => RealRooted.aissenSchoenbergWhitneyForward hpf
 
