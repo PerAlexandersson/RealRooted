@@ -60,6 +60,49 @@ instance instFintypeArrow (S N : ℕ) (v w : Vertex S N) :
 instance instQuiverVertex (S N : ℕ) : Quiver (Vertex S N) where
   Hom v w := Arrow S N v w
 
+instance instFintypeHom (S N : ℕ) (v w : Vertex S N) :
+    Fintype (v ⟶ w) :=
+  instFintypeArrow S N v w
+
+instance instSubsingletonArrow (S N : ℕ) (v w : Vertex S N) :
+    Subsingleton (Arrow S N v w) := by
+  constructor
+  intro e f
+  rcases e with e | e
+  · rcases f with f | f
+    · congr 1
+      apply Subtype.ext
+      rcases e with ⟨⟨stage, level⟩, hv, hw⟩
+      rcases f with ⟨⟨stage', level'⟩, hv', hw'⟩
+      have hsource := hv.symm.trans hv'
+      exact Prod.ext
+        (Fin.ext (congrArg (fun x ↦ x.1.val) hsource))
+        (Fin.ext (congrArg (fun x ↦ x.2.val) hsource))
+    · rcases e with ⟨⟨stage, level⟩, hv, hw⟩
+      rcases f with ⟨⟨stage', level'⟩, hv', hw'⟩
+      have hsource := congrArg (fun x ↦ x.2.val) (hv.symm.trans hv')
+      have htarget := congrArg (fun x ↦ x.2.val) (hw.symm.trans hw')
+      change level.val = level'.val + 1 at hsource
+      change level.val = level'.val at htarget
+      lia
+  · rcases f with f | f
+    · rcases e with ⟨⟨stage, level⟩, hv, hw⟩
+      rcases f with ⟨⟨stage', level'⟩, hv', hw'⟩
+      have hsource := congrArg (fun x ↦ x.2.val) (hv.symm.trans hv')
+      have htarget := congrArg (fun x ↦ x.2.val) (hw.symm.trans hw')
+      change level.val + 1 = level'.val at hsource
+      change level.val = level'.val at htarget
+      lia
+    · congr 1
+      apply Subtype.ext
+      rcases e with ⟨⟨stage, level⟩, hv, hw⟩
+      rcases f with ⟨⟨stage', level'⟩, hv', hw'⟩
+      have hsource := hv.symm.trans hv'
+      exact Prod.ext
+        (Fin.ext (congrArg (fun x ↦ x.1.val) hsource))
+        (Fin.ext (Nat.add_right_cancel
+          (congrArg (fun x ↦ x.2.val) hsource)))
+
 /-- The canonical stay arrow at a stage and level. -/
 def stay (stage : Fin S) (level : Fin (N + 1)) :
     Arrow S N (stage.castSucc, level) (stage.succ, level) :=

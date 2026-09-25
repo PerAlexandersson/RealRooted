@@ -129,6 +129,67 @@ theorem mul_apply_eq_zero_of_le_of_lower_strictLower
       (Fin.mk_le_mk.mp (le_of_not_gt hik)).trans hij
     rw [hK k j hkj, mul_zero]
 
+/-- A matrix whose nonzero entries drop by at least `r`, followed by a lower
+triangular matrix, still drops by at least `r`. -/
+theorem mul_apply_eq_zero_of_lt_add_of_drop_lower
+    {R : Type*} [Semiring R] {N r : ℕ}
+    (K G : Matrix (Fin N) (Fin N) R)
+    (hK : ∀ i j, i.val < j.val + r → K i j = 0)
+    (hG : ∀ i j, i < j → G i j = 0)
+    {i j : Fin N} (hij : i.val < j.val + r) :
+    (K * G) i j = 0 := by
+  rw [mul_apply]
+  apply Finset.sum_eq_zero
+  intro k _
+  by_cases hik : i.val < k.val + r
+  · rw [hK i k hik, zero_mul]
+  · have hkj : k < j := by
+      apply Fin.mk_lt_mk.mpr
+      lia
+    rw [hG k j hkj, mul_zero]
+
+/-- The `q`th power of a matrix whose entries drop by at least `r` drops by
+at least `q * r`. -/
+theorem pow_apply_eq_zero_of_lt_add_mul_of_drop
+    {R : Type*} [Semiring R] {N r : ℕ}
+    (K : Matrix (Fin N) (Fin N) R)
+    (hK : ∀ i j, i.val < j.val + r → K i j = 0)
+    (q : ℕ) {i j : Fin N} (hij : i.val < j.val + q * r) :
+    (K ^ q) i j = 0 := by
+  induction q generalizing i j with
+  | zero =>
+      simp only [Nat.zero_mul, Nat.add_zero] at hij
+      have hij' : i < j := Fin.mk_lt_mk.mpr hij
+      simp [ne_of_lt hij']
+  | succ q ih =>
+      rw [pow_succ, mul_apply]
+      apply Finset.sum_eq_zero
+      intro k _
+      by_cases hik : i.val < k.val + q * r
+      · rw [ih hik, zero_mul]
+      · have hkj : k.val < j.val + r := by
+          simp only [Nat.succ_mul] at hij
+          lia
+        rw [hK k j hkj, mul_zero]
+
+/-- A lower triangular matrix followed by `q` copies of a matrix dropping by
+at least `r` has support only at level differences of at least `q * r`. -/
+theorem mul_pow_apply_eq_zero_of_lt_add_mul_of_lower_drop
+    {R : Type*} [Semiring R] {N r q : ℕ}
+    (G K : Matrix (Fin N) (Fin N) R)
+    (hG : ∀ i j, i < j → G i j = 0)
+    (hK : ∀ i j, i.val < j.val + r → K i j = 0)
+    {i j : Fin N} (hij : i.val < j.val + q * r) :
+    (G * K ^ q) i j = 0 := by
+  rw [mul_apply]
+  apply Finset.sum_eq_zero
+  intro k _
+  by_cases hik : i < k
+  · rw [hG i k hik, zero_mul]
+  · have hkj : k.val < j.val + q * r := by
+      exact lt_of_le_of_lt (Fin.mk_le_mk.mp (le_of_not_gt hik)) hij
+    rw [pow_apply_eq_zero_of_lt_add_mul_of_drop K hK q hkj, mul_zero]
+
 /-- A strictly lower matrix followed by a lower matrix is nilpotent at the
 cardinality of its finite index type. -/
 theorem mul_pow_card_eq_zero_of_strictLower_lower

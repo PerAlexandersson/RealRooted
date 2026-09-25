@@ -95,7 +95,9 @@ emulation. These scripts complement `lake build`; they do not replace it.
   and Veronese-section material.
 - `RealRooted/LGV/` connects finite ranked-path networks to strict Toeplitz
   minors and Pólya-frequency sequences without duplicating LeanLGV's checked
-  path-cancellation engine. `RealRooted/BrandenLeite/` then packages finite
+  path-cancellation engine. Its repeated-chip endpoint certifies finite
+  `G * (K * G) ^ q` kernel rows directly from nonnegative lower-bidiagonal
+  factorizations. `RealRooted/BrandenLeite/` packages the corresponding finite
   kernel rows, two-kernel composition rows, and stationary or
   position-dependent tiling specializations.
 - `VeroneseSectionPair.lean` gives strict proper position for two nonzero
@@ -450,6 +452,10 @@ re-exports both APIs.
   `BrandenLeite.natDegree_kernelRow_le_row`: the exact coefficients and sharp
   row support of the finite kernel polynomial
   `G * (K * G) ^ q` for lower `G` and strictly lower `K`.
+- `LGV.RepeatedChip.kernelSequence_isPolyaFreqSeq` and
+  `LGV.RepeatedChip.kernelRow_isPFPolynomial`: ordered-LGV certificates for
+  nonnegative repeated chip words; `natDegree_kernelRow_le_div` records the
+  sharper bound when every marked pass drops at least `r` levels.
 - `BrandenLeite.twoKernelRows_pf_and_interl` and
   `BrandenLeite.rationalRodRows_pf_and_interl`: checked PF/interlacing
   endpoints for composition rows and factored stationary rod-tiling kernels.
