@@ -34,11 +34,12 @@ module = "RealRooted.NarayanaTransformation.Endpoints"
 
 The canonical family in this page is the two-parameter polynomial
 
-`Nₘ,ₙ(x) = Σₖ (binom(n,k) binom(n+m,k) / binom(m+k,k)) xᵏ`,
+`N_{n,m}(x) = Σₖ (binom(n,k) binom(n+m,k) / binom(m+k,k)) xᵏ`,
 
-with the sum represented in Lean by `narayanaPolynomial m n`.  The associated
-`narayanaTransform m` sends the monomial `X^k` to `Nₘ,ₖ`.  The selected
-theorems prove real splitting for every generalized Narayana polynomial,
+represented in Lean by `narayanaPolynomial m n`, whose Lean arguments are in
+the order `(m, n)`.  The associated `narayanaTransform m` sends the monomial
+`X^k` to `N_{k,m}`.  The selected theorems prove real splitting for every
+generalized Narayana polynomial,
 package the family as Pólya-frequency polynomials, and prove preservation of
 Pólya-frequency polynomials under this transform.
 
@@ -50,10 +51,11 @@ this catalogue.
 
 ## References
 
-The coefficient normalization is the generalized Narayana polynomial of
-Mao–Wang, Eq. (1.2), and the root-location input is the
-Dominici–Johnston–Jordaan theorem used as Lemma 2.5 in the transformation
-development.  The precise citations and formal recurrence interfaces are
-recorded in the imported `RealRooted.NarayanaTransformation` modules.
+The coefficient normalization is from Jianxi Mao and Lijie Wang, “The
+Narayana transformation,” arXiv:2607.01572 (2026), Eq. (1.2).  The
+root-location input is D. Dominici, S. J. Johnston, and K. Jordaan, “Real
+zeros of 2F1 hypergeometric polynomials,” *Journal of Computational and
+Applied Mathematics* 247 (2013), 152–161, arXiv:1301.4771, used as Lemma 2.5
+in the transformation development.
 <!-- /realrooted-catalog-content -->
 -/

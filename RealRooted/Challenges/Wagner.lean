@@ -31,7 +31,7 @@ The shift theorem states
 This is the Lean orientation: `StrictInterl f g` means that `f` is the shorter
 or left member and `g` is the right member.  Every selected theorem retains
 the root-location, leading-coefficient, and degree hypotheses needed by the
-formal result.
+formal result where required.
 
 ## References
 

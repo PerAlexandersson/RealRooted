@@ -40,7 +40,8 @@ larger and contains the alternating root list.
 
 ## References
 
-The definitions and root-list conventions are formalized in
+Steve Fisk, “Polynomials, roots, and interlacing,” arXiv:math/0612833
+(2006).  The definitions and root-list conventions are formalized in
 `RealRooted.Basic.ProperPosition`, with the canonical list interleaving
 bridges in `RealRooted.Basic`.
 <!-- /realrooted-catalog-content -->
