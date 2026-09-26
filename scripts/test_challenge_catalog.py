@@ -157,6 +157,18 @@ end RealRooted.Challenges.Sample
         with self.assertRaisesRegex(CatalogError, "deprecated compatibility alias"):
             validate_sources(self.root, load_catalog(self.root))
 
+        multiline_deprecated = (
+            selected
+            + "namespace RealRooted.Challenges.Sample\n"
+            + "@[deprecated canonicalFamily\n"
+            + "  (since := \"2026-09-26\")]\n"
+            + "abbrev family : Nat := 1\n"
+            + "end RealRooted.Challenges.Sample\n"
+        )
+        self.write("RealRooted/Challenges/Sample.lean", multiline_deprecated)
+        with self.assertRaisesRegex(CatalogError, "deprecated compatibility alias"):
+            validate_sources(self.root, load_catalog(self.root))
+
         scaffold = catalog_block(
             definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.forwardTarget"',
             theorems="",

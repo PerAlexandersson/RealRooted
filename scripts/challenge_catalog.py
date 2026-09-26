@@ -438,15 +438,18 @@ def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> d
     namespaces: list[str] = []
     found: dict[str, SourceDeclaration] = {}
     pending_deprecated = False
+    attribute_depth = 0
     for line_number, line in enumerate(clean.splitlines(), start=1):
         namespace_match = NAMESPACE_RE.match(line)
         if namespace_match:
             pending_deprecated = False
+            attribute_depth = 0
             namespaces.extend(namespace_match.group(1).split("."))
             continue
         end_match = END_NAMESPACE_RE.match(line)
         if end_match:
             pending_deprecated = False
+            attribute_depth = 0
             ending = end_match.group(1).split(".")
             if namespaces[-len(ending) :] == ending:
                 del namespaces[-len(ending) :]
@@ -454,8 +457,12 @@ def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> d
         declaration_match = DECLARATION_RE.match(line)
         stripped = line.strip()
         if not declaration_match:
-            if stripped.startswith("@["):
+            if attribute_depth:
                 pending_deprecated = pending_deprecated or "deprecated" in stripped
+                attribute_depth += line.count("[") - line.count("]")
+            elif stripped.startswith("@["):
+                pending_deprecated = pending_deprecated or "deprecated" in stripped
+                attribute_depth = line.count("[") - line.count("]")
             elif stripped:
                 pending_deprecated = False
             continue
@@ -463,6 +470,7 @@ def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> d
         attributes = declaration_match.group("attributes")
         deprecated = pending_deprecated or "deprecated" in attributes
         pending_deprecated = False
+        attribute_depth = 0
         if "private" in modifiers:
             continue
         raw_kind = declaration_match.group("kind")
