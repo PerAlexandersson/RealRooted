@@ -18,18 +18,18 @@ namespace RealRooted
 
 /-- A `StrictInterl` witness orients strict upper-tail root counts, independently of
 whether its endpoints have equal degrees or degrees differing by one. -/
-theorem rootCountAboveOriented_of_strictInterl {p q : ℝ[X]} (hprec : StrictInterl p q) :
+theorem rootCountAboveOriented_of_strictInterl {p q : ℝ[X]} (hstrictInterl : StrictInterl p q) :
     ∀ x : ℝ,
       ((p.roots.filter (x < ·)).card : ℤ) ≤ (q.roots.filter (x < ·)).card ∧
       ((q.roots.filter (x < ·)).card : ℤ) ≤
         (p.roots.filter (x < ·)).card + 1 := by
-  rcases hprec.natDegree_eq_or_eq_succ with hdeg | hsucc
+  rcases hstrictInterl.natDegree_eq_or_eq_succ with hdeg | hsucc
   · intro x
     exact
       (sameDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
-        (f := q) (g := p) hprec.2.1.2 hprec.1.2 hdeg.symm x).mpr
-        (sameDegreeRootCountOriented_of_strictInterl hprec hdeg x)
-  · exact succDegreeRootCountAboveOriented_of_strictInterl hprec hsucc
+        (f := q) (g := p) hstrictInterl.2.1.2 hstrictInterl.1.2 hdeg.symm x).mpr
+        (sameDegreeRootCountOriented_of_strictInterl hstrictInterl hdeg x)
+  · exact succDegreeRootCountAboveOriented_of_strictInterl hstrictInterl hsucc
 
 @[deprecated rootCountAboveOriented_of_strictInterl (since := "2026-09-18")]
 alias rootCountAboveOriented_of_prec := rootCountAboveOriented_of_strictInterl

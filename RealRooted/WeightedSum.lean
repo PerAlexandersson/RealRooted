@@ -192,14 +192,14 @@ Wagner (2). Zero-weight terms may be skipped, while a positive-weight head term
 must be compatible with the weighted tail. -/
 inductive WeightedCompatibleLeft (h : ℝ[X]) : List (ℝ × ℝ[X]) → Prop
   | singleton {a : ℝ} {p : ℝ[X]}
-      (ha : 0 < a) (hprec : StrictInterl h p) (hpos : HasPosLeadingCoeff p) :
+      (ha : 0 < a) (hstrictInterl : StrictInterl h p) (hpos : HasPosLeadingCoeff p) :
       WeightedCompatibleLeft h [(a, p)]
   | cons_zero {a : ℝ} {p : ℝ[X]} {l : List (ℝ × ℝ[X])}
-      (ha : a = 0) (hprec : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
+      (ha : a = 0) (hstrictInterl : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
       (hl : WeightedCompatibleLeft h l) :
       WeightedCompatibleLeft h ((a, p) :: l)
   | cons_pos {a : ℝ} {p : ℝ[X]} {l : List (ℝ × ℝ[X])}
-      (ha : 0 < a) (hprec : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
+      (ha : 0 < a) (hstrictInterl : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
       (hl : WeightedCompatibleLeft h l)
       (hrr_ne : (C a * p + weightedSum l) ≠ 0)
       (hrr_splits : (C a * p + weightedSum l).Splits)
@@ -253,14 +253,14 @@ lemma hasPosLeadingCoeff {h : ℝ[X]} {l : List (ℝ × ℝ[X])}
 
 lemma toStrictInterl {h : ℝ[X]} :
     ∀ {l : List (ℝ × ℝ[X])}, WeightedCompatibleLeft h l → StrictInterl h (weightedSum l)
-  | _, singleton ha hprec _ => by
-      simpa [weightedSum, weightedSum_cons] using StrictInterl.C_mul_right hprec ha.ne'
+  | _, singleton ha hstrictInterl _ => by
+      simpa [weightedSum, weightedSum_cons] using StrictInterl.C_mul_right hstrictInterl ha.ne'
   | _, cons_zero ha _ _ hl => by
       simpa [weightedSum, weightedSum_cons, ha] using toStrictInterl hl
-  | _, @cons_pos _ a p l ha hprec hpos hl hrr_ne hrr_splits hcop => by
+  | _, @cons_pos _ a p l ha hstrictInterl hpos hl hrr_ne hrr_splits hcop => by
       have hCa_pos : HasPosLeadingCoeff (C a * p) := hasPosLeadingCoeff_C_mul ha hpos
       exact StrictInterl.add_of_left
-        (StrictInterl.C_mul_right hprec ha.ne')
+        (StrictInterl.C_mul_right hstrictInterl ha.ne')
         (toStrictInterl hl)
         hCa_pos (hasPosLeadingCoeff hl) hrr_ne hrr_splits hcop
 
@@ -272,8 +272,8 @@ lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
       cases hl
   | [p], hl => by
       cases hl with
-      | singleton _ hprec hpos =>
-          simpa using SumCompatibleLeft.singleton hprec hpos
+      | singleton _ hstrictInterl hpos =>
+          simpa using SumCompatibleLeft.singleton hstrictInterl hpos
       | cons_zero ha _ _ _ =>
           simp_all
       | cons_pos _ _ _ hl _ _ _ =>
@@ -282,8 +282,8 @@ lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
       cases hl with
       | cons_zero ha _ _ _ =>
           simp_all
-      | cons_pos _ hprec hpos htail hrr_ne hrr_splits hcop =>
-          exact SumCompatibleLeft.cons hprec hpos
+      | cons_pos _ hstrictInterl hpos htail hrr_ne hrr_splits hcop =>
+          exact SumCompatibleLeft.cons hstrictInterl hpos
             (toSumCompatibleLeft_map_one htail)
             (by simp_all) (by simp_all) (by simp_all)
 
@@ -309,18 +309,18 @@ theorem StrictInterl.weightedSum_right_of_nonneg :
       (∃ ap ∈ l, 0 < ap.1) →
       StrictInterl (weightedSum l) h
   | [], _, _, _, _, hex => by simp_all
-  | (a, p) :: l, h, hnonneg, hprec, hpos, hex => by
+  | (a, p) :: l, h, hnonneg, hstrictInterl, hpos, hex => by
       have hnonneg_a : 0 ≤ a := hnonneg (a, p) (by simp)
       have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
         List.forall_mem_of_forall_mem_cons hnonneg
       have hstrictInterl_tail : ∀ ap ∈ l, StrictInterl ap.2 h :=
-        List.forall_mem_of_forall_mem_cons hprec
+        List.forall_mem_of_forall_mem_cons hstrictInterl
       have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
         List.forall_mem_of_forall_mem_cons hpos
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
       · by_cases htail : ∃ ap ∈ l, 0 < ap.1
         · have hCp_strictInterl : StrictInterl (C a * p) h :=
-            StrictInterl.C_mul_left (hprec (a, p) (by simp)) ha.ne'
+            StrictInterl.C_mul_left (hstrictInterl (a, p) (by simp)) ha.ne'
           have hCp_pos : HasPosLeadingCoeff (C a * p) :=
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
           have htail_strictInterl : StrictInterl (weightedSum l) h :=
@@ -336,7 +336,7 @@ theorem StrictInterl.weightedSum_right_of_nonneg :
               (forall_weight_eq_zero_of_nonneg_of_not_exists_pos
                 hnonneg_tail htail)
           simpa [weightedSum_cons, hzero_tail] using
-            StrictInterl.C_mul_left (hprec (a, p) (by simp)) ha.ne'
+            StrictInterl.C_mul_left (hstrictInterl (a, p) (by simp)) ha.ne'
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by simp_all
         simpa [weightedSum_cons] using
           StrictInterl.weightedSum_right_of_nonneg
@@ -345,7 +345,7 @@ theorem StrictInterl.weightedSum_right_of_nonneg :
 /-- Unweighted finite-sum Wagner theorem on the right. -/
 theorem StrictInterl.sum_right
     (l : List ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ p ∈ l, StrictInterl p h)
+    (hstrictInterl : ∀ p ∈ l, StrictInterl p h)
     (hpos : ∀ p ∈ l, HasPosLeadingCoeff p)
     (hne : l ≠ []) :
     StrictInterl l.sum h := by

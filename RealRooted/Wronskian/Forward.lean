@@ -103,13 +103,13 @@ interlaces `p` in the differ-by-one sense (`StrictInterl q p` with
 theorem wronskian_pos_of_strictInterl_succ {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg_succ : p.natDegree = q.natDegree + 1)
-    (hprec : StrictInterl q p)
+    (hstrictInterl : StrictInterl q p)
     (hp_nodup : p.roots.Nodup) (hq_nodup : q.roots.Nodup)
     (hdisj : ∀ x : ℝ, p.IsRoot x → ¬ q.IsRoot x)
     (t : ℝ) :
     0 < p.derivative.eval t * q.eval t - p.eval t * q.derivative.eval t := by
   obtain ⟨⟨hq_ne, hq_splits⟩, ⟨hp_ne, hp_splits⟩, ss, rs,
-    hss_sorted, hrs_sorted, hss_coe, hrs_coe, hbranch⟩ := hprec
+    hss_sorted, hrs_sorted, hss_coe, hrs_coe, hbranch⟩ := hstrictInterl
   set n := q.natDegree with hn
   have hp_deg : p.natDegree = n + 1 := hp_deg_succ
   have hss_len : ss.length = n := by

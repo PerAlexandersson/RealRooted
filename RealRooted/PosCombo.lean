@@ -119,20 +119,20 @@ interlaced on the left by `h`. -/
 theorem StrictInterl.weightedSum_left_of_common_left
     (l : List (ℝ × ℝ[X])) (h : ℝ[X])
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hprec : ∀ ap ∈ l, StrictInterl h ap.2)
+    (hstrictInterl : ∀ ap ∈ l, StrictInterl h ap.2)
     (hpos : HasPosLeadingCoeff h)
     (hpoly_pos : ∀ ap ∈ l, HasPosLeadingCoeff ap.2)
     (hex : ∃ ap ∈ l, 0 < ap.1) :
     StrictInterl h (weightedSum l) := by
   rcases hex with ⟨ap0, hap0, ha0_pos⟩
   have hex0 : ∃ ap ∈ l, 0 < ap.1 := ⟨ap0, hap0, ha0_pos⟩
-  have hh : (h ≠ 0 ∧ h.Splits) := (hprec ap0 hap0).1
+  have hh : (h ≠ 0 ∧ h.Splits) := (hstrictInterl ap0 hap0).1
   rcases exists_common_root_upper_bound h l with ⟨r, hh_le, hl_le⟩
   let H := (X - C r) * h
   have hH_pos : HasPosLeadingCoeff H := hasPosLeadingCoeff_X_sub_C_mul hpos
   have hstrictInterl_right : ∀ ap ∈ l, StrictInterl ap.2 H := by
     intro ap hap
-    have hp := hprec ap hap
+    have hp := hstrictInterl ap hap
     have hp_pos := hpoly_pos ap hap
     have hp_le : ∀ s ∈ ap.2.roots, s ≤ r := hl_le ap hap
     rcases hp.natDegree_eq_or_eq_succ with hdeg | hdeg
@@ -148,14 +148,14 @@ theorem StrictInterl.weightedSum_left_of_common_left
   have hH_deg : H.natDegree = h.natDegree + 1 := by
     rw [show H = (X - C r) * h by lia, natDegree_mul (X_sub_C_ne_zero r) hh.1, natDegree_X_sub_C]
     lia
-  have hH_le : ∀ s ∈ H.roots, s ≤ r := roots_le_X_sub_C_mul (hprec ap0 hap0).1.2 hh_le
+  have hH_le : ∀ s ∈ H.roots, s ≤ r := roots_le_X_sub_C_mul (hstrictInterl ap0 hap0).1.2 hh_le
   have hweighted_le : ∀ s ∈ (weightedSum l).roots, s ≤ r :=
     hweighted_right.roots_le_of_right hH_le
   rcases hweighted_right.natDegree_eq_or_eq_succ with hcase | hcase
   · have hdeg : h.natDegree + 1 = (weightedSum l).natDegree := by lia
     exact
       (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
-        r (hprec ap0 hap0).1.2 hweighted_right.1.2 hpos hweighted_pos
+        r (hstrictInterl ap0 hap0).1.2 hweighted_right.1.2 hpos hweighted_pos
         hh_le hweighted_le hdeg).mpr hweighted_right
   · have hdeg : h.natDegree = (weightedSum l).natDegree := by lia
     exact
@@ -167,17 +167,17 @@ be nonzero; its leading-coefficient sign is normalized internally. -/
 theorem StrictInterl.weightedSum_left_of_common_left_signed
     (l : List (ℝ × ℝ[X])) (h : ℝ[X])
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hprec : ∀ ap ∈ l, StrictInterl h ap.2)
+    (hstrictInterl : ∀ ap ∈ l, StrictInterl h ap.2)
     (hpoly_pos : ∀ ap ∈ l, HasPosLeadingCoeff ap.2)
     (hex : ∃ ap ∈ l, 0 < ap.1) :
     StrictInterl h (weightedSum l) := by
   rcases hex with ⟨ap0, hap0, ha0_pos⟩
-  have hh : h ≠ 0 ∧ h.Splits := (hprec ap0 hap0).1
+  have hh : h ≠ 0 ∧ h.Splits := (hstrictInterl ap0 hap0).1
   have hlc_ne : h.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hh.1
   rcases lt_or_gt_of_ne hlc_ne with hneg | hpos
   · let h' : ℝ[X] := C (-1 : ℝ) * h
     have hstrictInterl' : ∀ ap ∈ l, StrictInterl h' ap.2 :=
-      fun ap hap => StrictInterl.C_mul_left (hprec ap hap) (by simp)
+      fun ap hap => StrictInterl.C_mul_left (hstrictInterl ap hap) (by simp)
     have h'_pos : HasPosLeadingCoeff h' := by
       unfold h' HasPosLeadingCoeff
       simp_all
@@ -188,12 +188,12 @@ theorem StrictInterl.weightedSum_left_of_common_left_signed
       StrictInterl.C_mul_left hsum' (by simp)
     grind
   · exact StrictInterl.weightedSum_left_of_common_left
-      l h hnonneg hprec hpos hpoly_pos ⟨ap0, hap0, ha0_pos⟩
+      l h hnonneg hstrictInterl hpos hpoly_pos ⟨ap0, hap0, ha0_pos⟩
 
 /-- Unweighted left-cone corollary. -/
 theorem StrictInterl.sum_left_of_common_left
     (l : List ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ p ∈ l, StrictInterl h p)
+    (hstrictInterl : ∀ p ∈ l, StrictInterl h p)
     (hpos : HasPosLeadingCoeff h)
     (hpoly_pos : ∀ p ∈ l, HasPosLeadingCoeff p)
     (hne : l ≠ []) :
@@ -216,7 +216,7 @@ positive leading coefficient, then their sum is interlaced on the left by `h`
 without needing to assume the sign of `h.leadingCoeff` in advance. -/
 theorem StrictInterl.sum_left_of_common_left_signed
     (l : List ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ p ∈ l, StrictInterl h p)
+    (hstrictInterl : ∀ p ∈ l, StrictInterl h p)
     (hpoly_pos : ∀ p ∈ l, HasPosLeadingCoeff p)
     (hne : l ≠ []) :
     StrictInterl h l.sum := by
@@ -241,7 +241,7 @@ specialization, zero-aware form on lists: if `h ≪₀ f_i` for every summand an
 each `f_i` has nonnegative coefficients, then `h ≪₀ ∑ f_i`. -/
 theorem Interl.sum_left_of_common_left_of_nonneg
     (l : List ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ p ∈ l, Interl h p)
+    (hinterl : ∀ p ∈ l, Interl h p)
     (hnn : ∀ p ∈ l, HasNonnegCoeffs p) :
     Interl h l.sum := by
   by_cases hh0 : h = 0
@@ -255,7 +255,7 @@ theorem Interl.sum_left_of_common_left_of_nonneg
       intro p hp
       have hp_mem : p ∈ l := (List.mem_of_mem_filter hp)
       have hp_ne : p ≠ 0 := by grind
-      rcases hprec p hp_mem with hh | hp0 | hpf <;> lia
+      rcases hinterl p hp_mem with hh | hp0 | hpf <;> lia
     have hpos' : ∀ p ∈ l', HasPosLeadingCoeff p := by
       intro p hp
       have hp_mem : p ∈ l := List.mem_of_mem_filter hp
@@ -269,7 +269,7 @@ theorem Interl.sum_left_of_common_left_of_nonneg
 /-- Right cone for `Interl` over finite sums of nonnegative-coefficient polynomials. -/
 lemma Interl.finsetSum_right_of_nonneg {ι : Type}
     (s : Finset ι) (f : ι → ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ i ∈ s, Interl (f i) h)
+    (hinterl : ∀ i ∈ s, Interl (f i) h)
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
     Interl (s.sum f) h := by
   classical
@@ -277,7 +277,7 @@ lemma Interl.finsetSum_right_of_nonneg {ι : Type}
   | empty =>
       simpa using interl_zero_left h
   | @insert a s ha ih =>
-      have hinterl_a : Interl (f a) h := hprec a (by simp)
+      have hinterl_a : Interl (f a) h := hinterl a (by simp)
       have hinterl_s : ∀ i ∈ s, Interl (f i) h := by simp_all
       have hnn_a : HasNonnegCoeffs (f a) := hnn a (by simp)
       have hnn_s : ∀ i ∈ s, HasNonnegCoeffs (f i) := by simp_all
@@ -305,7 +305,7 @@ lemma Interl.finsetSum_right_of_nonneg {ι : Type}
 /-- Left cone for `Interl` over finite sums of nonnegative-coefficient polynomials. -/
 lemma Interl.finsetSum_left_of_nonneg {ι : Type}
     (h : ℝ[X]) (s : Finset ι) (f : ι → ℝ[X])
-    (hprec : ∀ i ∈ s, Interl h (f i))
+    (hinterl : ∀ i ∈ s, Interl h (f i))
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
     Interl h (s.sum f) := by
   classical
@@ -332,13 +332,13 @@ nonnegative coefficients, then the two finite sums are in `Interl` proper
 position. -/
 lemma Interl.finsetSum_pairwise_of_nonneg {ι κ : Type}
     (s : Finset ι) (t : Finset κ) (f : ι → ℝ[X]) (g : κ → ℝ[X])
-    (hprec : ∀ i ∈ s, ∀ j ∈ t, Interl (f i) (g j))
+    (hinterl : ∀ i ∈ s, ∀ j ∈ t, Interl (f i) (g j))
     (hfnn : ∀ i ∈ s, HasNonnegCoeffs (f i))
     (hgnn : ∀ j ∈ t, HasNonnegCoeffs (g j)) :
     Interl (s.sum f) (t.sum g) := by
   classical
   have hleft : ∀ i ∈ s, Interl (f i) (t.sum g) :=
-    fun i hi => Interl.finsetSum_left_of_nonneg (f i) t g (hprec i hi) hgnn
+    fun i hi => Interl.finsetSum_left_of_nonneg (f i) t g (hinterl i hi) hgnn
   exact Interl.finsetSum_right_of_nonneg s f (t.sum g) hleft hfnn
 
 /-! ## Deprecated zero-aware cone-sum names -/
@@ -346,35 +346,35 @@ lemma Interl.finsetSum_pairwise_of_nonneg {ι κ : Type}
 @[deprecated Interl.sum_left_of_common_left_of_nonneg (since := "2026-09-18")]
 theorem prec0_sum_left_of_common_left_of_nonneg
     (l : List ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ p ∈ l, Interl h p)
+    (hinterl : ∀ p ∈ l, Interl h p)
     (hnn : ∀ p ∈ l, HasNonnegCoeffs p) :
     Interl h l.sum :=
-  Interl.sum_left_of_common_left_of_nonneg l h hprec hnn
+  Interl.sum_left_of_common_left_of_nonneg l h hinterl hnn
 
 @[deprecated Interl.finsetSum_right_of_nonneg (since := "2026-09-18")]
 lemma prec0_finsetSum_right_of_nonneg {ι : Type}
     (s : Finset ι) (f : ι → ℝ[X]) (h : ℝ[X])
-    (hprec : ∀ i ∈ s, Interl (f i) h)
+    (hinterl : ∀ i ∈ s, Interl (f i) h)
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
     Interl (s.sum f) h :=
-  Interl.finsetSum_right_of_nonneg s f h hprec hnn
+  Interl.finsetSum_right_of_nonneg s f h hinterl hnn
 
 @[deprecated Interl.finsetSum_left_of_nonneg (since := "2026-09-18")]
 lemma prec0_finsetSum_left_of_nonneg {ι : Type}
     (h : ℝ[X]) (s : Finset ι) (f : ι → ℝ[X])
-    (hprec : ∀ i ∈ s, Interl h (f i))
+    (hinterl : ∀ i ∈ s, Interl h (f i))
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
     Interl h (s.sum f) :=
-  Interl.finsetSum_left_of_nonneg h s f hprec hnn
+  Interl.finsetSum_left_of_nonneg h s f hinterl hnn
 
 @[deprecated Interl.finsetSum_pairwise_of_nonneg (since := "2026-09-18")]
 lemma prec0_finsetSum_pairwise_of_nonneg {ι κ : Type}
     (s : Finset ι) (t : Finset κ) (f : ι → ℝ[X]) (g : κ → ℝ[X])
-    (hprec : ∀ i ∈ s, ∀ j ∈ t, Interl (f i) (g j))
+    (hinterl : ∀ i ∈ s, ∀ j ∈ t, Interl (f i) (g j))
     (hfnn : ∀ i ∈ s, HasNonnegCoeffs (f i))
     (hgnn : ∀ j ∈ t, HasNonnegCoeffs (g j)) :
     Interl (s.sum f) (t.sum g) :=
-  Interl.finsetSum_pairwise_of_nonneg s t f g hprec hfnn hgnn
+  Interl.finsetSum_pairwise_of_nonneg s t f g hinterl hfnn hgnn
 
 /-- Same-degree shift on the left: if `f ≪ g`, both have positive leading
 coefficient, and all roots lie at most `r`, then `g ≪ g + (X - C r) * f`. -/

@@ -691,7 +691,7 @@ theorem gwJL_weightedExpansion_strictInterl_right
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hg : g = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hprec : ∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k f))
+    (hstrictInterl : ∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k f))
     (hpos : ∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2))
     (hex : ∃ ap ∈ l, 0 < ap.1) :
     StrictInterl (gwJL k g) (gwJL k f) := by
@@ -706,7 +706,7 @@ theorem gwJL_weightedExpansion_strictInterl_right
       (by
         intro ap hap
         rcases List.mem_map.mp hap with ⟨ap₀, hap₀, rfl⟩
-        exact hprec ap₀ hap₀)
+        exact hstrictInterl ap₀ hap₀)
       (by
         intro ap hap
         rcases List.mem_map.mp hap with ⟨ap₀, hap₀, rfl⟩
@@ -731,8 +731,8 @@ theorem gwTheorem11ReverseStrictInterl_of_rightWeightedExpansion
     (h : gwTheorem11RightWeightedExpansionStatement) :
     ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, StrictInterl (gwJL k g) (gwJL k f) := by
   intro f g hfg k
-  rcases h hfg k with ⟨l, hg, hnonneg, hprec, hpos, hex⟩
-  exact gwJL_weightedExpansion_strictInterl_right hg hnonneg hprec hpos hex
+  rcases h hfg k with ⟨l, hg, hnonneg, hstrictInterl, hpos, hex⟩
+  exact gwJL_weightedExpansion_strictInterl_right hg hnonneg hstrictInterl hpos hex
 
 /-- Common-right weighted reduction in the forward Theorem 11(c) orientation.
 If the left input `f` is a nonnegative weighted sum whose `J^k L` images all
@@ -742,7 +742,7 @@ theorem gwJL_strictInterl_of_rightWeightedExpansion
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hprec : ∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k g))
+    (hstrictInterl : ∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k g))
     (hpos : ∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2))
     (hex : ∃ ap ∈ l, 0 < ap.1) :
     StrictInterl (gwJL k f) (gwJL k g) := by
@@ -757,7 +757,7 @@ theorem gwJL_strictInterl_of_rightWeightedExpansion
       (by
         intro ap hap
         rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
-        exact hprec ap0 hap0)
+        exact hstrictInterl ap0 hap0)
       (by
         intro ap hap
         rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
@@ -781,8 +781,8 @@ theorem gwTheorem11StrictInterl_of_rightWeightedExpansion
     (h : gwTheorem11StrictInterlRightWeightedExpansionStatement) :
     gwTheorem11StrictInterlStatement := by
   intro f g hfg k
-  rcases h hfg k with ⟨l, hf, hnonneg, hprec, hpos, hex⟩
-  exact gwJL_strictInterl_of_rightWeightedExpansion hf hnonneg hprec hpos hex
+  rcases h hfg k with ⟨l, hf, hnonneg, hstrictInterl, hpos, hex⟩
+  exact gwJL_strictInterl_of_rightWeightedExpansion hf hnonneg hstrictInterl hpos hex
 
 @[deprecated derivative_strictInterl_TDeriv_of_splits (since := "2026-09-18")]
 alias derivative_prec_TDeriv_of_splits := derivative_strictInterl_TDeriv_of_splits

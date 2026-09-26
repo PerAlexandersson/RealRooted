@@ -333,11 +333,11 @@ conclusion, multiplying everything by a common linear factor preserves it. This
 is the multiplication-back step for common-root reductions. -/
 lemma strictInterl_mul_X_sub_C_of_linearCombo_quotient
     {qf qg a b : ℝ[X]} {r : ℝ}
-    (hprec : StrictInterl qf (a * qf + b * qg)) :
+    (hstrictInterl : StrictInterl qf (a * qf + b * qg)) :
     StrictInterl ((X - C r) * qf) (a * ((X - C r) * qf) + b * ((X - C r) * qg)) := by
   have hmul :
       StrictInterl ((X - C r) * qf) ((X - C r) * (a * qf + b * qg)) :=
-    hprec.mul_common_factor
+    hstrictInterl.mul_common_factor
       (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
   simpa [add_mul_factor_X_sub_C, add_comm, add_left_comm, add_assoc] using hmul
 

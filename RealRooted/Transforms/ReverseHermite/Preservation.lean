@@ -33,7 +33,7 @@ private theorem reverseHermiteTransform_interl_of_weightedSum_right
     {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hprec : ∀ ap ∈ l,
+    (hinterl : ∀ ap ∈ l,
       Interl (reverseHermiteTransform ap.2)
         (reverseHermiteTransform g))
     (hnn : ∀ ap ∈ l,

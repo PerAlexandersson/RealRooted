@@ -195,10 +195,10 @@ lemma StrictInterlSameDegree.bezoutMatrix_posDef_quadratic
     {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2)
-    (hprec : StrictInterlSameDegree p q) :
+    (hstrictInterl : StrictInterlSameDegree p q) :
     (bezoutMatrix 2 q p).PosDef := by
-  obtain ⟨hp_ne, hp_splits⟩ := hprec.1
-  obtain ⟨hq_ne, hq_splits⟩ := hprec.2.1
+  obtain ⟨hp_ne, hp_splits⟩ := hstrictInterl.1
+  obtain ⟨hq_ne, hq_splits⟩ := hstrictInterl.2.1
   obtain ⟨b, d, hbd, hp_eq⟩ :=
     Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp_splits hp_deg
   obtain ⟨a, c, hac, hq_eq⟩ :=
@@ -269,7 +269,7 @@ lemma StrictInterlSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
   obtain ⟨hq_ne, hq_splits⟩ :=
     isRealRooted_of_deg_zero (leadingCoeff_ne_zero.mp hq_pos.ne') hq_deg
   constructor
-  · intro hprec
+  · intro hstrictInterl
     refine Matrix.PosDef.of_dotProduct_mulVec_pos (bezoutMatrix.isHermitian _ _ _) ?_
     intro x hx
     exact False.elim (hx (funext fun i ↦ i.elim0))

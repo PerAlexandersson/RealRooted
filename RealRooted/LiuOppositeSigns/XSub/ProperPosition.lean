@@ -29,11 +29,11 @@ theorem positiveSplitRootCountPair_of_strictInterl
 The degree split required by the backend follows automatically from `StrictInterl`. -/
 theorem xSub_splits_of_strictInterl_of_nonneg
     {p q : ℝ[X]} (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
-    (hprec : StrictInterl p q) (hpnn : HasNonnegCoeffs p)
+    (hstrictInterl : StrictInterl p q) (hpnn : HasNonnegCoeffs p)
     (hqnn : HasNonnegCoeffs q) {μ : ℝ} (hμ : 0 < μ) :
     (X * p - C μ * q).Splits := by
-  have hpair := positiveSplitRootCountPair_of_strictInterl hp hq hprec
-  rcases hprec.natDegree_eq_or_eq_succ with hdeg | hsucc
+  have hpair := positiveSplitRootCountPair_of_strictInterl hp hq hstrictInterl
+  rcases hstrictInterl.natDegree_eq_or_eq_succ with hdeg | hsucc
   · exact hpair.xSub_splits_of_same_degree_nonneg hpnn hqnn hdeg.symm hμ
   · exact hpair.xSub_splits_of_right_successor_nonneg hpnn hqnn hsucc hμ
 

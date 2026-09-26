@@ -33,7 +33,7 @@ lemma HasSimpleRoots.ne_zero (hp : HasSimpleRoots p) : p ≠ 0 := by
 
 /-- A strictly interlacing pair with no common real root has simple real roots in
 both entries. -/
-theorem StrictInterl.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : StrictInterl f g)
+theorem StrictInterl.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
     (hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ g.IsRoot r)) :
     HasSimpleRoots f ∧ HasSimpleRoots g := by
   constructor
@@ -41,22 +41,22 @@ theorem StrictInterl.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : St
     have hother : ¬ g.IsRoot r := fun hr ↦ hno r ⟨hroot, hr⟩
     have hotherMult : g.rootMultiplicity r = 0 := by simp_all
     have hpos : 0 < f.rootMultiplicity r :=
-      (Polynomial.rootMultiplicity_pos hprec.1.1).mpr hroot
-    have hbound := (hprec.rootMultiplicity_bounds r).1
+      (Polynomial.rootMultiplicity_pos hstrictInterl.1.1).mpr hroot
+    have hbound := (hstrictInterl.rootMultiplicity_bounds r).1
     lia
   · intro r hroot
     have hother : ¬ f.IsRoot r := fun hr ↦ hno r ⟨hr, hroot⟩
     have hotherMult : f.rootMultiplicity r = 0 := by simp_all
     have hpos : 0 < g.rootMultiplicity r :=
-      (Polynomial.rootMultiplicity_pos hprec.2.1.1).mpr hroot
-    have hbound := (hprec.rootMultiplicity_bounds r).2
+      (Polynomial.rootMultiplicity_pos hstrictInterl.2.1.1).mpr hroot
+    have hbound := (hstrictInterl.rootMultiplicity_bounds r).2
     lia
 
 /-- A coprime strictly interlacing pair has simple real roots in both entries. -/
-theorem StrictInterl.hasSimpleRoots_of_isCoprime {f g : ℝ[X]} (hprec : StrictInterl f g)
+theorem StrictInterl.hasSimpleRoots_of_isCoprime {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
     (hcop : IsCoprime f g) :
     HasSimpleRoots f ∧ HasSimpleRoots g :=
-  hprec.hasSimpleRoots_of_no_common_root fun _ hr ↦
+  hstrictInterl.hasSimpleRoots_of_no_common_root fun _ hr ↦
     hcop.not_isRoot_right hr.1 hr.2
 
 lemma HasSimpleRoots.hasSimpleRootsExcept (hp : HasSimpleRoots p) (a : ℝ) :
@@ -153,15 +153,15 @@ lemma HasSimpleRoots.roots_sort_sortedLT (hsimple : HasSimpleRoots p) :
   exact hsorted.sortedLT_of_nodup hnodup
 
 @[deprecated StrictInterl.hasSimpleRoots_of_no_common_root (since := "2026-09-16")]
-theorem Prec.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : StrictInterl f g)
+theorem Prec.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
     (hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ g.IsRoot r)) :
     HasSimpleRoots f ∧ HasSimpleRoots g :=
-  StrictInterl.hasSimpleRoots_of_no_common_root hprec hno
+  StrictInterl.hasSimpleRoots_of_no_common_root hstrictInterl hno
 
 @[deprecated StrictInterl.hasSimpleRoots_of_isCoprime (since := "2026-09-16")]
-theorem Prec.hasSimpleRoots_of_isCoprime {f g : ℝ[X]} (hprec : StrictInterl f g)
+theorem Prec.hasSimpleRoots_of_isCoprime {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
     (hcop : IsCoprime f g) :
     HasSimpleRoots f ∧ HasSimpleRoots g :=
-  StrictInterl.hasSimpleRoots_of_isCoprime hprec hcop
+  StrictInterl.hasSimpleRoots_of_isCoprime hstrictInterl hcop
 
 end RealRooted

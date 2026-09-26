@@ -182,14 +182,14 @@ theorem interl_weightedSum_right_of_nonneg :
       Interl (weightedSum l) h
   | [], h, _, _, _ => by
       simp [interl_zero_left]
-  | (a, p) :: l, h, hnonneg, hprec, hnn => by
+  | (a, p) :: l, h, hnonneg, hinterl, hnn => by
       have ha : 0 ≤ a := hnonneg (a, p) (by simp)
-      have hp_strictInterl : Interl p h := hprec (a, p) (by simp)
+      have hp_strictInterl : Interl p h := hinterl (a, p) (by simp)
       have hp_nn : HasNonnegCoeffs p := hnn (a, p) (by simp)
       have htail_nonneg : ∀ ap ∈ l, 0 ≤ ap.1 :=
         fun ap hap => hnonneg ap (by simp [hap])
       have htail_strictInterl : ∀ ap ∈ l, Interl ap.2 h :=
-        fun ap hap => hprec ap (by simp [hap])
+        fun ap hap => hinterl ap (by simp [hap])
       have htail_nn : ∀ ap ∈ l, HasNonnegCoeffs ap.2 :=
         fun ap hap => hnn ap (by simp [hap])
       have hhead_strictInterl : Interl (C a * p) h :=
@@ -221,7 +221,7 @@ theorem gwSchurProduct_interl_of_weightedSum_right {f g p : ℝ[X]}
     {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hprec :
+    (hinterl :
       ∀ ap ∈ l, Interl (gwSchurProduct ap.2 p) (gwSchurProduct g p))
     (hnn : ∀ ap ∈ l, HasNonnegCoeffs (gwSchurProduct ap.2 p)) :
     Interl (gwSchurProduct f p) (gwSchurProduct g p) := by
@@ -232,7 +232,7 @@ theorem gwSchurProduct_interl_of_weightedSum_right {f g p : ℝ[X]}
     exact hnonneg ap0 hap0
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
-    exact hprec ap0 hap0
+    exact hinterl ap0 hap0
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
     exact hnn ap0 hap0
@@ -244,7 +244,7 @@ theorem gwSchurProduct_interl_of_kreinSummandExpansion {f g p : ℝ[X]}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
     (hsummand : ∀ ap ∈ l, IsGWKreinSummand g ap.2)
-    (hprec :
+    (hinterl :
       ∀ q : ℝ[X], IsGWKreinSummand g q →
         Interl (gwSchurProduct q p) (gwSchurProduct g p))
     (hnn :
@@ -252,7 +252,7 @@ theorem gwSchurProduct_interl_of_kreinSummandExpansion {f g p : ℝ[X]}
         HasNonnegCoeffs (gwSchurProduct q p)) :
     Interl (gwSchurProduct f p) (gwSchurProduct g p) :=
   gwSchurProduct_interl_of_weightedSum_right hf hnonneg
-    (fun ap hap => hprec ap.2 (hsummand ap hap))
+    (fun ap hap => hinterl ap.2 (hsummand ap hap))
     (fun ap hap => hnn ap.2 (hsummand ap hap))
 
 /-- A PF polynomial's derivative precedes the polynomial itself in the

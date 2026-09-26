@@ -99,15 +99,15 @@ even part has no zero root, contradicting the multiplicity-one gap forced by
 interlacing. -/
 theorem coeff_zero_ne_of_strictInterl_rotatedParts
     {odd even : ℝ[X]}
-    (hprec :
+    (hstrictInterl :
       StrictInterl (hurwitzRotatedOddPart odd) (hurwitzRotatedEvenPart even) ∨
         StrictInterl (hurwitzRotatedEvenPart even) (hurwitzRotatedOddPart odd))
     (heven0 : even.coeff 0 ≠ 0) : odd.coeff 0 ≠ 0 := by
   intro hodd0
   have hrotOddNe : hurwitzRotatedOddPart odd ≠ 0 := by
-    rcases hprec with hprec | hprec
-    · exact hprec.1.1
-    · exact hprec.2.1.1
+    rcases hstrictInterl with hstrictInterl | hstrictInterl
+    · exact hstrictInterl.1.1
+    · exact hstrictInterl.2.1.1
   have hrotEvenMult :
       (hurwitzRotatedEvenPart even).rootMultiplicity 0 = 0 := by
     apply Polynomial.rootMultiplicity_eq_zero
@@ -136,9 +136,9 @@ theorem coeff_zero_ne_of_strictInterl_rotatedParts
   have hmultBound :
       (hurwitzRotatedOddPart odd).rootMultiplicity 0 - 1 ≤
         (hurwitzRotatedEvenPart even).rootMultiplicity 0 := by
-    rcases hprec with hprec | hprec
-    · exact (hprec.rootMultiplicity_bounds 0).1
-    · exact (hprec.rootMultiplicity_bounds 0).2
+    rcases hstrictInterl with hstrictInterl | hstrictInterl
+    · exact (hstrictInterl.rootMultiplicity_bounds 0).1
+    · exact (hstrictInterl.rootMultiplicity_bounds 0).2
   rw [hrotEvenMult] at hmultBound
   lia
 

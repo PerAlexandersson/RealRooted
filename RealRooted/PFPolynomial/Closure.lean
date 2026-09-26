@@ -91,7 +91,7 @@ theorem interl_of_pf_coeff_tendsto_of_natDegree_le
     {p q : ℕ → ℝ[X]} {p₀ q₀ : ℝ[X]} {N : ℕ}
     (hp : ∀ k, IsPFPolynomial (p k))
     (hq : ∀ k, IsPFPolynomial (q k))
-    (hprec : ∀ k, Interl (p k) (q k))
+    (hinterl : ∀ k, Interl (p k) (q k))
     (hpdeg : ∀ k, (p k).natDegree ≤ N)
     (hqdeg : ∀ k, (q k).natDegree ≤ N)
     (hpcoeff : ∀ i, Tendsto (fun k => (p k).coeff i) atTop
@@ -149,7 +149,7 @@ theorem interl_of_pf_coeff_tendsto_of_natDegree_le
         ((Complex.continuous_ofReal.tendsto _).comp (hpcoeff i)))
   have hHstable : ∀ k, H k = 0 ∨ IsUpperHalfPlaneStable (H k) := by
     intro k
-    rcases hprec k with hpzero | hqzero | hpq
+    rcases hinterl k with hpzero | hqzero | hpq
     · dsimp only [H]
       rw [hpzero]
       by_cases hqzero' : q k = 0
