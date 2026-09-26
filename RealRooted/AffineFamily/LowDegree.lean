@@ -672,7 +672,7 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
 /-- Linear left-hand branch of the affine converse. This extracts the
 `f.natDegree = 1` case from `strictInterl_of_affine_family_nonneg` so it can later be
 reused as the degree-one base case for right-pair recursion. -/
-protected lemma AffineFamily.prec_of_affine_family_nonneg_degree_one
+protected lemma AffineFamily.strictInterl_of_affine_family_nonneg_degree_one
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
@@ -717,8 +717,8 @@ protected lemma AffineFamily.prec_of_affine_family_nonneg_degree_one
   simpa [EuclideanDomain.div_add_mod'] using hprec_lin
 
 /-- Degree-one base case for the affine right pair. This is the right-pair
-transport of `AffineFamily.prec_of_affine_family_nonneg_degree_one`. -/
-protected lemma AffineFamily.prec_right_pair_of_affine_family_degree_one
+transport of `AffineFamily.strictInterl_of_affine_family_nonneg_degree_one`. -/
+protected lemma AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
@@ -729,8 +729,19 @@ protected lemma AffineFamily.prec_right_pair_of_affine_family_degree_one
     (hdegf1 : f.natDegree = 1) :
     StrictInterl g (X * f) :=
   strictInterl_to_strictInterl_mul_X_of_nonneg
-    (AffineFamily.prec_of_affine_family_nonneg_degree_one hf0 hg0 hfnn hgnn haff hdegf1)
+    (AffineFamily.strictInterl_of_affine_family_nonneg_degree_one
+      hf0 hg0 hfnn hgnn haff hdegf1)
     hfnn hgnn
+
+@[deprecated AffineFamily.strictInterl_of_affine_family_nonneg_degree_one
+  (since := "2026-09-26")]
+protected alias AffineFamily.prec_of_affine_family_nonneg_degree_one :=
+  AffineFamily.strictInterl_of_affine_family_nonneg_degree_one
+
+@[deprecated AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
+  (since := "2026-09-26")]
+protected alias AffineFamily.prec_right_pair_of_affine_family_degree_one :=
+  AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
 
 /-- Public degree-one right-pair form of the affine-family converse.  If
 `f.natDegree = 1`, the affine-family hypothesis gives the stronger conclusion
@@ -745,7 +756,7 @@ theorem strictInterl_right_pair_of_affine_family_nonneg_degree_one
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf1 : f.natDegree = 1) :
     StrictInterl g (X * f) :=
-  AffineFamily.prec_right_pair_of_affine_family_degree_one
+  AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
     hf0 hg0 hfnn hgnn haff hdegf1
 
 @[deprecated strictInterl_right_pair_of_affine_family_nonneg_degree_one

@@ -16,7 +16,7 @@ namespace LiuOppositeSigns
 
 /-- A left endpoint cannot be in `StrictInterl` with a right endpoint of one lower
 degree.  This guards against a tempting but degree-impossible #64 route. -/
-theorem not_prec_of_natDegree_eq_succ_left {f g : ℝ[X]}
+theorem not_strictInterl_of_natDegree_eq_succ_left {f g : ℝ[X]}
     (hdeg : f.natDegree = g.natDegree + 1) :
     ¬ StrictInterl f g := by
   intro h
@@ -24,7 +24,7 @@ theorem not_prec_of_natDegree_eq_succ_left {f g : ℝ[X]}
 
 /-- In the two-degree Liu left branch, orienting the translated deletion pair
 as `deleteRootFactor f r ≺ g` is degree-impossible. -/
-theorem LeftRootCountBranch.not_translatedDeletionPrec_of_twoDegree
+theorem LeftRootCountBranch.not_translatedDeletionStrictInterl_of_twoDegree
     {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
     (hdeg : f.natDegree = g.natDegree + 2) :
@@ -39,17 +39,17 @@ theorem LeftRootCountBranch.not_translatedDeletionPrec_of_twoDegree
         ((deleteRootFactor f r).comp (X + C r)).natDegree =
           ((-g).comp (X + C r)).natDegree + 1 := by
       simpa [Polynomial.natDegree_comp, Polynomial.natDegree_neg] using hdelete_deg
-    exact (not_prec_of_natDegree_eq_succ_left hdeg') hprec
+    exact (not_strictInterl_of_natDegree_eq_succ_left hdeg') hprec
   · have hdeg' :
         ((-(deleteRootFactor f r)).comp (X + C r)).natDegree =
           (g.comp (X + C r)).natDegree + 1 := by
       simpa [Polynomial.natDegree_comp, Polynomial.natDegree_neg] using hdelete_deg
-    exact (not_prec_of_natDegree_eq_succ_left hdeg') hprec
+    exact (not_strictInterl_of_natDegree_eq_succ_left hdeg') hprec
 
 /-- The stronger boundary-`StrictInterl` route is also degree-impossible in the
 two-degree Liu left branch: the restored endpoint has degree two more than
 `g`. -/
-theorem LeftRootCountBranch.not_translatedBoundaryPrec_of_twoDegree
+theorem LeftRootCountBranch.not_translatedBoundaryStrictInterl_of_twoDegree
     {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
     (hdeg : f.natDegree = g.natDegree + 2) :
@@ -79,6 +79,19 @@ theorem LeftRootCountBranch.not_translatedBoundaryPrec_of_twoDegree
     lia
   intro hprec
   exact hprec.not_of_left_natDegree_succ_lt_right hgap
+
+@[deprecated not_strictInterl_of_natDegree_eq_succ_left (since := "2026-09-26")]
+alias not_prec_of_natDegree_eq_succ_left := not_strictInterl_of_natDegree_eq_succ_left
+
+@[deprecated LeftRootCountBranch.not_translatedDeletionStrictInterl_of_twoDegree
+  (since := "2026-09-26")]
+alias LeftRootCountBranch.not_translatedDeletionPrec_of_twoDegree :=
+  LeftRootCountBranch.not_translatedDeletionStrictInterl_of_twoDegree
+
+@[deprecated LeftRootCountBranch.not_translatedBoundaryStrictInterl_of_twoDegree
+  (since := "2026-09-26")]
+alias LeftRootCountBranch.not_translatedBoundaryPrec_of_twoDegree :=
+  LeftRootCountBranch.not_translatedBoundaryStrictInterl_of_twoDegree
 
 /-- A `P := True` translated right-family predicate target gives the
 unrestricted translated right-family target. -/

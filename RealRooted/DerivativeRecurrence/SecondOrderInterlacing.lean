@@ -358,7 +358,7 @@ structure AffineLagSecondOrderCertificate (P : ℕ → ℝ[X]) (n : ℕ) : Prop 
 
 /-- Consecutive members of a certified rankwise recurrence are in proper
 position. -/
-theorem AffineLagSecondOrderCertificate.prec_succ {P : ℕ → ℝ[X]} {n : ℕ}
+theorem AffineLagSecondOrderCertificate.strictInterl_succ {P : ℕ → ℝ[X]} {n : ℕ}
     (h : AffineLagSecondOrderCertificate P n) : StrictInterl (P n) (P (n + 1)) :=
   h.interlaces_succ.toStrictInterl
 
@@ -366,7 +366,12 @@ theorem AffineLagSecondOrderCertificate.prec_succ {P : ℕ → ℝ[X]} {n : ℕ}
 reals. -/
 theorem AffineLagSecondOrderCertificate.splits {P : ℕ → ℝ[X]} {n : ℕ}
     (h : AffineLagSecondOrderCertificate P n) : (P n).Splits :=
-  h.prec_succ.1.2
+  h.strictInterl_succ.1.2
+
+@[deprecated AffineLagSecondOrderCertificate.strictInterl_succ
+  (since := "2026-09-26")]
+alias AffineLagSecondOrderCertificate.prec_succ :=
+  AffineLagSecondOrderCertificate.strictInterl_succ
 
 /-- The reusable rankwise package for an independent nonnegative lag. -/
 theorem affine_lag_second_order_derivative_certificate_of_nonneg_lag

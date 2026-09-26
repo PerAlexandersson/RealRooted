@@ -17,7 +17,7 @@ namespace RealRooted
 
 open LiuOppositeSigns
 
-private theorem prec_X_X_mul_X_sub_C (r : ℝ) :
+private theorem strictInterl_X_X_mul_X_sub_C (r : ℝ) :
     StrictInterl X (X * (X - C r) : ℝ[X]) := by
   have hbase : StrictInterl (1 : ℝ[X]) (X - C r) :=
     (interlaces_one_linear (by simp)).toStrictInterl
@@ -77,8 +77,8 @@ theorem quadratic_example_commonLeftInterlacer :
   intro p hp
   simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
   rcases hp with rfl | rfl
-  · exact prec_X_X_mul_X_sub_C 1
-  · exact prec_X_X_mul_X_sub_C 3
+  · exact strictInterl_X_X_mul_X_sub_C 1
+  · exact strictInterl_X_X_mul_X_sub_C 3
 
 /-- Appending a zero-weight member still returns a member of strictly positive
 support. -/
@@ -97,8 +97,8 @@ theorem rootSelection_zero_weight_example :
   · intro ap hap
     simp only [List.mem_cons, List.not_mem_nil, or_false] at hap
     rcases hap with rfl | rfl
-    · simpa only [Prod.snd] using prec_X_X_mul_X_sub_C 3
-    · simpa only [Prod.snd, Polynomial.C_1] using prec_X_X_mul_X_sub_C 1
+    · simpa only [Prod.snd] using strictInterl_X_X_mul_X_sub_C 3
+    · simpa only [Prod.snd, Polynomial.C_1] using strictInterl_X_X_mul_X_sub_C 1
   · intro ap hap
     simp only [List.mem_cons, List.not_mem_nil, or_false] at hap
     rcases hap with rfl | rfl
@@ -136,9 +136,9 @@ theorem rootSelection_two_child_tree_example :
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hchild
       rcases hchild with rfl | rfl
       · exact .leaf (natDegree_X_mul_X_sub_C 1)
-          (prec_X_X_mul_X_sub_C 1).2.1.2 (posLeading_X_mul_X_sub_C 1)
+          (strictInterl_X_X_mul_X_sub_C 1).2.1.2 (posLeading_X_mul_X_sub_C 1)
       · exact .leaf (natDegree_X_mul_X_sub_C 3)
-          (prec_X_X_mul_X_sub_C 3).2.1.2 (posLeading_X_mul_X_sub_C 3)
+          (strictInterl_X_X_mul_X_sub_C 3).2.1.2 (posLeading_X_mul_X_sub_C 3)
     · simpa [RootSelectionTree.polynomial] using quadratic_example_commonLeftInterlacer
   · norm_num
 

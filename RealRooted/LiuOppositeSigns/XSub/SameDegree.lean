@@ -98,7 +98,7 @@ def positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
 /-- Degree guardrail for the translated x-subtraction endpoint: in the
 left-successor case, `g.comp (X + C r)` and `X * f.comp (X + C r)` differ by
 two degrees, so this endpoint cannot be proved by a direct `StrictInterl` witness. -/
-theorem not_positiveSplitLeftSuccDegreeTranslatedXPrec
+theorem not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
     {f g : ℝ[X]} {r : ℝ}
     (hpair : PositiveSplitRootCountPair f g)
     (hdeg : f.natDegree = g.natDegree + 1) :
@@ -118,6 +118,11 @@ theorem not_positiveSplitLeftSuccDegreeTranslatedXPrec
     rw [hXF_deg, hF_deg, hG_deg]
     lia
   exact hprec.not_of_left_natDegree_succ_lt_right hgap
+
+@[deprecated not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
+  (since := "2026-09-26")]
+alias not_positiveSplitLeftSuccDegreeTranslatedXPrec :=
+  not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
 
 /-- Quadratic terminal case for the x-subtraction pencil with two degree-one
 endpoints and a nonnegative constant term on the right endpoint. -/

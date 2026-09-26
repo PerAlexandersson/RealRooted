@@ -489,7 +489,7 @@ private lemma strictInterl_right_pair_of_affine_family_high_degree
       have hprec_q : StrictInterl q_shift (X * qf) := by
         by_cases hqf_deg1 : qf.natDegree = 1
         · exact
-            AffineFamily.prec_right_pair_of_affine_family_degree_one
+            AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
               hqf_ne hq_shift_ne hqf_nonneg hq_shift_nonneg hq_aff hqf_deg1
         · grind
       -- Lift: StrictInterl (g + X * f) (X * f) from StrictInterl q_shift (X * qf).
@@ -524,7 +524,7 @@ private lemma strictInterl_right_pair_of_affine_family_high_degree
       have hprec_q : StrictInterl qg (X * qf) := by
         by_cases hqf_deg1 : qf.natDegree = 1
         · exact
-            AffineFamily.prec_right_pair_of_affine_family_degree_one
+            AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
               hqf_ne hqg_ne hqf_nonneg hqg_nonneg hqaff hqf_deg1
         · grind
       exact strictInterl_right_pair_of_common_root_factor hqf hqg hprec_q
@@ -563,7 +563,8 @@ theorem strictInterl_of_affine_family_nonneg
       exact StrictInterl.of_degree_zero_right_of_degree_one
         hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hdegf0 hg_deg1
   by_cases hdegf1 : f.natDegree = 1
-  · exact AffineFamily.prec_of_affine_family_nonneg_degree_one hf0 hg0 hfnn hgnn haff hdegf1
+  · exact AffineFamily.strictInterl_of_affine_family_nonneg_degree_one
+      hf0 hg0 hfnn hgnn haff hdegf1
   have hdegf2 : 2 ≤ f.natDegree := by lia
   have hprec_pair : StrictInterl g (X * f) :=
     strictInterl_right_pair_of_affine_family_high_degree hf0 hg0 hfnn hgnn haff hdegf2
