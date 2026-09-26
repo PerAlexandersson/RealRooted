@@ -531,11 +531,11 @@ scaffolds are not catalog entries. The same bounded module comment owns the
 explanatory prose and primary references, while detailed proof infrastructure
 remains in the main theorem modules. A symmetricfunctions.com link may provide
 useful context but is not required.
-The current challenge surface includes ASW, Chudnovsky-Seymour, Hadamard,
-Wagner, Cauchy interlacing, Obreschkoff, operator and matrix interlacing
-preservers, Hermite-Biehler, the checked row-oriented Hurwitz counterexamples,
-Veronese sections, Favard, Kurtz, Hermite-Poulain, Borcea-Branden, and Eulerian
-polynomials.
+The current challenge surface includes ASW, Chudnovsky-Seymour, Leake-Ryder
+same-phase stability, Hadamard, Wagner, Cauchy interlacing, Obreschkoff,
+operator and matrix interlacing preservers, Hermite-Biehler, the checked
+row-oriented Hurwitz counterexamples, Veronese sections, Favard, Kurtz,
+Hermite-Poulain, Borcea-Branden, and Eulerian polynomials.
 
 The finite complex Borcea--Branden classification is checked using the
 multivariate stability and polarization infrastructure in this repository,

@@ -7,8 +7,8 @@ import RealRooted.WagnerX
 /-!
 # Weighted common-phase interleaving
 
-This file provides reusable proper-position consequences of multivariate real
-stability for positive weighted common-phase restrictions.
+This file provides reusable strict-interlacing consequences of multivariate
+real stability for positive weighted common-phase restrictions.
 -/
 
 open Polynomial
@@ -58,9 +58,9 @@ theorem commonPhaseRestriction_ne_zero {σ : Type*}
       MvPolynomial.eval (fun i => (wt i : ℂ) * z) (complexifyMv P) := by
   simp [complexify]
 
-/-- Hermite--Biehler stability gives proper position, including the
+/-- Hermite--Biehler stability gives strict interlacing, including the
 constant-degree boundary case. -/
-theorem prec_of_upperHalfPlaneStable_hermiteBiehler
+theorem strictInterl_of_upperHalfPlaneStable_hermiteBiehler
     {A D : ℝ[X]}
     (hA : HasPosLeadingCoeff A) (hD : HasPosLeadingCoeff D)
     (hHB : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial A D)) :
@@ -75,9 +75,9 @@ theorem prec_of_upperHalfPlaneStable_hermiteBiehler
       (isRealRooted_of_deg_zero hD.ne_zero hD0).2 hA.ne_zero
       (isRealRooted_of_deg_zero hA.ne_zero hA0).2 hD0 hA0
 
-/-- A proper-position relation with `X * D` is closed under adding the left
-polynomial to the right. -/
-theorem prec_add_X_mul_of_prec
+/-- Strict interlacing with `X * D` is closed under adding the left polynomial
+to the right. -/
+theorem strictInterl_add_X_mul_of_strictInterl
     {A D : ℝ[X]}
     (hAD : StrictInterl A (X * D))
     (hApos : HasPosLeadingCoeff A)
@@ -100,9 +100,9 @@ theorem prec_add_X_mul_of_prec
   simpa using hsum
 
 /-- A positive common-phase restriction of a multiaffine real stable
-polynomial's distinguished derivative is in proper position with the
-zero-specialized restriction. -/
-theorem MvRealStable.prec_commonPhaseRestriction_pderiv
+polynomial's distinguished derivative strictly interlaces the zero-specialized
+restriction. -/
+theorem MvRealStable.strictInterl_commonPhaseRestriction_pderiv
     {σ : Type*} [DecidableEq σ] {P : MvPolynomial σ ℝ}
     (hP : MvRealStable P) (hma : MvPolynomial.IsMultiaffine P)
     (i : σ) (wt : σ → ℝ) (hwt : ∀ j, 0 < wt j)
@@ -178,7 +178,7 @@ theorem MvRealStable.prec_commonPhaseRestriction_pderiv
     apply hstable
     convert hzero using 1
     ring
-  exact prec_of_upperHalfPlaneStable_hermiteBiehler hA hD hHB
+  exact strictInterl_of_upperHalfPlaneStable_hermiteBiehler hA hD hHB
 
 /-- Common-phase restriction commutes with renaming variables. -/
 theorem commonPhaseRestriction_rename {σ τ : Type*}
@@ -222,5 +222,18 @@ theorem commonPhaseRestriction_eq_constant_add_X_mul_pderiv
   linarith
 
 end
+
+@[deprecated strictInterl_of_upperHalfPlaneStable_hermiteBiehler
+    (since := "2026-09-26")]
+alias prec_of_upperHalfPlaneStable_hermiteBiehler :=
+  strictInterl_of_upperHalfPlaneStable_hermiteBiehler
+
+@[deprecated strictInterl_add_X_mul_of_strictInterl (since := "2026-09-26")]
+alias prec_add_X_mul_of_prec := strictInterl_add_X_mul_of_strictInterl
+
+@[deprecated MvRealStable.strictInterl_commonPhaseRestriction_pderiv
+    (since := "2026-09-26")]
+alias MvRealStable.prec_commonPhaseRestriction_pderiv :=
+  MvRealStable.strictInterl_commonPhaseRestriction_pderiv
 
 end RealRooted
