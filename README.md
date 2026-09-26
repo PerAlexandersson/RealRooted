@@ -7,6 +7,10 @@ Proof assumptions and refuted legacy interfaces are summarized in
 polynomials, interlacing, compatibility, Polya-frequency sequences, and related
 combinatorial applications.
 
+**[Browse the theorem and definition catalog](https://peralexandersson.github.io/RealRooted/).**
+It presents a curated overview of completed results, with readable statements,
+Lean declarations, references, and links to the corresponding source.
+
 The repository is a research formalization workspace rather than a polished
 mathlib contribution.  The useful part is that the named theorem declarations
 below are checked by Lean, and the surrounding files give searchable proof
@@ -543,12 +547,19 @@ Further stability work may revisit the correctly oriented classical Hurwitz
 matrix and its stability criterion; both directions proposed for the current
 row-oriented matrix are formally refuted.
 
+The Brändén--Saud Leite program is complete through the canonical Whitney
+resolution of lower-unitriangular totally nonnegative matrices, the
+chain-polynomial splitting and consecutive-interlacing theorem, zero-constant
+composition rows, the two-kernel PF/interlacing theorem, stationary and
+position-dependent tiling recurrences, and the independent repeated-chip LGV
+certificate.
+
 GitHub issues track individual proof tasks rather than being duplicated here.
-Current open themes include the full singular/reducible Gantmacher--Krein
-theorem, the Branden--Leite chain-polynomial program, and analytic
-Chebyshev/Jacobi root-location backends for OEIS applications. Liu's
-opposite-leading-sign theorem is
-checked as
+Current open themes include the Braun--Jal generalized-snake-poset theorem,
+the Hoster--Stump Chow-polynomial strategy, classical root-counting
+foundations, infinite PF and transcendental stability classifications, and
+selected stable-polynomial and combinatorial applications. Liu's
+opposite-leading-sign theorem is checked as
 `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant`, with the
 necessary explicit common-root branch; its formerly proposed weaker interface
 has a checked counterexample.  Recent checked issue surfaces include the
