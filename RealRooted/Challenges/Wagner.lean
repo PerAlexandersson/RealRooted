@@ -7,6 +7,8 @@ import RealRooted.Wagner.NonpositiveRoots
 version = 1
 section = "theorems"
 slug = "wagner"
+authors = ["Wagner"]
+years = [1992]
 
 [[theorems]]
 name = "RealRooted.Challenges.Wagner.commonRight_add"

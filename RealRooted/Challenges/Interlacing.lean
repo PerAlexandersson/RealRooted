@@ -7,6 +7,8 @@ import RealRooted.Basic.ProperPosition
 version = 1
 section = "concepts"
 slug = "interlacing"
+authors = ["Fisk"]
+years = [2006]
 
 [[definitions]]
 name = "RealRooted.StrictInterl"

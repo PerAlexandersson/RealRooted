@@ -65,6 +65,8 @@ class CatalogPage:
     source_path: str
     section: str
     slug: str
+    authors: tuple[str, ...]
+    years: tuple[int, ...]
     definitions: tuple[CatalogItem, ...]
     theorems: tuple[CatalogItem, ...]
     content: str
@@ -221,6 +223,28 @@ def _published_title(path: str, content: str) -> str:
     return headings[0]
 
 
+def _read_attribution(
+    path: str, metadata: dict[str, Any]
+) -> tuple[tuple[str, ...], tuple[int, ...]]:
+    raw_authors = metadata.get("authors", [])
+    if not isinstance(raw_authors, list) or not all(
+        isinstance(author, str) and author.strip() == author and author for author in raw_authors
+    ):
+        raise _source_error(path, "authors must be an array of nonempty names")
+    if len(set(raw_authors)) != len(raw_authors):
+        raise _source_error(path, "authors must not contain duplicates")
+
+    raw_years = metadata.get("years", [])
+    if not isinstance(raw_years, list) or not all(
+        isinstance(year, int) and not isinstance(year, bool) and 1000 <= year <= 2999
+        for year in raw_years
+    ):
+        raise _source_error(path, "years must be an array of four-digit years")
+    if raw_years != sorted(set(raw_years)):
+        raise _source_error(path, "years must be strictly increasing")
+    return tuple(raw_authors), tuple(raw_years)
+
+
 def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
     """Parse one opted-in module, or return ``None`` if it is not curated."""
     comments = _doc_comments(text)
@@ -246,7 +270,7 @@ def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
         raise _source_error(source_path, f"invalid TOML metadata: {error}") from error
     if not isinstance(metadata, dict):
         raise _source_error(source_path, "metadata must be a TOML table")
-    allowed = {"version", "section", "slug", "definitions", "theorems"}
+    allowed = {"version", "section", "slug", "authors", "years", "definitions", "theorems"}
     unknown = set(metadata) - allowed
     if unknown:
         raise _source_error(source_path, f"unknown metadata keys: {', '.join(sorted(unknown))}")
@@ -258,6 +282,7 @@ def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
         raise _source_error(source_path, f"section must be one of {', '.join(SECTIONS)}")
     if not isinstance(slug, str) or not SLUG_RE.fullmatch(slug):
         raise _source_error(source_path, "slug must be lowercase hyphenated text")
+    authors, years = _read_attribution(source_path, metadata)
     definitions = _read_items(source_path, metadata.get("definitions"), "definition")
     theorems = _read_items(source_path, metadata.get("theorems"), "theorem")
     if not definitions and not theorems:
@@ -267,6 +292,8 @@ def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
         source_path=source_path,
         section=section,
         slug=slug,
+        authors=authors,
+        years=years,
         definitions=definitions,
         theorems=theorems,
         content=content,
@@ -726,9 +753,55 @@ def _template(repo_root: pathlib.Path, body: str, title: str, current_url: str) 
     template = template_path.read_text(encoding="utf-8")
     home = _relative_url(BASE_PATH, current_url)
     stylesheet = _relative_url(f"{BASE_PATH}assets/site.css", current_url)
+    script = _relative_url(f"{BASE_PATH}assets/site.js", current_url)
     return template.replace("{{ title }}", html.escape(title)).replace("{{ body }}", body).replace(
         "{{ home }}", home
-    ).replace("{{ stylesheet }}", stylesheet)
+    ).replace("{{ stylesheet }}", stylesheet).replace("{{ script }}", script)
+
+
+def _authors_label(authors: tuple[str, ...]) -> str:
+    if len(authors) < 2:
+        return "".join(authors)
+    if len(authors) == 2:
+        return " & ".join(authors)
+    return ", ".join(authors[:-1]) + " & " + authors[-1]
+
+
+def _years_label(years: tuple[int, ...]) -> str:
+    if not years:
+        return "Classical"
+    if len(years) == 1:
+        return str(years[0])
+    return f"{years[0]}–{years[-1]}"
+
+
+def _page_card(page: CatalogPage, href: str) -> str:
+    kind = "theorem" if page.section == "theorems" else "definition"
+    symbol = "⊢" if kind == "theorem" else "≔"
+    label = kind.title()
+    attribution_parts = [
+        part for part in (_authors_label(page.authors), _years_label(page.years)) if part
+    ]
+    attribution = " · ".join(attribution_parts)
+    year = page.years[0] if page.years else ""
+    return (
+        f'<li class="catalog-card catalog-card--{kind}" '
+        f'data-title="{html.escape(page.title.casefold(), quote=True)}" data-year="{year}">'
+        f'<a href="{html.escape(href, quote=True)}">'
+        f'<span class="kind-badge kind-badge--{kind}"><span aria-hidden="true">{symbol}</span>'
+        f'<span>{label}</span></span><strong class="card-title">{html.escape(page.title)}</strong>'
+        f'<span class="card-attribution">{html.escape(attribution)}</span>'
+        '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
+    )
+
+
+def _sort_controls() -> str:
+    return (
+        '<div class="catalog-toolbar"><label for="catalog-sort">Sort by</label>'
+        '<select id="catalog-sort" data-catalog-sort>'
+        '<option value="name">Name</option><option value="year">Year</option>'
+        '</select></div>'
+    )
 
 
 def _item_list(
@@ -795,10 +868,9 @@ def render_site(
     """Render deterministic generated files keyed by their output-relative path."""
     files: dict[str, str] = {}
     grouped = {section: [page for page in pages if page.section == section] for section in SECTIONS}
+    index_pages = sorted(pages, key=lambda page: (page.title.casefold(), page.slug))
     index_rows = "".join(
-        f"<li><a href=\"{page.section}/{page.slug}/\">{html.escape(page.title)}</a>"
-        f" <span>{html.escape(page.section)}</span></li>"
-        for page in pages
+        _page_card(page, f"{page.section}/{page.slug}/") for page in index_pages
     )
     index_body = (
         "<main class=\"catalog-home\"><section class=\"hero\">"
@@ -806,17 +878,17 @@ def render_site(
         "<h1>Real-rooted polynomials in Lean</h1>"
         "<p class=\"lede\">A curated guide to Lean definitions and proved theorems, "
         "with links to their source.</p></section>"
-        f"<ul class=\"catalog-index\">{index_rows}</ul></main>"
+        + _sort_controls()
+        + f'<ul class="catalog-index" data-catalog-list>{index_rows}</ul></main>'
     )
     files["index.html"] = _template(repo_root, index_body, "RealRooted catalog", BASE_PATH)
     for section, section_pages in grouped.items():
-        links = "".join(
-            f"<li><a href=\"{page.slug}/\">{html.escape(page.title)}</a></li>" for page in section_pages
-        )
+        links = "".join(_page_card(page, f"{page.slug}/") for page in section_pages)
         body = (
             "<main class=\"section-page\"><p class=\"eyebrow\">Browse the catalog</p>"
             f"<h1>{html.escape(section.title())}</h1>"
-            f"<ul class=\"section-index\">{links}</ul></main>"
+            + _sort_controls()
+            + f'<ul class="section-index" data-catalog-list>{links}</ul></main>'
         )
         section_url = f"{BASE_PATH}{section}/"
         files[f"{section}/index.html"] = _template(repo_root, body, section.title(), section_url)
@@ -826,13 +898,19 @@ def render_site(
         selected = ""
         if definition_html:
             selected += (
-                "<section class=\"declaration-group\"><p class=\"section-kicker\">"
-                "Lean declarations</p><h2>Definitions</h2>" + definition_html + "</section>"
+                '<section class="declaration-group declaration-group--definition">'
+                '<p class="section-kicker">Lean declarations</p>'
+                '<h2><span aria-hidden="true">≔</span> Definitions</h2>'
+                + definition_html
+                + "</section>"
             )
         if theorem_html:
             selected += (
-                "<section class=\"declaration-group\"><p class=\"section-kicker\">"
-                "Lean declarations</p><h2>Theorems</h2>" + theorem_html + "</section>"
+                '<section class="declaration-group declaration-group--theorem">'
+                '<p class="section-kicker">Lean declarations</p>'
+                '<h2><span aria-hidden="true">⊢</span> Theorems</h2>'
+                + theorem_html
+                + "</section>"
             )
         source = html.escape(_source_link(revision, SourceDeclaration("", "", page.source_path, 1)), quote=True)
         body = (
@@ -860,6 +938,8 @@ def render_site(
                 "title": page.title,
                 "url": page.url,
                 "source_path": page.source_path,
+                "authors": list(page.authors),
+                "years": list(page.years),
                 "definitions": [item.name for item in page.definitions],
                 "theorems": [item.name for item in page.theorems],
             }
@@ -869,6 +949,8 @@ def render_site(
     files["catalog-manifest.json"] = json.dumps(manifest, indent=2, sort_keys=True) + "\n"
     asset = repo_root / "website" / "assets" / "site.css"
     files["assets/site.css"] = asset.read_text(encoding="utf-8")
+    script = repo_root / "website" / "assets" / "site.js"
+    files["assets/site.js"] = script.read_text(encoding="utf-8")
     validate_internal_links(files)
     return files
 

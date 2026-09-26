@@ -8,6 +8,8 @@ import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 version = 1
 section = "theorems"
 slug = "hadamard-products"
+authors = ["Pólya", "Schur", "Garloff", "Wagner"]
+years = [1914, 1996]
 
 [[definitions]]
 name = "RealRooted.Challenges.Hadamard.SchurSzegoComposition"

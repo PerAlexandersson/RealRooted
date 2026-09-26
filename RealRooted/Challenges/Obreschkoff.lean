@@ -7,6 +7,8 @@ import RealRooted.ObreschkoffConverse
 version = 1
 section = "theorems"
 slug = "obreschkoff"
+authors = ["Obreschkoff", "Dedieu"]
+years = [1963, 1992]
 
 [[definitions]]
 name = "RealRooted.Challenges.Obreschkoff.RealPencilRealRooted"
