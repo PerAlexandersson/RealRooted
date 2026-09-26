@@ -23,17 +23,9 @@ name = "RealRooted.Challenges.Wagner.mulX_iff"
 <!-- realrooted-catalog-content -->
 # Wagner’s lemma
 
-For polynomials with only nonpositive real roots and positive leading
-coefficient, the common-right theorem says that if both `f` and `g` are in
-proper position with `h`, then `f + g` is in proper position with `h` as well.
-The common-left theorem is the analogous statement with `h` on the left.
-
-The shift theorem states
-`StrictInterl f g ↔ StrictInterl g (X * f)` when the degrees differ by one.
-This is the Lean orientation: `StrictInterl f g` means that `f` is the shorter
-or left member and `g` is the right member.  Every selected theorem retains
-the root-location, leading-coefficient, and degree hypotheses needed by the
-formal result where required.
+If `f` and `g` both interlace `h`, then `f + g` interlaces `h`; the analogous
+common-left statement also holds. For polynomials with nonpositive roots,
+multiplication by `X` reverses the interlacing orientation.
 
 ## References
 
@@ -48,8 +40,7 @@ https://www.symmetricfunctions.com/realRootedInterlacing.htm#wagnerLemma
 Original publication: D. G. Wagner, "Total positivity of Hadamard products",
 J. Math. Anal. Appl. 163 (1992), 459--483.
 
-This module exposes checked challenge-facing forms of Wagner's lemma.  The
-root-list analysis and common-sum infrastructure remain in `RealRooted.Wagner*`.
+This module records the three forms of Wagner's lemma used in the catalog.
 -/
 
 open Polynomial
@@ -58,16 +49,11 @@ namespace RealRooted
 namespace Challenges
 namespace Wagner
 
-/-- Human-style hypothesis from Wagner's lemma: real roots are nonpositive and
-the leading coefficient is positive. -/
-abbrev HasNonposRootsPosLeading (p : ℝ[X]) : Prop :=
-  RealRooted.Wagner.HasNonposRootsPosLeading p
-
 /-- Wagner (1): if `f` and `g` both interlace `h`, then `f + g` interlaces
 `h`. -/
 theorem commonRight_add {f g h : ℝ[X]}
-    (hf : HasNonposRootsPosLeading f)
-    (hg : HasNonposRootsPosLeading g)
+    (hf : RealRooted.Wagner.HasNonposRootsPosLeading f)
+    (hg : RealRooted.Wagner.HasNonposRootsPosLeading g)
     (hfh : StrictInterl f h) (hgh : StrictInterl g h) :
     StrictInterl (f + g) h :=
   RealRooted.Wagner.commonRight_add hf hg hfh hgh
@@ -79,8 +65,8 @@ This is the checked common-left form used by the catalog.  The reusable proof
 is in `RealRooted.Wagner.NonpositiveRoots`; the separate theorem
 `commonLeft_add_checked` exposes the lower-level algebraic interface. -/
 theorem commonLeft_add {f g h : ℝ[X]}
-    (hf : HasNonposRootsPosLeading f)
-    (hg : HasNonposRootsPosLeading g)
+    (hf : RealRooted.Wagner.HasNonposRootsPosLeading f)
+    (hg : RealRooted.Wagner.HasNonposRootsPosLeading g)
     (hhf : StrictInterl h f) (hhg : StrictInterl h g) :
     StrictInterl h (f + g) :=
   RealRooted.Wagner.commonLeft_add hf hg hhf hhg
@@ -102,8 +88,8 @@ This is the Lean orientation of the catalog statement
 `g \interl f` iff `f \interl t g`: here `f` is the shorter polynomial and
 `g` is the longer one. -/
 theorem mulX_iff {f g : ℝ[X]}
-    (hf : HasNonposRootsPosLeading f)
-    (hg : HasNonposRootsPosLeading g)
+    (hf : RealRooted.Wagner.HasNonposRootsPosLeading f)
+    (hg : RealRooted.Wagner.HasNonposRootsPosLeading g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     StrictInterl f g ↔ StrictInterl g (X * f) :=
   RealRooted.Wagner.mulX_iff hf hg hdeg

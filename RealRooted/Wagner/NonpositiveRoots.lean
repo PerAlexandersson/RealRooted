@@ -17,7 +17,7 @@ namespace Wagner
 
 /-- A polynomial splits over the reals, has only nonpositive roots, and has
 positive leading coefficient. -/
-abbrev HasNonposRootsPosLeading (p : ℝ[X]) : Prop :=
+def HasNonposRootsPosLeading (p : ℝ[X]) : Prop :=
   p.Splits ∧ (∀ r ∈ p.roots, r ≤ 0) ∧ HasPosLeadingCoeff p
 
 /-- If `f` and `g` both interlace `h`, then `f + g` interlaces `h`. -/
@@ -34,9 +34,8 @@ theorem commonLeft_add {f g h : ℝ[X]}
     (hg : HasNonposRootsPosLeading g)
     (hhf : StrictInterl h f) (hhg : StrictInterl h g) :
     StrictInterl h (f + g) := by
-  have hprec : StrictInterl h ([f, g].sum) := by
-    grind [RealRooted.StrictInterl.sum_left_of_common_left_signed]
-  grind
+  simpa using StrictInterl.sum_left_of_common_left_signed [f, g] h
+    (by simp [hhf, hhg]) (by simp [hf.2.2, hg.2.2]) (by simp)
 
 /-- The checked two-summand common-left form with explicit algebraic
 hypotheses. -/

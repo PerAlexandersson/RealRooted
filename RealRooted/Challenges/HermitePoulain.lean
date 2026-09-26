@@ -21,10 +21,8 @@ module = "RealRooted.HermitePoulain"
 <!-- realrooted-catalog-content -->
 # Hermite–Poulain theorem
 
-A polynomial `f` acts as a constant-coefficient differential operator by
-replacing each power of its variable with the corresponding derivative.  The
-selected theorem proves that when both the symbol `f` and the input polynomial
-split over the reals, the output is either zero or also splits over the reals.
+Replace each power in `f` by the corresponding derivative operator. If `f`
+and the input polynomial are real-rooted, the output is zero or real-rooted.
 
 ## References
 
@@ -40,8 +38,7 @@ https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermitePoulainTheor
 Original references include C. Hermite, G. Polya--I. Schur, N. Obreschkoff,
 and B. Ya. Levin's account of entire functions.
 
-This module preserves the established challenge-facing names as aliases for
-the reusable theorem implementation in `RealRooted.HermitePoulain`.
+The proof is in `RealRooted.HermitePoulain`.
 -/
 
 namespace RealRooted

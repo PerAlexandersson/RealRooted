@@ -14,9 +14,6 @@ years = [1935]
 name = "RealRooted.SatisfiesFavardRecurrence"
 module = "RealRooted.Favard.Recurrence"
 
-[[definitions]]
-name = "RealRooted.Challenges.Favard.PositiveFavardRecurrence"
-
 [[theorems]]
 name = "RealRooted.Challenges.Favard.interlacing"
 
@@ -28,10 +25,7 @@ name = "RealRooted.Challenges.Favard.realRooted"
 # Favard recurrences
 
 A monic three-term recurrence with positive subdiagonal coefficients produces
-a sequence of nonzero real-rooted polynomials.  Consecutive members are in
-proper position, so their roots interlace.  The selected definitions package
-the recurrence and its positivity hypothesis; the selected theorems give the
-interlacing and real-rootedness conclusions at every rank.
+nonzero real-rooted polynomials. Consecutive polynomials interlace.
 
 ## References
 
@@ -58,28 +52,22 @@ namespace RealRooted
 namespace Challenges
 namespace Favard
 
-/-- Challenge-facing name for the three-term Favard recurrence. -/
-abbrev FavardRecurrence (P : Nat → ℝ[X]) (α β : Nat → ℝ) : Prop :=
-  SatisfiesFavardRecurrence P α β
-
-/-- Challenge-facing name for the recurrence plus positive Favard coefficients. -/
-def PositiveFavardRecurrence (P : Nat → ℝ[X]) (α β : Nat → ℝ) : Prop :=
-  SatisfiesFavardRecurrence P α β ∧ ∀ n : Nat, 0 < β (n + 1)
-
 /-- Favard recurrence coefficients force consecutive interlacing. -/
 theorem interlacing :
     ∀ {P : Nat → ℝ[X]} {α β : Nat → ℝ},
-      PositiveFavardRecurrence P α β →
+      SatisfiesFavardRecurrence P α β →
+      (∀ n : Nat, 0 < β (n + 1)) →
       ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  fun h => RealRooted.favardInterlacing h.1 h.2
+  RealRooted.favardInterlacing
 
 /-- Favard recurrence coefficients force real-rootedness of every polynomial
 in the sequence. -/
 theorem realRooted :
     ∀ {P : Nat → ℝ[X]} {α β : Nat → ℝ},
-      PositiveFavardRecurrence P α β →
+      SatisfiesFavardRecurrence P α β →
+      (∀ n : Nat, 0 < β (n + 1)) →
       ∀ n : Nat, (P n) ≠ 0 ∧ (P n).Splits :=
-  fun h => RealRooted.isRealRooted_of_favard h.1 h.2
+  RealRooted.isRealRooted_of_favard
 
 end Favard
 end Challenges

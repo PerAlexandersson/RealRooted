@@ -26,12 +26,9 @@ module = "RealRooted.Kurtz"
 <!-- realrooted-catalog-content -->
 # Kurtz’s coefficient criterion
 
-Kurtz’s criterion gives a concrete sufficient condition for a polynomial to
-have distinct real roots.  If all coefficients through the degree are
-positive and each interior coefficient satisfies the strict quadratic
-inequality `aₖ² > 4 aₖ₋₁ aₖ₊₁`, then the polynomial splits over the reals and
-has no repeated root.  The selected theorem formalizes this implication with
-the coefficient range and endpoint conditions made explicit.
+If a polynomial has positive coefficients and
+`aₖ² > 4 aₖ₋₁ aₖ₊₁` at every interior index, then all its roots are real and
+distinct.
 
 ## References
 
@@ -48,8 +45,7 @@ functions", Trans. Amer. Math. Soc. 25 (1923), 325--332, and D. C. Kurtz,
 "A sufficient condition for all the roots of a polynomial to be real",
 Amer. Math. Monthly 99 (1992), 259--263.
 
-This module preserves the established challenge-facing names as aliases for
-the reusable theorem implementation in `RealRooted.Kurtz`.
+This module exposes the reusable theorem implementation in `RealRooted.Kurtz`.
 -/
 
 namespace RealRooted
@@ -58,7 +54,6 @@ namespace Kurtz
 
 export RealRooted.Kurtz
   (PositiveCoeffsUpToDegree
-    PositiveCoefficientsUpToDegree
     KurtzStrictInequalities
     ne_zero_of_kurtz
     hasPosLeadingCoeff_of_kurtz

@@ -44,12 +44,9 @@ module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
 <!-- realrooted-catalog-content -->
 # Borcea–Brändén finite-symbol theorems
 
-For a linear operator restricted to a finite multidegree box, the complex
-classification gives the two alternatives: a stable rank-one representation,
-or stability of the algebraic symbol.  The real univariate application proves
-the positive-symbol implication for operators on polynomials of bounded
-degree.  These are checked theorem witnesses derived from the multivariate
-stability and polarization development, not conditional statement wrappers.
+A linear operator on a finite multidegree box preserves stability precisely in
+the rank-one or stable-symbol cases. The real univariate theorem gives the
+corresponding positive-symbol criterion for bounded-degree polynomials.
 
 ## References
 
@@ -66,8 +63,7 @@ Original reference: J. Borcea and P. Branden, "The Lee-Yang and Polya-Schur
 programs. I. Linear operators preserving stability", Invent. Math. 177 (2009),
 541--569.
 
-This module preserves the established challenge-facing names as explicit
-exports from the reusable complex and real-univariate theorem modules.
+The proofs use the reusable complex and real-univariate theorem modules.
 -/
 
 namespace RealRooted

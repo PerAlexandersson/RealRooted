@@ -8,18 +8,18 @@ namespace RealRooted
 
 /-- A linear operator preserves real-rootedness up to the natural zero escape
 that can occur for non-injective operators. -/
-abbrev PreservesRealRootedOrZero (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
+def PreservesRealRootedOrZero (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
   ∀ p : ℝ[X], (p ≠ 0 ∧ p.Splits) → T p = 0 ∨ (T p).Splits
 
 /-- Order-insensitive version of interlacing preservation. This is the honest
 Obreschkoff-level consequence of preserving real-rootedness for all linear
 combinations. -/
-abbrev PreservesInterlacingPairsUpToOrder0 (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
+def PreservesInterlacingPairsUpToOrder0 (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
   ∀ ⦃f g : ℝ[X]⦄, StrictInterl f g → Interl (T f) (T g) ∨ Interl (T g) (T f)
 
 /-- A linear operator preserves the full all-combinations real-rootedness plane
 attached to a pair. -/
-abbrev PreservesAllComboPairs (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
+def PreservesAllComboPairs (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
   ∀ ⦃f g : ℝ[X]⦄, AllComboRealRooted f g → AllComboRealRooted (T f) (T g)
 
 /-- Pencil-local version of all-combinations transport through a linear map.
@@ -106,19 +106,10 @@ theorem preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
   interl_or_reverse_map_of_pencil (allComboRealRooted_of_strictInterl hfg) fun α β hrr =>
     hT (C α * f + C β * g) hrr
 
-/-- Planning stub for the operator theorem mentioned in `INTERLACING.md`.
-
-Expected proof route: use Obreschkoff/all-combinations to show that if `T`
-preserves real-rootedness on each polynomial, then it preserves real-rootedness
-of every real linear combination of an interlacing pair, and hence preserves the
-interlacing relation itself. -/
-abbrev operatorPreservesInterlacingPairsUpToOrderStatement : Prop :=
-  ∀ T : ℝ[X] →ₗ[ℝ] ℝ[X],
-    PreservesRealRootedOrZero T →
-    PreservesInterlacingPairsUpToOrder0 T
-
 theorem operatorPreservesInterlacingPairsUpToOrder :
-    operatorPreservesInterlacingPairsUpToOrderStatement :=
+    ∀ T : ℝ[X] →ₗ[ℝ] ℝ[X],
+      PreservesRealRootedOrZero T →
+      PreservesInterlacingPairsUpToOrder0 T :=
   @preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
 
 end RealRooted

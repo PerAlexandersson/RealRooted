@@ -37,16 +37,8 @@ name = "RealRooted.Challenges.Eulerian.typeB_interlaces_succ"
 <!-- realrooted-catalog-content -->
 # Eulerian polynomials
 
-The ordinary page records the shifted Eulerian family `Pₙ = eulerianTilde n`.
-Its initial polynomial is `P₀ = X`, and the recurrence is
-`Pₙ₊₁ = X ((n + 2) Pₙ + (1 - X) Pₙ')`.  The type `B` family starts at
-`P₀ = 1` and uses
-`Pₙ₊₁ = (1 + (2n + 1)X) Pₙ + 2X(1 - X) Pₙ'`.
-
-The selected results prove real-rootedness for each family and interlacing of
-successive members.  In this project, `Interlaces (Pₙ) (Pₙ₊₁)` uses the
-degree-one-increase orientation, with the roots of the shorter polynomial
-between the roots of the longer one.
+The ordinary and type `B` Eulerian polynomials satisfy derivative recurrences.
+Both families are real-rooted, and consecutive polynomials interlace.
 
 ## References
 
@@ -83,63 +75,34 @@ namespace RealRooted
 namespace Challenges
 namespace Eulerian
 
-/-- Challenge-facing name for the ordinary Eulerian polynomial normalization
-used in this project. -/
-noncomputable abbrev OrdinaryEulerianPolynomial (n : Nat) : ℝ[X] :=
-  eulerianTilde n
-
-/-- Challenge-facing name for the ordinary Eulerian Sturm prefix. -/
-noncomputable abbrev OrdinaryEulerianPrefix (n : Nat) : List ℝ[X] :=
-  eulerianTildePrefix n
-
-/-- Challenge-facing name for the type `B` Eulerian polynomials. -/
-noncomputable abbrev TypeBEulerianPolynomial (n : Nat) : ℝ[X] :=
-  typeBEulerian n
-
-/-- Challenge-facing name for the type `B` Eulerian Sturm prefix. -/
-noncomputable abbrev TypeBEulerianPrefix (n : Nat) : List ℝ[X] :=
-  typeBEulerianPrefix n
-
-/-- Challenge-facing predicate for a real-rooted polynomial family. -/
-abbrev RealRootedPolynomialFamily (A : Nat → ℝ[X]) : Prop :=
-  ∀ n : Nat, A n ≠ 0 ∧ (A n).Splits
-
-/-- Challenge-facing predicate for consecutive interlacing in a polynomial family. -/
-abbrev ConsecutiveInterlacing (A : Nat → ℝ[X]) : Prop :=
-  ∀ n : Nat, Interlaces (A n) (A (n + 1))
-
-/-- Challenge-facing predicate for Sturm prefixes attached to a polynomial family. -/
-abbrev SturmPrefixFamily (pref : Nat → List ℝ[X]) : Prop :=
-  ∀ n : Nat, IsSturmSeq (pref n)
-
 /-- Ordinary Eulerian tilde polynomials are real-rooted. -/
 theorem realRooted :
-    RealRootedPolynomialFamily OrdinaryEulerianPolynomial :=
+    ∀ n : Nat, eulerianTilde n ≠ 0 ∧ (eulerianTilde n).Splits :=
   RealRooted.isRealRooted_eulerianTilde
 
 /-- Consecutive ordinary Eulerian tilde polynomials interlace. -/
 theorem interlaces_succ :
-    ConsecutiveInterlacing OrdinaryEulerianPolynomial :=
+    ∀ n : Nat, Interlaces (eulerianTilde n) (eulerianTilde (n + 1)) :=
   RealRooted.interlaces_eulerianTilde_succ
 
 /-- Descending ordinary Eulerian prefixes form Sturm sequences. -/
 theorem sturmPrefix :
-    SturmPrefixFamily OrdinaryEulerianPrefix :=
+    ∀ n : Nat, IsSturmSeq (eulerianTildePrefix n) :=
   RealRooted.isSturmSeq_eulerianTildePrefix
 
 /-- Type `B` Eulerian polynomials are real-rooted. -/
 theorem typeB_realRooted :
-    RealRootedPolynomialFamily TypeBEulerianPolynomial :=
+    ∀ n : Nat, typeBEulerian n ≠ 0 ∧ (typeBEulerian n).Splits :=
   RealRooted.isRealRooted_typeBEulerian
 
 /-- Consecutive type `B` Eulerian polynomials interlace. -/
 theorem typeB_interlaces_succ :
-    ConsecutiveInterlacing TypeBEulerianPolynomial :=
+    ∀ n : Nat, Interlaces (typeBEulerian n) (typeBEulerian (n + 1)) :=
   RealRooted.interlaces_typeBEulerian_succ
 
 /-- Descending type `B` Eulerian prefixes form Sturm sequences. -/
 theorem typeB_sturmPrefix :
-    SturmPrefixFamily TypeBEulerianPrefix :=
+    ∀ n : Nat, IsSturmSeq (typeBEulerianPrefix n) :=
   RealRooted.isSturmSeq_typeBEulerianPrefix
 
 end Eulerian

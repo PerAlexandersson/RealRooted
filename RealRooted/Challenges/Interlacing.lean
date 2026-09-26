@@ -26,19 +26,9 @@ module = "RealRooted.Basic.ProperPosition"
 <!-- realrooted-catalog-content -->
 # Polynomial interlacing
 
-The project uses `StrictInterl f g` for proper position with `f` on the left:
-both polynomials must be nonzero and split over the reals, and their ordered
-roots either alternate at equal degree or interlace when the right polynomial
-has one larger degree.  Thus the right endpoint has the rightmost root in the
-differ-by-one case.  The inequalities are weak, so shared roots and repeated
-roots are allowed; the word `Strict` excludes the zero-polynomial case and
-does not mean that all roots are distinct.
-
-`Interl f g` is the zero-aware relation: either polynomial may be zero, or the
-nonzero pair satisfies `StrictInterl`.  `Interlaces g f` describes the case in
-which the degrees differ by one.  Its first argument is the shorter polynomial;
-the second has degree exactly one larger and contains the alternating root
-list.
+`StrictInterl f g` means that two nonzero real-rooted polynomials have
+interlacing roots in the project’s oriented convention. `Interl f g` also
+allows either polynomial to be zero. Shared and repeated roots are permitted.
 
 ## References
 

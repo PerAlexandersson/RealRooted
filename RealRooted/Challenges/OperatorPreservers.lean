@@ -27,11 +27,8 @@ name = "RealRooted.Challenges.OperatorPreservers.realRootedPreserver_preservesIn
 <!-- realrooted-catalog-content -->
 # Operators preserving interlacing
 
-Obreschkoff’s theorem turns preservation of real-rootedness into preservation
-of interlacing.  The selected result states that a real-linear polynomial
-operator that maps every real-rooted polynomial to a real-rooted polynomial
-or zero also preserves interlacing pairs, allowing zero images and the two
-possible proper-position orientations.
+A real-linear operator that preserves real-rootedness up to zero also
+preserves interlacing, up to reversing the orientation.
 
 ## References
 
@@ -56,22 +53,12 @@ namespace RealRooted
 namespace Challenges
 namespace OperatorPreservers
 
-/-- Challenge-facing name for operators preserving real-rootedness up to the
-zero polynomial. -/
-abbrev RealRootedPreserver (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
-  RealRooted.PreservesRealRootedOrZero T
-
-/-- Challenge-facing name for preserving interlacing pairs, allowing zero
-images and the orientation ambiguity of `StrictInterl`. -/
-abbrev InterlacingPreserverUpToOrder (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
-  RealRooted.PreservesInterlacingPairsUpToOrder0 T
-
 /-- Real-rootedness-preserving linear operators preserve interlacing pairs up
 to order and zero images. -/
 theorem realRootedPreserver_preservesInterlacing :
     ∀ T : ℝ[X] →ₗ[ℝ] ℝ[X],
-      RealRootedPreserver T →
-      InterlacingPreserverUpToOrder T :=
+      PreservesRealRootedOrZero T →
+      PreservesInterlacingPairsUpToOrder0 T :=
   RealRooted.operatorPreservesInterlacingPairsUpToOrder
 
 end OperatorPreservers
