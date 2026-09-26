@@ -13,10 +13,10 @@ noncomputable section
 
 namespace RealRooted
 
-lemma prec_of_prec0_of_ne_zero {f g : ℝ[X]}
+lemma strictInterl_of_interl_of_ne_zero {f g : ℝ[X]}
     (hf : f ≠ 0) (hg : g ≠ 0) (h : Interl f g) :
     StrictInterl f g := by
-  rcases h with rfl | rfl | hprec <;> lia
+  rcases h with rfl | rfl | hstrictInterl <;> lia
 
 private lemma natDegree_add_X_mul_ge_of_hasNonnegCoeffs
     {a b : ℝ[X]}
@@ -55,7 +55,7 @@ private lemma leadingCoeff_add_X_mul_eq_of_natDegree_le
     _ = b.coeff b.natDegree := by simp_all
     _ = b.leadingCoeff := by simp
 
-private lemma natDegree_right_of_prec_to_sum
+private lemma natDegree_right_of_strictInterl_to_sum
     {a b p : ℝ[X]}
     (hp_eq : p = a + X * b)
     (ha_nonneg : HasNonnegCoeffs a)
@@ -79,7 +79,7 @@ private lemma natDegree_right_of_prec_to_sum
 component `b` already interlaces `p = a + X*b`, and the top degree of `p`
 comes entirely from `X*b`, then subtracting that `X*b` term preserves the
 left interlacing relation. -/
-private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
+private theorem strictInterl_b_component_of_strictInterl_sum_of_leadingCoeff_eq
     {p a b : ℝ[X]}
     (hp_eq : p = a + X * b)
     (ha_nonneg : HasNonnegCoeffs a)
@@ -92,7 +92,7 @@ private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
   have hp0 : p ≠ 0 := hbp.2.1.1
   have hp_nonneg : HasNonnegCoeffs p := by simpa [hp_eq] using ha_nonneg.add hb_nonneg.X_mul
   have hdeg : b.natDegree + 1 = p.natDegree :=
-    natDegree_right_of_prec_to_sum hp_eq ha_nonneg hb_nonneg hb0 hbp
+    natDegree_right_of_strictInterl_to_sum hp_eq ha_nonneg hb_nonneg hb0 hbp
   let c : ℝ := p.leadingCoeff⁻¹
   have hc_ne : c ≠ 0 :=
     inv_ne_zero (ne_of_gt (hp_nonneg.pos_leadingCoeff hp0))
@@ -112,7 +112,7 @@ private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
     roots_nonpos_of_nonneg_coeffs hbp.1.2 hb_nonneg
   have hdeg_scaled : (C c * b).natDegree + 1 = (C c * p).natDegree := by
     rw [Polynomial.natDegree_C_mul hc_ne, Polynomial.natDegree_C_mul hc_ne, hdeg]
-  have hprec0 : Interl (C c * b) (C c * p - X * (C c * b)) := by
+  have hinterl : Interl (C c * b) (C c * p - X * (C c * b)) := by
     simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm, mul_assoc] using
       strictInterl_sub_X_mul_right
         (f := C c * p) (g := C c * b)
@@ -123,15 +123,15 @@ private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
           simp_all)
   have hXC : C c * (X * b) = X * (C c * b) := by grind
   have hsub_eq : C c * p - X * (C c * b) = C c * a := by grind
-  rw [hsub_eq] at hprec0
+  rw [hsub_eq] at hinterl
   have hCb0 : C c * b ≠ 0 := mul_ne_zero (Polynomial.C_ne_zero.mpr hc_ne) hb0
   have hCa0 : C c * a ≠ 0 := mul_ne_zero (Polynomial.C_ne_zero.mpr hc_ne) ha0
-  have hscaled_prec : StrictInterl (C c * b) (C c * a) :=
-    prec_of_prec0_of_ne_zero hCb0 hCa0 hprec0
+  have hscaled_strictInterl : StrictInterl (C c * b) (C c * a) :=
+    strictInterl_of_interl_of_ne_zero hCb0 hCa0 hinterl
   have hback :
       StrictInterl (C c⁻¹ * (C c * b)) (C c⁻¹ * (C c * a)) :=
     StrictInterl.C_mul_right
-      (StrictInterl.C_mul_left hscaled_prec (inv_ne_zero hc_ne))
+      (StrictInterl.C_mul_left hscaled_strictInterl (inv_ne_zero hc_ne))
       (inv_ne_zero hc_ne)
   have hcancel_b : C c⁻¹ * (C c * b) = b := by
     calc
@@ -143,7 +143,7 @@ private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
       _ = a := by simp_all
   lia
 
-theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
+theorem brandenSolusTheorem26_forward_of_strictInterl_b_a {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
     (ha_nonneg : HasNonnegCoeffs a)
@@ -168,7 +168,7 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
         (Or.inl (by simp)))
   have hp0 : p ≠ 0 := by simpa [hp_eq] using hp_right.1.1
   have hap : StrictInterl a p := by
-    have hprec0 : Interl a ([a, X * b].sum) := by
+    have hinterl : Interl a ([a, X * b].sum) := by
       refine Interl.sum_left_of_common_left_of_nonneg [a, X * b] a ?_ ?_
       · intro q hq
         simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
@@ -176,12 +176,12 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
         · exact Interl.refl fun _ => ha_rr.2
         · exact haxb.toInterl
       · simp_all
-    exact prec_of_prec0_of_ne_zero ha_rr.1 hp0 (by simp_all)
+    exact strictInterl_of_interl_of_ne_zero ha_rr.1 hp0 (by simp_all)
   have hbXb : StrictInterl b (X * b) :=
     strictInterl_mul_X_of_strictInterl_of_nonneg
       (StrictInterl.refl hb_rr.1 hb_rr.2) hb_nonneg hb_nonneg
   have hbp : StrictInterl b p := by
-    have hprec0 : Interl b ([a, X * b].sum) := by
+    have hinterl : Interl b ([a, X * b].sum) := by
       refine Interl.sum_left_of_common_left_of_nonneg [a, X * b] b ?_ ?_
       · intro q hq
         simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
@@ -189,22 +189,22 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
         · exact hba.toInterl
         · exact hbXb.toInterl
       · simp_all
-    exact prec_of_prec0_of_ne_zero hb_rr.1 hp0 (by simp_all)
+    exact strictInterl_of_interl_of_ne_zero hb_rr.1 hp0 (by simp_all)
   have hIda : StrictInterl (a + b) a := by
     simpa [add_comm, add_left_comm, add_assoc] using
       (hba.nonneg_combo_right hb_pos ha_pos
         (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp) (by simp)
         (Or.inl (by simp)))
   have hIdp : StrictInterl (IdTransform d p) p := by
-    have hprec0 : Interl (∑ t ∈ (Finset.univ : Finset Bool), cond t b a) p := by
+    have hinterl : Interl (∑ t ∈ (Finset.univ : Finset Bool), cond t b a) p := by
       refine Interl.finsetSum_right_of_nonneg (s := (Finset.univ : Finset Bool))
         (f := fun t => cond t b a) (h := p) ?_ ?_
       · intro t ht
         cases t <;> simp [hap.toInterl, hbp.toInterl]
       · lia
     have hId0 : IdTransform d p ≠ 0 := by simpa [hId_eq] using hIda.1.1
-    exact prec_of_prec0_of_ne_zero hId0 hp0 (by
-      simpa [hId_eq, add_comm, add_left_comm, add_assoc] using hprec0)
+    exact strictInterl_of_interl_of_ne_zero hId0 hp0 (by
+      simpa [hId_eq, add_comm, add_left_comm, add_assoc] using hinterl)
   lia
 
 theorem brandenSolusTheorem26_third_equiv_of_natDegree_le
@@ -219,16 +219,16 @@ theorem brandenSolusTheorem26_third_equiv_of_natDegree_le
     (StrictInterl b a ↔ StrictInterl b p) := by
   constructor
   · intro hba
-    exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).2.1
+    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.1
   · intro hbp
     have hlc : p.leadingCoeff = b.leadingCoeff := by
       rw [hid.1]
       exact leadingCoeff_add_X_mul_eq_of_natDegree_le ha_le hb_nonneg hb0
     exact
-      prec_b_component_of_prec_sum_of_leadingCoeff_eq
+      strictInterl_b_component_of_strictInterl_sum_of_leadingCoeff_eq
         hid.1 ha_nonneg hb_nonneg ha0 hb0 hbp hlc
 
-private theorem allComboRealRooted_left_X_mul_component_of_prec_left
+private theorem allComboRealRooted_left_X_mul_component_of_strictInterl_left
     {a b p : ℝ[X]}
     (hp_eq : p = a + X * b)
     (hap : StrictInterl a p) :
@@ -241,7 +241,7 @@ private theorem allComboRealRooted_left_X_mul_component_of_prec_left
     grind
   simpa [hrew] using hall_ap (α - β) β
 
-private theorem allComboRealRooted_left_X_mul_component_of_prec_right
+private theorem allComboRealRooted_left_X_mul_component_of_strictInterl_right
     {a b p : ℝ[X]}
     (hp_eq : p = a + X * b)
     (hpxb : StrictInterl p (X * b)) :
@@ -254,7 +254,7 @@ private theorem allComboRealRooted_left_X_mul_component_of_prec_right
     grind
   simpa [hrew] using hall_pXb α (β - α)
 
-private theorem prec_b_component_of_prec_left_of_natDegree_le
+private theorem strictInterl_b_component_of_strictInterl_left_of_natDegree_le
     {a b p : ℝ[X]}
     (hp_eq : p = a + X * b)
     (ha_nonneg : HasNonnegCoeffs a)
@@ -271,18 +271,18 @@ private theorem prec_b_component_of_prec_left_of_natDegree_le
   have hp_deg : p.natDegree = b.natDegree + 1 := by lia
   have hab_eq : a.natDegree = b.natDegree := by lia
   have hall_aXb : AllComboRealRooted a (X * b) :=
-    allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
+    allComboRealRooted_left_X_mul_component_of_strictInterl_left hp_eq hap
   have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) :=
     ⟨mul_ne_zero X_ne_zero hb0, hall_aXb.right_splits⟩
   have hdeg_aXb : a.natDegree + 1 = (X * b).natDegree := by simp_all
-  have hprec_or : StrictInterl a (X * b) ∨ StrictInterl (X * b) a :=
+  have hstrictInterl_or : StrictInterl a (X * b) ∨ StrictInterl (X * b) a :=
     strictInterl_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb
       (Or.inl hdeg_aXb)
-  have hprec_aXb : StrictInterl a (X * b) :=
-    StrictInterl.forward_of_orientation_of_succDegree hdeg_aXb.symm hprec_or
-  exact strictInterl_of_strictInterl_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
+  have hstrictInterl_aXb : StrictInterl a (X * b) :=
+    StrictInterl.forward_of_orientation_of_succDegree hdeg_aXb.symm hstrictInterl_or
+  exact strictInterl_of_strictInterl_mul_X_of_nonneg hstrictInterl_aXb hb_nonneg ha_nonneg
 
-private theorem natDegree_X_mul_component_eq_or_succ_of_prec_left_top
+private theorem natDegree_X_mul_component_eq_or_succ_of_strictInterl_left_top
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hp_eq : p = a + X * b)
@@ -293,7 +293,7 @@ private theorem natDegree_X_mul_component_eq_or_succ_of_prec_left_top
     (hap : StrictInterl a p) :
     (X * b).natDegree = d ∨ (X * b).natDegree + 1 = d := by
   have hall_aXb : AllComboRealRooted a (X * b) :=
-    allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
+    allComboRealRooted_left_X_mul_component_of_strictInterl_left hp_eq hap
   have hXb0 : X * b ≠ 0 := mul_ne_zero X_ne_zero hb0
   have hXb_le_p : (X * b).natDegree ≤ p.natDegree := by
     apply Polynomial.le_natDegree_of_ne_zero
@@ -358,7 +358,7 @@ private lemma exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_z
           (mem_roots hp_rr_ne).mpr hc_root
       grind
 
-private theorem prec_b_component_of_prec_left_top_of_sameDegree
+private theorem strictInterl_b_component_of_strictInterl_left_top_of_sameDegree
     {d : ℕ} {p a b : ℝ[X]}
     (hid : IsIdDecomposition d p a b)
     (ha_nonneg : HasNonnegCoeffs a)
@@ -371,11 +371,11 @@ private theorem prec_b_component_of_prec_left_top_of_sameDegree
     StrictInterl b a := by
   have hp_eq : p = a + X * b := hid.1
   have hall_aXb : AllComboRealRooted a (X * b) :=
-    allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
+    allComboRealRooted_left_X_mul_component_of_strictInterl_left hp_eq hap
   have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) :=
     ⟨mul_ne_zero X_ne_zero hb0, hall_aXb.right_splits⟩
   have hsame : a.natDegree = (X * b).natDegree := by lia
-  have hprec_or : StrictInterl a (X * b) ∨ StrictInterl (X * b) a :=
+  have hstrictInterl_or : StrictInterl a (X * b) ∨ StrictInterl (X * b) a :=
     strictInterl_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb
       (Or.inr hsame)
   have ha_not_root0 : ¬ a.IsRoot 0 :=
@@ -385,14 +385,14 @@ private theorem prec_b_component_of_prec_left_top_of_sameDegree
     exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
       hap.1.1 hap.1.2 ha_nonneg ha_not_root0
   have hXb_root0 : (X * b).IsRoot 0 := by simp
-  have hprec_aXb : StrictInterl a (X * b) :=
+  have hstrictInterl_aXb : StrictInterl a (X * b) :=
     PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := X * b) (g := a) (c := c) (r := 0)
       (by lia)
       hac_le hXb_root0 hc_lt0
-  exact strictInterl_of_strictInterl_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
+  exact strictInterl_of_strictInterl_mul_X_of_nonneg hstrictInterl_aXb hb_nonneg ha_nonneg
 
-private theorem prec_b_component_of_prec_left_top
+private theorem strictInterl_b_component_of_strictInterl_left_top
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -406,21 +406,21 @@ private theorem prec_b_component_of_prec_left_top
   have hp_eq : p = a + X * b := hid.1
   have hXb_case :
       (X * b).natDegree = d ∨ (X * b).natDegree + 1 = d :=
-    natDegree_X_mul_component_eq_or_succ_of_prec_left_top
+    natDegree_X_mul_component_eq_or_succ_of_strictInterl_left_top
       hd hp_eq ha_nonneg hb_nonneg ha_top hb0 hap
   rcases hXb_case with hXb_top | hXb_gap
   · exact
-      prec_b_component_of_prec_left_top_of_sameDegree
+      strictInterl_b_component_of_strictInterl_left_top_of_sameDegree
         hid ha_nonneg hb_nonneg ha0 hb0 ha_top hXb_top hap
   · exfalso
     have hall_aXb : AllComboRealRooted a (X * b) :=
-      allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
+      allComboRealRooted_left_X_mul_component_of_strictInterl_left hp_eq hap
     have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) :=
       ⟨mul_ne_zero X_ne_zero hb0, hall_aXb.right_splits⟩
     have hall_Xba : AllComboRealRooted (X * b) a := by
       intro α β
       simpa [add_comm, add_left_comm, add_assoc] using hall_aXb β α
-    have hprec_or : StrictInterl (X * b) a ∨ StrictInterl a (X * b) := by
+    have hstrictInterl_or : StrictInterl (X * b) a ∨ StrictInterl a (X * b) := by
       have hdeg : (X * b).natDegree + 1 = a.natDegree := by lia
       exact
         strictInterl_of_allComboRealRooted
@@ -435,11 +435,11 @@ private theorem prec_b_component_of_prec_left_top
     have hbad : StrictInterl a (X * b) :=
       PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
         (f := X * b) (g := a) (c := c) (r := 0)
-        hprec_or hac_le hXb_root0 hc_lt0
+        hstrictInterl_or hac_le hXb_root0 hc_lt0
     have hbound : a.natDegree ≤ (X * b).natDegree := hbad.natDegree_le
     lia
 
-private theorem prec_b_component_of_prec_right_top
+private theorem strictInterl_b_component_of_strictInterl_right_top
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -455,7 +455,7 @@ private theorem prec_b_component_of_prec_right_top
   have hpxb : StrictInterl p (X * b) :=
     strictInterl_mul_X_of_strictInterl_of_nonneg hbp hb_nonneg hp_nonneg
   have hall_aXb : AllComboRealRooted a (X * b) :=
-    allComboRealRooted_left_X_mul_component_of_prec_right hp_eq hpxb
+    allComboRealRooted_left_X_mul_component_of_strictInterl_right hp_eq hpxb
   have ha_rr : (a ≠ 0 ∧ a.Splits) := ⟨ha0, hall_aXb.left_splits⟩
   have hp_deg : p.natDegree = d := by
     apply le_antisymm hd
@@ -470,7 +470,7 @@ private theorem prec_b_component_of_prec_right_top
       linarith
     grind
   have hbp_deg : b.natDegree + 1 = p.natDegree :=
-    natDegree_right_of_prec_to_sum hp_eq ha_nonneg hb_nonneg hb0 hbp
+    natDegree_right_of_strictInterl_to_sum hp_eq ha_nonneg hb_nonneg hb0 hbp
   have hsame : a.natDegree = (X * b).natDegree := by simp_all
   have ha_not_root0 : ¬ a.IsRoot 0 :=
     not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
@@ -479,15 +479,15 @@ private theorem prec_b_component_of_prec_right_top
     exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
       ha_rr.1 ha_rr.2 ha_nonneg ha_not_root0
   have hXb_root0 : (X * b).IsRoot 0 := by simp
-  have hprec_or : StrictInterl a (X * b) ∨ StrictInterl (X * b) a :=
+  have hstrictInterl_or : StrictInterl a (X * b) ∨ StrictInterl (X * b) a :=
     strictInterl_of_allComboRealRooted ha_rr.1 ha_rr.2 hpxb.2.1.1 hpxb.2.1.2 hall_aXb
       (Or.inr hsame)
-  have hprec_aXb : StrictInterl a (X * b) :=
+  have hstrictInterl_aXb : StrictInterl a (X * b) :=
     PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := X * b) (g := a) (c := c) (r := 0)
       (by lia)
       hac_le hXb_root0 hc_lt0
-  exact strictInterl_of_strictInterl_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
+  exact strictInterl_of_strictInterl_mul_X_of_nonneg hstrictInterl_aXb hb_nonneg ha_nonneg
 
 theorem brandenSolusTheorem26_first_equiv_of_top_degree
     {d : ℕ} {p a b : ℝ[X]}
@@ -501,13 +501,13 @@ theorem brandenSolusTheorem26_first_equiv_of_top_degree
     (StrictInterl b a ↔ StrictInterl a p) := by
   constructor
   · intro hba
-    exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).1
+    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
   · intro hap
     exact
-      prec_b_component_of_prec_left_top
+      strictInterl_b_component_of_strictInterl_left_top
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hap
 
-theorem brandenSolusTheorem26_forward_of_prec_a_p_top_degree
+theorem brandenSolusTheorem26_forward_of_strictInterl_a_p_top_degree
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -521,7 +521,7 @@ theorem brandenSolusTheorem26_forward_of_prec_a_p_top_degree
   have hba : StrictInterl b a :=
     (brandenSolusTheorem26_first_equiv_of_top_degree
       hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top).2 hap
-  exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).2
+  exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2
 
 theorem brandenSolusTheorem26_second_equiv_of_top_degree
     {d : ℕ} {p a b : ℝ[X]}
@@ -536,13 +536,13 @@ theorem brandenSolusTheorem26_second_equiv_of_top_degree
   constructor
   · intro hap
     exact
-      (brandenSolusTheorem26_forward_of_prec_a_p_top_degree
+      (brandenSolusTheorem26_forward_of_strictInterl_a_p_top_degree
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hap).1
   · intro hbp
     have hba : StrictInterl b a :=
-      prec_b_component_of_prec_right_top
+      strictInterl_b_component_of_strictInterl_right_top
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hbp
-    exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).1
+    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
 
 theorem brandenSolusTheorem26_third_forward_of_top_degree
     {d : ℕ} {p a b : ℝ[X]}
@@ -556,11 +556,11 @@ theorem brandenSolusTheorem26_third_forward_of_top_degree
     StrictInterl b p → StrictInterl (IdTransform d p) p := by
   intro hbp
   have hba : StrictInterl b a :=
-    prec_b_component_of_prec_right_top
+    strictInterl_b_component_of_strictInterl_right_top
       hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hbp
-  exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).2.2
+  exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.2
 
-private theorem prec_b_component_of_prec_Id_top_of_right_top
+private theorem strictInterl_b_component_of_strictInterl_Id_top_of_right_top
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -623,7 +623,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     dsimp [t]
     rw [hh_deg, natDegree_mul (X_sub_C_ne_zero (1 : ℝ)) hb0, natDegree_X_sub_C]
     lia
-  have hprec_or : StrictInterl h t ∨ StrictInterl t h :=
+  have hstrictInterl_or : StrictInterl h t ∨ StrictInterl t h :=
     strictInterl_of_allComboRealRooted hIdp.1.1 hIdp.1.2 ht_rr.1 ht_rr.2 hall_ht
       (Or.inr hsame)
   have ht_root1 : t.IsRoot 1 := by
@@ -671,7 +671,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree_of_right_top
     StrictInterl (IdTransform d p) p → StrictInterl b p := by
   intro hIdp
   exact
-    prec_b_component_of_prec_Id_top_of_right_top
+    strictInterl_b_component_of_strictInterl_Id_top_of_right_top
       hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hb_top hIdp
 
 theorem brandenSolusTheorem26_third_equiv_of_top_degree_of_right_top
@@ -755,7 +755,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
   · have hall_th : AllComboRealRooted t h := by
       intro α β
       simpa [add_comm, add_left_comm, add_assoc] using hall_ht β α
-    have hprec_or : StrictInterl t h ∨ StrictInterl h t :=
+    have hstrictInterl_or : StrictInterl t h ∨ StrictInterl h t :=
       strictInterl_of_allComboRealRooted ht_rr.1 ht_rr.2 hIdp.1.1 hIdp.1.2 hall_th
         (Or.inl hgap)
     have hnot_th : ¬ StrictInterl t h := by
@@ -763,7 +763,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
       have h1_le : (1 : ℝ) ≤ 0 :=
         hth.roots_le_of_right hh_nonpos 1 ((mem_roots hth.1.1).mpr ht_root1)
       linarith
-    rcases hprec_or with hth | hht
+    rcases hstrictInterl_or with hth | hht
     · lia
     · have hbound : h.natDegree ≤ t.natDegree := hht.natDegree_le
       lia
@@ -797,9 +797,9 @@ theorem brandenSolusTheorem26_first_equiv_of_natDegree_le
     (StrictInterl b a ↔ StrictInterl a p) := by
   constructor
   · intro hba
-    exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).1
+    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
   · intro hap
-    exact prec_b_component_of_prec_left_of_natDegree_le
+    exact strictInterl_b_component_of_strictInterl_left_of_natDegree_le
       hid.1 ha_nonneg hb_nonneg ha_le hb0 hap
 
 theorem brandenSolusTheorem26_second_equiv_of_natDegree_le
@@ -817,12 +817,12 @@ theorem brandenSolusTheorem26_second_equiv_of_natDegree_le
     have hba : StrictInterl b a :=
       (brandenSolusTheorem26_first_equiv_of_natDegree_le
         hd hid ha_nonneg hb_nonneg ha_le hb0).2 hap
-    exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).2.1
+    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.1
   · intro hbp
     have hba : StrictInterl b a :=
       (brandenSolusTheorem26_third_equiv_of_natDegree_le
         hd hid ha_nonneg hb_nonneg ha_le ha0 hb0).2 hbp
-    exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).1
+    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
 
 theorem hasNonnegCoeffs_pair_of_isIdDecomposition {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
@@ -867,7 +867,7 @@ theorem hasNonnegCoeffs_transformed_components_of_isIdDecomposition {d : ℕ} {a
     HasNonnegCoeffs (fPolynomial d a) ∧ HasNonnegCoeffs (fPolynomial (d - 1) b) :=
   ⟨hasNonnegCoeffs_fPolynomial ha_nonneg, hasNonnegCoeffs_fPolynomial hb_nonneg⟩
 
-lemma prec_iff_prec_mul_X_add_one_both {f g : ℝ[X]} :
+lemma strictInterl_iff_strictInterl_mul_X_add_one_both {f g : ℝ[X]} :
     StrictInterl ((X + 1) * f) ((X + 1) * g) ↔ StrictInterl f g := by
   constructor
   · intro h
@@ -878,7 +878,7 @@ lemma prec_iff_prec_mul_X_add_one_both {f g : ℝ[X]} :
       h.mul_X_sub_C_both (-1)
     simp_all
 
-lemma prec_iff_prec_mul_X_add_one_pow_both {n : ℕ} {f g : ℝ[X]} :
+lemma strictInterl_iff_strictInterl_mul_X_add_one_pow_both {n : ℕ} {f g : ℝ[X]} :
     StrictInterl ((X + 1) ^ n * f) ((X + 1) ^ n * g) ↔ StrictInterl f g := by
   induction n with
   | zero =>
@@ -887,7 +887,7 @@ lemma prec_iff_prec_mul_X_add_one_pow_both {n : ℕ} {f g : ℝ[X]} :
       have hstep :
           StrictInterl ((X + 1) * ((X + 1) ^ n * f)) ((X + 1) * ((X + 1) ^ n * g)) ↔
             StrictInterl ((X + 1) ^ n * f) ((X + 1) ^ n * g) :=
-        prec_iff_prec_mul_X_add_one_both
+        strictInterl_iff_strictInterl_mul_X_add_one_both
       grind
 
 /-- Reduced transport target: it is enough to treat the minimal ambient degree
@@ -929,10 +929,12 @@ theorem strictInterlFPolynomialTransportMinimal :
       isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs hud h.1.1 h.1.2 hu_nonneg
     have hv_rr : (v ≠ 0 ∧ v.Splits) :=
       isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs hvd h.2.1.1 h.2.1.2 hv_nonneg
-    exact prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
+    exact strictInterl_of_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
       hd hu_rr.1 hu_rr.2 hv_rr.1 hv_rr.2 h hu_nonneg hv_nonneg
   · intro h
-    exact prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal hd h hu_nonneg hv_nonneg
+    exact
+      strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
+        hd h hu_nonneg hv_nonneg
 
 @[deprecated strictInterlFPolynomialTransportMinimal (since := "2026-09-18")]
 alias precFPolynomialTransportMinimal := strictInterlFPolynomialTransportMinimal
@@ -954,7 +956,7 @@ theorem strictInterlFPolynomialTransport_of_minimal
         ↔ StrictInterl ((X + 1) ^ (d - m) * fPolynomial m u)
           ((X + 1) ^ (d - m) * fPolynomial m v) := by lia
     _ ↔ StrictInterl (fPolynomial m u) (fPolynomial m v) :=
-          prec_iff_prec_mul_X_add_one_pow_both
+          strictInterl_iff_strictInterl_mul_X_add_one_pow_both
     _ ↔ StrictInterl u v := hminimal (d := m) rfl hu_nonneg hv_nonneg
 
 @[deprecated strictInterlFPolynomialTransport_of_minimal (since := "2026-09-18")]
@@ -1056,24 +1058,24 @@ private theorem brandenSolusTheorem26_descend_of_lt_top
     calc
       StrictInterl b a ↔ StrictInterl (X * b') (X * a') := by lia
       _ ↔ StrictInterl b' a' :=
-        (prec_iff_prec_mul_X_both_of_hasNonnegCoeffs hb'_nonneg ha'_nonneg).symm
+        (strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs hb'_nonneg ha'_nonneg).symm
   have hap_transport : StrictInterl a p ↔ StrictInterl a' q := by
     calc
       StrictInterl a p ↔ StrictInterl (X * a') (X * q) := by lia
       _ ↔ StrictInterl a' q :=
-        (prec_iff_prec_mul_X_both_of_hasNonnegCoeffs ha'_nonneg hq_nonneg).symm
+        (strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs ha'_nonneg hq_nonneg).symm
   have hbp_transport : StrictInterl b p ↔ StrictInterl b' q := by
     calc
       StrictInterl b p ↔ StrictInterl (X * b') (X * q) := by lia
       _ ↔ StrictInterl b' q :=
-        (prec_iff_prec_mul_X_both_of_hasNonnegCoeffs hb'_nonneg hq_nonneg).symm
+        (strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs hb'_nonneg hq_nonneg).symm
   have hIdp_transport :
       StrictInterl (IdTransform d p) p ↔ StrictInterl (IdTransform (d - 2) q) q := by
     calc
       StrictInterl (IdTransform d p) p ↔
           StrictInterl (X * IdTransform (d - 2) q) (X * q) := by lia
       _ ↔ StrictInterl (IdTransform (d - 2) q) q :=
-        (prec_iff_prec_mul_X_both_of_hasNonnegCoeffs hIdq_nonneg hq_nonneg).symm
+        (strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs hIdq_nonneg hq_nonneg).symm
   refine ⟨?_, ?_, ?_, brandenSolusTheorem26_last_equiv hd hid ha_nonneg hb_nonneg⟩ <;> lia
 
 /-- Naive fully strict translation of Brändén--Solus Theorem 2.6 into the
@@ -1184,7 +1186,7 @@ theorem brandenSolusTheorem26_ordered_bridge_forward_of_natDegree_le
   have hba : StrictInterl b a :=
     (brandenSolusTheorem26_third_equiv_of_natDegree_le
       hd hid ha_nonneg hb_nonneg ha_le ha0 hb0).2 hbp
-  exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).2.2
+  exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.2
 
 /-- Ordered-degree converse bridge: if `a.natDegree ≤ b.natDegree` and
 `IdTransform d p ≺ p`, then already `b ≺ p`.
@@ -1404,5 +1406,26 @@ theorem brandenSolusTheorem26 :
     brandenSolusTheorem26Statement :=
   brandenSolusTheorem26_of_top_degree_boundary_only
     brandenSolusTheorem26TopDegreeBoundary
+
+/-! Deprecated aliases for the pre-canonical strict-interlacing names. -/
+
+@[deprecated strictInterl_of_interl_of_ne_zero (since := "2026-09-26")]
+alias prec_of_prec0_of_ne_zero := strictInterl_of_interl_of_ne_zero
+
+@[deprecated brandenSolusTheorem26_forward_of_strictInterl_b_a (since := "2026-09-26")]
+alias brandenSolusTheorem26_forward_of_prec_b_a :=
+  brandenSolusTheorem26_forward_of_strictInterl_b_a
+
+@[deprecated brandenSolusTheorem26_forward_of_strictInterl_a_p_top_degree
+  (since := "2026-09-26")]
+alias brandenSolusTheorem26_forward_of_prec_a_p_top_degree :=
+  brandenSolusTheorem26_forward_of_strictInterl_a_p_top_degree
+
+@[deprecated strictInterl_iff_strictInterl_mul_X_add_one_both (since := "2026-09-26")]
+alias prec_iff_prec_mul_X_add_one_both := strictInterl_iff_strictInterl_mul_X_add_one_both
+
+@[deprecated strictInterl_iff_strictInterl_mul_X_add_one_pow_both (since := "2026-09-26")]
+alias prec_iff_prec_mul_X_add_one_pow_both :=
+  strictInterl_iff_strictInterl_mul_X_add_one_pow_both
 
 end RealRooted

@@ -172,7 +172,7 @@ lemma IdTransform_X_mul_of_natDegree_le_two_pred {d : ℕ} {p : ℝ[X]}
     _ = X * IdTransform (d - 2) p :=
       IdTransform_of_natDegree_le_pred (d := d - 1) (by lia) (by lia)
 
-theorem prec_iff_prec_mul_X_both_of_hasNonnegCoeffs {f g : ℝ[X]}
+theorem strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     StrictInterl f g ↔ StrictInterl (X * f) (X * g) := by
   constructor
@@ -726,6 +726,13 @@ theorem fPolynomialDecompositionCompatibility : fPolynomialDecompositionCompatib
     (p := fPolynomial d h) (a := fPolynomial d a) (b := fPolynomial (d - 1) b)
     (fPolynomial_natDegree_le d h) (isRdDecomposition_fPolynomial_of_isIdDecomposition hd hid)
   lia
+
+/-! Deprecated aliases for the pre-canonical strict-interlacing names. -/
+
+@[deprecated strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs
+  (since := "2026-09-26")]
+alias prec_iff_prec_mul_X_both_of_hasNonnegCoeffs :=
+  strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs
 
 
 end RealRooted
