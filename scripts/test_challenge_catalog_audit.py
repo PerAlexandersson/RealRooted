@@ -21,8 +21,8 @@ class ChallengeCatalogAuditTests(unittest.TestCase):
         self.assertIs(audit.catalog_digest, challenge_catalog.catalog_digest)
         pages = audit.load_pages(root)
         self.assertEqual(audit.catalog_digest(pages), challenge_catalog.catalog_digest(pages))
-        self.assertEqual(len(pages), 18)
-        self.assertEqual(len(audit.resolve_records(root, pages)), 75)
+        self.assertEqual(len(pages), 19)
+        self.assertEqual(len(audit.resolve_records(root, pages)), 82)
 
     def test_raw_audit_parser_rejects_duplicate_results(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
