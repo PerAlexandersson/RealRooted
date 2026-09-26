@@ -235,6 +235,35 @@ theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (hSPW (IsPFPolynomial.of_sequence hASW hp)
       (IsPFPolynomial.of_sequence hASW hq)).to_sequence
 
+/-- Finite Pólya-frequency sequences are closed under coefficientwise
+products.  Finite support is encoded by the coefficient sequences of the
+polynomials `p` and `q`. -/
+theorem polyaFrequencyHadamardCoeff :
+    polyaFrequencyHadamardCoeffStatement :=
+  polyaFrequencyHadamardCoeff_of_schurPolyaWagner
+    aissenSchoenbergWhitneyForwardOrZero
+    schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegStrictInterl
+
+/-- **Maló's theorem (finite-support Toeplitz form).**  The entrywise product
+of two totally nonnegative lower-triangular Toeplitz matrices is totally
+nonnegative when their diagonal sequences have finite support.
+
+Here finite support is represented canonically by polynomial coefficient
+sequences.  The analogous statement for arbitrary totally nonnegative
+matrices, or for arbitrary infinite-support Toeplitz sequences, is false. -/
+theorem maloToeplitzHadamard_isTotallyNonneg {p q : ℝ[X]}
+    (hp : (toeplitz p.coeff).IsTotallyNonneg)
+    (hq : (toeplitz q.coeff).IsTotallyNonneg) :
+    (Matrix.of fun i j =>
+      toeplitz p.coeff i j * toeplitz q.coeff i j).IsTotallyNonneg := by
+  have hcoeff : p.coeff * q.coeff =
+      fun n => (hadamardProduct p q).coeff n := by
+    funext n
+    simp only [Pi.mul_apply, coeff_hadamardProduct]
+  rw [← toeplitz_pointwise_mul]
+  rw [hcoeff]
+  exact polyaFrequencyHadamardCoeff hp hq
+
 @[deprecated garloffWagnerHadamardNonnegInterl_of_oddEven
   (since := "2026-09-18")]
 alias garloffWagnerHadamardNonnegPrec_of_oddEven :=
