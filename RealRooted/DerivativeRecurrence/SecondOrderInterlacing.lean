@@ -250,7 +250,7 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_n
         ring
       have hprec : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rw [hsum]
-        refine prec_generalizedLiuWang_of_no_common
+        refine strictInterl_generalizedLiuWang_of_no_common
           hinter (pos_leading_affine_lag_second_order_derivative h0 h1 hrec n)
             ?_ ?_ ?_ ?_ ?_ ?_ ihno hW
         · intro bg hmem

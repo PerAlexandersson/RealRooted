@@ -256,7 +256,7 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_evenShape
     simp only [Polynomial.IsRoot.def, Polynomial.eval_mul,
       Polynomial.eval_C, mul_eq_zero, hs0, false_or] at hevenRoot hoddRoot
     exact ⟨hevenRoot, hoddRoot⟩
-  have hW := wronskian_pos_of_prec_succ hevenPos hoddPos
+  have hW := wronskian_pos_of_strictInterl_succ hevenPos hoddPos
     (by
       rw [Polynomial.natDegree_C_mul hs0,
         Polynomial.natDegree_C_mul hs0,
@@ -327,7 +327,7 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_oddShape
     simp only [Polynomial.IsRoot.def, Polynomial.eval_mul,
       Polynomial.eval_C, mul_eq_zero, hs0, ht0, false_or] at hoddRoot hevenRoot
     exact ⟨hevenRoot, hoddRoot⟩
-  have hW := wronskian_pos_of_prec_succ hoddPos hevenPos
+  have hW := wronskian_pos_of_strictInterl_succ hoddPos hevenPos
     (by
       rw [Polynomial.natDegree_C_mul ht0,
         Polynomial.natDegree_C_mul hs0,

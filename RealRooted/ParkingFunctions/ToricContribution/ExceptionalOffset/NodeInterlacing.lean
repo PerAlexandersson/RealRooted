@@ -816,7 +816,7 @@ private theorem rPolynomial_finite_strictInterl_of_lt
   have hmTwo : 2 ≤ m := by lia
   have hpData := rPolynomial_rightClosedIntervalRootData m ε e hm he
   have hqData := rPolynomial_rightClosedIntervalRootData m ε d hm hd
-  apply (prec_iff_orderedRoot_bounds
+  apply (strictInterl_iff_orderedRoot_bounds
     (fun hzero => hpData.eval_zero_ne (by simp [hzero])) hpData.splits
     (fun hzero => hqData.eval_zero_ne (by simp [hzero])) hqData.splits
     hpData.natDegree_eq hqData.natDegree_eq).mpr
@@ -868,7 +868,7 @@ theorem rPolynomial_strictInterl_rPolynomial_of_lt
       exact natDegree_exceptionalEulerInverse m ε (by positivity)
     have hpPrevBounds := StrictInterl.orderedRoot_le
       hpStrictInterlPrev hpDegree hprevData.natDegree_eq
-    apply (prec_iff_orderedRoot_bounds
+    apply (strictInterl_iff_orderedRoot_bounds
       hpStrictInterlPrev.1.1 hpStrictInterlPrev.1.2
       (fun hzero => hqData.eval_zero_ne (by simp [hzero])) hqData.splits
       hpDegree hqData.natDegree_eq).mpr

@@ -157,7 +157,7 @@ theorem decoEulerian_strictInterl_and_noCommonRoot (n : ℕ) :
     StrictInterl (decoEulerian n) (decoEulerian (n + 1)) ∧
       ∀ r : ℝ, (decoEulerian (n + 1)).IsRoot r →
         ¬ (decoEulerian n).IsRoot r :=
-  ⟨(decoEulerian_certificate n).prec_succ,
+  ⟨(decoEulerian_certificate n).strictInterl_succ,
     (decoEulerian_certificate n).noCommonRoot_succ⟩
 
 /-- Every deco Eulerian polynomial splits over the reals. -/
@@ -167,7 +167,7 @@ theorem decoEulerian_splits (n : ℕ) : (decoEulerian n).Splits :=
 /-- Consecutive deco Eulerian polynomials are in proper position. -/
 theorem decoEulerian_strictInterl (n : ℕ) :
     StrictInterl (decoEulerian n) (decoEulerian (n + 1)) :=
-  (decoEulerian_certificate n).prec_succ
+  (decoEulerian_certificate n).strictInterl_succ
 
 /-- Consecutive deco Eulerian polynomials interlace with degree difference
 one. -/

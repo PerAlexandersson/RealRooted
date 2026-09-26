@@ -66,7 +66,7 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag
         ring
       have hprec : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rw [hsum]
-        refine prec_generalizedLiuWang_of_no_common
+        refine strictInterl_generalizedLiuWang_of_no_common
           hinter (hpos n) ?_ ?_ ?_ ?_ ?_ ?_ ihno hW
         · intro bg hmem
           rw [List.mem_singleton] at hmem

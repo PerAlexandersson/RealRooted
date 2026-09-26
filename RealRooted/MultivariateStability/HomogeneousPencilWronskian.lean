@@ -116,7 +116,7 @@ theorem MvRealStable.wronskian_eval_realAffineLineRestriction_nonneg_of_homogene
   have hHB : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial p q) := by
     intro z hz
     simpa using hpencil z Complex.I hz (by simp)
-  exact wronskian_eval_nonneg_of_prec hp hq
+  exact wronskian_eval_nonneg_of_strictInterl hp hq
     (strictInterl_of_upperHalfPlaneStable_hermiteBiehler hp hq hHB) t
 
 /-- A stable affine extension of two nonzero homogeneous polynomials with
