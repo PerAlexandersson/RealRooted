@@ -261,7 +261,7 @@ theorem normalizedReversedContribution_eq_C_mul_normalizedRPolynomial
 
 /-- The concrete reversed EHR contributions inherit the fixed-row proper
 position orientation. -/
-theorem normalizedReversedContribution_prec_of_lt
+theorem normalizedReversedContribution_strictInterl_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hε : ε ≤ 1)
     (hde : d < e) (he : e ≤ m) :
     StrictInterl (normalizedReversedContribution m ε e)
@@ -270,7 +270,7 @@ theorem normalizedReversedContribution_prec_of_lt
     normalizedReversedContribution_eq_C_mul_normalizedRPolynomial m ε d hε]
   exact StrictInterl.C_mul_right
     (StrictInterl.C_mul_left
-      (normalizedRPolynomial_prec_of_lt m ε d e hm hde he)
+      (normalizedRPolynomial_strictInterl_of_lt m ε d e hm hde he)
       (reversedContribution_scale_pos m ε e).ne')
     (reversedContribution_scale_pos m ε d).ne'
 
@@ -359,11 +359,11 @@ theorem toricContribution_eq_sum (m ε d : ℕ) :
 
 /-- Larger reverse offsets precede smaller reverse offsets for the original
 toric contribution polynomials. -/
-theorem toricContribution_prec_of_lt
+theorem toricContribution_strictInterl_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hε : ε ≤ 1)
     (hde : d < e) (he : e ≤ m) :
     StrictInterl (toricContribution m ε e) (toricContribution m ε d) := by
-  have hrev := normalizedReversedContribution_prec_of_lt
+  have hrev := normalizedReversedContribution_strictInterl_of_lt
     m ε d e hm hε hde he
   have hdegree :
       (normalizedReversedContribution m ε e).natDegree =
@@ -422,7 +422,7 @@ theorem toricContributionRow_isInterlacingSeq
     IsInterlacingSeq (toricContributionRow m ε) := by
   apply isInterlacingSeq_reverseOffsetRow
   intro d e hde he
-  exact toricContribution_prec_of_lt m ε d e (by lia) hε hde he
+  exact toricContribution_strictInterl_of_lt m ε d e (by lia) hε hde he
 
 /-- The normalized reversed contributions with a scalar weight at each
 offset. -/
@@ -464,6 +464,16 @@ theorem weightedNormalizedReversedContributionFamily_sum_splits
   apply normalizedRPolynomialFamily_weighted_sum_splits m ε hm
   intro d hd
   exact mul_pos (hw d hd) (reversedContribution_scale_pos m ε d)
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated normalizedReversedContribution_strictInterl_of_lt
+  (since := "2026-09-26")]
+alias normalizedReversedContribution_prec_of_lt :=
+  normalizedReversedContribution_strictInterl_of_lt
+
+@[deprecated toricContribution_strictInterl_of_lt (since := "2026-09-26")]
+alias toricContribution_prec_of_lt := toricContribution_strictInterl_of_lt
 
 end ToricContribution
 end ParkingFunctions

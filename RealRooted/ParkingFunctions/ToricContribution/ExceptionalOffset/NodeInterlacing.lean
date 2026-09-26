@@ -273,7 +273,7 @@ private theorem shiftedJacobiMonicRoot_base_interlacing_jacobi
           exact shiftedJacobiMonicRoot_isRoot (n + 1) i.succ hα hβ)
     exact hJK_i.trans (hKQ_i.trans hright_strict)
 
-private theorem prec_derivative_of_nonpos_of_pos_natDegree
+private theorem strictInterl_derivative_of_nonpos_of_pos_natDegree
     {p u v : ℝ[X]} (hp : p.Splits) (hdegree : 1 ≤ p.natDegree)
     (hdegreeLower : p.natDegree ≤ (u * p + v * p.derivative).natDegree)
     (hdegreeUpper : (u * p + v * p.derivative).natDegree ≤ p.natDegree + 1)
@@ -289,7 +289,7 @@ private theorem prec_derivative_of_nonpos_of_pos_natDegree
     (f := p) (g := p.derivative) (a := u) (b := v)
     hderivative hderivativePos houtputPos hdegreeLower hdegreeUpper hvNonpos
 
-private theorem exceptionalBasePolynomial_prec_exceptionalEulerInverse
+private theorem exceptionalBasePolynomial_strictInterl_exceptionalEulerInverse
     (m ε : ℕ) {γ : ℝ} (hm : 0 < m) (hγ : 0 < γ)
     (hγlower : (ε : ℝ) + 1 / 2 + m - 1 < γ)
     (hUsplits : (exceptionalEulerInverse m ε γ).Splits) :
@@ -383,9 +383,9 @@ private theorem exceptionalBasePolynomial_prec_exceptionalEulerInverse
           -(1 - X) * (-U.derivative.comp (1 - X)) := by ring
   have htargetPos : HasPosLeadingCoeff (C γ * f) :=
     hasPosLeadingCoeff_C_mul hγ hfPos
-  have hprecComp : StrictInterl u (C γ * f) := by
+  have hstrictInterlComp : StrictInterl u (C γ * f) := by
     rw [hrec]
-    apply prec_derivative_of_nonpos_of_pos_natDegree
+    apply strictInterl_derivative_of_nonpos_of_pos_natDegree
     · exact huSplits
     · rw [huDegree]
       exact hm
@@ -404,11 +404,11 @@ private theorem exceptionalBasePolynomial_prec_exceptionalEulerInverse
           exact (mem_roots hUne).mpr hxU)
       simp only [eval_neg, eval_sub, eval_one, eval_X]
       linarith
-  have hprecComp' : StrictInterl u f := by
-    have hscaled := hprecComp.C_mul_right (inv_ne_zero hγ.ne')
+  have hstrictInterlComp' : StrictInterl u f := by
+    have hscaled := hstrictInterlComp.C_mul_right (inv_ne_zero hγ.ne')
     rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hγ.ne', C_1, one_mul] at hscaled
     exact hscaled
-  have hreflect := hprecComp'.comp_one_sub_X_of_natDegree_eq
+  have hreflect := hstrictInterlComp'.comp_one_sub_X_of_natDegree_eq
     (by rw [huDegree, hfDegree])
   have hinvolution : (1 - X : ℝ[X]).comp (1 - X) = X := by
     simp
@@ -503,18 +503,18 @@ private theorem exceptionalRoot_interlacing_jPolynomialRoot
   have hRprevDegree :=
     (rPolynomial_rightClosedIntervalRootData m ε (m - 1) hm le_rfl).natDegree_eq
   have hleftBounds := StrictInterl.orderedRoot_le
-    (rPolynomial_exceptional_prec m ε hm) hRmDegree hRprevDegree
+    (rPolynomial_exceptional_strictInterl m ε hm) hRmDegree hRprevDegree
   let B : ℝ := (ε : ℝ) + 1 / 2 + m + 1 / 2
   have hB : 0 < B := by positivity
   have hBlower : (ε : ℝ) + 1 / 2 + m - 1 < B := by
     dsimp only [B]
     linarith
-  have hbasePrecUpper : StrictInterl (exceptionalBasePolynomial m ε)
+  have hbaseStrictInterlUpper : StrictInterl (exceptionalBasePolynomial m ε)
       (rPolynomial m ε m) := by
     rw [← exceptionalEulerInverse_upper_eq_rPolynomial]
-    apply exceptionalBasePolynomial_prec_exceptionalEulerInverse
+    apply exceptionalBasePolynomial_strictInterl_exceptionalEulerInverse
       m ε hm hB hBlower
-    exact (exceptionalEulerInverse_upper_prec_lower m ε hm).1.2
+    exact (exceptionalEulerInverse_upper_strictInterl_lower m ε hm).1.2
   have hbaseDegree : (exceptionalBasePolynomial m ε).natDegree = m := by
     let scale : ℝ :=
       (Ring.choose ((m : ℝ) + ((ε : ℝ) - 1 / 2)) m)⁻¹
@@ -529,7 +529,7 @@ private theorem exceptionalRoot_interlacing_jPolynomialRoot
         have hε : 0 ≤ (ε : ℝ) := by positivity
         linarith) (by norm_num)]
   have hrightBounds := StrictInterl.orderedRoot_le
-    hbasePrecUpper hbaseDegree hRmDegree
+    hbaseStrictInterlUpper hbaseDegree hRmDegree
   have hbaseJ := shiftedJacobiMonicRoot_base_interlacing_jacobi
     (m - 1) (α := (ε : ℝ) - 1 / 2) (by
       have hε : 0 ≤ (ε : ℝ) := by positivity
@@ -587,9 +587,9 @@ theorem rPolynomial_exceptional_eval_mul_jPolynomial_derivative_pos
       let J := jPolynomial (n + 1) ε
       let s : Fin (n + 1) → ℝ := orderedRoot R (n + 1)
       let r : Fin n → ℝ := jPolynomialRoot (n + 1) ε
-      have hRprec := rPolynomial_exceptional_prec (n + 1) ε (by lia)
-      have hRNe : R ≠ 0 := by simpa only [R] using hRprec.1.1
-      have hRSplits : R.Splits := by simpa only [R] using hRprec.1.2
+      have hRStrictInterl := rPolynomial_exceptional_strictInterl (n + 1) ε (by lia)
+      have hRNe : R ≠ 0 := by simpa only [R] using hRStrictInterl.1.1
+      have hRSplits : R.Splits := by simpa only [R] using hRStrictInterl.1.2
       have hRDegree : R.natDegree = n + 1 := by
         dsimp only [R]
         rw [← exceptionalEulerInverse_upper_eq_rPolynomial]
@@ -809,7 +809,7 @@ private theorem finiteRoot_interlacing_jPolynomialRoot
         lia, orderedRoot_finite_last_eq_one m ε d hm hd]
       exact hroot.2.le
 
-private theorem rPolynomial_finite_prec_of_lt
+private theorem rPolynomial_finite_strictInterl_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hde : d < e) (he : e ≤ m - 1) :
     StrictInterl (rPolynomial m ε e) (rPolynomial m ε d) := by
   have hd : d ≤ m - 1 := by lia
@@ -851,25 +851,25 @@ private theorem rPolynomial_finite_prec_of_lt
 
 /-- Larger reverse offsets precede smaller reverse offsets in proper position.
 This is the fixed-row orientation statement behind Xiao's Conjecture 4.2. -/
-theorem rPolynomial_prec_rPolynomial_of_lt
+theorem rPolynomial_strictInterl_rPolynomial_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hde : d < e) (he : e ≤ m) :
     StrictInterl (rPolynomial m ε e) (rPolynomial m ε d) := by
   by_cases heFinite : e ≤ m - 1
-  · exact rPolynomial_finite_prec_of_lt m ε d e hm hde heFinite
+  · exact rPolynomial_finite_strictInterl_of_lt m ε d e hm hde heFinite
   · have heEq : e = m := by lia
     subst e
     have hd : d ≤ m - 1 := by lia
     have hqData := rPolynomial_rightClosedIntervalRootData m ε d hm hd
     have hprevData :=
       rPolynomial_rightClosedIntervalRootData m ε (m - 1) hm le_rfl
-    have hpPrecPrev := rPolynomial_exceptional_prec m ε hm
+    have hpStrictInterlPrev := rPolynomial_exceptional_strictInterl m ε hm
     have hpDegree : (rPolynomial m ε m).natDegree = m := by
       rw [← exceptionalEulerInverse_upper_eq_rPolynomial]
       exact natDegree_exceptionalEulerInverse m ε (by positivity)
     have hpPrevBounds := StrictInterl.orderedRoot_le
-      hpPrecPrev hpDegree hprevData.natDegree_eq
+      hpStrictInterlPrev hpDegree hprevData.natDegree_eq
     apply (prec_iff_orderedRoot_bounds
-      hpPrecPrev.1.1 hpPrecPrev.1.2
+      hpStrictInterlPrev.1.1 hpStrictInterlPrev.1.2
       (fun hzero => hqData.eval_zero_ne (by simp [hzero])) hqData.splits
       hpDegree hqData.natDegree_eq).mpr
     constructor
@@ -963,14 +963,14 @@ theorem jPolynomial_interlaces_rPolynomial
     · simpa only [jPolynomialRoot] using hright
   · have hdEq : d = m := by lia
     subst d
-    have hRPrec := rPolynomial_exceptional_prec m ε hm
+    have hRStrictInterl := rPolynomial_exceptional_strictInterl m ε hm
     have hRDegree : (rPolynomial m ε m).natDegree = m := by
       rw [← exceptionalEulerInverse_upper_eq_rPolynomial]
       exact natDegree_exceptionalEulerInverse m ε (by positivity)
     obtain ⟨hleft, hright⟩ :=
       exceptionalRoot_interlacing_jPolynomialRoot m ε hm
     apply interlaces_of_intervalRootData_orderedRoot_bounds hJData
-      hRPrec.1.1 hRPrec.1.2 (hRDegree.trans hmSucc.symm)
+      hRStrictInterl.1.1 hRStrictInterl.1.2 (hRDegree.trans hmSucc.symm)
     · intro i
       simpa only [jPolynomialRoot, RealRooted.orderedRoot, Fin.val_cast] using
         (hleft i).le
@@ -1038,6 +1038,13 @@ theorem negOnePow_mul_rPolynomial_hasPosLeadingCoeff (m ε d : ℕ) :
     (isUnit_iff_ne_zero.mpr (pow_ne_zero m (by norm_num))), leadingCoeff,
     rPolynomial_natDegree]
   exact rPolynomial_top_signed_coeff_pos m ε d
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated rPolynomial_strictInterl_rPolynomial_of_lt
+  (since := "2026-09-26")]
+alias rPolynomial_prec_rPolynomial_of_lt :=
+  rPolynomial_strictInterl_rPolynomial_of_lt
 
 end ToricContribution
 end ParkingFunctions

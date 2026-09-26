@@ -181,14 +181,14 @@ private theorem neg_coeff_one_eq_sum_roots_inv
   simp only [neg_mul, one_mul] at hnext
   linarith
 
-private theorem neg_coeff_one_le_of_prec_sameDegree_of_roots_pos
-    {f g : ℝ[X]} (hprec : StrictInterl f g)
+private theorem neg_coeff_one_le_of_strictInterl_sameDegree_of_roots_pos
+    {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
     (hdegree : f.natDegree = g.natDegree)
     (hfzero : f.coeff 0 = 1) (hgzero : g.coeff 0 = 1)
     (hfdegree : 0 < f.natDegree)
     (hfpos : ∀ r ∈ f.roots, 0 < r) :
     -g.coeff 1 ≤ -f.coeff 1 := by
-  rcases hprec with
+  rcases hstrictInterl with
     ⟨hf, hg, ss, rs, hssSorted, hrsSorted, hssRoots, hrsRoots, hshape⟩
   have hssLength : ss.length = f.natDegree := by
     rw [← Multiset.coe_card, hssRoots, card_roots_of_splits hf.2]
@@ -240,7 +240,7 @@ theorem exceptionalEulerInverse_allComboRealRooted
 /-- Larger exceptional Euler parameter gives the left-hand root set in proper
 position.  The strict reciprocal-root sum selects this orientation from the
 Obreschkoff dichotomy. -/
-theorem exceptionalEulerInverse_prec
+theorem exceptionalEulerInverse_strictInterl
     (m ε : ℕ) {γ₁ γ₂ : ℝ} (hm : 0 < m)
     (hγ₁ : (ε : ℝ) + 1 / 2 + m - 1 < γ₁)
     (hγ₂ : (ε : ℝ) + 1 / 2 + m - 1 < γ₂)
@@ -288,7 +288,7 @@ theorem exceptionalEulerInverse_prec
       dsimp only [R₂]
       exact exceptionalEulerInverse_eval_zero m ε hγ₂pos.ne'
     have hrecipLe :=
-      neg_coeff_one_le_of_prec_sameDegree_of_roots_pos
+      neg_coeff_one_le_of_strictInterl_sameDegree_of_roots_pos
         hforward (hdeg₁.trans hdeg₂.symm) hzero₁ hzero₂
           (by rw [hdeg₁]; exact hm)
           (by
@@ -757,7 +757,7 @@ private theorem exceptionalEulerInverse_lower_allComboRealRooted
 
 /-- The upper distinguished exceptional polynomial is in proper position
 before the lower endpoint polynomial. -/
-theorem exceptionalEulerInverse_upper_prec_lower
+theorem exceptionalEulerInverse_upper_strictInterl_lower
     (m ε : ℕ) (hm : 0 < m) :
     StrictInterl
       (exceptionalEulerInverse m ε
@@ -812,7 +812,7 @@ theorem exceptionalEulerInverse_upper_prec_lower
       dsimp only [U]
       exact exceptionalEulerInverse_eval_zero m ε hB.ne'
     have hwrongCoeff :=
-      neg_coeff_one_le_of_prec_sameDegree_of_roots_pos
+      neg_coeff_one_le_of_strictInterl_sameDegree_of_roots_pos
         hwrong (hLdegree.trans hUdegree.symm) hLzero hUzero
           (by rw [hLdegree]; exact hm)
           (by
@@ -830,11 +830,24 @@ theorem exceptionalEulerInverse_upper_prec_lower
 
 /-- The two exceptional toric-contribution polynomials have the required
 weak proper-position orientation. -/
-theorem rPolynomial_exceptional_prec (m ε : ℕ) (hm : 0 < m) :
+theorem rPolynomial_exceptional_strictInterl (m ε : ℕ) (hm : 0 < m) :
     StrictInterl (rPolynomial m ε m) (rPolynomial m ε (m - 1)) := by
   rw [← exceptionalEulerInverse_upper_eq_rPolynomial m ε,
     ← exceptionalEulerInverse_lower_eq_rPolynomial m ε hm]
-  exact exceptionalEulerInverse_upper_prec_lower m ε hm
+  exact exceptionalEulerInverse_upper_strictInterl_lower m ε hm
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated exceptionalEulerInverse_strictInterl (since := "2026-09-26")]
+alias exceptionalEulerInverse_prec := exceptionalEulerInverse_strictInterl
+
+@[deprecated exceptionalEulerInverse_upper_strictInterl_lower
+  (since := "2026-09-26")]
+alias exceptionalEulerInverse_upper_prec_lower :=
+  exceptionalEulerInverse_upper_strictInterl_lower
+
+@[deprecated rPolynomial_exceptional_strictInterl (since := "2026-09-26")]
+alias rPolynomial_exceptional_prec := rPolynomial_exceptional_strictInterl
 
 end ToricContribution
 end ParkingFunctions

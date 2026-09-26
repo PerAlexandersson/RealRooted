@@ -480,3 +480,13 @@ peak values.  All owned callers use `StrictInterl` names.  The 25 former
 public occurrences remain only as dated deprecated aliases; all seven private
 old names disappear.  Relation methods owned by foundational modules remain
 for their own dependency-closed batches.
+
+Toric-contribution interlacing batch (2026-09-26)
+
+The next subsystem batch canonicalizes ten public APIs and four private
+helpers across interval insertion, finite offsets, exceptional-offset node
+interlacing and parameter orientation, common interlacers, and contribution
+reversal.  Owned callers and local proof labels use `StrictInterl` names.  The
+ten former public occurrences remain only as dated deprecated aliases; all
+four private old names disappear.  The generic Ma--Wang and ordered-root
+equivalence APIs remain for their own foundational owner batches.

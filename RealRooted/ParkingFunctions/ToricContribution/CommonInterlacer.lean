@@ -36,12 +36,12 @@ theorem normalizedRPolynomial_hasPosLeadingCoeff (m ε d : ℕ) :
 
 /-- The normalized reverse-offset polynomials inherit the fixed-row proper
 position orientation. -/
-theorem normalizedRPolynomial_prec_of_lt
+theorem normalizedRPolynomial_strictInterl_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hde : d < e) (he : e ≤ m) :
     StrictInterl (normalizedRPolynomial m ε e) (normalizedRPolynomial m ε d) := by
   exact StrictInterl.C_mul_right
     (StrictInterl.C_mul_left
-      (rPolynomial_prec_rPolynomial_of_lt m ε d e hm hde he)
+      (rPolynomial_strictInterl_rPolynomial_of_lt m ε d e hm hde he)
       (pow_ne_zero m (by norm_num)))
     (pow_ne_zero m (by norm_num))
 
@@ -62,7 +62,7 @@ theorem normalizedRPolynomialRow_isInterlacingSeq (m ε : ℕ) :
     IsInterlacingSeq (normalizedRPolynomialRow m ε) := by
   apply isInterlacingSeq_reverseOffsetRow
   intro d e hde he
-  exact normalizedRPolynomial_prec_of_lt m ε d e (by lia) hde he
+  exact normalizedRPolynomial_strictInterl_of_lt m ε d e (by lia) hde he
 
 /-- The terminating Jacobi polynomial is a common left interlacer of every
 parity-normalized toric-contribution polynomial. -/
@@ -129,6 +129,12 @@ theorem normalizedRPolynomialFamily_weighted_sum_splits
       (normalizedRPolynomial_hasPosLeadingCoeff m ε d)
   exact (isRealRooted_sum_of_commonLeftInterleaver hcommon hpositive
     (by simp [fs, weightedNormalizedRPolynomialFamily])).2
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated normalizedRPolynomial_strictInterl_of_lt
+  (since := "2026-09-26")]
+alias normalizedRPolynomial_prec_of_lt := normalizedRPolynomial_strictInterl_of_lt
 
 end ToricContribution
 end ParkingFunctions
