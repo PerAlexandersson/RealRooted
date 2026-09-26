@@ -166,7 +166,7 @@ lemma singletonFreeSetPartitionsCore_ne_zero (n : Nat) :
   rw [singletonFreeSetPartitions_succ_succ_eq_X_mul_core n] at hsucc_ne
   simp_all
 
-lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
+lemma strictInterl_singletonFreeSetPartitionsCore_of_strictInterl {n : Nat} (hn : 3 ≤ n)
     (hprev : StrictInterl (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1))) :
     StrictInterl (singletonFreeSetPartitionsCore n) (singletonFreeSetPartitions (n + 1)) := by
   rw [singletonFreeSetPartitionsCore]
@@ -194,16 +194,16 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
     StrictInterl.add_of_right_of_posLeadingCoeff
       hlower hder.toStrictInterl hlower_pos hder_pos
 
-lemma prec_singletonFreeSetPartitions_two_three :
+lemma strictInterl_singletonFreeSetPartitions_two_three :
     StrictInterl (singletonFreeSetPartitions 2) (singletonFreeSetPartitions 3) :=
   by simpa [singletonFreeSetPartitions_two, singletonFreeSetPartitions_three] using
     StrictInterl.refl (f := X) (by simp)
 
-lemma prec_singletonFreeSetPartitions_three_four :
+lemma strictInterl_singletonFreeSetPartitions_three_four :
     StrictInterl (singletonFreeSetPartitions 3) (singletonFreeSetPartitions 4) := by
   have hlin : Interlaces (1 : ℝ[X]) (1 + C (3 : ℝ) * X) :=
     interlaces_one_linear (by simp)
-  have hprec : StrictInterl (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toStrictInterl
+  have hstrictInterl : StrictInterl (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toStrictInterl
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
     have hX_nonneg : HasNonnegCoeffs (X : ℝ[X]) := by rintro (_ | _ | m) <;> simp [coeff_X]
     have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
@@ -211,8 +211,8 @@ lemma prec_singletonFreeSetPartitions_three_four :
     exact fun m => add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)
   have hmul :
       StrictInterl (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
-    rr_prec_mul_X_both using
-      proper := hprec,
+    rr_strictInterl_mul_X_both using
+      proper := hstrictInterl,
       left_nonneg := hasNonnegCoeffs_one,
       right_nonneg := hlin_nonneg
   have hfour : singletonFreeSetPartitions 4 = X * (1 + C (3 : ℝ) * X) := by
@@ -231,52 +231,52 @@ lemma prec_singletonFreeSetPartitions_three_four :
     grind
   simpa [singletonFreeSetPartitions_three, hfour] using hmul
 
-lemma prec_singletonFreeSetPartitions_succ_of_prec_core {n : Nat} (_hn : 3 ≤ n)
+lemma strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core {n : Nat} (_hn : 3 ≤ n)
     (hcore :
       StrictInterl (singletonFreeSetPartitionsCore n) (singletonFreeSetPartitions (n + 1))) :
     StrictInterl (singletonFreeSetPartitions (n + 1)) (singletonFreeSetPartitions (n + 2)) := by
   have hmain :
       StrictInterl (singletonFreeSetPartitions (n + 1))
         (X * singletonFreeSetPartitionsCore n) := by
-    rr_prec_mul_X using
+    rr_strictInterl_mul_X using
       proper := hcore,
       left_nonneg := singletonFreeSetPartitionsCore_nonnegCoeffs n,
       right_nonneg := singletonFreeSetPartitions_nonnegCoeffs (n + 1)
   simpa [singletonFreeSetPartitions_succ_succ_eq_X_mul_core n] using hmain
 
 /-- Consecutive singleton-free set partition polynomials satisfy `StrictInterl`. -/
-theorem prec_singletonFreeSetPartitions_succ :
+theorem strictInterl_singletonFreeSetPartitions_succ :
     ∀ n : Nat, 2 ≤ n →
       StrictInterl (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1))
   | 0, hn => by
       lia
   | 1, hn => by
       lia
-  | 2, _ => prec_singletonFreeSetPartitions_two_three
-  | 3, _ => prec_singletonFreeSetPartitions_three_four
+  | 2, _ => strictInterl_singletonFreeSetPartitions_two_three
+  | 3, _ => strictInterl_singletonFreeSetPartitions_three_four
   | n + 4, _ => by
       have hprev :
           StrictInterl (singletonFreeSetPartitions (n + 3))
             (singletonFreeSetPartitions (n + 4)) :=
-        prec_singletonFreeSetPartitions_succ (n + 3) (by lia)
+        strictInterl_singletonFreeSetPartitions_succ (n + 3) (by lia)
       have hcore :
           StrictInterl (singletonFreeSetPartitionsCore (n + 3))
             (singletonFreeSetPartitions (n + 4)) :=
-        prec_singletonFreeSetPartitionsCore_of_prec (n := n + 3) (by lia) hprev
+        strictInterl_singletonFreeSetPartitionsCore_of_strictInterl (n := n + 3) (by lia) hprev
       exact
-        prec_singletonFreeSetPartitions_succ_of_prec_core
+        strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core
           (n := n + 3) (by lia) hcore
 
 theorem isRealRooted_singletonFreeSetPartitions :
     ∀ n : Nat, 2 ≤ n → (singletonFreeSetPartitions n).Splits
   | 2, _ => by simp [singletonFreeSetPartitions_two]
   | n + 3, _ =>
-      (prec_singletonFreeSetPartitions_succ (n + 2) (by lia)).2.1.2
+      (strictInterl_singletonFreeSetPartitions_succ (n + 2) (by lia)).2.1.2
 
 theorem interlaces_singletonFreeSetPartitions_succ_of_odd {n : Nat}
     (hn : 3 ≤ n) (hodd : n % 2 = 1) :
     Interlaces (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1)) :=
-  (prec_singletonFreeSetPartitions_succ n (by lia)).toInterlaces <| by
+  (strictInterl_singletonFreeSetPartitions_succ n (by lia)).toInterlaces <| by
     rw [natDegree_singletonFreeSetPartitions n (by lia),
       natDegree_singletonFreeSetPartitions (n + 1) (by lia)]
     lia
@@ -305,11 +305,34 @@ theorem isGeneralizedSturmSeq_singletonFreeSetPartitionsPrefix :
       cases n with
       | zero =>
           simp [singletonFreeSetPartitionsPrefix, IsGeneralizedSturmSeq,
-            prec_singletonFreeSetPartitions_two_three]
+            strictInterl_singletonFreeSetPartitions_two_three]
       | succ n =>
           simpa [singletonFreeSetPartitionsPrefix, IsGeneralizedSturmSeq] using
             And.intro
-              (prec_singletonFreeSetPartitions_succ (n := n + 3) (by lia))
+              (strictInterl_singletonFreeSetPartitions_succ (n := n + 3) (by lia))
               ih
+
+@[deprecated strictInterl_singletonFreeSetPartitionsCore_of_strictInterl
+  (since := "2026-09-26")]
+alias prec_singletonFreeSetPartitionsCore_of_prec :=
+  strictInterl_singletonFreeSetPartitionsCore_of_strictInterl
+
+@[deprecated strictInterl_singletonFreeSetPartitions_two_three
+  (since := "2026-09-26")]
+alias prec_singletonFreeSetPartitions_two_three :=
+  strictInterl_singletonFreeSetPartitions_two_three
+
+@[deprecated strictInterl_singletonFreeSetPartitions_three_four
+  (since := "2026-09-26")]
+alias prec_singletonFreeSetPartitions_three_four :=
+  strictInterl_singletonFreeSetPartitions_three_four
+
+@[deprecated strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core
+  (since := "2026-09-26")]
+alias prec_singletonFreeSetPartitions_succ_of_prec_core :=
+  strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core
+
+@[deprecated strictInterl_singletonFreeSetPartitions_succ (since := "2026-09-26")]
+alias prec_singletonFreeSetPartitions_succ := strictInterl_singletonFreeSetPartitions_succ
 
 end RealRooted

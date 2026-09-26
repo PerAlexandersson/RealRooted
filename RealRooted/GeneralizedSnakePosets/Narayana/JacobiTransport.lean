@@ -542,7 +542,7 @@ theorem lemma34ModifiedNarayanaShifted_prev_interlaces_left
           k + 2) := by
     simpa using lemma34ModifiedNarayanaShifted_left_natDegree
       (m := k + 2) (by lia) hlam hmu
-  have hprec :
+  have hstrictInterl :
       StrictInterl (modifiedNarayanaPolynomial (k + 1))
         (a * modifiedNarayanaPolynomial (k + 1) +
           b * modifiedNarayanaPolynomial k) := by
@@ -574,8 +574,8 @@ theorem lemma34ModifiedNarayanaShifted_prev_interlaces_left
           narayanaQuot_hasNonnegCoeffs)
         (modifiedNarayanaPolynomial_posLeadingCoeff k)
         hF_pos hdeg_lo hdeg_hi hb_nonpos
-  rw [hleft_eq] at hprec
-  exact hprec.toInterlaces (by
+  rw [hleft_eq] at hstrictInterl
+  exact hstrictInterl.toInterlaces (by
     rw [modifiedNarayanaPolynomial_natDegree, hleft_deg])
 
 /-- The shifted Lemma 3.4 left-hand polynomial has no common root with the

@@ -132,7 +132,7 @@ lemma eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos (m : Nat) {r : ℝ} (hr :
   simpa only [coloredSetPartitionsCoeffB, eval_mul, eval_C, eval_X] using
     mul_nonpos_of_nonneg_of_nonpos (by positivity : 0 ≤ (m : ℝ)) hr
 
-lemma prec_coloredSetPartitions_one_two (c m : Nat) :
+lemma strictInterl_coloredSetPartitions_one_two (c m : Nat) :
     StrictInterl (coloredSetPartitions c m 1) (coloredSetPartitions c m 2) := by
   have hdeg : (coloredSetPartitions c m 1).natDegree = 1 :=
     natDegree_coloredSetPartitions c m 1
@@ -183,14 +183,14 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
 
 /-- Consecutive colored set-partition polynomials satisfy `StrictInterl`, hence form a
 Sturm sequence. -/
-theorem prec_coloredSetPartitions_succ (c m : Nat) :
+theorem strictInterl_coloredSetPartitions_succ (c m : Nat) :
     ∀ n : Nat, StrictInterl (coloredSetPartitions c m n) (coloredSetPartitions c m (n + 1))
   | 0 => (interlaces_coloredSetPartitions_zero_one c m).toStrictInterl
-  | 1 => prec_coloredSetPartitions_one_two c m
+  | 1 => strictInterl_coloredSetPartitions_one_two c m
   | n + 2 => by
       have hprev : StrictInterl (coloredSetPartitions c m (n + 1))
           (coloredSetPartitions c m (n + 2)) :=
-        prec_coloredSetPartitions_succ c m (n + 1)
+        strictInterl_coloredSetPartitions_succ c m (n + 1)
       have hInter :
           Interlaces (coloredSetPartitions c m (n + 2)).derivative
             (coloredSetPartitions c m (n + 2)) :=
@@ -240,13 +240,13 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
 
 theorem interlaces_coloredSetPartitions_succ (c m n : Nat) :
     Interlaces (coloredSetPartitions c m n) (coloredSetPartitions c m (n + 1)) :=
-  (prec_coloredSetPartitions_succ c m n).toInterlaces
+  (strictInterl_coloredSetPartitions_succ c m n).toInterlaces
     (by simp [natDegree_coloredSetPartitions])
 
 theorem isRealRooted_coloredSetPartitions (c m : Nat) :
     ∀ n : Nat, ((coloredSetPartitions c m n) ≠ 0 ∧ (coloredSetPartitions c m n).Splits)
   | 0 => by simp
-  | n + 1 => (prec_coloredSetPartitions_succ c m n).2.1
+  | n + 1 => (strictInterl_coloredSetPartitions_succ c m n).2.1
 
 /-- The descending prefix `[T_n, T_{n-1}, ..., T_0]` of the colored
 set-partition sequence. -/
@@ -288,5 +288,11 @@ theorem interlaces_typeBSetPartitions_succ (n : Nat) :
 theorem isRealRooted_typeBSetPartitions (n : Nat) :
     ((typeBSetPartitions n) ≠ 0 ∧ (typeBSetPartitions n).Splits) :=
   isRealRooted_coloredSetPartitions 1 2 n
+
+@[deprecated strictInterl_coloredSetPartitions_one_two (since := "2026-09-26")]
+alias prec_coloredSetPartitions_one_two := strictInterl_coloredSetPartitions_one_two
+
+@[deprecated strictInterl_coloredSetPartitions_succ (since := "2026-09-26")]
+alias prec_coloredSetPartitions_succ := strictInterl_coloredSetPartitions_succ
 
 end RealRooted

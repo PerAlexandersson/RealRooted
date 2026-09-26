@@ -181,13 +181,13 @@ lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
   simp [typeBEulerianCoeffB]
   nlinarith
 
-theorem prec_typeBEulerian_succ :
+theorem strictInterl_typeBEulerian_succ :
     ∀ n : Nat, StrictInterl (typeBEulerian n) (typeBEulerian (n + 1))
   | 0 => interlaces_typeBEulerian_zero_one.toStrictInterl
   | n + 1 => by
       have hInter :
           Interlaces (typeBEulerian (n + 1)).derivative (typeBEulerian (n + 1)) :=
-        interlaces_derivative_typeBEulerian (n + 1) (by simp) (prec_typeBEulerian_succ n).2.1.2
+        interlaces_derivative_typeBEulerian (n + 1) (by simp) (strictInterl_typeBEulerian_succ n).2.1.2
       have hg_pos : HasPosLeadingCoeff (typeBEulerian (n + 1)).derivative :=
         (typeBEulerian_posLeadingCoeff (n + 1)).derivative (by simp [natDegree_typeBEulerian])
       have hNext_eq :
@@ -215,8 +215,8 @@ theorem prec_typeBEulerian_succ :
           ∀ r, (typeBEulerian (n + 1)).IsRoot r → typeBEulerianCoeffB.eval r ≤ 0 := by
         intro r hr
         have hr_nonpos :
-            r ≤ 0 := roots_nonpos_typeBEulerian_of_isRealRooted (prec_typeBEulerian_succ n).2.1.2 r
-              ((mem_roots (prec_typeBEulerian_succ n).2.1.1).mpr hr)
+            r ≤ 0 := roots_nonpos_typeBEulerian_of_isRealRooted (strictInterl_typeBEulerian_succ n).2.1.2 r
+              ((mem_roots (strictInterl_typeBEulerian_succ n).2.1.1).mpr hr)
         exact eval_typeBEulerianCoeffB_nonpos_of_nonpos hr_nonpos
       simpa [hNext_eq] using
         strictInterl_of_interlaces_evalCoeff_nonpos
@@ -228,11 +228,11 @@ theorem prec_typeBEulerian_succ :
 
 theorem interlaces_typeBEulerian_succ (n : Nat) :
     Interlaces (typeBEulerian n) (typeBEulerian (n + 1)) :=
-  (prec_typeBEulerian_succ n).toInterlaces (by simp [natDegree_typeBEulerian])
+  (strictInterl_typeBEulerian_succ n).toInterlaces (by simp [natDegree_typeBEulerian])
 
 theorem isRealRooted_typeBEulerian : ∀ n : Nat, ((typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).Splits)
   | 0 => by simp
-  | n + 1 => (prec_typeBEulerian_succ n).2.1
+  | n + 1 => (strictInterl_typeBEulerian_succ n).2.1
 
 /-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the type `B` Eulerian sequence. -/
 def typeBEulerianPrefix : Nat → List ℝ[X]
@@ -252,5 +252,8 @@ theorem isSturmSeq_typeBEulerianPrefix :
       | succ k =>
           simpa [typeBEulerianPrefix, IsSturmSeq] using
             And.intro (interlaces_typeBEulerian_succ (k + 1)) ih
+
+@[deprecated strictInterl_typeBEulerian_succ (since := "2026-09-26")]
+alias prec_typeBEulerian_succ := strictInterl_typeBEulerian_succ
 
 end RealRooted

@@ -98,7 +98,7 @@ theorem theorem41StepMatrix_cross_has2x2_of_matrixClaim
 /-- Claim `(6)` and the source matrix send the induction pair to a proper-position
 pair.  Repeated column indices use the real-rootedness already contained in the
 same Claim `(6)` instance. -/
-theorem theorem41Step_difference_prec_of_matrixClaim
+theorem theorem41Step_difference_strictInterl_of_matrixClaim
     {P G : ℕ → ℝ[X]} {m : ℕ} {f g : ℝ[X]}
     (hclaim : Theorem41MatrixClaimStatement P G) (hm : 2 ≤ m)
     (hP_ne : P (m - 1) ≠ 0)
@@ -163,7 +163,7 @@ theorem theorem41ConsecutiveMatrix_cross_has2x2_of_claim7
 position in both consecutive columns propagates the induction pair directly.
 The paper instead applies Claim `(6)` to `theorem41StepMatrix` and then uses
 Lemma 2.6. -/
-theorem theorem41Step_prec_of_claim7
+theorem theorem41Step_strictInterl_of_claim7
     {P G : ℕ → ℝ[X]} {m : ℕ} {f g : ℝ[X]}
     (hclaim : Theorem41Claim7Statement P G) (hm : 2 ≤ m)
     (hP : StrictInterl (P (m - 1)) (P m)) (hG : StrictInterl (G (m - 1)) (G m))
@@ -189,7 +189,7 @@ If the last-change index survives deleting the final letter, Theorem 3.5
 expresses both `M w` and `M w.deleteFinal` with the same prefix polynomials
 and adjacent suffix parameter.  The matrix step then propagates the induction
 hypothesis on the prefix pair to `StrictInterl (M w.deleteFinal) (M w)`. -/
-theorem theorem41NonconstantStep_prec_of_claim7
+theorem theorem41NonconstantStep_strictInterl_of_claim7
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
     (hclaim : Theorem41Claim7Statement P G)
@@ -225,7 +225,7 @@ theorem theorem41NonconstantStep_prec_of_claim7
     rw [SnakeWord.takePrefix_deleteFinal_eq_takePrefix_of_le hkp1_le]
     rw [SnakeWord.takePrefix_deleteFinal_eq_takePrefix_of_le hk_le]
     rw [SnakeWord.length_deleteFinal_sub_eq]
-  have hstep := theorem41Step_prec_of_claim7
+  have hstep := theorem41Step_strictInterl_of_claim7
     (P := P) (G := G) (m := m) (f := f) (g := g)
     hclaim hm (hP hm) (hG hm) hprefix hP_nonneg hG_nonneg
     (hM_nonneg (w.takePrefix (k + 1))) (hM_nonneg (w.takePrefix k))
@@ -234,7 +234,7 @@ theorem theorem41NonconstantStep_prec_of_claim7
 /-- The nonconstant Braun--Jal induction step through the source
 `[P, G; Q, H]` matrix.  Unlike the consecutive-row shortcut above, this is the
 argument on p. 10 of the paper and requires no adjacent-`G` proper position. -/
-theorem theorem41NonconstantStep_prec_of_matrixClaim
+theorem theorem41NonconstantStep_strictInterl_of_matrixClaim
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
     (hclaim : Theorem41MatrixClaimStatement P G)
@@ -284,7 +284,7 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
     exact (hf_nonneg.mul (hQ_nonneg hm)).add
       (hg_nonneg.X_mul.mul (hH_nonneg hm))
   have hstep : StrictInterl (M w.deleteFinal) (M w - M w.deleteFinal) := by
-    have hstep_raw := theorem41Step_difference_prec_of_matrixClaim
+    have hstep_raw := theorem41Step_difference_strictInterl_of_matrixClaim
       hclaim hm (hP_ne (m - 1)) hP_nonneg hG_nonneg
       (hQ_nonneg hm) (hH_nonneg hm) hprefix hf_nonneg hg_nonneg
     rw [← hrec_del, ← hrec_diff] at hstep_raw
@@ -306,7 +306,7 @@ theorem theorem41NonconstantStep_prec_of_matrixClaim
 
 If `g ≪ f` and both polynomials have nonnegative coefficients, then
 `f ≪ (1 + X) f + X g`. -/
-theorem theorem41StepOne_prec_of_prec_nonneg {f g : ℝ[X]}
+theorem theorem41StepOne_strictInterl_of_strictInterl_nonneg {f g : ℝ[X]}
     (hgf : StrictInterl g f)
     (hf_nonneg : HasNonnegCoeffs f) (hg_nonneg : HasNonnegCoeffs g) :
     StrictInterl f ((1 + X) * f + X * g) := by
@@ -339,7 +339,7 @@ theorem theorem41StepOne_prec_of_prec_nonneg {f g : ℝ[X]}
 
 When the final constant suffix has length one, Theorem 3.5 rewrites `M w` as
 `(1 + X) f + X g`, while `w.deleteFinal` is the prefix carrying `f`. -/
-theorem theorem41StepOne_prec_of_recurrence
+theorem theorem41StepOne_strictInterl_of_recurrence
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
     (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
@@ -356,7 +356,7 @@ theorem theorem41StepOne_prec_of_recurrence
     dsimp [f, g]
     rw [hrec hlast.not_isConstant hlast, hsuffix, hP_one, hG_one]
     ring
-  have hstep := theorem41StepOne_prec_of_prec_nonneg
+  have hstep := theorem41StepOne_strictInterl_of_strictInterl_nonneg
     (f := f) (g := g) hprefix
     (hM_nonneg (w.takePrefix (k + 1))) (hM_nonneg (w.takePrefix k))
   rwa [hdel, hrec_w]
@@ -366,7 +366,7 @@ theorem theorem41StepOne_prec_of_recurrence
 If every nonconstant word step turns the prefix induction hypothesis into
 `StrictInterl (M w.deleteFinal) (M w)`, then constant words and the degree bridge
 finish the full deletion-interlacing statement. -/
-theorem theorem41_of_prec_step
+theorem theorem41_of_strictInterl_step
     {M : SnakeWord → ℝ[X]}
     (hstep :
       ∀ {w : SnakeWord} {k : ℕ}, ¬ w.IsConstant → w.IsLastChangeIndex k →
@@ -400,13 +400,13 @@ theorem theorem41_of_prec_step
               exact hlast.succ_lt_length
             · rw [hlast.takePrefix_succ_length]
               lia
-          have hprefix_prec :
+          have hprefix_strictInterl :
               StrictInterl (M (w.takePrefix k)) (M (w.takePrefix (k + 1))) := by
             rw [← SnakeWord.deleteFinal_takePrefix_succ_of_lt hlast.index_lt_length]
             exact hprefix_result.2.toStrictInterl
-          have hprec := hstep hconstw hlast hprefix_prec
+          have hstrictInterl := hstep hconstw hlast hprefix_strictInterl
           have hinter : Interlaces (M w.deleteFinal) (M w) :=
-            hprec.toInterlaces (hdeg hw)
+            hstrictInterl.toInterlaces (hdeg hw)
           exact ⟨hinter.1, hinter⟩
   intro w hw
   exact hmain w.length w rfl hw
@@ -436,12 +436,12 @@ theorem theorem41_of_claim7_of_base_cases
         w.IsLastChangeIndex k → w.length - (k + 1) = 1 →
           (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
     Theorem41NonNestingRookStatement M := by
-  refine theorem41_of_prec_step (M := M) ?_ hdeg hconst
-  intro w k hconstw hlast hprefix_prec
+  refine theorem41_of_strictInterl_step (M := M) ?_ hdeg hconst
+  intro w k hconstw hlast hprefix_strictInterl
   by_cases hk : k + 1 < w.deleteFinal.length
-  · exact theorem41NonconstantStep_prec_of_claim7
+  · exact theorem41NonconstantStep_strictInterl_of_claim7
       (M := M) (P := P) (G := G) (w := w) (k := k)
-      hrec hclaim hlast hk hP hG hprefix_prec hP_nonneg hG_nonneg hM_nonneg
+      hrec hclaim hlast hk hP hG hprefix_strictInterl hP_nonneg hG_nonneg hM_nonneg
   · have hw : 1 ≤ w.length :=
       Nat.succ_le_of_lt (lt_of_le_of_lt (Nat.zero_le k) hlast.index_lt_length)
     have hsuffix : w.length - (k + 1) = 1 := by
@@ -525,19 +525,19 @@ theorem theorem41_of_claim7_of_constant_cases
       ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
         (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
     Theorem41NonNestingRookStatement M := by
-  refine theorem41_of_prec_step (M := M) ?_ hdeg hconst
-  intro w k _hconstw hlast hprefix_prec
+  refine theorem41_of_strictInterl_step (M := M) ?_ hdeg hconst
+  intro w k _hconstw hlast hprefix_strictInterl
   by_cases hk : k + 1 < w.deleteFinal.length
-  · exact theorem41NonconstantStep_prec_of_claim7
+  · exact theorem41NonconstantStep_strictInterl_of_claim7
       (M := M) (P := P) (G := G) (w := w) (k := k)
-      hrec hclaim hlast hk hP hG hprefix_prec hP_nonneg hG_nonneg hM_nonneg
+      hrec hclaim hlast hk hP hG hprefix_strictInterl hP_nonneg hG_nonneg hM_nonneg
   · have hsuffix : w.length - (k + 1) = 1 := by
       rw [SnakeWord.length_deleteFinal] at hk
       have hlast_suffix := hlast.succ_lt_length
       lia
-    exact theorem41StepOne_prec_of_recurrence
+    exact theorem41StepOne_strictInterl_of_recurrence
       (M := M) (P := P) (G := G) (w := w) (k := k)
-      hrec hP_one hG_one hlast hsuffix hprefix_prec hM_nonneg
+      hrec hP_one hG_one hlast hsuffix hprefix_strictInterl hM_nonneg
 
 /-- Source-matrix length induction from Claim `(6)` to Braun--Jal Theorem 4.1.
 
@@ -564,20 +564,20 @@ theorem theorem41_of_matrixClaim_of_constant_cases
       ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
         (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
     Theorem41NonNestingRookStatement M := by
-  refine theorem41_of_prec_step (M := M) ?_ hdeg hconst
-  intro w k _hconstw hlast hprefix_prec
+  refine theorem41_of_strictInterl_step (M := M) ?_ hdeg hconst
+  intro w k _hconstw hlast hprefix_strictInterl
   by_cases hk : k + 1 < w.deleteFinal.length
-  · exact theorem41NonconstantStep_prec_of_matrixClaim
+  · exact theorem41NonconstantStep_strictInterl_of_matrixClaim
       (M := M) (P := P) (G := G) (w := w) (k := k)
       hrec hclaim hlast hk hP_ne hP_nonneg hG_nonneg
-      hQ_nonneg hH_nonneg hprefix_prec hM_nonneg
+      hQ_nonneg hH_nonneg hprefix_strictInterl hM_nonneg
   · have hsuffix : w.length - (k + 1) = 1 := by
       rw [SnakeWord.length_deleteFinal] at hk
       have hlast_suffix := hlast.succ_lt_length
       lia
-    exact theorem41StepOne_prec_of_recurrence
+    exact theorem41StepOne_strictInterl_of_recurrence
       (M := M) (P := P) (G := G) (w := w) (k := k)
-      hrec hP_one hG_one hlast hsuffix hprefix_prec hM_nonneg
+      hrec hP_one hG_one hlast hsuffix hprefix_strictInterl hM_nonneg
 
 /-- Source-matrix induction with the constant branch reduced to the concrete
 successor-length identity `M w = P (w.length + 1)`. -/
@@ -822,6 +822,35 @@ theorem theorem41InductionRoute_of_section3_rootSum_of_constant_matches_succ_len
       theorem41Claim7_of_section3_rootSumSideConditions hrec2 h34 hside)
     hP_interlaces hG hP_one hG_one hP_nonneg hG_nonneg hM_nonneg hdeg
     hM_const
+
+@[deprecated theorem41Step_difference_strictInterl_of_matrixClaim
+  (since := "2026-09-26")]
+alias theorem41Step_difference_prec_of_matrixClaim :=
+  theorem41Step_difference_strictInterl_of_matrixClaim
+
+@[deprecated theorem41Step_strictInterl_of_claim7 (since := "2026-09-26")]
+alias theorem41Step_prec_of_claim7 := theorem41Step_strictInterl_of_claim7
+
+@[deprecated theorem41NonconstantStep_strictInterl_of_claim7
+  (since := "2026-09-26")]
+alias theorem41NonconstantStep_prec_of_claim7 :=
+  theorem41NonconstantStep_strictInterl_of_claim7
+
+@[deprecated theorem41NonconstantStep_strictInterl_of_matrixClaim
+  (since := "2026-09-26")]
+alias theorem41NonconstantStep_prec_of_matrixClaim :=
+  theorem41NonconstantStep_strictInterl_of_matrixClaim
+
+@[deprecated theorem41StepOne_strictInterl_of_strictInterl_nonneg
+  (since := "2026-09-26")]
+alias theorem41StepOne_prec_of_prec_nonneg :=
+  theorem41StepOne_strictInterl_of_strictInterl_nonneg
+
+@[deprecated theorem41StepOne_strictInterl_of_recurrence (since := "2026-09-26")]
+alias theorem41StepOne_prec_of_recurrence := theorem41StepOne_strictInterl_of_recurrence
+
+@[deprecated theorem41_of_strictInterl_step (since := "2026-09-26")]
+alias theorem41_of_prec_step := theorem41_of_strictInterl_step
 
 end GeneralizedSnakePosets
 end RealRooted

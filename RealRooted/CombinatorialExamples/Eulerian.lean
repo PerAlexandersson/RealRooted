@@ -133,10 +133,10 @@ lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat} (hrr : (eulerianTilde
     ∀ r ∈ (eulerianTilde n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (eulerianTilde_nonnegCoeffs n)
 
-lemma prec_affineEulerianTilde {n : Nat} (hrr : (eulerianTilde n).Splits) :
+lemma strictInterl_affineEulerianTilde {n : Nat} (hrr : (eulerianTilde n).Splits) :
     StrictInterl (affineEulerianTilde n) (eulerianTilde n) := by
   rw [affineEulerianTilde]
-  exact prec_affine_derivative' hrr (by simp [natDegree_eulerianTilde])
+  exact strictInterl_affine_derivative' hrr (by simp [natDegree_eulerianTilde])
     (eulerianTilde_posLeadingCoeff n)
     (roots_nonpos_eulerianTilde_of_isRealRooted hrr)
     (by
@@ -168,12 +168,12 @@ lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
 
 /-- Once the affine block is known to precede `P_n`, the outer `X` factor in the
 recurrence gives `P_n ≪ P_{n+1}`. -/
-lemma prec_eulerianTilde_succ_of_prec_affine {n : Nat}
+lemma strictInterl_eulerianTilde_succ_of_strictInterl_affine {n : Nat}
     (haff : StrictInterl (affineEulerianTilde n) (eulerianTilde n)) :
     StrictInterl (eulerianTilde n) (eulerianTilde (n + 1)) := by
   have hmain :
       StrictInterl (eulerianTilde n) (X * affineEulerianTilde n) := by
-    rr_prec_mul_X using
+    rr_strictInterl_mul_X using
       proper := haff,
       left_nonneg := affineEulerianTilde_nonnegCoeffs n,
       right_nonneg := eulerianTilde_nonnegCoeffs n
@@ -182,11 +182,11 @@ lemma prec_eulerianTilde_succ_of_prec_affine {n : Nat}
 /-- Main induction theorem: consecutive Eulerian tilde polynomials interlace in
 the oriented `StrictInterl` sense. The induction hypothesis supplies real-rootedness of
 `P_n` as the right-hand half of `StrictInterl P_{n-1} P_n`. -/
-theorem prec_eulerianTilde_succ : ∀ n : Nat,
+theorem strictInterl_eulerianTilde_succ : ∀ n : Nat,
     StrictInterl (eulerianTilde n) (eulerianTilde (n + 1))
-  | 0 => prec_eulerianTilde_succ_of_prec_affine <| prec_affineEulerianTilde <| by simp
-  | n + 1 => prec_eulerianTilde_succ_of_prec_affine <| prec_affineEulerianTilde
-    (prec_eulerianTilde_succ n).2.1.2
+  | 0 => strictInterl_eulerianTilde_succ_of_strictInterl_affine <| strictInterl_affineEulerianTilde <| by simp
+  | n + 1 => strictInterl_eulerianTilde_succ_of_strictInterl_affine <| strictInterl_affineEulerianTilde
+    (strictInterl_eulerianTilde_succ n).2.1.2
 
 /-- Every Eulerian tilde polynomial is real-rooted, obtained as the
 right-hand component of the interlacing induction. -/
@@ -194,11 +194,11 @@ theorem isRealRooted_eulerianTilde : ∀ n : Nat,
     ((eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).Splits)
   | 0 => by
       simp
-  | n + 1 => (prec_eulerianTilde_succ n).2.1
+  | n + 1 => (strictInterl_eulerianTilde_succ n).2.1
 
 theorem interlaces_eulerianTilde_succ (n : Nat) :
     Interlaces (eulerianTilde n) (eulerianTilde (n + 1)) :=
-  (prec_eulerianTilde_succ n).toInterlaces
+  (strictInterl_eulerianTilde_succ n).toInterlaces
     (by simp [natDegree_eulerianTilde])
 
 /-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the Eulerian tilde
@@ -227,5 +227,16 @@ theorem isSturmSeq_eulerianTildePrefix :
       | succ n =>
           simpa [eulerianTildePrefix, IsSturmSeq] using
             And.intro (interlaces_eulerianTilde_succ (n + 1)) ih
+
+@[deprecated strictInterl_affineEulerianTilde (since := "2026-09-26")]
+alias prec_affineEulerianTilde := strictInterl_affineEulerianTilde
+
+@[deprecated strictInterl_eulerianTilde_succ_of_strictInterl_affine
+  (since := "2026-09-26")]
+alias prec_eulerianTilde_succ_of_prec_affine :=
+  strictInterl_eulerianTilde_succ_of_strictInterl_affine
+
+@[deprecated strictInterl_eulerianTilde_succ (since := "2026-09-26")]
+alias prec_eulerianTilde_succ := strictInterl_eulerianTilde_succ
 
 end RealRooted

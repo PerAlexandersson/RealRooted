@@ -108,7 +108,7 @@ private theorem touchardFactorStep_preservesPF {r : ℝ} (hr : 0 ≤ r)
     · exact hfirst_deg
     · lia
     · exact hfirst_pos
-  have hprec : StrictInterl f ((X + C r) * f + X * f.derivative) := by
+  have hstrictInterl : StrictInterl f ((X + C r) * f + X * f.derivative) := by
     apply strictInterl_of_interlaces_evalCoeff_nonpos hder hder_pos hsum_pos
     · rw [hsum_deg]
       lia
@@ -118,7 +118,7 @@ private theorem touchardFactorStep_preservesPF {r : ℝ} (hr : 0 ≤ r)
   exact IsPFPolynomial.of_realRooted_nonneg
     (((isPFPolynomial_X_add_C hr).mul hf).hasNonnegCoeffs.add
       hf.derivative.X_mul.hasNonnegCoeffs)
-    hprec.2.1.2
+    hstrictInterl.2.1.2
 
 private theorem basisTransform_touchard_preservesPF_aux :
     ∀ n (p : ℝ[X]), p.natDegree = n → p ≠ 0 → IsPFPolynomial p →
@@ -296,7 +296,7 @@ private theorem pairwise_add_le_of_two_listInterlaces (μ : ℝ) :
 
 /-- Two interlacings against a polynomial and its translate recover the root
 spacing invariant after a degree-increasing step. -/
-private theorem prec_comp_X_add_C_of_two_interlacings
+private theorem strictInterl_comp_X_add_C_of_two_interlacings
     {μ : ℝ} (hμ : 0 ≤ μ) {p q : ℝ[X]}
     (hpq : StrictInterl p q) (hshiftq : StrictInterl (p.comp (X + C μ)) q)
     (hdeg : p.natDegree + 1 = q.natDegree) :
@@ -341,7 +341,7 @@ private theorem prec_comp_X_add_C_of_two_interlacings
 
 /-- The Su--Yang--Zhang recurrence preserves both the PF property and the
 translate-proper-position invariant encoding `μ`-separated roots. -/
-theorem risingFactorialStep_pf_shiftPrec
+theorem risingFactorialStep_pf_shiftStrictInterl
     {μ r : ℝ} (hμ : 0 ≤ μ) (hr : 0 ≤ r) {f : ℝ[X]}
     (hf : IsPFPolynomial f) (hshift : StrictInterl (f.comp (X + C μ)) f) :
     let g := X * f.comp (X + C μ) + C r * f
@@ -401,7 +401,7 @@ theorem risingFactorialStep_pf_shiftPrec
     · exact (hfμ.hasNonnegCoeffs.pos_leadingCoeff hfμrr.1).X_mul
   have hgpf : IsPFPolynomial (X * fμ + C r * f) :=
     IsPFPolynomial.of_realRooted_nonneg (hXfμnn.add hrf_nn) hfg.2.1.2
-  exact ⟨hgpf, prec_comp_X_add_C_of_two_interlacings hμ hfg hfμg (by lia)⟩
+  exact ⟨hgpf, strictInterl_comp_X_add_C_of_two_interlacings hμ hfg hfμg (by lia)⟩
 
 /-- The generalized rising-factorial basis transform is the identity on
 degree-one polynomials. -/
@@ -434,5 +434,8 @@ theorem basisTransform_risingFactorial_eq_quadratic_of_natDegree_eq_two
   rw [map_add, map_mul]
   ring_nf
 
+
+@[deprecated risingFactorialStep_pf_shiftStrictInterl (since := "2026-09-26")]
+alias risingFactorialStep_pf_shiftPrec := risingFactorialStep_pf_shiftStrictInterl
 
 end RealRooted

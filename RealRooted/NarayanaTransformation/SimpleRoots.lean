@@ -22,7 +22,7 @@ theorem narayanaPolynomial_hasSimpleRoots (m n : ℕ) :
   cases n with
   | zero => simp [HasSimpleRoots, narayanaPolynomial]
   | succ n =>
-      exact ((prec_narayanaPolynomial_succ m n).hasSimpleRoots_of_no_common_root
+      exact ((strictInterl_narayanaPolynomial_succ m n).hasSimpleRoots_of_no_common_root
         (fun r hr ↦ (narayanaPolynomial_no_common_root m (n + 1) r hr.2) hr.1)).1
 
 /-- The derivative of a positive-degree generalized Narayana polynomial has
@@ -33,11 +33,11 @@ theorem narayanaPolynomial_derivative_hasSimpleRoots
   rcases n with _ | _ | n
   · simp at hn
   · simp [narayanaPolynomial_one, HasSimpleRoots]
-  · have hprec : StrictInterl (narayanaPolynomial m (n + 2)).derivative
+  · have hstrictInterl : StrictInterl (narayanaPolynomial m (n + 2)).derivative
         (narayanaPolynomial m (n + 2)) :=
       (derivative_interlaces (splits_narayanaPolynomial m (n + 2))
         (by rw [natDegree_narayanaPolynomial]; lia)).toStrictInterl
-    exact (hprec.hasSimpleRoots_of_no_common_root (fun _ hr ↦
+    exact (hstrictInterl.hasSimpleRoots_of_no_common_root (fun _ hr ↦
       (narayanaPolynomial_hasSimpleRoots m (n + 2)).eval_derivative_ne_zero hr.2 hr.1)).1
 
 end RealRooted

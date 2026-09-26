@@ -66,7 +66,7 @@ theorem generalizedRisingFactorialPreservesPF_of_natDegree_eq_two {μ : ℝ}
         (hasNonnegCoeffs_C hc))
     (quadraticPoly_splits_of_le ha hdisc')
 
-private theorem generalizedRisingFactorialPreservesPF_shiftPrec {μ : ℝ}
+private theorem generalizedRisingFactorialPreservesPF_shiftStrictInterl {μ : ℝ}
     (hμ : 0 < μ) :
     ∀ n (p : ℝ[X]), p.natDegree = n → p ≠ 0 → IsPFPolynomial p →
       let q := basisTransform (risingFactorialPolynomial μ) p
@@ -96,7 +96,7 @@ private theorem generalizedRisingFactorialPreservesPF_shiftPrec {μ : ℝ}
           apply hp0
           simp [hfactor, hqzero]
         have ihq := ih q.natDegree (by lia) q rfl hq0 hq
-        have hstep := risingFactorialStep_pf_shiftPrec hμ.le (neg_nonneg.mpr hu)
+        have hstep := risingFactorialStep_pf_shiftStrictInterl hμ.le (neg_nonneg.mpr hu)
           ihq.1 ihq.2
         have hfactor' : p = (X + C (-u)) * q := by simpa [sub_eq_add_neg] using hfactor
         rw [hfactor', basisTransform_risingFactorial_mul_X_add_C]
@@ -121,7 +121,7 @@ transform. -/
 theorem generalizedRisingFactorialPreservesPF_degreeAtLeastThree :
     generalizedRisingFactorialPreservesPFDegreeAtLeastThreeStatement := by
   intro μ hμ p hpdeg hp
-  exact (generalizedRisingFactorialPreservesPF_shiftPrec hμ p.natDegree p rfl
+  exact (generalizedRisingFactorialPreservesPF_shiftStrictInterl hμ p.natDegree p rfl
     (by intro hpzero; simp [hpzero] at hpdeg) hp).1
 
 /-- Degree-at-least-two case of the Su--Yang--Zhang generalized rising-factorial

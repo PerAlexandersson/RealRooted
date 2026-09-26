@@ -28,7 +28,7 @@ Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_two :
     StrictInterl (FiniteSkewBoard.auxiliaryG 2) (modifiedNarayanaPolynomial 2) := by
   rw [auxiliaryG_two_eq_C_mul_modifiedNarayanaPolynomial_one]
-  exact (modifiedNarayanaPolynomial_prec_succ 1).C_mul_left (by norm_num)
+  exact (modifiedNarayanaPolynomial_strictInterl_succ 1).C_mul_left (by norm_num)
 
 /-- The checked initial cases `n = 1, 2` of Braun--Jal Lemma 3.3, for the
 concrete modified Narayana family and the finite-board auxiliary `G`. -/
@@ -48,7 +48,7 @@ theorem lemma34ModifiedNarayanaInterlacing_modified_zero_zero
         modifiedNarayanaPolynomial m)
       ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial m +
         modifiedNarayanaPolynomial (m + 1)) := by
-  simpa using modifiedNarayanaPolynomial_prec_succ m
+  simpa using modifiedNarayanaPolynomial_strictInterl_succ m
 
 /-- The shifted `λ = 0, μ = 1` specialization of Braun--Jal Lemma 3.4 for the
 concrete modified Narayana family. -/
