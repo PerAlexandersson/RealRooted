@@ -36,7 +36,7 @@ private lemma ternaryRunPolynomial_succ_eq_linear_add_derivative (n : ℕ) :
   ring
 
 /-- Consecutive ternary-run polynomials are in weak proper position. -/
-theorem ternaryRunPolynomial_prec (n : ℕ) :
+theorem ternaryRunPolynomial_strictInterl (n : ℕ) :
     StrictInterl (ternaryRunPolynomial n) (ternaryRunPolynomial (n + 1)) := by
   induction n with
   | zero =>
@@ -85,6 +85,11 @@ theorem ternaryRunPolynomial_isPF (n : ℕ) :
     (ternaryRunPolynomial_hasNonnegCoeffs n)
   cases n with
   | zero => simp [ternaryRunPolynomial]
-  | succ n => exact (ternaryRunPolynomial_prec n).2.1.2
+  | succ n => exact (ternaryRunPolynomial_strictInterl n).2.1.2
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated ternaryRunPolynomial_strictInterl (since := "2026-09-26")]
+alias ternaryRunPolynomial_prec := ternaryRunPolynomial_strictInterl
 
 end RealRooted.Applications.EulerianVariations

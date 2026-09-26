@@ -197,7 +197,7 @@ private theorem inversePeakTypeB_degree_step (n : ℕ) :
       (inversePeakTypeB n).natDegree + 1 := by
   simp
 
-private theorem inversePeakTypeB_base_prec :
+private theorem inversePeakTypeB_base_strictInterl :
     StrictInterl (inversePeakTypeB 0) (inversePeakTypeB 1) := by
   rw [inversePeakTypeB_zero, inversePeakTypeB_one]
   have hpoly : (1 + C 6 * X + X ^ 2 : ℝ[X]) =
@@ -216,7 +216,7 @@ private theorem inversePeakTypeB_base_noCommon :
   nlinarith
 
 /-- Consecutive type-B rows are in proper position and share no real root. -/
-theorem inversePeakTypeB_prec_and_noCommonRoot (n : ℕ) :
+theorem inversePeakTypeB_strictInterl_and_noCommonRoot (n : ℕ) :
     StrictInterl (inversePeakTypeB n) (inversePeakTypeB (n + 1)) ∧
       ∀ r, (inversePeakTypeB (n + 1)).IsRoot r →
         ¬ (inversePeakTypeB n).IsRoot r := by
@@ -234,34 +234,44 @@ theorem inversePeakTypeB_prec_and_noCommonRoot (n : ℕ) :
   · exact inversePeakTypeB_hasPosLeadingCoeff
   · intro m r hr
     exact inversePeakTypeB_root_neg m hr
-  · exact inversePeakTypeB_base_prec
+  · exact inversePeakTypeB_base_strictInterl
   · exact inversePeakTypeB_base_noCommon
   · exact inversePeakTypeB_recurrence
 
 /-- Consecutive type-B rows are in proper position. -/
-theorem inversePeakTypeB_prec (n : ℕ) :
+theorem inversePeakTypeB_strictInterl (n : ℕ) :
     StrictInterl (inversePeakTypeB n) (inversePeakTypeB (n + 1)) :=
-  (inversePeakTypeB_prec_and_noCommonRoot n).1
+  (inversePeakTypeB_strictInterl_and_noCommonRoot n).1
 
 /-- Consecutive type-B rows have no common real root. -/
 theorem inversePeakTypeB_noCommonRoot (n : ℕ) (r : ℝ)
     (hr : (inversePeakTypeB (n + 1)).IsRoot r) :
     ¬ (inversePeakTypeB n).IsRoot r :=
-  (inversePeakTypeB_prec_and_noCommonRoot n).2 r hr
+  (inversePeakTypeB_strictInterl_and_noCommonRoot n).2 r hr
 
 /-- Every type-B row splits over the reals. -/
 theorem inversePeakTypeB_splits (n : ℕ) : (inversePeakTypeB n).Splits :=
-  (inversePeakTypeB_prec n).1.2
+  (inversePeakTypeB_strictInterl n).1.2
 
 /-- Consecutive type-B rows strictly interlace. -/
 theorem inversePeakTypeB_interlaces (n : ℕ) :
     Interlaces (inversePeakTypeB n) (inversePeakTypeB (n + 1)) :=
-  (inversePeakTypeB_prec n).toInterlaces (inversePeakTypeB_degree_step n).symm
+  (inversePeakTypeB_strictInterl n).toInterlaces (inversePeakTypeB_degree_step n).symm
 
 /-- Every type-B row has simple real roots. -/
 theorem inversePeakTypeB_hasSimpleRoots (n : ℕ) :
     HasSimpleRoots (inversePeakTypeB n) :=
-  ((inversePeakTypeB_prec n).hasSimpleRoots_of_no_common_root fun r hr =>
+  ((inversePeakTypeB_strictInterl n).hasSimpleRoots_of_no_common_root fun r hr =>
     inversePeakTypeB_noCommonRoot n r hr.2 hr.1).1
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated inversePeakTypeB_strictInterl_and_noCommonRoot
+  (since := "2026-09-26")]
+alias inversePeakTypeB_prec_and_noCommonRoot :=
+  inversePeakTypeB_strictInterl_and_noCommonRoot
+
+@[deprecated inversePeakTypeB_strictInterl (since := "2026-09-26")]
+alias inversePeakTypeB_prec := inversePeakTypeB_strictInterl
 
 end RealRooted.Applications.OEIS

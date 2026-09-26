@@ -470,3 +470,13 @@ linear-factor step, the weighted-sum cone, and reciprocal-shift reversal.
 Production and tactic callers use `StrictInterl` / `Interl` names; each former
 public name remains only as a dated deprecated alias, while the private helper
 is renamed directly.
+
+Application interlacing batch (2026-09-26)
+
+The next leaf-level batch canonicalizes 25 public APIs and seven private
+helpers across A144696, A144438 and its weighted/decorated/diagonal forms,
+inverse-peak families, lower reentrant corners, ternary runs, and weighted
+peak values.  All owned callers use `StrictInterl` names.  The 25 former
+public occurrences remain only as dated deprecated aliases; all seven private
+old names disappear.  Relation methods owned by foundational modules remain
+for their own dependency-closed batches.

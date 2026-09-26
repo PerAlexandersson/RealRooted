@@ -89,9 +89,9 @@ theorem a144696_residue_eval_gap {d k : ℕ} (hk : k < d) :
 
 /-- On an internal edge, the factorial endpoint gap gives the auxiliary the
 same strict sign as the derivative at every current-row root. -/
-theorem a144696Auxiliary_eval_mul_derivative_pos_of_prec
+theorem a144696Auxiliary_eval_mul_derivative_pos_of_strictInterl
     {d k : ℕ} (hk : k < d)
-    (hprec : StrictInterl (a144696BernsteinImage (d - 1) k)
+    (hstrictInterl : StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d k))
     (hcurSimple : HasSimpleRoots (a144696BernsteinImage d k))
     {r : ℝ} (hr : (a144696BernsteinImage d k).IsRoot r) :
@@ -107,7 +107,7 @@ theorem a144696Auxiliary_eval_mul_derivative_pos_of_prec
       natDegree_a144696BernsteinImage hk.le]
     exact_mod_cast (show d - 1 < d by lia)
   rw [a144696Auxiliary_eq_residueAuxiliary hk]
-  apply residueAuxiliary_eval_mul_derivative_pos hprec hcurPos hprevPos
+  apply residueAuxiliary_eval_mul_derivative_pos hstrictInterl hcurPos hprevPos
     (by rw [natDegree_a144696BernsteinImage hk.le]; lia)
     hprevDeg hcurSimple (by rw [← Nat.cast_sub hk.le]; positivity)
   · intro s hs
@@ -118,9 +118,9 @@ theorem a144696Auxiliary_eval_mul_derivative_pos_of_prec
 
 /-- On an internal edge, the residue auxiliary strictly interlaces the current
 Bernstein image. -/
-theorem a144696Auxiliary_interlaces_of_prec
+theorem a144696Auxiliary_interlaces_of_strictInterl
     {d k : ℕ} (hk : k < d)
-    (hprec : StrictInterl (a144696BernsteinImage (d - 1) k)
+    (hstrictInterl : StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d k))
     (hcurSimple : HasSimpleRoots (a144696BernsteinImage d k)) :
     Interlaces (a144696Auxiliary d k) (a144696BernsteinImage d k) := by
@@ -134,7 +134,7 @@ theorem a144696Auxiliary_interlaces_of_prec
       natDegree_a144696BernsteinImage hk.le]
     exact_mod_cast (show d - 1 < d by lia)
   rw [a144696Auxiliary_eq_residueAuxiliary hk]
-  apply residueAuxiliary_interlaces hprec hcurPos hprevPos
+  apply residueAuxiliary_interlaces hstrictInterl hcurPos hprevPos
     (by rw [natDegree_a144696BernsteinImage hk.le]; lia)
     hprevDeg hcurSimple (by rw [← Nat.cast_sub hk.le]; positivity)
   · intro r hr
@@ -408,7 +408,7 @@ private theorem a144696RowCertificate_succ
           (a144696BernsteinImage d k).derivative.eval r := by
       rcases lt_or_eq_of_le hk with hlt | rfl
       · exact fun _ hr ↦
-          a144696Auxiliary_eval_mul_derivative_pos_of_prec hlt
+          a144696Auxiliary_eval_mul_derivative_pos_of_strictInterl hlt
             (hrow.vertical k hlt) hcurSimple hr
       · exact fun _ hr ↦
           a144696Auxiliary_diagonal_eval_mul_derivative_pos hcurSimple hr
@@ -521,7 +521,7 @@ theorem hasSimpleRoots_a144696BernsteinImage {d k : ℕ} (hk : k ≤ d) :
 
 /-- Adjacent entries within an A144696 Bernstein-image row are in proper
 position. -/
-theorem a144696BernsteinImage_horizontal_prec {d k : ℕ} (hk : k < d) :
+theorem a144696BernsteinImage_horizontal_strictInterl {d k : ℕ} (hk : k < d) :
     StrictInterl (a144696BernsteinImage d k)
       (a144696BernsteinImage d (k + 1)) :=
   (a144696RowCertificate_all d).horizontal k hk
@@ -536,7 +536,7 @@ theorem a144696BernsteinImage_horizontal_noCommonRoot
 
 /-- Same-index entries in consecutive A144696 Bernstein-image rows are in
 proper position. -/
-theorem a144696BernsteinImage_vertical_prec {d k : ℕ} (hk : k < d) :
+theorem a144696BernsteinImage_vertical_strictInterl {d k : ℕ} (hk : k < d) :
     StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d k) :=
   (a144696RowCertificate_all d).vertical k hk
@@ -551,7 +551,7 @@ theorem a144696BernsteinImage_vertical_noCommonRoot
 
 /-- Shifted entries in consecutive A144696 Bernstein-image rows are in proper
 position. -/
-theorem a144696BernsteinImage_shifted_prec {d k : ℕ} (hk : k < d) :
+theorem a144696BernsteinImage_shifted_strictInterl {d k : ℕ} (hk : k < d) :
     StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d (k + 1)) :=
   (a144696RowCertificate_all d).shifted k hk
@@ -563,5 +563,32 @@ theorem a144696BernsteinImage_shifted_noCommonRoot
     (a144696BernsteinImage (d - 1) k).IsRoot r →
       ¬ (a144696BernsteinImage d (k + 1)).IsRoot r :=
   (a144696RowCertificate_all d).shiftedNoCommon k hk
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated a144696Auxiliary_eval_mul_derivative_pos_of_strictInterl
+  (since := "2026-09-26")]
+alias a144696Auxiliary_eval_mul_derivative_pos_of_prec :=
+  a144696Auxiliary_eval_mul_derivative_pos_of_strictInterl
+
+@[deprecated a144696Auxiliary_interlaces_of_strictInterl
+  (since := "2026-09-26")]
+alias a144696Auxiliary_interlaces_of_prec :=
+  a144696Auxiliary_interlaces_of_strictInterl
+
+@[deprecated a144696BernsteinImage_horizontal_strictInterl
+  (since := "2026-09-26")]
+alias a144696BernsteinImage_horizontal_prec :=
+  a144696BernsteinImage_horizontal_strictInterl
+
+@[deprecated a144696BernsteinImage_vertical_strictInterl
+  (since := "2026-09-26")]
+alias a144696BernsteinImage_vertical_prec :=
+  a144696BernsteinImage_vertical_strictInterl
+
+@[deprecated a144696BernsteinImage_shifted_strictInterl
+  (since := "2026-09-26")]
+alias a144696BernsteinImage_shifted_prec :=
+  a144696BernsteinImage_shifted_strictInterl
 
 end RealRooted

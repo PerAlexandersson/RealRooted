@@ -99,7 +99,7 @@ theorem diagonal_normalizedFiberPolynomial_eq_A144438 (n : Nat) :
 
 /-- Consecutive diagonalized admissible-code enumerators are in proper
 position. -/
-theorem diagonal_admissibleCodePolynomial_prec (n : Nat) :
+theorem diagonal_admissibleCodePolynomial_strictInterl (n : Nat) :
     StrictInterl
       (MvPolynomial.diagonal
         (admissibleCodePolynomial (R := Real) (n + 2)))
@@ -107,11 +107,11 @@ theorem diagonal_admissibleCodePolynomial_prec (n : Nat) :
         (admissibleCodePolynomial (R := Real) (n + 3))) := by
   rw [diagonal_admissibleCodePolynomial_eq_A144438 n,
     diagonal_admissibleCodePolynomial_eq_A144438 (n + 1)]
-  exact A144438_prec n
+  exact A144438_strictInterl n
 
 /-- Consecutive diagonalized normalized-fiber enumerators are in proper
 position. -/
-theorem diagonal_normalizedFiberPolynomial_prec (n : Nat) :
+theorem diagonal_normalizedFiberPolynomial_strictInterl (n : Nat) :
     StrictInterl
       (MvPolynomial.diagonal
         (normalizedFiberPolynomial (R := Real) (n + 2)))
@@ -119,7 +119,7 @@ theorem diagonal_normalizedFiberPolynomial_prec (n : Nat) :
         (normalizedFiberPolynomial (R := Real) (n + 3))) := by
   rw [diagonal_normalizedFiberPolynomial_eq_A144438 n,
     diagonal_normalizedFiberPolynomial_eq_A144438 (n + 1)]
-  exact A144438_prec n
+  exact A144438_strictInterl n
 
 /-- Consecutive diagonalized admissible-code enumerators interlace. -/
 theorem diagonal_admissibleCodePolynomial_interlaces (n : Nat) :
@@ -206,6 +206,18 @@ theorem diagonal_normalizedFiberPolynomial_hasSimpleRoots (n : Nat) :
         (normalizedFiberPolynomial (R := Real) (n + 2))) := by
   rw [diagonal_normalizedFiberPolynomial_eq_A144438]
   exact A144438_hasSimpleRoots n
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated diagonal_admissibleCodePolynomial_strictInterl
+  (since := "2026-09-26")]
+alias diagonal_admissibleCodePolynomial_prec :=
+  diagonal_admissibleCodePolynomial_strictInterl
+
+@[deprecated diagonal_normalizedFiberPolynomial_strictInterl
+  (since := "2026-09-26")]
+alias diagonal_normalizedFiberPolynomial_prec :=
+  diagonal_normalizedFiberPolynomial_strictInterl
 
 end
 

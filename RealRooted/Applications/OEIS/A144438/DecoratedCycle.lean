@@ -196,7 +196,7 @@ theorem normalizedDecoratedCycleEulerian_root_neg {q : ℝ} (hq : 0 < q)
   rw [heval] at hr
   exact (pow_pos hq n).ne' hr
 
-private theorem normalizedDecoratedCycleEulerian_base_prec (q : ℝ) :
+private theorem normalizedDecoratedCycleEulerian_base_strictInterl (q : ℝ) :
     StrictInterl (normalizedDecoratedCycleEulerian q 0)
       (normalizedDecoratedCycleEulerian q 1) := by
   rw [normalizedDecoratedCycleEulerian_zero]
@@ -211,7 +211,7 @@ private theorem normalizedDecoratedCycleEulerian_base_noCommon {q : ℝ} :
 
 /-- Strict adjacent proper position and no common root for the normalized
 family. -/
-theorem normalizedDecoratedCycleEulerian_prec_and_noCommonRoot
+theorem normalizedDecoratedCycleEulerian_strictInterl_and_noCommonRoot
     {q : ℝ} (hq : 0 < q) (n : ℕ) :
     StrictInterl (normalizedDecoratedCycleEulerian q n)
         (normalizedDecoratedCycleEulerian q (n + 1)) ∧
@@ -225,7 +225,7 @@ theorem normalizedDecoratedCycleEulerian_prec_and_noCommonRoot
         rw [HasPosLeadingCoeff, normalizedDecoratedCycleEulerian_monic]
         norm_num)
       (fun m r hr => normalizedDecoratedCycleEulerian_root_neg hq m hr)
-      (normalizedDecoratedCycleEulerian_base_prec q)
+      (normalizedDecoratedCycleEulerian_base_strictInterl q)
       normalizedDecoratedCycleEulerian_base_noCommon
       (normalizedDecoratedCycleEulerian_affine_recurrence q) n
 
@@ -299,23 +299,23 @@ theorem decoratedCycleEulerian_hasNonnegCoeffs {q : ℝ} (hq : 0 < q) (n : ℕ) 
     exact mul_nonneg hq.le (normalizedDecoratedCycleEulerian_hasNonnegCoeffs hq n k)
 
 /-- Consecutive positive ranks are in proper position for positive `q`. -/
-theorem decoratedCycleEulerian_prec {q : ℝ} (hq : 0 < q) (n : ℕ) :
+theorem decoratedCycleEulerian_strictInterl {q : ℝ} (hq : 0 < q) (n : ℕ) :
     StrictInterl (decoratedCycleEulerian q (n + 1))
       (decoratedCycleEulerian q (n + 2)) := by
   simpa only [decoratedCycleEulerian] using
-    (normalizedDecoratedCycleEulerian_prec_and_noCommonRoot hq n).1.C_mul_left
+    (normalizedDecoratedCycleEulerian_strictInterl_and_noCommonRoot hq n).1.C_mul_left
       hq.ne' |>.C_mul_right hq.ne'
 
 /-- Every positive-rank polynomial splits over the reals. -/
 theorem decoratedCycleEulerian_splits {q : ℝ} (hq : 0 < q) (n : ℕ) :
     (decoratedCycleEulerian q (n + 1)).Splits :=
-  (decoratedCycleEulerian_prec hq n).1.2
+  (decoratedCycleEulerian_strictInterl hq n).1.2
 
 /-- Consecutive positive ranks strictly interlace for positive `q`. -/
 theorem decoratedCycleEulerian_interlaces {q : ℝ} (hq : 0 < q) (n : ℕ) :
     Interlaces (decoratedCycleEulerian q (n + 1))
       (decoratedCycleEulerian q (n + 2)) := by
-  exact (decoratedCycleEulerian_prec hq n).toInterlaces (by
+  exact (decoratedCycleEulerian_strictInterl hq n).toInterlaces (by
     rw [decoratedCycleEulerian_natDegree hq, decoratedCycleEulerian_natDegree hq])
 
 /-- Consecutive positive ranks have no common real root. -/
@@ -323,7 +323,7 @@ theorem decoratedCycleEulerian_noCommonRoot {q : ℝ} (hq : 0 < q) (n : ℕ)
     (r : ℝ) (hr : (decoratedCycleEulerian q (n + 2)).IsRoot r) :
     ¬ (decoratedCycleEulerian q (n + 1)).IsRoot r := by
   simp only [decoratedCycleEulerian, Polynomial.IsRoot.def, eval_mul, eval_C] at hr ⊢
-  exact fun hr0 => (normalizedDecoratedCycleEulerian_prec_and_noCommonRoot hq n).2 r
+  exact fun hr0 => (normalizedDecoratedCycleEulerian_strictInterl_and_noCommonRoot hq n).2 r
     (by exact (mul_eq_zero.mp hr).resolve_left hq.ne')
     ((mul_eq_zero.mp hr0).resolve_left hq.ne')
 
@@ -337,7 +337,7 @@ theorem decoratedCycleEulerian_root_neg {q : ℝ} (hq : 0 < q) (n : ℕ) {r : �
 /-- Every positive-rank polynomial has simple real roots. -/
 theorem decoratedCycleEulerian_hasSimpleRoots {q : ℝ} (hq : 0 < q) (n : ℕ) :
     HasSimpleRoots (decoratedCycleEulerian q (n + 1)) :=
-  ((decoratedCycleEulerian_prec hq n).hasSimpleRoots_of_no_common_root fun r hr =>
+  ((decoratedCycleEulerian_strictInterl hq n).hasSimpleRoots_of_no_common_root fun r hr =>
     decoratedCycleEulerian_noCommonRoot hq n r hr.2 hr.1).1
 
 /-- At `q = 1`, positive rank `n + 1` is exactly the deco Eulerian polynomial
@@ -352,5 +352,15 @@ theorem decoratedCycleEulerian_one_eq_decoEulerian :
   | more n ih0 ih1 =>
       rw [normalizedDecoratedCycleEulerian_recurrence, decoEulerian_recurrence, ih0, ih1]
       simp
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated normalizedDecoratedCycleEulerian_strictInterl_and_noCommonRoot
+  (since := "2026-09-26")]
+alias normalizedDecoratedCycleEulerian_prec_and_noCommonRoot :=
+  normalizedDecoratedCycleEulerian_strictInterl_and_noCommonRoot
+
+@[deprecated decoratedCycleEulerian_strictInterl (since := "2026-09-26")]
+alias decoratedCycleEulerian_prec := decoratedCycleEulerian_strictInterl
 
 end RealRooted.Applications.OEIS
