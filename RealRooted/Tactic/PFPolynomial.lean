@@ -14,7 +14,7 @@ namespace RealRooted
 
 /-- Transfer PF rows and consecutive zero-aware proper position from a
 rowwise equal model sequence. -/
-theorem pf_and_prec0_of_model_sequence
+theorem pf_and_interl_of_model_sequence
     {P Q : Nat → ℝ[X]}
     (hmodel :
       (∀ n : Nat, IsPFPolynomial (Q n)) ∧
@@ -155,13 +155,13 @@ theorem pf_sequence_mul_X_add_one
     ∀ i : Nat, IsPFPolynomial ((X + 1) * P i) := fun i =>
   RealRooted.isPFPolynomial_mul_X_add_one (hP i)
 
-theorem pf_sequence_prec0_self
+theorem pf_sequence_interl_self
     {P : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
     ∀ i : Nat, Interl (P i) (P i) := fun i =>
   RealRooted.IsPFPolynomial.interl_self (hP i)
 
-theorem pf_sequence_prec0_X_mul_both
+theorem pf_sequence_interl_X_mul_both
     {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
@@ -350,26 +350,26 @@ syntax (name := rr_pf_sequence_mul_X_add_one_named)
   "rr_pf_sequence_mul_X_add_one" " using " "pf" ":=" term :
   tactic
 
-syntax (name := rr_pf_prec0_self_named)
-  "rr_pf_prec0_self" " using " "pf" ":=" term :
+syntax (name := rr_pf_interl_self_named)
+  "rr_pf_interl_self" " using " "pf" ":=" term :
   tactic
 
-syntax (name := rr_pf_sequence_prec0_self_named)
-  "rr_pf_sequence_prec0_self" " using " "pf" ":=" term :
+syntax (name := rr_pf_sequence_interl_self_named)
+  "rr_pf_sequence_interl_self" " using " "pf" ":=" term :
   tactic
 
-syntax (name := rr_pf_prec0_X_mul_both_named)
-  "rr_pf_prec0_X_mul_both" " using "
+syntax (name := rr_pf_interl_X_mul_both_named)
+  "rr_pf_interl_X_mul_both" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
-    "prec0" ":=" term :
+    "interl" ":=" term :
   tactic
 
-syntax (name := rr_pf_sequence_prec0_X_mul_both_named)
-  "rr_pf_sequence_prec0_X_mul_both" " using "
+syntax (name := rr_pf_sequence_interl_X_mul_both_named)
+  "rr_pf_sequence_interl_X_mul_both" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
-    "prec0" ":=" term :
+    "interl" ":=" term :
   tactic
 
 macro_rules
@@ -512,6 +512,72 @@ macro_rules
       `(tactic| exact RealRooted.isPFPolynomial_mul_X_add_one $hp)
   | `(tactic| rr_pf_sequence_mul_X_add_one using pf := $hp:term) =>
       `(tactic| exact RealRooted.Tactic.pf_sequence_mul_X_add_one $hp)
+  | `(tactic| rr_pf_interl_self using pf := $hp:term) =>
+      `(tactic| exact RealRooted.IsPFPolynomial.interl_self $hp)
+  | `(tactic| rr_pf_sequence_interl_self using pf := $hp:term) =>
+      `(tactic| exact RealRooted.Tactic.pf_sequence_interl_self $hp)
+  | `(tactic|
+      rr_pf_interl_X_mul_both using
+        left_pf := $hp:term,
+        right_pf := $hq:term,
+        interl := $hpq:term) =>
+      `(tactic| exact RealRooted.interl_X_mul_both_of_pf $hp $hq $hpq)
+  | `(tactic|
+      rr_pf_sequence_interl_X_mul_both using
+        left_pf := $hp:term,
+        right_pf := $hq:term,
+        interl := $hpq:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.pf_sequence_interl_X_mul_both
+          $hp $hq $hpq)
+
+end Tactic
+end RealRooted
+namespace RealRooted
+@[deprecated pf_and_interl_of_model_sequence (since := "2026-09-26")]
+alias pf_and_prec0_of_model_sequence := pf_and_interl_of_model_sequence
+
+end RealRooted
+
+namespace RealRooted
+namespace Tactic
+@[deprecated pf_sequence_interl_self (since := "2026-09-26")]
+alias pf_sequence_prec0_self := pf_sequence_interl_self
+
+@[deprecated pf_sequence_interl_X_mul_both (since := "2026-09-26")]
+alias pf_sequence_prec0_X_mul_both := pf_sequence_interl_X_mul_both
+
+end Tactic
+end RealRooted
+
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_pf_prec0_self_named_legacy)
+  "rr_pf_prec0_self" " using " "pf" ":=" term :
+  tactic
+
+syntax (name := rr_pf_sequence_prec0_self_named_legacy)
+  "rr_pf_sequence_prec0_self" " using " "pf" ":=" term :
+  tactic
+
+syntax (name := rr_pf_prec0_X_mul_both_named_legacy)
+  "rr_pf_prec0_X_mul_both" " using "
+    "left_pf" ":=" term ","
+    "right_pf" ":=" term ","
+    "prec0" ":=" term :
+  tactic
+
+syntax (name := rr_pf_sequence_prec0_X_mul_both_named_legacy)
+  "rr_pf_sequence_prec0_X_mul_both" " using "
+    "left_pf" ":=" term ","
+    "right_pf" ":=" term ","
+    "prec0" ":=" term :
+  tactic
+
+macro_rules
   | `(tactic| rr_pf_prec0_self using pf := $hp:term) =>
       `(tactic| exact RealRooted.IsPFPolynomial.interl_self $hp)
   | `(tactic| rr_pf_sequence_prec0_self using pf := $hp:term) =>
@@ -530,6 +596,5 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.pf_sequence_prec0_X_mul_both
           $hp $hq $hpq)
-
 end Tactic
 end RealRooted

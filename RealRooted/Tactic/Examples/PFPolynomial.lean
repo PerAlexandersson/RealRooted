@@ -223,27 +223,27 @@ example {P : Nat → ℝ[X]}
 
 example {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Interl p p := by
-  rr_pf_prec0_self using pf := hp
+  rr_pf_interl_self using pf := hp
 
 example {P : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
     ∀ i : Nat, Interl (P i) (P i) := by
-  rr_pf_sequence_prec0_self using pf := hP
+  rr_pf_sequence_interl_self using pf := hP
 
 example {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (X * p) (X * q) := by
-  rr_pf_prec0_X_mul_both using left_pf := hp, right_pf := hq, prec0 := hpq
+  rr_pf_interl_X_mul_both using left_pf := hp, right_pf := hq, interl := hpq
 
 example {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
     (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
     ∀ i : Nat, Interl (X * P i) (X * Q i) := by
-  rr_pf_sequence_prec0_X_mul_both using
+  rr_pf_sequence_interl_X_mul_both using
     left_pf := hP,
     right_pf := hQ,
-    prec0 := hPQ
+    interl := hPQ
 
 end Tactic
 end RealRooted

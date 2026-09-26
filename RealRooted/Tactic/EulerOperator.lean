@@ -19,7 +19,7 @@ If consecutive terms begin in proper position and
 `P (n + 2) = (X * P (n + 1))' + c n * X * P n` with `c n > 0`, then
 nonnegative coefficients and positive leading coefficients propagate proper
 position through the whole sequence. -/
-theorem prec_positive_euler_lag_sequence
+theorem strictInterl_positive_euler_lag_sequence
     {P : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n, HasNonnegCoeffs (P n))
@@ -65,12 +65,12 @@ theorem isPFPolynomial_iterateThetaPlusOne
   iterateThetaPlusOne_preserves_pf thetaPlusOne_preserves_pf l hp
 
 /-- Default proved `Interl` preservation for the `l`-fold iterate of `theta + 1`. -/
-theorem prec0_iterateThetaPlusOne
+theorem interl_iterateThetaPlusOne
     (l : ℕ) {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
     Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q) :=
-  iterateThetaPlusOne_preserves_prec0
-    thetaPlusOne_preserves_pf thetaPlusOnePreservesPrec0 l hp hq hpq
+  iterateThetaPlusOne_preserves_interl
+    thetaPlusOne_preserves_pf thetaPlusOnePreservesInterl l hp hq hpq
 
 namespace Tactic
 
@@ -118,15 +118,15 @@ theorem iterateThetaPlusOne_sequence_pf
     ∀ i : Nat, IsPFPolynomial (iterateThetaPlusOne (l i) (P i)) := fun i =>
   RealRooted.isPFPolynomial_iterateThetaPlusOne (l i) (hP i)
 
-theorem thetaPlusOne_sequence_prec0
+theorem thetaPlusOne_sequence_interl
     {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
     (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
     ∀ i : Nat, Interl (thetaPlusOne (P i)) (thetaPlusOne (Q i)) := fun i =>
-  RealRooted.thetaPlusOnePreservesPrec0 (hP i) (hQ i) (hPQ i)
+  RealRooted.thetaPlusOnePreservesInterl (hP i) (hQ i) (hPQ i)
 
-theorem iterateThetaPlusOne_sequence_prec0
+theorem iterateThetaPlusOne_sequence_interl
     {l : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
@@ -134,7 +134,7 @@ theorem iterateThetaPlusOne_sequence_prec0
     ∀ i : Nat,
       Interl (iterateThetaPlusOne (l i) (P i)) (iterateThetaPlusOne (l i) (Q i)) :=
     fun i =>
-  RealRooted.prec0_iterateThetaPlusOne (l i) (hP i) (hQ i) (hPQ i)
+  RealRooted.interl_iterateThetaPlusOne (l i) (hP i) (hQ i) (hPQ i)
 
 syntax (name := rr_theta_nonneg_named)
   "rr_theta_nonneg" " using " "nonneg" ":=" term :
@@ -204,38 +204,38 @@ syntax (name := rr_iterateThetaPlusOne_sequence_pf_named)
     "pf" ":=" term :
   tactic
 
-syntax (name := rr_thetaPlusOne_prec0_named)
-  "rr_thetaPlusOne_prec0" " using "
+syntax (name := rr_thetaPlusOne_interl_named)
+  "rr_thetaPlusOne_interl" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
-    "prec0" ":=" term :
+    "interl" ":=" term :
   tactic
 
-syntax (name := rr_thetaPlusOne_sequence_prec0_named)
-  "rr_thetaPlusOne_sequence_prec0" " using "
+syntax (name := rr_thetaPlusOne_sequence_interl_named)
+  "rr_thetaPlusOne_sequence_interl" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
-    "prec0" ":=" term :
+    "interl" ":=" term :
   tactic
 
-syntax (name := rr_iterateThetaPlusOne_prec0_named)
-  "rr_iterateThetaPlusOne_prec0" " using "
+syntax (name := rr_iterateThetaPlusOne_interl_named)
+  "rr_iterateThetaPlusOne_interl" " using "
     "index" ":=" term ","
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
-    "prec0" ":=" term :
+    "interl" ":=" term :
   tactic
 
-syntax (name := rr_iterateThetaPlusOne_sequence_prec0_named)
-  "rr_iterateThetaPlusOne_sequence_prec0" " using "
+syntax (name := rr_iterateThetaPlusOne_sequence_interl_named)
+  "rr_iterateThetaPlusOne_sequence_interl" " using "
     "index" ":=" term ","
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
-    "prec0" ":=" term :
+    "interl" ":=" term :
   tactic
 
-syntax (name := rr_prec_positive_euler_lag_sequence_named)
-  "rr_prec_positive_euler_lag_sequence" " using "
+syntax (name := rr_strict_interl_positive_euler_lag_sequence_named)
+  "rr_strict_interl_positive_euler_lag_sequence" " using "
     "base" ":=" term ","
     "nonneg" ":=" term ","
     "positive_lc" ":=" term ","
@@ -245,14 +245,14 @@ syntax (name := rr_prec_positive_euler_lag_sequence_named)
 
 macro_rules
   | `(tactic|
-      rr_prec_positive_euler_lag_sequence using
+      rr_strict_interl_positive_euler_lag_sequence using
         base := $hbase:term,
         nonneg := $hnonneg:term,
         positive_lc := $hpos:term,
         lag_positive := $hc:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.prec_positive_euler_lag_sequence
+        exact RealRooted.strictInterl_positive_euler_lag_sequence
           $hbase $hnonneg $hpos $hc $hrec)
   | `(tactic| rr_theta_nonneg using nonneg := $hp:term) =>
       `(tactic| exact RealRooted.HasNonnegCoeffs.theta $hp)
@@ -301,6 +301,112 @@ macro_rules
         pf := $hp:term) =>
       `(tactic| exact RealRooted.Tactic.iterateThetaPlusOne_sequence_pf (l := $l) $hp)
   | `(tactic|
+      rr_thetaPlusOne_interl using
+        left_pf := $hp:term,
+        right_pf := $hq:term,
+        interl := $hpq:term) =>
+      `(tactic| exact RealRooted.thetaPlusOnePreservesInterl $hp $hq $hpq)
+  | `(tactic|
+      rr_thetaPlusOne_sequence_interl using
+        left_pf := $hp:term,
+        right_pf := $hq:term,
+        interl := $hpq:term) =>
+      `(tactic| exact RealRooted.Tactic.thetaPlusOne_sequence_interl $hp $hq $hpq)
+  | `(tactic|
+      rr_iterateThetaPlusOne_interl using
+        index := $l:term,
+        left_pf := $hp:term,
+        right_pf := $hq:term,
+        interl := $hpq:term) =>
+      `(tactic| exact RealRooted.interl_iterateThetaPlusOne $l $hp $hq $hpq)
+  | `(tactic|
+      rr_iterateThetaPlusOne_sequence_interl using
+        index := $l:term,
+        left_pf := $hp:term,
+        right_pf := $hq:term,
+        interl := $hpq:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.iterateThetaPlusOne_sequence_interl
+          (l := $l) $hp $hq $hpq)
+
+end Tactic
+end RealRooted
+namespace RealRooted
+@[deprecated strictInterl_positive_euler_lag_sequence (since := "2026-09-26")]
+alias prec_positive_euler_lag_sequence := strictInterl_positive_euler_lag_sequence
+
+@[deprecated interl_iterateThetaPlusOne (since := "2026-09-26")]
+alias prec0_iterateThetaPlusOne := interl_iterateThetaPlusOne
+
+end RealRooted
+
+namespace RealRooted
+namespace Tactic
+@[deprecated thetaPlusOne_sequence_interl (since := "2026-09-26")]
+alias thetaPlusOne_sequence_prec0 := thetaPlusOne_sequence_interl
+
+@[deprecated iterateThetaPlusOne_sequence_interl (since := "2026-09-26")]
+alias iterateThetaPlusOne_sequence_prec0 := iterateThetaPlusOne_sequence_interl
+
+end Tactic
+end RealRooted
+
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_thetaPlusOne_prec0_named_legacy)
+  "rr_thetaPlusOne_prec0" " using "
+    "left_pf" ":=" term ","
+    "right_pf" ":=" term ","
+    "prec0" ":=" term :
+  tactic
+
+syntax (name := rr_thetaPlusOne_sequence_prec0_named_legacy)
+  "rr_thetaPlusOne_sequence_prec0" " using "
+    "left_pf" ":=" term ","
+    "right_pf" ":=" term ","
+    "prec0" ":=" term :
+  tactic
+
+syntax (name := rr_iterateThetaPlusOne_prec0_named_legacy)
+  "rr_iterateThetaPlusOne_prec0" " using "
+    "index" ":=" term ","
+    "left_pf" ":=" term ","
+    "right_pf" ":=" term ","
+    "prec0" ":=" term :
+  tactic
+
+syntax (name := rr_iterateThetaPlusOne_sequence_prec0_named_legacy)
+  "rr_iterateThetaPlusOne_sequence_prec0" " using "
+    "index" ":=" term ","
+    "left_pf" ":=" term ","
+    "right_pf" ":=" term ","
+    "prec0" ":=" term :
+  tactic
+
+syntax (name := rr_prec_positive_euler_lag_sequence_named_legacy)
+  "rr_prec_positive_euler_lag_sequence" " using "
+    "base" ":=" term ","
+    "nonneg" ":=" term ","
+    "positive_lc" ":=" term ","
+    "lag_positive" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_prec_positive_euler_lag_sequence using
+        base := $hbase:term,
+        nonneg := $hnonneg:term,
+        positive_lc := $hpos:term,
+        lag_positive := $hc:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        exact RealRooted.prec_positive_euler_lag_sequence
+          $hbase $hnonneg $hpos $hc $hrec)
+  | `(tactic|
       rr_thetaPlusOne_prec0 using
         left_pf := $hp:term,
         right_pf := $hq:term,
@@ -328,6 +434,5 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.iterateThetaPlusOne_sequence_prec0
           (l := $l) $hp $hq $hpq)
-
 end Tactic
 end RealRooted

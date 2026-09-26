@@ -12,7 +12,7 @@ open Polynomial
 
 namespace RealRooted
 
-theorem prec_affine_derivative_sequence {P : Nat → ℝ[X]} {c : Nat → ℝ}
+theorem strictInterl_affine_derivative_sequence {P : Nat → ℝ[X]} {c : Nat → ℝ}
     (hsplits : ∀ n : Nat, (P n).Splits)
     (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -21,10 +21,10 @@ theorem prec_affine_derivative_sequence {P : Nat → ℝ[X]} {c : Nat → ℝ}
     ∀ n : Nat, StrictInterl
       (C (c n) * P n + (1 - X) * (P n).derivative)
       (P n) := fun n =>
-  prec_affine_derivative' (hsplits n) (hdeg n) (hpos n)
+  strictInterl_affine_derivative' (hsplits n) (hdeg n) (hpos n)
     (hroots_nonpos n) (hc n)
 
-theorem isRealRooted_of_prec_affine_derivative_sequence
+theorem isRealRooted_of_strictInterl_affine_derivative_sequence
     {P : Nat → ℝ[X]} {c : Nat → ℝ}
     (hsplits : ∀ n : Nat, (P n).Splits)
     (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
@@ -35,9 +35,9 @@ theorem isRealRooted_of_prec_affine_derivative_sequence
       C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
         (C (c n) * P n + (1 - X) * (P n).derivative).Splits :=
   left_isRealRooted_of_strictInterl_sequence <|
-    prec_affine_derivative_sequence hsplits hdeg hpos hroots_nonpos hc
+    strictInterl_affine_derivative_sequence hsplits hdeg hpos hroots_nonpos hc
 
-theorem prec_affine_derivative_nonneg_sequence {P : Nat → ℝ[X]} {c : Nat → ℝ}
+theorem strictInterl_affine_derivative_nonneg_sequence {P : Nat → ℝ[X]} {c : Nat → ℝ}
     (hsplits : ∀ n : Nat, (P n).Splits)
     (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
     (hnn : ∀ n : Nat, HasNonnegCoeffs (P n))
@@ -45,9 +45,9 @@ theorem prec_affine_derivative_nonneg_sequence {P : Nat → ℝ[X]} {c : Nat →
     ∀ n : Nat, StrictInterl
       (C (c n) * P n + (1 - X) * (P n).derivative)
       (P n) := fun n =>
-  prec_affine_derivative_of_nonnegCoeffs (hsplits n) (hdeg n) (hnn n) (hc n)
+  strictInterl_affine_derivative_of_nonnegCoeffs (hsplits n) (hdeg n) (hnn n) (hc n)
 
-theorem isRealRooted_of_prec_affine_derivative_nonneg_sequence
+theorem isRealRooted_of_strictInterl_affine_derivative_nonneg_sequence
     {P : Nat → ℝ[X]} {c : Nat → ℝ}
     (hsplits : ∀ n : Nat, (P n).Splits)
     (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
@@ -57,7 +57,7 @@ theorem isRealRooted_of_prec_affine_derivative_nonneg_sequence
       C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
         (C (c n) * P n + (1 - X) * (P n).derivative).Splits :=
   left_isRealRooted_of_strictInterl_sequence <|
-    prec_affine_derivative_nonneg_sequence hsplits hdeg hnn hc
+    strictInterl_affine_derivative_nonneg_sequence hsplits hdeg hnn hc
 
 theorem coeff_affineDeriv_sequence
     {P : Nat → ℝ[X]} {c : Nat → ℝ}
@@ -157,8 +157,8 @@ syntax (name := rr_affine_deriv_ne_zero_sequence_named)
     "scalar_ne_degree" ":=" term :
   tactic
 
-syntax (name := rr_prec_affine_derivative_strong_named)
-  "rr_prec_affine_derivative_strong" " using "
+syntax (name := rr_strict_interl_affine_derivative_strong_named)
+  "rr_strict_interl_affine_derivative_strong" " using "
     "splits" ":=" term ","
     "degree_ge_two" ":=" term ","
     "pos_lc" ":=" term ","
@@ -166,8 +166,8 @@ syntax (name := rr_prec_affine_derivative_strong_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
-syntax (name := rr_prec_affine_derivative_degree_one_named)
-  "rr_prec_affine_derivative_degree_one" " using "
+syntax (name := rr_strict_interl_affine_derivative_degree_one_named)
+  "rr_strict_interl_affine_derivative_degree_one" " using "
     "splits" ":=" term ","
     "degree_eq_one" ":=" term ","
     "pos_lc" ":=" term ","
@@ -175,8 +175,8 @@ syntax (name := rr_prec_affine_derivative_degree_one_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
-syntax (name := rr_prec_affine_derivative_named)
-  "rr_prec_affine_derivative" " using "
+syntax (name := rr_strict_interl_affine_derivative_named)
+  "rr_strict_interl_affine_derivative" " using "
     "splits" ":=" term ","
     "degree_ge_one" ":=" term ","
     "pos_lc" ":=" term ","
@@ -184,16 +184,16 @@ syntax (name := rr_prec_affine_derivative_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
-syntax (name := rr_prec_affine_derivative_nonneg_named)
-  "rr_prec_affine_derivative_nonneg" " using "
+syntax (name := rr_strict_interl_affine_derivative_nonneg_named)
+  "rr_strict_interl_affine_derivative_nonneg" " using "
     "splits" ":=" term ","
     "degree_ge_one" ":=" term ","
     "nonneg" ":=" term ","
     "scalar_gt_degree" ":=" term :
   tactic
 
-syntax (name := rr_prec_affine_derivative_sequence_named)
-  "rr_prec_affine_derivative_sequence" " using "
+syntax (name := rr_strict_interl_affine_derivative_sequence_named)
+  "rr_strict_interl_affine_derivative_sequence" " using "
     "splits" ":=" term ","
     "degree_ge_one" ":=" term ","
     "pos_lc" ":=" term ","
@@ -201,8 +201,8 @@ syntax (name := rr_prec_affine_derivative_sequence_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
-syntax (name := rr_prec_affine_derivative_sequence_realrooted_named)
-  "rr_prec_affine_derivative_sequence_realrooted" " using "
+syntax (name := rr_strict_interl_affine_derivative_sequence_realrooted_named)
+  "rr_strict_interl_affine_derivative_sequence_realrooted" " using "
     "splits" ":=" term ","
     "degree_ge_one" ":=" term ","
     "pos_lc" ":=" term ","
@@ -210,16 +210,16 @@ syntax (name := rr_prec_affine_derivative_sequence_realrooted_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
-syntax (name := rr_prec_affine_derivative_nonneg_sequence_named)
-  "rr_prec_affine_derivative_nonneg_sequence" " using "
+syntax (name := rr_strict_interl_affine_derivative_nonneg_sequence_named)
+  "rr_strict_interl_affine_derivative_nonneg_sequence" " using "
     "splits" ":=" term ","
     "degree_ge_one" ":=" term ","
     "nonneg" ":=" term ","
     "scalar_gt_degree" ":=" term :
   tactic
 
-syntax (name := rr_prec_affine_derivative_nonneg_sequence_realrooted_named)
-  "rr_prec_affine_derivative_nonneg_sequence_realrooted" " using "
+syntax (name := rr_strict_interl_affine_derivative_nonneg_sequence_realrooted_named)
+  "rr_strict_interl_affine_derivative_nonneg_sequence_realrooted" " using "
     "splits" ":=" term ","
     "degree_ge_one" ":=" term ","
     "nonneg" ":=" term ","
@@ -286,6 +286,184 @@ macro_rules
         degree_ge_one := $hdeg:term,
         scalar_ne_degree := $hc:term) =>
       `(tactic| exact RealRooted.affineDeriv_ne_zero_sequence $hf $hdeg $hc)
+  | `(tactic|
+      rr_strict_interl_affine_derivative_strong using
+        splits := $hsplits:term,
+        degree_ge_two := $hdeg:term,
+        pos_lc := $hpos:term,
+        roots_nonpos := $hroots:term,
+        scalar_gt_degree := $hc:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_affine_derivative $hsplits $hdeg $hpos $hroots $hc)
+  | `(tactic|
+      rr_strict_interl_affine_derivative_degree_one using
+        splits := $hsplits:term,
+        degree_eq_one := $hdeg:term,
+        pos_lc := $hpos:term,
+        roots_nonpos := $hroots:term,
+        scalar_gt_degree := $hc:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_affine_derivative_deg_one
+          $hsplits $hdeg $hpos $hroots $hc)
+  | `(tactic|
+      rr_strict_interl_affine_derivative using
+        splits := $hsplits:term,
+        degree_ge_one := $hdeg:term,
+        pos_lc := $hpos:term,
+        roots_nonpos := $hroots:term,
+        scalar_gt_degree := $hc:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_affine_derivative' $hsplits $hdeg $hpos $hroots $hc)
+  | `(tactic|
+      rr_strict_interl_affine_derivative_nonneg using
+        splits := $hsplits:term,
+        degree_ge_one := $hdeg:term,
+        nonneg := $hnn:term,
+        scalar_gt_degree := $hc:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_affine_derivative_of_nonnegCoeffs
+          $hsplits $hdeg $hnn $hc)
+  | `(tactic|
+      rr_strict_interl_affine_derivative_sequence using
+        splits := $hsplits:term,
+        degree_ge_one := $hdeg:term,
+        pos_lc := $hpos:term,
+        roots_nonpos := $hroots:term,
+        scalar_gt_degree := $hc:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_affine_derivative_sequence
+          $hsplits $hdeg $hpos $hroots $hc)
+  | `(tactic|
+      rr_strict_interl_affine_derivative_sequence_realrooted using
+        splits := $hsplits:term,
+        degree_ge_one := $hdeg:term,
+        pos_lc := $hpos:term,
+        roots_nonpos := $hroots:term,
+        scalar_gt_degree := $hc:term) =>
+      `(tactic|
+        exact RealRooted.isRealRooted_of_strictInterl_affine_derivative_sequence
+          $hsplits $hdeg $hpos $hroots $hc)
+  | `(tactic|
+      rr_strict_interl_affine_derivative_nonneg_sequence using
+        splits := $hsplits:term,
+        degree_ge_one := $hdeg:term,
+        nonneg := $hnn:term,
+        scalar_gt_degree := $hc:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_affine_derivative_nonneg_sequence
+          $hsplits $hdeg $hnn $hc)
+  | `(tactic|
+      rr_strict_interl_affine_derivative_nonneg_sequence_realrooted using
+        splits := $hsplits:term,
+        degree_ge_one := $hdeg:term,
+        nonneg := $hnn:term,
+        scalar_gt_degree := $hc:term) =>
+      `(tactic|
+        exact RealRooted.isRealRooted_of_strictInterl_affine_derivative_nonneg_sequence
+          $hsplits $hdeg $hnn $hc)
+  | `(tactic|
+      rr_affine_deriv_eval_pos_iff using
+        root := $hr:term,
+        root_nonpos := $hrnp:term) =>
+      `(tactic| exact RealRooted.eval_affineDeriv_pos_iff $hr _ $hrnp)
+  | `(tactic|
+      rr_affine_deriv_eval_neg_iff using
+        root := $hr:term,
+        root_nonpos := $hrnp:term) =>
+      `(tactic| exact RealRooted.eval_affineDeriv_neg_iff $hr _ $hrnp)
+
+end Tactic
+end RealRooted
+namespace RealRooted
+@[deprecated strictInterl_affine_derivative_sequence (since := "2026-09-26")]
+alias prec_affine_derivative_sequence := strictInterl_affine_derivative_sequence
+
+@[deprecated isRealRooted_of_strictInterl_affine_derivative_sequence (since := "2026-09-26")]
+alias isRealRooted_of_prec_affine_derivative_sequence := isRealRooted_of_strictInterl_affine_derivative_sequence
+
+@[deprecated strictInterl_affine_derivative_nonneg_sequence (since := "2026-09-26")]
+alias prec_affine_derivative_nonneg_sequence := strictInterl_affine_derivative_nonneg_sequence
+
+@[deprecated isRealRooted_of_strictInterl_affine_derivative_nonneg_sequence (since := "2026-09-26")]
+alias isRealRooted_of_prec_affine_derivative_nonneg_sequence := isRealRooted_of_strictInterl_affine_derivative_nonneg_sequence
+
+end RealRooted
+
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_prec_affine_derivative_strong_named_legacy)
+  "rr_prec_affine_derivative_strong" " using "
+    "splits" ":=" term ","
+    "degree_ge_two" ":=" term ","
+    "pos_lc" ":=" term ","
+    "roots_nonpos" ":=" term ","
+    "scalar_gt_degree" ":=" term :
+  tactic
+
+syntax (name := rr_prec_affine_derivative_degree_one_named_legacy)
+  "rr_prec_affine_derivative_degree_one" " using "
+    "splits" ":=" term ","
+    "degree_eq_one" ":=" term ","
+    "pos_lc" ":=" term ","
+    "roots_nonpos" ":=" term ","
+    "scalar_gt_degree" ":=" term :
+  tactic
+
+syntax (name := rr_prec_affine_derivative_named_legacy)
+  "rr_prec_affine_derivative" " using "
+    "splits" ":=" term ","
+    "degree_ge_one" ":=" term ","
+    "pos_lc" ":=" term ","
+    "roots_nonpos" ":=" term ","
+    "scalar_gt_degree" ":=" term :
+  tactic
+
+syntax (name := rr_prec_affine_derivative_nonneg_named_legacy)
+  "rr_prec_affine_derivative_nonneg" " using "
+    "splits" ":=" term ","
+    "degree_ge_one" ":=" term ","
+    "nonneg" ":=" term ","
+    "scalar_gt_degree" ":=" term :
+  tactic
+
+syntax (name := rr_prec_affine_derivative_sequence_named_legacy)
+  "rr_prec_affine_derivative_sequence" " using "
+    "splits" ":=" term ","
+    "degree_ge_one" ":=" term ","
+    "pos_lc" ":=" term ","
+    "roots_nonpos" ":=" term ","
+    "scalar_gt_degree" ":=" term :
+  tactic
+
+syntax (name := rr_prec_affine_derivative_sequence_realrooted_named_legacy)
+  "rr_prec_affine_derivative_sequence_realrooted" " using "
+    "splits" ":=" term ","
+    "degree_ge_one" ":=" term ","
+    "pos_lc" ":=" term ","
+    "roots_nonpos" ":=" term ","
+    "scalar_gt_degree" ":=" term :
+  tactic
+
+syntax (name := rr_prec_affine_derivative_nonneg_sequence_named_legacy)
+  "rr_prec_affine_derivative_nonneg_sequence" " using "
+    "splits" ":=" term ","
+    "degree_ge_one" ":=" term ","
+    "nonneg" ":=" term ","
+    "scalar_gt_degree" ":=" term :
+  tactic
+
+syntax (name := rr_prec_affine_derivative_nonneg_sequence_realrooted_named_legacy)
+  "rr_prec_affine_derivative_nonneg_sequence_realrooted" " using "
+    "splits" ":=" term ","
+    "degree_ge_one" ":=" term ","
+    "nonneg" ":=" term ","
+    "scalar_gt_degree" ":=" term :
+  tactic
+
+macro_rules
   | `(tactic|
       rr_prec_affine_derivative_strong using
         splits := $hsplits:term,
@@ -361,16 +539,5 @@ macro_rules
       `(tactic|
         exact RealRooted.isRealRooted_of_prec_affine_derivative_nonneg_sequence
           $hsplits $hdeg $hnn $hc)
-  | `(tactic|
-      rr_affine_deriv_eval_pos_iff using
-        root := $hr:term,
-        root_nonpos := $hrnp:term) =>
-      `(tactic| exact RealRooted.eval_affineDeriv_pos_iff $hr _ $hrnp)
-  | `(tactic|
-      rr_affine_deriv_eval_neg_iff using
-        root := $hr:term,
-        root_nonpos := $hrnp:term) =>
-      `(tactic| exact RealRooted.eval_affineDeriv_neg_iff $hr _ $hrnp)
-
 end Tactic
 end RealRooted

@@ -61,7 +61,7 @@ example {P : Nat → ℝ[X]}
             ((X - C (1 : ℝ)) * P (n + 1) + X * (P (n + 1)).derivative) +
           ((X - C (1 : ℝ)) * P (n + 1) +
             X * (P (n + 1)).derivative).derivative))
-    (houter_prec : ∀ n : Nat,
+    (houter_strictInterl : ∀ n : Nat,
       StrictInterl (P (n + 1))
         (C (1 : ℝ) *
             ((X - C (1 : ℝ)) * P (n + 1) + X * (P (n + 1)).derivative) +
@@ -80,7 +80,7 @@ example {P : Nat → ℝ[X]}
     base_one := hbase_one,
     pos_lc := hpos,
     outer_pos_lc := houter_pos,
-    outer_prec := houter_prec,
+    outer_strictInterl := houter_strictInterl,
     recurrence := hrec
 
 -- `A105278`: Lah-type row
@@ -130,7 +130,7 @@ example {P : Nat → ℝ[X]}
             ((X + C (1 : ℝ)) * P (n + 1) + X * (P (n + 1)).derivative) +
           ((X + C (1 : ℝ)) * P (n + 1) +
             X * (P (n + 1)).derivative).derivative))
-    (houter_prec : ∀ n : Nat,
+    (houter_strictInterl : ∀ n : Nat,
       StrictInterl (P (n + 1))
         (C (1 : ℝ) *
             ((X + C (1 : ℝ)) * P (n + 1) + X * (P (n + 1)).derivative) +
@@ -149,7 +149,7 @@ example {P : Nat → ℝ[X]}
     base_one := hbase_one,
     pos_lc := hpos,
     outer_pos_lc := houter_pos,
-    outer_prec := houter_prec,
+    outer_strictInterl := houter_strictInterl,
     recurrence := hrec
 
 -- `A048854`: generalized Lah `L[4,1]`

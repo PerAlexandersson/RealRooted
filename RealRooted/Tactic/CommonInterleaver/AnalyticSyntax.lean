@@ -167,14 +167,14 @@ syntax (name := rr_succDegree_pair_common_interleaver_endpointSignLowerCountEq_n
     "count_eq" ":=" term :
   tactic
 
-syntax (name := rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec_named)
-  "rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec" " using "
+syntax (name := rr_succDegree_rootCountLeadRightZero_divXStrictInterl_of_strict_interl_named)
+  "rr_succDegree_rootCountLeadRightZero_divXStrictInterl_of_strict_interl" " using "
     "orientation" ":=" term :
   tactic
 
-syntax (name := rr_succDegree_rootCountLeadRightZero_of_divXPrec_named)
-  "rr_succDegree_rootCountLeadRightZero_of_divXPrec" " using "
-    "divX_prec" ":=" term :
+syntax (name := rr_succDegree_rootCountLeadRightZero_of_divXStrictInterl_named)
+  "rr_succDegree_rootCountLeadRightZero_of_divXStrictInterl" " using "
+    "divX_strictInterl" ":=" term :
   tactic
 
 syntax (name := rr_succDegree_rootCountLead_of_bothNonzero_and_rightZero_named)
@@ -183,14 +183,14 @@ syntax (name := rr_succDegree_rootCountLead_of_bothNonzero_and_rightZero_named)
     "right_zero" ":=" term :
   tactic
 
-syntax (name := rr_succDegree_rootCountLead_of_bothNonzero_and_divXPrec_named)
-  "rr_succDegree_rootCountLead_of_bothNonzero_and_divXPrec" " using "
+syntax (name := rr_succDegree_rootCountLead_of_bothNonzero_and_divXStrictInterl_named)
+  "rr_succDegree_rootCountLead_of_bothNonzero_and_divXStrictInterl" " using "
     "both_nonzero" ":=" term ","
-    "divX_prec" ":=" term :
+    "divX_strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_succDegree_rootCountResidual_of_prec_named)
-  "rr_succDegree_rootCountResidual_of_prec" " using "
+syntax (name := rr_succDegree_rootCountResidual_of_strict_interl_named)
+  "rr_succDegree_rootCountResidual_of_strict_interl" " using "
     "orientation" ":=" term :
   tactic
 
@@ -219,19 +219,19 @@ syntax (name := rr_succDegree_pair_common_interleaver_residual_and_lead_named)
   tactic
 
 syntax
-  (name := rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXPrec_named)
-  "rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXPrec" " using "
+  (name := rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXStrictInterl_named)
+  "rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXStrictInterl" " using "
     "both_nonzero" ":=" term ","
-    "divX_prec" ":=" term ","
+    "divX_strictInterl" ":=" term ","
     "residual" ":=" term :
   tactic
 
 syntax
-  (name := rr_succDegree_pair_common_interleaver_residualPrec_bothNonzero_divXPrec_named)
-  "rr_succDegree_pair_common_interleaver_residualPrec_bothNonzero_divXPrec" " using "
-    "residual_prec" ":=" term ","
+  (name := rr_succDegree_pair_common_interleaver_residualStrictInterl_bothNonzero_divXStrictInterl_named)
+  "rr_succDegree_pair_common_interleaver_residualStrictInterl_bothNonzero_divXStrictInterl" " using "
+    "residual_strictInterl" ":=" term ","
     "both_nonzero" ":=" term ","
-    "divX_prec" ":=" term :
+    "divX_strictInterl" ":=" term :
   tactic
 
 syntax (name := rr_compatible_pair_common_interleaver_degree_split_nonnegShift_named)
@@ -292,6 +292,23 @@ syntax (name := rr_chudnovskySeymour_compatible_pair_common_left_interleaver_nam
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "compatible" ":=" term :
+  tactic
+
+end Tactic
+end RealRooted
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec_named_legacy)
+  "rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec" " using "
+    "orientation" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_rootCountResidual_of_prec_named_legacy)
+  "rr_succDegree_rootCountResidual_of_prec" " using "
+    "orientation" ":=" term :
   tactic
 
 end Tactic

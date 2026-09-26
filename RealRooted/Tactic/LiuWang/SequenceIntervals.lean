@@ -784,7 +784,7 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
+        exact RealRooted.strictInterl_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
           $hbase $hpos $hroot_lower $hroot_upper $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_one_add_X_one_add_two_X_lag_sequence_realrooted_interval using
@@ -810,7 +810,7 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
+        exact RealRooted.strictInterl_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
           $hbase $hpos $hc $hroot_lower $hroot_upper $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval_auto using
@@ -823,7 +823,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
+          (RealRooted.strictInterl_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
             $hbase $hpos ?_ $hroot_lower $hroot_upper $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_realrooted_interval using
@@ -866,7 +866,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
+          RealRooted.strictInterl_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
             $hbase $hpos $hnonneg $hc $hb $hba $hroot_lower $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_neg_C_mul_affine_inner_lag_sequence_realrooted_nonneg using
@@ -895,7 +895,7 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+        exact RealRooted.strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
           $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_neg_C_mul_one_add_X_lag_sequence_nonneg_auto using
@@ -908,7 +908,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+          (RealRooted.strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
             $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_neg_C_mul_one_add_X_lag_sequence_realrooted_nonneg using
@@ -976,7 +976,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
+          RealRooted.strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hc $hroot_lower $hden $hcoeff
             $hraw $hdeg_succ $hno)
   | `(tactic|
@@ -1015,7 +1015,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
+          (RealRooted.strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg ?_ $hroot_lower $hden $hcoeff
             $hraw $hdeg_succ $hno))
   | `(tactic|
@@ -1111,7 +1111,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
+          RealRooted.strictInterl_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
             $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_neg_C_mul_one_add_two_X_lag_sequence_nonneg_auto using
@@ -1124,7 +1124,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
+          (RealRooted.strictInterl_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
             $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_neg_C_mul_one_add_two_X_lag_sequence_realrooted_nonneg using
@@ -1240,7 +1240,7 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
+        exact RealRooted.strictInterl_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
           $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_C_mul_X_sq_sub_one_lag_sequence_nonneg_auto using
@@ -1253,7 +1253,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
+          (RealRooted.strictInterl_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
             $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_C_mul_X_sq_sub_one_lag_sequence_realrooted_nonneg using

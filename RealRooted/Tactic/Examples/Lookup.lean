@@ -92,12 +92,12 @@ example : RRLookupNoCertificateRel := by rr_lookup [rr_root_bound]
 
 example : ∀ n : ℕ, RRLookupSmokeRel (n + 3) := by rr_lookup [rr_matrix_rect]
 
-@[rr_base_prec] theorem rr_lookup_full_forall_smoke :
+@[rr_base_strict_interl] theorem rr_lookup_full_forall_smoke :
     ∀ n : ℕ, RRLookupSmokeRel n := by
   intro n
   rfl
 
-example : ∀ n : ℕ, RRLookupSmokeRel n := by rr_lookup [rr_base_prec]
+example : ∀ n : ℕ, RRLookupSmokeRel n := by rr_lookup [rr_base_strict_interl]
 
 @[rr_degree] theorem rr_lookup_determined_smoke : 37 = 37 := by rfl
 

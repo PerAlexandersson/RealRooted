@@ -222,14 +222,14 @@ syntax (name := rr_interlaces_auto_degree)
 
 syntax (name := rr_interlaces_auto_named) "rr_interlaces" : tactic
 
-syntax (name := rr_prec0) "rr_prec0" " using " term : tactic
+syntax (name := rr_interl) "rr_interl" " using " term : tactic
 
-syntax (name := rr_prec_of_interlaces)
-  "rr_prec" " using " term :
+syntax (name := rr_strict_interl_of_interlaces)
+  "rr_strict_interl" " using " term :
   tactic
 
-syntax (name := rr_prec_of_prec0)
-  "rr_prec" " using " term ", " term ", " term : tactic
+syntax (name := rr_strict_interl_of_interl)
+  "rr_strict_interl" " using " term ", " term ", " term : tactic
 
 syntax (name := rr_gsturm_cons)
   "rr_gsturm_cons" " using " term ", " term : tactic
@@ -239,14 +239,14 @@ syntax (name := rr_sturm_cons)
 
 syntax (name := rr_sturm_base) "rr_sturm_base" : tactic
 
-syntax (name := rr_prec_sequence)
-  "rr_prec_sequence" " using "
+syntax (name := rr_strict_interl_sequence)
+  "rr_strict_interl_sequence" " using "
     "base" ":=" term ","
     "step" ":=" term :
   tactic
 
-syntax (name := rr_prec_sequence_realrooted)
-  "rr_prec_sequence_realrooted" " using "
+syntax (name := rr_strict_interl_sequence_realrooted)
+  "rr_strict_interl_sequence_realrooted" " using "
     "base" ":=" term ","
     "step" ":=" term :
   tactic
@@ -257,43 +257,43 @@ syntax (name := rr_finish_sequence_base_step)
     "step" ":=" term :
   tactic
 
-syntax (name := rr_finish_sequence_prec)
+syntax (name := rr_finish_sequence_strict_interl)
   "rr_finish_sequence" " using "
-    "prec" ":=" term :
+    "strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_finish_sequence_prec_degree)
+syntax (name := rr_finish_sequence_strict_interl_degree)
   "rr_finish_sequence" " using "
-    "prec" ":=" term ","
+    "strictInterl" ":=" term ","
     "degree" ":=" term :
   tactic
 
-syntax (name := rr_prec_sequence_branches)
-  "rr_prec_sequence_branches" " using "
+syntax (name := rr_strict_interl_sequence_branches)
+  "rr_strict_interl_sequence_branches" " using "
     "base" ":=" term ","
     "degree" ":=" term ","
     "same" ":=" term ","
     "successor" ":=" term :
   tactic
 
-syntax (name := rr_prec_sequence_branches_degree_branch)
-  "rr_prec_sequence_branches" " using "
+syntax (name := rr_strict_interl_sequence_branches_degree_branch)
+  "rr_strict_interl_sequence_branches" " using "
     "base" ":=" term ","
     "degree_branch" ":=" term ","
     "same" ":=" term ","
     "successor" ":=" term :
   tactic
 
-syntax (name := rr_prec_sequence_branches_realrooted)
-  "rr_prec_sequence_branches_realrooted" " using "
+syntax (name := rr_strict_interl_sequence_branches_realrooted)
+  "rr_strict_interl_sequence_branches_realrooted" " using "
     "base" ":=" term ","
     "degree" ":=" term ","
     "same" ":=" term ","
     "successor" ":=" term :
   tactic
 
-syntax (name := rr_prec_sequence_branches_realrooted_degree_branch)
-  "rr_prec_sequence_branches_realrooted" " using "
+syntax (name := rr_strict_interl_sequence_branches_realrooted_degree_branch)
+  "rr_strict_interl_sequence_branches_realrooted" " using "
     "base" ":=" term ","
     "degree_branch" ":=" term ","
     "same" ":=" term ","
@@ -321,7 +321,7 @@ syntax (name := rr_finish_using) "rr_finish" " using " term : tactic
 syntax (name := rr_finish_using_interlaces_degree)
   "rr_finish" " using " term ", " term : tactic
 
-syntax (name := rr_finish_using_prec0)
+syntax (name := rr_finish_using_interl)
   "rr_finish" " using " term ", " term ", " term : tactic
 
 syntax (name := rr_finish_using_sequence_branches)
@@ -357,31 +357,31 @@ private def closeNamedDirect? (tacticName : Name) (cName : Name) (arg : Expr)
         return true
   return false
 
-private def closeNamedDirectOrPrec (tacticName : Name) (target : Expr)
-    (directSuffix : String) (closePrec : Ident → TacticM Unit) : TacticM Unit := do
+private def closeNamedDirectOrStrictInterl (tacticName : Name) (target : Expr)
+    (directSuffix : String) (closeStrictInterl : Ident → TacticM Unit) : TacticM Unit := do
   let some (cName, arg) ← findNamedPolynomialConstantApp? target
     | throwError "{tacticName} failed: could not find named polynomial in target: {target}"
   if ← closeNamedDirect? tacticName cName arg directSuffix then
     return
-  for candidate in namedSuffixCandidates "_prec" do
+  for candidate in namedSuffixCandidates "_strictInterl" do
     if let some proof ← mkNamedTheoremApp? cName candidate arg then
-      let hprec ← assertProofAs `hprec proof
+      let hstrictInterl ← assertProofAs `hstrictInterl proof
       withMainContext do
-        closePrec hprec
+        closeStrictInterl hstrictInterl
       return
   throwError "{tacticName} failed: no matching named final wrapper closes target: {target}"
 
 elab "rr_named_nonzero" : tactic => do
   withMainContext do
     let target ← getMainTarget
-    closeNamedDirectOrPrec `rr_named_nonzero target "_ne_zero" fun hprec => do
-      evalTactic (← `(tactic| rr_nonzero using $hprec:ident))
+    closeNamedDirectOrStrictInterl `rr_named_nonzero target "_ne_zero" fun hstrictInterl => do
+      evalTactic (← `(tactic| rr_nonzero using $hstrictInterl:ident))
 
 elab "rr_named_splits" : tactic => do
   withMainContext do
     let target ← getMainTarget
-    closeNamedDirectOrPrec `rr_named_splits target "_splits" fun hprec => do
-      evalTactic (← `(tactic| rr_splits using $hprec:ident))
+    closeNamedDirectOrStrictInterl `rr_named_splits target "_splits" fun hstrictInterl => do
+      evalTactic (← `(tactic| rr_splits using $hstrictInterl:ident))
 
 elab "rr_named_realrooted" : tactic => do
   withMainContext do
@@ -964,20 +964,315 @@ macro_rules
             | rr_named_realrooted
             | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
             | simp_all [RealRooted.StrictInterl, RealRooted.Interlaces])
-  | `(tactic| rr_interlaces using $hprec:term, $hdeg:term) =>
+  | `(tactic| rr_interlaces using $hstrictInterl:term, $hdeg:term) =>
       `(tactic|
         rr_first_exact
-          RealRooted.StrictInterl.toInterlaces $hprec $hdeg,
-          RealRooted.StrictInterl.toInterlaces $hprec ($hdeg).symm)
-  | `(tactic| rr_interlaces using $hprec:term) =>
+          RealRooted.StrictInterl.toInterlaces $hstrictInterl $hdeg,
+          RealRooted.StrictInterl.toInterlaces $hstrictInterl ($hdeg).symm)
+  | `(tactic| rr_interlaces using $hstrictInterl:term) =>
       `(tactic|
-        exact RealRooted.StrictInterl.toInterlaces $hprec (by rr_close_side))
+        exact RealRooted.StrictInterl.toInterlaces $hstrictInterl (by rr_close_side))
   | `(tactic| rr_interlaces) =>
       `(tactic|
         with_reducible_and_instances
           first
             | rr_named_interlaces
             | exact rr_lookup_interlaces_term)
+  | `(tactic| rr_interl using $hstrictInterl:term) =>
+      `(tactic|
+        rr_first_exact
+          $hstrictInterl,
+          RealRooted.StrictInterl.toInterl $hstrictInterl,
+          RealRooted.StrictInterl.toInterl (RealRooted.Interlaces.toStrictInterl $hstrictInterl))
+  | `(tactic| rr_strict_interl using $hinter:term) =>
+      `(tactic|
+        rr_first_exact
+          $hinter,
+          RealRooted.Interlaces.toStrictInterl $hinter,
+          (fun n => RealRooted.Interlaces.toStrictInterl ($hinter n)),
+          (RealRooted.Interlaces.toStrictInterl ($hinter _)))
+  | `(tactic| rr_strict_interl using $hinterl:term, $hf:term, $hg:term) =>
+      `(tactic|
+        exact RealRooted.Interl.toStrictInterl_of_ne $hinterl $hf $hg)
+  | `(tactic| rr_gsturm_cons using $hstrictInterl:term, $htail:term) =>
+      `(tactic|
+        simpa [RealRooted.IsGeneralizedSturmSeq] using And.intro $hstrictInterl $htail)
+  | `(tactic| rr_sturm_cons using $hinter:term, $htail:term) =>
+      `(tactic|
+        simpa [RealRooted.IsSturmSeq] using And.intro $hinter $htail)
+  | `(tactic| rr_sturm_base) =>
+      `(tactic|
+        simp [RealRooted.IsSturmSeq, RealRooted.IsGeneralizedSturmSeq])
+  | `(tactic|
+      rr_strict_interl_sequence using
+        base := $hbase:term,
+        step := $hstep:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_sequence_of_base_and_step $hbase $hstep)
+  | `(tactic|
+      rr_strict_interl_sequence_realrooted using
+        base := $hbase:term,
+        step := $hstep:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_strictInterl_sequence $hbase $hstep))
+  | `(tactic|
+      rr_finish_sequence using
+        base := $hbase:term,
+        step := $hstep:term) =>
+      `(tactic|
+        rr_strict_interl_sequence_realrooted using
+          base := $hbase,
+          step := $hstep)
+  | `(tactic|
+      rr_finish_sequence using
+        strictInterl := $hstrictInterl:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_strictInterl_chain_from_step $hstrictInterl))
+  | `(tactic|
+      rr_finish_sequence using
+        strictInterl := $hstrictInterl:term,
+        degree := $hdegree:term) =>
+      `(tactic|
+        with_reducible_and_instances
+          first
+            | exact RealRooted.interlaces_of_strictInterl_chain $hstrictInterl $hdegree
+            | exact RealRooted.interlaces_of_strictInterl_chain $hstrictInterl (fun n => ($hdegree n).symm)
+            | exact (RealRooted.interlaces_of_strictInterl_chain $hstrictInterl $hdegree _)
+            | exact (RealRooted.interlaces_of_strictInterl_chain
+                $hstrictInterl (fun n => ($hdegree n).symm) _)
+            | rr_exact_realrooted_sequence_or_projection
+                (RealRooted.isRealRooted_of_strictInterl_chain_from_step $hstrictInterl))
+  | `(tactic|
+      rr_strict_interl_sequence_branches using
+        base := $hbase:term,
+        degree := $hbranch:term,
+        same := $hsame:term,
+        successor := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_sequence_of_base_and_degree_branches
+          $hbase $hbranch $hsame $hsucc)
+  | `(tactic|
+      rr_strict_interl_sequence_branches using
+        base := $hbase:term,
+        degree_branch := $hbranch:term,
+        same := $hsame:term,
+        successor := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_sequence_of_base_and_degree_branches
+          $hbase $hbranch $hsame $hsucc)
+  | `(tactic|
+      rr_strict_interl_sequence_branches_realrooted using
+        base := $hbase:term,
+        degree := $hbranch:term,
+        same := $hsame:term,
+        successor := $hsucc:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_strictInterl_sequence_degree_branches
+            $hbase $hbranch $hsame $hsucc))
+  | `(tactic|
+      rr_strict_interl_sequence_branches_realrooted using
+        base := $hbase:term,
+        degree_branch := $hbranch:term,
+        same := $hsame:term,
+        successor := $hsucc:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_strictInterl_sequence_degree_branches
+            $hbase $hbranch $hsame $hsucc))
+  | `(tactic|
+      rr_finish_sequence_branches using
+        base := $hbase:term,
+        degree := $hbranch:term,
+        same := $hsame:term,
+        successor := $hsucc:term) =>
+      `(tactic|
+        rr_strict_interl_sequence_branches_realrooted using
+          base := $hbase,
+          degree := $hbranch,
+          same := $hsame,
+          successor := $hsucc)
+  | `(tactic|
+      rr_finish_sequence_branches using
+        base := $hbase:term,
+        degree_branch := $hbranch:term,
+        same := $hsame:term,
+        successor := $hsucc:term) =>
+      `(tactic|
+        rr_strict_interl_sequence_branches_realrooted using
+          base := $hbase,
+          degree_branch := $hbranch,
+          same := $hsame,
+          successor := $hsucc)
+  | `(tactic| rr_finish using $h:term) =>
+      `(tactic|
+        with_reducible_and_instances
+          first
+            | exact $h
+            | exact RealRooted.derivative_interlaces $h (by rr_close_side)
+            | exact (RealRooted.derivative_interlaces $h (by rr_close_side)).toStrictInterl
+            | rr_exact_realrooted_sequence_or_projection
+                (RealRooted.left_isRealRooted_of_strictInterl_sequence $h)
+            | rr_exact_realrooted_sequence_or_projection
+                (RealRooted.right_isRealRooted_of_strictInterl_sequence $h)
+            | rr_exact_realrooted_sequence_or_projection
+                (fun n => RealRooted.left_isRealRooted_of_interlaces ($h n))
+            | rr_exact_realrooted_sequence_or_projection $h
+            | rr_exact_realrooted_pair_sequence_or_projection $h
+            | rr_exact_realrooted_or_projection $h
+            | rr_zero_or_splits using $h
+            | exact RealRooted.natDegree_succ_of_interlaces $h
+            | exact (RealRooted.natDegree_succ_of_interlaces $h).symm
+            | exact RealRooted.StrictInterl.toInterlaces $h (by rr_close_side)
+            | exact RealRooted.Interlaces.toStrictInterl $h
+            | exact fun n => RealRooted.Interlaces.toStrictInterl ($h n)
+            | exact RealRooted.Interlaces.toStrictInterl ($h _)
+            | exact RealRooted.StrictInterl.toInterl $h
+            | exact RealRooted.StrictInterl.toInterl (RealRooted.Interlaces.toStrictInterl $h)
+            | rr_close_side)
+  | `(tactic| rr_finish using $hstrictInterl:term, $hdeg:term) =>
+      `(tactic|
+        first
+          | exact RealRooted.interlaces_of_strictInterl_chain $hstrictInterl $hdeg
+          | exact RealRooted.interlaces_of_strictInterl_chain $hstrictInterl (fun n => ($hdeg n).symm)
+          | exact (RealRooted.interlaces_of_strictInterl_chain $hstrictInterl $hdeg _)
+          | exact (RealRooted.interlaces_of_strictInterl_chain
+              $hstrictInterl (fun n => ($hdeg n).symm) _)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_strictInterl_chain_from_step $hstrictInterl)
+          | exact RealRooted.StrictInterl.toInterlaces $hstrictInterl $hdeg
+          | exact RealRooted.StrictInterl.toInterlaces $hstrictInterl ($hdeg).symm
+          | exact RealRooted.strictInterl_sequence_of_base_and_step $hstrictInterl $hdeg
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_strictInterl_sequence $hstrictInterl $hdeg)
+          | simpa [RealRooted.IsGeneralizedSturmSeq] using
+              And.intro $hstrictInterl $hdeg
+          | simpa [RealRooted.IsSturmSeq] using And.intro $hstrictInterl $hdeg)
+  | `(tactic| rr_finish using $hinterl:term, $hf:term, $hg:term) =>
+      `(tactic| exact RealRooted.Interl.toStrictInterl_of_ne $hinterl $hf $hg)
+  | `(tactic| rr_finish using $hbase:term, $hbranch:term, $hsame:term, $hsucc:term) =>
+      `(tactic|
+        with_reducible_and_instances
+          first
+            | exact RealRooted.strictInterl_sequence_of_base_and_degree_branches
+                $hbase $hbranch $hsame $hsucc
+            | rr_exact_realrooted_sequence_or_projection
+                (RealRooted.isRealRooted_of_strictInterl_sequence_degree_branches
+                  $hbase $hbranch $hsame $hsucc))
+  | `(tactic| rr_finish) =>
+      `(tactic|
+        first
+          | rr_lookup
+          | assumption
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_strictInterl_chain_from_step rr_lookup_term)
+          | exact RealRooted.interlaces_of_strictInterl_chain rr_lookup_term rr_lookup_term
+          | exact RealRooted.interlaces_of_strictInterl_chain
+              rr_lookup_term (fun n => (rr_lookup_term n).symm)
+          | rr_exact_realrooted_sequence_or_projection rr_lookup_term
+          | rr_exact_realrooted_pair_sequence_or_projection rr_lookup_term
+          | rr_exact_realrooted_or_projection rr_lookup_term
+          | exact RealRooted.natDegree_succ_of_interlaces rr_lookup_term
+          | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
+          | exact rr_lookup_interlaces_term
+          | exact RealRooted.derivative_interlaces (by rr_splits) (by rr_close_side)
+          | exact (RealRooted.derivative_interlaces (by rr_splits)
+              (by rr_close_side)).toStrictInterl
+          | exact RealRooted.Interlaces.toStrictInterl rr_lookup_term
+          | exact RealRooted.StrictInterl.toInterl rr_lookup_term
+          | exact RealRooted.ne_zero_of_natDegree_eq_one (by rr_degree_eq_one)
+          | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
+          | exact RealRooted.StrictInterl.toInterl
+              (RealRooted.Interlaces.toStrictInterl rr_lookup_term)
+          | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
+          | rr_named_interlaces
+          | rr_named_realrooted
+          | rr_named_nonzero
+          | rr_named_splits
+          | rr_zero_or_splits
+          | rr_sign
+          | simp_all [
+              RealRooted.StrictInterl,
+              RealRooted.Interl,
+              RealRooted.Interlaces,
+              RealRooted.IsSturmSeq,
+              RealRooted.IsGeneralizedSturmSeq]
+          | rr_close_side)
+
+end Tactic
+end RealRooted
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_prec0_legacy) "rr_prec0" " using " term : tactic
+
+syntax (name := rr_prec_of_interlaces_legacy)
+  "rr_prec" " using " term :
+  tactic
+
+syntax (name := rr_prec_of_prec0_legacy)
+  "rr_prec" " using " term ", " term ", " term : tactic
+
+syntax (name := rr_prec_sequence_legacy)
+  "rr_prec_sequence" " using "
+    "base" ":=" term ","
+    "step" ":=" term :
+  tactic
+
+syntax (name := rr_prec_sequence_realrooted_legacy)
+  "rr_prec_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "step" ":=" term :
+  tactic
+
+syntax (name := rr_finish_sequence_prec_legacy)
+  "rr_finish_sequence" " using "
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_finish_sequence_prec_degree_legacy)
+  "rr_finish_sequence" " using "
+    "prec" ":=" term ","
+    "degree" ":=" term :
+  tactic
+
+syntax (name := rr_prec_sequence_branches_legacy)
+  "rr_prec_sequence_branches" " using "
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "same" ":=" term ","
+    "successor" ":=" term :
+  tactic
+
+syntax (name := rr_prec_sequence_branches_degree_branch_legacy)
+  "rr_prec_sequence_branches" " using "
+    "base" ":=" term ","
+    "degree_branch" ":=" term ","
+    "same" ":=" term ","
+    "successor" ":=" term :
+  tactic
+
+syntax (name := rr_prec_sequence_branches_realrooted_legacy)
+  "rr_prec_sequence_branches_realrooted" " using "
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "same" ":=" term ","
+    "successor" ":=" term :
+  tactic
+
+syntax (name := rr_prec_sequence_branches_realrooted_degree_branch_legacy)
+  "rr_prec_sequence_branches_realrooted" " using "
+    "base" ":=" term ","
+    "degree_branch" ":=" term ","
+    "same" ":=" term ","
+    "successor" ":=" term :
+  tactic
+
+macro_rules
   | `(tactic| rr_prec0 using $hprec:term) =>
       `(tactic|
         rr_first_exact
@@ -994,15 +1289,6 @@ macro_rules
   | `(tactic| rr_prec using $hprec0:term, $hf:term, $hg:term) =>
       `(tactic|
         exact RealRooted.Interl.toStrictInterl_of_ne $hprec0 $hf $hg)
-  | `(tactic| rr_gsturm_cons using $hprec:term, $htail:term) =>
-      `(tactic|
-        simpa [RealRooted.IsGeneralizedSturmSeq] using And.intro $hprec $htail)
-  | `(tactic| rr_sturm_cons using $hinter:term, $htail:term) =>
-      `(tactic|
-        simpa [RealRooted.IsSturmSeq] using And.intro $hinter $htail)
-  | `(tactic| rr_sturm_base) =>
-      `(tactic|
-        simp [RealRooted.IsSturmSeq, RealRooted.IsGeneralizedSturmSeq])
   | `(tactic|
       rr_prec_sequence using
         base := $hbase:term,
@@ -1016,14 +1302,6 @@ macro_rules
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_strictInterl_sequence $hbase $hstep))
-  | `(tactic|
-      rr_finish_sequence using
-        base := $hbase:term,
-        step := $hstep:term) =>
-      `(tactic|
-        rr_prec_sequence_realrooted using
-          base := $hbase,
-          step := $hstep)
   | `(tactic|
       rr_finish_sequence using
         prec := $hprec:term) =>
@@ -1082,124 +1360,5 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_strictInterl_sequence_degree_branches
             $hbase $hbranch $hsame $hsucc))
-  | `(tactic|
-      rr_finish_sequence_branches using
-        base := $hbase:term,
-        degree := $hbranch:term,
-        same := $hsame:term,
-        successor := $hsucc:term) =>
-      `(tactic|
-        rr_prec_sequence_branches_realrooted using
-          base := $hbase,
-          degree := $hbranch,
-          same := $hsame,
-          successor := $hsucc)
-  | `(tactic|
-      rr_finish_sequence_branches using
-        base := $hbase:term,
-        degree_branch := $hbranch:term,
-        same := $hsame:term,
-        successor := $hsucc:term) =>
-      `(tactic|
-        rr_prec_sequence_branches_realrooted using
-          base := $hbase,
-          degree_branch := $hbranch,
-          same := $hsame,
-          successor := $hsucc)
-  | `(tactic| rr_finish using $h:term) =>
-      `(tactic|
-        with_reducible_and_instances
-          first
-            | exact $h
-            | exact RealRooted.derivative_interlaces $h (by rr_close_side)
-            | exact (RealRooted.derivative_interlaces $h (by rr_close_side)).toStrictInterl
-            | rr_exact_realrooted_sequence_or_projection
-                (RealRooted.left_isRealRooted_of_strictInterl_sequence $h)
-            | rr_exact_realrooted_sequence_or_projection
-                (RealRooted.right_isRealRooted_of_strictInterl_sequence $h)
-            | rr_exact_realrooted_sequence_or_projection
-                (fun n => RealRooted.left_isRealRooted_of_interlaces ($h n))
-            | rr_exact_realrooted_sequence_or_projection $h
-            | rr_exact_realrooted_pair_sequence_or_projection $h
-            | rr_exact_realrooted_or_projection $h
-            | rr_zero_or_splits using $h
-            | exact RealRooted.natDegree_succ_of_interlaces $h
-            | exact (RealRooted.natDegree_succ_of_interlaces $h).symm
-            | exact RealRooted.StrictInterl.toInterlaces $h (by rr_close_side)
-            | exact RealRooted.Interlaces.toStrictInterl $h
-            | exact fun n => RealRooted.Interlaces.toStrictInterl ($h n)
-            | exact RealRooted.Interlaces.toStrictInterl ($h _)
-            | exact RealRooted.StrictInterl.toInterl $h
-            | exact RealRooted.StrictInterl.toInterl (RealRooted.Interlaces.toStrictInterl $h)
-            | rr_close_side)
-  | `(tactic| rr_finish using $hprec:term, $hdeg:term) =>
-      `(tactic|
-        first
-          | exact RealRooted.interlaces_of_strictInterl_chain $hprec $hdeg
-          | exact RealRooted.interlaces_of_strictInterl_chain $hprec (fun n => ($hdeg n).symm)
-          | exact (RealRooted.interlaces_of_strictInterl_chain $hprec $hdeg _)
-          | exact (RealRooted.interlaces_of_strictInterl_chain
-              $hprec (fun n => ($hdeg n).symm) _)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_strictInterl_chain_from_step $hprec)
-          | exact RealRooted.StrictInterl.toInterlaces $hprec $hdeg
-          | exact RealRooted.StrictInterl.toInterlaces $hprec ($hdeg).symm
-          | exact RealRooted.strictInterl_sequence_of_base_and_step $hprec $hdeg
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_strictInterl_sequence $hprec $hdeg)
-          | simpa [RealRooted.IsGeneralizedSturmSeq] using
-              And.intro $hprec $hdeg
-          | simpa [RealRooted.IsSturmSeq] using And.intro $hprec $hdeg)
-  | `(tactic| rr_finish using $hprec0:term, $hf:term, $hg:term) =>
-      `(tactic| exact RealRooted.Interl.toStrictInterl_of_ne $hprec0 $hf $hg)
-  | `(tactic| rr_finish using $hbase:term, $hbranch:term, $hsame:term, $hsucc:term) =>
-      `(tactic|
-        with_reducible_and_instances
-          first
-            | exact RealRooted.strictInterl_sequence_of_base_and_degree_branches
-                $hbase $hbranch $hsame $hsucc
-            | rr_exact_realrooted_sequence_or_projection
-                (RealRooted.isRealRooted_of_strictInterl_sequence_degree_branches
-                  $hbase $hbranch $hsame $hsucc))
-  | `(tactic| rr_finish) =>
-      `(tactic|
-        first
-          | rr_lookup
-          | assumption
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_strictInterl_chain_from_step rr_lookup_term)
-          | exact RealRooted.interlaces_of_strictInterl_chain rr_lookup_term rr_lookup_term
-          | exact RealRooted.interlaces_of_strictInterl_chain
-              rr_lookup_term (fun n => (rr_lookup_term n).symm)
-          | rr_exact_realrooted_sequence_or_projection rr_lookup_term
-          | rr_exact_realrooted_pair_sequence_or_projection rr_lookup_term
-          | rr_exact_realrooted_or_projection rr_lookup_term
-          | exact RealRooted.natDegree_succ_of_interlaces rr_lookup_term
-          | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
-          | exact rr_lookup_interlaces_term
-          | exact RealRooted.derivative_interlaces (by rr_splits) (by rr_close_side)
-          | exact (RealRooted.derivative_interlaces (by rr_splits)
-              (by rr_close_side)).toStrictInterl
-          | exact RealRooted.Interlaces.toStrictInterl rr_lookup_term
-          | exact RealRooted.StrictInterl.toInterl rr_lookup_term
-          | exact RealRooted.ne_zero_of_natDegree_eq_one (by rr_degree_eq_one)
-          | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
-          | exact RealRooted.StrictInterl.toInterl
-              (RealRooted.Interlaces.toStrictInterl rr_lookup_term)
-          | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
-          | rr_named_interlaces
-          | rr_named_realrooted
-          | rr_named_nonzero
-          | rr_named_splits
-          | rr_zero_or_splits
-          | rr_sign
-          | simp_all [
-              RealRooted.StrictInterl,
-              RealRooted.Interl,
-              RealRooted.Interlaces,
-              RealRooted.IsSturmSeq,
-              RealRooted.IsGeneralizedSturmSeq]
-          | rr_close_side)
-
 end Tactic
 end RealRooted

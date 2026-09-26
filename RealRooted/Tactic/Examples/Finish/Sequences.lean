@@ -11,7 +11,7 @@ example {P : Nat → ℝ[X]}
     (hstep : ∀ n : Nat,
       StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_prec_sequence using
+  rr_strict_interl_sequence using
     base := hbase,
     step := hstep
 
@@ -27,7 +27,7 @@ example {P : Nat → ℝ[X]}
     (hstep : ∀ n : Nat,
       StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_prec_sequence_realrooted using
+  rr_strict_interl_sequence_realrooted using
     base := hbase,
     step := hstep
 
@@ -43,7 +43,7 @@ example {P : Nat → ℝ[X]}
     (hstep : ∀ n : Nat,
       StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, (P n).Splits := by
-  rr_prec_sequence_realrooted using
+  rr_strict_interl_sequence_realrooted using
     base := hbase,
     step := hstep
 
@@ -57,65 +57,65 @@ example {P : Nat → ℝ[X]}
     step := hstep
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_finish_sequence using
-    prec := hprec
+    strictInterl := hstrictInterl
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_finish using hprec
+  rr_finish using hstrictInterl
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     P n ≠ 0 := by
   rr_finish_sequence using
-    prec := hprec
+    strictInterl := hstrictInterl
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     (P n).Splits := by
-  rr_finish using hprec
+  rr_finish using hstrictInterl
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     (P n).Splits := by
   rr_finish
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
   rr_finish_sequence using
-    prec := hprec,
+    strictInterl := hstrictInterl,
     degree := hdegree
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
-  rr_finish using hprec, hdegree
+  rr_finish using hstrictInterl, hdegree
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
   rr_finish
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P (n + 1)).natDegree = (P n).natDegree + 1) :
     Interlaces (P n) (P (n + 1)) := by
   rr_finish_sequence using
-    prec := hprec,
+    strictInterl := hstrictInterl,
     degree := hdegree
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P (n + 1)).natDegree = (P n).natDegree + 1) :
     Interlaces (P n) (P (n + 1)) := by
-  rr_finish using hprec, hdegree
+  rr_finish using hstrictInterl, hdegree
 
 example {P : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
@@ -127,7 +127,7 @@ example {P : Nat → ℝ[X]}
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
       StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_prec_sequence_branches using
+  rr_strict_interl_sequence_branches using
     base := hbase,
     degree_branch := hdegree,
     same := hsame,
@@ -155,7 +155,7 @@ example {P : Nat → ℝ[X]}
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
       StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_prec_sequence_branches_realrooted using
+  rr_strict_interl_sequence_branches_realrooted using
     base := hbase,
     degree_branch := hdegree,
     same := hsame,

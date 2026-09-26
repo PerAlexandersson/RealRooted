@@ -157,18 +157,18 @@ syntax (name := rr_model_lag_three_sequence_update_inferred)
     "update" ":=" term :
   tactic
 
-syntax (name := rr_model_lag_one_pf_prec0_sequence_named)
-  "rr_model_lag_one_pf_prec0_sequence" " using "
-    "model_pf_prec0" ":=" term ","
+syntax (name := rr_model_lag_one_pf_interl_sequence_named)
+  "rr_model_lag_one_pf_interl_sequence" " using "
+    "model_pf_interl" ":=" term ","
     "update" ":=" term ","
     "initial" ":=" term ","
     "target_recurrence" ":=" term ","
     "model_recurrence" ":=" term :
   tactic
 
-syntax (name := rr_model_lag_two_pf_prec0_sequence_named)
-  "rr_model_lag_two_pf_prec0_sequence" " using "
-    "model_pf_prec0" ":=" term ","
+syntax (name := rr_model_lag_two_pf_interl_sequence_named)
+  "rr_model_lag_two_pf_interl_sequence" " using "
+    "model_pf_interl" ":=" term ","
     "update" ":=" term ","
     "initial_zero" ":=" term ","
     "initial_one" ":=" term ","
@@ -176,9 +176,9 @@ syntax (name := rr_model_lag_two_pf_prec0_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
-syntax (name := rr_model_lag_three_pf_prec0_sequence_named)
-  "rr_model_lag_three_pf_prec0_sequence" " using "
-    "model_pf_prec0" ":=" term ","
+syntax (name := rr_model_lag_three_pf_interl_sequence_named)
+  "rr_model_lag_three_pf_interl_sequence" " using "
+    "model_pf_interl" ":=" term ","
     "update" ":=" term ","
     "initial_zero" ":=" term ","
     "initial_one" ":=" term ","
@@ -187,33 +187,33 @@ syntax (name := rr_model_lag_three_pf_prec0_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
-syntax (name := rr_model_lag_one_pf_prec0_sequence_update_inferred)
-  "rr_model_lag_one_pf_prec0_sequence" " using "
-    "model_pf_prec0" ":=" term ","
+syntax (name := rr_model_lag_one_pf_interl_sequence_update_inferred)
+  "rr_model_lag_one_pf_interl_sequence" " using "
+    "model_pf_interl" ":=" term ","
     "update" ":=" term :
   tactic
 
-syntax (name := rr_model_lag_two_pf_prec0_sequence_update_inferred)
-  "rr_model_lag_two_pf_prec0_sequence" " using "
-    "model_pf_prec0" ":=" term ","
+syntax (name := rr_model_lag_two_pf_interl_sequence_update_inferred)
+  "rr_model_lag_two_pf_interl_sequence" " using "
+    "model_pf_interl" ":=" term ","
     "update" ":=" term :
   tactic
 
-syntax (name := rr_model_lag_three_pf_prec0_sequence_update_inferred)
-  "rr_model_lag_three_pf_prec0_sequence" " using "
-    "model_pf_prec0" ":=" term ","
+syntax (name := rr_model_lag_three_pf_interl_sequence_update_inferred)
+  "rr_model_lag_three_pf_interl_sequence" " using "
+    "model_pf_interl" ":=" term ","
     "update" ":=" term :
   tactic
 
-syntax (name := rr_exact_pf_prec0_sequence_or_projection)
-  "rr_exact_pf_prec0_sequence_or_projection" term :
+syntax (name := rr_exact_pf_interl_sequence_or_projection)
+  "rr_exact_pf_interl_sequence_or_projection" term :
   tactic
 
 syntax (name := rr_recurrence_identification_fact_term)
   "rr_recurrence_identification_fact_term" : term
 
 macro_rules
-  | `(tactic| rr_exact_pf_prec0_sequence_or_projection $h:term) =>
+  | `(tactic| rr_exact_pf_interl_sequence_or_projection $h:term) =>
       `(tactic|
         first
           | exact $h
@@ -300,33 +300,33 @@ macro_rules
             (RealRooted.sequence_eq_of_same_lag_three_recurrence
               $upd $hzero $hone $htwo $hP $hQ)))
   | `(tactic|
-      rr_model_lag_one_pf_prec0_sequence using
-        model_pf_prec0 := $hmodel:term,
+      rr_model_lag_one_pf_interl_sequence using
+        model_pf_interl := $hmodel:term,
         update := $upd:term,
         initial := $hzero:term,
         target_recurrence := $hP:term,
         model_recurrence := $hQ:term) =>
       `(tactic|
-        rr_exact_pf_prec0_sequence_or_projection
-          (RealRooted.pf_and_prec0_of_model_sequence $hmodel
+        rr_exact_pf_interl_sequence_or_projection
+          (RealRooted.pf_and_interl_of_model_sequence $hmodel
             (RealRooted.sequence_eq_of_same_lag_one_recurrence
               $upd $hzero $hP $hQ)))
   | `(tactic|
-      rr_model_lag_two_pf_prec0_sequence using
-        model_pf_prec0 := $hmodel:term,
+      rr_model_lag_two_pf_interl_sequence using
+        model_pf_interl := $hmodel:term,
         update := $upd:term,
         initial_zero := $hzero:term,
         initial_one := $hone:term,
         target_recurrence := $hP:term,
         model_recurrence := $hQ:term) =>
       `(tactic|
-        rr_exact_pf_prec0_sequence_or_projection
-          (RealRooted.pf_and_prec0_of_model_sequence $hmodel
+        rr_exact_pf_interl_sequence_or_projection
+          (RealRooted.pf_and_interl_of_model_sequence $hmodel
             (RealRooted.sequence_eq_of_same_lag_two_recurrence
               $upd $hzero $hone $hP $hQ)))
   | `(tactic|
-      rr_model_lag_three_pf_prec0_sequence using
-        model_pf_prec0 := $hmodel:term,
+      rr_model_lag_three_pf_interl_sequence using
+        model_pf_interl := $hmodel:term,
         update := $upd:term,
         initial_zero := $hzero:term,
         initial_one := $hone:term,
@@ -334,8 +334,8 @@ macro_rules
         target_recurrence := $hP:term,
         model_recurrence := $hQ:term) =>
       `(tactic|
-        rr_exact_pf_prec0_sequence_or_projection
-          (RealRooted.pf_and_prec0_of_model_sequence $hmodel
+        rr_exact_pf_interl_sequence_or_projection
+          (RealRooted.pf_and_interl_of_model_sequence $hmodel
             (RealRooted.sequence_eq_of_same_lag_three_recurrence
               $upd $hzero $hone $htwo $hP $hQ)))
   | `(tactic|
@@ -405,6 +405,149 @@ macro_rules
           target_recurrence := rr_recurrence_identification_fact_term,
           model_recurrence := rr_recurrence_identification_fact_term)
   | `(tactic|
+      rr_model_lag_one_pf_interl_sequence using
+        model_pf_interl := $hmodel:term,
+        update := $upd:term) =>
+      `(tactic|
+        rr_model_lag_one_pf_interl_sequence using
+          model_pf_interl := $hmodel,
+          update := $upd,
+          initial := rr_recurrence_identification_fact_term,
+          target_recurrence := rr_recurrence_identification_fact_term,
+          model_recurrence := rr_recurrence_identification_fact_term)
+  | `(tactic|
+      rr_model_lag_two_pf_interl_sequence using
+        model_pf_interl := $hmodel:term,
+        update := $upd:term) =>
+      `(tactic|
+        rr_model_lag_two_pf_interl_sequence using
+          model_pf_interl := $hmodel,
+          update := $upd,
+          initial_zero := rr_recurrence_identification_fact_term,
+          initial_one := rr_recurrence_identification_fact_term,
+          target_recurrence := rr_recurrence_identification_fact_term,
+          model_recurrence := rr_recurrence_identification_fact_term)
+  | `(tactic|
+      rr_model_lag_three_pf_interl_sequence using
+        model_pf_interl := $hmodel:term,
+        update := $upd:term) =>
+      `(tactic|
+        rr_model_lag_three_pf_interl_sequence using
+          model_pf_interl := $hmodel,
+          update := $upd,
+          initial_zero := rr_recurrence_identification_fact_term,
+          initial_one := rr_recurrence_identification_fact_term,
+          initial_two := rr_recurrence_identification_fact_term,
+          target_recurrence := rr_recurrence_identification_fact_term,
+          model_recurrence := rr_recurrence_identification_fact_term)
+
+end RealRooted
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_model_lag_one_pf_prec0_sequence_named_legacy)
+  "rr_model_lag_one_pf_prec0_sequence" " using "
+    "model_pf_prec0" ":=" term ","
+    "update" ":=" term ","
+    "initial" ":=" term ","
+    "target_recurrence" ":=" term ","
+    "model_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_model_lag_two_pf_prec0_sequence_named_legacy)
+  "rr_model_lag_two_pf_prec0_sequence" " using "
+    "model_pf_prec0" ":=" term ","
+    "update" ":=" term ","
+    "initial_zero" ":=" term ","
+    "initial_one" ":=" term ","
+    "target_recurrence" ":=" term ","
+    "model_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_model_lag_three_pf_prec0_sequence_named_legacy)
+  "rr_model_lag_three_pf_prec0_sequence" " using "
+    "model_pf_prec0" ":=" term ","
+    "update" ":=" term ","
+    "initial_zero" ":=" term ","
+    "initial_one" ":=" term ","
+    "initial_two" ":=" term ","
+    "target_recurrence" ":=" term ","
+    "model_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_model_lag_one_pf_prec0_sequence_update_inferred_legacy)
+  "rr_model_lag_one_pf_prec0_sequence" " using "
+    "model_pf_prec0" ":=" term ","
+    "update" ":=" term :
+  tactic
+
+syntax (name := rr_model_lag_two_pf_prec0_sequence_update_inferred_legacy)
+  "rr_model_lag_two_pf_prec0_sequence" " using "
+    "model_pf_prec0" ":=" term ","
+    "update" ":=" term :
+  tactic
+
+syntax (name := rr_model_lag_three_pf_prec0_sequence_update_inferred_legacy)
+  "rr_model_lag_three_pf_prec0_sequence" " using "
+    "model_pf_prec0" ":=" term ","
+    "update" ":=" term :
+  tactic
+
+syntax (name := rr_exact_pf_prec0_sequence_or_projection_legacy)
+  "rr_exact_pf_prec0_sequence_or_projection" term :
+  tactic
+
+macro_rules
+  | `(tactic| rr_exact_pf_prec0_sequence_or_projection $h:term) =>
+      `(tactic|
+        first
+          | exact $h
+          | exact ($h).1
+          | exact ($h).2
+          | exact ($h).1 _
+          | exact ($h).2 _)
+  | `(tactic|
+      rr_model_lag_one_pf_prec0_sequence using
+        model_pf_prec0 := $hmodel:term,
+        update := $upd:term,
+        initial := $hzero:term,
+        target_recurrence := $hP:term,
+        model_recurrence := $hQ:term) =>
+      `(tactic|
+        rr_exact_pf_prec0_sequence_or_projection
+          (RealRooted.pf_and_prec0_of_model_sequence $hmodel
+            (RealRooted.sequence_eq_of_same_lag_one_recurrence
+              $upd $hzero $hP $hQ)))
+  | `(tactic|
+      rr_model_lag_two_pf_prec0_sequence using
+        model_pf_prec0 := $hmodel:term,
+        update := $upd:term,
+        initial_zero := $hzero:term,
+        initial_one := $hone:term,
+        target_recurrence := $hP:term,
+        model_recurrence := $hQ:term) =>
+      `(tactic|
+        rr_exact_pf_prec0_sequence_or_projection
+          (RealRooted.pf_and_prec0_of_model_sequence $hmodel
+            (RealRooted.sequence_eq_of_same_lag_two_recurrence
+              $upd $hzero $hone $hP $hQ)))
+  | `(tactic|
+      rr_model_lag_three_pf_prec0_sequence using
+        model_pf_prec0 := $hmodel:term,
+        update := $upd:term,
+        initial_zero := $hzero:term,
+        initial_one := $hone:term,
+        initial_two := $htwo:term,
+        target_recurrence := $hP:term,
+        model_recurrence := $hQ:term) =>
+      `(tactic|
+        rr_exact_pf_prec0_sequence_or_projection
+          (RealRooted.pf_and_prec0_of_model_sequence $hmodel
+            (RealRooted.sequence_eq_of_same_lag_three_recurrence
+              $upd $hzero $hone $htwo $hP $hQ)))
+  | `(tactic|
       rr_model_lag_one_pf_prec0_sequence using
         model_pf_prec0 := $hmodel:term,
         update := $upd:term) =>
@@ -440,5 +583,5 @@ macro_rules
           initial_two := rr_recurrence_identification_fact_term,
           target_recurrence := rr_recurrence_identification_fact_term,
           model_recurrence := rr_recurrence_identification_fact_term)
-
+end Tactic
 end RealRooted

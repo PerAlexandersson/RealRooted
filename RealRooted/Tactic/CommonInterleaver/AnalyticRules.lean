@@ -200,15 +200,15 @@ macro_rules
         exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_lowerCountEq
           $hcount)
   | `(tactic|
-      rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec using
+      rr_succDegree_rootCountLeadRightZero_divXStrictInterl_of_strict_interl using
         orientation := $horient:term) =>
       `(tactic|
         exact
           posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG
           $horient)
   | `(tactic|
-      rr_succDegree_rootCountLeadRightZero_of_divXPrec using
-        divX_prec := $hdivX:term) =>
+      rr_succDegree_rootCountLeadRightZero_of_divXStrictInterl using
+        divX_strictInterl := $hdivX:term) =>
       `(tactic|
         exact
           RealRooted.posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_strictInterl
@@ -221,15 +221,15 @@ macro_rules
         exact RealRooted.posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_rightZero
           $hboth $hright)
   | `(tactic|
-      rr_succDegree_rootCountLead_of_bothNonzero_and_divXPrec using
+      rr_succDegree_rootCountLead_of_bothNonzero_and_divXStrictInterl using
         both_nonzero := $hboth:term,
-        divX_prec := $hdivX:term) =>
+        divX_strictInterl := $hdivX:term) =>
       `(tactic|
         exact
           RealRooted.posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_strictInterl
           $hboth $hdivX)
   | `(tactic|
-      rr_succDegree_rootCountResidual_of_prec using
+      rr_succDegree_rootCountResidual_of_strict_interl using
         orientation := $horient:term) =>
       `(tactic|
         exact RealRooted.posComboNoCommonSuccDegreeRootCountResidual_of_strictInterl
@@ -263,19 +263,19 @@ macro_rules
         exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_residual_and_lead
           $hlead $hres)
   | `(tactic|
-      rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXPrec using
+      rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXStrictInterl using
         both_nonzero := $hboth:term,
-        divX_prec := $hdivX:term,
+        divX_strictInterl := $hdivX:term,
         residual := $hres:term) =>
       `(tactic|
         exact
           succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_strictInterl
             $hboth $hdivX $hres)
   | `(tactic|
-      rr_succDegree_pair_common_interleaver_residualPrec_bothNonzero_divXPrec using
-        residual_prec := $hres:term,
+      rr_succDegree_pair_common_interleaver_residualStrictInterl_bothNonzero_divXStrictInterl using
+        residual_strictInterl := $hres:term,
         both_nonzero := $hboth:term,
-        divX_prec := $hdivX:term) =>
+        divX_strictInterl := $hdivX:term) =>
       `(tactic|
         exact (
     succDegreePairHasCommonInterleaver_nonneg_of_residualStrictInterl_bothNonzero_divX_strictInterl
@@ -345,5 +345,26 @@ macro_rules
         exact RealRooted.compatiblePairHasCommonLeftInterleaver_chudnovskySeymour
           $hf $hg $hcomp)
 
+end Tactic
+end RealRooted
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+macro_rules
+  | `(tactic|
+      rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec using
+        orientation := $horient:term) =>
+      `(tactic|
+        exact
+          posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG
+          $horient)
+  | `(tactic|
+      rr_succDegree_rootCountResidual_of_prec using
+        orientation := $horient:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountResidual_of_strictInterl
+          $horient)
 end Tactic
 end RealRooted

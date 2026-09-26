@@ -25,7 +25,7 @@ theorem splits_mw_derivative_of_nonpos {f u v : ℝ[X]}
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
     (u * f + v * f.derivative).Splits :=
   right_splits_of_strictInterl
-    (prec_mw_derivative_of_nonpos
+    (strictInterl_mw_derivative_of_nonpos
       hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos)
 
 /-- Splits-only Ma--Wang wrapper for the sign-flipped inner transform.  This
@@ -203,7 +203,7 @@ theorem isRealRooted_of_mw_then_const_add_derivative_plus_current_sequence
       HasPosLeadingCoeff
         (C (a n) * (U n * P (n + 1) + V n * (P (n + 1)).derivative) +
           (U n * P (n + 1) + V n * (P (n + 1)).derivative).derivative))
-    (houter_prec : ∀ n : Nat,
+    (houter_strictInterl : ∀ n : Nat,
       StrictInterl (P (n + 1))
         (C (a n) * (U n * P (n + 1) + V n * (P (n + 1)).derivative) +
           (U n * P (n + 1) + V n * (P (n + 1)).derivative).derivative))
@@ -229,7 +229,7 @@ theorem isRealRooted_of_mw_then_const_add_derivative_plus_current_sequence
               (C (b n) * P (n + 1) + C (1 : ℝ) * H) ≠ 0 ∧
                 (C (b n) * P (n + 1) + C (1 : ℝ) * H).Splits :=
             StrictInterl.isRealRooted_nonneg_combo
-              (by simpa [H] using houter_prec n)
+              (by simpa [H] using houter_strictInterl n)
               (hcurrent_pos n) (by simpa [H] using houter_pos n)
               (hb n) rr_side_nonneg_term (Or.inr rr_side_pos_term)
           simpa [H, hrec n] using hcombo
@@ -445,7 +445,7 @@ syntax (name := rr_ls4_plus_current_sequence_expanded_named)
     "pos_lc" ":=" term ","
     "tail_nonneg" ":=" term ","
     "outer_pos_lc" ":=" term ","
-    "outer_prec" ":=" term ","
+    "outer_strictInterl" ":=" term ","
     "recurrence" ":=" term :
   tactic
 
@@ -457,7 +457,7 @@ syntax (name := rr_ls4_plus_current_sequence_expanded_auto)
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
     "outer_pos_lc" ":=" term ","
-    "outer_prec" ":=" term ","
+    "outer_strictInterl" ":=" term ","
     "recurrence" ":=" term :
   tactic
 
@@ -649,13 +649,13 @@ macro_rules
         pos_lc := $hpos:term,
         tail_nonneg := $hb:term,
         outer_pos_lc := $houter_pos:term,
-        outer_prec := $houter_prec:term,
+        outer_strictInterl := $houter_strictInterl:term,
         recurrence := $hrec:term) =>
       `(tactic|
         refine
           RealRooted.isRealRooted_of_mw_then_const_add_derivative_plus_current_sequence
             $a $b $hbase_zero $hbase_one (fun n => $hpos (n + 1)) $hb
-            $houter_pos $houter_prec ?_ <;>
+            $houter_pos $houter_strictInterl ?_ <;>
           (rr_ls4_recurrence_factorize $hrec))
   | `(tactic|
       rr_ls4_plus_current_sequence_expanded_auto using
@@ -665,7 +665,7 @@ macro_rules
         base_one := $hbase_one:term,
         pos_lc := $hpos:term,
         outer_pos_lc := $houter_pos:term,
-        outer_prec := $houter_prec:term,
+        outer_strictInterl := $houter_strictInterl:term,
         recurrence := $hrec:term) =>
       `(tactic|
         rr_ls4_plus_current_sequence_expanded using
@@ -676,7 +676,7 @@ macro_rules
           pos_lc := $hpos,
           tail_nonneg := rr_side_nonneg_seq_term,
           outer_pos_lc := $houter_pos,
-          outer_prec := $houter_prec,
+          outer_strictInterl := $houter_strictInterl,
           recurrence := $hrec)
   | `(tactic|
       rr_mw_plus_derivative_sequence using

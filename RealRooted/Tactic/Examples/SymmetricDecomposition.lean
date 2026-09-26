@@ -58,56 +58,56 @@ example {d : Nat} {u v : ℝ[X]}
     (hvd : v.natDegree ≤ d)
     (hu_nonneg : HasNonnegCoeffs u)
     (hv_nonneg : HasNonnegCoeffs v)
-    (hprec : StrictInterl u v) :
+    (hstrictInterl : StrictInterl u v) :
     StrictInterl (fPolynomial d u) (fPolynomial d v) := by
-  rr_fPolynomial_prec using
+  rr_fPolynomial_strict_interl using
     left_degree := hud,
     right_degree := hvd,
     left_nonneg := hu_nonneg,
     right_nonneg := hv_nonneg,
-    prec := hprec
+    strictInterl := hstrictInterl
 
 example {d : Nat → Nat} {U V : Nat → ℝ[X]}
     (hud : ∀ n : Nat, (U n).natDegree ≤ d n)
     (hvd : ∀ n : Nat, (V n).natDegree ≤ d n)
     (hu_nonneg : ∀ n : Nat, HasNonnegCoeffs (U n))
     (hv_nonneg : ∀ n : Nat, HasNonnegCoeffs (V n))
-    (hprec : ∀ n : Nat, StrictInterl (U n) (V n)) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (U n) (V n)) :
     ∀ n : Nat, StrictInterl (fPolynomial (d n) (U n)) (fPolynomial (d n) (V n)) := by
-  rr_fPolynomial_sequence_prec using
+  rr_fPolynomial_sequence_strict_interl using
     left_degree := hud,
     right_degree := hvd,
     left_nonneg := hu_nonneg,
     right_nonneg := hv_nonneg,
-    prec := hprec
+    strictInterl := hstrictInterl
 
 example {d : Nat} {u v : ℝ[X]}
     (hud : u.natDegree ≤ d)
     (hvd : v.natDegree ≤ d)
     (hu_nonneg : HasNonnegCoeffs u)
     (hv_nonneg : HasNonnegCoeffs v)
-    (hprec : StrictInterl (fPolynomial d u) (fPolynomial d v)) :
+    (hstrictInterl : StrictInterl (fPolynomial d u) (fPolynomial d v)) :
     StrictInterl u v := by
-  rr_of_fPolynomial_prec using
+  rr_of_fPolynomial_strict_interl using
     left_degree := hud,
     right_degree := hvd,
     left_nonneg := hu_nonneg,
     right_nonneg := hv_nonneg,
-    transformed_prec := hprec
+    transformed_strictInterl := hstrictInterl
 
 example {d : Nat → Nat} {U V : Nat → ℝ[X]}
     (hud : ∀ n : Nat, (U n).natDegree ≤ d n)
     (hvd : ∀ n : Nat, (V n).natDegree ≤ d n)
     (hu_nonneg : ∀ n : Nat, HasNonnegCoeffs (U n))
     (hv_nonneg : ∀ n : Nat, HasNonnegCoeffs (V n))
-    (hprec : ∀ n : Nat, StrictInterl (fPolynomial (d n) (U n)) (fPolynomial (d n) (V n))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (fPolynomial (d n) (U n)) (fPolynomial (d n) (V n))) :
     ∀ n : Nat, StrictInterl (U n) (V n) := by
-  rr_of_fPolynomial_sequence_prec using
+  rr_of_fPolynomial_sequence_strict_interl using
     left_degree := hud,
     right_degree := hvd,
     left_nonneg := hu_nonneg,
     right_nonneg := hv_nonneg,
-    transformed_prec := hprec
+    transformed_strictInterl := hstrictInterl
 
 example {d : Nat} {u v : ℝ[X]}
     (hud : u.natDegree ≤ d)
@@ -115,7 +115,7 @@ example {d : Nat} {u v : ℝ[X]}
     (hu_nonneg : HasNonnegCoeffs u)
     (hv_nonneg : HasNonnegCoeffs v) :
     (StrictInterl (fPolynomial d u) (fPolynomial d v) ↔ StrictInterl u v) := by
-  rr_fPolynomial_prec_iff using
+  rr_fPolynomial_strict_interl_iff using
     left_degree := hud,
     right_degree := hvd,
     left_nonneg := hu_nonneg,
@@ -126,11 +126,11 @@ example {d : Nat → Nat} {U V : Nat → ℝ[X]}
     (hvd : ∀ n : Nat, (V n).natDegree ≤ d n)
     (hu_nonneg : ∀ n : Nat, HasNonnegCoeffs (U n))
     (hv_nonneg : ∀ n : Nat, HasNonnegCoeffs (V n))
-    (hprec : ∀ n : Nat, StrictInterl (U n) (V n)) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (U n) (V n)) :
     ∀ n : Nat, PosComboRealRooted (fPolynomial (d n) (U n))
       (fPolynomial (d n) (V n)) := by
   rr_fPolynomial_sequence_pos_combo using
-    prec := hprec,
+    strictInterl := hstrictInterl,
     left_degree := hud,
     right_degree := hvd,
     left_nonneg := hu_nonneg,
@@ -141,10 +141,10 @@ example {d : Nat} {u v : ℝ[X]}
     (hvd : v.natDegree ≤ d)
     (hu_nonneg : HasNonnegCoeffs u)
     (hv_nonneg : HasNonnegCoeffs v)
-    (hprec : StrictInterl u v) :
+    (hstrictInterl : StrictInterl u v) :
     PosComboRealRooted (fPolynomial d u) (fPolynomial d v) := by
   rr_fPolynomial_pos_combo using
-    prec := hprec,
+    strictInterl := hstrictInterl,
     left_degree := hud,
     right_degree := hvd,
     left_nonneg := hu_nonneg,

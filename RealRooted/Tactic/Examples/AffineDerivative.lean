@@ -128,7 +128,7 @@ example {f : ℝ[X]} (hf : f.Splits)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
     StrictInterl (C c * f + (1 - X) * f.derivative) f := by
-  rr_prec_affine_derivative_strong using
+  rr_strict_interl_affine_derivative_strong using
     splits := hf,
     degree_ge_two := hdeg,
     pos_lc := hf_pos,
@@ -141,7 +141,7 @@ example {f : ℝ[X]} (hf : f.Splits)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
     StrictInterl (C c * f + (1 - X) * f.derivative) f := by
-  rr_prec_affine_derivative_degree_one using
+  rr_strict_interl_affine_derivative_degree_one using
     splits := hf,
     degree_eq_one := hdeg,
     pos_lc := hf_pos,
@@ -154,7 +154,7 @@ example {f : ℝ[X]} (hf : f.Splits)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
     StrictInterl (C c * f + (1 - X) * f.derivative) f := by
-  rr_prec_affine_derivative using
+  rr_strict_interl_affine_derivative using
     splits := hf,
     degree_ge_one := hdeg,
     pos_lc := hf_pos,
@@ -166,7 +166,7 @@ example {f : ℝ[X]} (hf : f.Splits)
     (hfnn : HasNonnegCoeffs f)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
     StrictInterl (C c * f + (1 - X) * f.derivative) f := by
-  rr_prec_affine_derivative_nonneg using
+  rr_strict_interl_affine_derivative_nonneg using
     splits := hf,
     degree_ge_one := hdeg,
     nonneg := hfnn,
@@ -181,7 +181,7 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     ∀ n : Nat, StrictInterl
       (C (c n) * P n + (1 - X) * (P n).derivative)
       (P n) := by
-  rr_prec_affine_derivative_sequence using
+  rr_strict_interl_affine_derivative_sequence using
     splits := hsplits,
     degree_ge_one := hdeg,
     pos_lc := hpos,
@@ -197,7 +197,7 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     ∀ n : Nat,
       C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
         (C (c n) * P n + (1 - X) * (P n).derivative).Splits := by
-  rr_prec_affine_derivative_sequence_realrooted using
+  rr_strict_interl_affine_derivative_sequence_realrooted using
     splits := hsplits,
     degree_ge_one := hdeg,
     pos_lc := hpos,
@@ -212,7 +212,7 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     ∀ n : Nat, StrictInterl
       (C (c n) * P n + (1 - X) * (P n).derivative)
       (P n) := by
-  rr_prec_affine_derivative_nonneg_sequence using
+  rr_strict_interl_affine_derivative_nonneg_sequence using
     splits := hsplits,
     degree_ge_one := hdeg,
     nonneg := hnn,
@@ -226,7 +226,7 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     ∀ n : Nat,
       C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
         (C (c n) * P n + (1 - X) * (P n).derivative).Splits := by
-  rr_prec_affine_derivative_nonneg_sequence_realrooted using
+  rr_strict_interl_affine_derivative_nonneg_sequence_realrooted using
     splits := hsplits,
     degree_ge_one := hdeg,
     nonneg := hnn,

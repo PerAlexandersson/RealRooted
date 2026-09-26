@@ -22,13 +22,13 @@ example {fs : List ℝ[X]} {i j : Fin fs.length}
     (hfs : IsInterlacingSeq fs)
     (hij : i < j) :
     StrictInterl (fs.get i) (fs.get j) := by
-  rr_interlacingSeq_prec using interlacing := hfs, index_lt := hij
+  rr_interlacingSeq_strict_interl using interlacing := hfs, index_lt := hij
 
 example {fs : List ℝ[X]} {i j : Fin fs.length}
     (hfs : IsInterlacingSeq0 fs)
     (hij : i < j) :
     Interl (fs.get i) (fs.get j) := by
-  rr_interlacingSeq0_prec0 using interlacing0 := hfs, index_lt := hij
+  rr_interlacingSeq0_interl using interlacing0 := hfs, index_lt := hij
 
 example {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq fs)
@@ -70,7 +70,7 @@ example {fs gs : List ℝ[X]}
   rr_interlacingSeq_append using
     left_interlacing := hfs,
     right_interlacing := hgs,
-    cross_prec := hfg
+    cross_strictInterl := hfg
 
 example {fs : List ℝ[X]}
     (hfs : IsInterlacingSeq fs) :

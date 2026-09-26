@@ -210,7 +210,7 @@ theorem hadamardProduct_sequence_nonneg_coeffs {P Q : Nat → ℝ[X]}
     ∀ i : Nat, HasNonnegCoeffs (hadamardProduct (P i) (Q i)) := fun i =>
   HasNonnegCoeffs.hadamardProduct (hPnonneg i) (hQnonneg i)
 
-theorem hadamardProduct_prec0_of_nonneg_prec {f g p q : ℝ[X]}
+theorem hadamardProduct_interl_of_nonneg_strictInterl {f g p q : ℝ[X]}
     (hf : HasNonnegCoeffs f)
     (hg : HasNonnegCoeffs g)
     (hp : HasNonnegCoeffs p)
@@ -220,7 +220,7 @@ theorem hadamardProduct_prec0_of_nonneg_prec {f g p q : ℝ[X]}
     Interl (hadamardProduct f p) (hadamardProduct g q) :=
   garloffWagnerHadamardNonnegInterl hf hg hp hq hfg hpq
 
-theorem hadamardProduct_sequence_prec0 {F G P Q : Nat → ℝ[X]}
+theorem hadamardProduct_sequence_interl {F G P Q : Nat → ℝ[X]}
     (hF : ∀ i : Nat, HasNonnegCoeffs (F i))
     (hG : ∀ i : Nat, HasNonnegCoeffs (G i))
     (hP : ∀ i : Nat, HasNonnegCoeffs (P i))
@@ -230,7 +230,7 @@ theorem hadamardProduct_sequence_prec0 {F G P Q : Nat → ℝ[X]}
     ∀ i : Nat,
       Interl (hadamardProduct (F i) (P i)) (hadamardProduct (G i) (Q i)) :=
   fun i =>
-    hadamardProduct_prec0_of_nonneg_prec
+    hadamardProduct_interl_of_nonneg_strictInterl
       (hF i) (hG i) (hP i) (hQ i) (hFG i) (hPQ i)
 
 syntax (name := rr_schur_szego_nonzero_statement_named)
@@ -472,18 +472,18 @@ syntax (name := rr_hadamard_nonneg_coeffs_named)
     "right_nonneg" ":=" term :
   tactic
 
-syntax (name := rr_hadamard_prec0_named)
-  "rr_hadamard_prec0" " using "
+syntax (name := rr_hadamard_interl_named)
+  "rr_hadamard_interl" " using "
     "first_left_nonneg" ":=" term ","
     "first_right_nonneg" ":=" term ","
     "second_left_nonneg" ":=" term ","
     "second_right_nonneg" ":=" term ","
-    "first_prec" ":=" term ","
-    "second_prec" ":=" term :
+    "first_strictInterl" ":=" term ","
+    "second_strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_hadamard_pf_prec0_named)
-  "rr_hadamard_pf_prec0" : tactic
+syntax (name := rr_hadamard_pf_interl_named)
+  "rr_hadamard_pf_interl" : tactic
 
 syntax (name := rr_hadamard_sequence_pf_named)
   "rr_hadamard_sequence_pf" " using "
@@ -514,14 +514,14 @@ syntax (name := rr_hadamard_sequence_nonneg_coeffs_named)
     "right_nonneg" ":=" term :
   tactic
 
-syntax (name := rr_hadamard_sequence_prec0_named)
-  "rr_hadamard_sequence_prec0" " using "
+syntax (name := rr_hadamard_sequence_interl_named)
+  "rr_hadamard_sequence_interl" " using "
     "first_left_nonneg" ":=" term ","
     "first_right_nonneg" ":=" term ","
     "second_left_nonneg" ":=" term ","
     "second_right_nonneg" ":=" term ","
-    "first_prec" ":=" term ","
-    "second_prec" ":=" term :
+    "first_strictInterl" ":=" term ","
+    "second_strictInterl" ":=" term :
   tactic
 
 macro_rules
@@ -795,17 +795,17 @@ macro_rules
       `(tactic|
         exact RealRooted.HasNonnegCoeffs.hadamardProduct $hpnn $hqnn)
   | `(tactic|
-      rr_hadamard_prec0 using
+      rr_hadamard_interl using
         first_left_nonneg := $hf:term,
         first_right_nonneg := $hg:term,
         second_left_nonneg := $hp:term,
         second_right_nonneg := $hq:term,
-        first_prec := $hfg:term,
-        second_prec := $hpq:term) =>
+        first_strictInterl := $hfg:term,
+        second_strictInterl := $hpq:term) =>
       `(tactic|
-        exact RealRooted.Tactic.hadamardProduct_prec0_of_nonneg_prec
+        exact RealRooted.Tactic.hadamardProduct_interl_of_nonneg_strictInterl
           $hf $hg $hp $hq $hfg $hpq)
-  | `(tactic| rr_hadamard_pf_prec0) =>
+  | `(tactic| rr_hadamard_pf_interl) =>
       `(tactic|
         first
           | exact RealRooted.hadamardProduct_preserves_interl_right
@@ -851,6 +851,83 @@ macro_rules
         exact RealRooted.Tactic.hadamardProduct_sequence_nonneg_coeffs
           $hpnn $hqnn)
   | `(tactic|
+      rr_hadamard_sequence_interl using
+        first_left_nonneg := $hf:term,
+        first_right_nonneg := $hg:term,
+        second_left_nonneg := $hp:term,
+        second_right_nonneg := $hq:term,
+        first_strictInterl := $hfg:term,
+        second_strictInterl := $hpq:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.hadamardProduct_sequence_interl
+          $hf $hg $hp $hq $hfg $hpq)
+
+end Tactic
+end RealRooted
+namespace RealRooted
+namespace Tactic
+@[deprecated hadamardProduct_interl_of_nonneg_strictInterl (since := "2026-09-26")]
+alias hadamardProduct_prec0_of_nonneg_prec := hadamardProduct_interl_of_nonneg_strictInterl
+
+@[deprecated hadamardProduct_sequence_interl (since := "2026-09-26")]
+alias hadamardProduct_sequence_prec0 := hadamardProduct_sequence_interl
+
+end Tactic
+end RealRooted
+
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_hadamard_prec0_named_legacy)
+  "rr_hadamard_prec0" " using "
+    "first_left_nonneg" ":=" term ","
+    "first_right_nonneg" ":=" term ","
+    "second_left_nonneg" ":=" term ","
+    "second_right_nonneg" ":=" term ","
+    "first_prec" ":=" term ","
+    "second_prec" ":=" term :
+  tactic
+
+syntax (name := rr_hadamard_pf_prec0_named_legacy)
+  "rr_hadamard_pf_prec0" : tactic
+
+syntax (name := rr_hadamard_sequence_prec0_named_legacy)
+  "rr_hadamard_sequence_prec0" " using "
+    "first_left_nonneg" ":=" term ","
+    "first_right_nonneg" ":=" term ","
+    "second_left_nonneg" ":=" term ","
+    "second_right_nonneg" ":=" term ","
+    "first_prec" ":=" term ","
+    "second_prec" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_hadamard_prec0 using
+        first_left_nonneg := $hf:term,
+        first_right_nonneg := $hg:term,
+        second_left_nonneg := $hp:term,
+        second_right_nonneg := $hq:term,
+        first_prec := $hfg:term,
+        second_prec := $hpq:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.hadamardProduct_prec0_of_nonneg_prec
+          $hf $hg $hp $hq $hfg $hpq)
+  | `(tactic| rr_hadamard_pf_prec0) =>
+      `(tactic|
+        first
+          | exact RealRooted.hadamardProduct_preserves_interl_right
+              RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
+              rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
+          | exact RealRooted.hadamardProduct_preserves_interl_left
+              RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
+              rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
+          | exact RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
+              rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
+              rr_lookup_term rr_lookup_term)
+  | `(tactic|
       rr_hadamard_sequence_prec0 using
         first_left_nonneg := $hf:term,
         first_right_nonneg := $hg:term,
@@ -861,6 +938,5 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.hadamardProduct_sequence_prec0
           $hf $hg $hp $hq $hfg $hpq)
-
 end Tactic
 end RealRooted

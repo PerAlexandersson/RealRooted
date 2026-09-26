@@ -12,7 +12,7 @@ namespace RealRooted
 
 This is the abstract step behind recurrences such as
 `P_n = P_{n-1} + t P_{n-2}` and `P_n = 2 P_{n-1} + t P_{n-2}`. -/
-theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
+theorem strictInterl_pos_X_lag_combo_of_strictInterl_nonneg {f g : ℝ[X]} {a c : ℝ}
     (h : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
@@ -35,7 +35,7 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     rcases List.mem_cons.mp hap with rfl | hap
     · exact hc
     · cases hap
-  have hprec : ∀ ap ∈ [(a, g), (c, X * f)], StrictInterl g ap.2 := by
+  have hstrictInterl : ∀ ap ∈ [(a, g), (c, X * f)], StrictInterl g ap.2 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
     · exact hself
@@ -53,13 +53,13 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
   have hex : ∃ ap ∈ [(a, g), (c, X * f)], 0 < ap.1 := ⟨(a, g), by simp, ha⟩
   have hsum : StrictInterl g (weightedSum [(a, g), (c, X * f)]) :=
     StrictInterl.weightedSum_left_of_common_left
-      [(a, g), (c, X * f)] g hnonneg hprec hg_pos hpoly_pos hex
+      [(a, g), (c, X * f)] g hnonneg hstrictInterl hg_pos hpoly_pos hex
   simpa [weightedSum, mul_assoc, add_assoc] using hsum
 
 /-- The previous polynomial also precedes a positive-current, nonnegative
-`X`-lag step.  Together with `prec_pos_X_lag_combo_of_prec_nonneg`, this says
+`X`-lag step.  Together with `strictInterl_pos_X_lag_combo_of_strictInterl_nonneg`, this says
 that both inputs lie on the left of the new polynomial. -/
-theorem prec_left_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
+theorem strictInterl_left_pos_X_lag_combo_of_strictInterl_nonneg {f g : ℝ[X]} {a c : ℝ}
     (h : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
@@ -81,7 +81,7 @@ theorem prec_left_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     rcases List.mem_cons.mp hap with rfl | hap
     · exact hc
     · cases hap
-  have hprec : ∀ ap ∈ [(a, g), (c, X * f)], StrictInterl f ap.2 := by
+  have hstrictInterl : ∀ ap ∈ [(a, g), (c, X * f)], StrictInterl f ap.2 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
     · exact h
@@ -100,13 +100,13 @@ theorem prec_left_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     ⟨(a, g), by simp, ha⟩
   have hsum : StrictInterl f (weightedSum [(a, g), (c, X * f)]) :=
     StrictInterl.weightedSum_left_of_common_left
-      [(a, g), (c, X * f)] f hnonneg hprec hf_pos hpoly_pos hex
+      [(a, g), (c, X * f)] f hnonneg hstrictInterl hf_pos hpoly_pos hex
   simpa [weightedSum, mul_assoc, add_assoc] using hsum
 
 /-- Sequence induction for scalar positive-current plus nonnegative `X`-lag
 recurrences.  This is plateau-safe: it never converts the previous `StrictInterl`
 certificate to a differ-by-one `Interlaces` certificate. -/
-theorem prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]} {a c : Nat → ℝ}
+theorem strictInterl_pos_X_lag_combo_sequence {P : Nat → ℝ[X]} {a c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (ha : ∀ n : Nat, 0 < a n)
@@ -118,7 +118,7 @@ theorem prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]} {a c : Nat → ℝ}
   intro n hprev
   have hstep :
       StrictInterl (P (n + 1)) (C (a n) * P (n + 1) + (C (c n) * X) * P n) :=
-    prec_pos_X_lag_combo_of_prec_nonneg
+    strictInterl_pos_X_lag_combo_of_strictInterl_nonneg
       hprev (hnonneg n) (hnonneg (n + 1)) (ha n) (hc n)
   simpa [← hrec n] using hstep
 
@@ -252,7 +252,7 @@ theorem natDegree_pos_X_lag_combo_sequence_shifted {P : Nat → ℝ[X]}
 
 /-- Real-rootedness corollary of scalar positive-current plus nonnegative
 `X`-lag sequence induction. -/
-theorem isRealRooted_of_prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]}
+theorem isRealRooted_of_strictInterl_pos_X_lag_combo_sequence {P : Nat → ℝ[X]}
     {a c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
@@ -262,8 +262,24 @@ theorem isRealRooted_of_prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]}
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_pos_X_lag_combo_sequence hbase hnonneg ha hc hrec
+    strictInterl_pos_X_lag_combo_sequence hbase hnonneg ha hc hrec
 
 
+
+end RealRooted
+
+/- Deprecated theorem aliases retained for the #984 Prec migration. -/
+namespace RealRooted
+@[deprecated strictInterl_pos_X_lag_combo_sequence (since := "2026-09-26")]
+alias prec_pos_X_lag_combo_sequence := strictInterl_pos_X_lag_combo_sequence
+
+@[deprecated strictInterl_pos_X_lag_combo_of_strictInterl_nonneg (since := "2026-09-26")]
+alias prec_pos_X_lag_combo_of_prec_nonneg := strictInterl_pos_X_lag_combo_of_strictInterl_nonneg
+
+@[deprecated isRealRooted_of_strictInterl_pos_X_lag_combo_sequence (since := "2026-09-26")]
+alias isRealRooted_of_prec_pos_X_lag_combo_sequence := isRealRooted_of_strictInterl_pos_X_lag_combo_sequence
+
+@[deprecated strictInterl_left_pos_X_lag_combo_of_strictInterl_nonneg (since := "2026-09-26")]
+alias prec_left_pos_X_lag_combo_of_prec_nonneg := strictInterl_left_pos_X_lag_combo_of_strictInterl_nonneg
 
 end RealRooted

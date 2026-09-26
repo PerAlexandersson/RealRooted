@@ -133,17 +133,17 @@ macro_rules
           | exact $hnonzero_proj)
   | `(tactic|
       rr_favard_goal_variants
-        $hinterlaces:term, $hprec:term, $hrealrooted:term, $hnonzero:term,
-        $hinterlaces_proj:term, $hprec_proj:term, $hrealrooted_proj:term,
+        $hinterlaces:term, $hstrictInterl:term, $hrealrooted:term, $hnonzero:term,
+        $hinterlaces_proj:term, $hstrictInterl_proj:term, $hrealrooted_proj:term,
         $hnonzero_proj:term) =>
       `(tactic|
         first
           | exact $hinterlaces
-          | exact $hprec
+          | exact $hstrictInterl
           | rr_exact_realrooted_sequence_or_projection $hrealrooted
           | exact $hnonzero
           | exact $hinterlaces_proj
-          | exact $hprec_proj
+          | exact $hstrictInterl_proj
           | rr_exact_realrooted_sequence_or_projection $hrealrooted_proj
           | exact $hnonzero_proj)
   | `(tactic|

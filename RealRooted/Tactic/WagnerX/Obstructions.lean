@@ -40,7 +40,7 @@ theorem exists_neg_root_upper_bound_of_nonneg_of_coeff_zero_ne {g : ℝ[X]}
   exact ⟨r0, lt_of_le_of_ne hr0_le hr0_ne, hr0_max⟩
 
 /-- Obstruction in the orientation `X^2 * f' ≪ g`. -/
-theorem not_prec_X_sq_mul_derivative_left {f g : ℝ[X]}
+theorem not_strictInterl_X_sq_mul_derivative_left {f g : ℝ[X]}
     (hgnn : HasNonnegCoeffs g)
     (hgc0 : g.coeff 0 ≠ 0) :
     ¬ StrictInterl (X ^ 2 * f.derivative) g := by
@@ -66,7 +66,7 @@ theorem not_prec_X_sq_mul_derivative_left {f g : ℝ[X]}
 
 /-- Obstruction in the orientation `g ≪ X^2 * f'` for the degree-matched
 cross-row derivative tail. -/
-theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
+theorem not_strictInterl_X_sq_mul_derivative_right {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hdeg : f.natDegree + 1 = g.natDegree)
@@ -124,5 +124,15 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
   have hzc : (0 : ℝ) ≤ c := hall 0 hq_zero_mem
   linarith
 
+
+end RealRooted
+
+/- Deprecated theorem aliases retained for the #984 Prec migration. -/
+namespace RealRooted
+@[deprecated not_strictInterl_X_sq_mul_derivative_left (since := "2026-09-26")]
+alias not_prec_X_sq_mul_derivative_left := not_strictInterl_X_sq_mul_derivative_left
+
+@[deprecated not_strictInterl_X_sq_mul_derivative_right (since := "2026-09-26")]
+alias not_prec_X_sq_mul_derivative_right := not_strictInterl_X_sq_mul_derivative_right
 
 end RealRooted

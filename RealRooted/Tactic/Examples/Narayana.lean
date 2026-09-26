@@ -29,7 +29,7 @@ example {m n : ℕ} :
 
 example {m n : ℕ} :
     StrictInterl (narayanaPolynomial m (n + 1)) (narayanaPolynomial m (n + 2)) := by
-  rr_narayana_polynomial_prec_succ using
+  rr_narayana_polynomial_strict_interl_succ using
     parameter := m,
     degree := n
 

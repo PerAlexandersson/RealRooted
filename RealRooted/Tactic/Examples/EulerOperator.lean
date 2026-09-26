@@ -13,7 +13,7 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     (hrec : ∀ n,
       P (n + 2) = (X * P (n + 1)).derivative + C (c n) * (X * P n)) :
     ∀ n, StrictInterl (P n) (P (n + 1)) := by
-  rr_prec_positive_euler_lag_sequence using
+  rr_strict_interl_positive_euler_lag_sequence using
     base := hbase,
     nonneg := hnonneg,
     positive_lc := hpos,
@@ -94,26 +94,26 @@ example {l : Nat → Nat} {P : Nat → ℝ[X]}
 example {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (thetaPlusOne p) (thetaPlusOne q) := by
-  rr_thetaPlusOne_prec0 using left_pf := hp, right_pf := hq, prec0 := hpq
+  rr_thetaPlusOne_interl using left_pf := hp, right_pf := hq, interl := hpq
 
 example {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
     (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
     ∀ i : Nat, Interl (thetaPlusOne (P i)) (thetaPlusOne (Q i)) := by
-  rr_thetaPlusOne_sequence_prec0 using
+  rr_thetaPlusOne_sequence_interl using
     left_pf := hP,
     right_pf := hQ,
-    prec0 := hPQ
+    interl := hPQ
 
 example {l : ℕ} {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q) := by
-  rr_iterateThetaPlusOne_prec0 using
+  rr_iterateThetaPlusOne_interl using
     index := l,
     left_pf := hp,
     right_pf := hq,
-    prec0 := hpq
+    interl := hpq
 
 example {l : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
@@ -121,11 +121,11 @@ example {l : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
     ∀ i : Nat,
       Interl (iterateThetaPlusOne (l i) (P i)) (iterateThetaPlusOne (l i) (Q i)) := by
-  rr_iterateThetaPlusOne_sequence_prec0 using
+  rr_iterateThetaPlusOne_sequence_interl using
     index := l,
     left_pf := hP,
     right_pf := hQ,
-    prec0 := hPQ
+    interl := hPQ
 
 end Tactic
 end RealRooted

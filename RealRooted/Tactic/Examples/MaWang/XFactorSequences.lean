@@ -125,7 +125,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       P (n + 2) = U n * P (n + 1) + X * (P (n + 1)).derivative)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
-  have hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
+  have hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
     rr_mw_derivative_X_sequence_nonneg using
       base := hbase,
       pos_lc := hpos,
@@ -133,7 +133,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       degree_two := hdeg_two,
       recurrence := hrec,
       degree_succ := hdeg_succ
-  rr_finish using hprec, hdeg_succ
+  rr_finish using hstrictInterl, hdeg_succ
 
 /-- Strict-degree real-rootedness endpoint for the `X P'` shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}

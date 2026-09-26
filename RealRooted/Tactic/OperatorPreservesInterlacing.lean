@@ -19,7 +19,7 @@ theorem operator_allCombo_sequence {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
     ∀ i : Nat, AllComboRealRooted (T (F i)) (T (G i)) := fun i =>
   preservesAllComboPairs_of_preservesRealRootedOrZero hT (hall i)
 
-theorem operator_prec0_sequence_of_interlacing_preserver
+theorem operator_interl_sequence_of_interlacing_preserver
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
     (hT : PreservesInterlacingPairsUpToOrder0 T)
     (hfg : ∀ i : Nat, StrictInterl (F i) (G i)) :
@@ -27,12 +27,12 @@ theorem operator_prec0_sequence_of_interlacing_preserver
   fun i =>
     hT (hfg i)
 
-theorem operator_prec0_sequence_up_to_order
+theorem operator_interl_sequence_up_to_order
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
     (hT : PreservesRealRootedOrZero T)
     (hfg : ∀ i : Nat, StrictInterl (F i) (G i)) :
     ∀ i : Nat, Interl (T (F i)) (T (G i)) ∨ Interl (T (G i)) (T (F i)) :=
-  operator_prec0_sequence_of_interlacing_preserver
+  operator_interl_sequence_of_interlacing_preserver
     (preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero hT) hfg
 
 syntax (name := rr_operator_all_combo_preserver_named)
@@ -57,22 +57,22 @@ syntax (name := rr_operator_interlaces_up_to_order0_named)
     "preserves" ":=" term :
   tactic
 
-syntax (name := rr_operator_prec0_sequence_of_preserver_named)
-  "rr_operator_prec0_sequence_of_preserver" " using "
+syntax (name := rr_operator_interl_sequence_of_preserver_named)
+  "rr_operator_interl_sequence_of_preserver" " using "
     "interlacing_preserver" ":=" term ","
-    "prec" ":=" term :
+    "strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_operator_prec0_up_to_order_named)
-  "rr_operator_prec0_up_to_order" " using "
+syntax (name := rr_operator_interl_up_to_order_named)
+  "rr_operator_interl_up_to_order" " using "
     "preserves" ":=" term ","
-    "prec" ":=" term :
+    "strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_operator_prec0_sequence_up_to_order_named)
-  "rr_operator_prec0_sequence_up_to_order" " using "
+syntax (name := rr_operator_interl_sequence_up_to_order_named)
+  "rr_operator_interl_sequence_up_to_order" " using "
     "preserves" ":=" term ","
-    "prec" ":=" term :
+    "strictInterl" ":=" term :
   tactic
 
 macro_rules
@@ -101,6 +101,65 @@ macro_rules
         exact RealRooted.preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
           $hT)
   | `(tactic|
+      rr_operator_interl_sequence_of_preserver using
+        interlacing_preserver := $hT:term,
+        strictInterl := $hfg:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.operator_interl_sequence_of_interlacing_preserver
+          $hT $hfg)
+  | `(tactic|
+      rr_operator_interl_up_to_order using
+        preserves := $hT:term,
+        strictInterl := $hfg:term) =>
+      `(tactic|
+        exact RealRooted.preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
+          $hT $hfg)
+  | `(tactic|
+      rr_operator_interl_sequence_up_to_order using
+        preserves := $hT:term,
+        strictInterl := $hfg:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.operator_interl_sequence_up_to_order
+          $hT $hfg)
+
+end Tactic
+end RealRooted
+namespace RealRooted
+namespace Tactic
+@[deprecated operator_interl_sequence_of_interlacing_preserver (since := "2026-09-26")]
+alias operator_prec0_sequence_of_interlacing_preserver := operator_interl_sequence_of_interlacing_preserver
+
+@[deprecated operator_interl_sequence_up_to_order (since := "2026-09-26")]
+alias operator_prec0_sequence_up_to_order := operator_interl_sequence_up_to_order
+
+end Tactic
+end RealRooted
+
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_operator_prec0_sequence_of_preserver_named_legacy)
+  "rr_operator_prec0_sequence_of_preserver" " using "
+    "interlacing_preserver" ":=" term ","
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_operator_prec0_up_to_order_named_legacy)
+  "rr_operator_prec0_up_to_order" " using "
+    "preserves" ":=" term ","
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_operator_prec0_sequence_up_to_order_named_legacy)
+  "rr_operator_prec0_sequence_up_to_order" " using "
+    "preserves" ":=" term ","
+    "prec" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
       rr_operator_prec0_sequence_of_preserver using
         interlacing_preserver := $hT:term,
         prec := $hfg:term) =>
@@ -121,6 +180,5 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.operator_prec0_sequence_up_to_order
           $hT $hfg)
-
 end Tactic
 end RealRooted

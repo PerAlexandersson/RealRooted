@@ -13,8 +13,8 @@ example {f g : ℝ[X]} {a b : ℝ}
     (hb : 0 ≤ b)
     (hab : 0 < a ∨ 0 < b) :
     StrictInterl (C a * f + C b * g) g := by
-  rr_pos_combo_nonneg_right_prec using
-    prec := hfg,
+  rr_pos_combo_nonneg_right_strict_interl using
+    strictInterl := hfg,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
     left_coeff_nonneg := ha,
@@ -29,8 +29,8 @@ example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
     (hb : ∀ i : Nat, 0 ≤ b i)
     (hab : ∀ i : Nat, 0 < a i ∨ 0 < b i) :
     ∀ i : Nat, StrictInterl (C (a i) * F i + C (b i) * G i) (G i) := by
-  rr_pos_combo_sequence_nonneg_right_prec using
-    prec := hfg,
+  rr_pos_combo_sequence_nonneg_right_strict_interl using
+    strictInterl := hfg,
     left_pos_lc := hF,
     right_pos_lc := hG,
     left_coeff_nonneg := ha,
@@ -46,7 +46,7 @@ example {f g : ℝ[X]} {a b : ℝ}
     (hab : 0 < a ∨ 0 < b) :
     ((C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits) := by
   rr_pos_combo_nonneg_realrooted using
-    prec := hfg,
+    strictInterl := hfg,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
     left_coeff_nonneg := ha,
@@ -64,7 +64,7 @@ example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
       (C (a i) * F i + C (b i) * G i) ≠ 0 ∧
         (C (a i) * F i + C (b i) * G i).Splits := by
   rr_pos_combo_sequence_nonneg_realrooted using
-    prec := hfg,
+    strictInterl := hfg,
     left_pos_lc := hF,
     right_pos_lc := hG,
     left_coeff_nonneg := ha,
@@ -79,7 +79,7 @@ example {f g : ℝ[X]} {a b : ℝ}
     (hb : 0 < b) :
     ((C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits) := by
   rr_pos_combo_positive_realrooted using
-    prec := hfg,
+    strictInterl := hfg,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
     left_coeff_pos := ha,
@@ -95,7 +95,7 @@ example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
       (C (a i) * F i + C (b i) * G i) ≠ 0 ∧
         (C (a i) * F i + C (b i) * G i).Splits := by
   rr_pos_combo_sequence_positive_realrooted using
-    prec := hfg,
+    strictInterl := hfg,
     left_pos_lc := hF,
     right_pos_lc := hG,
     left_coeff_pos := ha,
@@ -186,8 +186,8 @@ example {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g := by
-  rr_pos_combo_of_prec using
-    prec := hfg,
+  rr_pos_combo_of_strict_interl using
+    strictInterl := hfg,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos
 
@@ -196,8 +196,8 @@ example {F G : Nat → ℝ[X]}
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i)) :
     ∀ i : Nat, PosComboRealRooted (F i) (G i) := by
-  rr_pos_combo_sequence_of_prec using
-    prec := hfg,
+  rr_pos_combo_sequence_of_strict_interl using
+    strictInterl := hfg,
     left_pos_lc := hF,
     right_pos_lc := hG
 
@@ -479,8 +479,8 @@ example {f g : ℝ[X]} {a b : ℝ}
     (ha : 0 < a)
     (hb : 0 < b) :
     StrictInterl (C a * f + C b * g) g := by
-  rr_pos_combo_convex_right_prec using
-    prec := hfg,
+  rr_pos_combo_convex_right_strict_interl using
+    strictInterl := hfg,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
     left_coeff_pos := ha,
@@ -497,8 +497,8 @@ example {f g : ℝ[X]} {a b : ℝ}
     (hsplits : (C a * f + C b * g).Splits)
     (hcop : IsCoprime (C a * f) (C b * g)) :
     StrictInterl f (C a * f + C b * g) := by
-  rr_pos_combo_nonneg_left_prec using
-    prec := hfg,
+  rr_pos_combo_nonneg_left_strict_interl using
+    strictInterl := hfg,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
     left_coeff_nonneg := ha,
@@ -518,8 +518,8 @@ example {f g : ℝ[X]} {a b : ℝ}
     (hsplits : (C a * f + C b * g).Splits)
     (hcop : IsCoprime (C a * f) (C b * g)) :
     StrictInterl f (C a * f + C b * g) := by
-  rr_pos_combo_convex_left_prec using
-    prec := hfg,
+  rr_pos_combo_convex_left_strict_interl using
+    strictInterl := hfg,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
     left_coeff_pos := ha,
@@ -542,12 +542,12 @@ example {d f g f' g' : ℝ[X]} {a b : ℝ}
     (hsplits : (C a * f' + C b * g').Splits)
     (hcop : IsCoprime (C a * f') (C b * g')) :
     StrictInterl f (C a * f + C b * g) := by
-  rr_pos_combo_convex_left_common_factor_prec using
+  rr_pos_combo_convex_left_common_factor_strict_interl using
     factor_ne_zero := hd_ne,
     factor_splits := hd_splits,
     left_factorization := hf_def,
     right_factorization := hg_def,
-    reduced_prec := hfg,
+    reduced_strictInterl := hfg,
     reduced_left_pos_lc := hf_pos,
     reduced_right_pos_lc := hg_pos,
     left_coeff_pos := ha,

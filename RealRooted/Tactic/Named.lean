@@ -44,7 +44,7 @@ def namedSuffixCandidates (suffix : String) : List String :=
   | "_splits" => ["_splits", "_generated_splits"]
   | "_realRooted" => ["_realRooted", "_generated_realRooted"]
   | "_interlaces" => ["_interlaces", "_generated_interlaces"]
-  | "_prec" => ["_prec", "_generated_prec"]
+  | "_strictInterl" => ["_strictInterl", "_generated_strictInterl"]
   | _ => [suffix]
 
 def mkNamedTheoremApp? (cName : Name) (suffix : String) (arg : Expr) :

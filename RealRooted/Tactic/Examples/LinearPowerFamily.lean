@@ -14,8 +14,8 @@ namespace Tactic
 example {f g : ℝ[X]} (hgf : StrictInterl g f)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) (n : Nat) :
     StrictInterl (X ^ n * f) (X ^ (n + 1) * g) := by
-  rr_prec_X_pow_mul_X_pow_succ using
-    reverse_prec := hgf,
+  rr_strict_interl_X_pow_mul_X_pow_succ using
+    reverse_strictInterl := hgf,
     left_nonneg := hfnn,
     right_nonneg := hgnn,
     index := n

@@ -52,8 +52,8 @@ syntax (name := rr_narayana_polynomial_nonpos_roots_named)
     "degree" ":=" term :
   tactic
 
-syntax (name := rr_narayana_polynomial_prec_succ_named)
-  "rr_narayana_polynomial_prec_succ" " using "
+syntax (name := rr_narayana_polynomial_strict_interl_succ_named)
+  "rr_narayana_polynomial_strict_interl_succ" " using "
     "parameter" ":=" term ","
     "degree" ":=" term :
   tactic
@@ -107,10 +107,10 @@ macro_rules
           RealRooted.IsPFPolynomial.hasOnlyNonposRoots
             (RealRooted.narayanaPolynomialRootLocation $m $n))
   | `(tactic|
-      rr_narayana_polynomial_prec_succ using
+      rr_narayana_polynomial_strict_interl_succ using
         parameter := $m:term,
         degree := $n:term) =>
-      `(tactic| exact RealRooted.prec_narayanaPolynomial_succ $m $n)
+      `(tactic| exact RealRooted.strictInterl_narayanaPolynomial_succ $m $n)
   | `(tactic|
       rr_narayana_polynomial_sequence_pf using
         parameter := $m:term,
@@ -132,5 +132,24 @@ macro_rules
         degree := $d:term) =>
       `(tactic| exact RealRooted.Tactic.narayanaPolynomial_sequence_nonpos_roots $m $d)
 
+end Tactic
+end RealRooted
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_narayana_polynomial_prec_succ_named_legacy)
+  "rr_narayana_polynomial_prec_succ" " using "
+    "parameter" ":=" term ","
+    "degree" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_narayana_polynomial_prec_succ using
+        parameter := $m:term,
+        degree := $n:term) =>
+      `(tactic| exact RealRooted.prec_narayanaPolynomial_succ $m $n)
 end Tactic
 end RealRooted

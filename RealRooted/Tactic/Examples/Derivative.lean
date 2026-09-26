@@ -32,7 +32,7 @@ example {p : ℝ[X]} (hsplits : p.Splits) (hdeg : 2 ≤ p.natDegree) :
 
 example {p : ℝ[X]} (hsplits : p.Splits) (hdeg : 2 ≤ p.natDegree) :
     StrictInterl p.derivative p := by
-  rr_derivative_prec using
+  rr_derivative_strict_interl using
     splits := hsplits,
     degree_two := hdeg
 
@@ -40,13 +40,13 @@ example {P : Nat → ℝ[X]}
     (hsplits : ∀ i : Nat, (P i).Splits)
     (hdeg : ∀ i : Nat, 2 ≤ (P i).natDegree) :
     ∀ i : Nat, StrictInterl (P i).derivative (P i) := by
-  rr_derivative_sequence_prec using
+  rr_derivative_sequence_strict_interl using
     splits := hsplits,
     degree_two := hdeg
 
 example {p : ℝ[X]} (hsplits : p.Splits) (hdeg : 2 ≤ p.natDegree) :
     StrictInterl p.derivative p := by
-  rr_derivative_prec using
+  rr_derivative_strict_interl using
     splits := hsplits
 
 example {p : ℝ[X]} (hnn : HasNonnegCoeffs p) :

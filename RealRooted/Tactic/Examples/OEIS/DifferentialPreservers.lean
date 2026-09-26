@@ -20,9 +20,9 @@ example {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
     (hT : PreservesRealRootedOrZero T)
     (hfg : ∀ n : Nat, StrictInterl (F n) (G n)) :
     ∀ n : Nat, Interl (T (F n)) (T (G n)) ∨ Interl (T (G n)) (T (F n)) := by
-  rr_operator_prec0_sequence_up_to_order using
+  rr_operator_interl_sequence_up_to_order using
     preserves := hT,
-    prec := hfg
+    strictInterl := hfg
 
 /-- All-combinations derivative row-family exit exposed through the OEIS
 facade. -/
@@ -37,7 +37,7 @@ example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (P n).Splits)
     (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree) :
     ∀ n : Nat, StrictInterl (P n).derivative (P n) := by
-  rr_derivative_sequence_prec using
+  rr_derivative_sequence_strict_interl using
     splits := hP,
     degree_two := hdeg
 

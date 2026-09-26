@@ -21,8 +21,8 @@ example {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hG : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
     ∀ n : Nat, PosComboRealRooted (F n) (G n) := by
-  rr_pos_combo_sequence_of_prec using
-    prec := hfg,
+  rr_pos_combo_sequence_of_strict_interl using
+    strictInterl := hfg,
     left_pos_lc := hF,
     right_pos_lc := hG
 
@@ -38,17 +38,17 @@ facade. -/
 example {H : Nat → ℝ[X]} {L : Nat → List (ℝ × ℝ[X])}
     (hl : ∀ n : Nat, WeightedCompatibleLeft (H n) (L n)) :
     ∀ n : Nat, StrictInterl (H n) (weightedSum (L n)) := by
-  rr_weighted_sum_sequence_left_prec using compatible := hl
+  rr_weighted_sum_sequence_left_strict_interl using compatible := hl
 
 /-- Unweighted Wagner-sum row-family common-right exit exposed through the OEIS
 facade. -/
 example {L : Nat → List ℝ[X]} {H : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, ∀ p ∈ L n, StrictInterl p (H n))
+    (hstrictInterl : ∀ n : Nat, ∀ p ∈ L n, StrictInterl p (H n))
     (hpos : ∀ n : Nat, ∀ p ∈ L n, HasPosLeadingCoeff p)
     (hne : ∀ n : Nat, L n ≠ []) :
     ∀ n : Nat, StrictInterl (L n).sum (H n) := by
-  rr_sum_sequence_right_prec using
-    all_prec := hprec,
+  rr_sum_sequence_right_strict_interl using
+    all_strictInterl := hstrictInterl,
     terms_pos_lc := hpos,
     nonempty := hne
 

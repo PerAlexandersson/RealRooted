@@ -30,7 +30,7 @@ theorem isRealRooted_of_fPolynomial_isRealRooted_cert
   isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs hpdeg hfp.1 hfp.2 hpnn
 
 /-- Forward `StrictInterl` transport through `fPolynomial` in any ambient degree. -/
-theorem prec_fPolynomial_of_prec
+theorem strictInterl_fPolynomial_of_strictInterl
     {d : Nat} {u v : ℝ[X]}
     (hud : u.natDegree ≤ d)
     (hvd : v.natDegree ≤ d)
@@ -41,7 +41,7 @@ theorem prec_fPolynomial_of_prec
   (strictInterlFPolynomialTransport hud hvd hu_nonneg hv_nonneg).mpr h
 
 /-- Backward `StrictInterl` transport through `fPolynomial` in any ambient degree. -/
-theorem prec_of_prec_fPolynomial
+theorem strictInterl_of_strictInterl_fPolynomial
     {d : Nat} {u v : ℝ[X]}
     (hud : u.natDegree ≤ d)
     (hvd : v.natDegree ≤ d)
@@ -69,38 +69,38 @@ theorem isRealRooted_of_fPolynomial_sequence_isRealRooted_cert
     ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits := fun i =>
   isRealRooted_of_fPolynomial_isRealRooted_cert (hdeg i) (hfPrr i) (hnn i)
 
-theorem prec_fPolynomial_sequence_of_prec
+theorem strictInterl_fPolynomial_sequence_of_strictInterl
     {d : Nat → Nat} {U V : Nat → ℝ[X]}
     (hud : ∀ i : Nat, (U i).natDegree ≤ d i)
     (hvd : ∀ i : Nat, (V i).natDegree ≤ d i)
     (hu_nonneg : ∀ i : Nat, HasNonnegCoeffs (U i))
     (hv_nonneg : ∀ i : Nat, HasNonnegCoeffs (V i))
-    (hprec : ∀ i : Nat, StrictInterl (U i) (V i)) :
+    (hstrictInterl : ∀ i : Nat, StrictInterl (U i) (V i)) :
     ∀ i : Nat, StrictInterl (fPolynomial (d i) (U i)) (fPolynomial (d i) (V i)) :=
-  fun i => prec_fPolynomial_of_prec (hud i) (hvd i)
-    (hu_nonneg i) (hv_nonneg i) (hprec i)
+  fun i => strictInterl_fPolynomial_of_strictInterl (hud i) (hvd i)
+    (hu_nonneg i) (hv_nonneg i) (hstrictInterl i)
 
-theorem prec_of_prec_fPolynomial_sequence
+theorem strictInterl_of_strictInterl_fPolynomial_sequence
     {d : Nat → Nat} {U V : Nat → ℝ[X]}
     (hud : ∀ i : Nat, (U i).natDegree ≤ d i)
     (hvd : ∀ i : Nat, (V i).natDegree ≤ d i)
     (hu_nonneg : ∀ i : Nat, HasNonnegCoeffs (U i))
     (hv_nonneg : ∀ i : Nat, HasNonnegCoeffs (V i))
-    (hprec : ∀ i : Nat, StrictInterl (fPolynomial (d i) (U i)) (fPolynomial (d i) (V i))) :
+    (hstrictInterl : ∀ i : Nat, StrictInterl (fPolynomial (d i) (U i)) (fPolynomial (d i) (V i))) :
     ∀ i : Nat, StrictInterl (U i) (V i) := fun i =>
-  prec_of_prec_fPolynomial (hud i) (hvd i)
-    (hu_nonneg i) (hv_nonneg i) (hprec i)
+  strictInterl_of_strictInterl_fPolynomial (hud i) (hvd i)
+    (hu_nonneg i) (hv_nonneg i) (hstrictInterl i)
 
-theorem posComboRealRooted_fPolynomial_sequence_of_prec
+theorem posComboRealRooted_fPolynomial_sequence_of_strictInterl
     {d : Nat → Nat} {U V : Nat → ℝ[X]}
-    (hprec : ∀ i : Nat, StrictInterl (U i) (V i))
+    (hstrictInterl : ∀ i : Nat, StrictInterl (U i) (V i))
     (hud : ∀ i : Nat, (U i).natDegree ≤ d i)
     (hvd : ∀ i : Nat, (V i).natDegree ≤ d i)
     (hu_nonneg : ∀ i : Nat, HasNonnegCoeffs (U i))
     (hv_nonneg : ∀ i : Nat, HasNonnegCoeffs (V i)) :
     ∀ i : Nat, PosComboRealRooted (fPolynomial (d i) (U i))
       (fPolynomial (d i) (V i)) := fun i =>
-  posComboRealRooted_fPolynomial_of_prec (hprec i) (hud i) (hvd i)
+  posComboRealRooted_fPolynomial_of_strictInterl (hstrictInterl i) (hud i) (hvd i)
     (hu_nonneg i) (hv_nonneg i)
 
 namespace Tactic
@@ -133,26 +133,26 @@ syntax (name := rr_of_fPolynomial_sequence_realrooted_named)
     "nonneg" ":=" term :
   tactic
 
-syntax (name := rr_fPolynomial_prec_named)
-  "rr_fPolynomial_prec" " using "
+syntax (name := rr_fPolynomial_strict_interl_named)
+  "rr_fPolynomial_strict_interl" " using "
     "left_degree" ":=" term ","
     "right_degree" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
-    "prec" ":=" term :
+    "strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_of_fPolynomial_prec_named)
-  "rr_of_fPolynomial_prec" " using "
+syntax (name := rr_of_fPolynomial_strict_interl_named)
+  "rr_of_fPolynomial_strict_interl" " using "
     "left_degree" ":=" term ","
     "right_degree" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
-    "transformed_prec" ":=" term :
+    "transformed_strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_fPolynomial_prec_iff_named)
-  "rr_fPolynomial_prec_iff" " using "
+syntax (name := rr_fPolynomial_strict_interl_iff_named)
+  "rr_fPolynomial_strict_interl_iff" " using "
     "left_degree" ":=" term ","
     "right_degree" ":=" term ","
     "left_nonneg" ":=" term ","
@@ -161,34 +161,34 @@ syntax (name := rr_fPolynomial_prec_iff_named)
 
 syntax (name := rr_fPolynomial_pos_combo_named)
   "rr_fPolynomial_pos_combo" " using "
-    "prec" ":=" term ","
+    "strictInterl" ":=" term ","
     "left_degree" ":=" term ","
     "right_degree" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term :
   tactic
 
-syntax (name := rr_fPolynomial_sequence_prec_named)
-  "rr_fPolynomial_sequence_prec" " using "
+syntax (name := rr_fPolynomial_sequence_strict_interl_named)
+  "rr_fPolynomial_sequence_strict_interl" " using "
     "left_degree" ":=" term ","
     "right_degree" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
-    "prec" ":=" term :
+    "strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_of_fPolynomial_sequence_prec_named)
-  "rr_of_fPolynomial_sequence_prec" " using "
+syntax (name := rr_of_fPolynomial_sequence_strict_interl_named)
+  "rr_of_fPolynomial_sequence_strict_interl" " using "
     "left_degree" ":=" term ","
     "right_degree" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
-    "transformed_prec" ":=" term :
+    "transformed_strictInterl" ":=" term :
   tactic
 
 syntax (name := rr_fPolynomial_sequence_pos_combo_named)
   "rr_fPolynomial_sequence_pos_combo" " using "
-    "prec" ":=" term ","
+    "strictInterl" ":=" term ","
     "left_degree" ":=" term ","
     "right_degree" ":=" term ","
     "left_nonneg" ":=" term ","
@@ -228,6 +228,161 @@ macro_rules
       `(tactic|
         exact RealRooted.isRealRooted_of_fPolynomial_sequence_isRealRooted_cert
           $hdeg $hrr $hnn)
+  | `(tactic|
+      rr_fPolynomial_strict_interl using
+        left_degree := $hud:term,
+        right_degree := $hvd:term,
+        left_nonneg := $hu:term,
+        right_nonneg := $hv:term,
+        strictInterl := $hstrictInterl:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_fPolynomial_of_strictInterl $hud $hvd $hu $hv $hstrictInterl)
+  | `(tactic|
+      rr_of_fPolynomial_strict_interl using
+        left_degree := $hud:term,
+        right_degree := $hvd:term,
+        left_nonneg := $hu:term,
+        right_nonneg := $hv:term,
+        transformed_strictInterl := $hstrictInterl:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_of_strictInterl_fPolynomial $hud $hvd $hu $hv $hstrictInterl)
+  | `(tactic|
+      rr_fPolynomial_strict_interl_iff using
+        left_degree := $hud:term,
+        right_degree := $hvd:term,
+        left_nonneg := $hu:term,
+        right_nonneg := $hv:term) =>
+      `(tactic|
+        exact RealRooted.strictInterlFPolynomialTransport $hud $hvd $hu $hv)
+  | `(tactic|
+      rr_fPolynomial_pos_combo using
+        strictInterl := $hstrictInterl:term,
+        left_degree := $hud:term,
+        right_degree := $hvd:term,
+        left_nonneg := $hu:term,
+        right_nonneg := $hv:term) =>
+      `(tactic|
+        exact RealRooted.posComboRealRooted_fPolynomial_of_strictInterl
+          $hstrictInterl $hud $hvd $hu $hv)
+  | `(tactic|
+      rr_fPolynomial_sequence_strict_interl using
+        left_degree := $hud:term,
+        right_degree := $hvd:term,
+        left_nonneg := $hu:term,
+        right_nonneg := $hv:term,
+        strictInterl := $hstrictInterl:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_fPolynomial_sequence_of_strictInterl
+          $hud $hvd $hu $hv $hstrictInterl)
+  | `(tactic|
+      rr_of_fPolynomial_sequence_strict_interl using
+        left_degree := $hud:term,
+        right_degree := $hvd:term,
+        left_nonneg := $hu:term,
+        right_nonneg := $hv:term,
+        transformed_strictInterl := $hstrictInterl:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_of_strictInterl_fPolynomial_sequence
+          $hud $hvd $hu $hv $hstrictInterl)
+  | `(tactic|
+      rr_fPolynomial_sequence_pos_combo using
+        strictInterl := $hstrictInterl:term,
+        left_degree := $hud:term,
+        right_degree := $hvd:term,
+        left_nonneg := $hu:term,
+        right_nonneg := $hv:term) =>
+      `(tactic|
+        exact RealRooted.posComboRealRooted_fPolynomial_sequence_of_strictInterl
+          $hstrictInterl $hud $hvd $hu $hv)
+
+end Tactic
+end RealRooted
+namespace RealRooted
+@[deprecated strictInterl_fPolynomial_of_strictInterl (since := "2026-09-26")]
+alias prec_fPolynomial_of_prec := strictInterl_fPolynomial_of_strictInterl
+
+@[deprecated strictInterl_of_strictInterl_fPolynomial (since := "2026-09-26")]
+alias prec_of_prec_fPolynomial := strictInterl_of_strictInterl_fPolynomial
+
+@[deprecated strictInterl_fPolynomial_sequence_of_strictInterl (since := "2026-09-26")]
+alias prec_fPolynomial_sequence_of_prec := strictInterl_fPolynomial_sequence_of_strictInterl
+
+@[deprecated strictInterl_of_strictInterl_fPolynomial_sequence (since := "2026-09-26")]
+alias prec_of_prec_fPolynomial_sequence := strictInterl_of_strictInterl_fPolynomial_sequence
+
+@[deprecated posComboRealRooted_fPolynomial_sequence_of_strictInterl (since := "2026-09-26")]
+alias posComboRealRooted_fPolynomial_sequence_of_prec := posComboRealRooted_fPolynomial_sequence_of_strictInterl
+
+end RealRooted
+
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_fPolynomial_prec_named_legacy)
+  "rr_fPolynomial_prec" " using "
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_of_fPolynomial_prec_named_legacy)
+  "rr_of_fPolynomial_prec" " using "
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "transformed_prec" ":=" term :
+  tactic
+
+syntax (name := rr_fPolynomial_prec_iff_named_legacy)
+  "rr_fPolynomial_prec_iff" " using "
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term :
+  tactic
+
+syntax (name := rr_fPolynomial_pos_combo_named_legacy)
+  "rr_fPolynomial_pos_combo" " using "
+    "prec" ":=" term ","
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term :
+  tactic
+
+syntax (name := rr_fPolynomial_sequence_prec_named_legacy)
+  "rr_fPolynomial_sequence_prec" " using "
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_of_fPolynomial_sequence_prec_named_legacy)
+  "rr_of_fPolynomial_sequence_prec" " using "
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "transformed_prec" ":=" term :
+  tactic
+
+syntax (name := rr_fPolynomial_sequence_pos_combo_named_legacy)
+  "rr_fPolynomial_sequence_pos_combo" " using "
+    "prec" ":=" term ","
+    "left_degree" ":=" term ","
+    "right_degree" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term :
+  tactic
+
+macro_rules
   | `(tactic|
       rr_fPolynomial_prec using
         left_degree := $hud:term,
@@ -294,6 +449,5 @@ macro_rules
       `(tactic|
         exact RealRooted.posComboRealRooted_fPolynomial_sequence_of_prec
           $hprec $hud $hvd $hu $hv)
-
 end Tactic
 end RealRooted

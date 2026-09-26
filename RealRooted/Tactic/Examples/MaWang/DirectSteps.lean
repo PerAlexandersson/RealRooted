@@ -223,7 +223,7 @@ example {f g a b : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff (a * f + b * g))
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
     StrictInterl f (a * f + b * g) := by
-  rr_prec_evalCoeff_nonpos using
+  rr_strict_interl_evalCoeff_nonpos using
     interlaces := hgf,
     source_pos_lc := hg_pos,
     target_pos_lc := hF_pos,
@@ -238,7 +238,7 @@ example {f g a b : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff (a * f + b * g))
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
     StrictInterl f (a * f + b * g) := by
-  rr_prec_evalCoeff_nonpos using
+  rr_strict_interl_evalCoeff_nonpos using
     interlaces := hgf,
     source_pos_lc := hg_pos,
     target_pos_lc := hF_pos,
@@ -320,7 +320,7 @@ example {P G H A B : Nat → ℝ[X]} {n : Nat}
     (htarget_pos : ∀ k, HasPosLeadingCoeff (A k * P k + B k * G k))
     (hcoeff : ∀ k r, (P k).IsRoot r → (B k).eval r ≤ 0) :
     StrictInterl (P n) (A n * P n + B n * G n) := by
-  rr_prec_evalCoeff_nonpos
+  rr_strict_interl_evalCoeff_nonpos
 
 /-- A same-degree equality supplies both generic evaluation-step bounds. -/
 example {f g a b : ℝ[X]}
@@ -330,7 +330,7 @@ example {f g a b : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff (a * f + b * g))
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
     StrictInterl f (a * f + b * g) := by
-  rr_prec_evalCoeff_nonpos using degree := hdeg
+  rr_strict_interl_evalCoeff_nonpos using degree := hdeg
 
 
 end Tactic

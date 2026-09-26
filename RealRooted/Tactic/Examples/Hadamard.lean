@@ -378,32 +378,32 @@ example {f g p q : ℝ[X]}
     (hfg : StrictInterl f g)
     (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) := by
-  rr_hadamard_prec0 using
+  rr_hadamard_interl using
     first_left_nonneg := hf,
     first_right_nonneg := hg,
     second_left_nonneg := hp,
     second_right_nonneg := hq,
-    first_prec := hfg,
-    second_prec := hpq
+    first_strictInterl := hfg,
+    second_strictInterl := hpq
 
 example {f g p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hfg : Interl f g) (hpq : Interl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) := by
-  rr_hadamard_pf_prec0
+  rr_hadamard_pf_interl
 
 example {f g p : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
     (hfg : Interl f g) :
     Interl (hadamardProduct f p) (hadamardProduct g p) := by
-  rr_hadamard_pf_prec0
+  rr_hadamard_pf_interl
 
 example {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (hadamardProduct f p) (hadamardProduct f q) := by
-  rr_hadamard_pf_prec0
+  rr_hadamard_pf_interl
 
 example {F G P Q : Nat → ℝ[X]}
     (hF : ∀ i : Nat, IsPFPolynomial (F i))
@@ -415,7 +415,7 @@ example {F G P Q : Nat → ℝ[X]}
     ∀ n : Nat,
       Interl (hadamardProduct (F n) (P n)) (hadamardProduct (G n) (Q n)) := by
   intro n
-  rr_hadamard_pf_prec0
+  rr_hadamard_pf_interl
 
 example {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
@@ -486,13 +486,13 @@ example {F G P Q : Nat → ℝ[X]}
     (hPQ : ∀ i : Nat, StrictInterl (P i) (Q i)) :
     ∀ i : Nat,
       Interl (hadamardProduct (F i) (P i)) (hadamardProduct (G i) (Q i)) := by
-  rr_hadamard_sequence_prec0 using
+  rr_hadamard_sequence_interl using
     first_left_nonneg := hF,
     first_right_nonneg := hG,
     second_left_nonneg := hP,
     second_right_nonneg := hQ,
-    first_prec := hFG,
-    second_prec := hPQ
+    first_strictInterl := hFG,
+    second_strictInterl := hPQ
 
 end Tactic
 end RealRooted

@@ -15,7 +15,9 @@ as a convenient fallback once the proof shape is stable.
 - `[rr_pos_lc]` for positive-leading-coefficient lemmas;
 - `[rr_nonneg]` for nonnegative-coefficient lemmas;
 - `[rr_root_bound]` for root-interval lemmas;
-- `[rr_base_prec]` for base `StrictInterl` cases;
+- `[rr_base_strict_interl]` for base `StrictInterl` cases;
+- `[rr_base_prec]` is retained as deprecated compatibility syntax for the
+  former name of the preceding attribute;
 - `[rr_base_interlaces]` for base `Interlaces` cases.
 
 Planned matrix attributes:
@@ -50,9 +52,13 @@ initialize rrRootBoundAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_root_bound
     "root-location lemmas used by RealRooted recurrence tactics"
 
+initialize rrBaseStrictInterlAttr : Lean.TagAttribute ←
+  Lean.registerTagAttribute `rr_base_strict_interl
+    "base StrictInterl cases used by RealRooted recurrence tactics"
+
 initialize rrBasePrecAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_base_prec
-    "base StrictInterl cases used by RealRooted recurrence tactics"
+    "deprecated compatibility name for rr_base_strict_interl"
 
 initialize rrBaseInterlacesAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_base_interlaces
@@ -90,6 +96,7 @@ def rrCertificateAttributes : Array (Name × Lean.TagAttribute) :=
     (`rr_pos_lc, rrPosLCAttr),
     (`rr_nonneg, rrNonnegAttr),
     (`rr_root_bound, rrRootBoundAttr),
+    (`rr_base_strict_interl, rrBaseStrictInterlAttr),
     (`rr_base_prec, rrBasePrecAttr),
     (`rr_base_interlaces, rrBaseInterlacesAttr),
     (`rr_matrix_rect, rrMatrixRectAttr),

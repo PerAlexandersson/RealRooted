@@ -46,7 +46,7 @@ example
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
     (hpos : (bezoutMatrix n q p).PosDef) :
     StrictInterl p q := by
-  rr_bezout_prec_of_pos_def using
+  rr_bezout_strict_interl_of_pos_def using
     left_pos_lc := hp_pos,
     right_pos_lc := hq_pos,
     left_degree := hp_deg,
@@ -112,7 +112,7 @@ example
     (hQ_deg : ∀ i : Nat, (Q i).natDegree = d i)
     (hpos : ∀ i : Nat, (bezoutMatrix (d i) (Q i) (P i)).PosDef) :
     ∀ i : Nat, StrictInterl (P i) (Q i) := by
-  rr_bezout_sequence_prec_of_pos_def using
+  rr_bezout_sequence_strict_interl_of_pos_def using
     left_pos_lc := hP_pos,
     right_pos_lc := hQ_pos,
     left_degree := hP_deg,
@@ -161,7 +161,7 @@ example
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n) :
     StrictInterlSameDegree p q ↔ (bezoutMatrix n q p).PosDef := by
-  rr_bezout_strict_prec_same_degree_iff using
+  rr_bezout_strict_interl_same_degree_iff using
     left_pos_lc := hp_pos,
     right_pos_lc := hq_pos,
     left_degree := hp_deg,
@@ -172,19 +172,19 @@ example
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
     (hstrict : StrictInterlSameDegree p q) :
     (bezoutMatrix n q p).PosDef := by
-  rr_bezout_pos_def_of_strict_prec_same_degree using
+  rr_bezout_pos_def_of_strict_interl_same_degree using
     left_pos_lc := hp_pos,
     right_pos_lc := hq_pos,
     left_degree := hp_deg,
     right_degree := hq_deg,
-    strict_prec_same_degree := hstrict
+    strict_interl_same_degree := hstrict
 
 example
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
     (hpos : (bezoutMatrix n q p).PosDef) :
     StrictInterlSameDegree p q := by
-  rr_bezout_strict_prec_same_degree_of_pos_def using
+  rr_bezout_strict_interl_same_degree_of_pos_def using
     left_pos_lc := hp_pos,
     right_pos_lc := hq_pos,
     left_degree := hp_deg,
@@ -198,12 +198,12 @@ example
     (hQ_deg : ∀ i : Nat, (Q i).natDegree = d i)
     (hstrict : ∀ i : Nat, StrictInterlSameDegree (P i) (Q i)) :
     ∀ i : Nat, (bezoutMatrix (d i) (Q i) (P i)).PosDef := by
-  rr_bezout_sequence_pos_def_of_strict_prec_same_degree using
+  rr_bezout_sequence_pos_def_of_strict_interl_same_degree using
     left_pos_lc := hP_pos,
     right_pos_lc := hQ_pos,
     left_degree := hP_deg,
     right_degree := hQ_deg,
-    strict_prec_same_degree := hstrict
+    strict_interl_same_degree := hstrict
 
 example
     (hP_pos : ∀ i : Nat, HasPosLeadingCoeff (P i))
@@ -212,7 +212,7 @@ example
     (hQ_deg : ∀ i : Nat, (Q i).natDegree = d i)
     (hpos : ∀ i : Nat, (bezoutMatrix (d i) (Q i) (P i)).PosDef) :
     ∀ i : Nat, StrictInterlSameDegree (P i) (Q i) := by
-  rr_bezout_sequence_strict_prec_same_degree_of_pos_def using
+  rr_bezout_sequence_strict_interl_same_degree_of_pos_def using
     left_pos_lc := hP_pos,
     right_pos_lc := hQ_pos,
     left_degree := hP_deg,

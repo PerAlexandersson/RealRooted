@@ -650,15 +650,15 @@ example
         f.coeff 0 ≠ 0 →
         g.coeff 0 = 0 →
         StrictInterl f g) :
-    PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement := by
-  rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec using
+    PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement := by
+  rr_succDegree_rootCountLeadRightZero_divXStrictInterl_of_strict_interl using
     orientation := horient
 
 example
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement := by
-  rr_succDegree_rootCountLeadRightZero_of_divXPrec using
-    divX_prec := hdivX
+  rr_succDegree_rootCountLeadRightZero_of_divXStrictInterl using
+    divX_strictInterl := hdivX
 
 example
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
@@ -670,16 +670,16 @@ example
 
 example
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement := by
-  rr_succDegree_rootCountLead_of_bothNonzero_and_divXPrec using
+  rr_succDegree_rootCountLead_of_bothNonzero_and_divXStrictInterl using
     both_nonzero := hboth,
-    divX_prec := hdivX
+    divX_strictInterl := hdivX
 
 example
-    (horient : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement) :
+    (horient : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement) :
     PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement := by
-  rr_succDegree_rootCountResidual_of_prec using
+  rr_succDegree_rootCountResidual_of_strict_interl using
     orientation := horient
 
 example
@@ -716,23 +716,23 @@ example
 
 example
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement)
     (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXPrec using
+  rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXStrictInterl using
     both_nonzero := hboth,
-    divX_prec := hdivX,
+    divX_strictInterl := hdivX,
     residual := hres
 
 example
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement)
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  rr_succDegree_pair_common_interleaver_residualPrec_bothNonzero_divXPrec using
-    residual_prec := hres,
+  rr_succDegree_pair_common_interleaver_residualStrictInterl_bothNonzero_divXStrictInterl using
+    residual_strictInterl := hres,
     both_nonzero := hboth,
-    divX_prec := hdivX
+    divX_strictInterl := hdivX
 
 example
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
