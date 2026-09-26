@@ -203,6 +203,9 @@ end RealRooted.Challenges.Sample
         second = render_site(self.root, pages, resolved, REVISION)
         self.assertEqual(first, second)
         self.assertIn("theorems/sample/index.html", first)
+        self.assertIn('class="catalogue-home"', first["index.html"])
+        self.assertIn('class="brand"', first["theorems/sample/index.html"])
+        self.assertIn('class="declaration-group"', first["theorems/sample/index.html"])
         self.assertIn('href="../../assets/site.css"', first["theorems/sample/index.html"])
         self.assertIn("RealRooted/Canonical.lean#L2", first["theorems/sample/index.html"])
 
