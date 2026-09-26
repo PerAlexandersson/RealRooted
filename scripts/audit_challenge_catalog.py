@@ -110,7 +110,7 @@ def generate_module(
         "          | .thmInfo _ => \"theorem\"",
         "          | .defnInfo _ | .opaqueInfo _ | .inductInfo _ => \"definition\"",
         "          | .axiomInfo _ => \"axiom\"",
-        "          | .quotInfo _ | .ctorInfo _ => \"other\"",
+        "          | .quotInfo _ | .ctorInfo _ | .recInfo _ => \"other\"",
         "        let axioms ← liftCoreM <| Lean.collectAxioms name",
         "        let axiomText := String.intercalate \",\" (axioms.toList.map Name.toString)",
         "        liftIO <| IO.println (\"CATALOG_AUDIT|\" ++ name.toString ++ "

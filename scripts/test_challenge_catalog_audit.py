@@ -34,5 +34,12 @@ class ChallengeCatalogAuditTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 audit.parse_raw(path)
 
+    def test_generated_kind_match_covers_recursor_constants(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = pathlib.Path(directory) / "Audit.lean"
+            audit.generate_module(pathlib.Path(directory), path, [])
+            source = path.read_text(encoding="utf-8")
+            self.assertIn(".recInfo _ => \"other\"", source)
+
 if __name__ == "__main__":
     unittest.main()
