@@ -28,13 +28,20 @@ theorem peakValuePolynomial_stable (n : ℕ) (_hn : 1 ≤ n) :
 /-- Positive weighted diagonal specializations in ranks `n` and `n + 1` are
 in proper position. This is the second assertion of `peakValueStability`, with
 the paper's larger rank equal to `n + 1`. -/
-theorem peakValueWeightedDiagonal_consecutive_prec
+theorem peakValueWeightedDiagonal_consecutive_strictInterl
     (n : ℕ) (hn : 1 ≤ n) (wt : Fin (n + 1) → ℝ)
     (hwt : ∀ j, 0 < wt j) :
     StrictInterl
       (peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc))
       (peakValueWeightedDiagonal wt) :=
-  RealRooted.peakValueWeightedDiagonal_consecutive_prec n hn wt hwt
+  RealRooted.peakValueWeightedDiagonal_consecutive_strictInterl n hn wt hwt
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated peakValueWeightedDiagonal_consecutive_strictInterl
+  (since := "2026-09-26")]
+alias peakValueWeightedDiagonal_consecutive_prec :=
+  peakValueWeightedDiagonal_consecutive_strictInterl
 
 end
 

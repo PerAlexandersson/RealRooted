@@ -175,7 +175,7 @@ theorem commonPhaseRestriction_update_none_identifyLast_peakValue
   rw [hlift] at h
   simpa [peakValueOptionWeights, Function.update_self] using h
 
-theorem peakValueWeightedDiagonal_consecutive_prec_of_stable
+theorem peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
     (n : ℕ) (hn : 2 ≤ n) (wt : Fin (n + 1) → ℝ)
     (hwt : ∀ j, 0 < wt j)
     (hstable : MvRealStable (peakValuePolynomial (n + 1))) :
@@ -282,7 +282,7 @@ theorem peakValueWeightedDiagonal_two (wt : Fin 2 → ℝ) :
     peakValuePolynomial_eq_C_factorial_of_le_two 2 (by norm_num)]
   simp [commonPhaseRestriction]
 
-theorem peakValueWeightedDiagonal_consecutive_prec_of_stable_all_ranks
+theorem peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks
     (n : ℕ) (hn : 1 ≤ n) (wt : Fin (n + 1) → ℝ)
     (hwt : ∀ j, 0 < wt j)
     (hstable : MvRealStable (peakValuePolynomial (n + 1))) :
@@ -290,28 +290,45 @@ theorem peakValueWeightedDiagonal_consecutive_prec_of_stable_all_ranks
       (peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc))
       (peakValueWeightedDiagonal wt) := by
   by_cases hn2 : 2 ≤ n
-  · exact peakValueWeightedDiagonal_consecutive_prec_of_stable
+  · exact peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
       n hn2 wt hwt hstable
   · have hn1 : n = 1 := by lia
     subst n
     rw [peakValueWeightedDiagonal_one,
       peakValueWeightedDiagonal_two]
-    have hprec := StrictInterl.C_mul_right
+    have hstrictInterl := StrictInterl.C_mul_right
       (StrictInterl.refl (by norm_num : (1 : ℝ[X]) ≠ 0)
         (by exact Polynomial.Splits.one))
       (by norm_num : (2 : ℝ) ≠ 0)
-    simpa using hprec
+    simpa using hstrictInterl
 
 /-- Positive weighted diagonal specializations of consecutive peak-value
 enumerators are in proper position. -/
-theorem peakValueWeightedDiagonal_consecutive_prec
+theorem peakValueWeightedDiagonal_consecutive_strictInterl
     (n : ℕ) (hn : 1 ≤ n) (wt : Fin (n + 1) → ℝ)
     (hwt : ∀ j, 0 < wt j) :
     StrictInterl
       (peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc))
       (peakValueWeightedDiagonal wt) := by
-  exact peakValueWeightedDiagonal_consecutive_prec_of_stable_all_ranks n hn wt hwt
+  exact peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks n hn wt hwt
     (peakValuePolynomial_mvRealStable (n + 1))
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
+  (since := "2026-09-26")]
+alias peakValueWeightedDiagonal_consecutive_prec_of_stable :=
+  peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
+
+@[deprecated peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks
+  (since := "2026-09-26")]
+alias peakValueWeightedDiagonal_consecutive_prec_of_stable_all_ranks :=
+  peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks
+
+@[deprecated peakValueWeightedDiagonal_consecutive_strictInterl
+  (since := "2026-09-26")]
+alias peakValueWeightedDiagonal_consecutive_prec :=
+  peakValueWeightedDiagonal_consecutive_strictInterl
 
 end
 

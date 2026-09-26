@@ -246,7 +246,7 @@ private theorem lowerReentrantCorner_shifted_recurrence (n : ℕ) :
   simpa only [Nat.add_assoc, hc4, hc3, hc2] using
     lowerReentrantCorner_recurrence (n + 1)
 
-private theorem lowerReentrantCorner_one_prec_two :
+private theorem lowerReentrantCorner_one_strictInterl_two :
     StrictInterl (lowerReentrantCorner 1) (lowerReentrantCorner 2) := by
   have hlinear : (lowerReentrantCorner 2).natDegree = 1 := by simp
   have hone : StrictInterl (1 : ℝ[X]) (lowerReentrantCorner 2) :=
@@ -259,7 +259,7 @@ private theorem lowerReentrantCorner_one_two_noCommon :
   intro r _ hr
   simp [Polynomial.IsRoot.def] at hr
 
-private theorem lowerReentrantCorner_shifted_prec_and_noCommonRoot (n : ℕ) :
+private theorem lowerReentrantCorner_shifted_strictInterl_and_noCommonRoot (n : ℕ) :
     StrictInterl (lowerReentrantCorner (n + 1)) (lowerReentrantCorner (n + 2)) ∧
       ∀ r, (lowerReentrantCorner (n + 2)).IsRoot r →
         ¬ (lowerReentrantCorner (n + 1)).IsRoot r := by
@@ -280,23 +280,23 @@ private theorem lowerReentrantCorner_shifted_prec_and_noCommonRoot (n : ℕ) :
     exact lowerReentrantCorner_hasNonnegCoeffs (m + 1)
   · intro m
     exact lowerReentrantCorner_hasPosLeadingCoeff (m + 1)
-  · exact lowerReentrantCorner_one_prec_two
+  · exact lowerReentrantCorner_one_strictInterl_two
   · exact lowerReentrantCorner_one_two_noCommon
   · exact lowerReentrantCorner_shifted_recurrence
 
-private theorem lowerReentrantCorner_zero_prec_one :
+private theorem lowerReentrantCorner_zero_strictInterl_one :
     StrictInterl (lowerReentrantCorner 0) (lowerReentrantCorner 1) := by
   have hone : StrictInterl (1 : ℝ[X]) 1 :=
     StrictInterl.refl (by simp) (by simp)
   simpa using hone.C_mul_right (a := 2) (by norm_num)
 
 /-- Consecutive rows are in proper position. -/
-theorem lowerReentrantCorner_prec (n : ℕ) :
+theorem lowerReentrantCorner_strictInterl (n : ℕ) :
     StrictInterl (lowerReentrantCorner n) (lowerReentrantCorner (n + 1)) := by
   rcases n with _ | n
-  · exact lowerReentrantCorner_zero_prec_one
+  · exact lowerReentrantCorner_zero_strictInterl_one
   · simpa [Nat.add_assoc] using
-      (lowerReentrantCorner_shifted_prec_and_noCommonRoot n).1
+      (lowerReentrantCorner_shifted_strictInterl_and_noCommonRoot n).1
 
 /-- Consecutive rows have no common real root. -/
 theorem lowerReentrantCorner_noCommonRoot (n : ℕ) (r : ℝ)
@@ -305,17 +305,17 @@ theorem lowerReentrantCorner_noCommonRoot (n : ℕ) (r : ℝ)
   rcases n with _ | n
   · intro hr0
     simp [Polynomial.IsRoot.def] at hr0
-  · exact (lowerReentrantCorner_shifted_prec_and_noCommonRoot n).2 r (by simpa using hr)
+  · exact (lowerReentrantCorner_shifted_strictInterl_and_noCommonRoot n).2 r (by simpa using hr)
 
 /-- Every row splits over the reals. -/
 theorem lowerReentrantCorner_splits (n : ℕ) :
     (lowerReentrantCorner n).Splits :=
-  (lowerReentrantCorner_prec n).1.2
+  (lowerReentrantCorner_strictInterl n).1.2
 
 /-- Every row has simple real roots. -/
 theorem lowerReentrantCorner_hasSimpleRoots (n : ℕ) :
     HasSimpleRoots (lowerReentrantCorner n) :=
-  ((lowerReentrantCorner_prec n).hasSimpleRoots_of_no_common_root fun r hr =>
+  ((lowerReentrantCorner_strictInterl n).hasSimpleRoots_of_no_common_root fun r hr =>
     lowerReentrantCorner_noCommonRoot n r hr.2 hr.1).1
 
 private theorem half_two_mul (j : ℕ) : (2 * j) / 2 = j := by
@@ -345,7 +345,7 @@ theorem lowerReentrantCorner_even_alternates (j : ℕ) :
         (↑ss : Multiset ℝ) = (lowerReentrantCorner (2 * j)).roots ∧
         (↑rs : Multiset ℝ) = (lowerReentrantCorner (2 * j + 1)).roots ∧
         ListAlternates ss rs := by
-  apply (lowerReentrantCorner_prec (2 * j)).exists_listAlternates_of_natDegree_eq
+  apply (lowerReentrantCorner_strictInterl (2 * j)).exists_listAlternates_of_natDegree_eq
   rw [lowerReentrantCorner_natDegree, lowerReentrantCorner_natDegree,
     half_two_mul, half_two_mul_add_one]
 
@@ -353,8 +353,13 @@ theorem lowerReentrantCorner_even_alternates (j : ℕ) :
 theorem lowerReentrantCorner_odd_interlaces (j : ℕ) :
     Interlaces (lowerReentrantCorner (2 * j + 1))
       (lowerReentrantCorner (2 * j + 2)) := by
-  apply (lowerReentrantCorner_prec (2 * j + 1)).toInterlaces
+  apply (lowerReentrantCorner_strictInterl (2 * j + 1)).toInterlaces
   rw [lowerReentrantCorner_natDegree, lowerReentrantCorner_natDegree,
     half_two_mul_add_one, half_two_mul_add_two]
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated lowerReentrantCorner_strictInterl (since := "2026-09-26")]
+alias lowerReentrantCorner_prec := lowerReentrantCorner_strictInterl
 
 end RealRooted.Applications.OEIS

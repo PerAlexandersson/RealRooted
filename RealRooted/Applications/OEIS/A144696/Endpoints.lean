@@ -109,7 +109,7 @@ theorem a144696Polynomial_isIdDecomposition (n : ℕ) (hn : 1 ≤ n) :
       (reflect_loweringEulerStep_of_reflect hn
         (generalizedEulerian_one_reflect n))
 
-private theorem a144696Polynomial_reciprocal_prec_of_two_le
+private theorem a144696Polynomial_reciprocal_strictInterl_of_two_le
     {n : ℕ} (hn : 2 ≤ n) :
     StrictInterl (reciprocalShift n (a144696Polynomial n))
       (a144696Polynomial n) := by
@@ -155,7 +155,7 @@ private theorem a144696Polynomial_reciprocal_prec_of_two_le
 
 /-- The reciprocal of an A144696 row polynomial precedes the polynomial
 itself. This is the endpoint relation for the reflected Bernstein chain. -/
-theorem a144696Polynomial_reciprocal_prec (n : ℕ) :
+theorem a144696Polynomial_reciprocal_strictInterl (n : ℕ) :
     StrictInterl (reciprocalShift n (a144696Polynomial n))
       (a144696Polynomial n) := by
   rcases n with _ | n
@@ -193,7 +193,7 @@ theorem a144696Polynomial_reciprocal_prec (n : ℕ) :
           _ = C 2 * X + C 1 := by rw [← map_mul]; norm_num
           _ = 1 + C 2 * X := by simp [add_comm]
       rwa [hrewrite] at hright
-    · exact a144696Polynomial_reciprocal_prec_of_two_le (by lia)
+    · exact a144696Polynomial_reciprocal_strictInterl_of_two_le (by lia)
 
 /-- Finite second-order differential recurrence for the left endpoint of the
 A144696 Bernstein-image row. -/
@@ -324,7 +324,7 @@ theorem a144696BernsteinImage_zero_reflect (d : ℕ) :
 later member. The proof concatenates the reflected and direct adjacent chains;
 the reciprocal row-polynomial endpoint closes Wagner's endpoint-chain
 criterion. -/
-theorem a144696BernsteinImage_prec {d i j : ℕ}
+theorem a144696BernsteinImage_strictInterl {d i j : ℕ}
     (hij : i ≤ j) (hj : j ≤ d) :
     StrictInterl (a144696BernsteinImage d i) (a144696BernsteinImage d j) := by
   let H : ℕ → ℝ[X] := fun t ↦
@@ -341,7 +341,7 @@ theorem a144696BernsteinImage_prec {d i j : ℕ}
     intro k _ hk
     by_cases hkd : k < d
     · have hrange : d - (k + 1) < d := by lia
-      have hstep := a144696BernsteinImage_horizontal_prec hrange
+      have hstep := a144696BernsteinImage_horizontal_strictInterl hrange
       have hindex : d - k = d - (k + 1) + 1 := by lia
       rw [← hindex] at hstep
       have hrev := reciprocalShift_reverses_strictInterl
@@ -356,7 +356,7 @@ theorem a144696BernsteinImage_prec {d i j : ℕ}
     · have hindex : k + 1 - d = (k - d) + 1 := by lia
       have hrange : k - d < d := by lia
       simpa [H, hkd, show ¬ k + 1 < d by lia, hindex] using
-        (a144696BernsteinImage_horizontal_prec hrange)
+        (a144696BernsteinImage_horizontal_strictInterl hrange)
   have hend : StrictInterl (H 0) (H (2 * d)) := by
     by_cases hd0 : d = 0
     · subst d
@@ -372,7 +372,7 @@ theorem a144696BernsteinImage_prec {d i j : ℕ}
     · dsimp [H]
       rw [ite_eq_left (Nat.pos_of_ne_zero hd0), ite_eq_right (by lia)]
       rw [show 2 * d - d = d by lia, a144696BernsteinImage_diagonal]
-      exact a144696Polynomial_reciprocal_prec d
+      exact a144696Polynomial_reciprocal_strictInterl d
   have hall := strictInterl_chain_of_consecutive_of_endpoint H 0 (2 * d)
     hcons hend
   have hresult := hall (d + i) (d + j) (by lia) (by lia) (by lia)
@@ -398,6 +398,14 @@ theorem a144696BernsteinImageRow_isInterlacingSeqNonneg (d : ℕ) :
     intro i j hij
     dsimp only [a144696BernsteinImageRow] at i j ⊢
     erw [List.get_ofFn, List.get_ofFn]
-    exact a144696BernsteinImage_prec hij.le (by lia)
+    exact a144696BernsteinImage_strictInterl hij.le (by lia)
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated a144696Polynomial_reciprocal_strictInterl (since := "2026-09-26")]
+alias a144696Polynomial_reciprocal_prec := a144696Polynomial_reciprocal_strictInterl
+
+@[deprecated a144696BernsteinImage_strictInterl (since := "2026-09-26")]
+alias a144696BernsteinImage_prec := a144696BernsteinImage_strictInterl
 
 end RealRooted

@@ -153,7 +153,7 @@ theorem decoEulerian_ne_zero (n : ℕ) : decoEulerian n ≠ 0 :=
 
 /-- Consecutive deco Eulerian polynomials are in proper position and have no
 common real root. -/
-theorem decoEulerian_prec_and_noCommonRoot (n : ℕ) :
+theorem decoEulerian_strictInterl_and_noCommonRoot (n : ℕ) :
     StrictInterl (decoEulerian n) (decoEulerian (n + 1)) ∧
       ∀ r : ℝ, (decoEulerian (n + 1)).IsRoot r →
         ¬ (decoEulerian n).IsRoot r :=
@@ -165,7 +165,7 @@ theorem decoEulerian_splits (n : ℕ) : (decoEulerian n).Splits :=
   (decoEulerian_certificate n).splits
 
 /-- Consecutive deco Eulerian polynomials are in proper position. -/
-theorem decoEulerian_prec (n : ℕ) :
+theorem decoEulerian_strictInterl (n : ℕ) :
     StrictInterl (decoEulerian n) (decoEulerian (n + 1)) :=
   (decoEulerian_certificate n).prec_succ
 
@@ -264,8 +264,8 @@ theorem A144438_splits (n : ℕ) : (A144438 n).Splits :=
   decoEulerian_splits n
 
 /-- Consecutive A144438 polynomials are in proper position. -/
-theorem A144438_prec (n : ℕ) : StrictInterl (A144438 n) (A144438 (n + 1)) :=
-  decoEulerian_prec n
+theorem A144438_strictInterl (n : ℕ) : StrictInterl (A144438 n) (A144438 (n + 1)) :=
+  decoEulerian_strictInterl n
 
 /-- Consecutive A144438 polynomials interlace. -/
 theorem A144438_interlaces (n : ℕ) :
@@ -286,5 +286,18 @@ theorem A144438_root_neg (n : ℕ) {r : ℝ}
 /-- Every A144438 polynomial has simple roots. -/
 theorem A144438_hasSimpleRoots (n : ℕ) : HasSimpleRoots (A144438 n) :=
   decoEulerian_hasSimpleRoots n
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated decoEulerian_strictInterl_and_noCommonRoot
+  (since := "2026-09-26")]
+alias decoEulerian_prec_and_noCommonRoot :=
+  decoEulerian_strictInterl_and_noCommonRoot
+
+@[deprecated decoEulerian_strictInterl (since := "2026-09-26")]
+alias decoEulerian_prec := decoEulerian_strictInterl
+
+@[deprecated A144438_strictInterl (since := "2026-09-26")]
+alias A144438_prec := A144438_strictInterl
 
 end RealRooted.Applications.OEIS

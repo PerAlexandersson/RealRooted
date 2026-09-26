@@ -199,7 +199,7 @@ theorem weightedDecoEulerian_splits {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
   (weightedDecoEulerian_certificate hw n).splits
 
 /-- Consecutive ranks at a nonnegative weight are in proper position. -/
-theorem weightedDecoEulerian_prec {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
+theorem weightedDecoEulerian_strictInterl {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
     StrictInterl (weightedDecoEulerian w n) (weightedDecoEulerian w (n + 1)) :=
   (weightedDecoEulerian_certificate hw n).prec_succ
 
@@ -238,5 +238,10 @@ theorem weightedDecoEulerian_isSturmSeq {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
         intro m
         simpa only [one_mul, one_add_one_eq_two] using
           weightedDecoEulerian_affine_recurrence w m) n
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated weightedDecoEulerian_strictInterl (since := "2026-09-26")]
+alias weightedDecoEulerian_prec := weightedDecoEulerian_strictInterl
 
 end RealRooted.Applications.OEIS

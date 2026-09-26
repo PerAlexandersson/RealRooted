@@ -236,7 +236,7 @@ private theorem half_two_mul_add_three (j : ℕ) : (2 * j + 3) / 2 = j + 1 := by
     _ = 1 / 2 + (j + 1) := Nat.add_mul_div_left 1 (j + 1) (by decide)
     _ = j + 1 := by simp
 
-private theorem inversePeakEulerian_base_prec :
+private theorem inversePeakEulerian_base_strictInterl :
     StrictInterl (inversePeakEulerian 0) (inversePeakEulerian 1) := by
   rw [inversePeakEulerian_zero]
   exact (interlaces_one_linear (p := inversePeakEulerian 1)
@@ -249,7 +249,7 @@ private theorem inversePeakEulerian_base_noCommon :
 
 /-- Consecutive inverse-peak rows are in proper position and share no real
 root. -/
-theorem inversePeakEulerian_prec_and_noCommonRoot (n : ℕ) :
+theorem inversePeakEulerian_strictInterl_and_noCommonRoot (n : ℕ) :
     StrictInterl (inversePeakEulerian n) (inversePeakEulerian (n + 1)) ∧
       ∀ r, (inversePeakEulerian (n + 1)).IsRoot r →
         ¬ (inversePeakEulerian n).IsRoot r := by
@@ -266,29 +266,29 @@ theorem inversePeakEulerian_prec_and_noCommonRoot (n : ℕ) :
   · exact inversePeakEulerian_hasPosLeadingCoeff
   · intro m r hr
     exact inversePeakEulerian_root_neg m hr
-  · exact inversePeakEulerian_base_prec
+  · exact inversePeakEulerian_base_strictInterl
   · exact inversePeakEulerian_base_noCommon
   · exact inversePeakEulerian_affine_recurrence
 
 /-- Consecutive inverse-peak rows are in proper position. -/
-theorem inversePeakEulerian_prec (n : ℕ) :
+theorem inversePeakEulerian_strictInterl (n : ℕ) :
     StrictInterl (inversePeakEulerian n) (inversePeakEulerian (n + 1)) :=
-  (inversePeakEulerian_prec_and_noCommonRoot n).1
+  (inversePeakEulerian_strictInterl_and_noCommonRoot n).1
 
 /-- Consecutive inverse-peak rows have no common real root. -/
 theorem inversePeakEulerian_noCommonRoot (n : ℕ) (r : ℝ)
     (hr : (inversePeakEulerian (n + 1)).IsRoot r) :
     ¬ (inversePeakEulerian n).IsRoot r :=
-  (inversePeakEulerian_prec_and_noCommonRoot n).2 r hr
+  (inversePeakEulerian_strictInterl_and_noCommonRoot n).2 r hr
 
 /-- Every inverse-peak row splits over the reals. -/
 theorem inversePeakEulerian_splits (n : ℕ) : (inversePeakEulerian n).Splits :=
-  (inversePeakEulerian_prec n).1.2
+  (inversePeakEulerian_strictInterl n).1.2
 
 /-- Every inverse-peak row has simple real roots. -/
 theorem inversePeakEulerian_hasSimpleRoots (n : ℕ) :
     HasSimpleRoots (inversePeakEulerian n) :=
-  ((inversePeakEulerian_prec n).hasSimpleRoots_of_no_common_root fun r hr =>
+  ((inversePeakEulerian_strictInterl n).hasSimpleRoots_of_no_common_root fun r hr =>
     inversePeakEulerian_noCommonRoot n r hr.2 hr.1).1
 
 /-- On a degree-rise step, the preceding row strictly interlaces the next
@@ -297,7 +297,7 @@ theorem inversePeakEulerian_interlaces_of_degree_succ (n : ℕ)
     (hdeg : (inversePeakEulerian n).natDegree + 1 =
       (inversePeakEulerian (n + 1)).natDegree) :
     Interlaces (inversePeakEulerian n) (inversePeakEulerian (n + 1)) :=
-  (inversePeakEulerian_prec n).toInterlaces hdeg
+  (inversePeakEulerian_strictInterl n).toInterlaces hdeg
 
 /-- Odd-indexed transitions are same-degree proper-position steps.  The
 `ListAlternates ss rs` orientation records that the earlier row owns the
@@ -308,7 +308,7 @@ theorem inversePeakEulerian_odd_alternates (j : ℕ) :
         (↑ss : Multiset ℝ) = (inversePeakEulerian (2 * j + 1)).roots ∧
         (↑rs : Multiset ℝ) = (inversePeakEulerian (2 * j + 2)).roots ∧
         ListAlternates ss rs := by
-  apply (inversePeakEulerian_prec (2 * j + 1)).exists_listAlternates_of_natDegree_eq
+  apply (inversePeakEulerian_strictInterl (2 * j + 1)).exists_listAlternates_of_natDegree_eq
   rw [inversePeakEulerian_natDegree, inversePeakEulerian_natDegree,
     half_two_mul_add_two, half_two_mul_add_three]
 
@@ -319,5 +319,15 @@ theorem inversePeakEulerian_even_interlaces (j : ℕ) :
   apply inversePeakEulerian_interlaces_of_degree_succ
   rw [inversePeakEulerian_natDegree, inversePeakEulerian_natDegree,
     half_two_mul_add_one, half_two_mul_add_two]
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated inversePeakEulerian_strictInterl_and_noCommonRoot
+  (since := "2026-09-26")]
+alias inversePeakEulerian_prec_and_noCommonRoot :=
+  inversePeakEulerian_strictInterl_and_noCommonRoot
+
+@[deprecated inversePeakEulerian_strictInterl (since := "2026-09-26")]
+alias inversePeakEulerian_prec := inversePeakEulerian_strictInterl
 
 end RealRooted.Applications.OEIS
