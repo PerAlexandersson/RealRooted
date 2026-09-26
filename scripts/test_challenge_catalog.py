@@ -205,6 +205,8 @@ end RealRooted.Challenges.Sample
         self.assertIn("theorems/sample/index.html", first)
         self.assertIn('class="catalog-home"', first["index.html"])
         self.assertIn('>Catalog</a>', first["index.html"])
+        self.assertIn("<h1>Real-rooted polynomials in Lean</h1>", first["index.html"])
+        self.assertNotIn("made explorable", first["index.html"])
         self.assertIn("catalog-manifest.json", first)
         self.assertNotIn("catalogue-manifest.json", first)
         self.assertIn(

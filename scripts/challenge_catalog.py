@@ -746,7 +746,7 @@ def render_site(
     index_body = (
         "<main class=\"catalog-home\"><section class=\"hero\">"
         "<p class=\"eyebrow\">Lean 4 formalization</p>"
-        "<h1>Real-rooted polynomials,<br>made explorable.</h1>"
+        "<h1>Real-rooted polynomials in Lean</h1>"
         "<p class=\"lede\">A curated guide to Lean definitions and proved theorems, "
         "with links to their source.</p></section>"
         f"<ul class=\"catalog-index\">{index_rows}</ul></main>"
