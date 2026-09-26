@@ -182,7 +182,7 @@ private lemma sort_roots_gammaTransform_eq_reciprocalCenterRoots
 
 /-- Hoster--Stump, Proposition 2.5: proper position is equivalent before and
 after applying adjacent-degree gamma transforms. -/
-theorem prec_gammaTransform_succ_iff
+theorem strictInterl_gammaTransform_succ_iff
     {d : ℕ} {γ δ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2)
     (hδdeg : δ.natDegree ≤ (d + 1) / 2)
@@ -372,6 +372,8 @@ theorem prec_gammaTransform_succ_iff
         coe_reciprocalCenterRoots_eq_roots hδdeg hδ hTδneg,
         Or.inl ⟨hfull_len, hfull⟩⟩
 
+@[deprecated strictInterl_gammaTransform_succ_iff (since := "2026-09-26")]
+alias prec_gammaTransform_succ_iff := strictInterl_gammaTransform_succ_iff
 
 
 end RealRooted

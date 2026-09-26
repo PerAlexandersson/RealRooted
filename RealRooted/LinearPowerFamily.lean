@@ -18,7 +18,7 @@ open Polynomial
 namespace RealRooted
 
 /-- `StrictInterl (X^n) (X^(n+1))`: repeated root at `0`. -/
-theorem prec_X_pow_succ (n : ℕ) : StrictInterl ((X : ℝ[X]) ^ n) (X ^ (n + 1)) := by
+theorem strictInterl_X_pow_succ (n : ℕ) : StrictInterl ((X : ℝ[X]) ^ n) (X ^ (n + 1)) := by
   have hne : (X : ℝ[X]) ^ n ≠ 0 := pow_ne_zero _ X_ne_zero
   have hsplits : ((X : ℝ[X]) ^ n).Splits := Polynomial.Splits.X_pow n
   have hnn : HasNonnegCoeffs ((X : ℝ[X]) ^ n) := by
@@ -30,7 +30,7 @@ theorem prec_X_pow_succ (n : ℕ) : StrictInterl ((X : ℝ[X]) ^ n) (X ^ (n + 1)
 
 /-- Multiplying both members of a nonnegative proper-position pair by the same
 power of `X` preserves proper position. -/
-theorem prec_X_pow_mul_both_of_prec_nonneg {f g : ℝ[X]}
+theorem strictInterl_X_pow_mul_both_of_strictInterl_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (n : ℕ) :
     StrictInterl (X ^ n * f) (X ^ n * g) := by
@@ -48,7 +48,7 @@ theorem prec_X_pow_mul_both_of_prec_nonneg {f g : ℝ[X]}
 
 /-- A reverse proper-position pair with nonnegative coefficients remains in
 proper position after adjoining the consecutive powers `X^n` and `X^(n+1)`. -/
-theorem prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg {f g : ℝ[X]}
+theorem strictInterl_X_pow_mul_X_pow_succ_of_reverse_strictInterl_nonneg {f g : ℝ[X]}
     (hgf : StrictInterl g f) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (n : ℕ) :
     StrictInterl (X ^ n * f) (X ^ (n + 1) * g) := by
@@ -56,12 +56,12 @@ theorem prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg {f g : ℝ[X]}
     strictInterl_to_strictInterl_mul_X_of_nonneg hgf hgnn hfnn
   have hbase_nonneg : HasNonnegCoeffs (X * g) := hasNonnegCoeffs_X.mul hgnn
   simpa [pow_succ, mul_assoc] using
-    prec_X_pow_mul_both_of_prec_nonneg hbase hfnn hbase_nonneg n
+    strictInterl_X_pow_mul_both_of_strictInterl_nonneg hbase hfnn hbase_nonneg n
 
 /-- `StrictInterl ((X + C r)^n) ((X + C r)^(n+1))` by translating the repeated root. -/
-theorem prec_X_add_C_pow_succ (r : ℝ) (n : ℕ) :
+theorem strictInterl_X_add_C_pow_succ (r : ℝ) (n : ℕ) :
     StrictInterl ((X + C r) ^ n) ((X + C r) ^ (n + 1)) := by
-  have hprec := prec_X_pow_succ n
+  have hprec := strictInterl_X_pow_succ n
   rw [← StrictInterl.comp_X_add_C_iff r] at hprec
   simpa [pow_comp, X_comp] using hprec
 
@@ -74,7 +74,7 @@ theorem interlaces_linear_pow (a b : ℝ) (hb : 0 < b) (n : ℕ) :
     rw [this]
     ring
   rw [hfac, mul_pow, mul_pow, ← C_pow, ← C_pow]
-  have hbase := prec_X_add_C_pow_succ (a / b) n
+  have hbase := strictInterl_X_add_C_pow_succ (a / b) n
   have hprec :
       StrictInterl (C (b ^ n) * (X + C (a / b)) ^ n)
         (C (b ^ (n + 1)) * (X + C (a / b)) ^ (n + 1)) :=
@@ -666,5 +666,20 @@ theorem commonFactorLinearPowerSequence_realRooted
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_interlaces_chain <|
     commonFactorLinearPowerSequence_interlaces hfixed hclosed hexponent hb
+
+@[deprecated strictInterl_X_pow_succ (since := "2026-09-26")]
+alias prec_X_pow_succ := strictInterl_X_pow_succ
+
+@[deprecated strictInterl_X_pow_mul_both_of_strictInterl_nonneg (since := "2026-09-26")]
+alias prec_X_pow_mul_both_of_prec_nonneg :=
+  strictInterl_X_pow_mul_both_of_strictInterl_nonneg
+
+@[deprecated strictInterl_X_pow_mul_X_pow_succ_of_reverse_strictInterl_nonneg
+  (since := "2026-09-26")]
+alias prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg :=
+  strictInterl_X_pow_mul_X_pow_succ_of_reverse_strictInterl_nonneg
+
+@[deprecated strictInterl_X_add_C_pow_succ (since := "2026-09-26")]
+alias prec_X_add_C_pow_succ := strictInterl_X_add_C_pow_succ
 
 end RealRooted

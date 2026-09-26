@@ -13,7 +13,7 @@ This file provides the missing global forward bridge:
 * `RealRooted.wronskian_pos_of_strictInterlSameDegree`: for a strictly
   interlacing same-degree pair (positive leading coefficients, degree at least
   one), the Wronskian `q' * p - q * p'` is positive everywhere on `ℝ`.
-* `RealRooted.wronskian_pos_of_prec_succ`: for a strict differ-by-one pair
+* `RealRooted.wronskian_pos_of_strictInterl_succ`: for a strict differ-by-one pair
   (`StrictInterl q p`, `deg p = deg q + 1`, simple roots, no common root), the
   Wronskian `p' * q - p * q'` is positive everywhere on `ℝ`.
 
@@ -100,7 +100,7 @@ lemma listInterlaces_getElem_le {ss rs : List ℝ}
 interlaces `p` in the differ-by-one sense (`StrictInterl q p` with
 `deg p = deg q + 1`, all roots simple and no common root), then the Wronskian
 `p' * q - p * q'` is positive everywhere. -/
-theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
+theorem wronskian_pos_of_strictInterl_succ {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg_succ : p.natDegree = q.natDegree + 1)
     (hprec : StrictInterl q p)
@@ -363,5 +363,8 @@ theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
 @[deprecated wronskian_pos_of_strictInterlSameDegree (since := "2026-09-18")]
 alias wronskian_pos_of_strictPrecSameDegree :=
   wronskian_pos_of_strictInterlSameDegree
+
+@[deprecated wronskian_pos_of_strictInterl_succ (since := "2026-09-26")]
+alias wronskian_pos_of_prec_succ := wronskian_pos_of_strictInterl_succ
 
 end RealRooted

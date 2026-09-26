@@ -28,7 +28,7 @@ def staircaseSum (fs : List ℝ[X]) (m : Nat) : ℝ[X] :=
 
 /-- In an interlacing sequence with nonnegative coefficients, the distinguished
 term `f_m` interlaces the staircase-weighted sum built at the same index. -/
-theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
+theorem strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg
     {fs : List ℝ[X]} {m : Nat}
     (hfs : IsInterlacingSeqNonneg fs)
     (hm : m < fs.length) :
@@ -93,6 +93,10 @@ theorem isRealRooted_staircaseSum_of_isInterlacingSeqNonneg
     {fs : List ℝ[X]} {m : Nat}
     (hfs : IsInterlacingSeqNonneg fs)
     (hm : m < fs.length) : ((staircaseSum fs m) ≠ 0 ∧ (staircaseSum fs m).Splits) :=
-  (prec_get_staircaseSum_of_isInterlacingSeqNonneg hfs hm).2.1
+  (strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg hfs hm).2.1
+
+@[deprecated strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg (since := "2026-09-26")]
+alias prec_get_staircaseSum_of_isInterlacingSeqNonneg :=
+  strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg
 
 end RealRooted

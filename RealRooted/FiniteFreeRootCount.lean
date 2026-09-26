@@ -282,7 +282,7 @@ theorem RootwiseLE.trans {p q r : ℝ[X]}
 
 /-- Proper position between equal-degree polynomials induces coordinatewise
 order on their increasingly sorted roots. -/
-theorem RootwiseLE.of_prec_sameDegree {p q : ℝ[X]} (hpq : StrictInterl p q)
+theorem RootwiseLE.of_strictInterl_sameDegree {p q : ℝ[X]} (hpq : StrictInterl p q)
     (hdeg : p.natDegree = q.natDegree) : RootwiseLE p q := by
   rcases hpq with ⟨hp, hq, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hlen : ss.length = rs.length := by
@@ -453,7 +453,7 @@ private theorem rootwiseLE_map_rootPolynomial_of_forall₂
       have hstep :
           RootwiseLE (T (rootPolynomial (x ::ₘ s)))
             (T (rootPolynomial (y ::ₘ s))) :=
-        RootwiseLE.of_prec_sameDegree hTprec
+        RootwiseLE.of_strictInterl_sameDegree hTprec
           ((hT.1 hdegx).trans (hT.1 hdegy).symm)
       have htotal' : xs.length + (y ::ₘ fixed).card = d := by
         simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
@@ -799,5 +799,8 @@ theorem card_roots_signedReciprocal_filter_gt
   change (s < (-x)⁻¹) ↔ -s⁻¹ < x
   rw [lt_inv_comm₀ hs hnegpos]
   constructor <;> intro h <;> linarith
+
+@[deprecated RootwiseLE.of_strictInterl_sameDegree (since := "2026-09-26")]
+alias RootwiseLE.of_prec_sameDegree := RootwiseLE.of_strictInterl_sameDegree
 
 end RealRooted

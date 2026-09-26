@@ -20,7 +20,7 @@ noncomputable section
 nonnegativity of the oriented Wronskian.  Common roots are removed
 recursively; after they are exhausted, the existing strict same-degree and
 successor-degree Wronskian theorems apply. -/
-theorem wronskian_eval_nonneg_of_prec {p q : ℝ[X]}
+theorem wronskian_eval_nonneg_of_strictInterl {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hprec : StrictInterl q p) (t : ℝ) :
     0 ≤ (Polynomial.wronskian q p).eval t := by
@@ -79,11 +79,14 @@ theorem wronskian_eval_nonneg_of_prec {p q : ℝ[X]}
               exists_common_root_of_not_nodup_g hprec hdup
             exact hcommon r ((mem_roots hp_pos.ne_zero).mp hrp)
               ((mem_roots hq_pos.ne_zero).mp hrq)
-          have hpos := wronskian_pos_of_prec_succ hp_pos hq_pos hsucc
+          have hpos := wronskian_pos_of_strictInterl_succ hp_pos hq_pos hsucc
             hprec hp_nodup hq_nodup hcommon t
           rw [Polynomial.wronskian, eval_sub, eval_mul, eval_mul]
           nlinarith
 
 end
+
+@[deprecated wronskian_eval_nonneg_of_strictInterl (since := "2026-09-26")]
+alias wronskian_eval_nonneg_of_prec := wronskian_eval_nonneg_of_strictInterl
 
 end RealRooted
