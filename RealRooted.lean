@@ -208,6 +208,7 @@ import RealRooted.Challenges.Issue34WindowObstruction
 import RealRooted.Challenges.Kurtz
 import RealRooted.Challenges.MatrixInterlacing
 import RealRooted.Challenges.Narayana
+import RealRooted.Challenges.Nijenhuis
 import RealRooted.Challenges.Obreschkoff
 import RealRooted.Challenges.OperatorPreservers
 import RealRooted.Challenges.VeroneseSections
@@ -971,6 +972,7 @@ import RealRooted.RankTwoMatching.Enumeration
 import RealRooted.RankTwoMatching.Orientation
 import RealRooted.RankTwoMatching.Transform
 import RealRooted.RankTwoMatchingModel
+import RealRooted.RookPolynomial
 import RealRooted.RectangularConvolution
 import RealRooted.RectangularConvolutionIdentity
 import RealRooted.RectangularPolarization
