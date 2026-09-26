@@ -21,7 +21,7 @@ def linearFactorStep (r : ℝ) (D F : ℝ[X]) : ℝ[X] :=
 
 /-- If `D` precedes `F` in the PF cone, then `F` precedes their nonnegative
 linear-factor step. -/
-theorem prec0_linearFactorStep {D F : ℝ[X]} {r : ℝ}
+theorem interl_linearFactorStep {D F : ℝ[X]} {r : ℝ}
     (hr : 0 ≤ r) (hDF : Interl D F)
     (hD : IsPFPolynomial D) (hF : IsPFPolynomial F) :
     Interl F (linearFactorStep r D F) := by
@@ -55,7 +55,7 @@ theorem linearFactorStep_isPF {D F : ℝ[X]} {r : ℝ}
     (hr : 0 ≤ r) (hDF : Interl D F)
     (hD : IsPFPolynomial D) (hF : IsPFPolynomial F) :
     IsPFPolynomial (linearFactorStep r D F) := by
-  have hprec := prec0_linearFactorStep hr hDF hD hF
+  have hinterl := interl_linearFactorStep hr hDF hD hF
   have hnn : HasNonnegCoeffs (linearFactorStep r D F) := by
     rw [linearFactorStep]
     exact ((isPFPolynomial_X_add_C hr).mul hF).hasNonnegCoeffs.add
@@ -63,9 +63,14 @@ theorem linearFactorStep_isPF {D F : ℝ[X]} {r : ℝ}
   by_cases hF0 : F = 0
   · rw [linearFactorStep, hF0, mul_zero, zero_add]
     exact hD.X_mul
-  rcases hprec with hleft0 | hright0 | hstrict
+  rcases hinterl with hleft0 | hright0 | hstrict
   · exact False.elim (hF0 hleft0)
   · simpa [hright0] using IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg hnn hstrict.2.1.2
+
+/-! ## Deprecated interlacing names -/
+
+@[deprecated interl_linearFactorStep (since := "2026-09-26")]
+alias prec0_linearFactorStep := interl_linearFactorStep
 
 end RealRooted

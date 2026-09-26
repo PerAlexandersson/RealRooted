@@ -18,7 +18,7 @@ namespace RealRooted
 
 /-- At a common degree bound, reciprocal shift reverses a proper-position pair
 of PF polynomials. -/
-theorem reciprocalShift_reverses_prec
+theorem reciprocalShift_reverses_strictInterl
     {D : ℕ} {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpd : p.natDegree ≤ D) (hqd : q.natDegree ≤ D) (hpq : StrictInterl p q) :
     StrictInterl (reciprocalShift D q) (reciprocalShift D p) := by
@@ -204,5 +204,10 @@ theorem reciprocalShift_reverses_prec
       refine ⟨by grind, ?_⟩
       apply listInterlaces_of_interleaves_of_length (by grind)
       grind
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated reciprocalShift_reverses_strictInterl (since := "2026-09-26")]
+alias reciprocalShift_reverses_prec := reciprocalShift_reverses_strictInterl
 
 end RealRooted

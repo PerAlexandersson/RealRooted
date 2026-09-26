@@ -588,7 +588,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
         simp [interl_zero_right]
       · subst p
         simp [interl_zero_left]
-      · exact (reciprocalShift_reverses_prec
+      · exact (reciprocalShift_reverses_strictInterl
           (houtpf q hqout) (houtpf p hpout)
           ((houtdeg q hqout).trans (by lia))
           ((houtdeg p hpout).trans (by lia)) hpq).toInterl)
@@ -636,7 +636,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
             _ ≤ 1 + n := Nat.add_le_add_left hipdeg 1
             _ = n + 1 := by ac_rfl
         have hjdeg' : (out.get j).natDegree ≤ n + 1 := by lia
-        have hrev := reciprocalShift_reverses_prec (D := n + 1)
+        have hrev := reciprocalShift_reverses_strictInterl (D := n + 1)
           (houtpf _ hj_mem) (houtpf _ hi_mem).X_mul hjdeg' hXpdeg hqXp
         change StrictInterl ((X * out.get i).reflect (n + 1))
           ((out.get j).reflect (n + 1)) at hrev
@@ -752,7 +752,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
       intro p q hp hq hpq
       have hp_mem : p ∈ out := by simpa using hp
       have hq_mem : q ∈ out := by simpa using hq
-      exact reciprocalShift_reverses_prec
+      exact reciprocalShift_reverses_strictInterl
         (hout_pf q hq_mem) (hout_pf p hp_mem)
         (hout_deg q hq_mem) (hout_deg p hp_mem) hpq)
     have hmap := hrev'.map (fun p => p.reflect (n + 1)) (by

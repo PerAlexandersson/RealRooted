@@ -81,7 +81,7 @@ theorem hasPosLeadingCoeff_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
 
 /-- If the roots of a positive-degree split polynomial lie in `[a,b]`, then
 `(X-a)(X-b)f'` is in proper position to its right. -/
-theorem prec_endpointDerivative {f : ℝ[X]} {a b : ℝ}
+theorem strictInterl_endpointDerivative {f : ℝ[X]} {a b : ℝ}
     (hf : f.Splits) (hdeg : 1 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots : ∀ r, f.IsRoot r → r ∈ Icc a b) :
@@ -91,14 +91,14 @@ theorem prec_endpointDerivative {f : ℝ[X]} {a b : ℝ}
     exact natDegree_endpointDerivative hdeg
   have htarget_pos : HasPosLeadingCoeff (q * f.derivative) :=
     hasPosLeadingCoeff_endpointDerivative hf_pos hdeg
-  have hprec : StrictInterl f (0 * f + q * f.derivative) :=
+  have hstrictInterl : StrictInterl f (0 * f + q * f.derivative) :=
     strictInterl_mw_derivative_of_nonpos_of_pos_natDegree hf hdeg
       (by simp only [zero_mul, zero_add]; rw [htarget_deg]; lia)
       (by simp only [zero_mul, zero_add]; rw [htarget_deg])
       (by simpa using htarget_pos) hf_pos (by
         intro r hr
         exact eval_endpointQuadratic_nonpos_of_mem_Icc (hroots r hr))
-  simpa [q] using hprec
+  simpa [q] using hstrictInterl
 
 /-- The roots of `(X-a)(X-b)f'` stay in `[a,b]`. -/
 theorem roots_endpointDerivative_mem_Icc {f : ℝ[X]} {a b : ℝ}
@@ -125,7 +125,7 @@ theorem roots_endpointDerivative_mem_Icc {f : ℝ[X]} {a b : ℝ}
 
 /-- If the roots of `f` lie in `[a,b]`, then the derivative of
 `(X-a)(X-b)f` is in proper position to the right of `f`. -/
-theorem prec_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
+theorem strictInterl_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
     (hf : f.Splits) (hdeg : 1 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots : ∀ r, f.IsRoot r → r ∈ Icc a b) :
@@ -142,12 +142,12 @@ theorem prec_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
       HasPosLeadingCoeff (q.derivative * f + q * f.derivative) := by
     rw [← htarget_eq]
     exact hasPosLeadingCoeff_derivative_endpointProduct hf_pos
-  have hprec : StrictInterl f (q.derivative * f + q * f.derivative) :=
+  have hstrictInterl : StrictInterl f (q.derivative * f + q * f.derivative) :=
     strictInterl_mw_derivative_of_nonpos_of_pos_natDegree hf hdeg
       (by rw [htarget_deg]; lia) (by rw [htarget_deg]) htarget_pos hf_pos (by
         intro r hr
         exact eval_endpointQuadratic_nonpos_of_mem_Icc (hroots r hr))
-  simpa [q, derivative_mul] using hprec
+  simpa [q, derivative_mul] using hstrictInterl
 
 /-- The roots of `((X-a)(X-b)f)'` stay in `[a,b]`. -/
 theorem roots_derivative_endpointProduct_mem_Icc {f : ℝ[X]} {a b : ℝ}
@@ -174,6 +174,14 @@ theorem roots_derivative_endpointProduct_mem_Icc {f : ℝ[X]} {a b : ℝ}
     · exact hroots r ((mem_roots hf_pos.ne_zero).mp hr)
   exact roots_derivative_mem_Icc_of_roots_mem_Icc
     hqf_splits hqf_deg hqf_roots
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated strictInterl_endpointDerivative (since := "2026-09-26")]
+alias prec_endpointDerivative := strictInterl_endpointDerivative
+
+@[deprecated strictInterl_derivative_endpointProduct (since := "2026-09-26")]
+alias prec_derivative_endpointProduct := strictInterl_derivative_endpointProduct
 
 
 end RealRooted

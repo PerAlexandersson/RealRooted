@@ -461,3 +461,12 @@ callers use `StrictInterl` names; the 17 former public names occur only as
 dated deprecated aliases.  The catalog source parser now tracks multiline
 attribute blocks, with a regression test ensuring that multiline deprecated
 compatibility declarations cannot enter the completed-results catalog.
+
+Endpoint-sequence and transform batch (2026-09-26)
+
+The next dependency-closed batch canonicalizes 11 public APIs and one private
+helper across endpoint-pair product sequences, endpoint derivatives, the PF
+linear-factor step, the weighted-sum cone, and reciprocal-shift reversal.
+Production and tactic callers use `StrictInterl` / `Interl` names; each former
+public name remains only as a dated deprecated alias, while the private helper
+is renamed directly.

@@ -85,7 +85,8 @@ macro_rules
         pos_lc := $hp:term,
         degree_pos := $hd:term,
         recurrence := $hrec:term) =>
-      `(tactic| exact prec_endpointDerivative_sequence $hab $hs $hr $hp $hd $hrec)
+      `(tactic|
+        exact strictInterl_endpointDerivative_sequence $hab $hs $hr $hp $hd $hrec)
   | `(tactic|
       rr_endpoint_derivative_sequence_interlaces using
         lower_le_upper := $hab:term,
@@ -117,7 +118,8 @@ macro_rules
         degree_pos := $hd:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact prec_derivative_endpointProduct_sequence $hab $hs $hr $hp $hd $hrec)
+        exact strictInterl_derivative_endpointProduct_sequence
+          $hab $hs $hr $hp $hd $hrec)
   | `(tactic|
       rr_endpoint_product_derivative_sequence_interlaces using
         lower_le_upper := $hab:term,

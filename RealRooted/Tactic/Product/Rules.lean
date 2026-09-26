@@ -1905,7 +1905,7 @@ macro_rules
         x_step := $hx_step:term,
         coprime := $hcop:term) =>
       `(tactic|
-        exact RealRooted.prec_endpoint_sum_then_X_pair_sequence
+        exact RealRooted.strictInterl_endpoint_sum_then_X_pair_sequence
           $hbase $hleft_nonneg $hright_nonneg $hsum_step $hx_step $hcop)
   | `(tactic|
       rr_endpoint_sum_then_X_pair_sequence_realrooted using
@@ -1928,7 +1928,7 @@ macro_rules
         sum_step := $hsum_step:term,
         coprime := $hcop:term) =>
       `(tactic|
-        exact RealRooted.prec_endpoint_X_then_sum_pair_sequence
+        exact RealRooted.strictInterl_endpoint_X_then_sum_pair_sequence
           $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step $hcop)
   | `(tactic|
       rr_endpoint_X_then_sum_pair_sequence_realrooted using

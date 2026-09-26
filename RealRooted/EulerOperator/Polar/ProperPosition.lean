@@ -28,7 +28,7 @@ theorem polarTheta_preserves_interl : polarThetaPreservesInterlStatement := by
     rw [hqzero]
     simp [polarTheta, theta]
   · have hstep₁ : StrictInterl (reciprocalShift N q) (reciprocalShift N p) :=
-      reciprocalShift_reverses_prec hp hq hpd hqd hpq
+      reciprocalShift_reverses_strictInterl hp hq hpd hqd hpq
     have hsp : IsPFPolynomial (reciprocalShift N p) :=
       reciprocalShift_preserves_pf hp hpd
     have hsq : IsPFPolynomial (reciprocalShift N q) :=
@@ -57,7 +57,7 @@ theorem polarTheta_preserves_interl : polarThetaPreservesInterlStatement := by
       simp [reciprocalShift]
     · have hstep₃ : StrictInterl (reciprocalShift (N - 1) ((reciprocalShift N p).derivative))
           (reciprocalShift (N - 1) ((reciprocalShift N q).derivative)) :=
-        reciprocalShift_reverses_prec hdq hdp hdqd hdpd hprec
+        reciprocalShift_reverses_strictInterl hdq hdp hdqd hdpd hprec
       rw [polarTheta_eq_reciprocalShift_derivative_reciprocalShift N p hpd,
         polarTheta_eq_reciprocalShift_derivative_reciprocalShift N q hqd]
       exact hstep₃.toInterl

@@ -28,7 +28,7 @@ private theorem reflect_reverses_prec0_of_pf
     simpa using interl_zero_right (q.reflect n)
   · subst q
     simpa using interl_zero_left (p.reflect n)
-  · exact (reciprocalShift_reverses_prec hp hq hpdeg hqdeg hpq).toInterl
+  · exact (reciprocalShift_reverses_strictInterl hp hq hpdeg hqdeg hpq).toInterl
 
 private theorem reflectionInterlacing_pair_of_relations
     {n : ℕ} {p q : ℝ[X]}

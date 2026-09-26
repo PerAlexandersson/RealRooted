@@ -37,8 +37,8 @@ theorem hasNonnegCoeffs_C_mul {a : ℝ} {p : ℝ[X]} (ha : 0 ≤ a)
 
 /-- **Branden--Saud Leite Lemma 3.1(1).**  A nonnegative combination of an
 interlacing sequence is caught between its first and last members. -/
-theorem prec0_weightedSum_cone {n : ℕ} (f : ℕ → ℝ[X]) (lam : ℕ → ℝ)
-    (hprec : ∀ i j, i < j → j ≤ n → StrictInterl (f i) (f j))
+theorem interl_weightedSum_cone {n : ℕ} (f : ℕ → ℝ[X]) (lam : ℕ → ℝ)
+    (hstrictInterl : ∀ i j, i < j → j ≤ n → StrictInterl (f i) (f j))
     (hrr : ∀ i, i ≤ n → f i ≠ 0 ∧ (f i).Splits)
     (hnn : ∀ i, i ≤ n → HasNonnegCoeffs (f i))
     (hlam : ∀ i, 0 ≤ lam i) :
@@ -57,14 +57,19 @@ theorem prec0_weightedSum_cone {n : ℕ} (f : ℕ → ℝ[X]) (lam : ℕ → ℝ
     have hbase : Interl (f 0) (f i) := by
       rcases Nat.eq_zero_or_pos i with rfl | hpos
       · exact Interl.refl fun _ => (hrr 0 (Nat.zero_le n)).2
-      · exact (hprec 0 i hpos (hmem i hi)).toInterl
+      · exact (hstrictInterl 0 i hpos (hmem i hi)).toInterl
     exact Interl.C_mul_right_of_nonneg hbase (hlam i)
   · refine Interl.finsetSum_right_of_nonneg _ _ _ ?_ hnn'
     intro i hi
     have hbase : Interl (f i) (f n) := by
       rcases eq_or_lt_of_le (hmem i hi) with rfl | hlt
       · exact Interl.refl fun _ => (hrr i (hmem i hi)).2
-      · exact (hprec i n hlt le_rfl).toInterl
+      · exact (hstrictInterl i n hlt le_rfl).toInterl
     exact Interl.C_mul_left_of_nonneg hbase (hlam i)
+
+/-! ## Deprecated interlacing names -/
+
+@[deprecated interl_weightedSum_cone (since := "2026-09-26")]
+alias prec0_weightedSum_cone := interl_weightedSum_cone
 
 end RealRooted
