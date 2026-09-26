@@ -501,3 +501,14 @@ callers and local proof labels use `StrictInterl` / `Interl` terminology.  The
 the three private identifiers disappear.  Foundational sequence methods and
 product-orientation declarations used by this subsystem remain for their own
 owner batches.
+
+Foundational sequence and product-orientation batch (2026-09-26)
+
+The next small foundational batch canonicalizes the pair extractors as
+`IsInterlacingSeq.strictInterl` and `IsInterlacingSeq0.interl`, together with
+the two normalized-product orientation lemmas.  All 28 production and tactic
+callers use the canonical names; four dated aliases retain the former public
+signatures.  Existing aliases in `Basic/ProperPosition.lean` and `Linear.lean`
+are already intentional compatibility declarations and remain unchanged.
+User-facing tactic syntax names and Veronese helper declarations remain for
+their own coherent owner batches.

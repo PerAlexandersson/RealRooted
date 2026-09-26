@@ -193,7 +193,7 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff_of_coeff_zero_ne
   rcases hstrictInterl.natDegree_eq_or_eq_succ with heq | hsucc
   · have hfdegree : f.natDegree = n := by simpa [g, hgdegree] using heq.symm
     have hsame : f.natDegree = g.natDegree := by simp [hfdegree, hgdegree]
-    have hcross_le := eval_cross_le_of_prec_sameDegree_of_nonneg
+    have hcross_le := eval_cross_le_of_strictInterl_sameDegree_of_nonneg
       hstrictInterl hsame hfnn hgnn
     have hge : f.leadingCoeff ≤ f.coeff 0 := by
       have hgeval0 : g.eval 0 = f.leadingCoeff := by

@@ -124,12 +124,12 @@ macro_rules
       rr_interlacingSeq_prec using
         interlacing := $hfs:term,
         index_lt := $hij:term) =>
-      `(tactic| exact RealRooted.IsInterlacingSeq.prec $hfs $hij)
+      `(tactic| exact RealRooted.IsInterlacingSeq.strictInterl $hfs $hij)
   | `(tactic|
       rr_interlacingSeq0_prec0 using
         interlacing0 := $hfs:term,
         index_lt := $hij:term) =>
-      `(tactic| exact RealRooted.IsInterlacingSeq0.prec0 $hfs $hij)
+      `(tactic| exact RealRooted.IsInterlacingSeq0.interl $hfs $hij)
   | `(tactic|
       rr_interlacingSeq_sublist using
         interlacing := $hfs:term,

@@ -60,7 +60,7 @@ theorem matrix_preserves_interlacing_seq0_sparse_pair_interl
   let jRowJ₁ : Fin (G.get i₂).length := ⟨j₁, by simp_all⟩
   let jRowJ₂ : Fin (G.get i₂).length := ⟨j₂, by simp_all⟩
   have hpair : Interl ((matPolyAction G fs).get iG) ((matPolyAction G fs).get jG) :=
-    himage.1.prec0 (i := iG) (j := jG) (by grind)
+    himage.1.interl (i := iG) (j := jG) (by grind)
   have hleft :
       (matPolyAction G fs).get iG
         = (G.get i₁).get iRowJ₁ + (C a * X + C b) * (G.get i₁).get iRowJ₂ := by

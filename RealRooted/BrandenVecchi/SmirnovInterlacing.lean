@@ -102,7 +102,7 @@ theorem smirnovDescentRefined_interl (m r : ℕ) (i j : Fin m)
     ⟨j, by simp⟩
   have hij' : i' < j' := by simpa [i', j'] using hij
   have hinterl :=
-    (smirnovDescentRefined_interlacing m r).1.1.prec0 hij'
+    (smirnovDescentRefined_interlacing m r).1.1.interl hij'
   simpa [smirnovDescentRefinedList, i', j'] using hinterl
 
 /-- On an alphabet with at least two letters, every fixed-final-letter

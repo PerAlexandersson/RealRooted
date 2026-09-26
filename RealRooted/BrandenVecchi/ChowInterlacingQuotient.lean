@@ -110,7 +110,7 @@ theorem strictSelfReflect {n : ℕ} {f g : ℝ[X]}
   have hclosed := h.closedSequence
   have hfref0 : Interl f (f.reflect n) := by
     simpa [reflectionClosure] using
-      hclosed.interlacingSeq0.prec0
+      hclosed.interlacingSeq0.interl
         (i := (⟨0, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length))
         (j := (⟨3, by simp [reflectionClosure]⟩ :
@@ -129,14 +129,14 @@ theorem strictTriple {n : ℕ} {f g : ℝ[X]}
   have hclosed := h.closedSequence
   have hfg0 : Interl f g := by
     simpa [reflectionClosure] using
-      hclosed.interlacingSeq0.prec0
+      hclosed.interlacingSeq0.interl
         (i := (⟨0, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length))
         (j := (⟨1, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length)) (by simp)
   have hgref0 : Interl g (f.reflect n) := by
     simpa [reflectionClosure] using
-      hclosed.interlacingSeq0.prec0
+      hclosed.interlacingSeq0.interl
         (i := (⟨1, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length))
         (j := (⟨3, by simp [reflectionClosure]⟩ :

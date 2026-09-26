@@ -134,7 +134,7 @@ lemma IsInterlacingSeqNonneg.toIsInterlacingSeq0Nonneg {fs : List ℝ[X]}
   ⟨hfs.2.toIsInterlacingSeq0, fun f hf => (hfs.1 f hf).2⟩
 
 /-- Any pair in an interlacing sequence interlaces. -/
-lemma IsInterlacingSeq.prec {fs : List ℝ[X]} (h : IsInterlacingSeq fs)
+lemma IsInterlacingSeq.strictInterl {fs : List ℝ[X]} (h : IsInterlacingSeq fs)
     {i j : Fin fs.length} (hij : i < j) :
     StrictInterl (fs.get i) (fs.get j) := by
   rw [isInterlacingSeq_iff_pairwise] at h
@@ -156,7 +156,7 @@ lemma isInterlacingSeq_reverseOffsetRow (m : ℕ) (f : ℕ → ℝ[X])
   simpa using hpair (m - j.val) (m - i.val) hsub (Nat.sub_le m i.val)
 
 /-- Any pair in a weak zero-aware interlacing sequence satisfies `Interl`. -/
-lemma IsInterlacingSeq0.prec0 {fs : List ℝ[X]} (h : IsInterlacingSeq0 fs)
+lemma IsInterlacingSeq0.interl {fs : List ℝ[X]} (h : IsInterlacingSeq0 fs)
     {i j : Fin fs.length} (hij : i < j) :
     Interl (fs.get i) (fs.get j) := by
   rw [isInterlacingSeq0_iff_pairwise] at h
@@ -192,8 +192,8 @@ lemma IsInterlacingSeq0Nonneg.sublist_of_realRooted_of_ne
     rw [isInterlacingSeq_iff_pairwise]
     refine List.pairwise_iff_get.2 ?_
     intro i j hij
-    have hprec0 := hgs0.prec0 (i := i) (j := j) hij
-    exact hprec0.toStrictInterl_of_ne
+    have hinterl := hgs0.interl (i := i) (j := j) hij
+    exact hinterl.toStrictInterl_of_ne
       (hne _ (List.get_mem _ _)) (hne _ (List.get_mem _ _))
 
 /-- Concatenating two interlacing sequences that are compatible
@@ -331,5 +331,13 @@ lemma IsInterlacingSeqNonneg.toIsInterlacingSeq0NonnegRealRooted
     {fs : List ℝ[X]} (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0NonnegRealRooted fs :=
   ⟨hfs.toIsInterlacingSeq0Nonneg, fun f hf _ => hfs.realRooted f hf⟩
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated IsInterlacingSeq.strictInterl (since := "2026-09-26")]
+alias IsInterlacingSeq.prec := IsInterlacingSeq.strictInterl
+
+@[deprecated IsInterlacingSeq0.interl (since := "2026-09-26")]
+alias IsInterlacingSeq0.prec0 := IsInterlacingSeq0.interl
 
 end RealRooted

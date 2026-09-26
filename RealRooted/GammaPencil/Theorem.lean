@@ -88,21 +88,21 @@ theorem gammaU_strictInterl_gammaV (n : ℕ) (hn : 2 ≤ n) :
     exact hVzero
   rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted
       hall hUne hVne with hsame | hsucc | hrevsucc
-  · apply prec_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
+  · apply strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
       hUne hVne hUnn hVnn hall hsame
     have hVpos := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hVnn hVne
     rw [← Polynomial.coeff_zero_eq_eval_zero,
       ← Polynomial.coeff_zero_eq_eval_zero, hUzero, hVzero]
     simpa only [zero_mul, one_mul, HasPosLeadingCoeff] using hVpos
   · rcases strictInterl_of_allComboRealRooted hUne hUsplits hVne hVsplits hall
-        (Or.inl hsucc) with hprec | hreverse
-    · exact hprec
+        (Or.inl hsucc) with hstrictInterl | hreverse
+    · exact hstrictInterl
     · exact (hreverse.not_of_right_natDegree_lt_left (by lia)).elim
   · have hreverse : StrictInterl (gammaV n) (gammaU n) := by
       rcases strictInterl_of_allComboRealRooted hVne hVsplits hUne hUsplits
-          (allComboRealRooted_comm hall) (Or.inl hrevsucc) with hprec | hprec
-      · exact hprec
-      · exact (hprec.not_of_right_natDegree_lt_left (by lia)).elim
+          (allComboRealRooted_comm hall) (Or.inl hrevsucc) with hforward | hbackward
+      · exact hforward
+      · exact (hbackward.not_of_right_natDegree_lt_left (by lia)).elim
     have hVneg : ∀ r, (gammaV n).IsRoot r → r < 0 :=
       roots_neg_of_interlaces_of_right_roots_neg
         (hreverse.toInterlaces hrevsucc) (gammaU_roots_neg n hn)

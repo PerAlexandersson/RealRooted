@@ -809,12 +809,13 @@ lemma veroneseSectionPolynomialListDesc_C_mul
 
 lemma prec0_C_mul_both {c : ℝ} (hc : c ≠ 0) {f g : ℝ[X]}
     (h : Interl f g) : Interl (C c * f) (C c * g) := by
-  rcases h with hf | hg | hprec
+  rcases h with hf | hg | hstrictInterl
   · left
     simp [hf]
   · right
     simp_all
-  · exact Or.inr (Or.inr (StrictInterl.C_mul_right (StrictInterl.C_mul_left hprec hc) hc))
+  · exact Or.inr (Or.inr
+      (StrictInterl.C_mul_right (StrictInterl.C_mul_left hstrictInterl hc) hc))
 
 lemma isInterlacingSeq0Nonneg_map_C_mul
     {c : ℝ} (hc_nonneg : 0 ≤ c) (hc : c ≠ 0) {fs : List ℝ[X]}
@@ -827,8 +828,8 @@ lemma isInterlacingSeq0Nonneg_map_C_mul
     let i' : Fin fs.length := ⟨i.1, by grind⟩
     let j' : Fin fs.length := ⟨j.1, by grind⟩
     have hij' : i' < j' := by grind
-    have hprec0 := hfs.1.prec0 (i := i') (j := j') hij'
-    simpa [i', j'] using prec0_C_mul_both hc hprec0
+    have hinterl := hfs.1.interl (i := i') (j := j') hij'
+    simpa [i', j'] using prec0_C_mul_both hc hinterl
   · intro p hp
     rcases List.mem_map.1 hp with ⟨q, hq, rfl⟩
     exact nonnegCoeffs_C_mul hc_nonneg (hfs.2 q hq)
