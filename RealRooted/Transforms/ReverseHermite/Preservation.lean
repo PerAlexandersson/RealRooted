@@ -159,7 +159,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_interl :
                 grind,
                 reverseHermiteTransform_mul_X_add_C]
               simpa [linearFactorStep] using
-                prec0_linearFactorStep (r := -u) (by
+                interl_linearFactorStep (r := -u) (by
                   have huRoot : g.IsRoot u := by simp_all
                   exact neg_nonneg.mpr
                     (hg.roots_nonpos u

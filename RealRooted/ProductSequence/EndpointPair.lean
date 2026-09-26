@@ -38,7 +38,7 @@ theorem isRealRooted_of_even_product_odd_X_scalar_sequence
 
 /-- One endpoint-quotient transition: first form `a+b`, then the next row is
 `b+X(a+b)`. -/
-theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
+theorem strictInterl_endpoint_sum_then_X_step {a b : ℝ[X]}
     (hab : StrictInterl a b)
     (ha_nonneg : HasNonnegCoeffs a) (hb_nonneg : HasNonnegCoeffs b)
     (hcop : IsCoprime b (X * (a + b))) :
@@ -47,30 +47,32 @@ theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
     ha_nonneg.pos_leadingCoeff (left_ne_zero_of_strictInterl hab)
   have hb_pos : HasPosLeadingCoeff b :=
     hb_nonneg.pos_leadingCoeff (right_ne_zero_of_strictInterl hab)
-  have hsum_prec_raw : StrictInterl (C (1 : ℝ) * a + C (1 : ℝ) * b) b :=
+  have hsum_strictInterl_raw : StrictInterl (C (1 : ℝ) * a + C (1 : ℝ) * b) b :=
     hab.nonneg_combo_right ha_pos hb_pos zero_le_one zero_le_one (Or.inl zero_lt_one)
-  have hsum_prec : StrictInterl (a + b) b := by simpa using hsum_prec_raw
+  have hsum_strictInterl : StrictInterl (a + b) b := by
+    simpa using hsum_strictInterl_raw
   have hsum_nonneg : HasNonnegCoeffs (a + b) := ha_nonneg.add hb_nonneg
   have hsum_pos : HasPosLeadingCoeff (a + b) :=
-    hsum_nonneg.pos_leadingCoeff (left_ne_zero_of_strictInterl hsum_prec)
-  have hXsum_prec : StrictInterl (a + b) (X * (a + b)) :=
+    hsum_nonneg.pos_leadingCoeff (left_ne_zero_of_strictInterl hsum_strictInterl)
+  have hXsum_strictInterl : StrictInterl (a + b) (X * (a + b)) :=
     strictInterl_mul_X_of_strictInterl_of_nonneg
       (StrictInterl.refl
-        (left_ne_zero_of_strictInterl hsum_prec) (left_splits_of_strictInterl hsum_prec))
+        (left_ne_zero_of_strictInterl hsum_strictInterl)
+        (left_splits_of_strictInterl hsum_strictInterl))
       hsum_nonneg hsum_nonneg
   have hXsum_pos : HasPosLeadingCoeff (X * (a + b)) := hsum_pos.X_mul
   have hcombo : PosComboRealRooted b (X * (a + b)) :=
     PosComboRealRooted.of_commonLeftInterleaver
-      hsum_prec hXsum_prec hb_pos hXsum_pos
+      hsum_strictInterl hXsum_strictInterl hb_pos hXsum_pos
   have hrr : b + X * (a + b) ≠ 0 ∧ (b + X * (a + b)).Splits :=
     PosComboRealRooted.isRealRooted_add hcombo
   exact
     StrictInterl.add_of_left
-      hsum_prec hXsum_prec hb_pos hXsum_pos hrr.1 hrr.2 hcop
+      hsum_strictInterl hXsum_strictInterl hb_pos hXsum_pos hrr.1 hrr.2 hcop
 
 /-- One endpoint-quotient transition with the parity reversed: first form
 `b+Xa`, then the next row is `a+(b+Xa)`. -/
-theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
+theorem strictInterl_endpoint_X_then_sum_step {a b : ℝ[X]}
     (hab : StrictInterl a b)
     (ha_nonneg : HasNonnegCoeffs a) (hb_nonneg : HasNonnegCoeffs b)
     (hcop : IsCoprime b (X * a)) :
@@ -79,31 +81,31 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
     ha_nonneg.pos_leadingCoeff (left_ne_zero_of_strictInterl hab)
   have hb_pos : HasPosLeadingCoeff b :=
     hb_nonneg.pos_leadingCoeff (right_ne_zero_of_strictInterl hab)
-  have hXa_prec : StrictInterl a (X * a) :=
+  have hXa_strictInterl : StrictInterl a (X * a) :=
     strictInterl_mul_X_of_strictInterl_of_nonneg
       (StrictInterl.refl (left_ne_zero_of_strictInterl hab) (left_splits_of_strictInterl hab))
       ha_nonneg ha_nonneg
   have hXa_pos : HasPosLeadingCoeff (X * a) := ha_pos.X_mul
   have hcombo : PosComboRealRooted b (X * a) :=
-    PosComboRealRooted.of_commonLeftInterleaver hab hXa_prec hb_pos hXa_pos
+    PosComboRealRooted.of_commonLeftInterleaver hab hXa_strictInterl hb_pos hXa_pos
   have hrr : b + X * a ≠ 0 ∧ (b + X * a).Splits :=
     PosComboRealRooted.isRealRooted_add hcombo
-  have ha_sum_prec : StrictInterl a (b + X * a) :=
-    StrictInterl.add_of_left hab hXa_prec hb_pos hXa_pos hrr.1 hrr.2 hcop
+  have ha_sum_strictInterl : StrictInterl a (b + X * a) :=
+    StrictInterl.add_of_left hab hXa_strictInterl hb_pos hXa_pos hrr.1 hrr.2 hcop
   have hsum_nonneg : HasNonnegCoeffs (b + X * a) :=
     hb_nonneg.add (hasNonnegCoeffs_X.mul ha_nonneg)
   have hsum_pos : HasPosLeadingCoeff (b + X * a) :=
-    hsum_nonneg.pos_leadingCoeff (right_ne_zero_of_strictInterl ha_sum_prec)
+    hsum_nonneg.pos_leadingCoeff (right_ne_zero_of_strictInterl ha_sum_strictInterl)
   have hnext_raw :
       StrictInterl (C (1 : ℝ) * a + C (1 : ℝ) * (b + X * a)) (b + X * a) :=
-    ha_sum_prec.nonneg_combo_right ha_pos hsum_pos
+    ha_sum_strictInterl.nonneg_combo_right ha_pos hsum_pos
       zero_le_one zero_le_one (Or.inl zero_lt_one)
   simpa [add_assoc] using hnext_raw
 
 private def endpointPairPackage (A B : Nat → ℝ[X]) (n : Nat) : Prop :=
   StrictInterl (A n) (B n) ∧ HasNonnegCoeffs (A n) ∧ HasNonnegCoeffs (B n)
 
-private theorem prec_sequence_of_endpointPairPackage {A B : Nat → ℝ[X]}
+private theorem strictInterl_sequence_of_endpointPairPackage {A B : Nat → ℝ[X]}
     (hpack : ∀ n : Nat, endpointPairPackage A B n) :
     ∀ n : Nat, StrictInterl (A n) (B n) :=
   fun n => (hpack n).1
@@ -113,7 +115,7 @@ private theorem prec_sequence_of_endpointPairPackage {A B : Nat → ℝ[X]}
 This is the quotient recurrence after removing endpoint powers when the
 transition first forms `A_{n+1}=A_n+B_n` and then
 `B_{n+1}=B_n+X A_{n+1}`. -/
-theorem prec_endpoint_sum_then_X_pair_sequence
+theorem strictInterl_endpoint_sum_then_X_pair_sequence
     {A B : Nat → ℝ[X]}
     (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
@@ -124,23 +126,24 @@ theorem prec_endpoint_sum_then_X_pair_sequence
     ∀ n : Nat, StrictInterl (A n) (B n) := by
   have hpack : ∀ n : Nat, endpointPairPackage A B n :=
     sequence_of_base_and_step ⟨hbase, hA0_nonneg, hB0_nonneg⟩ fun n hP => by
-      rcases hP with ⟨hprec, hA_nonneg, hB_nonneg⟩
+      rcases hP with ⟨hstrictInterl, hA_nonneg, hB_nonneg⟩
       have hcop' : IsCoprime (B n) (X * (A n + B n)) := by simpa [hstepA n] using hcop n
-      have hprec_next :
+      have hstrictInterl_next :
           StrictInterl (A (n + 1)) (B (n + 1)) := by
         simpa [hstepA n, hstepB n] using
-          prec_endpoint_sum_then_X_step hprec hA_nonneg hB_nonneg hcop'
+          strictInterl_endpoint_sum_then_X_step
+            hstrictInterl hA_nonneg hB_nonneg hcop'
       have hA_nonneg_next : HasNonnegCoeffs (A (n + 1)) := by
         rw [hstepA n]
         exact hA_nonneg.add hB_nonneg
       have hB_nonneg_next : HasNonnegCoeffs (B (n + 1)) := by
         rw [hstepB n]
         exact hB_nonneg.add (hasNonnegCoeffs_X.mul hA_nonneg_next)
-      exact ⟨hprec_next, hA_nonneg_next, hB_nonneg_next⟩
-  exact prec_sequence_of_endpointPairPackage hpack
+      exact ⟨hstrictInterl_next, hA_nonneg_next, hB_nonneg_next⟩
+  exact strictInterl_sequence_of_endpointPairPackage hpack
 
 /-- Real-rootedness corollary for
-`prec_endpoint_sum_then_X_pair_sequence`. -/
+`strictInterl_endpoint_sum_then_X_pair_sequence`. -/
 theorem isRealRooted_of_endpoint_sum_then_X_pair_sequence
     {A B : Nat → ℝ[X]}
     (hbase : StrictInterl (A 0) (B 0))
@@ -151,14 +154,14 @@ theorem isRealRooted_of_endpoint_sum_then_X_pair_sequence
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1))) :
     ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
   isRealRooted_pair_sequence_of_strictInterl_sequence <|
-    prec_endpoint_sum_then_X_pair_sequence
+    strictInterl_endpoint_sum_then_X_pair_sequence
       hbase hA0_nonneg hB0_nonneg hstepA hstepB hcop
 
 /-- Pair-sequence endpoint quotient shell with the parity reversed.
 
 Here the transition first forms `B_{n+1}=B_n+X A_n` and then
 `A_{n+1}=A_n+B_{n+1}`. -/
-theorem prec_endpoint_X_then_sum_pair_sequence
+theorem strictInterl_endpoint_X_then_sum_pair_sequence
     {A B : Nat → ℝ[X]}
     (hbase : StrictInterl (A 0) (B 0))
     (hA0_nonneg : HasNonnegCoeffs (A 0))
@@ -169,22 +172,23 @@ theorem prec_endpoint_X_then_sum_pair_sequence
     ∀ n : Nat, StrictInterl (A n) (B n) := by
   have hpack : ∀ n : Nat, endpointPairPackage A B n :=
     sequence_of_base_and_step ⟨hbase, hA0_nonneg, hB0_nonneg⟩ fun n hP => by
-      rcases hP with ⟨hprec, hA_nonneg, hB_nonneg⟩
-      have hprec_next :
+      rcases hP with ⟨hstrictInterl, hA_nonneg, hB_nonneg⟩
+      have hstrictInterl_next :
           StrictInterl (A (n + 1)) (B (n + 1)) := by
         simpa [hstepB n, hstepA n] using
-          prec_endpoint_X_then_sum_step hprec hA_nonneg hB_nonneg (hcop n)
+          strictInterl_endpoint_X_then_sum_step
+            hstrictInterl hA_nonneg hB_nonneg (hcop n)
       have hB_nonneg_next : HasNonnegCoeffs (B (n + 1)) := by
         rw [hstepB n]
         exact hB_nonneg.add (hasNonnegCoeffs_X.mul hA_nonneg)
       have hA_nonneg_next : HasNonnegCoeffs (A (n + 1)) := by
         rw [hstepA n]
         exact hA_nonneg.add hB_nonneg_next
-      exact ⟨hprec_next, hA_nonneg_next, hB_nonneg_next⟩
-  exact prec_sequence_of_endpointPairPackage hpack
+      exact ⟨hstrictInterl_next, hA_nonneg_next, hB_nonneg_next⟩
+  exact strictInterl_sequence_of_endpointPairPackage hpack
 
 /-- Real-rootedness corollary for
-`prec_endpoint_X_then_sum_pair_sequence`. -/
+`strictInterl_endpoint_X_then_sum_pair_sequence`. -/
 theorem isRealRooted_of_endpoint_X_then_sum_pair_sequence
     {A B : Nat → ℝ[X]}
     (hbase : StrictInterl (A 0) (B 0))
@@ -195,7 +199,7 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_sequence
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n)) :
     ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
   isRealRooted_pair_sequence_of_strictInterl_sequence <|
-    prec_endpoint_X_then_sum_pair_sequence
+    strictInterl_endpoint_X_then_sum_pair_sequence
       hbase hA0_nonneg hB0_nonneg hstepB hstepA hcop
 
 /-- Endpoint quotient plus endpoint-power lift for a single row sequence.
@@ -285,6 +289,24 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_swapped_sequence
       (P := fun n => P (2 * n + 1)) (Q := A) (t := t) (m := mA)
       (left_isRealRooted_of_isRealRooted_pair_sequence hquot) hrowA
   exact isRealRooted_of_even_odd_sequence heven hodd
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated strictInterl_endpoint_sum_then_X_step (since := "2026-09-26")]
+alias prec_endpoint_sum_then_X_step := strictInterl_endpoint_sum_then_X_step
+
+@[deprecated strictInterl_endpoint_X_then_sum_step (since := "2026-09-26")]
+alias prec_endpoint_X_then_sum_step := strictInterl_endpoint_X_then_sum_step
+
+@[deprecated strictInterl_endpoint_sum_then_X_pair_sequence
+  (since := "2026-09-26")]
+alias prec_endpoint_sum_then_X_pair_sequence :=
+  strictInterl_endpoint_sum_then_X_pair_sequence
+
+@[deprecated strictInterl_endpoint_X_then_sum_pair_sequence
+  (since := "2026-09-26")]
+alias prec_endpoint_X_then_sum_pair_sequence :=
+  strictInterl_endpoint_X_then_sum_pair_sequence
 
 
 end RealRooted

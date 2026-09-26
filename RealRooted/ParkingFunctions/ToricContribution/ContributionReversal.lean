@@ -396,7 +396,7 @@ theorem toricContribution_prec_of_lt
       (reciprocalShift m (shiftedToricContribution m ε e)).natDegree ≤ m := by
     exact Polynomial.natDegree_reflect_le.trans (max_le le_rfl
       (natDegree_shiftedToricContribution_le m ε e))
-  have hshifted := reciprocalShift_reverses_prec
+  have hshifted := reciprocalShift_reverses_strictInterl
     hdPF hePF hdDegree heDegree hreciprocal
   have hshifted' :
       StrictInterl (shiftedToricContribution m ε e)

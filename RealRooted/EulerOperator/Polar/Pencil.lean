@@ -42,7 +42,7 @@ theorem prec_polarTheta_self {N : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p)
     lia
   have htransport :
       StrictInterl (reciprocalShift N (theta q)) (reciprocalShift N q) :=
-    reciprocalShift_reverses_prec hqpf htheta_pf hqdeg htheta_deg hbase
+    reciprocalShift_reverses_strictInterl hqpf htheta_pf hqdeg htheta_deg hbase
   have hinvol : reciprocalShift N q = p := by
     rw [hq]
     unfold reciprocalShift

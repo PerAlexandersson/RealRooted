@@ -344,7 +344,7 @@ theorem a144696BernsteinImage_prec {d i j : ℕ}
       have hstep := a144696BernsteinImage_horizontal_prec hrange
       have hindex : d - k = d - (k + 1) + 1 := by lia
       rw [← hindex] at hstep
-      have hrev := reciprocalShift_reverses_prec
+      have hrev := reciprocalShift_reverses_strictInterl
         (hpf (d - (k + 1)) (by lia)) (hpf (d - k) (by lia))
         (natDegree_a144696BernsteinImage (by lia)).le
         (natDegree_a144696BernsteinImage (by lia)).le hstep
