@@ -649,7 +649,7 @@ theorem signedTriangleFamily_terminal_strictInterlSameDegree_jPolynomial
   have hε : 0 ≤ (ε : ℝ) := Nat.cast_nonneg ε
   have hα : -1 < (ε : ℝ) - 1 / 2 := by linarith
   have hupper : -1 < (ε : ℝ) + 1 := by linarith
-  have hprec := shiftedJacobiMonic_prec_three_halves (m - 1) ε
+  have hstrictInterl := shiftedJacobiMonic_strictInterl_three_halves (m - 1) ε
   have hno : ∀ r,
       (shiftedJacobiMonic (m - 1) ((ε : ℝ) - 1 / 2) 1).IsRoot r →
       ¬(shiftedJacobiMonic (m - 1) ((ε : ℝ) + 1) 1).IsRoot r := by
@@ -662,7 +662,7 @@ theorem signedTriangleFamily_terminal_strictInterlSameDegree_jPolynomial
       StrictInterlSameDegree
         (shiftedJacobiMonic (m - 1) ((ε : ℝ) - 1 / 2) 1)
         (shiftedJacobiMonic (m - 1) ((ε : ℝ) + 1) 1) := by
-    apply StrictInterlSameDegree.of_strictInterl_of_no_common hprec
+    apply StrictInterlSameDegree.of_strictInterl_of_no_common hstrictInterl
     · rw [natDegree_shiftedJacobiMonic (m - 1) hα (by norm_num),
         natDegree_shiftedJacobiMonic (m - 1) hupper (by norm_num)]
     · exact hno

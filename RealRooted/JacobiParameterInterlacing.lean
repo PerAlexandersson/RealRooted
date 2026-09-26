@@ -198,7 +198,7 @@ theorem exists_shiftedJacobiMonic_beta_add_one_linearCombination
 /-- Increasing the second Jacobi parameter by one moves the roots to the left
 in the shifted variable, with the new polynomial in proper position before the
 old polynomial. -/
-theorem shiftedJacobiMonic_prec_beta_add_one (n : ℕ) {α β : ℝ}
+theorem shiftedJacobiMonic_strictInterl_beta_add_one (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     StrictInterl (shiftedJacobiMonic n α (β + 1))
       (shiftedJacobiMonic n α β) := by
@@ -212,11 +212,11 @@ theorem shiftedJacobiMonic_prec_beta_add_one (n : ℕ) {α β : ℝ}
       obtain ⟨a, b, ha, hb, hcombination⟩ :=
         exists_shiftedJacobiMonic_beta_add_one_linearCombination m hα hβ
       change F = C a * f + C b * g at hcombination
-      have hgf_prec : StrictInterl g f := by
+      have hgf_strictInterl : StrictInterl g f := by
         dsimp only [g, f]
-        exact shiftedJacobiMonic_prec_succ m (by linarith) (by linarith)
+        exact shiftedJacobiMonic_strictInterl_succ m (by linarith) (by linarith)
       have hgf : Interlaces g f := by
-        apply hgf_prec.toInterlaces
+        apply hgf_strictInterl.toInterlaces
         dsimp only [g, f]
         rw [natDegree_shiftedJacobiMonic m (by linarith) (by linarith),
           natDegree_shiftedJacobiMonic (m + 1) (by linarith) (by linarith)]
@@ -277,11 +277,12 @@ theorem shiftedJacobiMonic_noCommonRoot_beta_add_one (n : ℕ) {α β : ℝ}
 
 /-- Increasing the first Jacobi parameter by one moves the roots to the right
 in the shifted variable. -/
-theorem shiftedJacobiMonic_prec_alpha_add_one (n : ℕ) {α β : ℝ}
+theorem shiftedJacobiMonic_strictInterl_alpha_add_one (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     StrictInterl (shiftedJacobiMonic n α β)
       (shiftedJacobiMonic n (α + 1) β) := by
-  have hbeta := shiftedJacobiMonic_prec_beta_add_one n (α := β) (β := α) hβ hα
+  have hbeta := shiftedJacobiMonic_strictInterl_beta_add_one
+    n (α := β) (β := α) hβ hα
   have hreflected := hbeta.comp_one_sub_X_of_natDegree_eq (by
     rw [natDegree_shiftedJacobiMonic n (by linarith) hα,
       natDegree_shiftedJacobiMonic n hβ (by linarith)])
@@ -324,7 +325,7 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_alpha_add_one (n : ℕ) {α β
     StrictInterlSameDegree (shiftedJacobiMonic n α β)
       (shiftedJacobiMonic n (α + 1) β) := by
   apply StrictInterlSameDegree.of_strictInterl_of_no_common
-    (shiftedJacobiMonic_prec_alpha_add_one n hα hβ)
+    (shiftedJacobiMonic_strictInterl_alpha_add_one n hα hβ)
   · rw [natDegree_shiftedJacobiMonic n hα hβ,
       natDegree_shiftedJacobiMonic n (by linarith) hβ]
   · exact shiftedJacobiMonic_noCommonRoot_alpha_add_one n hα hβ
@@ -429,7 +430,7 @@ theorem shiftedJacobiMonic_eval_mul_alpha_add_one_two_pos (n : ℕ)
 
 /-- A two-unit increase in the first Jacobi parameter moves every root past
 the corresponding lower-parameter root. -/
-theorem shiftedJacobiMonic_prec_alpha_add_two (n : ℕ) {α β : ℝ}
+theorem shiftedJacobiMonic_strictInterl_alpha_add_two (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     StrictInterl (shiftedJacobiMonic n α β)
       (shiftedJacobiMonic n (α + 2) β) := by
@@ -493,7 +494,7 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_alpha_add_two (n : ℕ) {α β
     StrictInterlSameDegree (shiftedJacobiMonic n α β)
       (shiftedJacobiMonic n (α + 2) β) := by
   apply StrictInterlSameDegree.of_strictInterl_of_no_common
-    (shiftedJacobiMonic_prec_alpha_add_two n hα hβ)
+    (shiftedJacobiMonic_strictInterl_alpha_add_two n hα hβ)
   · rw [natDegree_shiftedJacobiMonic n hα hβ,
       natDegree_shiftedJacobiMonic n (by linarith) hβ]
   · intro x hx hhigh
@@ -518,7 +519,7 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one
 
 /-- Proper-position form of arbitrary positive first-parameter movement in
 degree one. -/
-theorem shiftedJacobiMonic_prec_alpha_add_degree_one
+theorem shiftedJacobiMonic_strictInterl_alpha_add_degree_one
     {α β t : ℝ} (hα : -1 < α) (hβ : -1 < β) (ht : 0 < t) :
     StrictInterl (shiftedJacobiMonic 1 α β)
       (shiftedJacobiMonic 1 (α + t) β) :=
@@ -640,7 +641,7 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_two
 
 /-- Proper-position form of the degree-two fractional comparison for the two
 parking-function parity classes. -/
-theorem shiftedJacobiMonic_prec_three_halves_degree_two
+theorem shiftedJacobiMonic_strictInterl_three_halves_degree_two
     (ε : ℕ) (hε : ε < 2) :
     StrictInterl (shiftedJacobiMonic 2 ((ε : ℝ) - 1 / 2) 1)
       (shiftedJacobiMonic 2 ((ε : ℝ) + 1) 1) :=
@@ -802,7 +803,7 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three
 
 /-- Proper-position form of the degree-three fractional comparison for the
 two parking-function parity classes. -/
-theorem shiftedJacobiMonic_prec_three_halves_degree_three
+theorem shiftedJacobiMonic_strictInterl_three_halves_degree_three
     (ε : ℕ) (hε : ε < 2) :
     StrictInterl (shiftedJacobiMonic 3 ((ε : ℝ) - 1 / 2) 1)
       (shiftedJacobiMonic 3 ((ε : ℝ) + 1) 1) :=
@@ -863,7 +864,7 @@ theorem shiftedJacobiMonic_noCommonRoot_alpha_add
 /-- The two-unit endpoint certificate propagates to an intermediate positive
 first-parameter shift if no root of the lower-parameter polynomial is crossed
 along the remaining parameter interval. -/
-theorem shiftedJacobiMonic_prec_alpha_add_of_no_crossing
+theorem shiftedJacobiMonic_strictInterl_alpha_add_of_no_crossing
     (n : ℕ) {α β t : ℝ} (hα : -1 < α) (hβ : -1 < β)
     (ht_pos : 0 < t) (ht_two : t ≤ 2)
     (hno : ∀ r, (shiftedJacobiMonic n α β).IsRoot r →
@@ -921,12 +922,12 @@ theorem shiftedJacobiMonic_prec_alpha_add_of_no_crossing
 /-- Every positive beta-one first-parameter shift of at most two puts the
 lower-parameter shifted Jacobi polynomial in proper position before the
 higher-parameter polynomial. -/
-theorem shiftedJacobiMonic_prec_alpha_add
+theorem shiftedJacobiMonic_strictInterl_alpha_add
     (n : ℕ) {α t : ℝ} (hα : -1 < α) (ht_pos : 0 < t)
     (ht_two : t ≤ 2) :
     StrictInterl (shiftedJacobiMonic n α 1)
       (shiftedJacobiMonic n (α + t) 1) := by
-  apply shiftedJacobiMonic_prec_alpha_add_of_no_crossing n hα
+  apply shiftedJacobiMonic_strictInterl_alpha_add_of_no_crossing n hα
     (by norm_num) ht_pos ht_two
   intro r hr s hs
   exact shiftedJacobiMonic_noCommonRoot_alpha_add n hα
@@ -934,14 +935,14 @@ theorem shiftedJacobiMonic_prec_alpha_add
 
 /-- The fractional first-parameter comparison used by the two parity classes
 in the A390883 Jacobi representation. -/
-theorem shiftedJacobiMonic_prec_three_halves (n ε : ℕ) :
+theorem shiftedJacobiMonic_strictInterl_three_halves (n ε : ℕ) :
     StrictInterl (shiftedJacobiMonic n ((ε : ℝ) - 1 / 2) 1)
       (shiftedJacobiMonic n ((ε : ℝ) + 1) 1) := by
   have hε : 0 ≤ (ε : ℝ) := Nat.cast_nonneg ε
   have hα : -1 < (ε : ℝ) - 1 / 2 := by linarith
-  have hprec := shiftedJacobiMonic_prec_alpha_add n hα
+  have hstrictInterl := shiftedJacobiMonic_strictInterl_alpha_add n hα
     (by norm_num : (0 : ℝ) < 3 / 2) (by norm_num : (3 / 2 : ℝ) ≤ 2)
-  convert hprec using 1
+  convert hstrictInterl using 1
   ring_nf
 
 /-- At a root of the degree-`m + 1` lower-parameter polynomial, the
@@ -1061,7 +1062,7 @@ theorem shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred (m : ℕ)
   let g := shiftedJacobiMonic m α β
   let F := shiftedJacobiMonic m (α + 2) β
   have hgf : Interlaces g f := by
-    apply (shiftedJacobiMonic_prec_succ m hα hβ).toInterlaces
+    apply (shiftedJacobiMonic_strictInterl_succ m hα hβ).toInterlaces
     rw [natDegree_shiftedJacobiMonic m hα hβ,
       natDegree_shiftedJacobiMonic (m + 1) hα hβ]
   obtain ⟨hf, hg, hdeg, rs, ss, hrs_sorted, hss_sorted,
@@ -1139,11 +1140,63 @@ theorem shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred (m : ℕ)
     hf.1 hf.2 hF_ne hdeg_lt hsign
 
 /-- Proper position form of the adjacent-degree two-unit endpoint. -/
-theorem shiftedJacobiMonic_prec_alpha_add_two_degree_pred (m : ℕ)
+theorem shiftedJacobiMonic_strictInterl_alpha_add_two_degree_pred (m : ℕ)
     {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
     StrictInterl (shiftedJacobiMonic m (α + 2) β)
       (shiftedJacobiMonic (m + 1) α β) :=
   (shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred m hα hβ).toStrictInterl
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated shiftedJacobiMonic_strictInterl_beta_add_one
+  (since := "2026-09-26")]
+alias shiftedJacobiMonic_prec_beta_add_one :=
+  shiftedJacobiMonic_strictInterl_beta_add_one
+
+@[deprecated shiftedJacobiMonic_strictInterl_alpha_add_one
+  (since := "2026-09-26")]
+alias shiftedJacobiMonic_prec_alpha_add_one :=
+  shiftedJacobiMonic_strictInterl_alpha_add_one
+
+@[deprecated shiftedJacobiMonic_strictInterl_alpha_add_two
+  (since := "2026-09-26")]
+alias shiftedJacobiMonic_prec_alpha_add_two :=
+  shiftedJacobiMonic_strictInterl_alpha_add_two
+
+@[deprecated shiftedJacobiMonic_strictInterl_alpha_add_degree_one
+  (since := "2026-09-26")]
+alias shiftedJacobiMonic_prec_alpha_add_degree_one :=
+  shiftedJacobiMonic_strictInterl_alpha_add_degree_one
+
+@[deprecated shiftedJacobiMonic_strictInterl_three_halves_degree_two
+  (since := "2026-09-26")]
+alias shiftedJacobiMonic_prec_three_halves_degree_two :=
+  shiftedJacobiMonic_strictInterl_three_halves_degree_two
+
+@[deprecated shiftedJacobiMonic_strictInterl_three_halves_degree_three
+  (since := "2026-09-26")]
+alias shiftedJacobiMonic_prec_three_halves_degree_three :=
+  shiftedJacobiMonic_strictInterl_three_halves_degree_three
+
+@[deprecated shiftedJacobiMonic_strictInterl_alpha_add_of_no_crossing
+  (since := "2026-09-26")]
+alias shiftedJacobiMonic_prec_alpha_add_of_no_crossing :=
+  shiftedJacobiMonic_strictInterl_alpha_add_of_no_crossing
+
+@[deprecated shiftedJacobiMonic_strictInterl_alpha_add
+  (since := "2026-09-26")]
+alias shiftedJacobiMonic_prec_alpha_add :=
+  shiftedJacobiMonic_strictInterl_alpha_add
+
+@[deprecated shiftedJacobiMonic_strictInterl_three_halves
+  (since := "2026-09-26")]
+alias shiftedJacobiMonic_prec_three_halves :=
+  shiftedJacobiMonic_strictInterl_three_halves
+
+@[deprecated shiftedJacobiMonic_strictInterl_alpha_add_two_degree_pred
+  (since := "2026-09-26")]
+alias shiftedJacobiMonic_prec_alpha_add_two_degree_pred :=
+  shiftedJacobiMonic_strictInterl_alpha_add_two_degree_pred
 
 /-! ## Deprecated strict same-degree interlacing names -/
 

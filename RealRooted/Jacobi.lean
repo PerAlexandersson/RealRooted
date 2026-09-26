@@ -18,7 +18,7 @@ namespace RealRooted
 
 /-- Consecutive monic shifted Jacobi polynomials are in proper position when
 both parameters exceed `-1`. -/
-theorem shiftedJacobiMonic_prec_succ (n : ℕ) {α β : ℝ}
+theorem shiftedJacobiMonic_strictInterl_succ (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     StrictInterl (shiftedJacobiMonic n α β) (shiftedJacobiMonic (n + 1) α β) := by
   apply favardInterlacing (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ)
@@ -30,14 +30,14 @@ theorem shiftedJacobiMonic_prec_succ (n : ℕ) {α β : ℝ}
 theorem shiftedJacobiMonic_ne_zero (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     shiftedJacobiMonic n α β ≠ 0 :=
-  (shiftedJacobiMonic_prec_succ n hα hβ).1.1
+  (shiftedJacobiMonic_strictInterl_succ n hα hβ).1.1
 
 /-- A monic shifted Jacobi polynomial splits over `ℝ` when both parameters
 exceed `-1`. -/
 theorem shiftedJacobiMonic_splits (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     (shiftedJacobiMonic n α β).Splits :=
-  (shiftedJacobiMonic_prec_succ n hα hβ).1.2
+  (shiftedJacobiMonic_strictInterl_succ n hα hβ).1.2
 
 /-- The roots of a monic shifted Jacobi polynomial are simple when both
 parameters exceed `-1`. -/
@@ -80,13 +80,13 @@ theorem shiftedJacobi_eq_leading_mul_monic (n : ℕ) {α β : ℝ}
 
 /-- Consecutive shifted Jacobi polynomials satisfy the project's
 scalar-invariant `StrictInterl` relation when both parameters exceed `-1`. -/
-theorem shiftedJacobi_prec_succ (n : ℕ) {α β : ℝ}
+theorem shiftedJacobi_strictInterl_succ (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     StrictInterl (shiftedJacobi n α β) (shiftedJacobi (n + 1) α β) := by
   rw [shiftedJacobi_eq_leading_mul_monic n hα hβ,
     shiftedJacobi_eq_leading_mul_monic (n + 1) hα hβ]
   exact
-    ((shiftedJacobiMonic_prec_succ n hα hβ).C_mul_left
+    ((shiftedJacobiMonic_strictInterl_succ n hα hβ).C_mul_left
       (shiftedJacobi_leadingScale_ne_zero n hα hβ)).C_mul_right
       (shiftedJacobi_leadingScale_ne_zero (n + 1) hα hβ)
 
@@ -95,7 +95,7 @@ exceed `-1`. -/
 theorem shiftedJacobi_interlaces_succ (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     Interlaces (shiftedJacobi n α β) (shiftedJacobi (n + 1) α β) := by
-  apply (shiftedJacobi_prec_succ n hα hβ).toInterlaces
+  apply (shiftedJacobi_strictInterl_succ n hα hβ).toInterlaces
   rw [Polynomial.natDegree_shiftedJacobi n hα hβ,
     Polynomial.natDegree_shiftedJacobi (n + 1) hα hβ]
 
@@ -129,6 +129,14 @@ theorem shiftedJacobi_hasSimpleRoots (n : ℕ) {α β : ℝ}
   HasSimpleRoots.of_roots_nodup
     (shiftedJacobi_ne_zero n hα hβ)
     (shiftedJacobi_roots_nodup n hα hβ)
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated shiftedJacobiMonic_strictInterl_succ (since := "2026-09-26")]
+alias shiftedJacobiMonic_prec_succ := shiftedJacobiMonic_strictInterl_succ
+
+@[deprecated shiftedJacobi_strictInterl_succ (since := "2026-09-26")]
+alias shiftedJacobi_prec_succ := shiftedJacobi_strictInterl_succ
 
 /-- A shifted Jacobi polynomial splits over `ℝ` when both parameters exceed
 `-1`. -/

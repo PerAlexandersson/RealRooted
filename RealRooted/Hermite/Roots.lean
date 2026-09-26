@@ -34,7 +34,7 @@ theorem hermiteReal_hasPosLeadingCoeff (n : ℕ) :
 
 /-- Consecutive real probabilists' Hermite polynomials are in proper
 position, with the lower-degree polynomial first. -/
-theorem hermiteReal_prec_succ (n : ℕ) :
+theorem hermiteReal_strictInterl_succ (n : ℕ) :
     StrictInterl (hermiteReal n) (hermiteReal (n + 1)) :=
   favardInterlacing hermiteReal_satisfiesFavardRecurrence
     hermiteReal_subdiag_pos n
@@ -42,7 +42,7 @@ theorem hermiteReal_prec_succ (n : ℕ) :
 /-- Consecutive real probabilists' Hermite polynomials interlace. -/
 theorem hermiteReal_interlaces_succ (n : ℕ) :
     Interlaces (hermiteReal n) (hermiteReal (n + 1)) :=
-  (hermiteReal_prec_succ n).toInterlaces (by simp)
+  (hermiteReal_strictInterl_succ n).toInterlaces (by simp)
 
 /-- Every real probabilists' Hermite polynomial is nonzero and splits over
 `ℝ`. -/
@@ -102,6 +102,11 @@ theorem hermiteReal_isGeneralizedSturmSeq (n : ℕ) :
     hermiteReal_satisfiesFavardRecurrence hermiteReal_subdiag_pos n
 
 example : StrictInterl (X : ℝ[X]) (X ^ 2 - 1) := by
-  simpa using hermiteReal_prec_succ 1
+  simpa using hermiteReal_strictInterl_succ 1
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated hermiteReal_strictInterl_succ (since := "2026-09-26")]
+alias hermiteReal_prec_succ := hermiteReal_strictInterl_succ
 
 end RealRooted

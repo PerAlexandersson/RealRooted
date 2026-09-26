@@ -40,10 +40,10 @@ theorem shiftedLegendreReal_splits (n : ℕ) :
   (shiftedLegendreReal_isRealRooted n).2
 
 /-- Consecutive real shifted Legendre polynomials satisfy `StrictInterl`. -/
-theorem shiftedLegendreReal_prec_succ (n : ℕ) :
+theorem shiftedLegendreReal_strictInterl_succ (n : ℕ) :
     StrictInterl (shiftedLegendreReal n) (shiftedLegendreReal (n + 1)) := by
   simpa only [shiftedLegendreReal_eq_shiftedJacobi] using
-    shiftedJacobi_prec_succ n (by norm_num) (by norm_num)
+    shiftedJacobi_strictInterl_succ n (by norm_num) (by norm_num)
 
 /-- Consecutive real shifted Legendre polynomials interlace. -/
 theorem shiftedLegendreReal_interlaces_succ (n : ℕ) :
@@ -137,12 +137,22 @@ theorem shiftedLegendreReal_comp_neg_X_interlaces_succ (n : ℕ) :
   interlaces_comp_neg_X (shiftedLegendreReal_interlaces_succ n)
 
 /-- Consecutive reflected real shifted Legendre polynomials satisfy `StrictInterl`. -/
-theorem shiftedLegendreReal_comp_neg_X_prec_succ (n : ℕ) :
+theorem shiftedLegendreReal_comp_neg_X_strictInterl_succ (n : ℕ) :
     StrictInterl ((shiftedLegendreReal n).comp (-X))
       ((shiftedLegendreReal (n + 1)).comp (-X)) :=
   (shiftedLegendreReal_comp_neg_X_interlaces_succ n).toStrictInterl
 
 example : StrictInterl (1 + 2 * X) (1 + 6 * X + 6 * X ^ 2) := by
-  simpa using shiftedLegendreReal_comp_neg_X_prec_succ 1
+  simpa using shiftedLegendreReal_comp_neg_X_strictInterl_succ 1
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated shiftedLegendreReal_strictInterl_succ (since := "2026-09-26")]
+alias shiftedLegendreReal_prec_succ := shiftedLegendreReal_strictInterl_succ
+
+@[deprecated shiftedLegendreReal_comp_neg_X_strictInterl_succ
+  (since := "2026-09-26")]
+alias shiftedLegendreReal_comp_neg_X_prec_succ :=
+  shiftedLegendreReal_comp_neg_X_strictInterl_succ
 
 end RealRooted

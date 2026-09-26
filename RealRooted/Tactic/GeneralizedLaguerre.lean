@@ -30,7 +30,7 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         first
-          | exact RealRooted.prec_of_generalized_laguerre_second_derivative
+          | exact RealRooted.strictInterl_of_generalized_laguerre_second_derivative
               (m := $m) (c := $c) $hzero (by
                 intro n
                 convert ($hrec) n using 1 <;> norm_num)

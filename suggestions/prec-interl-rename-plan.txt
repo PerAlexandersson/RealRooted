@@ -451,3 +451,13 @@ lexical matches, and other compatibility families remain later batches.  The
 source review logs for this boundary are `/tmp/realrooted-prec-statement-batch-inventory.log`,
 `/tmp/realrooted-prec-statement-batch-residual.log`, and
 `/tmp/realrooted-prec-statement-batch-guards.log`.
+
+Classical orthogonal-polynomial batch (2026-09-26)
+
+The next dependency-closed batch canonicalizes 17 proper-position APIs across
+the Jacobi, Jacobi-parameter, Hermite, Legendre, generalized-Laguerre, and
+generalized-Laguerre derivative-recurrence modules.  Production and tactic
+callers use `StrictInterl` names; the 17 former public names occur only as
+dated deprecated aliases.  The catalog source parser now tracks multiline
+attribute blocks, with a regression test ensuring that multiline deprecated
+compatibility declarations cannot enter the completed-results catalog.

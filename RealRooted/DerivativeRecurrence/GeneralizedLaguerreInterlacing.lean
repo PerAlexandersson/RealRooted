@@ -44,7 +44,7 @@ theorem natDegree_of_generalized_laguerre_second_derivative
 
 /-- Consecutive rows of a generalized-Laguerre second-derivative sequence are
 in proper position when both parameters are nonnegative. -/
-theorem prec_of_generalized_laguerre_second_derivative
+theorem strictInterl_of_generalized_laguerre_second_derivative
     {P : ℕ → ℝ[X]} {m c : ℝ} (hzero : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
       (C c + X) * P n +
@@ -67,7 +67,8 @@ theorem interlaces_of_generalized_laguerre_second_derivative
     (hm : 0 ≤ m) (hc : 0 ≤ c) :
     ∀ n, Interlaces (P n) (P (n + 1)) := by
   intro n
-  exact (prec_of_generalized_laguerre_second_derivative hzero hrec hm hc n).toInterlaces (by
+  exact (strictInterl_of_generalized_laguerre_second_derivative
+    hzero hrec hm hc n).toInterlaces (by
     rw [natDegree_of_generalized_laguerre_second_derivative hzero hrec,
       natDegree_of_generalized_laguerre_second_derivative hzero hrec])
 
@@ -81,6 +82,13 @@ theorem isRealRooted_of_generalized_laguerre_second_derivative_sequence
           C (m ^ 2) * X * (P n).derivative.derivative)
     (hm : 0 ≤ m) (hc : 0 ≤ c) :
     ∀ n, P n ≠ 0 ∧ (P n).Splits := fun n =>
-  (prec_of_generalized_laguerre_second_derivative hzero hrec hm hc n).1
+  (strictInterl_of_generalized_laguerre_second_derivative hzero hrec hm hc n).1
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated strictInterl_of_generalized_laguerre_second_derivative
+  (since := "2026-09-26")]
+alias prec_of_generalized_laguerre_second_derivative :=
+  strictInterl_of_generalized_laguerre_second_derivative
 
 end RealRooted
