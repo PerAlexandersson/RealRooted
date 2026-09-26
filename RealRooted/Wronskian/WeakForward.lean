@@ -6,7 +6,7 @@ import RealRooted.Wronskian.Forward
 /-!
 # Weak forward Wronskian orientation
 
-This file extends the strict forward Wronskian theorems to proper-position
+This file extends the strict forward Wronskian theorems to interlacing
 pairs with common roots.
 -/
 
@@ -16,7 +16,7 @@ namespace RealRooted
 
 noncomputable section
 
-/-- Proper position with positive leading coefficients gives global
+/-- Interlacing with positive leading coefficients gives global
 nonnegativity of the oriented Wronskian.  Common roots are removed
 recursively; after they are exhausted, the existing strict same-degree and
 successor-degree Wronskian theorems apply. -/

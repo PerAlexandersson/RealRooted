@@ -4,7 +4,7 @@ import RealRooted.GarloffWagner.Algebra
 # Garloff--Wagner iterated transforms
 
 The `J^k ∘ L` transform, its factor identities, and the Theorem 11
-real-rootedness and proper-position transport.
+real-rootedness and interlacing transport.
 -/
 
 open Polynomial
@@ -201,12 +201,12 @@ theorem derivative_strictInterl_TDeriv_of_splits {eps : ℝ} {p : ℝ[X]}
       (TDeriv eps p).natDegree = p.derivative.natDegree + 1 := by
     rw [natDegree_TDeriv, p.natDegree_derivative]
     lia
-  have hprec_or :
+  have hstrictInterl_or :
       StrictInterl p.derivative (TDeriv eps p) ∨
         StrictInterl (TDeriv eps p) p.derivative :=
     strictInterl_of_allComboRealRooted hder_rr.1 hder_rr.2 hT_rr.1 hT_rr.2 hall
       (Or.inl hsucc.symm)
-  exact StrictInterl.forward_of_orientation_of_succDegree hsucc hprec_or
+  exact StrictInterl.forward_of_orientation_of_succDegree hsucc hstrictInterl_or
 
 /-- Coprime/simple-root branch of Garloff--Wagner's formula (3):
 `J^k L f` precedes `J^k L ((X - u)f)` when `u ≤ 0`.  The remaining
@@ -222,12 +222,12 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_coprime {k : ℕ} {u : ℝ} {f : �
   have hdeg : 1 ≤ (gwJL (k + 1) f).natDegree := by
     rw [natDegree_gwJL (k + 1) hf0]
     lia
-  have hprec :=
+  have hstrictInterl :=
     derivative_strictInterl_TDeriv_of_nonpos_of_coprime
       (eps := u) (p := gwJL (k + 1) f) hu hF0 hFs hFpos hdeg hcop
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
-  simpa [hD] using hprec
+  simpa [hD] using hstrictInterl
 
 /-- Common-factor branch of Garloff--Wagner's formula (3).  For
 `F = J^(k+1)L f`, if `F = d q` and `F' = d r`, then the formula (3) proper
@@ -250,14 +250,14 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_common_factor
   have hdeg : 1 ≤ (gwJL (k + 1) f).natDegree := by
     rw [natDegree_gwJL (k + 1) hf0]
     lia
-  have hprec :=
+  have hstrictInterl :=
     derivative_strictInterl_TDeriv_of_nonpos_of_common_factor
       (eps := u) (p := gwJL (k + 1) f) (d := d) (q := q) (r := r)
       hu hF0 hFs hdeg hd_ne hd_splits hF_def hFder_def
       hrq hq_pos hr_pos hcop
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
-  simpa [hD] using hprec
+  simpa [hD] using hstrictInterl
 
 /-- Common-factor branch of formula (3), with quotient coprimality expressed
 as absence of common real roots. -/
@@ -275,18 +275,18 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_common_factor_no_common
   have hdeg : 1 ≤ (gwJL (k + 1) f).natDegree := by
     rw [natDegree_gwJL (k + 1) hf0]
     lia
-  have hprec :=
+  have hstrictInterl :=
     derivative_strictInterl_TDeriv_of_nonpos_of_common_factor_no_common
       (eps := u) (p := gwJL (k + 1) f) (d := d) (q := q) (r := r)
       hu hF0 hFs hdeg hd_ne hd_splits hF_def hFder_def
       hrq hq_pos hr_pos hno
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
-  simpa [hD] using hprec
+  simpa [hD] using hstrictInterl
 
 /-- Exact-root squarefree-quotient branch of Garloff--Wagner's formula (3).
 If `F = J^(k+1)L f = (X - C a)^m q` and the remaining quotient `q` has simple
-roots with no further `X - C a` factor, then the formula (3) proper-position
+roots with no further `X - C a` factor, then the formula (3) interlacing
 step follows. -/
 theorem gwJL_factor_strictInterl_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
     {k : ℕ} {u a : ℝ} {m : ℕ} {f q : ℝ[X]}
@@ -298,13 +298,13 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
     StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hFpos : HasPosLeadingCoeff (gwJL (k + 1) f) := hfpos.gwJL (k + 1)
-  have hprec :=
+  have hstrictInterl :=
     derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_hasSimpleRoots
       (eps := u) (p := gwJL (k + 1) f) (q := q) (a := a) (m := m)
       hu hF0 hFs hFpos hdeg hm hF_factor hq_nodvd hq_simple
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
-  simpa [hD] using hprec
+  simpa [hD] using hstrictInterl
 
 /-- Root-multiplicity squarefree-quotient branch of Garloff--Wagner's formula
 (3), using the canonical factorization of `F = J^(k+1)L f` at a root `a`. -/
@@ -321,13 +321,13 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_rootMultiplicity_factor_hasSimpleR
     StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hFpos : HasPosLeadingCoeff (gwJL (k + 1) f) := hfpos.gwJL (k + 1)
-  have hprec :=
+  have hstrictInterl :=
     derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRoots
       (eps := u) (p := gwJL (k + 1) f) (a := a)
       hu hF0 hFs hFpos hdeg hm hsimple
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
-  simpa [hD] using hprec
+  simpa [hD] using hstrictInterl
 
 /-- Formula (3) branch when `F = J^(k+1)L f` has simple roots away from the
 chosen exceptional root `a`.  For Garloff--Wagner Theorem 11(b), the intended
@@ -342,13 +342,13 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_rootMultiplicity_factor_hasSimpleR
     StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
   have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
   have hFpos : HasPosLeadingCoeff (gwJL (k + 1) f) := hfpos.gwJL (k + 1)
-  have hprec :=
+  have hstrictInterl :=
     derivative_strictInterl_TDeriv_of_nonpos_of_rootMultiplicity_factor_hasSimpleRootsExcept
       (eps := u) (p := gwJL (k + 1) f) (a := a)
       hu hF0 hFs hFpos hdeg hm hsimple
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
-  simpa [hD] using hprec
+  simpa [hD] using hstrictInterl
 
 theorem gwJ_C_mul_X_pow (a : ℝ) (k : ℕ) :
     gwJ (C a * X ^ k) = C (a * (k + 1 : ℝ)⁻¹) * X ^ (k + 1) := by
@@ -439,12 +439,12 @@ theorem gwJL_factor_strictInterl_of_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
   have hdeg : 1 ≤ (gwJL (k + 1) f).natDegree := by
     rw [natDegree_gwJL (k + 1) hf0]
     lia
-  have hprec :=
+  have hstrictInterl :=
     derivative_strictInterl_TDeriv_of_splits
       (eps := u) (p := gwJL (k + 1) f) hF0 hFs hdeg
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
-  simpa [hD] using hprec
+  simpa [hD] using hstrictInterl
 
 /-- Theorem 11(a), real-rooted part: `J^k L` preserves real-rootedness. -/
 def gwTheorem11RealRootedStatement : Prop :=
@@ -630,13 +630,13 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
   have hdeg : 1 ≤ (gwJL (k + 1) f).natDegree := by
     rw [natDegree_gwJL (k + 1) hf0]
     lia
-  have hprec :=
+  have hstrictInterl :=
     derivative_strictInterl_TDeriv_of_nonpos_of_hasSimpleRootsExcept_zero
       (eps := u) (p := gwJL (k + 1) f)
       hu hF0 hFs hFpos hdeg hFsimple
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
-  simpa [hD] using hprec
+  simpa [hD] using hstrictInterl
 
 /-- Garloff--Wagner formula (3), packaged under the Theorem 11(b) hypotheses
 that will be available in the Theorem 11(c) induction. -/
@@ -657,7 +657,7 @@ def gwTheorem11StrictInterlStatement : Prop :=
 /-- Reduction for the Lemma 7/Krein step in Garloff--Wagner, Theorem 11(c):
 once `g` is expressed as a weighted sum whose `J^k L` images are compatible
 with the common left bound `J^k L f`, Wagner's finite weighted-sum theorem
-gives the desired proper-position conclusion. -/
+gives the desired interlacing conclusion. -/
 theorem gwJL_strictInterl_of_weightedCompatibleExpansion
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hg : g = weightedSum l)

@@ -519,7 +519,7 @@ theorem exists_rightmost_factor_interlaces_of_strictInterl_sameDegree
       g.IsRoot uR ∧
       (∀ r ∈ g.roots, r ≤ uR) ∧
       Interlaces q f := by
-  have hprec_keep : StrictInterl f g := hprec
+  have hstrictInterl_keep : StrictInterl f g := hprec
   obtain ⟨_, hg, _, _, _, _, _, _, _⟩ := hprec
   obtain ⟨uR, huR_root, huR_max⟩ :=
     exists_rightmost_root_of_isRealRooted hg.1 hg.2 hdeg_pos
@@ -528,7 +528,7 @@ theorem exists_rightmost_factor_interlaces_of_strictInterl_sameDegree
     ⟨uR, q, hq, huR_root, huR_max,
       interlaces_of_strictInterl_sameDegree_rightmost_factor
         (f := f) (g := g) (q := q) (uR := uR)
-        hprec_keep hdeg huR_max hq⟩
+        hstrictInterl_keep hdeg huR_max hq⟩
 
 @[deprecated exists_rightmost_factor_interlaces_of_strictInterl_sameDegree
   (since := "2026-09-18")]

@@ -43,7 +43,7 @@ theorem natDegree_of_generalized_laguerre_second_derivative
     (generalized_laguerre_second_derivative_bilinear hzero hrec) (by norm_num) (by norm_num)
 
 /-- Consecutive rows of a generalized-Laguerre second-derivative sequence are
-in proper position when both parameters are nonnegative. -/
+in an interlacing relation when both parameters are nonnegative. -/
 theorem strictInterl_of_generalized_laguerre_second_derivative
     {P : ℕ → ℝ[X]} {m c : ℝ} (hzero : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
@@ -84,7 +84,7 @@ theorem isRealRooted_of_generalized_laguerre_second_derivative_sequence
     ∀ n, P n ≠ 0 ∧ (P n).Splits := fun n =>
   (strictInterl_of_generalized_laguerre_second_derivative hzero hrec hm hc n).1
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated strictInterl_of_generalized_laguerre_second_derivative
   (since := "2026-09-26")]

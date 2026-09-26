@@ -389,7 +389,7 @@ theorem derivative_strictInterl_TDeriv_of_nonpos_of_coprime {eps : ℝ} {p : ℝ
     have hder_rr : p.derivative ≠ 0 ∧ p.derivative.Splits := hder.2.1
     have hcoef_pos : 0 < -eps := neg_pos.mpr heps_neg
     have hT_eq : TDeriv eps p = p + C (-eps) * p.derivative := by simp [TDeriv, sub_eq_add_neg]
-    have hscaled_prec : StrictInterl p.derivative (C (-eps) * p.derivative) :=
+    have hscaled_strictInterl : StrictInterl p.derivative (C (-eps) * p.derivative) :=
       StrictInterl.C_mul_right (StrictInterl.refl hder_rr.1 hder_rr.2) hcoef_pos.ne'
     have hscaled_pos : HasPosLeadingCoeff (C (-eps) * p.derivative) :=
       hasPosLeadingCoeff_C_mul hcoef_pos (hp_pos.derivative (by lia))
@@ -399,10 +399,10 @@ theorem derivative_strictInterl_TDeriv_of_nonpos_of_coprime {eps : ℝ} {p : ℝ
     have hsum_splits : (p + C (-eps) * p.derivative).Splits := by
       rw [← hT_eq]
       exact splits_tderiv_all hp
-    have hprec : StrictInterl p.derivative (p + C (-eps) * p.derivative) :=
-      StrictInterl.add_of_left hder.toStrictInterl hscaled_prec hp_pos hscaled_pos
+    have hstrictInterl : StrictInterl p.derivative (p + C (-eps) * p.derivative) :=
+      StrictInterl.add_of_left hder.toStrictInterl hscaled_strictInterl hp_pos hscaled_pos
         hsum_ne hsum_splits (hcop heps_neg)
-    simpa [hT_eq] using hprec
+    simpa [hT_eq] using hstrictInterl
   · subst eps
     simpa [TDeriv] using (derivative_interlaces hp hdeg2).toStrictInterl
 
@@ -445,16 +445,16 @@ theorem derivative_strictInterl_TDeriv_of_nonpos_of_common_factor {eps : ℝ} {p
         ring
       exact (isRealRooted_of_dvd (TDeriv_ne_zero hp0) hT_splits hsum_ne hsum_dvd).2
     have hrr : r ≠ 0 ∧ r.Splits := hrq.1
-    have hscaled_prec : StrictInterl r (C (-eps) * r) :=
+    have hscaled_strictInterl : StrictInterl r (C (-eps) * r) :=
       StrictInterl.C_mul_right (StrictInterl.refl hrr.1 hrr.2) hcoef_pos.ne'
     have hscaled_pos : HasPosLeadingCoeff (C (-eps) * r) :=
       hasPosLeadingCoeff_C_mul hcoef_pos hr_pos
-    have hprec :
+    have hstrictInterl :
         StrictInterl p.derivative (p + C (-eps) * p.derivative) :=
       StrictInterl.add_of_left_of_common_factor
         hd_ne hd_splits hp_def hscaled_def hder_def
-        hrq hscaled_prec hq_pos hscaled_pos hsum_ne hsum_splits (hcop heps_neg)
-    simpa [hT_eq] using hprec
+        hrq hscaled_strictInterl hq_pos hscaled_pos hsum_ne hsum_splits (hcop heps_neg)
+    simpa [hT_eq] using hstrictInterl
   · subst eps
     simpa [TDeriv] using (derivative_interlaces hp hdeg2).toStrictInterl
 
@@ -726,7 +726,7 @@ theorem derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_no_common
   have hquot_pos :
       HasPosLeadingCoeff (C (m : ℝ) * q + (X - C a) * q.derivative) :=
     hasPosLeadingCoeff_derivative_common_factor_quotient hm hq_pos
-  have hprec :
+  have hstrictInterl :
       StrictInterl (C (m : ℝ) * q + (X - C a) * q.derivative) ((X - C a) * q) :=
     derivative_common_factor_quotient_strictInterl hp hdeg hm hp_factor
   exact
@@ -736,7 +736,7 @@ theorem derivative_strictInterl_TDeriv_of_nonpos_of_pow_X_sub_C_factor_no_common
       ((isRealRooted_X_sub_C a).2.pow _)
       (eq_common_factor_of_pow_X_sub_C_mul hm hp_factor)
       (derivative_eq_common_factor_of_pow_X_sub_C_mul hm hp_factor)
-      hprec hright_pos hquot_pos hno
+      hstrictInterl hright_pos hquot_pos hno
 
 /-- Exact linear-factor derivative-shift step when the remaining quotient is
 already squarefree in the local `HasSimpleRoots` sense. -/
@@ -843,7 +843,7 @@ theorem strictInterl_TDeriv {eps : ℝ} {p : ℝ[X]}
       have hrewrite : TDeriv eps (-p) = -TDeriv eps p := by
         simp [TDeriv]
         ring
-      have hprec_neg :
+      have hstrictInterl_neg :
           StrictInterl (-p) (TDeriv eps (-p)) := by
         have hder : Interlaces (-p).derivative (-p) := by
           simpa using derivative_interlaces (f := -p) (by simp_all) (by simp_all)
@@ -869,7 +869,7 @@ theorem strictInterl_TDeriv {eps : ℝ} {p : ℝ[X]}
           strictInterl_of_interlaces_evalCoeff_nonpos
             hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos
       have hleft : StrictInterl p (TDeriv eps (-p)) := by
-        simpa using StrictInterl.C_mul_left hprec_neg (by simp : (-1 : ℝ) ≠ 0)
+        simpa using StrictInterl.C_mul_left hstrictInterl_neg (by simp : (-1 : ℝ) ≠ 0)
       have hboth : StrictInterl p (TDeriv eps p) := by
         simpa [hrewrite] using StrictInterl.C_mul_right hleft (by simp : (-1 : ℝ) ≠ 0)
       lia

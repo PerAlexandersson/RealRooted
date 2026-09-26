@@ -102,7 +102,7 @@ theorem weightedShiftTilingRow_isPFPolynomial
   exact (weightedGreenKernel_markedShiftKernel_pf_and_interl
     hb has N hr).1 i
 
-/-- Consecutive nonstationary tiling rows are in zero-aware proper position. -/
+/-- Consecutive nonstationary tiling rows are in zero-aware interlacing. -/
 theorem interl_weightedShiftTilingRow_succ
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
@@ -363,7 +363,7 @@ theorem weightedShiftTilingRow_separated_isPFPolynomial
   obtain ⟨a, ha, rfl⟩ := hf
   exact mul_nonneg (halphas a ha) (hw n)
 
-/-- Consecutive rows of nonnegative separated data remain in proper position. -/
+/-- Consecutive rows of nonnegative separated data remain in an interlacing relation. -/
 theorem interl_weightedShiftTilingRow_separated_succ
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {alphas : List ℝ} (halphas : ∀ a ∈ alphas, 0 ≤ a)

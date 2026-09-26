@@ -565,11 +565,11 @@ private lemma allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
       _ = us.length := hus_len.symm
       _ = (↑us : Multiset ℝ).card := (Multiset.coe_card us).symm
       _ ≤ (↑us : Multiset ℝ).card := le_rfl
-  have hprec_fg : StrictInterl f g := by
+  have hstrictInterl_fg : StrictInterl f g := by
     refine ⟨hf_rr, hg_rr, us, rs, hus_pw.imp le_of_lt, hrs_sorted, hus_eq, hrs_eq, ?_⟩
     lia
   have hall_fg : AllComboRealRooted f g :=
-    allComboRealRooted_of_strictInterl hprec_fg
+    allComboRealRooted_of_strictInterl hstrictInterl_fg
   exact allComboRealRooted_comm hall_fg
 
 protected lemma AffineFamily.allComboRealRooted_of_affine_family_succDegree

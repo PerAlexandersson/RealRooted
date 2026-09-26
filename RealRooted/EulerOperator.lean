@@ -19,9 +19,9 @@ Eulerian-row arguments:
 * `polarTheta N p = C N * p - theta p`.
 
 The coefficient, nonnegative-coefficient, PF-preservation, and some
-proper-position preservation lemmas below are proved directly when they reduce
+interlacing preservation lemmas below are proved directly when they reduce
 to the existing derivative/PF API.  The remaining bounded-degree
-proper-position preservation results are recorded as statement interfaces,
+interlacing preservation results are recorded as statement interfaces,
 since their proofs are the classical Rolle/polar derivative input for the later
 formalization.
 -/
@@ -147,7 +147,7 @@ theorem thetaPreservesRealRootedOrZero : thetaPreservesRealRootedOrZeroStatement
   have htheta : IsPFPolynomial (theta p) := theta_preserves_pf hp
   exact ⟨htheta.eq_zero_or_splits, htheta.roots_nonpos⟩
 
-/-- Classical Rolle input: `theta` preserves weak proper position on the
+/-- Classical Rolle input: `theta` preserves weak interlacing on the
 polynomial PF cone. -/
 def thetaPreservesInterlStatement : Prop :=
   ∀ {p q : ℝ[X]},
@@ -162,7 +162,7 @@ theorem thetaPreservesInterl_of_derivative
   simpa [theta] using
     interl_X_mul_both_of_pf hp.derivative hq.derivative (hderiv hpq)
 
-/-- `theta` preserves weak proper position on the polynomial PF cone, obtained
+/-- `theta` preserves weak interlacing on the polynomial PF cone, obtained
 from the derivative preservation theorem and multiplication by `X`. -/
 theorem thetaPreservesInterl : thetaPreservesInterlStatement :=
   thetaPreservesInterl_of_derivative derivativePreservesInterl
@@ -188,7 +188,7 @@ theorem thetaPlusOne_preserves_pf : thetaPlusOnePreservesPFStatement := by
   intro p hp
   simpa [thetaPlusOne_eq_derivative_X_mul] using hp.X_mul.derivative
 
-/-- Classical Rolle input: `theta + 1` preserves weak proper position on the
+/-- Classical Rolle input: `theta + 1` preserves weak interlacing on the
 polynomial PF cone. -/
 def thetaPlusOnePreservesInterlStatement : Prop :=
   ∀ {p q : ℝ[X]},
@@ -203,13 +203,13 @@ theorem thetaPlusOnePreservesInterl_of_derivative
   intro p q hp hq hpq
   simpa [thetaPlusOne_eq_derivative_X_mul] using hderiv (interl_X_mul_both_of_pf hp hq hpq)
 
-/-- `theta + 1` preserves weak proper position on the polynomial PF cone,
+/-- `theta + 1` preserves weak interlacing on the polynomial PF cone,
 obtained from the derivative preservation theorem via
 `thetaPlusOnePreservesInterl_of_derivative`. -/
 theorem thetaPlusOnePreservesInterl : thetaPlusOnePreservesInterlStatement :=
   thetaPlusOnePreservesInterl_of_derivative derivativePreservesInterl
 
-/-- Classical Rolle input: a PF polynomial is in weak proper position with
+/-- Classical Rolle input: a PF polynomial is in weak interlacing with
 each of its iterates under `theta + 1`. -/
 def iterateThetaPlusOneSelfInterlStatement : Prop :=
   ∀ {p : ℝ[X]} (l : ℕ),
@@ -296,7 +296,7 @@ theorem polarThetaPreservesPF_of_realRootedOrZero
   fun {_ _} hp hdeg =>
     ⟨hp.hasNonnegCoeffs.polarTheta hdeg, (hNθ hp hdeg).1, (hNθ hp hdeg).2⟩
 
-/-- Polar-theta proper-position target. A checked witness is
+/-- Polar-theta interlacing target. A checked witness is
 `RealRooted.polarTheta_preserves_interl` in `EulerOperator.Polar.ProperPosition`. -/
 def polarThetaPreservesInterlStatement : Prop :=
   ∀ {N : ℕ} {p q : ℝ[X]},

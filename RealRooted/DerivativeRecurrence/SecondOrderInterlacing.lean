@@ -7,7 +7,7 @@ import RealRooted.WagnerRightSum
 /-!
 # Interlacing for affine-lagged second-order derivative recurrences
 
-Coefficient positivity, strict root negativity, and proper position for the
+Coefficient positivity, strict root negativity, and interlacing for the
 second-order recurrence shared by several OEIS polynomial families.
 -/
 
@@ -196,7 +196,7 @@ private theorem derivative_pos_affine_lag_second_order_derivative
     lia)
 
 /-- Adjacent members of an affine-lagged second-order derivative recurrence
-with an independent nonnegative lag are in proper position and have no common
+with an independent nonnegative lag strictly interlace and have no common
 real root. -/
 theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
     (P : ℕ → ℝ[X]) (a c : ℝ) (ha : 0 < a) (hc : 0 ≤ c)
@@ -218,13 +218,13 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_n
         rw [Polynomial.IsRoot.def, h0] at hr0
         simp at hr0
   | succ n ih =>
-      obtain ⟨ihprec, ihno⟩ := ih
+      obtain ⟨ihstrictInterl, ihno⟩ := ih
       have hinter : Interlaces (P n) (P (n + 1)) :=
-        ihprec.toInterlaces (by
+        ihstrictInterl.toInterlaces (by
           rw [natDegree_affine_lag_second_order_derivative h0 h1 hrec,
             natDegree_affine_lag_second_order_derivative h0 h1 hrec])
       have hderiv_inter : Interlaces ((P (n + 1)).derivative) (P (n + 1)) :=
-        derivative_interlaces_affine_lag_second_order_derivative h0 h1 hrec n ihprec.2.1.2
+        derivative_interlaces_affine_lag_second_order_derivative h0 h1 hrec n ihstrictInterl.2.1.2
       have hderiv_pos : HasPosLeadingCoeff ((P (n + 1)).derivative) :=
         derivative_pos_affine_lag_second_order_derivative h0 h1 hrec n
       have hV : ∀ r : ℝ, (P (n + 1)).IsRoot r →
@@ -248,7 +248,7 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_n
         rw [hrec n]
         simp only [polynomialWeightedSum]
         ring
-      have hprec : StrictInterl (P (n + 1)) (P (n + 2)) := by
+      have hstrictInterl : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rw [hsum]
         refine strictInterl_generalizedLiuWang_of_no_common
           hinter (pos_leading_affine_lag_second_order_derivative h0 h1 hrec n)
@@ -274,7 +274,7 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_n
         · rw [← hsum,
             natDegree_affine_lag_second_order_derivative h0 h1 hrec,
             natDegree_affine_lag_second_order_derivative h0 h1 hrec]
-      refine ⟨hprec, ?_⟩
+      refine ⟨hstrictInterl, ?_⟩
       intro r hr2 hr1
       have hrneg : r < 0 :=
         root_neg_affine_lag_second_order_derivative_of_nonneg_lag
@@ -295,7 +295,7 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_n
         exact (mul_eq_zero.mp hfactor).resolve_left hr0
       have hne : eval r (P n) ≠ 0 := fun hroot => ihno r hr1 hroot
       have hsign : 0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-        eval_mul_eval_nonneg_of_strictInterl_right ihprec hderiv_inter.toStrictInterl
+        eval_mul_eval_nonneg_of_strictInterl_right ihstrictInterl hderiv_inter.toStrictInterl
           (pos_leading_affine_lag_second_order_derivative h0 h1 hrec n) hderiv_pos hr1
       have hmul :
           0 ≤ a * (1 - r) *
@@ -326,7 +326,7 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_n
       have hderiv_zero : eval r ((P (n + 1)).derivative) = 0 :=
         (mul_eq_zero.mp hproduct_zero).resolve_left hne
       have hsimple : HasSimpleRoots (P (n + 1)) :=
-        (ihprec.hasSimpleRoots_of_no_common_root fun x hx =>
+        (ihstrictInterl.hasSimpleRoots_of_no_common_root fun x hx =>
           ihno x hx.2 hx.1).2
       exact (hsimple.eval_derivative_ne_zero hr1 hderiv_zero).elim
 

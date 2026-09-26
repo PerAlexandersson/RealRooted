@@ -3,9 +3,9 @@ import RealRooted.EulerOperator.Pencil
 import RealRooted.EulerOperator.Polar.ProperPosition
 
 /-!
-# Proper-position polar Euler pencils
+# Interlacing polar Euler pencils
 
-This file develops the proper-position comparisons between the polar Euler
+This file develops the interlacing comparisons between the polar Euler
 operator `polarTheta`, differentiation, and `thetaPlusOne`. The central
 derivative--polar comparison is proved once for the weak degree boundary; the
 strict-degree and boundary APIs differ only in how nonvanishing is supplied.
@@ -212,7 +212,7 @@ theorem strictInterl_derivative_polarTheta_boundary {M : ℕ} {p : ℝ[X]}
     StrictInterl p.derivative (polarTheta M p) :=
   strictInterl_derivative_polarTheta_of_le hp hpdeg hpM hpolar0 hpolar_p
 
-/-- The same boundary comparison with zero-aware proper position. -/
+/-- The same boundary comparison with zero-aware interlacing. -/
 theorem interl_derivative_polarTheta_boundary {M : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : 2 ≤ p.natDegree)
     (hpM : p.natDegree ≤ M) (hpolar_p : Interl (polarTheta M p) p) :

@@ -31,7 +31,7 @@ lemma HasSimpleRoots.ne_zero (hp : HasSimpleRoots p) : p ≠ 0 := by
   rintro rfl
   simp at hp
 
-/-- A proper-position pair with no common real root has simple real roots in
+/-- A strictly interlacing pair with no common real root has simple real roots in
 both entries. -/
 theorem StrictInterl.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ g.IsRoot r)) :
@@ -52,7 +52,7 @@ theorem StrictInterl.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hprec : St
     have hbound := (hprec.rootMultiplicity_bounds r).2
     lia
 
-/-- A coprime proper-position pair has simple real roots in both entries. -/
+/-- A coprime strictly interlacing pair has simple real roots in both entries. -/
 theorem StrictInterl.hasSimpleRoots_of_isCoprime {f g : ℝ[X]} (hprec : StrictInterl f g)
     (hcop : IsCoprime f g) :
     HasSimpleRoots f ∧ HasSimpleRoots g :=

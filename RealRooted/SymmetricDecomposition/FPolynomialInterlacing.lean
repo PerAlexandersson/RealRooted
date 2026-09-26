@@ -7,7 +7,7 @@ import RealRooted.WagnerX
 /-!
 # Interlacing transport for the `f`-polynomial transform
 
-Proper-position equivalences and positive-combination consequences of the
+Interlacing equivalences and positive-combination consequences of the
 Brändén--Solus `f`-polynomial transform.
 -/
 

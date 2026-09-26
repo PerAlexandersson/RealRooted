@@ -93,7 +93,7 @@ theorem IntervalRootData.hasPosLeadingCoeff_negOnePow_mul
     (isUnit_iff_ne_zero.mpr (pow_ne_zero n (by norm_num)))]
   exact hfactor
 
-/-- The interval-insertion proper-position theorem without a leading-sign
+/-- The interval-insertion interlacing theorem without a leading-sign
 hypothesis, using positive orientation at zero to normalize the input. -/
 theorem IntervalRootData.strictInterl_neg_insertionOperator
     {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) (hpZero : 0 < p.eval 0)
@@ -323,7 +323,7 @@ noncomputable def jPolynomialRoot
   orderedRoot (jPolynomial m ε) (m - 1) i
 
 /-- The next signed diagonal lies strictly before the current signed diagonal
-in proper-position order. This is the polynomial form of the directed gap
+in strict interlacing order. This is the polynomial form of the directed gap
 comparison in the last Darboux square. -/
 theorem consecutive_signedTriangleFamily_strictInterl
     (m ε d : ℕ) (hm : 2 ≤ m) (hd : d ≤ m - 2) :

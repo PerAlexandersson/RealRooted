@@ -95,7 +95,7 @@ theorem theorem41StepMatrix_cross_has2x2_of_matrixClaim
   intro s t hs ht
   exact hclaim hm hs.le ht.le
 
-/-- Claim `(6)` and the source matrix send the induction pair to a proper-position
+/-- Claim `(6)` and the source matrix send the induction pair to a interlacing
 pair.  Repeated column indices use the real-rootedness already contained in the
 same Claim `(6)` instance. -/
 theorem theorem41Step_difference_strictInterl_of_matrixClaim
@@ -233,7 +233,7 @@ theorem theorem41NonconstantStep_strictInterl_of_claim7
 
 /-- The nonconstant Braun--Jal induction step through the source
 `[P, G; Q, H]` matrix.  Unlike the consecutive-row shortcut above, this is the
-argument on p. 10 of the paper and requires no adjacent-`G` proper position. -/
+argument on p. 10 of the paper and requires no adjacent-`G` interlacing. -/
 theorem theorem41NonconstantStep_strictInterl_of_matrixClaim
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]} {w : SnakeWord} {k : ℕ}
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
@@ -543,7 +543,7 @@ theorem theorem41_of_claim7_of_constant_cases
 
 The long-suffix branch uses the displayed `[P, G; Q, H]` matrix, while the
 suffix-one branch uses `P_1 = 1 + X` and `G_1 = 1`.  In particular, no
-adjacent-`G` proper-position hypothesis occurs. -/
+adjacent-`G` interlacing hypothesis occurs. -/
 theorem theorem41_of_matrixClaim_of_constant_cases
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
@@ -638,7 +638,7 @@ theorem theorem41_degree_bridge_of_natDegree_succ_length
 constant-word branch reduced to a length-model identity.
 
 This leaves only standard family hypotheses: the Theorem 3.5 recurrence,
-Claim `(7)`, adjacent `P`/`G` proper-position statements, the `m = 1`
+Claim `(7)`, adjacent `P`/`G` interlacing statements, the `m = 1`
 normalizations, nonnegative coefficients, the degree bridge, consecutive
 interlacing of `P`, and the identity `M w = P w.length` on constant words. -/
 theorem theorem41_of_claim7_of_constant_matches_length

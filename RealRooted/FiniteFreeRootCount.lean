@@ -46,7 +46,7 @@ private theorem schurSzegoRightLinearMap_preservesRealRootedOrZeroUpTo
   exact schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
     hp hpdeg hqdeg hq.2
 
-/-- Fixed Schur--Szegő composition preserves a proper-position pair, up to
+/-- Fixed Schur--Szegő composition preserves a strictly interlacing pair, up to
 the orientation ambiguity in the generic operator theorem. -/
 private theorem schurSzegoComp_interl_or_reverse
     {d : ℕ} {f g p : ℝ[X]}
@@ -167,23 +167,23 @@ private theorem schurSzegoComp_strictInterl_of_pred_coeff_pos
   have hor := schurSzegoComp_interl_or_reverse
     hp hpdeg.le hfdeg.le hgdeg.le hfg
   rcases hor with hforward | hreverse
-  · rcases hforward with hzero | hzero | hprec
+  · rcases hforward with hzero | hzero | hstrictInterl
     · exact (hTf0 hzero).elim
     · exact (hTg0 hzero).elim
-    · exact hprec
-  · rcases hreverse with hzero | hzero | hprec
+    · exact hstrictInterl
+  · rcases hreverse with hzero | hzero | hstrictInterl
     · exact (hTg0 hzero).elim
     · exact (hTf0 hzero).elim
-    · apply hprec.of_reverse_of_roots_sum_le
+    · apply hstrictInterl.of_reverse_of_roots_sum_le
         (hTfdeg.trans hTgdeg.symm)
       have hinput_sum : f.roots.sum ≤ g.roots.sum :=
         hfg.roots_sum_le_of_sameDegree (hfdeg.trans hgdeg.symm)
       have hscaled_input :=
         mul_le_mul_of_nonneg_left hinput_sum hp_pred.le
       have hscale_f := roots_sum_schurSzegoComp_scaled
-        hd hfdeg hpdeg hfg.1.2 hprec.2.1.2
+        hd hfdeg hpdeg hfg.1.2 hstrictInterl.2.1.2
       have hscale_g := roots_sum_schurSzegoComp_scaled
-        hd hgdeg hpdeg hfg.2.1.2 hprec.1.2
+        hd hgdeg hpdeg hfg.2.1.2 hstrictInterl.1.2
       have hscale_pos : 0 < (d : ℝ) * p.coeff d := by
         exact mul_pos (by exact_mod_cast Nat.pos_of_ne_zero hd) hp_top_pos
       apply (mul_le_mul_iff_left₀ hscale_pos).mp
@@ -280,7 +280,7 @@ theorem RootwiseLE.trans {p q r : ℝ[X]}
     (hpq : RootwiseLE p q) (hqr : RootwiseLE q r) : RootwiseLE p r :=
   forall₂_le_trans hpq hqr
 
-/-- Proper position between equal-degree polynomials induces coordinatewise
+/-- Interlacing between equal-degree polynomials induces coordinatewise
 order on their increasingly sorted roots. -/
 theorem RootwiseLE.of_strictInterl_sameDegree {p q : ℝ[X]} (hpq : StrictInterl p q)
     (hdeg : p.natDegree = q.natDegree) : RootwiseLE p q := by
@@ -446,14 +446,14 @@ private theorem rootwiseLE_map_rootPolynomial_of_forall₂
       have hdegy : (rootPolynomial (y ::ₘ s)).natDegree = d := by
         rw [natDegree_rootPolynomial]
         simpa [s, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
-      have hprec :
+      have hstrictInterl :
           StrictInterl (rootPolynomial (x ::ₘ s)) (rootPolynomial (y ::ₘ s)) :=
         strictInterl_rootPolynomial_cons_move s hxy
-      have hTprec := hT.2 hdegx hdegy hprec
+      have hTstrictInterl := hT.2 hdegx hdegy hstrictInterl
       have hstep :
           RootwiseLE (T (rootPolynomial (x ::ₘ s)))
             (T (rootPolynomial (y ::ₘ s))) :=
-        RootwiseLE.of_strictInterl_sameDegree hTprec
+        RootwiseLE.of_strictInterl_sameDegree hTstrictInterl
           ((hT.1 hdegx).trans (hT.1 hdegy).symm)
       have htotal' : xs.length + (y ::ₘ fixed).card = d := by
         simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
@@ -527,14 +527,14 @@ private theorem rootCountAbove_map_raiseSmallest_le
           have hdeg1 : (rootPolynomial (M ::ₘ s)).natDegree = d := by
             rw [natDegree_rootPolynomial]
             simpa [s, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
-          have hprec := hT.2 hdeg0 hdeg1
+          have hstrictInterl := hT.2 hdeg0 hdeg1
             (strictInterl_rootPolynomial_cons_move s haM)
           have hcoe : (↑(a :: xs) : Multiset ℝ) + fixed = a ::ₘ s := by
             change (a ::ₘ (↑xs : Multiset ℝ)) + fixed =
               a ::ₘ ((↑xs : Multiset ℝ) + fixed)
             exact Multiset.cons_add a (↑xs : Multiset ℝ) fixed
           intro t
-          have hstep := (rootCountAboveOriented_of_strictInterl hprec t).2
+          have hstep := (rootCountAboveOriented_of_strictInterl hstrictInterl t).2
           have htotal' : xs.length + (M ::ₘ fixed).card = d := by
             simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
           have hrec := ih hell htailM htotal' t

@@ -849,7 +849,7 @@ private theorem rPolynomial_finite_strictInterl_of_lt
     simpa only [RealRooted.orderedRoot, k, Fin.val_castSucc, Fin.val_succ] using
       hqJ.trans hJp
 
-/-- Larger reverse offsets precede smaller reverse offsets in proper position.
+/-- Larger reverse offsets precede smaller reverse offsets in an interlacing relation.
 This is the fixed-row orientation statement behind Xiao's Conjecture 4.2. -/
 theorem rPolynomial_strictInterl_rPolynomial_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hde : d < e) (he : e ≤ m) :
@@ -1039,7 +1039,7 @@ theorem negOnePow_mul_rPolynomial_hasPosLeadingCoeff (m ε d : ℕ) :
     rPolynomial_natDegree]
   exact rPolynomial_top_signed_coeff_pos m ε d
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated rPolynomial_strictInterl_rPolynomial_of_lt
   (since := "2026-09-26")]

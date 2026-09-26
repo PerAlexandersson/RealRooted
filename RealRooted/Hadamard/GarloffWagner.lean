@@ -13,7 +13,7 @@ namespace RealRooted
 # Garloff--Wagner Hadamard interfaces
 
 Nonnegative coefficient closure, odd/even algebra, and the checked direct
-proper-position wrappers around the Garloff--Wagner route.
+interlacing wrappers around the Garloff--Wagner route.
 -/
 
 /-- Nonnegative coefficients are preserved by coefficientwise Hadamard
@@ -92,8 +92,8 @@ coefficientwise Hadamard products.
 
 This is the `StrictInterl`/`Interl` wrapper around Garloff--Wagner, Theorem 4(b):
 if two nonnegative-coefficient real-rooted pairs are in the same
-proper-position relation, then the pair of Hadamard products is again in
-proper position.  The conclusion is zero-aware for the same support reason as
+interlacing relation, then the pair of Hadamard products is again in
+interlacing.  The conclusion is zero-aware for the same support reason as
 `garloffWagnerHadamardNonnegRealRootedStatement`.
 
 Orientation audit: in this repository `StrictInterl f g` is the convention `f ≪ g`.
@@ -107,7 +107,7 @@ the conclusion is `Interl (f ⊙ p) (g ⊙ q)`.
 This statement is proved directly in `RealRooted.GarloffWagner`; the wrapper
 keeps the historical `Hadamard` API used by downstream theorem bundles.
 -/
-/-- Hadamard product preserves proper position in the nonnegative setting
+/-- Hadamard product preserves interlacing in the nonnegative setting
 (Garloff--Wagner, Theorem 4(b)). -/
 theorem garloffWagnerHadamardNonnegInterl {f g p q : ℝ[X]}
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)

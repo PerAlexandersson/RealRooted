@@ -33,7 +33,7 @@ theorem compatible_X_mul_affine_affine_of_cross
     {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
     (hv : 0 ≤ v) (hV : 0 ≤ V) (hcross : u * V ≤ U * v) :
     Compatible (X * (C u * X + C v)) (C U * X + C V) := by
-  have hprec : StrictInterl (C u * X + C v) (C U * X + C V) :=
+  have hstrictInterl : StrictInterl (C u * X + C v) (C U * X + C V) :=
     strictInterl_affine_linear_affine_linear_of_cross hu hU hcross
   have hnn_left : HasNonnegCoeffs (C u * X + C v) :=
     (nonnegCoeffs_C_mul hu.le hasNonnegCoeffs_X).add
@@ -43,6 +43,6 @@ theorem compatible_X_mul_affine_affine_of_cross
       (hasNonnegCoeffs_C hV)
   exact
     (Compatible.of_strictInterl <|
-      strictInterl_mul_X_of_strictInterl_of_nonneg hprec hnn_left hnn_right).comm
+      strictInterl_mul_X_of_strictInterl_of_nonneg hstrictInterl hnn_left hnn_right).comm
 
 end RealRooted

@@ -100,12 +100,12 @@ private theorem posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonne
     (motive := fun f g => ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h)
     hterminal
     (fun {r f g} _ _ hfg => by
-      obtain ⟨h, hf_prec, hg_prec⟩ := hfg
+      obtain ⟨h, hf_strictInterl, hg_strictInterl⟩ := hfg
       exact
         ⟨(X - C r) * h,
-          hf_prec.mul_common_factor
+          hf_strictInterl.mul_common_factor
             (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2,
-          hg_prec.mul_common_factor
+          hg_strictInterl.mul_common_factor
             (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2⟩)
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
@@ -149,12 +149,12 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction
         rw [natDegree_mul (X_sub_C_ne_zero r) hg_pos.ne_zero, natDegree_X_sub_C]
           at hmul_deg
         lia
-      obtain ⟨h, hf_prec, hg_prec⟩ := ih hgdeg
+      obtain ⟨h, hf_strictInterl, hg_strictInterl⟩ := ih hgdeg
       exact
         ⟨(X - C r) * h,
-          hf_prec.mul_common_factor
+          hf_strictInterl.mul_common_factor
             (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2,
-          hg_prec.mul_common_factor
+          hg_strictInterl.mul_common_factor
             (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2⟩)
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
 
@@ -198,8 +198,8 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
         posComboPairHasCommonInterleaver_of_natDegree_le_reduction
           (N := N) hterminal hg_pos hf_pos hgnn hfnn
           (PosComboRealRooted.comm hfg) hdeg' hclose_left hfdeg with
-      ⟨h, hg_prec, hf_prec⟩
-    exact ⟨h, hf_prec, hg_prec⟩
+      ⟨h, hg_strictInterl, hf_strictInterl⟩
+    exact ⟨h, hf_strictInterl, hg_strictInterl⟩
 
 /-- Ordered nonnegative-coefficient degree-`≤ 2` pair endpoint.  Shared roots
 are factored out recursively, and the terminal no-common-root case is the

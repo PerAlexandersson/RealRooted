@@ -8,7 +8,7 @@ The chain-polynomial recurrence of a Toeplitz matrix ignores its diagonal
 entry.  This file identifies those chain polynomials with the composition
 rows of the series obtained by retaining exactly the positive-order Toeplitz
 coefficients.  For a PF sequence with positive zeroth entry, the
-constant-diagonal normalization theorem then supplies PF and proper-position
+constant-diagonal normalization theorem then supplies PF and interlacing
 conclusions for these rows.
 -/
 
@@ -101,7 +101,7 @@ theorem compositionRow_positivePartSeries_isPFPolynomial
   · exact ha
 
 /-- Consecutive positive-order composition rows of a PF sequence with positive
-zeroth entry are in zero-aware proper position. -/
+zeroth entry are in zero-aware interlacing. -/
 theorem interl_compositionRow_positivePartSeries_succ
     {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) (ha0 : 0 < a 0) (n : ℕ) :
     Interl (compositionRow (positivePartSeries a) n)

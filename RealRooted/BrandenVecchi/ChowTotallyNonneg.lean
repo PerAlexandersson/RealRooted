@@ -335,7 +335,7 @@ theorem chowPolynomial_strictInterl_chowDerangement_of_isTotallyNonneg_of_ne
   (chowPolynomial_interl_chowDerangement_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
     hchow hderangement
 
-/-- Consecutive Chow polynomials are in zero-aware proper position. -/
+/-- Consecutive Chow polynomials are in zero-aware interlacing. -/
 theorem chowPolynomial_interl_succ_of_isTotallyNonneg
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular A)
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ) :

@@ -240,7 +240,7 @@ theorem wronskian_pos_of_strictInterl_succ {p q : ℝ[X]}
     · refine ⟨Fin.last n, ?_⟩
       rw [hrp_last (Fin.last n) (by simp)]
       exact (Multiset.mem_singleton.mp hx).symm
-  have hprec_up : StrictInterlSameDegree p (q * (X - C M)) := by
+  have hstrictInterl_up : StrictInterlSameDegree p (q * (X - C M)) := by
     refine StrictInterlSameDegree.of_fin_interlacing s rp hs_mono hrp_mono ?_ ?_
       p (q * (X - C M)) hp_ne hqp_ne hp_splits hqp_splits hp_deg hqp_deg
       hp_nodup hqp_nodup hs_surj hrp_surj
@@ -314,7 +314,7 @@ theorem wronskian_pos_of_strictInterl_succ {p q : ℝ[X]}
       rw [hrm_pos k.succ (by simp)]
       simpa using hk
     · exact ⟨0, by rw [hrm_zero]; exact (Multiset.mem_singleton.mp hx).symm⟩
-  have hprec_lo : StrictInterlSameDegree (q * (X - C m)) p := by
+  have hstrictInterl_lo : StrictInterlSameDegree (q * (X - C m)) p := by
     refine StrictInterlSameDegree.of_fin_interlacing rm s hrm_mono hs_mono ?_ ?_
       (q * (X - C m)) p hqm_ne hp_ne hqm_splits hp_splits hqm_deg hp_deg
       hqm_nodup hp_nodup hrm_surj hs_surj
@@ -341,9 +341,9 @@ theorem wronskian_pos_of_strictInterl_succ {p q : ℝ[X]}
             have := Fin.lt_def.mp hij; lia
   -- apply the same-degree bridge to both companions and combine
   have hW_up := wronskian_pos_of_strictInterlSameDegree hp_pos hqp_pos
-    (by lia) hprec_up t
+    (by lia) hstrictInterl_up t
   have hW_lo := wronskian_pos_of_strictInterlSameDegree hqm_pos hp_pos
-    (by lia) hprec_lo t
+    (by lia) hstrictInterl_lo t
   have e1 : (q * (X - C M)).derivative.eval t =
       q.derivative.eval t * (t - M) + q.eval t := by
     simp only [derivative_mul, derivative_X_sub_C, mul_one, eval_add, eval_mul,

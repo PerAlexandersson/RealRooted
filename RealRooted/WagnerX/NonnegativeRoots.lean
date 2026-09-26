@@ -442,7 +442,7 @@ theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     StrictInterl f g :=
   h.of_mul_X_both_of_roots_nonpos hf_nonpos hg_nonpos
 
-/-! ## Wagner `X`-multiplication proper-position bridges -/
+/-! ## Wagner `X`-multiplication interlacing bridges -/
 
 /- The canonical names below are kept in this lower dependency layer so that
 the affine-family API can reuse them without importing derivative results. -/

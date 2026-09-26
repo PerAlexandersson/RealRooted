@@ -1,7 +1,7 @@
 import RealRooted.VeroneseMatrix
 
 /-!
-# Strict proper position between normalized Veronese sections
+# Strict interlacing between normalized Veronese sections
 
 The production Veronese matrix theorem packages the residue sections of one
 nonnegative real-rooted polynomial as a descending weak interlacing list.

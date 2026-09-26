@@ -11,7 +11,7 @@ import RealRooted.GammaPencil.Basic
 
 This module computes the degree-box Borcea--Branden symbol of the gamma-pencil
 operator.  The two explicit univariate factors are retained for the subsequent
-proper-position and stability argument.
+interlacing and stability argument.
 -/
 
 open Polynomial

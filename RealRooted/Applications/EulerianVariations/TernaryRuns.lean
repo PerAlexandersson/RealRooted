@@ -35,7 +35,7 @@ private lemma ternaryRunPolynomial_succ_eq_linear_add_derivative (n : ℕ) :
   simp only [map_neg]
   ring
 
-/-- Consecutive ternary-run polynomials are in weak proper position. -/
+/-- Consecutive ternary-run polynomials are in weak interlacing. -/
 theorem ternaryRunPolynomial_strictInterl (n : ℕ) :
     StrictInterl (ternaryRunPolynomial n) (ternaryRunPolynomial (n + 1)) := by
   induction n with
@@ -87,7 +87,7 @@ theorem ternaryRunPolynomial_isPF (n : ℕ) :
   | zero => simp [ternaryRunPolynomial]
   | succ n => exact (ternaryRunPolynomial_strictInterl n).2.1.2
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated ternaryRunPolynomial_strictInterl (since := "2026-09-26")]
 alias ternaryRunPolynomial_prec := ternaryRunPolynomial_strictInterl

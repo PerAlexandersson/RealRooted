@@ -9,7 +9,7 @@ namespace RealRooted
 /-!
 # Hadamard consequences
 
-Conditional odd/even reductions, PF and proper-position closure, reciprocal
+Conditional odd/even reductions, PF and interlacing closure, reciprocal
 shift transport, and coefficientwise Polya-frequency consequences.
 -/
 
@@ -24,12 +24,12 @@ latter three are pre-existing interfaces from `RealRooted.VeroneseSection`):
   (Hadamard products of Hurwitz-stable polynomials are Hurwitz stable when the
   coefficientwise product is nonzero);
 * `NonnegStrictInterlToHurwitzOddEvenStatement` — the forward Hermite--Biehler bridge
-  from proper position `StrictInterl f g` of nonnegative-coefficient polynomials to
+  from interlacing `StrictInterl f g` of nonnegative-coefficient polynomials to
   Hurwitz stability of `oddEvenPolynomial f g = g(x²) + x·f(x²)`;
 * `LegacyHurwitzOddEvenToFullyInterlacingPairStatement` — the legacy row-oriented
   Hurwitz-to-Lace bridge, now known false as a general theorem; and
 * `FullyInterlacingPairToInterlStatement` — the converse lace-to-interlacing
-  bridge back to zero-aware proper position.
+  bridge back to zero-aware interlacing.
 
 The bridge between the two-pair and single-polynomial worlds is the proven
 algebraic identity `hadamardProduct_oddEvenPolynomial`:
@@ -162,7 +162,7 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl :
     hadamardProduct_preserves_pf_of_nonnegStrictInterl hp hq
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
 
-/-- Fixed-right Hadamard multiplication preserves zero-aware proper position
+/-- Fixed-right Hadamard multiplication preserves zero-aware interlacing
 inside the PF cone. -/
 theorem hadamardProduct_preserves_interl_right
     (hGW : garloffWagnerHadamardPFInterlStatement)
@@ -172,7 +172,7 @@ theorem hadamardProduct_preserves_interl_right
     Interl (hadamardProduct f p) (hadamardProduct g p) :=
   hGW hf hg hp hp hfg hp.interl_self
 
-/-- Fixed-left Hadamard multiplication preserves zero-aware proper position
+/-- Fixed-left Hadamard multiplication preserves zero-aware interlacing
 inside the PF cone. -/
 theorem hadamardProduct_preserves_interl_left
     (hGW : garloffWagnerHadamardPFInterlStatement)
@@ -204,13 +204,13 @@ zero-aware PF two-pair Garloff--Wagner wrapper. -/
 theorem hadamardReciprocalConeClosure_of_garloffWagner_interl
     (hGW : garloffWagnerHadamardPFInterlStatement) :
     hadamardReciprocalConeClosureStatement := by
-  intro D p q hp hq hprec_p hprec_q
+  intro D p q hp hq hstrictInterl_p hstrictInterl_q
   have hp_shift : IsPFPolynomial (reciprocalShift D p) :=
-    IsPFPolynomial.of_realRooted_nonneg hp.hasNonnegCoeffs.reciprocalShift hprec_p.2.1.2
+    IsPFPolynomial.of_realRooted_nonneg hp.hasNonnegCoeffs.reciprocalShift hstrictInterl_p.2.1.2
   have hq_shift : IsPFPolynomial (reciprocalShift D q) :=
-    IsPFPolynomial.of_realRooted_nonneg hq.hasNonnegCoeffs.reciprocalShift hprec_q.2.1.2
+    IsPFPolynomial.of_realRooted_nonneg hq.hasNonnegCoeffs.reciprocalShift hstrictInterl_q.2.1.2
   simpa [reciprocalShift_hadamardProduct] using
-    hGW hp hp_shift hq hq_shift hprec_p.toInterl hprec_q.toInterl
+    hGW hp hp_shift hq hq_shift hstrictInterl_p.toInterl hstrictInterl_q.toInterl
 
 theorem hadamardReciprocalConeClosure_of_garloffWagner_strictInterl
     (hGW : garloffWagnerHadamardPFStrictInterlStatement) :

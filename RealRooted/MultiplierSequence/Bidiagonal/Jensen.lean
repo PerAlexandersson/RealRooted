@@ -25,7 +25,7 @@ For a degree bound `d`, the two diagonal parts have finite Jensen kernels
 J_alpha,d(t) + lambda * t * J_beta,d(t)
 ```
 
-is the finite Schur--Szego/proper-position certificate we expect to use for
+is the finite Schur--Szego/interlacing certificate we expect to use for
 the Family H coefficient-bidiagonal operators. -/
 def bidiagonalJensenPencil (alpha beta : ℕ → ℝ) (d : ℕ) (lam : ℝ) : ℝ[X] :=
   jensenPolynomial d alpha + C lam * X * jensenPolynomial d beta
@@ -172,7 +172,7 @@ theorem isPFPolynomial_X_add_one_pow_mul
 
 This predicate records the concrete one-sided finite pencil condition.  The
 condition does not by itself supply the orientation required by the
-Garloff--Wagner proper-position theorem. The human proof instead uses a
+Garloff--Wagner interlacing theorem. The human proof instead uses a
 one-sided root-count contraction; its general Lean formalization remains
 incomplete. -/
 def BidiagonalJensenPencilCertificate

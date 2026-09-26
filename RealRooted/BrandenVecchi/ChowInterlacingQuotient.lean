@@ -68,7 +68,7 @@ private lemma listAlternates_right_le_of_left_lt_of_mem
           exact listInterlaces_right_le_of_left_lt_of_mem halt.2
             (fun x hx => hleft x (by simp [hx])) hc
 
-/-- If the roots of the left member of a proper-position pair lie strictly
+/-- If the roots of the left member of a strictly interlacing pair lie strictly
 below a root `c` of the right member, then `c` is an upper bound for all roots
 of the right member. -/
 theorem roots_le_of_strictInterl_of_left_roots_lt_of_right_root
@@ -117,7 +117,7 @@ theorem strictSelfReflect {n : ℕ} {f g : ℝ[X]}
           Fin (reflectionClosure n [f, g]).length)) (by simp)
   exact hfref0.toStrictInterl_of_ne hf_ne href_ne
 
-/-- The three strict proper-position relations carried by the two-member
+/-- The three strict interlacing relations carried by the two-member
 reflection closure, once its original members are known to be nonzero. -/
 theorem strictTriple {n : ℕ} {f g : ℝ[X]}
     (h : IsReflectionInterlacingSeq n [f, g])
@@ -283,7 +283,7 @@ theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl
       Interl (Polynomial.chowS n f) g :=
   ⟨h.chowS_nonnegCoeffs, h.chowS_interl⟩
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated roots_le_of_strictInterl_of_left_roots_lt_of_right_root
   (since := "2026-09-26")]

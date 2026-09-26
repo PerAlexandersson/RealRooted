@@ -34,17 +34,17 @@ theorem LeftRootCountBranch.not_translatedDeletionStrictInterl_of_twoDegree
       (deleteRootFactor f r).natDegree = g.natDegree + 1 :=
     h.delete_natDegree_eq_succ_of_twoDegree hsgn.left_ne_zero hdeg
   intro horient
-  rcases horient with hprec | hprec
+  rcases horient with hstrictInterl | hstrictInterl
   · have hdeg' :
         ((deleteRootFactor f r).comp (X + C r)).natDegree =
           ((-g).comp (X + C r)).natDegree + 1 := by
       simpa [Polynomial.natDegree_comp, Polynomial.natDegree_neg] using hdelete_deg
-    exact (not_strictInterl_of_natDegree_eq_succ_left hdeg') hprec
+    exact (not_strictInterl_of_natDegree_eq_succ_left hdeg') hstrictInterl
   · have hdeg' :
         ((-(deleteRootFactor f r)).comp (X + C r)).natDegree =
           (g.comp (X + C r)).natDegree + 1 := by
       simpa [Polynomial.natDegree_comp, Polynomial.natDegree_neg] using hdelete_deg
-    exact (not_strictInterl_of_natDegree_eq_succ_left hdeg') hprec
+    exact (not_strictInterl_of_natDegree_eq_succ_left hdeg') hstrictInterl
 
 /-- The stronger boundary-`StrictInterl` route is also degree-impossible in the
 two-degree Liu left branch: the restored endpoint has degree two more than
@@ -77,8 +77,8 @@ theorem LeftRootCountBranch.not_translatedBoundaryStrictInterl_of_twoDegree
         (X * (deleteRootFactor f r).comp (X + C r)).natDegree := by
     rw [hrestored_deg]
     lia
-  intro hprec
-  exact hprec.not_of_left_natDegree_succ_lt_right hgap
+  intro hstrictInterl
+  exact hstrictInterl.not_of_left_natDegree_succ_lt_right hgap
 
 @[deprecated not_strictInterl_of_natDegree_eq_succ_left (since := "2026-09-26")]
 alias not_prec_of_natDegree_eq_succ_left := not_strictInterl_of_natDegree_eq_succ_left

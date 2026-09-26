@@ -9,7 +9,7 @@ import RealRooted.Wagner.NonpositiveRoots
 The factorial-weight endpoint inequality feeds a residue certificate for the
 degree-dropping auxiliary polynomial. A strict Ma--Wang step then produces the
 shifted vertical edge, and Wagner's two addition theorems propagate it through
-the Pascal relation. The mutual induction records proper position, simple
+the Pascal relation. The mutual induction records interlacing, simple
 roots, and absence of common roots on every adjacent edge.
 -/
 
@@ -535,7 +535,7 @@ theorem a144696BernsteinImage_horizontal_noCommonRoot
   (a144696RowCertificate_all d).horizontalNoCommon k hk
 
 /-- Same-index entries in consecutive A144696 Bernstein-image rows are in
-proper position. -/
+interlacing. -/
 theorem a144696BernsteinImage_vertical_strictInterl {d k : ℕ} (hk : k < d) :
     StrictInterl (a144696BernsteinImage (d - 1) k)
       (a144696BernsteinImage d k) :=
@@ -564,7 +564,7 @@ theorem a144696BernsteinImage_shifted_noCommonRoot
       ¬ (a144696BernsteinImage d (k + 1)).IsRoot r :=
   (a144696RowCertificate_all d).shiftedNoCommon k hk
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated a144696Auxiliary_eval_mul_derivative_pos_of_strictInterl
   (since := "2026-09-26")]

@@ -6,7 +6,7 @@ import RealRooted.VeroneseSectionPair
 This packages the unconditional parity route suggested by Fisk's
 Hermite--Biehler discussion and Brändén's Veronese interlacing machinery.
 Two nonzero normalized residue sections of one nonnegative real-rooted
-polynomial are in proper position.  They therefore form an upper-half-plane
+polynomial strictly interlace.  They therefore form an upper-half-plane
 stable Hermite--Biehler polynomial, and their odd/even recombination is
 Hurwitz stable.
 

@@ -2,10 +2,10 @@ import RealRooted.EulerOperator.Polar
 import RealRooted.ReciprocalShift.ProperPosition
 
 /-!
-# Proper position for the polar-theta operator
+# Interlacing for the polar-theta operator
 
 The polar-theta operator is reciprocal-shift conjugate to differentiation.
-This module combines that identity with the reciprocal-shift proper-position
+This module combines that identity with the reciprocal-shift interlacing
 swap and derivative preservation.
 -/
 
@@ -15,7 +15,7 @@ noncomputable section
 
 namespace RealRooted
 
-/-- The polar-theta operator preserves weak proper position on the bounded
+/-- The polar-theta operator preserves weak interlacing on the bounded
 degree PF cone. -/
 theorem polarTheta_preserves_interl : polarThetaPreservesInterlStatement := by
   intro N p q hp hq hpd hqd hpq

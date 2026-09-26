@@ -104,9 +104,9 @@ private lemma neg_half_mem_roots_two_mul_X_add_one :
 orientation `StrictInterl f g`. -/
 theorem not_strictInterl_deg1_example :
     ¬ StrictInterl (C 2 * X + C 1 : ℝ[X]) ((X + C 1) * (X + C 2)) := by
-  intro hprec
+  intro hstrictInterl
   have hle : (-1 / 2 : ℝ) ≤ -1 :=
-    hprec.roots_le_of_right roots_X_add_one_mul_X_add_two_le_neg_one
+    hstrictInterl.roots_le_of_right roots_X_add_one_mul_X_add_two_le_neg_one
       (-1 / 2) neg_half_mem_roots_two_mul_X_add_one
   linarith
 

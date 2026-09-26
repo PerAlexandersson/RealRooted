@@ -113,7 +113,7 @@ theorem hasPosLeadingCoeff_neg_insertionOperator
   exact mul_pos (by positivity) hf_pos
 
 /-- The interval-insertion operator adds one real root and puts the input in
-proper position with its sign-normalized output. -/
+interlacing with its sign-normalized output. -/
 theorem strictInterl_neg_insertionOperator
     (a b : ℝ) {f : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
@@ -312,7 +312,7 @@ theorem insertionOperator_splits
 
 /-- Every inserted root has multiplicity one.  This is the strictness part of
 the root-slot theorem: an output root cannot be shared with the input, and
-proper position bounds its multiplicity by one. -/
+interlacing bounds its multiplicity by one. -/
 theorem rootMultiplicity_neg_insertionOperator_eq_one
     (a b : ℝ) {f : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
@@ -714,7 +714,7 @@ theorem insertionOperator_data_of_simple_roots_Ioo
         intro hzero
         simp [hzero] at htwo) (by lia) hb
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated strictInterl_neg_insertionOperator (since := "2026-09-26")]
 alias prec_neg_insertionOperator := strictInterl_neg_insertionOperator

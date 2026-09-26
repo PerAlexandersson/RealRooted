@@ -49,10 +49,10 @@ theorem isRealRooted_of_mw_derivative_nonpos_sequence {P : Nat → ℝ[X]}
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
+  have hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
     strictInterl_mw_derivative_nonpos_sequence
       hbase hpos hdeg_two hV_nonpos hrec hdeg_lo hdeg_hi
-  exact isRealRooted_of_strictInterl_chain hbase hprec
+  exact isRealRooted_of_strictInterl_chain hbase hstrictInterl
 
 /-- Sequence-level Ma--Wang induction for the `A194649` window factor
 `(1+X)(1+2X)`.  The sequence proof supplies the root window `[-1,-1/2]`;
@@ -611,10 +611,10 @@ theorem isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
+  have hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
     strictInterl_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
       hbase hpos hnonneg hdeg_two hV_nonpos hrec hdeg_lo hdeg_hi
-  exact isRealRooted_of_strictInterl_chain hbase hprec
+  exact isRealRooted_of_strictInterl_chain hbase hstrictInterl
 
 /-- Real-rootedness corollary for the nonnegative-coefficient sequence-level
 weak Ma--Wang induction. -/

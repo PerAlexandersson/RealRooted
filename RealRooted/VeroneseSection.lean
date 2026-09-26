@@ -855,7 +855,7 @@ def FullyInterlacingPairToStrictInterlStatement : Prop :=
 /-- Interlacing-extraction interface for the converse lace-to-polynomial
 bridge.  Given two nonzero polynomials whose coefficient sequences form a
 fully interlacing pair, the two-row Lace total-nonnegativity certificate should
-produce sorted root lists witnessing the proper-position root configuration of
+produce sorted root lists witnessing the interlacing root configuration of
 `StrictInterl`.
 
 This isolates the genuinely combinatorial heart of the converse direction:
@@ -882,7 +882,7 @@ classical inputs:
   Pólya-frequency coefficient rows (`FullyInterlacingPair.left_pf` and
   `FullyInterlacingPair.right_pf`) into real-rootedness of each polynomial; and
 * the interlacing-extraction interface `FullyInterlacingPairInterlaceStatement`,
-  which supplies the proper-position root data from the cross Lace minors.
+  which supplies the interlacing root data from the cross Lace minors.
 
 The zero polynomial cases are discharged directly by `interl_zero_left` and
 `interl_zero_right`. -/
@@ -922,7 +922,7 @@ def LegacyFullyInterlacingPairToHurwitzOddEvenStableStatement : Prop :=
 /-- Analytic converse interface (converse Hermite--Biehler / Hurwitz step).
 
 Hurwitz stability of the odd/even polynomial `q(x^2) + x p(x^2)` of two nonzero
-polynomials forces proper position `StrictInterl p q`. This isolates the genuinely
+polynomials forces interlacing `StrictInterl p q`. This isolates the genuinely
 analytic heart of the converse direction: once the two-row Lace certificate has
 been turned into Hurwitz stability of `q(x^2) + x p(x^2)`, the roots of `p` and
 `q` interlace in the `p ≪ q` orientation. Real-rootedness (`Splits`) is part of
@@ -997,7 +997,7 @@ theorem hurwitzOddEvenToHermiteBiehlerStable_of_rotated
 `hermiteBiehlerForwardPosStatement`).
 
 For polynomials `f`, `g` with positive leading coefficients, upper-half-plane
-stability of the combination `f + i g` forces the oriented proper position
+stability of the combination `f + i g` forces the oriented interlacing
 `StrictInterl g f`.  This is strictly stronger than the disjunctive
 `hermiteBiehlerConverseStatement` already recorded in
 `RealRooted.HermiteBiehler`: it commits to the orientation matching the forward
@@ -1018,7 +1018,7 @@ orientation open.  This interface records the single remaining analytic fact
 needed to commit to the orientation matching the forward bridge
 `hermiteBiehlerForwardPosStatement`: for `f`, `g` with positive leading
 coefficients, upper-half-plane stability of `f + i g` excludes the reversed
-proper position, so the reversed branch `StrictInterl f g` can only occur together with
+interlacing, so the reversed branch `StrictInterl f g` can only occur together with
 the oriented one `StrictInterl g f`. -/
 def HermiteBiehlerOrientationStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
@@ -1054,7 +1054,7 @@ project:
   into upper-half-plane stability of `q + i p`; and
 * `HermiteBiehlerConverseOrientedStatement`, the oriented converse
   Hermite--Biehler theorem, which turns that upper-half-plane stability into the
-  proper-position relation `StrictInterl p q`.
+  interlacing relation `StrictInterl p q`.
 
 The nonnegativity halves of `IsHurwitzStable` supply the positive leading
 coefficients needed by the oriented Hermite--Biehler input through
@@ -1088,7 +1088,7 @@ This isolates exactly where the orientation analytic content is needed: it is
 used only when the two polynomials have equal degree (equivalently, for the
 odd/even polynomial, only when its degree is odd). -/
 
-/-- Elementary orientation resolution by degree.  A disjunctive proper-position
+/-- Elementary orientation resolution by degree.  A disjunctive interlacing
 conclusion `StrictInterl g f ∨ StrictInterl f g` collapses to the oriented branch
 `StrictInterl g f`
 as soon as the degrees are strictly ordered `g.natDegree < f.natDegree`, since
@@ -1103,7 +1103,7 @@ orientation-selection input.
 
 For `f, g` with positive leading coefficients and strictly ordered degrees
 `g.natDegree < f.natDegree`, upper-half-plane stability of `f + i g` forces the
-oriented proper position `StrictInterl g f`, using only the disjunctive converse
+oriented interlacing `StrictInterl g f`, using only the disjunctive converse
 `hermiteBiehlerConverseStatement`.  This is the part of
 `HermiteBiehlerConverseOrientedStatement` that needs no extra analytic
 orientation fact: the orientation is pinned by the degree gap.  The remaining,
@@ -1240,7 +1240,7 @@ in the project:
   stability of `q(x^2) + x p(x^2)`; and
 * `HurwitzStableOddEvenToStrictInterlStatement`, the analytic converse
   Hermite--Biehler/Hurwitz step, which turns that Hurwitz stability into the
-  proper-position relation `StrictInterl p q`.
+  interlacing relation `StrictInterl p q`.
 
 The interlacing list data demanded by `FullyInterlacingPairInterlaceStatement`
 is then read off directly from the `StrictInterl p q` witness. -/

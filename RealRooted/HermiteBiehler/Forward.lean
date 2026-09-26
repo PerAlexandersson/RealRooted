@@ -7,7 +7,7 @@ import RealRooted.Interlacing.Residue
 # Forward Hermite--Biehler theorem
 
 This file proves upper-half-plane stability of the Hermite--Biehler polynomial
-from proper position and sign-normalized leading coefficients. It also exposes
+from interlacing and sign-normalized leading coefficients. It also exposes
 the multiset sign and partial-fraction helpers used by the converse theory.
 -/
 

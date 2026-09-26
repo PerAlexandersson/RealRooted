@@ -4,7 +4,7 @@ import RealRooted.Basic.ProperPosition
 # Canonically ordered polynomial roots
 
 This file packages the increasing root list of a real polynomial and relates
-coordinate bounds on equal-length root lists to same-degree proper position.
+coordinate bounds on equal-length root lists to same-degree interlacing.
 -/
 
 open Polynomial
@@ -18,7 +18,7 @@ irrelevant when the polynomial has the expected degree and splits. -/
 noncomputable def orderedRoot (p : ℝ[X]) (n : ℕ) (i : Fin n) : ℝ :=
   (p.roots.sort (· ≤ ·)).getD i 0
 
-/-- For two nonzero, split polynomials of degree `n`, proper position is
+/-- For two nonzero, split polynomials of degree `n`, interlacing is
 equivalent to the coordinate bounds on their canonically ordered roots. -/
 theorem strictInterl_iff_orderedRoot_bounds
     {p q : ℝ[X]} {n : ℕ}
@@ -78,7 +78,7 @@ theorem strictInterl_iff_orderedRoot_bounds
         let k : Fin n := ⟨i, by lia⟩
         simpa only [orderedRoot, ss, rs, k] using hright k (by lia)
 
-/-- Same-degree proper position bounds corresponding increasing roots. -/
+/-- Same-degree interlacing bounds corresponding increasing roots. -/
 theorem StrictInterl.orderedRoot_le {p q : ℝ[X]} {n : ℕ}
     (h : StrictInterl p q) (hpDegree : p.natDegree = n) (hqDegree : q.natDegree = n)
     (i : Fin n) :

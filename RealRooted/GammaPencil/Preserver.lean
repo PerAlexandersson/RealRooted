@@ -48,7 +48,7 @@ theorem gammaOperator_allComboRealRooted
   · exact hqdeg
   · exact hall
 
-/-- Proper position is transported up to the two possible orientations and
+/-- Interlacing is transported up to the two possible orientations and
 the zero-output boundary.  Coefficient invariants resolve this ambiguity for
 the recursive gamma components in the final pencil theorem. -/
 theorem gammaOperator_interl_or_reverse

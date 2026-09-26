@@ -460,9 +460,9 @@ theorem strictInterl_zipWith_sum_pair_of_2x2
 
 If each column is interlacing from the first row to the second row, the input
 pair `u, v` is interlacing, and the cross affine `2 x 2` test holds, then the
-two row sums are in proper position.  The cross test is the convention
+two row sums strictly interlace.  The cross test is the convention
 `Has2x2InterlacingProperty p₁ q₁ p₂ q₂`, namely the affine combination of
-`q₁, q₂` is in proper position with the affine combination of `p₁, p₂`. -/
+`q₁, q₂` is in an interlacing relation with the affine combination of `p₁, p₂`. -/
 theorem strictInterl_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
     (hp : StrictInterl p₁ p₂) (hq : StrictInterl q₁ q₂)
     (hoff : Has2x2InterlacingProperty p₁ q₁ p₂ q₂)

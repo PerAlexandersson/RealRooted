@@ -1,9 +1,9 @@
 import RealRooted.AffineFamily
 
 /-!
-# Proper position for affine polynomials
+# Interlacing for affine polynomials
 
-Elementary proper-position lemmas for constants and positive-slope affine
+Elementary interlacing lemmas for constants and positive-slope affine
 polynomials.  These facts are shared by the Veronese and threshold-matrix
 developments, so they live below both application layers.
 -/
@@ -14,7 +14,7 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Any two constant polynomials are in zero-aware proper position. -/
+/-- Any two constant polynomials are in zero-aware interlacing. -/
 lemma interl_C_C (a b : ℝ) : Interl (C a : ℝ[X]) (C b : ℝ[X]) := by
   by_cases ha : a = 0
   · left
@@ -59,7 +59,7 @@ lemma affineLinear_root_le_of_cross {u v U V : ℝ}
   rw [div_le_div_iff₀ hU hu]
   grind
 
-/-- Positive-slope affine polynomials are in proper position when their
+/-- Positive-slope affine polynomials strictly interlace when their
 coefficient cross product has the corresponding order. -/
 lemma strictInterl_affine_linear_affine_linear_of_cross
     {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)

@@ -11,7 +11,7 @@ The infinite Aissen--Schoenberg--Whitney--Edrei symbol is approached by the
 finite supersymmetric products from `SupersymmetricLimits`.  At every fixed
 rank, `ChowContinuity` turns coefficient convergence of the symbols into
 coefficient convergence of their Chow polynomials.  Bounded-degree root
-closedness and zero-aware proper-position closedness then transfer the finite
+closedness and zero-aware interlacing closedness then transfer the finite
 certificates from `ChowSupersymmetric` to the limit.
 -/
 
@@ -338,7 +338,7 @@ theorem aswEdreiChow_interl_succ
   · exact tendsto_coeff_aswEdreiTruncationChow halpha hbeta hsum (n + 1)
 
 /-- Consecutive infinite-symbol Chow-derangement polynomials remain in
-zero-aware proper position. -/
+zero-aware interlacing. -/
 theorem aswEdreiChowDerangement_interl_succ
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
@@ -372,7 +372,7 @@ theorem aswEdreiChowDerangement_interl_succ
 /-- Constant-term-one Brändén--Vecchi Theorem 8.4 for the ASW--Edrei
 symbol `exp (gamma * z) * ∏ᵢ (1 + alphaᵢ * z) /
 ∏ᵢ (1 - betaᵢ * z)`: every fixed-rank Chow polynomial is
-Pólya-frequency, and consecutive ranks are in zero-aware proper position. -/
+Pólya-frequency, and consecutive ranks are in zero-aware interlacing. -/
 theorem aswEdrei_chow_theorem
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)

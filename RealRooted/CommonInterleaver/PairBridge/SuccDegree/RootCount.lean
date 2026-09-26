@@ -243,14 +243,14 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_strictInterl
     PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement := by
   apply posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x
-  have hprec : StrictInterl (g.divX) f :=
+  have hstrictInterl : StrictInterl (g.divX) f :=
     horient hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
   have hgdivX : g.divX.natDegree = g.natDegree - 1 :=
     Polynomial.natDegree_divX_eq_natDegree_tsub_one
   have hdeg' : f.natDegree = g.divX.natDegree := by
     rw [hgdivX]
     lia
-  exact sameDegreeRootCountOriented_of_strictInterl hprec hdeg' x
+  exact sameDegreeRootCountOriented_of_strictInterl hstrictInterl hdeg' x
 
 /-- The full lead root-count branch follows from the both-nonzero branch and
 the `divX` orientation target for the right-zero branch. -/

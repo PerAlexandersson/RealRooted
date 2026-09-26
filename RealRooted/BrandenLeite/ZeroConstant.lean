@@ -10,7 +10,7 @@ This file proves the zero-constant specialization of Brändén--Saud Leite
 Theorem 4.4. A PF sequence is split at its first nonzero entry, regularized by
 the finite coefficient sequence of `(X + ε)^r`, and recovered as `ε` tends to
 zero. The bounded composition-row limits preserve both the PF property and
-zero-aware proper position.
+zero-aware interlacing.
 -/
 
 open Filter Polynomial Topology
@@ -132,7 +132,7 @@ theorem exists_pf_pos_zero_approximation_of_pf
   · exact exists_pf_pos_zero_approximation hf hfn
 
 /-- Composition rows of the positive-order part of any PF sequence are PF,
-and consecutive rows are in zero-aware proper position. -/
+and consecutive rows are in zero-aware interlacing. -/
 theorem compositionRows_positivePartSeries_pf_and_interl
     {f : ℕ → ℝ} (hf : IsPolyaFreqSeq f) :
     (∀ n, IsPFPolynomial (compositionRow (positivePartSeries f) n)) ∧
@@ -198,7 +198,7 @@ theorem compositionRow_mk_isPFPolynomial_of_zero
   (compositionRows_mk_pf_and_interl_of_zero hf hf0).1 n
 
 /-- Consecutive composition rows of a zero-constant PF sequence are in
-zero-aware proper position. -/
+zero-aware interlacing. -/
 theorem interl_compositionRow_mk_succ_of_zero
     {f : ℕ → ℝ} (hf : IsPolyaFreqSeq f) (hf0 : f 0 = 0) (n : ℕ) :
     Interl (compositionRow (PowerSeries.mk f) n)

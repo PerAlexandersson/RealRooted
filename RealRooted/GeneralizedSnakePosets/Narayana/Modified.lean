@@ -74,7 +74,7 @@ theorem modifiedNarayanaFamily_narayana :
   · intro n
     simp [modifiedNarayanaPolynomial, narayana]
 
-/-- Conditional consecutive proper position for the concrete modified Narayana
+/-- Conditional consecutive interlacing for the concrete modified Narayana
 family, inherited from the existing Narayana formalization. -/
 theorem modifiedNarayanaPolynomial_strictInterl_succ_of_nonnegCoeffs
     (n : ℕ) (hnonneg : ∀ m : ℕ, HasNonnegCoeffs (narayanaQuot m)) :
@@ -99,7 +99,7 @@ theorem modifiedNarayanaPolynomial_zero_interlaces_one :
     interlaces_one_linear (p := X + C (1 : ℝ))
       (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
 
-/-- Base proper-position relation between the first two modified Narayana
+/-- Base interlacing relation between the first two modified Narayana
 polynomials. -/
 theorem modifiedNarayanaPolynomial_zero_strictInterl_one :
     StrictInterl (modifiedNarayanaPolynomial 0) (modifiedNarayanaPolynomial 1) :=
@@ -324,7 +324,7 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
       show k ≠ 6 by lia, show k ≠ 7 by lia, show k ≠ 8 by lia,
       show k ≠ 9 by lia, show k ≠ 10 by lia, show k ≠ 11 by lia]
 
-/-- The first nontrivial proper-position check for the coefficient-side
+/-- The first nontrivial interlacing check for the coefficient-side
 modified Narayana family. -/
 theorem modifiedNarayanaCoeffPolynomial_one_strictInterl_two :
     StrictInterl (modifiedNarayanaCoeffPolynomial 1)

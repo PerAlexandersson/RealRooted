@@ -7,7 +7,7 @@ import RealRooted.Interlacing.Residue
 import RealRooted.WagnerRightSum.Sign
 
 /-!
-# Outer differences in an ordered proper-position triple
+# Outer differences in an ordered interlacing triple
 
 This file proves the signed-cone specialization used in Brändén--Vecchi's
 Chow-operator argument.  In the positive-leading root-order convention, the
@@ -36,7 +36,7 @@ private lemma list_eq_of_forall₂_le_of_sum_eq :
       have hsum_tail : xs.sum = ys.sum := by linarith
       rw [list_eq_of_forall₂_le_of_sum_eq hxy.2 hsum_tail]
 
-/-- Equality in the root-sum order of a same-degree proper-position pair,
+/-- Equality in the root-sum order of a same-degree strictly interlacing pair,
 together with equality of leading coefficients, forces equality of the
 polynomials. -/
 theorem StrictInterl.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
@@ -60,7 +60,7 @@ theorem StrictInterl.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
     rw [← hss_eq, ← hrs_eq, hlist]
   rw [hf.2.eq_prod_roots, hg.2.eq_prod_roots, hlc, hroots]
 
-/-- At a root of the right polynomial in a positive-leading proper-position
+/-- At a root of the right polynomial in a positive-leading interlacing
 pair, the left value and right derivative have nonnegative product. -/
 theorem StrictInterl.eval_mul_derivative_nonneg_of_right_root
     {f g : ℝ[X]} (hprec : StrictInterl f g)
@@ -77,7 +77,7 @@ theorem StrictInterl.eval_mul_derivative_nonneg_of_right_root
     rwa [card_roots_of_splits hprec.2.1.2] at hcard_pos
   have hgder_pos : HasPosLeadingCoeff g.derivative :=
     hg_pos.derivative (by lia)
-  have hder_prec : StrictInterl g.derivative g := by
+  have hder_strictInterl : StrictInterl g.derivative g := by
     rcases eq_or_lt_of_le (show 1 ≤ g.natDegree by lia) with hdeg_one | hdeg_two
     · have hbase : StrictInterl (1 : ℝ[X]) g :=
         (interlaces_one_linear (by lia)).toStrictInterl
@@ -95,10 +95,10 @@ theorem StrictInterl.eval_mul_derivative_nonneg_of_right_root
     · exact (derivative_interlaces hprec.2.1.2 (by lia)).toStrictInterl
   exact
     eval_mul_eval_nonneg_of_strictInterl_right
-      hprec hder_prec hf_pos hgder_pos hr
+      hprec hder_strictInterl hf_pos hgder_pos hr
 
 /-- At a root of the right polynomial in a positive-leading coprime
-proper-position pair, the left value and right derivative have strictly the
+strictly interlacing pair, the left value and right derivative have strictly the
 same sign. -/
 theorem StrictInterl.eval_mul_derivative_pos_of_right_root_of_isCoprime
     {f g : ℝ[X]} (hprec : StrictInterl f g)
@@ -116,7 +116,7 @@ theorem StrictInterl.eval_mul_derivative_pos_of_right_root_of_isCoprime
   have hgder : g.derivative.eval r ≠ 0 := hsimple.eval_derivative_ne_zero hr
   exact lt_of_le_of_ne hnonneg (Ne.symm (mul_ne_zero hfeval hgder))
 
-/-- At a root of the right polynomial in a positive-leading proper-position
+/-- At a root of the right polynomial in a positive-leading interlacing
 pair with no common real root, the left value and right derivative have
 strictly the same sign. -/
 theorem StrictInterl.eval_mul_derivative_pos_of_right_root_of_no_common
@@ -154,7 +154,7 @@ theorem interlaces_and_isCoprime_iff_eval_mul_derivative_pos
     rw [hqeval, zero_mul] at hpositive
     exact (lt_irrefl 0) hpositive
 
-/-- At a root of the left polynomial in a positive-leading proper-position
+/-- At a root of the left polynomial in a positive-leading interlacing
 pair, the right value and left derivative have nonpositive product. -/
 theorem StrictInterl.eval_mul_derivative_nonpos_of_left_root
     {f g : ℝ[X]} (hprec : StrictInterl f g)
@@ -196,7 +196,7 @@ theorem StrictInterl.eval_mul_derivative_nonpos_of_left_root
   nlinarith
 
 /-- At a root of the left polynomial in a positive-leading coprime
-proper-position pair, the right value and left derivative have strictly
+strictly interlacing pair, the right value and left derivative have strictly
 opposite signs. -/
 theorem StrictInterl.eval_mul_derivative_neg_of_left_root_of_isCoprime
     {f g : ℝ[X]} (hprec : StrictInterl f g)
@@ -213,7 +213,7 @@ theorem StrictInterl.eval_mul_derivative_neg_of_left_root_of_isCoprime
   have hfder : f.derivative.eval r ≠ 0 := hsimple.eval_derivative_ne_zero hr
   exact lt_of_le_of_ne hnonpos (mul_ne_zero hgeval hfder)
 
-/-- At a root of the left polynomial in a positive-leading proper-position
+/-- At a root of the left polynomial in a positive-leading interlacing
 pair with no common real root, the right value and left derivative have
 strictly opposite signs. -/
 theorem StrictInterl.eval_mul_derivative_neg_of_left_root_of_no_common
@@ -418,7 +418,7 @@ private theorem natDegree_sub_upper_bound_of_triple
     (max_le hh_le (hf_le.trans (Nat.le_succ _)))
 
 /-- **Signed outer-difference cone.**  Let `f`, `g`, and `h` be an ordered
-positive-leading proper-position triple.  If the outer difference has positive
+positive-leading interlacing triple.  If the outer difference has positive
 leading coefficient, then the middle polynomial precedes that difference.
 
 The proof does not assume that `h - f` splits.  Splitting comes from the outer
@@ -482,10 +482,10 @@ theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
       rw [hgfactor, natDegree_mul (X_sub_C_ne_zero r) hqg_pos.ne_zero,
         natDegree_X_sub_C]
       lia
-    have hqprec : StrictInterl qg (qh - qf) :=
+    have hqstrictInterl : StrictInterl qg (qh - qf) :=
       ih qg.natDegree (by lia) rfl hqfg hqgh hqfh
         hqf_pos hqg_pos hqh_pos hqsub_pos
-    have hmul := hqprec.mul_common_factor
+    have hmul := hqstrictInterl.mul_common_factor
       (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
     simpa [hgfactor, hsub_factor] using hmul
   · have hg_nodup : g.roots.Nodup := not_not.mp hdup

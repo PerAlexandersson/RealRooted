@@ -19,7 +19,7 @@ noncomputable section
 namespace RealRooted
 
 /-- A quadratic derivative recurrence with an arbitrary middle multiplier has
-strict adjacent proper position once its elementary rankwise invariants and
+strict adjacent interlacing once its elementary rankwise invariants and
 base pair are known. -/
 theorem strictInterl_and_noCommonRoot_of_quadratic_lag
     (P : ℕ → ℝ[X]) (a b c : ℝ) (Q : ℕ → ℝ[X])
@@ -38,12 +38,12 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag
   induction n with
   | zero => exact ⟨hbase, hbaseNo⟩
   | succ n ih =>
-      obtain ⟨ihprec, ihno⟩ := ih
+      obtain ⟨ihstrictInterl, ihno⟩ := ih
       have hinter : Interlaces (P n) (P (n + 1)) :=
-        ihprec.toInterlaces (by rw [hdeg, hdeg])
+        ihstrictInterl.toInterlaces (by rw [hdeg, hdeg])
       have hderiv_inter : Interlaces ((P (n + 1)).derivative) (P (n + 1)) :=
         interlaces_derivative_of_pos_natDegree (hpos (n + 1)).ne_zero
-          ihprec.2.1.2 (hpos (n + 1)) (by rw [hdeg]; lia)
+          ihstrictInterl.2.1.2 (hpos (n + 1)) (by rw [hdeg]; lia)
       have hderiv_pos : HasPosLeadingCoeff ((P (n + 1)).derivative) :=
         (hpos (n + 1)).derivative (by rw [hdeg]; lia)
       have hV : ∀ r : ℝ, (P (n + 1)).IsRoot r →
@@ -64,7 +64,7 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag
         rw [hrec n]
         simp only [polynomialWeightedSum]
         ring
-      have hprec : StrictInterl (P (n + 1)) (P (n + 2)) := by
+      have hstrictInterl : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rw [hsum]
         refine strictInterl_generalizedLiuWang_of_no_common
           hinter (hpos n) ?_ ?_ ?_ ?_ ?_ ?_ ihno hW
@@ -85,7 +85,7 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag
         · rw [← hsum, hdeg, hdeg]
           lia
         · rw [← hsum, hdeg, hdeg]
-      refine ⟨hprec, ?_⟩
+      refine ⟨hstrictInterl, ?_⟩
       intro r hr2 hr1
       have hrneg : r < 0 := hroot (n + 1) r hr1
       have hkey :
@@ -104,7 +104,7 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag
         exact (mul_eq_zero.mp hfactor).resolve_left hr0
       have hne : eval r (P n) ≠ 0 := fun hroot0 => ihno r hr1 hroot0
       have hsign : 0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-        eval_mul_eval_nonneg_of_strictInterl_right ihprec hderiv_inter.toStrictInterl
+        eval_mul_eval_nonneg_of_strictInterl_right ihstrictInterl hderiv_inter.toStrictInterl
           (hpos n) hderiv_pos hr1
       have hpref : 0 < a - b * r := by nlinarith
       have hmul :
@@ -132,12 +132,12 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag
       have hderiv_zero : eval r ((P (n + 1)).derivative) = 0 :=
         (mul_eq_zero.mp hproduct_zero).resolve_left hne
       have hsimple : HasSimpleRoots (P (n + 1)) :=
-        (ihprec.hasSimpleRoots_of_no_common_root fun x hx =>
+        (ihstrictInterl.hasSimpleRoots_of_no_common_root fun x hx =>
           ihno x hx.2 hx.1).2
       exact (hsimple.eval_derivative_ne_zero hr1 hderiv_zero).elim
 
 /-- A quadratic derivative recurrence whose degree stays fixed or rises by
-one has strict adjacent proper position.  This version uses the derivative as
+one has strict adjacent interlacing.  This version uses the derivative as
 the strict Liu--Wang interlacer, so the lag polynomial may have the same degree
 as the current row. -/
 theorem strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
@@ -159,13 +159,13 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
   induction n with
   | zero => exact ⟨hbase, hbaseNo⟩
   | succ n ih =>
-      obtain ⟨ihprec, ihno⟩ := ih
+      obtain ⟨ihstrictInterl, ihno⟩ := ih
       have hsimple : HasSimpleRoots (P (n + 1)) :=
-        (ihprec.hasSimpleRoots_of_no_common_root fun x hx =>
+        (ihstrictInterl.hasSimpleRoots_of_no_common_root fun x hx =>
           ihno x hx.2 hx.1).2
       have hderiv_inter : Interlaces ((P (n + 1)).derivative) (P (n + 1)) :=
         interlaces_derivative_of_pos_natDegree (hpos (n + 1)).ne_zero
-          ihprec.2.1.2 (hpos (n + 1)) (hdegreePos n)
+          ihstrictInterl.2.1.2 (hpos (n + 1)) (hdegreePos n)
       have hderiv_pos : HasPosLeadingCoeff ((P (n + 1)).derivative) :=
         (hpos (n + 1)).derivative (by exact (hdegreePos n).ne')
       have hrootSign : ∀ r, (P (n + 1)).IsRoot r →
@@ -174,7 +174,7 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
         have hrneg := hroot (n + 1) r hr
         have hprevDeriv :
             0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-          eval_mul_eval_nonneg_of_strictInterl_right ihprec hderiv_inter.toStrictInterl
+          eval_mul_eval_nonneg_of_strictInterl_right ihstrictInterl hderiv_inter.toStrictInterl
             (hpos n) hderiv_pos hr
         have hderivNe : eval r ((P (n + 1)).derivative) ≠ 0 :=
           hsimple.eval_derivative_ne_zero hr
@@ -195,13 +195,13 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
           ring
         rw [heval]
         nlinarith
-      have hprec : StrictInterl (P (n + 1)) (P (n + 2)) := by
+      have hstrictInterl : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rcases hstep (n + 1) with hsame | hsucc
         · exact strictInterl_of_interlaces_eval_mul_neg_same
             hderiv_inter hderiv_pos (hpos (n + 2)) hsame hrootSign
         · exact strictInterl_of_interlaces_eval_mul_neg_succ
             hderiv_inter hderiv_pos (hpos (n + 2)) hsucc hrootSign
-      refine ⟨hprec, ?_⟩
+      refine ⟨hstrictInterl, ?_⟩
       intro r hr2 hr1
       have hsign := hrootSign r hr1
       rw [Polynomial.IsRoot.def] at hr2

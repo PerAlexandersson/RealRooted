@@ -50,14 +50,14 @@ theorem favardInterlacing_affine_const_coeff_rowSign
     dsimp [Q]
     rw [neg_one_pow_add_two n, neg_one_pow_succ n, hstep n, C_neg]
     ring_nf
-  have hQprec : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) :=
+  have hQstrictInterl : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) :=
     favardInterlacing_affine_const_coeff hs hβ hQ0 hQ1 hQstep
   intro n
   have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
   have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
   have hscaled : StrictInterl (C ((-1 : ℝ) ^ n) * Q n)
       (C ((-1 : ℝ) ^ (n + 1)) * Q (n + 1)) :=
-    StrictInterl.C_mul_right (StrictInterl.C_mul_left (hQprec n) hleft_ne) hright_ne
+    StrictInterl.C_mul_right (StrictInterl.C_mul_left (hQstrictInterl n) hleft_ne) hright_ne
   have hleft_eq : C ((-1 : ℝ) ^ n) * Q n = P n := by
     dsimp [Q]
     rw [← mul_assoc, ← C_mul, neg_one_pow_mul_self n]
@@ -121,14 +121,14 @@ theorem favardInterlacing_affine_param_coeff_rowSign
     dsimp [Q]
     rw [neg_one_pow_add_two n, neg_one_pow_succ n, hstep n, C_neg]
     ring_nf
-  have hQprec : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) :=
+  have hQstrictInterl : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) :=
     favardInterlacing_affine_param_coeff hs hβ hQ0 hQ1 hQstep
   intro n
   have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
   have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
   have hscaled : StrictInterl (C ((-1 : ℝ) ^ n) * Q n)
       (C ((-1 : ℝ) ^ (n + 1)) * Q (n + 1)) :=
-    StrictInterl.C_mul_right (StrictInterl.C_mul_left (hQprec n) hleft_ne) hright_ne
+    StrictInterl.C_mul_right (StrictInterl.C_mul_left (hQstrictInterl n) hleft_ne) hright_ne
   have hleft_eq : C ((-1 : ℝ) ^ n) * Q n = P n := by
     dsimp [Q]
     rw [← mul_assoc, ← C_mul, neg_one_pow_mul_self n]

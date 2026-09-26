@@ -12,7 +12,7 @@ import Mathlib.Tactic.Positivity
 /-!
 # Roots of probabilists' Hermite polynomials
 
-The proper-position orientation is
+The interlacing orientation is
 
 `StrictInterl (hermiteReal n) (hermiteReal (n + 1))`.
 
@@ -104,7 +104,7 @@ theorem hermiteReal_isGeneralizedSturmSeq (n : ℕ) :
 example : StrictInterl (X : ℝ[X]) (X ^ 2 - 1) := by
   simpa using hermiteReal_strictInterl_succ 1
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated hermiteReal_strictInterl_succ (since := "2026-09-26")]
 alias hermiteReal_prec_succ := hermiteReal_strictInterl_succ

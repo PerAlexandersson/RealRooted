@@ -41,7 +41,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_of_le_two
 
 /-- The `λ = ν = 0` specialization of Braun--Jal Lemma 3.4 for the concrete
 modified Narayana family.  This exposes the Lemma 3.4 target shape while using
-the checked consecutive proper-position theorem. -/
+the checked consecutive interlacing theorem. -/
 theorem lemma34ModifiedNarayanaInterlacing_modified_zero_zero
     {m : ℕ} (_hm : 2 ≤ m) :
     StrictInterl ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +

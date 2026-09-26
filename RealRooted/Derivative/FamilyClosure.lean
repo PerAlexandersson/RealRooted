@@ -229,7 +229,7 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
     exact (derivative_interlaces hp_splits hdeg2).toStrictInterl.roots_le_of_right hroots
 
 /-- Statement interface for the Rolle--Obreschkoff fact that differentiation
-preserves weak proper position in the oriented, zero-aware `Interl` convention.
+preserves weak interlacing in the oriented, zero-aware `Interl` convention.
 The checked witness is `derivativePreservesInterl` in
 `RealRooted.ObreschkoffConverse.Derivative`. -/
 def derivativePreservesInterlStatement : Prop :=

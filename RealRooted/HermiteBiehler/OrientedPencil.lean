@@ -7,7 +7,7 @@ import RealRooted.Wronskian.Algebra
 # Oriented stable pencils
 
 This module combines the unoriented Obreschkoff converse with a pointwise
-Wronskian sign.  The sign selects the proper-position orientation compatible
+Wronskian sign.  The sign selects the interlacing orientation compatible
 with the two-variable pencil `f(z) + w g(z)`.
 -/
 

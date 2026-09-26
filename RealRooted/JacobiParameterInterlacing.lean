@@ -64,12 +64,12 @@ theorem shiftedJacobi_interlaces_shift_both (n : ℕ) {α β : ℝ}
             rw [natDegree_shiftedJacobi (n + 1 + 1) hα hβ]
             lia)).toStrictInterl
       have hunscaled := hscaled.C_mul_left (inv_ne_zero hc)
-      have hprec :
+      have hstrictInterl :
           StrictInterl (shiftedJacobi (n + 1) (α + 1) (β + 1))
             (shiftedJacobi (n + 1 + 1) α β) := by
         rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hc, C_1, one_mul] at hunscaled
         exact hunscaled
-      apply hprec.toInterlaces
+      apply hstrictInterl.toInterlaces
       rw [natDegree_shiftedJacobi (n + 1) (by linarith) (by linarith),
         natDegree_shiftedJacobi (n + 1 + 1) hα hβ]
 
@@ -196,7 +196,7 @@ theorem exists_shiftedJacobiMonic_beta_add_one_linearCombination
         rw [ha_poly, hb_poly]
 
 /-- Increasing the second Jacobi parameter by one moves the roots to the left
-in the shifted variable, with the new polynomial in proper position before the
+in the shifted variable, with the new polynomial in an interlacing relation before the
 old polynomial. -/
 theorem shiftedJacobiMonic_strictInterl_beta_add_one (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
@@ -517,7 +517,7 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one
   rw [neg_lt_neg_iff, div_lt_div_iff₀ hden₀ hdenₜ]
   nlinarith [mul_pos ht (by linarith : 0 < β + 1)]
 
-/-- Proper-position form of arbitrary positive first-parameter movement in
+/-- Interlacing form of arbitrary positive first-parameter movement in
 degree one. -/
 theorem shiftedJacobiMonic_strictInterl_alpha_add_degree_one
     {α β t : ℝ} (hα : -1 < α) (hβ : -1 < β) (ht : 0 < t) :
@@ -639,7 +639,7 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_two
       Polynomial.coeff_X_pow, coeff_X, coeff_C]
     apply Matrix.posDef_fin_two_of_entries <;> norm_num
 
-/-- Proper-position form of the degree-two fractional comparison for the two
+/-- Interlacing form of the degree-two fractional comparison for the two
 parking-function parity classes. -/
 theorem shiftedJacobiMonic_strictInterl_three_halves_degree_two
     (ε : ℕ) (hε : ε < 2) :
@@ -801,7 +801,7 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three
       (by norm_num) (by norm_num) (by norm_num) using 1
     norm_num
 
-/-- Proper-position form of the degree-three fractional comparison for the
+/-- Interlacing form of the degree-three fractional comparison for the
 two parking-function parity classes. -/
 theorem shiftedJacobiMonic_strictInterl_three_halves_degree_three
     (ε : ℕ) (hε : ε < 2) :
@@ -920,7 +920,7 @@ theorem shiftedJacobiMonic_strictInterl_alpha_add_of_no_crossing
         simpa only [mul_comm] using hsign
 
 /-- Every positive beta-one first-parameter shift of at most two puts the
-lower-parameter shifted Jacobi polynomial in proper position before the
+lower-parameter shifted Jacobi polynomial in an interlacing relation before the
 higher-parameter polynomial. -/
 theorem shiftedJacobiMonic_strictInterl_alpha_add
     (n : ℕ) {α t : ℝ} (hα : -1 < α) (ht_pos : 0 < t)
@@ -1139,14 +1139,14 @@ theorem shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred (m : ℕ)
   exact interlaces_of_consecutive_signs_of_natDegree_lt
     hf.1 hf.2 hF_ne hdeg_lt hsign
 
-/-- Proper position form of the adjacent-degree two-unit endpoint. -/
+/-- Interlacing form of the adjacent-degree two-unit endpoint. -/
 theorem shiftedJacobiMonic_strictInterl_alpha_add_two_degree_pred (m : ℕ)
     {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
     StrictInterl (shiftedJacobiMonic m (α + 2) β)
       (shiftedJacobiMonic (m + 1) α β) :=
   (shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred m hα hβ).toStrictInterl
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated shiftedJacobiMonic_strictInterl_beta_add_one
   (since := "2026-09-26")]

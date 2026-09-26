@@ -56,11 +56,11 @@ private theorem strictInterl_affine_favard_step {f g aPoly bPoly : ℝ[X]}
   have hF_deg : (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
     simpa [add_comm, hAf_deg] using
       natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
-  have hPrec_step : StrictInterl f (aPoly * f + bPoly * g) :=
+  have hStrictInterl_step : StrictInterl f (aPoly * f + bPoly * g) :=
     strictInterl_of_interlaces_evalCoeff_nonpos
       (f := f) (g := g) (a := aPoly) (b := bPoly)
       hInter hg_pos hF_pos (by lia) (by lia) hb_nonpos
-  exact ⟨hPrec_step, hPrec_step.toInterlaces (by lia), hF_pos⟩
+  exact ⟨hStrictInterl_step, hStrictInterl_step.toInterlaces (by lia), hF_pos⟩
 
 private def affineFavardChainPackage (P : Nat → ℝ[X]) (n : Nat) : Prop :=
   Interlaces (P n) (P (n + 1)) ∧

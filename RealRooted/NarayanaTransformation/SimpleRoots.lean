@@ -5,7 +5,7 @@ import RealRooted.SimpleRoots
 /-!
 # Simple roots of generalized Narayana polynomials
 
-Consecutive proper position and the no-common-root recurrence give simple
+Consecutive interlacing and the no-common-root recurrence give simple
 roots for every generalized Narayana polynomial. Derivative interlacing then
 gives the corresponding positive-degree derivative result.
 -/

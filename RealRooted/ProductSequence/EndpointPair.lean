@@ -290,7 +290,7 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_swapped_sequence
       (left_isRealRooted_of_isRealRooted_pair_sequence hquot) hrowA
   exact isRealRooted_of_even_odd_sequence heven hodd
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated strictInterl_endpoint_sum_then_X_step (since := "2026-09-26")]
 alias prec_endpoint_sum_then_X_step := strictInterl_endpoint_sum_then_X_step

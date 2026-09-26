@@ -87,11 +87,11 @@ theorem strictInterl_boundary_right_pair_of_orientation_succDegree_nonneg
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {t : ℝ} (ht : 0 < t) :
     StrictInterl (C t * f + g) (X * f) := by
-  have hprec_or : StrictInterl f g ∨ StrictInterl g f :=
+  have hstrictInterl_or : StrictInterl f g ∨ StrictInterl g f :=
     horient hfg hf_pos hg_pos (by lia) (by lia) hno
-  have hprec_fg : StrictInterl f g :=
-    StrictInterl.forward_of_orientation_of_succDegree hsucc hprec_or
-  exact strictInterl_boundary_right_pair_of_strictInterl_nonneg hprec_fg hfnn hgnn ht
+  have hstrictInterl_fg : StrictInterl f g :=
+    StrictInterl.forward_of_orientation_of_succDegree hsucc hstrictInterl_or
+  exact strictInterl_boundary_right_pair_of_strictInterl_nonneg hstrictInterl_fg hfnn hgnn ht
 
 @[deprecated strictInterl_boundary_right_pair_of_orientation_succDegree_nonneg
   (since := "2026-09-18")]
@@ -115,19 +115,19 @@ theorem posComboNoCommonAffineFamily_of_boundaryRightPairOrientation
     exact (nonnegCoeffs_C_mul ht.le hfnn).add hgnn
   have hp_pos : HasPosLeadingCoeff p := hp_nn.pos_leadingCoeff hp_rr.1
   have hXf_pos : HasPosLeadingCoeff (X * f) := hf_pos.X_mul
-  have hprec_or : StrictInterl p (X * f) ∨ StrictInterl (X * f) p := by
+  have hstrictInterl_or : StrictInterl p (X * f) ∨ StrictInterl (X * f) p := by
     dsimp [p]
     exact hboundary hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno ht
   have hno_right : ∀ r, p.IsRoot r → ¬ (X * f).IsRoot r := by
     dsimp [p]
     exact no_common_boundary_right_pair_of_no_common_nonneg hfnn hgnn hno ht
-  have hprec : StrictInterl p (X * f) :=
+  have hstrictInterl : StrictInterl p (X * f) :=
     strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
-      hprec_or hp_rr.1 hp_rr.2 hp_nn hno_right
+      hstrictInterl_or hp_rr.1 hp_rr.2 hp_nn hno_right
   have hcombo_rr :
       ((C (1 : ℝ) * p + C s * (X * f)) ≠ 0 ∧ (C (1 : ℝ) * p + C s * (X * f)).Splits) :=
     StrictInterl.isRealRooted_nonneg_combo
-      hprec hp_pos hXf_pos (by simp) hs.le (Or.inl zero_lt_one)
+      hstrictInterl hp_pos hXf_pos (by simp) hs.le (Or.inl zero_lt_one)
   grind
 
 end RealRooted

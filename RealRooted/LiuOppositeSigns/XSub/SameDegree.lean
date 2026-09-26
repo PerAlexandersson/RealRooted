@@ -103,7 +103,7 @@ theorem not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
     (hpair : PositiveSplitRootCountPair f g)
     (hdeg : f.natDegree = g.natDegree + 1) :
     ¬ StrictInterl (g.comp (X + C r)) (X * f.comp (X + C r)) := by
-  intro hprec
+  intro hstrictInterl
   have hF_ne : f.comp (X + C r) ≠ 0 :=
     (hpair.left_pos.comp_X_add_C r).ne_zero
   have hXF_deg :
@@ -117,7 +117,7 @@ theorem not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
         (X * f.comp (X + C r)).natDegree := by
     rw [hXF_deg, hF_deg, hG_deg]
     lia
-  exact hprec.not_of_left_natDegree_succ_lt_right hgap
+  exact hstrictInterl.not_of_left_natDegree_succ_lt_right hgap
 
 @[deprecated not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
   (since := "2026-09-26")]

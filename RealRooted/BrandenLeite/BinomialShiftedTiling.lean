@@ -115,7 +115,7 @@ def binomialShiftedRodRow (m n : ℕ) : ℝ[X] :=
     (List.replicate (m - 2) 1) (Nat.choose m 2 : ℝ) n
 
 /-- Binomial shifted rows are PF and consecutive rows are in zero-aware
-proper position. -/
+interlacing. -/
 theorem binomialShiftedRodRows_pf_and_interl (m : ℕ) :
     (∀ n, IsPFPolynomial (binomialShiftedRodRow m n)) ∧
       ∀ n, Interl (binomialShiftedRodRow m n)

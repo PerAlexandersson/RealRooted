@@ -10,13 +10,13 @@ namespace RealRooted
 # Garloff--Wagner Theorem 12
 
 The factorial Schur-product induction proving PF preservation and zero-aware
-proper-position transport. This layer also supplies the fixed-factor Hadamard
+interlacing transport. This layer also supplies the fixed-factor Hadamard
 consequences needed by the final two-pair argument.
 -/
 
 /-! ## Theorem 12 infrastructure -/
 
-/-- Degree-zero polynomials are in zero-aware proper position. -/
+/-- Degree-zero polynomials are in zero-aware interlacing. -/
 theorem interl_of_natDegree_eq_zero {p q : ℝ[X]}
     (hpdeg : p.natDegree = 0) (hqdeg : q.natDegree = 0) :
     Interl p q := by
@@ -31,7 +31,7 @@ theorem interl_of_natDegree_eq_zero {p q : ℝ[X]}
 
 namespace IsGWKreinSummand
 
-/-- Krein summands of a PF polynomial are in proper position with the parent. -/
+/-- Krein summands of a PF polynomial are in an interlacing relation with the parent. -/
 theorem strictInterl {g q : ℝ[X]} (h : IsGWKreinSummand g q)
     (hg0 : g ≠ 0) (hgs : g.Splits) :
     StrictInterl q g := by
@@ -126,7 +126,7 @@ theorem gwSchurProduct_pf_right_linearFactor_of_derivative_interl
     IsPFPolynomial (gwSchurProduct f ((X - C u) * p)) := by
   let F : ℝ[X] := gwSchurProduct f p
   let D : ℝ[X] := gwSchurProduct (gwD f) p
-  have hprec :
+  have hinterl :
       Interl F (gwSchurProduct f ((X - C u) * p)) :=
     gwSchurProduct_interl_right_linearFactor_of_derivative_interl
       hu hder hF hD
@@ -142,7 +142,7 @@ theorem gwSchurProduct_pf_right_linearFactor_of_derivative_interl
     change IsPFPolynomial (X * D - C u * F)
     rw [hF0, mul_zero, sub_zero]
     exact hD.X_mul
-  · rcases hprec with hleft0 | hright0 | hstrict
+  · rcases hinterl with hleft0 | hright0 | hstrict
     · exact False.elim (hF0 hleft0)
     · simpa [hright0] using IsPFPolynomial.zero
     · exact IsPFPolynomial.of_realRooted_nonneg htarget_nn hstrict.2.1.2
@@ -184,24 +184,24 @@ theorem interl_weightedSum_right_of_nonneg :
       simp [interl_zero_left]
   | (a, p) :: l, h, hnonneg, hprec, hnn => by
       have ha : 0 ≤ a := hnonneg (a, p) (by simp)
-      have hp_prec : Interl p h := hprec (a, p) (by simp)
+      have hp_strictInterl : Interl p h := hprec (a, p) (by simp)
       have hp_nn : HasNonnegCoeffs p := hnn (a, p) (by simp)
       have htail_nonneg : ∀ ap ∈ l, 0 ≤ ap.1 :=
         fun ap hap => hnonneg ap (by simp [hap])
-      have htail_prec : ∀ ap ∈ l, Interl ap.2 h :=
+      have htail_strictInterl : ∀ ap ∈ l, Interl ap.2 h :=
         fun ap hap => hprec ap (by simp [hap])
       have htail_nn : ∀ ap ∈ l, HasNonnegCoeffs ap.2 :=
         fun ap hap => hnn ap (by simp [hap])
-      have hhead_prec : Interl (C a * p) h :=
-        Interl.C_mul_left_of_nonneg hp_prec ha
-      have htail_prec_sum : Interl (weightedSum l) h :=
-        interl_weightedSum_right_of_nonneg l h htail_nonneg htail_prec htail_nn
+      have hhead_strictInterl : Interl (C a * p) h :=
+        Interl.C_mul_left_of_nonneg hp_strictInterl ha
+      have htail_strictInterl_sum : Interl (weightedSum l) h :=
+        interl_weightedSum_right_of_nonneg l h htail_nonneg htail_strictInterl htail_nn
       have hhead_nn : HasNonnegCoeffs (C a * p) :=
         nonnegCoeffs_C_mul ha hp_nn
       have htail_sum_nn : HasNonnegCoeffs (weightedSum l) :=
         HasNonnegCoeffs.weightedSum l htail_nonneg htail_nn
       simpa [weightedSum_cons] using
-        interl_add_left_of_common_right_of_nonneg hhead_prec htail_prec_sum
+        interl_add_left_of_common_right_of_nonneg hhead_strictInterl htail_strictInterl_sum
           hhead_nn htail_sum_nn
 
 theorem gwSchurProduct_weightedSum_left :
@@ -308,7 +308,7 @@ theorem gwL_sub_C_mul_gwD_gwL_pf {p : ℝ[X]} {u : ℝ}
     IsPFPolynomial (gwL p - C u * gwD (gwL p)) := by
   let T : ℝ[X] := gwL p - C u * gwD (gwL p)
   have hpL : IsPFPolynomial (gwL p) := by simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
-  have hprec : Interl T (gwL p) :=
+  have hinterl : Interl T (gwL p) :=
     gwL_sub_C_mul_gwD_gwL_interl_self hp hu
   have hDnn : HasNonnegCoeffs (gwD (gwL p)) := by simpa [gwD] using hpL.derivative.hasNonnegCoeffs
   have hTnn : HasNonnegCoeffs T := by
@@ -320,7 +320,7 @@ theorem gwL_sub_C_mul_gwD_gwL_pf {p : ℝ[X]} {u : ℝ}
       hpL.hasNonnegCoeffs.add hscaled_nn
   by_cases hT0 : T = 0
   · simpa [T, hT0] using IsPFPolynomial.zero
-  rcases hprec with hleft0 | hright0 | hstrict
+  rcases hinterl with hleft0 | hright0 | hstrict
   · exact False.elim (hT0 hleft0)
   · have hp0 : p = 0 := (gwL_eq_zero_iff p).1 hright0
     have hTzero : T = 0 := by simp [T, hp0, gwL_zero, gwD_zero]
@@ -470,7 +470,7 @@ theorem gwSchurProduct_interl_of_kreinSummandExpansion_of_derivative
 The induction is over the total degree of the two active Schur-product
 arguments.  At each measure we first prove PF preservation, then use that
 same-measure result as the common-right PF input for the fixed-factor
-proper-position statement.  All derivative and one-root-deleted calls have
+interlacing statement.  All derivative and one-root-deleted calls have
 strictly smaller total degree. -/
 theorem gwSchurProductPFAndStrictInterl :
     gwSchurProductPFStatement ∧ gwSchurProductStrictInterlStatement := by
@@ -536,10 +536,10 @@ theorem gwSchurProductPFAndStrictInterl :
             have hfD : IsPFPolynomial (gwD f) := by
               change IsPFPolynomial f.derivative
               exact hf.derivative
-            have hprecD : Interl (gwD f) f := by
+            have hinterlD : Interl (gwD f) f := by
               change Interl f.derivative f
               exact hf.derivative_interl_self
-            apply hB_lt hfD hf hq hprecD
+            apply hB_lt hfD hf hq hinterlD
             rw [← hmeasure]
             lia
           rw [hfactor]
@@ -603,10 +603,10 @@ theorem gwSchurProductPFAndStrictInterl :
               have hpD : IsPFPolynomial (gwD p) := by
                 change IsPFPolynomial p.derivative
                 exact hp.derivative
-              have hprecD : Interl (gwD p) p := by
+              have hinterlD : Interl (gwD p) p := by
                 change Interl p.derivative p
                 exact hp.derivative_interl_self
-              apply hB_lt hpD hp hq hprecD
+              apply hB_lt hpD hp hq hinterlD
               rw [← hmeasure]
               lia)
             (fun q u hfactor => by
@@ -649,12 +649,12 @@ theorem gwL_pf {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (gwL p) := by
   simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
 
-/-- The `L` operator preserves strict proper position. -/
+/-- The `L` operator preserves strict interlacing. -/
 theorem gwL_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     StrictInterl (gwL f) (gwL g) := by
   simpa [gwJL_zero_apply] using gwTheorem11StrictInterl hfg 0
 
-/-- The `L` operator preserves zero-aware proper position. -/
+/-- The `L` operator preserves zero-aware interlacing. -/
 theorem gwL_interl {f g : ℝ[X]} (hfg : Interl f g) :
     Interl (gwL f) (gwL g) := by
   rcases hfg with hf0 | hg0 | hstrict
@@ -685,7 +685,7 @@ theorem gwSchurProductInterl_left {f p q : ℝ[X]}
   simpa [gwSchurProduct_comm f p, gwSchurProduct_comm f q] using
     gwSchurProductInterl hp hq hf hpq
 
-/-- Ordinary Hadamard products preserve zero-aware proper position in a fixed
+/-- Ordinary Hadamard products preserve zero-aware interlacing in a fixed
 right factor, via `L` and the checked Schur-product theorem. -/
 theorem gwHadamardProductInterl {f g p : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)

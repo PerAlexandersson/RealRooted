@@ -120,7 +120,7 @@ theorem interlaces_of_derivative_linear_pos_const
     simp_all
   have hne (n : ℕ) : P n ≠ 0 := (hpos n).ne_zero
   have hP1 : P 1 = (C a + C c * X) * C d := by simp_all
-  have hprec : ∀ n, StrictInterl (P n) (P (n + 1)) := by
+  have hstrictInterl : ∀ n, StrictInterl (P n) (P (n + 1)) := by
     intro n
     induction n with
     | zero =>
@@ -187,7 +187,7 @@ theorem interlaces_of_derivative_linear_pos_const
           (a := C a + C c * X) (b := C b * X)
           hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
         simp_all
-  exact (hprec n).toInterlaces (by grind)
+  exact (hstrictInterl n).toInterlaces (by grind)
 
 /-- Unit-seed specialization of
 `interlaces_of_derivative_linear_pos_const`. -/

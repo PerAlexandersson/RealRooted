@@ -9,7 +9,7 @@ import Mathlib.Basic.Complex.Basic
 
 This module contains real-polynomial complexification, univariate half-plane
 stability, the Hermite--Biehler polynomial, and the splitness/stability bridge.
-It is independent of the forward and converse proper-position arguments.
+It is independent of the forward and converse interlacing arguments.
 -/
 
 open Polynomial

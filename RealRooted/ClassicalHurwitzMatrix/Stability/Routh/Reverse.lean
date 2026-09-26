@@ -37,23 +37,23 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
       StrictInterl red odd ∧ HasNonnegCoeffs red ∧ HasNonnegCoeffs odd ∧
         0 < red.coeff 0 ∧ 0 < odd.coeff 0 := by
     rcases hshape with hevenShape | hoddShape
-    · have hprec :=
+    · have hstrictInterl :=
         hred.strictInterl_parts_of_evenShape hredPos hodd hevenShape
       obtain ⟨hrednn, hoddnn⟩ :=
         hred.hasNonnegCoeffs_parts_of_evenShape
           hredPos hodd hevenShape
       obtain ⟨hred0, hodd0⟩ :=
         hred.coeff_zero_pos_parts_of_evenShape hredPos hodd hevenShape
-      exact ⟨hprec, hrednn, hoddnn, hred0, hodd0⟩
-    · have hprec :=
+      exact ⟨hstrictInterl, hrednn, hoddnn, hred0, hodd0⟩
+    · have hstrictInterl :=
         hred.strictInterl_parts_of_oddShape hredPos hodd hoddShape
       obtain ⟨hrednn, hoddnn⟩ :=
         hred.hasNonnegCoeffs_parts_of_oddShape
           hredPos hodd hoddShape
       obtain ⟨hred0, hodd0⟩ :=
         hred.coeff_zero_pos_parts_of_oddShape hredPos hodd hoddShape
-      exact ⟨hprec, hrednn, hoddnn, hred0, hodd0⟩
-  obtain ⟨hprec, hrednn, hoddnn, _, hodd0⟩ := hdata
+      exact ⟨hstrictInterl, hrednn, hoddnn, hred0, hodd0⟩
+  obtain ⟨hstrictInterl, hrednn, hoddnn, _, hodd0⟩ := hdata
   have heq : even = Polynomial.C c * odd + X * red := by
     simpa only [red] using
       even_eq_C_mul_odd_add_X_mul_routhReducedOddPart c odd even h0
@@ -67,7 +67,7 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
     hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hevennn fun hevenZero =>
       heven0 (by simp [hevenZero])
   have hoddXred : StrictInterl odd (X * red) :=
-    strictInterl_to_X_mul_of_nonneg hprec hrednn hoddnn
+    strictInterl_to_X_mul_of_nonneg hstrictInterl hrednn hoddnn
   have hscaled : StrictInterl (Polynomial.C c * odd) (X * red) :=
     hoddXred.C_mul_left hc.ne'
   have hsum : StrictInterl (Polynomial.C c * odd)
@@ -75,11 +75,11 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
     strictInterl_add_X_mul_of_strictInterl hscaled
       (hasPosLeadingCoeff_C_mul hc hodd) hredPos
   have hunscaled := hsum.C_mul_left (inv_ne_zero hc.ne')
-  have hsourcePrec : StrictInterl odd even := by
+  have hsourceInterl : StrictInterl odd even := by
     simpa only [← mul_assoc, ← Polynomial.C_mul,
       inv_mul_cancel₀ hc.ne', Polynomial.C_1,
       one_mul, ← heq] using hunscaled
-  have hHB := hermiteBiehlerForwardPos hevenPos hodd hsourcePrec
+  have hHB := hermiteBiehlerForwardPos hevenPos hodd hsourceInterl
   have hright :=
     hermiteBiehlerStableToHurwitzOddEven hoddnn hevennn hHB
   have hno : ∀ r : ℝ, ¬ (odd.IsRoot r ∧ even.IsRoot r) := by

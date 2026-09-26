@@ -6,7 +6,7 @@ import RealRooted.ObreschkoffConverse.Converse
 /-!
 # Obreschkoff forward direction
 
-The proper-position to all-real-rooted pencil half of Obreschkoff's theorem.
+The interlacing to all-real-rooted pencil half of Obreschkoff's theorem.
 -/
 
 open Polynomial
@@ -71,7 +71,7 @@ private theorem allComboRealRooted_of_strictInterl_succDegree_pos
             ((C (-β) * g + C (-α) * f) ≠ 0 ∧ (C (-β) * g + C (-α) * f).Splits) := by
           have hmix_lo : g.natDegree ≤ (C (-β) * g + C (-α) * f).natDegree := by lia
           have hmix_hi : (C (-β) * g + C (-α) * f).natDegree ≤ g.natDegree + 1 := by lia
-          have hprec_mix :
+          have hstrictInterl_mix :
               StrictInterl g (C (-β) * g + C (-α) * f) :=
             strictInterl_of_interlaces_evalCoeff_nonpos
               (f := g) (g := f) (a := C (-β)) (b := C (-α))
@@ -81,7 +81,7 @@ private theorem allComboRealRooted_of_strictInterl_succDegree_pos
                 intro r _
                 simp
                 grind)
-          exact hprec_mix.2.1
+          exact hstrictInterl_mix.2.1
         have hrr :
             ((C (-1 : ℝ) * (C (-β) * g + C (-α) * f)) ≠ 0 ∧
               (C (-1 : ℝ) * (C (-β) * g + C (-α) * f)).Splits) :=
@@ -119,7 +119,7 @@ private theorem allComboRealRooted_of_strictInterl_succDegree_pos
             _ = g.natDegree := by rw [natDegree_C_mul hβ0]
         have hmix_lo : g.natDegree ≤ (C β * g + C α * f).natDegree := by lia
         have hmix_hi : (C β * g + C α * f).natDegree ≤ g.natDegree + 1 := by lia
-        have hprec_mix :
+        have hstrictInterl_mix :
             StrictInterl g (C β * g + C α * f) :=
           strictInterl_of_interlaces_evalCoeff_nonpos
             (f := g) (g := f) (a := C β) (b := C α)
@@ -129,7 +129,7 @@ private theorem allComboRealRooted_of_strictInterl_succDegree_pos
               intro r _
               simp
               grind)
-        simpa [add_comm, add_left_comm, add_assoc] using hprec_mix.2.1.2
+        simpa [add_comm, add_left_comm, add_assoc] using hstrictInterl_mix.2.1.2
 
 private theorem allComboRealRooted_of_strictInterl_succDegree
     {f g : ℝ[X]}
@@ -218,11 +218,11 @@ private theorem allComboRealRooted_of_strictInterl_sameDegree_of_no_common
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
       lia
-    have hprec_q : StrictInterl qf qg := by
+    have hstrictInterl_q : StrictInterl qf qg := by
       apply StrictInterl.of_mul_X_sub_C_both (r := r)
       lia
     have hqhall : AllComboRealRooted qf qg :=
-      ih qf.natDegree hqf_deg_lt rfl hprec_q hqdeg
+      ih qf.natDegree hqf_deg_lt rfl hstrictInterl_q hqdeg
     have hmul :
         AllComboRealRooted ((X - C r) * qf) ((X - C r) * qg) :=
       allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r).2 hqhall
@@ -284,7 +284,7 @@ private lemma strictInterl_of_right_factor_combo_of_natDegree_ge
     nlinarith
   have hF_pos' : HasPosLeadingCoeff (C α * f + (C β * (X - C uR)) * q) := by lia
   have hdeg_lo' : f.natDegree ≤ (C α * f + (C β * (X - C uR)) * q).natDegree := by lia
-  have hprec :
+  have hstrictInterl :
       StrictInterl f (C α * f + (C β * (X - C uR)) * q) :=
     strictInterl_of_interlaces_evalCoeff_neg
       (f := f) (g := q) (a := C α) (b := C β * (X - C uR))

@@ -53,7 +53,7 @@ theorem chainPolynomial_toLowerTriangularMatrix_isPFPolynomial
     (fun i => Matrix.diagonalTail_apply_diagonal δ A hdiag)
     (hA.diagonalTail hδ.le) n
 
-/-- Consecutive finite chain polynomials are in zero-aware proper position. -/
+/-- Consecutive finite chain polynomials are in zero-aware interlacing. -/
 theorem interl_chainPolynomial_toLowerTriangularMatrix_succ
     {N n : ℕ} {δ : ℝ} {A : Matrix (Fin N) (Fin N) ℝ}
     (hδ : 0 < δ) (hA : A.IsTotallyNonneg)

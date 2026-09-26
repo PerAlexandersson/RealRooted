@@ -313,24 +313,24 @@ theorem StrictInterl.weightedSum_right_of_nonneg :
       have hnonneg_a : 0 ≤ a := hnonneg (a, p) (by simp)
       have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
         List.forall_mem_of_forall_mem_cons hnonneg
-      have hprec_tail : ∀ ap ∈ l, StrictInterl ap.2 h :=
+      have hstrictInterl_tail : ∀ ap ∈ l, StrictInterl ap.2 h :=
         List.forall_mem_of_forall_mem_cons hprec
       have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
         List.forall_mem_of_forall_mem_cons hpos
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
       · by_cases htail : ∃ ap ∈ l, 0 < ap.1
-        · have hCp_prec : StrictInterl (C a * p) h :=
+        · have hCp_strictInterl : StrictInterl (C a * p) h :=
             StrictInterl.C_mul_left (hprec (a, p) (by simp)) ha.ne'
           have hCp_pos : HasPosLeadingCoeff (C a * p) :=
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
-          have htail_prec : StrictInterl (weightedSum l) h :=
+          have htail_strictInterl : StrictInterl (weightedSum l) h :=
             StrictInterl.weightedSum_right_of_nonneg
-              l h hnonneg_tail hprec_tail hpos_tail htail
+              l h hnonneg_tail hstrictInterl_tail hpos_tail htail
           have htail_pos : HasPosLeadingCoeff (weightedSum l) :=
             hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
           simpa [weightedSum_cons] using
             StrictInterl.add_of_right_of_posLeadingCoeff
-              hCp_prec htail_prec hCp_pos htail_pos
+              hCp_strictInterl htail_strictInterl hCp_pos htail_pos
         · have hzero_tail : weightedSum l = 0 :=
             weightedSum_eq_zero_of_forall_coeff_zero l
               (forall_weight_eq_zero_of_nonneg_of_not_exists_pos
@@ -340,7 +340,7 @@ theorem StrictInterl.weightedSum_right_of_nonneg :
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by simp_all
         simpa [weightedSum_cons] using
           StrictInterl.weightedSum_right_of_nonneg
-            l h hnonneg_tail hprec_tail hpos_tail htail
+            l h hnonneg_tail hstrictInterl_tail hpos_tail htail
 
 /-- Unweighted finite-sum Wagner theorem on the right. -/
 theorem StrictInterl.sum_right

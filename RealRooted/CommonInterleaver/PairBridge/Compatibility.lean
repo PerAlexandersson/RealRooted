@@ -100,19 +100,19 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
         g.natDegree ≤ f.natDegree + 1) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   by_cases hfg_deg : f.natDegree ≤ g.natDegree
-  · have hprec_or : StrictInterl f g ∨ StrictInterl g f :=
+  · have hstrictInterl_or : StrictInterl f g ∨ StrictInterl g f :=
       PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
         (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
           hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
         hfg hf_pos hg_pos hfg_deg hclose.2
-    exact pairHasCommonInterleaver_of_strictInterl_or_reverse hprec_or
+    exact pairHasCommonInterleaver_of_strictInterl_or_reverse hstrictInterl_or
   · have hgf_deg : g.natDegree ≤ f.natDegree := le_of_not_ge hfg_deg
-    have hprec_or : StrictInterl g f ∨ StrictInterl f g :=
+    have hstrictInterl_or : StrictInterl g f ∨ StrictInterl f g :=
       PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
         (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
           hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
         (PosComboRealRooted.comm hfg) hg_pos hf_pos hgf_deg hclose.1
-    exact pairHasCommonInterleaver_of_strictInterl_or_reverse (Or.symm hprec_or)
+    exact pairHasCommonInterleaver_of_strictInterl_or_reverse (Or.symm hstrictInterl_or)
 
 /-- If one has both the no-common-roots orientation core and degree closeness
 for `PosComboRealRooted` pairs, then every positive-leading `PosComboRealRooted`
@@ -229,8 +229,8 @@ theorem posComboPairHasCommonInterleaver_of_orderedBridge_and_nonnegCoeffs
   · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
     rcases
         hordered hg_pos hf_pos hgnn hfnn (PosComboRealRooted.comm hfg) hdeg' hclose.1 with
-      ⟨h, hg_prec, hf_prec⟩
-    exact ⟨h, hf_prec, hg_prec⟩
+      ⟨h, hg_strictInterl, hf_strictInterl⟩
+    exact ⟨h, hf_strictInterl, hg_strictInterl⟩
 
 /-- Repaired degree-split package for the full positive-combo pair bridge in
 the nonnegative-coefficient regime. This is the version to use after the

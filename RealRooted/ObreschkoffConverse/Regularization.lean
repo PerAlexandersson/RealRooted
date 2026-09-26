@@ -966,7 +966,7 @@ theorem ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_n
         simpa [g₀, Polynomial.IsRoot.def] using hrg₀
       simp_all
     simp_all
-  have hprec₀ : StrictInterl f₀ g₀ ∨ StrictInterl g₀ f₀ := by
+  have hstrictInterl₀ : StrictInterl f₀ g₀ ∨ StrictInterl g₀ f₀ := by
     rcases hdeg₀ with hsucc | hsame
     · left
       exact
@@ -979,7 +979,7 @@ theorem ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_n
   have hsg_inv_ne : sg⁻¹ ≠ 0 := inv_ne_zero hsg_ne
   have hf_scale : C sf⁻¹ * f₀ = f := by grind
   have hg_scale : C sg⁻¹ * g₀ = g := by grind
-  rcases hprec₀ with hfg₀ | hgf₀
+  rcases hstrictInterl₀ with hfg₀ | hgf₀
   · have hscaled : StrictInterl (C sf⁻¹ * f₀) (C sg⁻¹ * g₀) :=
       StrictInterl.C_mul_right (StrictInterl.C_mul_left hfg₀ hsf_inv_ne) hsg_inv_ne
     lia
@@ -1059,7 +1059,7 @@ theorem
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     let n := max f.natDegree g.natDegree
     StrictInterl (iterateTDeriv eps n f) (iterateTDeriv eps n g) := by
-  have hprec_iter :
+  have hstrictInterl_iter :
       StrictInterl (iterateTDeriv eps (max f.natDegree g.natDegree) f)
           (iterateTDeriv eps (max f.natDegree g.natDegree) g) ∨
         StrictInterl (iterateTDeriv eps (max f.natDegree g.natDegree) g)
@@ -1070,7 +1070,7 @@ theorem
       (iterateTDeriv eps (max f.natDegree g.natDegree) f).natDegree + 1 =
         (iterateTDeriv eps (max f.natDegree g.natDegree) g).natDegree := by simp_all
   dsimp
-  exact StrictInterl.forward_of_orientation_of_succDegree hdeg_iter_succ.symm hprec_iter
+  exact StrictInterl.forward_of_orientation_of_succDegree hdeg_iter_succ.symm hstrictInterl_iter
 
 
 end

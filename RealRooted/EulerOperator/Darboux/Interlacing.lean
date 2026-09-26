@@ -20,7 +20,7 @@ noncomputable section
 
 namespace RealRooted
 
-/-- A sign-normalized Darboux output is in proper position when the input is
+/-- A sign-normalized Darboux output is in an interlacing relation when the input is
 real-rooted on `[0,1]` and the expected degree and leading-coefficient data
 hold. -/
 theorem strictInterl_neg_darbouxOperator_of_roots_mem_Icc

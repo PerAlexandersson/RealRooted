@@ -66,7 +66,7 @@ theorem rationalBackgroundDenominator_mul_series (ys : List ℝ) :
     rationalBackgroundSeries_mul_denominators ys
 
 /-- All stationary rational rod rows are PF and consecutive rows are in
-zero-aware proper position. -/
+zero-aware interlacing. -/
 theorem rationalRodRows_pf_and_interl
     {ys xs : List ℝ} (hys : ∀ y ∈ ys, 0 ≤ y)
     {c : ℝ} (hc : 0 < c) {r : ℕ} (hr : r ≠ 0)
@@ -176,7 +176,7 @@ theorem coeff_zero_rationalRodRow
 def monomerRodRow (b c : ℝ) (r : ℕ) (xs : List ℝ) (n : ℕ) : ℝ[X] :=
   rationalRodRow [b] c r xs n
 
-/-- Monomer rod rows inherit PF and consecutive zero-aware proper position. -/
+/-- Monomer rod rows inherit PF and consecutive zero-aware interlacing. -/
 theorem monomerRodRows_pf_and_interl
     {b c : ℝ} (hb : 0 ≤ b) (hc : 0 < c) {r : ℕ} (hr : r ≠ 0)
     {xs : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x) :

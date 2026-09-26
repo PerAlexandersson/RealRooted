@@ -123,7 +123,7 @@ theorem chainPolynomial_isPFPolynomial_of_pos_constantDiagonal
     (p := chainPolynomial B n) (a := δ) (d := 0) hδ (le_refl 0) hBpf
 
 /-- Consecutive chain polynomials of a totally nonnegative lower-triangular
-matrix with positive constant diagonal are in zero-aware proper position. -/
+matrix with positive constant diagonal are in zero-aware interlacing. -/
 theorem interl_chainPolynomial_succ_of_pos_constantDiagonal
     {δ : ℝ} {A : LowerTriangularMatrix ℝ} (hδ : 0 < δ)
     (hlower : LowerTriangularMatrix.IsLowerTriangular A)
@@ -134,12 +134,12 @@ theorem interl_chainPolynomial_succ_of_pos_constantDiagonal
     normalizeConstantDiagonal_unit hδ.ne' hlower hdiag
   have hB : Matrix.IsTotallyNonneg B :=
     normalizeConstantDiagonal_isTotallyNonneg hδ hA
-  have hprec : Interl (chainPolynomial B n)
+  have hinterl : Interl (chainPolynomial B n)
       (chainPolynomial B (n + 1)) :=
     interl_chainPolynomial_succ_of_isTotallyNonneg hunit hB n
   rw [chainPolynomial_comp_C_mul_X_normalizeConstantDiagonal hδ.ne' n,
     chainPolynomial_comp_C_mul_X_normalizeConstantDiagonal hδ.ne' (n + 1)]
-  rcases hprec with hzero | hzero | hprec
+  rcases hinterl with hzero | hzero | hinterl
   · left
     have hzero' :
         chainPolynomial (normalizeConstantDiagonal δ A) n = 0 := by
@@ -153,7 +153,7 @@ theorem interl_chainPolynomial_succ_of_pos_constantDiagonal
     rw [hzero', zero_comp]
   · right
     right
-    exact hprec.comp_C_mul_X hδ
+    exact hinterl.comp_C_mul_X hδ
 
 @[deprecated interl_chainPolynomial_succ_of_pos_constantDiagonal
   (since := "2026-09-18")]

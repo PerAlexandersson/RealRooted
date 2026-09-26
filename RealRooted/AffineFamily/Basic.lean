@@ -110,7 +110,7 @@ theorem isRealRooted_affine_combo_of_strictInterl_nonneg {f g : ℝ[X]}
     StrictInterl.add_of_right_of_posLeadingCoeff htf hmid htf_pos hmid_pos
   simpa [left_distrib, right_distrib, mul_assoc, add_assoc, add_left_comm, add_comm] using hsum.1
 
-/-- The repeated-column `2 x 2` affine test follows from proper position and
+/-- The repeated-column `2 x 2` affine test follows from interlacing and
 nonnegative coefficients. -/
 theorem has2x2InterlacingProperty_sameColumn_of_strictInterl_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :

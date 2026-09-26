@@ -587,7 +587,7 @@ lemma divX_realRooted_of_coeff_zero {g : ℝ[X]}
     g.divX ≠ 0 ∧ g.divX.Splits :=
   ⟨divX_ne_zero_of_coeff_zero hg hg0, divX_splits_of_splits_of_coeff_zero hg0 hgs⟩
 
-/-! ## Proper-position facts for the removed zero root -/
+/-! ## Interlacing facts for the removed zero root -/
 
 /-- The removed root really is a root: a nonzero polynomial with vanishing
 constant coefficient has `0` among its roots. -/
@@ -599,7 +599,7 @@ lemma zero_mem_roots_of_coeff_zero {g : ℝ[X]}
   rw [Polynomial.IsRoot.def, ← Polynomial.coeff_zero_eq_eval_zero]
   simp_all
 
-/-- Proper-position fact for the closed-segment/common-interleaver route: with
+/-- Interlacing fact for the closed-segment/common-interleaver route: with
 nonnegative coefficients every root of `g.divX` is `≤ 0`, since the roots of
 `g.divX` sit among the (nonpositive) roots of `g`. -/
 lemma divX_roots_nonpos_of_hasNonnegCoeffs {g : ℝ[X]}

@@ -211,10 +211,10 @@ lemma StrictInterlSameDegree.bezoutMatrix_posDef_quadratic
   have hv : 0 < v := hp_pos
   have hq_eq' : q = C u * mq := hq_eq
   have hp_eq' : p = C v * mp := hp_eq
-  have hprec_monic : StrictInterlSameDegree mp mq :=
+  have hstrictInterl_monic : StrictInterlSameDegree mp mq :=
     (StrictInterlSameDegree.C_mul_C_mul_iff hv.ne' hu.ne').mp (by grind)
   have hmonic : (bezoutMatrix 2 mq mp).PosDef :=
-    StrictInterlSameDegree.bezoutMatrix_quadratic_posDef hac hbd hprec_monic
+    StrictInterlSameDegree.bezoutMatrix_quadratic_posDef hac hbd hstrictInterl_monic
   have hscaled : (bezoutMatrix 2 (C u * mq) (C v * mp)).PosDef :=
     (bezoutMatrix.C_mul_C_mul_posDef_iff (n := 2) (u := u) (v := v) hu hv).mpr hmonic
   grind
@@ -241,10 +241,10 @@ lemma StrictInterlSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
   have hscaled : (bezoutMatrix 2 (C u * mq) (C v * mp)).PosDef := hp_eq' ▸ hq_eq' ▸ h
   have hmonic : (bezoutMatrix 2 mq mp).PosDef :=
     (bezoutMatrix.C_mul_C_mul_posDef_iff (n := 2) (u := u) (v := v) hu hv).mp hscaled
-  have hprec_monic : StrictInterlSameDegree mp mq :=
+  have hstrictInterl_monic : StrictInterlSameDegree mp mq :=
     StrictInterlSameDegree.of_bezoutMatrix_quadratic_posDef hac hbd hmonic
-  have hprec_scaled : StrictInterlSameDegree (C v * mp) (C u * mq) :=
-    hprec_monic.C_mul_C_mul (ne_of_gt hv) (ne_of_gt hu)
+  have hstrictInterl_scaled : StrictInterlSameDegree (C v * mp) (C u * mq) :=
+    hstrictInterl_monic.C_mul_C_mul (ne_of_gt hv) (ne_of_gt hu)
   grind
 
 lemma StrictInterlSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic

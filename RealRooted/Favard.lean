@@ -60,13 +60,13 @@ theorem favardInterlacing :
             natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
         have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 :=
           fun _ _ => by simpa [bPoly] using neg_nonpos.mpr (hβ n).le
-        have hPrec_step : StrictInterl f (aPoly * f + bPoly * g) :=
+        have hStrictInterl_step : StrictInterl f (aPoly * f + bPoly * g) :=
           strictInterl_of_interlaces_evalCoeff_nonpos
             (f := f) (g := g) (a := aPoly) (b := bPoly)
             hInter hPos_n hF_pos (by lia) (by lia) hb_nonpos
         refine ⟨?_, hPos_n1, ?_⟩
         · simpa [f, g, aPoly, bPoly, sub_eq_add_neg, hstep n] using
-            hPrec_step.toInterlaces (by lia)
+            hStrictInterl_step.toInterlaces (by lia)
         · grind
   exact fun n ↦ (hQ n).1.toStrictInterl
 
@@ -117,13 +117,13 @@ theorem rootMultiplicity_eq_one_of_favard
     (hβ : ∀ n : Nat, 0 < β (n + 1))
     (n : Nat) {r : ℝ} (hr : (P n).IsRoot r) :
     (P n).rootMultiplicity r = 1 := by
-  have hprec := favardInterlacing hrec hβ n
+  have hstrictInterl := favardInterlacing hrec hβ n
   have hnext_not_root := noCommonRoot_succ_of_favard hrec hβ n r hr
   have hnext_mult : (P (n + 1)).rootMultiplicity r = 0 := by
     simp_all
-  have hbound := (hprec.rootMultiplicity_bounds r).1
+  have hbound := (hstrictInterl.rootMultiplicity_bounds r).1
   have hpos : 0 < (P n).rootMultiplicity r :=
-    (rootMultiplicity_pos hprec.1.1).mpr hr
+    (rootMultiplicity_pos hstrictInterl.1.1).mpr hr
   lia
 
 /-- The real-root multiset of every member of a positive Favard family has no

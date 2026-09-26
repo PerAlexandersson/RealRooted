@@ -2,7 +2,7 @@ import RealRooted.ObreschkoffConverse.Converse
 import RealRooted.ObreschkoffConverse.Forward
 
 /-!
-# Derivative preservation of proper position
+# Derivative preservation of interlacing
 
 The derivative-preservation consequences of the two directions of
 Obreschkoff's theorem.
@@ -17,7 +17,7 @@ namespace RealRooted
 section
 
 /-- Differ-by-one case of the standard fact that differentiation preserves
-oriented weak proper position.
+oriented weak interlacing.
 
 The proof uses the forward Obreschkoff direction, differentiates the whole
 two-dimensional span, and applies the converse.  In the differ-by-one case the
@@ -48,7 +48,7 @@ theorem derivative_interl_of_strictInterl_succDegree {f g : ℝ[X]}
 alias derivative_prec0_of_prec_succDegree := derivative_interl_of_strictInterl_succDegree
 
 /-- In the same-degree case, existing Obreschkoff machinery gives the
-derivative pair in proper position up to orientation.  The remaining standard
+derivative pair in an interlacing relation up to orientation.  The remaining standard
 input below is exactly the oriented branch selection. -/
 theorem derivative_interl_or_reverse_of_strictInterl_sameDegree {f g : ℝ[X]}
     (hfg : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
@@ -65,8 +65,8 @@ theorem derivative_interl_or_reverse_of_strictInterl_sameDegree {f g : ℝ[X]}
   have hgdeg : g.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hgrr.1
   have hdeg' : f.derivative.natDegree = g.derivative.natDegree := by simp_all
   rcases strictInterl_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall
-    (Or.inr hdeg') with hprec | hrev
-  · exact Or.inl hprec.toInterl
+    (Or.inr hdeg') with hstrictInterl | hrev
+  · exact Or.inl hstrictInterl.toInterl
   · exact Or.inr hrev.toInterl
 
 @[deprecated derivative_interl_or_reverse_of_strictInterl_sameDegree
@@ -74,7 +74,7 @@ theorem derivative_interl_or_reverse_of_strictInterl_sameDegree {f g : ℝ[X]}
 alias derivative_prec0_or_revPrec0_of_prec_sameDegree :=
   derivative_interl_or_reverse_of_strictInterl_sameDegree
 
-/-- For monic same-degree polynomials in proper position, the roots of the
+/-- For monic same-degree polynomials in an interlacing relation, the roots of the
 derivatives have the same forward sum order. -/
 theorem derivative_roots_sum_le_of_strictInterl_sameDegree_monic {f g : ℝ[X]}
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -118,7 +118,7 @@ alias derivative_roots_sum_le_of_prec_sameDegree_monic :=
   derivative_roots_sum_le_of_strictInterl_sameDegree_monic
 
 /-- Same-degree branch of the standard fact that differentiation preserves
-oriented weak proper position. -/
+oriented weak interlacing. -/
 def derivativePreservesStrictInterlSameDegreeStatement : Prop :=
   ∀ {f g : ℝ[X]}, StrictInterl f g → f.natDegree = g.natDegree →
     Interl f.derivative g.derivative
@@ -132,10 +132,10 @@ position. -/
 private lemma interl_C_mul_left_right {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0)
     {f g : ℝ[X]} (h : Interl f g) :
     Interl (C a * f) (C b * g) := by
-  rcases h with rfl | rfl | hprec
+  rcases h with rfl | rfl | hstrictInterl
   · simp [interl_zero_left]
   · simp [interl_zero_right]
-  · exact (StrictInterl.C_mul_right (StrictInterl.C_mul_left hprec ha) hb).toInterl
+  · exact (StrictInterl.C_mul_right (StrictInterl.C_mul_left hstrictInterl ha) hb).toInterl
 
 /-- Degree-zero polynomials satisfy `StrictInterl` in both orientations. -/
 lemma StrictInterl.of_degree_zero_degree_zero
@@ -159,7 +159,7 @@ lemma StrictInterl.of_degree_zero_degree_zero
 alias prec_degree_zero_degree_zero := StrictInterl.of_degree_zero_degree_zero
 
 /-- Degree-at-least-two same-degree branch of the standard fact that
-differentiation preserves oriented weak proper position. -/
+differentiation preserves oriented weak interlacing. -/
 def derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeStatement : Prop :=
   ∀ {f g : ℝ[X]}, StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
     Interl f.derivative g.derivative
@@ -206,7 +206,7 @@ abbrev derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicPrecStatement :=
   derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStrictInterlStatement
 
 /-- Monic degree-at-least-two same-degree branch of the standard fact that
-differentiation preserves oriented weak proper position. -/
+differentiation preserves oriented weak interlacing. -/
 theorem derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonic :
     derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStatement := by
   intro f g hf_monic hg_monic hfg hdeg htwo
@@ -240,7 +240,7 @@ theorem derivativePreservesStrictInterlSameDegree_monicStrictInterl_of_monic
     Polynomial.derivative_ne_zero.mpr (by lia)
   have hgder_ne : g.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
-  rcases hmonic hf_monic hg_monic hfg hdeg htwo with hfzero | hgzero | hprec <;> simp_all
+  rcases hmonic hf_monic hg_monic hfg hdeg htwo with hfzero | hgzero | hstrictInterl <;> simp_all
 
 @[deprecated derivativePreservesStrictInterlSameDegree_monicStrictInterl_of_monic
   (since := "2026-09-18")]
@@ -421,7 +421,7 @@ theorem derivativePreservesInterl_of_sameDegree
 @[deprecated derivativePreservesInterl_of_sameDegree (since := "2026-09-18")]
 alias derivativePreservesPrec0_of_sameDegree := derivativePreservesInterl_of_sameDegree
 
-/-- Same-degree branch of differentiation preserving weak proper position. -/
+/-- Same-degree branch of differentiation preserving weak interlacing. -/
 theorem derivativePreservesStrictInterlSameDegree :
     derivativePreservesStrictInterlSameDegreeStatement :=
   derivativePreservesStrictInterlSameDegree_of_two_le_natDegree <|
@@ -432,7 +432,7 @@ theorem derivativePreservesStrictInterlSameDegree :
 @[deprecated derivativePreservesStrictInterlSameDegree (since := "2026-09-18")]
 alias derivativePreservesPrecSameDegree := derivativePreservesStrictInterlSameDegree
 
-/-- Differentiation preserves zero-aware weak proper position.  This is the
+/-- Differentiation preserves zero-aware weak interlacing.  This is the
 witness for `derivativePreservesInterlStatement`. -/
 theorem derivativePreservesInterl : derivativePreservesInterlStatement :=
   derivativePreservesInterl_of_sameDegree derivativePreservesStrictInterlSameDegree

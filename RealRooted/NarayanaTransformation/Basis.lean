@@ -340,7 +340,7 @@ private theorem strictInterl_comp_X_add_C_of_two_interlacings
       _ = (q.comp (X + C μ)).roots := (roots_comp_X_add_C μ).symm
 
 /-- The Su--Yang--Zhang recurrence preserves both the PF property and the
-translate-proper-position invariant encoding `μ`-separated roots. -/
+translate-interlacing invariant encoding `μ`-separated roots. -/
 theorem risingFactorialStep_pf_shiftStrictInterl
     {μ r : ℝ} (hμ : 0 ≤ μ) (hr : 0 ≤ r) {f : ℝ[X]}
     (hf : IsPFPolynomial f) (hshift : StrictInterl (f.comp (X + C μ)) f) :

@@ -768,11 +768,12 @@ theorem rootCountAbove_derivative_diff_le_one_of_splits
           (p.roots.filter (x < ·)).card ≤ 1 ∧
       ((p.roots.filter (x < ·)).card : ℤ) -
           (p.derivative.roots.filter (x < ·)).card ≤ 1 := by
-  have hprec : StrictInterl p.derivative p := (derivative_interlaces hp hdeg).toStrictInterl
+  have hstrictInterl : StrictInterl p.derivative p :=
+    (derivative_interlaces hp hdeg).toStrictInterl
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia
-  exact succDegreeRootCountAbove_of_strictInterl hprec hdeg'
+  exact succDegreeRootCountAbove_of_strictInterl hstrictInterl hdeg'
 
 /-- `StrictInterl`-to-root-count bridge in lower-threshold form. -/
 theorem succDegreeRootCount_of_strictInterl
@@ -799,11 +800,12 @@ theorem rootCount_derivative_diff_le_two_of_splits
           (p.roots.filter (· ≤ x)).card ≤ 0 ∧
       ((p.roots.filter (· ≤ x)).card : ℤ) -
           (p.derivative.roots.filter (· ≤ x)).card ≤ 2 := by
-  have hprec : StrictInterl p.derivative p := (derivative_interlaces hp hdeg).toStrictInterl
+  have hstrictInterl : StrictInterl p.derivative p :=
+    (derivative_interlaces hp hdeg).toStrictInterl
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia
-  exact succDegreeRootCount_of_strictInterl hprec hdeg'
+  exact succDegreeRootCount_of_strictInterl hstrictInterl hdeg'
 
 /-- Tight oriented lower-threshold `StrictInterl`-to-root-count bridge for the
 differ-by-one case.
@@ -864,11 +866,12 @@ theorem rootCountAbove_derivative_oriented_of_splits
         (p.roots.filter (x < ·)).card ∧
       ((p.roots.filter (x < ·)).card : ℤ) ≤
         (p.derivative.roots.filter (x < ·)).card + 1 := by
-  have hprec : StrictInterl p.derivative p := (derivative_interlaces hp hdeg).toStrictInterl
+  have hstrictInterl : StrictInterl p.derivative p :=
+    (derivative_interlaces hp hdeg).toStrictInterl
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia
-  exact succDegreeRootCountAboveOriented_of_strictInterl hprec hdeg'
+  exact succDegreeRootCountAboveOriented_of_strictInterl hstrictInterl hdeg'
 
 /-- A forward upper-count gap of at least three propagates to a derivative gap
 of at least two. -/

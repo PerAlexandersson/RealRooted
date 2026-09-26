@@ -5,7 +5,7 @@ import RealRooted.MaWang.Weak.Endpoint
 # Euler insertion operator
 
 This module owns the reusable algebra, coefficient shape, degree control, and
-proper-position API for
+interlacing API for
 
 `E(c, d) p = (c + (d + 1) X) p + (X - X^2) p'`.
 
@@ -143,7 +143,7 @@ theorem HasNonnegCoeffs.eulerInsertionStep
         simp [hpk, hpks]
 
 /-- An Euler insertion step lies immediately to the right of its input in
-proper position. The proof includes the degree-zero boundary case. -/
+interlacing. The proof includes the degree-zero boundary case. -/
 theorem strictInterl_eulerInsertionStep
     {c : ℝ} {d : ℕ} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hp_pos : HasPosLeadingCoeff p)

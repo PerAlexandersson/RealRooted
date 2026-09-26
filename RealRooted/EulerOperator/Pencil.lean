@@ -4,7 +4,7 @@ import RealRooted.WagnerX.ProperPosition
 /-!
 # Positive Euler pencils
 
-Proper-position comparisons for positive shifts of the Euler operator
+Interlacing comparisons for positive shifts of the Euler operator
 `theta p = X * p'` on polynomial PF families.
 -/
 
@@ -14,7 +14,7 @@ noncomputable section
 
 namespace RealRooted
 
-/-- A positive Euler pencil lies in proper position with `X * f` for a
+/-- A positive Euler pencil lies in an interlacing relation with `X * f` for a
 polynomial-PF `f` of degree at least two. -/
 theorem strictInterl_thetac_X_mul {f : ℝ[X]} (hf : IsPFPolynomial f)
     (hdeg : 2 ≤ f.natDegree) {c : ℝ} (hc : 0 < c) :

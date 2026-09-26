@@ -45,11 +45,11 @@ theorem strictInterl_sub_X_mul_left {f g : ℝ[X]}
     have hf : (f ≠ 0 ∧ f.Splits) := hgf.2.1
     have hg_pos : HasPosLeadingCoeff g := hasPosLeadingCoeff_of_monic hg_monic
     have hf_pos : HasPosLeadingCoeff f := hasPosLeadingCoeff_of_monic hf_monic
-    have hprec_fXg : StrictInterl f (X * g) :=
+    have hstrictInterl_fXg : StrictInterl f (X * g) :=
       (strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
         (f := g) (g := f) hg.2 hf.2 hg_pos hf_pos hg_nonpos hf_nonpos hdeg).mp hgf
     have hall_fXg : AllComboRealRooted f (X * g) :=
-      allComboRealRooted_of_strictInterl hprec_fXg
+      allComboRealRooted_of_strictInterl hstrictInterl_fXg
     have hall_qf : AllComboRealRooted q f := by
       intro α β
       have hrew :
@@ -83,9 +83,9 @@ theorem strictInterl_sub_X_mul_left {f g : ℝ[X]}
           _ = 0 := by simp [hg_monic.leadingCoeff]
       lia
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by lia
-    have hprec_or : StrictInterl q f ∨ StrictInterl f q :=
+    have hstrictInterl_or : StrictInterl q f ∨ StrictInterl f q :=
       strictInterl_of_allComboRealRooted hq.1 hq.2 hf.1 hf.2 hall_qf (Or.inl hdeg_qf)
-    have hnot_prec_fq : ¬ StrictInterl f q := by
+    have hnot_strictInterl_fq : ¬ StrictInterl f q := by
       intro hfq
       rcases hfq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
       have hss_len : ss.length = f.natDegree := by
@@ -93,7 +93,7 @@ theorem strictInterl_sub_X_mul_left {f g : ℝ[X]}
       have hrs_len : rs.length = q.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
       lia
-    rcases hprec_or with hqf | hfq
+    rcases hstrictInterl_or with hqf | hfq
     · exact hqf.toInterl
     · lia
 
@@ -149,9 +149,9 @@ theorem strictInterl_sub_X_mul_right {f g : ℝ[X]}
     have hclose_qf := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by lia
     have hdeg_qXg : q.natDegree + 1 = (X * g).natDegree := by simp_all
-    have hprec_or : StrictInterl q (X * g) ∨ StrictInterl (X * g) q :=
+    have hstrictInterl_or : StrictInterl q (X * g) ∨ StrictInterl (X * g) q :=
       strictInterl_of_allComboRealRooted hq.1 hq.2 hXg.1 hXg.2 hall_qXg (Or.inl hdeg_qXg)
-    have hnot_prec_Xgq : ¬ StrictInterl (X * g) q := by
+    have hnot_strictInterl_Xgq : ¬ StrictInterl (X * g) q := by
       intro hXgq
       rcases hXgq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
       have hss_len : ss.length = (X * g).natDegree := by
@@ -159,11 +159,11 @@ theorem strictInterl_sub_X_mul_right {f g : ℝ[X]}
       have hrs_len : rs.length = q.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
       lia
-    have hprec_qXg : StrictInterl q (X * g) := by lia
+    have hstrictInterl_qXg : StrictInterl q (X * g) := by lia
     have hdeg_gq : g.natDegree = q.natDegree := by lia
     exact
       (strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos
-        (f := g) (g := q) hprec_qXg hdeg_gq hg_nonpos).toInterl
+        (f := g) (g := q) hstrictInterl_qXg hdeg_gq hg_nonpos).toInterl
 
 /-- Brändén--Saud minus-sign step in the nonzero `StrictInterl` convention.
 
@@ -389,11 +389,11 @@ theorem strictInterl_component_of_strictInterl_next_eq_add_X_mul_of_roots_sum_le
   have hsame : U.natDegree = (X * V).natDegree := by
     rw [natDegree_mul X_ne_zero hV_pos.ne_zero, natDegree_X]
     lia
-  have hprec_or : StrictInterl U (X * V) ∨ StrictInterl (X * V) U :=
+  have hstrictInterl_or : StrictInterl U (X * V) ∨ StrictInterl (X * V) U :=
     strictInterl_of_allComboRealRooted hUW.1.1 hUW.1.2 hXV_ne hXV_splits hall_U_XV
       (Or.inr hsame)
   have hU_XV : StrictInterl U (X * V) := by
-    rcases hprec_or with hU_XV | hXV_U
+    rcases hstrictInterl_or with hU_XV | hXV_U
     · exact hU_XV
     · exact hXV_U.of_reverse_of_roots_sum_le hsame hsum_U_XV
   have hU_pos : HasPosLeadingCoeff U := by simpa [HasPosLeadingCoeff, hWU_lc] using hW_pos
@@ -444,7 +444,7 @@ theorem strictInterl_component_of_strictInterl_next_eq_add_X_mul
   have hsame : U.natDegree = (X * V).natDegree := by
     rw [natDegree_mul X_ne_zero hV_pos.ne_zero, natDegree_X]
     lia
-  have hprec_or : StrictInterl U (X * V) ∨ StrictInterl (X * V) U :=
+  have hstrictInterl_or : StrictInterl U (X * V) ∨ StrictInterl (X * V) U :=
     strictInterl_of_allComboRealRooted hUW.1.1 hUW.1.2 hXV_ne hXV_splits hall_U_XV
       (Or.inr hsame)
   obtain ⟨c, hU_le, hc_lt⟩ := hU_bound
@@ -452,7 +452,7 @@ theorem strictInterl_component_of_strictInterl_next_eq_add_X_mul
   have hU_XV : StrictInterl U (X * V) :=
     PosComboRealRooted.reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := U) (g := X * V) (c := c) (r := 0)
-      hprec_or hU_le hXV_root0 hc_lt
+      hstrictInterl_or hU_le hXV_root0 hc_lt
   have hV_splits : V.Splits := (isRealRooted_of_X_mul hXV_ne hXV_splits).2
   have hU_pos : HasPosLeadingCoeff U := by simpa [HasPosLeadingCoeff, hWU_lc] using hW_pos
   exact

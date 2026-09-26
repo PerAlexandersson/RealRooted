@@ -709,12 +709,12 @@ protected lemma AffineFamily.strictInterl_of_affine_family_nonneg_degree_one
         (((g / f) * f + g % f).eval r) = g.eval r :=
       congrArg (fun p : ℝ[X] => p.eval r) (EuclideanDomain.div_add_mod' g f)
     simp_all
-  have hprec_lin :
+  have hstrictInterl_lin :
       StrictInterl f (((g / f) * f) + (g % f) * (1 : ℝ[X])) :=
     strictInterl_of_interlaces_evalCoeff_nonpos
       (f := f) (g := (1 : ℝ[X])) (a := g / f) (b := g % f)
       hInter h1_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
-  simpa [EuclideanDomain.div_add_mod'] using hprec_lin
+  simpa [EuclideanDomain.div_add_mod'] using hstrictInterl_lin
 
 /-- Degree-one base case for the affine right pair. This is the right-pair
 transport of `AffineFamily.strictInterl_of_affine_family_nonneg_degree_one`. -/
@@ -770,10 +770,10 @@ factor `X`. -/
 private lemma strictInterl_right_pair_of_root_zero_factor
     {f g qg : ℝ[X]}
     (hg : g = X * qg)
-    (hprec_q : StrictInterl qg f) :
+    (hstrictInterl_q : StrictInterl qg f) :
     StrictInterl g (X * f) := by
-  have hprec_mul : StrictInterl (X * qg) (X * f) :=
-    hprec_q.mul_common_factor isRealRooted_X.1 isRealRooted_X.2
+  have hstrictInterl_mul : StrictInterl (X * qg) (X * f) :=
+    hstrictInterl_q.mul_common_factor isRealRooted_X.1 isRealRooted_X.2
   lia
 
 /-- A second boundary closure hidden in the affine family: after rescaling the

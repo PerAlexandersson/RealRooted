@@ -2,9 +2,9 @@ import RealRooted.EulerianCompletion
 import RealRooted.EulerOperator.Polar.Pencil
 
 /-!
-# Proper position for the lowering Euler step
+# Interlacing for the lowering Euler step
 
-This module keeps the heavier proper-position dependencies separate from the
+This module keeps the heavier interlacing dependencies separate from the
 algebraic and coefficientwise lowering-Euler API in `EulerianCompletion`.
 -/
 

@@ -25,11 +25,11 @@ theorem strictInterl_X_pow_succ (n : ℕ) : StrictInterl ((X : ℝ[X]) ^ n) (X ^
     intro m
     rw [coeff_X_pow]
     split <;> norm_num
-  have hprec := strictInterl_self_mul_X_of_nonneg hne hsplits hnn
-  rwa [show (X : ℝ[X]) * X ^ n = X ^ (n + 1) by ring] at hprec
+  have hstrictInterl := strictInterl_self_mul_X_of_nonneg hne hsplits hnn
+  rwa [show (X : ℝ[X]) * X ^ n = X ^ (n + 1) by ring] at hstrictInterl
 
-/-- Multiplying both members of a nonnegative proper-position pair by the same
-power of `X` preserves proper position. -/
+/-- Multiplying both members of a nonnegative strictly interlacing pair by the same
+power of `X` preserves interlacing. -/
 theorem strictInterl_X_pow_mul_both_of_strictInterl_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (n : ℕ) :
@@ -46,8 +46,8 @@ theorem strictInterl_X_pow_mul_both_of_strictInterl_nonneg {f g : ℝ[X]}
         (roots_nonpos_of_nonneg_coeffs (right_splits_of_strictInterl ih) hright_nonneg)
       simpa [pow_succ', mul_assoc] using hnext
 
-/-- A reverse proper-position pair with nonnegative coefficients remains in
-proper position after adjoining the consecutive powers `X^n` and `X^(n+1)`. -/
+/-- A reverse strictly interlacing pair with nonnegative coefficients remains in
+interlacing after adjoining the consecutive powers `X^n` and `X^(n+1)`. -/
 theorem strictInterl_X_pow_mul_X_pow_succ_of_reverse_strictInterl_nonneg {f g : ℝ[X]}
     (hgf : StrictInterl g f) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (n : ℕ) :
@@ -61,9 +61,9 @@ theorem strictInterl_X_pow_mul_X_pow_succ_of_reverse_strictInterl_nonneg {f g : 
 /-- `StrictInterl ((X + C r)^n) ((X + C r)^(n+1))` by translating the repeated root. -/
 theorem strictInterl_X_add_C_pow_succ (r : ℝ) (n : ℕ) :
     StrictInterl ((X + C r) ^ n) ((X + C r) ^ (n + 1)) := by
-  have hprec := strictInterl_X_pow_succ n
-  rw [← StrictInterl.comp_X_add_C_iff r] at hprec
-  simpa [pow_comp, X_comp] using hprec
+  have hstrictInterl := strictInterl_X_pow_succ n
+  rw [← StrictInterl.comp_X_add_C_iff r] at hstrictInterl
+  simpa [pow_comp, X_comp] using hstrictInterl
 
 /-- Confluent interlacing for a positive linear factor `a + bX`, with `b > 0`. -/
 theorem interlaces_linear_pow (a b : ℝ) (hb : 0 < b) (n : ℕ) :
@@ -75,7 +75,7 @@ theorem interlaces_linear_pow (a b : ℝ) (hb : 0 < b) (n : ℕ) :
     ring
   rw [hfac, mul_pow, mul_pow, ← C_pow, ← C_pow]
   have hbase := strictInterl_X_add_C_pow_succ (a / b) n
-  have hprec :
+  have hstrictInterl :
       StrictInterl (C (b ^ n) * (X + C (a / b)) ^ n)
         (C (b ^ (n + 1)) * (X + C (a / b)) ^ (n + 1)) :=
     StrictInterl.C_mul_right (StrictInterl.C_mul_left hbase (by positivity)) (by positivity)
@@ -83,7 +83,7 @@ theorem interlaces_linear_pow (a b : ℝ) (hb : 0 < b) (n : ℕ) :
     rw [natDegree_C_mul (by positivity), natDegree_pow, natDegree_X_add_C, mul_one]
   have hd₂ : (C (b ^ (n + 1)) * (X + C (a / b)) ^ (n + 1)).natDegree = n + 1 := by
     rw [natDegree_C_mul (by positivity), natDegree_pow, natDegree_X_add_C, mul_one]
-  exact hprec.toInterlaces (by rw [hd₁, hd₂])
+  exact hstrictInterl.toInterlaces (by rw [hd₁, hd₂])
 
 /-- Independent nonzero scalar multiples of consecutive powers of a positive linear factor
 interlace. -/
@@ -92,7 +92,7 @@ theorem interlaces_C_mul_linear_pow_succ (c d a b : ℝ) (hc : c ≠ 0) (hd : d 
     Interlaces (C c * (C a + C b * X) ^ n)
       (C d * (C a + C b * X) ^ (n + 1)) := by
   have hbase := interlaces_linear_pow a b hb n
-  have hprec : StrictInterl (C c * (C a + C b * X) ^ n)
+  have hstrictInterl : StrictInterl (C c * (C a + C b * X) ^ n)
       (C d * (C a + C b * X) ^ (n + 1)) :=
     StrictInterl.C_mul_right (StrictInterl.C_mul_left hbase.toStrictInterl hc) hd
   have hlin_deg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
@@ -102,7 +102,7 @@ theorem interlaces_C_mul_linear_pow_succ (c d a b : ℝ) (hc : c ≠ 0) (hd : d 
     rw [natDegree_C_mul hc, natDegree_pow, hlin_deg, mul_one]
   have hd₂ : (C d * (C a + C b * X) ^ (n + 1)).natDegree = n + 1 := by
     rw [natDegree_C_mul hd, natDegree_pow, hlin_deg, mul_one]
-  exact hprec.toInterlaces (by rw [hd₁, hd₂])
+  exact hstrictInterl.toInterlaces (by rw [hd₁, hd₂])
 private lemma linearFactor_natDegree {a b : ℝ} (hb : b ≠ 0) :
     (C a + C b * X : ℝ[X]).natDegree = 1 := by
   compute_degree!
@@ -291,13 +291,13 @@ theorem interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs {f : ℝ[X]}
   have hsum_splits : (C a * (1 : ℝ[X]) + C b * X).Splits := by
     apply Polynomial.Splits.of_natDegree_le_one
     compute_degree!
-  have hprec : StrictInterl (f * 1) (C a * (f * 1) + C b * (f * X)) :=
+  have hstrictInterl : StrictInterl (f * 1) (C a * (f * 1) + C b * (f * X)) :=
     StrictInterl.convex_left_of_common_factor (d := f) (f' := 1) (g' := X)
       hne hsplits (by ring) (by ring) h1X hasPosLeadingCoeff_one hXpos ha hb
       hsum_ne hsum_splits hcop
-  rw [mul_one] at hprec
+  rw [mul_one] at hstrictInterl
   have heq : C a * f + C b * (f * X) = (C a + C b * X) * f := by ring
-  rw [heq] at hprec
+  rw [heq] at hstrictInterl
   have hlin_ne : (C a + C b * X : ℝ[X]) ≠ 0 := by
     intro hzero
     have hdeg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
@@ -311,7 +311,7 @@ theorem interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs {f : ℝ[X]}
   have hdeg : f.natDegree + 1 = ((C a + C b * X) * f).natDegree := by
     rw [natDegree_mul hlin_ne hne, hlin_deg]
     ring
-  exact hprec.toInterlaces hdeg
+  exact hstrictInterl.toInterlaces hdeg
 
 /-- Unit-slope variant of `interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs`. -/
 theorem interlaces_self_mul_C_add_X_of_nonnegCoeffs {f : ℝ[X]} (hne : f ≠ 0)
@@ -454,17 +454,17 @@ theorem monomial_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u : ℝ}
           h0 h1 hstep (n + 1)
       have hnn :=
         monomial_tail_sequence_nonneg (A := A) hc.le ha hb.le hu.le h0 h1 hstep (n + 1)
-      have hprecX : StrictInterl (A (n + 1)) (X * A (n + 1)) :=
+      have hstrictInterlX : StrictInterl (A (n + 1)) (X * A (n + 1)) :=
         strictInterl_self_mul_X_of_nonneg hne hsplits hnn
-      have hprec : StrictInterl (A (n + 1)) ((C u * X) * A (n + 1)) := by
-        have hscaled := StrictInterl.C_mul_right hprecX hu.ne'
+      have hstrictInterl : StrictInterl (A (n + 1)) ((C u * X) * A (n + 1)) := by
+        have hscaled := StrictInterl.C_mul_right hstrictInterlX hu.ne'
         simpa [mul_assoc] using hscaled
       have htail_ne : (C u * X : ℝ[X]) ≠ 0 :=
         mul_ne_zero (C_ne_zero.mpr hu.ne') X_ne_zero
       have hdeg : (A (n + 1)).natDegree + 1 = ((C u * X) * A (n + 1)).natDegree := by
         rw [natDegree_mul htail_ne hne, natDegree_C_mul_X u hu.ne']
         ring
-      exact hprec.toInterlaces hdeg
+      exact hstrictInterl.toInterlaces hdeg
 
 /-- A linear factor interlaces the factored quadratic when its root is between the two roots. -/
 theorem interlaces_linear_quadratic_of_roots_between {α r s c : ℝ} (hc : c ≠ 0)
@@ -501,7 +501,7 @@ theorem interlaces_X_sub_C_pow_mul_linear_pow (r : ℝ) (m : ℕ) (a b : ℝ)
     (hb : 0 < b) (n : ℕ) :
     Interlaces ((X - C r) ^ m * (C a + C b * X) ^ n)
       ((X - C r) ^ m * (C a + C b * X) ^ (n + 1)) := by
-  have hprec := (interlaces_linear_pow a b hb n).toStrictInterl
+  have hstrictInterl := (interlaces_linear_pow a b hb n).toStrictInterl
   have hmul :
       ∀ j,
         StrictInterl ((X - C r) ^ j * (C a + C b * X) ^ n)
@@ -509,7 +509,7 @@ theorem interlaces_X_sub_C_pow_mul_linear_pow (r : ℝ) (m : ℕ) (a b : ℝ)
     intro j
     induction j with
     | zero =>
-        simpa using hprec
+        simpa using hstrictInterl
     | succ j ihj =>
         have hnext := ihj.mul_X_sub_C_both r
         rw [show (X - C r) * ((X - C r) ^ j * (C a + C b * X) ^ n) =
@@ -517,7 +517,7 @@ theorem interlaces_X_sub_C_pow_mul_linear_pow (r : ℝ) (m : ℕ) (a b : ℝ)
             show (X - C r) * ((X - C r) ^ j * (C a + C b * X) ^ (n + 1)) =
               (X - C r) ^ (j + 1) * (C a + C b * X) ^ (n + 1) by ring] at hnext
         exact hnext
-  have hprecm := hmul m
+  have hstrictInterlm := hmul m
   have hlin_deg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
     compute_degree!
     exact hb.ne'
@@ -529,7 +529,7 @@ theorem interlaces_X_sub_C_pow_mul_linear_pow (r : ℝ) (m : ℕ) (a b : ℝ)
     intro k
     rw [natDegree_mul (pow_ne_zero _ (X_sub_C_ne_zero r)) (pow_ne_zero _ hlin_ne),
       natDegree_pow, natDegree_X_sub_C, mul_one, natDegree_pow, hlin_deg, mul_one]
-  exact hprecm.toInterlaces (by rw [hdegree n, hdegree (n + 1)]; lia)
+  exact hstrictInterlm.toInterlaces (by rw [hdegree n, hdegree (n + 1)]; lia)
 
 /-- Consecutive interlacing for a common real-rooted factor times successive
 powers of one positive-slope linear factor. -/

@@ -3,7 +3,7 @@ import RealRooted.BrandenLeite.TwoKernelAlgebra
 import RealRooted.BrandenLeite.ZeroConstant
 
 /-!
-# The two-kernel PF and proper-position theorem
+# The two-kernel PF and interlacing theorem
 
 We approximate the zero-constant PF kernel by the positive-initial PF
 sequences extracted in `ZeroConstant`, apply the finite kernel-limit theorem,
@@ -26,7 +26,7 @@ theorem finiteToeplitz_isTotallyNonneg
     (fun _ _ hij => by simpa using hij)
 
 /-- The finite Toeplitz kernels satisfy the complete PF and consecutive
-zero-aware proper-position conclusion of the matrix-limit theorem. -/
+zero-aware interlacing conclusion of the matrix-limit theorem. -/
 theorem finiteToeplitz_kernelRows_pf_and_interl
     {g h : ℕ → ℝ} (hg : IsPolyaFreqSeq g) (hh : IsPolyaFreqSeq h)
     (hg0 : 0 < g 0) (hh0 : h 0 = 0) (N : ℕ) :
@@ -85,7 +85,7 @@ theorem finiteToeplitz_kernelRows_pf_and_interl
 /-- Literal two-kernel specialization of the Brändén--Saud Leite theorem.
 For PF coefficient sequences `g,h`, with positive `g(0)` and zero `h(0)`,
 every coefficient row of `g(z)/(1-X*g(z)*h(z))` is PF and consecutive rows
-are in zero-aware proper position. -/
+are in zero-aware interlacing. -/
 theorem twoKernelRows_pf_and_interl
     {g h : ℕ → ℝ} (hg : IsPolyaFreqSeq g) (hh : IsPolyaFreqSeq h)
     (hg0 : 0 < g 0) (hh0 : h 0 = 0) :
@@ -132,7 +132,7 @@ theorem twoKernelRow_isPFPolynomial
     IsPFPolynomial (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) n) :=
   (twoKernelRows_pf_and_interl hg hh hg0 hh0).1 n
 
-/-- Consecutive literal two-kernel rows are in zero-aware proper position. -/
+/-- Consecutive literal two-kernel rows are in zero-aware interlacing. -/
 theorem interl_twoKernelRow_succ
     {g h : ℕ → ℝ} (hg : IsPolyaFreqSeq g) (hh : IsPolyaFreqSeq h)
     (hg0 : 0 < g 0) (hh0 : h 0 = 0) (n : ℕ) :

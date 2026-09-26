@@ -1,7 +1,7 @@
 import RealRooted.Bezoutian.StrictInterleaving
 
 /-!
-# Strict proper-position bridge
+# Strict interlacing bridge
 
 The Bezoutian/Wronskian criterion produces `StrictInterlSameDegree`; this module
 converts it to the project's general nonzero `StrictInterl` predicate.

@@ -16,7 +16,7 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Consecutive monic shifted Jacobi polynomials are in proper position when
+/-- Consecutive monic shifted Jacobi polynomials strictly interlace when
 both parameters exceed `-1`. -/
 theorem shiftedJacobiMonic_strictInterl_succ (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
@@ -130,7 +130,7 @@ theorem shiftedJacobi_hasSimpleRoots (n : ℕ) {α β : ℝ}
     (shiftedJacobi_ne_zero n hα hβ)
     (shiftedJacobi_roots_nodup n hα hβ)
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated shiftedJacobiMonic_strictInterl_succ (since := "2026-09-26")]
 alias shiftedJacobiMonic_prec_succ := shiftedJacobiMonic_strictInterl_succ

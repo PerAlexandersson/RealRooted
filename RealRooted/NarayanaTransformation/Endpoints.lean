@@ -38,7 +38,7 @@ theorem splits_narayanaZeroGammaPolynomial (n : ℕ) :
   (narayanaZeroGammaPolynomial_realRooted n).1.2
 
 /-- Consecutive gamma polynomials of the binomial-square Narayana family are
-in proper position. -/
+in an interlacing relation. -/
 theorem strictInterl_narayanaZeroGammaPolynomial_succ (n : ℕ) :
     StrictInterl (narayanaZeroGammaPolynomial n)
       (narayanaZeroGammaPolynomial (n + 1)) := by

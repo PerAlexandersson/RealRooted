@@ -755,7 +755,7 @@ private theorem exceptionalEulerInverse_lower_allComboRealRooted
     rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ hQlead, C_1, one_mul]] at hscaled
   simpa only [Q, L, U, A] using hscaled
 
-/-- The upper distinguished exceptional polynomial is in proper position
+/-- The upper distinguished exceptional polynomial is in an interlacing relation
 before the lower endpoint polynomial. -/
 theorem exceptionalEulerInverse_upper_strictInterl_lower
     (m ε : ℕ) (hm : 0 < m) :
@@ -829,14 +829,14 @@ theorem exceptionalEulerInverse_upper_strictInterl_lower
   · simpa only [U, L, B, A] using hright
 
 /-- The two exceptional toric-contribution polynomials have the required
-weak proper-position orientation. -/
+weak interlacing orientation. -/
 theorem rPolynomial_exceptional_strictInterl (m ε : ℕ) (hm : 0 < m) :
     StrictInterl (rPolynomial m ε m) (rPolynomial m ε (m - 1)) := by
   rw [← exceptionalEulerInverse_upper_eq_rPolynomial m ε,
     ← exceptionalEulerInverse_lower_eq_rPolynomial m ε hm]
   exact exceptionalEulerInverse_upper_strictInterl_lower m ε hm
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated exceptionalEulerInverse_strictInterl (since := "2026-09-26")]
 alias exceptionalEulerInverse_prec := exceptionalEulerInverse_strictInterl

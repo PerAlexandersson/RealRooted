@@ -8,7 +8,7 @@ open LiuOppositeSigns
 
 noncomputable section
 
-/-- A positive-leading proper-position pair is a normalized Liu root-count
+/-- A positive-leading strictly interlacing pair is a normalized Liu root-count
 pair.  This bridges the project's usual `StrictInterl` invariants to the proved
 opposite-sign `X * p - μ * q` endpoint theorems. -/
 theorem positiveSplitRootCountPair_of_strictInterl

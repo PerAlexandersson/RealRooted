@@ -73,8 +73,8 @@ theorem posComboNoCommonSuccDegreeRootCrossing_of_orientation
     (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
     PosComboNoCommonSuccDegreeRootCrossingNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno _
-  have hprec : StrictInterl f g := hsucc hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  obtain ⟨hf, hg, ss, rs, hss_pw, hrs_pw, hss_eq, hrs_eq, hshape⟩ := hprec
+  have hstrictInterl : StrictInterl f g := hsucc hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  obtain ⟨hf, hg, ss, rs, hss_pw, hrs_pw, hss_eq, hrs_eq, hshape⟩ := hstrictInterl
   have hss_len : ss.length = f.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by

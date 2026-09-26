@@ -10,7 +10,7 @@ namespace RealRooted
 # Garloff--Wagner Hadamard endpoint
 
 The double-deleted Krein reduction and the final two-pair Hadamard
-proper-position theorem.
+interlacing theorem.
 -/
 
 /-- The remaining local core of Garloff--Wagner, Theorem 4(b), after the
@@ -49,13 +49,13 @@ theorem gwSchurProduct_firstDoubleDeletedTerm_interl
   have hpL : IsPFPolynomial (gwL p) := gwL_pf hp
   have hT : IsPFPolynomial (gwL p - C u * gwD (gwL p)) :=
     gwL_sub_C_mul_gwD_gwL_pf hp hu
-  have hprecT :
+  have hinterlT :
       Interl (gwSchurProduct f (gwL p - C u * gwD (gwL p)))
         (gwSchurProduct f (gwL p)) :=
     gwSchurProductInterl_left hf hT hpL
       (gwL_sub_C_mul_gwD_gwL_interl_self hp hu)
   exact
-    interl_mul_X_of_interl hprecT
+    interl_mul_X_of_interl hinterlT
       (gwSchurProductPF hf hT).hasNonnegCoeffs
       (gwSchurProductPF hf hpL).hasNonnegCoeffs
 

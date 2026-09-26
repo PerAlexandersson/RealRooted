@@ -447,7 +447,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_upTo_eight :
   intro n hn₁ hn₈
   exact narayanaAuxiliaryGRecurrence_modified_of_le_eight hn₁ hn₈
 
-/-- Unconditional consecutive proper position for the modified Narayana
+/-- Unconditional consecutive interlacing for the modified Narayana
 family. -/
 theorem modifiedNarayanaPolynomial_strictInterl_succ (n : ℕ) :
     StrictInterl (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) :=

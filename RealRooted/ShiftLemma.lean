@@ -125,12 +125,12 @@ theorem strictInterl_shift_of_same_degree
       have hdeg_mul :=
         congrArg (fun n => n * (X + C (1 : ℝ)).natDegree) hdeg
       simpa [h', f', natDegree_comp] using hdeg_mul
-    have hprec' : StrictInterl h' f' := by
+    have hstrictInterl' : StrictInterl h' f' := by
       simpa [h', f'] using
         (StrictInterl.comp_X_add_C_iff (f := h) (g := f) 1).2 hprec
     have hfX' : StrictInterl f' (X * h') :=
       strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos
-        hprec' hdeg' hh'_nonpos hf'_nonpos
+        hstrictInterl' hdeg' hh'_nonpos hf'_nonpos
     have htranslated : StrictInterl f' (t.comp (X + C 1)) := by
       simpa [t, h', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using hfX'

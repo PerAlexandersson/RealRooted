@@ -9,7 +9,7 @@ This file identifies the univariate diagonal of the recurrence-defined Deco
 layer total with `decoEulerian`.  Combining that algebraic recurrence theorem
 with the checked total-decomposition bridge proves real-rootedness of the
 diagonalized admissible-code and normalized-fiber enumerators.  It also
-transports proper position, interlacing, strict root negativity, and root
+transports interlacing, strict root negativity, and root
 simplicity from the recurrence family to both total models.
 
 This does not assert multivariate stability of the outer fiber sum.
@@ -207,7 +207,7 @@ theorem diagonal_normalizedFiberPolynomial_hasSimpleRoots (n : Nat) :
   rw [diagonal_normalizedFiberPolynomial_eq_A144438]
   exact A144438_hasSimpleRoots n
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated diagonal_admissibleCodePolynomial_strictInterl
   (since := "2026-09-26")]

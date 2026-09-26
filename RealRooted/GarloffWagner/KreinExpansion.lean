@@ -3,7 +3,7 @@ import RealRooted.GarloffWagner.KreinData
 /-!
 # Garloff--Wagner Krein expansions
 
-Positive root-deleted expansions and their Theorem 11 proper-position
+Positive root-deleted expansions and their Theorem 11 interlacing
 consequences.
 -/
 
@@ -102,9 +102,9 @@ theorem strictInterl_self_X_sub_C_mul {r : ℝ[X]} (hr0 : r ≠ 0) (hrs : r.Spli
   have hdeg : r.natDegree + 1 = ((X - C u) * r).natDegree := by
     rw [natDegree_mul (X_sub_C_ne_zero u) hr0, natDegree_X_sub_C]
     exact (Nat.add_comm 1 r.natDegree).symm
-  have hprec_or :=
+  have hstrictInterl_or :=
     strictInterl_of_allComboRealRooted hr0 hrs hright0 hright_splits hall (Or.inl hdeg)
-  exact StrictInterl.forward_of_orientation_of_succDegree hdeg.symm hprec_or
+  exact StrictInterl.forward_of_orientation_of_succDegree hdeg.symm hstrictInterl_or
 
 /-- Sign input for the Krein coefficient: after stripping the common
 `(X - C u)^(m - 1)` factor from `f ≪ g`, the quotient of `f` has the same sign
@@ -129,13 +129,13 @@ theorem kreinCoefficient_eval_div_nonneg
     rw [hg_factor_m]
     nth_rw 1 [show m = m - 1 + 1 by exact (Nat.sub_add_cancel hm).symm]
     ring_nf
-  have hprec_common :
+  have hstrictInterl_common :
       StrictInterl ((X - C u) ^ (m - 1) * s)
         ((X - C u) ^ (m - 1) * ((X - C u) * r)) := by
     rw [← hf_factor_m, ← hg_common]
     exact hfg
-  have hsr_prec : StrictInterl s ((X - C u) * r) :=
-    strictInterl_of_strictInterl_mul_pow_X_sub_C_both u (m - 1) hprec_common
+  have hsr_strictInterl : StrictInterl s ((X - C u) * r) :=
+    strictInterl_of_strictInterl_mul_pow_X_sub_C_both u (m - 1) hstrictInterl_common
   have hs_pos : HasPosLeadingCoeff s := by
     have hfpos' : HasPosLeadingCoeff ((X - C u) ^ (m - 1) * s) := by
       rw [← hf_factor_m]
@@ -146,12 +146,12 @@ theorem kreinCoefficient_eval_div_nonneg
       rw [← hg_factor_m]
       exact hgpos
     exact hasPosLeadingCoeff_of_pow_X_sub_C_mul hgpos'
-  have hrr_prec : StrictInterl r ((X - C u) * r) := strictInterl_self_X_sub_C_mul hr0 hrs u
+  have hrr_strictInterl : StrictInterl r ((X - C u) * r) := strictInterl_self_X_sub_C_mul hr0 hrs u
   have hroot_right : ((X - C u) * r).IsRoot u := by
     rw [Polynomial.IsRoot.def, eval_mul, eval_sub, eval_X, eval_C]
     ring
   have hprod : 0 ≤ s.eval u * r.eval u :=
-    eval_mul_eval_nonneg_of_strictInterl_right hsr_prec hrr_prec hs_pos hr_pos hroot_right
+    eval_mul_eval_nonneg_of_strictInterl_right hsr_strictInterl hrr_strictInterl hs_pos hr_pos hroot_right
   have hsq_pos : 0 < r.eval u * r.eval u := mul_self_pos.mpr hr_eval
   have hquot : 0 ≤ (s.eval u * r.eval u) / (r.eval u * r.eval u) :=
     div_nonneg hprod hsq_pos.le

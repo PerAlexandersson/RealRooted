@@ -305,7 +305,7 @@ private theorem tendsto_coeff_eulerInsertionStep_iterateTDeriv
           (tendsto_const_nhds.mul (hcoeff i))
 
 /-- Applying the same nonnegative derivative regularization to a succ-degree
-proper-position pair preserves its orientation and removes every common root.
+strictly interlacing pair preserves its orientation and removes every common root.
 The latter follows because every nonzero regularized linear combination is
 simple: a shared root would produce a nonzero combination with a double root.
 -/

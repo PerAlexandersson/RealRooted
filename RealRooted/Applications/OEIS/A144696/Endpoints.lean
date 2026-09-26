@@ -10,7 +10,7 @@ import RealRooted.SymmetricDecomposition.Theorem26
 The A144696 row polynomial is expressed through two consecutive ordinary
 Eulerian polynomials. Its resulting symmetric decomposition has a tight
 lowering-Euler component, so Brändén--Solus Theorem 2.6 supplies the reciprocal
-proper-position endpoint needed by the Bernstein-row chain.
+interlacing endpoint needed by the Bernstein-row chain.
 -/
 
 open Polynomial
@@ -400,7 +400,7 @@ theorem a144696BernsteinImageRow_isInterlacingSeqNonneg (d : ℕ) :
     erw [List.get_ofFn, List.get_ofFn]
     exact a144696BernsteinImage_strictInterl hij.le (by lia)
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated a144696Polynomial_reciprocal_strictInterl (since := "2026-09-26")]
 alias a144696Polynomial_reciprocal_prec := a144696Polynomial_reciprocal_strictInterl

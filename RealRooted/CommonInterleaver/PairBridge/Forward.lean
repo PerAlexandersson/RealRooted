@@ -113,7 +113,7 @@ theorem strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_no
             simp [Polynomial.coeff_C_mul]
             ring
   have htarget_eq' : -F + (X - C uR) * q = g := by simp_all
-  have hprec :
+  have hstrictInterl :
       StrictInterl F (C (-1 : ℝ) * F + (X - C uR) * q) :=
     strictInterl_of_interlaces_evalCoeff_neg_same
       (f := F) (g := q) (a := C (-1 : ℝ)) (b := X - C uR)

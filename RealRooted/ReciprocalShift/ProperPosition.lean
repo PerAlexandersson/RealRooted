@@ -3,7 +3,7 @@ import RealRooted.Mathlib.Data.List.Sort.Endpoint
 import RealRooted.ReciprocalShift.Interlacing.Inversion
 
 /-!
-# Proper position under reciprocal shifts
+# Interlacing under reciprocal shifts
 
 This module proves that a degree-padded reciprocal shift reverses a proper
 position pair of PF polynomials. The generic list endpoint and inverse-root
@@ -16,7 +16,7 @@ noncomputable section
 
 namespace RealRooted
 
-/-- At a common degree bound, reciprocal shift reverses a proper-position pair
+/-- At a common degree bound, reciprocal shift reverses a strictly interlacing pair
 of PF polynomials. -/
 theorem reciprocalShift_reverses_strictInterl
     {D : ℕ} {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
@@ -205,7 +205,7 @@ theorem reciprocalShift_reverses_strictInterl
       apply listInterlaces_of_interleaves_of_length (by grind)
       grind
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated reciprocalShift_reverses_strictInterl (since := "2026-09-26")]
 alias reciprocalShift_reverses_prec := reciprocalShift_reverses_strictInterl
