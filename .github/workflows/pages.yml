@@ -1,0 +1,72 @@
+name: Publish challenge catalogue
+
+on:
+  workflow_call:
+    inputs:
+      revision:
+        description: Exact validated Git revision to publish
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-production
+  cancel-in-progress: false
+
+jobs:
+  build-site:
+    name: build site
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Check out the validated revision
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ inputs.revision }}
+          persist-credentials: false
+      - name: Download matching Lean audit
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: challenge-catalogue-audit-${{ inputs.revision }}
+          path: ${{ runner.temp }}/challenge-catalogue-audit
+      - name: Render audited catalogue
+        run: |
+          python3 scripts/build_challenge_pages.py \
+            --audit-report "$RUNNER_TEMP/challenge-catalogue-audit/challenge-catalogue-audit.json" \
+            --output "$RUNNER_TEMP/challenge-catalogue"
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: ${{ runner.temp }}/challenge-catalogue
+
+  deploy:
+    name: deploy
+    needs: build-site
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Reject an obsolete main revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_SHA: ${{ inputs.revision }}
+        run: |
+          actual_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')"
+          if [[ "$actual_sha" != "$EXPECTED_SHA" ]]; then
+            echo "Refusing to publish stale revision $EXPECTED_SHA; current main is $actual_sha." >&2
+            exit 1
+          fi
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

@@ -51,8 +51,11 @@ def main() -> int:
         if args.check:
             print(f"ok: validated {len(pages)} curated catalogue pages")
             return 0
+        output = args.output.resolve()
+        if output == root or output.is_relative_to(root):
+            raise CatalogError("generated pages must use an output directory outside the repository")
         files = render_site(root, pages, resolved, revision)
-        write_site(args.output.resolve(), files)
+        write_site(output, files)
         print(f"ok: wrote {len(files)} catalogue files to {args.output}")
         return 0
     except CatalogError as error:

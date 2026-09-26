@@ -131,6 +131,57 @@ end RealRooted.Challenges.Sample
         with self.assertRaisesRegex(CatalogError, "not a definition"):
             validate_sources(self.root, pages)
 
+    def test_private_deprecated_and_scaffold_definitions_are_rejected(self) -> None:
+        selected = catalogue_block(
+            definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.family"',
+            theorems="",
+        )
+        private = (
+            selected
+            + "namespace RealRooted.Challenges.Sample\n"
+            + "@[simp] private def family : Nat := 1\n"
+            + "end RealRooted.Challenges.Sample\n"
+        )
+        self.write("RealRooted/Challenges/Sample.lean", private)
+        with self.assertRaisesRegex(CatalogError, "cannot resolve"):
+            validate_sources(self.root, load_catalogue(self.root))
+
+        deprecated = (
+            selected
+            + "namespace RealRooted.Challenges.Sample\n"
+            + "@[deprecated (since := \"2026-09-25\")]\n"
+            + "abbrev family : Nat := 1\n"
+            + "end RealRooted.Challenges.Sample\n"
+        )
+        self.write("RealRooted/Challenges/Sample.lean", deprecated)
+        with self.assertRaisesRegex(CatalogError, "deprecated compatibility alias"):
+            validate_sources(self.root, load_catalogue(self.root))
+
+        scaffold = catalogue_block(
+            definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.forwardTarget"',
+            theorems="",
+        )
+        scaffold += (
+            "namespace RealRooted.Challenges.Sample\n"
+            + "def forwardTarget : Prop := True\n"
+            + "end RealRooted.Challenges.Sample\n"
+        )
+        self.write("RealRooted/Challenges/Sample.lean", scaffold)
+        with self.assertRaisesRegex(CatalogError, "statement scaffold"):
+            validate_sources(self.root, load_catalogue(self.root))
+
+    def test_owning_module_cannot_escape_repository(self) -> None:
+        text = catalogue_block(
+            definitions="",
+            theorems=(
+                '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\n'
+                'module = "../Secret.lean"'
+            ),
+        )
+        self.write("RealRooted/Challenges/Sample.lean", text)
+        with self.assertRaisesRegex(CatalogError, "invalid module"):
+            load_catalogue(self.root)
+
     def test_owning_module_and_deterministic_nested_output(self) -> None:
         self.write(
             "RealRooted/Canonical.lean",
@@ -157,7 +208,7 @@ end RealRooted.Challenges.Sample
 
     def test_raw_html_and_unsafe_urls_are_escaped(self) -> None:
         content = (
-            "# Sample\n\n<script>alert(1)</script> [bad](javascript:alert(1))\n\n"
+            "# Sample\n\n<script>alert(1)</script> `safe` [bad](javascript:alert(1))\n\n"
             "## References\n\n- [Safe](https://example.org/)"
         )
         self.write(
@@ -177,6 +228,7 @@ end RealRooted.Challenges.Sample
         self.assertNotIn("<script>", page)
         self.assertIn("&lt;script&gt;", page)
         self.assertNotIn('href="javascript:', page)
+        self.assertIn("<code>", page)
 
     def test_audit_report_rejects_mismatch_and_accepts_exact_records(self) -> None:
         pages, resolved = self.pages_and_sources()

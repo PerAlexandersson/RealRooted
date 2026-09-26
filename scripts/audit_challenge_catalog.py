@@ -108,9 +108,9 @@ def generate_module(
         "    | some info =>",
         "        let kind := match info with",
         "          | .thmInfo _ => \"theorem\"",
-        "          | .defnInfo _ | .opaqueInfo _ => \"definition\"",
+        "          | .defnInfo _ | .opaqueInfo _ | .inductInfo _ => \"definition\"",
         "          | .axiomInfo _ => \"axiom\"",
-        "          | .quotInfo _ | .inductInfo _ | .ctorInfo _ => \"other\"",
+        "          | .quotInfo _ | .ctorInfo _ => \"other\"",
         "        let axioms ← liftCoreM <| Lean.collectAxioms name",
         "        let axiomText := String.intercalate \",\" (axioms.toList.map Name.toString)",
         "        liftIO <| IO.println (\"CATALOG_AUDIT|\" ++ name.toString ++ "

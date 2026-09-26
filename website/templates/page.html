@@ -8,7 +8,12 @@
     <link rel="stylesheet" href="{{ stylesheet }}">
   </head>
   <body>
-    <header class="site-header"><a href="{{ home }}">RealRooted</a><span>checked catalogue</span></header>
+    <header class="site-header">
+      <nav aria-label="Main navigation">
+        <a href="{{ home }}">RealRooted catalogue</a>
+        <a href="https://github.com/PerAlexandersson/RealRooted">GitHub repository</a>
+      </nav>
+    </header>
     {{ body }}
   </body>
 </html>

@@ -37,10 +37,10 @@ CONTENT_RE = re.compile(
     re.DOTALL,
 )
 DECLARATION_RE = re.compile(
-    r"^\s*(?:@\[[^\n]*\]\s*)*"
-    r"(?:(?:private|protected|noncomputable|unsafe|partial)\s+)*"
-    r"(theorem|lemma|def|abbrev|structure|inductive|class|opaque|instance)\s+"
-    r"([A-Za-z_][A-Za-z0-9_'.]*)\b"
+    r"^\s*(?P<attributes>(?:@\[[^\n]*\]\s*)*)"
+    r"(?P<modifiers>(?:(?:private|protected|noncomputable|unsafe|partial)\s+)*)"
+    r"(?P<kind>theorem|lemma|def|abbrev|structure|inductive|class|opaque|instance)\s+"
+    r"(?P<name>[A-Za-z_][A-Za-z0-9_'.]*)\b"
 )
 NAMESPACE_RE = re.compile(r"^\s*namespace\s+([A-Za-z_][A-Za-z0-9_'.]*)\s*$")
 END_NAMESPACE_RE = re.compile(r"^\s*end\s+([A-Za-z_][A-Za-z0-9_'.]*)\s*$")
@@ -85,6 +85,7 @@ class SourceDeclaration:
     actual_kind: str
     source_path: str
     source_line: int
+    deprecated: bool = False
 
 
 def strip_comments_and_strings(text: str) -> str:
@@ -183,11 +184,19 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
         module = record.get("module")
         if not isinstance(name, str) or not NAME_RE.fullmatch(name):
             raise _source_error(path, f"{expected_kind} record {index} needs a fully qualified name")
-        if module is not None and (
-            not isinstance(module, str)
-            or not (MODULE_RE.fullmatch(module) or module.endswith(".lean"))
-        ):
-            raise _source_error(path, f"{expected_kind} record {index} has an invalid module")
+        if module is not None:
+            valid_module = isinstance(module, str) and MODULE_RE.fullmatch(module)
+            if isinstance(module, str) and module.endswith(".lean"):
+                module_path = pathlib.PurePosixPath(module)
+                valid_module = (
+                    not module_path.is_absolute()
+                    and ".." not in module_path.parts
+                    and module_path.parts[:1] == ("RealRooted",)
+                )
+            if not valid_module:
+                raise _source_error(
+                    path, f"{expected_kind} record {index} has an invalid module"
+                )
         if name in seen:
             raise _source_error(path, f"duplicate {expected_kind} declaration {name}")
         seen.add(name)
@@ -382,28 +391,45 @@ def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> d
     clean = strip_comments_and_strings(source_path.read_text(encoding="utf-8"))
     namespaces: list[str] = []
     found: dict[str, SourceDeclaration] = {}
+    pending_deprecated = False
     for line_number, line in enumerate(clean.splitlines(), start=1):
         namespace_match = NAMESPACE_RE.match(line)
         if namespace_match:
+            pending_deprecated = False
             namespaces.extend(namespace_match.group(1).split("."))
             continue
         end_match = END_NAMESPACE_RE.match(line)
         if end_match:
+            pending_deprecated = False
             ending = end_match.group(1).split(".")
             if namespaces[-len(ending) :] == ending:
                 del namespaces[-len(ending) :]
             continue
         declaration_match = DECLARATION_RE.match(line)
-        if not declaration_match or line.lstrip().startswith("private "):
+        stripped = line.strip()
+        if not declaration_match:
+            if stripped.startswith("@["):
+                pending_deprecated = pending_deprecated or "deprecated" in stripped
+            elif stripped:
+                pending_deprecated = False
             continue
-        raw_kind, raw_name = declaration_match.groups()
+        modifiers = declaration_match.group("modifiers").split()
+        attributes = declaration_match.group("attributes")
+        deprecated = pending_deprecated or "deprecated" in attributes
+        pending_deprecated = False
+        if "private" in modifiers:
+            continue
+        raw_kind = declaration_match.group("kind")
+        raw_name = declaration_match.group("name")
         actual_kind = "theorem" if raw_kind in {"theorem", "lemma"} else "definition"
-        if raw_kind == "opaque":
-            actual_kind = "opaque"
+        if raw_kind in {"opaque", "class", "instance"}:
+            actual_kind = raw_kind
         name = _qualified_name(namespaces, raw_name)
         if name in found:
             raise CatalogError(f"{relative_path}:{line_number}: ambiguous declaration {name}")
-        found[name] = SourceDeclaration(name, actual_kind, relative_path, line_number)
+        found[name] = SourceDeclaration(
+            name, actual_kind, relative_path, line_number, deprecated
+        )
     return found
 
 
@@ -426,6 +452,12 @@ def resolve_item(
             f"{page.source_path}: {item.name} is a {declaration.actual_kind}, "
             f"not a {item.expected_kind}"
         )
+    if declaration.deprecated:
+        raise CatalogError(f"{page.source_path}: {item.name} is a deprecated compatibility alias")
+    if item.expected_kind == "definition" and re.search(
+        r"(?:Statement|Target|Route|Inputs|Backend)$", item.name
+    ):
+        raise CatalogError(f"{page.source_path}: {item.name} looks like a statement scaffold")
     return declaration
 
 
@@ -602,7 +634,9 @@ def _inline(text: str) -> str:
             return html.escape(label, quote=False)
         return f'<a href="{html.escape(safe, quote=True)}">{label}</a>'
 
-    return pattern.sub(link, escaped)
+    rendered = pattern.sub(link, escaped)
+    rendered = re.sub(r"`([^`\n]+)`", r"<code>\1</code>", rendered)
+    return re.sub(r"\*([^*\n]+)\*", r"<em>\1</em>", rendered)
 
 
 def _source_link(revision: str, source: SourceDeclaration) -> str:

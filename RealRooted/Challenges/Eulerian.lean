@@ -50,9 +50,9 @@ The ordinary Eulerian recurrence and its real-rootedness go back to
 F. G. Frobenius, “Über die Bernoullischen Zahlen und die Eulerschen Polynome,”
 Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften
 (1910), 809–847.  The type `B` family is the standard type `B` Eulerian
-polynomial recurrence; see F. Brenti, “q-Eulerian polynomials arising from
-Coxeter groups,” *European Journal of Combinatorics* 15 (1994), 417–441,
-DOI 10.1006/eujc.1994.1046.  Its formal recurrence and proofs are in the
+polynomial recurrence; see F. Brenti, [“q-Eulerian polynomials arising from
+Coxeter groups,”](https://doi.org/10.1006/eujc.1994.1046) *European Journal of
+Combinatorics* 15 (1994), 417–441.  Its formal recurrence and proofs are in the
 imported `RealRooted.CombinatorialExamples.TypeBEulerian` module.
 <!-- /realrooted-catalog-content -->
 

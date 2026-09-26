@@ -204,10 +204,12 @@ import RealRooted.Challenges.Hadamard
 import RealRooted.Challenges.HermiteBiehlerHurwitz
 import RealRooted.Challenges.HermitePoulain
 import RealRooted.Challenges.HosterStump
+import RealRooted.Challenges.Interlacing
 import RealRooted.Challenges.Issue34SingleMatrixCounterexample
 import RealRooted.Challenges.Issue34WindowObstruction
 import RealRooted.Challenges.Kurtz
 import RealRooted.Challenges.MatrixInterlacing
+import RealRooted.Challenges.Narayana
 import RealRooted.Challenges.Obreschkoff
 import RealRooted.Challenges.OperatorPreservers
 import RealRooted.Challenges.VeroneseSections

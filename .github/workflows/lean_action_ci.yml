@@ -13,6 +13,33 @@ permissions:
   contents: read
 
 jobs:
+  catalogue:
+    name: catalogue
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Check catalogue sources and renderer
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_challenge_catalog.py
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_challenge_catalog_audit.py
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/build_challenge_pages.py --check
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/audit_challenge_catalog.py --check
+      - name: Render review artifact
+        run: |
+          python3 scripts/build_challenge_pages.py \
+            --output "$RUNNER_TEMP/challenge-catalogue"
+      - name: Upload pull-request preview
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: challenge-catalogue-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/challenge-catalogue
+          if-no-files-found: error
+          retention-days: 14
+
   build:
     name: build
     runs-on: ubuntu-latest
@@ -56,3 +83,34 @@ jobs:
           # if future Lake metadata changes lean-action auto-detection.
           build: true
           build-args: ""
+      - name: Audit curated declarations
+        run: |
+          python3 scripts/audit_challenge_catalog.py \
+            --generate "$RUNNER_TEMP/challenge-catalogue-audit.lean"
+          lake env lean "$RUNNER_TEMP/challenge-catalogue-audit.lean" \
+            > "$RUNNER_TEMP/challenge-catalogue-audit.raw"
+          python3 scripts/audit_challenge_catalog.py \
+            --collect "$RUNNER_TEMP/challenge-catalogue-audit.raw" \
+            --report "$RUNNER_TEMP/challenge-catalogue-audit.json"
+      - name: Upload revision-specific catalogue evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: challenge-catalogue-audit-${{ github.sha }}
+          path: ${{ runner.temp }}/challenge-catalogue-audit.json
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    name: publish
+    needs: [build, catalogue]
+    if: >-
+      ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' &&
+          needs.build.result == 'success' && needs.catalogue.result == 'success' }}
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml
+    with:
+      revision: ${{ github.sha }}

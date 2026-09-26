@@ -80,6 +80,15 @@ Curated entry points may be introduced for stable families, but each entry
 point needs an import budget so that it does not silently become another full
 umbrella.
 
+Challenge modules also form the editorial boundary for the generated public
+catalogue. Opt-in metadata selects existing public definitions and theorems;
+the bounded module-doc section owns the published prose and references. The
+source scanner resolves each selection to its physical module and source line,
+while a post-build Lean environment query checks declaration kinds and
+transitive axioms. Generated HTML and audit reports are CI artifacts rather
+than source modules, so neither publication nor presentation code becomes a
+dependency of the theorem library.
+
 `InterlacingClosure` is the focused coefficientwise-limit layer for monic,
 fixed-degree weakly interlacing polynomial pairs. It depends on polynomial root
 continuity and the Obreschkoff equivalence, but not on matrix theory; matrix

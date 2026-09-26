@@ -239,8 +239,9 @@ emulation. These scripts complement `lake build`; they do not replace it.
 - `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces
   for the Braun-Jal generalized snake poset target.
 - `RealRooted/Challenges/` contains compact entry points for famous theorem
-  statements, each linking the Lean-facing declaration to human catalog
-  statements and references.
+  statements. Opted-in module comments are the maintained source for the
+  [public challenge catalogue](https://peralexandersson.github.io/RealRooted/),
+  including its human-readable descriptions and primary references.
 - `RealRooted/CombinatorialExamples/` contains examples such as Eulerian,
   type B Eulerian, simsun, Touchard, Narayana, Motzkin, and related families.
 - `RealRooted/Tactic/OEIS_COVERAGE.md` is the generated coverage ledger for
@@ -515,11 +516,14 @@ paper's board-model identities and the Stanley / Alexandersson--Jal
 particular, the development does not claim an unconditional theorem for an
 arbitrary polynomial family satisfying only the statement-interface type.
 
-Short-term documentation/onboarding now uses concise challenge entry-point files
-in `RealRooted/Challenges/` for the famous general theorems and theorem-shaped
-targets.  These files point to the corresponding human theorem statements on
-symmetricfunctions.com and to the original publications or catalog references,
-while the detailed proof infrastructure remains in the main theorem modules.
+Documentation and onboarding use concise challenge entry-point files in
+`RealRooted/Challenges/`. An explicit metadata block opts a module into the
+generated public catalogue; only selected definitions and checked theorem
+declarations are published. Conjectures, examples, and statement scaffolds are
+not catalogue entries. The same bounded module comment owns the explanatory
+prose and primary references, while detailed proof infrastructure remains in
+the main theorem modules. A symmetricfunctions.com link may provide useful
+context but is not required.
 The current challenge surface includes ASW, Chudnovsky-Seymour, Hadamard,
 Wagner, Cauchy interlacing, Obreschkoff, operator and matrix interlacing
 preservers, Hermite-Biehler, the checked row-oriented Hurwitz counterexamples,
@@ -626,9 +630,14 @@ branch or enable automatic merging merely to bypass review.
 
 Routine CI does not generate full-library API documentation. High-level public
 documentation is curated through the compact entry points in
-`RealRooted/Challenges/`; detailed proof infrastructure remains searchable in
-its owning theorem modules. Documentation is not a substitute for proof
-validation, and the required `build` check does not depend on publication.
+`RealRooted/Challenges/` and rendered by
+`scripts/build_challenge_pages.py`. Pull requests receive a review artifact.
+After the ordinary build, `scripts/audit_challenge_catalog.py` verifies the
+selected declaration kinds and transitive axioms; only that exact validated
+`main` revision can deploy to GitHub Pages. Detailed proof infrastructure
+remains searchable in its owning theorem modules. Documentation is not a
+substitute for proof validation, and the required `build` check does not depend
+on publication.
 
 ### Repository Cleanliness
 
