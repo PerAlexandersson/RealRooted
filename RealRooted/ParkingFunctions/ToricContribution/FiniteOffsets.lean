@@ -95,7 +95,7 @@ theorem IntervalRootData.hasPosLeadingCoeff_negOnePow_mul
 
 /-- The interval-insertion proper-position theorem without a leading-sign
 hypothesis, using positive orientation at zero to normalize the input. -/
-theorem IntervalRootData.prec_neg_insertionOperator
+theorem IntervalRootData.strictInterl_neg_insertionOperator
     {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) (hpZero : 0 < p.eval 0)
     (a b : ℝ) (hb : 0 < b) :
     StrictInterl p (-ToricContribution.insertionOperator a b p) := by
@@ -123,10 +123,10 @@ theorem IntervalRootData.prec_neg_insertionOperator
   have hscaledData : IntervalRootData (C sign * p) n := hp.C_mul hsign
   have hscaledPos : HasPosLeadingCoeff (C sign * p) := by
     exact hp.hasPosLeadingCoeff_negOnePow_mul hpZero
-  have hprec :
+  have hstrictInterl :
       StrictInterl (C sign * p)
         (-ToricContribution.insertionOperator a b (C sign * p)) := by
-    apply ToricContribution.prec_neg_insertionOperator a b
+    apply ToricContribution.strictInterl_neg_insertionOperator a b
       hscaledData.splits hscaledPos
       (by rw [hscaledData.natDegree_eq]; exact Nat.one_le_iff_ne_zero.mpr hn)
       (fun r hr => hscaledData.roots_mem_Ioo r
@@ -137,8 +137,8 @@ theorem IntervalRootData.prec_neg_insertionOperator
         C sign * (-ToricContribution.insertionOperator a b p) := by
     rw [insertionOperator_C_mul]
     ring
-  rw [hoperator] at hprec
-  have hleft := StrictInterl.C_mul_left hprec (inv_ne_zero hsign)
+  rw [hoperator] at hstrictInterl
+  have hleft := StrictInterl.C_mul_left hstrictInterl (inv_ne_zero hsign)
   rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsign, C_1,
     one_mul] at hleft
   have hboth := StrictInterl.C_mul_right hleft (inv_ne_zero hsign)
@@ -325,7 +325,7 @@ noncomputable def jPolynomialRoot
 /-- The next signed diagonal lies strictly before the current signed diagonal
 in proper-position order. This is the polynomial form of the directed gap
 comparison in the last Darboux square. -/
-theorem consecutive_signedTriangleFamily_prec
+theorem consecutive_signedTriangleFamily_strictInterl
     (m ε d : ℕ) (hm : 2 ≤ m) (hd : d ≤ m - 2) :
     StrictInterl
       (signedTriangleFamily ((ε : ℝ) + 1 / 2)
@@ -417,9 +417,9 @@ theorem consecutive_signedTriangleFamily_prec
     intro x
     simp only [eval_neg, eval_mul, eval_C]
     ring
-  have hHBPrec : StrictInterl Hpos Bpos := by
+  have hHBStrictInterl : StrictInterl Hpos Bpos := by
     rw [hBposOperator]
-    have hraw := hHData.prec_neg_insertionOperator hHEval a b (by
+    have hraw := hHData.strictInterl_neg_insertionOperator hHEval a b (by
       dsimp only [b]
       positivity)
     have hleft := StrictInterl.C_mul_left hraw hsignH
@@ -428,7 +428,7 @@ theorem consecutive_signedTriangleFamily_prec
     rw [insertionOperator_C_mul]
     simpa only [mul_neg] using hboth
   have hHBInterlaces : Interlaces Hpos Bpos := by
-    apply hHBPrec.toInterlaces
+    apply hHBStrictInterl.toInterlaces
     rw [hHposData.natDegree_eq, hBposData.natDegree_eq]
     lia
   have hnoCommon : ∀ r, Bpos.IsRoot r → ¬Hpos.IsRoot r := by
@@ -467,11 +467,11 @@ theorem consecutive_signedTriangleFamily_prec
     simp only [eval_neg, eval_mul, eval_C, eval_sub, eval_one, eval_X]
     norm_num
     nlinarith
-  have hprecPos := strictInterl_of_interlaces_evalCoeff_neg_same
+  have hstrictInterlPos := strictInterl_of_interlaces_evalCoeff_neg_same
     hHBInterlaces hHLeading hcombinationLeading hcombinationDegree
     hnoCommon hcoefficientNeg
-  rw [← hcombination] at hprecPos
-  have hleft := StrictInterl.C_mul_left hprecPos (inv_ne_zero hsignAB)
+  rw [← hcombination] at hstrictInterlPos
+  have hleft := StrictInterl.C_mul_left hstrictInterlPos (inv_ne_zero hsignAB)
   rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsignAB,
     C_1, one_mul] at hleft
   have hboth := StrictInterl.C_mul_right hleft (inv_ne_zero hsignAB)
@@ -538,7 +538,7 @@ theorem consecutive_signedTriangleFamily_strictInterlSameDegree
       ring
     rw [hparameter, insertionOperator_C_mul]
   apply StrictInterlSameDegree.of_strictInterl_of_no_common
-    (consecutive_signedTriangleFamily_prec m ε d hm hd)
+    (consecutive_signedTriangleFamily_strictInterl m ε d hm hd)
   · change B.natDegree = (C eigenvalue * A).natDegree
     rw [hB_data.natDegree_eq, natDegree_C_mul heigenvalue.ne',
       hA_data.natDegree_eq]
@@ -968,6 +968,16 @@ theorem rPolynomial_eval_mul_jPolynomial_derivative_pos_of_isRoot
     m ε d hm hd_pos hd i
 
 /-! ## Deprecated strict same-degree interlacing names -/
+
+@[deprecated IntervalRootData.strictInterl_neg_insertionOperator
+  (since := "2026-09-26")]
+alias IntervalRootData.prec_neg_insertionOperator :=
+  IntervalRootData.strictInterl_neg_insertionOperator
+
+@[deprecated consecutive_signedTriangleFamily_strictInterl
+  (since := "2026-09-26")]
+alias consecutive_signedTriangleFamily_prec :=
+  consecutive_signedTriangleFamily_strictInterl
 
 @[deprecated consecutive_signedTriangleFamily_strictInterlSameDegree
   (since := "2026-09-18")]

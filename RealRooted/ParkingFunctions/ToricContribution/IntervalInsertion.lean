@@ -114,7 +114,7 @@ theorem hasPosLeadingCoeff_neg_insertionOperator
 
 /-- The interval-insertion operator adds one real root and puts the input in
 proper position with its sign-normalized output. -/
-theorem prec_neg_insertionOperator
+theorem strictInterl_neg_insertionOperator
     (a b : ℝ) {f : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
     (hdeg : 1 ≤ f.natDegree)
@@ -166,14 +166,14 @@ theorem roots_neg_insertionOperator_mem_Ioo
     ∀ r ∈ (-insertionOperator a b f).roots, r ∈ Set.Ioo (0 : ℝ) 1 := by
   let F := -insertionOperator a b f
   have hb : 0 < b := by linarith
-  have hprec : StrictInterl f F := by
-    simpa [F] using prec_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb
+  have hstrictInterl : StrictInterl f F := by
+    simpa [F] using strictInterl_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb
   have hFdeg : F.natDegree = f.natDegree + 1 := by
     simpa [F] using natDegree_neg_insertionOperator a b hf_pos.ne_zero (by lia) hb
   have hF_pos : HasPosLeadingCoeff F := by
     simpa [F] using
       hasPosLeadingCoeff_neg_insertionOperator a b hf_pos.ne_zero (by lia) hb hf_pos
-  rcases hprec with
+  rcases hstrictInterl with
     ⟨hfrr, hFrr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
   have hss_len : ss.length = f.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfrr.2]
@@ -298,7 +298,7 @@ theorem neg_insertionOperator_splits
     (hsimple : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0)
     (hb : 0 < b) :
     (-insertionOperator a b f).Splits :=
-  (prec_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb).2.1.2
+  (strictInterl_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb).2.1.2
 
 theorem insertionOperator_splits
     (a b : ℝ) {f : ℝ[X]}
@@ -321,15 +321,15 @@ theorem rootMultiplicity_neg_insertionOperator_eq_one
     (hsimple : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0)
     (hb : 0 < b) {r : ℝ} (hr : (-insertionOperator a b f).IsRoot r) :
     (-insertionOperator a b f).rootMultiplicity r = 1 := by
-  have hprec := prec_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb
+  have hstrictInterl := strictInterl_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb
   have hnot : ¬f.IsRoot r := by
     intro hfr
     exact insertionOperator_no_common_root a b hroots hsimple r hfr (by
       simpa [IsRoot.def] using hr)
   have hfmult : f.rootMultiplicity r = 0 := rootMultiplicity_eq_zero hnot
-  have hbound := (hprec.rootMultiplicity_bounds r).2
+  have hbound := (hstrictInterl.rootMultiplicity_bounds r).2
   have hpos : 0 < (-insertionOperator a b f).rootMultiplicity r :=
-    (rootMultiplicity_pos hprec.2.1.1).mpr hr
+    (rootMultiplicity_pos hstrictInterl.2.1.1).mpr hr
   lia
 
 theorem rootMultiplicity_insertionOperator_eq_one
@@ -713,6 +713,11 @@ theorem insertionOperator_data_of_simple_roots_Ioo
       exact natDegree_neg_insertionOperator a b (by
         intro hzero
         simp [hzero] at htwo) (by lia) hb
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated strictInterl_neg_insertionOperator (since := "2026-09-26")]
+alias prec_neg_insertionOperator := strictInterl_neg_insertionOperator
 
 end ToricContribution
 end ParkingFunctions
