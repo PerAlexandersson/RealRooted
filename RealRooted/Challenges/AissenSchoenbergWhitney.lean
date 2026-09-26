@@ -39,7 +39,8 @@ the internal `forwardTarget` spelling is not itself a catalogue entry.
 
 M. Aissen, I. J. Schoenberg, and A. M. Whitney, “On the generating functions
 of totally positive sequences. I,” *Journal of Analyse Mathématique* 2 (1952),
-93–103.
+93–103.  See the
+[Pólya-frequency overview on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#aissenSchoenbergWhitney).
 <!-- /realrooted-catalog-content -->
 
 Human statement:

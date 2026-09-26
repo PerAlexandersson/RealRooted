@@ -53,7 +53,9 @@ Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften
 polynomial recurrence; see F. Brenti, [“q-Eulerian polynomials arising from
 Coxeter groups,”](https://doi.org/10.1006/eujc.1994.1046) *European Journal of
 Combinatorics* 15 (1994), 417–441.  Its formal recurrence and proofs are in the
-imported `RealRooted.CombinatorialExamples.TypeBEulerian` module.
+imported `RealRooted.CombinatorialExamples.TypeBEulerian` module.  Additional
+context appears in the
+[Eulerian-polynomial entry on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedWords.htm#eulerianPolynomial).
 <!-- /realrooted-catalog-content -->
 
 Human statements:

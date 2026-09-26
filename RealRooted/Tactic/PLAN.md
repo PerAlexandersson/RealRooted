@@ -821,9 +821,9 @@ wrappers. The then-useful source files, since retired from the live tree, were:
 - `proof-targets/open-tactic-work-packages.md`.
 
 The Hoster--Stump tracker in the OEIS repo has already been migrated:
-`sqrt-of-2/real-rooted-oeis#2` is closed, and the matching RealRooted issue
-`#99` is closed with `RealRooted/Challenges/HosterStump.lean` present but not
-imported by the root module.  It should not drive new tactic work.
+`sqrt-of-2/real-rooted-oeis#2` is closed.  The matching RealRooted issue #99 is
+open for the remaining theorem proof; its former strategy surface is not a
+completed challenge entry and should not drive new tactic work.
 
 The main repeated OEIS/Sturm lanes are:
 

@@ -57,6 +57,7 @@ Narayana transformation,”](https://arxiv.org/abs/2607.01572) arXiv:2607.01572
 and K. Jordaan, [“Real zeros of 2F1 hypergeometric
 polynomials,”](https://arxiv.org/abs/1301.4771) *Journal of Computational and
 Applied Mathematics* 247 (2013), 152–161, used as Lemma 2.5 in the
-transformation development.
+transformation development.  See also the
+[Narayana real-rootedness examples on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedCatalan.htm#ex:narayanaSturm).
 <!-- /realrooted-catalog-content -->
 -/

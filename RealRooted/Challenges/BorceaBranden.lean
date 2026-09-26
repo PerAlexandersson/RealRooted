@@ -1,8 +1,61 @@
+import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 import RealRooted.BorceaBranden.FiniteSymbolClassification
 import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 
 /-!
 # Borcea--Branden finite-symbol classification challenge entry point
+
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "borcea-branden"
+
+[[definitions]]
+name = "RealRooted.BorceaBranden.PreservesComplexStabilityOnDegreeBox"
+module = "RealRooted.BorceaBranden.FiniteSymbolClassification"
+
+[[definitions]]
+name = "RealRooted.BorceaBranden.HasStableRankOneRepresentation"
+module = "RealRooted.BorceaBranden.FiniteSymbolClassification"
+
+[[definitions]]
+name = "RealRooted.BorceaBranden.finiteAlgebraicSymbol"
+module = "RealRooted.BorceaBranden.UnivariateFiniteSymbol"
+
+[[definitions]]
+name = "RealRooted.BorceaBranden.PreservesRealRootedUpTo"
+module = "RealRooted.BorceaBranden.UnivariateFiniteSymbol"
+
+[[theorems]]
+name = "RealRooted.BorceaBranden.finiteComplexSymbolClassification"
+module = "RealRooted.BorceaBranden.FiniteSymbolClassification"
+
+[[theorems]]
+name = "RealRooted.BorceaBranden.finiteSymbolTheorem"
+module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
+
+[[theorems]]
+name = "RealRooted.BorceaBranden.finiteSymbol_preservesRealRootedUpTo"
+module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
+-->
+
+<!-- realrooted-catalog-content -->
+# Borcea–Brändén finite-symbol theorems
+
+For a linear operator restricted to a finite multidegree box, the complex
+classification gives the two alternatives: a stable rank-one representation,
+or stability of the algebraic symbol.  The real univariate application proves
+the positive-symbol implication for operators on polynomials of bounded
+degree.  These are checked theorem witnesses derived from the multivariate
+stability and polarization development, not conditional statement wrappers.
+
+## References
+
+J. Borcea and P. Brändén, “The Lee–Yang and Pólya–Schur programs. I. Linear
+operators preserving stability,” *Inventiones Mathematicae* 177 (2009),
+541–569.  See the
+[finite-symbol discussion on symmetricfunctions.com](https://www.symmetricfunctions.com/stablePolynomials.htm#borceaBrandenFiniteSymbol).
+<!-- /realrooted-catalog-content -->
 
 Human statement:
 https://www.symmetricfunctions.com/stablePolynomials.htm#borceaBrandenFiniteSymbol
@@ -47,7 +100,8 @@ export RealRooted.BorceaBranden
     finiteAlgebraicSymbol
     PreservesRealRootedUpTo
     finiteSymbolTheoremStatement
-    preservesRealRootedUpTo_of_finiteSymbol)
+    finiteSymbolTheorem
+    finiteSymbol_preservesRealRootedUpTo)
 
 end BorceaBranden
 end Challenges

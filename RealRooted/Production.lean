@@ -170,7 +170,6 @@ import RealRooted.CauchyInterlacing.Polynomial
 import RealRooted.Challenges.AissenSchoenbergWhitney
 import RealRooted.Challenges.BorceaBranden
 import RealRooted.Challenges.BrandenSolus
-import RealRooted.Challenges.BraunJal
 import RealRooted.Challenges.CauchyInterlacing
 import RealRooted.Challenges.ChudnovskySeymour
 import RealRooted.Challenges.Eulerian
@@ -178,7 +177,6 @@ import RealRooted.Challenges.Favard
 import RealRooted.Challenges.Hadamard
 import RealRooted.Challenges.HermiteBiehlerHurwitz
 import RealRooted.Challenges.HermitePoulain
-import RealRooted.Challenges.HosterStump
 import RealRooted.Challenges.Interlacing
 import RealRooted.Challenges.Issue34SingleMatrixCounterexample
 import RealRooted.Challenges.Issue34WindowObstruction

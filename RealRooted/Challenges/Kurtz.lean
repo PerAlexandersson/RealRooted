@@ -3,6 +3,41 @@ import RealRooted.Kurtz
 /-!
 # Kurtz challenge entry point
 
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "kurtz"
+
+[[definitions]]
+name = "RealRooted.Kurtz.PositiveCoeffsUpToDegree"
+module = "RealRooted.Kurtz"
+
+[[definitions]]
+name = "RealRooted.Kurtz.KurtzStrictInequalities"
+module = "RealRooted.Kurtz"
+
+[[theorems]]
+name = "RealRooted.Kurtz.coefficient_criterion"
+module = "RealRooted.Kurtz"
+-->
+
+<!-- realrooted-catalog-content -->
+# Kurtz’s coefficient criterion
+
+Kurtz’s criterion gives a concrete sufficient condition for a polynomial to
+have distinct real roots.  If all coefficients through the degree are
+positive and each interior coefficient satisfies the strict quadratic
+inequality `aₖ² > 4 aₖ₋₁ aₖ₊₁`, then the polynomial splits over the reals and
+has no repeated root.  The selected theorem formalizes this implication with
+the coefficient range and endpoint conditions made explicit.
+
+## References
+
+D. C. Kurtz, “A sufficient condition for all the roots of a polynomial to be
+real,” *American Mathematical Monthly* 99 (1992), 259–263.  See also the
+[contextual account on symmetricfunctions.com](https://www.symmetricfunctions.com/realRooted.htm#kurtzTheorem).
+<!-- /realrooted-catalog-content -->
+
 Human statement:
 https://www.symmetricfunctions.com/realRooted.htm#kurtzTheorem
 

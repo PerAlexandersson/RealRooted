@@ -3,6 +3,47 @@ import RealRooted.MatrixInterlacing
 /-!
 # Matrix interlacing challenge entry point
 
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "matrix-interlacing"
+
+[[definitions]]
+name = "RealRooted.Challenges.MatrixInterlacing.PolynomialMatrix"
+
+[[definitions]]
+name = "RealRooted.Challenges.MatrixInterlacing.AffineTwoByTwoInterlaces"
+
+[[definitions]]
+name = "RealRooted.Challenges.MatrixInterlacing.AffineTwoByTwoInterlacesOrZero"
+
+[[definitions]]
+name = "RealRooted.Challenges.MatrixInterlacing.PolynomialMatrix.AffineTwoByTwoCondition"
+
+[[theorems]]
+name = "RealRooted.Challenges.MatrixInterlacing.preserves_interlacing_sequences"
+
+[[theorems]]
+name = "RealRooted.Challenges.MatrixInterlacing.preserves_interlacing_sequences_zeroAware"
+-->
+
+<!-- realrooted-catalog-content -->
+# Matrices preserving interlacing sequences
+
+A rectangular matrix of polynomials acts on a polynomial sequence by matrix
+multiplication.  Brändén’s local criterion requires every ordered `2 × 2`
+submatrix to satisfy an affine interlacing condition.  Under coefficient
+nonnegativity, this condition preserves nonnegative interlacing sequences.
+The catalogue also includes the checked zero-aware form, which permits output
+rows to vanish.
+
+## References
+
+P. Brändén, “Unimodality, log-concavity, real-rootedness and beyond,” in
+*Handbook of Enumerative Combinatorics*, 2015, Theorem 7.8.5.  See the
+[matrix criterion on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#matrixPreservesInterlacingSequences).
+<!-- /realrooted-catalog-content -->
+
 Human statement:
 https://www.symmetricfunctions.com/realRootedInterlacing.htm#matrixPreservesInterlacingSequences
 
