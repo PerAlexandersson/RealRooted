@@ -47,7 +47,7 @@ theorem polarTheta_preserves_interl : polarThetaPreservesInterlStatement := by
       (Polynomial.natDegree_derivative_le _).trans (Nat.sub_le_sub_right hsqd 1)
     have hdpd : (reciprocalShift N p).derivative.natDegree ≤ N - 1 :=
       (Polynomial.natDegree_derivative_le _).trans (Nat.sub_le_sub_right hspd 1)
-    rcases hstep₂ with hzero | hzero | hprec
+    rcases hstep₂ with hzero | hzero | hStrictInterl
     · right
       left
       rw [polarTheta_eq_reciprocalShift_derivative_reciprocalShift N q hqd, hzero]
@@ -57,7 +57,7 @@ theorem polarTheta_preserves_interl : polarThetaPreservesInterlStatement := by
       simp [reciprocalShift]
     · have hstep₃ : StrictInterl (reciprocalShift (N - 1) ((reciprocalShift N p).derivative))
           (reciprocalShift (N - 1) ((reciprocalShift N q).derivative)) :=
-        reciprocalShift_reverses_strictInterl hdq hdp hdqd hdpd hprec
+        reciprocalShift_reverses_strictInterl hdq hdp hdqd hdpd hStrictInterl
       rw [polarTheta_eq_reciprocalShift_derivative_reciprocalShift N p hpd,
         polarTheta_eq_reciprocalShift_derivative_reciprocalShift N q hqd]
       exact hstep₃.toInterl

@@ -277,7 +277,7 @@ theorem loweringEulerStep_degree_pos
 
 /-- A lowering Euler operator preserves an oriented PF interlacing pair on
 the top degree of a fixed finite-symbol box. -/
-theorem loweringEulerStep_prec
+theorem loweringEulerStep_strictInterl
     {M D : ℕ} (hD : 1 ≤ D) (hM : D + 1 ≤ M) {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpdeg : p.natDegree = D) (hqdeg : q.natDegree = D)
@@ -289,18 +289,21 @@ theorem loweringEulerStep_prec
     hq.hasNonnegCoeffs.pos_leadingCoeff hpq.2.1.1
   have hpout := loweringEulerStep_degree_pos hM hpdeg hpPos
   have hqout := loweringEulerStep_degree_pos hM hqdeg hqPos
-  have hprec := BorceaBranden.linearMap_strictInterl_of_finiteSymbol_stable
+  have hStrictInterl := BorceaBranden.linearMap_strictInterl_of_finiteSymbol_stable
     (BorceaBranden.loweringEulerSymbol_stable M D hD hM)
     hqdeg.le hpdeg.le hpq hqPos hpPos hqout.2 hpout.2
       (by
         change 1 ≤ (loweringEulerStep M q).natDegree
         rw [hqout.1]
         exact hD)
-  simpa only [BorceaBranden.loweringEulerLinearMap_apply] using hprec
+  simpa only [BorceaBranden.loweringEulerLinearMap_apply] using hStrictInterl
+
+@[deprecated loweringEulerStep_strictInterl (since := "2026-09-26")]
+alias loweringEulerStep_prec := loweringEulerStep_strictInterl
 
 /-- The positive-boundary Euler insertion operator preserves an oriented PF
 interlacing pair inside a fixed degree box. -/
-theorem eulerInsertionStep_one_prec
+theorem eulerInsertionStep_one_strictInterl
     {d : ℕ} (hd : 1 ≤ d) {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
@@ -322,8 +325,11 @@ theorem eulerInsertionStep_one_prec
   rw [← heq p] at hpout
   rw [← heq q] at hqout
   exact BorceaBranden.eulerBidiagonalStepWithConstant_strictInterl
-    (by norm_num) hd hpdeg hqdeg hpq hpPos hqPos hpout.2 hqout.2
+      (by norm_num) hd hpdeg hqdeg hpq hpPos hqPos hpout.2 hqout.2
       (by rw [hpout.1]; lia)
+
+@[deprecated eulerInsertionStep_one_strictInterl (since := "2026-09-26")]
+alias eulerInsertionStep_one_prec := eulerInsertionStep_one_strictInterl
 
 theorem loweringEulerStep_theta_eq
     {M : ℕ} (hM : 2 ≤ M) (p : ℝ[X]) :
@@ -350,7 +356,7 @@ theorem X_mul_loweringEulerStep_eq
   ring
 
 /-- The oriented derivative-to-zero-boundary Euler relation. -/
-theorem eulerInsertionStep_derivative_prec_zeroStep
+theorem eulerInsertionStep_derivative_strictInterl_zeroStep
     {D M : ℕ} (hD : 2 ≤ D) (hM : D + 1 ≤ M) {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree = D) :
     StrictInterl (eulerInsertionStep 1 (M - 2) p.derivative)
@@ -378,7 +384,7 @@ theorem eulerInsertionStep_derivative_prec_zeroStep
         hp.hasNonnegCoeffs.derivative hp.hasNonnegCoeffs
   have hlower : StrictInterl (loweringEulerStep M p)
       (loweringEulerStep M (theta p)) :=
-    loweringEulerStep_prec (by lia) hM hp htheta hpdeg htheta_deg hbase
+    loweringEulerStep_strictInterl (by lia) hM hp htheta hpdeg htheta_deg hbase
   have hpM : p.natDegree ≤ M := by rw [hpdeg]; lia
   have hthetaM : (theta p).natDegree ≤ M := by rw [htheta_deg]; lia
   have hlower_p_nn : HasNonnegCoeffs (loweringEulerStep M p) :=
@@ -434,16 +440,16 @@ theorem crossedEulerCompletion_commonLeftInterleaver
   have hp1M : (p + 1).natDegree ≤ M - 2 := by rw [hp1deg]; lia
   have hT_p : StrictInterl (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 1 (M - 2) p) :=
-    eulerInsertionStep_one_prec (by lia) hp hderPF hpM hderdeg hder_p
+    eulerInsertionStep_one_strictInterl (by lia) hp hderPF hpM hderdeg hder_p
   have hT_p1 : StrictInterl (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 1 (M - 2) (p + 1)) :=
-    eulerInsertionStep_one_prec (by lia) hp1 hderPF hp1M hderdeg hder_p1
+    eulerInsertionStep_one_strictInterl (by lia) hp1 hderPF hp1M hderdeg hder_p1
   have hU_p : StrictInterl (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 0 (M - 1) p) :=
-    eulerInsertionStep_derivative_prec_zeroStep hD (by lia) hp hpdeg
+    eulerInsertionStep_derivative_strictInterl_zeroStep hD (by lia) hp hpdeg
   have hU_p1 : StrictInterl (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 0 (M - 1) (p + 1)) := by
-    have h := eulerInsertionStep_derivative_prec_zeroStep
+    have h := eulerInsertionStep_derivative_strictInterl_zeroStep
       hD (by lia : D + 1 ≤ M) hp1 hp1deg
     simpa using h
   refine ⟨eulerInsertionStep 1 (M - 2) p.derivative, ?_⟩
@@ -454,5 +460,10 @@ theorem crossedEulerCompletion_commonLeftInterleaver
   · exact hT_p1
   · exact hU_p
   · exact hU_p1
+
+@[deprecated eulerInsertionStep_derivative_strictInterl_zeroStep
+    (since := "2026-09-26")]
+alias eulerInsertionStep_derivative_prec_zeroStep :=
+  eulerInsertionStep_derivative_strictInterl_zeroStep
 
 end RealRooted

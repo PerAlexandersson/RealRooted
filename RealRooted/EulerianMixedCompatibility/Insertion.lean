@@ -144,7 +144,7 @@ theorem HasNonnegCoeffs.eulerInsertionStep
 
 /-- An Euler insertion step lies immediately to the right of its input in
 proper position. The proof includes the degree-zero boundary case. -/
-theorem prec_eulerInsertionStep
+theorem strictInterl_eulerInsertionStep
     {c : ℝ} {d : ℕ} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hp_pos : HasPosLeadingCoeff p)
     (hp_splits : p.Splits) (hpdeg : p.natDegree ≤ d) :
@@ -177,12 +177,15 @@ theorem prec_eulerInsertionStep
       simp only [eval_sub, eval_X, eval_pow]
       nlinarith [sq_nonneg r]
 
+@[deprecated strictInterl_eulerInsertionStep (since := "2026-09-26")]
+alias prec_eulerInsertionStep := strictInterl_eulerInsertionStep
+
 theorem splits_eulerInsertionStep
     {c : ℝ} {d : ℕ} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hp_pos : HasPosLeadingCoeff p)
     (hp_splits : p.Splits) (hpdeg : p.natDegree ≤ d) :
     (eulerInsertionStep c d p).Splits :=
-  (prec_eulerInsertionStep hp hp_pos hp_splits hpdeg).2.1.2
+  (strictInterl_eulerInsertionStep hp hp_pos hp_splits hpdeg).2.1.2
 
 /-- Applying one fixed Euler insertion step to both members of a compatible
 nonnegative pair in the degree box preserves compatibility. -/

@@ -319,7 +319,7 @@ theorem iterateThetaPlusOne_preserves_pf
 
 theorem iterateThetaPlusOne_preserves_interl
     (hθpf : thetaPlusOnePreservesPFStatement)
-    (hθprec : thetaPlusOnePreservesInterlStatement)
+    (hθinterl : thetaPlusOnePreservesInterlStatement)
     (l : ℕ) {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
     Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q) := by
@@ -327,7 +327,7 @@ theorem iterateThetaPlusOne_preserves_interl
   | zero =>
       simpa using hpq
   | succ l ih =>
-      simpa [iterateThetaPlusOne_succ] using hθprec
+      simpa [iterateThetaPlusOne_succ] using hθinterl
         (iterateThetaPlusOne_preserves_pf hθpf l hp)
         (iterateThetaPlusOne_preserves_pf hθpf l hq)
         (ih hp hq hpq)

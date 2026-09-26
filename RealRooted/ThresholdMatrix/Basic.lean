@@ -220,15 +220,18 @@ theorem isRealRooted_sum_of_isInterlacingSeq0Nonneg
 
 /-! ## Finite-entry shape helpers -/
 
-/- Deprecated compatibility alias for `Interl.refl`. -/
-@[deprecated Interl.refl (since := "2026-09-17")]
-theorem prec0_refl_of_realRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
+/-! Reflexivity for the weak interlacing relation of a nonzero split
+polynomial. -/
+theorem interl_refl_of_realRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     Interl p p :=
   Interl.refl fun _ => hp.2
 
+@[deprecated interl_refl_of_realRooted (since := "2026-09-26")]
+alias prec0_refl_of_realRooted := interl_refl_of_realRooted
+
 /-- A positive affine form precedes the `X`-multiple of another one under the
 cross inequality. -/
-theorem prec0_affine_to_X_mul_affine
+theorem interl_affine_to_X_mul_affine
     {u v U V : ℝ}
     (hu : 0 < u) (hU : 0 < U) (hcross : u * V ≤ U * v)
     (hv : 0 ≤ v) (hV : 0 ≤ V) :
@@ -237,6 +240,9 @@ theorem prec0_affine_to_X_mul_affine
     (strictInterl_affine_linear_affine_linear_of_cross hu hU hcross)
     (hasNonnegCoeffs_affine_linear hu.le hv)
     (hasNonnegCoeffs_affine_linear hU.le hV)).toInterl
+
+@[deprecated interl_affine_to_X_mul_affine (since := "2026-09-26")]
+alias prec0_affine_to_X_mul_affine := interl_affine_to_X_mul_affine
 
 def Threshold2x2EntryTuple
     (a b c d A B C D : ℝ[X]) : Prop :=

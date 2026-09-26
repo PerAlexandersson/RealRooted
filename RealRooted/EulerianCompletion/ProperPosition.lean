@@ -16,7 +16,7 @@ namespace RealRooted
 
 /-- At the tight degree boundary, the lowering Euler step precedes a
 nonnegative self-reciprocal input. -/
-theorem loweringEulerStep_prec_self_of_reflect {M : ℕ} {p : ℝ[X]}
+theorem loweringEulerStep_strictInterl_self_of_reflect {M : ℕ} {p : ℝ[X]}
     (hM : 2 ≤ M) (hp : IsPFPolynomial p)
     (hpdeg : p.natDegree = M) (hconst : p.coeff 0 ≠ 0)
     (hsym : p.reflect M = p) :
@@ -26,7 +26,7 @@ theorem loweringEulerStep_prec_self_of_reflect {M : ℕ} {p : ℝ[X]}
     rw [reciprocalShift, hsym, hpdeg]
     exact hM
   have hpolar : StrictInterl (polarTheta M p) p :=
-    prec_polarTheta_self hp hpdeg.le hshift
+    strictInterl_polarTheta_self hp hpdeg.le hshift
   have hderiv : StrictInterl p.derivative p :=
     (derivative_interlaces (hp.ne_zero_and_splits hp0).2 (by lia)).toStrictInterl
   have hpolarPos : HasPosLeadingCoeff (polarTheta M p) :=
@@ -41,5 +41,9 @@ theorem loweringEulerStep_prec_self_of_reflect {M : ℕ} {p : ℝ[X]}
     ring
   rw [heq]
   exact hcore
+
+@[deprecated loweringEulerStep_strictInterl_self_of_reflect (since := "2026-09-26")]
+alias loweringEulerStep_prec_self_of_reflect :=
+  loweringEulerStep_strictInterl_self_of_reflect
 
 end RealRooted

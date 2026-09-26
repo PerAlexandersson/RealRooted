@@ -309,7 +309,7 @@ proper-position pair preserves its orientation and removes every common root.
 The latter follows because every nonzero regularized linear combination is
 simple: a shared root would produce a nonzero combination with a double root.
 -/
-private theorem regularized_prec_no_common
+private theorem regularized_strictInterl_no_common
     {f g : ℝ[X]} (hgf : StrictInterl g f)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree + 1 = f.natDegree)
@@ -337,12 +337,12 @@ private theorem regularized_prec_no_common
   have hdegε : gε.natDegree + 1 = fε.natDegree := by
     dsimp [fε, gε]
     simpa using hdeg
-  have hprecε : StrictInterl gε fε := by
+  have hStrictInterlε : StrictInterl gε fε := by
     rcases strictInterl_of_allComboRealRooted hgε_ne hgε_splits hfε_ne hfε_splits
         hallε (Or.inl hdegε) with hforward | hreverse
     · exact hforward
     · exact False.elim <| hreverse.not_of_right_natDegree_lt_left (by lia)
-  refine ⟨hprecε, ?_⟩
+  refine ⟨hStrictInterlε, ?_⟩
   have hfε_simple : HasSimpleRoots fε := by
     dsimp [fε, k]
     exact hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
@@ -487,7 +487,7 @@ private theorem mixedEulerStep_nonneg_degree_leading
 /-- Strict core of the mixed adjacent Euler lemma.  The right input has one
 more degree, the two inputs have no common root, and its constant coefficient
 is positive. -/
-private theorem mixedEulerStep_prec_of_no_common_of_nontrivial_boundary
+private theorem mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
     {n : ℕ} {lam : ℝ} {f g : ℝ[X]}
     (hlam : 0 < lam)
     (hgf : StrictInterl g f)
@@ -555,10 +555,10 @@ private theorem mixedEulerStep_prec_of_no_common_of_nontrivial_boundary
       (hasPosLeadingCoeff_C_mul hlam hg_pos).ne_zero
       (hg_splits.C_mul lam) hscaled_no
   have hgh : StrictInterl g h := by
-    have hprec := hgf.convex_left hg_pos hf_pos hlam zero_lt_one
+    have hStrictInterl := hgf.convex_left hg_pos hf_pos hlam zero_lt_one
       (by simpa [h, add_comm] using hh_ne)
       (by simpa [h, add_comm] using hh_splits) (by simpa using hcop)
-    simpa [h, add_comm] using hprec
+    simpa [h, add_comm] using hStrictInterl
   have hno_hg : ∀ r, h.IsRoot r → ¬g.IsRoot r := by
     intro r hhr hgr
     apply hno r
@@ -730,7 +730,7 @@ private theorem mixedEulerStep_prec_of_no_common_of_nontrivial_boundary
 
 /-- No-common-root mixed step, including the exceptional linear/constant
 boundary where the mixed output has the input sum as an exact factor. -/
-private theorem mixedEulerStep_prec_of_no_common
+private theorem mixedEulerStep_strictInterl_of_no_common
     {n : ℕ} {lam : ℝ} {f g : ℝ[X]}
     (hlam : 0 < lam)
     (hgf : StrictInterl g f)
@@ -744,12 +744,12 @@ private theorem mixedEulerStep_prec_of_no_common
       (eulerInsertionStep 0 (n + 1) f +
         C lam * eulerInsertionStep 1 n g) := by
   by_cases hfzero_pos : 0 < f.coeff 0
-  · exact mixedEulerStep_prec_of_no_common_of_nontrivial_boundary
+  · exact mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
       hlam hgf hf hg hf_pos hg_pos hg_splits hdeg hfdeg hno (Or.inl hfzero_pos)
   have hfzero_nonneg : 0 ≤ f.coeff 0 := hf 0
   have hfzero : f.coeff 0 = 0 := by linarith
   by_cases hfdeg2 : 2 ≤ f.natDegree
-  · exact mixedEulerStep_prec_of_no_common_of_nontrivial_boundary
+  · exact mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
       hlam hgf hf hg hf_pos hg_pos hg_splits hdeg hfdeg hno (Or.inr hfdeg2)
   have hfdeg1 : f.natDegree = 1 := by lia
   have hgdeg0 : g.natDegree = 0 := by lia
@@ -882,9 +882,9 @@ theorem mixedEulerStep_splits
       (hfM_nonneg M) (hgM_nonneg M) (hfM_pos M) (hgM_pos M)
       (hdegM M) (hfdegM M)
   have hPM_splits (M : ℕ) : (PM M).Splits := by
-    obtain ⟨hprecM, hnoM⟩ :=
-      regularized_prec_no_common hgf hf_pos hg_pos hdeg (hdelta_pos M)
-    have hmixed := mixedEulerStep_prec_of_no_common hlam hprecM
+    obtain ⟨hStrictInterlM, hnoM⟩ :=
+      regularized_strictInterl_no_common hgf hf_pos hg_pos hdeg (hdelta_pos M)
+    have hmixed := mixedEulerStep_strictInterl_of_no_common hlam hStrictInterlM
       (hfM_nonneg M) (hgM_nonneg M) (hfM_pos M) (hgM_pos M)
       (hgM_splits M) (hdegM M) (hfdegM M) hnoM
     exact hmixed.2.1.2

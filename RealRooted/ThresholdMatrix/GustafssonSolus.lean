@@ -19,47 +19,47 @@ namespace GustafssonSolus
 
 /-! ### Finite-entry shape helpers -/
 
-private lemma prec0_gs_quadratic_self {s t : ℝ} (hs : 0 < s) :
+private lemma interl_gs_quadratic_self {s t : ℝ} (hs : 0 < s) :
     Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X + X) :=
   Interl.refl fun _ => (isRealRooted_affine_mul_X_add_X hs).2
 
-private lemma prec0_gs_X_quadratic {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+private lemma interl_gs_X_quadratic {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl X ((C s * X + C t) * X + X) := by
   rw [affine_mul_X_add_X_eq]
   simpa using
-    prec0_affine_to_X_mul_affine
+    interl_affine_to_X_mul_affine
       (u := s) (v := t + 1) (U := 1) (V := 0)
       hs zero_lt_one (by nlinarith) (by positivity) le_rfl
 
-private lemma prec0_gs_affine_add_X_quadratic
+private lemma interl_gs_affine_add_X_quadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + X) ((C s * X + C t) * X + X) := by
   rw [affine_mul_X_add_X_eq]
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   exact
-    prec0_affine_to_X_mul_affine
+    interl_affine_to_X_mul_affine
       (u := s) (v := t + 1) (U := s + 1) (V := t)
       hs (by positivity) (by nlinarith [hs, ht]) (by positivity) ht.le
 
-private lemma prec0_gs_affine_quadratic {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+private lemma interl_gs_affine_quadratic {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t) ((C s * X + C t) * X + X) := by
   rw [affine_mul_X_add_X_eq]
   exact
-    prec0_affine_to_X_mul_affine
+    interl_affine_to_X_mul_affine
       (u := s) (v := t + 1) (U := s) (V := t)
       hs hs (by nlinarith [hs]) (by positivity) ht.le
 
-private lemma prec0_gs_affine_add_one_quadratic
+private lemma interl_gs_affine_add_one_quadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + 1) ((C s * X + C t) * X + X) := by
   rw [affine_mul_X_add_X_eq]
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
   exact
-    prec0_affine_to_X_mul_affine
+    interl_affine_to_X_mul_affine
       (u := s) (v := t + 1) (U := s) (V := t + 1)
       hs hs le_rfl (by nlinarith) (by nlinarith)
 
-private lemma prec0_gs_affine_add_X_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+private lemma interl_gs_affine_add_X_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + X) X := by
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   simpa using
@@ -67,14 +67,14 @@ private lemma prec0_gs_affine_add_X_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
       (u := s + 1) (v := t) (U := 1) (V := 0)
       (by positivity) zero_lt_one (by nlinarith [ht])
 
-private lemma prec0_gs_affine_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+private lemma interl_gs_affine_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t) X := by
   simpa using
     interl_affine_linear_affine_linear_of_cross
       (u := s) (v := t) (U := 1) (V := 0)
       hs zero_lt_one (by nlinarith [ht])
 
-private lemma prec0_gs_affine_add_one_X
+private lemma interl_gs_affine_add_one_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + 1) X := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
@@ -83,25 +83,25 @@ private lemma prec0_gs_affine_add_one_X
       (u := s) (v := t + 1) (U := 1) (V := 0)
       hs zero_lt_one (by nlinarith [ht])
 
-private lemma prec0_gs_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
+private lemma interl_gs_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + X) (C s * X + C t + X) :=
   interl_affine_add_X_self hs
 
-private lemma prec0_gs_affine_self {s t : ℝ} (hs : 0 < s) :
+private lemma interl_gs_affine_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t) (C s * X + C t) :=
   Interl.refl fun _ => (isRealRooted_affine_factor (s := s) (t := t) hs).2
 
-private lemma prec0_gs_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
+private lemma interl_gs_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + 1) (C s * X + C t + 1) :=
   interl_affine_add_one_self hs
 
-private lemma prec0_gs_X_X : Interl (X : ℝ[X]) X :=
+private lemma interl_gs_X_X : Interl (X : ℝ[X]) X :=
   Interl.refl fun _ => isRealRooted_X.2
 
-private lemma prec0_gs_one_one : Interl (1 : ℝ[X]) 1 := by
+private lemma interl_gs_one_one : Interl (1 : ℝ[X]) 1 := by
   simpa using interl_C_C (1 : ℝ) (1 : ℝ)
 
-private lemma prec0_gs_affine_affine_add_X
+private lemma interl_gs_affine_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t) (C s * X + C t + X) := by
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
@@ -110,12 +110,12 @@ private lemma prec0_gs_affine_affine_add_X
       (u := s) (v := t) (U := s + 1) (V := t)
       hs (by positivity) (by nlinarith [ht])
 
-private lemma prec0_gs_affine_add_one_affine_add_X
+private lemma interl_gs_affine_add_one_affine_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + 1) (C s * X + C t + X) := by
   exact interl_affine_add_one_affine_add_X hs ht
 
-private lemma prec0_gs_affine_add_one_affine {s t : ℝ} (hs : 0 < s) :
+private lemma interl_gs_affine_add_one_affine {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + 1) (C s * X + C t) := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
   exact
@@ -152,23 +152,23 @@ private lemma GS2x2EntryShape.has2x2 {a b c d : ℝ[X]}
   all_goals
     rcases h with ⟨rfl, rfl, rfl, rfl⟩
   · simpa using interl_zero_zero
-  · simpa using prec0_gs_X_X
+  · simpa using interl_gs_X_X
   · simpa using (interl_zero_right (C s * X + C t + 1 : ℝ[X]))
-  · simpa using prec0_gs_affine_X hs ht
-  · simpa using prec0_gs_affine_add_one_X hs ht
-  · simpa using prec0_gs_affine_add_X_X hs ht
-  · simpa using prec0_gs_affine_self hs
-  · simpa using prec0_gs_affine_add_one_affine hs
-  · simpa using prec0_gs_affine_add_one_self hs
-  · simpa using prec0_gs_affine_affine_add_X hs ht
-  · simpa using prec0_gs_affine_add_one_affine_add_X hs ht
-  · simpa using prec0_gs_affine_add_X_self hs
+  · simpa using interl_gs_affine_X hs ht
+  · simpa using interl_gs_affine_add_one_X hs ht
+  · simpa using interl_gs_affine_add_X_X hs ht
+  · simpa using interl_gs_affine_self hs
+  · simpa using interl_gs_affine_add_one_affine hs
+  · simpa using interl_gs_affine_add_one_self hs
+  · simpa using interl_gs_affine_affine_add_X hs ht
+  · simpa using interl_gs_affine_add_one_affine_add_X hs ht
+  · simpa using interl_gs_affine_add_X_self hs
   · simpa using (interl_zero_left (((C s * X + C t) * X + X : ℝ[X])))
-  · simpa using prec0_gs_X_quadratic hs ht
-  · simpa using prec0_gs_affine_quadratic hs ht
-  · simpa using prec0_gs_affine_add_one_quadratic hs ht
-  · simpa using prec0_gs_affine_add_X_quadratic hs ht
-  · simpa using prec0_gs_quadratic_self hs
+  · simpa using interl_gs_X_quadratic hs ht
+  · simpa using interl_gs_affine_quadratic hs ht
+  · simpa using interl_gs_affine_add_one_quadratic hs ht
+  · simpa using interl_gs_affine_add_X_quadratic hs ht
+  · simpa using interl_gs_quadratic_self hs
 
 private lemma gsEntry_shape
     {t₁ t₂ j₁ j₂ : ℕ} {α₁ α₂ : ℝ[X]}

@@ -19,7 +19,7 @@ namespace RealRooted
 
 /-- A polar Euler derivative precedes its original polynomial after transport
 through a bounded reciprocal shift. -/
-theorem prec_polarTheta_self {N : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p)
+theorem strictInterl_polarTheta_self {N : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p)
     (hpdeg : p.natDegree ≤ N)
     (hshift : 2 ≤ (reciprocalShift N p).natDegree) :
     StrictInterl (polarTheta N p) p := by
@@ -29,7 +29,7 @@ theorem prec_polarTheta_self {N : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p)
     rw [hq]
     unfold reciprocalShift
     exact (Polynomial.natDegree_reflect_le).trans (max_le le_rfl hpdeg)
-  have hbase : StrictInterl q (theta q) := prec_self_theta hqpf hshift
+  have hbase : StrictInterl q (theta q) := strictInterl_self_theta hqpf hshift
   have htheta_pf : IsPFPolynomial (theta q) := theta_preserves_pf hqpf
   have htheta_deg : (theta q).natDegree ≤ N := by
     have hq0 : q ≠ 0 := by
@@ -52,7 +52,7 @@ theorem prec_polarTheta_self {N : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p)
   simpa [hinvol, hpolar] using htransport
 
 /-- Shared affine-family proof of the derivative--polar comparison. -/
-private theorem prec_derivative_polarTheta_of_le
+private theorem strictInterl_derivative_polarTheta_of_le
     {M : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p)
     (hpdeg : 2 ≤ p.natDegree) (hpM : p.natDegree ≤ M)
     (hpolar0 : polarTheta M p ≠ 0)
@@ -76,7 +76,7 @@ private theorem prec_derivative_polarTheta_of_le
     exact mul_ne_zero Polynomial.X_ne_zero hder0
   have htheta_splits : (theta p).Splits :=
     (htheta_pf.ne_zero_and_splits htheta0).2
-  have hp_theta : StrictInterl p (theta p) := prec_self_theta hp hpdeg
+  have hp_theta : StrictInterl p (theta p) := strictInterl_self_theta hp hpdeg
   have hder_theta : StrictInterl p.derivative (theta p) := by
     have hself : StrictInterl p.derivative (X * p.derivative) :=
       strictInterl_self_X_mul_of_nonneg hder0
@@ -171,7 +171,7 @@ private theorem prec_derivative_polarTheta_of_le
 
 /-- The derivative of a PF polynomial precedes its polar Euler derivative at
 a strictly larger index. -/
-theorem prec_derivative_polarTheta {M : ℕ} {p : ℝ[X]}
+theorem strictInterl_derivative_polarTheta {M : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : 2 ≤ p.natDegree)
     (hpM : p.natDegree < M) (hpolar_p : StrictInterl (polarTheta M p) p) :
     StrictInterl p.derivative (polarTheta M p) := by
@@ -200,20 +200,20 @@ theorem prec_derivative_polarTheta {M : ℕ} {p : ℝ[X]}
       simp
     rw [hstep.2] at hlead
     exact htop hlead
-  exact prec_derivative_polarTheta_of_le hp hpdeg (le_of_lt hpM)
+  exact strictInterl_derivative_polarTheta_of_le hp hpdeg (le_of_lt hpM)
     hpolar0 hpolar_p
 
-/-- Boundary form of `prec_derivative_polarTheta`, with nonvanishing supplied
+/-- Boundary form of `strictInterl_derivative_polarTheta`, with nonvanishing supplied
 explicitly when the polar operator may drop the leading degree. -/
-theorem prec_derivative_polarTheta_boundary {M : ℕ} {p : ℝ[X]}
+theorem strictInterl_derivative_polarTheta_boundary {M : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : 2 ≤ p.natDegree)
     (hpM : p.natDegree ≤ M) (hpolar0 : polarTheta M p ≠ 0)
     (hpolar_p : StrictInterl (polarTheta M p) p) :
     StrictInterl p.derivative (polarTheta M p) :=
-  prec_derivative_polarTheta_of_le hp hpdeg hpM hpolar0 hpolar_p
+  strictInterl_derivative_polarTheta_of_le hp hpdeg hpM hpolar0 hpolar_p
 
 /-- The same boundary comparison with zero-aware proper position. -/
-theorem prec0_derivative_polarTheta_boundary {M : ℕ} {p : ℝ[X]}
+theorem interl_derivative_polarTheta_boundary {M : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : 2 ≤ p.natDegree)
     (hpM : p.natDegree ≤ M) (hpolar_p : Interl (polarTheta M p) p) :
     Interl p.derivative (polarTheta M p) := by
@@ -222,12 +222,12 @@ theorem prec0_derivative_polarTheta_boundary {M : ℕ} {p : ℝ[X]}
   · have hp0 : p ≠ 0 := by
       intro hzero
       simp_all
-    exact (prec_derivative_polarTheta_boundary hp hpdeg hpM hpolar0
+    exact (strictInterl_derivative_polarTheta_boundary hp hpdeg hpM hpolar0
       (hpolar_p.toStrictInterl_of_ne hpolar0 hp0)).toInterl
 
 /-- A polar Euler derivative precedes `thetaPlusOne` at a strictly larger
 index. -/
-theorem prec_polarTheta_thetaPlusOne {N : ℕ} {p : ℝ[X]}
+theorem strictInterl_polarTheta_thetaPlusOne {N : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : 2 ≤ p.natDegree)
     (hpN : p.natDegree < N) (hconst : p.coeff 0 ≠ 0) :
     StrictInterl (polarTheta N p) (thetaPlusOne p) := by
@@ -242,9 +242,9 @@ theorem prec_polarTheta_thetaPlusOne {N : ℕ} {p : ℝ[X]}
       simp_all
     exact le_trans (by lia) (le_natDegree_of_ne_zero hcoeff)
   have hpolar_q : StrictInterl (polarTheta (N + 1) q) q :=
-    prec_polarTheta_self hqpf (le_of_lt hqN) hshift
+    strictInterl_polarTheta_self hqpf (le_of_lt hqN) hshift
   have hstep : StrictInterl q.derivative (polarTheta (N + 1) q) :=
-    prec_derivative_polarTheta hqpf hqdeg2 hqN hpolar_q
+    strictInterl_derivative_polarTheta hqpf hqdeg2 hqN hpolar_q
   have hpolar : polarTheta (N + 1) q = X * polarTheta N p := by
     rw [hq]
     ext k
@@ -261,7 +261,7 @@ theorem prec_polarTheta_thetaPlusOne {N : ℕ} {p : ℝ[X]}
 
 /-- At the boundary index, `thetaPlusOne p` precedes the `X`-shifted polar
 Euler derivative. -/
-theorem prec_thetaPlusOne_X_polarTheta_boundary {N : ℕ} {p : ℝ[X]}
+theorem strictInterl_thetaPlusOne_X_polarTheta_boundary {N : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree = N) (hN : 2 ≤ N)
     (hconst : p.coeff 0 ≠ 0) :
     StrictInterl (thetaPlusOne p) (X * polarTheta N p) := by
@@ -288,28 +288,28 @@ theorem prec_thetaPlusOne_X_polarTheta_boundary {N : ℕ} {p : ℝ[X]}
       simp_all
     exact le_trans hN (le_natDegree_of_ne_zero hcoeff)
   have hpolar_q : StrictInterl (polarTheta (N + 1) q) q :=
-    prec_polarTheta_self hqpf (by lia) hshift
+    strictInterl_polarTheta_self hqpf (by lia) hshift
   have hstep : StrictInterl q.derivative (polarTheta (N + 1) q) :=
-    prec_derivative_polarTheta_boundary hqpf (by lia) (by lia)
+    strictInterl_derivative_polarTheta_boundary hqpf (by lia) (by lia)
       (by simpa [hpolar] using mul_ne_zero Polynomial.X_ne_zero hpolar0)
       hpolar_q
   simpa [hpolar, hderivative] using hstep
 
 /-- The unshifted boundary counterpart of
-`prec_polarTheta_thetaPlusOne`. -/
-theorem prec_polarTheta_thetaPlusOne_boundary {N : ℕ} {p : ℝ[X]}
+`strictInterl_polarTheta_thetaPlusOne`. -/
+theorem strictInterl_polarTheta_thetaPlusOne_boundary {N : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree = N) (hN : 2 ≤ N)
     (hconst : p.coeff 0 ≠ 0) :
     StrictInterl (polarTheta N p) (thetaPlusOne p) := by
   have hstep :=
-    prec_thetaPlusOne_X_polarTheta_boundary hp hpdeg hN hconst
+    strictInterl_thetaPlusOne_X_polarTheta_boundary hp hpdeg hN hconst
   exact strictInterl_of_strictInterl_X_mul_of_nonneg hstep
     (polarTheta_preserves_pf hp (le_of_eq hpdeg)).hasNonnegCoeffs
     (thetaPlusOne_preserves_pf hp).hasNonnegCoeffs
 
 /-- At the boundary index, every positive Euler pencil precedes the
 `X`-shifted polar Euler derivative. -/
-theorem prec_self_add_C_mul_theta_X_polarTheta_boundary
+theorem strictInterl_self_add_C_mul_theta_X_polarTheta_boundary
     {N : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p)
     (hpdeg : p.natDegree = N) (hN : 2 ≤ N)
     (hconst : p.coeff 0 ≠ 0) {b : ℝ} (hb : 0 < b) :
@@ -326,12 +326,12 @@ theorem prec_self_add_C_mul_theta_X_polarTheta_boundary
     have hcoeff : (reciprocalShift N p).coeff N ≠ 0 := by simp_all
     exact hN.trans (le_natDegree_of_ne_zero hcoeff)
   have hpolar_p : StrictInterl (polarTheta N p) p :=
-    prec_polarTheta_self hp (le_of_eq hpdeg) hshift
+    strictInterl_polarTheta_self hp (le_of_eq hpdeg) hshift
   have hp_right : StrictInterl p (X * polarTheta N p) :=
     strictInterl_mul_X_of_strictInterl_of_nonneg hpolar_p
       hpolar_pf.hasNonnegCoeffs hp.hasNonnegCoeffs
   have hder_polar : StrictInterl p.derivative (polarTheta N p) :=
-    prec_derivative_polarTheta_boundary hp (by lia)
+    strictInterl_derivative_polarTheta_boundary hp (by lia)
       (le_of_eq hpdeg) hpolar0 hpolar_p
   have htheta_right : StrictInterl (theta p) (X * polarTheta N p) := by
     simpa [theta] using
@@ -349,5 +349,35 @@ theorem prec_self_add_C_mul_theta_X_polarTheta_boundary
       ((theta_preserves_pf hp).hasNonnegCoeffs.pos_leadingCoeff htheta0)
   exact StrictInterl.add_of_right_of_posLeadingCoeff
     hp_right hbtheta_right hp_pos hbtheta_pos
+
+/-! Deprecated names for the pre-canonical polar Euler interlacing APIs. -/
+
+@[deprecated strictInterl_polarTheta_self (since := "2026-09-26")]
+alias prec_polarTheta_self := strictInterl_polarTheta_self
+
+@[deprecated strictInterl_derivative_polarTheta (since := "2026-09-26")]
+alias prec_derivative_polarTheta := strictInterl_derivative_polarTheta
+
+@[deprecated strictInterl_derivative_polarTheta_boundary (since := "2026-09-26")]
+alias prec_derivative_polarTheta_boundary := strictInterl_derivative_polarTheta_boundary
+
+@[deprecated interl_derivative_polarTheta_boundary (since := "2026-09-26")]
+alias prec0_derivative_polarTheta_boundary := interl_derivative_polarTheta_boundary
+
+@[deprecated strictInterl_polarTheta_thetaPlusOne (since := "2026-09-26")]
+alias prec_polarTheta_thetaPlusOne := strictInterl_polarTheta_thetaPlusOne
+
+@[deprecated strictInterl_thetaPlusOne_X_polarTheta_boundary (since := "2026-09-26")]
+alias prec_thetaPlusOne_X_polarTheta_boundary :=
+  strictInterl_thetaPlusOne_X_polarTheta_boundary
+
+@[deprecated strictInterl_polarTheta_thetaPlusOne_boundary (since := "2026-09-26")]
+alias prec_polarTheta_thetaPlusOne_boundary :=
+  strictInterl_polarTheta_thetaPlusOne_boundary
+
+@[deprecated strictInterl_self_add_C_mul_theta_X_polarTheta_boundary
+    (since := "2026-09-26")]
+alias prec_self_add_C_mul_theta_X_polarTheta_boundary :=
+  strictInterl_self_add_C_mul_theta_X_polarTheta_boundary
 
 end RealRooted
