@@ -204,8 +204,14 @@ end RealRooted.Challenges.Sample
         self.assertEqual(first, second)
         self.assertIn("theorems/sample/index.html", first)
         self.assertIn('class="catalogue-home"', first["index.html"])
+        self.assertIn(
+            "A curated guide to Lean definitions and proved theorems, with links to their source.",
+            first["index.html"],
+        )
+        self.assertNotIn("Every declaration links", first["index.html"])
         self.assertIn('class="brand"', first["theorems/sample/index.html"])
         self.assertIn('class="declaration-group"', first["theorems/sample/index.html"])
+        self.assertIn("Source revision", first["theorems/sample/index.html"])
         self.assertIn('href="../../assets/site.css"', first["theorems/sample/index.html"])
         self.assertIn("RealRooted/Canonical.lean#L2", first["theorems/sample/index.html"])
 

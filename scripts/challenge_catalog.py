@@ -745,10 +745,10 @@ def render_site(
     )
     index_body = (
         "<main class=\"catalogue-home\"><section class=\"hero\">"
-        "<p class=\"eyebrow\">Lean 4 · Formalized mathematics</p>"
+        "<p class=\"eyebrow\">Lean 4 formalization</p>"
         "<h1>Real-rooted polynomials,<br>made explorable.</h1>"
-        "<p class=\"lede\">A curated guide to checked definitions and theorems. "
-        "Every declaration links to the exact source revision behind this site.</p></section>"
+        "<p class=\"lede\">A curated guide to Lean definitions and proved theorems, "
+        "with links to their source.</p></section>"
         f"<ul class=\"catalogue-index\">{index_rows}</ul></main>"
     )
     files["index.html"] = _template(repo_root, index_body, "RealRooted catalogue", BASE_PATH)
@@ -770,12 +770,12 @@ def render_site(
         if definition_html:
             selected += (
                 "<section class=\"declaration-group\"><p class=\"section-kicker\">"
-                "Verified API</p><h2>Definitions in Lean</h2>" + definition_html + "</section>"
+                "Lean declarations</p><h2>Definitions</h2>" + definition_html + "</section>"
             )
         if theorem_html:
             selected += (
                 "<section class=\"declaration-group\"><p class=\"section-kicker\">"
-                "Verified API</p><h2>Theorems in Lean</h2>" + theorem_html + "</section>"
+                "Lean declarations</p><h2>Theorems</h2>" + theorem_html + "</section>"
             )
         source = html.escape(_source_link(revision, SourceDeclaration("", "", page.source_path, 1)), quote=True)
         body = (
@@ -787,7 +787,7 @@ def render_site(
             + "</article><div class=\"lean-results\">"
             + selected
             + "</div>"
-            + f"<p class=\"verification\"><span>Verified source</span> "
+            + f"<p class=\"verification\"><span>Source revision</span> "
             + f"<code>{html.escape(revision)}</code> · "
             + f"<a href=\"{source}\">challenge module</a>.</p></main>"
         )
