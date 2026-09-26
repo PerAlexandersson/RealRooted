@@ -11,13 +11,15 @@ authors = ["Obreschkoff", "Dedieu"]
 years = [1963, 1992]
 
 [[definitions]]
-name = "RealRooted.Challenges.Obreschkoff.RealPencilRealRooted"
-
-[[definitions]]
-name = "RealRooted.Challenges.Obreschkoff.ProperPosition"
+name = "RealRooted.AllComboRealRooted"
+module = "RealRooted.AllCombo"
 
 [[definitions]]
 name = "RealRooted.Challenges.Obreschkoff.NonzeroSplitPolynomial"
+
+[[definitions]]
+name = "RealRooted.HasPosLeadingCoeff"
+module = "RealRooted.Basic.Coefficients"
 
 [[theorems]]
 name = "RealRooted.Challenges.Obreschkoff.allCombinationsRealRooted_of_interlaces"
@@ -38,7 +40,8 @@ linear combination is either zero or real-rooted.  Conversely, under the
 explicit nonzero, splitting, and degree hypotheses in the formal statement,
 a real-rooted pencil forces one of the two possible proper-position
 orientations.  A positive-leading-coefficient form is included for direct
-use with the project’s root-location APIs.
+use with the project’s root-location APIs. The full Lean definition of proper
+position appears on the [polynomial-interlacing page](../../concepts/interlacing/).
 
 ## References
 

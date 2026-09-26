@@ -11,13 +11,16 @@ authors = ["Nijenhuis"]
 years = [1976]
 
 [[definitions]]
-name = "RealRooted.Challenges.Nijenhuis.NonattackingRookPlacement"
+name = "RealRooted.Rook.IsRookPlacement"
+module = "RealRooted.RookPolynomial"
 
 [[definitions]]
-name = "RealRooted.Challenges.Nijenhuis.WeightedRookPolynomial"
+name = "RealRooted.Rook.weightedRookPolynomial"
+module = "RealRooted.RookPolynomial"
 
 [[definitions]]
-name = "RealRooted.Challenges.Nijenhuis.SignedRookPolynomial"
+name = "RealRooted.Rook.nijenhuisRookPolynomial"
+module = "RealRooted.RookPolynomial"
 
 [[theorems]]
 name = "RealRooted.Challenges.Nijenhuis.bipartiteMatchingIdentity"

@@ -13,10 +13,12 @@ authors = ["Chudnovsky", "Seymour"]
 years = [2007]
 
 [[definitions]]
-name = "RealRooted.Challenges.ChudnovskySeymour.ClawFreeGraph"
+name = "RealRooted.Graph.ClawFree"
+module = "RealRooted.Graph.ClawFree"
 
 [[definitions]]
-name = "RealRooted.Challenges.ChudnovskySeymour.IndependencePolynomial"
+name = "RealRooted.Graph.indepPoly"
+module = "RealRooted.Graph.IndependencePolynomial.Basic"
 
 [[theorems]]
 name = "RealRooted.Challenges.ChudnovskySeymour.clawFree_indepPoly_splits"

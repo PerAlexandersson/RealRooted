@@ -47,6 +47,11 @@ END_NAMESPACE_RE = re.compile(r"^\s*end\s+([A-Za-z_][A-Za-z0-9_'.]*)\s*$")
 IMPORT_RE = re.compile(
     r"^\s*(?:(?:public|private)\s+)?import\s+([A-Za-z_][A-Za-z0-9_'.]*)\s*$"
 )
+FORWARDING_ABBREV_RE = re.compile(
+    r"^\s*(?:noncomputable\s+)?abbrev\b[\s\S]*?:=\s*"
+    r"(?:_root_\.)?[A-Za-z_][A-Za-z0-9_'.]*"
+    r"(?:\s+[A-Za-z_][A-Za-z0-9_'.]*)*\s*$"
+)
 
 
 class CatalogError(ValueError):
@@ -536,6 +541,13 @@ def resolve_item(
         )
     if declaration.deprecated:
         raise CatalogError(f"{page.source_path}: {item.name} is a deprecated compatibility alias")
+    if item.expected_kind == "definition" and FORWARDING_ABBREV_RE.fullmatch(
+        strip_comments_and_strings(declaration.source_code)
+    ):
+        raise CatalogError(
+            f"{page.source_path}: {item.name} is only a forwarding abbreviation; "
+            "select its full definition instead"
+        )
     if item.expected_kind == "definition" and re.search(
         r"(?:Statement|Target|Route|Inputs|Backend)$", item.name
     ):

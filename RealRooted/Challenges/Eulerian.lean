@@ -14,10 +14,12 @@ authors = ["Frobenius", "Brenti"]
 years = [1910, 1994]
 
 [[definitions]]
-name = "RealRooted.Challenges.Eulerian.OrdinaryEulerianPolynomial"
+name = "RealRooted.eulerianTilde"
+module = "RealRooted.CombinatorialExamples.Eulerian"
 
 [[definitions]]
-name = "RealRooted.Challenges.Eulerian.TypeBEulerianPolynomial"
+name = "RealRooted.typeBEulerian"
+module = "RealRooted.CombinatorialExamples.TypeBEulerian"
 
 [[theorems]]
 name = "RealRooted.Challenges.Eulerian.realRooted"

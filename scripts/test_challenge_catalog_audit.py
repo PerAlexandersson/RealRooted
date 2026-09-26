@@ -24,6 +24,16 @@ class ChallengeCatalogAuditTests(unittest.TestCase):
         self.assertEqual(len(pages), 19)
         self.assertEqual(len(audit.resolve_records(root, pages)), 82)
 
+    def test_favard_page_uses_the_full_recurrence_definition(self) -> None:
+        root = pathlib.Path(__file__).resolve().parents[1]
+        pages = challenge_catalog.load_catalog(root)
+        resolved = challenge_catalog.validate_sources(root, pages)
+        source = resolved["RealRooted.SatisfiesFavardRecurrence"].source_code
+        self.assertTrue(source.startswith("def SatisfiesFavardRecurrence"))
+        self.assertIn("P 0 = 1", source)
+        self.assertIn("P (n + 2) =", source)
+        self.assertNotIn("abbrev FavardRecurrence", source)
+
     def test_raw_audit_parser_rejects_duplicate_results(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = pathlib.Path(directory) / "audit.raw"

@@ -9,7 +9,8 @@ section = "theorems"
 slug = "veronese-sections"
 
 [[definitions]]
-name = "RealRooted.Challenges.VeroneseSections.VeroneseSection"
+name = "RealRooted.veroneseSectionPolynomial"
+module = "RealRooted.VeroneseSection"
 
 [[definitions]]
 name = "RealRooted.Challenges.VeroneseSections.NonnegativeRealRootedPolynomial"
