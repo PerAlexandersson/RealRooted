@@ -159,5 +159,16 @@ theorem multivariateIndepPoly_samePhaseStable_iff_clawFree
   · exact clawFree_of_multivariateIndepPoly_samePhaseStable G
   · exact ClawFree.multivariateIndepPoly_samePhaseStable
 
+/-- Chudnovsky--Seymour as the unit common-phase specialization of the
+Leake--Ryder characterization. -/
+theorem ClawFree.indepPoly_splits_of_leakeRyder
+    {V : Type u} [Fintype V] [DecidableEq V]
+    {G : _root_.SimpleGraph V} (hG : ClawFree G) :
+    (indepPoly G).Splits := by
+  classical
+  rw [← commonPhaseRestriction_one_multivariateIndepPoly G]
+  exact (multivariateIndepPoly_samePhaseStable_iff_clawFree G).2 hG
+    (fun _ => 1) (fun _ => zero_le_one)
+
 end Graph
 end RealRooted

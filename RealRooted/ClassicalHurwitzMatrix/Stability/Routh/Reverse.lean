@@ -72,7 +72,7 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
     hoddXred.C_mul_left hc.ne'
   have hsum : StrictInterl (Polynomial.C c * odd)
       (Polynomial.C c * odd + X * red) :=
-    prec_add_X_mul_of_prec hscaled
+    strictInterl_add_X_mul_of_strictInterl hscaled
       (hasPosLeadingCoeff_C_mul hc hodd) hredPos
   have hunscaled := hsum.C_mul_left (inv_ne_zero hc.ne')
   have hsourcePrec : StrictInterl odd even := by

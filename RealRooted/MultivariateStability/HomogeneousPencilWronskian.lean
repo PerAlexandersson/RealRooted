@@ -117,7 +117,7 @@ theorem MvRealStable.wronskian_eval_realAffineLineRestriction_nonneg_of_homogene
     intro z hz
     simpa using hpencil z Complex.I hz (by simp)
   exact wronskian_eval_nonneg_of_prec hp hq
-    (prec_of_upperHalfPlaneStable_hermiteBiehler hp hq hHB) t
+    (strictInterl_of_upperHalfPlaneStable_hermiteBiehler hp hq hHB) t
 
 /-- A stable affine extension of two nonzero homogeneous polynomials with
 nonnegative coefficients orients every coordinate Wronskian of its direction

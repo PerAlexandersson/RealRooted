@@ -234,13 +234,13 @@ theorem peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
     exact hstable.rename
       (finSuccEquiv' (Fin.last n))
   have hDA : StrictInterl D A := by
-    exact hQstable.prec_commonPhaseRestriction_pderiv
+    exact hQstable.strictInterl_commonPhaseRestriction_pderiv
       (identifyLast_peakValuePolynomial_isMultiaffine n)
       none w hwpos hApos hDpos
   have hAXD : StrictInterl A (Polynomial.X * D) :=
     strictInterl_mul_X_of_strictInterl_of_nonneg hDA hDnn hAnn
   have hAfull : StrictInterl A (A + Polynomial.X * D) :=
-    prec_add_X_mul_of_prec hAXD hApos hDpos
+    strictInterl_add_X_mul_of_strictInterl hAXD hApos hDpos
   have hdecomp :
       commonPhaseRestriction w Q = A + Polynomial.X * D := by
     exact commonPhaseRestriction_eq_constant_add_X_mul_pderiv
