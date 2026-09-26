@@ -744,8 +744,11 @@ def render_site(
         for page in pages
     )
     index_body = (
-        "<main><h1>RealRooted catalogue</h1><p>Curated checked definitions and results. "
-        "Each declaration links to the exact source revision used to build this page.</p>"
+        "<main class=\"catalogue-home\"><section class=\"hero\">"
+        "<p class=\"eyebrow\">Lean 4 · Formalized mathematics</p>"
+        "<h1>Real-rooted polynomials,<br>made explorable.</h1>"
+        "<p class=\"lede\">A curated guide to checked definitions and theorems. "
+        "Every declaration links to the exact source revision behind this site.</p></section>"
         f"<ul class=\"catalogue-index\">{index_rows}</ul></main>"
     )
     files["index.html"] = _template(repo_root, index_body, "RealRooted catalogue", BASE_PATH)
@@ -753,7 +756,11 @@ def render_site(
         links = "".join(
             f"<li><a href=\"{page.slug}/\">{html.escape(page.title)}</a></li>" for page in section_pages
         )
-        body = f"<main><h1>{html.escape(section.title())}</h1><ul>{links}</ul></main>"
+        body = (
+            "<main class=\"section-page\"><p class=\"eyebrow\">Browse the catalogue</p>"
+            f"<h1>{html.escape(section.title())}</h1>"
+            f"<ul class=\"section-index\">{links}</ul></main>"
+        )
         section_url = f"{BASE_PATH}{section}/"
         files[f"{section}/index.html"] = _template(repo_root, body, section.title(), section_url)
     for page in pages:
@@ -761,17 +768,27 @@ def render_site(
         theorem_html = _item_list(page.theorems, resolved, revision) if page.theorems else ""
         selected = ""
         if definition_html:
-            selected += "<section><h2>Definitions in Lean</h2>" + definition_html + "</section>"
+            selected += (
+                "<section class=\"declaration-group\"><p class=\"section-kicker\">"
+                "Verified API</p><h2>Definitions in Lean</h2>" + definition_html + "</section>"
+            )
         if theorem_html:
-            selected += "<section><h2>Theorems in Lean</h2>" + theorem_html + "</section>"
+            selected += (
+                "<section class=\"declaration-group\"><p class=\"section-kicker\">"
+                "Verified API</p><h2>Theorems in Lean</h2>" + theorem_html + "</section>"
+            )
         source = html.escape(_source_link(revision, SourceDeclaration("", "", page.source_path, 1)), quote=True)
         body = (
-            "<main><p class=\"breadcrumb\"><a href=\"../\">"
+            "<main class=\"catalogue-page\"><p class=\"breadcrumb\"><a href=\"../\">"
             + html.escape(page.section.title())
             + "</a></p>"
+            + "<article class=\"prose\">"
             + render_markdown(page.content)
+            + "</article><div class=\"lean-results\">"
             + selected
-            + f"<p class=\"verification\">Source revision <code>{html.escape(revision)}</code>; "
+            + "</div>"
+            + f"<p class=\"verification\"><span>Verified source</span> "
+            + f"<code>{html.escape(revision)}</code> · "
             + f"<a href=\"{source}\">challenge module</a>.</p></main>"
         )
         files[f"{page.section}/{page.slug}/index.html"] = _template(

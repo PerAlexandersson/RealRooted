@@ -33,10 +33,10 @@ roots are allowed; the word `Strict` excludes the zero-polynomial case and
 does not mean that all roots are distinct.
 
 `Interl f g` is the zero-aware relation: either polynomial may be zero, or the
-nonzero pair satisfies `StrictInterl`.  `Interlaces g f` is the older
-differ-by-one presentation.  Its argument order is intentional: the first
-argument is the shorter polynomial, while the second has degree exactly one
-larger and contains the alternating root list.
+nonzero pair satisfies `StrictInterl`.  `Interlaces g f` describes the case in
+which the degrees differ by one.  Its first argument is the shorter polynomial;
+the second has degree exactly one larger and contains the alternating root
+list.
 
 ## References
 

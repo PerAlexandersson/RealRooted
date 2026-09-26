@@ -10,10 +10,24 @@
   <body>
     <header class="site-header">
       <nav aria-label="Main navigation">
-        <a href="{{ home }}">RealRooted catalogue</a>
-        <a href="https://github.com/PerAlexandersson/RealRooted">GitHub repository</a>
+        <a class="brand" href="{{ home }}">
+          <span class="brand-mark" aria-hidden="true">RR</span>
+          <span class="brand-copy">
+            <strong>RealRooted</strong>
+            <small>Formalized polynomial theory</small>
+          </span>
+        </a>
+        <div class="nav-links">
+          <a href="{{ home }}">Catalogue</a>
+          <a href="https://github.com/PerAlexandersson/RealRooted">
+            GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </div>
       </nav>
     </header>
     {{ body }}
+    <footer class="site-footer">
+      <p>Checked in Lean 4 · Source-linked · Axiom-audited</p>
+    </footer>
   </body>
 </html>
