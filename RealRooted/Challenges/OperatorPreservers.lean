@@ -13,10 +13,12 @@ authors = ["Brändén"]
 years = [2011]
 
 [[definitions]]
-name = "RealRooted.Challenges.OperatorPreservers.RealRootedPreserver"
+name = "RealRooted.PreservesRealRootedOrZero"
+module = "RealRooted.OperatorPreservesInterlacing"
 
 [[definitions]]
-name = "RealRooted.Challenges.OperatorPreservers.InterlacingPreserverUpToOrder"
+name = "RealRooted.PreservesInterlacingPairsUpToOrder0"
+module = "RealRooted.OperatorPreservesInterlacing"
 
 [[theorems]]
 name = "RealRooted.Challenges.OperatorPreservers.realRootedPreserver_preservesInterlacing"

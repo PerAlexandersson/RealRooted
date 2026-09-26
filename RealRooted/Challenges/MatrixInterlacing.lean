@@ -14,10 +14,12 @@ years = [2015]
 name = "RealRooted.Challenges.MatrixInterlacing.PolynomialMatrix"
 
 [[definitions]]
-name = "RealRooted.Challenges.MatrixInterlacing.AffineTwoByTwoInterlaces"
+name = "RealRooted.Has2x2InterlacingProperty"
+module = "RealRooted.AffineFamily.Basic"
 
 [[definitions]]
-name = "RealRooted.Challenges.MatrixInterlacing.AffineTwoByTwoInterlacesOrZero"
+name = "RealRooted.Has2x2InterlacingProperty0"
+module = "RealRooted.AffineFamily.Basic"
 
 [[definitions]]
 name = "RealRooted.Challenges.MatrixInterlacing.PolynomialMatrix.AffineTwoByTwoCondition"

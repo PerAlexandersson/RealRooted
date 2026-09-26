@@ -11,7 +11,8 @@ authors = ["Aissen", "Schoenberg", "Whitney"]
 years = [1952]
 
 [[definitions]]
-name = "RealRooted.Challenges.AissenSchoenbergWhitney.CoefficientsPolyaFrequency"
+name = "RealRooted.IsPolyaFreqSeq"
+module = "RealRooted.AissenSchoenbergWhitneyBase"
 
 [[definitions]]
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.HasRealNonposRoots"

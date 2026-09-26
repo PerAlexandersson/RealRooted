@@ -13,7 +13,8 @@ authors = ["Brändén", "Solus"]
 years = [2019]
 
 [[definitions]]
-name = "RealRooted.Challenges.BrandenSolus.IDecomposition"
+name = "RealRooted.IsIdDecomposition"
+module = "RealRooted.SymmetricDecomposition.Definitions"
 
 [[theorems]]
 name = "RealRooted.Challenges.BrandenSolus.theorem26"

@@ -173,6 +173,17 @@ end RealRooted.Challenges.Sample
         with self.assertRaisesRegex(CatalogError, "deprecated compatibility alias"):
             validate_sources(self.root, load_catalog(self.root))
 
+        forwarding = (
+            selected
+            + "namespace RealRooted.Challenges.Sample\n"
+            + "def canonicalFamily (n : Nat) : Nat := n + 1\n"
+            + "abbrev family (n : Nat) : Nat := canonicalFamily n\n"
+            + "end RealRooted.Challenges.Sample\n"
+        )
+        self.write("RealRooted/Challenges/Sample.lean", forwarding)
+        with self.assertRaisesRegex(CatalogError, "only a forwarding abbreviation"):
+            validate_sources(self.root, load_catalog(self.root))
+
         scaffold = catalog_block(
             definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.forwardTarget"',
             theorems="",

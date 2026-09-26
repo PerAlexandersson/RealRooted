@@ -12,16 +12,20 @@ authors = ["Maló", "Pólya", "Schur", "Wagner", "Garloff"]
 years = [1895, 1914, 1992, 1996]
 
 [[definitions]]
-name = "RealRooted.Challenges.Hadamard.SchurSzegoComposition"
+name = "RealRooted.schurSzegoComp"
+module = "RealRooted.Hadamard.Basic"
 
 [[definitions]]
-name = "RealRooted.Challenges.Hadamard.HadamardProduct"
+name = "RealRooted.hadamardProduct"
+module = "RealRooted.HadamardProduct"
 
 [[definitions]]
-name = "RealRooted.Challenges.Hadamard.PolyaFrequencyPolynomial"
+name = "RealRooted.IsPFPolynomial"
+module = "RealRooted.PFPolynomial"
 
 [[definitions]]
-name = "RealRooted.Challenges.Hadamard.ToeplitzMatrix"
+name = "RealRooted.toeplitz"
+module = "RealRooted.AissenSchoenbergWhitneyBase"
 
 [[definitions]]
 name = "RealRooted.Challenges.Hadamard.MatrixHadamardProduct"

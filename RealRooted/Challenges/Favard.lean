@@ -11,7 +11,8 @@ authors = ["Favard"]
 years = [1935]
 
 [[definitions]]
-name = "RealRooted.Challenges.Favard.FavardRecurrence"
+name = "RealRooted.SatisfiesFavardRecurrence"
+module = "RealRooted.Favard.Recurrence"
 
 [[definitions]]
 name = "RealRooted.Challenges.Favard.PositiveFavardRecurrence"
@@ -62,8 +63,8 @@ abbrev FavardRecurrence (P : Nat → ℝ[X]) (α β : Nat → ℝ) : Prop :=
   SatisfiesFavardRecurrence P α β
 
 /-- Challenge-facing name for the recurrence plus positive Favard coefficients. -/
-abbrev PositiveFavardRecurrence (P : Nat → ℝ[X]) (α β : Nat → ℝ) : Prop :=
-  FavardRecurrence P α β ∧ ∀ n : Nat, 0 < β (n + 1)
+def PositiveFavardRecurrence (P : Nat → ℝ[X]) (α β : Nat → ℝ) : Prop :=
+  SatisfiesFavardRecurrence P α β ∧ ∀ n : Nat, 0 < β (n + 1)
 
 /-- Favard recurrence coefficients force consecutive interlacing. -/
 theorem interlacing :
