@@ -9,6 +9,8 @@ open Polynomial
 version = 1
 section = "theorems"
 slug = "branden-solus"
+authors = ["Brändén", "Solus"]
+years = [2019]
 
 [[definitions]]
 name = "RealRooted.Challenges.BrandenSolus.IDecomposition"

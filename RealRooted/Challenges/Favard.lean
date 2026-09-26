@@ -7,6 +7,8 @@ import RealRooted.Favard
 version = 1
 section = "theorems"
 slug = "favard"
+authors = ["Favard"]
+years = [1935]
 
 [[definitions]]
 name = "RealRooted.Challenges.Favard.FavardRecurrence"

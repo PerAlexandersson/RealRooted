@@ -31,6 +31,8 @@ def catalog_block(
     *,
     section: str = "families",
     slug: str = "sample",
+    authors: str = "",
+    years: str = "",
     definitions: str = "",
     theorems: str = '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"',
     content: str | None = None,
@@ -41,6 +43,8 @@ def catalog_block(
 version = 1
 section = "{section}"
 slug = "{slug}"
+{authors}
+{years}
 {definitions}
 {theorems}
 -->
@@ -203,6 +207,8 @@ end RealRooted.Challenges.Sample
             "RealRooted/Challenges/Sample.lean",
             catalog_block(
                 section="theorems",
+                authors='authors = ["Canonical", "Author"]',
+                years="years = [1914, 1996]",
                 definitions="",
                 theorems='[[theorems]]\nname = "RealRooted.canonical"\nmodule = "RealRooted/Canonical.lean"',
             )
@@ -216,10 +222,15 @@ end RealRooted.Challenges.Sample
         self.assertEqual(first, second)
         self.assertIn("theorems/sample/index.html", first)
         self.assertIn('class="catalog-home"', first["index.html"])
+        self.assertIn('class="catalog-card catalog-card--theorem"', first["index.html"])
+        self.assertIn('class="kind-badge kind-badge--theorem"', first["index.html"])
+        self.assertIn("Canonical &amp; Author · 1914–1996", first["index.html"])
+        self.assertIn('data-catalog-sort', first["index.html"])
         self.assertIn('>Catalog</a>', first["index.html"])
         self.assertIn("<h1>Real-rooted polynomials in Lean</h1>", first["index.html"])
         self.assertNotIn("made explorable", first["index.html"])
         self.assertIn("catalog-manifest.json", first)
+        self.assertIn("assets/site.js", first)
         self.assertNotIn("catalogue-manifest.json", first)
         self.assertIn(
             "A curated guide to Lean definitions and proved theorems, with links to their source.",
@@ -227,13 +238,32 @@ end RealRooted.Challenges.Sample
         )
         self.assertNotIn("Every declaration links", first["index.html"])
         self.assertIn('class="brand"', first["theorems/sample/index.html"])
-        self.assertIn('class="declaration-group"', first["theorems/sample/index.html"])
+        self.assertIn(
+            'class="declaration-group declaration-group--theorem"',
+            first["theorems/sample/index.html"],
+        )
         self.assertIn('class="lean-declaration"', first["theorems/sample/index.html"])
         self.assertIn("protected theorem canonical : True", first["theorems/sample/index.html"])
         self.assertNotIn("by trivial", first["theorems/sample/index.html"])
         self.assertIn("Source revision", first["theorems/sample/index.html"])
         self.assertIn('href="../../assets/site.css"', first["theorems/sample/index.html"])
+        self.assertIn('src="../../assets/site.js"', first["theorems/sample/index.html"])
         self.assertIn("RealRooted/Canonical.lean#L2", first["theorems/sample/index.html"])
+
+        manifest = json.loads(first["catalog-manifest.json"])
+        self.assertEqual(manifest["pages"][0]["authors"], ["Canonical", "Author"])
+        self.assertEqual(manifest["pages"][0]["years"], [1914, 1996])
+
+    def test_attribution_metadata_is_validated(self) -> None:
+        bad_authors = catalog_block(authors='authors = ["Repeated", "Repeated"]')
+        self.write("RealRooted/Challenges/Sample.lean", bad_authors)
+        with self.assertRaisesRegex(CatalogError, "authors must not contain duplicates"):
+            load_catalog(self.root)
+
+        bad_years = catalog_block(years="years = [2007, 1952]")
+        self.write("RealRooted/Challenges/Sample.lean", bad_years)
+        with self.assertRaisesRegex(CatalogError, "years must be strictly increasing"):
+            load_catalog(self.root)
 
     def test_raw_html_and_unsafe_urls_are_escaped(self) -> None:
         content = (

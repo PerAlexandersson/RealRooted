@@ -10,6 +10,8 @@ open Polynomial
 version = 1
 section = "families"
 slug = "eulerian"
+authors = ["Frobenius", "Brenti"]
+years = [1910, 1994]
 
 [[definitions]]
 name = "RealRooted.Challenges.Eulerian.OrdinaryEulerianPolynomial"

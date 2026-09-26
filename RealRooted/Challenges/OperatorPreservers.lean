@@ -9,6 +9,8 @@ open Polynomial
 version = 1
 section = "theorems"
 slug = "operator-preservers"
+authors = ["Brändén"]
+years = [2011]
 
 [[definitions]]
 name = "RealRooted.Challenges.OperatorPreservers.RealRootedPreserver"

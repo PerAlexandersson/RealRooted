@@ -7,6 +7,8 @@ import RealRooted.MatrixInterlacing
 version = 1
 section = "theorems"
 slug = "matrix-interlacing"
+authors = ["Brändén"]
+years = [2015]
 
 [[definitions]]
 name = "RealRooted.Challenges.MatrixInterlacing.PolynomialMatrix"

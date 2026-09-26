@@ -10,6 +10,8 @@ block inside a `/-! ... -/` module comment:
 version = 1
 section = "families"
 slug = "example"
+authors = ["Example", "Author"]
+years = [1952]
 
 [[definitions]]
 name = "RealRooted.Challenges.Example.family"
@@ -31,12 +33,15 @@ Short human-readable account of the exact checked results.
 ```
 
 `version`, `section`, and `slug` are required.  Sections are `concepts`,
-`families`, and `theorems`; slugs are lowercase hyphenated text.  A declaration
-record has a fully qualified `name` and may add `module`, either a Lean module
-name or a repository-relative `.lean` path, when the selected declaration is
-owned by an imported canonical module.  The optional record arrays are
-`[[definitions]]` and `[[theorems]]`.  The displayed Markdown must have one H1
-and a nonempty `## References` section.
+`families`, and `theorems`; slugs are lowercase hyphenated text.  Optional
+`authors` and `years` arrays record compact attribution already supported by
+the page's references.  Years must be strictly increasing; the first year is
+the sorting key, and multiple years display as a range.  A declaration record
+has a fully qualified `name` and may add `module`, either a Lean module name or
+a repository-relative `.lean` path, when the selected declaration is owned by
+an imported canonical module.  The optional record arrays are `[[definitions]]`
+and `[[theorems]]`.  The displayed Markdown must have one H1 and a nonempty
+`## References` section.
 
 The selected-declaration digest is the SHA-256 of UTF-8 canonical JSON with
 sorted keys and compact separators, for this object:
@@ -90,6 +95,8 @@ python3 scripts/build_challenge_pages.py \
   --output /tmp/realrooted-pages
 ```
 
-The renderer has no JavaScript and treats raw HTML in contributed Markdown as
-text.  It writes no generated files into the repository by itself; Pages CI
-uploads the specified output directory as an artifact.
+The renderer treats raw HTML in contributed Markdown as text.  Its small local
+script only reorders catalog cards by name or earliest cited year; the content
+and links remain complete without JavaScript.  The renderer writes no generated
+files into the repository by itself; Pages CI uploads the specified output
+directory as an artifact.

@@ -9,6 +9,8 @@ import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 version = 1
 section = "theorems"
 slug = "borcea-branden"
+authors = ["Borcea", "Brändén"]
+years = [2009]
 
 [[definitions]]
 name = "RealRooted.BorceaBranden.PreservesComplexStabilityOnDegreeBox"

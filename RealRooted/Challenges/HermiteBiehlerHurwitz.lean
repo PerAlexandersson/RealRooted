@@ -12,6 +12,8 @@ open Polynomial
 version = 1
 section = "theorems"
 slug = "hermite-biehler-hurwitz"
+authors = ["Holtz"]
+years = [2003]
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_forward"

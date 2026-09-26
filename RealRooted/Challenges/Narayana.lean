@@ -7,6 +7,8 @@ import RealRooted.NarayanaTransformation.Endpoints
 version = 1
 section = "families"
 slug = "narayana"
+authors = ["Mao", "Wang", "Dominici", "Johnston", "Jordaan"]
+years = [2013, 2026]
 
 [[definitions]]
 name = "RealRooted.narayanaPolynomial"

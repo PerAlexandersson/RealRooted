@@ -9,6 +9,8 @@ open Polynomial
 version = 1
 section = "theorems"
 slug = "chudnovsky-seymour"
+authors = ["Chudnovsky", "Seymour"]
+years = [2007]
 
 [[definitions]]
 name = "RealRooted.Challenges.ChudnovskySeymour.ClawFreeGraph"

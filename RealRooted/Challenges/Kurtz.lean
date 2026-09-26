@@ -7,6 +7,8 @@ import RealRooted.Kurtz
 version = 1
 section = "theorems"
 slug = "kurtz"
+authors = ["Kurtz"]
+years = [1992]
 
 [[definitions]]
 name = "RealRooted.Kurtz.PositiveCoeffsUpToDegree"

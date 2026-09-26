@@ -7,6 +7,8 @@ import RealRooted.AissenSchoenbergWhitney
 version = 1
 section = "theorems"
 slug = "aissen-schoenberg-whitney"
+authors = ["Aissen", "Schoenberg", "Whitney"]
+years = [1952]
 
 [[definitions]]
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.CoefficientsPolyaFrequency"

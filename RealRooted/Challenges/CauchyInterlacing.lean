@@ -7,6 +7,8 @@ import RealRooted.CauchyInterlacing.Polynomial
 version = 1
 section = "theorems"
 slug = "cauchy-interlacing"
+authors = ["Fisk"]
+years = [2005]
 
 [[theorems]]
 name = "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_eigenvalues_interlace"

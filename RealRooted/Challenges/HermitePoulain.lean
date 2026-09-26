@@ -7,6 +7,7 @@ import RealRooted.HermitePoulain
 version = 1
 section = "theorems"
 slug = "hermite-poulain"
+authors = ["Hermite", "Poulain"]
 
 [[definitions]]
 name = "RealRooted.HermitePoulain.applyAsDifferentialOperator"
