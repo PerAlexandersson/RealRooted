@@ -90,7 +90,7 @@ def generate_module(
             for record in records
         }
     )
-    names = ", ".join(lean_name_literal(record.name) for record in records)
+    names = [f"    {lean_name_literal(record.name)}," for record in records]
     lines = [
         "import Lean",
         "import Lean.Elab.Command",
@@ -100,7 +100,9 @@ def generate_module(
         "",
         "run_cmd do",
         "  let env ← getEnv",
-        f"  let names : Array Name := #[{names}]",
+        "  let names : Array Name := #[",
+        *names,
+        "  ]",
         "  for name in names do",
         "    match env.find? name with",
         "    | none =>",

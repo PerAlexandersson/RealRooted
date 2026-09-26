@@ -36,10 +36,21 @@ class ChallengeCatalogAuditTests(unittest.TestCase):
 
     def test_generated_kind_match_covers_recursor_constants(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            path = pathlib.Path(directory) / "Audit.lean"
-            audit.generate_module(pathlib.Path(directory), path, [])
+            root = pathlib.Path(directory)
+            path = root / "Audit.lean"
+            records = [
+                audit.Record(
+                    "RealRooted.Challenges.Sample.a_representative_public_theorem",
+                    "theorem",
+                    "RealRooted.Challenges.Sample",
+                    root / "RealRooted/Challenges/Sample.lean",
+                    1,
+                )
+            ]
+            audit.generate_module(root, path, records)
             source = path.read_text(encoding="utf-8")
             self.assertIn(".recInfo _ => \"other\"", source)
+            self.assertLessEqual(max(map(len, source.splitlines())), 100)
 
 if __name__ == "__main__":
     unittest.main()
