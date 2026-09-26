@@ -12,9 +12,6 @@ slug = "veronese-sections"
 name = "RealRooted.veroneseSectionPolynomial"
 module = "RealRooted.VeroneseSection"
 
-[[definitions]]
-name = "RealRooted.Challenges.VeroneseSections.NonnegativeRealRootedPolynomial"
-
 [[theorems]]
 name = "RealRooted.Challenges.VeroneseSections.preserve_realRooted_nonneg"
 -->
@@ -22,11 +19,9 @@ name = "RealRooted.Challenges.VeroneseSections.preserve_realRooted_nonneg"
 <!-- realrooted-catalog-content -->
 # Veronese sections
 
-The `k`th `r`-Veronese section retains the coefficients whose indices are
-congruent to `k` modulo `r` and compresses their exponents.  The selected
-theorem proves that every section of a nonzero real-rooted polynomial with
-nonnegative coefficients is either zero or real-rooted.  Its proof uses the
-project’s Pólya-frequency and cyclic-matrix infrastructure.
+The `k`th `r`-Veronese section keeps coefficients with indices congruent to
+`k` modulo `r`. Every section of a nonzero real-rooted polynomial with
+nonnegative coefficients is zero or real-rooted.
 
 ## References
 
@@ -51,24 +46,16 @@ namespace RealRooted
 namespace Challenges
 namespace VeroneseSections
 
-/-- Challenge-facing name for the `k`th `r`-Veronese section of a polynomial. -/
-noncomputable abbrev VeroneseSection (r k : ℕ) (p : ℝ[X]) : ℝ[X] :=
-  veroneseSectionPolynomial r k p
-
-/-- Challenge-facing input class for the Veronese-section theorem. -/
-abbrev NonnegativeRealRootedPolynomial (p : ℝ[X]) : Prop :=
-  HasNonnegCoeffs p ∧ p ≠ 0 ∧ p.Splits
-
 /-- Veronese sections preserve real-rootedness for polynomials with
 nonnegative coefficients, allowing the selected section to vanish. -/
 theorem preserve_realRooted_nonneg :
     ∀ {r k : ℕ}, 0 < r → k < r → {p : ℝ[X]} →
-      NonnegativeRealRootedPolynomial p →
-        VeroneseSection r k p = 0 ∨
-          (VeroneseSection r k p).Splits :=
-  fun {_r} {_k} hr hk {_p} hp =>
+      HasNonnegCoeffs p → p ≠ 0 → p.Splits →
+        veroneseSectionPolynomial r k p = 0 ∨
+          (veroneseSectionPolynomial r k p).Splits :=
+  fun {_r} {_k} hr hk {_p} hp hp0 hsplits =>
     RealRooted.isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
-      hr hk hp.1 hp.2.1 hp.2.2
+      hr hk hp hp0 hsplits
 
 end VeroneseSections
 end Challenges

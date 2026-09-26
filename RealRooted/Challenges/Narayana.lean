@@ -34,22 +34,9 @@ module = "RealRooted.NarayanaTransformation.Endpoints"
 <!-- realrooted-catalog-content -->
 # Generalized Narayana polynomials
 
-The canonical family in this page is the two-parameter polynomial
-
-`N_{n,m}(x) = Σₖ (binom(n,k) binom(n+m,k) / binom(m+k,k)) xᵏ`,
-
-represented in Lean by `narayanaPolynomial m n`, whose Lean arguments are in
-the order `(m, n)`.  The associated `narayanaTransform m` sends the monomial
-`X^k` to `N_{k,m}`.  The selected theorems prove real splitting for every
-generalized Narayana polynomial,
-package the family as Pólya-frequency polynomials, and prove preservation of
-Pólya-frequency polynomials under this transform.
-
-These are the generalized transformation results developed in
-`RealRooted.NarayanaTransformation`.  They are distinct from the
-recurrence-facing conditional family in
-`RealRooted.CombinatorialExamples.Narayana`; the two are not identified by
-this catalog.
+`narayanaPolynomial m n` is the generalized Narayana polynomial with
+parameters `(m, n)`. These polynomials are Pólya-frequency, and the associated
+Narayana transform preserves Pólya-frequency polynomials.
 
 ## References
 

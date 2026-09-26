@@ -14,9 +14,6 @@ years = [1952]
 name = "RealRooted.IsPolyaFreqSeq"
 module = "RealRooted.AissenSchoenbergWhitneyBase"
 
-[[definitions]]
-name = "RealRooted.Challenges.AissenSchoenbergWhitney.HasRealNonposRoots"
-
 [[theorems]]
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.forwardTheorem"
 
@@ -27,16 +24,9 @@ name = "RealRooted.Challenges.AissenSchoenbergWhitney.reverseTheorem"
 <!-- realrooted-catalog-content -->
 # Aissen–Schoenberg–Whitney
 
-For a real polynomial `p`, `CoefficientsPolyaFrequency p` abbreviates the
-Pólya-frequency condition on its coefficient sequence.  `HasRealNonposRoots p`
-packages real splitting together with the assertion that every root is
-nonpositive.  The forward theorem proves that Pólya-frequency coefficients
-force this real nonpositive-root property.  The reverse theorem proves the
-converse under the explicit nonnegative-coefficient hypothesis used by the
-formalization.
-
-The catalog intentionally selects the checked forward and reverse theorems;
-the internal `forwardTarget` spelling is not itself a catalog entry.
+A finite nonnegative sequence is Pólya-frequency exactly when its generating
+polynomial has only real nonpositive roots. The selected theorems prove both
+directions for polynomial coefficients.
 
 ## References
 
@@ -64,29 +54,18 @@ namespace RealRooted
 namespace Challenges
 namespace AissenSchoenbergWhitney
 
-/-- Challenge-facing name for the Toeplitz total-nonnegativity condition on
-the coefficient sequence of a polynomial. -/
-abbrev CoefficientsPolyaFrequency (p : ℝ[X]) : Prop :=
-  IsPolyaFreqSeq p.coeff
-
-/-- Challenge-facing name for having only real nonpositive roots. -/
-abbrev HasRealNonposRoots (p : ℝ[X]) : Prop :=
-  p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
-
-/-- Compatibility proposition for the forward ASW implication. -/
-abbrev forwardTarget : Prop :=
-  ∀ {p : ℝ[X]}, CoefficientsPolyaFrequency p → HasRealNonposRoots p
-
 /-- Checked forward ASW theorem: PF coefficients imply real non-positive roots. -/
-theorem forwardTheorem : forwardTarget :=
-  fun hpf => RealRooted.aissenSchoenbergWhitneyForward hpf
+theorem forwardTheorem :
+    ∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
+      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 :=
+  RealRooted.aissenSchoenbergWhitneyForward
 
 /-- Reverse ASW theorem: real non-positive roots imply PF coefficients. -/
 theorem reverseTheorem :
     ∀ {p : ℝ[X]},
       HasNonnegCoeffs p →
-      HasRealNonposRoots p →
-      CoefficientsPolyaFrequency p :=
+      (p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) →
+      IsPolyaFreqSeq p.coeff :=
   fun hp ⟨hsplits, hroots⟩ =>
     RealRooted.aissenSchoenbergWhitney_reverse hp hsplits hroots
 

@@ -13,8 +13,7 @@ functions", Trans. Amer. Math. Soc. 25 (1923), 325--332, and D. C. Kurtz,
 "A sufficient condition for all the roots of a polynomial to be real",
 Amer. Math. Monthly 99 (1992), 259--263.
 
-This module proves the formal coefficient-inequality criterion. The challenge
-entry point remains a thin compatibility wrapper.
+This module proves the formal coefficient-inequality criterion.
 -/
 
 open Polynomial
@@ -22,19 +21,12 @@ open Polynomial
 namespace RealRooted
 namespace Kurtz
 
-/-- Challenge-facing name for positivity of all coefficients up to the degree
-of `p`. -/
-abbrev PositiveCoeffsUpToDegree (p : ℝ[X]) : Prop :=
+/-- Positivity of all coefficients up to the degree of `p`. -/
+def PositiveCoeffsUpToDegree (p : ℝ[X]) : Prop :=
   ∀ i ≤ p.natDegree, 0 < p.coeff i
 
-/-- Compatibility spelling for positivity of all coefficients up to the degree
-of `p`. -/
-abbrev PositiveCoefficientsUpToDegree (p : ℝ[X]) : Prop :=
-  PositiveCoeffsUpToDegree p
-
-/-- Challenge-facing name for the strict Hutchinson--Kurtz coefficient
-inequalities. -/
-abbrev KurtzStrictInequalities (p : ℝ[X]) : Prop :=
+/-- The strict Hutchinson--Kurtz coefficient inequalities. -/
+def KurtzStrictInequalities (p : ℝ[X]) : Prop :=
   ∀ i : ℕ, 0 < i → i < p.natDegree →
     4 * p.coeff (i - 1) * p.coeff (i + 1) < (p.coeff i) ^ 2
 
@@ -482,7 +474,7 @@ theorem coefficient_criterion {p : ℝ[X]}
     p.Splits :=
   splits_of_card_roots (coefficient_criterion_card_roots hdeg hpos hineq)
 
-/-- Compatibility wrapper for the original challenge-facing theorem name. -/
+/-- The Hutchinson--Kurtz coefficient criterion. -/
 theorem coefficientCriterion {p : ℝ[X]}
     (hdeg : 2 ≤ p.natDegree)
     (hpos : PositiveCoeffsUpToDegree p)

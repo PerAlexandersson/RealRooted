@@ -27,11 +27,9 @@ name = "RealRooted.Challenges.ChudnovskySeymour.clawFree_indepPoly_splits"
 <!-- realrooted-catalog-content -->
 # Claw-free independence polynomials
 
-The independence polynomial records independent vertex sets by cardinality.
-The Chudnovsky–Seymour theorem states that the independence polynomial of
-every finite claw-free graph has only real roots.  The selected Lean theorem
-uses the repository’s finite-graph definitions and proves real splitting
-directly for the resulting polynomial.
+The independence polynomial counts independent vertex sets by cardinality.
+Chudnovsky and Seymour proved that it is real-rooted for every finite
+claw-free graph.
 
 ## References
 
@@ -48,8 +46,7 @@ Original publication: M. Chudnovsky and P. Seymour, "The roots of the
 independence polynomial of a clawfree graph", J. Combin. Theory Ser. B 97
 (2007), 350--357.
 
-This challenge-facing module exposes the graph-form Chudnovsky--Seymour theorem:
-finite claw-free graphs have real-rooted independence polynomials.
+This module states the Chudnovsky--Seymour theorem for finite graphs.
 -/
 
 namespace RealRooted
@@ -58,21 +55,11 @@ namespace ChudnovskySeymour
 
 universe u
 
-/-- Challenge-facing name for claw-free finite graphs. -/
-abbrev ClawFreeGraph {V : Type u} (G : _root_.SimpleGraph V) : Prop :=
-  RealRooted.Graph.ClawFree G
-
-/-- Challenge-facing name for the independence polynomial. -/
-noncomputable abbrev IndependencePolynomial
-    {V : Type u} [Fintype V] [DecidableEq V]
-    (G : _root_.SimpleGraph V) : ℝ[X] :=
-  RealRooted.Graph.indepPoly G
-
 /-- Finite claw-free graph independence polynomials are real-rooted. -/
 theorem clawFree_indepPoly_splits :
     ∀ {V : Type u} [Fintype V] [DecidableEq V]
       (G : _root_.SimpleGraph V),
-      ClawFreeGraph G → (IndependencePolynomial G).Splits :=
+      RealRooted.Graph.ClawFree G → (RealRooted.Graph.indepPoly G).Splits :=
   RealRooted.Graph.clawFree_indepPoly_splits
 
 end ChudnovskySeymour

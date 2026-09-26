@@ -28,11 +28,9 @@ name = "RealRooted.Challenges.HermiteBiehlerHurwitz.classicalHurwitzCriterion"
 <!-- realrooted-catalog-content -->
 # Hermite–Biehler and Hurwitz criteria
 
-The Hermite–Biehler theorem relates half-plane stability of a real polynomial
-to proper position of its even and odd parts.  The catalog includes checked
-forward and converse forms with their sign normalization explicit.  The
-Hurwitz criterion then characterizes weak Hurwitz stability of a nonzero real
-polynomial by total nonnegativity of its classical Hurwitz matrix.
+The Hermite–Biehler theorem characterizes half-plane stability through
+interlacing of the even and odd parts. The Hurwitz criterion characterizes
+weak Hurwitz stability by total nonnegativity of the classical Hurwitz matrix.
 
 ## References
 
@@ -65,34 +63,30 @@ namespace RealRooted
 namespace Challenges
 namespace HermiteBiehlerHurwitz
 
-/-- Challenge-facing name for the sign-normalized forward Hermite--Biehler
-target. -/
-abbrev HermiteBiehlerForwardTarget : Prop :=
-  RealRooted.hermiteBiehlerForwardPosStatement
-
-/-- Challenge-facing name for the converse Hermite--Biehler target. -/
-abbrev HermiteBiehlerConverseTarget : Prop :=
-  RealRooted.hermiteBiehlerConverseStatement
-
-/-- Challenge-facing name for the refuted converse row-oriented
-Hurwitz-matrix criterion. -/
-abbrev HurwitzMatrixCriterionTarget : Prop :=
-  RealRooted.LegacyHurwitzMatrixTotallyNonnegativeToStableStatement
-
 /-- Sign-normalized forward Hermite--Biehler target. -/
 theorem hermiteBiehler_forward :
-    HermiteBiehlerForwardTarget :=
+    ∀ {f g : ℝ[X]},
+      HasPosLeadingCoeff f →
+      HasPosLeadingCoeff g →
+      StrictInterl g f →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) :=
   RealRooted.hermiteBiehlerForwardPos
 
 /-- Converse Hermite--Biehler target. -/
 theorem hermiteBiehler_converse :
-    HermiteBiehlerConverseTarget :=
+    ∀ ⦃f g : ℝ[X]⦄,
+      HasPosLeadingCoeff f →
+      HasPosLeadingCoeff g →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
+      StrictInterl g f ∨ StrictInterl f g :=
   @RealRooted.hermiteBiehlerConverse
 
 /-- The converse criterion is false for the row orientation used by
 `RealRooted.hurwitz`. -/
 theorem not_hurwitzMatrixCriterion :
-    ¬ HurwitzMatrixCriterionTarget :=
+    ¬ ∀ ⦃p : ℝ[X]⦄,
+      p ≠ 0 → (RealRooted.hurwitz p.coeff).IsTotallyNonneg →
+        IsHurwitzStable p :=
   RealRooted.not_hurwitzMatrixTotallyNonnegativeToStableStatement
 
 /-- For the stored polynomial `X³ + 1`, the order-three leading principal
@@ -131,8 +125,7 @@ theorem classicalHurwitzMatrixCriterionCounterexample_ne_legacy :
 
 /-! ### Corrected-convention acceptance regressions -/
 
-/-- Challenge-facing form of the corrected classical Hurwitz criterion for
-nonzero real polynomials. -/
+/-- The classical Hurwitz criterion for nonzero real polynomials. -/
 theorem classicalHurwitzCriterion {p : ℝ[X]} (hp : p ≠ 0) :
     RealRooted.IsHurwitzStable p ↔
       (Matrix.hurwitz p.coeff).IsTotallyNonneg :=

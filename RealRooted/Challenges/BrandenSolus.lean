@@ -23,12 +23,9 @@ name = "RealRooted.Challenges.BrandenSolus.theorem26"
 <!-- realrooted-catalog-content -->
 # Brändén–Solus symmetric decomposition
 
-The `I_d`-decomposition writes a polynomial as `a + X b` with the prescribed
-reciprocal symmetries in ambient degree `d`.  The selected theorem is the
-checked form of Brändén–Solus Theorem 2.6: under its nondegeneracy,
-coefficient, degree, and reciprocal-root hypotheses, the two symmetric pieces
-are in proper position.  The boundary cases are included in the underlying
-proof rather than assumed as an external input.
+The `I_d`-decomposition writes a polynomial as `a + X b` with reciprocal
+symmetry conditions on `a` and `b`. Under the hypotheses of Brändén–Solus
+Theorem 2.6, these two pieces interlace.
 
 ## References
 
@@ -53,17 +50,20 @@ namespace RealRooted
 namespace Challenges
 namespace BrandenSolus
 
-/-- Challenge-facing name for the symmetric `I_d`-decomposition. -/
-abbrev IDecomposition (d : ℕ) (p a b : ℝ[X]) : Prop :=
-  IsIdDecomposition d p a b
-
-/-- Challenge-facing name for the Brändén--Solus Theorem 2.6 target. -/
-abbrev Theorem26Target : Prop :=
-  RealRooted.brandenSolusTheorem26Statement
-
-/-- Branden--Solus symmetric-decomposition theorem, challenge-facing alias. -/
+/-- Branden--Solus symmetric-decomposition theorem. -/
 theorem theorem26 :
-    Theorem26Target :=
+    ∀ {d : ℕ} {p a b : ℝ[X]},
+      p.natDegree ≤ d →
+      IsIdDecomposition d p a b →
+      HasNonnegCoeffs a →
+      HasNonnegCoeffs b →
+      a ≠ 0 →
+      b ≠ 0 →
+      (StrictInterl b a ↔ StrictInterl a p) ∧
+      (StrictInterl a p ↔ StrictInterl b p) ∧
+      (StrictInterl b p ↔ StrictInterl (IdTransform d p) p) ∧
+      (StrictInterl (IdTransform d p) p ↔
+        StrictInterl (RdTransform d (fPolynomial d p)) (fPolynomial d p)) :=
   RealRooted.brandenSolusTheorem26
 
 end BrandenSolus

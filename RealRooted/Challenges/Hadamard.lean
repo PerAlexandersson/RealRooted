@@ -27,9 +27,6 @@ module = "RealRooted.PFPolynomial"
 name = "RealRooted.toeplitz"
 module = "RealRooted.AissenSchoenbergWhitneyBase"
 
-[[definitions]]
-name = "RealRooted.Challenges.Hadamard.MatrixHadamardProduct"
-
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.finiteSchurSzegoComposition"
 
@@ -49,15 +46,10 @@ name = "RealRooted.Challenges.Hadamard.polynomialValueProductPolyaFrequency"
 <!-- realrooted-catalog-content -->
 # Hadamard products and Schur–Szegő composition
 
-This page collects checked closure theorems for coefficientwise products.  A
-fixed-degree Schur–Szegő composition with a Pólya-frequency factor preserves
-real splitting up to zero.  The finite Pólya–Schur theorem characterizes
-nonnegative multiplier sequences by their Jensen polynomials.  The
-Garloff–Wagner theorem preserves proper position under Hadamard product.
-Maló's theorem says that the entrywise product of two totally nonnegative
-lower-triangular Toeplitz matrices remains totally nonnegative when the
-diagonal sequences have finite support.  Polynomial-value Pólya-frequency
-sequences are also closed under multiplication of their defining polynomials.
+Schur–Szegő composition and coefficientwise products preserve several
+real-rootedness and interlacing classes. The page also includes the finite
+Pólya–Schur theorem and Maló’s total-nonnegativity theorem for Toeplitz
+matrices.
 
 ## References
 
@@ -108,38 +100,14 @@ namespace RealRooted
 namespace Challenges
 namespace Hadamard
 
-/-- Challenge-facing name for the fixed-degree Schur--Szego composition. -/
-noncomputable abbrev SchurSzegoComposition (n : Nat) (f g : ℝ[X]) : ℝ[X] :=
-  schurSzegoComp n f g
-
-/-- Challenge-facing name for coefficientwise Hadamard product. -/
-noncomputable abbrev HadamardProduct (p q : ℝ[X]) : ℝ[X] :=
-  hadamardProduct p q
-
-/-- Challenge-facing name for polynomial-side Pólya-frequency. -/
-abbrev PolyaFrequencyPolynomial (p : ℝ[X]) : Prop :=
-  IsPFPolynomial p
-
-/-- The lower-triangular Toeplitz matrix associated with a sequence. -/
-abbrev ToeplitzMatrix (a : ℕ → ℝ) : Matrix ℕ ℕ ℝ :=
-  toeplitz a
-
-/-- Entrywise (Hadamard) product of two matrices. -/
-abbrev MatrixHadamardProduct (M N : Matrix ℕ ℕ ℝ) : Matrix ℕ ℕ ℝ :=
-  Matrix.of fun i j => M i j * N i j
-
-/-- Challenge-facing name for a nonnegative-coefficient proper-position pair. -/
-abbrev NonnegativeProperPositionPair (f g : ℝ[X]) : Prop :=
-  HasNonnegCoeffs f ∧ HasNonnegCoeffs g ∧ StrictInterl f g
-
 /-- Fixed-degree Schur--Szego composition theorem. -/
 theorem finiteSchurSzegoComposition :
     ∀ {n : ℕ} {f p : ℝ[X]},
-      PolyaFrequencyPolynomial f →
+      IsPFPolynomial f →
       f.natDegree ≤ n →
       p.natDegree ≤ n →
       p.Splits →
-        SchurSzegoComposition n f p = 0 ∨ (SchurSzegoComposition n f p).Splits :=
+        schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
   RealRooted.finiteSchurSzegoComposition
 
 /-- Finite Polya--Schur theorem in the nonnegative-coefficient convention. -/
@@ -147,27 +115,26 @@ theorem finitePolyaSchur_nonneg :
     ∀ {n : ℕ} {gamma : ℕ → ℝ},
       (∀ k, 0 ≤ gamma k) →
         (IsFiniteMultiplierSequence n gamma ↔
-          PolyaFrequencyPolynomial (jensenPolynomial n gamma)) :=
+          IsPFPolynomial (jensenPolynomial n gamma)) :=
   RealRooted.finitePolyaSchur_nonneg
 
-/-- Garloff--Wagner proper-position Hadamard theorem. -/
+/-- Garloff--Wagner interlacing theorem for coefficientwise products. -/
 theorem garloffWagnerHadamardNonnegInterl :
     ∀ {f g p q : ℝ[X]},
-      NonnegativeProperPositionPair f g →
-      NonnegativeProperPositionPair p q →
-      Interl (HadamardProduct f p) (HadamardProduct g q) :=
-  fun hfg hpq =>
-    RealRooted.garloffWagnerHadamardNonnegInterl
-      hfg.1 hfg.2.1 hpq.1 hpq.2.1 hfg.2.2 hpq.2.2
+      HasNonnegCoeffs f → HasNonnegCoeffs g →
+      HasNonnegCoeffs p → HasNonnegCoeffs q →
+      StrictInterl f g → StrictInterl p q →
+      Interl (hadamardProduct f p) (hadamardProduct g q) :=
+  RealRooted.gwHadamardProductNonnegInterl
 
 /-- Maló's theorem for finite-support Pólya-frequency sequences: the
 entrywise product of their lower-triangular Toeplitz matrices is totally
 nonnegative.  Polynomial coefficients encode the finite-support condition. -/
 theorem maloToeplitzHadamard {p q : ℝ[X]}
-    (hp : (ToeplitzMatrix p.coeff).IsTotallyNonneg)
-    (hq : (ToeplitzMatrix q.coeff).IsTotallyNonneg) :
-    (MatrixHadamardProduct (ToeplitzMatrix p.coeff)
-      (ToeplitzMatrix q.coeff)).IsTotallyNonneg :=
+    (hp : (toeplitz p.coeff).IsTotallyNonneg)
+    (hq : (toeplitz q.coeff).IsTotallyNonneg) :
+    (Matrix.of fun i j =>
+      toeplitz p.coeff i j * toeplitz q.coeff i j).IsTotallyNonneg :=
   RealRooted.maloToeplitzHadamard_isTotallyNonneg hp hq
 
 /-- Polynomial-value PF sequences are closed under polynomial multiplication.

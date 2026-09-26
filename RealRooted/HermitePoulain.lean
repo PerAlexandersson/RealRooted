@@ -13,8 +13,7 @@ and B. Ya. Levin's account of entire functions.
 
 This module proves the finite-polynomial differential-operator theorem:
 if `f` and `g` are real-rooted, then applying `f(D)` to `g` preserves
-real-rootedness, allowing the result to vanish. The challenge entry point is a
-thin compatibility wrapper.
+real-rootedness, allowing the result to vanish.
 -/
 
 open Polynomial
@@ -26,7 +25,7 @@ namespace HermitePoulain
 
 /-- The finite constant-coefficient differential operator `f(D)` applied to
 `g`. -/
-abbrev applyAsDifferentialOperator (f g : ℝ[X]) : ℝ[X] :=
+def applyAsDifferentialOperator (f g : ℝ[X]) : ℝ[X] :=
   (Finset.range (f.natDegree + 1)).sum fun k =>
     C (f.coeff k) * ((derivative^[k]) g)
 
@@ -230,7 +229,7 @@ theorem differential_operator_preserves_real_rooted {f g : ℝ[X]}
       · exact ihx hy
   exact this f hf.2 hg.2
 
-/-- Compatibility wrapper for the original challenge-facing theorem name. -/
+/-- Hermite--Poulain in the nonzero-and-splitting formulation. -/
 theorem differentialOperator_preserves_realRooted {f g : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits)
     (hg : g ≠ 0 ∧ g.Splits) :
