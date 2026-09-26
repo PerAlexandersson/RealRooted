@@ -14,7 +14,7 @@ namespace RealRooted
 
 /-- Sequence-level Liu--Wang induction for a lag coefficient that is
 nonpositive at all roots of the current row. -/
-theorem prec_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
+theorem strictInterl_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
     {A B : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -28,7 +28,7 @@ theorem prec_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
   have hInter : Interlaces (P n) (P (n + 1)) :=
     hprev.toInterlaces (hdeg_succ n)
   have hstep : StrictInterl (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
-    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+    strictInterl_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
       (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) (hB_nonpos n)
   simpa [← hrec n] using hstep
 
@@ -50,7 +50,7 @@ theorem strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos {P : Nat → ℝ
     hprev.toInterlaces (hdeg_succ n)
   have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
   have hstep : StrictInterl (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
-    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+    strictInterl_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
       (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) (hB_nonpos n hsource)
   simpa [← hrec n] using hstep
 
@@ -66,7 +66,7 @@ theorem isRealRooted_of_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_nonpos_lag_sequence hbase hpos hB_nonpos hrec hdeg_succ hno
+    strictInterl_lw_nonpos_lag_sequence hbase hpos hB_nonpos hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for sequence-level nonpositive-lag Liu--Wang
 induction with an inductive lag-sign certificate. -/
@@ -90,7 +90,7 @@ This wrapper consumes the raw OEIS-style recurrence
 `C d_n * P_{n+2} = C d_n * (A_n P_{n+1} + B_n P_n)` and cancels the
 nonzero scalar denominator internally before applying the usual nonpositive-lag
 sequence theorem. -/
-theorem prec_lw_nonpos_lag_sequence_den {P : Nat → ℝ[X]}
+theorem strictInterl_lw_nonpos_lag_sequence_den {P : Nat → ℝ[X]}
     {A B : Nat → ℝ[X]} {d : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -102,7 +102,7 @@ theorem prec_lw_nonpos_lag_sequence_den {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence (A := A) hbase hpos hB_nonpos
+  strictInterl_lw_nonpos_lag_sequence (A := A) hbase hpos hB_nonpos
     (fun n => eq_of_C_mul_eq_C_mul (hden n) (hraw n)) hdeg_succ hno
 
 /-- Real-rootedness corollary for denominator-fused nonpositive-lag
@@ -120,11 +120,11 @@ theorem isRealRooted_of_lw_nonpos_lag_sequence_den {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_nonpos_lag_sequence_den hbase hpos hB_nonpos hden hraw hdeg_succ hno
+    strictInterl_lw_nonpos_lag_sequence_den hbase hpos hB_nonpos hden hraw hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for globally nonpositive negative
 constant lag. -/
-theorem prec_lw_negative_const_lag_sequence {P : Nat → ℝ[X]}
+theorem strictInterl_lw_negative_const_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -133,7 +133,7 @@ theorem prec_lw_negative_const_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence
+  strictInterl_lw_nonpos_lag_sequence
     (B := fun n => -(C (c n))) hbase hpos
     (fun n _ _ => eval_neg_C_nonpos_of_nonneg (hc n))
     hrec hdeg_succ hno
@@ -149,10 +149,10 @@ theorem isRealRooted_of_lw_negative_const_lag_sequence {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_negative_const_lag_sequence hbase hpos hc hrec hdeg_succ hno
+    strictInterl_lw_negative_const_lag_sequence hbase hpos hc hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for normalized `C (-c_n)` lag. -/
-theorem prec_lw_negative_const_C_neg_lag_sequence {P : Nat → ℝ[X]}
+theorem strictInterl_lw_negative_const_C_neg_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -161,7 +161,7 @@ theorem prec_lw_negative_const_C_neg_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence
+  strictInterl_lw_nonpos_lag_sequence
     (B := fun n => C (-(c n))) hbase hpos
     (fun n _ _ => eval_C_neg_nonpos_of_nonneg (hc n))
     hrec hdeg_succ hno
@@ -177,11 +177,11 @@ theorem isRealRooted_of_lw_negative_const_C_neg_lag_sequence {P : Nat → ℝ[X]
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_negative_const_C_neg_lag_sequence hbase hpos hc hrec hdeg_succ hno
+    strictInterl_lw_negative_const_C_neg_lag_sequence hbase hpos hc hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for globally nonpositive negative-square
 lag. -/
-theorem prec_lw_negative_square_lag_sequence {P : Nat → ℝ[X]}
+theorem strictInterl_lw_negative_square_lag_sequence {P : Nat → ℝ[X]}
     {A q : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -191,7 +191,7 @@ theorem prec_lw_negative_square_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence
+  strictInterl_lw_nonpos_lag_sequence
     (B := fun n => -(C (c n)) * (q n) ^ 2) hbase hpos
     (fun n _ _ => eval_neg_C_mul_sq_nonpos_of_nonneg (hc n))
     hrec hdeg_succ hno
@@ -208,13 +208,13 @@ theorem isRealRooted_of_lw_negative_square_lag_sequence {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_negative_square_lag_sequence hbase hpos hc hrec hdeg_succ hno
+    strictInterl_lw_negative_square_lag_sequence hbase hpos hc hrec hdeg_succ hno
 
 /-- Sequence-level negative-square lag with unit scalar coefficient.
 
 This accepts the natural recurrence spelling `-q_n^2 P_n` without requiring a
 visible `-(C 1) * q_n^2` coefficient. -/
-theorem prec_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]}
+theorem strictInterl_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]}
     {A q : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -223,7 +223,7 @@ theorem prec_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_negative_square_lag_sequence
+  strictInterl_lw_negative_square_lag_sequence
     (A := A) (q := q) (c := fun _ => 1) hbase hpos (fun _ => by norm_num)
     (fun n => by simpa using hrec n) hdeg_succ hno
 
@@ -238,7 +238,7 @@ theorem isRealRooted_of_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_negative_square_lag_sequence_unit hbase hpos hrec hdeg_succ hno
+    strictInterl_lw_negative_square_lag_sequence_unit hbase hpos hrec hdeg_succ hno
 
 /-- Denominator-fused negative-square Liu--Wang induction for split raw
 coefficients.
@@ -248,7 +248,7 @@ This matches Narayana-style OEIS recurrences where the raw recurrence has
 `C d_n`, and the lag summand written as
 `C b_n * (-(q_n)^2 * P_n)`.  The side condition
 `d_n⁻¹ * b_n = c_n` gives the normalized negative-square coefficient. -/
-theorem prec_lw_negative_square_lag_sequence_den_coeff {P : Nat → ℝ[X]}
+theorem strictInterl_lw_negative_square_lag_sequence_den_coeff {P : Nat → ℝ[X]}
     {A q : Nat → ℝ[X]} {b c d : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -262,7 +262,7 @@ theorem prec_lw_negative_square_lag_sequence_den_coeff {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   refine
-    prec_lw_negative_square_lag_sequence
+    strictInterl_lw_negative_square_lag_sequence
       (A := A) (q := q) (c := c) hbase hpos hc ?_ hdeg_succ hno
   intro n
   have hnorm :
@@ -289,12 +289,12 @@ theorem isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_negative_square_lag_sequence_den_coeff
+    strictInterl_lw_negative_square_lag_sequence_den_coeff
       hbase hpos hc hden hcoeff hraw hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for a negative-definite monic quadratic
 lag. -/
-theorem prec_lw_negative_monic_quadratic_lag_sequence {P : Nat → ℝ[X]}
+theorem strictInterl_lw_negative_monic_quadratic_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {b c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -305,7 +305,7 @@ theorem prec_lw_negative_monic_quadratic_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence
+  strictInterl_lw_nonpos_lag_sequence
     (B := fun n => -(X ^ 2 + C (b n) * X + C (c n))) hbase hpos
     (fun n _ _ => eval_neg_monic_quadratic_nonpos_of_discrim_nonpos (hdisc n))
     hrec hdeg_succ hno
@@ -324,11 +324,11 @@ theorem isRealRooted_of_lw_negative_monic_quadratic_lag_sequence
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_negative_monic_quadratic_lag_sequence hbase hpos hdisc hrec hdeg_succ hno
+    strictInterl_lw_negative_monic_quadratic_lag_sequence hbase hpos hdisc hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for a globally nonpositive quadratic
 lag with a non-monic leading coefficient. -/
-theorem prec_lw_negative_quadratic_lag_sequence {P : Nat → ℝ[X]}
+theorem strictInterl_lw_negative_quadratic_lag_sequence {P : Nat → ℝ[X]}
     {A : Nat → ℝ[X]} {a b c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -341,7 +341,7 @@ theorem prec_lw_negative_quadratic_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence
+  strictInterl_lw_nonpos_lag_sequence
     (B := fun n => -(C (a n) * X ^ 2 + C (b n) * X + C (c n))) hbase hpos
     (fun n _ _ => eval_neg_quadratic_nonpos_of_discrim_nonpos
       (ha n) (hc n) (hdisc n))
@@ -363,7 +363,7 @@ theorem isRealRooted_of_lw_negative_quadratic_lag_sequence
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_negative_quadratic_lag_sequence
+    strictInterl_lw_negative_quadratic_lag_sequence
       hbase hpos ha hc hdisc hrec hdeg_succ hno
 
 /-- Denominator-fused Liu--Wang induction for a raw split non-monic
@@ -373,7 +373,7 @@ This matches OEIS-style recurrences where a scalar factor `d_n` multiplies
 `P_{n+2}`, while the lag summand is written with raw quadratic coefficients.
 The three coefficient identities state that division by `d_n` gives the
 normalized quadratic used for the sign certificate. -/
-theorem prec_lw_negative_quadratic_lag_sequence_den_coeff {P : Nat → ℝ[X]}
+theorem strictInterl_lw_negative_quadratic_lag_sequence_den_coeff {P : Nat → ℝ[X]}
     {Araw : Nat → ℝ[X]} {araw braw craw a b c d : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -392,7 +392,7 @@ theorem prec_lw_negative_quadratic_lag_sequence_den_coeff {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   refine
-    prec_lw_negative_quadratic_lag_sequence
+    strictInterl_lw_negative_quadratic_lag_sequence
       (A := fun n => C ((d n)⁻¹) * Araw n)
       (a := a) (b := b) (c := c)
       hbase hpos ha hc hdisc ?_ hdeg_succ hno
@@ -437,12 +437,47 @@ theorem isRealRooted_of_lw_negative_quadratic_lag_sequence_den_coeff
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_negative_quadratic_lag_sequence_den_coeff
+    strictInterl_lw_negative_quadratic_lag_sequence_den_coeff
       hbase hpos ha hc hdisc hden ha_coeff hb_coeff hc_coeff hraw hdeg_succ hno
 
 @[deprecated strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
   (since := "2026-09-18")]
 alias prec_lw_nonpos_lag_sequence_of_inductive_nonpos :=
   strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
+
+@[deprecated strictInterl_lw_nonpos_lag_sequence (since := "2026-09-26")]
+alias prec_lw_nonpos_lag_sequence := strictInterl_lw_nonpos_lag_sequence
+
+@[deprecated strictInterl_lw_nonpos_lag_sequence_den (since := "2026-09-26")]
+alias prec_lw_nonpos_lag_sequence_den := strictInterl_lw_nonpos_lag_sequence_den
+
+@[deprecated strictInterl_lw_negative_const_lag_sequence (since := "2026-09-26")]
+alias prec_lw_negative_const_lag_sequence := strictInterl_lw_negative_const_lag_sequence
+
+@[deprecated strictInterl_lw_negative_const_C_neg_lag_sequence (since := "2026-09-26")]
+alias prec_lw_negative_const_C_neg_lag_sequence :=
+  strictInterl_lw_negative_const_C_neg_lag_sequence
+
+@[deprecated strictInterl_lw_negative_square_lag_sequence (since := "2026-09-26")]
+alias prec_lw_negative_square_lag_sequence := strictInterl_lw_negative_square_lag_sequence
+
+@[deprecated strictInterl_lw_negative_square_lag_sequence_unit (since := "2026-09-26")]
+alias prec_lw_negative_square_lag_sequence_unit :=
+  strictInterl_lw_negative_square_lag_sequence_unit
+
+@[deprecated strictInterl_lw_negative_square_lag_sequence_den_coeff (since := "2026-09-26")]
+alias prec_lw_negative_square_lag_sequence_den_coeff :=
+  strictInterl_lw_negative_square_lag_sequence_den_coeff
+
+@[deprecated strictInterl_lw_negative_monic_quadratic_lag_sequence (since := "2026-09-26")]
+alias prec_lw_negative_monic_quadratic_lag_sequence :=
+  strictInterl_lw_negative_monic_quadratic_lag_sequence
+
+@[deprecated strictInterl_lw_negative_quadratic_lag_sequence (since := "2026-09-26")]
+alias prec_lw_negative_quadratic_lag_sequence := strictInterl_lw_negative_quadratic_lag_sequence
+
+@[deprecated strictInterl_lw_negative_quadratic_lag_sequence_den_coeff (since := "2026-09-26")]
+alias prec_lw_negative_quadratic_lag_sequence_den_coeff :=
+  strictInterl_lw_negative_quadratic_lag_sequence_den_coeff
 
 end RealRooted

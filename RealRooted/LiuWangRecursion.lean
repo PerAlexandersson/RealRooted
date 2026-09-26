@@ -25,7 +25,7 @@ namespace RealRooted
 The lag polynomial `g` is the distinguished interlacer.  The derivative
 `f.derivative` is only used as a tail interlacer, so this theorem does not need
 `f` to be squarefree. -/
-theorem prec_lw_derivative_lag_of_nonpos {f g u v w : ℝ[X]}
+theorem strictInterl_lw_derivative_lag_of_nonpos {f g u v w : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hgf : Interlaces g f)
@@ -61,9 +61,9 @@ theorem prec_lw_derivative_lag_of_nonpos {f g u v w : ℝ[X]}
   have hdeg_hi_weighted :
       (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])).natDegree ≤
         f.natDegree + 1 := by simp_all
-  have hprec :
+  have hstrictInterl :
       StrictInterl f (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])) :=
-    prec_generalizedLiuWang_of_no_common
+    strictInterl_generalizedLiuWang_of_no_common
       (f := f) (g := g) (a := u) (b := w) (l := [(v, f.derivative)])
       hgf hg_pos htail_inter htail_pos htail_nonpos
       hF_pos_weighted hdeg_lo_weighted hdeg_hi_weighted hno hw_nonpos
@@ -71,7 +71,7 @@ theorem prec_lw_derivative_lag_of_nonpos {f g u v w : ℝ[X]}
 
 /-- Sequence-level Liu--Wang induction for derivative-lag recurrences where
 the sign checks may use the current row's already proved real-rootedness. -/
-theorem prec_lw_derivative_lag_sequence_of_root_signs
+theorem strictInterl_lw_derivative_lag_sequence_of_root_signs
     {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -110,14 +110,14 @@ theorem prec_lw_derivative_lag_sequence_of_root_signs
       have hstep :
           StrictInterl (P (n + 1))
             (U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n) :=
-        prec_lw_derivative_lag_of_nonpos
+        strictInterl_lw_derivative_lag_of_nonpos
           hsource.2 (hdeg_two n) hLag_inter (hpos n) (hpos (n + 1))
           hF_pos hdeg_lo hdeg_hi (hno n)
           (hV_nonpos n hsource) (hW_nonpos n hsource)
       simp_all
 
 /-- Sequence-level Liu--Wang induction with direct root-sign side conditions. -/
-theorem prec_lw_derivative_lag_sequence
+theorem strictInterl_lw_derivative_lag_sequence
     {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -132,7 +132,7 @@ theorem prec_lw_derivative_lag_sequence
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_derivative_lag_sequence_of_root_signs
+  strictInterl_lw_derivative_lag_sequence_of_root_signs
     hbase hpos hdeg_two hrec
     (fun n _ r hr => hV_nonpos n r hr)
     (fun n _ r hr => hW_nonpos n r hr)
@@ -140,7 +140,7 @@ theorem prec_lw_derivative_lag_sequence
 
 /-- Sequence-level Liu--Wang induction where the two sign checks are certified
 on an explicit root window. -/
-theorem prec_lw_derivative_lag_sequence_of_root_window
+theorem strictInterl_lw_derivative_lag_sequence_of_root_window
     {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]} {lo hi : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -159,7 +159,7 @@ theorem prec_lw_derivative_lag_sequence_of_root_window
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_derivative_lag_sequence
+  strictInterl_lw_derivative_lag_sequence
     hbase hpos hdeg_two hrec
     (fun n r hr => hV_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
     (fun n r hr => hW_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
@@ -184,15 +184,15 @@ theorem isRealRooted_of_lw_derivative_lag_sequence_of_root_signs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-    prec_lw_derivative_lag_sequence_of_root_signs
+  have hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
+    strictInterl_lw_derivative_lag_sequence_of_root_signs
       hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
   intro n
   cases n with
   | zero =>
       exact hbase.1
   | succ n =>
-      exact (hprec n).2.1
+      exact (hstrictInterl n).2.1
 
 /-- Real-rootedness corollary for derivative-lag Liu--Wang induction with
 direct root-sign side conditions. -/
@@ -243,5 +243,19 @@ theorem isRealRooted_of_lw_derivative_lag_sequence_of_root_window
     (fun n r hr => hV_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
     (fun n r hr => hW_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
     hdeg_succ hno
+
+@[deprecated strictInterl_lw_derivative_lag_of_nonpos (since := "2026-09-26")]
+alias prec_lw_derivative_lag_of_nonpos := strictInterl_lw_derivative_lag_of_nonpos
+
+@[deprecated strictInterl_lw_derivative_lag_sequence_of_root_signs (since := "2026-09-26")]
+alias prec_lw_derivative_lag_sequence_of_root_signs :=
+  strictInterl_lw_derivative_lag_sequence_of_root_signs
+
+@[deprecated strictInterl_lw_derivative_lag_sequence (since := "2026-09-26")]
+alias prec_lw_derivative_lag_sequence := strictInterl_lw_derivative_lag_sequence
+
+@[deprecated strictInterl_lw_derivative_lag_sequence_of_root_window (since := "2026-09-26")]
+alias prec_lw_derivative_lag_sequence_of_root_window :=
+  strictInterl_lw_derivative_lag_sequence_of_root_window
 
 end RealRooted

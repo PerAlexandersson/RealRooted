@@ -33,8 +33,8 @@ lemma polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
         (polynomialWeightedSum l).eval r * g₀.eval r ≤ 0
   | [], _, _, _, r, hr => by
       simp
-  | (b, g) :: l, hprec, hpos, hcoeff, r, hr => by
-      have hgf : StrictInterl g f := hprec (b, g) (by simp)
+  | (b, g) :: l, hstrictInterl, hpos, hcoeff, r, hr => by
+      have hgf : StrictInterl g f := hstrictInterl (b, g) (by simp)
       have hg_pos : HasPosLeadingCoeff g := hpos (b, g) (by simp)
       have hb_nonpos : b.eval r ≤ 0 := hcoeff (b, g) (by simp) r hr
       have hgg_nonneg : 0 ≤ g.eval r * g₀.eval r :=
@@ -46,8 +46,8 @@ lemma polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
                   simp [Polynomial.eval_mul]
                   ring
           _ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hb_nonpos hgg_nonneg
-      have htail_prec : ∀ bg ∈ l, StrictInterl bg.2 f :=
-        List.forall_mem_of_forall_mem_cons hprec
+      have htail_strictInterl : ∀ bg ∈ l, StrictInterl bg.2 f :=
+        List.forall_mem_of_forall_mem_cons hstrictInterl
       have htail_pos : ∀ bg ∈ l, HasPosLeadingCoeff bg.2 :=
         List.forall_mem_of_forall_mem_cons hpos
       have htail_coeff :
@@ -56,7 +56,7 @@ lemma polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
       have htail_nonpos :
           (polynomialWeightedSum l).eval r * g₀.eval r ≤ 0 :=
         polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
-          hg₀f hg₀_pos htail_prec htail_pos htail_coeff r hr
+          hg₀f hg₀_pos htail_strictInterl htail_pos htail_coeff r hr
       have hsum :
           (polynomialWeightedSum ((b, g) :: l)).eval r * g₀.eval r
             = (b * g).eval r * g₀.eval r
@@ -74,7 +74,7 @@ lemma polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
     (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0)
-    (hl_prec : ∀ bg ∈ l, StrictInterl bg.2 f)
+    (hl_strictInterl : ∀ bg ∈ l, StrictInterl bg.2 f)
     (hl_pos : ∀ bg ∈ l, HasPosLeadingCoeff bg.2)
     (hl_nonpos : ∀ bg ∈ l, ∀ r : ℝ, f.IsRoot r → bg.1.eval r ≤ 0) :
   ∀ r : ℝ, f.IsRoot r →
@@ -90,7 +90,7 @@ lemma polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
   have htail_nonpos :
       (polynomialWeightedSum l).eval r * g.eval r ≤ 0 :=
     polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
-      hgf hg_pos hl_prec hl_pos hl_nonpos r hr
+      hgf hg_pos hl_strictInterl hl_pos hl_nonpos r hr
   have hsum :
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r
         = (b * g).eval r * g.eval r
@@ -102,7 +102,7 @@ lemma polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
 /-- Strict finite-family Liu--Wang theorem in the same-degree case. One
 distinguished interlacer `g` supplies the orientation, while the remaining
 interlacers contribute additional nonpositive endpoint mass. -/
-theorem prec_generalizedLiuWang_strict_same
+theorem strictInterl_generalizedLiuWang_strict_same
     {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -116,16 +116,16 @@ theorem prec_generalizedLiuWang_strict_same
     StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   refine strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg ?_
   intro r hr
-  have hl_prec : ∀ bg ∈ l, StrictInterl bg.2 f :=
+  have hl_strictInterl : ∀ bg ∈ l, StrictInterl bg.2 f :=
     fun bg hmem => (hl_inter bg hmem).toStrictInterl
   have hsum_sign :
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r < 0 :=
     polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
-      hgf.toStrictInterl hg_pos hno hb_neg hl_prec hl_pos hl_nonpos r hr
+      hgf.toStrictInterl hg_pos hno hb_neg hl_strictInterl hl_pos hl_nonpos r hr
   simp_all
 
 /-- Strict finite-family Liu--Wang theorem in the differ-by-1 case. -/
-theorem prec_generalizedLiuWang_strict_succ
+theorem strictInterl_generalizedLiuWang_strict_succ
     {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -139,19 +139,19 @@ theorem prec_generalizedLiuWang_strict_succ
     StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   refine strictInterl_of_interlaces_eval_mul_neg_succ hgf hg_pos hF_pos hdeg ?_
   intro r hr
-  have hl_prec : ∀ bg ∈ l, StrictInterl bg.2 f :=
+  have hl_strictInterl : ∀ bg ∈ l, StrictInterl bg.2 f :=
     fun bg hmem => (hl_inter bg hmem).toStrictInterl
   have hsum_sign :
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r < 0 :=
     polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
-      hgf.toStrictInterl hg_pos hno hb_neg hl_prec hl_pos hl_nonpos r hr
+      hgf.toStrictInterl hg_pos hno hb_neg hl_strictInterl hl_pos hl_nonpos r hr
   simp_all
 
 /-- Degree-bounded strict finite-family Liu--Wang theorem. This is the first
 reusable multi-interlacer version: one distinguished head term is strictly
 negative at roots of `f`, while the remaining terms are allowed to be merely
 nonpositive there. -/
-theorem prec_generalizedLiuWang_strict
+theorem strictInterl_generalizedLiuWang_strict
     {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -171,10 +171,10 @@ theorem prec_generalizedLiuWang_strict
     lia
   rcases hcases with hsame | hsucc
   · exact
-      prec_generalizedLiuWang_strict_same
+      strictInterl_generalizedLiuWang_strict_same
         hgf hg_pos hl_inter hl_pos hl_nonpos hF_pos hsame hno hb_neg
   · exact
-      prec_generalizedLiuWang_strict_succ
+      strictInterl_generalizedLiuWang_strict_succ
         hgf hg_pos hl_inter hl_pos hl_nonpos hF_pos hsucc hno hb_neg
 
 /-- Weak generalized Liu--Wang theorem in the no-common-roots regime.
@@ -182,7 +182,7 @@ theorem prec_generalizedLiuWang_strict
 One distinguished interlacer `g` is used to orient the endpoint sign data. The
 head coefficient `b` is only assumed nonpositive at roots of `f`; strictness is
 recovered by subtracting `C δ * g` and then letting `δ → 0⁺`. -/
-theorem prec_generalizedLiuWang_of_no_common
+theorem strictInterl_generalizedLiuWang_of_no_common
     {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -227,18 +227,18 @@ theorem prec_generalizedLiuWang_of_no_common
         have hb_le : b.eval r ≤ 0 := hb_nonpos r hr
         simp
         linarith
-      have hprecδ :
+      have hstrictInterlδ :
           StrictInterl f (a * f + polynomialWeightedSum (((b - C δ), g) :: l)) :=
-        prec_generalizedLiuWang_strict hgf hg_pos hl_inter hl_pos hl_nonpos
+        strictInterl_generalizedLiuWang_strict hgf hg_pos hl_inter hl_pos hl_nonpos
           hFδ_pos hFδ_lo hFδ_hi hno hbδ_neg
       have hrrδ : ((a * f + ((b - C δ) * g + polynomialWeightedSum l)) ≠ 0 ∧
         (a * f + ((b - C δ) * g + polynomialWeightedSum l)).Splits) := by
-        simpa [polynomialWeightedSum_cons] using hprecδ.2.1
+        simpa [polynomialWeightedSum_cons] using hstrictInterlδ.2.1
       simp_all
   have hroot_nonpos :
       ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0 := by
     intro r hr
-    have hprec_all : ∀ bg ∈ ((b, g) :: l), StrictInterl bg.2 f :=
+    have hstrictInterl_all : ∀ bg ∈ ((b, g) :: l), StrictInterl bg.2 f :=
       List.forall_mem_cons.2
         ⟨hgf.toStrictInterl, fun bg hmem => (hl_inter bg hmem).toStrictInterl⟩
     have hpos_all : ∀ bg ∈ ((b, g) :: l), HasPosLeadingCoeff bg.2 :=
@@ -252,7 +252,7 @@ theorem prec_generalizedLiuWang_of_no_common
               simp_all [F, Polynomial.eval_add, Polynomial.eval_mul]
       _ ≤ 0 :=
         polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
-          hgf.toStrictInterl hg_pos hprec_all hpos_all hcoeff_all r hr
+          hgf.toStrictInterl hg_pos hstrictInterl_all hpos_all hcoeff_all r hr
   simpa [F] using
     strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
       hgf hg_pos hF_rr.1 hF_rr.2 hF_pos hdeg_lo hdeg_hi hno hroot_nonpos
@@ -280,7 +280,19 @@ def generalizedLiuWangCriterionStatement : Prop :=
 theorem generalizedLiuWangCriterion :
     generalizedLiuWangCriterionStatement := by
   intro f g a b l hgf hg_pos hl_inter hl_pos hno hb_nonpos hl_nonpos hF_pos hdeg_lo hdeg_hi
-  exact prec_generalizedLiuWang_of_no_common
+  exact strictInterl_generalizedLiuWang_of_no_common
     hgf hg_pos hl_inter hl_pos hl_nonpos hF_pos hdeg_lo hdeg_hi hno hb_nonpos
+
+@[deprecated strictInterl_generalizedLiuWang_strict_same (since := "2026-09-26")]
+alias prec_generalizedLiuWang_strict_same := strictInterl_generalizedLiuWang_strict_same
+
+@[deprecated strictInterl_generalizedLiuWang_strict_succ (since := "2026-09-26")]
+alias prec_generalizedLiuWang_strict_succ := strictInterl_generalizedLiuWang_strict_succ
+
+@[deprecated strictInterl_generalizedLiuWang_strict (since := "2026-09-26")]
+alias prec_generalizedLiuWang_strict := strictInterl_generalizedLiuWang_strict
+
+@[deprecated strictInterl_generalizedLiuWang_of_no_common (since := "2026-09-26")]
+alias prec_generalizedLiuWang_of_no_common := strictInterl_generalizedLiuWang_of_no_common
 
 end RealRooted

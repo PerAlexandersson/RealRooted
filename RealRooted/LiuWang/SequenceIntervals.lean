@@ -54,7 +54,7 @@ theorem isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
 
 /-- Sequence-level `X(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
-theorem prec_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+theorem strictInterl_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -83,12 +83,12 @@ theorem isRealRooted_of_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+    strictInterl_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `c_n X(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
-theorem prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+theorem strictInterl_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -120,12 +120,12 @@ theorem isRealRooted_of_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+    strictInterl_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `X(1-X)(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
-theorem prec_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+theorem strictInterl_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -155,12 +155,12 @@ theorem isRealRooted_of_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+    strictInterl_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `c_n X(1-X)(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
-theorem prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+theorem strictInterl_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -196,11 +196,11 @@ theorem isRealRooted_of_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_n
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+    strictInterl_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `X-X^3` lag controlled on the inner root window `[-1,0]`. -/
-theorem prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
+theorem strictInterl_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -229,12 +229,12 @@ theorem isRealRooted_of_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
+    strictInterl_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `c_n (X-X^3)` lag controlled on the inner root window
 `[-1,0]`. -/
-theorem prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
+theorem strictInterl_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -266,7 +266,7 @@ theorem isRealRooted_of_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
+    strictInterl_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for lags controlled on an explicit
@@ -283,7 +283,7 @@ theorem strictInterl_lw_interval_lag_sequence {P : Nat → ℝ[X]} {A B : Nat �
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_nonpos_lag_sequence hbase hpos
+  strictInterl_lw_nonpos_lag_sequence hbase hpos
     (fun n r hr => hB_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
     hrec hdeg_succ hno
 
@@ -306,7 +306,7 @@ theorem isRealRooted_of_lw_interval_lag_sequence
 
 /-- Sequence-level `(1+X)(1+2X)` lag on the explicit window
 `[-1,-1/2]`. -/
-theorem prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
+theorem strictInterl_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -339,12 +339,12 @@ theorem isRealRooted_of_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
+    strictInterl_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
       hbase hpos hroot_lower hroot_upper hrec hdeg_succ hno
 
 /-- Sequence-level `c_n(1+X)(1+2X)` lag on the explicit window
 `[-1,-1/2]`. -/
-theorem prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
+theorem strictInterl_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -380,12 +380,12 @@ theorem isRealRooted_of_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
+    strictInterl_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
       hbase hpos hc hroot_lower hroot_upper hrec hdeg_succ hno
 
 /-- Sequence-level `-c_n(a_n+b_n X)` lag controlled on the inner root window
 `[-1,0]`, in the common monotone-affine case `0 <= b_n <= a_n`. -/
-theorem prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
+theorem strictInterl_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -425,11 +425,11 @@ theorem isRealRooted_of_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
+    strictInterl_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hb hba hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `-c_n(1+X)` lag controlled on `[-1,0]`. -/
-theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+theorem strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -461,7 +461,7 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+    strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 /-- Denominator-fused `-c_n(1+X)` inner-window Liu--Wang induction.
@@ -470,7 +470,7 @@ The raw recurrence has a nonzero scalar denominator `d_n`, a current-row
 summand already multiplied by `d_n`, and a raw affine lag coefficient
 `b_n(1+X)`.  The side condition `d_n⁻¹ b_n = -c_n` gives the normalized
 negative coefficient. -/
-theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
+theorem strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {b c d : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -486,7 +486,7 @@ theorem prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   refine
-    prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+    strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
       (A := A) hbase hpos hnonneg hc hroot_lower ?_ hdeg_succ hno
   intro n
   have hraw' :
@@ -520,12 +520,12 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
+    strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
       (A := A) hbase hpos hnonneg hc hroot_lower hden hcoeff hraw hdeg_succ hno
 
 /-- Sequence-level `-c_n(1+2X)` lag controlled on the tighter inner window
 `[-1/2,0]`. -/
-theorem prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
+theorem strictInterl_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -564,7 +564,7 @@ theorem isRealRooted_of_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_co
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
+    strictInterl_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `X^2-1` lag controlled on the inner root window
@@ -603,7 +603,7 @@ theorem isRealRooted_of_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
 
 /-- Sequence-level `c_n(X^2-1)` lag controlled on the inner root window
 `[-1,0]`. -/
-theorem prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
+theorem strictInterl_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -635,7 +635,7 @@ theorem isRealRooted_of_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
+    strictInterl_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
 
 @[deprecated strictInterl_lw_inner_window_lag_sequence_of_nonneg_coeffs
@@ -650,5 +650,68 @@ alias prec_lw_interval_lag_sequence := strictInterl_lw_interval_lag_sequence
   (since := "2026-09-18")]
 alias prec_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs :=
   strictInterl_lw_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs (since := "2026-09-26")]
+alias prec_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs :=
+  strictInterl_lw_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs :=
+  strictInterl_lw_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs :=
+  strictInterl_lw_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs :=
+  strictInterl_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs :=
+  strictInterl_lw_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs :=
+  strictInterl_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence (since := "2026-09-26")]
+alias prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence :=
+  strictInterl_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
+
+@[deprecated strictInterl_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
+  (since := "2026-09-26")]
+alias prec_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence :=
+  strictInterl_lw_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
+
+@[deprecated strictInterl_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs :=
+  strictInterl_lw_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs :=
+  strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs :=
+  strictInterl_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs :=
+  strictInterl_lw_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs :=
+  strictInterl_lw_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
 
 end RealRooted
