@@ -256,7 +256,7 @@ theorem resolvedChowCombination_isPF
 
 /-- The first and last transformed resolving polynomials bound every
 nonnegative row combination in zero-aware proper position. -/
-theorem resolvedChowCombination_endpoint_prec0
+theorem resolvedChowCombination_endpoint_interl
     {A : LowerTriangularMatrix ℝ}
     (resolution : BrandenLeite.Resolution A) {n : ℕ}
     {a : ℕ → ℝ} (ha : ∀ j, j ≤ n → 0 ≤ a j) :
@@ -324,7 +324,7 @@ theorem resolvedChowCombination_endpoint_prec0
 
 /-- Strict endpoint form of Theorem 4.16.  All three nonvanishing hypotheses
 are explicit because resolution weights may vanish. -/
-theorem resolvedChowCombination_endpoint_prec_of_ne
+theorem resolvedChowCombination_endpoint_strictInterl_of_ne
     {A : LowerTriangularMatrix ℝ}
     (resolution : BrandenLeite.Resolution A) {n : ℕ}
     {a : ℕ → ℝ} (ha : ∀ j, j ≤ n → 0 ≤ a j)
@@ -335,13 +335,13 @@ theorem resolvedChowCombination_endpoint_prec_of_ne
         (resolvedChowCombination resolution n a) ∧
       StrictInterl (resolvedChowCombination resolution n a)
         (resolvedChowDerangement resolution n n) := by
-  have hprec := resolvedChowCombination_endpoint_prec0 resolution ha
-  exact ⟨hprec.1.toStrictInterl_of_ne hfirst hcombination,
-    hprec.2.toStrictInterl_of_ne hcombination hlast⟩
+  have hinterl := resolvedChowCombination_endpoint_interl resolution ha
+  exact ⟨hinterl.1.toStrictInterl_of_ne hfirst hcombination,
+    hinterl.2.toStrictInterl_of_ne hcombination hlast⟩
 
 /-- Paper-shaped zero-aware endpoint statement for a nonnegative combination
 of the original resolving row. -/
-theorem chowPolynomial_resolvingRowCombination_endpoint_prec0
+theorem chowPolynomial_resolvingRowCombination_endpoint_interl
     {A : LowerTriangularMatrix ℝ}
     (resolution : BrandenLeite.Resolution A) {n : ℕ}
     {a : ℕ → ℝ} (ha : ∀ j, j ≤ n → 0 ≤ a j) :
@@ -352,7 +352,7 @@ theorem chowPolynomial_resolvingRowCombination_endpoint_prec0
         (chowDerangedTransform A
           (resolvingRowCombination resolution n a))
         (chowDerangement A n) := by
-  simpa using resolvedChowCombination_endpoint_prec0 resolution ha
+  simpa using resolvedChowCombination_endpoint_interl resolution ha
 
 /-- The Chow-deranged image of a nonnegative resolving-row combination is
 zero or split, with nonnegative coefficients. -/
@@ -368,7 +368,7 @@ theorem chowDerangedTransform_resolvingRowCombination_isPF
 
 /-- Strict paper-shaped endpoint statement under explicit nonvanishing
 hypotheses. -/
-theorem chowPolynomial_resolvingRowCombination_endpoint_prec_of_ne
+theorem chowPolynomial_resolvingRowCombination_endpoint_strictInterl_of_ne
     {A : LowerTriangularMatrix ℝ}
     (resolution : BrandenLeite.Resolution A) {n : ℕ}
     {a : ℕ → ℝ} (ha : ∀ j, j ≤ n → 0 ≤ a j)
@@ -384,10 +384,29 @@ theorem chowPolynomial_resolvingRowCombination_endpoint_prec_of_ne
         (chowDerangedTransform A
           (resolvingRowCombination resolution n a))
         (chowDerangement A n) := by
-  have hprec :=
-    chowPolynomial_resolvingRowCombination_endpoint_prec0 resolution ha
-  exact ⟨hprec.1.toStrictInterl_of_ne hchow hcombination,
-    hprec.2.toStrictInterl_of_ne hcombination hderangement⟩
+  have hinterl :=
+    chowPolynomial_resolvingRowCombination_endpoint_interl resolution ha
+  exact ⟨hinterl.1.toStrictInterl_of_ne hchow hcombination,
+    hinterl.2.toStrictInterl_of_ne hcombination hderangement⟩
+
+@[deprecated resolvedChowCombination_endpoint_interl (since := "2026-09-26")]
+alias resolvedChowCombination_endpoint_prec0 :=
+  resolvedChowCombination_endpoint_interl
+
+@[deprecated resolvedChowCombination_endpoint_strictInterl_of_ne
+  (since := "2026-09-26")]
+alias resolvedChowCombination_endpoint_prec_of_ne :=
+  resolvedChowCombination_endpoint_strictInterl_of_ne
+
+@[deprecated chowPolynomial_resolvingRowCombination_endpoint_interl
+  (since := "2026-09-26")]
+alias chowPolynomial_resolvingRowCombination_endpoint_prec0 :=
+  chowPolynomial_resolvingRowCombination_endpoint_interl
+
+@[deprecated chowPolynomial_resolvingRowCombination_endpoint_strictInterl_of_ne
+  (since := "2026-09-26")]
+alias chowPolynomial_resolvingRowCombination_endpoint_prec_of_ne :=
+  chowPolynomial_resolvingRowCombination_endpoint_strictInterl_of_ne
 
 end
 

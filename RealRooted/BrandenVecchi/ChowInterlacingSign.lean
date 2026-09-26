@@ -72,15 +72,15 @@ private lemma forall₂_map_zero_sub_rev :
 nonnegative proper-position polynomials equal after cross-normalization by
 their leading coefficients.  The nonzero endpoint hypotheses exclude a zero
 root, so equality of the positive root products is rigid. -/
-theorem leadingCoeff_cross_mul_eq_of_prec_sameDegree_of_nonneg_of_eval_cross_eq
+theorem leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_cross_eq
     {f g : ℝ[X]}
-    (hprec : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
+    (hstrictInterl : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hf0 : f.eval 0 ≠ 0) (hg0 : g.eval 0 ≠ 0)
     (hcross : g.eval 0 * f.leadingCoeff =
       f.eval 0 * g.leadingCoeff) :
     C g.leadingCoeff * f = C f.leadingCoeff * g := by
-  rcases hprec with ⟨hf, hg, ss, rs, _hss_sorted, _hrs_sorted,
+  rcases hstrictInterl with ⟨hf, hg, ss, rs, _hss_sorted, _hrs_sorted,
     hss_eq, hrs_eq, hshape⟩
   have hlen_ss : ss.length = f.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
@@ -177,7 +177,7 @@ coefficient. -/
 theorem chowS_eq_zero_or_hasPosLeadingCoeff_of_coeff_zero_ne
     {n : ℕ} {f : ℝ[X]} (hdegree : f.natDegree ≤ n)
     (hfnn : HasNonnegCoeffs f) (hcoeff0 : f.coeff 0 ≠ 0)
-    (hprec : StrictInterl f (f.reflect n)) :
+    (hstrictInterl : StrictInterl f (f.reflect n)) :
     Polynomial.chowS n f = 0 ∨ HasPosLeadingCoeff (Polynomial.chowS n f) := by
   let g := f.reflect n
   have hgdegree : g.natDegree = n :=
@@ -186,15 +186,15 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff_of_coeff_zero_ne
     DegreeDropReversal.leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le
       hdegree hcoeff0
   have hgnn : HasNonnegCoeffs g := hfnn.reflect n
-  have hfne : f ≠ 0 := hprec.1.1
-  have hgne : g ≠ 0 := hprec.2.1.1
+  have hfne : f ≠ 0 := hstrictInterl.1.1
+  have hgne : g ≠ 0 := hstrictInterl.2.1.1
   have hf_lc_pos : 0 < f.leadingCoeff := hfnn.pos_leadingCoeff hfne
   have hf_zero_pos : 0 < f.coeff 0 := lt_of_le_of_ne (hfnn 0) (Ne.symm hcoeff0)
-  rcases hprec.natDegree_eq_or_eq_succ with heq | hsucc
+  rcases hstrictInterl.natDegree_eq_or_eq_succ with heq | hsucc
   · have hfdegree : f.natDegree = n := by simpa [g, hgdegree] using heq.symm
     have hsame : f.natDegree = g.natDegree := by simp [hfdegree, hgdegree]
     have hcross_le := eval_cross_le_of_prec_sameDegree_of_nonneg
-      hprec hsame hfnn hgnn
+      hstrictInterl hsame hfnn hgnn
     have hge : f.leadingCoeff ≤ f.coeff 0 := by
       have hgeval0 : g.eval 0 = f.leadingCoeff := by
         change (f.reflect n).eval 0 = f.leadingCoeff
@@ -213,8 +213,8 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff_of_coeff_zero_ne
             Polynomial.revAt_zero, ← hfdegree, Polynomial.coeff_natDegree]
         rw [hgeval0, ← Polynomial.coeff_zero_eq_eval_zero, hglc, hlc_eq]
       have hnormalized :=
-        leadingCoeff_cross_mul_eq_of_prec_sameDegree_of_nonneg_of_eval_cross_eq
-          hprec hsame hfnn hgnn
+        leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_cross_eq
+          hstrictInterl hsame hfnn hgnn
           (by simpa [Polynomial.coeff_zero_eq_eval_zero] using hcoeff0)
           (by
             have hgeval0 : g.eval 0 = f.leadingCoeff := by
@@ -330,13 +330,13 @@ nonnegative polynomial in proper position with its degree-bounded reflection,
 the Chow quotient is either zero or has positive leading coefficient. -/
 theorem chowS_eq_zero_or_hasPosLeadingCoeff
     {n : ℕ} {f : ℝ[X]} (hdegree : f.natDegree ≤ n)
-    (hfnn : HasNonnegCoeffs f) (hprec : StrictInterl f (f.reflect n)) :
+    (hfnn : HasNonnegCoeffs f) (hstrictInterl : StrictInterl f (f.reflect n)) :
     Polynomial.chowS n f = 0 ∨ HasPosLeadingCoeff (Polynomial.chowS n f) := by
   induction n using Nat.strong_induction_on generalizing f with
   | h n ih =>
     by_cases hcoeff0 : f.coeff 0 = 0
-    · have hfne : f ≠ 0 := hprec.1.1
-      have hg_ne : f.reflect n ≠ 0 := hprec.2.1.1
+    · have hfne : f ≠ 0 := hstrictInterl.1.1
+      have hg_ne : f.reflect n ≠ 0 := hstrictInterl.2.1.1
       have href_degree_le : (f.reflect n).natDegree ≤ n := by
         exact Polynomial.natDegree_reflect_le.trans (by simp [hdegree])
       have href_degree_ne : (f.reflect n).natDegree ≠ n := by
@@ -347,7 +347,8 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff
           Polynomial.revAt_le le_rfl, Nat.sub_self]
         exact hcoeff0
       have hfdegree_lt : f.natDegree < n :=
-        lt_of_le_of_lt hprec.natDegree_le (lt_of_le_of_ne href_degree_le href_degree_ne)
+        lt_of_le_of_lt hstrictInterl.natDegree_le
+          (lt_of_le_of_ne href_degree_le href_degree_ne)
       have hfactor : f = X * f.divX :=
         DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hcoeff0
       have hreflect :=
@@ -365,13 +366,13 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff
       have hdiv_le : f.divX.natDegree ≤ n - 2 := by
         rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one]
         lia
-      have hdiv_prec : StrictInterl f.divX (f.divX.reflect (n - 2)) := by
+      have hdivStrictInterl : StrictInterl f.divX (f.divX.reflect (n - 2)) := by
         apply StrictInterl.of_mul_X_sub_C_both (r := 0)
-        have hprec' : StrictInterl (X * f.divX) (X * f.divX.reflect (n - 2)) := by
+        have hstrictInterl' : StrictInterl (X * f.divX) (X * f.divX.reflect (n - 2)) := by
           rw [← hfactor, ← hreflect]
-          exact hprec
-        simpa using hprec'
-      have hrec := ih (n - 2) (by lia) hdiv_le hfnn.divX hdiv_prec
+          exact hstrictInterl
+        simpa using hstrictInterl'
+      have hrec := ih (n - 2) (by lia) hdiv_le hfnn.divX hdivStrictInterl
       have hchow :=
         chowS_eq_X_mul_chowS_divX_of_coeff_zero_of_natDegree_lt
           hfne hcoeff0 hfdegree_lt
@@ -382,6 +383,11 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff
         rw [hchow]
         exact hpos.X_mul
     · exact chowS_eq_zero_or_hasPosLeadingCoeff_of_coeff_zero_ne
-        hdegree hfnn hcoeff0 hprec
+        hdegree hfnn hcoeff0 hstrictInterl
+
+@[deprecated leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_cross_eq
+  (since := "2026-09-26")]
+alias leadingCoeff_cross_mul_eq_of_prec_sameDegree_of_nonneg_of_eval_cross_eq :=
+  leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_cross_eq
 
 end RealRooted

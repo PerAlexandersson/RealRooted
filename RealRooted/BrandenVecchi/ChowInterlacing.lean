@@ -30,7 +30,7 @@ private theorem add_ne_zero_of_nonnegCoeffs_of_right_ne_zero
   rw [coeff_add] at hcoeff_zero
   linarith
 
-private theorem pairwise_prec0_of_filter_ne_zero_pairwise_prec :
+private theorem pairwise_interl_of_filter_ne_zero_pairwise_strictInterl :
     ∀ fs : List ℝ[X], (fs.filter (· ≠ 0)).Pairwise StrictInterl → fs.Pairwise Interl
   | [], _ => by simp
   | f :: fs, h => by
@@ -38,12 +38,12 @@ private theorem pairwise_prec0_of_filter_ne_zero_pairwise_prec :
       · subst f
         constructor
         · exact fun _ _ => interl_zero_left _
-        · exact pairwise_prec0_of_filter_ne_zero_pairwise_prec fs (by simpa using h)
+        · exact pairwise_interl_of_filter_ne_zero_pairwise_strictInterl fs (by simpa using h)
       · have h' : (f :: fs.filter (· ≠ 0)).Pairwise StrictInterl := by
           simpa [List.filter_cons, hf] using h
         rcases List.pairwise_cons.mp h' with ⟨hhead, htail⟩
         apply List.pairwise_cons.2
-        refine ⟨?_, pairwise_prec0_of_filter_ne_zero_pairwise_prec fs htail⟩
+        refine ⟨?_, pairwise_interl_of_filter_ne_zero_pairwise_strictInterl fs htail⟩
         intro g hg
         by_cases hg_zero : g = 0
         · exact Or.inr (Or.inl hg_zero)
@@ -56,7 +56,7 @@ private theorem isInterlacingSeq0NonnegRealRooted_of_filter_ne_zero
     IsInterlacingSeq0NonnegRealRooted fs := by
   refine ⟨⟨?_, hnonneg⟩, ?_⟩
   · rw [isInterlacingSeq0_iff_pairwise]
-    exact pairwise_prec0_of_filter_ne_zero_pairwise_prec fs
+    exact pairwise_interl_of_filter_ne_zero_pairwise_strictInterl fs
       (isInterlacingSeq_iff_pairwise.mp hstrict.2)
   · exact fun p hp hp_ne => ⟨hp_ne, hreal p hp hp_ne⟩
 
@@ -94,7 +94,7 @@ namespace BrandenVecchi
 /-- The two quotient relations supplied by a singleton reflection-interlacing
 sequence.  This is the zero-aware form of the two uses of Lemma 4.11 in the
 proof of Branden--Vecchi, Lemma 4.12. -/
-theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0_self_reflect
+theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
     {n : ℕ} {f : ℝ[X]} (h : IsReflectionInterlacingSeq n [f]) :
     HasNonnegCoeffs (chowS n f) ∧
       Interl (chowS n f) f ∧ Interl (chowS n f) (f.reflect n) := by
@@ -122,9 +122,9 @@ theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0_self_reflect
       exact hf_ne ((reflect_eq_zero_iff (f := f) (N := n)).mp
         (by simpa [fr] using hfr_zero))
     have hfref : StrictInterl f fr := hfref0.toStrictInterl_of_ne hf_ne hfr_ne
-    have hSf := chowS_nonnegCoeffs_and_prec_of_triple hdegree hfnn hfnn
+    have hSf := chowS_nonnegCoeffs_and_strictInterl_of_triple hdegree hfnn hfnn
       (StrictInterl.refl hf_ne hfref.1.2) hfref hfref (by simpa [S] using hS_ne)
-    have hSfr := chowS_nonnegCoeffs_and_prec_of_triple hdegree hfnn hfrnn
+    have hSfr := chowS_nonnegCoeffs_and_strictInterl_of_triple hdegree hfnn hfrnn
       hfref (StrictInterl.refl hfr_ne hfref.2.1.2) hfref (by simpa [S] using hS_ne)
     exact ⟨by simpa [S] using hSf.1, hSf.2.toInterl, hSfr.2.toInterl⟩
   · have hS_zero : S = 0 := not_ne_iff.mp hS_ne
@@ -222,8 +222,8 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     h.sublist (by simp)
   have hg_single : IsReflectionInterlacingSeq n [g] :=
     h.sublist (by simp)
-  have hSpack := hf_single.chowS_nonnegCoeffs_and_prec0_self_reflect
-  have hTpack := hg_single.chowS_nonnegCoeffs_and_prec0_self_reflect
+  have hSpack := hf_single.chowS_nonnegCoeffs_and_interl_self_reflect
+  have hTpack := hg_single.chowS_nonnegCoeffs_and_interl_self_reflect
   have hSnn : HasNonnegCoeffs S := by simpa [S] using hSpack.1
   have hTnn : HasNonnegCoeffs T := by simpa [T] using hTpack.1
   have hSf0 : Interl S f := by simpa [S] using hSpack.2.1
@@ -464,6 +464,11 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     have hclosure : reflectionClosure n [S, f, g, q] = closed := by
       simp [reflectionClosure, closed, hrefS, hrefq, fr, gr]
     simpa [S, T, q] using hclosure.symm ▸ hclosed
+
+@[deprecated IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
+  (since := "2026-09-26")]
+alias IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0_self_reflect :=
+  IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
 
 end BrandenVecchi
 

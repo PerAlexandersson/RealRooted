@@ -104,7 +104,7 @@ theorem aswEdreiFullProjectiveChow_theorem
       aswEdreiCoeff_zero halpha hbeta hsum
     exact ⟨projectiveRegularizedChow_isPFPolynomial
         hpf hzero hepsilon N n,
-      projectiveRegularizedChow_prec0_succ
+      projectiveRegularizedChow_interl_succ
         hpf hzero hepsilon N n⟩
 
 end

@@ -17,7 +17,7 @@ noncomputable section
 
 variable {A : LowerTriangularMatrix ℝ}
 
-private theorem reflect_reverses_prec0_of_pf
+private theorem reflect_reverses_interl_of_pf
     {n : ℕ} {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree ≤ n)
@@ -142,12 +142,12 @@ private theorem resolvedChowWeightSum_endpoint_pairs
   have hreflectLeft : ∀ j, j ≤ n →
       Interl ((d j).reflect n) ((d 0).reflect n) := by
     intro j hj
-    exact reflect_reverses_prec0_of_pf (hdpf 0 (Nat.zero_le n))
+    exact reflect_reverses_interl_of_pf (hdpf 0 (Nat.zero_le n))
       (hdpf j hj) (hddeg 0 (Nat.zero_le n)) (hddeg j hj) (hleft j hj)
   have hreflectRight : ∀ j, j ≤ n →
       Interl ((d n).reflect n) ((d j).reflect n) := by
     intro j hj
-    exact reflect_reverses_prec0_of_pf (hdpf j hj) (hdpf n le_rfl)
+    exact reflect_reverses_interl_of_pf (hdpf j hj) (hdpf n le_rfl)
       (hddeg j hj) (hddeg n le_rfl) (hright j hj)
   have hFpf : IsPFPolynomial F := by
     simpa [F, a, resolvedChowWeightSum, resolvedChowCombination] using
@@ -163,7 +163,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
       reflect_finset_sum_C_mul (Finset.range (n + 1)) a d n
   have hFbounds : Interl (d 0) F ∧ Interl F (d n) := by
     simpa [F, a, d, resolvedChowWeightSum, resolvedChowCombination] using
-      resolvedChowCombination_endpoint_prec0 resolution ha
+      resolvedChowCombination_endpoint_interl resolution ha
   have h0refF : Interl (d 0) (F.reflect n) := by
     rw [hreflectF]
     apply Interl.finsetSum_left_of_nonneg
@@ -302,7 +302,7 @@ theorem chowDerangement_eq_zero_or_splits_of_isTotallyNonneg
 
 /-- In each row, the Chow polynomial precedes the Chow-derangement
 polynomial, with vanishing endpoints allowed. -/
-theorem chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg
+theorem chowPolynomial_interl_chowDerangement_of_isTotallyNonneg
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular A)
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ) :
     Interl (chowPolynomial A n) (chowDerangement A n) := by
@@ -320,23 +320,23 @@ theorem chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg
         ⟨0, by rw [length_resolvedChowRow]; lia⟩
       let last : Fin (resolvedChowRow resolution (n + 1)).length :=
         ⟨n + 1, by rw [length_resolvedChowRow]; lia⟩
-      have hprec := hdirect.interlacingSeq0.prec0
+      have hinterl := hdirect.interlacingSeq0.prec0
         (i := first) (j := last) (by change 0 < n + 1; lia)
-      simpa [first, last, resolvedChowRow] using hprec
+      simpa [first, last, resolvedChowRow] using hinterl
 
 /-- Strict within-row endpoint relation under explicit nonvanishing
 hypotheses. -/
-theorem chowPolynomial_prec_chowDerangement_of_isTotallyNonneg_of_ne
+theorem chowPolynomial_strictInterl_chowDerangement_of_isTotallyNonneg_of_ne
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular A)
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ)
     (hchow : chowPolynomial A n ≠ 0)
     (hderangement : chowDerangement A n ≠ 0) :
     StrictInterl (chowPolynomial A n) (chowDerangement A n) :=
-  (chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
+  (chowPolynomial_interl_chowDerangement_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
     hchow hderangement
 
 /-- Consecutive Chow polynomials are in zero-aware proper position. -/
-theorem chowPolynomial_prec0_succ_of_isTotallyNonneg
+theorem chowPolynomial_interl_succ_of_isTotallyNonneg
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular A)
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ) :
     Interl (chowPolynomial A n) (chowPolynomial A (n + 1)) := by
@@ -349,7 +349,7 @@ theorem chowPolynomial_prec0_succ_of_isTotallyNonneg
     rw [← resolvedChowDerangement_zero resolution (n + 1),
       resolvedChowDerangement_succ resolution (k := 0) (by lia)]
     simp [resolvedChowWeightSum]
-  have hprec := hext.closedSequence.interlacingSeq0.prec0
+  have hinterl := hext.closedSequence.interlacingSeq0.prec0
     (i := (⟨1, by simp [reflectionClosure]⟩ :
       Fin (reflectionClosure n
         [chowS n (resolvedChowDerangement resolution n 0),
@@ -364,22 +364,22 @@ theorem chowPolynomial_prec0_succ_of_isTotallyNonneg
           resolvedChowWeightSum resolution n,
           X * chowS n (resolvedChowWeightSum resolution n) +
             resolvedChowWeightSum resolution n]).length)) (by simp)
-  simpa [reflectionClosure, hsucc] using hprec
+  simpa [reflectionClosure, hsucc] using hinterl
 
 /-- Strict consecutive Chow relation under explicit nonvanishing
 hypotheses. -/
-theorem chowPolynomial_prec_succ_of_isTotallyNonneg_of_ne
+theorem chowPolynomial_strictInterl_succ_of_isTotallyNonneg_of_ne
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular A)
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ)
     (hn : chowPolynomial A n ≠ 0)
     (hsucc : chowPolynomial A (n + 1) ≠ 0) :
     StrictInterl (chowPolynomial A n) (chowPolynomial A (n + 1)) :=
-  (chowPolynomial_prec0_succ_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
+  (chowPolynomial_interl_succ_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
     hn hsucc
 
 /-- Consecutive Chow-derangement polynomials are in zero-aware proper
 position. -/
-theorem chowDerangement_prec0_succ_of_isTotallyNonneg
+theorem chowDerangement_interl_succ_of_isTotallyNonneg
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular A)
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ) :
     Interl (chowDerangement A n) (chowDerangement A (n + 1)) := by
@@ -392,7 +392,7 @@ theorem chowDerangement_prec0_succ_of_isTotallyNonneg
       (chowS n (resolvedChowWeightSum resolution n)).reflect n =
         X * chowS n (resolvedChowWeightSum resolution n) :=
     reflect_chowS n (resolvedChowWeightSum resolution n) hFdeg
-  have hprec := hext.closedSequence.interlacingSeq0.prec0
+  have hinterl := hext.closedSequence.interlacingSeq0.prec0
     (i := (⟨2, by simp [reflectionClosure]⟩ :
       Fin (reflectionClosure n
         [chowS n (resolvedChowWeightSum resolution n),
@@ -408,18 +408,48 @@ theorem chowDerangement_prec0_succ_of_isTotallyNonneg
           X * chowS n (resolvedChowDerangement resolution n n) +
             resolvedChowDerangement resolution n n]).length)) (by simp)
   rw [chowDerangement_succ_eq_resolvedChowWeightSum resolution n]
-  simpa [reflectionClosure, hrefS] using hprec
+  simpa [reflectionClosure, hrefS] using hinterl
 
 /-- Strict consecutive Chow-derangement relation under explicit
 nonvanishing hypotheses. -/
-theorem chowDerangement_prec_succ_of_isTotallyNonneg_of_ne
+theorem chowDerangement_strictInterl_succ_of_isTotallyNonneg_of_ne
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular A)
     (hA : Matrix.IsTotallyNonneg A) (n : ℕ)
     (hn : chowDerangement A n ≠ 0)
     (hsucc : chowDerangement A (n + 1) ≠ 0) :
     StrictInterl (chowDerangement A n) (chowDerangement A (n + 1)) :=
-  (chowDerangement_prec0_succ_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
+  (chowDerangement_interl_succ_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
     hn hsucc
+
+@[deprecated chowPolynomial_interl_chowDerangement_of_isTotallyNonneg
+  (since := "2026-09-26")]
+alias chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg :=
+  chowPolynomial_interl_chowDerangement_of_isTotallyNonneg
+
+@[deprecated chowPolynomial_strictInterl_chowDerangement_of_isTotallyNonneg_of_ne
+  (since := "2026-09-26")]
+alias chowPolynomial_prec_chowDerangement_of_isTotallyNonneg_of_ne :=
+  chowPolynomial_strictInterl_chowDerangement_of_isTotallyNonneg_of_ne
+
+@[deprecated chowPolynomial_interl_succ_of_isTotallyNonneg
+  (since := "2026-09-26")]
+alias chowPolynomial_prec0_succ_of_isTotallyNonneg :=
+  chowPolynomial_interl_succ_of_isTotallyNonneg
+
+@[deprecated chowPolynomial_strictInterl_succ_of_isTotallyNonneg_of_ne
+  (since := "2026-09-26")]
+alias chowPolynomial_prec_succ_of_isTotallyNonneg_of_ne :=
+  chowPolynomial_strictInterl_succ_of_isTotallyNonneg_of_ne
+
+@[deprecated chowDerangement_interl_succ_of_isTotallyNonneg
+  (since := "2026-09-26")]
+alias chowDerangement_prec0_succ_of_isTotallyNonneg :=
+  chowDerangement_interl_succ_of_isTotallyNonneg
+
+@[deprecated chowDerangement_strictInterl_succ_of_isTotallyNonneg_of_ne
+  (since := "2026-09-26")]
+alias chowDerangement_prec_succ_of_isTotallyNonneg_of_ne :=
+  chowDerangement_strictInterl_succ_of_isTotallyNonneg_of_ne
 
 end
 

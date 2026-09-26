@@ -282,7 +282,7 @@ theorem aswEdreiChowDerangement_eq_zero_or_splits
 
 /-- In a fixed infinite-symbol row, the Chow polynomial precedes the
 Chow-derangement endpoint, including all zero cases. -/
-theorem aswEdreiChow_prec0_derangement
+theorem aswEdreiChow_interl_derangement
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
@@ -298,7 +298,7 @@ theorem aswEdreiChow_prec0_derangement
   · exact fun N =>
       truncationChowDerangement_isPFPolynomial hgamma halpha hbeta N n
   · intro N
-    exact finiteSupersymmetricChow_prec0_derangement
+    exact finiteSupersymmetricChow_interl_derangement
       (truncationNumerator_nonneg hgamma halpha N)
       (truncationDenominator_nonneg hbeta N) n
   · exact fun N => natDegree_aswEdreiTruncationChow_le
@@ -311,7 +311,7 @@ theorem aswEdreiChow_prec0_derangement
 
 /-- Consecutive infinite-symbol Chow polynomials remain in zero-aware proper
 position. -/
-theorem aswEdreiChow_prec0_succ
+theorem aswEdreiChow_interl_succ
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
@@ -326,7 +326,7 @@ theorem aswEdreiChow_prec0_succ
   · exact fun N =>
       truncationChow_isPFPolynomial hgamma halpha hbeta N (n + 1)
   · intro N
-    exact finiteSupersymmetricChow_prec0_succ
+    exact finiteSupersymmetricChow_interl_succ
       (truncationNumerator_nonneg hgamma halpha N)
       (truncationDenominator_nonneg hbeta N) n
   · intro N
@@ -339,7 +339,7 @@ theorem aswEdreiChow_prec0_succ
 
 /-- Consecutive infinite-symbol Chow-derangement polynomials remain in
 zero-aware proper position. -/
-theorem aswEdreiChowDerangement_prec0_succ
+theorem aswEdreiChowDerangement_interl_succ
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
@@ -356,7 +356,7 @@ theorem aswEdreiChowDerangement_prec0_succ
   · exact fun N =>
       truncationChowDerangement_isPFPolynomial hgamma halpha hbeta N (n + 1)
   · intro N
-    exact finiteSupersymmetricChowDerangement_prec0_succ
+    exact finiteSupersymmetricChowDerangement_interl_succ
       (truncationNumerator_nonneg hgamma halpha N)
       (truncationDenominator_nonneg hbeta N) n
   · intro N
@@ -381,7 +381,19 @@ theorem aswEdrei_chow_theorem
       Interl (aswEdreiChow gamma alpha beta n)
         (aswEdreiChow gamma alpha beta (n + 1)) :=
   ⟨aswEdreiChow_isPFPolynomial hgamma halpha hbeta hsum n,
-    aswEdreiChow_prec0_succ hgamma halpha hbeta hsum n⟩
+    aswEdreiChow_interl_succ hgamma halpha hbeta hsum n⟩
+
+/-! ## Deprecated interlacing names -/
+
+@[deprecated aswEdreiChow_interl_derangement (since := "2026-09-26")]
+alias aswEdreiChow_prec0_derangement := aswEdreiChow_interl_derangement
+
+@[deprecated aswEdreiChow_interl_succ (since := "2026-09-26")]
+alias aswEdreiChow_prec0_succ := aswEdreiChow_interl_succ
+
+@[deprecated aswEdreiChowDerangement_interl_succ (since := "2026-09-26")]
+alias aswEdreiChowDerangement_prec0_succ :=
+  aswEdreiChowDerangement_interl_succ
 
 end
 

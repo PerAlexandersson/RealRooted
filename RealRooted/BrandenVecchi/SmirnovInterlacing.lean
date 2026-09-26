@@ -50,9 +50,9 @@ private theorem smirnovDescentRefinedList_zero_data (m : ℕ) :
   constructor
   · constructor
     · rw [isInterlacingSeq0_iff_pairwise]
-      have hprec : Interl (1 : ℝ[X]) 1 :=
+      have hinterl : Interl (1 : ℝ[X]) 1 :=
         Interl.refl fun _ => Polynomial.Splits.one
-      simp [hprec]
+      simp [hinterl]
     · intro f hf
       simp only [List.mem_replicate] at hf
       rcases hf with ⟨hm, rfl⟩
@@ -92,7 +92,7 @@ theorem smirnovDescentRefined_interlacing (m r : ℕ) :
 
 /-- Ordered reversed-last-letter components are in zero-aware proper
 position. -/
-theorem smirnovDescentRefined_prec0 (m r : ℕ) (i j : Fin m)
+theorem smirnovDescentRefined_interl (m r : ℕ) (i j : Fin m)
     (hij : i < j) :
     Interl (smirnovDescentRefined m r i)
       (smirnovDescentRefined m r j) := by
@@ -101,9 +101,9 @@ theorem smirnovDescentRefined_prec0 (m r : ℕ) (i j : Fin m)
   let j' : Fin (smirnovDescentRefinedList m r).length :=
     ⟨j, by simp⟩
   have hij' : i' < j' := by simpa [i', j'] using hij
-  have hprec :=
+  have hinterl :=
     (smirnovDescentRefined_interlacing m r).1.1.prec0 hij'
-  simpa [smirnovDescentRefinedList, i', j'] using hprec
+  simpa [smirnovDescentRefinedList, i', j'] using hinterl
 
 /-- On an alphabet with at least two letters, every fixed-final-letter
 component is nonzero. -/
@@ -248,6 +248,11 @@ theorem finiteSupersymmetricChow_replicate_one_nil_ne_zero
       (List.replicate m (1 : ℝ)) [] n ≠ 0 := by
   rw [finiteSupersymmetricChow_replicate_one_nil_eq_smirnov]
   exact smirnovDescentPolynomial_ne_zero m hm n
+
+/-! ## Deprecated interlacing names -/
+
+@[deprecated smirnovDescentRefined_interl (since := "2026-09-26")]
+alias smirnovDescentRefined_prec0 := smirnovDescentRefined_interl
 
 end
 
