@@ -3,6 +3,40 @@ import RealRooted.Favard
 /-!
 # Favard challenge entry point
 
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "favard"
+
+[[definitions]]
+name = "RealRooted.Challenges.Favard.FavardRecurrence"
+
+[[definitions]]
+name = "RealRooted.Challenges.Favard.PositiveFavardRecurrence"
+
+[[theorems]]
+name = "RealRooted.Challenges.Favard.interlacing"
+
+[[theorems]]
+name = "RealRooted.Challenges.Favard.realRooted"
+-->
+
+<!-- realrooted-catalog-content -->
+# Favard recurrences
+
+A monic three-term recurrence with positive subdiagonal coefficients produces
+a sequence of nonzero real-rooted polynomials.  Consecutive members are in
+proper position, so their roots interlace.  The selected definitions package
+the recurrence and its positivity hypothesis; the selected theorems give the
+interlacing and real-rootedness conclusions at every rank.
+
+## References
+
+J. Favard, “Sur les polynômes de Tchebicheff,” *Comptes rendus de l’Académie
+des sciences* 200 (1935), 2052–2053.  See also the
+[interlacing overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#favardInterlacing).
+<!-- /realrooted-catalog-content -->
+
 Human statement:
 https://www.symmetricfunctions.com/realRootedInterlacing.htm#favardInterlacing
 

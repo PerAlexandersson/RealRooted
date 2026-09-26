@@ -3,6 +3,37 @@ import RealRooted.VeroneseMatrix
 /-!
 # Veronese sections challenge entry point
 
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "veronese-sections"
+
+[[definitions]]
+name = "RealRooted.Challenges.VeroneseSections.VeroneseSection"
+
+[[definitions]]
+name = "RealRooted.Challenges.VeroneseSections.NonnegativeRealRootedPolynomial"
+
+[[theorems]]
+name = "RealRooted.Challenges.VeroneseSections.preserve_realRooted_nonneg"
+-->
+
+<!-- realrooted-catalog-content -->
+# Veronese sections
+
+The `k`th `r`-Veronese section retains the coefficients whose indices are
+congruent to `k` modulo `r` and compresses their exponents.  The selected
+theorem proves that every section of a nonzero real-rooted polynomial with
+nonnegative coefficients is either zero or real-rooted.  Its proof uses the
+project’s Pólya-frequency and cyclic-matrix infrastructure.
+
+## References
+
+The result is a standard consequence of the Pólya-frequency characterization
+and total nonnegativity.  See the
+[Veronese-section discussion on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#veroneseSectionsRealRooted).
+<!-- /realrooted-catalog-content -->
+
 Human statement:
 https://www.symmetricfunctions.com/polyaFrequency.htm#veroneseSectionsRealRooted
 

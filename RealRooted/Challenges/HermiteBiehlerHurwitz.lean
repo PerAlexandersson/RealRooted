@@ -8,6 +8,39 @@ open Polynomial
 /-!
 # Hermite--Biehler and Hurwitz challenge entry point
 
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "hermite-biehler-hurwitz"
+
+[[theorems]]
+name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_forward"
+
+[[theorems]]
+name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_converse"
+
+[[theorems]]
+name = "RealRooted.Challenges.HermiteBiehlerHurwitz.classicalHurwitzCriterion"
+-->
+
+<!-- realrooted-catalog-content -->
+# Hermite–Biehler and Hurwitz criteria
+
+The Hermite–Biehler theorem relates half-plane stability of a real polynomial
+to proper position of its even and odd parts.  The catalogue includes checked
+forward and converse forms with their sign normalization explicit.  The
+Hurwitz criterion then characterizes weak Hurwitz stability of a nonzero real
+polynomial by total nonnegativity of its classical Hurwitz matrix.
+
+## References
+
+O. Holtz, “Hermite–Biehler, Routh–Hurwitz, and total positivity,” *Linear
+Algebra and its Applications* 372 (2003), 105–110.  See also the
+[Hermite–Biehler theorem](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermiteBiehlerTheorem)
+and [Hurwitz criterion](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hurwitzLaceCriterion)
+on symmetricfunctions.com.
+<!-- /realrooted-catalog-content -->
+
 Human statements:
 
 * Hermite--Biehler:

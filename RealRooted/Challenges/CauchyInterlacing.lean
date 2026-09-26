@@ -29,7 +29,8 @@ explicit, and use the one-index deletion convention from the implementation.
 
 C. D. Godsil, *Algebraic Combinatorics*, Routledge, 2017; and S. Fisk,
 “A very short proof of Cauchy’s interlace theorem for eigenvalues of Hermitian
-matrices,” *American Mathematical Monthly* 112 (2005), 118.
+matrices,” *American Mathematical Monthly* 112 (2005), 118.  See also the
+[Cauchy interlacing entry on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#cauchyInterlacingTheorem).
 <!-- /realrooted-catalog-content -->
 
 Human statement:

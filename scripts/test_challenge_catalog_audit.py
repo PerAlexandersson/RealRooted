@@ -21,7 +21,8 @@ class ChallengeCatalogAuditTests(unittest.TestCase):
         self.assertIs(audit.catalogue_digest, challenge_catalog.catalog_digest)
         pages = audit.load_pages(root)
         self.assertEqual(audit.catalogue_digest(pages), challenge_catalog.catalog_digest(pages))
-        self.assertEqual(len(audit.resolve_records(root, pages)), 23)
+        self.assertEqual(len(pages), 18)
+        self.assertEqual(len(audit.resolve_records(root, pages)), 72)
 
     def test_raw_audit_parser_rejects_duplicate_results(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -50,6 +51,11 @@ class ChallengeCatalogAuditTests(unittest.TestCase):
             audit.generate_module(root, path, records)
             source = path.read_text(encoding="utf-8")
             self.assertIn(".recInfo _ => \"other\"", source)
+            self.assertIn(
+                '`RealRooted.Challenges.Sample\n'
+                '      "a_representative_public_theorem",',
+                source,
+            )
             self.assertLessEqual(max(map(len, source.splitlines())), 100)
 
 if __name__ == "__main__":

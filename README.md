@@ -503,27 +503,30 @@ through the line-graph reduction in `HeilmannLieb`.
 
 Garloff--Wagner Hadamard proper-position is now proved directly in
 `RealRooted.GarloffWagner` and exposed through
-`garloffWagnerHadamardNonnegPrec`. It no longer remains as an external standard
-fact for the `SuperEulerian` project.
+`garloffWagnerHadamardNonnegInterl`. It no longer remains as an external
+standard fact for the `SuperEulerian` project.
 
 The Braun--Jal generalized-snake development now checks the recurrence,
 Liu--Wang proper-position, Claim 7, matrix-induction, real-rootedness, and
 interlacing deductions.  The public route is
-`theorem41NonNestingRook_modified_of_modelInputs`, with the challenge-facing
-rook and order-polytope wrappers in `RealRooted.Challenges.BraunJal`.  The
-paper's board-model identities and the Stanley / Alexandersson--Jal
+`theorem41NonNestingRook_modified_of_modelInputs`.  The paper's board-model
+identities and the Stanley / Alexandersson--Jal
 `h^*`-to-rook correspondence remain explicit combinatorial inputs.  In
 particular, the development does not claim an unconditional theorem for an
-arbitrary polynomial family satisfying only the statement-interface type.
+arbitrary polynomial family satisfying only the statement-interface type;
+issue #71 tracks the remaining theorem proof.
 
 Documentation and onboarding use concise challenge entry-point files in
-`RealRooted/Challenges/`. An explicit metadata block opts a module into the
-generated public catalogue; only selected definitions and checked theorem
-declarations are published. Conjectures, examples, and statement scaffolds are
-not catalogue entries. The same bounded module comment owns the explanatory
-prose and primary references, while detailed proof infrastructure remains in
-the main theorem modules. A symmetricfunctions.com link may provide useful
-context but is not required.
+`RealRooted/Challenges/`.  This directory is a positive ledger of completed
+results: every theorem challenge must have an unconditional checked witness.
+Incomplete theorem targets and strategy surfaces belong in open GitHub issues,
+not in challenge modules.  An explicit metadata block opts a completed module
+into the generated public catalogue; only selected definitions and checked
+theorem declarations are published. Conjectures, examples, and statement
+scaffolds are not catalogue entries. The same bounded module comment owns the
+explanatory prose and primary references, while detailed proof infrastructure
+remains in the main theorem modules. A symmetricfunctions.com link may provide
+useful context but is not required.
 The current challenge surface includes ASW, Chudnovsky-Seymour, Hadamard,
 Wagner, Cauchy interlacing, Obreschkoff, operator and matrix interlacing
 preservers, Hermite-Biehler, the checked row-oriented Hurwitz counterexamples,

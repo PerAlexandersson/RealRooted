@@ -36,7 +36,8 @@ formal result where required.
 ## References
 
 D. G. Wagner, “Total positivity of Hadamard products,” *Journal of
-Mathematical Analysis and Applications* 163 (1992), 459–483.
+Mathematical Analysis and Applications* 163 (1992), 459–483.  See the
+[contextual statement on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#wagnerLemma).
 <!-- /realrooted-catalog-content -->
 
 Human statement:

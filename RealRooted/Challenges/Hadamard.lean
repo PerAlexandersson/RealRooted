@@ -4,6 +4,56 @@ import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 /-!
 # Hadamard challenge entry point
 
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "hadamard-products"
+
+[[definitions]]
+name = "RealRooted.Challenges.Hadamard.SchurSzegoComposition"
+
+[[definitions]]
+name = "RealRooted.Challenges.Hadamard.HadamardProduct"
+
+[[definitions]]
+name = "RealRooted.Challenges.Hadamard.PolyaFrequencyPolynomial"
+
+[[theorems]]
+name = "RealRooted.Challenges.Hadamard.finiteSchurSzegoComposition"
+
+[[theorems]]
+name = "RealRooted.Challenges.Hadamard.finitePolyaSchur_nonneg"
+
+[[theorems]]
+name = "RealRooted.Challenges.Hadamard.garloffWagnerHadamardNonnegInterl"
+
+[[theorems]]
+name = "RealRooted.Challenges.Hadamard.polynomialValueProductPolyaFrequency"
+-->
+
+<!-- realrooted-catalog-content -->
+# Hadamard products and Schur–Szegő composition
+
+This page collects checked closure theorems for coefficientwise products.  A
+fixed-degree Schur–Szegő composition with a Pólya-frequency factor preserves
+real splitting up to zero.  The finite Pólya–Schur theorem characterizes
+nonnegative multiplier sequences by their Jensen polynomials.  The
+Garloff–Wagner theorem preserves proper position under Hadamard product, and
+polynomial-value Pólya-frequency sequences are closed under multiplication of
+their defining polynomials.
+
+## References
+
+G. Pólya and I. Schur, “Über zwei Arten von Faktorenfolgen in der Theorie der
+algebraischen Gleichungen,” *Journal für die reine und angewandte Mathematik*
+144 (1914), 89–113; J. Garloff and D. G. Wagner, “Hadamard products of stable
+polynomials are stable,” *Journal of Mathematical Analysis and Applications*
+202 (1996), 797–809.  See the
+[Hadamard-product overview](https://www.symmetricfunctions.com/realRooted.htm#hadamardProductTheorems)
+and [Schur–Szegő composition](https://www.symmetricfunctions.com/realRooted.htm#schurSzegoComposition)
+on symmetricfunctions.com.
+<!-- /realrooted-catalog-content -->
+
 Human statements:
 
 * Hadamard product theorems:
@@ -73,13 +123,13 @@ theorem finitePolyaSchur_nonneg :
   RealRooted.finitePolyaSchur_nonneg
 
 /-- Garloff--Wagner proper-position Hadamard theorem. -/
-theorem garloffWagnerHadamardNonnegPrec :
+theorem garloffWagnerHadamardNonnegInterl :
     ∀ {f g p q : ℝ[X]},
       NonnegativeProperPositionPair f g →
       NonnegativeProperPositionPair p q →
       Interl (HadamardProduct f p) (HadamardProduct g q) :=
   fun hfg hpq =>
-    RealRooted.garloffWagnerHadamardNonnegPrec
+    RealRooted.garloffWagnerHadamardNonnegInterl
       hfg.1 hfg.2.1 hpq.1 hpq.2.1 hfg.2.2 hpq.2.2
 
 /-- Polynomial-value PF sequences are closed under polynomial multiplication.

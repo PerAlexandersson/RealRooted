@@ -75,10 +75,11 @@ def resolve_records(
     return records
 
 
-def lean_name_literal(name: str) -> str:
+def lean_name_lines(name: str) -> list[str]:
     if not NAME_RE.fullmatch(name):
         raise ValueError(f"cannot emit unsafe Lean name {name}")
-    return "`" + name
+    prefix, leaf = name.rsplit(".", 1)
+    return ["    Name.str", f"      `{prefix}", f'      "{leaf}",']
 
 
 def generate_module(
@@ -90,7 +91,7 @@ def generate_module(
             for record in records
         }
     )
-    names = [f"    {lean_name_literal(record.name)}," for record in records]
+    names = [line for record in records for line in lean_name_lines(record.name)]
     lines = [
         "import Lean",
         "import Lean.Elab.Command",

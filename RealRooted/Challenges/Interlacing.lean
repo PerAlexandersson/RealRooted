@@ -42,6 +42,8 @@ list.
 
 Steve Fisk, [“Polynomials, roots, and
 interlacing,”](https://arxiv.org/abs/math/0612833) arXiv:math/0612833 (2006).
+See also the
+[interlacing overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#interlacesPolynomial).
 The definitions and root-list conventions are formalized in
 `RealRooted.Basic.ProperPosition`, with the canonical list interleaving
 bridges in `RealRooted.Basic`.
