@@ -86,6 +86,7 @@ class SourceDeclaration:
     source_path: str
     source_line: int
     deprecated: bool = False
+    source_code: str = ""
 
 
 def strip_comments_and_strings(text: str) -> str:
@@ -385,6 +386,51 @@ def _qualified_name(namespace: list[str], name: str) -> str:
     return f"{prefix}.{name}"
 
 
+def _declaration_source_code(
+    source_path: pathlib.Path, source_line: int, actual_kind: str
+) -> str:
+    """Extract a definition body or theorem statement from its owning Lean source."""
+    original = source_path.read_text(encoding="utf-8")
+    clean = strip_comments_and_strings(original)
+    original_lines = original.splitlines(keepends=True)
+    clean_lines = clean.splitlines(keepends=True)
+    start = source_line - 1
+
+    if actual_kind == "theorem":
+        original_tail = "".join(original_lines[start:])
+        clean_tail = "".join(clean_lines[start:])
+        depth = 0
+        for index, character in enumerate(clean_tail[:-1]):
+            if character in "([{":
+                depth += 1
+            elif character in ")]}":
+                depth -= 1
+            elif character == ":" and clean_tail[index + 1] == "=" and depth == 0:
+                return original_tail[:index].rstrip()
+        relative = source_path.as_posix()
+        raise CatalogError(f"{relative}:{source_line}: cannot isolate theorem statement")
+
+    end = len(original_lines)
+    for index in range(start + 1, len(original_lines)):
+        clean_line = clean_lines[index]
+        original_line = original_lines[index]
+        if original_line.startswith(("/--", "/-!", "@[")):
+            end = index
+            break
+        if clean_line and not clean_line[0].isspace() and (
+            DECLARATION_RE.match(clean_line)
+            or clean_line.startswith(("namespace ", "end ", "section "))
+            or clean_line.startswith(("noncomputable section", "open ", "variable "))
+        ):
+            end = index
+            break
+    source_code = "".join(original_lines[start:end]).rstrip()
+    if not source_code:
+        relative = source_path.as_posix()
+        raise CatalogError(f"{relative}:{source_line}: empty declaration source")
+    return source_code
+
+
 def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> dict[str, SourceDeclaration]:
     """Find ordinary public declaration headers in one Lean source file."""
     relative_path = source_path.relative_to(repo_root).as_posix()
@@ -427,8 +473,9 @@ def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> d
         name = _qualified_name(namespaces, raw_name)
         if name in found:
             raise CatalogError(f"{relative_path}:{line_number}: ambiguous declaration {name}")
+        source_code = _declaration_source_code(source_path, line_number, actual_kind)
         found[name] = SourceDeclaration(
-            name, actual_kind, relative_path, line_number, deprecated
+            name, actual_kind, relative_path, line_number, deprecated, source_code
         )
     return found
 
@@ -683,11 +730,13 @@ def _item_list(
     for item in items:
         source = resolved[item.name]
         rows.append(
-            "<li><code>"
+            "<li><div class=\"declaration-meta\"><code class=\"declaration-name\">"
             + html.escape(item.name)
-            + "</code> <a class=\"source\" href=\""
+            + "</code><a class=\"source\" href=\""
             + html.escape(_source_link(revision, source), quote=True)
-            + "\">source</a></li>"
+            + "\">source</a></div><pre class=\"lean-declaration\"><code>"
+            + html.escape(source.source_code)
+            + "</code></pre></li>"
         )
     return "<ul class=\"declarations\">" + "".join(rows) + "</ul>"
 

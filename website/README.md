@@ -58,6 +58,13 @@ Pages are ordered by `source_path` before hashing.  Prose is intentionally not
 part of the digest: the Lean audit proves the selected declarations, while
 prose and references remain an editorial review boundary.
 
+For each selected declaration, the renderer follows `module` to the owning
+Lean source and displays an exact source excerpt.  Definitions include their
+defining bodies.  Theorems include the complete proposition but stop before
+the proof term or tactic block.  This keeps the formal statement visible to
+readers without duplicating Lean code in challenge metadata or publishing
+proof implementation details on the catalog page.
+
 Run source-only validation without touching an output directory:
 
 ```bash
