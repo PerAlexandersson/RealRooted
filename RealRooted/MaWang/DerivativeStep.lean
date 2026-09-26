@@ -33,7 +33,7 @@ theorem strictInterl_mw_derivative_of_nonpos_of_pos_natDegree {f u v : ℝ[X]}
       hder hf'_pos hF_pos hdeg_lo hdeg_hi hv_nonpos
 
 /-- Compatibility wrapper for the original degree-two weak Ma--Wang API. -/
-theorem prec_mw_derivative_of_nonpos {f u v : ℝ[X]}
+theorem strictInterl_mw_derivative_of_nonpos {f u v : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
@@ -47,7 +47,7 @@ theorem prec_mw_derivative_of_nonpos {f u v : ℝ[X]}
 
 /-- Ma--Wang derivative step where the target leading-coefficient and degree
 side goals are supplied through a normalized recurrence identity. -/
-theorem prec_mw_derivative_of_nonpos_of_recurrence {f F u v : ℝ[X]}
+theorem strictInterl_mw_derivative_of_nonpos_of_recurrence {f F u v : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hrec : F = u * f + v * f.derivative)
@@ -57,13 +57,13 @@ theorem prec_mw_derivative_of_nonpos_of_recurrence {f F u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
     StrictInterl f (u * f + v * f.derivative) :=
-  prec_mw_derivative_of_nonpos hf hdegf
+  strictInterl_mw_derivative_of_nonpos hf hdegf
     (by simpa only [hrec] using hdeg_lo)
     (by simpa only [hrec] using hdeg_hi)
     (by simpa only [hrec] using hF_pos)
     hf_pos hv_nonpos
 
-theorem prec_mw_derivative_X_mul_of_nonneg_on_roots {f u q : ℝ[X]}
+theorem strictInterl_mw_derivative_X_mul_of_nonneg_on_roots {f u q : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + (X * q) * f.derivative).natDegree)
@@ -73,11 +73,11 @@ theorem prec_mw_derivative_X_mul_of_nonneg_on_roots {f u q : ℝ[X]}
     (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
     (hq_nonneg : ∀ r, f.IsRoot r → 0 ≤ q.eval r) :
     StrictInterl f (u * f + (X * q) * f.derivative) :=
-  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+  strictInterl_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
     (fun r hr => eval_X_mul_nonpos_of_nonpos_of_nonneg
       (hf_roots r hr) (hq_nonneg r hr))
 
-theorem prec_mw_derivative_C_mul_X_mul_of_nonneg_on_roots {f u q : ℝ[X]} {c : ℝ}
+theorem strictInterl_mw_derivative_C_mul_X_mul_of_nonneg_on_roots {f u q : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + (C c * X * q) * f.derivative).natDegree)
@@ -89,12 +89,12 @@ theorem prec_mw_derivative_C_mul_X_mul_of_nonneg_on_roots {f u q : ℝ[X]} {c : 
     (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
     (hq_nonneg : ∀ r, f.IsRoot r → 0 ≤ q.eval r) :
     StrictInterl f (u * f + (C c * X * q) * f.derivative) :=
-  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+  strictInterl_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
     (fun r hr =>
       eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
         hc (hf_roots r hr) (hq_nonneg r hr))
 
-theorem prec_mw_derivative_X_mul_one_add_X_of_roots_in_Icc {f u : ℝ[X]}
+theorem strictInterl_mw_derivative_X_mul_one_add_X_of_roots_in_Icc {f u : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + (X * (1 + X)) * f.derivative).natDegree)
@@ -105,11 +105,11 @@ theorem prec_mw_derivative_X_mul_one_add_X_of_roots_in_Icc {f u : ℝ[X]}
     (hroot_lo : ∀ r, f.IsRoot r → -1 ≤ r)
     (hroot_hi : ∀ r, f.IsRoot r → r ≤ 0) :
     StrictInterl f (u * f + (X * (1 + X)) * f.derivative) :=
-  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+  strictInterl_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
     (fun r hr => eval_X_mul_one_add_X_nonpos_of_mem_Icc
       (hroot_lo r hr) (hroot_hi r hr))
 
-theorem prec_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
+theorem strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
     {f u : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
@@ -124,12 +124,12 @@ theorem prec_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
     (hc : 0 ≤ c)
     (hroot_hi : ∀ r, f.IsRoot r → r ≤ -1) :
     StrictInterl f (u * f + (-(C c) * X * (1 + X)) * f.derivative) :=
-  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+  strictInterl_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
     (fun r hr =>
       eval_neg_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_le_neg_one
         hc (hroot_hi r hr))
 
-theorem prec_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
+theorem strictInterl_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
     {f u : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
@@ -146,12 +146,12 @@ theorem prec_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
     (hroot_lo : ∀ r, f.IsRoot r → -1 ≤ r)
     (hroot_hi : ∀ r, f.IsRoot r → r ≤ -(1 / 2 : ℝ)) :
     StrictInterl f (u * f + ((1 + X) * (1 + C (2 : ℝ) * X)) * f.derivative) :=
-  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+  strictInterl_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
     (fun r hr =>
       eval_one_add_X_mul_one_add_two_mul_X_nonpos_of_mem_interval
         (hroot_lo r hr) (hroot_hi r hr))
 
-theorem prec_mw_derivative_neg_const {f u : ℝ[X]} {c : ℝ}
+theorem strictInterl_mw_derivative_neg_const {f u : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + C (-c) * f.derivative).natDegree)
@@ -160,10 +160,10 @@ theorem prec_mw_derivative_neg_const {f u : ℝ[X]} {c : ℝ}
     (hf_pos : HasPosLeadingCoeff f)
     (hc : 0 ≤ c) :
     StrictInterl f (u * f + C (-c) * f.derivative) :=
-  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+  strictInterl_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
     (fun _ _ => eval_C_neg_nonpos_of_nonneg hc)
 
-theorem prec_mw_derivative_neg_C_mul_X_sq {f u : ℝ[X]} {c : ℝ}
+theorem strictInterl_mw_derivative_neg_C_mul_X_sq {f u : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo :
@@ -174,12 +174,51 @@ theorem prec_mw_derivative_neg_C_mul_X_sq {f u : ℝ[X]} {c : ℝ}
     (hf_pos : HasPosLeadingCoeff f)
     (hc : 0 ≤ c) :
     StrictInterl f (u * f + (-(C c) * X ^ 2) * f.derivative) :=
-  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+  strictInterl_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
     (fun _ _ => eval_neg_C_mul_X_sq_nonpos_of_nonneg hc)
 
 @[deprecated strictInterl_mw_derivative_of_nonpos_of_pos_natDegree
   (since := "2026-09-18")]
 alias prec_mw_derivative_of_nonpos_of_pos_natDegree :=
   strictInterl_mw_derivative_of_nonpos_of_pos_natDegree
+
+@[deprecated strictInterl_mw_derivative_of_nonpos (since := "2026-09-26")]
+alias prec_mw_derivative_of_nonpos := strictInterl_mw_derivative_of_nonpos
+
+@[deprecated strictInterl_mw_derivative_of_nonpos_of_recurrence
+  (since := "2026-09-26")]
+alias prec_mw_derivative_of_nonpos_of_recurrence :=
+  strictInterl_mw_derivative_of_nonpos_of_recurrence
+
+@[deprecated strictInterl_mw_derivative_X_mul_of_nonneg_on_roots
+  (since := "2026-09-26")]
+alias prec_mw_derivative_X_mul_of_nonneg_on_roots :=
+  strictInterl_mw_derivative_X_mul_of_nonneg_on_roots
+
+@[deprecated strictInterl_mw_derivative_C_mul_X_mul_of_nonneg_on_roots
+  (since := "2026-09-26")]
+alias prec_mw_derivative_C_mul_X_mul_of_nonneg_on_roots :=
+  strictInterl_mw_derivative_C_mul_X_mul_of_nonneg_on_roots
+
+@[deprecated strictInterl_mw_derivative_X_mul_one_add_X_of_roots_in_Icc
+  (since := "2026-09-26")]
+alias prec_mw_derivative_X_mul_one_add_X_of_roots_in_Icc :=
+  strictInterl_mw_derivative_X_mul_one_add_X_of_roots_in_Icc
+
+@[deprecated strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
+  (since := "2026-09-26")]
+alias prec_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one :=
+  strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
+
+@[deprecated strictInterl_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
+  (since := "2026-09-26")]
+alias prec_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval :=
+  strictInterl_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
+
+@[deprecated strictInterl_mw_derivative_neg_const (since := "2026-09-26")]
+alias prec_mw_derivative_neg_const := strictInterl_mw_derivative_neg_const
+
+@[deprecated strictInterl_mw_derivative_neg_C_mul_X_sq (since := "2026-09-26")]
+alias prec_mw_derivative_neg_C_mul_X_sq := strictInterl_mw_derivative_neg_C_mul_X_sq
 
 end RealRooted
