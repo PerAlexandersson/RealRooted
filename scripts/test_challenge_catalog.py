@@ -216,6 +216,9 @@ end RealRooted.Challenges.Sample
         self.assertNotIn("Every declaration links", first["index.html"])
         self.assertIn('class="brand"', first["theorems/sample/index.html"])
         self.assertIn('class="declaration-group"', first["theorems/sample/index.html"])
+        self.assertIn('class="lean-declaration"', first["theorems/sample/index.html"])
+        self.assertIn("protected theorem canonical : True", first["theorems/sample/index.html"])
+        self.assertNotIn("by trivial", first["theorems/sample/index.html"])
         self.assertIn("Source revision", first["theorems/sample/index.html"])
         self.assertIn('href="../../assets/site.css"', first["theorems/sample/index.html"])
         self.assertIn("RealRooted/Canonical.lean#L2", first["theorems/sample/index.html"])
@@ -243,6 +246,9 @@ end RealRooted.Challenges.Sample
         self.assertIn("&lt;script&gt;", page)
         self.assertNotIn('href="javascript:', page)
         self.assertIn("<code>", page)
+        self.assertIn("def family : Nat := 1", page)
+        self.assertIn("theorem proven : True", page)
+        self.assertNotIn("by trivial", page)
 
     def test_audit_report_rejects_mismatch_and_accepts_exact_records(self) -> None:
         pages, resolved = self.pages_and_sources()
