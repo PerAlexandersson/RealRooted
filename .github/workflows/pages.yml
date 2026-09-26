@@ -1,4 +1,4 @@
-name: Publish challenge catalogue
+name: Publish challenge catalog
 
 on:
   workflow_call:
@@ -32,17 +32,17 @@ jobs:
       - name: Download matching Lean audit
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          name: challenge-catalogue-audit-${{ inputs.revision }}
-          path: ${{ runner.temp }}/challenge-catalogue-audit
-      - name: Render audited catalogue
+          name: challenge-catalog-audit-${{ inputs.revision }}
+          path: ${{ runner.temp }}/challenge-catalog-audit
+      - name: Render audited catalog
         run: |
           python3 scripts/build_challenge_pages.py \
-            --audit-report "$RUNNER_TEMP/challenge-catalogue-audit/challenge-catalogue-audit.json" \
-            --output "$RUNNER_TEMP/challenge-catalogue"
+            --audit-report "$RUNNER_TEMP/challenge-catalog-audit/challenge-catalog-audit.json" \
+            --output "$RUNNER_TEMP/challenge-catalog"
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
-          path: ${{ runner.temp }}/challenge-catalogue
+          path: ${{ runner.temp }}/challenge-catalog
 
   deploy:
     name: deploy

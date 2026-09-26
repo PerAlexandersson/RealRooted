@@ -34,7 +34,7 @@ A rectangular matrix of polynomials acts on a polynomial sequence by matrix
 multiplication.  Brändén’s local criterion requires every ordered `2 × 2`
 submatrix to satisfy an affine interlacing condition.  Under coefficient
 nonnegativity, this condition preserves nonnegative interlacing sequences.
-The catalogue also includes the checked zero-aware form, which permits output
+The catalog also includes the checked zero-aware form, which permits output
 rows to vanish.
 
 ## References

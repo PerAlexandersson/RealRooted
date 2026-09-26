@@ -240,12 +240,12 @@ emulation. These scripts complement `lake build`; they do not replace it.
   for the Braun-Jal generalized snake poset target.
 - `RealRooted/Challenges/` contains compact entry points for famous theorem
   statements. Opted-in module comments are the maintained source for the
-  [public challenge catalogue](https://peralexandersson.github.io/RealRooted/),
+  [public challenge catalog](https://peralexandersson.github.io/RealRooted/),
   including its human-readable descriptions and primary references.
 - `RealRooted/CombinatorialExamples/` contains examples such as Eulerian,
   type B Eulerian, simsun, Touchard, Narayana, Motzkin, and related families.
 - `RealRooted/Tactic/OEIS_COVERAGE.md` is the generated coverage ledger for
-  OEIS-labelled tactic shells, certificate fragments, and concrete theorems.
+  OEIS-labeled tactic shells, certificate fragments, and concrete theorems.
 - `RealRooted/Tactic/OEIS/` contains focused OEIS certificate-family frontends.
   `DerivativeLag.lean`, `PositiveLag.lean`, and `NegativeLag.lean` own the
   lag families, while `ProductExit.lean`, `ProductFactor.lean`,
@@ -521,9 +521,9 @@ Documentation and onboarding use concise challenge entry-point files in
 results: every theorem challenge must have an unconditional checked witness.
 Incomplete theorem targets and strategy surfaces belong in open GitHub issues,
 not in challenge modules.  An explicit metadata block opts a completed module
-into the generated public catalogue; only selected definitions and checked
+into the generated public catalog; only selected definitions and checked
 theorem declarations are published. Conjectures, examples, and statement
-scaffolds are not catalogue entries. The same bounded module comment owns the
+scaffolds are not catalog entries. The same bounded module comment owns the
 explanatory prose and primary references, while detailed proof infrastructure
 remains in the main theorem modules. A symmetricfunctions.com link may provide
 useful context but is not required.

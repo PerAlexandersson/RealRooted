@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate or render the curated RealRooted challenge catalogue."""
+"""Validate or render the curated RealRooted challenge catalog."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ sys.dont_write_bytecode = True
 
 from challenge_catalog import (
     CatalogError,
-    load_catalogue,
+    load_catalog,
     render_site,
     revision_at,
     validate_audit_report,
@@ -43,20 +43,20 @@ def main() -> int:
     args = parse_args()
     root = args.repo_root.resolve()
     try:
-        pages = load_catalogue(root)
+        pages = load_catalog(root)
         resolved = validate_sources(root, pages)
         revision = revision_at(root)
         if args.audit_report is not None:
             validate_audit_report(args.audit_report, pages, resolved, revision)
         if args.check:
-            print(f"ok: validated {len(pages)} curated catalogue pages")
+            print(f"ok: validated {len(pages)} curated catalog pages")
             return 0
         output = args.output.resolve()
         if output == root or output.is_relative_to(root):
             raise CatalogError("generated pages must use an output directory outside the repository")
         files = render_site(root, pages, resolved, revision)
         write_site(output, files)
-        print(f"ok: wrote {len(files)} catalogue files to {args.output}")
+        print(f"ok: wrote {len(files)} catalog files to {args.output}")
         return 0
     except CatalogError as error:
         print(f"error: {error}", file=sys.stderr)

@@ -32,8 +32,8 @@ force this real nonpositive-root property.  The reverse theorem proves the
 converse under the explicit nonnegative-coefficient hypothesis used by the
 formalization.
 
-The catalogue intentionally selects the checked forward and reverse theorems;
-the internal `forwardTarget` spelling is not itself a catalogue entry.
+The catalog intentionally selects the checked forward and reverse theorems;
+the internal `forwardTarget` spelling is not itself a catalog entry.
 
 ## References
 

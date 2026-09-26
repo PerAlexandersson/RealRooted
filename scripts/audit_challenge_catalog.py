@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Prepare and collect the Lean audit for the curated challenge catalogue.
+"""Prepare and collect the Lean audit for the curated challenge catalog.
 
-Catalogue parsing, source validation, canonicalization, and digest computation
+Catalog parsing, source validation, canonicalization, and digest computation
 are owned by :mod:`challenge_catalog`.  This driver only prepares the temporary
 Lean environment query and converts its marker output into the frozen audit
 report.
@@ -44,9 +44,9 @@ class Record:
 
 
 # These aliases are deliberately direct: the generator owns the canonical
-# catalogue loader and digest schema used by both source and publishable paths.
-load_pages = challenge_catalog.load_catalogue
-catalogue_digest = challenge_catalog.catalog_digest
+# catalog loader and digest schema used by both source and publishable paths.
+load_pages = challenge_catalog.load_catalog
+catalog_digest = challenge_catalog.catalog_digest
 
 
 def repo_root_from_args() -> pathlib.Path:
@@ -177,7 +177,7 @@ def collect_report(
     report = {
         "schema_version": 1,
         "revision": challenge_catalog.revision_at(repo_root),
-        "catalog_digest": catalogue_digest(pages),
+        "catalog_digest": catalog_digest(pages),
         "lean_toolchain": toolchain_path.read_text(encoding="utf-8").strip(),
         "declarations": declarations,
     }
@@ -205,7 +205,7 @@ def main() -> int:
         pages = load_pages(repo_root)
         records = resolve_records(repo_root, pages)
         if args.check:
-            print(f"ok: {len(pages)} catalogue page(s), {len(records)} selected declaration(s)")
+            print(f"ok: {len(pages)} catalog page(s), {len(records)} selected declaration(s)")
         if args.generate:
             generate_module(repo_root, args.generate.resolve(), records)
             print(f"ok: generated Lean audit module {args.generate}")
@@ -213,7 +213,7 @@ def main() -> int:
             if args.report is None:
                 raise ValueError("--collect requires --report")
             collect_report(repo_root, args.collect.resolve(), args.report.resolve(), pages, records)
-            print(f"ok: wrote catalogue audit report {args.report}")
+            print(f"ok: wrote catalog audit report {args.report}")
         if not (args.check or args.generate or args.collect):
             print(f"ok: source metadata valid ({len(pages)} pages, {len(records)} declarations)")
         return 0

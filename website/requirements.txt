@@ -1,2 +1,2 @@
-# The catalogue renderer uses only the Python 3.11+ standard library.
+# The catalog renderer uses only the Python 3.11+ standard library.
 # This intentionally avoids an unpinned package download in Pages CI.

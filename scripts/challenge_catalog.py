@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Parse and render the curated RealRooted challenge catalogue.
+"""Parse and render the curated RealRooted challenge catalog.
 
 This module deliberately implements a small, conservative subset of Lean
-source syntax.  It is a catalogue source guard, not a Lean parser: an
+source syntax.  It is a catalog source guard, not a Lean parser: an
 ambiguous selected declaration is an error and is left for the Lean audit to
 resolve.  The companion audit verifies selected constants in Lean's
 environment after a successful build.
@@ -50,7 +50,7 @@ IMPORT_RE = re.compile(
 
 
 class CatalogError(ValueError):
-    """A deterministic catalogue source or audit validation error."""
+    """A deterministic catalog source or audit validation error."""
 
 
 @dataclass(frozen=True)
@@ -231,14 +231,14 @@ def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
     marker_count = text.count("realrooted-catalog")
     if not metadata_matches and not content_matches:
         if marker_count:
-            raise _source_error(source_path, "catalogue markers must occur in a module doc comment")
+            raise _source_error(source_path, "catalog markers must occur in a module doc comment")
         return None
     if len(metadata_matches) != 1 or len(content_matches) != 1:
         raise _source_error(source_path, "requires exactly one metadata and one content block")
     metadata_comment, metadata_match = metadata_matches[0]
     content_comment, content_match = content_matches[0]
     if metadata_comment != content_comment or marker_count != 3:
-        raise _source_error(source_path, "catalogue blocks must occur together in one module doc comment")
+        raise _source_error(source_path, "catalog blocks must occur together in one module doc comment")
     try:
         metadata = tomllib.loads(metadata_match.group(1))
     except tomllib.TOMLDecodeError as error:
@@ -292,7 +292,7 @@ def _tracked_challenge_paths(repo_root: pathlib.Path) -> list[pathlib.Path]:
     return sorted(paths)
 
 
-def load_catalogue(repo_root: pathlib.Path) -> tuple[CatalogPage, ...]:
+def load_catalog(repo_root: pathlib.Path) -> tuple[CatalogPage, ...]:
     """Load and validate every opted-in tracked challenge module."""
     pages: list[CatalogPage] = []
     for path in _tracked_challenge_paths(repo_root):
@@ -304,12 +304,12 @@ def load_catalogue(repo_root: pathlib.Path) -> tuple[CatalogPage, ...]:
     paths: set[str] = set()
     for page in pages:
         if page.url in paths:
-            raise CatalogError(f"duplicate catalogue URL {page.url}")
+            raise CatalogError(f"duplicate catalog URL {page.url}")
         paths.add(page.url)
     return tuple(sorted(pages, key=lambda page: (SECTIONS.index(page.section), page.title, page.slug)))
 
 
-def canonical_catalogue_data(pages: Iterable[CatalogPage]) -> dict[str, Any]:
+def canonical_catalog_data(pages: Iterable[CatalogPage]) -> dict[str, Any]:
     """The frozen, prose-independent selected-declaration digest input."""
     return {
         "schema_version": 1,
@@ -328,7 +328,7 @@ def canonical_catalogue_data(pages: Iterable[CatalogPage]) -> dict[str, Any]:
 
 def catalog_digest(pages: Iterable[CatalogPage]) -> str:
     payload = json.dumps(
-        canonical_catalogue_data(pages), sort_keys=True, separators=(",", ":"), ensure_ascii=True
+        canonical_catalog_data(pages), sort_keys=True, separators=(",", ":"), ensure_ascii=True
     )
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
@@ -507,7 +507,7 @@ def validate_audit_report(
     if report["schema_version"] != 1 or report["revision"] != revision:
         raise CatalogError("audit report revision does not match the checked-out source")
     if report["catalog_digest"] != catalog_digest(pages):
-        raise CatalogError("audit report catalogue digest does not match the selected declarations")
+        raise CatalogError("audit report catalog digest does not match the selected declarations")
     if not isinstance(report["lean_toolchain"], str) or not report["lean_toolchain"]:
         raise CatalogError("audit report lacks its Lean toolchain")
     declarations = report["declarations"]
@@ -744,20 +744,20 @@ def render_site(
         for page in pages
     )
     index_body = (
-        "<main class=\"catalogue-home\"><section class=\"hero\">"
+        "<main class=\"catalog-home\"><section class=\"hero\">"
         "<p class=\"eyebrow\">Lean 4 formalization</p>"
         "<h1>Real-rooted polynomials,<br>made explorable.</h1>"
         "<p class=\"lede\">A curated guide to Lean definitions and proved theorems, "
         "with links to their source.</p></section>"
-        f"<ul class=\"catalogue-index\">{index_rows}</ul></main>"
+        f"<ul class=\"catalog-index\">{index_rows}</ul></main>"
     )
-    files["index.html"] = _template(repo_root, index_body, "RealRooted catalogue", BASE_PATH)
+    files["index.html"] = _template(repo_root, index_body, "RealRooted catalog", BASE_PATH)
     for section, section_pages in grouped.items():
         links = "".join(
             f"<li><a href=\"{page.slug}/\">{html.escape(page.title)}</a></li>" for page in section_pages
         )
         body = (
-            "<main class=\"section-page\"><p class=\"eyebrow\">Browse the catalogue</p>"
+            "<main class=\"section-page\"><p class=\"eyebrow\">Browse the catalog</p>"
             f"<h1>{html.escape(section.title())}</h1>"
             f"<ul class=\"section-index\">{links}</ul></main>"
         )
@@ -779,7 +779,7 @@ def render_site(
             )
         source = html.escape(_source_link(revision, SourceDeclaration("", "", page.source_path, 1)), quote=True)
         body = (
-            "<main class=\"catalogue-page\"><p class=\"breadcrumb\"><a href=\"../\">"
+            "<main class=\"catalog-page\"><p class=\"breadcrumb\"><a href=\"../\">"
             + html.escape(page.section.title())
             + "</a></p>"
             + "<article class=\"prose\">"
@@ -809,7 +809,7 @@ def render_site(
             for page in pages
         ],
     }
-    files["catalogue-manifest.json"] = json.dumps(manifest, indent=2, sort_keys=True) + "\n"
+    files["catalog-manifest.json"] = json.dumps(manifest, indent=2, sort_keys=True) + "\n"
     asset = repo_root / "website" / "assets" / "site.css"
     files["assets/site.css"] = asset.read_text(encoding="utf-8")
     validate_internal_links(files)
