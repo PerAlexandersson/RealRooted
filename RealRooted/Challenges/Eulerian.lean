@@ -6,6 +6,56 @@ open Polynomial
 /-!
 # Eulerian polynomial challenge entry point
 
+<!-- realrooted-catalog
+version = 1
+section = "families"
+slug = "eulerian"
+
+[[definitions]]
+name = "RealRooted.Challenges.Eulerian.OrdinaryEulerianPolynomial"
+
+[[definitions]]
+name = "RealRooted.Challenges.Eulerian.TypeBEulerianPolynomial"
+
+[[theorems]]
+name = "RealRooted.Challenges.Eulerian.realRooted"
+
+[[theorems]]
+name = "RealRooted.Challenges.Eulerian.interlaces_succ"
+
+[[theorems]]
+name = "RealRooted.Challenges.Eulerian.typeB_realRooted"
+
+[[theorems]]
+name = "RealRooted.Challenges.Eulerian.typeB_interlaces_succ"
+-->
+
+<!-- realrooted-catalog-content -->
+# Eulerian polynomials
+
+The ordinary page records the shifted Eulerian family `Pₙ = eulerianTilde n`.
+Its initial polynomial is `P₀ = X`, and the recurrence is
+`Pₙ₊₁ = X ((n + 2) Pₙ + (1 - X) Pₙ')`.  The type `B` family starts at
+`P₀ = 1` and uses
+`Pₙ₊₁ = (1 + (2n + 1)X) Pₙ + 2X(1 - X) Pₙ'`.
+
+The selected results prove real-rootedness for each family and interlacing of
+successive members.  In this project, `Interlaces (Pₙ) (Pₙ₊₁)` uses the
+degree-one-increase orientation, with the roots of the shorter polynomial
+between the roots of the longer one.
+
+## References
+
+The ordinary Eulerian recurrence and its real-rootedness go back to
+F. G. Frobenius, “Über die Bernoullischen Zahlen und die Eulerschen Polynome,”
+Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften
+(1910), 809–847.  The type `B` family is the standard type `B` Eulerian
+polynomial recurrence; see F. Brenti, [“q-Eulerian polynomials arising from
+Coxeter groups,”](https://doi.org/10.1006/eujc.1994.1046) *European Journal of
+Combinatorics* 15 (1994), 417–441.  Its formal recurrence and proofs are in the
+imported `RealRooted.CombinatorialExamples.TypeBEulerian` module.
+<!-- /realrooted-catalog-content -->
+
 Human statements:
 
 * Eulerian polynomials:
@@ -20,7 +70,7 @@ Eulerschen Polynome", Sitzungsberichte der Königlich Preussischen Akademie der
 Wissenschaften (1910), 809--847.
 
 This module exposes the checked ordinary and type `B` Eulerian real-rootedness
-and Sturm-sequence statements.
+and interlacing statements, together with the corresponding Sturm-prefix API.
 -/
 
 namespace RealRooted

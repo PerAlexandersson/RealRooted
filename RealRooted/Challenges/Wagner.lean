@@ -3,6 +3,42 @@ import RealRooted.Wagner.NonpositiveRoots
 /-!
 # Wagner challenge entry point
 
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "wagner"
+
+[[theorems]]
+name = "RealRooted.Challenges.Wagner.commonRight_add"
+
+[[theorems]]
+name = "RealRooted.Challenges.Wagner.commonLeft_add"
+
+[[theorems]]
+name = "RealRooted.Challenges.Wagner.mulX_iff"
+-->
+
+<!-- realrooted-catalog-content -->
+# Wagner’s lemma
+
+For polynomials with only nonpositive real roots and positive leading
+coefficient, the common-right theorem says that if both `f` and `g` are in
+proper position with `h`, then `f + g` is in proper position with `h` as well.
+The common-left theorem is the analogous statement with `h` on the left.
+
+The shift theorem states
+`StrictInterl f g ↔ StrictInterl g (X * f)` when the degrees differ by one.
+This is the Lean orientation: `StrictInterl f g` means that `f` is the shorter
+or left member and `g` is the right member.  Every selected theorem retains
+the root-location, leading-coefficient, and degree hypotheses needed by the
+formal result where required.
+
+## References
+
+D. G. Wagner, “Total positivity of Hadamard products,” *Journal of
+Mathematical Analysis and Applications* 163 (1992), 459–483.
+<!-- /realrooted-catalog-content -->
+
 Human statement:
 https://www.symmetricfunctions.com/realRootedInterlacing.htm#wagnerLemma
 
@@ -36,10 +72,9 @@ theorem commonRight_add {f g h : ℝ[X]}
 /-- Wagner (2): if `h` interlaces both `f` and `g`, then `h` interlaces
 `f + g`.
 
-This is the human statement from the catalog.  The current checked theorem in
-`RealRooted.WagnerLeftSum` proves a stronger-shaped internal step with explicit
-coprime and splitting hypotheses; this challenge-facing theorem records the
-clean target. -/
+This is the checked common-left form used by the catalog.  The reusable proof
+is in `RealRooted.Wagner.NonpositiveRoots`; the separate theorem
+`commonLeft_add_checked` exposes the lower-level algebraic interface. -/
 theorem commonLeft_add {f g h : ℝ[X]}
     (hf : HasNonposRootsPosLeading f)
     (hg : HasNonposRootsPosLeading g)

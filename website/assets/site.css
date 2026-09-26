@@ -1,0 +1,35 @@
+:root {
+  color-scheme: light dark;
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  line-height: 1.55;
+  background: #f9fafb;
+  color: #172033;
+}
+
+body { margin: 0; }
+.site-header {
+  padding: 1rem max(1rem, calc((100% - 72rem) / 2));
+  border-bottom: 1px solid #cdd5df;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+.site-header nav { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; }
+.site-header a { color: inherit; font-weight: 700; text-decoration: none; }
+.site-header a + a { color: #536174; font-size: 0.9rem; font-weight: 500; }
+.catalogue-index span { color: #536174; font-size: 0.9rem; }
+main { max-width: 46rem; margin: 2.5rem auto; padding: 0 1.25rem 3rem; }
+h1, h2, h3 { line-height: 1.2; }
+a { color: #0759ad; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+code { overflow-wrap: anywhere; }
+pre { overflow-x: auto; padding: 0.8rem; background: #eaf0f5; }
+.declarations { padding-left: 1.2rem; }
+.source { margin-left: 0.4rem; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.86rem; }
+.breadcrumb, .verification { color: #536174; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.9rem; }
+
+@media (prefers-color-scheme: dark) {
+  :root { background: #111827; color: #e5e7eb; }
+  .site-header { border-color: #374151; }
+  .site-header a + a, .catalogue-index span, .breadcrumb, .verification { color: #aab5c5; }
+  a { color: #8cc7ff; }
+  pre { background: #1f2937; }
+}

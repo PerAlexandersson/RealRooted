@@ -10,10 +10,10 @@
   },
   "budgets": {
     "RealRooted": {
-      "max_modules": 1419
+      "max_modules": 1421
     },
     "RealRooted.Production": {
-      "max_modules": 1291
+      "max_modules": 1293
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 642
@@ -896,6 +896,12 @@
     },
     "RealRooted.Challenges.Wagner": {
       "max_modules": 90
+    },
+    "RealRooted.Challenges.Interlacing": {
+      "max_modules": 8
+    },
+    "RealRooted.Challenges.Narayana": {
+      "max_modules": 177
     },
     "RealRooted.Tactic.Wagner": {
       "max_modules": 92
@@ -2280,6 +2286,8 @@
     "RealRooted.Tactic.Kurtz",
     "RealRooted.Wagner.NonpositiveRoots",
     "RealRooted.Challenges.Wagner",
+    "RealRooted.Challenges.Interlacing",
+    "RealRooted.Challenges.Narayana",
     "RealRooted.Tactic.Wagner",
     "RealRooted.WagnerX.ListInterlacing",
     "RealRooted.WagnerX.NonnegativeRoots",

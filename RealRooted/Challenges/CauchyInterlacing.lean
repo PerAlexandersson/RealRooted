@@ -3,6 +3,35 @@ import RealRooted.CauchyInterlacing.Polynomial
 /-!
 # Cauchy interlacing challenge entry point
 
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "cauchy-interlacing"
+
+[[theorems]]
+name = "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_eigenvalues_interlace"
+
+[[theorems]]
+name = "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_charpoly_interlaces"
+-->
+
+<!-- realrooted-catalog-content -->
+# Cauchy interlacing
+
+Let `A` be a Hermitian matrix indexed by `Fin (n + 1)`, and delete one common
+row and column.  The ordered eigenvalues of the resulting principal
+submatrix interlace the ordered eigenvalues of `A`; the characteristic
+polynomials satisfy the corresponding polynomial interlacing relation.  The
+selected statements make the Hermitian hypothesis and the deleted index
+explicit, and use the one-index deletion convention from the implementation.
+
+## References
+
+C. D. Godsil, *Algebraic Combinatorics*, Routledge, 2017; and S. Fisk,
+“A very short proof of Cauchy’s interlace theorem for eigenvalues of Hermitian
+matrices,” *American Mathematical Monthly* 112 (2005), 118.
+<!-- /realrooted-catalog-content -->
+
 Human statement:
 https://www.symmetricfunctions.com/realRootedInterlacing.htm#cauchyInterlacingTheorem
 
