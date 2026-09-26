@@ -71,11 +71,11 @@ private lemma listAlternates_right_le_of_left_lt_of_mem
 /-- If the roots of the left member of a proper-position pair lie strictly
 below a root `c` of the right member, then `c` is an upper bound for all roots
 of the right member. -/
-theorem roots_le_of_prec_of_left_roots_lt_of_right_root
-    {f g : ℝ[X]} {c : ℝ} (hprec : StrictInterl f g)
+theorem roots_le_of_strictInterl_of_left_roots_lt_of_right_root
+    {f g : ℝ[X]} {c : ℝ} (hstrictInterl : StrictInterl f g)
     (hleft : ∀ r ∈ f.roots, r < c) (hc : g.IsRoot c) :
     ∀ r ∈ g.roots, r ≤ c := by
-  rcases hprec with ⟨hf, hg, ss, rs, _hss_sorted, _hrs_sorted,
+  rcases hstrictInterl with ⟨hf, hg, ss, rs, _hss_sorted, _hrs_sorted,
     hss_eq, hrs_eq, hshape⟩
   have hleft' : ∀ r ∈ ss, r < c := by
     intro r hr
@@ -150,7 +150,7 @@ end IsReflectionInterlacingSeq
 /-- Strict Chow-quotient bridge for an ordered middle polynomial.  The
 reflection-interlacing application uses either the second member or the first
 member itself as `g`. -/
-theorem chowS_nonnegCoeffs_and_prec_of_triple
+theorem chowS_nonnegCoeffs_and_strictInterl_of_triple
     {n : ℕ} {f g : ℝ[X]} (hdegree : f.natDegree ≤ n)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : StrictInterl f g) (hgref : StrictInterl g (f.reflect n))
@@ -192,7 +192,7 @@ theorem chowS_nonnegCoeffs_and_prec_of_triple
     rw [← hfactor]
     simp [Polynomial.IsRoot.def]
   have hdiff_le_one : ∀ r ∈ (fr - f).roots, r ≤ 1 :=
-    roots_le_of_prec_of_left_roots_lt_of_right_root houter
+    roots_le_of_strictInterl_of_left_roots_lt_of_right_root houter
       (fun r hr => by linarith [hg_nonpos r hr]) hdiff_root_one
   have hS_le_one : ∀ r ∈ S.roots, r ≤ 1 := by
     intro r hr
@@ -202,20 +202,20 @@ theorem chowS_nonnegCoeffs_and_prec_of_triple
   have hg_le_one : ∀ r ∈ g.roots, r ≤ 1 := by
     intro r hr
     linarith [hg_nonpos r hr]
-  have hfactor_prec : StrictInterl g ((X - C 1) * S) := by
+  have hfactorStrictInterl : StrictInterl g ((X - C 1) * S) := by
     rw [hfactor]
     exact houter
   have hfactor_deg : ((X - C 1) * S).natDegree = S.natDegree + 1 := by
     rw [natDegree_mul (X_sub_C_ne_zero 1) hS_ne, natDegree_X_sub_C]
     lia
   have hSg : StrictInterl S g := by
-    rcases hfactor_prec.natDegree_eq_or_eq_succ with hsame | hsucc
+    rcases hfactorStrictInterl.natDegree_eq_or_eq_succ with hsame | hsucc
     · have hdeg : S.natDegree + 1 = g.natDegree := by lia
       exact (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
         1 hS_rr.2 hfg.2.1.2 hS_pos hg_pos hS_le_one hg_le_one hdeg).mpr
-          hfactor_prec
+          hfactorStrictInterl
     · have hdeg : S.natDegree = g.natDegree := by lia
-      exact hfactor_prec.of_mul_X_sub_C_of_sameDegree_of_roots_le
+      exact hfactorStrictInterl.of_mul_X_sub_C_of_sameDegree_of_roots_le
         hdeg hS_pos hg_pos hS_le_one hg_le_one
   have hS_nonpos : ∀ r ∈ S.roots, r ≤ 0 :=
     hSg.roots_le_of_right hg_nonpos
@@ -224,14 +224,14 @@ theorem chowS_nonnegCoeffs_and_prec_of_triple
 
 /-- A nonzero Chow quotient strictly precedes the nonzero second member of a
 two-member reflection-interlacing sequence and has nonnegative coefficients. -/
-theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec
+theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_strictInterl
     {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g])
     (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hS_ne : Polynomial.chowS n f ≠ 0) :
     HasNonnegCoeffs (Polynomial.chowS n f) ∧
       StrictInterl (Polynomial.chowS n f) g := by
   have htriple := h.strictTriple hf_ne hg_ne
-  exact chowS_nonnegCoeffs_and_prec_of_triple
+  exact chowS_nonnegCoeffs_and_strictInterl_of_triple
     (h.natDegree_le (by simp))
     (h.closedSequence.nonnegCoeffs f (by simp [reflectionClosure]))
     (h.closedSequence.nonnegCoeffs g (by simp [reflectionClosure]))
@@ -245,7 +245,7 @@ theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs
   by_cases hf_ne : f ≠ 0
   · by_cases hS_ne : Polynomial.chowS n f ≠ 0
     · have hfref := h.strictSelfReflect hf_ne
-      exact (chowS_nonnegCoeffs_and_prec_of_triple
+      exact (chowS_nonnegCoeffs_and_strictInterl_of_triple
         (h.natDegree_le (by simp))
         (h.closedSequence.nonnegCoeffs f (by simp [reflectionClosure]))
         (h.closedSequence.nonnegCoeffs f (by simp [reflectionClosure]))
@@ -258,7 +258,7 @@ theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs
 
 /-- Zero-aware Chow-quotient endpoint for a two-member
 reflection-interlacing sequence. -/
-theorem IsReflectionInterlacingSeq.chowS_prec0
+theorem IsReflectionInterlacingSeq.chowS_interl
     {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g]) :
     Interl (Polynomial.chowS n f) g := by
   by_cases hS_ne : Polynomial.chowS n f ≠ 0
@@ -267,7 +267,7 @@ theorem IsReflectionInterlacingSeq.chowS_prec0
         intro hf_zero
         subst f
         simp [Polynomial.chowS] at hS_ne
-      exact (h.chowS_nonnegCoeffs_and_prec hf_ne hg_ne hS_ne).2.toInterl
+      exact (h.chowS_nonnegCoeffs_and_strictInterl hf_ne hg_ne hS_ne).2.toInterl
     · have hg_zero : g = 0 := not_ne_iff.mp hg_ne
       rw [hg_zero]
       exact interl_zero_right _
@@ -277,11 +277,38 @@ theorem IsReflectionInterlacingSeq.chowS_prec0
 
 /-- Complete zero-aware quotient package: the Chow quotient has nonnegative
 coefficients and precedes the second member in `Interl`. -/
-theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0
+theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl
     {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g]) :
     HasNonnegCoeffs (Polynomial.chowS n f) ∧
       Interl (Polynomial.chowS n f) g :=
-  ⟨h.chowS_nonnegCoeffs, h.chowS_prec0⟩
+  ⟨h.chowS_nonnegCoeffs, h.chowS_interl⟩
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated roots_le_of_strictInterl_of_left_roots_lt_of_right_root
+  (since := "2026-09-26")]
+alias roots_le_of_prec_of_left_roots_lt_of_right_root :=
+  roots_le_of_strictInterl_of_left_roots_lt_of_right_root
+
+@[deprecated chowS_nonnegCoeffs_and_strictInterl_of_triple
+  (since := "2026-09-26")]
+alias chowS_nonnegCoeffs_and_prec_of_triple :=
+  chowS_nonnegCoeffs_and_strictInterl_of_triple
+
+@[deprecated IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_strictInterl
+  (since := "2026-09-26")]
+alias IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec :=
+  IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_strictInterl
+
+@[deprecated IsReflectionInterlacingSeq.chowS_interl
+  (since := "2026-09-26")]
+alias IsReflectionInterlacingSeq.chowS_prec0 :=
+  IsReflectionInterlacingSeq.chowS_interl
+
+@[deprecated IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl
+  (since := "2026-09-26")]
+alias IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0 :=
+  IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl
 
 end BrandenVecchi
 

@@ -91,36 +91,49 @@ theorem finiteSupersymmetricChowDerangement_eq_zero_or_splits
 
 /-- In one finite supersymmetric row, the Chow polynomial precedes its
 Chow-derangement endpoint, with zeros allowed. -/
-theorem finiteSupersymmetricChow_prec0_derangement
+theorem finiteSupersymmetricChow_interl_derangement
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
     Interl (finiteSupersymmetricChow xs ys n)
       (finiteSupersymmetricChowDerangement xs ys n) := by
-  exact chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg
+  exact chowPolynomial_interl_chowDerangement_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
 
 /-- Consecutive finite supersymmetric Chow polynomials are in zero-aware
 proper position. -/
-theorem finiteSupersymmetricChow_prec0_succ
+theorem finiteSupersymmetricChow_interl_succ
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
     Interl (finiteSupersymmetricChow xs ys n)
       (finiteSupersymmetricChow xs ys (n + 1)) := by
-  exact chowPolynomial_prec0_succ_of_isTotallyNonneg
+  exact chowPolynomial_interl_succ_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
 
 /-- Consecutive finite supersymmetric Chow-derangement polynomials are in
 zero-aware proper position. -/
-theorem finiteSupersymmetricChowDerangement_prec0_succ
+theorem finiteSupersymmetricChowDerangement_interl_succ
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
     Interl (finiteSupersymmetricChowDerangement xs ys n)
       (finiteSupersymmetricChowDerangement xs ys (n + 1)) := by
-  exact chowDerangement_prec0_succ_of_isTotallyNonneg
+  exact chowDerangement_interl_succ_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
+
+@[deprecated finiteSupersymmetricChow_interl_derangement
+  (since := "2026-09-26")]
+alias finiteSupersymmetricChow_prec0_derangement :=
+  finiteSupersymmetricChow_interl_derangement
+
+@[deprecated finiteSupersymmetricChow_interl_succ (since := "2026-09-26")]
+alias finiteSupersymmetricChow_prec0_succ := finiteSupersymmetricChow_interl_succ
+
+@[deprecated finiteSupersymmetricChowDerangement_interl_succ
+  (since := "2026-09-26")]
+alias finiteSupersymmetricChowDerangement_prec0_succ :=
+  finiteSupersymmetricChowDerangement_interl_succ
 
 end
 

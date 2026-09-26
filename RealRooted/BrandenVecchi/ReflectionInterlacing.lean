@@ -67,12 +67,12 @@ theorem IsInterlacingSeq0NonnegRealRooted.nonnegScalarMultiples
     have hnonzero : a ≠ 0 ∧ fs.get ⟨i, hi⟩ ≠ 0 := by simpa using hg_ne
     exact ⟨hg_ne, (hfs.splits (List.get_mem _ _) hnonzero.2).C_mul a⟩
 
-private theorem splits_add_of_prec0_of_nonneg {f g : ℝ[X]}
+private theorem splits_add_of_interl_of_nonneg {f g : ℝ[X]}
     (hfg : Interl f g) (hf : HasNonnegCoeffs f)
     (hg : HasNonnegCoeffs g) (hfr : f ≠ 0 → f.Splits)
     (hgr : g ≠ 0 → g.Splits) (hsum : f + g ≠ 0) :
     (f + g).Splits := by
-  rcases hfg with hf_zero | hg_zero | hprec
+  rcases hfg with hf_zero | hg_zero | hstrictInterl
   · simpa [hf_zero] using
       (show g.Splits from by
         have hg_ne : g ≠ 0 := by simpa [hf_zero] using hsum
@@ -82,9 +82,9 @@ private theorem splits_add_of_prec0_of_nonneg {f g : ℝ[X]}
         have hf_ne : f ≠ 0 := by simpa [hg_zero] using hsum
         exact hfr hf_ne)
   · exact (PosComboRealRooted.isRealRooted_add
-      (PosComboRealRooted.of_strictInterl hprec
-        (hf.pos_leadingCoeff hprec.1.1)
-        (hg.pos_leadingCoeff hprec.2.1.1))).2
+      (PosComboRealRooted.of_strictInterl hstrictInterl
+        (hf.pos_leadingCoeff hstrictInterl.1.1)
+        (hg.pos_leadingCoeff hstrictInterl.2.1.1))).2
 
 private theorem pairwise_insertAdjacentAdd_of_nonneg
     {f g : ℝ[X]} {right : List ℝ[X]} :
@@ -173,7 +173,7 @@ theorem IsInterlacingSeq0NonnegRealRooted.insertAdjacentAdd
     · subst p
       exact h.realRooted f (by simp) hp_ne
     · subst p
-      exact ⟨hp_ne, splits_add_of_prec0_of_nonneg hfg hfnn hgnn
+      exact ⟨hp_ne, splits_add_of_interl_of_nonneg hfg hfnn hgnn
         (fun hf_ne => h.splits (by simp) hf_ne)
         (fun hg_ne => h.splits (by simp) hg_ne) hp_ne⟩
     · subst p

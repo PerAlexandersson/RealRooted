@@ -245,7 +245,7 @@ theorem chowRowTransform_nonnegCoeffs
       (left := []) (block := fs) (right := []) (by simpa using h)
     simpa using hcollapsed
   have hSnn : HasNonnegCoeffs (chowS n fs.sum) :=
-    (htotal.chowS_nonnegCoeffs_and_prec0_self_reflect).1
+    (htotal.chowS_nonnegCoeffs_and_interl_self_reflect).1
   exact hSnn.X_mul.add <| hasNonnegCoeffs_sum _ fun q hq =>
     h.member_nonnegCoeffs (List.mem_of_mem_drop hq)
 
@@ -270,7 +270,7 @@ theorem chowRowTransform_natDegree_le
 
 /-- Any earlier transformed row member precedes any later one. This is the
 three-block cone argument in Branden--Vecchi, Theorem 4.13. -/
-theorem chowRowTransform_prec0_of_lt
+theorem chowRowTransform_interl_of_lt
     {n : ℕ} {fs : List ℝ[X]} (h : IsReflectionInterlacingSeq n fs)
     {k l : ℕ} (hkl : k < l) (hl : l < fs.length + 1) :
     Interl (X * chowS n fs.sum + (fs.drop k).sum)
@@ -292,15 +292,15 @@ theorem chowRowTransform_prec0_of_lt
   have h₂nn := hthree.member_nonnegCoeffs (p := h₂) (by simp)
   have hS₀nn : HasNonnegCoeffs (chowS n h₀) := h₀₁.chowS_nonnegCoeffs
   have hS₁nn : HasNonnegCoeffs (chowS n h₁) :=
-    (h₁₁.chowS_nonnegCoeffs_and_prec0_self_reflect).1
+    (h₁₁.chowS_nonnegCoeffs_and_interl_self_reflect).1
   have hS₂nn : HasNonnegCoeffs (chowS n h₂) :=
     (h₁₂.sublist (by simp) |>
-      IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0_self_reflect).1
+      IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect).1
   have hh₁XS₀ : Interl h₁ (X * chowS n h₀) :=
-    interl_mul_X_of_interl h₀₁.chowS_prec0 hS₀nn h₁nn
+    interl_mul_X_of_interl h₀₁.chowS_interl hS₀nn h₁nn
   have hh₁XS₁ : Interl h₁ (X * chowS n h₁) :=
     interl_mul_X_of_interl
-      (h₁₁.chowS_nonnegCoeffs_and_prec0_self_reflect).2.1 hS₁nn h₁nn
+      (h₁₁.chowS_nonnegCoeffs_and_interl_self_reflect).2.1 hS₁nn h₁nn
   have hext := h₁₂.chowSExtension
   have hh₁q₂ : Interl h₁ (X * chowS n h₂ + h₂) := by
     simpa [reflectionClosure] using
@@ -481,7 +481,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_direct
     intro i j hij
     have hi : i.val < fs.length + 1 := by simpa using i.isLt
     have hj : j.val < fs.length + 1 := by simpa using j.isLt
-    have hp := chowRowTransform_prec0_of_lt h hij hj
+    have hp := chowRowTransform_interl_of_lt h hij hj
     rw [← getElem_chowRowTransform hi, ← getElem_chowRowTransform hj] at hp
     exact hp
   · intro p hp hp_ne
@@ -514,7 +514,7 @@ private theorem chowS_drop_eq_zero_of_sum_eq_zero
   have hSann : HasNonnegCoeffs (chowS n a) := hab.chowS_nonnegCoeffs
   have hb_single : IsReflectionInterlacingSeq n [b] := hab.sublist (by simp)
   have hSbnn : HasNonnegCoeffs (chowS n b) :=
-    (hb_single.chowS_nonnegCoeffs_and_prec0_self_reflect).1
+    (hb_single.chowS_nonnegCoeffs_and_interl_self_reflect).1
   have hsum : fs.sum = a + b := by
     rw [← List.take_append_drop k fs, List.sum_append]
   have hzero : chowS n a + chowS n b = 0 := by
@@ -697,7 +697,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
       (left := []) (block := fs) (right := []) (by simpa using h)
     simpa using hc
   have hSnn : HasNonnegCoeffs (chowS n fs.sum) :=
-    (htotal.chowS_nonnegCoeffs_and_prec0_self_reflect).1
+    (htotal.chowS_nonnegCoeffs_and_interl_self_reflect).1
   have hXS_ne : X * chowS n fs.sum ≠ 0 := mul_ne_zero X_ne_zero hS_ne
   have hout_ne : ∀ p ∈ out, p ≠ 0 := by
     intro p hp
@@ -718,7 +718,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
     intro i j hij
     have hi : i.val < fs.length + 1 := by simpa [out] using i.isLt
     have hj : j.val < fs.length + 1 := by simpa [out] using j.isLt
-    have hp := chowRowTransform_prec0_of_lt h hij hj
+    have hp := chowRowTransform_interl_of_lt h hij hj
     rw [← getElem_chowRowTransform hi, ← getElem_chowRowTransform hj] at hp
     exact hp.toStrictInterl_of_ne
       (hout_ne _ (List.get_mem out i)) (hout_ne _ (List.get_mem out j))
@@ -735,15 +735,15 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
         intro hzero
         rw [hzero] at hS_ne
         exact hS_ne (by simp [chowS])
-      have hSprec : StrictInterl (chowS n fs.sum) fs.sum :=
-        (htotal.chowS_nonnegCoeffs_and_prec0_self_reflect).2.1.toStrictInterl_of_ne
+      have hSStrictInterl : StrictInterl (chowS n fs.sum) fs.sum :=
+        (htotal.chowS_nonnegCoeffs_and_interl_self_reflect).2.1.toStrictInterl_of_ne
           hS_ne htotal_ne
       have hlast : out.get i = X * chowS n fs.sum := by
         have hi' : i.val < fs.length + 1 := by simpa [out] using i.isLt
         rw [getElem_chowRowTransform hi']
         simp [hilast, hout_len]
       rw [hlast]
-      exact (isRealRooted_X_mul hS_ne hSprec.1.2).2
+      exact (isRealRooted_X_mul hS_ne hSStrictInterl.1.2).2
   have hdirect_seq : IsInterlacingSeq out :=
     isInterlacingSeq_iff_pairwise.mpr hdirect
   have hrefs : refs.Pairwise StrictInterl := by
@@ -927,6 +927,9 @@ theorem IsReflectionInterlacingSeq.chowRowTransform
   by_cases hS : chowS n fs.sum = 0
   · exact h.chowRowTransform_of_chowS_eq_zero hS
   · exact h.chowRowTransform_of_chowS_ne_zero hS
+
+@[deprecated chowRowTransform_interl_of_lt (since := "2026-09-26")]
+alias chowRowTransform_prec0_of_lt := chowRowTransform_interl_of_lt
 
 end BrandenVecchi
 

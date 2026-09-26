@@ -490,3 +490,14 @@ reversal.  Owned callers and local proof labels use `StrictInterl` names.  The
 ten former public occurrences remain only as dated deprecated aliases; all
 four private old names disappear.  The generic Ma--Wang and ordered-root
 equivalence APIs remain for their own foundational owner batches.
+
+Branden--Vecchi interlacing batch (2026-09-26)
+
+The next dependency-closed subsystem batch canonicalizes 28 public APIs and
+three private helpers across the Branden--Vecchi Chow, reflection, Smirnov,
+signed-word, supersymmetric, and totally-nonnegative modules.  All owned
+callers and local proof labels use `StrictInterl` / `Interl` terminology.  The
+28 former public identifiers remain only as dated deprecated aliases, while
+the three private identifiers disappear.  Foundational sequence methods and
+product-orientation declarations used by this subsystem remain for their own
+owner batches.

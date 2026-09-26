@@ -505,14 +505,17 @@ theorem finiteSignedWordEnumerator_isPFPolynomial
 
 /-- Consecutive literal finite signed-word enumerators are in zero-aware
 proper position for nonnegative parameters. -/
-theorem finiteSignedWordEnumerator_prec0_succ
+theorem finiteSignedWordEnumerator_interl_succ
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
     Interl (finiteSignedWordEnumerator xs ys n)
       (finiteSignedWordEnumerator xs ys (n + 1)) := by
   rw [← finiteSupersymmetricChow_eq_finiteSignedWordEnumerator,
     ← finiteSupersymmetricChow_eq_finiteSignedWordEnumerator]
-  exact finiteSupersymmetricChow_prec0_succ hxs hys n
+  exact finiteSupersymmetricChow_interl_succ hxs hys n
+
+@[deprecated finiteSignedWordEnumerator_interl_succ (since := "2026-09-26")]
+alias finiteSignedWordEnumerator_prec0_succ := finiteSignedWordEnumerator_interl_succ
 
 end
 

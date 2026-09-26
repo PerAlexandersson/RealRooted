@@ -255,13 +255,13 @@ theorem projectiveRegularizedChow_isPFPolynomial
 
 /-- Consecutive projectively regularized Chow rows are in zero-aware proper
 position. -/
-theorem projectiveRegularizedChow_prec0_succ
+theorem projectiveRegularizedChow_interl_succ
     {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) (ha0 : a 0 = 1)
     {epsilon : ℝ} (hepsilon : 0 ≤ epsilon) (N n : ℕ) :
     Interl (projectiveRegularizedChow N a epsilon n)
       (projectiveRegularizedChow N a epsilon (n + 1)) := by
   rw [projectiveRegularizedChow, projectiveRegularizedChow]
-  exact chowPolynomial_prec0_succ_of_isTotallyNonneg
+  exact chowPolynomial_interl_succ_of_isTotallyNonneg
     (toeplitz_projectiveRegularizedSequence_isLowerUnitriangular
       ha0 N epsilon)
     (projectiveRegularizedSequence_isPolyaFreqSeq ha hepsilon N) n
@@ -282,14 +282,24 @@ theorem binomialSymbolChow_eq_zero_or_splits (N n : ℕ) :
 
 /-- Consecutive finite binomial special-fiber rows are in zero-aware proper
 position. -/
-theorem binomialSymbolChow_prec0_succ (N n : ℕ) :
+theorem binomialSymbolChow_interl_succ (N n : ℕ) :
     Interl (binomialSymbolChow N n) (binomialSymbolChow N (n + 1)) := by
   have hone : IsPolyaFreqSeq (fun _ : ℕ => (1 : ℝ)) := by
     simpa using geometric_isPolyaFreqSeq (1 : ℝ) zero_le_one
-  have h := projectiveRegularizedChow_prec0_succ
+  have h := projectiveRegularizedChow_interl_succ
     hone (a := fun _ : ℕ => (1 : ℝ)) (by simp)
     (epsilon := 0) (by norm_num) N n
   simpa using h
+
+/-! ## Deprecated interlacing names -/
+
+@[deprecated projectiveRegularizedChow_interl_succ
+  (since := "2026-09-26")]
+alias projectiveRegularizedChow_prec0_succ :=
+  projectiveRegularizedChow_interl_succ
+
+@[deprecated binomialSymbolChow_interl_succ (since := "2026-09-26")]
+alias binomialSymbolChow_prec0_succ := binomialSymbolChow_interl_succ
 
 end
 
