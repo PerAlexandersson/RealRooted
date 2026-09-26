@@ -27,7 +27,7 @@ name = "RealRooted.Challenges.HermiteBiehlerHurwitz.classicalHurwitzCriterion"
 # Hermite–Biehler and Hurwitz criteria
 
 The Hermite–Biehler theorem relates half-plane stability of a real polynomial
-to proper position of its even and odd parts.  The catalogue includes checked
+to proper position of its even and odd parts.  The catalog includes checked
 forward and converse forms with their sign normalization explicit.  The
 Hurwitz criterion then characterizes weak Hurwitz stability of a nonzero real
 polynomial by total nonnegativity of its classical Hurwitz matrix.

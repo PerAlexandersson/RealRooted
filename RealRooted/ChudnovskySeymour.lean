@@ -4,7 +4,7 @@ import RealRooted.ChudnovskySeymour.Reductions
 # Chudnovsky--Seymour direct endpoint adapters
 
 This umbrella extends the generic roadmap reductions with the direct endpoint
-catalogue and low-degree wrappers. Clients needing only the proved core theorem
+catalog and low-degree wrappers. Clients needing only the proved core theorem
 surface should import `RealRooted.ChudnovskySeymour.Core`; clients needing the
 generic roadmap layer should import `RealRooted.ChudnovskySeymour.Reductions`.
 -/

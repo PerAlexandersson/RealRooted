@@ -1,6 +1,6 @@
-# RealRooted challenge catalogue
+# RealRooted challenge catalog
 
-The challenge modules are the only maintained source of catalogue prose and
+The challenge modules are the only maintained source of catalog prose and
 references.  A module opts in with one TOML block and one bounded Markdown
 block inside a `/-! ... -/` module comment:
 
@@ -79,7 +79,7 @@ Each record has `name`, `expected_kind`, `actual_kind`, `source_path`,
 
 ```bash
 python3 scripts/build_challenge_pages.py \
-  --audit-report /tmp/challenge-catalogue-audit.json \
+  --audit-report /tmp/challenge-catalog-audit.json \
   --output /tmp/realrooted-pages
 ```
 

@@ -81,7 +81,7 @@ point needs an import budget so that it does not silently become another full
 umbrella.
 
 Challenge modules also form the editorial boundary for the generated public
-catalogue. Opt-in metadata selects existing public definitions and theorems;
+catalog. Opt-in metadata selects existing public definitions and theorems;
 the bounded module-doc section owns the published prose and references. The
 source scanner resolves each selection to its physical module and source line,
 while a post-build Lean environment query checks declaration kinds and
@@ -1234,10 +1234,10 @@ and family-compatibility theorem surface through the canonical nonnegative-
 coefficient result. `ChudnovskySeymour.Reductions` adds the generic roadmap
 reductions and their first direct successor-degree adapters. The
 `ChudnovskySeymour` umbrella extends that layer with the full direct endpoint
-catalogue and low-degree adapters.
+catalog and low-degree adapters.
 Consumers such as `Compatibility.Three` and
 `LiuOppositeSigns.JensenRootCount` import the core directly instead of parsing
-the later roadmap and endpoint-adapter catalogues. Each new source boundary
+the later roadmap and endpoint-adapter catalogs. Each new source boundary
 raises the root, OEIS-tactic, and tactic-umbrella closures by exactly one
 module; their explicit budgets record those intentional re-export costs.
 The low `Basic` layer owns both directions between the legacy list-interlacing

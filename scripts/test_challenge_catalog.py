@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unit tests for the source-only curated challenge catalogue generator."""
+"""Unit tests for the source-only curated challenge catalog generator."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ sys.dont_write_bytecode = True
 from challenge_catalog import (
     CatalogError,
     catalog_digest,
-    load_catalogue,
+    load_catalog,
     render_site,
     validate_audit_report,
     validate_sources,
@@ -27,7 +27,7 @@ REPO_ROOT = SCRIPT_DIR.parent
 REVISION = "a" * 40
 
 
-def catalogue_block(
+def catalog_block(
     *,
     section: str = "families",
     slug: str = "sample",
@@ -52,7 +52,7 @@ slug = "{slug}"
 '''
 
 
-class CatalogueFixture(unittest.TestCase):
+class CatalogFixture(unittest.TestCase):
     def setUp(self) -> None:
         self.tempdir = tempfile.TemporaryDirectory()
         self.root = pathlib.Path(self.tempdir.name)
@@ -72,7 +72,7 @@ class CatalogueFixture(unittest.TestCase):
 
     def sample_source(self, *, extra: str = "") -> str:
         return (
-            catalogue_block(
+            catalog_block(
                 definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.family"',
             )
             + "namespace RealRooted.Challenges.Sample\n"
@@ -84,7 +84,7 @@ class CatalogueFixture(unittest.TestCase):
 
     def pages_and_sources(self) -> tuple[tuple, dict]:
         self.write("RealRooted/Challenges/Sample.lean", self.sample_source())
-        pages = load_catalogue(self.root)
+        pages = load_catalog(self.root)
         return pages, validate_sources(self.root, pages)
 
     def test_missing_metadata_is_excluded(self) -> None:
@@ -93,28 +93,28 @@ class CatalogueFixture(unittest.TestCase):
         self.assertEqual([page.slug for page in pages], ["sample"])
 
     def test_malformed_and_duplicate_metadata_fail(self) -> None:
-        malformed = catalogue_block(theorems='[[theorems]]\nname = "not-qualified"')
+        malformed = catalog_block(theorems='[[theorems]]\nname = "not-qualified"')
         self.write("RealRooted/Challenges/Bad.lean", malformed)
         with self.assertRaisesRegex(CatalogError, "fully qualified"):
-            load_catalogue(self.root)
+            load_catalog(self.root)
         self.write("RealRooted/Challenges/Bad.lean", self.sample_source())
         self.write("RealRooted/Challenges/Other.lean", self.sample_source())
-        with self.assertRaisesRegex(CatalogError, "duplicate catalogue URL"):
-            load_catalogue(self.root)
+        with self.assertRaisesRegex(CatalogError, "duplicate catalog URL"):
+            load_catalog(self.root)
         (self.root / "RealRooted" / "Challenges" / "Other.lean").unlink()
-        self.write("RealRooted/Challenges/Bad.lean", self.sample_source() + catalogue_block())
+        self.write("RealRooted/Challenges/Bad.lean", self.sample_source() + catalog_block())
         with self.assertRaisesRegex(CatalogError, "exactly one metadata"):
-            load_catalogue(self.root)
+            load_catalog(self.root)
 
     def test_comments_and_strings_cannot_supply_a_declaration(self) -> None:
-        text = catalogue_block() + '''
+        text = catalog_block() + '''
 namespace RealRooted.Challenges.Sample
 /- theorem proven : True := by trivial -/
 def text := "theorem proven : True"
 end RealRooted.Challenges.Sample
 '''
         self.write("RealRooted/Challenges/Sample.lean", text)
-        pages = load_catalogue(self.root)
+        pages = load_catalog(self.root)
         with self.assertRaisesRegex(CatalogError, "cannot resolve"):
             validate_sources(self.root, pages)
 
@@ -122,17 +122,17 @@ end RealRooted.Challenges.Sample
         pages, resolved = self.pages_and_sources()
         self.assertEqual(resolved["RealRooted.Challenges.Sample.family"].actual_kind, "definition")
         self.assertGreater(resolved["RealRooted.Challenges.Sample.proven"].source_line, 1)
-        bad = catalogue_block(
+        bad = catalog_block(
             definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.proven"',
             theorems="",
         ) + "namespace RealRooted.Challenges.Sample\ntheorem proven : True := by trivial\nend RealRooted.Challenges.Sample\n"
         self.write("RealRooted/Challenges/Sample.lean", bad)
-        pages = load_catalogue(self.root)
+        pages = load_catalog(self.root)
         with self.assertRaisesRegex(CatalogError, "not a definition"):
             validate_sources(self.root, pages)
 
     def test_private_deprecated_and_scaffold_definitions_are_rejected(self) -> None:
-        selected = catalogue_block(
+        selected = catalog_block(
             definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.family"',
             theorems="",
         )
@@ -144,7 +144,7 @@ end RealRooted.Challenges.Sample
         )
         self.write("RealRooted/Challenges/Sample.lean", private)
         with self.assertRaisesRegex(CatalogError, "cannot resolve"):
-            validate_sources(self.root, load_catalogue(self.root))
+            validate_sources(self.root, load_catalog(self.root))
 
         deprecated = (
             selected
@@ -155,9 +155,9 @@ end RealRooted.Challenges.Sample
         )
         self.write("RealRooted/Challenges/Sample.lean", deprecated)
         with self.assertRaisesRegex(CatalogError, "deprecated compatibility alias"):
-            validate_sources(self.root, load_catalogue(self.root))
+            validate_sources(self.root, load_catalog(self.root))
 
-        scaffold = catalogue_block(
+        scaffold = catalog_block(
             definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.forwardTarget"',
             theorems="",
         )
@@ -168,10 +168,10 @@ end RealRooted.Challenges.Sample
         )
         self.write("RealRooted/Challenges/Sample.lean", scaffold)
         with self.assertRaisesRegex(CatalogError, "statement scaffold"):
-            validate_sources(self.root, load_catalogue(self.root))
+            validate_sources(self.root, load_catalog(self.root))
 
     def test_owning_module_cannot_escape_repository(self) -> None:
-        text = catalogue_block(
+        text = catalog_block(
             definitions="",
             theorems=(
                 '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\n'
@@ -180,7 +180,7 @@ end RealRooted.Challenges.Sample
         )
         self.write("RealRooted/Challenges/Sample.lean", text)
         with self.assertRaisesRegex(CatalogError, "invalid module"):
-            load_catalogue(self.root)
+            load_catalog(self.root)
 
     def test_owning_module_and_deterministic_nested_output(self) -> None:
         self.write(
@@ -189,7 +189,7 @@ end RealRooted.Challenges.Sample
         )
         self.write(
             "RealRooted/Challenges/Sample.lean",
-            catalogue_block(
+            catalog_block(
                 section="theorems",
                 definitions="",
                 theorems='[[theorems]]\nname = "RealRooted.canonical"\nmodule = "RealRooted/Canonical.lean"',
@@ -197,13 +197,16 @@ end RealRooted.Challenges.Sample
             + "import RealRooted.Canonical\n"
             + "namespace RealRooted.Challenges.Sample\nend RealRooted.Challenges.Sample\n",
         )
-        pages = load_catalogue(self.root)
+        pages = load_catalog(self.root)
         resolved = validate_sources(self.root, pages)
         first = render_site(self.root, pages, resolved, REVISION)
         second = render_site(self.root, pages, resolved, REVISION)
         self.assertEqual(first, second)
         self.assertIn("theorems/sample/index.html", first)
-        self.assertIn('class="catalogue-home"', first["index.html"])
+        self.assertIn('class="catalog-home"', first["index.html"])
+        self.assertIn('>Catalog</a>', first["index.html"])
+        self.assertIn("catalog-manifest.json", first)
+        self.assertNotIn("catalogue-manifest.json", first)
         self.assertIn(
             "A curated guide to Lean definitions and proved theorems, with links to their source.",
             first["index.html"],
@@ -222,7 +225,7 @@ end RealRooted.Challenges.Sample
         )
         self.write(
             "RealRooted/Challenges/Sample.lean",
-            catalogue_block(
+            catalog_block(
                 definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.family"',
                 content=content,
             )
@@ -231,7 +234,7 @@ end RealRooted.Challenges.Sample
             + "theorem proven : True := by trivial\n"
             + "end RealRooted.Challenges.Sample\n",
         )
-        pages = load_catalogue(self.root)
+        pages = load_catalog(self.root)
         rendered = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
         page = rendered["families/sample/index.html"]
         self.assertNotIn("<script>", page)

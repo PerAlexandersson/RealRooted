@@ -47,7 +47,7 @@ These are the generalized transformation results developed in
 `RealRooted.NarayanaTransformation`.  They are distinct from the
 recurrence-facing conditional family in
 `RealRooted.CombinatorialExamples.Narayana`; the two are not identified by
-this catalogue.
+this catalog.
 
 ## References
 
