@@ -47,7 +47,7 @@ theorem IsInterlacingSeq0NonnegRealRooted.nonnegScalarMultiples
     have hj : j.val < fs.length := by simp [hlen]
     rcases hscale.get hi i.isLt with ⟨a, ha, hia⟩
     rcases hscale.get hj j.isLt with ⟨b, hb, hjb⟩
-    have hbase := hfs.interlacingSeq0.prec0
+    have hbase := hfs.interlacingSeq0.interl
       (i := ⟨i, hi⟩) (j := ⟨j, hj⟩) hij
     rw [hia, hjb]
     exact Interl.C_mul_right_of_nonneg

@@ -52,12 +52,12 @@ private lemma forall₂_map_zero_sub_rev :
 
 /-- For same-degree nonnegative-coefficient polynomials, proper position
 orders the normalized values at zero. -/
-lemma eval_cross_le_of_prec_sameDegree_of_nonneg
+lemma eval_cross_le_of_strictInterl_sameDegree_of_nonneg
     {f g : ℝ[X]}
-    (hprec : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
+    (hstrictInterl : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     g.eval 0 * f.leadingCoeff ≤ f.eval 0 * g.leadingCoeff := by
-  rcases hprec with ⟨hf, hg, ss, rs, _hss_sorted, _hrs_sorted,
+  rcases hstrictInterl with ⟨hf, hg, ss, rs, _hss_sorted, _hrs_sorted,
     hss_eq, hrs_eq, hshape⟩
   have hlen_ss : ss.length = f.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
@@ -99,7 +99,7 @@ lemma eval_cross_le_of_prec_sameDegree_of_nonneg
 
 /-- A strict normalized endpoint comparison selects the forward branch of
 Obreschkoff's same-degree orientation alternative. -/
-theorem prec_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
+theorem strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -111,8 +111,20 @@ theorem prec_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
   rcases strictInterl_of_allComboRealRooted hf0 (hall.isRealRooted_left hf0).2
       hg0 (hall.isRealRooted_right hg0).2 hall (Or.inr hdeg) with hfg | hgf
   · grind
-  · have hle := eval_cross_le_of_prec_sameDegree_of_nonneg
+  · have hle := eval_cross_le_of_strictInterl_sameDegree_of_nonneg
       hgf hdeg.symm hgnn hfnn
     linarith
+
+/-! ## Deprecated proper-position names -/
+
+@[deprecated eval_cross_le_of_strictInterl_sameDegree_of_nonneg
+  (since := "2026-09-26")]
+alias eval_cross_le_of_prec_sameDegree_of_nonneg :=
+  eval_cross_le_of_strictInterl_sameDegree_of_nonneg
+
+@[deprecated strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
+  (since := "2026-09-26")]
+alias prec_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt :=
+  strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
 
 end RealRooted

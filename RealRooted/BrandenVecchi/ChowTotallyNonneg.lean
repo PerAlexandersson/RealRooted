@@ -320,7 +320,7 @@ theorem chowPolynomial_interl_chowDerangement_of_isTotallyNonneg
         ⟨0, by rw [length_resolvedChowRow]; lia⟩
       let last : Fin (resolvedChowRow resolution (n + 1)).length :=
         ⟨n + 1, by rw [length_resolvedChowRow]; lia⟩
-      have hinterl := hdirect.interlacingSeq0.prec0
+      have hinterl := hdirect.interlacingSeq0.interl
         (i := first) (j := last) (by change 0 < n + 1; lia)
       simpa [first, last, resolvedChowRow] using hinterl
 
@@ -349,7 +349,7 @@ theorem chowPolynomial_interl_succ_of_isTotallyNonneg
     rw [← resolvedChowDerangement_zero resolution (n + 1),
       resolvedChowDerangement_succ resolution (k := 0) (by lia)]
     simp [resolvedChowWeightSum]
-  have hinterl := hext.closedSequence.interlacingSeq0.prec0
+  have hinterl := hext.closedSequence.interlacingSeq0.interl
     (i := (⟨1, by simp [reflectionClosure]⟩ :
       Fin (reflectionClosure n
         [chowS n (resolvedChowDerangement resolution n 0),
@@ -392,7 +392,7 @@ theorem chowDerangement_interl_succ_of_isTotallyNonneg
       (chowS n (resolvedChowWeightSum resolution n)).reflect n =
         X * chowS n (resolvedChowWeightSum resolution n) :=
     reflect_chowS n (resolvedChowWeightSum resolution n) hFdeg
-  have hinterl := hext.closedSequence.interlacingSeq0.prec0
+  have hinterl := hext.closedSequence.interlacingSeq0.interl
     (i := (⟨2, by simp [reflectionClosure]⟩ :
       Fin (reflectionClosure n
         [chowS n (resolvedChowWeightSum resolution n),

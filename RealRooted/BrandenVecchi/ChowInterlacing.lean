@@ -107,7 +107,7 @@ theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
     simpa [fr] using hfnn.reflect n
   have hfref0 : Interl f fr := by
     simpa [fr, reflectionClosure] using
-      h.closedSequence.interlacingSeq0.prec0
+      h.closedSequence.interlacingSeq0.interl
         (i := (⟨0, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f]).length))
         (j := (⟨1, by simp [reflectionClosure]⟩ :
@@ -192,28 +192,28 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     h.closedSequence.splits (by simp [gr, reflectionClosure]) hgr_ne
   have hfg0 : Interl f g := by
     simpa [reflectionClosure] using
-      h.closedSequence.interlacingSeq0.prec0
+      h.closedSequence.interlacingSeq0.interl
         (i := (⟨0, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length))
         (j := (⟨1, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length)) (by simp)
   have hggr0 : Interl g gr := by
     simpa [gr, reflectionClosure] using
-      h.closedSequence.interlacingSeq0.prec0
+      h.closedSequence.interlacingSeq0.interl
         (i := (⟨1, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length))
         (j := (⟨2, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length)) (by simp)
   have hgrfr0 : Interl gr fr := by
     simpa [fr, gr, reflectionClosure] using
-      h.closedSequence.interlacingSeq0.prec0
+      h.closedSequence.interlacingSeq0.interl
         (i := (⟨2, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length))
         (j := (⟨3, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length)) (by simp)
   have hffr0 : Interl f fr := by
     simpa [fr, reflectionClosure] using
-      h.closedSequence.interlacingSeq0.prec0
+      h.closedSequence.interlacingSeq0.interl
         (i := (⟨0, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n [f, g]).length))
         (j := (⟨3, by simp [reflectionClosure]⟩ :

@@ -47,7 +47,7 @@ theorem isInterlacingSeq0NonnegRealRooted_map_fPolynomial
     have hi : fs.get i' ∈ fs := List.get_mem _ _
     have hj : fs.get j' ∈ fs := List.get_mem _ _
     have hij' : i' < j' := by simpa [i', j'] using hij
-    have hpq := hfs.interlacingSeq0.prec0 hij'
+    have hpq := hfs.interlacingSeq0.interl hij'
     simpa [i', j'] using interl_fPolynomial (hdeg _ hi) (hdeg _ hj)
       (hfs.nonnegCoeffs _ hi) (hfs.nonnegCoeffs _ hj) hpq
   · intro p hp
@@ -171,11 +171,11 @@ private theorem scale_range_interlacing
     let i' : Fin ((List.range q).map f).length := ⟨i.1, by simpa using i.2⟩
     let j' : Fin ((List.range q).map f).length := ⟨j.1, by simpa using j.2⟩
     have hij' : i' < j' := by simpa [i', j'] using hij
-    have hprec := hf.interlacingSeq0.prec0 hij'
+    have hinterl := hf.interlacingSeq0.interl hij'
     have hiq : i.1 < q := by simpa using i.2
     have hjq : j.1 < q := by simpa using j.2
     simpa [i', j'] using scaleLeft
-      (Interl.C_mul_right_of_nonneg hprec (ha j.1 hjq)) (ha i.1 hiq)
+      (Interl.C_mul_right_of_nonneg hinterl (ha j.1 hjq)) (ha i.1 hiq)
   · intro p hp
     rcases List.mem_map.mp hp with ⟨j, hj, rfl⟩
     have hjq : j < q := by simpa using hj
@@ -373,11 +373,11 @@ theorem interl_chainPolynomial_succ
       exact Interl.refl (hrow.splits (hmem n le_rfl))
     · let i : Fin (subdivisionRow resolution n).length := ⟨j, by simp; lia⟩
       let last : Fin (subdivisionRow resolution n).length := ⟨n, by simp⟩
-      have hprec := hrow.interlacingSeq0.prec0 (i := i) (j := last) (by
+      have hinterl := hrow.interlacingSeq0.interl (i := i) (j := last) (by
         change j < n
         exact hjn)
-      simpa [F, subdivisionRow, i, last] using hprec
-  have hSprec : Interl S (F n) := by
+      simpa [F, subdivisionRow, i, last] using hinterl
+  have hSInterl : Interl S (F n) := by
     apply Interl.finsetSum_right_of_nonneg
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
@@ -395,7 +395,7 @@ theorem interl_chainPolynomial_succ
       (hrow.nonnegCoeffs _ (hmem j hjn))
   have hFn : F n = chainPolynomial R n :=
     subdivisionOperator_resolutionPolynomial_diagonal resolution n
-  have hstep := interl_mul_X_of_interl hSprec hSnn
+  have hstep := interl_mul_X_of_interl hSInterl hSnn
     (hrow.nonnegCoeffs _ (hmem n le_rfl))
   rw [hFn] at hstep
   rw [chainPolynomial_succ_eq_resolution_sum resolution]

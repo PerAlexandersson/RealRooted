@@ -289,7 +289,7 @@ theorem resolvedChowCombination_endpoint_interl
       let current : Fin (resolvedChowRow resolution n).length :=
         ⟨j, by simpa using hj⟩
       simpa [first, current, resolvedChowRow] using
-        hdirect.interlacingSeq0.prec0 (i := first) (j := current) hjpos
+        hdirect.interlacingSeq0.interl (i := first) (j := current) hjpos
   have hright : ∀ j, j ≤ n →
       Interl (resolvedChowDerangement resolution n j)
         (resolvedChowDerangement resolution n n) := by
@@ -303,7 +303,7 @@ theorem resolvedChowCombination_endpoint_interl
       let last : Fin (resolvedChowRow resolution n).length :=
         ⟨n, by simp⟩
       simpa [current, last, resolvedChowRow] using
-        hdirect.interlacingSeq0.prec0 (i := current) (j := last) hjlt
+        hdirect.interlacingSeq0.interl (i := current) (j := last) hjlt
   constructor
   · apply Interl.finsetSum_left_of_nonneg
     · intro j hj

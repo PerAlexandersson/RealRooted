@@ -304,7 +304,7 @@ theorem chowRowTransform_interl_of_lt
   have hext := h₁₂.chowSExtension
   have hh₁q₂ : Interl h₁ (X * chowS n h₂ + h₂) := by
     simpa [reflectionClosure] using
-      hext.closedSequence.interlacingSeq0.prec0
+      hext.closedSequence.interlacingSeq0.interl
         (i := (⟨1, by simp [reflectionClosure]⟩ :
           Fin (reflectionClosure n
             [chowS n h₁, h₁, h₂, X * chowS n h₂ + h₂]).length))
@@ -621,7 +621,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
       have hi_ne : out.get i ≠ 0 := hp0
       have hj_ne : out.get j ≠ 0 := hq0
       rcases lt_trichotomy i j with hij | rfl | hji
-      · have hpq0 := hdirect.interlacingSeq0.prec0 hij
+      · have hpq0 := hdirect.interlacingSeq0.interl hij
         have hpq := hpq0.toStrictInterl_of_ne hi_ne hj_ne
         have hqXp := strictInterl_mul_X_of_strictInterl_of_nonneg hpq
           (houtpf _ hi_mem).hasNonnegCoeffs
@@ -650,7 +650,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
       · exact (strictInterl_self_X_mul_of_nonneg hi_ne
           ((houtpf _ hi_mem).ne_zero_and_splits hi_ne).2
           (houtpf _ hi_mem).hasNonnegCoeffs).toInterl
-      · have hqp0 := hdirect.interlacingSeq0.prec0 hji
+      · have hqp0 := hdirect.interlacingSeq0.interl hji
         have hqp := hqp0.toStrictInterl_of_ne hj_ne hi_ne
         exact (strictInterl_mul_X_of_strictInterl_of_nonneg hqp
           (houtpf _ hj_mem).hasNonnegCoeffs
