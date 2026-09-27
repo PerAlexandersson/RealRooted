@@ -123,68 +123,35 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
     (hc2 : ∀ j, 1 ≤ j → j < rf.length → rf.getD j 0 ≤ rg.getD (j - 1) 0)
     (j : ℕ) (hjf : j < rf.length + 1) (hjg : j < rg.length + 1) :
     (rootSlotInterval rf ⟨j, hjf⟩ ∩ rootSlotInterval rg ⟨j, hjg⟩).Nonempty := by
-  rcases j with (_ | j) <;>
-    simp_all +decide only [ge_iff_le, List.getD_eq_getElem?_getD, Order.lt_add_one_iff,
-      getElem?_pos, Option.getD_some, rootSlotInterval, ↓reduceDIte, Fin.zero_eta,
-      List.length_nil, Nat.reduceAdd, List.length_cons, Nat.add_eq_zero_iff, and_false,
-      List.get_eq_getElem, add_tsub_cancel_right, Nat.add_right_cancel_iff]
-  · rcases rf with (_ | ⟨r, rf⟩) <;> rcases rg with (_ | ⟨s, rg⟩) <;> norm_num at *
-  · split_ifs
-    · exfalso
-      lia
-    · rcases x : rf.reverse with (_ | ⟨r, _ | ⟨s, l⟩⟩) <;>
-          simp_all +decide only [lt_add_iff_pos_right, Order.lt_one_iff,
-            List.reverse_eq_nil_iff, List.length_nil,
-            Set.univ_inter, Set.nonempty_Icc, List.Pairwise.nil, nonpos_iff_eq_zero,
-            zero_tsub, not_false_eq_true, getElem?_neg, Option.getD_none,
-            not_lt_zero, IsEmpty.forall_iff, implies_true, Nat.add_eq_zero_iff,
-            and_false, List.reverse_eq_cons_iff, List.reverse_nil, List.nil_append,
-            List.length_cons, zero_add, List.pairwise_cons, List.not_mem_nil, and_self,
-            Nat.sub_eq_zero_of_le, getElem?_pos, List.getElem_cons_zero, Option.getD_some,
-            Nat.reduceAdd, Order.lt_two_iff, Nat.add_eq_right, List.reverse_cons,
-            List.append_assoc, List.cons_append, List.length_append, List.length_reverse,
-            Nat.add_right_cancel_iff]
-      · rcases rg with (_ | ⟨a, _ | ⟨b, rg⟩⟩) <;>
-            simp_all +decide only [List.pairwise_cons, List.mem_cons, forall_eq_or_imp,
-              List.getElem_cons_succ, List.getElem_cons_zero]
-        · contradiction
-        · grind
-        · have hba : b ≤ a := hrg.1.1
-          exact iic_inter_icc_nonempty_of_left hba
-            (by simpa using hc1 1 (by norm_num) (by norm_num))
-      · refine ⟨rg[l.length + 2], ?_, ?_⟩ <;> norm_num
-        · have h := hc1 (l.length + 2) (by lia) (by lia)
-          have hr : (l.reverse ++ [s, r])[l.length + 2 - 1]?.getD 0 = r := by
-            rw [List.getElem?_append_right (by simp)]
-            simp
-          rwa [hr] at h
-        · simpa [List.get_eq_getElem] using
-            get_le_get_of_pairwise_ge hrg
-              (i := ⟨l.length + 1, by lia⟩)
-              (j := ⟨l.length + 2, by lia⟩)
-              (by simp)
-    · exfalso
-      lia
-    · have hrf_step : rf[j + 1] ≤ rf[j] := by
-        simpa [List.get_eq_getElem] using
-          get_le_get_of_pairwise_ge hrf
-            (i := ⟨j, by lia⟩) (j := ⟨j + 1, by lia⟩) (by simp)
-      have hrg_step : rg[j + 1] ≤ rg[j] := by
-        simpa [List.get_eq_getElem] using
-          get_le_get_of_pairwise_ge hrg
-            (i := ⟨j, by lia⟩) (j := ⟨j + 1, by lia⟩) (by simp)
-      have hcross_gf : rg[j + 1] ≤ rf[j] := by
-        simpa [List.getD_eq_getElem?_getD,
-          List.getElem?_eq_getElem (l := rg) (i := j + 1) (by lia),
-          List.getElem?_eq_getElem (l := rf) (i := j) (by lia)]
-          using hc1 (j + 1) (by lia) (by lia)
-      have hcross_fg : rf[j + 1] ≤ rg[j] := by
-        simpa [List.getD_eq_getElem?_getD,
-          List.getElem?_eq_getElem (l := rf) (i := j + 1) (by lia),
-          List.getElem?_eq_getElem (l := rg) (i := j) (by lia)]
-          using hc2 (j + 1) (by lia) (by lia)
-      simpa [rootSlotInterval] using
-        icc_inter_icc_nonempty_of_crossing hrf_step hrg_step hcross_fg hcross_gf
+  have hgetD : ∀ {rs : List ℝ} {i : ℕ} (hi : i < rs.length), rs.getD i 0 = rs[i] :=
+    fun hi => by simp [hi]
+  have hstep : ∀ {rs : List ℝ}, rs.Pairwise (· ≥ ·) → ∀ {i : ℕ} (hi : i + 1 < rs.length),
+      rs[i + 1] ≤ rs[i] := fun hrs i hi => by
+    simpa using get_le_get_of_pairwise_ge hrs
+      (i := ⟨i, by lia⟩) (j := ⟨i + 1, hi⟩) (by simp [Fin.le_def])
+  rcases Nat.eq_zero_or_pos j with rfl | hj0
+  · rcases rg with _ | ⟨s, rg⟩
+    · simp at hlen
+    rcases rf with _ | ⟨r, rf⟩
+    · exact ⟨s, by simp [rootSlotInterval]⟩
+    · exact ⟨max r s, by simp [rootSlotInterval]⟩
+  have hjg' : j ≠ rg.length := by lia
+  by_cases hjn : j = rf.length
+  · obtain ⟨l, r, rfl⟩ :=
+      (List.eq_nil_or_concat' rf).resolve_left (by rintro rfl; simp at hjn; lia)
+    simp only [List.length_append, List.length_singleton] at hjn hlen hjf
+    subst hjn
+    have hc := hc1 (l.length + 1) (by lia) (by simp)
+    rw [hgetD (by lia), hgetD (by simp)] at hc
+    refine ⟨rg[l.length + 1], ?_, ?_⟩
+    · simpa [rootSlotInterval] using hc
+    · simpa [rootSlotInterval, hj0.ne', hjg'] using hstep hrg (i := l.length) (by lia)
+  · have hc₁ := hc1 j hj0 (by lia)
+    have hc₂ := hc2 j hj0 (by lia)
+    rw [hgetD (by lia), hgetD (by lia)] at hc₁ hc₂
+    obtain ⟨k, rfl⟩ : ∃ k, j = k + 1 := ⟨j - 1, by lia⟩
+    simpa [rootSlotInterval, hjn, hjg'] using
+      icc_inter_icc_nonempty_of_crossing (hstep hrf (by lia)) (hstep hrg (by lia)) hc₂ hc₁
 
 /-- **Sub-statement A of milestone B2: left-endpoint real-rootedness.**
 

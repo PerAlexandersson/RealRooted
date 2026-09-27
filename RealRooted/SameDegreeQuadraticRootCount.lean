@@ -57,7 +57,7 @@ indicators. -/
 theorem card_filter_le_pair (a b x : ℝ) :
     (({a, b} : Multiset ℝ).filter (· ≤ x)).card
       = (if a ≤ x then 1 else 0) + (if b ≤ x then 1 else 0) := by
-  split_ifs <;> simp_all +decide [Multiset.filter_singleton]
+  split_ifs <;> simp_all [Multiset.filter_singleton]
 
 /-- The positive-combination splitting hypothesis on the two quadratics
 `f = A * (X - a) * (X - b)` and `g = B * (X - c) * (X - d)`, with positive
