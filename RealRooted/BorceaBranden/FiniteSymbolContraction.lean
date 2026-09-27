@@ -19,9 +19,9 @@ noncomputable section
 
 /-- Iterated mapped contraction is additive in the polynomial argument. -/
 theorem contractMappedVariablePairs_add
-    {R sigma omega : Type*} [CommRing R]
-    (left right : sigma → omega) (l : List sigma)
-    (P Q : MvPolynomial omega R) :
+    {R sigma ω : Type*} [CommRing R]
+    (left right : sigma → ω) (l : List sigma)
+    (P Q : MvPolynomial ω R) :
     contractMappedVariablePairs left right l (P + Q) =
       contractMappedVariablePairs left right l P +
         contractMappedVariablePairs left right l Q := by
@@ -33,9 +33,9 @@ theorem contractMappedVariablePairs_add
 
 /-- Iterated mapped contraction commutes with finite sums. -/
 theorem contractMappedVariablePairs_sum
-    {R sigma omega ι : Type*} [CommRing R]
-    (left right : sigma → omega) (l : List sigma)
-    (s : Finset ι) (P : ι → MvPolynomial omega R) :
+    {R sigma ω ι : Type*} [CommRing R]
+    (left right : sigma → ω) (l : List sigma)
+    (s : Finset ι) (P : ι → MvPolynomial ω R) :
     contractMappedVariablePairs left right l (∑ i ∈ s, P i) =
       ∑ i ∈ s, contractMappedVariablePairs left right l (P i) := by
   classical

@@ -19,8 +19,8 @@ noncomputable section
 /-- The signed squarefree basis monomial becomes the product `(-X_i) ^ m_i`
 after renaming. -/
 private theorem rename_signedBasisMonomial_eq_prod
-    {sigma omega : Type*} [Fintype sigma]
-    (e : sigma → omega) (m : OneBox sigma) :
+    {sigma ω : Type*} [Fintype sigma]
+    (e : sigma → ω) (m : OneBox sigma) :
     MvPolynomial.rename e (signedBasisMonomial m) =
       ∏ i : sigma, (-MvPolynomial.X (e i)) ^ m.1 i := by
   classical

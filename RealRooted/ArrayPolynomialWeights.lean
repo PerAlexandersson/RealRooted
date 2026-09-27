@@ -80,7 +80,7 @@ private theorem factorial_cast_ne_zero (m : ℕ) : (Nat.factorial m : ℝ) ≠ 0
 /-- The weight at index one, `cWeight n 1 = -1 / n ^ 2`. -/
 theorem cWeight_one_index (n : ℕ) (hn : 1 ≤ n) :
     cWeight n 1 = -1 / ((n : ℝ)) ^ 2 := by
-  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by lia⟩
   have hm : (Nat.factorial m : ℝ) ≠ 0 := factorial_cast_ne_zero m
   have h1 : ((m : ℝ) + 1) ≠ 0 := by positivity
   unfold cWeight
@@ -107,7 +107,7 @@ theorem cWeight_recurrence_one (m : ℕ) :
     cWeight (m + 3) 1 = cWeight (m + 2) 1 + alphaC (m + 3) * cWeight (m + 1) 0 := by
   have h1 : ((m : ℝ) + 2) ≠ 0 := by positivity
   have h2 : ((m : ℝ) + 3) ≠ 0 := by positivity
-  rw [cWeight_one_index (m + 3) (by omega), cWeight_one_index (m + 2) (by omega),
+  rw [cWeight_one_index (m + 3) (by lia), cWeight_one_index (m + 2) (by lia),
     cWeight_zero_index]
   have hA : alphaC (m + 3)
       = (2 * ((m : ℝ) + 3) - 1) / (((m : ℝ) + 3) ^ 2 * ((m : ℝ) + 2) ^ 2) := by
@@ -127,10 +127,10 @@ theorem cWeight_recurrence (i j : ℕ) :
       = cWeight (j + i + 2) (j + 2)
         + alphaC (j + i + 3) * cWeight (j + i + 1) (j + 1)
         + betaC (j + i + 3) * cWeight (j + i) j := by
-  have e1 : j + i + 3 - (j + 2) = i + 1 := by omega
-  have e2 : j + i + 2 - (j + 2) = i := by omega
-  have e3 : j + i + 1 - (j + 1) = i := by omega
-  have e4 : j + i - j = i := by omega
+  have e1 : j + i + 3 - (j + 2) = i + 1 := by lia
+  have e2 : j + i + 2 - (j + 2) = i := by lia
+  have e3 : j + i + 1 - (j + 1) = i := by lia
+  have e4 : j + i - j = i := by lia
   have F1 : Nat.factorial (j + i + 1) = (j + i + 1) * Nat.factorial (j + i) :=
     Nat.factorial_succ (j + i)
   have F2 : Nat.factorial (j + i + 2) = (j + i + 2) * Nat.factorial (j + i + 1) := by
@@ -187,7 +187,7 @@ theorem dNorm_split_two (n l : ℕ) :
     dNorm n (l + 2)
       = (∑ j ∈ Finset.range (l + 1), cWeight n (j + 2) * eCube (l - j))
         + cWeight n 1 * eCube (l + 1) + cWeight n 0 * eCube (l + 2) := by
-  have h : l + 2 - 1 = l + 1 := by omega
+  have h : l + 2 - 1 = l + 1 := by lia
   rw [dNorm, Finset.sum_range_succ', Finset.sum_range_succ']
   simp only [Nat.add_sub_add_right, Nat.sub_zero, h]
 
@@ -279,8 +279,8 @@ private theorem cWeight_mul_eCube_mul_descFactorial_pow_three
     cWeight n j * eCube (k - j) * (Nat.descFactorial n k : ℝ) ^ 3
       = (-1) ^ j * (n.choose j : ℝ) * (((n - j).choose (k - j) : ℕ) : ℝ) ^ 3 := by
   have hjn : j ≤ n := le_trans hjk hk
-  have hkj : k - j ≤ n - j := by omega
-  have hsub : n - j - (k - j) = n - k := by omega
+  have hkj : k - j ≤ n - j := by lia
+  have hsub : n - j - (k - j) = n - k := by lia
   have nf : ∀ m : ℕ, (Nat.factorial m : ℝ) ≠ 0 := fun m =>
     Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero m)
   have h1 : (n.choose j : ℝ) * (Nat.factorial j : ℝ) * (Nat.factorial (n - j) : ℝ)
@@ -314,7 +314,7 @@ theorem dNorm_mul_descFactorial_pow_three (n k : ℕ) (hk : k ≤ n) :
     dNorm n k * (Nat.descFactorial n k : ℝ) ^ 3 = tArray n k := by
   rw [dNorm_eq, tArray, Finset.sum_mul]
   refine Finset.sum_congr rfl fun j hj => ?_
-  have hjk : j ≤ k := by simp only [Finset.mem_range] at hj; omega
+  have hjk : j ≤ k := by simp only [Finset.mem_range] at hj; lia
   exact cWeight_mul_eCube_mul_descFactorial_pow_three n k j hjk hk
 
 /-- The coefficient identity in the orientation used downstream. -/

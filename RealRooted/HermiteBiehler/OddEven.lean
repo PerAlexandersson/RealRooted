@@ -165,11 +165,11 @@ theorem natDegree_oddEvenPolynomial {p q : ℝ[X]} (hp : p ≠ 0) :
     natDegree_X_mul_comp_X_sq hp
   unfold oddEvenPolynomial
   rcases lt_or_gt_of_ne (show (q.comp (X ^ 2 : ℝ[X])).natDegree ≠
-      (X * p.comp (X ^ 2 : ℝ[X])).natDegree by omega) with h | h
+      (X * p.comp (X ^ 2 : ℝ[X])).natDegree by lia) with h | h
   · rw [Polynomial.natDegree_add_eq_right_of_natDegree_lt h, hb]
-    omega
+    lia
   · rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt h, ha]
-    omega
+    lia
 
 /-- For `p ≠ 0`, the odd/even polynomial has even degree exactly when the even
 part has strictly larger degree than the odd input. -/

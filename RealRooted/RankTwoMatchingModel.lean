@@ -176,7 +176,7 @@ private theorem diagonal_coeff_rawFactor_prod_eq_subset_sum
   have hS_card : S.card ≤ Fintype.card I := Finset.card_le_univ S
   have hexponent :
       (Fintype.card I - S.card) + (M - Fintype.card I) = M - S.card := by
-    omega
+    lia
   rw [hselected, hunselected]
   change
     ((embedReal (∏ i ∈ S, g i) * B ^ S.card * A ^ (Fintype.card I - S.card) *
