@@ -24,14 +24,14 @@ syntax (name := rr_interlacingSeq_to_interlacingSeq0_named)
     "interlacing" ":=" term :
   tactic
 
-syntax (name := rr_interlacingSeq_prec_named)
-  "rr_interlacingSeq_prec" " using "
+syntax (name := rr_interlacingSeq_strict_interl_named)
+  "rr_interlacingSeq_strict_interl" " using "
     "interlacing" ":=" term ","
     "index_lt" ":=" term :
   tactic
 
-syntax (name := rr_interlacingSeq0_prec0_named)
-  "rr_interlacingSeq0_prec0" " using "
+syntax (name := rr_interlacingSeq0_interl_named)
+  "rr_interlacingSeq0_interl" " using "
     "interlacing0" ":=" term ","
     "index_lt" ":=" term :
   tactic
@@ -66,7 +66,7 @@ syntax (name := rr_interlacingSeq_append_named)
   "rr_interlacingSeq_append" " using "
     "left_interlacing" ":=" term ","
     "right_interlacing" ":=" term ","
-    "cross_prec" ":=" term :
+    "cross_strictInterl" ":=" term :
   tactic
 
 syntax (name := rr_interlacingSeq_reverse_pairwise_named)
@@ -121,12 +121,12 @@ macro_rules
         interlacing := $hfs:term) =>
       `(tactic| exact RealRooted.IsInterlacingSeq.toIsInterlacingSeq0 $hfs)
   | `(tactic|
-      rr_interlacingSeq_prec using
+      rr_interlacingSeq_strict_interl using
         interlacing := $hfs:term,
         index_lt := $hij:term) =>
       `(tactic| exact RealRooted.IsInterlacingSeq.strictInterl $hfs $hij)
   | `(tactic|
-      rr_interlacingSeq0_prec0 using
+      rr_interlacingSeq0_interl using
         interlacing0 := $hfs:term,
         index_lt := $hij:term) =>
       `(tactic| exact RealRooted.IsInterlacingSeq0.interl $hfs $hij)
@@ -158,7 +158,7 @@ macro_rules
       rr_interlacingSeq_append using
         left_interlacing := $hfs:term,
         right_interlacing := $hgs:term,
-        cross_prec := $hfg:term) =>
+        cross_strictInterl := $hfg:term) =>
       `(tactic| exact RealRooted.IsInterlacingSeq.append $hfs $hgs $hfg)
   | `(tactic|
       rr_interlacingSeq_reverse_pairwise using
@@ -197,5 +197,35 @@ macro_rules
         exact RealRooted.IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted
           $hfs $hreal)
 
+end Tactic
+end RealRooted
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_interlacingSeq_prec_named_legacy)
+  "rr_interlacingSeq_prec" " using "
+    "interlacing" ":=" term ","
+    "index_lt" ":=" term :
+  tactic
+
+syntax (name := rr_interlacingSeq0_prec0_named_legacy)
+  "rr_interlacingSeq0_prec0" " using "
+    "interlacing0" ":=" term ","
+    "index_lt" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_interlacingSeq_prec using
+        interlacing := $hfs:term,
+        index_lt := $hij:term) =>
+      `(tactic| exact RealRooted.IsInterlacingSeq.strictInterl $hfs $hij)
+  | `(tactic|
+      rr_interlacingSeq0_prec0 using
+        interlacing0 := $hfs:term,
+        index_lt := $hij:term) =>
+      `(tactic| exact RealRooted.IsInterlacingSeq0.interl $hfs $hij)
 end Tactic
 end RealRooted

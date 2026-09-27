@@ -63,8 +63,9 @@ theorem allComboRealRooted_of_strictInterl_or_reverse
     {f g : ℝ[X]} :
     StrictInterl f g ∨ StrictInterl g f →
     AllComboRealRooted f g
-  | Or.inl hprec => allComboRealRooted_of_strictInterl hprec
-  | Or.inr hprec => allComboRealRooted_comm (allComboRealRooted_of_strictInterl hprec)
+  | Or.inl hstrictInterl => allComboRealRooted_of_strictInterl hstrictInterl
+  | Or.inr hstrictInterl =>
+      allComboRealRooted_comm (allComboRealRooted_of_strictInterl hstrictInterl)
 
 @[deprecated allComboRealRooted_of_strictInterl_or_reverse (since := "2026-09-18")]
 alias allComboRealRooted_of_prec_or_revPrec :=
@@ -117,16 +118,16 @@ theorem allComboRealRooted_of_natDegree_le_one
 /-- A `StrictInterl` relation immediately gives a common right interleaver: use the
 right endpoint as the witness. -/
 theorem pairHasCommonInterleaver_of_strictInterl
-    {f g : ℝ[X]} (hprec : StrictInterl f g) :
+    {f g : ℝ[X]} (hstrictInterl : StrictInterl f g) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  ⟨g, hprec, StrictInterl.refl hprec.2.1.1 hprec.2.1.2⟩
+  ⟨g, hstrictInterl, StrictInterl.refl hstrictInterl.2.1.1 hstrictInterl.2.1.2⟩
 
 /-- A reversed `StrictInterl` relation immediately gives a common right interleaver:
 use the left endpoint as the witness. -/
 theorem pairHasCommonInterleaver_of_reverseStrictInterl
-    {f g : ℝ[X]} (hprec : StrictInterl g f) :
+    {f g : ℝ[X]} (hstrictInterl : StrictInterl g f) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  ⟨f, StrictInterl.refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+  ⟨f, StrictInterl.refl hstrictInterl.2.1.1 hstrictInterl.2.1.2, hstrictInterl⟩
 
 /-- A symmetric `StrictInterl` orientation immediately gives a common right
 interleaver: use the larger polynomial in the chosen orientation as the
@@ -135,22 +136,22 @@ theorem pairHasCommonInterleaver_of_strictInterl_or_reverse
     {f g : ℝ[X]} :
     StrictInterl f g ∨ StrictInterl g f →
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h
-  | Or.inl hprec => pairHasCommonInterleaver_of_strictInterl hprec
-  | Or.inr hprec => pairHasCommonInterleaver_of_reverseStrictInterl hprec
+  | Or.inl hstrictInterl => pairHasCommonInterleaver_of_strictInterl hstrictInterl
+  | Or.inr hstrictInterl => pairHasCommonInterleaver_of_reverseStrictInterl hstrictInterl
 
 /-- A `StrictInterl` relation immediately gives a common left interleaver: use the
 left endpoint as the witness. -/
 theorem pairHasCommonLeftInterleaver_of_strictInterl
-    {f g : ℝ[X]} (hprec : StrictInterl f g) :
+    {f g : ℝ[X]} (hstrictInterl : StrictInterl f g) :
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
-  ⟨f, StrictInterl.refl hprec.1.1 hprec.1.2, hprec⟩
+  ⟨f, StrictInterl.refl hstrictInterl.1.1 hstrictInterl.1.2, hstrictInterl⟩
 
 /-- A reversed `StrictInterl` relation immediately gives a common left interleaver:
 use the right endpoint as the witness. -/
 theorem pairHasCommonLeftInterleaver_of_reverseStrictInterl
-    {f g : ℝ[X]} (hprec : StrictInterl g f) :
+    {f g : ℝ[X]} (hstrictInterl : StrictInterl g f) :
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
-  ⟨g, hprec, StrictInterl.refl hprec.1.1 hprec.1.2⟩
+  ⟨g, hstrictInterl, StrictInterl.refl hstrictInterl.1.1 hstrictInterl.1.2⟩
 
 /-- A symmetric `StrictInterl` orientation immediately gives a common left interleaver:
 use the smaller polynomial in the chosen orientation as the witness. -/
@@ -158,8 +159,8 @@ theorem pairHasCommonLeftInterleaver_of_strictInterl_or_reverse
     {f g : ℝ[X]} :
     StrictInterl f g ∨ StrictInterl g f →
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g
-  | Or.inl hprec => pairHasCommonLeftInterleaver_of_strictInterl hprec
-  | Or.inr hprec => pairHasCommonLeftInterleaver_of_reverseStrictInterl hprec
+  | Or.inl hstrictInterl => pairHasCommonLeftInterleaver_of_strictInterl hstrictInterl
+  | Or.inr hstrictInterl => pairHasCommonLeftInterleaver_of_reverseStrictInterl hstrictInterl
 
 @[deprecated pairHasCommonInterleaver_of_strictInterl (since := "2026-09-18")]
 alias pairHasCommonInterleaver_of_prec :=
@@ -300,17 +301,17 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlterna
             ⟨j, by
               have : j < g.natDegree + 1 := by lia
               simpa [rootSeqDesc_length hg_rr.2] using this⟩).Nonempty := by
-    rcases hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno with hprec | hprec
+    rcases hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno with hstrictInterl | hstrictInterl
     · intro j hj
       exact
-        rootSlotInterval_inter_nonempty_of_commonInterleaver hprec
-          (StrictInterl.refl hprec.2.1.1 hprec.2.1.2) j
+        rootSlotInterval_inter_nonempty_of_commonInterleaver hstrictInterl
+          (StrictInterl.refl hstrictInterl.2.1.1 hstrictInterl.2.1.2) j
           (by lia)
           (by lia)
     · intro j hj
       exact
         rootSlotInterval_inter_nonempty_of_commonInterleaver
-          (StrictInterl.refl hprec.2.1.1 hprec.2.1.2) hprec
+          (StrictInterl.refl hstrictInterl.2.1.1 hstrictInterl.2.1.2) hstrictInterl
           j
           (by lia)
           (by lia)

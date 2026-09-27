@@ -18,7 +18,7 @@ namespace RealRooted
 If `f` is real-rooted with nonnegative coefficients, then `X * f'` is in
 proper position with `X * f`.  This packages derivative interlacing together
 with the Wagner common-`X` multiplication bridge. -/
-theorem prec_X_mul_derivative_X_mul_self_of_splits_nonneg {f : ℝ[X]}
+theorem strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg {f : ℝ[X]}
     (hf : f.Splits)
     (hdeg : 2 ≤ f.natDegree)
     (hfnn : HasNonnegCoeffs f) :
@@ -32,7 +32,7 @@ If `f ≪ g`, then the derivative of `g` also precedes `g`, and Wagner's
 positive-cone theorem puts `c g' + a f` before `g`.  Multiplication by `X`
 then gives the active-row step behind recurrences
 `P_{n+2} = X * (c_n P'_{n+1} + a_n P_n)`. -/
-theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
+theorem strictInterl_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
     (h : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
@@ -53,7 +53,7 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
     rcases List.mem_cons.mp hap with rfl | hap
     · exact ha.le
     · cases hap
-  have hprec : ∀ ap ∈ [(c, g.derivative), (a, f)], StrictInterl ap.2 g := by
+  have hstrictInterl : ∀ ap ∈ [(c, g.derivative), (a, f)], StrictInterl ap.2 g := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
     · exact hder
@@ -70,23 +70,23 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
     · cases hap
   have hex : ∃ ap ∈ [(c, g.derivative), (a, f)], 0 < ap.1 :=
     ⟨(c, g.derivative), by simp, hc⟩
-  have hsum_prec : StrictInterl (weightedSum [(c, g.derivative), (a, f)]) g :=
+  have hsum_strictInterl : StrictInterl (weightedSum [(c, g.derivative), (a, f)]) g :=
     StrictInterl.weightedSum_right_of_nonneg [(c, g.derivative), (a, f)] g
-      hnonneg hprec hpoly_pos hex
+      hnonneg hstrictInterl hpoly_pos hex
   have hsum_nonneg : HasNonnegCoeffs (C c * g.derivative + C a * f) := by
     rr_nonneg_coeffs using hgnn.derivative, hfnn
   have hsum_nonneg_weighted :
       HasNonnegCoeffs (weightedSum [(c, g.derivative), (a, f)]) := by
     simpa [weightedSum, add_assoc] using hsum_nonneg
   simpa [weightedSum, add_assoc] using
-    (strictInterl_mul_X_of_strictInterl_of_nonneg hsum_prec hsum_nonneg_weighted hgnn)
+    (strictInterl_mul_X_of_strictInterl_of_nonneg hsum_strictInterl hsum_nonneg_weighted hgnn)
 
 /-- Scalar-left Wagner derivative-gap-lag step.
 
-This is the same bridge as `prec_wagner_derivative_gap_lag_step`, but the
+This is the same bridge as `strictInterl_wagner_derivative_gap_lag_step`, but the
 recurrence may be supplied in the unnormalized form
 `d * p = X * (c * g' + a * f)`. -/
-theorem prec_wagner_derivative_gap_lag_step_den {f g p : ℝ[X]} {a c d : ℝ}
+theorem strictInterl_wagner_derivative_gap_lag_step_den {f g p : ℝ[X]} {a c d : ℝ}
     (h : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
@@ -97,7 +97,7 @@ theorem prec_wagner_derivative_gap_lag_step_den {f g p : ℝ[X]} {a c d : ℝ}
     (hrec : C d * p = X * (C c * g.derivative + C a * f)) :
     StrictInterl g p := by
   have hstep : StrictInterl g (X * (C c * g.derivative + C a * f)) :=
-    prec_wagner_derivative_gap_lag_step h hfnn hgnn hdeg ha hc
+    strictInterl_wagner_derivative_gap_lag_step h hfnn hgnn hdeg ha hc
   have hscaled : StrictInterl g (C d * p) := by simpa [hrec] using hstep
   have hscaled' : StrictInterl g (C d⁻¹ * (C d * p)) :=
     StrictInterl.C_mul_right hscaled (inv_ne_zero hd.ne')
@@ -111,7 +111,7 @@ theorem prec_wagner_derivative_gap_lag_step_den {f g p : ℝ[X]} {a c d : ℝ}
 Use this after any exceptional startup rows have been absorbed into the base
 case, so that the derivative and lag coefficients are both positive on the
 indexed range. -/
-theorem prec_wagner_derivative_gap_lag_sequence {P : Nat → ℝ[X]} {a c : Nat → ℝ}
+theorem strictInterl_wagner_derivative_gap_lag_sequence {P : Nat → ℝ[X]} {a c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
@@ -125,12 +125,12 @@ theorem prec_wagner_derivative_gap_lag_sequence {P : Nat → ℝ[X]} {a c : Nat 
   have hstep :
       StrictInterl (P (n + 1))
         (X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :=
-    prec_wagner_derivative_gap_lag_step
+    strictInterl_wagner_derivative_gap_lag_step
       hprev (hnonneg n) (hnonneg (n + 1)) (hdeg n) (ha n) (hc n)
   simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for active Wagner derivative-gap-lag recurrences. -/
-theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
+theorem isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence
     {P : Nat → ℝ[X]} {a c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
@@ -141,10 +141,10 @@ theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
       P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_wagner_derivative_gap_lag_sequence hbase hnonneg hdeg ha hc hrec
+    strictInterl_wagner_derivative_gap_lag_sequence hbase hnonneg hdeg ha hc hrec
 
 /-- Sequence induction for scalar-left active Wagner derivative-gap-lag recurrences. -/
-theorem prec_wagner_derivative_gap_lag_sequence_den
+theorem strictInterl_wagner_derivative_gap_lag_sequence_den
     {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
@@ -159,12 +159,12 @@ theorem prec_wagner_derivative_gap_lag_sequence_den
   refine strictInterl_sequence_of_base_and_step hbase ?_
   intro n hprev
   exact
-    prec_wagner_derivative_gap_lag_step_den
+    strictInterl_wagner_derivative_gap_lag_step_den
       hprev (hnonneg n) (hnonneg (n + 1)) (hdeg n) (ha n) (hc n) (hd n)
       (hrec n)
 
 /-- Real-rootedness corollary for scalar-left active Wagner gap-lag recurrences. -/
-theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
+theorem isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence_den
     {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
@@ -177,8 +177,39 @@ theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
         X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_wagner_derivative_gap_lag_sequence_den hbase hnonneg hdeg ha hc hd hrec
+    strictInterl_wagner_derivative_gap_lag_sequence_den hbase hnonneg hdeg ha hc hd hrec
 
 
+
+end RealRooted
+
+/- Deprecated theorem aliases retained for the #984 Prec migration. -/
+namespace RealRooted
+@[deprecated strictInterl_wagner_derivative_gap_lag_sequence (since := "2026-09-26")]
+alias prec_wagner_derivative_gap_lag_sequence := strictInterl_wagner_derivative_gap_lag_sequence
+
+@[deprecated isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence
+  (since := "2026-09-26")]
+alias isRealRooted_of_prec_wagner_derivative_gap_lag_sequence :=
+  isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence
+
+@[deprecated strictInterl_wagner_derivative_gap_lag_sequence_den (since := "2026-09-26")]
+alias prec_wagner_derivative_gap_lag_sequence_den :=
+  strictInterl_wagner_derivative_gap_lag_sequence_den
+
+@[deprecated isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence_den
+  (since := "2026-09-26")]
+alias isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den :=
+  isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence_den
+
+@[deprecated strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg (since := "2026-09-26")]
+alias prec_X_mul_derivative_X_mul_self_of_splits_nonneg :=
+  strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg
+
+@[deprecated strictInterl_wagner_derivative_gap_lag_step (since := "2026-09-26")]
+alias prec_wagner_derivative_gap_lag_step := strictInterl_wagner_derivative_gap_lag_step
+
+@[deprecated strictInterl_wagner_derivative_gap_lag_step_den (since := "2026-09-26")]
+alias prec_wagner_derivative_gap_lag_step_den := strictInterl_wagner_derivative_gap_lag_step_den
 
 end RealRooted

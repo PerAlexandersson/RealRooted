@@ -148,9 +148,9 @@ private theorem wordDescentRefined_zero_interlacing (m : ℕ) :
     IsInterlacingSeq0Nonneg (wordDescentRefined m 0) := by
   constructor
   · rw [isInterlacingSeq0_iff_pairwise]
-    have hprec : Interl (1 : ℝ[X]) 1 :=
+    have hinterl : Interl (1 : ℝ[X]) 1 :=
       Interl.refl fun _ => Polynomial.Splits.one
-    simp [wordDescentRefined, hprec]
+    simp [wordDescentRefined, hinterl]
   · intro f hf
     simp only [wordDescentRefined, List.mem_replicate] at hf
     rcases hf with ⟨_, rfl⟩

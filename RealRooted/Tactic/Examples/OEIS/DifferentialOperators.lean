@@ -28,11 +28,11 @@ example {l : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hPQ : ∀ n : Nat, Interl (P n) (Q n)) :
     ∀ n : Nat,
       Interl (iterateThetaPlusOne (l n) (P n)) (iterateThetaPlusOne (l n) (Q n)) := by
-  rr_iterateThetaPlusOne_sequence_prec0 using
+  rr_iterateThetaPlusOne_sequence_interl using
     index := l,
     left_pf := hP,
     right_pf := hQ,
-    prec0 := hPQ
+    interl := hPQ
 
 /-- Derivative-shift row-family real-rootedness exit exposed through the OEIS
 facade. -/
@@ -53,7 +53,7 @@ example {eps : Nat → ℝ} {K : Nat → Nat} {P : Nat → ℝ[X]}
     ∀ n : Nat,
       StrictInterl (iterateTDeriv (eps n) (K n) (P n))
         (iterateTDeriv (eps n) (K n + 1) (P n)) := by
-  rr_iterateTDeriv_sequence_prec_succ using
+  rr_iterateTDeriv_sequence_strict_interl_succ using
     eps_pos := heps,
     nonzero := hP0,
     splits := hP,

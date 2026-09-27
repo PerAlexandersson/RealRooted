@@ -290,7 +290,7 @@ private theorem lowerReentrantCorner_zero_strictInterl_one :
     StrictInterl.refl (by simp) (by simp)
   simpa using hone.C_mul_right (a := 2) (by norm_num)
 
-/-- Consecutive rows are in proper position. -/
+/-- Consecutive rows strictly interlace. -/
 theorem lowerReentrantCorner_strictInterl (n : ℕ) :
     StrictInterl (lowerReentrantCorner n) (lowerReentrantCorner (n + 1)) := by
   rcases n with _ | n
@@ -336,7 +336,7 @@ private theorem half_two_mul_add_two (j : ℕ) : (2 * j + 2) / 2 = j + 1 := by
     _ = 0 / 2 + (j + 1) := Nat.add_mul_div_left 0 (j + 1) (by decide)
     _ = j + 1 := by simp
 
-/-- Even-indexed transitions are same-degree proper-position steps.  The
+/-- Even-indexed transitions are same-degree interlacing steps.  The
 `ListAlternates ss rs` orientation records that the earlier row owns the
 leftmost root and the later row owns the rightmost root. -/
 theorem lowerReentrantCorner_even_alternates (j : ℕ) :
@@ -357,7 +357,7 @@ theorem lowerReentrantCorner_odd_interlaces (j : ℕ) :
   rw [lowerReentrantCorner_natDegree, lowerReentrantCorner_natDegree,
     half_two_mul_add_one, half_two_mul_add_two]
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated lowerReentrantCorner_strictInterl (since := "2026-09-26")]
 alias lowerReentrantCorner_prec := lowerReentrantCorner_strictInterl

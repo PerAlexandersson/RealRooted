@@ -199,7 +199,7 @@ lemma listAlternates_dropLast_right_lt_zero_of_left_lt_zero :
   | [], _ :: _, halt, _, _, _ => by simp [ListAlternates] at halt
   | _ :: _, [], halt, _, _, _ => by simp [ListAlternates] at halt
 
-/-- In a same-degree proper-position pair, a zero root of the right
+/-- In a same-degree strictly interlacing pair, a zero root of the right
 polynomial must be its rightmost root when every root of the left polynomial
 is strictly negative; hence all right roots are nonpositive. -/
 theorem roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
@@ -244,7 +244,7 @@ theorem roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
 alias roots_nonpos_of_prec_sameDegree_of_zero_root_of_left_roots_neg :=
   roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
 
-/-- In a same-degree proper-position pair, strict negativity of every root of
+/-- In a same-degree strictly interlacing pair, strict negativity of every root of
 the right polynomial implies strict negativity of every root of the left. -/
 theorem roots_neg_of_strictInterl_sameDegree_of_roots_neg {g f : ℝ[X]}
     (hgf : StrictInterl g f)

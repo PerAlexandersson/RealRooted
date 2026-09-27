@@ -12,24 +12,24 @@ open Polynomial
 
 namespace RealRooted
 
-lemma prec_C_mul_left_sequence {F G : Nat → ℝ[X]} {a : Nat → ℝ}
-    (hprec : ∀ i : Nat, StrictInterl (F i) (G i))
+lemma strictInterl_C_mul_left_sequence {F G : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hstrictInterl : ∀ i : Nat, StrictInterl (F i) (G i))
     (ha : ∀ i : Nat, a i ≠ 0) :
     ∀ i : Nat, StrictInterl (C (a i) * F i) (G i) := fun i =>
-  StrictInterl.C_mul_left (hprec i) (ha i)
+  StrictInterl.C_mul_left (hstrictInterl i) (ha i)
 
-lemma prec_C_mul_right_sequence {F G : Nat → ℝ[X]} {a : Nat → ℝ}
-    (hprec : ∀ i : Nat, StrictInterl (F i) (G i))
+lemma strictInterl_C_mul_right_sequence {F G : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hstrictInterl : ∀ i : Nat, StrictInterl (F i) (G i))
     (ha : ∀ i : Nat, a i ≠ 0) :
     ∀ i : Nat, StrictInterl (F i) (C (a i) * G i) := fun i =>
-  StrictInterl.C_mul_right (hprec i) (ha i)
+  StrictInterl.C_mul_right (hstrictInterl i) (ha i)
 
-lemma prec_C_mul_both_sequence {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hprec : ∀ i : Nat, StrictInterl (F i) (G i))
+lemma strictInterl_C_mul_both_sequence {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hstrictInterl : ∀ i : Nat, StrictInterl (F i) (G i))
     (ha : ∀ i : Nat, a i ≠ 0)
     (hb : ∀ i : Nat, b i ≠ 0) :
     ∀ i : Nat, StrictInterl (C (a i) * F i) (C (b i) * G i) := fun i =>
-  StrictInterl.C_mul_right (StrictInterl.C_mul_left (hprec i) (ha i)) (hb i)
+  StrictInterl.C_mul_right (StrictInterl.C_mul_left (hstrictInterl i) (ha i)) (hb i)
 
 lemma C_mul_realrooted_sequence {P : Nat → ℝ[X]} {a : Nat → ℝ}
     (hrr : ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits)
@@ -82,72 +82,72 @@ syntax (name := rr_interlaces_C_linear_auto)
     "scalar_ne" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_left_named)
-  "rr_prec_C_mul_left" " using "
-    "prec" ":=" term ","
+syntax (name := rr_strict_interl_C_mul_left_named)
+  "rr_strict_interl_C_mul_left" " using "
+    "strictInterl" ":=" term ","
     "scalar_ne" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_left_auto)
-  "rr_prec_C_mul_left" " using "
-    "prec" ":=" term :
+syntax (name := rr_strict_interl_C_mul_left_auto)
+  "rr_strict_interl_C_mul_left" " using "
+    "strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_left_sequence_named)
-  "rr_prec_C_mul_left_sequence" " using "
-    "prec" ":=" term ","
+syntax (name := rr_strict_interl_C_mul_left_sequence_named)
+  "rr_strict_interl_C_mul_left_sequence" " using "
+    "strictInterl" ":=" term ","
     "scalar_ne" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_left_sequence_auto)
-  "rr_prec_C_mul_left_sequence" " using "
-    "prec" ":=" term :
+syntax (name := rr_strict_interl_C_mul_left_sequence_auto)
+  "rr_strict_interl_C_mul_left_sequence" " using "
+    "strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_right_named)
-  "rr_prec_C_mul_right" " using "
-    "prec" ":=" term ","
+syntax (name := rr_strict_interl_C_mul_right_named)
+  "rr_strict_interl_C_mul_right" " using "
+    "strictInterl" ":=" term ","
     "scalar_ne" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_right_auto)
-  "rr_prec_C_mul_right" " using "
-    "prec" ":=" term :
+syntax (name := rr_strict_interl_C_mul_right_auto)
+  "rr_strict_interl_C_mul_right" " using "
+    "strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_right_sequence_named)
-  "rr_prec_C_mul_right_sequence" " using "
-    "prec" ":=" term ","
+syntax (name := rr_strict_interl_C_mul_right_sequence_named)
+  "rr_strict_interl_C_mul_right_sequence" " using "
+    "strictInterl" ":=" term ","
     "scalar_ne" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_right_sequence_auto)
-  "rr_prec_C_mul_right_sequence" " using "
-    "prec" ":=" term :
+syntax (name := rr_strict_interl_C_mul_right_sequence_auto)
+  "rr_strict_interl_C_mul_right_sequence" " using "
+    "strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_both_named)
-  "rr_prec_C_mul_both" " using "
-    "prec" ":=" term ","
+syntax (name := rr_strict_interl_C_mul_both_named)
+  "rr_strict_interl_C_mul_both" " using "
+    "strictInterl" ":=" term ","
     "left_ne" ":=" term ","
     "right_ne" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_both_auto)
-  "rr_prec_C_mul_both" " using "
-    "prec" ":=" term :
+syntax (name := rr_strict_interl_C_mul_both_auto)
+  "rr_strict_interl_C_mul_both" " using "
+    "strictInterl" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_both_sequence_named)
-  "rr_prec_C_mul_both_sequence" " using "
-    "prec" ":=" term ","
+syntax (name := rr_strict_interl_C_mul_both_sequence_named)
+  "rr_strict_interl_C_mul_both_sequence" " using "
+    "strictInterl" ":=" term ","
     "left_ne" ":=" term ","
     "right_ne" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_both_sequence_auto)
-  "rr_prec_C_mul_both_sequence" " using "
-    "prec" ":=" term :
+syntax (name := rr_strict_interl_C_mul_both_sequence_auto)
+  "rr_strict_interl_C_mul_both_sequence" " using "
+    "strictInterl" ":=" term :
   tactic
 
 syntax (name := rr_C_mul_realrooted_named)
@@ -221,6 +221,192 @@ macro_rules
             | rr_lookup [rr_degree]
             | compute_degree!))
   | `(tactic|
+      rr_strict_interl_C_mul_left using
+        strictInterl := $hstrictInterl:term,
+        scalar_ne := $ha:term) =>
+      `(tactic| exact RealRooted.StrictInterl.C_mul_left $hstrictInterl $ha)
+  | `(tactic|
+      rr_strict_interl_C_mul_left using
+        strictInterl := $hstrictInterl:term) =>
+      `(tactic| exact RealRooted.StrictInterl.C_mul_left $hstrictInterl (by rr_side_ne))
+  | `(tactic|
+      rr_strict_interl_C_mul_left_sequence using
+        strictInterl := $hstrictInterl:term,
+        scalar_ne := $ha:term) =>
+      `(tactic| exact RealRooted.strictInterl_C_mul_left_sequence $hstrictInterl $ha)
+  | `(tactic|
+      rr_strict_interl_C_mul_left_sequence using
+        strictInterl := $hstrictInterl:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_C_mul_left_sequence $hstrictInterl (fun i => by rr_side_ne))
+  | `(tactic|
+      rr_strict_interl_C_mul_right using
+        strictInterl := $hstrictInterl:term,
+        scalar_ne := $ha:term) =>
+      `(tactic| exact RealRooted.StrictInterl.C_mul_right $hstrictInterl $ha)
+  | `(tactic|
+      rr_strict_interl_C_mul_right using
+        strictInterl := $hstrictInterl:term) =>
+      `(tactic| exact RealRooted.StrictInterl.C_mul_right $hstrictInterl (by rr_side_ne))
+  | `(tactic|
+      rr_strict_interl_C_mul_right_sequence using
+        strictInterl := $hstrictInterl:term,
+        scalar_ne := $ha:term) =>
+      `(tactic| exact RealRooted.strictInterl_C_mul_right_sequence $hstrictInterl $ha)
+  | `(tactic|
+      rr_strict_interl_C_mul_right_sequence using
+        strictInterl := $hstrictInterl:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_C_mul_right_sequence $hstrictInterl (fun i => by rr_side_ne))
+  | `(tactic|
+      rr_strict_interl_C_mul_both using
+        strictInterl := $hstrictInterl:term,
+        left_ne := $hleft:term,
+        right_ne := $hright:term) =>
+      `(tactic|
+        exact RealRooted.StrictInterl.C_mul_right
+          (RealRooted.StrictInterl.C_mul_left $hstrictInterl $hleft) $hright)
+  | `(tactic|
+      rr_strict_interl_C_mul_both using
+        strictInterl := $hstrictInterl:term) =>
+      `(tactic|
+        exact RealRooted.StrictInterl.C_mul_right
+          (RealRooted.StrictInterl.C_mul_left $hstrictInterl (by rr_side_ne)) (by rr_side_ne))
+  | `(tactic|
+      rr_strict_interl_C_mul_both_sequence using
+        strictInterl := $hstrictInterl:term,
+        left_ne := $hleft:term,
+        right_ne := $hright:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_C_mul_both_sequence $hstrictInterl $hleft $hright)
+  | `(tactic|
+      rr_strict_interl_C_mul_both_sequence using
+        strictInterl := $hstrictInterl:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_C_mul_both_sequence $hstrictInterl
+          (fun i => by rr_side_ne) (fun i => by rr_side_ne))
+  | `(tactic|
+      rr_C_mul_realrooted using
+        realrooted := $hp:term,
+        scalar_ne := $ha:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection
+          (RealRooted.isRealRooted_C_mul_of_isRealRooted $hp $ha))
+  | `(tactic|
+      rr_C_mul_realrooted_sequence using
+        realrooted := $hp:term,
+        scalar_ne := $ha:term) =>
+      `(tactic|
+        rr_first_realrooted_sequence_or_projection
+          (RealRooted.C_mul_realrooted_sequence $hp $ha))
+  | `(tactic|
+      rr_C_mul_realrooted_sequence using
+        realrooted := $hp:term) =>
+      `(tactic|
+        rr_first_realrooted_sequence_or_projection
+          (RealRooted.C_mul_realrooted_sequence $hp (fun i => by rr_side_ne)))
+  | `(tactic|
+      rr_X_mul_realrooted using
+        realrooted := $hp:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection
+          (RealRooted.isRealRooted_X_mul_of_isRealRooted $hp))
+  | `(tactic|
+      rr_X_mul_realrooted_sequence using
+        realrooted := $hp:term) =>
+      `(tactic|
+        rr_first_realrooted_sequence_or_projection
+          (RealRooted.X_mul_realrooted_sequence $hp))
+
+end Tactic
+end RealRooted
+namespace RealRooted
+@[deprecated strictInterl_C_mul_left_sequence (since := "2026-09-26")]
+alias prec_C_mul_left_sequence := strictInterl_C_mul_left_sequence
+
+@[deprecated strictInterl_C_mul_right_sequence (since := "2026-09-26")]
+alias prec_C_mul_right_sequence := strictInterl_C_mul_right_sequence
+
+@[deprecated strictInterl_C_mul_both_sequence (since := "2026-09-26")]
+alias prec_C_mul_both_sequence := strictInterl_C_mul_both_sequence
+
+end RealRooted
+
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_prec_C_mul_left_named_legacy)
+  "rr_prec_C_mul_left" " using "
+    "prec" ":=" term ","
+    "scalar_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_left_auto_legacy)
+  "rr_prec_C_mul_left" " using "
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_left_sequence_named_legacy)
+  "rr_prec_C_mul_left_sequence" " using "
+    "prec" ":=" term ","
+    "scalar_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_left_sequence_auto_legacy)
+  "rr_prec_C_mul_left_sequence" " using "
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_right_named_legacy)
+  "rr_prec_C_mul_right" " using "
+    "prec" ":=" term ","
+    "scalar_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_right_auto_legacy)
+  "rr_prec_C_mul_right" " using "
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_right_sequence_named_legacy)
+  "rr_prec_C_mul_right_sequence" " using "
+    "prec" ":=" term ","
+    "scalar_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_right_sequence_auto_legacy)
+  "rr_prec_C_mul_right_sequence" " using "
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_both_named_legacy)
+  "rr_prec_C_mul_both" " using "
+    "prec" ":=" term ","
+    "left_ne" ":=" term ","
+    "right_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_both_auto_legacy)
+  "rr_prec_C_mul_both" " using "
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_both_sequence_named_legacy)
+  "rr_prec_C_mul_both_sequence" " using "
+    "prec" ":=" term ","
+    "left_ne" ":=" term ","
+    "right_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_both_sequence_auto_legacy)
+  "rr_prec_C_mul_both_sequence" " using "
+    "prec" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
       rr_prec_C_mul_left using
         prec := $hprec:term,
         scalar_ne := $ha:term) =>
@@ -285,38 +471,5 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_C_mul_both_sequence $hprec
           (fun i => by rr_side_ne) (fun i => by rr_side_ne))
-  | `(tactic|
-      rr_C_mul_realrooted using
-        realrooted := $hp:term,
-        scalar_ne := $ha:term) =>
-      `(tactic|
-        rr_first_realrooted_or_projection
-          (RealRooted.isRealRooted_C_mul_of_isRealRooted $hp $ha))
-  | `(tactic|
-      rr_C_mul_realrooted_sequence using
-        realrooted := $hp:term,
-        scalar_ne := $ha:term) =>
-      `(tactic|
-        rr_first_realrooted_sequence_or_projection
-          (RealRooted.C_mul_realrooted_sequence $hp $ha))
-  | `(tactic|
-      rr_C_mul_realrooted_sequence using
-        realrooted := $hp:term) =>
-      `(tactic|
-        rr_first_realrooted_sequence_or_projection
-          (RealRooted.C_mul_realrooted_sequence $hp (fun i => by rr_side_ne)))
-  | `(tactic|
-      rr_X_mul_realrooted using
-        realrooted := $hp:term) =>
-      `(tactic|
-        rr_first_realrooted_or_projection
-          (RealRooted.isRealRooted_X_mul_of_isRealRooted $hp))
-  | `(tactic|
-      rr_X_mul_realrooted_sequence using
-        realrooted := $hp:term) =>
-      `(tactic|
-        rr_first_realrooted_sequence_or_projection
-          (RealRooted.X_mul_realrooted_sequence $hp))
-
 end Tactic
 end RealRooted

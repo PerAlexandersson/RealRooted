@@ -4,7 +4,7 @@ import RealRooted.HermiteBiehler.Converse
 # Stable univariate pencils
 
 This module expresses the two-variable upper-half-plane nonvanishing condition
-for a real polynomial pencil and derives it from oriented proper position.
+for a real polynomial pencil and derives it from oriented interlacing.
 -/
 
 open Polynomial
@@ -74,7 +74,7 @@ theorem isUpperHalfPlaneStablePencil_zero_left
   simpa using mul_ne_zero hw0
     (eval_complexify_ne_zero_of_splits_of_im_pos hg hg0 hz)
 
-/-- Positive-leading-coefficient proper position orients the corresponding
+/-- Positive-leading-coefficient interlacing orients the corresponding
 nonconstant polynomial pencil away from the product of upper half-planes. -/
 theorem isUpperHalfPlaneStablePencil_of_strictInterl_of_natDegree_pos
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f)
@@ -108,7 +108,7 @@ theorem isUpperHalfPlaneStablePencil_of_strictInterl_of_natDegree_pos
   rw [hw_eq, Complex.neg_im] at hw
   linarith
 
-/-- Positive-leading-coefficient proper position gives a stable pencil in all
+/-- Positive-leading-coefficient interlacing gives a stable pencil in all
 degrees, including the constant boundary case. -/
 theorem isUpperHalfPlaneStablePencil_of_strictInterl
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f)

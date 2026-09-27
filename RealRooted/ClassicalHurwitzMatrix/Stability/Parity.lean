@@ -42,12 +42,12 @@ theorem IsStrictlyHurwitzStable.hasNonnegCoeffs_parts_of_evenShape
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree + 1) :
     HasNonnegCoeffs odd ∧ HasNonnegCoeffs even := by
-  have hprec := h.strictInterl_rotatedParts_of_evenShape hodd heven hdegree
+  have hstrictInterl := h.strictInterl_rotatedParts_of_evenShape hodd heven hdegree
   exact
     ⟨hasNonnegCoeffs_of_posLeading_of_splits_hurwitzRotatedOddPart
-        hodd hprec.1.2,
+        hodd hstrictInterl.1.2,
       hasNonnegCoeffs_of_posLeading_of_splits_hurwitzRotatedEvenPart
-        heven hprec.2.1.2⟩
+        heven hstrictInterl.2.1.2⟩
 
 /-- In the odd-degree parity shape, strict stability and positive leading
 coefficients force both parity inputs to have nonnegative coefficients. -/
@@ -57,12 +57,12 @@ theorem IsStrictlyHurwitzStable.hasNonnegCoeffs_parts_of_oddShape
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree) :
     HasNonnegCoeffs odd ∧ HasNonnegCoeffs even := by
-  have hprec := h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree
+  have hstrictInterl := h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree
   exact
     ⟨hasNonnegCoeffs_of_posLeading_of_splits_hurwitzRotatedOddPart
-        hodd hprec.2.1.2,
+        hodd hstrictInterl.2.1.2,
       hasNonnegCoeffs_of_posLeading_of_splits_hurwitzRotatedEvenPart
-        heven hprec.1.2⟩
+        heven hstrictInterl.1.2⟩
 
 /-- An even-shape strictly stable odd/even polynomial with positive-leading
 parts has nonnegative coefficients. -/
@@ -90,24 +90,24 @@ theorem IsStrictlyHurwitzStable.hasNonnegCoeffs_of_oddShape
 
 /-! ## Strict constant and Routh-pivot signs -/
 
-/-- If the two rotated parity parts occur in either proper-position order and
+/-- If the two rotated parity parts occur in either interlacing order and
 the even input has nonzero constant coefficient, then so does the odd input.
 
 Indeed, a zero constant in the odd input would give the rotated odd part at
 least two zero factors: its explicit `-X` and one from composition. The rotated
 even part has no zero root, contradicting the multiplicity-one gap forced by
-proper position. -/
+interlacing. -/
 theorem coeff_zero_ne_of_strictInterl_rotatedParts
     {odd even : ℝ[X]}
-    (hprec :
+    (hstrictInterl :
       StrictInterl (hurwitzRotatedOddPart odd) (hurwitzRotatedEvenPart even) ∨
         StrictInterl (hurwitzRotatedEvenPart even) (hurwitzRotatedOddPart odd))
     (heven0 : even.coeff 0 ≠ 0) : odd.coeff 0 ≠ 0 := by
   intro hodd0
   have hrotOddNe : hurwitzRotatedOddPart odd ≠ 0 := by
-    rcases hprec with hprec | hprec
-    · exact hprec.1.1
-    · exact hprec.2.1.1
+    rcases hstrictInterl with hstrictInterl | hstrictInterl
+    · exact hstrictInterl.1.1
+    · exact hstrictInterl.2.1.1
   have hrotEvenMult :
       (hurwitzRotatedEvenPart even).rootMultiplicity 0 = 0 := by
     apply Polynomial.rootMultiplicity_eq_zero
@@ -136,9 +136,9 @@ theorem coeff_zero_ne_of_strictInterl_rotatedParts
   have hmultBound :
       (hurwitzRotatedOddPart odd).rootMultiplicity 0 - 1 ≤
         (hurwitzRotatedEvenPart even).rootMultiplicity 0 := by
-    rcases hprec with hprec | hprec
-    · exact (hprec.rootMultiplicity_bounds 0).1
-    · exact (hprec.rootMultiplicity_bounds 0).2
+    rcases hstrictInterl with hstrictInterl | hstrictInterl
+    · exact (hstrictInterl.rootMultiplicity_bounds 0).1
+    · exact (hstrictInterl.rootMultiplicity_bounds 0).2
   rw [hrotEvenMult] at hmultBound
   lia
 

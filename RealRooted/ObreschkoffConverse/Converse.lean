@@ -4,7 +4,7 @@ import RealRooted.ObreschkoffConverse.Regularization
 # Obreschkoff converse endgame
 
 Root-sign assembly and common-root descent from all-real-rooted pencils to
-proper position.
+interlacing.
 -/
 
 open Polynomial
@@ -353,15 +353,15 @@ private theorem strictInterl_of_allComboRealRooted_of_no_common
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
       lia
-    have hprec_q : StrictInterl qf qg ∨ StrictInterl qg qf :=
+    have hstrictInterl_q : StrictInterl qf qg ∨ StrictInterl qg qf :=
       ih qf.natDegree hqf_deg_lt rfl hqf_rr hqg_rr hqhall hqdeg
-    rcases hprec_q with hprec_q | hprec_q
-    · have hprec_mul : StrictInterl ((X - C r) * qf) ((X - C r) * qg) :=
-        hprec_q.mul_common_factor
+    rcases hstrictInterl_q with hstrictInterl_q | hstrictInterl_q
+    · have hstrictInterl_mul : StrictInterl ((X - C r) * qf) ((X - C r) * qg) :=
+        hstrictInterl_q.mul_common_factor
           (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
       lia
-    · have hprec_mul : StrictInterl ((X - C r) * qg) ((X - C r) * qf) :=
-        hprec_q.mul_common_factor
+    · have hstrictInterl_mul : StrictInterl ((X - C r) * qg) ((X - C r) * qf) :=
+        hstrictInterl_q.mul_common_factor
           (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
       lia
 /-- **Obreschkoff's theorem** (Brändén, Theorem 7.7.3): `f` and `g` interlace
@@ -394,7 +394,7 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
     simpa [n] using
       simple_pair_of_allComboRealRooted_iterateTDeriv hf.1 hg.1 hf.2 hg.2 hall hdeg heps
   rcases hsimple_data with ⟨hall_iter, _, _, hf_simple, hg_simple, _⟩
-  have hprec_iter :
+  have hstrictInterl_iter :
       StrictInterl (iterateTDeriv eps n f) (iterateTDeriv eps n g) ∨
         StrictInterl (iterateTDeriv eps n g) (iterateTDeriv eps n f) := by
     simpa [n] using
@@ -519,11 +519,11 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
         (f.natDegree = g.natDegree → StrictInterl f g ∨ StrictInterl g f) := by
     constructor
     · intro hsucc
-      have hprec_or :
+      have hstrictInterl_or :
           StrictInterl f g ∨ StrictInterl g f :=
         ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
           hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inl hsucc) hno
-      exact StrictInterl.forward_of_orientation_of_succDegree hsucc.symm hprec_or
+      exact StrictInterl.forward_of_orientation_of_succDegree hsucc.symm hstrictInterl_or
     · intro hsame
       exact
         ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common

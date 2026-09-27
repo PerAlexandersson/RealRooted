@@ -44,7 +44,7 @@ example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, (P n).Splits := by
-  have hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
+  have hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
     rr_mw_derivative_nonpos_sequence using
       base := hbase,
       pos_lc := hpos,
@@ -53,7 +53,7 @@ example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
       recurrence := hrec,
       degree_lower := hdeg_lo,
       degree_upper := hdeg_hi
-  rr_finish using hprec
+  rr_finish using hstrictInterl
 
 /-- The generic weak Ma--Wang sequence shell also closes real-rootedness of all
 rows. -/

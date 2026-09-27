@@ -17,7 +17,7 @@ theorem, refutation, or production caller. They contain no admission.
 | Declaration | Status |
 | --- | --- |
 | `HurwitzOddEvenToReverseFullyInterlacingPairStatement` | Proposed reverse-row replacement for the refuted legacy Hurwitz-to-Lace orientation |
-| `iterateThetaPlusOneSelfPrec0Statement` | Unused open proper-position target for iterates of `theta + 1` |
+| `iterateThetaPlusOneSelfInterlStatement` | Unused open interlacing target for iterates of `theta + 1` |
 
 The Hoster--Stump challenge module also retains the abstract, unproved targets
 `RefinedBaseRowStatement`, `RefinedRecurrenceStatement`,
@@ -43,11 +43,11 @@ a production caller.
 | General Jensen theorem reduced to root-count contraction | `jensenPencilBidiagonalPreserver_of_schurSzegoCompatibility` |
 | Schur--Szegő Jensen compatibility contraction | `schurSzegoPreservesJensenPencilCompatibility` |
 | Liu theorem with common roots | `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant` |
-| Garloff--Wagner PF closure | `garloffWagnerHadamardPFPrec0_of_nonnegPrec` |
-| Bounded-degree polar-theta proper-position preservation | `polarTheta_preserves_prec0` |
+| Garloff--Wagner PF closure | `garloffWagnerHadamardPFInterl_of_nonnegStrictInterl` |
+| Bounded-degree polar-theta interlacing preservation | `polarTheta_preserves_interl` |
 | Derivative preservation statement interface | `derivativePreservesInterlStatement`, witnessed by `derivativePreservesInterl`; deprecated compatibility declarations retain the legacy `Prec` / `Prec0` names |
 | Peak-value multivariate stability | `peakValuePolynomial_mvRealStable` |
-| Weighted consecutive peak-value interleaving | `peakValueWeightedDiagonal_consecutive_prec` |
+| Weighted consecutive peak-value interleaving | `peakValueWeightedDiagonal_consecutive_strictInterl` |
 
 The deprecated derivative-statement compatibility layer consists of
 `derivativePreservesPrec0Statement`,

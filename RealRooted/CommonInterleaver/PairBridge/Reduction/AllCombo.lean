@@ -152,10 +152,10 @@ theorem posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
     exact strictInterl_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg'
   · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
     have hdeg'' : g.natDegree + 1 = f.natDegree ∨ g.natDegree = f.natDegree := by lia
-    have hprec' : StrictInterl g f ∨ StrictInterl f g :=
+    have hstrictInterl' : StrictInterl g f ∨ StrictInterl f g :=
       strictInterl_of_allComboRealRooted hg_rr.1 hg_rr.2 hf_rr.1 hf_rr.2
         (allComboRealRooted_comm hall) hdeg''
-    exact Or.symm hprec'
+    exact Or.symm hstrictInterl'
 
 /-- The honest degree-split package therefore yields the full Obreschkoff
 orientation alternative for every positive-combination pair with nonnegative
@@ -305,12 +305,12 @@ theorem
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  have hprec_or :
+  have hstrictInterl_or :
       StrictInterl f g ∨ StrictInterl g f :=
     posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
       hboundary hf_pos hg_pos hfnn hgnn hfg
-  have hprec_fg : StrictInterl f g :=
-    StrictInterl.forward_of_orientation_of_succDegree hsucc hprec_or
-  exact ⟨g, hprec_fg, StrictInterl.refl hprec_fg.2.1.1 hprec_fg.2.1.2⟩
+  have hstrictInterl_fg : StrictInterl f g :=
+    StrictInterl.forward_of_orientation_of_succDegree hsucc hstrictInterl_or
+  exact ⟨g, hstrictInterl_fg, StrictInterl.refl hstrictInterl_fg.2.1.1 hstrictInterl_fg.2.1.2⟩
 
 end RealRooted

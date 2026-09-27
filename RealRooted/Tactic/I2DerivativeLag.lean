@@ -44,7 +44,7 @@ theorem isRealRooted_of_i2_derivative_lag_wagnerGap_sequence
       P (n + 2) =
         X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
+  isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence
     hbase hnonneg hdegree_two ha hc hrec
 
 end RealRooted

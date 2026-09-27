@@ -10,7 +10,7 @@ import RealRooted.SymmetricDecomposition.Theorem26
 The A144696 row polynomial is expressed through two consecutive ordinary
 Eulerian polynomials. Its resulting symmetric decomposition has a tight
 lowering-Euler component, so Brändén--Solus Theorem 2.6 supplies the reciprocal
-proper-position endpoint needed by the Bernstein-row chain.
+interlacing endpoint needed by the Bernstein-row chain.
 -/
 
 open Polynomial
@@ -121,7 +121,7 @@ private theorem a144696Polynomial_reciprocal_strictInterl_of_two_le
   have hEpf : IsPFPolynomial E :=
     IsPFPolynomial.of_realRooted_nonneg hEnn hEsplits
   have hbE : StrictInterl b E := by
-    apply loweringEulerStep_prec_self_of_reflect hn hEpf
+    apply loweringEulerStep_strictInterl_self_of_reflect hn hEpf
     · exact generalizedEulerian_natDegree 1 n
     · simp [E]
     · exact generalizedEulerian_one_reflect n
@@ -137,7 +137,7 @@ private theorem a144696Polynomial_reciprocal_strictInterl_of_two_le
   have hendpoint :
       StrictInterl (IdTransform n (C 2 * a144696Polynomial n))
         (C 2 * a144696Polynomial n) :=
-    (brandenSolusTheorem26_forward_of_prec_b_a hpdeg
+    (brandenSolusTheorem26_forward_of_strictInterl_b_a hpdeg
       (a144696Polynomial_isIdDecomposition n (by lia)) hAnn hbnn hbA).2.2
   have hscaled :
       StrictInterl (C 2 * reciprocalShift n (a144696Polynomial n))
@@ -400,7 +400,7 @@ theorem a144696BernsteinImageRow_isInterlacingSeqNonneg (d : ℕ) :
     erw [List.get_ofFn, List.get_ofFn]
     exact a144696BernsteinImage_strictInterl hij.le (by lia)
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated a144696Polynomial_reciprocal_strictInterl (since := "2026-09-26")]
 alias a144696Polynomial_reciprocal_prec := a144696Polynomial_reciprocal_strictInterl

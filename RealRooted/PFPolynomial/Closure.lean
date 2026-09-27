@@ -5,12 +5,12 @@ import RealRooted.PFPolynomial
 import RealRooted.SamePhaseInterlacing
 
 /-!
-# Closure of Pólya-frequency polynomials and proper position
+# Closure of Pólya-frequency polynomials and interlacing
 
 This file proves coefficientwise sequential closure for Pólya-frequency
 sequences and polynomials.  Its final theorem combines bounded-degree root
 closedness with the sign-normalized Hermite--Biehler correspondence to retain
-the orientation of the zero-aware proper-position relation `Interl`.
+the orientation of the zero-aware interlacing relation `Interl`.
 -/
 
 open Filter Matrix Polynomial Topology
@@ -86,12 +86,12 @@ theorem isUpperHalfPlaneStable_of_tendsto_eval_of_natDegree_le
   exact (not_le_of_gt hz) hzclosed
 
 /-- Uniformly bounded-degree coefficientwise limits preserve zero-aware
-proper position for Pólya-frequency polynomial pairs. -/
+interlacing for Pólya-frequency polynomial pairs. -/
 theorem interl_of_pf_coeff_tendsto_of_natDegree_le
     {p q : ℕ → ℝ[X]} {p₀ q₀ : ℝ[X]} {N : ℕ}
     (hp : ∀ k, IsPFPolynomial (p k))
     (hq : ∀ k, IsPFPolynomial (q k))
-    (hprec : ∀ k, Interl (p k) (q k))
+    (hinterl : ∀ k, Interl (p k) (q k))
     (hpdeg : ∀ k, (p k).natDegree ≤ N)
     (hqdeg : ∀ k, (q k).natDegree ≤ N)
     (hpcoeff : ∀ i, Tendsto (fun k => (p k).coeff i) atTop
@@ -149,7 +149,7 @@ theorem interl_of_pf_coeff_tendsto_of_natDegree_le
         ((Complex.continuous_ofReal.tendsto _).comp (hpcoeff i)))
   have hHstable : ∀ k, H k = 0 ∨ IsUpperHalfPlaneStable (H k) := by
     intro k
-    rcases hprec k with hpzero | hqzero | hpq
+    rcases hinterl k with hpzero | hqzero | hpq
     · dsimp only [H]
       rw [hpzero]
       by_cases hqzero' : q k = 0

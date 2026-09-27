@@ -31,7 +31,7 @@ lemma eval_sub_X_mul_at_root {f g : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) :
 /-- If `g ⊳ f` (differ-by-1), monic, all roots ≤ 0, then `(f - X*g) ≪₀ f`.
 Again this is stated in the zero-aware convention to allow complete
 cancellation. -/
-theorem prec_sub_X_mul_left {f g : ℝ[X]}
+theorem strictInterl_sub_X_mul_left {f g : ℝ[X]}
     (hgf : StrictInterl g f)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree + 1 = f.natDegree)
@@ -45,11 +45,11 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
     have hf : (f ≠ 0 ∧ f.Splits) := hgf.2.1
     have hg_pos : HasPosLeadingCoeff g := hasPosLeadingCoeff_of_monic hg_monic
     have hf_pos : HasPosLeadingCoeff f := hasPosLeadingCoeff_of_monic hf_monic
-    have hprec_fXg : StrictInterl f (X * g) :=
+    have hstrictInterl_fXg : StrictInterl f (X * g) :=
       (strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
         (f := g) (g := f) hg.2 hf.2 hg_pos hf_pos hg_nonpos hf_nonpos hdeg).mp hgf
     have hall_fXg : AllComboRealRooted f (X * g) :=
-      allComboRealRooted_of_strictInterl hprec_fXg
+      allComboRealRooted_of_strictInterl hstrictInterl_fXg
     have hall_qf : AllComboRealRooted q f := by
       intro α β
       have hrew :
@@ -83,9 +83,9 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
           _ = 0 := by simp [hg_monic.leadingCoeff]
       lia
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by lia
-    have hprec_or : StrictInterl q f ∨ StrictInterl f q :=
+    have hstrictInterl_or : StrictInterl q f ∨ StrictInterl f q :=
       strictInterl_of_allComboRealRooted hq.1 hq.2 hf.1 hf.2 hall_qf (Or.inl hdeg_qf)
-    have hnot_prec_fq : ¬ StrictInterl f q := by
+    have hnot_strictInterl_fq : ¬ StrictInterl f q := by
       intro hfq
       rcases hfq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
       have hss_len : ss.length = f.natDegree := by
@@ -93,7 +93,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
       have hrs_len : rs.length = q.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
       lia
-    rcases hprec_or with hqf | hfq
+    rcases hstrictInterl_or with hqf | hfq
     · exact hqf.toInterl
     · lia
 
@@ -111,7 +111,7 @@ theorem strictInterl_sub_X_mul_right {f g : ℝ[X]}
   by_cases hq0 : q = 0
   · simpa [q, hq0] using interl_zero_right g
   · have hleft0 : Interl q f := by
-      simpa [q] using prec_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos
+      simpa [q] using strictInterl_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos
     have hf0 : f ≠ 0 := hgf.2.1.1
     have hqf : StrictInterl q f := by rcases hleft0 with hqz | hfz | hqf <;> lia
     have hall_qf : AllComboRealRooted q f := allComboRealRooted_of_strictInterl hqf
@@ -149,9 +149,9 @@ theorem strictInterl_sub_X_mul_right {f g : ℝ[X]}
     have hclose_qf := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by lia
     have hdeg_qXg : q.natDegree + 1 = (X * g).natDegree := by simp_all
-    have hprec_or : StrictInterl q (X * g) ∨ StrictInterl (X * g) q :=
+    have hstrictInterl_or : StrictInterl q (X * g) ∨ StrictInterl (X * g) q :=
       strictInterl_of_allComboRealRooted hq.1 hq.2 hXg.1 hXg.2 hall_qXg (Or.inl hdeg_qXg)
-    have hnot_prec_Xgq : ¬ StrictInterl (X * g) q := by
+    have hnot_strictInterl_Xgq : ¬ StrictInterl (X * g) q := by
       intro hXgq
       rcases hXgq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
       have hss_len : ss.length = (X * g).natDegree := by
@@ -159,18 +159,18 @@ theorem strictInterl_sub_X_mul_right {f g : ℝ[X]}
       have hrs_len : rs.length = q.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
       lia
-    have hprec_qXg : StrictInterl q (X * g) := by lia
+    have hstrictInterl_qXg : StrictInterl q (X * g) := by lia
     have hdeg_gq : g.natDegree = q.natDegree := by lia
     exact
       (strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos
-        (f := g) (g := q) hprec_qXg hdeg_gq hg_nonpos).toInterl
+        (f := g) (g := q) hstrictInterl_qXg hdeg_gq hg_nonpos).toInterl
 
 /-- Brändén--Saud minus-sign step in the nonzero `StrictInterl` convention.
 
 If `g ≪ f`, the two polynomials are monic with `deg f = deg g + 1`, all roots
 are nonpositive, and `f - X * g` has positive leading coefficient, then
 `g ≪ f - X * g ≪ f`. -/
-theorem prec_sub_X_mul_pair_of_posLeadingCoeff {f g : ℝ[X]}
+theorem strictInterl_sub_X_mul_pair_of_posLeadingCoeff {f g : ℝ[X]}
     (hgf : StrictInterl g f)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree + 1 = f.natDegree)
@@ -182,16 +182,16 @@ theorem prec_sub_X_mul_pair_of_posLeadingCoeff {f g : ℝ[X]}
   constructor
   · exact (strictInterl_sub_X_mul_right hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
       |>.toStrictInterl_of_ne hgf.1.1 hsub_ne
-  · exact (prec_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
+  · exact (strictInterl_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
       |>.toStrictInterl_of_ne hsub_ne hgf.2.1.1
 
 /-- Brändén--Saud minus-sign step after scaling by a common positive leading
 coefficient.
 
-This is the same conclusion as `prec_sub_X_mul_pair_of_posLeadingCoeff`, but it
+This is the same conclusion as `strictInterl_sub_X_mul_pair_of_posLeadingCoeff`, but it
 allows `f` and `g` to share any positive leading coefficient instead of being
 monic. -/
-theorem prec_sub_X_mul_pair_of_eq_posLeadingCoeff {f g : ℝ[X]}
+theorem strictInterl_sub_X_mul_pair_of_eq_posLeadingCoeff {f g : ℝ[X]}
     (hgf : StrictInterl g f)
     (hf_pos : HasPosLeadingCoeff f)
     (hlc : f.leadingCoeff = g.leadingCoeff)
@@ -226,7 +226,7 @@ theorem prec_sub_X_mul_pair_of_eq_posLeadingCoeff {f g : ℝ[X]}
     rw [hEq]
     exact hasPosLeadingCoeff_C_mul hc_pos hsub_pos
   have hpair_scaled :=
-    prec_sub_X_mul_pair_of_posLeadingCoeff
+    strictInterl_sub_X_mul_pair_of_posLeadingCoeff
       hscaled hf_monic hg_monic hdeg_scaled hf_scaled_nonpos hg_scaled_nonpos
       hsub_scaled_pos
   have hright_scaled : StrictInterl (C c * g) (C c * (f - X * g)) := by
@@ -266,7 +266,7 @@ The scale `c > 1` is chosen so that `f` and `C c * g` have equal leading
 coefficients.  The equal-leading subtraction theorem handles
 `f - X * (C c * g)`, and `f - X * g` is then a positive convex combination
 of this cancellation remainder and `f`. -/
-theorem prec_right_shear_of_scaled_cancellation {f g : ℝ[X]} (c : ℝ)
+theorem strictInterl_right_shear_of_scaled_cancellation {f g : ℝ[X]} (c : ℝ)
     (hc : 1 < c)
     (hgf : StrictInterl g f)
     (hf_pos : HasPosLeadingCoeff f)
@@ -282,7 +282,7 @@ theorem prec_right_shear_of_scaled_cancellation {f g : ℝ[X]} (c : ℝ)
   have hdeg_scaled : (C c * g).natDegree + 1 = f.natDegree := by rw [natDegree_C_mul hc_ne, hdeg]
   have hg_scaled_nonpos : ∀ r ∈ (C c * g).roots, r ≤ 0 := by
     simpa [roots_C_mul _ hc_ne] using hg_nonpos
-  have hpair := prec_sub_X_mul_pair_of_eq_posLeadingCoeff
+  have hpair := strictInterl_sub_X_mul_pair_of_eq_posLeadingCoeff
     hscaled hf_pos hlc hdeg_scaled hf_nonpos hg_scaled_nonpos hcancel_pos
   have hleft_scaled : StrictInterl (C c⁻¹ * (C c * g)) (f - X * (C c * g)) :=
     StrictInterl.C_mul_left hpair.1 (inv_ne_zero hc_ne)
@@ -329,7 +329,7 @@ theorem prec_right_shear_of_scaled_cancellation {f g : ℝ[X]} (c : ℝ)
 
 /-- If the oriented same-degree relation `U ≪ X * V` is already known, then
 the nonpositive-root Wagner step removes the factor `X` and gives `V ≪ U`. -/
-theorem prec_component_of_prec_mul_X_of_roots_nonpos
+theorem strictInterl_component_of_strictInterl_mul_X_of_roots_nonpos
     {U V : ℝ[X]}
     (hU_XV : StrictInterl U (X * V))
     (hU_pos : HasPosLeadingCoeff U)
@@ -350,7 +350,7 @@ If `U ≪ W` and `W = (1 + X) * U + X * V`, the usual Obreschkoff alternative
 for `U` and `X * V` can be oriented by the same-degree root-sum order
 `U.roots.sum ≤ (X * V).roots.sum`.  This is useful at zero-root endpoints where
 the older strict rightmost-root asymmetry condition is too strong. -/
-theorem prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le
+theorem strictInterl_component_of_strictInterl_next_eq_add_X_mul_of_roots_sum_le
     {U V W : ℝ[X]}
     (hUW : StrictInterl U W)
     (hW_eq : W = (1 + X) * U + X * V)
@@ -371,7 +371,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le
   have hU_mid : StrictInterl U (U + X * V) := by
     have hsub_pos : HasPosLeadingCoeff (W - X * U) := by simpa [hmid_eq] using hmid_pos
     have hpair :=
-      prec_sub_X_mul_pair_of_eq_posLeadingCoeff
+      strictInterl_sub_X_mul_pair_of_eq_posLeadingCoeff
         (f := W) (g := U) hUW hW_pos hWU_lc hdeg_UW
         hW_nonpos hU_nonpos hsub_pos
     simpa [hmid_eq] using hpair.1
@@ -389,23 +389,23 @@ theorem prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le
   have hsame : U.natDegree = (X * V).natDegree := by
     rw [natDegree_mul X_ne_zero hV_pos.ne_zero, natDegree_X]
     lia
-  have hprec_or : StrictInterl U (X * V) ∨ StrictInterl (X * V) U :=
+  have hstrictInterl_or : StrictInterl U (X * V) ∨ StrictInterl (X * V) U :=
     strictInterl_of_allComboRealRooted hUW.1.1 hUW.1.2 hXV_ne hXV_splits hall_U_XV
       (Or.inr hsame)
   have hU_XV : StrictInterl U (X * V) := by
-    rcases hprec_or with hU_XV | hXV_U
+    rcases hstrictInterl_or with hU_XV | hXV_U
     · exact hU_XV
     · exact hXV_U.of_reverse_of_roots_sum_le hsame hsum_U_XV
   have hU_pos : HasPosLeadingCoeff U := by simpa [HasPosLeadingCoeff, hWU_lc] using hW_pos
   exact
-    prec_component_of_prec_mul_X_of_roots_nonpos
+    strictInterl_component_of_strictInterl_mul_X_of_roots_nonpos
       hU_XV hU_pos hV_pos hU_nonpos hV_nonpos hdeg_VU
 
 /-- Paper-shaped conversion step for Braun--Jal Claim `(7)`.
 
 If `U ≪ W` and `W = (1 + X) * U + X * V`, with the root and degree side
 conditions needed to orient the Obreschkoff alternative, then `V ≪ U`. -/
-theorem prec_component_of_prec_next_eq_add_X_mul
+theorem strictInterl_component_of_strictInterl_next_eq_add_X_mul
     {U V W : ℝ[X]}
     (hUW : StrictInterl U W)
     (hW_eq : W = (1 + X) * U + X * V)
@@ -426,7 +426,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul
   have hU_mid : StrictInterl U (U + X * V) := by
     have hsub_pos : HasPosLeadingCoeff (W - X * U) := by simpa [hmid_eq] using hmid_pos
     have hpair :=
-      prec_sub_X_mul_pair_of_eq_posLeadingCoeff
+      strictInterl_sub_X_mul_pair_of_eq_posLeadingCoeff
         (f := W) (g := U) hUW hW_pos hWU_lc hdeg_UW
         hW_nonpos hU_nonpos hsub_pos
     simpa [hmid_eq] using hpair.1
@@ -444,7 +444,7 @@ theorem prec_component_of_prec_next_eq_add_X_mul
   have hsame : U.natDegree = (X * V).natDegree := by
     rw [natDegree_mul X_ne_zero hV_pos.ne_zero, natDegree_X]
     lia
-  have hprec_or : StrictInterl U (X * V) ∨ StrictInterl (X * V) U :=
+  have hstrictInterl_or : StrictInterl U (X * V) ∨ StrictInterl (X * V) U :=
     strictInterl_of_allComboRealRooted hUW.1.1 hUW.1.2 hXV_ne hXV_splits hall_U_XV
       (Or.inr hsame)
   obtain ⟨c, hU_le, hc_lt⟩ := hU_bound
@@ -452,14 +452,44 @@ theorem prec_component_of_prec_next_eq_add_X_mul
   have hU_XV : StrictInterl U (X * V) :=
     PosComboRealRooted.reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := U) (g := X * V) (c := c) (r := 0)
-      hprec_or hU_le hXV_root0 hc_lt
+      hstrictInterl_or hU_le hXV_root0 hc_lt
   have hV_splits : V.Splits := (isRealRooted_of_X_mul hXV_ne hXV_splits).2
   have hU_pos : HasPosLeadingCoeff U := by simpa [HasPosLeadingCoeff, hWU_lc] using hW_pos
   exact
-    prec_component_of_prec_mul_X_of_roots_nonpos
+    strictInterl_component_of_strictInterl_mul_X_of_roots_nonpos
       hU_XV hU_pos hV_pos hU_nonpos hV_nonpos hdeg_VU
 
 @[deprecated strictInterl_sub_X_mul_right (since := "2026-09-18")]
 alias prec_sub_X_mul_right := strictInterl_sub_X_mul_right
+
+@[deprecated strictInterl_sub_X_mul_left (since := "2026-09-26")]
+alias prec_sub_X_mul_left := strictInterl_sub_X_mul_left
+
+@[deprecated strictInterl_sub_X_mul_pair_of_posLeadingCoeff (since := "2026-09-26")]
+alias prec_sub_X_mul_pair_of_posLeadingCoeff :=
+  strictInterl_sub_X_mul_pair_of_posLeadingCoeff
+
+@[deprecated strictInterl_sub_X_mul_pair_of_eq_posLeadingCoeff (since := "2026-09-26")]
+alias prec_sub_X_mul_pair_of_eq_posLeadingCoeff :=
+  strictInterl_sub_X_mul_pair_of_eq_posLeadingCoeff
+
+@[deprecated strictInterl_right_shear_of_scaled_cancellation (since := "2026-09-26")]
+alias prec_right_shear_of_scaled_cancellation :=
+  strictInterl_right_shear_of_scaled_cancellation
+
+@[deprecated strictInterl_component_of_strictInterl_mul_X_of_roots_nonpos
+  (since := "2026-09-26")]
+alias prec_component_of_prec_mul_X_of_roots_nonpos :=
+  strictInterl_component_of_strictInterl_mul_X_of_roots_nonpos
+
+@[deprecated strictInterl_component_of_strictInterl_next_eq_add_X_mul_of_roots_sum_le
+  (since := "2026-09-26")]
+alias prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le :=
+  strictInterl_component_of_strictInterl_next_eq_add_X_mul_of_roots_sum_le
+
+@[deprecated strictInterl_component_of_strictInterl_next_eq_add_X_mul
+  (since := "2026-09-26")]
+alias prec_component_of_prec_next_eq_add_X_mul :=
+  strictInterl_component_of_strictInterl_next_eq_add_X_mul
 
 end RealRooted

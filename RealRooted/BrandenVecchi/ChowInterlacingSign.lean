@@ -69,7 +69,7 @@ private lemma forall₂_map_zero_sub_rev :
       exact List.Forall₂.cons (by simp_all) (forall₂_map_zero_sub_rev h.2)
 
 /-- Equality in the same-degree endpoint-product orientation makes two
-nonnegative proper-position polynomials equal after cross-normalization by
+nonnegative interlacing polynomials equal after cross-normalization by
 their leading coefficients.  The nonzero endpoint hypotheses exclude a zero
 root, so equality of the positive root products is rigid. -/
 theorem leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_cross_eq
@@ -171,7 +171,7 @@ private lemma hasPosLeadingCoeff_chowS_of_hasPosLeadingCoeff_reflect_sub
   exact hpos
 
 /-- Leading-sign dichotomy for the Chow operator when the input has no zero
-root.  Proper position against the degree-`n` reflection either makes the
+root.  Interlacing against the degree-`n` reflection either makes the
 input reflection-invariant, or makes the exact quotient have positive leading
 coefficient. -/
 theorem chowS_eq_zero_or_hasPosLeadingCoeff_of_coeff_zero_ne
@@ -326,7 +326,7 @@ theorem chowS_eq_X_mul_chowS_divX_of_coeff_zero_of_natDegree_lt
     _ = (X - 1) * (X * Polynomial.chowS (n - 2) f.divX) := by ring
 
 /-- Brändén--Vecchi's leading-sign certificate for the Chow operator.  For a
-nonnegative polynomial in proper position with its degree-bounded reflection,
+nonnegative polynomial in an interlacing relation with its degree-bounded reflection,
 the Chow quotient is either zero or has positive leading coefficient. -/
 theorem chowS_eq_zero_or_hasPosLeadingCoeff
     {n : ℕ} {f : ℝ[X]} (hdegree : f.natDegree ≤ n)

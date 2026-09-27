@@ -20,16 +20,16 @@ example {F G : Nat → ℝ[X]} {a : Nat → ℝ}
     (hFG : ∀ n : Nat, StrictInterl (F n) (G n))
     (ha : ∀ n : Nat, a n ≠ 0) :
     ∀ n : Nat, StrictInterl (C (a n) * F n) (G n) := by
-  rr_prec_C_mul_left_sequence using
-    prec := hFG,
+  rr_strict_interl_C_mul_left_sequence using
+    strictInterl := hFG,
     scalar_ne := ha
 
 /-- Scalar-both `StrictInterl` row-family exit exposed through the OEIS facade. -/
 example {F G : Nat → ℝ[X]}
     (hFG : ∀ n : Nat, StrictInterl (F n) (G n)) :
     ∀ n : Nat, StrictInterl (C ((n : ℝ) + 1) * F n) (C ((n : ℝ) + 2) * G n) := by
-  rr_prec_C_mul_both_sequence using
-    prec := hFG
+  rr_strict_interl_C_mul_both_sequence using
+    strictInterl := hFG
 
 /-- Multiplication by `X` row-family real-rootedness exposed through the OEIS facade. -/
 example {P : Nat → ℝ[X]}
@@ -72,14 +72,14 @@ example {d : Nat → Nat} {U V : Nat → ℝ[X]}
     (hvd : ∀ n : Nat, (V n).natDegree ≤ d n)
     (hu_nonneg : ∀ n : Nat, HasNonnegCoeffs (U n))
     (hv_nonneg : ∀ n : Nat, HasNonnegCoeffs (V n))
-    (hprec : ∀ n : Nat, StrictInterl (U n) (V n)) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (U n) (V n)) :
     ∀ n : Nat, StrictInterl (fPolynomial (d n) (U n)) (fPolynomial (d n) (V n)) := by
-  rr_fPolynomial_sequence_prec using
+  rr_fPolynomial_sequence_strict_interl using
     left_degree := hud,
     right_degree := hvd,
     left_nonneg := hu_nonneg,
     right_nonneg := hv_nonneg,
-    prec := hprec
+    strictInterl := hstrictInterl
 
 end Tactic
 end RealRooted

@@ -215,7 +215,7 @@ private theorem inversePeakTypeB_base_noCommon :
   simp only [eval_add, eval_one, eval_X, eval_mul, eval_C, eval_pow] at hr0 hr1
   nlinarith
 
-/-- Consecutive type-B rows are in proper position and share no real root. -/
+/-- Consecutive type-B rows strictly interlace and share no real root. -/
 theorem inversePeakTypeB_strictInterl_and_noCommonRoot (n : ℕ) :
     StrictInterl (inversePeakTypeB n) (inversePeakTypeB (n + 1)) ∧
       ∀ r, (inversePeakTypeB (n + 1)).IsRoot r →
@@ -238,7 +238,7 @@ theorem inversePeakTypeB_strictInterl_and_noCommonRoot (n : ℕ) :
   · exact inversePeakTypeB_base_noCommon
   · exact inversePeakTypeB_recurrence
 
-/-- Consecutive type-B rows are in proper position. -/
+/-- Consecutive type-B rows strictly interlace. -/
 theorem inversePeakTypeB_strictInterl (n : ℕ) :
     StrictInterl (inversePeakTypeB n) (inversePeakTypeB (n + 1)) :=
   (inversePeakTypeB_strictInterl_and_noCommonRoot n).1
@@ -264,7 +264,7 @@ theorem inversePeakTypeB_hasSimpleRoots (n : ℕ) :
   ((inversePeakTypeB_strictInterl n).hasSimpleRoots_of_no_common_root fun r hr =>
     inversePeakTypeB_noCommonRoot n r hr.2 hr.1).1
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated inversePeakTypeB_strictInterl_and_noCommonRoot
   (since := "2026-09-26")]

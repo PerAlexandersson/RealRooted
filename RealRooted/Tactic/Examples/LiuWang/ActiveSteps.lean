@@ -168,7 +168,7 @@ example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
         no_common_roots := hno n,
         head_neg := hb_neg n
     simpa [← hrec n] using hstep
-  rr_prec_sequence_branches using
+  rr_strict_interl_sequence_branches using
     base := hbase,
     degree_branch := hdegree,
     same := hsame,

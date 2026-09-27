@@ -476,7 +476,7 @@ private theorem strictData_liuWangRec (d : Nat) :
           (liuWangRec d (n + 3)).natDegree = (liuWangRec d (n + 2)).natDegree + 1 := by
         rw [natDegree_liuWangRec d (n + 3) (by lia), natDegree_liuWangRec d (n + 2) (by lia)]
         lia
-      have hPrec : StrictInterl (liuWangRec d (n + 2)) (liuWangRec d (n + 3)) :=
+      have hStrictInterl : StrictInterl (liuWangRec d (n + 2)) (liuWangRec d (n + 3)) :=
         strictInterl_of_interlaces_evalCoeff_neg_succ hInter
           (liuWangRec_posLeadingCoeff d (n + 1) (by lia))
           (liuWangRec_posLeadingCoeff d (n + 3) (by lia))
@@ -488,7 +488,7 @@ private theorem strictData_liuWangRec (d : Nat) :
             have : (r : ℝ) * (1 - r) < 0 := by nlinarith
             simp_all)
       have hInter' : Interlaces (liuWangRec d (n + 2)) (liuWangRec d (n + 3)) :=
-        hPrec.toInterlaces hdeg.symm
+        hStrictInterl.toInterlaces hdeg.symm
       have hNoCommon' :
           ∀ r, (liuWangRec d (n + 3)).IsRoot r → ¬ (liuWangRec d (n + 2)).IsRoot r := by
         intro r hrootF hrootf
@@ -553,7 +553,7 @@ lemma interlaces_liuWangRec_threshold (d : Nat) :
         rw [natDegree_liuWangRec (d + 1) (d + 3) (by lia),
           natDegree_liuWangRec (d + 1) (d + 2) (by lia)]
         lia
-      have hPrec : StrictInterl (liuWangRec (d + 1) (d + 2)) (liuWangRec (d + 1) (d + 3)) :=
+      have hStrictInterl : StrictInterl (liuWangRec (d + 1) (d + 2)) (liuWangRec (d + 1) (d + 3)) :=
         strictInterl_of_interlaces_evalCoeff_neg_succ hInter
           (liuWangRec_posLeadingCoeff (d + 1) (d + 1) (by lia))
           (liuWangRec_posLeadingCoeff (d + 1) (d + 3) (by lia))
@@ -564,7 +564,8 @@ lemma interlaces_liuWangRec_threshold (d : Nat) :
             have hr_neg : r < 0 := hNeg r hr
             have : (r : ℝ) * (1 - r) < 0 := by nlinarith
             simp_all)
-      simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hPrec.toInterlaces hdeg.symm
+      simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
+        hStrictInterl.toInterlaces hdeg.symm
 
 lemma roots_nonpos_liuWangRec_threshold (d : Nat) :
     ∀ r, (liuWangRec d (d + 2)).IsRoot r → r ≤ 0 := by
@@ -576,7 +577,7 @@ lemma roots_nonpos_liuWangRec_threshold (d : Nat) :
     exact roots_neg_liuWangRec_of_lt_threshold d (d + 1) (by lia) hbound
   exact roots_nonpos_of_interlaces_of_zero_root_of_roots_neg hInter hzero hneg
 
-private lemma weakPrec_liuWangRec_step (d n : Nat) (hn : 1 ≤ n)
+private lemma weakStrictInterl_liuWangRec_step (d n : Nat) (hn : 1 ≤ n)
     (hInter : Interlaces (liuWangRec d n) (liuWangRec d (n + 1)))
     (hnonpos : ∀ r, (liuWangRec d (n + 1)).IsRoot r → r ≤ 0) :
     StrictInterl (liuWangRec d (n + 1)) (liuWangRec d (n + 2)) := by
@@ -615,8 +616,8 @@ private lemma weakPrec_liuWangRec_step (d n : Nat) (hn : 1 ≤ n)
 
 lemma interlaces_liuWangRec_threshold_succ (d : Nat) :
     Interlaces (liuWangRec d (d + 2)) (liuWangRec d (d + 3)) := by
-  have hPrec : StrictInterl (liuWangRec d (d + 2)) (liuWangRec d (d + 3)) :=
-    weakPrec_liuWangRec_step d (d + 1) (by lia)
+  have hStrictInterl : StrictInterl (liuWangRec d (d + 2)) (liuWangRec d (d + 3)) :=
+    weakStrictInterl_liuWangRec_step d (d + 1) (by lia)
       (interlaces_liuWangRec_threshold d) (roots_nonpos_liuWangRec_threshold d)
   have hdeg :
       (liuWangRec d (d + 3)).natDegree =
@@ -624,9 +625,9 @@ lemma interlaces_liuWangRec_threshold_succ (d : Nat) :
     rw [natDegree_liuWangRec d (d + 3) (by lia),
       natDegree_liuWangRec d (d + 2) (by lia)]
     lia
-  exact hPrec.toInterlaces hdeg.symm
+  exact hStrictInterl.toInterlaces hdeg.symm
 
-private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
+private lemma strictInterl_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
     (h : Interlaces g (X * f))
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     StrictInterl f g := by
@@ -661,7 +662,7 @@ private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
     ⟨hf, hg, rs_f, ss_g, hrs_f_sorted, hss_g, hrs_f_eq, hss_g_eq,
       Or.inr ⟨hlen_eq, halt⟩⟩
 
-private lemma prec_threshold_divX (d : Nat) :
+private lemma strictInterl_threshold_divX (d : Nat) :
     StrictInterl ((liuWangRec d (d + 2)) /ₘ X) (liuWangRec d (d + 1)) := by
   let q : ℝ[X] := (liuWangRec d (d + 2)) /ₘ X
   have hroot0 : (liuWangRec d (d + 2)).IsRoot 0 := by simp
@@ -683,11 +684,11 @@ private lemma prec_threshold_divX (d : Nat) :
         _ = r * q.eval r := by simp
         _ = 0 := by simp_all
     exact roots_nonpos_liuWangRec_threshold d r hr_root_p
-  simpa [q] using prec_of_interlaces_X_mul_of_roots_nonpos hInter hq_nonpos
+  simpa [q] using strictInterl_of_interlaces_X_mul_of_roots_nonpos hInter hq_nonpos
 
 private lemma roots_neg_threshold_divX (d : Nat) :
     ∀ r, (((liuWangRec d (d + 2)) /ₘ X)).IsRoot r → r < 0 := by
-  have hPrec := prec_threshold_divX d
+  have hStrictInterl := strictInterl_threshold_divX d
   have hdeg :
       (((liuWangRec d (d + 2)) /ₘ X)).natDegree = (liuWangRec d (d + 1)).natDegree := by
     rw [natDegree_divByMonic _ (monic_X : (X : ℝ[X]).Monic),
@@ -697,7 +698,7 @@ private lemma roots_neg_threshold_divX (d : Nat) :
   have hneg :
       ∀ r, (liuWangRec d (d + 1)).IsRoot r → r < 0 :=
     roots_neg_liuWangRec_of_lt_threshold d (d + 1) (by lia) (by lia)
-  exact roots_neg_of_strictInterl_sameDegree_of_roots_neg hPrec hdeg hneg
+  exact roots_neg_of_strictInterl_sameDegree_of_roots_neg hStrictInterl hdeg hneg
 
 /-- The recurrence family is real-rooted throughout the strict range
 `1 ≤ n ≤ d + 1`, and also at the threshold step `n = d + 2`. -/
@@ -746,17 +747,18 @@ lemma interlaces_liuWangRec_of_ge_threshold_of_nonnegCoeffs (d k : Nat)
           ∀ r, (liuWangRec d ((d + 1 + k) + 1)).IsRoot r → r ≤ 0 :=
         fun r hr => roots_nonpos_of_nonneg_coeffs hInter.1.2
           (hnonneg ((d + 1 + k) + 1)) r ((mem_roots hInter.1.1).mpr hr)
-      have hPrec :
+      have hStrictInterl :
           StrictInterl (liuWangRec d (d + 2 + k)) (liuWangRec d (d + 3 + k)) :=
         by simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
-          weakPrec_liuWangRec_step d (d + 1 + k) (by lia) hInter hnonpos
+          weakStrictInterl_liuWangRec_step d (d + 1 + k) (by lia) hInter hnonpos
       have hdeg :
           (liuWangRec d (d + 3 + k)).natDegree =
             (liuWangRec d (d + 2 + k)).natDegree + 1 := by
         rw [natDegree_liuWangRec d (d + 3 + k) (by lia),
           natDegree_liuWangRec d (d + 2 + k) (by lia)]
         lia
-      simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hPrec.toInterlaces hdeg.symm
+      simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
+        hStrictInterl.toInterlaces hdeg.symm
 
 /-- Conditional global interlacing statement for the recurrence family: once
 nonnegative coefficients are available, the weak Liu--Wang induction extends

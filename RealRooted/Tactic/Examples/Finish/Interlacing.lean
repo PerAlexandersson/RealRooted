@@ -203,64 +203,64 @@ example {P : Nat → ℝ[X]} {n : Nat}
   rr_finish
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, P n ≠ 0 := by
-  rr_nonzero using hprec
+  rr_nonzero using hstrictInterl
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     P n ≠ 0 := by
-  rr_nonzero using hprec
+  rr_nonzero using hstrictInterl
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, (P n).Splits := by
-  rr_splits using hprec
+  rr_splits using hstrictInterl
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     (P n).Splits := by
-  rr_splits using hprec
+  rr_splits using hstrictInterl
 
 example {P : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     ∀ n : Nat, P n = 0 ∨ (P n).Splits := by
-  rr_zero_or_splits using hprec
+  rr_zero_or_splits using hstrictInterl
 
 example {P : Nat → ℝ[X]} {n : Nat}
-    (hprec : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1))) :
     P n ≠ 0 ∧ (P n).Splits := by
-  rr_realrooted using hprec
+  rr_realrooted using hstrictInterl
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, A n ≠ 0 := by
-  rr_nonzero using hprec
+  rr_nonzero using hstrictInterl
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, B n ≠ 0 := by
-  rr_nonzero using hprec
+  rr_nonzero using hstrictInterl
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, (A n).Splits := by
-  rr_splits using hprec
+  rr_splits using hstrictInterl
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, (B n).Splits := by
-  rr_splits using hprec
+  rr_splits using hstrictInterl
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, A n ≠ 0 ∧ (A n).Splits := by
-  rr_realrooted using hprec
+  rr_realrooted using hstrictInterl
 
 example {A B : Nat → ℝ[X]}
-    (hprec : ∀ n : Nat, StrictInterl (A n) (B n)) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (A n) (B n)) :
     ∀ n : Nat, B n ≠ 0 ∧ (B n).Splits := by
-  rr_finish using hprec
+  rr_finish using hstrictInterl
 
 example {P : Nat → ℝ[X]}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
@@ -560,23 +560,23 @@ example {p : ℝ[X]} {d : Nat}
     top_eq := htop,
     above := habove
 
-example {f g : ℝ[X]} (hfg : StrictInterl f g) : Interl f g := by rr_prec0 using hfg
+example {f g : ℝ[X]} (hfg : StrictInterl f g) : Interl f g := by rr_interl using hfg
 
 example {f g : ℝ[X]} (hfg : StrictInterl f g) : Interl f g := by rr_finish
 
 example {f g : ℝ[X]} (hfg : StrictInterl f g) : Interl f g := by rr_finish using hfg
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : StrictInterl f g := by rr_prec using hfg
+example {f g : ℝ[X]} (hfg : Interlaces f g) : StrictInterl f g := by rr_strict_interl using hfg
 
 example {P : Nat → ℝ[X]}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_prec using hinter
+  rr_strict_interl using hinter
 
 example {P : Nat → ℝ[X]} {n : Nat}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
     StrictInterl (P n) (P (n + 1)) := by
-  rr_prec using hinter
+  rr_strict_interl using hinter
 
 example {P : Nat → ℝ[X]}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
@@ -592,13 +592,13 @@ example {f g : ℝ[X]} (hfg : Interlaces f g) : StrictInterl f g := by rr_finish
 
 example {f g : ℝ[X]} (hfg : Interlaces f g) : StrictInterl f g := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Interl f g := by rr_prec0 using hfg
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Interl f g := by rr_interl using hfg
 
 example {f g : ℝ[X]} (hfg : Interlaces f g) : Interl f g := by rr_finish using hfg
 
 example {f g : ℝ[X]} (hfg : Interl f g) (hf : f ≠ 0) (hg : g ≠ 0) :
     StrictInterl f g := by
-  rr_prec using hfg, hf, hg
+  rr_strict_interl using hfg, hf, hg
 
 example {f g : ℝ[X]} (hfg : Interl f g) (hf : f ≠ 0) (hg : g ≠ 0) :
     StrictInterl f g := by

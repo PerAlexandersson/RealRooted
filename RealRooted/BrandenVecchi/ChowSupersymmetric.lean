@@ -101,7 +101,7 @@ theorem finiteSupersymmetricChow_interl_derangement
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
 
 /-- Consecutive finite supersymmetric Chow polynomials are in zero-aware
-proper position. -/
+interlacing. -/
 theorem finiteSupersymmetricChow_interl_succ
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
@@ -112,7 +112,7 @@ theorem finiteSupersymmetricChow_interl_succ
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
 
 /-- Consecutive finite supersymmetric Chow-derangement polynomials are in
-zero-aware proper position. -/
+zero-aware interlacing. -/
 theorem finiteSupersymmetricChowDerangement_interl_succ
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :

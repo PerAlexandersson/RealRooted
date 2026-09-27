@@ -6,7 +6,7 @@ import RealRooted.WagnerX.NonnegativeRoots
 
 A finite family of split real polynomials with positive leading coefficients
 can be translated by one common amount so that every member has nonnegative
-coefficients. Translation preserves both strict and zero-aware proper position,
+coefficients. Translation preserves both strict and zero-aware interlacing,
 so the same normalization applies to finite interlacing sequences.
 -/
 

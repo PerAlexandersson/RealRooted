@@ -456,7 +456,7 @@ theorem theorem41Claim7_of_section3
     intro r hr
     exact le_trans (hU_le r (by simpa [U] using hr)) (le_of_lt hc_lt)
   exact
-    prec_component_of_prec_next_eq_add_X_mul hUW hW_eq
+    strictInterl_component_of_strictInterl_next_eq_add_X_mul hUW hW_eq
       (by simpa [W] using hW_pos hm hlam hnu)
       (by simpa [U, W] using hWU_lc hm hlam hnu)
       (by simpa [U, W] using hdeg_UW hm hlam hnu)
@@ -499,7 +499,7 @@ theorem theorem41Claim7_of_section3_rootSumSideConditions
     simpa [U, V, W] using
       theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence hrec hm lam nu
   exact
-    prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le hUW hW_eq
+    strictInterl_component_of_strictInterl_next_eq_add_X_mul_of_roots_sum_le hUW hW_eq
       (by simpa [W] using hside.w_pos hm hlam hnu)
       (by simpa [U, W] using hside.wu_lc hm hlam hnu)
       (by simpa [U, W] using hside.deg_uw hm hlam hnu)

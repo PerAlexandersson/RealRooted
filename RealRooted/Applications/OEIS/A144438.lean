@@ -151,23 +151,23 @@ theorem decoEulerian_coeff_pos_iff (n k : ℕ) :
 theorem decoEulerian_ne_zero (n : ℕ) : decoEulerian n ≠ 0 :=
   (decoEulerian_monic n).ne_zero
 
-/-- Consecutive deco Eulerian polynomials are in proper position and have no
+/-- Consecutive deco Eulerian polynomials strictly interlace and have no
 common real root. -/
 theorem decoEulerian_strictInterl_and_noCommonRoot (n : ℕ) :
     StrictInterl (decoEulerian n) (decoEulerian (n + 1)) ∧
       ∀ r : ℝ, (decoEulerian (n + 1)).IsRoot r →
         ¬ (decoEulerian n).IsRoot r :=
-  ⟨(decoEulerian_certificate n).prec_succ,
+  ⟨(decoEulerian_certificate n).strictInterl_succ,
     (decoEulerian_certificate n).noCommonRoot_succ⟩
 
 /-- Every deco Eulerian polynomial splits over the reals. -/
 theorem decoEulerian_splits (n : ℕ) : (decoEulerian n).Splits :=
   (decoEulerian_certificate n).splits
 
-/-- Consecutive deco Eulerian polynomials are in proper position. -/
+/-- Consecutive deco Eulerian polynomials strictly interlace. -/
 theorem decoEulerian_strictInterl (n : ℕ) :
     StrictInterl (decoEulerian n) (decoEulerian (n + 1)) :=
-  (decoEulerian_certificate n).prec_succ
+  (decoEulerian_certificate n).strictInterl_succ
 
 /-- Consecutive deco Eulerian polynomials interlace with degree difference
 one. -/
@@ -263,7 +263,7 @@ theorem A144438_ne_zero (n : ℕ) : A144438 n ≠ 0 :=
 theorem A144438_splits (n : ℕ) : (A144438 n).Splits :=
   decoEulerian_splits n
 
-/-- Consecutive A144438 polynomials are in proper position. -/
+/-- Consecutive A144438 polynomials strictly interlace. -/
 theorem A144438_strictInterl (n : ℕ) : StrictInterl (A144438 n) (A144438 (n + 1)) :=
   decoEulerian_strictInterl n
 
@@ -287,7 +287,7 @@ theorem A144438_root_neg (n : ℕ) {r : ℝ}
 theorem A144438_hasSimpleRoots (n : ℕ) : HasSimpleRoots (A144438 n) :=
   decoEulerian_hasSimpleRoots n
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated decoEulerian_strictInterl_and_noCommonRoot
   (since := "2026-09-26")]

@@ -70,7 +70,7 @@ private theorem gammaU_roots_neg (n : ℕ) (hn : 2 ≤ n) :
     norm_num at heval
   exact lt_of_le_of_ne hrle hrne
 
-/-- The gamma components occur in the directed proper position selected by
+/-- The gamma components occur in the directed interlacing selected by
 the zero root of `gammaV n` and the nonzero constant term of `gammaU n`. -/
 theorem gammaU_strictInterl_gammaV (n : ℕ) (hn : 2 ≤ n) :
     StrictInterl (gammaU n) (gammaV n) := by

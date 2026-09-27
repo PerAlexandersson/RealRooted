@@ -255,7 +255,7 @@ theorem resolvedChowCombination_isPF
         simp [reflectionClosure]) hzero
 
 /-- The first and last transformed resolving polynomials bound every
-nonnegative row combination in zero-aware proper position. -/
+nonnegative row combination in zero-aware interlacing. -/
 theorem resolvedChowCombination_endpoint_interl
     {A : LowerTriangularMatrix ℝ}
     (resolution : BrandenLeite.Resolution A) {n : ℕ}

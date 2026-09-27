@@ -9,5 +9,5 @@ import RealRooted.Transforms.BrandenE.WeightedSum
 # Brändén's E transform
 
 Facade for the ordered-Bell transform, its falling-factorial inverse, and its
-Pólya-frequency/proper-position theory.
+Pólya-frequency/interlacing theory.
 -/

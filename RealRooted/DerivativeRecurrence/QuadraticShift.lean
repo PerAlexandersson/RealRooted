@@ -4,7 +4,7 @@ import RealRooted.MaWang
 /-!
 # Shifted quadratic-coefficient derivative recurrences
 
-Nonnegative-coefficient and proper-position results for the normalized shifted recurrence.
+Nonnegative-coefficient and interlacing results for the normalized shifted recurrence.
 -/
 
 open Polynomial

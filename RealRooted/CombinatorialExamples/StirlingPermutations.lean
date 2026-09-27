@@ -165,7 +165,7 @@ lemma eval_stirlingPermutationsCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) 
   simp [stirlingPermutationsCoeffB]
   nlinarith
 
-lemma prec_stirlingPermutations_one_two :
+lemma strictInterl_stirlingPermutations_one_two :
     StrictInterl (stirlingPermutations 1) (stirlingPermutations 2) := by
   have hdeg : (stirlingPermutations 1).natDegree = 1 :=
     natDegree_stirlingPermutations 1
@@ -214,15 +214,15 @@ lemma prec_stirlingPermutations_one_two :
       (b := stirlingPermutationsCoeffB)
       hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
-theorem prec_stirlingPermutations_succ :
+theorem strictInterl_stirlingPermutations_succ :
     ∀ n : Nat, StrictInterl (stirlingPermutations n) (stirlingPermutations (n + 1))
   | 0 => interlaces_stirlingPermutations_zero_one.toStrictInterl
-  | 1 => prec_stirlingPermutations_one_two
+  | 1 => strictInterl_stirlingPermutations_one_two
   | n + 2 => by
       have hInter :
           Interlaces (stirlingPermutations (n + 2)).derivative
             (stirlingPermutations (n + 2)) :=
-        derivative_interlaces (prec_stirlingPermutations_succ (n + 1)).2.1.2 (by
+        derivative_interlaces (strictInterl_stirlingPermutations_succ (n + 1)).2.1.2 (by
           simp [natDegree_stirlingPermutations])
       have hg_pos : HasPosLeadingCoeff (stirlingPermutations (n + 2)).derivative :=
         (stirlingPermutations_posLeadingCoeff (n + 2)).derivative (by
@@ -255,8 +255,8 @@ theorem prec_stirlingPermutations_succ :
         intro r hr
         have hr_nonpos : r ≤ 0 :=
           roots_nonpos_stirlingPermutations_of_isRealRooted
-            (prec_stirlingPermutations_succ (n + 1)).2.1.2 r
-            ((mem_roots (prec_stirlingPermutations_succ (n + 1)).2.1.1).mpr hr)
+            (strictInterl_stirlingPermutations_succ (n + 1)).2.1.2 r
+            ((mem_roots (strictInterl_stirlingPermutations_succ (n + 1)).2.1.1).mpr hr)
         exact eval_stirlingPermutationsCoeffB_nonpos_of_nonpos hr_nonpos
       simpa [hNext_eq] using
         strictInterl_of_interlaces_evalCoeff_nonpos
@@ -268,13 +268,13 @@ theorem prec_stirlingPermutations_succ :
 
 theorem interlaces_stirlingPermutations_succ (n : Nat) :
     Interlaces (stirlingPermutations n) (stirlingPermutations (n + 1)) :=
-  (prec_stirlingPermutations_succ n).toInterlaces
+  (strictInterl_stirlingPermutations_succ n).toInterlaces
     (by simp [natDegree_stirlingPermutations])
 
 theorem isRealRooted_stirlingPermutations :
     ∀ n : Nat, ((stirlingPermutations n) ≠ 0 ∧ (stirlingPermutations n).Splits)
   | 0 => by simp
-  | n + 1 => (prec_stirlingPermutations_succ n).2.1
+  | n + 1 => (strictInterl_stirlingPermutations_succ n).2.1
 
 /-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the Stirling-permutation
 sequence. -/
@@ -303,5 +303,11 @@ theorem isSturmSeq_stirlingPermutationsPrefix :
       | succ k =>
           simpa [stirlingPermutationsPrefix, IsSturmSeq] using
             And.intro (interlaces_stirlingPermutations_succ (k + 1)) ih
+
+@[deprecated strictInterl_stirlingPermutations_one_two (since := "2026-09-26")]
+alias prec_stirlingPermutations_one_two := strictInterl_stirlingPermutations_one_two
+
+@[deprecated strictInterl_stirlingPermutations_succ (since := "2026-09-26")]
+alias prec_stirlingPermutations_succ := strictInterl_stirlingPermutations_succ
 
 end RealRooted

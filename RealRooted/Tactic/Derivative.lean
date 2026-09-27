@@ -20,17 +20,17 @@ theorem derivative_sequence_interlaces
     ∀ i : Nat, Interlaces (P i).derivative (P i) := fun i =>
   RealRooted.derivative_interlaces (hsplits i) (hdeg i)
 
-theorem derivative_prec {p : ℝ[X]}
+theorem derivative_strictInterl {p : ℝ[X]}
     (hsplits : p.Splits) (hdeg : 2 ≤ p.natDegree) :
     StrictInterl p.derivative p :=
   (RealRooted.derivative_interlaces hsplits hdeg).toStrictInterl
 
-theorem derivative_sequence_prec
+theorem derivative_sequence_strictInterl
     {P : Nat → ℝ[X]}
     (hsplits : ∀ i : Nat, (P i).Splits)
     (hdeg : ∀ i : Nat, 2 ≤ (P i).natDegree) :
     ∀ i : Nat, StrictInterl (P i).derivative (P i) := fun i =>
-  RealRooted.Tactic.derivative_prec (hsplits i) (hdeg i)
+  RealRooted.Tactic.derivative_strictInterl (hsplits i) (hdeg i)
 
 theorem nonnegCoeffs_sequence_derivative
     {P : Nat → ℝ[X]}
@@ -68,20 +68,20 @@ syntax (name := rr_derivative_interlaces_auto)
     "splits" ":=" term :
   tactic
 
-syntax (name := rr_derivative_prec_named)
-  "rr_derivative_prec" " using "
+syntax (name := rr_derivative_strict_interl_named)
+  "rr_derivative_strict_interl" " using "
     "splits" ":=" term ","
     "degree_two" ":=" term :
   tactic
 
-syntax (name := rr_derivative_sequence_prec_named)
-  "rr_derivative_sequence_prec" " using "
+syntax (name := rr_derivative_sequence_strict_interl_named)
+  "rr_derivative_sequence_strict_interl" " using "
     "splits" ":=" term ","
     "degree_two" ":=" term :
   tactic
 
-syntax (name := rr_derivative_prec_auto)
-  "rr_derivative_prec" " using "
+syntax (name := rr_derivative_strict_interl_auto)
+  "rr_derivative_strict_interl" " using "
     "splits" ":=" term :
   tactic
 
@@ -142,20 +142,20 @@ macro_rules
         splits := $hsplits:term) =>
       `(tactic| exact RealRooted.derivative_interlaces $hsplits (by rr_close_side))
   | `(tactic|
-      rr_derivative_prec using
+      rr_derivative_strict_interl using
         splits := $hsplits:term,
         degree_two := $hdeg:term) =>
-      `(tactic| exact RealRooted.Tactic.derivative_prec $hsplits $hdeg)
+      `(tactic| exact RealRooted.Tactic.derivative_strictInterl $hsplits $hdeg)
   | `(tactic|
-      rr_derivative_sequence_prec using
+      rr_derivative_sequence_strict_interl using
         splits := $hsplits:term,
         degree_two := $hdeg:term) =>
-      `(tactic| exact RealRooted.Tactic.derivative_sequence_prec $hsplits $hdeg)
+      `(tactic| exact RealRooted.Tactic.derivative_sequence_strictInterl $hsplits $hdeg)
   | `(tactic|
-      rr_derivative_prec using
+      rr_derivative_strict_interl using
         splits := $hsplits:term) =>
       `(tactic|
-        exact RealRooted.Tactic.derivative_prec $hsplits (by rr_close_side))
+        exact RealRooted.Tactic.derivative_strictInterl $hsplits (by rr_close_side))
   | `(tactic|
       rr_nonneg_coeffs_derivative using
         nonneg_coeffs := $hnn:term) =>
@@ -191,5 +191,56 @@ macro_rules
       `(tactic|
         exact Polynomial.derivative_ne_zero.mpr (by rr_close_side))
 
+end Tactic
+end RealRooted
+namespace RealRooted
+namespace Tactic
+@[deprecated derivative_strictInterl (since := "2026-09-26")]
+alias derivative_prec := derivative_strictInterl
+
+@[deprecated derivative_sequence_strictInterl (since := "2026-09-26")]
+alias derivative_sequence_prec := derivative_sequence_strictInterl
+
+end Tactic
+end RealRooted
+
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_derivative_prec_named_legacy)
+  "rr_derivative_prec" " using "
+    "splits" ":=" term ","
+    "degree_two" ":=" term :
+  tactic
+
+syntax (name := rr_derivative_sequence_prec_named_legacy)
+  "rr_derivative_sequence_prec" " using "
+    "splits" ":=" term ","
+    "degree_two" ":=" term :
+  tactic
+
+syntax (name := rr_derivative_prec_auto_legacy)
+  "rr_derivative_prec" " using "
+    "splits" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_derivative_prec using
+        splits := $hsplits:term,
+        degree_two := $hdeg:term) =>
+      `(tactic| exact RealRooted.Tactic.derivative_prec $hsplits $hdeg)
+  | `(tactic|
+      rr_derivative_sequence_prec using
+        splits := $hsplits:term,
+        degree_two := $hdeg:term) =>
+      `(tactic| exact RealRooted.Tactic.derivative_sequence_prec $hsplits $hdeg)
+  | `(tactic|
+      rr_derivative_prec using
+        splits := $hsplits:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.derivative_prec $hsplits (by rr_close_side))
 end Tactic
 end RealRooted

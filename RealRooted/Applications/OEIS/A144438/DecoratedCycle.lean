@@ -209,7 +209,7 @@ private theorem normalizedDecoratedCycleEulerian_base_noCommon {q : ℝ} :
   intro r _ hr0
   simp [Polynomial.IsRoot.def] at hr0
 
-/-- Strict adjacent proper position and no common root for the normalized
+/-- Strict adjacent interlacing and no common root for the normalized
 family. -/
 theorem normalizedDecoratedCycleEulerian_strictInterl_and_noCommonRoot
     {q : ℝ} (hq : 0 < q) (n : ℕ) :
@@ -298,7 +298,7 @@ theorem decoratedCycleEulerian_hasNonnegCoeffs {q : ℝ} (hq : 0 < q) (n : ℕ) 
     simp only [decoratedCycleEulerian, coeff_C_mul]
     exact mul_nonneg hq.le (normalizedDecoratedCycleEulerian_hasNonnegCoeffs hq n k)
 
-/-- Consecutive positive ranks are in proper position for positive `q`. -/
+/-- Consecutive positive ranks strictly interlace for positive `q`. -/
 theorem decoratedCycleEulerian_strictInterl {q : ℝ} (hq : 0 < q) (n : ℕ) :
     StrictInterl (decoratedCycleEulerian q (n + 1))
       (decoratedCycleEulerian q (n + 2)) := by
@@ -353,7 +353,7 @@ theorem decoratedCycleEulerian_one_eq_decoEulerian :
       rw [normalizedDecoratedCycleEulerian_recurrence, decoEulerian_recurrence, ih0, ih1]
       simp
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated normalizedDecoratedCycleEulerian_strictInterl_and_noCommonRoot
   (since := "2026-09-26")]

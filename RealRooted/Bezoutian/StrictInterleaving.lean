@@ -5,7 +5,7 @@ import RealRooted.Mathlib.Data.List.Interleave
 /-!
 # Strict same-degree interlacing
 
-Root-list reversal lemmas and the strict same-degree proper-position predicate,
+Root-list reversal lemmas and the strict same-degree interlacing predicate,
 including its transport across nonzero scalar multiples.
 
 -/
@@ -243,7 +243,7 @@ def StrictInterlSameDegree (p q : ℝ[X]) : Prop :=
 @[deprecated StrictInterlSameDegree (since := "2026-09-18")]
 abbrev StrictPrecSameDegree := StrictInterlSameDegree
 
-/-- Equal-degree proper position is strict when the two polynomials have no
+/-- Equal-degree interlacing is strict when the two polynomials have no
 common root. -/
 theorem StrictInterlSameDegree.of_strictInterl_of_no_common {p q : ℝ[X]}
     (h : StrictInterl p q)

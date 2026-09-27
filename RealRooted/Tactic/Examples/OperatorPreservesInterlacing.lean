@@ -30,20 +30,20 @@ example {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
     (hT : PreservesInterlacingPairsUpToOrder0 T)
     (hfg : ∀ i : Nat, StrictInterl (F i) (G i)) :
     ∀ i : Nat, Interl (T (F i)) (T (G i)) ∨ Interl (T (G i)) (T (F i)) := by
-  rr_operator_prec0_sequence_of_preserver using
+  rr_operator_interl_sequence_of_preserver using
     interlacing_preserver := hT,
-    prec := hfg
+    strictInterl := hfg
 
 example {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {f g : ℝ[X]}
     (hT : PreservesRealRootedOrZero T) (hfg : StrictInterl f g) :
     Interl (T f) (T g) ∨ Interl (T g) (T f) := by
-  rr_operator_prec0_up_to_order using preserves := hT, prec := hfg
+  rr_operator_interl_up_to_order using preserves := hT, strictInterl := hfg
 
 example {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
     (hT : PreservesRealRootedOrZero T)
     (hfg : ∀ i : Nat, StrictInterl (F i) (G i)) :
     ∀ i : Nat, Interl (T (F i)) (T (G i)) ∨ Interl (T (G i)) (T (F i)) := by
-  rr_operator_prec0_sequence_up_to_order using preserves := hT, prec := hfg
+  rr_operator_interl_sequence_up_to_order using preserves := hT, strictInterl := hfg
 
 end Tactic
 end RealRooted

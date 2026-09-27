@@ -198,10 +198,10 @@ theorem weightedDecoEulerian_splits {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
     (weightedDecoEulerian w n).Splits :=
   (weightedDecoEulerian_certificate hw n).splits
 
-/-- Consecutive ranks at a nonnegative weight are in proper position. -/
+/-- Consecutive ranks at a nonnegative weight strictly interlace. -/
 theorem weightedDecoEulerian_strictInterl {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
     StrictInterl (weightedDecoEulerian w n) (weightedDecoEulerian w (n + 1)) :=
-  (weightedDecoEulerian_certificate hw n).prec_succ
+  (weightedDecoEulerian_certificate hw n).strictInterl_succ
 
 /-- Consecutive ranks at a nonnegative weight strictly interlace. -/
 theorem weightedDecoEulerian_interlaces {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
@@ -239,7 +239,7 @@ theorem weightedDecoEulerian_isSturmSeq {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
         simpa only [one_mul, one_add_one_eq_two] using
           weightedDecoEulerian_affine_recurrence w m) n
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated weightedDecoEulerian_strictInterl (since := "2026-09-26")]
 alias weightedDecoEulerian_prec := weightedDecoEulerian_strictInterl

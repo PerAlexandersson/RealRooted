@@ -708,10 +708,10 @@ leading coefficient, and satisfy the Wagner-2 compatibility hypotheses with the
 sum of the already-compatible tail. -/
 inductive SumCompatibleLeft (h : ℝ[X]) : List ℝ[X] → Prop
   | singleton {p : ℝ[X]}
-      (hprec : StrictInterl h p) (hpos : HasPosLeadingCoeff p) :
+      (hstrictInterl : StrictInterl h p) (hpos : HasPosLeadingCoeff p) :
       SumCompatibleLeft h [p]
   | cons {p : ℝ[X]} {l : List ℝ[X]}
-      (hprec : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
+      (hstrictInterl : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
       (hl : SumCompatibleLeft h l)
       (hrr_ne : (p + l.sum) ≠ 0) (hrr_splits : (p + l.sum).Splits)
       (hcop : IsCoprime p l.sum) :
@@ -732,10 +732,10 @@ lemma hasPosLeadingCoeff_sum {h : ℝ[X]} :
 
 lemma toStrictInterl {h : ℝ[X]} :
     ∀ {l : List ℝ[X]}, SumCompatibleLeft h l → StrictInterl h l.sum
-  | _, singleton hprec _ => by
+  | _, singleton hstrictInterl _ => by
       simp_all
-  | _, @cons _ p l hprec hpos hl hrr_ne hrr_splits hcop =>
-      StrictInterl.add_of_left hprec (toStrictInterl hl)
+  | _, @cons _ p l hstrictInterl hpos hl hrr_ne hrr_splits hcop =>
+      StrictInterl.add_of_left hstrictInterl (toStrictInterl hl)
         hpos (hasPosLeadingCoeff_sum hl) hrr_ne hrr_splits hcop
 
 end SumCompatibleLeft

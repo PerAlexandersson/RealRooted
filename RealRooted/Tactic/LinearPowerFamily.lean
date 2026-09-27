@@ -37,9 +37,9 @@ theorem isRealRooted_of_monomial_tail_sequence
 
 namespace Tactic
 
-syntax (name := rr_prec_X_pow_mul_X_pow_succ_named)
-  "rr_prec_X_pow_mul_X_pow_succ" " using "
-    "reverse_prec" ":=" term ","
+syntax (name := rr_strict_interl_X_pow_mul_X_pow_succ_named)
+  "rr_strict_interl_X_pow_mul_X_pow_succ" " using "
+    "reverse_strictInterl" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
     "index" ":=" term :
@@ -144,13 +144,13 @@ syntax (name := rr_interlaces_X_sub_C_pow_mul_linear_pow_named)
 
 macro_rules
   | `(tactic|
-      rr_prec_X_pow_mul_X_pow_succ using
-        reverse_prec := $hgf:term,
+      rr_strict_interl_X_pow_mul_X_pow_succ using
+        reverse_strictInterl := $hgf:term,
         left_nonneg := $hfnn:term,
         right_nonneg := $hgnn:term,
         index := $n:term) =>
       `(tactic|
-        exact RealRooted.prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg
+        exact RealRooted.strictInterl_X_pow_mul_X_pow_succ_of_reverse_strictInterl_nonneg
           $hgf $hfnn $hgnn $n)
   | `(tactic|
       rr_interlaces_linear_pow using
@@ -254,5 +254,30 @@ macro_rules
         exact RealRooted.interlaces_X_sub_C_pow_mul_linear_pow
           $r $m $a $b $hb $n)
 
+end Tactic
+end RealRooted
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_prec_X_pow_mul_X_pow_succ_named_legacy)
+  "rr_prec_X_pow_mul_X_pow_succ" " using "
+    "reverse_prec" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "index" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_prec_X_pow_mul_X_pow_succ using
+        reverse_prec := $hgf:term,
+        left_nonneg := $hfnn:term,
+        right_nonneg := $hgnn:term,
+        index := $n:term) =>
+      `(tactic|
+        exact RealRooted.prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg
+          $hgf $hfnn $hgnn $n)
 end Tactic
 end RealRooted

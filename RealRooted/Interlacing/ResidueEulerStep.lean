@@ -84,7 +84,7 @@ theorem monic_residueEulerStep
     hf.leadingCoeff]
 
 /-- A positive-point residue gap, together with a nonnegative interlacing
-tail, gives a strict proper-position successor with simple negative roots. -/
+tail, gives a strict interlacing successor with simple negative roots. -/
 theorem residueEulerStep_strict_package
     {f h r : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hfdeg : 1 ≤ f.natDegree)
@@ -155,7 +155,7 @@ theorem residueEulerStep_strict_package
   have hstep := strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     hhf.2.1.2 hf_pos hstep_pos hfdeg hdegree.1 hrec haux_sign hX_neg
       htail_nonpos
-  have hprec : StrictInterl f (residueEulerStep a b f h r) := hstep.1
+  have hstrictInterl : StrictInterl f (residueEulerStep a b f h r) := hstep.1
   have hsimple : HasSimpleRoots (residueEulerStep a b f h r) := hstep.2
   have hno : ∀ x, f.IsRoot x →
       ¬ (residueEulerStep a b f h r).IsRoot x :=
@@ -169,9 +169,9 @@ theorem residueEulerStep_strict_package
     simp [residueEulerStep]
   have hstep_neg : ∀ x, (residueEulerStep a b f h r).IsRoot x → x < 0 := by
     apply roots_neg_of_interlaces_of_eval_zero_pos
-      (hprec.toInterlaces (by lia)) hstep_pos
+      (hstrictInterl.toInterlaces (by lia)) hstep_pos
     · rwa [hstep_zero]
     · exact hf_neg
-  exact ⟨haux_interlaces, hprec, hno, hsimple, hstep_neg⟩
+  exact ⟨haux_interlaces, hstrictInterl, hno, hsimple, hstep_neg⟩
 
 end RealRooted

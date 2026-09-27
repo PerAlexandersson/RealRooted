@@ -6,7 +6,7 @@ import RealRooted.Compatibility.CutTransformClosure
 
 The generic ordered P/Q package is not closed under the cut transform.  This
 module retains the additional decomposition `P = N + D`, `Q = X * N + D`
-and the zero-aware proper-position order `reverse N ++ D` needed by the
+and the zero-aware interlacing order `reverse N ++ D` needed by the
 structured recurrence.  The last `D` coordinate is allowed to be zero.
 -/
 

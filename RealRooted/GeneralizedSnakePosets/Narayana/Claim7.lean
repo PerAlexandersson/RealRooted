@@ -90,7 +90,7 @@ theorem lemma33AuxiliaryGInterlaces_modified
         (m := n) (lam := 0) (nu := 0) (by lia) (by norm_num) (by norm_num)
 
 /-- Consecutive auxiliary `G` polynomials have real-rooted positive linear
-combinations. This is the part of adjacent `G` proper position supplied
+combinations. This is the part of adjacent `G` interlacing supplied
 directly by equation `(2)` and Lemma 3.4; orienting the pencil remains a
 separate analytic step. -/
 theorem auxiliaryG_posComboRealRooted_of_narayanaRecurrence
@@ -154,7 +154,7 @@ theorem theorem41InductionRoute_modified_of_modelInputs
     modifiedNarayanaPolynomial_hasNonnegCoeffs
     FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
 
-private theorem prec_narayanaPolynomial_two (n : ℕ) :
+private theorem strictInterl_narayanaPolynomial_two (n : ℕ) :
     StrictInterl (narayanaPolynomial 2 n) (narayanaPolynomial 2 (n + 1)) := by
   cases n with
   | zero =>
@@ -163,16 +163,16 @@ private theorem prec_narayanaPolynomial_two (n : ℕ) :
         (interlaces_one_linear (Polynomial.natDegree_X_add_C (1 : ℝ))).toStrictInterl
   | succ n =>
       simpa [Nat.succ_eq_add_one, Nat.add_assoc] using
-        prec_narayanaPolynomial_succ 2 n
+        strictInterl_narayanaPolynomial_succ 2 n
 
-/-- Consecutive auxiliary polynomials are in proper position under an additional
+/-- Consecutive auxiliary polynomials are in an interlacing relation under an additional
 identification with parameter-two generalized Narayana polynomials.
 
 This identity is not an input used in Braun--Jal's proof of Theorem 4.1; their
 proof instead uses the `[P, G; Q, H]` matrix and Claim `(6)`.  This theorem is
 therefore an optional stronger route and `hG_model` requires an independent
 justification. -/
-theorem auxiliaryG_prec_succ_of_narayanaTwoModel
+theorem auxiliaryG_strictInterl_succ_of_narayanaTwoModel
     (hG_model : ∀ n : ℕ, 1 ≤ n →
       FiniteSkewBoard.auxiliaryG n =
         C (n : ℝ) * narayanaPolynomial 2 (n - 1)) :
@@ -181,10 +181,10 @@ theorem auxiliaryG_prec_succ_of_narayanaTwoModel
         (FiniteSkewBoard.auxiliaryG m) := by
   intro m hm
   rw [hG_model (m - 1) (by lia), hG_model m (by lia)]
-  have hprec := prec_narayanaPolynomial_two (m - 2)
+  have hstrictInterl := strictInterl_narayanaPolynomial_two (m - 2)
   have hm1_ne : ((m - 1 : ℕ) : ℝ) ≠ 0 := by exact_mod_cast (show m - 1 ≠ 0 by lia)
   have hscaled :=
-    (hprec.C_mul_left hm1_ne).C_mul_right
+    (hstrictInterl.C_mul_left hm1_ne).C_mul_right
       (show (m : ℝ) ≠ 0 by positivity)
   have hleft : m - 1 - 1 = m - 2 := by lia
   have hright : m - 2 + 1 = m - 1 := by lia
@@ -228,7 +228,7 @@ The hypotheses are the intended combinatorial trust boundary.  Equation `(2)`,
 nonnegativity of the board difference `H`, Theorem 3.5, the degree identity,
 and the constant-word staircase identity come from the non-nesting-rook model;
 formalizing that complete model is outside the present scope.  No hypothesis
-assumes real-rootedness, interlacing, proper position, or splitting. -/
+assumes real-rootedness, interlacing, or splitting. -/
 theorem theorem41NonNestingRook_modified_of_sourceInputs
     {M : SnakeWord → ℝ[X]}
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
@@ -288,7 +288,12 @@ theorem theorem41NonNestingRook_modified_of_modelInputs
       M w = modifiedNarayanaPolynomial (w.length + 1)) :
     Theorem41NonNestingRookStatement M :=
   theorem41NonNestingRook_modified_of_modelInputs_of_adjacentG hrec2 hH_nonneg
-    (auxiliaryG_prec_succ_of_narayanaTwoModel hG_model) hrec hM_nonneg hdeg hM_const
+    (auxiliaryG_strictInterl_succ_of_narayanaTwoModel hG_model) hrec hM_nonneg hdeg hM_const
+
+@[deprecated auxiliaryG_strictInterl_succ_of_narayanaTwoModel
+  (since := "2026-09-26")]
+alias auxiliaryG_prec_succ_of_narayanaTwoModel :=
+  auxiliaryG_strictInterl_succ_of_narayanaTwoModel
 
 end GeneralizedSnakePosets
 end RealRooted

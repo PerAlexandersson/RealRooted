@@ -236,7 +236,7 @@ theorem markedShiftKernel_eq_zero_of_lt
 
 /-- The weighted Green background and marked optional-rise kernel satisfy the
 complete finite kernel-limit package: every kernel row is PF and consecutive
-rows are in zero-aware proper position. -/
+rows are in zero-aware interlacing. -/
 theorem weightedGreenKernel_markedShiftKernel_pf_and_interl
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)

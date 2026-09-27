@@ -6,7 +6,7 @@ import RealRooted.VeroneseSectionPair
 This packages the unconditional parity route suggested by Fisk's
 Hermite--Biehler discussion and Brändén's Veronese interlacing machinery.
 Two nonzero normalized residue sections of one nonnegative real-rooted
-polynomial are in proper position.  They therefore form an upper-half-plane
+polynomial strictly interlace.  They therefore form an upper-half-plane
 stable Hermite--Biehler polynomial, and their odd/even recombination is
 Hurwitz stable.
 
@@ -32,14 +32,14 @@ theorem isUpperHalfPlaneStable_hermiteBiehler_veroneseSections
       (hermiteBiehlerPolynomial
         (veroneseSectionPolynomial r j p)
         (veroneseSectionPolynomial r k p)) := by
-  have hprec := prec_veroneseSectionPolynomial_of_residue_lt
+  have hstrictInterl := strictInterl_veroneseSectionPolynomial_of_residue_lt
     hr hjk hk hpnn hp0 hps hj0 hk0
   have hjnn : HasNonnegCoeffs (veroneseSectionPolynomial r j p) :=
     hasNonnegCoeffs_veroneseSectionPolynomial hr hpnn
   have hknn : HasNonnegCoeffs (veroneseSectionPolynomial r k p) :=
     hasNonnegCoeffs_veroneseSectionPolynomial hr hpnn
   exact hermiteBiehlerForwardPos
-    (hjnn.pos_leadingCoeff hj0) (hknn.pos_leadingCoeff hk0) hprec
+    (hjnn.pos_leadingCoeff hj0) (hknn.pos_leadingCoeff hk0) hstrictInterl
 
 /-- The odd/even recombination of two ordered normalized Veronese residues is
 Hurwitz stable.  The higher residue supplies the odd component and the lower

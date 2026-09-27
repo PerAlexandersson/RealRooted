@@ -3,11 +3,11 @@ import RealRooted.PFPolynomial.LinearFactor
 import RealRooted.Transforms.ReverseHermite.Basic
 
 /-!
-# PF and proper-position preservation for the reverse-Hermite transform
+# PF and interlacing preservation for the reverse-Hermite transform
 
 The algebraic transform is separated from this real-rootedness layer. A
 simultaneous degree induction proves preservation of the polynomial PF cone
-and of zero-aware proper position.
+and of zero-aware interlacing.
 -/
 
 open Polynomial
@@ -33,7 +33,7 @@ private theorem reverseHermiteTransform_interl_of_weightedSum_right
     {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hprec : ∀ ap ∈ l,
+    (hinterl : ∀ ap ∈ l,
       Interl (reverseHermiteTransform ap.2)
         (reverseHermiteTransform g))
     (hnn : ∀ ap ∈ l,
@@ -88,7 +88,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_interl :
               rw [← hpdeg]
               have := natDegree_derivative_le q
               lia)).1 hqder rfl
-          have hprec :
+          have hinterl :
               Interl (reverseHermiteTransform q.derivative)
                 (reverseHermiteTransform q) := by
             exact (ih q.natDegree (by lia)).2 hqder hq
@@ -98,8 +98,8 @@ private theorem reverseHermiteTransform_preserves_pf_and_interl :
             reverseHermiteTransform_mul_X_add_C]
           simpa [linearFactorStep] using
             linearFactorStep_isPF (r := -u) (by linarith)
-              hprec hqderT hqT
-        have hPrec0 :
+              hinterl hqderT hqT
+        have hInterl :
             ∀ {f g : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g →
               Interl f g → g.natDegree = n →
               Interl (reverseHermiteTransform f)
@@ -178,7 +178,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_interl :
                   natDegree_X_sub_C]
                 lia
               exact ((ih ap.2.natDegree (by lia)).1 hp rfl).hasNonnegCoeffs
-        exact ⟨hPF, hPrec0⟩
+        exact ⟨hPF, hInterl⟩
   constructor
   · intro p hp
     exact (hP p.natDegree).1 hp rfl
@@ -191,7 +191,7 @@ theorem reverseHermiteTransform_preserves_pf {p : ℝ[X]}
     IsPFPolynomial (reverseHermiteTransform p) :=
   reverseHermiteTransform_preserves_pf_and_interl.1 hp
 
-/-- The reverse-Hermite transform preserves zero-aware proper position between
+/-- The reverse-Hermite transform preserves zero-aware interlacing between
 PF polynomials. -/
 theorem reverseHermiteTransform_preserves_interl {f g : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
@@ -199,7 +199,7 @@ theorem reverseHermiteTransform_preserves_interl {f g : ℝ[X]}
     Interl (reverseHermiteTransform f) (reverseHermiteTransform g) :=
   reverseHermiteTransform_preserves_pf_and_interl.2 hf hg hfg
 
-/-- Strict proper position between PF polynomials is transported to the
+/-- Strict interlacing between PF polynomials is transported to the
 zero-aware relation by the reverse-Hermite transform. -/
 theorem reverseHermiteTransform_strictInterl_to_interl {f g : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)

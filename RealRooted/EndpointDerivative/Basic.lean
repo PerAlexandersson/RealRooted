@@ -80,7 +80,7 @@ theorem hasPosLeadingCoeff_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
   lia
 
 /-- If the roots of a positive-degree split polynomial lie in `[a,b]`, then
-`(X-a)(X-b)f'` is in proper position to its right. -/
+`(X-a)(X-b)f'` is in an interlacing relation to its right. -/
 theorem strictInterl_endpointDerivative {f : ℝ[X]} {a b : ℝ}
     (hf : f.Splits) (hdeg : 1 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
@@ -124,7 +124,7 @@ theorem roots_endpointDerivative_mem_Icc {f : ℝ[X]} {a b : ℝ}
   · exact hder_roots r hr
 
 /-- If the roots of `f` lie in `[a,b]`, then the derivative of
-`(X-a)(X-b)f` is in proper position to the right of `f`. -/
+`(X-a)(X-b)f` is in an interlacing relation to the right of `f`. -/
 theorem strictInterl_derivative_endpointProduct {f : ℝ[X]} {a b : ℝ}
     (hf : f.Splits) (hdeg : 1 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
@@ -175,7 +175,7 @@ theorem roots_derivative_endpointProduct_mem_Icc {f : ℝ[X]} {a b : ℝ}
   exact roots_derivative_mem_Icc_of_roots_mem_Icc
     hqf_splits hqf_deg hqf_roots
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated strictInterl_endpointDerivative (since := "2026-09-26")]
 alias prec_endpointDerivative := strictInterl_endpointDerivative

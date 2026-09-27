@@ -74,13 +74,13 @@ theorem modifiedNarayanaFamily_narayana :
   · intro n
     simp [modifiedNarayanaPolynomial, narayana]
 
-/-- Conditional consecutive proper position for the concrete modified Narayana
+/-- Conditional consecutive interlacing for the concrete modified Narayana
 family, inherited from the existing Narayana formalization. -/
-theorem modifiedNarayanaPolynomial_prec_succ_of_nonnegCoeffs
+theorem modifiedNarayanaPolynomial_strictInterl_succ_of_nonnegCoeffs
     (n : ℕ) (hnonneg : ∀ m : ℕ, HasNonnegCoeffs (narayanaQuot m)) :
     StrictInterl (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) := by
   simpa [modifiedNarayanaPolynomial] using
-    (prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg)
+    (strictInterl_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg)
 
 /-- Conditional consecutive interlacing for the concrete modified Narayana
 family, inherited from the existing Narayana formalization. -/
@@ -99,9 +99,9 @@ theorem modifiedNarayanaPolynomial_zero_interlaces_one :
     interlaces_one_linear (p := X + C (1 : ℝ))
       (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
 
-/-- Base proper-position relation between the first two modified Narayana
+/-- Base interlacing relation between the first two modified Narayana
 polynomials. -/
-theorem modifiedNarayanaPolynomial_zero_prec_one :
+theorem modifiedNarayanaPolynomial_zero_strictInterl_one :
     StrictInterl (modifiedNarayanaPolynomial 0) (modifiedNarayanaPolynomial 1) :=
   modifiedNarayanaPolynomial_zero_interlaces_one.toStrictInterl
 
@@ -110,7 +110,7 @@ Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_base :
     StrictInterl (FiniteSkewBoard.auxiliaryG 1) (modifiedNarayanaPolynomial 1) := by
   simpa [FiniteSkewBoard.auxiliaryG_one] using
-    modifiedNarayanaPolynomial_zero_prec_one
+    modifiedNarayanaPolynomial_zero_strictInterl_one
 
 /-- Base case `n = 1` of Braun--Jal equation (2), for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
@@ -324,20 +324,20 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
       show k ≠ 6 by lia, show k ≠ 7 by lia, show k ≠ 8 by lia,
       show k ≠ 9 by lia, show k ≠ 10 by lia, show k ≠ 11 by lia]
 
-/-- The first nontrivial proper-position check for the coefficient-side
+/-- The first nontrivial interlacing check for the coefficient-side
 modified Narayana family. -/
-theorem modifiedNarayanaCoeffPolynomial_one_prec_two :
+theorem modifiedNarayanaCoeffPolynomial_one_strictInterl_two :
     StrictInterl (modifiedNarayanaCoeffPolynomial 1)
       (modifiedNarayanaCoeffPolynomial 2) := by
   simpa [modifiedNarayanaCoeffPolynomial] using
-    (prec_narayanaPolynomial_one_two 1)
+    (strictInterl_narayanaPolynomial_one_two 1)
 
 /-- The first nontrivial interlacing check for the coefficient-side modified
 Narayana family. -/
 theorem modifiedNarayanaCoeffPolynomial_one_interlaces_two :
     Interlaces (modifiedNarayanaCoeffPolynomial 1)
       (modifiedNarayanaCoeffPolynomial 2) :=
-  modifiedNarayanaCoeffPolynomial_one_prec_two.toInterlaces (by
+  modifiedNarayanaCoeffPolynomial_one_strictInterl_two.toInterlaces (by
     rw [modifiedNarayanaCoeffPolynomial_natDegree,
       modifiedNarayanaCoeffPolynomial_natDegree])
 
@@ -842,6 +842,21 @@ theorem modifiedNarayanaPolynomial_six_ne_zero : modifiedNarayanaPolynomial 6 �
               C (1210 : ℝ) * X ^ 9 + C (66 : ℝ) * X ^ 10 + X ^ 11 := by
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
     modifiedNarayanaCoeffPolynomial_eleven]
+
+@[deprecated modifiedNarayanaPolynomial_strictInterl_succ_of_nonnegCoeffs
+  (since := "2026-09-26")]
+alias modifiedNarayanaPolynomial_prec_succ_of_nonnegCoeffs :=
+  modifiedNarayanaPolynomial_strictInterl_succ_of_nonnegCoeffs
+
+@[deprecated modifiedNarayanaPolynomial_zero_strictInterl_one
+  (since := "2026-09-26")]
+alias modifiedNarayanaPolynomial_zero_prec_one :=
+  modifiedNarayanaPolynomial_zero_strictInterl_one
+
+@[deprecated modifiedNarayanaCoeffPolynomial_one_strictInterl_two
+  (since := "2026-09-26")]
+alias modifiedNarayanaCoeffPolynomial_one_prec_two :=
+  modifiedNarayanaCoeffPolynomial_one_strictInterl_two
 
 end GeneralizedSnakePosets
 end RealRooted

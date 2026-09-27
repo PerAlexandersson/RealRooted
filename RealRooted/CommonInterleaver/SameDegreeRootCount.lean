@@ -1018,8 +1018,8 @@ theorem posComboNoCommonSameDegreeRootCrossing_of_orientationAlternative
       ∃ sf sg : List ℝ, sf.Pairwise (· ≤ ·) ∧ sg.Pairwise (· ≤ ·) ∧
         (↑sf : Multiset ℝ) = f.roots ∧ (↑sg : Multiset ℝ) = g.roots ∧
         (ListAlternates sf sg ∨ ListAlternates sg sf) := by
-    rcases hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno with hprec | hprec
-    · obtain ⟨hf, hg, ss, rs, hss_pw, hrs_pw, hss_eq, hrs_eq, hshape⟩ := hprec
+    rcases hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno with hstrictInterl | hstrictInterl
+    · obtain ⟨hf, hg, ss, rs, hss_pw, hrs_pw, hss_eq, hrs_eq, hshape⟩ := hstrictInterl
       have hss_len : ss.length = f.natDegree := by
         rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
       have hrs_len : rs.length = g.natDegree := by
@@ -1031,7 +1031,7 @@ theorem posComboNoCommonSameDegreeRootCrossing_of_orientationAlternative
           lia
         · exact h
       exact ⟨ss, rs, hss_pw, hrs_pw, hss_eq, hrs_eq, Or.inl halt⟩
-    · obtain ⟨hg, hf, sg, sf, hsg_pw, hsf_pw, hsg_eq, hsf_eq, hshape⟩ := hprec
+    · obtain ⟨hg, hf, sg, sf, hsg_pw, hsf_pw, hsg_eq, hsf_eq, hshape⟩ := hstrictInterl
       have hsg_len : sg.length = g.natDegree := by
         rw [← Multiset.coe_card, hsg_eq, card_roots_of_splits hg.2]
       have hsf_len : sf.length = f.natDegree := by

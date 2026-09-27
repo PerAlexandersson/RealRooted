@@ -22,9 +22,9 @@ theorem hermiteBiehlerOddEven_isHurwitzStable {p q : ℝ[X]}
 theorem hermiteBiehlerForwardPos_sequence {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
-    (hprec : ∀ n : Nat, StrictInterl (G n) (F n)) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (G n) (F n)) :
     ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n)) :=
-  fun n => RealRooted.hermiteBiehlerForwardPos (hF n) (hG n) (hprec n)
+  fun n => RealRooted.hermiteBiehlerForwardPos (hF n) (hG n) (hstrictInterl n)
 
 theorem hermiteBiehlerConverse_sequence {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
@@ -42,7 +42,7 @@ theorem hermiteBiehlerSplits_sequence {F G : Nat → ℝ[X]}
     ∀ n : Nat, (F n).Splits ∧ (G n).Splits :=
   fun n => RealRooted.splits_of_stable (hF n) (hG n) (hstable n)
 
-theorem hermiteBiehlerPrec_sequence {F G : Nat → ℝ[X]}
+theorem hermiteBiehlerStrictInterl_sequence {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
     (hstable :
@@ -81,7 +81,7 @@ syntax (name := rr_hermite_biehler_forward_pos_named)
   "rr_hermite_biehler_forward_pos" " using "
     "real_pos_lc" ":=" term ","
     "imag_pos_lc" ":=" term ","
-    "prec_imag_real" ":=" term :
+    "strictInterl_imag_real" ":=" term :
   tactic
 
 syntax (name := rr_hermite_biehler_converse_named)
@@ -98,8 +98,8 @@ syntax (name := rr_hermite_biehler_splits_named)
     "stable" ":=" term :
   tactic
 
-syntax (name := rr_hermite_biehler_prec_named)
-  "rr_hermite_biehler_prec" " using "
+syntax (name := rr_hermite_biehler_strict_interl_named)
+  "rr_hermite_biehler_strict_interl" " using "
     "real_pos_lc" ":=" term ","
     "imag_pos_lc" ":=" term ","
     "stable" ":=" term ","
@@ -124,7 +124,7 @@ syntax (name := rr_hermite_biehler_forward_pos_sequence_named)
   "rr_hermite_biehler_forward_pos_sequence" " using "
     "real_pos_lc" ":=" term ","
     "imag_pos_lc" ":=" term ","
-    "prec_imag_real" ":=" term :
+    "strictInterl_imag_real" ":=" term :
   tactic
 
 syntax (name := rr_hermite_biehler_converse_sequence_named)
@@ -141,8 +141,8 @@ syntax (name := rr_hermite_biehler_splits_sequence_named)
     "stable" ":=" term :
   tactic
 
-syntax (name := rr_hermite_biehler_prec_sequence_named)
-  "rr_hermite_biehler_prec_sequence" " using "
+syntax (name := rr_hermite_biehler_strict_interl_sequence_named)
+  "rr_hermite_biehler_strict_interl_sequence" " using "
     "real_pos_lc" ":=" term ","
     "imag_pos_lc" ":=" term ","
     "stable" ":=" term ","
@@ -166,8 +166,8 @@ syntax (name := rr_hermite_biehler_odd_even_hurwitz_stable_sequence_named)
 macro_rules
   | `(tactic| rr_hermite_biehler_forward_pos_statement) =>
       `(tactic|
-        exact fun {f g} hf hg hprec =>
-          RealRooted.hermiteBiehlerForwardPos (f := f) (g := g) hf hg hprec)
+        exact fun {f g} hf hg hstrictInterl =>
+          RealRooted.hermiteBiehlerForwardPos (f := f) (g := g) hf hg hstrictInterl)
   | `(tactic| rr_hermite_biehler_converse_statement) =>
       `(tactic|
         exact fun {f g} hf hg hstable =>
@@ -181,9 +181,9 @@ macro_rules
       rr_hermite_biehler_forward_pos using
         real_pos_lc := $hf:term,
         imag_pos_lc := $hg:term,
-        prec_imag_real := $hprec:term) =>
+        strictInterl_imag_real := $hstrictInterl:term) =>
       `(tactic|
-        exact RealRooted.hermiteBiehlerForwardPos $hf $hg $hprec)
+        exact RealRooted.hermiteBiehlerForwardPos $hf $hg $hstrictInterl)
   | `(tactic|
       rr_hermite_biehler_converse using
         real_pos_lc := $hf:term,
@@ -199,7 +199,7 @@ macro_rules
       `(tactic|
         exact RealRooted.splits_of_stable $hf $hg $hstable)
   | `(tactic|
-      rr_hermite_biehler_prec using
+      rr_hermite_biehler_strict_interl using
         real_pos_lc := $hf:term,
         imag_pos_lc := $hg:term,
         stable := $hstable:term,
@@ -225,10 +225,10 @@ macro_rules
       rr_hermite_biehler_forward_pos_sequence using
         real_pos_lc := $hf:term,
         imag_pos_lc := $hg:term,
-        prec_imag_real := $hprec:term) =>
+        strictInterl_imag_real := $hstrictInterl:term) =>
       `(tactic|
         exact RealRooted.Tactic.hermiteBiehlerForwardPos_sequence
-          $hf $hg $hprec)
+          $hf $hg $hstrictInterl)
   | `(tactic|
       rr_hermite_biehler_converse_sequence using
         real_pos_lc := $hf:term,
@@ -246,13 +246,13 @@ macro_rules
         exact RealRooted.Tactic.hermiteBiehlerSplits_sequence
           $hf $hg $hstable)
   | `(tactic|
-      rr_hermite_biehler_prec_sequence using
+      rr_hermite_biehler_strict_interl_sequence using
         real_pos_lc := $hf:term,
         imag_pos_lc := $hg:term,
         stable := $hstable:term,
         real_degree_pos := $hdegree:term) =>
       `(tactic|
-        exact RealRooted.Tactic.hermiteBiehlerPrec_sequence
+        exact RealRooted.Tactic.hermiteBiehlerStrictInterl_sequence
           $hf $hg $hstable $hdegree)
   | `(tactic|
       rr_hermite_biehler_odd_even_hurwitz_sequence using
@@ -271,5 +271,83 @@ macro_rules
         exact RealRooted.Tactic.hermiteBiehlerOddEven_isHurwitzStable_sequence
           $hp $hq $hstable)
 
+end Tactic
+end RealRooted
+namespace RealRooted
+namespace Tactic
+@[deprecated hermiteBiehlerStrictInterl_sequence (since := "2026-09-26")]
+alias hermiteBiehlerPrec_sequence := hermiteBiehlerStrictInterl_sequence
+
+end Tactic
+end RealRooted
+
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_hermite_biehler_forward_pos_named_legacy)
+  "rr_hermite_biehler_forward_pos" " using "
+    "real_pos_lc" ":=" term ","
+    "imag_pos_lc" ":=" term ","
+    "prec_imag_real" ":=" term :
+  tactic
+
+syntax (name := rr_hermite_biehler_prec_named_legacy)
+  "rr_hermite_biehler_prec" " using "
+    "real_pos_lc" ":=" term ","
+    "imag_pos_lc" ":=" term ","
+    "stable" ":=" term ","
+    "real_degree_pos" ":=" term :
+  tactic
+
+syntax (name := rr_hermite_biehler_forward_pos_sequence_named_legacy)
+  "rr_hermite_biehler_forward_pos_sequence" " using "
+    "real_pos_lc" ":=" term ","
+    "imag_pos_lc" ":=" term ","
+    "prec_imag_real" ":=" term :
+  tactic
+
+syntax (name := rr_hermite_biehler_prec_sequence_named_legacy)
+  "rr_hermite_biehler_prec_sequence" " using "
+    "real_pos_lc" ":=" term ","
+    "imag_pos_lc" ":=" term ","
+    "stable" ":=" term ","
+    "real_degree_pos" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_hermite_biehler_forward_pos using
+        real_pos_lc := $hf:term,
+        imag_pos_lc := $hg:term,
+        prec_imag_real := $hprec:term) =>
+      `(tactic|
+        exact RealRooted.hermiteBiehlerForwardPos $hf $hg $hprec)
+  | `(tactic|
+      rr_hermite_biehler_prec using
+        real_pos_lc := $hf:term,
+        imag_pos_lc := $hg:term,
+        stable := $hstable:term,
+        real_degree_pos := $hdegree:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_of_stable_general $hf $hg $hstable $hdegree)
+  | `(tactic|
+      rr_hermite_biehler_forward_pos_sequence using
+        real_pos_lc := $hf:term,
+        imag_pos_lc := $hg:term,
+        prec_imag_real := $hprec:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.hermiteBiehlerForwardPos_sequence
+          $hf $hg $hprec)
+  | `(tactic|
+      rr_hermite_biehler_prec_sequence using
+        real_pos_lc := $hf:term,
+        imag_pos_lc := $hg:term,
+        stable := $hstable:term,
+        real_degree_pos := $hdegree:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.hermiteBiehlerPrec_sequence
+          $hf $hg $hstable $hdegree)
 end Tactic
 end RealRooted

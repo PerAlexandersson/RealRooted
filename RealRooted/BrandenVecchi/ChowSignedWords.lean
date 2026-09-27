@@ -504,7 +504,7 @@ theorem finiteSignedWordEnumerator_isPFPolynomial
     (finiteSignedWordEnumerator_eq_zero_or_splits hxs hys n)
 
 /-- Consecutive literal finite signed-word enumerators are in zero-aware
-proper position for nonnegative parameters. -/
+interlacing for nonnegative parameters. -/
 theorem finiteSignedWordEnumerator_interl_succ
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :

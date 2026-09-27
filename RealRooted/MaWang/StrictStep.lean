@@ -94,7 +94,7 @@ theorem noCommonRoot_of_auxiliary_sign
   · simp
 
 /-- A degree-raising recurrence through a strictly signed auxiliary and a
-weakly signed tail puts `f` in proper position with `F` and gives `F` simple
+weakly signed tail puts `f` in an interlacing relation with `F` and gives `F` simple
 roots. -/
 theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     {f q t F u v : ℝ[X]}
@@ -117,13 +117,13 @@ theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     fun _ hr ↦
       eval_mul_derivative_neg_of_auxiliary_sign_add_tail
         hrec hq_sign hv_neg ht_nonpos hr
-  have hprec : StrictInterl f F :=
+  have hstrictInterl : StrictInterl f F :=
     strictInterl_of_interlaces_eval_mul_neg_succ hder hder_pos hF_pos hdeg hroot_sign
   have hnoRoot :=
     noCommonRoot_of_auxiliary_sign_add_tail hrec hq_sign hv_neg ht_nonpos
   have hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ F.IsRoot r) :=
     fun r h ↦ hnoRoot r h.1 h.2
-  exact ⟨hprec, (hprec.hasSimpleRoots_of_no_common_root hno).2⟩
+  exact ⟨hstrictInterl, (hstrictInterl.hasSimpleRoots_of_no_common_root hno).2⟩
 
 @[deprecated strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
   (since := "2026-09-18")]
@@ -131,7 +131,7 @@ alias prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail :=
   strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
 
 /-- A degree-raising recurrence through a derivative-sign auxiliary puts `f`
-in proper position with `F` and gives `F` simple roots. -/
+in an interlacing relation with `F` and gives `F` simple roots. -/
 theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
     {f q F u v : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
@@ -154,7 +154,7 @@ theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
 alias prec_and_hasSimpleRoots_of_auxiliary_sign_succ :=
   strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
 
-/-- A strict differ-by-one Ma--Wang step puts `f` in proper position with `F`
+/-- A strict differ-by-one Ma--Wang step puts `f` in an interlacing relation with `F`
 and propagates simple real roots. -/
 theorem strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
@@ -182,7 +182,7 @@ theorem strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v
         rw [eval_add, eval_mul, eval_mul, hfeval, mul_zero, zero_add]
         ring
       _ < 0 := hstrict
-  have hprec : StrictInterl f F :=
+  have hstrictInterl : StrictInterl f F :=
     strictInterl_of_interlaces_eval_mul_neg_succ hder hder_pos hF_pos hdeg hroot_sign
   have hno : ∀ r, f.IsRoot r → ¬ F.IsRoot r := by
     intro r hfr hFr
@@ -192,9 +192,9 @@ theorem strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v
     exact (lt_irrefl 0) hs
   have hnodup : F.roots.Nodup := by
     by_contra hnot
-    obtain ⟨r, hFr, hfr⟩ := exists_common_root_of_not_nodup hprec hnot
+    obtain ⟨r, hFr, hfr⟩ := exists_common_root_of_not_nodup hstrictInterl hnot
     exact hno r (isRoot_of_mem_roots hfr) (isRoot_of_mem_roots hFr)
-  exact ⟨hprec, HasSimpleRoots.of_roots_nodup hF_pos.ne_zero hnodup⟩
+  exact ⟨hstrictInterl, HasSimpleRoots.of_roots_nodup hF_pos.ne_zero hnodup⟩
 
 @[deprecated strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ
   (since := "2026-09-18")]

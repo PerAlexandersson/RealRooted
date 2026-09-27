@@ -64,7 +64,7 @@ lemma isRealRooted_X_pow :
     ∀ n : Nat, (((X : ℝ[X]) ^ n) ≠ 0 ∧ ((X : ℝ[X]) ^ n).Splits) := by
   simp
 
-lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
+lemma strictInterl_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     (ha : 0 ≤ a) (hab : a ≤ b) :
     StrictInterl (X + C a) (X * (X + C b)) := by
   have hdeg_a : (X + C a).natDegree = 1 :=
@@ -196,7 +196,7 @@ lemma oneDescentQ_one_succ (m : Nat) :
   have hchoose : C ((Nat.choose (m + 1) 1 : Nat) : ℝ) = C ((m + 1 : Nat) : ℝ) := by simp
   grind
 
-lemma prec_one_X_add_C (a : ℝ) :
+lemma strictInterl_one_X_add_C (a : ℝ) :
     StrictInterl (1 : ℝ[X]) (X + C a) :=
   (interlaces_one_linear (p := X + C a) (by simp)).toStrictInterl
 
@@ -221,7 +221,7 @@ lemma oneDescentGamma_adjacent_linearShift_le
   field_simp [hj1_pos.ne', hj2_pos.ne']
   nlinarith [hstep, hsucc]
 
-lemma oneDescent_prec_gamma_one_top (m : Nat) (hm : 0 < m) :
+lemma oneDescent_strictInterl_gamma_one_top (m : Nat) (hm : 0 < m) :
     StrictInterl (oneDescentGamma 1 m m) (oneDescentGamma 1 m (m - 1)) := by
   have hpred_lt : m - 1 < m := by lia
   rw [oneDescentGamma_diag, oneDescentGamma_one m (m - 1) hpred_lt]
@@ -229,13 +229,13 @@ lemma oneDescent_prec_gamma_one_top (m : Nat) (hm : 0 < m) :
   rw [hpow0, pow_zero]
   have hchoose_ne : (((Nat.choose m (m - 1) : Nat) : ℝ)) ≠ 0 :=
     Nat.cast_choose_ne_zero (R := ℝ) (Nat.sub_le m 1)
-  have hprec :=
+  have hstrictInterl :=
     StrictInterl.C_mul_right
-      (prec_one_X_add_C ((((m - (m - 1) : Nat) : ℝ) / (((m - 1) + 1 : Nat) : ℝ))))
+      (strictInterl_one_X_add_C ((((m - (m - 1) : Nat) : ℝ) / (((m - 1) + 1 : Nat) : ℝ))))
       hchoose_ne
   lia
 
-lemma oneDescent_prec_gamma_one_adjacent
+lemma oneDescent_strictInterl_gamma_one_adjacent
     (m j : Nat) (hj : j + 1 < m) :
     StrictInterl (oneDescentGamma 1 m (j + 1)) (oneDescentGamma 1 m j) := by
   have hjm : j < m := by lia
@@ -252,7 +252,7 @@ lemma oneDescent_prec_gamma_one_adjacent
     simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm, Nat.cast_add, Nat.cast_one] using
       oneDescentGamma_adjacent_linearShift_le m j hj
   have hbase : StrictInterl (X + C a) (X * (X + C b)) :=
-    prec_X_add_C_to_X_mul_X_add_C ha hab
+    strictInterl_X_add_C_to_X_mul_X_add_C ha hab
   have hleft_ne : (((Nat.choose m (j + 1) : Nat) : ℝ)) ≠ 0 :=
     Nat.cast_choose_ne_zero (R := ℝ) (Nat.le_of_lt hj)
   have hright_ne : (((Nat.choose m j : Nat) : ℝ)) ≠ 0 :=
@@ -268,7 +268,7 @@ lemma oneDescent_prec_gamma_one_adjacent
   simpa [a, b, mul_assoc, mul_left_comm, mul_comm] using
     (hscaled.mul_common_factor hpow_rr.1 hpow_rr.2)
 
-lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
+lemma oneDescent_strictInterl_gamma_one_terminal (m : Nat) (hm : 1 < m) :
     StrictInterl (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
   have hpow : (X : ℝ[X]) ^ (m - 1) = X ^ (m - 2) * X := by
     rw [show m - 1 = Nat.succ (m - 2) by lia, pow_succ]
@@ -277,7 +277,7 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
   have ha : 0 ≤ a := oneDescentGamma_linearShift_nonneg m 1
   have hab : a ≤ b := by grind
   have hbase : StrictInterl (X + C a) (X * (X + C b)) :=
-    prec_X_add_C_to_X_mul_X_add_C ha hab
+    strictInterl_X_add_C_to_X_mul_X_add_C ha hab
   have hchoose_ne : (((Nat.choose m 1 : Nat) : ℝ)) ≠ 0 :=
     Nat.cast_choose_ne_zero (R := ℝ) (show 1 ≤ m by lia)
   have hscaled :
@@ -293,26 +293,26 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
 
 /-- Uniform adjacent comparison in the base `d = 1` Gamma chain:
 `Γ_{1,j+1}^{(m)} ≪ Γ_{1,j}^{(m)}` for every admissible `j`. -/
-theorem oneDescent_prec_gamma_one_adjacent_chain
+theorem oneDescent_strictInterl_gamma_one_adjacent_chain
     (m j : Nat) (hj : j < m) :
     StrictInterl (oneDescentGamma 1 m (j + 1)) (oneDescentGamma 1 m j) := by
   by_cases htop : j + 1 = m
   · rw [htop, show j = m - 1 by lia]
-    exact oneDescent_prec_gamma_one_top m (by lia)
+    exact oneDescent_strictInterl_gamma_one_top m (by lia)
   · have hj_strict : j + 1 < m := by lia
-    exact oneDescent_prec_gamma_one_adjacent m j hj_strict
+    exact oneDescent_strictInterl_gamma_one_adjacent m j hj_strict
 
 /-- Terminal comparison in the base `d = 1` Gamma chain:
 `Γ_{1,1}^{(m)} ≪ Q_1^{(m)}`. -/
-theorem oneDescent_prec_gamma_one_terminal_chain
+theorem oneDescent_strictInterl_gamma_one_terminal_chain
     (m : Nat) (hm : 0 < m) :
     StrictInterl (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
   by_cases hm_large : 1 < m
-  · exact oneDescent_prec_gamma_one_terminal m hm_large
+  · exact oneDescent_strictInterl_gamma_one_terminal m hm_large
   · have hm_eq : m = 1 := by lia
     subst hm_eq
     rw [oneDescentGamma_diag, oneDescentQ_one]
-    · simpa using prec_one_X_add_C (0 : ℝ)
+    · simpa using strictInterl_one_X_add_C (0 : ℝ)
     · lia
 
 /-- Every polynomial in the base `d = 1` Gamma family is real-rooted. -/
@@ -346,5 +346,30 @@ theorem oneDescentQ_one_isRealRooted
   simpa [a] using
     isRealRooted_mul (isRealRooted_X_pow (m - 1)).1 (isRealRooted_X_pow (m - 1)).2
       hlin_rr.1 hlin_rr.2
+
+@[deprecated strictInterl_X_add_C_to_X_mul_X_add_C (since := "2026-09-26")]
+alias prec_X_add_C_to_X_mul_X_add_C := strictInterl_X_add_C_to_X_mul_X_add_C
+
+@[deprecated strictInterl_one_X_add_C (since := "2026-09-26")]
+alias prec_one_X_add_C := strictInterl_one_X_add_C
+
+@[deprecated oneDescent_strictInterl_gamma_one_top (since := "2026-09-26")]
+alias oneDescent_prec_gamma_one_top := oneDescent_strictInterl_gamma_one_top
+
+@[deprecated oneDescent_strictInterl_gamma_one_adjacent (since := "2026-09-26")]
+alias oneDescent_prec_gamma_one_adjacent := oneDescent_strictInterl_gamma_one_adjacent
+
+@[deprecated oneDescent_strictInterl_gamma_one_terminal (since := "2026-09-26")]
+alias oneDescent_prec_gamma_one_terminal := oneDescent_strictInterl_gamma_one_terminal
+
+@[deprecated oneDescent_strictInterl_gamma_one_adjacent_chain
+  (since := "2026-09-26")]
+alias oneDescent_prec_gamma_one_adjacent_chain :=
+  oneDescent_strictInterl_gamma_one_adjacent_chain
+
+@[deprecated oneDescent_strictInterl_gamma_one_terminal_chain
+  (since := "2026-09-26")]
+alias oneDescent_prec_gamma_one_terminal_chain :=
+  oneDescent_strictInterl_gamma_one_terminal_chain
 
 end RealRooted

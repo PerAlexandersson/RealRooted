@@ -5,7 +5,7 @@ import RealRooted.SamePhaseInterlacing
 # Weighted interleaving of peak-value polynomials
 
 Positive weighted diagonal restrictions of consecutive peak-value enumerators
-are in proper position.
+strictly interlace.
 -/
 
 open Polynomial
@@ -303,7 +303,7 @@ theorem peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks
     simpa using hstrictInterl
 
 /-- Positive weighted diagonal specializations of consecutive peak-value
-enumerators are in proper position. -/
+enumerators strictly interlace. -/
 theorem peakValueWeightedDiagonal_consecutive_strictInterl
     (n : ℕ) (hn : 1 ≤ n) (wt : Fin (n + 1) → ℝ)
     (hwt : ∀ j, 0 < wt j) :
@@ -313,7 +313,7 @@ theorem peakValueWeightedDiagonal_consecutive_strictInterl
   exact peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks n hn wt hwt
     (peakValuePolynomial_mvRealStable (n + 1))
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
   (since := "2026-09-26")]

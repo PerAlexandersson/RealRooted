@@ -457,7 +457,7 @@ macro_rules
         recurrence := $hrec:term,
         certificate := plateauX) =>
       `(tactic|
-        rr_prec_pos_X_lag_sequence_auto using
+        rr_strict_interl_pos_X_lag_sequence_auto using
           base := $hbase,
           nonneg_coeffs := $hnonneg,
           recurrence := $hrec)
@@ -468,7 +468,7 @@ macro_rules
         recurrence := $hrec:term,
         certificate := plateauX) =>
       `(tactic|
-        rr_prec_pos_X_lag_sequence_realrooted_auto using
+        rr_strict_interl_pos_X_lag_sequence_realrooted_auto using
           base := $hbase,
           nonneg_coeffs := $hnonneg,
           recurrence := $hrec)

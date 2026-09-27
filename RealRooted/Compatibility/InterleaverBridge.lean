@@ -21,10 +21,10 @@ theorem pairwiseCompatible_of_commonLeftInterleaver
     (hcommon : HasCommonLeftInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs :=
-  let ⟨_, hprec⟩ := hcommon
+  let ⟨_, hstrictInterl⟩ := hcommon
   fun i j _ => Compatible.of_commonLeftInterleaver
-    (hprec (fs.get i) (fs.get_mem i))
-    (hprec (fs.get j) (fs.get_mem j))
+    (hstrictInterl (fs.get i) (fs.get_mem i))
+    (hstrictInterl (fs.get j) (fs.get_mem j))
     (hpos (fs.get i) (fs.get_mem i))
     (hpos (fs.get j) (fs.get_mem j))
 
@@ -47,10 +47,10 @@ theorem pairwiseCompatible_of_commonInterleaver
     (hcommon : HasCommonInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs :=
-  let ⟨_, hprec⟩ := hcommon
+  let ⟨_, hstrictInterl⟩ := hcommon
   fun i j _ => Compatible.of_commonInterleaver
-    (hprec (fs.get i) (fs.get_mem i))
-    (hprec (fs.get j) (fs.get_mem j))
+    (hstrictInterl (fs.get i) (fs.get_mem i))
+    (hstrictInterl (fs.get j) (fs.get_mem j))
     (hpos (fs.get i) (fs.get_mem i))
     (hpos (fs.get j) (fs.get_mem j))
 

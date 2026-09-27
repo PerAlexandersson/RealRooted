@@ -1,6 +1,7 @@
 Prec / Prec0 identifier migration plan
-Date: 2026-09-18
-Tracking: GitHub issues #530 and #850
+Opened: 2026-09-18
+Completion batch: 2026-09-27
+Tracking: GitHub issues #530, #850, and #974--#986
 
 Inventory
 
@@ -14,6 +15,38 @@ contains 1,534 unique identifiers, 7,005 occurrences, and 429 files.
 
 Each row records an old identifier, proposed identifier, occurrence count,
 file count, category, migration action, and top-level source clusters.
+
+Completion snapshot
+
+The repository-wide completion batch is recorded in:
+
+  suggestions/prec-interl-final-residuals.tsv
+
+That snapshot reruns the complete identifier-word search after all source edits.
+It contains 1,327 residual identifiers, 3,429 occurrences, and 312 files.  Every
+row records its original migration category and its final disposition.  The
+remaining identifiers are limited to:
+
+  919  dated deprecated API compatibility identifiers
+  358  legacy tactic parser or declaration compatibility identifiers
+   20  deprecated statement compatibility identifiers
+   25  unrelated lexical matches
+    2  foundational deprecated predicate aliases (`Prec` and `Prec0`)
+    2  documented foundational or tactic-local compatibility names
+    1  legacy module/import path (`DegreeDropDivXPrec`)
+
+No active canonical declaration remains under `Prec` / `Prec0` terminology.
+Canonical production callers use `Interl`, `StrictInterl`, or the more specific
+relation name.  Compatibility aliases are dated, parser compatibility remains
+explicitly isolated in `RealRooted/Tactic`, and the legacy module filename is
+retained so existing imports continue to resolve.
+
+The snapshot starts from this exact source search (with `LC_ALL=C` sorting
+before aggregation):
+
+  rg -o --with-filename \
+    '\b[A-Za-z0-9_]*(?:Prec0|Prec|prec0|prec)[A-Za-z0-9_]*\b' \
+    RealRooted.lean RealRooted --glob '*.lean'
 
 Disposition counts
 

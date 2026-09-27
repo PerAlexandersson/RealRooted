@@ -9,64 +9,64 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-syntax (name := rr_prec_mul_X)
-  "rr_prec_mul_X" " using "
+syntax (name := rr_strict_interl_mul_X)
+  "rr_strict_interl_mul_X" " using "
     "proper" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term :
   tactic
 
-syntax (name := rr_prec_mul_X_inferred)
-  "rr_prec_mul_X" : tactic
+syntax (name := rr_strict_interl_mul_X_inferred)
+  "rr_strict_interl_mul_X" : tactic
 
-syntax (name := rr_prec_mul_X_both)
-  "rr_prec_mul_X_both" " using "
+syntax (name := rr_strict_interl_mul_X_both)
+  "rr_strict_interl_mul_X_both" " using "
     "proper" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term :
   tactic
 
-syntax (name := rr_prec_mul_X_both_inferred)
-  "rr_prec_mul_X_both" : tactic
+syntax (name := rr_strict_interl_mul_X_both_inferred)
+  "rr_strict_interl_mul_X_both" : tactic
 
-syntax (name := rr_prec_C_mul_X)
-  "rr_prec_C_mul_X" " using "
+syntax (name := rr_strict_interl_C_mul_X)
+  "rr_strict_interl_C_mul_X" " using "
     "proper" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
     "coeff_ne" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_X_pos)
-  "rr_prec_C_mul_X" " using "
+syntax (name := rr_strict_interl_C_mul_X_pos)
+  "rr_strict_interl_C_mul_X" " using "
     "proper" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
     "coeff_pos" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_X_inferred)
-  "rr_prec_C_mul_X" " using "
+syntax (name := rr_strict_interl_C_mul_X_inferred)
+  "rr_strict_interl_C_mul_X" " using "
     "coeff_ne" ":=" term :
   tactic
 
-syntax (name := rr_prec_C_mul_X_pos_inferred)
-  "rr_prec_C_mul_X" " using "
+syntax (name := rr_strict_interl_C_mul_X_pos_inferred)
+  "rr_strict_interl_C_mul_X" " using "
     "coeff_pos" ":=" term :
   tactic
 
-syntax (name := rr_prec_X_derivative_X_self)
-  "rr_prec_X_derivative_X_self" " using "
+syntax (name := rr_strict_interl_X_derivative_X_self)
+  "rr_strict_interl_X_derivative_X_self" " using "
     "splits" ":=" term ","
     "degree_two" ":=" term ","
     "nonneg_coeffs" ":=" term :
   tactic
 
-syntax (name := rr_prec_X_derivative_X_self_inferred)
-  "rr_prec_X_derivative_X_self" : tactic
+syntax (name := rr_strict_interl_X_derivative_X_self_inferred)
+  "rr_strict_interl_X_derivative_X_self" : tactic
 
-syntax (name := rr_prec_wagner_derivative_gap_lag)
-  "rr_prec_wagner_derivative_gap_lag" " using "
+syntax (name := rr_strict_interl_wagner_derivative_gap_lag)
+  "rr_strict_interl_wagner_derivative_gap_lag" " using "
     "proper" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
@@ -75,11 +75,11 @@ syntax (name := rr_prec_wagner_derivative_gap_lag)
     "derivative_coeff_pos" ":=" term :
   tactic
 
-syntax (name := rr_prec_wagner_derivative_gap_lag_inferred)
-  "rr_prec_wagner_derivative_gap_lag" : tactic
+syntax (name := rr_strict_interl_wagner_derivative_gap_lag_inferred)
+  "rr_strict_interl_wagner_derivative_gap_lag" : tactic
 
-syntax (name := rr_prec_wagner_derivative_gap_lag_den)
-  "rr_prec_wagner_derivative_gap_lag_den" " using "
+syntax (name := rr_strict_interl_wagner_derivative_gap_lag_den)
+  "rr_strict_interl_wagner_derivative_gap_lag_den" " using "
     "proper" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
@@ -90,8 +90,8 @@ syntax (name := rr_prec_wagner_derivative_gap_lag_den)
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_wagner_derivative_gap_lag_sequence)
-  "rr_prec_wagner_derivative_gap_lag_sequence" " using "
+syntax (name := rr_strict_interl_wagner_derivative_gap_lag_sequence)
+  "rr_strict_interl_wagner_derivative_gap_lag_sequence" " using "
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
     "degree_two" ":=" term ","
@@ -100,8 +100,8 @@ syntax (name := rr_prec_wagner_derivative_gap_lag_sequence)
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_wagner_derivative_gap_lag_sequence_realrooted)
-  "rr_prec_wagner_derivative_gap_lag_sequence_realrooted" " using "
+syntax (name := rr_strict_interl_wagner_derivative_gap_lag_sequence_realrooted)
+  "rr_strict_interl_wagner_derivative_gap_lag_sequence_realrooted" " using "
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
     "degree_two" ":=" term ","
@@ -110,19 +110,8 @@ syntax (name := rr_prec_wagner_derivative_gap_lag_sequence_realrooted)
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_wagner_derivative_gap_lag_sequence_den)
-  "rr_prec_wagner_derivative_gap_lag_sequence_den" " using "
-    "base" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
-    "lag_coeff_pos" ":=" term ","
-    "derivative_coeff_pos" ":=" term ","
-    "denom_pos" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name := rr_prec_wagner_derivative_gap_lag_sequence_den_realrooted)
-  "rr_prec_wagner_derivative_gap_lag_sequence_den_realrooted" " using "
+syntax (name := rr_strict_interl_wagner_derivative_gap_lag_sequence_den)
+  "rr_strict_interl_wagner_derivative_gap_lag_sequence_den" " using "
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
     "degree_two" ":=" term ","
@@ -132,8 +121,19 @@ syntax (name := rr_prec_wagner_derivative_gap_lag_sequence_den_realrooted)
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_lag_combo)
-  "rr_prec_pos_X_lag_combo" " using "
+syntax (name := rr_strict_interl_wagner_derivative_gap_lag_sequence_den_realrooted)
+  "rr_strict_interl_wagner_derivative_gap_lag_sequence_den_realrooted" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "lag_coeff_pos" ":=" term ","
+    "derivative_coeff_pos" ":=" term ","
+    "denom_pos" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_strict_interl_pos_X_lag_combo)
+  "rr_strict_interl_pos_X_lag_combo" " using "
     "proper" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
@@ -141,8 +141,8 @@ syntax (name := rr_prec_pos_X_lag_combo)
     "lag_coeff_nonneg" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_lag_combo_lag_pos)
-  "rr_prec_pos_X_lag_combo" " using "
+syntax (name := rr_strict_interl_pos_X_lag_combo_lag_pos)
+  "rr_strict_interl_pos_X_lag_combo" " using "
     "proper" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
@@ -150,8 +150,8 @@ syntax (name := rr_prec_pos_X_lag_combo_lag_pos)
     "lag_coeff_pos" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_lag_sequence)
-  "rr_prec_pos_X_lag_sequence" " using "
+syntax (name := rr_strict_interl_pos_X_lag_sequence)
+  "rr_strict_interl_pos_X_lag_sequence" " using "
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
     "current_coeff_pos" ":=" term ","
@@ -177,8 +177,8 @@ syntax (name := rr_natDegree_pos_X_lag_sequence_shifted)
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_lag_sequence_auto)
-  "rr_prec_pos_X_lag_sequence_auto" " using "
+syntax (name := rr_strict_interl_pos_X_lag_sequence_auto)
+  "rr_strict_interl_pos_X_lag_sequence_auto" " using "
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
     "recurrence" ":=" term :
@@ -186,8 +186,8 @@ syntax (name := rr_prec_pos_X_lag_sequence_auto)
 
 /-- Automatic scalar-side-condition frontend for a positive-`X` lag sequence
 with explicitly supplied current and lag coefficient functions. -/
-syntax (name := rr_prec_pos_X_lag_coeff_sequence_auto)
-  "rr_prec_pos_X_lag_coeff_sequence_auto" " using "
+syntax (name := rr_strict_interl_pos_X_lag_coeff_sequence_auto)
+  "rr_strict_interl_pos_X_lag_coeff_sequence_auto" " using "
     "current_coeff" ":=" term ","
     "lag_coeff" ":=" term ","
     "base" ":=" term ","
@@ -195,8 +195,8 @@ syntax (name := rr_prec_pos_X_lag_coeff_sequence_auto)
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_lag_sequence_realrooted)
-  "rr_prec_pos_X_lag_sequence_realrooted" " using "
+syntax (name := rr_strict_interl_pos_X_lag_sequence_realrooted)
+  "rr_strict_interl_pos_X_lag_sequence_realrooted" " using "
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
     "current_coeff_pos" ":=" term ","
@@ -204,17 +204,17 @@ syntax (name := rr_prec_pos_X_lag_sequence_realrooted)
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_lag_sequence_realrooted_auto)
-  "rr_prec_pos_X_lag_sequence_realrooted_auto" " using "
+syntax (name := rr_strict_interl_pos_X_lag_sequence_realrooted_auto)
+  "rr_strict_interl_pos_X_lag_sequence_realrooted_auto" " using "
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
     "recurrence" ":=" term :
   tactic
 
 /-- Real-rootedness endpoint for
-`rr_prec_pos_X_lag_coeff_sequence_auto`. -/
-syntax (name := rr_prec_pos_X_lag_coeff_sequence_realrooted_auto)
-  "rr_prec_pos_X_lag_coeff_sequence_realrooted_auto" " using "
+`rr_strict_interl_pos_X_lag_coeff_sequence_auto`. -/
+syntax (name := rr_strict_interl_pos_X_lag_coeff_sequence_realrooted_auto)
+  "rr_strict_interl_pos_X_lag_coeff_sequence_realrooted_auto" " using "
     "current_coeff" ":=" term ","
     "lag_coeff" ":=" term ","
     "base" ":=" term ","
@@ -242,8 +242,8 @@ syntax (name := rr_natDegree_pos_X_sub_C_lag_sequence_shifted)
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_sub_C_lag_sequence)
-  "rr_prec_pos_X_sub_C_lag_sequence" " using "
+syntax (name := rr_strict_interl_pos_X_sub_C_lag_sequence)
+  "rr_strict_interl_pos_X_sub_C_lag_sequence" " using "
     "shift" ":=" term ","
     "base" ":=" term ","
     "shift_nonneg_coeffs" ":=" term ","
@@ -252,8 +252,8 @@ syntax (name := rr_prec_pos_X_sub_C_lag_sequence)
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_sub_C_lag_sequence_realrooted)
-  "rr_prec_pos_X_sub_C_lag_sequence_realrooted" " using "
+syntax (name := rr_strict_interl_pos_X_sub_C_lag_sequence_realrooted)
+  "rr_strict_interl_pos_X_sub_C_lag_sequence_realrooted" " using "
     "shift" ":=" term ","
     "base" ":=" term ","
     "shift_nonneg_coeffs" ":=" term ","
@@ -262,40 +262,40 @@ syntax (name := rr_prec_pos_X_sub_C_lag_sequence_realrooted)
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_sub_C_lag_sequence_realrooted_auto)
-  "rr_prec_pos_X_sub_C_lag_sequence_realrooted_auto" " using "
+syntax (name := rr_strict_interl_pos_X_sub_C_lag_sequence_realrooted_auto)
+  "rr_strict_interl_pos_X_sub_C_lag_sequence_realrooted_auto" " using "
     "shift" ":=" term ","
     "base" ":=" term ","
     "shift_nonneg_coeffs" ":=" term ","
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_unit_lag_sequence_auto)
-  "rr_prec_pos_X_unit_lag_sequence_auto" " using "
+syntax (name := rr_strict_interl_pos_X_unit_lag_sequence_auto)
+  "rr_strict_interl_pos_X_unit_lag_sequence_auto" " using "
     "current_coeff" ":=" term ","
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_unit_lag_sequence_realrooted_auto)
-  "rr_prec_pos_X_unit_lag_sequence_realrooted_auto" " using "
+syntax (name := rr_strict_interl_pos_X_unit_lag_sequence_realrooted_auto)
+  "rr_strict_interl_pos_X_unit_lag_sequence_realrooted_auto" " using "
     "current_coeff" ":=" term ","
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_same_coeff_sequence_auto)
-  "rr_prec_pos_X_same_coeff_sequence_auto" " using "
+syntax (name := rr_strict_interl_pos_X_same_coeff_sequence_auto)
+  "rr_strict_interl_pos_X_same_coeff_sequence_auto" " using "
     "shared_coeff" ":=" term ","
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
     "recurrence" ":=" term :
   tactic
 
-syntax (name := rr_prec_pos_X_same_coeff_sequence_realrooted_auto)
-  "rr_prec_pos_X_same_coeff_sequence_realrooted_auto" " using "
+syntax (name := rr_strict_interl_pos_X_same_coeff_sequence_realrooted_auto)
+  "rr_strict_interl_pos_X_same_coeff_sequence_realrooted_auto" " using "
     "shared_coeff" ":=" term ","
     "base" ":=" term ","
     "nonneg_coeffs" ":=" term ","
@@ -321,6 +321,264 @@ macro_rules
       `(fun n => by simpa using $hrec n)
 
 
+
+end Tactic
+end RealRooted
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_prec_mul_X_legacy)
+  "rr_prec_mul_X" " using "
+    "proper" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term :
+  tactic
+
+syntax (name := rr_prec_mul_X_inferred_legacy)
+  "rr_prec_mul_X" : tactic
+
+syntax (name := rr_prec_mul_X_both_legacy)
+  "rr_prec_mul_X_both" " using "
+    "proper" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term :
+  tactic
+
+syntax (name := rr_prec_mul_X_both_inferred_legacy)
+  "rr_prec_mul_X_both" : tactic
+
+syntax (name := rr_prec_C_mul_X_legacy)
+  "rr_prec_C_mul_X" " using "
+    "proper" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "coeff_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_X_pos_legacy)
+  "rr_prec_C_mul_X" " using "
+    "proper" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "coeff_pos" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_X_inferred_legacy)
+  "rr_prec_C_mul_X" " using "
+    "coeff_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_X_pos_inferred_legacy)
+  "rr_prec_C_mul_X" " using "
+    "coeff_pos" ":=" term :
+  tactic
+
+syntax (name := rr_prec_X_derivative_X_self_legacy)
+  "rr_prec_X_derivative_X_self" " using "
+    "splits" ":=" term ","
+    "degree_two" ":=" term ","
+    "nonneg_coeffs" ":=" term :
+  tactic
+
+syntax (name := rr_prec_X_derivative_X_self_inferred_legacy)
+  "rr_prec_X_derivative_X_self" : tactic
+
+syntax (name := rr_prec_wagner_derivative_gap_lag_legacy)
+  "rr_prec_wagner_derivative_gap_lag" " using "
+    "proper" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "degree_two" ":=" term ","
+    "lag_coeff_pos" ":=" term ","
+    "derivative_coeff_pos" ":=" term :
+  tactic
+
+syntax (name := rr_prec_wagner_derivative_gap_lag_inferred_legacy)
+  "rr_prec_wagner_derivative_gap_lag" : tactic
+
+syntax (name := rr_prec_wagner_derivative_gap_lag_den_legacy)
+  "rr_prec_wagner_derivative_gap_lag_den" " using "
+    "proper" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "degree_two" ":=" term ","
+    "lag_coeff_pos" ":=" term ","
+    "derivative_coeff_pos" ":=" term ","
+    "denom_pos" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_wagner_derivative_gap_lag_sequence_legacy)
+  "rr_prec_wagner_derivative_gap_lag_sequence" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "lag_coeff_pos" ":=" term ","
+    "derivative_coeff_pos" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_wagner_derivative_gap_lag_sequence_realrooted_legacy)
+  "rr_prec_wagner_derivative_gap_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "lag_coeff_pos" ":=" term ","
+    "derivative_coeff_pos" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_wagner_derivative_gap_lag_sequence_den_legacy)
+  "rr_prec_wagner_derivative_gap_lag_sequence_den" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "lag_coeff_pos" ":=" term ","
+    "derivative_coeff_pos" ":=" term ","
+    "denom_pos" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_wagner_derivative_gap_lag_sequence_den_realrooted_legacy)
+  "rr_prec_wagner_derivative_gap_lag_sequence_den_realrooted" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "lag_coeff_pos" ":=" term ","
+    "derivative_coeff_pos" ":=" term ","
+    "denom_pos" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_lag_combo_legacy)
+  "rr_prec_pos_X_lag_combo" " using "
+    "proper" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "current_coeff_pos" ":=" term ","
+    "lag_coeff_nonneg" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_lag_combo_lag_pos_legacy)
+  "rr_prec_pos_X_lag_combo" " using "
+    "proper" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "current_coeff_pos" ":=" term ","
+    "lag_coeff_pos" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_lag_sequence_legacy)
+  "rr_prec_pos_X_lag_sequence" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "current_coeff_pos" ":=" term ","
+    "lag_coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_lag_sequence_auto_legacy)
+  "rr_prec_pos_X_lag_sequence_auto" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_lag_coeff_sequence_auto_legacy)
+  "rr_prec_pos_X_lag_coeff_sequence_auto" " using "
+    "current_coeff" ":=" term ","
+    "lag_coeff" ":=" term ","
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_lag_sequence_realrooted_legacy)
+  "rr_prec_pos_X_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "current_coeff_pos" ":=" term ","
+    "lag_coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_lag_sequence_realrooted_auto_legacy)
+  "rr_prec_pos_X_lag_sequence_realrooted_auto" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_lag_coeff_sequence_realrooted_auto_legacy)
+  "rr_prec_pos_X_lag_coeff_sequence_realrooted_auto" " using "
+    "current_coeff" ":=" term ","
+    "lag_coeff" ":=" term ","
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_sub_C_lag_sequence_legacy)
+  "rr_prec_pos_X_sub_C_lag_sequence" " using "
+    "shift" ":=" term ","
+    "base" ":=" term ","
+    "shift_nonneg_coeffs" ":=" term ","
+    "current_coeff_pos" ":=" term ","
+    "lag_coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_sub_C_lag_sequence_realrooted_legacy)
+  "rr_prec_pos_X_sub_C_lag_sequence_realrooted" " using "
+    "shift" ":=" term ","
+    "base" ":=" term ","
+    "shift_nonneg_coeffs" ":=" term ","
+    "current_coeff_pos" ":=" term ","
+    "lag_coeff_nonneg" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_sub_C_lag_sequence_realrooted_auto_legacy)
+  "rr_prec_pos_X_sub_C_lag_sequence_realrooted_auto" " using "
+    "shift" ":=" term ","
+    "base" ":=" term ","
+    "shift_nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_unit_lag_sequence_auto_legacy)
+  "rr_prec_pos_X_unit_lag_sequence_auto" " using "
+    "current_coeff" ":=" term ","
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_unit_lag_sequence_realrooted_auto_legacy)
+  "rr_prec_pos_X_unit_lag_sequence_realrooted_auto" " using "
+    "current_coeff" ":=" term ","
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_same_coeff_sequence_auto_legacy)
+  "rr_prec_pos_X_same_coeff_sequence_auto" " using "
+    "shared_coeff" ":=" term ","
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_prec_pos_X_same_coeff_sequence_realrooted_auto_legacy)
+  "rr_prec_pos_X_same_coeff_sequence_realrooted_auto" " using "
+    "shared_coeff" ":=" term ","
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
 
 end Tactic
 end RealRooted

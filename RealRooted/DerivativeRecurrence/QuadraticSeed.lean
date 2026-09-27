@@ -3,7 +3,7 @@ import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 /-!
 # Quadratic-seed derivative recurrences
 
-Degree and proper-position adapters for recurrences beginning with a quadratic seed.
+Degree and interlacing adapters for recurrences beginning with a quadratic seed.
 -/
 
 open Polynomial

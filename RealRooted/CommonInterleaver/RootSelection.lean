@@ -7,7 +7,7 @@ import RealRooted.WagnerRightSum.Sign
 
 This file proves the finite-family root-selection lemma of
 Marcus--Spielman--Srivastava.  The orientation and degree gap are explicit: a
-polynomial of degree `d - 1` lies in proper position on the left of every
+polynomial of degree `d - 1` lies in an interlacing relation on the left of every
 degree-`d` family member.
 -/
 
@@ -129,7 +129,7 @@ theorem exists_largestRoot_le_of_common_left_pair
   have hfg_deg : f.natDegree = g.natDegree := hf_deg.trans hg_deg.symm
   have hsum_pos : HasPosLeadingCoeff (f + g) :=
     hasPosLeadingCoeff_add_of_same_natDegree hfg_deg hf_pos hg_pos
-  have hsum_prec : StrictInterl h (f + g) := by
+  have hsum_strictInterl : StrictInterl h (f + g) := by
     simpa using StrictInterl.sum_left_of_common_left_signed [f, g] h
       (by simp [hfh, hgh]) (by simp [hf_pos, hg_pos]) (by simp)
   have hd_pos : 0 < d := by lia
@@ -138,7 +138,7 @@ theorem exists_largestRoot_le_of_common_left_pair
   obtain ⟨rg, hrg⟩ :=
     LiuOppositeSigns.exists_isLargestRoot hgh.2.1.1 hgh.2.1.2 (by lia)
   obtain ⟨r, hr⟩ :=
-    LiuOppositeSigns.exists_isLargestRoot hsum_pos.ne_zero hsum_prec.2.1.2 (by
+    LiuOppositeSigns.exists_isLargestRoot hsum_pos.ne_zero hsum_strictInterl.2.1.2 (by
       rw [natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hfg_deg hf_pos hg_pos,
         hf_deg]
       exact hd_pos)
@@ -165,7 +165,7 @@ theorem exists_largestRoot_le_of_common_left_pair
     linarith
   have hh_lt : ∀ s ∈ h.roots, s < x := by
     intro s hs
-    have hs_le_r : s ≤ r := hsum_prec.roots_le_of_right hr.roots_le s hs
+    have hs_le_r : s ≤ r := hsum_strictInterl.roots_le_of_right hr.roots_le s hs
     exact hs_le_r.trans_lt hr_lt_x
   have hf_neg : f.eval x < 0 :=
     hfh.eval_neg_of_left_top_gap (by lia) hf_pos hh_lt
@@ -174,7 +174,7 @@ theorem exists_largestRoot_le_of_common_left_pair
     hgh.eval_neg_of_left_top_gap (by lia) hg_pos hh_lt
       ⟨rg, hrg.isRoot, hx_lt_rg⟩
   have hsum_eval_pos : 0 < (f + g).eval x :=
-    eval_pos_of_all_roots_lt hsum_pos.ne_zero hsum_prec.2.1.2 hsum_pos fun s hs =>
+    eval_pos_of_all_roots_lt hsum_pos.ne_zero hsum_strictInterl.2.1.2 hsum_pos fun s hs =>
       (hr.roots_le s hs).trans_lt hr_lt_x
   rw [Polynomial.eval_add] at hsum_eval_pos
   linarith
@@ -197,15 +197,15 @@ theorem exists_mem_largestRoot_le_weightedSum :
         ∃ rp rsum, IsLargestRoot ap.2 rp ∧
           IsLargestRoot (weightedSum l) rsum ∧ rp ≤ rsum
   | [], _, _, _, _, _, _, _, hex => by simp_all
-  | (a, p) :: l, h, d, hh_deg, hnonneg, hprec, hdeg, hpos, hex => by
+  | (a, p) :: l, h, d, hh_deg, hnonneg, hstrictInterl, hdeg, hpos, hex => by
       have ha_nonneg : 0 ≤ a := hnonneg (a, p) (by simp)
-      have hp_prec : StrictInterl h p := hprec (a, p) (by simp)
+      have hp_strictInterl : StrictInterl h p := hstrictInterl (a, p) (by simp)
       have hp_deg : p.natDegree = d := hdeg (a, p) (by simp)
       have hp_pos : HasPosLeadingCoeff p := hpos (a, p) (by simp)
       have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
         List.forall_mem_of_forall_mem_cons hnonneg
-      have hprec_tail : ∀ ap ∈ l, StrictInterl h ap.2 :=
-        List.forall_mem_of_forall_mem_cons hprec
+      have hstrictInterl_tail : ∀ ap ∈ l, StrictInterl h ap.2 :=
+        List.forall_mem_of_forall_mem_cons hstrictInterl
       have hdeg_tail : ∀ ap ∈ l, ap.2.natDegree = d :=
         List.forall_mem_of_forall_mem_cons hdeg
       have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
@@ -213,29 +213,30 @@ theorem exists_mem_largestRoot_le_weightedSum :
       rcases eq_or_lt_of_le ha_nonneg with rfl | ha_pos
       · obtain ⟨ap, hap, hap_pos, rp, rsum, hrp, hrsum, hle⟩ :=
           exists_mem_largestRoot_le_weightedSum hh_deg hnonneg_tail
-            hprec_tail hdeg_tail hpos_tail (by simp_all)
+            hstrictInterl_tail hdeg_tail hpos_tail (by simp_all)
         exact ⟨ap, by simp [hap], hap_pos, rp, rsum, hrp, by simpa using hrsum, hle⟩
       · by_cases htail : ∃ ap ∈ l, 0 < ap.1
         · obtain ⟨ap, hap, hap_pos, rp, rtail, hrp, hrtail, hrp_le⟩ :=
             exists_mem_largestRoot_le_weightedSum hh_deg hnonneg_tail
-              hprec_tail hdeg_tail hpos_tail htail
-          have htail_prec : StrictInterl h (weightedSum l) :=
+              hstrictInterl_tail hdeg_tail hpos_tail htail
+          have htail_strictInterl : StrictInterl h (weightedSum l) :=
             StrictInterl.weightedSum_left_of_common_left_signed
-              l h hnonneg_tail hprec_tail hpos_tail htail
+              l h hnonneg_tail hstrictInterl_tail hpos_tail htail
           have htail_deg : (weightedSum l).natDegree = d :=
             natDegree_weightedSum_eq_of_nonneg_of_sameDegree
               hnonneg_tail hdeg_tail hpos_tail htail
           have htail_pos : HasPosLeadingCoeff (weightedSum l) :=
             hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
-          have hscaled_prec : StrictInterl h (C a * p) :=
-            StrictInterl.C_mul_right hp_prec ha_pos.ne'
+          have hscaled_strictInterl : StrictInterl h (C a * p) :=
+            StrictInterl.C_mul_right hp_strictInterl ha_pos.ne'
           have hscaled_deg : (C a * p).natDegree = d := by
             rw [Polynomial.natDegree_C_mul ha_pos.ne', hp_deg]
           have hscaled_pos : HasPosLeadingCoeff (C a * p) :=
             hasPosLeadingCoeff_C_mul ha_pos hp_pos
           obtain ⟨rsum, hrsum, hhead | htail_sel⟩ :=
             exists_largestRoot_le_of_common_left_pair
-              hscaled_prec htail_prec hh_deg hscaled_deg htail_deg hscaled_pos htail_pos
+              hscaled_strictInterl htail_strictInterl hh_deg hscaled_deg htail_deg
+                hscaled_pos htail_pos
           · obtain ⟨rhead, hrhead, hle⟩ := hhead
             exact ⟨(a, p), by simp, ha_pos, rhead, rsum,
               hrhead.of_C_mul ha_pos.ne', by simpa [weightedSum_cons] using hrsum, hle⟩
@@ -255,7 +256,8 @@ theorem exists_mem_largestRoot_le_weightedSum :
                   exact htail ⟨ap, hap, hap_pos⟩
                 linarith)
           obtain ⟨rp, hrp⟩ :=
-            LiuOppositeSigns.exists_isLargestRoot hp_prec.2.1.1 hp_prec.2.1.2 (by lia)
+            LiuOppositeSigns.exists_isLargestRoot
+              hp_strictInterl.2.1.1 hp_strictInterl.2.1.2 (by lia)
           exact ⟨(a, p), by simp, ha_pos, rp, rp, hrp,
             by simpa [weightedSum_cons, hzero_tail] using hrp.C_mul ha_pos.ne', le_rfl⟩
 
@@ -268,7 +270,7 @@ theorem exists_mem_largestRoot_le_sum
     (hne : fs ≠ []) :
     ∃ p ∈ fs, ∃ rp rsum, IsLargestRoot p rp ∧
       IsLargestRoot fs.sum rsum ∧ rp ≤ rsum := by
-  rcases hcommon with ⟨h, hh_deg, hprec⟩
+  rcases hcommon with ⟨h, hh_deg, hstrictInterl⟩
   obtain ⟨ap, hap, _, rp, rsum, hrp, hrsum, hle⟩ :=
     exists_mem_largestRoot_le_weightedSum
       (l := fs.map fun p => ((1 : ℝ), p)) hh_deg

@@ -231,13 +231,13 @@ residual orientation target, the both-nonzero lead branch, and the right-zero
 `divX` orientation target. -/
 theorem
     succDegreePairHasCommonInterleaver_nonneg_of_residualStrictInterl_bothNonzero_divX_strictInterl
-    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement)
+    (hresStrictInterl : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement)
     (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
     (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_residualStrictInterl_bothNonzero_divX_strictInterl
-      hresPrec hboth hdivX)
+      hresStrictInterl hboth hdivX)
 
 @[deprecated
   succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_strictInterl

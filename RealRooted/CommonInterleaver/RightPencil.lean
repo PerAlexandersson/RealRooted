@@ -184,7 +184,7 @@ def CompatibleSuccDegreeNegativeRightFamilyNonnegStatement : Prop :=
     ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits
 
 /-- Coefficient-free compatible succ-degree orientation shortcut.  The forced
-proper-position orientation `f ≪ g` is false in general; this statement remains
+interlacing orientation `f ≪ g` is false in general; this statement remains
 only as a named failed route. -/
 def CompatibleSuccDegreeStrictInterlStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
@@ -947,7 +947,7 @@ theorem compatibleSuccDegreeAllCombo_of_negativeRightFamily_nonnegShift
     (compatibleSuccDegreeNegativeRightFamily_of_nonnegShift hneg)
 
 /-- The compatible succ-degree all-combinations target implies the forced
-proper-position orientation, by Obreschkoff's converse and degree orientation.
+interlacing orientation, by Obreschkoff's converse and degree orientation.
 -/
 theorem compatibleSuccDegreeStrictInterl_of_allCombo
     (hallTarget : CompatibleSuccDegreeAllComboStatement) :
@@ -1440,13 +1440,13 @@ the cases `g_le - f_le = 0` and `g_le - f_le = 1`; same-sign endpoint
 evaluations rule out the even zero case by the succ-degree lower-count parity
 bridge. -/
 theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl
-    (hprecTarget : CompatibleSuccDegreeStrictInterlStatement) :
+    (hstrictInterlTarget : CompatibleSuccDegreeStrictInterlStatement) :
     CompatibleSuccDegreeEndpointSignLowerCountEqStatement := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
-  have hprec : StrictInterl f g :=
-    hprecTarget hcomp hf_pos hg_pos hdeg hf_split
+  have hstrictInterl : StrictInterl f g :=
+    hstrictInterlTarget hcomp hf_pos hg_pos hdeg hf_split
   obtain ⟨hfg_le, hgf_le⟩ :=
-    succDegreeRootCountLowerOriented_of_strictInterl hprec hdeg x
+    succDegreeRootCountLowerOriented_of_strictInterl hstrictInterl hdeg x
   have hnot_even :
       ¬ Even (((f.roots.filter (· ≤ x)).card : ℤ) -
         (g.roots.filter (· ≤ x)).card) := by
@@ -1474,7 +1474,6 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl
         (g.roots.filter (· ≤ x)).card = 0 := by
     dsimp [d] at hd_zero
     linarith
-
   exact hnot_even (by rw [hfg_zero]; norm_num)
 
 @[deprecated compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl

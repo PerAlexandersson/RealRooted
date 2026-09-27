@@ -4,7 +4,7 @@ import RealRooted.MaWang
 /-!
 # Interlacing for quadratic-coefficient derivative recurrences
 
-Nonnegative-coefficient and proper-position results for the general
+Nonnegative-coefficient and interlacing results for the general
 linear-multiplier recurrence, including degree offsets.
 -/
 

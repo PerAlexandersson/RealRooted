@@ -332,7 +332,7 @@ lemma IsInterlacingSeqNonneg.toIsInterlacingSeq0NonnegRealRooted
     IsInterlacingSeq0NonnegRealRooted fs :=
   ⟨hfs.toIsInterlacingSeq0Nonneg, fun f hf _ => hfs.realRooted f hf⟩
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated IsInterlacingSeq.strictInterl (since := "2026-09-26")]
 alias IsInterlacingSeq.prec := IsInterlacingSeq.strictInterl

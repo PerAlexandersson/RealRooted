@@ -195,8 +195,8 @@ emulation. These scripts complement `lake build`; they do not replace it.
   normalized positive-leading pair. `LiuOppositeSigns.lean` retains the
   cross-owned-gap and left/right branch interface, with
   `LiuOppositeSignsTheorem.lean` providing the theorem endpoint. Its
-  `XSub/ProperPosition.lean` child exposes the ordinary-`Prec` bridge and the
-  nonnegative `X * p - μ * q` splitness corollary. Its
+  `XSub/ProperPosition.lean` child exposes the ordinary `StrictInterl` bridge
+  and the nonnegative `X * p - μ * q` splitness corollary. Its
   `XSub/IntervalRootCount/` package separates root filters, adjacent gaps,
   exterior tails, count-to-splitting endpoints, and the three degree cases;
   `XSub/IntervalRootCount.lean` remains the compatible import. Its
@@ -260,8 +260,8 @@ emulation. These scripts complement `lake build`; they do not replace it.
 
 ## Main Concepts
 
-- `Interlaces f g`, `Prec f g`, and `Prec0 f g`: the main interlacing and
-  proper-position relations.  `Prec0` is the zero-aware version.
+- `Interlaces f g`, `StrictInterl f g`, and `Interl f g`: the main strict,
+  oriented, and zero-aware interlacing relations.
 - `p = 0 ∨ p.Splits`: the zero-aware real-rootedness convention used in closure
   statements where the zero polynomial is a natural exceptional case.
 - `IsGeneralizedSturmSeq ps`, `IsInterlacingSeq fs`, and `IsInterlacingSeq0 fs`:
@@ -316,12 +316,12 @@ the checked or challenge-facing highlights are:
   Wagner (1992).
 - Obreschkoff's theorem: two polynomials have a real-rooted real pencil
   `alpha * f + beta * g` if and only if they interlace, up to orientation and
-  degree conventions.  See `allComboRealRooted_of_prec`,
-  `prec_of_allComboRealRooted`, and `RealRooted.Challenges.Obreschkoff`;
+  degree conventions.  See `allComboRealRooted_of_strictInterl`,
+  `strictInterl_of_allComboRealRooted`, and `RealRooted.Challenges.Obreschkoff`;
   references include Obreschkoff (1963), Dedieu (1992), and Branden (2004).
 - Interlacing preservers: a linear operator that preserves real-rootedness
   sends interlacing pairs to interlacing pairs, up to the zero and orientation
-  conventions used by `Prec0`.  See
+  conventions used by `Interl`.  See
   `operatorPreservesInterlacingPairsUpToOrder` and
   `RealRooted.Challenges.OperatorPreservers`; reference: Branden (2004).
 - Matrix preservers: a polynomial matrix with nonnegative coefficients
@@ -380,11 +380,11 @@ re-exports both APIs.
 
 - `derivative_interlaces`: Rolle-style derivative interlacing for real-rooted
   polynomials.
-- `prec_add_of_prec_right_of_posLeadingCoeff`, `prec_add_of_prec_left`, and
-  `prec0_mul_X_of_prec0`: checked Wagner-lemma forms for common interlacers
-  and multiplication by `X`.
-- `prec_ma_wang` and `generalizedLiuWangCriterion`: Ma-Wang and Liu-Wang style
-  criteria for interlacing recurrences and weighted sums.
+- `StrictInterl.add_of_right_of_posLeadingCoeff`, `StrictInterl.add_of_left`,
+  and `interl_mul_X_of_interl`: checked Wagner-lemma forms for common
+  interlacers and multiplication by `X`.
+- `strictInterl_ma_wang` and `generalizedLiuWangCriterion`: Ma-Wang and
+  Liu-Wang style criteria for interlacing recurrences and weighted sums.
 - `favardInterlacing` and `isRealRooted_of_favard`: a Favard recurrence
   interface for orthogonal-polynomial style Sturm sequences.
 - `SatisfiesFavardRecurrence.pairing_iIsOrtho`,
@@ -401,7 +401,7 @@ re-exports both APIs.
   interface for interlacing pairs.
 - `cauchy_interlacing`: Cauchy's eigenvalue interlacing theorem for Hermitian
   matrices and one-index principal submatrices.
-- `gwHadamardProductNonnegPrec`: the Garloff--Wagner proper-position theorem
+- `gwHadamardProductNonnegInterl`: the Garloff--Wagner interlacing theorem
   for coefficientwise Hadamard products of nonnegative real-rooted pairs.
 
 ### Compatibility And Common Interleavers
@@ -424,10 +424,10 @@ re-exports both APIs.
 - `idDecompositionExistsUnique` and `rdDecompositionExistsUnique`: existence
   and uniqueness of the Branden-Solus symmetric decompositions.
 - `brandenSolusTheorem26`: the formalized Branden-Solus Theorem 2.6 package in
-  the local `Prec` language.
+  the canonical interlacing language.
 - `isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs`: real-rootedness
   preservation for the `h -> f` transform in the nonnegative setting.
-- `strictPrecSameDegree_iff_bezoutMatrix_posDef`: strict same-degree
+- `strictInterlSameDegree_iff_bezoutMatrix_posDef`: strict same-degree
   Bezoutian characterization.
 
 ### Polya Frequency, ASW, And Veronese Sections
@@ -473,9 +473,9 @@ re-exports both APIs.
 - `not_isUpperHalfPlaneStable_hermiteBiehlerPolynomial_X_neg_one`: a checked
   counterexample documenting why the Hermite-Biehler forward route is exposed
   only in sign-normalized form.
-- `gammaU_prec_gammaV` and `gammaU_add_C_mul_gammaV_splits`: the directed
-  proper-position and all-real-parameter splitness endpoints for the A16634x
-  gamma pencil in every rank at least two.
+- `gammaU_strictInterl_gammaV` and `gammaU_add_C_mul_gammaV_splits`: the
+  directed interlacing and all-real-parameter splitness endpoints for the
+  A16634x gamma pencil in every rank at least two.
 
 ### Combinatorial Examples
 
@@ -492,9 +492,9 @@ declarations include:
 - `isRealRooted_motzkin`
 - `peakValuePolynomial_mvRealStable`: the peak-value enumerator of
   permutations is multivariate real stable in every rank.
-- `peakValueWeightedDiagonal_consecutive_prec`: positive weighted diagonal
-  specializations of consecutive peak-value enumerators are in proper
-  position (the weighted A008303 application).
+- `peakValueWeightedDiagonal_consecutive_strictInterl`: positive weighted
+  diagonal specializations of consecutive peak-value enumerators strictly
+  interlace (the weighted A008303 application).
 
 ## Current Roadmap
 

@@ -2,9 +2,9 @@ import RealRooted.GammaTransform.RootLists
 import RealRooted.GammaTransform.Preservation
 
 /-!
-# Gamma-transform proper position
+# Gamma-transform interlacing
 
-The adjacent-ambient-degree proper-position equivalence for gamma transforms.
+The adjacent-ambient-degree interlacing equivalence for gamma transforms.
 -/
 
 open Polynomial Finset
@@ -180,9 +180,9 @@ private lemma sort_roots_gammaTransform_eq_reciprocalCenterRoots
     ((Multiset.sort_eq _ _).trans
       (coe_reciprocalCenterRoots_eq_roots hγdeg hγ hneg).symm)
 
-/-- Hoster--Stump, Proposition 2.5: proper position is equivalent before and
+/-- Hoster--Stump, Proposition 2.5: interlacing is equivalent before and
 after applying adjacent-degree gamma transforms. -/
-theorem prec_gammaTransform_succ_iff
+theorem strictInterl_gammaTransform_succ_iff
     {d : ℕ} {γ δ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2)
     (hδdeg : δ.natDegree ≤ (d + 1) / 2)
@@ -217,14 +217,14 @@ theorem prec_gammaTransform_succ_iff
   have hss : ∀ x ∈ ss, x ∈ Set.Ioo (-1 : ℝ) 0 := by exact fun _ hx => mem_preferredRoots hx
   have hrs : ∀ x ∈ rs, x ∈ Set.Ioo (-1 : ℝ) 0 := by exact fun _ hx => mem_preferredRoots hx
   constructor
-  · intro hTprec
+  · intro hTstrictInterl
     have hγrr :=
       isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
-        hγdeg hTprec.1.1 hTprec.1.2
+        hγdeg hTstrictInterl.1.1 hTstrictInterl.1.2
         (roots_nonpos_of_hasNonnegCoeffs hTγnn)
     have hδrr :=
       isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
-        hδdeg hTprec.2.1.1 hTprec.2.1.2
+        hδdeg hTstrictInterl.2.1.1 hTstrictInterl.2.1.2
         (roots_nonpos_of_hasNonnegCoeffs hTδnn)
     have hsslen : ss.length = γ.natDegree := by
       exact length_preferredRoots hγdeg hγ hγrr.1.2
@@ -232,13 +232,13 @@ theorem prec_gammaTransform_succ_iff
     have hrslen : rs.length = δ.natDegree := by
       exact length_preferredRoots hδdeg hδ hδrr.1.2
         (roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0)
-    have hmult := hTprec.rootMultiplicity_bounds (-1)
+    have hmult := hTstrictInterl.rootMultiplicity_bounds (-1)
     rw [rootMultiplicity_neg_one_gammaTransform hγdeg hγ,
       rootMultiplicity_neg_one_gammaTransform hδdeg hδ] at hmult
     have hdegcases : γ.natDegree = δ.natDegree ∨
         γ.natDegree + 1 = δ.natDegree := by
       lia
-    have hsorted := hTprec.sorted_roots_shape
+    have hsorted := hTstrictInterl.sorted_roots_shape
     rw [sort_roots_gammaTransform_eq_reciprocalCenterRoots hγdeg hγ hTγneg,
       sort_roots_gammaTransform_eq_reciprocalCenterRoots hδdeg hδ hTδneg] at hsorted
     have hfull :
@@ -290,14 +290,14 @@ theorem prec_gammaTransform_succ_iff
         apply (listAlternates_iff_interleaves_of_length (by simpa using hlen)).2
         apply (interleaves_map_gammaRootMap_iff hrs hss).2
         exact (listAlternates_iff_interleaves_of_length hlen).1 halt
-  · intro hprec
+  · intro hstrictInterl
     have hγneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hγnn hγ0
     have hδneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0
     have hsslen : ss.length = γ.natDegree :=
-      length_preferredRoots hγdeg hγ hprec.1.2 hγneg
+      length_preferredRoots hγdeg hγ hstrictInterl.1.2 hγneg
     have hrslen : rs.length = δ.natDegree :=
-      length_preferredRoots hδdeg hδ hprec.2.1.2 hδneg
-    have hsorted := hprec.sorted_roots_shape
+      length_preferredRoots hδdeg hδ hstrictInterl.2.1.2 hδneg
+    have hsorted := hstrictInterl.sorted_roots_shape
     rw [sort_roots_eq_map_gammaRootMap_preferredRoots hγdeg hγ hγneg,
       sort_roots_eq_map_gammaRootMap_preferredRoots hδdeg hδ hδneg] at hsorted
     have hpreferred :
@@ -318,10 +318,10 @@ theorem prec_gammaTransform_succ_iff
         exact (listAlternates_iff_interleaves_of_length hlen).1 halt
     have hTγrr :=
       isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
-        hγdeg hγ hprec.1.2 hγnn
+        hγdeg hγ hstrictInterl.1.2 hγnn
     have hTδrr :=
       isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
-        hδdeg hδ hprec.2.1.2 hδnn
+        hδdeg hδ hstrictInterl.2.1.2 hδnn
     rcases hpreferred with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
     · have hcenter : d - 2 * γ.natDegree =
           (d + 1 - 2 * δ.natDegree) + 1 := by
@@ -372,6 +372,8 @@ theorem prec_gammaTransform_succ_iff
         coe_reciprocalCenterRoots_eq_roots hδdeg hδ hTδneg,
         Or.inl ⟨hfull_len, hfull⟩⟩
 
+@[deprecated strictInterl_gammaTransform_succ_iff (since := "2026-09-26")]
+alias prec_gammaTransform_succ_iff := strictInterl_gammaTransform_succ_iff
 
 
 end RealRooted

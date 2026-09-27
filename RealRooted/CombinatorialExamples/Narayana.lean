@@ -254,7 +254,7 @@ lemma narayanaQuot_one_two_interlaces :
     interlaces_one_linear (p := X + C (1 : ℝ))
       (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
 
-private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
+private lemma strictInterl_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     (hInter : Interlaces (narayanaQuot n) (narayanaQuot (n + 1)))
     (_hnonneg : HasNonnegCoeffs (narayanaQuot (n + 1))) :
     StrictInterl (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) := by
@@ -291,7 +291,7 @@ private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
 /-- Conditional oriented interlacing for the quotient Narayana sequence. Once
 nonnegative coefficients are known, the three-term recurrence is an immediate
 weak Liu--Wang induction. -/
-theorem prec_narayanaQuot_succ_of_nonnegCoeffs :
+theorem strictInterl_narayanaQuot_succ_of_nonnegCoeffs :
     ∀ n : Nat, 1 ≤ n →
       (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
       StrictInterl (narayanaQuot n) (narayanaQuot (n + 1))
@@ -300,18 +300,18 @@ theorem prec_narayanaQuot_succ_of_nonnegCoeffs :
   | 1, _, _ => narayanaQuot_one_two_interlaces.toStrictInterl
   | n + 2, _, hnonneg => by
       have hprev : StrictInterl (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
-        prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg
+        strictInterl_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg
       have hInter : Interlaces (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
         hprev.toInterlaces <| by
           rw [natDegree_narayanaQuot (n + 2) (by lia),
             natDegree_narayanaQuot (n + 1) (by lia)]
           lia
-      exact prec_narayanaQuot_step (n + 1) (by lia) hInter (hnonneg (n + 2))
+      exact strictInterl_narayanaQuot_step (n + 1) (by lia) hInter (hnonneg (n + 2))
 
 theorem interlaces_narayanaQuot_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
     (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
     Interlaces (narayanaQuot n) (narayanaQuot (n + 1)) :=
-  (prec_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg).toInterlaces <| by
+  (strictInterl_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg).toInterlaces <| by
     rw [natDegree_narayanaQuot (n + 1) (by lia), natDegree_narayanaQuot n hn]
     lia
 
@@ -323,22 +323,23 @@ theorem isRealRooted_narayanaQuot_of_nonnegCoeffs :
   | 0, hn, _ => by lia
   | 1, _, _ => by simp
   | n + 2, _, hnonneg =>
-      (prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).2.1
+      (strictInterl_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).2.1
 
 /-- Conditional interlacing for the original Narayana sequence. This is just
 the quotient result with the common `X` factor reattached on both sides. -/
 theorem interlaces_narayana_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
     (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
     Interlaces (narayana n) (narayana (n + 1)) := by
-  have hprecQ : StrictInterl (narayanaQuot n) (narayanaQuot (n + 1)) :=
-    prec_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg
+  have hstrictInterlQ : StrictInterl (narayanaQuot n) (narayanaQuot (n + 1)) :=
+    strictInterl_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg
   have hmain : StrictInterl (X * narayanaQuot n) (X * narayanaQuot (n + 1)) := by
-    rr_prec_mul_X_both using
-      proper := hprecQ,
+    rr_strict_interl_mul_X_both using
+      proper := hstrictInterlQ,
       left_nonneg := hnonneg n,
       right_nonneg := hnonneg (n + 1)
-  have hprec : StrictInterl (narayana n) (narayana (n + 1)) := by simpa [narayana] using hmain
-  exact hprec.toInterlaces (by
+  have hstrictInterl : StrictInterl (narayana n) (narayana (n + 1)) := by
+    simpa [narayana] using hmain
+  exact hstrictInterl.toInterlaces (by
     rw [natDegree_narayana (n + 1) (by lia), natDegree_narayana n hn])
 
 /-- Conditional real-rootedness of the original Narayana sequence. -/
@@ -378,5 +379,9 @@ theorem isSturmSeq_narayanaPrefix_of_nonnegCoeffs
       | succ n =>
           simpa [narayanaPrefix, IsSturmSeq] using
             And.intro (interlaces_narayana_succ_of_nonnegCoeffs (n + 2) (by lia) hnonneg) ih
+
+@[deprecated strictInterl_narayanaQuot_succ_of_nonnegCoeffs (since := "2026-09-26")]
+alias prec_narayanaQuot_succ_of_nonnegCoeffs :=
+  strictInterl_narayanaQuot_succ_of_nonnegCoeffs
 
 end RealRooted

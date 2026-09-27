@@ -1,7 +1,7 @@
 import RealRooted.VeroneseMatrix
 
 /-!
-# Strict proper position between normalized Veronese sections
+# Strict interlacing between normalized Veronese sections
 
 The production Veronese matrix theorem packages the residue sections of one
 nonnegative real-rooted polynomial as a descending weak interlacing list.
@@ -19,7 +19,7 @@ noncomputable section
 
 namespace RealRooted
 
-theorem prec_veroneseSectionPolynomial_of_residue_lt
+theorem strictInterl_veroneseSectionPolynomial_of_residue_lt
     {r j k : ℕ} (hr : 0 < r) (hjk : j < k) (hk : k < r)
     {p : ℝ[X]} (hpnn : HasNonnegCoeffs p) (hp0 : p ≠ 0)
     (hps : p.Splits)
@@ -38,7 +38,7 @@ theorem prec_veroneseSectionPolynomial_of_residue_lt
   have hiq : i < q := by
     simp [i, q, ir, qr]
     lia
-  have hprec0 : Interl (fs.get i) (fs.get q) := by
+  have hinterl : Interl (fs.get i) (fs.get q) := by
     exact (isInterlacingSeq0_iff_pairwise.mp hpkg.1.1).rel_get_of_lt hiq
   have hi : fs.get i = veroneseSectionPolynomial r k p := by
     rw [show fs.get i = veroneseSectionPolynomial r (r - 1 - ir.1) p by
@@ -52,7 +52,11 @@ theorem prec_veroneseSectionPolynomial_of_residue_lt
     simp [qr]
     congr 1
     lia
-  rw [hi, hq] at hprec0
-  exact hprec0.toStrictInterl_of_ne hk0 hj0
+  rw [hi, hq] at hinterl
+  exact hinterl.toStrictInterl_of_ne hk0 hj0
+
+@[deprecated strictInterl_veroneseSectionPolynomial_of_residue_lt (since := "2026-09-26")]
+alias prec_veroneseSectionPolynomial_of_residue_lt :=
+  strictInterl_veroneseSectionPolynomial_of_residue_lt
 
 end RealRooted

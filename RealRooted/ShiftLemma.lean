@@ -93,7 +93,7 @@ lemma shift_natDegree_of_same_degree {f h : ℝ[X]}
 /-- The shift lemma when `h` and `f` have the same degree. -/
 theorem strictInterl_shift_of_same_degree
     {f h : ℝ[X]}
-    (hprec : StrictInterl h f)
+    (hstrictInterl : StrictInterl h f)
     (hdeg : h.natDegree = f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hh_pos : HasPosLeadingCoeff h)
@@ -108,9 +108,9 @@ theorem strictInterl_shift_of_same_degree
     let h' := h.comp (X + C 1)
     let f' := f.comp (X + C 1)
     have hh' : (h' ≠ 0 ∧ h'.Splits) := by
-      simpa [h'] using isRealRooted_comp_X_add_C hprec.1.1 hprec.1.2 1
+      simpa [h'] using isRealRooted_comp_X_add_C hstrictInterl.1.1 hstrictInterl.1.2 1
     have hf' : (f' ≠ 0 ∧ f'.Splits) := by
-      simpa [f'] using isRealRooted_comp_X_add_C hprec.2.1.1 hprec.2.1.2 1
+      simpa [f'] using isRealRooted_comp_X_add_C hstrictInterl.2.1.1 hstrictInterl.2.1.2 1
     have hh'_nonpos : ∀ s ∈ h'.roots, s ≤ 0 := by
       intro s hs
       simp only [h', roots_comp_X_add_C 1] at hs
@@ -125,12 +125,12 @@ theorem strictInterl_shift_of_same_degree
       have hdeg_mul :=
         congrArg (fun n => n * (X + C (1 : ℝ)).natDegree) hdeg
       simpa [h', f', natDegree_comp] using hdeg_mul
-    have hprec' : StrictInterl h' f' := by
+    have hstrictInterl' : StrictInterl h' f' := by
       simpa [h', f'] using
-        (StrictInterl.comp_X_add_C_iff (f := h) (g := f) 1).2 hprec
+        (StrictInterl.comp_X_add_C_iff (f := h) (g := f) 1).2 hstrictInterl
     have hfX' : StrictInterl f' (X * h') :=
       strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos
-        hprec' hdeg' hh'_nonpos hf'_nonpos
+        hstrictInterl' hdeg' hh'_nonpos hf'_nonpos
     have htranslated : StrictInterl f' (t.comp (X + C 1)) := by
       simpa [t, h', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using hfX'
@@ -143,7 +143,7 @@ theorem strictInterl_shift_of_same_degree
     · intro p hp
       have hp' : p = f ∨ p = t := by simp_all
       rcases hp' with rfl | rfl
-      · exact StrictInterl.refl hprec.2.1.1 hprec.2.1.2
+      · exact StrictInterl.refl hstrictInterl.2.1.1 hstrictInterl.2.1.2
       · lia
     · simp_all
     · lia
@@ -164,10 +164,10 @@ theorem strictInterl_shift
     (hh_nonpos : ∀ r ∈ h.roots, r ≤ 0)
     (hf_pos : HasPosLeadingCoeff f)
     (hh_pos : HasPosLeadingCoeff h)
-    (hprec : StrictInterl h f)
+    (hstrictInterl : StrictInterl h f)
     (heval : h.eval 0 ≤ f.eval 0) :
     StrictInterl f (f + (X - C 1) * h) := by
-  obtain ⟨_, _, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := hprec
+  obtain ⟨_, _, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := hstrictInterl
   have hss_len : ss.length = h.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hh_splits]
   have hrs_len : rs.length = f.natDegree := by
@@ -194,10 +194,11 @@ theorem strictInterl_shift' {F H : ℝ[X]}
     (hH_nonpos : ∀ r ∈ H.roots, r ≤ 0)
     (hF_pos : HasPosLeadingCoeff F)
     (hH_pos : HasPosLeadingCoeff H)
-    (hinterl : StrictInterl H F)
+    (hstrictInterl : StrictInterl H F)
     (heval : H.eval 0 ≤ F.eval 0) :
     StrictInterl F (F + (X - C 1) * H) :=
-  strictInterl_shift hF_ne hF_splits hH_ne hH_splits hF_nonpos hH_nonpos hF_pos hH_pos hinterl heval
+  strictInterl_shift hF_ne hF_splits hH_ne hH_splits hF_nonpos hH_nonpos hF_pos hH_pos
+    hstrictInterl heval
 
 @[deprecated strictInterl_shift_of_interlaces (since := "2026-09-18")]
 alias prec_shift_of_interlaces := strictInterl_shift_of_interlaces

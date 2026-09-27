@@ -1,7 +1,7 @@
 /-
 # Affine derivative preserves interlacing
 
-Main result (`prec_affine_derivative`): if `f` is real-rooted with all roots ≤ 0
+Main result (`strictInterl_affine_derivative`): if `f` is real-rooted with all roots ≤ 0
 and `c > natDegree f`, then
   `StrictInterl (C c * f + (1 - X) * f.derivative) f`.
 
@@ -814,7 +814,7 @@ private lemma neg_pow_prod_nonneg_of_all_nonpos (s : Multiset ℝ)
 
 /-- Package a same-degree interlacing witness once the extra root on the `g` side
     is known to lie to the left of the first root of `f`. -/
-private lemma prec_of_extra_root_left {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0)
+private lemma strictInterl_of_extra_root_left {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0)
     (hf : f.Splits) (hg : g.Splits)
     {u r₁ : ℝ} {ss rest : List ℝ}
     (hrs_sorted : (r₁ :: rest).Pairwise (· ≤ ·))
@@ -837,7 +837,7 @@ private lemma prec_of_extra_root_left {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : 
 /-- **Affine derivative interlacing**: if `f` is real-rooted with all roots ≤ 0,
 positive leading coefficient, degree ≥ 2, and `c > natDegree f`, then
 `C c * f + (1 - X) * f.derivative` interlaces `f` (same-degree `StrictInterl`). -/
-theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
+theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     (hdeg : 2 ≤ f.natDegree)
     (hf₀ : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
@@ -900,7 +900,7 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
   have hr₁_nonpos : r₁ ≤ 0 := hroots_nonpos r₁ hr₁_mem_f
   have hc_pos : 0 < c := by grind
   by_cases hu : u ≤ r₁
-  · exact prec_of_extra_root_left hf₀.ne_zero hg₀.ne_zero hf hg_rr hrs_sorted
+  · exact strictInterl_of_extra_root_left hf₀.ne_zero hg₀.ne_zero hf hg_rr hrs_sorted
       hrs_eq hu_roots_eq' hss_interlaces hu
   · have hu_gt : r₁ < u := lt_of_not_ge hu
     set m := f.rootMultiplicity r₁ with hm_def
@@ -1088,7 +1088,7 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     linarith
 
 /-- Degree 1 version: both `g` and `f` have degree 1, and `g`'s root is left of `f`'s. -/
-theorem prec_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
+theorem strictInterl_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
     (hdeg : f.natDegree = 1)
     (hf₀ : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
@@ -1134,14 +1134,14 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
     Or.inr ⟨rfl, hsr, trivial⟩⟩
 
 /-- Combined version for degree ≥ 1. -/
-theorem prec_affine_derivative' {f : ℝ[X]} (hf : f.Splits) (hdeg : 1 ≤ f.natDegree)
+theorem strictInterl_affine_derivative' {f : ℝ[X]} (hf : f.Splits) (hdeg : 1 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
     StrictInterl (C c * f + (1 - X) * f.derivative) f := by
   rcases eq_or_lt_of_le hdeg with h | h
-  · exact prec_affine_derivative_deg_one hf h.symm hf_pos hroots_nonpos hc
-  · exact prec_affine_derivative hf h hf_pos hroots_nonpos hc
+  · exact strictInterl_affine_derivative_deg_one hf h.symm hf_pos hroots_nonpos hc
+  · exact strictInterl_affine_derivative hf h hf_pos hroots_nonpos hc
 
 /-! ## Sign wrappers at nonpositive roots
 
@@ -1173,23 +1173,23 @@ lemma eval_affineDeriv_neg_iff {f : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) (c : ℝ
   · intro h
     exact mul_neg_of_pos_of_neg h1 h
 
-/-- **Applied form** of `prec_affine_derivative'` for polynomials with
+/-- **Applied form** of `strictInterl_affine_derivative'` for polynomials with
 nonnegative coefficients. Such polynomials automatically have nonpositive roots
 (`roots_nonpos_of_hasNonnegCoeffs`) and positive leading coefficient
 (`HasNonnegCoeffs.pos_leadingCoeff`), so only real-rootedness, degree `≥ 1`, and
 `c > natDegree f` need to be supplied. -/
-theorem prec_affine_derivative_of_nonnegCoeffs {f : ℝ[X]} (hf : f.Splits)
+theorem strictInterl_affine_derivative_of_nonnegCoeffs {f : ℝ[X]} (hf : f.Splits)
     (hdeg : 1 ≤ f.natDegree) (hfnn : HasNonnegCoeffs f)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
     StrictInterl (C c * f + (1 - X) * f.derivative) f := by
   have hf0 : f ≠ 0 := by rintro rfl; simp at hdeg
-  exact prec_affine_derivative' hf hdeg (hfnn.pos_leadingCoeff hf0)
+  exact strictInterl_affine_derivative' hf hdeg (hfnn.pos_leadingCoeff hf0)
     (roots_nonpos_of_hasNonnegCoeffs hfnn) hc
 
 /-- If `f` is split with nonnegative coefficients and degree at least two, then
 the derivative block `(1 - X) * f'` lies on the right of `f` in the oriented
 `StrictInterl` relation. -/
-theorem prec_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
+theorem strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
     (hf : f.Splits) (hdeg : 2 ≤ f.natDegree) (hnn : HasNonnegCoeffs f) :
     StrictInterl f ((1 - X) * f.derivative) := by
   have hder : StrictInterl f.derivative f := (derivative_interlaces hf hdeg).toStrictInterl
@@ -1214,5 +1214,23 @@ theorem prec_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
   have hscaled : StrictInterl f (C (-1) * ((X - C 1) * f.derivative)) :=
     StrictInterl.C_mul_right hmain (by simp)
   grind
+
+@[deprecated strictInterl_affine_derivative (since := "2026-09-26")]
+alias prec_affine_derivative := strictInterl_affine_derivative
+
+@[deprecated strictInterl_affine_derivative_deg_one (since := "2026-09-26")]
+alias prec_affine_derivative_deg_one := strictInterl_affine_derivative_deg_one
+
+@[deprecated strictInterl_affine_derivative' (since := "2026-09-26")]
+alias prec_affine_derivative' := strictInterl_affine_derivative'
+
+@[deprecated strictInterl_affine_derivative_of_nonnegCoeffs (since := "2026-09-26")]
+alias prec_affine_derivative_of_nonnegCoeffs :=
+  strictInterl_affine_derivative_of_nonnegCoeffs
+
+@[deprecated strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs
+  (since := "2026-09-26")]
+alias prec_one_sub_X_mul_derivative_right_of_nonnegCoeffs :=
+  strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs
 
 end RealRooted

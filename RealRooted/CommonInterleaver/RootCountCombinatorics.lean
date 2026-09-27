@@ -734,13 +734,13 @@ the interlacing relation `StrictInterl f g` forces the succ-degree upper-thresho
 root-count inequalities: the numbers of roots strictly above each threshold
 differ by at most one in each direction. -/
 theorem succDegreeRootCountAbove_of_strictInterl
-    {f g : ℝ[X]} (hprec : StrictInterl f g)
+    {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
     (hdeg : g.natDegree = f.natDegree + 1) :
     ∀ x : ℝ,
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
   obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, hss, hrs, hss_eq, hrs_eq, hinter⟩ :=
-    hprec.exists_interleaves_of_succDegree hdeg
+    hstrictInterl.exists_interleaves_of_succDegree hdeg
   have hint : ListInterlaces ss rs :=
     listInterlaces_of_interleaves_of_length hlen hinter
   intro x
@@ -768,21 +768,22 @@ theorem rootCountAbove_derivative_diff_le_one_of_splits
           (p.roots.filter (x < ·)).card ≤ 1 ∧
       ((p.roots.filter (x < ·)).card : ℤ) -
           (p.derivative.roots.filter (x < ·)).card ≤ 1 := by
-  have hprec : StrictInterl p.derivative p := (derivative_interlaces hp hdeg).toStrictInterl
+  have hstrictInterl : StrictInterl p.derivative p :=
+    (derivative_interlaces hp hdeg).toStrictInterl
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia
-  exact succDegreeRootCountAbove_of_strictInterl hprec hdeg'
+  exact succDegreeRootCountAbove_of_strictInterl hstrictInterl hdeg'
 
 /-- `StrictInterl`-to-root-count bridge in lower-threshold form. -/
 theorem succDegreeRootCount_of_strictInterl
-    {f g : ℝ[X]} (hprec : StrictInterl f g)
+    {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
     (hdeg : g.natDegree = f.natDegree + 1) :
     ∀ x : ℝ,
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
-  succDegreeRootCount_of_rootCountAbove hprec.1.2 hprec.2.1.2 hdeg
-    (succDegreeRootCountAbove_of_strictInterl hprec hdeg)
+  succDegreeRootCount_of_rootCountAbove hstrictInterl.1.2 hstrictInterl.2.1.2 hdeg
+    (succDegreeRootCountAbove_of_strictInterl hstrictInterl hdeg)
 
 @[deprecated succDegreeRootCount_of_strictInterl (since := "2026-09-18")]
 alias succDegreeRootCount_of_prec := succDegreeRootCount_of_strictInterl
@@ -799,11 +800,12 @@ theorem rootCount_derivative_diff_le_two_of_splits
           (p.roots.filter (· ≤ x)).card ≤ 0 ∧
       ((p.roots.filter (· ≤ x)).card : ℤ) -
           (p.derivative.roots.filter (· ≤ x)).card ≤ 2 := by
-  have hprec : StrictInterl p.derivative p := (derivative_interlaces hp hdeg).toStrictInterl
+  have hstrictInterl : StrictInterl p.derivative p :=
+    (derivative_interlaces hp hdeg).toStrictInterl
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia
-  exact succDegreeRootCount_of_strictInterl hprec hdeg'
+  exact succDegreeRootCount_of_strictInterl hstrictInterl hdeg'
 
 /-- Tight oriented lower-threshold `StrictInterl`-to-root-count bridge for the
 differ-by-one case.
@@ -811,14 +813,14 @@ differ-by-one case.
 If `p ≺ q` and `q` has one more root than `p`, then every lower threshold
 contains at least as many roots of `q` as roots of `p`, but at most one more. -/
 theorem succDegreeRootCountLowerOriented_of_strictInterl
-    {p q : ℝ[X]} (hprec : StrictInterl p q)
+    {p q : ℝ[X]} (hstrictInterl : StrictInterl p q)
     (hdeg : q.natDegree = p.natDegree + 1) :
     ∀ x : ℝ,
       ((p.roots.filter (· ≤ x)).card : ℤ) ≤ (q.roots.filter (· ≤ x)).card ∧
       ((q.roots.filter (· ≤ x)).card : ℤ) ≤
         (p.roots.filter (· ≤ x)).card + 1 := by
   obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, hss, hrs, hss_eq, hrs_eq, hinter⟩ :=
-    hprec.exists_interleaves_of_succDegree hdeg
+    hstrictInterl.exists_interleaves_of_succDegree hdeg
   have hint : ListInterlaces ss rs :=
     listInterlaces_of_interleaves_of_length hlen hinter
   intro x
@@ -842,15 +844,15 @@ differ-by-one case.
 If `p ≺ q` and `q` has one more root than `p`, then every upper threshold
 contains at least as many roots of `q` as roots of `p`, but at most one more. -/
 theorem succDegreeRootCountAboveOriented_of_strictInterl
-    {p q : ℝ[X]} (hprec : StrictInterl p q)
+    {p q : ℝ[X]} (hstrictInterl : StrictInterl p q)
     (hdeg : q.natDegree = p.natDegree + 1) :
     ∀ x : ℝ,
       ((p.roots.filter (x < ·)).card : ℤ) ≤ (q.roots.filter (x < ·)).card ∧
       ((q.roots.filter (x < ·)).card : ℤ) ≤
         (p.roots.filter (x < ·)).card + 1 := fun x =>
   (succDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
-    hprec.1.2 hprec.2.1.2 hdeg x).mpr
-    (succDegreeRootCountLowerOriented_of_strictInterl hprec hdeg x)
+    hstrictInterl.1.2 hstrictInterl.2.1.2 hdeg x).mpr
+    (succDegreeRootCountLowerOriented_of_strictInterl hstrictInterl hdeg x)
 
 @[deprecated succDegreeRootCountAboveOriented_of_strictInterl (since := "2026-09-18")]
 alias succDegreeRootCountAboveOriented_of_prec :=
@@ -864,11 +866,12 @@ theorem rootCountAbove_derivative_oriented_of_splits
         (p.roots.filter (x < ·)).card ∧
       ((p.roots.filter (x < ·)).card : ℤ) ≤
         (p.derivative.roots.filter (x < ·)).card + 1 := by
-  have hprec : StrictInterl p.derivative p := (derivative_interlaces hp hdeg).toStrictInterl
+  have hstrictInterl : StrictInterl p.derivative p :=
+    (derivative_interlaces hp hdeg).toStrictInterl
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia
-  exact succDegreeRootCountAboveOriented_of_strictInterl hprec hdeg'
+  exact succDegreeRootCountAboveOriented_of_strictInterl hstrictInterl hdeg'
 
 /-- A forward upper-count gap of at least three propagates to a derivative gap
 of at least two. -/
@@ -978,13 +981,13 @@ interlacing relation `StrictInterl p q` forces the oriented lower-threshold root
 inequalities: at each threshold `q` has at most as many roots at or below it as
 `p`, and `p` has at most one more than `q`. -/
 theorem sameDegreeRootCountOriented_of_strictInterl
-    {p q : ℝ[X]} (hprec : StrictInterl p q)
+    {p q : ℝ[X]} (hstrictInterl : StrictInterl p q)
     (hdeg : q.natDegree = p.natDegree) :
     ∀ x : ℝ,
       ((q.roots.filter (· ≤ x)).card : ℤ) ≤ (p.roots.filter (· ≤ x)).card ∧
       ((p.roots.filter (· ≤ x)).card : ℤ) ≤ (q.roots.filter (· ≤ x)).card + 1 := by
   obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, hss, hrs, hss_eq, hrs_eq, hinter⟩ :=
-    hprec.exists_interleaves_of_natDegree_eq hdeg.symm
+    hstrictInterl.exists_interleaves_of_natDegree_eq hdeg.symm
   have halt : ListAlternates ss rs :=
     listAlternates_of_interleaves_of_length hlen hinter
   intro x

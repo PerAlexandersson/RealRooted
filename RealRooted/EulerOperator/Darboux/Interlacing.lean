@@ -20,10 +20,10 @@ noncomputable section
 
 namespace RealRooted
 
-/-- A sign-normalized Darboux output is in proper position when the input is
+/-- A sign-normalized Darboux output is in an interlacing relation when the input is
 real-rooted on `[0,1]` and the expected degree and leading-coefficient data
 hold. -/
-theorem prec_neg_darbouxOperator_of_roots_mem_Icc
+theorem strictInterl_neg_darbouxOperator_of_roots_mem_Icc
     {a b : ℝ} {p : ℝ[X]}
     (hp : p.Splits) (hdegp : 1 ≤ p.natDegree)
     (hp_pos : HasPosLeadingCoeff p)
@@ -48,6 +48,10 @@ theorem prec_neg_darbouxOperator_of_roots_mem_Icc
   simp only [eval_mul, eval_neg, eval_X, eval_sub, eval_one]
   nlinarith
 
+@[deprecated strictInterl_neg_darbouxOperator_of_roots_mem_Icc (since := "2026-09-26")]
+alias prec_neg_darbouxOperator_of_roots_mem_Icc :=
+  strictInterl_neg_darbouxOperator_of_roots_mem_Icc
+
 /-- A degree-raising Darboux output weakly interlaces its input under the same
 unit-interval sign hypotheses. -/
 theorem darbouxOperator_interlaces_of_roots_mem_Icc
@@ -58,18 +62,18 @@ theorem darbouxOperator_interlaces_of_roots_mem_Icc
     (hdeg : (darbouxOperator a b p).natDegree = p.natDegree + 1)
     (hroots : ∀ r ∈ p.roots, 0 ≤ r ∧ r ≤ 1) :
     Interlaces p (darbouxOperator a b p) := by
-  have hprec_neg : StrictInterl p (-darbouxOperator a b p) :=
-    prec_neg_darbouxOperator_of_roots_mem_Icc hp hdegp hp_pos houtput_pos
+  have hStrictInterl_neg : StrictInterl p (-darbouxOperator a b p) :=
+    strictInterl_neg_darbouxOperator_of_roots_mem_Icc hp hdegp hp_pos houtput_pos
       (by rw [natDegree_neg, hdeg]; lia)
       (by rw [natDegree_neg, hdeg]) hroots
-  have hprec : StrictInterl p (darbouxOperator a b p) := by
-    simpa using StrictInterl.C_mul_right hprec_neg (a := (-1 : ℝ)) (by norm_num)
-  exact hprec.toInterlaces (by rw [hdeg])
+  have hStrictInterl : StrictInterl p (darbouxOperator a b p) := by
+    simpa using StrictInterl.C_mul_right hStrictInterl_neg (a := (-1 : ℝ)) (by norm_num)
+  exact hStrictInterl.toInterlaces (by rw [hdeg])
 
 /-- Moving both Darboux parameters by a nonnegative shift orients the two
 outputs once the shifted output interlaces the input and has roots at most
 one. -/
-theorem darbouxOperator_shift_prec
+theorem darbouxOperator_shift_strictInterl
     {a b s : ℝ} {p : ℝ[X]}
     (hs : 0 ≤ s)
     (hinter : Interlaces p (darbouxOperator (a + s) (b + s) p))
@@ -102,5 +106,8 @@ theorem darbouxOperator_shift_prec
       simpa [shifted] using hroots r hr_mem
     simp only [eval_mul, eval_C, eval_sub, eval_X]
     nlinarith
+
+@[deprecated darbouxOperator_shift_strictInterl (since := "2026-09-26")]
+alias darbouxOperator_shift_prec := darbouxOperator_shift_strictInterl
 
 end RealRooted

@@ -223,7 +223,7 @@ theorem hermiteBiehlerPolynomial_C_mul (a : ℝ) (f g : ℝ[X]) :
   ring
 
 /-- With positive leading coefficients in the direct normalization, strict
-Hurwitz stability forces the rotated odd part to be in proper position with
+Hurwitz stability forces the rotated odd part to be in an interlacing relation with
 respect to the rotated even part. -/
 theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_posLeading
     {odd even : ℝ[X]}
@@ -236,7 +236,7 @@ theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_posLeading
     h.upperHalfPlaneStable_rotatedParts hdegree
 
 /-- With positive leading coefficients after multiplication by `i`, strict
-Hurwitz stability forces the rotated even part to be in proper position with
+Hurwitz stability forces the rotated even part to be in an interlacing relation with
 respect to the negated rotated odd part. -/
 theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_swapped_of_posLeading
     {odd even : ℝ[X]}
@@ -286,11 +286,11 @@ theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_evenShape
       Polynomial.natDegree_comp]
     simp only [natDegree_neg, natDegree_pow, natDegree_X]
     lia
-  have hprec : StrictInterl
+  have hstrictInterl : StrictInterl
       (Polynomial.C s * hurwitzRotatedOddPart odd)
       (Polynomial.C s * hurwitzRotatedEvenPart even) :=
     strictInterl_of_stable_general heven' hodd' hstable hdegree'
-  have hscaled := (hprec.C_mul_left hs0).C_mul_right hs0
+  have hscaled := (hstrictInterl.C_mul_left hs0).C_mul_right hs0
   simpa [← mul_assoc, ← Polynomial.C_mul, hsquare] using hscaled
 
 /-- In the odd-degree parity shape, strict stability and positive leading
@@ -344,11 +344,11 @@ theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_oddShape
       natDegree_neg, Polynomial.natDegree_comp]
     simp only [natDegree_neg, natDegree_pow, natDegree_X]
     lia
-  have hprec : StrictInterl
+  have hstrictInterl : StrictInterl
       (Polynomial.C s * hurwitzRotatedEvenPart even)
       (Polynomial.C s * -hurwitzRotatedOddPart odd) :=
     strictInterl_of_stable_general hodd' heven' hstable hdegree'
-  have hscaled := (hprec.C_mul_left hs0).C_mul_right hs0
+  have hscaled := (hstrictInterl.C_mul_left hs0).C_mul_right hs0
   have hneg : StrictInterl
       (hurwitzRotatedEvenPart even) (-hurwitzRotatedOddPart odd) := by
     simpa [← mul_assoc, ← Polynomial.C_mul, hsquare] using hscaled
@@ -362,10 +362,10 @@ theorem IsStrictlyHurwitzStable.splits_parts_of_evenShape
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree + 1) :
     odd.Splits ∧ even.Splits := by
-  have hprec := h.strictInterl_rotatedParts_of_evenShape hodd heven hdegree
+  have hstrictInterl := h.strictInterl_rotatedParts_of_evenShape hodd heven hdegree
   exact
-    ⟨Polynomial.Splits.of_hurwitzRotatedOddPart hprec.1.2,
-      Polynomial.Splits.of_hurwitzRotatedEvenPart hprec.2.1.2⟩
+    ⟨Polynomial.Splits.of_hurwitzRotatedOddPart hstrictInterl.1.2,
+      Polynomial.Splits.of_hurwitzRotatedEvenPart hstrictInterl.2.1.2⟩
 
 /-- The parity inputs of an odd-shape strictly stable polynomial are both
 real-rooted. -/
@@ -375,10 +375,10 @@ theorem IsStrictlyHurwitzStable.splits_parts_of_oddShape
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree) :
     odd.Splits ∧ even.Splits := by
-  have hprec := h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree
+  have hstrictInterl := h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree
   exact
-    ⟨Polynomial.Splits.of_hurwitzRotatedOddPart hprec.2.1.2,
-      Polynomial.Splits.of_hurwitzRotatedEvenPart hprec.1.2⟩
+    ⟨Polynomial.Splits.of_hurwitzRotatedOddPart hstrictInterl.2.1.2,
+      Polynomial.Splits.of_hurwitzRotatedEvenPart hstrictInterl.1.2⟩
 
 @[deprecated IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_posLeading
   (since := "2026-09-18")]

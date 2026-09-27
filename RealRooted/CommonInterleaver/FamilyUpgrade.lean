@@ -141,7 +141,7 @@ private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
             have : j < p.natDegree + 1 := lt_of_lt_of_le hj hp_deg_hi
             simpa [rootSeqDesc_length hp_rr] using this⟩ := by
     grind
-  have hp_prec : StrictInterl p (CommonInterleaver.polyOfDescRoots xlist) :=
+  have hp_strictInterl : StrictInterl p (CommonInterleaver.polyOfDescRoots xlist) :=
     CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
       (hpos p hp_mem).ne_zero hp_rr hx_pair hp_deg_lo hp_deg_hi hslot
   lia
@@ -226,7 +226,7 @@ private theorem hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver_ge_
             have : j < p.natDegree := lt_of_lt_of_le hj hp_deg_lo
             simpa [rootSeqDesc_length hp_rr] using Nat.succ_lt_succ this⟩ := by
     grind
-  have hp_prec : StrictInterl (CommonInterleaver.polyOfDescRoots xlist) p :=
+  have hp_strictInterl : StrictInterl (CommonInterleaver.polyOfDescRoots xlist) p :=
     CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
       (hpos p hp_mem).ne_zero hp_rr hx_pair hp_deg_lo hp_deg_hi hslot
   lia
@@ -275,8 +275,8 @@ theorem isRealRooted_sum_of_commonInterleaver
     (hcommon : HasCommonInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hne : fs ≠ []) : (fs.sum ≠ 0 ∧ fs.sum.Splits) := by
-  rcases hcommon with ⟨h, hprec⟩
-  exact (StrictInterl.sum_right fs h hprec hpos hne).1
+  rcases hcommon with ⟨h, hstrictInterl⟩
+  exact (StrictInterl.sum_right fs h hstrictInterl hpos hne).1
 
 /-- Left-oriented sum real-rootedness package used by the Brändén 7.8.3
 product family. This is the direct Chudnovsky--Seymour `3 ⇒ m` step for a
@@ -288,8 +288,8 @@ theorem isRealRooted_sum_of_commonLeftInterleaver
     (hcommon : HasCommonLeftInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hne : fs ≠ []) : (fs.sum ≠ 0 ∧ fs.sum.Splits) := by
-  rcases hcommon with ⟨h, hprec⟩
-  exact (StrictInterl.sum_left_of_common_left_signed fs h hprec hpos hne).2.1
+  rcases hcommon with ⟨h, hstrictInterl⟩
+  exact (StrictInterl.sum_left_of_common_left_signed fs h hstrictInterl hpos hne).2.1
 
 end
 

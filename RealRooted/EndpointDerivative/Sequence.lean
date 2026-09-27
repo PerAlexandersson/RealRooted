@@ -122,7 +122,7 @@ theorem isRealRooted_derivative_endpointProduct_sequence
   (strictInterl_derivative_endpointProduct_sequence
     hab hbase_splits hbase_roots hpos hdeg hrec n).1
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated strictInterl_endpointDerivative_sequence (since := "2026-09-26")]
 alias prec_endpointDerivative_sequence := strictInterl_endpointDerivative_sequence

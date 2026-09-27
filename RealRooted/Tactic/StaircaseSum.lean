@@ -20,13 +20,13 @@ theorem staircaseSum_sequence_length {FS : Nat → List ℝ[X]} :
     ∀ i : Nat, staircaseSum (FS i) (FS i).length = X * (FS i).sum := fun i =>
   RealRooted.staircaseSum_length (FS i)
 
-theorem staircaseSum_sequence_prec
+theorem staircaseSum_sequence_strictInterl
     {FS : Nat → List ℝ[X]} {M : Nat → Nat}
     (hFS : ∀ i : Nat, IsInterlacingSeqNonneg (FS i))
     (hM : ∀ i : Nat, M i < (FS i).length) :
     ∀ i : Nat, StrictInterl ((FS i).get ⟨M i, hM i⟩) (staircaseSum (FS i) (M i)) :=
   fun i =>
-    RealRooted.prec_get_staircaseSum_of_isInterlacingSeqNonneg
+    RealRooted.strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg
       (hFS i) (hM i)
 
 theorem staircaseSum_sequence_realrooted
@@ -54,14 +54,14 @@ syntax (name := rr_staircaseSum_sequence_length_named)
   "rr_staircaseSum_sequence_length" :
   tactic
 
-syntax (name := rr_staircaseSum_prec_named)
-  "rr_staircaseSum_prec" " using "
+syntax (name := rr_staircaseSum_strict_interl_named)
+  "rr_staircaseSum_strict_interl" " using "
     "interlacing_nonneg" ":=" term ","
     "index_lt" ":=" term :
   tactic
 
-syntax (name := rr_staircaseSum_sequence_prec_named)
-  "rr_staircaseSum_sequence_prec" " using "
+syntax (name := rr_staircaseSum_sequence_strict_interl_named)
+  "rr_staircaseSum_sequence_strict_interl" " using "
     "interlacing_nonneg" ":=" term ","
     "index_lt" ":=" term :
   tactic
@@ -88,18 +88,18 @@ macro_rules
   | `(tactic| rr_staircaseSum_sequence_length) =>
       `(tactic| exact RealRooted.Tactic.staircaseSum_sequence_length)
   | `(tactic|
-      rr_staircaseSum_prec using
+      rr_staircaseSum_strict_interl using
         interlacing_nonneg := $hfs:term,
         index_lt := $hm:term) =>
       `(tactic|
-        exact RealRooted.prec_get_staircaseSum_of_isInterlacingSeqNonneg
+        exact RealRooted.strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg
           $hfs $hm)
   | `(tactic|
-      rr_staircaseSum_sequence_prec using
+      rr_staircaseSum_sequence_strict_interl using
         interlacing_nonneg := $hfs:term,
         index_lt := $hm:term) =>
       `(tactic|
-        exact RealRooted.Tactic.staircaseSum_sequence_prec $hfs $hm)
+        exact RealRooted.Tactic.staircaseSum_sequence_strictInterl $hfs $hm)
   | `(tactic|
       rr_staircaseSum_realrooted using
         interlacing_nonneg := $hfs:term,
@@ -114,5 +114,46 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.staircaseSum_sequence_realrooted $hfs $hm)
 
+end Tactic
+end RealRooted
+namespace RealRooted
+namespace Tactic
+@[deprecated staircaseSum_sequence_strictInterl (since := "2026-09-26")]
+alias staircaseSum_sequence_prec := staircaseSum_sequence_strictInterl
+
+end Tactic
+end RealRooted
+
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_staircaseSum_prec_named_legacy)
+  "rr_staircaseSum_prec" " using "
+    "interlacing_nonneg" ":=" term ","
+    "index_lt" ":=" term :
+  tactic
+
+syntax (name := rr_staircaseSum_sequence_prec_named_legacy)
+  "rr_staircaseSum_sequence_prec" " using "
+    "interlacing_nonneg" ":=" term ","
+    "index_lt" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_staircaseSum_prec using
+        interlacing_nonneg := $hfs:term,
+        index_lt := $hm:term) =>
+      `(tactic|
+        exact RealRooted.prec_get_staircaseSum_of_isInterlacingSeqNonneg
+          $hfs $hm)
+  | `(tactic|
+      rr_staircaseSum_sequence_prec using
+        interlacing_nonneg := $hfs:term,
+        index_lt := $hm:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.staircaseSum_sequence_prec $hfs $hm)
 end Tactic
 end RealRooted

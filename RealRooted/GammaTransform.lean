@@ -8,5 +8,5 @@ import RealRooted.GammaTransform.ProperPosition
 # Gamma transforms
 
 Focused entry point for the gamma-transform algebra, root maps, ordered-root
-completion, preservation results, and proper-position bridge.
+completion, preservation results, and interlacing bridge.
 -/

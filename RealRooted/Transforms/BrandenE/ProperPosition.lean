@@ -5,10 +5,10 @@ import RealRooted.PFPolynomial
 import RealRooted.Transforms.BrandenE.BasisImage
 
 /-!
-# Proper position for Brändén binomial-basis images
+# Interlacing for Brändén binomial-basis images
 
 The basis images split over the reals, have all roots in `[-1, 0]`, and form
-an adjacent proper-position chain.  The proof combines the Euler differential
+an adjacent interlacing chain.  The proof combines the Euler differential
 step with explicit low-degree seeds and the general consecutive-chain API.
 -/
 
@@ -212,7 +212,7 @@ theorem brandenBasisImage_endpoint_strictInterl (n : ℕ) (hn : 1 ≤ n) :
   rw [hf_factor, hg_factor']
   simpa [mul_assoc, mul_left_comm, mul_comm] using hcommon
 
-/-- Consecutive basis images are in proper position in ambient degree at
+/-- Consecutive basis images are in an interlacing relation in ambient degree at
 least two. -/
 theorem brandenBasisImage_adjacent_strictInterl
     (n k : ℕ) (hn : 2 ≤ n) (hk : k < n) :
@@ -246,7 +246,7 @@ theorem brandenBasisImage_adjacent_strictInterl
     rw [show n = (n - 1) + 1 by lia, brandenBasisImage_succ_succ]
   rwa [hleft, hright]
 
-/-- Every earlier in-range Brändén basis image is in proper position
+/-- Every earlier in-range Brändén basis image is in an interlacing relation
 before every later one. The endpoint relation supplies the non-transitive
 closure of the adjacent chain. -/
 theorem brandenBasisImage_strictInterl
@@ -278,7 +278,7 @@ theorem brandenBasisImage_zero_strictInterl
     StrictInterl (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
   brandenBasisImage_strictInterl n 0 k (by lia) hk
 
-/-- The first basis image is in proper position before every in-range image
+/-- The first basis image is in an interlacing relation before every in-range image
 in ambient degree at least three. -/
 theorem brandenBasisImage_first_strictInterl
     (n k : ℕ) (_hn : 3 ≤ n) (hk : k ≤ n) :

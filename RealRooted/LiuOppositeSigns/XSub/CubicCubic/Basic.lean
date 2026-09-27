@@ -210,10 +210,10 @@ lemma xSubCubicCubicSplits_of_interlacing_roots {a b c u v w μ : ℝ}
   have hb_nonpos : ∀ r, f.IsRoot r → (-C μ).eval r ≤ 0 := by
     intro r _
     simpa only [eval_neg, eval_C, Left.neg_nonpos_iff] using le_of_lt hμ
-  have hprec : StrictInterl f ((1 : ℝ[X]) * f + (-C μ) * g) :=
+  have hstrictInterl : StrictInterl f ((1 : ℝ[X]) * f + (-C μ) * g) :=
     strictInterl_of_interlaces_evalCoeff_nonpos
       hgf hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
-  have hsplits : ((1 : ℝ[X]) * f + (-C μ) * g).Splits := hprec.2.1.2
+  have hsplits : ((1 : ℝ[X]) * f + (-C μ) * g).Splits := hstrictInterl.2.1.2
   dsimp [f, g] at hsplits ⊢
   simpa [sub_eq_add_neg] using hsplits
 

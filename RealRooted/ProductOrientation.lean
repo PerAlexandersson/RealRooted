@@ -2,7 +2,7 @@ import RealRooted.ObreschkoffConverse
 import RealRooted.WagnerRightSum
 
 /-!
-# Selecting a same-degree proper-position orientation by an endpoint product
+# Selecting a same-degree interlacing orientation by an endpoint product
 
 Obreschkoff's converse turns a real-rooted full pencil into the alternative
 `StrictInterl f g ∨ StrictInterl g f`.  For polynomials with nonnegative coefficients, all
@@ -50,7 +50,7 @@ private lemma forall₂_map_zero_sub_rev :
       exact List.Forall₂.cons (by simp_all)
         (forall₂_map_zero_sub_rev h.2)
 
-/-- For same-degree nonnegative-coefficient polynomials, proper position
+/-- For same-degree nonnegative-coefficient polynomials, interlacing
 orders the normalized values at zero. -/
 lemma eval_cross_le_of_strictInterl_sameDegree_of_nonneg
     {f g : ℝ[X]}
@@ -115,7 +115,7 @@ theorem strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross
       hgf hdeg.symm hgnn hfnn
     linarith
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated eval_cross_le_of_strictInterl_sameDegree_of_nonneg
   (since := "2026-09-26")]

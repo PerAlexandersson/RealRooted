@@ -19,12 +19,12 @@ example :
 
 example {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hprec : StrictInterl g f) :
+    (hstrictInterl : StrictInterl g f) :
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) := by
   rr_hermite_biehler_forward_pos using
     real_pos_lc := hf,
     imag_pos_lc := hg,
-    prec_imag_real := hprec
+    strictInterl_imag_real := hstrictInterl
 
 example {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
@@ -49,7 +49,7 @@ example {f g : ℝ[X]}
     (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
     (hdegree : 1 ≤ f.natDegree) :
     StrictInterl g f := by
-  rr_hermite_biehler_prec using
+  rr_hermite_biehler_strict_interl using
     real_pos_lc := hf,
     imag_pos_lc := hg,
     stable := hstable,
@@ -76,12 +76,12 @@ example {p q : ℝ[X]}
 example {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
-    (hprec : ∀ n : Nat, StrictInterl (G n) (F n)) :
+    (hstrictInterl : ∀ n : Nat, StrictInterl (G n) (F n)) :
     ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n)) := by
   rr_hermite_biehler_forward_pos_sequence using
     real_pos_lc := hF,
     imag_pos_lc := hG,
-    prec_imag_real := hprec
+    strictInterl_imag_real := hstrictInterl
 
 example {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
@@ -112,7 +112,7 @@ example {F G : Nat → ℝ[X]}
       ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n)))
     (hdegree : ∀ n : Nat, 1 ≤ (F n).natDegree) :
     ∀ n : Nat, StrictInterl (G n) (F n) := by
-  rr_hermite_biehler_prec_sequence using
+  rr_hermite_biehler_strict_interl_sequence using
     real_pos_lc := hF,
     imag_pos_lc := hG,
     stable := hstable,

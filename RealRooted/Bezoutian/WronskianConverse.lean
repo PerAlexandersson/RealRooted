@@ -5,7 +5,7 @@ import RealRooted.Bezoutian.ComplexRoots
 # Wronskian positivity and strict interlacing
 
 Root-sign and gap arguments converting global Wronskian positivity to strict
-same-degree proper position, together with the higher-degree converse from a
+same-degree interlacing, together with the higher-degree converse from a
 positive Bezout matrix.
 -/
 

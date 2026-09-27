@@ -28,7 +28,7 @@ def staircaseSum (fs : List ℝ[X]) (m : Nat) : ℝ[X] :=
 
 /-- In an interlacing sequence with nonnegative coefficients, the distinguished
 term `f_m` interlaces the staircase-weighted sum built at the same index. -/
-theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
+theorem strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg
     {fs : List ℝ[X]} {m : Nat}
     (hfs : IsInterlacingSeqNonneg fs)
     (hm : m < fs.length) :
@@ -41,14 +41,14 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
   · subst hm0
     have hfs_eq : fs = f :: fs.drop 1 := by simpa [f] using (List.drop_eq_getElem_cons hm)
     have hf_mem_take : f ∈ fs.take 1 := by grind
-    have hprec : ∀ p ∈ fs, StrictInterl f p := fun p hp => by
+    have hstrictInterl : ∀ p ∈ fs, StrictInterl f p := fun p hp => by
       rw [hfs_eq] at hp
       rcases List.mem_cons.mp hp with rfl | hp'
       · simpa [f] using StrictInterl.refl hf_rr.1 hf_rr.2
       · exact hpair.rel_of_mem_take_of_mem_drop hf_mem_take hp'
     have hne : fs ≠ [] := by grind
     simpa [staircaseSum, f] using
-      StrictInterl.sum_left_of_common_left_signed fs f hprec hfs.posLeadingCoeff hne
+      StrictInterl.sum_left_of_common_left_signed fs f hstrictInterl hfs.posLeadingCoeff hne
   · have htake_ne : fs.take m ≠ [] := fun hnil => by
       have hlen : (fs.take m).length = 0 := by simp [hnil]
       grind
@@ -56,7 +56,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       rw [List.mem_iff_getElem?]
       refine ⟨0, ?_⟩
       grind
-    have hprefix_prec : StrictInterl (fs.take m).sum f :=
+    have hprefix_strictInterl : StrictInterl (fs.take m).sum f :=
       StrictInterl.sum_right (fs.take m) f
         (fun _ hp => hpair.rel_of_mem_take_of_mem_drop hp hf_mem_drop)
         (fun p hp => hfs.posLeadingCoeff p (List.mem_of_mem_take hp))
@@ -64,8 +64,8 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
     have hprefix_nonneg : HasNonnegCoeffs (fs.take m).sum :=
       hasNonnegCoeffs_sum (fs.take m)
         (fun p hp => hfs.nonnegCoeffs p (List.mem_of_mem_take hp))
-    have hXprefix_prec : StrictInterl f (X * (fs.take m).sum) :=
-      strictInterl_mul_X_of_strictInterl_of_nonneg hprefix_prec hprefix_nonneg hf_nonneg
+    have hXprefix_strictInterl : StrictInterl f (X * (fs.take m).sum) :=
+      strictInterl_mul_X_of_strictInterl_of_nonneg hprefix_strictInterl hprefix_nonneg hf_nonneg
     have htake_succ : fs.take (m + 1) = fs.take m ++ [f] := by simp [f]
     have hf_mem_take_succ : f ∈ fs.take (m + 1) := by simp_all
     have hcommon_left : ∀ p ∈ (X * (fs.take m).sum) :: fs.drop m, StrictInterl f p :=
@@ -80,12 +80,12 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       fun p hp => by
       rcases List.mem_cons.mp hp with rfl | hp
       · exact (hprefix_nonneg.pos_leadingCoeff
-          (right_ne_zero_of_mul hXprefix_prec.2.1.1)).X_mul
+          (right_ne_zero_of_mul hXprefix_strictInterl.2.1.1)).X_mul
       · exact hfs.posLeadingCoeff p (List.mem_of_mem_drop hp)
-    have hsum_prec : StrictInterl f (((X * (fs.take m).sum) :: fs.drop m).sum) :=
+    have hsum_strictInterl : StrictInterl f (((X * (fs.take m).sum) :: fs.drop m).sum) :=
       StrictInterl.sum_left_of_common_left_signed
         ((X * (fs.take m).sum) :: fs.drop m) f hcommon_left hpos (by lia)
-    simpa [staircaseSum, f, List.sum_cons] using hsum_prec
+    simpa [staircaseSum, f, List.sum_cons] using hsum_strictInterl
 
 /-- Real-rootedness corollary for staircase-weighted sums of an interlacing
 sequence with nonnegative coefficients. -/
@@ -93,6 +93,10 @@ theorem isRealRooted_staircaseSum_of_isInterlacingSeqNonneg
     {fs : List ℝ[X]} {m : Nat}
     (hfs : IsInterlacingSeqNonneg fs)
     (hm : m < fs.length) : ((staircaseSum fs m) ≠ 0 ∧ (staircaseSum fs m).Splits) :=
-  (prec_get_staircaseSum_of_isInterlacingSeqNonneg hfs hm).2.1
+  (strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg hfs hm).2.1
+
+@[deprecated strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg (since := "2026-09-26")]
+alias prec_get_staircaseSum_of_isInterlacingSeqNonneg :=
+  strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg
 
 end RealRooted

@@ -104,26 +104,26 @@ syntax (name := rr_wagner_common_right_add_pos_lc_named)
 syntax (name := rr_wagner_common_right_add_pos_lc_inferred)
   "rr_wagner_common_right_add_pos_lc" : tactic
 
-syntax (name := rr_prec_cancel_common_linear_factor_named)
-  "rr_prec_cancel_common_linear_factor" " using "
+syntax (name := rr_strict_interl_cancel_common_linear_factor_named)
+  "rr_strict_interl_cancel_common_linear_factor" " using "
     "root" ":=" term ","
     "multiplied_interlacing" ":=" term :
   tactic
 
-syntax (name := rr_prec_cancel_common_linear_factor_inferred)
-  "rr_prec_cancel_common_linear_factor" " using "
+syntax (name := rr_strict_interl_cancel_common_linear_factor_inferred)
+  "rr_strict_interl_cancel_common_linear_factor" " using "
     "root" ":=" term :
   tactic
 
-syntax (name := rr_prec_mul_common_factor_named)
-  "rr_prec_mul_common_factor" " using "
+syntax (name := rr_strict_interl_mul_common_factor_named)
+  "rr_strict_interl_mul_common_factor" " using "
     "factor_nonzero" ":=" term ","
     "factor_splits" ":=" term ","
     "base_interlacing" ":=" term :
   tactic
 
-syntax (name := rr_prec_mul_common_factor_inferred)
-  "rr_prec_mul_common_factor" : tactic
+syntax (name := rr_strict_interl_mul_common_factor_inferred)
+  "rr_strict_interl_mul_common_factor" : tactic
 
 macro_rules
   | `(tactic|
@@ -193,10 +193,67 @@ macro_rules
       `(tactic|
         exact (by
           apply RealRooted.StrictInterl.add_of_right_of_posLeadingCoeff
-          case hfh => rr_lookup [rr_base_prec]
-          case hgh => rr_lookup [rr_base_prec]
+          case hfh => rr_lookup [rr_base_strict_interl]
+          case hgh => rr_lookup [rr_base_strict_interl]
           case hf_pos => rr_lookup [rr_pos_lc]
           case hg_pos => rr_lookup [rr_pos_lc]))
+  | `(tactic|
+      rr_strict_interl_cancel_common_linear_factor using
+        root := $r:term,
+        multiplied_interlacing := $h:term) =>
+      `(tactic|
+        exact RealRooted.StrictInterl.of_mul_X_sub_C_both (r := $r) $h)
+  | `(tactic|
+      rr_strict_interl_cancel_common_linear_factor using
+        root := $r:term) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.StrictInterl.of_mul_X_sub_C_both (r := $r)
+          rr_lookup [rr_base_strict_interl]))
+  | `(tactic|
+      rr_strict_interl_mul_common_factor using
+        factor_nonzero := $hd_ne:term,
+        factor_splits := $hd_splits:term,
+        base_interlacing := $h:term) =>
+      `(tactic|
+        exact RealRooted.StrictInterl.mul_common_factor $h $hd_ne $hd_splits)
+  | `(tactic| rr_strict_interl_mul_common_factor) =>
+      `(tactic|
+        exact (by
+          apply RealRooted.StrictInterl.mul_common_factor
+          case hd_ne => rr_lookup [rr_nonzero]
+          case hd_splits => assumption
+          case h => rr_lookup [rr_base_strict_interl]))
+
+end Tactic
+end RealRooted
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_prec_cancel_common_linear_factor_named_legacy)
+  "rr_prec_cancel_common_linear_factor" " using "
+    "root" ":=" term ","
+    "multiplied_interlacing" ":=" term :
+  tactic
+
+syntax (name := rr_prec_cancel_common_linear_factor_inferred_legacy)
+  "rr_prec_cancel_common_linear_factor" " using "
+    "root" ":=" term :
+  tactic
+
+syntax (name := rr_prec_mul_common_factor_named_legacy)
+  "rr_prec_mul_common_factor" " using "
+    "factor_nonzero" ":=" term ","
+    "factor_splits" ":=" term ","
+    "base_interlacing" ":=" term :
+  tactic
+
+syntax (name := rr_prec_mul_common_factor_inferred_legacy)
+  "rr_prec_mul_common_factor" : tactic
+
+macro_rules
   | `(tactic|
       rr_prec_cancel_common_linear_factor using
         root := $r:term,
@@ -224,6 +281,5 @@ macro_rules
           case hd_ne => rr_lookup [rr_nonzero]
           case hd_splits => assumption
           case h => rr_lookup [rr_base_prec]))
-
 end Tactic
 end RealRooted

@@ -17,7 +17,7 @@ noncomputable section
 namespace RealRooted
 
 /-- An affine lag that is strictly negative on the nonpositive half-line gives
-strict adjacent proper position when every adjacent degree stays fixed or rises
+strict adjacent interlacing when every adjacent degree stays fixed or rises
 by one. -/
 theorem strictInterl_and_noCommonRoot_of_affine_lag_degree_step
     (P : ℕ → ℝ[X]) (a b : ℕ → ℝ) (A : ℕ → ℝ[X])
@@ -37,13 +37,13 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_degree_step
   induction n with
   | zero => exact ⟨hbase, hbaseNo⟩
   | succ n ih =>
-      obtain ⟨ihprec, ihno⟩ := ih
+      obtain ⟨ihstrictInterl, ihno⟩ := ih
       have hsimple : HasSimpleRoots (P (n + 1)) :=
-        (ihprec.hasSimpleRoots_of_no_common_root fun x hx =>
+        (ihstrictInterl.hasSimpleRoots_of_no_common_root fun x hx =>
           ihno x hx.2 hx.1).2
       have hderivInter : Interlaces ((P (n + 1)).derivative) (P (n + 1)) :=
         interlaces_derivative_of_pos_natDegree (hpos (n + 1)).ne_zero
-          ihprec.2.1.2 (hpos (n + 1)) (hdegreePos n)
+          ihstrictInterl.2.1.2 (hpos (n + 1)) (hdegreePos n)
       have hderivPos : HasPosLeadingCoeff ((P (n + 1)).derivative) :=
         (hpos (n + 1)).derivative (hdegreePos n).ne'
       have hrootSign : ∀ r, (P (n + 1)).IsRoot r →
@@ -54,7 +54,7 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_degree_step
             (hpos (n + 1)).ne_zero hr
         have hprevDeriv :
             0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-          eval_mul_eval_nonneg_of_strictInterl_right ihprec hderivInter.toStrictInterl
+          eval_mul_eval_nonneg_of_strictInterl_right ihstrictInterl hderivInter.toStrictInterl
             (hpos n) hderivPos hr
         have hprevNe : eval r (P n) ≠ 0 := by
           intro hzero
@@ -77,13 +77,13 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_degree_step
           ring
         rw [heval]
         nlinarith
-      have hprec : StrictInterl (P (n + 1)) (P (n + 2)) := by
+      have hstrictInterl : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rcases hstep (n + 1) with hsame | hsucc
         · exact strictInterl_of_interlaces_eval_mul_neg_same
             hderivInter hderivPos (hpos (n + 2)) hsame hrootSign
         · exact strictInterl_of_interlaces_eval_mul_neg_succ
             hderivInter hderivPos (hpos (n + 2)) hsucc hrootSign
-      refine ⟨hprec, ?_⟩
+      refine ⟨hstrictInterl, ?_⟩
       intro r hr2 hr1
       have hsign := hrootSign r hr1
       rw [Polynomial.IsRoot.def] at hr2

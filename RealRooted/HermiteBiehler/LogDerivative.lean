@@ -5,7 +5,7 @@ import RealRooted.HermiteBiehler.Basic
 
 This file transports Mathlib's split-polynomial derivative identities through
 complexification and records the upper-half-plane sign of a single reciprocal
-root factor. It is independent of the Hermite--Biehler proper-position
+root factor. It is independent of the Hermite--Biehler interlacing
 arguments.
 -/
 

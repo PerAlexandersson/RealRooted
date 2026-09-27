@@ -15,7 +15,7 @@ theorem splits_narayanaPolynomial (m n : ℕ) :
     (narayanaPolynomial m n).Splits := by
   rcases n with _ | n
   · simp
-  · exact (prec_narayanaPolynomial_succ m n).1.2
+  · exact (strictInterl_narayanaPolynomial_succ m n).1.2
 
 /-- The gamma polynomial of the binomial-square Narayana polynomial is itself
 real-rooted, with all roots nonpositive. -/
@@ -38,8 +38,8 @@ theorem splits_narayanaZeroGammaPolynomial (n : ℕ) :
   (narayanaZeroGammaPolynomial_realRooted n).1.2
 
 /-- Consecutive gamma polynomials of the binomial-square Narayana family are
-in proper position. -/
-theorem prec_narayanaZeroGammaPolynomial_succ (n : ℕ) :
+in an interlacing relation. -/
+theorem strictInterl_narayanaZeroGammaPolynomial_succ (n : ℕ) :
     StrictInterl (narayanaZeroGammaPolynomial n)
       (narayanaZeroGammaPolynomial (n + 1)) := by
   cases n with
@@ -47,12 +47,12 @@ theorem prec_narayanaZeroGammaPolynomial_succ (n : ℕ) :
       simpa [narayanaZeroGammaPolynomial] using
         (StrictInterl.refl (by simp) (by simp) : StrictInterl (1 : ℝ[X]) 1)
   | succ n =>
-      rw [← prec_gammaTransform_succ_iff
+      rw [← strictInterl_gammaTransform_succ_iff
         (natDegree_narayanaZeroGammaPolynomial_le (n + 1))
         (natDegree_narayanaZeroGammaPolynomial_le (n + 2))]
       · rw [gammaTransform_narayanaZeroGammaPolynomial,
           gammaTransform_narayanaZeroGammaPolynomial]
-        exact prec_narayanaPolynomial_succ 0 n
+        exact strictInterl_narayanaPolynomial_succ 0 n
       · intro k
         by_cases hk : k ≤ (n + 1) / 2
         · rw [coeff_narayanaZeroGammaPolynomial_of_le hk]
@@ -141,5 +141,8 @@ theorem narayanaTransformPreservesNonposRoots :
   intro m p hpnn hpsplits
   exact (narayanaTransformPreservesPF m
     (IsPFPolynomial.of_realRooted_nonneg hpnn hpsplits)).hasOnlyNonposRoots
+
+@[deprecated strictInterl_narayanaZeroGammaPolynomial_succ (since := "2026-09-26")]
+alias prec_narayanaZeroGammaPolynomial_succ := strictInterl_narayanaZeroGammaPolynomial_succ
 
 end RealRooted

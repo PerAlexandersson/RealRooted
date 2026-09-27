@@ -397,7 +397,7 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact RealRooted.prec_lw_derivative_lag_sequence
+        exact RealRooted.strictInterl_lw_derivative_lag_sequence
           $hbase $hpos $hdeg_two $hrec $hderivative_nonpos $hlag_nonpos
           $hdeg_succ $hno)
   | `(tactic|
@@ -427,7 +427,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact RealRooted.interlaces_of_strictInterl_chain
-          (RealRooted.prec_lw_derivative_lag_sequence
+          (RealRooted.strictInterl_lw_derivative_lag_sequence
             $hbase $hpos $hdeg_two $hrec $hderivative_nonpos $hlag_nonpos
             $hdeg_succ $hno)
           $hdeg_succ)
@@ -442,7 +442,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_derivative_lag_sequence_of_root_signs
+          RealRooted.strictInterl_lw_derivative_lag_sequence_of_root_signs
             $hbase $hpos $hdeg_two $hrec
             (by
               intro n hsource
@@ -482,7 +482,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_finish using
-          (RealRooted.prec_lw_derivative_lag_sequence_of_root_signs
+          (RealRooted.strictInterl_lw_derivative_lag_sequence_of_root_signs
             $hbase $hpos $hdeg_two $hrec
             (by
               intro n hsource
@@ -504,7 +504,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.prec_lw_derivative_lag_sequence_of_root_window
+          RealRooted.strictInterl_lw_derivative_lag_sequence_of_root_window
             $hbase $hpos $hdeg_two $hrec $hroot_lower $hroot_upper
             (by
               intro n r hr hroot_window_lower hroot_window_upper
@@ -550,7 +550,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_finish using
-          (RealRooted.prec_lw_derivative_lag_sequence_of_root_window
+          (RealRooted.strictInterl_lw_derivative_lag_sequence_of_root_window
             $hbase $hpos $hdeg_two $hrec $hroot_lower $hroot_upper
             (by
               intro n r hr hroot_window_lower hroot_window_upper

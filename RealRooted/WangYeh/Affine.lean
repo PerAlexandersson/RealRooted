@@ -5,7 +5,7 @@ import RealRooted.ObreschkoffConverse.Forward
 # The Wang--Yeh affine real-rootedness criterion
 
 This module proves Wang and Yeh's affine combination theorem. If `g` is in
-proper position to the left of `f`, both leading coefficients are positive,
+interlacing to the left of `f`, both leading coefficients are positive,
 and `b * c ≤ a * d`, then
 
 `(bX + a) f + (dX + c) g`

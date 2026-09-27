@@ -128,7 +128,7 @@ theorem interlaces_of_one_add_X_positive_coeff_with_base
           · rw [hr, heval0] at hr0
             norm_num at hr0
         · exact ih r (by rw [IsRoot]; exact hr0) (by rw [IsRoot]; exact hev0)
-  exact (RealRooted.prec_lw_current_one_add_X_positive_t_lag_sequence
+  exact (RealRooted.strictInterl_lw_current_one_add_X_positive_t_lag_sequence
     (c := c) hbase hpos hnn (fun n => le_of_lt (hc_pos n)) hrec hdeg_succ hno n).toInterlaces
       (hdeg_succ n)
 

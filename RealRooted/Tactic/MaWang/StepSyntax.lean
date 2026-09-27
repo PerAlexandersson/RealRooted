@@ -58,8 +58,8 @@ syntax (name := rr_ma_wang_succ_named)
     "root_sign" ":=" term :
   tactic
 
-syntax (name := rr_prec_evalCoeff_nonpos_named)
-  "rr_prec_evalCoeff_nonpos" " using "
+syntax (name := rr_strict_interl_evalCoeff_nonpos_named)
+  "rr_strict_interl_evalCoeff_nonpos" " using "
     "interlaces" ":=" term ","
     "source_pos_lc" ":=" term ","
     "target_pos_lc" ":=" term ","
@@ -68,8 +68,8 @@ syntax (name := rr_prec_evalCoeff_nonpos_named)
     "coeff_nonpos" ":=" term :
   tactic
 
-syntax (name := rr_prec_evalCoeff_nonpos_degree_named)
-  "rr_prec_evalCoeff_nonpos" " using "
+syntax (name := rr_strict_interl_evalCoeff_nonpos_degree_named)
+  "rr_strict_interl_evalCoeff_nonpos" " using "
     "interlaces" ":=" term ","
     "source_pos_lc" ":=" term ","
     "target_pos_lc" ":=" term ","
@@ -77,11 +77,11 @@ syntax (name := rr_prec_evalCoeff_nonpos_degree_named)
     "coeff_nonpos" ":=" term :
   tactic
 
-syntax (name := rr_prec_evalCoeff_nonpos_inferred)
-  "rr_prec_evalCoeff_nonpos" : tactic
+syntax (name := rr_strict_interl_evalCoeff_nonpos_inferred)
+  "rr_strict_interl_evalCoeff_nonpos" : tactic
 
-syntax (name := rr_prec_evalCoeff_nonpos_degree_inferred)
-  "rr_prec_evalCoeff_nonpos" " using " "degree" ":=" term : tactic
+syntax (name := rr_strict_interl_evalCoeff_nonpos_degree_inferred)
+  "rr_strict_interl_evalCoeff_nonpos" " using " "degree" ":=" term : tactic
 
 syntax (name := rr_mw_derivative_nonpos)
   "rr_mw_derivative_nonpos" " using " term ", " term ", " term ", " term ", "
@@ -346,6 +346,38 @@ syntax (name := rr_mw_derivative_neg_X_sq_auto_named)
     "target_pos_lc" ":=" term ","
     "source_pos_lc" ":=" term :
   tactic
+
+end Tactic
+end RealRooted
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_prec_evalCoeff_nonpos_named_legacy)
+  "rr_prec_evalCoeff_nonpos" " using "
+    "interlaces" ":=" term ","
+    "source_pos_lc" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term ","
+    "coeff_nonpos" ":=" term :
+  tactic
+
+syntax (name := rr_prec_evalCoeff_nonpos_degree_named_legacy)
+  "rr_prec_evalCoeff_nonpos" " using "
+    "interlaces" ":=" term ","
+    "source_pos_lc" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "degree" ":=" term ","
+    "coeff_nonpos" ":=" term :
+  tactic
+
+syntax (name := rr_prec_evalCoeff_nonpos_inferred_legacy)
+  "rr_prec_evalCoeff_nonpos" : tactic
+
+syntax (name := rr_prec_evalCoeff_nonpos_degree_inferred_legacy)
+  "rr_prec_evalCoeff_nonpos" " using " "degree" ":=" term : tactic
 
 end Tactic
 end RealRooted

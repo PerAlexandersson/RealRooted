@@ -247,7 +247,7 @@ private theorem inversePeakEulerian_base_noCommon :
   intro r _ hr0
   simp [Polynomial.IsRoot.def] at hr0
 
-/-- Consecutive inverse-peak rows are in proper position and share no real
+/-- Consecutive inverse-peak rows strictly interlace and share no real
 root. -/
 theorem inversePeakEulerian_strictInterl_and_noCommonRoot (n : ℕ) :
     StrictInterl (inversePeakEulerian n) (inversePeakEulerian (n + 1)) ∧
@@ -270,7 +270,7 @@ theorem inversePeakEulerian_strictInterl_and_noCommonRoot (n : ℕ) :
   · exact inversePeakEulerian_base_noCommon
   · exact inversePeakEulerian_affine_recurrence
 
-/-- Consecutive inverse-peak rows are in proper position. -/
+/-- Consecutive inverse-peak rows strictly interlace. -/
 theorem inversePeakEulerian_strictInterl (n : ℕ) :
     StrictInterl (inversePeakEulerian n) (inversePeakEulerian (n + 1)) :=
   (inversePeakEulerian_strictInterl_and_noCommonRoot n).1
@@ -299,7 +299,7 @@ theorem inversePeakEulerian_interlaces_of_degree_succ (n : ℕ)
     Interlaces (inversePeakEulerian n) (inversePeakEulerian (n + 1)) :=
   (inversePeakEulerian_strictInterl n).toInterlaces hdeg
 
-/-- Odd-indexed transitions are same-degree proper-position steps.  The
+/-- Odd-indexed transitions are same-degree interlacing steps.  The
 `ListAlternates ss rs` orientation records that the earlier row owns the
 leftmost root and the later row owns the rightmost root. -/
 theorem inversePeakEulerian_odd_alternates (j : ℕ) :
@@ -320,7 +320,7 @@ theorem inversePeakEulerian_even_interlaces (j : ℕ) :
   rw [inversePeakEulerian_natDegree, inversePeakEulerian_natDegree,
     half_two_mul_add_one, half_two_mul_add_two]
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated inversePeakEulerian_strictInterl_and_noCommonRoot
   (since := "2026-09-26")]

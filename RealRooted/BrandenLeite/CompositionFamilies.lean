@@ -65,7 +65,7 @@ theorem shiftedFiniteSupersymmetricCoeff_isPolyaFreqSeq
   exact (finiteSupersymmetricCoeff_isPolyaFreqSeq hxs hys).prefix_zeros 1
 
 /-- All composition rows of a positive-order finite supersymmetric product
-are PF, and consecutive rows are in zero-aware proper position. -/
+are PF, and consecutive rows are in zero-aware interlacing. -/
 theorem shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) :
@@ -236,7 +236,7 @@ theorem binomialCompositionRow_exact_X_power
     exact hcoeffm hz
 
 /-- Binomial composition rows are PF and consecutive rows are in zero-aware
-proper position. -/
+interlacing. -/
 theorem binomialCompositionRows_pf_and_interl (d : ℕ) :
     (∀ n, IsPFPolynomial
       (compositionRow (PowerSeries.mk (binomialCompositionKernel d)) n)) ∧
@@ -364,7 +364,7 @@ theorem inversePowerCompositionRow_exact_X
       ((Polynomial.X_pow_dvd_iff.mp hdvd) 1 (by norm_num))
 
 /-- Inverse-power composition rows are PF and consecutive rows are in
-zero-aware proper position. -/
+zero-aware interlacing. -/
 theorem inversePowerCompositionRows_pf_and_interl (e : ℕ) :
     (∀ n, IsPFPolynomial
       (compositionRow
@@ -684,7 +684,7 @@ theorem a116088Row_eq_sum_choose (n : ℕ) :
         C (Nat.choose (2 * k) (n - k) : ℝ) * X ^ k := by
   exact compositionRow_binomialCompositionKernel 2 n
 
-/-- A116088 rows are PF and consecutively in zero-aware proper position. -/
+/-- A116088 rows are PF and consecutively in zero-aware interlacing. -/
 theorem a116088Rows_pf_and_interl :
     (∀ n, IsPFPolynomial (a116088Row n)) ∧
       ∀ n, Interl (a116088Row n) (a116088Row (n + 1)) := by
@@ -715,7 +715,7 @@ theorem a116089Row_eq_sum_choose (n : ℕ) :
         C (Nat.choose (3 * k) (n - k) : ℝ) * X ^ k := by
   exact compositionRow_binomialCompositionKernel 3 n
 
-/-- A116089 rows are PF and consecutively in zero-aware proper position. -/
+/-- A116089 rows are PF and consecutively in zero-aware interlacing. -/
 theorem a116089Rows_pf_and_interl :
     (∀ n, IsPFPolynomial (a116089Row n)) ∧
       ∀ n, Interl (a116089Row n) (a116089Row (n + 1)) := by
@@ -746,7 +746,7 @@ theorem a206294Row_eq_sum_choose (n : ℕ) :
         C (inversePowerCompositionRowCoeff 3 n k) * X ^ k := by
   exact compositionRow_inversePowerCompositionKernel (by norm_num) n
 
-/-- A206294 rows are PF and consecutively in zero-aware proper position. -/
+/-- A206294 rows are PF and consecutively in zero-aware interlacing. -/
 theorem a206294Rows_pf_and_interl :
     (∀ n, IsPFPolynomial (a206294Row n)) ∧
       ∀ n, Interl (a206294Row n) (a206294Row (n + 1)) := by

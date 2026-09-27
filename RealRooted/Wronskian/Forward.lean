@@ -13,7 +13,7 @@ This file provides the missing global forward bridge:
 * `RealRooted.wronskian_pos_of_strictInterlSameDegree`: for a strictly
   interlacing same-degree pair (positive leading coefficients, degree at least
   one), the Wronskian `q' * p - q * p'` is positive everywhere on `ℝ`.
-* `RealRooted.wronskian_pos_of_prec_succ`: for a strict differ-by-one pair
+* `RealRooted.wronskian_pos_of_strictInterl_succ`: for a strict differ-by-one pair
   (`StrictInterl q p`, `deg p = deg q + 1`, simple roots, no common root), the
   Wronskian `p' * q - p * q'` is positive everywhere on `ℝ`.
 
@@ -100,16 +100,16 @@ lemma listInterlaces_getElem_le {ss rs : List ℝ}
 interlaces `p` in the differ-by-one sense (`StrictInterl q p` with
 `deg p = deg q + 1`, all roots simple and no common root), then the Wronskian
 `p' * q - p * q'` is positive everywhere. -/
-theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
+theorem wronskian_pos_of_strictInterl_succ {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg_succ : p.natDegree = q.natDegree + 1)
-    (hprec : StrictInterl q p)
+    (hstrictInterl : StrictInterl q p)
     (hp_nodup : p.roots.Nodup) (hq_nodup : q.roots.Nodup)
     (hdisj : ∀ x : ℝ, p.IsRoot x → ¬ q.IsRoot x)
     (t : ℝ) :
     0 < p.derivative.eval t * q.eval t - p.eval t * q.derivative.eval t := by
   obtain ⟨⟨hq_ne, hq_splits⟩, ⟨hp_ne, hp_splits⟩, ss, rs,
-    hss_sorted, hrs_sorted, hss_coe, hrs_coe, hbranch⟩ := hprec
+    hss_sorted, hrs_sorted, hss_coe, hrs_coe, hbranch⟩ := hstrictInterl
   set n := q.natDegree with hn
   have hp_deg : p.natDegree = n + 1 := hp_deg_succ
   have hss_len : ss.length = n := by
@@ -240,7 +240,7 @@ theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
     · refine ⟨Fin.last n, ?_⟩
       rw [hrp_last (Fin.last n) (by simp)]
       exact (Multiset.mem_singleton.mp hx).symm
-  have hprec_up : StrictInterlSameDegree p (q * (X - C M)) := by
+  have hstrictInterl_up : StrictInterlSameDegree p (q * (X - C M)) := by
     refine StrictInterlSameDegree.of_fin_interlacing s rp hs_mono hrp_mono ?_ ?_
       p (q * (X - C M)) hp_ne hqp_ne hp_splits hqp_splits hp_deg hqp_deg
       hp_nodup hqp_nodup hs_surj hrp_surj
@@ -314,7 +314,7 @@ theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
       rw [hrm_pos k.succ (by simp)]
       simpa using hk
     · exact ⟨0, by rw [hrm_zero]; exact (Multiset.mem_singleton.mp hx).symm⟩
-  have hprec_lo : StrictInterlSameDegree (q * (X - C m)) p := by
+  have hstrictInterl_lo : StrictInterlSameDegree (q * (X - C m)) p := by
     refine StrictInterlSameDegree.of_fin_interlacing rm s hrm_mono hs_mono ?_ ?_
       (q * (X - C m)) p hqm_ne hp_ne hqm_splits hp_splits hqm_deg hp_deg
       hqm_nodup hp_nodup hrm_surj hs_surj
@@ -341,9 +341,9 @@ theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
             have := Fin.lt_def.mp hij; lia
   -- apply the same-degree bridge to both companions and combine
   have hW_up := wronskian_pos_of_strictInterlSameDegree hp_pos hqp_pos
-    (by lia) hprec_up t
+    (by lia) hstrictInterl_up t
   have hW_lo := wronskian_pos_of_strictInterlSameDegree hqm_pos hp_pos
-    (by lia) hprec_lo t
+    (by lia) hstrictInterl_lo t
   have e1 : (q * (X - C M)).derivative.eval t =
       q.derivative.eval t * (t - M) + q.eval t := by
     simp only [derivative_mul, derivative_X_sub_C, mul_one, eval_add, eval_mul,
@@ -363,5 +363,8 @@ theorem wronskian_pos_of_prec_succ {p q : ℝ[X]}
 @[deprecated wronskian_pos_of_strictInterlSameDegree (since := "2026-09-18")]
 alias wronskian_pos_of_strictPrecSameDegree :=
   wronskian_pos_of_strictInterlSameDegree
+
+@[deprecated wronskian_pos_of_strictInterl_succ (since := "2026-09-26")]
+alias wronskian_pos_of_prec_succ := wronskian_pos_of_strictInterl_succ
 
 end RealRooted

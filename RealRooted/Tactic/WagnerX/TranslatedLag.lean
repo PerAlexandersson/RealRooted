@@ -34,9 +34,9 @@ private lemma hasPosLeadingCoeff_of_comp_X_add_C {p : ℝ[X]} {r : ℝ}
 /-- Plateau-safe sequence induction for a fixed translated affine lag.
 
 The change of variables `Q_n(X) = P_n(X + r)` turns the lag `X - r` into
-`X`, so `prec_pos_X_lag_combo_sequence` applies even when consecutive degrees
+`X`, so `strictInterl_pos_X_lag_combo_sequence` applies even when consecutive degrees
 are equal. -/
-theorem prec_pos_X_sub_C_lag_combo_sequence
+theorem strictInterl_pos_X_sub_C_lag_combo_sequence
     {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hshift_nonneg : ∀ n : Nat, HasNonnegCoeffs ((P n).comp (X + C r)))
@@ -52,13 +52,13 @@ theorem prec_pos_X_sub_C_lag_combo_sequence
   have hQrec : ∀ n : Nat,
       Q (n + 2) = C (a n) * Q (n + 1) + (C (c n) * X) * Q n := by
     simpa [Q] using comp_pos_X_sub_C_lag_recurrence hrec
-  have hQprec : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) :=
-    prec_pos_X_lag_combo_sequence hQbase
+  have hQstrictInterl : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) :=
+    strictInterl_pos_X_lag_combo_sequence hQbase
       (by simpa [Q] using hshift_nonneg) ha hc hQrec
   intro n
   exact
     (StrictInterl.comp_X_add_C_iff (f := P n) (g := P (n + 1)) r).1
-      (hQprec n)
+      (hQstrictInterl n)
 
 /-- Equal-base degree profile for a fixed translated affine lag. -/
 theorem natDegree_pos_X_sub_C_lag_combo_sequence
@@ -119,7 +119,7 @@ theorem natDegree_pos_X_sub_C_lag_combo_sequence_shifted
   · exact hasPosLeadingCoeff_of_comp_X_add_C (hQ n).2
 
 /-- Real-rootedness corollary for a plateau-safe translated affine lag. -/
-theorem isRealRooted_of_prec_pos_X_sub_C_lag_combo_sequence
+theorem isRealRooted_of_strictInterl_pos_X_sub_C_lag_combo_sequence
     {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hshift_nonneg : ∀ n : Nat, HasNonnegCoeffs ((P n).comp (X + C r)))
@@ -129,7 +129,18 @@ theorem isRealRooted_of_prec_pos_X_sub_C_lag_combo_sequence
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * (X - C r)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    prec_pos_X_sub_C_lag_combo_sequence hbase hshift_nonneg ha hc hrec
+    strictInterl_pos_X_sub_C_lag_combo_sequence hbase hshift_nonneg ha hc hrec
 
+
+end RealRooted
+
+/- Deprecated theorem aliases retained for the #984 Prec migration. -/
+namespace RealRooted
+@[deprecated isRealRooted_of_strictInterl_pos_X_sub_C_lag_combo_sequence (since := "2026-09-26")]
+alias isRealRooted_of_prec_pos_X_sub_C_lag_combo_sequence :=
+  isRealRooted_of_strictInterl_pos_X_sub_C_lag_combo_sequence
+
+@[deprecated strictInterl_pos_X_sub_C_lag_combo_sequence (since := "2026-09-26")]
+alias prec_pos_X_sub_C_lag_combo_sequence := strictInterl_pos_X_sub_C_lag_combo_sequence
 
 end RealRooted

@@ -223,12 +223,12 @@ lemma simsun_nonzero (n : Nat) :
 
 lemma interlaces_derivative_simsun_three :
     Interlaces (simsun 3).derivative (simsun 3) := by
-  have hprec : StrictInterl (1 : ℝ[X]) (1 + C (4 : ℝ) * X) :=
+  have hstrictInterl : StrictInterl (1 : ℝ[X]) (1 + C (4 : ℝ) * X) :=
     (interlaces_one_linear (by simp)).toStrictInterl
-  have hprecC : StrictInterl (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
-    StrictInterl.C_mul_left hprec (by simp)
+  have hstrictInterlC : StrictInterl (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
+    StrictInterl.C_mul_left hstrictInterl (by simp)
   have hInter : Interlaces (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
-    hprecC.toInterlaces (by simp)
+    hstrictInterlC.toInterlaces (by simp)
   simpa [simsun_three] using hInter
 
 lemma simsun_posLeadingCoeff (n : Nat) :
@@ -271,13 +271,13 @@ lemma eval_simsunCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
   nlinarith
 
 /-- Consecutive simsun descent polynomials satisfy `StrictInterl`. -/
-theorem prec_simsun_succ : ∀ n : Nat, StrictInterl (simsun n) (simsun (n + 1))
+theorem strictInterl_simsun_succ : ∀ n : Nat, StrictInterl (simsun n) (simsun (n + 1))
   | 0 => interlaces_simsun_zero_one
   | 1 => interlaces_simsun_one_two.toStrictInterl
   | n + 2 => by
     have hInter :
         Interlaces (simsun (n + 2)).derivative (simsun (n + 2)) :=
-      interlaces_derivative_simsun (n + 2) (by simp) (prec_simsun_succ (n + 1)).2.1.2
+      interlaces_derivative_simsun (n + 2) (by simp) (strictInterl_simsun_succ (n + 1)).2.1.2
     have hg_pos : HasPosLeadingCoeff (simsun (n + 2)).derivative :=
       (simsun_posLeadingCoeff (n + 2)).derivative (by simp [natDegree_simsun])
     have hNext_eq :
@@ -306,8 +306,8 @@ theorem prec_simsun_succ : ∀ n : Nat, StrictInterl (simsun n) (simsun (n + 1))
         ∀ r, (simsun (n + 2)).IsRoot r → simsunCoeffB.eval r ≤ 0 := by
       intro r hr
       have hr_nonpos :
-          r ≤ 0 := roots_nonpos_simsun_of_isRealRooted (prec_simsun_succ (n + 1)).2.1.2 r
-            ((mem_roots (prec_simsun_succ (n + 1)).2.1.1).mpr hr)
+          r ≤ 0 := roots_nonpos_simsun_of_isRealRooted (strictInterl_simsun_succ (n + 1)).2.1.2 r
+            ((mem_roots (strictInterl_simsun_succ (n + 1)).2.1.1).mpr hr)
       exact eval_simsunCoeffB_nonpos_of_nonpos hr_nonpos
     simpa [hNext_eq] using
       strictInterl_of_interlaces_evalCoeff_nonpos
@@ -319,11 +319,11 @@ theorem prec_simsun_succ : ∀ n : Nat, StrictInterl (simsun n) (simsun (n + 1))
 
 theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧ (simsun n).Splits)
   | 0 => by simp
-  | n + 1 => (prec_simsun_succ n).2.1
+  | n + 1 => (strictInterl_simsun_succ n).2.1
 
 theorem interlaces_simsun_succ_of_odd {n : Nat} (hodd : n % 2 = 1) :
     Interlaces (simsun n) (simsun (n + 1)) :=
-  (prec_simsun_succ n).toInterlaces
+  (strictInterl_simsun_succ n).toInterlaces
     (by rw [natDegree_simsun, natDegree_simsun]; lia)
 
 /-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the simsun sequence. -/
@@ -349,6 +349,9 @@ theorem isGeneralizedSturmSeq_simsunPrefix :
           simpa [simsunPrefix, IsGeneralizedSturmSeq] using interlaces_simsun_zero_one
       | succ n =>
           simpa [simsunPrefix, IsGeneralizedSturmSeq] using
-            And.intro (prec_simsun_succ (n + 1)) ih
+            And.intro (strictInterl_simsun_succ (n + 1)) ih
+
+@[deprecated strictInterl_simsun_succ (since := "2026-09-26")]
+alias prec_simsun_succ := strictInterl_simsun_succ
 
 end RealRooted

@@ -39,17 +39,19 @@ right pair `(C t * f + g, X * f)` inherits the correct orientation just by
 combining `g ≺ X * f` with the trivial self-orientation of `f`. -/
 theorem strictInterl_boundary_right_pair_of_strictInterl_nonneg
     {f g : ℝ[X]}
-    (hprec : StrictInterl f g)
+    (hstrictInterl : StrictInterl f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     {t : ℝ} (ht : 0 < t) :
     StrictInterl (C t * f + g) (X * f) := by
-  have hgfX : StrictInterl g (X * f) := strictInterl_to_strictInterl_mul_X_of_nonneg hprec hfnn hgnn
-  have hfX : StrictInterl f (X * f) := strictInterl_self_mul_X_of_nonneg hprec.1.1 hprec.1.2 hfnn
+  have hgfX : StrictInterl g (X * f) :=
+    strictInterl_to_strictInterl_mul_X_of_nonneg hstrictInterl hfnn hgnn
+  have hfX : StrictInterl f (X * f) :=
+    strictInterl_self_mul_X_of_nonneg hstrictInterl.1.1 hstrictInterl.1.2 hfnn
   have htfX : StrictInterl (C t * f) (X * f) := StrictInterl.C_mul_left hfX ht.ne'
   have htf_pos : HasPosLeadingCoeff (C t * f) :=
-    hasPosLeadingCoeff_C_mul ht (hfnn.pos_leadingCoeff hprec.1.1)
-  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hprec.2.1.1
+    hasPosLeadingCoeff_C_mul ht (hfnn.pos_leadingCoeff hstrictInterl.1.1)
+  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hstrictInterl.2.1.1
   exact StrictInterl.add_of_right_of_posLeadingCoeff htfX hgfX htf_pos hg_pos
 
 @[deprecated strictInterl_boundary_right_pair_of_strictInterl_nonneg
@@ -61,11 +63,11 @@ alias prec_boundary_right_pair_of_prec_nonneg :=
 `X * f` itself is already a common right interleaver for `f` and `g`. -/
 theorem pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
     {f g : ℝ[X]}
-    (hprec : StrictInterl g (X * f))
+    (hstrictInterl : StrictInterl g (X * f))
     (hfnn : HasNonnegCoeffs f) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
-  have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hprec.2.1.1 hprec.2.1.2
-  exact ⟨X * f, strictInterl_self_mul_X_of_nonneg hf.1 hf.2 hfnn, hprec⟩
+  have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hstrictInterl.2.1.1 hstrictInterl.2.1.2
+  exact ⟨X * f, strictInterl_self_mul_X_of_nonneg hf.1 hf.2 hfnn, hstrictInterl⟩
 
 @[deprecated pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
   (since := "2026-09-18")]
@@ -87,11 +89,11 @@ theorem strictInterl_boundary_right_pair_of_orientation_succDegree_nonneg
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {t : ℝ} (ht : 0 < t) :
     StrictInterl (C t * f + g) (X * f) := by
-  have hprec_or : StrictInterl f g ∨ StrictInterl g f :=
+  have hstrictInterl_or : StrictInterl f g ∨ StrictInterl g f :=
     horient hfg hf_pos hg_pos (by lia) (by lia) hno
-  have hprec_fg : StrictInterl f g :=
-    StrictInterl.forward_of_orientation_of_succDegree hsucc hprec_or
-  exact strictInterl_boundary_right_pair_of_strictInterl_nonneg hprec_fg hfnn hgnn ht
+  have hstrictInterl_fg : StrictInterl f g :=
+    StrictInterl.forward_of_orientation_of_succDegree hsucc hstrictInterl_or
+  exact strictInterl_boundary_right_pair_of_strictInterl_nonneg hstrictInterl_fg hfnn hgnn ht
 
 @[deprecated strictInterl_boundary_right_pair_of_orientation_succDegree_nonneg
   (since := "2026-09-18")]
@@ -115,19 +117,19 @@ theorem posComboNoCommonAffineFamily_of_boundaryRightPairOrientation
     exact (nonnegCoeffs_C_mul ht.le hfnn).add hgnn
   have hp_pos : HasPosLeadingCoeff p := hp_nn.pos_leadingCoeff hp_rr.1
   have hXf_pos : HasPosLeadingCoeff (X * f) := hf_pos.X_mul
-  have hprec_or : StrictInterl p (X * f) ∨ StrictInterl (X * f) p := by
+  have hstrictInterl_or : StrictInterl p (X * f) ∨ StrictInterl (X * f) p := by
     dsimp [p]
     exact hboundary hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno ht
   have hno_right : ∀ r, p.IsRoot r → ¬ (X * f).IsRoot r := by
     dsimp [p]
     exact no_common_boundary_right_pair_of_no_common_nonneg hfnn hgnn hno ht
-  have hprec : StrictInterl p (X * f) :=
+  have hstrictInterl : StrictInterl p (X * f) :=
     strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
-      hprec_or hp_rr.1 hp_rr.2 hp_nn hno_right
+      hstrictInterl_or hp_rr.1 hp_rr.2 hp_nn hno_right
   have hcombo_rr :
       ((C (1 : ℝ) * p + C s * (X * f)) ≠ 0 ∧ (C (1 : ℝ) * p + C s * (X * f)).Splits) :=
     StrictInterl.isRealRooted_nonneg_combo
-      hprec hp_pos hXf_pos (by simp) hs.le (Or.inl zero_lt_one)
+      hstrictInterl hp_pos hXf_pos (by simp) hs.le (Or.inl zero_lt_one)
   grind
 
 end RealRooted

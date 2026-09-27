@@ -91,7 +91,7 @@ lemma interlaces_touchard_zero_one :
     Interlaces (touchard 0) (touchard 1) :=
   by simpa [touchard_zero, touchard_one] using interlaces_one_linear (p := X) (by simp)
 
-lemma prec_touchard_one_two :
+lemma strictInterl_touchard_one_two :
     StrictInterl (touchard 1) (touchard 2) := by
   have hInter : Interlaces (touchard 0) (touchard 1) := interlaces_touchard_zero_one
   have h0_pos : HasPosLeadingCoeff (touchard 0) := touchard_posLeadingCoeff 0
@@ -121,12 +121,12 @@ lemma prec_touchard_one_two :
       hdeg_lo hdeg_hi hb_nonpos
 
 /-- Consecutive Touchard polynomials satisfy `StrictInterl`, hence are real-rooted. -/
-theorem prec_touchard_succ : ∀ n : Nat, StrictInterl (touchard n) (touchard (n + 1))
+theorem strictInterl_touchard_succ : ∀ n : Nat, StrictInterl (touchard n) (touchard (n + 1))
   | 0 => interlaces_touchard_zero_one.toStrictInterl
-  | 1 => prec_touchard_one_two
+  | 1 => strictInterl_touchard_one_two
   | n + 2 => by
       have hprev : StrictInterl (touchard (n + 1)) (touchard (n + 2)) :=
-        prec_touchard_succ (n + 1)
+        strictInterl_touchard_succ (n + 1)
       have hInter :
           Interlaces (touchard (n + 2)).derivative (touchard (n + 2)) :=
         derivative_interlaces hprev.2.1.2 (by simp [natDegree_touchard])
@@ -163,11 +163,11 @@ theorem prec_touchard_succ : ∀ n : Nat, StrictInterl (touchard n) (touchard (n
 
 theorem interlaces_touchard_succ (n : Nat) :
     Interlaces (touchard n) (touchard (n + 1)) :=
-  (prec_touchard_succ n).toInterlaces (by simp [natDegree_touchard])
+  (strictInterl_touchard_succ n).toInterlaces (by simp [natDegree_touchard])
 
 theorem isRealRooted_touchard : ∀ n : Nat, ((touchard n) ≠ 0 ∧ (touchard n).Splits)
   | 0 => by simp
-  | n + 1 => (prec_touchard_succ n).2.1
+  | n + 1 => (strictInterl_touchard_succ n).2.1
 
 /-- The descending prefix `[T_n, T_{n-1}, ..., T_0]` of the Touchard sequence. -/
 def touchardPrefix : Nat → List ℝ[X]
@@ -193,5 +193,11 @@ theorem isSturmSeq_touchardPrefix :
       | succ k =>
           simpa [touchardPrefix, IsSturmSeq] using
             And.intro (interlaces_touchard_succ (k + 1)) ih
+
+@[deprecated strictInterl_touchard_one_two (since := "2026-09-26")]
+alias prec_touchard_one_two := strictInterl_touchard_one_two
+
+@[deprecated strictInterl_touchard_succ (since := "2026-09-26")]
+alias prec_touchard_succ := strictInterl_touchard_succ
 
 end RealRooted

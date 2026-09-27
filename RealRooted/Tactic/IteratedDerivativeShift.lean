@@ -27,7 +27,7 @@ theorem TDeriv_sequence_splits {eps : Nat → ℝ} {P : Nat → ℝ[X]}
     ∀ i : Nat, (TDeriv (eps i) (P i)).Splits := fun i =>
   RealRooted.splits_tderiv (heps i) (hP i)
 
-theorem TDeriv_sequence_prec {eps : Nat → ℝ} {P : Nat → ℝ[X]}
+theorem TDeriv_sequence_strictInterl {eps : Nat → ℝ} {P : Nat → ℝ[X]}
     (heps : ∀ i : Nat, 0 < eps i)
     (hP0 : ∀ i : Nat, P i ≠ 0)
     (hP : ∀ i : Nat, (P i).Splits) :
@@ -47,7 +47,7 @@ theorem iterateTDeriv_sequence_splits
     ∀ i : Nat, (iterateTDeriv (eps i) (K i) (P i)).Splits := fun i =>
   RealRooted.splits_iterateTDeriv (heps i) (hP i)
 
-theorem iterateTDeriv_sequence_prec_succ
+theorem iterateTDeriv_sequence_strictInterl_succ
     {eps : Nat → ℝ} {P : Nat → ℝ[X]} (K : Nat → ℕ)
     (heps : ∀ i : Nat, 0 < eps i)
     (hP0 : ∀ i : Nat, P i ≠ 0)
@@ -157,15 +157,15 @@ syntax (name := rr_TDeriv_sequence_splits_named)
     "splits" ":=" term :
   tactic
 
-syntax (name := rr_TDeriv_prec_named)
-  "rr_TDeriv_prec" " using "
+syntax (name := rr_TDeriv_strict_interl_named)
+  "rr_TDeriv_strict_interl" " using "
     "eps_pos" ":=" term ","
     "nonzero" ":=" term ","
     "splits" ":=" term :
   tactic
 
-syntax (name := rr_TDeriv_sequence_prec_named)
-  "rr_TDeriv_sequence_prec" " using "
+syntax (name := rr_TDeriv_sequence_strict_interl_named)
+  "rr_TDeriv_sequence_strict_interl" " using "
     "eps_pos" ":=" term ","
     "nonzero" ":=" term ","
     "splits" ":=" term :
@@ -194,15 +194,15 @@ syntax (name := rr_iterateTDeriv_sequence_splits_named)
     "index" ":=" term :
   tactic
 
-syntax (name := rr_iterateTDeriv_prec_succ_named)
-  "rr_iterateTDeriv_prec_succ" " using "
+syntax (name := rr_iterateTDeriv_strict_interl_succ_named)
+  "rr_iterateTDeriv_strict_interl_succ" " using "
     "eps_pos" ":=" term ","
     "nonzero" ":=" term ","
     "splits" ":=" term :
   tactic
 
-syntax (name := rr_iterateTDeriv_sequence_prec_succ_named)
-  "rr_iterateTDeriv_sequence_prec_succ" " using "
+syntax (name := rr_iterateTDeriv_sequence_strict_interl_succ_named)
+  "rr_iterateTDeriv_sequence_strict_interl_succ" " using "
     "eps_pos" ":=" term ","
     "nonzero" ":=" term ","
     "splits" ":=" term ","
@@ -317,17 +317,17 @@ macro_rules
         splits := $hp:term) =>
       `(tactic| exact RealRooted.Tactic.TDeriv_sequence_splits $heps $hp)
   | `(tactic|
-      rr_TDeriv_prec using
+      rr_TDeriv_strict_interl using
         eps_pos := $heps:term,
         nonzero := $hp0:term,
         splits := $hp:term) =>
       `(tactic| exact RealRooted.strictInterl_TDeriv $heps $hp0 $hp)
   | `(tactic|
-      rr_TDeriv_sequence_prec using
+      rr_TDeriv_sequence_strict_interl using
         eps_pos := $heps:term,
         nonzero := $hp0:term,
         splits := $hp:term) =>
-      `(tactic| exact RealRooted.Tactic.TDeriv_sequence_prec $heps $hp0 $hp)
+      `(tactic| exact RealRooted.Tactic.TDeriv_sequence_strictInterl $heps $hp0 $hp)
   | `(tactic| rr_iterateTDeriv_ne_zero using nonzero := $hp:term) =>
       `(tactic| exact RealRooted.iterateTDeriv_ne_zero $hp)
   | `(tactic|
@@ -348,18 +348,18 @@ macro_rules
       `(tactic| exact RealRooted.Tactic.iterateTDeriv_sequence_splits
           $k $heps $hp)
   | `(tactic|
-      rr_iterateTDeriv_prec_succ using
+      rr_iterateTDeriv_strict_interl_succ using
         eps_pos := $heps:term,
         nonzero := $hp0:term,
         splits := $hp:term) =>
       `(tactic| exact RealRooted.strictInterl_iterateTDeriv_succ $heps $hp0 $hp)
   | `(tactic|
-      rr_iterateTDeriv_sequence_prec_succ using
+      rr_iterateTDeriv_sequence_strict_interl_succ using
         eps_pos := $heps:term,
         nonzero := $hp0:term,
         splits := $hp:term,
         index := $k:term) =>
-      `(tactic| exact RealRooted.Tactic.iterateTDeriv_sequence_prec_succ
+      `(tactic| exact RealRooted.Tactic.iterateTDeriv_sequence_strictInterl_succ
           $k $heps $hp0 $hp)
   | `(tactic| rr_iterateTDeriv_natDegree) =>
       `(tactic| exact RealRooted.natDegree_iterateTDeriv _ _ _)
@@ -411,5 +411,79 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.iterate_derivative_iterateTDeriv_sequence)
 
+end Tactic
+end RealRooted
+namespace RealRooted
+namespace Tactic
+@[deprecated TDeriv_sequence_strictInterl (since := "2026-09-26")]
+alias TDeriv_sequence_prec := TDeriv_sequence_strictInterl
+
+@[deprecated iterateTDeriv_sequence_strictInterl_succ (since := "2026-09-26")]
+alias iterateTDeriv_sequence_prec_succ := iterateTDeriv_sequence_strictInterl_succ
+
+end Tactic
+end RealRooted
+
+/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
+    Canonical syntax is preferred; these declarations retain old scripts
+    and dispatch through the deprecated theorem aliases above. -/
+namespace RealRooted
+namespace Tactic
+syntax (name := rr_TDeriv_prec_named_legacy)
+  "rr_TDeriv_prec" " using "
+    "eps_pos" ":=" term ","
+    "nonzero" ":=" term ","
+    "splits" ":=" term :
+  tactic
+
+syntax (name := rr_TDeriv_sequence_prec_named_legacy)
+  "rr_TDeriv_sequence_prec" " using "
+    "eps_pos" ":=" term ","
+    "nonzero" ":=" term ","
+    "splits" ":=" term :
+  tactic
+
+syntax (name := rr_iterateTDeriv_prec_succ_named_legacy)
+  "rr_iterateTDeriv_prec_succ" " using "
+    "eps_pos" ":=" term ","
+    "nonzero" ":=" term ","
+    "splits" ":=" term :
+  tactic
+
+syntax (name := rr_iterateTDeriv_sequence_prec_succ_named_legacy)
+  "rr_iterateTDeriv_sequence_prec_succ" " using "
+    "eps_pos" ":=" term ","
+    "nonzero" ":=" term ","
+    "splits" ":=" term ","
+    "index" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_TDeriv_prec using
+        eps_pos := $heps:term,
+        nonzero := $hp0:term,
+        splits := $hp:term) =>
+      `(tactic| exact RealRooted.strictInterl_TDeriv $heps $hp0 $hp)
+  | `(tactic|
+      rr_TDeriv_sequence_prec using
+        eps_pos := $heps:term,
+        nonzero := $hp0:term,
+        splits := $hp:term) =>
+      `(tactic| exact RealRooted.Tactic.TDeriv_sequence_prec $heps $hp0 $hp)
+  | `(tactic|
+      rr_iterateTDeriv_prec_succ using
+        eps_pos := $heps:term,
+        nonzero := $hp0:term,
+        splits := $hp:term) =>
+      `(tactic| exact RealRooted.strictInterl_iterateTDeriv_succ $heps $hp0 $hp)
+  | `(tactic|
+      rr_iterateTDeriv_sequence_prec_succ using
+        eps_pos := $heps:term,
+        nonzero := $hp0:term,
+        splits := $hp:term,
+        index := $k:term) =>
+      `(tactic| exact RealRooted.Tactic.iterateTDeriv_sequence_prec_succ
+          $k $heps $hp0 $hp)
 end Tactic
 end RealRooted

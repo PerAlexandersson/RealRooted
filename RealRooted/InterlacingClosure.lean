@@ -6,7 +6,7 @@ import RealRooted.RootContinuity
 
 This file proves that weak interlacing is preserved by coefficientwise limits
 when both polynomial degrees stay fixed and all polynomials are monic. The
-proof avoids choosing continuously ordered roots: proper position makes every
+proof avoids choosing continuously ordered roots: interlacing makes every
 real linear combination split, and polynomial root continuity passes that
 property to the limit one combination at a time.
 -/

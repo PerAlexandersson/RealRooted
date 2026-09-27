@@ -945,7 +945,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses
   exact lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_root_crosses
     hP_roots hab hbc hcd hde her (hcross hP_roots hab hbc hcd hde her)
 
-/-- The `n = 6` Braun--Jal Lemma 3.3 proper-position form follows from proving
+/-- The `n = 6` Braun--Jal Lemma 3.3 interlacing form follows from proving
 the cross inequalities for any sorted `P_6` root list. -/
 theorem lemma33AuxiliaryGInterlaces_modified_six_of_crosses
     (hcross :
@@ -968,7 +968,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
     (by simpa [modifiedNarayanaPolynomialSix] using hP_roots)
     hab hbc hcd hde her hsign
 
-/-- The `n = 6` Braun--Jal Lemma 3.3 proper-position form follows from the
+/-- The `n = 6` Braun--Jal Lemma 3.3 interlacing form follows from the
 `P_6`/`G_6` sign certificate. -/
 theorem lemma33AuxiliaryGInterlaces_modified_six_of_eval_signs
     (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
@@ -981,7 +981,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces :
   lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
     modifiedNarayanaPolynomial_six_auxiliaryG_signCertificate
 
-/-- The checked `n = 6` Braun--Jal Lemma 3.3 proper-position case. -/
+/-- The checked `n = 6` Braun--Jal Lemma 3.3 interlacing case. -/
 theorem lemma33AuxiliaryGInterlaces_modified_six :
     StrictInterl (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
   lemma33AuxiliaryGInterlaces_modified_six_interlaces.toStrictInterl

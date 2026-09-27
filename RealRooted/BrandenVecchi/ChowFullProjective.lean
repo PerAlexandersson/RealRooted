@@ -78,7 +78,7 @@ theorem aswEdreiFullProjectiveChow_eq_scaled_normalized
 /-- Corrected full ASW--Edrei Chow theorem. For a nonnegative outer scalar,
 the zero branch is literal zero and every positive branch is represented by
 the projective regularization. All nonnegative epsilon fibers are PF and
-consecutive ranks are in zero-aware proper position. -/
+consecutive ranks are in zero-aware interlacing. -/
 theorem aswEdreiFullProjectiveChow_theorem
     {outer gamma epsilon : ℝ} {N : ℕ} {alpha beta : ℕ → ℝ}
     (houter : 0 ≤ outer) (hgamma : 0 ≤ gamma)

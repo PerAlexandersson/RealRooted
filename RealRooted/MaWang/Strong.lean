@@ -307,8 +307,8 @@ theorem strictInterl_of_interlaces_evalCoeff_neg
 lemma interlaces_of_interlaces_X_sub_C_mul {f g : ℝ[X]} {r : ℝ}
     (h : Interlaces ((X - C r) * g) ((X - C r) * f)) :
     Interlaces g f := by
-  have hprec : StrictInterl ((X - C r) * g) ((X - C r) * f) := h.toStrictInterl
-  have hprec' : StrictInterl g f := hprec.of_mul_X_sub_C_both
+  have hstrictInterl : StrictInterl ((X - C r) * g) ((X - C r) * f) := h.toStrictInterl
+  have hstrictInterl' : StrictInterl g f := hstrictInterl.of_mul_X_sub_C_both
   obtain ⟨hf_mul, hg_mul, hdeg_mul, _, _, _, _, _, _, _⟩ := h
   have hf0 : f ≠ 0 := right_ne_zero_of_mul hf_mul.1
   have hg0 : g ≠ 0 := right_ne_zero_of_mul hg_mul.1
@@ -316,7 +316,7 @@ lemma interlaces_of_interlaces_X_sub_C_mul {f g : ℝ[X]} {r : ℝ}
     rw [natDegree_mul (X_sub_C_ne_zero r) hg0, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hf0, natDegree_X_sub_C] at hdeg_mul
     lia
-  exact hprec'.toInterlaces hdeg
+  exact hstrictInterl'.toInterlaces hdeg
 
 lemma isRoot_add_mul_of_common_root {f g a b : ℝ[X]} {r : ℝ}
     (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
@@ -333,11 +333,11 @@ conclusion, multiplying everything by a common linear factor preserves it. This
 is the multiplication-back step for common-root reductions. -/
 lemma strictInterl_mul_X_sub_C_of_linearCombo_quotient
     {qf qg a b : ℝ[X]} {r : ℝ}
-    (hprec : StrictInterl qf (a * qf + b * qg)) :
+    (hstrictInterl : StrictInterl qf (a * qf + b * qg)) :
     StrictInterl ((X - C r) * qf) (a * ((X - C r) * qf) + b * ((X - C r) * qg)) := by
   have hmul :
       StrictInterl ((X - C r) * qf) ((X - C r) * (a * qf + b * qg)) :=
-    hprec.mul_common_factor
+    hstrictInterl.mul_common_factor
       (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
   simpa [add_mul_factor_X_sub_C, add_comm, add_left_comm, add_assoc] using hmul
 

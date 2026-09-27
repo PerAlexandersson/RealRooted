@@ -816,7 +816,7 @@ private theorem rPolynomial_finite_strictInterl_of_lt
   have hmTwo : 2 ≤ m := by lia
   have hpData := rPolynomial_rightClosedIntervalRootData m ε e hm he
   have hqData := rPolynomial_rightClosedIntervalRootData m ε d hm hd
-  apply (prec_iff_orderedRoot_bounds
+  apply (strictInterl_iff_orderedRoot_bounds
     (fun hzero => hpData.eval_zero_ne (by simp [hzero])) hpData.splits
     (fun hzero => hqData.eval_zero_ne (by simp [hzero])) hqData.splits
     hpData.natDegree_eq hqData.natDegree_eq).mpr
@@ -849,7 +849,7 @@ private theorem rPolynomial_finite_strictInterl_of_lt
     simpa only [RealRooted.orderedRoot, k, Fin.val_castSucc, Fin.val_succ] using
       hqJ.trans hJp
 
-/-- Larger reverse offsets precede smaller reverse offsets in proper position.
+/-- Larger reverse offsets precede smaller reverse offsets in an interlacing relation.
 This is the fixed-row orientation statement behind Xiao's Conjecture 4.2. -/
 theorem rPolynomial_strictInterl_rPolynomial_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hde : d < e) (he : e ≤ m) :
@@ -868,7 +868,7 @@ theorem rPolynomial_strictInterl_rPolynomial_of_lt
       exact natDegree_exceptionalEulerInverse m ε (by positivity)
     have hpPrevBounds := StrictInterl.orderedRoot_le
       hpStrictInterlPrev hpDegree hprevData.natDegree_eq
-    apply (prec_iff_orderedRoot_bounds
+    apply (strictInterl_iff_orderedRoot_bounds
       hpStrictInterlPrev.1.1 hpStrictInterlPrev.1.2
       (fun hzero => hqData.eval_zero_ne (by simp [hzero])) hqData.splits
       hpDegree hqData.natDegree_eq).mpr
@@ -1039,7 +1039,7 @@ theorem negOnePow_mul_rPolynomial_hasPosLeadingCoeff (m ε d : ℕ) :
     rPolynomial_natDegree]
   exact rPolynomial_top_signed_coeff_pos m ε d
 
-/-! ## Deprecated proper-position names -/
+/-! ## Deprecated aliases -/
 
 @[deprecated rPolynomial_strictInterl_rPolynomial_of_lt
   (since := "2026-09-26")]

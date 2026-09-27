@@ -8,7 +8,7 @@ import RealRooted.WagnerX.NonnegativeRoots
 
 Finite matrix multiplication and powers are continuous in the entrywise
 topology.  We combine that fact with the finite source-border chain theorem to
-pass PF and proper-position certificates to strictly lower kernel rows.
+pass PF and interlacing certificates to strictly lower kernel rows.
 -/
 
 open Filter Matrix Polynomial Topology
@@ -78,7 +78,7 @@ theorem regularizedKernelRow_isPFPolynomial
   exact isPFPolynomial_of_X_mul hchain
 
 /-- Consecutive regularized rows in a positive finite approximation are in
-zero-aware proper position. -/
+zero-aware interlacing. -/
 theorem interl_regularizedKernelRow_succ
     {N : ℕ} {g η : ℝ}
     {G H : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
@@ -111,7 +111,7 @@ theorem interl_regularizedKernelRow_succ
       hHlower hGdiag hHdiag i.succ).hasNonnegCoeffs
 
 /-- Strictly lower entrywise limits of positive-diagonal TN approximations
-have PF kernel rows and consecutive zero-aware proper position. -/
+have PF kernel rows and consecutive zero-aware interlacing. -/
 theorem kernelRows_pf_and_interl_of_tendsto
     {N : ℕ} {g : ℝ} {η : ℕ → ℝ}
     {G : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}

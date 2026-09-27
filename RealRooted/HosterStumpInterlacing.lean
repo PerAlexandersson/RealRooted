@@ -14,7 +14,7 @@ def IsSourceRealRooted (f : ℝ[X]) : Prop :=
   f = 0 ∨ (f ≠ 0 ∧ f.Splits)
 
 /-- Hoster--Stump's Section 2 interlacing relation. Besides zero endpoints and
-ordinary oriented proper position, the source declares any two polynomials of
+ordinary oriented interlacing, the source declares any two polynomials of
 degree at most one to interlace. -/
 def SourceInterl (f g : ℝ[X]) : Prop :=
   IsSourceRealRooted f ∧ IsSourceRealRooted g ∧
@@ -186,7 +186,7 @@ theorem source_lowerPartialSums_counterexample :
       (Polynomial.natDegree_X_add_C (2 : ℝ))
     have hfive := isRealRooted_of_degree_one
       (Polynomial.natDegree_X_add_C (5 : ℝ))
-    rcases hfirstLast.2.2 with hzero | hzero | hlow | hprec
+    rcases hfirstLast.2.2 with hzero | hzero | hlow | hstrictInterl
     · exact hlr.1.1 hzero
     · exact (mul_ne_zero htwo.1 hfive.1) hzero
     · have hdeg : ((X + C 2) * (X + C 5) : ℝ[X]).natDegree = 2 := by
@@ -203,7 +203,7 @@ theorem source_lowerPartialSums_counterexample :
         change (-1 : ℝ) ∈ (X + C 1 : ℝ[X]).roots
         rw [roots_X_add_C]
         simp
-      have := hprec.roots_le_of_right hbound (-1) hleftRoot
+      have := hstrictInterl.roots_le_of_right hbound (-1) hleftRoot
       norm_num at this
 
 /-- The non-real-rooted polynomial used to check that the old weak sequence
@@ -233,16 +233,16 @@ lemma weakQuadratic_not_sourceRealRooted : ¬IsSourceRealRooted weakQuadratic :=
   · exact weakQuadratic_not_splits hsplits
 
 lemma weakQuadratic_not_interl_self : ¬Interl weakQuadratic weakQuadratic := by
-  rintro (hzero | hzero | hprec)
+  rintro (hzero | hzero | hstrictInterl)
   · exact weakQuadratic_ne_zero hzero
   · exact weakQuadratic_ne_zero hzero
-  · exact weakQuadratic_not_splits hprec.1.2
+  · exact weakQuadratic_not_splits hstrictInterl.1.2
 
 lemma weakQuadratic_not_interl_X_mul : ¬Interl weakQuadratic (X * weakQuadratic) := by
-  rintro (hzero | hzero | hprec)
+  rintro (hzero | hzero | hstrictInterl)
   · exact weakQuadratic_ne_zero hzero
   · exact (mul_ne_zero X_ne_zero weakQuadratic_ne_zero) hzero
-  · exact weakQuadratic_not_splits hprec.1.2
+  · exact weakQuadratic_not_splits hstrictInterl.1.2
 
 private lemma weakInput (fs : List ℝ[X])
     (hpair : fs.Pairwise Interl) (hmem : ∀ f ∈ fs, f = 0 ∨ f = weakQuadratic) :

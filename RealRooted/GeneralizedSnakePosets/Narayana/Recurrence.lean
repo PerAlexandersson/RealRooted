@@ -447,11 +447,11 @@ theorem narayanaAuxiliaryGRecurrence_modified_upTo_eight :
   intro n hn₁ hn₈
   exact narayanaAuxiliaryGRecurrence_modified_of_le_eight hn₁ hn₈
 
-/-- Unconditional consecutive proper position for the modified Narayana
+/-- Unconditional consecutive interlacing for the modified Narayana
 family. -/
-theorem modifiedNarayanaPolynomial_prec_succ (n : ℕ) :
+theorem modifiedNarayanaPolynomial_strictInterl_succ (n : ℕ) :
     StrictInterl (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) :=
-  modifiedNarayanaPolynomial_prec_succ_of_nonnegCoeffs n
+  modifiedNarayanaPolynomial_strictInterl_succ_of_nonnegCoeffs n
     narayanaQuot_hasNonnegCoeffs
 
 /-- Unconditional consecutive interlacing for the modified Narayana family. -/
@@ -671,6 +671,9 @@ theorem auxiliaryGPencil_natDegree_of_narayanaRecurrence
   apply natDegree_eq_of_le_of_coeff_ne_zero hle
   rw [hcoeff]
   positivity
+
+@[deprecated modifiedNarayanaPolynomial_strictInterl_succ (since := "2026-09-26")]
+alias modifiedNarayanaPolynomial_prec_succ := modifiedNarayanaPolynomial_strictInterl_succ
 
 end GeneralizedSnakePosets
 end RealRooted

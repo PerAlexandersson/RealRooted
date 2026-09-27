@@ -58,7 +58,7 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     ∀ n : Nat, StrictInterl
       (C (c n) * P n + (1 - X) * (P n).derivative)
       (P n) := by
-  rr_prec_affine_derivative_nonneg_sequence using
+  rr_strict_interl_affine_derivative_nonneg_sequence using
     splits := hsplits,
     degree_ge_one := hdeg,
     nonneg := hnn,
@@ -73,7 +73,7 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     ∀ n : Nat,
       C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
         (C (c n) * P n + (1 - X) * (P n).derivative).Splits := by
-  rr_prec_affine_derivative_nonneg_sequence_realrooted using
+  rr_strict_interl_affine_derivative_nonneg_sequence_realrooted using
     splits := hsplits,
     degree_ge_one := hdeg,
     nonneg := hnn,

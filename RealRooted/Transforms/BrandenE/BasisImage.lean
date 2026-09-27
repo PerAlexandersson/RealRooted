@@ -8,7 +8,7 @@ import RealRooted.WagnerX.NonnegativeRoots
 
 This module packages the ambient-degree binomial basis, its images under the
 `E` transform, the associated Euler differential step, and the elementary
-coefficient and root-window geometry used by the proper-position theory.
+coefficient and root-window geometry used by the interlacing theory.
 -/
 
 open Polynomial

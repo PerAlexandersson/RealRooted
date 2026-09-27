@@ -40,18 +40,18 @@ theorem IsPFPolynomial.wangYeh_bidiagonal
   · have hp_ne : p ≠ 0 := by
       intro hzero
       simp [hzero] at hdeg
-    have hprec : StrictInterl p (theta p) :=
-      prec_self_theta_of_natDegree_ne_zero hp hdeg
+    have hstrictInterl : StrictInterl p (theta p) :=
+      strictInterl_self_theta_of_natDegree_ne_zero hp hdeg
     have hp_pos : HasPosLeadingCoeff p :=
       hp.hasNonnegCoeffs.pos_leadingCoeff hp_ne
     have htheta_pf : IsPFPolynomial (theta p) := theta_preserves_pf hp
     have htheta_pos : HasPosLeadingCoeff (theta p) :=
-      htheta_pf.hasNonnegCoeffs.pos_leadingCoeff hprec.2.1.1
+      htheta_pf.hasNonnegCoeffs.pos_leadingCoeff hstrictInterl.2.1.1
     have hdet' : c * b ≤ d * a := by
       simpa [mul_comm] using hdet
     have hsplit := wangYehAffine_eq_zero_or_splits
       (f := theta p) (g := p) (a := d) (b := c) (c := b) (d := a)
-      hprec htheta_pos hp_pos hdet'
+      hstrictInterl htheta_pos hp_pos hdet'
     apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hout
     rw [bidiagonalOperator_affine_weights]
     simpa [theta, add_comm] using hsplit

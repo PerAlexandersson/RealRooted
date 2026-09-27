@@ -119,8 +119,8 @@ example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X]}
     (hP : ∀ n : Nat, P (n + 1) = upd n (P n))
     (hQ : ∀ n : Nat, Q (n + 1) = upd n (Q n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
-  rr_model_lag_one_pf_prec0_sequence using
-    model_pf_prec0 := hmodel,
+  rr_model_lag_one_pf_interl_sequence using
+    model_pf_interl := hmodel,
     update := upd
 
 example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X]}
@@ -248,8 +248,8 @@ example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X]}
     (hQ : ∀ n : Nat, Q (n + 1) = upd n (Q n)) :
     (∀ n : Nat, IsPFPolynomial (P n)) ∧
       ∀ n : Nat, Interl (P n) (P (n + 1)) := by
-  rr_model_lag_one_pf_prec0_sequence using
-    model_pf_prec0 := hmodel,
+  rr_model_lag_one_pf_interl_sequence using
+    model_pf_interl := hmodel,
     update := upd,
     initial := hzero,
     target_recurrence := hP,
@@ -264,8 +264,8 @@ example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X]}
     (hP : ∀ n : Nat, P (n + 2) = upd n (P (n + 1)) (P n))
     (hQ : ∀ n : Nat, Q (n + 2) = upd n (Q (n + 1)) (Q n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
-  rr_model_lag_two_pf_prec0_sequence using
-    model_pf_prec0 := hmodel,
+  rr_model_lag_two_pf_interl_sequence using
+    model_pf_interl := hmodel,
     update := upd
 
 example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X]}
@@ -277,8 +277,8 @@ example {P Q : Nat → ℝ[X]} {upd : Nat → ℝ[X] → ℝ[X] → ℝ[X]}
     (hP : ∀ n : Nat, P (n + 2) = upd n (P (n + 1)) (P n))
     (hQ : ∀ n : Nat, Q (n + 2) = upd n (Q (n + 1)) (Q n)) :
     ∀ n : Nat, Interl (P n) (P (n + 1)) := by
-  rr_model_lag_two_pf_prec0_sequence using
-    model_pf_prec0 := hmodel,
+  rr_model_lag_two_pf_interl_sequence using
+    model_pf_interl := hmodel,
     update := upd,
     initial_zero := hzero,
     initial_one := hone,
@@ -298,8 +298,8 @@ example {P Q : Nat → ℝ[X]}
     (hQ : ∀ n : Nat,
       Q (n + 3) = upd n (Q (n + 2)) (Q (n + 1)) (Q n)) :
     ∀ n : Nat, Interl (P n) (P (n + 1)) := by
-  rr_model_lag_three_pf_prec0_sequence using
-    model_pf_prec0 := hmodel,
+  rr_model_lag_three_pf_interl_sequence using
+    model_pf_interl := hmodel,
     update := upd,
     initial_zero := hzero,
     initial_one := hone,
@@ -320,8 +320,8 @@ example {P Q : Nat → ℝ[X]}
     (hQ : ∀ n : Nat,
       Q (n + 3) = upd n (Q (n + 2)) (Q (n + 1)) (Q n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
-  rr_model_lag_three_pf_prec0_sequence using
-    model_pf_prec0 := hmodel,
+  rr_model_lag_three_pf_interl_sequence using
+    model_pf_interl := hmodel,
     update := upd
 
 /-- Conclusion-first unification also transports a PF/interlacing certificate
@@ -341,8 +341,8 @@ example {P Q : Nat → ℝ[X]}
         X * (C (1 : ℝ) * (Q (n + 1)).derivative +
           C ((n : ℝ) + 4) * Q n)) :
     ∀ n : Nat, Interl (P (n + 3)) (P (n + 4)) := by
-  rr_model_lag_two_pf_prec0_sequence using
-    model_pf_prec0 := hmodel,
+  rr_model_lag_two_pf_interl_sequence using
+    model_pf_interl := hmodel,
     update := fun n p q =>
       X * (C (1 : ℝ) * p.derivative + C ((n : ℝ) + 4) * q)
 
@@ -353,8 +353,8 @@ example (P : Nat → ℝ[X])
     (hrec : ∀ n : Nat, P (n + 1) = P n) :
     (∀ n : Nat, IsPFPolynomial (P n)) ∧
       ∀ n : Nat, Interl (P n) (P (n + 1)) := by
-  rr_model_lag_one_pf_prec0_sequence using
-    model_pf_prec0 := show
+  rr_model_lag_one_pf_interl_sequence using
+    model_pf_interl := show
       (∀ n : Nat, IsPFPolynomial ((fun _ => (1 : ℝ[X])) n)) ∧
         ∀ n : Nat, Interl ((fun _ => (1 : ℝ[X])) n)
           ((fun _ => (1 : ℝ[X])) (n + 1)) from by
@@ -362,7 +362,7 @@ example (P : Nat → ℝ[X])
       · intro n
         exact IsPFPolynomial.one
       · intro n
-        exact IsPFPolynomial.one.prec0_self,
+        exact IsPFPolynomial.one.interl_self,
     update := fun _ p => p,
     initial := by simpa using hzero,
     target_recurrence := hrec,

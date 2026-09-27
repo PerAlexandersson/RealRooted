@@ -8,10 +8,10 @@ open LiuOppositeSigns
 
 noncomputable section
 
-/-- A positive-leading proper-position pair is a normalized Liu root-count
+/-- A positive-leading strictly interlacing pair is a normalized Liu root-count
 pair.  This bridges the project's usual `StrictInterl` invariants to the proved
 opposite-sign `X * p - μ * q` endpoint theorems. -/
-theorem positiveSplitRootCountPair_of_prec
+theorem positiveSplitRootCountPair_of_strictInterl
     {p q : ℝ[X]} (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
     (h : StrictInterl p q) : PositiveSplitRootCountPair p q := by
   refine ⟨hp, hq, h.1.2, h.2.1.2, ?_⟩
@@ -27,15 +27,21 @@ theorem positiveSplitRootCountPair_of_prec
 
 /-- Liu's proved `X`-subtraction theorem in the ordinary `StrictInterl` interface.
 The degree split required by the backend follows automatically from `StrictInterl`. -/
-theorem xSub_splits_of_prec_of_nonneg
+theorem xSub_splits_of_strictInterl_of_nonneg
     {p q : ℝ[X]} (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
-    (hprec : StrictInterl p q) (hpnn : HasNonnegCoeffs p)
+    (hstrictInterl : StrictInterl p q) (hpnn : HasNonnegCoeffs p)
     (hqnn : HasNonnegCoeffs q) {μ : ℝ} (hμ : 0 < μ) :
     (X * p - C μ * q).Splits := by
-  have hpair := positiveSplitRootCountPair_of_prec hp hq hprec
-  rcases hprec.natDegree_eq_or_eq_succ with hdeg | hsucc
+  have hpair := positiveSplitRootCountPair_of_strictInterl hp hq hstrictInterl
+  rcases hstrictInterl.natDegree_eq_or_eq_succ with hdeg | hsucc
   · exact hpair.xSub_splits_of_same_degree_nonneg hpnn hqnn hdeg.symm hμ
   · exact hpair.xSub_splits_of_right_successor_nonneg hpnn hqnn hsucc hμ
+
+@[deprecated positiveSplitRootCountPair_of_strictInterl (since := "2026-09-26")]
+alias positiveSplitRootCountPair_of_prec := positiveSplitRootCountPair_of_strictInterl
+
+@[deprecated xSub_splits_of_strictInterl_of_nonneg (since := "2026-09-26")]
+alias xSub_splits_of_prec_of_nonneg := xSub_splits_of_strictInterl_of_nonneg
 
 end
 

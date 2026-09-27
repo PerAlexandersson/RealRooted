@@ -107,13 +107,13 @@ example {F G P Q : Nat → ℝ[X]}
     (hPQ : ∀ n : Nat, StrictInterl (P n) (Q n)) :
     ∀ n : Nat,
       Interl (hadamardProduct (F n) (P n)) (hadamardProduct (G n) (Q n)) := by
-  rr_hadamard_sequence_prec0 using
+  rr_hadamard_sequence_interl using
     first_left_nonneg := hF,
     first_right_nonneg := hG,
     second_left_nonneg := hP,
     second_right_nonneg := hQ,
-    first_prec := hFG,
-    second_prec := hPQ
+    first_strictInterl := hFG,
+    second_strictInterl := hPQ
 
 /-- Schur--Szego row-family exit exposed through the OEIS facade. -/
 example {N : Nat → ℕ} {F P : Nat → ℝ[X]}

@@ -247,8 +247,8 @@ private lemma xAddOne_xSq_add_fiveX_add_six_noCommon :
 
 private lemma xAddOne_xSq_add_fiveX_add_six_not_strictInterl :
     ¬ StrictInterl (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) := by
-  intro hprec
-  rcases hprec with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+  intro hstrictInterl
+  rcases hstrictInterl with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hss_card : (X + 1 : ℝ[X]).roots.card = 1 := by
     simpa [xAddOne_natDegree] using card_roots_of_splits hf.2
   have hrs_card : (((X + 2) * (X + 3)) : ℝ[X]).roots.card = 2 := by
@@ -442,8 +442,8 @@ private lemma xSq_add_twoX_add_two_not_isRealRooted :
 
 private lemma xAddOne_xAddTwo_not_strictInterl :
     ¬ StrictInterl (X + 1 : ℝ[X]) (X + 2) := by
-  intro hprec
-  rcases hprec with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+  intro hstrictInterl
+  rcases hstrictInterl with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hss_card : (X + 1 : ℝ[X]).roots.card = 1 := by
     simpa [xAddOne_natDegree] using card_roots_of_splits hf.2
   have hrs_card : (X + 2 : ℝ[X]).roots.card = 1 := by
@@ -523,7 +523,7 @@ lemma not_posComboNoCommonBoundaryRightPairOrientationStatement :
 lemma not_posComboNoCommonSameDegreeShiftedPairOrientationStatement :
     ¬ PosComboNoCommonSameDegreeShiftedPairOrientationStatement := by
   intro hshift
-  have hprec : StrictInterl (X + 1 : ℝ[X]) ((X + 2) + X * (X + 1)) :=
+  have hstrictInterl : StrictInterl (X + 1 : ℝ[X]) ((X + 2) + X * (X + 1)) :=
       hshift
         xAddOne_hasPosLeadingCoeff
         xAddTwo_hasPosLeadingCoeff
@@ -533,7 +533,7 @@ lemma not_posComboNoCommonSameDegreeShiftedPairOrientationStatement :
         (by simp [xAddTwo_natDegree])
         xAddOne_xAddTwo_noCommon
   have hrr : ((((X + 2) + X * (X + 1)) : ℝ[X]) ≠ 0 ∧
-    (((X + 2) + X * (X + 1)) : ℝ[X]).Splits) := hprec.2.1
+    (((X + 2) + X * (X + 1)) : ℝ[X]).Splits) := hstrictInterl.2.1
   rw [xAddOne_xAddTwo_badShiftedPair_eq] at hrr
   exact xSq_add_twoX_add_two_not_isRealRooted hrr
 
@@ -649,8 +649,8 @@ lemma not_compatibleSuccDegreeAllComboStatement :
 linear/quadratic pair is compatible, but both quadratic roots lie to the left
 of the linear root. -/
 lemma not_compatibleSuccDegreeStrictInterlStatement :
-    ¬ CompatibleSuccDegreePrecStatement := by
-  intro hprec
+    ¬ CompatibleSuccDegreeStrictInterlStatement := by
+  intro hstrictInterl
   have hcomp : Compatible (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) :=
     Compatible.of_posComboRealRooted
       xAddOne_xSq_add_fiveX_add_six_posComboRealRooted
@@ -658,7 +658,7 @@ lemma not_compatibleSuccDegreeStrictInterlStatement :
       xSq_add_fiveX_add_six_isRealRooted
   exact
     xAddOne_xSq_add_fiveX_add_six_not_strictInterl
-      (hprec hcomp
+      (hstrictInterl hcomp
         xAddOne_hasPosLeadingCoeff
         xSq_add_fiveX_add_six_hasPosLeadingCoeff
         (by simp [xSq_add_fiveX_add_six_natDegree])
@@ -813,7 +813,7 @@ lemma not_posComboNoCommonOrientationStatement :
 /-! ### The residual succ-degree orientation target is false
 
 The residual branch of the succ-degree no-common orientation problem
-(`PosComboNoCommonSuccDegreeRootCountResidualPrecStatement`) additionally
+(`PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement`) additionally
 assumes `f.coeff 0 = 0` and `g.coeff 0 ≠ 0`.  It is false: take `f = X` and
 `g = (X + 1)(X + 2)`.  A common left interleaver `X + 3/2` witnesses the
 positive-combination condition, but `0`, the only root of `X`, lies strictly to
@@ -896,21 +896,21 @@ private lemma X_xAddOne_xAddTwo_noCommon :
 
 private lemma X_not_strictInterl_xAddOne_xAddTwo :
     ¬ StrictInterl (X : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) := by
-  intro hprec
+  intro hstrictInterl
   have hg_le : ∀ r ∈ (((X + 1) * (X + 2)) : ℝ[X]).roots, r ≤ (-1 : ℝ) := by
     intro r hr
     rw [xAddOne_xAddTwo_roots] at hr
     simp only [Multiset.mem_add, Multiset.mem_singleton] at hr
     grind
-  have hf_le := hprec.roots_le_of_right hg_le
+  have hf_le := hstrictInterl.roots_le_of_right hg_le
   have h0 : (0 : ℝ) ∈ (X : ℝ[X]).roots := by simp
   grind
 
 /-- The residual succ-degree orientation target
-`PosComboNoCommonSuccDegreeRootCountResidualPrecStatement` is false.
+`PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement` is false.
 Witnessed by `f = X`, `g = (X + 1)(X + 2)`. -/
 lemma not_posComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement :
-    ¬ PosComboNoCommonSuccDegreeRootCountResidualPrecStatement :=
+    ¬ PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement :=
   fun hres =>
     X_not_strictInterl_xAddOne_xAddTwo
       (hres

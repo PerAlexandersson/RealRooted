@@ -127,10 +127,10 @@ theorem IsInterlacingSeqNonneg.familyCompatible
     intro f hf
     exact (hfs.1 f hf).2.pos_leadingCoeff (hfs.1 f hf).1.1
   apply (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible hrr hpos).mp
-  have hprec := isInterlacingSeq_iff_pairwise.mp hfs.2
-  rw [List.pairwise_iff_get] at hprec
+  have hstrictInterl := isInterlacingSeq_iff_pairwise.mp hfs.2
+  rw [List.pairwise_iff_get] at hstrictInterl
   intro i j hij
-  exact Compatible.of_strictInterl (hprec i j hij)
+  exact Compatible.of_strictInterl (hstrictInterl i j hij)
 
 /-- Every nonnegative weighted sum drawn from a nonnegative interlacing
 sequence is a Pólya-frequency polynomial. -/

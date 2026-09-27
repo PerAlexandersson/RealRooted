@@ -78,7 +78,7 @@ This consumes the split raw recurrence
 `C d_n P_{n+2} = C d_n U_n P_{n+1} + C b_n V_n P'_{n+1} +
 C e_n W_n P_n` and internally normalizes the two scalar coefficients to
 `c_n` and `a_n`, using `d_n⁻¹ * b_n = c_n` and `d_n⁻¹ * e_n = a_n`. -/
-theorem prec_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
+theorem strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]} {b c e a d : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -111,7 +111,7 @@ theorem prec_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
 
 /-- Denominator-fused combined Ma--Wang/Liu--Wang induction with explicit
 root-window sign certificates. -/
-theorem prec_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
+theorem strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
     {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]} {b c e a d : Nat → ℝ}
     {lo hi : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
@@ -138,7 +138,7 @@ theorem prec_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_lw_derivative_lag_sequence_of_root_window
+  strictInterl_mw_lw_derivative_lag_sequence_of_root_window
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
     hbase hpos hdeg_two
     (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
@@ -229,7 +229,7 @@ This consumes the split raw recurrence
 `C d_n P_{n+2} = C d_n U_n P_{n+1} + C b_n (V_n P'_{n+1})` and internally
 normalizes the scalar derivative coefficient to `c_n`, using
 `d_n⁻¹ * b_n = c_n`. -/
-theorem prec_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+theorem strictInterl_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]} {b c d : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -246,7 +246,7 @@ theorem prec_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs
+  strictInterl_mw_derivative_nonpos_sequence_of_nonneg_coeffs
     (U := U) (V := fun n => C (c n) * V n) hbase hpos hnonneg hdeg_two
     (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
       (hc n) (hV_nonpos n r hr))
@@ -282,7 +282,7 @@ theorem isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
 /-- Sequence-level `X Q_n P'` Ma--Wang wrapper.  The current-row root bound is
 derived internally from nonnegative coefficients; the remaining input is the
 nonnegativity of `Q_n` at current-row roots. -/
-theorem prec_mw_derivative_X_mul_sequence_of_nonneg_coeffs
+theorem strictInterl_mw_derivative_X_mul_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -295,7 +295,7 @@ theorem prec_mw_derivative_X_mul_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
+  strictInterl_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
     (V := fun n => X * Q n) hbase hpos hnonneg hdeg_two
     (fun n r hr hroot_nonpos =>
       eval_X_mul_nonpos_of_nonpos_of_nonneg hroot_nonpos (hQ_nonneg n r hr))
@@ -323,7 +323,7 @@ theorem isRealRooted_of_mw_derivative_X_mul_sequence_of_nonneg_coeffs
     hrec hdeg_lo hdeg_hi
 
 /-- Sequence-level `c_n X Q_n P'` Ma--Wang wrapper. -/
-theorem prec_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
+theorem strictInterl_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -337,7 +337,7 @@ theorem prec_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
+  strictInterl_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
     (V := fun n => C (c n) * X * Q n) hbase hpos hnonneg hdeg_two
     (fun n r hr hroot_nonpos =>
       eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
@@ -374,7 +374,7 @@ This consumes the split raw recurrence
 `C d_n P_{n+2} = C d_n U_n P_{n+1} + C b_n (X Q_n P'_{n+1})` and internally
 normalizes the scalar derivative coefficient to `c_n`, using
 `d_n⁻¹ * b_n = c_n`. -/
-theorem prec_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
+theorem strictInterl_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b c d : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -391,7 +391,7 @@ theorem prec_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
+  strictInterl_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
     (U := U) (Q := Q) (c := c) hbase hpos hnonneg hdeg_two hc hQ_nonneg
     (fun n => by
       simpa only [mul_assoc] using
@@ -428,7 +428,7 @@ theorem isRealRooted_of_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_c
 
 /-- Sequence-level `X P'` Ma--Wang wrapper.  The current-row root bound is
 derived internally from nonnegative coefficients. -/
-theorem prec_mw_derivative_X_sequence_of_nonneg_coeffs
+theorem strictInterl_mw_derivative_X_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -439,7 +439,7 @@ theorem prec_mw_derivative_X_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs
+  strictInterl_mw_derivative_nonpos_sequence_of_nonneg_coeffs
     (V := fun _ => X) hbase hpos hnonneg hdeg_two
     (fun _ _ hroot_nonpos => eval_X_nonpos_of_nonpos hroot_nonpos)
     hrec hdeg_lo hdeg_hi
@@ -463,7 +463,7 @@ theorem isRealRooted_of_mw_derivative_X_sequence_of_nonneg_coeffs
 
 /-- Sequence-level `c_n X P'` Ma--Wang wrapper for positive-constant MW2
 derivative coefficients. -/
-theorem prec_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
+theorem strictInterl_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -475,7 +475,7 @@ theorem prec_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs
+  strictInterl_mw_derivative_nonpos_sequence_of_nonneg_coeffs
     (V := fun n => C (c n) * X) hbase hpos hnonneg hdeg_two
     (fun n _ hroot_nonpos =>
       eval_C_mul_X_nonpos_of_nonneg_of_nonpos (hc n) hroot_nonpos)
@@ -504,7 +504,7 @@ theorem isRealRooted_of_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
 /-- Sequence-level `X(1+X) P'` Ma--Wang wrapper for inner-window roots.
 The upper bound `r <= 0` is derived from nonnegative coefficients, while the
 lower bound `-1 <= r` is a sequence-specific certificate. -/
-theorem prec_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
+theorem strictInterl_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -516,7 +516,7 @@ theorem prec_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
+  strictInterl_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
     (V := fun _ => X * (1 + X)) hbase hpos hnonneg hdeg_two
     (fun n r hr hroot_nonpos =>
       eval_X_mul_one_add_X_nonpos_of_mem_Icc (hroot_lower n r hr) hroot_nonpos)
@@ -543,7 +543,7 @@ theorem isRealRooted_of_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
     hrec hdeg_lo hdeg_hi
 
 /-- Sequence-level `c_n X(1+X) P'` Ma--Wang wrapper for inner-window roots. -/
-theorem prec_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
+theorem strictInterl_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -557,7 +557,7 @@ theorem prec_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
+  strictInterl_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
     (V := fun n => C (c n) * X * (1 + X)) hbase hpos hnonneg hdeg_two
     (fun n r hr hroot_nonpos =>
       eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc
@@ -588,7 +588,7 @@ theorem isRealRooted_of_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_c
     hrec hdeg_lo hdeg_hi
 
 /-- Sequence-level `-c_n X(1+X) P'` Ma--Wang wrapper for outer-window roots. -/
-theorem prec_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
+theorem strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -602,7 +602,7 @@ theorem prec_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_derivative_nonpos_sequence hbase hpos hdeg_two
+  strictInterl_mw_derivative_nonpos_sequence hbase hpos hdeg_two
     (fun n r hr =>
       eval_neg_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_le_neg_one
         (hc n) (hroot_upper n r hr))
@@ -632,7 +632,7 @@ theorem isRealRooted_of_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
 
 /-- Sequence-level `c_n X(1-X) P'` Ma--Wang wrapper where nonpositive roots of
 the current row are derived internally from nonnegative coefficients. -/
-theorem prec_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
+theorem strictInterl_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -645,7 +645,7 @@ theorem prec_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs
+  strictInterl_mw_derivative_nonpos_sequence_of_nonneg_coeffs
     (V := fun n => C (c n) * X * (1 - X)) hbase hpos hnonneg hdeg_two
     (fun n _ hr =>
       eval_C_mul_X_mul_one_sub_X_nonpos_of_nonneg_of_nonpos (hc n) hr)
@@ -671,5 +671,65 @@ theorem isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_c
     (fun n _ hr =>
       eval_C_mul_X_mul_one_sub_X_nonpos_of_nonneg_of_nonpos (hc n) hr)
     hrec hdeg_lo hdeg_hi
+
+@[deprecated strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs :=
+  strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
+
+@[deprecated strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
+  (since := "2026-09-26")]
+alias prec_mw_lw_derivative_lag_sequence_den_coeff_of_root_window :=
+  strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
+
+@[deprecated strictInterl_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs :=
+  strictInterl_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+
+@[deprecated strictInterl_mw_derivative_X_mul_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_mw_derivative_X_mul_sequence_of_nonneg_coeffs :=
+  strictInterl_mw_derivative_X_mul_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs :=
+  strictInterl_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs :=
+  strictInterl_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
+
+@[deprecated strictInterl_mw_derivative_X_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_mw_derivative_X_sequence_of_nonneg_coeffs :=
+  strictInterl_mw_derivative_X_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs :=
+  strictInterl_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs :=
+  strictInterl_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs :=
+  strictInterl_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
+
+@[deprecated strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
+  (since := "2026-09-26")]
+alias prec_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence :=
+  strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
+
+@[deprecated strictInterl_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
+  (since := "2026-09-26")]
+alias prec_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs :=
+  strictInterl_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
 
 end RealRooted

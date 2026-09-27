@@ -165,7 +165,7 @@ lemma affine_mul_C_add_same_eq (s t a : ℝ) :
       C a * (C s * X + C (t + 1)) := by
   grind
 
-lemma prec0_const_entry_affine_plus_const_to_affine_plus_X
+lemma interl_const_entry_affine_plus_const_to_affine_plus_X
     {A b d s t : ℝ}
     (hA : 0 ≤ A) (hb : 0 ≤ b) (hd : 0 ≤ d)
     (hs : 0 < s) (ht : 0 ≤ t) :
@@ -195,7 +195,7 @@ lemma prec0_const_entry_affine_plus_const_to_affine_plus_X
           (u := b * s) (v := b * t + d) (U := A * s + 1) (V := A * t)
           (by simp_all) (by positivity) hcross
 
-lemma prec0_C_mul_affine_linear_X_mul_affine_linear
+lemma interl_C_mul_affine_linear_X_mul_affine_linear
     {a u v : ℝ} (hu : 0 < u) (hv : 0 ≤ v) :
     Interl (C a * (C u * X + C v)) (X * (C u * X + C v)) := by
   by_cases ha0 : a = 0
@@ -206,6 +206,15 @@ lemma prec0_C_mul_affine_linear_X_mul_affine_linear
   have hfnn : HasNonnegCoeffs (C u * X + C v : ℝ[X]) :=
     hasNonnegCoeffs_affine_linear hu.le hv
   exact (StrictInterl.C_mul_left (strictInterl_self_mul_X_of_nonneg hf.1 hf.2 hfnn) ha0).toInterl
+
+@[deprecated interl_const_entry_affine_plus_const_to_affine_plus_X
+    (since := "2026-09-26")]
+alias prec0_const_entry_affine_plus_const_to_affine_plus_X :=
+  interl_const_entry_affine_plus_const_to_affine_plus_X
+
+@[deprecated interl_C_mul_affine_linear_X_mul_affine_linear (since := "2026-09-26")]
+alias prec0_C_mul_affine_linear_X_mul_affine_linear :=
+  interl_C_mul_affine_linear_X_mul_affine_linear
 
 /-! ## Matrix action formula -/
 
@@ -469,7 +478,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
       exact Interl.refl fun _ => hrr.2
     · rw [ite_eq_left hj₁0, ite_eq_right hj₂0]
       exact
-        prec0_const_entry_affine_plus_const_to_affine_plus_X
+        interl_const_entry_affine_plus_const_to_affine_plus_X
           (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁)
           (veroneseLinearFactorConstEntry_nonneg ha i₁ j₂)
           (veroneseLinearFactorLastConstEntry_nonneg ha j₂)
@@ -514,7 +523,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
         simp only [veroneseLinearFactorLastConstEntry, hj₂last, ite_true]
         rw [affine_mul_C_add_same_eq, affine_mul_X_add_X_eq]
         exact
-          prec0_C_mul_affine_linear_X_mul_affine_linear
+          interl_C_mul_affine_linear_X_mul_affine_linear
             (a := a) (u := s) (v := t + 1) hs (by grind)
       · simp [hj₁0, hj₂0, hj₂last,
           veroneseLinearFactorLastConstEntry, interl_zero_left]
@@ -807,7 +816,7 @@ lemma veroneseSectionPolynomialListDesc_C_mul
       simp [List.get_eq_getElem, veroneseSectionPolynomialListDesc, i]]
     exact veroneseSectionPolynomial_C_mul hr c p
 
-lemma prec0_C_mul_both {c : ℝ} (hc : c ≠ 0) {f g : ℝ[X]}
+lemma interl_C_mul_both {c : ℝ} (hc : c ≠ 0) {f g : ℝ[X]}
     (h : Interl f g) : Interl (C c * f) (C c * g) := by
   rcases h with hf | hg | hstrictInterl
   · left
@@ -816,6 +825,9 @@ lemma prec0_C_mul_both {c : ℝ} (hc : c ≠ 0) {f g : ℝ[X]}
     simp_all
   · exact Or.inr (Or.inr
       (StrictInterl.C_mul_right (StrictInterl.C_mul_left hstrictInterl hc) hc))
+
+@[deprecated interl_C_mul_both (since := "2026-09-26")]
+alias prec0_C_mul_both := interl_C_mul_both
 
 lemma isInterlacingSeq0Nonneg_map_C_mul
     {c : ℝ} (hc_nonneg : 0 ≤ c) (hc : c ≠ 0) {fs : List ℝ[X]}
@@ -829,7 +841,7 @@ lemma isInterlacingSeq0Nonneg_map_C_mul
     let j' : Fin fs.length := ⟨j.1, by grind⟩
     have hij' : i' < j' := by grind
     have hinterl := hfs.1.interl (i := i') (j := j') hij'
-    simpa [i', j'] using prec0_C_mul_both hc hinterl
+    simpa [i', j'] using interl_C_mul_both hc hinterl
   · intro p hp
     rcases List.mem_map.1 hp with ⟨q, hq, rfl⟩
     exact nonnegCoeffs_C_mul hc_nonneg (hfs.2 q hq)

@@ -7,7 +7,7 @@ import RealRooted.WagnerX
 /-!
 # Interlacing transport for the `f`-polynomial transform
 
-Proper-position equivalences and positive-combination consequences of the
+Interlacing equivalences and positive-combination consequences of the
 Brändén--Solus `f`-polynomial transform.
 -/
 
@@ -17,7 +17,7 @@ noncomputable section
 
 namespace RealRooted
 
-theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
+theorem strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
     {d : ℕ} {u v : ℝ[X]}
     (hd : d = max u.natDegree v.natDegree)
     (h : StrictInterl u v)
@@ -123,7 +123,7 @@ theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
     refine ⟨by simp_all, ?_⟩
     simpa [φ] using listAlternates_map_transformedRoot_of_nonpos halt hrs_nonpos
 
-theorem prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs
+theorem strictInterl_of_strictInterl_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {u v : ℝ[X]}
     (hud : u.natDegree = d) (hvd : v.natDegree = d)
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
@@ -207,7 +207,7 @@ theorem prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeff
     refine ⟨by simp_all, ?_⟩
     exact listAlternates_map_untransformRoot_of_neg_one_lt halt hss_gt_neg_one hrs_gt_neg_one
 
-theorem prec_of_prec_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeffs
+theorem strictInterl_of_strictInterl_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {u v : ℝ[X]}
     (hud : u.natDegree + 1 = d) (hvd : v.natDegree = d)
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
@@ -333,7 +333,7 @@ theorem prec_of_prec_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeff
             · exact listInterlaces_map_untransformRoot_of_neg_one_lt
                 hint hss_tail_gt_neg_one hrs_gt_neg_one
 
-private theorem not_prec_fPolynomial_of_right_degree_lt_of_sameDegree_left
+private theorem not_strictInterl_fPolynomial_of_right_degree_lt_of_sameDegree_left
     {d : ℕ} {u v : ℝ[X]}
     (hud : u.natDegree = d) (hvd : v.natDegree < d)
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
@@ -409,7 +409,7 @@ private theorem not_prec_fPolynomial_of_right_degree_lt_of_sameDegree_left
             have hs_gt_neg_one : -1 < s := hss_gt_neg_one s (by simp)
             linarith
 
-private theorem not_prec_fPolynomial_of_left_degree_le_sub_two_of_right_full
+private theorem not_strictInterl_fPolynomial_of_left_degree_le_sub_two_of_right_full
     {d : ℕ} {u v : ℝ[X]}
     (hud : u.natDegree + 2 ≤ d) (hvd : v.natDegree = d)
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
@@ -515,7 +515,7 @@ private theorem not_prec_fPolynomial_of_left_degree_le_sub_two_of_right_full
               listInterlaces_all_ge ss' rs' r hhalt.2 (-1) hminus_mem_tail
             linarith
 
-theorem prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
+theorem strictInterl_of_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {u v : ℝ[X]}
     (hd : d = max u.natDegree v.natDegree)
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
@@ -527,23 +527,25 @@ theorem prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
   have hvd : v.natDegree ≤ d := by simp_all
   by_cases hv_eq : v.natDegree = d
   · by_cases hu_eq : u.natDegree = d
-    · exact prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs
+    · exact
+        strictInterl_of_strictInterl_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs
         hu_eq hv_eq hu_rr_ne hu_rr_splits hv_rr_ne hv_rr_splits h hu_nonneg hv_nonneg
     · have hu_lt : u.natDegree < d := lt_of_le_of_ne hud hu_eq
       by_cases hu_succ : u.natDegree + 1 = d
-      · exact prec_of_prec_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeffs
+      · exact
+          strictInterl_of_strictInterl_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeffs
           hu_succ hv_eq hu_rr_ne hu_rr_splits hv_rr_ne hv_rr_splits h hu_nonneg hv_nonneg
       · have hu_two : u.natDegree + 2 ≤ d := by lia
         exact False.elim <|
-          not_prec_fPolynomial_of_left_degree_le_sub_two_of_right_full
+          not_strictInterl_fPolynomial_of_left_degree_le_sub_two_of_right_full
             hu_two hv_eq hu_rr_ne hu_rr_splits hv_rr_ne hv_rr_splits hu_nonneg hv_nonneg h
   · have hv_lt : v.natDegree < d := lt_of_le_of_ne hvd hv_eq
     have hu_eq : u.natDegree = d := by grind
     exact False.elim <|
-      not_prec_fPolynomial_of_right_degree_lt_of_sameDegree_left
+      not_strictInterl_fPolynomial_of_right_degree_lt_of_sameDegree_left
         hu_eq hv_lt hu_rr_ne hu_rr_splits hv_rr_ne hv_rr_splits hu_nonneg hv_nonneg h
 
-theorem prec_iff_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
+theorem strictInterl_iff_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {u v : ℝ[X]}
     (hd : d = max u.natDegree v.natDegree)
     (hu_rr_ne : u ≠ 0) (hu_rr_splits : u.Splits)
@@ -552,15 +554,15 @@ theorem prec_iff_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
     (StrictInterl (fPolynomial d u) (fPolynomial d v) ↔ StrictInterl u v) := by
   constructor
   · intro h
-    exact prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
+    exact strictInterl_of_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
       hd hu_rr_ne hu_rr_splits hv_rr_ne hv_rr_splits h hu_nonneg hv_nonneg
   · intro h
-    exact prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
+    exact strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
       hd h hu_nonneg hv_nonneg
 
 /-- If `u ≺ v` and both have nonnegative coefficients, then their
 Brändén--Solus `f`-polynomials form a positive-combination real-rooted pair. -/
-theorem posComboRealRooted_fPolynomial_of_prec
+theorem posComboRealRooted_fPolynomial_of_strictInterl
     {d : ℕ} {u v : ℝ[X]} (h : StrictInterl u v)
     (hud : u.natDegree ≤ d) (hvd : v.natDegree ≤ d)
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
@@ -584,5 +586,37 @@ theorem posComboRealRooted_fPolynomial_of_prec
     isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
       hcombo_deg hcombo_rr.1 hcombo_rr.2 hcombo_nonneg
 
+/-! Deprecated aliases for the pre-canonical strict-interlacing names. -/
+
+@[deprecated strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
+  (since := "2026-09-26")]
+alias prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal :=
+  strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
+
+@[deprecated
+  strictInterl_of_strictInterl_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs
+  (since := "2026-09-26")]
+alias prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs :=
+  strictInterl_of_strictInterl_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs
+
+@[deprecated
+  strictInterl_of_strictInterl_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeffs
+  (since := "2026-09-26")]
+alias prec_of_prec_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeffs :=
+  strictInterl_of_strictInterl_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeffs
+
+@[deprecated strictInterl_of_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
+  (since := "2026-09-26")]
+alias prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs :=
+  strictInterl_of_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
+
+@[deprecated strictInterl_iff_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
+  (since := "2026-09-26")]
+alias prec_iff_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs :=
+  strictInterl_iff_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
+
+@[deprecated posComboRealRooted_fPolynomial_of_strictInterl (since := "2026-09-26")]
+alias posComboRealRooted_fPolynomial_of_prec :=
+  posComboRealRooted_fPolynomial_of_strictInterl
 
 end RealRooted

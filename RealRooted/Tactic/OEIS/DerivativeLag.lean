@@ -512,7 +512,7 @@ macro_rules
         recurrence := $hrec:term,
         certificate := wagnerGap) =>
       `(tactic|
-        rr_prec_wagner_derivative_gap_lag_sequence using
+        rr_strict_interl_wagner_derivative_gap_lag_sequence using
           base := $hbase,
           nonneg_coeffs := $hnonneg,
           degree_two := $hdeg,
@@ -529,7 +529,7 @@ macro_rules
         recurrence := $hrec:term,
         certificate := wagnerGap) =>
       `(tactic|
-        rr_prec_wagner_derivative_gap_lag_sequence_realrooted using
+        rr_strict_interl_wagner_derivative_gap_lag_sequence_realrooted using
           base := $hbase,
           nonneg_coeffs := $hnonneg,
           degree_two := $hdeg,
@@ -547,7 +547,7 @@ macro_rules
         recurrence := $hrec:term,
         certificate := wagnerGap) =>
       `(tactic|
-        rr_prec_wagner_derivative_gap_lag_sequence_den using
+        rr_strict_interl_wagner_derivative_gap_lag_sequence_den using
           base := $hbase,
           nonneg_coeffs := $hnonneg,
           degree_two := $hdeg,
@@ -566,7 +566,7 @@ macro_rules
         recurrence := $hrec:term,
         certificate := wagnerGap) =>
       `(tactic|
-        rr_prec_wagner_derivative_gap_lag_sequence_den_realrooted using
+        rr_strict_interl_wagner_derivative_gap_lag_sequence_den_realrooted using
           base := $hbase,
           nonneg_coeffs := $hnonneg,
           degree_two := $hdeg,

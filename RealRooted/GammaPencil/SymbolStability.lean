@@ -12,7 +12,7 @@ import RealRooted.LinearPowerFamily
 # Stability of the gamma-pencil finite symbol
 
 The explicit residual factors in the gamma-pencil finite symbol are in
-proper position in both parity cases.  This gives upper-half-plane stability
+interlacing in both parity cases.  This gives upper-half-plane stability
 of the residual and, with the factorization from `Symbol`, of the finite
 algebraic symbol.
 -/
@@ -131,7 +131,7 @@ theorem gammaSymbol_even_root_order (m : ℕ) (hm : 0 < m) :
   have hmR : 0 < (m : ℝ) := by exact_mod_cast hm
   exact neg_lt_zero.mpr (one_div_pos.mpr (by positivity))
 
-/-- The even residual factors are in the required directed proper position. -/
+/-- The even residual factors are in the required directed interlacing. -/
 theorem gammaSymbol_even_strictInterl (m : ℕ) (hm : 0 < m) :
     StrictInterl (gammaSymbolQ (2 * m)) (gammaSymbolP (2 * m) m) := by
   rw [gammaSymbolP_even, gammaSymbolQ_even m hm]
@@ -210,7 +210,7 @@ theorem gammaSymbolQ_odd_isRoot (m : ℕ) :
   rw [gammaSymbolQ_odd]
   simp [Polynomial.IsRoot]
 
-/-- The odd residual factors are in the required directed proper position. -/
+/-- The odd residual factors are in the required directed interlacing. -/
 theorem gammaSymbol_odd_strictInterl (m : ℕ) (hm : 0 < m) :
     StrictInterl (gammaSymbolQ (2 * m + 1)) (gammaSymbolP (2 * m + 1) m) := by
   rw [gammaSymbolP_odd, gammaSymbolQ_odd]

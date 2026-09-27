@@ -62,7 +62,7 @@ example {P : Nat → ℝ[X]}
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_prec_pos_X_lag_sequence_auto using
+  rr_strict_interl_pos_X_lag_sequence_auto using
     base := hbase,
     nonneg_coeffs := hnonneg,
     recurrence := hrec
@@ -73,7 +73,7 @@ example {P : Nat → ℝ[X]}
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
     (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_prec_pos_X_lag_sequence_realrooted_auto using
+  rr_strict_interl_pos_X_lag_sequence_realrooted_auto using
     base := hbase,
     nonneg_coeffs := hnonneg,
     recurrence := hrec

@@ -26,7 +26,7 @@ theorem orderNumeratorStep_isPF_strict
   let a := (D : ℝ) + 1 - c
   have hp0 : p ≠ 0 := fun h => hpzero (by simp [h])
   have hcore : StrictInterl (C a * p + (1 - X) * p.derivative) p := by
-    apply prec_affine_derivative_of_nonnegCoeffs
+    apply strictInterl_affine_derivative_of_nonnegCoeffs
     · exact (hp.ne_zero_and_splits hp0).2
     · simpa [hpdeg] using hm
     · exact hp.hasNonnegCoeffs
@@ -70,7 +70,7 @@ theorem orderNumeratorStep_isPF_tight
       simp [hpzero]
     exact hm.trans (le_natDegree_of_ne_zero htop)
   have hpolar : StrictInterl (polarTheta m p) p :=
-    prec_polarTheta_self hp hpdeg.le hreflect
+    strictInterl_polarTheta_self hp hpdeg.le hreflect
   have hderiv : StrictInterl p.derivative p :=
     (derivative_interlaces (hp.ne_zero_and_splits hp0).2 (by lia)).toStrictInterl
   have hpolarPos : HasPosLeadingCoeff (polarTheta m p) :=

@@ -5,7 +5,7 @@ import RealRooted.InterlacingSequence.NonnegativeShift
 # Positive translations of stationary tiling rows
 
 This file transports the stationary rational rod rows through the common
-substitution `X ↦ X + γ`.  It keeps the affine root and proper-position layer
+substitution `X ↦ X + γ`.  It keeps the affine root and interlacing layer
 separate from the later coefficient-sign arithmetic for two seed polynomials.
 -/
 
@@ -130,7 +130,7 @@ theorem twoSeedFactorRecurrenceCoefficient_hasNonnegCoeffs
     simpa [twoSeedRecurrenceCoefficient] using hasNonnegCoeffs_C (hb 1)
 
 /-- Nonnegative translation preserves PF rows and consecutive zero-aware
-proper position. -/
+interlacing. -/
 theorem shiftedRationalRodRows_pf_and_interl
     {ys xs : List ℝ} (hys : ∀ y ∈ ys, 0 ≤ y)
     {c : ℝ} (hc : 0 < c) {r : ℕ} (hr : r ≠ 0)
@@ -138,13 +138,13 @@ theorem shiftedRationalRodRows_pf_and_interl
     (∀ n, IsPFPolynomial (shiftedRationalRodRow ys c r xs γ n)) ∧
       ∀ n, Interl (shiftedRationalRodRow ys c r xs γ n)
         (shiftedRationalRodRow ys c r xs γ (n + 1)) := by
-  obtain ⟨hpf, hprec⟩ := rationalRodRows_pf_and_interl hys hc hr hxs
+  obtain ⟨hpf, hstrictInterl⟩ := rationalRodRows_pf_and_interl hys hc hr hxs
   constructor
   · intro n
     simpa [shiftedRationalRodRow] using
       (hpf n).comp_C_mul_X_add_C (a := 1) (d := γ) zero_lt_one hγ
   · intro n
-    exact (Interl.comp_X_add_C_iff γ).2 (hprec n)
+    exact (Interl.comp_X_add_C_iff γ).2 (hstrictInterl n)
 
 /-- The translated one-monomer specialization. -/
 def shiftedMonomerRodRow (b c : ℝ) (r : ℕ) (xs : List ℝ)

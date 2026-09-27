@@ -18,9 +18,9 @@ theorem pairwiseHasCommonInterleaver_of_commonInterleaver
     {fs : List ℝ[X]}
     (hcommon : HasCommonInterleaver fs) :
     PairwiseHasCommonInterleaver fs :=
-  Exists.elim hcommon fun h hprec i j _ => ⟨h,
-    hprec (fs.get i) (List.get_mem _ _),
-    hprec (fs.get j) (List.get_mem _ _)⟩
+  Exists.elim hcommon fun h hstrictInterl i j _ => ⟨h,
+    hstrictInterl (fs.get i) (List.get_mem _ _),
+    hstrictInterl (fs.get j) (List.get_mem _ _)⟩
 
 /-- A single common left interleaver is in particular a pairwise common left
 interleaver witness. -/
@@ -28,9 +28,9 @@ theorem pairwiseHasCommonLeftInterleaver_of_commonLeftInterleaver
     {fs : List ℝ[X]}
     (hcommon : HasCommonLeftInterleaver fs) :
     PairwiseHasCommonLeftInterleaver fs :=
-  Exists.elim hcommon fun h hprec i j _ => ⟨h,
-    hprec (fs.get i) (List.get_mem _ _),
-    hprec (fs.get j) (List.get_mem _ _)⟩
+  Exists.elim hcommon fun h hstrictInterl i j _ => ⟨h,
+    hstrictInterl (fs.get i) (List.get_mem _ _),
+    hstrictInterl (fs.get j) (List.get_mem _ _)⟩
 
 /-- A common right interleaver yields full family compatibility for all
 nonnegative weighted sums. -/
@@ -39,11 +39,11 @@ theorem familyCompatible_of_commonInterleaver
     (hcommon : HasCommonInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     FamilyCompatible fs := by
-  obtain ⟨h, hprec⟩ := hcommon
+  obtain ⟨h, hstrictInterl⟩ := hcommon
   intro l hmem hnonneg
   by_cases hex : ∃ ap ∈ l, 0 < ap.1
   · exact Or.inr (StrictInterl.weightedSum_right_of_nonneg l h hnonneg
-      (fun ap hap => hprec ap.2 (hmem ap hap))
+      (fun ap hap => hstrictInterl ap.2 (hmem ap hap))
       (fun ap hap => hpos ap.2 (hmem ap hap)) hex).1
   · exact Or.inl (weightedSum_eq_zero_of_forall_coeff_zero l fun ap hap =>
       le_antisymm (not_lt.1 fun hlt => hex ⟨ap, hap, hlt⟩) (hnonneg ap hap))
