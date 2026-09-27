@@ -1007,6 +1007,7 @@ import RealRooted.RootCountLocalConstancy
 import RealRooted.RootCounting
 import RealRooted.RootCounting.Finite
 import RealRooted.RootCounting.SignChanges
+import RealRooted.RootCounting.Sturm
 import RealRooted.RootCounting.Threshold
 import RealRooted.RootCounting.Threshold.Anchor
 import RealRooted.RootCounting.Threshold.Basic
@@ -1420,5 +1421,7 @@ import RealRooted.LGV.ChipNetwork.Matrix
 import RealRooted.LGV.ChipNetwork.Paths
 import RealRooted.LGV.ChipNetwork.Word
 import RealRooted.Challenges.Descartes
+import RealRooted.Challenges.Sturm
 import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
+import RealRooted.Mathlib.Algebra.Polynomial.Sturm
 import RealRooted.RootCounting.Descartes

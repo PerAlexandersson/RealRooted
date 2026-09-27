@@ -1533,6 +1533,63 @@ lemma strictlyAlternates_alternating (n : ℕ) {ε : ℝ} (hε : 0 < ε) :
 
 end Fin
 
+/-- A pointwise sign-preserving perturbation of a finite list does not change
+its sign variation when both endpoints are nonzero and every interior zero is
+nodal. -/
+theorem List.signVariations_eq_of_sign_eq_on_nonzero_of_interior_nodal
+    {x y : List ℝ} (hlen : y.length = x.length) (htwo : 2 ≤ x.length)
+    (hfirst : x[0]'(by lia) ≠ 0)
+    (hlast : x[x.length - 1]'(by lia) ≠ 0)
+    (hsign : ∀ i (hi : i < x.length), x[i] ≠ 0 →
+      SignType.sign (y[i]'(by simpa [hlen] using hi)) = SignType.sign x[i])
+    (hnodal : ∀ i (hi : i + 2 < x.length), x[i + 1] = 0 →
+      x[i] * x[i + 2] < 0) :
+    y.signVariations = x.signVariations := by
+  let n := x.length - 2
+  have hn : n + 2 = x.length := Nat.sub_add_cancel htwo
+  have hyn : n + 2 = y.length := by lia
+  let xv : Fin (n + 2) → ℝ := fun i => x[(Fin.cast hn i).val]
+  let yv : Fin (n + 2) → ℝ := fun i => y[(Fin.cast hyn i).val]
+  have hxlist : List.ofFn xv = x := by
+    simp [xv, hn]
+  have hylist : List.ofFn yv = y := by
+    simp [yv, hyn]
+  have hsignv : ∀ i, xv i ≠ 0 →
+      SignType.sign (yv i) = SignType.sign (xv i) := by
+    intro i hi
+    exact hsign (Fin.cast hn i).val (Fin.cast hn i).isLt hi
+  have hnodalv : ∀ i : Fin n, xv i.succ.castSucc = 0 →
+      xv i.castSucc.castSucc * xv i.succ.succ < 0 := by
+    intro i hi
+    have hibound : (i : ℕ) + 2 < x.length := by
+      rw [← hn]
+      simp
+    exact hnodal i hibound (by simpa [xv] using hi)
+  have hchain := Fin.nodalInsertions_coreSigns hsignv hnodalv
+  have hfirstv : xv 0 ≠ 0 := by simpa [xv] using hfirst
+  have hlastv : xv (Fin.last (n + 1)) ≠ 0 := by
+    have hnlast : n + 1 = x.length - 1 := by
+      dsimp [n]
+      lia
+    change x[n + 1] ≠ 0
+    simpa [hnlast] using hlast
+  have hcore :
+      Fin.nodalPerturbationCoreSigns xv yv =
+        List.ofFn (SignType.sign ∘ yv) := by
+    rw [List.ofFn_two_endpoints]
+    simp [Fin.nodalPerturbationCoreSigns, hfirstv, hlastv]
+  calc
+    y.signVariations = Fin.signVariations yv := by
+      rw [Fin.signVariations, hylist]
+    _ = (List.ofFn (SignType.sign ∘ yv)).signVariations :=
+      Fin.signVariations_eq_signList yv
+    _ = (Fin.nodalPerturbationCoreSigns xv yv).signVariations := by
+      rw [hcore]
+    _ = ((List.ofFn (SignType.sign ∘ xv)).filter (· ≠ 0)).signVariations :=
+      List.signVariations_eq_of_nodalInsertions hchain
+    _ = Fin.signVariations xv := Fin.filtered_signList_signVariations xv
+    _ = x.signVariations := by rw [Fin.signVariations, hxlist]
+
 /-- Sign variation is monotone under taking a list prefix. -/
 theorem List.signVariations_mono_of_prefix
     {R : Type*} [Zero R] [LinearOrder R]
