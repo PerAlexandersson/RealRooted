@@ -751,7 +751,7 @@ abbrev PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement :=
 succ-degree orientation `StrictInterl f g` on this branch.  The degree-drop step is
 isolated in `strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero`. -/
 theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG
-    (hprecFG :
+    (hstrictInterlFG :
       ∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
@@ -767,7 +767,7 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_stri
     PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
   exact strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    (hprecFG hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hgnn hg0 hdeg
+    (hstrictInterlFG hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hgnn hg0 hdeg
 
 @[deprecated
   posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterl_of_strictInterlFG

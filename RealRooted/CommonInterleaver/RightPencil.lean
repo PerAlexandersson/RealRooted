@@ -1440,11 +1440,11 @@ the cases `g_le - f_le = 0` and `g_le - f_le = 1`; same-sign endpoint
 evaluations rule out the even zero case by the succ-degree lower-count parity
 bridge. -/
 theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl
-    (hprecTarget : CompatibleSuccDegreeStrictInterlStatement) :
+    (hstrictInterlTarget : CompatibleSuccDegreeStrictInterlStatement) :
     CompatibleSuccDegreeEndpointSignLowerCountEqStatement := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
   have hstrictInterl : StrictInterl f g :=
-    hprecTarget hcomp hf_pos hg_pos hdeg hf_split
+    hstrictInterlTarget hcomp hf_pos hg_pos hdeg hf_split
   obtain ⟨hfg_le, hgf_le⟩ :=
     succDegreeRootCountLowerOriented_of_strictInterl hstrictInterl hdeg x
   have hnot_even :

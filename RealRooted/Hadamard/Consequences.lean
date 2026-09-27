@@ -46,9 +46,9 @@ single-polynomial real-rootedness fact
 `garloffWagnerHadamardNonnegRealRootedStatement`. -/
 theorem garloffWagnerHadamardNonnegInterl_of_oddEven
     (hThm1 : hadamardPreservesHurwitzStableStatement)
-    (hPrecToHurwitz : NonnegStrictInterlToHurwitzOddEvenStatement)
+    (hStrictInterlToHurwitz : NonnegStrictInterlToHurwitzOddEvenStatement)
     (hHurwitzToFull : LegacyHurwitzOddEvenToFullyInterlacingPairStatement)
-    (hFullToPrec0 : FullyInterlacingPairToInterlStatement) :
+    (hFullToInterl : FullyInterlacingPairToInterlStatement) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       StrictInterl f g → StrictInterl p q →
@@ -58,13 +58,13 @@ theorem garloffWagnerHadamardNonnegInterl_of_oddEven
   · simpa [hfp0] using interl_zero_left (hadamardProduct g q)
   by_cases hgq0 : hadamardProduct g q = 0
   · simpa [hgq0] using interl_zero_right (hadamardProduct f p)
-  have hOE1 : IsHurwitzStable (oddEvenPolynomial f g) := hPrecToHurwitz hf hg hfg
-  have hOE2 : IsHurwitzStable (oddEvenPolynomial p q) := hPrecToHurwitz hp hq hpq
+  have hOE1 : IsHurwitzStable (oddEvenPolynomial f g) := hStrictInterlToHurwitz hf hg hfg
+  have hOE2 : IsHurwitzStable (oddEvenPolynomial p q) := hStrictInterlToHurwitz hp hq hpq
   have hOEprod0 :
       hadamardProduct (oddEvenPolynomial f g) (oddEvenPolynomial p q) ≠ 0 := by
     rw [hadamardProduct_oddEvenPolynomial]
     exact oddEvenPolynomial_ne_zero_iff.mpr (Or.inl hfp0)
-  exact hFullToPrec0 (hHurwitzToFull (by
+  exact hFullToInterl (hHurwitzToFull (by
     simpa [hadamardProduct_oddEvenPolynomial] using hThm1 hOE1 hOE2 hOEprod0))
 
 /-- PF-polynomial wrapper around the checked nonnegative
