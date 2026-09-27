@@ -114,8 +114,7 @@ theorem splits_of_wronskian_neg_succ {n : ℕ}
     intro a b hab
     rw [hgr_val a, hgr_val b]
     have hlt : a.val < b.val := hab
-    split_ifs with ha0 hbn1 hb0 hbn1' ha1 hbn2 ha2
-    all_goals first
+    split_ifs with ha0 hbn1 hb0 hbn1' ha1 hbn2 ha2 <;> first
       | exact hxb_xa
       | exact hxb_xi _
       | rfl

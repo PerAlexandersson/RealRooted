@@ -125,7 +125,7 @@ namespace FiniteSkewBoard
       have hsub := hmem.1
       fin_cases hsub <;>
         simp [IsNonNestingPlacement] at hmem <;>
-        try decide
+        decide
     · intro hmem
       simp only [Finset.mem_insert, Finset.mem_singleton] at hmem
       rcases hmem with rfl | rfl | rfl | rfl <;>
@@ -165,7 +165,7 @@ namespace FiniteSkewBoard
       have hsub := hmem.1
       fin_cases hsub <;>
         simp [IsNonNestingPlacement] at hmem <;>
-        try decide
+        decide
     · intro hmem
       fin_cases hmem <;> simp [IsNonNestingPlacement, hcells]
   rw [truncatedStaircaseRookPolynomial, rookPolynomial, hplacements,
@@ -259,7 +259,7 @@ polynomial `1 + 5X + 3X^2`. -/
       have hsub := hmem.1
       fin_cases hsub <;>
         simp [IsNonNestingPlacement] at hmem <;>
-        try decide
+        decide
     · intro hmem
       simp only [Finset.mem_insert, Finset.mem_singleton] at hmem
       rcases hmem with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl

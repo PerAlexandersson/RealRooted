@@ -21,8 +21,7 @@ theorem strictInterl_of_interlaces_evalCoeff_nonpos_same_of_no_common
   obtain ⟨hf, hg, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hgf
   have hF : (F ≠ 0 ∧ F.Splits) := by
     apply isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
-      hgf' hg_pos hF_pos
-    all_goals simp_all
+      hgf' hg_pos hF_pos <;> simp_all
   set ts := F.roots.sort (· ≤ ·)
   have hts_eq : (↑ts : Multiset ℝ) = F.roots := Multiset.sort_eq ..
   have hts_sorted : ts.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
@@ -167,8 +166,7 @@ theorem strictInterl_of_interlaces_evalCoeff_nonpos_succ_of_no_common
   obtain ⟨hf, hg, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hgf
   have hF : (F ≠ 0 ∧ F.Splits) := by
     apply isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
-      hgf' hg_pos hF_pos
-    all_goals simp_all
+      hgf' hg_pos hF_pos <;> simp_all
   set ts := F.roots.sort (· ≤ ·)
   have hts_eq : (↑ts : Multiset ℝ) = F.roots := Multiset.sort_eq ..
   have hts_sorted : ts.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..

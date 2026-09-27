@@ -148,8 +148,7 @@ private lemma GS2x2EntryShape.has2x2 {a b c d : ℝ[X]}
     Has2x2InterlacingProperty0 a b c d := by
   intro s t hs ht
   rcases h with
-    h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h
-  all_goals
+    h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h <;>
     rcases h with ⟨rfl, rfl, rfl, rfl⟩
   · simpa using interl_zero_zero
   · simpa using interl_gs_X_X
@@ -179,13 +178,12 @@ private lemma gsEntry_shape
     GS2x2EntryShape
       (thresholdEntry t₁ α₁ j₁) (thresholdEntry t₁ α₁ j₂)
       (thresholdEntry t₂ α₂ j₁) (thresholdEntry t₂ α₂ j₂) := by
-  rcases hα₁ with rfl | rfl <;> rcases hα₂ with rfl | rfl
-  all_goals
-    simp at hcompat
-    unfold GS2x2EntryShape Threshold2x2EntryTuple
-    simp only [thresholdEntry]
-    split_ifs with h₁ h₂ h₃ h₄ h₅ h₆ h₇ h₈
-    all_goals try lia
+  rcases hα₁ with rfl | rfl <;> rcases hα₂ with rfl | rfl <;>
+    simp at hcompat <;>
+    unfold GS2x2EntryShape Threshold2x2EntryTuple <;>
+    simp only [thresholdEntry] <;>
+    split_ifs <;>
+    lia
 
 /-- Validity data for the Gustafsson--Solus recursion rows.
 

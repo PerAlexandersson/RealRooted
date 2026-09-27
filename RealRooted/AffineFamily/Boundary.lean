@@ -419,7 +419,9 @@ private lemma isRealRooted_add_X_mul_right_of_affine_family
   · intro t ht
     simpa [add_assoc, add_left_comm, add_comm, mul_assoc, left_distrib, right_distrib] using
       haff hs ht
-  all_goals lia
+  · lia
+  · assumption
+  · lia
 
 /-- The affine-family hypothesis already implies that the fixed right-hand pair
 `(g, X * f)` satisfies the restricted Obreschkoff condition: every strictly
