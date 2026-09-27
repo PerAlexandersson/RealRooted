@@ -327,7 +327,9 @@ the checked or challenge-facing highlights are:
 - Matrix preservers: a polynomial matrix with nonnegative coefficients
   preserves interlacing sequences when its two-by-two affine tests interlace.
   See `matrix_preserves_interlacing_seq` and
-  `RealRooted.Challenges.MatrixInterlacing`; reference: Branden (2015).
+  `RealRooted.Challenges.MatrixInterlacing`; Fisk (2006) develops matrices
+  preserving interlacing, and Branden (2015) gives the exact criterion used
+  here.
 - Favard interlacing: a three-term Favard recurrence with positive recurrence
   coefficients gives a Sturm sequence, hence every polynomial in the sequence
   is real-rooted.  See `favardInterlacing` and

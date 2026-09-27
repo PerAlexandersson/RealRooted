@@ -7,8 +7,8 @@ import RealRooted.MatrixInterlacing
 version = 1
 section = "theorems"
 slug = "matrix-interlacing"
-authors = ["Brändén"]
-years = [2015]
+authors = ["Fisk", "Brändén"]
+years = [2006, 2015]
 
 [[definitions]]
 name = "RealRooted.matPolyAction"
@@ -33,21 +33,24 @@ name = "RealRooted.Challenges.MatrixInterlacing.preserves_interlacing_sequences_
 # Matrices preserving interlacing sequences
 
 A nonnegative polynomial matrix preserves interlacing sequences when every
-ordered `2 × 2` submatrix satisfies Brändén’s affine interlacing condition.
-A zero-aware form allows output rows to vanish.
+ordered `2 × 2` submatrix satisfies the affine interlacing condition. A
+zero-aware form allows output rows to vanish.
 
 ## References
 
-P. Brändén, “Unimodality, log-concavity, real-rootedness and beyond,” in
-*Handbook of Enumerative Combinatorics*, 2015, Theorem 7.8.5.  See the
+S. Fisk, *Polynomials, roots, and interlacing*, 2006, Chapter 3, develops
+matrices preserving interlacing. P. Brändén gives the exact nonnegative
+polynomial characterization in “Unimodality, log-concavity, real-rootedness
+and beyond,” *Handbook of Enumerative Combinatorics*, 2015, Theorem 7.8.5. See the
 [matrix criterion on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#matrixPreservesInterlacingSequences).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
 https://www.symmetricfunctions.com/realRootedInterlacing.htm#matrixPreservesInterlacingSequences
 
-Reference: P. Branden, *Unimodality, log-concavity, real-rootedness and
-beyond*, Handbook of Enumerative Combinatorics (2015), Theorem 7.8.5.
+References: S. Fisk, *Polynomials, roots, and interlacing* (2006), Chapter 3;
+P. Branden, *Unimodality, log-concavity, real-rootedness and beyond*,
+Handbook of Enumerative Combinatorics (2015), Theorem 7.8.5.
 
 This module exposes the checked forward matrix-preserver theorem and the
 zero-aware variant.  The sparse test families and 2-by-2 reduction machinery
@@ -60,7 +63,7 @@ namespace RealRooted
 namespace Challenges
 namespace MatrixInterlacing
 
-/-- Branden's matrix criterion, forward direction: the affine 2-by-2
+/-- The matrix criterion, forward direction: the affine 2-by-2
 conditions imply preservation of nonnegative interlacing sequences. -/
 theorem preserves_interlacing_sequences :
     ∀ {n : Nat} (_hn : 0 < n) (G : List (List ℝ[X]))
