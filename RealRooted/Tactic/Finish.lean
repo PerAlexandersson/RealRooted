@@ -1038,7 +1038,8 @@ macro_rules
         with_reducible_and_instances
           first
             | exact RealRooted.interlaces_of_strictInterl_chain $hstrictInterl $hdegree
-            | exact RealRooted.interlaces_of_strictInterl_chain $hstrictInterl (fun n => ($hdegree n).symm)
+            | exact RealRooted.interlaces_of_strictInterl_chain
+                $hstrictInterl (fun n => ($hdegree n).symm)
             | exact (RealRooted.interlaces_of_strictInterl_chain $hstrictInterl $hdegree _)
             | exact (RealRooted.interlaces_of_strictInterl_chain
                 $hstrictInterl (fun n => ($hdegree n).symm) _)
@@ -1136,7 +1137,8 @@ macro_rules
       `(tactic|
         first
           | exact RealRooted.interlaces_of_strictInterl_chain $hstrictInterl $hdeg
-          | exact RealRooted.interlaces_of_strictInterl_chain $hstrictInterl (fun n => ($hdeg n).symm)
+          | exact RealRooted.interlaces_of_strictInterl_chain
+              $hstrictInterl (fun n => ($hdeg n).symm)
           | exact (RealRooted.interlaces_of_strictInterl_chain $hstrictInterl $hdeg _)
           | exact (RealRooted.interlaces_of_strictInterl_chain
               $hstrictInterl (fun n => ($hdeg n).symm) _)

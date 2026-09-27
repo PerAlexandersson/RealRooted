@@ -235,7 +235,8 @@ theorem exists_mem_largestRoot_le_weightedSum :
             hasPosLeadingCoeff_C_mul ha_pos hp_pos
           obtain ⟨rsum, hrsum, hhead | htail_sel⟩ :=
             exists_largestRoot_le_of_common_left_pair
-              hscaled_strictInterl htail_strictInterl hh_deg hscaled_deg htail_deg hscaled_pos htail_pos
+              hscaled_strictInterl htail_strictInterl hh_deg hscaled_deg htail_deg
+                hscaled_pos htail_pos
           · obtain ⟨rhead, hrhead, hle⟩ := hhead
             exact ⟨(a, p), by simp, ha_pos, rhead, rsum,
               hrhead.of_C_mul ha_pos.ne', by simpa [weightedSum_cons] using hrsum, hle⟩
@@ -255,7 +256,8 @@ theorem exists_mem_largestRoot_le_weightedSum :
                   exact htail ⟨ap, hap, hap_pos⟩
                 linarith)
           obtain ⟨rp, hrp⟩ :=
-            LiuOppositeSigns.exists_isLargestRoot hp_strictInterl.2.1.1 hp_strictInterl.2.1.2 (by lia)
+            LiuOppositeSigns.exists_isLargestRoot
+              hp_strictInterl.2.1.1 hp_strictInterl.2.1.2 (by lia)
           exact ⟨(a, p), by simp, ha_pos, rp, rp, hrp,
             by simpa [weightedSum_cons, hzero_tail] using hrp.C_mul ha_pos.ne', le_rfl⟩
 

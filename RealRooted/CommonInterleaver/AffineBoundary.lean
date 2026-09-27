@@ -44,8 +44,10 @@ theorem strictInterl_boundary_right_pair_of_strictInterl_nonneg
     (hgnn : HasNonnegCoeffs g)
     {t : ℝ} (ht : 0 < t) :
     StrictInterl (C t * f + g) (X * f) := by
-  have hgfX : StrictInterl g (X * f) := strictInterl_to_strictInterl_mul_X_of_nonneg hstrictInterl hfnn hgnn
-  have hfX : StrictInterl f (X * f) := strictInterl_self_mul_X_of_nonneg hstrictInterl.1.1 hstrictInterl.1.2 hfnn
+  have hgfX : StrictInterl g (X * f) :=
+    strictInterl_to_strictInterl_mul_X_of_nonneg hstrictInterl hfnn hgnn
+  have hfX : StrictInterl f (X * f) :=
+    strictInterl_self_mul_X_of_nonneg hstrictInterl.1.1 hstrictInterl.1.2 hfnn
   have htfX : StrictInterl (C t * f) (X * f) := StrictInterl.C_mul_left hfX ht.ne'
   have htf_pos : HasPosLeadingCoeff (C t * f) :=
     hasPosLeadingCoeff_C_mul ht (hfnn.pos_leadingCoeff hstrictInterl.1.1)

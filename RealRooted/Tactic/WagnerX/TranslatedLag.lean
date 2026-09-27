@@ -137,7 +137,8 @@ end RealRooted
 /- Deprecated theorem aliases retained for the #984 Prec migration. -/
 namespace RealRooted
 @[deprecated isRealRooted_of_strictInterl_pos_X_sub_C_lag_combo_sequence (since := "2026-09-26")]
-alias isRealRooted_of_prec_pos_X_sub_C_lag_combo_sequence := isRealRooted_of_strictInterl_pos_X_sub_C_lag_combo_sequence
+alias isRealRooted_of_prec_pos_X_sub_C_lag_combo_sequence :=
+  isRealRooted_of_strictInterl_pos_X_sub_C_lag_combo_sequence
 
 @[deprecated strictInterl_pos_X_sub_C_lag_combo_sequence (since := "2026-09-26")]
 alias prec_pos_X_sub_C_lag_combo_sequence := strictInterl_pos_X_sub_C_lag_combo_sequence

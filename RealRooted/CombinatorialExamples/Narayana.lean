@@ -333,11 +333,12 @@ theorem interlaces_narayana_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
   have hstrictInterlQ : StrictInterl (narayanaQuot n) (narayanaQuot (n + 1)) :=
     strictInterl_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg
   have hmain : StrictInterl (X * narayanaQuot n) (X * narayanaQuot (n + 1)) := by
-    rr_strictInterl_mul_X_both using
+    rr_strict_interl_mul_X_both using
       proper := hstrictInterlQ,
       left_nonneg := hnonneg n,
       right_nonneg := hnonneg (n + 1)
-  have hstrictInterl : StrictInterl (narayana n) (narayana (n + 1)) := by simpa [narayana] using hmain
+  have hstrictInterl : StrictInterl (narayana n) (narayana (n + 1)) := by
+    simpa [narayana] using hmain
   exact hstrictInterl.toInterlaces (by
     rw [natDegree_narayana (n + 1) (by lia), natDegree_narayana n hn])
 

@@ -86,7 +86,8 @@ theorem strictInterl_of_strictInterl_fPolynomial_sequence
     (hvd : ∀ i : Nat, (V i).natDegree ≤ d i)
     (hu_nonneg : ∀ i : Nat, HasNonnegCoeffs (U i))
     (hv_nonneg : ∀ i : Nat, HasNonnegCoeffs (V i))
-    (hstrictInterl : ∀ i : Nat, StrictInterl (fPolynomial (d i) (U i)) (fPolynomial (d i) (V i))) :
+    (hstrictInterl : ∀ i : Nat,
+      StrictInterl (fPolynomial (d i) (U i)) (fPolynomial (d i) (V i))) :
     ∀ i : Nat, StrictInterl (U i) (V i) := fun i =>
   strictInterl_of_strictInterl_fPolynomial (hud i) (hvd i)
     (hu_nonneg i) (hv_nonneg i) (hstrictInterl i)
@@ -311,7 +312,8 @@ alias prec_fPolynomial_sequence_of_prec := strictInterl_fPolynomial_sequence_of_
 alias prec_of_prec_fPolynomial_sequence := strictInterl_of_strictInterl_fPolynomial_sequence
 
 @[deprecated posComboRealRooted_fPolynomial_sequence_of_strictInterl (since := "2026-09-26")]
-alias posComboRealRooted_fPolynomial_sequence_of_prec := posComboRealRooted_fPolynomial_sequence_of_strictInterl
+alias posComboRealRooted_fPolynomial_sequence_of_prec :=
+  posComboRealRooted_fPolynomial_sequence_of_strictInterl
 
 end RealRooted
 

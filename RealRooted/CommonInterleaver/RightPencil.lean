@@ -1474,7 +1474,6 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl
         (g.roots.filter (· ≤ x)).card = 0 := by
     dsimp [d] at hd_zero
     linarith
-
   exact hnot_even (by rw [hfg_zero]; norm_num)
 
 @[deprecated compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl

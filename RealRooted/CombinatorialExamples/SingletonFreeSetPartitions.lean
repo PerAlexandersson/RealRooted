@@ -211,7 +211,7 @@ lemma strictInterl_singletonFreeSetPartitions_three_four :
     exact fun m => add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)
   have hmul :
       StrictInterl (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
-    rr_strictInterl_mul_X_both using
+    rr_strict_interl_mul_X_both using
       proper := hstrictInterl,
       left_nonneg := hasNonnegCoeffs_one,
       right_nonneg := hlin_nonneg
@@ -238,7 +238,7 @@ lemma strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core {n : Nat
   have hmain :
       StrictInterl (singletonFreeSetPartitions (n + 1))
         (X * singletonFreeSetPartitionsCore n) := by
-    rr_strictInterl_mul_X using
+    rr_strict_interl_mul_X using
       proper := hcore,
       left_nonneg := singletonFreeSetPartitionsCore_nonnegCoeffs n,
       right_nonneg := singletonFreeSetPartitions_nonnegCoeffs (n + 1)

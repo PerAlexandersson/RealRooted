@@ -456,10 +456,11 @@ theorem strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
     (hdeg : g.natDegree = f.natDegree + 1) :
     StrictInterl f g ↔ StrictInterl (g.divX) f :=
   ⟨fun hstrictInterl =>
-      strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero hstrictInterl hgnn hg0 hdeg,
+      strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
+        hstrictInterl hgnn hg0 hdeg,
    fun hstrictInterl =>
-      strictInterl_of_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero hstrictInterl hfnn hgnn hg0
-        hdeg⟩
+      strictInterl_of_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
+        hstrictInterl hfnn hgnn hg0 hdeg⟩
 
 /-- Bundle the same-degree data for the right-zero succ-degree divX reduction. -/
 lemma sameDegreePair_divX_data_of_succDegree_of_coeff_zero

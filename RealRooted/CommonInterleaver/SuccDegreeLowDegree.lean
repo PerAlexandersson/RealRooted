@@ -64,7 +64,8 @@ theorem allComboRealRooted_of_strictInterl_or_reverse
     StrictInterl f g ∨ StrictInterl g f →
     AllComboRealRooted f g
   | Or.inl hstrictInterl => allComboRealRooted_of_strictInterl hstrictInterl
-  | Or.inr hstrictInterl => allComboRealRooted_comm (allComboRealRooted_of_strictInterl hstrictInterl)
+  | Or.inr hstrictInterl =>
+      allComboRealRooted_comm (allComboRealRooted_of_strictInterl hstrictInterl)
 
 @[deprecated allComboRealRooted_of_strictInterl_or_reverse (since := "2026-09-18")]
 alias allComboRealRooted_of_prec_or_revPrec :=

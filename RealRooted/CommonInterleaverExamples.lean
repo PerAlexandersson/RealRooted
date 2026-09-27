@@ -649,7 +649,7 @@ lemma not_compatibleSuccDegreeAllComboStatement :
 linear/quadratic pair is compatible, but both quadratic roots lie to the left
 of the linear root. -/
 lemma not_compatibleSuccDegreeStrictInterlStatement :
-    ¬ CompatibleSuccDegreePrecStatement := by
+    ¬ CompatibleSuccDegreeStrictInterlStatement := by
   intro hstrictInterl
   have hcomp : Compatible (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) :=
     Compatible.of_posComboRealRooted
@@ -813,7 +813,7 @@ lemma not_posComboNoCommonOrientationStatement :
 /-! ### The residual succ-degree orientation target is false
 
 The residual branch of the succ-degree no-common orientation problem
-(`PosComboNoCommonSuccDegreeRootCountResidualPrecStatement`) additionally
+(`PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement`) additionally
 assumes `f.coeff 0 = 0` and `g.coeff 0 ≠ 0`.  It is false: take `f = X` and
 `g = (X + 1)(X + 2)`.  A common left interleaver `X + 3/2` witnesses the
 positive-combination condition, but `0`, the only root of `X`, lies strictly to
@@ -907,10 +907,10 @@ private lemma X_not_strictInterl_xAddOne_xAddTwo :
   grind
 
 /-- The residual succ-degree orientation target
-`PosComboNoCommonSuccDegreeRootCountResidualPrecStatement` is false.
+`PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement` is false.
 Witnessed by `f = X`, `g = (X + 1)(X + 2)`. -/
 lemma not_posComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement :
-    ¬ PosComboNoCommonSuccDegreeRootCountResidualPrecStatement :=
+    ¬ PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement :=
   fun hres =>
     X_not_strictInterl_xAddOne_xAddTwo
       (hres

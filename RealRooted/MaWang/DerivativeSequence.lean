@@ -659,7 +659,7 @@ theorem strictInterl_mw_lw_derivative_lag_sequence_of_root_signs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  prec_lw_derivative_lag_sequence_of_root_signs
+  strictInterl_lw_derivative_lag_sequence_of_root_signs
     hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
 
 /-- Combined Ma--Wang/Liu--Wang sequence induction with direct root-sign

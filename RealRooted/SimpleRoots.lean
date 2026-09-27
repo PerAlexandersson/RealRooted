@@ -33,7 +33,8 @@ lemma HasSimpleRoots.ne_zero (hp : HasSimpleRoots p) : p ≠ 0 := by
 
 /-- A strictly interlacing pair with no common real root has simple real roots in
 both entries. -/
-theorem StrictInterl.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
+theorem StrictInterl.hasSimpleRoots_of_no_common_root
+    {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
     (hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ g.IsRoot r)) :
     HasSimpleRoots f ∧ HasSimpleRoots g := by
   constructor

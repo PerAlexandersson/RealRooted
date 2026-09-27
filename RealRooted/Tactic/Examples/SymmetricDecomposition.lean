@@ -100,7 +100,8 @@ example {d : Nat → Nat} {U V : Nat → ℝ[X]}
     (hvd : ∀ n : Nat, (V n).natDegree ≤ d n)
     (hu_nonneg : ∀ n : Nat, HasNonnegCoeffs (U n))
     (hv_nonneg : ∀ n : Nat, HasNonnegCoeffs (V n))
-    (hstrictInterl : ∀ n : Nat, StrictInterl (fPolynomial (d n) (U n)) (fPolynomial (d n) (V n))) :
+    (hstrictInterl : ∀ n : Nat,
+      StrictInterl (fPolynomial (d n) (U n)) (fPolynomial (d n) (V n))) :
     ∀ n : Nat, StrictInterl (U n) (V n) := by
   rr_of_fPolynomial_sequence_strict_interl using
     left_degree := hud,

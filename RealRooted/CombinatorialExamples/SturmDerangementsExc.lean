@@ -59,7 +59,8 @@ lemma sturmDerangementsExc_succ_eq_X_mul_recurrenceCore (n : Nat) (hn : 2 ≤ n)
 
 /-- If `f` is real-rooted with nonnegative coefficients, then the derivative term
 `(1 - X) * f'` sits on the "right" of `f` in the oriented `StrictInterl` relation. -/
-lemma strictInterl_one_sub_X_derivative_right {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDegree)
+lemma strictInterl_one_sub_X_derivative_right
+    {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDegree)
     (hnn : HasNonnegCoeffs f) :
     StrictInterl f ((1 - X) * f.derivative) :=
   strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs hf hdeg hnn
@@ -519,7 +520,9 @@ theorem strictInterl_sturmDerangementsExc_succ : ∀ n : Nat, 2 ≤ n →
   | 0, hn => by lia
   | 1, hn => by lia
   | 2, _ => by
-      exact strictInterl_sturmDerangementsExc_succ_of_strictInterl_recurrenceCore (n := 2) (by lia) <| by
+      exact
+        strictInterl_sturmDerangementsExc_succ_of_strictInterl_recurrenceCore
+          (n := 2) (by lia) <| by
         simpa [recurrenceCoreSturmDerangementsExc, affineSturmDerangementsExc]
           using strictInterl_affine_sturmDerangementsExc (n := 2) (by lia) (by simp)
   | n + 3, _ => by
@@ -528,7 +531,9 @@ theorem strictInterl_sturmDerangementsExc_succ : ∀ n : Nat, 2 ≤ n →
       have hcore : StrictInterl (recurrenceCoreSturmDerangementsExc (n + 3))
           (sturmDerangementsExc (n + 3)) :=
         strictInterl_recurrenceCoreSturmDerangementsExc (n := n + 3) (by lia) hprev
-      exact strictInterl_sturmDerangementsExc_succ_of_strictInterl_recurrenceCore (n := n + 3) (by lia) hcore
+      exact
+        strictInterl_sturmDerangementsExc_succ_of_strictInterl_recurrenceCore
+          (n := n + 3) (by lia) hcore
 
 /-- In particular, every nontrivial derangement excedance polynomial is real-rooted. -/
 theorem isRealRooted_sturmDerangementsExc : ∀ n : Nat, 2 ≤ n →

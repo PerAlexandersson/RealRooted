@@ -882,7 +882,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+          strictInterl_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
             $hbase $hpos $hnonneg $hc $hroot_lower $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_auto using
@@ -895,7 +895,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_lw_refine_active_nonneg_seq
-          (RealRooted.strictInterl_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
+          (strictInterl_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
             $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg using

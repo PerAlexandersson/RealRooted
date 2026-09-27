@@ -508,23 +508,37 @@ macro_rules
 end Tactic
 end RealRooted
 namespace RealRooted
-@[deprecated interl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl (since := "2026-09-26")]
-alias prec0_veronesePairSectionPolynomial_fin_sequence_of_prec := interl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
+@[deprecated
+  interl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
+  (since := "2026-09-26")]
+alias prec0_veronesePairSectionPolynomial_fin_sequence_of_prec :=
+  interl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
 
-@[deprecated strictInterl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl (since := "2026-09-26")]
-alias prec_veronesePairSectionPolynomial_fin_sequence_of_prec := strictInterl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
+@[deprecated
+  strictInterl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
+  (since := "2026-09-26")]
+alias prec_veronesePairSectionPolynomial_fin_sequence_of_prec :=
+  strictInterl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
 
-@[deprecated interl_veroneseSectionPolynomial_sequence_of_strictInterl (since := "2026-09-26")]
-alias prec0_veroneseSectionPolynomial_sequence_of_prec := interl_veroneseSectionPolynomial_sequence_of_strictInterl
+@[deprecated interl_veroneseSectionPolynomial_sequence_of_strictInterl
+  (since := "2026-09-26")]
+alias prec0_veroneseSectionPolynomial_sequence_of_prec :=
+  interl_veroneseSectionPolynomial_sequence_of_strictInterl
 
-@[deprecated strictInterl_veroneseSectionPolynomial_sequence_of_strictInterl (since := "2026-09-26")]
-alias prec_veroneseSectionPolynomial_sequence_of_prec := strictInterl_veroneseSectionPolynomial_sequence_of_strictInterl
+@[deprecated strictInterl_veroneseSectionPolynomial_sequence_of_strictInterl
+  (since := "2026-09-26")]
+alias prec_veroneseSectionPolynomial_sequence_of_prec :=
+  strictInterl_veroneseSectionPolynomial_sequence_of_strictInterl
 
-@[deprecated interl_veronesePairSectionPolynomial_sequence_of_strictInterl (since := "2026-09-26")]
-alias prec0_veronesePairSectionPolynomial_sequence_of_prec := interl_veronesePairSectionPolynomial_sequence_of_strictInterl
+@[deprecated interl_veronesePairSectionPolynomial_sequence_of_strictInterl
+  (since := "2026-09-26")]
+alias prec0_veronesePairSectionPolynomial_sequence_of_prec :=
+  interl_veronesePairSectionPolynomial_sequence_of_strictInterl
 
-@[deprecated strictInterl_veronesePairSectionPolynomial_sequence_of_strictInterl (since := "2026-09-26")]
-alias prec_veronesePairSectionPolynomial_sequence_of_prec := strictInterl_veronesePairSectionPolynomial_sequence_of_strictInterl
+@[deprecated strictInterl_veronesePairSectionPolynomial_sequence_of_strictInterl
+  (since := "2026-09-26")]
+alias prec_veronesePairSectionPolynomial_sequence_of_prec :=
+  strictInterl_veronesePairSectionPolynomial_sequence_of_strictInterl
 
 end RealRooted
 

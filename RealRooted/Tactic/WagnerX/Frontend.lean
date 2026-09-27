@@ -46,7 +46,8 @@ macro_rules
         right_nonneg := $hgnn:term,
         coeff_ne := $hc:term) =>
       `(tactic|
-        exact RealRooted.strictInterl_C_mul_X_of_strictInterl_of_nonneg $hstrictInterl $hfnn $hgnn $hc)
+        exact strictInterl_C_mul_X_of_strictInterl_of_nonneg
+          $hstrictInterl $hfnn $hgnn $hc)
   | `(tactic|
       rr_strict_interl_C_mul_X using
         proper := $hstrictInterl:term,

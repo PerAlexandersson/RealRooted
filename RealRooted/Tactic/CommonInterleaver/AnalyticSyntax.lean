@@ -227,8 +227,10 @@ syntax
   tactic
 
 syntax
-  (name := rr_succDegree_pair_common_interleaver_residualStrictInterl_bothNonzero_divXStrictInterl_named)
-  "rr_succDegree_pair_common_interleaver_residualStrictInterl_bothNonzero_divXStrictInterl" " using "
+  (name :=
+    rr_succDegree_pair_common_interleaver_residualStrictInterl_bothNonzero_divXStrictInterl_named)
+  "rr_succDegree_pair_common_interleaver_residualStrictInterl_\
+    bothNonzero_divXStrictInterl" " using "
     "residual_strictInterl" ":=" term ","
     "both_nonzero" ":=" term ","
     "divX_strictInterl" ":=" term :

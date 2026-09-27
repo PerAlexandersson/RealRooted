@@ -23,12 +23,12 @@ The repository-wide completion batch is recorded in:
   suggestions/prec-interl-final-residuals.tsv
 
 That snapshot reruns the complete identifier-word search after all source edits.
-It contains 1,325 residual identifiers, 3,433 occurrences, and 312 files.  Every
+It contains 1,327 residual identifiers, 3,429 occurrences, and 312 files.  Every
 row records its original migration category and its final disposition.  The
 remaining identifiers are limited to:
 
   919  dated deprecated API compatibility identifiers
-  356  legacy tactic parser or declaration compatibility identifiers
+  358  legacy tactic parser or declaration compatibility identifiers
    20  deprecated statement compatibility identifiers
    25  unrelated lexical matches
     2  foundational deprecated predicate aliases (`Prec` and `Prec0`)

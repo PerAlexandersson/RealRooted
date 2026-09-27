@@ -187,7 +187,8 @@ theorem strictInterl_typeBEulerian_succ :
   | n + 1 => by
       have hInter :
           Interlaces (typeBEulerian (n + 1)).derivative (typeBEulerian (n + 1)) :=
-        interlaces_derivative_typeBEulerian (n + 1) (by simp) (strictInterl_typeBEulerian_succ n).2.1.2
+        interlaces_derivative_typeBEulerian
+          (n + 1) (by simp) (strictInterl_typeBEulerian_succ n).2.1.2
       have hg_pos : HasPosLeadingCoeff (typeBEulerian (n + 1)).derivative :=
         (typeBEulerian_posLeadingCoeff (n + 1)).derivative (by simp [natDegree_typeBEulerian])
       have hNext_eq :
@@ -214,9 +215,10 @@ theorem strictInterl_typeBEulerian_succ :
       have hb_nonpos :
           ∀ r, (typeBEulerian (n + 1)).IsRoot r → typeBEulerianCoeffB.eval r ≤ 0 := by
         intro r hr
-        have hr_nonpos :
-            r ≤ 0 := roots_nonpos_typeBEulerian_of_isRealRooted (strictInterl_typeBEulerian_succ n).2.1.2 r
-              ((mem_roots (strictInterl_typeBEulerian_succ n).2.1.1).mpr hr)
+        have hr_nonpos : r ≤ 0 :=
+          roots_nonpos_typeBEulerian_of_isRealRooted
+            (strictInterl_typeBEulerian_succ n).2.1.2 r
+            ((mem_roots (strictInterl_typeBEulerian_succ n).2.1.1).mpr hr)
         exact eval_typeBEulerianCoeffB_nonpos_of_nonpos hr_nonpos
       simpa [hNext_eq] using
         strictInterl_of_interlaces_evalCoeff_nonpos

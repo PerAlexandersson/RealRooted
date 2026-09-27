@@ -379,13 +379,15 @@ namespace RealRooted
 alias prec_affine_derivative_sequence := strictInterl_affine_derivative_sequence
 
 @[deprecated isRealRooted_of_strictInterl_affine_derivative_sequence (since := "2026-09-26")]
-alias isRealRooted_of_prec_affine_derivative_sequence := isRealRooted_of_strictInterl_affine_derivative_sequence
+alias isRealRooted_of_prec_affine_derivative_sequence :=
+  isRealRooted_of_strictInterl_affine_derivative_sequence
 
 @[deprecated strictInterl_affine_derivative_nonneg_sequence (since := "2026-09-26")]
 alias prec_affine_derivative_nonneg_sequence := strictInterl_affine_derivative_nonneg_sequence
 
 @[deprecated isRealRooted_of_strictInterl_affine_derivative_nonneg_sequence (since := "2026-09-26")]
-alias isRealRooted_of_prec_affine_derivative_nonneg_sequence := isRealRooted_of_strictInterl_affine_derivative_nonneg_sequence
+alias isRealRooted_of_prec_affine_derivative_nonneg_sequence :=
+  isRealRooted_of_strictInterl_affine_derivative_nonneg_sequence
 
 end RealRooted
 

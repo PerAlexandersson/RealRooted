@@ -173,7 +173,7 @@ lemma strictInterl_eulerianTilde_succ_of_strictInterl_affine {n : Nat}
     StrictInterl (eulerianTilde n) (eulerianTilde (n + 1)) := by
   have hmain :
       StrictInterl (eulerianTilde n) (X * affineEulerianTilde n) := by
-    rr_strictInterl_mul_X using
+    rr_strict_interl_mul_X using
       proper := haff,
       left_nonneg := affineEulerianTilde_nonnegCoeffs n,
       right_nonneg := eulerianTilde_nonnegCoeffs n
@@ -184,9 +184,13 @@ the oriented `StrictInterl` sense. The induction hypothesis supplies real-rooted
 `P_n` as the right-hand half of `StrictInterl P_{n-1} P_n`. -/
 theorem strictInterl_eulerianTilde_succ : ∀ n : Nat,
     StrictInterl (eulerianTilde n) (eulerianTilde (n + 1))
-  | 0 => strictInterl_eulerianTilde_succ_of_strictInterl_affine <| strictInterl_affineEulerianTilde <| by simp
-  | n + 1 => strictInterl_eulerianTilde_succ_of_strictInterl_affine <| strictInterl_affineEulerianTilde
-    (strictInterl_eulerianTilde_succ n).2.1.2
+  | 0 =>
+      strictInterl_eulerianTilde_succ_of_strictInterl_affine <|
+        strictInterl_affineEulerianTilde <| by simp
+  | n + 1 =>
+      strictInterl_eulerianTilde_succ_of_strictInterl_affine <|
+        strictInterl_affineEulerianTilde
+          (strictInterl_eulerianTilde_succ n).2.1.2
 
 /-- Every Eulerian tilde polynomial is real-rooted, obtained as the
 right-hand component of the interlacing induction. -/
