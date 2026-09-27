@@ -597,11 +597,12 @@ python3 scripts/check_proof_status.py --self-test
 python3 scripts/check_proof_status.py
 ```
 
-The guard rejects `sorry`, `admit`, and source `axiom` commands, and reports
-low-use theorem-shaped propositions that still need an explicit status in
-`PROOF_STATUS.md`.
+The guard rejects `sorry`, `admit`, and source `axiom` commands, the tactic
+rules below, and reports low-use theorem-shaped propositions that still need an
+explicit status in `PROOF_STATUS.md`.
 
-All code accepted into the default branch must build without warnings. Draft
+All code accepted into the default branch must build without warnings. The
+lakefile sets `warningAsError`, so `lake build` fails on any warning. Draft
 branches may use the CI-first verification workflow below.
 
 To maintain clean and reliable build verification, the use of `set_option` is
@@ -611,10 +612,12 @@ suppressing them.
 
 To ensure proofs are deterministic and maintainable, the use of `try`,
 `all_goals`, and `any_goals` tactics is forbidden in proofs (they remain
-permitted inside custom tactic implementations). Proofs should use structured
-casing or sequential composition instead. Similarly, the use of `simp +decide`
-and `simp_all +decide` is discouraged; prefer `simp` and `simp_all` without
-`+decide` whenever possible.
+permitted inside `macro`, `macro_rules`, `elab`, and `elab_rules` tactic
+implementations). Proofs should use structured casing or sequential
+composition instead. Similarly, `simp +decide` and `simp_all +decide` are
+forbidden. Use `lia` instead of `omega`; a goal that `lia` cannot close may use
+`omega` only when its declaration is listed in `ALLOWED_OMEGA` in
+`scripts/check_proof_status.py`.
 
 Please keep repository configuration files (like `lakefile.toml` and
   `lake-manifest.json`) free of hardcoded absolute paths such as

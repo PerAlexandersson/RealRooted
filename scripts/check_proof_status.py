@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Audit Lean proof placeholders and low-use theorem-shaped declarations.
 
-The hard-fail policy permits no `sorry`, `admit`, or source `axiom` commands.
+The hard-fail policy permits no `sorry`, `admit`, or source `axiom` commands,
+no `set_option`, `simp +decide`, or `simp_all +decide`, no `omega` outside the
+declarations listed in `ALLOWED_OMEGA` (goals `lia` cannot close), and no `try`,
+`all_goals`, or `any_goals` outside tactic implementations (`macro`,
+`macro_rules`, `elab`, and `elab_rules` commands).
 Statement-like declarations referenced only by their own
 definition are reported for review unless `PROOF_STATUS.md` classifies them.
 """
@@ -18,6 +22,10 @@ from dataclasses import dataclass
 
 ALLOWED_ADMISSIONS: frozenset[tuple[str, str]] = frozenset()
 
+# `(path, declaration)` pairs whose goals `lia` cannot close, with the exact
+# number of `omega` calls each may contain.
+ALLOWED_OMEGA: dict[tuple[str, str], int] = {}
+
 DECLARATION_RE = re.compile(
     r"^\s*(?:(?:private|protected|noncomputable)\s+)*"
     r"(theorem|lemma|def|abbrev|structure|class|instance|opaque)\s+"
@@ -28,6 +36,13 @@ AXIOM_RE = re.compile(
     r"^\s*(?:(?:private|protected)\s+)*axioms?\s+"
     r"([A-Za-z_][A-Za-z0-9_'.]*)\b"
 )
+FORBIDDEN_RE = re.compile(
+    r"\b(set_option)\b|\b(simp(?:_all)?\??\s*\+decide)\b|\b(decide\s*:=\s*true)\b"
+)
+OMEGA_RE = re.compile(r"(?<![.'])\bomega\b(?!['?])")
+COMBINATOR_RE = re.compile(r"(?<![.'])\b(try|all_goals|any_goals)\b(?!['?])")
+COMMAND_START_RE = re.compile(r"^(?:@\[[^\]]*\]\s*)?(?:(?:local|scoped)\s+)?([a-z_]+)\b")
+TACTIC_IMPLEMENTATION_COMMANDS = frozenset({"macro", "macro_rules", "elab", "elab_rules"})
 STATEMENT_NAME_RE = re.compile(r"(?:Statement|Target|Route|Inputs|Backend)$")
 IDENTIFIER_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")
 STATEMENT_DECLARATION_KINDS = frozenset({"def", "abbrev", "structure", "class"})
@@ -122,7 +137,13 @@ def scan_text(path: str, text: str) -> tuple[list[Finding], list[StatementDeclar
     findings: list[Finding] = []
     statements: list[StatementDeclaration] = []
     current_declaration = "<unknown>"
+    in_tactic_implementation = False
     for line_number, line in enumerate(clean.splitlines(), start=1):
+        command_match = COMMAND_START_RE.match(line)
+        if command_match:
+            in_tactic_implementation = (
+                command_match.group(1) in TACTIC_IMPLEMENTATION_COMMANDS
+            )
         declaration_match = DECLARATION_RE.match(line)
         if declaration_match:
             declaration_kind = declaration_match.group(1)
@@ -138,6 +159,22 @@ def scan_text(path: str, text: str) -> tuple[list[Finding], list[StatementDeclar
         axiom_match = AXIOM_RE.match(line)
         if axiom_match:
             findings.append(Finding(path, axiom_match.group(1), line_number, "axiom"))
+        for forbidden_match in FORBIDDEN_RE.finditer(line):
+            findings.append(
+                Finding(
+                    path,
+                    re.sub(r"\s+", " ", forbidden_match.group(0)),
+                    line_number,
+                    "forbidden",
+                )
+            )
+        for _ in OMEGA_RE.finditer(line):
+            findings.append(Finding(path, current_declaration, line_number, "omega"))
+        if not in_tactic_implementation:
+            for combinator_match in COMBINATOR_RE.finditer(line):
+                findings.append(
+                    Finding(path, combinator_match.group(1), line_number, "forbidden")
+                )
         for placeholder_match in PLACEHOLDER_RE.finditer(line):
             findings.append(
                 Finding(
@@ -150,20 +187,42 @@ def scan_text(path: str, text: str) -> tuple[list[Finding], list[StatementDeclar
     return findings, statements, clean
 
 
-def admission_errors(findings: list[Finding]) -> list[str]:
+def admission_errors(
+    findings: list[Finding],
+    allowed_omega: dict[tuple[str, str], int] | None = None,
+) -> list[str]:
+    if allowed_omega is None:
+        allowed_omega = ALLOWED_OMEGA
     errors: list[str] = []
     observed: Counter[tuple[str, str]] = Counter()
+    observed_omega: Counter[tuple[str, str]] = Counter()
     for finding in findings:
         identity = (finding.path, finding.declaration)
         location = f"{finding.path}:{finding.line}"
-        if finding.kind == "axiom":
+        if finding.kind == "omega":
+            if identity in allowed_omega:
+                observed_omega[identity] += 1
+            else:
+                errors.append(
+                    f"{location}: forbidden omega in {finding.declaration} (use lia)"
+                )
+        elif finding.kind == "axiom":
             errors.append(f"{location}: source axiom {finding.declaration}")
+        elif finding.kind == "forbidden":
+            errors.append(f"{location}: forbidden {finding.declaration}")
         elif finding.kind == "admit":
             errors.append(f"{location}: admit in {finding.declaration}")
         elif identity not in ALLOWED_ADMISSIONS:
             errors.append(f"{location}: unexpected sorry in {finding.declaration}")
         else:
             observed[identity] += 1
+    for identity, expected in sorted(allowed_omega.items()):
+        count = observed_omega[identity]
+        if count != expected:
+            errors.append(
+                f"{identity[0]}: expected {expected} omega in {identity[1]}, "
+                f"found {count}; update ALLOWED_OMEGA"
+            )
     for identity in sorted(ALLOWED_ADMISSIONS):
         count = observed[identity]
         if count != 1:
@@ -200,6 +259,34 @@ def run_self_test() -> int:
         "axiom badAxiom : True\n"
         "/- sorry axiom ignored : True -/\n",
     )
+    forbidden, _, _ = scan_text(
+        "RealRooted/Test.lean",
+        "set_option maxHeartbeats 0 in\n"
+        "theorem a : 1 = 1 := by\n  all_goals try omega\n"
+        "theorem b : True := by\n  simp +decide\n"
+        "theorem c : True := by\n  simp_all  +decide [x]\n"
+        "theorem d : True := by\n  any_goals decide\n"
+        "-- omega try all_goals in comments are ignored\n"
+        "macro_rules\n  | `(tactic| foo) => `(tactic| all_goals try simp)\n"
+        "elab \"bar\" : tactic => do\n  evalTactic (← `(tactic| try rfl))\n"
+        "theorem e : True := by\n  first | try trivial | trivial\n",
+    )
+    assert [(item.line, item.declaration) for item in forbidden] == [
+        (1, "set_option"),
+        (3, "a"),
+        (3, "all_goals"),
+        (3, "try"),
+        (5, "simp +decide"),
+        (7, "simp_all +decide"),
+        (9, "any_goals"),
+        (16, "try"),
+    ], forbidden
+    assert all("forbidden" in error for error in admission_errors(forbidden, {}))
+    assert not admission_errors(
+        [item for item in forbidden if item.kind == "omega"],
+        {("RealRooted/Test.lean", "a"): 1},
+    )
+    assert admission_errors([], {("RealRooted/Test.lean", "a"): 1})
     combined = synthetic_findings + unexpected
     errors = admission_errors(combined)
     assert any("unexpected sorry" in error for error in errors)
@@ -261,7 +348,7 @@ def main() -> int:
         )
 
     print(
-        "ok: no sorry, admit, or source axiom commands; "
+        "ok: no sorry, admit, source axiom, or forbidden tactic commands; "
         f"{len(unclassified)} unclassified low-use statement(s)"
     )
     return 0
