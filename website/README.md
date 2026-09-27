@@ -76,6 +76,17 @@ Run source-only validation without touching an output directory:
 python3 scripts/build_challenge_pages.py --check
 ```
 
+Build a source-only local preview without invoking Lake or Lean:
+
+```bash
+python3 scripts/build_challenge_pages.py --preview
+```
+
+The command writes to the system temporary directory and prints a ready-to-run
+`python3 -m http.server` command.  It does not perform the post-Lean publication
+audit; that remains a CI/release check rather than a prerequisite for styling
+or editorial work.
+
 Render a local static site (use an external temporary directory):
 
 ```bash

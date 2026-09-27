@@ -809,10 +809,24 @@ def _page_card(page: CatalogPage, href: str) -> str:
 
 def _sort_controls() -> str:
     return (
-        '<div class="catalog-toolbar"><label for="catalog-sort">Sort by</label>'
-        '<select id="catalog-sort" data-catalog-sort>'
-        '<option value="name">Name</option><option value="year">Year</option>'
-        '</select></div>'
+        '<div class="catalog-toolbar" role="group" aria-labelledby="catalog-sort-label" '
+        'data-catalog-sort><span id="catalog-sort-label" class="catalog-sort-label">Sort by</span>'
+        '<label class="catalog-sort-option"><input type="radio" name="catalog-sort" '
+        'value="name" checked><span class="catalog-sort-indicator" aria-hidden="true"></span>'
+        '<span>Name</span></label><label class="catalog-sort-option"><input type="radio" '
+        'name="catalog-sort" value="year"><span class="catalog-sort-indicator" '
+        'aria-hidden="true"></span><span>Year</span></label></div>'
+    )
+
+
+def _catalog_group(kind: str, pages: Iterable[CatalogPage]) -> str:
+    title = kind.title()
+    symbol = "≔" if kind == "definitions" else "⊢"
+    rows = "".join(_page_card(page, f"{page.section}/{page.slug}/") for page in pages)
+    return (
+        f'<section class="catalog-group" id="{kind}">'
+        f'<h2><span aria-hidden="true">{symbol}</span> {title}</h2>'
+        f'<ul class="catalog-index" data-catalog-list>{rows}</ul></section>'
     )
 
 
@@ -881,17 +895,19 @@ def render_site(
     files: dict[str, str] = {}
     grouped = {section: [page for page in pages if page.section == section] for section in SECTIONS}
     index_pages = sorted(pages, key=lambda page: (page.title.casefold(), page.slug))
-    index_rows = "".join(
-        _page_card(page, f"{page.section}/{page.slug}/") for page in index_pages
-    )
+    definition_pages = [page for page in index_pages if page.section != "theorems"]
+    theorem_pages = [page for page in index_pages if page.section == "theorems"]
     index_body = (
         "<main class=\"catalog-home\"><section class=\"hero\">"
-        "<p class=\"eyebrow\">Lean 4 formalization</p>"
-        "<h1>Real-rooted polynomials in Lean</h1>"
-        "<p class=\"lede\">A curated guide to Lean definitions and proved theorems, "
-        "with links to their source.</p></section>"
+        "<p class=\"eyebrow\">Reference catalog</p>"
+        "<h1>Real-rooted polynomials</h1>"
+        "<p class=\"lede\">Definitions and proved theorems, with links to their "
+        "formal sources.</p></section>"
         + _sort_controls()
-        + f'<ul class="catalog-index" data-catalog-list>{index_rows}</ul></main>'
+        + '<div class="catalog-groups">'
+        + _catalog_group("definitions", definition_pages)
+        + _catalog_group("theorems", theorem_pages)
+        + "</div></main>"
     )
     files["index.html"] = _template(repo_root, index_body, "RealRooted catalog", BASE_PATH)
     for section, section_pages in grouped.items():
@@ -910,16 +926,14 @@ def render_site(
         selected = ""
         if definition_html:
             selected += (
-                '<section class="declaration-group declaration-group--definition">'
-                '<p class="section-kicker">Lean declarations</p>'
+                '<section class="declaration-group declaration-group--definition" id="definitions">'
                 '<h2><span aria-hidden="true">≔</span> Definitions</h2>'
                 + definition_html
                 + "</section>"
             )
         if theorem_html:
             selected += (
-                '<section class="declaration-group declaration-group--theorem">'
-                '<p class="section-kicker">Lean declarations</p>'
+                '<section class="declaration-group declaration-group--theorem" id="theorems">'
                 '<h2><span aria-hidden="true">⊢</span> Theorems</h2>'
                 + theorem_html
                 + "</section>"

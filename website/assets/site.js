@@ -1,10 +1,9 @@
 "use strict";
 
 for (const control of document.querySelectorAll("[data-catalog-sort]")) {
-  const list = control.closest("main")?.querySelector("[data-catalog-list]");
-  if (!list) continue;
+  const lists = Array.from(control.closest("main")?.querySelectorAll("[data-catalog-list]") ?? []);
+  if (!lists.length) continue;
 
-  const cards = Array.from(list.children);
   const compareName = (left, right) =>
     left.dataset.title.localeCompare(right.dataset.title, "en", { sensitivity: "base" });
   const compareYear = (left, right) => {
@@ -13,8 +12,13 @@ for (const control of document.querySelectorAll("[data-catalog-sort]")) {
     return leftYear - rightYear || compareName(left, right);
   };
 
-  control.addEventListener("change", () => {
-    cards.sort(control.value === "year" ? compareYear : compareName);
-    list.append(...cards);
+  control.addEventListener("change", (event) => {
+    const selected = event.target.closest('input[type="radio"]');
+    if (!selected) return;
+    for (const list of lists) {
+      const cards = Array.from(list.children);
+      cards.sort(selected.value === "year" ? compareYear : compareName);
+      list.append(...cards);
+    }
   });
 }
