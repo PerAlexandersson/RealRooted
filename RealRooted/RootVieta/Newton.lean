@@ -12,7 +12,6 @@ import Mathlib.Analysis.Matrix.Order
 import Mathlib.LinearAlgebra.Lagrange
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
 
 /-!
@@ -204,25 +203,25 @@ def complexRoots (p : ℝ[X]) : Multiset ℂ :=
 def complexNewtonSum (p : ℝ[X]) (k : ℕ) : ℂ :=
   (complexRoots p).powerSum k
 
-lemma map_star_complexification (p : ℝ[X]) :
+private lemma map_star_complexification (p : ℝ[X]) :
     (p.map Complex.ofRealHom).map (starRingEnd ℂ) =
       p.map Complex.ofRealHom := by
   ext k
   simp [coeff_map]
 
-lemma map_star_complexRoots (p : ℝ[X]) :
+private lemma map_star_complexRoots (p : ℝ[X]) :
     (complexRoots p).map (starRingEnd ℂ) = complexRoots p := by
   have h := (IsAlgClosed.splits (p.map Complex.ofRealHom)).roots_map
     (starRingEnd ℂ)
   rw [map_star_complexification] at h
   exact h.symm
 
-lemma star_complexNewtonSum (p : ℝ[X]) (k : ℕ) :
+private lemma star_complexNewtonSum (p : ℝ[X]) (k : ℕ) :
     star (complexNewtonSum p k) = complexNewtonSum p k := by
   change (starRingEnd ℂ) (complexNewtonSum p k) = complexNewtonSum p k
   rw [complexNewtonSum, Multiset.map_powerSum, map_star_complexRoots]
 
-lemma complexNewtonSum_im (p : ℝ[X]) (k : ℕ) :
+private lemma complexNewtonSum_im (p : ℝ[X]) (k : ℕ) :
     (complexNewtonSum p k).im = 0 :=
   Complex.conj_eq_iff_im.mp (star_complexNewtonSum p k)
 
@@ -230,7 +229,7 @@ lemma complexNewtonSum_im (p : ℝ[X]) (k : ℕ) :
 def newtonSum (p : ℝ[X]) (k : ℕ) : ℝ :=
   (complexNewtonSum p k).re
 
-lemma ofReal_newtonSum (p : ℝ[X]) (k : ℕ) :
+private lemma ofReal_newtonSum (p : ℝ[X]) (k : ℕ) :
     (newtonSum p k : ℂ) = complexNewtonSum p k := by
   rw [newtonSum, ← Complex.conj_eq_iff_re]
   exact star_complexNewtonSum p k
@@ -240,7 +239,7 @@ monic polynomial, extended by zero above the degree. -/
 def monicElementaryCoeff (p : ℝ[X]) (k : ℕ) : ℝ :=
   if k ≤ p.natDegree then (-1 : ℝ) ^ k * p.coeff (p.natDegree - k) else 0
 
-lemma esymm_complexRoots_eq_monicElementaryCoeff {p : ℝ[X]}
+private lemma esymm_complexRoots_eq_monicElementaryCoeff {p : ℝ[X]}
     (hp : p.Monic) (k : ℕ) :
     (complexRoots p).esymm k = (monicElementaryCoeff p k : ℂ) := by
   by_cases hk : k ≤ p.natDegree
@@ -277,8 +276,8 @@ theorem newtonSum_eq_monicElementaryCoeff_sub_sum {p : ℝ[X]}
     induction n with
     | zero => simp
     | succ n ih => simp [pow_succ, ih]
-  have hpower_im (n : ℕ) : ((complexRoots p).powerSum n).im = 0 := by
-    exact complexNewtonSum_im p n
+  have hpower_im (n : ℕ) : ((complexRoots p).powerSum n).im = 0 :=
+    complexNewtonSum_im p n
   simpa [complexNewtonSum, newtonSum, hneg_re, hneg_im, hpower_im] using hre
 
 /-- Exact first-order regression for the coefficient-side Newton recurrence. -/
@@ -305,7 +304,7 @@ theorem newtonSum_two_eq_sq_sub_two_mul_nextCoeff {p : ℝ[X]} (hp : p.Monic)
   simp [monicElementaryCoeff, show 1 ≤ p.natDegree by lia, hdeg] at h
   nlinarith
 
-lemma sum_coe_pow {R : Type*} [CommSemiring R] [DecidableEq R]
+private lemma sum_coe_pow {R : Type*} [CommSemiring R] [DecidableEq R]
     (s : Multiset R) (k : ℕ) :
     (∑ x : s.ToType, (x : R) ^ k) = s.powerSum k := by
   classical
@@ -316,7 +315,7 @@ lemma sum_coe_pow {R : Type*} [CommSemiring R] [DecidableEq R]
       congrArg Multiset.sum (Multiset.map_univ s fun x : R => x ^ k)
     _ = _ := rfl
 
-lemma newtonSum_eq_roots_powerSum {p : ℝ[X]} (hp : p.Splits) (k : ℕ) :
+private lemma newtonSum_eq_roots_powerSum {p : ℝ[X]} (hp : p.Splits) (k : ℕ) :
     newtonSum p k = p.roots.powerSum k := by
   apply Complex.ofReal_injective
   rw [ofReal_newtonSum, complexNewtonSum, complexRoots, hp.roots_map,
@@ -329,10 +328,8 @@ def hermiteMatrix (p : ℝ[X]) : Matrix (Fin p.natDegree) (Fin p.natDegree) ℝ 
 
 /-- The Hermite matrix of a real polynomial is Hermitian. -/
 lemma hermiteMatrix_isHermitian (p : ℝ[X]) :
-    (hermiteMatrix p).IsHermitian := by
-  apply Matrix.IsHermitian.ext
-  intro i j
-  simp [hermiteMatrix, add_comm]
+    (hermiteMatrix p).IsHermitian :=
+  Matrix.IsHermitian.ext fun i j => by simp [hermiteMatrix, add_comm]
 
 /-- A polynomial that splits over the reals has positive-semidefinite Hermite
 matrix, with repeated roots represented by repeated Gram-matrix rows. -/
@@ -348,17 +345,18 @@ theorem hermiteMatrix_posSemidef_of_splits {p : ℝ[X]} (hp : p.Splits) :
   rw [hmatrix]
   exact posSemidef_conjTranspose_mul_self V
 
-lemma eval_eq_sum_fin {f : ℂ[X]} {n : ℕ} (hdeg : f.natDegree < n) (z : ℂ) :
+private lemma eval_eq_sum_fin {f : ℂ[X]} {n : ℕ} (hdeg : f.natDegree < n) (z : ℂ) :
     f.eval z = ∑ i : Fin n, f.coeff i * z ^ i.val := by
   rw [f.eval_eq_sum_range' hdeg]
   exact (Fin.sum_univ_eq_sum_range (fun i : ℕ => f.coeff i * z ^ i) n).symm
 
-lemma ofReal_im_eq_sub_star_div (z : ℂ) :
+private lemma ofReal_im_eq_sub_star_div (z : ℂ) :
     (z.im : ℂ) = (z - star z) / (2 * Complex.I) := by
   apply Complex.ext <;> simp [Complex.div_re, Complex.div_im]
   ring
 
-lemma sum_im_coeff_mul_pow {f : ℂ[X]} {n : ℕ} (hdeg : f.natDegree < n) (z : ℂ) :
+private lemma sum_im_coeff_mul_pow {f : ℂ[X]} {n : ℕ}
+    (hdeg : f.natDegree < n) (z : ℂ) :
     (∑ i : Fin n, (f.coeff i).im * z ^ i.val : ℂ) =
       (f.eval z - star (f.eval (star z))) / (2 * Complex.I) := by
   rw [eval_eq_sum_fin hdeg z, eval_eq_sum_fin hdeg (star z)]
@@ -381,7 +379,7 @@ lemma sum_im_coeff_mul_pow {f : ℂ[X]} {n : ℕ} (hdeg : f.natDegree < n) (z : 
       rw [← Finset.sum_sub_distrib, Finset.sum_div]
       simp only [starRingEnd_apply]
 
-lemma ofReal_dotProduct_hermiteMatrix_mulVec (p : ℝ[X])
+private lemma ofReal_dotProduct_hermiteMatrix_mulVec (p : ℝ[X])
     (b : Fin p.natDegree → ℝ) :
     ((b ⬝ᵥ hermiteMatrix p *ᵥ b : ℝ) : ℂ) =
       ∑ r ∈ (complexRoots p).toFinset,
@@ -418,21 +416,24 @@ lemma ofReal_dotProduct_hermiteMatrix_mulVec (p : ℝ[X])
       intro j _
       ring
 
-lemma lagrange_im_coeff_eval_sq {s : Finset ℂ} {z r : ℂ}
+private lemma lagrange_im_coeff_eval_sq {s : Finset ℂ} {z r : ℂ}
     (hz : z ∈ s) (hr : r ∈ s) (hstar : ∀ w ∈ s, star w ∈ s)
     (hzstar : star z ≠ z) {n : ℕ} (hcard : s.card ≤ n) :
     (∑ i : Fin n, ((Lagrange.basis s id z).coeff i).im * r ^ i.val : ℂ) ^ 2 =
       if r = z ∨ r = star z then -1 / 4 else 0 := by
   classical
   let f : ℂ[X] := Lagrange.basis s id z
-  have hinj : Set.InjOn (id : ℂ → ℂ) (↑s : Set ℂ) := by
-    intro a _ b _ h
-    exact h
+  have hinj : Set.InjOn (id : ℂ → ℂ) (↑s : Set ℂ) := Set.injOn_id _
   have hspos : 0 < s.card := Finset.card_pos.mpr ⟨z, hz⟩
   have hdeg : f.natDegree < n := by
-    rw [show f.natDegree = s.card - 1 by
-      exact Lagrange.natDegree_basis hinj hz]
+    rw [Lagrange.natDegree_basis hinj hz]
     lia
+  have heval_one : f.eval z = 1 := by
+    dsimp [f]
+    exact Lagrange.eval_basis_self (s := s) (v := id) (i := z) hinj hz
+  have heval_zero {w : ℂ} (hw : w ∈ s) (hzw : z ≠ w) : f.eval w = 0 := by
+    dsimp [f]
+    exact Lagrange.eval_basis_of_ne (s := s) (v := id) (i := z) (j := w) hzw hw
   have hconst : ((1 : ℂ) / (2 * Complex.I)) ^ 2 = -1 / 4 := by
     apply Complex.ext <;>
       norm_num [Complex.div_re, Complex.div_im, pow_two, Complex.mul_re,
@@ -440,43 +441,19 @@ lemma lagrange_im_coeff_eval_sq {s : Finset ℂ} {z r : ℂ}
   rw [sum_im_coeff_mul_pow hdeg]
   by_cases hrz : r = z
   · subst r
-    have heval : f.eval z = 1 := by
-      dsimp [f]
-      exact Lagrange.eval_basis_self (s := s) (v := id) (i := z) hinj hz
-    have hevalstar : f.eval (star z) = 0 := by
-      dsimp [f]
-      exact Lagrange.eval_basis_of_ne (s := s) (v := id) (i := z)
-        (j := star z) (Ne.symm hzstar) (hstar z hz)
-    rw [heval, hevalstar]
+    rw [heval_one, heval_zero (hstar z hz) (Ne.symm hzstar)]
     simpa only [star_zero, sub_zero, true_or, ite_true] using hconst
   · by_cases hrstar : r = star z
     · subst r
-      have heval : f.eval (star z) = 0 := by
-        dsimp [f]
-        exact Lagrange.eval_basis_of_ne (s := s) (v := id) (i := z)
-          (j := star z) (Ne.symm hzstar) (hstar z hz)
+      rw [heval_zero (hstar z hz) (Ne.symm hzstar)]
       have hevalstar : f.eval (star (star z)) = 1 := by
-        rw [star_star]
-        dsimp [f]
-        exact Lagrange.eval_basis_self (s := s) (v := id) (i := z) hinj hz
-      rw [heval, hevalstar]
+        simpa only [star_star] using heval_one
+      rw [hevalstar]
       simp only [star_one, zero_sub, or_true, ite_true]
       convert hconst using 1
       ring
-    · have heval : f.eval r = 0 := by
-        dsimp [f]
-        exact Lagrange.eval_basis_of_ne (s := s) (v := id) (i := z)
-          (j := r) (Ne.symm hrz) hr
-      have hne : z ≠ star r := by
-        intro h
-        have := congrArg star h
-        simp only [star_star] at this
-        exact hrstar this.symm
-      have hevalstar : f.eval (star r) = 0 := by
-        dsimp [f]
-        exact Lagrange.eval_basis_of_ne (s := s) (v := id) (i := z)
-          (j := star r) hne (hstar r hr)
-      rw [heval, hevalstar]
+    · have hne : z ≠ star r := by grind [star_star]
+      rw [heval_zero hr (Ne.symm hrz), heval_zero (hstar r hr) hne]
       simp only [star_zero, sub_zero, zero_div, zero_pow (by norm_num : 2 ≠ 0),
         hrz, false_or]
       simp only [hrstar, ite_false]
@@ -487,8 +464,7 @@ private lemma splits_of_all_roots_real_aux {p : ℝ[X]}
   refine Splits.of_splits_map Complex.ofRealHom (IsAlgClosed.splits _) ?_
   intro z hz
   refine ⟨z.re, ?_⟩
-  rw [← Complex.re_add_im z, hall z (isRoot_of_mem_roots hz)]
-  simp
+  simpa [hall z (isRoot_of_mem_roots hz)] using Complex.re_add_im z
 
 /-- **Hermite--Sylvester criterion.** A monic real polynomial splits over the
 reals if and only if its Hermite matrix is positive semidefinite. -/
@@ -500,9 +476,8 @@ theorem splits_iff_hermiteMatrix_posSemidef {p : ℝ[X]} (hp : p.Monic) :
     apply splits_of_all_roots_real_aux
     intro z hz
     by_contra hzreal
-    have hqmonic : (p.map Complex.ofRealHom).Monic := hp.map _
     have hzmem : z ∈ complexRoots p := by
-      rw [complexRoots, (mem_roots hqmonic.ne_zero)]
+      rw [complexRoots, mem_roots (hp.map _).ne_zero]
       exact hz
     have hzfin : z ∈ (complexRoots p).toFinset := Multiset.mem_toFinset.mpr hzmem
     have hzstar : star z ≠ z := by
@@ -511,17 +486,13 @@ theorem splits_iff_hermiteMatrix_posSemidef {p : ℝ[X]} (hp : p.Monic) :
     have hstar (w : ℂ) (hw : w ∈ (complexRoots p).toFinset) :
         star w ∈ (complexRoots p).toFinset := by
       rw [Multiset.mem_toFinset] at hw ⊢
-      have hmap : star w ∈ (complexRoots p).map (starRingEnd ℂ) :=
-        Multiset.mem_map.mpr ⟨w, hw, rfl⟩
-      rwa [map_star_complexRoots] at hmap
+      simpa only [map_star_complexRoots] using
+        (Multiset.mem_map.mpr ⟨w, hw, rfl⟩ : star w ∈
+          (complexRoots p).map (starRingEnd ℂ))
     have hcard : (complexRoots p).toFinset.card ≤ p.natDegree := by
-      calc
-        (complexRoots p).toFinset.card ≤ (complexRoots p).card :=
-          Multiset.toFinset_card_le _
-        _ = (p.map Complex.ofRealHom).natDegree := by
-          symm
-          exact (IsAlgClosed.splits (p.map Complex.ofRealHom)).natDegree_eq_card_roots
-        _ = p.natDegree := hp.natDegree_map _
+      convert Multiset.toFinset_card_le (complexRoots p) using 1
+      rw [complexRoots, ← (IsAlgClosed.splits
+        (p.map Complex.ofRealHom)).natDegree_eq_card_roots, hp.natDegree_map]
     let f : ℂ[X] := Lagrange.basis (complexRoots p).toFinset id z
     let b : Fin p.natDegree → ℝ := fun i => (f.coeff i).im
     have hb_sq (r : ℂ) (hr : r ∈ (complexRoots p).toFinset) :
@@ -529,12 +500,11 @@ theorem splits_iff_hermiteMatrix_posSemidef {p : ℝ[X]} (hp : p.Monic) :
           if r = z ∨ r = star z then -1 / 4 else 0 := by
       dsimp [b, f]
       exact lagrange_im_coeff_eval_sq hzfin hr hstar hzstar hcard
-    have hformC := ofReal_dotProduct_hermiteMatrix_mulVec p b
     have hformC' : ((b ⬝ᵥ hermiteMatrix p *ᵥ b : ℝ) : ℂ) =
         ∑ r ∈ (complexRoots p).toFinset,
           ((complexRoots p).count r : ℂ) *
             (if r = z ∨ r = star z then (-1 / 4 : ℂ) else 0) := by
-      rw [hformC]
+      rw [ofReal_dotProduct_hermiteMatrix_mulVec]
       apply Finset.sum_congr rfl
       intro r hr
       rw [hb_sq r hr]
