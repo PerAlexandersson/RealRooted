@@ -210,31 +210,6 @@ theorem splits_pow_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (n :
     (p ^ n).Splits :=
   (isRealRooted_pow_of_isRealRooted hp n).2
 
-/-- Product transport for zero-aware real-rootedness certificates. -/
-theorem mul_eq_zero_or_splits {p q : ℝ[X]}
-    (hp : p = 0 ∨ p.Splits) (hq : q = 0 ∨ q.Splits) :
-    p * q = 0 ∨ (p * q).Splits := by
-  rcases hp with rfl | hp
-  · left
-    simp
-  rcases hq with rfl | hq
-  · left
-    simp
-  · exact Or.inr (hp.mul hq)
-
-/-- Power transport for zero-aware real-rootedness certificates. -/
-theorem pow_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) (n : Nat) :
-    p ^ n = 0 ∨ (p ^ n).Splits := by
-  rcases hp with rfl | hp
-  · cases n with
-    | zero =>
-        right
-        simp
-    | succ n =>
-        left
-        simp
-  · exact Or.inr (hp.pow n)
-
 /-- Power transport from nonzero real-rootedness to zero-aware real-rootedness. -/
 theorem pow_eq_zero_or_splits_of_isRealRooted {p : ℝ[X]}
     (hp : p ≠ 0 ∧ p.Splits) (n : Nat) :
