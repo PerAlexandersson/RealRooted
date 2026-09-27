@@ -82,8 +82,7 @@ theorem natDegree_of_quadratic_derivative_linear_quadratic_seed
         change Polynomial.coeff (P 2) m = 0
         rw [h2]
         apply coeff_eq_zero_of_natDegree_lt
-        rw [show (1 + X * C u + X ^ 2 : ℝ[X]).natDegree = 2 by compute_degree!]
-        assumption
+        rwa [show (1 + X * C u + X ^ 2 : ℝ[X]).natDegree = 2 by compute_degree!]
       have hrecQ : ∀ n, (fun m ↦ P (m + 2)) (n + 1) =
           (C a * X + C (-b) * X ^ 2) * ((fun m ↦ P (m + 2)) n).derivative +
             (C c + C (s + t * (n : ℝ)) * X) * (fun m ↦ P (m + 2)) n := by assumption
@@ -128,8 +127,7 @@ theorem strictInterl_of_quadratic_derivative_linear_quadratic_seed
         change Polynomial.coeff (P 2) m = 0
         rw [h2]
         apply coeff_eq_zero_of_natDegree_lt
-        rw [show (1 + X * C u + X ^ 2 : ℝ[X]).natDegree = 2 by compute_degree!]
-        assumption
+        rwa [show (1 + X * C u + X ^ 2 : ℝ[X]).natDegree = 2 by compute_degree!]
       have hbase_splits : (((fun m ↦ P (m + 2)) 0)).Splits := by
         change (P 2).Splits
         rw [h2]

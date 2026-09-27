@@ -93,8 +93,7 @@ lemma strictInterl_step_of_quadratic_derivative_linear
         ha hb hc hs hbt m) r ((mem_roots hne).mpr hr)
   have hInter : Interlaces (P m).derivative (P m) :=
     derivative_interlaces hsp (by
-      rw [natDegree_of_quadratic_derivative_linear P a b c s t h0 hrec hs hbt]
-      assumption)
+      rwa [natDegree_of_quadratic_derivative_linear P a b c s t h0 hrec hs hbt])
   have hg_pos : HasPosLeadingCoeff (P m).derivative :=
     (hasPosLeadingCoeff_of_quadratic_derivative_linear P a b c s t h0 hrec hs hbt m).derivative (by
       rw [natDegree_of_quadratic_derivative_linear P a b c s t h0 hrec hs hbt]

@@ -203,7 +203,7 @@ theorem jacobiBetaOneOperator_shiftedJacobi (n : ℕ) (α : ℝ) :
   simp only [map_add, map_mul, map_neg, map_natCast] at h ⊢
   simp only [hC2] at h ⊢
   norm_num at h ⊢
-  convert h using 1 <;> ring
+  convert h using 1 <;> ring_nf
 
 theorem jacobiBetaOneOperator_X_pow (α : ℝ) (n : ℕ) :
     jacobiBetaOneOperator α (X ^ n) =
@@ -211,7 +211,7 @@ theorem jacobiBetaOneOperator_X_pow (α : ℝ) (n : ℕ) :
         C (-(n * (n + α + 2))) * X ^ n := by
   rw [X_pow_eq_monomial, jacobiBetaOneOperator_monomial]
   simp only [← C_mul_X_pow_eq_monomial, one_mul, map_one]
-  ring
+  ring_nf
 
 @[simp]
 theorem jacobiBetaOneInner_monomial_right (α c : ℝ) (p : ℝ[X]) (n : ℕ) :

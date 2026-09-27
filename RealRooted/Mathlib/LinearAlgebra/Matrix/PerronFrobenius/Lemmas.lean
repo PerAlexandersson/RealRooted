@@ -503,5 +503,3 @@ end ShiftAndMap
 end PerronFrobenius
 
 end Matrix
-
-#lint
