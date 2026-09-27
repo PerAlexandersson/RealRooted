@@ -73,6 +73,23 @@ lemma isRealRooted_mul {p q : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
     (hq_ne : q ≠ 0) (hq_splits : q.Splits) : (p * q ≠ 0 ∧ (p * q).Splits) :=
   ⟨mul_ne_zero hp_ne hq_ne, hp_splits.mul hq_splits⟩
 
+/-- Product transport for zero-aware splitting certificates. -/
+theorem mul_eq_zero_or_splits {p q : ℝ[X]}
+    (hp : p = 0 ∨ p.Splits) (hq : q = 0 ∨ q.Splits) :
+    p * q = 0 ∨ (p * q).Splits := by
+  rcases hp with rfl | hp
+  · simp
+  rcases hq with rfl | hq
+  · simp
+  · exact Or.inr (hp.mul hq)
+
+/-- Power transport for zero-aware splitting certificates. -/
+theorem pow_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) (n : ℕ) :
+    p ^ n = 0 ∨ (p ^ n).Splits := by
+  rcases hp with rfl | hp
+  · cases n <;> simp
+  · exact Or.inr (hp.pow n)
+
 lemma coeff_X_sub_C_mul (r : ℝ) (q : ℝ[X]) (n : ℕ) :
     ((X - C r) * q).coeff n =
       (if n = 0 then 0 else q.coeff (n - 1)) - r * q.coeff n := by

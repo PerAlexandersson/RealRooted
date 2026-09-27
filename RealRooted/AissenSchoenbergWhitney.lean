@@ -256,14 +256,7 @@ theorem splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two {p : ℝ[X]}
       rw [natDegree_divByMonic_X_sub_C, h2]
     have hqsplits : (p /ₘ (X - C x)).Splits := (isRealRooted_of_degree_one hqdeg).2
     exact hpq ▸ splits_X_sub_C_mul_iff.mpr hqsplits
-  · rcases Nat.lt_or_ge p.natDegree 1 with hlt | hge
-    · have h0 : p.natDegree = 0 := by lia
-      have hcard : p.roots.card = p.natDegree := by
-        have hle := Polynomial.card_roots' p
-        lia
-      exact splits_of_card_roots hcard
-    · have h1 : p.natDegree = 1 := by lia
-      exact (isRealRooted_of_degree_one h1).2
+  · exact Polynomial.Splits.of_natDegree_le_one (by lia)
 
 /-- Degree-`≤ 1` case of the forward Aissen--Schoenberg--Whitney theorem. -/
 theorem aissenSchoenbergWhitneyForward_of_natDegree_le_one {p : ℝ[X]}
@@ -1109,8 +1102,7 @@ theorem aissenSchoenbergWhitneyForwardOrZero_iff_noNonneg :
       (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
       (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
         (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  ⟨aissenSchoenbergWhitneyForwardNoNonneg_of_orZero,
-    aissenSchoenbergWhitneyForwardOrZero_of_noNonneg⟩
+  aissenSchoenbergWhitneyForwardNoNonneg_iff_orZero.symm
 
 /-- Reversed-orientation endpoint equivalence from the zero-aware ASW endpoint
 to the base forward ASW endpoint. -/
@@ -1141,16 +1133,12 @@ left-endpoint / direct route.
 -/
 
 /-- Applied splitting projection of the base forward ASW statement. -/
-theorem aissenSchoenbergWhitneyForward_splits_apply {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq p.coeff) :
-    p.Splits :=
-  aissenSchoenbergWhitneyForwardSplits hpf
+alias aissenSchoenbergWhitneyForward_splits_apply :=
+  aissenSchoenbergWhitneyForwardSplits
 
 /-- Applied root-location projection of the base forward ASW statement. -/
-theorem aissenSchoenbergWhitneyForward_rootsNonpos_apply {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq p.coeff) :
-    ∀ r ∈ p.roots, r ≤ 0 :=
-  roots_nonpos_of_IsPolyaFreqSeq_coeff hpf
+alias aissenSchoenbergWhitneyForward_rootsNonpos_apply :=
+  roots_nonpos_of_IsPolyaFreqSeq_coeff
 
 /-- Applied root-count projection of the base forward ASW statement. -/
 theorem aissenSchoenbergWhitneyForward_cardRoots_apply {p : ℝ[X]}

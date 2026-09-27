@@ -68,47 +68,26 @@ theorem of_nonnegCoeffs_eq_zero_or_splits {p : ℝ[X]}
 
 theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
-    IsPFPolynomial (C a * p) := by
-  by_cases hp0 : p = 0
-  · simp_all
-  · have hprr : p ≠ 0 ∧ p.Splits := hp.ne_zero_and_splits hp0
-    refine ⟨nonnegCoeffs_C_mul ha.le hp.hasNonnegCoeffs, Or.inr ?_, ?_⟩
-    · simp_all
-    · intro r hr
-      have hrp : r ∈ p.roots := by simpa [Polynomial.roots_C_mul _ ha.ne'] using hr
-      exact hp.roots_nonpos r hrp
+    IsPFPolynomial (C a * p) :=
+  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    (nonnegCoeffs_C_mul ha.le hp.hasNonnegCoeffs)
+    (mul_eq_zero_or_splits (Or.inr (by simp)) hp.eq_zero_or_splits)
 
-theorem of_C_nonneg {a : ℝ} (ha : 0 ≤ a) : IsPFPolynomial (Polynomial.C a) := by
-  by_cases ha0 : a = 0
-  · simpa [ha0] using IsPFPolynomial.zero
-  · have ha_pos : 0 < a := lt_of_le_of_ne ha (Ne.symm ha0)
-    simpa using IsPFPolynomial.one.const_mul ha_pos
+theorem of_C_nonneg {a : ℝ} (ha : 0 ≤ a) : IsPFPolynomial (Polynomial.C a) :=
+  IsPFPolynomial.of_realRooted_nonneg (hasNonnegCoeffs_C ha) (by simp)
 
 theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    IsPFPolynomial (X * p) := by
-  by_cases hp0 : p = 0
-  · simp_all
-  have hprr := hp.ne_zero_and_splits hp0
-  have hnn : HasNonnegCoeffs (X * p) := by
-    rintro (_ | n)
-    · simp
-    · simpa [coeff_X_mul] using hp.hasNonnegCoeffs n
-  have hXp_rr := isRealRooted_X_mul hprr.1 hprr.2
-  exact IsPFPolynomial.of_realRooted_nonneg hnn hXp_rr.2
+    IsPFPolynomial (X * p) :=
+  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    (hasNonnegCoeffs_X.mul hp.hasNonnegCoeffs)
+    (mul_eq_zero_or_splits (Or.inr (by simp)) hp.eq_zero_or_splits)
 
 theorem mul {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
-    IsPFPolynomial (p * q) := by
-  by_cases hp0 : p = 0
-  · simp_all
-  by_cases hq0 : q = 0
-  · simp_all
-  have hprr := hp.ne_zero_and_splits hp0
-  have hqrr := hq.ne_zero_and_splits hq0
-  have hpq_rr := isRealRooted_mul hprr.1 hprr.2 hqrr.1 hqrr.2
-  exact IsPFPolynomial.of_realRooted_nonneg
+    IsPFPolynomial (p * q) :=
+  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
     (hp.hasNonnegCoeffs.mul hq.hasNonnegCoeffs)
-    hpq_rr.2
+    (mul_eq_zero_or_splits hp.eq_zero_or_splits hq.eq_zero_or_splits)
 
 /-- If a PF polynomial is factored by a real linear factor, then the quotient
 is again PF. -/
@@ -140,9 +119,7 @@ theorem exists_X_sub_C_factor_of_pos_natDegree {p : ℝ[X]}
     ∃ u : ℝ, ∃ q : ℝ[X],
       u ≤ 0 ∧ p = (X - C u) * q ∧ IsPFPolynomial q ∧
         q.natDegree < p.natDegree := by
-  have hp0 : p ≠ 0 := by
-    intro hp0
-    simp [hp0] at hdeg
+  have hp0 : p ≠ 0 := by grind
   have hpsplits : p.Splits := hp.ne_zero_and_splits hp0 |>.2
   have hroots_pos : 0 < p.roots.card := by
     rw [card_roots_of_splits hpsplits]
@@ -150,10 +127,7 @@ theorem exists_X_sub_C_factor_of_pos_natDegree {p : ℝ[X]}
   rcases Multiset.card_pos_iff_exists_mem.mp hroots_pos with ⟨u, hu_mem⟩
   have hu_root : p.IsRoot u := (mem_roots hp0).mp hu_mem
   rcases (dvd_iff_isRoot).mpr hu_root with ⟨q, hq⟩
-  have hq0 : q ≠ 0 := by
-    intro hq0
-    rw [hq, hq0, mul_zero] at hp0
-    exact hp0 rfl
+  have hq0 : q ≠ 0 := by grind
   have hqdeg : q.natDegree < p.natDegree := by
     rw [hq, natDegree_mul (X_sub_C_ne_zero u) hq0, natDegree_X_sub_C]
     lia
@@ -190,9 +164,7 @@ theorem exists_pos_multiset_prod_one_add_C_mul_X {p : ℝ[X]}
           have hu_zero : u = 0 := le_antisymm hu (le_of_not_gt hu_not)
           simp [hu_zero] at hcoeff
         let q' : ℝ[X] := C (-u) * q
-        have hq_ne : q ≠ 0 := by
-          intro hq_zero
-          simp [hq_zero] at hcoeff
+        have hq_ne : q ≠ 0 := by grind
         have hq' : IsPFPolynomial q' :=
           hq.const_mul (by simpa using neg_pos.mpr hu_neg)
         have hq'const : q'.coeff 0 = 1 := by simpa [q'] using hcoeff
@@ -205,7 +177,7 @@ theorem exists_pos_multiset_prod_one_add_C_mul_X {p : ℝ[X]}
           dsimp [q']
           rw [natDegree_C_mul (ne_of_gt (neg_pos.mpr hu_neg))]
           rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hq_ne, natDegree_X_sub_C]
-          omega
+          lia
         obtain ⟨s, hs, hscard, hprod⟩ :=
           ih q'.natDegree hq'degree hq' hq'const rfl
         refine ⟨(-u)⁻¹ ::ₘ s, ?_, ?_, ?_⟩
@@ -214,8 +186,7 @@ theorem exists_pos_multiset_prod_one_add_C_mul_X {p : ℝ[X]}
           rcases ha with rfl | ha
           · exact inv_pos.mpr (neg_pos.mpr hu_neg)
           · exact hs a ha
-        · simp only [Multiset.card_cons, hscard]
-          omega
+        · rw [Multiset.card_cons, hscard, hq'degree_succ, hdegree]
         · rw [Multiset.map_cons, Multiset.prod_cons, ← hprod]
           dsimp [q']
           have hu_ne : -u ≠ 0 := ne_of_gt (neg_pos.mpr hu_neg)
@@ -235,22 +206,15 @@ theorem exists_pos_multiset_prod_one_add_C_mul_X {p : ℝ[X]}
             _ = (1 + C (-u)⁻¹ * X) * (C (-u) * q) := by ring
 
 theorem pow {p : ℝ[X]} (hp : IsPFPolynomial p) (n : ℕ) :
-    IsPFPolynomial (p ^ n) := by
-  induction n with
-  | zero =>
-      simpa using IsPFPolynomial.one
-  | succ n ih =>
-      simpa [pow_succ] using ih.mul hp
+    IsPFPolynomial (p ^ n) :=
+  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    (hp.hasNonnegCoeffs.pow n) (pow_eq_zero_or_splits hp.eq_zero_or_splits n)
 
 theorem derivative {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
-    IsPFPolynomial p.derivative := by
-  by_cases hp0 : p = 0
-  · simp_all
-  have hprr := hp.ne_zero_and_splits hp0
-  exact ⟨hp.hasNonnegCoeffs.derivative,
-    eq_zero_or_splits_derivative hp.eq_zero_or_splits,
-    roots_nonpos_derivative_of_roots_nonpos hprr.2 hp.roots_nonpos⟩
+    IsPFPolynomial p.derivative :=
+  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hp.hasNonnegCoeffs.derivative
+    (eq_zero_or_splits_derivative hp.eq_zero_or_splits)
 
 theorem of_sequence
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
@@ -265,8 +229,7 @@ sequence using the proved forward ASW theorem. -/
 theorem of_polyaFreqSeq {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
     IsPFPolynomial p :=
-  let hpnn := hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf
-  ⟨hpnn, aissenSchoenbergWhitneyForwardOrZero hpnn hpf⟩
+  IsPFPolynomial.of_sequence aissenSchoenbergWhitneyForwardOrZero hpf
 
 /-- Forward-ASW endpoint closure for positive affine coefficient limits. -/
 theorem of_forall_pos_add_C_mul_of_forward
@@ -295,8 +258,8 @@ theorem of_forall_pos_add_C_mul
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
     (hfamily : ∀ {μ : ℝ}, 0 < μ → (p + C μ * q).Splits) :
     IsPFPolynomial p :=
-  IsPFPolynomial.of_polyaFreqSeq <|
-    IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits hpnn hqnn hfamily
+  IsPFPolynomial.of_forall_pos_add_C_mul_of_forward
+    aissenSchoenbergWhitneyForwardOrZero hpnn hqnn hfamily
 
 /-- Splitting form of `IsPFPolynomial.of_forall_pos_add_C_mul`. -/
 theorem splits_of_forall_pos_add_C_mul
@@ -305,7 +268,8 @@ theorem splits_of_forall_pos_add_C_mul
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
     (hfamily : ∀ {μ : ℝ}, 0 < μ → (p + C μ * q).Splits) :
     p.Splits :=
-  (of_forall_pos_add_C_mul hpnn hqnn hfamily).ne_zero_and_splits hp0 |>.2
+  splits_of_forall_pos_add_C_mul_of_forward
+    aissenSchoenbergWhitneyForwardOrZero hp0 hpnn hqnn hfamily
 
 theorem to_sequence
     {p : ℝ[X]}
@@ -403,76 +367,35 @@ theorem comp_C_mul_X_add_C {a d : ℝ} (ha : 0 < a) (hd : 0 ≤ d)
 
 end IsPFPolynomial
 
+theorem IsPFPolynomial.reverse {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPFPolynomial p.reverse :=
+  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    (by
+      change HasNonnegCoeffs (p.reflect p.natDegree)
+      exact hp.hasNonnegCoeffs.reflect p.natDegree)
+    (by
+      rcases hp.eq_zero_or_splits with rfl | hsplits
+      · exact Or.inl (by simp)
+      · exact Or.inr (DegreeDropReversal.splits_reverse hsplits))
+
 theorem reverse_X_sub_C_isPF {r : ℝ} (hr : r ≤ 0) :
     IsPFPolynomial ((X - C r : ℝ[X]).reverse) := by
-  by_cases hr0 : r = 0
-  · subst r
-    rw [show (X - C (0 : ℝ) : ℝ[X]) = X by simp]
-    rw [Polynomial.reverse, natDegree_X]
-    simpa using isPFPolynomial_one
-  · have hrlt : r < 0 := lt_of_le_of_ne hr hr0
-    have hneg : 0 < -r := by linarith
-    have hinvlt : r⁻¹ < 0 := inv_lt_zero'.mpr hrlt
-    have hinv_nonneg : 0 ≤ -(r⁻¹) := by linarith
-    have hbase : IsPFPolynomial (X + C (-(r⁻¹)) : ℝ[X]) :=
-      isPFPolynomial_X_add_C hinv_nonneg
-    have hscale : IsPFPolynomial (C (-r) * (X + C (-(r⁻¹)) : ℝ[X])) :=
-      hbase.const_mul hneg
-    have hrev_linear : (X - C r : ℝ[X]).reverse = 1 - C r * X := by
-      ext n
-      cases n with
-      | zero =>
-          simp
-      | succ n =>
-          cases n with
-          | zero =>
-              simp [Polynomial.coeff_reverse, Polynomial.coeff_one, Polynomial.coeff_X]
-          | succ n =>
-              have hgt : 1 < Nat.succ (Nat.succ n) :=
-                Nat.succ_lt_succ (Nat.zero_lt_succ n)
-              simp [Polynomial.coeff_reverse, Polynomial.revAt_eq_self_of_lt hgt,
-                Polynomial.coeff_one, Polynomial.coeff_X]
-    have hscale_eq : C (-r) * (X + C (-(r⁻¹)) : ℝ[X]) = 1 - C r * X := by
-      ext n
-      cases n with
-      | zero =>
-          simp_all
-      | succ n =>
-          cases n with
-          | zero =>
-              simp [Polynomial.coeff_one, Polynomial.coeff_X]
-          | succ n =>
-              simp [Polynomial.coeff_one, Polynomial.coeff_X]
-    simp_all
+  simpa [sub_eq_add_neg] using
+    (isPFPolynomial_X_add_C (a := -r) (neg_nonneg.mpr hr)).reverse
 
 theorem isPFPolynomial_reverse_prod_X_sub_C
     (s : Multiset ℝ) (hs : ∀ r ∈ s, r ≤ 0) :
     IsPFPolynomial ((s.map fun r => X - C r).prod.reverse) := by
+  apply IsPFPolynomial.reverse
   induction s using Multiset.induction_on with
   | empty =>
-      simpa [Polynomial.reverse, natDegree_one] using isPFPolynomial_one
+      simpa using isPFPolynomial_one
   | cons r s ih =>
       rw [Multiset.map_cons, Multiset.prod_cons]
-      rw [Polynomial.reverse_mul_of_domain]
-      exact
-        (reverse_X_sub_C_isPF (hs r (by simp))).mul
-          (ih (fun x hx => hs x (by simp [hx])))
-
-theorem IsPFPolynomial.reverse {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    IsPFPolynomial p.reverse := by
-  by_cases hp0 : p = 0
-  · simp_all
-  have hprr : p ≠ 0 ∧ p.Splits := hp.ne_zero_and_splits hp0
-  have hp_eq : p = C p.leadingCoeff * (p.roots.map fun r ↦ X - C r).prod :=
-    (C_leadingCoeff_mul_prod_multiset_X_sub_C
-      (card_roots_of_splits hprr.2)).symm
-  rw [hp_eq]
-  rw [Polynomial.reverse_mul_of_domain]
-  have hlc_pos : 0 < p.leadingCoeff := hp.hasNonnegCoeffs.pos_leadingCoeff hp0
-  have hlc_pf : IsPFPolynomial (C p.leadingCoeff).reverse := by
-    simpa [Polynomial.reverse_C] using
-      (IsPFPolynomial.const_mul (p := (1 : ℝ[X])) hlc_pos isPFPolynomial_one)
-  exact hlc_pf.mul (isPFPolynomial_reverse_prod_X_sub_C p.roots hp.roots_nonpos)
+      have hr : IsPFPolynomial (X - C r : ℝ[X]) := by
+        simpa [sub_eq_add_neg] using
+          isPFPolynomial_X_add_C (a := -r) (neg_nonneg.mpr (hs r (by simp)))
+      exact hr.mul (ih fun x hx => hs x (by simp [hx]))
 
 theorem interl_X_mul_both_of_pf {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
@@ -579,12 +502,8 @@ def reciprocalShiftPreservesPFStatement : Prop :=
 theorem reciprocalShift_eq_X_pow_mul_reverse {D : ℕ} {p : ℝ[X]}
     (hdeg : p.natDegree ≤ D) :
     reciprocalShift D p = X ^ (D - p.natDegree) * p.reverse := by
-  unfold reciprocalShift
-  have hD : p.natDegree + (D - p.natDegree) = D := Nat.add_sub_of_le hdeg
-  have hmul := Polynomial.reflect_mul (f := p) (g := (1 : ℝ[X]))
-    (F := p.natDegree) (G := D - p.natDegree) le_rfl (by simp)
-  rw [← hD]
-  simpa [Polynomial.reverse, mul_comm] using hmul
+  simpa [reciprocalShift] using
+    DegreeDropReversal.reflect_eq_X_pow_mul_reverse p hdeg
 
 theorem reciprocalShift_preserves_pf : reciprocalShiftPreservesPFStatement := by
   intro D p hp hdeg
