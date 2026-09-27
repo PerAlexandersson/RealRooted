@@ -5,14 +5,12 @@ Authors: Matteo Cipollina
 
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.  Original path: MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Primitive.lean
+adaptations to the pinned Mathlib.  Original path:
+MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Primitive.lean
 -/
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
 import Mathlib.Tactic
-
--- Ported third-party code; keep original line layout.
-set_option linter.style.longLine false
 
 /-!
 # Perron-Frobenius for primitive matrices
@@ -95,7 +93,8 @@ lemma exists_pos_vector_collatzWielandtFn_gt_of_residual
 
 /-- For a maximizer `v` of the Collatz-Wielandt function, `A * v = r • v`. -/
 theorem maximizer_is_eigenvector (hA_prim : IsPrimitive A)
-    (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ} (hv_max : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v)
+    (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ}
+    (hv_max : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v)
     (hv_simplex : v ∈ RealRooted.standardSimplex ℝ n) (r : ℝ) (hr_def : r = collatzWielandtFn A v) :
     A *ᵥ v = r • v := by
   have hv_nonneg : ∀ i, 0 ≤ v i := hv_simplex.1
@@ -121,7 +120,8 @@ theorem maximizer_is_eigenvector (hA_prim : IsPrimitive A)
   linarith
 
 omit [Nonempty n] in
-/-- An eigenvector `v` of a primitive matrix `A` corresponding to a positive eigenvalue `r` must be strictly positive. -/
+/-- An eigenvector `v` of a primitive matrix `A` corresponding to a positive eigenvalue `r` must
+be strictly positive. -/
 lemma eigenvector_of_primitive_is_positive {r : ℝ} (hA_prim : IsPrimitive A) (hr_pos : 0 < r)
     {v : n → ℝ} (h_eigen : A *ᵥ v = r • v) (hv_nonneg : ∀ i, 0 ≤ v i) (hv_ne_zero : v ≠ 0) :
     ∀ i, 0 < v i := by
@@ -157,7 +157,8 @@ lemma collatzWielandtFn_ones_norm_eq (A : Matrix n n ℝ) :
 /-- The Perron root `r = collatzWielandtFn A v` is positive. -/
 lemma perron_root_pos_of_primitive
   (hA_prim : IsPrimitive A) (hA_nonneg : ∀ i j, 0 ≤ A i j)
-  {v : n → ℝ} (_ : v ∈ RealRooted.standardSimplex ℝ n) (hvM : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v) :
+  {v : n → ℝ} (_ : v ∈ RealRooted.standardSimplex ℝ n)
+  (hvM : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v) :
   0 < collatzWielandtFn A v := by
   let ones_norm : n → ℝ := fun _ => (Fintype.card n : ℝ)⁻¹
   have h₁ : ones_norm ∈ RealRooted.standardSimplex ℝ n := by

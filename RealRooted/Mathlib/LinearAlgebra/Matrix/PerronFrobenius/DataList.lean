@@ -16,8 +16,6 @@ import Mathlib.Analysis.Normed.Ring.Lemmas
 import Mathlib.Data.Int.Star
 import Mathlib.Data.List.Basic
 
--- Ported third-party code; keep original line layout.
-set_option linter.style.longLine false
 namespace List
 open List
 variable {α : Type*}
@@ -46,9 +44,9 @@ lemma dropLast_append_singleton {l : List α} {a : α} (h : l.length > 0) :
     cases tl with
     | nil => simp only [concat_eq_append, cons_append, nil_append, dropLast_cons_cons,
       dropLast_singleton]
-    | cons tl_hd tl_tl => simp_all only [List.length_cons, gt_iff_lt, lt_add_iff_pos_left, add_pos_iff, Nat.lt_one_iff,
-      pos_of_gt, or_true, _root_.List.concat_eq_append, List.cons_append, forall_const, Nat.ofNat_pos,
-      List.dropLast_cons_cons]
+    | cons tl_hd tl_tl => simp_all only [List.length_cons, gt_iff_lt, lt_add_iff_pos_left,
+      add_pos_iff, Nat.lt_one_iff, pos_of_gt, or_true, _root_.List.concat_eq_append,
+      List.cons_append, forall_const, Nat.ofNat_pos, List.dropLast_cons_cons]
 
 lemma length_pos_of_append_singleton (l : List α) (a : α) : (l ++ [a]).length > 0 := by
   simp only [length_append, length_cons, length_nil, zero_add, gt_iff_lt, lt_add_iff_pos_left,
@@ -92,7 +90,8 @@ theorem get_append_right {α : Type*} {l m : List α} {n : ℕ}
     (hl : l.length ≤ n) (hn : n < (l ++ m).length) :
   (l ++ m).get ⟨n, hn⟩ =
     m.get ⟨n - l.length, by
-      simpa [List.length_append] using Nat.sub_lt_left_of_lt_add hl (by simpa [List.length_append] using hn)⟩ := by
+      simpa [List.length_append] using
+        Nat.sub_lt_left_of_lt_add hl (by simpa [List.length_append] using hn)⟩ := by
   induction l generalizing n with
   | nil =>
     simp only [List.nil_append, List.get_eq_getElem, List.length_nil, tsub_zero]
@@ -217,7 +216,8 @@ lemma count_ge_two_of_mem_head_and_tail {l : List α} {x : α}
 omit [DecidableEq α] in
 /-- A list with its head not in its tail has no duplicates if its tail has no duplicates -/
 lemma nodup_of_head_not_mem_tail {l : List α} {x : α}
-    (h_nonempty : l ≠ []) (h_head : l.head h_nonempty = x) (h_not_in_tail : x ∉ l.tail) (h_nodup_tail : l.tail.Nodup) : l.Nodup := by
+    (h_nonempty : l ≠ []) (h_head : l.head h_nonempty = x) (h_not_in_tail : x ∉ l.tail)
+    (h_nodup_tail : l.tail.Nodup) : l.Nodup := by
   cases l with
   | nil => contradiction
   | cons y ys =>
@@ -279,7 +279,7 @@ lemma count_eq_one_of_idxOf_eq_length_sub_one [DecidableEq α] {l : List α} {x 
           simp [idxOf_append_of_mem hmem]
         have hlt' : idxOf x xs < xs.length := idxOf_lt_length_of_mem hmem
         simp_rw [← hidx'] at hlt'
-        omega
+        lia
       have hcount0 : xs.count x = 0 := count_eq_zero_of_not_mem h_not_mem
       simp [count_append, hcount0]
     · have hx_mem : x ∈ xs ++ [y] := idxOf_lt_length_iff.mp hlt
@@ -290,7 +290,7 @@ lemma count_eq_one_of_idxOf_eq_length_sub_one [DecidableEq α] {l : List α} {x 
           have : idxOf x (xs ++ [y]) = idxOf x xs := by
             simp [idxOf_append_of_mem hmem]
           have hlt' : idxOf x xs < xs.length := idxOf_lt_length_of_mem hmem
-          simp; omega
+          simp; lia
       | inr hxy => exact (hx hxy).elim
 
 @[simp] lemma idxOf_eq_length_sub_one_of_getLast
@@ -309,10 +309,10 @@ lemma count_eq_one_of_idxOf_eq_length_sub_one [DecidableEq α] {l : List α} {x 
       rw [dropLast_eq_take]; rw [@mem_take_iff_getElem]
       use l.idxOf x
       constructor
-      · (expose_names; (expose_names; refine List.getElem_idxOf (by exact List.idxOf_lt_length_of_mem hx)))
+      · exact List.getElem_idxOf (List.idxOf_lt_length_of_mem hx)
       · subst h_last
-        simp_all only [getLast_mem, tsub_le_iff_right, le_add_iff_nonneg_right, le_refl, Nat.eq_of_le_zero, zero_le,
-          inf_of_le_left]
+        simp_all only [getLast_mem, tsub_le_iff_right, le_add_iff_nonneg_right, le_refl,
+          Nat.eq_of_le_zero, zero_le, inf_of_le_left]
     contradiction
   have h_idx_lt : l.idxOf x < l.length := List.idxOf_lt_length_of_mem hx
   exact Nat.le_antisymm (Nat.le_sub_one_of_lt h_idx_lt) h_idx_ge
@@ -332,7 +332,8 @@ omit [DecidableEq α] in
 omit [DecidableEq α] in
 /-- If `x` is in the tail of a list, then `x` is not the head of the list.
 This is only true in general for lists without duplicates. -/
-lemma ne_of_mem_tail {l : List α} {x : α} (h_nodup : l.Nodup) (h_mem : x ∈ l.tail) (h_ne_nil : l ≠ []) :
+lemma ne_of_mem_tail {l : List α} {x : α} (h_nodup : l.Nodup) (h_mem : x ∈ l.tail)
+    (h_ne_nil : l ≠ []) :
     x ≠ l.head h_ne_nil := by
   intro h_eq
   have h_head_in_tail : l.head h_ne_nil ∈ l.tail := by
@@ -340,7 +341,8 @@ lemma ne_of_mem_tail {l : List α} {x : α} (h_nodup : l.Nodup) (h_mem : x ∈ l
   have h_head_not_in_tail := head_not_mem_tail_of_nodup h_nodup h_ne_nil
   contradiction
 
-lemma bif_of_false {α : Type*} {p : Bool} {a b : α} (h : p = false) : (bif p then a else b) = b := by
+lemma bif_of_false {α : Type*} {p : Bool} {a b : α} (h : p = false) :
+    (bif p then a else b) = b := by
   rw [h]
   rfl
 
@@ -434,8 +436,9 @@ lemma get_idxOf_of_mem {l : List α} {x : α} (h : x ∈ l) :
         have hl' : idxOf x tl + 1 < (hd :: tl).length := by
           rw [length_cons]
           exact Nat.add_lt_add_right hl 1
-        have helper : (hd :: tl).get ⟨idxOf x (hd :: tl), idxOf_lt_length_of_mem (mem_cons.mpr (Or.inr h_tl))⟩ =
-                      (hd :: tl).get ⟨idxOf x tl + 1, hl'⟩ := by
+        have helper : (hd :: tl).get ⟨idxOf x (hd :: tl),
+            idxOf_lt_length_of_mem (mem_cons.mpr (Or.inr h_tl))⟩ =
+              (hd :: tl).get ⟨idxOf x tl + 1, hl'⟩ := by
           congr
         have h_getElem : (hd :: tl).get ⟨idxOf x tl + 1, hl'⟩ = tl.get ⟨idxOf x tl, hl⟩ := by
           simp only [get_eq_getElem]
@@ -495,8 +498,10 @@ lemma idxOf_pos_of_ne_head {α} [DecidableEq α] {v : α} {l : List α}
       rw [idxOf_cons_of_ne h]
       exact Nat.succ_pos _
 
-/-- If an element `x` is in the tail of a list `l` without duplicates, its first index in `l` must be positive. -/
-lemma idxOf_pos_of_mem_tail {l : List α} (h_nodup : l.Nodup) {x : α} (h : x ∈ l.tail) : 0 < l.idxOf x := by
+/-- If an element `x` is in the tail of a list `l` without duplicates, its first index in `l` must
+be positive. -/
+lemma idxOf_pos_of_mem_tail {l : List α} (h_nodup : l.Nodup) {x : α} (h : x ∈ l.tail) :
+    0 < l.idxOf x := by
   cases l with
   | nil => simp only [tail_nil, not_mem_nil] at h
   | cons hd tl =>
@@ -589,7 +594,8 @@ lemma nodup_take_of_nodup {α : Type*} {l : List α} (h : l.Nodup) (n : ℕ) :
 
 omit [DecidableEq α] in
 /--
-For a list `l` with no duplicates, the element at index `i` is not a member of the prefix of `l` of length `i`.
+For a list `l` with no duplicates, the element at index `i` is not a member of the prefix of `l` of
+length `i`.
 -/
 lemma get_not_mem_take {l : List α} (h_nodup : l.Nodup)
     (i : ℕ) (h_bounds : i < l.length) :

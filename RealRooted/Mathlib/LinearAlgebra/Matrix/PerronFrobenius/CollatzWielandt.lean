@@ -5,7 +5,8 @@ Authors: Matteo Cipollina
 
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.  Original path: MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/CollatzWielandt.lean
+adaptations to the pinned Mathlib.  Original path:
+MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/CollatzWielandt.lean
 -/
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
@@ -13,9 +14,6 @@ import Mathlib.Data.Matrix.Basic
 import Mathlib.Algebra.Order.AbsoluteValue.Basic
 import Mathlib.Data.Rat.Floor
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.ExtremeValueUSC
-
--- Ported third-party code; keep original line layout.
-set_option linter.style.longLine false
 
 /-!
 # Collatz–Wielandt function and the Perron root
@@ -25,18 +23,19 @@ We use column vectors `A *ᵥ x` (Seneta’s row-vector formulation is equivalen
 ## Main definitions
 
 * `Matrix.collatzWielandtFn`: minimum of ratios `(A *ᵥ x) i / x i` over `{i | 0 < x i}`.
-* `Matrix.CollatzWielandt.nonnegNeZero`: nonnegative nonzero vectors (Seneta’s unconstrained domain).
+* `Matrix.CollatzWielandt.nonnegNeZero`: nonnegative nonzero vectors (Seneta’s unconstrained
+  domain).
 * `Matrix.CollatzWielandt.perronRoot`: supremum of `collatzWielandtFn` over `nonnegNeZero`.
 
 ## Main statements
 
-* `Matrix.CollatzWielandt.upperSemicontinuousOn`: **Collatz–Wielandt function is upper semicontinuous**
-  on the standard simplex.
+* `Matrix.CollatzWielandt.upperSemicontinuousOn`: **Collatz–Wielandt function is upper
+  semicontinuous** on the standard simplex.
 * `Matrix.CollatzWielandt.exists_maximizer`: a maximizer on the simplex exists (USC + compactness).
 * `Matrix.CollatzWielandt.le_mulVec`: `collatzWielandtFn A v • v ≤ A *ᵥ v` for nonnegative `v ≠ 0`.
-* `Matrix.collatzWielandtFn_of_ones_is_pos` / `Matrix.perronRoot_pos_of_irreducible`: for irreducible
-  nonnegative `A`, the Collatz–Wielandt value at the all-ones vector and hence `perronRoot A` are
-  strictly positive.
+* `Matrix.collatzWielandtFn_of_ones_is_pos` / `Matrix.perronRoot_pos_of_irreducible`: for
+  irreducible nonnegative `A`, the Collatz–Wielandt value at the all-ones vector and hence
+  `perronRoot A` are strictly positive.
 
 ## References
 
@@ -157,7 +156,8 @@ Seneta relies on this fact (p.15, Appendix C) to use the Extreme Value Theorem.
 The minimum of continuous functions is upper-semicontinuous.
 [Giaquinta-Modica, Definition 6.21, Exercise 6.28, pp: 235, 236] -/
 theorem upperSemicontinuousOn
-    (A : Matrix n n ℝ) : UpperSemicontinuousOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) := by
+    (A : Matrix n n ℝ) :
+    UpperSemicontinuousOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) := by
   intro x₀ hx₀ c hc
   have supp_x₀ : {i | 0 < x₀ i}.toFinset.Nonempty :=
     pos_support_toFinset_nonempty_of_mem_stdSimplex hx₀
@@ -202,8 +202,10 @@ lemma nonnegNeZero_mem_const_one : (fun _ : n => (1 : ℝ)) ∈ nonnegNeZero := 
 /-- The Collatz-Wielandt function attains its maximum on the standard simplex.
     [Giaquinta-Modica, Theorem 6.24 (dual), p: 235] -/
 theorem exists_maximizer (A : Matrix n n ℝ) :
-    ∃ v ∈ RealRooted.standardSimplex ℝ n, IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v := by
-  have h_compact : IsCompact (RealRooted.standardSimplex ℝ n) := by exact RealRooted.isCompact_standardSimplex n
+    ∃ v ∈ RealRooted.standardSimplex ℝ n,
+      IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v := by
+  have h_compact : IsCompact (RealRooted.standardSimplex ℝ n) := by
+    exact RealRooted.isCompact_standardSimplex n
   have h_nonempty : (RealRooted.standardSimplex ℝ n).Nonempty := stdSimplex_nonempty
   have h_usc : UpperSemicontinuousOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) :=
     upperSemicontinuousOn A
@@ -296,7 +298,8 @@ lemma exists_mulVec_eq_zero_on_support_of_nonpos [Fintype n]
   · exact absurd hb0 (ne_of_gt h_vb_pos)
 
 open scoped Classical in
-/-- The set of values from the Collatz-Wielandt function is bounded above by the maximum row sum of A. -/
+/-- The set of values from the Collatz-Wielandt function is bounded above by the maximum row sum
+of A. -/
 lemma bddAbove (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     BddAbove (collatzWielandtFn A '' nonnegNeZero) := by
   use Finset.univ.sup' Finset.univ_nonempty (fun i ↦ ∑ j, A i j)
@@ -304,7 +307,8 @@ lemma bddAbove (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
   obtain ⟨m, h_xm_pos, h_xm_max⟩ := exists_pos_maximal_of_nonneg_ne_zero hx_nonneg hx_ne_zero
   have h_le_ratio : collatzWielandtFn A x ≤ (A *ᵥ x) m / x m :=
     le_ratio (A := A) m h_xm_pos
-  have h_ratio_le : (A *ᵥ x) m / x m ≤ Finset.univ.sup' Finset.univ_nonempty (fun k ↦ ∑ l, A k l) := by
+  have h_ratio_le :
+      (A *ᵥ x) m / x m ≤ Finset.univ.sup' Finset.univ_nonempty (fun k ↦ ∑ l, A k l) := by
     rw [mulVec_apply, div_le_iff h_xm_pos]
     refine le_trans (sum_mul_le_sum_mul_const_of_forall_le (fun j => A m j) x m
       (fun j => hA_nonneg m j) h_xm_max) ?_
@@ -335,7 +339,8 @@ lemma collatzWielandtFn_smul {c : ℝ} (hc : 0 < c)
   simp only [mulVec_smul, smul_eq_mul, Pi.smul_apply]
   rw [mul_div_mul_left _ _ (ne_of_gt hc)]
 
-/-- The Perron root as the supremum of the Collatz–Wielandt function over `nonnegNeZero` (Seneta). -/
+/-- The Perron root as the supremum of the Collatz–Wielandt function over `nonnegNeZero`
+(Seneta). -/
 noncomputable def perronRoot (A : Matrix n n ℝ) : ℝ :=
   sSup (collatzWielandtFn A '' nonnegNeZero)
 
@@ -427,7 +432,8 @@ lemma perron_root_le_eigenvalue_of_left_eigenvector
   apply csSup_le
   · exact CollatzWielandt.set_nonempty
   · rintro _ ⟨w, ⟨hw_nonneg, hw_ne_zero⟩, rfl⟩
-    exact CollatzWielandt.le_eigenvalue_of_left_eigenvector hA_nonneg hr_pos hu_pos h_eig hw_nonneg hw_ne_zero
+    exact CollatzWielandt.le_eigenvalue_of_left_eigenvector hA_nonneg hr_pos hu_pos h_eig
+      hw_nonneg hw_ne_zero
 
 omit [Nonempty n] in
 /--
@@ -716,7 +722,8 @@ lemma collatzWielandtFn_of_ones_is_pos
   rw [dite_eq_left h_supp_nonempty]
   have h_supp_ones : {i | 0 < x_ones i}.toFinset = Finset.univ := by
     ext a; simp [x_ones, zero_lt_one]
-  have h_inf_eq : ({i | 0 < x_ones i}.toFinset.inf' h_supp_nonempty fun i ↦ (A *ᵥ x_ones) i / x_ones i) =
+  have h_inf_eq :
+      ({i | 0 < x_ones i}.toFinset.inf' h_supp_nonempty fun i ↦ (A *ᵥ x_ones) i / x_ones i) =
       (Finset.univ.inf' (by rwa [← h_supp_ones]) fun i ↦ (A *ᵥ x_ones) i / x_ones i) := by
     congr
   rw [h_inf_eq]

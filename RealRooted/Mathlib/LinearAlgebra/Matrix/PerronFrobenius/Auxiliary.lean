@@ -12,9 +12,6 @@ import Mathlib.Algebra.Order.Ring.Star
 import Mathlib.Analysis.Convex.StdSimplex
 import Mathlib.Data.Int.Star
 
--- Ported third-party code; keep original line layout.
-set_option linter.style.longLine false
-
 open Filter Set Finset Matrix Topology Convex
 
 /-! # Auxiliary lemmas for Perron-Frobenius and MCMC
@@ -33,7 +30,8 @@ common nonzero factor in a field fraction).
 -- Standard simplex is nonempty when ι is nonempty
 theorem stdSimplex_nonempty {ι : Type*} [Fintype ι] [Nonempty ι] :
     (RealRooted.standardSimplex ℝ ι).Nonempty := by
-  exact ⟨(Fintype.card ι : ℝ)⁻¹ • 1, by simp [RealRooted.standardSimplex, Finset.sum_const, nsmul_eq_mul]⟩
+  exact ⟨(Fintype.card ι : ℝ)⁻¹ • 1,
+    by simp [RealRooted.standardSimplex, Finset.sum_const, nsmul_eq_mul]⟩
 
 /-!
 ## Helper Lemmas for Continuity
@@ -98,7 +96,8 @@ theorem exists_pos_of_sum_one_of_nonneg {n : Type*} [Fintype n] [Nonempty n] {x 
   exact absurd this (by norm_num)
 
 -- Matrix power multiplication
-theorem pow_mulVec_succ {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n] {A : Matrix n n ℝ} (k : ℕ) (x : n → ℝ) :
+theorem pow_mulVec_succ {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n] {A : Matrix n n ℝ}
+    (k : ℕ) (x : n → ℝ) :
     (A^(k+1)).mulVec x = A.mulVec ((A^k).mulVec x) := by
   simp only [mulVec_mulVec]
   rw [pow_succ']
@@ -227,7 +226,8 @@ lemma Finset.disjoint_compl_right {n : Type*} [Fintype n] [DecidableEq n] {s : F
   rw [@inter_sdiff_self]
 
 /-- The standard simplex is bounded. -/
-lemma bounded_stdSimplex' {n : Type*} [Fintype n] : Bornology.IsBounded (RealRooted.standardSimplex ℝ n) := by
+lemma bounded_stdSimplex' {n : Type*} [Fintype n] :
+    Bornology.IsBounded (RealRooted.standardSimplex ℝ n) := by
   classical
   rw [Metric.isBounded_iff_subset_closedBall 0]
   use 1
@@ -247,7 +247,8 @@ variable {n : Type*}
 
 /-- For a vector on the standard simplex, if the sum of a subset of its components is 1,
     then the components outside that subset must be zero. -/
-lemma mem_supp_of_sum_eq_one [Fintype n] {v : n → ℝ} (hv : v ∈ RealRooted.standardSimplex ℝ n) (S : Finset n)
+lemma mem_supp_of_sum_eq_one [Fintype n] {v : n → ℝ} (hv : v ∈ RealRooted.standardSimplex ℝ n)
+    (S : Finset n)
     (h_sum : ∑ i ∈ S, v i = 1) :
     ∀ i, v i ≠ 0 → i ∈ S := by
   classical
@@ -328,7 +329,8 @@ section ConditionallyCompleteLinearOrder
 
 variable {α : Type*} [ConditionallyCompleteLinearOrder α]
 /-- If y is an upper bound of a set s, and x is in s, then x ≤ y -/
-lemma le_of_mem_upperBounds {s : Set α} {x : α} {y : α} (hy : y ∈ upperBounds s) (hx : x ∈ s) : x ≤ y := by
+lemma le_of_mem_upperBounds {s : Set α} {x : α} {y : α} (hy : y ∈ upperBounds s) (hx : x ∈ s) :
+    x ≤ y := by
   exact hy hx
 
 lemma bddAbove_iff_exists_upperBound {s : Set α} : BddAbove s ↔ ∃ b, ∀ x ∈ s, x ≤ b := by exact
@@ -384,7 +386,8 @@ lemma sup'_le_sup'_of_le {α β : Type*} [SemilatticeSup α] {s t : Finset β}
   exact sup'_mono f h hs
 
 -- A non-zero function must be non-zero at some point.
-lemma Function.exists_ne_zero_of_ne_zero {α β} [Zero β] {f : α → β} (h : f ≠ (fun _ => 0)) : ∃ i, f i ≠ 0 := by
+lemma Function.exists_ne_zero_of_ne_zero {α β} [Zero β] {f : α → β} (h : f ≠ (fun _ => 0)) :
+    ∃ i, f i ≠ 0 := by
   by_contra hf
   push Not at hf
   apply h
@@ -392,7 +395,8 @@ lemma Function.exists_ne_zero_of_ne_zero {α β} [Zero β] {f : α → β} (h : 
   exact hf x
 
 /-- If the ratio (A *ᵥ v) i / v i = 0 and v i > 0, then (A *ᵥ v) i = 0. -/
-lemma mulVec_eq_zero_of_ratio_zero [Fintype n] (A : Matrix n n ℝ) {v : n → ℝ} (i : n) (hv_pos : 0 < v i)
+lemma mulVec_eq_zero_of_ratio_zero [Fintype n] (A : Matrix n n ℝ) {v : n → ℝ} (i : n)
+    (hv_pos : 0 < v i)
     (h_ratio_zero : (A *ᵥ v) i / v i = 0) :
     (A *ᵥ v) i = 0 := by
   rw [div_eq_zero_iff] at h_ratio_zero
@@ -440,7 +444,8 @@ lemma exists_eq_iInf {α : Type*} [Finite α] [Nonempty α] (f : α → ℝ) : �
   exists_eq_ciInf_of_finite
 
 /-- An element of the image of a set is less than or equal to the supremum of that set. -/
-lemma le_csSup_of_mem {α : Type*} {f : α → ℝ} {s : Set α} (hs_bdd : BddAbove (f '' s)) {y : α} (hy : y ∈ s) :
+lemma le_csSup_of_mem {α : Type*} {f : α → ℝ} {s : Set α} (hs_bdd : BddAbove (f '' s)) {y : α}
+    (hy : y ∈ s) :
   f y ≤ sSup (f '' s) :=
 le_csSup hs_bdd (Set.mem_image_of_mem f hy)
 

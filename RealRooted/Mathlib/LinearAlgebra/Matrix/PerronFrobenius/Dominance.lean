@@ -5,14 +5,12 @@ Authors: Matteo Cipollina
 
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.  Original path: MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Dominance.lean
+adaptations to the pinned Mathlib.  Original path:
+MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Dominance.lean
 -/
 import Mathlib.Analysis.Normed.Algebra.Spectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
-
--- Ported third-party code; keep original line layout.
-set_option linter.style.longLine false
 
 open Quiver.Path
 namespace Matrix
@@ -117,7 +115,8 @@ lemma norm_eigenvector_is_eigenvector_of_triangle_eq
         = ∑ j, A i j * ‖x j‖ := by
           change (∑ j, A i j * ‖x j‖) = _
           rfl
-    _   = ∑ j, ‖(A i j : ℂ)‖ * ‖x j‖ := by simp_rw [Complex.norm_ofReal, abs_of_nonneg (hA_nonneg _ _)]
+    _   = ∑ j, ‖(A i j : ℂ)‖ * ‖x j‖ := by
+          simp_rw [Complex.norm_ofReal, abs_of_nonneg (hA_nonneg _ _)]
     _   = ∑ j, ‖(A i j : ℂ) * x j‖ := by simp_rw [norm_mul]
     _   = ‖∑ j, (A i j : ℂ) * x j‖ := (h_triangle_eq i).symm
     _   = ‖((A.map (algebraMap ℝ ℂ)) *ᵥ x) i‖ := by simp; rfl
@@ -468,7 +467,8 @@ omit [DecidableEq n] in
 open scoped Classical in
 /-- For an irreducible, non-negative matrix, the Perron root (defined as the Collatz-Wielandt
 supremum) is equal to the unique positive eigenvalue `r` from the existence theorem. -/
-lemma perron_root_eq_positive_eigenvalue (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
+lemma perron_root_eq_positive_eigenvalue (hA_irred : A.IsIrreducible)
+    (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     ∃ r v, 0 < r ∧ (∀ i, 0 < v i) ∧ A *ᵥ v = r • v ∧ perronRoot A = r := by
   obtain ⟨r, v, hr_pos, hv_pos, h_eig⟩ := exists_positive_eigenvector_of_irreducible hA_irred
   have h_le : perronRoot A ≤ r :=
@@ -552,8 +552,9 @@ which works directly with `perronRoot`. -/
 
 /--
 **Perron–Frobenius at the spectral radius:** an irreducible nonnegative matrix admits a strictly
-positive right eigenvector for `(spectralRadius ℝ A).toReal`, the common value of the spectral radius
-and the Perron root. (From https://lean-lang.org/eval/problems/irreducible_nonnegative_matrix_has_positive_eigenvector_at_spectralRadius/)
+positive right eigenvector for `(spectralRadius ℝ A).toReal`, the common value of the spectral
+radius and the Perron root. (From
+https://lean-lang.org/eval/problems/irreducible_nonnegative_matrix_has_positive_eigenvector_at_spectralRadius/)
 -/
 theorem irreducible_nonnegative_matrix_has_positive_eigenvector_at_spectralRadius
     (A : Matrix n n ℝ) (hA : A.IsIrreducible) :
@@ -580,7 +581,8 @@ theorem irreducible_nonnegative_matrix_has_positive_eigenvector_at_spectralRadiu
   have h_spectral_ge : ‖(perronRoot A : ℝ)‖₊ ≤ spectralRadius ℝ A := by
     rw [spectralRadius_eq_of_unital]
     exact le_iSup₂_of_le (perronRoot A) h_r_in_spec le_rfl
-  have h_spectral_eq : spectralRadius ℝ A = ‖(perronRoot A : ℝ)‖₊ := le_antisymm h_spectral_le h_spectral_ge
+  have h_spectral_eq : spectralRadius ℝ A = ‖(perronRoot A : ℝ)‖₊ :=
+    le_antisymm h_spectral_le h_spectral_ge
   have h_toReal_eq : (spectralRadius ℝ A).toReal = perronRoot A := by
     simp [h_spectral_eq, Real.norm_of_nonneg h_r_pos.le]
   rw [h_toReal_eq]
@@ -669,7 +671,8 @@ lemma term_ne_zero_of_pos_entry {A : Matrix n n ℝ} {x : n → ℂ}
   mul_ne_zero (ofReal_ne_zero.mpr hAij_pos.ne') hxj_ne_zero
 
 omit [DecidableEq n] in
-/-- From an irreducible Perron eigenvector equation on `‖x‖`, every component `‖x k‖` is positive. -/
+/-- From an irreducible Perron eigenvector equation on `‖x‖`, every component `‖x k‖` is
+positive. -/
 lemma norm_entries_pos_of_irreducible_abs_perron_eigenvector {x : n → ℂ}
     (hA_irred : A.IsIrreducible)
     (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (perronRoot A) • (fun i => ‖x i‖))
@@ -692,7 +695,8 @@ lemma aligned_neighbors_of_triangle_eq {A : Matrix n n ℝ} (hA_irred : A.IsIrre
   let s := ∑ l', z l'
   have hs_ne_zero : s ≠ 0 :=
     sum_s_ne_zero_of_triangle_eq hA_irred hA_nonneg h_triangle_eq h_x_abs_eig hx_ne_zero k
-  have hx_pos := norm_entries_pos_of_irreducible_abs_perron_eigenvector hA_irred h_x_abs_eig hx_ne_zero
+  have hx_pos :=
+    norm_entries_pos_of_irreducible_abs_perron_eigenvector hA_irred h_x_abs_eig hx_ne_zero
   have h_sum_term (l' : n) (hl' : z l' ≠ 0) : z l' / ↑‖z l'‖ = s / ↑‖s‖ :=
     Complex.aligned_of_triangle_eq rfl (h_triangle_eq k) hs_ne_zero l' (by simp) hl'
   have h_zl_ne_zero : z l ≠ 0 := term_ne_zero_of_pos_entry hAkl_pos (norm_pos_iff.mp (hx_pos l))
@@ -711,7 +715,8 @@ lemma reference_phase_norm_one {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
     (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (perronRoot A) • (fun i => ‖x i‖))
     (j₀ : n) :
     ‖x j₀ / ↑‖x j₀‖‖ = 1 := by
-  have h_pos := norm_entries_pos_of_irreducible_abs_perron_eigenvector hA_irred h_x_abs_eig hx_ne_zero j₀
+  have h_pos :=
+    norm_entries_pos_of_irreducible_abs_perron_eigenvector hA_irred h_x_abs_eig hx_ne_zero j₀
   simp_rw [norm_div, Complex.norm_ofReal, abs_of_nonneg (norm_nonneg _)]
   exact div_self h_pos.ne'
 
@@ -732,7 +737,8 @@ lemma row_entries_aligned_of_triangle_eq {A : Matrix n n ℝ} (hA_irred : A.IsIr
 omit [Fintype n] [DecidableEq n] in
 open scoped Classical in
 /-- For an irreducible matrix, every row has at least one positive entry. -/
-lemma IsIrreducible.exists_pos_entry_in_row {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) (i : n) :
+lemma IsIrreducible.exists_pos_entry_in_row {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
+    (i : n) :
     ∃ j, 0 < A i j := by
   by_contra h_no_pos
   push Not at h_no_pos
@@ -880,7 +886,8 @@ lemma sum_eq_perron_root_times_phase_aligned_vector
 
 open scoped Classical in
 /-- When triangle equality holds for a complex eigenvector equation, the vector of component norms
-    is an eigenvector of the real matrix with eigenvalue equal to the norm of the complex eigenvalue. -/
+    is an eigenvector of the real matrix with eigenvalue equal to the norm of the complex
+    eigenvalue. -/
 lemma norm_vector_is_eigenvector_of_triangle_eq
     {n : Type*} [Fintype n]
     {A : Matrix n n ℝ} (hA_nonneg : ∀ i j, 0 ≤ A i j)
@@ -912,7 +919,8 @@ lemma eigenvalue_norm_eq_perron_root_of_triangle_eq
     hA_irred hA_nonneg h_mu_norm_pos hx_abs_pos h_x_abs_eig
 
 open scoped Classical in
-/-- In a matrix with triangle equality, vertices that share a common predecessor have aligned phases. -/
+/-- In a matrix with triangle equality, vertices that share a common predecessor have aligned
+phases. -/
 lemma phase_aligned_within_row
     {n : Type*} [Fintype n] [Nonempty n]
     {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j)
@@ -953,7 +961,8 @@ lemma eigenvector_norm_pos_of_primitive_and_norm_eq_perron_root
   have h_x_abs_nonneg : ∀ j, 0 ≤ ‖x j‖ := fun j => norm_nonneg _
   have h_r_pos : 0 < perronRoot A :=
     perronRoot_pos_of_irreducible (Matrix.IsPrimitive.isIrreducible hA_prim) hA_nonneg
-  exact eigenvector_of_primitive_is_positive hA_prim h_r_pos h_x_abs_eig h_x_abs_nonneg h_x_abs_ne_zero
+  exact eigenvector_of_primitive_is_positive hA_prim h_r_pos h_x_abs_eig h_x_abs_nonneg
+    h_x_abs_ne_zero
 
 omit [Fintype n] [Nonempty n] [DecidableEq n] in
 /-- Reference phase is unit: `‖x i₀ / ‖x i₀‖‖ = 1`. -/
@@ -964,7 +973,8 @@ lemma reference_phase_norm_one_of_primitive
   simp [hx_abs_pos.ne']
 
 omit [Nonempty n] in
-/-- The norm of a matrix-vector product equals the perron root to the kth power times the norm of the vector component. -/
+/-- The norm of a matrix-vector product equals the perron root to the kth power times the norm of
+the vector component. -/
 lemma norm_matrix_power_vec_eq_perron_power_norm
     {A : Matrix n n ℝ} {μ : ℂ} {x : n → ℂ}
     (hx_eig : (A.map (algebraMap ℝ ℂ)) *ᵥ x = μ • x)
@@ -1024,7 +1034,8 @@ lemma entries_share_phase_of_primitive
   intro i j
   obtain ⟨m⟩ := ‹Nonempty n›
   let v l := ((A ^ k) m l : ℂ) * x l
-  have hτ := triangle_equality_for_primitive_power hA_prim hx_eig h_x_abs_eig h_norm_eq_r m k hAk_pos
+  have hτ :=
+    triangle_equality_for_primitive_power hA_prim hx_eig h_x_abs_eig h_norm_eq_r m k hAk_pos
   have hi := term_ne_zero_of_pos_entry (hAk_pos m i) (norm_pos_iff.mp (hx_abs_pos i))
   have hj := term_ne_zero_of_pos_entry (hAk_pos m j) (norm_pos_iff.mp (hx_abs_pos j))
   calc
@@ -1162,6 +1173,7 @@ theorem spectral_dominance_of_primitive'
   have h_le : ‖μ‖ ≤ perronRoot A := by
     exact @eigenvalue_abs_le_perron_root n _ _ _ A hA_irred hA_nonneg μ h_is_eigenvalue
   exact lt_of_le_of_ne h_le fun h_eq =>
-    h_ne_perron <| @spectral_dominance_of_primitive n _ _ _ A hA_prim hA_nonneg μ h_is_eigenvalue h_eq
+    h_ne_perron <|
+      @spectral_dominance_of_primitive n _ _ _ A hA_prim hA_nonneg μ h_is_eigenvalue h_eq
 
 end Matrix

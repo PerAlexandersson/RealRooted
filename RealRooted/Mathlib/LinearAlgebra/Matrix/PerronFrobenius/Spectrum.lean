@@ -19,9 +19,6 @@ import Mathlib.RingTheory.DedekindDomain.Dvr
 import Mathlib.RingTheory.FiniteLength
 import Mathlib.RingTheory.SimpleRing.Principal
 
--- Ported third-party code; keep original line layout.
-set_option linter.style.longLine false
-
 /-! # Perron-Frobenius Theory for Matrices
 
 This file develops the essential Perron-Frobenius theory needed for MCMC convergence proofs.
@@ -49,7 +46,8 @@ Polynomial.natTrailingDegree p : ℕ.
 minpoly K a : K[X]: Minimal polynomial of a : A over a field K.
 minpoly.aeval K a : aeval a (minpoly K a) = 0.
 minpoly.dvd K a p (hp : aeval a p = 0) : minpoly K a ∣ p.
-Polynomial.annIdealGenerator_eq_minpoly {𝕜 A} [Field 𝕜] [Ring A] [Algebra 𝕜 A] (a : A) : Polynomial.annIdealGenerator 𝕜 a = minpoly 𝕜 a.
+Polynomial.annIdealGenerator_eq_minpoly {𝕜 A} [Field 𝕜] [Ring A] [Algebra 𝕜 A] (a : A) :
+  Polynomial.annIdealGenerator 𝕜 a = minpoly 𝕜 a.
 
 II. Linear Algebra: Maps, Submodules, Basis, Dimension
 
@@ -65,11 +63,13 @@ Submodule.span R (s : Set M) : Submodule R M.
 Submodule.mkQ (p : Submodule R M) : M →ₗ[R] M ⧸ p (quotient map).
 Basis (Basis ι R M):
 b i : M: The i-th basis vector.
-repr : M ≃ₗ[R] (ι →₀ R): The isomorphism to the module of finitely supported functions (coordinates).
+repr : M ≃ₗ[R] (ι →₀ R): The isomorphism to the module of finitely supported functions
+  (coordinates).
 Basis.mk (hli : LinearIndependent R v) (hsp : Submodule.span R (Set.range v) = ⊤) : Basis ι R M.
 Basis.linearIndependent : LinearIndependent R b.
 Basis.span_eq : Submodule.span R (Set.range b) = ⊤.
-Basis.ofVectorSpace K V : Basis (Basis.ofVectorSpaceIndex K V) K V (existence of a basis for vector spaces over a field K).
+Basis.ofVectorSpace K V : Basis (Basis.ofVectorSpaceIndex K V) K V (existence of a basis for vector
+  spaces over a field K).
 Pi.basisFun R n : Basis (Fin n) R (Fin n → R).
 Linear Independence (LinearIndependent R v):
 linearIndependent_iff.
@@ -78,15 +78,19 @@ Rank (Cardinal-valued dimension): Module.rank R M : Cardinal.
 Basis.mk_eq_rank'' (b : Basis ι R M) : #ι = Module.rank R M (for rings with Strong Rank Condition).
 LinearMap.lift_rank_le_of_injective (f : M →ₗ[R] N') (hf : Injective f).
 LinearMap.rank_le_of_surjective (f : M →ₗ[R] N) (hf : Surjective f).
-LinearMap.rank_range_add_rank_ker (f : M →ₗ[R] N) : Module.rank R (LinearMap.range f) + Module.rank R (LinearMap.ker f) = Module.rank R M (for rings with HasRankNullity, e.g., division rings).
+LinearMap.rank_range_add_rank_ker (f : M →ₗ[R] N) :
+  Module.rank R (LinearMap.range f) + Module.rank R (LinearMap.ker f) = Module.rank R M
+  (for rings with HasRankNullity, e.g., division rings).
 rank_quotient_add_rank_of_divisionRing (p : Submodule K V).
 Finrank (Nat-valued dimension): Module.finrank R M : ℕ.
 finrank_eq_rank : ↑(finrank R M) = Module.rank R M (if Module.Finite R M and StrongRankCondition R).
 FiniteDimensional K V: Typeclass, equivalent to Module.Finite K V for division rings.
 FiniteDimensional.of_fintype_basis (b : Basis ι K V) [Fintype ι].
-finrank_eq_card_basis [Fintype ι] (b : Basis ι K V) : finrank K V = Fintype.card ι (for StrongRankCondition R).
+finrank_eq_card_basis [Fintype ι] (b : Basis ι K V) : finrank K V = Fintype.card ι
+  (for StrongRankCondition R).
 LinearMap.injective_iff_surjective [FiniteDimensional K V] (f : End K V).
-Submodule.finrank_lt [FiniteDimensional K V] {s : Submodule K V} (h : s ≠ ⊤) : finrank K s < finrank K V.
+Submodule.finrank_lt [FiniteDimensional K V] {s : Submodule K V} (h : s ≠ ⊤) :
+  finrank K s < finrank K V.
 Submodule.finrank_quotient_add_finrank [FiniteDimensional K V] (N : Submodule K V).
 
 III. Matrices
@@ -95,24 +99,31 @@ Matrix n n R (Square matrices, often n is a Fintype).
 Matrix.det (A : Matrix n n R) : R.
 Matrix.det_mul, Matrix.det_one, Matrix.det_transpose.
 Matrix.isUnit_iff_isUnit_det.
-Matrix.det_smul_sub_eq_eval_charpoly (A : Matrix n n ℝ) (μ : ℝ) : det (μ • 1 - A) = (Matrix.charpoly A).eval μ.
-Matrix.toLin' (A : Matrix n n R) : (Fin n → R) →ₗ[R] (Fin n → R) (matrix as a linear map on Fin n → R).
+Matrix.det_smul_sub_eq_eval_charpoly (A : Matrix n n ℝ) (μ : ℝ) :
+  det (μ • 1 - A) = (Matrix.charpoly A).eval μ.
+Matrix.toLin' (A : Matrix n n R) : (Fin n → R) →ₗ[R] (Fin n → R)
+  (matrix as a linear map on Fin n → R).
 LinearMap.toMatrix (b₁ : Basis ι R M) (b₂ : Basis ι' R N) (f : M →ₗ[R] N) : Matrix ι' ι R.
 Matrix.toLinAlgEquiv (b : Basis ι R M) [Fintype ι] [DecidableEq ι] : End R M ≃ₐ[R] Matrix ι ι R.
 Matrix.charpoly (A : Matrix n n R) : R[X].
-Matrix.aeval_self_charpoly A : Polynomial.aeval A (Matrix.charpoly A) = 0 (Cayley-Hamilton for matrices).
+Matrix.aeval_self_charpoly A : Polynomial.aeval A (Matrix.charpoly A) = 0 (Cayley-Hamilton for
+  matrices).
 Matrix.charpoly_transpose A : Matrix.charpoly Aᵀ = Matrix.charpoly A.
 
 IV. Endomorphisms, Eigenvalues, Eigenspaces, Spectrum
 
 Module.End R M := M →ₗ[R] M.
 LinearMap.det (f : End R M) : R.
-LinearMap.det_toMatrix (b : Basis ι R M) f : Matrix.det (LinearMap.toMatrix b b f) = LinearMap.det f.
+LinearMap.det_toMatrix (b : Basis ι R M) f :
+  Matrix.det (LinearMap.toMatrix b b f) = LinearMap.det f.
 LinearMap.isUnit_iff_isUnit_det.
-LinearMap.det_eq_sign_charpoly_coeff {R M} [CommRing R] [Module.Free R M] [Module.Finite R M] (f : End R M) : LinearMap.det f = (-1) ^ Module.finrank R M * (LinearMap.charpoly f).coeff 0.
+LinearMap.det_eq_sign_charpoly_coeff {R M} [CommRing R] [Module.Free R M] [Module.Finite R M]
+  (f : End R M) : LinearMap.det f = (-1) ^ Module.finrank R M * (LinearMap.charpoly f).coeff 0.
 LinearMap.charpoly (f : End R M) : R[X] (where M is finite and free).
-LinearMap.aeval_self_charpoly f : Polynomial.aeval f (LinearMap.charpoly f) = 0 (Cayley-Hamilton for endomorphisms).
-LinearMap.charpoly_toMatrix (b : Basis ι R M) f : (Matrix.toMatrix b b f).charpoly = LinearMap.charpoly f.
+LinearMap.aeval_self_charpoly f : Polynomial.aeval f (LinearMap.charpoly f) = 0 (Cayley-Hamilton for
+  endomorphisms).
+LinearMap.charpoly_toMatrix (b : Basis ι R M) f : (Matrix.toMatrix b b f).charpoly =
+  LinearMap.charpoly f.
 LinearMap.minpoly_dvd_charpoly {K V} [Field K] [FiniteDimensional K V] (f : End K V).
 spectrum R a (for a : A in an R-algebra A).
 spectrum.mem_iff : μ ∈ spectrum R a ↔ ¬IsUnit (algebraMap R A μ - a).
@@ -129,12 +140,16 @@ Module.End.genEigenspace (f : End R M) (μ : R) (k : ℕ∞).
 Module.End.maxGenEigenspace (f : End R M) (μ : R) := ⨆ k, genEigenspace f μ k.
 Module.End.iSup_maxGenEigenspace_eq_top [IsAlgClosed K] [FiniteDimensional K V] (f : End K V).
 Module.End.IsFinitelySemisimple.genEigenspace_eq_eigenspace (hf : f.IsFinitelySemisimple).
-Module.End.isRoot_of_hasEigenvalue {f : End K V} {μ : K} (h : HasEigenvalue f μ) : (minpoly K f).IsRoot μ.
-Module.End.hasEigenvalue_of_isRoot {f : End K V} {μ : K} (h : (minpoly K f).IsRoot μ) : HasEigenvalue f μ.
-LinearMap.hasEigenvalue_zero_tfae (φ : End K M): List of equivalent conditions for 0 being an eigenvalue (e.g., det φ = 0, ker φ ≠ ⊥).
+Module.End.isRoot_of_hasEigenvalue {f : End K V} {μ : K} (h : HasEigenvalue f μ) :
+  (minpoly K f).IsRoot μ.
+Module.End.hasEigenvalue_of_isRoot {f : End K V} {μ : K} (h : (minpoly K f).IsRoot μ) :
+  HasEigenvalue f μ.
+LinearMap.hasEigenvalue_zero_tfae (φ : End K M): List of equivalent conditions for 0 being an
+  eigenvalue (e.g., det φ = 0, ker φ ≠ ⊥).
 Matrix.hasEigenvalue_toLin'_iff_det_sub_eq_zero (A : Matrix n n ℝ) (μ : ℝ).
 Module.End.exists_eigenvalue [IsAlgClosed K] [FiniteDimensional K V] [Nontrivial V] (f : End K V).
-Module.End.eigenvectors_linearIndependent [NoZeroSMulDivisors R M] (f : End R M) (μs : Set R) (xs : μs → M) (h_eigenvec).
+Module.End.eigenvectors_linearIndependent [NoZeroSMulDivisors R M] (f : End R M) (μs : Set R)
+  (xs : μs → M) (h_eigenvec).
 
 -/
 
@@ -169,7 +184,8 @@ lemma spectrum_eq_spectrum_toLin' (A : Matrix n n ℝ) :
     spectrum ℝ A = spectrum ℝ (Matrix.toLin' A) := by
   exact Eq.symm (AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (Pi.basisFun ℝ n)) A)
 
-/-- The determinant of `μ • 1 - A` is the evaluation of the characteristic polynomial of `A` at `μ`. -/
+/-- The determinant of `μ • 1 - A` is the evaluation of the characteristic polynomial of `A` at
+`μ`. -/
 lemma det_smul_sub_eq_eval_charpoly (A : Matrix n n ℝ) (μ : ℝ) :
     det (μ • 1 - A) = (Matrix.charpoly A).eval μ := by
   have h : μ • 1 = Matrix.scalar n μ := by
@@ -371,9 +387,11 @@ lemma bijective_iff_isUnit_toLin' (A : Matrix n n ℝ) :
   rw [h_equiv, and_self]
   rw [LinearMap.isUnit_iff_ker_eq_bot]
 
-lemma isUnit_of_det_ne_zero (A : Matrix n n ℝ) (h_det_ne_zero : LinearMap.det (Matrix.toLin' A) ≠ 0) :
+lemma isUnit_of_det_ne_zero (A : Matrix n n ℝ)
+    (h_det_ne_zero : LinearMap.det (Matrix.toLin' A) ≠ 0) :
     IsUnit (Matrix.toLin' A) := by
-  rw [← bijective_iff_isUnit_toLin', ← injective_iff_bijective_toLin', ← ker_eq_bot_iff_injective_toLin']
+  rw [← bijective_iff_isUnit_toLin', ← injective_iff_bijective_toLin',
+    ← ker_eq_bot_iff_injective_toLin']
   by_contra h_ker_ne_bot
   have h_det_zero : LinearMap.det (Matrix.toLin' A) = 0 := by
     exact det_eq_zero_of_ker_ne_bot h_ker_ne_bot
@@ -390,7 +408,8 @@ lemma AlgEquiv.isUnit_map_iff {R A B : Type*} [CommSemiring R] [Ring A] [Ring B]
   · intro h_x_unit
     simp_all only [MulEquiv.isUnit_map]
 
-lemma isUnit_of_det_ne_zero' {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n ℝ) (h_det_ne_zero : LinearMap.det (Matrix.toLin' A) ≠ 0) :
+lemma isUnit_of_det_ne_zero' {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n ℝ)
+    (h_det_ne_zero : LinearMap.det (Matrix.toLin' A) ≠ 0) :
     IsUnit (Matrix.toLin' A) := by
   let f := Matrix.toLin' A
   have h_det_f_is_unit : IsUnit (LinearMap.det f) := IsUnit.mk0 (LinearMap.det f) h_det_ne_zero
@@ -464,7 +483,8 @@ lemma spectralRadius_le_nnnorm_of_mem_spectrum {A : Matrix n n ℝ} {μ : ℝ}
   have hv_norm_pos : 0 < ‖v‖ := norm_pos_iff.mpr hv_ne_zero
   have : ‖μ • v‖ = ‖μ‖ * ‖v‖ := norm_smul μ v
   rw [← hv_eigen, ← Matrix.toLin'_apply] at this
-  have h_bound : ‖(Matrix.toLin' A).toContinuousLinearMap v‖ ≤ ‖(Matrix.toLin' A).toContinuousLinearMap‖ * ‖v‖ :=
+  have h_bound : ‖(Matrix.toLin' A).toContinuousLinearMap v‖ ≤
+      ‖(Matrix.toLin' A).toContinuousLinearMap‖ * ‖v‖ :=
       ContinuousLinearMap.le_opNorm _ v
   rw [LinearMap.coe_toContinuousLinearMap', this] at h_bound
   exact le_of_mul_le_mul_right h_bound hv_norm_pos
@@ -481,7 +501,8 @@ lemma spectralRadius_lt_top {A : Matrix n n ℝ} :
   · intro i
     apply iSup_le
     intro hi
-    exact ENNReal.coe_le_coe.mpr (le_trans (spectralRadius_le_nnnorm_of_mem_spectrum hi) (le_add_of_nonneg_right zero_le_one))
+    exact ENNReal.coe_le_coe.mpr (le_trans (spectralRadius_le_nnnorm_of_mem_spectrum hi)
+      (le_add_of_nonneg_right zero_le_one))
 
 lemma spectrum.nnnorm_le_nnnorm_of_mem {𝕜 A : Type*}
     [NormedField 𝕜] [NormedRing A] [NormedAlgebra 𝕜 A] [CompleteSpace A] [NormOneClass A]
@@ -573,7 +594,8 @@ lemma spectralRadius_le_opNorm (A : Matrix n n ℝ) :
 
 lemma spectralRadius_finite (A : Matrix n n ℝ) :
     spectralRadius ℝ (Matrix.toLin' A) ≠ ⊤ := by
-  have h_le_norm : spectralRadius ℝ (Matrix.toLin' A) ≤ ↑‖(Matrix.toLin' A).toContinuousLinearMap‖₊ :=
+  have h_le_norm :
+      spectralRadius ℝ (Matrix.toLin' A) ≤ ↑‖(Matrix.toLin' A).toContinuousLinearMap‖₊ :=
     spectralRadius_le_opNorm A
   have h_norm_finite : (↑‖(Matrix.toLin' A).toContinuousLinearMap‖₊ : ENNReal) ≠ ⊤ :=
     ENNReal.coe_ne_top
@@ -701,13 +723,16 @@ lemma isRoot_of_hasEigenvalue {A : Matrix n n ℝ} {μ : ℝ}
 
 /-- The spectrum of a matrix `A` is equal to the spectrum of its corresponding linear map
 `Matrix.toLin' A`. -/
-theorem spectrum.Matrix_toLin'_eq_spectrum {R n : Type*} [CommRing R] [Fintype n] [DecidableEq n] (A : Matrix n n R) :
+theorem spectrum.Matrix_toLin'_eq_spectrum {R n : Type*} [CommRing R] [Fintype n] [DecidableEq n]
+    (A : Matrix n n R) :
     spectrum R (Matrix.toLin' A) = spectrum R A := by
   exact AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (Pi.basisFun R n)) A
 end Matrix
 
-/-- If a linear map `f` has an eigenvector `v` for an eigenvalue `μ`, then `μ` is in the spectrum of `f`. -/
-lemma Module.End.mem_spectrum_of_hasEigenvector {K V : Type*} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
+/-- If a linear map `f` has an eigenvector `v` for an eigenvalue `μ`, then `μ` is in the spectrum
+of `f`. -/
+lemma Module.End.mem_spectrum_of_hasEigenvector {K V : Type*} [Field K] [AddCommGroup V]
+    [Module K V] [FiniteDimensional K V]
     {f : V →ₗ[K] V} {μ : K} {v : V} (h : HasEigenvector f μ v) :
     μ ∈ spectrum K f := by
   rw [← Module.End.hasEigenvalue_iff_mem_spectrum]

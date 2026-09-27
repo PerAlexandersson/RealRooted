@@ -12,9 +12,6 @@ import Mathlib.Analysis.Normed.Order.Lattice
 import Mathlib.Analysis.RCLike.Basic
 import Mathlib.Analysis.SpecificLimits.Basic
 
--- Ported third-party code; keep original line layout.
-set_option linter.style.longLine false
-
 open Set Filter Topology
 
 namespace IsCompact
@@ -181,7 +178,8 @@ theorem exists_isMaxOn_of_upperSemicontinuousOn (hK : IsCompact K) (hK_nonempty 
     simp only [mem_iInter] at hx₀_inter
     have h_le : f x₀ ≤ s := le_csSup h_bdd_above (mem_image_of_mem f x₀.prop)
     have h_ge : s ≤ f x₀ :=
-      le_of_tendsto (tendsto_const_sub_inv_add_one_atTop s) (Filter.Eventually.of_forall (fun n => hx₀_inter n))
+      le_of_tendsto (tendsto_const_sub_inv_add_one_atTop s)
+        (Filter.Eventually.of_forall (fun n => hx₀_inter n))
     exact le_antisymm h_le h_ge
   -- This implies `IsMaxOn`.
   intro y hy

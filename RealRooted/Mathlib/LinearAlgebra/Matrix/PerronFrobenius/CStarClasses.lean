@@ -13,9 +13,6 @@ import Mathlib.Algebra.EuclideanDomain.Field
 import Mathlib.Analysis.CStarAlgebra.Classes
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
 
--- Ported third-party code; keep original line layout.
-set_option linter.style.longLine false
-
 open Finset Real Complex Matrix
 
 namespace Complex
@@ -26,7 +23,8 @@ variable {z : ℂ}
 /-- The norm of a real number embedded in the complex numbers is its absolute value. -/
 lemma norm_ofReal (r : ℝ) : ‖(r : ℂ)‖ = |r| := by simp
 
-theorem sq_eq_zero {R : Type*} [MonoidWithZero R] [NoZeroDivisors R] {x : R} : x ^ 2 = 0 ↔ x = 0 := by
+theorem sq_eq_zero {R : Type*} [MonoidWithZero R] [NoZeroDivisors R] {x : R} :
+    x ^ 2 = 0 ↔ x = 0 := by
   rw [pow_two, mul_eq_zero]
   exact or_self_iff
 
@@ -66,14 +64,16 @@ is true by definition.
 -/
 lemma ofReal_eq_coe (r : ℝ) : (r : ℂ) = ↑r := rfl
 
-/-- The real part of a product of complex numbers is less than or equal to the product of their norms.
+/-- The real part of a product of complex numbers is less than or equal to the product of their
+norms.
 This is a consequence of the Cauchy-Schwarz inequality. -/
 lemma re_mul_le_norm (z w : ℂ) : re (z * w) ≤ ‖z‖ * ‖w‖ := by
   calc
     re (z * w) ≤ ‖z * w‖ := re_le_norm (z * w)
     _ = ‖z‖ * ‖w‖ := norm_mul z w
 
-/-- If a sum of `f i` equals a sum of `g i`, and `f i ≤ g i` for all `i`, then `f i = g i` for all `i`. -/
+/-- If a sum of `f i` equals a sum of `g i`, and `f i ≤ g i` for all `i`, then `f i = g i` for all
+`i`. -/
 lemma eq_of_sum_eq_of_le {s : Finset ι} {f g : ι → ℝ}
     (h_le : ∀ i ∈ s, f i ≤ g i) (h_sum_eq : ∑ i ∈ s, f i = ∑ i ∈ s, g i) :
     ∀ i ∈ s, f i = g i := by
@@ -95,7 +95,8 @@ lemma eq_re_of_norm_eq (h : ‖z‖ = z.re) : z = z.re := by
     rw [h, sq, sq] at h_norm_sq
     linarith
   refine Eq.symm ((fun {z w} ↦ Complex.ext_iff.mpr) ?_)
-  simp_all only [ge_iff_le, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff, and_self]
+  simp_all only [ge_iff_le, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, pow_eq_zero_iff,
+    and_self]
 
 lemma eq_coe_re_of_mul_eq_norm_mul {z w : ℂ} (h : re (z * star w) = ‖z‖ * ‖w‖) :
     (z * star w) = ↑(re (z * star w)) := by
@@ -198,8 +199,9 @@ lemma each_term_is_nonneg_real_multiple_of_sum_of_triangle_eq {u : ℂ}
     rw [← ofReal_mul, ← aligned i hi]
     exact eq_coe_re_of_mul_eq_norm_mul (aligned i hi)
   calc
-    v i = (v i * star u) * u / (u * star u) := by rw [mul_assoc, mul_comm (star u), mul_div_cancel_right₀ _ (
-      (CStarRing.mul_star_self_ne_zero_iff u).mpr h_ne)]
+    v i = (v i * star u) * u / (u * star u) := by
+      rw [mul_assoc, mul_comm (star u),
+        mul_div_cancel_right₀ _ ((CStarRing.mul_star_self_ne_zero_iff u).mpr h_ne)]
     _ = (‖v i‖ * ‖u‖ : ℂ) * u / (‖u‖ ^ 2 : ℂ) := by rw [h, star_mul_self, ofReal_pow]
     _ = (k : ℂ) * u := by
       rw [ofReal_div, ← ofReal_mul]
@@ -222,7 +224,8 @@ lemma coeff_of_aligned_vector {u vi : ℂ} {k : ℝ}
       cases hvi_zero with
       | inl h_zero =>
           subst h_aligned
-          simp_all only [ge_iff_le, ne_eq, norm_eq_zero, not_false_eq_true, ofReal_eq_zero, ofReal_zero,
+          simp_all only [ge_iff_le, ne_eq, norm_eq_zero, not_false_eq_true, ofReal_eq_zero,
+            ofReal_zero,
             zero_mul, norm_zero]
       | inr h_zero =>
           subst h_zero h_aligned
@@ -262,7 +265,8 @@ lemma sum_of_aligned_vectors_factors {u : ℂ} {v : ι → ℂ} {s : Finset ι}
     _ = (∑ i ∈ s, (‖v i‖ / ‖u‖ : ℂ)) * u := by
           simp [h_sum_div]
 
-/-- If equality holds in the triangle inequality, the sum of the non-negative real multiples is 1. -/
+/-- If equality holds in the triangle inequality, the sum of the non-negative real multiples is
+1. -/
 lemma sum_of_multiples_is_one_of_triangle_eq
     {u : ℂ} {v : ι → ℂ} {s : Finset ι}
     (_ : u = ∑ i ∈ s, v i)

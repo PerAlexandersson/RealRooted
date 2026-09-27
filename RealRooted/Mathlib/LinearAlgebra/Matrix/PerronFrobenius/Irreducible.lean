@@ -5,15 +5,13 @@ Authors: Matteo Cipollina
 
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.  Original path: MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Irreducible.lean
+adaptations to the pinned Mathlib.  Original path:
+MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Irreducible.lean
 -/
 import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
 import Mathlib.Combinatorics.Quiver.Path
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
-
--- Ported third-party code; keep original line layout.
-set_option linter.style.longLine false
 
 /-!
 # Irreducible nonnegative matrices
@@ -139,7 +137,8 @@ lemma mulVec_eq_sub_one_smul_of_one_add_mulVec
   have : A *ᵥ v = r • v - v := eq_sub_of_add_eq' h_exp
   simpa [sub_smul, one_smul] using this
 
-/-- For irreducible `A`, a positive eigenvector of `1 + A` has eigenvalue strictly larger than `1`. -/
+/-- For irreducible `A`, a positive eigenvector of `1 + A` has eigenvalue strictly larger than
+`1`. -/
 lemma one_lt_eigenvalue_one_add_of_irreducible [Nonempty n]
     {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
     {r : ℝ} {v : n → ℝ} (hv_pos : ∀ i, 0 < v i)
@@ -156,18 +155,19 @@ lemma one_lt_eigenvalue_one_add_of_irreducible [Nonempty n]
 omit [DecidableEq n] in
 open scoped Classical in
 /-- **Perron–Frobenius, irreducible case (Existence part)**
-If `A` is a non-negative irreducible matrix, then there exists a strictly positive eigenvalue `r > 0`
-and a strictly positive eigenvector `v` (`∀ i, 0 < v i`) such that `A *ᵥ v = r • v`.
+If `A` is a non-negative irreducible matrix, then there exists a strictly positive eigenvalue
+`r > 0` and a strictly positive eigenvector `v` (`∀ i, 0 < v i`) such that `A *ᵥ v = r • v`.
 
-The proof uses the auxiliary matrix `B = 1 + A`, which is primitive, to apply the Perron-Frobenius theorem
-for primitive matrices and translate the result back to `A`. -/
+The proof uses the auxiliary matrix `B = 1 + A`, which is primitive, to apply the Perron-Frobenius
+theorem for primitive matrices and translate the result back to `A`. -/
 theorem exists_positive_eigenvector_of_irreducible [Nonempty n]
   (hA_irred : A.IsIrreducible) :
     ∃ (r : ℝ) (v : n → ℝ),
       0 < r ∧ (∀ i, 0 < v i) ∧ A *ᵥ v = r • v := by
   let B : Matrix n n ℝ := 1 + A
   have hB_nonneg : ∀ i j, 0 ≤ B i j := fun i j => Matrix.one_add_apply_nonneg hA_irred.nonneg i j
-  have hB_diag_pos : ∀ i, 0 < B i i := fun i => Matrix.one_add_diag_pos (fun j => hA_irred.nonneg j j) i
+  have hB_diag_pos : ∀ i, 0 < B i i := fun i =>
+    Matrix.one_add_diag_pos (fun j => hA_irred.nonneg j j) i
   have hB_irred : (1 + A).IsIrreducible := Irreducible.add_one (A := A) hA_irred
   have hB_prim : B.IsPrimitive :=
     IsPrimitive.of_irreducible_pos_diagonal B hB_nonneg hB_irred hB_diag_pos
@@ -180,7 +180,8 @@ theorem exists_positive_eigenvector_of_irreducible [Nonempty n]
   have hrA_pos : 0 < rB - 1 := sub_pos.mpr hrB_gt_one
   exact ⟨rB - 1, v, hrA_pos, hv_pos, h_eig_A⟩
 
-/-! A non-zero, non-negative eigenvector of an irreducible matrix is in fact **strictly** positive. -/
+/-! A non-zero, non-negative eigenvector of an irreducible matrix is in fact **strictly**
+positive. -/
 omit [DecidableEq n] in
 lemma eigenvector_is_positive_of_irreducible [Nonempty n] {r : ℝ}
   (hA_irred : A.IsIrreducible)
@@ -361,7 +362,8 @@ lemma stdSimplex_eigenvector_eq_of_irreducible [Nonempty n]
     v = w := by
   let B : Matrix n n ℝ := 1 + A
   have hB_nonneg : ∀ i j, 0 ≤ B i j := fun i j => Matrix.one_add_apply_nonneg hA_irred.nonneg i j
-  obtain ⟨u, hu⟩ := pft_primitive (by simpa [B] using one_add_isPrimitive_of_irreducible hA_irred) hB_nonneg
+  obtain ⟨u, hu⟩ :=
+    pft_primitive (by simpa [B] using one_add_isPrimitive_of_irreducible hA_irred) hB_nonneg
   have hvB : B *ᵥ v.1 = (r + 1) • v.1 := by
     simp [B, add_mulVec, one_mulVec, add_smul, one_smul, hv_eig, add_comm]
   have hwB : B *ᵥ w.1 = (s + 1) • w.1 := by
@@ -374,7 +376,8 @@ open scoped Classical in
 
 Let A : Matrix n n ℝ be an irreducible nonnegative matrix indexed by a finite nonempty type n.
 Then there exists a unique eigenpair (v, r) where
-  • v : RealRooted.standardSimplex ℝ n is a probability vector (i.e. v.val has nonnegative entries summing to 1),
+  • v : RealRooted.standardSimplex ℝ n is a probability vector (i.e. v.val has nonnegative
+    entries summing to 1),
   • r : ℝ is a positive scalar,
 such that
   A *ᵥ v.val = r • v.val   and   r > 0.
