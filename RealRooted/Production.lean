@@ -1291,6 +1291,9 @@ import RealRooted.LGV.ChipNetwork.Basic
 import RealRooted.LGV.ChipNetwork.Matrix
 import RealRooted.LGV.ChipNetwork.Paths
 import RealRooted.LGV.ChipNetwork.Word
+import RealRooted.Challenges.Descartes
+import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
+import RealRooted.RootCounting.Descartes
 
 /-!
 # RealRooted production umbrella
