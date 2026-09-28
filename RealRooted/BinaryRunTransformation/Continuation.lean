@@ -1,7 +1,11 @@
+import RealRooted.BinaryRunTransformation.Anchor
 import RealRooted.BinaryRunTransformation.PointingPencil
 import RealRooted.CriticalValueContinuation
 import RealRooted.Interlacing.NegativeRoots
 import RealRooted.IteratedDerivativeShift
+import RealRooted.Hadamard.Newton
+import RealRooted.Mathlib.Topology.Algebra.Polynomial
+import RealRooted.QuadraticRoot
 import Mathlib.Topology.Order.ProjIcc
 
 /-!
@@ -391,6 +395,329 @@ theorem shiftedBinaryRunDeformation_pf_criticalValueMargin_Icc
     hclosed.Icc_subset_of_forall_mem_nhdsWithin haS hforward
   intro u hu
   exact hsub hu
+
+/-- A regular PF input admits a positive starting scale carrying a uniform
+critical-value margin.  Regularity here means that the coefficient at the
+maximal possible output degree is positive. -/
+theorem exists_pos_shiftedBinaryRunDeformation_anchor
+    {n : ℕ} (hn : 4 ≤ n) {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hpdeg : p.natDegree ≤ n) (hp0 : 0 < p.coeff 0)
+    (hpTop : 0 < p.coeff ((n + 1) / 2)) :
+    ∃ a δ : ℝ, 0 < a ∧ a ≤ 1 ∧ 0 < δ ∧
+      (shiftedBinaryRunDeformation n p a).natDegree = (n + 1) / 2 ∧
+      IsPFPolynomial (shiftedBinaryRunDeformation n p a) ∧
+      ∀ x, (shiftedBinaryRunDeformation n p a).derivative.IsRoot x →
+        δ ≤ (shiftedBinaryRunDeformation n p a).eval x ^ 2 := by
+  let D := (n + 1) / 2
+  let P : ℝ → ℝ[X] := fun t ↦ rescaledBinaryRunDeformation n p t
+  have hPdegree0 : (P 0).natDegree = D := by
+    exact natDegree_rescaledBinaryRunDeformation_eq (by lia)
+      hp.hasNonnegCoeffs hpTop le_rfl
+  have hPanchor : P 0 = binaryRunAnchor n p := by
+    exact rescaledBinaryRunDeformation_zero n p
+  have hPsimple : HasSimpleRoots (P 0) := by
+    rw [hPanchor]
+    exact binaryRunAnchor_hasSimpleRoots (by lia) hp hpdeg hp0
+  have hPsplit : (P 0).Splits := by
+    rw [hPanchor]
+    exact ((isPFPolynomial_binaryRunAnchor hp hpdeg).ne_zero_and_splits
+      (by rw [← hPanchor]; exact hPsimple.ne_zero)).2
+  have hPdegree : ∀ᶠ t in nhds (0 : ℝ), (P t).natDegree = D := by
+    apply Polynomial.eventually_natDegree_eq_of_le_of_continuous_coeff
+      P hPdegree0 hPsimple.ne_zero
+    · intro t
+      exact natDegree_rescaledBinaryRunDeformation_le n p t
+    · intro k
+      exact (contDiff_coeff_rescaledBinaryRunDeformation n p k).continuous
+  obtain ⟨ξ, _hξbase, hlocal⟩ :=
+    exists_eventually_polynomial_root_branches P (by dsimp [D]; lia)
+      hPdegree hPsplit hPsimple fun x _ ↦ by
+        simpa only [P] using
+          (contDiff_rescaledBinaryRunDeformation_eval_prod n p).contDiffAt.of_le
+            (by norm_num)
+  have hgood : ∀ᶠ t in nhds (0 : ℝ),
+      (P t).Splits ∧ HasSimpleRoots (P t) :=
+    hlocal.mono fun t ht ↦ ⟨ht.1, ht.2.1⟩
+  rcases Metric.mem_nhds_iff.mp hgood with ⟨ρ, hρ, hball⟩
+  let a : ℝ := min (ρ / 2) (1 / 2)
+  have ha : 0 < a := by
+    dsimp [a]
+    positivity
+  have haρ : a < ρ := by
+    exact (min_le_left (ρ / 2) (1 / 2 : ℝ)).trans_lt (half_lt_self hρ)
+  have ha1 : a ≤ 1 := by
+    dsimp [a]
+    linarith [min_le_right (ρ / 2) (1 / 2 : ℝ)]
+  have hPa : (P a).Splits ∧ HasSimpleRoots (P a) := by
+    apply hball
+    simpa [Real.dist_eq, abs_of_pos ha] using haρ
+  have hPaPF : IsPFPolynomial (P a) :=
+    IsPFPolynomial.of_realRooted_nonneg
+      (hp.hasNonnegCoeffs.rescaledBinaryRunDeformation ha.le) hPa.1
+  have hordPF :
+      IsPFPolynomial (binaryRunTransform n (scalePolynomial a p)) := by
+    rw [← rescaledBinaryRunDeformation_comp_scale hpdeg a]
+    simpa using hPaPF.comp_C_mul_X_add_C
+      (a := a) (d := 0) ha (by norm_num)
+  have hordSimple :
+      HasSimpleRoots (binaryRunTransform n (scalePolynomial a p)) := by
+    rw [← rescaledBinaryRunDeformation_comp_scale hpdeg a]
+    simpa using hPa.2.comp_C_mul_X_add_C
+      (a := a) (b := 0) ha.ne'
+  have hshiftPF :
+      IsPFPolynomial (shiftedBinaryRunDeformation n p a) := by
+    simpa [shiftedBinaryRunDeformation] using
+      hordPF.comp_C_mul_X_add_C (a := 1) (d := 1) (by norm_num) (by norm_num)
+  have hshiftSimple :
+      HasSimpleRoots (shiftedBinaryRunDeformation n p a) := by
+    simpa [shiftedBinaryRunDeformation] using
+      hordSimple.comp_C_mul_X_add_C (a := 1) (b := 1) (by norm_num)
+  obtain ⟨δ, hδ, hmargin⟩ := hshiftSimple.exists_pos_criticalValueMargin
+    (by rw [natDegree_shiftedBinaryRunDeformation_eq (by lia)
+      hp.hasNonnegCoeffs hpdeg hpTop ha]; dsimp [D]; lia)
+  refine ⟨a, δ, ha, ha1, hδ,
+    natDegree_shiftedBinaryRunDeformation_eq (by lia)
+      hp.hasNonnegCoeffs hpdeg hpTop ha, hshiftPF, hmargin⟩
+
+/-- The binary-run transform preserves PF polynomials satisfying the two
+strict coefficient conditions needed by the constant-degree continuation. -/
+theorem isPFPolynomial_binaryRunTransform_of_regular
+    {n : ℕ} (hn : 4 ≤ n) {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hpdeg : p.natDegree ≤ n) (hp0 : 0 < p.coeff 0)
+    (hpTop : 0 < p.coeff ((n + 1) / 2)) :
+    IsPFPolynomial (binaryRunTransform n p) := by
+  obtain ⟨a, δ, ha, ha1, hδ, haDegree, haPF, haMargin⟩ :=
+    exists_pos_shiftedBinaryRunDeformation_anchor hn hp hpdeg hp0 hpTop
+  have hdegree : ∀ u ∈ Set.Icc a 1,
+      (shiftedBinaryRunDeformation n p u).natDegree = (n + 1) / 2 := by
+    intro u hu
+    exact natDegree_shiftedBinaryRunDeformation_eq (by lia)
+      hp.hasNonnegCoeffs hpdeg hpTop (ha.trans_le hu.1)
+  have hall := shiftedBinaryRunDeformation_pf_criticalValueMargin_Icc
+    hn hp (by
+      intro hpzero
+      rw [hpzero] at hp0
+      simp at hp0) hpdeg ha ha1 hδ hdegree haPF haMargin
+  have hone := hall 1 (Set.right_mem_Icc.mpr ha1)
+  have honeDegree := hdegree 1 (Set.right_mem_Icc.mpr ha1)
+  have hshiftNe : shiftedBinaryRunDeformation n p 1 ≠ 0 := by
+    intro hzero
+    rw [hzero] at honeDegree
+    simp at honeDegree
+    lia
+  have hshiftSplit : (shiftedBinaryRunDeformation n p 1).Splits :=
+    (hone.1.ne_zero_and_splits hshiftNe).2
+  have hback := isRealRooted_comp_X_add_C hshiftNe hshiftSplit (-1)
+  have houtSplit : (binaryRunTransform n p).Splits := by
+    simpa [shiftedBinaryRunDeformation, scalePolynomial,
+      Polynomial.comp_assoc, add_assoc] using hback.2
+  exact IsPFPolynomial.of_realRooted_nonneg
+    hp.hasNonnegCoeffs.binaryRunTransform houtSplit
+
+/-- Reflection and a small positive translation regularize every PF input
+with positive constant coefficient while staying inside the degree box. -/
+theorem isPFPolynomial_binaryRunTransform_of_coeff_zero_pos
+    {n : ℕ} (hn : 4 ≤ n) {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hpdeg : p.natDegree ≤ n) (hp0 : 0 < p.coeff 0) :
+    IsPFPolynomial (binaryRunTransform n p) := by
+  let q : ℝ[X] := p.reflect n
+  let r : ℝ → ℝ[X] := fun u ↦ (q.comp (X + C u)).reflect n
+  have hqPF : IsPFPolynomial q := isPFPolynomial_reflect hp hpdeg
+  have hqdegree : q.natDegree = n :=
+    DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hpdeg hp0.ne'
+  have hq0 : q ≠ 0 := by
+    intro hzero
+    rw [hzero] at hqdegree
+    simp at hqdegree
+    lia
+  have htranslatedDegree (u : ℝ) :
+      (q.comp (X + C u)).natDegree = n := by
+    rw [Polynomial.natDegree_comp, hqdegree]
+    simp
+  have hrdegree (u : ℝ) : (r u).natDegree ≤ n := by
+    dsimp [r]
+    calc
+      _ ≤ max n (q.comp (X + C u)).natDegree :=
+        Polynomial.natDegree_reflect_le
+      _ = n := by rw [htranslatedDegree]; simp
+  have hrPF {u : ℝ} (hu : 0 < u) : IsPFPolynomial (r u) := by
+    apply isPFPolynomial_reflect
+    · simpa using hqPF.comp_C_mul_X_add_C
+        (a := 1) (d := u) (by norm_num) hu.le
+    · rw [htranslatedDegree]
+  have hrCoeffPos {u : ℝ} (hu : 0 < u) {k : ℕ} (hk : k ≤ n) :
+      0 < (r u).coeff k := by
+    change 0 < ((q.comp (X + C u)).reflect n).coeff k
+    rw [Polynomial.coeff_reflect, Polynomial.revAt_le hk]
+    apply hqPF.hasNonnegCoeffs.coeff_comp_X_add_C_pos
+      hq0 hu
+    rw [hqdegree]
+    exact Nat.sub_le n k
+  have hregular {u : ℝ} (hu : 0 < u) :
+      IsPFPolynomial (binaryRunTransform n (r u)) := by
+    apply isPFPolynomial_binaryRunTransform_of_regular hn (hrPF hu)
+      (hrdegree u)
+    · exact hrCoeffPos hu (Nat.zero_le n)
+    · exact hrCoeffPos hu (by lia)
+  have hrCoeffContinuous (m : ℕ) : Continuous fun u ↦ (r u).coeff m := by
+    rw [show (fun u ↦ (r u).coeff m) = fun u ↦
+        (q.comp (X + C u)).coeff (Polynomial.revAt n m) by
+      funext u
+      simp only [r, Polynomial.coeff_reflect]]
+    exact q.continuous_coeff_comp_X_add_C _
+  have houtCoeffContinuous (k : ℕ) :
+      Continuous fun u ↦ (binaryRunTransform n (r u)).coeff k := by
+    simp_rw [coeff_binaryRunTransform_eq_sum_range (hrdegree _) k]
+    apply continuous_finsetSum
+    intro m hm
+    exact (hrCoeffContinuous m).mul_const _
+  have hlimit : IsPFPolynomial (binaryRunTransform n (r 0)) := by
+    apply IsPFPolynomial.of_coeff_tendsto
+      (p := fun j ↦ binaryRunTransform n (r (1 / (j + 1 : ℝ))))
+    · intro j
+      apply hregular
+      positivity
+    · intro k
+      exact (houtCoeffContinuous k).tendsto 0 |>.comp
+        (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  simpa [r, q, Polynomial.reflect_reflect] using hlimit
+
+/-- For `n ≥ 4`, the binary-run transform preserves every PF polynomial in
+the degree-`n` box. -/
+theorem isPFPolynomial_binaryRunTransform_of_four_le
+    {n : ℕ} (hn : 4 ≤ n) {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hpdeg : p.natDegree ≤ n) :
+    IsPFPolynomial (binaryRunTransform n p) := by
+  by_cases hpzero : p = 0
+  · subst p
+    simp [IsPFPolynomial.zero]
+  let r : ℝ → ℝ[X] := fun u ↦ p.comp (X + C u)
+  have hrdegree (u : ℝ) : (r u).natDegree ≤ n := by
+    dsimp [r]
+    rw [Polynomial.natDegree_comp]
+    simpa using hpdeg
+  have hregular {u : ℝ} (hu : 0 < u) :
+      IsPFPolynomial (binaryRunTransform n (r u)) := by
+    apply isPFPolynomial_binaryRunTransform_of_coeff_zero_pos hn
+      (by
+        dsimp [r]
+        simpa using hp.comp_C_mul_X_add_C
+          (a := 1) (d := u) (by norm_num) hu.le)
+      (hrdegree u)
+    change 0 < (p.comp (X + C u)).coeff 0
+    simpa [Polynomial.coeff_zero_eq_eval_zero] using
+      eval_pos_of_hasNonnegCoeffs hp.hasNonnegCoeffs hpzero hu
+  have hrCoeffContinuous (m : ℕ) : Continuous fun u ↦ (r u).coeff m :=
+    p.continuous_coeff_comp_X_add_C m
+  have houtCoeffContinuous (k : ℕ) :
+      Continuous fun u ↦ (binaryRunTransform n (r u)).coeff k := by
+    simp_rw [coeff_binaryRunTransform_eq_sum_range (hrdegree _) k]
+    apply continuous_finsetSum
+    intro m hm
+    exact (hrCoeffContinuous m).mul_const _
+  have hlimit : IsPFPolynomial (binaryRunTransform n (r 0)) := by
+    apply IsPFPolynomial.of_coeff_tendsto
+      (p := fun j ↦ binaryRunTransform n (r (1 / (j + 1 : ℝ))))
+    · intro j
+      apply hregular
+      positivity
+    · intro k
+      exact (houtCoeffContinuous k).tendsto 0 |>.comp
+        (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  simpa [r] using hlimit
+
+private theorem coeff_zero_binaryRunTransform_three {p : ℝ[X]}
+    (hpdeg : p.natDegree ≤ 3) :
+    (binaryRunTransform 3 p).coeff 0 = p.coeff 0 := by
+  rw [coeff_binaryRunTransform_eq_sum_range hpdeg]
+  norm_num [Finset.sum_range_succ, binaryRunPolynomial, Polynomial.finsetSum_coeff,
+    Polynomial.coeff_monomial, Polynomial.coeff_one]
+
+private theorem coeff_one_binaryRunTransform_three {p : ℝ[X]}
+    (hpdeg : p.natDegree ≤ 3) :
+    (binaryRunTransform 3 p).coeff 1 =
+      p.coeff 1 + 2 * p.coeff 2 / 3 + p.coeff 3 := by
+  rw [coeff_binaryRunTransform_eq_sum_range hpdeg]
+  norm_num [Finset.sum_range_succ, binaryRunPolynomial, Polynomial.finsetSum_coeff,
+    Polynomial.coeff_monomial, Polynomial.coeff_one]
+  ring_nf
+
+private theorem coeff_two_binaryRunTransform_three {p : ℝ[X]}
+    (hpdeg : p.natDegree ≤ 3) :
+    (binaryRunTransform 3 p).coeff 2 = p.coeff 2 / 3 := by
+  rw [coeff_binaryRunTransform_eq_sum_range hpdeg]
+  norm_num [Finset.sum_range_succ, binaryRunPolynomial, Polynomial.finsetSum_coeff,
+    Polynomial.coeff_monomial, Polynomial.coeff_one]
+  ring
+
+private theorem isPFPolynomial_binaryRunTransform_of_le_three
+    {n : ℕ} (hn : n ≤ 3) {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hpdeg : p.natDegree ≤ n) :
+    IsPFPolynomial (binaryRunTransform n p) := by
+  let q := binaryRunTransform n p
+  have hqnn : HasNonnegCoeffs q := hp.hasNonnegCoeffs.binaryRunTransform
+  by_cases hn3 : n = 3
+  · subst n
+    have hqdeg : q.natDegree ≤ 2 := by
+      exact natDegree_binaryRunTransform_le hpdeg
+    have hpSplit : p.Splits := by
+      rcases hp.eq_zero_or_splits with hpzero | hsplit
+      · simp [hpzero]
+      · exact hsplit
+    have hnewton :=
+      two_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_of_natDegree_le
+        (n := 3) (by norm_num) hpdeg hpSplit
+    have hq0 : q.coeff 0 = p.coeff 0 :=
+      coeff_zero_binaryRunTransform_three hpdeg
+    have hq1 : q.coeff 1 =
+        p.coeff 1 + 2 * p.coeff 2 / 3 + p.coeff 3 :=
+      coeff_one_binaryRunTransform_three hpdeg
+    have hq2 : q.coeff 2 = p.coeff 2 / 3 :=
+      coeff_two_binaryRunTransform_three hpdeg
+    have hdisc : 4 * q.coeff 2 * q.coeff 0 ≤ q.coeff 1 ^ 2 := by
+      rw [hq0, hq1, hq2]
+      have hp0 := hp.hasNonnegCoeffs 0
+      have hp1 := hp.hasNonnegCoeffs 1
+      have hp2 := hp.hasNonnegCoeffs 2
+      have hp3 := hp.hasNonnegCoeffs 3
+      have htail : 0 ≤ 2 * p.coeff 2 / 3 + p.coeff 3 := by positivity
+      have hsquare : p.coeff 1 ^ 2 ≤
+          (p.coeff 1 + 2 * p.coeff 2 / 3 + p.coeff 3) ^ 2 := by
+        nlinarith [mul_nonneg hp1 htail,
+          sq_nonneg (2 * p.coeff 2 / 3 + p.coeff 3)]
+      norm_num at hnewton
+      nlinarith [mul_nonneg hp0 hp2]
+    have hqSplit : q.Splits := by
+      by_cases hq2zero : q.coeff 2 = 0
+      · apply Polynomial.Splits.of_natDegree_le_one
+        rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+        intro k hk
+        rcases eq_or_lt_of_le (show 2 ≤ k by lia) with rfl | hk2
+        · exact hq2zero
+        · exact Polynomial.coeff_eq_zero_of_natDegree_lt
+            (lt_of_le_of_lt hqdeg hk2)
+      · rw [Polynomial.eq_quadratic_of_degree_le_two
+          (Polynomial.degree_le_of_natDegree_le hqdeg)]
+        exact quadraticPoly_splits_of_le (lt_of_le_of_ne (hqnn 2) <|
+          Ne.symm hq2zero) hdisc
+    exact IsPFPolynomial.of_realRooted_nonneg hqnn hqSplit
+  · have hn2 : n ≤ 2 := by lia
+    apply IsPFPolynomial.of_realRooted_nonneg hqnn
+    apply Polynomial.Splits.of_natDegree_le_one
+    exact (natDegree_binaryRunTransform_le hpdeg).trans <| by
+      have : (n + 1) / 2 ≤ 1 := by lia
+      exact this
+
+/-- The normalized binary-run basis transformation preserves PF polynomials,
+equivalently real-rooted polynomials with nonnegative coefficients and
+nonpositive zeros, in every finite degree box. -/
+theorem IsPFPolynomial.binaryRunTransform
+    {n : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hpdeg : p.natDegree ≤ n) :
+    IsPFPolynomial (binaryRunTransform n p) := by
+  by_cases hn : 4 ≤ n
+  · exact isPFPolynomial_binaryRunTransform_of_four_le hn hp hpdeg
+  · exact isPFPolynomial_binaryRunTransform_of_le_three (by lia) hp hpdeg
 
 end
 

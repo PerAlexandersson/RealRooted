@@ -1,7 +1,9 @@
 import RealRooted.BinaryRunTransformation.Deformation
+import RealRooted.CriticalValueContinuation
 import RealRooted.DegreeDropReversal
 import RealRooted.Favard
 import RealRooted.Hadamard.Grace
+import RealRooted.IteratedDerivativeShift
 import RealRooted.SimpleRoots
 
 /-!
@@ -366,9 +368,83 @@ theorem isPFPolynomial_pathMatchingPolynomial (N : ℕ) :
     (hasNonnegCoeffs_pathMatchingPolynomial N)
     (pathMatchingPolynomial_splits N)
 
+theorem HasNonnegCoeffs.coeff_comp_X_add_C_pos
+    {p : ℝ[X]} (hp : HasNonnegCoeffs p) (hp0 : p ≠ 0)
+    {u : ℝ} (hu : 0 < u) {k : ℕ} (hk : k ≤ p.natDegree) :
+    0 < (p.comp (X + C u)).coeff k := by
+  rw [Polynomial.comp_eq_sum_left, Polynomial.sum_def,
+    Polynomial.finsetSum_coeff]
+  apply Finset.sum_pos'
+  · intro m hm
+    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_add_C_pow]
+    exact mul_nonneg (hp m) <| mul_nonneg (pow_nonneg hu.le _)
+      (Nat.cast_nonneg _)
+  · refine ⟨p.natDegree, ?_, ?_⟩
+    · rw [Polynomial.mem_support_iff, Polynomial.coeff_natDegree]
+      exact Polynomial.leadingCoeff_ne_zero.mpr hp0
+    · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_add_C_pow]
+      have hlead : 0 < p.coeff p.natDegree := by
+        rw [Polynomial.coeff_natDegree]
+        exact hp.pos_leadingCoeff hp0
+      have hchoose : 0 < (Nat.choose p.natDegree k : ℝ) := by
+        exact_mod_cast Nat.choose_pos hk
+      positivity
+
+/-- A path-matching polynomial of positive degree admits small positive and
+negative constant perturbations that still split over `ℝ`. -/
+theorem exists_pos_pathMatchingPolynomial_add_C_splits {N : ℕ}
+    (hN : (pathMatchingPolynomial N).natDegree ≠ 0) :
+    ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧
+      (pathMatchingPolynomial N + C ε).Splits ∧
+        (pathMatchingPolynomial N + C (-ε)).Splits := by
+  let q : ℝ → ℝ[X] := fun u ↦ pathMatchingPolynomial N + C u
+  obtain ⟨ξ, _hξbase, hlocal⟩ :=
+    exists_eventually_polynomial_root_branches q (t := 0)
+      (D := (pathMatchingPolynomial N).natDegree) hN
+      (Filter.Eventually.of_forall fun u : ℝ ↦ by simp [q])
+      (by simpa [q] using pathMatchingPolynomial_splits N)
+      (by simpa [q] using pathMatchingPolynomial_hasSimpleRoots N)
+      (by
+        intro x hx
+        have heval : (fun z : ℝ × ℝ ↦ (q z.1).eval z.2) =
+            fun z ↦ (pathMatchingPolynomial N).eval z.2 + z.1 := by
+          funext z
+          simp [q]
+        rw [heval]
+        exact (((Polynomial.contDiff_aeval (pathMatchingPolynomial N) 1).comp
+          contDiff_snd).add contDiff_fst).contDiffAt)
+  have hsplits : ∀ᶠ u in nhds (0 : ℝ), (q u).Splits :=
+    hlocal.mono fun u hu ↦ hu.1
+  rcases Metric.mem_nhds_iff.mp hsplits with ⟨δ, hδ, hball⟩
+  let ε : ℝ := min (δ / 2) (1 / 2)
+  have hε : 0 < ε := by
+    dsimp [ε]
+    positivity
+  have hεδ : ε < δ := by
+    dsimp [ε]
+    exact (min_le_left _ _).trans_lt (half_lt_self hδ)
+  have hε1 : ε < 1 := by
+    dsimp [ε]
+    linarith [min_le_right (δ / 2) (1 / 2 : ℝ)]
+  refine ⟨ε, hε, hε1, ?_, ?_⟩
+  · apply hball
+    simpa [Real.dist_eq, abs_of_pos hε] using hεδ
+  · apply hball
+    simpa [Real.dist_eq, abs_of_pos hε] using hεδ
+
 /-- The limiting polynomial in the small-scale binary-run deformation. -/
 def binaryRunAnchor (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
   schurSzegoComp n (pathMatchingPolynomial (n + 1)) p
+
+private theorem schurSzegoComp_add_C_left (n : ℕ)
+    (f p : ℝ[X]) (u : ℝ) :
+    schurSzegoComp n (f + C u) p =
+      schurSzegoComp n f p + C (u * p.coeff 0) := by
+  ext k
+  rcases k with _ | k
+  · simp [coeff_zero_schurSzegoComp]
+    ring
+  · simp [coeff_schurSzegoComp]
 
 theorem isPFPolynomial_binaryRunAnchor {n : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ n) :
@@ -382,6 +458,95 @@ theorem isPFPolynomial_binaryRunAnchor {n : ℕ} {p : ℝ[X]}
           Nat.div_lt_self (by lia) (by norm_num)
         lia
   · exact hpdeg
+
+/-- If the input has positive constant coefficient, then the Schur--Szegő
+anchor has only simple roots.  The proof perturbs the simple path polynomial
+in both constant directions and applies the strict Laguerre inequality to the
+two resulting split compositions. -/
+theorem binaryRunAnchor_hasSimpleRoots {n : ℕ} {p : ℝ[X]}
+    (hn : 1 ≤ n) (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ n)
+    (hp0 : 0 < p.coeff 0) :
+    HasSimpleRoots (binaryRunAnchor n p) := by
+  let f := pathMatchingPolynomial (n + 1)
+  let h := binaryRunAnchor n p
+  have hfdeg : f.natDegree ≤ n := by
+    dsimp [f]
+    rw [natDegree_pathMatchingPolynomial]
+    have hlt : (n + 1) / 2 < n + 1 :=
+      Nat.div_lt_self (by lia) (by norm_num)
+    lia
+  have hfdeg0 : f.natDegree ≠ 0 := by
+    dsimp [f]
+    rw [natDegree_pathMatchingPolynomial]
+    have : 1 ≤ (n + 1) / 2 := by lia
+    lia
+  obtain ⟨ε, hε, hε1, hfplus, hfminus⟩ :=
+    exists_pos_pathMatchingPolynomial_add_C_splits hfdeg0
+  let c := ε * p.coeff 0
+  have hc : 0 < c := mul_pos hε hp0
+  have hplusComp : (schurSzegoComp n (f + C ε) p).Splits := by
+    rw [schurSzegoComp_comm]
+    exact (schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial hp hpdeg
+      (by simpa [f] using hfdeg) (by simpa [f] using hfplus)).resolve_left (by
+        intro hz
+        have hz0 : p.coeff 0 * (1 + ε) = 0 := by
+          simpa only [f, coeff_zero_schurSzegoComp, coeff_add, coeff_C,
+            coeff_zero_pathMatchingPolynomial, one_mul, coeff_zero, ite_true]
+            using congrArg (fun q : ℝ[X] ↦ q.coeff 0) hz
+        rcases mul_eq_zero.mp hz0 with hpzero | heq
+        · exact hp0.ne' hpzero
+        · nlinarith)
+  have hminusComp : (schurSzegoComp n (f + C (-ε)) p).Splits := by
+    rw [schurSzegoComp_comm]
+    exact (schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial hp hpdeg
+      (by
+        rw [Polynomial.natDegree_add_C]
+        exact hfdeg)
+      (by simpa [f] using hfminus)).resolve_left (by
+        intro hz
+        have hz0 : p.coeff 0 * (1 + -ε) = 0 := by
+          simpa only [f, coeff_zero_schurSzegoComp, coeff_add, coeff_C,
+            coeff_zero_pathMatchingPolynomial, one_mul, coeff_zero, ite_true]
+            using congrArg (fun q : ℝ[X] ↦ q.coeff 0) hz
+        rcases mul_eq_zero.mp hz0 with hpzero | heq
+        · exact hp0.ne' hpzero
+        · nlinarith)
+  have hplus : (h + C c).Splits := by
+    rw [schurSzegoComp_add_C_left] at hplusComp
+    simpa [h, f, c, binaryRunAnchor] using hplusComp
+  have hminus : (h + C (-c)).Splits := by
+    rw [schurSzegoComp_add_C_left] at hminusComp
+    simpa [h, f, c, binaryRunAnchor] using hminusComp
+  have hh0 : h.coeff 0 = p.coeff 0 := by
+    simp [h, binaryRunAnchor, coeff_zero_schurSzegoComp]
+  have hhne : h ≠ 0 := by
+    intro hz
+    have := congrArg (fun q : ℝ[X] ↦ q.coeff 0) hz
+    rw [hh0] at this
+    simp_all
+  by_cases hhdeg : h.natDegree ≤ 1
+  · exact hasSimpleRoots_of_natDegree_le_one hhne hhdeg
+  intro r hr
+  have hrh : h.eval r = 0 := by
+    simpa [h, Polynomial.IsRoot.def] using hr
+  have hmultpos : 0 < h.rootMultiplicity r :=
+    (Polynomial.rootMultiplicity_pos hhne).2 hr
+  by_contra hmult
+  have hmultTwo : 1 < h.rootMultiplicity r := by lia
+  have hderRoot : h.derivative.IsRoot r :=
+    ((Polynomial.one_lt_rootMultiplicity_iff_isRoot hhne).1 hmultTwo).2
+  have hplusEval : (h + C c).eval r ≠ 0 := by
+    simp [hrh, hc.ne']
+  have hminusEval : (h + C (-c)).eval r ≠ 0 := by
+    simp [hrh, hc.ne']
+  have hplusStrict := deriv2_mul_lt_deriv_sq_at_non_root hplus
+    (by simpa using (lt_of_not_ge hhdeg).le) hplusEval
+  have hminusStrict := deriv2_mul_lt_deriv_sq_at_non_root hminus
+    (by rw [Polynomial.natDegree_add_C]; exact (lt_of_not_ge hhdeg).le)
+    hminusEval
+  simp [Polynomial.IsRoot.def] at hderRoot
+  simp [hrh, hderRoot] at hplusStrict hminusStrict
+  nlinarith
 
 theorem coeff_binaryRunAnchor_of_le {n k : ℕ} (p : ℝ[X]) (hk : k ≤ n) :
     (binaryRunAnchor n p).coeff k =
@@ -435,6 +600,43 @@ theorem natDegree_rescaledBinaryRunDeformation_le
   intro k hk
   exact coeff_rescaledBinaryRunDeformation_of_lt p t hk
 
+theorem HasNonnegCoeffs.rescaledBinaryRunDeformation
+    {n : ℕ} {p : ℝ[X]} (hp : HasNonnegCoeffs p) {t : ℝ}
+    (ht : 0 ≤ t) :
+    HasNonnegCoeffs (rescaledBinaryRunDeformation n p t) := by
+  intro k
+  by_cases hk : k ≤ (n + 1) / 2
+  · rw [coeff_rescaledBinaryRunDeformation_of_le p t hk]
+    apply Finset.sum_nonneg
+    intro m hm
+    exact mul_nonneg
+      (mul_nonneg (hp m) (hasNonnegCoeffs_binaryRunPolynomial n m k))
+      (pow_nonneg ht _)
+  · rw [coeff_rescaledBinaryRunDeformation_of_lt p t
+      (Nat.lt_of_not_ge hk)]
+
+theorem natDegree_rescaledBinaryRunDeformation_eq
+    {n : ℕ} (hn : 1 ≤ n) {p : ℝ[X]} (hp : HasNonnegCoeffs p)
+    (hpTop : 0 < p.coeff ((n + 1) / 2)) {t : ℝ} (ht : 0 ≤ t) :
+    (rescaledBinaryRunDeformation n p t).natDegree = (n + 1) / 2 := by
+  apply le_antisymm (natDegree_rescaledBinaryRunDeformation_le n p t)
+  apply Polynomial.le_natDegree_of_ne_zero
+  rw [coeff_rescaledBinaryRunDeformation_of_le p t le_rfl]
+  apply ne_of_gt
+  apply Finset.sum_pos'
+  · intro m hm
+    exact mul_nonneg
+      (mul_nonneg (hp m) (hasNonnegCoeffs_binaryRunPolynomial n m _))
+      (pow_nonneg ht _)
+  · refine ⟨(n + 1) / 2, by simp; lia, ?_⟩
+    rw [coeff_binaryRunPolynomial_self n ((n + 1) / 2) (by lia)]
+    have hnum : 0 < (Nat.choose
+        (n + 1 - (n + 1) / 2) ((n + 1) / 2) : ℝ) := by
+      exact_mod_cast Nat.choose_pos (by lia)
+    have hden : 0 < (Nat.choose n ((n + 1) / 2) : ℝ) := by
+      exact_mod_cast Nat.choose_pos (by lia)
+    simpa using mul_pos hpTop (div_pos hnum hden)
+
 /-- Every coefficient of the rescaled family is a polynomial function of the
 scale, including at scale zero. -/
 theorem contDiff_coeff_rescaledBinaryRunDeformation
@@ -446,6 +648,21 @@ theorem contDiff_coeff_rescaledBinaryRunDeformation
   · simp_rw [coeff_rescaledBinaryRunDeformation_of_lt p _
       (Nat.lt_of_not_ge hk)]
     fun_prop
+
+theorem contDiff_rescaledBinaryRunDeformation_eval_prod
+    (n : ℕ) (p : ℝ[X]) :
+    ContDiff ℝ ∞ (fun z : ℝ × ℝ ↦
+      (rescaledBinaryRunDeformation n p z.1).eval z.2) := by
+  rw [show (fun z : ℝ × ℝ ↦
+      (rescaledBinaryRunDeformation n p z.1).eval z.2) =
+      fun z ↦ ∑ k ∈ Finset.range ((n + 1) / 2 + 1),
+        (∑ m ∈ Finset.range (n + 1),
+          p.coeff m * (binaryRunPolynomial n m).coeff k *
+            z.1 ^ (m - k)) * z.2 ^ k by
+    funext z
+    rw [rescaledBinaryRunDeformation, Polynomial.eval_finsetSum]
+    simp only [eval_monomial, Finset.sum_mul]]
+  fun_prop
 
 /-- Rescaling back by `X ↦ tX` recovers the ordinary binary-run deformation.
 This identity is valid at `t = 0`; invertibility is only needed in the reverse
@@ -481,6 +698,22 @@ theorem rescaledBinaryRunDeformation_comp_scale
       lt_of_le_of_lt
         (natDegree_binaryRunTransform_le
           ((natDegree_scalePolynomial_le t p).trans hp)) hklt).symm
+
+theorem natDegree_shiftedBinaryRunDeformation_eq
+    {n : ℕ} (hn : 1 ≤ n) {p : ℝ[X]} (hp : HasNonnegCoeffs p)
+    (hpdeg : p.natDegree ≤ n)
+    (hpTop : 0 < p.coeff ((n + 1) / 2)) {t : ℝ} (ht : 0 < t) :
+    (shiftedBinaryRunDeformation n p t).natDegree = (n + 1) / 2 := by
+  have hrescaled := natDegree_rescaledBinaryRunDeformation_eq
+    hn hp hpTop ht.le
+  have hscale := rescaledBinaryRunDeformation_comp_scale hpdeg t
+  have hordinary :
+      (binaryRunTransform n (scalePolynomial t p)).natDegree =
+        (n + 1) / 2 := by
+    rw [← hscale, Polynomial.natDegree_comp, hrescaled]
+    simp [ht.ne']
+  rw [shiftedBinaryRunDeformation, Polynomial.natDegree_comp]
+  simpa using hordinary
 
 /-- The rescaled family specializes at zero to the Schur--Szegő anchor. -/
 theorem rescaledBinaryRunDeformation_zero (n : ℕ) (p : ℝ[X]) :

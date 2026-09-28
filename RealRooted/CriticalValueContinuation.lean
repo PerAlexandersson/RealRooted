@@ -224,6 +224,46 @@ theorem HasSimpleRoots.derivative_of_splits
     exact (hinterl.hasSimpleRoots_of_no_common_root fun _ hx =>
       hsimple.eval_derivative_ne_zero hx.2 hx.1).1
 
+/-- A positive-degree polynomial with simple roots has a uniform positive
+lower bound on the squares of all its critical values. -/
+theorem HasSimpleRoots.exists_pos_criticalValueMargin
+    {p : ℝ[X]} (hsimple : HasSimpleRoots p) (hdegree : p.natDegree ≠ 0) :
+    ∃ δ : ℝ, 0 < δ ∧
+      ∀ x, p.derivative.IsRoot x → δ ≤ p.eval x ^ 2 := by
+  classical
+  have hderivative : p.derivative ≠ 0 :=
+    Polynomial.derivative_ne_zero.mpr hdegree
+  let S := p.derivative.roots.toFinset
+  have hpositive : ∀ x ∈ S, 0 < p.eval x ^ 2 := by
+    intro x hx
+    have hxcritical : p.derivative.IsRoot x := by
+      apply (Polynomial.mem_roots hderivative).mp
+      exact Multiset.mem_toFinset.mp hx
+    apply sq_pos_of_ne_zero
+    intro hxzero
+    exact hsimple.eval_derivative_ne_zero
+      (by simpa [Polynomial.IsRoot.def] using hxzero) <| by
+        simpa [Polynomial.IsRoot.def] using hxcritical
+  have hfinite : ∀ T : Finset ℝ,
+      (∀ x ∈ T, 0 < p.eval x ^ 2) →
+        ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ T, δ ≤ p.eval x ^ 2 := by
+    intro T hT
+    induction T using Finset.induction_on with
+    | empty => exact ⟨1, by norm_num, by simp⟩
+    | @insert a T ha ih =>
+        obtain ⟨δ, hδ, hbound⟩ := ih fun x hx ↦ hT x (by simp [hx])
+        refine ⟨min δ (p.eval a ^ 2), lt_min hδ (hT a (by simp)), ?_⟩
+        intro x hx
+        rcases Finset.mem_insert.mp hx with rfl | hx
+        · exact min_le_right _ _
+        · exact (min_le_left _ _).trans (hbound x hx)
+  obtain ⟨δ, hδ, hbound⟩ := hfinite S hpositive
+  refine ⟨δ, hδ, ?_⟩
+  intro x hx
+  apply hbound x
+  apply Multiset.mem_toFinset.mpr
+  exact (Polynomial.mem_roots hderivative).mpr hx
+
 private theorem toSpanSingleton_isInvertible {c : ℝ} (hc : c ≠ 0) :
     (ContinuousLinearMap.toSpanSingleton ℝ c).IsInvertible := by
   let e : ℝ ≃L[ℝ] ℝ :=
