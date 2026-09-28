@@ -1497,6 +1497,59 @@ private theorem blockwisePolarizationBasis_eq_normalized
   rw [← map_prod]
   simp [MvPolynomial.boxChoose]
 
+private theorem sourceBlockwisePolarizationGeneral_eq_basis_sum
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (P : MvPolynomial (τ ⊕ σ) ℂ) :
+    sourceBlockwisePolarizationGeneral κ P =
+      ∑ r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i},
+        MvPolynomial.rename Sum.inl (sourceCoefficientGeneral P r.1) *
+          MvPolynomial.rename Sum.inr (blockwisePolarizationBasis κ r) := by
+  classical
+  unfold sourceBlockwisePolarizationGeneral
+  apply Fintype.sum_congr
+  intro r
+  rw [blockwisePolarizationBasis_eq_normalized]
+  simp only [map_mul, MvPolynomial.rename_C]
+  ring
+
+/-- Source-block polarization is affine in each new polarized coordinate;
+the untouched output variables remain unrestricted. -/
+theorem degreeOf_sourceBlockwisePolarizationGeneral_inr_le_one
+    {σ τ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (P : MvPolynomial (τ ⊕ σ) ℂ) (x : PolarizedSource κ) :
+    (sourceBlockwisePolarizationGeneral κ P).degreeOf (Sum.inr x) ≤ 1 := by
+  classical
+  rw [sourceBlockwisePolarizationGeneral_eq_basis_sum]
+  refine (MvPolynomial.degreeOf_sum_le (Sum.inr x) Finset.univ fun r =>
+    MvPolynomial.rename Sum.inl (sourceCoefficientGeneral P r.1) *
+      MvPolynomial.rename Sum.inr (blockwisePolarizationBasis κ r)).trans ?_
+  apply Finset.sup_le
+  intro r _
+  have houtput :
+      (MvPolynomial.rename (Sum.inl : τ → τ ⊕ PolarizedSource κ)
+        (sourceCoefficientGeneral P r.1)).degreeOf (Sum.inr x) = 0 := by
+    apply Nat.le_zero.mp
+    rw [MvPolynomial.degreeOf_le_iff]
+    intro d hd
+    apply Nat.le_zero.mpr
+    by_contra hdx
+    have hxvars : Sum.inr x ∈
+        (MvPolynomial.rename (Sum.inl : τ → τ ⊕ PolarizedSource κ)
+          (sourceCoefficientGeneral P r.1)).vars := by
+      rw [MvPolynomial.mem_vars_iff_mem_support]
+      exact ⟨d, hd, Finsupp.mem_support_iff.mpr hdx⟩
+    obtain ⟨j, _hj, hji⟩ :=
+      MvPolynomial.mem_vars_rename Sum.inl _ hxvars
+    exact Sum.inl_ne_inr hji
+  have hsource :
+      (MvPolynomial.rename (Sum.inr : PolarizedSource κ →
+        τ ⊕ PolarizedSource κ) (blockwisePolarizationBasis κ r)).degreeOf
+          (Sum.inr x) ≤ 1 := by
+    rw [MvPolynomial.degreeOf_rename_of_injective Sum.inr_injective]
+    exact isMultiaffine_blockwisePolarizationBasis κ r x
+  exact (MvPolynomial.degreeOf_mul_le _ _ _).trans <|
+    (Nat.add_le_add houtput.le hsource).trans_eq (Nat.zero_add 1)
+
 private theorem coe_blockwisePolarizationDegreeBoxGeneral_eq_sum
     {σ : Type*} [Fintype σ] (κ : σ → ℕ)
     (p : MvPolynomial.degreeOfLE σ ℂ κ) :
