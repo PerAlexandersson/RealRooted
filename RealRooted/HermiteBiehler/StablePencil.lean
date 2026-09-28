@@ -19,6 +19,62 @@ def IsUpperHalfPlaneStablePencil (f g : ℝ[X]) : Prop :=
   ∀ z w : ℂ, 0 < z.im → 0 < w.im →
     (complexify f).eval z + w * (complexify g).eval z ≠ 0
 
+/-- The bivariate realization `f(z) + w g(z)` of a real polynomial pencil. -/
+def bivariatePencil (f g : ℝ[X]) : MvPolynomial (Fin 2) ℂ :=
+  (complexify f).eval₂ (MvPolynomial.C : ℂ →+* MvPolynomial (Fin 2) ℂ)
+      (MvPolynomial.X 0) +
+    MvPolynomial.X 1 *
+      (complexify g).eval₂ (MvPolynomial.C : ℂ →+* MvPolynomial (Fin 2) ℂ)
+        (MvPolynomial.X 0)
+
+@[simp] theorem eval_bivariatePencil (f g : ℝ[X]) (z : Fin 2 → ℂ) :
+    MvPolynomial.eval z (bivariatePencil f g) =
+      (complexify f).eval (z 0) + z 1 * (complexify g).eval (z 0) := by
+  have hC :
+      (MvPolynomial.eval z).comp
+          (MvPolynomial.C : ℂ →+* MvPolynomial (Fin 2) ℂ) =
+        RingHom.id ℂ := by
+    ext r
+    simp
+  simp [bivariatePencil, Polynomial.hom_eval₂, hC]
+
+/-- Multivariate upper-half-plane stability of `f(z) + w g(z)` is exactly the
+nonvanishing statement needed for a stable univariate pencil. -/
+theorem MvUpperHalfPlaneStable.isUpperHalfPlaneStablePencil {f g : ℝ[X]}
+    (h : MvUpperHalfPlaneStable (bivariatePencil f g)) :
+    IsUpperHalfPlaneStablePencil f g := by
+  intro z w hz hw
+  simpa using h ![z, w] (by
+    intro i
+    fin_cases i
+    · simpa using hz
+    · simpa using hw)
+
+/-- A weakly stable bivariate pencil either has both endpoints zero or gives a
+genuine stable pencil. -/
+theorem MvUpperHalfPlaneStableOrZero.eq_zero_pair_or_stablePencil
+    {f g : ℝ[X]}
+    (h : MvUpperHalfPlaneStableOrZero (bivariatePencil f g)) :
+    (f = 0 ∧ g = 0) ∨ IsUpperHalfPlaneStablePencil f g := by
+  rcases h with hzero | hstable
+  · left
+    have hfmap : complexify f = 0 := by
+      apply Polynomial.funext
+      intro z
+      have heval := congrArg (MvPolynomial.eval ![z, 0]) hzero
+      simpa using heval
+    have hf : f = 0 :=
+      (Polynomial.map_eq_zero_iff Complex.ofReal_injective).mp hfmap
+    subst f
+    have hgmap : complexify g = 0 := by
+      apply Polynomial.funext
+      intro z
+      have heval := congrArg (MvPolynomial.eval ![z, 1]) hzero
+      simpa using heval
+    exact ⟨rfl,
+      (Polynomial.map_eq_zero_iff Complex.ofReal_injective).mp hgmap⟩
+  · exact Or.inr hstable.isUpperHalfPlaneStablePencil
+
 /-- Specializing a stable pencil at `w = i` gives a stable
 Hermite--Biehler polynomial. -/
 theorem IsUpperHalfPlaneStablePencil.hermiteBiehler {f g : ℝ[X]}

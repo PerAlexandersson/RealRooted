@@ -70,6 +70,7 @@ import RealRooted.BinaryRunTransformation.Coefficients
 import RealRooted.BinaryRunTransformation.Contraction
 import RealRooted.BinaryRunTransformation.CriticalValue
 import RealRooted.BinaryRunTransformation.Deformation
+import RealRooted.BinaryRunTransformation.PointingPencil
 import RealRooted.BinaryRunTransformation.Sturm
 import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol

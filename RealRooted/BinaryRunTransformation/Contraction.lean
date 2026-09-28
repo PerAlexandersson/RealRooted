@@ -274,6 +274,21 @@ theorem mvUpperHalfPlaneStableOrZero_normalizedDiagonalContraction
     simp [hzero, specializeRight]
   · exact hstableQ.specializeRight_zero_or_of_degreeOf_le_one hQdegree
 
+/-- The normalized contraction also preserves the zero-aware form of
+upper-half-plane stability. -/
+theorem MvUpperHalfPlaneStableOrZero.normalizedDiagonalContraction
+    {τ : Type*} [Fintype τ] {n : ℕ}
+    {P : MvPolynomial (τ ⊕ Fin 2) ℂ}
+    (hstable : MvUpperHalfPlaneStableOrZero P)
+    (hdegree : ∀ i, P.degreeOf (Sum.inr i) ≤ n) :
+    MvUpperHalfPlaneStableOrZero (normalizedDiagonalContraction n P) := by
+  rcases hstable with rfl | hstable
+  · left
+    rw [normalizedDiagonalContraction_eq_box_sum]
+    simp [sourceCoefficientGeneral]
+  · exact mvUpperHalfPlaneStableOrZero_normalizedDiagonalContraction
+      n P hdegree hstable
+
 end
 
 end RealRooted
