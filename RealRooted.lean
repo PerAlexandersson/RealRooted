@@ -202,6 +202,7 @@ import RealRooted.ClassicalHurwitzMatrix.Stability.Vieta
 import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
 import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 import RealRooted.Challenges.AissenSchoenbergWhitney
+import RealRooted.Challenges.BinaryRunTransformation
 import RealRooted.Challenges.BorceaBranden
 import RealRooted.Challenges.BrandenSolus
 import RealRooted.Challenges.CauchyInterlacing
