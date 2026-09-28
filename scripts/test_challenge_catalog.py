@@ -237,14 +237,17 @@ end RealRooted.Challenges.Sample
         self.assertIn('class="kind-badge kind-badge--theorem"', first["index.html"])
         self.assertIn("Canonical &amp; Author · 1914–1996", first["index.html"])
         self.assertIn('data-catalog-sort', first["index.html"])
-        self.assertIn('>Catalog</a>', first["index.html"])
-        self.assertIn("<h1>Real-rooted polynomials in Lean</h1>", first["index.html"])
+        self.assertEqual(first["index.html"].count('type="radio"'), 2)
+        self.assertNotIn("<select", first["index.html"])
+        self.assertIn('href="./#definitions">Definitions</a>', first["index.html"])
+        self.assertIn('href="./#theorems">Theorems</a>', first["index.html"])
+        self.assertIn("<h1>Real-rooted polynomials</h1>", first["index.html"])
         self.assertNotIn("made explorable", first["index.html"])
         self.assertIn("catalog-manifest.json", first)
         self.assertIn("assets/site.js", first)
         self.assertNotIn("catalogue-manifest.json", first)
         self.assertIn(
-            "A curated guide to Lean definitions and proved theorems, with links to their source.",
+            "Definitions and proved theorems, with links to their formal sources.",
             first["index.html"],
         )
         self.assertNotIn("Every declaration links", first["index.html"])
@@ -264,6 +267,31 @@ end RealRooted.Challenges.Sample
         manifest = json.loads(first["catalog-manifest.json"])
         self.assertEqual(manifest["pages"][0]["authors"], ["Canonical", "Author"])
         self.assertEqual(manifest["pages"][0]["years"], [1914, 1996])
+
+    def test_home_lists_definitions_before_theorems(self) -> None:
+        self.write("RealRooted/Challenges/Sample.lean", self.sample_source())
+        self.write(
+            "RealRooted/Challenges/Other.lean",
+            catalog_block(
+                section="theorems",
+                slug="other",
+                definitions="",
+                theorems='[[theorems]]\nname = "RealRooted.Challenges.Other.proven"',
+                content=(
+                    "# Other\n\nAnother result.\n\n## References\n\n"
+                    "- [Paper](https://example.org/)"
+                ),
+            )
+            + "namespace RealRooted.Challenges.Other\n"
+            + "theorem proven : True := by trivial\n"
+            + "end RealRooted.Challenges.Other\n",
+        )
+        pages = load_catalog(self.root)
+        output = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
+        home = output["index.html"]
+        self.assertLess(home.index('id="definitions"'), home.index('id="theorems"'))
+        self.assertIn('href="families/sample/"', home)
+        self.assertIn('href="theorems/other/"', home)
 
     def test_attribution_metadata_is_validated(self) -> None:
         bad_authors = catalog_block(authors='authors = ["Repeated", "Repeated"]')
