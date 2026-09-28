@@ -421,4 +421,23 @@ theorem natDegree_comp_binaryRunTransform_le {n : ℕ} {p : ℝ[X]}
     rw [Nat.choose_eq_zero_of_lt hmk']
     simp
 
+/-- Reflection symmetry of the nonconstant binary-run basis images. -/
+theorem binaryRunPolynomial_reflection (n m : ℕ)
+    (hm0 : 0 < m) (hm : m ≤ n) :
+    binaryRunPolynomial n (n + 1 - m) = binaryRunPolynomial n m := by
+  have hreflect0 : 0 < n + 1 - m := by lia
+  have hreflect_le : n + 1 - m ≤ n := by lia
+  have hshift :
+      (binaryRunPolynomial n (n + 1 - m)).comp (X + 1) =
+        (binaryRunPolynomial n m).comp (X + 1) := by
+    ext k
+    rw [coeff_comp_binaryRunPolynomial_all n (n + 1 - m) k
+        hreflect0 hreflect_le,
+      coeff_comp_binaryRunPolynomial_all n m k hm0 hm]
+    have hsub : n + 1 - (n + 1 - m) = m := by lia
+    rw [hsub]
+    ring
+  have hinverse := congrArg (fun p : ℝ[X] => p.comp (X - 1)) hshift
+  simpa [Polynomial.comp_assoc] using hinverse
+
 end RealRooted
