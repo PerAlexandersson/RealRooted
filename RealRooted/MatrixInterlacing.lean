@@ -152,6 +152,21 @@ def isPreserving (M : Atomic2x2Matrix) : Bool :=
     !(M.a == .x && M.c == .one) &&
     !(M.b == .x && M.d == .one)
 
+/-- Reflection across the anti-diagonal. This is the square reflection that
+preserves the directed atomic classification. -/
+def antiTranspose (M : Atomic2x2Matrix) : Atomic2x2Matrix :=
+  ⟨M.d, M.b, M.c, M.a⟩
+
+@[simp] theorem antiTranspose_antiTranspose (M : Atomic2x2Matrix) :
+    M.antiTranspose.antiTranspose = M := by
+  cases M
+  rfl
+
+theorem isPreserving_antiTranspose (M : Atomic2x2Matrix) :
+    M.antiTranspose.isPreserving = M.isPreserving := by
+  rcases M with ⟨a, b, c, d⟩
+  fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d <;> decide
+
 /-- The explicit enumeration of all `3^4 = 81` atomic matrices. -/
 def all : Finset Atomic2x2Matrix := Finset.univ
 
@@ -163,6 +178,59 @@ def preserving : Finset Atomic2x2Matrix :=
 theorem card_all : all.card = 81 := by decide
 
 theorem card_preserving : preserving.card = 40 := by decide
+
+/-- Boolean form of the 18-matrix table's nondegeneracy convention: neither
+row is zero and the two rows are distinct. -/
+def isNondegenerate (M : Atomic2x2Matrix) : Bool :=
+  !(M.a == .zero && M.b == .zero) &&
+  !(M.c == .zero && M.d == .zero) &&
+  !(M.a == M.c && M.b == M.d)
+
+/-- Proposition form of `isNondegenerate`. -/
+def IsNondegenerate (M : Atomic2x2Matrix) : Prop :=
+  M.isNondegenerate = true
+
+/-- The 56 atomic codes remaining after deleting zero-row and repeated-row
+matrices. -/
+def nondegenerate : Finset Atomic2x2Matrix :=
+  all.filter fun M => M.isNondegenerate = true
+
+/-- The nondegenerate members of the full 40-code preserving table. -/
+def nondegeneratePreserving : Finset Atomic2x2Matrix :=
+  preserving.filter fun M => M.isNondegenerate = true
+
+theorem card_nondegenerate : nondegenerate.card = 56 := by decide
+
+theorem card_nondegeneratePreserving : nondegeneratePreserving.card = 18 := by
+  decide
+
+/-- The 18 nondegenerate preservers displayed at
+<https://www.symmetricfunctions.com/realRootedInterlacing.htm#smallInterlacingMatrices>. -/
+def symCatPreservingList : List Atomic2x2Matrix :=
+  [⟨.zero, .one, .zero, .x⟩,
+    ⟨.zero, .one, .x, .zero⟩,
+    ⟨.one, .zero, .zero, .one⟩,
+    ⟨.one, .zero, .x, .zero⟩,
+    ⟨.x, .zero, .zero, .x⟩,
+    ⟨.zero, .one, .x, .one⟩,
+    ⟨.zero, .one, .x, .x⟩,
+    ⟨.one, .zero, .one, .one⟩,
+    ⟨.one, .zero, .x, .one⟩,
+    ⟨.one, .one, .zero, .one⟩,
+    ⟨.one, .one, .x, .zero⟩,
+    ⟨.x, .zero, .x, .x⟩,
+    ⟨.x, .one, .zero, .x⟩,
+    ⟨.x, .one, .x, .zero⟩,
+    ⟨.x, .x, .zero, .x⟩,
+    ⟨.one, .one, .x, .one⟩,
+    ⟨.one, .one, .x, .x⟩,
+    ⟨.x, .one, .x, .x⟩]
+
+def symCatPreserving : Finset Atomic2x2Matrix :=
+  symCatPreservingList.toFinset
+
+theorem nondegeneratePreserving_eq_symCatPreserving :
+    nondegeneratePreserving = symCatPreserving := by decide
 
 /-! ### Affine certificates for the accepted codes -/
 
@@ -638,6 +706,10 @@ theorem mem_preserving_iff_hasFullAffineProperty (M : Atomic2x2Matrix) :
   rw [hasFullAffineProperty_iff_isPreserving]
   simp [preserving, all]
 
+theorem mem_preserving_antiTranspose_iff (M : Atomic2x2Matrix) :
+    M.antiTranspose ∈ preserving ↔ M ∈ preserving := by
+  simp [preserving, all, isPreserving_antiTranspose]
+
 /-- An atomic matrix preserves the iterative zero-aware nonnegative
 real-rooted interlacing package under the polynomial matrix action. -/
 def PreservesInterlacing (M : Atomic2x2Matrix) : Prop :=
@@ -891,6 +963,96 @@ private theorem X_add_X_cube_not_splits :
   exact h.of_dvd
     (ne_zero_of_natDegree_eq_succ (by compute_degree!))
     ⟨X, by ring⟩
+
+private theorem not_preserves_top_row_one_x (c d : AtomicMatrixEntry) :
+    ¬ PreservesInterlacing ⟨.one, .x, c, d⟩ := by
+  intro hM
+  apply X_add_X_cube_not_splits
+  apply action_mem_splits hM input_X_X_sq
+  · simp [matPolyAction, eval]
+    left
+    ring
+  · exact ne_zero_of_natDegree_eq_succ (by compute_degree!)
+
+private theorem not_preserves_bottom_row_one_x (a b : AtomicMatrixEntry) :
+    ¬ PreservesInterlacing ⟨a, b, .one, .x⟩ := by
+  intro hM
+  apply X_add_X_cube_not_splits
+  apply action_mem_splits hM input_X_X_sq
+  · simp [matPolyAction, eval]
+    right
+    ring
+  · exact ne_zero_of_natDegree_eq_succ (by compute_degree!)
+
+set_option maxHeartbeats 8000000 in
+-- The semantic converse normalizes five witness images in every rejected case.
+/-- Semantic completeness of the finite atomic classification: every atomic
+matrix preserving the iterative zero-aware interlacing package belongs to the
+checked table. -/
+theorem mem_preserving_of_preservesInterlacing
+    {M : Atomic2x2Matrix} (hM : M.PreservesInterlacing) :
+    M ∈ preserving := by
+  rw [mem_preserving_iff_hasFullAffineProperty,
+    hasFullAffineProperty_iff_isPreserving]
+  rcases M with ⟨a, b, c, d⟩
+  fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d
+  all_goals simp [isPreserving, isAffineAdmissible]
+  all_goals try exact not_preserves_top_row_one_x _ _ hM
+  all_goals try exact not_preserves_bottom_row_one_x _ _ hM
+  all_goals
+    have hzeroX := interl_action_pair hM input_zero_X_sq
+    have hXzero := interl_action_pair hM input_X_sq_zero
+    have hXX := interl_action_pair hM input_X_sq_X_sq
+    have hxX := interl_action_pair hM input_X_X_sq
+    have hone := interl_action_pair hM input_one_X_add_one
+    have hbadAffine₁ := not_interl_X_two_mul_X_add_one
+    have hbadAffine₂ := not_interl_two_mul_X_add_one_X_add_one
+    simp [AtomicMatrixEntry.eval] at hzeroX hXzero hXX hxX hone
+    ring_nf at hzeroX hXzero hXX hxX hone hbadAffine₁ hbadAffine₂
+    first
+    | exact not_interl_X_sq_X hzeroX
+    | exact not_interl_X_sq_X hXzero
+    | exact not_interl_X_sq_X hXX
+    | exact not_interl_X_sq_X hxX
+    | exact not_interl_X_cube_X_sq hzeroX
+    | exact not_interl_X_cube_X_sq hXzero
+    | exact not_interl_X_cube_X_sq hXX
+    | exact not_interl_X_cube_X_sq hxX
+    | exact not_interl_X_X_cube hzeroX
+    | exact not_interl_X_X_cube hXzero
+    | exact not_interl_X_X_cube hXX
+    | exact not_interl_X_X_cube hxX
+    | exact not_interl_X_X_sq_add_X_cube hxX
+    | exact not_interl_X_add_X_sq_X hxX
+    | exact not_interl_X_sq_add_X_cube_X_sq hxX
+    | exact not_interl_X_sq_X_add_X_sq hxX
+    | exact not_interl_X_cube_X_sq_add_X_cube hxX
+    | exact not_interl_X_add_X_sq_X_cube hxX
+    | exact hbadAffine₁ hone
+    | exact not_interl_X_X_add_one hone
+    | exact not_interl_X_X_add_two hone
+    | exact hbadAffine₂ hone
+
+/-- Exact semantic classification of all 81 atomic matrices. -/
+theorem preservesInterlacing_iff_mem_preserving (M : Atomic2x2Matrix) :
+    M.PreservesInterlacing ↔ M ∈ preserving :=
+  ⟨mem_preserving_of_preservesInterlacing,
+    preservesInterlacing_of_mem_preserving⟩
+
+/-- Anti-diagonal reflection preserves the semantic matrix property. -/
+theorem preservesInterlacing_antiTranspose_iff (M : Atomic2x2Matrix) :
+    M.antiTranspose.PreservesInterlacing ↔ M.PreservesInterlacing := by
+  rw [preservesInterlacing_iff_mem_preserving,
+    mem_preserving_antiTranspose_iff,
+    ← preservesInterlacing_iff_mem_preserving]
+
+/-- Membership in the displayed 18-matrix table is exactly nondegeneracy plus
+semantic preservation of the zero-aware interlacing package. -/
+theorem mem_symCatPreserving_iff (M : Atomic2x2Matrix) :
+    M ∈ symCatPreserving ↔ M.IsNondegenerate ∧ M.PreservesInterlacing := by
+  rw [← nondegeneratePreserving_eq_symCatPreserving]
+  simp [nondegeneratePreserving, IsNondegenerate,
+    preservesInterlacing_iff_mem_preserving, and_comm]
 
 end Atomic2x2Matrix
 
