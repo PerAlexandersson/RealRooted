@@ -27,32 +27,8 @@ private def binaryRunCoeff (n m k : ℕ) : ℝ :=
 private theorem coeff_binaryRunPolynomial_of_pos (n m k : ℕ)
     (hm0 : 0 < m) (hk0 : 0 < k) :
     (binaryRunPolynomial n m).coeff k = binaryRunCoeff n m k := by
-  rw [binaryRunPolynomial, ite_eq_right (ne_of_gt hm0),
-    Polynomial.finsetSum_coeff]
-  by_cases hkn : k ≤ n
-  · rw [Finset.sum_eq_single k]
-    · simp [binaryRunCoeff]
-    · intro b hb hbk
-      simp [coeff_monomial, hbk]
-    · intro hnot
-      exact (hnot (Finset.mem_Icc.mpr ⟨hk0, hkn⟩)).elim
-  · have htop : n + 1 - m < k := by lia
-    rw [Finset.sum_eq_zero]
-    · simp [binaryRunCoeff, Nat.choose_eq_zero_of_lt htop]
-    · intro b hb
-      rw [coeff_monomial, ite_eq_right]
-      intro hbk
-      subst b
-      exact hkn (Finset.mem_Icc.mp hb).2
-
-private theorem coeff_binaryRunPolynomial_zero_of_pos (n m : ℕ) (hm0 : 0 < m) :
-    (binaryRunPolynomial n m).coeff 0 = 0 := by
-  rw [binaryRunPolynomial, ite_eq_right (ne_of_gt hm0),
-    Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro k hk
-  have hk0 : k ≠ 0 := Nat.one_le_iff_ne_zero.mp (Finset.mem_Icc.mp hk).1
-  simp [coeff_monomial, hk0]
+  rw [coeff_binaryRunPolynomial_of_pos_formula n m k hm0 hk0]
+  rfl
 
 private theorem binaryRunCoeff_recurrence (n m k : ℕ)
     (hm0 : 0 < m) (hmid : 2 * m < n) (hk2 : 2 ≤ k) (hkm : k ≤ m + 1) :
@@ -200,8 +176,8 @@ theorem binaryRunPolynomial_differential_recurrence (n m : ℕ)
   have hmsucc : m + 1 ≤ n := by lia
   by_cases hk0 : k = 0
   · subst k
-    simp [coeff_binaryRunPolynomial_zero_of_pos n m hm0,
-      coeff_binaryRunPolynomial_zero_of_pos n (m + 1) (by lia)]
+    simp [coeff_zero_binaryRunPolynomial_of_pos n m hm0,
+      coeff_zero_binaryRunPolynomial_of_pos n (m + 1) (by lia)]
   have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
   by_cases hk1 : k = 1
   · subst k
@@ -210,7 +186,7 @@ theorem binaryRunPolynomial_differential_recurrence (n m : ℕ)
       coeff_binaryRunPolynomial_of_pos n (m + 1) 1 (by lia) (by lia),
       coeff_binaryRunPolynomial_of_pos n m 1 hm0 (by lia),
       coeff_X_mul_one_sub_X_mul_derivative]
-    rw [coeff_binaryRunPolynomial_zero_of_pos n m hm0,
+    rw [coeff_zero_binaryRunPolynomial_of_pos n m hm0,
       coeff_binaryRunPolynomial_of_pos n m 1 hm0 (by lia)]
     simp only [binaryRunCoeff, Nat.choose_zero_right, Nat.choose_one_right,
       mul_zero, add_zero, Nat.cast_one, one_mul, tsub_self,
@@ -359,7 +335,7 @@ theorem hasPosLeadingCoeff_binaryRunPolynomial (n m : ℕ)
   ext k
   cases k with
   | zero =>
-      simp [coeff_binaryRunPolynomial_zero_of_pos n 1 (by simp)]
+      simp [coeff_zero_binaryRunPolynomial_of_pos n 1 (by simp)]
   | succ k =>
       rw [coeff_binaryRunPolynomial_of_pos n 1 (k + 1) (by simp) (by lia)]
       cases k with
@@ -372,7 +348,7 @@ theorem hasPosLeadingCoeff_binaryRunPolynomial (n m : ℕ)
 
 private theorem X_mul_divX_binaryRunPolynomial (n m : ℕ) (hm0 : 0 < m) :
     X * (binaryRunPolynomial n m).divX = binaryRunPolynomial n m := by
-  simpa [coeff_binaryRunPolynomial_zero_of_pos n m hm0] using
+  simpa [coeff_zero_binaryRunPolynomial_of_pos n m hm0] using
     Polynomial.X_mul_divX_add (binaryRunPolynomial n m)
 
 theorem eval_zero_binaryRunPolynomial_divX_pos
@@ -506,12 +482,12 @@ theorem strictInterl_binaryRunPolynomial_divX_succ (n m : ℕ)
   have hmfac :
       (X - C 0) * (binaryRunPolynomial n m).divX =
         binaryRunPolynomial n m := by
-    simpa [coeff_binaryRunPolynomial_zero_of_pos n m hm0] using
+    simpa [coeff_zero_binaryRunPolynomial_of_pos n m hm0] using
       Polynomial.X_mul_divX_add (binaryRunPolynomial n m)
   have hsuccfac :
       (X - C 0) * (binaryRunPolynomial n (m + 1)).divX =
         binaryRunPolynomial n (m + 1) := by
-    simpa [coeff_binaryRunPolynomial_zero_of_pos n (m + 1) (by lia)] using
+    simpa [coeff_zero_binaryRunPolynomial_of_pos n (m + 1) (by lia)] using
       Polynomial.X_mul_divX_add (binaryRunPolynomial n (m + 1))
   apply StrictInterl.of_mul_X_sub_C_both (r := 0)
   rw [hmfac, hsuccfac]

@@ -66,6 +66,7 @@ import RealRooted.Bezoutian.StrictInterleaving
 import RealRooted.Bezoutian.WronskianConverse
 import RealRooted.BooleanSwapOrbit
 import RealRooted.BivariateOpenMapping
+import RealRooted.BinaryRunTransformation.Anchor
 import RealRooted.BinaryRunTransformation.Coefficients
 import RealRooted.BinaryRunTransformation.Contraction
 import RealRooted.BinaryRunTransformation.Continuation

@@ -75,6 +75,84 @@ theorem HasNonnegCoeffs.binaryRunTransform {n : ℕ} {p : ℝ[X]}
     HasNonnegCoeffs (binaryRunTransform n p) :=
   hp.basisTransform (hasNonnegCoeffs_binaryRunPolynomial n)
 
+/-- Fixed-range coefficient expansion of the binary-run transform. -/
+theorem coeff_binaryRunTransform_eq_sum_range
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) (k : ℕ) :
+    (binaryRunTransform n p).coeff k =
+      ∑ m ∈ Finset.range (n + 1),
+        p.coeff m * (binaryRunPolynomial n m).coeff k := by
+  rw [binaryRunTransform, Polynomial.basisTransform, Polynomial.sum_def,
+    Polynomial.finsetSum_coeff]
+  simp only [Polynomial.coeff_C_mul]
+  apply Finset.sum_subset
+  · intro m hm
+    rw [Finset.mem_range]
+    exact Nat.lt_succ_of_le <|
+      (Polynomial.le_natDegree_of_ne_zero
+        (Polynomial.mem_support_iff.mp hm)).trans hp
+  · intro m hmrange hmsupport
+    rw [Polynomial.notMem_support_iff.mp hmsupport]
+    simp
+
+/-- Away from the constant basis image, the coefficient of `X^k` in
+`J_{n,m}` is the defining normalized binary-run count. -/
+theorem coeff_binaryRunPolynomial_of_pos_formula (n m k : ℕ)
+    (hm0 : 0 < m) (hk0 : 0 < k) :
+    (binaryRunPolynomial n m).coeff k =
+      ((Nat.choose (m - 1) (k - 1) : ℝ) *
+          (Nat.choose (n + 1 - m) k : ℝ)) /
+        (Nat.choose n m : ℝ) := by
+  rw [binaryRunPolynomial, ite_eq_right (ne_of_gt hm0),
+    Polynomial.finsetSum_coeff]
+  by_cases hkn : k ≤ n
+  · rw [Finset.sum_eq_single k]
+    · simp
+    · intro b hb hbk
+      simp [coeff_monomial, hbk]
+    · intro hnot
+      exact (hnot (Finset.mem_Icc.mpr ⟨hk0, hkn⟩)).elim
+  · have htop : n + 1 - m < k := by lia
+    rw [Finset.sum_eq_zero]
+    · simp [Nat.choose_eq_zero_of_lt htop]
+    · intro b hb
+      rw [coeff_monomial, ite_eq_right]
+      intro hbk
+      subst b
+      exact hkn (Finset.mem_Icc.mp hb).2
+
+/-- Every nonconstant binary-run basis image has zero constant term. -/
+theorem coeff_zero_binaryRunPolynomial_of_pos (n m : ℕ) (hm0 : 0 < m) :
+    (binaryRunPolynomial n m).coeff 0 = 0 := by
+  rw [binaryRunPolynomial, ite_eq_right (ne_of_gt hm0),
+    Polynomial.finsetSum_coeff]
+  apply Finset.sum_eq_zero
+  intro k hk
+  have hk0 : k ≠ 0 := Nat.one_le_iff_ne_zero.mp (Finset.mem_Icc.mp hk).1
+  simp [coeff_monomial, hk0]
+
+/-- A binary-run basis image has no terms above its input index. -/
+theorem coeff_binaryRunPolynomial_eq_zero_of_lt
+    {n m k : ℕ} (hmk : m < k) :
+    (binaryRunPolynomial n m).coeff k = 0 := by
+  have hk0 : 0 < k := lt_of_le_of_lt (Nat.zero_le m) hmk
+  by_cases hm0 : m = 0
+  · subst m
+    rw [binaryRunPolynomial_zero, Polynomial.coeff_one,
+      ite_eq_right hk0.ne']
+  rw [coeff_binaryRunPolynomial_of_pos_formula n m k
+    (Nat.pos_of_ne_zero hm0) hk0]
+  have hchoose : Nat.choose (m - 1) (k - 1) = 0 :=
+    Nat.choose_eq_zero_of_lt (by lia)
+  simp [hchoose]
+
+/-- The diagonal coefficient of `J_{n,k}` is the normalized path-matching
+number `choose (n+1-k) k / choose n k`. -/
+theorem coeff_binaryRunPolynomial_self (n k : ℕ) (hk0 : 0 < k) :
+    (binaryRunPolynomial n k).coeff k =
+      (Nat.choose (n + 1 - k) k : ℝ) / (Nat.choose n k : ℝ) := by
+  rw [coeff_binaryRunPolynomial_of_pos_formula n k k hk0 hk0]
+  simp
+
 theorem coeff_comp_binaryRunPolynomial (n m k : ℕ) (hm0 : 0 < m) :
     ((binaryRunPolynomial n m).comp (X + 1)).coeff k =
       ∑ r ∈ Finset.Icc 1 n,
@@ -420,6 +498,25 @@ theorem natDegree_comp_binaryRunTransform_le {n : ℕ} {p : ℝ[X]}
   · have hmk' : m < k := Nat.lt_of_not_ge hmk
     rw [Nat.choose_eq_zero_of_lt hmk']
     simp
+
+/-- The unshifted binary-run transform has the same global degree bound. -/
+theorem natDegree_binaryRunTransform_le {n : ℕ} {p : ℝ[X]}
+    (hp : p.natDegree ≤ n) :
+    (binaryRunTransform n p).natDegree ≤ (n + 1) / 2 := by
+  let q := binaryRunTransform n p
+  have hrecover : q = (q.comp (X + 1)).comp (X - 1) := by
+    simp [Polynomial.comp_assoc, q]
+  change q.natDegree ≤ (n + 1) / 2
+  rw [hrecover]
+  calc
+    ((q.comp (X + 1)).comp (X - 1)).natDegree ≤
+        (q.comp (X + 1)).natDegree * (X - 1 : ℝ[X]).natDegree :=
+      Polynomial.natDegree_comp_le
+    _ ≤ ((n + 1) / 2) * 1 := by
+      gcongr
+      · exact natDegree_comp_binaryRunTransform_le hp
+      · simpa only [C_1] using (natDegree_X_sub_C (R := ℝ) 1).le
+    _ = (n + 1) / 2 := by simp
 
 /-- Reflection symmetry of the nonconstant binary-run basis images. -/
 theorem binaryRunPolynomial_reflection (n m : ℕ)
