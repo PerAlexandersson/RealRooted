@@ -96,6 +96,17 @@ lemma HasSimpleRoots.roots_nodup (hsimple : HasSimpleRoots p) :
   · have hmult0 : p.rootMultiplicity r = 0 := by simp_all
     lia
 
+/-- Simple roots are preserved by an invertible real affine substitution. -/
+theorem HasSimpleRoots.comp_C_mul_X_add_C (hsimple : HasSimpleRoots p)
+    {a b : ℝ} (ha : a ≠ 0) :
+    HasSimpleRoots (p.comp (C a * X + C b)) := by
+  intro r hr
+  rw [Polynomial.rootMultiplicity_comp_C_mul_X_add_C _ _ _ _
+    (isUnit_iff_ne_zero.mpr ha)]
+  apply hsimple
+  rw [Polynomial.IsRoot.def] at hr ⊢
+  simpa using hr
+
 /-- A nonzero polynomial with a duplicate-free root multiset has simple real
 roots. -/
 lemma HasSimpleRoots.of_roots_nodup {p : ℝ[X]}

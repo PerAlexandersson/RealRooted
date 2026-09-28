@@ -66,6 +66,15 @@ import RealRooted.Bezoutian.StrictInterleaving
 import RealRooted.Bezoutian.WronskianConverse
 import RealRooted.BooleanSwapOrbit
 import RealRooted.BivariateOpenMapping
+import RealRooted.BinaryRunTransformation.Anchor
+import RealRooted.BinaryRunTransformation.Coefficients
+import RealRooted.BinaryRunTransformation.Contraction
+import RealRooted.BinaryRunTransformation.Continuation
+import RealRooted.BinaryRunTransformation.CriticalValue
+import RealRooted.BinaryRunTransformation.Deformation
+import RealRooted.BinaryRunTransformation.PointingPencil
+import RealRooted.BinaryRunTransformation.Sturm
+import RealRooted.CriticalValueContinuation
 import RealRooted.BrandenLeite.BinomialShiftedTiling
 import RealRooted.BrandenLeite.ChainPolynomial
 import RealRooted.BrandenLeite.ChainPolynomial.Algebra

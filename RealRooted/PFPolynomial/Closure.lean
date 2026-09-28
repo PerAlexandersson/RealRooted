@@ -43,6 +43,18 @@ theorem IsPFPolynomial.of_coeff_tendsto
   apply IsPFPolynomial.of_polyaFreqSeq
   exact IsPolyaFreqSeq.of_tendsto (fun k => (hp k).to_sequence) hlim
 
+/-- In a coefficientwise continuous polynomial family, the locus of
+Pólya-frequency polynomials is closed. -/
+theorem isClosed_isPFPolynomial
+    {T : Type*} [TopologicalSpace T] [SequentialSpace T]
+    (p : T → ℝ[X])
+    (hcoeff : ∀ i : ℕ, Continuous fun t => (p t).coeff i) :
+    IsClosed {t | IsPFPolynomial (p t)} := by
+  apply IsSeqClosed.isClosed
+  intro u t hu hut
+  exact IsPFPolynomial.of_coeff_tendsto hu fun i =>
+    ((hcoeff i).tendsto t).comp hut
+
 /-- Uniform degree bounds turn coefficientwise convergence into pointwise
 evaluation convergence. -/
 theorem Polynomial.tendsto_eval_of_coeff_tendsto_of_natDegree_le
