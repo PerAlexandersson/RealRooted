@@ -50,6 +50,23 @@ theorem coeff_signedParityLift (n : ℕ) (p : ℝ[X]) {k : ℕ}
   · intro hknot
     exact absurd (Finset.mem_range.mpr (by lia)) hknot
 
+/-- On its natural degree range, the signed parity lift is injective at zero.
+-/
+theorem signedParityLift_eq_zero_iff
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n / 2) :
+    signedParityLift n p = 0 ↔ p = 0 := by
+  constructor
+  · intro hzero
+    apply Polynomial.ext
+    intro k
+    by_cases hk : k ≤ n / 2
+    · have hcoeff := congrArg (fun q : ℝ[X] => q.coeff (n - 2 * k)) hzero
+      rw [coeff_signedParityLift n p hk, coeff_zero] at hcoeff
+      exact (mul_eq_zero.mp hcoeff).resolve_left (pow_ne_zero _ (by norm_num))
+    · rw [coeff_eq_zero_of_natDegree_lt (by lia), coeff_zero]
+  · rintro rfl
+    simp [signedParityLift]
+
 theorem natDegree_signedParityLift_le (n : ℕ) (p : ℝ[X]) :
     (signedParityLift n p).natDegree ≤ n := by
   apply Polynomial.natDegree_sum_le_of_forall_le

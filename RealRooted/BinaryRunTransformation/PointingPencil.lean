@@ -820,6 +820,40 @@ theorem mvUpperHalfPlaneStableOrZero_binaryRunPointingPencil
     at hcontracted
   exact hcontracted
 
+/-- The pointing construction discharges the stable-pencil hypothesis in the
+critical-value sign theorem. The degenerate zero-pencil branch makes the
+pointing polynomial itself zero and hence satisfies the inequality directly.
+-/
+theorem binaryRunDeformation_critical_sign
+    {n : ℕ} (hn : 4 ≤ n) {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hp0 : p ≠ 0) (hdegree : p.natDegree ≤ n) {t r : ℝ} (ht : 0 < t)
+    (hr : 0 < r)
+    (hcritical :
+      (shiftedBinaryRunDeformation n p t).derivative.eval
+        (-(r ^ 2)⁻¹) = 0) :
+    (shiftedBinaryRunPointing n p t).eval (-(r ^ 2)⁻¹) *
+      (shiftedBinaryRunDeformation n p t).derivative.derivative.eval
+        (-(r ^ 2)⁻¹) ≤ 0 := by
+  have hpencil := mvUpperHalfPlaneStableOrZero_binaryRunPointingPencil
+    (by lia) hp hp0 hdegree ht
+  rcases hpencil.eq_zero_pair_or_stablePencil with hzero | hstable
+  · have hqzero :
+        (shiftedBinaryRunDeformation n p t).derivative = 0 := by
+      apply (signedParityLift_eq_zero_iff
+        (natDegree_derivative_shiftedBinaryRunDeformation_le hdegree t)).mp
+      exact neg_eq_zero.mp hzero.1
+    have hEzero : binaryRunPointingRemainder n p t = 0 := by
+      apply (signedParityLift_eq_zero_iff
+        (natDegree_binaryRunPointingRemainder_le hdegree t)).mp
+      exact hzero.2
+    have hpointing : shiftedBinaryRunPointing n p t = 0 := by
+      rw [shiftedBinaryRunPointing_eq_remainder_add, hEzero, hqzero]
+      simp
+    rw [hpointing]
+    simp
+  · exact binaryRunDeformation_critical_sign_of_stablePencil
+      hn hdegree hr hcritical hstable
+
 end
 
 end RealRooted
