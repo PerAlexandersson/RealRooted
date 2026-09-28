@@ -22,10 +22,56 @@ noncomputable section
 
 open BorceaBranden
 
+/-- Source exponent with powers `S^a T^b`. -/
+def binaryRunSourceIndex (a b : ℕ) : Fin 2 →₀ ℕ :=
+  Finsupp.single 0 a + Finsupp.single 1 b
+
+@[simp] theorem binaryRunSourceIndex_zero (a b : ℕ) :
+    binaryRunSourceIndex a b 0 = a := by
+  simp [binaryRunSourceIndex]
+
+@[simp] theorem binaryRunSourceIndex_one (a b : ℕ) :
+    binaryRunSourceIndex a b 1 = b := by
+  simp [binaryRunSourceIndex]
+
 /-- The two `n`-element clone blocks used for normalized diagonal
 contraction. -/
 abbrev BinaryRunPolarizedSource (n : ℕ) :=
   PolarizedSource (fun _ : Fin 2 => n)
+
+/-- The two-variable degree-`n` box is canonically indexed by a pair of
+integers in `0, ..., n`. -/
+def binaryRunDegreeBoxEquiv (n : ℕ) :
+    {a : Fin 2 →₀ ℕ // ∀ i, a i ≤ n} ≃ Fin (n + 1) × Fin (n + 1) where
+  toFun a :=
+    (⟨a.1 0, Nat.lt_succ_of_le (a.2 0)⟩,
+      ⟨a.1 1, Nat.lt_succ_of_le (a.2 1)⟩)
+  invFun a := ⟨binaryRunSourceIndex a.1 a.2, by
+    intro i
+    fin_cases i
+    · norm_num [binaryRunSourceIndex]
+      exact Nat.le_of_lt_succ a.1.isLt
+    · norm_num [binaryRunSourceIndex]
+      exact Nat.le_of_lt_succ a.2.isLt⟩
+  left_inv a := by
+    apply Subtype.ext
+    ext i
+    fin_cases i <;> simp [binaryRunSourceIndex]
+  right_inv a := by
+    rcases a with ⟨i, j⟩
+    simp [binaryRunSourceIndex]
+
+@[simp] theorem binaryRunDegreeBoxEquiv_symm_apply (n : ℕ)
+    (a : Fin (n + 1) × Fin (n + 1)) :
+    (binaryRunDegreeBoxEquiv n).symm a =
+      ⟨binaryRunSourceIndex a.1 a.2, by
+        intro i
+        fin_cases i
+        · norm_num [binaryRunSourceIndex]
+          exact Nat.le_of_lt_succ a.1.isLt
+        · norm_num [binaryRunSourceIndex]
+          exact Nat.le_of_lt_succ a.2.isLt⟩ := by
+  rfl
 
 /-- Identify the two clone blocks with the canonical sum used by paired
 Lieb--Sokal contraction. -/
@@ -239,6 +285,67 @@ theorem normalizedDiagonalContraction_eq_box_sum
   exact normalizedDiagonalContraction_polarizedTerm n
     (sourceCoefficientGeneral P a.1) a.1
       ((MvPolynomial.boxChoose (fun _ : Fin 2 => n) a.1 : ℂ)⁻¹)
+
+@[simp] theorem boxChoose_binaryRunSourceIndex (n a b : ℕ) :
+    MvPolynomial.boxChoose (fun _ : Fin 2 => n)
+        (binaryRunSourceIndex a b) =
+      Nat.choose n a * Nat.choose n b := by
+  classical
+  rw [MvPolynomial.boxChoose,
+    show (Finset.univ : Finset (Fin 2)) = {0, 1} by rfl]
+  simp [binaryRunSourceIndex]
+
+/-- After the vanishing off the diagonal and cancellation of one binomial
+factor, normalized diagonal contraction is a single sum over `k = 0, ..., n`.
+-/
+theorem normalizedDiagonalContraction_eq_diagonal_sum
+    {τ : Type*} [Fintype τ] (n : ℕ)
+    (P : MvPolynomial (τ ⊕ Fin 2) ℂ) :
+    normalizedDiagonalContraction n P =
+      ∑ k : Fin (n + 1),
+        MvPolynomial.C
+            ((-1 : ℂ) ^ (k : ℕ) * (Nat.choose n k : ℂ)⁻¹) *
+          sourceCoefficientGeneral P
+            (binaryRunSourceIndex k k) := by
+  classical
+  rw [normalizedDiagonalContraction_eq_box_sum]
+  calc
+    _ = ∑ a : Fin (n + 1) × Fin (n + 1),
+        if a.1 = a.2 then
+          MvPolynomial.C
+              ((-1 : ℂ) ^ (a.1 : ℕ) *
+                (Nat.choose n a.1 : ℂ)⁻¹) *
+            sourceCoefficientGeneral P
+              (binaryRunSourceIndex a.1 a.2)
+        else 0 := by
+      apply Fintype.sum_equiv (binaryRunDegreeBoxEquiv n)
+      intro a
+      by_cases hdiag : a.1 0 = a.1 1
+      · have hindex :
+            a.1 = binaryRunSourceIndex (a.1 0) (a.1 1) := by
+          ext i
+          fin_cases i <;> simp [binaryRunSourceIndex]
+        have hchooseOne : (Nat.choose n (a.1 1) : ℂ) ≠ 0 := by
+          exact_mod_cast Nat.ne_of_gt (Nat.choose_pos (a.2 1))
+        have hscalar :
+            ((Nat.choose n (a.1 1) * Nat.choose n (a.1 1) : ℕ) : ℂ)⁻¹ *
+                ((-1 : ℂ) ^ (a.1 1) * Nat.choose n (a.1 1)) =
+              (-1 : ℂ) ^ (a.1 1) * (Nat.choose n (a.1 1) : ℂ)⁻¹ := by
+          push_cast
+          field_simp
+        rw [hindex, boxChoose_binaryRunSourceIndex, hdiag]
+        simp only [binaryRunSourceIndex_zero, binaryRunSourceIndex_one]
+        rw [hscalar]
+        simp [binaryRunDegreeBoxEquiv, hdiag]
+      · have hfin :
+            (⟨a.1 0, Nat.lt_succ_of_le (a.2 0)⟩ : Fin (n + 1)) ≠
+              ⟨a.1 1, Nat.lt_succ_of_le (a.2 1)⟩ := by
+          intro h
+          exact hdiag (Fin.ext_iff.mp h)
+        simp [binaryRunDegreeBoxEquiv, hdiag, hfin]
+    _ = _ := by
+      rw [Fintype.sum_prod_type]
+      simp
 
 /-- The normalized diagonal contraction preserves upper-half-plane stability,
 up to the zero polynomial. -/

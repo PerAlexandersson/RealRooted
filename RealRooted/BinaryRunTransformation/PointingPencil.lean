@@ -39,10 +39,6 @@ def binaryRunPointingSource (n : ℕ) (p : ℝ[X]) (t : ℝ) :
 def binaryRunOutputIndex (k : ℕ) : Fin 2 →₀ ℕ :=
   Finsupp.single 0 k
 
-/-- Source exponent with powers `S^a T^b`. -/
-def binaryRunSourceIndex (a b : ℕ) : Fin 2 →₀ ℕ :=
-  Finsupp.single 0 a + Finsupp.single 1 b
-
 /-- Fully expanded monomial form of the homogenized source. -/
 def binaryRunExpandedSource (n : ℕ) (p : ℝ[X]) (t : ℝ) :
     MvPolynomial (Fin 2 ⊕ Fin 2) ℂ :=
@@ -505,6 +501,109 @@ theorem sourceCoefficientGeneral_binaryRunPointingSource_diagonal
   simp only [map_mul]
   ring
 
+theorem eval₂_complexify_signedParityLift_eq_sum
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n / 2) :
+    (complexify (signedParityLift n p)).eval₂
+        (MvPolynomial.C : ℂ →+* MvPolynomial (Fin 2) ℂ)
+        (MvPolynomial.X 0) =
+      ∑ k : Fin (n + 1),
+        MvPolynomial.C ((-1 : ℂ) ^ (k : ℕ) * p.coeff k) *
+          MvPolynomial.X 0 ^ (n - 2 * (k : ℕ)) := by
+  rw [signedParityLift_eq_sum_range_succ hp]
+  unfold complexify
+  rw [Polynomial.map_sum, Polynomial.eval₂_finsetSum,
+    ← Fin.sum_univ_eq_sum_range]
+  apply Fintype.sum_congr
+  intro k
+  rw [Polynomial.map_mul, Polynomial.map_C, Polynomial.map_pow,
+    Polynomial.map_X, Polynomial.eval₂_mul, Polynomial.eval₂_C,
+    Polynomial.eval₂_pow, Polynomial.eval₂_X]
+  simp
+
+theorem eval₂_complexify_neg_signedParityLift_derivative_eq_sum
+    {n : ℕ} (hn : 1 ≤ n) (q : ℝ[X])
+    (hq : q.derivative.natDegree ≤ (n - 1) / 2) :
+    (complexify (-(signedParityLift (n - 1) q.derivative))).eval₂
+        (MvPolynomial.C : ℂ →+* MvPolynomial (Fin 2) ℂ)
+        (MvPolynomial.X 0) =
+      ∑ k : Fin (n + 1),
+        MvPolynomial.C
+            ((-1 : ℂ) ^ (k : ℕ) * (k : ℂ) * q.coeff k) *
+          MvPolynomial.X 0 ^ (n + 1 - 2 * (k : ℕ)) := by
+  have hnsub : n - 1 + 1 = n := by lia
+  rw [show complexify (-(signedParityLift (n - 1) q.derivative)) =
+      -(complexify (signedParityLift (n - 1) q.derivative)) by
+        simp [complexify],
+    Polynomial.eval₂_neg,
+    eval₂_complexify_signedParityLift_eq_sum hq]
+  rw [← Finset.sum_neg_distrib]
+  rw [hnsub]
+  rw [Fin.sum_univ_eq_sum_range (fun k : ℕ =>
+    -(MvPolynomial.C ((-1 : ℂ) ^ k * q.derivative.coeff k) *
+      MvPolynomial.X 0 ^ (n - 1 - 2 * k)))]
+  rw [Fin.sum_univ_eq_sum_range (fun k : ℕ =>
+    MvPolynomial.C ((-1 : ℂ) ^ k * (k : ℂ) * q.coeff k) *
+      MvPolynomial.X 0 ^ (n + 1 - 2 * k)), Finset.sum_range_succ']
+  norm_num
+  rw [← Finset.sum_neg_distrib]
+  apply Finset.sum_congr rfl
+  intro k hk
+  simp only [Finset.mem_range] at hk
+  rw [Polynomial.coeff_derivative]
+  have hpow : n + 1 - 2 * (k + 1) = n - 1 - 2 * k := by lia
+  rw [hpow, pow_succ]
+  push_cast
+  simp only [map_add, map_mul, map_natCast, map_one]
+  ring
+
+/-- The contracted pointing source is the explicit signed diagonal sum before
+the two summands are repackaged as signed parity lifts. -/
+theorem normalizedDiagonalContraction_binaryRunPointingSource_eq_sum
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) (t : ℝ) :
+    normalizedDiagonalContraction n (binaryRunPointingSource n p t) =
+      ∑ k : Fin (n + 1),
+        (MvPolynomial.C
+              ((-1 : ℂ) ^ (k : ℕ) * (k : ℂ) *
+                (shiftedBinaryRunDeformation n p t).coeff k) *
+            MvPolynomial.X 0 ^ (n + 1 - 2 * (k : ℕ)) +
+          MvPolynomial.X 1 *
+            MvPolynomial.C
+              ((-1 : ℂ) ^ (k : ℕ) *
+                (binaryRunPointingRemainder n p t).coeff k) *
+              MvPolynomial.X 0 ^ (n - 2 * (k : ℕ))) := by
+  classical
+  rw [normalizedDiagonalContraction_eq_diagonal_sum]
+  apply Fintype.sum_congr
+  intro k
+  have hk : (k : ℕ) ≤ n := Nat.lt_succ_iff.mp k.isLt
+  rw [sourceCoefficientGeneral_binaryRunPointingSource_diagonal hp t hk]
+  have hchoose : (Nat.choose n (k : ℕ) : ℂ) ≠ 0 := by
+    exact_mod_cast Nat.ne_of_gt (Nat.choose_pos hk)
+  rw [← mul_assoc, ← MvPolynomial.C_mul]
+  simp [hchoose]
+  ring
+
+/-- Normalized diagonal contraction of the stable pointing source is exactly
+the bivariate signed-parity pencil used by the critical-value argument. -/
+theorem normalizedDiagonalContraction_binaryRunPointingSource
+    {n : ℕ} (hn : 1 ≤ n) {p : ℝ[X]} (hp : p.natDegree ≤ n) (t : ℝ) :
+    normalizedDiagonalContraction n (binaryRunPointingSource n p t) =
+      bivariatePencil
+        (-(signedParityLift (n - 1)
+          (shiftedBinaryRunDeformation n p t).derivative))
+        (signedParityLift n (binaryRunPointingRemainder n p t)) := by
+  rw [normalizedDiagonalContraction_binaryRunPointingSource_eq_sum hp t]
+  unfold bivariatePencil
+  rw [eval₂_complexify_neg_signedParityLift_derivative_eq_sum hn
+      (shiftedBinaryRunDeformation n p t)
+      (natDegree_derivative_shiftedBinaryRunDeformation_le hp t),
+    eval₂_complexify_signedParityLift_eq_sum
+      (natDegree_binaryRunPointingRemainder_le hp t),
+    Finset.mul_sum, ← Finset.sum_add_distrib]
+  apply Fintype.sum_congr
+  intro k
+  ring
+
 theorem pderiv_binaryRunHomogenizedSource_eq_sum
     (n : ℕ) (p : ℝ[X]) (t : ℝ) :
     MvPolynomial.pderiv (Sum.inr 0)
@@ -702,6 +801,24 @@ theorem mvUpperHalfPlaneStableOrZero_binaryRunPointingSource
   have hderiv := hsource.pderiv_zero_or_of_finite (Sum.inr 0)
   exact (MvUpperHalfPlaneStable.X_add_X (Sum.inr 0) (Sum.inl 1)).orZero.mul
     hderiv
+
+/-- The concrete signed-parity pencil obtained from the pointing construction
+is stable, with the zero-pair alternative retained explicitly. -/
+theorem mvUpperHalfPlaneStableOrZero_binaryRunPointingPencil
+    {n : ℕ} (hn : 1 ≤ n) {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hp0 : p ≠ 0) (hdegree : p.natDegree ≤ n) {t : ℝ} (ht : 0 < t) :
+    MvUpperHalfPlaneStableOrZero
+      (bivariatePencil
+        (-(signedParityLift (n - 1)
+          (shiftedBinaryRunDeformation n p t).derivative))
+        (signedParityLift n (binaryRunPointingRemainder n p t))) := by
+  have hsource := mvUpperHalfPlaneStableOrZero_binaryRunPointingSource
+    hp hp0 hdegree ht
+  have hcontracted := hsource.normalizedDiagonalContraction
+    (fun i => degreeOf_binaryRunPointingSource_source_le hdegree t i)
+  rw [normalizedDiagonalContraction_binaryRunPointingSource hn hdegree t]
+    at hcontracted
+  exact hcontracted
 
 end
 

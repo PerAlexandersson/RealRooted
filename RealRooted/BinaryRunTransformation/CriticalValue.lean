@@ -21,6 +21,21 @@ def signedParityLift (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
   ∑ k ∈ Finset.range (n / 2 + 1),
     C ((-1) ^ k * p.coeff k) * X ^ (n - 2 * k)
 
+/-- Under the natural degree bound, the defining sum may be extended through
+all indices `0, ..., n`; every added coefficient vanishes. -/
+theorem signedParityLift_eq_sum_range_succ
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n / 2) :
+    signedParityLift n p =
+      ∑ k ∈ Finset.range (n + 1),
+        C ((-1) ^ k * p.coeff k) * X ^ (n - 2 * k) := by
+  rw [signedParityLift]
+  refine Finset.sum_subset (Finset.range_subset_range.mpr (by lia)) ?_
+  rintro k hk hksmall
+  simp only [Finset.mem_range] at hk hksmall ⊢
+  have hdegree : p.natDegree < k := by lia
+  rw [coeff_eq_zero_of_natDegree_lt hdegree]
+  simp
+
 theorem coeff_signedParityLift (n : ℕ) (p : ℝ[X]) {k : ℕ}
     (hk : k ≤ n / 2) :
     (signedParityLift n p).coeff (n - 2 * k) =
