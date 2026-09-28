@@ -342,4 +342,83 @@ theorem coeff_comp_binaryRunPolynomial_all
       rw [Nat.choose_eq_zero_of_lt hidx]
       simp
 
+/-- Coefficients of a shifted binary-run transform, expressed directly in
+the input coefficients. -/
+theorem coeff_comp_binaryRunTransform {n : ℕ} {p : ℝ[X]}
+    (hp : p.natDegree ≤ n) (k : ℕ) :
+    ((binaryRunTransform n p).comp (X + 1)).coeff k =
+      p.sum fun m a =>
+        a * (((Nat.choose m k : ℝ) *
+          (Nat.choose (n + 1 - m) k : ℝ)) /
+            (Nat.choose n k : ℝ)) := by
+  rw [binaryRunTransform, Polynomial.basisTransform,
+    Polynomial.sum_def]
+  change ((Polynomial.compRingHom (X + 1))
+      (∑ m ∈ p.support, C (p.coeff m) * binaryRunPolynomial n m)).coeff k =
+    ∑ m ∈ p.support,
+      p.coeff m * (((Nat.choose m k : ℝ) *
+        (Nat.choose (n + 1 - m) k : ℝ)) /
+          (Nat.choose n k : ℝ))
+  rw [map_sum, Polynomial.finsetSum_coeff]
+  apply Finset.sum_congr rfl
+  intro m hm
+  change ((C (p.coeff m) * binaryRunPolynomial n m).comp
+      (X + 1)).coeff k = _
+  rw [mul_comp, C_comp, coeff_C_mul]
+  have hmle : m ≤ n := by
+    exact (Polynomial.le_natDegree_of_ne_zero
+      (Polynomial.mem_support_iff.mp hm)).trans hp
+  by_cases hm0 : m = 0
+  · subst m
+    by_cases hk0 : k = 0
+    · subst k
+      simp
+    · have hkpos : 0 < k := Nat.pos_of_ne_zero hk0
+      rw [binaryRunPolynomial_zero]
+      simp [Polynomial.coeff_one, hk0,
+        Nat.choose_eq_zero_of_lt hkpos]
+  · rw [coeff_comp_binaryRunPolynomial_all n m k
+      (Nat.pos_of_ne_zero hm0) hmle]
+
+/-- Range-sum form of `coeff_comp_binaryRunTransform`, convenient for
+comparing an input with its Euler pointing. -/
+theorem coeff_comp_binaryRunTransform_eq_sum_range {n : ℕ} {p : ℝ[X]}
+    (hp : p.natDegree ≤ n) (k : ℕ) :
+    ((binaryRunTransform n p).comp (X + 1)).coeff k =
+      ∑ m ∈ Finset.range (n + 1),
+        p.coeff m * (((Nat.choose m k : ℝ) *
+          (Nat.choose (n + 1 - m) k : ℝ)) /
+            (Nat.choose n k : ℝ)) := by
+  rw [coeff_comp_binaryRunTransform hp, Polynomial.sum_def]
+  apply Finset.sum_subset
+  · intro m hm
+    rw [Finset.mem_range]
+    exact Nat.lt_succ_of_le <|
+      (Polynomial.le_natDegree_of_ne_zero
+        (Polynomial.mem_support_iff.mp hm)).trans hp
+  · intro m hmrange hmsupport
+    rw [Polynomial.notMem_support_iff.mp hmsupport, zero_mul]
+
+/-- The shifted binary-run transform has degree at most `⌊(n+1)/2⌋` on the
+degree-`n` input box. -/
+theorem natDegree_comp_binaryRunTransform_le {n : ℕ} {p : ℝ[X]}
+    (hp : p.natDegree ≤ n) :
+    ((binaryRunTransform n p).comp (X + 1)).natDegree ≤ (n + 1) / 2 := by
+  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+  intro k hk
+  rw [coeff_comp_binaryRunTransform hp]
+  rw [Polynomial.sum_def]
+  apply Finset.sum_eq_zero
+  intro m hm
+  have hmle : m ≤ n := (Polynomial.le_natDegree_of_ne_zero
+    (Polynomial.mem_support_iff.mp hm)).trans hp
+  have htwok : n + 1 < 2 * k := by lia
+  by_cases hmk : k ≤ m
+  · have hother : n + 1 - m < k := by lia
+    rw [Nat.choose_eq_zero_of_lt hother]
+    simp
+  · have hmk' : m < k := Nat.lt_of_not_ge hmk
+    rw [Nat.choose_eq_zero_of_lt hmk']
+    simp
+
 end RealRooted
