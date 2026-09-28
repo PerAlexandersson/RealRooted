@@ -18,6 +18,10 @@ noncomputable section
 def scalePolynomial (t : ℝ) (p : ℝ[X]) : ℝ[X] :=
   p.comp (C t * X)
 
+theorem coeff_scalePolynomial (t : ℝ) (p : ℝ[X]) (m : ℕ) :
+    (scalePolynomial t p).coeff m = p.coeff m * t ^ m := by
+  rw [scalePolynomial, Polynomial.comp_C_mul_X_coeff]
+
 /-- The shifted output `Q(λ, 1 + Y)` of the binary-run deformation. -/
 def shiftedBinaryRunDeformation (n : ℕ) (p : ℝ[X]) (t : ℝ) : ℝ[X] :=
   (binaryRunTransform n (scalePolynomial t p)).comp (X + 1)
@@ -55,10 +59,90 @@ theorem natDegree_scalePolynomial_le (t : ℝ) (p : ℝ[X]) :
       simpa using Polynomial.natDegree_C_mul_le t X
     _ = p.natDegree := by simp
 
+/-- Fixed-range expansion of a shifted binary-run transform. -/
+theorem comp_binaryRunTransform_eq_sum_range
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) :
+    (binaryRunTransform n p).comp (X + 1) =
+      ∑ m ∈ Finset.range (n + 1),
+        C (p.coeff m) * (binaryRunPolynomial n m).comp (X + 1) := by
+  rw [binaryRunTransform, Polynomial.basisTransform, Polynomial.sum_def]
+  change (Polynomial.compRingHom (X + 1))
+      (∑ m ∈ p.support, C (p.coeff m) * binaryRunPolynomial n m) = _
+  rw [map_sum]
+  simp_rw [map_mul, Polynomial.coe_compRingHom_apply, C_comp]
+  apply Finset.sum_subset
+  · intro m hm
+    rw [Finset.mem_range]
+    exact Nat.lt_succ_of_le <|
+      (Polynomial.le_natDegree_of_ne_zero
+        (Polynomial.mem_support_iff.mp hm)).trans hp
+  · intro m hmrange hmsupport
+    rw [Polynomial.notMem_support_iff.mp hmsupport]
+    simp
+
+/-- Fixed-range expansion of the shifted deformation.  This form exposes its
+polynomial dependence on the scaling parameter. -/
+theorem shiftedBinaryRunDeformation_eq_sum_range
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) (t : ℝ) :
+    shiftedBinaryRunDeformation n p t =
+      ∑ m ∈ Finset.range (n + 1),
+        C (p.coeff m * t ^ m) *
+          (binaryRunPolynomial n m).comp (X + 1) := by
+  rw [shiftedBinaryRunDeformation,
+    comp_binaryRunTransform_eq_sum_range
+      ((natDegree_scalePolynomial_le t p).trans hp)]
+  simp_rw [coeff_scalePolynomial]
+
 theorem natDegree_pointPolynomial_le (p : ℝ[X]) :
     (pointPolynomial p).natDegree ≤ p.natDegree := by
   simpa [pointPolynomial] using
     Polynomial.natDegree_C_mul_add_affine_mul_derivative_le p 0 0 1
+
+/-- Fixed-range expansion of the pointed shifted deformation. -/
+theorem shiftedBinaryRunPointing_eq_sum_range
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) (t : ℝ) :
+    shiftedBinaryRunPointing n p t =
+      ∑ m ∈ Finset.range (n + 1),
+        C ((m : ℝ) * (p.coeff m * t ^ m)) *
+          (binaryRunPolynomial n m).comp (X + 1) := by
+  rw [shiftedBinaryRunPointing,
+    comp_binaryRunTransform_eq_sum_range
+      ((natDegree_pointPolynomial_le (scalePolynomial t p)).trans
+        ((natDegree_scalePolynomial_le t p).trans hp))]
+  simp_rw [pointPolynomial, Polynomial.coeff_X_mul_derivative,
+    coeff_scalePolynomial]
+
+/-- Parameter differentiation is Euler pointing: at positive scale, the
+parameter derivative of an evaluation is the pointed evaluation divided by
+the scale. -/
+theorem hasDerivAt_shiftedBinaryRunDeformation_eval
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) {t : ℝ}
+    (ht : t ≠ 0) (x : ℝ) :
+    HasDerivAt (fun u => (shiftedBinaryRunDeformation n p u).eval x)
+      ((shiftedBinaryRunPointing n p t).eval x / t) t := by
+  simp_rw [shiftedBinaryRunDeformation_eq_sum_range hp,
+    shiftedBinaryRunPointing_eq_sum_range hp, Polynomial.eval_finsetSum,
+    Polynomial.eval_mul, Polynomial.eval_C]
+  have hderiv : HasDerivAt
+      (fun u => ∑ m ∈ Finset.range (n + 1),
+        (p.coeff m * u ^ m) *
+          ((binaryRunPolynomial n m).comp (X + 1)).eval x)
+      (∑ m ∈ Finset.range (n + 1),
+        (p.coeff m * ((m : ℝ) * t ^ (m - 1))) *
+          ((binaryRunPolynomial n m).comp (X + 1)).eval x) t := by
+    apply HasDerivAt.fun_sum
+    intro m hm
+    exact ((hasDerivAt_pow m t).const_mul (p.coeff m)).mul_const _
+  convert hderiv using 1
+  rw [Finset.sum_div]
+  apply Finset.sum_congr rfl
+  intro m hm
+  cases m with
+  | zero => simp
+  | succ m =>
+    simp only [Nat.cast_add, Nat.cast_one, Nat.add_sub_cancel]
+    rw [pow_succ]
+    field_simp [ht]
 
 theorem coeff_shiftedBinaryRunDeformation_eq_sum_range
     {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) (t : ℝ) (k : ℕ) :

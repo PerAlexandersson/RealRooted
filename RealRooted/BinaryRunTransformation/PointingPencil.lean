@@ -854,6 +854,25 @@ theorem binaryRunDeformation_critical_sign
   · exact binaryRunDeformation_critical_sign_of_stablePencil
       hn hdegree hr hcritical hstable
 
+/-- Equivalent negative-coordinate form of the critical-value inequality. -/
+theorem binaryRunDeformation_critical_sign_of_neg
+    {n : ℕ} (hn : 4 ≤ n) {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hp0 : p ≠ 0) (hdegree : p.natDegree ≤ n) {t y : ℝ} (ht : 0 < t)
+    (hy : y < 0)
+    (hcritical :
+      (shiftedBinaryRunDeformation n p t).derivative.eval y = 0) :
+    (shiftedBinaryRunPointing n p t).eval y *
+      (shiftedBinaryRunDeformation n p t).derivative.derivative.eval y ≤ 0 := by
+  let r : ℝ := Real.sqrt (-y)⁻¹
+  have hinv : 0 < (-y)⁻¹ := inv_pos.mpr (neg_pos.mpr hy)
+  have hr : 0 < r := Real.sqrt_pos.mpr hinv
+  have hr_sq : r ^ 2 = (-y)⁻¹ := Real.sq_sqrt hinv.le
+  have hcoord : -(r ^ 2)⁻¹ = y := by
+    rw [hr_sq, inv_inv]
+    ring
+  rw [← hcoord] at hcritical ⊢
+  exact binaryRunDeformation_critical_sign hn hp hp0 hdegree ht hr hcritical
+
 end
 
 end RealRooted
