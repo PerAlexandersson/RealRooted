@@ -370,6 +370,22 @@ theorem hasPosLeadingCoeff_binaryRunPolynomial (n m : ℕ)
           simp [binaryRunCoeff, coeff_X,
             Nat.choose_eq_zero_of_lt (by lia : 0 < k + 1)]
 
+private theorem X_mul_divX_binaryRunPolynomial (n m : ℕ) (hm0 : 0 < m) :
+    X * (binaryRunPolynomial n m).divX = binaryRunPolynomial n m := by
+  simpa [coeff_binaryRunPolynomial_zero_of_pos n m hm0] using
+    Polynomial.X_mul_divX_add (binaryRunPolynomial n m)
+
+theorem eval_zero_binaryRunPolynomial_divX_pos
+    (n m : ℕ) (hm0 : 0 < m) (hm : m ≤ n) :
+    0 < (binaryRunPolynomial n m).divX.eval 0 := by
+  rw [← Polynomial.coeff_zero_eq_eval_zero, Polynomial.coeff_divX]
+  rw [coeff_binaryRunPolynomial_of_pos n m 1 hm0 (by lia)]
+  have hnum : (0 : ℝ) < Nat.choose (n + 1 - m) 1 := by
+    exact_mod_cast Nat.choose_pos (by lia : 1 ≤ n + 1 - m)
+  have hden : (0 : ℝ) < Nat.choose n m := by
+    exact_mod_cast Nat.choose_pos hm
+  simpa [binaryRunCoeff] using div_pos hnum hden
+
 /-- Consecutive binary-run basis images strictly interlace up to the midpoint.
 The shared zero at the origin is retained by the project's `StrictInterl`
 relation. -/
@@ -431,6 +447,56 @@ theorem strictInterl_binaryRunPolynomial_succ (n m : ℕ)
       rw [← hrec] at hstep
       exact hstep
 
+/-- The constant and linear endpoint begins the binary-run Sturm chain. -/
+theorem strictInterl_binaryRunPolynomial_zero_one (n : ℕ) (hn : 0 < n) :
+    StrictInterl (binaryRunPolynomial n 0) (binaryRunPolynomial n 1) := by
+  rw [binaryRunPolynomial_zero, binaryRunPolynomial_one n hn]
+  exact (interlaces_one_linear (p := (X : ℝ[X])) (by simp)).toStrictInterl
+
+/-- Uniform forward orientation for every adjacent pair strictly before the
+midpoint, including the constant-to-linear endpoint. -/
+theorem strictInterl_binaryRunPolynomial_succ_of_two_mul_lt
+    (n m : ℕ) (hmid : 2 * m < n) :
+    StrictInterl (binaryRunPolynomial n m)
+      (binaryRunPolynomial n (m + 1)) := by
+  by_cases hm0 : m = 0
+  · subst m
+    simpa using strictInterl_binaryRunPolynomial_zero_one n (by lia)
+  · exact strictInterl_binaryRunPolynomial_succ n m
+      (Nat.pos_of_ne_zero hm0) hmid
+
+/-- At an even midpoint, the two central binary-run basis images coincide. -/
+theorem binaryRunPolynomial_eq_succ_of_two_mul_eq
+    (n m : ℕ) (hm0 : 0 < m) (hmid : 2 * m = n) :
+    binaryRunPolynomial n m = binaryRunPolynomial n (m + 1) := by
+  have hreflect := binaryRunPolynomial_reflection n m hm0 (by lia)
+  have hindex : n + 1 - m = m + 1 := by lia
+  simpa [hindex] using hreflect.symm
+
+/-- Past the midpoint, reflection reverses the orientation of the adjacent
+Sturm pair. -/
+theorem strictInterl_binaryRunPolynomial_succ_reverse
+    (n m : ℕ) (hm : m < n) (hmid : n < 2 * m) :
+    StrictInterl (binaryRunPolynomial n (m + 1))
+      (binaryRunPolynomial n m) := by
+  let j := n - m
+  have hj0 : 0 < j := by simp [j]; lia
+  have hjmid : 2 * j < n := by simp [j]; lia
+  have hforward := strictInterl_binaryRunPolynomial_succ n j hj0 hjmid
+  have hm0 : 0 < m := by lia
+  have hmle : m ≤ n := hm.le
+  have hmsucc : 0 < m + 1 := by lia
+  have hmsuccle : m + 1 ≤ n := by lia
+  have hreflect_m := binaryRunPolynomial_reflection n m hm0 hmle
+  have hreflect_succ :=
+    binaryRunPolynomial_reflection n (m + 1) hmsucc hmsuccle
+  have hj : j = n - m := rfl
+  have hleft : n + 1 - (m + 1) = j := by simp [j]
+  have hright : n + 1 - m = j + 1 := by simp [j]; lia
+  rw [hleft] at hreflect_succ
+  rw [hright] at hreflect_m
+  simpa [hreflect_succ, hreflect_m] using hforward
+
 /-- Removing the shared zero at the origin gives strict interlacing in the
 usual no-common-root sense. -/
 theorem strictInterl_binaryRunPolynomial_divX_succ (n m : ℕ)
@@ -451,6 +517,131 @@ theorem strictInterl_binaryRunPolynomial_divX_succ (n m : ℕ)
   rw [hmfac, hsuccfac]
   exact strictInterl_binaryRunPolynomial_succ n m hm0 hmid
 
+private theorem noCommonRoot_binaryRunPolynomial_divX_succ_of_simple
+    (n m : ℕ) (hm0 : 0 < m) (hmid : 2 * m < n)
+    (hsimple : HasSimpleRoots (binaryRunPolynomial n m).divX) :
+    ∀ r : ℝ, ¬ ((binaryRunPolynomial n m).divX.IsRoot r ∧
+      (binaryRunPolynomial n (m + 1)).divX.IsRoot r) := by
+  intro r hr
+  have hmle : m ≤ n := by lia
+  have hr_nonpos : r ≤ 0 :=
+    roots_nonpos_of_realrooted_of_nonneg_coeffs
+      ⟨hsimple.ne_zero,
+        (strictInterl_binaryRunPolynomial_divX_succ n m hm0 hmid).1.2⟩
+      (hasNonnegCoeffs_binaryRunPolynomial n m).divX r hr.1
+  have hr0 : r ≠ 0 := by
+    intro hrzero
+    subst r
+    exact (ne_of_gt (eval_zero_binaryRunPolynomial_divX_pos n m hm0 hmle)) hr.1
+  have hr_neg : r < 0 := lt_of_le_of_ne hr_nonpos hr0
+  have hmfac := X_mul_divX_binaryRunPolynomial n m hm0
+  have hsuccfac := X_mul_divX_binaryRunPolynomial n (m + 1) (by lia)
+  have hrJ : (binaryRunPolynomial n m).IsRoot r := by
+    rw [← hmfac, Polynomial.IsRoot, eval_mul, eval_X, hr.1, mul_zero]
+  have hrJsucc : (binaryRunPolynomial n (m + 1)).IsRoot r := by
+    rw [← hsuccfac, Polynomial.IsRoot, eval_mul, eval_X, hr.2, mul_zero]
+  have hder_ne : (binaryRunPolynomial n m).derivative.eval r ≠ 0 := by
+    have hfactor_deriv := congrArg
+      (fun q : ℝ[X] => q.derivative.eval r) hmfac
+    have hrF : (binaryRunPolynomial n m).divX.eval r = 0 := hr.1
+    simp only [derivative_mul, derivative_X, one_mul, eval_add, eval_mul,
+      eval_X] at hfactor_deriv
+    rw [hrF, zero_add] at hfactor_deriv
+    rw [← hfactor_deriv]
+    exact mul_ne_zero hr0 (hsimple.eval_derivative_ne_zero hr.1)
+  have hrec := binaryRunPolynomial_differential_recurrence_normalized
+    n m hm0 hmid
+  have heval := congrArg (fun q : ℝ[X] => q.eval r) hrec
+  have hrJeval : (binaryRunPolynomial n m).eval r = 0 := hrJ
+  have hrJsuccEval : (binaryRunPolynomial n (m + 1)).eval r = 0 := hrJsucc
+  simp only [eval_add, eval_mul, eval_C, eval_X, eval_one, eval_sub] at heval
+  rw [hrJeval, hrJsuccEval] at heval
+  simp only [mul_zero, zero_add] at heval
+  have hc : 0 < ((n - 2 * m : ℕ) : ℝ) /
+      (((n - m : ℕ) : ℝ) * ((n + 1 - m : ℕ) : ℝ)) := by
+    apply div_pos
+    · exact_mod_cast (by lia : 0 < n - 2 * m)
+    · exact mul_pos (by exact_mod_cast (by lia : 0 < n - m))
+        (by exact_mod_cast (by lia : 0 < n + 1 - m))
+  have hfactor : r * (1 - r) ≠ 0 :=
+    mul_ne_zero hr0 (by linarith)
+  have hnonzero :
+      (((n - 2 * m : ℕ) : ℝ) /
+        (((n - m : ℕ) : ℝ) * ((n + 1 - m : ℕ) : ℝ))) *
+          (r * (1 - r)) *
+            (binaryRunPolynomial n m).derivative.eval r ≠ 0 :=
+    mul_ne_zero (mul_ne_zero hc.ne' hfactor) hder_ne
+  apply hnonzero
+  calc
+    _ = ((n - 2 * m : ℕ) : ℝ) /
+        (((n - m : ℕ) : ℝ) * ((n + 1 - m : ℕ) : ℝ)) * r *
+          (1 - r) * (binaryRunPolynomial n m).derivative.eval r := by ring
+    _ = 0 := heval.symm
+
+/-- Before and at the top of the forward half, removing the common factor
+`X` leaves a polynomial with simple roots. -/
+theorem hasSimpleRoots_binaryRunPolynomial_divX
+    (n m : ℕ) (hm0 : 0 < m) (hmid : 2 * m ≤ n + 1) :
+    HasSimpleRoots (binaryRunPolynomial n m).divX := by
+  induction m using Nat.strong_induction_on with
+  | h m ih =>
+      by_cases hm1 : m = 1
+      · subst m
+        rw [binaryRunPolynomial_one n (by lia)]
+        have hdiv : (X : ℝ[X]).divX = 1 := by
+          simpa using (Polynomial.divX_X_pow (R := ℝ) (n := 1))
+        rw [hdiv]
+        simp [HasSimpleRoots]
+      · let j := m - 1
+        have hj0 : 0 < j := by simp [j]; lia
+        have hjmid : 2 * j < n := by simp [j]; lia
+        have hjsimple : HasSimpleRoots (binaryRunPolynomial n j).divX :=
+          ih j (by simp [j]; lia) hj0 (by simp [j]; lia)
+        have hstrict := strictInterl_binaryRunPolynomial_divX_succ
+          n j hj0 hjmid
+        have hno := noCommonRoot_binaryRunPolynomial_divX_succ_of_simple
+          n j hj0 hjmid hjsimple
+        have hsimple := hstrict.hasSimpleRoots_of_no_common_root hno
+        have hj : j + 1 = m := by simp [j, Nat.sub_add_cancel (by lia : 1 ≤ m)]
+        simpa [hj] using hsimple.2
+
+/-- Every root of a reduced forward-half basis image is strictly negative. -/
+theorem roots_neg_binaryRunPolynomial_divX
+    (n m : ℕ) (hm0 : 0 < m) (hmid : 2 * m ≤ n + 1) :
+    ∀ r, (binaryRunPolynomial n m).divX.IsRoot r → r < 0 := by
+  intro r hr
+  by_cases hm1 : m = 1
+  · subst m
+    rw [binaryRunPolynomial_one n (by lia)] at hr
+    have hdiv : (X : ℝ[X]).divX = 1 := by
+      simpa using (Polynomial.divX_X_pow (R := ℝ) (n := 1))
+    simp [hdiv, Polynomial.IsRoot] at hr
+  · let j := m - 1
+    have hj0 : 0 < j := by simp [j]; lia
+    have hjmid : 2 * j < n := by simp [j]; lia
+    have hstrict := strictInterl_binaryRunPolynomial_divX_succ n j hj0 hjmid
+    have hj : j + 1 = m := by simp [j, Nat.sub_add_cancel (by lia : 1 ≤ m)]
+    have hsplits : (binaryRunPolynomial n m).divX.Splits := by
+      simpa [hj] using hstrict.2.1.2
+    have hne : (binaryRunPolynomial n m).divX ≠ 0 := by
+      simpa [hj] using hstrict.2.1.1
+    have hr_nonpos := roots_nonpos_of_realrooted_of_nonneg_coeffs
+      ⟨hne, hsplits⟩ (hasNonnegCoeffs_binaryRunPolynomial n m).divX r hr
+    have hr0 : r ≠ 0 := by
+      intro hrzero
+      subst r
+      exact (ne_of_gt (eval_zero_binaryRunPolynomial_divX_pos n m hm0 (by lia))) hr
+    exact lt_of_le_of_ne hr_nonpos hr0
+
+/-- Consecutive reduced basis images before the midpoint have no common root;
+hence their interlacing is strict in the ordinary root sense. -/
+theorem noCommonRoot_binaryRunPolynomial_divX_succ
+    (n m : ℕ) (hm0 : 0 < m) (hmid : 2 * m < n) :
+    ∀ r : ℝ, ¬ ((binaryRunPolynomial n m).divX.IsRoot r ∧
+      (binaryRunPolynomial n (m + 1)).divX.IsRoot r) :=
+  noCommonRoot_binaryRunPolynomial_divX_succ_of_simple n m hm0 hmid
+    (hasSimpleRoots_binaryRunPolynomial_divX n m hm0 (by lia))
+
 /-- Every real signed pencil of two consecutive basis images is real-rooted
 (or zero). -/
 theorem splits_binaryRunPolynomial_adjacent_pencil (n m : ℕ)
@@ -459,5 +650,45 @@ theorem splits_binaryRunPolynomial_adjacent_pencil (n m : ℕ)
       C β * binaryRunPolynomial n (m + 1)).Splits :=
   allComboRealRooted_of_strictInterl
     (strictInterl_binaryRunPolynomial_succ n m hm0 hmid) α β
+
+/-- Every real signed pencil of adjacent binary-run basis images is
+real-rooted (or zero), across both orientations and the even central pair. -/
+theorem splits_binaryRunPolynomial_adjacent_pencil_all
+    (n m : ℕ) (hm : m < n) (α β : ℝ) :
+    (C α * binaryRunPolynomial n m +
+      C β * binaryRunPolynomial n (m + 1)).Splits := by
+  rcases lt_trichotomy (2 * m) n with hbefore | hcentral | hafter
+  · exact allComboRealRooted_of_strictInterl
+      (strictInterl_binaryRunPolynomial_succ_of_two_mul_lt n m hbefore) α β
+  · have hm0 : 0 < m := by
+      lia
+    have hsplit : (binaryRunPolynomial n m).Splits := by
+      have hpair := strictInterl_binaryRunPolynomial_succ_of_two_mul_lt
+        n (m - 1) (by lia)
+      simpa [Nat.sub_add_cancel (by lia : 1 ≤ m)] using hpair.2.1.2
+    have heq := binaryRunPolynomial_eq_succ_of_two_mul_eq n m hm0 hcentral
+    have hsuccsplit : (binaryRunPolynomial n (m + 1)).Splits := by
+      rw [← heq]
+      exact hsplit
+    rw [heq]
+    rw [← add_mul, ← C_add]
+    exact hsuccsplit.C_mul (α + β)
+  · exact allComboRealRooted_comm
+      (allComboRealRooted_of_strictInterl
+        (strictInterl_binaryRunPolynomial_succ_reverse n m hm hafter)) α β
+
+/-- The binary-run transform sends every real signed pencil supported on two
+adjacent monomials to a real-rooted polynomial (or zero). -/
+theorem splits_binaryRunTransform_adjacent_monomial_pencil
+    (n m : ℕ) (hm : m < n) (α β : ℝ) :
+    (binaryRunTransform n
+      (X ^ m * (C α + C β * X))).Splits := by
+  have hinput :
+      (X ^ m * (C α + C β * X) : ℝ[X]) =
+        C α * X ^ m + C β * X ^ (m + 1) := by
+    ring
+  rw [hinput, binaryRunTransform_add]
+  simp only [binaryRunTransform, Polynomial.basisTransform_C_mul_X_pow]
+  exact splits_binaryRunPolynomial_adjacent_pencil_all n m hm α β
 
 end RealRooted
