@@ -19,6 +19,33 @@ def IsUpperHalfPlaneStablePencil (f g : ℝ[X]) : Prop :=
   ∀ z w : ℂ, 0 < z.im → 0 < w.im →
     (complexify f).eval z + w * (complexify g).eval z ≠ 0
 
+/-- Specializing a stable pencil at `w = i` gives a stable
+Hermite--Biehler polynomial. -/
+theorem IsUpperHalfPlaneStablePencil.hermiteBiehler {f g : ℝ[X]}
+    (h : IsUpperHalfPlaneStablePencil f g) :
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) := by
+  intro z hz
+  simpa [eval_hermiteBiehlerPolynomial] using
+    h z Complex.I hz (by norm_num)
+
+/-- A stable pencil `-b + w a` has the nonpositive Wronskian orientation
+`W(a, b) ≤ 0` on the real axis. -/
+theorem IsUpperHalfPlaneStablePencil.wronskian_nonpos {a b : ℝ[X]}
+    (h : IsUpperHalfPlaneStablePencil (-b) a) (r : ℝ) :
+    (wronskian a b).eval r ≤ 0 := by
+  have him := im_deriv_mul_conj_nonpos_of_stable h.hermiteBiehler r
+  rw [im_hb_deriv_mul_conj] at him
+  simpa [wronskian, eval_sub, eval_mul, mul_comm] using him
+
+/-- At a real root of the second member of a stable pencil `-b + w a`, its
+derivative has the opposite weak sign from the value of the first member. -/
+theorem IsUpperHalfPlaneStablePencil.derivative_mul_nonpos_at_root
+    {a b : ℝ[X]} (h : IsUpperHalfPlaneStablePencil (-b) a)
+    {r : ℝ} (hr : b.eval r = 0) :
+    b.derivative.eval r * a.eval r ≤ 0 := by
+  have hw := h.wronskian_nonpos r
+  simpa [wronskian, eval_sub, eval_mul, hr, mul_comm] using hw
+
 /-- Swapping a stable pencil and negating its old base preserves stability.
 The parameter change is the upper-half-plane involution `w ↦ -w⁻¹`. -/
 theorem IsUpperHalfPlaneStablePencil.swap_neg {f g : ℝ[X]}
