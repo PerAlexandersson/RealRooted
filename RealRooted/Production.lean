@@ -68,10 +68,12 @@ import RealRooted.BooleanSwapOrbit
 import RealRooted.BivariateOpenMapping
 import RealRooted.BinaryRunTransformation.Coefficients
 import RealRooted.BinaryRunTransformation.Contraction
+import RealRooted.BinaryRunTransformation.Continuation
 import RealRooted.BinaryRunTransformation.CriticalValue
 import RealRooted.BinaryRunTransformation.Deformation
 import RealRooted.BinaryRunTransformation.PointingPencil
 import RealRooted.BinaryRunTransformation.Sturm
+import RealRooted.CriticalValueContinuation
 import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences

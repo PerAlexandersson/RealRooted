@@ -1,4 +1,5 @@
 import RealRooted.BinaryRunTransformation.CriticalValue
+import Mathlib.Analysis.Calculus.ContDiff.Polynomial
 
 /-!
 # The binary-run pointing deformation
@@ -9,6 +10,7 @@ the abstract signed-parity theorem.
 -/
 
 open Polynomial
+open scoped ContDiff
 
 namespace RealRooted
 
@@ -92,6 +94,66 @@ theorem shiftedBinaryRunDeformation_eq_sum_range
     comp_binaryRunTransform_eq_sum_range
       ((natDegree_scalePolynomial_le t p).trans hp)]
   simp_rw [coeff_scalePolynomial]
+
+/-- Every coefficient of the shifted deformation depends smoothly on the
+scaling parameter. -/
+theorem contDiff_coeff_shiftedBinaryRunDeformation
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) (k : ℕ) :
+    ContDiff ℝ ∞
+      (fun t => (shiftedBinaryRunDeformation n p t).coeff k) := by
+  rw [show (fun t => (shiftedBinaryRunDeformation n p t).coeff k) =
+      fun t => ∑ m ∈ Finset.range (n + 1),
+        (p.coeff m * t ^ m) *
+          ((binaryRunPolynomial n m).comp (X + 1)).coeff k by
+    funext t
+    rw [shiftedBinaryRunDeformation_eq_sum_range hp]
+    simp only [Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul]]
+  fun_prop
+
+/-- Evaluation of the shifted deformation is jointly smooth in the scaling
+parameter and the polynomial variable. -/
+theorem contDiff_shiftedBinaryRunDeformation_eval_prod
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) :
+    ContDiff ℝ ∞
+      (fun z : ℝ × ℝ =>
+        (shiftedBinaryRunDeformation n p z.1).eval z.2) := by
+  rw [show (fun z : ℝ × ℝ =>
+      (shiftedBinaryRunDeformation n p z.1).eval z.2) =
+      fun z => ∑ m ∈ Finset.range (n + 1),
+        (p.coeff m * z.1 ^ m) *
+          ((binaryRunPolynomial n m).comp (X + 1)).eval z.2 by
+    funext z
+    rw [shiftedBinaryRunDeformation_eq_sum_range hp,
+      Polynomial.eval_finsetSum]
+    simp]
+  apply ContDiff.sum
+  intro m _
+  exact (contDiff_const.mul (contDiff_fst.pow m)).mul
+    ((Polynomial.contDiff_aeval
+      ((binaryRunPolynomial n m).comp (X + 1)) ∞).comp contDiff_snd)
+
+/-- Evaluation of the spatial derivative of the shifted deformation is jointly
+smooth in the scaling parameter and the polynomial variable. -/
+theorem contDiff_derivative_shiftedBinaryRunDeformation_eval_prod
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) :
+    ContDiff ℝ ∞
+      (fun z : ℝ × ℝ =>
+        (shiftedBinaryRunDeformation n p z.1).derivative.eval z.2) := by
+  rw [show (fun z : ℝ × ℝ =>
+      (shiftedBinaryRunDeformation n p z.1).derivative.eval z.2) =
+      fun z => ∑ m ∈ Finset.range (n + 1),
+        (p.coeff m * z.1 ^ m) *
+          ((binaryRunPolynomial n m).comp (X + 1)).derivative.eval z.2 by
+    funext z
+    rw [shiftedBinaryRunDeformation_eq_sum_range hp]
+    simp only [Polynomial.derivative_sum, Polynomial.derivative_C_mul,
+      Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_C]]
+  apply ContDiff.sum
+  intro m _
+  exact (contDiff_const.mul (contDiff_fst.pow m)).mul
+    ((Polynomial.contDiff_aeval
+      ((binaryRunPolynomial n m).comp (X + 1)).derivative ∞).comp
+        contDiff_snd)
 
 theorem natDegree_pointPolynomial_le (p : ℝ[X]) :
     (pointPolynomial p).natDegree ≤ p.natDegree := by
