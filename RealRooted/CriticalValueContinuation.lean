@@ -1,6 +1,8 @@
 import RealRooted.PFPolynomial.Closure
+import RealRooted.RootCounting.Finite
 import RealRooted.SimpleRoots
 import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Calculus.ImplicitContDiff
 
@@ -36,6 +38,22 @@ theorem Polynomial.continuous_eval_of_continuous_coeff
       (Nat.lt_succ_of_le (hdegree t)) (x t)]
   exact continuous_finsetSum _ fun i _ =>
     (hcoeff i).mul (hx.pow i)
+
+/-- A continuous polynomial family with a uniform degree bound retains its
+maximal degree locally when the top coefficient is initially nonzero. -/
+theorem Polynomial.eventually_natDegree_eq_of_le_of_continuous_coeff
+    {T : Type*} [TopologicalSpace T] (p : T → ℝ[X]) {t : T} {D : ℕ}
+    (hdegree : (p t).natDegree = D) (hp0 : p t ≠ 0)
+    (hle : ∀ u, (p u).natDegree ≤ D)
+    (hcoeff : ∀ i : ℕ, Continuous fun u => (p u).coeff i) :
+    ∀ᶠ u in 𝓝 t, (p u).natDegree = D := by
+  have htop : (p t).coeff D ≠ 0 := by
+    rw [← hdegree]
+    rw [Polynomial.coeff_natDegree]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hp0
+  filter_upwards [(hcoeff D).continuousAt.eventually_ne htop] with u hu
+  apply le_antisymm (hle u)
+  exact Polynomial.le_natDegree_of_ne_zero hu
 
 /-- The monic normalization of the derivative of a real polynomial. -/
 def monicDerivative (p : ℝ[X]) : ℝ[X] :=
@@ -250,5 +268,156 @@ theorem exists_contDiffAt_polynomial_root
     simpa only [F, Polynomial.IsRoot.def] using hs.trans (by simpa using hr)
   exact ⟨ρ, hF.contDiffAt_implicitFunction (by simp) hAinv,
     hρbase, hρroot⟩
+
+/-- The simple roots of a smooth fixed-degree split polynomial admit local
+smooth branches that exhaust all nearby roots. -/
+theorem exists_eventually_polynomial_root_branches
+    (p : ℝ → ℝ[X]) {t : ℝ} {D : ℕ} (hD : D ≠ 0)
+    (hdegree : ∀ᶠ u in 𝓝 t, (p u).natDegree = D)
+    (hsplits : (p t).Splits) (hsimple : HasSimpleRoots (p t))
+    (hsmooth : ∀ x, (p t).IsRoot x →
+      ContDiffAt ℝ 1 (fun z : ℝ × ℝ => (p z.1).eval z.2) (t, x)) :
+    ∃ ξ : {x // x ∈ (p t).roots.toFinset} → ℝ → ℝ,
+      (∀ i, ξ i t = i) ∧
+        ∀ᶠ u in 𝓝 t,
+          (p u).Splits ∧ HasSimpleRoots (p u) ∧
+            (∀ i, ContDiffAt ℝ 1 (ξ i) u) ∧
+              ∀ x, (p u).IsRoot x ↔ ∃ i, ξ i u = x := by
+  classical
+  let I := (p t).roots.toFinset
+  have hdegree_t : (p t).natDegree = D := hdegree.self_of_nhds
+  have hroot (i : ↥I) : (p t).IsRoot i := by
+    apply (Polynomial.mem_roots hsimple.ne_zero).mp
+    apply Multiset.mem_toFinset.mp
+    simpa only [I] using i.2
+  let ξ (i : ↥I) : ℝ → ℝ :=
+    (exists_contDiffAt_polynomial_root p (hsmooth i (hroot i))
+      (hroot i) (hsimple.eval_derivative_ne_zero (hroot i))).choose
+  have hξsmooth (i : ↥I) : ContDiffAt ℝ 1 (ξ i) t :=
+    (exists_contDiffAt_polynomial_root p (hsmooth i (hroot i))
+      (hroot i) (hsimple.eval_derivative_ne_zero (hroot i))).choose_spec.1
+  have hξbase (i : ↥I) : ξ i t = i :=
+    (exists_contDiffAt_polynomial_root p (hsmooth i (hroot i))
+      (hroot i) (hsimple.eval_derivative_ne_zero (hroot i))).choose_spec.2.1
+  have hξroot (i : ↥I) :
+      ∀ᶠ u in 𝓝 t, (p u).IsRoot (ξ i u) :=
+    (exists_contDiffAt_polynomial_root p (hsmooth i (hroot i))
+      (hroot i) (hsimple.eval_derivative_ne_zero (hroot i))).choose_spec.2.2
+  refine ⟨ξ, hξbase, ?_⟩
+  have hroots : ∀ᶠ u in 𝓝 t, ∀ i : ↥I,
+      (p u).IsRoot (ξ i u) :=
+    Filter.eventually_all.mpr hξroot
+  have hsmooths : ∀ᶠ u in 𝓝 t, ∀ i : ↥I,
+      ContDiffAt ℝ 1 (ξ i) u :=
+    Filter.eventually_all.mpr fun i =>
+      (hξsmooth i).eventually (by norm_num)
+  have hdistinct : ∀ᶠ u in 𝓝 t, ∀ i j : ↥I,
+      i ≠ j → ξ i u ≠ ξ j u := by
+    rw [Filter.eventually_all]
+    intro i
+    rw [Filter.eventually_all]
+    intro j
+    by_cases hij : i = j
+    · subst j
+      simp
+    · have hne : ξ i t - ξ j t ≠ 0 := by
+        rw [hξbase i, hξbase j, sub_ne_zero]
+        exact fun h => hij (Subtype.ext h)
+      filter_upwards [((hξsmooth i).continuousAt.sub
+        (hξsmooth j).continuousAt).eventually_ne hne]
+        with u hu
+      intro _
+      exact sub_ne_zero.mp hu
+  have hIcard : I.card = D := by
+    dsimp [I]
+    rw [Multiset.toFinset_card_of_nodup hsimple.roots_nodup,
+      ← hsplits.natDegree_eq_card_roots, hdegree_t]
+  filter_upwards [hdegree, hroots, hsmooths, hdistinct]
+    with u hudegree huroots husmooth hudistinct
+  let s : Finset ℝ := Finset.univ.image fun i : ↥I => ξ i u
+  have hξinj : Function.Injective fun i : ↥I => ξ i u := by
+    intro i j hij
+    by_contra hne
+    exact hudistinct i j hne hij
+  have hscard : s.card = D := by
+    change (Finset.univ.image fun i : ↥I => ξ i u).card = D
+    rw [Finset.card_image_of_injective _ hξinj, Finset.card_univ,
+      Fintype.card_coe, hIcard]
+  have hsroot : ∀ x ∈ s, (p u).IsRoot x := by
+    intro x hx
+    change x ∈ Finset.univ.image (fun i : ↥I => ξ i u) at hx
+    rw [Finset.mem_image] at hx
+    obtain ⟨i, _, rfl⟩ := hx
+    exact huroots i
+  have husplits : (p u).Splits :=
+    Polynomial.splits_of_finset_roots_of_natDegree_le_card hsroot <| by
+      rw [hudegree, hscard]
+  have hu0 : p u ≠ 0 := by
+    intro hu
+    have : D = 0 := by simpa [hu] using hudegree.symm
+    exact hD this
+  have hunodup : (p u).roots.Nodup := by
+    apply RootCounting.roots_nodup_of_card_roots
+      husplits.natDegree_eq_card_roots.symm hsroot hu0
+    rw [hudegree, hscard]
+  have hssub : s ⊆ (p u).roots.toFinset := by
+    intro x hx
+    apply Multiset.mem_toFinset.mpr
+    exact (Polynomial.mem_roots hu0).mpr (hsroot x hx)
+  have hseq : s = (p u).roots.toFinset := by
+    apply Finset.eq_of_subset_of_card_le hssub
+    calc
+      (p u).roots.toFinset.card ≤ (p u).roots.card :=
+        Multiset.toFinset_card_le _
+      _ = (p u).natDegree := husplits.natDegree_eq_card_roots.symm
+      _ = D := hudegree
+      _ = s.card := hscard.symm
+  refine ⟨husplits, HasSimpleRoots.of_roots_nodup hu0 hunodup,
+    husmooth, ?_⟩
+  intro x
+  constructor
+  · intro hx
+    have hxmem : x ∈ s := by
+      rw [hseq]
+      exact Multiset.mem_toFinset.mpr ((Polynomial.mem_roots hu0).mpr hx)
+    change x ∈ Finset.univ.image (fun i : ↥I => ξ i u) at hxmem
+    obtain ⟨i, _, hi⟩ := Finset.mem_image.mp hxmem
+    exact ⟨i, hi⟩
+  · rintro ⟨i, rfl⟩
+    exact huroots i
+
+/-- If finitely many critical-point branches exhaust all nearby critical
+points and their squared critical values have nonnegative derivatives, then a
+critical-value margin persists to the right. -/
+theorem criticalValueMargin_eventually_right_of_branches
+    {ι : Type*} (p : ℝ → ℝ[X]) (ξ : ι → ℝ → ℝ) {t δ : ℝ}
+    (hbase : ∀ i, δ ≤ (p t).eval (ξ i t) ^ 2)
+    (hlocal : ∀ᶠ s in 𝓝 t,
+      (∀ x, (p s).derivative.IsRoot x → ∃ i, ξ i s = x) ∧
+        ∀ i, ∃ v,
+          HasDerivAt (fun u => (p u).eval (ξ i u) ^ 2) v s ∧ 0 ≤ v) :
+    ∀ᶠ s in 𝓝[>] t,
+      ∀ x, (p s).derivative.IsRoot x → δ ≤ (p s).eval x ^ 2 := by
+  obtain ⟨l, r, ht, hgood⟩ := hlocal.exists_Ioo_subset
+  have hmono (i : ι) :
+      MonotoneOn (fun u => (p u).eval (ξ i u) ^ 2) (Set.Ioo l r) := by
+    apply monotoneOn_of_deriv_nonneg (convex_Ioo l r)
+    · intro s hs
+      exact ((hgood hs).2 i).choose_spec.1.continuousAt.continuousWithinAt
+    · intro s hs
+      rw [interior_Ioo] at hs
+      exact ((hgood hs).2 i).choose_spec.1.differentiableAt.differentiableWithinAt
+    · intro s hs
+      rw [interior_Ioo] at hs
+      obtain ⟨v, hv, hvnonneg⟩ := (hgood hs).2 i
+      rw [hv.deriv]
+      exact hvnonneg
+  apply mem_nhdsGT_iff_exists_Ioo_subset.mpr
+  refine ⟨r, ht.2, ?_⟩
+  intro s hs x hx
+  have hs' : s ∈ Set.Ioo l r := ⟨ht.1.trans hs.1, hs.2⟩
+  obtain ⟨i, hi⟩ := (hgood hs').1 x hx
+  rw [← hi]
+  exact (hbase i).trans (hmono i ht hs' hs.1.le)
 
 end RealRooted

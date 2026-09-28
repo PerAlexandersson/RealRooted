@@ -217,6 +217,31 @@ theorem coeff_shiftedBinaryRunDeformation_eq_sum_range
   exact coeff_comp_binaryRunTransform_eq_sum_range
     ((natDegree_scalePolynomial_le t p).trans hp) k
 
+theorem coeff_zero_shiftedBinaryRunDeformation
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) (t : ℝ) :
+    (shiftedBinaryRunDeformation n p t).coeff 0 = p.eval t := by
+  rw [coeff_shiftedBinaryRunDeformation_eq_sum_range hp,
+    Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hp)]
+  apply Finset.sum_congr rfl
+  intro m _
+  rw [coeff_scalePolynomial]
+  simp
+
+/-- Nonnegative inputs remain coefficientwise nonnegative throughout the
+nonnegative scaling deformation. -/
+theorem HasNonnegCoeffs.shiftedBinaryRunDeformation
+    {n : ℕ} {p : ℝ[X]} (hp : HasNonnegCoeffs p)
+    (hdegree : p.natDegree ≤ n) {t : ℝ} (ht : 0 ≤ t) :
+    HasNonnegCoeffs (shiftedBinaryRunDeformation n p t) := by
+  intro k
+  rw [coeff_shiftedBinaryRunDeformation_eq_sum_range hdegree]
+  apply Finset.sum_nonneg
+  intro m _
+  have hscale : 0 ≤ (scalePolynomial t p).coeff m := by
+    rw [coeff_scalePolynomial]
+    exact mul_nonneg (hp m) (pow_nonneg ht m)
+  positivity
+
 theorem coeff_shiftedBinaryRunPointing_eq_sum_range
     {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) (t : ℝ) (k : ℕ) :
     (shiftedBinaryRunPointing n p t).coeff k =
