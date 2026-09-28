@@ -1307,6 +1307,44 @@ import RealRooted.Challenges.Sturm
 import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
 import RealRooted.Mathlib.Algebra.Polynomial.Sturm
 import RealRooted.RootCounting.Descartes
+import RealRooted.Applications.OEIS.A132885
+import RealRooted.CauchyInterlacing.Submatrix
+import RealRooted.DerivativeSimpleRoots
+import RealRooted.EulerOperator.Polar.RealParameter
+import RealRooted.JacobiDeformation
+import RealRooted.JacobiDeformation.Appell
+import RealRooted.JacobiDeformation.BaseProduct
+import RealRooted.JacobiDeformation.Basic
+import RealRooted.JacobiDeformation.Boundary
+import RealRooted.JacobiDeformation.BoundaryProjection
+import RealRooted.JacobiDeformation.Collocation
+import RealRooted.JacobiDeformation.CollocationPositivity
+import RealRooted.JacobiDeformation.CriticalCases
+import RealRooted.JacobiDeformation.CriticalKernelSign
+import RealRooted.JacobiDeformation.ImageProduct
+import RealRooted.JacobiDeformation.JacobiLowering
+import RealRooted.JacobiDeformation.JacobiOperator
+import RealRooted.JacobiDeformation.Kernel
+import RealRooted.JacobiDeformation.KernelExpansion
+import RealRooted.JacobiDeformation.KernelSign
+import RealRooted.JacobiDeformation.Moment
+import RealRooted.JacobiDeformation.NewtonIdentity
+import RealRooted.JacobiDeformation.Parity
+import RealRooted.JacobiDeformation.Pochhammer
+import RealRooted.JacobiDeformation.Quadrature
+import RealRooted.JacobiDeformation.QuasiNodes
+import RealRooted.JacobiDeformation.RootGeometry
+import RealRooted.JacobiDeformation.Shift
+import RealRooted.JacobiDeformation.SpectralKernel
+import RealRooted.JacobiDeformation.Strict
+import RealRooted.MaWang.CriticalSign
+import RealRooted.Mathlib.Algebra.Polynomial.DividedDifference
+import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
+import RealRooted.Mathlib.LinearAlgebra.Lagrange.Quadrature
+import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
+import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
+import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
+import RealRooted.SpectralProduct
 
 /-!
 # RealRooted production umbrella

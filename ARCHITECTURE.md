@@ -1104,6 +1104,55 @@ layers, and the historical insertion operator is only a compatibility alias
 for the neutral Darboux operator. The toric model definitions and finite-offset
 assembly remain in the application layer.
 
+The Jacobi-deformation theorem and its A132885 application are layered so
+that the reusable pieces sit below the deformation namespace:
+
+- Mathlib-shaped shims import only Mathlib.
+  `Mathlib.Combinatorics.Enumerative.CentralTrinomial` defines
+  `Nat.centralTrinomial` with its factorial forms, holonomic recurrence, and
+  characteristic-zero uniqueness. `Mathlib.LinearAlgebra.Lagrange.Quadrature`
+  owns exact Lagrange quadrature from orthogonality to a nodal polynomial,
+  positivity of its weights, and collocation matrices of polynomial operators.
+  `Mathlib.Algebra.Polynomial.DividedDifference`,
+  `Mathlib.LinearAlgebra.Matrix.AdjugateExpansion` and `AdjugatePath` own the
+  divided-difference product rule, the characteristic-adjugate Newton quotient,
+  and the recursive simple-path cofactor identity, while
+  `Mathlib.LinearAlgebra.Matrix.RankOneCompression` owns the two-point
+  determinant identity.
+- `CauchyInterlacing.Submatrix` gives the eigenvalue bound for arbitrary
+  injective principal submatrices, and `SpectralProduct` combines it with the
+  matrix shims to prove the Micchelli--Willoughby theorem: initial spectral
+  products of an entrywise nonnegative real symmetric matrix with simple
+  spectrum are entrywise nonnegative.
+- Generic root facts live beside their neighbours. `DerivativeSimpleRoots`
+  proves simplicity of the derivative of a split polynomial with root
+  multiplicities at most two and strict derivative bounds at a simple upper
+  root; `MaWang.CriticalSign` packages the successor-degree strict Sturm step
+  from critical signs; `EulerOperator.Polar.RealParameter` extends the polar
+  multiplier package to a real parameter above the degree.
+- `JacobiDeformation.Pochhammer` is the single real rising/falling-factorial
+  layer, including the Chu--Vandermonde and Pfaff--Saalschütz summations;
+  every deformation module uses it instead of a local product definition.
+- The deformation stack is one-directional. `Basic` and `Boundary` own the
+  finite definition and ranks zero and one; `Kernel` and `NewtonIdentity` the
+  kernel weights and their Newton expansion; `Moment`, `Appell`,
+  `BoundaryProjection`, and `KernelExpansion` the diagonal Jacobi kernel
+  expansion; `Quadrature`, `JacobiOperator`, `Collocation`, and
+  `CollocationPositivity` the quasi-Jacobi collocation matrix and its
+  entrywise positivity; `KernelSign`, `SpectralKernel`, `QuasiNodes`, and
+  `CriticalKernelSign` the kernel signs; `RootGeometry`, `ImageProduct`, and
+  `BaseProduct` the delta-zero product; `CriticalCases` and `Strict` the
+  strict theorem; `Shift` the unit parameter shift to every `δ ≥ 0`; and
+  `Parity` the central-trinomial specializations. `JacobiDeformation` is the
+  public facade over `Strict` and `Parity`.
+- `Applications.OEIS.A132885` defines the row polynomials by their closed
+  central-trinomial coefficient formula and proves degree, splitness, simple
+  strictly negative roots, root count, and the PF property. Identification
+  of an OEIS recurrence with this closed form stays in the consumer.
+
+The 38 new modules raise the root and production closure budgets by exactly
+38; the tactic regression closure is unchanged.
+
 Shifted-Jacobi orthogonality has a finite/analytic boundary. `Jacobi.Favard`
 owns the monic recurrence certificate without importing roots or analysis.
 The coefficient-ring self-adjointness criterion lives in the Jacobi moment
