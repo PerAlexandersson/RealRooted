@@ -299,8 +299,8 @@ private theorem exceptionalBasePolynomial_strictInterl_exceptionalEulerInverse
   let F := exceptionalBasePolynomial m ε
   let u := U.comp (1 - X)
   let f := F.comp (1 - X)
-  have hUdegree : U.natDegree = m := by
-    exact natDegree_exceptionalEulerInverse m ε hγ
+  have hUdegree : U.natDegree = m :=
+    natDegree_exceptionalEulerInverse m ε hγ
   have hFdegree : F.natDegree = m := by
     obtain ⟨scale, hscalePos⟩ : ∃ scale : ℝ, 0 < scale ∧
         F = C scale * shiftedJacobi m ((ε : ℝ) - 1 / 2) 0 := by
@@ -315,8 +315,8 @@ private theorem exceptionalBasePolynomial_strictInterl_exceptionalEulerInverse
       natDegree_shiftedJacobi m (by
         have hε : 0 ≤ (ε : ℝ) := by positivity
         linarith) (by norm_num)]
-  have hUlead : 0 < (-1 : ℝ) ^ m * U.leadingCoeff := by
-    exact negOnePow_mul_exceptionalEulerInverse_leadingCoeff_pos m ε hγ
+  have hUlead : 0 < (-1 : ℝ) ^ m * U.leadingCoeff :=
+    negOnePow_mul_exceptionalEulerInverse_leadingCoeff_pos m ε hγ
   have hFlead : 0 < (-1 : ℝ) ^ m * F.leadingCoeff := by
     have hratio : 0 < γ / (γ + m) := by positivity
     have hcoeff : U.leadingCoeff = F.leadingCoeff * (γ / (γ + m)) := by
@@ -363,8 +363,8 @@ private theorem exceptionalBasePolynomial_strictInterl_exceptionalEulerInverse
     rw [hzero] at hUdegree
     simp at hUdegree
     lia
-  have huSplits : u.Splits := by
-    exact (isRealRooted_comp_one_sub_X hUne hUsplits).2
+  have huSplits : u.Splits :=
+    (isRealRooted_comp_one_sub_X hUne hUsplits).2
   have hrec : C γ * f = C γ * u + -(1 - X) * u.derivative := by
     have heuler := eulerShiftOperator_exceptionalEulerInverse m ε hγ
     have hcomp := congrArg (fun p : ℝ[X] => p.comp (1 - X)) heuler
@@ -604,12 +604,10 @@ theorem rPolynomial_exceptional_eval_mul_jPolynomial_derivative_pos
         simp [hzero]
       have hinter := exceptionalRoot_interlacing_jPolynomialRoot
         (n + 1) ε (by lia)
-      have hsLeft : ∀ j : Fin n, s j.castSucc < r j := by
-        intro j
-        exact hinter.1 j
-      have hsRight : ∀ j : Fin n, r j < s j.succ := by
-        intro j
-        exact hinter.2 j
+      have hsLeft : ∀ j : Fin n, s j.castSucc < r j :=
+        fun j => hinter.1 j
+      have hsRight : ∀ j : Fin n, r j < s j.succ :=
+        fun j => hinter.2 j
       have hsMono : StrictMono s := by
         rw [Fin.strictMono_iff_lt_succ]
         intro j
@@ -617,15 +615,14 @@ theorem rPolynomial_exceptional_eval_mul_jPolynomial_derivative_pos
       have hrMono : StrictMono r := hJData.strictMono_orderedRoot
       have hsFirstMono : StrictMono (fun j : Fin n => s j.castSucc) :=
         hsMono.comp Fin.strictMono_castSucc
-      have hsCross : ∀ (j k : Fin n), j < k → r j < s k.castSucc := by
-        intro j k hjk
-        exact (hsRight j).trans_le (hsMono.monotone (by
+      have hsCross : ∀ (j k : Fin n), j < k → r j < s k.castSucc :=
+        fun j k hjk => (hsRight j).trans_le (hsMono.monotone (by
           change j.val + 1 ≤ k.val
           lia))
       have hprodFirst := StrictMono.prod_sub_mul_prod_sub_pos_of_interlacing
         (fun j : Fin n => s j.castSucc) r hrMono hsLeft hsCross i
-      have hlast : r i < s (Fin.last n) := by
-        exact (hsRight i).trans_le (hsMono.monotone (Fin.le_last i.succ))
+      have hlast : r i < s (Fin.last n) :=
+        (hsRight i).trans_le (hsMono.monotone (Fin.le_last i.succ))
       have hprodFull :
           (∏ j : Fin (n + 1), (r i - s j)) *
               (∏ j ∈ Finset.univ.erase i, (r i - r j)) < 0 := by
