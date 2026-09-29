@@ -1405,6 +1405,28 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_im_ratio_nonpos
       (isRealRooted_of_deg_zero hApos.ne_zero hAdeg0).2 hQpos.ne_zero
       (isRealRooted_of_deg_zero hQpos.ne_zero hQdeg0).2 hAdeg0 hQdeg0
 
+/-- Nonnegative tangent residues at every simple pencil root imply that the
+parameter tangent precedes the pencil. -/
+theorem strictInterl_quadraticInterlacingTangent_pencil_of_residue_nonneg
+    {F G H : ℝ[X]} {a : ℝ}
+    (hQpos : HasPosLeadingCoeff (quadraticInterlacingPencil F G H a))
+    (hApos : HasPosLeadingCoeff (quadraticInterlacingTangent F G a))
+    (hQsplit : (quadraticInterlacingPencil F G H a).Splits)
+    (hQsimple : HasSimpleRoots (quadraticInterlacingPencil F G H a))
+    (hQdeg : 1 ≤ (quadraticInterlacingPencil F G H a).natDegree)
+    (hAdeg : (quadraticInterlacingTangent F G a).natDegree ≤
+      (quadraticInterlacingPencil F G H a).natDegree)
+    (hres : ∀ r ∈ (quadraticInterlacingPencil F G H a).roots,
+      0 ≤ (quadraticInterlacingTangent F G a).eval r /
+        (quadraticInterlacingPencil F G H a).derivative.eval r) :
+    StrictInterl (quadraticInterlacingTangent F G a)
+      (quadraticInterlacingPencil F G H a) := by
+  apply strictInterl_quadraticInterlacingTangent_pencil_of_im_ratio_nonpos
+    hQpos hApos hQsplit
+  intro z hz
+  exact im_ratio_nonpos_of_residue_nonneg hQpos hQsplit
+    hQsimple.roots_nodup hQdeg hAdeg hres hz
+
 /-- The quadratic pencil is the right member plus `a` times its tangent. -/
 theorem quadraticInterlacingPencil_eq_right_add_tangent
     (F G H : ℝ[X]) (a : ℝ) :
