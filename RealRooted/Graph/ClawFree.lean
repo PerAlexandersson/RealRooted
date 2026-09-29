@@ -131,8 +131,8 @@ theorem ClawFree.neighborSetOn_sdiff_commonClosedNeighbor_simplicial
     intro huH
     have huH' := Finset.mem_sdiff.mp huH
     have huS : u ∈ S := huH'.1
-    have huCommon : u ∈ commonClosedNeighborSetOn G S u v := by
-      exact Finset.mem_inter.mpr
+    have huCommon : u ∈ commonClosedNeighborSetOn G S u v :=
+      Finset.mem_inter.mpr
         ⟨Finset.mem_filter.mpr ⟨huS, Or.inl rfl⟩,
           Finset.mem_filter.mpr ⟨huS, Or.inr huv.symm⟩⟩
     simp_all
@@ -144,10 +144,10 @@ theorem ClawFree.neighborSetOn_sdiff_commonClosedNeighbor_simplicial
     have hyK := Finset.mem_filter.mp hy
     have hxH' := Finset.mem_sdiff.mp hxK.1
     have hyH' := Finset.mem_sdiff.mp hyK.1
-    have hxClosedU : x ∈ closedNeighborSetOn G S u := by
-      exact Finset.mem_filter.mpr ⟨hxH'.1, Or.inr hxK.2⟩
-    have hyClosedU : y ∈ closedNeighborSetOn G S u := by
-      exact Finset.mem_filter.mpr ⟨hyH'.1, Or.inr hyK.2⟩
+    have hxClosedU : x ∈ closedNeighborSetOn G S u :=
+      Finset.mem_filter.mpr ⟨hxH'.1, Or.inr hxK.2⟩
+    have hyClosedU : y ∈ closedNeighborSetOn G S u :=
+      Finset.mem_filter.mpr ⟨hyH'.1, Or.inr hyK.2⟩
     have hx_not_closed_v : x ∉ closedNeighborSetOn G S v := by
       intro hxClosedV
       exact hxH'.2 (Finset.mem_inter.mpr ⟨hxClosedU, hxClosedV⟩)

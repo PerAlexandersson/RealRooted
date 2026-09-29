@@ -875,8 +875,8 @@ theorem exists_insertionCut_card {m k : ℕ}
     let yR : RankedNeighbor P O := ⟨y, hyK⟩
     let yS : {z // z ∈ S} := ⟨yR, Finset.mem_univ _⟩
     let j : Fin P.lastEarlierNeighbors.card := e.symm yS
-    have hej : (e j).1.val = y := by
-      exact congrArg (fun z ↦ z.val)
+    have hej : (e j).1.val = y :=
+      congrArg (fun z ↦ z.val)
         (congrArg Subtype.val (e.apply_symm_apply yS))
     have hjnot : j ∉ indices := by
       intro hj
