@@ -1109,6 +1109,133 @@ theorem quadraticInterlacingPencil_one_positive_crossing_exact_drop
   rw [hmult_eq_drop]
   omega
 
+/-- With two positive crossing parameters, both successive chamber-count
+jumps are downward and equal their full parameter-root multiplicities. -/
+theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
+    {F G H : ℝ[X]} {r a b R : ℝ} {D : ℕ}
+    (hFpos : HasPosLeadingCoeff F) (hGpos : HasPosLeadingCoeff G)
+    (hHpos : HasPosLeadingCoeff H) (hFG : StrictInterl F G)
+    (hGH : StrictInterl G H) (hrF : ¬F.IsRoot r)
+    (hrG : ¬G.IsRoot r) (hrH : ¬H.IsRoot r)
+    (hrs : positiveQuadraticParameterRoots F G H r = [a, b])
+    (hbR : b < R) (hD : D ≠ 0)
+    (hdegree : ∀ μ ∈ Set.Icc (0 : ℝ) R,
+      (quadraticInterlacingPencil F G H μ).natDegree = D)
+    (hdegree_local : ∀ μ ∈ Set.Icc (0 : ℝ) R, ∀ᶠ c in 𝓝 μ,
+      (quadraticInterlacingPencil F G H c).natDegree = D)
+    (hsplits : ∀ μ ∈ Set.Icc (0 : ℝ) R,
+      (quadraticInterlacingPencil F G H μ).Splits)
+    (hsimple : ∀ μ ∈ Set.Icc (0 : ℝ) R,
+      HasSimpleRoots (quadraticInterlacingPencil F G H μ))
+    (hR : ((quadraticInterlacingPencil F G H R).roots.filter (r < ·)).card =
+      (F.roots.filter (r < ·)).card) :
+    let m := (a + b) / 2
+    ((quadraticInterlacingPencil F G H 0).roots.filter (r < ·)).card =
+        ((quadraticInterlacingPencil F G H m).roots.filter (r < ·)).card +
+          (quadraticParameterEvaluation F G H r).roots.count a ∧
+      ((quadraticInterlacingPencil F G H m).roots.filter (r < ·)).card =
+        ((quadraticInterlacingPencil F G H R).roots.filter (r < ·)).card +
+          (quadraticParameterEvaluation F G H r).roots.count b := by
+  dsimp only
+  let q := quadraticParameterEvaluation F G H r
+  let m := (a + b) / 2
+  change
+    ((quadraticInterlacingPencil F G H 0).roots.filter (r < ·)).card =
+        ((quadraticInterlacingPencil F G H m).roots.filter (r < ·)).card +
+          q.roots.count a ∧
+      ((quadraticInterlacingPencil F G H m).roots.filter (r < ·)).card =
+        ((quadraticInterlacingPencil F G H R).roots.filter (r < ·)).card +
+          q.roots.count b
+  have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
+    rw [hrs]
+    simp
+  have hbmem : b ∈ positiveQuadraticParameterRoots F G H r := by
+    rw [hrs]
+    simp
+  have hapos : 0 < a :=
+    (mem_positiveQuadraticParameterRoots_iff.mp hamem).2
+  have hbpos : 0 < b :=
+    (mem_positiveQuadraticParameterRoots_iff.mp hbmem).2
+  have hab : a < b := by
+    have hpair := positiveQuadraticParameterRoots_pairwise F G H r
+    rw [hrs] at hpair
+    simpa using hpair
+  have ham : a < m := by dsimp [m]; linarith
+  have hmb : m < b := by dsimp [m]; linarith
+  have hmR : m < R := hmb.trans hbR
+  have hm0 : (0 : ℝ) ≤ m := hapos.le.trans ham.le
+  have haRoot : q.IsRoot a :=
+    Polynomial.isRoot_of_mem_roots
+      (mem_positiveQuadraticParameterRoots_iff.mp hamem).1
+  have hbRoot : q.IsRoot b :=
+    Polynomial.isRoot_of_mem_roots
+      (mem_positiveQuadraticParameterRoots_iff.mp hbmem).1
+  have haQroot : (quadraticInterlacingPencil F G H a).IsRoot r :=
+    (quadraticParameterEvaluation_isRoot_iff F G H r a).1 haRoot
+  have hbQroot : (quadraticInterlacingPencil F G H b).IsRoot r :=
+    (quadraticParameterEvaluation_isRoot_iff F G H r b).1 hbRoot
+  have habZip : (a, b) ∈
+      (positiveQuadraticParameterRoots F G H r).zip
+        (positiveQuadraticParameterRoots F G H r).tail := by
+    rw [hrs]
+    simp
+  have hjumpA :=
+    quadraticInterlacingPencil_card_roots_gt_left_le_right_add_one
+      hapos ham hD
+      (fun μ hμ => hdegree μ ⟨hμ.1, hμ.2.trans hmR.le⟩)
+      (fun μ hμ => hdegree_local μ ⟨hμ.1, hμ.2.trans hmR.le⟩)
+      (fun μ hμ => hsplits μ ⟨hμ.1, hμ.2.trans hmR.le⟩)
+      (fun μ hμ => hsimple μ ⟨hμ.1, hμ.2.trans hmR.le⟩)
+      haQroot
+      (fun μ hμ => quadraticParameterEvaluation_not_isRoot_before_first_positive
+        hrF hrH hrs hμ.1 hμ.2)
+      (fun μ hμ => quadraticParameterEvaluation_not_isRoot_between_adjacent_positive
+        hrF habZip hμ.1 (hμ.2.trans_lt hmb))
+  have hjumpB :=
+    quadraticInterlacingPencil_card_roots_gt_left_le_right_add_one
+      hmb hbR hD
+      (fun μ hμ => hdegree μ ⟨hm0.trans hμ.1, hμ.2⟩)
+      (fun μ hμ => hdegree_local μ ⟨hm0.trans hμ.1, hμ.2⟩)
+      (fun μ hμ => hsplits μ ⟨hm0.trans hμ.1, hμ.2⟩)
+      (fun μ hμ => hsimple μ ⟨hm0.trans hμ.1, hμ.2⟩)
+      hbQroot
+      (fun μ hμ => quadraticParameterEvaluation_not_isRoot_between_adjacent_positive
+        hrF habZip (ham.trans_le hμ.1) hμ.2)
+      (fun μ hμ => quadraticParameterEvaluation_not_isRoot_after_last_positive
+        hrF (xs := [a]) (by simpa using hrs) hμ.1)
+  have hmultA : 1 ≤ q.roots.count a :=
+    Multiset.one_le_count_iff_mem.mpr
+      (mem_positiveQuadraticParameterRoots_iff.mp hamem).1
+  have hmultB : 1 ≤ q.roots.count b :=
+    Multiset.one_le_count_iff_mem.mpr
+      (mem_positiveQuadraticParameterRoots_iff.mp hbmem).1
+  have hsum :=
+    sum_count_positiveQuadraticParameterRoots_eq_positiveRootCount F G H r
+  rw [hrs] at hsum
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+    add_zero] at hsum
+  have hbudget0 := positiveRootCount_quadraticParameterEvaluation_le_rootCountDrop
+    hFpos hGpos hHpos hFG hGH hrF hrG hrH
+  have hbudget : q.roots.count a + q.roots.count b ≤
+      (H.roots.filter (r < ·)).card - (F.roots.filter (r < ·)).card := by
+    rw [hsum]
+    exact hbudget0
+  have hFleH : (F.roots.filter (r < ·)).card ≤
+      (H.roots.filter (r < ·)).card := by
+    have hFGcount := (rootCountAboveOriented_of_strictInterl hFG r).1
+    have hGHcount := (rootCountAboveOriented_of_strictInterl hGH r).1
+    exact_mod_cast hFGcount.trans hGHcount
+  have hdrop := Nat.sub_add_cancel hFleH
+  have hQ0 : quadraticInterlacingPencil F G H 0 = H := by
+    simp [quadraticInterlacingPencil]
+  rw [hQ0] at hjumpA ⊢
+  rw [hR] at hjumpB ⊢
+  change q.roots.count a + q.roots.count b ≤ _ at hbudget
+  have hmult_eq_drop : q.roots.count a + q.roots.count b =
+      (H.roots.filter (r < ·)).card - (F.roots.filter (r < ·)).card := by
+    omega
+  omega
+
 /-! ## Logarithmic-ratio endpoint -/
 
 /-- A nonpositive upper-half-plane logarithmic ratio puts the parameter
