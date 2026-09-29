@@ -51,7 +51,7 @@ lemma eval_cubicSubQuadratic_at_upper_nonpos {a b c u v μ : ℝ}
   have hcv_nonneg : 0 ≤ c - v := sub_nonneg.mpr hvc
   have hG_nonneg : 0 ≤ (c - u) * (c - v) :=
     mul_nonneg hcu_nonneg hcv_nonneg
-  nlinarith [mul_nonneg (le_of_lt hμ) hG_nonneg]
+  linarith [mul_nonneg (le_of_lt hμ) hG_nonneg]
 
 /-- A monic cubic minus a lower-degree quadratic has positive leading
 coefficient. -/
@@ -140,7 +140,7 @@ lemma cubicSubQuadratic_splits_of_order_u_a_v_b
       mul_pos_of_neg_of_neg hua_neg hub_neg
     have hprod_neg : (u - a) * (u - b) * (u - c) < 0 :=
       mul_neg_of_pos_of_neg h12_pos huc_neg
-    nlinarith
+    linarith
   have hP_a_pos : 0 < P.eval a := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
@@ -148,7 +148,7 @@ lemma cubicSubQuadratic_splits_of_order_u_a_v_b
     have hav_neg : a - v < 0 := sub_neg.mpr hav
     have hG_neg : (a - u) * (a - v) < 0 :=
       mul_neg_of_pos_of_neg hau_pos hav_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_v_pos : 0 < P.eval v := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
@@ -159,14 +159,14 @@ lemma cubicSubQuadratic_splits_of_order_u_a_v_b
       mul_neg_of_pos_of_neg hva_pos hvb_neg
     have hprod_pos : 0 < (v - a) * (v - b) * (v - c) :=
       mul_pos_of_neg_of_neg h12_neg hvc_neg
-    nlinarith
+    linarith
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
     have hbu_pos : 0 < b - u := sub_pos.mpr hub
     have hbv_pos : 0 < b - v := sub_pos.mpr hvb
     have hG_pos : 0 < (b - u) * (b - v) := mul_pos hbu_pos hbv_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_c_nonpos : P.eval c ≤ 0 := by
     dsimp [P]
     exact eval_cubicSubQuadratic_at_upper_nonpos hbc (le_of_lt hub)
@@ -212,7 +212,7 @@ lemma cubicSubQuadratic_splits_of_order_u_a_b_v
       mul_pos_of_neg_of_neg hua_neg hub_neg
     have hprod_neg : (u - a) * (u - b) * (u - c) < 0 :=
       mul_neg_of_pos_of_neg h12_pos huc_neg
-    nlinarith
+    linarith
   have hP_a_pos : 0 < P.eval a := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
@@ -220,7 +220,7 @@ lemma cubicSubQuadratic_splits_of_order_u_a_b_v
     have hav_neg : a - v < 0 := sub_neg.mpr hav
     have hG_neg : (a - u) * (a - v) < 0 :=
       mul_neg_of_pos_of_neg hau_pos hav_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
@@ -228,7 +228,7 @@ lemma cubicSubQuadratic_splits_of_order_u_a_b_v
     have hbv_neg : b - v < 0 := sub_neg.mpr hbv
     have hG_neg : (b - u) * (b - v) < 0 :=
       mul_neg_of_pos_of_neg hbu_pos hbv_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_v_neg : P.eval v < 0 := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
@@ -238,7 +238,7 @@ lemma cubicSubQuadratic_splits_of_order_u_a_b_v
     have h12_pos : 0 < (v - a) * (v - b) := mul_pos hva_pos hvb_pos
     have hprod_neg : (v - a) * (v - b) * (v - c) < 0 :=
       mul_neg_of_pos_of_neg h12_pos hvc_neg
-    nlinarith
+    linarith
   have hP_c_nonpos : P.eval c ≤ 0 := by
     dsimp [P]
     exact eval_cubicSubQuadratic_at_upper_nonpos hbc (le_of_lt hub)
@@ -281,7 +281,7 @@ lemma cubicSubQuadratic_splits_of_order_a_u_v_b
     have hav_neg : a - v < 0 := sub_neg.mpr hav
     have hG_pos : 0 < (a - u) * (a - v) :=
       mul_pos_of_neg_of_neg hau_neg hav_neg
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_u_pos : 0 < P.eval u := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
@@ -292,7 +292,7 @@ lemma cubicSubQuadratic_splits_of_order_a_u_v_b
       mul_neg_of_pos_of_neg hua_pos hub_neg
     have hprod_pos : 0 < (u - a) * (u - b) * (u - c) :=
       mul_pos_of_neg_of_neg h12_neg huc_neg
-    nlinarith
+    linarith
   have hP_v_pos : 0 < P.eval v := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
@@ -303,14 +303,14 @@ lemma cubicSubQuadratic_splits_of_order_a_u_v_b
       mul_neg_of_pos_of_neg hva_pos hvb_neg
     have hprod_pos : 0 < (v - a) * (v - b) * (v - c) :=
       mul_pos_of_neg_of_neg h12_neg hvc_neg
-    nlinarith
+    linarith
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
     have hbu_pos : 0 < b - u := sub_pos.mpr hub
     have hbv_pos : 0 < b - v := sub_pos.mpr hvb
     have hG_pos : 0 < (b - u) * (b - v) := mul_pos hbu_pos hbv_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_c_nonpos : P.eval c ≤ 0 := by
     dsimp [P]
     exact eval_cubicSubQuadratic_at_upper_nonpos hbc (le_of_lt hub)
@@ -352,7 +352,7 @@ lemma cubicSubQuadratic_splits_of_order_a_u_b_v
     have hav_neg : a - v < 0 := sub_neg.mpr hav
     have hG_pos : 0 < (a - u) * (a - v) :=
       mul_pos_of_neg_of_neg hau_neg hav_neg
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_u_pos : 0 < P.eval u := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
@@ -363,7 +363,7 @@ lemma cubicSubQuadratic_splits_of_order_a_u_b_v
       mul_neg_of_pos_of_neg hua_pos hub_neg
     have hprod_pos : 0 < (u - a) * (u - b) * (u - c) :=
       mul_pos_of_neg_of_neg h12_neg huc_neg
-    nlinarith
+    linarith
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
@@ -371,7 +371,7 @@ lemma cubicSubQuadratic_splits_of_order_a_u_b_v
     have hbv_neg : b - v < 0 := sub_neg.mpr hbv
     have hG_neg : (b - u) * (b - v) < 0 :=
       mul_neg_of_pos_of_neg hbu_pos hbv_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_v_neg : P.eval v < 0 := by
     dsimp [P]
     rw [eval_cubicSubQuadratic]
@@ -381,7 +381,7 @@ lemma cubicSubQuadratic_splits_of_order_a_u_b_v
     have h12_pos : 0 < (v - a) * (v - b) := mul_pos hva_pos hvb_pos
     have hprod_neg : (v - a) * (v - b) * (v - c) < 0 :=
       mul_neg_of_pos_of_neg h12_pos hvc_neg
-    nlinarith
+    linarith
   have hP_c_nonpos : P.eval c ≤ 0 := by
     dsimp [P]
     exact eval_cubicSubQuadratic_at_upper_nonpos hbc (le_of_lt hub)

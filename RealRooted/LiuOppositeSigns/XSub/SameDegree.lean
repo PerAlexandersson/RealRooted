@@ -145,7 +145,7 @@ lemma splits_X_mul_sub_C_mul_of_natDegree_one_one_right_nonneg
   have hprod_nonneg : 0 ≤ 4 * a * μ * d := by positivity
   have hdisc : 0 ≤ discrim a (b - μ * c) (-μ * d) := by
     rw [discrim]
-    nlinarith [sq_nonneg (b - μ * c), hprod_nonneg]
+    linarith [sq_nonneg (b - μ * c), hprod_nonneg]
   simpa [hpoly] using quadraticPoly_splits_of_discrim_nonneg ha_pos.ne' hdisc
 
 /-- Linear-or-constant terminal case for the x-subtraction pencil. -/

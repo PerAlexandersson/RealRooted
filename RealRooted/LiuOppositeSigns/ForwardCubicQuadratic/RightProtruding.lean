@@ -157,10 +157,10 @@ lemma cubicSubQuadratic_right_protruding_midpoint_mu_pos
   let G : ℝ := e1 ^ 2 - 3 * e2
   have hG_nonneg : 0 ≤ G := by
     dsimp [G, e1, e2]
-    nlinarith [sq_nonneg (a - b), sq_nonneg (b - c), sq_nonneg (c - a)]
+    linarith [sq_nonneg (a - b), sq_nonneg (b - c), sq_nonneg (c - a)]
   have hv_pos : 0 < 3 * v - e1 := by
     dsimp [e1]
-    nlinarith
+    linarith
   have hprod_eq :
       (3 * u - e1) * (3 * v - e1) =
         G - 3 * ((a + b + c) * (u + v) - 3 * (u * v) -
@@ -169,10 +169,10 @@ lemma cubicSubQuadratic_right_protruding_midpoint_mu_pos
     ring
   have hprod_pos : 0 < (3 * u - e1) * (3 * v - e1) := by
     rw [hprod_eq]
-    nlinarith
+    linarith
   have hu_pos : 0 < 3 * u - e1 := by nlinarith [hprod_pos, hv_pos]
   dsimp [e1] at hu_pos hv_pos ⊢
-  nlinarith
+  linarith
 
 /-- In the negative-side right-protruding branch, the midpoint coefficient
 makes the derivative discriminant of the cubic-minus-quadratic pencil
@@ -198,8 +198,8 @@ lemma cubicSubQuadratic_right_protruding_midpoint_deriv_disc_neg
         3 * (a * b + a * c + b * c +
             (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) -
           (a + b + c + (3 * ((u + v) / 2) - (a + b + c))) ^ 2 := by
-    nlinarith [sq_nonneg (v - u), hdelta]
-  nlinarith
+    linarith [sq_nonneg (v - u), hdelta]
+  linarith
 
 /-- In the negative-side right-protruding branch, some positive subtraction
 coefficient makes the monic cubic-minus-quadratic pencil fail to split. -/

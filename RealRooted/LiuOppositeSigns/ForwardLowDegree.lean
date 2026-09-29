@@ -114,7 +114,7 @@ lemma exists_quadraticSubLinear_not_splits_of_upper_lt_right_root
       unfold discrim
       ring_nf
     rw [hdisc_eq]
-    nlinarith
+    linarith
   intro hsplit
   exact (quadraticPoly_not_splits_of_discrim_neg one_ne_zero hdisc) (by
     simpa [hpoly] using hsplit)
@@ -241,7 +241,7 @@ lemma exists_quadraticSubQuadratic_not_splits_of_inner_roots
     have hμ_gt_one : 1 < μ := by
       dsimp [μ]
       have hnum_gt : 4 * (c - a) * (b - c) < (b - a) ^ 2 + 1 := by
-        nlinarith [sq_nonneg ((c - a) - (b - c))]
+        linarith [sq_nonneg ((c - a) - (b - c))]
       rw [one_lt_div hden_pos]
       linarith
     refine ⟨μ, hμ_pos, ?_⟩
@@ -290,7 +290,7 @@ lemma exists_quadraticSubQuadratic_not_splits_of_inner_roots
     have hμ_gt_one : 1 < μ := by
       dsimp [μ]
       have hnum_gt : v ^ 2 < u * v + 2 * u * w + v ^ 2 + v * w := by
-        nlinarith [mul_pos hu hv, mul_pos hu hw, mul_pos hv hw]
+        linarith [mul_pos hu hv, mul_pos hu hw, mul_pos hv hw]
       rw [one_lt_div (by positivity : 0 < v ^ 2)]
       linarith
     refine ⟨μ, hμ_pos, ?_⟩
