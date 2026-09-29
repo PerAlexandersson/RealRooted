@@ -195,11 +195,6 @@ end Tactic
 end RealRooted
 namespace RealRooted
 namespace Tactic
-@[deprecated derivative_strictInterl (since := "2026-09-26")]
-alias derivative_prec := derivative_strictInterl
-
-@[deprecated derivative_sequence_strictInterl (since := "2026-09-26")]
-alias derivative_sequence_prec := derivative_sequence_strictInterl
 
 end Tactic
 end RealRooted
@@ -231,16 +226,16 @@ macro_rules
       rr_derivative_prec using
         splits := $hsplits:term,
         degree_two := $hdeg:term) =>
-      `(tactic| exact RealRooted.Tactic.derivative_prec $hsplits $hdeg)
+      `(tactic| exact RealRooted.Tactic.derivative_strictInterl $hsplits $hdeg)
   | `(tactic|
       rr_derivative_sequence_prec using
         splits := $hsplits:term,
         degree_two := $hdeg:term) =>
-      `(tactic| exact RealRooted.Tactic.derivative_sequence_prec $hsplits $hdeg)
+      `(tactic| exact RealRooted.Tactic.derivative_sequence_strictInterl $hsplits $hdeg)
   | `(tactic|
       rr_derivative_prec using
         splits := $hsplits:term) =>
       `(tactic|
-        exact RealRooted.Tactic.derivative_prec $hsplits (by rr_close_side))
+        exact RealRooted.Tactic.derivative_strictInterl $hsplits (by rr_close_side))
 end Tactic
 end RealRooted

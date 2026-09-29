@@ -866,11 +866,6 @@ end Tactic
 end RealRooted
 namespace RealRooted
 namespace Tactic
-@[deprecated hadamardProduct_interl_of_nonneg_strictInterl (since := "2026-09-26")]
-alias hadamardProduct_prec0_of_nonneg_prec := hadamardProduct_interl_of_nonneg_strictInterl
-
-@[deprecated hadamardProduct_sequence_interl (since := "2026-09-26")]
-alias hadamardProduct_sequence_prec0 := hadamardProduct_sequence_interl
 
 end Tactic
 end RealRooted
@@ -913,7 +908,7 @@ macro_rules
         first_prec := $hfg:term,
         second_prec := $hpq:term) =>
       `(tactic|
-        exact RealRooted.Tactic.hadamardProduct_prec0_of_nonneg_prec
+        exact RealRooted.Tactic.hadamardProduct_interl_of_nonneg_strictInterl
           $hf $hg $hp $hq $hfg $hpq)
   | `(tactic| rr_hadamard_pf_prec0) =>
       `(tactic|
@@ -936,7 +931,7 @@ macro_rules
         first_prec := $hfg:term,
         second_prec := $hpq:term) =>
       `(tactic|
-        exact RealRooted.Tactic.hadamardProduct_sequence_prec0
+        exact RealRooted.Tactic.hadamardProduct_sequence_interl
           $hf $hg $hp $hq $hfg $hpq)
 end Tactic
 end RealRooted

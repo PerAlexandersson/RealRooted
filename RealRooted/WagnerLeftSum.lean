@@ -746,9 +746,6 @@ end SumCompatibleLeft
 alias prec_add_of_prec_left := StrictInterl.add_of_left
 
 @[deprecated SumCompatibleLeft.toStrictInterl (since := "2026-09-18")]
-alias SumCompatibleLeft.prec_sum := SumCompatibleLeft.toStrictInterl
-
-@[deprecated SumCompatibleLeft.toStrictInterl (since := "2026-09-18")]
 alias prec_sum_of_compatible_left := SumCompatibleLeft.toStrictInterl
 
 end

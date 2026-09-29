@@ -534,18 +534,11 @@ macro_rules
 end Tactic
 end RealRooted
 namespace RealRooted
-@[deprecated pf_and_interl_of_model_sequence (since := "2026-09-26")]
-alias pf_and_prec0_of_model_sequence := pf_and_interl_of_model_sequence
 
 end RealRooted
 
 namespace RealRooted
 namespace Tactic
-@[deprecated pf_sequence_interl_self (since := "2026-09-26")]
-alias pf_sequence_prec0_self := pf_sequence_interl_self
-
-@[deprecated pf_sequence_interl_X_mul_both (since := "2026-09-26")]
-alias pf_sequence_prec0_X_mul_both := pf_sequence_interl_X_mul_both
 
 end Tactic
 end RealRooted
@@ -581,7 +574,7 @@ macro_rules
   | `(tactic| rr_pf_prec0_self using pf := $hp:term) =>
       `(tactic| exact RealRooted.IsPFPolynomial.interl_self $hp)
   | `(tactic| rr_pf_sequence_prec0_self using pf := $hp:term) =>
-      `(tactic| exact RealRooted.Tactic.pf_sequence_prec0_self $hp)
+      `(tactic| exact RealRooted.Tactic.pf_sequence_interl_self $hp)
   | `(tactic|
       rr_pf_prec0_X_mul_both using
         left_pf := $hp:term,
@@ -594,7 +587,7 @@ macro_rules
         right_pf := $hq:term,
         prec0 := $hpq:term) =>
       `(tactic|
-        exact RealRooted.Tactic.pf_sequence_prec0_X_mul_both
+        exact RealRooted.Tactic.pf_sequence_interl_X_mul_both
           $hp $hq $hpq)
 end Tactic
 end RealRooted

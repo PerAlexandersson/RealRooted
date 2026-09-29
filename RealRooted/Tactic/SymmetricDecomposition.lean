@@ -299,21 +299,6 @@ macro_rules
 end Tactic
 end RealRooted
 namespace RealRooted
-@[deprecated strictInterl_fPolynomial_of_strictInterl (since := "2026-09-26")]
-alias prec_fPolynomial_of_prec := strictInterl_fPolynomial_of_strictInterl
-
-@[deprecated strictInterl_of_strictInterl_fPolynomial (since := "2026-09-26")]
-alias prec_of_prec_fPolynomial := strictInterl_of_strictInterl_fPolynomial
-
-@[deprecated strictInterl_fPolynomial_sequence_of_strictInterl (since := "2026-09-26")]
-alias prec_fPolynomial_sequence_of_prec := strictInterl_fPolynomial_sequence_of_strictInterl
-
-@[deprecated strictInterl_of_strictInterl_fPolynomial_sequence (since := "2026-09-26")]
-alias prec_of_prec_fPolynomial_sequence := strictInterl_of_strictInterl_fPolynomial_sequence
-
-@[deprecated posComboRealRooted_fPolynomial_sequence_of_strictInterl (since := "2026-09-26")]
-alias posComboRealRooted_fPolynomial_sequence_of_prec :=
-  posComboRealRooted_fPolynomial_sequence_of_strictInterl
 
 end RealRooted
 
@@ -393,7 +378,7 @@ macro_rules
         right_nonneg := $hv:term,
         prec := $hprec:term) =>
       `(tactic|
-        exact RealRooted.prec_fPolynomial_of_prec $hud $hvd $hu $hv $hprec)
+        exact RealRooted.strictInterl_fPolynomial_of_strictInterl $hud $hvd $hu $hv $hprec)
   | `(tactic|
       rr_of_fPolynomial_prec using
         left_degree := $hud:term,
@@ -402,7 +387,7 @@ macro_rules
         right_nonneg := $hv:term,
         transformed_prec := $hprec:term) =>
       `(tactic|
-        exact RealRooted.prec_of_prec_fPolynomial $hud $hvd $hu $hv $hprec)
+        exact RealRooted.strictInterl_of_strictInterl_fPolynomial $hud $hvd $hu $hv $hprec)
   | `(tactic|
       rr_fPolynomial_prec_iff using
         left_degree := $hud:term,
@@ -429,7 +414,7 @@ macro_rules
         right_nonneg := $hv:term,
         prec := $hprec:term) =>
       `(tactic|
-        exact RealRooted.prec_fPolynomial_sequence_of_prec
+        exact RealRooted.strictInterl_fPolynomial_sequence_of_strictInterl
           $hud $hvd $hu $hv $hprec)
   | `(tactic|
       rr_of_fPolynomial_sequence_prec using
@@ -439,7 +424,7 @@ macro_rules
         right_nonneg := $hv:term,
         transformed_prec := $hprec:term) =>
       `(tactic|
-        exact RealRooted.prec_of_prec_fPolynomial_sequence
+        exact RealRooted.strictInterl_of_strictInterl_fPolynomial_sequence
           $hud $hvd $hu $hv $hprec)
   | `(tactic|
       rr_fPolynomial_sequence_pos_combo using
@@ -449,7 +434,7 @@ macro_rules
         left_nonneg := $hu:term,
         right_nonneg := $hv:term) =>
       `(tactic|
-        exact RealRooted.posComboRealRooted_fPolynomial_sequence_of_prec
+        exact RealRooted.posComboRealRooted_fPolynomial_sequence_of_strictInterl
           $hprec $hud $hvd $hu $hv)
 end Tactic
 end RealRooted

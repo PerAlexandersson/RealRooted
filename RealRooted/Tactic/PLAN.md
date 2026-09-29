@@ -42,14 +42,14 @@ already been supplied.
 The tactic layer should first reuse these checked declarations.
 
 - `RealRooted.MaWang`
-  - `prec_ma_wang`
-  - `prec_ma_wang_same`
+  - `strictInterl_ma_wang`
+  - `strictInterl_ma_wang_same`
   - `prec_ma_wang_succ`
   - `prec_of_interlaces_evalCoeff_nonpos`
   - weak/no-common Liu-Wang variants near the end of `MaWang.lean`
 - `RealRooted.GeneralizedLiuWang`
   - `polynomialWeightedSum`
-  - `prec_generalizedLiuWang_strict`
+  - `strictInterl_generalizedLiuWang_strict`
   - `prec_generalizedLiuWang_of_no_common`
   - `generalizedLiuWangCriterion`
 - `RealRooted.Favard`
@@ -142,8 +142,8 @@ The first certificate-driven layer is implemented.
 - `SideGoals.lean` defines `rr_side`, a conservative side-goal closer.
 - `Finish.lean` defines small proof-tail dispatchers that consume `StrictInterl`
   certificates.
-- `MaWang.lean` defines dispatchers for `prec_ma_wang`,
-  `prec_ma_wang_same`, and `prec_ma_wang_succ`.
+- `MaWang.lean` defines dispatchers for `strictInterl_ma_wang`,
+  `strictInterl_ma_wang_same`, and `prec_ma_wang_succ`.
 - `Favard.lean` defines a dispatcher for the Favard interlacing and
   real-rootedness theorems.
 - `LiuWang.lean` defines weak/no-common and strict generalized Liu-Wang
@@ -288,7 +288,7 @@ The tactic should:
 3. derive `P n` real-rooted from the previous `StrictInterl`;
 4. derive `Interlaces (P n).derivative (P n)` by `derivative_interlaces`;
 5. rewrite the recurrence target into `u * f + v * f.derivative`;
-6. apply `prec_ma_wang` or `prec_of_interlaces_evalCoeff_nonpos`;
+6. apply `strictInterl_ma_wang` or `prec_of_interlaces_evalCoeff_nonpos`;
 7. solve degree, leading-coefficient, and root-sign side goals by `rr_side`.
 
 The root-sign side goal should not be guessed.  It should use a tagged root
@@ -551,7 +551,7 @@ structure MaWangCertificate (P : Nat -> R[X]) where
       (v n).eval r * ((P n).derivative.eval r)^2 < 0
 ```
 
-This exact strict sign condition matches `prec_ma_wang`.  For the examples
+This exact strict sign condition matches `strictInterl_ma_wang`.  For the examples
 that naturally use weak signs, either use `prec_of_interlaces_evalCoeff_nonpos`
 or define a separate weak certificate structure.
 

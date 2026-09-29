@@ -1638,31 +1638,4 @@ theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
 
 /-! Deprecated aliases for the pre-canonical statement and bridge names. -/
 
-@[deprecated interl_veroneseSectionPolynomial_of_strictInterl (since := "2026-09-26")]
-alias prec0_veroneseSectionPolynomial_of_prec :=
-  interl_veroneseSectionPolynomial_of_strictInterl
-
-@[deprecated strictInterl_veroneseSectionPolynomial_of_strictInterl (since := "2026-09-26")]
-alias prec_veroneseSectionPolynomial_of_prec :=
-  strictInterl_veroneseSectionPolynomial_of_strictInterl
-
-@[deprecated interl_veronesePairSectionPolynomial_of_strictInterl (since := "2026-09-26")]
-alias prec0_veronesePairSectionPolynomial_of_prec :=
-  interl_veronesePairSectionPolynomial_of_strictInterl
-
-@[deprecated strictInterl_veronesePairSectionPolynomial_of_strictInterl
-  (since := "2026-09-26")]
-alias prec_veronesePairSectionPolynomial_of_prec :=
-  strictInterl_veronesePairSectionPolynomial_of_strictInterl
-
-@[deprecated interl_veronesePairSectionPolynomial_fin_of_strictInterl
-  (since := "2026-09-26")]
-alias prec0_veronesePairSectionPolynomial_fin_of_prec :=
-  interl_veronesePairSectionPolynomial_fin_of_strictInterl
-
-@[deprecated strictInterl_veronesePairSectionPolynomial_fin_of_strictInterl
-  (since := "2026-09-26")]
-alias prec_veronesePairSectionPolynomial_fin_of_prec :=
-  strictInterl_veronesePairSectionPolynomial_fin_of_strictInterl
-
 end RealRooted
