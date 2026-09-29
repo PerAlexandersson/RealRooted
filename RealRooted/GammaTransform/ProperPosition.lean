@@ -35,8 +35,8 @@ private noncomputable def preferredRoots (d : ℕ) (γ : ℝ[X]) : List ℝ :=
     (fun x => x ∈ Set.Ioo (-1 : ℝ) 0)).sort (· ≤ ·)
 
 private lemma preferredRoots_pairwise (d : ℕ) (γ : ℝ[X]) :
-    (preferredRoots d γ).Pairwise (· ≤ ·) := by
-  exact Multiset.pairwise_sort _ _
+    (preferredRoots d γ).Pairwise (· ≤ ·) :=
+  Multiset.pairwise_sort _ _
 
 private lemma mem_preferredRoots {d : ℕ} {γ : ℝ[X]} {x : ℝ}
     (hx : x ∈ preferredRoots d γ) : x ∈ Set.Ioo (-1 : ℝ) 0 := by
@@ -214,8 +214,8 @@ theorem strictInterl_gammaTransform_succ_iff
   have hTδneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hTδnn hTδ0
   let ss := preferredRoots d γ
   let rs := preferredRoots (d + 1) δ
-  have hss : ∀ x ∈ ss, x ∈ Set.Ioo (-1 : ℝ) 0 := by exact fun _ hx => mem_preferredRoots hx
-  have hrs : ∀ x ∈ rs, x ∈ Set.Ioo (-1 : ℝ) 0 := by exact fun _ hx => mem_preferredRoots hx
+  have hss : ∀ x ∈ ss, x ∈ Set.Ioo (-1 : ℝ) 0 := fun _ hx => mem_preferredRoots hx
+  have hrs : ∀ x ∈ rs, x ∈ Set.Ioo (-1 : ℝ) 0 := fun _ hx => mem_preferredRoots hx
   constructor
   · intro hTstrictInterl
     have hγrr :=
@@ -226,11 +226,11 @@ theorem strictInterl_gammaTransform_succ_iff
       isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
         hδdeg hTstrictInterl.2.1.1 hTstrictInterl.2.1.2
         (roots_nonpos_of_hasNonnegCoeffs hTδnn)
-    have hsslen : ss.length = γ.natDegree := by
-      exact length_preferredRoots hγdeg hγ hγrr.1.2
+    have hsslen : ss.length = γ.natDegree :=
+      length_preferredRoots hγdeg hγ hγrr.1.2
         (roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hγnn hγ0)
-    have hrslen : rs.length = δ.natDegree := by
-      exact length_preferredRoots hδdeg hδ hδrr.1.2
+    have hrslen : rs.length = δ.natDegree :=
+      length_preferredRoots hδdeg hδ hδrr.1.2
         (roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0)
     have hmult := hTstrictInterl.rootMultiplicity_bounds (-1)
     rw [rootMultiplicity_neg_one_gammaTransform hγdeg hγ,
