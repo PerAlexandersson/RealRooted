@@ -78,8 +78,8 @@ theorem ndCutThresholdMatrix_preserves_interlacing_weak
     (m : ℕ) (fs : List ℝ[X])
     (hfs : IsInterlacingSeq0NonnegRealRooted fs) :
     IsInterlacingSeq0NonnegRealRooted
-      (matPolyAction (thresholdMatrix fs.length (ndCutThresholdRows m)) fs) := by
-  exact thresholdMatrix_preserves_interlacing_seq0_of_entry_weak
+      (matPolyAction (thresholdMatrix fs.length (ndCutThresholdRows m)) fs) :=
+  thresholdMatrix_preserves_interlacing_seq0_of_entry_weak
     (ndCutThresholdRows m) ndCutThresholdRows_marker_nonneg
       ndCutThresholdRows_has2x2 fs rfl hfs.1 hfs.2
 
@@ -162,22 +162,18 @@ theorem orderedCutCompatible_of_stateInterlacing
       p_nonneg := hP_nonneg
       q_pos := hQ_pos
       q_nonneg := hQ_nonneg
-      pp_reverse := by
-        intro i j hij
-        exact Compatible.of_strictInterl (hPP hij)
-      xpp_reverse := by
-        intro i j hij
-        exact compatible_X_left_of_strictInterl_nonneg
+      pp_reverse :=
+        fun _ _ hij => Compatible.of_strictInterl (hPP hij)
+      xpp_reverse :=
+        fun i j hij => compatible_X_left_of_strictInterl_nonneg
           (hPP hij) (hP_nonneg j) (hP_nonneg i)
       pq := fun i j ↦ Compatible.of_strictInterl (hPQ i j)
       xpq := fun i j ↦
         compatible_X_left_of_strictInterl_nonneg (hPQ i j) (hP_nonneg i) (hQ_nonneg j)
-      qq_forward := by
-        intro i j hij
-        exact Compatible.of_strictInterl (hQQ hij)
-      xqq_forward := by
-        intro i j hij
-        exact compatible_X_left_of_strictInterl_nonneg
+      qq_forward :=
+        fun _ _ hij => Compatible.of_strictInterl (hQQ hij)
+      xqq_forward :=
+        fun i j hij => compatible_X_left_of_strictInterl_nonneg
           (hQQ hij) (hQ_nonneg i) (hQ_nonneg j) }
 
 /-- The structural state-order field and the exact threshold representation

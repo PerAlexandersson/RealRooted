@@ -800,16 +800,14 @@ theorem root_delete_le {f g : ℝ[X]} {r s t : ℝ}
 
 theorem delete_roots_le_largest {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_ne : f ≠ 0) :
-    ∀ t ∈ (deleteRootFactor f r).roots, t ≤ r := by
-  intro t ht
-  exact h.root_delete_le hf_ne
+    ∀ t ∈ (deleteRootFactor f r).roots, t ≤ r :=
+  fun _ ht => h.root_delete_le hf_ne
     ((Polynomial.mem_roots (h.delete_ne_zero hf_ne)).mp ht)
 
 theorem right_roots_le_left_largest {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) :
-    ∀ t ∈ g.roots, t ≤ r := by
-  intro t ht
-  exact (h.g_largest.roots_le t ht).trans h.largest_ge
+    ∀ t ∈ g.roots, t ≤ r :=
+  fun t ht => (h.g_largest.roots_le t ht).trans h.largest_ge
 
 theorem deletionPair_roots_le_left_largest {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_ne : f ≠ 0) :
@@ -1011,8 +1009,8 @@ theorem rootCountAbove_delete_bounds_of_nonRoot
     ((f.roots.filter (x < ·)).card : ℤ) -
         ((deleteRootFactor g s).roots.filter (x < ·)).card ≤ 1 ∧
       (((deleteRootFactor g s).roots.filter (x < ·)).card : ℤ) -
-        (f.roots.filter (x < ·)).card ≤ 1 := by
-  exact (h.toLeftBranch_symm.rootCountAbove_delete_bounds_of_nonRoot
+        (f.roots.filter (x < ·)).card ≤ 1 :=
+  (h.toLeftBranch_symm.rootCountAbove_delete_bounds_of_nonRoot
     hg_ne hf_ne hgx hfx).symm
 
 /-- To prove the right Liu deletion branch, it is enough to control the

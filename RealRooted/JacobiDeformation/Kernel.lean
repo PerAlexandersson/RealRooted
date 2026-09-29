@@ -170,8 +170,8 @@ theorem newtonCoefficient_one (m : ℕ) (δ s : ℝ) :
 
 theorem newtonCoefficient_one_pos {m : ℕ} {δ s : ℝ}
     (hm : 1 ≤ m) (hδ : 0 < δ) (hδ1 : δ < 1) (hs : 0 < s) :
-    0 < newtonCoefficient m δ s 1 := by
-  exact newtonCoefficient_pos hm hδ hδ1 hs
+    0 < newtonCoefficient m δ s 1 :=
+  newtonCoefficient_pos hm hδ hδ1 hs
 
 /-- The finite Newton polynomial `∑_k a_k(δ) Λ_k` formed from the positive
 Newton coefficients. -/
@@ -193,8 +193,8 @@ theorem eval_weightNewtonPolynomial_eq_sum_newtonExpansionTerm
     (weightNewtonPolynomial m δ s).eval (eigenvalue s j) =
       ∑ k ∈ Finset.range (j + 1), newtonExpansionTerm m δ s j k := by
   rw [weightNewtonPolynomial, eval_finsetSum]
-  have hsubset : Finset.range (j + 1) ⊆ Finset.range (m + 1) := by
-    exact Finset.range_mono (by lia)
+  have hsubset : Finset.range (j + 1) ⊆ Finset.range (m + 1) :=
+    Finset.range_mono (by lia)
   rw [← Finset.sum_subset hsubset]
   · apply Finset.sum_congr rfl
     intro k hk
@@ -202,8 +202,8 @@ theorem eval_weightNewtonPolynomial_eq_sum_newtonExpansionTerm
     simp only [newtonExpansionTerm, risingFactorial]
     ring
   · intro k hkm hkj
-    have hjk : j < k := by
-      exact Nat.lt_of_not_ge (by
+    have hjk : j < k :=
+      Nat.lt_of_not_ge (by
         simpa only [Finset.mem_range, Nat.lt_add_one_iff] using hkj)
     rw [eval_mul, eval_C, eval_newtonPolynomial_eq_zero hjk, mul_zero]
 
@@ -293,8 +293,8 @@ theorem eigenCoefficient_eq_zero_of_ne {n : ℕ} {eigenvalue : Fin n → ℝ}
     (hcoefficient : EigenCoefficientCondition eigenvalue coefficient)
     {i j : Fin n} (hij : i ≠ j) :
     coefficient i j = 0 := by
-  have hne : eigenvalue i - eigenvalue j ≠ 0 := by
-    exact sub_ne_zero.mpr fun h => hij (heigenvalue h)
+  have hne : eigenvalue i - eigenvalue j ≠ 0 :=
+    sub_ne_zero.mpr fun h => hij (heigenvalue h)
   exact (mul_eq_zero.mp (hcoefficient i j)).resolve_left hne
 
 /-- A finite coefficient array satisfying the distinct-eigenvalue relation is
@@ -302,9 +302,8 @@ diagonal. -/
 theorem eigenCoefficient_diagonal {n : ℕ} {eigenvalue : Fin n → ℝ}
     {coefficient : Fin n → Fin n → ℝ} (heigenvalue : Function.Injective eigenvalue)
     (hcoefficient : EigenCoefficientCondition eigenvalue coefficient) :
-    ∀ i j, i ≠ j → coefficient i j = 0 := by
-  intro i j hij
-  exact eigenCoefficient_eq_zero_of_ne heigenvalue hcoefficient hij
+    ∀ i j, i ≠ j → coefficient i j = 0 :=
+  fun _ _ hij => eigenCoefficient_eq_zero_of_ne heigenvalue hcoefficient hij
 
 /-- Apply an operator to the first variable of a finite separable polynomial
 kernel, represented only by its finite coefficient array. -/
@@ -353,8 +352,8 @@ theorem eigenKernelAction_eq_of_distinct {n : ℕ} {coefficient : Fin n → Fin 
     (hoperator : ∀ i, operator (basis i) = C (eigenvalue i) * basis i)
     (r z : ℝ) :
     eigenKernelActionLeft coefficient basis operator r z =
-      eigenKernelActionRight coefficient basis operator r z := by
-  exact eigenKernelAction_eq_of_diagonal
+      eigenKernelActionRight coefficient basis operator r z :=
+  eigenKernelAction_eq_of_diagonal
     (eigenCoefficient_diagonal heigenvalue hcoefficient) hoperator r z
 
 /-! ### Coefficient extraction
@@ -424,8 +423,8 @@ theorem eigenCoefficient_diagonal_of_action_eq {n : ℕ}
     (haction : ∀ r z,
       eigenKernelActionLeft coefficient basis operator r z =
         eigenKernelActionRight coefficient basis operator r z) :
-    ∀ i j, i ≠ j → coefficient i j = 0 := by
-  exact eigenCoefficient_diagonal heigenvalue
+    ∀ i j, i ≠ j → coefficient i j = 0 :=
+  eigenCoefficient_diagonal heigenvalue
     (eigenCoefficientCondition_of_action_eq hbasis hoperator haction)
 
 end RealRooted.JacobiDeformation

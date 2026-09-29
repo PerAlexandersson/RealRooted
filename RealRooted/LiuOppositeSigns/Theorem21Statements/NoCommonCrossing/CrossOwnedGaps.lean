@@ -103,8 +103,8 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd_of_endpoint_counts
     (hright_count_b : g.IsRoot b →
       ((f + C νR * g).roots.filter (b < ·)).card =
         (f.roots.filter (b < ·)).card) :
-    (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b) := by
-  exact hsgn.cross_owner_roots_of_not_odd_of_endpoint_count_diffs
+    (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b) :=
+  hsgn.cross_owner_roots_of_not_odd_of_endpoint_count_diffs
     hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
     hνL_pos hνL_large hdegL
     (fun hfa hfb => by rw [hleft_count_a hfa, hleft_count_b hfb]; simp)
@@ -253,9 +253,8 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_no_isRoot_Ioo
       ((r.roots.filter (a < ·)).card : ℤ) - (q.roots.filter (a < ·)).card =
         ((r.roots.filter (b < ·)).card : ℤ) -
           (q.roots.filter (b < ·)).card := by
-    have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z := by
-      intro z haz hzb
-      exact hpq.right_not_isRoot_Icc_of_left_roots hpa hpb hq_no z
+    have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z :=
+      fun z haz hzb => hpq.right_not_isRoot_Icc_of_left_roots hpa hpb hq_no z
         ⟨le_of_lt haz, hzb⟩
     have hr_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ r.IsRoot z := by
       intro z haz hzb
@@ -302,8 +301,8 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_counts
     (hright_count : ∀ x c : ℝ, g.IsRoot c →
       ((f + C (νR x) * g).roots.filter (c < ·)).card =
         (f.roots.filter (c < ·)).card) :
-    CrossOwnedNotOddGaps f g := by
-  exact hsgn.crossOwnedNotOddGaps_of_endpoint_count_diffs
+    CrossOwnedNotOddGaps f g :=
+  hsgn.crossOwnedNotOddGaps_of_endpoint_count_diffs
     hfg hno hf hg νL νR hνL_pos hνL_large hdegL
     (fun x a b hfa hfb => by rw [hleft_count x a hfa, hleft_count x b hfb]; simp)
     hνR_pos hνR_small hdegR
@@ -351,9 +350,8 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_local_no_isRoot_Ioo
       ((r.roots.filter (a < ·)).card : ℤ) - (q.roots.filter (a < ·)).card =
         ((r.roots.filter (b < ·)).card : ℤ) -
           (q.roots.filter (b < ·)).card := by
-    have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z := by
-      intro z haz hzb
-      exact hpq.right_not_isRoot_Icc_of_left_roots hpa hpb hq_no z
+    have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z :=
+      fun z haz hzb => hpq.right_not_isRoot_Icc_of_left_roots hpa hpb hq_no z
         ⟨le_of_lt haz, hzb⟩
     have hr_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ r.IsRoot z := by
       intro z haz hzb

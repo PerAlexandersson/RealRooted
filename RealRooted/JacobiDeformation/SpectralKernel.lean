@@ -65,10 +65,10 @@ theorem shiftedJacobiMonic_quadrature_orthogonality
       if n = k then shiftedJacobiMonicNorm n α β else 0 := by
   let pn := shiftedJacobiMonic n α β
   let pk := shiftedJacobiMonic k α β
-  have hndeg : pn.natDegree = n := by
-    exact (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).natDegree_eq n
-  have hkdeg : pk.natDegree = k := by
-    exact (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).natDegree_eq k
+  have hndeg : pn.natDegree = n :=
+    (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).natDegree_eq n
+  have hkdeg : pk.natDegree = k :=
+    (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).natDegree_eq k
   have hdeg : (pn * pk).natDegree ≤ 2 * q - 2 := by
     calc
       (pn * pk).natDegree ≤ pn.natDegree + pk.natDegree := natDegree_mul_le
@@ -143,8 +143,8 @@ theorem jacobiEvaluationMatrix_mul_inv
     (hα : -1 < α) (hβ : -1 < β)
     (x : Fin q → ℝ) (hx : Function.Injective x)
     (hroot : ∀ i, (quasiJacobiPolynomial q α β τ).IsRoot (x i)) :
-    jacobiEvaluationMatrix q α β x * jacobiEvaluationMatrixInv q α β x = 1 := by
-  exact mul_eq_one_comm.mp
+    jacobiEvaluationMatrix q α β x * jacobiEvaluationMatrixInv q α β x = 1 :=
+  mul_eq_one_comm.mp
     (jacobiEvaluationMatrixInv_mul hq hα hβ x hx hroot)
 
 /-- Columns of the evaluation matrix, divided by the signed collocation
@@ -187,8 +187,8 @@ theorem quasiJacobiEigenvectorMatrix_mul_inv
     (x : Fin q → ℝ) (hx : Function.Injective x)
     (hroot : ∀ i, (quasiJacobiPolynomial q α β τ).IsRoot (x i)) :
     quasiJacobiEigenvectorMatrix q α β τ x *
-        quasiJacobiEigenvectorMatrixInv q α β τ x = 1 := by
-  exact mul_eq_one_comm.mp
+        quasiJacobiEigenvectorMatrixInv q α β τ x = 1 :=
+  mul_eq_one_comm.mp
     (quasiJacobiEigenvectorMatrixInv_mul hq hα hβ x hx hroot)
 
 /-- The signed quasi-Jacobi collocation matrix is intertwined with the
@@ -227,8 +227,8 @@ theorem quasiJacobiCollocationMatrix_mul_eigenvectorMatrix
         hq hα hβ x hx hroot j]
     _ = eigenvalue (α + β + 2) n *
         (shiftedJacobiMonic n α β).eval (x i) /
-          quasiJacobiCollocationScale q α β τ x i := by
-      exact congrArg (fun y => y / quasiJacobiCollocationScale q α β τ x i)
+          quasiJacobiCollocationScale q α β τ x i :=
+      congrArg (fun y => y / quasiJacobiCollocationScale q α β τ x i)
         haction
     _ = quasiJacobiEigenvectorMatrix q α β τ x i n *
         eigenvalue (α + β + 2) n := by
@@ -424,8 +424,8 @@ theorem quasiJacobiCollocationMatrix_charpoly
     _ = (R * (Q * Λ)).charpoly := Matrix.charpoly_mul_comm (Q * Λ) R
     _ = ((R * Q) * Λ).charpoly := by rw [mul_assoc]
     _ = Λ.charpoly := by rw [hRQ, one_mul]
-    _ = ∏ n : Fin q, (X - C (eigenvalue (α + β + 2) n)) := by
-      exact Matrix.charpoly_diagonal _
+    _ = ∏ n : Fin q, (X - C (eigenvalue (α + β + 2) n)) :=
+      Matrix.charpoly_diagonal _
 
 /-- Real symmetry supplies the Hermitian structure used by the ordered
 spectrum API. -/

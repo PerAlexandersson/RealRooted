@@ -401,8 +401,8 @@ private def interiorRootProduct (q : ℝ[X]) : ℝ[X] :=
 
 private theorem natDegree_interiorRootProduct (q : ℝ[X]) :
     (interiorRootProduct q).natDegree =
-      (q.roots.filter fun r => 0 < r ∧ r < 1).card := by
-  exact Polynomial.natDegree_multiset_prod_X_sub_C_eq_card _
+      (q.roots.filter fun r => 0 < r ∧ r < 1).card :=
+  Polynomial.natDegree_multiset_prod_X_sub_C_eq_card _
 
 private theorem interiorRootProduct_eval_pos_of_one_le
     (q : ℝ[X]) {x : ℝ} (hx : 1 ≤ x) :
@@ -639,9 +639,8 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
     rw [show P = interiorRootProduct Q by rfl,
       natDegree_interiorRootProduct]
     lia
-  have hPpos : ∀ x : ℝ, 1 < x → 0 < P.eval x := by
-    intro x hx
-    exact interiorRootProduct_eval_pos_of_one_le Q hx.le
+  have hPpos : ∀ x : ℝ, 1 < x → 0 < P.eval x :=
+    fun _ hx => interiorRootProduct_eval_pos_of_one_le Q hx.le
   by_cases hzero : ∃ κ : ℝ, 1 < κ ∧ K κ = 0
   · obtain ⟨κ, hκ, hκzero⟩ := hzero
     let T : ℝ[X] := C κ - X
@@ -697,8 +696,8 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
           K 1 * (P.eval x * (κ - x) * K x) =
               P.eval x * (K 1 * ((κ - x) * K x)) := by ring
           _ ≥ 0 := (mul_pos hP hcross).le
-    have hfInt : IntegrableOn f (Ioi 1) volume := by
-      exact hExtInt.const_mul (Q.eval 1)
+    have hfInt : IntegrableOn f (Ioi 1) volume :=
+      hExtInt.const_mul (Q.eval 1)
     have hsubset : Ioo (1 : ℝ) κ ⊆
         Function.support f ∩ Ioi 1 := by
       intro x hx
@@ -729,9 +728,8 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
     have hEq := congrArg (fun z : ℝ => Q.eval 1 * z) hmoment
     dsimp only [Q, K] at hmoment hEq
     nlinarith
-  · have hKNo : ∀ x : ℝ, 1 < x → K x ≠ 0 := by
-      intro x hx hKx
-      exact hzero ⟨x, hx, hKx⟩
+  · have hKNo : ∀ x : ℝ, 1 < x → K x ≠ 0 :=
+      fun x hx hKx => hzero ⟨x, hx, hKx⟩
     let test : ℝ[X] := P
     have hInterior :
         0 < Q.eval 1 *

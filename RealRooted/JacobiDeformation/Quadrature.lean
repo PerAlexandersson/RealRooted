@@ -56,8 +56,8 @@ theorem nodal_eq_quasiJacobiPolynomial {q : ℕ} (hq : 1 ≤ q)
     Lagrange.nodal Finset.univ x = quasiJacobiPolynomial q α β τ := by
   let v := Lagrange.nodal Finset.univ x
   let p := quasiJacobiPolynomial q α β τ
-  have hvmonic : v.Monic := by
-    exact Lagrange.nodal_monic
+  have hvmonic : v.Monic :=
+    Lagrange.nodal_monic
   have hvdeg : v.degree = q := by
     rw [degree_eq_natDegree hvmonic.ne_zero]
     simp [v]
@@ -176,21 +176,21 @@ theorem shiftedJacobi_eval_derivative_nodal_mul_inner_basis
   let b := Lagrange.basis Finset.univ x i
   let p := shiftedJacobiMonic (q - 1) α β
   let d := v.derivative.eval (x i)
-  have hpmono : p.IsMonicOfDegree (q - 1) := by
-    exact (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).isMonicOfDegree _
+  have hpmono : p.IsMonicOfDegree (q - 1) :=
+    (shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ).isMonicOfDegree _
   have hbdeg : b.natDegree = q - 1 := by
     simpa [b] using Lagrange.natDegree_basis hx.injOn (mem_univ i)
-  have hdne : d ≠ 0 := by
-    exact Lagrange.eval_derivative_nodal_ne_zero x hx i
-  have hblc : b.leadingCoeff = d⁻¹ := by
-    exact Lagrange.leadingCoeff_basis_eq_inv_eval_derivative_nodal x hx i
+  have hdne : d ≠ 0 :=
+    Lagrange.eval_derivative_nodal_ne_zero x hx i
+  have hblc : b.leadingCoeff = d⁻¹ :=
+    Lagrange.leadingCoeff_basis_eq_inv_eval_derivative_nodal x hx i
   have hdbmono : (C d * b).IsMonicOfDegree (q - 1) := by
     refine ⟨?_, ?_⟩
     · rw [natDegree_C_mul hdne, hbdeg]
     · rw [Monic.def, leadingCoeff_mul, leadingCoeff_C, hblc]
       field_simp
-  have hremdeg : (C d * b - p).natDegree < q - 1 := by
-    exact hdbmono.natDegree_sub_lt (by lia) hpmono
+  have hremdeg : (C d * b - p).natDegree < q - 1 :=
+    hdbmono.natDegree_sub_lt (by lia) hpmono
   have horthrem := shiftedJacobiMonicInner_eq_zero hα hβ
     (C d * b - p) hremdeg
   change shiftedJacobiInner α β p (C d * b - p) = 0 at horthrem
