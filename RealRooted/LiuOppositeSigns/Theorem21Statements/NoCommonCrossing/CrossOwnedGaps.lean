@@ -103,8 +103,8 @@ theorem OppositeLeadingSigns.cross_owner_roots_of_not_odd_of_endpoint_counts
     (hright_count_b : g.IsRoot b →
       ((f + C νR * g).roots.filter (b < ·)).card =
         (f.roots.filter (b < ·)).card) :
-    (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b) := by
-  exact hsgn.cross_owner_roots_of_not_odd_of_endpoint_count_diffs
+    (f.IsRoot a ∧ g.IsRoot b) ∨ (g.IsRoot a ∧ f.IsRoot b) :=
+  hsgn.cross_owner_roots_of_not_odd_of_endpoint_count_diffs
     hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
     hνL_pos hνL_large hdegL
     (fun hfa hfb => by rw [hleft_count_a hfa, hleft_count_b hfb]; simp)
@@ -203,14 +203,14 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_count_diffs
           (f.roots.filter (a < ·)).card =
         (((f + C (νR x) * g).roots.filter (b < ·)).card : ℤ) -
           (f.roots.filter (b < ·)).card) :
-    CrossOwnedNotOddGaps f g := by
-  intro a b x hax hxb ha_root hb_root hgap hnot_odd
-  exact hsgn.cross_owner_roots_of_not_odd_of_endpoint_count_diffs
-    hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
-    (hνL_pos x) (hνL_large x) (hdegL x)
-    (hleft_count_sub x a b)
-    (hνR_pos x) (hνR_small x) (hdegR x)
-    (hright_count_sub x a b)
+    CrossOwnedNotOddGaps f g :=
+  fun a b x hax hxb ha_root hb_root hgap hnot_odd =>
+    hsgn.cross_owner_roots_of_not_odd_of_endpoint_count_diffs
+      hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
+      (hνL_pos x) (hνL_large x) (hdegL x)
+      (hleft_count_sub x a b)
+      (hνR_pos x) (hνR_small x) (hdegR x)
+      (hright_count_sub x a b)
 
 /-- Supplier for the parity-guarded consecutive-root ownership input from an
 open-gap no-root hypothesis for the endpoint families.  This is the finite
@@ -253,9 +253,8 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_no_isRoot_Ioo
       ((r.roots.filter (a < ·)).card : ℤ) - (q.roots.filter (a < ·)).card =
         ((r.roots.filter (b < ·)).card : ℤ) -
           (q.roots.filter (b < ·)).card := by
-    have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z := by
-      intro z haz hzb
-      exact hpq.right_not_isRoot_Icc_of_left_roots hpa hpb hq_no z
+    have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z :=
+      fun z haz hzb => hpq.right_not_isRoot_Icc_of_left_roots hpa hpb hq_no z
         ⟨le_of_lt haz, hzb⟩
     have hr_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ r.IsRoot z := by
       intro z haz hzb
@@ -302,8 +301,8 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_counts
     (hright_count : ∀ x c : ℝ, g.IsRoot c →
       ((f + C (νR x) * g).roots.filter (c < ·)).card =
         (f.roots.filter (c < ·)).card) :
-    CrossOwnedNotOddGaps f g := by
-  exact hsgn.crossOwnedNotOddGaps_of_endpoint_count_diffs
+    CrossOwnedNotOddGaps f g :=
+  hsgn.crossOwnedNotOddGaps_of_endpoint_count_diffs
     hfg hno hf hg νL νR hνL_pos hνL_large hdegL
     (fun x a b hfa hfb => by rw [hleft_count x a hfa, hleft_count x b hfb]; simp)
     hνR_pos hνR_small hdegR
@@ -351,9 +350,8 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_local_no_isRoot_Ioo
       ((r.roots.filter (a < ·)).card : ℤ) - (q.roots.filter (a < ·)).card =
         ((r.roots.filter (b < ·)).card : ℤ) -
           (q.roots.filter (b < ·)).card := by
-    have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z := by
-      intro z haz hzb
-      exact hpq.right_not_isRoot_Icc_of_left_roots hpa hpb hq_no z
+    have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z :=
+      fun z haz hzb => hpq.right_not_isRoot_Icc_of_left_roots hpa hpb hq_no z
         ⟨le_of_lt haz, hzb⟩
     have hr_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ r.IsRoot z := by
       intro z haz hzb
@@ -502,9 +500,8 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_parameter_bounds
         (f + C τ * g).natDegree = (f + C μ * g).natDegree)
     (hdegR_zero : ∀ x η : ℝ, η ∈ Set.Icc (0 : ℝ) (νR x) →
       (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree) :
-    CrossOwnedNotOddGaps f g := by
-  intro a b x hax hxb ha_root hb_root hgap hnot_odd
-  exact hsgn.cross_owner_roots_of_not_odd
+    CrossOwnedNotOddGaps f g :=
+  fun a b x hax hxb ha_root hb_root hgap hnot_odd => hsgn.cross_owner_roots_of_not_odd
     hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
     (hνL_pos x) (hνL_large x) (hdegL x) (hdegL_inv x)
     (hνR_pos x) (hνR_small x) (hdegR x) (hdegR_zero x)
