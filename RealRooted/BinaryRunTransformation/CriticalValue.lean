@@ -213,8 +213,8 @@ theorem criticalValue_sign_of_stablePencil {n : ℕ} (hn : 4 ≤ n)
       hcritical, mul_zero]
   have hsign : b.derivative.eval r * a.eval r ≤ 0 :=
     hstable.derivative_mul_nonpos_at_root hb0
-  have ha : a.eval r = r ^ n * E.eval η := by
-    exact eval_signedParityLift hE hr0
+  have ha : a.eval r = r ^ n * E.eval η :=
+    eval_signedParityLift hE hr0
   have hlift :
       (signedParityLift (n - 1) (X * q.derivative.derivative)).eval r =
         r ^ (n - 1) * (η * q.derivative.derivative.eval η) := by
