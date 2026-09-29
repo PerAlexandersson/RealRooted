@@ -302,7 +302,7 @@ theorem newtonSum_two_eq_sq_sub_two_mul_nextCoeff {p : ℝ[X]} (hp : p.Monic)
   simp only [Finset.sum_singleton, pow_one] at h
   rw [newtonSum_one_eq_neg_nextCoeff hp (by lia)] at h
   simp [monicElementaryCoeff, show 1 ≤ p.natDegree by lia, hdeg] at h
-  nlinarith
+  linarith
 
 private lemma sum_coe_pow {R : Type*} [CommSemiring R] [DecidableEq R]
     (s : Multiset R) (k : ℕ) :
@@ -543,7 +543,7 @@ theorem splits_iff_hermiteMatrix_posSemidef {p : ℝ[X]} (hp : p.Monic) :
       have hzterm : -((complexRoots p).count z : ℝ) / 4 < 0 := by
         have hzcountR : (0 : ℝ) < (complexRoots p).count z := by
           exact_mod_cast hzcount
-        nlinarith
+        linarith
       exact add_neg_of_neg_of_nonpos hzterm hrest
     have hform_nonneg : 0 ≤ b ⬝ᵥ hermiteMatrix p *ᵥ b := by
       simpa using hpos.dotProduct_mulVec_nonneg b
