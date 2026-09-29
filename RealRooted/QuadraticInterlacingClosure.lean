@@ -786,6 +786,127 @@ theorem quadraticInterlacingPencil_card_roots_gt_at_crossing_eq_right
     (fun μ hμ => hnoRight μ ⟨habR.trans_le hμ.1, hμ.2⟩)
   omega
 
+/-- An exact downward chamber jump forces a nonnegative tangent residue at the
+crossing.  The proof uses right-chamber evaluation signs and then lets the
+right parameter approach the crossing; the quadratic remainder contributes
+only a vanishing first-order correction. -/
+theorem quadraticInterlacingTangent_residue_nonneg_of_exact_crossing
+    {F G H : ℝ[X]} {μL a μR r : ℝ} {D : ℕ}
+    (hμLa : μL < a) (haμR : a < μR) (hD : D ≠ 0)
+    (hdegree : ∀ μ ∈ Set.Icc μL μR,
+      (quadraticInterlacingPencil F G H μ).natDegree = D)
+    (hdegree_local : ∀ μ ∈ Set.Icc μL μR, ∀ᶠ b in 𝓝 μ,
+      (quadraticInterlacingPencil F G H b).natDegree = D)
+    (hpos : ∀ μ ∈ Set.Icc μL μR,
+      HasPosLeadingCoeff (quadraticInterlacingPencil F G H μ))
+    (hsplits : ∀ μ ∈ Set.Icc μL μR,
+      (quadraticInterlacingPencil F G H μ).Splits)
+    (hsimple : ∀ μ ∈ Set.Icc μL μR,
+      HasSimpleRoots (quadraticInterlacingPencil F G H μ))
+    (hroot : (quadraticInterlacingPencil F G H a).IsRoot r)
+    (hnoLeft : ∀ μ ∈ Set.Ico μL a,
+      ¬(quadraticParameterEvaluation F G H r).IsRoot μ)
+    (hnoRight : ∀ μ ∈ Set.Ioc a μR,
+      ¬(quadraticParameterEvaluation F G H r).IsRoot μ)
+    (hexact :
+      ((quadraticInterlacingPencil F G H μL).roots.filter (r < ·)).card =
+        ((quadraticInterlacingPencil F G H μR).roots.filter (r < ·)).card + 1) :
+    0 ≤ (quadraticInterlacingTangent F G a).eval r /
+      (quadraticInterlacingPencil F G H a).derivative.eval r := by
+  let Q : ℝ → ℝ[X] := fun b => quadraticInterlacingPencil F G H b
+  let A := quadraticInterlacingTangent F G a
+  have haIcc : a ∈ Set.Icc μL μR := ⟨hμLa.le, haμR.le⟩
+  have hcountAt :=
+    quadraticInterlacingPencil_card_roots_gt_at_crossing_eq_right
+      hμLa haμR hD hdegree hdegree_local hsplits hsimple hroot hnoLeft
+      hnoRight hexact
+  have hlocal := exists_eventually_quadraticInterlacingPencil_root_count_bounds
+    hD (hdegree_local a haIcc) (hsplits a haIcc) (hsimple a haIcc) hroot
+  have hmulNonneg : 0 ≤ A.eval r * (Q a).derivative.eval r := by
+    by_contra hnot
+    have hmulNeg : A.eval r * (Q a).derivative.eval r < 0 :=
+      lt_of_not_ge hnot
+    have hphiCont : ContinuousAt
+        (fun b => (2 * A.eval r + (b - a) * F.eval r) *
+          (Q a).derivative.eval r) a := by
+      fun_prop
+    have hphiNeg : ∀ᶠ b in 𝓝 a,
+        (2 * A.eval r + (b - a) * F.eval r) *
+          (Q a).derivative.eval r < 0 := by
+      apply hphiCont.eventually_lt continuousAt_const
+      nlinarith
+    have hrightEvent : ∀ᶠ b in 𝓝 a,
+        ((((Q a).roots.filter (r < ·)).card ≤
+            ((Q b).roots.filter (r < ·)).card ∧
+          ((Q b).roots.filter (r < ·)).card ≤
+            ((Q a).roots.filter (r < ·)).card + 1) ∧
+          b < μR) ∧
+        (2 * A.eval r + (b - a) * F.eval r) *
+          (Q a).derivative.eval r < 0 :=
+      (hlocal.and (eventually_lt_nhds haμR)).and hphiNeg
+    obtain ⟨b, hab, ⟨⟨hbBounds, hbμR⟩, hphi⟩⟩ := hrightEvent.exists_gt
+    have hbIcc : b ∈ Set.Icc μL μR :=
+      ⟨hμLa.le.trans hab.le, hbμR.le⟩
+    have hright := quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
+      hbμR.le hD
+      (fun μ hμ => hdegree μ ⟨(hμLa.le.trans hab.le).trans hμ.1, hμ.2⟩)
+      (fun μ hμ => hdegree_local μ
+        ⟨(hμLa.le.trans hab.le).trans hμ.1, hμ.2⟩)
+      (fun μ hμ => hsplits μ ⟨(hμLa.le.trans hab.le).trans hμ.1, hμ.2⟩)
+      (fun μ hμ => hsimple μ ⟨(hμLa.le.trans hab.le).trans hμ.1, hμ.2⟩)
+      (fun μ hμ => hnoRight μ ⟨hab.trans_le hμ.1, hμ.2⟩)
+    have hbCount : ((Q b).roots.filter (r < ·)).card =
+        ((Q a).roots.filter (r < ·)).card := by
+      dsimp only [Q] at hright hcountAt ⊢
+      omega
+    have hbNotRoot : ¬(Q b).IsRoot r := by
+      intro hbr
+      exact hnoRight b ⟨hab, hbμR.le⟩
+        ((quadraticParameterEvaluation_isRoot_iff F G H r b).2 hbr)
+    have hbNotMem : r ∉ (Q b).roots := by
+      intro hmem
+      exact hbNotRoot (Polynomial.isRoot_of_mem_roots hmem)
+    have hEval := eval_sign (hsplits b hbIcc) (hpos b hbIcc) r hbNotMem
+    have hRootMem : r ∈ (Q a).roots :=
+      (Polynomial.mem_roots (hpos a haIcc).ne_zero).2 hroot
+    have hDer := deriv_at_root_sign (hsplits a haIcc)
+      (hpos a haIcc) r hRootMem ((hsimple a haIcc).roots_count_eq_one hroot)
+    rw [Multiset.countP_eq_card_filter, hbCount] at hEval
+    rw [Multiset.countP_eq_card_filter] at hDer
+    let e : ℝ := (-1 : ℝ) ^ ((Q a).roots.filter (r < ·)).card
+    have heSq : e * e = 1 := by
+      dsimp only [e]
+      rw [← pow_add]
+      simp
+    have hprod0 := mul_pos hEval hDer
+    have hprod : 0 < (Q b).eval r * (Q a).derivative.eval r := by
+      have heq :
+          ((Q b).eval r * e) * ((Q a).derivative.eval r * e) =
+            (Q b).eval r * (Q a).derivative.eval r * (e * e) := by ring
+      rw [heq, heSq, mul_one] at hprod0
+      exact hprod0
+    have hQexpand : (Q b).eval r =
+        (b - a) * (2 * A.eval r + (b - a) * F.eval r) := by
+      have hzero : (Q a).eval r = 0 := Polynomial.IsRoot.def.mp hroot
+      calc
+        (Q b).eval r = (Q a).eval r +
+            (b - a) * (2 * A.eval r + (b - a) * F.eval r) := by
+              dsimp only [Q, A, quadraticInterlacingPencil,
+                quadraticInterlacingTangent]
+              simp only [eval_add, eval_mul, eval_C]
+              ring
+        _ = (b - a) * (2 * A.eval r + (b - a) * F.eval r) := by
+          rw [hzero, zero_add]
+    rw [hQexpand] at hprod
+    have hneg := mul_neg_of_pos_of_neg (sub_pos.mpr hab) hphi
+    apply (not_lt_of_ge hprod.le)
+    nlinarith
+  have hderNe : (Q a).derivative.eval r ≠ 0 :=
+    (hsimple a haIcc).eval_derivative_ne_zero hroot
+  rcases lt_or_gt_of_ne hderNe with hderNeg | hderPos
+  · exact div_nonneg_of_nonpos (by nlinarith) hderNeg.le
+  · exact div_nonneg (by nlinarith) hderPos.le
+
 /-- If the leading spatial polynomial does not vanish at `r`, the parameter
 evaluation is a genuine quadratic. -/
 theorem quadraticParameterEvaluation_natDegree
