@@ -240,8 +240,8 @@ theorem IsTotallyNonneg.hurwitz_routhReducedPolynomial_minor_nonneg_ratio_of_odd
     (hrows : StrictMono rows) (hcols : StrictMono cols)
     (hclosed : ∀ i, Odd (rows i) → ∃ k, rows k + 1 = rows i) :
     0 ≤ ((hurwitz (routhReducedPolynomial
-      (routhCoefficient odd even) odd even).coeff).submatrix rows cols).det := by
-  exact hM.hurwitz_routhReducedPolynomial_minor_nonneg_of_odd_predecessors
+      (routhCoefficient odd even) odd even).coeff).submatrix rows cols).det :=
+  hM.hurwitz_routhReducedPolynomial_minor_nonneg_of_odd_predecessors
     (routhCoefficient_mul_coeff_zero odd even hodd)
     rows cols hrows hcols hclosed
 
