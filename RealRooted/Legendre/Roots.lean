@@ -95,8 +95,8 @@ theorem shiftedLegendreReal_comp_neg_X_hasPosLeadingCoeff (n : ℕ) :
 
 /-- The reflected real shifted Legendre polynomial is nonzero. -/
 theorem shiftedLegendreReal_comp_neg_X_ne_zero (n : ℕ) :
-    (shiftedLegendreReal n).comp (-X) ≠ 0 := by
-  exact Polynomial.comp_neg_X_eq_zero_iff.not.mpr
+    (shiftedLegendreReal n).comp (-X) ≠ 0 :=
+  Polynomial.comp_neg_X_eq_zero_iff.not.mpr
     (shiftedLegendreReal_ne_zero n)
 
 /-- The reflected real shifted Legendre polynomial splits over `ℝ`. -/
