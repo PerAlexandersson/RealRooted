@@ -410,8 +410,8 @@ theorem roots_eq_map_filter_roots_gammaTransform
             (s.filter
               (fun z => gammaRootMap x = gammaRootMap z)).card :=
           Multiset.count_map gammaRootMap s (gammaRootMap x)
-        _ = (s.filter (fun z => x = z)).card := by
-          exact congrArg Multiset.card <|
+        _ = (s.filter (fun z => x = z)).card :=
+          congrArg Multiset.card <|
             Multiset.filter_congr fun z hz =>
               strictMonoOn_gammaRootMap.injOn.eq_iff hx (hs_Ioo hz)
         _ = s.count x :=
