@@ -182,15 +182,15 @@ theorem MvRealStable.homogeneousComponent_totalDegree
   let H := MvPolynomial.homogeneousComponent P.totalDegree P
   let L := MvPolynomial.eval b H
   let qLimit := realAffineLineRestriction a b H
-  have hHhom : H.IsHomogeneous P.totalDegree := by
-    exact MvPolynomial.homogeneousComponent_isHomogeneous P.totalDegree P
-  have hHne : H ≠ 0 := by
-    exact MvPolynomial.homogeneousComponent_totalDegree_ne_zero hP
-  have hHnn : MvPolynomial.HasNonnegCoeffs H := by
-    exact hnn.homogeneousComponent P.totalDegree
+  have hHhom : H.IsHomogeneous P.totalDegree :=
+    MvPolynomial.homogeneousComponent_isHomogeneous P.totalDegree P
+  have hHne : H ≠ 0 :=
+    MvPolynomial.homogeneousComponent_totalDegree_ne_zero hP
+  have hHnn : MvPolynomial.HasNonnegCoeffs H :=
+    hnn.homogeneousComponent P.totalDegree
   have hLpos : 0 < L := hHnn.eval_pos hHne hb
-  have hqlCoeff : qLimit.coeff P.totalDegree = L := by
-    exact MvPolynomial.IsHomogeneous.coeff_realAffineLineRestriction
+  have hqlCoeff : qLimit.coeff P.totalDegree = L :=
+    MvPolynomial.IsHomogeneous.coeff_realAffineLineRestriction
       hHhom a b
   have hqlDeg : qLimit.natDegree = P.totalDegree := by
     apply le_antisymm
@@ -218,8 +218,8 @@ theorem MvRealStable.homogeneousComponent_totalDegree
     simpa [qM, L, H] using
       coeff_realAffineLineRestriction_homogeneousTopApproximation
         P (δseq M) a b
-  have hqDeg (M : ℕ) : (qM M).natDegree = P.totalDegree := by
-    exact le_antisymm (hqDegLe M)
+  have hqDeg (M : ℕ) : (qM M).natDegree = P.totalDegree :=
+    le_antisymm (hqDegLe M)
       (Polynomial.le_natDegree_of_ne_zero
         ((hqCoeffTop M).trans_ne hLpos.ne'))
   have hqLead (M : ℕ) : (qM M).leadingCoeff = L := by
