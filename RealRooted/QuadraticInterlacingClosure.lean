@@ -729,6 +729,36 @@ theorem quadraticParameterEvaluation_not_isRoot_between_adjacent_positive
   exact List.not_mem_of_mem_zip_tail_of_pairwise_lt
     (positiveQuadraticParameterRoots_pairwise F G H r) hab haz hzb hzmem
 
+/-- Before the first positive crossing, the nonnegative parameter chamber is
+root-free, provided the zero endpoint is not itself a crossing. -/
+theorem quadraticParameterEvaluation_not_isRoot_before_first_positive
+    {F G H : ℝ[X]} {r a z : ℝ} {xs : List ℝ}
+    (hrF : ¬F.IsRoot r) (hrH : ¬H.IsRoot r)
+    (hrs : positiveQuadraticParameterRoots F G H r = a :: xs)
+    (hz0 : 0 ≤ z) (hza : z < a) :
+    ¬(quadraticParameterEvaluation F G H r).IsRoot z := by
+  let q := quadraticParameterEvaluation F G H r
+  have hqdeg : q.natDegree = 2 := quadraticParameterEvaluation_natDegree hrF
+  have hqne : q ≠ 0 := by
+    intro hzero
+    rw [hzero] at hqdeg
+    simp at hqdeg
+  intro hzroot
+  rcases hz0.eq_or_lt with rfl | hzpos
+  · apply hrH
+    simpa [quadraticInterlacingPencil] using
+      (quadraticParameterEvaluation_isRoot_iff F G H r 0).1 hzroot
+  · have hzmem : z ∈ positiveQuadraticParameterRoots F G H r := by
+      rw [mem_positiveQuadraticParameterRoots_iff]
+      exact ⟨(Polynomial.mem_roots hqne).2 hzroot, hzpos⟩
+    rw [hrs] at hzmem
+    rcases List.mem_cons.mp hzmem with hzaeq | hzmem
+    · subst z
+      exact (lt_irrefl a hza).elim
+    · have hpair := positiveQuadraticParameterRoots_pairwise F G H r
+      rw [hrs, List.pairwise_cons] at hpair
+      exact (not_lt_of_ge hza.le) (hpair.1 z hzmem)
+
 /-- The constant and leading coefficients of the parameter evaluation are
 the endpoint evaluations `H(r)` and `F(r)`. -/
 theorem quadraticParameterEvaluation_end_coeffs (F G H : ℝ[X]) (r : ℝ) :
