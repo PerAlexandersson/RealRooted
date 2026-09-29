@@ -184,6 +184,28 @@ theorem exists_eps_forall_quadraticInterlacingPencil_root_count_le_near
   exact (contDiff_quadraticInterlacingPencil_eval_prod F G H).contDiffAt.of_le
     (by norm_num)
 
+/-- At a simple spatial crossing of the quadratic pencil, the nearby
+strict-upper root count is the crossing count itself or one larger. -/
+theorem exists_eventually_quadraticInterlacingPencil_root_count_bounds
+    {F G H : ℝ[X]} {a r : ℝ} {D : ℕ} (hD : D ≠ 0)
+    (hdegree : ∀ᶠ b in 𝓝 a,
+      (quadraticInterlacingPencil F G H b).natDegree = D)
+    (hsplits : (quadraticInterlacingPencil F G H a).Splits)
+    (hsimple : HasSimpleRoots (quadraticInterlacingPencil F G H a))
+    (hroot : (quadraticInterlacingPencil F G H a).IsRoot r) :
+    ∀ᶠ b in 𝓝 a,
+      ((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card ≤
+          ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ∧
+        ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ≤
+          ((quadraticInterlacingPencil F G H a).roots.filter
+            (r < ·)).card + 1 := by
+  refine exists_eventually_card_roots_gt_bounds_near_simple_root
+    (fun b => quadraticInterlacingPencil F G H b) hD hdegree hsplits
+      hsimple ?_ hroot
+  intro x _
+  exact (contDiff_quadraticInterlacingPencil_eval_prod F G H).contDiffAt.of_le
+    (by norm_num)
+
 /-- Iterated derivative shifts commute with the quadratic pencil. -/
 theorem iterateTDeriv_quadraticInterlacingPencil
     (eps : ℝ) (k : ℕ) (F G H : ℝ[X]) (a : ℝ) :
