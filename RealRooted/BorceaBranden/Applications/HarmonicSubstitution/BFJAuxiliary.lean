@@ -53,15 +53,15 @@ theorem harmonicClear {Q : MvPolynomial (Fin 2) ℝ}
 do. -/
 theorem bfjAuxiliary {P Q : MvPolynomial (Fin 2) ℝ}
     (hP : HasNonnegCoeffs P) (hQ : HasNonnegCoeffs Q) :
-    HasNonnegCoeffs (MvPolynomial.bfjAuxiliary P Q) := by
-  exact hP.addAuxiliary.mul hQ.harmonicClear
+    HasNonnegCoeffs (MvPolynomial.bfjAuxiliary P Q) :=
+  hP.addAuxiliary.mul hQ.harmonicClear
 
 /-- The distinguished BFJ coefficient has nonnegative coefficients when both
 inputs do. -/
 theorem bfjCoefficient {P Q : MvPolynomial (Fin 2) ℝ}
     (hP : HasNonnegCoeffs P) (hQ : HasNonnegCoeffs Q) (b : ℕ) :
-    HasNonnegCoeffs (MvPolynomial.bfjCoefficient P Q b) := by
-  exact (hP.bfjAuxiliary hQ).optionEquivLeft_coeff (2 * b)
+    HasNonnegCoeffs (MvPolynomial.bfjCoefficient P Q b) :=
+  (hP.bfjAuxiliary hQ).optionEquivLeft_coeff (2 * b)
 
 end HasNonnegCoeffs
 
@@ -96,8 +96,8 @@ theorem MvUpperHalfPlaneStable.bfjAuxiliary
     {P Q : MvPolynomial (Fin 2) ℂ} {b : ℕ}
     (hP : MvUpperHalfPlaneStable P) (hQ : MvUpperHalfPlaneStable Q)
     (hhom : Q.IsHomogeneous b) :
-    MvUpperHalfPlaneStable (MvPolynomial.bfjAuxiliary P Q) := by
-  exact hP.addAuxiliary.mul (hQ.harmonicClear hhom)
+    MvUpperHalfPlaneStable (MvPolynomial.bfjAuxiliary P Q) :=
+  hP.addAuxiliary.mul (hQ.harmonicClear hhom)
 
 /-- The distinguished coefficient of the stable BFJ auxiliary product is
 zero or stable. -/
@@ -105,8 +105,8 @@ theorem MvUpperHalfPlaneStable.bfjCoefficient_zero_or
     {P Q : MvPolynomial (Fin 2) ℂ} {b : ℕ}
     (hP : MvUpperHalfPlaneStable P) (hQ : MvUpperHalfPlaneStable Q)
     (hhom : Q.IsHomogeneous b) :
-    MvUpperHalfPlaneStableOrZero (MvPolynomial.bfjCoefficient P Q b) := by
-  exact (hP.bfjAuxiliary hQ hhom).optionEquivLeft_coeff_zero_or_of_finite
+    MvUpperHalfPlaneStableOrZero (MvPolynomial.bfjCoefficient P Q b) :=
+  (hP.bfjAuxiliary hQ hhom).optionEquivLeft_coeff_zero_or_of_finite
     (2 * b)
 
 end
