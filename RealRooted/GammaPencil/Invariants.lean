@@ -58,7 +58,7 @@ theorem gammaOperator_hasNonnegCoeffs_of_natDegree_le
           exact_mod_cast hkn
         exact add_nonneg
           (mul_nonneg (by positivity) (hp (k + 1)))
-          (mul_nonneg (by nlinarith) (hp k))
+          (mul_nonneg (by linarith) (hp k))
       · have hkdeg : p.natDegree < k := by lia
         have hkdeg' : p.natDegree < k + 1 := by lia
         rw [coeff_eq_zero_of_natDegree_lt hkdeg',
