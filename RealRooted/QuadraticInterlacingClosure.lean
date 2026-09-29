@@ -759,6 +759,28 @@ theorem quadraticParameterEvaluation_not_isRoot_before_first_positive
       rw [hrs, List.pairwise_cons] at hpair
       exact (not_lt_of_ge hza.le) (hpair.1 z hzmem)
 
+/-- Beyond the Cauchy bound, the parameter evaluation has no roots.  This
+provides a canonical terminal chamber to the right of every positive crossing. -/
+theorem quadraticParameterEvaluation_not_isRoot_above_cauchyBound
+    {F G H : ℝ[X]} {r A z : ℝ} (hrF : ¬F.IsRoot r)
+    (hA : ((quadraticParameterEvaluation F G H r).cauchyBound : ℝ) ≤ A)
+    (hAz : A ≤ z) :
+    ¬(quadraticParameterEvaluation F G H r).IsRoot z := by
+  let q := quadraticParameterEvaluation F G H r
+  have hqdeg : q.natDegree = 2 := quadraticParameterEvaluation_natDegree hrF
+  have hqne : q ≠ 0 := by
+    intro hzero
+    rw [hzero] at hqdeg
+    simp at hqdeg
+  intro hzroot
+  have hzlt : |z| < (q.cauchyBound : ℝ) := by
+    have hlt := hzroot.norm_lt_cauchyBound hqne
+    exact_mod_cast hlt
+  have hznonneg : 0 ≤ z :=
+    (NNReal.coe_nonneg q.cauchyBound).trans (hA.trans hAz)
+  rw [abs_of_nonneg hznonneg] at hzlt
+  exact (not_lt_of_ge (hA.trans hAz)) hzlt
+
 /-- The constant and leading coefficients of the parameter evaluation are
 the endpoint evaluations `H(r)` and `F(r)`. -/
 theorem quadraticParameterEvaluation_end_coeffs (F G H : ℝ[X]) (r : ℝ) :
