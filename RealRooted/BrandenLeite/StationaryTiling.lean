@@ -94,8 +94,8 @@ theorem rationalRodDenominator_mul_generatingSeries
   let g := rationalBackgroundSeries ys
   let h := markedFactorSeries c r xs
   let F := twoKernelGeneratingSeries g h
-  have hzero : PowerSeries.constantCoeff h = 0 := by
-    exact constantCoeff_markedFactorSeries c hr xs
+  have hzero : PowerSeries.constantCoeff h = 0 :=
+    constantCoeff_markedFactorSeries c hr xs
   have hQg : Q * g = 1 := rationalBackgroundDenominator_mul_series ys
   have hbase :
       (1 - PowerSeries.C X * polynomialLift (g * h)) * F =

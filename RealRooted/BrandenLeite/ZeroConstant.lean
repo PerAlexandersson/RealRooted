@@ -89,12 +89,10 @@ theorem exists_pf_pos_zero_approximation
   have hεlim : Tendsto ε atTop (𝓝 0) := by
     simpa [ε] using
       (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
-  have ha_pf : ∀ k, IsPolyaFreqSeq (a k) := by
-    intro k
-    exact regularizedSequence_isPolyaFreqSeq hu_pf r (le_of_lt (hεpos k))
-  have ha0pos : ∀ k, 0 < a k 0 := by
-    intro k
-    exact regularizedSequence_zero_pos (hεpos k) hu0pos
+  have ha_pf : ∀ k, IsPolyaFreqSeq (a k) :=
+    fun k => regularizedSequence_isPolyaFreqSeq hu_pf r (le_of_lt (hεpos k))
+  have ha0pos : ∀ k, 0 < a k 0 :=
+    fun k => regularizedSequence_zero_pos (hεpos k) hu0pos
   have halim : ∀ n, Tendsto (fun k => a k n) atTop (𝓝 (f n)) := by
     intro n
     rw [hf_eq]

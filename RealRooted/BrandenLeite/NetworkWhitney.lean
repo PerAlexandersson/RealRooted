@@ -15,9 +15,8 @@ namespace RealRooted.BrandenLeite
 private theorem networkShift_normalized
     (weights : ℕ → ℕ → ℝ)
     (hnormalized : ∀ n k, k ≤ n → weights n k = 0 → weights (n + 1) k = 0) :
-    ∀ n k, k ≤ n → networkShift weights n k = 0 → networkShift weights (n + 1) k = 0 := by
-  intro n k hkn hzero
-  exact hnormalized (n + 1) (k + 1) (Nat.succ_le_succ hkn) hzero
+    ∀ n k, k ≤ n → networkShift weights n k = 0 → networkShift weights (n + 1) k = 0 :=
+  fun n k hkn hzero => hnormalized (n + 1) (k + 1) (Nat.succ_le_succ hkn) hzero
 
 private theorem networkShift_iterate_normalized
     (weights : ℕ → ℕ → ℝ)
@@ -144,8 +143,7 @@ theorem resolutionLambda_normalized
     (R : LowerTriangularMatrix ℝ)
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)
     (hR : Matrix.IsTotallyNonneg R) :
-    ∀ n k, k ≤ n → resolutionLambda R n k = 0 → resolutionLambda R (n + 1) k = 0 := by
-  intro n k hkn hzero
-  exact resolutionOfTotallyNonneg_isNormalized hunit hR n k hkn hzero
+    ∀ n k, k ≤ n → resolutionLambda R n k = 0 → resolutionLambda R (n + 1) k = 0 :=
+  fun n k hkn hzero => resolutionOfTotallyNonneg_isNormalized hunit hR n k hkn hzero
 
 end RealRooted.BrandenLeite

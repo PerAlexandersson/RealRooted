@@ -249,8 +249,8 @@ theorem twoKernelRow_eq_kernelRow {R : Type*} [CommSemiring R]
       kernelRow
         (finiteToeplitz (fun m => PowerSeries.coeff m g) n)
         (finiteToeplitz (fun m => PowerSeries.coeff m h) n)
-        (Fin.last n) := by
-  exact twoKernelRow_eq_kernelRow_fin hzero (Fin.last n)
+        (Fin.last n) :=
+  twoKernelRow_eq_kernelRow_fin hzero (Fin.last n)
 
 /-- For each polynomial column, the generating series of literal row
 coefficients is exactly the corresponding geometric-series term.  This is a
@@ -393,8 +393,8 @@ theorem twoKernelGeneratingSeries_eq_div
       change C (PowerSeries.coeff 0 (g * h)) = 0
       simp [PowerSeries.coeff_zero_eq_constantCoeff, hzero]
     simp [D, hlift]
-  have hmul : D * twoKernelGeneratingSeries g h = polynomialLift g := by
-    exact one_sub_mul_twoKernelGeneratingSeries hzero
+  have hmul : D * twoKernelGeneratingSeries g h = polynomialLift g :=
+    one_sub_mul_twoKernelGeneratingSeries hzero
   calc
     twoKernelGeneratingSeries g h =
         1 * twoKernelGeneratingSeries g h := by rw [one_mul]

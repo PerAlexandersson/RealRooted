@@ -98,8 +98,8 @@ theorem weightedShiftTilingRow_isPFPolynomial
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
     (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin (N + 1)) :
-    IsPFPolynomial (weightedShiftTilingRow b as N r i) := by
-  exact (weightedGreenKernel_markedShiftKernel_pf_and_interl
+    IsPFPolynomial (weightedShiftTilingRow b as N r i) :=
+  (weightedGreenKernel_markedShiftKernel_pf_and_interl
     hb has N hr).1 i
 
 /-- Consecutive nonstationary tiling rows are in zero-aware interlacing. -/
@@ -108,8 +108,8 @@ theorem interl_weightedShiftTilingRow_succ
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
     (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin N) :
     Interl (weightedShiftTilingRow b as N r i.castSucc)
-      (weightedShiftTilingRow b as N r i.succ) := by
-  exact (weightedGreenKernel_markedShiftKernel_pf_and_interl
+      (weightedShiftTilingRow b as N r i.succ) :=
+  (weightedGreenKernel_markedShiftKernel_pf_and_interl
     hb has N hr).2 i
 
 /-- The constant coefficient of a tiling row is the unique descending Green-
@@ -143,22 +143,18 @@ theorem weightedShiftTilingRow_eq_global
             weightedShiftTilingRow b as N r j := by
   let G := weightedGreenKernel b N
   let K := markedShiftKernel as N r
-  have hG : ∀ i j, i < j → G i j = 0 := by
-    intro a c hac
-    exact weightedGreenKernel_apply_eq_zero_of_lt b N
+  have hG : ∀ i j, i < j → G i j = 0 :=
+    fun _ _ hac => weightedGreenKernel_apply_eq_zero_of_lt b N
       (Fin.mk_lt_mk.mp hac)
-  have hK : ∀ i j, i < j → K i j = 0 := by
-    intro a c hac
-    exact markedShiftKernel_apply_eq_zero_of_le as N hr
+  have hK : ∀ i j, i < j → K i j = 0 :=
+    fun _ _ hac => markedShiftKernel_apply_eq_zero_of_le as N hr
       (Fin.mk_le_mk.mpr hac.le)
   have hKstrict : ∀ i j, i.val ≤ j.val → K i j = 0 :=
     fun a c => markedShiftKernel_apply_eq_zero_of_le as N hr
-  have hGKlower : ∀ i j, i < j → (G * K) i j = 0 := by
-    intro a c hac
-    exact Matrix.mul_apply_eq_zero_of_lt_of_upper_zero G K hG hK hac
-  have hGKdiag : ∀ i, (G * K) i i = 0 := by
-    intro a
-    exact Matrix.mul_apply_eq_zero_of_le_of_lower_strictLower G K hG
+  have hGKlower : ∀ i j, i < j → (G * K) i j = 0 :=
+    fun _ _ hac => Matrix.mul_apply_eq_zero_of_lt_of_upper_zero G K hG hK hac
+  have hGKdiag : ∀ i, (G * K) i i = 0 :=
+    fun a => Matrix.mul_apply_eq_zero_of_le_of_lower_strictLower G K hG
       hKstrict (le_refl a.val)
   have hreg (j : Fin (N + 1)) :
       regularizedKernelRow G K j = kernelRow G K j :=
@@ -545,13 +541,11 @@ theorem weightedShiftTilingRow_zero
     {r : ℕ} (hr : 0 < r) :
     weightedShiftTilingRow b as N r 0 = 1 := by
   have hG : ∀ i j : Fin (N + 1), i < j →
-      weightedGreenKernel b N i j = 0 := by
-    intro i j hij
-    exact weightedGreenKernel_apply_eq_zero_of_lt b N hij
+      weightedGreenKernel b N i j = 0 :=
+    fun _ _ hij => weightedGreenKernel_apply_eq_zero_of_lt b N hij
   have hK : ∀ i j : Fin (N + 1), i.val ≤ j.val →
-      markedShiftKernel as N r i j = 0 := by
-    intro i j hij
-    exact markedShiftKernel_apply_eq_zero_of_le as N hr hij
+      markedShiftKernel as N r i j = 0 :=
+    fun _ _ hij => markedShiftKernel_apply_eq_zero_of_le as N hr hij
   have hdegree : (weightedShiftTilingRow b as N r 0).natDegree ≤ 0 :=
     natDegree_kernelRow_le_row (weightedGreenKernel b N)
       (markedShiftKernel as N r) hG hK 0
@@ -587,8 +581,8 @@ theorem weightedShiftTilingRow_roots_neg
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
     (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin (N + 1))
     (x : ℝ) (hx : x ∈ (weightedShiftTilingRow b as N r i).roots) :
-    x < 0 := by
-  exact (weightedShiftTilingRow_isPFPolynomial (fun n => (hb n).le)
+    x < 0 :=
+  (weightedShiftTilingRow_isPFPolynomial (fun n => (hb n).le)
     has N hr i).roots_neg_of_coeff_zero_ne
       (ne_of_gt (coeff_zero_weightedShiftTilingRow_pos hb as N r i)) x hx
 

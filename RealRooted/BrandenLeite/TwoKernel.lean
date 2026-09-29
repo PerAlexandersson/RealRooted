@@ -43,9 +43,8 @@ theorem finiteToeplitz_kernelRows_pf_and_interl
     fun m => finiteToeplitz (a m) N
   let K : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ := finiteToeplitz h N
   have hG : G.IsTotallyNonneg := finiteToeplitz_isTotallyNonneg hg N
-  have hH : ∀ m, (H m).IsTotallyNonneg := by
-    intro m
-    exact finiteToeplitz_isTotallyNonneg (ha_pf m) N
+  have hH : ∀ m, (H m).IsTotallyNonneg :=
+    fun m => finiteToeplitz_isTotallyNonneg (ha_pf m) N
   have hGlower : ∀ i j, i < j → G i j = 0 := by
     intro i j hij
     change finiteToeplitz g N i j = 0

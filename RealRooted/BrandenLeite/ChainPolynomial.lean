@@ -240,8 +240,8 @@ private theorem exists_fPolynomial_preimage_row
         exact (Polynomial.natDegree_C_mul_le _ _).trans
           (hdeg j (Nat.le_of_lt_succ hj))
       have hwrow :
-          IsInterlacingSeq0NonnegRealRooted ((List.range (n + 1)).map w) := by
-        exact scale_range_interlacing hrow fun j hj =>
+          IsInterlacingSeq0NonnegRealRooted ((List.range (n + 1)).map w) :=
+        scale_range_interlacing hrow fun j hj =>
           resolution.lambda_nonneg n j (Nat.le_of_lt_succ hj)
       have hh'row :
           IsInterlacingSeq0NonnegRealRooted ((List.range (n + 2)).map h') := by
@@ -324,8 +324,8 @@ theorem chainPolynomial_eq_zero_or_splits
     chainPolynomial R n = 0 ∨ (chainPolynomial R n).Splits := by
   have hrow := subdivisionRow_interlacing resolution n
   have hmem : subdivisionOperator R (resolution.polynomial n n) ∈
-      subdivisionRow resolution n := by
-    exact List.mem_map.mpr ⟨n, by simp, rfl⟩
+      subdivisionRow resolution n :=
+    List.mem_map.mpr ⟨n, by simp, rfl⟩
   by_cases h0 : chainPolynomial R n = 0
   · exact Or.inl h0
   · have hmem' : chainPolynomial R n ∈ subdivisionRow resolution n := by
@@ -360,9 +360,8 @@ theorem interl_chainPolynomial_succ
     subdivisionOperator R (resolution.polynomial n j)
   let S : ℝ[X] := ∑ j ∈ Finset.range (n + 1), C (resolution.lambda n j) * F j
   have hrow := subdivisionRow_interlacing resolution n
-  have hmem : ∀ j, j ≤ n → F j ∈ subdivisionRow resolution n := by
-    intro j hj
-    exact List.mem_map.mpr ⟨j, by simpa using hj, rfl⟩
+  have hmem : ∀ j, j ≤ n → F j ∈ subdivisionRow resolution n :=
+    fun j hj => List.mem_map.mpr ⟨j, by simpa using hj, rfl⟩
   have hbase : ∀ j, j ≤ n → Interl (F j) (F n) := by
     intro j hj
     rcases eq_or_lt_of_le hj with hEq | hjn
