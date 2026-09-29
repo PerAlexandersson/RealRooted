@@ -44,8 +44,8 @@ def singularUpperShift : Matrix (Fin 2) (Fin 2) ℝ :=
   Matrix.upperBidiagonalFin 2 (fun _ => 0) (fun _ => 1)
 
 theorem singularUpperShift_isTotallyNonneg :
-    singularUpperShift.IsTotallyNonneg := by
-  exact Matrix.isTotallyNonneg_upperBidiagonalFin 2 _ _
+    singularUpperShift.IsTotallyNonneg :=
+  Matrix.isTotallyNonneg_upperBidiagonalFin 2 _ _
     (fun _ => le_rfl) (fun _ => zero_le_one)
 
 theorem singularUpperShift_ne_zero : singularUpperShift ≠ 0 := by
@@ -136,8 +136,8 @@ def reducibleIdentity : Matrix (Fin 2) (Fin 2) ℝ :=
     norm_num [reducibleIdentity, Matrix.upperBidiagonalFin_apply]
 
 theorem reducibleIdentity_isTotallyNonneg :
-    reducibleIdentity.IsTotallyNonneg := by
-  exact Matrix.isTotallyNonneg_upperBidiagonalFin 2 _ _
+    reducibleIdentity.IsTotallyNonneg :=
+  Matrix.isTotallyNonneg_upperBidiagonalFin 2 _ _
     (fun _ => zero_le_one) (fun _ => le_rfl)
 
 @[simp] theorem reducibleIdentity_charpoly :
@@ -168,8 +168,8 @@ def repeatedUpperJordan : Matrix (Fin 2) (Fin 2) ℝ :=
   Matrix.upperBidiagonalFin 2 (fun _ => 1) (fun _ => 1)
 
 theorem repeatedUpperJordan_isTotallyNonneg :
-    repeatedUpperJordan.IsTotallyNonneg := by
-  exact Matrix.isTotallyNonneg_upperBidiagonalFin 2 _ _
+    repeatedUpperJordan.IsTotallyNonneg :=
+  Matrix.isTotallyNonneg_upperBidiagonalFin 2 _ _
     (fun _ => zero_le_one) (fun _ => zero_le_one)
 
 theorem repeatedUpperJordan_offDiagonal :
