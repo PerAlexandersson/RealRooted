@@ -713,18 +713,18 @@ def PreservesInterlacing (M : Atomic2x2Matrix) : Prop :=
 private theorem eval_rect (M : Atomic2x2Matrix) :
     ∀ row ∈ M.eval, row.length = 2 := by
   intro row hrow
-  simp [eval] at hrow
+  simp only [eval, AtomicMatrixEntry.eval, List.mem_cons, List.not_mem_nil, or_false] at hrow
   rcases hrow with rfl | rfl <;> simp
 
 private theorem eval_nonneg (M : Atomic2x2Matrix) :
     ∀ row ∈ M.eval, ∀ p ∈ row, HasNonnegCoeffs p := by
   rcases M with ⟨a, b, c, d⟩
   intro row hrow p hp
-  simp [eval] at hrow
+  simp only [eval, AtomicMatrixEntry.eval, List.mem_cons, List.not_mem_nil, or_false] at hrow
   rcases hrow with rfl | rfl
-  · simp at hp
+  · simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
     rcases hp with rfl | rfl <;> apply AtomicMatrixEntry.hasNonnegCoeffs
-  · simp at hp
+  · simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
     rcases hp with rfl | rfl <;> apply AtomicMatrixEntry.hasNonnegCoeffs
 
 private theorem affine_submatrix_of_hasFullAffineProperty
@@ -786,12 +786,12 @@ private theorem interlacingPair
   · rw [isInterlacingSeq0_iff_pairwise]
     simpa using hfg
   · intro p hp
-    simp at hp
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
     rcases hp with rfl | rfl
     · exact hfnn
     · exact hgnn
   · intro p hp hp0
-    simp at hp
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
     rcases hp with rfl | rfl
     · exact ⟨hp0, hfrr hp0⟩
     · exact ⟨hp0, hgrr hp0⟩
@@ -962,7 +962,9 @@ private theorem not_preserves_top_row_one_x (c d : AtomicMatrixEntry) :
   intro hM
   apply X_add_X_cube_not_splits
   apply action_mem_splits hM input_X_X_sq
-  · simp [matPolyAction, eval]
+  · simp only [matPolyAction, eval, AtomicMatrixEntry.eval, List.map_cons, List.zipWith_cons_cons,
+        one_mul, List.zipWith_self, List.map_nil, List.sum_cons, List.sum_nil, add_zero,
+        List.mem_cons, add_right_inj, List.not_mem_nil, or_false]
     left
     ring
   · exact ne_zero_of_natDegree_eq_succ (by compute_degree!)
@@ -972,7 +974,9 @@ private theorem not_preserves_bottom_row_one_x (a b : AtomicMatrixEntry) :
   intro hM
   apply X_add_X_cube_not_splits
   apply action_mem_splits hM input_X_X_sq
-  · simp [matPolyAction, eval]
+  · simp only [matPolyAction, eval, AtomicMatrixEntry.eval, List.map_cons, List.zipWith_cons_cons,
+        List.zipWith_self, List.map_nil, List.sum_cons, List.sum_nil, add_zero, one_mul,
+        List.mem_cons, add_right_inj, List.not_mem_nil, or_false]
     right
     ring
   · exact ne_zero_of_natDegree_eq_succ (by compute_degree!)
@@ -987,7 +991,11 @@ theorem mem_preserving_of_preservesInterlacing
     hasFullAffineProperty_iff_isPreserving]
   rcases M with ⟨a, b, c, d⟩
   fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d
-  all_goals simp [isPreserving, isAffineAdmissible]
+  all_goals simp only [isPreserving, isAffineAdmissible, Bool.not_and, Bool.true_and, Bool.and_self,
+                Bool.and_self_right, Bool.and_eq_true, Bool.or_eq_true, Bool.not_eq_eq_eq_not,
+                Bool.not_true, beq_eq_false_iff_ne, ne_eq, reduceCtorEq, not_false_eq_true, or_self,
+                and_self, BEq.rfl, Bool.and_true, Bool.false_and, Bool.false_eq_true,
+                Bool.and_false]
   all_goals try exact not_preserves_top_row_one_x _ _ hM
   all_goals try exact not_preserves_bottom_row_one_x _ _ hM
   all_goals
