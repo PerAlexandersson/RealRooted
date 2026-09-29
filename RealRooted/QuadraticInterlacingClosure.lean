@@ -4,6 +4,7 @@ import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
 import RealRooted.LiuOppositeSigns.JensenRootCount
 import RealRooted.PFPolynomial.Closure
+import RealRooted.RootCountLocalConstancy
 import RealRooted.RootCounting.Descartes
 import RealRooted.Wronskian.WeakForward
 
@@ -297,6 +298,37 @@ theorem quadraticParameterEvaluation_isRoot_iff (F G H : ℝ[X]) (r a : ℝ) :
     (quadraticParameterEvaluation F G H r).IsRoot a ↔
       (quadraticInterlacingPencil F G H a).IsRoot r := by
   simp only [Polynomial.IsRoot.def, quadraticParameterEvaluation_eval]
+
+/-- On a parameter interval containing no crossing of a fixed spatial level,
+the quadratic pencil has constant strict-upper root count. -/
+theorem quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
+    {F G H : ℝ[X]} {μ₀ μ₁ r : ℝ} {D : ℕ}
+    (hμ₀μ₁ : μ₀ ≤ μ₁) (hD : D ≠ 0)
+    (hdegree : ∀ μ ∈ Set.Icc μ₀ μ₁,
+      (quadraticInterlacingPencil F G H μ).natDegree = D)
+    (hdegree_local : ∀ μ ∈ Set.Icc μ₀ μ₁, ∀ᶠ b in 𝓝 μ,
+      (quadraticInterlacingPencil F G H b).natDegree = D)
+    (hsplits : ∀ μ ∈ Set.Icc μ₀ μ₁,
+      (quadraticInterlacingPencil F G H μ).Splits)
+    (hsimple : ∀ μ ∈ Set.Icc μ₀ μ₁,
+      HasSimpleRoots (quadraticInterlacingPencil F G H μ))
+    (hno : ∀ μ ∈ Set.Icc μ₀ μ₁,
+      ¬ (quadraticParameterEvaluation F G H r).IsRoot μ) :
+    ((quadraticInterlacingPencil F G H μ₀).roots.filter (r < ·)).card =
+      ((quadraticInterlacingPencil F G H μ₁).roots.filter
+        (r < ·)).card := by
+  apply polynomialFamily_card_roots_gt_eq_of_local_lower_counts
+    (p := fun μ => quadraticInterlacingPencil F G H μ) hμ₀μ₁
+  · intro μ hμ
+    rw [hdegree μ hμ, hdegree μ₀ ⟨le_rfl, hμ₀μ₁⟩]
+  · exact hsplits
+  · intro μ hμ hroot
+    exact hno μ hμ ((quadraticParameterEvaluation_isRoot_iff F G H r μ).2 hroot)
+  · intro μ hμ ρ hρ
+    obtain ⟨ε, hε, hlocal⟩ :=
+      exists_eps_forall_quadraticInterlacingPencil_root_count_le_near
+        hD (hdegree_local μ hμ) (hsplits μ hμ) (hsimple μ hμ) hρ
+    exact ⟨ε, hε, fun ν _ hν => hlocal ν hν⟩
 
 /-- If the leading spatial polynomial does not vanish at `r`, the parameter
 evaluation is a genuine quadratic. -/
