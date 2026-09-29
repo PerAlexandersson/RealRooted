@@ -508,37 +508,6 @@ macro_rules
 end Tactic
 end RealRooted
 namespace RealRooted
-@[deprecated
-  interl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
-  (since := "2026-09-26")]
-alias prec0_veronesePairSectionPolynomial_fin_sequence_of_prec :=
-  interl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
-
-@[deprecated
-  strictInterl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
-  (since := "2026-09-26")]
-alias prec_veronesePairSectionPolynomial_fin_sequence_of_prec :=
-  strictInterl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
-
-@[deprecated interl_veroneseSectionPolynomial_sequence_of_strictInterl
-  (since := "2026-09-26")]
-alias prec0_veroneseSectionPolynomial_sequence_of_prec :=
-  interl_veroneseSectionPolynomial_sequence_of_strictInterl
-
-@[deprecated strictInterl_veroneseSectionPolynomial_sequence_of_strictInterl
-  (since := "2026-09-26")]
-alias prec_veroneseSectionPolynomial_sequence_of_prec :=
-  strictInterl_veroneseSectionPolynomial_sequence_of_strictInterl
-
-@[deprecated interl_veronesePairSectionPolynomial_sequence_of_strictInterl
-  (since := "2026-09-26")]
-alias prec0_veronesePairSectionPolynomial_sequence_of_prec :=
-  interl_veronesePairSectionPolynomial_sequence_of_strictInterl
-
-@[deprecated strictInterl_veronesePairSectionPolynomial_sequence_of_strictInterl
-  (since := "2026-09-26")]
-alias prec_veronesePairSectionPolynomial_sequence_of_prec :=
-  strictInterl_veronesePairSectionPolynomial_sequence_of_strictInterl
 
 end RealRooted
 
@@ -676,7 +645,7 @@ macro_rules
         r_pos := $hr:term,
         k_lt_r := $hk:term) =>
       `(tactic|
-        exact RealRooted.prec0_veroneseSectionPolynomial_of_prec
+        exact RealRooted.interl_veroneseSectionPolynomial_of_strictInterl
           $hPrecToFull $hFullToPrec0 $hpq $hr $hk)
   | `(tactic|
       rr_veronese_section_prec using
@@ -686,7 +655,7 @@ macro_rules
         r_pos := $hr:term,
         k_lt_r := $hk:term) =>
       `(tactic|
-        exact RealRooted.prec_veroneseSectionPolynomial_of_prec
+        exact RealRooted.strictInterl_veroneseSectionPolynomial_of_strictInterl
           $hPrecToFull $hFullToPrec $hpq $hr $hk)
   | `(tactic|
       rr_veronese_pair_prec0 using
@@ -697,7 +666,7 @@ macro_rules
         index_lt := $hij:term,
         right_lt_bound := $hj:term) =>
       `(tactic|
-        exact RealRooted.prec0_veronesePairSectionPolynomial_of_prec
+        exact RealRooted.interl_veronesePairSectionPolynomial_of_strictInterl
           $hPrecToFull $hFullToPrec0 $hpq $hr $hij $hj)
   | `(tactic|
       rr_veronese_pair_prec using
@@ -708,7 +677,7 @@ macro_rules
         index_lt := $hij:term,
         right_lt_bound := $hj:term) =>
       `(tactic|
-        exact RealRooted.prec_veronesePairSectionPolynomial_of_prec
+        exact RealRooted.strictInterl_veronesePairSectionPolynomial_of_strictInterl
           $hPrecToFull $hFullToPrec $hpq $hr $hij $hj)
   | `(tactic|
       rr_veronese_pair_fin_prec0 using
@@ -720,7 +689,7 @@ macro_rules
         right := $j:term,
         index_lt := $hij:term) =>
       `(tactic|
-        exact RealRooted.prec0_veronesePairSectionPolynomial_fin_of_prec
+        exact RealRooted.interl_veronesePairSectionPolynomial_fin_of_strictInterl
           $hPrecToFull $hFullToPrec0 $hpq $hr $i $j $hij)
   | `(tactic|
       rr_veronese_pair_fin_prec using
@@ -732,7 +701,7 @@ macro_rules
         right := $j:term,
         index_lt := $hij:term) =>
       `(tactic|
-        exact RealRooted.prec_veronesePairSectionPolynomial_fin_of_prec
+        exact RealRooted.strictInterl_veronesePairSectionPolynomial_fin_of_strictInterl
           $hPrecToFull $hFullToPrec $hpq $hr $i $j $hij)
   | `(tactic|
       rr_veronese_section_sequence_prec0 using
@@ -742,7 +711,7 @@ macro_rules
         r_pos := $hr:term,
         k_lt_r := $hk:term) =>
       `(tactic|
-        exact RealRooted.prec0_veroneseSectionPolynomial_sequence_of_prec
+        exact RealRooted.interl_veroneseSectionPolynomial_sequence_of_strictInterl
           $hPrecToFull $hFullToPrec0 $hpq $hr $hk)
   | `(tactic|
       rr_veronese_section_sequence_prec using
@@ -752,7 +721,7 @@ macro_rules
         r_pos := $hr:term,
         k_lt_r := $hk:term) =>
       `(tactic|
-        exact RealRooted.prec_veroneseSectionPolynomial_sequence_of_prec
+        exact RealRooted.strictInterl_veroneseSectionPolynomial_sequence_of_strictInterl
           $hPrecToFull $hFullToPrec $hpq $hr $hk)
   | `(tactic|
       rr_veronese_pair_sequence_prec0 using
@@ -763,7 +732,7 @@ macro_rules
         index_lt := $hij:term,
         right_lt_bound := $hj:term) =>
       `(tactic|
-        exact RealRooted.prec0_veronesePairSectionPolynomial_sequence_of_prec
+        exact RealRooted.interl_veronesePairSectionPolynomial_sequence_of_strictInterl
           $hPrecToFull $hFullToPrec0 $hpq $hr $hij $hj)
   | `(tactic|
       rr_veronese_pair_sequence_prec using
@@ -774,7 +743,7 @@ macro_rules
         index_lt := $hij:term,
         right_lt_bound := $hj:term) =>
       `(tactic|
-        exact RealRooted.prec_veronesePairSectionPolynomial_sequence_of_prec
+        exact RealRooted.strictInterl_veronesePairSectionPolynomial_sequence_of_strictInterl
           $hPrecToFull $hFullToPrec $hpq $hr $hij $hj)
   | `(tactic|
       rr_veronese_pair_fin_sequence_prec0 using
@@ -786,7 +755,7 @@ macro_rules
         right := $j:term,
         index_lt := $hij:term) =>
       `(tactic|
-        exact RealRooted.prec0_veronesePairSectionPolynomial_fin_sequence_of_prec
+        exact RealRooted.interl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
           $hPrecToFull $hFullToPrec0 $hpq $hr $i $j $hij)
   | `(tactic|
       rr_veronese_pair_fin_sequence_prec using
@@ -798,7 +767,7 @@ macro_rules
         right := $j:term,
         index_lt := $hij:term) =>
       `(tactic|
-        exact RealRooted.prec_veronesePairSectionPolynomial_fin_sequence_of_prec
+        exact RealRooted.strictInterl_veronesePairSectionPolynomial_fin_sequence_of_strictInterl
           $hPrecToFull $hFullToPrec $hpq $hr $i $j $hij)
 end Tactic
 end RealRooted

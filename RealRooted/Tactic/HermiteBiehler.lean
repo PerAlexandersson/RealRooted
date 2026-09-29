@@ -275,8 +275,6 @@ end Tactic
 end RealRooted
 namespace RealRooted
 namespace Tactic
-@[deprecated hermiteBiehlerStrictInterl_sequence (since := "2026-09-26")]
-alias hermiteBiehlerPrec_sequence := hermiteBiehlerStrictInterl_sequence
 
 end Tactic
 end RealRooted
@@ -347,7 +345,7 @@ macro_rules
         stable := $hstable:term,
         real_degree_pos := $hdegree:term) =>
       `(tactic|
-        exact RealRooted.Tactic.hermiteBiehlerPrec_sequence
+        exact RealRooted.Tactic.hermiteBiehlerStrictInterl_sequence
           $hf $hg $hstable $hdegree)
 end Tactic
 end RealRooted

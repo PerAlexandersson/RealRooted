@@ -345,19 +345,13 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
   rw [← hF_eq]
   simp_all [-hF_eq]
 
-@[deprecated strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
-  (since := "2026-09-18")]
-alias prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common :=
-  strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
-
-
 end RealRooted.MaWangInternal
 
 namespace RealRooted
 
 export MaWangInternal
   (strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
-    prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
+    strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
     isRealRooted_of_interlaces_sub_C_mul_of_forall_pos)

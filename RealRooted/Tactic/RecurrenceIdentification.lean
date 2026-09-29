@@ -517,7 +517,7 @@ macro_rules
         model_recurrence := $hQ:term) =>
       `(tactic|
         rr_exact_pf_prec0_sequence_or_projection
-          (RealRooted.pf_and_prec0_of_model_sequence $hmodel
+          (RealRooted.pf_and_interl_of_model_sequence $hmodel
             (RealRooted.sequence_eq_of_same_lag_one_recurrence
               $upd $hzero $hP $hQ)))
   | `(tactic|
@@ -530,7 +530,7 @@ macro_rules
         model_recurrence := $hQ:term) =>
       `(tactic|
         rr_exact_pf_prec0_sequence_or_projection
-          (RealRooted.pf_and_prec0_of_model_sequence $hmodel
+          (RealRooted.pf_and_interl_of_model_sequence $hmodel
             (RealRooted.sequence_eq_of_same_lag_two_recurrence
               $upd $hzero $hone $hP $hQ)))
   | `(tactic|
@@ -544,7 +544,7 @@ macro_rules
         model_recurrence := $hQ:term) =>
       `(tactic|
         rr_exact_pf_prec0_sequence_or_projection
-          (RealRooted.pf_and_prec0_of_model_sequence $hmodel
+          (RealRooted.pf_and_interl_of_model_sequence $hmodel
             (RealRooted.sequence_eq_of_same_lag_three_recurrence
               $upd $hzero $hone $htwo $hP $hQ)))
   | `(tactic|
