@@ -169,8 +169,8 @@ theorem rootCountAtOrAbove_le_natDegree_of_splits {p : ℝ[X]}
 
 theorem rootCountAtOrAbove_eq_zero_of_splits_natDegree_eq_zero {p : ℝ[X]}
     (hp_splits : p.Splits) (hpdeg : p.natDegree = 0) (x : ℝ) :
-    rootCountAtOrAbove p x = 0 := by
-  exact Nat.eq_zero_of_le_zero
+    rootCountAtOrAbove p x = 0 :=
+  Nat.eq_zero_of_le_zero
     (by simpa [hpdeg] using rootCountAtOrAbove_le_natDegree_of_splits hp_splits x)
 
 theorem RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one
@@ -426,9 +426,8 @@ theorem roots_eq_singleton_add_roots_deleteRootFactor_of_isRoot
     {p : ℝ[X]} {r : ℝ} (hp_ne : p ≠ 0) (hr : p.IsRoot r) :
     p.roots = {r} + (deleteRootFactor p r).roots := by
   have hfactor := factor_deleteRootFactor_of_isRoot hr
-  have hprod_ne : (X - C r) * deleteRootFactor p r ≠ 0 := by
-    intro hzero
-    exact hp_ne (by rw [← hfactor, hzero])
+  have hprod_ne : (X - C r) * deleteRootFactor p r ≠ 0 :=
+    fun hzero => hp_ne (by rw [← hfactor, hzero])
   calc
     p.roots = ((X - C r) * deleteRootFactor p r).roots := by rw [hfactor]
     _ = (X - C r).roots + (deleteRootFactor p r).roots :=
@@ -488,9 +487,8 @@ theorem rootCountAtOrAbove_eq_zero_of_forall_roots_lt {p : ℝ[X]} {x : ℝ}
 theorem rootCountAtOrAbove_eq_rootCountAbove_of_not_isRoot
     {p : ℝ[X]} (hp_ne : p ≠ 0) {x : ℝ} (hx : ¬ p.IsRoot x) :
     rootCountAtOrAbove p x = (p.roots.filter (x < ·)).card := by
-  have hx_not_mem : x ∉ p.roots := by
-    intro hx_mem
-    exact hx ((Polynomial.mem_roots hp_ne).mp hx_mem)
+  have hx_not_mem : x ∉ p.roots :=
+    fun hx_mem => hx ((Polynomial.mem_roots hp_ne).mp hx_mem)
   have hfilter := Multiset.filter_ge_eq_filter_gt_of_not_mem p.roots hx_not_mem
   simp [rootCountAtOrAbove, hfilter]
 
@@ -578,9 +576,8 @@ theorem RootCountCompatible.card_right_roots_gt_eq_left_roots_gt_add_one_of_left
       (fun x hpx hqx =>
         h.rootCountAbove_bounds_of_nonRoot hp_ne hq_ne hpx hqx) a
   have hQa_P_le : ((Qa : ℤ) - P) ≤ 1 := by simpa [P, Qa] using habove.2
-  have hq_not_mem_b : b ∉ q.roots := by
-    intro hb_mem
-    exact hqb ((Polynomial.mem_roots hq_ne).mp hb_mem)
+  have hq_not_mem_b : b ∉ q.roots :=
+    fun hb_mem => hqb ((Polynomial.mem_roots hq_ne).mp hb_mem)
   have hpart : I + Qb = Qa := by
     simpa [I, Qb, Qa] using
       card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
@@ -626,7 +623,7 @@ theorem exists_threshold_no_mem_Ico_left (s : Multiset ℝ) (x : ℝ) :
   by_cases hSne : S.Nonempty
   · set m : ℝ := S.max' hSne with hm
     have hmS : m ∈ S := Finset.max'_mem S hSne
-    have hmx : m < x := by exact (Finset.mem_filter.mp hmS).2
+    have hmx : m < x := (Finset.mem_filter.mp hmS).2
     refine ⟨(m + x) / 2, by linarith, ?_⟩
     intro r hr
     by_cases hrx : r < x
