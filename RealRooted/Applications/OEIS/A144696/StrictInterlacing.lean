@@ -564,31 +564,4 @@ theorem a144696BernsteinImage_shifted_noCommonRoot
       ¬ (a144696BernsteinImage d (k + 1)).IsRoot r :=
   (a144696RowCertificate_all d).shiftedNoCommon k hk
 
-/-! ## Deprecated aliases -/
-
-@[deprecated a144696Auxiliary_eval_mul_derivative_pos_of_strictInterl
-  (since := "2026-09-26")]
-alias a144696Auxiliary_eval_mul_derivative_pos_of_prec :=
-  a144696Auxiliary_eval_mul_derivative_pos_of_strictInterl
-
-@[deprecated a144696Auxiliary_interlaces_of_strictInterl
-  (since := "2026-09-26")]
-alias a144696Auxiliary_interlaces_of_prec :=
-  a144696Auxiliary_interlaces_of_strictInterl
-
-@[deprecated a144696BernsteinImage_horizontal_strictInterl
-  (since := "2026-09-26")]
-alias a144696BernsteinImage_horizontal_prec :=
-  a144696BernsteinImage_horizontal_strictInterl
-
-@[deprecated a144696BernsteinImage_vertical_strictInterl
-  (since := "2026-09-26")]
-alias a144696BernsteinImage_vertical_prec :=
-  a144696BernsteinImage_vertical_strictInterl
-
-@[deprecated a144696BernsteinImage_shifted_strictInterl
-  (since := "2026-09-26")]
-alias a144696BernsteinImage_shifted_prec :=
-  a144696BernsteinImage_shifted_strictInterl
-
 end RealRooted

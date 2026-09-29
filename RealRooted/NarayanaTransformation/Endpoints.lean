@@ -142,7 +142,4 @@ theorem narayanaTransformPreservesNonposRoots :
   exact (narayanaTransformPreservesPF m
     (IsPFPolynomial.of_realRooted_nonneg hpnn hpsplits)).hasOnlyNonposRoots
 
-@[deprecated strictInterl_narayanaZeroGammaPolynomial_succ (since := "2026-09-26")]
-alias prec_narayanaZeroGammaPolynomial_succ := strictInterl_narayanaZeroGammaPolynomial_succ
-
 end RealRooted

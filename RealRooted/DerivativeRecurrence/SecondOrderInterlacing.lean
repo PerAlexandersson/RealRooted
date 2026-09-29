@@ -487,22 +487,4 @@ theorem strictInterl_and_noCommonRoot_of_unit_affine_unit_lag
   simp only [map_one, map_neg]
   ring_nf
 
-@[deprecated strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
-  (since := "2026-09-18")]
-alias prec_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag :=
-  strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
-
-@[deprecated strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative
-  (since := "2026-09-18")]
-alias prec_and_noCommonRoot_of_affine_lag_second_order_derivative :=
-  strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative
-
-@[deprecated strictInterl_and_noCommonRoot_of_unit_affine_zero_lag (since := "2026-09-18")]
-alias prec_and_noCommonRoot_of_unit_affine_zero_lag :=
-  strictInterl_and_noCommonRoot_of_unit_affine_zero_lag
-
-@[deprecated strictInterl_and_noCommonRoot_of_unit_affine_unit_lag (since := "2026-09-18")]
-alias prec_and_noCommonRoot_of_unit_affine_unit_lag :=
-  strictInterl_and_noCommonRoot_of_unit_affine_unit_lag
-
 end RealRooted

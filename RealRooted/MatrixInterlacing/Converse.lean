@@ -103,9 +103,4 @@ theorem matrix_preserves_interlacing_seq0_necessary_conditions
       matrix_preserves_interlacing_seq0_sparse_pair_interl
         (n := n) G hG_rect hpres0 i₁ i₂ j₁ j₂ hi hj ha hb⟩
 
-@[deprecated matrix_preserves_interlacing_seq0_sparse_pair_interl
-  (since := "2026-09-18")]
-alias matrix_preserves_interlacing_seq0_sparse_pair_prec0 :=
-  matrix_preserves_interlacing_seq0_sparse_pair_interl
-
 end RealRooted

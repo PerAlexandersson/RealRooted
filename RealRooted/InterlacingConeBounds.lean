@@ -67,9 +67,4 @@ theorem interl_weightedSum_cone {n : ℕ} (f : ℕ → ℝ[X]) (lam : ℕ → �
       · exact (hstrictInterl i n hlt le_rfl).toInterl
     exact Interl.C_mul_left_of_nonneg hbase (hlam i)
 
-/-! ## Deprecated interlacing names -/
-
-@[deprecated interl_weightedSum_cone (since := "2026-09-26")]
-alias prec0_weightedSum_cone := interl_weightedSum_cone
-
 end RealRooted

@@ -175,13 +175,4 @@ theorem roots_derivative_endpointProduct_mem_Icc {f : ℝ[X]} {a b : ℝ}
   exact roots_derivative_mem_Icc_of_roots_mem_Icc
     hqf_splits hqf_deg hqf_roots
 
-/-! ## Deprecated aliases -/
-
-@[deprecated strictInterl_endpointDerivative (since := "2026-09-26")]
-alias prec_endpointDerivative := strictInterl_endpointDerivative
-
-@[deprecated strictInterl_derivative_endpointProduct (since := "2026-09-26")]
-alias prec_derivative_endpointProduct := strictInterl_derivative_endpointProduct
-
-
 end RealRooted

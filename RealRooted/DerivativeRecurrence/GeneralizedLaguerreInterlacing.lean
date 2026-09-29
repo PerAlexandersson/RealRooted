@@ -84,11 +84,4 @@ theorem isRealRooted_of_generalized_laguerre_second_derivative_sequence
     ∀ n, P n ≠ 0 ∧ (P n).Splits := fun n =>
   (strictInterl_of_generalized_laguerre_second_derivative hzero hrec hm hc n).1
 
-/-! ## Deprecated aliases -/
-
-@[deprecated strictInterl_of_generalized_laguerre_second_derivative
-  (since := "2026-09-26")]
-alias prec_of_generalized_laguerre_second_derivative :=
-  strictInterl_of_generalized_laguerre_second_derivative
-
 end RealRooted

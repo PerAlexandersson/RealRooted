@@ -291,16 +291,6 @@ theorem binomialSymbolChow_interl_succ (N n : ℕ) :
     (epsilon := 0) (by norm_num) N n
   simpa using h
 
-/-! ## Deprecated interlacing names -/
-
-@[deprecated projectiveRegularizedChow_interl_succ
-  (since := "2026-09-26")]
-alias projectiveRegularizedChow_prec0_succ :=
-  projectiveRegularizedChow_interl_succ
-
-@[deprecated binomialSymbolChow_interl_succ (since := "2026-09-26")]
-alias binomialSymbolChow_prec0_succ := binomialSymbolChow_interl_succ
-
 end
 
 end RealRooted.BrandenVecchi

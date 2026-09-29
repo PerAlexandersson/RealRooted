@@ -465,16 +465,6 @@ theorem weightedNormalizedReversedContributionFamily_sum_splits
   intro d hd
   exact mul_pos (hw d hd) (reversedContribution_scale_pos m ε d)
 
-/-! ## Deprecated aliases -/
-
-@[deprecated normalizedReversedContribution_strictInterl_of_lt
-  (since := "2026-09-26")]
-alias normalizedReversedContribution_prec_of_lt :=
-  normalizedReversedContribution_strictInterl_of_lt
-
-@[deprecated toricContribution_strictInterl_of_lt (since := "2026-09-26")]
-alias toricContribution_prec_of_lt := toricContribution_strictInterl_of_lt
-
 end ToricContribution
 end ParkingFunctions
 end RealRooted

@@ -237,9 +237,6 @@ theorem shiftedRationalRodRow_two_seed_recurrence
   simp [twoSeedRecurrenceCoefficient]
   ring
 
-@[deprecated shiftedRationalRodRows_pf_and_interl (since := "2026-09-18")]
-alias shiftedRationalRodRows_pf_and_prec0 := shiftedRationalRodRows_pf_and_interl
-
 end
 
 end RealRooted.BrandenLeite

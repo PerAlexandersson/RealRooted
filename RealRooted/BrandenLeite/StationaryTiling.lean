@@ -347,12 +347,6 @@ theorem monomerRodRow_roots_neg
   apply hpf.roots_neg_of_coeff_zero_ne
   simp [hr, pow_ne_zero _ hb.ne']
 
-@[deprecated rationalRodRows_pf_and_interl (since := "2026-09-18")]
-alias rationalRodRows_pf_and_prec0 := rationalRodRows_pf_and_interl
-
-@[deprecated monomerRodRows_pf_and_interl (since := "2026-09-18")]
-alias monomerRodRows_pf_and_prec0 := monomerRodRows_pf_and_interl
-
 end
 
 end RealRooted.BrandenLeite

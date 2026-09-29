@@ -104,9 +104,4 @@ theorem hermiteReal_isGeneralizedSturmSeq (n : ℕ) :
 example : StrictInterl (X : ℝ[X]) (X ^ 2 - 1) := by
   simpa using hermiteReal_strictInterl_succ 1
 
-/-! ## Deprecated aliases -/
-
-@[deprecated hermiteReal_strictInterl_succ (since := "2026-09-26")]
-alias hermiteReal_prec_succ := hermiteReal_strictInterl_succ
-
 end RealRooted

@@ -928,9 +928,6 @@ theorem IsReflectionInterlacingSeq.chowRowTransform
   · exact h.chowRowTransform_of_chowS_eq_zero hS
   · exact h.chowRowTransform_of_chowS_ne_zero hS
 
-@[deprecated chowRowTransform_interl_of_lt (since := "2026-09-26")]
-alias chowRowTransform_prec0_of_lt := chowRowTransform_interl_of_lt
-
 end BrandenVecchi
 
 end RealRooted

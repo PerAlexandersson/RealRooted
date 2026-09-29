@@ -226,9 +226,6 @@ theorem interl_refl_of_realRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     Interl p p :=
   Interl.refl fun _ => hp.2
 
-@[deprecated interl_refl_of_realRooted (since := "2026-09-26")]
-alias prec0_refl_of_realRooted := interl_refl_of_realRooted
-
 /-- A positive affine form precedes the `X`-multiple of another one under the
 cross inequality. -/
 theorem interl_affine_to_X_mul_affine
@@ -240,9 +237,6 @@ theorem interl_affine_to_X_mul_affine
     (strictInterl_affine_linear_affine_linear_of_cross hu hU hcross)
     (hasNonnegCoeffs_affine_linear hu.le hv)
     (hasNonnegCoeffs_affine_linear hU.le hV)).toInterl
-
-@[deprecated interl_affine_to_X_mul_affine (since := "2026-09-26")]
-alias prec0_affine_to_X_mul_affine := interl_affine_to_X_mul_affine
 
 def Threshold2x2EntryTuple
     (a b c d A B C D : ℝ[X]) : Prop :=

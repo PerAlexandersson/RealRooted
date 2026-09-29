@@ -367,15 +367,6 @@ lemma prec0_finsetSum_left_of_nonneg {ι : Type}
     Interl h (s.sum f) :=
   Interl.finsetSum_left_of_nonneg h s f hinterl hnn
 
-@[deprecated Interl.finsetSum_pairwise_of_nonneg (since := "2026-09-18")]
-lemma prec0_finsetSum_pairwise_of_nonneg {ι κ : Type}
-    (s : Finset ι) (t : Finset κ) (f : ι → ℝ[X]) (g : κ → ℝ[X])
-    (hinterl : ∀ i ∈ s, ∀ j ∈ t, Interl (f i) (g j))
-    (hfnn : ∀ i ∈ s, HasNonnegCoeffs (f i))
-    (hgnn : ∀ j ∈ t, HasNonnegCoeffs (g j)) :
-    Interl (s.sum f) (t.sum g) :=
-  Interl.finsetSum_pairwise_of_nonneg s t f g hinterl hfnn hgnn
-
 /-- Same-degree shift on the left: if `f ≪ g`, both have positive leading
 coefficient, and all roots lie at most `r`, then `g ≪ g + (X - C r) * f`. -/
 theorem StrictInterl.add_of_sameDegree_shift_left_of_roots_le

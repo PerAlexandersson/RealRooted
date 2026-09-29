@@ -145,9 +145,4 @@ theorem strictInterl_of_compatible_and_X_mul_left
   exact ⟨by simpa [hrewrite] using hne,
     by simpa [hrewrite] using hcompat.splits_add hne⟩
 
-@[deprecated strictInterl_of_compatible_and_X_mul_left
-  (since := "2026-09-18")]
-alias prec_of_compatible_and_X_mul_left :=
-  strictInterl_of_compatible_and_X_mul_left
-
 end RealRooted

@@ -551,11 +551,6 @@ lemma Interl.comp_neg_X_of_natDegree_eq {f g : ℝ[X]} (h : Interl f g)
 
 /- Deprecated compatibility alias for
 `StrictInterl.comp_one_sub_X_of_natDegree_eq`. -/
-@[deprecated StrictInterl.comp_one_sub_X_of_natDegree_eq (since := "2026-09-17")]
-lemma prec_comp_one_sub_X_of_sameDegree {f g : ℝ[X]}
-    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
-    StrictInterl (g.comp (1 - X)) (f.comp (1 - X)) :=
-  h.comp_one_sub_X_of_natDegree_eq hdeg
 
 /- Deprecated compatibility alias for `StrictInterl.comp_X_add_C`. -/
 @[deprecated StrictInterl.comp_X_add_C (since := "2026-09-17")]
@@ -564,24 +559,10 @@ lemma prec_comp_X_add_C {f g : ℝ[X]} (h : StrictInterl f g) (r : ℝ) :
   h.comp_X_add_C r
 
 /- Deprecated compatibility alias for `StrictInterl.comp_C_mul_X`. -/
-@[deprecated StrictInterl.comp_C_mul_X (since := "2026-09-17")]
-lemma prec_comp_C_mul_X {f g : ℝ[X]} (h : StrictInterl f g)
-    {a : ℝ} (ha : 0 < a) :
-    StrictInterl (f.comp (C a * X)) (g.comp (C a * X)) :=
-  h.comp_C_mul_X ha
 
 /- Deprecated compatibility alias for `StrictInterl.comp_C_mul_X_iff`. -/
-@[deprecated StrictInterl.comp_C_mul_X_iff (since := "2026-09-17")]
-lemma prec_comp_C_mul_X_iff {f g : ℝ[X]} {a : ℝ} (ha : 0 < a) :
-    StrictInterl (f.comp (C a * X)) (g.comp (C a * X)) ↔ StrictInterl f g :=
-  StrictInterl.comp_C_mul_X_iff ha
 
 /- Deprecated compatibility alias for `StrictInterl.comp_neg_X_of_natDegree_eq`. -/
-@[deprecated StrictInterl.comp_neg_X_of_natDegree_eq (since := "2026-09-17")]
-lemma prec_comp_neg_X_of_sameDegree {f g : ℝ[X]}
-    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
-    StrictInterl (g.comp (-X)) (f.comp (-X)) :=
-  h.comp_neg_X_of_natDegree_eq hdeg
 
 /- Deprecated compatibility alias for `StrictInterl.comp_X_add_C_iff`. -/
 @[deprecated StrictInterl.comp_X_add_C_iff (since := "2026-09-17")]
@@ -615,11 +596,6 @@ lemma interlaces_C_linear {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0)
   simpa using hprec.toInterlaces hdeg
 
 /- Deprecated compatibility alias for `Interl.C_mul_right_of_nonneg`. -/
-@[deprecated Interl.C_mul_right_of_nonneg (since := "2026-09-17")]
-lemma prec0_C_mul_right_of_nonneg {f g : ℝ[X]}
-    (h : Interl f g) {a : ℝ} (ha : 0 ≤ a) :
-    Interl f (C a * g) :=
-  h.C_mul_right_of_nonneg ha
 
 /- Deprecated compatibility alias for `StrictInterl.C_mul_self`. -/
 @[deprecated StrictInterl.C_mul_self (since := "2026-09-17")]

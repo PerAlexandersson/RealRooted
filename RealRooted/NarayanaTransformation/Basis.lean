@@ -434,8 +434,4 @@ theorem basisTransform_risingFactorial_eq_quadratic_of_natDegree_eq_two
   rw [map_add, map_mul]
   ring_nf
 
-
-@[deprecated risingFactorialStep_pf_shiftStrictInterl (since := "2026-09-26")]
-alias risingFactorialStep_pf_shiftPrec := risingFactorialStep_pf_shiftStrictInterl
-
 end RealRooted

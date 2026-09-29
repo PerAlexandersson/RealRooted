@@ -130,12 +130,6 @@ theorem normalizedRPolynomialFamily_weighted_sum_splits
   exact (isRealRooted_sum_of_commonLeftInterleaver hcommon hpositive
     (by simp [fs, weightedNormalizedRPolynomialFamily])).2
 
-/-! ## Deprecated aliases -/
-
-@[deprecated normalizedRPolynomial_strictInterl_of_lt
-  (since := "2026-09-26")]
-alias normalizedRPolynomial_prec_of_lt := normalizedRPolynomial_strictInterl_of_lt
-
 end ToricContribution
 end ParkingFunctions
 end RealRooted

@@ -207,18 +207,6 @@ theorem diagonal_normalizedFiberPolynomial_hasSimpleRoots (n : Nat) :
   rw [diagonal_normalizedFiberPolynomial_eq_A144438]
   exact A144438_hasSimpleRoots n
 
-/-! ## Deprecated aliases -/
-
-@[deprecated diagonal_admissibleCodePolynomial_strictInterl
-  (since := "2026-09-26")]
-alias diagonal_admissibleCodePolynomial_prec :=
-  diagonal_admissibleCodePolynomial_strictInterl
-
-@[deprecated diagonal_normalizedFiberPolynomial_strictInterl
-  (since := "2026-09-26")]
-alias diagonal_normalizedFiberPolynomial_prec :=
-  diagonal_normalizedFiberPolynomial_strictInterl
-
 end
 
 end RealRooted.Applications.OEIS

@@ -30,9 +30,6 @@ theorem interl_fPolynomial {d : ℕ} {p q : ℝ[X]}
   · simp [interl_zero_right]
   · exact (strictInterlFPolynomialTransport hpdeg hqdeg hpnn hqnn).2 hpq |>.toInterl
 
-@[deprecated interl_fPolynomial (since := "2026-09-18")]
-alias prec0_fPolynomial := interl_fPolynomial
-
 theorem isInterlacingSeq0NonnegRealRooted_map_fPolynomial
     {d : ℕ} {fs : List ℝ[X]}
     (hfs : IsInterlacingSeq0NonnegRealRooted fs)
@@ -401,9 +398,6 @@ theorem interl_chainPolynomial_succ
   rw [chainPolynomial_succ_eq_resolution_sum resolution]
   simpa [S, F] using hstep
 
-@[deprecated interl_chainPolynomial_succ (since := "2026-09-18")]
-alias prec0_chainPolynomial_succ := interl_chainPolynomial_succ
-
 /-- Strict form of Theorem 3.7 when both adjacent chain polynomials are
 nonzero. -/
 theorem strictInterl_chainPolynomial_succ_of_ne
@@ -411,8 +405,5 @@ theorem strictInterl_chainPolynomial_succ_of_ne
     (hn : chainPolynomial R n ≠ 0) (hsucc : chainPolynomial R (n + 1) ≠ 0) :
     StrictInterl (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
   (interl_chainPolynomial_succ resolution n).toStrictInterl_of_ne hn hsucc
-
-@[deprecated strictInterl_chainPolynomial_succ_of_ne (since := "2026-09-18")]
-alias prec_chainPolynomial_succ_of_ne := strictInterl_chainPolynomial_succ_of_ne
 
 end RealRooted.BrandenLeite

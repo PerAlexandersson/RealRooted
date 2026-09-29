@@ -313,23 +313,6 @@ theorem peakValueWeightedDiagonal_consecutive_strictInterl
   exact peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks n hn wt hwt
     (peakValuePolynomial_mvRealStable (n + 1))
 
-/-! ## Deprecated aliases -/
-
-@[deprecated peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
-  (since := "2026-09-26")]
-alias peakValueWeightedDiagonal_consecutive_prec_of_stable :=
-  peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
-
-@[deprecated peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks
-  (since := "2026-09-26")]
-alias peakValueWeightedDiagonal_consecutive_prec_of_stable_all_ranks :=
-  peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks
-
-@[deprecated peakValueWeightedDiagonal_consecutive_strictInterl
-  (since := "2026-09-26")]
-alias peakValueWeightedDiagonal_consecutive_prec :=
-  peakValueWeightedDiagonal_consecutive_strictInterl
-
 end
 
 end RealRooted

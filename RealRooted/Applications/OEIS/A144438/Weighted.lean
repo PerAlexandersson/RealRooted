@@ -239,9 +239,4 @@ theorem weightedDecoEulerian_isSturmSeq {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
         simpa only [one_mul, one_add_one_eq_two] using
           weightedDecoEulerian_affine_recurrence w m) n
 
-/-! ## Deprecated aliases -/
-
-@[deprecated weightedDecoEulerian_strictInterl (since := "2026-09-26")]
-alias weightedDecoEulerian_prec := weightedDecoEulerian_strictInterl
-
 end RealRooted.Applications.OEIS

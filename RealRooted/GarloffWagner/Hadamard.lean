@@ -296,46 +296,9 @@ theorem gwHadamardProductNonnegInterl {f g p q : ℝ[X]}
 
 namespace IsGWKreinSummand
 
-@[deprecated gwSchurProduct_interl (since := "2026-09-18")]
-alias gwSchurProduct_prec0 := gwSchurProduct_interl
-
-@[deprecated gwSchurProduct_interl_of_doubleDeleted (since := "2026-09-18")]
-alias gwSchurProduct_prec0_of_doubleDeleted :=
-  gwSchurProduct_interl_of_doubleDeleted
-
-@[deprecated gwHadamardProduct_interl (since := "2026-09-18")]
-alias gwHadamardProduct_prec0 := gwHadamardProduct_interl
-
-@[deprecated gwHadamardProduct_interl_of_doubleDeleted (since := "2026-09-18")]
-alias gwHadamardProduct_prec0_of_doubleDeleted :=
-  gwHadamardProduct_interl_of_doubleDeleted
-
 end IsGWKreinSummand
-
-@[deprecated gwSchurProduct_firstDoubleDeletedTerm_interl
-  (since := "2026-09-18")]
-alias gwSchurProduct_firstDoubleDeletedTerm_prec0 :=
-  gwSchurProduct_firstDoubleDeletedTerm_interl
-
-@[deprecated gwSchurProduct_secondDoubleDeletedTerm_interl
-  (since := "2026-09-18")]
-alias gwSchurProduct_secondDoubleDeletedTerm_prec0 :=
-  gwSchurProduct_secondDoubleDeletedTerm_interl
-
-@[deprecated hadamardProduct_interl_of_kreinSummandExpansion_left
-  (since := "2026-09-18")]
-alias hadamardProduct_prec0_of_kreinSummandExpansion_left :=
-  hadamardProduct_interl_of_kreinSummandExpansion_left
-
-@[deprecated hadamardProduct_interl_of_kreinSummandExpansions
-  (since := "2026-09-18")]
-alias hadamardProduct_prec0_of_kreinSummandExpansions :=
-  hadamardProduct_interl_of_kreinSummandExpansions
 
 @[deprecated gwHadamardProductInterl_of_strictInterl (since := "2026-09-18")]
 alias gwHadamardProductPrec0_of_prec := gwHadamardProductInterl_of_strictInterl
-
-@[deprecated gwHadamardProductNonnegInterl (since := "2026-09-18")]
-alias gwHadamardProductNonnegPrec := gwHadamardProductNonnegInterl
 
 end RealRooted

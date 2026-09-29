@@ -389,25 +389,6 @@ theorem chowPolynomial_resolvingRowCombination_endpoint_strictInterl_of_ne
   exact ⟨hinterl.1.toStrictInterl_of_ne hchow hcombination,
     hinterl.2.toStrictInterl_of_ne hcombination hderangement⟩
 
-@[deprecated resolvedChowCombination_endpoint_interl (since := "2026-09-26")]
-alias resolvedChowCombination_endpoint_prec0 :=
-  resolvedChowCombination_endpoint_interl
-
-@[deprecated resolvedChowCombination_endpoint_strictInterl_of_ne
-  (since := "2026-09-26")]
-alias resolvedChowCombination_endpoint_prec_of_ne :=
-  resolvedChowCombination_endpoint_strictInterl_of_ne
-
-@[deprecated chowPolynomial_resolvingRowCombination_endpoint_interl
-  (since := "2026-09-26")]
-alias chowPolynomial_resolvingRowCombination_endpoint_prec0 :=
-  chowPolynomial_resolvingRowCombination_endpoint_interl
-
-@[deprecated chowPolynomial_resolvingRowCombination_endpoint_strictInterl_of_ne
-  (since := "2026-09-26")]
-alias chowPolynomial_resolvingRowCombination_endpoint_prec_of_ne :=
-  chowPolynomial_resolvingRowCombination_endpoint_strictInterl_of_ne
-
 end
 
 end RealRooted.BrandenVecchi

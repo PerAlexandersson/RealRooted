@@ -143,9 +143,6 @@ theorem gammaSymbol_even_strictInterl (m : ℕ) (hm : 0 < m) :
     · positivity
   · positivity
 
-@[deprecated gammaSymbol_even_strictInterl (since := "2026-09-18")]
-alias gammaSymbol_even_prec := gammaSymbol_even_strictInterl
-
 /-- For odd rank, the two roots of the first residual factor are displayed
 explicitly by its positive scalar factorization. -/
 theorem gammaSymbolP_odd (m : ℕ) :
@@ -222,9 +219,6 @@ theorem gammaSymbol_odd_strictInterl (m : ℕ) (hm : 0 < m) :
         (by norm_num) (gammaSymbol_odd_root_order m hm).1.le
         (gammaSymbol_odd_root_order m hm).2.le).toStrictInterl
   · positivity
-
-@[deprecated gammaSymbol_odd_strictInterl (since := "2026-09-18")]
-alias gammaSymbol_odd_prec := gammaSymbol_odd_strictInterl
 
 private theorem gammaSymbolP_even_pos (m : ℕ) :
     HasPosLeadingCoeff (gammaSymbolP (2 * m) m) := by

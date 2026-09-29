@@ -353,14 +353,4 @@ theorem decoratedCycleEulerian_one_eq_decoEulerian :
       rw [normalizedDecoratedCycleEulerian_recurrence, decoEulerian_recurrence, ih0, ih1]
       simp
 
-/-! ## Deprecated aliases -/
-
-@[deprecated normalizedDecoratedCycleEulerian_strictInterl_and_noCommonRoot
-  (since := "2026-09-26")]
-alias normalizedDecoratedCycleEulerian_prec_and_noCommonRoot :=
-  normalizedDecoratedCycleEulerian_strictInterl_and_noCommonRoot
-
-@[deprecated decoratedCycleEulerian_strictInterl (since := "2026-09-26")]
-alias decoratedCycleEulerian_prec := decoratedCycleEulerian_strictInterl
-
 end RealRooted.Applications.OEIS

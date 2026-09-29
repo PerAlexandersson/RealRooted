@@ -380,17 +380,6 @@ theorem IsStrictlyHurwitzStable.splits_parts_of_oddShape
     ⟨Polynomial.Splits.of_hurwitzRotatedOddPart hstrictInterl.2.1.2,
       Polynomial.Splits.of_hurwitzRotatedEvenPart hstrictInterl.1.2⟩
 
-@[deprecated IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_posLeading
-  (since := "2026-09-18")]
-alias IsStrictlyHurwitzStable.prec_rotatedParts_of_posLeading :=
-  IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_posLeading
-
-@[deprecated
-  IsStrictlyHurwitzStable.strictInterl_rotatedParts_swapped_of_posLeading
-  (since := "2026-09-18")]
-alias IsStrictlyHurwitzStable.prec_rotatedParts_swapped_of_posLeading :=
-  IsStrictlyHurwitzStable.strictInterl_rotatedParts_swapped_of_posLeading
-
 @[deprecated IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_evenShape
   (since := "2026-09-18")]
 alias IsStrictlyHurwitzStable.prec_rotatedParts_of_evenShape :=

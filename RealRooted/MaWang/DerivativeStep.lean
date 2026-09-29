@@ -190,11 +190,6 @@ alias prec_mw_derivative_of_nonpos := strictInterl_mw_derivative_of_nonpos
 alias prec_mw_derivative_of_nonpos_of_recurrence :=
   strictInterl_mw_derivative_of_nonpos_of_recurrence
 
-@[deprecated strictInterl_mw_derivative_X_mul_of_nonneg_on_roots
-  (since := "2026-09-26")]
-alias prec_mw_derivative_X_mul_of_nonneg_on_roots :=
-  strictInterl_mw_derivative_X_mul_of_nonneg_on_roots
-
 @[deprecated strictInterl_mw_derivative_C_mul_X_mul_of_nonneg_on_roots
   (since := "2026-09-26")]
 alias prec_mw_derivative_C_mul_X_mul_of_nonneg_on_roots :=
@@ -209,16 +204,5 @@ alias prec_mw_derivative_X_mul_one_add_X_of_roots_in_Icc :=
   (since := "2026-09-26")]
 alias prec_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one :=
   strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
-
-@[deprecated strictInterl_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
-  (since := "2026-09-26")]
-alias prec_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval :=
-  strictInterl_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
-
-@[deprecated strictInterl_mw_derivative_neg_const (since := "2026-09-26")]
-alias prec_mw_derivative_neg_const := strictInterl_mw_derivative_neg_const
-
-@[deprecated strictInterl_mw_derivative_neg_C_mul_X_sq (since := "2026-09-26")]
-alias prec_mw_derivative_neg_C_mul_X_sq := strictInterl_mw_derivative_neg_C_mul_X_sq
 
 end RealRooted

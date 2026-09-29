@@ -514,9 +514,6 @@ theorem finiteSignedWordEnumerator_interl_succ
     ← finiteSupersymmetricChow_eq_finiteSignedWordEnumerator]
   exact finiteSupersymmetricChow_interl_succ hxs hys n
 
-@[deprecated finiteSignedWordEnumerator_interl_succ (since := "2026-09-26")]
-alias finiteSignedWordEnumerator_prec0_succ := finiteSignedWordEnumerator_interl_succ
-
 end
 
 end RealRooted.BrandenVecchi

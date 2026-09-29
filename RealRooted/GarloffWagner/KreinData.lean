@@ -577,11 +577,6 @@ theorem eq_zero_of_dvd_of_natDegree_lt {g h : ℝ[X]}
     rw [natDegree_mul hg0 hr0] at hlt
     lia
 
-@[deprecated rootMultiplicity_sub_one_le_of_strictInterl_right
-  (since := "2026-09-18")]
-alias rootMultiplicity_sub_one_le_of_prec_right :=
-  rootMultiplicity_sub_one_le_of_strictInterl_right
-
 @[deprecated exists_strictInterlLeft_factor_of_right_isRoot (since := "2026-09-18")]
 alias exists_precLeft_factor_of_right_isRoot :=
   exists_strictInterlLeft_factor_of_right_isRoot

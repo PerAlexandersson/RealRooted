@@ -289,14 +289,6 @@ theorem A144438_hasSimpleRoots (n : ℕ) : HasSimpleRoots (A144438 n) :=
 
 /-! ## Deprecated aliases -/
 
-@[deprecated decoEulerian_strictInterl_and_noCommonRoot
-  (since := "2026-09-26")]
-alias decoEulerian_prec_and_noCommonRoot :=
-  decoEulerian_strictInterl_and_noCommonRoot
-
-@[deprecated decoEulerian_strictInterl (since := "2026-09-26")]
-alias decoEulerian_prec := decoEulerian_strictInterl
-
 @[deprecated A144438_strictInterl (since := "2026-09-26")]
 alias A144438_prec := A144438_strictInterl
 
