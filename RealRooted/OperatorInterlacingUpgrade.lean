@@ -1,4 +1,5 @@
 import RealRooted.GarloffWagner.KreinExpansion
+import RealRooted.QuadraticInterlacingClosure
 
 /-!
 # Oriented interlacing upgrades for linear maps
@@ -74,10 +75,11 @@ theorem IsGWKreinSummand.isPFPolynomial {g q : ℝ[X]}
 /-- The monomial chain extends through every PF factor once the quadratic
 closure step is available.
 
-The last hypothesis is the sharp analytic input: a splitting quadratic pencil
-through three consecutive interlacing polynomials advances the two adjacent
-affine combinations.  All remaining work in this theorem is algebraic PF
-factor induction. -/
+The last hypothesis is the sharp analytic input: the parameter tangent of a
+splitting quadratic pencil follows that pencil in the oriented interlacing
+order.  `strictInterl_quadraticInterlacingRight_of_tangent` then advances the
+two adjacent affine combinations.  All remaining work in this theorem is
+algebraic PF factor induction. -/
 theorem preservesPFShiftInterlacingOnDegree_of_monomials
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D : ℕ}
     (hTnn : ∀ ⦃p : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs (T p))
@@ -85,13 +87,14 @@ theorem preservesPFShiftInterlacingOnDegree_of_monomials
       p.natDegree ≤ D → T p ≠ 0 ∧ (T p).Splits)
     (hmono : ∀ m : ℕ, m + 1 ≤ D →
       StrictInterl (T (X ^ m)) (T (X ^ (m + 1))))
-    (hquad : ∀ ⦃F G H : ℝ[X]⦄,
+    (hquadTangent : ∀ ⦃F G H : ℝ[X]⦄,
       HasNonnegCoeffs F → HasNonnegCoeffs G → HasNonnegCoeffs H →
       StrictInterl F G → StrictInterl G H →
       (∀ b : ℝ, 0 ≤ b →
         (H + C (2 * b) * G + C (b ^ 2) * F).Splits) →
       ∀ a : ℝ, 0 ≤ a →
-        StrictInterl (G + C a * F) (H + C a * G)) :
+        StrictInterl (quadraticInterlacingTangent F G a)
+          (quadraticInterlacingPencil F G H a)) :
     PreservesPFShiftInterlacingOnDegree T D := by
   let P : ℕ → Prop := fun n =>
     ∀ ⦃p : ℝ[X]⦄ ⦃m : ℕ⦄,
@@ -237,8 +240,30 @@ theorem preservesPFShiftInterlacingOnDegree_of_monomials
                 T.map_smul, T.map_smul, Polynomial.smul_eq_C_mul,
                 Polynomial.smul_eq_C_mul]
             rwa [← hmap]
-          have hstep := hquad hFnn hGnn hHnn hFG' hGH' hfamily
-              (-u) (neg_nonneg.mpr hu)
+          have ha : 0 ≤ -u := neg_nonneg.mpr hu
+          have hAQ := hquadTangent hFnn hGnn hHnn hFG' hGH' hfamily (-u) ha
+          have hAnn : HasNonnegCoeffs
+              (quadraticInterlacingTangent F G (-u)) :=
+            hGnn.add (nonnegCoeffs_C_mul ha hFnn)
+          have hBnn : HasNonnegCoeffs
+              (quadraticInterlacingRight G H (-u)) :=
+            hHnn.add (nonnegCoeffs_C_mul ha hGnn)
+          have hQnn : HasNonnegCoeffs
+              (quadraticInterlacingPencil F G H (-u)) := by
+            exact (hHnn.add (nonnegCoeffs_C_mul (mul_nonneg (by norm_num) ha) hGnn)).add
+              (nonnegCoeffs_C_mul (sq_nonneg (-u)) hFnn)
+          have hB0 : quadraticInterlacingRight G H (-u) ≠ 0 := by
+            have hsum : C (-u) * G + H ≠ 0 :=
+              add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
+                (nonnegCoeffs_C_mul ha hGnn) hHnn hGH'.2.1.1
+            simpa [quadraticInterlacingRight, add_comm] using hsum
+          have hstep : StrictInterl
+              (quadraticInterlacingTangent F G (-u))
+              (quadraticInterlacingRight G H (-u)) :=
+            strictInterl_quadraticInterlacingRight_of_tangent
+              (hAnn.pos_leadingCoeff hAQ.1.1)
+              (hBnn.pos_leadingCoeff hB0)
+              (hQnn.pos_leadingCoeff hAQ.2.1.1) hAQ
           have hmap_factor : ∀ j : ℕ,
               T (X ^ j * p) =
                 T (X ^ (j + 1) * q) + C (-u) * T (X ^ j * q) := by
@@ -250,7 +275,8 @@ theorem preservesPFShiftInterlacingOnDegree_of_monomials
               ring
             rw [hpoly, T.map_add, T.map_smul, Polynomial.smul_eq_C_mul]
           rw [hmap_factor m, hmap_factor (m + 1)]
-          simpa only [F, G, H, show (m + 1) + 1 = m + 2 by lia] using hstep
+          simpa only [quadraticInterlacingTangent, quadraticInterlacingRight,
+            F, G, H, show (m + 1) + 1 = m + 2 by lia] using hstep
   intro p m hp hp0 hbound
   exact hP p.natDegree hp hp0 rfl hbound
 
