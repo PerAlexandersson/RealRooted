@@ -85,7 +85,7 @@ theorem a144696_residue_eval_gap {d k : ℕ} (hk : k < d) :
   have hfactor : ((d - k : ℕ) : ℝ) ≤ d + 1 := by
     exact_mod_cast (show d - k ≤ d + 1 by lia)
   have hmul := mul_le_mul_of_nonneg_right hfactor hprevEval.le
-  nlinarith
+  linarith
 
 /-- On an internal edge, the factorial endpoint gap gives the auxiliary the
 same strict sign as the derivative at every current-row root. -/

@@ -286,7 +286,7 @@ theorem
         (decoBottomTotalWronskianCompanion 1) 1) := by
   rw [coordinateWronskian_decoBottomTotalCompanionCore_companion_one]
   simp
-  nlinarith [sq_nonneg (16 * x 2 + 21)]
+  linarith [sq_nonneg (16 * x 2 + 21)]
 
 /-- The coordinate-`1` zero-section of the companion is the zero-section of
 the latest bottom total. -/

@@ -218,6 +218,6 @@ theorem a144696_eval_gap_pos
       (a144696BernsteinImage d (k + 1)).eval 1 := by
   have hsum := a144696_weighted_sum_pos (d := d) (k := k) hk
   have heq := a144696_eval_difference_eq_sum (d := d) (k := k) hk
-  nlinarith
+  linarith
 
 end RealRooted
