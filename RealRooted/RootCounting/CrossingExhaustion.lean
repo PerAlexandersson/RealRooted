@@ -14,6 +14,21 @@ of its full multiplicity.
 
 namespace RealRooted
 
+/-- Counting multiplicities over the distinct elements satisfying a predicate
+recovers the predicate count in the original multiset. -/
+theorem sum_count_filter_toFinset_eq_countP
+    {α : Type*} [DecidableEq α] (s : Multiset α) (p : α → Prop)
+    [DecidablePred p] :
+    ∑ a ∈ s.toFinset.filter p, s.count a = s.countP p := by
+  rw [Multiset.countP_eq_card_filter,
+    ← Multiset.toFinset_sum_count_eq (s.filter p)]
+  refine Finset.sum_congr ?_ ?_
+  · ext a
+    simp
+  · intro a ha
+    rw [Multiset.count_filter_of_pos]
+    exact (by simpa using ha : a ∈ s ∧ p a).2
+
 /-- If all chamber-count drops are bounded by their crossing multiplicities,
 and the endpoint drop exhausts the total multiplicity budget, then every
 crossing is a downward jump of its full multiplicity. -/

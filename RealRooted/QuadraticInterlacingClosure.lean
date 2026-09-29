@@ -404,6 +404,94 @@ theorem contDiff_quadraticInterlacingPencil_eval_prod
     ((contDiff_fst.pow 2).mul
       ((Polynomial.contDiff_aeval F ∞).comp contDiff_snd))
 
+private theorem quadratic_toSpanSingleton_isInvertible {c : ℝ} (hc : c ≠ 0) :
+    (ContinuousLinearMap.toSpanSingleton ℝ c).IsInvertible := by
+  let e : ℝ ≃L[ℝ] ℝ :=
+    ContinuousLinearEquiv.smulLeft (Units.mk0 c hc)
+  refine ⟨e, ?_⟩
+  ext
+  simp [e, ContinuousLinearMap.toSpanSingleton_apply, mul_comm]
+
+private theorem quadratic_inverse_toSpanSingleton_apply
+    {c y : ℝ} (hc : c ≠ 0) :
+    (ContinuousLinearMap.toSpanSingleton ℝ c).inverse y = y / c := by
+  have hinv := quadratic_toSpanSingleton_isInvertible hc
+  have h := hinv.self_apply_inverse y
+  simp only [ContinuousLinearMap.toSpanSingleton_apply, smul_eq_mul] at h
+  exact (eq_div_iff hc).2 h
+
+/-- A simple root of the quadratic pencil admits a local differentiable root
+branch. Its velocity is the implicit quotient of the parameter tangent by the
+spatial derivative. -/
+theorem exists_hasDerivAt_quadraticInterlacingPencil_root
+    {F G H : ℝ[X]} {a r : ℝ}
+    (hr : (quadraticInterlacingPencil F G H a).IsRoot r)
+    (hregular :
+      (quadraticInterlacingPencil F G H a).derivative.eval r ≠ 0) :
+    ∃ ρ : ℝ → ℝ,
+      HasDerivAt ρ
+        (-2 * (quadraticInterlacingTangent F G a).eval r /
+          (quadraticInterlacingPencil F G H a).derivative.eval r) a ∧
+        ρ a = r ∧
+          ∀ᶠ b in 𝓝 a,
+            (quadraticInterlacingPencil F G H b).IsRoot (ρ b) := by
+  let p : ℝ → ℝ[X] := fun b => quadraticInterlacingPencil F G H b
+  let Φ : ℝ × ℝ → ℝ := fun z => (p z.1).eval z.2
+  have hcont : ContDiffAt ℝ ∞ Φ (a, r) := by
+    exact (contDiff_quadraticInterlacingPencil_eval_prod F G H).contDiffAt
+  let A : ℝ →L[ℝ] ℝ :=
+    fderiv ℝ Φ (a, r) ∘L ContinuousLinearMap.inr ℝ ℝ ℝ
+  let B : ℝ →L[ℝ] ℝ :=
+    fderiv ℝ Φ (a, r) ∘L ContinuousLinearMap.inl ℝ ℝ ℝ
+  have hfull : HasFDerivAt Φ (fderiv ℝ Φ (a, r)) (a, r) :=
+    (hcont.differentiableAt (by simp)).hasFDerivAt
+  have hA : A = ContinuousLinearMap.toSpanSingleton ℝ
+      ((p a).derivative.eval r) := by
+    apply HasFDerivAt.unique
+    · exact hfull.comp r (hasFDerivAt_prodMk_right a r)
+    · exact (p a).hasFDerivAt r
+  have hparam : HasDerivAt (fun b => (p b).eval r)
+      (2 * (quadraticInterlacingTangent F G a).eval r) a := by
+    simp only [p, quadraticInterlacingPencil, quadraticInterlacingTangent,
+      eval_add, eval_mul, eval_C]
+    convert (((hasDerivAt_const a (H.eval r)).add
+      ((hasDerivAt_id a).const_mul (2 * G.eval r))).add
+      ((hasDerivAt_pow 2 a).mul_const (F.eval r))) using 1
+    · funext b
+      dsimp
+      ring
+    · ring
+  have hB : B = ContinuousLinearMap.toSpanSingleton ℝ
+      (2 * (quadraticInterlacingTangent F G a).eval r) := by
+    apply HasFDerivAt.unique
+    · exact hfull.comp a (hasFDerivAt_prodMk_left a r)
+    · exact hparam.hasFDerivAt
+  have hAinv : A.IsInvertible := by
+    rw [hA]
+    exact quadratic_toSpanSingleton_isInvertible hregular
+  let ρ : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
+  have hρbase : ρ a = r :=
+    hcont.implicitFunction_apply_self (by simp) hAinv
+  have hρroot : ∀ᶠ b in 𝓝 a, (p b).IsRoot (ρ b) := by
+    have heq := hcont.eventually_apply_implicitFunction (by simp) hAinv
+    filter_upwards [heq] with b hb
+    rw [Polynomial.IsRoot.def]
+    change Φ (b, ρ b) = 0
+    simpa only [Φ, Polynomial.IsRoot.def] using hb.trans (by simpa [p] using hr)
+  have hρstrict := hcont.hasStrictFDerivAt_implicitFunction (by simp) hAinv
+  have hρderiv : HasDerivAt ρ ((-(A.inverse ∘L B)) 1) a := by
+    simpa only [ρ, A, B] using hρstrict.hasFDerivAt.hasDerivAt
+  have hquotient : (-(A.inverse ∘L B)) 1 =
+      -2 * (quadraticInterlacingTangent F G a).eval r /
+        (quadraticInterlacingPencil F G H a).derivative.eval r := by
+    rw [neg_apply, ContinuousLinearMap.comp_apply, hB,
+      ContinuousLinearMap.toSpanSingleton_apply, one_smul, hA]
+    rw [quadratic_inverse_toSpanSingleton_apply hregular]
+    ring
+  refine ⟨ρ, ?_, hρbase, ?_⟩
+  · rwa [hquotient] at hρderiv
+  · simpa only [p] using hρroot
+
 /-- Local multiplicity preservation for a simple member of a quadratic
 interlacing pencil. -/
 theorem exists_eps_forall_quadraticInterlacingPencil_root_count_le_near
