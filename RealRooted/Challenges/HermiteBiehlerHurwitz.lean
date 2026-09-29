@@ -214,7 +214,7 @@ theorem isHurwitzStable_one_add_X_sq :
       Complex.zero_re, Complex.one_im, Complex.add_im, Complex.mul_im,
       Complex.zero_im] at hre him
     have hzim : z.im = 0 := by
-      have hprod : z.re * z.im = 0 := by nlinarith
+      have hprod : z.re * z.im = 0 := by linarith
       exact (mul_eq_zero.mp hprod).resolve_left hz.ne'
     rw [hzim] at hre
     nlinarith
