@@ -89,9 +89,8 @@ def commonClosedNeighborSetOn {V : Type u} [DecidableEq V]
 theorem commonClosedNeighborSetOn_subset {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
     (S : Finset V) (u v : V) :
-    commonClosedNeighborSetOn G S u v ⊆ S := by
-  intro w hw
-  exact (Finset.mem_filter.mp (Finset.mem_inter.mp hw).1).1
+    commonClosedNeighborSetOn G S u v ⊆ S :=
+  fun w hw => (Finset.mem_filter.mp (Finset.mem_inter.mp hw).1).1
 
 /-- Neighbors of a vertex in a finite support, excluding a clique. -/
 def neighborOutsideCliqueOn {V : Type u} [DecidableEq V]
@@ -131,8 +130,8 @@ theorem ClawFree.neighborSetOn_sdiff_commonClosedNeighbor_simplicial
     intro huH
     have huH' := Finset.mem_sdiff.mp huH
     have huS : u ∈ S := huH'.1
-    have huCommon : u ∈ commonClosedNeighborSetOn G S u v := by
-      exact Finset.mem_inter.mpr
+    have huCommon : u ∈ commonClosedNeighborSetOn G S u v :=
+      Finset.mem_inter.mpr
         ⟨Finset.mem_filter.mpr ⟨huS, Or.inl rfl⟩,
           Finset.mem_filter.mpr ⟨huS, Or.inr huv.symm⟩⟩
     simp_all
@@ -144,28 +143,22 @@ theorem ClawFree.neighborSetOn_sdiff_commonClosedNeighbor_simplicial
     have hyK := Finset.mem_filter.mp hy
     have hxH' := Finset.mem_sdiff.mp hxK.1
     have hyH' := Finset.mem_sdiff.mp hyK.1
-    have hxClosedU : x ∈ closedNeighborSetOn G S u := by
-      exact Finset.mem_filter.mpr ⟨hxH'.1, Or.inr hxK.2⟩
-    have hyClosedU : y ∈ closedNeighborSetOn G S u := by
-      exact Finset.mem_filter.mpr ⟨hyH'.1, Or.inr hyK.2⟩
-    have hx_not_closed_v : x ∉ closedNeighborSetOn G S v := by
-      intro hxClosedV
-      exact hxH'.2 (Finset.mem_inter.mpr ⟨hxClosedU, hxClosedV⟩)
-    have hy_not_closed_v : y ∉ closedNeighborSetOn G S v := by
-      intro hyClosedV
-      exact hyH'.2 (Finset.mem_inter.mpr ⟨hyClosedU, hyClosedV⟩)
-    have hvx_not : ¬ G.Adj v x := by
-      intro hvx
-      exact hx_not_closed_v (Finset.mem_filter.mpr ⟨hxH'.1, Or.inr hvx⟩)
-    have hvy_not : ¬ G.Adj v y := by
-      intro hvy
-      exact hy_not_closed_v (Finset.mem_filter.mpr ⟨hyH'.1, Or.inr hvy⟩)
-    have hvx_ne : v ≠ x := by
-      intro hvx
-      exact hx_not_closed_v (Finset.mem_filter.mpr ⟨hxH'.1, Or.inl hvx.symm⟩)
-    have hvy_ne : v ≠ y := by
-      intro hvy
-      exact hy_not_closed_v (Finset.mem_filter.mpr ⟨hyH'.1, Or.inl hvy.symm⟩)
+    have hxClosedU : x ∈ closedNeighborSetOn G S u :=
+      Finset.mem_filter.mpr ⟨hxH'.1, Or.inr hxK.2⟩
+    have hyClosedU : y ∈ closedNeighborSetOn G S u :=
+      Finset.mem_filter.mpr ⟨hyH'.1, Or.inr hyK.2⟩
+    have hx_not_closed_v : x ∉ closedNeighborSetOn G S v :=
+      fun hxClosedV => hxH'.2 (Finset.mem_inter.mpr ⟨hxClosedU, hxClosedV⟩)
+    have hy_not_closed_v : y ∉ closedNeighborSetOn G S v :=
+      fun hyClosedV => hyH'.2 (Finset.mem_inter.mpr ⟨hyClosedU, hyClosedV⟩)
+    have hvx_not : ¬ G.Adj v x :=
+      fun hvx => hx_not_closed_v (Finset.mem_filter.mpr ⟨hxH'.1, Or.inr hvx⟩)
+    have hvy_not : ¬ G.Adj v y :=
+      fun hvy => hy_not_closed_v (Finset.mem_filter.mpr ⟨hyH'.1, Or.inr hvy⟩)
+    have hvx_ne : v ≠ x :=
+      fun hvx => hx_not_closed_v (Finset.mem_filter.mpr ⟨hxH'.1, Or.inl hvx.symm⟩)
+    have hvy_ne : v ≠ y :=
+      fun hvy => hy_not_closed_v (Finset.mem_filter.mpr ⟨hyH'.1, Or.inl hvy.symm⟩)
     exact hG.adj_of_forced_triangle huv hxK.2 hyK.2 hvx_not hvy_not
       hvx_ne hvy_ne hxy
   · intro n hn x hx y hy hxy
@@ -174,12 +167,10 @@ theorem ClawFree.neighborSetOn_sdiff_commonClosedNeighbor_simplicial
     have hyOut := Finset.mem_sdiff.mp hy
     have hxN := Finset.mem_filter.mp hxOut.1
     have hyN := Finset.mem_filter.mp hyOut.1
-    have hux_not : ¬ G.Adj u x := by
-      intro hux
-      exact hxOut.2 (Finset.mem_filter.mpr ⟨hxN.1, hux⟩)
-    have huy_not : ¬ G.Adj u y := by
-      intro huy
-      exact hyOut.2 (Finset.mem_filter.mpr ⟨hyN.1, huy⟩)
+    have hux_not : ¬ G.Adj u x :=
+      fun hux => hxOut.2 (Finset.mem_filter.mpr ⟨hxN.1, hux⟩)
+    have huy_not : ¬ G.Adj u y :=
+      fun huy => hyOut.2 (Finset.mem_filter.mpr ⟨hyN.1, huy⟩)
     have hux_ne : u ≠ x := by grind
     have huy_ne : u ≠ y := by grind
     exact hG.adj_of_forced_triangle hnK.2.symm hxN.2 hyN.2 hux_not huy_not
@@ -247,13 +238,11 @@ theorem ClawFree.simplicialClique_neighborOutside {V : Type u} [DecidableEq V]
     have hyN := Finset.mem_filter.mp hyL.1
     have hxSdiff := Finset.mem_sdiff.mp hxN.1
     have hySdiff := Finset.mem_sdiff.mp hyN.1
-    have hkx_not : ¬ G.Adj k x := by
-      intro hkx
-      exact hxL.2 (Finset.mem_sdiff.mpr
+    have hkx_not : ¬ G.Adj k x :=
+      fun hkx => hxL.2 (Finset.mem_sdiff.mpr
         ⟨Finset.mem_filter.mpr ⟨hxSdiff.1, hkx⟩, hxSdiff.2⟩)
-    have hky_not : ¬ G.Adj k y := by
-      intro hky
-      exact hyL.2 (Finset.mem_sdiff.mpr
+    have hky_not : ¬ G.Adj k y :=
+      fun hky => hyL.2 (Finset.mem_sdiff.mpr
         ⟨Finset.mem_filter.mpr ⟨hySdiff.1, hky⟩, hySdiff.2⟩)
     have hneigh : ∀ w ∈ ({k, x, y} : Finset V), G.Adj n w := by
       intro w hw
