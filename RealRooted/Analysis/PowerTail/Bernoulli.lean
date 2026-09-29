@@ -59,6 +59,6 @@ theorem step_ineq_w {A w : K} (hA : 0 < A) (hw : 0 < w) (r : ℕ) :
     div_le_div_iff₀ hBp2 (by positivity)]
   rw [show (A + w) ^ (r + 2) = (A + w) * (A + w) ^ (r + 1) by ring]
   have hfin := mul_le_mul_of_nonneg_right hcore hBp.le
-  nlinarith [hfin]
+  linarith [hfin]
 
 end RealRooted.Analysis.PowerTail
