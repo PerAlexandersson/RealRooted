@@ -196,6 +196,20 @@ lemma leadingCoeff_TDeriv (eps : ℝ) (p : ℝ[X]) :
       _ < p.natDegree := Nat.sub_lt (by lia) one_pos
   rw [Polynomial.coeff_eq_zero_of_natDegree_lt hp'_deg, sub_zero, Polynomial.leadingCoeff]
 
+/-- `T_ε` changes the coefficient below the leading term by the expected
+multiple of the leading coefficient. -/
+lemma nextCoeff_TDeriv (eps : ℝ) (p : ℝ[X]) :
+    (TDeriv eps p).nextCoeff =
+      p.nextCoeff - eps * (p.natDegree : ℝ) * p.leadingCoeff := by
+  by_cases hdeg : p.natDegree = 0
+  · simp [hdeg, tderiv_of_natDegree_eq_zero hdeg]
+  · have hpos : 0 < p.natDegree := Nat.pos_of_ne_zero hdeg
+    rw [Polynomial.nextCoeff_of_natDegree_pos (by simpa),
+      Polynomial.nextCoeff_of_natDegree_pos hpos, natDegree_TDeriv,
+      coeff_TDeriv]
+    have hsucc : p.natDegree - 1 + 1 = p.natDegree := by lia
+    rw [hsucc, Polynomial.coeff_natDegree]
+
 lemma HasPosLeadingCoeff.TDeriv {eps : ℝ} {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (TDeriv eps p) := by
@@ -350,6 +364,20 @@ theorem splits_tderiv_all {eps : ℝ} {p : ℝ[X]} (hp : p.Splits) :
   · subst eps
     simpa [TDeriv] using hp
   · exact splits_tderiv heps hp
+
+/-- A derivative shift translates the sum of the roots by `ε · deg p`.
+This orientation invariant is useful when an all-real-combination argument
+determines an interlacing pair only up to reversal. -/
+lemma roots_sum_TDeriv (eps : ℝ) {p : ℝ[X]} (hp_ne : p ≠ 0)
+    (hp_splits : p.Splits) :
+    (TDeriv eps p).roots.sum =
+      p.roots.sum + eps * (p.natDegree : ℝ) := by
+  have hT_splits : (TDeriv eps p).Splits := splits_tderiv_all hp_splits
+  have hp_vieta := hp_splits.nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
+  have hT_vieta := hT_splits.nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
+  rw [nextCoeff_TDeriv, leadingCoeff_TDeriv, hp_vieta] at hT_vieta
+  apply mul_left_cancel₀ (leadingCoeff_ne_zero.mpr hp_ne)
+  nlinarith
 
 theorem derivative_strictInterl_TDeriv_of_natDegree_one {eps : ℝ} {p : ℝ[X]}
     (hdeg : p.natDegree = 1) :
@@ -979,6 +1007,29 @@ lemma splits_iterateTDeriv {eps : ℝ} {p : ℝ[X]} {k : ℕ} (heps : 0 < eps)
   | succ n ih =>
     rw [iterateTDeriv_succ]
     exact splits_tderiv heps ih
+
+/-- Every real derivative shift preserves splitness under iteration. -/
+lemma splits_iterateTDeriv_all {eps : ℝ} {p : ℝ[X]} (hp : p.Splits) :
+    ∀ k : ℕ, (iterateTDeriv eps k p).Splits
+  | 0 => by simpa
+  | k + 1 => by
+      rw [iterateTDeriv_succ]
+      exact splits_tderiv_all (splits_iterateTDeriv_all hp k)
+
+/-- The nonnegative derivative regularization `p ↦ p + eps * p'` preserves
+coefficientwise nonnegativity under iteration. -/
+lemma HasNonnegCoeffs.iterateTDeriv_neg
+    {eps : ℝ} (heps : 0 ≤ eps) {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
+    ∀ k : ℕ, HasNonnegCoeffs (iterateTDeriv (-eps) k p)
+  | 0 => by simpa
+  | k + 1 => by
+      rw [iterateTDeriv_succ]
+      intro i
+      simp only [TDeriv, coeff_sub, coeff_C_mul, coeff_derivative]
+      have hi := hp.iterateTDeriv_neg heps k i
+      have hisucc := hp.iterateTDeriv_neg heps k (i + 1)
+      simp only [neg_mul, sub_neg_eq_add]
+      exact add_nonneg hi (mul_nonneg heps (mul_nonneg hisucc (by positivity)))
 
 /-- Consecutive `iterateTDeriv` iterates form a generalized Sturm chain: every
 step strictly interlaces into the next one. This packages repeated applications
@@ -1741,6 +1792,44 @@ theorem hasSimpleRoots_iterateTDeriv_of_natDegree
       _ ≤ f.roots.card := f.roots.count_le_card a
       _ ≤ f.natDegree := card_roots' f
       _ = n := hdeg
+  lia
+
+/-- Iterating the nonnegative derivative regularization `p ↦ p + eps * p'`
+at least `natDegree p` times makes every root simple. -/
+theorem hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
+    {eps : ℝ} (heps : 0 < eps) {p : ℝ[X]} (hp_ne : p ≠ 0)
+    (hp_splits : p.Splits) {k : ℕ} (hdeg : p.natDegree ≤ k) :
+    HasSimpleRoots (iterateTDeriv (-eps) k p) := by
+  intro a ha
+  by_contra hmult
+  push Not at hmult
+  have hge2 : 2 ≤ (iterateTDeriv (-eps) k p).rootMultiplicity a := by
+    have hpos := (rootMultiplicity_pos (iterateTDeriv_ne_zero hp_ne)).mpr ha
+    lia
+  have hsteps : ∀ j, j ≤ k →
+      2 + j ≤ (iterateTDeriv (-eps) (k - j) p).rootMultiplicity a := by
+    intro j
+    induction j with
+    | zero => simpa using hge2
+    | succ j ih =>
+        intro hj
+        have hprev := ih (by lia)
+        have hstep : k - j = (k - (j + 1)) + 1 := by lia
+        rw [hstep, iterateTDeriv_succ] at hprev
+        have hback := rootMultiplicity_eq_succ_of_TDeriv_ge_two_of_ne
+          (neg_ne_zero.mpr heps.ne')
+          (splits_iterateTDeriv_all hp_splits (k - (j + 1)))
+          (by linarith :
+            2 ≤ (TDeriv (-eps)
+              (iterateTDeriv (-eps) (k - (j + 1)) p)).rootMultiplicity a)
+        lia
+  have hzero := hsteps k le_rfl
+  simp only [Nat.sub_self, iterateTDeriv_zero] at hzero
+  have hmult_le : p.rootMultiplicity a ≤ p.natDegree := by
+    calc
+      p.rootMultiplicity a = p.roots.count a := (count_roots p).symm
+      _ ≤ p.roots.card := p.roots.count_le_card a
+      _ ≤ p.natDegree := card_roots' p
   lia
 
 @[deprecated derivative_strictInterl_TDeriv_of_natDegree_one

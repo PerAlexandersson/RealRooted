@@ -1,6 +1,8 @@
 import RealRooted.HermiteBiehler.OrientedPencil
 import RealRooted.Interlacing.Residue
+import RealRooted.IteratedDerivativeShift
 import RealRooted.LiuOppositeSigns.JensenRootCount
+import RealRooted.PFPolynomial.Closure
 import RealRooted.RootCounting.Descartes
 import RealRooted.Wronskian.WeakForward
 
@@ -28,6 +30,94 @@ noncomputable section
 
 namespace RealRooted
 
+/-! ## Derivative-shift regularization of oriented pairs -/
+
+/-- Applying the same derivative shift to an oriented interlacing pair
+preserves its orientation. In the equal-degree case, the all-combination
+criterion determines the pair only up to reversal; the common translation of
+the two root sums selects the original orientation. -/
+theorem StrictInterl.TDeriv_common {f g : ℝ[X]} (hfg : StrictInterl f g)
+    (eps : ℝ) : StrictInterl (TDeriv eps f) (TDeriv eps g) := by
+  have hall : AllComboRealRooted f g := allComboRealRooted_of_strictInterl hfg
+  have hallT : AllComboRealRooted (TDeriv eps f) (TDeriv eps g) := by
+    simpa [iterateTDeriv_succ] using
+      allComboRealRooted_iterateTDeriv_all hall eps 1
+  rcases hfg.natDegree_eq_or_eq_succ with hsame | hsucc
+  · have horient :
+        StrictInterl (TDeriv eps f) (TDeriv eps g) ∨
+          StrictInterl (TDeriv eps g) (TDeriv eps f) :=
+      strictInterl_of_allComboRealRooted
+        (TDeriv_ne_zero hfg.1.1) (splits_tderiv_all hfg.1.2)
+        (TDeriv_ne_zero hfg.2.1.1) (splits_tderiv_all hfg.2.1.2)
+        hallT (Or.inr (by simpa using hsame.symm))
+    rcases horient with hforward | hreverse
+    · exact hforward
+    · apply hreverse.of_reverse_of_roots_sum_le
+      · simpa using hsame.symm
+      · rw [roots_sum_TDeriv eps hfg.1.1 hfg.1.2,
+          roots_sum_TDeriv eps hfg.2.1.1 hfg.2.1.2]
+        simpa [hsame] using
+          add_le_add_right (hfg.roots_sum_le_of_sameDegree hsame.symm)
+            (eps * (f.natDegree : ℝ))
+  · apply StrictInterl.forward_of_orientation_of_succDegree (by simpa using hsucc)
+    exact strictInterl_of_allComboRealRooted
+      (TDeriv_ne_zero hfg.1.1) (splits_tderiv_all hfg.1.2)
+      (TDeriv_ne_zero hfg.2.1.1) (splits_tderiv_all hfg.2.1.2)
+      hallT (Or.inl (by simpa using hsucc.symm))
+
+/-- Common iterated derivative shifts preserve oriented interlacing. -/
+theorem StrictInterl.iterateTDeriv_common {f g : ℝ[X]}
+    (hfg : StrictInterl f g) (eps : ℝ) :
+    ∀ k : ℕ, StrictInterl (iterateTDeriv eps k f) (iterateTDeriv eps k g)
+  | 0 => by simpa
+  | k + 1 => by
+      rw [iterateTDeriv_succ, iterateTDeriv_succ]
+      exact (hfg.iterateTDeriv_common eps k).TDeriv_common eps
+
+/-- If every positive nonnegative-coefficient derivative regularization of a
+pair is in proper position, then so is the original pair. This is the closure
+step that lets the quadratic argument be proved first with simple roots. -/
+theorem strictInterl_of_iterateTDeriv_neg
+    {f g : ℝ[X]} (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
+    (hf_ne : f ≠ 0) (hg_ne : g ≠ 0) (k : ℕ)
+    (hreg : ∀ eps : ℝ, 0 < eps →
+      StrictInterl (iterateTDeriv (-eps) k f)
+        (iterateTDeriv (-eps) k g)) :
+    StrictInterl f g := by
+  let delta : ℕ → ℝ := fun M ↦ ((M : ℝ) + 1)⁻¹
+  have hdelta_pos (M : ℕ) : 0 < delta M := by
+    dsimp [delta]
+    positivity
+  have hdelta : Filter.Tendsto delta Filter.atTop (nhds 0) := by
+    simpa [delta, one_div] using
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  have hneg_delta :
+      Filter.Tendsto (fun M ↦ -(delta M)) Filter.atTop (nhds 0) := by
+    simpa using hdelta.neg
+  let fM : ℕ → ℝ[X] := fun M ↦ iterateTDeriv (-(delta M)) k f
+  let gM : ℕ → ℝ[X] := fun M ↦ iterateTDeriv (-(delta M)) k g
+  have hinterl (M : ℕ) : Interl (fM M) (gM M) := by
+    exact (hreg (delta M) (hdelta_pos M)).toInterl
+  have hfM_pf (M : ℕ) : IsPFPolynomial (fM M) := by
+    apply IsPFPolynomial.of_realRooted_nonneg
+    · exact hf.iterateTDeriv_neg (hdelta_pos M).le k
+    · exact (hreg (delta M) (hdelta_pos M)).1.2
+  have hgM_pf (M : ℕ) : IsPFPolynomial (gM M) := by
+    apply IsPFPolynomial.of_realRooted_nonneg
+    · exact hg.iterateTDeriv_neg (hdelta_pos M).le k
+    · exact (hreg (delta M) (hdelta_pos M)).2.1.2
+  have hlimit : Interl f g :=
+    interl_of_pf_coeff_tendsto_of_natDegree_le hfM_pf hgM_pf hinterl
+      (N := max f.natDegree g.natDegree)
+      (fun M ↦ by simp [fM]) (fun M ↦ by simp [gM])
+      (fun i ↦ by
+        simpa [fM, Function.comp_def] using
+          (continuousAt_coeff_iterateTDeriv_zero k f i).tendsto.comp hneg_delta)
+      (fun i ↦ by
+        simpa [gM, Function.comp_def] using
+          (continuousAt_coeff_iterateTDeriv_zero k g i).tendsto.comp hneg_delta)
+  exact hlimit.toStrictInterl_of_ne hf_ne hg_ne
+
 /-- The quadratic polynomial path `H + 2 a G + a² F`. -/
 def quadraticInterlacingPencil (F G H : ℝ[X]) (a : ℝ) : ℝ[X] :=
   H + C (2 * a) * G + C (a ^ 2) * F
@@ -39,6 +129,77 @@ def quadraticInterlacingTangent (F G : ℝ[X]) (a : ℝ) : ℝ[X] :=
 /-- The right member in the quadratic closure conclusion. -/
 def quadraticInterlacingRight (G H : ℝ[X]) (a : ℝ) : ℝ[X] :=
   H + C a * G
+
+/-- Iterated derivative shifts commute with the quadratic pencil. -/
+theorem iterateTDeriv_quadraticInterlacingPencil
+    (eps : ℝ) (k : ℕ) (F G H : ℝ[X]) (a : ℝ) :
+    iterateTDeriv eps k (quadraticInterlacingPencil F G H a) =
+      quadraticInterlacingPencil (iterateTDeriv eps k F)
+        (iterateTDeriv eps k G) (iterateTDeriv eps k H) a := by
+  unfold quadraticInterlacingPencil
+  rw [iterateTDeriv_add, iterateTDeriv_add, iterateTDeriv_C_mul,
+    iterateTDeriv_C_mul]
+
+/-- Iterated derivative shifts commute with the parameter tangent. -/
+theorem iterateTDeriv_quadraticInterlacingTangent
+    (eps : ℝ) (k : ℕ) (F G : ℝ[X]) (a : ℝ) :
+    iterateTDeriv eps k (quadraticInterlacingTangent F G a) =
+      quadraticInterlacingTangent (iterateTDeriv eps k F)
+        (iterateTDeriv eps k G) a := by
+  simp [quadraticInterlacingTangent, iterateTDeriv_add,
+    iterateTDeriv_C_mul]
+
+/-- Iterated derivative shifts commute with the right member of the
+quadratic closure pair. -/
+theorem iterateTDeriv_quadraticInterlacingRight
+    (eps : ℝ) (k : ℕ) (G H : ℝ[X]) (a : ℝ) :
+    iterateTDeriv eps k (quadraticInterlacingRight G H a) =
+      quadraticInterlacingRight (iterateTDeriv eps k G)
+        (iterateTDeriv eps k H) a := by
+  simp [quadraticInterlacingRight, iterateTDeriv_add,
+    iterateTDeriv_C_mul]
+
+/-- A quadratic closure proof for every positive derivative regularization
+descends to the original pair. This is the fixed-triple interface used to
+reduce the general quadratic lemma to its simple-root case. -/
+theorem strictInterl_quadraticInterlacingRight_of_regularized
+    {F G H : ℝ[X]} {a : ℝ} {k : ℕ}
+    (hTangent_nonneg :
+      HasNonnegCoeffs (quadraticInterlacingTangent F G a))
+    (hRight_nonneg : HasNonnegCoeffs (quadraticInterlacingRight G H a))
+    (hTangent_ne : quadraticInterlacingTangent F G a ≠ 0)
+    (hRight_ne : quadraticInterlacingRight G H a ≠ 0)
+    (hreg : ∀ eps : ℝ, 0 < eps →
+      StrictInterl
+        (quadraticInterlacingTangent (iterateTDeriv (-eps) k F)
+          (iterateTDeriv (-eps) k G) a)
+        (quadraticInterlacingRight (iterateTDeriv (-eps) k G)
+          (iterateTDeriv (-eps) k H) a)) :
+    StrictInterl (quadraticInterlacingTangent F G a)
+      (quadraticInterlacingRight G H a) := by
+  apply strictInterl_of_iterateTDeriv_neg hTangent_nonneg hRight_nonneg
+    hTangent_ne hRight_ne k
+  intro eps heps
+  rw [iterateTDeriv_quadraticInterlacingTangent,
+    iterateTDeriv_quadraticInterlacingRight]
+  exact hreg eps heps
+
+/-- A common negative derivative shift makes every member of a split
+quadratic pencil simple once the iteration count dominates its degree. -/
+theorem hasSimpleRoots_regularized_quadraticInterlacingPencil
+    {F G H : ℝ[X]} {eps : ℝ} {k : ℕ} (heps : 0 < eps)
+    (hne : ∀ b : ℝ, 0 ≤ b → quadraticInterlacingPencil F G H b ≠ 0)
+    (hsplits : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).Splits)
+    (hdeg : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).natDegree ≤ k)
+    {b : ℝ} (hb : 0 ≤ b) :
+    HasSimpleRoots
+      (quadraticInterlacingPencil (iterateTDeriv (-eps) k F)
+        (iterateTDeriv (-eps) k G) (iterateTDeriv (-eps) k H) b) := by
+  rw [← iterateTDeriv_quadraticInterlacingPencil]
+  exact hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le heps
+    (hne b hb) (hsplits b hb) (hdeg b hb)
 
 /-- Evaluation of the quadratic pencil at a fixed spatial level, regarded as
 a polynomial in the parameter. -/
