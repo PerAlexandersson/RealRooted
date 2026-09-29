@@ -44,7 +44,7 @@ theorem norm_aeval_mono_im_of_splits {p : ℝ[X]} (hp : p.Splits) (x y y' : ℝ)
   simp only [coe_nnnorm, Complex.norm_def]
   apply Real.sqrt_le_sqrt
   simp [Complex.normSq_apply]
-  nlinarith
+  linarith
 
 private theorem eval_map_ofRealHom (p : ℝ[X]) (z : ℂ) :
     (p.map Complex.ofRealHom).eval z = aeval z p := by
