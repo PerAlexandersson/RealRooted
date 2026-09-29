@@ -375,10 +375,10 @@ theorem quasiJacobiTwoPointCompression_posDef
           Lagrange.eval_basis_self hx.injOn (mem_univ j)]
       simp only [p, eval_add, eval_mul, eval_C, eval_zero,
         hei_i, hei_j, hej_i, hej_j, mul_zero, add_zero, zero_add] at hi hj
-      have hyi : y 0 = 0 := by
-        exact (mul_eq_zero.mp hi).resolve_right (inv_ne_zero hsi)
-      have hyj : y 1 = 0 := by
-        exact (mul_eq_zero.mp hj).resolve_right (inv_ne_zero hsj)
+      have hyi : y 0 = 0 :=
+        (mul_eq_zero.mp hi).resolve_right (inv_ne_zero hsi)
+      have hyj : y 1 = 0 :=
+        (mul_eq_zero.mp hj).resolve_right (inv_ne_zero hsj)
       apply hy
       funext a
       fin_cases a <;> assumption
@@ -447,10 +447,10 @@ theorem quasiJacobiTwoPointComplement_posDef
           Lagrange.eval_basis_self hx.injOn (mem_univ j)]
       simp only [p, eval_add, eval_mul, eval_C, eval_zero,
         hei_i, hei_j, hej_i, hej_j, mul_zero, add_zero, zero_add] at hi hj
-      have hyi : y 0 = 0 := by
-        exact (mul_eq_zero.mp hi).resolve_right (inv_ne_zero hsi)
-      have hyj : y 1 = 0 := by
-        exact (mul_eq_zero.mp hj).resolve_right (inv_ne_zero hsj)
+      have hyi : y 0 = 0 :=
+        (mul_eq_zero.mp hi).resolve_right (inv_ne_zero hsi)
+      have hyj : y 1 = 0 :=
+        (mul_eq_zero.mp hj).resolve_right (inv_ne_zero hsj)
       apply hy
       funext a
       fin_cases a <;> assumption

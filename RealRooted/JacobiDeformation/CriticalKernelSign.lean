@@ -311,9 +311,8 @@ private theorem shiftedJacobiMonic_eval_prev_ne_zero_of_next_root
     (shiftedJacobiMonic (n + 1) α β).eval x ≠ 0 := by
   intro hzero
   let hrec := shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ
-  have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α β := by
-    intro k
-    exact shiftedJacobiSubdiag_pos (k + 1) (by lia) hα hβ
+  have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α β :=
+    fun k => shiftedJacobiSubdiag_pos (k + 1) (by lia) hα hβ
   have hcommon := noCommonRoot_succ_of_favard hrec hsub (n + 1) x
   apply hcommon
   · simpa only [Polynomial.IsRoot.def] using hzero

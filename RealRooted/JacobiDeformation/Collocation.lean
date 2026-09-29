@@ -72,8 +72,8 @@ theorem shiftedJacobi_collocationMatrix_offdiag
         exact eval_positiveJacobiOperator α β (x i) v
       _ = (positiveJacobiOperator α β
           (quasiJacobiPolynomial q α β τ)).eval (x i) := by rw [hv]
-      _ = e * p.eval (x i) := by
-        exact eval_positiveJacobiOperator_quasiJacobiPolynomial_at_root (hroot i)
+      _ = e * p.eval (x i) :=
+        eval_positiveJacobiOperator_quasiJacobiPolynomial_at_root (hroot i)
   rw [Lagrange.collocationMatrix, eval_positiveJacobiOperator, hb1, hb2]
   rw [← hv]
   change -(σ * ((v.derivative.derivative.eval (x i) - 2 * d i / s) /
