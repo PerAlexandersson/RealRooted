@@ -1664,7 +1664,7 @@ theorem quadraticInterlacingTangent_residue_nonneg_of_branch_limit
     {F G H : ℝ[X]} {r a : ℝ} {α : ℝ → ℝ}
     (hα : ContinuousAt α r) (hαbase : α r = a)
     (hder : (quadraticInterlacingPencil F G H a).derivative.eval r ≠ 0)
-    (hres : ∀ᶠ s in nhds r,
+    (hres : ∀ᶠ s in nhdsWithin r (Set.Iio r),
       0 ≤ (quadraticInterlacingTangent F G (α s)).eval s /
         (quadraticInterlacingPencil F G H (α s)).derivative.eval s) :
     0 ≤ (quadraticInterlacingTangent F G a).eval r /
@@ -1684,11 +1684,130 @@ theorem quadraticInterlacingTangent_residue_nonneg_of_branch_limit
       simp only [quadraticInterlacingPencil, derivative_add,
         derivative_C_mul, eval_add, eval_mul, eval_C]]
     fun_prop
-  have hnum := hnumCont.tendsto
-  have hden := hdenCont.tendsto
+  have hnum : Filter.Tendsto
+      (fun s => (quadraticInterlacingTangent F G (α s)).eval s)
+      (nhdsWithin r (Set.Iio r))
+      (nhds ((quadraticInterlacingTangent F G (α r)).eval r)) :=
+    hnumCont.tendsto.mono_left nhdsWithin_le_nhds
+  have hden : Filter.Tendsto
+      (fun s =>
+        (quadraticInterlacingPencil F G H (α s)).derivative.eval s)
+      (nhdsWithin r (Set.Iio r))
+      (nhds ((quadraticInterlacingPencil F G H (α r)).derivative.eval r)) :=
+    hdenCont.tendsto.mono_left nhdsWithin_le_nhds
   rw [hαbase] at hnum hden
   exact le_of_tendsto_of_tendsto tendsto_const_nhds
     (hnum.div hden hder) hres
+
+/-- Every simple negative root of the positive-parameter quadratic pencil has
+a nonnegative tangent residue.  Exceptional levels are reached by a local
+implicit branch of the parameter-evaluation polynomial and the closed branch
+limit above. -/
+theorem quadraticInterlacingTangent_residue_nonneg
+    {F G H : ℝ[X]} {D K : ℕ}
+    (hFpos : HasPosLeadingCoeff F) (hGpos : HasPosLeadingCoeff G)
+    (hHpos : HasPosLeadingCoeff H) (hFG : StrictInterl F G)
+    (hGH : StrictInterl G H) (hD : D ≠ 0)
+    (hFdeg : F.natDegree ≤ K) (hGdeg : G.natDegree ≤ K)
+    (hHdeg : H.natDegree ≤ K)
+    (hdegree : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).natDegree = D)
+    (hdegree_local : ∀ b : ℝ, 0 ≤ b → ∀ᶠ c in nhds b,
+      (quadraticInterlacingPencil F G H c).natDegree = D)
+    (hpos : ∀ b : ℝ, 0 ≤ b →
+      HasPosLeadingCoeff (quadraticInterlacingPencil F G H b))
+    (hsplits : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).Splits)
+    (hsimple : ∀ b : ℝ, 0 ≤ b →
+      HasSimpleRoots (quadraticInterlacingPencil F G H b))
+    (hsplits_recip : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).Splits)
+    (hcoeff0_recip : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).coeff 0 ≠ 0)
+    (hneg_recip : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
+      (quadraticInterlacingPencil H G F b).roots, q < 0)
+    {r a : ℝ} (hr : r < 0) (ha : 0 < a)
+    (haroot : (quadraticInterlacingPencil F G H a).IsRoot r) :
+    0 ≤ (quadraticInterlacingTangent F G a).eval r /
+      (quadraticInterlacingPencil F G H a).derivative.eval r := by
+  have hsimpleA := hsimple a ha.le
+  have hder : (quadraticInterlacingPencil F G H a).derivative.eval r ≠ 0 :=
+    hsimpleA.eval_derivative_ne_zero haroot
+  by_cases hAzero : (quadraticInterlacingTangent F G a).eval r = 0
+  · rw [hAzero, zero_div]
+  let p : ℝ → ℝ[X] := fun s => quadraticParameterEvaluation F G H s
+  have hproot : (p r).IsRoot a :=
+    (quadraticParameterEvaluation_isRoot_iff F G H r a).2 haroot
+  have hpregular : (p r).derivative.eval a ≠ 0 := by
+    rw [show (p r).derivative.eval a =
+      2 * (quadraticInterlacingTangent F G a).eval r by
+        simpa only [p] using
+          derivative_eval_quadraticParameterEvaluation F G H r a]
+    exact mul_ne_zero (by norm_num) hAzero
+  have hpsmooth : ContDiffAt ℝ 1
+      (fun z : ℝ × ℝ => (p z.1).eval z.2) (r, a) := by
+    rw [show (fun z : ℝ × ℝ => (p z.1).eval z.2) =
+        fun z => H.eval z.1 + 2 * G.eval z.1 * z.2 +
+          F.eval z.1 * z.2 ^ 2 by
+      funext z
+      simp [p, quadraticParameterEvaluation]]
+    exact ((((Polynomial.contDiff_aeval H ∞).comp contDiff_fst).add
+      ((contDiff_const.mul
+        ((Polynomial.contDiff_aeval G ∞).comp contDiff_fst)).mul
+          contDiff_snd)).add
+      (((Polynomial.contDiff_aeval F ∞).comp contDiff_fst).mul
+        (contDiff_snd.pow 2))).contDiffAt.of_le (by norm_num)
+  obtain ⟨α, hαdiff, hαbase, hαroot⟩ :=
+    exists_contDiffAt_polynomial_root p hpsmooth hproot hpregular
+  apply quadraticInterlacingTangent_residue_nonneg_of_branch_limit
+    hαdiff.continuousAt hαbase hder
+  let E : Finset ℝ :=
+    F.roots.toFinset ∪ G.roots.toFinset ∪ H.roots.toFinset
+  have havoidNhds : ∀ᶠ s in nhds r, s ∉ E.erase r := by
+    have hopen : IsOpen ((↑(E.erase r) : Set ℝ)ᶜ) :=
+      (E.erase r).isClosed.isOpen_compl
+    exact hopen.mem_nhds (by simp)
+  have hαposNhds : ∀ᶠ s in nhds r, 0 < α s := by
+    apply continuousAt_const.eventually_lt hαdiff.continuousAt
+    simpa [hαbase] using ha
+  have hαroot' : ∀ᶠ s in nhdsWithin r (Set.Iio r),
+      (p s).IsRoot (α s) :=
+    hαroot.filter_mono nhdsWithin_le_nhds
+  have havoid : ∀ᶠ s in nhdsWithin r (Set.Iio r), s ∉ E.erase r :=
+    havoidNhds.filter_mono nhdsWithin_le_nhds
+  have hαpos : ∀ᶠ s in nhdsWithin r (Set.Iio r), 0 < α s :=
+    hαposNhds.filter_mono nhdsWithin_le_nhds
+  filter_upwards [hαroot', havoid, hαpos, self_mem_nhdsWithin] with
+    s hsroot hsavoid hsαpos hsr
+  have hsrne : s ≠ r := ne_of_lt hsr
+  have hsF : ¬F.IsRoot s := by
+    intro hs
+    apply hsavoid
+    rw [Finset.mem_erase]
+    refine ⟨hsrne, ?_⟩
+    simp only [E, Finset.mem_union, Multiset.mem_toFinset]
+    exact Or.inl (Or.inl ((Polynomial.mem_roots hFpos.ne_zero).2 hs))
+  have hsG : ¬G.IsRoot s := by
+    intro hs
+    apply hsavoid
+    rw [Finset.mem_erase]
+    refine ⟨hsrne, ?_⟩
+    simp only [E, Finset.mem_union, Multiset.mem_toFinset]
+    exact Or.inl (Or.inr ((Polynomial.mem_roots hGpos.ne_zero).2 hs))
+  have hsH : ¬H.IsRoot s := by
+    intro hs
+    apply hsavoid
+    rw [Finset.mem_erase]
+    refine ⟨hsrne, ?_⟩
+    simp only [E, Finset.mem_union, Multiset.mem_toFinset]
+    exact Or.inr ((Polynomial.mem_roots hHpos.ne_zero).2 hs)
+  have hsQroot :
+      (quadraticInterlacingPencil F G H (α s)).IsRoot s :=
+    (quadraticParameterEvaluation_isRoot_iff F G H s (α s)).1 hsroot
+  exact quadraticInterlacingTangent_residue_nonneg_of_nonexceptional
+    hFpos hGpos hHpos hFG hGH hD hFdeg hGdeg hHdeg hdegree
+    hdegree_local hpos hsplits hsimple hsplits_recip hcoeff0_recip
+    hneg_recip (hsr.trans hr) hsF hsG hsH hsαpos hsQroot
 
 /-! ## Logarithmic-ratio endpoint -/
 
