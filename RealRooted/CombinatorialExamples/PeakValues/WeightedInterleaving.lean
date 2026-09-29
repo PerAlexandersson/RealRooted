@@ -120,7 +120,7 @@ theorem pderiv_none_identifyLast_peakValuePolynomial_ne_zero
     rw [Nat.cast_sub (by lia : 1 ≤ n)]
     norm_num
   rw [hnsub] at hprod
-  nlinarith
+  linarith
 
 def peakValueOptionWeights (n : ℕ) (wt : Fin (n + 1) → ℝ) :
     Option (Fin n) → ℝ

@@ -188,7 +188,7 @@ lemma angle_mem_Ioo_zero_pi_div_two (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) 
       norm_num
       have hjn_real : (2 * j : ℝ) < n := by
         simpa [Nat.cast_mul] using (Nat.cast_lt.mpr hjn : ((2 * j : ℕ) : ℝ) < n)
-      nlinarith
+      linarith
     have hpi_pos : (0 : ℝ) < Real.pi := Real.pi_pos
     calc
       Real.pi * (j : ℝ) / (n : ℝ) =
