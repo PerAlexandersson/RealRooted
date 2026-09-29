@@ -44,6 +44,6 @@ theorem generalizedLaguerreSubdiag_pos (n : ℕ) {α : ℝ} (hn : n ≠ 0)
   have hn_pos : 0 < (n : ℝ) := by exact_mod_cast Nat.pos_of_ne_zero hn
   have hn_one : (1 : ℝ) ≤ n := by
     exact_mod_cast Nat.one_le_iff_ne_zero.mpr hn
-  exact mul_pos hn_pos (by nlinarith)
+  exact mul_pos hn_pos (by linarith)
 
 end RealRooted
