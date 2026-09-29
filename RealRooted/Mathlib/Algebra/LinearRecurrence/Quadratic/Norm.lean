@@ -71,6 +71,6 @@ theorem quadratic_norm_bound {p q β₁ β₂ : R} {lam : ℝ} {S : ℕ → R}
           _ = lam * (lam * ‖S k‖) + lam ^ (k + 1) *
               (‖S 1‖ + lam * ‖S 0‖) := by ring
       norm_num
-      nlinarith [hmul', hs']
+      linarith [hmul', hs']
 
 end LinearRecurrence

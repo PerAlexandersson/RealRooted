@@ -53,7 +53,7 @@ theorem exists_coeff_radius_root_near
     dsimp [δ]
     have hpow : 0 < ρ ^ p.natDegree := pow_pos hρ _
     field_simp
-    nlinarith
+    linarith
   have hzw' :
       ‖z - w‖ < (((p.natDegree + 1 : ℕ) : ℝ) * δ) ^
           ((p.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
@@ -113,7 +113,7 @@ theorem exists_coeff_radius_forall_root_near
     dsimp [δ]
     have hpow : 0 < ρ ^ p.natDegree := pow_pos hρ _
     field_simp
-    nlinarith
+    linarith
   have hzw' :
       ‖z - w‖ < ρ * max ‖z‖ 1 := by
     have hmax : 0 < max ‖z‖ 1 :=
@@ -143,7 +143,7 @@ theorem exists_coeff_radius_forall_root_near
       have hznonneg : 0 ≤ ‖z‖ := norm_nonneg _
       have hhalf : ρ * ‖z‖ ≤ (1 / 2 : ℝ) * ‖z‖ :=
         mul_le_mul_of_nonneg_right hρhalf hznonneg
-      nlinarith
+      linarith
   have hρη : ρ ≤ η / (2 * B) := min_le_right _ _
   calc
     ‖z - w‖ < ρ * max ‖z‖ 1 := hzw'

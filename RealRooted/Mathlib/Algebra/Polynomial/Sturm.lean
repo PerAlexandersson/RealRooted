@@ -246,7 +246,7 @@ theorem eval_neighbors_mul_neg_of_isSignedRemainderChain_of_linearOrder
     apply hne
     simp [hr]
   rw [hpval]
-  nlinarith [sq_pos_of_ne_zero hrne]
+  linarith [sq_pos_of_ne_zero hrne]
 
 /-- The final entry of a no-common-root signed remainder sequence has no root.
 Equivalently, it is the real-root-free terminal gcd factor relevant to Sturm's
