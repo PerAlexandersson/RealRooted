@@ -293,7 +293,7 @@ theorem exists_one_sub_X_mul_signedTriangleFamily_diagonal_eq_C_mul_rPolynomial
     exact hderivative
   have hk : 0 < k := by
     dsimp only [k]
-    nlinarith [mul_pos hrising hcoefficient]
+    linarith [mul_pos hrising hcoefficient]
   have hcollapse :=
     one_sub_X_mul_triangleFamily_diagonal_eq_C_mul_rPolynomial m ε d hm hd
   refine ⟨k, hk, ?_⟩
@@ -466,7 +466,7 @@ theorem consecutive_signedTriangleFamily_strictInterl
     have hone : 0 < 1 - r := sub_pos.mpr hri.2
     simp only [eval_neg, eval_mul, eval_C, eval_sub, eval_one, eval_X]
     norm_num
-    nlinarith
+    linarith
   have hstrictInterlPos := strictInterl_of_interlaces_evalCoeff_neg_same
     hHBInterlaces hHLeading hcombinationLeading hcombinationDegree
     hnoCommon hcoefficientNeg

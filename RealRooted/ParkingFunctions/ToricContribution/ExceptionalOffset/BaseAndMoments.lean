@@ -548,7 +548,7 @@ theorem exceptional_realRisingFactorial_neg_nat_eq_factorial_div
       (m.descFactorial r : ℝ) =
         m.factorial / (m - r).factorial := by
     rw [eq_div_iff hden.ne']
-    nlinarith
+    linarith
   rw [hdesc]
   ring
 
@@ -720,7 +720,7 @@ private theorem exceptionalEndpointNumerator_eval_neg_nat
       realRisingFactorial (c + m) r / realRisingFactorial c r =
         realRisingFactorial (c + r) m / realRisingFactorial c m := by
     field_simp [hcr.ne', hcm.ne']
-    nlinarith [hshift]
+    linarith [hshift]
   dsimp only [c] at hshift hratio ⊢
   simp only [Nat.sub_self, Nat.factorial_zero, Nat.cast_one, div_one]
   field_simp [hcr.ne', hcm.ne', hfactorialR.ne', hfactorialSub.ne']
@@ -843,7 +843,7 @@ theorem exceptionalEulerInverse_eval_one_eq_endpointProduct
   rw [hdenProduct] at hmul
   apply (eq_div_iff hrf.ne').2
   apply (mul_left_cancel₀ hγpos.ne')
-  nlinarith [hmul]
+  linarith [hmul]
 
 /-- The exceptional endpoint has the parity sign prescribed by the signed
 moment route. -/
@@ -955,7 +955,7 @@ private theorem exceptionalParameterTopRatio_strictMono
     (γ₁ + (m : ℝ) - 1) / (γ₁ + m) <
       (γ₂ + (m : ℝ) - 1) / (γ₂ + m) := by
   apply (div_lt_div_iff₀ (by positivity) (by positivity)).2
-  nlinarith
+  linarith
 
 /-- At distinct positive parameters, the top two coefficient vectors are
 linearly independent. -/
@@ -1098,7 +1098,7 @@ theorem neg_coeff_one_exceptionalEulerInverse_strictMono
   have hγ₂ : 0 < γ₂ := lt_trans hγ₁ hγ
   have hratio : γ₁ / (γ₁ + 1) < γ₂ / (γ₂ + 1) := by
     apply (div_lt_div_iff₀ (by positivity) (by positivity)).2
-    nlinarith
+    linarith
   have hfactor :
       0 < (m : ℝ) * ((ε : ℝ) + 1 / 2 + m) /
         ((ε : ℝ) + 1 / 2) := by positivity
