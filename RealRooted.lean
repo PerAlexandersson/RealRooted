@@ -218,6 +218,7 @@ import RealRooted.Challenges.Issue34SingleMatrixCounterexample
 import RealRooted.Challenges.Issue34WindowObstruction
 import RealRooted.Challenges.Kurtz
 import RealRooted.Challenges.MatrixInterlacing
+import RealRooted.Challenges.MonomialChainOperator
 import RealRooted.Challenges.Narayana
 import RealRooted.Challenges.Nijenhuis
 import RealRooted.Challenges.Obreschkoff
@@ -975,6 +976,7 @@ import RealRooted.ProductSequence.Factors
 import RealRooted.ProductSequence.Lifts
 import RealRooted.ProductSequence.ScalarFamilies
 import RealRooted.QuadraticCubicPencil
+import RealRooted.QuadraticInterlacingClosure
 import RealRooted.QuadraticRoot
 import RealRooted.RankTwoMatching
 import RealRooted.RankTwoMatching.Basic
