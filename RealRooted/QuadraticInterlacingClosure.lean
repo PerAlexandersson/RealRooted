@@ -1657,6 +1657,39 @@ theorem quadraticInterlacingTangent_residue_nonneg_of_nonexceptional
             hrF (xs := [c]) (by simpa using hrs) hμ.1)
           hdrop
 
+/-- Tangent-residue nonnegativity is closed under a continuous branch of
+parameter crossings.  This is the topological endpoint used to pass from
+nonexceptional spatial levels to a level meeting one of `F`, `G`, or `H`. -/
+theorem quadraticInterlacingTangent_residue_nonneg_of_branch_limit
+    {F G H : ℝ[X]} {r a : ℝ} {α : ℝ → ℝ}
+    (hα : ContinuousAt α r) (hαbase : α r = a)
+    (hder : (quadraticInterlacingPencil F G H a).derivative.eval r ≠ 0)
+    (hres : ∀ᶠ s in nhds r,
+      0 ≤ (quadraticInterlacingTangent F G (α s)).eval s /
+        (quadraticInterlacingPencil F G H (α s)).derivative.eval s) :
+    0 ≤ (quadraticInterlacingTangent F G a).eval r /
+      (quadraticInterlacingPencil F G H a).derivative.eval r := by
+  have hnumCont : ContinuousAt
+      (fun s => (quadraticInterlacingTangent F G (α s)).eval s) r := by
+    simp only [quadraticInterlacingTangent, eval_add, eval_mul, eval_C]
+    fun_prop
+  have hdenCont : ContinuousAt
+      (fun s =>
+        (quadraticInterlacingPencil F G H (α s)).derivative.eval s) r := by
+    rw [show (fun s =>
+        (quadraticInterlacingPencil F G H (α s)).derivative.eval s) =
+      fun s => H.derivative.eval s + 2 * α s * G.derivative.eval s +
+        (α s) ^ 2 * F.derivative.eval s by
+      funext s
+      simp only [quadraticInterlacingPencil, derivative_add,
+        derivative_C_mul, eval_add, eval_mul, eval_C]]
+    fun_prop
+  have hnum := hnumCont.tendsto
+  have hden := hdenCont.tendsto
+  rw [hαbase] at hnum hden
+  exact le_of_tendsto_of_tendsto tendsto_const_nhds
+    (hnum.div hden hder) hres
+
 /-! ## Logarithmic-ratio endpoint -/
 
 /-- Nonnegative residues at the simple roots of the denominator force the
