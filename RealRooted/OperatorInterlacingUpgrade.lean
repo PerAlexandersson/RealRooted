@@ -71,6 +71,189 @@ theorem IsGWKreinSummand.isPFPolynomial {g q : ℝ[X]}
   · exact hg
   · exact hg.of_X_sub_C_mul_factor hfactor
 
+/-- The monomial chain extends through every PF factor once the quadratic
+closure step is available.
+
+The last hypothesis is the sharp analytic input: a splitting quadratic pencil
+through three consecutive interlacing polynomials advances the two adjacent
+affine combinations.  All remaining work in this theorem is algebraic PF
+factor induction. -/
+theorem preservesPFShiftInterlacingOnDegree_of_monomials
+    {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D : ℕ}
+    (hTnn : ∀ ⦃p : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs (T p))
+    (hTrr : ∀ ⦃p : ℝ[X]⦄, IsPFPolynomial p → p ≠ 0 →
+      p.natDegree ≤ D → T p ≠ 0 ∧ (T p).Splits)
+    (hmono : ∀ m : ℕ, m + 1 ≤ D →
+      StrictInterl (T (X ^ m)) (T (X ^ (m + 1))))
+    (hquad : ∀ ⦃F G H : ℝ[X]⦄,
+      HasNonnegCoeffs F → HasNonnegCoeffs G → HasNonnegCoeffs H →
+      StrictInterl F G → StrictInterl G H →
+      (∀ b : ℝ, 0 ≤ b →
+        (H + C (2 * b) * G + C (b ^ 2) * F).Splits) →
+      ∀ a : ℝ, 0 ≤ a →
+        StrictInterl (G + C a * F) (H + C a * G)) :
+    PreservesPFShiftInterlacingOnDegree T D := by
+  let P : ℕ → Prop := fun n =>
+    ∀ ⦃p : ℝ[X]⦄ ⦃m : ℕ⦄,
+      IsPFPolynomial p → p ≠ 0 → p.natDegree = n →
+      (X ^ (m + 1) * p).natDegree ≤ D →
+      StrictInterl (T (X ^ m * p)) (T (X ^ (m + 1) * p))
+  have hP : ∀ n, P n := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | h n ih =>
+        intro p m hp hp0 hpdeg hbound
+        by_cases hn0 : n = 0
+        · have hpdeg0 : p.natDegree = 0 := hpdeg.trans hn0
+          let c : ℝ := p.coeff 0
+          have hpC : p = C c := by
+            simpa [c] using Polynomial.eq_C_of_natDegree_eq_zero hpdeg0
+          have hcpos : 0 < c := by
+            have hp_pos : HasPosLeadingCoeff p :=
+              hp.hasNonnegCoeffs.pos_leadingCoeff hp0
+            change 0 < p.leadingCoeff at hp_pos
+            rw [leadingCoeff, hpdeg0] at hp_pos
+            exact hp_pos
+          have hmD : m + 1 ≤ D := by
+            have hpow0 : (X : ℝ[X]) ^ (m + 1) ≠ 0 :=
+              pow_ne_zero _ X_ne_zero
+            rw [natDegree_mul hpow0 hp0, natDegree_pow, natDegree_X,
+              hpdeg0] at hbound
+            simpa using hbound
+          have hbase := hmono m hmD
+          have hscaled :
+              StrictInterl (C c * T (X ^ m))
+                (C c * T (X ^ (m + 1))) :=
+            StrictInterl.C_mul_right
+              (StrictInterl.C_mul_left hbase hcpos.ne') hcpos.ne'
+          have hleft : T (X ^ m * p) = C c * T (X ^ m) := by
+            calc
+              T (X ^ m * p) = T (C c * X ^ m) := by rw [hpC, mul_comm]
+              _ = T (c • X ^ m) := by rw [Polynomial.smul_eq_C_mul]
+              _ = c • T (X ^ m) := T.map_smul c (X ^ m)
+              _ = C c * T (X ^ m) := by rw [Polynomial.smul_eq_C_mul]
+          have hright :
+              T (X ^ (m + 1) * p) = C c * T (X ^ (m + 1)) := by
+            calc
+              T (X ^ (m + 1) * p) = T (C c * X ^ (m + 1)) := by
+                rw [hpC, mul_comm]
+              _ = T (c • X ^ (m + 1)) := by
+                rw [Polynomial.smul_eq_C_mul]
+              _ = c • T (X ^ (m + 1)) := T.map_smul c (X ^ (m + 1))
+              _ = C c * T (X ^ (m + 1)) := by
+                rw [Polynomial.smul_eq_C_mul]
+          rwa [hleft, hright]
+        · have hpdeg_pos : 0 < p.natDegree := by
+            rw [hpdeg]
+            exact Nat.pos_of_ne_zero hn0
+          obtain ⟨u, q, hu, hfactor, hq, hqdeg⟩ :=
+            hp.exists_X_sub_C_factor_of_pos_natDegree hpdeg_pos
+          have hq0 : q ≠ 0 := by
+            intro hzero
+            rw [hzero, mul_zero] at hfactor
+            exact hp0 hfactor
+          have hpdeg_succ : p.natDegree = q.natDegree + 1 := by
+            rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hq0,
+              natDegree_X_sub_C]
+            lia
+          have htotal : m + 2 + q.natDegree ≤ D := by
+            have hpow0 : (X : ℝ[X]) ^ (m + 1) ≠ 0 :=
+              pow_ne_zero _ X_ne_zero
+            rw [natDegree_mul hpow0 hp0, natDegree_pow, natDegree_X,
+              hpdeg_succ] at hbound
+            simp only [mul_one] at hbound
+            lia
+          have hbound_m : (X ^ (m + 1) * q).natDegree ≤ D := by
+            rw [natDegree_mul (pow_ne_zero _ X_ne_zero) hq0,
+              natDegree_pow, natDegree_X]
+            simp only [mul_one]
+            lia
+          have hbound_succ :
+              (X ^ ((m + 1) + 1) * q).natDegree ≤ D := by
+            rw [natDegree_mul (pow_ne_zero _ X_ne_zero) hq0,
+              natDegree_pow, natDegree_X]
+            simp only [mul_one]
+            lia
+          have hqn : q.natDegree < n := by
+            rw [← hpdeg]
+            exact hqdeg
+          have hFG :
+              StrictInterl (T (X ^ m * q))
+                (T (X ^ (m + 1) * q)) :=
+            ih q.natDegree hqn hq hq0 rfl hbound_m
+          have hGH :
+              StrictInterl (T (X ^ (m + 1) * q))
+                (T (X ^ ((m + 1) + 1) * q)) :=
+            ih q.natDegree hqn hq hq0 rfl hbound_succ
+          let F : ℝ[X] := T (X ^ m * q)
+          let G : ℝ[X] := T (X ^ (m + 1) * q)
+          let H : ℝ[X] := T (X ^ (m + 2) * q)
+          have hFnn : HasNonnegCoeffs F :=
+            hTnn ((isPFPolynomial_X_pow m).mul hq).hasNonnegCoeffs
+          have hGnn : HasNonnegCoeffs G :=
+            hTnn ((isPFPolynomial_X_pow (m + 1)).mul hq).hasNonnegCoeffs
+          have hHnn : HasNonnegCoeffs H :=
+            hTnn ((isPFPolynomial_X_pow (m + 2)).mul hq).hasNonnegCoeffs
+          have hFG' : StrictInterl F G := by simpa [F, G] using hFG
+          have hGH' : StrictInterl G H := by
+            simpa only [G, H, show (m + 1) + 1 = m + 2 by lia] using hGH
+          have hfamily : ∀ b : ℝ, 0 ≤ b →
+              (H + C (2 * b) * G + C (b ^ 2) * F).Splits := by
+            intro b hb
+            let r : ℝ[X] := X ^ m * (X + C b) ^ 2 * q
+            have hrpf : IsPFPolynomial r :=
+              ((isPFPolynomial_X_pow m).mul
+                ((isPFPolynomial_X_add_C hb).pow 2)).mul hq
+            have hr0 : r ≠ 0 := by
+              exact mul_ne_zero
+                (mul_ne_zero (pow_ne_zero _ X_ne_zero)
+                  (pow_ne_zero _ (X_add_C_ne_zero b))) hq0
+            have hrdeg : r.natDegree ≤ D := by
+              dsimp [r]
+              rw [natDegree_mul
+                (mul_ne_zero (pow_ne_zero _ X_ne_zero)
+                  (pow_ne_zero _ (X_add_C_ne_zero b))) hq0,
+                natDegree_mul (pow_ne_zero _ X_ne_zero)
+                  (pow_ne_zero _ (X_add_C_ne_zero b)),
+                natDegree_pow, natDegree_X, natDegree_pow,
+                natDegree_X_add_C]
+              simp only [mul_one]
+              lia
+            have hr_split : (T r).Splits := (hTrr hrpf hr0 hrdeg).2
+            have hr_expand :
+                r = X ^ (m + 2) * q +
+                    C (2 * b) * (X ^ (m + 1) * q) +
+                    C (b ^ 2) * (X ^ m * q) := by
+              dsimp [r]
+              rw [show X ^ (m + 2) = X ^ m * X ^ 2 by
+                exact pow_add X m 2,
+                show X ^ (m + 1) = X ^ m * X by rw [pow_succ]]
+              simp only [map_mul, map_pow, map_ofNat]
+              ring
+            have hmap :
+                T r = H + C (2 * b) * G + C (b ^ 2) * F := by
+              rw [hr_expand, T.map_add, T.map_add]
+              rw [← Polynomial.smul_eq_C_mul, ← Polynomial.smul_eq_C_mul,
+                T.map_smul, T.map_smul, Polynomial.smul_eq_C_mul,
+                Polynomial.smul_eq_C_mul]
+            rwa [← hmap]
+          have hstep := hquad hFnn hGnn hHnn hFG' hGH' hfamily
+              (-u) (neg_nonneg.mpr hu)
+          have hmap_factor : ∀ j : ℕ,
+              T (X ^ j * p) =
+                T (X ^ (j + 1) * q) + C (-u) * T (X ^ j * q) := by
+            intro j
+            have hpoly :
+                X ^ j * p = X ^ (j + 1) * q + (-u) • (X ^ j * q) := by
+              rw [hfactor, show X ^ (j + 1) = X ^ j * X by rw [pow_succ]]
+              simp only [Polynomial.smul_eq_C_mul, map_neg]
+              ring
+            rw [hpoly, T.map_add, T.map_smul, Polynomial.smul_eq_C_mul]
+          rw [hmap_factor m, hmap_factor (m + 1)]
+          simpa only [F, G, H, show (m + 1) + 1 = m + 2 by lia] using hstep
+  intro p m hp hp0 hbound
+  exact hP p.natDegree hp hp0 rfl hbound
+
 /-- Krein-expansion reduction for an oriented interlacing preserver.
 
 If the map preserves coefficientwise nonnegativity and sends every PF Krein
