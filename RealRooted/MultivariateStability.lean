@@ -144,16 +144,14 @@ theorem MvStableIn.mul {sigma : Type*} {Omega : sigma → Set ℂ}
 /-- Each left factor of a region-stable product is region-stable. -/
 theorem MvStableIn.left_of_mul {sigma : Type*} {Omega : sigma → Set ℂ}
     {P Q : MvPolynomial sigma ℂ} (hPQ : MvStableIn Omega (P * Q)) :
-    MvStableIn Omega P := by
-  intro z hz hzero
-  exact hPQ z hz (by simp [hzero])
+    MvStableIn Omega P :=
+  fun z hz hzero => hPQ z hz (by simp [hzero])
 
 /-- Each right factor of a region-stable product is region-stable. -/
 theorem MvStableIn.right_of_mul {sigma : Type*} {Omega : sigma → Set ℂ}
     {P Q : MvPolynomial sigma ℂ} (hPQ : MvStableIn Omega (P * Q)) :
-    MvStableIn Omega Q := by
-  intro z hz hzero
-  exact hPQ z hz (by simp [hzero])
+    MvStableIn Omega Q :=
+  fun z hz hzero => hPQ z hz (by simp [hzero])
 
 /-- Renaming variables preserves stability when the new coordinate regions
 map into the old ones. -/
@@ -528,16 +526,14 @@ theorem MvUpperHalfPlaneStable.mul_X_add_X_pow {sigma : Type*}
 theorem MvUpperHalfPlaneStable.left_of_mul {sigma : Type*}
     {P Q : MvPolynomial sigma ℂ}
     (hPQ : MvUpperHalfPlaneStable (P * Q)) :
-    MvUpperHalfPlaneStable P := by
-  intro z hz hzero
-  exact hPQ z hz (by simp [hzero])
+    MvUpperHalfPlaneStable P :=
+  fun z hz hzero => hPQ z hz (by simp [hzero])
 
 theorem MvUpperHalfPlaneStable.right_of_mul {sigma : Type*}
     {P Q : MvPolynomial sigma ℂ}
     (hPQ : MvUpperHalfPlaneStable (P * Q)) :
-    MvUpperHalfPlaneStable Q := by
-  intro z hz hzero
-  exact hPQ z hz (by simp [hzero])
+    MvUpperHalfPlaneStable Q :=
+  fun z hz hzero => hPQ z hz (by simp [hzero])
 
 theorem MvUpperHalfPlaneStable.rename {sigma tau : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
@@ -704,8 +700,8 @@ theorem MvUpperHalfPlaneStable.of_translate_add_real {sigma : Type*}
   have htranslated :
       MvPolynomial.aeval (fun i => z i - (a i : ℂ))
         (MvPolynomial.aeval
-          (fun i => MvPolynomial.C (a i : ℂ) + MvPolynomial.X i) P) ≠ 0 := by
-    exact hP (fun i => z i - (a i : ℂ)) (by
+          (fun i => MvPolynomial.C (a i : ℂ) + MvPolynomial.X i) P) ≠ 0 :=
+    hP (fun i => z i - (a i : ℂ)) (by
       intro i
       simpa using hz i)
   rw [MvPolynomial.comp_aeval_apply] at htranslated
