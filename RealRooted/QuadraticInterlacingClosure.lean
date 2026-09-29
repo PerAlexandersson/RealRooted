@@ -380,6 +380,39 @@ theorem positiveRootCount_quadraticParameterEvaluation_le_rootCountDrop
         ((Polynomial.card_roots' p).trans_eq hpdeg)
     simpa [hGF, hHG, Nat.add_assoc] using hroots
 
+/-! ## Logarithmic-ratio endpoint -/
+
+/-- A nonpositive upper-half-plane logarithmic ratio puts the parameter
+tangent before the quadratic pencil in oriented interlacing order.
+
+This is the exact formal endpoint needed from the analytic root-motion
+argument.  Rellich root branches with nonpositive velocities give `hratio`
+by logarithmic differentiation; the existing Hermite--Biehler converse then
+supplies proper position, including common and repeated roots. -/
+theorem strictInterl_quadraticInterlacingTangent_pencil_of_im_ratio_nonpos
+    {F G H : ℝ[X]} {a : ℝ}
+    (hQpos : HasPosLeadingCoeff (quadraticInterlacingPencil F G H a))
+    (hApos : HasPosLeadingCoeff (quadraticInterlacingTangent F G a))
+    (hQsplit : (quadraticInterlacingPencil F G H a).Splits)
+    (hratio : ∀ z : ℂ, 0 < z.im →
+      ((complexify (quadraticInterlacingTangent F G a)).eval z /
+        (complexify (quadraticInterlacingPencil F G H a)).eval z).im ≤ 0) :
+    StrictInterl (quadraticInterlacingTangent F G a)
+      (quadraticInterlacingPencil F G H a) := by
+  let Q := quadraticInterlacingPencil F G H a
+  let A := quadraticInterlacingTangent F G a
+  have hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial Q A) :=
+    stable_of_im_ratio_nonpos hQpos.ne_zero hQsplit hratio
+  by_cases hQdeg : 1 ≤ Q.natDegree
+  · exact strictInterl_of_stable_general hQpos hApos hstable hQdeg
+  · have hQdeg0 : Q.natDegree = 0 := by lia
+    have hAdeg0 : A.natDegree = 0 := by
+      have hshape := (natDegree_shape_of_stable hQpos hApos hstable).1
+      lia
+    exact StrictInterl.of_degree_zero_degree_zero hApos.ne_zero
+      (isRealRooted_of_deg_zero hApos.ne_zero hAdeg0).2 hQpos.ne_zero
+      (isRealRooted_of_deg_zero hQpos.ne_zero hQdeg0).2 hAdeg0 hQdeg0
+
 /-- The quadratic pencil is the right member plus `a` times its tangent. -/
 theorem quadraticInterlacingPencil_eq_right_add_tangent
     (F G H : ℝ[X]) (a : ℝ) :
@@ -473,5 +506,23 @@ theorem strictInterl_quadraticInterlacingRight_of_tangent
     exact hWQ x
   exact strictInterl_of_allComboRealRooted_of_wronskian_nonneg
     hBpos hApos (allComboRealRooted_comm hallAB) hWB
+
+/-- A nonpositive upper-half-plane logarithmic ratio gives the full
+quadratic-closure conclusion.  This packages the Hermite--Biehler endpoint
+with the algebraic change from the pencil to `H + a G`. -/
+theorem strictInterl_quadraticInterlacingRight_of_im_ratio_nonpos
+    {F G H : ℝ[X]} {a : ℝ}
+    (hApos : HasPosLeadingCoeff (quadraticInterlacingTangent F G a))
+    (hBpos : HasPosLeadingCoeff (quadraticInterlacingRight G H a))
+    (hQpos : HasPosLeadingCoeff (quadraticInterlacingPencil F G H a))
+    (hQsplit : (quadraticInterlacingPencil F G H a).Splits)
+    (hratio : ∀ z : ℂ, 0 < z.im →
+      ((complexify (quadraticInterlacingTangent F G a)).eval z /
+        (complexify (quadraticInterlacingPencil F G H a)).eval z).im ≤ 0) :
+    StrictInterl (quadraticInterlacingTangent F G a)
+      (quadraticInterlacingRight G H a) := by
+  apply strictInterl_quadraticInterlacingRight_of_tangent hApos hBpos hQpos
+  exact strictInterl_quadraticInterlacingTangent_pencil_of_im_ratio_nonpos
+    hQpos hApos hQsplit hratio
 
 end RealRooted
