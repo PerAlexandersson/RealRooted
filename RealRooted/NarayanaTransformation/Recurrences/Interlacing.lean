@@ -68,7 +68,7 @@ theorem strictInterl_narayanaPolynomial_one_two (m : ℕ) :
     ring
   have hprod : r₁ * r₂ = 1 := by
     rw [hr₁_def, hr₂_def]
-    nlinarith [hd_sq]
+    linarith [hd_sq]
   have hfactor : narayanaPolynomial m 2 = (X - C r₁) * (X - C r₂) := by
     rw [hN₂]
     symm
