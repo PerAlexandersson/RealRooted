@@ -296,18 +296,19 @@ def theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstantStateme
 common-interleaver forward direction. -/
 theorem theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
     (hforward : theorem21CompatibleToRootCountBranchesStatement) :
-    theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement :=
-  fun f g hf hg hsgn hcompat =>
-    theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
-      hf hg hsgn (hforward hf hg hsgn hcompat)
+    theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement := by
+  intro f g hf hg hsgn hcompat
+  exact theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
+    hf hg hsgn (hforward hf hg hsgn hcompat)
 
 /-- The branch-retaining common-interleaver forward direction forgets back to
 the root-count forward direction. -/
 theorem theorem21CompatibleToRootCountBranches_of_commonForward
     (hforward :
       theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement) :
-    theorem21CompatibleToRootCountBranchesStatement :=
-  fun f g hf hg hsgn hcompat => theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
+    theorem21CompatibleToRootCountBranchesStatement := by
+  intro f g hf hg hsgn hcompat
+  exact theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
     (hforward hf hg hsgn hcompat)
 
 /-- The branch-retaining common-interleaver reverse direction restricts to the
@@ -316,15 +317,17 @@ theorem
     theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstant_of_reverse
     (hreverse :
       theorem21DeletionPairCommonInterleaverBranchesToCompatibleStatement) :
-    theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstantStatement :=
-  fun f g hf hg hsgn _hf_deg _hg_deg hbranches => hreverse hf hg hsgn hbranches
+    theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstantStatement := by
+  intro f g hf hg hsgn _hf_deg _hg_deg hbranches
+  exact hreverse hf hg hsgn hbranches
 
 /-- The isolated reverse root-count direction supplies the branch-retaining
 common-interleaver reverse direction. -/
 theorem theorem21DeletionPairCommonInterleaverBranchesToCompatible_of_reverse
     (hreverse : theorem21RootCountBranchesToCompatibleStatement) :
-    theorem21DeletionPairCommonInterleaverBranchesToCompatibleStatement :=
-  fun f g hf hg hsgn hbranches => hreverse hf hg hsgn
+    theorem21DeletionPairCommonInterleaverBranchesToCompatibleStatement := by
+  intro f g hf hg hsgn hbranches
+  exact hreverse hf hg hsgn
     (theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
       hbranches)
 
@@ -333,8 +336,9 @@ branch-retaining common-interleaver reverse direction. -/
 theorem
     theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstant_of_rootCountReverse
     (hreverse : theorem21RootCountBranchesToCompatibleNonconstantStatement) :
-    theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstantStatement :=
-  fun f g hf hg hsgn hf_deg hg_deg hbranches => hreverse hf hg hsgn hf_deg hg_deg
+    theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstantStatement := by
+  intro f g hf hg hsgn hf_deg hg_deg hbranches
+  exact hreverse hf hg hsgn hf_deg hg_deg
     (theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
       hbranches)
 
