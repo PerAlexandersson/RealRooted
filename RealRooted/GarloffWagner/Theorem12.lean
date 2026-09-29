@@ -64,12 +64,12 @@ end IsGWKreinSummand
 theorem gwSchurProduct_interl_of_right_natDegree_eq_zero
     (f g p : ℝ[X]) (hpdeg : p.natDegree = 0) :
     Interl (gwSchurProduct f p) (gwSchurProduct g p) := by
-  have hfdeg : (gwSchurProduct f p).natDegree = 0 := by
-    exact le_antisymm
+  have hfdeg : (gwSchurProduct f p).natDegree = 0 :=
+    le_antisymm
       ((natDegree_gwSchurProduct_le_right f p).trans (le_of_eq hpdeg))
       (Nat.zero_le _)
-  have hgdeg : (gwSchurProduct g p).natDegree = 0 := by
-    exact le_antisymm
+  have hgdeg : (gwSchurProduct g p).natDegree = 0 :=
+    le_antisymm
       ((natDegree_gwSchurProduct_le_right g p).trans (le_of_eq hpdeg))
       (Nat.zero_le _)
   exact interl_of_natDegree_eq_zero hfdeg hgdeg
@@ -78,8 +78,8 @@ theorem gwSchurProduct_interl_of_right_natDegree_eq_zero
 theorem gwSchurProduct_pf_of_right_natDegree_eq_zero {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hpdeg : p.natDegree = 0) :
     IsPFPolynomial (gwSchurProduct f p) := by
-  have hdeg : (gwSchurProduct f p).natDegree = 0 := by
-    exact le_antisymm
+  have hdeg : (gwSchurProduct f p).natDegree = 0 :=
+    le_antisymm
       ((natDegree_gwSchurProduct_le_right f p).trans (le_of_eq hpdeg))
       (Nat.zero_le _)
   exact IsPFPolynomial.of_realRooted_nonneg
@@ -562,13 +562,13 @@ theorem gwSchurProductPFAndStrictInterl :
           · have hfdeg0 : f.natDegree = 0 := by
               have hstrict_le := hstrict.natDegree_le
               lia
-            have hleftdeg : (gwSchurProduct f p).natDegree = 0 := by
-              exact le_antisymm
+            have hleftdeg : (gwSchurProduct f p).natDegree = 0 :=
+              le_antisymm
                 ((natDegree_gwSchurProduct_le_left f p).trans
                   (le_of_eq hfdeg0))
                 (Nat.zero_le _)
-            have hrightdeg : (gwSchurProduct g p).natDegree = 0 := by
-              exact le_antisymm
+            have hrightdeg : (gwSchurProduct g p).natDegree = 0 :=
+              le_antisymm
                 ((natDegree_gwSchurProduct_le_left g p).trans
                   (le_of_eq hgdeg0))
                 (Nat.zero_le _)
