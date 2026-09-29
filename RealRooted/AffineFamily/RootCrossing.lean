@@ -403,7 +403,7 @@ protected lemma AffineFamily.hasSimpleRoots_right_of_affine_family_succDegree_no
     exists_delta_eval_mul_pos_iterateTDeriv_at_zero k
       (p := qNeg) (x := r) hqNeg_eval_ne
   let η : ℝ := min δPos δNeg / 2
-  have hη_pos : 0 < η := by exact half_pos (lt_min_iff.mpr ⟨hδPos, hδNeg⟩)
+  have hη_pos : 0 < η := half_pos (lt_min_iff.mpr ⟨hδPos, hδNeg⟩)
   have hη_smallPos : ‖η‖ < δPos := by
     have hη_norm : ‖η‖ = min δPos δNeg / 2 := by
       rw [Real.norm_eq_abs, show η = min δPos δNeg / 2 by rfl, abs_of_pos hη_pos]
@@ -756,9 +756,8 @@ theorem PosComboRealRooted.hasSimpleRoots_add_left
     {lam : ℝ}
     (hlam : 0 < lam) :
     HasSimpleRoots (C lam * f + g) := by
-  have hno' : ∀ r, g.IsRoot r → ¬ f.IsRoot r := by
-    intro r hg hf
-    exact hno r hf hg
+  have hno' : ∀ r, g.IsRoot r → ¬ f.IsRoot r :=
+    fun r hg hf => hno r hf hg
   simpa [add_comm] using
     PosComboRealRooted.hasSimpleRoots_add_right
       (f := g) (g := f) (PosComboRealRooted.comm hfg) hno' hlam
@@ -831,9 +830,8 @@ theorem eval_pos_iff_of_not_exists_pos_isRoot_add_right
     {f g : ℝ[X]} {x : ℝ} (hfx : f.eval x ≠ 0) (hgx : g.eval x ≠ 0)
     (hno : ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :
     (0 < f.eval x ↔ 0 < g.eval x) := by
-  have hnot_mul : ¬ f.eval x * g.eval x < 0 := by
-    intro hmul
-    exact hno ((exists_pos_isRoot_add_right_iff_eval_mul_neg hfx).mpr hmul)
+  have hnot_mul : ¬ f.eval x * g.eval x < 0 :=
+    fun hmul => hno ((exists_pos_isRoot_add_right_iff_eval_mul_neg hfx).mpr hmul)
   constructor
   · intro hfpos
     by_contra hnot
@@ -874,9 +872,8 @@ theorem eval_right_ne_zero_of_isRoot_of_no_common
     {f g : ℝ[X]} {x : ℝ}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfx : f.IsRoot x) :
-    g.eval x ≠ 0 := by
-  intro hgx
-  exact hno x hfx (by simpa [Polynomial.IsRoot.def] using hgx)
+    g.eval x ≠ 0 :=
+  fun hgx => hno x hfx (by simpa [Polynomial.IsRoot.def] using hgx)
 
 /-- Symmetric endpoint-evaluation form of
 `eval_right_ne_zero_of_isRoot_of_no_common`. -/
@@ -884,9 +881,8 @@ theorem eval_left_ne_zero_of_isRoot_of_no_common
     {f g : ℝ[X]} {x : ℝ}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hgx : g.IsRoot x) :
-    f.eval x ≠ 0 := by
-  intro hfx
-  exact hno x (by simpa [Polynomial.IsRoot.def] using hfx) hgx
+    f.eval x ≠ 0 :=
+  fun hfx => hno x (by simpa [Polynomial.IsRoot.def] using hfx) hgx
 
 /-- At a root of a no-common right pencil, the right endpoint does not vanish. -/
 theorem eval_right_ne_zero_of_isRoot_add_right_of_no_common
