@@ -31,8 +31,9 @@ def basisCoefficientMatrix (P : ℕ → ℝ[X]) : LowerTriangularMatrix ℝ :=
 
 theorem basisCoefficientMatrix_isLowerTriangular {P : ℕ → ℝ[X]}
     (hP : ∀ i, (P i).natDegree ≤ i) :
-    IsLowerTriangular (basisCoefficientMatrix P) :=
-  fun i j hij => Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (hP i) hij)
+    IsLowerTriangular (basisCoefficientMatrix P) := by
+  intro i j hij
+  exact Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (hP i) hij)
 
 @[simp] theorem rowPolynomial_basisCoefficientMatrix {P : ℕ → ℝ[X]}
     (hP : ∀ i, (P i).natDegree ≤ i) (i : ℕ) :
@@ -79,13 +80,14 @@ theorem rowPolynomial_mul_basisCoefficientMatrix {P : ℕ → ℝ[X]}
   by_cases hji : j ≤ i
   · rw [coeff_rowPolynomial_mul_of_le M (basisCoefficientMatrix P) hji,
       coeff_basisTransform_rowPolynomial]
-    have hsubset : Finset.Icc j i ⊆ Finset.range (i + 1) :=
-      fun k hk => Finset.mem_range.mpr (Nat.lt_succ_iff.mpr (Finset.mem_Icc.mp hk).2)
+    have hsubset : Finset.Icc j i ⊆ Finset.range (i + 1) := by
+      intro k hk
+      exact Finset.mem_range.mpr (Nat.lt_succ_iff.mpr (Finset.mem_Icc.mp hk).2)
     rw [← Finset.sum_subset hsubset]
     · simp [basisCoefficientMatrix]
     · intro k hkrange hkIcc
       have hki : k ≤ i := Nat.lt_succ_iff.mp (Finset.mem_range.mp hkrange)
-      have hkj : k < j := lt_of_not_ge fun hjk => hkIcc (Finset.mem_Icc.mpr ⟨hjk, hki⟩)
+      have hkj : k < j := by exact lt_of_not_ge fun hjk => hkIcc (Finset.mem_Icc.mpr ⟨hjk, hki⟩)
       rw [Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (hP k) hkj),
         mul_zero]
   · have hij : i < j := Nat.lt_of_not_ge hji
@@ -118,8 +120,8 @@ theorem natDegree_affineBasisPolynomial_le (a d : ℝ) (n : ℕ) :
     ((C a * X + C d : ℝ[X]) ^ n).natDegree
         ≤ n * (C a * X + C d : ℝ[X]).natDegree :=
       Polynomial.natDegree_pow_le
-    _ ≤ n * 1 :=
-      Nat.mul_le_mul_left n (by
+    _ ≤ n * 1 := by
+      exact Nat.mul_le_mul_left n (by
         calc
           (C a * X + C d : ℝ[X]).natDegree
               ≤ max (C a * X).natDegree (C d).natDegree :=
@@ -177,8 +179,9 @@ theorem RowGeneratingFunctionsPF.mul_affineSubstitutionMatrix
 
 theorem affineSubstitutionMatrix_rightPreservesRowGeneratingFunctionsPF
     {a d : ℝ} (ha : 0 < a) (hd : 0 ≤ d) :
-    RightPreservesRowGeneratingFunctionsPF (affineSubstitutionMatrix a d) :=
-  fun M hM => hM.mul_affineSubstitutionMatrix ha hd
+    RightPreservesRowGeneratingFunctionsPF (affineSubstitutionMatrix a d) := by
+  intro M hM
+  exact hM.mul_affineSubstitutionMatrix ha hd
 
 theorem affineSubstitutionMatrix_rightPowersPreserveRowGeneratingFunctionsPF
     {a d : ℝ} (ha : 0 < a) (hd : 0 ≤ d) :
@@ -299,8 +302,9 @@ theorem RowGeneratingFunctionsPF.mul_touchardMatrix
   exact touchardTransformPreservesPF (hM.row i)
 
 theorem touchardMatrix_rightPreservesRowGeneratingFunctionsPF :
-    RightPreservesRowGeneratingFunctionsPF touchardMatrix :=
-  fun M hM => hM.mul_touchardMatrix
+    RightPreservesRowGeneratingFunctionsPF touchardMatrix := by
+  intro M hM
+  exact hM.mul_touchardMatrix
 
 theorem touchardMatrix_rightPowersPreserveRowGeneratingFunctionsPF :
     RightPowersPreserveRowGeneratingFunctionsPF touchardMatrix :=
@@ -337,8 +341,9 @@ theorem RowGeneratingFunctionsPF.mul_risingFactorialMatrix
 
 theorem risingFactorialMatrix_rightPreservesRowGeneratingFunctionsPF
     {μ : ℝ} (hμ : 0 < μ) :
-    RightPreservesRowGeneratingFunctionsPF (risingFactorialMatrix μ) :=
-  fun M hM => hM.mul_risingFactorialMatrix hμ
+    RightPreservesRowGeneratingFunctionsPF (risingFactorialMatrix μ) := by
+  intro M hM
+  exact hM.mul_risingFactorialMatrix hμ
 
 theorem risingFactorialMatrix_rightPowersPreserveRowGeneratingFunctionsPF
     {μ : ℝ} (hμ : 0 < μ) :
@@ -375,8 +380,9 @@ theorem RowGeneratingFunctionsPF.mul_narayanaMatrix
   exact narayanaTransformPreservesPF m (hM.row i)
 
 theorem narayanaMatrix_rightPreservesRowGeneratingFunctionsPF (m : ℕ) :
-    RightPreservesRowGeneratingFunctionsPF (narayanaMatrix m) :=
-  fun M hM => hM.mul_narayanaMatrix m
+    RightPreservesRowGeneratingFunctionsPF (narayanaMatrix m) := by
+  intro M hM
+  exact hM.mul_narayanaMatrix m
 
 theorem narayanaMatrix_rightPowersPreserveRowGeneratingFunctionsPF (m : ℕ) :
     RightPowersPreserveRowGeneratingFunctionsPF (narayanaMatrix m) :=
@@ -457,13 +463,14 @@ abbrev maoWangMatrixListProductRowGeneratingFunctionsPFStatement : Prop :=
         RowGeneratingFunctionsPF (mul M (listProduct Bs))
 
 theorem maoWang_matrixProduct_rowGeneratingFunctions_pf :
-    maoWangMatrixProductRowGeneratingFunctionsPFStatement :=
-  fun M B hB r hM => hB.rightPowersPreserveRowGeneratingFunctionsPF M r hM
+    maoWangMatrixProductRowGeneratingFunctionsPFStatement := by
+  intro M B hB r hM
+  exact hB.rightPowersPreserveRowGeneratingFunctionsPF M r hM
 
 theorem maoWang_matrixListProduct_rowGeneratingFunctions_pf :
-    maoWangMatrixListProductRowGeneratingFunctionsPFStatement :=
-  fun M Bs hBs hM =>
-    maoWangAdmissibleMatrix_listProduct_rightPreservesRowGeneratingFunctionsPF hBs M hM
+    maoWangMatrixListProductRowGeneratingFunctionsPFStatement := by
+  intro M Bs hBs hM
+  exact maoWangAdmissibleMatrix_listProduct_rightPreservesRowGeneratingFunctionsPF hBs M hM
 
 /-- Every row-generating polynomial has only real nonpositive roots, allowing
 the zero polynomial. -/
@@ -473,8 +480,9 @@ def RowGeneratingFunctionsHaveOnlyNonposRoots
 
 theorem RowGeneratingFunctionsPF.hasOnlyNonposRoots
     {A : LowerTriangularMatrix ℝ} (hA : RowGeneratingFunctionsPF A) :
-    RowGeneratingFunctionsHaveOnlyNonposRoots A :=
-  fun i => (hA.row i).hasOnlyNonposRoots
+    RowGeneratingFunctionsHaveOnlyNonposRoots A := by
+  intro i
+  exact (hA.row i).hasOnlyNonposRoots
 
 /-- Mao--Wang matrix-product criterion in the paper-facing root-location
 form, for right powers of an admissible one-step factor. -/
@@ -495,12 +503,14 @@ abbrev maoWangMatrixListProductRowGeneratingFunctionsNonposRootsStatement :
         RowGeneratingFunctionsHaveOnlyNonposRoots (mul M (listProduct Bs))
 
 theorem maoWang_matrixProduct_rowGeneratingFunctions_nonposRoots :
-    maoWangMatrixProductRowGeneratingFunctionsNonposRootsStatement :=
-  fun M B hB r hM => (maoWang_matrixProduct_rowGeneratingFunctions_pf hB r hM).hasOnlyNonposRoots
+    maoWangMatrixProductRowGeneratingFunctionsNonposRootsStatement := by
+  intro M B hB r hM
+  exact (maoWang_matrixProduct_rowGeneratingFunctions_pf hB r hM).hasOnlyNonposRoots
 
 theorem maoWang_matrixListProduct_rowGeneratingFunctions_nonposRoots :
-    maoWangMatrixListProductRowGeneratingFunctionsNonposRootsStatement :=
-  fun M Bs hBs hM => (maoWang_matrixListProduct_rowGeneratingFunctions_pf hBs hM).hasOnlyNonposRoots
+    maoWangMatrixListProductRowGeneratingFunctionsNonposRootsStatement := by
+  intro M Bs hBs hM
+  exact (maoWang_matrixListProduct_rowGeneratingFunctions_pf hBs hM).hasOnlyNonposRoots
 
 /-- Rowwise Brenti inverse statement for the falling-factorial coefficient
 matrix. -/
@@ -520,8 +530,9 @@ theorem RowGeneratingFunctionsHaveOnlyNonposRoots.of_mul_fallingFactorialMatrix
   exact brentiFallingFactorial hrow
 
 theorem fallingFactorialMatrix_reflectsRowGeneratingFunctionsNonposRoots :
-    fallingFactorialMatrixReflectsRowGeneratingFunctionsNonposRootsStatement :=
-  fun M hM => hM.of_mul_fallingFactorialMatrix
+    fallingFactorialMatrixReflectsRowGeneratingFunctionsNonposRootsStatement := by
+  intro M hM
+  exact hM.of_mul_fallingFactorialMatrix
 
 end LowerTriangularMatrix
 
