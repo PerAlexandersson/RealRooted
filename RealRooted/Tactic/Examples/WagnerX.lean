@@ -802,7 +802,7 @@ lemma a358623Shifted_coeff_two_pos_succ :
       rw [a358623Shifted_succ_succ, coeff_X_mul, coeff_add, coeff_C_mul,
         coeff_C_mul, coeff_derivative, hone]
       norm_num
-      nlinarith [hprev, show (0 : ℝ) < (n : ℝ) + 4 by positivity]
+      linarith [hprev, show (0 : ℝ) < (n : ℝ) + 4 by positivity]
 
 /-- Active shifted rows have degree at least two, as required by Rolle. -/
 lemma a358623Shifted_degree_two_succ (n : Nat) :
