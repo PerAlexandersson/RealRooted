@@ -232,8 +232,9 @@ theorem exceptionalEulerInverse_allComboRealRooted
     (hγ : γ₁ < γ₂) :
     AllComboRealRooted
       (exceptionalEulerInverse m ε γ₁)
-      (exceptionalEulerInverse m ε γ₂) :=
-  fun a b => exceptionalEulerInverse_pencil_splits
+      (exceptionalEulerInverse m ε γ₂) := by
+  intro a b
+  exact exceptionalEulerInverse_pencil_splits
     m ε hm hγ₁ hγ₂ hγ
 
 /-- Larger exceptional Euler parameter gives the left-hand root set in proper

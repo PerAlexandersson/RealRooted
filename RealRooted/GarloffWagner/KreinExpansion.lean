@@ -25,7 +25,7 @@ theorem exists_kreinRootDeletedExpansion_right {f g : ℝ[X]}
   let roots : List ℝ := g.roots.toFinset.toList
   have hroots_nodup : roots.Nodup := Finset.nodup_toList _
   have hroot : ∀ u ∈ roots, g.IsRoot u :=
-    fun u hu => (mem_roots hfg.2.1.1).mp
+    fun _ hu => (mem_roots hfg.2.1.1).mp
       (Multiset.mem_toFinset.mp (Finset.mem_toList.mp hu))
   have hdata : ∀ u ∈ roots, ∃ a : ℝ, ∃ q : ℝ[X],
       g = (X - C u) * q ∧
@@ -241,7 +241,7 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree {f g : ℝ[X]
   let roots : List ℝ := g.roots.toFinset.toList
   have hroots_nodup : roots.Nodup := Finset.nodup_toList _
   have hroot : ∀ u ∈ roots, g.IsRoot u :=
-    fun u hu => (mem_roots hfg.2.1.1).mp
+    fun _ hu => (mem_roots hfg.2.1.1).mp
       (Multiset.mem_toFinset.mp (Finset.mem_toList.mp hu))
   have hdata : ∀ u ∈ roots, ∃ a : ℝ, ∃ q : ℝ[X],
       0 ≤ a ∧

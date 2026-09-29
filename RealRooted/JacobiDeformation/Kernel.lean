@@ -303,7 +303,7 @@ theorem eigenCoefficient_diagonal {n : ℕ} {eigenvalue : Fin n → ℝ}
     {coefficient : Fin n → Fin n → ℝ} (heigenvalue : Function.Injective eigenvalue)
     (hcoefficient : EigenCoefficientCondition eigenvalue coefficient) :
     ∀ i j, i ≠ j → coefficient i j = 0 :=
-  fun i j hij => eigenCoefficient_eq_zero_of_ne heigenvalue hcoefficient hij
+  fun _ _ hij => eigenCoefficient_eq_zero_of_ne heigenvalue hcoefficient hij
 
 /-- Apply an operator to the first variable of a finite separable polynomial
 kernel, represented only by its finite coefficient array. -/

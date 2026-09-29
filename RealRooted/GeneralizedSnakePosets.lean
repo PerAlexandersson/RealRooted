@@ -323,8 +323,9 @@ theorem deleteFirstColumnPlacement_isNonNestingPlacement
     rcases a with ⟨row, col⟩
     have ha_cell := hP.1 ha
     rw [mem_ferrers_cells] at ha_cell ⊢
-    have hcol_ne : col ≠ 1 :=
-      fun hcol => hfree row (by simpa [hcol] using ha)
+    have hcol_ne : col ≠ 1 := by
+      intro hcol
+      exact hfree row (by simpa [hcol] using ha)
     have hcol_gt : 1 < col := lt_of_le_of_ne (Nat.succ_le_of_lt ha_cell.2.1) hcol_ne.symm
     refine ⟨by simpa [partitionSubOne] using ha_cell.1,
       Nat.sub_pos_of_lt hcol_gt, ?_⟩
@@ -474,8 +475,9 @@ theorem one_lt_col_of_mem_withoutFirstColumn
   intro a ha
   have ha_cell := hP.1.1 ha
   rw [mem_ferrers_cells] at ha_cell
-  have hcol_ne : a.2 ≠ 1 :=
-    fun hcol => hP.2 a.1 (by
+  have hcol_ne : a.2 ≠ 1 := by
+    intro hcol
+    exact hP.2 a.1 (by
       have ha_eq : (a.1, 1) = a := by ext <;> simp [hcol]
       simpa [ha_eq] using ha)
   exact lt_of_le_of_ne (Nat.succ_le_of_lt ha_cell.2.1) hcol_ne.symm

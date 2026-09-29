@@ -616,7 +616,7 @@ theorem rPolynomial_exceptional_eval_mul_jPolynomial_derivative_pos
       have hsFirstMono : StrictMono (fun j : Fin n => s j.castSucc) :=
         hsMono.comp Fin.strictMono_castSucc
       have hsCross : ∀ (j k : Fin n), j < k → r j < s k.castSucc :=
-        fun j k hjk => (hsRight j).trans_le (hsMono.monotone (by
+        fun j k _ => (hsRight j).trans_le (hsMono.monotone (by
           change j.val + 1 ≤ k.val
           lia))
       have hprodFirst := StrictMono.prod_sub_mul_prod_sub_pos_of_interlacing

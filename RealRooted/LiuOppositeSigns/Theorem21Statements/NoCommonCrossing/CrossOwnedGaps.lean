@@ -203,14 +203,14 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_endpoint_count_diffs
           (f.roots.filter (a < ·)).card =
         (((f + C (νR x) * g).roots.filter (b < ·)).card : ℤ) -
           (f.roots.filter (b < ·)).card) :
-    CrossOwnedNotOddGaps f g :=
-  fun a b x hax hxb ha_root hb_root hgap hnot_odd =>
-    hsgn.cross_owner_roots_of_not_odd_of_endpoint_count_diffs
-      hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
-      (hνL_pos x) (hνL_large x) (hdegL x)
-      (hleft_count_sub x a b)
-      (hνR_pos x) (hνR_small x) (hdegR x)
-      (hright_count_sub x a b)
+    CrossOwnedNotOddGaps f g := by
+  intro a b x hax hxb ha_root hb_root hgap hnot_odd
+  exact hsgn.cross_owner_roots_of_not_odd_of_endpoint_count_diffs
+    hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
+    (hνL_pos x) (hνL_large x) (hdegL x)
+    (hleft_count_sub x a b)
+    (hνR_pos x) (hνR_small x) (hdegR x)
+    (hright_count_sub x a b)
 
 /-- Supplier for the parity-guarded consecutive-root ownership input from an
 open-gap no-root hypothesis for the endpoint families.  This is the finite
@@ -500,8 +500,9 @@ theorem OppositeLeadingSigns.crossOwnedNotOddGaps_of_parameter_bounds
         (f + C τ * g).natDegree = (f + C μ * g).natDegree)
     (hdegR_zero : ∀ x η : ℝ, η ∈ Set.Icc (0 : ℝ) (νR x) →
       (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree) :
-    CrossOwnedNotOddGaps f g :=
-  fun a b x hax hxb ha_root hb_root hgap hnot_odd => hsgn.cross_owner_roots_of_not_odd
+    CrossOwnedNotOddGaps f g := by
+  intro a b x hax hxb ha_root hb_root hgap hnot_odd
+  exact hsgn.cross_owner_roots_of_not_odd
     hfg hno hf hg hgap hax hxb ha_root hb_root hnot_odd
     (hνL_pos x) (hνL_large x) (hdegL x) (hdegL_inv x)
     (hνR_pos x) (hνR_small x) (hdegR x) (hdegR_zero x)

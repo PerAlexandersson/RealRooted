@@ -104,8 +104,9 @@ theorem coeff_signedRunSeries_of_isPositive
     PowerSeries.coeff n (signedRunSeries weight letter) =
       if n = 1 then C (weight letter) else 0 := by
   classical
-  have hnotnegative : ¬letter.IsNegative :=
-    fun hnegative => letter.not_isNegative_and_isPositive ⟨hnegative, hpositive⟩
+  have hnotnegative : ¬letter.IsNegative := by
+    intro hnegative
+    exact letter.not_isNegative_and_isPositive ⟨hnegative, hpositive⟩
   simp [signedRunSeries, hnotnegative]
 
 @[simp]
@@ -250,8 +251,9 @@ theorem coeff_signedSkeletonRunSeries
       apply Finset.sum_subset (Finset.filter_subset _ _)
       intro lengths hlengths hnotmem
       have hnotvalid :
-          ¬IsSignedRunLengthAssignment skeleton lengths :=
-        fun hvalid => hnotmem (Finset.mem_filter.mpr ⟨hlengths, hvalid⟩)
+          ¬IsSignedRunLengthAssignment skeleton lengths := by
+        intro hvalid
+        exact hnotmem (Finset.mem_filter.mpr ⟨hlengths, hvalid⟩)
       obtain ⟨i, hi⟩ :=
         exists_coeff_signedRunSeries_eq_zero_of_not_assignment
           weight hnotvalid
@@ -504,8 +506,9 @@ theorem coeff_signedTupleSkeletonRunSeries
       apply Finset.sum_subset (Finset.filter_subset _ _)
       intro lengths hlengths hnotmem
       have hnotvalid :
-          ¬IsSignedTupleRunLengthAssignment skeleton lengths :=
-        fun hvalid => hnotmem (Finset.mem_filter.mpr ⟨hlengths, hvalid⟩)
+          ¬IsSignedTupleRunLengthAssignment skeleton lengths := by
+        intro hvalid
+        exact hnotmem (Finset.mem_filter.mpr ⟨hlengths, hvalid⟩)
       obtain ⟨i, hi⟩ :=
         exists_coeff_signedRunSeries_eq_zero_of_not_tupleAssignment
           weight hnotvalid

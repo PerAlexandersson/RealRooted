@@ -45,8 +45,9 @@ theorem RootCountCompatible.card_right_roots_filter_Ioo_le_two_of_left_no_isRoot
       simpa [Qb] using rootCountAtOrAbove_eq_rootCountAbove_of_not_isRoot
         hq_ne hqb
     have hP_Qb_le : ((P : ℤ) - Qb) ≤ 1 := by simpa [hP_at_b, hQ_at_b] using (hcount.bounds b).1
-    have hq_not_mem_b : b ∉ q.roots :=
-      fun hb_mem => hqb ((Polynomial.mem_roots hq_ne).mp hb_mem)
+    have hq_not_mem_b : b ∉ q.roots := by
+      intro hb_mem
+      exact hqb ((Polynomial.mem_roots hq_ne).mp hb_mem)
     have hpart : I + Qb = Qa := by
       simpa [I, Qb, Qa] using
         card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
@@ -164,7 +165,7 @@ theorem PositiveSplitRootCountPair.min_two_card_xSub_Ioo_of_adjacent_left_roots
     rw [Finset.mem_sort, Multiset.mem_toFinset] at hb_mem
     exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp hb_mem
   have hp_no : ∀ z : ℝ, a < z → z < b → ¬ p.IsRoot z :=
-    fun z haz hzb => Polynomial.not_isRoot_Ioo_of_mem_roots_toFinset_sort_zip_tail
+    fun _ haz hzb => Polynomial.not_isRoot_Ioo_of_mem_roots_toFinset_sort_zip_tail
       hpair.left_pos.ne_zero hab_mem haz hzb
   exact hpair.min_two_card_right_roots_le_card_xSub_roots_Ioo
     hp_nonneg hno hab ha hb hμ hp_no
@@ -272,7 +273,7 @@ theorem
       rw [Finset.mem_sort, Multiset.mem_toFinset] at hv_mem
       exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp hv_mem
     have hp_no : ∀ z : ℝ, u < z → z < v → ¬ p.IsRoot z :=
-      fun z huz hzv => Polynomial.not_isRoot_Ioo_of_mem_roots_toFinset_sort_zip_tail
+      fun _ huz hzv => Polynomial.not_isRoot_Ioo_of_mem_roots_toFinset_sort_zip_tail
         hpair.left_pos.ne_zero hab_sort huz hzv
     have hgap_le_two :
         (q.roots.filter (fun x => u < x ∧ x < v)).card ≤ 2 :=
@@ -526,8 +527,9 @@ theorem
     simpa [P] using
       hpair.hasPosLeadingCoeff_neg_X_mul_sub_C_mul_of_right_natDegree_eq_left_add_one
         hdeg hcoeff
-  have hP_ne : P ≠ 0 :=
-    fun hzero => hnegP_pos.ne_zero (by simp [hzero])
+  have hP_ne : P ≠ 0 := by
+    intro hzero
+    exact hnegP_pos.ne_zero (by simp [hzero])
   have hP_nat_pos : 0 < P.natDegree := by
     rw [hP_natDegree, hdeg]
     exact Nat.succ_pos _

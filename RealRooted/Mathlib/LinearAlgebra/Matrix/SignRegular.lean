@@ -97,8 +97,9 @@ protected lemma IsStrictlySignRegular.transpose {M : Matrix ι κ R}
 
 protected lemma IsStrictlySignConsistentOrder.toSignConsistentOrder
     {M : Matrix ι κ R} {q : ℕ} (hM : M.IsStrictlySignConsistentOrder q) :
-    M.IsSignConsistentOrder q :=
-  fun rows rows' cols cols' hrows hrows' hcols hcols' => (hM hrows hrows' hcols hcols').le
+    M.IsSignConsistentOrder q := by
+  intro rows rows' cols cols' hrows hrows' hcols hcols'
+  exact (hM hrows hrows' hcols hcols').le
 
 protected lemma IsStrictlySignRegular.toSignRegular {M : Matrix ι κ R}
     (hM : M.IsStrictlySignRegular) : M.IsSignRegular :=
@@ -110,9 +111,9 @@ variable [IsStrictOrderedRing R]
 variable {ι' κ' : Type*} [PartialOrder ι'] [PartialOrder κ']
 
 lemma IsTotallyNonnegRect.isSignConsistentOrder {M : Matrix ι' κ' R}
-    (hM : M.IsTotallyNonnegRect) (q : ℕ) : M.IsSignConsistentOrder q :=
-  fun rows rows' cols cols' hrows hrows' hcols hcols' =>
-    mul_nonneg (hM hrows hcols) (hM hrows' hcols')
+    (hM : M.IsTotallyNonnegRect) (q : ℕ) : M.IsSignConsistentOrder q := by
+  intro rows rows' cols cols' hrows hrows' hcols hcols'
+  exact mul_nonneg (hM hrows hcols) (hM hrows' hcols')
 
 lemma IsTotallyNonnegRect.isSignRegular {M : Matrix ι' κ' R}
     (hM : M.IsTotallyNonnegRect) : M.IsSignRegular :=

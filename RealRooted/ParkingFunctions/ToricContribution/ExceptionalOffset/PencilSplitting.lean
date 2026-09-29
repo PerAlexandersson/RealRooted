@@ -330,8 +330,9 @@ private theorem setIntegral_pos_of_pos_Ioi
   apply (MeasureTheory.setIntegral_pos_iff_support_of_nonneg_ae
     hfNonneg hfInt).mpr
   have hsubset : Ioo (1 : ℝ) 2 ⊆
-      Function.support f ∩ Ioi 1 :=
-    fun x hx => ⟨Function.mem_support.mpr (hfPos x hx.1).ne', hx.1⟩
+      Function.support f ∩ Ioi 1 := by
+    intro x hx
+    exact ⟨Function.mem_support.mpr (hfPos x hx.1).ne', hx.1⟩
   exact ((MeasureTheory.Measure.measure_Ioo_pos _).mpr
     (show (1 : ℝ) < 2 by norm_num)).trans_le
       (MeasureTheory.measure_mono hsubset)
@@ -639,7 +640,7 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
       natDegree_interiorRootProduct]
     lia
   have hPpos : ∀ x : ℝ, 1 < x → 0 < P.eval x :=
-    fun x hx => interiorRootProduct_eval_pos_of_one_le Q hx.le
+    fun _ hx => interiorRootProduct_eval_pos_of_one_le Q hx.le
   by_cases hzero : ∃ κ : ℝ, 1 < κ ∧ K κ = 0
   · obtain ⟨κ, hκ, hκzero⟩ := hzero
     let T : ℝ[X] := C κ - X

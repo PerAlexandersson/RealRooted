@@ -318,8 +318,9 @@ theorem owner_diff_of_crossOwned_consecutive_roots_of_left_sub_le_one
                 (g.roots.filter (x < ·)).card ≤ 1 :=
           hupper x hfx hgx
         exact False.elim (by linarith)
-      · have hfc_not : ¬ f.IsRoot c :=
-          fun hfc => hdisj c hfc hgc
+      · have hfc_not : ¬ f.IsRoot c := by
+          intro hfc
+          exact hdisj c hfc hgc
         have hdiff :=
           card_roots_filter_gt_sub_eq_sub_one_of_right_least_root_no_mem_Ioc
             hf_ne hg_ne hxc (le_of_lt hcb) hfc_not (hsimple_g c hgc)
@@ -442,8 +443,9 @@ theorem owner_diff_bounds_of_crossOwned_consecutive_roots
       ((f.roots.filter (x < ·)).card : ℤ) -
           (g.roots.filter (x < ·)).card =
         ((f.roots.filter (b < ·)).card : ℤ) -
-          (g.roots.filter (b < ·)).card + 1 :=
-    fun hfc => card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
+          (g.roots.filter (b < ·)).card + 1 := by
+    intro hfc
+    exact card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
       hf_ne hg_ne hxc (le_of_lt hcb) (hdisj c hfc) (hsimple_f c hfc)
       hleast hgap_f hgap_g rfl
   have hstep_g : g.IsRoot c →
@@ -452,8 +454,9 @@ theorem owner_diff_bounds_of_crossOwned_consecutive_roots
         ((f.roots.filter (b < ·)).card : ℤ) -
           (g.roots.filter (b < ·)).card - 1 := by
     intro hgc
-    have hfc_not : ¬ f.IsRoot c :=
-      fun hfc => hdisj c hfc hgc
+    have hfc_not : ¬ f.IsRoot c := by
+      intro hfc
+      exact hdisj c hfc hgc
     exact card_roots_filter_gt_sub_eq_sub_one_of_right_least_root_no_mem_Ioc
       hf_ne hg_ne hxc (le_of_lt hcb) hfc_not (hsimple_g c hgc)
       hleast hgap_f hgap_g rfl
@@ -798,7 +801,7 @@ theorem root_delete_le {f g : ℝ[X]} {r s t : ℝ}
 theorem delete_roots_le_largest {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_ne : f ≠ 0) :
     ∀ t ∈ (deleteRootFactor f r).roots, t ≤ r :=
-  fun t ht => h.root_delete_le hf_ne
+  fun _ ht => h.root_delete_le hf_ne
     ((Polynomial.mem_roots (h.delete_ne_zero hf_ne)).mp ht)
 
 theorem right_roots_le_left_largest {f g : ℝ[X]} {r s : ℝ}

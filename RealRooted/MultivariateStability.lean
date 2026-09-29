@@ -144,14 +144,16 @@ theorem MvStableIn.mul {sigma : Type*} {Omega : sigma → Set ℂ}
 /-- Each left factor of a region-stable product is region-stable. -/
 theorem MvStableIn.left_of_mul {sigma : Type*} {Omega : sigma → Set ℂ}
     {P Q : MvPolynomial sigma ℂ} (hPQ : MvStableIn Omega (P * Q)) :
-    MvStableIn Omega P :=
-  fun z hz hzero => hPQ z hz (by simp [hzero])
+    MvStableIn Omega P := by
+  intro z hz hzero
+  exact hPQ z hz (by simp [hzero])
 
 /-- Each right factor of a region-stable product is region-stable. -/
 theorem MvStableIn.right_of_mul {sigma : Type*} {Omega : sigma → Set ℂ}
     {P Q : MvPolynomial sigma ℂ} (hPQ : MvStableIn Omega (P * Q)) :
-    MvStableIn Omega Q :=
-  fun z hz hzero => hPQ z hz (by simp [hzero])
+    MvStableIn Omega Q := by
+  intro z hz hzero
+  exact hPQ z hz (by simp [hzero])
 
 /-- Renaming variables preserves stability when the new coordinate regions
 map into the old ones. -/
@@ -526,14 +528,16 @@ theorem MvUpperHalfPlaneStable.mul_X_add_X_pow {sigma : Type*}
 theorem MvUpperHalfPlaneStable.left_of_mul {sigma : Type*}
     {P Q : MvPolynomial sigma ℂ}
     (hPQ : MvUpperHalfPlaneStable (P * Q)) :
-    MvUpperHalfPlaneStable P :=
-  fun z hz hzero => hPQ z hz (by simp [hzero])
+    MvUpperHalfPlaneStable P := by
+  intro z hz hzero
+  exact hPQ z hz (by simp [hzero])
 
 theorem MvUpperHalfPlaneStable.right_of_mul {sigma : Type*}
     {P Q : MvPolynomial sigma ℂ}
     (hPQ : MvUpperHalfPlaneStable (P * Q)) :
-    MvUpperHalfPlaneStable Q :=
-  fun z hz hzero => hPQ z hz (by simp [hzero])
+    MvUpperHalfPlaneStable Q := by
+  intro z hz hzero
+  exact hPQ z hz (by simp [hzero])
 
 theorem MvUpperHalfPlaneStable.rename {sigma tau : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)

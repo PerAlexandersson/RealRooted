@@ -163,7 +163,7 @@ theorem orderedCutCompatible_of_stateInterlacing
       q_pos := hQ_pos
       q_nonneg := hQ_nonneg
       pp_reverse :=
-        fun i j hij => Compatible.of_strictInterl (hPP hij)
+        fun _ _ hij => Compatible.of_strictInterl (hPP hij)
       xpp_reverse :=
         fun i j hij => compatible_X_left_of_strictInterl_nonneg
           (hPP hij) (hP_nonneg j) (hP_nonneg i)
@@ -171,7 +171,7 @@ theorem orderedCutCompatible_of_stateInterlacing
       xpq := fun i j ↦
         compatible_X_left_of_strictInterl_nonneg (hPQ i j) (hP_nonneg i) (hQ_nonneg j)
       qq_forward :=
-        fun i j hij => Compatible.of_strictInterl (hQQ hij)
+        fun _ _ hij => Compatible.of_strictInterl (hQQ hij)
       xqq_forward :=
         fun i j hij => compatible_X_left_of_strictInterl_nonneg
           (hQQ hij) (hQ_nonneg i) (hQ_nonneg j) }

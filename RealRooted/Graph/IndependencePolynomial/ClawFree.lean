@@ -535,7 +535,7 @@ theorem weightedSupportSimplicialXCompatible_of_smaller
     have hneighbor_simp : ∀ v ∈ K,
         IsSimplicialCliqueOn G (S \ K)
           (neighborOutsideCliqueOn G S K v) :=
-      fun v hv => hG.simplicialClique_neighborOutside hK hv
+      fun _ hv => hG.simplicialClique_neighborOutside hK hv
     have hbase_neighbor_x : ∀ v ∈ K,
         Compatible (weightedIndepPolyOn G (S \ K) wt)
           (X * weightedIndepPolyOn G
@@ -632,8 +632,9 @@ theorem weightedSupportIndepPoly_splits_of_clawFree
             weightedIndepPolyOn G (S.erase v) wt +
               C (wt v) *
                 (X * weightedIndepPolyOn G
-                  (deleteClosedNeighborSupport G S v) wt) ≠ 0 :=
-          fun hzero => weightedIndepPolyOn_ne_zero G S wt (by
+                  (deleteClosedNeighborSupport G S v) wt) ≠ 0 := by
+          intro hzero
+          exact weightedIndepPolyOn_ne_zero G S wt (by
             rw [weightedIndepPolyOn_erase G wt hvS]
             simpa [mul_assoc] using hzero)
         have hsum_splits :=

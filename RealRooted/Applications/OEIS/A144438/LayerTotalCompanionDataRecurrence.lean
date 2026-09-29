@@ -706,8 +706,9 @@ theorem decoBottomTotalCompanionWronskianCorrection_eq_zero_of_notMem_Icc
     subst i
     exact hi (Finset.mem_Icc.mpr ⟨le_rfl, by lia⟩)
   rw [decoBottomTotalCompanionWronskianCorrection_of_ne_one n i hi1]
-  have hiTotal : i ∉ (decoBottomTotal (n + 1)).vars :=
-    fun hiVars => hi (vars_decoBottomTotal_subset_Icc (n + 1) hiVars)
+  have hiTotal : i ∉ (decoBottomTotal (n + 1)).vars := by
+    intro hiVars
+    exact hi (vars_decoBottomTotal_subset_Icc (n + 1) hiVars)
   have hiRename : i ∉ (MvPolynomial.rename (fun j : Nat => j + 1)
       (decoBottomTotal n)).vars := by
     intro hiVars
@@ -989,11 +990,13 @@ theorem eval_companionWronskian_compensation_iff_Icc (n : Nat) :
   · intro h i x
     by_cases hi : i ∈ Finset.Icc 1 (n + 1)
     · exact h i hi x
-    · have hiCore : i ∉ (decoBottomTotalCompanionCore n).vars :=
-        fun hiVars => hi (vars_decoBottomTotalCompanionCore_subset_Icc n hiVars)
+    · have hiCore : i ∉ (decoBottomTotalCompanionCore n).vars := by
+        intro hiVars
+        exact hi (vars_decoBottomTotalCompanionCore_subset_Icc n hiVars)
       have hiCompanion :
-          i ∉ (decoBottomTotalWronskianCompanion n).vars :=
-        fun hiVars => hi
+          i ∉ (decoBottomTotalWronskianCompanion n).vars := by
+        intro hiVars
+        exact hi
           (vars_decoBottomTotalWronskianCompanion_subset_Icc n hiVars)
       rw [MvPolynomial.coordinateWronskian_eq_zero_of_notMem_vars
         hiCore hiCompanion,
@@ -1028,11 +1031,13 @@ theorem
       simpa only [
         decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionCross,
         j, Fin.val_mk, Nat.sub_add_cancel hiLower] using hj
-    · have hiSlope : i ∉ (decoBottomTotalCompanionSlope n).vars :=
-        fun hiVars => hi (vars_decoBottomTotalCompanionSlope_subset_Icc n hiVars)
+    · have hiSlope : i ∉ (decoBottomTotalCompanionSlope n).vars := by
+        intro hiVars
+        exact hi (vars_decoBottomTotalCompanionSlope_subset_Icc n hiVars)
       have hiCompanion :
-          i ∉ (decoBottomTotalWronskianCompanion n).vars :=
-        fun hiVars => hi
+          i ∉ (decoBottomTotalWronskianCompanion n).vars := by
+        intro hiVars
+        exact hi
           (vars_decoBottomTotalWronskianCompanion_subset_Icc n hiVars)
       rw [MvPolynomial.coordinateWronskian_eq_zero_of_notMem_vars
         hiSlope hiCompanion]

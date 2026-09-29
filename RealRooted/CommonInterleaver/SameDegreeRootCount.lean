@@ -272,10 +272,12 @@ theorem sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
     {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
     (Even ((f.roots.filter (· ≤ x)).card + (g.roots.filter (· ≤ x)).card) ↔
       ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  have hfx_eval : f.eval x ≠ 0 :=
-    fun hfx => hxf (by simpa [Polynomial.IsRoot.def] using hfx)
-  have hgx_eval : g.eval x ≠ 0 :=
-    fun hgx => hxg (by simpa [Polynomial.IsRoot.def] using hgx)
+  have hfx_eval : f.eval x ≠ 0 := by
+    intro hfx
+    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  have hgx_eval : g.eval x ≠ 0 := by
+    intro hgx
+    exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
   rw [hf.even_card_roots_le_add_iff_eval_pos_iff hg hf_pos hg_pos hdeg hxf hxg]
   exact (not_exists_pos_isRoot_add_right_iff_eval_pos_iff hfx_eval hgx_eval).symm
 
@@ -369,10 +371,12 @@ theorem sameDegree_even_card_roots_gt_add_iff_not_exists_pos_isRoot_add_right
     {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
     (Even ((f.roots.filter (x < ·)).card + (g.roots.filter (x < ·)).card) ↔
       ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  have hfx_eval : f.eval x ≠ 0 :=
-    fun hfx => hxf (by simpa [Polynomial.IsRoot.def] using hfx)
-  have hgx_eval : g.eval x ≠ 0 :=
-    fun hgx => hxg (by simpa [Polynomial.IsRoot.def] using hgx)
+  have hfx_eval : f.eval x ≠ 0 := by
+    intro hfx
+    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  have hgx_eval : g.eval x ≠ 0 := by
+    intro hgx
+    exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
   rw [hf.even_card_roots_gt_add_iff_eval_pos_iff hg hf_pos hg_pos hxf hxg]
   exact (not_exists_pos_isRoot_add_right_iff_eval_pos_iff hfx_eval hgx_eval).symm
 
@@ -633,19 +637,19 @@ theorem posComboNoCommonSameDegreeRootCrossing_iff_rootCountAbove :
 variant. -/
 theorem posComboNoCommonSameDegreeRootCount_of_nonRoot
     (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement :=
-  fun f g hf_pos hg_pos hfnn hgnn hfg hdeg hno =>
-    sameDegreeRootCount_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
-      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+    PosComboNoCommonSameDegreeRootCountNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  exact sameDegreeRootCount_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- The same-degree upper root-count target follows from its common-non-root
 variant. -/
 theorem posComboNoCommonSameDegreeRootCountAbove_of_nonRoot
     (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement :=
-  fun f g hf_pos hg_pos hfnn hgnn hfg hdeg hno =>
-    sameDegreeRootCountAbove_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
-      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  exact sameDegreeRootCountAbove_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- Low-degree base case for the same-degree root-count formulation.
 

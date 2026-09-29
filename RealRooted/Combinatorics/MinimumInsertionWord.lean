@@ -401,10 +401,12 @@ theorem comparisonWord_step_congr {w v : List Nat}
           | nil => simp at hlen
           | cons b v =>
               rw [step_succ, step_succ]
-              have hwTail : IsPositive w :=
-                fun x hx => hw x (by simp [hx])
-              have hvTail : IsPositive v :=
-                fun x hx => hv x (by simp [hx])
+              have hwTail : IsPositive w := by
+                intro x hx
+                exact hw x (by simp [hx])
+              have hvTail : IsPositive v := by
+                intro x hx
+                exact hv x (by simp [hx])
               have hlenTail : w.length = v.length := by simpa using hlen
               have hrTail : r ≤ w.length := by simpa using hr
               have hcompTail : comparisonWord w = comparisonWord v := by

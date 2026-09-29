@@ -242,8 +242,9 @@ private theorem blocksToRuns_map_replicate {α : Type*} :
       have htail_pos : ∀ current ∈ runs, 0 < current.2 :=
         fun current hcurrent => hpos current (by simp [hcurrent])
       have htail_nil :
-          [] ∉ runs.map fun current => List.replicate current.2 current.1 :=
-        fun h => hnil (by simp [h])
+          [] ∉ runs.map fun current => List.replicate current.2 current.1 := by
+        intro h
+        exact hnil (by simp [h])
       have htail := blocksToRuns_map_replicate runs htail_pos htail_nil
       simpa [blocksToRuns, hrun_pos.ne'] using htail
 
