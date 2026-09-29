@@ -98,8 +98,8 @@ theorem mul_residue_lt_sub_of_eval_lt
   have hle :
       (g.eval r / f.derivative.eval r) / (a - r) ≤
         ∑ s ∈ f.roots.toFinset,
-          (g.eval s / f.derivative.eval s) / (a - s) := by
-    exact Finset.single_le_sum (fun s hs => hterm_nonneg s hs) hrfin
+          (g.eval s / f.derivative.eval s) / (a - s) :=
+    Finset.single_le_sum (fun s hs => hterm_nonneg s hs) hrfin
   have hsum_lt : m * (g.eval a / f.eval a) < 1 := by
     rw [mul_div]
     exact (div_lt_one hfa).2 hgap
@@ -222,9 +222,8 @@ theorem residueAuxiliary_interlaces
     (ha : ∀ r ∈ f.roots, r < a) (hgap : m * g.eval a < f.eval a) :
     Interlaces (residueAuxiliary a m f g) f := by
   have hq_sign : ∀ r, f.IsRoot r →
-      0 < (residueAuxiliary a m f g).eval r * f.derivative.eval r := by
-    intro r hr
-    exact residueAuxiliary_eval_mul_derivative_pos
+      0 < (residueAuxiliary a m f g).eval r * f.derivative.eval r :=
+    fun _ hr => residueAuxiliary_eval_mul_derivative_pos
       hgf hflc hglc hfdeg hgdeg hsimple hm ha hgap hr
   have hroots_ne : f.roots ≠ 0 := by
     intro hzero
