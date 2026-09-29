@@ -262,9 +262,8 @@ theorem HasNonnegInitialColumnMinors.consecutiveColumnMinor_nonneg
         hA.pivot_pos_and_trailing_det_ne_zero A hzero hdet
       have hB := hA.trailing A hzero hpivot
       have hupperB : ∀ i j, i < j →
-          (A.submatrix Fin.succ Fin.succ) i j = 0 := by
-        intro i j hij
-        exact hupper i.succ j.succ (Fin.succ_lt_succ_iff.mpr hij)
+          (A.submatrix Fin.succ Fin.succ) i j = 0 :=
+        fun i j hij => hupper i.succ j.succ (Fin.succ_lt_succ_iff.mpr hij)
       by_cases hrow : ∃ i, rows i = 0
       · obtain ⟨i, hi⟩ := hrow
         have hrowzero : ∀ j : Fin m,

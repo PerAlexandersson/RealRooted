@@ -62,8 +62,8 @@ theorem exists_coeff_radius_root_near
   calc
     (((p.natDegree + 1 : ℕ) : ℝ) * δ) ^
           ((p.natDegree : ℝ)⁻¹) * max ‖z‖ 1 <
-        ρ * B := by
-      exact mul_lt_mul_of_pos_right hfactor hB
+        ρ * B :=
+      mul_lt_mul_of_pos_right hfactor hB
     _ = η := by
       dsimp [ρ]
       field_simp
@@ -84,8 +84,8 @@ theorem exists_coeff_radius_forall_root_near
   let δ : ℝ := ρ ^ p.natDegree /
     (2 * ((p.natDegree + 1 : ℕ) : ℝ))
   have hdegree_pos : 0 < p.natDegree := Nat.pos_of_ne_zero hdegree
-  have hB : 0 < B := by
-    exact lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+  have hB : 0 < B :=
+    lt_of_lt_of_le zero_lt_one (le_max_right _ _)
   have hρ : 0 < ρ := by
     apply lt_min
     · norm_num
@@ -265,8 +265,8 @@ theorem forall_isRoot_mem_of_isPreconnected
     (hstart : ∀ z, (p a).IsRoot z → z ∈ U) :
     ∀ z, (p b).IsRoot z → z ∈ U := by
   let L : Set T := {t | ∀ z, (p t).IsRoot z → z ∈ U}
-  have hclopen : IsClopen L := by
-    exact Polynomial.isClopen_forall_isRoot_mem_of_partition
+  have hclopen : IsClopen L :=
+    Polynomial.isClopen_forall_isRoot_mem_of_partition
       p hmonic hdegree hd hcoeff hsplits hU hV hUV hcover
   have hsubset : s ⊆ L :=
     hs.subset_isClopen hclopen ⟨a, ha, hstart⟩

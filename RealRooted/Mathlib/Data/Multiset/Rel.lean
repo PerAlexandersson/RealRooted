@@ -42,9 +42,8 @@ theorem Rel.card_filter_eq {α β : Type*} {R : α → β → Prop}
   | zero => simp
   | @cons a b s t hab hrel ih =>
       have hpq : P a ↔ Q b := hpred a (by simp) b (by simp) hab
-      have htail : ∀ c ∈ s, ∀ d ∈ t, R c d → (P c ↔ Q d) := by
-        intro c hc d hd hcd
-        exact hpred c (by simp [hc]) d (by simp [hd]) hcd
+      have htail : ∀ c ∈ s, ∀ d ∈ t, R c d → (P c ↔ Q d) :=
+        fun c hc d hd hcd => hpred c (by simp [hc]) d (by simp [hd]) hcd
       by_cases ha : P a
       · have hb : Q b := hpq.mp ha
         simp [ha, hb, ih htail]
@@ -102,9 +101,8 @@ theorem Rel.forall₂_sort {α : Type*} [LinearOrder α] {R : α → α → Prop
       have hsord : (a :: as).Pairwise (· ≤ ·) := by
         simpa [hs] using
           (Multiset.pairwise_sort (s := s) (r := (· ≤ ·)))
-      have ha : ∀ c ∈ (as : Multiset α), a ≤ c := by
-        intro c hc
-        exact (List.pairwise_cons.mp hsord).1 c (by simpa using hc)
+      have ha : ∀ c ∈ (as : Multiset α), a ≤ c :=
+        fun c hc => (List.pairwise_cons.mp hsord).1 c (by simpa using hc)
       cases ht : t.sort (· ≤ ·) with
       | nil =>
           have ht0 : t = 0 := by
@@ -125,9 +123,8 @@ theorem Rel.forall₂_sort {α : Type*} [LinearOrder α] {R : α → α → Prop
           have htord : (b :: bs).Pairwise (· ≤ ·) := by
             simpa [ht] using
               (Multiset.pairwise_sort (s := t) (r := (· ≤ ·)))
-          have hb : ∀ d ∈ (bs : Multiset α), b ≤ d := by
-            intro d hd
-            exact (List.pairwise_cons.mp htord).1 d (by simpa using hd)
+          have hb : ∀ d ∈ (bs : Multiset α), b ≤ d :=
+            fun d hd => (List.pairwise_cons.mp htord).1 d (by simpa using hd)
           rw [hsrepr, htrepr] at hrel
           obtain ⟨hab, htail⟩ := rel_uncross_min_cons huncross ha hb hrel
           have hsmall : (as : Multiset α) < s := by

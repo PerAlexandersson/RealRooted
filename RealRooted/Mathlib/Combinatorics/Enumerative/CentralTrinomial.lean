@@ -324,8 +324,8 @@ theorem cast_centralTrinomial_two_mul_add_eq_sum_antidiagonal (q e : ℕ) (he : 
         ((2 * q + e).factorial : ℝ) /
           ((ij.1.factorial : ℝ) ^ 2 * ((2 * ij.2 + e).factorial : ℝ)) := by
   rw [cast_centralTrinomial_eq_sum_factorial]
-  have hsub : range (q + 1) ⊆ range (2 * q + e + 1) := by
-    exact range_subset_range.mpr (by lia)
+  have hsub : range (q + 1) ⊆ range (2 * q + e + 1) :=
+    range_subset_range.mpr (by lia)
   calc
     ∑ i ∈ range (2 * q + e + 1),
         (if 2 * i ≤ 2 * q + e then

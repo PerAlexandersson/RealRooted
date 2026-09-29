@@ -183,8 +183,8 @@ private theorem sum_function_eq_sum_embedding_of_zero_noninjective
         apply Finset.sum_eq_zero
         intro f _
         exact hzero f f.property, add_zero]
-    _ = ∑ f : Fin q ↪ I, g f := by
-      exact Fintype.sum_equiv
+    _ = ∑ f : Fin q ↪ I, g f :=
+      Fintype.sum_equiv
         (Equiv.subtypeInjectiveEquivEmbedding (Fin q) I) _ _ fun _ => rfl
 
 private theorem sum_perm_det_submatrix_comp_mul_prod_eq
@@ -280,7 +280,7 @@ theorem Matrix.exists_ordered_minor_ne_zero_of_mulVec_injective
       (A.submatrix rows cols).det ≠ 0 := by
   classical
   let B := A.submatrix id cols
-  have hB : Function.Injective B.mulVec := by exact selected_mulVec_injective A hA cols hcols
+  have hB : Function.Injective B.mulVec := selected_mulVec_injective A hA cols hcols
   obtain ⟨C, hCB⟩ := exists_left_inverse_matrix B hB
   have hsum :
       (∑ s : Set.powersetCard (Fin n) q,

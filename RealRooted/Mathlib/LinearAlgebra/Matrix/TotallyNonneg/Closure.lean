@@ -22,8 +22,8 @@ theorem IsTotallyNonneg.of_tendsto
   intro n rows cols hrows hcols
   have hmatrix : Tendsto
       (fun k => (A k).submatrix rows cols) atTop
-      (𝓝 (A₀.submatrix rows cols)) := by
-    exact tendsto_pi_nhds.mpr fun i =>
+      (𝓝 (A₀.submatrix rows cols)) :=
+    tendsto_pi_nhds.mpr fun i =>
       tendsto_pi_nhds.mpr fun j => hlim (rows i) (cols j)
   have hdet : Tendsto
       (fun k => ((A k).submatrix rows cols).det) atTop

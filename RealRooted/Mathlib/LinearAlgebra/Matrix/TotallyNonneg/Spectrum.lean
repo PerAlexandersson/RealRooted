@@ -376,11 +376,11 @@ theorem rank_gaussianSandwich (A : Matrix (Fin n) (Fin n) ℝ)
       strictMono_id).ne'
   calc
     (gaussianSandwich A a).rank =
-        (gaussianMatrix n a * A).rank := by
-      exact Matrix.rank_mul_eq_left_of_isUnit_det
+        (gaussianMatrix n a * A).rank :=
+      Matrix.rank_mul_eq_left_of_isUnit_det
         (gaussianMatrix n a) (gaussianMatrix n a * A) hunit
-    _ = A.rank := by
-      exact Matrix.rank_mul_eq_right_of_isUnit_det
+    _ = A.rank :=
+      Matrix.rank_mul_eq_right_of_isUnit_det
         (gaussianMatrix n a) A hunit
 
 /-- A positive-parameter Gaussian matrix is totally nonnegative. -/

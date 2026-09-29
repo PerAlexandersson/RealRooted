@@ -149,8 +149,8 @@ theorem IsHomogeneous.natDegree_affineLineRestriction_eq
     {P : MvPolynomial σ R} {d : ℕ}
     (hP : P.IsHomogeneous d) (a b : σ → R)
     (hb : MvPolynomial.eval b P ≠ 0) :
-    (affineLineRestriction a b P).natDegree = d := by
-  exact Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+    (affineLineRestriction a b P).natDegree = d :=
+  Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
     (hP.natDegree_affineLineRestriction_le a b)
     ((hP.coeff_affineLineRestriction a b).trans_ne hb)
 

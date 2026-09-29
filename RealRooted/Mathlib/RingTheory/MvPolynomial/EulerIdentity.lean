@@ -19,8 +19,8 @@ noncomputable def eulerOperator {σ R : Type*} [Fintype σ] [CommSemiring R]
 theorem IsHomogeneous.eulerOperator_eq {σ R : Type*}
     [Fintype σ] [CommSemiring R] {P : MvPolynomial σ R} {n : ℕ}
     (hP : P.IsHomogeneous n) :
-    eulerOperator P = n • P := by
-  exact hP.sum_X_mul_pderiv
+    eulerOperator P = n • P :=
+  hP.sum_X_mul_pderiv
 
 /-- Euler's identity with the natural scalar written as a constant
 polynomial. -/

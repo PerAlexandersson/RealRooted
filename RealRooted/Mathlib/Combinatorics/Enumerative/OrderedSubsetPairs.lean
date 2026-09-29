@@ -124,14 +124,14 @@ noncomputable def firstPrefixViolation (A B : Finset ℕ) (h : ¬ prefixDominate
 /-- The first prefix-violation threshold is violating. -/
 theorem firstPrefixViolation_spec {A B : Finset ℕ} (h : ¬ prefixDominates A B) :
     (A.filter fun x => x ≤ firstPrefixViolation A B h).card <
-      (B.filter fun x => x ≤ firstPrefixViolation A B h).card := by
-  exact Nat.find_spec ((not_prefixDominates_iff_exists_card_filter_lt).mp h)
+      (B.filter fun x => x ≤ firstPrefixViolation A B h).card :=
+  Nat.find_spec ((not_prefixDominates_iff_exists_card_filter_lt).mp h)
 
 /-- No smaller threshold violates prefix dominance. -/
 theorem firstPrefixViolation_min {A B : Finset ℕ} (h : ¬ prefixDominates A B)
     {j : ℕ} (hj : j < firstPrefixViolation A B h) :
-    ¬ (A.filter fun x => x ≤ j).card < (B.filter fun x => x ≤ j).card := by
-  exact Nat.find_min ((not_prefixDominates_iff_exists_card_filter_lt).mp h) hj
+    ¬ (A.filter fun x => x ≤ j).card < (B.filter fun x => x ≤ j).card :=
+  Nat.find_min ((not_prefixDominates_iff_exists_card_filter_lt).mp h) hj
 
 private theorem card_filter_lt_le_of_forall_not_prefix {i : ℕ} {A B : Finset ℕ}
     (hmin : ∀ j < i,
@@ -180,9 +180,8 @@ theorem firstPrefixViolation_prefix_succ {A B : Finset ℕ} (h : ¬ prefixDomina
   have hviolate : (A.filter fun x => x ≤ i).card < (B.filter fun x => x ≤ i).card := by
     simpa [i] using firstPrefixViolation_spec h
   have hmin : ∀ j < i,
-      ¬ (A.filter fun x => x ≤ j).card < (B.filter fun x => x ≤ j).card := by
-    intro j hj
-    exact firstPrefixViolation_min h (by simpa [i] using hj)
+      ¬ (A.filter fun x => x ≤ j).card < (B.filter fun x => x ≤ j).card :=
+    fun _ hj => firstPrefixViolation_min h (by simpa [i] using hj)
   have hlt : (B.filter fun x => x < i).card ≤ (A.filter fun x => x < i).card :=
     card_filter_lt_le_of_forall_not_prefix hmin
   have hBstep : (B.filter fun x => x ≤ i).card ≤
@@ -393,8 +392,8 @@ theorem firstPrefixViolation_tailExchangeAt_firstPrefixViolation {A B : Finset �
     rw [tailExchangeAt_fst_filter_le_of_le (le_of_lt hj),
       tailExchangeAt_snd_filter_le_of_le (le_of_lt hj)]
     exact firstPrefixViolation_min h (by simpa [i] using hj)
-  have hge : i ≤ firstPrefixViolation C.1 C.2 (by simpa [C, i] using htail) := by
-    exact le_of_not_gt fun hlt => hnot_before _ hlt (firstPrefixViolation_spec _)
+  have hge : i ≤ firstPrefixViolation C.1 C.2 (by simpa [C, i] using htail) :=
+    le_of_not_gt fun hlt => hnot_before _ hlt (firstPrefixViolation_spec _)
   have h_eq : firstPrefixViolation C.1 C.2 (by simpa [C, i] using htail) = i :=
     le_antisymm hle hge
   simpa [C, i] using h_eq

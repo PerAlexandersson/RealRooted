@@ -29,9 +29,8 @@ theorem IsTotallyNonneg.exists_hermitianModel_of_det_ne_zero {N : ℕ}
   obtain ⟨T, hT, -, hTchar, hTtrailing, hTlower, hTupper⟩ :=
     exists_whitneyTridiagonal A hA hdet
   have hprod : ∀ i : Fin N,
-      0 ≤ T i.castSucc i.succ * T i.succ i.castSucc := by
-    intro i
-    exact mul_nonneg (hT.nonneg _ _) (hT.nonneg _ _)
+      0 ≤ T i.castSucc i.succ * T i.succ i.castSucc :=
+    fun _ => mul_nonneg (hT.nonneg _ _) (hT.nonneg _ _)
   obtain ⟨S, hS, hSchar, hStrailing⟩ :=
     exists_hermitianModel_of_tridiagonal_of_nonneg_product T hTlower hTupper hprod
   exact ⟨S, hS, hSchar.trans hTchar, hStrailing.trans hTtrailing⟩

@@ -26,14 +26,12 @@ lemma eq_filter_ne_append_replicate_count {l : List α} {a : α}
   | cons b l ih =>
       rw [pairwise_cons] at hsorted
       have hsorted' := hsorted.2
-      have hupper' : ∀ x ∈ l, x ≤ a := by
-        intro x hx
-        exact hupper x (mem_cons_of_mem _ hx)
+      have hupper' : ∀ x ∈ l, x ≤ a :=
+        fun x hx => hupper x (mem_cons_of_mem _ hx)
       by_cases hb : b = a
       · subst b
-        have hendpoint : ∀ x ∈ l, x = a := by
-          intro x hx
-          exact le_antisymm (hupper' x hx) (hsorted.1 x hx)
+        have hendpoint : ∀ x ∈ l, x = a :=
+          fun x hx => le_antisymm (hupper' x hx) (hsorted.1 x hx)
         have hfilter : l.filter (fun x ↦ decide (x ≠ a)) = [] := by
           rw [filter_eq_nil_iff]
           grind
