@@ -75,8 +75,8 @@ private theorem nonneg_coeffs_affine_lag_second_order_derivative_aux
       · obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by lia⟩
         rw [hcoeff j]
         have hfirst :
-            0 ≤ (a * ((j : ℝ) + 1) + 1) * coeff (P (n + 1)) (j + 1) := by
-          exact mul_nonneg (by positivity) (hnn1 (j + 1))
+            0 ≤ (a * ((j : ℝ) + 1) + 1) * coeff (P (n + 1)) (j + 1) :=
+          mul_nonneg (by positivity) (hnn1 (j + 1))
         have hlast : 0 ≤ c * coeff (P n) j := mul_nonneg hc (hnn0 j)
         have hmiddle :
             0 ≤ (((a + 1) + a * (n : ℝ)) - a * (j : ℝ)) *
@@ -95,8 +95,8 @@ private theorem top_affine_lag_second_order_derivative
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
         (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
         (C c * X) * P n) (n : ℕ) :
-    0 < coeff (P n) n ∧ ∀ m > n, coeff (P n) m = 0 := by
-  exact second_order_derivative_top_and_above P a c
+    0 < coeff (P n) n ∧ ∀ m > n, coeff (P n) m = 0 :=
+  second_order_derivative_top_and_above P a c
     (fun m => (a + 1) + a * (m : ℝ)) h0 h1 hrec (by intro m; ring) n
 
 /-- Every polynomial in the recurrence has nonnegative coefficients when both
@@ -131,8 +131,8 @@ private theorem natDegree_affine_lag_second_order_derivative
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
         (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
         (C c * X) * P n) (n : ℕ) :
-    (P n).natDegree = n := by
-  exact natDegree_of_second_order_derivative P a c
+    (P n).natDegree = n :=
+  natDegree_of_second_order_derivative P a c
     (fun m => (a + 1) + a * (m : ℝ)) h0 h1 hrec (by intro m; ring) n
 
 private theorem pos_leading_affine_lag_second_order_derivative

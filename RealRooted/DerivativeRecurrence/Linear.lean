@@ -71,8 +71,8 @@ theorem natDegree_of_derivative_linear
     (hrec : ∀ n, P (n + 1) = (C b * X) * (P n).derivative + (C a + C c * X) * P n)
     (hc_pos : 0 < c)
     (n : ℕ) :
-    (P n).natDegree = n := by
-  exact natDegree_of_derivative_linear_pos_const P a b c 1 (by grind) hrec
+    (P n).natDegree = n :=
+  natDegree_of_derivative_linear_pos_const P a b c 1 (by grind) hrec
     (by norm_num) hc_pos n
 
 /-- Consecutive polynomials in a positive first-order linear derivative
@@ -198,8 +198,8 @@ theorem interlaces_of_derivative_linear
     (hdeg : ∀ n, (P n).natDegree = n)
     (ha_nonneg : 0 ≤ a) (hb_pos : 0 < b) (hc_pos : 0 < c)
     (n : ℕ) :
-    Interlaces (P n) (P (n + 1)) := by
-  exact interlaces_of_derivative_linear_pos_const P a b c 1 (by grind) hrec hdeg
+    Interlaces (P n) (P (n + 1)) :=
+  interlaces_of_derivative_linear_pos_const P a b c 1 (by grind) hrec hdeg
     (by norm_num) ha_nonneg hb_pos hc_pos n
 
 end RealRooted
