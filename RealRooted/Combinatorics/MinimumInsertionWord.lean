@@ -238,8 +238,8 @@ def decodeFrom (w : List Nat) (code : List Nat) : List Nat :=
 
 /-- Decoding a concatenated code is successive decoding. -/
 theorem decodeFrom_append (w : List Nat) (left right : List Nat) :
-    decodeFrom w (left ++ right) = decodeFrom (decodeFrom w left) right := by
-  exact List.foldl_append
+    decodeFrom w (left ++ right) = decodeFrom (decodeFrom w left) right :=
+  List.foldl_append
 
 /-- Decode a complete chronological insertion code from the empty word. -/
 def decode (code : List Nat) : List Nat := decodeFrom [] code
@@ -252,8 +252,8 @@ theorem IsPositive.decodeFrom {w code : List Nat} (hw : IsPositive w) :
   | cons r code ih => exact ih (isPositive_step r w)
 
 /-- Every word decoded from the empty word has positive labels. -/
-theorem IsPositive.decode (code : List Nat) : IsPositive (decode code) := by
-  exact IsPositive.decodeFrom (by simp [IsPositive])
+theorem IsPositive.decode (code : List Nat) : IsPositive (decode code) :=
+  IsPositive.decodeFrom (by simp [IsPositive])
 
 /-- Decoding a valid suffix adds exactly its length to the word length. -/
 theorem length_decodeFrom {w code : List Nat}
@@ -291,8 +291,8 @@ theorem Nodup.decodeFrom {w code : List Nat} (hw : w.Nodup)
 
 /-- Decoding a valid insertion code produces a nodup word. -/
 theorem Nodup.decode {code : List Nat} (hcode : ValidFrom 0 code) :
-    (decode code).Nodup := by
-  exact Nodup.decodeFrom (by simp) (by simp [IsPositive]) hcode
+    (decode code).Nodup :=
+  Nodup.decodeFrom (by simp) (by simp [IsPositive]) hcode
 
 /-- A common suffix transports a swap by the length of that suffix. -/
 theorem decodeFrom_map_swap (code w : List Nat) (a b : Nat)
@@ -401,12 +401,10 @@ theorem comparisonWord_step_congr {w v : List Nat}
           | nil => simp at hlen
           | cons b v =>
               rw [step_succ, step_succ]
-              have hwTail : IsPositive w := by
-                intro x hx
-                exact hw x (by simp [hx])
-              have hvTail : IsPositive v := by
-                intro x hx
-                exact hv x (by simp [hx])
+              have hwTail : IsPositive w :=
+                fun x hx => hw x (by simp [hx])
+              have hvTail : IsPositive v :=
+                fun x hx => hv x (by simp [hx])
               have hlenTail : w.length = v.length := by simpa using hlen
               have hrTail : r ≤ w.length := by simpa using hr
               have hcompTail : comparisonWord w = comparisonWord v := by
