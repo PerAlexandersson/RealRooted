@@ -237,6 +237,143 @@ theorem eventually_compactifiedQuadraticInterlacingPencil_card_roots_gt_eq
   simpa [p] using
     hbridge (p b) hp0split hsplit (by rw [hdeg, hp0degree]) (hb hsplit)
 
+/-- Reciprocal rescaling of the quadratic pencil. -/
+theorem C_sq_mul_quadraticInterlacingPencil_inv
+    (F G H : ℝ[X]) {b : ℝ} (hb : b ≠ 0) :
+    C (b ^ 2) * quadraticInterlacingPencil F G H b⁻¹ =
+      quadraticInterlacingPencil H G F b := by
+  simp only [quadraticInterlacingPencil, mul_add, map_mul, map_pow]
+  have hlinear : C (b ^ 2) * C (b⁻¹ * 2) = C (b * 2) := by
+    calc
+      C (b ^ 2) * C (b⁻¹ * 2) = C (b ^ 2 * (b⁻¹ * 2)) := C_mul.symm
+      _ = C (b * 2) := by
+        congr 1
+        field_simp [hb]
+  have hquadratic : C (b ^ 2) * C (b⁻¹ ^ 2) = (1 : ℝ[X]) := by
+    calc
+      C (b ^ 2) * C (b⁻¹ ^ 2) = C (b ^ 2 * b⁻¹ ^ 2) := C_mul.symm
+      _ = C 1 := by
+        congr 1
+        field_simp [hb]
+      _ = 1 := map_one C
+  have hlinear' : C b ^ 2 * (C 2 * C b⁻¹) = C 2 * C b := by
+    calc
+      C b ^ 2 * (C 2 * C b⁻¹) =
+          C (b ^ 2) * C (b⁻¹ * 2) := by
+        simp only [map_mul, map_pow]
+        ring
+      _ = C (b * 2) := hlinear
+      _ = C 2 * C b := by
+        simp only [map_mul]
+        ring
+  have hquadratic' : C b ^ 2 * C b⁻¹ ^ 2 = (1 : ℝ[X]) := by
+    simpa only [map_pow] using hquadratic
+  calc
+    C b ^ 2 * H + C b ^ 2 * (C 2 * C b⁻¹ * G) +
+        C b ^ 2 * (C b⁻¹ ^ 2 * F) =
+      C b ^ 2 * H + (C b ^ 2 * (C 2 * C b⁻¹)) * G +
+        (C b ^ 2 * C b⁻¹ ^ 2) * F := by ring
+    _ = F + C 2 * C b * G + C b ^ 2 * H := by
+      rw [hlinear', hquadratic']
+      ring
+
+/-- Reciprocal rescaling does not change the root multiset. -/
+theorem roots_quadraticInterlacingPencil_reciprocal
+    (F G H : ℝ[X]) {b : ℝ} (hb : b ≠ 0) :
+    (quadraticInterlacingPencil H G F b).roots =
+      (quadraticInterlacingPencil F G H b⁻¹).roots := by
+  rw [← C_sq_mul_quadraticInterlacingPencil_inv F G H hb,
+    roots_C_mul _ (pow_ne_zero 2 hb)]
+
+/-- Reciprocal-parameter form of the `a → ∞` endpoint count.
+
+If the reciprocal pencil remains split, has nonzero constant coefficient, and
+has strictly negative roots for nonnegative reciprocal parameters, then its
+strict-upper root count at a generic negative level agrees with that of `F`
+for all sufficiently small positive reciprocal parameters. -/
+theorem eventually_reciprocalQuadraticInterlacingPencil_card_roots_gt_eq
+    {F G H : ℝ[X]} {D : ℕ}
+    (hF : F.natDegree ≤ D) (hG : G.natDegree ≤ D)
+    (hH : H.natDegree ≤ D)
+    (hsplits : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).Splits)
+    (hcoeff0 : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).coeff 0 ≠ 0)
+    (hneg : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
+      (quadraticInterlacingPencil H G F b).roots, q < 0)
+    {r : ℝ} (hr : r < 0) (hrF : ¬F.IsRoot r) :
+    ∀ᶠ b in 𝓝 0, 0 < b →
+      ((quadraticInterlacingPencil H G F b).roots.filter (r < ·)).card =
+        (F.roots.filter (r < ·)).card := by
+  have hFsplit : F.Splits := by
+    simpa [quadraticInterlacingPencil] using hsplits 0 le_rfl
+  have hF0 : F.coeff 0 ≠ 0 := by
+    simpa [quadraticInterlacingPencil] using hcoeff0 0 le_rfl
+  have hFneg : ∀ q ∈ F.roots, q < 0 := by
+    simpa [quadraticInterlacingPencil] using hneg 0 le_rfl
+  have hs : r⁻¹ ∉ (reflect D F).roots := by
+    intro hmem
+    apply hrF
+    exact (DegreeDropReversal.isRoot_reflect_inv_iff (ne_of_lt hr) hF).1
+      (Polynomial.isRoot_of_mem_roots hmem)
+  have hreflect :=
+    eventually_compactifiedQuadraticInterlacingPencil_card_roots_gt_eq
+      hF hG hH hF0 hFsplit hs
+  have heval_cont : Continuous fun b =>
+      (quadraticInterlacingPencil H G F b).eval r := by
+    simp only [quadraticInterlacingPencil, eval_add, eval_mul, eval_C]
+    fun_prop
+  have hFeval : F.eval r ≠ 0 :=
+    (Polynomial.not_isRoot_iff_eval_ne_zero F r).mp hrF
+  have hbaseeval : (quadraticInterlacingPencil H G F 0).eval r ≠ 0 := by
+    simpa [quadraticInterlacingPencil] using hFeval
+  have hrootfree : ∀ᶠ b in 𝓝 0,
+      ¬(quadraticInterlacingPencil H G F b).IsRoot r := by
+    have hne := heval_cont.continuousAt.eventually_ne hbaseeval
+    simpa [quadraticInterlacingPencil, Polynomial.IsRoot.def] using hne
+  filter_upwards [hreflect, hrootfree] with b hbreflect hbroot
+  intro hbpos
+  have hbsplit := hsplits b hbpos.le
+  have hb0 := hcoeff0 b hbpos.le
+  have hbneg := hneg b hbpos.le
+  have hbdegree := natDegree_quadraticInterlacingPencil_le hH hG hF b
+  have hbcount := DegreeDropReversal.card_roots_filter_gt_eq_reflect_compl
+    hbsplit hb0 hbdegree hr hbroot hbneg
+  have hFcount := DegreeDropReversal.card_roots_filter_gt_eq_reflect_compl
+    hFsplit hF0 hF hr hrF hFneg
+  have hreflect_eq := hbreflect
+    (DegreeDropReversal.splits_reflect_of_splits hbsplit hbdegree)
+  change ((reflect D (quadraticInterlacingPencil H G F b)).roots.filter
+      (r⁻¹ < ·)).card = ((reflect D F).roots.filter (r⁻¹ < ·)).card at hreflect_eq
+  omega
+
+/-- Original-parameter form of the root-count endpoint at `a → ∞`. -/
+theorem eventually_quadraticInterlacingPencil_card_roots_gt_eq_atTop
+    {F G H : ℝ[X]} {D : ℕ}
+    (hF : F.natDegree ≤ D) (hG : G.natDegree ≤ D)
+    (hH : H.natDegree ≤ D)
+    (hsplits : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).Splits)
+    (hcoeff0 : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).coeff 0 ≠ 0)
+    (hneg : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
+      (quadraticInterlacingPencil H G F b).roots, q < 0)
+    {r : ℝ} (hr : r < 0) (hrF : ¬F.IsRoot r) :
+    ∀ᶠ a in Filter.atTop,
+      ((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card =
+        (F.roots.filter (r < ·)).card := by
+  have hsmall :=
+    eventually_reciprocalQuadraticInterlacingPencil_card_roots_gt_eq
+      hF hG hH hsplits hcoeff0 hneg hr hrF
+  have hsmall_atTop := tendsto_inv_atTop_zero.eventually hsmall
+  filter_upwards [hsmall_atTop, Filter.eventually_gt_atTop (0 : ℝ)] with a ha hapos
+  have hainvpos : 0 < a⁻¹ := inv_pos.mpr hapos
+  have hcount := ha hainvpos
+  have hroots := roots_quadraticInterlacingPencil_reciprocal
+    F G H (inv_ne_zero (ne_of_gt hapos))
+  rw [inv_inv] at hroots
+  rwa [hroots] at hcount
+
 /-- Every coefficient of the quadratic pencil depends smoothly on its real
 parameter. -/
 theorem contDiff_coeff_quadraticInterlacingPencil
