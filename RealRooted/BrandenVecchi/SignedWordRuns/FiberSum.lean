@@ -104,9 +104,8 @@ theorem coeff_signedRunSeries_of_isPositive
     PowerSeries.coeff n (signedRunSeries weight letter) =
       if n = 1 then C (weight letter) else 0 := by
   classical
-  have hnotnegative : ¬letter.IsNegative := by
-    intro hnegative
-    exact letter.not_isNegative_and_isPositive ⟨hnegative, hpositive⟩
+  have hnotnegative : ¬letter.IsNegative :=
+    fun hnegative => letter.not_isNegative_and_isPositive ⟨hnegative, hpositive⟩
   simp [signedRunSeries, hnotnegative]
 
 @[simp]
@@ -251,9 +250,8 @@ theorem coeff_signedSkeletonRunSeries
       apply Finset.sum_subset (Finset.filter_subset _ _)
       intro lengths hlengths hnotmem
       have hnotvalid :
-          ¬IsSignedRunLengthAssignment skeleton lengths := by
-        intro hvalid
-        exact hnotmem (Finset.mem_filter.mpr ⟨hlengths, hvalid⟩)
+          ¬IsSignedRunLengthAssignment skeleton lengths :=
+        fun hvalid => hnotmem (Finset.mem_filter.mpr ⟨hlengths, hvalid⟩)
       obtain ⟨i, hi⟩ :=
         exists_coeff_signedRunSeries_eq_zero_of_not_assignment
           weight hnotvalid
@@ -506,9 +504,8 @@ theorem coeff_signedTupleSkeletonRunSeries
       apply Finset.sum_subset (Finset.filter_subset _ _)
       intro lengths hlengths hnotmem
       have hnotvalid :
-          ¬IsSignedTupleRunLengthAssignment skeleton lengths := by
-        intro hvalid
-        exact hnotmem (Finset.mem_filter.mpr ⟨hlengths, hvalid⟩)
+          ¬IsSignedTupleRunLengthAssignment skeleton lengths :=
+        fun hvalid => hnotmem (Finset.mem_filter.mpr ⟨hlengths, hvalid⟩)
       obtain ⟨i, hi⟩ :=
         exists_coeff_signedRunSeries_eq_zero_of_not_tupleAssignment
           weight hnotvalid
@@ -590,8 +587,8 @@ theorem runIndexRuns_injective {q p : ℕ} :
   subst k'
   have hpairs :
       (fun i => (skeleton i, lengths i)) =
-        fun i => (skeleton' i, lengths' i) := by
-    exact List.ofFn_injective hindex
+        fun i => (skeleton' i, lengths' i) :=
+    List.ofFn_injective hindex
   have hskeleton : skeleton = skeleton' := by
     funext i
     exact congrArg Prod.fst (congrFun hpairs i)
@@ -827,10 +824,10 @@ theorem compressedRunIndex_surjOn_signedSmirnovExpansionFiber
             lengths hlengths.2)
       _ = n := hlengths.1
   let word := listAsTuple data.expand hexpandLength
-  have hwordList : List.ofFn word = data.expand := by
-    exact ofFn_listAsTuple data.expand hexpandLength
-  have hsigned : data.IsSigned := by
-    exact runLengthDataOfTupleAssignment_isSigned skeleton hskeleton
+  have hwordList : List.ofFn word = data.expand :=
+    ofFn_listAsTuple data.expand hexpandLength
+  have hsigned : data.IsSigned :=
+    runLengthDataOfTupleAssignment_isSigned skeleton hskeleton
       lengths hlengths.2
   have hword : IsSignedWord n word := by
     rw [← isSignedList_ofFn_iff, hwordList,
@@ -940,8 +937,8 @@ theorem signedSmirnovSubstitutionCoeff_add_zero_letters
     signedSmirnovSubstitutionCoeff weight n =
       signedSmirnovSubstitutionCoeff
         (extendSignedLetterWeight
-          (signedLetterExtend q p r s).toEmbedding weight) n := by
-  exact signedSmirnovSubstitutionCoeff_extend
+          (signedLetterExtend q p r s).toEmbedding weight) n :=
+  signedSmirnovSubstitutionCoeff_extend
     (signedLetterExtend q p r s)
     (signedLetterExtend_isNegative_iff q p r s) weight n
 
