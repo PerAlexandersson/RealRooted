@@ -140,8 +140,8 @@ theorem amplitude_at_smallest_root_of_sq_ratio
       ring
     rw [hidentity]
     linarith
-  have hlowerPos : 0 < (2 * c - 1) / c := by
-    exact div_pos (by linarith) hcpos
+  have hlowerPos : 0 < (2 * c - 1) / c :=
+    div_pos (by linarith) hcpos
   have hproductNonnegative : 0 ≤ (W.map (fun x => 1 - x)).prod :=
     le_trans hlowerPos.le hlower
   have hproductRewrite :
