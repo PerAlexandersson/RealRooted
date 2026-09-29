@@ -157,8 +157,8 @@ theorem shiftedBinaryRunDeformation_sqCriticalValue_deriv_nonneg
     rw [hcritical] at hstrict
     norm_num [Q, B, C] at hstrict ⊢
     exact hstrict
-  have hAB : A * B ≤ 0 := by
-    exact binaryRunDeformation_critical_sign_of_neg
+  have hAB : A * B ≤ 0 :=
+    binaryRunDeformation_critical_sign_of_neg
       hn hp hp0 hdegree ht hx hcritical
   have hAC : 0 ≤ A * C := by
     rcases mul_neg_iff.mp hBC with ⟨hBpos, hCneg⟩ | ⟨hBneg, hCpos⟩
@@ -247,14 +247,14 @@ theorem shiftedBinaryRunDeformation_pf_criticalValueMargin_eventually_right
     filter_upwards [hQdegreeEvent] with u hu
     change (Q u).derivative.natDegree = D - 1
     rw [Polynomial.natDegree_derivative, hu]
-  have hR0 : R t ≠ 0 := by
-    exact Polynomial.derivative_ne_zero.mpr <| by
+  have hR0 : R t ≠ 0 :=
+    Polynomial.derivative_ne_zero.mpr <| by
       rw [hQdegree']
       exact hDpos.ne'
-  have hRsplit : (R t).Splits := by
-    exact (hQpf.derivative.ne_zero_and_splits hR0).2
-  have hRsimple : HasSimpleRoots (R t) := by
-    exact hQsimple.derivative_of_splits hQsplit <| by
+  have hRsplit : (R t).Splits :=
+    (hQpf.derivative.ne_zero_and_splits hR0).2
+  have hRsimple : HasSimpleRoots (R t) :=
+    hQsimple.derivative_of_splits hQsplit <| by
       rw [hQdegree']
       exact hDpos.ne'
   have hDsub : D - 1 ≠ 0 := by
@@ -283,8 +283,8 @@ theorem shiftedBinaryRunDeformation_pf_criticalValueMargin_eventually_right
   have hξvalue : ∀ᶠ u in 𝓝 t, ∀ i, (Q u).eval (ξ i u) ≠ 0 := by
     rw [Filter.eventually_all]
     intro i
-    have hcont : ContinuousAt (fun u => (Q u).eval (ξ i u)) t := by
-      exact (contDiff_shiftedBinaryRunDeformation_eval_prod
+    have hcont : ContinuousAt (fun u => (Q u).eval (ξ i u)) t :=
+      (contDiff_shiftedBinaryRunDeformation_eval_prod
         hdegree).continuous.continuousAt.comp
           (continuousAt_id.prodMk (hξlocal_t.2.2.1 i).continuousAt)
     exact hcont.eventually_ne (hξvalue0 i)
@@ -313,14 +313,13 @@ theorem shiftedBinaryRunDeformation_pf_criticalValueMargin_eventually_right
       · exact shiftedBinaryRunDeformation_sqCriticalValue_deriv_nonneg
           hn hp hp0 hdegree hupos (hξnegu i) hcritical hQu.1
           (by rw [hQdegreeu]; exact hDpos) (hξvalueu i)
-  have hbase : ∀ i, δ ≤ (Q t).eval (ξ i t) ^ 2 := by
-    intro i
-    exact hmargin (ξ i t) (hξroot_t i)
+  have hbase : ∀ i, δ ≤ (Q t).eval (ξ i t) ^ 2 :=
+    fun i => hmargin (ξ i t) (hξroot_t i)
   have hmarginRight :=
     criticalValueMargin_eventually_right_of_branches Q ξ hbase hlocal
   have hQright : ∀ᶠ u in 𝓝[>] t,
-      (Q u).Splits ∧ HasSimpleRoots (Q u) := by
-    exact hζlocal.filter_mono inf_le_left |>.mono fun _ hu => ⟨hu.1, hu.2.1⟩
+      (Q u).Splits ∧ HasSimpleRoots (Q u) :=
+    hζlocal.filter_mono inf_le_left |>.mono fun _ hu => ⟨hu.1, hu.2.1⟩
   filter_upwards [hmarginRight, hQright,
     (self_mem_nhdsWithin : ∀ᶠ u : ℝ in 𝓝[>] t, u ∈ Set.Ioi t)]
     with u humargin hQu hut
@@ -357,9 +356,8 @@ theorem shiftedBinaryRunDeformation_pf_criticalValueMargin_Icc
     intro u
     apply hQdegree (c u)
     exact (Set.projIcc a b hab u).2
-  have hPcoeff : ∀ k : ℕ, Continuous fun u => (P u).coeff k := by
-    intro k
-    exact (contDiff_coeff_shiftedBinaryRunDeformation
+  have hPcoeff : ∀ k : ℕ, Continuous fun u => (P u).coeff k :=
+    fun k => (contDiff_coeff_shiftedBinaryRunDeformation
       hdegree k).continuous.comp hc
   have hD : 2 ≤ (n + 1) / 2 := by lia
   have hPclosed := isClosed_isPFPolynomial_and_criticalValueMargin
@@ -379,8 +377,8 @@ theorem shiftedBinaryRunDeformation_pf_criticalValueMargin_Icc
         simpa [S, P, Q, c, Set.projIcc_of_mem hab huIcc] using hu
     rw [heq]
     exact hPclosed.inter isClosed_Icc
-  have haS : a ∈ S := by
-    exact ⟨haPF, haMargin⟩
+  have haS : a ∈ S :=
+    ⟨haPF, haMargin⟩
   have hforward : ∀ u ∈ S ∩ Set.Ico a b, S ∈ 𝓝[>] u := by
     intro u hu
     have huIcc : u ∈ Set.Icc a b := ⟨hu.2.1, hu.2.2.le⟩
@@ -410,11 +408,11 @@ theorem exists_pos_shiftedBinaryRunDeformation_anchor
         δ ≤ (shiftedBinaryRunDeformation n p a).eval x ^ 2 := by
   let D := (n + 1) / 2
   let P : ℝ → ℝ[X] := fun t ↦ rescaledBinaryRunDeformation n p t
-  have hPdegree0 : (P 0).natDegree = D := by
-    exact natDegree_rescaledBinaryRunDeformation_eq (by lia)
+  have hPdegree0 : (P 0).natDegree = D :=
+    natDegree_rescaledBinaryRunDeformation_eq (by lia)
       hp.hasNonnegCoeffs hpTop le_rfl
-  have hPanchor : P 0 = binaryRunAnchor n p := by
-    exact rescaledBinaryRunDeformation_zero n p
+  have hPanchor : P 0 = binaryRunAnchor n p :=
+    rescaledBinaryRunDeformation_zero n p
   have hPsimple : HasSimpleRoots (P 0) := by
     rw [hPanchor]
     exact binaryRunAnchor_hasSimpleRoots (by lia) hp hpdeg hp0
@@ -443,8 +441,8 @@ theorem exists_pos_shiftedBinaryRunDeformation_anchor
   have ha : 0 < a := by
     dsimp [a]
     positivity
-  have haρ : a < ρ := by
-    exact (min_le_left (ρ / 2) (1 / 2 : ℝ)).trans_lt (half_lt_self hρ)
+  have haρ : a < ρ :=
+    (min_le_left (ρ / 2) (1 / 2 : ℝ)).trans_lt (half_lt_self hρ)
   have ha1 : a ≤ 1 := by
     dsimp [a]
     linarith [min_le_right (ρ / 2) (1 / 2 : ℝ)]
@@ -489,9 +487,8 @@ theorem isPFPolynomial_binaryRunTransform_of_regular
   obtain ⟨a, δ, ha, ha1, hδ, haDegree, haPF, haMargin⟩ :=
     exists_pos_shiftedBinaryRunDeformation_anchor hn hp hpdeg hp0 hpTop
   have hdegree : ∀ u ∈ Set.Icc a 1,
-      (shiftedBinaryRunDeformation n p u).natDegree = (n + 1) / 2 := by
-    intro u hu
-    exact natDegree_shiftedBinaryRunDeformation_eq (by lia)
+      (shiftedBinaryRunDeformation n p u).natDegree = (n + 1) / 2 :=
+    fun u hu => natDegree_shiftedBinaryRunDeformation_eq (by lia)
       hp.hasNonnegCoeffs hpdeg hpTop (ha.trans_le hu.1)
   have hall := shiftedBinaryRunDeformation_pf_criticalValueMargin_Icc
     hn hp (by
@@ -658,8 +655,8 @@ private theorem isPFPolynomial_binaryRunTransform_of_le_three
   have hqnn : HasNonnegCoeffs q := hp.hasNonnegCoeffs.binaryRunTransform
   by_cases hn3 : n = 3
   · subst n
-    have hqdeg : q.natDegree ≤ 2 := by
-      exact natDegree_binaryRunTransform_le hpdeg
+    have hqdeg : q.natDegree ≤ 2 :=
+      natDegree_binaryRunTransform_le hpdeg
     have hpSplit : p.Splits := by
       rcases hp.eq_zero_or_splits with hpzero | hsplit
       · simp [hpzero]
