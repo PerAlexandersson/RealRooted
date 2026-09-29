@@ -251,10 +251,10 @@ relation theorem by symmetry. -/
 theorem theorem21RightFactorReturnAllComboRelation_of_leftRelation
     {R : ℕ → ℕ → Prop}
     (hleft : theorem21LeftFactorReturnAllComboRelationStatement R) :
-    theorem21RightFactorReturnAllComboRelationStatement R := by
-  intro f g r s hf hg hsgn hright hdeg hcommon
-  exact theorem21RightFactorReturnAllCombo_of_leftDegreeRelation
-    hleft hf hg hsgn hright hdeg hcommon
+    theorem21RightFactorReturnAllComboRelationStatement R :=
+  fun f g r s hf hg hsgn hright hdeg hcommon =>
+    theorem21RightFactorReturnAllCombo_of_leftDegreeRelation
+      hleft hf hg hsgn hright hdeg hcommon
 
 /-- The right same-degree all-combinations factor-return case follows from
 the left same-degree case by swapping the two polynomials. -/
@@ -394,9 +394,8 @@ endpoint predicate implications. -/
 theorem theorem21LeftFactorReturnPredicateRelationStatement_of_imp
     {R : ℕ → ℕ → Prop} {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
     (hQ : theorem21LeftFactorReturnPredicateRelationStatement R Q) :
-    theorem21LeftFactorReturnPredicateRelationStatement R P := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg
-  exact hQ hf hg hsgn hleft hdeg hcommon (hPQ _ hgdeg)
+    theorem21LeftFactorReturnPredicateRelationStatement R P :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon hgdeg => hQ hf hg hsgn hleft hdeg hcommon (hPQ _ hgdeg)
 
 /-- The unrestricted left factor-return relation target is the `P := True`
 case of the predicate-restricted relation target. -/
@@ -404,9 +403,8 @@ theorem theorem21LeftFactorReturnPredicateRelation_true_of_relation
     {R : ℕ → ℕ → Prop}
     (hreturn : theorem21LeftFactorReturnRelationStatement R) :
     theorem21LeftFactorReturnPredicateRelationStatement R
-      (fun _ => True) := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon _
-  exact hreturn hf hg hsgn hleft hdeg hcommon
+      (fun _ => True) :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon _ => hreturn hf hg hsgn hleft hdeg hcommon
 
 /-- A `P := True` left factor-return predicate relation target gives the
 unrestricted relation target. -/
@@ -415,9 +413,8 @@ theorem theorem21LeftFactorReturnRelation_of_predicate_true
     (hreturn :
       theorem21LeftFactorReturnPredicateRelationStatement R
         (fun _ => True)) :
-    theorem21LeftFactorReturnRelationStatement R := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon
-  exact hreturn hf hg hsgn hleft hdeg hcommon trivial
+    theorem21LeftFactorReturnRelationStatement R :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon => hreturn hf hg hsgn hleft hdeg hcommon trivial
 
 /-- Same-degree left-branch factor-return target. -/
 def theorem21LeftFactorReturnSameDegreeStatement : Prop :=
@@ -487,9 +484,8 @@ the corresponding compatibility factor-return leaf. -/
 theorem theorem21LeftFactorReturn_of_allComboRelation
     {R : ℕ → ℕ → Prop}
     (hleft : theorem21LeftFactorReturnAllComboRelationStatement R) :
-    theorem21LeftFactorReturnRelationStatement R := by
-  intro f g r s hf hg hsgn hbranch hdeg hcommon
-  exact Compatible.of_allComboRealRooted
+    theorem21LeftFactorReturnRelationStatement R :=
+  fun f g r s hf hg hsgn hbranch hdeg hcommon => Compatible.of_allComboRealRooted
     (hleft hf hg hsgn hbranch hdeg hcommon)
 
 /-- A same-degree all-combinations left leaf gives the corresponding
@@ -554,9 +550,8 @@ theorem
       theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
         R Q) :
     theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
-      R P := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg
-  exact hQ hf hg hsgn hleft hdeg hcommon (hPQ _ hgdeg)
+      R P :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon hgdeg => hQ hf hg hsgn hleft hdeg hcommon (hPQ _ hgdeg)
 
 /-- The unrestricted translated compatibility relation target is the
 `P := True` case of the predicate-restricted relation target. -/
@@ -565,9 +560,8 @@ theorem theorem21LeftFactorReturnTranslatedCompatiblePredicateRelation_true_of_r
     (htranslated :
       theorem21LeftFactorReturnTranslatedCompatibleRelationStatement R) :
     theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
-      R (fun _ => True) := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon _
-  exact htranslated hf hg hsgn hleft hdeg hcommon
+      R (fun _ => True) :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon _ => htranslated hf hg hsgn hleft hdeg hcommon
 
 /-- A `P := True` translated compatibility predicate relation target gives the
 unrestricted translated compatibility relation target. -/
@@ -576,9 +570,8 @@ theorem theorem21LeftFactorReturnTranslatedCompatibleRelation_of_predicate_true
     (htranslated :
       theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
         R (fun _ => True)) :
-    theorem21LeftFactorReturnTranslatedCompatibleRelationStatement R := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon
-  exact htranslated hf hg hsgn hleft hdeg hcommon trivial
+    theorem21LeftFactorReturnTranslatedCompatibleRelationStatement R :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon => htranslated hf hg hsgn hleft hdeg hcommon trivial
 
 /-- Pointwise translated compatibility descent for a Liu left-branch
 factor-return route. -/
