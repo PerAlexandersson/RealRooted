@@ -377,8 +377,8 @@ theorem MvUpperHalfPlaneStable.of_ordinaryHomogenization
     (hstable : MvUpperHalfPlaneStable
       (MvPolynomial.ordinaryHomogenization p d))
     (hdeg : p.totalDegree ≤ d) :
-    MvUpperHalfPlaneStable p := by
-  exact ((mvUpperHalfPlaneStable_ordinaryHomogenization_iff hdeg).mp
+    MvUpperHalfPlaneStable p :=
+  ((mvUpperHalfPlaneStable_ordinaryHomogenization_iff hdeg).mp
     hstable).mvUpperHalfPlaneStable
 
 /-- Dehomogenizing a homogeneous stable polynomial at the positive real value
@@ -559,8 +559,8 @@ theorem homogeneousAdjoinFactor_isHomogeneous
 theorem MvUpperHalfPlaneStable.homogeneousAdjoinFactor
     {σ : Type*} {Q : MvPolynomial (Option σ) ℂ}
     (hQ : MvUpperHalfPlaneStable Q) :
-    MvUpperHalfPlaneStable (homogeneousAdjoinFactor Q) := by
-  exact (MvUpperHalfPlaneStable.X_add_X none (some none)).mul hQ.rename
+    MvUpperHalfPlaneStable (homogeneousAdjoinFactor Q) :=
+  (MvUpperHalfPlaneStable.X_add_X none (some none)).mul hQ.rename
 
 theorem homogeneousAdjoinFactor_top_coeff
     {σ R : Type*} [CommSemiring R]

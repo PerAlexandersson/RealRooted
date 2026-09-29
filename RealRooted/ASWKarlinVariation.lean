@@ -93,8 +93,8 @@ theorem aswSectorThreshold_le_of_karlin_sine_kernel_of_nonneg
     (hsineUpper : ∀ {φ : ℝ}, 0 ≤ φ →
       φ < aswSectorThreshold degree order →
       Fin.signVariations (aswKarlinSineVector φ degree order 1) < order) :
-    aswSectorThreshold degree order ≤ θ := by
-  exact aswSectorThreshold_le_of_signVariation_bounds hsign hkerLower
+    aswSectorThreshold degree order ≤ θ :=
+  aswSectorThreshold_le_of_signVariation_bounds hsign hkerLower
     (hsineUpper hθ)
 
 /-- Karlin's variation-diminishing kernel criterion specialized to the

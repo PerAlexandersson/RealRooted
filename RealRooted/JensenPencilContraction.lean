@@ -115,8 +115,8 @@ private theorem continuous_coeff_jensenTranslateCombination
 /-- A positive threshold lies strictly above every root of a PF polynomial. -/
 theorem IsPFPolynomial.rootCountAtOrAbove_eq_zero_of_pos
     {p : ℝ[X]} (hp : IsPFPolynomial p) {x : ℝ} (hx : 0 < x) :
-    LiuOppositeSigns.rootCountAtOrAbove p x = 0 := by
-  exact LiuOppositeSigns.rootCountAtOrAbove_eq_zero_of_forall_roots_lt
+    LiuOppositeSigns.rootCountAtOrAbove p x = 0 :=
+  LiuOppositeSigns.rootCountAtOrAbove_eq_zero_of_forall_roots_lt
     (fun r hr ↦ lt_of_le_of_lt (hp.roots_nonpos r hr) hx)
 
 /-- Translating both PF endpoints left by the same positive amount, while

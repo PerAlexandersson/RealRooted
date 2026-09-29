@@ -80,8 +80,8 @@ def arrayKernelFin (N : ℕ) : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
   scaledLowerFin N arrayVScale * scaledLowerFin N arrayUScale
 
 theorem arrayKernelFin_isTotallyNonneg (N : ℕ) :
-    (arrayKernelFin N).IsTotallyNonneg := by
-  exact (scaledLowerFin_isTotallyNonneg N arrayVScale arrayVScale_pos).mul
+    (arrayKernelFin N).IsTotallyNonneg :=
+  (scaledLowerFin_isTotallyNonneg N arrayVScale arrayVScale_pos).mul
     (scaledLowerFin_isTotallyNonneg N arrayUScale arrayUScale_pos)
 
 @[simp] theorem arrayKernelFin_det (N : ℕ) : (arrayKernelFin N).det = 1 := by
@@ -108,8 +108,8 @@ def upperBidiagonalFin (N : ℕ) (a : ℝ) :
     simp [hij, hval]
 
 theorem upperBidiagonalFin_isTotallyNonneg (N : ℕ) (a : ℝ) (ha : 0 ≤ a) :
-    (upperBidiagonalFin N a).IsTotallyNonneg := by
-  exact (((bidiagonal_isTotallyNonneg a ha).submatrix
+    (upperBidiagonalFin N a).IsTotallyNonneg :=
+  (((bidiagonal_isTotallyNonneg a ha).submatrix
     Fin.val_strictMono Fin.val_strictMono).toRect.transpose).toSquare
 
 lemma upperBidiagonalFin_blockTriangular (N : ℕ) (a : ℝ) :
@@ -163,8 +163,8 @@ theorem gaussianArrayKernelFin_minors_pos (N : ℕ) (a δ : ℝ)
     (ha : 0 < a) (hδ : 0 < δ) {q : ℕ}
     {rows cols : Fin q → Fin (N + 1)}
     (hrows : StrictMono rows) (hcols : StrictMono cols) :
-    0 < ((gaussianArrayKernelFin N a δ).submatrix rows cols).det := by
-  exact Matrix.IsTotallyNonnegRect.det_gaussianMatrix_mul_pos_of_injective
+    0 < ((gaussianArrayKernelFin N a δ).submatrix rows cols).det :=
+  Matrix.IsTotallyNonnegRect.det_gaussianMatrix_mul_pos_of_injective
     (arrayPerturbedKernelFin_isTotallyNonneg N δ hδ.le).toRect
     (arrayPerturbedKernelFin_mulVec_injective N δ hδ.ne') ha hrows hcols
 

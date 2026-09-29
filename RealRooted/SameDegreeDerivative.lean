@@ -64,9 +64,8 @@ bound `roots_derivative_le_of_roots_le` into a single interval statement. -/
 theorem roots_derivative_mem_Icc_of_roots_mem_Icc {p : ℝ[X]} {u v : ℝ}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
     (h : ∀ r ∈ p.roots, r ∈ Set.Icc u v) :
-    ∀ r ∈ p.derivative.roots, r ∈ Set.Icc u v := by
-  intro r hr
-  exact ⟨le_roots_derivative_of_le_roots hp hdeg (fun s hs => (h s hs).1) r hr,
+    ∀ r ∈ p.derivative.roots, r ∈ Set.Icc u v :=
+  fun r hr => ⟨le_roots_derivative_of_le_roots hp hdeg (fun s hs => (h s hs).1) r hr,
     roots_derivative_le_of_roots_le hp hdeg (fun s hs => (h s hs).2) r hr⟩
 
 /-- Strict lower bound: if every root of a split polynomial of degree at least
@@ -128,9 +127,8 @@ theorem roots_derivative_lt_of_roots_lt {p : ℝ[X]} {v : ℝ}
 theorem roots_derivative_mem_Ioo_of_roots_mem_Ioo {p : ℝ[X]} {u v : ℝ}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
     (h : ∀ r ∈ p.roots, r ∈ Set.Ioo u v) :
-    ∀ r ∈ p.derivative.roots, r ∈ Set.Ioo u v := by
-  intro r hr
-  exact ⟨lt_roots_derivative_of_lt_roots hp hdeg (fun s hs => (h s hs).1) r hr,
+    ∀ r ∈ p.derivative.roots, r ∈ Set.Ioo u v :=
+  fun r hr => ⟨lt_roots_derivative_of_lt_roots hp hdeg (fun s hs => (h s hs).1) r hr,
     roots_derivative_lt_of_roots_lt hp hdeg (fun s hs => (h s hs).2) r hr⟩
 
 /-- Derivative root right-ray preservation. -/
@@ -165,18 +163,16 @@ theorem roots_derivative_mem_Iic_of_roots_mem_Iic {p : ℝ[X]} {v : ℝ}
 theorem roots_derivative_mem_Ico_of_roots_mem_Ico {p : ℝ[X]} {u v : ℝ}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
     (h : ∀ r ∈ p.roots, r ∈ Set.Ico u v) :
-    ∀ r ∈ p.derivative.roots, r ∈ Set.Ico u v := by
-  intro r hr
-  exact ⟨le_roots_derivative_of_le_roots hp hdeg (fun s hs => (h s hs).1) r hr,
+    ∀ r ∈ p.derivative.roots, r ∈ Set.Ico u v :=
+  fun r hr => ⟨le_roots_derivative_of_le_roots hp hdeg (fun s hs => (h s hs).1) r hr,
     roots_derivative_lt_of_roots_lt hp hdeg (fun s hs => (h s hs).2) r hr⟩
 
 /-- Derivative root half-open interval `(u, v]` preservation. -/
 theorem roots_derivative_mem_Ioc_of_roots_mem_Ioc {p : ℝ[X]} {u v : ℝ}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
     (h : ∀ r ∈ p.roots, r ∈ Set.Ioc u v) :
-    ∀ r ∈ p.derivative.roots, r ∈ Set.Ioc u v := by
-  intro r hr
-  exact ⟨lt_roots_derivative_of_lt_roots hp hdeg (fun s hs => (h s hs).1) r hr,
+    ∀ r ∈ p.derivative.roots, r ∈ Set.Ioc u v :=
+  fun r hr => ⟨lt_roots_derivative_of_lt_roots hp hdeg (fun s hs => (h s hs).1) r hr,
     roots_derivative_le_of_roots_le hp hdeg (fun s hs => (h s hs).2) r hr⟩
 
 /-- **Same-degree bookkeeping.** Differentiation preserves a common natural

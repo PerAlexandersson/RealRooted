@@ -262,9 +262,8 @@ theorem aswShiftedToeplitzMinor_two_cubic_rec {R : Type*} [CommRing R] (u : ℕ 
       u 2 * aswShiftedToeplitzMinor u 2 (k + 2) -
         u 1 * u 3 * aswShiftedToeplitzMinor u 2 (k + 1) +
           u 0 * u 3 ^ 2 * aswShiftedToeplitzMinor u 2 k := by
-  have hreverse : ∀ j, 4 ≤ j → aswCubicReverse u j = 0 := by
-    intro j hj
-    exact aswCubicReverse_eq_zero u hj
+  have hreverse : ∀ j, 4 ≤ j → aswCubicReverse u j = 0 :=
+    fun _ hj => aswCubicReverse_eq_zero u hj
   have hrec := aswShiftedToeplitzMinor_one_cubic_rec
     (aswCubicReverse u) hreverse k
   rw [aswCubicReverse_zero, aswCubicReverse_one, aswCubicReverse_two,

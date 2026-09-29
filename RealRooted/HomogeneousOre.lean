@@ -123,8 +123,8 @@ theorem allComboRealRooted_step_linear_change_of_pencil
     (hT : PreservesRealRootedOnPencil T f g)
     (hp : p = C a * T f + C b * T g)
     (hq : q = C c * T f + C d * T g) :
-    AllComboRealRooted p q := by
-  exact allComboRealRooted_linear_recombination hp hq
+    AllComboRealRooted p q :=
+  allComboRealRooted_linear_recombination hp hq
     (allComboRealRooted_map_of_pencil hall hT)
 
 /-- Single triangular Ore-shaped step through a pencil-local image operator.
