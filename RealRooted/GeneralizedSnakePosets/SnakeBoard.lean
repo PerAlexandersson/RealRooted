@@ -41,8 +41,8 @@ theorem mem_generalizedSnakeBoard_replicate_R_cells {n r c : ℕ} :
     have hbounds : r ≤ n ∧ c ≤ n := by simpa [Finset.mem_product] using hbound
     rw [Bool.and_eq_true] at hcell
     rcases hcell with ⟨_hrow_col, hcol_row⟩
-    have hrc : r ≤ c := by
-      exact (snakeElementReachable_replicate_R_colCode_rowCode_eq_false_iff
+    have hrc : r ≤ c :=
+      (snakeElementReachable_replicate_R_colCode_rowCode_eq_false_iff
         (n := n) (c := c) (r := r) hbounds.1).mp (by simpa using hcol_row)
     exact ⟨hbounds.1, hbounds.2, hrc⟩
   · rintro ⟨hr, hc, hrc⟩
@@ -71,8 +71,8 @@ theorem mem_generalizedSnakeBoard_replicate_L_cells {n r c : ℕ} :
     have hbounds : r ≤ n ∧ c ≤ n := by simpa [Finset.mem_product] using hbound
     rw [Bool.and_eq_true] at hcell
     rcases hcell with ⟨hrow_col, _hcol_row⟩
-    have hcr : c ≤ r := by
-      exact (snakeElementReachable_replicate_L_rowCode_colCode_eq_false_iff
+    have hcr : c ≤ r :=
+      (snakeElementReachable_replicate_L_rowCode_colCode_eq_false_iff
         (n := n) (r := r) (c := c) hbounds.2).mp (by simpa using hrow_col)
     exact ⟨hbounds.1, hbounds.2, hcr⟩
   · rintro ⟨hr, hc, hcr⟩

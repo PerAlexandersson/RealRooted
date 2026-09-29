@@ -28,9 +28,8 @@ private lemma listSum_hasNonnegCoeffs {ps : List ℝ[X]}
   | cons p ps ih =>
       intro k
       have hp : HasNonnegCoeffs p := hps p (by simp)
-      have htail : ∀ q ∈ ps, HasNonnegCoeffs q := by
-        intro q hq
-        exact hps q (by simp [hq])
+      have htail : ∀ q ∈ ps, HasNonnegCoeffs q :=
+        fun q hq => hps q (by simp [hq])
       simpa using add_nonneg (hp k) (ih htail k)
 
 /-- The auxiliary polynomial `G_n` as a finite sum over truncated staircase

@@ -381,8 +381,8 @@ theorem modifiedNarayana_affine_natDegree_le
         (C lam * X + C mu : ℝ[X]).natDegree +
           (modifiedNarayanaPolynomial n).natDegree :=
       Polynomial.natDegree_mul_le
-    _ ≤ 1 + n := by
-      exact Nat.add_le_add affineLinear_natDegree_le
+    _ ≤ 1 + n :=
+      Nat.add_le_add affineLinear_natDegree_le
         (le_of_eq (modifiedNarayanaPolynomial_natDegree n))
     _ = n + 1 := by rw [Nat.add_comm]
 
@@ -703,9 +703,8 @@ theorem lemma34ModifiedNarayanaShifted_left_isRoot_nonpos
         narayanaDifference modifiedNarayanaPolynomial m ≠ 0) :
     ∀ r,
       (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
-        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r) → r ≤ 0 := by
-  intro r hr
-  exact lemma34ModifiedNarayanaShifted_left_roots_nonpos hm hlam hmu r
+        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r) → r ≤ 0 :=
+  fun r hr => lemma34ModifiedNarayanaShifted_left_roots_nonpos hm hlam hmu r
     ((Polynomial.mem_roots hne).mpr hr)
 
 /-- The right-hand polynomial in the shifted Lemma 3.4 route has no positive
@@ -727,9 +726,8 @@ theorem lemma34ModifiedNarayanaShifted_right_isRoot_nonpos
     ∀ r,
       (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
         narayanaDifference modifiedNarayanaPolynomial (m + 1)).IsRoot r) →
-          r ≤ 0 := by
-  intro r hr
-  exact lemma34ModifiedNarayanaShifted_right_roots_nonpos hlam hmu r
+          r ≤ 0 :=
+  fun r hr => lemma34ModifiedNarayanaShifted_right_roots_nonpos hlam hmu r
     ((Polynomial.mem_roots hne).mpr hr)
 
 private theorem lemma34ModifiedNarayanaShifted_left_eq_paper

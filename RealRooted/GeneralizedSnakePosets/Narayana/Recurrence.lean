@@ -291,8 +291,8 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_four
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₄ : n ≤ 4) :
     X * FiniteSkewBoard.auxiliaryG (n - 1) =
       modifiedNarayanaPolynomial n -
-        (1 + X) * modifiedNarayanaPolynomial (n - 1) := by
-  exact narayanaAuxiliaryGRecurrence_modified_of_le_four_of_auxiliaryG_three
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
+  narayanaAuxiliaryGRecurrence_modified_of_le_four_of_auxiliaryG_three
     FiniteSkewBoard.auxiliaryG_three hn₁ hn₄
 
 /-- The checked initial cases `n = 1, 2, 3, 4`, plus the conditional `n = 5`
@@ -319,8 +319,8 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_five
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₅ : n ≤ 5) :
     X * FiniteSkewBoard.auxiliaryG (n - 1) =
       modifiedNarayanaPolynomial n -
-        (1 + X) * modifiedNarayanaPolynomial (n - 1) := by
-  exact narayanaAuxiliaryGRecurrence_modified_of_le_five_of_auxiliaryG_four
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
+  narayanaAuxiliaryGRecurrence_modified_of_le_five_of_auxiliaryG_four
     FiniteSkewBoard.auxiliaryG_four hn₁ hn₅
 
 /-- The checked initial cases `n = 1, 2, 3, 4, 5`, plus the conditional `n = 6`
@@ -577,8 +577,8 @@ theorem auxiliaryG_natDegree_of_narayanaRecurrence
     simp
   have hrec := hrec2 (n := n + 1) (by lia)
   simp only [Nat.add_sub_cancel] at hrec
-  have hlin : (1 + X : ℝ[X]).natDegree ≤ 1 := by
-    exact (natDegree_add_le (1 : ℝ[X]) X).trans (by simp)
+  have hlin : (1 + X : ℝ[X]).natDegree ≤ 1 :=
+    (natDegree_add_le (1 : ℝ[X]) X).trans (by simp)
   have hprod_le :
       ((1 + X) * modifiedNarayanaPolynomial n).natDegree ≤ n + 1 := by
     calc
@@ -635,8 +635,8 @@ theorem auxiliaryGPencil_natDegree_of_narayanaRecurrence
       _ = m - 1 := by lia
   have hle :
       ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).natDegree ≤ m - 1 := by
-    exact (natDegree_add_le _ _).trans (max_le hprod (by rw [hGm_deg]))
+        FiniteSkewBoard.auxiliaryG m).natDegree ≤ m - 1 :=
+    (natDegree_add_le _ _).trans (max_le hprod (by rw [hGm_deg]))
   have hGprev_top :
       (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 2) =
         ((m - 1 : ℕ) : ℝ) := by

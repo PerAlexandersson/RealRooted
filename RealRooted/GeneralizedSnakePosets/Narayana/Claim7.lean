@@ -244,8 +244,8 @@ theorem theorem41NonNestingRook_modified_of_sourceInputs
       (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
       M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    Theorem41NonNestingRookStatement M := by
-  exact theorem41_of_matrixClaim_of_constant_matches_succ_length
+    Theorem41NonNestingRookStatement M :=
+  theorem41_of_matrixClaim_of_constant_matches_succ_length
     (M := M) (P := modifiedNarayanaPolynomial)
     (G := FiniteSkewBoard.auxiliaryG)
     hrec

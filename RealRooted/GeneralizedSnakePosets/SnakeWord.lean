@@ -91,8 +91,8 @@ theorem takePrefix_eq_self_iff (w : SnakeWord) {k : ℕ} :
 /-- A prefix of length at least the word length is the whole word. -/
 theorem takePrefix_eq_self_of_length_le {w : SnakeWord} {k : ℕ}
     (hk : w.length ≤ k) :
-    w.takePrefix k = w := by
-  exact (takePrefix_eq_self_iff w).mpr hk
+    w.takePrefix k = w :=
+  (takePrefix_eq_self_iff w).mpr hk
 
 /-- Final-letter deletion is the prefix of length `w.length - 1`. -/
 theorem deleteFinal_eq_takePrefix (w : SnakeWord) :
@@ -194,8 +194,8 @@ theorem mem_changeIndices {w : SnakeWord} {k : ℕ} :
 
 /-- The computable change-index list is sorted in increasing order. -/
 theorem sortedLE_changeIndices (w : SnakeWord) :
-    w.changeIndices.SortedLE := by
-  exact (List.Pairwise.filter
+    w.changeIndices.SortedLE :=
+  (List.Pairwise.filter
     (fun k => decide (w[k]? ≠ w[w.length - 1]?))
     (List.SortedLE.pairwise
       (List.SortedLT.sortedLE (List.sortedLT_range w.length)))).sortedLE
