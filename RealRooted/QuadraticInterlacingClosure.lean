@@ -2195,6 +2195,63 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
     hQεsplits hQεsimple hQεneg hQεsplitsRecip hQεcoeff0Recip
     hQεnegRecip ha (hAεnn.pos_leadingCoeff hAεne) hAεdeg
 
+/-- The parameter tangent of a real-rooted quadratic pencil follows the
+pencil in oriented interlacing order.  This is the quadratic closure step
+used to propagate a consecutive monomial chain through PF factors. -/
+theorem strictInterl_quadraticInterlacingTangent_pencil
+    {F G H : ℝ[X]}
+    (hF : HasNonnegCoeffs F) (hG : HasNonnegCoeffs G)
+    (hH : HasNonnegCoeffs H) (hFG : StrictInterl F G)
+    (hGH : StrictInterl G H)
+    (hsplits : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).Splits)
+    {a : ℝ} (ha : 0 ≤ a) :
+    StrictInterl (quadraticInterlacingTangent F G a)
+      (quadraticInterlacingPencil F G H a) := by
+  rcases ha.eq_or_lt with rfl | ha
+  · simpa [quadraticInterlacingTangent, quadraticInterlacingPencil] using hGH
+  by_cases hHdeg : H.natDegree = 0
+  · have hGdeg : G.natDegree = 0 := by
+      exact Nat.eq_zero_of_le_zero (by simpa [hHdeg] using hGH.natDegree_le)
+    have hFdeg : F.natDegree = 0 := by
+      exact Nat.eq_zero_of_le_zero (by simpa [hGdeg] using hFG.natDegree_le)
+    have hFne : F ≠ 0 := hFG.1.1
+    have hGne : G ≠ 0 := hFG.2.1.1
+    have hHne : H ≠ 0 := hGH.2.1.1
+    have hAnn : HasNonnegCoeffs (quadraticInterlacingTangent F G a) :=
+      hG.add (nonnegCoeffs_C_mul ha.le hF)
+    have hAne : quadraticInterlacingTangent F G a ≠ 0 := by
+      simpa [quadraticInterlacingTangent, add_comm] using
+        add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
+          (nonnegCoeffs_C_mul ha.le hF) hG hGne
+    have hAdeg : (quadraticInterlacingTangent F G a).natDegree = 0 := by
+      apply Nat.eq_zero_of_le_zero
+      calc
+        (quadraticInterlacingTangent F G a).natDegree ≤
+            max G.natDegree (C a * F).natDegree := by
+          simpa [quadraticInterlacingTangent] using
+            natDegree_add_le G (C a * F)
+        _ ≤ max 0 0 := max_le hGdeg.le
+          ((natDegree_C_mul_le a F).trans hFdeg.le)
+        _ = 0 := by simp
+    have hQne : quadraticInterlacingPencil F G H a ≠ 0 := by
+      have hsum : C (2 * a) * G + C (a ^ 2) * F + H ≠ 0 :=
+        add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
+          ((nonnegCoeffs_C_mul (mul_nonneg (by norm_num) ha.le) hG).add
+            (nonnegCoeffs_C_mul (sq_nonneg a) hF)) hH hHne
+      simpa [quadraticInterlacingPencil, add_comm, add_left_comm,
+        add_assoc] using hsum
+    have hQdeg : (quadraticInterlacingPencil F G H a).natDegree = 0 := by
+      have hFleH : F.natDegree ≤ H.natDegree := by simp [hFdeg, hHdeg]
+      have hGleH : G.natDegree ≤ H.natDegree := by simp [hGdeg, hHdeg]
+      exact (natDegree_quadraticInterlacingPencil_eq
+        hF hG hH hHne hFleH hGleH ha.le).trans hHdeg
+    exact StrictInterl.of_degree_zero_degree_zero hAne
+      (isRealRooted_of_deg_zero hAne hAdeg).2 hQne (hsplits a ha.le)
+      hAdeg hQdeg
+  · exact strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
+      hF hG hH hFG hGH hsplits hHdeg ha
+
 /-- The quadratic pencil is the right member plus `a` times its tangent. -/
 theorem quadraticInterlacingPencil_eq_right_add_tangent
     (F G H : ℝ[X]) (a : ℝ) :
