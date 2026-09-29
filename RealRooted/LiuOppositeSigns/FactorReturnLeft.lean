@@ -75,13 +75,13 @@ translated right-family target for the same-degree Liu left branch. -/
 theorem theorem21LeftFactorReturnSameDegreeTranslatedRightFamily_of_xSub
     (hsub :
       positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement) :
-    theorem21LeftFactorReturnSameDegreeTranslatedRightFamilyStatement := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon
-  exact theorem21LeftFactorReturnSameDegreeTranslatedRightFamily_of_xSub_rightPredicate
-    (P := fun _ => True)
-    (positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
-      hsub)
-    hf hg hsgn hleft hdeg hcommon trivial
+    theorem21LeftFactorReturnSameDegreeTranslatedRightFamilyStatement :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon =>
+    theorem21LeftFactorReturnSameDegreeTranslatedRightFamily_of_xSub_rightPredicate
+      (P := fun _ => True)
+      (positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
+        hsub)
+      hf hg hsgn hleft hdeg hcommon trivial
 
 /-- A same-degree sign-normalized x-subtraction leaf gives the translated
 right-family target for the successor-degree Liu left branch. -/
@@ -141,13 +141,13 @@ theorem theorem21LeftFactorReturnSuccDegreeTranslatedRightFamily_of_xSub_rightPr
 right-family target for the successor-degree Liu left branch. -/
 theorem theorem21LeftFactorReturnSuccDegreeTranslatedRightFamily_of_xSub
     (hsub : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement) :
-    theorem21LeftFactorReturnSuccDegreeTranslatedRightFamilyStatement := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon
-  exact theorem21LeftFactorReturnSuccDegreeTranslatedRightFamily_of_xSub_rightPredicate
-    (P := fun _ => True)
-    (positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
-      hsub)
-    hf hg hsgn hleft hdeg hcommon trivial
+    theorem21LeftFactorReturnSuccDegreeTranslatedRightFamilyStatement :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon =>
+    theorem21LeftFactorReturnSuccDegreeTranslatedRightFamily_of_xSub_rightPredicate
+      (P := fun _ => True)
+      (positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
+        hsub)
+      hf hg hsgn hleft hdeg hcommon trivial
 
 /-- Predicate-restricted right-successor sign-normalized x-subtraction leaves
 give predicate-restricted translated right-family targets for the same-degree
@@ -158,10 +158,10 @@ theorem theorem21LeftFactorReturnSameDegreeTranslatedRightFamilyPredicate_of_xSu
       positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
         P) :
     theorem21LeftFactorReturnSameDegreeTranslatedRightFamilyPredicateStatement
-      P := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg
-  exact theorem21LeftFactorReturnSameDegreeTranslatedRightFamily_of_xSub_rightPredicate
-    hterminal hf hg hsgn hleft hdeg hcommon hgdeg
+      P :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon hgdeg =>
+    theorem21LeftFactorReturnSameDegreeTranslatedRightFamily_of_xSub_rightPredicate
+      hterminal hf hg hsgn hleft hdeg hcommon hgdeg
 
 /-- Predicate-restricted same-degree sign-normalized x-subtraction leaves give
 predicate-restricted translated right-family targets for the successor-degree
@@ -171,10 +171,10 @@ theorem theorem21LeftFactorReturnSuccDegreeTranslatedRightFamilyPredicate_of_xSu
     (hterminal :
       positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement P) :
     theorem21LeftFactorReturnSuccDegreeTranslatedRightFamilyPredicateStatement
-      P := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg
-  exact theorem21LeftFactorReturnSuccDegreeTranslatedRightFamily_of_xSub_rightPredicate
-    hterminal hf hg hsgn hleft hdeg hcommon hgdeg
+      P :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon hgdeg =>
+    theorem21LeftFactorReturnSuccDegreeTranslatedRightFamily_of_xSub_rightPredicate
+      hterminal hf hg hsgn hleft hdeg hcommon hgdeg
 
 /-- Degree-one right endpoint case for the translated same-degree Liu
 right-family target. -/
@@ -1016,9 +1016,8 @@ same-degree factor-return target. -/
 theorem theorem21LeftFactorReturnSameDegree_of_xSub
     (hsub :
       positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement) :
-    theorem21LeftFactorReturnSameDegreeStatement := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon
-  exact theorem21LeftFactorReturnSameDegree_of_xSubPredicate
+    theorem21LeftFactorReturnSameDegreeStatement :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon => theorem21LeftFactorReturnSameDegree_of_xSubPredicate
     (P := fun _ => True)
     (positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
       hsub)
@@ -1028,9 +1027,8 @@ theorem theorem21LeftFactorReturnSameDegree_of_xSub
 successor-degree factor-return target. -/
 theorem theorem21LeftFactorReturnSuccDegree_of_xSub
     (hsub : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement) :
-    theorem21LeftFactorReturnSuccDegreeStatement := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon
-  exact theorem21LeftFactorReturnSuccDegree_of_xSubPredicate
+    theorem21LeftFactorReturnSuccDegreeStatement :=
+  fun f g r s hf hg hsgn hleft hdeg hcommon => theorem21LeftFactorReturnSuccDegree_of_xSubPredicate
     (P := fun _ => True)
     (positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
       hsub)
