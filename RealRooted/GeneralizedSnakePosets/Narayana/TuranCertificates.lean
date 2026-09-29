@@ -515,9 +515,8 @@ theorem modifiedNarayanaTuran_nonneg_of_le_three
 
 /-- Bounded Turan package through `m = 3`. -/
 theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_three :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 3 := by
-  intro m r hm₁ hm₃ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_three hm₁ hm₃ hr
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 3 :=
+  fun m r hm₁ hm₃ hr => modifiedNarayanaTuran_nonneg_of_le_three hm₁ hm₃ hr
 
 /-- The first four Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_four
@@ -536,9 +535,8 @@ theorem modifiedNarayanaTuran_nonneg_of_le_four
 
 /-- Bounded Turan package through `m = 4`. -/
 theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_four :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 4 := by
-  intro m r hm₁ hm₄ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_four hm₁ hm₄ hr
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 4 :=
+  fun m r hm₁ hm₄ hr => modifiedNarayanaTuran_nonneg_of_le_four hm₁ hm₄ hr
 
 /-- The first five Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_five
@@ -560,9 +558,8 @@ theorem modifiedNarayanaTuran_nonneg_of_le_five
 
 /-- Bounded Turan package through `m = 5`. -/
 theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_five :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 5 := by
-  intro m r hm₁ hm₅ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_five hm₁ hm₅ hr
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 5 :=
+  fun m r hm₁ hm₅ hr => modifiedNarayanaTuran_nonneg_of_le_five hm₁ hm₅ hr
 
 /-- The first six Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_six
@@ -587,9 +584,8 @@ theorem modifiedNarayanaTuran_nonneg_of_le_six
 
 /-- Bounded Turan package through `m = 6`. -/
 theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_six :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 6 := by
-  intro m r hm₁ hm₆ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_six hm₁ hm₆ hr
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 6 :=
+  fun m r hm₁ hm₆ hr => modifiedNarayanaTuran_nonneg_of_le_six hm₁ hm₆ hr
 
 /-- The first seven Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_seven
@@ -617,9 +613,8 @@ theorem modifiedNarayanaTuran_nonneg_of_le_seven
 
 /-- Bounded Turan package through `m = 7`. -/
 theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_seven :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 7 := by
-  intro m r hm₁ hm₇ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_seven hm₁ hm₇ hr
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 7 :=
+  fun m r hm₁ hm₇ hr => modifiedNarayanaTuran_nonneg_of_le_seven hm₁ hm₇ hr
 
 /-- The first eight Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_eight
@@ -650,9 +645,8 @@ theorem modifiedNarayanaTuran_nonneg_of_le_eight
 
 /-- Bounded Turan package through `m = 8`. -/
 theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_eight :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 8 := by
-  intro m r hm₁ hm₈ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_eight hm₁ hm₈ hr
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 8 :=
+  fun m r hm₁ hm₈ hr => modifiedNarayanaTuran_nonneg_of_le_eight hm₁ hm₈ hr
 
 /-- The first nine Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_nine
@@ -686,9 +680,8 @@ theorem modifiedNarayanaTuran_nonneg_of_le_nine
 
 /-- Bounded Turan package through `m = 9`. -/
 theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_nine :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 9 := by
-  intro m r hm₁ hm₉ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_nine hm₁ hm₉ hr
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 9 :=
+  fun m r hm₁ hm₉ hr => modifiedNarayanaTuran_nonneg_of_le_nine hm₁ hm₉ hr
 
 /-- The first ten Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_ten
@@ -725,9 +718,8 @@ theorem modifiedNarayanaTuran_nonneg_of_le_ten
 
 /-- Bounded Turan package through `m = 10`. -/
 theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_ten :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 10 := by
-  intro m r hm₁ hm₁₀ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_ten hm₁ hm₁₀ hr
+    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 10 :=
+  fun m r hm₁ hm₁₀ hr => modifiedNarayanaTuran_nonneg_of_le_ten hm₁ hm₁₀ hr
 
 /-- Checked shifted Lemma 3.4 root-sign test through `m = 3`. -/
 theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_three
