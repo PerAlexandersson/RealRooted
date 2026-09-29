@@ -132,27 +132,27 @@ lemma peakPairSlot_injective {m : ℕ} (π : Equiv.Perm (Fin (m + 1))) :
   cases bj <;> cases bk
   · have hval := congrArg (fun x => x.1.val) h
     simp only [peakPairSlot, Fin.val_castSucc, Fin.val_pred] at hval
-    have hjpos : 0 < j.val := by
-      exact Fin.pos_iff_ne_zero.mpr
+    have hjpos : 0 < j.val :=
+      Fin.pos_iff_ne_zero.mpr
         (peakPosition_ne_zero (mem_peakPositions_iff.mp hj))
-    have hkpos : 0 < k.val := by
-      exact Fin.pos_iff_ne_zero.mpr
+    have hkpos : 0 < k.val :=
+      Fin.pos_iff_ne_zero.mpr
         (peakPosition_ne_zero (mem_peakPositions_iff.mp hk))
     have hjk : j = k := Fin.ext (by lia)
     subst k
     rfl
   · have hval := congrArg (fun x => x.1.val) h
     simp only [peakPairSlot, Fin.val_castSucc, Fin.val_pred] at hval
-    have hjpos : 0 < j.val := by
-      exact Fin.pos_iff_ne_zero.mpr
+    have hjpos : 0 < j.val :=
+      Fin.pos_iff_ne_zero.mpr
         (peakPosition_ne_zero (mem_peakPositions_iff.mp hj))
     have hkj : k.val + 1 = j.val := by lia
     exact (peakPositions_not_adjacent
       (mem_peakPositions_iff.mp hk) (mem_peakPositions_iff.mp hj) hkj).elim
   · have hval := congrArg (fun x => x.1.val) h
     simp only [peakPairSlot, Fin.val_castSucc, Fin.val_pred] at hval
-    have hkpos : 0 < k.val := by
-      exact Fin.pos_iff_ne_zero.mpr
+    have hkpos : 0 < k.val :=
+      Fin.pos_iff_ne_zero.mpr
         (peakPosition_ne_zero (mem_peakPositions_iff.mp hk))
     have hjk : j.val + 1 = k.val := by lia
     exact (peakPositions_not_adjacent
