@@ -197,11 +197,11 @@ theorem reversedContributionCoeff_eq_mul_rCoeff
         positivity
       have hleft :
           a * reversedContributionCoeff m ε d (k + 1) =
-            b * reversedContributionCoeff m ε d k := by
-        exact reversedContributionCoeff_succ_mul m ε d k hε hklt
+            b * reversedContributionCoeff m ε d k :=
+        reversedContributionCoeff_succ_mul m ε d k hε hklt
       have hright :
-          a * rCoeff m ε d (k + 1) = b * rCoeff m ε d k := by
-        exact rCoeff_succ_mul m ε d k
+          a * rCoeff m ε d (k + 1) = b * rCoeff m ε d k :=
+        rCoeff_succ_mul m ε d k
       apply mul_left_cancel₀ ha
       calc
         a * reversedContributionCoeff m ε d (k + 1) =
@@ -389,12 +389,12 @@ theorem toricContribution_strictInterl_of_lt
       (shiftedToricContribution_hasNonnegCoeffs m ε e).reciprocalShift
       hreciprocal.2.1.2
   have hdDegree :
-      (reciprocalShift m (shiftedToricContribution m ε d)).natDegree ≤ m := by
-    exact Polynomial.natDegree_reflect_le.trans (max_le le_rfl
+      (reciprocalShift m (shiftedToricContribution m ε d)).natDegree ≤ m :=
+    Polynomial.natDegree_reflect_le.trans (max_le le_rfl
       (natDegree_shiftedToricContribution_le m ε d))
   have heDegree :
-      (reciprocalShift m (shiftedToricContribution m ε e)).natDegree ≤ m := by
-    exact Polynomial.natDegree_reflect_le.trans (max_le le_rfl
+      (reciprocalShift m (shiftedToricContribution m ε e)).natDegree ≤ m :=
+    Polynomial.natDegree_reflect_le.trans (max_le le_rfl
       (natDegree_shiftedToricContribution_le m ε e))
   have hshifted := reciprocalShift_reverses_strictInterl
     hdPF hePF hdDegree heDegree hreciprocal

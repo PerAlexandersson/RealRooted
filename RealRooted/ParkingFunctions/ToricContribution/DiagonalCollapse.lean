@@ -287,8 +287,8 @@ theorem one_sub_X_pow_mul_iterate_derivative_jPolynomial_eq
   let scale : ℝ := (d.factorial : ℝ) * jCoeff m ε d
   have hdata := iteratedDerivative_jPolynomial_intervalRootData m ε d hm hd
   have hscaleEval :
-      ((derivative^[d]) (jPolynomial m ε)).eval 0 = scale := by
-    exact iterate_derivative_jPolynomial_eval_zero m ε d (by lia)
+      ((derivative^[d]) (jPolynomial m ε)).eval 0 = scale :=
+    iterate_derivative_jPolynomial_eval_zero m ε d (by lia)
   have hscale : scale ≠ 0 := by
     have hpos := negOnePow_mul_iterate_derivative_jPolynomial_eval_zero_pos
       m ε d hm hd
@@ -340,8 +340,8 @@ theorem one_sub_X_pow_mul_iterate_derivative_jPolynomial_eq
 
 /-- A shifted Euler operator multiplies coefficient `k` by `k+a`. -/
 theorem coeff_eulerShiftOperator (a : ℝ) (f : ℝ[X]) (k : ℕ) :
-    (eulerShiftOperator a f).coeff k = (k + a) * f.coeff k := by
-  exact RealRooted.coeff_eulerShift a f k
+    (eulerShiftOperator a f).coeff k = (k + a) * f.coeff k :=
+  RealRooted.coeff_eulerShift a f k
 
 /-- Successive shifted Euler operators multiply coefficient `k` by the rising
 factorial `(c+k)_t`. -/

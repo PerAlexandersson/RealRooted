@@ -289,9 +289,8 @@ private theorem integral_Ioi_finsetPolynomial
   have hintegrable : ∀ j ∈ Finset.range M,
       IntegrableOn
         (fun x : ℝ => b j * x ^ (c - γ - 1 + (j : ℝ)))
-        (Ioi 1) volume := by
-    intro j hj
-    exact (integrableOn_Ioi_rpow_of_lt
+        (Ioi 1) volume :=
+    fun j hj => (integrableOn_Ioi_rpow_of_lt
       (hexponent j hj) one_pos).const_mul _
   have hintegral :
       (∫ x in Ioi (1 : ℝ),

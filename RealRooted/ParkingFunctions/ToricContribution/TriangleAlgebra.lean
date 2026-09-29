@@ -308,8 +308,8 @@ theorem jPolynomial_signedTriangleFamily_intervalRootData
     (m ε d t : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) (ht : t ≤ d) :
     IntervalRootData
       (signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε) d t)
-      (m - 1 - d + t) := by
-  exact signedTriangleFamily_intervalRootData
+      (m - 1 - d + t) :=
+  signedTriangleFamily_intervalRootData
     (jPolynomial_triangleFamily_intervalRootData m ε d t hm hd ht)
 
 /-- The value at zero of an iterated derivative of `J` is its corresponding
@@ -385,8 +385,8 @@ theorem signedTriangleFamily_eval_zero_pos
 theorem signedTriangleFamily_diagonal_eval_zero_pos
     (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
     0 < (signedTriangleFamily ((ε : ℝ) + 1 / 2)
-      (jPolynomial m ε) d d).eval 0 := by
-  exact signedTriangleFamily_eval_zero_pos m ε d d hm hd
+      (jPolynomial m ε) d d).eval 0 :=
+  signedTriangleFamily_eval_zero_pos m ε d d hm hd
 
 /-- The terminal signed diagonal is a positively scaled shifted Jacobi
 polynomial with the lower half-integer first parameter. -/

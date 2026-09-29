@@ -85,8 +85,8 @@ def cyclicSortChains {n : ℕ} (L : List (List (Fin n))) (c : Fin (n + 1))
 theorem isParkingWord_cyclicSortChains_iff {n : ℕ} (L : List (List (Fin n)))
     (hL : ∀ l ∈ L, l.Nodup) (c : Fin (n + 1))
     (w : Fin n → Fin (n + 1)) :
-    IsParkingWord (cyclicSortChains L c w) ↔ IsParkingWord (cyclicValueShift c w) := by
-  exact isParkingWord_sortChains_iff L hL _
+    IsParkingWord (cyclicSortChains L c w) ↔ IsParkingWord (cyclicValueShift c w) :=
+  isParkingWord_sortChains_iff L hL _
 
 /-- Every cyclic-shift-and-sort orbit has a unique parking-word representative. -/
 theorem existsUnique_isParkingWord_cyclicSortChains {n : ℕ} (L : List (List (Fin n)))
@@ -125,8 +125,8 @@ theorem sortChains_unshift_cyclicSortChains {n : ℕ} (L : List (List (Fin n)))
         (l.map (cyclicValueUnshift c (cyclicSortChains L c w))) (l.map w) := by
       change List.Perm
         (l.map ((finCycle c).symm ∘ sortChains L (cyclicValueShift c w))) (l.map w)
-      have hundo : (finCycle c).symm ∘ cyclicValueShift c w = w := by
-        exact cyclicValueUnshift_cyclicValueShift c w
+      have hundo : (finCycle c).symm ∘ cyclicValueShift c w = w :=
+        cyclicValueUnshift_cyclicValueShift c w
       simpa only [List.map_map, hundo] using hsorted.map (finCycle c).symm
     exact (perm_map_sortChains_of_disjoint L hLnodup hnodup hdisj
       (cyclicValueUnshift c (cyclicSortChains L c w)) l hl).trans hunshift
@@ -210,8 +210,8 @@ theorem sortedLT_map_cyclicSortChains_of_disjoint {n : ℕ}
     (hdisj : ∀ l₁ ∈ L, ∀ l₂ ∈ L, l₁ ≠ l₂ → ∀ i ∈ l₁, i ∉ l₂)
     (c : Fin (n + 1)) (w : Fin n → Fin (n + 1))
     (hvalues : ∀ l ∈ L, (l.map w).Nodup) :
-    ∀ l ∈ L, (l.map (cyclicSortChains L c w)).SortedLT := by
-  exact sortedLT_map_sortChains_of_disjoint L hLnodup hnodup hdisj
+    ∀ l ∈ L, (l.map (cyclicSortChains L c w)).SortedLT :=
+  sortedLT_map_sortChains_of_disjoint L hLnodup hnodup hdisj
     (cyclicValueShift c w) (fun l hl =>
       nodup_map_cyclicValueShift c l w (hvalues l hl))
 
