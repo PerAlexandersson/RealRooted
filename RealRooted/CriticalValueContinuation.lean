@@ -426,6 +426,76 @@ theorem exists_eventually_polynomial_root_branches
   · rintro ⟨i, rfl⟩
     exact huroots i
 
+/-- Simple roots in a smooth fixed-degree split family persist locally with
+their (unit) multiplicity.
+
+This packages `exists_eventually_polynomial_root_branches` in the per-root
+lower-count form used by root-count local-constancy arguments. Unlike the
+older affine-pencil continuity theorem, the polynomial family `p` is
+arbitrary.
+-/
+theorem exists_eventually_forall_root_count_le_card_filter_near_of_simple
+    (p : ℝ → ℝ[X]) {t : ℝ} {D : ℕ} (hD : D ≠ 0)
+    (hdegree : ∀ᶠ u in 𝓝 t, (p u).natDegree = D)
+    (hsplits : (p t).Splits) (hsimple : HasSimpleRoots (p t))
+    (hsmooth : ∀ x, (p t).IsRoot x →
+      ContDiffAt ℝ 1 (fun z : ℝ × ℝ => (p z.1).eval z.2) (t, x))
+    {ρ : ℝ} (hρ : 0 < ρ) :
+    ∀ᶠ u in 𝓝 t, ∀ a ∈ (p t).roots.toFinset,
+      (p t).roots.count a ≤
+        ((p u).roots.filter (fun q => |q - a| < ρ)).card := by
+  classical
+  obtain ⟨ξ, hξbase, hbranches⟩ :=
+    exists_eventually_polynomial_root_branches p hD hdegree hsplits
+      hsimple hsmooth
+  have hbranches_t := hbranches.self_of_nhds
+  have hnear : ∀ᶠ u in 𝓝 t,
+      ∀ i : {x // x ∈ (p t).roots.toFinset}, |ξ i u - i| < ρ := by
+    rw [Filter.eventually_all]
+    intro i
+    have hcontinuous : ContinuousAt (ξ i) t :=
+      (hbranches_t.2.2.1 i).continuousAt
+    simpa [Real.dist_eq, hξbase i] using
+      (Metric.tendsto_nhds.mp hcontinuous.tendsto ρ hρ)
+  filter_upwards [hbranches, hnear] with u hu hnear_u
+  intro a ha
+  let i : {x // x ∈ (p t).roots.toFinset} := ⟨a, ha⟩
+  have ha_root : (p t).IsRoot a :=
+    Polynomial.isRoot_of_mem_roots (Multiset.mem_toFinset.mp ha)
+  have hcount : (p t).roots.count a = 1 :=
+    hsimple.roots_count_eq_one ha_root
+  have hbranch_root : (p u).IsRoot (ξ i u) :=
+    (hu.2.2.2 (ξ i u)).2 ⟨i, rfl⟩
+  have hbranch_mem : ξ i u ∈ (p u).roots :=
+    (Polynomial.mem_roots hu.2.1.ne_zero).2 hbranch_root
+  rw [hcount]
+  apply Multiset.card_pos.mpr
+  intro hzero
+  have hmem : ξ i u ∈
+      (p u).roots.filter (fun q => |q - a| < ρ) :=
+    Multiset.mem_filter.mpr ⟨hbranch_mem, hnear_u i⟩
+  simp [hzero] at hmem
+
+/-- Metric-neighborhood form of
+`exists_eventually_forall_root_count_le_card_filter_near_of_simple`. -/
+theorem exists_eps_forall_root_count_le_card_filter_near_of_simple
+    (p : ℝ → ℝ[X]) {t : ℝ} {D : ℕ} (hD : D ≠ 0)
+    (hdegree : ∀ᶠ u in 𝓝 t, (p u).natDegree = D)
+    (hsplits : (p t).Splits) (hsimple : HasSimpleRoots (p t))
+    (hsmooth : ∀ x, (p t).IsRoot x →
+      ContDiffAt ℝ 1 (fun z : ℝ × ℝ => (p z.1).eval z.2) (t, x))
+    {ρ : ℝ} (hρ : 0 < ρ) :
+    ∃ ε > 0, ∀ u : ℝ, |u - t| < ε →
+      ∀ a ∈ (p t).roots.toFinset,
+        (p t).roots.count a ≤
+          ((p u).roots.filter (fun q => |q - a| < ρ)).card := by
+  have hlocal :=
+    exists_eventually_forall_root_count_le_card_filter_near_of_simple
+      p hD hdegree hsplits hsimple hsmooth hρ
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hlocal
+  refine ⟨ε, hε, fun u hu ↦ hball ?_⟩
+  simpa [Metric.mem_ball, Real.dist_eq] using hu
+
 /-- If finitely many critical-point branches exhaust all nearby critical
 points and their squared critical values have nonnegative derivatives, then a
 critical-value margin persists to the right. -/

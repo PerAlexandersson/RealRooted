@@ -60,33 +60,55 @@ private theorem eq_of_locally_constant_on_Icc {N : ℝ → ℕ} {a b : ℝ} (hab
 
 /--
 Analytic per-root lower counts imply local constancy of the strict-upper root
-count near a fixed positive parameter.
+count for an arbitrary real-parameter polynomial family.
 
-This is the #42 local-constancy consumer for a multiplicity-preserving
-root-continuity theorem: once each root of `f + C μ * g` keeps at least its
-multiplicity inside every sufficiently small ball for nearby parameters, the
-finite radius bridge gives exact equality of the upper count near `μ`.
+It separates the finite multiplicity bookkeeping from the special affine
+presentation `f + C μ * g`.
 -/
-private theorem rightFamily_local_card_roots_gt_eq_of_local_lower_counts
-    {f g : ℝ[X]} {μ₀ μ₁ μ x : ℝ}
+private theorem polynomialFamily_local_card_roots_gt_eq_of_local_lower_counts
+    {p : ℝ → ℝ[X]} {μ₀ μ₁ μ x : ℝ}
     (hμ : μ ∈ Set.Icc μ₀ μ₁)
-    (hdeg : ∀ ν ∈ Set.Icc μ₀ μ₁,
-      (f + C ν * g).natDegree = (f + C μ * g).natDegree)
-    (hrr : ∀ ν ∈ Set.Icc μ₀ μ₁, (f + C ν * g).Splits)
-    (hne : ∀ ν ∈ Set.Icc μ₀ μ₁, ¬ (f + C ν * g).IsRoot x)
+    (hdeg : ∀ ν ∈ Set.Icc μ₀ μ₁, (p ν).natDegree = (p μ).natDegree)
+    (hrr : ∀ ν ∈ Set.Icc μ₀ μ₁, (p ν).Splits)
+    (hne : ∀ ν ∈ Set.Icc μ₀ μ₁, ¬ (p ν).IsRoot x)
     (hlower : ∀ ρ > 0, ∃ ε > 0, ∀ ν ∈ Set.Icc μ₀ μ₁,
       |ν - μ| < ε →
-        ∀ a ∈ (f + C μ * g).roots.toFinset,
-          (f + C μ * g).roots.count a ≤
-            ((f + C ν * g).roots.filter (fun r => |r - a| < ρ)).card) :
+        ∀ a ∈ (p μ).roots.toFinset,
+          (p μ).roots.count a ≤
+            ((p ν).roots.filter (fun r => |r - a| < ρ)).card) :
     ∃ ε > 0, ∀ ν ∈ Set.Icc μ₀ μ₁, |ν - μ| < ε →
-      ((f + C ν * g).roots.filter (x < ·)).card =
-        ((f + C μ * g).roots.filter (x < ·)).card := by
-  have hx : x ∉ (f + C μ * g).roots :=
+      ((p ν).roots.filter (x < ·)).card =
+        ((p μ).roots.filter (x < ·)).card := by
+  have hx : x ∉ (p μ).roots :=
     fun hx ↦ hne μ hμ (Polynomial.isRoot_of_mem_roots hx)
   obtain ⟨ρ, hρ_pos, hρ⟩ :=
     exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_counts hx
   grind
+
+/--
+Per-root lower counts along a root-free compact interval imply endpoint
+equality of strict-upper root counts for an arbitrary polynomial family.
+
+No coefficient-continuity hypothesis appears here: the analytic content is
+isolated in `hlower`.  This is the general finite consumer needed by nonlinear
+families such as a quadratic pencil.
+-/
+theorem polynomialFamily_card_roots_gt_eq_of_local_lower_counts
+    {p : ℝ → ℝ[X]} {μ₀ μ₁ x : ℝ} (hμ₁ : μ₀ ≤ μ₁)
+    (hdeg : ∀ μ ∈ Set.Icc μ₀ μ₁, (p μ).natDegree = (p μ₀).natDegree)
+    (hrr : ∀ μ ∈ Set.Icc μ₀ μ₁, (p μ).Splits)
+    (hne : ∀ μ ∈ Set.Icc μ₀ μ₁, ¬ (p μ).IsRoot x)
+    (hlower : ∀ μ ∈ Set.Icc μ₀ μ₁, ∀ ρ > 0, ∃ ε > 0,
+      ∀ ν ∈ Set.Icc μ₀ μ₁, |ν - μ| < ε →
+        ∀ a ∈ (p μ).roots.toFinset,
+          (p μ).roots.count a ≤
+            ((p ν).roots.filter (fun r => |r - a| < ρ)).card) :
+    ((p μ₀).roots.filter (x < ·)).card =
+      ((p μ₁).roots.filter (x < ·)).card := by
+  refine eq_of_locally_constant_on_Icc
+    (N := fun μ ↦ ((p μ).roots.filter (x < ·)).card) hμ₁ ?_
+  exact fun μ hμ ↦ polynomialFamily_local_card_roots_gt_eq_of_local_lower_counts
+    (p := p) (μ := μ) hμ (fun ν hν ↦ by simp_all) hrr hne (hlower μ hμ)
 
 /--
 Per-root lower counts along a root-free compact parameter interval imply
@@ -108,10 +130,7 @@ theorem rightFamily_card_roots_gt_eq_of_local_lower_counts
             ((f + C ν * g).roots.filter (fun r => |r - a| < ρ)).card) :
     ((f + C μ₀ * g).roots.filter (x < ·)).card =
       ((f + C μ₁ * g).roots.filter (x < ·)).card := by
-  refine eq_of_locally_constant_on_Icc
-    (N := fun μ ↦ ((f + C μ * g).roots.filter (x < ·)).card) hμ₁ ?_
-  exact fun μ hμ ↦ rightFamily_local_card_roots_gt_eq_of_local_lower_counts
-    (f := f) (g := g) (μ := μ) hμ
-    (fun ν hν ↦ by simp_all) hrr hne (hlower μ hμ)
+  exact polynomialFamily_card_roots_gt_eq_of_local_lower_counts
+    (p := fun μ ↦ f + C μ * g) hμ₁ hdeg hrr hne hlower
 
 end RealRooted

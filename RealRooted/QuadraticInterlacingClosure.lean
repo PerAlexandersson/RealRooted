@@ -1,4 +1,5 @@
 import RealRooted.HermiteBiehler.OrientedPencil
+import RealRooted.CriticalValueContinuation
 import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
 import RealRooted.LiuOppositeSigns.JensenRootCount
@@ -25,6 +26,8 @@ oriented Wronskian.
 
 open Polynomial
 open SignType
+open Topology
+open scoped ContDiff
 
 noncomputable section
 
@@ -129,6 +132,57 @@ def quadraticInterlacingTangent (F G : ℝ[X]) (a : ℝ) : ℝ[X] :=
 /-- The right member in the quadratic closure conclusion. -/
 def quadraticInterlacingRight (G H : ℝ[X]) (a : ℝ) : ℝ[X] :=
   H + C a * G
+
+/-- Every coefficient of the quadratic pencil depends smoothly on its real
+parameter. -/
+theorem contDiff_coeff_quadraticInterlacingPencil
+    (F G H : ℝ[X]) (i : ℕ) :
+    ContDiff ℝ ∞
+      (fun a => (quadraticInterlacingPencil F G H a).coeff i) := by
+  rw [show (fun a => (quadraticInterlacingPencil F G H a).coeff i) =
+      fun a => H.coeff i + (2 * a) * G.coeff i + a ^ 2 * F.coeff i by
+    funext a
+    simp only [quadraticInterlacingPencil, coeff_add, coeff_C_mul]]
+  fun_prop
+
+/-- Evaluation of the quadratic pencil is jointly smooth in the parameter and
+the polynomial variable. -/
+theorem contDiff_quadraticInterlacingPencil_eval_prod
+    (F G H : ℝ[X]) :
+    ContDiff ℝ ∞ (fun z : ℝ × ℝ =>
+      (quadraticInterlacingPencil F G H z.1).eval z.2) := by
+  rw [show (fun z : ℝ × ℝ =>
+      (quadraticInterlacingPencil F G H z.1).eval z.2) =
+      fun z => H.eval z.2 + (2 * z.1) * G.eval z.2 +
+        z.1 ^ 2 * F.eval z.2 by
+    funext z
+    simp [quadraticInterlacingPencil]]
+  exact (((Polynomial.contDiff_aeval H ∞).comp contDiff_snd).add
+    ((contDiff_const.mul contDiff_fst).mul
+      ((Polynomial.contDiff_aeval G ∞).comp contDiff_snd))).add
+    ((contDiff_fst.pow 2).mul
+      ((Polynomial.contDiff_aeval F ∞).comp contDiff_snd))
+
+/-- Local multiplicity preservation for a simple member of a quadratic
+interlacing pencil. -/
+theorem exists_eps_forall_quadraticInterlacingPencil_root_count_le_near
+    {F G H : ℝ[X]} {a : ℝ} {D : ℕ} (hD : D ≠ 0)
+    (hdegree : ∀ᶠ b in 𝓝 a,
+      (quadraticInterlacingPencil F G H b).natDegree = D)
+    (hsplits : (quadraticInterlacingPencil F G H a).Splits)
+    (hsimple : HasSimpleRoots (quadraticInterlacingPencil F G H a))
+    {ρ : ℝ} (hρ : 0 < ρ) :
+    ∃ ε > 0, ∀ b : ℝ, |b - a| < ε →
+      ∀ r ∈ (quadraticInterlacingPencil F G H a).roots.toFinset,
+        (quadraticInterlacingPencil F G H a).roots.count r ≤
+          ((quadraticInterlacingPencil F G H b).roots.filter
+            (fun q => |q - r| < ρ)).card := by
+  refine exists_eps_forall_root_count_le_card_filter_near_of_simple
+    (fun b => quadraticInterlacingPencil F G H b) hD hdegree hsplits
+      hsimple ?_ hρ
+  intro x _
+  exact (contDiff_quadraticInterlacingPencil_eval_prod F G H).contDiffAt.of_le
+    (by norm_num)
 
 /-- Iterated derivative shifts commute with the quadratic pencil. -/
 theorem iterateTDeriv_quadraticInterlacingPencil
