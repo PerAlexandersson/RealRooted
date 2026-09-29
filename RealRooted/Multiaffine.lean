@@ -77,9 +77,8 @@ theorem X [Nontrivial R] (i : σ) :
   split <;> simp_all
 
 theorem add {p q : MvPolynomial σ R} (hp : IsMultiaffine p)
-    (hq : IsMultiaffine q) : IsMultiaffine (p + q) := by
-  intro i
-  exact (MvPolynomial.degreeOf_add_le i p q).trans (max_le (hp i) (hq i))
+    (hq : IsMultiaffine q) : IsMultiaffine (p + q) :=
+  fun i => (MvPolynomial.degreeOf_add_le i p q).trans (max_le (hp i) (hq i))
 
 theorem neg {S : Type*} [CommRing S] {p : MvPolynomial σ S}
     (hp : IsMultiaffine p) : IsMultiaffine (-p) := by
@@ -94,21 +93,18 @@ theorem sub {S : Type*} [CommRing S] {p q : MvPolynomial σ S}
 
 theorem sum {I : Type*} {s : Finset I} {p : I → MvPolynomial σ R}
     (hp : ∀ i ∈ s, IsMultiaffine (p i)) :
-    IsMultiaffine (∑ i ∈ s, p i) := by
-  intro j
-  exact (MvPolynomial.degreeOf_sum_le j s p).trans
+    IsMultiaffine (∑ i ∈ s, p i) :=
+  fun j => (MvPolynomial.degreeOf_sum_le j s p).trans
     (Finset.sup_le fun i hi => hp i hi j)
 
 theorem C_mul {p : MvPolynomial σ R} (hp : IsMultiaffine p) (r : R) :
-    IsMultiaffine (MvPolynomial.C r * p) := by
-  intro i
-  exact (MvPolynomial.degreeOf_C_mul_le p i r).trans (hp i)
+    IsMultiaffine (MvPolynomial.C r * p) :=
+  fun i => (MvPolynomial.degreeOf_C_mul_le p i r).trans (hp i)
 
 /-- Partial differentiation preserves multiaffineness. -/
 theorem pderiv {p : MvPolynomial σ R} (hp : IsMultiaffine p) (i : σ) :
-    IsMultiaffine (MvPolynomial.pderiv i p) := by
-  intro j
-  exact (MvPolynomial.degreeOf_pderiv_le p i j).trans (hp j)
+    IsMultiaffine (MvPolynomial.pderiv i p) :=
+  fun j => (MvPolynomial.degreeOf_pderiv_le p i j).trans (hp j)
 
 /-- Differentiating a multiaffine polynomial twice in the same variable gives
 zero. -/
@@ -234,8 +230,8 @@ theorem eval_update_eq_eval_pderiv_mul_add
     (i : σ) (z : σ → S) (t : S) :
     MvPolynomial.eval (Function.update z i t) p =
       MvPolynomial.eval z (MvPolynomial.pderiv i p) * t +
-        MvPolynomial.eval (Function.update z i 0) p := by
-  exact MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
+        MvPolynomial.eval (Function.update z i 0) p :=
+  MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
     (hp i) z t
 
 /-- The partial derivative of a multiaffine polynomial is independent of the
@@ -540,9 +536,8 @@ variable {R σ τ : Type*} [CommSemiring R]
 multiaffineness. -/
 theorem specializeZero_preserves {S : Type*} [CommRing S]
     {p : MvPolynomial σ S} (hp : IsMultiaffine p) (i : σ) :
-    IsMultiaffine (MvPolynomial.specializeZero i p) := by
-  intro j
-  exact (MvPolynomial.degreeOf_specializeZero_le p i j).trans (hp j)
+    IsMultiaffine (MvPolynomial.specializeZero i p) :=
+  fun j => (MvPolynomial.degreeOf_specializeZero_le p i j).trans (hp j)
 
 theorem rename {p : MvPolynomial σ R} (hp : IsMultiaffine p)
     {f : σ → τ} (hf : Function.Injective f) :
@@ -553,8 +548,8 @@ theorem rename {p : MvPolynomial σ R} (hp : IsMultiaffine p)
   · obtain ⟨i, hi, rfl⟩ := MvPolynomial.mem_vars_rename f p hj
     rw [MvPolynomial.degreeOf_rename_of_injective hf]
     exact hp i
-  · have hzero : (MvPolynomial.rename f p).degreeOf j = 0 := by
-      exact not_ne_iff.mp
+  · have hzero : (MvPolynomial.rename f p).degreeOf j = 0 :=
+      not_ne_iff.mp
         ((MvPolynomial.mem_vars_iff_degreeOf_ne_zero).not.mp hj)
     simp [hzero]
 
@@ -575,12 +570,12 @@ theorem mul_of_disjoint_vars {p q : MvPolynomial σ R}
   refine (MvPolynomial.degreeOf_mul_le i p q).trans ?_
   by_cases hi : i ∈ p.vars
   · have hqi : i ∉ q.vars := Finset.disjoint_left.mp hdisj hi
-    have hqzero : q.degreeOf i = 0 := by
-      exact not_ne_iff.mp
+    have hqzero : q.degreeOf i = 0 :=
+      not_ne_iff.mp
         ((MvPolynomial.mem_vars_iff_degreeOf_ne_zero).not.mp hqi)
     simpa [hqzero] using hp i
-  · have hpzero : p.degreeOf i = 0 := by
-      exact not_ne_iff.mp
+  · have hpzero : p.degreeOf i = 0 :=
+      not_ne_iff.mp
         ((MvPolynomial.mem_vars_iff_degreeOf_ne_zero).not.mp hi)
     simpa [hpzero] using hq i
 
@@ -626,8 +621,8 @@ theorem IsMultiaffine.partialSymmetrization
     {σ R : Type*} [CommRing R]
     {p : MvPolynomial σ R} (hp : IsMultiaffine p)
     (t : R) (e : Equiv.Perm σ) :
-    IsMultiaffine (MvPolynomial.partialSymmetrization t e p) := by
-  exact (hp.C_mul t).add
+    IsMultiaffine (MvPolynomial.partialSymmetrization t e p) :=
+  (hp.C_mul t).add
     ((hp.rename e.injective).C_mul (1 - t))
 
 end MvPolynomial
