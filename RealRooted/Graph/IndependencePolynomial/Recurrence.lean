@@ -328,8 +328,8 @@ theorem sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSu
     have hwH' := Finset.mem_sdiff.mp hw'.1
     have hwu : w ≠ u := by
       intro hwu
-      have hwCommon : w ∈ commonClosedNeighborSetOn G S u v := by
-        exact Finset.mem_inter.mpr
+      have hwCommon : w ∈ commonClosedNeighborSetOn G S u v :=
+        Finset.mem_inter.mpr
           ⟨Finset.mem_filter.mpr ⟨hwH'.1, Or.inl hwu⟩,
             Finset.mem_filter.mpr ⟨hwH'.1, Or.inr (hwu ▸ huv.symm)⟩⟩
       simp_all
