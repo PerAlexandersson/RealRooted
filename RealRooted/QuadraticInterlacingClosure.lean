@@ -1244,6 +1244,78 @@ theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
     · omega
     · constructor <;> omega
 
+/-- Under the simple fixed-degree pencil hypotheses, every positive root of
+the parameter evaluation is simple.  The proof selects the root-count endpoint
+at infinity and exhausts the ordered list of at most two crossings. -/
+theorem quadraticParameterEvaluation_positive_root_count_eq_one
+    {F G H : ℝ[X]} {D K : ℕ}
+    (hFpos : HasPosLeadingCoeff F) (hGpos : HasPosLeadingCoeff G)
+    (hHpos : HasPosLeadingCoeff H) (hFG : StrictInterl F G)
+    (hGH : StrictInterl G H) (hD : D ≠ 0)
+    (hFdeg : F.natDegree ≤ K) (hGdeg : G.natDegree ≤ K)
+    (hHdeg : H.natDegree ≤ K)
+    (hdegree : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).natDegree = D)
+    (hdegree_local : ∀ b : ℝ, 0 ≤ b → ∀ᶠ c in 𝓝 b,
+      (quadraticInterlacingPencil F G H c).natDegree = D)
+    (hsplits : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).Splits)
+    (hsimple : ∀ b : ℝ, 0 ≤ b →
+      HasSimpleRoots (quadraticInterlacingPencil F G H b))
+    (hsplits_recip : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).Splits)
+    (hcoeff0_recip : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).coeff 0 ≠ 0)
+    (hneg_recip : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
+      (quadraticInterlacingPencil H G F b).roots, q < 0)
+    {r a : ℝ} (hr : r < 0) (hrF : ¬F.IsRoot r)
+    (hrG : ¬G.IsRoot r) (hrH : ¬H.IsRoot r)
+    (ha : 0 < a) (haroot : (quadraticParameterEvaluation F G H r).IsRoot a) :
+    (quadraticParameterEvaluation F G H r).roots.count a = 1 := by
+  let q := quadraticParameterEvaluation F G H r
+  have hqdeg : q.natDegree = 2 := quadraticParameterEvaluation_natDegree hrF
+  have hqne : q ≠ 0 := by
+    intro hzero
+    rw [hzero] at hqdeg
+    simp at hqdeg
+  have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
+    rw [mem_positiveQuadraticParameterRoots_iff]
+    exact ⟨(Polynomial.mem_roots hqne).2 haroot, ha⟩
+  have hlen := positiveQuadraticParameterRoots_length_le_two
+    (F := F) (G := G) (H := H) (r := r) hrF
+  generalize hrs : positiveQuadraticParameterRoots F G H r = xs at hamem hlen
+  have hend := eventually_quadraticInterlacingPencil_card_roots_gt_eq_atTop
+    hFdeg hGdeg hHdeg hsplits_recip hcoeff0_recip hneg_recip hr hrF
+  rcases xs with _ | ⟨c, xs⟩
+  · simp at hamem
+  · rcases xs with _ | ⟨d, xs⟩
+    · have hac : a = c := by simpa using hamem
+      subst a
+      obtain ⟨R, hRcount, hcR⟩ :=
+        (hend.and (Filter.eventually_gt_atTop c)).exists
+      have hexact := quadraticInterlacingPencil_one_positive_crossing_exact_drop
+        hFpos hGpos hHpos hFG hGH hrF hrG hrH hrs hcR hD
+        (fun μ hμ => hdegree μ hμ.1)
+        (fun μ hμ => hdegree_local μ hμ.1)
+        (fun μ hμ => hsplits μ hμ.1)
+        (fun μ hμ => hsimple μ hμ.1) hRcount
+      simpa only [q] using hexact.2
+    · have hxsNil : xs = [] := by
+        simpa using hlen
+      subst xs
+      have haCases : a = c ∨ a = d := by simpa using hamem
+      obtain ⟨R, hRcount, hdR⟩ :=
+        (hend.and (Filter.eventually_gt_atTop d)).exists
+      have hexact := quadraticInterlacingPencil_two_positive_crossings_exact_drop
+        hFpos hGpos hHpos hFG hGH hrF hrG hrH hrs hdR hD
+        (fun μ hμ => hdegree μ hμ.1)
+        (fun μ hμ => hdegree_local μ hμ.1)
+        (fun μ hμ => hsplits μ hμ.1)
+        (fun μ hμ => hsimple μ hμ.1) hRcount
+      rcases haCases with rfl | rfl
+      · simpa only [q] using hexact.2.2.1
+      · simpa only [q] using hexact.2.2.2
+
 /-! ## Logarithmic-ratio endpoint -/
 
 /-- A nonpositive upper-half-plane logarithmic ratio puts the parameter
