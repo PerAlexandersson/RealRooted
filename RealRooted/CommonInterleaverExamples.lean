@@ -925,16 +925,6 @@ lemma not_posComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement :
         X_coeff_zero
         xAddOne_xAddTwo_coeff_zero_ne)
 
-@[deprecated not_compatibleSuccDegreeStrictInterlStatement
-  (since := "2026-09-24")]
-alias not_compatibleSuccDegreePrecStatement :=
-  not_compatibleSuccDegreeStrictInterlStatement
-
-@[deprecated not_posComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement
-  (since := "2026-09-24")]
-alias not_posComboNoCommonSuccDegreeRootCountResidualPrecStatement :=
-  not_posComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement
-
 end CommonInterleaverExamples
 
 end RealRooted

@@ -672,8 +672,5 @@ theorem auxiliaryGPencil_natDegree_of_narayanaRecurrence
   rw [hcoeff]
   positivity
 
-@[deprecated modifiedNarayanaPolynomial_strictInterl_succ (since := "2026-09-26")]
-alias modifiedNarayanaPolynomial_prec_succ := modifiedNarayanaPolynomial_strictInterl_succ
-
 end GeneralizedSnakePosets
 end RealRooted

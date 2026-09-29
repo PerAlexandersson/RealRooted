@@ -1048,13 +1048,4 @@ theorem hermiteBiehlerConverse_of_natDegree_le_two {f g : ℝ[X]}
     · have hg₂ : g.natDegree = 2 := by lia
       exact Or.inl (strictInterl_of_stable_two hf hg hf₂ hg₂ hstab)
 
-@[deprecated strictInterl_of_stable_monic_two (since := "2026-09-18")]
-alias prec_of_stable_monic_two := strictInterl_of_stable_monic_two
-
-@[deprecated strictInterl_of_stable_two (since := "2026-09-18")]
-alias prec_of_stable_two := strictInterl_of_stable_two
-
-@[deprecated strictInterl_of_stable_two_one (since := "2026-09-18")]
-alias prec_of_stable_two_one := strictInterl_of_stable_two_one
-
 end RealRooted

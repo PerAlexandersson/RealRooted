@@ -465,11 +465,6 @@ theorem IsReflectionInterlacingSeq.chowSExtension
       simp [reflectionClosure, closed, hrefS, hrefq, fr, gr]
     simpa [S, T, q] using hclosure.symm ▸ hclosed
 
-@[deprecated IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
-  (since := "2026-09-26")]
-alias IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0_self_reflect :=
-  IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
-
 end BrandenVecchi
 
 end RealRooted

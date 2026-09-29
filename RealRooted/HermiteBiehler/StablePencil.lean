@@ -225,11 +225,6 @@ theorem isUpperHalfPlaneStablePencil_of_strictInterl
 
 end
 
-@[deprecated isUpperHalfPlaneStablePencil_of_strictInterl_of_natDegree_pos
-  (since := "2026-09-18")]
-alias isUpperHalfPlaneStablePencil_of_prec_of_natDegree_pos :=
-  isUpperHalfPlaneStablePencil_of_strictInterl_of_natDegree_pos
-
 @[deprecated isUpperHalfPlaneStablePencil_of_strictInterl
   (since := "2026-09-18")]
 alias isUpperHalfPlaneStablePencil_of_prec :=

@@ -648,10 +648,5 @@ lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
 alias eval_add_mul_eval_left_nonneg_of_prec_right :=
   eval_add_mul_eval_left_nonneg_of_strictInterl_right
 
-@[deprecated eval_add_mul_eval_right_nonneg_of_strictInterl_right
-  (since := "2026-09-18")]
-alias eval_add_mul_eval_right_nonneg_of_prec_right :=
-  eval_add_mul_eval_right_nonneg_of_strictInterl_right
-
 end
 end RealRooted

@@ -48,10 +48,6 @@ theorem strictInterl_neg_darbouxOperator_of_roots_mem_Icc
   simp only [eval_mul, eval_neg, eval_X, eval_sub, eval_one]
   nlinarith
 
-@[deprecated strictInterl_neg_darbouxOperator_of_roots_mem_Icc (since := "2026-09-26")]
-alias prec_neg_darbouxOperator_of_roots_mem_Icc :=
-  strictInterl_neg_darbouxOperator_of_roots_mem_Icc
-
 /-- A degree-raising Darboux output weakly interlaces its input under the same
 unit-interval sign hypotheses. -/
 theorem darbouxOperator_interlaces_of_roots_mem_Icc
@@ -106,8 +102,5 @@ theorem darbouxOperator_shift_strictInterl
       simpa [shifted] using hroots r hr_mem
     simp only [eval_mul, eval_C, eval_sub, eval_X]
     nlinarith
-
-@[deprecated darbouxOperator_shift_strictInterl (since := "2026-09-26")]
-alias darbouxOperator_shift_prec := darbouxOperator_shift_strictInterl
 
 end RealRooted

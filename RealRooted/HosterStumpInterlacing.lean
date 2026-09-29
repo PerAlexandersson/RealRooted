@@ -334,11 +334,5 @@ alias SourcePrec.of_prec := SourceInterl.of_strictInterl
 @[deprecated SourceInterl.of_lowDegree (since := "2026-09-18")]
 alias SourcePrec.of_lowDegree := SourceInterl.of_lowDegree
 
-@[deprecated weakQuadratic_not_interl_self (since := "2026-09-18")]
-alias weakQuadratic_not_prec0_self := weakQuadratic_not_interl_self
-
-@[deprecated weakQuadratic_not_interl_X_mul (since := "2026-09-18")]
-alias weakQuadratic_not_prec0_X_mul := weakQuadratic_not_interl_X_mul
-
 end HosterStump
 end RealRooted

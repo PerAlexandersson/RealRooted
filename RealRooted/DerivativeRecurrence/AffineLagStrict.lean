@@ -90,9 +90,4 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_degree_step
       rw [hr2, zero_mul] at hsign
       exact (lt_irrefl 0 hsign).elim
 
-@[deprecated strictInterl_and_noCommonRoot_of_affine_lag_degree_step
-  (since := "2026-09-18")]
-alias prec_and_noCommonRoot_of_affine_lag_degree_step :=
-  strictInterl_and_noCommonRoot_of_affine_lag_degree_step
-
 end RealRooted

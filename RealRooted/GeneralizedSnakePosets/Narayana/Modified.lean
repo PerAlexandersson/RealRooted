@@ -843,20 +843,5 @@ theorem modifiedNarayanaPolynomial_six_ne_zero : modifiedNarayanaPolynomial 6 â‰
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
     modifiedNarayanaCoeffPolynomial_eleven]
 
-@[deprecated modifiedNarayanaPolynomial_strictInterl_succ_of_nonnegCoeffs
-  (since := "2026-09-26")]
-alias modifiedNarayanaPolynomial_prec_succ_of_nonnegCoeffs :=
-  modifiedNarayanaPolynomial_strictInterl_succ_of_nonnegCoeffs
-
-@[deprecated modifiedNarayanaPolynomial_zero_strictInterl_one
-  (since := "2026-09-26")]
-alias modifiedNarayanaPolynomial_zero_prec_one :=
-  modifiedNarayanaPolynomial_zero_strictInterl_one
-
-@[deprecated modifiedNarayanaCoeffPolynomial_one_strictInterl_two
-  (since := "2026-09-26")]
-alias modifiedNarayanaCoeffPolynomial_one_prec_two :=
-  modifiedNarayanaCoeffPolynomial_one_strictInterl_two
-
 end GeneralizedSnakePosets
 end RealRooted

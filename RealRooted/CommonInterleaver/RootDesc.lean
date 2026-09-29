@@ -233,9 +233,6 @@ theorem strictInterl_iff_rootSeqDesc {f g : ℝ[X]} :
       have := h2 l (by lia) (by lia)
       rwa [hSf, hSg] at this
 
-@[deprecated strictInterl_iff_rootSeqDesc (since := "2026-09-18")]
-alias prec_iff_rootSeqDesc := strictInterl_iff_rootSeqDesc
-
 /-- **Chain lemma.**  If `F a ≪ F (a+1) ≪ ⋯ ≪ F b` is a chain of consecutive
 interlacings and additionally the two extremes satisfy `F a ≪ F b`, then every
 pair `F i ≪ F j` with `a ≤ i ≤ j ≤ b` interlaces.  This is the substitute for

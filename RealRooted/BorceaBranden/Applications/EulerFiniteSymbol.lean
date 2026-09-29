@@ -393,7 +393,4 @@ theorem eulerBidiagonalStep_strictInterl
     (eulerAffineBidiagonalSymbol_stable d hd)
     hpdeg hqdeg hpq hp hq hpout hqout hpoutdeg
 
-@[deprecated eulerBidiagonalStep_strictInterl (since := "2026-09-18")]
-alias eulerBidiagonalStep_prec := eulerBidiagonalStep_strictInterl
-
 end RealRooted.BorceaBranden

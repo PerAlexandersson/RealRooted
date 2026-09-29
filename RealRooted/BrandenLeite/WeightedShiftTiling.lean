@@ -592,13 +592,6 @@ theorem weightedShiftTilingRow_roots_neg
     has N hr i).roots_neg_of_coeff_zero_ne
       (ne_of_gt (coeff_zero_weightedShiftTilingRow_pos hb as N r i)) x hx
 
-@[deprecated interl_weightedShiftTilingRow_succ (since := "2026-09-18")]
-alias prec0_weightedShiftTilingRow_succ := interl_weightedShiftTilingRow_succ
-
-@[deprecated interl_weightedShiftTilingRow_separated_succ (since := "2026-09-18")]
-alias prec0_weightedShiftTilingRow_separated_succ :=
-  interl_weightedShiftTilingRow_separated_succ
-
 end
 
 end RealRooted.BrandenLeite

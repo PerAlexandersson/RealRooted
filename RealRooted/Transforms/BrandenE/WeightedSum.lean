@@ -255,18 +255,6 @@ theorem brandenBasisWeightedSum_isPFPolynomial
     IsPFPolynomial (brandenBasisWeightedSum n s a) :=
   brandenBasisWeightedSum_isPFPolynomial_of_le n s a hkn ha
 
-@[deprecated brandenBasisWeightedSum_interl_of_le (since := "2026-09-18")]
-alias brandenBasisWeightedSum_prec0_of_le := brandenBasisWeightedSum_interl_of_le
-
-@[deprecated brandenBasisWeightedSum_interl (since := "2026-09-18")]
-alias brandenBasisWeightedSum_prec0 := brandenBasisWeightedSum_interl
-
-@[deprecated brandenBasisWeightedSum_strictInterl_of_le (since := "2026-09-18")]
-alias brandenBasisWeightedSum_prec_of_le := brandenBasisWeightedSum_strictInterl_of_le
-
-@[deprecated brandenBasisWeightedSum_strictInterl (since := "2026-09-18")]
-alias brandenBasisWeightedSum_prec := brandenBasisWeightedSum_strictInterl
-
 end Real
 
 end RealRooted

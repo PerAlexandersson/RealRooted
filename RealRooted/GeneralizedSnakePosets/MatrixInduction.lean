@@ -823,34 +823,5 @@ theorem theorem41InductionRoute_of_section3_rootSum_of_constant_matches_succ_len
     hP_interlaces hG hP_one hG_one hP_nonneg hG_nonneg hM_nonneg hdeg
     hM_const
 
-@[deprecated theorem41Step_difference_strictInterl_of_matrixClaim
-  (since := "2026-09-26")]
-alias theorem41Step_difference_prec_of_matrixClaim :=
-  theorem41Step_difference_strictInterl_of_matrixClaim
-
-@[deprecated theorem41Step_strictInterl_of_claim7 (since := "2026-09-26")]
-alias theorem41Step_prec_of_claim7 := theorem41Step_strictInterl_of_claim7
-
-@[deprecated theorem41NonconstantStep_strictInterl_of_claim7
-  (since := "2026-09-26")]
-alias theorem41NonconstantStep_prec_of_claim7 :=
-  theorem41NonconstantStep_strictInterl_of_claim7
-
-@[deprecated theorem41NonconstantStep_strictInterl_of_matrixClaim
-  (since := "2026-09-26")]
-alias theorem41NonconstantStep_prec_of_matrixClaim :=
-  theorem41NonconstantStep_strictInterl_of_matrixClaim
-
-@[deprecated theorem41StepOne_strictInterl_of_strictInterl_nonneg
-  (since := "2026-09-26")]
-alias theorem41StepOne_prec_of_prec_nonneg :=
-  theorem41StepOne_strictInterl_of_strictInterl_nonneg
-
-@[deprecated theorem41StepOne_strictInterl_of_recurrence (since := "2026-09-26")]
-alias theorem41StepOne_prec_of_recurrence := theorem41StepOne_strictInterl_of_recurrence
-
-@[deprecated theorem41_of_strictInterl_step (since := "2026-09-26")]
-alias theorem41_of_prec_step := theorem41_of_strictInterl_step
-
 end GeneralizedSnakePosets
 end RealRooted

@@ -1557,45 +1557,9 @@ theorem StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor_of_no_comm
 
 /-! ## Deprecated Wagner sum names -/
 
-@[deprecated StrictInterl.add_of_right (since := "2026-09-18")]
-alias prec_add_of_prec_right := StrictInterl.add_of_right
-
-@[deprecated StrictInterl.add_of_right_of_no_common_right (since := "2026-09-18")]
-alias prec_add_of_prec_right_of_no_common_right :=
-  StrictInterl.add_of_right_of_no_common_right
-
-@[deprecated StrictInterl.add_of_right_of_common_factor (since := "2026-09-18")]
-alias prec_add_of_prec_right_of_common_factor :=
-  StrictInterl.add_of_right_of_common_factor
-
-@[deprecated StrictInterl.add_of_right_of_common_factor_of_no_common_right
-  (since := "2026-09-18")]
-alias prec_add_of_prec_right_of_common_factor_of_no_common_right :=
-  StrictInterl.add_of_right_of_common_factor_of_no_common_right
-
 @[deprecated StrictInterl.add_of_right_of_posLeadingCoeff (since := "2026-09-18")]
 alias prec_add_of_prec_right_of_posLeadingCoeff :=
   StrictInterl.add_of_right_of_posLeadingCoeff
-
-@[deprecated StrictInterl.add_of_right_mixed_of_natDegree (since := "2026-09-18")]
-alias prec_add_of_prec_right_mixed_of_natDegree :=
-  StrictInterl.add_of_right_mixed_of_natDegree
-
-@[deprecated StrictInterl.add_of_right_mixed_of_natDegree_of_no_common_right
-  (since := "2026-09-18")]
-alias prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right :=
-  StrictInterl.add_of_right_mixed_of_natDegree_of_no_common_right
-
-@[deprecated StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor
-  (since := "2026-09-18")]
-alias prec_add_of_prec_right_mixed_of_natDegree_of_common_factor :=
-  StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor
-
-@[deprecated
-  StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor_of_no_common_right
-  (since := "2026-09-18")]
-alias prec_add_of_prec_right_mixed_of_natDegree_of_common_factor_of_no_common_right :=
-  StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor_of_no_common_right
 
 end
 end RealRooted

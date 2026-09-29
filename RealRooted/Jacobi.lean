@@ -135,9 +135,6 @@ theorem shiftedJacobi_hasSimpleRoots (n : ℕ) {α β : ℝ}
 @[deprecated shiftedJacobiMonic_strictInterl_succ (since := "2026-09-26")]
 alias shiftedJacobiMonic_prec_succ := shiftedJacobiMonic_strictInterl_succ
 
-@[deprecated shiftedJacobi_strictInterl_succ (since := "2026-09-26")]
-alias shiftedJacobi_prec_succ := shiftedJacobi_strictInterl_succ
-
 /-- A shifted Jacobi polynomial splits over `ℝ` when both parameters exceed
 `-1`. -/
 theorem shiftedJacobi_splits (n : ℕ) {α β : ℝ}

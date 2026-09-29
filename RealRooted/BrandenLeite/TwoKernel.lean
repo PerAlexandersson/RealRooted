@@ -141,15 +141,6 @@ theorem interl_twoKernelRow_succ
       (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) (n + 1)) :=
   (twoKernelRows_pf_and_interl hg hh hg0 hh0).2 n
 
-@[deprecated finiteToeplitz_kernelRows_pf_and_interl (since := "2026-09-18")]
-alias finiteToeplitz_kernelRows_pf_and_prec0 := finiteToeplitz_kernelRows_pf_and_interl
-
-@[deprecated twoKernelRows_pf_and_interl (since := "2026-09-18")]
-alias twoKernelRows_pf_and_prec0 := twoKernelRows_pf_and_interl
-
-@[deprecated interl_twoKernelRow_succ (since := "2026-09-18")]
-alias prec0_twoKernelRow_succ := interl_twoKernelRow_succ
-
 end
 
 end RealRooted.BrandenLeite

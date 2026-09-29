@@ -979,16 +979,6 @@ alias IntervalRootData.prec_neg_insertionOperator :=
 alias consecutive_signedTriangleFamily_prec :=
   consecutive_signedTriangleFamily_strictInterl
 
-@[deprecated consecutive_signedTriangleFamily_strictInterlSameDegree
-  (since := "2026-09-18")]
-alias consecutive_signedTriangleFamily_strictPrec :=
-  consecutive_signedTriangleFamily_strictInterlSameDegree
-
-@[deprecated signedTriangleFamily_terminal_strictInterlSameDegree_jPolynomial
-  (since := "2026-09-18")]
-alias signedTriangleFamily_terminal_strictPrec_jPolynomial :=
-  signedTriangleFamily_terminal_strictInterlSameDegree_jPolynomial
-
 end ToricContribution
 end ParkingFunctions
 end RealRooted

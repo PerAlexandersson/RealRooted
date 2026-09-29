@@ -383,18 +383,6 @@ theorem aswEdrei_chow_theorem
   ⟨aswEdreiChow_isPFPolynomial hgamma halpha hbeta hsum n,
     aswEdreiChow_interl_succ hgamma halpha hbeta hsum n⟩
 
-/-! ## Deprecated interlacing names -/
-
-@[deprecated aswEdreiChow_interl_derangement (since := "2026-09-26")]
-alias aswEdreiChow_prec0_derangement := aswEdreiChow_interl_derangement
-
-@[deprecated aswEdreiChow_interl_succ (since := "2026-09-26")]
-alias aswEdreiChow_prec0_succ := aswEdreiChow_interl_succ
-
-@[deprecated aswEdreiChowDerangement_interl_succ (since := "2026-09-26")]
-alias aswEdreiChowDerangement_prec0_succ :=
-  aswEdreiChowDerangement_interl_succ
-
 end
 
 end RealRooted.BrandenVecchi

@@ -421,36 +421,6 @@ theorem chowDerangement_strictInterl_succ_of_isTotallyNonneg_of_ne
   (chowDerangement_interl_succ_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
     hn hsucc
 
-@[deprecated chowPolynomial_interl_chowDerangement_of_isTotallyNonneg
-  (since := "2026-09-26")]
-alias chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg :=
-  chowPolynomial_interl_chowDerangement_of_isTotallyNonneg
-
-@[deprecated chowPolynomial_strictInterl_chowDerangement_of_isTotallyNonneg_of_ne
-  (since := "2026-09-26")]
-alias chowPolynomial_prec_chowDerangement_of_isTotallyNonneg_of_ne :=
-  chowPolynomial_strictInterl_chowDerangement_of_isTotallyNonneg_of_ne
-
-@[deprecated chowPolynomial_interl_succ_of_isTotallyNonneg
-  (since := "2026-09-26")]
-alias chowPolynomial_prec0_succ_of_isTotallyNonneg :=
-  chowPolynomial_interl_succ_of_isTotallyNonneg
-
-@[deprecated chowPolynomial_strictInterl_succ_of_isTotallyNonneg_of_ne
-  (since := "2026-09-26")]
-alias chowPolynomial_prec_succ_of_isTotallyNonneg_of_ne :=
-  chowPolynomial_strictInterl_succ_of_isTotallyNonneg_of_ne
-
-@[deprecated chowDerangement_interl_succ_of_isTotallyNonneg
-  (since := "2026-09-26")]
-alias chowDerangement_prec0_succ_of_isTotallyNonneg :=
-  chowDerangement_interl_succ_of_isTotallyNonneg
-
-@[deprecated chowDerangement_strictInterl_succ_of_isTotallyNonneg_of_ne
-  (since := "2026-09-26")]
-alias chowDerangement_prec_succ_of_isTotallyNonneg_of_ne :=
-  chowDerangement_strictInterl_succ_of_isTotallyNonneg_of_ne
-
 end
 
 end RealRooted.BrandenVecchi

@@ -119,11 +119,6 @@ theorem not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
     lia
   exact hstrictInterl.not_of_left_natDegree_succ_lt_right hgap
 
-@[deprecated not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
-  (since := "2026-09-26")]
-alias not_positiveSplitLeftSuccDegreeTranslatedXPrec :=
-  not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
-
 /-- Quadratic terminal case for the x-subtraction pencil with two degree-one
 endpoints and a nonnegative constant term on the right endpoint. -/
 lemma splits_X_mul_sub_C_mul_of_natDegree_one_one_right_nonneg

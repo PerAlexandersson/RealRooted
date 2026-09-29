@@ -672,61 +672,6 @@ theorem isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_c
       eval_C_mul_X_mul_one_sub_X_nonpos_of_nonneg_of_nonpos (hc n) hr)
     hrec hdeg_lo hdeg_hi
 
-@[deprecated strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs :=
-  strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
-  (since := "2026-09-26")]
-alias prec_mw_lw_derivative_lag_sequence_den_coeff_of_root_window :=
-  strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
-
-@[deprecated strictInterl_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_X_mul_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_X_mul_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_X_mul_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_X_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_X_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_X_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
-  (since := "2026-09-26")]
-alias prec_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence :=
-  strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
-
 @[deprecated strictInterl_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
   (since := "2026-09-26")]
 alias prec_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs :=

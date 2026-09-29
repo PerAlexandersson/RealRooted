@@ -338,21 +338,4 @@ lemma HasPosLeadingCoeff.divByMonic_X_sub_C {f : ℝ[X]}
     HasPosLeadingCoeff (f /ₘ (X - C r)) := by
   simpa only [HasPosLeadingCoeff, leadingCoeff_divByMonic_X_sub_C hr] using hf
 
-/-! ## Deprecated residue interlacing names -/
-
-@[deprecated StrictInterl.roots_countP_eq (since := "2026-09-18")]
-alias prec_countP_eq := StrictInterl.roots_countP_eq
-
-@[deprecated StrictInterl.cofactor_of_common_root (since := "2026-09-18")]
-theorem prec_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
-    (hpq : StrictInterl g f) (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
-    StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
-  hpq.cofactor_of_common_root hrf hrg
-
-@[deprecated StrictInterl.of_cofactor_of_common_root (since := "2026-09-18")]
-theorem prec_of_prec_cofactor {f g : ℝ[X]} {r : ℝ}
-    (hrf : f.IsRoot r) (hrg : g.IsRoot r)
-    (h : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r))) : StrictInterl g f :=
-  h.of_cofactor_of_common_root hrf hrg
-
 end RealRooted

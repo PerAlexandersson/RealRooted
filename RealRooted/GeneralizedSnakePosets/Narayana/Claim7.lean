@@ -290,10 +290,5 @@ theorem theorem41NonNestingRook_modified_of_modelInputs
   theorem41NonNestingRook_modified_of_modelInputs_of_adjacentG hrec2 hH_nonneg
     (auxiliaryG_strictInterl_succ_of_narayanaTwoModel hG_model) hrec hM_nonneg hdeg hM_const
 
-@[deprecated auxiliaryG_strictInterl_succ_of_narayanaTwoModel
-  (since := "2026-09-26")]
-alias auxiliaryG_prec_succ_of_narayanaTwoModel :=
-  auxiliaryG_strictInterl_succ_of_narayanaTwoModel
-
 end GeneralizedSnakePosets
 end RealRooted

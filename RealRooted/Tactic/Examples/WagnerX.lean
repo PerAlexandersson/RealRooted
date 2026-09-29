@@ -907,11 +907,6 @@ end RealRooted
 /- Deprecated theorem aliases retained for the #984 Prec migration. -/
 namespace RealRooted
 namespace Tactic
-@[deprecated a358623_activeOffset_strictInterl (since := "2026-09-26")]
-alias a358623_activeOffset_prec := a358623_activeOffset_strictInterl
-
-@[deprecated a358623Shifted_strictInterl (since := "2026-09-26")]
-alias a358623Shifted_prec := a358623Shifted_strictInterl
 
 end Tactic
 end RealRooted

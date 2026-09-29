@@ -1198,31 +1198,4 @@ alias shiftedJacobiMonic_prec_three_halves :=
 alias shiftedJacobiMonic_prec_alpha_add_two_degree_pred :=
   shiftedJacobiMonic_strictInterl_alpha_add_two_degree_pred
 
-/-! ## Deprecated strict same-degree interlacing names -/
-
-@[deprecated shiftedJacobiMonic_strictInterlSameDegree_alpha_add_one
-  (since := "2026-09-18")]
-alias shiftedJacobiMonic_strictPrec_alpha_add_one :=
-  shiftedJacobiMonic_strictInterlSameDegree_alpha_add_one
-
-@[deprecated shiftedJacobiMonic_strictInterlSameDegree_alpha_add_two
-  (since := "2026-09-18")]
-alias shiftedJacobiMonic_strictPrec_alpha_add_two :=
-  shiftedJacobiMonic_strictInterlSameDegree_alpha_add_two
-
-@[deprecated shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one
-  (since := "2026-09-18")]
-alias shiftedJacobiMonic_strictPrec_alpha_add_degree_one :=
-  shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one
-
-@[deprecated shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_two
-  (since := "2026-09-18")]
-alias shiftedJacobiMonic_strictPrec_three_halves_degree_two :=
-  shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_two
-
-@[deprecated shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three
-  (since := "2026-09-18")]
-alias shiftedJacobiMonic_strictPrec_three_halves_degree_three :=
-  shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three
-
 end RealRooted

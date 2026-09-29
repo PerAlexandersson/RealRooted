@@ -147,9 +147,6 @@ example : StrictInterl (1 + 2 * X) (1 + 6 * X + 6 * X ^ 2) := by
 
 /-! ## Deprecated aliases -/
 
-@[deprecated shiftedLegendreReal_strictInterl_succ (since := "2026-09-26")]
-alias shiftedLegendreReal_prec_succ := shiftedLegendreReal_strictInterl_succ
-
 @[deprecated shiftedLegendreReal_comp_neg_X_strictInterl_succ
   (since := "2026-09-26")]
 alias shiftedLegendreReal_comp_neg_X_prec_succ :=

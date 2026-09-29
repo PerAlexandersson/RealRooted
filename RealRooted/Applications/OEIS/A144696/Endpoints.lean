@@ -400,12 +400,4 @@ theorem a144696BernsteinImageRow_isInterlacingSeqNonneg (d : ℕ) :
     erw [List.get_ofFn, List.get_ofFn]
     exact a144696BernsteinImage_strictInterl hij.le (by lia)
 
-/-! ## Deprecated aliases -/
-
-@[deprecated a144696Polynomial_reciprocal_strictInterl (since := "2026-09-26")]
-alias a144696Polynomial_reciprocal_prec := a144696Polynomial_reciprocal_strictInterl
-
-@[deprecated a144696BernsteinImage_strictInterl (since := "2026-09-26")]
-alias a144696BernsteinImage_prec := a144696BernsteinImage_strictInterl
-
 end RealRooted

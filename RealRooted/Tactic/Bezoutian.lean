@@ -59,16 +59,6 @@ theorem bezout_sequence_strictInterlSameDegree_of_posDef
   (strictInterlSameDegree_iff_bezoutMatrix_posDef
     (hP_pos i) (hQ_pos i) (hP_deg i) (hQ_deg i)).2 (hpos i)
 
-@[deprecated bezout_sequence_posDef_of_strictInterlSameDegree
-  (since := "2026-09-18")]
-alias bezout_sequence_posDef_of_strictPrecSameDegree :=
-  bezout_sequence_posDef_of_strictInterlSameDegree
-
-@[deprecated bezout_sequence_strictInterlSameDegree_of_posDef
-  (since := "2026-09-18")]
-alias bezout_sequence_strictPrecSameDegree_of_posDef :=
-  bezout_sequence_strictInterlSameDegree_of_posDef
-
 theorem bezout_sequence_strictInterl_of_posDef
     {d : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hP_pos : ∀ i : Nat, HasPosLeadingCoeff (P i))

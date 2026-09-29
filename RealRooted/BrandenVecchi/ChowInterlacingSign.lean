@@ -385,9 +385,4 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff
     · exact chowS_eq_zero_or_hasPosLeadingCoeff_of_coeff_zero_ne
         hdegree hfnn hcoeff0 hstrictInterl
 
-@[deprecated leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_cross_eq
-  (since := "2026-09-26")]
-alias leadingCoeff_cross_mul_eq_of_prec_sameDegree_of_nonneg_of_eval_cross_eq :=
-  leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_cross_eq
-
 end RealRooted

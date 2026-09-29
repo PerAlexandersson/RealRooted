@@ -80,19 +80,6 @@ theorem LeftRootCountBranch.not_translatedBoundaryStrictInterl_of_twoDegree
   intro hstrictInterl
   exact hstrictInterl.not_of_left_natDegree_succ_lt_right hgap
 
-@[deprecated not_strictInterl_of_natDegree_eq_succ_left (since := "2026-09-26")]
-alias not_prec_of_natDegree_eq_succ_left := not_strictInterl_of_natDegree_eq_succ_left
-
-@[deprecated LeftRootCountBranch.not_translatedDeletionStrictInterl_of_twoDegree
-  (since := "2026-09-26")]
-alias LeftRootCountBranch.not_translatedDeletionPrec_of_twoDegree :=
-  LeftRootCountBranch.not_translatedDeletionStrictInterl_of_twoDegree
-
-@[deprecated LeftRootCountBranch.not_translatedBoundaryStrictInterl_of_twoDegree
-  (since := "2026-09-26")]
-alias LeftRootCountBranch.not_translatedBoundaryPrec_of_twoDegree :=
-  LeftRootCountBranch.not_translatedBoundaryStrictInterl_of_twoDegree
-
 /-- A `P := True` translated right-family predicate target gives the
 unrestricted translated right-family target. -/
 theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily_of_predicate_true

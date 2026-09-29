@@ -378,9 +378,6 @@ theorem inversePowerCompositionRows_pf_and_interl (e : ℕ) :
     (shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
       (xs := []) (ys := List.replicate e 1) (by simp) (by simp))
 
-@[deprecated inversePowerCompositionRows_pf_and_interl (since := "2026-09-18")]
-alias inversePowerCompositionRows_pf_and_prec0 := inversePowerCompositionRows_pf_and_interl
-
 /-- Every nonzero root of an inverse-power composition row is strictly
 negative. -/
 theorem inversePowerCompositionRow_nonzero_roots_neg
@@ -762,26 +759,6 @@ theorem a206294Row_nonzero_roots_neg
     (n : ℕ) {r : ℝ} (hr : r ∈ (a206294Row n).roots)
     (hr0 : r ≠ 0) : r < 0 := by
   exact inversePowerCompositionRow_nonzero_roots_neg 3 n hr hr0
-
-@[deprecated shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
-  (since := "2026-09-18")]
-alias shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0 :=
-  shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
-
-@[deprecated binomialCompositionRows_pf_and_interl (since := "2026-09-18")]
-alias binomialCompositionRows_pf_and_prec0 := binomialCompositionRows_pf_and_interl
-
-@[deprecated a207327Rows_pf_and_interl (since := "2026-09-18")]
-alias a207327Rows_pf_and_prec0 := a207327Rows_pf_and_interl
-
-@[deprecated a116088Rows_pf_and_interl (since := "2026-09-18")]
-alias a116088Rows_pf_and_prec0 := a116088Rows_pf_and_interl
-
-@[deprecated a116089Rows_pf_and_interl (since := "2026-09-18")]
-alias a116089Rows_pf_and_prec0 := a116089Rows_pf_and_interl
-
-@[deprecated a206294Rows_pf_and_interl (since := "2026-09-18")]
-alias a206294Rows_pf_and_prec0 := a206294Rows_pf_and_interl
 
 end
 

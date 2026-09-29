@@ -68,9 +68,4 @@ theorem linearFactorStep_isPF {D F : ℝ[X]} {r : ℝ}
   · simpa [hright0] using IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg hnn hstrict.2.1.2
 
-/-! ## Deprecated interlacing names -/
-
-@[deprecated interl_linearFactorStep (since := "2026-09-26")]
-alias prec0_linearFactorStep := interl_linearFactorStep
-
 end RealRooted

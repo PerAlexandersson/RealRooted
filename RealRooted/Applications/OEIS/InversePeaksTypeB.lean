@@ -264,14 +264,4 @@ theorem inversePeakTypeB_hasSimpleRoots (n : ℕ) :
   ((inversePeakTypeB_strictInterl n).hasSimpleRoots_of_no_common_root fun r hr =>
     inversePeakTypeB_noCommonRoot n r hr.2 hr.1).1
 
-/-! ## Deprecated aliases -/
-
-@[deprecated inversePeakTypeB_strictInterl_and_noCommonRoot
-  (since := "2026-09-26")]
-alias inversePeakTypeB_prec_and_noCommonRoot :=
-  inversePeakTypeB_strictInterl_and_noCommonRoot
-
-@[deprecated inversePeakTypeB_strictInterl (since := "2026-09-26")]
-alias inversePeakTypeB_prec := inversePeakTypeB_strictInterl
-
 end RealRooted.Applications.OEIS

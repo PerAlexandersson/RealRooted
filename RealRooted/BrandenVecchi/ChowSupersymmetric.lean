@@ -122,19 +122,6 @@ theorem finiteSupersymmetricChowDerangement_interl_succ
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
 
-@[deprecated finiteSupersymmetricChow_interl_derangement
-  (since := "2026-09-26")]
-alias finiteSupersymmetricChow_prec0_derangement :=
-  finiteSupersymmetricChow_interl_derangement
-
-@[deprecated finiteSupersymmetricChow_interl_succ (since := "2026-09-26")]
-alias finiteSupersymmetricChow_prec0_succ := finiteSupersymmetricChow_interl_succ
-
-@[deprecated finiteSupersymmetricChowDerangement_interl_succ
-  (since := "2026-09-26")]
-alias finiteSupersymmetricChowDerangement_prec0_succ :=
-  finiteSupersymmetricChowDerangement_interl_succ
-
 end
 
 end RealRooted.BrandenVecchi

@@ -207,12 +207,4 @@ theorem reverseHermiteTransform_strictInterl_to_interl {f g : ℝ[X]}
     Interl (reverseHermiteTransform f) (reverseHermiteTransform g) :=
   reverseHermiteTransform_preserves_interl hf hg hfg.toInterl
 
-@[deprecated reverseHermiteTransform_preserves_interl (since := "2026-09-18")]
-alias reverseHermiteTransform_preserves_prec0 :=
-  reverseHermiteTransform_preserves_interl
-
-@[deprecated reverseHermiteTransform_strictInterl_to_interl (since := "2026-09-18")]
-alias reverseHermiteTransform_prec_to_prec0 :=
-  reverseHermiteTransform_strictInterl_to_interl
-
 end RealRooted
