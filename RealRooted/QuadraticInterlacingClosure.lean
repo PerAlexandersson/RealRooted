@@ -4,8 +4,10 @@ import RealRooted.DegreeDropReversal
 import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
 import RealRooted.LiuOppositeSigns.JensenRootCount
+import RealRooted.Mathlib.Data.List.Zip
 import RealRooted.PFPolynomial.Closure
 import RealRooted.RootCountLocalConstancy
+import RealRooted.RootCounting.CrossingExhaustion
 import RealRooted.RootCounting.Descartes
 import RealRooted.SameDegreeMultiplicityLowerCount
 import RealRooted.Wronskian.WeakForward
@@ -666,6 +668,66 @@ theorem quadraticParameterEvaluation_natDegree
   have hF : F.eval r ≠ 0 := (Polynomial.not_isRoot_iff_eval_ne_zero F r).mp hrF
   rw [quadraticParameterEvaluation]
   compute_degree <;> simp_all
+
+/-- The distinct positive parameter values at which the quadratic pencil
+crosses a fixed spatial level, listed in increasing order. -/
+noncomputable def positiveQuadraticParameterRoots
+    (F G H : ℝ[X]) (r : ℝ) : List ℝ :=
+  ((quadraticParameterEvaluation F G H r).roots.toFinset.filter (0 < ·)).sort
+    (· ≤ ·)
+
+theorem positiveQuadraticParameterRoots_pairwise
+    (F G H : ℝ[X]) (r : ℝ) :
+    (positiveQuadraticParameterRoots F G H r).Pairwise (· < ·) := by
+  exact (Finset.sortedLT_sort
+    ((quadraticParameterEvaluation F G H r).roots.toFinset.filter
+      (0 < ·))).pairwise
+
+theorem mem_positiveQuadraticParameterRoots_iff
+    {F G H : ℝ[X]} {r a : ℝ} :
+    a ∈ positiveQuadraticParameterRoots F G H r ↔
+      a ∈ (quadraticParameterEvaluation F G H r).roots ∧ 0 < a := by
+  simp [positiveQuadraticParameterRoots]
+
+/-- A genuine quadratic parameter evaluation has at most two distinct
+positive crossing parameters. -/
+theorem positiveQuadraticParameterRoots_length_le_two
+    {F G H : ℝ[X]} {r : ℝ} (hrF : ¬F.IsRoot r) :
+    (positiveQuadraticParameterRoots F G H r).length ≤ 2 := by
+  let q := quadraticParameterEvaluation F G H r
+  calc
+    (positiveQuadraticParameterRoots F G H r).length =
+        (q.roots.toFinset.filter (0 < ·)).card := by
+      simp [positiveQuadraticParameterRoots, q]
+    _ ≤ q.roots.toFinset.card := Finset.card_filter_le _ _
+    _ ≤ q.roots.card := Multiset.toFinset_card_le q.roots
+    _ ≤ q.natDegree := Polynomial.card_roots' q
+    _ = 2 := quadraticParameterEvaluation_natDegree hrF
+
+/-- Consecutive entries of the ordered positive-crossing list delimit a
+parameter chamber with no crossing in its interior. -/
+theorem quadraticParameterEvaluation_not_isRoot_between_adjacent_positive
+    {F G H : ℝ[X]} {r a b z : ℝ} (hrF : ¬F.IsRoot r)
+    (hab : (a, b) ∈ (positiveQuadraticParameterRoots F G H r).zip
+      (positiveQuadraticParameterRoots F G H r).tail)
+    (haz : a < z) (hzb : z < b) :
+    ¬(quadraticParameterEvaluation F G H r).IsRoot z := by
+  let q := quadraticParameterEvaluation F G H r
+  have hqdeg : q.natDegree = 2 := quadraticParameterEvaluation_natDegree hrF
+  have hqne : q ≠ 0 := by
+    intro hzero
+    rw [hzero] at hqdeg
+    simp at hqdeg
+  have hamem : a ∈ positiveQuadraticParameterRoots F G H r :=
+    List.fst_mem_of_mem_zip hab
+  have hapos : 0 < a :=
+    (mem_positiveQuadraticParameterRoots_iff.mp hamem).2
+  intro hzroot
+  have hzmem : z ∈ positiveQuadraticParameterRoots F G H r := by
+    rw [mem_positiveQuadraticParameterRoots_iff]
+    exact ⟨(Polynomial.mem_roots hqne).2 hzroot, hapos.trans haz⟩
+  exact List.not_mem_of_mem_zip_tail_of_pairwise_lt
+    (positiveQuadraticParameterRoots_pairwise F G H r) hab haz hzb hzmem
 
 /-- The constant and leading coefficients of the parameter evaluation are
 the endpoint evaluations `H(r)` and `F(r)`. -/
