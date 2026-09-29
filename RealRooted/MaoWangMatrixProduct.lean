@@ -87,7 +87,7 @@ theorem rowPolynomial_mul_basisCoefficientMatrix {P : ℕ → ℝ[X]}
     · simp [basisCoefficientMatrix]
     · intro k hkrange hkIcc
       have hki : k ≤ i := Nat.lt_succ_iff.mp (Finset.mem_range.mp hkrange)
-      have hkj : k < j := by exact lt_of_not_ge fun hjk => hkIcc (Finset.mem_Icc.mpr ⟨hjk, hki⟩)
+      have hkj : k < j := lt_of_not_ge fun hjk => hkIcc (Finset.mem_Icc.mpr ⟨hjk, hki⟩)
       rw [Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (hP k) hkj),
         mul_zero]
   · have hij : i < j := Nat.lt_of_not_ge hji
@@ -120,8 +120,8 @@ theorem natDegree_affineBasisPolynomial_le (a d : ℝ) (n : ℕ) :
     ((C a * X + C d : ℝ[X]) ^ n).natDegree
         ≤ n * (C a * X + C d : ℝ[X]).natDegree :=
       Polynomial.natDegree_pow_le
-    _ ≤ n * 1 := by
-      exact Nat.mul_le_mul_left n (by
+    _ ≤ n * 1 :=
+      Nat.mul_le_mul_left n (by
         calc
           (C a * X + C d : ℝ[X]).natDegree
               ≤ max (C a * X).natDegree (C d).natDegree :=
