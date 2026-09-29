@@ -382,8 +382,6 @@ private lemma interl_affine_mul_X_self {s t : ℝ} (hs : 0 < s) :
   exact Interl.refl fun _ => (isRealRooted_X_mul (isRealRooted_affine_factor hs).1
     (isRealRooted_affine_factor hs).2).2
 
-set_option maxHeartbeats 800000 in
--- Normalizing both common `X` factors is expensive for the elaborator.
 private lemma interl_affine_mul_X_add_X_affine_mul_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X) := by
@@ -406,8 +404,6 @@ private lemma interl_affine_mul_X_add_X_self {s t : ℝ} (hs : 0 < s) :
     (isRealRooted_affine_factor (t := t + 1) hs).1
     (isRealRooted_affine_factor (t := t + 1) hs).2).2
 
-set_option maxHeartbeats 4000000 in
--- The exhaustive proof elaborates 81 small constructor branches.
 theorem hasAffineProperty_of_isAffineAdmissible
     {M : Atomic2x2Matrix} (hM : M.isAffineAdmissible) :
     M.HasAffineProperty := by
@@ -418,33 +414,33 @@ theorem hasAffineProperty_of_isAffineAdmissible
   all_goals intro s t hs ht
   all_goals try simp only [mul_zero, mul_one, add_zero, zero_add]
   all_goals first
-    | exact interl_zero_left _
-    | exact interl_zero_right _
-    | simpa using interl_one_one
-    | simpa using interl_one_X
-    | simpa using interl_one_affine hs
-    | simpa using interl_one_affine_add_one hs
-    | simpa using interl_one_affine_add_X hs
-    | simpa using interl_X_X
-    | simpa using interl_affine_X hs ht
-    | simpa using interl_affine_add_one_X hs ht
-    | simpa using interl_affine_add_X_X hs ht
-    | simpa using interl_affine_self hs
-    | simpa using interl_affine_add_one_affine hs
-    | simpa using interl_affine_add_one_self hs
-    | simpa using interl_affine_affine_add_X hs ht
-    | simpa using interl_affine_add_one_affine_add_X hs ht
-    | simpa using interl_affine_add_X_self hs
-    | simpa using interl_X_affine_mul_X hs ht
-    | simpa using interl_X_affine_mul_X_add_X hs ht
-    | simpa using interl_affine_affine_mul_X hs ht
-    | simpa using interl_affine_add_X_affine_mul_X hs ht
-    | simpa using interl_affine_affine_mul_X_add_X hs ht
-    | simpa using interl_affine_add_one_affine_mul_X_add_X hs ht
-    | simpa using interl_affine_add_X_affine_mul_X_add_X hs ht
-    | simpa using interl_affine_mul_X_self hs
-    | simpa using interl_affine_mul_X_add_X_affine_mul_X hs ht
-    | simpa using interl_affine_mul_X_add_X_self hs
+    | with_reducible exact interl_zero_left _
+    | with_reducible exact interl_zero_right _
+    | with_reducible exact interl_one_one
+    | with_reducible exact interl_one_X
+    | with_reducible exact interl_one_affine hs
+    | with_reducible exact interl_one_affine_add_one hs
+    | with_reducible exact interl_one_affine_add_X hs
+    | with_reducible exact interl_X_X
+    | with_reducible exact interl_affine_X hs ht
+    | with_reducible exact interl_affine_add_one_X hs ht
+    | with_reducible exact interl_affine_add_X_X hs ht
+    | with_reducible exact interl_affine_self hs
+    | with_reducible exact interl_affine_add_one_affine hs
+    | with_reducible exact interl_affine_add_one_self hs
+    | with_reducible exact interl_affine_affine_add_X hs ht
+    | with_reducible exact interl_affine_add_one_affine_add_X hs ht
+    | with_reducible exact interl_affine_add_X_self hs
+    | with_reducible exact interl_X_affine_mul_X hs ht
+    | with_reducible exact interl_X_affine_mul_X_add_X hs ht
+    | with_reducible exact interl_affine_affine_mul_X hs ht
+    | with_reducible exact interl_affine_add_X_affine_mul_X hs ht
+    | with_reducible exact interl_affine_affine_mul_X_add_X hs ht
+    | with_reducible exact interl_affine_add_one_affine_mul_X_add_X hs ht
+    | with_reducible exact interl_affine_add_X_affine_mul_X_add_X hs ht
+    | with_reducible exact interl_affine_mul_X_self hs
+    | with_reducible exact interl_affine_mul_X_add_X_affine_mul_X hs ht
+    | with_reducible exact interl_affine_mul_X_add_X_self hs
 
 /-! ### Exact obstructions for the excluded codes -/
 
@@ -625,8 +621,6 @@ private lemma not_interl_bad_quadratic_pair :
       all_goals try simp only [Polynomial.C_ofNat, C_1, one_mul])
   norm_num at hcross
 
-set_option maxHeartbeats 4000000 in
--- The converse checks the 39 rejected constructor branches at `s = t = 1`.
 theorem isAffineAdmissible_of_hasAffineProperty
     {M : Atomic2x2Matrix} (hM : M.HasAffineProperty) :
     M.isAffineAdmissible = true := by
@@ -638,30 +632,30 @@ theorem isAffineAdmissible_of_hasAffineProperty
   all_goals have h := hM 1 1 zero_lt_one zero_lt_one
   all_goals norm_num at h
   all_goals first
-    | exact not_interl_atomicBadQuadratic_left
-        (by first
-          | exact one_ne_zero
-          | exact X_ne_zero
-          | exact ne_zero_of_natDegree_eq_succ (by compute_degree!)) h
-    | exact not_interl_atomicBadQuadratic_right
-        (by first
-          | exact one_ne_zero
-          | exact X_ne_zero
-          | exact ne_zero_of_natDegree_eq_succ (by compute_degree!)) h
-    | exact not_interl_X_two_mul_X_add_one h
-    | exact not_interl_X_X_add_one h
-    | exact not_interl_X_X_add_two h
-    | exact not_interl_two_mul_X_add_one_X_add_one h
-    | exact not_interl_two_mul_X_add_one_X_add_two h
-    | exact not_interl_X_add_one_X_add_two h
-    | exact not_interl_X_X_add_one_add_X h
-    | exact not_interl_X_X_add_one_add_one h
-    | exact not_interl_X_add_one_add_X_X_add_one h
-    | exact not_interl_X_add_one_add_X_X_add_one_add_one h
-    | exact not_interl_X_add_one_X_add_one_add_one h
-    | exact not_interl_bad_linear_quadratic h
-    | exact not_interl_bad_linear_quadratic_raw h
-    | exact not_interl_bad_quadratic_pair h
+    | ((with_reducible_and_instances refine absurd h (not_interl_atomicBadQuadratic_left ?_))
+       first
+        | exact one_ne_zero
+        | exact X_ne_zero
+        | exact ne_zero_of_natDegree_eq_succ (by compute_degree!))
+    | ((with_reducible_and_instances refine absurd h (not_interl_atomicBadQuadratic_right ?_))
+       first
+        | exact one_ne_zero
+        | exact X_ne_zero
+        | exact ne_zero_of_natDegree_eq_succ (by compute_degree!))
+    | with_reducible_and_instances exact absurd h not_interl_X_two_mul_X_add_one
+    | with_reducible_and_instances exact absurd h not_interl_X_X_add_one
+    | with_reducible_and_instances exact absurd h not_interl_X_X_add_two
+    | with_reducible_and_instances exact absurd h not_interl_two_mul_X_add_one_X_add_one
+    | with_reducible_and_instances exact absurd h not_interl_two_mul_X_add_one_X_add_two
+    | with_reducible_and_instances exact absurd h not_interl_X_add_one_X_add_two
+    | with_reducible_and_instances exact absurd h not_interl_X_X_add_one_add_X
+    | with_reducible_and_instances exact absurd h not_interl_X_X_add_one_add_one
+    | with_reducible_and_instances exact absurd h not_interl_X_add_one_add_X_X_add_one
+    | with_reducible_and_instances exact absurd h not_interl_X_add_one_add_X_X_add_one_add_one
+    | with_reducible_and_instances exact absurd h not_interl_X_add_one_X_add_one_add_one
+    | with_reducible_and_instances exact absurd h not_interl_bad_linear_quadratic
+    | with_reducible_and_instances exact absurd h not_interl_bad_linear_quadratic_raw
+    | with_reducible_and_instances exact absurd h not_interl_bad_quadratic_pair
     | (have hs := h.toStrictInterl_of_ne
           (by first
             | exact one_ne_zero
@@ -984,8 +978,6 @@ private theorem not_preserves_bottom_row_one_x (a b : AtomicMatrixEntry) :
     ring
   · exact ne_zero_of_natDegree_eq_succ (by compute_degree!)
 
-set_option maxHeartbeats 8000000 in
--- The semantic converse normalizes five witness images in every rejected case.
 /-- Semantic completeness of the finite atomic classification: every atomic
 matrix preserving the iterative zero-aware interlacing package belongs to the
 checked table. -/
@@ -1010,28 +1002,28 @@ theorem mem_preserving_of_preservesInterlacing
     simp [AtomicMatrixEntry.eval] at hzeroX hXzero hXX hxX hone
     ring_nf at hzeroX hXzero hXX hxX hone hbadAffine₁ hbadAffine₂
     first
-    | exact not_interl_X_sq_X hzeroX
-    | exact not_interl_X_sq_X hXzero
-    | exact not_interl_X_sq_X hXX
-    | exact not_interl_X_sq_X hxX
-    | exact not_interl_X_cube_X_sq hzeroX
-    | exact not_interl_X_cube_X_sq hXzero
-    | exact not_interl_X_cube_X_sq hXX
-    | exact not_interl_X_cube_X_sq hxX
-    | exact not_interl_X_X_cube hzeroX
-    | exact not_interl_X_X_cube hXzero
-    | exact not_interl_X_X_cube hXX
-    | exact not_interl_X_X_cube hxX
-    | exact not_interl_X_X_sq_add_X_cube hxX
-    | exact not_interl_X_add_X_sq_X hxX
-    | exact not_interl_X_sq_add_X_cube_X_sq hxX
-    | exact not_interl_X_sq_X_add_X_sq hxX
-    | exact not_interl_X_cube_X_sq_add_X_cube hxX
-    | exact not_interl_X_add_X_sq_X_cube hxX
-    | exact hbadAffine₁ hone
-    | exact not_interl_X_X_add_one hone
-    | exact not_interl_X_X_add_two hone
-    | exact hbadAffine₂ hone
+    | with_reducible_and_instances exact absurd hzeroX not_interl_X_sq_X
+    | with_reducible_and_instances exact absurd hXzero not_interl_X_sq_X
+    | with_reducible_and_instances exact absurd hXX not_interl_X_sq_X
+    | with_reducible_and_instances exact absurd hxX not_interl_X_sq_X
+    | with_reducible_and_instances exact absurd hzeroX not_interl_X_cube_X_sq
+    | with_reducible_and_instances exact absurd hXzero not_interl_X_cube_X_sq
+    | with_reducible_and_instances exact absurd hXX not_interl_X_cube_X_sq
+    | with_reducible_and_instances exact absurd hxX not_interl_X_cube_X_sq
+    | with_reducible_and_instances exact absurd hzeroX not_interl_X_X_cube
+    | with_reducible_and_instances exact absurd hXzero not_interl_X_X_cube
+    | with_reducible_and_instances exact absurd hXX not_interl_X_X_cube
+    | with_reducible_and_instances exact absurd hxX not_interl_X_X_cube
+    | with_reducible_and_instances exact absurd hxX not_interl_X_X_sq_add_X_cube
+    | with_reducible_and_instances exact absurd hxX not_interl_X_add_X_sq_X
+    | with_reducible_and_instances exact absurd hxX not_interl_X_sq_add_X_cube_X_sq
+    | with_reducible_and_instances exact absurd hxX not_interl_X_sq_X_add_X_sq
+    | with_reducible_and_instances exact absurd hxX not_interl_X_cube_X_sq_add_X_cube
+    | with_reducible_and_instances exact absurd hxX not_interl_X_add_X_sq_X_cube
+    | with_reducible_and_instances exact absurd hone hbadAffine₁
+    | with_reducible_and_instances exact absurd hone not_interl_X_X_add_one
+    | with_reducible_and_instances exact absurd hone not_interl_X_X_add_two
+    | with_reducible_and_instances exact absurd hone hbadAffine₂
 
 /-- Exact semantic classification of all 81 atomic matrices. -/
 theorem preservesInterlacing_iff_mem_preserving (M : Atomic2x2Matrix) :
