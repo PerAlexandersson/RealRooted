@@ -538,15 +538,14 @@ theorem hasDerivAt_shiftedJacobiMonic_eval_alpha (n : ℕ) {α β x : ℝ}
       ((shiftedJacobiMonicAlphaDeriv n α β).eval x) α := by
   have hcoeff : ∀ k ∈ Finset.range n,
       DifferentiableAt ℝ
-        (fun a => (shiftedJacobiMonic n a β).coeff k) α := by
-    intro k hk
-    exact differentiableAt_shiftedJacobiMonic_coeff_alpha n k hα hβ
+        (fun a => (shiftedJacobiMonic n a β).coeff k) α :=
+    fun k hk => differentiableAt_shiftedJacobiMonic_coeff_alpha n k hα hβ
   have hsum : HasDerivAt
       (fun a => ∑ k ∈ Finset.range n,
         (shiftedJacobiMonic n a β).coeff k * x ^ k)
       (∑ k ∈ Finset.range n,
-        deriv (fun a => (shiftedJacobiMonic n a β).coeff k) α * x ^ k) α := by
-    exact HasDerivAt.fun_sum fun k hk =>
+        deriv (fun a => (shiftedJacobiMonic n a β).coeff k) α * x ^ k) α :=
+    HasDerivAt.fun_sum fun k hk =>
       (hcoeff k hk).hasDerivAt.mul_const (x ^ k)
   have htop : HasDerivAt
       (fun a => (shiftedJacobiMonic n a β).coeff n * x ^ n) 0 α := by
@@ -590,9 +589,8 @@ theorem hasDerivAt_jacobiBetaOneInner_shiftedJacobiMonic_alpha (n : ℕ)
   have hp_repr : ∀ a : ℝ,
       shiftedJacobiMonic n a 1 =
         ∑ k ∈ Finset.range (n + 1),
-          C ((shiftedJacobiMonic n a 1).coeff k) * X ^ k := by
-    intro a
-    exact (shiftedJacobiMonic n a 1).as_sum_range_C_mul_X_pow'
+          C ((shiftedJacobiMonic n a 1).coeff k) * X ^ k :=
+    fun a => (shiftedJacobiMonic n a 1).as_sum_range_C_mul_X_pow'
       (Nat.lt_succ_of_le (natDegree_shiftedJacobiMonic_le n a 1))
   have hfun :
       (fun a => jacobiBetaOneInner a (shiftedJacobiMonic n a 1) q) =
@@ -636,8 +634,8 @@ theorem hasDerivAt_jacobiBetaOneInner_shiftedJacobiMonic_alpha (n : ℕ)
         (deriv (fun a => (shiftedJacobiMonic n a 1).coeff k) α *
             jacobiBetaOneInner α (X ^ k) q +
           (shiftedJacobiMonic n α 1).coeff k *
-            jacobiBetaOneLogFunctional α (X ^ k * q))) α := by
-    exact HasDerivAt.fun_sum hterm
+            jacobiBetaOneLogFunctional α (X ^ k * q))) α :=
+    HasDerivAt.fun_sum hterm
   have hfirst :
       (∑ k ∈ Finset.range (n + 1),
         deriv (fun a => (shiftedJacobiMonic n a 1).coeff k) α *
@@ -792,12 +790,12 @@ theorem jacobiBetaOneInner_rootQuotient_eq_eval_mul {n : ℕ} {α r : ℝ}
   let p := shiftedJacobiMonic n α 1
   let q := p /ₘ (X - C r)
   let s := (h - C (h.eval r)) /ₘ (X - C r)
-  have hp_factor : (X - C r) * q = p := by
-    exact Polynomial.mul_divByMonic_eq_iff_isRoot.mpr hr
+  have hp_factor : (X - C r) * q = p :=
+    Polynomial.mul_divByMonic_eq_iff_isRoot.mpr hr
   have ht_root : (h - C (h.eval r)).IsRoot r := by
     simp [Polynomial.IsRoot.def]
-  have ht_factor : (X - C r) * s = h - C (h.eval r) := by
-    exact Polynomial.mul_divByMonic_eq_iff_isRoot.mpr ht_root
+  have ht_factor : (X - C r) * s = h - C (h.eval r) :=
+    Polynomial.mul_divByMonic_eq_iff_isRoot.mpr ht_root
   have hn : 1 ≤ n := by lia
   have hcdeg : (C (h.eval r)).natDegree < n := by
     rw [natDegree_C]
@@ -812,8 +810,8 @@ theorem jacobiBetaOneInner_rootQuotient_eq_eval_mul {n : ℕ} {α r : ℝ}
           natDegree_divByMonic_X_sub_C (h - C (h.eval r)) r
       _ ≤ (h - C (h.eval r)).natDegree := Nat.sub_le _ _
       _ < n := htdeg
-  have horth : jacobiBetaOneInner α p s = 0 := by
-    exact shiftedJacobiMonic_betaOneInner_eq_zero hα s hsdeg
+  have horth : jacobiBetaOneInner α p s = 0 :=
+    shiftedJacobiMonic_betaOneInner_eq_zero hα s hsdeg
   have hcross : jacobiBetaOneInner α ((X - C r) * s) q =
       jacobiBetaOneInner α p s := by
     simp only [jacobiBetaOneInner]
@@ -844,8 +842,8 @@ theorem shiftedJacobiMonicAlphaDeriv_eval_mul_derivative_eval_neg
   let p := shiftedJacobiMonic n α 1
   let d := shiftedJacobiMonicAlphaDeriv n α 1
   let q := p /ₘ (X - C r)
-  have hp_factor : (X - C r) * q = p := by
-    exact Polynomial.mul_divByMonic_eq_iff_isRoot.mpr hr
+  have hp_factor : (X - C r) * q = p :=
+    Polynomial.mul_divByMonic_eq_iff_isRoot.mpr hr
   have hq_ne : q ≠ 0 := by
     intro hqzero
     have hp_ne : p ≠ 0 :=
@@ -890,11 +888,11 @@ theorem shiftedJacobiMonicAlphaDeriv_eval_mul_derivative_eval_neg
   have hddeg : d.natDegree < n :=
     natDegree_shiftedJacobiMonicAlphaDeriv_lt n α 1 hn
   have hdrep : jacobiBetaOneInner α d q =
-      d.eval r * jacobiBetaOneInner α 1 q := by
-    exact jacobiBetaOneInner_rootQuotient_eq_eval_mul hα hr d hddeg
+      d.eval r * jacobiBetaOneInner α 1 q :=
+    jacobiBetaOneInner_rootQuotient_eq_eval_mul hα hr d hddeg
   have hqrep : jacobiBetaOneInner α q q =
-      q.eval r * jacobiBetaOneInner α 1 q := by
-    exact jacobiBetaOneInner_rootQuotient_eq_eval_mul hα hr q hqdeg
+      q.eval r * jacobiBetaOneInner α 1 q :=
+    jacobiBetaOneInner_rootQuotient_eq_eval_mul hα hr q hqdeg
   have hqq_pos : 0 < jacobiBetaOneInner α q q := by
     simpa only [jacobiBetaOneInner, pow_two] using
       jacobiBetaOneFunctional_sq_pos hα hq_ne
@@ -1008,8 +1006,8 @@ theorem exists_hasDerivAt_shiftedJacobiMonic_root_alpha
       ∀ᶠ a in 𝓝 α, (shiftedJacobiMonic n a 1).IsRoot (ρ a) := by
   let F : ℝ × ℝ → ℝ := fun z =>
     (shiftedJacobiMonic n z.1 1).eval z.2
-  have hcont : ContDiffAt ℝ ∞ F (α, r) := by
-    exact contDiffAt_shiftedJacobiMonic_eval_alpha_prod n hα (by norm_num)
+  have hcont : ContDiffAt ℝ ∞ F (α, r) :=
+    contDiffAt_shiftedJacobiMonic_eval_alpha_prod n hα (by norm_num)
   let A : ℝ →L[ℝ] ℝ :=
     fderiv ℝ F (α, r) ∘L ContinuousLinearMap.inr ℝ ℝ ℝ
   let B : ℝ →L[ℝ] ℝ :=
@@ -1033,8 +1031,8 @@ theorem exists_hasDerivAt_shiftedJacobiMonic_root_alpha
     rw [hA]
     exact toSpanSingleton_isInvertible hspatial
   let ρ : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
-  have hρbase : ρ α = r := by
-    exact hcont.implicitFunction_apply_self (by simp) hAinv
+  have hρbase : ρ α = r :=
+    hcont.implicitFunction_apply_self (by simp) hAinv
   have hρroot : ∀ᶠ a in 𝓝 α,
       (shiftedJacobiMonic n a 1).IsRoot (ρ a) := by
     have heq := hcont.eventually_apply_implicitFunction (by simp) hAinv
@@ -1066,17 +1064,15 @@ theorem hasDerivAt_shiftedJacobiMonicRoot_alpha
         (shiftedJacobiMonic n α 1).derivative.eval
           (shiftedJacobiMonicRoot n i α 1)) α := by
   let r : Fin n → ℝ := fun j => shiftedJacobiMonicRoot n j α 1
-  have hr_root : ∀ j, (shiftedJacobiMonic n α 1).IsRoot (r j) := by
-    intro j
-    exact shiftedJacobiMonicRoot_isRoot n j hα (by norm_num)
+  have hr_root : ∀ j, (shiftedJacobiMonic n α 1).IsRoot (r j) :=
+    fun j => shiftedJacobiMonicRoot_isRoot n j hα (by norm_num)
   have hbranch : ∀ j : Fin n, ∃ ρ : ℝ → ℝ,
       HasDerivAt ρ
         (-((shiftedJacobiMonicAlphaDeriv n α 1).eval (r j)) /
           (shiftedJacobiMonic n α 1).derivative.eval (r j)) α ∧
       ρ α = r j ∧
-      ∀ᶠ a in 𝓝 α, (shiftedJacobiMonic n a 1).IsRoot (ρ a) := by
-    intro j
-    exact exists_hasDerivAt_shiftedJacobiMonic_root_alpha n hα (hr_root j)
+      ∀ᶠ a in 𝓝 α, (shiftedJacobiMonic n a 1).IsRoot (ρ a) :=
+    fun j => exists_hasDerivAt_shiftedJacobiMonic_root_alpha n hα (hr_root j)
   choose ρ hρderiv hρbase hρroot using hbranch
   have hall_roots : ∀ᶠ a in 𝓝 α, ∀ j : Fin n,
       (shiftedJacobiMonic n a 1).IsRoot (ρ j a) := by
