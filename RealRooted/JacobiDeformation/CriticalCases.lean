@@ -203,8 +203,8 @@ theorem polynomial_eval_mul_imageProduct_secondDerivative_neg_of_nonroot
         calc
           _ = ((shiftedJacobiMonic (n + 1) α β).eval r /
               (shiftedJacobiMonic (n + 2) α β).eval r) *
-                (shiftedJacobiMonic (n + 2) α β).eval r := by
-                  exact (div_mul_cancel₀ _ hpr).symm
+                (shiftedJacobiMonic (n + 2) α β).eval r :=
+                  (div_mul_cancel₀ _ hpr).symm
           _ = 0 := by rw [not_ne_iff.mp hratio_ne, zero_mul]
       have hratio_z :
           (shiftedJacobiMonic (n + 1) α β).eval z /
@@ -215,8 +215,8 @@ theorem polynomial_eval_mul_imageProduct_secondDerivative_neg_of_nonroot
         calc
           _ = ((shiftedJacobiMonic (n + 1) α β).eval z /
               (shiftedJacobiMonic (n + 2) α β).eval z) *
-                (shiftedJacobiMonic (n + 2) α β).eval z := by
-                  exact (div_mul_cancel₀ _ hpz).symm
+                (shiftedJacobiMonic (n + 2) α β).eval z :=
+                  (div_mul_cancel₀ _ hpz).symm
           _ = 0 := by rw [hratio_z, zero_mul]
       have hm3 : 3 ≤ n + 2 :=
         shiftedJacobiMonic_prev_two_roots_force_three hm hα hβ
@@ -365,8 +365,8 @@ theorem polynomial_eval_mul_imageProduct_secondDerivative_neg_of_doubleRoot
     have hderne := (shiftedJacobiMonic_hasSimpleRoots m hα hβ).eval_derivative_ne_zero
       (hnodeRoot i)
     have hleft : 0 < t i * (1 - t i) *
-        (shiftedJacobiMonic m α β).derivative.eval (t i) ^ 2 := by
-      exact mul_pos (mul_pos (ht i).1 (sub_pos.mpr (ht i).2))
+        (shiftedJacobiMonic m α β).derivative.eval (t i) ^ 2 :=
+      mul_pos (mul_pos (ht i).1 (sub_pos.mpr (ht i).2))
         (sq_pos_of_ne_zero hderne)
     have hright : 0 <
         ((2 * (m : ℝ) + (α + β + 2) - 1) * shiftedJacobiSubdiag m α β) *

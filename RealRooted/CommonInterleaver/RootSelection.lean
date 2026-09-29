@@ -52,9 +52,8 @@ theorem StrictInterl.eval_neg_of_left_top_gap {h p : ℝ[X]} {x : ℝ}
       simp at hlen
     have hpaired : List.Forall₂ (· ≤ ·) rs.dropLast ss :=
       listInterlaces_dropLast_forall₂_le hinter hlen
-    have hss_lt : ∀ r ∈ ss, r < x := by
-      intro r hr
-      exact hh_lt r (by simpa [hss_eq] using Multiset.mem_coe.mpr hr)
+    have hss_lt : ∀ r ∈ ss, r < x :=
+      fun r hr => hh_lt r (by simpa [hss_eq] using Multiset.mem_coe.mpr hr)
     have hdrop_lt : ∀ r ∈ rs.dropLast, r < x :=
       forall_lt_of_forall₂_le hpaired hss_lt
     obtain ⟨r, hr_root, hxr⟩ := hp_above

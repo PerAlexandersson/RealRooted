@@ -116,8 +116,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_three :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 3) (modifiedNarayanaPolynomial 3) := by
-  exact lemma33AuxiliaryGInterlaces_modified_three_interlaces.toStrictInterl
+    StrictInterl (FiniteSkewBoard.auxiliaryG 3) (modifiedNarayanaPolynomial 3) :=
+  lemma33AuxiliaryGInterlaces_modified_three_interlaces.toStrictInterl
 
 /-- The checked initial cases `n = 1, 2, 3` of Braun--Jal Lemma 3.3, for the
 concrete modified Narayana family and the finite-board auxiliary `G`. -/
@@ -391,8 +391,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
 /-- The `n = 4` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_four :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 4) (modifiedNarayanaPolynomial 4) := by
-  exact lemma33AuxiliaryGInterlaces_modified_four_interlaces.toStrictInterl
+    StrictInterl (FiniteSkewBoard.auxiliaryG 4) (modifiedNarayanaPolynomial 4) :=
+  lemma33AuxiliaryGInterlaces_modified_four_interlaces.toStrictInterl
 
 /-- The checked initial cases `n = 1, 2, 3, 4` of Braun--Jal Lemma 3.3, for the
 concrete modified Narayana family and the finite-board auxiliary `G`. -/
@@ -790,8 +790,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
 /-- The `n = 5` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_five :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 5) (modifiedNarayanaPolynomial 5) := by
-  exact lemma33AuxiliaryGInterlaces_modified_five_interlaces.toStrictInterl
+    StrictInterl (FiniteSkewBoard.auxiliaryG 5) (modifiedNarayanaPolynomial 5) :=
+  lemma33AuxiliaryGInterlaces_modified_five_interlaces.toStrictInterl
 
 /-- The checked initial cases `n = 1, 2, 3, 4, 5` of Braun--Jal Lemma 3.3, for
 the concrete modified Narayana family and the finite-board auxiliary `G`. -/

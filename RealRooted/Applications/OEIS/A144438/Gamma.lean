@@ -194,8 +194,8 @@ theorem weightedDecoGamma_natDegree_le (w : ℝ) :
       · exact gammaOperator_natDegree_le_of_natDegree_le ih1
       · calc
           (C w * (X * weightedDecoGamma w n)).natDegree ≤
-              X.natDegree + (weightedDecoGamma w n).natDegree := by
-                exact (natDegree_C_mul_le w _).trans natDegree_mul_le
+              X.natDegree + (weightedDecoGamma w n).natDegree :=
+                (natDegree_C_mul_le w _).trans natDegree_mul_le
           _ ≤ 1 + n / 2 := by simpa using Nat.add_le_add_left ih0 1
           _ ≤ (n + 2) / 2 := by lia
 

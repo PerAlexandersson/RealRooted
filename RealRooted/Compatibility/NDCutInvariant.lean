@@ -76,8 +76,8 @@ theorem toOrderedCutCompatible {m : ℕ} {N D : Fin m → ℝ[X]}
 /-- Every `N` coordinate has nonnegative coefficients. -/
 theorem n_nonneg {m : ℕ} {N D : Fin m → ℝ[X]}
     (h : OrderedNDCutCompatible N D) (i : Fin m) :
-    HasNonnegCoeffs (N i) := by
-  exact h.stateInterlacing.nonnegCoeffs (N i) (by
+    HasNonnegCoeffs (N i) :=
+  h.stateInterlacing.nonnegCoeffs (N i) (by
     apply List.mem_append_left
     simp)
 
@@ -85,8 +85,8 @@ theorem n_nonneg {m : ℕ} {N D : Fin m → ℝ[X]}
 zero extreme suffix. -/
 theorem d_nonneg {m : ℕ} {N D : Fin m → ℝ[X]}
     (h : OrderedNDCutCompatible N D) (i : Fin m) :
-    HasNonnegCoeffs (D i) := by
-  exact h.stateInterlacing.nonnegCoeffs (D i) (by
+    HasNonnegCoeffs (D i) :=
+  h.stateInterlacing.nonnegCoeffs (D i) (by
     apply List.mem_append_right
     simp)
 

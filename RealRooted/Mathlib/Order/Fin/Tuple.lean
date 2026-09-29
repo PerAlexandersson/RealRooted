@@ -49,8 +49,8 @@ theorem exists_ordered_interior_insert
         u ∘ r.castSucc.succ.succAbove = cols := by
   classical
   let t : Fin (q + 2) := Fin.find (fun i => b < cols i) ⟨Fin.last (q + 1), hright⟩
-  have ht : b < cols t := by
-    exact Fin.find_spec (p := fun i => b < cols i) _
+  have ht : b < cols t :=
+    Fin.find_spec (p := fun i => b < cols i) _
   have ht_ne_zero : t ≠ 0 := by
     intro h
     exact (lt_asymm hleft) (by simpa [h] using ht)
@@ -98,10 +98,10 @@ theorem consecutive_or_exists_missing_between
   · right
     push Not at hcon
     obtain ⟨i, hi⟩ := hcon
-    have hstep : (cols i.castSucc).val + 1 ≤ (cols i.succ).val := by
-      exact Nat.succ_le_iff.mpr (Fin.lt_def.mp (hcols i.castSucc_lt_succ))
-    have hgap : (cols i.castSucc).val + 1 < (cols i.succ).val := by
-      exact lt_of_le_of_ne hstep (Ne.symm hi)
+    have hstep : (cols i.castSucc).val + 1 ≤ (cols i.succ).val :=
+      Nat.succ_le_iff.mpr (Fin.lt_def.mp (hcols i.castSucc_lt_succ))
+    have hgap : (cols i.castSucc).val + 1 < (cols i.succ).val :=
+      lt_of_le_of_ne hstep (Ne.symm hi)
     let b : Fin N := ⟨(cols i.castSucc).val + 1, lt_trans hgap (cols i.succ).isLt⟩
     have hleft : cols 0 < b := by
       change (cols 0).val < (cols i.castSucc).val + 1

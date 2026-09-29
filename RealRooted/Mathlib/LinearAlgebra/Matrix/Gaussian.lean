@@ -378,9 +378,8 @@ theorem det_exponentialKernelMatrix_pos {q : ℕ}
       rw [det_eq_det_adjacentRowDiff_of_firstColumn_eq_one _ hfirst]
       let yTail : Fin n → ℝ := fun j => y0 j.succ
       have hyTail : StrictMono yTail := hy0.comp Fin.strictMono_succ
-      have hyTail_pos : ∀ j, 0 < yTail j := by
-        intro j
-        exact hy00 ▸ hy0 (by simp)
+      have hyTail_pos : ∀ j, 0 < yTail j :=
+        fun _ => hy00 ▸ hy0 (by simp)
       exact det_adjacentRowDiff_exponentialKernelMatrix_pos
         x yTail hx hyTail_pos (fun t ht => ih ht hyTail)
 

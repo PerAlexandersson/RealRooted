@@ -25,9 +25,8 @@ private theorem sum_range_two_mul_add_one_eq_sum_range_two_mul {R : Type*}
   induction k with
   | zero => simp
   | succ k ih =>
-      have hodd' : ∀ i, i ≤ 2 * k → Odd i → F i = 0 := by
-        intro i hi
-        exact hodd i (by lia)
+      have hodd' : ∀ i, i ≤ 2 * k → Odd i → F i = 0 :=
+        fun i _ => hodd i (by lia)
       rw [show 2 * (k + 1) + 1 = (2 * k + 1) + 2 by ring]
       rw [Finset.sum_range_succ, Finset.sum_range_succ, ih hodd']
       rw [hodd (2 * k + 1) (by lia) (odd_two_mul_add_one k)]

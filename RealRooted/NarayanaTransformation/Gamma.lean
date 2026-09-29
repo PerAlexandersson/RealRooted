@@ -55,8 +55,8 @@ theorem narayanaZeroGammaPolynomial_pure_rec (n : ℕ) :
         · compute_degree!
         · exact natDegree_narayanaZeroGammaPolynomial_le n
       _ ≤ (n + 2) / 2 := by lia
-  have hγsub : (γ₁ - γ₀).natDegree ≤ (n + 2) / 2 := by
-    exact (natDegree_sub_le γ₁ γ₀).trans
+  have hγsub : (γ₁ - γ₀).natDegree ≤ (n + 2) / 2 :=
+    (natDegree_sub_le γ₁ γ₀).trans
       (max_le hγ₁ hγ₀)
   apply gammaTransform_injective_of_natDegree_le hγ₂ hγsub
   dsimp [γ₂, γ₁, γ₀]

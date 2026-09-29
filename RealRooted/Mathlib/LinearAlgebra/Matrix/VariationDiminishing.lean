@@ -62,8 +62,8 @@ namespace Fin
 /-- The local `S^-` convention gives the zero vector zero sign variations. -/
 @[simp]
 lemma signVariations_zero (n : ℕ) :
-    signVariations (0 : Fin n → ℝ) = 0 := by
-  exact signVariations_eq_zero_of_forall_nonneg 0 (fun _ ↦ le_rfl)
+    signVariations (0 : Fin n → ℝ) = 0 :=
+  signVariations_eq_zero_of_forall_nonneg 0 (fun _ ↦ le_rfl)
 
 end Fin
 

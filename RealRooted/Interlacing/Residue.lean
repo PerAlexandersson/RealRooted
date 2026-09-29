@@ -275,8 +275,8 @@ theorem lagInterp_degree_lt {f g : ℝ[X]} (hfs : f.Splits) (hnd : f.roots.Nodup
         ≤ 0 + (f /ₘ (X - C s)).degree := by gcongr; exact degree_C_le
       _ = (f /ₘ (X - C s)).degree := by simp
   apply lt_of_le_of_lt this
-  have : (f /ₘ (X - C s)).natDegree = f.natDegree - 1 := by
-    exact natDegree_divByMonic_X_sub_C f s
+  have : (f /ₘ (X - C s)).natDegree = f.natDegree - 1 :=
+    natDegree_divByMonic_X_sub_C f s
   calc (f /ₘ (X - C s)).degree ≤ ((f /ₘ (X - C s)).natDegree : WithBot ℕ) :=
       degree_le_natDegree
     _ = ((f.natDegree - 1 : ℕ) : WithBot ℕ) := by simp [*]

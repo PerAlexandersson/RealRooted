@@ -1315,8 +1315,8 @@ theorem hurwitz_eq_toeplitz_firstColumn_submatrix (c : ℕ → ℝ) :
 the whole Hurwitz matrix is totally nonnegative. -/
 theorem hurwitz_isTotallyNonneg_of_firstColumn_isPolyaFreqSeq (c : ℕ → ℝ)
     (h : IsPolyaFreqSeq fun k => hurwitz c k 0) :
-    (hurwitz c).IsTotallyNonneg := by
-  exact hurwitz_eq_toeplitz_firstColumn_submatrix c ▸
+    (hurwitz c).IsTotallyNonneg :=
+  hurwitz_eq_toeplitz_firstColumn_submatrix c ▸
     Matrix.IsTotallyNonneg.submatrix h strictMono_id (fun _ _ hab => by lia)
 
 /-! ### The row-oriented Hurwitz criterion is false -/

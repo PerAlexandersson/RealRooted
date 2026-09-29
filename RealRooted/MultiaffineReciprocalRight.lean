@@ -143,9 +143,8 @@ private theorem eval_signedMultiaffineReciprocalRight_term
     change d = Finsupp.sumFinsuppEquivProdFinsupp.symm
       (Finsupp.sumFinsuppEquivProdFinsupp d)
     exact (Finsupp.sumFinsuppEquivProdFinsupp.symm_apply_apply d).symm
-  have hdright : ∀ i : sigma, dr i ≤ 1 := by
-    intro i
-    exact hd i
+  have hdright : ∀ i : sigma, dr i ≤ 1 :=
+    fun i => hd i
   have hcomplement :
       (complementRightExponent d).prod (fun i n => z i ^ n) =
         dl.prod (fun i n => z (Sum.inl i) ^ n) *

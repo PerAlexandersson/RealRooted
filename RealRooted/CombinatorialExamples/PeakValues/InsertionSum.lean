@@ -381,8 +381,8 @@ theorem sum_identifyLast_peakValueMonomial_insertMaximum_normal
               ∏ v ∈ (peakValues π).erase x.1, X (some v) =
           ∑ v ∈ peakValues π,
             (X none : MvPolynomial (Option (Fin n)) ℝ) *
-              ∏ w ∈ (peakValues π).erase v, X (some w) := by
-      exact Finset.sum_attach (peakValues π)
+              ∏ w ∈ (peakValues π).erase v, X (some w) :=
+      Finset.sum_attach (peakValues π)
         (fun v => (X none : MvPolynomial (Option (Fin n)) ℝ) *
           ∏ w ∈ (peakValues π).erase v, X (some w))
     rw [hattach]

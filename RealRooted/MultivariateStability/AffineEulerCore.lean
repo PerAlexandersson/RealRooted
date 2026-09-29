@@ -180,8 +180,8 @@ theorem MvRealStable.eval_coordinateWronskian_directionalPDeriv_one_nonneg
     (hhom : H.IsHomogeneous d) (hd : d ≠ 0) :
     ∀ i x, 0 ≤ MvPolynomial.eval x
       (MvPolynomial.coordinateWronskian
-        (directionalPDeriv (fun _ : σ => (1 : Real)) H) H i) := by
-  exact hstable.eval_coordinateWronskian_directionalPDeriv_nonneg_of_nonzero
+        (directionalPDeriv (fun _ : σ => (1 : Real)) H) H i) :=
+  hstable.eval_coordinateWronskian_directionalPDeriv_nonneg_of_nonzero
     hnn hhom (fun _ : σ => (1 : Real)) (fun _ => zero_le_one)
       (hstable.directionalPDeriv_one_ne_zero hnn hhom hd)
 
@@ -241,12 +241,12 @@ theorem
       (none : Option σ)).mul
         (hDhom.rename_isHomogeneous (f := some))
     simpa [K, Nat.add_sub_of_le (Nat.one_le_iff_ne_zero.mpr hd)] using hmul
-  have hKnn : MvPolynomial.HasNonnegCoeffs K := by
-    exact (hnn.rename_of_injective (Option.some_injective σ)).add
+  have hKnn : MvPolynomial.HasNonnegCoeffs K :=
+    (hnn.rename_of_injective (Option.some_injective σ)).add
       ((MvPolynomial.HasNonnegCoeffs.X none).mul
         (hDnn.rename_of_injective (Option.some_injective σ)))
-  have hKstable : MvRealStable K := by
-    exact hstable.directionalPDeriv_pencil
+  have hKstable : MvRealStable K :=
+    hstable.directionalPDeriv_pencil
       (fun _ : σ => (1 : Real)) fun _ => zero_le_one
   have hL : L = MvPolynomial.rename some D + MvPolynomial.X none *
       MvPolynomial.rename some E := by
@@ -549,8 +549,8 @@ theorem MvRealStable.allCombo_affineEulerCore
   have hH : MvRealStable H :=
     hP.ordinaryHomogenization_of_totalDegree_le hnn hP.ne_zero hdeg
   have hDcore : MvPolynomial.dehomogenize D =
-      MvPolynomial.affineEulerCore id (d : Real) P := by
-    exact dehomogenize_directionalPDeriv_ordinaryHomogenization P d hdeg
+      MvPolynomial.affineEulerCore id (d : Real) P :=
+    dehomogenize_directionalPDeriv_ordinaryHomogenization P d hdeg
   apply allComboMvRealStableOrZero_of_affine
   · rw [← hDcore]
     exact (hH.directionalPDeriv_zero_or

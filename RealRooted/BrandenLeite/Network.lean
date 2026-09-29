@@ -285,8 +285,8 @@ theorem networkPathWeightFrom_one_eq_networkShift {R : Type*} [CommSemiring R]
   · simp [ht]
   · rw [ite_eq_right ht, ite_eq_right ht]
     have hbefore : horizontalBefore s t ≤ t.val := horizontalBefore_le s t
-    have hsub : t.val - horizontalBefore s t ≤ n := by
-      exact (Nat.sub_le _ _).trans (Nat.le_of_lt t.isLt)
+    have hsub : t.val - horizontalBefore s t ≤ n :=
+      (Nat.sub_le _ _).trans (Nat.le_of_lt t.isLt)
     have hpos : 0 < n - (t.val - horizontalBefore s t) := by
       apply Nat.sub_pos_of_lt
       exact (Nat.sub_le _ _).trans_lt t.isLt

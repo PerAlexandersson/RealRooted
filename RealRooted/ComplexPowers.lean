@@ -33,9 +33,8 @@ theorem exists_pos_pow_re_gt_of_norm_eq_one {w : ℂ}
     exact tendsto_nhds_unique hnormlim tendsto_const_nhds
   have hlne : l ≠ 0 := norm_ne_zero_iff.mp (by simp [hlnorm])
   let d : ℕ → ℕ := fun n ↦ φ (n + 1) - φ n
-  have hdpos : ∀ n, 0 < d n := by
-    intro n
-    exact Nat.sub_pos_of_lt (hφ (Nat.lt_succ_self n))
+  have hdpos : ∀ n, 0 < d n :=
+    fun n => Nat.sub_pos_of_lt (hφ (Nat.lt_succ_self n))
   have hpoweq : ∀ n, w ^ d n = w ^ φ (n + 1) / w ^ φ n := by
     intro n
     apply (eq_div_iff (pow_ne_zero _ (norm_ne_zero_iff.mp (by simp [hw])))).2

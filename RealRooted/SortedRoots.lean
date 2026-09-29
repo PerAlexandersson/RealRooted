@@ -41,8 +41,8 @@ theorem rootMags_pos (p : ℝ[X]) (hneg : ∀ r ∈ p.roots, r < 0) {x : ℝ}
   have := hneg _ hmem
   linarith
 
-theorem rootMags_sortedLE (p : ℝ[X]) : (rootMags p).SortedLE := by
-  exact List.Pairwise.sortedLE (Multiset.pairwise_sort (p.roots.map (fun r => -r)) (· ≤ ·))
+theorem rootMags_sortedLE (p : ℝ[X]) : (rootMags p).SortedLE :=
+  List.Pairwise.sortedLE (Multiset.pairwise_sort (p.roots.map (fun r => -r)) (· ≤ ·))
 
 theorem rootMags_nodup (p : ℝ[X]) (hnd : p.roots.Nodup) : (rootMags p).Nodup := by
   have hmap : (p.roots.map (fun r : ℝ => -r)).Nodup :=

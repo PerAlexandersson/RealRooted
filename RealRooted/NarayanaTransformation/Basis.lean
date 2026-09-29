@@ -25,15 +25,15 @@ theorem fallingFactorialPolynomial_succ_mul (n : ℕ) :
 Touchard differential recurrence after the transform. -/
 theorem basisTransform_touchard_X_mul (p : ℝ[X]) :
     basisTransform touchard (X * p) =
-      X * basisTransform touchard p + X * (basisTransform touchard p).derivative := by
-  exact basisTransform_X_mul_of_succ_derivative touchard X X touchard_succ p
+      X * basisTransform touchard p + X * (basisTransform touchard p).derivative :=
+  basisTransform_X_mul_of_succ_derivative touchard X X touchard_succ p
 
 /-- Factor recurrence for the Touchard-basis transform. -/
 theorem basisTransform_touchard_mul_X_add_C (r : ℝ) (p : ℝ[X]) :
     basisTransform touchard ((X + C r) * p) =
       (X + C r) * basisTransform touchard p +
-        X * (basisTransform touchard p).derivative := by
-  exact basisTransform_mul_X_add_C_of_succ_derivative touchard X X touchard_succ r p
+        X * (basisTransform touchard p).derivative :=
+  basisTransform_mul_X_add_C_of_succ_derivative touchard X X touchard_succ r p
 
 /-- The Touchard-basis transform sends a falling factorial back to the
 corresponding monomial. -/

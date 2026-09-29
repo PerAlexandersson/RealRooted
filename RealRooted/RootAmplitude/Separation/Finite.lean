@@ -124,8 +124,8 @@ theorem staircaseProd_above {q : K} (hq : 1 ≤ q) {g : ℕ → K} {n k N : ℕ}
     have hqpow : (1 : K) ≤ q ^ (j + 1) := one_le_pow₀ hq
     have hqpowPos : (0 : K) < q ^ (j + 1) :=
       lt_of_lt_of_le zero_lt_one hqpow
-    have hinv : (q ^ (j + 1))⁻¹ ≤ 1 := by
-      exact (inv_le_one₀ hqpowPos).mpr hqpow
+    have hinv : (q ^ (j + 1))⁻¹ ≤ 1 :=
+      (inv_le_one₀ hqpowPos).mpr hqpow
     linarith
   · intro j hj
     have hjN : j < N := mem_range.mp hj

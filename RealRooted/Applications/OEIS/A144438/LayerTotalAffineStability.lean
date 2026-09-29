@@ -288,8 +288,8 @@ theorem decoBottomTotal_add_two_isRayleigh_of_stable_affine
     (hdisc : ∀ i j x, i ≠ 1 → j ≠ 1 → MvPolynomial.eval x
       (MvPolynomial.affineRayleighDiscriminant
         (decoBottomTotalAffineBase n) (decoBottomTotalAffineSlope n) i j) ≤ 0) :
-    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) := by
-  exact decoBottomTotal_add_two_isRayleigh_of_affine n hbase
+    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) :=
+  decoBottomTotal_add_two_isRayleigh_of_affine n hbase
     (decoBottomTotalAffineSlope_isRayleigh n hstable)
     ((eval_coordinateWronskian_affineSlope_base_nonneg_iff_compensation n).mpr
       hcomp) hdisc
@@ -308,8 +308,8 @@ theorem decoBottomTotal_add_two_isRayleigh_of_stable_affine_companion
     (hdisc : ∀ i j x, i ≠ 1 → j ≠ 1 → MvPolynomial.eval x
       (MvPolynomial.affineRayleighDiscriminant
         (decoBottomTotalAffineBase n) (decoBottomTotalAffineSlope n) i j) ≤ 0) :
-    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) := by
-  exact (decoBottomTotal_add_two_isRayleigh_iff_stable_affine_companion
+    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) :=
+  (decoBottomTotal_add_two_isRayleigh_iff_stable_affine_companion
     n hstable).2 ⟨hbase, hcompanion, hdisc⟩
 
 end

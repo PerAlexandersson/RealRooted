@@ -132,8 +132,8 @@ theorem contentTypeSmirnov_cyclicValueShift_iff {n : ℕ}
     (w : Fin n → Fin (n + 1)) :
     (HasContentType μ (cyclicValueShift c w) ∧
         BrandenVecchi.IsSmirnovWord n (cyclicValueShift c w)) ↔
-      HasContentType μ w ∧ BrandenVecchi.IsSmirnovWord n w := by
-  exact and_congr (hasContentType_cyclicValueShift_iff μ c w)
+      HasContentType μ w ∧ BrandenVecchi.IsSmirnovWord n w :=
+  and_congr (hasContentType_cyclicValueShift_iff μ c w)
     (isSmirnovWord_cyclicValueShift_iff c w)
 
 /-- Pollak's cyclic action gives the exact integral factor `n + 1` within

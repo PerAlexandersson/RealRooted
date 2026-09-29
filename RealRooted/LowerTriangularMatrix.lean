@@ -208,9 +208,8 @@ theorem IsLowerTriangular.listProduct [Semiring R]
       exact IsLowerTriangular.identity
   | cons A As ih =>
       have hA : IsLowerTriangular A := hAs A (by simp)
-      have htail : ∀ B ∈ As, IsLowerTriangular B := by
-        intro B hB
-        exact hAs B (by simp [hB])
+      have htail : ∀ B ∈ As, IsLowerTriangular B :=
+        fun B hB => hAs B (by simp [hB])
       intro i j hij
       exact IsLowerTriangular.mul hA (ih htail) hij
 
@@ -375,9 +374,8 @@ theorem RightPreservesRowGeneratingFunctionsPF.listProduct
       simpa using RightPreservesRowGeneratingFunctionsPF.identity
   | cons B Bs ih =>
       have hB : RightPreservesRowGeneratingFunctionsPF B := hBs B (by simp)
-      have htail : ∀ C ∈ Bs, RightPreservesRowGeneratingFunctionsPF C := by
-        intro C hC
-        exact hBs C (by simp [hC])
+      have htail : ∀ C ∈ Bs, RightPreservesRowGeneratingFunctionsPF C :=
+        fun C hC => hBs C (by simp [hC])
       simpa using hB.trans (ih htail)
 
 theorem RightPreservesRowGeneratingFunctionsPF.rightPowers

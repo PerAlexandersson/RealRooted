@@ -79,16 +79,16 @@ theorem MvPolynomial.IsHomogeneous.coeff_realAffineLineRestriction
     {σ : Type*} {H : MvPolynomial σ ℝ} {d : ℕ}
     (hH : H.IsHomogeneous d) (a b : σ → ℝ) :
     (realAffineLineRestriction a b H).coeff d =
-      MvPolynomial.eval b H := by
-  exact hH.coeff_affineLineRestriction a b
+      MvPolynomial.eval b H :=
+  hH.coeff_affineLineRestriction a b
 
 /-- An affine-line restriction of a degree-`d` homogeneous polynomial has
 univariate degree at most `d`. -/
 theorem MvPolynomial.IsHomogeneous.natDegree_realAffineLineRestriction_le
     {σ : Type*} {H : MvPolynomial σ ℝ} {d : ℕ}
     (hH : H.IsHomogeneous d) (a b : σ → ℝ) :
-    (realAffineLineRestriction a b H).natDegree ≤ d := by
-  exact hH.natDegree_affineLineRestriction_le a b
+    (realAffineLineRestriction a b H).natDegree ≤ d :=
+  hH.natDegree_affineLineRestriction_le a b
 
 /-- Every positive-direction real affine restriction of a real stable
 multivariate polynomial is nonzero and real-rooted. -/

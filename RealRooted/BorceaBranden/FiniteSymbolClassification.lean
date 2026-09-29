@@ -318,8 +318,8 @@ theorem uniformlyDominatedByShiftedBox
           (MvPolynomial.monomial m (f.1.coeff m))‖ ≤
         ∑ m ∈ f.1.support,
           ‖MvPolynomial.eval z
-            (MvPolynomial.monomial m (f.1.coeff m))‖ := by
-      exact norm_sum_le _ _
+            (MvPolynomial.monomial m (f.1.coeff m))‖ :=
+      norm_sum_le _ _
     _ ≤ ∑ m ∈ f.1.support,
         ((‖f.1.coeff m‖ * A) *
           ∏ i, ‖z i + W i‖ ^ κ i) := by

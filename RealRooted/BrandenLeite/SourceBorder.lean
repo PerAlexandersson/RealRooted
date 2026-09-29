@@ -112,8 +112,8 @@ theorem sourceBorder_certificate
     (hGdiag : ∀ i, G i i = g) (hHdiag : ∀ i, H i i = η) :
     (sourceBorder (g * η) G H).IsTotallyNonneg ∧
       (∀ i j, i < j → sourceBorder (g * η) G H i j = 0) ∧
-      (∀ i, sourceBorder (g * η) G H i i = g * η) := by
-  exact ⟨sourceBorder_isTotallyNonneg (mul_nonneg hg.le hη.le) hG hH,
+      (∀ i, sourceBorder (g * η) G H i i = g * η) :=
+  ⟨sourceBorder_isTotallyNonneg (mul_nonneg hg.le hη.le) hG hH,
     sourceBorder_upper_zero hGlower hHlower,
     sourceBorder_diagonal hGlower hHlower hGdiag hHdiag⟩
 

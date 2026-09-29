@@ -216,8 +216,8 @@ theorem normalizedDecoratedCycleEulerian_strictInterl_and_noCommonRoot
     StrictInterl (normalizedDecoratedCycleEulerian q n)
         (normalizedDecoratedCycleEulerian q (n + 1)) ∧
       ∀ r : ℝ, (normalizedDecoratedCycleEulerian q (n + 1)).IsRoot r →
-        ¬ (normalizedDecoratedCycleEulerian q n).IsRoot r := by
-  exact strictInterl_and_noCommonRoot_of_quadratic_lag
+        ¬ (normalizedDecoratedCycleEulerian q n).IsRoot r :=
+  strictInterl_and_noCommonRoot_of_quadratic_lag
     (normalizedDecoratedCycleEulerian q) 1 1 q
       (fun m => C q + C ((2 : ℝ) + m) * X) (by norm_num) (by norm_num) hq.le
       (normalizedDecoratedCycleEulerian_natDegree q)
@@ -314,8 +314,8 @@ theorem decoratedCycleEulerian_splits {q : ℝ} (hq : 0 < q) (n : ℕ) :
 /-- Consecutive positive ranks strictly interlace for positive `q`. -/
 theorem decoratedCycleEulerian_interlaces {q : ℝ} (hq : 0 < q) (n : ℕ) :
     Interlaces (decoratedCycleEulerian q (n + 1))
-      (decoratedCycleEulerian q (n + 2)) := by
-  exact (decoratedCycleEulerian_strictInterl hq n).toInterlaces (by
+      (decoratedCycleEulerian q (n + 2)) :=
+  (decoratedCycleEulerian_strictInterl hq n).toInterlaces (by
     rw [decoratedCycleEulerian_natDegree hq, decoratedCycleEulerian_natDegree hq])
 
 /-- Consecutive positive ranks have no common real root. -/

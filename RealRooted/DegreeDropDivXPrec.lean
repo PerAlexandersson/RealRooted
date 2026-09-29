@@ -290,8 +290,8 @@ theorem strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_
     rw [← hrs_eq]
     exact Multiset.mem_coe.mpr hm_mem
   have hm_nonpos : m ≤ 0 := hroots m hm_root
-  have h0_le_m : (0 : ℝ) ≤ m := by
-    exact List.Pairwise.rel_getLast hrs_sorted h0_mem
+  have h0_le_m : (0 : ℝ) ≤ m :=
+    List.Pairwise.rel_getLast hrs_sorted h0_mem
   have hm0 : m = 0 := le_antisymm hm_nonpos h0_le_m
   have hdivX_roots : (↑(rs.dropLast) : Multiset ℝ) = g.divX.roots :=
     divX_roots_eq_dropLast_of_coeff_zero hg.1 hg0 hrs_eq hrs_ne

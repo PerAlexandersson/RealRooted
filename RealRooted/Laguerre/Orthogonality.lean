@@ -78,8 +78,8 @@ def generalizedLaguerreInner (α : ℝ) (p q : ℝ[X]) : ℝ :=
   simp [generalizedLaguerreFunctional]
 
 theorem generalizedLaguerreInner_comm (α : ℝ) (p q : ℝ[X]) :
-    generalizedLaguerreInner α p q = generalizedLaguerreInner α q p := by
-  exact Polynomial.momentPairing_comm _ _ _
+    generalizedLaguerreInner α p q = generalizedLaguerreInner α q p :=
+  Polynomial.momentPairing_comm _ _ _
 
 @[simp] theorem generalizedLaguerreInner_zero_left (α : ℝ) (p : ℝ[X]) :
     generalizedLaguerreInner α 0 p = 0 := by

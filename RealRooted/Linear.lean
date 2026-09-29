@@ -664,7 +664,7 @@ lemma exists_pos_forall_natDegree_add_C_mul_eq_left_of_natDegree_le
         exact
           mul_le_mul_of_nonneg_left
             (by linarith [abs_nonneg (q.coeff p.natDegree)]) hμ_nonneg
-      _ < ε * (|q.coeff p.natDegree| + 1) := by exact mul_lt_mul_of_pos_right hμε (by positivity)
+      _ < ε * (|q.coeff p.natDegree| + 1) := mul_lt_mul_of_pos_right hμε (by positivity)
       _ = |p.leadingCoeff| := by
         have hden_ne : |q.coeff p.natDegree| + 1 ≠ 0 := by positivity
         exact div_mul_cancel₀ |p.leadingCoeff| hden_ne
@@ -832,8 +832,8 @@ lemma natDegree_add_C_mul_cancel_lt_of_natDegree_eq
     exact coeff_natDegree
   have hq_lc : q.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hq
   have hle_scaled :
-      (C (-p.leadingCoeff / q.leadingCoeff) * q).natDegree ≤ p.natDegree := by
-    exact (Polynomial.natDegree_C_mul_le (-p.leadingCoeff / q.leadingCoeff) q).trans
+      (C (-p.leadingCoeff / q.leadingCoeff) * q).natDegree ≤ p.natDegree :=
+    (Polynomial.natDegree_C_mul_le (-p.leadingCoeff / q.leadingCoeff) q).trans
       (le_of_eq hdeg.symm)
   have hle :
       (p + C (-p.leadingCoeff / q.leadingCoeff) * q).natDegree ≤ p.natDegree :=

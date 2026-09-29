@@ -569,9 +569,8 @@ theorem imageProduct_double_root_sign {m : ℕ} (t : Fin m → ℝ) (U V xi : �
       (∏ i ∈ I, (-xi / (t i * (1 - t i)))) *
         ((∏ i ∈ I, (t a - t i)) * ∏ i ∈ I, (t b - t i)) := by
     have hcongr : ∀ i ∈ I, xi + c i =
-        (-xi / (t i * (1 - t i))) * ((t a - t i) * (t b - t i)) := by
-      intro i _
-      exact image_coordinate_identity (hne0 i) (hne1 i) hU hV
+        (-xi / (t i * (1 - t i))) * ((t a - t i) * (t b - t i)) :=
+      fun i _ => image_coordinate_identity (hne0 i) (hne1 i) hU hV
     rw [Finset.prod_congr rfl hcongr, Finset.prod_mul_distrib, Finset.prod_mul_distrib]
   have hW : 0 < ∏ i ∈ I, (-xi / (t i * (1 - t i))) := by
     refine Finset.prod_pos ?_

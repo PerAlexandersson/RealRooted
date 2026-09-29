@@ -71,8 +71,8 @@ private theorem weightedResolvedChowRow_drop_sum
     ((weightedResolvedChowRow resolution n).drop k).sum =
       ∑ j ∈ Finset.Ico k (n + 1),
         C (resolution.lambda n j) *
-          resolvedChowDerangement resolution n j := by
-  exact sum_drop_map_range_eq_finset_sum_Ico _ k (n + 1)
+          resolvedChowDerangement resolution n j :=
+  sum_drop_map_range_eq_finset_sum_Ico _ k (n + 1)
 
 private theorem chowRowTransform_weightedResolvedChowRow
     {A : LowerTriangularMatrix ℝ}
@@ -270,14 +270,12 @@ theorem resolvedChowCombination_endpoint_interl
     hrow.closedSequence.sublist (by simp [reflectionClosure])
   have hmem : ∀ j, j ≤ n →
       resolvedChowDerangement resolution n j ∈
-        resolvedChowRow resolution n := by
-    intro j hj
-    exact List.mem_map.mpr ⟨j, by simpa using hj, rfl⟩
+        resolvedChowRow resolution n :=
+    fun j hj => List.mem_map.mpr ⟨j, by simpa using hj, rfl⟩
   have hself : ∀ j, j ≤ n →
       Interl (resolvedChowDerangement resolution n j)
-        (resolvedChowDerangement resolution n j) := by
-    intro j hj
-    exact Interl.refl (hdirect.splits (hmem j hj))
+        (resolvedChowDerangement resolution n j) :=
+    fun j hj => Interl.refl (hdirect.splits (hmem j hj))
   have hleft : ∀ j, j ≤ n →
       Interl (resolvedChowDerangement resolution n 0)
         (resolvedChowDerangement resolution n j) := by

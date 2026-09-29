@@ -146,10 +146,10 @@ theorem polynomial_nonneg_parameter_splits_roots_neg
       ∀ r ∈ (polynomial m δ c d U V).roots, r < 0 := by
   let n : ℕ := ⌊δ⌋₊
   let ε : ℝ := δ - n
-  have hnle : (n : ℝ) ≤ δ := by
-    exact Nat.floor_le hδ
-  have hnlt : δ < (n : ℝ) + 1 := by
-    exact Nat.lt_floor_add_one δ
+  have hnle : (n : ℝ) ≤ δ :=
+    Nat.floor_le hδ
+  have hnlt : δ < (n : ℝ) + 1 :=
+    Nat.lt_floor_add_one δ
   have hε : 0 ≤ ε := by
     dsimp only [ε]
     linarith

@@ -270,8 +270,8 @@ endpoint polynomials have no common roots. -/
 theorem NoCommonRoots.not_isRoot_xSub_of_left_root
     {p q : ℝ[X]} (hno : NoCommonRoots p q) {a μ : ℝ}
     (ha : p.IsRoot a) (hμ : μ ≠ 0) :
-    ¬ (X * p - C μ * q).IsRoot a := by
-  exact not_isRoot_X_mul_sub_C_mul_of_left_isRoot ha hμ (hno a ha)
+    ¬ (X * p - C μ * q).IsRoot a :=
+  not_isRoot_X_mul_sub_C_mul_of_left_isRoot ha hμ (hno a ha)
 
 /-- The x-subtraction pencil is nonzero when the left endpoint has a root and
 the two endpoint polynomials have no common roots. -/

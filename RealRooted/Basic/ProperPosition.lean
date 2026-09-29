@@ -267,14 +267,14 @@ theorem StrictInterl.natDegree_eq_or_eq_succ {f g : ℝ[X]} (h : StrictInterl f 
 /-- A polynomial cannot be in `StrictInterl` with a right endpoint of strictly lower
 degree. -/
 theorem StrictInterl.not_of_right_natDegree_lt_left {f g : ℝ[X]}
-    (h : StrictInterl f g) (hdeg : g.natDegree < f.natDegree) : False := by
-  exact (not_le_of_gt hdeg) h.natDegree_le
+    (h : StrictInterl f g) (hdeg : g.natDegree < f.natDegree) : False :=
+  (not_le_of_gt hdeg) h.natDegree_le
 
 /-- A polynomial cannot be in `StrictInterl` with a right endpoint whose degree is more
 than one larger. -/
 theorem StrictInterl.not_of_left_natDegree_succ_lt_right {f g : ℝ[X]}
-    (h : StrictInterl f g) (hdeg : f.natDegree + 1 < g.natDegree) : False := by
-  exact (not_le_of_gt hdeg) h.natDegree_le_succ
+    (h : StrictInterl f g) (hdeg : f.natDegree + 1 < g.natDegree) : False :=
+  (not_le_of_gt hdeg) h.natDegree_le_succ
 
 lemma StrictInterl.forward_of_orientation_of_succDegree
     {f g : ℝ[X]}

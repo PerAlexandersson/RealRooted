@@ -172,8 +172,8 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
             have ha : (f.natDegree : ℝ) < a := by
               dsimp only [a]
               simp_all
-            have hgf : StrictInterl g f := by
-              exact strictInterl_affine_derivative_of_nonnegCoeffs hsplits
+            have hgf : StrictInterl g f :=
+              strictInterl_affine_derivative_of_nonnegCoeffs hsplits
                 (by lia) hnn ha
             have hgroots : ∀ r ∈ g.roots, r ≤ 0 :=
               hgf.roots_le_of_right

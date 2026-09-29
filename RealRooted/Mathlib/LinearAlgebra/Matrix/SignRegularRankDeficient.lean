@@ -179,10 +179,10 @@ theorem Matrix.signedRowCofactor_spec_of_minor_ne_zero
     have hle : B.rank ≤ A.rank := Matrix.rank_submatrix_le A rows id
     rw [hBrank, hrank] at hle
     lia
-  have hkernel : B.mulVec z = 0 := by
-    exact B.mulVec_signedRowCofactor_eq_zero_of_det_eq_zero i0 hdet
-  have hzj0 : z j0 ≠ 0 := by
-    exact mul_ne_zero (pow_ne_zero _ (by simp)) (by
+  have hkernel : B.mulVec z = 0 :=
+    B.mulVec_signedRowCofactor_eq_zero_of_det_eq_zero i0 hdet
+  have hzj0 : z j0 ≠ 0 :=
+    mul_ne_zero (pow_ne_zero _ (by simp)) (by
       simpa only [B] using hminor)
   have hminorA :
       (A.submatrix (rows ∘ i0.succAbove)
@@ -301,8 +301,8 @@ theorem Matrix.IsSignConsistentOrder.not_strictlyAlternates_mulVec_of_cofactor_n
       Fin.StrictlyAlternates (fun i => A'.mulVec d' (rows i)) := by
     rw [hreassemble] at hAltPert
     exact hAltPert
-  have hA' : A'.IsSignConsistentOrder k := by
-    exact hA.submatrix strictMono_id (Fin.strictMono_succAbove j0)
+  have hA' : A'.IsSignConsistentOrder k :=
+    hA.submatrix strictMono_id (Fin.strictMono_succAbove j0)
   have hk1n : k + 1 ≤ n := by simpa using Fintype.card_le_of_injective rows hrows.injective
   have hkn : k ≤ n := (Nat.le_succ k).trans hk1n
   have hA'inj : Function.Injective A'.mulVec := by

@@ -91,17 +91,16 @@ theorem norm_le_of_nonneg_conjugate_geometric
       div_pow, div_pow, map_div₀, Complex.conj_ofReal, div_pow]
     field_simp
   have hnorm_pos : 0 < ‖z‖ := norm_pos_iff.mpr hz0
-  have hq_nonneg : 0 ≤ q := by exact div_nonneg hr (norm_nonneg z)
-  have hq_lt : q < 1 := by exact (div_lt_one hnorm_pos).mpr hzr
+  have hq_nonneg : 0 ≤ q := div_nonneg hr (norm_nonneg z)
+  have hq_lt : q < 1 := (div_lt_one hnorm_pos).mpr hzr
   have hw_norm : ‖w‖ = 1 := by simp [w, hnorm]
   have hw_im : w.im ≠ 0 := by
     simp only [w, Complex.div_im, Complex.ofReal_re, Complex.ofReal_im,
       mul_zero, zero_div, sub_zero]
     exact div_ne_zero (mul_ne_zero hz hnorm)
       (Complex.normSq_pos.mpr (Complex.ofReal_ne_zero.mpr hnorm)).ne'
-  have hy_nonneg : ∀ n, 0 ≤ y n := by
-    intro n
-    exact div_nonneg (hx_nonneg n) (pow_nonneg (norm_nonneg z) n)
+  have hy_nonneg : ∀ n, 0 ≤ y n :=
+    fun n => div_nonneg (hx_nonneg n) (pow_nonneg (norm_nonneg z) n)
   have hw_ne_one : w ≠ 1 := by
     intro h
     apply hw_im
@@ -183,8 +182,8 @@ theorem norm_le_of_nonneg_conjugate_geometric
                 simp only [weightedMean, norm_smul]
         _ ≤ ‖((N + 1 : ℕ) : ℝ)⁻¹‖ *
               ∑ n ∈ range (N + 1),
-                ‖(y n : ℂ) * (starRingEnd ℂ w) ^ n‖ := by
-                  exact mul_le_mul_of_nonneg_left (norm_sum_le _ _) (norm_nonneg _)
+                ‖(y n : ℂ) * (starRingEnd ℂ w) ^ n‖ :=
+                  mul_le_mul_of_nonneg_left (norm_sum_le _ _) (norm_nonneg _)
         _ = ((N + 1 : ℕ) : ℝ)⁻¹ * ∑ n ∈ range (N + 1), y n := by
               rw [Real.norm_of_nonneg (inv_nonneg.mpr (Nat.cast_nonneg _))]
               congr 1

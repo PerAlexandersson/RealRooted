@@ -172,8 +172,8 @@ theorem theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
       _ = (X * modifiedNarayanaPolynomial (m - 1)).coeff ((m - 1) + 1) :=
         congr_arg
           (fun k => (X * modifiedNarayanaPolynomial (m - 1)).coeff k) (by lia)
-      _ = (modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) := by
-        exact coeff_X_mul (modifiedNarayanaPolynomial (m - 1)) (m - 1)
+      _ = (modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) :=
+        coeff_X_mul (modifiedNarayanaPolynomial (m - 1)) (m - 1)
       _ = 1 := hPprevLead
   have hXPprevNext :
       (X * modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) =
@@ -381,8 +381,8 @@ theorem modifiedNarayanaPencil_natDegree {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m)
     calc
       _ ≤ (C lam * X + C nu : ℝ[X]).natDegree +
           (modifiedNarayanaPolynomial (m - 1)).natDegree := natDegree_mul_le
-      _ ≤ 1 + (m - 1) := by
-        exact Nat.add_le_add hfac (by
+      _ ≤ 1 + (m - 1) :=
+        Nat.add_le_add hfac (by
           rw [modifiedNarayanaPolynomial_natDegree])
       _ = m := by lia
   have hle :

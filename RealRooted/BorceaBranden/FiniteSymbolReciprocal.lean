@@ -91,8 +91,8 @@ private theorem rightComplementMonomial_one
     _ = monomial
           (Finsupp.indicator
             ((Finset.univ \ m.1.support).map
-              (sumInrEmbedding tau sigma)) (fun _ _ => 1)) 1 := by
-      exact prod_X_eq_monomial_indicator_map
+              (sumInrEmbedding tau sigma)) (fun _ _ => 1)) 1 :=
+      prod_X_eq_monomial_indicator_map
         (sumInrEmbedding tau sigma) (Finset.univ \ m.1.support)
 
 private theorem degreeOf_rightComplementMonomial_one_le

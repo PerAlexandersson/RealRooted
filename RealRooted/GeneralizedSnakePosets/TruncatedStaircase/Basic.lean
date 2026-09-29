@@ -98,8 +98,8 @@ cardinality as the placement. -/
 theorem IsNonNestingPlacement.full_card_image_reflectedColumn
     {n : ℕ} {P : Finset (ℕ × ℕ)}
     (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
-    (P.image fun a => n - 1 - a.2).card = P.card := by
-  exact Finset.card_image_of_injOn (by
+    (P.image fun a => n - 1 - a.2).card = P.card :=
+  Finset.card_image_of_injOn (by
     intro a ha b hb hreflect
     by_contra hne
     exact hP.full_reflectedColumn_ne ha hb hne hreflect)

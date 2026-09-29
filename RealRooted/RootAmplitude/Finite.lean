@@ -135,9 +135,8 @@ theorem amp_le_amp_of_core (hpositive : ∀ i, 0 < g i) (hstrict : StrictMono g)
   set Pabove : K := ∏ j ∈ Ico (k + 2) n, (g j - g (k + 1)) with hPabove
   set Rbelow : K := ∏ j ∈ range k, (1 + D / (g k - g j)) with hRbelow
   set Rabove : K := ∏ j ∈ Ico (k + 2) n, (1 + D / (g j - g (k + 1))) with hRabove
-  have hbelow_positive : ∀ j ∈ range k, 0 < g k - g j := by
-    intro j hj
-    exact sub_pos.mpr (hstrict (Finset.mem_range.mp hj))
+  have hbelow_positive : ∀ j ∈ range k, 0 < g k - g j :=
+    fun _ hj => sub_pos.mpr (hstrict (Finset.mem_range.mp hj))
   have habove_positive : ∀ j ∈ Ico (k + 2) n, 0 < g j - g (k + 1) := by
     intro j hj
     rw [Finset.mem_Ico] at hj

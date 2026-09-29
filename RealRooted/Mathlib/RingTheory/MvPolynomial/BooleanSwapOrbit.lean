@@ -46,8 +46,8 @@ theorem rename_swap_finsetMonomial {σ R : Type*} [CommSemiring R]
     [DecidableEq σ]
     (x y : σ) (A : Finset σ) :
     rename (Equiv.swap x y) (finsetMonomial A : MvPolynomial σ R) =
-      finsetMonomial (swapFinset x y A) := by
-  exact rename_finsetMonomial (Equiv.swap x y) (Equiv.swap x y).injective A
+      finsetMonomial (swapFinset x y A) :=
+  rename_finsetMonomial (Equiv.swap x y) (Equiv.swap x y).injective A
 
 /-- A swap fixes a support containing neither endpoint. -/
 theorem swapFinset_eq_self_of_not_mem {σ : Type*} [DecidableEq σ]

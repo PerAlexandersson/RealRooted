@@ -133,11 +133,11 @@ private theorem eventually_sturmVariations_root_formula
           (tail.map fun q ↦ q.eval x).signVariations := by
     simpa [tail, r] using eventually_variations_pair_eq hnext hderx
   let c := p /ₘ (X - C x)
-  have hcx : c.eval x = p.derivative.eval x := by
-    exact eval_divByMonic_X_sub_C_eq_derivative_of_isRoot hx
+  have hcx : c.eval x = p.derivative.eval x :=
+    eval_divByMonic_X_sub_C_eq_derivative_of_isRoot hx
   have hcne : c.eval x ≠ 0 := hcx ▸ hderx
-  have hfactor : (X - C x) * c = p := by
-    exact (Polynomial.mul_divByMonic_eq_iff_isRoot).2 hx
+  have hfactor : (X - C x) * c = p :=
+    (Polynomial.mul_divByMonic_eq_iff_isRoot).2 hx
   let f : ℝ → Fin 2 → ℝ := fun y i ↦
     if i = 0 then c.eval y else p.derivative.eval y
   have hf : Tendsto f (nhds x) (nhds (f x)) := by
@@ -261,8 +261,8 @@ below the threshold is independent of the threshold. -/
 theorem sturmVariations_add_card_roots_filter_le_eq
     {p : ℝ[X]} (hp : HasSimpleRoots p) (a b : ℝ) :
     sturmVariations p a + (p.roots.filter (· ≤ a)).card =
-      sturmVariations p b + (p.roots.filter (· ≤ b)).card := by
-  exact (sturmInvariant_isLocallyConstant hp).apply_eq_of_isPreconnected
+      sturmVariations p b + (p.roots.filter (· ≤ b)).card :=
+  (sturmInvariant_isLocallyConstant hp).apply_eq_of_isPreconnected
     isPreconnected_univ (Set.mem_univ a) (Set.mem_univ b)
 
 /-- Sturm's theorem for a polynomial with simple real roots.  Endpoint roots

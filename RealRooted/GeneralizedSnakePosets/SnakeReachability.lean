@@ -53,8 +53,8 @@ theorem snakeReachableFuel_le {w : SnakeWord} {fuel a b : ℕ}
 /-- If the target code is smaller than the source code, no fuel can reach it. -/
 theorem snakeReachableFuel_eq_false_of_target_lt {w : SnakeWord}
     {fuel a b : ℕ} (hba : b < a) :
-    snakeReachableFuel w fuel a b = false := by
-  exact Bool.eq_false_of_not_eq_true fun hreach =>
+    snakeReachableFuel w fuel a b = false :=
+  Bool.eq_false_of_not_eq_true fun hreach =>
     (not_lt_of_ge (snakeReachableFuel_le hreach)) hba
 
 /-- A row cannot reach a weakly lower column in any generalized snake word. -/
@@ -678,8 +678,8 @@ theorem snakeReachableFuel_replicate_L_colCode_rowCode_eq_false
 theorem snakeReachableFuel_replicate_R_colCode_rowCode_eq_false_of_le
     {n fuel c r : ℕ} (hrc : r ≤ c) :
     snakeReachableFuel (List.replicate n SnakeLetter.R) fuel
-      (snakeColCode c) (snakeRowCode r) = false := by
-  exact snakeReachableFuel_eq_false_of_target_lt (by
+      (snakeColCode c) (snakeRowCode r) = false :=
+  snakeReachableFuel_eq_false_of_target_lt (by
     simp [snakeRowCode, snakeColCode]
     lia)
 

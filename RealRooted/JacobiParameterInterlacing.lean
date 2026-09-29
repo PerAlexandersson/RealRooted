@@ -127,12 +127,12 @@ theorem exists_shiftedJacobiMonic_beta_add_one_linearCombination
   have hb_eq : b = -(D * pₘ / (A * p₀)) := by
     simp only [b, l₀, lₘ, n, pow_succ]
     field_simp [hsign, hp₀.ne', hpₘ.ne', hA.ne']
-  have hl₀ : l₀ ≠ 0 := by
-    exact mul_ne_zero (pow_ne_zero n (by norm_num)) hp₀.ne'
-  have hl₁ : l₁ ≠ 0 := by
-    exact mul_ne_zero (pow_ne_zero n (by norm_num)) hp₁.ne'
-  have hlₘ : lₘ ≠ 0 := by
-    exact mul_ne_zero hsign hpₘ.ne'
+  have hl₀ : l₀ ≠ 0 :=
+    mul_ne_zero (pow_ne_zero n (by norm_num)) hp₀.ne'
+  have hl₁ : l₁ ≠ 0 :=
+    mul_ne_zero (pow_ne_zero n (by norm_num)) hp₁.ne'
+  have hlₘ : lₘ ≠ 0 :=
+    mul_ne_zero hsign hpₘ.ne'
   have ha_scalar : (A * l₀)⁻¹ * B = a * l₁⁻¹ := by
     simp only [a]
     field_simp [hA.ne', hl₀, hl₁]
@@ -237,9 +237,8 @@ theorem shiftedJacobiMonic_strictInterl_beta_add_one (n : ℕ) {α β : ℝ}
       have hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r := by
         have hrec := shiftedJacobiMonic_satisfiesFavardRecurrence
           α (β + 1) (by linarith) (by linarith)
-        have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α (β + 1) := by
-          intro k
-          exact shiftedJacobiSubdiag_pos (k + 1) (by lia) (by linarith) (by linarith)
+        have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α (β + 1) :=
+          fun k => shiftedJacobiSubdiag_pos (k + 1) (by lia) (by linarith) (by linarith)
         have hcommon := noCommonRoot_succ_of_favard hrec hsub m
         intro r hf hg
         exact hcommon r hg hf
@@ -262,9 +261,8 @@ theorem shiftedJacobiMonic_noCommonRoot_beta_add_one (n : ℕ) {α β : ℝ}
         exists_shiftedJacobiMonic_beta_add_one_linearCombination m hα hβ
       have hrec := shiftedJacobiMonic_satisfiesFavardRecurrence
         α (β + 1) (by linarith) (by linarith)
-      have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α (β + 1) := by
-        intro k
-        exact shiftedJacobiSubdiag_pos (k + 1) (by lia) (by linarith) (by linarith)
+      have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α (β + 1) :=
+        fun k => shiftedJacobiSubdiag_pos (k + 1) (by lia) (by linarith) (by linarith)
       have hcommon := noCommonRoot_succ_of_favard hrec hsub m
       intro r hf hF
       have heval := congrArg (Polynomial.eval r) hcombination
@@ -371,8 +369,8 @@ theorem shiftedJacobiMonic_eval_mul_alpha_add_one_two_pos (n : ℕ)
       C l₂ * shiftedJacobiMonic n (α + 2) β := by
     simpa only [l₂] using
       shiftedJacobi_eq_leading_mul_monic n (by linarith : -1 < α + 2) hβ
-  have hl₁_ne : l₁ ≠ 0 := by
-    exact mul_ne_zero hsign hp₁.ne'
+  have hl₁_ne : l₁ ≠ 0 :=
+    mul_ne_zero hsign hp₁.ne'
   have hraw₁_ne : (shiftedJacobi n (α + 1) β).eval x ≠ 0 := by
     rw [hraw₁]
     simp only [eval_mul, eval_C]
@@ -441,32 +439,32 @@ theorem shiftedJacobiMonic_strictInterl_alpha_add_two (n : ℕ) {α β : ℝ}
       let p₀ := shiftedJacobiMonic (m + 1) α β
       let p₁ := shiftedJacobiMonic (m + 1) (α + 1) β
       let p₂ := shiftedJacobiMonic (m + 1) (α + 2) β
-      have hp₀_monic : p₀.Monic := by
-        exact monic_shiftedJacobiMonic (m + 1) hα hβ
-      have hp₁_monic : p₁.Monic := by
-        exact monic_shiftedJacobiMonic (m + 1) (by linarith) hβ
-      have hp₂_monic : p₂.Monic := by
-        exact monic_shiftedJacobiMonic (m + 1) (by linarith) hβ
+      have hp₀_monic : p₀.Monic :=
+        monic_shiftedJacobiMonic (m + 1) hα hβ
+      have hp₁_monic : p₁.Monic :=
+        monic_shiftedJacobiMonic (m + 1) (by linarith) hβ
+      have hp₂_monic : p₂.Monic :=
+        monic_shiftedJacobiMonic (m + 1) (by linarith) hβ
       have hp₀_pos : HasPosLeadingCoeff p₀ :=
         hasPosLeadingCoeff_of_monic hp₀_monic
       have hp₁_pos : HasPosLeadingCoeff p₁ :=
         hasPosLeadingCoeff_of_monic hp₁_monic
       have hp₂_pos : HasPosLeadingCoeff p₂ :=
         hasPosLeadingCoeff_of_monic hp₂_monic
-      have hp₀_deg : p₀.natDegree = m + 1 := by
-        exact natDegree_shiftedJacobiMonic (m + 1) hα hβ
-      have hp₁_deg : p₁.natDegree = m + 1 := by
-        exact natDegree_shiftedJacobiMonic (m + 1) (by linarith) hβ
-      have hp₂_deg : p₂.natDegree = m + 1 := by
-        exact natDegree_shiftedJacobiMonic (m + 1) (by linarith) hβ
-      have hstrict : StrictInterlSameDegree p₀ p₁ := by
-        exact shiftedJacobiMonic_strictInterlSameDegree_alpha_add_one (m + 1) hα hβ
+      have hp₀_deg : p₀.natDegree = m + 1 :=
+        natDegree_shiftedJacobiMonic (m + 1) hα hβ
+      have hp₁_deg : p₁.natDegree = m + 1 :=
+        natDegree_shiftedJacobiMonic (m + 1) (by linarith) hβ
+      have hp₂_deg : p₂.natDegree = m + 1 :=
+        natDegree_shiftedJacobiMonic (m + 1) (by linarith) hβ
+      have hstrict : StrictInterlSameDegree p₀ p₁ :=
+        shiftedJacobiMonic_strictInterlSameDegree_alpha_add_one (m + 1) hα hβ
       have hroot_sign : ∀ x, p₀.IsRoot x → p₂.eval x * p₀.derivative.eval x < 0 := by
         intro x hx
         have hder_mid : p₀.derivative.eval x * p₁.eval x < 0 :=
           hstrict.derivative_mul_eval_neg hp₀_pos hp₁_pos hp₀_deg hp₁_deg hx
-        have hmid_high : 0 < p₁.eval x * p₂.eval x := by
-          exact shiftedJacobiMonic_eval_mul_alpha_add_one_two_pos
+        have hmid_high : 0 < p₁.eval x * p₂.eval x :=
+          shiftedJacobiMonic_eval_mul_alpha_add_one_two_pos
             (m + 1) hα hβ hx
         rcases mul_neg_iff.mp hder_mid with ⟨hder_pos, hmid_neg⟩ |
             ⟨hder_neg, hmid_pos⟩
@@ -878,24 +876,24 @@ theorem shiftedJacobiMonic_strictInterl_alpha_add_of_no_crossing
   | succ n =>
       let f := shiftedJacobiMonic (n + 1) α β
       let p : ℝ → ℝ[X] := fun s ↦ shiftedJacobiMonic (n + 1) (α + s) β
-      have hf_pos : HasPosLeadingCoeff f := by
-        exact hasPosLeadingCoeff_of_monic (monic_shiftedJacobiMonic (n + 1) hα hβ)
-      have hf_deg : f.natDegree = n + 1 := by
-        exact natDegree_shiftedJacobiMonic (n + 1) hα hβ
-      have hder_pos : HasPosLeadingCoeff f.derivative := by
-        exact hf_pos.derivative (by rw [hf_deg]; lia)
-      have hinter : Interlaces f.derivative f := by
-        exact interlaces_derivative_of_pos_natDegree hf_pos.ne_zero
+      have hf_pos : HasPosLeadingCoeff f :=
+        hasPosLeadingCoeff_of_monic (monic_shiftedJacobiMonic (n + 1) hα hβ)
+      have hf_deg : f.natDegree = n + 1 :=
+        natDegree_shiftedJacobiMonic (n + 1) hα hβ
+      have hder_pos : HasPosLeadingCoeff f.derivative :=
+        hf_pos.derivative (by rw [hf_deg]; lia)
+      have hinter : Interlaces f.derivative f :=
+        interlaces_derivative_of_pos_natDegree hf_pos.ne_zero
           (shiftedJacobiMonic_splits (n + 1) hα hβ) hf_pos (by rw [hf_deg]; lia)
-      have hpt_pos : HasPosLeadingCoeff (p t) := by
-        exact hasPosLeadingCoeff_of_monic
+      have hpt_pos : HasPosLeadingCoeff (p t) :=
+        hasPosLeadingCoeff_of_monic
           (monic_shiftedJacobiMonic (n + 1) (by linarith) hβ)
       have hpt_deg : (p t).natDegree = f.natDegree := by
         dsimp only [p, f]
         rw [natDegree_shiftedJacobiMonic (n + 1) (by linarith) hβ,
           natDegree_shiftedJacobiMonic (n + 1) hα hβ]
-      have htwo_pos : HasPosLeadingCoeff (p 2) := by
-        exact hasPosLeadingCoeff_of_monic
+      have htwo_pos : HasPosLeadingCoeff (p 2) :=
+        hasPosLeadingCoeff_of_monic
           (monic_shiftedJacobiMonic (n + 1) (by linarith) hβ)
       have hendpoint : StrictInterlSameDegree f (p 2) := by
         simpa only [f, p] using
@@ -982,9 +980,8 @@ theorem shiftedJacobiMonic_eval_mul_alpha_add_two_degree_pred_pos (m : ℕ)
     (shiftedJacobi_isRoot_mem_Ioo (m + 1) hα hβ hrawLow).1
   have hprev_ne : (shiftedJacobiMonic m α β).eval x ≠ 0 := by
     have hrec := shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ
-    have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α β := by
-      intro k
-      exact shiftedJacobiSubdiag_pos (k + 1) (by lia) hα hβ
+    have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α β :=
+      fun k => shiftedJacobiSubdiag_pos (k + 1) (by lia) hα hβ
     have hcommon := noCommonRoot_succ_of_favard hrec hsub m
     intro hzero
     exact hcommon x (by simpa only [Polynomial.IsRoot.def] using hzero) hx
@@ -1068,9 +1065,8 @@ theorem shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred (m : ℕ)
   obtain ⟨hf, hg, hdeg, rs, ss, hrs_sorted, hss_sorted,
     hrs_eq, hss_eq, hint⟩ := hgf
   have hrec := shiftedJacobiMonic_satisfiesFavardRecurrence α β hα hβ
-  have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α β := by
-    intro k
-    exact shiftedJacobiSubdiag_pos (k + 1) (by lia) hα hβ
+  have hsub : ∀ k : ℕ, 0 < shiftedJacobiSubdiag (k + 1) α β :=
+    fun k => shiftedJacobiSubdiag_pos (k + 1) (by lia) hα hβ
   have hcommon := noCommonRoot_succ_of_favard hrec hsub m
   have hrs_canonical : f.roots.sort (· ≤ ·) = rs := by
     rw [← hrs_eq, Multiset.coe_sort]
@@ -1110,11 +1106,11 @@ theorem shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred (m : ℕ)
         hss_eq hint hEq'
     have hg_neg : g.eval r₁ * g.eval r₂ < 0 :=
       lt_of_le_of_ne hg_nonpos (mul_ne_zero hg₁_ne hg₂_ne)
-    have hsame₁ : 0 < g.eval r₁ * F.eval r₁ := by
-      exact shiftedJacobiMonic_eval_mul_alpha_add_two_degree_pred_pos
+    have hsame₁ : 0 < g.eval r₁ * F.eval r₁ :=
+      shiftedJacobiMonic_eval_mul_alpha_add_two_degree_pred_pos
         m hα hβ hr₁_root
-    have hsame₂ : 0 < g.eval r₂ * F.eval r₂ := by
-      exact shiftedJacobiMonic_eval_mul_alpha_add_two_degree_pred_pos
+    have hsame₂ : 0 < g.eval r₂ * F.eval r₂ :=
+      shiftedJacobiMonic_eval_mul_alpha_add_two_degree_pred_pos
         m hα hβ hr₂_root
     rcases mul_neg_iff.mp hg_neg with ⟨hg₁_pos, hg₂_neg⟩ |
         ⟨hg₁_neg, hg₂_pos⟩

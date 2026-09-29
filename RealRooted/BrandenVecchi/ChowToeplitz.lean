@@ -205,8 +205,8 @@ theorem eq_toeplitzChowSeries_of_rescale_mul
     linear_combination hF
   have hchowDenominator :
       denominator * toeplitzChowSeries a =
-        (1 - PowerSeries.C X) * toeplitzCoefficientSeries a := by
-    exact toeplitzChowSeries_mul_denominator a ha0
+        (1 - PowerSeries.C X) * toeplitzCoefficientSeries a :=
+    toeplitzChowSeries_mul_denominator a ha0
   have hconstantCoefficient :
       PowerSeries.constantCoeff (toeplitzCoefficientSeries a) = 1 := by
     rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]

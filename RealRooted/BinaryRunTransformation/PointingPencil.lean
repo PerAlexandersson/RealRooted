@@ -346,8 +346,8 @@ theorem sourceCoefficientGeneral_X_mul_pderiv_source
       simpa using Nat.one_le_iff_ne_zero.mpr hi
     have hrestore :
         u.sumElim r - Finsupp.single (Sum.inr i) 1 +
-            Finsupp.single (Sum.inr i) 1 = u.sumElim r := by
-      exact tsub_add_cancel_of_le hle
+            Finsupp.single (Sum.inr i) 1 = u.sumElim r :=
+      tsub_add_cancel_of_le hle
     rw [hrestore]
     have hcoord :
         (u.sumElim r - Finsupp.single (Sum.inr i) 1 :
@@ -700,8 +700,8 @@ theorem degreeOf_pderiv_binaryRunHomogenizedSource_source_one_le
         simp [MvPolynomial.degreeOf_X])
     have hconst :
         (MvPolynomial.C ((m : ℂ) * (scalePolynomial t p).coeff m) :
-          MvPolynomial (Fin 2 ⊕ Fin 2) ℂ).degreeOf (Sum.inr 1) ≤ 0 := by
-      exact le_of_eq (MvPolynomial.degreeOf_C _ _)
+          MvPolynomial (Fin 2 ⊕ Fin 2) ℂ).degreeOf (Sum.inr 1) ≤ 0 :=
+      le_of_eq (MvPolynomial.degreeOf_C _ _)
     have hfirstPow : (A ^ (m - 1)).degreeOf (Sum.inr 1) ≤ 0 :=
       (MvPolynomial.degreeOf_pow_le _ _ _).trans <| by
         simpa using Nat.mul_le_mul_left (m - 1) hfirst

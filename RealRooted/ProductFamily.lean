@@ -542,8 +542,8 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
     simpa [fs'] using interlacingSeqNonneg_filterLeftNonzero
       (fs := fs) (gs := gs.reverse) (by simp_all)
       ⟨hfs, hfs_real⟩
-  have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse := by
-    exact interlacingSeqNonneg_reverse_of_sublist_reverse hgs <| by
+  have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse :=
+    interlacingSeqNonneg_reverse_of_sublist_reverse hgs <| by
       simpa [gs'] using filterRightByLeftNonzero_sublist_right fs gs.reverse
   have hlen' : fs'.length = gs'.length := by
     simpa [fs', gs'] using length_filterLeftNonzero_eq_filterRightByLeftNonzero fs gs.reverse

@@ -107,8 +107,8 @@ theorem IsTotallyNonneg.leading_charpoly_strictInterlaces {N : ℕ}
       ∀ x ∈ A.charpoly.roots, 0 < x := by
   let B : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
     Matrix.reindex Fin.revPerm Fin.revPerm A
-  have hB : B.IsTotallyNonneg := by
-    exact hA.finRev
+  have hB : B.IsTotallyNonneg :=
+    hA.finRev
   have hBdet : B.det ≠ 0 := by
     simpa [B] using hdet
   have hBsuper : ∀ i : Fin N, 0 < B i.castSucc i.succ := by

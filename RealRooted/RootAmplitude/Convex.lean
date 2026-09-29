@@ -125,9 +125,8 @@ theorem amp_le_amp_of_convex (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
   refine amp_le_amp_of_core g hpos hsm n k hk1 ?_
   have hDpos : (0 : K) ≤ g (k + 1) - g k :=
     le_of_lt (sub_pos.mpr (hsm (Nat.lt_succ_self k)))
-  have hb : ∀ y ∈ range k, 0 < g k - g y := by
-    intro y hy
-    exact sub_pos.mpr (hsm (Finset.mem_range.mp hy))
+  have hb : ∀ y ∈ range k, 0 < g k - g y :=
+    fun _ hy => sub_pos.mpr (hsm (Finset.mem_range.mp hy))
   have ha : ∀ x ∈ Ico (k + 2) n, 0 < g x - g (k + 1) := by
     intro x hx
     rw [Finset.mem_Ico] at hx
@@ -181,9 +180,8 @@ theorem amp_le_amp_of_convex_tail (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
   refine amp_le_amp_of_core g hpos hsm n k hk1 ?_
   have hDpos : (0 : K) ≤ g (k + 1) - g k :=
     le_of_lt (sub_pos.mpr (hsm (Nat.lt_succ_self k)))
-  have hb : ∀ y ∈ range k, 0 < g k - g y := by
-    intro y hy
-    exact sub_pos.mpr (hsm (Finset.mem_range.mp hy))
+  have hb : ∀ y ∈ range k, 0 < g k - g y :=
+    fun _ hy => sub_pos.mpr (hsm (Finset.mem_range.mp hy))
   have ha : ∀ x ∈ Ico (k + 2) n, 0 < g x - g (k + 1) := by
     intro x hx
     rw [Finset.mem_Ico] at hx
@@ -235,8 +233,8 @@ theorem amp_le_amp_of_convex_tail (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
     (∏ j ∈ Ico (k + 2) (2 * k + 2), (1 + (g (k + 1) - g k) / (g j - g (k + 1))))
         * ∏ j ∈ Ico (2 * k + 2) n, (1 + (g (k + 1) - g k) / (g j - g (k + 1)))
       ≤ (∏ j ∈ range k, (1 + (g (k + 1) - g k) / (g k - g j)))
-        * (1 + (g (k + 1) - g k) / g k) := by
-        exact mul_le_mul hpair htail htail_nonnegative
+        * (1 + (g (k + 1) - g k) / g k) :=
+        mul_le_mul hpair htail htail_nonnegative
           (Finset.prod_nonneg (fun j hj => by
             have hone := one_le_one_add_div hDpos (hb j hj)
             linarith))

@@ -286,8 +286,8 @@ theorem gwHadamardProductNonnegInterl {f g p q : ℝ[X]}
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
     (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
-    Interl (hadamardProduct f p) (hadamardProduct g q) := by
-  exact gwHadamardProductInterl_of_strictInterl
+    Interl (hadamardProduct f p) (hadamardProduct g q) :=
+  gwHadamardProductInterl_of_strictInterl
     (IsPFPolynomial.of_realRooted_nonneg hf hfg.1.2)
     (IsPFPolynomial.of_realRooted_nonneg hg hfg.2.1.2)
     (IsPFPolynomial.of_realRooted_nonneg hp hpq.1.2)

@@ -181,8 +181,8 @@ theorem shiftedSlotIntersections_of_commonInterleaver
     have hmem_g : x ∈ rootSlotInterval (rootSeqDesc g) jg := by
       simpa [x, jg, jh] using mem_rootSlotInterval_of_strictInterl_desc hgh jh
     exact ⟨x, hmem_f, hmem_g⟩
-  · have hjh_le : h.natDegree ≤ j + 1 := by exact Nat.le_of_not_gt hjh
-    have hjh_ge : j + 1 ≤ h.natDegree := by exact (Nat.succ_le_iff.mpr hjf_nat).trans hfh_lower
+  · have hjh_le : h.natDegree ≤ j + 1 := Nat.le_of_not_gt hjh
+    have hjh_ge : j + 1 ≤ h.natDegree := (Nat.succ_le_iff.mpr hjf_nat).trans hfh_lower
     have hjh_eq : j + 1 = h.natDegree := le_antisymm hjh_ge hjh_le
     have hf_eq_h : f.natDegree = h.natDegree := by lia
     have hg_eq_h : g.natDegree = h.natDegree := by lia

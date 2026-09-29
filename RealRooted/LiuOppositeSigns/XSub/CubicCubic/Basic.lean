@@ -41,8 +41,8 @@ lemma hasPosLeadingCoeff_xSubCubicCubic (a b c u v w μ : ℝ) :
     HasPosLeadingCoeff
       (X * ((X - C a) * (X - C b) * (X - C c)) -
         C μ * ((X - C u) * (X - C v) * (X - C w))) := by
-  have hcubic_pos : HasPosLeadingCoeff ((X - C a) * (X - C b) * (X - C c)) := by
-    exact ((hasPosLeadingCoeff_X_sub_C a).mul (hasPosLeadingCoeff_X_sub_C b)).mul
+  have hcubic_pos : HasPosLeadingCoeff ((X - C a) * (X - C b) * (X - C c)) :=
+    ((hasPosLeadingCoeff_X_sub_C a).mul (hasPosLeadingCoeff_X_sub_C b)).mul
       (hasPosLeadingCoeff_X_sub_C c)
   have hleft_pos : HasPosLeadingCoeff (X * ((X - C a) * (X - C b) * (X - C c))) :=
     hcubic_pos.X_mul

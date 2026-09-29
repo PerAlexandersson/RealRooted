@@ -356,8 +356,8 @@ private theorem card_filter_gt_eq_of_rel_with_extra_le
   · have hsu : (s.filter (fun r ↦ r ≤ x)).card ≤
         (u.filter (fun q ↦ q ≤ x)).card :=
       card_filter_le_le_of_rel_abs_sub_lt hsep hmatch
-    have hfilter_extra : a ::ₘ (u.filter (fun q => q ≤ x)) ≤ t := by
-      exact le_trans
+    have hfilter_extra : a ::ₘ (u.filter (fun q => q ≤ x)) ≤ t :=
+      le_trans
         (Multiset.cons_le_cons a (Multiset.filter_le (fun q => q ≤ x) u))
         hextra
     have hcard_extra : (u.filter (fun q => q ≤ x)).card + 1 ≤

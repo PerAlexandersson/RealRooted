@@ -56,8 +56,8 @@ with diagonal entry `n!`. -/
 
 /-- The normalized Hermite Favard pairing is positive definite. -/
 theorem hermiteReal_favardPairing_posDef :
-    hermiteReal_satisfiesFavardRecurrence.pairing.toQuadraticMap.PosDef := by
-  exact hermiteReal_satisfiesFavardRecurrence.pairing_posDef
+    hermiteReal_satisfiesFavardRecurrence.pairing.toQuadraticMap.PosDef :=
+  hermiteReal_satisfiesFavardRecurrence.pairing_posDef
     hermiteReal_subdiag_pos
 
 /-- The normalized Hermite Favard pairing is nondegenerate. -/

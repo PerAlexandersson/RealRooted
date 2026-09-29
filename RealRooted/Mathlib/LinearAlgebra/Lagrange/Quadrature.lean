@@ -62,8 +62,8 @@ theorem quadrature_exact {q : ℕ} (hq : 2 ≤ q)
     apply Lagrange.eq_interpolate hx.injOn
     simpa using hrdeg
   have hrem_eval (i : Fin q) : r.eval (x i) = f.eval (x i) := by
-    have hnode : n.eval (x i) = 0 := by
-      exact Lagrange.eval_nodal_at_node (s := Finset.univ) (v := x) (mem_univ i)
+    have hnode : n.eval (x i) = 0 :=
+      Lagrange.eval_nodal_at_node (s := Finset.univ) (v := x) (mem_univ i)
     have hdecomp := congrArg (Polynomial.eval (x i)) (modByMonic_add_div f n)
     simpa only [r, g, eval_add, eval_mul, hnode, zero_mul, add_zero] using hdecomp
   have hdecomp : f = r + n * g := (modByMonic_add_div f n).symm
@@ -89,8 +89,8 @@ theorem quadratureWeight_pos {q : ℕ} (hq : 2 ≤ q)
     (i : Fin q) :
     0 < quadratureWeight L x i := by
   let b : ℝ[X] := Lagrange.basis Finset.univ x i
-  have hbne : b ≠ 0 := by
-    exact Lagrange.basis_ne_zero hx.injOn (mem_univ i)
+  have hbne : b ≠ 0 :=
+    Lagrange.basis_ne_zero hx.injOn (mem_univ i)
   have hbdeg : b.natDegree = q - 1 := by
     simpa [b] using Lagrange.natDegree_basis hx.injOn (mem_univ i)
   have hbdeglt : b.natDegree < q := by lia
@@ -325,8 +325,8 @@ theorem eval_derivative_basis_of_ne {q : ℕ}
   have hri : r.eval (x i) = 0 := by
     apply Lagrange.eval_nodal_at_node
     exact Finset.mem_erase.mpr ⟨hij, mem_univ i⟩
-  have hv : v = (X - C (x j)) * r := by
-    exact Lagrange.nodal_eq_mul_nodal_erase (mem_univ j)
+  have hv : v = (X - C (x j)) * r :=
+    Lagrange.nodal_eq_mul_nodal_erase (mem_univ j)
   have hdi : di = (x i - x j) * r.derivative.eval (x i) := by
     dsimp only [di]
     rw [hv, derivative_mul]
@@ -368,8 +368,8 @@ theorem eval_derivative_derivative_basis_of_ne {q : ℕ}
   have hri : r.eval (x i) = 0 := by
     apply Lagrange.eval_nodal_at_node
     exact Finset.mem_erase.mpr ⟨hij, mem_univ i⟩
-  have hv : v = (X - C (x j)) * r := by
-    exact Lagrange.nodal_eq_mul_nodal_erase (mem_univ j)
+  have hv : v = (X - C (x j)) * r :=
+    Lagrange.nodal_eq_mul_nodal_erase (mem_univ j)
   have hdi : di = (x i - x j) * r.derivative.eval (x i) := by
     dsimp only [di]
     rw [hv, derivative_mul]

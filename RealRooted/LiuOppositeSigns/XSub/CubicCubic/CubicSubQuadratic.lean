@@ -59,8 +59,8 @@ lemma hasPosLeadingCoeff_cubicSubQuadratic (a b c u v μ : ℝ) :
     HasPosLeadingCoeff
       (((X - C a) * (X - C b) * (X - C c)) -
         C μ * ((X - C u) * (X - C v))) := by
-  have hcubic_pos : HasPosLeadingCoeff ((X - C a) * (X - C b) * (X - C c)) := by
-    exact ((hasPosLeadingCoeff_X_sub_C a).mul (hasPosLeadingCoeff_X_sub_C b)).mul
+  have hcubic_pos : HasPosLeadingCoeff ((X - C a) * (X - C b) * (X - C c)) :=
+    ((hasPosLeadingCoeff_X_sub_C a).mul (hasPosLeadingCoeff_X_sub_C b)).mul
       (hasPosLeadingCoeff_X_sub_C c)
   have hcubic_deg : ((X - C a) * (X - C b) * (X - C c)).natDegree = 3 := by
     compute_degree <;> norm_num

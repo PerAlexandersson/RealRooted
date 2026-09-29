@@ -22,8 +22,8 @@ noncomputable def embedSubmatrix {d N : ℕ} (f : Fin d → Fin N)
 @[simp]
 theorem embedSubmatrix_apply {d N : ℕ} (f : Fin d → Fin N)
     (hf : Function.Injective f) (x : Fin d → 𝕜) (i : Fin d) :
-    embedSubmatrix f x (f i) = x i := by
-  exact hf.extend_apply x 0 i
+    embedSubmatrix f x (f i) = x i :=
+  hf.extend_apply x 0 i
 
 private theorem sum_embedSubmatrix {d N : ℕ} (f : Fin d → Fin N)
     (hf : Function.Injective f) (g : Fin N → 𝕜)

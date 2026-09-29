@@ -204,8 +204,8 @@ theorem eq_of_mk_mul_mk_eq_mk
     (hDzero : D 0 = 1)
     (hP : PowerSeries.mk D * PowerSeries.mk P = PowerSeries.mk E)
     (hQ : PowerSeries.mk D * PowerSeries.mk Q = PowerSeries.mk E) :
-    P = Q := by
-  exact eq_of_finite_denominator_numerator hDzero
+    P = Q :=
+  eq_of_finite_denominator_numerator hDzero
     ((mk_mul_mk_eq_mk_iff D P E).mp hP)
     ((mk_mul_mk_eq_mk_iff D Q E).mp hQ)
 

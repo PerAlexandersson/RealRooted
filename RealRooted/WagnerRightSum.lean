@@ -1251,9 +1251,8 @@ theorem StrictInterl.add_of_right_of_posLeadingCoeff {f g h : ℝ[X]}
       ∀ n, ∀ (f g h : ℝ[X]), h.natDegree = n →
         StrictInterl f h → StrictInterl g h →
         HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-        StrictInterl (f + g) h := by
-    intro n
-    exact Nat.strong_induction_on n (fun n ih =>
+        StrictInterl (f + g) h :=
+    fun n => Nat.strong_induction_on n (fun n ih =>
       show ∀ (f g h : ℝ[X]), h.natDegree = n →
         StrictInterl f h → StrictInterl g h →
         HasPosLeadingCoeff f → HasPosLeadingCoeff g →

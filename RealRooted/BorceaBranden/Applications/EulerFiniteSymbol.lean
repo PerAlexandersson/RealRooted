@@ -279,8 +279,8 @@ theorem eulerBidiagonalStepWithConstant_degree_pos
     have hzero : p.coeff (m + 1) = 0 :=
       coeff_eq_zero_of_natDegree_lt (by simp [m])
     rw [hzero, mul_zero, zero_add]
-    have htop : p.coeff m = p.leadingCoeff := by
-      exact p.coeff_natDegree
+    have htop : p.coeff m = p.leadingCoeff :=
+      p.coeff_natDegree
     rw [htop]
     simp [eulerBeta]
   have hbeta : 0 < (d : ℝ) + 1 - (m : ℝ) := by

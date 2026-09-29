@@ -83,15 +83,15 @@ private theorem reverseHermiteTransform_preserves_pf_and_interl :
             grind
           have hqder : IsPFPolynomial q.derivative := hq.derivative
           have hqderT :
-              IsPFPolynomial (reverseHermiteTransform q.derivative) := by
-            exact (ih q.derivative.natDegree (by
+              IsPFPolynomial (reverseHermiteTransform q.derivative) :=
+            (ih q.derivative.natDegree (by
               rw [← hpdeg]
               have := natDegree_derivative_le q
               lia)).1 hqder rfl
           have hinterl :
               Interl (reverseHermiteTransform q.derivative)
-                (reverseHermiteTransform q) := by
-            exact (ih q.natDegree (by lia)).2 hqder hq
+                (reverseHermiteTransform q) :=
+            (ih q.natDegree (by lia)).2 hqder hq
               hq.derivative_interl_self rfl
           rw [hfactor, show X - C u = X + C (-u) by
             grind,

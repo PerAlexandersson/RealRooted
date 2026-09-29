@@ -303,8 +303,8 @@ theorem auxiliaryG_six_root_order :
     apply Real.le_sqrt_of_sq_le
     nlinarith [hs_sq, hs_le8]
   have h2sβ_leα : 2 * s + β ≤ α := by
-    have hmul : 4 * s * β ≤ 4 * s * 8 := by
-      exact mul_le_mul_of_nonneg_left hβ_le8 (by positivity)
+    have hmul : 4 * s * β ≤ 4 * s * 8 :=
+      mul_le_mul_of_nonneg_left hβ_le8 (by positivity)
     have hsq_le : (2 * s + β) ^ 2 ≤ α ^ 2 := by nlinarith [hs_sq, hβ_sq, hα_sq, hmul, hs_ge7]
     nlinarith [sq_nonneg (α - (2 * s + β)), hsq_le, hα_nonneg, hs_nonneg,
       hβ_nonneg]
@@ -954,8 +954,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_of_crosses
           (↑[a, b, c, d, e, r] : Multiset ℝ) →
         a ≤ b → b ≤ c → c ≤ d → d ≤ e → e ≤ r →
         ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r) :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
-  exact (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses hcross).toStrictInterl
+    StrictInterl (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
+  (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses hcross).toStrictInterl
 
 /-- The `n = 6` Braun--Jal Lemma 3.3 interlacing follows from the
 `P_6`/`G_6` sign certificate. -/

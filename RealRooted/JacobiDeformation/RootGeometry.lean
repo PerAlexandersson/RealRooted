@@ -301,10 +301,10 @@ theorem differentiated_coordinate_product_neg
     a * b < 0 := by
   obtain ⟨ha, hb⟩ := differentiated_coordinate_equations hrz.ne hfirst hsecond
   have hden_neg : r - z < 0 := sub_neg.mpr hrz
-  have hr_one : 0 < r * (1 - r) := by
-    exact mul_pos hr (sub_pos.mpr (lt_trans hrz hz))
-  have hz_one : 0 < z * (1 - z) := by
-    exact mul_pos (lt_trans hr hrz) (sub_pos.mpr hz)
+  have hr_one : 0 < r * (1 - r) :=
+    mul_pos hr (sub_pos.mpr (lt_trans hrz hz))
+  have hz_one : 0 < z * (1 - z) :=
+    mul_pos (lt_trans hr hrz) (sub_pos.mpr hz)
   have hXa_neg : X * a < 0 := by
     rw [ha]
     exact div_neg_of_pos_of_neg hr_one hden_neg

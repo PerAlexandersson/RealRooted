@@ -39,8 +39,8 @@ private theorem brentiFallingFactorial_of_natDegree_eq_two_pos_leading {p : ℝ[
     HasOnlyNonposRoots p := by
   let q := basisTransform fallingFactorialPolynomial p
   have hqform : q = C (p.coeff 2) * X ^ 2 + C (p.coeff 1 - p.coeff 2) * X +
-      C (p.coeff 0) := by
-    exact basisTransform_fallingFactorial_eq_quadratic_of_natDegree_eq_two hpdeg
+      C (p.coeff 0) :=
+    basisTransform_fallingFactorial_eq_quadratic_of_natDegree_eq_two hpdeg
   have hqdeg : q.natDegree = 2 := by
     rw [hqform]
     exact Polynomial.natDegree_quadratic hpos.ne'

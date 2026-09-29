@@ -21,8 +21,8 @@ namespace RealRooted
 
 theorem splits_of_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0)
     (h : 0 ≤ discrim a b c) :
-    (C a * X ^ 2 + C b * X + C c).Splits := by
-  exact quadraticPoly_splits_of_discrim_nonneg ha h
+    (C a * X ^ 2 + C b * X + C c).Splits :=
+  quadraticPoly_splits_of_discrim_nonneg ha h
 
 theorem eval_hermiteBiehler_neg_conj (f g : ℝ[X]) (z : ℂ) :
     (hermiteBiehlerPolynomial f (-g)).eval (starRingEnd ℂ z)

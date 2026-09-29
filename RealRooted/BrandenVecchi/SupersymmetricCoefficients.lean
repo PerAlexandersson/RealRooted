@@ -107,9 +107,8 @@ private theorem isPolyaFreqSeq_coeff_list_prod
   | cons f fs ih =>
       have hf := hfs f (by simp)
       have htail : ∀ g ∈ fs,
-          IsPolyaFreqSeq fun n => PowerSeries.coeff n g := by
-        intro g hg
-        exact hfs g (by simp [hg])
+          IsPolyaFreqSeq fun n => PowerSeries.coeff n g :=
+        fun g hg => hfs g (by simp [hg])
       have hconv := hf.natCauchyConvolution (ih htail)
       convert hconv using 1
       funext n

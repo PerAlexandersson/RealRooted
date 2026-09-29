@@ -122,9 +122,8 @@ theorem IsTotallyNonneg.trailing_charpoly_interlaces {N : ℕ}
     (Q k).submatrix Fin.succ Fin.succ
   have hQall : Tendsto Q Filter.atTop (nhds A) := by
     simpa [Q] using Matrix.tendsto_nonsingularTNApprox A
-  have hQ : ∀ i j, Tendsto (fun k => Q k i j) Filter.atTop (nhds (A i j)) := by
-    intro i j
-    exact tendsto_pi_nhds.mp (tendsto_pi_nhds.mp hQall i) j
+  have hQ : ∀ i j, Tendsto (fun k => Q k i j) Filter.atTop (nhds (A i j)) :=
+    fun i j => tendsto_pi_nhds.mp (tendsto_pi_nhds.mp hQall i) j
   have hP : ∀ i j, Tendsto (fun k => P k i j) Filter.atTop
       (nhds ((A.submatrix Fin.succ Fin.succ) i j)) := by
     intro i j

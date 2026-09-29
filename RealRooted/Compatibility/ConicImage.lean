@@ -34,12 +34,10 @@ theorem map_weightedSum {fs : List ℝ[X]} (hfs : FamilyCompatible fs)
         have hp : p ∈ blocks.map weightedSum := hblocks (a, p) (by simp)
         rcases List.mem_map.mp hp with ⟨block, hblock, hblockSum⟩
         subst p
-        have htailBlocks : ∀ ap ∈ tail, ap.2 ∈ blocks.map weightedSum := by
-          intro ap hap
-          exact hblocks ap (by simp [hap])
-        have htailWeights : ∀ ap ∈ tail, 0 ≤ ap.1 := by
-          intro ap hap
-          exact hweights ap (by simp [hap])
+        have htailBlocks : ∀ ap ∈ tail, ap.2 ∈ blocks.map weightedSum :=
+          fun ap hap => hblocks ap (by simp [hap])
+        have htailWeights : ∀ ap ∈ tail, 0 ≤ ap.1 :=
+          fun ap hap => hweights ap (by simp [hap])
         obtain ⟨flat, hflat, hflatMem, hflatNonneg⟩ :=
           ih htailBlocks htailWeights
         let scaled := block.map fun ap => (a * ap.1, ap.2)

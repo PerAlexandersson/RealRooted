@@ -364,8 +364,8 @@ theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily_of_right_natDegr
     (hgdeg : g.natDegree = 2) :
     ∀ μ : ℝ, 0 < μ →
       (X * (deleteRootFactor f r).comp (X + C r) +
-          C μ * g.comp (X + C r)).Splits := by
-  exact theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_right_natDegree_two
+          C μ * g.comp (X + C r)).Splits :=
+  theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_right_natDegree_two
     hf hg hsgn hleft hdeg hcommon hgdeg
 
 /-- Endpoint cases through right degree two for the translated two-degree Liu
@@ -414,8 +414,8 @@ theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily_of_rightDeg_thre
     (hgdeg : g.natDegree = 3) :
     ∀ μ : ℝ, 0 < μ →
       (X * (deleteRootFactor f r).comp (X + C r) +
-          C μ * g.comp (X + C r)).Splits := by
-  exact theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_rightDeg_three
+          C μ * g.comp (X + C r)).Splits :=
+  theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_rightDeg_three
     hf hg hsgn hleft hdeg hcommon hgdeg
 
 /-- Endpoint cases through right degree three for the translated two-degree Liu
@@ -698,8 +698,8 @@ theorem theorem21LeftFactorReturnTwoDegreeTranslatedCompatible_of_right_natDegre
     (hgdeg : g.natDegree = 2) :
     Compatible
       (X * (deleteRootFactor f r).comp (X + C r))
-      (g.comp (X + C r)) := by
-  exact theorem21LeftFactorReturnTwoDegreeTranslatedCompatiblePredicate_of_right_natDegree_two
+      (g.comp (X + C r)) :=
+  theorem21LeftFactorReturnTwoDegreeTranslatedCompatiblePredicate_of_right_natDegree_two
     hf hg hsgn hleft hdeg hcommon hgdeg
 
 /-- Endpoint cases through right degree two for the translated two-degree Liu

@@ -242,8 +242,8 @@ theorem natDegree_rectangularLeftSlice_eq
       calc
         (Finset.univ.val.map y).esymm (m + n) =
             (Finset.univ.val.map y).esymm
-              (Finset.univ.val.map y).card := by
-          exact congrArg (Finset.univ.val.map y).esymm hcard.symm
+              (Finset.univ.val.map y).card :=
+          congrArg (Finset.univ.val.map y).esymm hcard.symm
         _ = (Finset.univ.val.map y).prod :=
           esymm_card_eq_prod (Finset.univ.val.map y)
     rw [heq]

@@ -94,8 +94,8 @@ noncomputable def polynomialValueEulerNumerator (p : ℝ[X]) : ℝ[X] :=
 /-- The canonical numerator uses the source polynomial's actual degree as its
 degree cap. -/
 theorem natDegree_polynomialValueEulerNumerator_le (p : ℝ[X]) :
-    (polynomialValueEulerNumerator p).natDegree ≤ p.natDegree := by
-  exact natDegree_finiteEulerNumerator_le p.natDegree _
+    (polynomialValueEulerNumerator p).natDegree ≤ p.natDegree :=
+  natDegree_finiteEulerNumerator_le p.natDegree _
 
 /-- The generating series of a polynomial-value sequence is its canonical
 Euler numerator divided by `(1 - X)^(natDegree + 1)`. -/
@@ -167,8 +167,8 @@ theorem polynomialValueEulerNumerator_eval_one (p : ℝ[X]) :
 theorem polynomialValueEulerNumerator_ne_zero {p : ℝ[X]} (hp : p ≠ 0) :
     polynomialValueEulerNumerator p ≠ 0 := by
   intro hzero
-  have hprod : p.leadingCoeff * (p.natDegree.factorial : ℝ) ≠ 0 := by
-    exact mul_ne_zero (leadingCoeff_ne_zero.mpr hp) (by positivity)
+  have hprod : p.leadingCoeff * (p.natDegree.factorial : ℝ) ≠ 0 :=
+    mul_ne_zero (leadingCoeff_ne_zero.mpr hp) (by positivity)
   apply hprod
   simpa [hzero] using (polynomialValueEulerNumerator_eval_one p).symm
 

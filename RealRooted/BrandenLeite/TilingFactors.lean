@@ -40,9 +40,8 @@ theorem optionalRisePolynomial_isPFPolynomial
     | nil => simpa using IsPFPolynomial.one
     | cons x xs ih =>
         have hx : 0 ≤ x := hxs x (by simp)
-        have htail : ∀ y ∈ xs, 0 ≤ y := by
-          intro y hy
-          exact hxs y (by simp [hy])
+        have htail : ∀ y ∈ xs, 0 ≤ y :=
+          fun y hy => hxs y (by simp [hy])
         have hfactor : IsPFPolynomial (1 + C x * X : ℝ[X]) := by
           by_cases hx0 : x = 0
           · simpa [hx0] using IsPFPolynomial.one

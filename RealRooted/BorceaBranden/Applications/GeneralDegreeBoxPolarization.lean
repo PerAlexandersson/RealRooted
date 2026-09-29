@@ -408,8 +408,8 @@ def boxComplementEquiv {σ : Type*} [Fintype σ] (κ : σ → ℕ) :
 
 @[simp] theorem boxComplementIndex_involution {σ : Type*} [Fintype σ]
     (κ : σ → ℕ) (r : {r : σ →₀ ℕ // ∀ i, r i ≤ κ i}) :
-    boxComplementIndex κ (boxComplementIndex κ r) = r := by
-  exact (boxComplementEquiv κ).left_inv r
+    boxComplementIndex κ (boxComplementIndex κ r) = r :=
+  (boxComplementEquiv κ).left_inv r
 
 /-- Complementing a bounded exponent preserves its degree-box binomial
 coefficient. -/
@@ -725,10 +725,10 @@ private theorem mapDomain_sigma_fst_le {σ : Type*} [Finite σ]
   change (∑ x ∈ m.support, if x.fst = i then m x else 0) ≤ κ i
   calc
     (∑ x ∈ m.support, if x.fst = i then m x else 0) ≤
-        ∑ x ∈ m.support, if x.fst = i then 1 else 0 := by
-      exact Finset.sum_le_sum fun x _ => by split_ifs <;> simp_all
-    _ ≤ ∑ x : PolarizedSource κ, if x.fst = i then 1 else 0 := by
-      exact Finset.sum_le_sum_of_subset (Finset.subset_univ _)
+        ∑ x ∈ m.support, if x.fst = i then 1 else 0 :=
+      Finset.sum_le_sum fun x _ => by split_ifs <;> simp_all
+    _ ≤ ∑ x : PolarizedSource κ, if x.fst = i then 1 else 0 :=
+      Finset.sum_le_sum_of_subset (Finset.subset_univ _)
     _ = κ i := by
       rw [Fintype.sum_sigma, Finset.sum_eq_single i]
       · simp

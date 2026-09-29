@@ -72,9 +72,8 @@ theorem MvPolynomial.IsRayleigh.mvRealStableOrZero_of_allCombo_specializeZero_pd
     let G := MvPolynomial.pderiv i P
     let f := realAffineLineRestriction a b F
     let g := realAffineLineRestriction a b G
-    have hb : ∀ j, 0 < b j := by
-      intro j
-      exact hz j
+    have hb : ∀ j, 0 < b j :=
+      fun j => hz j
     have hb0 : ∀ j, 0 ≤ b0 j := by
       intro j
       by_cases hji : j = i
@@ -82,8 +81,8 @@ theorem MvPolynomial.IsRayleigh.mvRealStableOrZero_of_allCombo_specializeZero_pd
         simp [b0]
       · have hzj : 0 < (z j).im := hz j
         simp [b0, b, hji, hzj.le]
-    have hallLine : AllComboRealRooted f g := by
-      exact hall.allComboRealRooted_realAffineLineRestriction a b hb
+    have hallLine : AllComboRealRooted f g :=
+      hall.allComboRealRooted_realAffineLineRestriction a b hb
     have hfline : f = realAffineLineRestriction a0 b0 P := by
       simpa [f, F, a0, b0] using
         realAffineLineRestriction_specializeZero a b P i
