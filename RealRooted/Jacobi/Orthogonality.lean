@@ -86,8 +86,8 @@ def shiftedJacobiInner (α β : ℝ) (p q : ℝ[X]) : ℝ :=
   simp [shiftedJacobiFunctional]
 
 theorem shiftedJacobiInner_comm (α β : ℝ) (p q : ℝ[X]) :
-    shiftedJacobiInner α β p q = shiftedJacobiInner α β q p := by
-  exact Polynomial.momentPairing_comm _ _ _
+    shiftedJacobiInner α β p q = shiftedJacobiInner α β q p :=
+  Polynomial.momentPairing_comm _ _ _
 
 @[simp] theorem shiftedJacobiInner_zero_left (α β : ℝ) (p : ℝ[X]) :
     shiftedJacobiInner α β 0 p = 0 := by
