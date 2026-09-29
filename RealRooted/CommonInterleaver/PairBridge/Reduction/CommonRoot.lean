@@ -20,7 +20,7 @@ private lemma nonneg_of_add_mul_pos_forall {a b : ℝ}
   by_contra ha
   have ha_lt : a < 0 := lt_of_not_ge ha
   by_cases hb : b ≤ 0
-  · have hbad : a + (1 : ℝ) * b < 0 := by nlinarith
+  · have hbad : a + (1 : ℝ) * b < 0 := by linarith
     exact not_lt_of_ge (h zero_lt_one) hbad
   · have hb_pos : 0 < b := lt_of_not_ge hb
     let μ : ℝ := -a / (2 * b)
@@ -32,7 +32,7 @@ private lemma nonneg_of_add_mul_pos_forall {a b : ℝ}
       unfold μ
       have hb_ne : b ≠ 0 := ne_of_gt hb_pos
       field_simp [hb_ne]
-      nlinarith
+      linarith
     grind
 
 private lemma coeff_nonneg_of_add_C_mul_nonneg_forall
