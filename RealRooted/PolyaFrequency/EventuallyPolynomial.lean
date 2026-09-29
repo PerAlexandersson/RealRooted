@@ -29,8 +29,8 @@ theorem toeplitz_causalFwdDiff (a : ℕ → ℝ) (i j : ℕ) :
       subst i
       simp [toeplitz_apply, Function.causalFwdDiff]
     · have hpos : 0 < i - j := Nat.pos_of_ne_zero hzero
-      have hsucc : j + 1 ≤ i := by
-        exact Nat.succ_le_iff.mpr (Nat.lt_of_sub_pos hpos)
+      have hsucc : j + 1 ≤ i :=
+        Nat.succ_le_iff.mpr (Nat.lt_of_sub_pos hpos)
       rw [toeplitz_apply, ite_eq_left hsucc]
       have hindex : i - j = i - (j + 1) + 1 := by
         lia
