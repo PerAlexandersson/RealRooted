@@ -291,7 +291,7 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_n
         have hfactor :
             r * (a * (1 - r) * eval r ((P (n + 1)).derivative) +
               c * eval r (P n)) = 0 := by
-          nlinarith [h]
+          linarith [h]
         exact (mul_eq_zero.mp hfactor).resolve_left hr0
       have hne : eval r (P n) ≠ 0 := fun hroot => ihno r hr1 hroot
       have hsign : 0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
@@ -315,7 +315,7 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_n
       have hfirst_zero :
           a * (1 - r) *
             (eval r (P n) * eval r ((P (n + 1)).derivative)) = 0 := by
-        nlinarith
+        linarith
       have hproduct_zero :
           eval r (P n) * eval r ((P (n + 1)).derivative) = 0 := by
         rcases mul_eq_zero.mp hfirst_zero with hprefix | hproduct
