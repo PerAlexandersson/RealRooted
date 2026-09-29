@@ -1038,6 +1038,77 @@ theorem positiveRootCount_quadraticParameterEvaluation_le_rootCountDrop
         ((Polynomial.card_roots' p).trans_eq hpdeg)
     simpa [hGF, hHG, Nat.add_assoc] using hroots
 
+/-- If there is exactly one positive crossing parameter, its chamber-count
+jump is downward and equals its full parameter-root multiplicity. -/
+theorem quadraticInterlacingPencil_one_positive_crossing_exact_drop
+    {F G H : ℝ[X]} {r a R : ℝ} {D : ℕ}
+    (hFpos : HasPosLeadingCoeff F) (hGpos : HasPosLeadingCoeff G)
+    (hHpos : HasPosLeadingCoeff H) (hFG : StrictInterl F G)
+    (hGH : StrictInterl G H) (hrF : ¬F.IsRoot r)
+    (hrG : ¬G.IsRoot r) (hrH : ¬H.IsRoot r)
+    (hrs : positiveQuadraticParameterRoots F G H r = [a])
+    (haR : a < R) (hD : D ≠ 0)
+    (hdegree : ∀ μ ∈ Set.Icc (0 : ℝ) R,
+      (quadraticInterlacingPencil F G H μ).natDegree = D)
+    (hdegree_local : ∀ μ ∈ Set.Icc (0 : ℝ) R, ∀ᶠ b in 𝓝 μ,
+      (quadraticInterlacingPencil F G H b).natDegree = D)
+    (hsplits : ∀ μ ∈ Set.Icc (0 : ℝ) R,
+      (quadraticInterlacingPencil F G H μ).Splits)
+    (hsimple : ∀ μ ∈ Set.Icc (0 : ℝ) R,
+      HasSimpleRoots (quadraticInterlacingPencil F G H μ))
+    (hR : ((quadraticInterlacingPencil F G H R).roots.filter (r < ·)).card =
+      (F.roots.filter (r < ·)).card) :
+    ((quadraticInterlacingPencil F G H 0).roots.filter (r < ·)).card =
+      ((quadraticInterlacingPencil F G H R).roots.filter (r < ·)).card +
+        (quadraticParameterEvaluation F G H r).roots.count a := by
+  let q := quadraticParameterEvaluation F G H r
+  have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
+    rw [hrs]
+    simp
+  have hapos : 0 < a :=
+    (mem_positiveQuadraticParameterRoots_iff.mp hamem).2
+  have haq : a ∈ q.roots :=
+    (mem_positiveQuadraticParameterRoots_iff.mp hamem).1
+  have haroot : q.IsRoot a := Polynomial.isRoot_of_mem_roots haq
+  have haQroot : (quadraticInterlacingPencil F G H a).IsRoot r :=
+    (quadraticParameterEvaluation_isRoot_iff F G H r a).1 haroot
+  have hjump :=
+    quadraticInterlacingPencil_card_roots_gt_left_le_right_add_one
+      (show (0 : ℝ) < a from hapos) haR hD hdegree hdegree_local hsplits
+      hsimple haQroot
+      (fun μ hμ => quadraticParameterEvaluation_not_isRoot_before_first_positive
+        hrF hrH hrs hμ.1 hμ.2)
+      (fun μ hμ => quadraticParameterEvaluation_not_isRoot_after_last_positive
+        hrF (xs := []) (by simpa using hrs) hμ.1)
+  have hmult : 1 ≤ q.roots.count a := Multiset.one_le_count_iff_mem.mpr haq
+  have hsum :=
+    sum_count_positiveQuadraticParameterRoots_eq_positiveRootCount F G H r
+  rw [hrs] at hsum
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+    add_zero] at hsum
+  have hbudget0 := positiveRootCount_quadraticParameterEvaluation_le_rootCountDrop
+    hFpos hGpos hHpos hFG hGH hrF hrG hrH
+  have hbudget : q.roots.count a ≤
+      (H.roots.filter (r < ·)).card - (F.roots.filter (r < ·)).card := by
+    rw [hsum]
+    exact hbudget0
+  have hFleH : (F.roots.filter (r < ·)).card ≤
+      (H.roots.filter (r < ·)).card := by
+    have hFGcount := (rootCountAboveOriented_of_strictInterl hFG r).1
+    have hGHcount := (rootCountAboveOriented_of_strictInterl hGH r).1
+    exact_mod_cast hFGcount.trans hGHcount
+  have hQ0 : quadraticInterlacingPencil F G H 0 = H := by
+    simp [quadraticInterlacingPencil]
+  have hdrop := Nat.sub_add_cancel hFleH
+  rw [hQ0] at hjump ⊢
+  rw [hR] at hjump ⊢
+  change q.roots.count a ≤ _ at hbudget
+  have hmult_eq_drop : q.roots.count a =
+      (H.roots.filter (r < ·)).card - (F.roots.filter (r < ·)).card := by
+    omega
+  rw [hmult_eq_drop]
+  omega
+
 /-! ## Logarithmic-ratio endpoint -/
 
 /-- A nonpositive upper-half-plane logarithmic ratio puts the parameter
