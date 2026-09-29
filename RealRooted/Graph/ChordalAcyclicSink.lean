@@ -234,8 +234,9 @@ theorem weightedIndepPolyOn_scaleWeightsOn_clique
         C (1 - c) * weightedIndepPolyOn G (T \ K) wt := by
   classical
   let L := K ∩ T
-  have hL : G.IsClique (L : Set W) :=
-    fun x hx y hy hxy => hK (Finset.mem_inter.mp hx).1 (Finset.mem_inter.mp hy).1 hxy
+  have hL : G.IsClique (L : Set W) := by
+    intro x hx y hy hxy
+    exact hK (Finset.mem_inter.mp hx).1 (Finset.mem_inter.mp hy).1 hxy
   have hLT : L ⊆ T := fun x hx ↦ (Finset.mem_inter.mp hx).2
   have hsdiff : T \ L = T \ K := by
     ext x
@@ -257,8 +258,9 @@ theorem weightedIndepPolyOn_scaleWeightsOn_clique
     have hvK : v ∈ K := (Finset.mem_inter.mp hv).1
     have hxData := Finset.mem_filter.mp hx
     have hxne : x ≠ v := (Finset.mem_erase.mp hxData.1).1
-    have hxK : x ∉ K :=
-      fun hxK => hxData.2 (hK hvK hxK hxne.symm)
+    have hxK : x ∉ K := by
+      intro hxK
+      exact hxData.2 (hK hvK hxK hxne.symm)
     simp [scaleWeightsOn, hxK]
   have hscaled := weightedIndepPolyOn_sdiff_clique
     G (scaleWeightsOn K c wt) T L hL hLT
@@ -383,8 +385,9 @@ theorem prefixEmbedding_succ_apply {m : ℕ}
 /-- Restriction to an initial interval of the elimination order. -/
 def take (k : ℕ) (hk : k ≤ n) : FinReversePerfectEliminationOrder k where
   graph := P.graph.comap (P.prefixEmbedding hk)
-  earlier_isClique :=
-    fun v x hx y hy hxy => P.earlier_isClique (P.prefixEmbedding hk v)
+  earlier_isClique := by
+    intro v x hx y hy hxy
+    exact P.earlier_isClique (P.prefixEmbedding hk v)
       ⟨(P.prefixEmbedding hk).lt_iff_lt.mpr hx.1, hx.2⟩
       ⟨(P.prefixEmbedding hk).lt_iff_lt.mpr hy.1, hy.2⟩
       (fun h ↦ hxy ((P.prefixEmbedding hk).injective h))
@@ -552,15 +555,17 @@ def extendOrientation {m : ℕ}
       · intro huv
         simp
       · intro huv
-        have hyK : y ∉ P.lastEarlierNeighbors :=
-          fun hyK => huv ((P.mem_lastEarlierNeighbors_iff y).mp hyK |>.symm)
+        have hyK : y ∉ P.lastEarlierNeighbors := by
+          intro hyK
+          exact huv ((P.mem_lastEarlierNeighbors_iff y).mp hyK |>.symm)
         have hyB : y ∉ cut.lower := fun hy ↦ hyK (cut.lower_subset hy)
         simp [hyK, hyB]
     · intro v
       refine Fin.lastCases ?_ (fun y ↦ ?_) v
       · intro huv
-        have hxK : x ∉ P.lastEarlierNeighbors :=
-          fun hxK => huv ((P.mem_lastEarlierNeighbors_iff x).mp hxK)
+        have hxK : x ∉ P.lastEarlierNeighbors := by
+          intro hxK
+          exact huv ((P.mem_lastEarlierNeighbors_iff x).mp hxK)
         have hxB : x ∉ cut.lower := fun hx ↦ hxK (cut.lower_subset hx)
         simp [hxB]
       · intro huv
@@ -713,8 +718,9 @@ theorem extendOrientation_cutOfAcyclicOrientation {m : ℕ}
           constructor
           · rintro ⟨hyK, hynot⟩
             have hadj := (P.mem_lastEarlierNeighbors_iff y).mp hyK
-            have hynot' : ¬Q.1.Directed y.castSucc (Fin.last m) :=
-              fun hylast => hynot ((P.mem_cutOfAcyclicOrientation_lower Q y).2 hylast)
+            have hynot' : ¬Q.1.Directed y.castSucc (Fin.last m) := by
+              intro hylast
+              exact hynot ((P.mem_cutOfAcyclicOrientation_lower Q y).2 hylast)
             exact (Q.1.directed_of_adj_iff_not_directed_reverse
               hadj.symm).2 hynot'
           · intro hlasty
@@ -1052,8 +1058,9 @@ theorem not_isSink_of_mem_properCut {m : ℕ}
     (O : Orientation P.init.graph) (cut : InsertionCut P O)
     (hproper : cut.lower ≠ P.lastEarlierNeighbors)
     {x : Fin m} (hx : x ∈ cut.lower) : ¬O.IsSink x := by
-  have hnsubset : ¬P.lastEarlierNeighbors ⊆ cut.lower :=
-    fun hsubset => hproper (Finset.Subset.antisymm cut.lower_subset hsubset)
+  have hnsubset : ¬P.lastEarlierNeighbors ⊆ cut.lower := by
+    intro hsubset
+    exact hproper (Finset.Subset.antisymm cut.lower_subset hsubset)
   obtain ⟨y, hyK, hyLower⟩ := Finset.not_subset.mp hnsubset
   intro hsink
   exact hsink y (cut.directed_across hx hyK hyLower)
@@ -1597,8 +1604,9 @@ noncomputable def finModel (P : ReversePerfectEliminationOrder G) :
   let e := P.equivFin
   exact
     { graph := G.comap e
-      earlier_isClique :=
-        fun v x hx y hy hxy => P.earlier_isClique (e v)
+      earlier_isClique := by
+        intro v x hx y hy hxy
+        exact P.earlier_isClique (e v)
           ⟨(P.equivFin_lt_iff x v).mp hx.1, hx.2⟩
           ⟨(P.equivFin_lt_iff y v).mp hy.1, hy.2⟩
           (fun h ↦ hxy (e.injective h)) }

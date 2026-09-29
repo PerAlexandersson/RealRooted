@@ -340,8 +340,9 @@ private theorem det_submatrix_whitneyEliminateFirst {m n q : ℕ}
     by_cases hi : i = p
     · subst i
       simp [whitneyEliminateFirst, M, v, hp, Pi.smul_apply]
-    · have hrow : rows i ≠ s.succ :=
-        fun h => hi (hrows.injective (h.trans hp.symm))
+    · have hrow : rows i ≠ s.succ := by
+        intro h
+        exact hi (hrows.injective (h.trans hp.symm))
       simp [whitneyEliminateFirst, M, v, Matrix.updateRow_apply, hi, hrow]
   have hreplace : M.updateRow p v =
       A.submatrix (Function.update rows p s.castSucc) cols := by
@@ -384,8 +385,9 @@ private theorem det_submatrix_whitneyEliminateAt {m n q : ℕ}
     by_cases hi : i = p
     · subst i
       simp [whitneyEliminateAt, M, v, hp, Pi.smul_apply]
-    · have hrow : rows i ≠ s.succ :=
-        fun h => hi (hrows.injective (h.trans hp.symm))
+    · have hrow : rows i ≠ s.succ := by
+        intro h
+        exact hi (hrows.injective (h.trans hp.symm))
       simp [whitneyEliminateAt, M, v, Matrix.updateRow_apply, hi, hrow]
   have hreplace : M.updateRow p v =
       A.submatrix (Function.update rows p s.castSucc) cols := by
@@ -1126,8 +1128,9 @@ theorem IsTotallyNonnegRect.whitneyRestoreFirst_nonneg {m n : ℕ}
       by_cases hi : i = p
       · subst i
         simp [Matrix.whitneyRestoreFirst, M, v, prev, hp]
-      · have hne : rows i ≠ s.succ :=
-          fun h => hi (hrows.injective (h.trans hp.symm))
+      · have hne : rows i ≠ s.succ := by
+          intro h
+          exact hi (hrows.injective (h.trans hp.symm))
         simp [Matrix.whitneyRestoreFirst, M, v, prev, hi, hne]
     rw [hsub, Matrix.det_updateRow_add, Matrix.updateRow_eq_self,
       Matrix.det_updateRow_smul]

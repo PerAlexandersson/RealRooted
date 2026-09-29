@@ -742,8 +742,9 @@ theorem even_card_roots_filter_Ioo_of_eval_mul_pos
       ring
     rw [hcalc, hpow] at hnorm_prod
     nlinarith [hprod, hlc_sq]
-  have hb_not_mem : b ∉ p.roots :=
-    fun hb_mem => hpb ((Polynomial.mem_roots hp_ne).mp hb_mem)
+  have hb_not_mem : b ∉ p.roots := by
+    intro hb_mem
+    exact hpb ((Polynomial.mem_roots hp_ne).mp hb_mem)
   have hsplit : I + B = A := by
     simpa [I, B, A] using
       card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
@@ -772,8 +773,9 @@ theorem eval_mul_eval_pos_of_even_card_roots_filter_Ioo
     simpa [B] using hp.eval_mul_leadingCoeff_neg_one_pow_pos hp_ne hb
   have hlc_sq : 0 < p.leadingCoeff * p.leadingCoeff :=
     mul_self_pos.mpr (Polynomial.leadingCoeff_ne_zero.mpr hp_ne)
-  have hb_not_mem : b ∉ p.roots :=
-    fun hb_mem => hb ((Polynomial.mem_roots hp_ne).mp hb_mem)
+  have hb_not_mem : b ∉ p.roots := by
+    intro hb_mem
+    exact hb ((Polynomial.mem_roots hp_ne).mp hb_mem)
   have hsplit : I + B = A := by
     simpa [I, B, A] using
       card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
@@ -807,13 +809,16 @@ theorem eval_mul_eval_neg_of_odd_card_roots_filter_Ioo
     (hodd : Odd (p.roots.filter (fun r => a < r ∧ r < b)).card)
     (ha : ¬ p.IsRoot a) (hb : ¬ p.IsRoot b) :
     p.eval a * p.eval b < 0 := by
-  have hpa : p.eval a ≠ 0 :=
-    fun h => ha (by simpa [Polynomial.IsRoot.def] using h)
-  have hpb : p.eval b ≠ 0 :=
-    fun h => hb (by simpa [Polynomial.IsRoot.def] using h)
+  have hpa : p.eval a ≠ 0 := by
+    intro h
+    exact ha (by simpa [Polynomial.IsRoot.def] using h)
+  have hpb : p.eval b ≠ 0 := by
+    intro h
+    exact hb (by simpa [Polynomial.IsRoot.def] using h)
   have hprod_ne : p.eval a * p.eval b ≠ 0 := mul_ne_zero hpa hpb
-  have hnot_pos : ¬ 0 < p.eval a * p.eval b :=
-    fun hpos => (Nat.not_even_iff_odd.mpr hodd)
+  have hnot_pos : ¬ 0 < p.eval a * p.eval b := by
+    intro hpos
+    exact (Nat.not_even_iff_odd.mpr hodd)
       (even_card_roots_filter_Ioo_of_eval_mul_pos hp_ne hp hab hpos)
   exact lt_of_le_of_ne (le_of_not_gt hnot_pos) hprod_ne
 

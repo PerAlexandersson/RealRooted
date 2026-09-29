@@ -488,7 +488,7 @@ theorem isPFPolynomial_binaryRunTransform_of_regular
     exists_pos_shiftedBinaryRunDeformation_anchor hn hp hpdeg hp0 hpTop
   have hdegree : ∀ u ∈ Set.Icc a 1,
       (shiftedBinaryRunDeformation n p u).natDegree = (n + 1) / 2 :=
-    fun u hu => natDegree_shiftedBinaryRunDeformation_eq (by lia)
+    fun _ hu => natDegree_shiftedBinaryRunDeformation_eq (by lia)
       hp.hasNonnegCoeffs hpdeg hpTop (ha.trans_le hu.1)
   have hall := shiftedBinaryRunDeformation_pf_criticalValueMargin_Icc
     hn hp (by

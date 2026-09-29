@@ -261,13 +261,15 @@ lemma length_destutter'_map_neg_signType (s : SignType) (l : List SignType) :
   | cons t l ih =>
       rw [List.map_cons, List.destutter'_cons, List.destutter'_cons]
       by_cases hst : s ≠ t
-      · have hneg : -s ≠ -t :=
-          fun h => hst (neg_inj.mp h)
+      · have hneg : -s ≠ -t := by
+          intro h
+          exact hst (neg_inj.mp h)
         rw [ite_eq_left hneg, ite_eq_left hst]
         simp [ih]
       · have hst_eq : s = t := of_not_not hst
-        have hneg : ¬ -s ≠ -t :=
-          fun h => h (by rw [hst_eq])
+        have hneg : ¬ -s ≠ -t := by
+          intro h
+          exact h (by rw [hst_eq])
         rw [ite_eq_right hneg, ite_eq_right hst]
         exact ih s
 
@@ -1714,8 +1716,9 @@ theorem Fin.signBlockIndex_last
 /-- Sign-block indices are monotone in the original index. -/
 theorem Fin.monotone_signBlockIndex
     {n : ℕ} (c : Fin n → ℝ) :
-    Monotone (Fin.signBlockIndex c) :=
-  fun i j hij => Fin.monotone_prefixSignVariations c hij
+    Monotone (Fin.signBlockIndex c) := by
+  intro i j hij
+  exact Fin.monotone_prefixSignVariations c hij
 
 /-- Adjacent prefix sign-variation values differ by at most one. -/
 theorem Fin.prefixSignVariations_succ_le

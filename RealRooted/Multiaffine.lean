@@ -77,8 +77,9 @@ theorem X [Nontrivial R] (i : σ) :
   split <;> simp_all
 
 theorem add {p q : MvPolynomial σ R} (hp : IsMultiaffine p)
-    (hq : IsMultiaffine q) : IsMultiaffine (p + q) :=
-  fun i => (MvPolynomial.degreeOf_add_le i p q).trans (max_le (hp i) (hq i))
+    (hq : IsMultiaffine q) : IsMultiaffine (p + q) := by
+  intro i
+  exact (MvPolynomial.degreeOf_add_le i p q).trans (max_le (hp i) (hq i))
 
 theorem neg {S : Type*} [CommRing S] {p : MvPolynomial σ S}
     (hp : IsMultiaffine p) : IsMultiaffine (-p) := by
@@ -93,18 +94,21 @@ theorem sub {S : Type*} [CommRing S] {p q : MvPolynomial σ S}
 
 theorem sum {I : Type*} {s : Finset I} {p : I → MvPolynomial σ R}
     (hp : ∀ i ∈ s, IsMultiaffine (p i)) :
-    IsMultiaffine (∑ i ∈ s, p i) :=
-  fun j => (MvPolynomial.degreeOf_sum_le j s p).trans
+    IsMultiaffine (∑ i ∈ s, p i) := by
+  intro j
+  exact (MvPolynomial.degreeOf_sum_le j s p).trans
     (Finset.sup_le fun i hi => hp i hi j)
 
 theorem C_mul {p : MvPolynomial σ R} (hp : IsMultiaffine p) (r : R) :
-    IsMultiaffine (MvPolynomial.C r * p) :=
-  fun i => (MvPolynomial.degreeOf_C_mul_le p i r).trans (hp i)
+    IsMultiaffine (MvPolynomial.C r * p) := by
+  intro i
+  exact (MvPolynomial.degreeOf_C_mul_le p i r).trans (hp i)
 
 /-- Partial differentiation preserves multiaffineness. -/
 theorem pderiv {p : MvPolynomial σ R} (hp : IsMultiaffine p) (i : σ) :
-    IsMultiaffine (MvPolynomial.pderiv i p) :=
-  fun j => (MvPolynomial.degreeOf_pderiv_le p i j).trans (hp j)
+    IsMultiaffine (MvPolynomial.pderiv i p) := by
+  intro j
+  exact (MvPolynomial.degreeOf_pderiv_le p i j).trans (hp j)
 
 /-- Differentiating a multiaffine polynomial twice in the same variable gives
 zero. -/
@@ -536,8 +540,9 @@ variable {R σ τ : Type*} [CommSemiring R]
 multiaffineness. -/
 theorem specializeZero_preserves {S : Type*} [CommRing S]
     {p : MvPolynomial σ S} (hp : IsMultiaffine p) (i : σ) :
-    IsMultiaffine (MvPolynomial.specializeZero i p) :=
-  fun j => (MvPolynomial.degreeOf_specializeZero_le p i j).trans (hp j)
+    IsMultiaffine (MvPolynomial.specializeZero i p) := by
+  intro j
+  exact (MvPolynomial.degreeOf_specializeZero_le p i j).trans (hp j)
 
 theorem rename {p : MvPolynomial σ R} (hp : IsMultiaffine p)
     {f : σ → τ} (hf : Function.Injective f) :

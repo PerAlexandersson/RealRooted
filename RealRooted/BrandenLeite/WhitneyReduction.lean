@@ -206,10 +206,12 @@ theorem isTotallyNonneg_of_principalSections (M : Matrix ℕ ℕ ℝ)
       let cols' : Fin (n + 1) → Fin (B + 1) := fun i ↦
         ⟨cols i, Nat.lt_succ_of_le <|
           le_trans (hcols.monotone (Fin.le_last i)) (le_max_right _ _)⟩
-      have hrows' : StrictMono rows' :=
-        fun i j hij => Fin.lt_def.mpr (hrows hij)
-      have hcols' : StrictMono cols' :=
-        fun i j hij => Fin.lt_def.mpr (hcols hij)
+      have hrows' : StrictMono rows' := by
+        intro i j hij
+        exact Fin.lt_def.mpr (hrows hij)
+      have hcols' : StrictMono cols' := by
+        intro i j hij
+        exact Fin.lt_def.mpr (hcols hij)
       have hminor : M.submatrix rows cols =
           (M.submatrix (fun i : Fin (B + 1) ↦ i.val)
             (fun i : Fin (B + 1) ↦ i.val)).submatrix rows' cols' := by
@@ -221,8 +223,9 @@ theorem det_principalSection_eq_one
     {R : LowerTriangularMatrix ℝ}
     (hR : LowerTriangularMatrix.IsLowerUnitriangular R) (N : ℕ) :
     (principalSection R N).det = 1 := by
-  have hlower : (principalSection R N).BlockTriangular OrderDual.toDual :=
-    fun i j hij => hR.lower hij
+  have hlower : (principalSection R N).BlockTriangular OrderDual.toDual := by
+    intro i j hij
+    exact hR.lower hij
   rw [Matrix.det_of_isLowerTriangular _ hlower]
   simp [principalSection, hR.diagonal]
 
@@ -399,11 +402,13 @@ def resolutionOfTotallyNonneg
   lowerUnitriangular := hunit
   lambda := resolutionLambda R
   polynomial := resolutionPolynomial R
-  lambda_nonneg :=
-    fun n k hk => firstColumnRatio_nonneg
+  lambda_nonneg := by
+    intro n k hk
+    exact firstColumnRatio_nonneg
       (whitneyIterate_invariant hunit hR k).2 (n - k)
-  monic :=
-    fun n k hk => (Polynomial.monic_X_pow k).mul <|
+  monic := by
+    intro n k hk
+    exact (Polynomial.monic_X_pow k).mul <|
       rowPolynomial_monic (whitneyIterate_invariant hunit hR k).1 (n - k)
   row_zero := by
     intro n
@@ -412,11 +417,13 @@ def resolutionOfTotallyNonneg
     intro n
     have hdiag := (whitneyIterate_invariant hunit hR n).1.diagonal 0
     simp [resolutionPolynomial, LowerTriangularMatrix.rowPolynomial, hdiag]
-  dvd_X_pow :=
-    fun n k hk => ⟨LowerTriangularMatrix.rowPolynomial
+  dvd_X_pow := by
+    intro n k hk
+    exact ⟨LowerTriangularMatrix.rowPolynomial
       (whitneyIterate R k) (n - k), rfl⟩
-  recurrence :=
-    fun n k hk => resolutionPolynomial_recurrence hunit hR hk
+  recurrence := by
+    intro n k hk
+    exact resolutionPolynomial_recurrence hunit hR hk
 
 theorem isResolvable_of_isTotallyNonneg
     {R : LowerTriangularMatrix ℝ}

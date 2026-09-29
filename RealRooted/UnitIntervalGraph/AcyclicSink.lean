@@ -70,8 +70,9 @@ def suffixFactor (k : ℕ) (q : ℝ) : ℝ :=
 def graph : _root_.SimpleGraph (Fin n) where
   Adj i j :=
     i ≠ j ∧ a.left i ≤ j.val ∧ a.left j ≤ i.val
-  symm.symm :=
-    fun i j h => ⟨h.1.symm, h.2.2, h.2.1⟩
+  symm.symm := by
+    intro i j h
+    exact ⟨h.1.symm, h.2.2, h.2.1⟩
   loopless.irrefl := by simp
 
 @[simp]
@@ -116,8 +117,9 @@ theorem prefixEmbedding_succ_apply {m : ℕ} (a : Data (m + 1)) (i : Fin m) :
 def take (k : ℕ) (hk : k ≤ n) : Data k where
   left i := a.left (a.prefixEmbedding hk i)
   left_le i := a.left_le (a.prefixEmbedding hk i)
-  monotone_left :=
-    fun i j hij => a.monotone_left ((a.prefixEmbedding hk).monotone hij)
+  monotone_left := by
+    intro i j hij
+    exact a.monotone_left ((a.prefixEmbedding hk).monotone hij)
 
 @[simp]
 theorem take_self : a.take n le_rfl = a := by
@@ -371,16 +373,18 @@ def extendOrientation {m : ℕ} (a : Data (m + 1))
       · intro huv
         simp
       · intro huv
-        have hyK : y ∉ a.lastEarlierNeighbors :=
-          fun hyK => huv ((a.mem_lastEarlierNeighbors_iff y).mp hyK |>.symm)
+        have hyK : y ∉ a.lastEarlierNeighbors := by
+          intro hyK
+          exact huv ((a.mem_lastEarlierNeighbors_iff y).mp hyK |>.symm)
         have hyB : y ∉ cut.lower :=
           fun hy ↦ hyK (cut.lower_subset hy)
         simp [hyK, hyB]
     · intro v
       refine Fin.lastCases ?_ (fun y ↦ ?_) v
       · intro huv
-        have hxK : x ∉ a.lastEarlierNeighbors :=
-          fun hxK => huv ((a.mem_lastEarlierNeighbors_iff x).mp hxK)
+        have hxK : x ∉ a.lastEarlierNeighbors := by
+          intro hxK
+          exact huv ((a.mem_lastEarlierNeighbors_iff x).mp hxK)
         have hxB : x ∉ cut.lower :=
           fun hx ↦ hxK (cut.lower_subset hx)
         simp [hxB]
@@ -537,8 +541,9 @@ theorem extendOrientation_cutOfAcyclicOrientation {m : ℕ}
           · rintro ⟨hyK, hynot⟩
             have hadj := (a.mem_lastEarlierNeighbors_iff y).mp hyK
             rw [a.prefixEmbedding_succ_apply] at hadj
-            have hynot' : ¬Q.1.Directed y.castSucc (Fin.last m) :=
-              fun hylast => hynot ((a.mem_cutOfAcyclicOrientation_lower Q y).2 hylast)
+            have hynot' : ¬Q.1.Directed y.castSucc (Fin.last m) := by
+              intro hylast
+              exact hynot ((a.mem_cutOfAcyclicOrientation_lower Q y).2 hylast)
             exact (Q.1.directed_of_adj_iff_not_directed_reverse
               hadj.symm).2 hynot'
           · intro hlasty
@@ -949,8 +954,9 @@ theorem not_isSink_of_mem_properCut {m : ℕ} (a : Data (m + 1))
     (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O)
     (hproper : cut.lower ≠ a.lastEarlierNeighbors)
     {x : Fin m} (hx : x ∈ cut.lower) : ¬O.IsSink x := by
-  have hnsubset : ¬a.lastEarlierNeighbors ⊆ cut.lower :=
-    fun hsubset => hproper (Finset.Subset.antisymm cut.lower_subset hsubset)
+  have hnsubset : ¬a.lastEarlierNeighbors ⊆ cut.lower := by
+    intro hsubset
+    exact hproper (Finset.Subset.antisymm cut.lower_subset hsubset)
   obtain ⟨y, hyK, hyLower⟩ := Finset.not_subset.mp hnsubset
   intro hsink
   exact hsink y (cut.directed_across hx hyK hyLower)
@@ -1231,13 +1237,15 @@ theorem extendOrientation_noSinkFrom_iff {m k : ℕ} (a : Data (m + 1))
       cut.lower ≠ a.lastEarlierNeighbors ∧ a.init.NoSinkFrom O k := by
   constructor
   · intro hno
-    have hproper : cut.lower ≠ a.lastEarlierNeighbors :=
-      fun hfull => hno (Fin.last m) hk
+    have hproper : cut.lower ≠ a.lastEarlierNeighbors := by
+      intro hfull
+      exact hno (Fin.last m) hk
         ((a.extendOrientation_isSink_last O cut).2 hfull)
     refine ⟨hproper, ?_⟩
     intro x hxk hxSink
-    have hxLower : x ∉ cut.lower :=
-      fun hx => a.not_isSink_of_mem_properCut O cut hproper hx hxSink
+    have hxLower : x ∉ cut.lower := by
+      intro hx
+      exact a.not_isSink_of_mem_properCut O cut hproper hx hxSink
     exact hno x.castSucc hxk
       ((a.extendOrientation_isSink_prefix O cut x).2 ⟨hxSink, hxLower⟩)
   · rintro ⟨hproper, hno⟩ v hvk
@@ -1265,8 +1273,9 @@ theorem suffixFactor_succ_of_le {m k : ℕ} (a : Data (m + 1))
   ac_rfl
 
 theorem noSinkFrom_card {n : ℕ} (a : Data n)
-    (O : Graph.Orientation a.graph) : a.NoSinkFrom O n :=
-  fun v hnv => False.elim ((Nat.not_le_of_gt v.isLt) hnv)
+    (O : Graph.Orientation a.graph) : a.NoSinkFrom O n := by
+  intro v hnv
+  exact False.elim ((Nat.not_le_of_gt v.isLt) hnv)
 
 theorem noSinkFromPolynomial_card {n : ℕ} (a : Data n) (q : ℝ) :
     a.noSinkFromPolynomial n q = Graph.acyclicSinkPolynomial a.graph q := by
@@ -1438,12 +1447,15 @@ theorem graph_clawFree : Graph.ClawFree a.graph := by
     lt_or_gt_of_ne (a.graph_adj.mp hvy).1.symm
   have sz : z < v ∨ v < z :=
     lt_or_gt_of_ne (a.graph_adj.mp hvz).1.symm
-  have hnxy : ¬a.graph.Adj x y :=
-    fun hadj => hind.isIndepSet (by simp) (by simp) hxy hadj
-  have hnxz : ¬a.graph.Adj x z :=
-    fun hadj => hind.isIndepSet (by simp) (by simp) hxz hadj
-  have hnyz : ¬a.graph.Adj y z :=
-    fun hadj => hind.isIndepSet (by simp) (by simp) hyz hadj
+  have hnxy : ¬a.graph.Adj x y := by
+    intro hadj
+    exact hind.isIndepSet (by simp) (by simp) hxy hadj
+  have hnxz : ¬a.graph.Adj x z := by
+    intro hadj
+    exact hind.isIndepSet (by simp) (by simp) hxz hadj
+  have hnyz : ¬a.graph.Adj y z := by
+    intro hadj
+    exact hind.isIndepSet (by simp) (by simp) hyz hadj
   rcases sx with hxv | hvx' <;>
     rcases sy with hyv | hvy' <;>
       rcases sz with hzv | hvz'
