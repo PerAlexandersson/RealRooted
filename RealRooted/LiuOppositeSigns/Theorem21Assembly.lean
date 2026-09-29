@@ -80,8 +80,9 @@ implications. -/
 theorem theorem21RootCountBranchesToCompatiblePredicateStatement_of_imp
     {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
     (hQ : theorem21RootCountBranchesToCompatiblePredicateStatement Q) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement P :=
-  fun f g hf hg hsgn hbranches => hQ hf hg hsgn
+    theorem21RootCountBranchesToCompatiblePredicateStatement P := by
+  intro f g hf hg hsgn hbranches
+  exact hQ hf hg hsgn
     (theorem21RootCountBranchesPredicate_of_imp hPQ hbranches)
 
 /-- Reassemble Liu Theorem 2.1 from separately proved forward and reverse
@@ -89,8 +90,9 @@ directions. -/
 theorem theorem21CompatibleRootCount_of_forward_and_reverse
     (hforward : theorem21CompatibleToRootCountBranchesStatement)
     (hreverse : theorem21RootCountBranchesToCompatibleStatement) :
-    theorem21CompatibleRootCountStatement :=
-  fun f g hf hg hsgn => ⟨hforward hf hg hsgn, hreverse hf hg hsgn⟩
+    theorem21CompatibleRootCountStatement := by
+  intro f g hf hg hsgn
+  exact ⟨hforward hf hg hsgn, hreverse hf hg hsgn⟩
 
 /-- Predicate-restricted nonconstant reverse half of Liu Theorem 2.1. -/
 def theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
@@ -107,20 +109,21 @@ theorem
     {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
     (hQ :
       theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement Q) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
-  fun f g hf hg hsgn hf_deg hg_deg hbranches => hQ hf hg hsgn hf_deg hg_deg
+    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P := by
+  intro f g hf hg hsgn hf_deg hg_deg hbranches
+  exact hQ hf hg hsgn hf_deg hg_deg
     (theorem21RootCountBranchesPredicate_of_imp hPQ hbranches)
 
 /-- The branch-retaining deletion-pair package reduces the reverse direction
 of Liu Theorem 2.1 to the explicit factor-return principle. -/
 theorem theorem21RootCountBranchesToCompatible_of_deletionPairFactorReturn
     (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
-    theorem21RootCountBranchesToCompatibleStatement :=
-  fun f g hf hg hsgn hbranches =>
-    theorem21DeletionPairCommonInterleaverBranchesToCompatible_of_factorReturn
-      hreturn hf hg hsgn
-      (theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
-        hf hg hsgn hbranches)
+    theorem21RootCountBranchesToCompatibleStatement := by
+  intro f g hf hg hsgn hbranches
+  exact theorem21DeletionPairCommonInterleaverBranchesToCompatible_of_factorReturn
+    hreturn hf hg hsgn
+    (theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
+      hf hg hsgn hbranches)
 
 /-- The factor-return principle proves the no-common-root reverse root-count
 direction. -/
@@ -212,8 +215,9 @@ subfamilies. -/
 theorem theorem21RootCountBranchesToCompatiblePredicate_of_reverse
     {P : ℕ → Prop}
     (hreverse : theorem21RootCountBranchesToCompatibleStatement) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement P :=
-  fun f g hf hg hsgn hbranches => hreverse hf hg hsgn
+    theorem21RootCountBranchesToCompatiblePredicateStatement P := by
+  intro f g hf hg hsgn hbranches
+  exact hreverse hf hg hsgn
     (theorem21RootCountBranches_of_predicate hbranches)
 
 /-- Predicate-restricted factor-return proves the predicate-restricted reverse
@@ -361,8 +365,9 @@ theorem theorem21RootCountBranchesToCompatible_of_predicate_true
     (hreverse :
       theorem21RootCountBranchesToCompatiblePredicateStatement
         (fun _ => True)) :
-    theorem21RootCountBranchesToCompatibleStatement :=
-  fun f g hf hg hsgn hbranches => hreverse hf hg hsgn
+    theorem21RootCountBranchesToCompatibleStatement := by
+  intro f g hf hg hsgn hbranches
+  exact hreverse hf hg hsgn
     (theorem21RootCountBranchesPredicate_true_iff.mpr hbranches)
 
 /-- Predicate-`True` reverse root-count direction is equivalent to the
@@ -391,8 +396,9 @@ theorem
     theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
     {P : ℕ → Prop}
     (hreverse : theorem21RootCountBranchesToCompatiblePredicateStatement P) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
-  fun f g hf hg hsgn _hf_deg _hg_deg hbranches => hreverse hf hg hsgn hbranches
+    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P := by
+  intro f g hf hg hsgn _hf_deg _hg_deg hbranches
+  exact hreverse hf hg hsgn hbranches
 
 /-- Predicate-restricted factor-return proves the nonconstant
 predicate-restricted reverse root-count direction. -/
@@ -549,8 +555,9 @@ theorem theorem21RootCountBranchesToCompatibleNonconstant_of_predicate_true
     (hreverse :
       theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
         (fun _ => True)) :
-    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
-  fun f g hf hg hsgn hf_deg hg_deg hbranches => hreverse hf hg hsgn hf_deg hg_deg
+    theorem21RootCountBranchesToCompatibleNonconstantStatement := by
+  intro f g hf hg hsgn hf_deg hg_deg hbranches
+  exact hreverse hf hg hsgn hf_deg hg_deg
     (theorem21RootCountBranchesPredicate_true_iff.mpr hbranches)
 
 /-- Predicate-`True` factor-return proves the ordinary nonconstant reverse
