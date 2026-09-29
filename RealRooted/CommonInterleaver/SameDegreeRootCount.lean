@@ -122,10 +122,10 @@ theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
   · subst j
     have hrf_len_pos : 0 < rf.length := Nat.pos_of_ne_zero hlen0
     have hrg_len_pos : 0 < rg.length := by simpa [hlen] using hrf_len_pos
-    have hrf_rev_ne : rf.reverse ≠ [] := by
-      exact List.ne_nil_of_length_pos (by simpa [List.length_reverse] using hrf_len_pos)
-    have hrg_rev_ne : rg.reverse ≠ [] := by
-      exact List.ne_nil_of_length_pos (by simpa [List.length_reverse] using hrg_len_pos)
+    have hrf_rev_ne : rf.reverse ≠ [] :=
+      List.ne_nil_of_length_pos (by simpa [List.length_reverse] using hrf_len_pos)
+    have hrg_rev_ne : rg.reverse ≠ [] :=
+      List.ne_nil_of_length_pos (by simpa [List.length_reverse] using hrg_len_pos)
     obtain ⟨a, rf', hrf_rev⟩ := List.exists_cons_of_ne_nil hrf_rev_ne
     obtain ⟨b, rg', hrg_rev⟩ := List.exists_cons_of_ne_nil hrg_rev_ne
     convert iic_inter_iic_nonempty a b using 1
@@ -272,12 +272,10 @@ theorem sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
     {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
     (Even ((f.roots.filter (· ≤ x)).card + (g.roots.filter (· ≤ x)).card) ↔
       ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  have hfx_eval : f.eval x ≠ 0 := by
-    intro hfx
-    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
-  have hgx_eval : g.eval x ≠ 0 := by
-    intro hgx
-    exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
+  have hfx_eval : f.eval x ≠ 0 :=
+    fun hfx => hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  have hgx_eval : g.eval x ≠ 0 :=
+    fun hgx => hxg (by simpa [Polynomial.IsRoot.def] using hgx)
   rw [hf.even_card_roots_le_add_iff_eval_pos_iff hg hf_pos hg_pos hdeg hxf hxg]
   exact (not_exists_pos_isRoot_add_right_iff_eval_pos_iff hfx_eval hgx_eval).symm
 
@@ -371,12 +369,10 @@ theorem sameDegree_even_card_roots_gt_add_iff_not_exists_pos_isRoot_add_right
     {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
     (Even ((f.roots.filter (x < ·)).card + (g.roots.filter (x < ·)).card) ↔
       ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  have hfx_eval : f.eval x ≠ 0 := by
-    intro hfx
-    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
-  have hgx_eval : g.eval x ≠ 0 := by
-    intro hgx
-    exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
+  have hfx_eval : f.eval x ≠ 0 :=
+    fun hfx => hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  have hgx_eval : g.eval x ≠ 0 :=
+    fun hgx => hxg (by simpa [Polynomial.IsRoot.def] using hgx)
   rw [hf.even_card_roots_gt_add_iff_eval_pos_iff hg hf_pos hg_pos hxf hxg]
   exact (not_exists_pos_isRoot_add_right_iff_eval_pos_iff hfx_eval hgx_eval).symm
 
@@ -637,19 +633,19 @@ theorem posComboNoCommonSameDegreeRootCrossing_iff_rootCountAbove :
 variant. -/
 theorem posComboNoCommonSameDegreeRootCount_of_nonRoot
     (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  exact sameDegreeRootCount_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
-    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+    PosComboNoCommonSameDegreeRootCountNonnegStatement :=
+  fun f g hf_pos hg_pos hfnn hgnn hfg hdeg hno =>
+    sameDegreeRootCount_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
+      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- The same-degree upper root-count target follows from its common-non-root
 variant. -/
 theorem posComboNoCommonSameDegreeRootCountAbove_of_nonRoot
     (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  exact sameDegreeRootCountAbove_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
-    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement :=
+  fun f g hf_pos hg_pos hfnn hgnn hfg hdeg hno =>
+    sameDegreeRootCountAbove_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
+      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- Low-degree base case for the same-degree root-count formulation.
 
