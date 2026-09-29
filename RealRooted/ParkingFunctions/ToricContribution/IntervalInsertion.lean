@@ -81,16 +81,16 @@ theorem natDegree_neg_insertionOperator
         simpa using Polynomial.natDegree_C_mul_le b (X * f)
       _ ≤ X.natDegree + f.natDegree := natDegree_mul_le
       _ = f.natDegree + 1 := by simp [natDegree_X, Nat.add_comm]
-  have ha : (C a * f).natDegree ≤ f.natDegree + 1 := by
-    exact (Polynomial.natDegree_C_mul_le a f).trans (by lia)
+  have ha : (C a * f).natDegree ≤ f.natDegree + 1 :=
+    (Polynomial.natDegree_C_mul_le a f).trans (by lia)
   have hsub :
       (X * (X * f.derivative) - X * f.derivative).natDegree ≤
-        f.natDegree + 1 := by
-    exact (natDegree_sub_le _ _).trans (max_le hXX hX)
+        f.natDegree + 1 :=
+    (natDegree_sub_le _ _).trans (max_le hXX hX)
   have hadd :
       (X * (X * f.derivative) - X * f.derivative + C b * (X * f)).natDegree ≤
-        f.natDegree + 1 := by
-    exact (natDegree_add_le _ _).trans (max_le hsub hbX)
+        f.natDegree + 1 :=
+    (natDegree_add_le _ _).trans (max_le hsub hbX)
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · rw [hform]
     exact (natDegree_sub_le _ _).trans (max_le hadd ha)
@@ -231,8 +231,8 @@ theorem roots_neg_insertionOperator_mem_Ioo
       hFrr.2 hf_pos hF_pos hf0_not_root hF0_not_root).mp heven)
   have heven_one :
       Even ((f.roots.filter ((1 : ℝ) < ·)).card +
-        (F.roots.filter ((1 : ℝ) < ·)).card) := by
-    exact (hfrr.2.even_card_roots_gt_add_iff_eval_pos_iff
+        (F.roots.filter ((1 : ℝ) < ·)).card) :=
+    (hfrr.2.even_card_roots_gt_add_iff_eval_pos_iff
       hFrr.2 hf_pos hF_pos hf1_not_root hF1_not_root).mpr hsign_one
   have hss_above_zero :
       (ss.filter ((0 : ℝ) < ·)).length = ss.length := by
@@ -322,9 +322,8 @@ theorem rootMultiplicity_neg_insertionOperator_eq_one
     (hb : 0 < b) {r : ℝ} (hr : (-insertionOperator a b f).IsRoot r) :
     (-insertionOperator a b f).rootMultiplicity r = 1 := by
   have hstrictInterl := strictInterl_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb
-  have hnot : ¬f.IsRoot r := by
-    intro hfr
-    exact insertionOperator_no_common_root a b hroots hsimple r hfr (by
+  have hnot : ¬f.IsRoot r :=
+    fun hfr => insertionOperator_no_common_root a b hroots hsimple r hfr (by
       simpa [IsRoot.def] using hr)
   have hfmult : f.rootMultiplicity r = 0 := rootMultiplicity_eq_zero hnot
   have hbound := (hstrictInterl.rootMultiplicity_bounds r).2
