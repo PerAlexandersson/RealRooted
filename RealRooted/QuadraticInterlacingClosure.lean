@@ -159,6 +159,39 @@ theorem natDegree_quadraticInterlacingPencil_le
       (max_le hH ((natDegree_C_mul_le _ _).trans hG))
   · exact (natDegree_C_mul_le _ _).trans hF
 
+/-- A nonnegative quadratic pencil has the degree of its right endpoint when
+the other two coefficient polynomials have no larger degree. -/
+theorem natDegree_quadraticInterlacingPencil_eq
+    {F G H : ℝ[X]} (hF : HasNonnegCoeffs F)
+    (hG : HasNonnegCoeffs G) (hH : HasNonnegCoeffs H) (hHne : H ≠ 0)
+    (hFdeg : F.natDegree ≤ H.natDegree)
+    (hGdeg : G.natDegree ≤ H.natDegree)
+    {a : ℝ} (ha : 0 ≤ a) :
+    (quadraticInterlacingPencil F G H a).natDegree = H.natDegree := by
+  apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+  · exact natDegree_quadraticInterlacingPencil_le hFdeg hGdeg le_rfl a
+  · have hHlead : 0 < H.coeff H.natDegree := by
+      have hlead := hH.pos_leadingCoeff hHne
+      rw [HasPosLeadingCoeff, leadingCoeff] at hlead
+      exact hlead
+    have hGcoeff : 0 ≤ G.coeff H.natDegree := hG H.natDegree
+    have hFcoeff : 0 ≤ F.coeff H.natDegree := hF H.natDegree
+    simp only [quadraticInterlacingPencil, coeff_add, coeff_C_mul]
+    nlinarith [mul_nonneg ha hGcoeff, mul_nonneg (sq_nonneg a) hFcoeff]
+
+/-- A nonnegative-coefficient polynomial with nonzero constant coefficient
+has strictly negative roots. -/
+theorem roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
+    {p : ℝ[X]} (hp : HasNonnegCoeffs p)
+    (hp0 : p.coeff 0 ≠ 0) : ∀ r ∈ p.roots, r < 0 := by
+  intro r hr
+  apply lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs hp r hr)
+  intro hre
+  subst r
+  apply hp0
+  simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using
+    (Polynomial.isRoot_of_mem_roots hr)
+
 /-- The compactified pencil has degree at most its reflection degree. -/
 theorem natDegree_compactifiedQuadraticInterlacingPencil_le
     {F G H : ℝ[X]} {D : ℕ}
@@ -278,6 +311,20 @@ theorem C_sq_mul_quadraticInterlacingPencil_inv
     _ = F + C 2 * C b * G + C b ^ 2 * H := by
       rw [hlinear', hquadratic']
       ring
+
+/-- Splitting of the forward quadratic pencil implies splitting of its
+reciprocal pencil on nonnegative parameters. -/
+theorem splits_reciprocalQuadraticInterlacingPencil
+    {F G H : ℝ[X]} (hFsplit : F.Splits)
+    (hsplits : ∀ a : ℝ, 0 ≤ a →
+      (quadraticInterlacingPencil F G H a).Splits) :
+    ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).Splits := by
+  intro b hb
+  rcases hb.eq_or_lt with rfl | hbpos
+  · simpa [quadraticInterlacingPencil] using hFsplit
+  · have hscaled := (hsplits b⁻¹ (inv_nonneg.mpr hbpos.le)).C_mul (b ^ 2)
+    rwa [C_sq_mul_quadraticInterlacingPencil_inv F G H hbpos.ne'] at hscaled
 
 /-- Reciprocal rescaling does not change the root multiset. -/
 theorem roots_quadraticInterlacingPencil_reciprocal
