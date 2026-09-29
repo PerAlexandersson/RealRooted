@@ -47,8 +47,8 @@ lemma hasPosLeadingCoeff_xSubCubicQuadratic (a b c u v μ : ℝ) :
     HasPosLeadingCoeff
       (X * ((X - C a) * (X - C b) * (X - C c)) -
         C μ * ((X - C u) * (X - C v))) := by
-  have hcubic_pos : HasPosLeadingCoeff ((X - C a) * (X - C b) * (X - C c)) := by
-    exact ((hasPosLeadingCoeff_X_sub_C a).mul (hasPosLeadingCoeff_X_sub_C b)).mul
+  have hcubic_pos : HasPosLeadingCoeff ((X - C a) * (X - C b) * (X - C c)) :=
+    ((hasPosLeadingCoeff_X_sub_C a).mul (hasPosLeadingCoeff_X_sub_C b)).mul
       (hasPosLeadingCoeff_X_sub_C c)
   have hleft_pos : HasPosLeadingCoeff (X * ((X - C a) * (X - C b) * (X - C c))) :=
     hcubic_pos.X_mul
@@ -157,8 +157,8 @@ coefficient. -/
 lemma hasPosLeadingCoeff_cubicSubLinear (a b c u μ : ℝ) :
     HasPosLeadingCoeff
       (((X - C a) * (X - C b) * (X - C c)) - C μ * (X - C u)) := by
-  have hcubic_pos : HasPosLeadingCoeff ((X - C a) * (X - C b) * (X - C c)) := by
-    exact ((hasPosLeadingCoeff_X_sub_C a).mul (hasPosLeadingCoeff_X_sub_C b)).mul
+  have hcubic_pos : HasPosLeadingCoeff ((X - C a) * (X - C b) * (X - C c)) :=
+    ((hasPosLeadingCoeff_X_sub_C a).mul (hasPosLeadingCoeff_X_sub_C b)).mul
       (hasPosLeadingCoeff_X_sub_C c)
   have hcubic_deg : ((X - C a) * (X - C b) * (X - C c)).natDegree = 3 := by
     compute_degree <;> norm_num
@@ -523,15 +523,15 @@ lemma xSubCubicQuadraticSplits_of_middle_quadratic_roots_strict
   have hP_a_neg : P.eval a < 0 := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
-    have hG : 0 < (a - u) * (a - v) := by
-      exact mul_pos_of_neg_of_neg (sub_neg.mpr hau) (sub_neg.mpr hav)
+    have hG : 0 < (a - u) * (a - v) :=
+      mul_pos_of_neg_of_neg (sub_neg.mpr hau) (sub_neg.mpr hav)
     nlinarith [mul_pos hμ hG]
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
     have hbv : b < v := lt_of_lt_of_le hbu huv
-    have hG : 0 < (b - u) * (b - v) := by
-      exact mul_pos_of_neg_of_neg (sub_neg.mpr hbu) (sub_neg.mpr hbv)
+    have hG : 0 < (b - u) * (b - v) :=
+      mul_pos_of_neg_of_neg (sub_neg.mpr hbu) (sub_neg.mpr hbv)
     nlinarith [mul_pos hμ hG]
   have hP_u_pos : 0 < P.eval u := by
     dsimp [P]
@@ -568,7 +568,7 @@ lemma xSubCubicQuadraticSplits_of_middle_quadratic_roots_strict
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
-    have hG : 0 < (0 - u) * (0 - v) := by exact mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
+    have hG : 0 < (0 - u) * (0 - v) := mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
     nlinarith [mul_pos hμ hG]
   have ht_bot : Tendsto (fun x => P.eval x) atBot atTop := by
     dsimp [P]
@@ -663,8 +663,8 @@ lemma xSubCubicQuadraticSplits_of_right_quadratic_root_strict
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
-    have hG : 0 < (b - u) * (b - v) := by
-      exact mul_pos_of_neg_of_neg (sub_neg.mpr hbu) (sub_neg.mpr hbv)
+    have hG : 0 < (b - u) * (b - v) :=
+      mul_pos_of_neg_of_neg (sub_neg.mpr hbu) (sub_neg.mpr hbv)
     nlinarith [mul_pos hμ hG]
   have hP_u_pos : 0 < P.eval u := by
     dsimp [P]
@@ -690,15 +690,15 @@ lemma xSubCubicQuadraticSplits_of_right_quadratic_root_strict
     have hva_pos : 0 < v - a := sub_pos.mpr hav
     have hvb_pos : 0 < v - b := sub_pos.mpr hbv
     have hvc_pos : 0 < v - c := sub_pos.mpr hcv
-    have hprod_pos : 0 < (v - a) * (v - b) * (v - c) := by
-      exact mul_pos (mul_pos hva_pos hvb_pos) hvc_pos
+    have hprod_pos : 0 < (v - a) * (v - b) * (v - c) :=
+      mul_pos (mul_pos hva_pos hvb_pos) hvc_pos
     have hH_neg : v * ((v - a) * (v - b) * (v - c)) < 0 :=
       mul_neg_of_neg_of_pos hv0 hprod_pos
     nlinarith
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
-    have hG : 0 < (0 - u) * (0 - v) := by exact mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
+    have hG : 0 < (0 - u) * (0 - v) := mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
     nlinarith [mul_pos hμ hG]
   have ht_bot : Tendsto (fun x => P.eval x) atBot atTop := by
     dsimp [P]
@@ -965,8 +965,8 @@ lemma xSubCubicQuadraticSplits_of_upper_quadratic_root_right_strict
   have hP_a_neg : P.eval a < 0 := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
-    have hG : 0 < (a - u) * (a - v) := by
-      exact mul_pos_of_neg_of_neg (sub_neg.mpr hau) (sub_neg.mpr hav)
+    have hG : 0 < (a - u) * (a - v) :=
+      mul_pos_of_neg_of_neg (sub_neg.mpr hau) (sub_neg.mpr hav)
     nlinarith [mul_pos hμ hG]
   have hP_u_neg : P.eval u < 0 := by
     dsimp [P]
@@ -974,21 +974,21 @@ lemma xSubCubicQuadraticSplits_of_upper_quadratic_root_right_strict
     have hua_pos : 0 < u - a := sub_pos.mpr hau
     have hub_neg : u - b < 0 := sub_neg.mpr hub
     have huc_neg : u - c < 0 := sub_neg.mpr huc
-    have hprod_pos : 0 < (u - a) * (u - b) * (u - c) := by
-      exact mul_pos_of_neg_of_neg (mul_neg_of_pos_of_neg hua_pos hub_neg) huc_neg
+    have hprod_pos : 0 < (u - a) * (u - b) * (u - c) :=
+      mul_pos_of_neg_of_neg (mul_neg_of_pos_of_neg hua_pos hub_neg) huc_neg
     nlinarith [mul_neg_of_neg_of_pos hu0 hprod_pos]
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
     have hbv : b < v := lt_of_le_of_lt hbc hcv
-    have hG_neg : (b - u) * (b - v) < 0 := by
-      exact mul_neg_of_pos_of_neg (sub_pos.mpr hub) (sub_neg.mpr hbv)
+    have hG_neg : (b - u) * (b - v) < 0 :=
+      mul_neg_of_pos_of_neg (sub_pos.mpr hub) (sub_neg.mpr hbv)
     nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_c_pos : 0 < P.eval c := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
-    have hG_neg : (c - u) * (c - v) < 0 := by
-      exact mul_neg_of_pos_of_neg (sub_pos.mpr huc) (sub_neg.mpr hcv)
+    have hG_neg : (c - u) * (c - v) < 0 :=
+      mul_neg_of_pos_of_neg (sub_pos.mpr huc) (sub_neg.mpr hcv)
     nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_v_neg : P.eval v < 0 := by
     dsimp [P]
@@ -996,13 +996,13 @@ lemma xSubCubicQuadraticSplits_of_upper_quadratic_root_right_strict
     have hvb_pos : 0 < v - b := sub_pos.mpr (lt_of_le_of_lt hbc hcv)
     have hvc_pos : 0 < v - c := sub_pos.mpr hcv
     have hva_pos : 0 < v - a := sub_pos.mpr hav
-    have hprod_pos : 0 < (v - a) * (v - b) * (v - c) := by
-      exact mul_pos (mul_pos hva_pos hvb_pos) hvc_pos
+    have hprod_pos : 0 < (v - a) * (v - b) * (v - c) :=
+      mul_pos (mul_pos hva_pos hvb_pos) hvc_pos
     nlinarith [mul_neg_of_neg_of_pos hv0 hprod_pos]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubCubicQuadratic]
-    have hG : 0 < (0 - u) * (0 - v) := by exact mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
+    have hG : 0 < (0 - u) * (0 - v) := mul_pos (sub_pos.mpr hu0) (sub_pos.mpr hv0)
     nlinarith [mul_pos hμ hG]
   have ht_bot : Tendsto (fun x => P.eval x) atBot atTop := by
     dsimp [P]
