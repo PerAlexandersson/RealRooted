@@ -514,23 +514,23 @@ private lemma not_interl_X_add_one_X_add_two :
 
 private lemma not_interl_X_X_add_one_add_X :
     ¬ Interl (X : ℝ[X]) (X + 1 + X) := by
-  convert not_interl_X_two_mul_X_add_one using 1 <;> ring_nf
+  convert not_interl_X_two_mul_X_add_one using 1; ring_nf
 
 private lemma not_interl_X_X_add_one_add_one :
     ¬ Interl (X : ℝ[X]) (X + 1 + 1) := by
-  convert not_interl_X_X_add_two using 1 <;> ring_nf
+  convert not_interl_X_X_add_two using 1; ring_nf
 
 private lemma not_interl_X_add_one_add_X_X_add_one :
     ¬ Interl (X + 1 + X : ℝ[X]) (X + 1) := by
-  convert not_interl_two_mul_X_add_one_X_add_one using 1 <;> ring_nf
+  convert not_interl_two_mul_X_add_one_X_add_one using 1; ring_nf
 
 private lemma not_interl_X_add_one_add_X_X_add_one_add_one :
     ¬ Interl (X + 1 + X : ℝ[X]) (X + 1 + 1) := by
-  convert not_interl_two_mul_X_add_one_X_add_two using 1 <;> ring_nf
+  convert not_interl_two_mul_X_add_one_X_add_two using 1; ring_nf
 
 private lemma not_interl_X_add_one_X_add_one_add_one :
     ¬ Interl (X + 1 : ℝ[X]) (X + 1 + 1) := by
-  convert not_interl_X_add_one_X_add_two using 1 <;> ring_nf
+  convert not_interl_X_add_one_X_add_two using 1; ring_nf
 
 private lemma natDegree_X_add_one_add_one :
     (X + 1 + 1 : ℝ[X]).natDegree = 1 := by compute_degree!
@@ -582,10 +582,10 @@ private lemma not_interl_bad_linear_quadratic :
     (X_add_C_ne_zero 2) (mul_ne_zero (X_add_C_ne_zero 1) X_ne_zero)
   have hreduced : StrictInterl (X + 1 : ℝ[X]) (X + 2) := by
     apply strictInterl_of_strictInterl_X_mul_of_nonneg
-    · convert hstrict using 1 <;> ring
+    · convert hstrict using 1; ring
     · convert hasNonnegCoeffs_affine_linear
         (a := 1) (b := 1) (by norm_num) (by norm_num) using 1
-      all_goals try simp only [Polynomial.C_ofNat, C_1, one_mul]
+      all_goals try simp only [C_1, one_mul]
     · convert hasNonnegCoeffs_affine_linear
         (a := 1) (b := 2) (by norm_num) (by norm_num) using 1
       all_goals try simp only [Polynomial.C_ofNat, C_1, one_mul]
@@ -598,7 +598,7 @@ private lemma not_interl_bad_linear_quadratic :
 
 private lemma not_interl_bad_linear_quadratic_raw :
     ¬ Interl (X + 1 + 1 : ℝ[X]) ((X + 1) * X) := by
-  convert not_interl_bad_linear_quadratic using 1 <;> ring_nf
+  convert not_interl_bad_linear_quadratic using 1; ring_nf
 
 private lemma not_interl_bad_quadratic_pair :
     ¬ Interl ((X + 1) * X : ℝ[X]) ((X + 1) * X + X) := by
@@ -610,7 +610,7 @@ private lemma not_interl_bad_quadratic_pair :
     · exact hfactor
     · convert hasNonnegCoeffs_affine_linear
         (a := 1) (b := 1) (by norm_num) (by norm_num) using 1
-      all_goals try simp only [Polynomial.C_ofNat, C_1, one_mul]
+      all_goals try simp only [C_1, one_mul]
     · convert hasNonnegCoeffs_affine_linear
         (a := 1) (b := 2) (by norm_num) (by norm_num) using 1
       all_goals try simp only [Polynomial.C_ofNat, C_1, one_mul]
@@ -627,7 +627,6 @@ theorem isAffineAdmissible_of_hasAffineProperty
   rcases M with ⟨a, b, c, d⟩
   fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d
   all_goals simp only [isAffineAdmissible]
-  all_goals try rfl
   all_goals exfalso
   all_goals have h := hM 1 1 zero_lt_one zero_lt_one
   all_goals norm_num at h
@@ -822,7 +821,7 @@ private theorem input_X_X_sq :
     IsInterlacingSeq0NonnegRealRooted [X, X ^ 2] := by
   apply interlacingPair
   · convert (strictInterl_self_mul_X_of_nonneg
-      X_ne_zero isRealRooted_X.2 hasNonnegCoeffs_X).toInterl using 1 <;> ring
+      X_ne_zero isRealRooted_X.2 hasNonnegCoeffs_X).toInterl using 1; ring
   · exact hasNonnegCoeffs_X
   · exact nonneg_X_sq
   · exact fun _ => isRealRooted_X.2
@@ -939,7 +938,7 @@ private theorem not_interl_X_add_X_sq_X_cube :
     (pow_ne_zero 2 X_ne_zero)
   have hbad := strictInterl_of_strictInterl_X_mul_of_nonneg
     (f := X) (g := 1 + X)
-    (by convert hstrict using 1 <;> ring)
+    (by convert hstrict using 1; ring)
     hasNonnegCoeffs_X (hasNonnegCoeffs_one.add hasNonnegCoeffs_X)
   exact not_interl_X_X_add_one (by simpa [add_comm] using hbad.toInterl)
 
