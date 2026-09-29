@@ -1920,6 +1920,52 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_residue_nonneg
   exact im_ratio_nonpos_of_residue_nonneg hQpos hQsplit
     hQsimple.roots_nodup hQdeg hAdeg hres hz
 
+/-- The simple fixed-degree quadratic path satisfies the tangent conclusion.
+All analytic crossing work is packaged in
+`quadraticInterlacingTangent_residue_nonneg`; this theorem feeds those
+residues into the logarithmic-ratio endpoint. -/
+theorem strictInterl_quadraticInterlacingTangent_pencil_of_simple_path
+    {F G H : ℝ[X]} {D K : ℕ}
+    (hFpos : HasPosLeadingCoeff F) (hGpos : HasPosLeadingCoeff G)
+    (hHpos : HasPosLeadingCoeff H) (hFG : StrictInterl F G)
+    (hGH : StrictInterl G H) (hD : D ≠ 0)
+    (hFdeg : F.natDegree ≤ K) (hGdeg : G.natDegree ≤ K)
+    (hHdeg : H.natDegree ≤ K)
+    (hdegree : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).natDegree = D)
+    (hdegree_local : ∀ b : ℝ, 0 ≤ b → ∀ᶠ c in nhds b,
+      (quadraticInterlacingPencil F G H c).natDegree = D)
+    (hpos : ∀ b : ℝ, 0 ≤ b →
+      HasPosLeadingCoeff (quadraticInterlacingPencil F G H b))
+    (hsplits : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).Splits)
+    (hsimple : ∀ b : ℝ, 0 ≤ b →
+      HasSimpleRoots (quadraticInterlacingPencil F G H b))
+    (hneg : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
+      (quadraticInterlacingPencil F G H b).roots, q < 0)
+    (hsplits_recip : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).Splits)
+    (hcoeff0_recip : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).coeff 0 ≠ 0)
+    (hneg_recip : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
+      (quadraticInterlacingPencil H G F b).roots, q < 0)
+    {a : ℝ} (ha : 0 < a)
+    (hApos : HasPosLeadingCoeff (quadraticInterlacingTangent F G a))
+    (hAdeg : (quadraticInterlacingTangent F G a).natDegree ≤ D) :
+    StrictInterl (quadraticInterlacingTangent F G a)
+      (quadraticInterlacingPencil F G H a) := by
+  apply strictInterl_quadraticInterlacingTangent_pencil_of_residue_nonneg
+    (hpos a ha.le) hApos (hsplits a ha.le) (hsimple a ha.le)
+  · rw [hdegree a ha.le]
+    exact Nat.one_le_iff_ne_zero.mpr hD
+  · simpa [hdegree a ha.le] using hAdeg
+  · intro r hrmem
+    exact quadraticInterlacingTangent_residue_nonneg
+      hFpos hGpos hHpos hFG hGH hD hFdeg hGdeg hHdeg hdegree
+      hdegree_local hpos hsplits hsimple hsplits_recip hcoeff0_recip
+      hneg_recip (hneg a ha.le r hrmem) ha
+      (Polynomial.isRoot_of_mem_roots hrmem)
+
 /-- The quadratic pencil is the right member plus `a` times its tangent. -/
 theorem quadraticInterlacingPencil_eq_right_add_tangent
     (F G H : ℝ[X]) (a : ℝ) :
