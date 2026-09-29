@@ -1318,6 +1318,62 @@ theorem quadraticParameterEvaluation_positive_root_count_eq_one
 
 /-! ## Logarithmic-ratio endpoint -/
 
+/-- Nonnegative residues at the simple roots of the denominator force the
+upper-half-plane imaginary part of the polynomial ratio to be nonpositive.
+The numerator may have either the same degree or one of smaller degree. -/
+theorem im_ratio_nonpos_of_residue_nonneg
+    {f g : ℝ[X]} (hfpos : HasPosLeadingCoeff f)
+    (hfs : f.Splits) (hfnd : f.roots.Nodup)
+    (hfdeg : 1 ≤ f.natDegree) (hgdeg : g.natDegree ≤ f.natDegree)
+    (hres : ∀ s ∈ f.roots, 0 ≤ g.eval s / f.derivative.eval s)
+    {z : ℂ} (hz : 0 < z.im) :
+    ((complexify g).eval z / (complexify f).eval z).im ≤ 0 := by
+  have hfne : f ≠ 0 := by
+    intro hzero
+    subst f
+    simp at hfdeg
+  by_cases hgne : g = 0
+  · subst g
+    simp
+  by_cases hlt : g.natDegree < f.natDegree
+  · have hgdegree : g.degree < f.natDegree := by
+      rw [degree_eq_natDegree hgne]
+      exact_mod_cast hlt
+    apply im_partialfraction_nonpos z hz 0
+      (fun s => g.eval s / f.derivative.eval s) hres
+    rw [complexify_ratio_eq_partialfraction hfs hfnd hfdeg hgdegree hz]
+    simp
+  · have heq : g.natDegree = f.natDegree := by omega
+    set c₀ := g.leadingCoeff / f.leadingCoeff with hc₀
+    set g' := g - C c₀ * f with hg'
+    have hg'deg : g'.degree < f.natDegree :=
+      degree_sub_c₀_mul_lt hfne hgne heq hfpos
+    have hg'eval : ∀ s ∈ f.roots, g'.eval s = g.eval s := by
+      intro s hs
+      have hsroot : f.IsRoot s := Polynomial.isRoot_of_mem_roots hs
+      simp [hg', Polynomial.IsRoot.def.mp hsroot]
+    have hfz : (complexify f).eval z ≠ 0 :=
+      eval_complexify_ne_zero_of_splits_of_im_pos hfs hfne hz
+    have hproper : (complexify g').eval z / (complexify f).eval z =
+        (f.roots.map fun s =>
+          ((g.eval s / f.derivative.eval s : ℝ) : ℂ) / (z - (s : ℂ))).sum := by
+      rw [complexify_ratio_eq_partialfraction hfs hfnd hfdeg hg'deg hz]
+      congr 1
+      apply Multiset.map_congr rfl
+      simp_all
+    have hsplit : (complexify g).eval z =
+        (complexify g').eval z + (c₀ : ℂ) * (complexify f).eval z := by
+      rw [hg']
+      unfold complexify
+      simp
+    have hid : (complexify g).eval z / (complexify f).eval z =
+        (c₀ : ℂ) + (f.roots.map fun s =>
+          ((g.eval s / f.derivative.eval s : ℝ) : ℂ) / (z - (s : ℂ))).sum := by
+      rw [hsplit, add_div, mul_div_assoc, div_self hfz, mul_one, add_comm,
+        hproper]
+    exact im_partialfraction_nonpos z hz c₀
+      (fun s => g.eval s / f.derivative.eval s) hres hid
+
 /-- A nonpositive upper-half-plane logarithmic ratio puts the parameter
 tangent before the quadratic pencil in oriented interlacing order.
 
