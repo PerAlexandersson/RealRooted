@@ -1060,7 +1060,8 @@ theorem quadraticInterlacingPencil_one_positive_crossing_exact_drop
       (F.roots.filter (r < ·)).card) :
     ((quadraticInterlacingPencil F G H 0).roots.filter (r < ·)).card =
       ((quadraticInterlacingPencil F G H R).roots.filter (r < ·)).card +
-        (quadraticParameterEvaluation F G H r).roots.count a := by
+        (quadraticParameterEvaluation F G H r).roots.count a ∧
+      (quadraticParameterEvaluation F G H r).roots.count a = 1 := by
   let q := quadraticParameterEvaluation F G H r
   have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
     rw [hrs]
@@ -1107,7 +1108,7 @@ theorem quadraticInterlacingPencil_one_positive_crossing_exact_drop
       (H.roots.filter (r < ·)).card - (F.roots.filter (r < ·)).card := by
     omega
   rw [hmult_eq_drop]
-  omega
+  constructor <;> omega
 
 /-- With two positive crossing parameters, both successive chamber-count
 jumps are downward and equal their full parameter-root multiplicities. -/
@@ -1135,7 +1136,9 @@ theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
           (quadraticParameterEvaluation F G H r).roots.count a ∧
       ((quadraticInterlacingPencil F G H m).roots.filter (r < ·)).card =
         ((quadraticInterlacingPencil F G H R).roots.filter (r < ·)).card +
-          (quadraticParameterEvaluation F G H r).roots.count b := by
+          (quadraticParameterEvaluation F G H r).roots.count b ∧
+      (quadraticParameterEvaluation F G H r).roots.count a = 1 ∧
+      (quadraticParameterEvaluation F G H r).roots.count b = 1 := by
   dsimp only
   let q := quadraticParameterEvaluation F G H r
   let m := (a + b) / 2
@@ -1145,7 +1148,8 @@ theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
           q.roots.count a ∧
       ((quadraticInterlacingPencil F G H m).roots.filter (r < ·)).card =
         ((quadraticInterlacingPencil F G H R).roots.filter (r < ·)).card +
-          q.roots.count b
+          q.roots.count b ∧
+      q.roots.count a = 1 ∧ q.roots.count b = 1
   have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
     rw [hrs]
     simp
@@ -1234,7 +1238,11 @@ theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
   have hmult_eq_drop : q.roots.count a + q.roots.count b =
       (H.roots.filter (r < ·)).card - (F.roots.filter (r < ·)).card := by
     omega
-  omega
+  constructor
+  · omega
+  · constructor
+    · omega
+    · constructor <;> omega
 
 /-! ## Logarithmic-ratio endpoint -/
 
