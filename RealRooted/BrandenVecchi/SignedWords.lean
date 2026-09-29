@@ -370,8 +370,8 @@ theorem signedDescentNumber_le {q p n : ℕ}
 theorem IsSignedWord.isNegative_of_mem_collisionSet {q p n : ℕ}
     {w : Fin (n + 1) → SignedLetter q p} (hw : IsSignedWord (n + 1) w)
     {i : Fin n} (hi : i ∈ collisionSet w) :
-    (w i.castSucc).IsNegative := by
-  exact (signedAdjacent_iff_eq_imp_isNegative _ _).mp
+    (w i.castSucc).IsNegative :=
+  (signedAdjacent_iff_eq_imp_isNegative _ _).mp
     ((isSignedWord_succ_iff w).mp hw i) (mem_collisionSet_iff w i |>.mp hi)
 
 end RealRooted.BrandenVecchi

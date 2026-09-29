@@ -83,8 +83,8 @@ theorem signedWordWeight_eq_zero_of_exists {q p n : ℕ}
     (weight : SignedLetter q p → R)
     (w : Fin n → SignedLetter q p) {i : Fin n}
     (hi : weight (w i) = 0) :
-    signedWordWeight weight w = 0 := by
-  exact Finset.prod_eq_zero (Finset.mem_univ i) hi
+    signedWordWeight weight w = 0 :=
+  Finset.prod_eq_zero (Finset.mem_univ i) hi
 
 /-- Pointwise equal weight functions give equal word weights. -/
 theorem signedWordWeight_congr {q p n : ℕ}
@@ -111,8 +111,8 @@ theorem signedWordEnumerator_zero {q p : ℕ}
     (weight : SignedLetter q p → R) :
     signedWordEnumerator weight 0 = 1 := by
   classical
-  have hwords : signedWords q p 0 = Finset.univ := by
-    exact Finset.filter_eq_self.mpr fun _ _ => trivial
+  have hwords : signedWords q p 0 = Finset.univ :=
+    Finset.filter_eq_self.mpr fun _ _ => trivial
   simp [signedWordEnumerator, hwords]
 
 @[simp]
@@ -353,8 +353,8 @@ theorem signedWordEnumerator_add_zero_letters {q p : ℕ}
     (weight : SignedLetter q p → R) (r s n : ℕ) :
     signedWordEnumerator weight n =
       signedWordEnumerator
-        (extendSignedLetterWeight (signedLetterExtend q p r s).toEmbedding weight) n := by
-  exact signedWordEnumerator_extend (signedLetterExtend q p r s)
+        (extendSignedLetterWeight (signedLetterExtend q p r s).toEmbedding weight) n :=
+  signedWordEnumerator_extend (signedLetterExtend q p r s)
     (signedLetterExtend_isNegative_iff q p r s) weight n
 
 end

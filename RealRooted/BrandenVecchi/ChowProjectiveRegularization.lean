@@ -141,8 +141,8 @@ theorem tendsto_coeff_projectiveRegularizedChow
 theorem projectiveRegularizedSequence_isPolyaFreqSeq
     {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon) (N : ℕ) :
-    IsPolyaFreqSeq (projectiveRegularizedSequence N a epsilon) := by
-  exact BrandenLeite.regularizedSequence_isPolyaFreqSeq
+    IsPolyaFreqSeq (projectiveRegularizedSequence N a epsilon) :=
+  BrandenLeite.regularizedSequence_isPolyaFreqSeq
     (ha.geometricScale epsilon hepsilon) N zero_le_one
 
 /-- Division-free comparison of the two epsilon regularizations. -/
