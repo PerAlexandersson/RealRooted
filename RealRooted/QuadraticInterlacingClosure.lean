@@ -835,6 +835,38 @@ theorem quadraticParameterEvaluation_not_isRoot_before_first_positive
       rw [hrs, List.pairwise_cons] at hpair
       exact (not_lt_of_ge hza.le) (hpair.1 z hzmem)
 
+/-- After the final positive crossing, the parameter chamber is root-free. -/
+theorem quadraticParameterEvaluation_not_isRoot_after_last_positive
+    {F G H : ℝ[X]} {r a z : ℝ} {xs : List ℝ}
+    (hrF : ¬F.IsRoot r)
+    (hrs : positiveQuadraticParameterRoots F G H r = xs ++ [a])
+    (haz : a < z) :
+    ¬(quadraticParameterEvaluation F G H r).IsRoot z := by
+  let q := quadraticParameterEvaluation F G H r
+  have hqdeg : q.natDegree = 2 := quadraticParameterEvaluation_natDegree hrF
+  have hqne : q ≠ 0 := by
+    intro hzero
+    rw [hzero] at hqdeg
+    simp at hqdeg
+  have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
+    rw [hrs, List.mem_append]
+    simp
+  have hapos : 0 < a :=
+    (mem_positiveQuadraticParameterRoots_iff.mp hamem).2
+  intro hzroot
+  have hzmem : z ∈ positiveQuadraticParameterRoots F G H r := by
+    rw [mem_positiveQuadraticParameterRoots_iff]
+    exact ⟨(Polynomial.mem_roots hqne).2 hzroot, hapos.trans haz⟩
+  have hpair := positiveQuadraticParameterRoots_pairwise F G H r
+  rw [hrs, List.pairwise_append] at hpair
+  rw [hrs, List.mem_append] at hzmem
+  rcases hzmem with hzxs | hzlast
+  · have hza := hpair.2.2 z hzxs a (by simp)
+    exact (not_lt_of_ge haz.le) hza
+  · simp only [List.mem_singleton] at hzlast
+    subst z
+    exact (lt_irrefl a haz).elim
+
 /-- Beyond the Cauchy bound, the parameter evaluation has no roots.  This
 provides a canonical terminal chamber to the right of every positive crossing. -/
 theorem quadraticParameterEvaluation_not_isRoot_above_cauchyBound
