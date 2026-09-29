@@ -378,8 +378,8 @@ lemma countP_lt_of_eq_max_isRoot
     have hr_mem : r ∈ ts := by
       apply Multiset.mem_coe.mp
       simp_all
-    have hlt : ts.countP (· < r) < ts.countP (· ≤ r) := by
-      exact countP_lt_countP_of_exists (by grind) hr_mem (by simp) (by simp)
+    have hlt : ts.countP (· < r) < ts.countP (· ≤ r) :=
+      countP_lt_countP_of_exists (by grind) hr_mem (by simp) (by simp)
     lia
 
 lemma mul_neg_of_mul_neg_of_mul_neg {a b c d : ℝ}
