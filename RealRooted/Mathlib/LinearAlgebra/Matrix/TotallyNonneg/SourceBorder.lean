@@ -86,12 +86,10 @@ protected theorem IsTotallyNonneg.prependFirstBasisColumn
           let rows' : Fin q → Fin (N + 1) := fun i => rows i.succ
           let cols' : Fin q → Fin (N + 1) := fun j =>
             (cols j.succ).pred (hcols_tail_ne j)
-          have hrows' : StrictMono rows' := by
-            intro i j hij
-            exact hrows (Fin.succ_lt_succ_iff.mpr hij)
-          have hcols' : StrictMono cols' := by
-            intro i j hij
-            exact Fin.pred_lt_pred_iff.mpr
+          have hrows' : StrictMono rows' :=
+            fun i j hij => hrows (Fin.succ_lt_succ_iff.mpr hij)
+          have hcols' : StrictMono cols' :=
+            fun i j hij => Fin.pred_lt_pred_iff.mpr
               (hcols (Fin.succ_lt_succ_iff.mpr hij))
           let M := (prependFirstBasisColumn H).submatrix rows cols
           have hcolM : ∀ i : Fin q, M i.succ 0 = 0 := by
@@ -136,9 +134,8 @@ protected theorem IsTotallyNonneg.prependFirstBasisColumn
           simpa [hj] using hcols.monotone (Fin.zero_le j)
         let cols' : Fin (q + 1) → Fin (N + 1) := fun j =>
           (cols j).pred (hcols_ne_zero j)
-        have hcols' : StrictMono cols' := by
-          intro i j hij
-          exact Fin.pred_lt_pred_iff.mpr (hcols hij)
+        have hcols' : StrictMono cols' :=
+          fun i j hij => Fin.pred_lt_pred_iff.mpr (hcols hij)
         have heq : (prependFirstBasisColumn H).submatrix rows cols =
             H.submatrix rows cols' := by
           ext i j
@@ -266,13 +263,11 @@ protected theorem IsTotallyNonneg.sourceStep
             (rows i.succ).pred (hrows_tail_ne i)
           let cols' : Fin q → Fin (N + 1) := fun j =>
             (cols j.succ).pred (hcols_tail_ne j)
-          have hrows' : StrictMono rows' := by
-            intro i j hij
-            exact Fin.pred_lt_pred_iff.mpr
+          have hrows' : StrictMono rows' :=
+            fun i j hij => Fin.pred_lt_pred_iff.mpr
               (hrows (Fin.succ_lt_succ_iff.mpr hij))
-          have hcols' : StrictMono cols' := by
-            intro i j hij
-            exact Fin.pred_lt_pred_iff.mpr
+          have hcols' : StrictMono cols' :=
+            fun i j hij => Fin.pred_lt_pred_iff.mpr
               (hcols (Fin.succ_lt_succ_iff.mpr hij))
           have hrows_eq :
               (Fin.cases 0 fun i => (rows' i).succ) = rows := by
@@ -296,9 +291,8 @@ protected theorem IsTotallyNonneg.sourceStep
             simpa [hi] using hrows.monotone (Fin.zero_le i)
           let rows' : Fin (q + 1) → Fin (N + 1) := fun i =>
             (rows i).pred (hrows_ne_zero i)
-          have hrows' : StrictMono rows' := by
-            intro i j hij
-            exact Fin.pred_lt_pred_iff.mpr (hrows hij)
+          have hrows' : StrictMono rows' :=
+            fun i j hij => Fin.pred_lt_pred_iff.mpr (hrows hij)
           have heq : (sourceStep δ H).submatrix rows cols =
               (prependFirstBasisColumn H).submatrix rows' cols := by
             ext i j
@@ -316,9 +310,8 @@ protected theorem IsTotallyNonneg.sourceStep
           simpa [hj] using hcols.monotone (Fin.zero_le j)
         let cols' : Fin (q + 1) → Fin (N + 1) := fun j =>
           (cols j).pred (hcols_ne_zero j)
-        have hcols' : StrictMono cols' := by
-          intro i j hij
-          exact Fin.pred_lt_pred_iff.mpr (hcols hij)
+        have hcols' : StrictMono cols' :=
+          fun i j hij => Fin.pred_lt_pred_iff.mpr (hcols hij)
         have hcols_eq : (fun j => (cols' j).succ) = cols := by
           funext j
           simp [cols']
