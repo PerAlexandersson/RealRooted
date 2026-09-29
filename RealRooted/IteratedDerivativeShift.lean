@@ -1031,6 +1031,47 @@ lemma HasNonnegCoeffs.iterateTDeriv_neg
       simp only [neg_mul, sub_neg_eq_add]
       exact add_nonneg hi (mul_nonneg heps (mul_nonneg hisucc (by positivity)))
 
+/-- Once the number of negative derivative shifts dominates the degree, a
+nonzero polynomial with nonnegative coefficients has positive constant term.
+Equivalently, the regularization has no zero root. -/
+theorem coeff_zero_iterateTDeriv_neg_pos_of_natDegree_le
+    {eps : ℝ} (heps : 0 < eps) {p : ℝ[X]}
+    (hp : HasNonnegCoeffs p) (hpne : p ≠ 0) :
+    ∀ {k : ℕ}, p.natDegree ≤ k →
+      0 < (iterateTDeriv (-eps) k p).coeff 0 := by
+  intro k
+  induction k generalizing p with
+  | zero =>
+      intro hdeg
+      have hpdeg : p.natDegree = 0 := by omega
+      have hlead := hp.pos_leadingCoeff hpne
+      rw [iterateTDeriv_eq_of_natDegree_zero (-eps) hpdeg]
+      simpa [HasPosLeadingCoeff, leadingCoeff, hpdeg] using hlead
+  | succ k ih =>
+      intro hdeg
+      by_cases hpdeg : p.natDegree = 0
+      · have hlead := hp.pos_leadingCoeff hpne
+        rw [iterateTDeriv_eq_of_natDegree_zero (-eps) hpdeg]
+        simpa [HasPosLeadingCoeff, leadingCoeff, hpdeg] using hlead
+      · have hpderne : p.derivative ≠ 0 :=
+          (p.derivative_ne_zero).2 hpdeg
+        have hpderdeg : p.derivative.natDegree ≤ k := by
+          rw [p.natDegree_derivative]
+          omega
+        have hderpos := ih hp.derivative hpderne hpderdeg
+        have hcoeffOne : 0 < (iterateTDeriv (-eps) k p).coeff 1 := by
+          have hcomm := iterate_derivative_iterateTDeriv (-eps) k 1 p
+          simp only [Function.iterate_one] at hcomm
+          have hcoeff := congrArg (fun q : ℝ[X] => q.coeff 0) hcomm
+          simp only [coeff_derivative] at hcoeff
+          norm_num at hcoeff
+          rwa [hcoeff]
+        have hcoeffZero : 0 ≤ (iterateTDeriv (-eps) k p).coeff 0 :=
+          hp.iterateTDeriv_neg heps.le k 0
+        rw [iterateTDeriv_succ, coeff_TDeriv]
+        norm_num
+        nlinarith
+
 /-- Consecutive `iterateTDeriv` iterates form a generalized Sturm chain: every
 step strictly interlaces into the next one. This packages repeated applications
 of `strictInterl_TDeriv` in the exact form needed for chain arguments. -/
