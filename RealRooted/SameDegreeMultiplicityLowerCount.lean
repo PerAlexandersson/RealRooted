@@ -352,8 +352,8 @@ private lemma abs_root_lt_of_coeff_le {p : ℝ[X]} {C0 M : ℝ} (hC0 : 0 < C0)
 
 /-- **Per-root multiplicity lower counts for a continuous fixed-degree family.**
 
-Suppose that `p` has coefficientwise-continuous coefficients and constant
-`natDegree`.  If the base member splits, then every base root, counted with
+Suppose that `p` has coefficientwise-continuous coefficients, is uniformly
+bounded by the base degree, and the base member splits. Then every base root, counted with
 multiplicity, is represented by at least that many roots of every sufficiently
 nearby splitting member in any prescribed neighborhood.
 
@@ -362,7 +362,8 @@ reflection, roots escaping to infinity become an ordinary multiple root at
 zero, so no separate simple-root hypothesis is needed. -/
 theorem eventually_forall_root_count_le_card_filter_near_of_continuous_coeff
     {T : Type*} [TopologicalSpace T] (p : T → ℝ[X]) {t : T} {n : ℕ}
-    (hdegree : ∀ u, (p u).natDegree = n)
+    (hdegree : ∀ u, (p u).natDegree ≤ n)
+    (hp0degree : (p t).natDegree = n)
     (hcoeff : ∀ i, Continuous fun u => (p u).coeff i)
     (hp0_split : (p t).Splits) (ρ : ℝ) (hρ : 0 < ρ) :
     ∀ᶠ u in 𝓝 t, (p u).Splits →
@@ -375,7 +376,7 @@ theorem eventually_forall_root_count_le_card_filter_near_of_continuous_coeff
       rw [hp0] at ha
       simp at ha
   set p0 := p t with hp0def
-  have hp0deg : p0.natDegree = n := hdegree t
+  have hp0deg : p0.natDegree = n := hp0degree
   have hlc0ne : p0.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp0
   set lc0 := p0.leadingCoeff with hlc0def
   have hlc0pos : 0 < |lc0| := abs_pos.mpr hlc0ne
@@ -416,7 +417,7 @@ theorem eventually_forall_root_count_le_card_filter_near_of_continuous_coeff
     rw [Finset.eventually_all]
     intro j hj
     have htaylor := continuousAt_coeff_taylor_of_continuousAt_coeff
-      p (fun u => (hdegree u).le) hcoeffAt a j
+      p hdegree hcoeffAt a j
     have hnear := Metric.tendsto_nhds.mp htaylor (δ * c0) (mul_pos hδ0 hc0)
     simpa [hp0def, Real.dist_eq] using hnear
   have hp0_coeff : ∀ i, |p0.coeff i| ≤ M0 := by
@@ -429,7 +430,6 @@ theorem eventually_forall_root_count_le_card_filter_near_of_continuous_coeff
   filter_upwards [hcoeff_near, hlc_near, htaylor_near] with u hucoeff hulc hutaylor
   intro husplit a ha
   set pnu := p u with hpnudef
-  have hpnu_deg : pnu.natDegree = n := hdegree u
   have hpnu_coeff : ∀ i, |pnu.coeff i| ≤ Cfg := by
     intro i
     by_cases hi : i ≤ n
@@ -444,9 +444,9 @@ theorem eventually_forall_root_count_le_card_filter_near_of_continuous_coeff
       have hclose : |pnu.coeff i - p0.coeff i| < 1 := by
         simpa [hpnudef] using hucoeff i (Finset.mem_range.mpr (by lia))
       linarith
-    · rw [coeff_eq_zero_of_natDegree_lt (by rw [hpnu_deg]; lia)]
+    · rw [coeff_eq_zero_of_natDegree_lt (by
+        exact lt_of_not_ge fun h => hi (h.trans (hdegree u)))]
       simpa using hCfg0
-  have hpnu_lc : pnu.leadingCoeff = pnu.coeff n := by rw [leadingCoeff, hpnu_deg]
   have hp0_cn : p0.coeff n = lc0 := by rw [hlc0def, leadingCoeff, hp0deg]
   have hclower : c0 ≤ |pnu.coeff n| := by
     have htri := abs_add_le (lc0 - pnu.coeff n) (pnu.coeff n)
@@ -458,6 +458,10 @@ theorem eventually_forall_root_count_le_card_filter_near_of_continuous_coeff
   have hcne : pnu.coeff n ≠ 0 := fun h => by
     rw [h, abs_zero] at hclower
     linarith
+  have hpnu_deg : pnu.natDegree = n := by
+    apply le_antisymm (hdegree u)
+    exact le_natDegree_of_ne_zero hcne
+  have hpnu_lc : pnu.leadingCoeff = pnu.coeff n := by rw [leadingCoeff, hpnu_deg]
   set c := pnu.coeff n with hcdef
   have hcinv : c⁻¹ ≠ 0 := inv_ne_zero hcne
   set ptil := C c⁻¹ * pnu with hptildef

@@ -25,7 +25,7 @@ This is the polynomial bridge for the local-lower-count part of issue #42:
 after an analytic continuity argument supplies the per-root lower counts near a
 fixed positive parameter, the threshold count equality is finite bookkeeping.
 -/
-private theorem exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_counts
+theorem exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_counts
     {p : ℝ[X]} {x : ℝ} (hx : x ∉ p.roots) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ q : ℝ[X], p.Splits → q.Splits →
       q.natDegree = p.natDegree →

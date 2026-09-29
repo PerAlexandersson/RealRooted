@@ -1,11 +1,13 @@
 import RealRooted.HermiteBiehler.OrientedPencil
 import RealRooted.CriticalValueContinuation
+import RealRooted.DegreeDropReversal
 import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
 import RealRooted.LiuOppositeSigns.JensenRootCount
 import RealRooted.PFPolynomial.Closure
 import RealRooted.RootCountLocalConstancy
 import RealRooted.RootCounting.Descartes
+import RealRooted.SameDegreeMultiplicityLowerCount
 import RealRooted.Wronskian.WeakForward
 
 /-!
@@ -133,6 +135,107 @@ def quadraticInterlacingTangent (F G : ℝ[X]) (a : ℝ) : ℝ[X] :=
 /-- The right member in the quadratic closure conclusion. -/
 def quadraticInterlacingRight (G H : ℝ[X]) (a : ℝ) : ℝ[X] :=
   H + C a * G
+
+/-- The fixed-degree reflection of the reciprocal-parameter quadratic pencil.
+
+For `b ≠ 0`, its unreflected member is `b² Q (b⁻¹)`. At `b = 0` it is
+`F`, so reflection turns roots escaping as `a → ∞` into ordinary roots near
+zero. -/
+def compactifiedQuadraticInterlacingPencil
+    (F G H : ℝ[X]) (D : ℕ) (b : ℝ) : ℝ[X] :=
+  reflect D (quadraticInterlacingPencil H G F b)
+
+/-- A common degree bound for the three coefficient polynomials bounds every
+member of their quadratic pencil. -/
+theorem natDegree_quadraticInterlacingPencil_le
+    {F G H : ℝ[X]} {D : ℕ}
+    (hF : F.natDegree ≤ D) (hG : G.natDegree ≤ D)
+    (hH : H.natDegree ≤ D) (a : ℝ) :
+    (quadraticInterlacingPencil F G H a).natDegree ≤ D := by
+  refine (natDegree_add_le _ _).trans (max_le ?_ ?_)
+  · exact (natDegree_add_le _ _).trans
+      (max_le hH ((natDegree_C_mul_le _ _).trans hG))
+  · exact (natDegree_C_mul_le _ _).trans hF
+
+/-- The compactified pencil has degree at most its reflection degree. -/
+theorem natDegree_compactifiedQuadraticInterlacingPencil_le
+    {F G H : ℝ[X]} {D : ℕ}
+    (hF : F.natDegree ≤ D) (hG : G.natDegree ≤ D)
+    (hH : H.natDegree ≤ D) (b : ℝ) :
+    (compactifiedQuadraticInterlacingPencil F G H D b).natDegree ≤ D := by
+  unfold compactifiedQuadraticInterlacingPencil
+  refine Polynomial.natDegree_reflect_le.trans ?_
+  rw [max_eq_left]
+  exact natDegree_quadraticInterlacingPencil_le hH hG hF b
+
+/-- Every coefficient of the compactified reciprocal pencil is continuous in
+the reciprocal parameter. -/
+theorem continuous_coeff_compactifiedQuadraticInterlacingPencil
+    (F G H : ℝ[X]) (D i : ℕ) :
+    Continuous fun b =>
+      (compactifiedQuadraticInterlacingPencil F G H D b).coeff i := by
+  simp only [compactifiedQuadraticInterlacingPencil, coeff_reflect,
+    quadraticInterlacingPencil, coeff_add, coeff_C_mul]
+  fun_prop
+
+/-- At reciprocal parameter zero, the compactified pencil is the fixed-degree
+reflection of `F`. -/
+@[simp] theorem compactifiedQuadraticInterlacingPencil_zero
+    (F G H : ℝ[X]) (D : ℕ) :
+    compactifiedQuadraticInterlacingPencil F G H D 0 = reflect D F := by
+  simp [compactifiedQuadraticInterlacingPencil,
+    quadraticInterlacingPencil]
+
+/-- Near the compactified `a = ∞` endpoint, the strict-upper root count of the
+reflected pencil is constant across every level avoiding the reflected roots
+of `F`.
+
+The nearby member is required to split only when the conclusion is consumed;
+the theorem's continuity argument itself is valid for the full real parameter
+line. Repeated zero roots created by a degree drop are handled by the general
+multiplicity-persistence theorem. -/
+theorem eventually_compactifiedQuadraticInterlacingPencil_card_roots_gt_eq
+    {F G H : ℝ[X]} {D : ℕ}
+    (hF : F.natDegree ≤ D) (hG : G.natDegree ≤ D)
+    (hH : H.natDegree ≤ D) (hF0 : F.coeff 0 ≠ 0)
+    (hFsplit : F.Splits) {s : ℝ} (hs : s ∉ (reflect D F).roots) :
+    ∀ᶠ b in 𝓝 0,
+      (compactifiedQuadraticInterlacingPencil F G H D b).Splits →
+        ((compactifiedQuadraticInterlacingPencil F G H D b).roots.filter
+            (s < ·)).card =
+          ((reflect D F).roots.filter (s < ·)).card := by
+  let p : ℝ → ℝ[X] := fun b =>
+    compactifiedQuadraticInterlacingPencil F G H D b
+  have hdegree_le : ∀ b, (p b).natDegree ≤ D := fun b =>
+    natDegree_compactifiedQuadraticInterlacingPencil_le hF hG hH b
+  have hp0 : p 0 = reflect D F := by simp [p]
+  have hp0degree : (p 0).natDegree = D := by
+    rw [hp0]
+    exact DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hF hF0
+  have hp0ne : p 0 ≠ 0 := by
+    rw [hp0]
+    apply leadingCoeff_ne_zero.mp
+    rw [DegreeDropReversal.leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le hF hF0]
+    exact hF0
+  have hp0split : (p 0).Splits := by
+    rw [hp0]
+    exact DegreeDropReversal.splits_reflect_of_splits hFsplit hF
+  have hcoeff : ∀ i, Continuous fun b => (p b).coeff i := fun i => by
+    simpa [p] using
+      continuous_coeff_compactifiedQuadraticInterlacingPencil F G H D i
+  obtain ⟨ρ, hρ, hbridge⟩ :=
+    exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_counts
+      (p := p 0) (x := s) (by simpa [hp0] using hs)
+  have hlower :=
+    eventually_forall_root_count_le_card_filter_near_of_continuous_coeff
+      p hdegree_le hp0degree hcoeff hp0split ρ hρ
+  have hdegree :=
+    Polynomial.eventually_natDegree_eq_of_le_of_continuous_coeff
+      p hp0degree hp0ne hdegree_le hcoeff
+  filter_upwards [hlower, hdegree] with b hb hdeg
+  intro hsplit
+  simpa [p] using
+    hbridge (p b) hp0split hsplit (by rw [hdeg, hp0degree]) (hb hsplit)
 
 /-- Every coefficient of the quadratic pencil depends smoothly on its real
 parameter. -/
