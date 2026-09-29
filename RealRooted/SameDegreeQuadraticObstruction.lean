@@ -57,7 +57,7 @@ theorem discrim_neg_of_quadratic_roots_separated
   have had : 0 < a - d := by linarith
   by_cases hcd0 : c = d
   · subst hcd0
-    have hden : 0 < (b - c) * (a - c) := by nlinarith
+    have hden : 0 < (b - c) * (a - c) := by linarith
     refine ⟨((a - b) ^ 2 + 1) / (2 * ((b - c) * (a - c))), ?_, ?_⟩
     · exact div_pos (by positivity) (by linarith)
     · rw [discrim_pencil_quadratics]
@@ -69,7 +69,7 @@ theorem discrim_neg_of_quadratic_roots_separated
                 (((a - b) ^ 2 + 1) / (2 * ((b - c) * (a - c)))) ^ 2 =
             -(a - b) ^ 2 - 2 := by grind
       rw [hval]
-      nlinarith [sq_nonneg (a - b)]
+      linarith [sq_nonneg (a - b)]
   · have hcd' : c < d := lt_of_le_of_ne hcd hcd0
     have hq : 0 < (c - d) ^ 2 := by
       have : c - d ≠ 0 := by grind
@@ -79,11 +79,11 @@ theorem discrim_neg_of_quadratic_roots_separated
     have hlin :
         (b - a) * (d - c) <
           (b - c) * (a - d) + (b - d) * (a - c) := by
-      nlinarith [mul_pos had hbc]
+      linarith [mul_pos had hbc]
     have hSsq :
         (a - b) ^ 2 * (c - d) ^ 2 <
           ((b - c) * (a - d) + (b - d) * (a - c)) ^ 2 := by
-      nlinarith
+      linarith
         [mul_pos
           (show
             (0 : ℝ) <

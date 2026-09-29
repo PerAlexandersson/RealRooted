@@ -89,7 +89,7 @@ theorem eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
   ext k
   simp [hd, mul_add, add_assoc]
   ring_nf
-  nlinarith [congrArg (fun x => x * Q.coeff k) hbc,
+  linarith [congrArg (fun x => x * Q.coeff k) hbc,
     congrArg (fun x => x * R.coeff k) hef]
 
 

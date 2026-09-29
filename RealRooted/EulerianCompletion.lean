@@ -234,7 +234,7 @@ theorem loweringEulerResidual_stable
   have hMpos : 0 < (M : ℝ) := by
     have hDpos : 0 < D := hD
     exact_mod_cast (lt_of_lt_of_le hDpos (by lia : D ≤ M))
-  nlinarith [mul_pos hMD (hz 0), mul_pos hMpos (hz 1)]
+  linarith [mul_pos hMD (hz 0), mul_pos hMpos (hz 1)]
 
 /-- The genuine finite algebraic symbol of the lowering Euler operator is
 upper-half-plane stable. -/

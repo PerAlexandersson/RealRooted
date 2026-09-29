@@ -95,7 +95,7 @@ lemma eval_cross_le_of_strictInterl_sameDegree_of_nonneg
   rw [eval_eq_leadingCoeff_mul_prod_sub hf.2 0,
     eval_eq_leadingCoeff_mul_prod_sub hg.2 0, ← hss_eq, ← hrs_eq]
   simp only [Multiset.map_coe, Multiset.prod_coe]
-  nlinarith [mul_le_mul_of_nonneg_left hprod (le_of_lt (mul_pos hflc hglc))]
+  linarith [mul_le_mul_of_nonneg_left hprod (le_of_lt (mul_pos hflc hglc))]
 
 /-- A strict normalized endpoint comparison selects the forward branch of
 Obreschkoff's same-degree orientation alternative. -/

@@ -174,7 +174,7 @@ lemma interl_affine_add_one_affine_add_X
   exact
     interl_affine_linear_affine_linear_of_cross
       (u := s) (v := t + 1) (U := s + 1) (V := t)
-      hs (by positivity) (by nlinarith [hs, ht])
+      hs (by positivity) (by linarith [hs, ht])
 
 lemma interl_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + X) (C s * X + C t + X) := by

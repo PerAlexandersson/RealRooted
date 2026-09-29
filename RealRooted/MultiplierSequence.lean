@@ -549,7 +549,7 @@ theorem IsPFPolynomial.jensenPolynomial_two_logConcave {gamma : ℕ → ℝ}
     (p := jensenPolynomial 2 gamma) hj.to_sequence
     (natDegree_jensenPolynomial_le 2 gamma)
   simp [coeff_jensenPolynomial] at hdisc
-  nlinarith
+  linarith
 
 private lemma gamma_eq_zero_of_natDegree_jensen_lt {n : ℕ} {gamma : ℕ → ℝ}
     {k : ℕ} (hk : k ≤ n) (hdeg : (jensenPolynomial n gamma).natDegree < k) :
@@ -571,7 +571,7 @@ theorem IsPFPolynomial.jensenPolynomial_three_logConcave_left {gamma : ℕ → �
       gamma_eq_zero_of_natDegree_jensen_lt (n := 3) (gamma := gamma)
         (k := 2) (by norm_num) hdeg
     rw [hgamma2]
-    nlinarith [sq_nonneg (gamma 1)]
+    linarith [sq_nonneg (gamma 1)]
   · have hdeg' : 1 < (jensenPolynomial 3 gamma).natDegree := by lia
     have hdeg_le : (jensenPolynomial 3 gamma).natDegree ≤ 3 :=
       natDegree_jensenPolynomial_le 3 gamma
@@ -589,7 +589,7 @@ theorem IsPFPolynomial.jensenPolynomial_three_logConcave_left {gamma : ℕ → �
       have h := hulc 1 (by norm_num) hdeg'
       rw [hdeg_three] at h
       norm_num [coeff_jensenPolynomial] at h
-      nlinarith
+      linarith
 
 /-- Right adjacent log-concavity inequality extracted from a degree-three PF
 Jensen polynomial. -/
@@ -601,7 +601,7 @@ theorem IsPFPolynomial.jensenPolynomial_three_logConcave_right {gamma : ℕ → 
       gamma_eq_zero_of_natDegree_jensen_lt (n := 3) (gamma := gamma)
         (k := 3) (by norm_num) hdeg
     rw [hgamma3]
-    nlinarith [sq_nonneg (gamma 2)]
+    linarith [sq_nonneg (gamma 2)]
   · have hdeg' : 2 < (jensenPolynomial 3 gamma).natDegree := by lia
     have hdeg_le : (jensenPolynomial 3 gamma).natDegree ≤ 3 :=
       natDegree_jensenPolynomial_le 3 gamma
@@ -612,7 +612,7 @@ theorem IsPFPolynomial.jensenPolynomial_three_logConcave_right {gamma : ℕ → 
     have h := hulc 2 (by norm_num) hdeg'
     rw [hdeg_three] at h
     norm_num [coeff_jensenPolynomial] at h
-    nlinarith
+    linarith
 
 /-- Adjacent log-concavity inequalities extracted from a degree-three PF
 Jensen polynomial. -/
@@ -672,7 +672,7 @@ private theorem diagonalOperator_discrim_nonneg_of_natDegree_two
     have hgamma_nonneg : 0 ≤ gamma 0 * gamma 2 := mul_nonneg hgamma0 hgamma2
     have hmul_nonpos : (gamma 0 * gamma 2) * (p.coeff 0 * p.coeff 2) ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos hgamma_nonneg hp_nonpos
-    nlinarith [hmul_nonpos, sq_nonneg (gamma 1 * p.coeff 1)]
+    linarith [hmul_nonpos, sq_nonneg (gamma 1 * p.coeff 1)]
 
 /-- Degree at most two case of the backward finite Pólya--Schur direction.
 

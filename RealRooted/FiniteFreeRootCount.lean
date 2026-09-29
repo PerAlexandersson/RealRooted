@@ -122,7 +122,7 @@ private theorem roots_sum_schurSzegoComp_scaled
         -((d : ℝ) *
           (-(schurSzegoComp d f p).roots.sum *
             (f.coeff d * p.coeff d))) := by ring
-    _ = -(f.coeff (d - 1) * p.coeff (d - 1)) := by nlinarith [hout_vieta]
+    _ = -(f.coeff (d - 1) * p.coeff (d - 1)) := by linarith [hout_vieta]
     _ = f.coeff d * (p.coeff (d - 1) * f.roots.sum) := by
       rw [hf_vieta]
       ring
