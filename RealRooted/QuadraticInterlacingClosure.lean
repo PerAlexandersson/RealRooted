@@ -1516,6 +1516,147 @@ theorem quadraticParameterEvaluation_positive_root_count_eq_one
       · simpa only [q] using hexact.2.2.1
       · simpa only [q] using hexact.2.2.2
 
+/-- At a spatial level avoiding the three coefficient polynomials, the
+ordered-crossing exhaustion gives a nonnegative tangent residue at every
+positive-parameter crossing. -/
+theorem quadraticInterlacingTangent_residue_nonneg_of_nonexceptional
+    {F G H : ℝ[X]} {D K : ℕ}
+    (hFpos : HasPosLeadingCoeff F) (hGpos : HasPosLeadingCoeff G)
+    (hHpos : HasPosLeadingCoeff H) (hFG : StrictInterl F G)
+    (hGH : StrictInterl G H) (hD : D ≠ 0)
+    (hFdeg : F.natDegree ≤ K) (hGdeg : G.natDegree ≤ K)
+    (hHdeg : H.natDegree ≤ K)
+    (hdegree : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).natDegree = D)
+    (hdegree_local : ∀ b : ℝ, 0 ≤ b → ∀ᶠ c in nhds b,
+      (quadraticInterlacingPencil F G H c).natDegree = D)
+    (hpos : ∀ b : ℝ, 0 ≤ b →
+      HasPosLeadingCoeff (quadraticInterlacingPencil F G H b))
+    (hsplits : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).Splits)
+    (hsimple : ∀ b : ℝ, 0 ≤ b →
+      HasSimpleRoots (quadraticInterlacingPencil F G H b))
+    (hsplits_recip : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).Splits)
+    (hcoeff0_recip : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil H G F b).coeff 0 ≠ 0)
+    (hneg_recip : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
+      (quadraticInterlacingPencil H G F b).roots, q < 0)
+    {r a : ℝ} (hr : r < 0) (hrF : ¬F.IsRoot r)
+    (hrG : ¬G.IsRoot r) (hrH : ¬H.IsRoot r)
+    (ha : 0 < a)
+    (haroot : (quadraticInterlacingPencil F G H a).IsRoot r) :
+    0 ≤ (quadraticInterlacingTangent F G a).eval r /
+      (quadraticInterlacingPencil F G H a).derivative.eval r := by
+  let q := quadraticParameterEvaluation F G H r
+  have hqdeg : q.natDegree = 2 := quadraticParameterEvaluation_natDegree hrF
+  have hqne : q ≠ 0 := by
+    intro hzero
+    rw [hzero] at hqdeg
+    simp at hqdeg
+  have haqroot : q.IsRoot a :=
+    (quadraticParameterEvaluation_isRoot_iff F G H r a).2 haroot
+  have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
+    rw [mem_positiveQuadraticParameterRoots_iff]
+    exact ⟨(Polynomial.mem_roots hqne).2 haqroot, ha⟩
+  have hlen := positiveQuadraticParameterRoots_length_le_two
+    (F := F) (G := G) (H := H) (r := r) hrF
+  generalize hrs : positiveQuadraticParameterRoots F G H r = xs at hamem hlen
+  have hend := eventually_quadraticInterlacingPencil_card_roots_gt_eq_atTop
+    hFdeg hGdeg hHdeg hsplits_recip hcoeff0_recip hneg_recip hr hrF
+  rcases xs with _ | ⟨c, xs⟩
+  · simp at hamem
+  · rcases xs with _ | ⟨d, xs⟩
+    · have hac : a = c := by simpa using hamem
+      subst a
+      obtain ⟨R, hRcount, hcR⟩ :=
+        (hend.and (Filter.eventually_gt_atTop c)).exists
+      have hexact := quadraticInterlacingPencil_one_positive_crossing_exact_drop
+        hFpos hGpos hHpos hFG hGH hrF hrG hrH hrs hcR hD
+        (fun μ hμ => hdegree μ hμ.1)
+        (fun μ hμ => hdegree_local μ hμ.1)
+        (fun μ hμ => hsplits μ hμ.1)
+        (fun μ hμ => hsimple μ hμ.1) hRcount
+      have hdrop :
+          ((quadraticInterlacingPencil F G H 0).roots.filter (r < ·)).card =
+            ((quadraticInterlacingPencil F G H R).roots.filter (r < ·)).card + 1 := by
+        rw [hexact.1, hexact.2]
+      exact quadraticInterlacingTangent_residue_nonneg_of_exact_crossing
+        ha hcR hD
+        (fun μ hμ => hdegree μ hμ.1)
+        (fun μ hμ => hdegree_local μ hμ.1)
+        (fun μ hμ => hpos μ hμ.1)
+        (fun μ hμ => hsplits μ hμ.1)
+        (fun μ hμ => hsimple μ hμ.1) haroot
+        (fun μ hμ => quadraticParameterEvaluation_not_isRoot_before_first_positive
+          hrF hrH hrs hμ.1 hμ.2)
+        (fun μ hμ => quadraticParameterEvaluation_not_isRoot_after_last_positive
+          hrF (xs := []) (by simpa using hrs) hμ.1)
+        hdrop
+    · have hxsNil : xs = [] := by
+        simpa using hlen
+      subst xs
+      have haCases : a = c ∨ a = d := by simpa using hamem
+      have hpair := positiveQuadraticParameterRoots_pairwise F G H r
+      have hcd : c < d := by
+        rw [hrs] at hpair
+        simpa using hpair
+      have hcmem : c ∈ positiveQuadraticParameterRoots F G H r := by
+        rw [hrs]
+        simp
+      have hcpos : 0 < c :=
+        (mem_positiveQuadraticParameterRoots_iff.mp hcmem).2
+      let m := (c + d) / 2
+      have hcm : c < m := by dsimp [m]; linarith
+      have hmd : m < d := by dsimp [m]; linarith
+      have hm0 : 0 ≤ m := hcpos.le.trans hcm.le
+      obtain ⟨R, hRcount, hdR⟩ :=
+        (hend.and (Filter.eventually_gt_atTop d)).exists
+      have hexact := quadraticInterlacingPencil_two_positive_crossings_exact_drop
+        hFpos hGpos hHpos hFG hGH hrF hrG hrH hrs hdR hD
+        (fun μ hμ => hdegree μ hμ.1)
+        (fun μ hμ => hdegree_local μ hμ.1)
+        (fun μ hμ => hsplits μ hμ.1)
+        (fun μ hμ => hsimple μ hμ.1) hRcount
+      have hzip : (c, d) ∈
+          (positiveQuadraticParameterRoots F G H r).zip
+            (positiveQuadraticParameterRoots F G H r).tail := by
+        rw [hrs]
+        simp
+      rcases haCases with rfl | rfl
+      · have hdrop :
+            ((quadraticInterlacingPencil F G H 0).roots.filter (r < ·)).card =
+              ((quadraticInterlacingPencil F G H m).roots.filter (r < ·)).card + 1 := by
+          simpa only [m, hexact.2.2.1] using hexact.1
+        exact quadraticInterlacingTangent_residue_nonneg_of_exact_crossing
+          ha hcm hD
+          (fun μ hμ => hdegree μ hμ.1)
+          (fun μ hμ => hdegree_local μ hμ.1)
+          (fun μ hμ => hpos μ hμ.1)
+          (fun μ hμ => hsplits μ hμ.1)
+          (fun μ hμ => hsimple μ hμ.1) haroot
+          (fun μ hμ => quadraticParameterEvaluation_not_isRoot_before_first_positive
+            hrF hrH hrs hμ.1 hμ.2)
+          (fun μ hμ => quadraticParameterEvaluation_not_isRoot_between_adjacent_positive
+            hrF hzip hμ.1 (hμ.2.trans_lt hmd))
+          hdrop
+      · have hdrop :
+            ((quadraticInterlacingPencil F G H m).roots.filter (r < ·)).card =
+              ((quadraticInterlacingPencil F G H R).roots.filter (r < ·)).card + 1 := by
+          simpa only [m, hexact.2.2.2] using hexact.2.1
+        exact quadraticInterlacingTangent_residue_nonneg_of_exact_crossing
+          hmd hdR hD
+          (fun μ hμ => hdegree μ (hm0.trans hμ.1))
+          (fun μ hμ => hdegree_local μ (hm0.trans hμ.1))
+          (fun μ hμ => hpos μ (hm0.trans hμ.1))
+          (fun μ hμ => hsplits μ (hm0.trans hμ.1))
+          (fun μ hμ => hsimple μ (hm0.trans hμ.1)) haroot
+          (fun μ hμ => quadraticParameterEvaluation_not_isRoot_between_adjacent_positive
+            hrF hzip (hcm.trans_le hμ.1) hμ.2)
+          (fun μ hμ => quadraticParameterEvaluation_not_isRoot_after_last_positive
+            hrF (xs := [c]) (by simpa using hrs) hμ.1)
+          hdrop
+
 /-! ## Logarithmic-ratio endpoint -/
 
 /-- Nonnegative residues at the simple roots of the denominator force the
