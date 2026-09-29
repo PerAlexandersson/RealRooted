@@ -248,9 +248,8 @@ theorem succDegree_odd_roots_gt_count_sub_iff_eval_mul_neg
     (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
     (Odd (((f.roots.filter (x < ·)).card : ℤ) -
         (g.roots.filter (x < ·)).card) ↔ f.eval x * g.eval x < 0) := by
-  have hfx_eval : f.eval x ≠ 0 := by
-    intro hfx
-    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  have hfx_eval : f.eval x ≠ 0 :=
+    fun hfx => hxf (by simpa [Polynomial.IsRoot.def] using hfx)
   exact (succDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
     hf_pos hg_pos hfg hdeg hf_split hxf hxg).trans
     (exists_pos_isRoot_add_right_iff_eval_mul_neg hfx_eval)
@@ -265,17 +264,14 @@ theorem succDegree_eval_mul_pos_of_not_odd_roots_gt_count_sub
     (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
         (g.roots.filter (x < ·)).card)) :
     0 < f.eval x * g.eval x := by
-  have hnot_neg : ¬ f.eval x * g.eval x < 0 := by
-    intro hneg
-    exact hnot_odd
+  have hnot_neg : ¬ f.eval x * g.eval x < 0 :=
+    fun hneg => hnot_odd
       ((succDegree_odd_roots_gt_count_sub_iff_eval_mul_neg
         hf_pos hg_pos hfg hdeg hf_split hxf hxg).mpr hneg)
-  have hfx_eval : f.eval x ≠ 0 := by
-    intro hfx
-    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
-  have hgx_eval : g.eval x ≠ 0 := by
-    intro hgx
-    exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
+  have hfx_eval : f.eval x ≠ 0 :=
+    fun hfx => hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  have hgx_eval : g.eval x ≠ 0 :=
+    fun hgx => hxg (by simpa [Polynomial.IsRoot.def] using hgx)
   have hprod_ne : f.eval x * g.eval x ≠ 0 := mul_ne_zero hfx_eval hgx_eval
   exact lt_of_le_of_ne (le_of_not_gt hnot_neg) hprod_ne.symm
 
@@ -685,12 +681,10 @@ theorem eval_mul_pos_of_no_rightFamily_isRoot
     {f g : ℝ[X]} {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
     (hno : ∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) :
     0 < f.eval x * g.eval x := by
-  have hfx_eval : f.eval x ≠ 0 := by
-    intro hfx
-    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
-  have hgx_eval : g.eval x ≠ 0 := by
-    intro hgx
-    exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
+  have hfx_eval : f.eval x ≠ 0 :=
+    fun hfx => hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  have hgx_eval : g.eval x ≠ 0 :=
+    fun hgx => hxg (by simpa [Polynomial.IsRoot.def] using hgx)
   have hno_pos : ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x := by
     rintro ⟨μ, hμ, hroot⟩
     exact hno hμ.le hroot
@@ -740,8 +734,8 @@ theorem closedSegment_not_isRoot_add_right_of_nonneg
     rw [div_le_one hden_pos]
     linarith
   intro hroot
-  have hseg_root : (C (1 - μ / (μ + 1)) * f + C (μ / (μ + 1)) * g).IsRoot x := by
-    exact (closedSegment_isRoot_iff_add_right_of_nonneg (f := f) (g := g)
+  have hseg_root : (C (1 - μ / (μ + 1)) * f + C (μ / (μ + 1)) * g).IsRoot x :=
+    (closedSegment_isRoot_iff_add_right_of_nonneg (f := f) (g := g)
       (x := x) hμ).2 hroot
   exact hseg hβ0 hβ1 hseg_root
 
@@ -765,30 +759,30 @@ theorem closedSegment_forall_not_isRoot_iff_eval_mul_pos
 theorem by the parameter change `β = μ / (μ + 1)`. -/
 theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_rightFamily
     (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
-  exact hright hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
-    (fun {_} hμ => closedSegment_not_isRoot_add_right_of_nonneg hμ hseg)
+    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement :=
+  fun f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg =>
+    hright hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
+      (fun {_} hμ => closedSegment_not_isRoot_add_right_of_nonneg hμ hseg)
 
 /-- The endpoint-sign no-gap-two theorem implies the right-family no-gap-two
 theorem because the right-family no-root hypothesis is exactly same-sign
 endpoint evaluation at a common non-root threshold. -/
 theorem compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSign
     (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    CompatibleSuccDegreeRightFamilyNoGapTwoStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hno
-  exact hsign hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
-    (eval_mul_pos_of_no_rightFamily_isRoot hxf hxg hno)
+    CompatibleSuccDegreeRightFamilyNoGapTwoStatement :=
+  fun f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hno =>
+    hsign hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
+      (eval_mul_pos_of_no_rightFamily_isRoot hxf hxg hno)
 
 /-- The right-family no-gap-two theorem implies the endpoint-sign no-gap-two
 theorem because same-sign endpoint evaluations rule out nonnegative
 right-family roots at the fixed threshold. -/
 theorem compatibleSuccDegreeEndpointSignNoGapTwo_of_rightFamily
     (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    CompatibleSuccDegreeEndpointSignNoGapTwoStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
-  exact hright hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
-    (fun {_} hμ => rightFamily_not_isRoot_of_eval_mul_pos hμ hprod)
+    CompatibleSuccDegreeEndpointSignNoGapTwoStatement :=
+  fun f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod =>
+    hright hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
+      (fun {_} hμ => rightFamily_not_isRoot_of_eval_mul_pos hμ hprod)
 
 /-- The right-family and endpoint-sign no-gap-two targets are equivalent. -/
 theorem compatibleSuccDegreeRightFamilyNoGapTwo_iff_endpointSign :
@@ -1081,20 +1075,20 @@ theorem compatibleSuccDegreeRightFamilyNoGapTwo_of_lowerCountEq
 no-gap-two theorem. -/
 theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSign
     (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
-  exact hsign hcomp hf_pos hg_pos hdeg hf_split x hxf hxg <|
-    (closedSegment_forall_not_isRoot_iff_eval_mul_pos hxf hxg).mp hseg
+    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement :=
+  fun f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg =>
+    hsign hcomp hf_pos hg_pos hdeg hf_split x hxf hxg <|
+      (closedSegment_forall_not_isRoot_iff_eval_mul_pos hxf hxg).mp hseg
 
 /-- The closed-segment no-gap-two theorem implies the endpoint-sign
 no-gap-two theorem because same-sign endpoint evaluations rule out
 closed-segment roots at the fixed threshold. -/
 theorem compatibleSuccDegreeEndpointSignNoGapTwo_of_closedSegment
     (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    CompatibleSuccDegreeEndpointSignNoGapTwoStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
-  exact hclosed hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
-    (fun {_} hβ0 hβ1 => closedSegment_not_isRoot_of_eval_mul_pos hβ0 hβ1 hprod)
+    CompatibleSuccDegreeEndpointSignNoGapTwoStatement :=
+  fun f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod =>
+    hclosed hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
+      (fun {_} hβ0 hβ1 => closedSegment_not_isRoot_of_eval_mul_pos hβ0 hβ1 hprod)
 
 /-- The closed-segment and endpoint-sign no-gap-two targets are equivalent. -/
 theorem compatibleSuccDegreeClosedSegmentNoGapTwo_iff_endpointSign :
@@ -1427,9 +1421,8 @@ theorem succDegree_even_roots_le_count_sub_iff_eval_mul_neg
     (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
     (Even (((f.roots.filter (· ≤ x)).card : ℤ) -
         (g.roots.filter (· ≤ x)).card) ↔ f.eval x * g.eval x < 0) := by
-  have hfx_eval : f.eval x ≠ 0 := by
-    intro hfx
-    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  have hfx_eval : f.eval x ≠ 0 :=
+    fun hfx => hxf (by simpa [Polynomial.IsRoot.def] using hfx)
   exact (succDegree_even_roots_le_count_sub_iff_exists_pos_isRoot_add_right
     hf_pos hg_pos hfg hdeg hf_split hxf hxg).trans
     (exists_pos_isRoot_add_right_iff_eval_mul_neg hfx_eval)
