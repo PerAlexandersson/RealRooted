@@ -627,7 +627,7 @@ macro_rules
             | (apply mul_ne_zero <;> rr_nonzero)
             | (apply pow_ne_zero <;> rr_nonzero)
             | (rw [Ne, Polynomial.reverse_eq_zero] <;> rr_nonzero)
-            | exact Polynomial.derivative_ne_zero.mpr (by rr_close_side)
+            | (refine Polynomial.derivative_ne_zero.mpr ?_ <;> rr_close_side)
             | (intro hzero; simp_all [RealRooted.StrictInterl, RealRooted.Interlaces])
             | simp_all [RealRooted.StrictInterl, RealRooted.Interlaces])
   | `(tactic| rr_splits using $h:term) =>
@@ -734,8 +734,9 @@ macro_rules
             | apply Polynomial.Splits.X_sub_C
             | apply Polynomial.Splits.X_pow
             | apply Polynomial.Splits.C_mul_X_pow
-            | exact RealRooted.left_splits_of_interlaces
-                (RealRooted.derivative_interlaces (by assumption) (by rr_close_side))
+            | (refine RealRooted.left_splits_of_interlaces
+                  (RealRooted.derivative_interlaces ?_ ?_) <;>
+                [assumption; rr_close_side])
             | rr_named_splits
             | (apply Polynomial.Splits.mul <;> rr_splits)
             | (apply Polynomial.Splits.pow <;> rr_splits)
@@ -1112,8 +1113,8 @@ macro_rules
         with_reducible_and_instances
           first
             | exact $h
-            | exact RealRooted.derivative_interlaces $h (by rr_close_side)
-            | exact (RealRooted.derivative_interlaces $h (by rr_close_side)).toStrictInterl
+            | (refine RealRooted.derivative_interlaces $h ?_ <;> rr_close_side)
+            | (refine (RealRooted.derivative_interlaces $h ?_).toStrictInterl <;> rr_close_side)
             | rr_exact_realrooted_sequence_or_projection
                 (RealRooted.left_isRealRooted_of_strictInterl_sequence $h)
             | rr_exact_realrooted_sequence_or_projection
@@ -1126,7 +1127,7 @@ macro_rules
             | rr_zero_or_splits using $h
             | exact RealRooted.natDegree_succ_of_interlaces $h
             | exact (RealRooted.natDegree_succ_of_interlaces $h).symm
-            | exact RealRooted.StrictInterl.toInterlaces $h (by rr_close_side)
+            | (refine RealRooted.StrictInterl.toInterlaces $h ?_ <;> rr_close_side)
             | exact RealRooted.Interlaces.toStrictInterl $h
             | exact fun n => RealRooted.Interlaces.toStrictInterl ($h n)
             | exact RealRooted.Interlaces.toStrictInterl ($h _)
@@ -1179,12 +1180,12 @@ macro_rules
           | exact RealRooted.natDegree_succ_of_interlaces rr_lookup_term
           | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
           | exact rr_lookup_interlaces_term
-          | exact RealRooted.derivative_interlaces (by rr_splits) (by rr_close_side)
-          | exact (RealRooted.derivative_interlaces (by rr_splits)
-              (by rr_close_side)).toStrictInterl
+          | (refine RealRooted.derivative_interlaces ?_ ?_ <;> [rr_splits; rr_close_side])
+          | (refine (RealRooted.derivative_interlaces ?_ ?_).toStrictInterl <;>
+              [rr_splits; rr_close_side])
           | exact RealRooted.Interlaces.toStrictInterl rr_lookup_term
           | exact RealRooted.StrictInterl.toInterl rr_lookup_term
-          | exact RealRooted.ne_zero_of_natDegree_eq_one (by rr_degree_eq_one)
+          | (refine RealRooted.ne_zero_of_natDegree_eq_one ?_ <;> rr_degree_eq_one)
           | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
           | exact RealRooted.StrictInterl.toInterl
               (RealRooted.Interlaces.toStrictInterl rr_lookup_term)
