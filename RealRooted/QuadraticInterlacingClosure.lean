@@ -629,6 +629,14 @@ theorem quadraticParameterEvaluation_isRoot_iff (F G H : ℝ[X]) (r a : ℝ) :
       (quadraticInterlacingPencil F G H a).IsRoot r := by
   simp only [Polynomial.IsRoot.def, quadraticParameterEvaluation_eval]
 
+/-- The parameter derivative is twice the spatial evaluation of the tangent. -/
+theorem derivative_eval_quadraticParameterEvaluation
+    (F G H : ℝ[X]) (r a : ℝ) :
+    (quadraticParameterEvaluation F G H r).derivative.eval a =
+      2 * (quadraticInterlacingTangent F G a).eval r := by
+  simp [quadraticParameterEvaluation, quadraticInterlacingTangent]
+  ring
+
 /-- On a parameter interval containing no crossing of a fixed spatial level,
 the quadratic pencil has constant strict-upper root count. -/
 theorem quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
@@ -725,6 +733,16 @@ theorem quadraticParameterEvaluation_natDegree
   have hF : F.eval r ≠ 0 := (Polynomial.not_isRoot_iff_eval_ne_zero F r).mp hrF
   rw [quadraticParameterEvaluation]
   compute_degree <;> simp_all
+
+/-- A genuine quadratic parameter evaluation splits as soon as one real
+parameter root is known. -/
+theorem quadraticParameterEvaluation_splits_of_isRoot
+    {F G H : ℝ[X]} {r a : ℝ} (hrF : ¬F.IsRoot r)
+    (ha : (quadraticParameterEvaluation F G H r).IsRoot a) :
+    (quadraticParameterEvaluation F G H r).Splits := by
+  apply Polynomial.Splits.of_natDegree_eq_two
+    (quadraticParameterEvaluation_natDegree hrF)
+  exact Polynomial.IsRoot.def.mp ha
 
 /-- The distinct positive parameter values at which the quadratic pencil
 crosses a fixed spatial level, listed in increasing order. -/
