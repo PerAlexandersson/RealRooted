@@ -210,7 +210,7 @@ theorem imageProduct_coordinate_identity
     have h1t0 : 1 - t i ≠ 0 := (sub_pos.mpr (ht i).2).ne'
     have hcleared := image_root_product_cleared hprod hcomp (t := t i)
     field_simp [ht0, h1t0]
-    nlinarith [hcleared]
+    linarith [hcleared]
   have hterms :
       Finset.univ.prod (fun i : Fin m => xi * (r - t i) * (z - t i)) =
         Finset.univ.prod (fun i : Fin m =>
@@ -596,7 +596,7 @@ theorem imageProduct_double_root_sign {m : ℕ} (t : Fin m → ℝ) (U V xi : �
   have hkey : 0 < 2 * (∏ i ∈ I, (-xi / (t i * (1 - t i)))) * (t a - t b) ^ 2 *
       (∏ i ∈ I, (t a - t i)) ^ 2 * (∏ i ∈ I, (t b - t i)) ^ 2 := by
     positivity
-  nlinarith [hkey]
+  linarith [hkey]
 
 /-- The two-node double-root sign, retaining the empty remaining product. -/
 theorem imageProduct_double_root_sign_two_nodes (t : Fin 2 → ℝ) (U V xi : ℝ)
