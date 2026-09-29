@@ -166,19 +166,16 @@ theorem exists_outer_geometric_root_family_of_logConcave
   classical
   have hc0 : (0 : ℝ) < c := by linarith
   have hsign_lower : ∀ j, 1 ≤ j → j ≤ J →
-      0 < (-1 : ℝ) ^ j * p.eval (-(lowerDominanceRadius p c j)) := by
-    intro j hj hjJ
-    exact lowerDominanceRadius_sign hc htheta hdegree hpos hlog_concave hj
+      0 < (-1 : ℝ) ^ j * p.eval (-(lowerDominanceRadius p c j)) :=
+    fun j hj hjJ => lowerDominanceRadius_sign hc htheta hdegree hpos hlog_concave hj
       (by lia) (hstrong j hj hjJ)
   have hsign_upper : ∀ j, 1 ≤ j → j ≤ J →
-      0 < (-1 : ℝ) ^ j * p.eval (-(upperDominanceRadius p c j)) := by
-    intro j hj hjJ
-    exact upperDominanceRadius_sign hc htheta hdegree hpos hlog_concave hj
+      0 < (-1 : ℝ) ^ j * p.eval (-(upperDominanceRadius p c j)) :=
+    fun j hj hjJ => upperDominanceRadius_sign hc htheta hdegree hpos hlog_concave hj
       (by lia) (hstrong j hj hjJ)
   have hwidth : ∀ j, 1 ≤ j → j ≤ J →
-      theta * lowerDominanceRadius p c j ≤ upperDominanceRadius p c j := by
-    intro j hj hjJ
-    exact dominanceRadii_separated hc0 hpos hj (by lia) (hstrong j hj hjJ)
+      theta * lowerDominanceRadius p c j ≤ upperDominanceRadius p c j :=
+    fun j hj hjJ => dominanceRadii_separated hc0 hpos hj (by lia) (hstrong j hj hjJ)
   have heval1 : 0 < p.eval 1 := eval_one_pos_of_coeff_pos hdegree hpos
   set s0 : ℝ := min (lowerDominanceRadius p c 1 / 2)
     (min 1 (p.coeff 0 / (2 * p.eval 1))) with hs0
@@ -271,19 +268,16 @@ theorem exists_top_geometric_root_family_of_logConcave
   classical
   have hc0 : (0 : ℝ) < c := by linarith
   have hsign_lower : ∀ k, N - J ≤ k → 1 ≤ k → k + 1 ≤ N →
-      0 < (-1 : ℝ) ^ k * p.eval (-(lowerDominanceRadius p c k)) := by
-    intro k hk hj hnext
-    exact lowerDominanceRadius_sign hc htheta hdegree hpos hlog_concave hj
+      0 < (-1 : ℝ) ^ k * p.eval (-(lowerDominanceRadius p c k)) :=
+    fun k hk hj hnext => lowerDominanceRadius_sign hc htheta hdegree hpos hlog_concave hj
       hnext (hstrong k hk hnext)
   have hsign_upper : ∀ k, N - J ≤ k → 1 ≤ k → k + 1 ≤ N →
-      0 < (-1 : ℝ) ^ k * p.eval (-(upperDominanceRadius p c k)) := by
-    intro k hk hj hnext
-    exact upperDominanceRadius_sign hc htheta hdegree hpos hlog_concave hj
+      0 < (-1 : ℝ) ^ k * p.eval (-(upperDominanceRadius p c k)) :=
+    fun k hk hj hnext => upperDominanceRadius_sign hc htheta hdegree hpos hlog_concave hj
       hnext (hstrong k hk hnext)
   have hwidth : ∀ k, N - J ≤ k → 1 ≤ k → k + 1 ≤ N →
-      theta * lowerDominanceRadius p c k ≤ upperDominanceRadius p c k := by
-    intro k hk hj hnext
-    exact dominanceRadii_separated hc0 hpos hj hnext (hstrong k hk hnext)
+      theta * lowerDominanceRadius p c k ≤ upperDominanceRadius p c k :=
+    fun k hk hj hnext => dominanceRadii_separated hc0 hpos hj hnext (hstrong k hk hnext)
   have heval1 : 0 < p.eval 1 := eval_one_pos_of_coeff_pos hdegree hpos
   have hcoeffN : 0 < p.coeff N := hpos N le_rfl
   set sinf : ℝ := max (1 + p.eval 1 / p.coeff N)
