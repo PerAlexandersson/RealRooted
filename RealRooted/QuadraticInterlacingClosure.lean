@@ -660,6 +660,63 @@ theorem quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
         hD (hdegree_local μ hμ) (hsplits μ hμ) (hsimple μ hμ) hρ
     exact ⟨ε, hε, fun ν _ hν => hlocal ν hν⟩
 
+/-- Across one crossing, the strict-upper root count in the chamber on the
+left is at most the count in the chamber on the right plus one. -/
+theorem quadraticInterlacingPencil_card_roots_gt_left_le_right_add_one
+    {F G H : ℝ[X]} {μL a μR r : ℝ} {D : ℕ}
+    (hμLa : μL < a) (haμR : a < μR) (hD : D ≠ 0)
+    (hdegree : ∀ μ ∈ Set.Icc μL μR,
+      (quadraticInterlacingPencil F G H μ).natDegree = D)
+    (hdegree_local : ∀ μ ∈ Set.Icc μL μR, ∀ᶠ b in 𝓝 μ,
+      (quadraticInterlacingPencil F G H b).natDegree = D)
+    (hsplits : ∀ μ ∈ Set.Icc μL μR,
+      (quadraticInterlacingPencil F G H μ).Splits)
+    (hsimple : ∀ μ ∈ Set.Icc μL μR,
+      HasSimpleRoots (quadraticInterlacingPencil F G H μ))
+    (hroot : (quadraticInterlacingPencil F G H a).IsRoot r)
+    (hnoLeft : ∀ μ ∈ Set.Ico μL a,
+      ¬(quadraticParameterEvaluation F G H r).IsRoot μ)
+    (hnoRight : ∀ μ ∈ Set.Ioc a μR,
+      ¬(quadraticParameterEvaluation F G H r).IsRoot μ) :
+    ((quadraticInterlacingPencil F G H μL).roots.filter (r < ·)).card ≤
+      ((quadraticInterlacingPencil F G H μR).roots.filter (r < ·)).card + 1 := by
+  have haIcc : a ∈ Set.Icc μL μR := ⟨hμLa.le, haμR.le⟩
+  have hlocal := exists_eventually_quadraticInterlacingPencil_root_count_bounds
+    hD (hdegree_local a haIcc) (hsplits a haIcc) (hsimple a haIcc) hroot
+  have hleftEvent : ∀ᶠ b in 𝓝 a,
+      (((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card ≤
+          ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ∧
+        ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ≤
+          ((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card + 1) ∧
+        μL < b :=
+    hlocal.and (eventually_gt_nhds hμLa)
+  obtain ⟨bL, hbLa, hbLbound, hμLbL⟩ := hleftEvent.exists_lt
+  have hrightEvent : ∀ᶠ b in 𝓝 a,
+      (((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card ≤
+          ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ∧
+        ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ≤
+          ((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card + 1) ∧
+        b < μR :=
+    hlocal.and (eventually_lt_nhds haμR)
+  obtain ⟨bR, habR, hbRbound, hbRμR⟩ := hrightEvent.exists_gt
+  have hleft := quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
+    hμLbL.le hD
+    (fun μ hμ => hdegree μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
+    (fun μ hμ => hdegree_local μ
+      ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
+    (fun μ hμ => hsplits μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
+    (fun μ hμ => hsimple μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
+    (fun μ hμ => hnoLeft μ ⟨hμ.1, hμ.2.trans_lt hbLa⟩)
+  have hright := quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
+    hbRμR.le hD
+    (fun μ hμ => hdegree μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
+    (fun μ hμ => hdegree_local μ
+      ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
+    (fun μ hμ => hsplits μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
+    (fun μ hμ => hsimple μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
+    (fun μ hμ => hnoRight μ ⟨habR.trans_le hμ.1, hμ.2⟩)
+  omega
+
 /-- If the leading spatial polynomial does not vanish at `r`, the parameter
 evaluation is a genuine quadratic. -/
 theorem quadraticParameterEvaluation_natDegree
