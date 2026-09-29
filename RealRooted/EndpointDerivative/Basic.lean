@@ -87,8 +87,8 @@ theorem strictInterl_endpointDerivative {f : ℝ[X]} {a b : ℝ}
     (hroots : ∀ r, f.IsRoot r → r ∈ Icc a b) :
     StrictInterl f (((X - C a) * (X - C b)) * f.derivative) := by
   let q : ℝ[X] := (X - C a) * (X - C b)
-  have htarget_deg : (q * f.derivative).natDegree = f.natDegree + 1 := by
-    exact natDegree_endpointDerivative hdeg
+  have htarget_deg : (q * f.derivative).natDegree = f.natDegree + 1 :=
+    natDegree_endpointDerivative hdeg
   have htarget_pos : HasPosLeadingCoeff (q * f.derivative) :=
     hasPosLeadingCoeff_endpointDerivative hf_pos hdeg
   have hstrictInterl : StrictInterl f (0 * f + q * f.derivative) :=
