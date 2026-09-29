@@ -518,7 +518,7 @@ theorem auxiliaryG_coeff_sub_two_of_narayanaRecurrence
   rw [show n + 1 - 2 = n - 1 by lia] at hPsucc
   rw [hPsucc, hPnext, hPsecond] at hcoeff
   push_cast at hcoeff ⊢
-  nlinarith
+  linarith
 
 /-- Equation `(2)` forces the coefficient one place above the leading
 candidate coefficient of `G_n` to vanish. -/

@@ -150,7 +150,7 @@ theorem modifiedNarayanaTuran_ten (r : ℝ) :
 private theorem modifiedNarayanaTuran_two_factor_nonneg (r : ℝ) :
     0 ≤ r ^ 2 + r + 1 := by
   have hs : 0 ≤ (2 * r + 1) ^ 2 := sq_nonneg (2 * r + 1)
-  nlinarith
+  linarith
 
 private theorem modifiedNarayanaTuran_three_factor_nonneg_of_nonpos
     {r : ℝ} (hr : r ≤ 0) :
@@ -179,7 +179,7 @@ private theorem modifiedNarayanaTuran_four_factor_nonneg (r : ℝ) :
   let y : ℝ := -r
   have hquad : 0 ≤ 3 * y ^ 2 - 4 * y + 3 := by
     have hs : 0 ≤ (3 * y - 2) ^ 2 := sq_nonneg (3 * y - 2)
-    nlinarith
+    linarith
   have hdecomp :
       y ^ 6 - 6 * y ^ 5 + 21 * y ^ 4 - 28 * y ^ 3 +
         21 * y ^ 2 - 6 * y + 1 =

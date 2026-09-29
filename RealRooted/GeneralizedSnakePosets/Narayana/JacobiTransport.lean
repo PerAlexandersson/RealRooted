@@ -28,10 +28,10 @@ theorem jacobi11ChangeOfVariables_mem_Icc_of_nonpos {r : ℝ} (hr : r ≤ 0) :
   constructor
   · have hden : r - 1 < 0 := by linarith
     rw [jacobi11ChangeOfVariables, le_div_iff_of_neg hden]
-    nlinarith
+    linarith
   · have hden : r - 1 < 0 := by linarith
     rw [jacobi11ChangeOfVariables, div_le_iff_of_neg hden]
-    nlinarith
+    linarith
 
 /-- The Braun--Jal change of variables never maps a real number to `1`. -/
 theorem jacobi11ChangeOfVariables_ne_one (x : ℝ) :
