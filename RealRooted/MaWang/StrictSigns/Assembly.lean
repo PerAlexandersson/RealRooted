@@ -30,7 +30,7 @@ theorem exists_strictSignInterleaving {F : ℝ[X]} :
         have hr₁r₂_le : r₁ ≤ r₂ := List.rel_of_pairwise_cons hrs_sorted (by simp)
         by_contra hEq
         have : F.eval r₁ * F.eval r₂ = (F.eval r₁) ^ 2 := by grind
-        nlinarith [sq_nonneg (F.eval r₁)]
+        linarith [sq_nonneg (F.eval r₁)]
       obtain ⟨u, hu₁, hu₂, hu_root⟩ :=
         exists_isRoot_between_of_eval_mul_neg hr₁r₂ (by simpa using hsign [] rfl)
       have htail_sorted : (r₂ :: rest).Pairwise (· ≤ ·) :=
