@@ -187,34 +187,30 @@ def Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement
 theorem narayanaAuxiliaryGRecurrenceUpTo_of_statement
     {P G : ℕ → ℝ[X]} (h : NarayanaAuxiliaryGRecurrenceStatement P G)
     (N : ℕ) :
-    NarayanaAuxiliaryGRecurrenceUpToStatement P G N := by
-  intro n hn _hnN
-  exact h hn
+    NarayanaAuxiliaryGRecurrenceUpToStatement P G N :=
+  fun n hn _hnN => h hn
 
 /-- The all-`n` Lemma 3.3 statement implies every bounded Lemma 3.3 package. -/
 theorem lemma33AuxiliaryGInterlacesUpTo_of_statement
     {P G : ℕ → ℝ[X]} (h : Lemma33AuxiliaryGInterlacesStatement P G)
     (N : ℕ) :
-    Lemma33AuxiliaryGInterlacesUpToStatement P G N := by
-  intro n hn _hnN
-  exact h hn
+    Lemma33AuxiliaryGInterlacesUpToStatement P G N :=
+  fun n hn _hnN => h hn
 
 /-- The all-`n` Lemma 3.4 statement implies every bounded Lemma 3.4 package. -/
 theorem lemma34ModifiedNarayanaInterlacingUpTo_of_statement
     {P : ℕ → ℝ[X]} (h : Lemma34ModifiedNarayanaInterlacingStatement P)
     (N : ℕ) :
-    Lemma34ModifiedNarayanaInterlacingUpToStatement P N := by
-  intro m lam nu hm _hmN hlam hnu
-  exact h hm hlam hnu
+    Lemma34ModifiedNarayanaInterlacingUpToStatement P N :=
+  fun m lam nu hm _hmN hlam hnu => h hm hlam hnu
 
 /-- The all-`n` shifted Lemma 3.4 statement implies every bounded shifted
 Lemma 3.4 package. -/
 theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_statement
     {P : ℕ → ℝ[X]}
     (h : Lemma34ModifiedNarayanaShiftedInterlacingStatement P) (N : ℕ) :
-    Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N := by
-  intro m lam mu hm _hmN hlam hmu
-  exact h hm hlam hmu
+    Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N :=
+  fun m lam mu hm _hmN hlam hmu => h hm hlam hmu
 
 /-- A bounded shifted Lemma 3.4 package implies the bounded paper-shaped
 `nu ≥ -1` package. -/
@@ -570,9 +566,8 @@ form. -/
 theorem theorem35Computable_of_theorem35
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G) :
-    Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G := by
-  intro w k hlast
-  exact hrec (SnakeWord.not_isConstant_of_lastChangeIndex?_eq_some hlast)
+    Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G :=
+  fun w k hlast => hrec (SnakeWord.not_isConstant_of_lastChangeIndex?_eq_some hlast)
     (SnakeWord.isLastChangeIndex_of_lastChangeIndex?_eq_some hlast)
 
 /-- The computable `lastChangeIndex?` recurrence implies the predicate-form
@@ -580,9 +575,8 @@ recurrence. -/
 theorem theorem35_of_theorem35Computable
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hrec : Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G) :
-    Theorem35GeneralizedSnakeRecurrenceStatement M P G := by
-  intro w k _hconst hlast
-  exact hrec (SnakeWord.lastChangeIndex?_eq_some_of_isLastChangeIndex hlast)
+    Theorem35GeneralizedSnakeRecurrenceStatement M P G :=
+  fun w k _hconst hlast => hrec (SnakeWord.lastChangeIndex?_eq_some_of_isLastChangeIndex hlast)
 
 /-- The predicate-form and computable forms of the generalized snake
 recurrence are equivalent. -/
@@ -614,17 +608,15 @@ input. -/
 theorem theorem41InductionRouteComputable_of_theorem41InductionRoute
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hroute : Theorem41InductionRouteStatement M P G) :
-    Theorem41InductionRouteComputableStatement M P G := by
-  intro h33 h34 hrec
-  exact hroute h33 h34 (theorem35_of_theorem35Computable hrec)
+    Theorem41InductionRouteComputableStatement M P G :=
+  fun h33 h34 hrec => hroute h33 h34 (theorem35_of_theorem35Computable hrec)
 
 /-- The computable-recursion induction route implies the predicate-form route. -/
 theorem theorem41InductionRoute_of_theorem41InductionRouteComputable
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
     (hroute : Theorem41InductionRouteComputableStatement M P G) :
-    Theorem41InductionRouteStatement M P G := by
-  intro h33 h34 hrec
-  exact hroute h33 h34 (theorem35Computable_of_theorem35 hrec)
+    Theorem41InductionRouteStatement M P G :=
+  fun h33 h34 hrec => hroute h33 h34 (theorem35Computable_of_theorem35 hrec)
 
 /-- Predicate and computable forms of the Theorem 4.1 induction route are
 equivalent. -/
