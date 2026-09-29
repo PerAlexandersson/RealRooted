@@ -32,9 +32,8 @@ lemma xSubQuarticCubicSplits_of_lower_left_repeated
   have hcommon_dispatch :
       (u = a ∨ u = a ∨ u = c ∨ v = a ∨ v = c ∨ v = d ∨
           w = c ∨ w = d) →
-        (xSubQuarticCubicPolynomial a a c d u v w μ).Splits := by
-    intro hcommon
-    exact xSubQuarticCubicSplits_of_common_root_cases
+        (xSubQuarticCubicPolynomial a a c d u v w μ).Splits :=
+    fun hcommon => xSubQuarticCubicSplits_of_common_root_cases
       le_rfl (le_of_lt hac) (le_of_lt hcd) huv hvw hau
       (hau.trans huv) hcw huc hvd hd0 hw0 hμ hcommon
   by_cases hua_eq : u = a
@@ -266,9 +265,8 @@ lemma xSubQuarticCubicSplits_of_middle_left_repeated
   have hcommon_dispatch :
       (u = a ∨ u = b ∨ u = b ∨ v = b ∨ v = b ∨ v = d ∨
           w = b ∨ w = d) →
-        (xSubQuarticCubicPolynomial a b b d u v w μ).Splits := by
-    intro hcommon
-    exact xSubQuarticCubicSplits_of_common_root_cases
+        (xSubQuarticCubicPolynomial a b b d u v w μ).Splits :=
+    fun hcommon => xSubQuarticCubicSplits_of_common_root_cases
       (le_of_lt hab) le_rfl (le_of_lt hbd) huv hvw hau hbv hbw hub hvd
       hd0 hw0 hμ hcommon
   by_cases hua_eq : u = a
@@ -284,9 +282,8 @@ lemma xSubQuarticCubicSplits_of_middle_left_repeated
   by_cases hwd_eq : w = d
   · exact hcommon_dispatch (by simp [hwd_eq])
   by_cases hw_eq : w = 0
-  · have hd_ne : d ≠ 0 := by
-      intro hd_eq
-      exact hwd_eq (by rw [hw_eq, hd_eq])
+  · have hd_ne : d ≠ 0 :=
+      fun hd_eq => hwd_eq (by rw [hw_eq, hd_eq])
     exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases
       (le_of_lt hab) le_rfl (le_of_lt hbd) huv hvw hau hbv hbw hub hvd
       hd0 hw0 hμ hw_eq hd_ne
@@ -413,9 +410,8 @@ lemma xSubQuarticCubicSplits_of_upper_left_repeated
   have hcommon_dispatch :
       (u = a ∨ u = b ∨ u = d ∨ v = b ∨ v = d ∨ v = d ∨
           w = d ∨ w = d) →
-        (xSubQuarticCubicPolynomial a b d d u v w μ).Splits := by
-    intro hcommon
-    exact xSubQuarticCubicSplits_of_common_root_cases
+        (xSubQuarticCubicPolynomial a b d d u v w μ).Splits :=
+    fun hcommon => xSubQuarticCubicSplits_of_common_root_cases
       (le_of_lt hab) (le_of_lt hbd) le_rfl huv hvw hau hbv hdw
       hud hvd hd0 hw0 hμ hcommon
   by_cases hua_eq : u = a
@@ -431,9 +427,8 @@ lemma xSubQuarticCubicSplits_of_upper_left_repeated
   by_cases hwd_eq : w = d
   · exact hcommon_dispatch (by simp [hwd_eq])
   by_cases hw_eq : w = 0
-  · have hd_ne : d ≠ 0 := by
-      intro hd_eq
-      exact hwd_eq (by rw [hw_eq, hd_eq])
+  · have hd_ne : d ≠ 0 :=
+      fun hd_eq => hwd_eq (by rw [hw_eq, hd_eq])
     exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases
       (le_of_lt hab) (le_of_lt hbd) le_rfl huv hvw hau hbv hdw
       hud hvd hd0 hw0 hμ hw_eq hd_ne
@@ -568,9 +563,8 @@ lemma xSubQuarticCubicSplits_of_double_left_pair
   have hcommon_dispatch :
       (u = a ∨ u = a ∨ u = c ∨ v = a ∨ v = c ∨ v = c ∨
           w = c ∨ w = c) →
-        (xSubQuarticCubicPolynomial a a c c u v w μ).Splits := by
-    intro hcommon
-    exact xSubQuarticCubicSplits_of_common_root_cases
+        (xSubQuarticCubicPolynomial a a c c u v w μ).Splits :=
+    fun hcommon => xSubQuarticCubicSplits_of_common_root_cases
       le_rfl (le_of_lt hac) le_rfl huv hvw hau (hau.trans huv) hcw
       huc hvc hc0 hw0 hμ hcommon
   by_cases hua_eq : u = a
@@ -582,9 +576,8 @@ lemma xSubQuarticCubicSplits_of_double_left_pair
   by_cases hwc_eq : w = c
   · exact hcommon_dispatch (by simp [hwc_eq])
   by_cases hw_eq : w = 0
-  · have hc_ne : c ≠ 0 := by
-      intro hc_eq
-      exact hwc_eq (by rw [hw_eq, hc_eq])
+  · have hc_ne : c ≠ 0 :=
+      fun hc_eq => hwc_eq (by rw [hw_eq, hc_eq])
     exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases
       le_rfl (le_of_lt hac) le_rfl huv hvw hau (hau.trans huv) hcw
       huc hvc hc0 hw0 hμ hw_eq hc_ne
