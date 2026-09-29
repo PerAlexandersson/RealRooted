@@ -41,9 +41,9 @@ endpoint predicate implications. -/
 theorem theorem21RightFactorReturnPredicateRelationStatement_of_imp
     {R : ℕ → ℕ → Prop} {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
     (hQ : theorem21RightFactorReturnPredicateRelationStatement R Q) :
-    theorem21RightFactorReturnPredicateRelationStatement R P := by
-  intro f g r s hf hg hsgn hright hdeg hcommon hfdeg
-  exact hQ hf hg hsgn hright hdeg hcommon (hPQ _ hfdeg)
+    theorem21RightFactorReturnPredicateRelationStatement R P :=
+  fun f g r s hf hg hsgn hright hdeg hcommon hfdeg =>
+    hQ hf hg hsgn hright hdeg hcommon (hPQ _ hfdeg)
 
 /-- The unrestricted right factor-return relation target is the `P := True`
 case of the predicate-restricted relation target. -/
@@ -51,9 +51,8 @@ theorem theorem21RightFactorReturnPredicateRelation_true_of_relation
     {R : ℕ → ℕ → Prop}
     (hreturn : theorem21RightFactorReturnRelationStatement R) :
     theorem21RightFactorReturnPredicateRelationStatement R
-      (fun _ => True) := by
-  intro f g r s hf hg hsgn hright hdeg hcommon _
-  exact hreturn hf hg hsgn hright hdeg hcommon
+      (fun _ => True) :=
+  fun f g r s hf hg hsgn hright hdeg hcommon _ => hreturn hf hg hsgn hright hdeg hcommon
 
 /-- A `P := True` right factor-return predicate relation target gives the
 unrestricted relation target. -/
@@ -62,9 +61,8 @@ theorem theorem21RightFactorReturnRelation_of_predicate_true
     (hreturn :
       theorem21RightFactorReturnPredicateRelationStatement R
         (fun _ => True)) :
-    theorem21RightFactorReturnRelationStatement R := by
-  intro f g r s hf hg hsgn hright hdeg hcommon
-  exact hreturn hf hg hsgn hright hdeg hcommon trivial
+    theorem21RightFactorReturnRelationStatement R :=
+  fun f g r s hf hg hsgn hright hdeg hcommon => hreturn hf hg hsgn hright hdeg hcommon trivial
 
 /-- Same-degree right-branch factor-return target. -/
 def theorem21RightFactorReturnSameDegreeStatement : Prop :=
@@ -108,9 +106,8 @@ the corresponding compatibility factor-return leaf. -/
 theorem theorem21RightFactorReturn_of_allComboRelation
     {R : ℕ → ℕ → Prop}
     (hright : theorem21RightFactorReturnAllComboRelationStatement R) :
-    theorem21RightFactorReturnRelationStatement R := by
-  intro f g r s hf hg hsgn hbranch hdeg hcommon
-  exact Compatible.of_allComboRealRooted
+    theorem21RightFactorReturnRelationStatement R :=
+  fun f g r s hf hg hsgn hbranch hdeg hcommon => Compatible.of_allComboRealRooted
     (hright hf hg hsgn hbranch hdeg hcommon)
 
 /-- A same-degree all-combinations right leaf gives the corresponding
@@ -206,9 +203,8 @@ theorem theorem21RightFactorReturn_of_leftDegreeRelation
 case by swapping the two polynomials. -/
 theorem theorem21RightFactorReturnSameDegree_of_leftSameDegree
     (hleft : theorem21LeftFactorReturnSameDegreeStatement) :
-    theorem21RightFactorReturnSameDegreeStatement := by
-  intro f g r s hf hg hsgn hright hdeg hcommon
-  exact theorem21RightFactorReturn_of_leftDegreeRelation
+    theorem21RightFactorReturnSameDegreeStatement :=
+  fun f g r s hf hg hsgn hright hdeg hcommon => theorem21RightFactorReturn_of_leftDegreeRelation
     (R := fun m n => m = n) hleft hf hg hsgn hright hdeg hcommon
 
 /-- Predicate-restricted same-degree left factor-return targets give the
@@ -216,13 +212,13 @@ corresponding right-branch predicate targets by symmetry. -/
 theorem theorem21RightFactorReturnSameDegreePredicate_of_leftPredicate
     {P : ℕ → Prop}
     (hleft : theorem21LeftFactorReturnSameDegreePredicateStatement P) :
-    theorem21RightFactorReturnSameDegreePredicateStatement P := by
-  intro f g r s hf hg hsgn hright hdeg hcommon hfdeg
-  exact theorem21RightFactorReturn_of_leftDegreeRelation
-    (R := fun m n => m = n ∧ P n)
-    (fun hp hq hsgn' hleft' hrel hcommon' =>
-      hleft hp hq hsgn' hleft' hrel.1 hcommon' hrel.2)
-    hf hg hsgn hright ⟨hdeg, hfdeg⟩ hcommon
+    theorem21RightFactorReturnSameDegreePredicateStatement P :=
+  fun f g r s hf hg hsgn hright hdeg hcommon hfdeg =>
+    theorem21RightFactorReturn_of_leftDegreeRelation
+      (R := fun m n => m = n ∧ P n)
+      (fun hp hq hsgn' hleft' hrel hcommon' =>
+        hleft hp hq hsgn' hleft' hrel.1 hcommon' hrel.2)
+      hf hg hsgn hright ⟨hdeg, hfdeg⟩ hcommon
 
 /-- Degree-one-left endpoint package for the right same-degree factor-return
 target. -/
@@ -383,9 +379,8 @@ theorem theorem21RightFactorReturnSameDegree_of_left_natDegree_le_three
 successor-degree case by swapping the two polynomials. -/
 theorem theorem21RightFactorReturnSuccDegree_of_leftSuccDegree
     (hleft : theorem21LeftFactorReturnSuccDegreeStatement) :
-    theorem21RightFactorReturnSuccDegreeStatement := by
-  intro f g r s hf hg hsgn hright hdeg hcommon
-  exact theorem21RightFactorReturn_of_leftDegreeRelation
+    theorem21RightFactorReturnSuccDegreeStatement :=
+  fun f g r s hf hg hsgn hright hdeg hcommon => theorem21RightFactorReturn_of_leftDegreeRelation
     (R := fun m n => m = n + 1) hleft hf hg hsgn hright hdeg hcommon
 
 /-- Predicate-restricted successor-degree left factor-return targets give the
@@ -393,13 +388,13 @@ corresponding right-branch predicate targets by symmetry. -/
 theorem theorem21RightFactorReturnSuccDegreePredicate_of_leftPredicate
     {P : ℕ → Prop}
     (hleft : theorem21LeftFactorReturnSuccDegreePredicateStatement P) :
-    theorem21RightFactorReturnSuccDegreePredicateStatement P := by
-  intro f g r s hf hg hsgn hright hdeg hcommon hfdeg
-  exact theorem21RightFactorReturn_of_leftDegreeRelation
-    (R := fun m n => m = n + 1 ∧ P n)
-    (fun hp hq hsgn' hleft' hrel hcommon' =>
-      hleft hp hq hsgn' hleft' hrel.1 hcommon' hrel.2)
-    hf hg hsgn hright ⟨hdeg, hfdeg⟩ hcommon
+    theorem21RightFactorReturnSuccDegreePredicateStatement P :=
+  fun f g r s hf hg hsgn hright hdeg hcommon hfdeg =>
+    theorem21RightFactorReturn_of_leftDegreeRelation
+      (R := fun m n => m = n + 1 ∧ P n)
+      (fun hp hq hsgn' hleft' hrel hcommon' =>
+        hleft hp hq hsgn' hleft' hrel.1 hcommon' hrel.2)
+      hf hg hsgn hright ⟨hdeg, hfdeg⟩ hcommon
 
 /-- Degree-zero-left endpoint package for the right successor-degree
 factor-return target. -/
@@ -585,10 +580,10 @@ corresponding right-branch predicate targets by symmetry. -/
 theorem theorem21RightFactorReturnTwoDegreePredicate_of_leftPredicate
     {P : ℕ → Prop}
     (hleft : theorem21LeftFactorReturnTwoDegreePredicateStatement P) :
-    theorem21RightFactorReturnTwoDegreePredicateStatement P := by
-  intro f g r s hf hg hsgn hright hdeg hcommon hfdeg
-  exact theorem21RightFactorReturnTwoDegree_of_leftPredicate
-    hleft hf hg hsgn hright hdeg hcommon hfdeg
+    theorem21RightFactorReturnTwoDegreePredicateStatement P :=
+  fun f g r s hf hg hsgn hright hdeg hcommon hfdeg =>
+    theorem21RightFactorReturnTwoDegree_of_leftPredicate
+      hleft hf hg hsgn hright hdeg hcommon hfdeg
 
 /-- A `P := True` right-branch factor-return predicate target gives the
 unrestricted right two-degree factor-return target. -/
