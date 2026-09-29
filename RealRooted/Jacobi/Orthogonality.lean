@@ -316,7 +316,7 @@ theorem shiftedJacobiInner_X_pow_eq_zero
         linarith
       have hdiff : 0 < (n : ℝ) * (n + α + β + 1) -
           (j + 1 : ℝ) * (j + 1 + α + β + 1) := by
-        nlinarith [mul_pos (sub_pos.mpr hjn) hsum]
+        linarith [mul_pos (sub_pos.mpr hjn) hsum]
       have hproduct : ((j + 1 : ℝ) * (j + 1 + α + β + 1) -
           (n : ℝ) * (n + α + β + 1)) *
           shiftedJacobiInner α β
