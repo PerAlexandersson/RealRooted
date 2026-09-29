@@ -20,8 +20,8 @@ lemma roots_order_of_positiveSplitRootCountPair_two_three
     {f g : ℝ[X]} (h : PositiveSplitRootCountPair f g)
     {a b c d e : ℝ} (hab : a ≤ b) (hcd : c ≤ d) (hde : d ≤ e)
     (hfroots : f.roots = {a, b}) (hgroots : g.roots = {c, d, e}) :
-    c ≤ a ∧ d ≤ b ∧ a ≤ e := by
-  exact roots_order_of_positiveSplitRootCountPair_three_two
+    c ≤ a ∧ d ≤ b ∧ a ≤ e :=
+  roots_order_of_positiveSplitRootCountPair_three_two
     h.symm hcd hde hab hgroots hfroots
 
 /-- A `(2, 3)` positive split root-count pair admits ordered root data with

@@ -320,7 +320,7 @@ lemma xSubCubicCubicSplits_of_left_root_right_strict_roots {a b c u v w μ : ℝ
       hc0 hμ
   have hub_lt : u < b := lt_of_le_of_ne hub hub_eq
   have hvc_lt : v < c := lt_of_le_of_ne hvc hvc_eq
-  have hbw_lt : b < w := by exact lt_of_le_of_ne hbw (by intro h; exact hwb h.symm)
+  have hbw_lt : b < w := lt_of_le_of_ne hbw (by intro h; exact hwb h.symm)
   exact xSubCubicCubicSplits_of_left_root_right_strict_distinct
     hab hbc hau hub_lt huv hvw hvc_lt hbw_lt hc0 hw0 hvb hwc hμ
 
@@ -340,7 +340,7 @@ lemma xSubCubicCubicSplits_of_strict_roots {a b c u v w μ : ℝ}
   · subst u
     exact xSubCubicCubicSplits_of_lower_common_root
       (le_of_lt hbc) (le_of_lt hvw) hvc hbw hc0 (le_of_lt hw0) hμ
-  have hau : a < u := by exact lt_of_le_of_ne (le_of_not_gt hua) (by intro h; exact hua_eq h.symm)
+  have hau : a < u := lt_of_le_of_ne (le_of_not_gt hua) (by intro h; exact hua_eq h.symm)
   exact xSubCubicCubicSplits_of_left_root_right_strict_roots
     hab hbc hau hub huv hvw hvc hbw hc0 hw0 hμ
 

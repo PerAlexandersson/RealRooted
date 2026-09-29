@@ -610,7 +610,7 @@ theorem xSubQuadraticQuadraticSplits :
   have hdlt : d < 0 := lt_of_le_of_ne hd0 hd_zero
   rcases lt_or_gt_of_ne hac_eq with hac | hca
   · rcases lt_or_gt_of_ne hbd_eq with hbd | hdb
-    · have hcb_lt : c < b := by exact lt_of_le_of_ne hcb (by intro h; exact hbc_eq h.symm)
+    · have hcb_lt : c < b := lt_of_le_of_ne hcb (by intro h; exact hbc_eq h.symm)
       exact xSubQuadraticQuadraticSplits_of_order_a_c_b_d
         hac hcb_lt hbd hdlt hμ
     · exact xSubQuadraticQuadraticSplits_of_order_a_c_d_b

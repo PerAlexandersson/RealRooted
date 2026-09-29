@@ -226,8 +226,8 @@ lemma exists_cubicSubQuadratic_not_splits_of_average_above
     ∃ μ : ℝ, 0 < μ ∧
       ¬ (((X - C a) * (X - C b) * (X - C c)) -
         C μ * ((X - C u) * (X - C v))).Splits := by
-  have hμ : 0 < 3 * ((u + v) / 2) - (a + b + c) := by
-    exact cubicSubQuadratic_average_above_mu_pos hab hbc hcmean
+  have hμ : 0 < 3 * ((u + v) / 2) - (a + b + c) :=
+    cubicSubQuadratic_average_above_mu_pos hab hbc hcmean
   exact
     exists_cubicSubQuadratic_not_splits_of_deriv_disc_neg hμ
       (cubicSubQuadratic_average_above_deriv_disc_neg hab hbc hcmean)

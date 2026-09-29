@@ -215,7 +215,7 @@ lemma discrim_quadraticSubQuadratic_inner_vertex {u v w : ℝ}
         -4 * u * w * (u + v) * (v + w) / v ^ 2 := by
   intro μ
   dsimp [μ]
-  have hv2_ne : v ^ 2 ≠ 0 := by exact pow_ne_zero 2 hv
+  have hv2_ne : v ^ 2 ≠ 0 := pow_ne_zero 2 hv
   unfold discrim
   field_simp [hv2_ne]
   ring

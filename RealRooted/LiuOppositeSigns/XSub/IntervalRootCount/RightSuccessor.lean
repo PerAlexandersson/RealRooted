@@ -46,9 +46,8 @@ theorem
     simpa [L] using
       hpair.card_right_roots_filter_lt_le_two_of_roots_ge_of_right_successor
         hhead.2 hdeg
-  have hupper_nonpos : ∀ y ∈ q.roots, last < y → y ≤ 0 := by
-    intro y hy _hy
-    exact roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
+  have hupper_nonpos : ∀ y ∈ q.roots, last < y → y ≤ 0 :=
+    fun y hy _ => roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
   have hupper_count : U + 1 ≤ upperTail := by
     simpa [U, upperTail, last, P] using
       hpair.upper_nonpos_tail_add_one_le_card_xSub_ge_of_top_coeff_pos
@@ -120,9 +119,8 @@ theorem
     simpa [L, lowerTail, P] using
       hpair.card_right_roots_lt_head_le_card_xSub_le_of_top_coeff_neg
         hp_nonneg hno hhead.1 hhead.2 hdeg hcoeff hμ
-  have hupper_nonpos : ∀ y ∈ q.roots, last < y → y ≤ 0 := by
-    intro y hy _hy
-    exact roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
+  have hupper_nonpos : ∀ y ∈ q.roots, last < y → y ≤ 0 :=
+    fun y hy _ => roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
   have hupper_count : U ≤ upperTail := by
     simpa [U, upperTail, last, P] using
       hpair.card_right_roots_gt_le_card_xSub_ge_of_left_largest_root_nonpos
@@ -175,9 +173,8 @@ theorem
     simpa [L] using
       hpair.card_right_roots_filter_lt_le_two_of_roots_ge_of_right_successor
         hhead.2 hdeg
-  have hupper_nonpos : ∀ y ∈ q.roots, last < y → y ≤ 0 := by
-    intro y hy _hy
-    exact roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
+  have hupper_nonpos : ∀ y ∈ q.roots, last < y → y ≤ 0 :=
+    fun y hy _ => roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
   have hupper_count : U ≤ upperTail := by
     simpa [U, upperTail, last, P] using
       hpair.card_right_roots_gt_le_card_xSub_ge_of_left_largest_root_nonpos

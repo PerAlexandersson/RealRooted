@@ -51,8 +51,8 @@ lemma hasPosLeadingCoeff_xSubQuarticCubic (a b c d u v w μ : ℝ) :
       (xSubQuarticCubicPolynomial a b c d u v w μ) := by
   unfold xSubQuarticCubicPolynomial
   have hquartic_pos :
-      HasPosLeadingCoeff ((X - C a) * (X - C b) * (X - C c) * (X - C d)) := by
-    exact (((hasPosLeadingCoeff_X_sub_C a).mul
+      HasPosLeadingCoeff ((X - C a) * (X - C b) * (X - C c) * (X - C d)) :=
+    (((hasPosLeadingCoeff_X_sub_C a).mul
       (hasPosLeadingCoeff_X_sub_C b)).mul
       (hasPosLeadingCoeff_X_sub_C c)).mul
       (hasPosLeadingCoeff_X_sub_C d)
