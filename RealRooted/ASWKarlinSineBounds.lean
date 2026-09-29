@@ -80,8 +80,8 @@ lemma signVariations_sin_mul_le_one_of_last_le_two_pi
         intro i
         have hiq : (i : ℕ) ≤ q := Nat.lt_succ_iff.mp i.isLt
         have hi_le_q : ((i : ℕ) : ℝ) ≤ q := by exact_mod_cast hiq
-        have hq_le : (q : ℝ) ≤ Real.pi / θ := by
-          exact Nat.floor_le (show 0 ≤ Real.pi / θ by positivity)
+        have hq_le : (q : ℝ) ≤ Real.pi / θ :=
+          Nat.floor_le (show 0 ≤ Real.pi / θ by positivity)
         have hi_le : ((i : ℕ) : ℝ) ≤ Real.pi / θ := hi_le_q.trans hq_le
         nlinarith [mul_div_cancel₀ Real.pi hθpos.ne'])
       (by
@@ -108,8 +108,8 @@ lemma signVariations_sin_mul_le_one_of_last_le_two_pi
   · have hNq : N ≤ q := by lia
     have hlast_pi : (N : ℝ) * θ ≤ Real.pi := by
       have hN_le_q : (N : ℝ) ≤ q := by exact_mod_cast hNq
-      have hq_le : (q : ℝ) ≤ Real.pi / θ := by
-        exact Nat.floor_le (show 0 ≤ Real.pi / θ by positivity)
+      have hq_le : (q : ℝ) ≤ Real.pi / θ :=
+        Nat.floor_le (show 0 ≤ Real.pi / θ by positivity)
       have hN_le : (N : ℝ) ≤ Real.pi / θ := hN_le_q.trans hq_le
       nlinarith [mul_div_cancel₀ Real.pi hθpos.ne']
     have hzero := signVariations_sin_mul_eq_zero_of_last_le_pi
@@ -146,8 +146,8 @@ lemma signVariations_sin_mul_lt_of_last_le_nat_mul_pi
           have hk_pos : 0 < k := by positivity
           by_cases hcut : q + 1 ≤ N + 1
           · have hinit_last : (q : ℝ) * θ ≤ (k : ℝ) * Real.pi := by
-              have hq_le : (q : ℝ) ≤ ((k : ℝ) * Real.pi) / θ := by
-                exact Nat.floor_le (show 0 ≤ ((k : ℝ) * Real.pi) / θ by positivity)
+              have hq_le : (q : ℝ) ≤ ((k : ℝ) * Real.pi) / θ :=
+                Nat.floor_le (show 0 ≤ ((k : ℝ) * Real.pi) / θ by positivity)
               nlinarith [mul_div_cancel₀ ((k : ℝ) * Real.pi) hθpos.ne']
             have hinit_lt := ih (N := q) (θ := θ) hk_pos hθ0 hinit_last
             have happend :
@@ -215,8 +215,8 @@ lemma signVariations_sin_mul_lt_of_last_le_nat_mul_pi
           · have hNq : N ≤ q := by lia
             have hlast_prev : (N : ℝ) * θ ≤ (k : ℝ) * Real.pi := by
               have hN_le_q : (N : ℝ) ≤ q := by exact_mod_cast hNq
-              have hq_le : (q : ℝ) ≤ ((k : ℝ) * Real.pi) / θ := by
-                exact Nat.floor_le (show 0 ≤ ((k : ℝ) * Real.pi) / θ by positivity)
+              have hq_le : (q : ℝ) ≤ ((k : ℝ) * Real.pi) / θ :=
+                Nat.floor_le (show 0 ≤ ((k : ℝ) * Real.pi) / θ by positivity)
               have hN_le : (N : ℝ) ≤ ((k : ℝ) * Real.pi) / θ := hN_le_q.trans hq_le
               nlinarith [mul_div_cancel₀ ((k : ℝ) * Real.pi) hθpos.ne']
             have hlt := ih (N := N) (θ := θ) hk_pos hθ0 hlast_prev
@@ -308,8 +308,8 @@ private lemma signVariations_sin_add_mul_lt_of_last_le_nat_mul_pi_of_theta_pos
               sub_nonneg.mpr hphase_before.le
             have hquot_nonneg : 0 ≤ (((k : ℝ) * Real.pi - phase) / θ) :=
               div_nonneg hnum_nonneg hθpos.le
-            have hq_le : (q : ℝ) ≤ (((k : ℝ) * Real.pi - phase) / θ) := by
-              exact Nat.floor_le hquot_nonneg
+            have hq_le : (q : ℝ) ≤ (((k : ℝ) * Real.pi - phase) / θ) :=
+              Nat.floor_le hquot_nonneg
             have hinit_last : phase + (q : ℝ) * θ ≤ (k : ℝ) * Real.pi := by
               have hq_mul_le : (q : ℝ) * θ ≤ (k : ℝ) * Real.pi - phase := by
                 have hmul := mul_le_mul_of_nonneg_right hq_le hθpos.le
@@ -608,8 +608,8 @@ lemma signVariations_aswKarlinSineVector_degree_one_lt
   have hle := Fin.signVariations_le_card_sub_two_of_zero_first
     (aswKarlinSineVector θ 1 order 1) hzero
   have hle' :
-      Fin.signVariations (aswKarlinSineVector θ 1 order 1) ≤ order - 1 := by
-    exact hle.trans (by lia)
+      Fin.signVariations (aswKarlinSineVector θ 1 order 1) ≤ order - 1 :=
+    hle.trans (by lia)
   exact Nat.lt_of_le_pred horder hle'
 
 /-- Threshold-shaped wrapper for the degree-one sine upper bound. -/
