@@ -761,6 +761,25 @@ theorem positiveQuadraticParameterRoots_length_le_two
     _ ≤ q.natDegree := Polynomial.card_roots' q
     _ = 2 := quadraticParameterEvaluation_natDegree hrF
 
+/-- Summing parameter-root multiplicities over the ordered distinct positive
+crossings recovers the positive root count of the parameter evaluation. -/
+theorem sum_count_positiveQuadraticParameterRoots_eq_positiveRootCount
+    (F G H : ℝ[X]) (r : ℝ) :
+    ((positiveQuadraticParameterRoots F G H r).map fun a =>
+        (quadraticParameterEvaluation F G H r).roots.count a).sum =
+      (quadraticParameterEvaluation F G H r).positiveRootCount := by
+  let q := quadraticParameterEvaluation F G H r
+  let S := q.roots.toFinset.filter (0 < ·)
+  have hperm : List.Perm
+      ((S.sort (· ≤ ·)).map fun a => q.roots.count a)
+        (S.toList.map fun a => q.roots.count a) :=
+    (Finset.sort_perm_toList S (· ≤ ·)).map _
+  rw [show positiveQuadraticParameterRoots F G H r = S.sort (· ≤ ·) by
+    rfl]
+  rw [hperm.sum_eq]
+  simpa [q, S, Polynomial.positiveRootCount] using
+    (sum_count_filter_toFinset_eq_countP q.roots (0 < ·))
+
 /-- Consecutive entries of the ordered positive-crossing list delimit a
 parameter chamber with no crossing in its interior. -/
 theorem quadraticParameterEvaluation_not_isRoot_between_adjacent_positive
