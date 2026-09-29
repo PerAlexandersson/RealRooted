@@ -784,8 +784,8 @@ theorem succDegreeRootCountAbove_of_natDegree_eq_zero
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hdeg : g.natDegree = f.natDegree + 1) (hfdeg : f.natDegree = 0) (x : ℝ) :
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  exact (succDegreeRootCountAbove_of_rootCount hf hg hdeg
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  (succDegreeRootCountAbove_of_rootCount hf hg hdeg
     (fun y => succDegreeRootCount_of_natDegree_eq_zero hf hg hdeg hfdeg y)) x
 
 /-- Degree-zero base case for the upper-threshold succ-degree analytic
@@ -958,7 +958,7 @@ private lemma nat_eq_zero_or_eq_one_of_le_one {n : ℕ} (hn : n ≤ 1) :
     n = 0 ∨ n = 1 := by
   rcases n with _ | n
   · exact Or.inl rfl
-  · have hn0 : n = 0 := by exact Nat.eq_zero_of_le_zero (Nat.succ_le_succ_iff.mp hn)
+  · have hn0 : n = 0 := Nat.eq_zero_of_le_zero (Nat.succ_le_succ_iff.mp hn)
     exact Or.inr (by rw [hn0])
 
 /-- Low-degree base case for the upper-threshold succ-degree root-count
@@ -988,8 +988,8 @@ theorem compatibleSuccDegreeRootCountAbove_of_natDegree_eq_zero
     (hdeg : g.natDegree = f.natDegree + 1)
     (hf_split : f.Splits) (hfdeg : f.natDegree = 0) (x : ℝ) :
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  exact succDegreeRootCountAbove_of_natDegree_eq_zero hf_split
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  succDegreeRootCountAbove_of_natDegree_eq_zero hf_split
     (hcomp.isRealRooted_right hg_pos).2 hdeg hfdeg x
 
 /-- Degree-one compatible-pair base case for the upper-threshold succ-degree
