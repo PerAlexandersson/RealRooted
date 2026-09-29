@@ -199,8 +199,8 @@ theorem rankedNetwork_pathWeight_nonneg
     (hsubdiagonal : ∀ stage level, 0 ≤ subdiagonal stage level)
     {i j : Fin n}
     (p : (rankedNetwork diagonal subdiagonal source sink).toFinitePathNetwork.Path i j) :
-    0 ≤ (rankedNetwork diagonal subdiagonal source sink).toFinitePathNetwork.weight p := by
-  exact (rankedNetwork diagonal subdiagonal source sink).pathWeight_nonneg
+    0 ≤ (rankedNetwork diagonal subdiagonal source sink).toFinitePathNetwork.weight p :=
+  (rankedNetwork diagonal subdiagonal source sink).pathWeight_nonneg
     (rankedNetwork_edgeWeight_nonneg diagonal subdiagonal source sink
       hdiagonal hsubdiagonal) p
 
