@@ -793,8 +793,8 @@ example {P Q F : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hrow : ∀ n : Nat, P n = F n * Q n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  exact RealRooted.isRealRooted_of_product_lift_sequence hquot hfactor hrow
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  RealRooted.isRealRooted_of_product_lift_sequence hquot hfactor hrow
 
 /-- The checked affine router directly accepts a constant-first positive slope. -/
 example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
