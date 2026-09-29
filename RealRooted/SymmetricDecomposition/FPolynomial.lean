@@ -590,9 +590,8 @@ theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
   have hP :
       ∀ n (p : ℝ[X]), p.natDegree = n → (p ≠ 0 ∧ p.Splits) → HasNonnegCoeffs p →
         (fPolynomial p.natDegree p).roots =
-          p.roots.map (fun r : ℝ => r / (1 - r)) := by
-    intro n
-    exact Nat.strong_induction_on n (fun n ih =>
+          p.roots.map (fun r : ℝ => r / (1 - r)) :=
+    fun n => Nat.strong_induction_on n (fun n ih =>
       show ∀ (p : ℝ[X]), p.natDegree = n → (p ≠ 0 ∧
         p.Splits) → HasNonnegCoeffs p →
         (fPolynomial p.natDegree p).roots =
@@ -688,9 +687,8 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
         (fPolynomial n p).natDegree = n →
         ((fPolynomial n p) ≠ 0 ∧ (fPolynomial n p).Splits) →
         (∀ x ∈ (fPolynomial n p).roots, -1 < x) →
-        (p ≠ 0 ∧ p.Splits) := by
-    intro n
-    exact Nat.strong_induction_on n (fun n ih p hpdeg hqdeg hq_rr hq_gt => by
+        (p ≠ 0 ∧ p.Splits) :=
+    fun n => Nat.strong_induction_on n (fun n ih p hpdeg hqdeg hq_rr hq_gt => by
       have hp0 : p ≠ 0 := fun hpz => by simp_all
       by_cases hn : n = 0
       · exact isRealRooted_of_deg_zero hp0 (by lia)
