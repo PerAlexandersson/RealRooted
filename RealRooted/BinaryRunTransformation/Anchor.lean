@@ -495,7 +495,7 @@ theorem binaryRunAnchor_hasSimpleRoots {n : ℕ} {p : ℝ[X]}
             using congrArg (fun q : ℝ[X] ↦ q.coeff 0) hz
         rcases mul_eq_zero.mp hz0 with hpzero | heq
         · exact hp0.ne' hpzero
-        · nlinarith)
+        · linarith)
   have hminusComp : (schurSzegoComp n (f + C (-ε)) p).Splits := by
     rw [schurSzegoComp_comm]
     exact (schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial hp hpdeg
@@ -510,7 +510,7 @@ theorem binaryRunAnchor_hasSimpleRoots {n : ℕ} {p : ℝ[X]}
             using congrArg (fun q : ℝ[X] ↦ q.coeff 0) hz
         rcases mul_eq_zero.mp hz0 with hpzero | heq
         · exact hp0.ne' hpzero
-        · nlinarith)
+        · linarith)
   have hplus : (h + C c).Splits := by
     rw [schurSzegoComp_add_C_left] at hplusComp
     simpa [h, f, c, binaryRunAnchor] using hplusComp
@@ -546,7 +546,7 @@ theorem binaryRunAnchor_hasSimpleRoots {n : ℕ} {p : ℝ[X]}
     hminusEval
   simp [Polynomial.IsRoot.def] at hderRoot
   simp [hrh, hderRoot] at hplusStrict hminusStrict
-  nlinarith
+  linarith
 
 theorem coeff_binaryRunAnchor_of_le {n k : ℕ} (p : ℝ[X]) (hk : k ≤ n) :
     (binaryRunAnchor n p).coeff k =
