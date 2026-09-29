@@ -17,16 +17,16 @@ value. -/
 @[simp] theorem complexifyMv_specializeAt {σ : Type*}
     (i : σ) (c : ℝ) (P : MvPolynomial σ ℝ) :
     complexifyMv (MvPolynomial.specializeAt i c P) =
-      MvPolynomial.specializeAt i (c : ℂ) (complexifyMv P) := by
-  exact MvPolynomial.map_specializeAt Complex.ofRealHom i c P
+      MvPolynomial.specializeAt i (c : ℂ) (complexifyMv P) :=
+  MvPolynomial.map_specializeAt Complex.ofRealHom i c P
 
 /-- Complexification commutes with ordered specialization at real values. -/
 @[simp] theorem complexifyMv_specializeAtList {σ : Type*}
     (c : σ → ℝ) (l : List σ) (P : MvPolynomial σ ℝ) :
     complexifyMv (MvPolynomial.specializeAtList c l P) =
       MvPolynomial.specializeAtList (fun i => (c i : ℂ)) l
-        (complexifyMv P) := by
-  exact MvPolynomial.map_specializeAtList Complex.ofRealHom c l P
+        (complexifyMv P) :=
+  MvPolynomial.map_specializeAtList Complex.ofRealHom c l P
 
 /-- Real stability is preserved, up to the zero polynomial, by specializing an
 ordered list of coordinates at real values.  Repeated coordinates are allowed. -/

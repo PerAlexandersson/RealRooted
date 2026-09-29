@@ -37,12 +37,12 @@ theorem directionalPDeriv_add_X_mul_rename_some
     exact (Option.some_ne_none i) hi
   have hPsome (i : σ) :
       MvPolynomial.pderiv (some i) (MvPolynomial.rename some P) =
-        MvPolynomial.rename some (MvPolynomial.pderiv i P) := by
-    exact MvPolynomial.pderiv_rename (Option.some_injective σ) i P
+        MvPolynomial.rename some (MvPolynomial.pderiv i P) :=
+    MvPolynomial.pderiv_rename (Option.some_injective σ) i P
   have hQsome (i : σ) :
       MvPolynomial.pderiv (some i) (MvPolynomial.rename some Q) =
-        MvPolynomial.rename some (MvPolynomial.pderiv i Q) := by
-    exact MvPolynomial.pderiv_rename (Option.some_injective σ) i Q
+        MvPolynomial.rename some (MvPolynomial.pderiv i Q) :=
+    MvPolynomial.pderiv_rename (Option.some_injective σ) i Q
   have hXsome (i : σ) :
       MvPolynomial.pderiv (some i)
         (MvPolynomial.X none : MvPolynomial (Option σ) R) = 0 :=
@@ -86,8 +86,8 @@ theorem MvUpperHalfPlaneStable.directionalPDeriv_zero_or
   let pencil : MvPolynomial (Option σ) ℂ :=
     MvPolynomial.rename some P + MvPolynomial.X none *
       MvPolynomial.rename some D
-  have hpencil : MvUpperHalfPlaneStable pencil := by
-    exact hP.directionalPDeriv_pencil c hc
+  have hpencil : MvUpperHalfPlaneStable pencil :=
+    hP.directionalPDeriv_pencil c hc
   have hbaseVars : none ∉ (MvPolynomial.rename some P).vars := by
     intro hnone
     obtain ⟨i, _, hi⟩ := MvPolynomial.mem_vars_rename some P hnone
@@ -169,8 +169,8 @@ theorem MvRealStable.affineExtension_directionalPDeriv_specialize
     (c : σ → ℝ) (t s : ℝ) (hc : ∀ i, 0 ≤ c i) (ht : 0 ≤ t) :
     MvRealStableOrZero
       (directionalPDeriv c P + MvPolynomial.C t * Q +
-        MvPolynomial.C s * directionalPDeriv c Q) := by
-  exact (hPQ.affineExtension_directionalPDeriv_zero_or c t hc ht).affineExtension_specialize s
+        MvPolynomial.C s * directionalPDeriv c Q) :=
+  (hPQ.affineExtension_directionalPDeriv_zero_or c t hc ht).affineExtension_specialize s
 
 /-- The affine extension obtained by a nonnegative directional derivative is
 stable whenever it is nonzero. -/
