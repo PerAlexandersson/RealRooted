@@ -153,8 +153,8 @@ theorem sum_card_filter_Ioo_zip_tail_le_card_filter_gt
       have htail : (b :: t).IsChain (· < ·) := List.IsChain.of_cons hchain
       have hgap_le :
           (s.filter (fun r => a < r ∧ r < b)).card ≤
-            (s.filter (fun r => a < r ∧ r ≤ b)).card := by
-        exact Multiset.card_le_card
+            (s.filter (fun r => a < r ∧ r ≤ b)).card :=
+        Multiset.card_le_card
           (Multiset.monotone_filter_right s fun _ hr => ⟨hr.1, le_of_lt hr.2⟩)
       have hpart :=
         card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt s (le_of_lt hab_lt)
@@ -189,8 +189,8 @@ theorem sum_card_filter_Ioo_zip_tail_add_card_filter_ge_getLast_le_card_filter_g
       have htail : (b :: c :: t).IsChain (· < ·) := List.IsChain.of_cons hchain
       have hgap_le :
           (s.filter (fun r => a < r ∧ r < b)).card ≤
-            (s.filter (fun r => a < r ∧ r ≤ b)).card := by
-        exact Multiset.card_le_card
+            (s.filter (fun r => a < r ∧ r ≤ b)).card :=
+        Multiset.card_le_card
           (Multiset.monotone_filter_right s fun _ hr => ⟨hr.1, le_of_lt hr.2⟩)
       have hpart :=
         card_filter_gt_eq_card_filter_Ioc_add_card_filter_gt s (le_of_lt hab_lt)
@@ -304,9 +304,8 @@ theorem card_filter_lt_add_sum_card_filter_Ioo_zip_tail_add_card_filter_gt_getLa
       have hab_lt : a < b := List.IsChain.rel hchain
       have htail : (b :: t).IsChain (· < ·) := List.IsChain.of_cons hchain
       have ha_not : a ∉ s := hnode a (by simp)
-      have hnode_tail : ∀ x ∈ b :: t, x ∉ s := by
-        intro x hx
-        exact hnode x (by simp [hx])
+      have hnode_tail : ∀ x ∈ b :: t, x ∉ s :=
+        fun x hx => hnode x (by simp [hx])
       have hlower :
           (s.filter (· < a)).card +
               (s.filter (fun r => a < r ∧ r < b)).card =
@@ -668,8 +667,8 @@ theorem not_card_filter_gt_add_two_le_of_card_filter_gt_eq
     (ht : (t.filter (a < ·)).card = (t.filter (b < ·)).card)
     (ha : (s.filter (a < ·)).card = (t.filter (a < ·)).card)
     (hb : (s.filter (b < ·)).card = (t.filter (b < ·)).card) :
-    ¬ ((s.filter (b < ·)).card + 2 ≤ (s.filter (a < ·)).card) := by
-  exact not_card_filter_gt_add_two_le_of_card_filter_gt_sub_eq ht
+    ¬ ((s.filter (b < ·)).card + 2 ≤ (s.filter (a < ·)).card) :=
+  not_card_filter_gt_add_two_le_of_card_filter_gt_sub_eq ht
     (by rw [ha, hb]; simp)
 
 /-- A strict-upper root-count drop by at least two is impossible if the
@@ -697,8 +696,8 @@ theorem not_card_roots_filter_gt_add_two_le_of_eq_no_isRoot_Ioc
     (ha : (p.roots.filter (a < ·)).card = (q.roots.filter (a < ·)).card)
     (hb : (p.roots.filter (b < ·)).card = (q.roots.filter (b < ·)).card) :
     ¬ ((p.roots.filter (b < ·)).card + 2 ≤
-      (p.roots.filter (a < ·)).card) := by
-  exact not_card_roots_filter_gt_add_two_le_of_sub_eq_no_isRoot_Ioc hab hq_no
+      (p.roots.filter (a < ·)).card) :=
+  not_card_roots_filter_gt_add_two_le_of_sub_eq_no_isRoot_Ioc hab hq_no
     (by rw [ha, hb]; simp)
 
 /-- A nonzero splitting polynomial with same-sign endpoint values has an even
@@ -743,9 +742,8 @@ theorem even_card_roots_filter_Ioo_of_eval_mul_pos
       ring
     rw [hcalc, hpow] at hnorm_prod
     nlinarith [hprod, hlc_sq]
-  have hb_not_mem : b ∉ p.roots := by
-    intro hb_mem
-    exact hpb ((Polynomial.mem_roots hp_ne).mp hb_mem)
+  have hb_not_mem : b ∉ p.roots :=
+    fun hb_mem => hpb ((Polynomial.mem_roots hp_ne).mp hb_mem)
   have hsplit : I + B = A := by
     simpa [I, B, A] using
       card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
@@ -753,7 +751,7 @@ theorem even_card_roots_filter_Ioo_of_eval_mul_pos
   rw [← hsplit] at hAB_even
   have hsum : Even (I + (B + B)) := by simpa [Nat.add_assoc] using hAB_even
   rw [Nat.even_add] at hsum
-  have hBB : Even (B + B) := by exact ⟨B, by ring⟩
+  have hBB : Even (B + B) := ⟨B, by ring⟩
   exact hsum.mpr hBB
 
 /-- A nonzero splitting polynomial with an even number of roots, counted with
@@ -774,15 +772,14 @@ theorem eval_mul_eval_pos_of_even_card_roots_filter_Ioo
     simpa [B] using hp.eval_mul_leadingCoeff_neg_one_pow_pos hp_ne hb
   have hlc_sq : 0 < p.leadingCoeff * p.leadingCoeff :=
     mul_self_pos.mpr (Polynomial.leadingCoeff_ne_zero.mpr hp_ne)
-  have hb_not_mem : b ∉ p.roots := by
-    intro hb_mem
-    exact hb ((Polynomial.mem_roots hp_ne).mp hb_mem)
+  have hb_not_mem : b ∉ p.roots :=
+    fun hb_mem => hb ((Polynomial.mem_roots hp_ne).mp hb_mem)
   have hsplit : I + B = A := by
     simpa [I, B, A] using
       card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
         (s := p.roots) hab hb_not_mem
   have hI_even : Even I := by simpa [I] using heven
-  have hBB_even : Even (B + B) := by exact ⟨B, by ring_nf⟩
+  have hBB_even : Even (B + B) := ⟨B, by ring_nf⟩
   have hAB_even : Even (A + B) := by
     rw [← hsplit]
     simpa [Nat.add_assoc] using Even.add hI_even hBB_even
@@ -810,16 +807,13 @@ theorem eval_mul_eval_neg_of_odd_card_roots_filter_Ioo
     (hodd : Odd (p.roots.filter (fun r => a < r ∧ r < b)).card)
     (ha : ¬ p.IsRoot a) (hb : ¬ p.IsRoot b) :
     p.eval a * p.eval b < 0 := by
-  have hpa : p.eval a ≠ 0 := by
-    intro h
-    exact ha (by simpa [Polynomial.IsRoot.def] using h)
-  have hpb : p.eval b ≠ 0 := by
-    intro h
-    exact hb (by simpa [Polynomial.IsRoot.def] using h)
+  have hpa : p.eval a ≠ 0 :=
+    fun h => ha (by simpa [Polynomial.IsRoot.def] using h)
+  have hpb : p.eval b ≠ 0 :=
+    fun h => hb (by simpa [Polynomial.IsRoot.def] using h)
   have hprod_ne : p.eval a * p.eval b ≠ 0 := mul_ne_zero hpa hpb
-  have hnot_pos : ¬ 0 < p.eval a * p.eval b := by
-    intro hpos
-    exact (Nat.not_even_iff_odd.mpr hodd)
+  have hnot_pos : ¬ 0 < p.eval a * p.eval b :=
+    fun hpos => (Nat.not_even_iff_odd.mpr hodd)
       (even_card_roots_filter_Ioo_of_eval_mul_pos hp_ne hp hab hpos)
   exact lt_of_le_of_ne (le_of_not_gt hnot_pos) hprod_ne
 
@@ -831,8 +825,8 @@ theorem two_le_card_roots_filter_Ioo_of_even_of_isRoot
     (heven : Even (p.roots.filter (fun r => a < r ∧ r < b)).card) :
     2 ≤ (p.roots.filter (fun r => a < r ∧ r < b)).card := by
   let s := p.roots.filter (fun r => a < r ∧ r < b)
-  have hmem : y ∈ s := by
-    exact Multiset.mem_filter.mpr
+  have hmem : y ∈ s :=
+    Multiset.mem_filter.mpr
       ⟨(Polynomial.mem_roots hp_ne).mpr hy, ⟨hay, hyb⟩⟩
   have hcard_pos : 0 < s.card :=
     Multiset.card_pos_iff_exists_mem.mpr ⟨y, hmem⟩
