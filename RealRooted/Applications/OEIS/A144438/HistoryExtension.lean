@@ -101,8 +101,8 @@ theorem last_eq_zero_of_exceptionalHistory_exceptional {n : Nat}
       DecoExceptionalHistory.exceptional H) :
     c (Fin.last (n + 3)) = 0 := by
   let j : Fin (n + 4) := (Fin.last (n + 2)).castSucc
-  have hjOne : c j = 1 := by
-    exact penultimate_eq_one_of_exceptionalHistory_exceptional H hc hhistory
+  have hjOne : c j = 1 :=
+    penultimate_eq_one_of_exceptionalHistory_exceptional H hc hhistory
   obtain ⟨_, hjBound, hjZero⟩ := hc j hjOne
   have hindex : (⟨j.1 + 1, hjBound⟩ : Fin (n + 4)) =
       Fin.last (n + 3) := by

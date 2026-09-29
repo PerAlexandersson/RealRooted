@@ -195,8 +195,8 @@ theorem comparisonBottomInsertionCore_inverseWord_tail
   let w := c.1.1.inverseWord
   let S := comparisonBottomSupport w
   have hascent := c.1.1.inverseWord_startsWithAscent c.1.2 (by lia)
-  have hsupport : comparisonBottomSupport w.tail = S := by
-    exact comparisonBottomSupport_tail_eq_of_startsWithAscent hascent
+  have hsupport : comparisonBottomSupport w.tail = S :=
+    comparisonBottomSupport_tail_eq_of_startsWithAscent hascent
   have hlength : w.tail.length = n + 1 := by
     have hwlength := c.1.1.length_inverseWord
     change w.length = n + 2 at hwlength
@@ -207,9 +207,8 @@ theorem comparisonBottomInsertionCore_inverseWord_tail
     have := card_comparisonBottomSupport_le_length hnodup.tail
     rw [hsupport, hlength] at this
     exact this
-  have hS : ∀ x ∈ S, 1 ≤ x ∧ x ≤ n := by
-    intro x hx
-    exact mem_comparisonBottomSupport_inverseWord_bounds H c hx
+  have hS : ∀ x ∈ S, 1 ≤ x ∧ x ≤ n :=
+    fun _ hx => mem_comparisonBottomSupport_inverseWord_bounds H c hx
   have hwordSupport : comparisonBottomSupport c.1.1.inverseWord = S := rfl
   have hderiv :
       (∑ x ∈ S,

@@ -64,8 +64,8 @@ private theorem decoEulerian_affine_recurrence (n : ℕ) :
 /-- The complete rankwise certificate obtained from the independent-lag
 second-order recurrence theorem. -/
 theorem decoEulerian_certificate (n : ℕ) :
-    AffineLagSecondOrderCertificate decoEulerian n := by
-  exact affine_lag_second_order_derivative_certificate_of_nonneg_lag
+    AffineLagSecondOrderCertificate decoEulerian n :=
+  affine_lag_second_order_derivative_certificate_of_nonneg_lag
     decoEulerian 1 1 (by norm_num) (by norm_num) decoEulerian_zero
       decoEulerian_one (by
         intro m
@@ -78,8 +78,8 @@ theorem decoEulerian_natDegree (n : ℕ) : (decoEulerian n).natDegree = n :=
   (decoEulerian_certificate n).natDegree
 
 /-- Every deco Eulerian polynomial is monic. -/
-theorem decoEulerian_monic (n : ℕ) : (decoEulerian n).Monic := by
-  exact monic_of_second_order_derivative decoEulerian 1 1
+theorem decoEulerian_monic (n : ℕ) : (decoEulerian n).Monic :=
+  monic_of_second_order_derivative decoEulerian 1 1
     (fun m => (2 : ℝ) + m) decoEulerian_zero decoEulerian_one
       decoEulerian_affine_recurrence (by intro m; ring) n
 
@@ -195,8 +195,8 @@ def decoEulerianPrefix (n : ℕ) : List ℝ[X] :=
   (List.range (n + 1)).reverse.map decoEulerian
 
 /-- Every reversed finite prefix is a Sturm sequence. -/
-theorem decoEulerian_isSturmSeq (n : ℕ) : IsSturmSeq (decoEulerianPrefix n) := by
-  exact isSturmSeq_affine_lag_second_order_derivative_of_nonneg_lag
+theorem decoEulerian_isSturmSeq (n : ℕ) : IsSturmSeq (decoEulerianPrefix n) :=
+  isSturmSeq_affine_lag_second_order_derivative_of_nonneg_lag
     decoEulerian 1 1 (by norm_num) (by norm_num) decoEulerian_zero
       decoEulerian_one (by
         intro m

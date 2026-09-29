@@ -127,8 +127,8 @@ private theorem a144696Polynomial_reciprocal_strictInterl_of_two_le
     · exact generalizedEulerian_one_reflect n
   have hbA : StrictInterl b (C 2 * E) :=
     StrictInterl.C_mul_right hbE (by norm_num)
-  have hbnn : HasNonnegCoeffs b := by
-    exact loweringEulerStep_nonneg hEnn
+  have hbnn : HasNonnegCoeffs b :=
+    loweringEulerStep_nonneg hEnn
       (generalizedEulerian_natDegree 1 n).le
   have hAnn : HasNonnegCoeffs (C 2 * E) :=
     nonnegCoeffs_C_mul (by norm_num) hEnn
@@ -332,9 +332,8 @@ theorem a144696BernsteinImage_strictInterl {d i j : ℕ}
       reciprocalShift d (a144696BernsteinImage d (d - t))
     else
       a144696BernsteinImage d (t - d)
-  have hpf : ∀ k, k ≤ d → IsPFPolynomial (a144696BernsteinImage d k) := by
-    intro k hk
-    exact IsPFPolynomial.of_realRooted_nonneg
+  have hpf : ∀ k, k ≤ d → IsPFPolynomial (a144696BernsteinImage d k) :=
+    fun k hk => IsPFPolynomial.of_realRooted_nonneg
       (hasNonnegCoeffs_a144696BernsteinImage d k)
       (a144696BernsteinImage_splits hk)
   have hcons : ∀ k, 0 ≤ k → k < 2 * d → StrictInterl (H k) (H (k + 1)) := by

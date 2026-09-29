@@ -1197,8 +1197,8 @@ theorem decoBottomTotalCompanionExtensionCore_eq_zero_add_X_mul_slope
     decoBottomTotalCompanionExtensionCore n =
       decoBottomTotalCompanionExtensionCoreZero n +
         MvPolynomial.X 0 *
-          decoBottomTotalCompanionExtensionCoreSlope n := by
-  exact MvPolynomial.IsMultiaffine.eq_specializeZero_add_X_mul_pderiv
+          decoBottomTotalCompanionExtensionCoreSlope n :=
+  MvPolynomial.IsMultiaffine.eq_specializeZero_add_X_mul_pderiv
     (decoBottomTotalCompanionExtensionCore_isMultiaffine n) 0
 
 /-- The constant coefficient of a successor core row is the zero-section of
@@ -1983,8 +1983,8 @@ theorem zero_notMem_vars_decoBottomTotalCompanionExtensionCoreZero
 /-- The core slope is independent of its differentiated coordinate. -/
 theorem zero_notMem_vars_decoBottomTotalCompanionExtensionCoreSlope
     (n : Nat) :
-    0 ∉ (decoBottomTotalCompanionExtensionCoreSlope n).vars := by
-  exact MvPolynomial.IsMultiaffine.notMem_vars_pderiv_self
+    0 ∉ (decoBottomTotalCompanionExtensionCoreSlope n).vars :=
+  MvPolynomial.IsMultiaffine.notMem_vars_pderiv_self
     (decoBottomTotalCompanionExtensionCore_isMultiaffine n) 0
 
 /-- Exact fresh-coordinate Rayleigh criterion for the companion extension

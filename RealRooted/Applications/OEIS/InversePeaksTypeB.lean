@@ -29,8 +29,8 @@ def inversePeakTypeB (m : ℕ) : ℝ[X] :=
 @[simp]
 theorem scaledInversePeakGamma_coeff (m k : ℕ) :
     (scaledInversePeakGamma m).coeff k =
-      (inversePeakEulerian m).coeff k * 4 ^ k := by
-  exact Polynomial.comp_C_mul_X_coeff
+      (inversePeakEulerian m).coeff k * 4 ^ k :=
+  Polynomial.comp_C_mul_X_coeff
 
 @[simp]
 theorem scaledInversePeakGamma_coeff_zero (m : ℕ) :
