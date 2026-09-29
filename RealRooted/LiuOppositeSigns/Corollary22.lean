@@ -138,10 +138,10 @@ def theorem21CompatibleToRootCountBranchesNatDegreeLeOneNonconstantStatement :
 deleting the unique largest root on the side selected by the largest-root
 comparison. -/
 theorem theorem21CompatibleToRootCountBranchesNatDegreeLeOneNonconstant :
-    theorem21CompatibleToRootCountBranchesNatDegreeLeOneNonconstantStatement := by
-  intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le hcompat
-  exact theorem21RootCountBranches_of_compatible_natDegree_le_one_nonconstant
-    hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le hcompat
+    theorem21CompatibleToRootCountBranchesNatDegreeLeOneNonconstantStatement :=
+  fun f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le hcompat =>
+    theorem21RootCountBranches_of_compatible_natDegree_le_one_nonconstant
+      hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le hcompat
 
 /-- Isolated nonconstant linear-endpoint forward direction, restated with
 branch-retaining deletion-pair common-interleaver witnesses. -/
@@ -373,17 +373,15 @@ theorem theorem21CompatibleRootCountNatDegreeLeTwo_of_endpointLeTwo
 endpoint-degree-two form. -/
 theorem theorem21CompatibleRootCountEndpointLeTwoNonconstant_of_endpointLeTwo
     (h : theorem21CompatibleRootCountEndpointLeTwoStatement) :
-    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement := by
-  intro f g hf hg hsgn _hfdeg_ne _hgdeg_ne
-  exact h f g hf hg hsgn
+    theorem21CompatibleRootCountEndpointLeTwoNonconstantStatement :=
+  fun f g hf hg hsgn _hfdeg_ne _hgdeg_ne => h f g hf hg hsgn
 
 /-- The ordinary endpoint-degree-two Liu package restricts to its nonconstant
 form. -/
 theorem theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_natDegreeLeTwo
     (h : theorem21CompatibleRootCountNatDegreeLeTwoStatement) :
-    theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement := by
-  intro f g hf hg hsgn _hfdeg_ne _hgdeg_ne hfdeg hgdeg
-  exact h f g hf hg hsgn hfdeg hgdeg
+    theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement :=
+  fun f g hf hg hsgn _hfdeg_ne _hgdeg_ne hfdeg hgdeg => h f g hf hg hsgn hfdeg hgdeg
 
 /-- The nonconstant bounded endpoint-degree-two package restricts to the
 ordinary nonconstant low-degree statement with explicit endpoint degree bounds.
@@ -434,16 +432,14 @@ theorem theorem21CompatibleRootCountNatDegreeLeThree_of_endpointLeThree
 bounded endpoint-degree-three package. -/
 theorem theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_endpointLeThree
     (h : theorem21CompatibleRootCountEndpointLeThreeStatement) :
-    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement := by
-  intro f g hf hg hsgn _hfdeg_ne _hgdeg_ne
-  exact h f g hf hg hsgn
+    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement :=
+  fun f g hf hg hsgn _hfdeg_ne _hgdeg_ne => h f g hf hg hsgn
 
 /-- The ordinary low-degree Liu package restricts to its nonconstant form. -/
 theorem theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_natDegreeLeThree
     (h : theorem21CompatibleRootCountNatDegreeLeThreeStatement) :
-    theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement := by
-  intro f g hf hg hsgn _hfdeg_ne _hgdeg_ne hfdeg hgdeg
-  exact h f g hf hg hsgn hfdeg hgdeg
+    theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement :=
+  fun f g hf hg hsgn _hfdeg_ne _hgdeg_ne hfdeg hgdeg => h f g hf hg hsgn hfdeg hgdeg
 
 /-- The bounded endpoint-degree-three nonconstant package restricts to the
 ordinary nonconstant low-degree statement with explicit endpoint degree bounds.
@@ -1123,20 +1119,20 @@ theorem corollary22DegreeDiff_natDegree_le_three_nonconstant
 Theorem 2.1 package. -/
 theorem corollary22DegreeDiffNatDegreeLeThree_of_theorem21NatDegreeLeThree
     (h : theorem21CompatibleRootCountNatDegreeLeThreeStatement) :
-    corollary22DegreeDiffNatDegreeLeThreeStatement := by
-  intro f g hf hg hsgn hfdeg hgdeg hcompat
-  exact natDegree_abs_sub_le_two_of_theorem21RootCountBranches hf hg hsgn
-    ((h f g hf hg hsgn hfdeg hgdeg).1 hcompat)
+    corollary22DegreeDiffNatDegreeLeThreeStatement :=
+  fun f g hf hg hsgn hfdeg hgdeg hcompat =>
+    natDegree_abs_sub_le_two_of_theorem21RootCountBranches hf hg hsgn
+      ((h f g hf hg hsgn hfdeg hgdeg).1 hcompat)
 
 /-- Nonconstant low-degree Liu Corollary 2.2 follows from the checked
 nonconstant low-degree Theorem 2.1 package. -/
 theorem
     corollary22DegreeDiffNatDegreeLeThreeNonconstant_of_theorem21NatDegreeLeThree
     (h : theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement) :
-    corollary22DegreeDiffNatDegreeLeThreeNonconstantStatement := by
-  intro f g hf hg hsgn hf_deg hg_deg hfdeg hgdeg hcompat
-  exact natDegree_abs_sub_le_two_of_theorem21RootCountBranches hf hg hsgn
-    ((h f g hf hg hsgn hf_deg hg_deg hfdeg hgdeg).1 hcompat)
+    corollary22DegreeDiffNatDegreeLeThreeNonconstantStatement :=
+  fun f g hf hg hsgn hf_deg hg_deg hfdeg hgdeg hcompat =>
+    natDegree_abs_sub_le_two_of_theorem21RootCountBranches hf hg hsgn
+      ((h f g hf hg hsgn hf_deg hg_deg hfdeg hgdeg).1 hcompat)
 
 /-- Low-degree Liu Corollary 2.2 follows from the isolated branch-retaining
 common-interleaver forward direction. -/
