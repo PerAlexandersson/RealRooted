@@ -55,6 +55,9 @@ import RealRooted.Basic.PolynomialFacts
 import RealRooted.Basic.ProperPosition
 import RealRooted.Basic.RootLists
 import RealRooted.BasisTransform
+import RealRooted.BalancedRunTransformation
+import RealRooted.BalancedRunTransformation.Interlacing
+import RealRooted.BalancedRunTransformation.Preservation
 import RealRooted.BernsteinCone
 import RealRooted.BernsteinCone.Preserver
 import RealRooted.Bezoutian

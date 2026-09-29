@@ -209,6 +209,31 @@ theorem natDegree_comp_balancedRunTransform_le
   · rw [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge hmk)]
     simp
 
+/-- The balanced run transform preserves evaluation at one on its natural
+degree box. -/
+theorem eval_one_balancedRunTransform
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) :
+    (balancedRunTransform n p).eval 1 = p.eval 1 := by
+  have hcoeff := coeff_comp_balancedRunTransform_eq_sum_range hp 0
+  rw [Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_comp,
+    Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_one,
+    zero_add] at hcoeff
+  simp only [Nat.choose_zero_right, Nat.cast_one, div_one, mul_one] at hcoeff
+  rw [Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hp)]
+  simp only [one_pow, mul_one]
+  exact hcoeff
+
+/-- A nonzero polynomial with nonnegative coefficients is not annihilated by
+the balanced run transform on the natural degree box. -/
+theorem balancedRunTransform_ne_zero
+    {n : ℕ} {p : ℝ[X]} (hp : HasNonnegCoeffs p) (hp0 : p ≠ 0)
+    (hdegree : p.natDegree ≤ n) :
+    balancedRunTransform n p ≠ 0 := by
+  intro hzero
+  have hpos := eval_pos_of_hasNonnegCoeffs hp hp0 one_pos
+  rw [← eval_one_balancedRunTransform hdegree, hzero] at hpos
+  simp at hpos
+
 private theorem balancedRunHomogenizedSource_diagonal_scalar
     {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) {k : ℕ} (hk : k ≤ n) :
     (∑ m ∈ Finset.range (n + 1),
