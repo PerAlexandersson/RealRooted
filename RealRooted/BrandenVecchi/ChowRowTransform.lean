@@ -101,8 +101,8 @@ theorem IsReflectionInterlacingSeq.insertZero
 theorem IsReflectionInterlacingSeq.replaceAdjacentAdd
     {n : ℕ} {left right : List ℝ[X]} {f g : ℝ[X]}
     (h : IsReflectionInterlacingSeq n (left ++ f :: g :: right)) :
-    IsReflectionInterlacingSeq n (left ++ (f + g) :: right) := by
-  exact h.insertAdjacentAdd.sublist (by simp)
+    IsReflectionInterlacingSeq n (left ++ (f + g) :: right) :=
+  h.insertAdjacentAdd.sublist (by simp)
 
 private theorem IsReflectionInterlacingSeq.collapseSuffixFromHead
     {n : ℕ} {left : List ℝ[X]} {f : ℝ[X]} :
@@ -673,8 +673,8 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
         have hqdeg : q.natDegree ≤ n + 1 := by
           have hqdeg0 := houtdeg q hq
           lia
-        have hpf : IsPFPolynomial (q.reflect (n + 1)) := by
-          exact reciprocalShift_preserves_pf (D := n + 1) (p := q)
+        have hpf : IsPFPolynomial (q.reflect (n + 1)) :=
+          reciprocalShift_preserves_pf (D := n + 1) (p := q)
             (houtpf q hq) hqdeg
         exact ⟨hp_ne, (hpf.ne_zero_and_splits hp_ne).2⟩
 
@@ -707,12 +707,10 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
         h.member_nonnegCoeffs (List.mem_of_mem_drop hq)
     simpa [add_comm] using
       add_ne_zero_of_nonnegCoeffs_of_right_ne_zero htailnn hSnn.X_mul hXS_ne
-  have hout_nn : ∀ p ∈ out, HasNonnegCoeffs p := by
-    intro p hp
-    exact chowRowTransform_nonnegCoeffs h (by simpa [out] using hp)
-  have hout_deg : ∀ p ∈ out, p.natDegree ≤ n + 1 := by
-    intro p hp
-    exact chowRowTransform_natDegree_le h (by simpa [out] using hp)
+  have hout_nn : ∀ p ∈ out, HasNonnegCoeffs p :=
+    fun _ hp => chowRowTransform_nonnegCoeffs h (by simpa [out] using hp)
+  have hout_deg : ∀ p ∈ out, p.natDegree ≤ n + 1 :=
+    fun _ hp => chowRowTransform_natDegree_le h (by simpa [out] using hp)
   have hdirect : out.Pairwise StrictInterl := by
     rw [List.pairwise_iff_get]
     intro i j hij
@@ -927,9 +925,6 @@ theorem IsReflectionInterlacingSeq.chowRowTransform
   by_cases hS : chowS n fs.sum = 0
   · exact h.chowRowTransform_of_chowS_eq_zero hS
   · exact h.chowRowTransform_of_chowS_ne_zero hS
-
-@[deprecated chowRowTransform_interl_of_lt (since := "2026-09-26")]
-alias chowRowTransform_prec0_of_lt := chowRowTransform_interl_of_lt
 
 end BrandenVecchi
 

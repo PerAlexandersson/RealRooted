@@ -27,8 +27,8 @@ theorem det_nonneg_of_tendsto {n : Type*} [Fintype n] [DecidableEq n]
     {M : ℕ → Matrix n n ℝ} {M₀ : Matrix n n ℝ}
     (hM : ∀ᶠ k in atTop, 0 ≤ (M k).det)
     (h : ∀ i j, Tendsto (fun k => M k i j) atTop (𝓝 (M₀ i j))) :
-    0 ≤ M₀.det := by
-  exact le_of_tendsto_of_tendsto tendsto_const_nhds (tendsto_det h)
+    0 ≤ M₀.det :=
+  le_of_tendsto_of_tendsto tendsto_const_nhds (tendsto_det h)
     hM
 
 end Matrix

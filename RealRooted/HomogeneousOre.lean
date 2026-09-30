@@ -123,8 +123,8 @@ theorem allComboRealRooted_step_linear_change_of_pencil
     (hT : PreservesRealRootedOnPencil T f g)
     (hp : p = C a * T f + C b * T g)
     (hq : q = C c * T f + C d * T g) :
-    AllComboRealRooted p q := by
-  exact allComboRealRooted_linear_recombination hp hq
+    AllComboRealRooted p q :=
+  allComboRealRooted_linear_recombination hp hq
     (allComboRealRooted_map_of_pencil hall hT)
 
 /-- Single triangular Ore-shaped step through a pencil-local image operator.
@@ -646,9 +646,6 @@ theorem interl_or_reverse_sequence_of_pencil
   interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_sequence_of_pencil hbase hT hP hQ j)
 
-@[deprecated interl_or_reverse_sequence_of_pencil (since := "2026-09-18")]
-alias prec0_or_revPrec0_sequence_of_pencil := interl_or_reverse_sequence_of_pencil
-
 /-- Unoriented `Interl` consequence of sequence-level pencil transport with a
 post-map two-coordinate linear change at each step. -/
 theorem interl_or_reverse_sequence_linear_change_of_pencil
@@ -663,11 +660,6 @@ theorem interl_or_reverse_sequence_linear_change_of_pencil
     ∀ j : ℕ, Interl (P j) (Q j) ∨ Interl (Q j) (P j) := fun j =>
   interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_sequence_linear_change_of_pencil hbase hT hP hQ j)
-
-@[deprecated interl_or_reverse_sequence_linear_change_of_pencil
-  (since := "2026-09-18")]
-alias prec0_or_revPrec0_sequence_linear_change_of_pencil :=
-  interl_or_reverse_sequence_linear_change_of_pencil
 
 /-- Unoriented `Interl` consequence of triangular Ore-shaped state transport. -/
 theorem interl_or_reverse_triangular_sequence_of_pencil
@@ -688,11 +680,6 @@ theorem interl_or_reverse_triangular_sequence_of_pencil
     (allComboRealRooted_triangular_sequence_of_pencil
       hbase hT hP hQ hPimage hQimage j)
 
-@[deprecated interl_or_reverse_triangular_sequence_of_pencil
-  (since := "2026-09-18")]
-alias prec0_or_revPrec0_triangular_sequence_of_pencil :=
-  interl_or_reverse_triangular_sequence_of_pencil
-
 /-- Unoriented `Interl` consequence of triangular row-certificate transport. -/
 theorem interl_or_reverse_triangular_sequence_of_certificates
     {T A K : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {P Q : ℕ → ℝ[X]}
@@ -704,10 +691,5 @@ theorem interl_or_reverse_triangular_sequence_of_certificates
   interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_triangular_sequence_of_certificates
       hbase hrow hP hQ j)
-
-@[deprecated interl_or_reverse_triangular_sequence_of_certificates
-  (since := "2026-09-18")]
-alias prec0_or_revPrec0_triangular_sequence_of_certificates :=
-  interl_or_reverse_triangular_sequence_of_certificates
 
 end RealRooted

@@ -122,8 +122,8 @@ theorem applyMonomialDifferential_comp
     {R sigma : Type*} [CommSemiring R] [Fintype sigma]
     (d e : sigma →₀ ℕ) (P : MvPolynomial sigma R) :
     applyMonomialDifferential (d + e) P =
-      applyMonomialDifferential d (applyMonomialDifferential e P) := by
-  exact applyMonomialDifferentialAlong_add
+      applyMonomialDifferential d (applyMonomialDifferential e P) :=
+  applyMonomialDifferentialAlong_add
     (differentialVariableOrder sigma) d e P
 
 private theorem finsupp_totalDegree_add
@@ -237,8 +237,8 @@ private theorem applyMonomialDifferential_mapDomain_inr_mul_rename
 private theorem totalDegree_mapDomain
     {sigma tau : Type*} (f : sigma → tau) (hf : Function.Injective f)
     (d : sigma →₀ ℕ) :
-    (d.mapDomain f).sum (fun _ n ↦ n) = d.sum (fun _ n ↦ n) := by
-  exact Finsupp.sum_mapDomain_index_inj hf
+    (d.mapDomain f).sum (fun _ n ↦ n) = d.sum (fun _ n ↦ n) :=
+  Finsupp.sum_mapDomain_index_inj hf
 
 private theorem applyNegDifferential_rename_inr_mul_rename
     {R sigma tau : Type*} [CommRing R] [Fintype sigma] [Fintype tau]

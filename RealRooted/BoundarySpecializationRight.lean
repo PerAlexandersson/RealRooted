@@ -55,8 +55,8 @@ private theorem specializeZero_zero_or_of_degreeOf_le_one_unrestricted
   have hPaff := MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
     hi z (z i)
   have hQeval : MvPolynomial.eval z Q =
-      MvPolynomial.eval (Function.update z i 0) P := by
-    exact MvPolynomial.eval_specializeZero i P z
+      MvPolynomial.eval (Function.update z i 0) P :=
+    MvPolynomial.eval_specializeZero i P z
   have hB0 : B.eval 0 ≠ 0 := by
     simp only [B, eval_affineLineRestriction, mul_zero, add_zero]
     intro hzero

@@ -24,12 +24,10 @@ theorem reciprocalShift_reverses_strictInterl
     StrictInterl (reciprocalShift D q) (reciprocalShift D p) := by
   obtain ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, ss, rs, hss_sorted, hrs_sorted,
     hss_roots, hrs_roots, hshape⟩ := hpq
-  have hss_nonpos : ∀ x ∈ ss, x ≤ 0 := by
-    intro x hx
-    exact hp.2.2 x (by rw [← hss_roots]; exact_mod_cast hx)
-  have hrs_nonpos : ∀ x ∈ rs, x ≤ 0 := by
-    intro x hx
-    exact hq.2.2 x (by rw [← hrs_roots]; exact_mod_cast hx)
+  have hss_nonpos : ∀ x ∈ ss, x ≤ 0 :=
+    fun x hx => hp.2.2 x (by rw [← hss_roots]; exact_mod_cast hx)
+  have hrs_nonpos : ∀ x ∈ rs, x ≤ 0 :=
+    fun x hx => hq.2.2 x (by rw [← hrs_roots]; exact_mod_cast hx)
   set SSout := (rs.filter fun r ↦ decide (r ≠ 0)).reverse.map (fun r ↦ 1 / r)
     ++ List.replicate (D - q.natDegree) 0 with hSSout
   set RSout := (ss.filter fun r ↦ decide (r ≠ 0)).reverse.map (fun r ↦ 1 / r)

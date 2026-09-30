@@ -126,12 +126,6 @@ end Tactic
 end RealRooted
 namespace RealRooted
 namespace Tactic
-@[deprecated operator_interl_sequence_of_interlacing_preserver (since := "2026-09-26")]
-alias operator_prec0_sequence_of_interlacing_preserver :=
-  operator_interl_sequence_of_interlacing_preserver
-
-@[deprecated operator_interl_sequence_up_to_order (since := "2026-09-26")]
-alias operator_prec0_sequence_up_to_order := operator_interl_sequence_up_to_order
 
 end Tactic
 end RealRooted
@@ -165,7 +159,7 @@ macro_rules
         interlacing_preserver := $hT:term,
         prec := $hfg:term) =>
       `(tactic|
-        exact RealRooted.Tactic.operator_prec0_sequence_of_interlacing_preserver
+        exact RealRooted.Tactic.operator_interl_sequence_of_interlacing_preserver
           $hT $hfg)
   | `(tactic|
       rr_operator_prec0_up_to_order using
@@ -179,7 +173,7 @@ macro_rules
         preserves := $hT:term,
         prec := $hfg:term) =>
       `(tactic|
-        exact RealRooted.Tactic.operator_prec0_sequence_up_to_order
+        exact RealRooted.Tactic.operator_interl_sequence_up_to_order
           $hT $hfg)
 end Tactic
 end RealRooted

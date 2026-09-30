@@ -64,7 +64,4 @@ theorem gammaOperator_interl_or_reverse
   · exact hqdeg
   · exact hpq
 
-@[deprecated gammaOperator_interl_or_reverse (since := "2026-09-18")]
-alias gammaOperator_prec0_or_revPrec0 := gammaOperator_interl_or_reverse
-
 end RealRooted

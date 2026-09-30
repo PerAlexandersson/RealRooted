@@ -117,8 +117,8 @@ theorem reflect_chowPolynomial_succ (A : LowerTriangularMatrix R)
         (chowDerangement A)
   have hd : chowDerangement A (n + 1) = X * S := by
     rw [chowDerangement_succ]
-  have hS : (X - 1) * S = P.reflect n - P := by
-    exact X_sub_one_mul_chowS n P hPdegree
+  have hS : (X - 1) * S = P.reflect n - P :=
+    X_sub_one_mul_chowS n P hPdegree
   have hreflectP : P.reflect n = P + (X - 1) * S := by
     calc
       P.reflect n = (P.reflect n - P) + P := by ring

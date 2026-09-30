@@ -320,14 +320,4 @@ theorem inversePeakEulerian_even_interlaces (j : ℕ) :
   rw [inversePeakEulerian_natDegree, inversePeakEulerian_natDegree,
     half_two_mul_add_one, half_two_mul_add_two]
 
-/-! ## Deprecated aliases -/
-
-@[deprecated inversePeakEulerian_strictInterl_and_noCommonRoot
-  (since := "2026-09-26")]
-alias inversePeakEulerian_prec_and_noCommonRoot :=
-  inversePeakEulerian_strictInterl_and_noCommonRoot
-
-@[deprecated inversePeakEulerian_strictInterl (since := "2026-09-26")]
-alias inversePeakEulerian_prec := inversePeakEulerian_strictInterl
-
 end RealRooted.Applications.OEIS

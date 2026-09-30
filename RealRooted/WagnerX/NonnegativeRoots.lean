@@ -566,10 +566,4 @@ theorem Interl.mul_X_both_iff_of_nonneg {f g : ℝ[X]}
   ⟨fun h => h.mul_X_both_of_nonneg hfnn hgnn,
     fun h => h.of_mul_X_both_of_nonneg hfnn hgnn⟩
 
-@[deprecated Interl.mul_X_both_iff_of_nonneg (since := "2026-09-18")]
-theorem prec0_iff_prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Interl f g ↔ Interl (X * f) (X * g) :=
-  Interl.mul_X_both_iff_of_nonneg hfnn hgnn
-
 end RealRooted

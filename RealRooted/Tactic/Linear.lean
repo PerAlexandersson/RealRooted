@@ -321,14 +321,6 @@ macro_rules
 end Tactic
 end RealRooted
 namespace RealRooted
-@[deprecated strictInterl_C_mul_left_sequence (since := "2026-09-26")]
-alias prec_C_mul_left_sequence := strictInterl_C_mul_left_sequence
-
-@[deprecated strictInterl_C_mul_right_sequence (since := "2026-09-26")]
-alias prec_C_mul_right_sequence := strictInterl_C_mul_right_sequence
-
-@[deprecated strictInterl_C_mul_both_sequence (since := "2026-09-26")]
-alias prec_C_mul_both_sequence := strictInterl_C_mul_both_sequence
 
 end RealRooted
 
@@ -419,12 +411,12 @@ macro_rules
       rr_prec_C_mul_left_sequence using
         prec := $hprec:term,
         scalar_ne := $ha:term) =>
-      `(tactic| exact RealRooted.prec_C_mul_left_sequence $hprec $ha)
+      `(tactic| exact RealRooted.strictInterl_C_mul_left_sequence $hprec $ha)
   | `(tactic|
       rr_prec_C_mul_left_sequence using
         prec := $hprec:term) =>
       `(tactic|
-        exact RealRooted.prec_C_mul_left_sequence $hprec (fun i => by rr_side_ne))
+        exact RealRooted.strictInterl_C_mul_left_sequence $hprec (fun i => by rr_side_ne))
   | `(tactic|
       rr_prec_C_mul_right using
         prec := $hprec:term,
@@ -438,12 +430,12 @@ macro_rules
       rr_prec_C_mul_right_sequence using
         prec := $hprec:term,
         scalar_ne := $ha:term) =>
-      `(tactic| exact RealRooted.prec_C_mul_right_sequence $hprec $ha)
+      `(tactic| exact RealRooted.strictInterl_C_mul_right_sequence $hprec $ha)
   | `(tactic|
       rr_prec_C_mul_right_sequence using
         prec := $hprec:term) =>
       `(tactic|
-        exact RealRooted.prec_C_mul_right_sequence $hprec (fun i => by rr_side_ne))
+        exact RealRooted.strictInterl_C_mul_right_sequence $hprec (fun i => by rr_side_ne))
   | `(tactic|
       rr_prec_C_mul_both using
         prec := $hprec:term,
@@ -464,12 +456,12 @@ macro_rules
         left_ne := $hleft:term,
         right_ne := $hright:term) =>
       `(tactic|
-        exact RealRooted.prec_C_mul_both_sequence $hprec $hleft $hright)
+        exact RealRooted.strictInterl_C_mul_both_sequence $hprec $hleft $hright)
   | `(tactic|
       rr_prec_C_mul_both_sequence using
         prec := $hprec:term) =>
       `(tactic|
-        exact RealRooted.prec_C_mul_both_sequence $hprec
+        exact RealRooted.strictInterl_C_mul_both_sequence $hprec
           (fun i => by rr_side_ne) (fun i => by rr_side_ne))
 end Tactic
 end RealRooted

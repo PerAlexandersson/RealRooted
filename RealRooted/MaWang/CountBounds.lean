@@ -377,9 +377,6 @@ theorem strictInterl_of_count_bounds_same
 @[deprecated strictInterl_of_count_bounds_succ (since := "2026-09-18")]
 alias prec_of_count_bounds_succ := strictInterl_of_count_bounds_succ
 
-@[deprecated strictInterl_of_count_bounds_same (since := "2026-09-18")]
-alias prec_of_count_bounds_same := strictInterl_of_count_bounds_same
-
 end RealRooted.MaWangInternal
 
 namespace RealRooted
@@ -391,6 +388,6 @@ export MaWangInternal
     strictInterl_of_count_bounds_succ
     strictInterl_of_count_bounds_same
     prec_of_count_bounds_succ
-    prec_of_count_bounds_same)
+    strictInterl_of_count_bounds_same)
 
 end RealRooted

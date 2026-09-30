@@ -290,8 +290,8 @@ theorem strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_
     rw [← hrs_eq]
     exact Multiset.mem_coe.mpr hm_mem
   have hm_nonpos : m ≤ 0 := hroots m hm_root
-  have h0_le_m : (0 : ℝ) ≤ m := by
-    exact List.Pairwise.rel_getLast hrs_sorted h0_mem
+  have h0_le_m : (0 : ℝ) ≤ m :=
+    List.Pairwise.rel_getLast hrs_sorted h0_mem
   have hm0 : m = 0 := le_antisymm hm_nonpos h0_le_m
   have hdivX_roots : (↑(rs.dropLast) : Multiset ℝ) = g.divX.roots :=
     divX_roots_eq_dropLast_of_coeff_zero hg.1 hg0 hrs_eq hrs_ne
@@ -711,81 +711,10 @@ theorem rightZeroDivX_roots_nonpos_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
 
 /-! ## Deprecated `Prec` / `Prec0` compatibility names -/
 
-@[deprecated divX_realRooted_of_strictInterl_coeff_zero
-  (since := "2026-09-18")]
-alias divX_realRooted_of_prec_coeff_zero :=
-  divX_realRooted_of_strictInterl_coeff_zero
-
-@[deprecated divX_roots_nonpos_of_strictInterl_hasNonnegCoeffs
-  (since := "2026-09-18")]
-alias divX_roots_nonpos_of_prec_hasNonnegCoeffs :=
-  divX_roots_nonpos_of_strictInterl_hasNonnegCoeffs
-
-@[deprecated interl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias prec0_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  interl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated
-  strictInterl_divX_left_of_strictInterl_sameDegree_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias prec_divX_left_of_prec_sameDegree_of_hasNonnegCoeffs_coeff_zero :=
-  strictInterl_divX_left_of_strictInterl_sameDegree_of_hasNonnegCoeffs_coeff_zero
-
 @[deprecated strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
   (since := "2026-09-18")]
 alias prec_iff_prec_divX_left_of_hasNonnegCoeffs_coeff_zero :=
   strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias rightZeroDivX_package_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated rightZeroDivX_interl_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias rightZeroDivX_prec0_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  rightZeroDivX_interl_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated
-  rightZeroDivX_realRooted_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias rightZeroDivX_realRooted_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  rightZeroDivX_realRooted_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated
-  rightZeroDivX_roots_nonpos_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias rightZeroDivX_roots_nonpos_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  rightZeroDivX_roots_nonpos_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated
-  rightZeroDivX_zero_mem_roots_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias rightZeroDivX_zero_mem_roots_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  rightZeroDivX_zero_mem_roots_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated
-  sameDegreePair_divX_strictInterl_backward_of_succDegree_of_coeff_zero
-  (since := "2026-09-18")]
-alias sameDegreePair_divX_prec_backward_of_succDegree_of_coeff_zero :=
-  sameDegreePair_divX_strictInterl_backward_of_succDegree_of_coeff_zero
-
-@[deprecated
-  sameDegreePair_divX_strictInterl_forward_of_succDegree_of_coeff_zero
-  (since := "2026-09-18")]
-alias sameDegreePair_divX_prec_forward_of_succDegree_of_coeff_zero :=
-  sameDegreePair_divX_strictInterl_forward_of_succDegree_of_coeff_zero
-
-@[deprecated sameDegreePair_divX_strictInterl_iff_of_succDegree_of_coeff_zero
-  (since := "2026-09-18")]
-alias sameDegreePair_divX_prec_iff_of_succDegree_of_coeff_zero :=
-  sameDegreePair_divX_strictInterl_iff_of_succDegree_of_coeff_zero
-
-@[deprecated zero_mem_roots_of_strictInterl_coeff_zero
-  (since := "2026-09-18")]
-alias zero_mem_roots_of_prec_coeff_zero :=
-  zero_mem_roots_of_strictInterl_coeff_zero
 
 @[deprecated
   strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero

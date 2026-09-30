@@ -341,9 +341,8 @@ theorem appellKernelCoefficientMatrix_offDiagonal_eq_zero
   have hbasis : LinearIndependent ℝ basis :=
     shiftedJacobiMonic_linearIndependent_fin (c - 1) (d - 1)
       (by linarith) (by linarith) m
-  have hoperator : ∀ a, operator (basis a) = C (eigen a) * basis a := by
-    intro a
-    exact jacobiDifferentialOperatorLinearMap_shiftedJacobiMonic c d a
+  have hoperator : ∀ a, operator (basis a) = C (eigen a) * basis a :=
+    fun a => jacobiDifferentialOperatorLinearMap_shiftedJacobiMonic c d a
   apply eigenCoefficient_diagonal_of_action_eq heigen hbasis hoperator
   intro r z
   rw [eigenKernelActionLeft_appellKernelCoefficientMatrix m b hc hd,

@@ -61,8 +61,8 @@ theorem flatten_equalityRuns {α : Type*} [DecidableEq α] (word : List α) :
   simp [equalityRuns]
 
 theorem nil_notMem_equalityRuns {α : Type*} [DecidableEq α] (word : List α) :
-    [] ∉ equalityRuns word := by
-  exact List.nil_notMem_splitBy _ _
+    [] ∉ equalityRuns word :=
+  List.nil_notMem_splitBy _ _
 
 theorem isChain_eq_of_mem_equalityRuns {α : Type*} [DecidableEq α]
     {word block : List α} (hblock : block ∈ equalityRuns word) :
@@ -121,9 +121,8 @@ private theorem blocksToRuns_representatives_ne {α : Type*} :
         exact hne
       have htailnil : [] ∉ next :: blocks := fun h => hnil (by simp [h])
       have htailconstant :
-          ∀ current ∈ next :: blocks, current.IsChain (· = ·) := by
-        intro current hcurrent
-        exact hconstant current (by simp [hcurrent])
+          ∀ current ∈ next :: blocks, current.IsChain (· = ·) :=
+        fun current hcurrent => hconstant current (by simp [hcurrent])
       have htail := blocksToRuns_representatives_ne (next :: blocks)
         htailnil htailconstant hseparated.tail
       simpa [blocksToRuns] using List.IsChain.cons_cons hhead htail
@@ -164,9 +163,8 @@ private theorem expand_blocksToRuns {α : Type*} :
         symm
         exact (List.isChain_eq_iff_eq_replicate.mp
           (hconstant block (by simp))) _ (List.head_mem_head? _)
-      have htailconstant : ∀ current ∈ blocks, current.IsChain (· = ·) := by
-        intro current hcurrent
-        exact hconstant current (by simp [hcurrent])
+      have htailconstant : ∀ current ∈ blocks, current.IsChain (· = ·) :=
+        fun current hcurrent => hconstant current (by simp [hcurrent])
       simp [blocksToRuns, hrep,
         expand_blocksToRuns blocks hblocks htailconstant]
 
@@ -241,9 +239,8 @@ private theorem blocksToRuns_map_replicate {α : Type*} :
   | [], _, _ => by simp [blocksToRuns]
   | run :: runs, hpos, hnil => by
       have hrun_pos : 0 < run.2 := hpos run (by simp)
-      have htail_pos : ∀ current ∈ runs, 0 < current.2 := by
-        intro current hcurrent
-        exact hpos current (by simp [hcurrent])
+      have htail_pos : ∀ current ∈ runs, 0 < current.2 :=
+        fun current hcurrent => hpos current (by simp [hcurrent])
       have htail_nil :
           [] ∉ runs.map fun current => List.replicate current.2 current.1 := by
         intro h
@@ -348,8 +345,8 @@ theorem isSigned_iff_repeated_isNegative {q p : ℕ}
 private theorem blocks_isChain_signedAdjacent {q p : ℕ}
     (data : RunLengthData (SignedLetter q p)) :
     data.blocks.IsChain fun left right =>
-      ∀ᵉ (x ∈ left.getLast?) (y ∈ right.head?), SignedAdjacent x y := by
-  exact data.blocks_separated.imp fun left right h => by
+      ∀ᵉ (x ∈ left.getLast?) (y ∈ right.head?), SignedAdjacent x y :=
+  data.blocks_separated.imp fun left right h => by
     obtain ⟨hleft, hright, hne⟩ := h
     simp [List.getLast?_eq_some_getLast hleft,
       List.head?_eq_some_head hright, SignedAdjacent, hne]
@@ -428,8 +425,8 @@ theorem compress_ofFn_repeated_isNegative {q p n : ℕ}
     {run : SignedLetter q p × ℕ}
     (hrun : run ∈ (compressRunLengthData (List.ofFn word)).runs)
     (hrepeated : 1 < run.2) :
-    run.1.IsNegative := by
-  exact RunLengthData.compress_repeated_isNegative
+    run.1.IsNegative :=
+  RunLengthData.compress_repeated_isNegative
     ((isSignedList_ofFn_iff word).mpr hword) hrun hrepeated
 
 end RealRooted.BrandenVecchi

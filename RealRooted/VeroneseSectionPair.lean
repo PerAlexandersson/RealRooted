@@ -38,8 +38,8 @@ theorem strictInterl_veroneseSectionPolynomial_of_residue_lt
   have hiq : i < q := by
     simp [i, q, ir, qr]
     lia
-  have hinterl : Interl (fs.get i) (fs.get q) := by
-    exact (isInterlacingSeq0_iff_pairwise.mp hpkg.1.1).rel_get_of_lt hiq
+  have hinterl : Interl (fs.get i) (fs.get q) :=
+    (isInterlacingSeq0_iff_pairwise.mp hpkg.1.1).rel_get_of_lt hiq
   have hi : fs.get i = veroneseSectionPolynomial r k p := by
     rw [show fs.get i = veroneseSectionPolynomial r (r - 1 - ir.1) p by
       exact get_veroneseSectionPolynomialListDesc (p := p) ir]

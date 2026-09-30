@@ -375,10 +375,10 @@ theorem quasiJacobiTwoPointCompression_posDef
           Lagrange.eval_basis_self hx.injOn (mem_univ j)]
       simp only [p, eval_add, eval_mul, eval_C, eval_zero,
         hei_i, hei_j, hej_i, hej_j, mul_zero, add_zero, zero_add] at hi hj
-      have hyi : y 0 = 0 := by
-        exact (mul_eq_zero.mp hi).resolve_right (inv_ne_zero hsi)
-      have hyj : y 1 = 0 := by
-        exact (mul_eq_zero.mp hj).resolve_right (inv_ne_zero hsj)
+      have hyi : y 0 = 0 :=
+        (mul_eq_zero.mp hi).resolve_right (inv_ne_zero hsi)
+      have hyj : y 1 = 0 :=
+        (mul_eq_zero.mp hj).resolve_right (inv_ne_zero hsj)
       apply hy
       funext a
       fin_cases a <;> assumption
@@ -447,10 +447,10 @@ theorem quasiJacobiTwoPointComplement_posDef
           Lagrange.eval_basis_self hx.injOn (mem_univ j)]
       simp only [p, eval_add, eval_mul, eval_C, eval_zero,
         hei_i, hei_j, hej_i, hej_j, mul_zero, add_zero, zero_add] at hi hj
-      have hyi : y 0 = 0 := by
-        exact (mul_eq_zero.mp hi).resolve_right (inv_ne_zero hsi)
-      have hyj : y 1 = 0 := by
-        exact (mul_eq_zero.mp hj).resolve_right (inv_ne_zero hsj)
+      have hyi : y 0 = 0 :=
+        (mul_eq_zero.mp hi).resolve_right (inv_ne_zero hsi)
+      have hyj : y 1 = 0 :=
+        (mul_eq_zero.mp hj).resolve_right (inv_ne_zero hsj)
       apply hy
       funext a
       fin_cases a <;> assumption
@@ -645,22 +645,22 @@ theorem quasiJacobiCollocationMatrix_offdiag_pos
     have := hC.diag_pos (i := (0 : Fin 2))
     have hraw : 0 < x i - τ * u * u := by
       simpa [C, Matrix.twoPointRankOneCompression] using this
-    nlinarith
+    linarith
   have hCjj : 0 < x j - τ * v ^ 2 := by
     have := hC.diag_pos (i := (1 : Fin 2))
     have hraw : 0 < x j - τ * v * v := by
       simpa [C, Matrix.twoPointRankOneCompression] using this
-    nlinarith
+    linarith
   have hIii : 0 < 1 - x i + τ * u ^ 2 := by
     have := hcomplement.diag_pos (i := (0 : Fin 2))
     have hraw : x i - τ * u * u < 1 := by
       simpa [u, Matrix.twoPointRankOneCompression] using this
-    nlinarith
+    linarith
   have hIjj : 0 < 1 - x j + τ * v ^ 2 := by
     have := hcomplement.diag_pos (i := (1 : Fin 2))
     have hraw : x j - τ * v * v < 1 := by
       simpa [v, Matrix.twoPointRankOneCompression] using this
-    nlinarith
+    linarith
   have hnotRight : ¬(1 ≤ x i ∧ 1 ≤ x j) := by
     rintro ⟨hi, hj⟩
     exact Matrix.one_sub_twoPointRankOneCompression_not_posDef_of_one_le
@@ -691,8 +691,8 @@ theorem quasiJacobiCollocationMatrix_offdiag_pos
   · subst τ
     apply quasiJacobiCollocationMatrix_offdiag_pos_of_mem_Ioo
       hq hα hβ x hx hroot hij
-    · constructor <;> nlinarith
-    · constructor <;> nlinarith
+    · constructor <;> linarith
+    · constructor <;> linarith
   · have hi0 : 0 < x i := by nlinarith
     have hj0 : 0 < x j := by nlinarith
     by_cases hi1 : x i < 1

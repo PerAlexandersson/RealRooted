@@ -140,7 +140,7 @@ theorem isRayleigh_add_X_mul_iff_of_fresh
         rw [eval_update_eq_of_notMem_vars hPdiff,
           eval_update_eq_of_notMem_vars hmixed,
           eval_update_eq_of_notMem_vars hQdiff] at h
-        nlinarith
+        linarith
       simpa [affineRayleighDiscriminant, discrim] using
         (discrim_le_zero hquad)
   · rintro ⟨hP, hQ, hcross, hdisc⟩

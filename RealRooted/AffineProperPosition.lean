@@ -174,7 +174,7 @@ lemma interl_affine_add_one_affine_add_X
   exact
     interl_affine_linear_affine_linear_of_cross
       (u := s) (v := t + 1) (U := s + 1) (V := t)
-      hs (by positivity) (by nlinarith [hs, ht])
+      hs (by positivity) (by linarith [hs, ht])
 
 lemma interl_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + X) (C s * X + C t + X) := by
@@ -200,9 +200,6 @@ alias prec_affine_linear_affine_linear_of_cross :=
 alias prec0_affine_linear_affine_linear_of_cross :=
   interl_affine_linear_affine_linear_of_cross
 
-@[deprecated interl_C_affine_linear (since := "2026-09-18")]
-alias prec0_C_affine_linear := interl_C_affine_linear
-
 @[deprecated interl_congr (since := "2026-09-18")]
 alias prec0_congr := interl_congr
 
@@ -210,16 +207,5 @@ alias prec0_congr := interl_congr
   (since := "2026-09-18")]
 alias prec0_const_entries_affine_of_det_nonneg :=
   interl_const_entries_affine_of_det_nonneg
-
-@[deprecated interl_affine_add_one_affine_add_X
-  (since := "2026-09-18")]
-alias prec0_affine_add_one_affine_add_X :=
-  interl_affine_add_one_affine_add_X
-
-@[deprecated interl_affine_add_X_self (since := "2026-09-18")]
-alias prec0_affine_add_X_self := interl_affine_add_X_self
-
-@[deprecated interl_affine_add_one_self (since := "2026-09-18")]
-alias prec0_affine_add_one_self := interl_affine_add_one_self
 
 end RealRooted

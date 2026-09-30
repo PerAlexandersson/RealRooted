@@ -86,8 +86,8 @@ def shiftedJacobiInner (α β : ℝ) (p q : ℝ[X]) : ℝ :=
   simp [shiftedJacobiFunctional]
 
 theorem shiftedJacobiInner_comm (α β : ℝ) (p q : ℝ[X]) :
-    shiftedJacobiInner α β p q = shiftedJacobiInner α β q p := by
-  exact Polynomial.momentPairing_comm _ _ _
+    shiftedJacobiInner α β p q = shiftedJacobiInner α β q p :=
+  Polynomial.momentPairing_comm _ _ _
 
 @[simp] theorem shiftedJacobiInner_zero_left (α β : ℝ) (p : ℝ[X]) :
     shiftedJacobiInner α β 0 p = 0 := by
@@ -316,7 +316,7 @@ theorem shiftedJacobiInner_X_pow_eq_zero
         linarith
       have hdiff : 0 < (n : ℝ) * (n + α + β + 1) -
           (j + 1 : ℝ) * (j + 1 + α + β + 1) := by
-        nlinarith [mul_pos (sub_pos.mpr hjn) hsum]
+        linarith [mul_pos (sub_pos.mpr hjn) hsum]
       have hproduct : ((j + 1 : ℝ) * (j + 1 + α + β + 1) -
           (n : ℝ) * (n + α + β + 1)) *
           shiftedJacobiInner α β

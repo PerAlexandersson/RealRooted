@@ -61,12 +61,10 @@ private theorem isRealRooted_of_two_left_roots_of_strict_signs
     exact listInterlaces_all_ge us rest r hus_interlaces
   have hus_le_last : ∀ u ∈ us, u ≤ rs.getLast hrs_ne :=
     listInterlaces_all_le_getLast hrs_ne hrs_sorted hus_interlaces
-  have huL_lt_us : ∀ u ∈ us, uL < u := by
-    intro u hu
-    exact lt_of_lt_of_le huL_lt_head (hhead_le_us u hu)
-  have hus_lt_uR : ∀ u ∈ us, u < uR := by
-    intro u hu
-    exact lt_of_le_of_lt (hus_le_last u hu) hlast_lt_uR
+  have huL_lt_us : ∀ u ∈ us, uL < u :=
+    fun u hu => lt_of_lt_of_le huL_lt_head (hhead_le_us u hu)
+  have hus_lt_uR : ∀ u ∈ us, u < uR :=
+    fun u hu => lt_of_le_of_lt (hus_le_last u hu) hlast_lt_uR
   have huL_lt_uR : uL < uR :=
     lt_trans huL_lt_head
       (lt_of_le_of_lt

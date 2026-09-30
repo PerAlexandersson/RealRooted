@@ -357,9 +357,4 @@ theorem lowerReentrantCorner_odd_interlaces (j : ℕ) :
   rw [lowerReentrantCorner_natDegree, lowerReentrantCorner_natDegree,
     half_two_mul_add_one, half_two_mul_add_two]
 
-/-! ## Deprecated aliases -/
-
-@[deprecated lowerReentrantCorner_strictInterl (since := "2026-09-26")]
-alias lowerReentrantCorner_prec := lowerReentrantCorner_strictInterl
-
 end RealRooted.Applications.OEIS

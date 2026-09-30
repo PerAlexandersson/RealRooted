@@ -127,8 +127,8 @@ theorem amp_le_amp_of_sum (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
       ≤ Real.exp (∑ j ∈ Ico (k + 2) n, D / (g j - g (k + 1))) := hupper
     _ ≤ Real.exp (D / g (k + 1)) * Real.exp (∑ j ∈ range k, D / (g (k + 1) - g j)) :=
       hexp
-    _ ≤ (1 + D / g k) * ∏ j ∈ range k, (1 + D / (g k - g j)) := by
-        exact mul_le_mul horigin hlower (le_of_lt (Real.exp_pos _))
+    _ ≤ (1 + D / g k) * ∏ j ∈ range k, (1 + D / (g k - g j)) :=
+        mul_le_mul horigin hlower (le_of_lt (Real.exp_pos _))
           (by
             have hbound := exp_div_le_one_add (div_nonneg hDpos (le_of_lt hgk))
             linarith [horigin, horigin_positive])

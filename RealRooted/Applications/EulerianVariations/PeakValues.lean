@@ -36,13 +36,6 @@ theorem peakValueWeightedDiagonal_consecutive_strictInterl
       (peakValueWeightedDiagonal wt) :=
   RealRooted.peakValueWeightedDiagonal_consecutive_strictInterl n hn wt hwt
 
-/-! ## Deprecated aliases -/
-
-@[deprecated peakValueWeightedDiagonal_consecutive_strictInterl
-  (since := "2026-09-26")]
-alias peakValueWeightedDiagonal_consecutive_prec :=
-  peakValueWeightedDiagonal_consecutive_strictInterl
-
 end
 
 end RealRooted.Applications.EulerianVariations

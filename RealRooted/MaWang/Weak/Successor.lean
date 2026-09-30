@@ -31,9 +31,8 @@ theorem strictInterl_of_interlaces_eval_mul_nonpos_same_of_no_common
   have hstrict :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
         rs = pre ++ r₁ :: r₂ :: rest →
-        r₁ < r₂ := by
-    intro pre r₁ r₂ rest hEq
-    exact lt_of_consecutive_of_interlaces_of_no_common hf.1 hg.1
+        r₁ < r₂ :=
+    fun _ _ _ _ hEq => lt_of_consecutive_of_interlaces_of_no_common hf.1 hg.1
       hrs_eq hss_eq hint hEq hno
   have hgsign :=
     eval_sign_of_interlaces_root hg.1 hg.2 hg_pos hrs_sorted hrs_eq hss_eq hint hno
@@ -164,9 +163,8 @@ theorem strictInterl_of_interlaces_eval_mul_nonpos_succ_of_no_common
   have hstrict :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
         rs = pre ++ r₁ :: r₂ :: rest →
-        r₁ < r₂ := by
-    intro pre r₁ r₂ rest hEq
-    exact lt_of_consecutive_of_interlaces_of_no_common hf.1 hg.1
+        r₁ < r₂ :=
+    fun _ _ _ _ hEq => lt_of_consecutive_of_interlaces_of_no_common hf.1 hg.1
       hrs_eq hss_eq hint hEq hno
   have hgsign :=
     eval_sign_of_interlaces_root hg.1 hg.2 hg_pos hrs_sorted hrs_eq hss_eq hint hno

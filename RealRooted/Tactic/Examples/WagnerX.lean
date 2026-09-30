@@ -802,7 +802,7 @@ lemma a358623Shifted_coeff_two_pos_succ :
       rw [a358623Shifted_succ_succ, coeff_X_mul, coeff_add, coeff_C_mul,
         coeff_C_mul, coeff_derivative, hone]
       norm_num
-      nlinarith [hprev, show (0 : ℝ) < (n : ℝ) + 4 by positivity]
+      linarith [hprev, show (0 : ℝ) < (n : ℝ) + 4 by positivity]
 
 /-- Active shifted rows have degree at least two, as required by Rolle. -/
 lemma a358623Shifted_degree_two_succ (n : Nat) :
@@ -907,11 +907,6 @@ end RealRooted
 /- Deprecated theorem aliases retained for the #984 Prec migration. -/
 namespace RealRooted
 namespace Tactic
-@[deprecated a358623_activeOffset_strictInterl (since := "2026-09-26")]
-alias a358623_activeOffset_prec := a358623_activeOffset_strictInterl
-
-@[deprecated a358623Shifted_strictInterl (since := "2026-09-26")]
-alias a358623Shifted_prec := a358623Shifted_strictInterl
 
 end Tactic
 end RealRooted

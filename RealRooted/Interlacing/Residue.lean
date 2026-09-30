@@ -275,8 +275,8 @@ theorem lagInterp_degree_lt {f g : ℝ[X]} (hfs : f.Splits) (hnd : f.roots.Nodup
         ≤ 0 + (f /ₘ (X - C s)).degree := by gcongr; exact degree_C_le
       _ = (f /ₘ (X - C s)).degree := by simp
   apply lt_of_le_of_lt this
-  have : (f /ₘ (X - C s)).natDegree = f.natDegree - 1 := by
-    exact natDegree_divByMonic_X_sub_C f s
+  have : (f /ₘ (X - C s)).natDegree = f.natDegree - 1 :=
+    natDegree_divByMonic_X_sub_C f s
   calc (f /ₘ (X - C s)).degree ≤ ((f /ₘ (X - C s)).natDegree : WithBot ℕ) :=
       degree_le_natDegree
     _ = ((f.natDegree - 1 : ℕ) : WithBot ℕ) := by simp [*]
@@ -337,22 +337,5 @@ lemma HasPosLeadingCoeff.divByMonic_X_sub_C {f : ℝ[X]}
     (hf : HasPosLeadingCoeff f) {r : ℝ} (hr : f.IsRoot r) :
     HasPosLeadingCoeff (f /ₘ (X - C r)) := by
   simpa only [HasPosLeadingCoeff, leadingCoeff_divByMonic_X_sub_C hr] using hf
-
-/-! ## Deprecated residue interlacing names -/
-
-@[deprecated StrictInterl.roots_countP_eq (since := "2026-09-18")]
-alias prec_countP_eq := StrictInterl.roots_countP_eq
-
-@[deprecated StrictInterl.cofactor_of_common_root (since := "2026-09-18")]
-theorem prec_cofactor_of_common_root {f g : ℝ[X]} {r : ℝ}
-    (hpq : StrictInterl g f) (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
-    StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
-  hpq.cofactor_of_common_root hrf hrg
-
-@[deprecated StrictInterl.of_cofactor_of_common_root (since := "2026-09-18")]
-theorem prec_of_prec_cofactor {f g : ℝ[X]} {r : ℝ}
-    (hrf : f.IsRoot r) (hrg : g.IsRoot r)
-    (h : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r))) : StrictInterl g f :=
-  h.of_cofactor_of_common_root hrf hrg
 
 end RealRooted

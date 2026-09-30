@@ -149,11 +149,6 @@ theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
   · exact hv_neg
   · simp
 
-@[deprecated strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
-  (since := "2026-09-18")]
-alias prec_and_hasSimpleRoots_of_auxiliary_sign_succ :=
-  strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
-
 /-- A strict differ-by-one Ma--Wang step puts `f` in an interlacing relation with `F`
 and propagates simple real roots. -/
 theorem strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v : ℝ[X]}
@@ -195,10 +190,5 @@ theorem strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v
     obtain ⟨r, hFr, hfr⟩ := exists_common_root_of_not_nodup hstrictInterl hnot
     exact hno r (isRoot_of_mem_roots hfr) (isRoot_of_mem_roots hFr)
   exact ⟨hstrictInterl, HasSimpleRoots.of_roots_nodup hF_pos.ne_zero hnodup⟩
-
-@[deprecated strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ
-  (since := "2026-09-18")]
-alias prec_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ :=
-  strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ
 
 end RealRooted

@@ -437,11 +437,6 @@ alias prec_of_interlaces_evalCoeff_neg_same :=
 @[deprecated strictInterl_of_interlaces_evalCoeff_neg (since := "2026-09-18")]
 alias prec_of_interlaces_evalCoeff_neg := strictInterl_of_interlaces_evalCoeff_neg
 
-@[deprecated strictInterl_mul_X_sub_C_of_linearCombo_quotient
-  (since := "2026-09-18")]
-alias prec_mul_X_sub_C_of_linearCombo_quotient :=
-  strictInterl_mul_X_sub_C_of_linearCombo_quotient
-
 end RealRooted.MaWangInternal
 
 namespace RealRooted

@@ -95,8 +95,8 @@ lemma length_destutter'_replicate_one_signType (n : ℕ) :
   length_destutter'_replicate_signType 1 n
 
 lemma length_destutter_replicate_one_signType (n : ℕ) :
-    ((replicate (n + 1) (1 : SignType)).destutter (· ≠ ·)).length = 1 := by
-  exact length_destutter_replicate_signType 1 n
+    ((replicate (n + 1) (1 : SignType)).destutter (· ≠ ·)).length = 1 :=
+  length_destutter_replicate_signType 1 n
 
 lemma length_destutter'_replicate_le_two (a s : SignType) (n : ℕ) :
     (destutter' (fun x y : SignType => x ≠ y) a (replicate n s)).length ≤ 2 := by
@@ -801,17 +801,17 @@ theorem nodalInsertions_coreSigns_remove
       have hkzero : k = 0 := Fin.eq_zero k
       subst k
       have hleftIndex :
-          (0 : Fin 1).castSucc.castSucc = (0 : Fin 3) := by
-        exact Fin.ext rfl
+          (0 : Fin 1).castSucc.castSucc = (0 : Fin 3) :=
+        Fin.ext rfl
       have hcenterIndex :
-          (0 : Fin 1).succ.castSucc = (1 : Fin 3) := by
-        exact Fin.ext rfl
+          (0 : Fin 1).succ.castSucc = (1 : Fin 3) :=
+        Fin.ext rfl
       have hrightIndex :
-          (0 : Fin 1).succ.succ = (2 : Fin 3) := by
-        exact Fin.ext rfl
+          (0 : Fin 1).succ.succ = (2 : Fin 3) :=
+        Fin.ext rfl
       have hlastIndex :
-          (Fin.last 2 : Fin 3) = (2 : Fin 3) := by
-        exact Fin.ext rfl
+          (Fin.last 2 : Fin 3) = (2 : Fin 3) :=
+        Fin.ext rfl
       have hxzero' : x (0 : Fin 3) ≠ 0 := by simpa only [hleftIndex] using hxleft
       have hxtwo : x (2 : Fin 3) ≠ 0 := by simpa only [hrightIndex] using hxright
       have hsignLeft : SignType.sign (y 0) ≠ 0 := by simpa only [hleftIndex] using hopposite.1
@@ -1018,8 +1018,8 @@ theorem nodalInsertions_coreSigns
   induction n with
   | zero =>
       have hinterior :
-          ∀ i : Fin 0, x i.succ.castSucc ≠ 0 := by
-        exact fun i => Fin.elim0 i
+          ∀ i : Fin 0, x i.succ.castSucc ≠ 0 :=
+        fun i => Fin.elim0 i
       rw [Fin.nodalPerturbationCoreSigns_eq_of_no_interior_zero
         hsign hinterior]
   | succ n ih =>
@@ -1029,9 +1029,8 @@ theorem nodalInsertions_coreSigns
         exact Fin.nodalInsertions_coreSigns_remove
           ih hsign hnodal k hk
       · have hinterior :
-            ∀ i : Fin (n + 1), x i.succ.castSucc ≠ 0 := by
-          intro i hi
-          exact hzero ⟨i, hi⟩
+            ∀ i : Fin (n + 1), x i.succ.castSucc ≠ 0 :=
+          fun i hi => hzero ⟨i, hi⟩
         rw [Fin.nodalPerturbationCoreSigns_eq_of_no_interior_zero
           hsign hinterior]
 
@@ -1054,8 +1053,8 @@ theorem signVariations_le_add_two_of_sign_eq_on_nonzero_of_interior_nodal
   let core := Fin.nodalPerturbationCoreSigns x y
   have hchain :
       Relation.ReflTransGen List.NodalInsertion
-        ((List.ofFn (SignType.sign ∘ x)).filter (· ≠ 0)) core := by
-    exact Fin.nodalInsertions_coreSigns hsign hnodal
+        ((List.ofFn (SignType.sign ∘ x)).filter (· ≠ 0)) core :=
+    Fin.nodalInsertions_coreSigns hsign hnodal
   have hcore : core.signVariations = Fin.signVariations x := by
     rw [List.signVariations_eq_of_nodalInsertions hchain]
     exact Fin.filtered_signList_signVariations x
@@ -1555,9 +1554,8 @@ theorem List.signVariations_eq_of_sign_eq_on_nonzero_of_interior_nodal
   have hylist : List.ofFn yv = y := by
     simp [yv, hyn]
   have hsignv : ∀ i, xv i ≠ 0 →
-      SignType.sign (yv i) = SignType.sign (xv i) := by
-    intro i hi
-    exact hsign (Fin.cast hn i).val (Fin.cast hn i).isLt hi
+      SignType.sign (yv i) = SignType.sign (xv i) :=
+    fun i hi => hsign (Fin.cast hn i).val (Fin.cast hn i).isLt hi
   have hnodalv : ∀ i : Fin n, xv i.succ.castSucc = 0 →
       xv i.castSucc.castSucc * xv i.succ.succ < 0 := by
     intro i hi

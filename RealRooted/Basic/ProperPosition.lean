@@ -267,14 +267,14 @@ theorem StrictInterl.natDegree_eq_or_eq_succ {f g : ℝ[X]} (h : StrictInterl f 
 /-- A polynomial cannot be in `StrictInterl` with a right endpoint of strictly lower
 degree. -/
 theorem StrictInterl.not_of_right_natDegree_lt_left {f g : ℝ[X]}
-    (h : StrictInterl f g) (hdeg : g.natDegree < f.natDegree) : False := by
-  exact (not_le_of_gt hdeg) h.natDegree_le
+    (h : StrictInterl f g) (hdeg : g.natDegree < f.natDegree) : False :=
+  (not_le_of_gt hdeg) h.natDegree_le
 
 /-- A polynomial cannot be in `StrictInterl` with a right endpoint whose degree is more
 than one larger. -/
 theorem StrictInterl.not_of_left_natDegree_succ_lt_right {f g : ℝ[X]}
-    (h : StrictInterl f g) (hdeg : f.natDegree + 1 < g.natDegree) : False := by
-  exact (not_le_of_gt hdeg) h.natDegree_le_succ
+    (h : StrictInterl f g) (hdeg : f.natDegree + 1 < g.natDegree) : False :=
+  (not_le_of_gt hdeg) h.natDegree_le_succ
 
 lemma StrictInterl.forward_of_orientation_of_succDegree
     {f g : ℝ[X]}
@@ -685,20 +685,6 @@ lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
     f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 :=
   StrictInterl.natDegree_bounds hfg
 
-@[deprecated StrictInterl.not_of_right_natDegree_lt_left (since := "2026-09-18")]
-theorem not_prec_of_right_natDegree_lt_left {f g : ℝ[X]}
-    (hdeg : g.natDegree < f.natDegree) :
-    ¬ StrictInterl f g := by
-  intro hprec
-  exact hprec.not_of_right_natDegree_lt_left hdeg
-
-@[deprecated StrictInterl.not_of_left_natDegree_succ_lt_right (since := "2026-09-18")]
-theorem not_prec_of_left_natDegree_succ_lt_right {f g : ℝ[X]}
-    (hdeg : f.natDegree + 1 < g.natDegree) :
-    ¬ StrictInterl f g := by
-  intro hprec
-  exact hprec.not_of_left_natDegree_succ_lt_right hdeg
-
 @[deprecated StrictInterl.forward_of_orientation_of_succDegree (since := "2026-09-18")]
 lemma prec_forward_of_orientation_of_succDegree
     {f g : ℝ[X]}
@@ -713,13 +699,6 @@ theorem prec_of_reverse_prec_of_roots_sum_le {f g : ℝ[X]}
     (hsum : f.roots.sum ≤ g.roots.sum) :
     StrictInterl f g :=
   StrictInterl.of_reverse_of_roots_sum_le hgf hdeg hsum
-
-@[deprecated StrictInterl.rootMultiplicity_bounds (since := "2026-09-17")]
-theorem rootMultiplicity_bounds_of_prec {f g : ℝ[X]} (h : StrictInterl f g)
-    (u : ℝ) :
-    f.rootMultiplicity u - 1 ≤ g.rootMultiplicity u ∧
-      g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u :=
-  StrictInterl.rootMultiplicity_bounds h u
 
 @[deprecated StrictInterl.roots_le_of_right (since := "2026-09-17")]
 theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}

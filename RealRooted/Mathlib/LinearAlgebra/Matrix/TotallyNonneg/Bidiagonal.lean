@@ -128,8 +128,8 @@ omit [PartialOrder R] [IsStrictOrderedRing R] in
 nonnegative. -/
 theorem isTotallyNonneg_upperBidiagonal (d s : ℕ → R)
     (hd : ∀ i, 0 ≤ d i) (hs : ∀ i, 0 ≤ s i) :
-    (upperBidiagonal d s).IsTotallyNonneg := by
-  exact (isTotallyNonneg_lowerBidiagonal d s hd hs).toRect.transpose.toSquare
+    (upperBidiagonal d s).IsTotallyNonneg :=
+  (isTotallyNonneg_lowerBidiagonal d s hd hs).toRect.transpose.toSquare
 
 /-- The leading finite truncation of a variable lower-bidiagonal matrix. -/
 def lowerBidiagonalFin (n : ℕ) (d s : ℕ → R) : Matrix (Fin n) (Fin n) R :=

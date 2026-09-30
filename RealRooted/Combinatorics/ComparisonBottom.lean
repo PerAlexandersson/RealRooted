@@ -106,8 +106,8 @@ theorem comparisonBottomSupport_map (f : Nat ↪ Nat) (w : List Nat)
             List.cons.inj hcomp |>.1
           have htail :
               comparisonWord ((b :: w).map f) =
-                comparisonWord (b :: w) := by
-            exact List.cons.inj hcomp |>.2
+                comparisonWord (b :: w) :=
+            List.cons.inj hcomp |>.2
           by_cases hab : a < b
           · have hfab : f a < f b := by
               by_contra hn
@@ -135,8 +135,8 @@ def succEmbedding : Nat ↪ Nat where
 
 theorem comparisonBottomSupport_raise (w : List Nat) :
     comparisonBottomSupport (raise w) =
-      (comparisonBottomSupport w).map succEmbedding := by
-  exact comparisonBottomSupport_map succEmbedding w (comparisonWord_raise w)
+      (comparisonBottomSupport w).map succEmbedding :=
+  comparisonBottomSupport_map succEmbedding w (comparisonWord_raise w)
 
 theorem succ_mem_comparisonBottomSupport_raise_iff (w : List Nat) (x : Nat) :
     x + 1 ∈ comparisonBottomSupport (raise w) ↔

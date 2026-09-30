@@ -85,7 +85,7 @@ theorem a144696_residue_eval_gap {d k : ℕ} (hk : k < d) :
   have hfactor : ((d - k : ℕ) : ℝ) ≤ d + 1 := by
     exact_mod_cast (show d - k ≤ d + 1 by lia)
   have hmul := mul_le_mul_of_nonneg_right hfactor hprevEval.le
-  nlinarith
+  linarith
 
 /-- On an internal edge, the factorial endpoint gap gives the auxiliary the
 same strict sign as the derivative at every current-row root. -/
@@ -177,8 +177,8 @@ theorem a144696Auxiliary_diagonal_interlaces
     (hsimple : HasSimpleRoots (a144696BernsteinImage d d)) :
     Interlaces (a144696Auxiliary d d) (a144696BernsteinImage d d) := by
   let f := a144696BernsteinImage d d
-  have hfdeg : f.natDegree = d := by
-    exact natDegree_a144696BernsteinImage (le_refl d)
+  have hfdeg : f.natDegree = d :=
+    natDegree_a144696BernsteinImage (le_refl d)
   have hfpos : HasPosLeadingCoeff f :=
     hasPosLeadingCoeff_a144696BernsteinImage (le_refl d)
   have hsplitsF : f.Splits := hsplits
@@ -333,9 +333,8 @@ private theorem a144696RowCertificate_zero : A144696RowCertificate 0 := by
     lia
 
 private theorem a144696RowCertificate_one : A144696RowCertificate 1 := by
-  have hsplits : ∀ k, k ≤ 1 → (a144696BernsteinImage 1 k).Splits := by
-    intro k hk
-    exact (isRealRooted_of_degree_one
+  have hsplits : ∀ k, k ≤ 1 → (a144696BernsteinImage 1 k).Splits :=
+    fun _ hk => (isRealRooted_of_degree_one
       (natDegree_a144696BernsteinImage hk)).2
   have hsimple : ∀ k, k ≤ 1 →
       HasSimpleRoots (a144696BernsteinImage 1 k) := by
@@ -387,8 +386,8 @@ private theorem a144696RowCertificate_one : A144696RowCertificate 1 := by
 private theorem a144696BernsteinImage_wagnerData
     {d k : ℕ} (hk : k ≤ d)
     (hsplits : (a144696BernsteinImage d k).Splits) :
-    Wagner.HasNonposRootsPosLeading (a144696BernsteinImage d k) := by
-  exact ⟨hsplits,
+    Wagner.HasNonposRootsPosLeading (a144696BernsteinImage d k) :=
+  ⟨hsplits,
     fun r hr ↦ (roots_neg_a144696BernsteinImage hk r hr).le,
     hasPosLeadingCoeff_a144696BernsteinImage hk⟩
 
@@ -451,8 +450,8 @@ private theorem a144696RowCertificate_succ
             a144696BernsteinImage (d + 1) (k + 1)).eval r = 0 := hnext
       simpa only [eval_add] using hsumZero
     have htargetRoot :
-        (a144696BernsteinImage (d + 1) (k + 1)).IsRoot r := by
-      exact (show (a144696BernsteinImage (d + 1) (k + 1)).eval r = 0 by
+        (a144696BernsteinImage (d + 1) (k + 1)).IsRoot r :=
+      (show (a144696BernsteinImage (d + 1) (k + 1)).eval r = 0 by
         linarith)
     exact (hshift k hk).2.1 r hcur htargetRoot
   have hhorizontalNoCommon : ∀ k, k ≤ d → ∀ r,
@@ -470,8 +469,8 @@ private theorem a144696RowCertificate_succ
           (a144696BernsteinImage d k +
             a144696BernsteinImage (d + 1) (k + 1)).eval r = 0 := hleft
       simpa only [eval_add] using hsumZero
-    have hcurRoot : (a144696BernsteinImage d k).IsRoot r := by
-      exact (show (a144696BernsteinImage d k).eval r = 0 by linarith)
+    have hcurRoot : (a144696BernsteinImage d k).IsRoot r :=
+      (show (a144696BernsteinImage d k).eval r = 0 by linarith)
     exact (hshift k hk).2.1 r hcurRoot hright
   constructor
   · intro k hk
@@ -563,32 +562,5 @@ theorem a144696BernsteinImage_shifted_noCommonRoot
     (a144696BernsteinImage (d - 1) k).IsRoot r →
       ¬ (a144696BernsteinImage d (k + 1)).IsRoot r :=
   (a144696RowCertificate_all d).shiftedNoCommon k hk
-
-/-! ## Deprecated aliases -/
-
-@[deprecated a144696Auxiliary_eval_mul_derivative_pos_of_strictInterl
-  (since := "2026-09-26")]
-alias a144696Auxiliary_eval_mul_derivative_pos_of_prec :=
-  a144696Auxiliary_eval_mul_derivative_pos_of_strictInterl
-
-@[deprecated a144696Auxiliary_interlaces_of_strictInterl
-  (since := "2026-09-26")]
-alias a144696Auxiliary_interlaces_of_prec :=
-  a144696Auxiliary_interlaces_of_strictInterl
-
-@[deprecated a144696BernsteinImage_horizontal_strictInterl
-  (since := "2026-09-26")]
-alias a144696BernsteinImage_horizontal_prec :=
-  a144696BernsteinImage_horizontal_strictInterl
-
-@[deprecated a144696BernsteinImage_vertical_strictInterl
-  (since := "2026-09-26")]
-alias a144696BernsteinImage_vertical_prec :=
-  a144696BernsteinImage_vertical_strictInterl
-
-@[deprecated a144696BernsteinImage_shifted_strictInterl
-  (since := "2026-09-26")]
-alias a144696BernsteinImage_shifted_prec :=
-  a144696BernsteinImage_shifted_strictInterl
 
 end RealRooted

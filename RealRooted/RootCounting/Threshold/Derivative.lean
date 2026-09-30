@@ -106,7 +106,7 @@ theorem deriv_sign_at_root {p : ℝ[X]} (hp : p.Splits) (hnd : p.roots.Nodup)
     nlinarith [hsgn, h0]
   by_contra hcon
   push Not at hcon
-  nlinarith [hlt0, hsneg, hcon,
+  linarith [hlt0, hsneg, hcon,
     mul_nonneg (neg_nonneg.mpr hsneg.le) (neg_nonneg.mpr hcon)]
 
 end RealRooted.RootCounting

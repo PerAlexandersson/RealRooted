@@ -65,8 +65,8 @@ private theorem natDegree_monicSignedReciprocal_eq {d : ℕ} {F : ℝ[X]}
 
 private theorem monicSignedReciprocal_splits {d : ℕ} {F : ℝ[X]}
     (hFdeg : F.natDegree ≤ d) (hFs : F.Splits) :
-    (monicSignedReciprocal d F).Splits := by
-  exact (signedReciprocal_splits_of_splits hFdeg hFs).C_mul _
+    (monicSignedReciprocal d F).Splits :=
+  (signedReciprocal_splits_of_splits hFdeg hFs).C_mul _
 
 private theorem roots_monicSignedReciprocal {d : ℕ} {F : ℝ[X]}
     (hF0 : F.coeff 0 ≠ 0) :
@@ -150,8 +150,8 @@ private theorem rootCount_band_monicSignedReciprocal
       · rw [min_eq_left hd2]
         lia
       · have hPAcard :
-            (A.roots.filter (-s⁻¹ ≤ ·)).card ≤ d := by
-          exact (Multiset.card_le_card (Multiset.filter_le _ _)).trans (by
+            (A.roots.filter (-s⁻¹ ≤ ·)).card ≤ d :=
+          (Multiset.card_le_card (Multiset.filter_le _ _)).trans (by
             rw [card_roots_of_splits
               (hA.2.1.resolve_left (by
                 intro h

@@ -310,8 +310,8 @@ theorem eq_regularizedKernelRow_of_recurrence
 theorem sourceBorderReducedChain_eq_regularizedKernelRow
     {R : Type*} [CommSemiring R] {N : ℕ} (δ : R)
     (G H : Matrix (Fin (N + 1)) (Fin (N + 1)) R) :
-    sourceBorderReducedChain δ G H = regularizedKernelRow G H := by
-  exact eq_regularizedKernelRow_of_recurrence G H
+    sourceBorderReducedChain δ G H = regularizedKernelRow G H :=
+  eq_regularizedKernelRow_of_recurrence G H
     (sourceBorderReducedChain δ G H)
     (sourceBorderReducedChain_eq δ G H)
 

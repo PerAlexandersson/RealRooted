@@ -249,11 +249,6 @@ theorem finiteSupersymmetricChow_replicate_one_nil_ne_zero
   rw [finiteSupersymmetricChow_replicate_one_nil_eq_smirnov]
   exact smirnovDescentPolynomial_ne_zero m hm n
 
-/-! ## Deprecated interlacing names -/
-
-@[deprecated smirnovDescentRefined_interl (since := "2026-09-26")]
-alias smirnovDescentRefined_prec0 := smirnovDescentRefined_interl
-
 end
 
 end RealRooted.BrandenVecchi

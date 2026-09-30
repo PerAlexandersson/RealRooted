@@ -53,7 +53,7 @@ theorem two_natDegree_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits
     norm_num
   rw [hcast_m, hcast_nm, hcast_nm1] at hnewton
   rw [hc0, hc1, hc2]
-  nlinarith [mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff),
+  linarith [mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff),
     sq_nonneg p.leadingCoeff]
 
 /-- Level-lift arithmetic for Newton's `k = 1` inequality: an inequality in the
@@ -66,7 +66,7 @@ private theorem newton_level_lift_arith {A B M N : ℝ}
     (hnat : 2 * N * B ≤ (N - 1) * A) :
     2 * M * B ≤ (M - 1) * A := by
   rcases le_or_gt B 0 with hB | hB
-  · nlinarith [mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith) hA,
+  · linarith [mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith) hA,
       mul_nonneg (show (0 : ℝ) ≤ M by linarith)
         (show (0 : ℝ) ≤ -B by linarith)]
   · have key : (N - 1) * ((M - 1) * A - 2 * M * B)
@@ -139,7 +139,7 @@ theorem newton_three_coeff_one_coeff_three_of_splits
     norm_num
   rw [hcast_m, hcast_nm, hcast_nm1] at hnewton
   rw [hc1, hc2, hc3]
-  nlinarith [mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff),
+  linarith [mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff),
     sq_nonneg p.leadingCoeff]
 
 /-- Level-lift arithmetic for Newton's `k = 2` inequality: an inequality in the
@@ -152,7 +152,7 @@ private theorem newton_second_level_lift_arith {A B M N : ℝ}
     (hnat : 3 * (N - 1) * B ≤ 2 * (N - 2) * A) :
     3 * (M - 1) * B ≤ 2 * (M - 2) * A := by
   rcases le_or_gt B 0 with hB | hB
-  · nlinarith [mul_nonneg (show (0 : ℝ) ≤ M - 2 by linarith) hA,
+  · linarith [mul_nonneg (show (0 : ℝ) ≤ M - 2 by linarith) hA,
       mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith)
         (show (0 : ℝ) ≤ -B by linarith)]
   · have key : (N - 1) * (2 * (M - 2) * A - 3 * (M - 1) * B)
@@ -222,7 +222,7 @@ theorem normalized_coeff_logConcave_of_splits_natDegree_le
         field_simp
       have key2 : (p.coeff 1 / N) ^ 2 = p.coeff 1 ^ 2 / N ^ 2 := by rw [div_pow]
       rw [key1, key2, div_le_div_iff₀ (mul_pos hNpos hN1pos) (pow_pos hNpos 2)]
-      nlinarith [mul_le_mul_of_nonneg_right hpd hNpos.le, hpd]
+      linarith [mul_le_mul_of_nonneg_right hpd hNpos.le, hpd]
     · have hlt : n < 2 := h2
       have hc2 : (n.choose 2 : ℝ) = 0 := by
         rw [Nat.choose_eq_zero_of_lt hlt]
@@ -254,7 +254,7 @@ theorem normalized_coeff_logConcave_of_splits_natDegree_le
       have hden1 : (0 : ℝ) < N ^ 2 * (N - 1) * (N - 2) := by positivity
       have hden2 : (0 : ℝ) < N ^ 2 * (N - 1) ^ 2 := by positivity
       rw [key1, key2, div_le_div_iff₀ hden1 hden2]
-      nlinarith [mul_le_mul_of_nonneg_right hpd
+      linarith [mul_le_mul_of_nonneg_right hpd
         (show (0 : ℝ) ≤ 2 * N ^ 2 * (N - 1) by positivity), hpd]
     · have hlt : n < 3 := h3
       have hc3 : (n.choose 3 : ℝ) = 0 := by
@@ -371,12 +371,12 @@ private theorem schurSzegoComp_pf_disc_arith
     ring
   rw [hkey, div_pow, div_le_div_iff₀ (mul_pos hNpos hN1) (pow_pos hNpos 2)]
   rcases le_total (d * g) 0 with hdg | hdg
-  · nlinarith [mul_nonpos_of_nonneg_of_nonpos (mul_nonneg hac (sq_nonneg N)) hdg,
+  · linarith [mul_nonpos_of_nonneg_of_nonpos (mul_nonneg hac (sq_nonneg N)) hdg,
       mul_nonneg (sq_nonneg (b * e)) (mul_pos hNpos hN1).le]
   · have hmul : 4 * (a * c) * (2 * N * (d * g)) ≤
         b ^ 2 * ((N - 1) * e ^ 2) :=
       mul_le_mul hfd hpd (by nlinarith [hdg, hNpos.le]) (sq_nonneg b)
-    nlinarith [mul_le_mul_of_nonneg_right hmul hNpos.le, sq_nonneg (b * e)]
+    linarith [mul_le_mul_of_nonneg_right hmul hNpos.le, sq_nonneg (b * e)]
 
 /-- **Schur--Szego discriminant inequality with a degree-`≤ 2` PF factor.**
 For a level `n ≥ 2`, a PF factor `f` of degree at most two, and a splitting
@@ -443,7 +443,7 @@ theorem finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
       4 * (schurSzegoComp n f p).coeff 2 * (schurSzegoComp n f p).coeff 0 := by
     have := four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp_of_pf
       hn hf hfdeg hpdeg hsplit
-    nlinarith [this]
+    linarith [this]
   obtain ⟨x, hx⟩ := exists_root_of_disc_nonneg
     (a := (schurSzegoComp n f p).coeff 2)
     (b := (schurSzegoComp n f p).coeff 1)

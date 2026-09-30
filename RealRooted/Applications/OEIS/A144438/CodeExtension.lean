@@ -132,8 +132,8 @@ theorem inverseWord_startsWithAscent {h : Nat} (c : DecoCode h)
       | succ h =>
           let r : Fin (h + 1) :=
             ⟨c (Fin.last h), c.entry_lt (Fin.last h)⟩
-          have hrOne : (r : Nat) ≠ 1 := by
-            exact last_ne_one_of_isAdmissible hc
+          have hrOne : (r : Nat) ≠ 1 :=
+            last_ne_one_of_isAdmissible hc
           have hcode : c.init.snoc r = c := snoc_init_last c
           rw [← hcode, inverseWord_snoc]
           by_cases hrZero : (r : Nat) = 0
@@ -152,8 +152,8 @@ theorem inverseWord_startsWithAscent {h : Nat} (c : DecoCode h)
               lia
             have hprefix := ih h (by lia) c.init
               (init_isAdmissible_of_last_ne_zero hc hrZero) hhPrefix
-            obtain ⟨k, hk⟩ : ∃ k, (r : Nat) = k + 2 := by
-              exact ⟨(r : Nat) - 2, by lia⟩
+            obtain ⟨k, hk⟩ : ∃ k, (r : Nat) = k + 2 :=
+              ⟨(r : Nat) - 2, by lia⟩
             rw [hk]
             exact hprefix.step_add_two k
 

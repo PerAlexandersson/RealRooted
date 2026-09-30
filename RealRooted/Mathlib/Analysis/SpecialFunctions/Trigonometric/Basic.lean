@@ -35,7 +35,7 @@ lemma sin_nonneg_of_even_nat_mul_pi_le_of_le_succ_nat_mul_pi {k : ℕ} {x : ℝ}
     have hsucc : ((k + 1 : ℕ) : ℝ) * π = (k : ℝ) * π + π := by
       norm_num [Nat.cast_add]
       ring
-    nlinarith
+    linarith
   have hy : 0 ≤ sin (x - (k : ℝ) * π) :=
     sin_nonneg_of_nonneg_of_le_pi hy0 hypi
   rw [sin_sub_nat_mul_pi] at hy
@@ -50,7 +50,7 @@ lemma sin_nonpos_of_odd_nat_mul_pi_le_of_le_succ_nat_mul_pi {k : ℕ} {x : ℝ}
     have hsucc : ((k + 1 : ℕ) : ℝ) * π = (k : ℝ) * π + π := by
       norm_num [Nat.cast_add]
       ring
-    nlinarith
+    linarith
   have hy : 0 ≤ sin (x - (k : ℝ) * π) :=
     sin_nonneg_of_nonneg_of_le_pi hy0 hypi
   rw [sin_sub_nat_mul_pi] at hy

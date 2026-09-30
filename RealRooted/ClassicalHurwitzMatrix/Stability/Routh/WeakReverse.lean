@@ -41,8 +41,8 @@ private theorem routhApproxSource_degree_leadingCoeff (c : ℝ) {u : ℝ[X]}
     have hmod := Nat.mod_lt u.natDegree (by decide : 0 < 2)
     have hdecomp := Nat.mod_add_div u.natDegree 2
     lia
-  have hevenTerm : evenTerm.natDegree ≤ u.natDegree := by
-    exact (Polynomial.natDegree_C_mul_le c _).trans (by
+  have hevenTerm : evenTerm.natDegree ≤ u.natDegree :=
+    (Polynomial.natDegree_C_mul_le c _).trans (by
       rw [natDegree_comp_X_sq]
       calc
         2 * (Polynomial.contract 2 u).natDegree ≤
@@ -59,8 +59,8 @@ private theorem routhApproxSource_degree_leadingCoeff (c : ℝ) {u : ℝ[X]}
   have hsource :
       oddEvenPolynomial (Polynomial.contract 2 u)
           (C c * Polynomial.contract 2 u +
-            X * Polynomial.contract 2 u.divX) = mainTerm + evenTerm := by
-    exact routhApproxSource_eq c u
+            X * Polynomial.contract 2 u.divX) = mainTerm + evenTerm :=
+    routhApproxSource_eq c u
   dsimp only
   rw [hsource]
   constructor

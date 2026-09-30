@@ -145,9 +145,6 @@ theorem mem_rootSlotInterval_of_strictInterl_desc
         simpa [hf, hg] using lt_of_lt_of_le j.2 hdeg⟩ :=
   CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl hfg j
 
-@[deprecated mem_rootSlotInterval_of_strictInterl_desc (since := "2026-09-18")]
-alias mem_rootSlotInterval_of_prec_desc := mem_rootSlotInterval_of_strictInterl_desc
-
 /-- A common right interleaver gives matching shifted-slot intersections for a
 close-degree pair.  For all but the last shifted slot we use the corresponding
 root of the common right interleaver; the final lower-tail slots meet
@@ -184,8 +181,8 @@ theorem shiftedSlotIntersections_of_commonInterleaver
     have hmem_g : x ∈ rootSlotInterval (rootSeqDesc g) jg := by
       simpa [x, jg, jh] using mem_rootSlotInterval_of_strictInterl_desc hgh jh
     exact ⟨x, hmem_f, hmem_g⟩
-  · have hjh_le : h.natDegree ≤ j + 1 := by exact Nat.le_of_not_gt hjh
-    have hjh_ge : j + 1 ≤ h.natDegree := by exact (Nat.succ_le_iff.mpr hjf_nat).trans hfh_lower
+  · have hjh_le : h.natDegree ≤ j + 1 := Nat.le_of_not_gt hjh
+    have hjh_ge : j + 1 ≤ h.natDegree := (Nat.succ_le_iff.mpr hjf_nat).trans hfh_lower
     have hjh_eq : j + 1 = h.natDegree := le_antisymm hjh_ge hjh_le
     have hf_eq_h : f.natDegree = h.natDegree := by lia
     have hg_eq_h : g.natDegree = h.natDegree := by lia
@@ -225,9 +222,6 @@ theorem strictInterl_of_slots_polyOfDescRootsDesc
     CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
       hf₀ hf hxs hdeg_lo hdeg_hi hslot
 
-@[deprecated strictInterl_of_slots_polyOfDescRootsDesc (since := "2026-09-18")]
-alias prec_of_slots_polyOfDescRootsDesc := strictInterl_of_slots_polyOfDescRootsDesc
-
 /-- Shifted slot data against `rootSeqDesc f` reconstructs a left `StrictInterl` witness
 with the descending-root polynomial built from those slot choices. -/
 theorem strictInterl_left_of_shifted_slots_polyOfDescRootsDesc
@@ -244,11 +238,6 @@ theorem strictInterl_left_of_shifted_slots_polyOfDescRootsDesc
   simpa [polyOfDescRootsDesc] using
     CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
       hf₀ hf hxs hdeg_lo hdeg_hi hslot
-
-@[deprecated strictInterl_left_of_shifted_slots_polyOfDescRootsDesc
-  (since := "2026-09-18")]
-alias prec_left_of_shifted_slots_polyOfDescRootsDesc :=
-  strictInterl_left_of_shifted_slots_polyOfDescRootsDesc
 
 private lemma strictInterl_polyOfDescRootsDesc_of_ofFn_slots
     {f : ℝ[X]} {n : ℕ} {x : Fin n → ℝ}

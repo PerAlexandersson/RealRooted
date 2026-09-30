@@ -79,8 +79,8 @@ degrees `a` and `b`. -/
 theorem bfjAuxiliary {R : Type*} [CommSemiring R]
     {P Q : MvPolynomial (Fin 2) R} {a b : ℕ}
     (hP : P.IsHomogeneous a) (hQ : Q.IsHomogeneous b) :
-    (MvPolynomial.bfjAuxiliary P Q).IsHomogeneous (a + 3 * b) := by
-  exact hP.addAuxiliary.mul hQ.harmonicClear
+    (MvPolynomial.bfjAuxiliary P Q).IsHomogeneous (a + 3 * b) :=
+  hP.addAuxiliary.mul hQ.harmonicClear
 
 /-- The distinguished BFJ coefficient has homogeneous degree `a + b`. -/
 theorem bfjCoefficient {R : Type*} [CommSemiring R]

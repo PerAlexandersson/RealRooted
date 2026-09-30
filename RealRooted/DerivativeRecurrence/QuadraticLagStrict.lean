@@ -100,7 +100,7 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag
         have hfactor :
             r * ((a - b * r) * eval r ((P (n + 1)).derivative) +
               c * eval r (P n)) = 0 := by
-          nlinarith [h]
+          linarith [h]
         exact (mul_eq_zero.mp hfactor).resolve_left hr0
       have hne : eval r (P n) ≠ 0 := fun hroot0 => ihno r hr1 hroot0
       have hsign : 0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
@@ -207,14 +207,5 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
       rw [Polynomial.IsRoot.def] at hr2
       rw [hr2, zero_mul] at hsign
       exact (lt_irrefl 0 hsign).elim
-
-@[deprecated strictInterl_and_noCommonRoot_of_quadratic_lag (since := "2026-09-18")]
-alias prec_and_noCommonRoot_of_quadratic_lag :=
-  strictInterl_and_noCommonRoot_of_quadratic_lag
-
-@[deprecated strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
-  (since := "2026-09-18")]
-alias prec_and_noCommonRoot_of_quadratic_lag_degree_step :=
-  strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
 
 end RealRooted

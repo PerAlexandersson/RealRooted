@@ -29,9 +29,8 @@ private theorem sorted_getElem_le_iff_lt_card_filter
           | zero => simp [hh]
           | succ k =>
               simpa [hh] using ih htl k (by simpa using hk)
-        · have hnone : ∀ y ∈ tl, ¬y ≤ x := by
-            intro y hy hyx
-            exact hh ((hhd y hy).trans hyx)
+        · have hnone : ∀ y ∈ tl, ¬y ≤ x :=
+            fun y hy hyx => hh ((hhd y hy).trans hyx)
           have hf : (tl.filter (· ≤ x)).length = 0 := by
             rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
             intro y hy

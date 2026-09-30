@@ -86,11 +86,6 @@ theorem bidiagonalOperator_strictInterl_of_affineSymbol_stable
   linearMap_strictInterl_of_finiteSymbol_stable
     hSymbol hpdeg hqdeg hpq hp hq hpout hqout hpoutdeg
 
-@[deprecated bidiagonalOperator_strictInterl_of_affineSymbol_stable
-  (since := "2026-09-18")]
-alias bidiagonalOperator_prec_of_affineSymbol_stable :=
-  bidiagonalOperator_strictInterl_of_affineSymbol_stable
-
 end RealRooted.BorceaBranden
 
 namespace RealRooted

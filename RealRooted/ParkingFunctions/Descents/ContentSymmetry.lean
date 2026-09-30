@@ -169,8 +169,8 @@ def fixedContentWords {n m : ℕ} (μ : Multiset (Fin m)) :
 @[simp]
 theorem mem_fixedContentWords_iff {n m : ℕ}
     {μ : Multiset (Fin m)} {w : Fin n → Fin m} :
-    w ∈ fixedContentWords μ ↔ wordContent w = μ := by
-  exact mem_contentFiber_iff
+    w ∈ fixedContentWords μ ↔ wordContent w = μ :=
+  mem_contentFiber_iff
 
 /-- The integral descent enumerator of one ordinary labeled-content fiber. -/
 def fixedContentWordDescentPolynomial {n m : ℕ}
@@ -297,8 +297,8 @@ theorem card_fixedContentWords_descentSet_map_equiv {n m : ℕ}
     ((fixedContentWords (n := n + 1) (μ.map e)).filter fun w =>
       descentSet w = S).card =
     ((fixedContentWords (n := n + 1) μ).filter fun w =>
-      descentSet w = S).card := by
-  exact card_contentFiber_descentSet_map_equiv μ e S
+      descentSet w = S).card :=
+  card_contentFiber_descentSet_map_equiv μ e S
 
 @[simp]
 theorem fixedContentWordDescentPolynomial_zero (m : ℕ) :

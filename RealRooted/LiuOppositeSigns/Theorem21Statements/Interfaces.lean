@@ -432,8 +432,8 @@ theorem theorem21RootCountBranchesWithCommon_of_compatible_of_noCommonForward
     (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement)
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
-    theorem21RootCountBranchesWithCommon f g := by
-  exact theorem21RootCountBranchesReduced.withCommon
+    theorem21RootCountBranchesWithCommon f g :=
+  theorem21RootCountBranchesReduced.withCommon
     (theorem21RootCountBranchesReduced_of_compatible_of_noCommonForward
       hforward hf hg hsgn hcompat)
 
@@ -498,8 +498,8 @@ theorem theorem21RootCountBranchesWithCommon_of_compatible_of_forward
 direction and the automatic common-root deletion branch. -/
 theorem theorem21CompatibleToRootCountBranchesWithCommon_of_noCommonForward
     (hforward : theorem21CompatibleToRootCountBranchesNoCommonStatement) :
-    theorem21CompatibleToRootCountBranchesWithCommonStatement := by
-  exact theorem21CompatibleToRootCountBranchesWithCommon_of_reduced
+    theorem21CompatibleToRootCountBranchesWithCommonStatement :=
+  theorem21CompatibleToRootCountBranchesWithCommon_of_reduced
     (theorem21CompatibleToRootCountBranchesReduced_of_noCommonForward hforward)
 
 /-- Branch-only reverse direction plus factor multiplication proves the

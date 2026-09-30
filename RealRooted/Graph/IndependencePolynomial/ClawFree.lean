@@ -198,8 +198,8 @@ theorem compatible_weighted_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
           deleteClosedNeighborSupport G S u :=
       deleteClosedNeighborSupport_erase_eq_of_adj G huv
     simpa [A, B, hsupport, mul_assoc] using h
-  have hA : A ≠ 0 ∧ A.Splits := by
-    exact ⟨weightedIndepPolyOn_ne_zero G ((S.erase v).erase u) wt,
+  have hA : A ≠ 0 ∧ A.Splits :=
+    ⟨weightedIndepPolyOn_ne_zero G ((S.erase v).erase u) wt,
       hBaseSplit⟩
   have hB : B ≠ 0 ∧ B.Splits := by
     dsimp [B]
@@ -283,8 +283,8 @@ theorem weightedSupportVertexDeletionCompatible_of_smaller
     have hEraseUSmall : (S.erase u).card < S.card :=
       Finset.card_erase_lt_of_mem huS
     have hBaseSplit :
-        (weightedIndepPolyOn G ((S.erase v).erase u) wt).Splits := by
-      exact hSplitSmall ((S.erase v).erase u) <|
+        (weightedIndepPolyOn G ((S.erase v).erase u) wt).Splits :=
+      hSplitSmall ((S.erase v).erase u) <|
         lt_of_le_of_lt
           (Finset.card_le_card (Finset.erase_subset u (S.erase v)))
           hEraseVSmall
@@ -330,8 +330,8 @@ theorem weightedSupportVertexDeletionCompatible_of_smaller
       simp_all
     have hCommonSub : commonClosedNeighborSetOn G S u v ⊆ S :=
       commonClosedNeighborSetOn_subset G S u v
-    have huCommon : u ∈ commonClosedNeighborSetOn G S u v := by
-      exact Finset.mem_inter.mpr
+    have huCommon : u ∈ commonClosedNeighborSetOn G S u v :=
+      Finset.mem_inter.mpr
         ⟨Finset.mem_filter.mpr ⟨huS, Or.inl rfl⟩,
           Finset.mem_filter.mpr ⟨huS, Or.inr huv.symm⟩⟩
     have hCommonNonempty :
@@ -534,15 +534,13 @@ theorem weightedSupportSimplicialXCompatible_of_smaller
       hSplit (S \ K) sdiff_subset
     have hneighbor_simp : ∀ v ∈ K,
         IsSimplicialCliqueOn G (S \ K)
-          (neighborOutsideCliqueOn G S K v) := by
-      intro v hv
-      exact hG.simplicialClique_neighborOutside hK hv
+          (neighborOutsideCliqueOn G S K v) :=
+      fun _ hv => hG.simplicialClique_neighborOutside hK hv
     have hbase_neighbor_x : ∀ v ∈ K,
         Compatible (weightedIndepPolyOn G (S \ K) wt)
           (X * weightedIndepPolyOn G
-            ((S \ K) \ neighborOutsideCliqueOn G S K v) wt) := by
-      intro v hv
-      exact hXSmall (S \ K) hsmall (hneighbor_simp v hv)
+            ((S \ K) \ neighborOutsideCliqueOn G S K v) wt) :=
+      fun v hv => hXSmall (S \ K) hsmall (hneighbor_simp v hv)
     have hbase_neighbor : ∀ v ∈ K,
         Compatible (weightedIndepPolyOn G (S \ K) wt)
           (weightedIndepPolyOn G
@@ -555,9 +553,8 @@ theorem weightedSupportSimplicialXCompatible_of_smaller
           (weightedIndepPolyOn G
             ((S \ K) \ neighborOutsideCliqueOn G S K u) wt)
           (weightedIndepPolyOn G
-            ((S \ K) \ neighborOutsideCliqueOn G S K v) wt) := by
-      intro u hu v hv
-      exact (hPairSmall (S \ K) hsmall)
+            ((S \ K) \ neighborOutsideCliqueOn G S K v) wt) :=
+      fun u hu v hv => (hPairSmall (S \ K) hsmall)
         (hneighbor_simp u hu) (hneighbor_simp v hv)
     have hpair : PairwiseCompatible
         (weightedCliqueDeletionCompatibilityFamily G wt S K) :=

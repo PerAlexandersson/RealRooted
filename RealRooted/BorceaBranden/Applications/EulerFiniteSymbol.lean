@@ -195,9 +195,9 @@ theorem eulerAffineBidiagonalResidualWithConstant_stable
       0 < (((d : ℝ) + 1) * (z 0).re + c) ^ 2 +
         (((d : ℝ) + 1) * (z 0).im) ^ 2 := by
     have himul : 0 < ((d : ℝ) + 1) * (z 0).im := mul_pos hD hb
-    nlinarith [sq_nonneg (((d : ℝ) + 1) * (z 0).re + c),
+    linarith [sq_nonneg (((d : ℝ) + 1) * (z 0).re + c),
       sq_pos_of_pos himul]
-  nlinarith [mul_pos he hdenpos, mul_pos hb hbracket]
+  linarith [mul_pos he hdenpos, mul_pos hb hbracket]
 
 theorem eulerAffineBidiagonalResidual_stable (d : ℕ) (hd : 1 ≤ d) :
     MvUpperHalfPlaneStable (complexifyMv
@@ -279,8 +279,8 @@ theorem eulerBidiagonalStepWithConstant_degree_pos
     have hzero : p.coeff (m + 1) = 0 :=
       coeff_eq_zero_of_natDegree_lt (by simp [m])
     rw [hzero, mul_zero, zero_add]
-    have htop : p.coeff m = p.leadingCoeff := by
-      exact p.coeff_natDegree
+    have htop : p.coeff m = p.leadingCoeff :=
+      p.coeff_natDegree
     rw [htop]
     simp [eulerBeta]
   have hbeta : 0 < (d : ℝ) + 1 - (m : ℝ) := by
@@ -392,8 +392,5 @@ theorem eulerBidiagonalStep_strictInterl
   exact bidiagonalOperator_strictInterl_of_affineSymbol_stable
     (eulerAffineBidiagonalSymbol_stable d hd)
     hpdeg hqdeg hpq hp hq hpout hqout hpoutdeg
-
-@[deprecated eulerBidiagonalStep_strictInterl (since := "2026-09-18")]
-alias eulerBidiagonalStep_prec := eulerBidiagonalStep_strictInterl
 
 end RealRooted.BorceaBranden

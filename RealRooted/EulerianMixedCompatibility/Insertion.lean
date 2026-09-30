@@ -175,7 +175,7 @@ theorem strictInterl_eulerInsertionStep
         roots_nonpos_of_hasNonnegCoeffs hp r
           ((mem_roots hp_pos.ne_zero).mpr hr)
       simp only [eval_sub, eval_X, eval_pow]
-      nlinarith [sq_nonneg r]
+      linarith [sq_nonneg r]
 
 @[deprecated strictInterl_eulerInsertionStep (since := "2026-09-26")]
 alias prec_eulerInsertionStep := strictInterl_eulerInsertionStep

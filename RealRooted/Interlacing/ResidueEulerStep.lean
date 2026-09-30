@@ -54,8 +54,8 @@ theorem natDegree_and_leadingCoeff_residueEulerStep
     simpa [mul_assoc] using (natDegree_C_mul_le (-a) (X * h)).trans hhX
   have hright : (C b * X * r).natDegree ≤ f.natDegree := by
     simpa [mul_assoc] using (natDegree_C_mul_le b (X * r)).trans hrX
-  have htail : tail.natDegree ≤ f.natDegree := by
-    exact (natDegree_add_le _ _).trans (max_le hleft hright)
+  have htail : tail.natDegree ≤ f.natDegree :=
+    (natDegree_add_le _ _).trans (max_le hleft hright)
   have htop :
       ((-1 : ℝ) * (f.natDegree : ℝ) + ((f.natDegree : ℝ) + 1)) *
           f.leadingCoeff ≠ 0 := by
@@ -120,9 +120,8 @@ theorem residueEulerStep_strict_package
     residueAuxiliary_interlaces hhf hf_pos hh_pos
       hfdeg hhdeg hf_simple ha hroots_lt_one hgap
   have haux_sign : ∀ x, f.IsRoot x →
-      0 < (residueAuxiliary 1 a f h).eval x * f.derivative.eval x := by
-    intro x hx
-    exact residueAuxiliary_eval_mul_derivative_pos
+      0 < (residueAuxiliary 1 a f h).eval x * f.derivative.eval x :=
+    fun _ hx => residueAuxiliary_eval_mul_derivative_pos
       hhf hf_pos hh_pos hfdeg hhdeg hf_simple
         ha hroots_lt_one hgap hx
   let tail : ℝ[X] := C b * X * r

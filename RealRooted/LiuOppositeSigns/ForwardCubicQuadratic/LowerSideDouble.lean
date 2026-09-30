@@ -141,7 +141,7 @@ lemma cubicDiscr_cubicSubQuadratic_left_double_roots_below_neg
   have hfrac :
       0 < cubicSubQuadraticLeftDoubleBelowBracket sav dab dbc / sav ^ 2 :=
     div_pos hbracket (by positivity)
-  nlinarith
+  linarith
 
 /-- If the quadratic has a double root strictly below the cubic roots, then
 some positive subtraction coefficient makes the monic cubic-minus-quadratic

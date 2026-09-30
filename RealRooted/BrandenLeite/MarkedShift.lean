@@ -275,11 +275,6 @@ theorem weightedGreenKernel_markedShiftKernel_pf_and_interl
     exact markedShiftApproximation_apply_self as N r (markedShiftEpsilon m)
   · exact tendsto_markedShiftApproximation as N r
 
-@[deprecated weightedGreenKernel_markedShiftKernel_pf_and_interl
-  (since := "2026-09-18")]
-alias weightedGreenKernel_markedShiftKernel_pf_and_prec0 :=
-  weightedGreenKernel_markedShiftKernel_pf_and_interl
-
 end
 
 end RealRooted.BrandenLeite

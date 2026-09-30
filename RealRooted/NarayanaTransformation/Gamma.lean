@@ -55,8 +55,8 @@ theorem narayanaZeroGammaPolynomial_pure_rec (n : ℕ) :
         · compute_degree!
         · exact natDegree_narayanaZeroGammaPolynomial_le n
       _ ≤ (n + 2) / 2 := by lia
-  have hγsub : (γ₁ - γ₀).natDegree ≤ (n + 2) / 2 := by
-    exact (natDegree_sub_le γ₁ γ₀).trans
+  have hγsub : (γ₁ - γ₀).natDegree ≤ (n + 2) / 2 :=
+    (natDegree_sub_le γ₁ γ₀).trans
       (max_le hγ₁ hγ₀)
   apply gammaTransform_injective_of_natDegree_le hγ₂ hγsub
   dsimp [γ₂, γ₁, γ₀]
@@ -189,7 +189,7 @@ theorem coeff_narayanaZeroGammaPolynomial_deriv_rec
       rw [factorial_succ_cast n, factorial_cast_pred hkpos]
       have heqR := congrArg (fun m : ℕ ↦ (m : ℝ)) heq
       push_cast at heqR ⊢
-      have hnR : (n : ℝ) = 2 * (k : ℝ) - 1 := by nlinarith
+      have hnR : (n : ℝ) = 2 * (k : ℝ) - 1 := by linarith
       rw [hnR]
       ring
     · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by lia),
@@ -198,7 +198,7 @@ theorem coeff_narayanaZeroGammaPolynomial_deriv_rec
       · have heq : 2 * k = n + 2 := by lia
         have heqR := congrArg (fun m : ℕ ↦ (m : ℝ)) heq
         push_cast at heqR
-        have hfactor : 4 * (n : ℝ) + 8 - 8 * (k : ℝ) = 0 := by nlinarith
+        have hfactor : 4 * (n : ℝ) + 8 - 8 * (k : ℝ) = 0 := by linarith
         rw [hfactor]
         ring
       · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by lia)]

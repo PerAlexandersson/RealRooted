@@ -44,7 +44,7 @@ theorem sum_sq_le (u : K) (hu : 0 < u) (r N : ℕ) :
       ≤ u / (u + 2 * ((k : K) + 1)) :=
     div_le_div_of_nonneg_left hu.le h1 h2
   have hnn : (0 : K) ≤ u / (u + ((k : K) + 1) * ((k : K) + 2)) := by
-    have : (0 : K) < u + ((k : K) + 1) * ((k : K) + 2) := by nlinarith
+    have : (0 : K) < u + ((k : K) + 1) * ((k : K) + 2) := by linarith
     positivity
   exact pow_le_pow_left₀ hnn hdiv _
 
@@ -79,7 +79,7 @@ theorem sum_sq_sharp (u : K) (hu : 0 < u) (r N : ℕ)
         ≤ u / ((u + 2) + 4 * (k : K)) :=
       div_le_div_of_nonneg_left hu.le hd1 hden
     have hnn : (0 : K) ≤ u / (u + ((k : K) + 1) * ((k : K) + 2)) := by
-      have : (0 : K) < u + ((k : K) + 1) * ((k : K) + 2) := by nlinarith [hk]
+      have : (0 : K) < u + ((k : K) + 1) * ((k : K) + 2) := by linarith [hk]
       positivity
     refine le_trans (pow_le_pow_left₀ hnn hstep _) (le_of_eq ?_)
     rw [← mul_pow]

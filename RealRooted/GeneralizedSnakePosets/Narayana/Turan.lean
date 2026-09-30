@@ -149,7 +149,7 @@ theorem modifiedNarayanaTuran_nonneg_of_nonpos
           (add_nonneg
             (mul_nonneg (mul_nonneg (by positivity) (sq_nonneg (r - 1))) ih)
             (sq_nonneg _))
-          (mul_nonneg (by nlinarith) (sq_nonneg _))
+          (mul_nonneg (by linarith) (sq_nonneg _))
       · positivity
 
 /-- The all-`m` Narayana Turan package needed by the shifted Lemma 3.4 route. -/

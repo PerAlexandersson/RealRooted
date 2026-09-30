@@ -48,8 +48,8 @@ theorem det_eq_last_apply_mul_det_castSucc {R : Type*} [CommRing R]
     {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) R)
     (hzero : ∀ i : Fin n, A i.castSucc (Fin.last n) = 0) :
     A.det = A (Fin.last n) (Fin.last n) *
-      (A.submatrix Fin.castSucc Fin.castSucc).det := by
-  exact Matrix.det_eq_last_apply_mul_det_castSucc_of_above_eq_zero A hzero
+      (A.submatrix Fin.castSucc Fin.castSucc).det :=
+  Matrix.det_eq_last_apply_mul_det_castSucc_of_above_eq_zero A hzero
 
 /-- The cofactor obtained by deleting the final row and penultimate column. -/
 def lowerHessenbergTwoPenultimateCofactor {R : Type*} [CommRing R]

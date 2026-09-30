@@ -278,7 +278,7 @@ lemma Interleaves.drop_replicate_of_lt
     {k₁ k₂ : ℕ}
     (h : Interleaves (· ≤ ·) (l₁ ++ List.replicate k₁ a)
       (l₂ ++ List.replicate k₂ a)) :
-    Interleaves (· ≤ ·) l₁ l₂ := by
-  exact interleaves_drop_replicate_of_lt_aux l₁ l₂ hlt₁ hlt₂ (k₁ + k₂) k₁ k₂ rfl h
+    Interleaves (· ≤ ·) l₁ l₂ :=
+  interleaves_drop_replicate_of_lt_aux l₁ l₂ hlt₁ hlt₂ (k₁ + k₂) k₁ k₂ rfl h
 
 end List

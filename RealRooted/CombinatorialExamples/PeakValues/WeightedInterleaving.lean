@@ -64,15 +64,15 @@ theorem identifyLast_peakValuePolynomial_hasNonnegCoeffs (n : ℕ) :
   exact (finSuccEquiv' (Fin.last n)).injective
 
 theorem identifyLast_peakValuePolynomial_ne_zero (n : ℕ) :
-    identifyLast n (peakValuePolynomial (n + 1)) ≠ 0 := by
-  exact (MvPolynomial.renameEquiv ℝ
+    identifyLast n (peakValuePolynomial (n + 1)) ≠ 0 :=
+  (MvPolynomial.renameEquiv ℝ
     (finSuccEquiv' (Fin.last n))).injective.ne
       (peakValuePolynomial_ne_zero (n + 1))
 
 theorem identifyLast_peakValuePolynomial_isMultiaffine (n : ℕ) :
     MvPolynomial.IsMultiaffine
-      (identifyLast n (peakValuePolynomial (n + 1))) := by
-  exact (peakValuePolynomial_isMultiaffine (n + 1)).rename
+      (identifyLast n (peakValuePolynomial (n + 1))) :=
+  (peakValuePolynomial_isMultiaffine (n + 1)).rename
     (finSuccEquiv' (Fin.last n)).injective
 
 theorem pderiv_none_identifyLast_peakValuePolynomial_ne_zero
@@ -120,7 +120,7 @@ theorem pderiv_none_identifyLast_peakValuePolynomial_ne_zero
     rw [Nat.cast_sub (by lia : 1 ≤ n)]
     norm_num
   rw [hnsub] at hprod
-  nlinarith
+  linarith
 
 def peakValueOptionWeights (n : ℕ) (wt : Fin (n + 1) → ℝ) :
     Option (Fin n) → ℝ
@@ -192,37 +192,37 @@ theorem peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
     cases j with
     | none => exact hwt (Fin.last n)
     | some j => exact hwt j.castSucc
-  have hQnn : MvPolynomial.HasNonnegCoeffs Q := by
-    exact identifyLast_peakValuePolynomial_hasNonnegCoeffs n
+  have hQnn : MvPolynomial.HasNonnegCoeffs Q :=
+    identifyLast_peakValuePolynomial_hasNonnegCoeffs n
   have hQ0 : Q ≠ 0 := identifyLast_peakValuePolynomial_ne_zero n
   have hDQnn : MvPolynomial.HasNonnegCoeffs (MvPolynomial.pderiv none Q) :=
     MvPolynomial.HasNonnegCoeffs.pderiv hQnn none
   have hDQ0 : MvPolynomial.pderiv none Q ≠ 0 :=
     pderiv_none_identifyLast_peakValuePolynomial_ne_zero n hn
-  have hAnn : HasNonnegCoeffs A := by
-    exact commonPhaseRestriction_hasNonnegCoeffs hQnn _ fun j => by
+  have hAnn : HasNonnegCoeffs A :=
+    commonPhaseRestriction_hasNonnegCoeffs hQnn _ fun j => by
       by_cases hj : j = none
       · subst j
         simp
       · rw [Function.update_of_ne hj]
         exact (hwpos j).le
   have hAeq : A = Polynomial.C 2 *
-      peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc) := by
-    exact commonPhaseRestriction_update_none_identifyLast_peakValue n hn wt
+      peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc) :=
+    commonPhaseRestriction_update_none_identifyLast_peakValue n hn wt
   have hlowerNN : HasNonnegCoeffs
-      (peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc)) := by
-    exact commonPhaseRestriction_hasNonnegCoeffs
+      (peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc)) :=
+    commonPhaseRestriction_hasNonnegCoeffs
       (peakValuePolynomial_hasNonnegCoeffs n) _
       (fun j => (hwt j.castSucc).le)
   have hlower0 :
-      peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc) ≠ 0 := by
-    exact commonPhaseRestriction_ne_zero
+      peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc) ≠ 0 :=
+    commonPhaseRestriction_ne_zero
       (peakValuePolynomial_hasNonnegCoeffs n)
       (peakValuePolynomial_ne_zero n) _ (fun j => hwt j.castSucc)
   have hA0 : A ≠ 0 := by rw [hAeq]; exact mul_ne_zero (by norm_num) hlower0
   have hApos : HasPosLeadingCoeff A := hAnn.pos_leadingCoeff hA0
-  have hDnn : HasNonnegCoeffs D := by
-    exact nonnegCoeffs_C_mul (hwpos none).le
+  have hDnn : HasNonnegCoeffs D :=
+    nonnegCoeffs_C_mul (hwpos none).le
       (commonPhaseRestriction_hasNonnegCoeffs hDQnn w
         fun j => (hwpos j).le)
   have hD0 : D ≠ 0 := by
@@ -230,11 +230,11 @@ theorem peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
     · exact Polynomial.C_ne_zero.mpr (hwpos none).ne'
     · exact commonPhaseRestriction_ne_zero hDQnn hDQ0 w hwpos
   have hDpos : HasPosLeadingCoeff D := hDnn.pos_leadingCoeff hD0
-  have hQstable : MvRealStable Q := by
-    exact hstable.rename
+  have hQstable : MvRealStable Q :=
+    hstable.rename
       (finSuccEquiv' (Fin.last n))
-  have hDA : StrictInterl D A := by
-    exact hQstable.strictInterl_commonPhaseRestriction_pderiv
+  have hDA : StrictInterl D A :=
+    hQstable.strictInterl_commonPhaseRestriction_pderiv
       (identifyLast_peakValuePolynomial_isMultiaffine n)
       none w hwpos hApos hDpos
   have hAXD : StrictInterl A (Polynomial.X * D) :=
@@ -242,12 +242,12 @@ theorem peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
   have hAfull : StrictInterl A (A + Polynomial.X * D) :=
     strictInterl_add_X_mul_of_strictInterl hAXD hApos hDpos
   have hdecomp :
-      commonPhaseRestriction w Q = A + Polynomial.X * D := by
-    exact commonPhaseRestriction_eq_constant_add_X_mul_pderiv
+      commonPhaseRestriction w Q = A + Polynomial.X * D :=
+    commonPhaseRestriction_eq_constant_add_X_mul_pderiv
       (identifyLast_peakValuePolynomial_isMultiaffine n) none w
   have hfull : commonPhaseRestriction w Q =
-      peakValueWeightedDiagonal wt := by
-    exact commonPhaseRestriction_identifyLast n wt
+      peakValueWeightedDiagonal wt :=
+    commonPhaseRestriction_identifyLast n wt
       (peakValuePolynomial (n + 1))
   rw [← hdecomp, hfull, hAeq] at hAfull
   have hscaled := StrictInterl.C_mul_left hAfull (by norm_num : (2 : ℝ)⁻¹ ≠ 0)
@@ -309,26 +309,9 @@ theorem peakValueWeightedDiagonal_consecutive_strictInterl
     (hwt : ∀ j, 0 < wt j) :
     StrictInterl
       (peakValueWeightedDiagonal (fun j : Fin n => wt j.castSucc))
-      (peakValueWeightedDiagonal wt) := by
-  exact peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks n hn wt hwt
+      (peakValueWeightedDiagonal wt) :=
+  peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks n hn wt hwt
     (peakValuePolynomial_mvRealStable (n + 1))
-
-/-! ## Deprecated aliases -/
-
-@[deprecated peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
-  (since := "2026-09-26")]
-alias peakValueWeightedDiagonal_consecutive_prec_of_stable :=
-  peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
-
-@[deprecated peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks
-  (since := "2026-09-26")]
-alias peakValueWeightedDiagonal_consecutive_prec_of_stable_all_ranks :=
-  peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks
-
-@[deprecated peakValueWeightedDiagonal_consecutive_strictInterl
-  (since := "2026-09-26")]
-alias peakValueWeightedDiagonal_consecutive_prec :=
-  peakValueWeightedDiagonal_consecutive_strictInterl
 
 end
 

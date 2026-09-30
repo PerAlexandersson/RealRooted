@@ -67,8 +67,8 @@ theorem sortedLT_map_sortAlong_of_nodup {n : ℕ} (l : List (Fin n)) (hl : l.Nod
       (List.pairwise_mergeSort (le := fun a b : Fin (n + 1) => decide (a ≤ b))
         (by intro a b c hab hbc; simp only [decide_eq_true_eq] at *; lia)
         (by intro a b; simp only [Bool.or_eq_true, decide_eq_true_eq]; lia) (l.map f))
-  have hsorted : ((l.map f).mergeSort (fun a b => a ≤ b)).SortedLE := by
-    exact hpair.sortedLE
+  have hsorted : ((l.map f).mergeSort (fun a b => a ≤ b)).SortedLE :=
+    hpair.sortedLE
   exact hsorted.sortedLT_of_nodup ((List.mergeSort_perm _ _).nodup_iff.mpr hvalues)
 
 /-- Sorting an already weakly increasing chain leaves the word unchanged. -/

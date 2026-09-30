@@ -213,8 +213,8 @@ theorem coeff_shiftedBinaryRunDeformation_eq_sum_range
         (scalePolynomial t p).coeff m *
           (((Nat.choose m k : ℝ) *
             (Nat.choose (n + 1 - m) k : ℝ)) /
-              (Nat.choose n k : ℝ)) := by
-  exact coeff_comp_binaryRunTransform_eq_sum_range
+              (Nat.choose n k : ℝ)) :=
+  coeff_comp_binaryRunTransform_eq_sum_range
     ((natDegree_scalePolynomial_le t p).trans hp) k
 
 theorem coeff_zero_shiftedBinaryRunDeformation
@@ -312,8 +312,8 @@ theorem natDegree_derivative_shiftedBinaryRunDeformation_le
 theorem natDegree_X_mul_secondDerivative_shiftedBinaryRunDeformation_le
     {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) (t : ℝ) :
     (X * (shiftedBinaryRunDeformation n p t).derivative.derivative).natDegree ≤
-      (n - 1) / 2 := by
-  exact (natDegree_pointPolynomial_le
+      (n - 1) / 2 :=
+  (natDegree_pointPolynomial_le
       (shiftedBinaryRunDeformation n p t).derivative).trans
     (natDegree_derivative_shiftedBinaryRunDeformation_le hp t)
 

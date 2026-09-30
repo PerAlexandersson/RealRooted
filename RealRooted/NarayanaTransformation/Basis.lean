@@ -25,15 +25,15 @@ theorem fallingFactorialPolynomial_succ_mul (n : ℕ) :
 Touchard differential recurrence after the transform. -/
 theorem basisTransform_touchard_X_mul (p : ℝ[X]) :
     basisTransform touchard (X * p) =
-      X * basisTransform touchard p + X * (basisTransform touchard p).derivative := by
-  exact basisTransform_X_mul_of_succ_derivative touchard X X touchard_succ p
+      X * basisTransform touchard p + X * (basisTransform touchard p).derivative :=
+  basisTransform_X_mul_of_succ_derivative touchard X X touchard_succ p
 
 /-- Factor recurrence for the Touchard-basis transform. -/
 theorem basisTransform_touchard_mul_X_add_C (r : ℝ) (p : ℝ[X]) :
     basisTransform touchard ((X + C r) * p) =
       (X + C r) * basisTransform touchard p +
-        X * (basisTransform touchard p).derivative := by
-  exact basisTransform_mul_X_add_C_of_succ_derivative touchard X X touchard_succ r p
+        X * (basisTransform touchard p).derivative :=
+  basisTransform_mul_X_add_C_of_succ_derivative touchard X X touchard_succ r p
 
 /-- The Touchard-basis transform sends a falling factorial back to the
 corresponding monomial. -/
@@ -433,9 +433,5 @@ theorem basisTransform_risingFactorial_eq_quadratic_of_natDegree_eq_two
   repeat rw [Polynomial.smul_eq_C_mul]
   rw [map_add, map_mul]
   ring_nf
-
-
-@[deprecated risingFactorialStep_pf_shiftStrictInterl (since := "2026-09-26")]
-alias risingFactorialStep_pf_shiftPrec := risingFactorialStep_pf_shiftStrictInterl
 
 end RealRooted

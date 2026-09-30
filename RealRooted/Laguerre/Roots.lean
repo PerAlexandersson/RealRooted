@@ -54,8 +54,8 @@ private theorem generalizedLaguerre_bilinear_recurrence_real (α : ℝ) : ∀ n,
 /-- Generalized Laguerre polynomials have nonnegative coefficients throughout
 the closed classical parameter range. -/
 theorem generalizedLaguerre_hasNonnegCoeffs (n : ℕ) {α : ℝ}
-    (hα : -1 ≤ α) : HasNonnegCoeffs (generalizedLaguerre n α) := by
-  exact hasNonnegCoeffs_of_quadratic_derivative_bilinear
+    (hα : -1 ≤ α) : HasNonnegCoeffs (generalizedLaguerre n α) :=
+  hasNonnegCoeffs_of_quadratic_derivative_bilinear
     (fun k => generalizedLaguerre k α) 1 0 (α + 1) 1 1 0
     (generalizedLaguerre_zero α)
     (generalizedLaguerre_bilinear_recurrence_real α)
@@ -181,10 +181,5 @@ theorem generalizedLaguerre_hasSimpleRoots (n : ℕ) {α : ℝ} (hα : -1 ≤ α
   HasSimpleRoots.of_roots_nodup
     (monic_generalizedLaguerre n α).ne_zero
     (generalizedLaguerre_roots_nodup n hα)
-
-/-! ## Deprecated aliases -/
-
-@[deprecated generalizedLaguerre_strictInterl_succ (since := "2026-09-26")]
-alias generalizedLaguerre_prec_succ := generalizedLaguerre_strictInterl_succ
 
 end RealRooted

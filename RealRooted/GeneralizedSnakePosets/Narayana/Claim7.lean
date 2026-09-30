@@ -46,7 +46,7 @@ theorem auxiliaryG_roots_sum_of_narayanaRecurrence
   have hvieta := hsplit.nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
   rw [hnext, hlead] at hvieta
   apply mul_left_cancel₀ (show (n : ℝ) ≠ 0 by positivity)
-  nlinarith
+  linarith
 
 /-- Braun--Jal Claim `(7)` for the concrete modified Narayana family.
 
@@ -244,8 +244,8 @@ theorem theorem41NonNestingRook_modified_of_sourceInputs
       (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
       M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    Theorem41NonNestingRookStatement M := by
-  exact theorem41_of_matrixClaim_of_constant_matches_succ_length
+    Theorem41NonNestingRookStatement M :=
+  theorem41_of_matrixClaim_of_constant_matches_succ_length
     (M := M) (P := modifiedNarayanaPolynomial)
     (G := FiniteSkewBoard.auxiliaryG)
     hrec
@@ -289,11 +289,6 @@ theorem theorem41NonNestingRook_modified_of_modelInputs
     Theorem41NonNestingRookStatement M :=
   theorem41NonNestingRook_modified_of_modelInputs_of_adjacentG hrec2 hH_nonneg
     (auxiliaryG_strictInterl_succ_of_narayanaTwoModel hG_model) hrec hM_nonneg hdeg hM_const
-
-@[deprecated auxiliaryG_strictInterl_succ_of_narayanaTwoModel
-  (since := "2026-09-26")]
-alias auxiliaryG_prec_succ_of_narayanaTwoModel :=
-  auxiliaryG_strictInterl_succ_of_narayanaTwoModel
 
 end GeneralizedSnakePosets
 end RealRooted

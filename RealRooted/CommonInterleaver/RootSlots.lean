@@ -454,11 +454,6 @@ protected lemma CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl
     mem_rootSlotInterval_of_strictInterl_witness hss hrs hshape ⟨j.1, by lia⟩
   lia
 
-@[deprecated CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl
-  (since := "2026-09-18")]
-protected alias CommonInterleaver.RootSlots.mem_rootSlotInterval_of_prec :=
-  CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl
-
 private lemma mem_shifted_rootSlotInterval_reverse_of_listInterlaces
     {ss rs : List ℝ}
     (hlen : ss.length + 1 = rs.length)
@@ -694,12 +689,6 @@ protected lemma CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_stri
     · exact mem_shifted_rootSlotInterval_reverse_of_listAlternates hlen halt
         ⟨j.1, by simp [hss_len, j.2]⟩
   lia
-
-@[deprecated CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_strictInterl
-  (since := "2026-09-18")]
-protected alias CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_prec :=
-  CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_strictInterl
-
 
 end
 end RealRooted

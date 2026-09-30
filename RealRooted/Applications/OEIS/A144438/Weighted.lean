@@ -88,8 +88,8 @@ theorem weightedDecoEulerian_zero_weight :
 /-- The rankwise root and interlacing certificate for every nonnegative
 weight. -/
 theorem weightedDecoEulerian_certificate {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
-    AffineLagSecondOrderCertificate (weightedDecoEulerian w) n := by
-  exact affine_lag_second_order_derivative_certificate_of_nonneg_lag
+    AffineLagSecondOrderCertificate (weightedDecoEulerian w) n :=
+  affine_lag_second_order_derivative_certificate_of_nonneg_lag
     (weightedDecoEulerian w) 1 w (by norm_num) hw
       (weightedDecoEulerian_zero w) (weightedDecoEulerian_one w) (by
         intro m
@@ -100,8 +100,8 @@ theorem weightedDecoEulerian_certificate {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
 condition on the weight. -/
 @[simp]
 theorem weightedDecoEulerian_natDegree (w : ℝ) (n : ℕ) :
-    (weightedDecoEulerian w n).natDegree = n := by
-  exact natDegree_of_second_order_derivative (weightedDecoEulerian w) 1 w
+    (weightedDecoEulerian w n).natDegree = n :=
+  natDegree_of_second_order_derivative (weightedDecoEulerian w) 1 w
     (fun m => (2 : ℝ) + m) (weightedDecoEulerian_zero w)
       (weightedDecoEulerian_one w) (weightedDecoEulerian_affine_recurrence w)
         (by intro m; ring) n
@@ -109,8 +109,8 @@ theorem weightedDecoEulerian_natDegree (w : ℝ) (n : ℕ) :
 /-- Weighted deco Eulerian polynomials are monic, without a sign condition
 on the weight. -/
 theorem weightedDecoEulerian_monic (w : ℝ) (n : ℕ) :
-    (weightedDecoEulerian w n).Monic := by
-  exact monic_of_second_order_derivative (weightedDecoEulerian w) 1 w
+    (weightedDecoEulerian w n).Monic :=
+  monic_of_second_order_derivative (weightedDecoEulerian w) 1 w
     (fun m => (2 : ℝ) + m) (weightedDecoEulerian_zero w)
       (weightedDecoEulerian_one w) (weightedDecoEulerian_affine_recurrence w)
         (by intro m; ring) n
@@ -118,8 +118,8 @@ theorem weightedDecoEulerian_monic (w : ℝ) (n : ℕ) :
 /-- Every weighted row has constant coefficient one. -/
 @[simp]
 theorem weightedDecoEulerian_coeff_zero (w : ℝ) (n : ℕ) :
-    (weightedDecoEulerian w n).coeff 0 = 1 := by
-  exact coeff_zero_affine_lag_second_order_derivative
+    (weightedDecoEulerian w n).coeff 0 = 1 :=
+  coeff_zero_affine_lag_second_order_derivative
     (P := weightedDecoEulerian w) (a := 1) (c := w)
     (weightedDecoEulerian_zero w) (weightedDecoEulerian_one w) (by
       intro m
@@ -231,17 +231,12 @@ def weightedDecoEulerianPrefix (w : ℝ) (n : ℕ) : List ℝ[X] :=
 /-- Every reversed finite prefix at a nonnegative weight is a Sturm sequence.
 -/
 theorem weightedDecoEulerian_isSturmSeq {w : ℝ} (hw : 0 ≤ w) (n : ℕ) :
-    IsSturmSeq (weightedDecoEulerianPrefix w n) := by
-  exact isSturmSeq_affine_lag_second_order_derivative_of_nonneg_lag
+    IsSturmSeq (weightedDecoEulerianPrefix w n) :=
+  isSturmSeq_affine_lag_second_order_derivative_of_nonneg_lag
     (weightedDecoEulerian w) 1 w (by norm_num) hw
       (weightedDecoEulerian_zero w) (weightedDecoEulerian_one w) (by
         intro m
         simpa only [one_mul, one_add_one_eq_two] using
           weightedDecoEulerian_affine_recurrence w m) n
-
-/-! ## Deprecated aliases -/
-
-@[deprecated weightedDecoEulerian_strictInterl (since := "2026-09-26")]
-alias weightedDecoEulerian_prec := weightedDecoEulerian_strictInterl
 
 end RealRooted.Applications.OEIS

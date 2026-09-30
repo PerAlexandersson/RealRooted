@@ -85,8 +85,8 @@ theorem rescale_signedLetterBaseSeries_mul_one_add_run
       PowerSeries.rescale (a * (1 + X)) (PowerSeries.mk 1)
     have hcommon :
         common *
-            (1 - PowerSeries.C (a * (1 + X)) * PowerSeries.X) = 1 := by
-      exact geometricSeries_mul_one_sub (a * (1 + X))
+            (1 - PowerSeries.C (a * (1 + X)) * PowerSeries.X) = 1 :=
+      geometricSeries_mul_one_sub (a * (1 + X))
     have hcommon' :
         (1 - PowerSeries.C (a * (1 + X)) * PowerSeries.X) *
             common = 1 := by
@@ -404,10 +404,10 @@ theorem signedRunSmirnovSeries_product_identity
     smirnovSubstitutionSeries (A := R[X]) X (signedRunSeries weight)
   let tail : PowerSeries R[X] :=
     1 - PowerSeries.C X + PowerSeries.C X * series
-  have hsmirnov : left * series = right * tail := by
-    exact signedRunSeries_smirnov_product_identity weight
-  have hcross : PowerSeries.rescale X base * right = base * left := by
-    exact rescale_prod_signedLetterBaseSeries_mul_prod_one_add_run weight
+  have hsmirnov : left * series = right * tail :=
+    signedRunSeries_smirnov_product_identity weight
+  have hcross : PowerSeries.rescale X base * right = base * left :=
+    rescale_prod_signedLetterBaseSeries_mul_prod_one_add_run weight
   have hregular : IsRegular left :=
     isRegular_prod_one_add_C_mul_signedRunSeries weight
   apply hregular.left
@@ -498,8 +498,8 @@ is a Pólya-frequency polynomial. -/
 theorem finiteSignedWordEnumerator_isPFPolynomial
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
-    IsPFPolynomial (finiteSignedWordEnumerator xs ys n) := by
-  exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    IsPFPolynomial (finiteSignedWordEnumerator xs ys n) :=
+  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
     (finiteSignedWordEnumerator_nonnegCoeffs hxs hys n)
     (finiteSignedWordEnumerator_eq_zero_or_splits hxs hys n)
 
@@ -513,9 +513,6 @@ theorem finiteSignedWordEnumerator_interl_succ
   rw [← finiteSupersymmetricChow_eq_finiteSignedWordEnumerator,
     ← finiteSupersymmetricChow_eq_finiteSignedWordEnumerator]
   exact finiteSupersymmetricChow_interl_succ hxs hys n
-
-@[deprecated finiteSignedWordEnumerator_interl_succ (since := "2026-09-26")]
-alias finiteSignedWordEnumerator_prec0_succ := finiteSignedWordEnumerator_interl_succ
 
 end
 

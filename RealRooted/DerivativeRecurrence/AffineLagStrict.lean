@@ -62,8 +62,8 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_degree_step
         have hderivNe : eval r ((P (n + 1)).derivative) ≠ 0 :=
           hsimple.eval_derivative_ne_zero hr
         have hprevDerivPos :
-            0 < eval r (P n) * eval r ((P (n + 1)).derivative) := by
-          exact lt_of_le_of_ne hprevDeriv (mul_ne_zero hprevNe hderivNe).symm
+            0 < eval r (P n) * eval r ((P (n + 1)).derivative) :=
+          lt_of_le_of_ne hprevDeriv (mul_ne_zero hprevNe hderivNe).symm
         have hlagNeg : a n * r - b n < 0 := by
           have har : a n * r ≤ 0 :=
             mul_nonpos_of_nonneg_of_nonpos (ha n) hrNonpos
@@ -89,10 +89,5 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_degree_step
       rw [Polynomial.IsRoot.def] at hr2
       rw [hr2, zero_mul] at hsign
       exact (lt_irrefl 0 hsign).elim
-
-@[deprecated strictInterl_and_noCommonRoot_of_affine_lag_degree_step
-  (since := "2026-09-18")]
-alias prec_and_noCommonRoot_of_affine_lag_degree_step :=
-  strictInterl_and_noCommonRoot_of_affine_lag_degree_step
 
 end RealRooted

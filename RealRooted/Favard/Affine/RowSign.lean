@@ -53,8 +53,8 @@ theorem favardInterlacing_affine_const_coeff_rowSign
   have hQstrictInterl : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) :=
     favardInterlacing_affine_const_coeff hs hβ hQ0 hQ1 hQstep
   intro n
-  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
-  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
+  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := pow_ne_zero _ (by norm_num)
+  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := pow_ne_zero _ (by norm_num)
   have hscaled : StrictInterl (C ((-1 : ℝ) ^ n) * Q n)
       (C ((-1 : ℝ) ^ (n + 1)) * Q (n + 1)) :=
     StrictInterl.C_mul_right (StrictInterl.C_mul_left (hQstrictInterl n) hleft_ne) hright_ne
@@ -124,8 +124,8 @@ theorem favardInterlacing_affine_param_coeff_rowSign
   have hQstrictInterl : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) :=
     favardInterlacing_affine_param_coeff hs hβ hQ0 hQ1 hQstep
   intro n
-  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
-  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := by exact pow_ne_zero _ (by norm_num)
+  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := pow_ne_zero _ (by norm_num)
+  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := pow_ne_zero _ (by norm_num)
   have hscaled : StrictInterl (C ((-1 : ℝ) ^ n) * Q n)
       (C ((-1 : ℝ) ^ (n + 1)) * Q (n + 1)) :=
     StrictInterl.C_mul_right (StrictInterl.C_mul_left (hQstrictInterl n) hleft_ne) hright_ne

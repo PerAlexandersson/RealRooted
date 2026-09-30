@@ -164,12 +164,10 @@ theorem StrictInterl.eval_mul_derivative_nonpos_of_left_root
   obtain ⟨bf, hbf⟩ := exists_root_upper_bound f
   obtain ⟨bg, hbg⟩ := exists_root_upper_bound g
   let b : ℝ := max bf bg + 1
-  have hf_le : ∀ x ∈ f.roots, x ≤ b := by
-    intro x hx
-    exact (hbf x hx).trans (by dsimp [b]; linarith [le_max_left bf bg])
-  have hg_le : ∀ x ∈ g.roots, x ≤ b := by
-    intro x hx
-    exact (hbg x hx).trans (by dsimp [b]; linarith [le_max_right bf bg])
+  have hf_le : ∀ x ∈ f.roots, x ≤ b :=
+    fun x hx => (hbf x hx).trans (by dsimp [b]; linarith [le_max_left bf bg])
+  have hg_le : ∀ x ∈ g.roots, x ≤ b :=
+    fun x hx => (hbg x hx).trans (by dsimp [b]; linarith [le_max_right bf bg])
   have hr_lt : r < b := by
     have hr_mem : r ∈ f.roots := (mem_roots hstrictInterl.1.1).mpr hr
     have := hbf r hr_mem
@@ -460,12 +458,12 @@ theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
       have := (hgh.rootMultiplicity_bounds r).1
       lia
     have hrh' : h.IsRoot r := (rootMultiplicity_pos hgh.2.1.1).mp (by lia)
-    have hffactor : f = (X - C r) * qf := by
-      exact (mul_divByMonic_eq_iff_isRoot.mpr hrf').symm
-    have hgfactor : g = (X - C r) * qg := by
-      exact (mul_divByMonic_eq_iff_isRoot.mpr hrg').symm
-    have hhfactor : h = (X - C r) * qh := by
-      exact (mul_divByMonic_eq_iff_isRoot.mpr hrh').symm
+    have hffactor : f = (X - C r) * qf :=
+      (mul_divByMonic_eq_iff_isRoot.mpr hrf').symm
+    have hgfactor : g = (X - C r) * qg :=
+      (mul_divByMonic_eq_iff_isRoot.mpr hrg').symm
+    have hhfactor : h = (X - C r) * qh :=
+      (mul_divByMonic_eq_iff_isRoot.mpr hrh').symm
     have hqfg : StrictInterl qf qg := hfg.cofactor_of_common_root hrg' hrf'
     have hqgh : StrictInterl qg qh := hgh.cofactor_of_common_root hrh' hrg'
     have hqfh : StrictInterl qf qh := hfh.cofactor_of_common_root hrh' hrf'
@@ -570,62 +568,5 @@ theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
         strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
           hder_inter hgder_pos hsub_pos.ne_zero hsub_splits hsub_pos
           hdeg_lo hdeg_hi hno hroot_sign
-
-/-! ## Deprecated outer-difference interlacing names -/
-
-@[deprecated StrictInterl.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
-  (since := "2026-09-18")]
-alias eq_of_prec_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq :=
-  StrictInterl.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
-
-@[deprecated StrictInterl.eval_mul_derivative_nonneg_of_right_root
-  (since := "2026-09-18")]
-alias eval_mul_derivative_nonneg_of_prec_right_root :=
-  StrictInterl.eval_mul_derivative_nonneg_of_right_root
-
-@[deprecated StrictInterl.eval_mul_derivative_pos_of_right_root_of_isCoprime
-  (since := "2026-09-18")]
-alias eval_mul_derivative_pos_of_prec_right_root_of_isCoprime :=
-  StrictInterl.eval_mul_derivative_pos_of_right_root_of_isCoprime
-
-@[deprecated StrictInterl.eval_mul_derivative_pos_of_right_root_of_no_common
-  (since := "2026-09-18")]
-alias eval_mul_derivative_pos_of_prec_right_root_of_no_common :=
-  StrictInterl.eval_mul_derivative_pos_of_right_root_of_no_common
-
-@[deprecated StrictInterl.eval_mul_derivative_nonpos_of_left_root
-  (since := "2026-09-18")]
-alias eval_mul_derivative_nonpos_of_prec_left_root :=
-  StrictInterl.eval_mul_derivative_nonpos_of_left_root
-
-@[deprecated StrictInterl.eval_mul_derivative_neg_of_left_root_of_isCoprime
-  (since := "2026-09-18")]
-alias eval_mul_derivative_neg_of_prec_left_root_of_isCoprime :=
-  StrictInterl.eval_mul_derivative_neg_of_left_root_of_isCoprime
-
-@[deprecated StrictInterl.eval_mul_derivative_neg_of_left_root_of_no_common
-  (since := "2026-09-18")]
-alias eval_mul_derivative_neg_of_prec_left_root_of_no_common :=
-  StrictInterl.eval_mul_derivative_neg_of_left_root_of_no_common
-
-@[deprecated StrictInterl.eval_mul_eval_nonpos_of_sandwich
-  (since := "2026-09-18")]
-alias eval_mul_eval_nonpos_of_prec_sandwich :=
-  StrictInterl.eval_mul_eval_nonpos_of_sandwich
-
-@[deprecated StrictInterl.eval_mul_eval_neg_of_sandwich_of_isCoprime
-  (since := "2026-09-18")]
-alias eval_mul_eval_neg_of_prec_sandwich_of_isCoprime :=
-  StrictInterl.eval_mul_eval_neg_of_sandwich_of_isCoprime
-
-@[deprecated StrictInterl.eval_mul_eval_neg_of_sandwich_of_no_common
-  (since := "2026-09-18")]
-alias eval_mul_eval_neg_of_prec_sandwich_of_no_common :=
-  StrictInterl.eval_mul_eval_neg_of_sandwich_of_no_common
-
-@[deprecated StrictInterl.sub_of_triple_of_posLeadingCoeff
-  (since := "2026-09-18")]
-alias prec_sub_of_prec_triple_of_posLeadingCoeff :=
-  StrictInterl.sub_of_triple_of_posLeadingCoeff
 
 end RealRooted

@@ -213,16 +213,14 @@ theorem lineGraph_clawFree {V : Type u} (G : _root_.SimpleGraph V) :
       Fintype.card {x // x ∈ (v : Sym2 V).toFinset} =
         (v : Sym2 V).toFinset.card := by simp
   have hshared : ∀ w : {w // w ∈ s},
-      ∃ x : V, x ∈ (v : Sym2 V) ∧ x ∈ ((w.val : G.edgeSet) : Sym2 V) := by
-    intro w
-    exact (_root_.SimpleGraph.lineGraph_adj_iff_exists.mp (hneigh w.val w.property)).2
+      ∃ x : V, x ∈ (v : Sym2 V) ∧ x ∈ ((w.val : G.edgeSet) : Sym2 V) :=
+    fun w => (_root_.SimpleGraph.lineGraph_adj_iff_exists.mp (hneigh w.val w.property)).2
   let φ : {w // w ∈ s} → {x // x ∈ (v : Sym2 V).toFinset} := fun w =>
     ⟨Classical.choose (hshared w), by
       rw [Sym2.mem_toFinset]
       exact (Classical.choose_spec (hshared w)).1⟩
-  have hφ_edge : ∀ w : {w // w ∈ s}, (φ w : V) ∈ ((w.val : G.edgeSet) : Sym2 V) := by
-    intro w
-    exact (Classical.choose_spec (hshared w)).2
+  have hφ_edge : ∀ w : {w // w ∈ s}, (φ w : V) ∈ ((w.val : G.edgeSet) : Sym2 V) :=
+    fun w => (Classical.choose_spec (hshared w)).2
   have hφ_inj : Function.Injective φ := by
     intro a b hab
     apply Subtype.ext

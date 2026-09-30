@@ -93,8 +93,8 @@ theorem norm_eval_le_pow_mul_norm_eval_of_forall_le_norm_sub
           (fun r hr => hfactor r hr)
       _ = C ^ p.roots.card * (p.roots.map fun r => ‖μ - r‖).prod :=
         hprod_const p.roots
-      _ ≤ C ^ N * (p.roots.map fun r => ‖μ - r‖).prod := by
-        exact mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hC hcard)
+      _ ≤ C ^ N * (p.roots.map fun r => ‖μ - r‖).prod :=
+        mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hC hcard)
           (Multiset.prod_map_nonneg fun _ _ => norm_nonneg _)
       _ = C ^ N * ‖(p.roots.map (μ - ·)).prod‖ := by
         congr 1
@@ -161,8 +161,8 @@ theorem roots_mem_of_tendsto_eval {S : Set ℂ} (hS : IsClosed S)
     (hm : ∀ k, (p k).Monic) (hdeg : ∀ k, (p k).natDegree = N)
     (hroots : ∀ k, ∀ r ∈ (p k).roots, r ∈ S)
     (heval : ∀ μ : ℂ, Tendsto (fun k => (p k).eval μ) atTop (𝓝 (p₀.eval μ))) :
-    ∀ μ ∈ p₀.roots, μ ∈ S := by
-  exact roots_mem_of_tendsto_eval_of_natDegree_le hS
+    ∀ μ ∈ p₀.roots, μ ∈ S :=
+  roots_mem_of_tendsto_eval_of_natDegree_le hS
     (fun k => by
       by_cases hp : p k = 0
       · exact ((hm k).ne_zero hp).elim

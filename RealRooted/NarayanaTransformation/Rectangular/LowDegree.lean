@@ -240,7 +240,7 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_two
     dsimp [γ]
     have hden : 0 < 2 * ((m : ℝ) + 2) := by positivity
     rw [div_le_iff₀ hden]
-    nlinarith
+    linarith
   have hDnonneg : 0 ≤ D := by
     dsimp [D]
     exact add_nonneg
@@ -254,18 +254,18 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_two
   have hfdisc_scaled : 4 * f.coeff 2 * f.coeff 0 * g.coeff 2 ^ 2 ≤
       f.coeff 1 ^ 2 * g.coeff 2 ^ 2 := by
     have hscaled := mul_le_mul_of_nonneg_right hfdisc (sq_nonneg (g.coeff 2))
-    nlinarith
+    linarith
   have hgdisc_scaled : 4 * g.coeff 2 * g.coeff 0 * f.coeff 2 ^ 2 ≤
       g.coeff 1 ^ 2 * f.coeff 2 ^ 2 := by
     have hscaled := mul_le_mul_of_nonneg_right hgdisc (sq_nonneg (f.coeff 2))
-    nlinarith
+    linarith
   have hcross_scaled : 4 * γ * (f.coeff 2 * g.coeff 2 * (f.coeff 1 * g.coeff 1)) ≤
       2 * (f.coeff 2 * g.coeff 2 * (f.coeff 1 * g.coeff 1)) := by
-    have hfactor : 4 * γ ≤ (2 : ℝ) := by nlinarith
+    have hfactor : 4 * γ ≤ (2 : ℝ) := by linarith
     exact mul_le_mul_of_nonneg_right hfactor hcross_nonneg
   have hdisc : 4 * A * D ≤ B ^ 2 := by
     dsimp [A, B, D]
-    nlinarith [hfdisc_scaled, hgdisc_scaled, hcross_scaled]
+    linarith [hfdisc_scaled, hgdisc_scaled, hcross_scaled]
   have hqquad_splits : (C A * X ^ 2 + C B * X + C D : ℝ[X]).Splits :=
     quadraticPoly_splits_of_le hApos hdisc
   have hqsplits : q.Splits := by simpa [← hqform] using hqquad_splits

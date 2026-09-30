@@ -117,8 +117,8 @@ omit [Fintype V] in
 theorem allOrientationWeightedSupport_empty
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
     weightedIndepPolyOn G (∅ : Finset V)
-      (fun v => ((2 : ℝ)⁻¹) ^ allOrientationDegree G v) = 1 := by
-  exact weightedIndepPolyOn_empty G _
+      (fun v => ((2 : ℝ)⁻¹) ^ allOrientationDegree G v) = 1 :=
+  weightedIndepPolyOn_empty G _
 
 omit [Fintype V] in
 /-- The support deletion recurrence for the all-orientation weighted model. -/
@@ -131,8 +131,8 @@ theorem allOrientationWeightedSupport_erase
           (fun u => ((2 : ℝ)⁻¹) ^ allOrientationDegree G u) +
         C (((2 : ℝ)⁻¹) ^ allOrientationDegree G v) * X *
           weightedIndepPolyOn G (deleteClosedNeighborSupport G S v)
-            (fun u => ((2 : ℝ)⁻¹) ^ allOrientationDegree G u) := by
-  exact weightedIndepPolyOn_erase G _ hv
+            (fun u => ((2 : ℝ)⁻¹) ^ allOrientationDegree G u) :=
+  weightedIndepPolyOn_erase G _ hv
 
 omit [Fintype V] [DecidableEq V] in
 /-- The weights in the all-orientation model are nonnegative. -/

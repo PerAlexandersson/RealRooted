@@ -41,8 +41,8 @@ theorem applyNegDifferential_finsetSum_left
     (s : Finset I) (F : I → MvPolynomial sigma R)
     (G : MvPolynomial sigma R) :
     applyNegDifferential (∑ x ∈ s, F x) G =
-      ∑ x ∈ s, applyNegDifferential (F x) G := by
-  exact map_sum (applyNegDifferentialLeftLinearMap G) F s
+      ∑ x ∈ s, applyNegDifferential (F x) G :=
+  map_sum (applyNegDifferentialLeftLinearMap G) F s
 
 /-- `applyNegDifferential` distributes over a finite sum in its second
 argument. -/
@@ -51,8 +51,8 @@ theorem applyNegDifferential_finsetSum_right
     (F : MvPolynomial sigma R) (s : Finset I)
     (G : I → MvPolynomial sigma R) :
     applyNegDifferential F (∑ x ∈ s, G x) =
-      ∑ x ∈ s, applyNegDifferential F (G x) := by
-  exact map_sum (applyNegDifferentialRightLinearMap F) G s
+      ∑ x ∈ s, applyNegDifferential F (G x) :=
+  map_sum (applyNegDifferentialRightLinearMap F) G s
 
 /-- `applyNegDifferential` distributes over finite sums in both arguments. -/
 theorem applyNegDifferential_doubleSum

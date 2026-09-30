@@ -740,8 +740,8 @@ theorem closedSegment_not_isRoot_add_right_of_nonneg
     rw [div_le_one hden_pos]
     linarith
   intro hroot
-  have hseg_root : (C (1 - μ / (μ + 1)) * f + C (μ / (μ + 1)) * g).IsRoot x := by
-    exact (closedSegment_isRoot_iff_add_right_of_nonneg (f := f) (g := g)
+  have hseg_root : (C (1 - μ / (μ + 1)) * f + C (μ / (μ + 1)) * g).IsRoot x :=
+    (closedSegment_isRoot_iff_add_right_of_nonneg (f := f) (g := g)
       (x := x) hμ).2 hroot
   exact hseg hβ0 hβ1 hseg_root
 

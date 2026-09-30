@@ -443,8 +443,8 @@ theorem coeff_comp_binaryRunTransform {n : ℕ} {p : ℝ[X]}
   change ((C (p.coeff m) * binaryRunPolynomial n m).comp
       (X + 1)).coeff k = _
   rw [mul_comp, C_comp, coeff_C_mul]
-  have hmle : m ≤ n := by
-    exact (Polynomial.le_natDegree_of_ne_zero
+  have hmle : m ≤ n :=
+    (Polynomial.le_natDegree_of_ne_zero
       (Polynomial.mem_support_iff.mp hm)).trans hp
   by_cases hm0 : m = 0
   · subst m

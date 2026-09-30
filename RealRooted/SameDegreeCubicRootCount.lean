@@ -206,7 +206,7 @@ theorem eval_monicCubicPencil_at_a_neg_twoBelow
   have hqa' : 0 < a - q := by linarith
   have har' : a - r < 0 := by linarith
   have hg : (a - p) * (a - q) * (a - r) < 0 := by nlinarith [mul_pos hpa hqa']
-  nlinarith [mul_neg_of_pos_of_neg hs hg]
+  linarith [mul_neg_of_pos_of_neg hs hg]
 
 /-- In the two-above configuration, the monic pencil is positive at the middle
 root `b` of the first cubic for every positive parameter. -/
@@ -406,7 +406,7 @@ the derivative-discriminant quadratic in the pencil parameter is strictly
 positive. -/
 theorem derivDiscA_pos_of_lt {p q r : ℝ} (hqr : q < r) :
     0 < (p + q + r) ^ 2 - 3 * (p * q + q * r + r * p) := by
-  nlinarith [mul_pos (sub_pos.mpr hqr) (sub_pos.mpr hqr),
+  linarith [mul_pos (sub_pos.mpr hqr) (sub_pos.mpr hqr),
     sq_nonneg (p - q), sq_nonneg (p - r)]
 
 /-- #41-only wrapper reducing `CubicDiscrMonicPencilNegTwoBelowStatement` to

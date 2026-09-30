@@ -252,8 +252,8 @@ theorem dividedDifference_prod_X_sub_C_nonneg :
             rw [Finset.prod_range]
             exact dividedDifference_prod_X_sub_C_eq_one
               (fun i : Fin (n + 1) => ν i) v hv.injective
-          have hfactor : 0 ≤ v (Fin.last (n + 1)) - ν (n + 1) := by
-            exact sub_nonneg.mpr (by simpa using hdom (Fin.last (n + 1)))
+          have hfactor : 0 ≤ v (Fin.last (n + 1)) - ν (n + 1) :=
+            sub_nonneg.mpr (by simpa using hdom (Fin.last (n + 1)))
           have hlower :
               0 ≤ dividedDifference n (fun i : Fin (n + 1) => v i.castSucc)
                 (∏ i ∈ Finset.range (n + 1), (X - C (ν i))) := by

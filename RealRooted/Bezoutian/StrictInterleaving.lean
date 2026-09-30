@@ -312,13 +312,6 @@ theorem StrictInterlSameDegree.toStrictInterl {p q : ℝ[X]}
       Multiset.sort_eq _ _, Multiset.sort_eq _ _,
       Or.inr ⟨h_len, (listAlternates_iff_interleaves_of_length h_len).2 h_le⟩⟩
 
-@[deprecated StrictInterlSameDegree.of_strictInterl_of_no_common (since := "2026-09-18")]
-theorem StrictPrecSameDegree.of_prec_of_no_common {p q : ℝ[X]} (h : StrictInterl p q)
-    (hdeg : p.natDegree = q.natDegree)
-    (hno : ∀ r, p.IsRoot r → ¬q.IsRoot r) :
-    StrictInterlSameDegree p q :=
-  StrictInterlSameDegree.of_strictInterl_of_no_common h hdeg hno
-
 @[deprecated StrictInterlSameDegree.C_mul_C_mul (since := "2026-09-18")]
 lemma StrictPrecSameDegree.C_mul_C_mul {p q : ℝ[X]} (h : StrictInterlSameDegree p q)
     {u v : ℝ} (hu : u ≠ 0) (hv : v ≠ 0) :

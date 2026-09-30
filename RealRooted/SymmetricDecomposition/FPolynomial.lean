@@ -337,7 +337,7 @@ lemma untransformRoot_mono_of_neg_one_lt {x y : ℝ}
   have h1x_pos : 0 < 1 + x := by linarith
   have h1y_pos : 0 < 1 + y := by linarith
   rw [untransformRoot, untransformRoot, div_le_div_iff₀ h1x_pos h1y_pos]
-  nlinarith
+  linarith
 
 lemma transformedRoot_mono_of_nonpos {r s : ℝ}
     (hrs : r ≤ s) (hs : s ≤ 0) :
@@ -345,7 +345,7 @@ lemma transformedRoot_mono_of_nonpos {r s : ℝ}
   have h1r_pos : 0 < 1 - r := by linarith
   have h1s_pos : 0 < 1 - s := by linarith
   rw [div_le_div_iff₀ h1r_pos h1s_pos]
-  nlinarith
+  linarith
 
 lemma pairwise_map_transformedRoot_of_nonpos :
     ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) →
@@ -590,9 +590,8 @@ theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
   have hP :
       ∀ n (p : ℝ[X]), p.natDegree = n → (p ≠ 0 ∧ p.Splits) → HasNonnegCoeffs p →
         (fPolynomial p.natDegree p).roots =
-          p.roots.map (fun r : ℝ => r / (1 - r)) := by
-    intro n
-    exact Nat.strong_induction_on n (fun n ih =>
+          p.roots.map (fun r : ℝ => r / (1 - r)) :=
+    fun n => Nat.strong_induction_on n (fun n ih =>
       show ∀ (p : ℝ[X]), p.natDegree = n → (p ≠ 0 ∧
         p.Splits) → HasNonnegCoeffs p →
         (fPolynomial p.natDegree p).roots =
@@ -688,9 +687,8 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
         (fPolynomial n p).natDegree = n →
         ((fPolynomial n p) ≠ 0 ∧ (fPolynomial n p).Splits) →
         (∀ x ∈ (fPolynomial n p).roots, -1 < x) →
-        (p ≠ 0 ∧ p.Splits) := by
-    intro n
-    exact Nat.strong_induction_on n (fun n ih p hpdeg hqdeg hq_rr hq_gt => by
+        (p ≠ 0 ∧ p.Splits) :=
+    fun n => Nat.strong_induction_on n (fun n ih p hpdeg hqdeg hq_rr hq_gt => by
       have hp0 : p ≠ 0 := fun hpz => by simp_all
       by_cases hn : n = 0
       · exact isRealRooted_of_deg_zero hp0 (by lia)

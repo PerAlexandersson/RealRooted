@@ -119,8 +119,8 @@ noncomputable instance [Finite V] : Fintype (AcyclicOrientation G) :=
 
 /-- A chosen topological rank for a finite acyclic orientation. -/
 noncomputable def AcyclicOrientation.topologicalRank
-    (O : AcyclicOrientation G) : V → ℕ := by
-  exact Classical.choose O.2
+    (O : AcyclicOrientation G) : V → ℕ :=
+  Classical.choose O.2
 
 theorem AcyclicOrientation.directed_topologicalRank_lt
     (O : AcyclicOrientation G) {u v : V} (huv : O.1.Directed u v) :

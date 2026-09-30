@@ -239,18 +239,6 @@ theorem
     (posComboNoCommonSuccDegreeRootCount_of_residualStrictInterl_bothNonzero_divX_strictInterl
       hresStrictInterl hboth hdivX)
 
-@[deprecated
-  succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_strictInterl
-  (since := "2026-09-18")]
-alias succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_prec :=
-  succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_strictInterl
-
-@[deprecated
-  succDegreePairHasCommonInterleaver_nonneg_of_residualStrictInterl_bothNonzero_divX_strictInterl
-  (since := "2026-09-18")]
-alias succDegreePairHasCommonInterleaver_nonneg_of_residualPrec_bothNonzero_divX_prec :=
-  succDegreePairHasCommonInterleaver_nonneg_of_residualStrictInterl_bothNonzero_divX_strictInterl
-
 /-- Succ-degree slot data from the PF/ASW left-endpoint route and the
 descending-root crossing inequalities. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing

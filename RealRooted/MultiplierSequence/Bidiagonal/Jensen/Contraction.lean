@@ -42,8 +42,8 @@ theorem schurSzegoJensenEndpoints_pf
     (hp : IsPFPolynomial p) (hAdeg : A.natDegree ≤ d)
     (hBdeg : B.natDegree ≤ d) (hpdeg : p.natDegree ≤ d) :
     IsPFPolynomial (schurSzegoComp d A p) ∧
-      IsPFPolynomial (X * schurSzegoComp d B p) := by
-  exact ⟨hA.schurSzegoComp hp hAdeg hpdeg,
+      IsPFPolynomial (X * schurSzegoComp d B p) :=
+  ⟨hA.schurSzegoComp hp hAdeg hpdeg,
     ((isPFPolynomial_of_X_mul hXB).schurSzegoComp hp hBdeg hpdeg).X_mul⟩
 
 /-- The Schur--Szegő compatibility core implies the complete Jensen-pencil
@@ -75,8 +75,8 @@ theorem jensenPencilBidiagonalPreserver_of_schurSzegoCompatibility
 theorem jensenPencilBidiagonalPreserver :
     ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
       BidiagonalJensenPencilCertificate alpha beta d →
-      BidiagonalPFPreserver alpha beta d := by
-  exact jensenPencilBidiagonalPreserver_of_schurSzegoCompatibility
+      BidiagonalPFPreserver alpha beta d :=
+  jensenPencilBidiagonalPreserver_of_schurSzegoCompatibility
     schurSzegoPreservesJensenPencilCompatibility
 
 /-- Apply the named Jensen-pencil backend theorem. -/

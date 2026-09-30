@@ -122,7 +122,7 @@ private theorem roots_sum_schurSzegoComp_scaled
         -((d : ℝ) *
           (-(schurSzegoComp d f p).roots.sum *
             (f.coeff d * p.coeff d))) := by ring
-    _ = -(f.coeff (d - 1) * p.coeff (d - 1)) := by nlinarith [hout_vieta]
+    _ = -(f.coeff (d - 1) * p.coeff (d - 1)) := by linarith [hout_vieta]
     _ = f.coeff d * (p.coeff (d - 1) * f.roots.sum) := by
       rw [hf_vieta]
       ring
@@ -184,8 +184,8 @@ private theorem schurSzegoComp_strictInterl_of_pred_coeff_pos
         hd hfdeg hpdeg hfg.1.2 hstrictInterl.2.1.2
       have hscale_g := roots_sum_schurSzegoComp_scaled
         hd hgdeg hpdeg hfg.2.1.2 hstrictInterl.1.2
-      have hscale_pos : 0 < (d : ℝ) * p.coeff d := by
-        exact mul_pos (by exact_mod_cast Nat.pos_of_ne_zero hd) hp_top_pos
+      have hscale_pos : 0 < (d : ℝ) * p.coeff d :=
+        mul_pos (by exact_mod_cast Nat.pos_of_ne_zero hd) hp_top_pos
       apply (mul_le_mul_iff_left₀ hscale_pos).mp
       calc
         (schurSzegoComp d f p).roots.sum * ((d : ℝ) * p.coeff d) =
@@ -669,12 +669,10 @@ theorem rootCountAbove_schurSzegoComp_reflect_le_add
   have hps_len : ps.length = d := by simp [ps, card_roots_of_splits hPsplit, hPdeg]
   have hqs_len : qs.length = d := by simp [qs, card_roots_of_splits hQsplit, hQdeg]
   have hlen : ps.length = qs.length := hps_len.trans hqs_len.symm
-  have hMps : ∀ r ∈ ps, r ≤ M := by
-    intro r hr
-    exact (le_listMax hr).trans (le_max_left _ _)
-  have hMqs : ∀ r ∈ qs, r ≤ M := by
-    intro r hr
-    exact (le_listMax hr).trans (le_max_right _ _)
+  have hMps : ∀ r ∈ ps, r ≤ M :=
+    fun _ hr => (le_listMax hr).trans (le_max_left _ _)
+  have hMqs : ∀ r ∈ qs, r ≤ M :=
+    fun _ hr => (le_listMax hr).trans (le_max_right _ _)
   have hcount_lists : ∀ x : ℝ,
       (qs.filter (x ≤ ·)).length ≤ (ps.filter (x ≤ ·)).length + ell := by
     intro x

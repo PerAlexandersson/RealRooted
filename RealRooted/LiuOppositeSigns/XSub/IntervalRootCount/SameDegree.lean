@@ -56,9 +56,8 @@ theorem
     simpa [L, lowerTail, P] using
       hpair.card_right_roots_lt_head_le_card_xSub_le
         hno hhead.1 hhead.2 hdeg hμ
-  have hupper_nonpos : ∀ y ∈ q.roots, last < y → y ≤ 0 := by
-    intro y hy _hy
-    exact roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
+  have hupper_nonpos : ∀ y ∈ q.roots, last < y → y ≤ 0 :=
+    fun y hy _ => roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
   have hupper_count : U + 1 ≤ upperTail := by
     simpa [U, upperTail, last, P] using
       hpair.upper_nonpos_tail_add_one_le_card_xSub_ge

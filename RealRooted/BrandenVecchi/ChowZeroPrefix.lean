@@ -83,8 +83,8 @@ theorem IsPolyaFreqSeq.const_mul_sequence
 theorem IsPolyaFreqSeq.scaledZeroPrefix
     {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) {C : ℝ} (hC : 0 ≤ C)
     (N : ℕ) :
-    IsPolyaFreqSeq (scaledZeroPrefix C N a) := by
-  exact IsPolyaFreqSeq.prefix_zeros
+    IsPolyaFreqSeq (scaledZeroPrefix C N a) :=
+  IsPolyaFreqSeq.prefix_zeros
     (IsPolyaFreqSeq.const_mul_sequence ha C hC) N
 
 /-- Exact entry formula for the Toeplitz matrix after a scalar zero prefix. -/
@@ -192,8 +192,8 @@ by each epsilon approximant. -/
 theorem scaledRegularizedSequence_zero_pos
     {C epsilon : ℝ} {N : ℕ} {a : ℕ → ℝ}
     (hC : 0 < C) (hepsilon : 0 < epsilon) (ha0 : 0 < a 0) :
-    0 < scaledRegularizedSequence C N a epsilon 0 := by
-  exact mul_pos hC
+    0 < scaledRegularizedSequence C N a epsilon 0 :=
+  mul_pos hC
     (BrandenLeite.regularizedSequence_zero_pos hepsilon ha0)
 
 /-- Three leading zeroes can likewise destroy matrix-level Chow splitness,
@@ -261,8 +261,8 @@ theorem aswEdreiFullCoeff_isPolyaFreqSeq
     (hC : 0 ≤ C) (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) :
-    IsPolyaFreqSeq (aswEdreiFullCoeff C N gamma alpha beta) := by
-  exact IsPolyaFreqSeq.scaledZeroPrefix
+    IsPolyaFreqSeq (aswEdreiFullCoeff C N gamma alpha beta) :=
+  IsPolyaFreqSeq.scaledZeroPrefix
     (aswEdreiCoeff_isPolyaFreqSeq hgamma halpha hbeta hsum) hC N
 
 /-- Full ASW--Edrei Chow rows below the leading power vanish. -/

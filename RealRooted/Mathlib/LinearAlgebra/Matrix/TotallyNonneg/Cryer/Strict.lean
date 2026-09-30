@@ -169,9 +169,8 @@ theorem pos_minor_of_pos_consecutive_column_minors
         obtain ⟨u, r, hu, _hrb, hdel⟩ :=
           hcols.exists_ordered_interior_insert hb hleft hright
         have hsmall : ∀ (rows' : Fin (q + 1) → Fin n) (cols' : Fin (q + 1) → Fin N),
-            StrictMono rows' → StrictMono cols' → 0 < (A.submatrix rows' cols').det := by
-          intro rows' cols' hrows' hcols'
-          exact ih (q + 1) (by lia) rows' cols' hrows' hcols'
+            StrictMono rows' → StrictMono cols' → 0 < (A.submatrix rows' cols').det :=
+          fun rows' cols' hrows' hcols' => ih (q + 1) (by lia) rows' cols' hrows' hcols'
         have hspan' : ∀ (cols' : Fin (q + 2) → Fin N), StrictMono cols' →
             (cols' (Fin.last (q + 1))).val - (cols' 0).val <
               (cols (Fin.last (q + 1))).val - (cols 0).val →

@@ -281,7 +281,7 @@ lemma xSubQuadraticQuadraticSplits_of_order_a_c_b_d
     rw [eval_xSubQuadraticQuadratic]
     have hG : 0 < (a - c) * (a - d) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hac) (sub_neg.mpr had)
-    nlinarith [mul_pos hμ hG]
+    linarith [mul_pos hμ hG]
   have hP_c_pos : 0 < P.eval c := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
@@ -291,7 +291,7 @@ lemma xSubQuadraticQuadraticSplits_of_order_a_c_b_d
       mul_neg_of_pos_of_neg hca_pos hcb_neg
     have hleft_pos : 0 < c * ((c - a) * (c - b)) :=
       mul_pos_of_neg_of_neg hc0 hprod_neg
-    nlinarith
+    linarith
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
@@ -299,7 +299,7 @@ lemma xSubQuadraticQuadraticSplits_of_order_a_c_b_d
     have hbd_neg : b - d < 0 := sub_neg.mpr hbd
     have hG_neg : (b - c) * (b - d) < 0 :=
       mul_neg_of_pos_of_neg hbc_pos hbd_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_d_neg : P.eval d < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
@@ -308,13 +308,13 @@ lemma xSubQuadraticQuadraticSplits_of_order_a_c_b_d
     have hprod_pos : 0 < (d - a) * (d - b) := mul_pos hda_pos hdb_pos
     have hleft_neg : d * ((d - a) * (d - b)) < 0 :=
       mul_neg_of_neg_of_pos hd0 hprod_pos
-    nlinarith
+    linarith
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
     have hG : 0 < (0 - c) * (0 - d) :=
       mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)
-    nlinarith [mul_pos hμ hG]
+    linarith [mul_pos hμ hG]
   have ht_top : Tendsto (fun x => P.eval x) atTop atTop := by
     dsimp [P]
     exact tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
@@ -358,7 +358,7 @@ lemma xSubQuadraticQuadraticSplits_of_order_a_c_d_b
     rw [eval_xSubQuadraticQuadratic]
     have hG : 0 < (a - c) * (a - d) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hac) (sub_neg.mpr had)
-    nlinarith [mul_pos hμ hG]
+    linarith [mul_pos hμ hG]
   have hP_c_pos : 0 < P.eval c := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
@@ -369,7 +369,7 @@ lemma xSubQuadraticQuadraticSplits_of_order_a_c_d_b
       mul_neg_of_pos_of_neg hca_pos hcb_neg
     have hleft_pos : 0 < c * ((c - a) * (c - b)) :=
       mul_pos_of_neg_of_neg hc0 hprod_neg
-    nlinarith
+    linarith
   have hP_d_pos : 0 < P.eval d := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
@@ -379,20 +379,20 @@ lemma xSubQuadraticQuadraticSplits_of_order_a_c_d_b
       mul_neg_of_pos_of_neg hda_pos hdb_neg
     have hleft_pos : 0 < d * ((d - a) * (d - b)) :=
       mul_pos_of_neg_of_neg hd0 hprod_neg
-    nlinarith
+    linarith
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
     have hbc_pos : 0 < b - c := sub_pos.mpr (lt_of_le_of_lt hcd hdb)
     have hbd_pos : 0 < b - d := sub_pos.mpr hdb
     have hG : 0 < (b - c) * (b - d) := mul_pos hbc_pos hbd_pos
-    nlinarith [mul_pos hμ hG]
+    linarith [mul_pos hμ hG]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
     have hG : 0 < (0 - c) * (0 - d) :=
       mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)
-    nlinarith [mul_pos hμ hG]
+    linarith [mul_pos hμ hG]
   have ht_top : Tendsto (fun x => P.eval x) atTop atTop := by
     dsimp [P]
     exact tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
@@ -440,7 +440,7 @@ lemma xSubQuadraticQuadraticSplits_of_order_c_a_b_d
       mul_pos_of_neg_of_neg hca_neg hcb_neg
     have hleft_neg : c * ((c - a) * (c - b)) < 0 :=
       mul_neg_of_neg_of_pos hc0 hprod_pos
-    nlinarith
+    linarith
   have hP_a_pos : 0 < P.eval a := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
@@ -448,7 +448,7 @@ lemma xSubQuadraticQuadraticSplits_of_order_c_a_b_d
     have had_neg : a - d < 0 := sub_neg.mpr (lt_of_le_of_lt hab hbd)
     have hG_neg : (a - c) * (a - d) < 0 :=
       mul_neg_of_pos_of_neg hac_pos had_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
@@ -456,7 +456,7 @@ lemma xSubQuadraticQuadraticSplits_of_order_c_a_b_d
     have hbd_neg : b - d < 0 := sub_neg.mpr hbd
     have hG_neg : (b - c) * (b - d) < 0 :=
       mul_neg_of_pos_of_neg hbc_pos hbd_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_d_neg : P.eval d < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
@@ -465,13 +465,13 @@ lemma xSubQuadraticQuadraticSplits_of_order_c_a_b_d
     have hprod_pos : 0 < (d - a) * (d - b) := mul_pos hda_pos hdb_pos
     have hleft_neg : d * ((d - a) * (d - b)) < 0 :=
       mul_neg_of_neg_of_pos hd0 hprod_pos
-    nlinarith
+    linarith
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
     have hG : 0 < (0 - c) * (0 - d) :=
       mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)
-    nlinarith [mul_pos hμ hG]
+    linarith [mul_pos hμ hG]
   have ht_top : Tendsto (fun x => P.eval x) atTop atTop := by
     dsimp [P]
     exact tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
@@ -519,7 +519,7 @@ lemma xSubQuadraticQuadraticSplits_of_order_c_a_d_b
       mul_pos_of_neg_of_neg hca_neg hcb_neg
     have hleft_neg : c * ((c - a) * (c - b)) < 0 :=
       mul_neg_of_neg_of_pos hc0 hprod_pos
-    nlinarith
+    linarith
   have hP_a_pos : 0 < P.eval a := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
@@ -527,7 +527,7 @@ lemma xSubQuadraticQuadraticSplits_of_order_c_a_d_b
     have had_neg : a - d < 0 := sub_neg.mpr had
     have hG_neg : (a - c) * (a - d) < 0 :=
       mul_neg_of_pos_of_neg hac_pos had_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_d_pos : 0 < P.eval d := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
@@ -537,20 +537,20 @@ lemma xSubQuadraticQuadraticSplits_of_order_c_a_d_b
       mul_neg_of_pos_of_neg hda_pos hdb_neg
     have hleft_pos : 0 < d * ((d - a) * (d - b)) :=
       mul_pos_of_neg_of_neg hd0 hprod_neg
-    nlinarith
+    linarith
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
     have hbc_pos : 0 < b - c := sub_pos.mpr (lt_trans hca (lt_trans had hdb))
     have hbd_pos : 0 < b - d := sub_pos.mpr hdb
     have hG : 0 < (b - c) * (b - d) := mul_pos hbc_pos hbd_pos
-    nlinarith [mul_pos hμ hG]
+    linarith [mul_pos hμ hG]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
     have hG : 0 < (0 - c) * (0 - d) :=
       mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)
-    nlinarith [mul_pos hμ hG]
+    linarith [mul_pos hμ hG]
   have ht_top : Tendsto (fun x => P.eval x) atTop atTop := by
     dsimp [P]
     exact tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
@@ -610,7 +610,7 @@ theorem xSubQuadraticQuadraticSplits :
   have hdlt : d < 0 := lt_of_le_of_ne hd0 hd_zero
   rcases lt_or_gt_of_ne hac_eq with hac | hca
   · rcases lt_or_gt_of_ne hbd_eq with hbd | hdb
-    · have hcb_lt : c < b := by exact lt_of_le_of_ne hcb (by intro h; exact hbc_eq h.symm)
+    · have hcb_lt : c < b := lt_of_le_of_ne hcb (by intro h; exact hbc_eq h.symm)
       exact xSubQuadraticQuadraticSplits_of_order_a_c_b_d
         hac hcb_lt hbd hdlt hμ
     · exact xSubQuadraticQuadraticSplits_of_order_a_c_d_b

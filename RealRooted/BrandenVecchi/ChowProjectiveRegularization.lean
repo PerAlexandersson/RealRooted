@@ -141,8 +141,8 @@ theorem tendsto_coeff_projectiveRegularizedChow
 theorem projectiveRegularizedSequence_isPolyaFreqSeq
     {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) {epsilon : ℝ}
     (hepsilon : 0 ≤ epsilon) (N : ℕ) :
-    IsPolyaFreqSeq (projectiveRegularizedSequence N a epsilon) := by
-  exact BrandenLeite.regularizedSequence_isPolyaFreqSeq
+    IsPolyaFreqSeq (projectiveRegularizedSequence N a epsilon) :=
+  BrandenLeite.regularizedSequence_isPolyaFreqSeq
     (ha.geometricScale epsilon hepsilon) N zero_le_one
 
 /-- Division-free comparison of the two epsilon regularizations. -/
@@ -290,16 +290,6 @@ theorem binomialSymbolChow_interl_succ (N n : ℕ) :
     hone (a := fun _ : ℕ => (1 : ℝ)) (by simp)
     (epsilon := 0) (by norm_num) N n
   simpa using h
-
-/-! ## Deprecated interlacing names -/
-
-@[deprecated projectiveRegularizedChow_interl_succ
-  (since := "2026-09-26")]
-alias projectiveRegularizedChow_prec0_succ :=
-  projectiveRegularizedChow_interl_succ
-
-@[deprecated binomialSymbolChow_interl_succ (since := "2026-09-26")]
-alias binomialSymbolChow_prec0_succ := binomialSymbolChow_interl_succ
 
 end
 

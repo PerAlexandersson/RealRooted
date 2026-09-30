@@ -90,8 +90,8 @@ nonnegative Hadamard product. -/
 theorem exists_totallyNonneg_hadamard_det_neg :
     ∃ a b : Matrix (Fin 3) (Fin 3) ℝ,
       a.IsTotallyNonneg ∧ b.IsTotallyNonneg ∧
-        (Matrix.of fun i j => a i j * b i j).det < 0 := by
-  exact ⟨aMat, bMat, aMat_isTotallyNonneg, bMat_isTotallyNonneg,
+        (Matrix.of fun i j => a i j * b i j).det < 0 :=
+  ⟨aMat, bMat, aMat_isTotallyNonneg, bMat_isTotallyNonneg,
     by norm_num [hadamard_det_eq]⟩
 
 /-- The corner-zeroed Hadamard determinant shape used in the issue #34
@@ -111,8 +111,8 @@ theorem hadamardCornerZeroedDet_eq : hadamardCornerZeroedDet aMat bMat = -2 := b
 minors alone. -/
 theorem exists_totallyNonneg_hadamardCornerZeroed_neg :
     ∃ a b : Matrix (Fin 3) (Fin 3) ℝ,
-      a.IsTotallyNonneg ∧ b.IsTotallyNonneg ∧ hadamardCornerZeroedDet a b < 0 := by
-  exact ⟨aMat, bMat, aMat_isTotallyNonneg, bMat_isTotallyNonneg,
+      a.IsTotallyNonneg ∧ b.IsTotallyNonneg ∧ hadamardCornerZeroedDet a b < 0 :=
+  ⟨aMat, bMat, aMat_isTotallyNonneg, bMat_isTotallyNonneg,
     by norm_num [hadamardCornerZeroedDet_eq]⟩
 
 end RealRooted.Issue34WindowObstruction

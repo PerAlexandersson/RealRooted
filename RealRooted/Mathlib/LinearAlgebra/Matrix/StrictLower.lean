@@ -39,8 +39,8 @@ the original matrix. -/
 theorem strictLowerPart_apply_eq_zero_of_le
     {R ι : Type*} [Zero R] [LinearOrder ι]
     (A : Matrix ι ι R) {i j : ι} (hij : i ≤ j) :
-    strictLowerPart A i j = 0 := by
-  exact strictLowerPart_apply_of_not_lt A (not_lt_of_ge hij)
+    strictLowerPart A i j = 0 :=
+  strictLowerPart_apply_of_not_lt A (not_lt_of_ge hij)
 
 /-- A lower triangular matrix with zero diagonal equals its strict-lower
 part. -/
@@ -186,8 +186,8 @@ theorem mul_pow_apply_eq_zero_of_lt_add_mul_of_lower_drop
   intro k _
   by_cases hik : i < k
   · rw [hG i k hik, zero_mul]
-  · have hkj : k.val < j.val + q * r := by
-      exact lt_of_le_of_lt (Fin.mk_le_mk.mp (le_of_not_gt hik)) hij
+  · have hkj : k.val < j.val + q * r :=
+      lt_of_le_of_lt (Fin.mk_le_mk.mp (le_of_not_gt hik)) hij
     rw [pow_apply_eq_zero_of_lt_add_mul_of_drop K hK q hkj, mul_zero]
 
 /-- A strictly lower matrix followed by a lower matrix is nilpotent at the
@@ -216,8 +216,8 @@ theorem mul_pow_apply_eq_zero_of_lt_add_of_lower_strictLower
   intro k _
   by_cases hik : i < k
   · rw [hG i k hik, zero_mul]
-  · have hkj : k.val < j.val + q := by
-      exact lt_of_le_of_lt (Fin.mk_le_mk.mp (le_of_not_gt hik)) hij
+  · have hkj : k.val < j.val + q :=
+      lt_of_le_of_lt (Fin.mk_le_mk.mp (le_of_not_gt hik)) hij
     rw [pow_apply_eq_zero_of_lt_add_of_strictLower K hK hkj, mul_zero]
 
 /-- A power of a strictly lower triangular matrix followed by a lower

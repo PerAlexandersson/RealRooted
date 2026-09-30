@@ -50,10 +50,6 @@ theorem interl_chainPolynomial_succ_of_isTotallyNonneg
     Interl (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
   interl_chainPolynomial_succ (resolutionOfTotallyNonneg R hunit hR) n
 
-@[deprecated interl_chainPolynomial_succ_of_isTotallyNonneg (since := "2026-09-18")]
-alias prec0_chainPolynomial_succ_of_isTotallyNonneg :=
-  interl_chainPolynomial_succ_of_isTotallyNonneg
-
 theorem strictInterl_chainPolynomial_succ_of_isTotallyNonneg_of_ne
     (hunit : LowerTriangularMatrix.IsLowerUnitriangular R)
     (hR : Matrix.IsTotallyNonneg R) (n : ℕ)
@@ -62,10 +58,5 @@ theorem strictInterl_chainPolynomial_succ_of_isTotallyNonneg_of_ne
     StrictInterl (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
   strictInterl_chainPolynomial_succ_of_ne
     (resolutionOfTotallyNonneg R hunit hR) n hn hsucc
-
-@[deprecated strictInterl_chainPolynomial_succ_of_isTotallyNonneg_of_ne
-  (since := "2026-09-18")]
-alias prec_chainPolynomial_succ_of_isTotallyNonneg_of_ne :=
-  strictInterl_chainPolynomial_succ_of_isTotallyNonneg_of_ne
 
 end RealRooted.BrandenLeite

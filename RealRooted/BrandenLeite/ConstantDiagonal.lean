@@ -155,9 +155,4 @@ theorem interl_chainPolynomial_succ_of_pos_constantDiagonal
     right
     exact hinterl.comp_C_mul_X hδ
 
-@[deprecated interl_chainPolynomial_succ_of_pos_constantDiagonal
-  (since := "2026-09-18")]
-alias prec0_chainPolynomial_succ_of_pos_constantDiagonal :=
-  interl_chainPolynomial_succ_of_pos_constantDiagonal
-
 end RealRooted.BrandenLeite

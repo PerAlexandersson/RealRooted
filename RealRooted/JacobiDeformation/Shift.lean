@@ -59,8 +59,8 @@ theorem coeff_polynomial_shift (m k : ℕ) (δ c d U V : ℝ) :
       Finset.mul_sum, Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro ij hij
-    have hijsum : ij.1 + ij.2 = m - k := by
-      exact HasAntidiagonal.mem_antidiagonal.mp hij
+    have hijsum : ij.1 + ij.2 = m - k :=
+      HasAntidiagonal.mem_antidiagonal.mp hij
     simpa [hijsum] using summand_shift m ij.1 ij.2 δ c d U V
   · rw [coeff_polynomial, coeff_polynomial, ite_eq_right hk, ite_eq_right hk]
     ring

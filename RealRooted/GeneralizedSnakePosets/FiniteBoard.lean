@@ -212,8 +212,8 @@ theorem IsNonNestingPlacement.col_ne {B : FiniteSkewBoard}
 placement. -/
 theorem IsNonNestingPlacement.card_image_fst {B : FiniteSkewBoard}
     {P : Finset (ℕ × ℕ)} (hP : B.IsNonNestingPlacement P) :
-    (P.image fun a => a.1).card = P.card := by
-  exact Finset.card_image_of_injOn (by
+    (P.image fun a => a.1).card = P.card :=
+  Finset.card_image_of_injOn (by
     intro a ha b hb hrow
     by_contra hne
     exact hP.row_ne ha hb hne hrow)
@@ -222,8 +222,8 @@ theorem IsNonNestingPlacement.card_image_fst {B : FiniteSkewBoard}
 placement. -/
 theorem IsNonNestingPlacement.card_image_snd {B : FiniteSkewBoard}
     {P : Finset (ℕ × ℕ)} (hP : B.IsNonNestingPlacement P) :
-    (P.image fun a => a.2).card = P.card := by
-  exact Finset.card_image_of_injOn (by
+    (P.image fun a => a.2).card = P.card :=
+  Finset.card_image_of_injOn (by
     intro a ha b hb hcol
     by_contra hne
     exact hP.col_ne ha hb hne hcol)

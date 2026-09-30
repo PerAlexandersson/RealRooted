@@ -415,11 +415,6 @@ end Tactic
 end RealRooted
 namespace RealRooted
 namespace Tactic
-@[deprecated TDeriv_sequence_strictInterl (since := "2026-09-26")]
-alias TDeriv_sequence_prec := TDeriv_sequence_strictInterl
-
-@[deprecated iterateTDeriv_sequence_strictInterl_succ (since := "2026-09-26")]
-alias iterateTDeriv_sequence_prec_succ := iterateTDeriv_sequence_strictInterl_succ
 
 end Tactic
 end RealRooted
@@ -470,7 +465,7 @@ macro_rules
         eps_pos := $heps:term,
         nonzero := $hp0:term,
         splits := $hp:term) =>
-      `(tactic| exact RealRooted.Tactic.TDeriv_sequence_prec $heps $hp0 $hp)
+      `(tactic| exact RealRooted.Tactic.TDeriv_sequence_strictInterl $heps $hp0 $hp)
   | `(tactic|
       rr_iterateTDeriv_prec_succ using
         eps_pos := $heps:term,
@@ -483,7 +478,7 @@ macro_rules
         nonzero := $hp0:term,
         splits := $hp:term,
         index := $k:term) =>
-      `(tactic| exact RealRooted.Tactic.iterateTDeriv_sequence_prec_succ
+      `(tactic| exact RealRooted.Tactic.iterateTDeriv_sequence_strictInterl_succ
           $k $heps $hp0 $hp)
 end Tactic
 end RealRooted

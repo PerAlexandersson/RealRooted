@@ -54,8 +54,8 @@ private lemma list_eq_of_forall₂_le_of_pos_of_prod_eq :
             (mul_le_mul_of_nonneg_left htail_le (le_of_lt (hy y (by simp))))
         exact (ne_of_lt hlt) hprod
       subst y
-      have htail : xs.prod = ys.prod := by
-        exact mul_left_cancel₀ (ne_of_gt (hx x (by simp))) hprod
+      have htail : xs.prod = ys.prod :=
+        mul_left_cancel₀ (ne_of_gt (hx x (by simp))) hprod
       rw [list_eq_of_forall₂_le_of_pos_of_prod_eq hxy.2 (by simp_all) (by simp_all) htail]
 
 private lemma forall₂_map_zero_sub_rev :
@@ -148,14 +148,14 @@ theorem leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_c
   calc
     C g.leadingCoeff * f =
         C g.leadingCoeff *
-          (C f.leadingCoeff * (f.roots.map fun x => X - C x).prod) := by
-      exact congrArg (fun p : ℝ[X] => C g.leadingCoeff * p) hffactor
+          (C f.leadingCoeff * (f.roots.map fun x => X - C x).prod) :=
+      congrArg (fun p : ℝ[X] => C g.leadingCoeff * p) hffactor
     _ = C f.leadingCoeff *
           (C g.leadingCoeff * (g.roots.map fun x => X - C x).prod) := by
       rw [hroots]
       ring
-    _ = C f.leadingCoeff * g := by
-      exact congrArg (fun p : ℝ[X] => C f.leadingCoeff * p) hgfactor.symm
+    _ = C f.leadingCoeff * g :=
+      congrArg (fun p : ℝ[X] => C f.leadingCoeff * p) hgfactor.symm
 
 private lemma hasPosLeadingCoeff_chowS_of_hasPosLeadingCoeff_reflect_sub
     {n : ℕ} {f : ℝ[X]} (hdegree : f.natDegree ≤ n)
@@ -337,8 +337,8 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff
     by_cases hcoeff0 : f.coeff 0 = 0
     · have hfne : f ≠ 0 := hstrictInterl.1.1
       have hg_ne : f.reflect n ≠ 0 := hstrictInterl.2.1.1
-      have href_degree_le : (f.reflect n).natDegree ≤ n := by
-        exact Polynomial.natDegree_reflect_le.trans (by simp [hdegree])
+      have href_degree_le : (f.reflect n).natDegree ≤ n :=
+        Polynomial.natDegree_reflect_le.trans (by simp [hdegree])
       have href_degree_ne : (f.reflect n).natDegree ≠ n := by
         intro heq
         have hlc_ne := Polynomial.leadingCoeff_ne_zero.mpr hg_ne
@@ -384,10 +384,5 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff
         exact hpos.X_mul
     · exact chowS_eq_zero_or_hasPosLeadingCoeff_of_coeff_zero_ne
         hdegree hfnn hcoeff0 hstrictInterl
-
-@[deprecated leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_cross_eq
-  (since := "2026-09-26")]
-alias leadingCoeff_cross_mul_eq_of_prec_sameDegree_of_nonneg_of_eval_cross_eq :=
-  leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_cross_eq
 
 end RealRooted

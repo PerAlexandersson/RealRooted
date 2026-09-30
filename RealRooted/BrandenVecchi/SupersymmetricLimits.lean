@@ -403,16 +403,16 @@ theorem tendsto_aswEdreiTruncationCoeff
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (d : ℕ) :
     Tendsto (fun N => aswEdreiTruncationCoeff gamma alpha beta N d) atTop
-      (𝓝 (aswEdreiCoeff gamma alpha beta d)) := by
-  exact (PowerSeries.WithPiTopology.continuous_coeff ℝ d).continuousAt.tendsto.comp
+      (𝓝 (aswEdreiCoeff gamma alpha beta d)) :=
+  (PowerSeries.WithPiTopology.continuous_coeff ℝ d).continuousAt.tendsto.comp
     (tendsto_aswEdreiTruncationSeries halpha hbeta hsum)
 
 /-- Each finite approximation has coefficient zero equal to one. -/
 @[simp]
 theorem aswEdreiTruncationCoeff_zero
     (gamma : ℝ) (alpha beta : ℕ → ℝ) (N : ℕ) :
-    aswEdreiTruncationCoeff gamma alpha beta N 0 = 1 := by
-  exact finiteSupersymmetricCoeff_zero
+    aswEdreiTruncationCoeff gamma alpha beta N 0 = 1 :=
+  finiteSupersymmetricCoeff_zero
     (List.replicate N (gamma * (N : ℝ)⁻¹) ++ parameterPrefix alpha N)
     (parameterPrefix beta N)
 
@@ -449,8 +449,8 @@ theorem aswEdreiCoeff_zero
     {gamma : ℝ} {alpha beta : ℕ → ℝ}
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) :
-    aswEdreiCoeff gamma alpha beta 0 = 1 := by
-  exact tendsto_nhds_unique
+    aswEdreiCoeff gamma alpha beta 0 = 1 :=
+  tendsto_nhds_unique
     (tendsto_aswEdreiTruncationCoeff halpha hbeta hsum 0)
     (by
       simp only [aswEdreiTruncationCoeff_zero]

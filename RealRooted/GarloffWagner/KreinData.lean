@@ -15,8 +15,8 @@ namespace RealRooted
 
 theorem rootMultiplicity_sub_one_le_of_strictInterl_right {f g : ℝ[X]} (h : StrictInterl f g)
     (u : ℝ) :
-    g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u := by
-  exact (h.rootMultiplicity_bounds u).2
+    g.rootMultiplicity u - 1 ≤ f.rootMultiplicity u :=
+  (h.rootMultiplicity_bounds u).2
 
 /-- If `f ≪ g` and `u` is a root of `g`, then `f` is divisible by all but
 one copy of the `u`-factor of `g`.  This is the quotient of the left input
@@ -159,9 +159,8 @@ theorem fullRootMultiplicity_dvd_sub_weightedSum_deletedSummands_of_forall_ne
   | cons ap l ih =>
       rcases ap with ⟨a, p⟩
       rcases hfactor (a, p) (by simp) with ⟨u, hfactor_u, hvu⟩
-      have htail : ∀ bp ∈ l, ∃ w : ℝ, g = (X - C w) * bp.2 ∧ v ≠ w := by
-        intro bp hbp
-        exact hfactor bp (by simp [hbp])
+      have htail : ∀ bp ∈ l, ∃ w : ℝ, g = (X - C w) * bp.2 ∧ v ≠ w :=
+        fun bp hbp => hfactor bp (by simp [hbp])
       have hstep : (X - C v) ^ (g.rootMultiplicity v) ∣ h - C a * p :=
         fullRootMultiplicity_dvd_sub_kreinDeletedSummand_of_ne
           hdvd hg0 hfactor_u hvu
@@ -215,9 +214,8 @@ theorem fullRootMultiplicity_dvd_sub_weightedSum_rootDeleted
         convert htail_dvd using 1
         simp [weightedSum_cons]
         ring_nf
-      · have hfactor_tail : ∀ v ∈ xs, g = (X - C v) * q v := by
-          intro v hv
-          exact hfactor v (by simp [hv])
+      · have hfactor_tail : ∀ v ∈ xs, g = (X - C v) * q v :=
+          fun v hv => hfactor v (by simp [hv])
         have hgain_tail : ∀ v ∈ xs,
             (X - C v) ^ (g.rootMultiplicity v) ∣
               (h - C (a x) * q x) - C (a v) * q v := by
@@ -393,17 +391,15 @@ theorem exists_kreinRootDeletedSub_dvd_right {f g : ℝ[X]}
   classical
   let roots : List ℝ := g.roots.toFinset.toList
   have hroots_nodup : roots.Nodup := Finset.nodup_toList _
-  have hroot : ∀ u ∈ roots, g.IsRoot u := by
-    intro u hu
-    exact (mem_roots hfg.2.1.1).mp
+  have hroot : ∀ u ∈ roots, g.IsRoot u :=
+    fun _ hu => (mem_roots hfg.2.1.1).mp
       (Multiset.mem_toFinset.mp (Finset.mem_toList.mp hu))
   have hdata : ∀ u ∈ roots, ∃ a : ℝ, ∃ q : ℝ[X],
       g = (X - C u) * q ∧
         IsGWKreinSummand g q ∧
         (X - C u) ^ (g.rootMultiplicity u) ∣
-          f - C c * g - C a * q := by
-    intro u hu
-    exact exists_kreinCoefficientData_of_right_isRoot hfg hfg.2.1.2 c (hroot u hu)
+          f - C c * g - C a * q :=
+    fun u hu => exists_kreinCoefficientData_of_right_isRoot hfg hfg.2.1.2 c (hroot u hu)
   choose a q hfactor hsummand hgain using hdata
   let a' : ℝ → ℝ := fun u => if hu : u ∈ roots then a u hu else 0
   let q' : ℝ → ℝ[X] := fun u => if hu : u ∈ roots then q u hu else 0
@@ -421,9 +417,8 @@ theorem exists_kreinRootDeletedSub_dvd_right {f g : ℝ[X]}
       fullRootMultiplicity_dvd_sub_weightedSum_rootDeleted
         hfg.2.1.1 roots hroots_nodup a' q' hfactor' hgain'
   have hdiv_all_roots : ∀ u ∈ g.roots,
-      (X - C u) ^ (g.rootMultiplicity u) ∣ f - C c * g - weightedSum l := by
-    intro u hu
-    exact hdiv_roots u (by
+      (X - C u) ^ (g.rootMultiplicity u) ∣ f - C c * g - weightedSum l :=
+    fun u hu => hdiv_roots u (by
       rw [Finset.mem_toList, Multiset.mem_toFinset]
       exact hu)
   refine ⟨l, ?_, dvd_of_roots_fullRootMultiplicity_dvd hfg.2.1.1 hfg.2.1.2 hdiv_all_roots⟩
@@ -576,11 +571,6 @@ theorem eq_zero_of_dvd_of_natDegree_lt {g h : ℝ[X]}
   · exfalso
     rw [natDegree_mul hg0 hr0] at hlt
     lia
-
-@[deprecated rootMultiplicity_sub_one_le_of_strictInterl_right
-  (since := "2026-09-18")]
-alias rootMultiplicity_sub_one_le_of_prec_right :=
-  rootMultiplicity_sub_one_le_of_strictInterl_right
 
 @[deprecated exists_strictInterlLeft_factor_of_right_isRoot (since := "2026-09-18")]
 alias exists_precLeft_factor_of_right_isRoot :=

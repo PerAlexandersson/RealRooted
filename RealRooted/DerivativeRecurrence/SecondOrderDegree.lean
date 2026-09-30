@@ -110,7 +110,7 @@ theorem monic_of_second_order_derivative
               (P (n + 1)).leadingCoeff ≠ 0 := by
         rw [hdegree1, ih1]
         push_cast
-        nlinarith [hcancel n]
+        linarith [hcancel n]
       have hstep :=
         Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add
           (P (n + 1)) ((C c * X) * P n) a (-a) 1 (b n) hlag htop
@@ -119,7 +119,7 @@ theorem monic_of_second_order_derivative
         (C 1 + C (b n) * X) * P (n + 1) + (C c * X) * P n).leadingCoeff = 1
       rw [hstep.2, hdegree1, ih1]
       push_cast
-      nlinarith [hcancel n]
+      linarith [hcancel n]
 
 /-- Nonvanishing consequence of `second_order_derivative_top_and_above`. -/
 theorem ne_zero_of_second_order_derivative

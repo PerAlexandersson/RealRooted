@@ -132,8 +132,8 @@ theorem hasContentType_relabelWord_iff {n m : ℕ}
 /-- Alphabet relabeling preserves the complete equality pattern of a word. -/
 theorem relabelWord_eq_iff {n m : ℕ} (e : Equiv.Perm (Fin m))
     (w : Fin n → Fin m) (i j : Fin n) :
-    relabelWord e w i = relabelWord e w j ↔ w i = w j := by
-  exact e.injective.eq_iff
+    relabelWord e w i = relabelWord e w j ↔ w i = w j :=
+  e.injective.eq_iff
 
 end
 

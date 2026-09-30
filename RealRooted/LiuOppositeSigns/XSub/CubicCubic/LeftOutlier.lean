@@ -513,8 +513,8 @@ lemma xSubCubicCubicSplits_of_left_root_left_strict_roots {a b c u v w μ : ℝ}
       C μ * ((X - C u) * (X - C v) * (X - C w))).Splits := by
   by_cases hva : v = a
   · subst v
-    have huw : u ≤ w := by exact (le_of_lt hua).trans ((le_of_lt hab).trans hbw)
-    have huc : u ≤ c := by exact (le_of_lt hua).trans ((le_of_lt hab).trans (le_of_lt hbc))
+    have huw : u ≤ w := (le_of_lt hua).trans ((le_of_lt hab).trans hbw)
+    have huc : u ≤ c := (le_of_lt hua).trans ((le_of_lt hab).trans (le_of_lt hbc))
     have hcommon := xSubCubicCubicSplits_of_common_root
       (r := a) (a := b) (b := c) (c := u) (d := w)
       (le_of_lt hbc) huw hbw huc hc0 (le_of_lt hw0) hμ
@@ -526,7 +526,7 @@ lemma xSubCubicCubicSplits_of_left_root_left_strict_roots {a b c u v w μ : ℝ}
       (le_of_lt hab) (le_of_lt hbc) hub hbw hc0 (le_of_lt hw0) hμ
   by_cases hvc_eq : v = c
   · subst v
-    have huw : u ≤ w := by exact (le_of_lt hua).trans ((le_of_lt hab).trans hbw)
+    have huw : u ≤ w := (le_of_lt hua).trans ((le_of_lt hab).trans hbw)
     have haw : a ≤ w := (le_of_lt hab).trans hbw
     have hub : u ≤ b := (le_of_lt hua).trans (le_of_lt hab)
     have hb0 : b ≤ 0 := (le_of_lt hbc).trans hc0
@@ -538,7 +538,7 @@ lemma xSubCubicCubicSplits_of_left_root_left_strict_roots {a b c u v w μ : ℝ}
   · subst w
     have hac : a ≤ c := (le_of_lt hab).trans (le_of_lt hbc)
     have huv : u ≤ v := (le_of_lt hua).trans hav
-    have huc : u ≤ c := by exact (le_of_lt hua).trans ((le_of_lt hab).trans (le_of_lt hbc))
+    have huc : u ≤ c := (le_of_lt hua).trans ((le_of_lt hab).trans (le_of_lt hbc))
     have hv0 : v ≤ 0 := hvc.trans hc0
     have hcommon := xSubCubicCubicSplits_of_common_root
       (r := b) (a := a) (b := c) (c := u) (d := v)
@@ -550,9 +550,9 @@ lemma xSubCubicCubicSplits_of_left_root_left_strict_roots {a b c u v w μ : ℝ}
     have hub : u ≤ b := (le_of_lt hua).trans (le_of_lt hab)
     exact xSubCubicCubicSplits_of_upper_common_root
       (le_of_lt hab) (le_of_lt hbc) huv hub hav hvc hc0 hμ
-  have hav_lt : a < v := by exact lt_of_le_of_ne hav (by intro h; exact hva h.symm)
-  have hvc_lt : v < c := by exact lt_of_le_of_ne hvc hvc_eq
-  have hbw_lt : b < w := by exact lt_of_le_of_ne hbw (by intro h; exact hwb h.symm)
+  have hav_lt : a < v := lt_of_le_of_ne hav (by intro h; exact hva h.symm)
+  have hvc_lt : v < c := lt_of_le_of_ne hvc hvc_eq
+  have hbw_lt : b < w := lt_of_le_of_ne hbw (by intro h; exact hwb h.symm)
   exact xSubCubicCubicSplits_of_left_root_left_strict_distinct
     hua hab hbc hav_lt hvc_lt hvw hbw_lt hc0 hw0 hvb hwc hμ
 end LiuOppositeSigns

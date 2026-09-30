@@ -37,10 +37,10 @@ theorem IsStrictlyHurwitzStable.nextCoeff_pos {p : ℝ[X]}
   have hvieta :=
     (IsAlgClosed.splits q).nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
   have hvietaRe := congrArg Complex.re hvieta
-  have hqNextCoeff : q.nextCoeff = (p.nextCoeff : ℂ) := by
-    exact Polynomial.nextCoeff_map Complex.ofReal_injective p
-  have hqLeadingCoeff : q.leadingCoeff = (p.leadingCoeff : ℂ) := by
-    exact Polynomial.leadingCoeff_map_of_injective Complex.ofReal_injective p
+  have hqNextCoeff : q.nextCoeff = (p.nextCoeff : ℂ) :=
+    Polynomial.nextCoeff_map Complex.ofReal_injective p
+  have hqLeadingCoeff : q.leadingCoeff = (p.leadingCoeff : ℂ) :=
+    Polynomial.leadingCoeff_map_of_injective Complex.ofReal_injective p
   rw [hqNextCoeff, hqLeadingCoeff] at hvietaRe
   norm_num at hvietaRe
   unfold HasPosLeadingCoeff at hlead

@@ -271,8 +271,8 @@ theorem smirnovSubstitutionSeries_eq_tsum [TopologicalSpace A]
     (weight : Fin m → PowerSeries A)
     (hweight : ∀ i, PowerSeries.constantCoeff (weight i) = 0) :
     smirnovSubstitutionSeries t weight =
-      ∑' k, smirnovSubstitutionFixed t weight k := by
-  exact (hasSum_smirnovSubstitutionFixed t weight hweight).tsum_eq.symm
+      ∑' k, smirnovSubstitutionFixed t weight k :=
+  (hasSum_smirnovSubstitutionFixed t weight hweight).tsum_eq.symm
 
 /-- The total substituted series is the empty word plus the sum of its
 last-letter refinements. -/
@@ -560,13 +560,13 @@ theorem smirnovSubstitutionSeries_comp_equiv {m : ℕ}
   have hrescaled :
       (∏ i : Fin m,
           (1 + PowerSeries.C t * (weight ∘ e) i)) =
-        rescaledProduct := by
-    exact Fintype.prod_equiv e
+        rescaledProduct :=
+    Fintype.prod_equiv e
       (fun i => 1 + PowerSeries.C t * (weight ∘ e) i)
       (fun i => 1 + PowerSeries.C t * weight i) (fun _ => rfl)
   have hproduct :
-      (∏ i : Fin m, (1 + (weight ∘ e) i)) = product := by
-    exact Fintype.prod_equiv e
+      (∏ i : Fin m, (1 + (weight ∘ e) i)) = product :=
+    Fintype.prod_equiv e
       (fun i => 1 + (weight ∘ e) i)
       (fun i => 1 + weight i) (fun _ => rfl)
   have hpermuted := smirnovSubstitutionSeries_product_identity

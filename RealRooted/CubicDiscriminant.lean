@@ -113,7 +113,7 @@ theorem cubicDiscr_neg_of_critical_value
     (hsign : 0 ≤ y * (3 * t + p) ^ 3) :
     cubicDiscr (C (1 : ℝ) * X ^ 3 + C p * X ^ 2 + C q * X + C r) < 0 := by
   have hy_sq_pos : 0 < y ^ 2 := sq_pos_of_ne_zero hy
-  exact (cubicDiscr_neg_iff_critical_value hcrit hvalue).mpr (by nlinarith)
+  exact (cubicDiscr_neg_iff_critical_value hcrit hvalue).mpr (by linarith)
 
 /-- The discriminant of the Hessian quadratic covariant of a cubic is
 `-3` times the cubic discriminant.
@@ -135,7 +135,7 @@ theorem cubicDiscr_neg_iff_hessianDiscr_pos (α β γ δ : ℝ) :
         (β * γ - 9 * α * δ) ^ 2 -
           4 * (β ^ 2 - 3 * α * γ) * (γ ^ 2 - 3 * β * δ) := by
   rw [cubicHessianDiscr_eq_neg_three_mul_cubicDiscr]
-  constructor <;> intro h <;> nlinarith
+  constructor <;> intro h <;> linarith
 
 /-- Negative-discriminant certificate from the quadratic Hessian covariant.
 
@@ -152,7 +152,7 @@ theorem cubicDiscr_neg_of_hessian_neg_at (α β γ δ t : ℝ)
   have hdisc :
       0 < (β * γ - 9 * α * δ) ^ 2 -
         4 * (β ^ 2 - 3 * α * γ) * (γ ^ 2 - 3 * β * δ) := by
-    nlinarith [sq_nonneg
+    linarith [sq_nonneg
       (2 * (β ^ 2 - 3 * α * γ) * t + (β * γ - 9 * α * δ)),
       mul_pos hlead (neg_pos.mpr hval)]
   exact (cubicDiscr_neg_iff_hessianDiscr_pos α β γ δ).mpr hdisc
@@ -373,7 +373,7 @@ theorem cubicDiscr_nonneg_of_splits_natDegree_three
   have hdisc_q : 0 ≤ discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) := by
     have hquad := quadratic_disc_coeff_le_of_splits_natDegree_two hqdeg hqsplit
     unfold discrim
-    nlinarith [hquad]
+    linarith [hquad]
   have hkey : cubicDiscr p
       = (q.eval r) ^ 2 * discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) := by
     rw [← hfact]
@@ -395,7 +395,7 @@ theorem cubicDiscr_nonneg_of_splits_natDegree_le_three
     have hdisc_q : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0) := by
       have hquad := quadratic_disc_coeff_le_of_splits_natDegree_two h2 hs
       unfold discrim
-      nlinarith [hquad]
+      linarith [hquad]
     rw [hkey]
     exact mul_nonneg (sq_nonneg _) hdisc_q
   have hle1 : p.natDegree ≤ 1 :=

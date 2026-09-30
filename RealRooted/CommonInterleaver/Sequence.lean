@@ -153,16 +153,10 @@ def StrictInterlLeftShiftedSlotStatement : Prop :=
           have hjf : j.1 < f.natDegree := lt_of_lt_of_le j.2 hdeg
           simpa [rootSeqDesc_length hhf.2.1.2] using Nat.succ_lt_succ hjf⟩
 
-@[deprecated StrictInterlLeftShiftedSlotStatement (since := "2026-09-18")]
-abbrev PrecLeftShiftedSlotStatement := StrictInterlLeftShiftedSlotStatement
-
 /-- Atomic left `StrictInterl` shifted-slot membership. -/
 theorem strictInterlLeftShiftedSlot : StrictInterlLeftShiftedSlotStatement := by
   intro h f hhf j
   exact CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_strictInterl hhf j
-
-@[deprecated strictInterlLeftShiftedSlot (since := "2026-09-18")]
-alias precLeftShiftedSlot := strictInterlLeftShiftedSlot
 
 /-- Geometric shifted-slot consequence of a common left interleaver.
 
@@ -228,11 +222,6 @@ theorem commonLeftInterleaverShiftedSlot_of_strictInterlLeft
         CommonInterleaver.RootSlots.rootSlotInterval_last_eq_reverse_get_zero
           (rs := rootSeqDesc g) (List.reverse_ne_nil_iff.mp hrevg_ne)
     simp_all
-
-@[deprecated commonLeftInterleaverShiftedSlot_of_strictInterlLeft
-  (since := "2026-09-18")]
-alias commonLeftInterleaverShiftedSlot_of_precLeft :=
-  commonLeftInterleaverShiftedSlot_of_strictInterlLeft
 
 /-- Common-left-interleaver shifted-slot intersections. -/
 theorem commonLeftInterleaverShiftedSlot :

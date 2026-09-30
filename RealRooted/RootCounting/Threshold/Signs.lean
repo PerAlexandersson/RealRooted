@@ -110,7 +110,7 @@ theorem sign_at_far_left_of_eval_one_lt {p : K[X]}
       ∑ k ∈ Finset.range p.natDegree, p.coeff k <
         p.coeff p.natDegree * R := by
     rw [heval1, Finset.sum_range_succ] at hbig
-    nlinarith
+    linarith
   exact sign_at_far_left hpos hd1 hR hsum
 
 /-- Consecutive signed evaluations at negative points yield a root between the

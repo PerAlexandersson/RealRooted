@@ -695,8 +695,8 @@ theorem exists_insertionCut_card {m k : ℕ} (a : Data (m + 1))
     let yR : RankedNeighbor a O := ⟨y, hyK⟩
     let yS : {z // z ∈ S} := ⟨yR, Finset.mem_univ _⟩
     let j : Fin a.lastEarlierNeighbors.card := e.symm yS
-    have hej : (e j).1.val = y := by
-      exact congrArg (fun z ↦ z.val) (congrArg Subtype.val (e.apply_symm_apply yS))
+    have hej : (e j).1.val = y :=
+      congrArg (fun z ↦ z.val) (congrArg Subtype.val (e.apply_symm_apply yS))
     have hjnot : j ∉ indices := by
       intro hj
       apply hyLower
@@ -716,8 +716,8 @@ theorem exists_insertionCut_card {m k : ℕ} (a : Data (m + 1))
       have hijVal : i.val < j.val := lt_of_lt_of_le hiVal hkVal
       exact hijVal
     have hrank :
-        O.topologicalRank (e i).1.val < O.topologicalRank (e j).1.val := by
-      exact e.lt_iff_lt.mpr hij
+        O.topologicalRank (e i).1.val < O.topologicalRank (e j).1.val :=
+      e.lt_iff_lt.mpr hij
     have hne : (e i).1.val ≠ y := by
       rw [← hej]
       exact fun h ↦ ne_of_lt hij (e.injective (Subtype.ext (RankedNeighbor.ext h)))
@@ -833,8 +833,8 @@ theorem sum_properInsertionCuts {m : ℕ} (a : Data (m + 1))
   let e := a.insertionCutEquivFin O
   rw [← e.symm.sum_comp]
   have hcard (k : Fin (a.lastEarlierNeighbors.card + 1)) :
-      (e.symm k).lower.card = k.val := by
-    exact congrArg Fin.val (e.apply_symm_apply k)
+      (e.symm k).lower.card = k.val :=
+    congrArg Fin.val (e.apply_symm_apply k)
   have hfull (k : Fin (a.lastEarlierNeighbors.card + 1)) :
       (e.symm k).lower = a.lastEarlierNeighbors ↔
         k.val = a.lastEarlierNeighbors.card := by
@@ -1094,8 +1094,8 @@ theorem extendOrientation_sinkCount_of_fullCut_of_hasSink {m : ℕ}
         (O.sinks.filter fun y ↦ y ∉ a.lastEarlierNeighbors).card + 1 := by
     calc
       O.sinks.card =
-          ((O.sinks.filter fun y ↦ y ∉ a.lastEarlierNeighbors) ∪ {x}).card := by
-        exact congrArg Finset.card hsinks
+          ((O.sinks.filter fun y ↦ y ∉ a.lastEarlierNeighbors) ∪ {x}).card :=
+        congrArg Finset.card hsinks
       _ = _ := by rw [Finset.card_union_of_disjoint hdisjoint]; simp
   exact hcardSinks.symm
 
@@ -1546,8 +1546,8 @@ theorem qNat_nonneg {q : ℝ} (hq : 0 ≤ q) (m : ℕ) :
 theorem qNat_succ_pos {q : ℝ} (hq : 0 ≤ q) (m : ℕ) :
     0 < qNat q (m + 1) := by
   have hmem : 0 ∈ Finset.range (m + 1) := by simp
-  have hle : q ^ 0 ≤ qNat q (m + 1) := by
-    exact Finset.single_le_sum
+  have hle : q ^ 0 ≤ qNat q (m + 1) :=
+    Finset.single_le_sum
       (fun k hk ↦ by positivity) hmem
   simpa using lt_of_lt_of_le zero_lt_one hle
 
@@ -1588,8 +1588,8 @@ theorem prefixNormalization_mul_weight (a : Data n) {q : ℝ}
   field_simp [ne_of_gt (prefixNormalization_pos a hq (i.val + 1))]
 
 theorem normalization_pos (a : Data n) {q : ℝ} (hq : 0 ≤ q) :
-    0 < normalization a q := by
-  exact prefixNormalization_pos a hq n
+    0 < normalization a q :=
+  prefixNormalization_pos a hq n
 
 theorem weight_nonneg (a : Data n) {q : ℝ} (hq : 0 ≤ q) (i : Fin n) :
     0 ≤ weight a q i := by
@@ -1624,8 +1624,8 @@ theorem acyclicSinkPolynomial_take_comp_X_add_one {q : ℝ} (hq : 0 ≤ q)
           have hkLe : k ≤ n := Nat.le_of_lt hkN
           let v : Fin n := ⟨k, hkN⟩
           let b : Data (k + 1) := a.take (k + 1) hk
-          have hbinit : b.init = a.take k hkLe := by
-            exact a.take_succ_init hk
+          have hbinit : b.init = a.take k hkLe :=
+            a.take_succ_init hk
           have hleftN : a.left v ≤ n :=
             (a.left_le v).trans (Nat.le_of_lt hkN)
           have hleftK : a.left v ≤ k := a.left_le v

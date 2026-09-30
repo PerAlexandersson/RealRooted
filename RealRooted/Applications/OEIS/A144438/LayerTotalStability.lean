@@ -65,8 +65,8 @@ private theorem decoLayerTotalTwoPrecursor_mvRealStable :
 
 /-- The rank-two pencil is multivariate real stable. -/
 private theorem decoLayerTotalTwoPencil_mvRealStable :
-    MvRealStable decoLayerTotalTwoPencil := by
-  exact decoLayerTotalTwoPrecursor_mvRealStable.directionalPDeriv_pencil_rename
+    MvRealStable decoLayerTotalTwoPencil :=
+  decoLayerTotalTwoPrecursor_mvRealStable.directionalPDeriv_pencil_rename
     decoLayerTotalTwoWeight (by
       intro i
       cases i with

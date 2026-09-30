@@ -154,11 +154,11 @@ theorem isRayleigh_bivariate_iff (a b c d : ℝ) :
       · exact hma.eval_rayleighDifference_self_nonneg 0 x
       · norm_num [P, MvPolynomial.rayleighDifference,
           MvPolynomial.pderiv_mul]
-        nlinarith
+        linarith
     · fin_cases j
       · norm_num [P, MvPolynomial.rayleighDifference,
           MvPolynomial.pderiv_mul]
-        nlinarith
+        linarith
       · exact hma.eval_rayleighDifference_self_nonneg 1 x
 
 /-- A real bivariate multiaffine polynomial is stable exactly when it is
@@ -265,7 +265,7 @@ theorem mvRealStable_bivariate_coeff_iff (a b c d : ℝ) :
           (Complex.normSq_nonneg _)
       have him := congrArg Complex.im hroot
       rw [Complex.neg_im] at him
-      nlinarith
+      linarith
 
 /-- Bivariate real stability is equivalent to nontriviality together with
 the Rayleigh property. -/

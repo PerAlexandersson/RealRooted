@@ -220,8 +220,8 @@ theorem OppositeLeadingSigns.closedSegment_not_isRoot_of_odd_roots_gt_sub_Ioo
     (hodd : Odd (((f.roots.filter (x < ·)).card : ℤ) -
         (g.roots.filter (x < ·)).card))
     (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) :
-    ¬ (C (1 - β) * f + C β * g).IsRoot y := by
-  exact closedSegment_not_isRoot_of_eval_mul_pos hβ0 hβ1
+    ¬ (C (1 - β) * f + C β * g).IsRoot y :=
+  closedSegment_not_isRoot_of_eval_mul_pos hβ0 hβ1
     (hsgn.eval_mul_pos_of_odd_roots_gt_sub_Ioo
       hf hg hf_no hg_no hax hxb hay hyb hodd)
 
@@ -567,9 +567,8 @@ theorem false_of_add_right_count_drop_of_count_sub_eq_no_isRoot_Icc
       (((f + C ν * g).roots.filter (b < ·)).card : ℤ) -
         (q.roots.filter (b < ·)).card) :
     False := by
-  have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z := by
-    intro z haz hzb
-    exact hq_no z ⟨le_of_lt haz, hzb⟩
+  have hq_no_Ioc : ∀ z : ℝ, a < z → z ≤ b → ¬ q.IsRoot z :=
+    fun z haz hzb => hq_no z ⟨le_of_lt haz, hzb⟩
   exact
     (not_card_roots_filter_gt_add_two_le_of_sub_eq_no_isRoot_Ioc
       (p := f + C ν * g) (q := q) hab hq_no_Ioc hsub) hdrop
@@ -705,8 +704,8 @@ theorem OppositeLeadingSigns.false_of_left_roots_add_right_count_eq_right
       (g.roots.filter (a < ·)).card)
     (hb_eq : ((f + C ν * g).roots.filter (b < ·)).card =
       (g.roots.filter (b < ·)).card) :
-    False := by
-  exact hsgn.false_of_left_roots_add_right_count_sub_eq_right
+    False :=
+  hsgn.false_of_left_roots_add_right_count_sub_eq_right
     hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
     hν_large hdeg_large (by rw [ha_eq, hb_eq]; simp)
 
@@ -772,8 +771,8 @@ theorem OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_eq_right
       (g.roots.filter (a < ·)).card)
     (hb_inv_eq : ((g + C ν⁻¹ * f).roots.filter (b < ·)).card =
       (g.roots.filter (b < ·)).card) :
-    False := by
-  exact hsgn.false_of_left_roots_add_left_inv_count_sub_eq_right
+    False :=
+  hsgn.false_of_left_roots_add_left_inv_count_sub_eq_right
     hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
     hν_pos hν_large hdeg_large (by rw [ha_inv_eq, hb_inv_eq]; simp)
 
@@ -848,8 +847,8 @@ theorem OppositeLeadingSigns.false_of_right_roots_add_right_small_count_eq_left
       (f.roots.filter (a < ·)).card)
     (hb_eq : ((f + C ν * g).roots.filter (b < ·)).card =
       (f.roots.filter (b < ·)).card) :
-    False := by
-  exact hsgn.false_of_right_roots_add_right_small_count_sub_eq_left
+    False :=
+  hsgn.false_of_right_roots_add_right_small_count_sub_eq_left
     hfg hno hf hg hga hgb hf_no hg_no hax hxb hay hyb hnot_odd
     hν_pos hν_small hdeg_small (by rw [ha_eq, hb_eq]; simp)
 

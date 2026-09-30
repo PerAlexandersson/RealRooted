@@ -144,6 +144,6 @@ theorem orderNumeratorStep_natDegree_tight
     rw [hbound']
     have hscalar : 0 < c + (j + 1 : ℕ) := by positivity
     have hjnn : 0 ≤ p.coeff j := hp.hasNonnegCoeffs j
-    nlinarith [mul_pos hscalar htop]
+    linarith [mul_pos hscalar htop]
 
 end RealRooted

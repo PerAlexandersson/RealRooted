@@ -120,11 +120,11 @@ theorem shiftedJacobiFunctional_mul_positiveJacobiOperator_comm
       shiftedJacobiFunctional α β
           (p * jacobiDifferentialOperator (α + 1) (α + β + 2) r) =
         shiftedJacobiFunctional α β
-          (jacobiDifferentialOperator (α + 1) (α + β + 2) p * r) := by
-    exact hsymm.symm
+          (jacobiDifferentialOperator (α + 1) (α + β + 2) p * r) :=
+    hsymm.symm
   have hneg (f : ℝ[X]) :
-      shiftedJacobiFunctional α β (-f) = -shiftedJacobiFunctional α β f := by
-    exact (Polynomial.momentFunctionalLinearMap
+      shiftedJacobiFunctional α β (-f) = -shiftedJacobiFunctional α β f :=
+    (Polynomial.momentFunctionalLinearMap
       (shiftedJacobiMoment α β)).map_neg f
   change shiftedJacobiFunctional α β
       (p * -jacobiDifferentialOperator (α + 1) (α + β + 2) r) =

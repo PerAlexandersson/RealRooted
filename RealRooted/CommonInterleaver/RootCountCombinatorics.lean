@@ -754,9 +754,6 @@ theorem succDegreeRootCountAbove_of_strictInterl
   rw [hfcard, hgcard]
   constructor <;> lia
 
-@[deprecated succDegreeRootCountAbove_of_strictInterl (since := "2026-09-18")]
-alias succDegreeRootCountAbove_of_prec := succDegreeRootCountAbove_of_strictInterl
-
 /-- Rolle root-count bound in upper-threshold form.
 
 For a splitting real polynomial of degree at least two, the numbers of roots of
@@ -784,9 +781,6 @@ theorem succDegreeRootCount_of_strictInterl
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
   succDegreeRootCount_of_rootCountAbove hstrictInterl.1.2 hstrictInterl.2.1.2 hdeg
     (succDegreeRootCountAbove_of_strictInterl hstrictInterl hdeg)
-
-@[deprecated succDegreeRootCount_of_strictInterl (since := "2026-09-18")]
-alias succDegreeRootCount_of_prec := succDegreeRootCount_of_strictInterl
 
 /-- Rolle root-count bound in lower-threshold form.
 
@@ -853,10 +847,6 @@ theorem succDegreeRootCountAboveOriented_of_strictInterl
   (succDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
     hstrictInterl.1.2 hstrictInterl.2.1.2 hdeg x).mpr
     (succDegreeRootCountLowerOriented_of_strictInterl hstrictInterl hdeg x)
-
-@[deprecated succDegreeRootCountAboveOriented_of_strictInterl (since := "2026-09-18")]
-alias succDegreeRootCountAboveOriented_of_prec :=
-  succDegreeRootCountAboveOriented_of_strictInterl
 
 /-- Oriented Rolle root-count bound in upper-threshold form. -/
 theorem rootCountAbove_derivative_oriented_of_splits
@@ -1000,9 +990,6 @@ theorem sameDegreeRootCountOriented_of_strictInterl
     rw [← hrs_eq, Multiset.filter_coe, Multiset.coe_card]
   rw [hpcard, hqcard]
   constructor <;> lia
-
-@[deprecated sameDegreeRootCountOriented_of_strictInterl (since := "2026-09-18")]
-alias sameDegreeRootCountOriented_of_prec := sameDegreeRootCountOriented_of_strictInterl
 
 /-- The succ-degree upper root-count target follows from its common-non-root
 variant. -/

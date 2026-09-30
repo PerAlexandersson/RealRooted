@@ -204,9 +204,4 @@ theorem IsStrictlyHurwitzStable.routhCoefficient_pos_of_oddShape
     h.coeff_zero_pos_parts_of_oddShape hodd heven hdegree
   exact routhCoefficient_pos hodd0 heven0
 
-@[deprecated coeff_zero_ne_of_strictInterl_rotatedParts
-  (since := "2026-09-18")]
-alias coeff_zero_ne_of_prec_rotatedParts :=
-  coeff_zero_ne_of_strictInterl_rotatedParts
-
 end RealRooted

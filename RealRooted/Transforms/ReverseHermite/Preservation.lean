@@ -83,15 +83,15 @@ private theorem reverseHermiteTransform_preserves_pf_and_interl :
             grind
           have hqder : IsPFPolynomial q.derivative := hq.derivative
           have hqderT :
-              IsPFPolynomial (reverseHermiteTransform q.derivative) := by
-            exact (ih q.derivative.natDegree (by
+              IsPFPolynomial (reverseHermiteTransform q.derivative) :=
+            (ih q.derivative.natDegree (by
               rw [← hpdeg]
               have := natDegree_derivative_le q
               lia)).1 hqder rfl
           have hinterl :
               Interl (reverseHermiteTransform q.derivative)
-                (reverseHermiteTransform q) := by
-            exact (ih q.natDegree (by lia)).2 hqder hq
+                (reverseHermiteTransform q) :=
+            (ih q.natDegree (by lia)).2 hqder hq
               hq.derivative_interl_self rfl
           rw [hfactor, show X - C u = X + C (-u) by
             grind,
@@ -206,13 +206,5 @@ theorem reverseHermiteTransform_strictInterl_to_interl {f g : ℝ[X]}
     (hfg : StrictInterl f g) :
     Interl (reverseHermiteTransform f) (reverseHermiteTransform g) :=
   reverseHermiteTransform_preserves_interl hf hg hfg.toInterl
-
-@[deprecated reverseHermiteTransform_preserves_interl (since := "2026-09-18")]
-alias reverseHermiteTransform_preserves_prec0 :=
-  reverseHermiteTransform_preserves_interl
-
-@[deprecated reverseHermiteTransform_strictInterl_to_interl (since := "2026-09-18")]
-alias reverseHermiteTransform_prec_to_prec0 :=
-  reverseHermiteTransform_strictInterl_to_interl
 
 end RealRooted

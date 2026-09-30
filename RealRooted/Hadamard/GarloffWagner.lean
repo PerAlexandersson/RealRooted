@@ -113,8 +113,8 @@ theorem garloffWagnerHadamardNonnegInterl {f g p q : ℝ[X]}
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
     (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
-    Interl (hadamardProduct f p) (hadamardProduct g q) := by
-  exact gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
+    Interl (hadamardProduct f p) (hadamardProduct g q) :=
+  gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
 
 
 /-- Linear-factor sanity check for the orientation used in

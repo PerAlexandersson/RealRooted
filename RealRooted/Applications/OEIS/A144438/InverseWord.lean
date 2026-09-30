@@ -55,13 +55,13 @@ def inverseWordPrefix {h : Nat} (c : DecoCode h) (j : Nat) : List Nat :=
 
 /-- Every label in a deco inverse word is positive. -/
 theorem inverseWord_isPositive {h : Nat} (c : DecoCode h) :
-    MinimumInsertionWord.IsPositive c.inverseWord := by
-  exact MinimumInsertionWord.IsPositive.decode c.entryList
+    MinimumInsertionWord.IsPositive c.inverseWord :=
+  MinimumInsertionWord.IsPositive.decode c.entryList
 
 /-- Every decoded chronological word has distinct labels. -/
 theorem inverseWord_nodup {h : Nat} (c : DecoCode h) :
-    c.inverseWord.Nodup := by
-  exact RealRooted.MinimumInsertionWord.Nodup.decode c.validFrom_entryList
+    c.inverseWord.Nodup :=
+  RealRooted.MinimumInsertionWord.Nodup.decode c.validFrom_entryList
 
 @[simp] theorem length_inverseWordPrefix {h : Nat} (c : DecoCode h)
     {j : Nat} (hj : j ≤ h) :
@@ -72,8 +72,8 @@ theorem inverseWord_nodup {h : Nat} (c : DecoCode h) :
 
 /-- Every label already constructed in a chronological prefix is positive. -/
 theorem inverseWordPrefix_isPositive {h : Nat} (c : DecoCode h) (j : Nat) :
-    MinimumInsertionWord.IsPositive (c.inverseWordPrefix j) := by
-  exact MinimumInsertionWord.IsPositive.decode (c.entryList.take j)
+    MinimumInsertionWord.IsPositive (c.inverseWordPrefix j) :=
+  MinimumInsertionWord.IsPositive.decode (c.entryList.take j)
 
 /-- Split the chronological entries around two successive positions. -/
 theorem entryList_eq_take_pair_drop {h : Nat} (c : DecoCode h)

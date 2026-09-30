@@ -704,8 +704,8 @@ theorem MvUpperHalfPlaneStable.of_translate_add_real {sigma : Type*}
   have htranslated :
       MvPolynomial.aeval (fun i => z i - (a i : ℂ))
         (MvPolynomial.aeval
-          (fun i => MvPolynomial.C (a i : ℂ) + MvPolynomial.X i) P) ≠ 0 := by
-    exact hP (fun i => z i - (a i : ℂ)) (by
+          (fun i => MvPolynomial.C (a i : ℂ) + MvPolynomial.X i) P) ≠ 0 :=
+    hP (fun i => z i - (a i : ℂ)) (by
       intro i
       simpa using hz i)
   rw [MvPolynomial.comp_aeval_apply] at htranslated

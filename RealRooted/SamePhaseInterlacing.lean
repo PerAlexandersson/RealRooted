@@ -20,15 +20,15 @@ noncomputable section
 @[simp] theorem commonPhaseRestriction_add {σ : Type*}
     (wt : σ → ℝ) (P Q : MvPolynomial σ ℝ) :
     commonPhaseRestriction wt (P + Q) =
-      commonPhaseRestriction wt P + commonPhaseRestriction wt Q := by
-  exact map_add (MvPolynomial.eval₂Hom Polynomial.C
+      commonPhaseRestriction wt P + commonPhaseRestriction wt Q :=
+  map_add (MvPolynomial.eval₂Hom Polynomial.C
     (fun i => Polynomial.C (wt i) * Polynomial.X)) P Q
 
 @[simp] theorem commonPhaseRestriction_mul {σ : Type*}
     (wt : σ → ℝ) (P Q : MvPolynomial σ ℝ) :
     commonPhaseRestriction wt (P * Q) =
-      commonPhaseRestriction wt P * commonPhaseRestriction wt Q := by
-  exact map_mul (MvPolynomial.eval₂Hom Polynomial.C
+      commonPhaseRestriction wt P * commonPhaseRestriction wt Q :=
+  map_mul (MvPolynomial.eval₂Hom Polynomial.C
     (fun i => Polynomial.C (wt i) * Polynomial.X)) P Q
 
 /-- A nonzero polynomial with nonnegative coefficients is positive at a

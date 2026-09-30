@@ -68,8 +68,8 @@ theorem natDegree_polynomial_le (m : ℕ) (δ c d U V : ℝ) :
 
 /-- The finite Jacobi deformation is monic. -/
 theorem monic_polynomial (m : ℕ) (δ c d U V : ℝ) :
-    (polynomial m δ c d U V).Monic := by
-  exact monic_of_natDegree_le_of_coeff_eq_one m
+    (polynomial m δ c d U V).Monic :=
+  monic_of_natDegree_le_of_coeff_eq_one m
     (natDegree_polynomial_le m δ c d U V) (coeff_polynomial_self m δ c d U V)
 
 /-- The finite Jacobi deformation has degree exactly `m`. -/

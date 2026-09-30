@@ -127,8 +127,8 @@ theorem cyclicPathDescentPolynomial_hasSimpleRoots (n : ℕ) (hn : 0 < n) :
   let q := (narayanaPolynomial 0 n).derivative
   have hqSimple : HasSimpleRoots q :=
     narayanaPolynomial_derivative_hasSimpleRoots 0 n hn
-  have hq0 : ¬ q.IsRoot 0 := by
-    exact narayanaPolynomial_derivative_eval_zero_ne_zero n hn
+  have hq0 : ¬ q.IsRoot 0 :=
+    narayanaPolynomial_derivative_eval_zero_ne_zero n hn
   have hscale : 2 / (n : ℝ) ≠ 0 := by positivity
   have hXqSimple : HasSimpleRoots (X * q) := hqSimple.X_mul hq0
   have hXq : X * q ≠ 0 := hXqSimple.ne_zero

@@ -66,7 +66,7 @@ theorem wronskian_eval_nonneg_of_strictInterl {p q : ℝ[X]}
             have hpos := wronskian_pos_of_strictInterlSameDegree
               hq_pos hp_pos (Nat.pos_of_ne_zero hpdeg) hstrict t
             rw [Polynomial.wronskian, eval_sub, eval_mul, eval_mul]
-            nlinarith
+            linarith
         · have hp_nodup : p.roots.Nodup := by
             by_contra hdup
             obtain ⟨r, hrp, hrq⟩ :=
@@ -82,7 +82,7 @@ theorem wronskian_eval_nonneg_of_strictInterl {p q : ℝ[X]}
           have hpos := wronskian_pos_of_strictInterl_succ hp_pos hq_pos hsucc
             hstrictInterl hp_nodup hq_nodup hcommon t
           rw [Polynomial.wronskian, eval_sub, eval_mul, eval_mul]
-          nlinarith
+          linarith
 
 end
 

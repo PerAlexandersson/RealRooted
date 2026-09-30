@@ -43,10 +43,6 @@ theorem exists_comp_X_add_C_hasNonnegCoeffs (fs : List ℝ[X])
     (hfs p hp).1 (hfs p hp).2 (hr p hp)
 
 /- Deprecated compatibility alias for `Interl.comp_X_add_C_iff`. -/
-@[deprecated Interl.comp_X_add_C_iff (since := "2026-09-17")]
-theorem prec0_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
-    Interl (f.comp (X + C r)) (g.comp (X + C r)) ↔ Interl f g :=
-  Interl.comp_X_add_C_iff r
 
 /-- Simultaneous translation is an equivalence for finite interlacing
 sequences. -/

@@ -72,8 +72,8 @@ theorem shiftedJacobi_collocationMatrix_offdiag
         exact eval_positiveJacobiOperator α β (x i) v
       _ = (positiveJacobiOperator α β
           (quasiJacobiPolynomial q α β τ)).eval (x i) := by rw [hv]
-      _ = e * p.eval (x i) := by
-        exact eval_positiveJacobiOperator_quasiJacobiPolynomial_at_root (hroot i)
+      _ = e * p.eval (x i) :=
+        eval_positiveJacobiOperator_quasiJacobiPolynomial_at_root (hroot i)
   rw [Lagrange.collocationMatrix, eval_positiveJacobiOperator, hb1, hb2]
   rw [← hv]
   change -(σ * ((v.derivative.derivative.eval (x i) - 2 * d i / s) /
@@ -137,7 +137,7 @@ theorem quadratureWeight_mul_quasiJacobiCollocationScale_sq
   rw [mul_pow, Real.sq_sqrt heta.le]
   change w * (d / p * p ^ 2) = _
   field_simp [hp]
-  nlinarith [hid]
+  linarith [hid]
 
 /-- Weighted self-adjointness of positive-Jacobi collocation at explicit
 distinct quasi-Jacobi roots. -/
@@ -194,7 +194,7 @@ theorem quasiJacobiCollocationMatrix_isSymm
     exact sub_eq_zero.mp ((mul_eq_zero.mp hwcross).resolve_left hwi)
   change r i / r j * D j i = r j / r i * D i j
   field_simp [hri, hrj]
-  nlinarith [hcross]
+  linarith [hcross]
 
 /-- Before symmetrizing the numerator, the signed off-diagonal entry is the
 sum of the local differential term and the rank-one residual. -/
