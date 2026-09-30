@@ -103,16 +103,5 @@ theorem ClawFree.weightedMultivariateIndepPoly_samePhaseStable
   rw [weightedMultivariateIndepPoly_eq_coordinateScale]
   exact hG.multivariateIndepPoly_samePhaseStable.coordinateScale hwt
 
-/-- The unit common-phase specialization recovers the checked weighted
-univariate splitness theorem. -/
-theorem ClawFree.commonPhaseRestriction_one_weightedMultivariateIndepPoly_splits
-    {V : Type u} [Fintype V] {G : _root_.SimpleGraph V} (hG : ClawFree G)
-    (wt : V → ℝ) (hwt : ∀ v, 0 ≤ wt v) :
-    (commonPhaseRestriction (fun _ => 1)
-      (weightedMultivariateIndepPoly G wt)).Splits := by
-  classical
-  rw [commonPhaseRestriction_one_weightedMultivariateIndepPoly]
-  exact clawFree_weightedIndepPoly_splits hG wt hwt
-
 end Graph
 end RealRooted

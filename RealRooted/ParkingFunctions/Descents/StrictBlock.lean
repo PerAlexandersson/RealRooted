@@ -116,14 +116,6 @@ theorem strictDecreasingWordEnumerator_zero_alphabet (k : ℕ) :
       · simp
       · simp
 
-/-- The strict-block enumerator is invariant under alphabet renaming. -/
-theorem rename_strictDecreasingWordEnumerator (k m : ℕ)
-    (e : Equiv.Perm (Fin m)) :
-    MvPolynomial.rename e (strictDecreasingWordEnumerator k m) =
-      strictDecreasingWordEnumerator k m := by
-  rw [strictDecreasingWordEnumerator_eq_esymm,
-    MvPolynomial.rename_esymm]
-
 end
 
 end RealRooted.ParkingFunctions

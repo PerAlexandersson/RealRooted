@@ -124,16 +124,6 @@ lemma quadraticPoly_not_splits_iff_discrim_neg {a b c : ℝ} (ha : a ≠ 0) :
     ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ discrim a b c < 0 := by
   rw [quadraticPoly_splits_iff_discrim_nonneg ha, not_le]
 
-/-- Splitting is invariant under common nonzero scaling of quadratic
-coefficients. -/
-lemma quadraticPoly_smul_splits_iff {a b c t : ℝ} (ha : a ≠ 0) (ht : t ≠ 0) :
-    ((C (t * a) * X ^ 2 + C (t * b) * X + C (t * c)) : ℝ[X]).Splits ↔
-      ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits := by
-  rw [quadraticPoly_splits_iff_discrim_nonneg (mul_ne_zero ht ha),
-    quadraticPoly_splits_iff_discrim_nonneg ha, discrim_smul]
-  have ht2 : (0 : ℝ) < t ^ 2 := by positivity
-  simp_all
-
 /-- Splitting criterion for a normalized monic real quadratic, phrased with
 the explicit discriminant `b ^ 2 - 4 * c`. -/
 lemma monicQuadraticPoly_splits_iff_discrim_nonneg {b c : ℝ} :

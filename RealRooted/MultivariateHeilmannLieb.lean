@@ -27,16 +27,5 @@ theorem commonPhaseRestriction_one_weightedMultivariateMatchingPolynomialByEdges
   rw [commonPhaseRestriction_one_weightedMultivariateMatchingPolynomialByEdges]
   exact weightedMatchingPolynomialByEdges_splits G wt hwt
 
-/-- The same specialization recovers the existing Pólya-frequency endpoint. -/
-theorem commonPhaseRestriction_one_weightedMultivariateMatchingPolynomialByEdges_isPFPolynomial
-    {V : Type u} [Fintype V]
-    (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ)
-    (hwt : ∀ e, 0 ≤ wt e) :
-    IsPFPolynomial (commonPhaseRestriction (fun _ => 1)
-      (weightedMultivariateMatchingPolynomialByEdges G wt)) := by
-  classical
-  rw [commonPhaseRestriction_one_weightedMultivariateMatchingPolynomialByEdges]
-  exact weightedMatchingPolynomialByEdges_isPFPolynomial G wt hwt
-
 end Graph
 end RealRooted

@@ -47,22 +47,6 @@ protected theorem PairwiseUpgrade.fourWay_of_pairwiseCommonForward
   chudnovskySeymour_fourWay_of_pairwiseCompatible_iff_pairwiseCommon hrr hpos
     ⟨hforward, fun hpair => pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos⟩
 
-/-- Chudnovsky--Seymour four-way package in the finite-list language used in
-this project, with the two-polynomial converse isolated as hypothesis:
-
-1. pairwise compatibility,
-2. pairwise common right interleavers,
-3. a global common right interleaver,
-4. full nonnegative family compatibility. -/
-theorem chudnovskySeymour_fourWay_of_pairBridge
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonRightInterleaverStatement) :
-    ChudnovskySeymourFourWayPackage fs :=
-  PairwiseUpgrade.fourWay_of_pairwiseCommonForward hrr hpos <|
-    pairwiseHasCommonInterleaver_of_pairwiseCompatible htwo hpos
-
 /-- Chudnovsky--Seymour four-way package with the natural two-polynomial bridge
 assumption (requiring positive leading coefficients on the pair). -/
 theorem chudnovskySeymour_fourWay_of_pairBridgePos
@@ -142,36 +126,6 @@ theorem chudnovskySeymour_fourWay_of_rootCrossing
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_rootCrossing_via_nonnegShift
     hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
-
-/-- Four-way Chudnovsky--Seymour package from root-crossing formulations, with
-the succ-degree left endpoint supplied by the PF/ASW route before shifting. -/
-theorem chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    ChudnovskySeymourFourWayPackage fs :=
-  chudnovskySeymour_fourWay_of_pairBridgePos
-    (hrr := hrr) (hpos := hpos)
-    (compatiblePairHasCommonInterleaver_of_rootCrossing_and_forward_asw
-      hsame hASW hsucc)
-
-/-- Four-way Chudnovsky--Seymour package from root-crossing formulations, with
-the succ-degree left endpoint supplied by the splitting-only ASW target before
-shifting. -/
-theorem chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw_splits
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    ChudnovskySeymourFourWayPackage fs :=
-  chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw
-    (fs := fs) hrr hpos hsame
-    (aissenSchoenbergWhitneyForwardOrZero_of_splits hASW) hsucc
 
 /-- Four-way Chudnovsky--Seymour package from the nonnegative-coefficient
 degree-split package, upgraded to arbitrary positive-leading families by a

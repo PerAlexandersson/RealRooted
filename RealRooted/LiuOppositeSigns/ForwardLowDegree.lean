@@ -494,23 +494,6 @@ theorem theorem21RootCountBranches_of_compatible_natDegree_one_two_of_no_common
   exact theorem21RootCountBranches_of_compatible_natDegree_one_two_of_largest_ne
     hf hg hsgn hcompat hfdeg hgdeg hr hs hrs_ne
 
-/-- Mixed endpoint degree-two no-common forward case.  This combines the
-checked `(2, 1)` obstruction with its `(1, 2)` no-common counterpart. -/
-theorem
-    theorem21RootCountBranches_of_compatible_natDegree_one_two_or_two_one_of_no_common
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
-    (hno : NoCommonRoots f g)
-    (hdeg :
-      (f.natDegree = 2 ∧ g.natDegree = 1) ∨
-        (f.natDegree = 1 ∧ g.natDegree = 2)) :
-    theorem21RootCountBranches f g := by
-  rcases hdeg with hdeg | hdeg
-  · exact theorem21RootCountBranches_of_compatible_natDegree_two_one
-      hf hg hsgn hcompat hdeg.1 hdeg.2
-  · exact theorem21RootCountBranches_of_compatible_natDegree_one_two_of_no_common
-      hf hg hsgn hcompat hdeg.1 hdeg.2 hno
-
 /-- No-common quadratic/quadratic forward endpoint case.  If the largest root
 of one side lies to the right, deleting it leaves a singleton/two-root
 comparison.  The only way that count comparison could fail is the bad nested

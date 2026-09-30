@@ -239,46 +239,5 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
   exact splits_X_mul_sub_C_mul_of_left_natDegree_zero_right_natDegree_le_one
     hFdeg hGdeg μ
 
-/-- Pack the degree-zero right endpoint terminal as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_zero :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 0) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
-    hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-one right endpoint terminal as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_one :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 1) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_one
-    hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the low-degree right endpoint terminals as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_one :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 1) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_one
-    hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-one right endpoint terminal as a predicate-restricted
-right-successor sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_one :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 1) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
-    hpair hfnn hgnn hdeg hgdeg
-
-
 end LiuOppositeSigns
 end RealRooted

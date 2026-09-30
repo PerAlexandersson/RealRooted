@@ -508,23 +508,6 @@ lemma exists_cubicSubQuadratic_not_splits_of_middle_gap
       exact exists_cubicSubQuadratic_not_splits_of_middle_gap_upper_endpoint
         hab hbu
 
-/-- The cubic/quadratic endpoint is not compatible in the distinct-root
-middle-gap branch. -/
-lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_middle_gap_distinct
-    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
-    (hbu : b < u) (huv : u < v) (hvc : v ≤ c) :
-    ¬ Compatible
-      (C A * ((X - C a) * (X - C b) * (X - C c)))
-      (C B * ((X - C u) * (X - C v))) := by
-  obtain ⟨μ, hμ, hnot_splits⟩ :=
-    exists_cubicSubQuadratic_not_splits_of_middle_gap_distinct
-      hab hbc hbu huv hvc
-  exact
-    not_compatible_scaled_pair_of_opposite_of_sub_not_splits
-      (P := (X - C a) * (X - C b) * (X - C c))
-      (Q := (X - C u) * (X - C v))
-      hAB hμ hnot_splits
-
 /-- The cubic/quadratic endpoint is not compatible in the middle-gap branch. -/
 lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_middle_gap
     {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)

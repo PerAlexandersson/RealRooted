@@ -300,7 +300,6 @@ import RealRooted.CommonInterleaver.RightPencil
 import RealRooted.CommonInterleaver.RootDesc
 import RealRooted.CommonInterleaver.RootCountCombinatorics
 import RealRooted.CommonInterleaver.RootSelection
-import RealRooted.CommonInterleaver.RootSelectionExamples
 import RealRooted.CommonInterleaver.RootSelectionTree
 import RealRooted.CommonInterleaver.RootSlots
 import RealRooted.CommonInterleaver.RootSlots.Basic
@@ -1500,3 +1499,5 @@ import RealRooted.GeneralizedSnakePosets.SnakeConstant
 import RealRooted.GeneralizedSnakePosets.SnakeTheorem35
 import RealRooted.GeneralizedSnakePosets.SnakeTheorem41
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+import RealRooted.Challenges.LiuOppositeSigns
+import RealRooted.Challenges.PerronFrobenius

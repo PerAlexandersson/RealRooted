@@ -634,18 +634,6 @@ theorem pairHasCommonInterleaver_of_degreeGap_le_slotIntersections_and
   pairHasCommonInterleaver_of_slotIntersections
     hf₀ hg₀ hf hg hdeg.1 hdeg.2 hslot
 
-/-- Degree-zero edge case of `pairHasCommonInterleaver_of_slotIntersections`. -/
-theorem pairHasCommonInterleaver_of_natDegree_eq_zero
-    {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0) (hf : f.Splits) (hg : g.Splits)
-    (hfdeg : f.natDegree = 0) (hgdeg : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
-  refine pairHasCommonInterleaver_of_slotIntersections hf₀ hg₀ hf hg
-    (by lia) (by lia) ?_
-  intro j hj
-  have hflen : (rootSeqDesc f).length = 0 := by rw [rootSeqDesc_length hf, hfdeg]
-  rw [CommonInterleaver.RootSlots.rootSlotInterval_eq_univ_of_length_eq_zero hflen, Set.univ_inter]
-  exact rootSlotInterval_nonempty (rootSeqDesc g) rootSeqDesc_pairwise _
-
 /-! ### Two-element pair wrappers -/
 
 /-- `HasCommonInterleaver [f, g]` is exactly the existence of a common right

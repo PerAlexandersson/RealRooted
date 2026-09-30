@@ -77,30 +77,4 @@ theorem matrix_preserves_interlacing_seq0_sparse_pair_interl
         j₁ j₂ (ne_of_lt hj) a b
   lia
 
-/-- Weak handbook-style converse package: a matrix preserving the zero-aware
-family `𝓕ₙ⁰⁺` must have entrywise nonnegative coefficients, and its 2×2 affine
-sparse test images satisfy the corresponding weak `Interl` relation. -/
-theorem matrix_preserves_interlacing_seq0_necessary_conditions
-    (G : List (List ℝ[X]))
-    (hG_rect : ∀ row ∈ G, row.length = n)
-    (hpres0 : ∀ (fs : List ℝ[X]), fs.length = n → IsInterlacingSeq0Nonneg fs →
-      IsInterlacingSeq0Nonneg (matPolyAction G fs)) :
-    (∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p) ∧
-    (∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
-      i₁ < i₂ → j₁ < j₂ →
-      ∀ {a b : ℝ}, 0 < a → 0 < b →
-      Interl
-        (((G.get i₁).get ⟨j₁, by
-            simp_all⟩)
-          + (C a * X + C b) * ((G.get i₁).get ⟨j₂, by
-            simp_all⟩))
-        (((G.get i₂).get ⟨j₁, by
-            simp_all⟩)
-          + (C a * X + C b) * ((G.get i₂).get ⟨j₂, by
-            simp_all⟩))) :=
-  ⟨matrix_preserves_interlacing_seq0_nonneg_entries (n := n) G hG_rect hpres0,
-    fun i₁ i₂ j₁ j₂ hi hj _a _b ha hb =>
-      matrix_preserves_interlacing_seq0_sparse_pair_interl
-        (n := n) G hG_rect hpres0 i₁ i₂ j₁ j₂ hi hj ha hb⟩
-
 end RealRooted

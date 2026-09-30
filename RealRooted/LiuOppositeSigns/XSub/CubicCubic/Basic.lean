@@ -71,32 +71,6 @@ lemma eval_xSubCubicCubic (a b c u v w μ x : ℝ) :
   simp only [eval_sub, eval_mul, eval_X, eval_C]
 
 /-- The normalized cubic/cubic x-subtraction polynomial tends to `+∞` at
-`-∞`. -/
-lemma tendsto_eval_xSubCubicCubic_atBot_atTop (a b c u v w μ : ℝ) :
-    Tendsto
-      (fun x =>
-        (X * ((X - C a) * (X - C b) * (X - C c)) -
-          C μ * ((X - C u) * (X - C v) * (X - C w))).eval x)
-      atBot atTop := by
-  let P : ℝ[X] :=
-    X * ((X - C a) * (X - C b) * (X - C c)) -
-      C μ * ((X - C u) * (X - C v) * (X - C w))
-  have hP_pos : HasPosLeadingCoeff P := by
-    dsimp [P]
-    exact hasPosLeadingCoeff_xSubCubicCubic a b c u v w μ
-  have hP_deg_pos : 0 < P.degree := by
-    have hnat : 0 < P.natDegree := by
-      dsimp [P]
-      rw [natDegree_xSubCubicCubic]
-      norm_num
-    exact natDegree_pos_iff_degree_pos.mp hnat
-  have hP_even : Even P.natDegree := by
-    dsimp [P]
-    rw [natDegree_xSubCubicCubic]
-    norm_num
-  exact tendsto_eval_atBot_atTop_of_posLeadingCoeff_even hP_pos hP_deg_pos hP_even
-
-/-- The normalized cubic/cubic x-subtraction polynomial tends to `+∞` at
 `+∞`. -/
 lemma tendsto_eval_xSubCubicCubic_atTop_atTop (a b c u v w μ : ℝ) :
     Tendsto

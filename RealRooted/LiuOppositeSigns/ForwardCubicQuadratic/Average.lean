@@ -232,37 +232,6 @@ lemma exists_cubicSubQuadratic_not_splits_of_average_above
     exists_cubicSubQuadratic_not_splits_of_deriv_disc_neg hμ
       (cubicSubQuadratic_average_above_deriv_disc_neg hab hbc hcmean)
 
-/-- The midpoint tangent coefficient is positive when both quadratic roots lie
-strictly above the cubic root interval. -/
-lemma cubicSubQuadratic_right_roots_above_mu_pos {a b c u v : ℝ}
-    (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u) (huv : u ≤ v) :
-    0 < 3 * ((u + v) / 2) - (a + b + c) := by
-  have hcmean : c < (u + v) / 2 := by linarith
-  exact cubicSubQuadratic_average_above_mu_pos hab hbc hcmean
-
-/-- With the midpoint tangent coefficient, the derivative discriminant of the
-cubic-minus-quadratic pencil is negative. -/
-lemma cubicSubQuadratic_right_roots_above_deriv_disc_neg {a b c u v : ℝ}
-    (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u) (huv : u ≤ v) :
-    (a + b + c + (3 * ((u + v) / 2) - (a + b + c))) ^ 2 <
-      3 *
-        (a * b + a * c + b * c +
-          (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) := by
-  have hcmean : c < (u + v) / 2 := by linarith
-  exact cubicSubQuadratic_average_above_deriv_disc_neg hab hbc hcmean
-
-/-- If both quadratic roots lie strictly above the cubic roots, then the
-midpoint tangent coefficient gives a negative cubic discriminant. -/
-lemma cubicDiscr_cubicSubQuadratic_right_roots_above_neg
-    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u)
-    (huv : u ≤ v) :
-    cubicDiscr
-      (((X - C a) * (X - C b) * (X - C c)) -
-        C (3 * ((u + v) / 2) - (a + b + c)) *
-          ((X - C u) * (X - C v))) < 0 := by
-  have hcmean : c < (u + v) / 2 := by linarith
-  exact cubicDiscr_cubicSubQuadratic_average_above_neg hab hbc hcmean
-
 /-- If both quadratic roots lie strictly above the cubic roots, then some
 positive subtraction coefficient makes the monic cubic-minus-quadratic pencil
 fail to split. -/

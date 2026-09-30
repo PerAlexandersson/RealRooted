@@ -131,35 +131,6 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
   pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
     hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
 
-/-- Chudnovsky--Seymour `1 ↔ 3` corollary from root-crossing formulations, with
-the succ-degree left endpoint supplied by the PF/ASW route before shifting. -/
-theorem pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
-  pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
-    chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw
-      (fs := fs) hrr hpos hsame hASW hsucc
-
-/-- Chudnovsky--Seymour `1 ↔ 3` corollary from root-crossing formulations, with
-the succ-degree left endpoint supplied by the splitting-only ASW target before
-shifting. -/
-theorem pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw_splits
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
-  pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw
-    (fs := fs) hrr hpos hsame
-    (aissenSchoenbergWhitneyForwardOrZero_of_splits hASW) hsucc
-
 /-- Chudnovsky--Seymour `1 ↔ 3` corollary from the nonnegative-coefficient
 degree-split package, with the familywise nonnegativity assumption removed by
 translation. -/
@@ -215,19 +186,6 @@ theorem pairwiseCompatible_iff_familyCompatible_of_pairBridgePos
     (pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos
       (fs := fs) hrr hpos htwo).1
 
-/-- Chudnovsky--Seymour `1 ↔ 4` specialization from the honest same-degree /
-succ-degree compatibility split. -/
-theorem pairwiseCompatible_iff_familyCompatible_of_compatibleDegreeSplit
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
-    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
-    PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
-    (pairwiseCompatible_iff_hasCommonInterleaver_of_compatibleDegreeSplit
-      (fs := fs) hrr hpos hsame hsucc).1
-
 /-- Chudnovsky--Seymour `1 ↔ 4` specialization from the repaired shifted
 nonnegative-coefficient degree split. -/
 theorem pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_via_nonnegShift
@@ -279,50 +237,6 @@ theorem pairwiseCompatible_iff_familyCompatible_of_rootCrossing
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_rootCrossing_via_nonnegShift
     hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
-
-/-- Chudnovsky--Seymour `1 ↔ 4` specialization from root-crossing formulations,
-with the succ-degree left endpoint supplied by the PF/ASW route before shifting.
--/
-theorem pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forward_asw
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
-    (pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw
-      (fs := fs) hrr hpos hsame hASW hsucc).1
-
-/-- Chudnovsky--Seymour `1 ↔ 4` specialization from root-crossing formulations,
-with the succ-degree left endpoint supplied by the splitting-only ASW target
-before shifting. -/
-theorem pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forward_asw_splits
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forward_asw
-    (fs := fs) hrr hpos hsame
-    (aissenSchoenbergWhitneyForwardOrZero_of_splits hASW) hsucc
-
-/-- Chudnovsky--Seymour `1 ↔ 4` specialization from the nonnegative-coefficient
-degree-split package, with the familywise nonnegativity assumption removed by
-translation. -/
-theorem pairwiseCompatible_iff_familyCompatible_of_degreeSplit_via_nonnegShift
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
-    (pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_via_nonnegShift
-      (fs := fs) hrr hpos hsame hsucc).1
 
 /-- Chudnovsky--Seymour `1 ↔ 4` specialization after the nonnegative shift
 reduction, with the succ-degree branch discharged by the affine-family bridge.

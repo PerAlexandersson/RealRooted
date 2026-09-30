@@ -129,8 +129,6 @@ lemma natDegree_le_csDegree {fs : List ℝ[X]} {f : ℝ[X]} (hf : f ∈ fs) :
   unfold csDegree
   exact List.le_max_of_le (by grind) le_rfl
 
-lemma csDegree_eq_zero_of_nil : csDegree ([] : List ℝ[X]) = 0 := by simp [csDegree]
-
 lemma exists_mem_csDegree_of_ne_nil {fs : List ℝ[X]} (hfs : fs ≠ []) :
     ∃ f ∈ fs, f.natDegree = csDegree fs := by
   induction fs with

@@ -928,15 +928,6 @@ theorem card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt_trans
   (card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt_trans
     hab hbc hab_no hbc_no).2
 
-/-- Window-count projection from the transitive bundled theorem. -/
-theorem card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc_lt_trans
-    {p : ℝ[X]} {a b c : ℝ} (hab : a < b) (hbc : b < c)
-    (hab_no : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x)
-    (hbc_no : ∀ x, b < x → x ≤ c → ¬ p.IsRoot x) :
-    (p.roots.filter (fun x => a < x ∧ x ≤ c)).card = 0 :=
-  (card_roots_filter_all_eq_of_no_isRoot_Ioc_lt_trans
-    hab hbc hab_no hbc_no).2.2
-
 /-!
 ### Closed-segment and two-polynomial count-stability wrappers
 
