@@ -10,6 +10,7 @@ closure budgets.
 from __future__ import annotations
 
 import argparse
+import re
 import json
 import pathlib
 import sys
@@ -300,6 +301,13 @@ def check_graph(graph: ImportGraph, config: dict[str, Any]) -> list[str]:
         else:
             errors.append("module_partition must be a JSON object")
 
+    for rule in config.get("forbidden_module_names", []):
+        pattern = re.compile(rule["pattern"])
+        reason = rule.get("reason", "forbidden module name")
+        for module in sorted(graph.imports):
+            if pattern.search(module):
+                errors.append(f"{module}: module name matches {rule['pattern']} ({reason})")
+
     for module, budget in config.get("budgets", {}).items():
         try:
             metrics = graph.metrics(module)
@@ -395,6 +403,8 @@ def run_self_test() -> int:
         }
         graph = ImportGraph.from_repo(root)
         assert not check_graph(graph, config)
+        name_rule = {"forbidden_module_names": [{"pattern": r"\.Basic$"}]}
+        assert any("TestLib.Basic: module name" in error for error in check_graph(graph, name_rule))
         assert graph.metrics("TestLib").modules == 3
         assert graph.metrics("TestLib.Basic").transitive_users == 1
         tight_config = {**config, "budgets": {"TestLib": {"max_modules": 2}}}

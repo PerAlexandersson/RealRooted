@@ -216,8 +216,8 @@ import RealRooted.Challenges.HermiteBiehlerHurwitz
 import RealRooted.Challenges.HermitePoulain
 import RealRooted.Challenges.Interlacing
 import RealRooted.Challenges.LeakeRyder
-import RealRooted.Challenges.Issue34SingleMatrixCounterexample
-import RealRooted.Challenges.Issue34WindowObstruction
+import RealRooted.Challenges.HurwitzCornerZeroedCounterexample
+import RealRooted.Challenges.TotallyNonnegativeHadamardObstruction
 import RealRooted.Challenges.Kurtz
 import RealRooted.Challenges.MatrixInterlacing
 import RealRooted.Challenges.MonomialChainOperator

@@ -380,4 +380,111 @@ theorem motzkinWeightedRow_inv_ascPochhammer_strictInterl_succ {α : ℝ} (hα :
   motzkinWeightedRow_strictInterl_succ (isPFMultiplierSequence_inv_ascPochhammer hα)
     (fun m => inv_pos.mpr (ascPochhammer_pos m α hα)) n
 
+/-! ### Monotonicity in the parameter -/
+
+/-- The Pochhammer shift `α (α+1)_m = (α + m) (α)_m`. -/
+private theorem mul_ascPochhammer_eval_succ (α : ℝ) (m : ℕ) :
+    α * (ascPochhammer ℝ m).eval (α + 1) = (α + m) * (ascPochhammer ℝ m).eval α := by
+  have h1 := ascPochhammer_succ_eval m α
+  rw [ascPochhammer_succ_left, eval_mul, eval_X, eval_comp, eval_add, eval_X, eval_one] at h1
+  rw [h1]
+  ring
+
+/-- The parameter shift `α G_n^(α) = (Θ + α) G_n^(α+1)` for `γ_m = 1 / (α)_m`. -/
+theorem motzkinWeightedInput_inv_ascPochhammer_shift {α : ℝ} (hα : 0 < α) (n : ℕ) :
+    C α * motzkinWeightedInput (fun m => ((ascPochhammer ℝ m).eval α)⁻¹) n =
+      X * derivative (motzkinWeightedInput (fun m => ((ascPochhammer ℝ m).eval (α + 1))⁻¹) n) +
+        C α * motzkinWeightedInput (fun m => ((ascPochhammer ℝ m).eval (α + 1))⁻¹) n := by
+  ext m
+  have hshift := mul_ascPochhammer_eval_succ α m
+  have h0 := ascPochhammer_pos m α hα
+  have h1 := ascPochhammer_pos m (α + 1) (by linarith)
+  rw [coeff_add, ← theta, coeff_theta, coeff_C_mul, coeff_C_mul, coeff_motzkinWeightedInput,
+    coeff_motzkinWeightedInput]
+  field_simp
+  linear_combination completeMatchingCount n m * hshift
+
+/-- **Parameter monotonicity.**  For real `α > 0`, the Motzkin rows with
+parameter `α + 1` interlace those with parameter `α`:
+`P_n^(α+1) ≪ P_n^(α)`, where `P_n^(α) = R_n^γ` with `γ_m = 1 / (α)_m`. -/
+theorem motzkinWeightedRow_inv_ascPochhammer_succ_strictInterl {α : ℝ} (hα : 0 < α)
+    (n : ℕ) :
+    StrictInterl
+      (motzkinWeightedRow (fun m => ((ascPochhammer ℝ m).eval (α + 1))⁻¹) n)
+      (motzkinWeightedRow (fun m => ((ascPochhammer ℝ m).eval α)⁻¹) n) := by
+  set γ : ℕ → ℝ := fun m => ((ascPochhammer ℝ m).eval α)⁻¹ with hγ
+  set δ : ℕ → ℝ := fun m => ((ascPochhammer ℝ m).eval (α + 1))⁻¹ with hδ
+  have hα1 : 0 < α + 1 := by linarith
+  have hγpos : ∀ m, 0 < γ m := fun m => inv_pos.mpr (ascPochhammer_pos m α hα)
+  have hδpos : ∀ m, 0 < δ m := fun m => inv_pos.mpr (ascPochhammer_pos m (α + 1) hα1)
+  rcases lt_or_ge n 4 with hn | hn
+  · have hc1 : completeMatchingCount 1 1 = 0 := completeMatchingCount_eq_zero (by norm_num)
+    have hc2 : completeMatchingCount 2 1 = 1 := by
+      rw [completeMatchingCount_of_le (by norm_num)]; norm_num [Nat.factorial]
+    have hc3 : completeMatchingCount 3 1 = 3 := by
+      rw [completeMatchingCount_of_le (by norm_num)]; norm_num [Nat.factorial]
+    have hγ0 : γ 0 = 1 := by simp [hγ]
+    have hδ0 : δ 0 = 1 := by simp [hδ]
+    have hγ1 : γ 1 = α⁻¹ := by simp [hγ]
+    have hδ1 : δ 1 = (α + 1)⁻¹ := by simp [hδ]
+    have hconst : ∀ ε : ℕ → ℝ, ε 0 = 1 → motzkinWeightedRow ε 0 = 1 := by
+      intro ε hε
+      rw [motzkinWeightedRow, motzkinWeightedInput_of_le_three ε (by norm_num),
+        completeMatchingCount_eq_zero (by norm_num), hε]
+      simp
+    have hone := StrictInterl.refl (one_ne_zero : (1 : ℝ[X]) ≠ 0) (Splits.C 1)
+    -- Linear rows: `1 + c X` with root `-1/c`.
+    have hlin : ∀ {a b : ℝ}, 0 < a → a < b →
+        StrictInterl (C 1 + C a * X) (C 1 + C b * X) := by
+      intro a b ha hab
+      have hb : 0 < b := ha.trans hab
+      have hf : (C 1 + C a * X : ℝ[X]).natDegree = 1 := by
+        rw [add_comm]; exact natDegree_linear ha.ne'
+      have hg : (C 1 + C b * X : ℝ[X]).natDegree = 1 := by
+        rw [add_comm]; exact natDegree_linear hb.ne'
+      refine PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
+        (PosComboRealRooted.strictInterl_or_reverse_of_same_degree_one (hf.trans hg.symm) hg)
+        (c := -1 / a) (r := -1 / b) ?_ ?_ ?_
+      · intro x hx
+        have hf0 : (C 1 + C a * X : ℝ[X]) ≠ 0 := ne_zero_of_natDegree_gt (n := 0) (by lia)
+        have hroot := (mem_roots hf0).mp hx
+        simp only [IsRoot, eval_add, eval_C, eval_mul, eval_X] at hroot
+        field_simp
+        linarith
+      · simp only [IsRoot, eval_add, eval_C, eval_mul, eval_X]
+        field_simp
+        ring
+      · rw [div_lt_div_iff₀ ha hb]
+        linarith
+    interval_cases n
+    · rw [hconst δ hδ0, hconst γ hγ0]
+      exact hone
+    · rw [motzkinWeightedRow_of_le_three δ (by norm_num) (by norm_num),
+        motzkinWeightedRow_of_le_three γ (by norm_num) (by norm_num), hc1]
+      simpa [hγ0, hδ0] using hone
+    · rw [motzkinWeightedRow_of_le_three δ (by norm_num) (by norm_num),
+        motzkinWeightedRow_of_le_three γ (by norm_num) (by norm_num), hc2, hγ0, hδ0, hγ1, hδ1]
+      exact hlin (by positivity) (by
+        have := (inv_lt_inv₀ hα1 hα).mpr (lt_add_one α)
+        linarith)
+    · rw [motzkinWeightedRow_of_le_three δ (by norm_num) (by norm_num),
+        motzkinWeightedRow_of_le_three γ (by norm_num) (by norm_num), hc3, hγ0, hδ0, hγ1, hδ1]
+      exact hlin (by positivity) (by
+        have := (inv_lt_inv₀ hα1 hα).mpr (lt_add_one α)
+        linarith)
+  · have hδPF := isPFMultiplierSequence_inv_ascPochhammer hα1
+    have hγPF := isPFMultiplierSequence_inv_ascPochhammer hα
+    have hg := motzkinWeightedInput_isPFPolynomial hδPF n
+    have hdeg := natDegree_motzkinWeightedInput hδpos n
+    have hself := strictInterl_self_thetac hg (by rw [hdeg]; lia) hα
+    rw [← motzkinWeightedInput_inv_ascPochhammer_shift hα n] at hself
+    have hCnn : HasNonnegCoeffs (C α * motzkinWeightedInput γ n) :=
+      nonnegCoeffs_C_mul hα.le (motzkinWeightedInput_isPFPolynomial hγPF n).hasNonnegCoeffs
+    have hT := strictInterl_binaryRunTransform (n := n) hself hg.hasNonnegCoeffs hCnn
+      (by rw [hdeg]; lia)
+      ((natDegree_C_mul_le _ _).trans (by rw [natDegree_motzkinWeightedInput hγpos]; lia))
+    rw [binaryRunTransform_C_mul'] at hT
+    have h' := hT.C_mul_right (inv_ne_zero hα.ne')
+    rwa [← mul_assoc, ← C_mul, inv_mul_cancel₀ hα.ne', C_1, one_mul] at h'
+
 end RealRooted

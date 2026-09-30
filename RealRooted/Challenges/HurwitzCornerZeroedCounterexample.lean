@@ -1,10 +1,11 @@
 import RealRooted.HurwitzMatrix
 
 /-!
-# Issue #34 single-matrix corner-zeroed arithmetic witness
+# A corner-zeroed Hurwitz-minor counterexample
 
-This file records the checked arithmetic from an Aristotle #34 search showing
-why the one-matrix full-band corner-zeroed route is too strong.  For the
+This file records checked arithmetic showing that the one-matrix full-band
+corner-zeroed route to the Hurwitz Schur-product problem (issue #34) is too
+strong.  For the
 coefficient sequence
 
 ```text
@@ -18,14 +19,14 @@ expression is `-1000`.
 
 This module does not formalize the infinite total-nonnegativity witness for the
 sequence.  It is a checked arithmetic diagnostic for the failed one-matrix
-reduction route; it does not refute the two-matrix issue #34 target.
+reduction route; it does not refute the two-matrix Schur-product target.
 -/
 
-namespace RealRooted.Issue34Counterexample
+namespace RealRooted.HurwitzCornerZeroedCounterexample
 
 noncomputable section
 
-/-- Candidate coefficient sequence from the Aristotle #34 counterexample. -/
+/-- Candidate coefficient sequence of the counterexample. -/
 def cseq : ℕ → ℝ :=
   fun k => ([1, 1, 8, 10, 17, 31, 10, 30] : List ℝ).getD k 0
 
@@ -83,4 +84,4 @@ theorem fullMinor_nonneg : 0 ≤ fullMinor := by norm_num [fullMinor_eq]
 
 end
 
-end RealRooted.Issue34Counterexample
+end RealRooted.HurwitzCornerZeroedCounterexample
