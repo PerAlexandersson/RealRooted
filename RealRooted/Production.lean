@@ -1355,6 +1355,7 @@ import RealRooted.RootCounting.CrossingExhaustion
 import RealRooted.BinaryRunTransformation.CrossLength
 import RealRooted.BinaryRunTransformation.Interlacing
 import RealRooted.BinaryRunTransformation.KernelIdentities
+import RealRooted.MultiplierSequence.InvPochhammer
 
 /-!
 # RealRooted production umbrella
