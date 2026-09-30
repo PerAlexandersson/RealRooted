@@ -108,6 +108,24 @@ lemma HasNonnegCoeffs.pos_leadingCoeff {p : ℝ[X]} (hp : HasNonnegCoeffs p)
   unfold HasPosLeadingCoeff
   exact lt_of_le_of_ne (hp p.natDegree) (Ne.symm (leadingCoeff_ne_zero.mpr hp0))
 
+/-- A finite sum of nonnegative-coefficient polynomials cannot vanish if one of
+the summands is already nonzero. This is the no-cancellation fact needed when
+matrix row sums are built from nonnegative product terms. -/
+lemma add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
+    {p q : ℝ[X]}
+    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
+    (hq_ne : q ≠ 0) :
+    p + q ≠ 0 := by
+  let d : ℕ := q.natDegree
+  have hp_coeff : 0 ≤ p.coeff d := hp d
+  have hq_pos : 0 < q.coeff d := by
+    have hq_lc : 0 < q.leadingCoeff := hq.pos_leadingCoeff hq_ne
+    simpa [d] using hq_lc
+  intro hsum0
+  have hcoeff0 : (p + q).coeff d = 0 := by simp_all
+  rw [coeff_add] at hcoeff0
+  linarith
+
 /-- A nonzero polynomial with nonnegative coefficients is strictly positive at
 every strictly positive real argument. -/
 theorem eval_pos_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p)
