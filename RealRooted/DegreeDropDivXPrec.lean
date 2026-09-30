@@ -716,12 +716,6 @@ theorem rightZeroDivX_roots_nonpos_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
 alias prec_iff_prec_divX_left_of_hasNonnegCoeffs_coeff_zero :=
   strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
 
-@[deprecated
-  strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero
-  (since := "2026-09-18")]
-alias prec_divX_left_of_prec_sameDegree_of_roots_nonpos_coeff_zero :=
-  strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero
-
 @[deprecated strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
   (since := "2026-09-18")]
 alias prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero :=

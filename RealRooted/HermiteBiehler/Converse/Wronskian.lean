@@ -187,15 +187,4 @@ theorem strictInterl_of_stable_succ_degree {f g : ℝ[X]}
   exact strictInterl_of_wronskian_pos_succ hf hg hdeg rfl hfs hgs
     (fun t => wronskian_pos_of_stable hstab hnoreal hw₀mem hw₀neg t)
 
-@[deprecated strictInterl_of_stable_same_degree (since := "2026-09-18")]
-alias prec_of_stable_same_degree := strictInterl_of_stable_same_degree
-
-@[deprecated strictInterl_of_stable_same_degree_no_common
-  (since := "2026-09-18")]
-alias prec_of_stable_same_degree_no_common :=
-  strictInterl_of_stable_same_degree_no_common
-
-@[deprecated strictInterl_of_stable_succ_degree (since := "2026-09-18")]
-alias prec_of_stable_succ_degree := strictInterl_of_stable_succ_degree
-
 end RealRooted

@@ -495,8 +495,7 @@ private theorem raiseSmallest_eq {xs : List ℝ} {ell : ℕ}
             M ::ₘ raiseSmallest xs ell M from rfl, ih hell]
           rw [List.replicate_succ]
           simp only [List.drop_succ_cons]
-          apply Multiset.coe_eq_coe.mpr
-          exact List.perm_cons_append_cons M (List.Perm.refl _)
+          exact Multiset.coe_eq_coe.mpr (List.perm_cons_append_cons M (List.Perm.refl _))
 
 /-- Raising `ell` roots produces at most `ell` extra output roots above any
 threshold. -/

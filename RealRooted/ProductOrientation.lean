@@ -122,9 +122,4 @@ theorem strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross
 alias eval_cross_le_of_prec_sameDegree_of_nonneg :=
   eval_cross_le_of_strictInterl_sameDegree_of_nonneg
 
-@[deprecated strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
-  (since := "2026-09-26")]
-alias prec_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt :=
-  strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
-
 end RealRooted

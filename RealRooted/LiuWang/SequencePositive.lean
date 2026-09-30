@@ -267,28 +267,4 @@ theorem isRealRooted_of_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
     strictInterl_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
       hbase hpos hshift_nonneg hrec hdeg_succ hno
 
-@[deprecated strictInterl_lw_positive_t_lag_sequence (since := "2026-09-26")]
-alias prec_lw_positive_t_lag_sequence := strictInterl_lw_positive_t_lag_sequence
-
-@[deprecated strictInterl_lw_positive_X_lag_sequence (since := "2026-09-26")]
-alias prec_lw_positive_X_lag_sequence := strictInterl_lw_positive_X_lag_sequence
-
-@[deprecated strictInterl_lw_C_mul_X_sub_C_lag_sequence (since := "2026-09-26")]
-alias prec_lw_C_mul_X_sub_C_lag_sequence := strictInterl_lw_C_mul_X_sub_C_lag_sequence
-
-@[deprecated strictInterl_lw_positive_affine_lag_sequence (since := "2026-09-26")]
-alias prec_lw_positive_affine_lag_sequence := strictInterl_lw_positive_affine_lag_sequence
-
-@[deprecated strictInterl_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs :=
-  strictInterl_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
-
-@[deprecated strictInterl_lw_C_add_X_lag_sequence (since := "2026-09-26")]
-alias prec_lw_C_add_X_lag_sequence := strictInterl_lw_C_add_X_lag_sequence
-
-@[deprecated strictInterl_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs (since := "2026-09-26")]
-alias prec_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs :=
-  strictInterl_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
-
 end RealRooted

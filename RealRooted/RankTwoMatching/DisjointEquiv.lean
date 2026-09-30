@@ -197,8 +197,7 @@ theorem other_orientationOfDisjointEquiv {A B : Finset V}
     congrArg Subtype.val ((edgeIndexEquiv hAB f).apply_symm_apply ⟨e, he⟩)
   have hs := Sym2.other_spec' (orientationOfDisjointEquiv_mem hAB f e he)
   change s(i.1, Sym2.Mem.other' (orientationOfDisjointEquiv_mem hAB f e he)) = e.1 at hs
-  apply Sym2.congr_right.mp
-  exact hs.trans (congrArg Subtype.val hei).symm
+  exact Sym2.congr_right.mp (hs.trans (congrArg Subtype.val hei).symm)
 
 omit [Fintype V] in
 theorem orientationRightVertices_ofDisjointEquiv {A B : Finset V}

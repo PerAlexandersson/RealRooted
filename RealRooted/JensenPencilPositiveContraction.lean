@@ -337,12 +337,10 @@ theorem compatible_schurSzego_jensen_of_pos_coeff_zero
     have hUne : U ≠ 0 := ne_zero_of_coeff_zero_pos hU0
     have hVne : V ≠ 0 := ne_zero_of_coeff_zero_pos hV0
     have hXVne : X * V ≠ 0 := mul_ne_zero X_ne_zero hVne
-    have hUdeg : U.natDegree = 0 := by
-      apply Nat.eq_zero_of_le_zero
-      exact (natDegree_schurSzegoComp_le_right d A p).trans hpdeg0.le
-    have hVdeg : V.natDegree = 0 := by
-      apply Nat.eq_zero_of_le_zero
-      exact (natDegree_schurSzegoComp_le_right d B p).trans hpdeg0.le
+    have hUdeg : U.natDegree = 0 :=
+      Nat.eq_zero_of_le_zero ((natDegree_schurSzegoComp_le_right d A p).trans hpdeg0.le)
+    have hVdeg : V.natDegree = 0 :=
+      Nat.eq_zero_of_le_zero ((natDegree_schurSzegoComp_le_right d B p).trans hpdeg0.le)
     have hXVdeg : (X * V).natDegree ≤ 1 := by rw [Polynomial.natDegree_X_mul hVne, hVdeg]
     have hcount :=
       LiuOppositeSigns.RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one

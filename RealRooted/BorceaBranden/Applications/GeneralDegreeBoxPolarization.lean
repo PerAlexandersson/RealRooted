@@ -855,9 +855,8 @@ noncomputable def diagonalAggregateFiberEquivBlockSupportsOfCard
       rw [diagonalDegreeBoxIndexGeneral_apply_eq_card_blockSupport,
         exponentBlockSupports_exponentOfBlockSupports]
       exact (s i).2⟩
-  left_inv b := by
-    apply Subtype.ext
-    exact exponentOfBlockSupports_exponentBlockSupports κ b.1
+  left_inv b :=
+    Subtype.ext (exponentOfBlockSupports_exponentBlockSupports κ b.1)
   right_inv s := by
     funext i
     apply Subtype.ext

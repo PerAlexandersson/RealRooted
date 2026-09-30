@@ -62,7 +62,4 @@ theorem polarTheta_preserves_interl : polarThetaPreservesInterlStatement := by
         polarTheta_eq_reciprocalShift_derivative_reciprocalShift N q hqd]
       exact hstep₃.toInterl
 
-@[deprecated polarTheta_preserves_interl (since := "2026-09-24")]
-alias polarTheta_preserves_prec0 := polarTheta_preserves_interl
-
 end RealRooted

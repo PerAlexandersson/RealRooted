@@ -50,10 +50,6 @@ theorem compatibleSuccDegreeStrictInterl_of_allComboBridge
   compatibleSuccDegreeStrictInterl_of_allCombo
     (compatibleSuccDegreeAllCombo_of_allComboBridge hallBridge)
 
-@[deprecated compatibleSuccDegreeStrictInterl_of_allComboBridge (since := "2026-09-18")]
-alias compatibleSuccDegreePrec_of_allComboBridge :=
-  compatibleSuccDegreeStrictInterl_of_allComboBridge
-
 /-- The all-combinations no-common bridge implies the exact lower-count
 endpoint comparison used by the #42 no-gap reductions. -/
 theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_allComboBridge

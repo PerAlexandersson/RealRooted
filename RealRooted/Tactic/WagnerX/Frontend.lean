@@ -521,7 +521,7 @@ macro_rules
         denom_pos := $hd:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.prec_wagner_derivative_gap_lag_step_den
+        exact RealRooted.strictInterl_wagner_derivative_gap_lag_step_den
           $hprec $hfnn $hgnn $hdeg $ha $hc $hd $hrec)
   | `(tactic|
       rr_prec_wagner_derivative_gap_lag_sequence using
@@ -556,7 +556,7 @@ macro_rules
         denom_pos := $hd:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.prec_wagner_derivative_gap_lag_sequence_den
+        exact RealRooted.strictInterl_wagner_derivative_gap_lag_sequence_den
           $hbase $hnonneg $hdeg $ha $hc $hd $hrec)
   | `(tactic|
       rr_prec_wagner_derivative_gap_lag_sequence_den_realrooted using
@@ -569,7 +569,7 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
+          (RealRooted.isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence_den
             $hbase $hnonneg $hdeg $ha $hc $hd $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_combo using
@@ -641,7 +641,7 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+          (RealRooted.isRealRooted_of_strictInterl_pos_X_lag_combo_sequence
             $hbase $hnonneg $ha $hc $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_sequence_realrooted_auto using
@@ -650,11 +650,11 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         rr_first_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+          (RealRooted.isRealRooted_of_strictInterl_pos_X_lag_combo_sequence
             (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
             $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
             (rr_wagner_recurrence_seq $hrec)),
-          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+          (RealRooted.isRealRooted_of_strictInterl_pos_X_lag_combo_sequence
             $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_coeff_sequence_realrooted_auto using
@@ -665,7 +665,7 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+          (RealRooted.isRealRooted_of_strictInterl_pos_X_lag_combo_sequence
             (a := $a) (c := $c)
             $hbase $hnonneg rr_side_pos_seq_term rr_side_nonneg_seq_term
             (rr_wagner_recurrence_seq $hrec)))
@@ -690,7 +690,7 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_pos_X_sub_C_lag_combo_sequence
+          (RealRooted.isRealRooted_of_strictInterl_pos_X_sub_C_lag_combo_sequence
             (r := $r) $hbase $hnonneg $ha $hc $hrec))
   | `(tactic|
       rr_prec_pos_X_sub_C_lag_sequence_realrooted_auto using
@@ -700,7 +700,7 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_pos_X_sub_C_lag_combo_sequence
+          (RealRooted.isRealRooted_of_strictInterl_pos_X_sub_C_lag_combo_sequence
             (r := $r) $hbase $hnonneg
             rr_wagner_pos_seq rr_wagner_pos_seq $hrec))
   | `(tactic|
@@ -722,7 +722,7 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+          (RealRooted.isRealRooted_of_strictInterl_pos_X_lag_combo_sequence
             (a := $a) (c := fun _ => (1 : ℝ))
             $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
             (rr_wagner_recurrence_seq $hrec)))
@@ -745,7 +745,7 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+          (RealRooted.isRealRooted_of_strictInterl_pos_X_lag_combo_sequence
             (a := $c) (c := $c)
             $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
             (rr_wagner_recurrence_seq $hrec)))

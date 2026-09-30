@@ -350,9 +350,8 @@ theorem weightedBooleanSwapOrbitNormalForm_eq_zero_or_mvRealStable
       have hproduct : ∏ j ∈ active,
           (MvPolynomial.C (leftWeight j) * MvPolynomial.X (left j) +
             MvPolynomial.C (rightWeight j) * MvPolynomial.X (right j)) =
-              (0 : MvPolynomial σ ℝ) := by
-        apply Finset.prod_eq_zero hactive
-        exact hlinear
+              (0 : MvPolynomial σ ℝ) :=
+        Finset.prod_eq_zero hactive hlinear
       simp [hproduct]
 
 end

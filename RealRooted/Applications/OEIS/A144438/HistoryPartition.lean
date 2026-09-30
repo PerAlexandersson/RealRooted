@@ -40,8 +40,7 @@ theorem eq_seedHistoryFiberCode
     (c : DecoHistoryFiber DecoExceptionalHistory.seed) :
     c = seedHistoryFiberCode := by
   apply Subtype.ext
-  apply Subtype.ext
-  exact DecoCode.eq_seed_of_isAdmissible c.1.1 c.1.2
+  exact Subtype.ext (DecoCode.eq_seed_of_isAdmissible c.1.1 c.1.2)
 
 /-- The comparison-bottom enumerator of one exact exceptional-history fiber. -/
 def historyFiberPolynomial {R : Type*} [CommSemiring R] {n : Nat}

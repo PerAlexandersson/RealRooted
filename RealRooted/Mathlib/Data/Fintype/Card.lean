@@ -27,10 +27,8 @@ theorem card_eq_card_mul_card_subtype_of_existsUnique_equiv
       { toFun := fun _ => Unit.unit
         invFun := fun _ => ⟨Classical.choose (h x),
           (Classical.choose_spec (h x)).1⟩
-        left_inv := by
-          intro z
-          apply Subtype.ext
-          exact (h x).unique (Classical.choose_spec (h x)).1 z.prop
+        left_inv :=
+          fun z => Subtype.ext ((h x).unique (Classical.choose_spec (h x)).1 z.prop)
         right_inv :=
           fun _ => Unit.ext _ _ }
     exact (Equiv.sigmaEquivProdOfEquiv eFiber).trans

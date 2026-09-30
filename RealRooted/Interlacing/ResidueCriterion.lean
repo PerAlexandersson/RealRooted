@@ -241,7 +241,6 @@ theorem residueAuxiliary_interlaces
   have hqdeg : (residueAuxiliary a m f g).natDegree < f.natDegree :=
     (natDegree_lt_iff_degree_lt hq_ne).2
       (residueAuxiliary_degree_lt hfdeg hgdeg a m)
-  apply interlaces_of_eval_mul_derivative_pos hgf.2.1.2 hflc hqdeg
-  exact hq_sign
+  exact interlaces_of_eval_mul_derivative_pos hgf.2.1.2 hflc hqdeg hq_sign
 
 end RealRooted

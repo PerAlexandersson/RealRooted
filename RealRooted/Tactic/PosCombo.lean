@@ -1135,11 +1135,6 @@ end Tactic
 end RealRooted
 namespace RealRooted
 namespace Tactic
-@[deprecated posCombo_sequence_nonneg_right_strictInterl (since := "2026-09-26")]
-alias posCombo_sequence_nonneg_right_prec := posCombo_sequence_nonneg_right_strictInterl
-
-@[deprecated posCombo_sequence_of_strictInterl (since := "2026-09-26")]
-alias posCombo_sequence_of_prec := posCombo_sequence_of_strictInterl
 
 end Tactic
 end RealRooted
@@ -1292,7 +1287,7 @@ macro_rules
         right_coeff_nonneg := $hb:term,
         some_coeff_pos := $hab:term) =>
       `(tactic|
-        exact RealRooted.Tactic.posCombo_sequence_nonneg_right_prec
+        exact RealRooted.Tactic.posCombo_sequence_nonneg_right_strictInterl
           $hfg $hfpos $hgpos $ha $hb $hab)
   | `(tactic|
       rr_pos_combo_nonneg_realrooted using
@@ -1350,7 +1345,7 @@ macro_rules
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term) =>
       `(tactic|
-        exact RealRooted.Tactic.posCombo_sequence_of_prec
+        exact RealRooted.Tactic.posCombo_sequence_of_strictInterl
           $hfg $hfpos $hgpos)
   | `(tactic|
       rr_pos_combo_convex_right_prec using

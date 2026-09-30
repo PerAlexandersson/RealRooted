@@ -672,20 +672,4 @@ theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
   change StrictInterl q.divX odd ∧ HasNonnegCoeffs q.divX
   exact ⟨hredStrictInterl, hqnn.divX⟩
 
-@[deprecated IsStrictlyHurwitzStable.strictInterl_parts_of_evenShape
-  (since := "2026-09-18")]
-alias IsStrictlyHurwitzStable.prec_parts_of_evenShape :=
-  IsStrictlyHurwitzStable.strictInterl_parts_of_evenShape
-
-@[deprecated IsStrictlyHurwitzStable.strictInterl_parts_of_oddShape
-  (since := "2026-09-18")]
-alias IsStrictlyHurwitzStable.prec_parts_of_oddShape :=
-  IsStrictlyHurwitzStable.strictInterl_parts_of_oddShape
-
-@[deprecated
-  IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
-  (since := "2026-09-18")]
-alias IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_evenShape :=
-  IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
-
 end RealRooted

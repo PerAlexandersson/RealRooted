@@ -1421,9 +1421,6 @@ theorem strictInterl_or_reverse_of_same_degree_one
     · simp [hrf_eq]
     · exact Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces, hge]⟩
 
-@[deprecated strictInterl_or_reverse_of_same_degree_one (since := "2026-09-18")]
-alias prec_or_revPrec_of_same_degree_one := strictInterl_or_reverse_of_same_degree_one
-
 end PosComboRealRooted
 
 /-! ### Note on PosComboRealRooted and interlacing
@@ -1552,10 +1549,6 @@ lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ
 @[deprecated StrictInterl.weightedSum_left_of_common_left (since := "2026-09-18")]
 alias prec_weightedSum_left_of_common_left := StrictInterl.weightedSum_left_of_common_left
 
-@[deprecated StrictInterl.weightedSum_left_of_common_left_signed (since := "2026-09-18")]
-alias prec_weightedSum_left_of_common_left_signed :=
-  StrictInterl.weightedSum_left_of_common_left_signed
-
 @[deprecated StrictInterl.sum_left_of_common_left (since := "2026-09-18")]
 alias prec_sum_left_of_common_left := StrictInterl.sum_left_of_common_left
 
@@ -1585,17 +1578,5 @@ alias isRealRooted_pos_combo_of_prec := StrictInterl.isRealRooted_pos_combo
 
 @[deprecated PosComboRealRooted.of_strictInterl (since := "2026-09-18")]
 alias PosComboRealRooted.of_prec := PosComboRealRooted.of_strictInterl
-
-@[deprecated StrictInterl.nonneg_combo_left (since := "2026-09-18")]
-alias prec_nonneg_combo_left := StrictInterl.nonneg_combo_left
-
-@[deprecated StrictInterl.convex_right (since := "2026-09-18")]
-alias prec_convex_right := StrictInterl.convex_right
-
-@[deprecated StrictInterl.convex_left (since := "2026-09-18")]
-alias prec_convex_left := StrictInterl.convex_left
-
-@[deprecated StrictInterl.convex_left_of_common_factor (since := "2026-09-18")]
-alias prec_convex_left_of_common_factor := StrictInterl.convex_left_of_common_factor
 
 end RealRooted

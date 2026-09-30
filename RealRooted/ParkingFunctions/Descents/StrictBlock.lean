@@ -45,9 +45,8 @@ def orderEmbeddingEquivFinsetCard (k m : ℕ) :
     symm
     apply Finset.orderEmbOfFin_unique'
     simp
-  right_inv s := by
-    apply Subtype.ext
-    exact Finset.image_orderEmbOfFin_univ s.1 s.2
+  right_inv s :=
+    Subtype.ext (Finset.image_orderEmbOfFin_univ s.1 s.2)
 
 /-- A decreasing word is determined by the subset of alphabet letters that
 it uses. -/

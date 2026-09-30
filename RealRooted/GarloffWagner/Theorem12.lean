@@ -722,96 +722,10 @@ alias derivative_prec0_self := derivative_interl_self
 
 end IsPFPolynomial
 
-@[deprecated interl_of_natDegree_eq_zero (since := "2026-09-18")]
-alias prec0_of_natDegree_eq_zero := interl_of_natDegree_eq_zero
-
-@[deprecated gwSchurProduct_interl_of_right_natDegree_eq_zero
-  (since := "2026-09-18")]
-alias gwSchurProduct_prec0_of_right_natDegree_eq_zero :=
-  gwSchurProduct_interl_of_right_natDegree_eq_zero
-
-@[deprecated gwSchurProduct_interl_right_linearFactor_of_derivative_interl
-  (since := "2026-09-18")]
-alias gwSchurProduct_prec0_right_linearFactor_of_derivative_prec0 :=
-  gwSchurProduct_interl_right_linearFactor_of_derivative_interl
-
-@[deprecated gwSchurProduct_pf_right_linearFactor_of_derivative_interl
-  (since := "2026-09-18")]
-alias gwSchurProduct_pf_right_linearFactor_of_derivative_prec0 :=
-  gwSchurProduct_pf_right_linearFactor_of_derivative_interl
-
 @[deprecated interl_weightedSum_right_of_nonneg (since := "2026-09-18")]
 alias prec0_weightedSum_right_of_nonneg := interl_weightedSum_right_of_nonneg
 
-@[deprecated gwSchurProduct_interl_of_weightedSum_right
-  (since := "2026-09-18")]
-alias gwSchurProduct_prec0_of_weightedSum_right :=
-  gwSchurProduct_interl_of_weightedSum_right
-
-@[deprecated gwSchurProduct_interl_of_kreinSummandExpansion
-  (since := "2026-09-18")]
-alias gwSchurProduct_prec0_of_kreinSummandExpansion :=
-  gwSchurProduct_interl_of_kreinSummandExpansion
-
-@[deprecated gwL_sub_C_mul_gwD_gwL_interl_self (since := "2026-09-18")]
-alias gwL_sub_C_mul_gwD_gwL_prec0_self := gwL_sub_C_mul_gwD_gwL_interl_self
-
-@[deprecated gwSchurProductStrictInterlStatement (since := "2026-09-18")]
-abbrev gwSchurProductPrecStatement := gwSchurProductStrictInterlStatement
-
-@[deprecated gwSchurProductPF_of_strictInterl (since := "2026-09-18")]
-alias gwSchurProductPF_of_prec := gwSchurProductPF_of_strictInterl
-
-@[deprecated gwSchurProductInterl_of_strictInterl (since := "2026-09-18")]
-alias gwSchurProductPrec0_of_prec := gwSchurProductInterl_of_strictInterl
-
-@[deprecated gwSchurProduct_derivative_interl_self_of_strictInterl
-  (since := "2026-09-18")]
-alias gwSchurProduct_derivative_prec0_self_of_prec :=
-  gwSchurProduct_derivative_interl_self_of_strictInterl
-
-@[deprecated gwSchurProduct_interl_left_linearFactor_of_derivative_interl
-  (since := "2026-09-18")]
-alias gwSchurProduct_prec0_left_linearFactor_of_derivative_prec0 :=
-  gwSchurProduct_interl_left_linearFactor_of_derivative_interl
-
-@[deprecated gwSchurProduct_interl_of_kreinDeletedFactor
-  (since := "2026-09-18")]
-alias gwSchurProduct_prec0_of_kreinDeletedFactor :=
-  gwSchurProduct_interl_of_kreinDeletedFactor
-
-@[deprecated IsGWKreinSummand.gwSchurProduct_interl_of_derivative
-  (since := "2026-09-18")]
-alias IsGWKreinSummand.gwSchurProduct_prec0_of_derivative :=
-  IsGWKreinSummand.gwSchurProduct_interl_of_derivative
-
-@[deprecated gwSchurProduct_interl_of_kreinSummandExpansion_of_derivative
-  (since := "2026-09-18")]
-alias gwSchurProduct_prec0_of_kreinSummandExpansion_of_derivative :=
-  gwSchurProduct_interl_of_kreinSummandExpansion_of_derivative
-
-@[deprecated gwSchurProductPFAndStrictInterl (since := "2026-09-18")]
-alias gwSchurProductPFAndPrec := gwSchurProductPFAndStrictInterl
-
-@[deprecated gwL_strictInterl (since := "2026-09-18")]
-alias gwL_prec := gwL_strictInterl
-
-@[deprecated gwL_interl (since := "2026-09-18")]
-alias gwL_prec0 := gwL_interl
-
-@[deprecated gwSchurProductStrictInterl (since := "2026-09-18")]
-alias gwSchurProductPrec := gwSchurProductStrictInterl
-
 @[deprecated gwSchurProductInterl (since := "2026-09-18")]
 alias gwSchurProductPrec0 := gwSchurProductInterl
-
-@[deprecated gwSchurProductInterl_left (since := "2026-09-18")]
-alias gwSchurProductPrec0_left := gwSchurProductInterl_left
-
-@[deprecated gwHadamardProductInterl (since := "2026-09-18")]
-alias gwHadamardProductPrec0 := gwHadamardProductInterl
-
-@[deprecated gwHadamardProductInterl_left (since := "2026-09-18")]
-alias gwHadamardProductPrec0_left := gwHadamardProductInterl_left
 
 end RealRooted

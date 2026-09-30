@@ -198,14 +198,12 @@ def normalHistoryExtensionEquiv {n : Nat}
     apply Subtype.ext
     apply Prod.ext
     · apply Subtype.ext
-      apply Subtype.ext
-      exact DecoCode.init_snoc _ _
+      exact Subtype.ext (DecoCode.init_snoc _ _)
     · apply Fin.ext
       simp [normalHistoryExtension, normalHistoryRestriction]
   right_inv c := by
     apply Subtype.ext
-    apply Subtype.ext
-    exact DecoCode.snoc_init_last _
+    exact Subtype.ext (DecoCode.snoc_init_last _)
 
 /-- Append the exceptional pair to a fixed-history admissible code. -/
 def exceptionalHistoryExtension {n : Nat}

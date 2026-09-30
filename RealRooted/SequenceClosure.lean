@@ -85,9 +85,6 @@ theorem strictInterl_sequence_of_base_and_step {P : Nat → ℝ[X]}
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   sequence_of_base_and_step hbase hstep
 
-@[deprecated strictInterl_sequence_of_base_and_step (since := "2026-09-18")]
-alias prec_sequence_of_base_and_step := strictInterl_sequence_of_base_and_step
-
 /-- Real-rootedness corollary of a generic `StrictInterl`-chain induction. -/
 theorem isRealRooted_of_strictInterl_sequence {P : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
@@ -520,10 +517,6 @@ theorem isRealRooted_pair_sequence_of_strictInterl_sequence {A B : Nat → ℝ[X
   fun n =>
     ⟨left_isRealRooted_of_strictInterl (hstrictInterl n),
       right_isRealRooted_of_strictInterl (hstrictInterl n)⟩
-
-@[deprecated isRealRooted_pair_sequence_of_strictInterl_sequence (since := "2026-09-18")]
-alias isRealRooted_pair_sequence_of_prec_sequence :=
-  isRealRooted_pair_sequence_of_strictInterl_sequence
 
 /-- Project left row-wise real-rootedness from a `StrictInterl` sequence. -/
 theorem left_isRealRooted_of_strictInterl_sequence {A B : Nat → ℝ[X]}

@@ -58,9 +58,8 @@ power-series factors convergent. -/
 theorem linearFactorProduct_multipliable
     (c : ℕ → ℝ) (hc : Summable fun i => |c i|) :
     Multipliable fun i =>
-      1 + PowerSeries.C (c i) * PowerSeries.X := by
-  apply multipliable_one_add_of_summable_prod
-  exact summable_prod_linearDeviation c hc
+      1 + PowerSeries.C (c i) * PowerSeries.X :=
+  multipliable_one_add_of_summable_prod (summable_prod_linearDeviation c hc)
 
 /-- Products over initial parameter segments converge coefficientwise to the
 infinite linear-factor product. -/

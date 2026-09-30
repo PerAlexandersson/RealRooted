@@ -22,8 +22,4 @@ theorem strictInterl_X_derivative_X_self_of_splits_nonneg {f : ℝ[X]}
     (roots_nonpos_of_nonneg_coeffs hder.1.2 hfnn.derivative)
     (roots_nonpos_of_nonneg_coeffs hf hfnn)
 
-@[deprecated strictInterl_X_derivative_X_self_of_splits_nonneg (since := "2026-09-26")]
-alias prec_X_derivative_X_self_of_splits_nonneg :=
-  strictInterl_X_derivative_X_self_of_splits_nonneg
-
 end RealRooted

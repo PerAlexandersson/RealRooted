@@ -108,9 +108,6 @@ theorem gammaU_strictInterl_gammaV (n : ℕ) (hn : 2 ≤ n) :
         (hreverse.toInterlaces hrevsucc) (gammaU_roots_neg n hn)
     exact ((lt_irrefl 0) (hVneg 0 hVroot)).elim
 
-@[deprecated gammaU_strictInterl_gammaV (since := "2026-09-18")]
-alias gammaU_prec_gammaV := gammaU_strictInterl_gammaV
-
 /-- Every displayed affine gamma-pencil member is nonzero. -/
 theorem gammaU_add_C_mul_gammaV_ne_zero (a : ℝ) (n : ℕ) (hn : 2 ≤ n) :
     gammaU n + C a * gammaV n ≠ 0 := by

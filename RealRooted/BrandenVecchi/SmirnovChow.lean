@@ -41,8 +41,7 @@ theorem sum_fin_val_lt_succ {A : Type*} [AddCommMonoid A]
         intro hi
         have hle : i.val ≤ k := Nat.lt_succ_iff.mp (by simpa using hi)
         have hge : k ≤ i.val := Nat.le_of_not_gt hik
-        apply hieq
-        exact Fin.ext (le_antisymm hle hge)
+        exact hieq (Fin.ext (le_antisymm hle hge))
       simp [hik, hieq, hisucc]
 
 /-- Splitting the complementary finite sum at the next natural cut. -/
@@ -98,8 +97,7 @@ theorem prod_fin_val_lt_succ {A : Type*} [CommMonoid A]
         intro hi
         have hle : i.val ≤ k := Nat.lt_succ_iff.mp (by simpa using hi)
         have hge : k ≤ i.val := Nat.le_of_not_gt hik
-        apply hieq
-        exact Fin.ext (le_antisymm hle hge)
+        exact hieq (Fin.ext (le_antisymm hle hge))
       simp [hik, hieq, hisucc]
 
 /-- A finite word is Smirnov when adjacent letters are distinct. -/

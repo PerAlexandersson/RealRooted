@@ -203,8 +203,7 @@ theorem isRealRooted_sum_of_isInterlacingSeq0Nonneg
     intro hnil
     have hsum_filter : (fs.filter (· ≠ 0)).sum = fs.sum := sum_filter_ne_zero fs
     have hsum_zero : (fs.filter (· ≠ 0)).sum = 0 := by simpa using congrArg List.sum hnil
-    apply hsum_ne
-    exact hsum_filter.symm.trans hsum_zero
+    exact hsum_ne (hsum_filter.symm.trans hsum_zero)
   have hlen_pos : 0 < (fs.filter (· ≠ 0)).length := by
     cases hfilter : fs.filter (· ≠ 0) with
     | nil => exact False.elim (hfilter_ne hfilter)

@@ -223,17 +223,7 @@ theorem commonPhaseRestriction_eq_constant_add_X_mul_pderiv
 
 end
 
-@[deprecated strictInterl_of_upperHalfPlaneStable_hermiteBiehler
-    (since := "2026-09-26")]
-alias prec_of_upperHalfPlaneStable_hermiteBiehler :=
-  strictInterl_of_upperHalfPlaneStable_hermiteBiehler
-
 @[deprecated strictInterl_add_X_mul_of_strictInterl (since := "2026-09-26")]
 alias prec_add_X_mul_of_prec := strictInterl_add_X_mul_of_strictInterl
-
-@[deprecated MvRealStable.strictInterl_commonPhaseRestriction_pderiv
-    (since := "2026-09-26")]
-alias MvRealStable.prec_commonPhaseRestriction_pderiv :=
-  MvRealStable.strictInterl_commonPhaseRestriction_pderiv
 
 end RealRooted

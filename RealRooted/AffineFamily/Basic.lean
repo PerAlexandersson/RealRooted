@@ -132,10 +132,4 @@ alias prec_of_prec_mul_X_of_nonneg := strictInterl_of_strictInterl_mul_X_of_nonn
 alias isRealRooted_affine_combo_of_prec_nonneg :=
   isRealRooted_affine_combo_of_strictInterl_nonneg
 
-@[deprecated has2x2InterlacingProperty_sameColumn_of_strictInterl_nonneg
-  (since := "2026-09-18")]
-alias has2x2InterlacingProperty_sameColumn_of_prec_nonneg :=
-  has2x2InterlacingProperty_sameColumn_of_strictInterl_nonneg
-
-
 end RealRooted

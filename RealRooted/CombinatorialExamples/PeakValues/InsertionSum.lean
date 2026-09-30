@@ -182,15 +182,13 @@ lemma peakDestroySlot_filter {n : ℕ} (π : Equiv.Perm (Fin n))
           peakDestroySlot π (⟨⟨w, hw⟩, false⟩) := by
         simpa [peakDestroySlot] using heq
       have hpairs := peakDestroySlot_injective π heq'
-      apply hwv
-      exact (congrArg (fun q => q.1.1) hpairs).symm
+      exact hwv ((congrArg (fun q => q.1.1) hpairs).symm)
     · intro heq
       have heq' : peakDestroySlot π (⟨⟨v, hv⟩, b⟩) =
           peakDestroySlot π (⟨⟨w, hw⟩, true⟩) := by
         simpa [peakDestroySlot] using heq
       have hpairs := peakDestroySlot_injective π heq'
-      apply hwv
-      exact (congrArg (fun q => q.1.1) hpairs).symm
+      exact hwv ((congrArg (fun q => q.1.1) hpairs).symm)
 
 lemma filter_eq_peakValues_of_not_mem_peakDestroySlots {n : ℕ}
     (π : Equiv.Perm (Fin n)) (slot : Fin (n + 1))

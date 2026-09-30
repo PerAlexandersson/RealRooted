@@ -271,8 +271,7 @@ theorem polynomialDividedDifference_evalQuotientMatrix_append_ofFn
         apply Polynomial.dividedDifference_eq_zero_of_eval_eq_zero
         intro i
         apply eval_rootsProduct_eq_zero_of_mem
-        apply List.mem_append.mpr
-        exact Or.inr (List.mem_ofFn.mpr ⟨i, rfl⟩)
+        exact List.mem_append.mpr (Or.inr (List.mem_ofFn.mpr ⟨i, rfl⟩))
       rw [hzero, ih]
       simp only [zero_smul, zero_add, rootsProduct, aeval_mul, aeval_sub,
         aeval_X, aeval_C]

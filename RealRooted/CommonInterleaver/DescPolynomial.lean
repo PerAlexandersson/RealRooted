@@ -646,11 +646,6 @@ protected lemma CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
   simpa [CommonInterleaver.polyOfDescRoots] using
     strictInterl_of_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
 
-@[deprecated CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
-  (since := "2026-09-18")]
-protected alias CommonInterleaver.prec_of_slots_polyOfDescRoots :=
-  CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
-
 /-- Internal left-oriented shifted-slot-construction bridge. -/
 protected lemma CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
@@ -665,10 +660,5 @@ protected lemma CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescR
     StrictInterl (CommonInterleaver.polyOfDescRoots xs) f := by
   simpa [CommonInterleaver.polyOfDescRoots] using
     strictInterl_left_of_shifted_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
-
-@[deprecated CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
-  (since := "2026-09-18")]
-protected alias CommonInterleaver.prec_left_of_shifted_slots_polyOfDescRoots :=
-  CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
 
 end RealRooted

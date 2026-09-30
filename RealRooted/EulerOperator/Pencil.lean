@@ -103,9 +103,6 @@ theorem strictInterl_self_theta_of_natDegree_ne_zero {p : ℝ[X]}
     hder hp.hasNonnegCoeffs.derivative hp.hasNonnegCoeffs
   simpa [theta] using hmul
 
-@[deprecated strictInterl_self_theta_of_natDegree_ne_zero (since := "2026-09-26")]
-alias prec_self_theta_of_natDegree_ne_zero := strictInterl_self_theta_of_natDegree_ne_zero
-
 /-- A polynomial PF member lies to the left of its Euler derivative when its
 degree is at least two. -/
 theorem strictInterl_self_theta {p : ℝ[X]} (hp : IsPFPolynomial p)
