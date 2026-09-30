@@ -1,7 +1,10 @@
+import RealRooted.BrandenLeite.CompositionFamilies
 import RealRooted.BrandenLeite.ConstantDiagonal
+import RealRooted.BrandenLeite.NetworkWhitney
 import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 import RealRooted.BrandenLeite.Theorem37
 import RealRooted.BrandenLeite.TwoKernel
+import RealRooted.BrandenLeite.WeightedShiftTiling
 import RealRooted.BrandenLeite.ZeroConstant
 
 /-!
@@ -57,6 +60,22 @@ module = "RealRooted.BrandenLeite.ZeroConstant"
 [[theorems]]
 name = "RealRooted.BrandenLeite.twoKernelRows_pf_and_interl"
 module = "RealRooted.BrandenLeite.TwoKernel"
+
+[[theorems]]
+name = "RealRooted.BrandenLeite.binomialCompositionRows_pf_and_interl"
+module = "RealRooted.BrandenLeite.CompositionFamilies"
+
+[[theorems]]
+name = "RealRooted.BrandenLeite.inversePowerCompositionRows_pf_and_interl"
+module = "RealRooted.BrandenLeite.CompositionFamilies"
+
+[[theorems]]
+name = "RealRooted.BrandenLeite.networkMatrix_resolutionLambda_eq"
+module = "RealRooted.BrandenLeite.NetworkWhitney"
+
+[[theorems]]
+name = "RealRooted.BrandenLeite.weightedShiftTilingRow_separated_isPFPolynomial"
+module = "RealRooted.BrandenLeite.WeightedShiftTiling"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -86,6 +105,15 @@ families:
 
 - the rows of `1 / (1 - x h(z))` when `h(0) = 0`;
 - the rows of `g / (1 - x g h)`.
+
+In particular, the rows of `1 / (1 - x z (1+z)^d)` and of
+`1 / (1 - x z / (1-z)^e)` are PF and interlace. These include OEIS A116088
+(`d = 2`), A116089 (`d = 3`) and A206294 (`e = 3`).
+
+The resolution theorem has a network form. Every lower-unitriangular totally
+nonnegative matrix is the path matrix of a triangular planar network whose
+nonnegative weights come from Whitney elimination. The same machinery gives PF
+rows for tiling polynomials built from weighted lower shifts.
 
 ## Proof idea
 
