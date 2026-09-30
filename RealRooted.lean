@@ -55,6 +55,9 @@ import RealRooted.Basic.PolynomialFacts
 import RealRooted.Basic.ProperPosition
 import RealRooted.Basic.RootLists
 import RealRooted.BasisTransform
+import RealRooted.BalancedRunTransformation
+import RealRooted.BalancedRunTransformation.Interlacing
+import RealRooted.BalancedRunTransformation.Preservation
 import RealRooted.BernsteinCone
 import RealRooted.BernsteinCone.Preserver
 import RealRooted.Bezoutian
@@ -218,6 +221,7 @@ import RealRooted.Challenges.Issue34SingleMatrixCounterexample
 import RealRooted.Challenges.Issue34WindowObstruction
 import RealRooted.Challenges.Kurtz
 import RealRooted.Challenges.MatrixInterlacing
+import RealRooted.Challenges.MonomialChainOperator
 import RealRooted.Challenges.Narayana
 import RealRooted.Challenges.Nijenhuis
 import RealRooted.Challenges.Obreschkoff
@@ -903,6 +907,7 @@ import RealRooted.ObreschkoffConverse.Derivative
 import RealRooted.ObreschkoffConverse.Forward
 import RealRooted.ObreschkoffConverse.Regularization
 import RealRooted.OscillatoryInterlacing
+import RealRooted.OperatorInterlacingUpgrade
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.OrderedRoots
 import RealRooted.ParkingFunctions.Descents.Basic
@@ -974,6 +979,7 @@ import RealRooted.ProductSequence.Factors
 import RealRooted.ProductSequence.Lifts
 import RealRooted.ProductSequence.ScalarFamilies
 import RealRooted.QuadraticCubicPencil
+import RealRooted.QuadraticInterlacingClosure
 import RealRooted.QuadraticRoot
 import RealRooted.RankTwoMatching
 import RealRooted.RankTwoMatching.Basic
@@ -1473,3 +1479,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
 import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 import RealRooted.SpectralProduct
+import RealRooted.RootCounting.CrossingExhaustion
+import RealRooted.BinaryRunTransformation.CrossLength
+import RealRooted.BinaryRunTransformation.Interlacing
+import RealRooted.BinaryRunTransformation.KernelIdentities
