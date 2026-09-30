@@ -61,17 +61,6 @@ theorem positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
   intro f g r hpair hfnn hgnn hdeg _ μ hμ
   exact hsub r hpair hfnn hgnn hdeg μ hμ
 
-/-- A `P := True` relation x-subtraction target gives the unrestricted
-relation target. -/
-theorem positiveSplitTranslatedXSubRightFamilyRelation_of_predicate_true
-    {R : ℕ → ℕ → Prop}
-    (hsub :
-      positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement R
-        (fun _ => True)) :
-    positiveSplitTranslatedXSubRightFamilyRelationStatement R := by
-  intro f g r hpair hfnn hgnn hdeg μ hμ
-  exact hsub r hpair hfnn hgnn hdeg trivial μ hμ
-
 /-- Same-degree positive-split subtraction-family target. -/
 def positiveSplitSameDegreeTranslatedXSubRightFamilyStatement : Prop :=
   positiveSplitTranslatedXSubRightFamilyRelationStatement
@@ -94,30 +83,6 @@ def positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
     (P : ℕ → Prop) : Prop :=
   positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement
     (fun m n => n = m + 1) P
-
-/-- Degree guardrail for the translated x-subtraction endpoint: in the
-left-successor case, `g.comp (X + C r)` and `X * f.comp (X + C r)` differ by
-two degrees, so this endpoint cannot be proved by a direct `StrictInterl` witness. -/
-theorem not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
-    {f g : ℝ[X]} {r : ℝ}
-    (hpair : PositiveSplitRootCountPair f g)
-    (hdeg : f.natDegree = g.natDegree + 1) :
-    ¬ StrictInterl (g.comp (X + C r)) (X * f.comp (X + C r)) := by
-  intro hstrictInterl
-  have hF_ne : f.comp (X + C r) ≠ 0 :=
-    (hpair.left_pos.comp_X_add_C r).ne_zero
-  have hXF_deg :
-      (X * f.comp (X + C r)).natDegree =
-        (f.comp (X + C r)).natDegree + 1 :=
-    natDegree_X_mul hF_ne
-  have hF_deg : (f.comp (X + C r)).natDegree = f.natDegree := by simp [Polynomial.natDegree_comp]
-  have hG_deg : (g.comp (X + C r)).natDegree = g.natDegree := by simp [Polynomial.natDegree_comp]
-  have hgap :
-      (g.comp (X + C r)).natDegree + 1 <
-        (X * f.comp (X + C r)).natDegree := by
-    rw [hXF_deg, hF_deg, hG_deg]
-    lia
-  exact hstrictInterl.not_of_left_natDegree_succ_lt_right hgap
 
 /-- Quadratic terminal case for the x-subtraction pencil with two degree-one
 endpoints and a nonnegative constant term on the right endpoint. -/
@@ -238,47 +203,6 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
     simpa [Polynomial.natDegree_comp] using hgdeg.le
   exact splits_X_mul_sub_C_mul_of_left_natDegree_zero_right_natDegree_le_one
     hFdeg hGdeg μ
-
-/-- Pack the degree-zero right endpoint terminal as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_zero :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 0) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
-    hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-one right endpoint terminal as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_one :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 1) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_one
-    hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the low-degree right endpoint terminals as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_one :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 1) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_one
-    hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-one right endpoint terminal as a predicate-restricted
-right-successor sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_one :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 1) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
-    hpair hfnn hgnn hdeg hgdeg
-
 
 end LiuOppositeSigns
 end RealRooted

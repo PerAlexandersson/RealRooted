@@ -204,38 +204,6 @@ theorem RootCountCompatible.of_natDegree_le_one
   rw [abs_le]
   lia
 
-/-- A two-root polynomial and a one-root polynomial have Liu-compatible root
-counts when the lower root of the two-root side lies weakly below the singleton
-root. -/
-theorem RootCountCompatible.of_roots_pair_singleton
-    {p q : ℝ[X]} {a b c : ℝ} (hac : a ≤ c)
-    (hproots : p.roots = {a, b}) (hqroots : q.roots = {c}) :
-    RootCountCompatible p q := by
-  intro x
-  rw [rootCountAtOrAbove, rootCountAtOrAbove, hproots, hqroots]
-  simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
-    Multiset.filter_singleton]
-  by_cases hxa : x ≤ a
-  · have hxc : x ≤ c := hxa.trans hac
-    by_cases hxb : x ≤ b <;> norm_num [hxa, hxb, hxc]
-  · by_cases hxb : x ≤ b <;> by_cases hxc : x ≤ c <;> norm_num [hxa, hxb, hxc]
-
-/-- A one-root polynomial and a two-root polynomial have Liu-compatible root
-counts when the lower root of the two-root side lies weakly below the singleton
-root. -/
-theorem RootCountCompatible.of_roots_singleton_pair
-    {p q : ℝ[X]} {a c d : ℝ} (hca : c ≤ a)
-    (hproots : p.roots = {a}) (hqroots : q.roots = {c, d}) :
-    RootCountCompatible p q := by
-  intro x
-  rw [rootCountAtOrAbove, rootCountAtOrAbove, hproots, hqroots]
-  simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
-    Multiset.filter_singleton]
-  by_cases hxc : x ≤ c
-  · have hxa : x ≤ a := hxc.trans hca
-    by_cases hxd : x ≤ d <;> norm_num [hxa, hxc, hxd]
-  · by_cases hxa : x ≤ a <;> by_cases hxd : x ≤ d <;> norm_num [hxa, hxc, hxd]
-
 /-- Two two-root polynomials have Liu-compatible root counts when the two
 closed root intervals overlap. -/
 theorem RootCountCompatible.of_roots_pair_pair
@@ -287,25 +255,6 @@ theorem OppositeLeadingSigns.pos_neg_or_neg_pos {p q : ℝ[X]}
         mul_nonneg (le_of_lt hp_pos) hq_nonneg
       linarith
     exact Or.inl ⟨hp_pos, hasPosLeadingCoeff_neg hq_neg⟩
-
-/-- The same-degree leading-term cancellation parameter is positive for an
-opposite-leading-sign pair. -/
-theorem OppositeLeadingSigns.cancelParameter_pos {p q : ℝ[X]}
-    (h : OppositeLeadingSigns p q) :
-    0 < -p.leadingCoeff / q.leadingCoeff := by
-  rw [neg_div]
-  exact neg_pos.mpr
-    ((div_neg_iff.mpr (mul_neg_iff.mp h)) : p.leadingCoeff / q.leadingCoeff < 0)
-
-/-- Swapping an opposite-leading-sign pair inverts the leading-term
-cancellation parameter. -/
-theorem OppositeLeadingSigns.cancelParameter_symm_eq_inv {p q : ℝ[X]}
-    (h : OppositeLeadingSigns p q) :
-    -q.leadingCoeff / p.leadingCoeff =
-      (-p.leadingCoeff / q.leadingCoeff)⁻¹ := by
-  have hp_lc : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr h.left_ne_zero
-  have hq_lc : q.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr h.right_ne_zero
-  field_simp [hp_lc, hq_lc]
 
 /-- For two splitting polynomials with opposite leading signs, the signed
 difference of the numbers of roots strictly above a common non-root is odd
@@ -522,23 +471,6 @@ theorem RootCountCompatible.rootCountAbove_bounds_of_nonRoot
         (p.roots.filter (x < ·)).card ≤ 1 :=
   ⟨h.rootCountAbove_left_sub_le_one_of_nonRoot hp_ne hq_ne hpx hqx,
     h.symm.rootCountAbove_left_sub_le_one_of_nonRoot hq_ne hp_ne hqx hpx⟩
-
-/-- A root-count-compatible bound at the upper endpoint of `(a, b]` shifts to
-the lower endpoint after subtracting the explicit roots in the window. -/
-theorem RootCountCompatible.rootCountAbove_shift_Ioc_abs_le_one
-    {p q : ℝ[X]} (h : RootCountCompatible p q)
-    (hp_ne : p ≠ 0) (hq_ne : q ≠ 0) {a b : ℝ} (hab : a ≤ b)
-    (hpb : ¬ p.IsRoot b) (hqb : ¬ q.IsRoot b) :
-    |(((p.roots.filter (a < ·)).card : ℤ) -
-          (q.roots.filter (a < ·)).card) -
-        (((p.roots.filter (fun r => a < r ∧ r ≤ b)).card : ℤ) -
-          (q.roots.filter (fun r => a < r ∧ r ≤ b)).card)| ≤ 1 := by
-  have hbabs :=
-    h.rootCountAbove_abs_sub_le_one_of_nonRoot hp_ne hq_ne hpb hqb
-  have hjump := card_filter_gt_sub_eq_card_filter_Ioc_sub_add
-    (s := p.roots) (t := q.roots) hab
-  rw [hjump]
-  simpa using hbabs
 
 /-- If the left polynomial has no roots in `(a, b)` and the right polynomial
 has at least two roots in `(a, b)`, Liu-compatible root counts force the right

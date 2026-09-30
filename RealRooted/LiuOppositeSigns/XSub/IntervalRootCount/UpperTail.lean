@@ -8,47 +8,6 @@ open Polynomial Filter
 
 namespace RealRooted
 namespace LiuOppositeSigns
-/-- If the x-subtraction pencil has the right upper-tail sign at the last
-left-root location, then the summed adjacent-gap `min 2` lower bounds plus one
-additional upper-tail root are bounded by the strict-upper root count above the
-first left root. -/
-theorem
-    PositiveSplitRootCountPair.sum_min_two_add_one_le_card_xSub_gt_of_roots_sort_of_last_q_nonneg
-    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
-    (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
-    {a b μ : ℝ} {xs : List ℝ}
-    (hrs : p.roots.toFinset.sort (· ≤ ·) = a :: b :: xs) (hμ : 0 < μ)
-    (hq_last : 0 ≤ q.eval ((b :: xs).getLast (List.cons_ne_nil b xs)))
-    (htop : Tendsto (fun x => (X * p - C μ * q).eval x) atTop atTop) :
-    (((a :: b :: xs).zip (b :: xs)).map
-        (fun ab => min 2
-          (q.roots.filter (fun x => ab.1 < x ∧ x < ab.2)).card)).sum + 1 ≤
-    ((X * p - C μ * q).roots.filter (a < ·)).card := by
-  let last := (b :: xs).getLast (List.cons_ne_nil b xs)
-  let tailCard := ((X * p - C μ * q).roots.filter (fun x => last ≤ x)).card
-  have ha_mem : a ∈ p.roots.toFinset.sort (· ≤ ·) := by simp [hrs]
-  have ha : p.IsRoot a := by
-    rw [Finset.mem_sort, Multiset.mem_toFinset] at ha_mem
-    exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp ha_mem
-  have hlast_mem_tail : last ∈ b :: xs :=
-    List.getLast_mem (List.cons_ne_nil b xs)
-  have hlast_mem : last ∈ p.roots.toFinset.sort (· ≤ ·) := by
-    rw [hrs]
-    exact List.mem_cons.mpr (Or.inr hlast_mem_tail)
-  have hlast : p.IsRoot last := by
-    rw [Finset.mem_sort, Multiset.mem_toFinset] at hlast_mem
-    exact (Polynomial.mem_roots hpair.left_pos.ne_zero).mp hlast_mem
-  have hP_ne : X * p - C μ * q ≠ 0 :=
-    hno.xSub_ne_zero_of_left_root ha hμ.ne'
-  have htail_one : 1 ≤ tailCard := by
-    simpa [tailCard, last] using
-      one_le_card_xSub_roots_filter_ge_of_left_root_right_eval_nonneg
-        hlast hq_last hμ hP_ne htop
-  have hsum_tail :=
-    hpair.sum_min_two_add_card_xSub_ge_last_le_card_xSub_gt_of_roots_sort
-      hp_nonneg hno hrs hμ
-  exact le_trans (Nat.add_le_add_left htail_one _)
-    (by simpa [tailCard, last] using hsum_tail)
 
 /-- If a unique right-endpoint root lies strictly above the largest left root
 and is negative, then the x-subtraction pencil has at least two roots in the

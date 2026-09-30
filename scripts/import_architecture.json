@@ -1275,59 +1275,8 @@
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor": {
       "max_modules": 168
    },
-    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.TailSigns": {
-      "max_modules": 168
-   },
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount": {
       "max_modules": 172
-   },
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Statements": {
-      "max_modules": 152
-    },
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedRight": {
-      "max_modules": 153
-    },
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.QuarticSubQuadratic": {
-      "max_modules": 153
-    },
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedLeft": {
-      "max_modules": 154
-    },
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.EndpointZero": {
-      "max_modules": 156
-    },
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Assembly": {
-      "max_modules": 157
-    },
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary": {
-      "max_modules": 158
-    },
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.CubicSubQuadratic": {
-      "max_modules": 160
-   },
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.Basic": {
-      "max_modules": 161
-   },
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.LeftOutlier": {
-      "max_modules": 162
-   },
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.MiddleCases": {
-      "max_modules": 163
-   },
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.RightRepeated": {
-      "max_modules": 164
-   },
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.LeftRepeated": {
-      "max_modules": 165
-   },
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.Endpoints": {
-      "max_modules": 166
-   },
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic": {
-      "max_modules": 167
-   },
-    "RealRooted.LiuOppositeSigns.XSub.ProperPosition": {
-      "max_modules": 173
    },
     "RealRooted.Wronskian": {
       "max_modules": 120
@@ -2125,24 +2074,7 @@
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor",
-    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.TailSigns",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount",
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Statements",
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedRight",
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.QuarticSubQuadratic",
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedLeft",
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.EndpointZero",
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Assembly",
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary",
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.CubicSubQuadratic",
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.Basic",
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.LeftOutlier",
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.MiddleCases",
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.RightRepeated",
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.LeftRepeated",
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic.Endpoints",
-    "RealRooted.LiuOppositeSigns.XSub.CubicCubic",
-    "RealRooted.LiuOppositeSigns.XSub.ProperPosition",
     "RealRooted.Interlacing.Multiplicity",
     "RealRooted.Interlacing.Residue",
     "RealRooted.MaWang",

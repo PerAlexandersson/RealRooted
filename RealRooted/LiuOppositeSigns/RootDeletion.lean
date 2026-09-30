@@ -42,19 +42,6 @@ theorem
     (deleteRootFactor_splits_of_isRoot hf_splits hr) hg_splits
     hdelete_deg hgdeg
 
-theorem
-    rootCountCompatible_left_deleteRootFactor_of_left_le_one_right_le_two
-    {f g : ℝ[X]} {s : ℝ}
-    (hf_splits : f.Splits) (hg_splits : g.Splits)
-    (hs : g.IsRoot s) (hfdeg : f.natDegree ≤ 1)
-    (hgdeg : g.natDegree ≤ 2) :
-    RootCountCompatible f (deleteRootFactor g s) := by
-  have hdelete_deg : (deleteRootFactor g s).natDegree ≤ 1 := by
-    rw [natDegree_deleteRootFactor]
-    lia
-  exact RootCountCompatible.of_natDegree_le_one hf_splits
-    (deleteRootFactor_splits_of_isRoot hg_splits hs) hfdeg hdelete_deg
-
 theorem leadingCoeff_deleteRootFactor_of_isRoot {p : ℝ[X]} {r : ℝ}
     (hp_ne : p ≠ 0) (hr : p.IsRoot r) :
     (deleteRootFactor p r).leadingCoeff = p.leadingCoeff := by
@@ -203,11 +190,6 @@ theorem deleteRootFactor_ne_zero_and_splits {p : ℝ[X]} {r : ℝ}
     deleteRootFactor p r ≠ 0 ∧ (deleteRootFactor p r).Splits :=
   deleteRootFactor_ne_zero_and_splits_of_isRoot hp_ne hp_splits h.isRoot
 
-theorem leadingCoeff_deleteRootFactor {p : ℝ[X]} {r : ℝ} (hp_ne : p ≠ 0)
-    (h : IsLargestRoot p r) :
-    (deleteRootFactor p r).leadingCoeff = p.leadingCoeff :=
-  leadingCoeff_deleteRootFactor_of_isRoot hp_ne h.isRoot
-
 theorem root_deleteRootFactor_le {p : ℝ[X]} {r s : ℝ} (hp_ne : p ≠ 0)
     (h : IsLargestRoot p r) (hs : (deleteRootFactor p r).IsRoot s) :
     s ≤ r := by
@@ -233,58 +215,7 @@ theorem rootCountAbove_deleteRootFactor_eq_zero_of_le
   exact rootCountAbove_eq_zero_of_forall_roots_le fun s hs =>
     (h.root_deleteRootFactor_le hp_ne ((Polynomial.mem_roots hdelete_ne).mp hs)).trans hx
 
-/-- For an ordered two-root multiset, the largest-root certificate selects the
-right entry. -/
-theorem eq_right_of_roots_pair {p : ℝ[X]} {r a b : ℝ}
-    (hp_ne : p ≠ 0) (h : IsLargestRoot p r) (hab : a ≤ b)
-    (hroots : p.roots = {a, b}) :
-    r = b := by
-  have hb_le : b ≤ r := h.roots_le b (by simp [hroots])
-  have hr := h.mem_roots hp_ne
-  rw [hroots] at hr
-  simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hr
-  rcases hr with rfl | rfl
-  · exact le_antisymm hab hb_le
-  · rfl
-
-/-- For an ordered three-root multiset, the largest-root certificate selects
-the right entry. -/
-theorem eq_right_of_roots_triple {p : ℝ[X]} {r a b c : ℝ}
-    (hp_ne : p ≠ 0) (h : IsLargestRoot p r) (hab : a ≤ b) (hbc : b ≤ c)
-    (hroots : p.roots = {a, b, c}) :
-    r = c := by
-  have hc_le : c ≤ r := h.roots_le c (by simp [hroots])
-  have hr := h.mem_roots hp_ne
-  rw [hroots] at hr
-  simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hr
-  rcases hr with rfl | rfl | rfl
-  · exact le_antisymm (hab.trans hbc) hc_le
-  · exact le_antisymm hbc hc_le
-  · rfl
-
 end IsLargestRoot
-
-/-- If a split quadratic has roots `{a, b}` and is factored accordingly, then
-deleting the right root leaves the singleton root `{a}`. -/
-theorem roots_deleteRootFactor_eq_singleton_of_roots_pair_right
-    {p : ℝ[X]} {a b : ℝ} (hp_ne : p ≠ 0)
-    (hroots : p.roots = {a, b})
-    (hfac : p = C p.leadingCoeff * ((X - C a) * (X - C b))) :
-    (deleteRootFactor p b).roots = {a} := by
-  have hbroot : p.IsRoot b :=
-    (Polynomial.mem_roots hp_ne).mp (by
-      rw [hroots]
-      simp only [Multiset.insert_eq_cons]
-      simp)
-  have hlc : p.leadingCoeff ≠ 0 := mt leadingCoeff_eq_zero.mp hp_ne
-  have hdelete_eq : deleteRootFactor p b = C p.leadingCoeff * (X - C a) := by
-    apply mul_left_cancel₀ (X_sub_C_ne_zero b)
-    calc
-      (X - C b) * deleteRootFactor p b = p :=
-        factor_deleteRootFactor_of_isRoot hbroot
-      _ = C p.leadingCoeff * ((X - C a) * (X - C b)) := hfac
-      _ = (X - C b) * (C p.leadingCoeff * (X - C a)) := by ring
-  rw [hdelete_eq, Polynomial.roots_C_mul _ hlc, roots_X_sub_C]
 
 /-- If a split cubic has roots `{a, b, c}` and is factored accordingly, then
 deleting the right root leaves the pair of remaining roots `{a, b}`. -/

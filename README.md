@@ -203,16 +203,10 @@ emulation. These scripts complement `lake build`; they do not replace it.
   largest-root deletion API, and `PositiveSplitRootCount.lean` packages the
   normalized positive-leading pair. `LiuOppositeSigns.lean` retains the
   cross-owned-gap and left/right branch interface, with
-  `LiuOppositeSignsTheorem.lean` providing the theorem endpoint. Its
-  `XSub/ProperPosition.lean` child exposes the ordinary `StrictInterl` bridge
-  and the nonnegative `X * p - μ * q` splitness corollary. Its
+  `LiuOppositeSigns/Theorem.lean` providing the theorem endpoint. Its
   `XSub/IntervalRootCount/` package separates root filters, adjacent gaps,
   exterior tails, count-to-splitting endpoints, and the three degree cases;
-  `XSub/IntervalRootCount.lean` remains the compatible import. Its
-  `XSub/CubicCubic/` package similarly separates cubic-minus-quadratic
-  infrastructure, normalized setup, root-order case families, repeated-root
-  boundaries, and the degree-three endpoints; `XSub/CubicCubic.lean` remains
-  the compatible import.
+  `XSub/IntervalRootCount.lean` remains the compatible import.
 - `RealRooted/Favard/Affine/` separates direct positive-slope recurrences,
   scalar-denominator normalizations, and row-sign normalizations; its parent
   `Favard/Affine.lean` is the focused theorem import, while `Tactic/Favard.lean`

@@ -291,26 +291,6 @@ theorem card_right_roots_filter_lt_le_two_of_roots_ge_of_right_successor
       hroots_ge
   lia
 
-theorem sameDegreeRootCountAboveNonRoot {p q : ℝ[X]}
-    (h : PositiveSplitRootCountPair p q)
-    (_hdeg : q.natDegree = p.natDegree) :
-    ∀ x : ℝ, ¬ p.IsRoot x → ¬ q.IsRoot x →
-      ((p.roots.filter (x < ·)).card : ℤ) -
-          (q.roots.filter (x < ·)).card ≤ 1 ∧
-        ((q.roots.filter (x < ·)).card : ℤ) -
-          (p.roots.filter (x < ·)).card ≤ 1 :=
-  fun _ hpx hqx => h.rootCountAbove_bounds_of_nonRoot hpx hqx
-
-theorem succDegreeRootCountAboveNonRoot {p q : ℝ[X]}
-    (h : PositiveSplitRootCountPair p q)
-    (_hdeg : q.natDegree = p.natDegree + 1) :
-    ∀ x : ℝ, ¬ p.IsRoot x → ¬ q.IsRoot x →
-      ((p.roots.filter (x < ·)).card : ℤ) -
-          (q.roots.filter (x < ·)).card ≤ 1 ∧
-        ((q.roots.filter (x < ·)).card : ℤ) -
-          (p.roots.filter (x < ·)).card ≤ 1 :=
-  fun _ hpx hqx => h.rootCountAbove_bounds_of_nonRoot hpx hqx
-
 end PositiveSplitRootCountPair
 
 /-- Deleting a common root from both endpoints preserves the positive-split
