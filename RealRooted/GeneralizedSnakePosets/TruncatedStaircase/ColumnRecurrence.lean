@@ -37,6 +37,11 @@ private theorem listRange_map_sum_eq {M : Type*} [AddCommMonoid M] (f : ℕ → 
   | succ n ih => rw [List.range_succ, List.map_append, List.sum_append, ih,
       Finset.sum_range_succ]; simp
 
+/-- `G_n = sum_{i < n} R(n, i)` as a `Finset` sum. -/
+theorem auxiliaryG_eq_sum_range (n : ℕ) :
+    auxiliaryG n = ∑ i ∈ Finset.range n, truncatedStaircaseRookPolynomial n i := by
+  rw [auxiliaryG, listRange_map_sum_eq]
+
 /-- The bottom-row expansion with a `Finset` sum. -/
 private theorem bottomRow (n i : ℕ) :
     truncatedStaircaseRookPolynomial n (i + 1) =

@@ -1499,3 +1499,6 @@ import RealRooted.BinaryRunTransformation.MultiplierMotzkin
 import RealRooted.GeneralizedSnakePosets.SnakeConstant
 import RealRooted.GeneralizedSnakePosets.SnakeTheorem41
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+import RealRooted.GeneralizedSnakePosets.ChainPolynomial
+import RealRooted.GeneralizedSnakePosets.SnakeBand
+import RealRooted.GeneralizedSnakePosets.SnakeTheorem35
