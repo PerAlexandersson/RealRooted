@@ -42,6 +42,10 @@ module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
 [[theorems]]
 name = "RealRooted.motzkinWeightedRow_inv_ascPochhammer_succ_strictInterl"
 module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
+
+[[theorems]]
+name = "RealRooted.motzkinAscentRow_strictInterl_succ"
+module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
 -->
 
 <!-- realrooted-catalog-content -->

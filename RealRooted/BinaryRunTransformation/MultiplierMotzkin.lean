@@ -487,4 +487,30 @@ theorem motzkinWeightedRow_inv_ascPochhammer_succ_strictInterl {α : ℝ} (hα :
     have h' := hT.C_mul_right (inv_ne_zero hα.ne')
     rwa [← mul_assoc, ← C_mul, inv_mul_cancel₀ hα.ne', C_1, one_mul] at h'
 
+/-! ### The Motzkin-ascent case `α = 2` -/
+
+/-- `(2)_m = (m + 1)!`. -/
+theorem ascPochhammer_eval_two (m : ℕ) :
+    (ascPochhammer ℝ m).eval 2 = ((m + 1).factorial : ℝ) := by
+  induction m with
+  | zero => simp
+  | succ m ih =>
+      rw [ascPochhammer_succ_eval, ih, Nat.factorial_succ (m + 1)]
+      push_cast
+      ring
+
+/-- At `α = 2` the weights are `γ_m = 1 / (m + 1)!`, the Motzkin-ascent case. -/
+theorem motzkinWeightedRow_inv_ascPochhammer_two (n : ℕ) :
+    motzkinWeightedRow (fun m => ((ascPochhammer ℝ m).eval 2)⁻¹) n =
+      motzkinWeightedRow (fun m => (((m + 1).factorial : ℕ) : ℝ)⁻¹) n := by
+  simp_rw [ascPochhammer_eval_two]
+
+/-- **Sturm chain for the Motzkin-ascent rows** `γ_m = 1 / (m + 1)!`. -/
+theorem motzkinAscentRow_strictInterl_succ (n : ℕ) :
+    StrictInterl
+      (motzkinWeightedRow (fun m => (((m + 1).factorial : ℕ) : ℝ)⁻¹) n)
+      (motzkinWeightedRow (fun m => (((m + 1).factorial : ℕ) : ℝ)⁻¹) (n + 1)) := by
+  rw [← motzkinWeightedRow_inv_ascPochhammer_two, ← motzkinWeightedRow_inv_ascPochhammer_two]
+  exact motzkinWeightedRow_inv_ascPochhammer_strictInterl_succ (by norm_num) n
+
 end RealRooted
