@@ -48,19 +48,6 @@ private theorem IsInterlacingSeq0NonnegRealRooted.insertZero
     · exact (hp_ne rfl).elim
     · exact h.realRooted p (by simp [hp]) hp_ne
 
-private theorem add_ne_zero_of_nonnegCoeffs_of_right_ne_zero
-    {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
-    (hq_ne : q ≠ 0) : p + q ≠ 0 := by
-  let d := q.natDegree
-  have hp_coeff : 0 ≤ p.coeff d := hp d
-  have hq_coeff : 0 < q.coeff d := by
-    change 0 < q.leadingCoeff
-    exact hq.pos_leadingCoeff hq_ne
-  intro hzero
-  have := congrArg (fun r : ℝ[X] => r.coeff d) hzero
-  simp only [coeff_add, coeff_zero] at this
-  linarith
-
 namespace BrandenVecchi
 
 /-- Insert a zero anywhere in a reflection-interlacing sequence. -/
@@ -706,7 +693,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
       hasNonnegCoeffs_sum _ fun q hq =>
         h.member_nonnegCoeffs (List.mem_of_mem_drop hq)
     simpa [add_comm] using
-      add_ne_zero_of_nonnegCoeffs_of_right_ne_zero htailnn hSnn.X_mul hXS_ne
+      add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero htailnn hSnn.X_mul hXS_ne
   have hout_nn : ∀ p ∈ out, HasNonnegCoeffs p :=
     fun _ hp => chowRowTransform_nonnegCoeffs h (by simpa [out] using hp)
   have hout_deg : ∀ p ∈ out, p.natDegree ≤ n + 1 :=

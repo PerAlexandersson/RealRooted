@@ -17,19 +17,6 @@ noncomputable section
 
 namespace RealRooted
 
-private theorem add_ne_zero_of_nonnegCoeffs_of_right_ne_zero
-    {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
-    (hq_ne : q ≠ 0) : p + q ≠ 0 := by
-  let d : ℕ := q.natDegree
-  have hp_coeff : 0 ≤ p.coeff d := hp d
-  have hq_pos : 0 < q.coeff d := by
-    have hq_lc : 0 < q.leadingCoeff := hq.pos_leadingCoeff hq_ne
-    simpa [d] using hq_lc
-  intro hsum_zero
-  have hcoeff_zero : (p + q).coeff d = 0 := by simp [hsum_zero]
-  rw [coeff_add] at hcoeff_zero
-  linarith
-
 private theorem pairwise_interl_of_filter_ne_zero_pairwise_strictInterl :
     ∀ fs : List ℝ[X], (fs.filter (· ≠ 0)).Pairwise StrictInterl → fs.Pairwise Interl
   | [], _ => by simp
@@ -313,7 +300,7 @@ theorem IsReflectionInterlacingSeq.chowSExtension
           exact hg_ne ((reflect_eq_zero_iff (f := g) (N := n)).mp
             (by simpa [gr] using hgr_zero))
         have hq_ne : q ≠ 0 :=
-          add_ne_zero_of_nonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
+          add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
         have hfg := hfg0.toStrictInterl_of_ne hf_ne hg_ne
         have hgq := hgq0.toStrictInterl_of_ne hg_ne hq_ne
         have hqq := StrictInterl.refl hq_ne (hqreal hq_ne)
@@ -420,7 +407,7 @@ theorem IsReflectionInterlacingSeq.chowSExtension
           exact hg_ne ((reflect_eq_zero_iff (f := g) (N := n)).mp
             (by simpa [gr] using hgr_zero))
         have hq_ne : q ≠ 0 :=
-          add_ne_zero_of_nonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
+          add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
         have hgq := hgq0.toStrictInterl_of_ne hg_ne hq_ne
         have hqq := StrictInterl.refl hq_ne (hqreal hq_ne)
         have hqgr := hqgr0.toStrictInterl_of_ne hq_ne hgr_ne
