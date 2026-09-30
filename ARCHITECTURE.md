@@ -1504,26 +1504,16 @@ wrappers come from `Tactic.PFBidiagonal`. It does not carry a second
 mathematical implementation of those declarations.
 
 The Braun--Jal modified-Narayana application is layered by proof role:
-`Narayana.Recurrence` owns full-staircase identification, finite recurrence
-checks, and the auxiliary coefficient/degree algebra; `Narayana.RootSums` owns
-the Vieta comparison, root-sum orientation, and the refuted strict-bound
-interface; and `Narayana.PFFacts` owns the PF and base interlacing facts.
-`Narayana.RankSix` contains the explicit rank-six roots, signs, interval
-isolation, and cross inequalities, while `Narayana.LowRank` contains the
-ranks-three-through-five certificates and bounded rank-six assembly.
-`Narayana.Claim7Analytic` owns the pencil leading coefficients, splitness,
-nonpositive roots, and endpoint-safe Claim 7 package. The historical
-`GeneralizedSnakePosetsNarayana` path is a 10-line compatibility import.
-
-All 135 established declarations retain their names and signatures. The six
-implementation units have 675, 517, 161, 990, 859, and 386 local lines,
-respectively, instead of one 3,527-line mixed source. The high-level
-`Narayana.Claim7` consumer imports the analytic branch directly: its closure
-grows from 201 to 202 modules while falling from 86,322 to 83,448 local lines,
-because it no longer loads the PF and finite-certificate branch. The broad
-challenge and compatibility imports deliberately continue to re-export both
-branches. The root umbrella budget rises by the exact six new source modules
-to 831.
+`Narayana.Modified` defines the modified Narayana polynomials; `Narayana.Recurrence`
+identifies them with the full-staircase rook polynomials; `Narayana.PFFacts`
+owns their PF property; `Narayana.Turan` and `Narayana.JacobiTransport` prove
+Lemma 3.4 through the Jacobi transport; and `Narayana.RootSums`,
+`Narayana.Claim7Analytic` and `Narayana.Claim7` prove Claim 7 and the abstract
+Theorem 4.1 induction.  The concrete board, the column recurrence and
+Theorem 3.5 live in `SnakeBand`, `TruncatedStaircase.ColumnRecurrence` and
+`SnakeTheorem35`.  The earlier finite-rank certificates (ranks three to six)
+were removed once the general proofs covered them.  The historical
+`GeneralizedSnakePosetsNarayana` path is a compatibility import.
 
 The truncated-staircase finite-board implementation is likewise layered by
 mathematical role. `TruncatedStaircase.Basic` owns the board definition and

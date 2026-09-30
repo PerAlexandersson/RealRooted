@@ -16,67 +16,6 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
-/-- Concrete modified-Narayana/auxiliary-`G` route for Braun--Jal Theorem 4.1.
-
-This discharges the standard modified-Narayana facts and the elementary
-auxiliary-`G` facts from the generic Section 3 route.  The remaining hypotheses
-are the all-`n` equation `(2)`, Claim `(7)` side conditions, adjacent
-interlacing of the auxiliary `G` column, and the word-family side conditions.
--/
-theorem theorem41InductionRoute_modified_of_section3_of_constant_matches_succ_length
-    {M : SnakeWord → ℝ[X]}
-    (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hside :
-      Theorem41Claim7SideConditions
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hG : ∀ {m : ℕ}, 2 ≤ m →
-      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1)) (FiniteSkewBoard.auxiliaryG m))
-    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
-    (hdeg :
-      ∀ {w : SnakeWord}, 1 ≤ w.length →
-        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const :
-      ∀ {w : SnakeWord}, w.IsConstant →
-        M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    Theorem41InductionRouteStatement
-      M modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
-  theorem41InductionRoute_of_section3_of_constant_matches_succ_length
-    (M := M) (P := modifiedNarayanaPolynomial) (G := FiniteSkewBoard.auxiliaryG)
-    hrec2 hside modifiedNarayanaPolynomial_interlaces_succ hG
-    modifiedNarayanaPolynomial_one FiniteSkewBoard.auxiliaryG_one
-    modifiedNarayanaPolynomial_hasNonnegCoeffs
-    FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
-
-/-- Endpoint-compatible modified-Narayana route for Braun--Jal Theorem 4.1,
-using root sums to orient Claim `(7)`. -/
-theorem theorem41InductionRoute_modified_of_section3_rootSum_of_constant_matches_succ_length
-    {M : SnakeWord → ℝ[X]}
-    (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hside :
-      Theorem41Claim7RootSumSideConditions
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hG : ∀ {m : ℕ}, 2 ≤ m →
-      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1)) (FiniteSkewBoard.auxiliaryG m))
-    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
-    (hdeg :
-      ∀ {w : SnakeWord}, 1 ≤ w.length →
-        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const :
-      ∀ {w : SnakeWord}, w.IsConstant →
-        M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    Theorem41InductionRouteStatement
-      M modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
-  theorem41InductionRoute_of_section3_rootSum_of_constant_matches_succ_length
-    (M := M) (P := modifiedNarayanaPolynomial) (G := FiniteSkewBoard.auxiliaryG)
-    hrec2 hside modifiedNarayanaPolynomial_interlaces_succ hG
-    modifiedNarayanaPolynomial_one FiniteSkewBoard.auxiliaryG_one
-    modifiedNarayanaPolynomial_hasNonnegCoeffs
-    FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
-
 /-- Arithmetic comparison between the Vieta expressions predicted by the
 leading and next coefficients of the modified-Narayana `U` window and the
 auxiliary-`G` `V` window. -/
@@ -457,62 +396,6 @@ theorem theorem41Claim7_modified_u_v_roots_sum_of_section3
     lia
   exact theorem41Claim7_modified_roots_sum_le_of_recurrence hrec2
     hm hlam hnu hU_split (hV_split hm hlam hnu) hUdeg' hVdeg'
-
-/-- Boundary polynomial showing that the strict negative `U`-root bound in the
-current Claim `(7)` side-condition bundle cannot be discharged uniformly at
-`ν = -1`. -/
-theorem theorem41Claim7_modified_left_boundary_eq :
-    (C (0 : ℝ) * X + C (-1 : ℝ)) * modifiedNarayanaPolynomial (2 - 1) +
-        modifiedNarayanaPolynomial 2 =
-      -X + C (3 : ℝ) * X + X ^ 2 := by
-  norm_num [modifiedNarayanaPolynomial_one, modifiedNarayanaPolynomial_two]
-  ring_nf
-
-/-- In the boundary case `m = 2`, `λ = 0`, `ν = -1`, the left polynomial
-`U = (λ X + ν) P_{m-1} + P_m` has zero as a root. -/
-theorem theorem41Claim7_modified_left_boundary_isRoot_zero :
-    ((C (0 : ℝ) * X + C (-1 : ℝ)) * modifiedNarayanaPolynomial (2 - 1) +
-        modifiedNarayanaPolynomial 2).IsRoot 0 := by
-  rw [theorem41Claim7_modified_left_boundary_eq, Polynomial.IsRoot.def]
-  simp
-
-/-- The strict negative upper bound requested by the current Claim `(7)` side
-condition fails for the modified Narayana boundary case `λ = 0`, `ν = -1`. -/
-theorem theorem41Claim7_modified_left_boundary_not_strictRootBound :
-    ¬ ∃ c : ℝ,
-      (∀ s ∈ (((C (0 : ℝ) * X + C (-1 : ℝ)) *
-        modifiedNarayanaPolynomial (2 - 1) + modifiedNarayanaPolynomial 2).roots),
-          s ≤ c) ∧ c < 0 := by
-  rintro ⟨c, hle, hc⟩
-  have hpoly_ne : -X + C (3 : ℝ) * X + X ^ 2 ≠ 0 := by
-    intro h
-    have heval := congr_arg (fun p : ℝ[X] => p.eval 1) h
-    norm_num at heval
-  have hboundary_ne :
-      (C (0 : ℝ) * X + C (-1 : ℝ)) *
-          modifiedNarayanaPolynomial (2 - 1) + modifiedNarayanaPolynomial 2 ≠
-        0 := by
-    rw [theorem41Claim7_modified_left_boundary_eq]
-    exact hpoly_ne
-  have hzero_mem :
-      (0 : ℝ) ∈ (((C (0 : ℝ) * X + C (-1 : ℝ)) *
-        modifiedNarayanaPolynomial (2 - 1) + modifiedNarayanaPolynomial 2).roots) :=
-    (Polynomial.mem_roots hboundary_ne).mpr
-      theorem41Claim7_modified_left_boundary_isRoot_zero
-  have hzero_le : (0 : ℝ) ≤ c := hle 0 hzero_mem
-  linarith
-
-/-- Consequently, the current bundled Claim `(7)` side-condition interface is
-not satisfiable by the concrete modified-Narayana / auxiliary-`G` data.  The
-endpoint `ν = -1` needs a refined conversion route instead of a uniform strict
-negative bound on the roots of `U`. -/
-theorem not_theorem41Claim7SideConditions_modified_auxiliaryG :
-    ¬ Theorem41Claim7SideConditions
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG := by
-  intro hside
-  exact theorem41Claim7_modified_left_boundary_not_strictRootBound
-    (hside.u_bound (m := 2) (lam := 0) (nu := -1)
-      (by norm_num) (by norm_num) (by norm_num))
 
 end GeneralizedSnakePosets
 end RealRooted
