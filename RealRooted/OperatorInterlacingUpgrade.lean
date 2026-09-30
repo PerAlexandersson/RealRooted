@@ -1,4 +1,4 @@
-import RealRooted.GarloffWagner.KreinExpansion
+import RealRooted.GarloffWagner.Theorem12
 import RealRooted.QuadraticInterlacingClosure
 
 /-!
@@ -63,14 +63,6 @@ def PreservesPFShiftInterlacingOnDegree
     IsPFPolynomial q → q ≠ 0 →
       (X ^ (m + 1) * q).natDegree ≤ D →
       StrictInterl (T (X ^ m * q)) (T (X ^ (m + 1) * q))
-
-/-- Every Krein summand of a nonzero PF polynomial is again PF. -/
-theorem IsGWKreinSummand.isPFPolynomial {g q : ℝ[X]}
-    (h : IsGWKreinSummand g q) (hg : IsPFPolynomial g) (hg0 : g ≠ 0) :
-    IsPFPolynomial q := by
-  rcases h with rfl | ⟨u, hfactor⟩
-  · exact hg
-  · exact hg.of_X_sub_C_mul_factor hfactor
 
 /-- The monomial chain extends through every PF factor.  Quadratic tangent
 closure advances the two adjacent affine combinations; all remaining work is
@@ -309,7 +301,7 @@ theorem strictInterl_map_of_preservesPFKreinInterlacingOnDegree
     have hinterl : StrictInterl (T ap₀.2) (T g) :=
       hTkrein hpf hfg.2.1.1 hgdeg (hsummand ap₀ hap₀)
     exact (hTnn ((hsummand ap₀ hap₀).isPFPolynomial
-      hpf hfg.2.1.1).hasNonnegCoeffs).pos_leadingCoeff hinterl.1.1
+      hpf).hasNonnegCoeffs).pos_leadingCoeff hinterl.1.1
   · rcases hex with ⟨ap, hap, hapos⟩
     exact ⟨(ap.1, T ap.2), List.mem_map.mpr ⟨ap, hap, rfl⟩, hapos⟩
 
