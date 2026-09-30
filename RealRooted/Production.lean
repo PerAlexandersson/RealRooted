@@ -1352,6 +1352,9 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 import RealRooted.SpectralProduct
 import RealRooted.RootCounting.CrossingExhaustion
+import RealRooted.BinaryRunTransformation.CrossLength
+import RealRooted.BinaryRunTransformation.Interlacing
+import RealRooted.BinaryRunTransformation.KernelIdentities
 
 /-!
 # RealRooted production umbrella
