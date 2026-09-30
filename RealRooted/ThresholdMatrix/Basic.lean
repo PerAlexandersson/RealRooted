@@ -225,18 +225,6 @@ theorem interl_refl_of_realRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     Interl p p :=
   Interl.refl fun _ => hp.2
 
-/-- A positive affine form precedes the `X`-multiple of another one under the
-cross inequality. -/
-theorem interl_affine_to_X_mul_affine
-    {u v U V : ℝ}
-    (hu : 0 < u) (hU : 0 < U) (hcross : u * V ≤ U * v)
-    (hv : 0 ≤ v) (hV : 0 ≤ V) :
-    Interl (C U * X + C V) (X * (C u * X + C v)) :=
-  (strictInterl_to_strictInterl_mul_X_of_nonneg
-    (strictInterl_affine_linear_affine_linear_of_cross hu hU hcross)
-    (hasNonnegCoeffs_affine_linear hu.le hv)
-    (hasNonnegCoeffs_affine_linear hU.le hV)).toInterl
-
 def Threshold2x2EntryTuple
     (a b c d A B C D : ℝ[X]) : Prop :=
   a = A ∧ b = B ∧ c = C ∧ d = D
