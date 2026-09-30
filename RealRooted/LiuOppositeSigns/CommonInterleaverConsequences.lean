@@ -183,23 +183,13 @@ theorem
     exact (hsucc hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
       |>.pairHasCommonInterleaver_of_succDegree hdeg
 
-/-- The strict-upper non-root count leaves also route through the
-positive-split package before reaching the common-interleaver endpoint. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCountAboveNonRoot_via_positiveSplit
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_positiveSplitRootCountAboveNonRoot
-    (positiveSplitSameDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot hsame)
-    (positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot hsucc)
-
 /-- The checked same-degree analytic count spine and the succ-degree
 common-left-interleaver reduction supply the compatible-pair endpoint. -/
 theorem
     compatiblePairHasCommonInterleaver_of_sameDegreeAnalytic_and_succCommonLeftInterleaver
     (hsucc : PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCountAboveNonRoot_via_positiveSplit
+  compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
     _root_.RealRooted.posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
     (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_commonLeftInterleaver
       hsucc)

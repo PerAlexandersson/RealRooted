@@ -163,15 +163,11 @@ lemma coeff_top_liuWangPoly (d n : Nat) (hn : 0 < n) :
   obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hn.ne'
   simp [Nat.choose_succ_self_right]
 
-lemma coeff_above_liuWangPoly (d n m : Nat) (hm : n ≤ m) :
-    coeff (liuWangPoly d n) m = 0 :=
-  coeff_liuWangPoly_of_ge d n m hm
-
 lemma natDegree_liuWangPoly (d n : Nat) (hn : 0 < n) :
     (liuWangPoly d n).natDegree = n - 1 :=
   natDegree_eq_of_le_of_coeff_ne_zero
     (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm =>
-      coeff_above_liuWangPoly d n m (by lia)))
+      coeff_liuWangPoly_of_ge d n m (by lia)))
     (by
       rw [coeff_top_liuWangPoly d n hn]
       exact Nat.cast_ne_zero.mpr hn.ne')

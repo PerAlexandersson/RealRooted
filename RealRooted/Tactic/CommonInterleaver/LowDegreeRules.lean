@@ -91,7 +91,7 @@ macro_rules
         right_degree_le_one := $hgdeg:term) =>
       `(tactic|
         have _hfg := ($hfg);
-        exact RealRooted.compatiblePairHasCommonLeftInterleaver_of_natDegree_le_one
+        exact RealRooted.pairHasCommonLeftInterleaver_of_natDegree_le_one
           $hfpos $hgpos $hfdeg $hgdeg)
   | `(tactic|
       rr_pairwise_common_interleaver_degree_le_one using

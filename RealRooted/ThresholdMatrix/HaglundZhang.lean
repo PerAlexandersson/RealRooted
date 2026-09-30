@@ -328,7 +328,7 @@ private lemma interl_hz_affine_add_one_XAffineAddOne
   have hf_nn : HasNonnegCoeffs (C s * X + C t + 1 : ℝ[X]) := by
     rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
     exact hasNonnegCoeffs_affine_linear hs.le (by nlinarith)
-  simpa using (strictInterl_self_mul_X_of_nonneg hf_rr.1 hf_rr.2 hf_nn).toInterl
+  simpa using (strictInterl_self_X_mul_of_nonneg hf_rr.1 hf_rr.2 hf_nn).toInterl
 
 private lemma interl_hz_affine_add_one_add_X_XAffineAddOne
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :

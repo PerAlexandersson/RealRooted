@@ -649,13 +649,6 @@ theorem jensenPolynomial_three_logConcave_of_splits_natDegree_three
       gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
   jensenPolynomial_three_logConcave_of_eq_zero_or_splits (Or.inr hs)
 
-/-- A splitting real quadratic has nonnegative discriminant, expressed in
-coefficient form. -/
-theorem four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_two
-    {p : ℝ[X]} (hdeg : p.natDegree = 2) (hs : p.Splits) :
-    4 * (p.coeff 0 * p.coeff 2) ≤ p.coeff 1 ^ 2 :=
-  quadratic_disc_coeff_le_of_splits_natDegree_two hdeg hs
-
 private theorem diagonalOperator_discrim_nonneg_of_natDegree_two
     {gamma : ℕ → ℝ} {p : ℝ[X]}
     (hgamma0 : 0 ≤ gamma 0) (hgamma2 : 0 ≤ gamma 2)
@@ -701,7 +694,7 @@ theorem isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
     lia
   have hlog := hjensen.jensenPolynomial_two_logConcave
   have hpdisc :=
-    four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_two
+    quadratic_disc_coeff_le_of_splits_natDegree_two
       hpdeg hsplit
   have hqdisc := diagonalOperator_discrim_nonneg_of_natDegree_two
     (hgamma 0) (hgamma 2) hlog hpdisc

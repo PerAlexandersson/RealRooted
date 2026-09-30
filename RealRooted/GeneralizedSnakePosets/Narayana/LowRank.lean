@@ -385,7 +385,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
   have hwd : w ≤ d := by
     dsimp [w, d]
     linarith
-  exact interlaces_of_cubic_quartic_root_lists hP_ne hP_splits hG_ne hG_splits
+  exact Interlaces.of_cubic_quartic_root_lists hP_ne hP_splits hG_ne hG_splits
     hPdeg hGdeg hP_roots hG_roots hab hbc hcd huv hvw hau hub hbv hvc hcw hwd
 
 /-- The `n = 4` case of Braun--Jal Lemma 3.3, for the concrete modified
@@ -783,7 +783,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
   have hze : z ≤ e := by
     dsimp [z, e]
     linarith
-  exact interlaces_of_quartic_quintic_root_lists hP_ne hP_splits hG_ne hG_splits
+  exact Interlaces.of_quartic_quintic_root_lists hP_ne hP_splits hG_ne hG_splits
     hPdeg hGdeg hP_roots hG_roots hab hbc hcd hde huv hvw hwz hau hub hbv hvc
     hcw hwd hdz hze
 

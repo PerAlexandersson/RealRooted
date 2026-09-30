@@ -361,16 +361,11 @@ theorem splits_of_divX_splits_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0)
     (hdiv : p.divX.Splits) : p.Splits :=
   (splits_iff_divX_splits_of_coeff_zero h0).2 hdiv
 
-/-- Alias for `reverse_divX_of_coeff_zero` matching the right-zero branch. -/
-theorem reverse_eq_reverse_divX_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0) :
-    p.reverse = p.divX.reverse :=
-  reverse_divX_of_coeff_zero h0
-
 /-- In the zero-constant branch, `p.reverse` splits iff `p.divX` splits. -/
 theorem splits_reverse_iff_divX_splits_of_coeff_zero {p : K[X]}
     (h0 : p.coeff 0 = 0) :
     p.reverse.Splits ↔ p.divX.Splits := by
-  rw [reverse_eq_reverse_divX_of_coeff_zero h0, splits_reverse_iff]
+  rw [DegreeDropReversal.reverse_divX_of_coeff_zero h0, splits_reverse_iff]
 
 /-- The reflected degree-padded family splits if and only if the original
 family splits. -/

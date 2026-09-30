@@ -650,7 +650,7 @@ private theorem input_X_sq_X_sq :
 private theorem input_X_X_sq :
     IsInterlacingSeq0NonnegRealRooted [X, X ^ 2] := by
   apply interlacingPair
-  · convert (strictInterl_self_mul_X_of_nonneg
+  · convert (strictInterl_self_X_mul_of_nonneg
       X_ne_zero isRealRooted_X.2 hasNonnegCoeffs_X).toInterl using 1; ring
   · exact hasNonnegCoeffs_X
   · exact nonneg_X_sq

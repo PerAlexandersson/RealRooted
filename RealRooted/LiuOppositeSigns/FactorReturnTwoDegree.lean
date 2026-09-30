@@ -453,21 +453,6 @@ theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily_of_rightDeg_le_t
     theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicate_of_rightDeg_le_three
       hf hg hsgn hleft hdeg hcommon hgdeg
 
-/-- Pointwise right-family form of the translated two-degree Liu compatibility
-target. -/
-theorem theorem21LeftFactorReturnTwoDegreeTranslatedCompatible_of_pointwiseRightFamily
-    {f g : ℝ[X]} {r s : ℝ}
-    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hleft : LeftRootCountBranch f g r s)
-    (hright : ∀ μ : ℝ, 0 < μ →
-      (X * (deleteRootFactor f r).comp (X + C r) +
-          C μ * g.comp (X + C r)).Splits) :
-    Compatible
-      (X * (deleteRootFactor f r).comp (X + C r))
-      (g.comp (X + C r)) :=
-  theorem21LeftFactorReturnTranslatedCompatible_of_pointwiseRightFamily
-    hf hg hsgn hleft hright
-
 /-- The positive right-pencil translated leaf gives the translated
 compatibility leaf by scaling an arbitrary nonnegative linear combination. -/
 theorem theorem21LeftFactorReturnTwoDegreeTranslatedCompatible_of_rightFamily
@@ -810,18 +795,6 @@ theorem theorem21LeftFactorReturnTwoDegreePredicate_of_translatedCompatiblePredi
   theorem21LeftFactorReturnPredicate_of_translatedCompatibleRelation
     (R := fun m n => m = n + 2) htranslated
 
-/-- Pointwise translated compatibility descent for the two-degree left
-factor-return route. -/
-theorem theorem21LeftFactorReturnTwoDegree_of_pointwiseTranslatedCompatible
-    {f g : ℝ[X]} {r s : ℝ}
-    (hleft : LeftRootCountBranch f g r s)
-    (htranslated :
-      Compatible
-        (X * (deleteRootFactor f r).comp (X + C r))
-        (g.comp (X + C r))) :
-    Compatible f g :=
-  theorem21LeftFactorReturn_of_pointwiseTranslatedCompatible hleft htranslated
-
 /-- The translated compatibility target gives the original two-degree
 factor-return leaf by descending through the translation. -/
 theorem theorem21LeftFactorReturnTwoDegree_of_translatedCompatible
@@ -855,7 +828,7 @@ theorem theorem21LeftFactorReturnTwoDegree_of_rightPredicate
     (hcommon : ∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k)
     (hgdeg : P g.natDegree) :
     Compatible f g :=
-  theorem21LeftFactorReturnTwoDegree_of_pointwiseTranslatedCompatible hleft
+  LiuOppositeSigns.theorem21LeftFactorReturn_of_pointwiseTranslatedCompatible hleft
     (theorem21LeftFactorReturnTwoDegreeTranslatedCompatible_of_rightPredicate
       hright hf hg hsgn hleft hdeg hcommon hgdeg)
 

@@ -270,19 +270,12 @@ theorem BidiagonalCubicResidualCertificate.toPFPreserver_sequence_from
     ∀ n : Nat, N ≤ n → BidiagonalPFPreserver (alpha n) (beta n) (d n) :=
   fun n hn => (hcert n hn).toPFPreserver
 
-/-- Apply a bundled cubic-residual certificate as a PF-bidiagonal preserver. -/
-theorem bidiagonalPFPreserver_of_cubicResidualCertificate
-    {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hcert : BidiagonalCubicResidualCertificate alpha beta d) :
-    BidiagonalPFPreserver alpha beta d :=
-  hcert.toPFPreserver
-
 /-- Method-style compatibility spelling for cubic-residual PF-bidiagonal certificates. -/
 theorem BidiagonalPFPreserver.of_cubicResidualCertificate
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (hcert : BidiagonalCubicResidualCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d :=
-  bidiagonalPFPreserver_of_cubicResidualCertificate hcert
+  BidiagonalCubicResidualCertificate.toPFPreserver hcert
 
 /-- Apply a PF-bidiagonal preserver certificate to one polynomial. -/
 theorem isPFPolynomial_bidiagonalOperator_of_preserver

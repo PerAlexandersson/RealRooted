@@ -266,15 +266,6 @@ theorem posComboRealRooted_derivative
     PosComboRealRooted f.derivative g.derivative :=
   hfg.derivative hf hg hdeg hpos
 
-/-- Non-namespace wrapper with the positive-combination hypothesis first and
-degree equality as `f.natDegree = g.natDegree`. -/
-theorem posComboRealRooted_derivative'
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : f.natDegree = g.natDegree) (hpos : 1 ≤ f.natDegree) :
-    PosComboRealRooted f.derivative g.derivative :=
-  hfg.derivative hf hg hdeg.symm hpos
-
 /-- Explicit-binder applied form of `PosComboRealRooted.derivative` with the two
 polynomials as explicit arguments and degree equality in the call-site order
 `f.natDegree = g.natDegree`.  Handy at call sites that want to pass everything

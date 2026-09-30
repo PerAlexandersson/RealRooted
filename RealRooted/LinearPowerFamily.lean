@@ -25,7 +25,7 @@ theorem strictInterl_X_pow_succ (n : ℕ) : StrictInterl ((X : ℝ[X]) ^ n) (X ^
     intro m
     rw [coeff_X_pow]
     split <;> norm_num
-  have hstrictInterl := strictInterl_self_mul_X_of_nonneg hne hsplits hnn
+  have hstrictInterl := strictInterl_self_X_mul_of_nonneg hne hsplits hnn
   rwa [show (X : ℝ[X]) * X ^ n = X ^ (n + 1) by ring] at hstrictInterl
 
 /-- Multiplying both members of a nonnegative strictly interlacing pair by the same
@@ -455,7 +455,7 @@ theorem monomial_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u : ℝ}
       have hnn :=
         monomial_tail_sequence_nonneg (A := A) hc.le ha hb.le hu.le h0 h1 hstep (n + 1)
       have hstrictInterlX : StrictInterl (A (n + 1)) (X * A (n + 1)) :=
-        strictInterl_self_mul_X_of_nonneg hne hsplits hnn
+        strictInterl_self_X_mul_of_nonneg hne hsplits hnn
       have hstrictInterl : StrictInterl (A (n + 1)) ((C u * X) * A (n + 1)) := by
         have hscaled := StrictInterl.C_mul_right hstrictInterlX hu.ne'
         simpa [mul_assoc] using hscaled

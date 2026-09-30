@@ -619,7 +619,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_lw_derivative_lag_sequence
+          RealRooted.strictInterl_lw_derivative_lag_sequence
             $hbase $hpos $hdeg_two $hrec
             (rr_sign_at_roots_upper_seq $hroot_upper)
             (rr_sign_at_roots_upper_seq $hroot_upper)
@@ -652,7 +652,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence
+          (RealRooted.isRealRooted_of_lw_derivative_lag_sequence
             $hbase $hpos $hdeg_two $hrec
             (rr_sign_at_roots_upper_seq $hroot_upper)
             (rr_sign_at_roots_upper_seq $hroot_upper)
@@ -669,7 +669,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_lw_derivative_lag_sequence_of_root_window
+          RealRooted.strictInterl_lw_derivative_lag_sequence_of_root_window
             $hbase $hpos $hdeg_two $hrec $hroot_lower $hroot_upper
             (by
               intro n r hr hroot_window_lower hroot_window_upper
@@ -692,7 +692,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence_of_root_window
+          (RealRooted.isRealRooted_of_lw_derivative_lag_sequence_of_root_window
             $hbase $hpos $hdeg_two $hrec $hroot_lower $hroot_upper
             (by
               intro n r hr hroot_window_lower hroot_window_upper

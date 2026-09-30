@@ -236,31 +236,6 @@ def PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement : Prop :=
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
 
-/-- Same-degree lower root-count bounds reduce to thresholds that are roots
-of neither polynomial.  This is the local-constancy bridge used before applying
-the fixed-threshold sign/parity lemmas. -/
-theorem sameDegreeRootCount_of_nonRoot_bound
-    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0)
-    (hbound : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) :
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 :=
-  rootCount_diff_le_one_of_nonRoot_isRoot hf hg hbound
-
-/-- Same-degree upper root-count bounds reduce to thresholds that are roots
-of neither polynomial. -/
-theorem sameDegreeRootCountAbove_of_nonRoot_bound
-    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0)
-    (hbound : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :
-    ∀ x : ℝ,
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
-  rootCountAbove_diff_le_one_of_nonRoot_isRoot hf hg hbound
-
 /-- Same-degree sign/parity bridge in the right-pencil language.  At a common
 non-root threshold, the combined lower root-count parity is equivalent to the
 absence of a positive parameter for which `f + C μ * g` vanishes at the
@@ -639,7 +614,7 @@ theorem posComboNoCommonSameDegreeRootCount_of_nonRoot
     (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
     PosComboNoCommonSameDegreeRootCountNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  exact sameDegreeRootCount_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
+  exact rootCount_diff_le_one_of_nonRoot_isRoot hf_pos.ne_zero hg_pos.ne_zero
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- The same-degree upper root-count target follows from its common-non-root
@@ -648,7 +623,7 @@ theorem posComboNoCommonSameDegreeRootCountAbove_of_nonRoot
     (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
     PosComboNoCommonSameDegreeRootCountAboveNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  exact sameDegreeRootCountAbove_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
+  exact rootCountAbove_diff_le_one_of_nonRoot_isRoot hf_pos.ne_zero hg_pos.ne_zero
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- Low-degree base case for the same-degree root-count formulation.
@@ -987,22 +962,6 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_natDegree_le_three_of_cubic
         fun j hj =>
           sameDegreeSlotData_of_posCombo_natDegree_le_three_of_cubicInterior
             hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg j hj _ _
-
-/-- Degree-`≤ 3` no-common same-degree endpoint, assuming the two cubic
-interior partial-separation leaves. -/
-theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hfdeg : f.natDegree ≤ 3) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  sameDegreePairHasCommonInterleaver_nonneg_of_natDegree_le_three_of_cubicInterior
-    hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg
 
 /-- The same-degree orientation alternative gives the descending-root crossing
 inequalities consumed by the #41 slot-data reduction. -/

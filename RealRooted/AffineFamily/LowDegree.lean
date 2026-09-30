@@ -743,26 +743,10 @@ protected alias AffineFamily.prec_of_affine_family_nonneg_degree_one :=
 protected alias AffineFamily.prec_right_pair_of_affine_family_degree_one :=
   AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
 
-/-- Public degree-one right-pair form of the affine-family converse.  If
-`f.natDegree = 1`, the affine-family hypothesis gives the stronger conclusion
-`g ≪ X * f`, not only `f ≪ g`. -/
-theorem strictInterl_right_pair_of_affine_family_nonneg_degree_one
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (hdegf1 : f.natDegree = 1) :
-    StrictInterl g (X * f) :=
-  AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
-    hf0 hg0 hfnn hgnn haff hdegf1
-
-@[deprecated strictInterl_right_pair_of_affine_family_nonneg_degree_one
+@[deprecated AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
   (since := "2026-09-18")]
 alias prec_right_pair_of_affine_family_nonneg_degree_one :=
-  strictInterl_right_pair_of_affine_family_nonneg_degree_one
+  AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
 
 /-- If `g` has an explicit factor `X`, any orientation of `(qg, f)` lifts
 immediately to the affine right pair `(g, X * f)` by restoring the common
@@ -821,19 +805,6 @@ protected lemma AffineFamily.isRealRooted_X_mul_of_affine_family
     simpa using hscaled
   all_goals lia
 
-/-- Direct endpoint form of the affine-family converse: the two-parameter
-positive affine family already forces `X * f` to be real-rooted. -/
-theorem isRealRooted_X_mul_of_affine_family_nonneg
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    ((X * f) ≠ 0 ∧ (X * f).Splits) :=
-  AffineFamily.isRealRooted_X_mul_of_affine_family hf0 hg0 hfnn hgnn haff
-
 /-- Left-endpoint form of the affine-family converse: the two-parameter
 positive affine family already forces the lower member `f` to be real-rooted. -/
 theorem isRealRooted_left_of_affine_family_nonneg
@@ -845,7 +816,7 @@ theorem isRealRooted_left_of_affine_family_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     (f ≠ 0 ∧ f.Splits) := by
-  have hXf := isRealRooted_X_mul_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff
+  have hXf := AffineFamily.isRealRooted_X_mul_of_affine_family hf0 hg0 hfnn hgnn haff
   exact isRealRooted_of_X_mul hXf.1 hXf.2
 
 end RealRooted
