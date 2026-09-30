@@ -247,15 +247,4 @@ theorem isRealRooted_of_lw_derivative_lag_sequence_of_root_window
 @[deprecated strictInterl_lw_derivative_lag_of_nonpos (since := "2026-09-26")]
 alias prec_lw_derivative_lag_of_nonpos := strictInterl_lw_derivative_lag_of_nonpos
 
-@[deprecated strictInterl_lw_derivative_lag_sequence_of_root_signs (since := "2026-09-26")]
-alias prec_lw_derivative_lag_sequence_of_root_signs :=
-  strictInterl_lw_derivative_lag_sequence_of_root_signs
-
-@[deprecated strictInterl_lw_derivative_lag_sequence (since := "2026-09-26")]
-alias prec_lw_derivative_lag_sequence := strictInterl_lw_derivative_lag_sequence
-
-@[deprecated strictInterl_lw_derivative_lag_sequence_of_root_window (since := "2026-09-26")]
-alias prec_lw_derivative_lag_sequence_of_root_window :=
-  strictInterl_lw_derivative_lag_sequence_of_root_window
-
 end RealRooted

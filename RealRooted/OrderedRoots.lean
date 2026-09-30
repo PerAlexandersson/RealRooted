@@ -93,7 +93,4 @@ theorem Prec.orderedRoot_le {p q : ℝ[X]} {n : ℕ}
     orderedRoot p n i ≤ orderedRoot q n i :=
   StrictInterl.orderedRoot_le h hpDegree hqDegree i
 
-@[deprecated strictInterl_iff_orderedRoot_bounds (since := "2026-09-26")]
-alias prec_iff_orderedRoot_bounds := strictInterl_iff_orderedRoot_bounds
-
 end RealRooted

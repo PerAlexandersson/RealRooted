@@ -560,7 +560,4 @@ theorem strictInterl_lw_negative_const_lag_C_neg {f g a : ℝ[X]} {c : ℝ}
       (by simpa using hdeg_hi)
       hno)
 
-@[deprecated strictInterl_lw_two_of_nonpos_of_recurrence (since := "2026-09-26")]
-alias prec_lw_two_of_nonpos_of_recurrence := strictInterl_lw_two_of_nonpos_of_recurrence
-
 end RealRooted

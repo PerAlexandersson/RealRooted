@@ -183,9 +183,4 @@ theorem eq_zero_pair_or_isUpperHalfPlaneStablePencil_of_allComboRealRooted_of_wr
 
 end
 
-@[deprecated strictInterl_of_allComboRealRooted_of_wronskian_nonneg
-  (since := "2026-09-18")]
-alias prec_of_allComboRealRooted_of_wronskian_nonneg :=
-  strictInterl_of_allComboRealRooted_of_wronskian_nonneg
-
 end RealRooted

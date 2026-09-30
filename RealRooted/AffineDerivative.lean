@@ -1218,19 +1218,8 @@ theorem strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
 @[deprecated strictInterl_affine_derivative (since := "2026-09-26")]
 alias prec_affine_derivative := strictInterl_affine_derivative
 
-@[deprecated strictInterl_affine_derivative_deg_one (since := "2026-09-26")]
-alias prec_affine_derivative_deg_one := strictInterl_affine_derivative_deg_one
-
-@[deprecated strictInterl_affine_derivative' (since := "2026-09-26")]
-alias prec_affine_derivative' := strictInterl_affine_derivative'
-
 @[deprecated strictInterl_affine_derivative_of_nonnegCoeffs (since := "2026-09-26")]
 alias prec_affine_derivative_of_nonnegCoeffs :=
   strictInterl_affine_derivative_of_nonnegCoeffs
-
-@[deprecated strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs
-  (since := "2026-09-26")]
-alias prec_one_sub_X_mul_derivative_right_of_nonnegCoeffs :=
-  strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs
 
 end RealRooted

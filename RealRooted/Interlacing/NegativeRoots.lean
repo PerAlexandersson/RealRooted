@@ -239,11 +239,6 @@ theorem roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
   · exact (hrs_drop_neg r
       (List.mem_dropLast_of_mem_of_ne_getLast hr_mem hr_last)).le
 
-@[deprecated roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
-  (since := "2026-09-18")]
-alias roots_nonpos_of_prec_sameDegree_of_zero_root_of_left_roots_neg :=
-  roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
-
 /-- In a same-degree strictly interlacing pair, strict negativity of every root of
 the right polynomial implies strict negativity of every root of the left. -/
 theorem roots_neg_of_strictInterl_sameDegree_of_roots_neg {g f : ℝ[X]}
@@ -269,10 +264,5 @@ theorem roots_neg_of_strictInterl_sameDegree_of_roots_neg {g f : ℝ[X]}
     apply hss_neg r
     apply Multiset.mem_coe.mp
     simp_all
-
-@[deprecated roots_neg_of_strictInterl_sameDegree_of_roots_neg
-  (since := "2026-09-18")]
-alias roots_neg_of_prec_sameDegree_of_roots_neg :=
-  roots_neg_of_strictInterl_sameDegree_of_roots_neg
 
 end RealRooted

@@ -57,11 +57,6 @@ theorem linearMap_interl_or_reverse_of_finiteSymbol_stable
   exact linearMap_allComboRealRooted_of_finiteSymbol_stable
     hSymbol hpdeg hqdeg (allComboRealRooted_of_strictInterl hpq)
 
-@[deprecated linearMap_interl_or_reverse_of_finiteSymbol_stable
-  (since := "2026-09-18")]
-alias linearMap_prec0_or_revPrec0_of_finiteSymbol_stable :=
-  linearMap_interl_or_reverse_of_finiteSymbol_stable
-
 /-- A common degree bound controls the Hermite--Biehler combination. -/
 lemma hermiteBiehlerPolynomial_natDegree_le
     {p q : ℝ[X]} {d : ℕ} (hpdeg : p.natDegree ≤ d)
@@ -151,8 +146,5 @@ theorem linearMap_strictInterl_of_finiteSymbol_stable
         simp_all
       grind
     · grind
-
-@[deprecated linearMap_strictInterl_of_finiteSymbol_stable (since := "2026-09-18")]
-alias linearMap_prec_of_finiteSymbol_stable := linearMap_strictInterl_of_finiteSymbol_stable
 
 end RealRooted.BorceaBranden

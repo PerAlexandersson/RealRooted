@@ -208,8 +208,4 @@ theorem interl_of_pf_coeff_tendsto_of_natDegree_le
   exact strictInterl_of_upperHalfPlaneStable_hermiteBiehler
     hq₀pos hp₀pos hH₀stable
 
-@[deprecated interl_of_pf_coeff_tendsto_of_natDegree_le (since := "2026-09-18")]
-alias prec0_of_pf_coeff_tendsto_of_natDegree_le :=
-  interl_of_pf_coeff_tendsto_of_natDegree_le
-
 end RealRooted

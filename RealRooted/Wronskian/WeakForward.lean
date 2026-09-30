@@ -86,7 +86,4 @@ theorem wronskian_eval_nonneg_of_strictInterl {p q : ℝ[X]}
 
 end
 
-@[deprecated wronskian_eval_nonneg_of_strictInterl (since := "2026-09-26")]
-alias wronskian_eval_nonneg_of_prec := wronskian_eval_nonneg_of_strictInterl
-
 end RealRooted

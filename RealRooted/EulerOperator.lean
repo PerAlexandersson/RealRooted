@@ -337,19 +337,8 @@ theorem iterateThetaPlusOne_preserves_interl
 @[deprecated thetaPreservesInterlStatement (since := "2026-09-24")]
 abbrev thetaPreservesPrec0Statement : Prop := thetaPreservesInterlStatement
 
-@[deprecated thetaPreservesInterl_of_derivative (since := "2026-09-24")]
-alias thetaPreservesPrec0_of_derivative := thetaPreservesInterl_of_derivative
-
 @[deprecated thetaPreservesInterl (since := "2026-09-24")]
 alias thetaPreservesPrec0 := thetaPreservesInterl
-
-@[deprecated thetaPlusOnePreservesInterlStatement (since := "2026-09-24")]
-abbrev thetaPlusOnePreservesPrec0Statement : Prop :=
-  thetaPlusOnePreservesInterlStatement
-
-@[deprecated thetaPlusOnePreservesInterl_of_derivative (since := "2026-09-24")]
-alias thetaPlusOnePreservesPrec0_of_derivative :=
-  thetaPlusOnePreservesInterl_of_derivative
 
 @[deprecated thetaPlusOnePreservesInterl (since := "2026-09-24")]
 alias thetaPlusOnePreservesPrec0 := thetaPlusOnePreservesInterl

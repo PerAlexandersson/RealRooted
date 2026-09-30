@@ -299,8 +299,6 @@ end Tactic
 end RealRooted
 namespace RealRooted
 namespace Tactic
-@[deprecated bezout_sequence_strictInterl_of_posDef (since := "2026-09-26")]
-alias bezout_sequence_prec_of_posDef := bezout_sequence_strictInterl_of_posDef
 
 end Tactic
 end RealRooted
@@ -391,7 +389,7 @@ macro_rules
         right_degree := $hQ_deg:term,
         pos_def := $hpos:term) =>
       `(tactic|
-        exact RealRooted.Tactic.bezout_sequence_prec_of_posDef
+        exact RealRooted.Tactic.bezout_sequence_strictInterl_of_posDef
           $hP_pos $hQ_pos $hP_deg $hQ_deg $hpos)
   | `(tactic|
       rr_bezout_strict_prec_same_degree_iff using

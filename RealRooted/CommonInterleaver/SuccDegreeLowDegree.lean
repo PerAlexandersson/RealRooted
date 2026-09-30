@@ -67,10 +67,6 @@ theorem allComboRealRooted_of_strictInterl_or_reverse
   | Or.inr hstrictInterl =>
       allComboRealRooted_comm (allComboRealRooted_of_strictInterl hstrictInterl)
 
-@[deprecated allComboRealRooted_of_strictInterl_or_reverse (since := "2026-09-18")]
-alias allComboRealRooted_of_prec_or_revPrec :=
-  allComboRealRooted_of_strictInterl_or_reverse
-
 namespace Compatible
 
 /-- All-real-combination real-rootedness implies Chudnovsky--Seymour
@@ -96,9 +92,6 @@ compatibility. -/
 lemma of_strictInterl_or_reverse {f g : ℝ[X]} (h : StrictInterl f g ∨ StrictInterl g f) :
     Compatible f g :=
   of_allComboRealRooted (allComboRealRooted_of_strictInterl_or_reverse h)
-
-@[deprecated of_strictInterl_or_reverse (since := "2026-09-18")]
-alias of_prec_or_revPrec := of_strictInterl_or_reverse
 
 end Compatible
 
@@ -161,33 +154,6 @@ theorem pairHasCommonLeftInterleaver_of_strictInterl_or_reverse
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g
   | Or.inl hstrictInterl => pairHasCommonLeftInterleaver_of_strictInterl hstrictInterl
   | Or.inr hstrictInterl => pairHasCommonLeftInterleaver_of_reverseStrictInterl hstrictInterl
-
-@[deprecated pairHasCommonInterleaver_of_strictInterl (since := "2026-09-18")]
-alias pairHasCommonInterleaver_of_prec :=
-  pairHasCommonInterleaver_of_strictInterl
-
-@[deprecated pairHasCommonInterleaver_of_reverseStrictInterl (since := "2026-09-18")]
-alias pairHasCommonInterleaver_of_revPrec :=
-  pairHasCommonInterleaver_of_reverseStrictInterl
-
-@[deprecated pairHasCommonInterleaver_of_strictInterl_or_reverse
-  (since := "2026-09-18")]
-alias pairHasCommonInterleaver_of_prec_or_revPrec :=
-  pairHasCommonInterleaver_of_strictInterl_or_reverse
-
-@[deprecated pairHasCommonLeftInterleaver_of_strictInterl (since := "2026-09-18")]
-alias pairHasCommonLeftInterleaver_of_prec :=
-  pairHasCommonLeftInterleaver_of_strictInterl
-
-@[deprecated pairHasCommonLeftInterleaver_of_reverseStrictInterl
-  (since := "2026-09-18")]
-alias pairHasCommonLeftInterleaver_of_revPrec :=
-  pairHasCommonLeftInterleaver_of_reverseStrictInterl
-
-@[deprecated pairHasCommonLeftInterleaver_of_strictInterl_or_reverse
-  (since := "2026-09-18")]
-alias pairHasCommonLeftInterleaver_of_prec_or_revPrec :=
-  pairHasCommonLeftInterleaver_of_strictInterl_or_reverse
 
 /-- Two-polynomial common-interleaver endpoint in degree at most one. This is
 the direct pair version used by the low-degree Chudnovsky--Seymour package. -/

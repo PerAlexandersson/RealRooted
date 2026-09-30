@@ -276,10 +276,6 @@ alias prec_pos_X_lag_combo_sequence := strictInterl_pos_X_lag_combo_sequence
 @[deprecated strictInterl_pos_X_lag_combo_of_strictInterl_nonneg (since := "2026-09-26")]
 alias prec_pos_X_lag_combo_of_prec_nonneg := strictInterl_pos_X_lag_combo_of_strictInterl_nonneg
 
-@[deprecated isRealRooted_of_strictInterl_pos_X_lag_combo_sequence (since := "2026-09-26")]
-alias isRealRooted_of_prec_pos_X_lag_combo_sequence :=
-  isRealRooted_of_strictInterl_pos_X_lag_combo_sequence
-
 @[deprecated strictInterl_left_pos_X_lag_combo_of_strictInterl_nonneg (since := "2026-09-26")]
 alias prec_left_pos_X_lag_combo_of_prec_nonneg :=
   strictInterl_left_pos_X_lag_combo_of_strictInterl_nonneg

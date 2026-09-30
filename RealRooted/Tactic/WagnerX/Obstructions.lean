@@ -129,10 +129,5 @@ end RealRooted
 
 /- Deprecated theorem aliases retained for the #984 Prec migration. -/
 namespace RealRooted
-@[deprecated not_strictInterl_X_sq_mul_derivative_left (since := "2026-09-26")]
-alias not_prec_X_sq_mul_derivative_left := not_strictInterl_X_sq_mul_derivative_left
-
-@[deprecated not_strictInterl_X_sq_mul_derivative_right (since := "2026-09-26")]
-alias not_prec_X_sq_mul_derivative_right := not_strictInterl_X_sq_mul_derivative_right
 
 end RealRooted

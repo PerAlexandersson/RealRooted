@@ -157,12 +157,6 @@ theorem kernelRows_pf_and_interl_of_tendsto
       (tendsto_coeff_regularizedKernelRow G hlim i.castSucc)
       (tendsto_coeff_regularizedKernelRow G hlim i.succ)
 
-@[deprecated interl_regularizedKernelRow_succ (since := "2026-09-18")]
-alias prec0_regularizedKernelRow_succ := interl_regularizedKernelRow_succ
-
-@[deprecated kernelRows_pf_and_interl_of_tendsto (since := "2026-09-18")]
-alias kernelRows_pf_and_prec0_of_tendsto := kernelRows_pf_and_interl_of_tendsto
-
 end
 
 end RealRooted.BrandenLeite

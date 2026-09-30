@@ -497,24 +497,8 @@ theorem gwTheorem11StrictInterl :
 @[deprecated strictInterl_self_X_sub_C_mul (since := "2026-09-18")]
 alias prec_self_X_sub_C_mul := strictInterl_self_X_sub_C_mul
 
-@[deprecated gwJL_strictInterl_of_kreinSummandExpansion (since := "2026-09-18")]
-alias gwJL_prec_of_kreinSummandExpansion := gwJL_strictInterl_of_kreinSummandExpansion
-
-@[deprecated gwTheorem11StrictInterlKreinSummandExpansionStatement
-  (since := "2026-09-18")]
-abbrev gwTheorem11PrecKreinSummandExpansionStatement :=
-  gwTheorem11StrictInterlKreinSummandExpansionStatement
-
-@[deprecated gwTheorem11StrictInterl_of_kreinSummandExpansion
-  (since := "2026-09-18")]
-alias gwTheorem11Prec_of_kreinSummandExpansion :=
-  gwTheorem11StrictInterl_of_kreinSummandExpansion
-
 @[deprecated gwTheorem11StrictInterlKreinSummandExpansion (since := "2026-09-18")]
 alias gwTheorem11PrecKreinSummandExpansion :=
   gwTheorem11StrictInterlKreinSummandExpansion
-
-@[deprecated gwTheorem11StrictInterl (since := "2026-09-18")]
-alias gwTheorem11Prec := gwTheorem11StrictInterl
 
 end RealRooted

@@ -69,11 +69,6 @@ theorem pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
   have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hstrictInterl.2.1.1 hstrictInterl.2.1.2
   exact ⟨X * f, strictInterl_self_mul_X_of_nonneg hf.1 hf.2 hfnn, hstrictInterl⟩
 
-@[deprecated pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
-  (since := "2026-09-18")]
-alias pairHasCommonInterleaver_of_prec_right_pair_nonneg :=
-  pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
-
 /-- In the succ-degree branch, the boundary right pair is automatic as soon as
 the original no-common orientation statement is known: `StrictInterl g f` is ruled out
 by degree, so the previous transport theorem applies. -/
@@ -94,11 +89,6 @@ theorem strictInterl_boundary_right_pair_of_orientation_succDegree_nonneg
   have hstrictInterl_fg : StrictInterl f g :=
     StrictInterl.forward_of_orientation_of_succDegree hsucc hstrictInterl_or
   exact strictInterl_boundary_right_pair_of_strictInterl_nonneg hstrictInterl_fg hfnn hgnn ht
-
-@[deprecated strictInterl_boundary_right_pair_of_orientation_succDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_boundary_right_pair_of_orientation_succDegree_nonneg :=
-  strictInterl_boundary_right_pair_of_orientation_succDegree_nonneg
 
 /-- Orienting each boundary pair `(C t * f + g, X * f)` is already enough to
 recover the full affine-family hypothesis. The no-common condition for the
