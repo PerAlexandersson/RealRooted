@@ -1479,3 +1479,4 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
 import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 import RealRooted.SpectralProduct
+import RealRooted.RootCounting.CrossingExhaustion
