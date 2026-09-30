@@ -10,22 +10,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma gammaTransform_succ_of_natDegree_le
-    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) :
-    gammaTransform (d + 1) γ = (X + 1) * gammaTransform d γ := by
-  rcases Nat.mod_two_eq_zero_or_one d with hd | hd
-  · have hd' : d = 2 * (d / 2) := by lia
-    rw [hd']
-    exact gammaTransform_odd (d / 2) γ
-  · have hd' : d = 2 * (d / 2) + 1 := by lia
-    have hcoeff : γ.coeff (d / 2 + 1) = 0 :=
-      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ (by lia))
-    rw [hd']
-    change gammaTransform (2 * (d / 2 + 1)) γ =
-      (X + 1) * gammaTransform (2 * (d / 2) + 1) γ
-    rw [gammaTransform_even_succ, hcoeff]
-    simp
-
 /-- The binomial-square Narayana gamma rows satisfy the transported pure
 three-term recurrence. -/
 theorem narayanaZeroGammaPolynomial_pure_rec (n : ℕ) :
@@ -71,7 +55,7 @@ theorem narayanaZeroGammaPolynomial_pure_rec (n : ℕ) :
               ring]
   rw [gammaTransform_add, gammaTransform_C_mul, gammaTransform_C_mul,
     gammaTransform_add, gammaTransform_C_mul,
-    gammaTransform_succ_of_natDegree_le
+    gammaTransform_pad_one
       (natDegree_narayanaZeroGammaPolynomial_le (n + 1)),
     gammaTransform_pad_two (natDegree_narayanaZeroGammaPolynomial_le n),
     gammaTransform_X_mul_two]
