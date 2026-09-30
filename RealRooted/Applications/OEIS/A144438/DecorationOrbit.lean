@@ -354,8 +354,7 @@ noncomputable def eligibleStartEmbedding {h : Nat}
   toFun j := ⟨j.1, mem_eligibleStarts.mp (D.starts_subset j.2)⟩
   inj' := by
     intro i j hij
-    apply Subtype.ext
-    exact congrArg (fun z : EligibleStart c => z.1) hij
+    exact Subtype.ext (congrArg (fun z : EligibleStart c => z.1) hij)
 
 noncomputable def eligibleFinset {h : Nat} {c : DecoNormalizedCode h}
     (D : Decoration c) : Finset (EligibleStart c) :=
@@ -393,9 +392,8 @@ noncomputable def eligibleFinset {h : Nat} {c : DecoNormalizedCode h}
     have hkEligible := mem_eligibleStarts.mp (D.starts_subset hk)
     let j : EligibleStart c := ⟨k, hkEligible⟩
     rw [ofEligibleFinset_starts, Finset.mem_map]
-    have hj : j ∈ D.eligibleFinset := by
-      apply (mem_eligibleFinset D j).mpr
-      exact hk
+    have hj : j ∈ D.eligibleFinset :=
+      (mem_eligibleFinset D j).mpr hk
     exact ⟨j, hj, rfl⟩
 
 @[simp] theorem eligibleFinset_ofEligibleFinset {h : Nat}

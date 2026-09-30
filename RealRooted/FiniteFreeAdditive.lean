@@ -267,9 +267,8 @@ theorem finiteFreeAdditiveConvolutionCoeff_eq_zero_of_odd (d k : ℕ) (p q : ℝ
   intro i hi
   have hi_le : i ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
   rcases Nat.even_or_odd i with hi_even | hi_odd
-  · have hki_odd : Odd (k - i) := by
-      apply (Nat.odd_sub hi_le).mpr
-      exact iff_of_true hodd hi_even
+  · have hki_odd : Odd (k - i) :=
+      (Nat.odd_sub hi_le).mpr (iff_of_true hodd hi_even)
     rw [hq (k - i) ((Nat.sub_le k i).trans hk) hki_odd]
     ring
   · rw [hp i (hi_le.trans hk) hi_odd]

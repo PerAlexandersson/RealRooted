@@ -246,8 +246,7 @@ theorem exceptionalize_apply_of_not_mem_of_no_predecessor {h : ℕ}
           ¬∃ i : Fin h, i.1 + 1 = j.1 ∧ D.exceptionalize i = 1 := by
         intro hexists
         rcases hexists with ⟨i, hij, hiOne⟩
-        apply hprevious
-        exact ⟨i, (exceptionalize_apply_eq_one_iff D i).1 hiOne, hij⟩
+        exact hprevious ⟨i, (exceptionalize_apply_eq_one_iff D i).1 hiOne, hij⟩
       have hjBase : D.exceptionalize j = c j := by
         simp [exceptionalize, hj, hprevious]
       change (if D.exceptionalize j = 1 then 0

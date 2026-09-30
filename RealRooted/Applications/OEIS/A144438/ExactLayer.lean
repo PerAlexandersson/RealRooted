@@ -403,9 +403,8 @@ theorem decoExceptionalLayerStep_isHomogeneous {R : Type*}
 /-- The normal exact-layer operator preserves multivariate real stability. -/
 theorem decoNormalLayerStep_mvRealStable {n : ℕ}
     {P : MvPolynomial (DecoLayerCoord n) ℝ} (hP : MvRealStable P) :
-    MvRealStable (decoNormalLayerStep P) := by
-  apply (MvRealStable.X none).mul
-  exact hP.sum_pderiv_pencil_rename decoNormalRename (some 0)
+    MvRealStable (decoNormalLayerStep P) :=
+  (MvRealStable.X none).mul (hP.sum_pderiv_pencil_rename decoNormalRename (some 0))
 
 /-- The exceptional exact-layer operator preserves multivariate real
 stability. -/

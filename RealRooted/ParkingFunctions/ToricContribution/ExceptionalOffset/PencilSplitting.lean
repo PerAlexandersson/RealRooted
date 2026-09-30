@@ -880,13 +880,11 @@ private theorem exceptionalEulerInverse_pencil_splits_of_eval_one_eq_zero
   have hfPos : HasPosLeadingCoeff f := by
     apply hasPosLeadingCoeff_of_monic
     dsimp only [f]
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    exact inv_mul_cancel₀ hQlc
+    exact monic_C_mul_of_mul_leadingCoeff_eq_one (inv_mul_cancel₀ hQlc)
   have hgPos : HasPosLeadingCoeff g := by
     apply hasPosLeadingCoeff_of_monic
     dsimp only [g]
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    exact inv_mul_cancel₀ hRlc
+    exact monic_C_mul_of_mul_leadingCoeff_eq_one (inv_mul_cancel₀ hRlc)
   have hfdeg : f.natDegree = Q.natDegree := by
     dsimp only [f]
     exact Polynomial.natDegree_C_mul (inv_ne_zero hQlc)

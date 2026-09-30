@@ -25,8 +25,7 @@ theorem HasNonnegInitialColumnMinors.isTotallyNonneg_of_upper_zero_of_det_ne_zer
     A.IsTotallyNonneg := by
   have hAinj : Function.Injective A.mulVec := by
     apply Matrix.mulVec_injective_iff_isUnit.mpr
-    apply A.isUnit_iff_isUnit_det.mpr
-    exact isUnit_iff_ne_zero.mpr hdet
+    exact A.isUnit_iff_isUnit_det.mpr (isUnit_iff_ne_zero.mpr hdet)
   intro k rows cols hrows hcols
   let D : ℝ → ℝ := fun a =>
     ((gaussianMatrix N a * A).submatrix rows cols).det

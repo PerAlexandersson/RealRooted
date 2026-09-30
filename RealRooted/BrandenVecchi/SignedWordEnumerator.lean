@@ -237,8 +237,8 @@ theorem extendSignedLetterWeight_apply {q p q' p' : ℕ}
     (weight : SignedLetter q p → R) (a : SignedLetter q p) :
     extendSignedLetterWeight e weight (e a) = weight a := by
   rw [extendSignedLetterWeight, dite_eq_left ⟨a, rfl⟩]
-  apply congrArg weight
-  exact e.injective (Classical.choose_spec (show ∃ c, e c = e a from ⟨a, rfl⟩))
+  exact congrArg weight
+    (e.injective (Classical.choose_spec (show ∃ c, e c = e a from ⟨a, rfl⟩)))
 
 theorem extendSignedLetterWeight_eq_zero_of_not_mem_range
     {q p q' p' : ℕ} (e : SignedLetter q p ↪ SignedLetter q' p')
@@ -302,8 +302,7 @@ theorem signedWordEnumerator_extend {q p q' p' : ℕ}
         rw [mem_signedWords_iff]
         rw [← isSignedWord_map_iff e hneg, hmap]
         exact mem_signedWords_iff.mp hw
-      apply hnot
-      exact Finset.mem_map.mpr ⟨v, hv, hmap⟩
+      exact hnot (Finset.mem_map.mpr ⟨v, hv, hmap⟩)
     obtain ⟨i, hi⟩ := hexists
     have hzero : extendSignedLetterWeight e.toEmbedding weight (w i) = 0 :=
       extendSignedLetterWeight_eq_zero_of_not_mem_range e.toEmbedding weight hi
@@ -330,9 +329,8 @@ largest positive letters. -/
 def signedLetterExtend (q p r s : ℕ) :
     SignedLetter q p ↪o SignedLetter (r + q) (p + s) where
   toFun a := ⟨r + a.val, by lia⟩
-  inj' a b h := by
-    apply Fin.ext
-    exact Nat.add_left_cancel (Fin.ext_iff.mp h)
+  inj' a b h :=
+    Fin.ext (Nat.add_left_cancel (Fin.ext_iff.mp h))
   map_rel_iff' := by
     intro a b
     change r + a.val ≤ r + b.val ↔ a.val ≤ b.val

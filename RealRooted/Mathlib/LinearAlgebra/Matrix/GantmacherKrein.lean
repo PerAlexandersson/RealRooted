@@ -486,8 +486,7 @@ theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
         Set.powersetCard.mem_iff.mpr (hswap.1.trans (topFinset_card hqn))⟩
     have hs_ne : sTop ≠ sAlt := by
       intro h
-      apply hswap.2.2
-      exact (congrArg Subtype.val h).symm
+      exact hswap.2.2 ((congrArg Subtype.val h).symm)
     let g : Set.powersetCard (Fin n) q → ℂ :=
       fun s => ∏ k, μc (powersetEnum s k)
     have hg_eq : g sTop = g sAlt := by

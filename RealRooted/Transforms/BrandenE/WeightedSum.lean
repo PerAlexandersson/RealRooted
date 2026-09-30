@@ -142,8 +142,7 @@ theorem brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg_of_exists_pos
     · intro k hks hkt
       have hk_nonpos : ¬0 < a k := by
         intro hkpos
-        apply hkt
-        exact Finset.mem_filter.mpr ⟨hks, hkpos⟩
+        exact hkt (Finset.mem_filter.mpr ⟨hks, hkpos⟩)
       have hkzero : a k = 0 :=
         le_antisymm (le_of_not_gt hk_nonpos) (ha k hks)
       simp [hkzero]

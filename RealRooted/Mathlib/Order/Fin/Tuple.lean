@@ -68,8 +68,7 @@ theorem exists_ordered_interior_insert
   have hafter : ∀ i : Fin (q + 2), p ≤ i.castSucc → b < cols i := by
     intro i hti
     apply ht.trans_le
-    apply hcols.monotone
-    exact Fin.castSucc_le_castSucc_iff.mp hti
+    exact hcols.monotone (Fin.castSucc_le_castSucc_iff.mp hti)
   refine ⟨u, r, ?_, ?_, ?_⟩
   · exact insertNth_of_bounds hcols hbefore hafter
   · subst t

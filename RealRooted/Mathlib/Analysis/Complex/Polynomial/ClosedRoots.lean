@@ -139,8 +139,7 @@ theorem roots_mem_of_tendsto_eval_of_natDegree_le
   obtain ⟨t, ht⟩ : ∃ t : ℂ, p₀.eval t ≠ 0 := by
     by_contra hnone
     push Not at hnone
-    apply hp₀ne
-    exact Polynomial.funext fun x => by simpa using hnone x
+    exact hp₀ne (Polynomial.funext fun x => by simpa using hnone x)
   have hlimμ : Tendsto (fun k => ‖(p k).eval μ‖) atTop (𝓝 0) := by
     simpa [h0] using (heval μ).norm
   have hlimBound : Tendsto
