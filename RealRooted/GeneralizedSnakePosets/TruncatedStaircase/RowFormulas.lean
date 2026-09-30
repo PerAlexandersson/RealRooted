@@ -15,20 +15,6 @@ namespace RealRooted
 namespace GeneralizedSnakePosets
 namespace FiniteSkewBoard
 
-/-- Coefficients commute with finite list sums of polynomials. -/
-private lemma listSum_coeff (ps : List ℝ[X]) (k : ℕ) :
-    ps.sum.coeff k = (ps.map fun p => p.coeff k).sum := by
-  induction ps with
-  | nil =>
-      simp
-  | cons p ps ih =>
-      simp [ih, Polynomial.coeff_add]
-
-/-- Truncated-staircase rook polynomials are nonzero. -/
-theorem truncatedStaircaseRookPolynomial_ne_zero (n i : ℕ) :
-    truncatedStaircaseRookPolynomial n i ≠ 0 :=
-  rookPolynomial_ne_zero _
-
 /-- Bottom-row expansion for truncated-staircase rook polynomials: split
 placements according to whether the last row is empty, and if not, according
 to the column of its unique rook. -/
@@ -46,26 +32,6 @@ theorem truncatedStaircaseBottomRowExpansion_all (n i : ℕ) :
   rw [sum_nonNestingPlacements_succ_eq_withoutBottomRow_add_bottomRow]
   rw [sum_nonNestingPlacementsWithoutBottomRow_eq_truncatedStaircaseRookPolynomial]
   rw [sum_bottomRowCells_nonNestingPlacementsWithCell_eq_mul_sum]
-
-/-- The constant coefficient is unchanged by adding the bottom row. -/
-theorem coeff_truncatedStaircaseRookPolynomial_succ_zero (n i : ℕ) :
-    (truncatedStaircaseRookPolynomial n (i + 1)).coeff 0 =
-      (truncatedStaircaseRookPolynomial n i).coeff 0 := by
-  have hbottom := truncatedStaircaseBottomRowExpansion_all n i
-  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
-  rw [hbottom, Polynomial.coeff_add, Polynomial.coeff_X_mul_zero, add_zero]
-
-/-- Coefficient form of the bottom-row expansion for positive powers of `X`. -/
-theorem coeff_truncatedStaircaseRookPolynomial_succ_succ (n i k : ℕ) :
-    (truncatedStaircaseRookPolynomial n (i + 1)).coeff (k + 1) =
-      (truncatedStaircaseRookPolynomial n i).coeff (k + 1) +
-        ((List.range (n - i)).map fun c =>
-          (truncatedStaircaseRookPolynomial (n - c - 1) i).coeff k).sum := by
-  have hbottom := truncatedStaircaseBottomRowExpansion_all n i
-  dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
-  rw [hbottom, Polynomial.coeff_add, Polynomial.coeff_X_mul]
-  rw [listSum_coeff, List.map_map]
-  simp [Function.comp_def]
 
 /-- The one-row truncated staircase with `n` cells has rook polynomial
 `1 + nX`. -/
