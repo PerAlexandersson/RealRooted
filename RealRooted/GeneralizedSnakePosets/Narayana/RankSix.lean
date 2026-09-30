@@ -911,13 +911,6 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
     (by simpa [modifiedNarayanaPolynomialSix] using hP_roots)
     hab hbc hcd hde her hsign
 
-/-- The `n = 6` Braun--Jal Lemma 3.3 interlacing form follows from the
-`P_6`/`G_6` sign certificate. -/
-theorem lemma33AuxiliaryGInterlaces_modified_six_of_eval_signs
-    (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
-  (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs hsign).toStrictInterl
-
 /-- The checked `n = 6` Braun--Jal Lemma 3.3 interlacing case. -/
 theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces :
     Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
