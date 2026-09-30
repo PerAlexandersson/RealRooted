@@ -420,6 +420,73 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
           exact h_add)
         hno_right hlocal hpos_c
 
+/-- Boundary same-degree package for the fixed right pair `(g, X * f)` in the
+succ-degree affine branch with `g(0) ≠ 0`.
+
+For every `μ > 0`, the pair `(g, g + μ X f)` stays inside the same positive
+cone, the second member has the same degree as `g`, its roots are simple, and
+it has no common root with `g`. This is the honest same-degree perturbation data
+needed if we want to orient the boundary family directly rather than going
+through a converse shortcut. -/
+private lemma right_boundary_pair_sameDegree_data_of_affine_family_succDegree_not_isRoot_zero
+    {f g : ℝ[X]}
+    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (haff :
+      ∀ {s t : ℝ}, 0 < s → 0 < t →
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
+    (hg_root0 : ¬ g.IsRoot 0)
+    {μ : ℝ}
+    (hμ : 0 < μ) :
+    PosComboRealRooted g (g + C μ * (X * f)) ∧
+    ((g + C μ * (X * f)) ≠ 0 ∧ (g + C μ * (X * f)).Splits) ∧
+    HasSimpleRoots (g + C μ * (X * f)) ∧
+    HasPosLeadingCoeff (g + C μ * (X * f)) ∧
+    (g + C μ * (X * f)).natDegree = g.natDegree ∧
+    (∀ r, g.IsRoot r → ¬ (g + C μ * (X * f)).IsRoot r) := by
+  have hg_rr : (g ≠ 0 ∧ g.Splits) :=
+    AffineFamily.isRealRooted_right_of_affine_family_succDegree hf0 hg0 hfnn hgnn haff hsucc.symm
+  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
+  have hXf_pos : HasPosLeadingCoeff (X * f) :=
+    (hfnn.pos_leadingCoeff hf0).X_mul
+  have hposcombo : PosComboRealRooted g (X * f) :=
+    AffineFamily.posComboRealRooted_right_of_affine_family hf0 hg0 hfnn hgnn haff
+  have hno_right :
+      ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r :=
+    no_common_right_pair_of_no_common_of_not_isRoot_zero hno hg_root0
+  have hpair :
+      PosComboRealRooted g (g + C μ * (X * f)) := by
+    intro lam ν hlam hν
+    have hrr :
+        ((C (lam + ν) * g + C (ν * μ) * (X * f)) ≠ 0 ∧
+          (C (lam + ν) * g + C (ν * μ) * (X * f)).Splits) :=
+      hposcombo (lam := lam + ν) (μ := ν * μ) (by grind) (by positivity)
+    grind
+  have hμ_rr : ((g + C μ * (X * f)) ≠ 0 ∧ (g + C μ * (X * f)).Splits) :=
+    PosComboRealRooted.isRealRooted_add_right hposcombo hμ
+  have hμ_simple : HasSimpleRoots (g + C μ * (X * f)) :=
+    PosComboRealRooted.hasSimpleRoots_add_right hposcombo hno_right hμ
+  have hμ_pos : HasPosLeadingCoeff (g + C μ * (X * f)) := by
+    have hdeg : g.natDegree ≤ (X * f).natDegree := by simp_all
+    have hsum_nonneg : HasNonnegCoeffs (g + C μ * (X * f)) :=
+      hgnn.add (nonnegCoeffs_C_mul hμ.le hfnn.X_mul)
+    have hsum_ne : g + C μ * (X * f) ≠ 0 := hμ_rr.1
+    exact hsum_nonneg.pos_leadingCoeff hsum_ne
+  have hμ_deg : (g + C μ * (X * f)).natDegree = g.natDegree := by
+    have hdeg : g.natDegree ≤ (X * f).natDegree := by simp_all
+    calc
+      (g + C μ * (X * f)).natDegree = (X * f).natDegree :=
+        PosComboRealRooted.family_natDegree_right hdeg hg_pos hXf_pos hμ
+      _ = g.natDegree := by simp_all
+  have hno_boundary :
+      ∀ r, g.IsRoot r → ¬ (g + C μ * (X * f)).IsRoot r := by
+    intro r hgr hboundary
+    simp_all
+  lia
+
 /-- The affine family `(C s * X + C t) * f + g` being real-rooted for all `s, t > 0`
 implies `AllComboRealRooted g f` (all linear combinations `α g + β f` are
 real-rooted), provided `f, g` have nonneg coefficients, positive leading

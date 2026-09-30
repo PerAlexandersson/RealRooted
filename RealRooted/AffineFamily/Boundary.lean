@@ -630,6 +630,17 @@ theorem exists_strict_right_root_of_X_mul_of_no_common
   intro r hr
   exact roots_strictly_neg_of_nonneg_of_no_common_right_pair hg_ne hg_splits hgnn hno r hr
 
+/-- Convenience form of `exists_strict_right_root_of_X_mul_of_no_common` from
+no common roots of `(g, f)` and `¬ g.IsRoot 0`. -/
+theorem exists_strict_right_root_of_X_mul_of_no_common_fg_of_not_isRoot_zero
+    {f g : ℝ[X]}
+    (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
+    (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
+    (hg0 : ¬ g.IsRoot 0) :
+    ∃ uR, (X * f).IsRoot uR ∧ ∀ r ∈ g.roots, r < uR :=
+  exists_strict_right_root_of_X_mul_of_no_common hg_ne hg_splits hgnn
+    (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
+
 /-- In the no-common-roots regime for the affine right-hand pair `(g, X * f)`,
 any future Obreschkoff alternative is automatically oriented the correct way:
 the distinguished root `0` of `X * f` sits strictly to the right of all roots
@@ -648,6 +659,20 @@ private lemma strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common
     PosComboRealRooted.reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
       (f := g) (g := X * f) (c := c) (r := 0)
       h hc_le (by simp [Polynomial.IsRoot.def]) (by lia)
+
+/-- Orientation wrapper for the affine right pair under no-common `f/g` and
+`g(0) ≠ 0`: once an Obreschkoff alternative for `(g, X*f)` is available, the
+right direction is forced. -/
+private lemma
+    strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_fg_of_not_isRoot_zero
+    {f g : ℝ[X]}
+    (h : StrictInterl g (X * f) ∨ StrictInterl (X * f) g)
+    (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
+    (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
+    (hg0 : ¬ g.IsRoot 0) :
+    StrictInterl g (X * f) :=
+  strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common h hg_ne hg_splits hgnn
+    (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
 
 /-- Public orientation selector for the right-hand pair `(g, X * f)` in the
 nonnegative-coefficient regime: if an Obreschkoff alternative is known and the

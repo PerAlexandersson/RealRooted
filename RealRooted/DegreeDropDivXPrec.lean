@@ -85,6 +85,19 @@ lemma divX_rootCount_eq_length_pred_of_coeff_zero {g : ℝ[X]} {rs : List ℝ}
     divX_roots_eq_dropLast_of_coeff_zero hg hg0 hrs_eq hrs_ne hlast
   rw [← hdivX_roots, Multiset.coe_card, List.length_dropLast]
 
+/-- Additive root-count form of `divX_rootCount_eq_length_pred_of_coeff_zero`.
+
+This avoids downstream reasoning about truncated subtraction in the right-zero
+degree-drop branch. -/
+lemma divX_rootCount_succ_eq_length_of_coeff_zero {g : ℝ[X]} {rs : List ℝ}
+    (hg : g ≠ 0) (hg0 : g.coeff 0 = 0)
+    (hrs_eq : (↑rs : Multiset ℝ) = g.roots)
+    (hrs_ne : rs ≠ [])
+    (hlast : rs.getLast hrs_ne = 0) :
+    Multiset.card g.divX.roots + 1 = rs.length := by
+  rw [divX_rootCount_eq_length_pred_of_coeff_zero hg hg0 hrs_eq hrs_ne hlast]
+  grind
+
 /-- List-level factorization behind the right-zero degree drop.
 
 For equal-length lists, `ss` interlaces the one-longer list `ts ++ [m]` exactly
@@ -293,6 +306,18 @@ theorem strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_
   exact ⟨⟨hdivX_ne, hdivX_split⟩, hf, rs.dropLast, ss, hdrop_sorted,
     hss_sorted, hdivX_roots, hss_eq,
     Or.inl ⟨hlen, listInterlaces_dropLast_right_of_listAlternates hAlt⟩⟩
+
+/-- Nonnegative-coefficient wrapper for
+`strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero`. -/
+theorem strictInterl_divX_left_of_strictInterl_sameDegree_of_hasNonnegCoeffs_coeff_zero
+    {f g : ℝ[X]}
+    (hstrictInterl : StrictInterl f g)
+    (hgnn : HasNonnegCoeffs g)
+    (hg0 : g.coeff 0 = 0)
+    (hdeg : g.natDegree = f.natDegree) :
+    StrictInterl g.divX f :=
+  strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero hstrictInterl
+    (fun r hr => roots_nonpos_of_hasNonnegCoeffs hgnn r hr) hg0 hdeg
 
 /-- Right-zero degree-drop reduction at the `StrictInterl` level.
 

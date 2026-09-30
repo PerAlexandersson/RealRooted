@@ -46,4 +46,12 @@ theorem IsStrictlyHurwitzStable.nextCoeff_pos {p : ℝ[X]}
   unfold HasPosLeadingCoeff at hlead
   nlinarith
 
+/-- Coefficient form of `IsStrictlyHurwitzStable.nextCoeff_pos`. -/
+theorem IsStrictlyHurwitzStable.coeff_natDegree_sub_one_pos {p : ℝ[X]}
+    (h : IsStrictlyHurwitzStable p) (hlead : HasPosLeadingCoeff p)
+    (hdegree : p.natDegree ≠ 0) :
+    0 < p.coeff (p.natDegree - 1) := by
+  rw [← Polynomial.nextCoeff_of_natDegree_pos (Nat.pos_of_ne_zero hdegree)]
+  exact h.nextCoeff_pos hlead hdegree
+
 end RealRooted

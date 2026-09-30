@@ -877,6 +877,16 @@ theorem eval_right_ne_zero_of_isRoot_of_no_common
   intro hgx
   exact hno x hfx (by simpa [Polynomial.IsRoot.def] using hgx)
 
+/-- Symmetric endpoint-evaluation form of
+`eval_right_ne_zero_of_isRoot_of_no_common`. -/
+theorem eval_left_ne_zero_of_isRoot_of_no_common
+    {f g : ℝ[X]} {x : ℝ}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hgx : g.IsRoot x) :
+    f.eval x ≠ 0 := by
+  intro hfx
+  exact hno x (by simpa [Polynomial.IsRoot.def] using hfx) hgx
+
 /-- At a root of a no-common right pencil, the right endpoint does not vanish. -/
 theorem eval_right_ne_zero_of_isRoot_add_right_of_no_common
     {f g : ℝ[X]} {mu x : ℝ}

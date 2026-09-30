@@ -211,6 +211,51 @@ theorem MvUpperHalfPlaneStableOrZero.specializeAtList_real_general
   | nil => exact hP
   | cons i l ih => exact ih (hP.specializeAt_real_general i (c i))
 
+/-- Specializing an entire finite right block at zero preserves
+upper-half-plane stability up to the zero polynomial, with no coordinate-degree
+restriction. The left block may have arbitrary cardinality and degrees. -/
+theorem MvUpperHalfPlaneStable.specializeRight_zero_or_general
+    {tau sigma : Type*} [Finite sigma]
+    {P : MvPolynomial (Sum tau sigma) ℂ}
+    (hP : MvUpperHalfPlaneStable P) :
+    MvUpperHalfPlaneStableOrZero
+      (_root_.RealRooted.specializeRight (fun _ : sigma => 0) P) := by
+  classical
+  let := Fintype.ofFinite sigma
+  let l : List (Sum tau sigma) :=
+    Finset.univ.toList.map (Sum.inr : sigma → Sum tau sigma)
+  let Q : MvPolynomial (Sum tau sigma) ℂ := specializeZeroList l P
+  have hQeval (x : tau → ℂ) (y : sigma → ℂ) :
+      MvPolynomial.eval (Sum.elim x y) Q =
+        MvPolynomial.eval (Sum.elim x (fun _ => 0)) P := by
+    change
+      MvPolynomial.eval (Sum.elim x y) (specializeZeroList l P) =
+        MvPolynomial.eval (Sum.elim x (fun _ => 0)) P
+    rw [eval_specializeZeroList]
+    apply congrArg (fun w : Sum tau sigma → ℂ => MvPolynomial.eval w P)
+    funext j
+    cases j <;> simp [l]
+  have hQzero_or : MvUpperHalfPlaneStableOrZero Q :=
+    hP.specializeZeroList_zero_or_general l
+  by_cases hzero :
+      _root_.RealRooted.specializeRight (fun _ : sigma => 0) P = 0
+  · exact Or.inl hzero
+  have hQne : Q ≠ 0 := by
+    intro hQzero
+    obtain ⟨x, _hx, heval⟩ := exists_upperHalfPlane_eval_ne_zero hzero
+    apply heval
+    rw [eval_specializeRight, ← hQeval x (fun _ => I), hQzero]
+    simp
+  right
+  have hQstable : MvUpperHalfPlaneStable Q :=
+    hQzero_or.resolve_left hQne
+  intro x hx
+  rw [eval_specializeRight, ← hQeval x (fun _ => I)]
+  exact hQstable (Sum.elim x (fun _ => I)) fun j => by
+    cases j with
+    | inl i => exact hx i
+    | inr _ => simp
+
 end
 
 end RealRooted

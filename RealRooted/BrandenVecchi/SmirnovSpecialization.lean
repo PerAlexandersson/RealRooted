@@ -62,6 +62,21 @@ theorem isPositive_of_signedWordWeight_zeroOne_ne_zero
   · rw [hj]
     exact SignedLetter.isPositive_positive j
 
+/-- In the literal finite list specialization, every nonzero word monomial
+contains only positive letters. -/
+theorem isPositive_of_finiteSignedWordWeight_replicate_ne_zero
+    {q p n : ℕ}
+    (w : Fin n → SignedLetter (List.replicate q (0 : ℝ)).length
+      (List.replicate p 1).length)
+    (hweight : signedWordWeight
+      (finiteSignedLetterWeight (List.replicate p (1 : ℝ))
+        (List.replicate q 0)) w ≠ 0)
+    (i : Fin n) : (w i).IsPositive := by
+  apply isPositive_of_signedWordWeight_zeroOne_ne_zero w
+  rw [← signedWordWeight_congr
+    (finiteSignedLetterWeight_replicate_one_zero q p) w]
+  exact hweight
+
 /-- Remove the vacuous zero-sized negative block from the signed alphabet. -/
 def positiveLetterOrderIso (m : ℕ) : SignedLetter 0 m ≃o Fin m :=
   Fin.castOrderIso (Nat.zero_add m)

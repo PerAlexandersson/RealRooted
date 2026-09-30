@@ -151,6 +151,72 @@ theorem ClawFree.comap_equiv
     · rw [Finset.card_map]
       exact hInd.card_eq
 
+/-- Weighted independence polynomials on finite supports are invariant under
+graph isomorphism, with the weights pulled back along the isomorphism. -/
+theorem weightedIndepPolyOn_iso
+    {W : Type v} {G : _root_.SimpleGraph V} {H : _root_.SimpleGraph W}
+    [DecidableEq V] [DecidableEq W]
+    [DecidableRel G.Adj] [DecidableRel H.Adj]
+    (e : G ≃g H) (S : Finset V) (wt : W → ℝ) :
+    weightedIndepPolyOn H (S.map e.toEquiv.toEmbedding) wt =
+      weightedIndepPolyOn G S (wt ∘ e) := by
+  classical
+  symm
+  unfold weightedIndepPolyOn indepSetsOn
+  refine Finset.sum_bij
+    (fun s _ ↦ s.map e.toEquiv.toEmbedding) ?_ ?_ ?_ ?_
+  · intro s hs
+    rcases Finset.mem_filter.mp hs with ⟨hsS, hsInd⟩
+    apply Finset.mem_filter.mpr
+    refine ⟨?_, ?_⟩
+    · exact Finset.mem_powerset.mpr fun y hy ↦ by
+        rcases Finset.mem_map.mp hy with ⟨x, hx, rfl⟩
+        exact Finset.mem_map.mpr
+          ⟨x, Finset.mem_powerset.mp hsS hx, rfl⟩
+    · intro a ha b hb hab hadj
+      rcases Finset.mem_map.mp ha with ⟨x, hx, rfl⟩
+      rcases Finset.mem_map.mp hb with ⟨y, hy, hey⟩
+      subst hey
+      exact hsInd hx hy (fun h ↦ hab (congrArg e h))
+        ((e.map_adj_iff (v := x) (w := y)).mp hadj)
+  · intro s hs t ht hst
+    exact Finset.map_injective e.toEquiv.toEmbedding hst
+  · intro t ht
+    rcases Finset.mem_filter.mp ht with ⟨htS, htInd⟩
+    let s := t.map e.symm.toEquiv.toEmbedding
+    refine ⟨s, ?_, ?_⟩
+    · apply Finset.mem_filter.mpr
+      refine ⟨?_, ?_⟩
+      · apply Finset.mem_powerset.mpr
+        intro x hx
+        rcases Finset.mem_map.mp hx with ⟨y, hy, rfl⟩
+        have hyS := Finset.mem_powerset.mp htS hy
+        rcases Finset.mem_map.mp hyS with ⟨z, hz, hez⟩
+        simpa [← hez] using hz
+      · intro x hx y hy hxy hadj
+        rcases Finset.mem_map.mp hx with ⟨a, ha, rfl⟩
+        rcases Finset.mem_map.mp hy with ⟨b, hb, heb⟩
+        subst heb
+        exact htInd ha hb (fun h ↦ hxy (congrArg e.symm h))
+          ((e.symm.map_adj_iff (v := a) (w := b)).mp hadj)
+    · dsimp [s]
+      ext y
+      constructor
+      · intro hy
+        rcases Finset.mem_map.mp hy with ⟨x, hx, hxy⟩
+        rcases Finset.mem_map.mp hx with ⟨z, hz, hzx⟩
+        have hzy : z = y := by
+          calc
+            z = e (e.symm z) := (e.apply_symm_apply z).symm
+            _ = e x := congrArg e hzx
+            _ = y := hxy
+        simpa [hzy] using hz
+      · intro hy
+        exact Finset.mem_map.mpr
+          ⟨e.symm y, Finset.mem_map.mpr ⟨y, hy, rfl⟩, by simp⟩
+  · intro s hs
+    simp
+
 /-- Scale weights on a specified vertex set. -/
 def scaleWeightsOn {W : Type*} [DecidableEq W]
     (K : Finset W) (c : ℝ) (wt : W → ℝ) (v : W) : ℝ :=

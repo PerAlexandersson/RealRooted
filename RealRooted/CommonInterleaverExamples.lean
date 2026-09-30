@@ -672,6 +672,8 @@ private lemma X_hasPosLeadingCoeff : HasPosLeadingCoeff (X : ℝ[X]) :=
 
 private lemma X_roots : (X : ℝ[X]).roots = {(0 : ℝ)} := by simp
 
+private lemma X_coeff_zero : (X : ℝ[X]).coeff 0 = 0 := by simp
+
 private lemma xAddOne_xAddTwo_isRealRooted :
     ((((X + 1) * (X + 2)) : ℝ[X]) ≠ 0 ∧ (((X + 1) * (X + 2)) : ℝ[X]).Splits) :=
   isRealRooted_mul xAddOne_isRealRooted.1 xAddOne_isRealRooted.2
@@ -694,6 +696,9 @@ private lemma xAddOne_xAddTwo_roots :
     (((X + 1) * (X + 2)) : ℝ[X]).roots = {(-2 : ℝ)} + {(-1 : ℝ)} := by
   rw [roots_mul (mul_ne_zero xAddOne_isRealRooted.1 xAddTwo_isRealRooted.1),
     xAddOne_roots, xAddTwo_roots, add_comm]
+
+private lemma xAddOne_xAddTwo_coeff_zero_ne :
+    (((X + 1) * (X + 2)) : ℝ[X]).coeff 0 ≠ 0 := by simp
 
 private lemma xAddThreeHalves_isRealRooted :
     ((X + C (3 / 2 : ℝ) : ℝ[X]) ≠ 0 ∧ (X + C (3 / 2 : ℝ) : ℝ[X]).Splits) := by

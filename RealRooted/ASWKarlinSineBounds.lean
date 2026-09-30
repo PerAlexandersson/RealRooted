@@ -562,6 +562,15 @@ lemma signVariations_aswKarlinSineVector_order_one_eq_zero_of_le_threshold
   have hN : 1 * (degree + 1 - 1) = degree := by lia
   simpa [hN] using hlast
 
+/-- Strict upper-bound form of the order-one sine estimate. -/
+lemma signVariations_aswKarlinSineVector_order_one_lt
+    {θ : ℝ} {degree : ℕ} (hdegree : 0 < degree) (hθ0 : 0 ≤ θ)
+    (hθ : θ < aswSectorThreshold degree 1) :
+    Fin.signVariations (aswKarlinSineVector θ degree 1 1) < 1 := by
+  rw [signVariations_aswKarlinSineVector_order_one_eq_zero_of_le_threshold
+    hdegree hθ0 hθ.le]
+  norm_num
+
 /-- In degree one, the one-block Karlin sine vector always has fewer than
 `order` sign variations.  The first sampled sine is zero, leaving at most
 `order` nonzero entries and hence at most `order - 1` variations. -/
@@ -575,5 +584,12 @@ lemma signVariations_aswKarlinSineVector_degree_one_lt
       Fin.signVariations (aswKarlinSineVector θ 1 order 1) ≤ order - 1 :=
     hle.trans (by lia)
   exact Nat.lt_of_le_pred horder hle'
+
+/-- Threshold-shaped wrapper for the degree-one sine upper bound. -/
+lemma signVariations_aswKarlinSineVector_degree_one_lt_of_lt_threshold
+    {θ : ℝ} {order : ℕ} (horder : 0 < order) (_hθ0 : 0 ≤ θ)
+    (_hθ : θ < aswSectorThreshold 1 order) :
+    Fin.signVariations (aswKarlinSineVector θ 1 order 1) < order :=
+  signVariations_aswKarlinSineVector_degree_one_lt θ horder
 
 end RealRooted

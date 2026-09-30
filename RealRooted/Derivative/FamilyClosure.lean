@@ -75,6 +75,20 @@ theorem closedSegment_derivative_splits_of_ne
   · exact False.elim (hder_ne hzero)
   · exact hsplit.2
 
+/-- Nonzero-and-splits wrapper for a derivative of a closed real-rooted
+segment.  This packages `closedSegment_derivative_splits_of_ne` in the
+`≠ 0 ∧ Splits` shape used by positive-combination arguments. -/
+theorem closedSegment_derivative_ne_zero_and_splits_of_ne
+    {f g : ℝ[X]}
+    (hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+      ((C (1 - β) * f + C β * g) ≠ 0 ∧
+        (C (1 - β) * f + C β * g).Splits))
+    {β : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hder_ne : C (1 - β) * f.derivative + C β * g.derivative ≠ 0) :
+    C (1 - β) * f.derivative + C β * g.derivative ≠ 0 ∧
+      (C (1 - β) * f.derivative + C β * g.derivative).Splits :=
+  ⟨hder_ne, closedSegment_derivative_splits_of_ne hseg hβ0 hβ1 hder_ne⟩
+
 /-- Right positive family, zero-aware: for each `μ > 0`, the derivative member
 `f' + C μ * g'` is either zero or real-rooted. -/
 theorem posFamily_derivative_eq_zero_or_ne_zero_and_splits
@@ -153,6 +167,14 @@ theorem posFamily_derivative_family_splits_of_ne
     ∀ {μ : ℝ}, 0 < μ → (f.derivative + C μ * g.derivative).Splits :=
   fun hμ => (posFamily_derivative_family_of_ne hfam hder_ne hμ).2
 
+/-- Nonzero projection from the implicit derivative-family wrapper. -/
+theorem posFamily_derivative_family_ne_zero_of_ne
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    (hder_ne : ∀ {μ : ℝ}, 0 < μ → f.derivative + C μ * g.derivative ≠ 0) :
+    ∀ {μ : ℝ}, 0 < μ → f.derivative + C μ * g.derivative ≠ 0 :=
+  fun hμ => (posFamily_derivative_family_of_ne hfam hder_ne hμ).1
+
 /-- Splitting projection from the explicit derivative-family wrapper. -/
 theorem posFamily_derivative_splits_explicit_of_ne
     {f g : ℝ[X]}
@@ -160,6 +182,14 @@ theorem posFamily_derivative_splits_explicit_of_ne
     (hder_ne : ∀ μ : ℝ, 0 < μ → f.derivative + C μ * g.derivative ≠ 0) :
     ∀ μ : ℝ, 0 < μ → (f.derivative + C μ * g.derivative).Splits :=
   fun μ hμ => (posFamily_derivative_family_explicit_of_ne hfam hder_ne μ hμ).2
+
+/-- Nonzero projection from the explicit derivative-family wrapper. -/
+theorem posFamily_derivative_ne_zero_explicit_of_ne
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    (hder_ne : ∀ μ : ℝ, 0 < μ → f.derivative + C μ * g.derivative ≠ 0) :
+    ∀ μ : ℝ, 0 < μ → f.derivative + C μ * g.derivative ≠ 0 :=
+  fun μ hμ => (posFamily_derivative_family_explicit_of_ne hfam hder_ne μ hμ).1
 
 /-- If all roots of a real-rooted polynomial are nonpositive, then all roots of
 its derivative are nonpositive. -/

@@ -378,6 +378,15 @@ theorem right_coeff_zero_ne_of_no_common_of_left_coeff_zero
     simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using hg0
   exact (hno 0 hf_root) hg_root
 
+/-- Symmetric constant-coefficient form of the no-common-roots hypothesis. -/
+theorem left_coeff_zero_ne_of_no_common_of_right_coeff_zero
+    {f g : ℝ[X]}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hg0 : g.coeff 0 = 0) :
+    f.coeff 0 ≠ 0 := by
+  intro hf0
+  exact right_coeff_zero_ne_of_no_common_of_left_coeff_zero hno hf0 hg0
+
 /-- Zero-constant succ-degree data pass to the pair divided by the common
 factor `X`.  This is the reduction package for the complementary branch to
 `PosComboRealRooted.left_splits_of_succDegree_of_coeff_zero_ne`. -/
@@ -417,6 +426,76 @@ theorem card_roots_filter_divX_of_coeff_zero {f : ℝ[X]} (hf : f ≠ 0)
   rw [roots_eq_zero_cons_divX_of_coeff_zero hf hf0, Multiset.filter_cons]
   by_cases h : p 0 <;>
     simp [h, Multiset.card_add, Multiset.card_singleton, add_comm]
+
+/-- Common-`X`/`divX` root-count invariance step.  Dividing out the common
+factor `X` from a pair of nonzero polynomials with zero constant coefficient
+leaves the threshold root-count difference with respect to any predicate `p`
+unchanged: the extra root at `0` is contributed to both counts and cancels. -/
+theorem card_roots_filter_sub_divX_of_coeff_zero {f g : ℝ[X]}
+    (hf : f ≠ 0) (hg : g ≠ 0) (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0)
+    (p : ℝ → Prop) [DecidablePred p] :
+    ((f.roots.filter p).card : ℤ) - (g.roots.filter p).card =
+      ((f.divX.roots.filter p).card : ℤ) - (g.divX.roots.filter p).card := by
+  rw [card_roots_filter_divX_of_coeff_zero hf hf0 p,
+    card_roots_filter_divX_of_coeff_zero hg hg0 p]
+  push_cast
+  ring
+
+/-- Upper-threshold same-cardinality count bounds lift across a common
+zero constant term. -/
+theorem rootCountAbove_diff_le_one_of_divX_coeff_zero {f g : ℝ[X]}
+    (hf : f ≠ 0) (hg : g ≠ 0) (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0)
+    (hcount : ∀ x : ℝ,
+      ((f.divX.roots.filter (x < ·)).card : ℤ) -
+          (g.divX.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.divX.roots.filter (x < ·)).card : ℤ) -
+          (f.divX.roots.filter (x < ·)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  intro x
+  have hfg := card_roots_filter_sub_divX_of_coeff_zero hf hg hf0 hg0 (fun y : ℝ => x < y)
+  have hgf := card_roots_filter_sub_divX_of_coeff_zero hg hf hg0 hf0 (fun y : ℝ => x < y)
+  constructor
+  · rw [hfg]
+    exact (hcount x).1
+  · rw [hgf]
+    exact (hcount x).2
+
+/-- Succ-degree lower-threshold count bounds lift across a common zero
+constant term. -/
+theorem succDegreeRootCount_of_divX_coeff_zero {f g : ℝ[X]}
+    (hf : f ≠ 0) (hg : g ≠ 0) (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0)
+    (hcount : ∀ x : ℝ,
+      ((f.divX.roots.filter (· ≤ x)).card : ℤ) -
+          (g.divX.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.divX.roots.filter (· ≤ x)).card : ℤ) -
+          (f.divX.roots.filter (· ≤ x)).card ≤ 2) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
+  intro x
+  have hfg := card_roots_filter_sub_divX_of_coeff_zero hf hg hf0 hg0 (fun y : ℝ => y ≤ x)
+  have hgf := card_roots_filter_sub_divX_of_coeff_zero hg hf hg0 hf0 (fun y : ℝ => y ≤ x)
+  constructor
+  · rw [hfg]
+    exact (hcount x).1
+  · rw [hgf]
+    exact (hcount x).2
+
+/-- Succ-degree upper-threshold count bounds lift across a common zero
+constant term. -/
+theorem succDegreeRootCountAbove_of_divX_coeff_zero {f g : ℝ[X]}
+    (hf : f ≠ 0) (hg : g ≠ 0) (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0)
+    (hcount : ∀ x : ℝ,
+      ((f.divX.roots.filter (x < ·)).card : ℤ) -
+          (g.divX.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.divX.roots.filter (x < ·)).card : ℤ) -
+          (f.divX.roots.filter (x < ·)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  rootCountAbove_diff_le_one_of_divX_coeff_zero hf hg hf0 hg0 hcount
 
 /-- The full succ-degree left-endpoint statement is reduced to the residual
 branch `f.coeff 0 = 0`, `g.coeff 0 ≠ 0`.

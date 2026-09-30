@@ -78,6 +78,17 @@ theorem MvRealStable.oneSubPderivList_specializeAtList_zero_or_general
   (MvRealStable.oneSubPderivList hP operators).specializeAtList_zero_or_general
     c coordinates
 
+/-- Applying an ordered operator list and then specializing coordinates to zero
+preserves complex upper-half-plane stability up to the zero polynomial. -/
+theorem MvUpperHalfPlaneStable.oneSubPderivList_specializeZeroList_zero_or_general
+    {sigma : Type*} {P : MvPolynomial sigma ℂ}
+    (hP : MvUpperHalfPlaneStable P) (operators coordinates : List sigma) :
+    MvUpperHalfPlaneStableOrZero
+      (specializeZeroList coordinates
+        (_root_.RealRooted.oneSubPderivList operators P)) :=
+  (MvUpperHalfPlaneStable.oneSubPderivList hP operators)
+    |>.specializeZeroList_zero_or_general coordinates
+
 section MixedCharacteristicExample
 
 /-- A degree-two mixed-characteristic-shaped input in an output variable and

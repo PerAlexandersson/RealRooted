@@ -41,6 +41,16 @@ theorem isLaguerrePolyaTypeI_exp : IsLaguerrePolyaTypeI Complex.exp := by
   rw [← complexExpGeneratingFunction_one]
   exact isPFMultiplierSequence_one_sequence.isLaguerrePolyaTypeI_complexExpGeneratingFunction
 
+/-- The Type-I Pólya--Schur classification specialized to the complex
+exponential and the constant-one sequence. -/
+theorem isPFMultiplierSequence_one_iff_isLaguerrePolyaTypeI_exp :
+    IsPFMultiplierSequence (fun _ => (1 : ℝ)) ↔
+      IsLaguerrePolyaTypeI Complex.exp := by
+  rw [← complexExpGeneratingFunction_one]
+  apply isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+  refine ⟨1, zero_lt_one, ?_⟩
+  simpa using Real.summable_pow_div_factorial (1 : ℝ)
+
 /-- The complex EGF of the constant-negative-one sequence is `-exp`. -/
 theorem complexExpGeneratingFunction_neg_one :
     complexExpGeneratingFunction (fun _ => (-1 : ℝ)) =

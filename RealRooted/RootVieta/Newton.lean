@@ -175,6 +175,18 @@ theorem coeff_zero_mul_reverse_roots_powerSum
         p.reverse.roots.powerSum k * p.coeff 0 := mul_comm _ _
     _ = _ := hscaled
 
+/-- Consumer-facing reciprocal-root form of
+`coeff_zero_mul_reverse_roots_powerSum`. -/
+theorem coeff_zero_mul_sum_inv_roots_pow
+    {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
+    (k : ℕ) (hk : 0 < k) :
+    p.coeff 0 * (p.roots.map fun r => r⁻¹ ^ k).sum =
+      -(k : K) * p.coeff k -
+        ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
+          p.coeff a.1 * (p.roots.map fun r => r⁻¹ ^ a.2).sum := by
+  simpa only [reverse_roots_powerSum_eq_sum_inv_pow hp h0] using
+    coeff_zero_mul_reverse_roots_powerSum hp h0 k hk
+
 end RealRooted.RootVieta
 
 /-! ## Hermite--Sylvester criterion -/

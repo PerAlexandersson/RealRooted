@@ -117,6 +117,17 @@ theorem decoBottomTotalCompanionCore_mvRealStable_zero_or (n : Nat)
   unfold decoBottomTotalCompanionCore
   exact MvRealStableOrZero.of_rename h (by intro i j hij; lia)
 
+/-- Under preceding-rank stability, specializing the normal affine step at
+one makes the companion successor slope zero or real stable. -/
+theorem decoBottomTotalCompanionSlope_mvRealStable_zero_or (n : Nat)
+    (hstable : MvRealStable (decoLayerTotal (n + 1))) :
+    MvRealStableOrZero (decoBottomTotalCompanionSlope n) := by
+  have h := (decoNormalBottomStep_total_mvRealStable
+    (n + 1) hstable).specializeAt_zero_or_general 1 1
+  rw [decoNormalBottomStep_total_eq_affine,
+    specializeAt_one_decoBottomTotalAffineNormal_eq_companionSlope] at h
+  exact MvRealStableOrZero.of_rename h (by intro i j hij; lia)
+
 /-- Under preceding-rank stability, the unshifted normal core paired with the
 two-rank companion is Rayleigh. -/
 theorem decoBottomTotalCompanionCore_isRayleigh (n : Nat)

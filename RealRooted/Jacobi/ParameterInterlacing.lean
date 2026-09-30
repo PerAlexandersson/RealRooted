@@ -515,6 +515,14 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one
   rw [neg_lt_neg_iff, div_lt_div_iff₀ hden₀ hdenₜ]
   linarith [mul_pos ht (by linarith : 0 < β + 1)]
 
+/-- Interlacing form of arbitrary positive first-parameter movement in
+degree one. -/
+theorem shiftedJacobiMonic_strictInterl_alpha_add_degree_one
+    {α β t : ℝ} (hα : -1 < α) (hβ : -1 < β) (ht : 0 < t) :
+    StrictInterl (shiftedJacobiMonic 1 α β)
+      (shiftedJacobiMonic 1 (α + t) β) :=
+  (shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one hα hβ ht).toStrictInterl
+
 private theorem shiftedJacobiMonic_two_neg_half_one :
     shiftedJacobiMonic 2 (-(1 / 2) : ℝ) 1 =
       X ^ 2 - C (2 / 3 : ℝ) * X + C (1 / 21 : ℝ) := by

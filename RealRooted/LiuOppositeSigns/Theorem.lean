@@ -258,6 +258,14 @@ lemma natDegree_right_le_two_of_compatible_of_left_natDegree_eq_zero
   rw [eq_C_of_natDegree_eq_zero hfdeg] at hsgn hcompat
   exact natDegree_le_two_of_compatible_C_left hg hsgn hcompat
 
+/-- The left polynomial has degree at most two when the right polynomial is constant. -/
+lemma natDegree_left_le_two_of_compatible_of_right_natDegree_eq_zero
+    {f g : ℝ[X]} (hf : f.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hgdeg : g.natDegree = 0) :
+    f.natDegree ≤ 2 :=
+  natDegree_right_le_two_of_compatible_of_left_natDegree_eq_zero
+    hf hsgn.symm hcompat.comm hgdeg
+
 /-- Corollary 2.2's degree bound when the left polynomial is constant. -/
 lemma natDegree_abs_sub_le_two_of_compatible_of_left_natDegree_eq_zero
     {f g : ℝ[X]} (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
