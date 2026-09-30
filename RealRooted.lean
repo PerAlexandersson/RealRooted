@@ -1496,3 +1496,4 @@ import RealRooted.Challenges.ParkingFunctions
 import RealRooted.Challenges.ToricContribution
 import RealRooted.MultiplierSequence.InvPochhammer
 import RealRooted.BinaryRunTransformation.MultiplierMotzkin
+import RealRooted.MultiplierSequence.Laguerre
