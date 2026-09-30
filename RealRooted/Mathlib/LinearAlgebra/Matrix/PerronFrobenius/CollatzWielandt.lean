@@ -81,19 +81,6 @@ private lemma pos_support_toFinset_nonempty_of_mem_stdSimplex {x : n → ℝ}
   exact ⟨i, by simpa using hi_pos⟩
 
 omit [Nonempty n] in
-/-- A nonnegative nonzero vector has nonempty positive support. -/
-private lemma pos_support_toFinset_nonempty_of_nonneg_ne_zero {x : n → ℝ}
-    (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne_zero : x ≠ 0) :
-    ({i | 0 < x i}.toFinset).Nonempty := by
-  by_contra h_empty
-  apply hx_ne_zero
-  ext i
-  have hi_not_pos : ¬ 0 < x i := by
-    intro hi_pos
-    exact h_empty ⟨i, by simpa using hi_pos⟩
-  exact le_antisymm (not_lt.mp hi_not_pos) (hx_nonneg i)
-
-omit [Nonempty n] in
 /-- On a vector with nonempty positive support, `collatzWielandtFn` is the infimum of its
 associated ratios. -/
 lemma collatzWielandtFn_eq_inf' (A : Matrix n n ℝ) {x : n → ℝ}
@@ -226,24 +213,6 @@ lemma eq_iInf_of_nonempty (v : n → ℝ) (h : {i | 0 < v i}.toFinset.Nonempty) 
 
 omit [Nonempty n] in
 open scoped Classical in
-/-- If r ≤ 0 and r is the infimum of non-negative ratios, then r = 0. -/
-lemma val_eq_zero_of_nonpos
-    (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ} (hv_nonneg : ∀ i, 0 ≤ v i)
-    (S : Set n) (hS_def : S = {i | 0 < v i}) (hS_nonempty : S.Nonempty)
-    (r : ℝ) (hr_def : r = collatzWielandtFn A v) (hr_nonpos : r ≤ 0) :
-    r = 0 := by
-  have r_ge_zero : 0 ≤ r := by
-    have hS_finset_nonempty : { j | 0 < v j }.toFinset.Nonempty := by
-      rwa [Set.toFinset_nonempty_iff, ← hS_def]
-    rw [hr_def, collatzWielandtFn_eq_inf' A hS_finset_nonempty]
-    apply Finset.le_inf'
-    intro j hj
-    rw [Set.mem_toFinset] at hj
-    exact div_nonneg (Finset.sum_nonneg fun k _ => mul_nonneg (hA_nonneg j k) (hv_nonneg k)) hj.le
-  exact le_antisymm hr_nonpos r_ge_zero
-
-omit [Nonempty n] in
-open scoped Classical in
 /-- Each ratio is at least the Collatz-Wielandt value -/
 lemma le_ratio {v : n → ℝ} (i : n) (hi_pos : 0 < v i) :
     collatzWielandtFn A v ≤ (A *ᵥ v) i / v i := by
@@ -271,29 +240,6 @@ lemma le_mulVec
   · have h_vi_zero : v i = 0 := by linarith [hv_nonneg i, not_lt.mp hi_supp]
     simp only [Pi.smul_apply, smul_eq_mul, h_vi_zero, mul_zero]
     exact mulVec_nonneg hA_nonneg hv_nonneg i
-
-omit [Fintype n] [Nonempty n] in
-/-- If the Collatz-Wielandt value `r` is non-positive, there must be some `i` in the support of `v`
-    where the ratio, and thus `(A * v) i`, is zero. -/
-lemma exists_mulVec_eq_zero_on_support_of_nonpos [Fintype n]
-  (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ} (hv_nonneg : ∀ i, 0 ≤ v i)
-  (h_supp_nonempty : {i | 0 < v i}.toFinset.Nonempty)
-  (h_r_nonpos : collatzWielandtFn A v ≤ 0) :
-  ∃ i ∈ {i | 0 < v i}.toFinset, (A *ᵥ v) i = 0 := by
-  have r_nonneg : 0 ≤ collatzWielandtFn A v := by
-    rw [collatzWielandtFn_eq_inf' A h_supp_nonempty]
-    apply Finset.le_inf'
-    intro i hi_mem
-    exact div_nonneg (mulVec_nonneg hA_nonneg hv_nonneg i) (by exact hv_nonneg i)
-  have r_eq_zero : collatzWielandtFn A v = 0 := le_antisymm h_r_nonpos r_nonneg
-  rw [collatzWielandtFn_eq_inf' A h_supp_nonempty] at r_eq_zero
-  obtain ⟨b, hb_mem, hb_eq⟩ := Finset.exists_mem_eq_inf' h_supp_nonempty (fun i => (A *ᵥ v) i / v i)
-  have h_ratio_zero : (A *ᵥ v) b / v b = 0 := by rw [← hb_eq, r_eq_zero]
-  have h_vb_pos : 0 < v b := by simpa [Set.mem_toFinset] using hb_mem
-  refine ⟨b, hb_mem, ?_⟩
-  rcases div_eq_zero_iff.mp h_ratio_zero with hAv | hb0
-  · exact hAv
-  · exact absurd hb0 (ne_of_gt h_vb_pos)
 
 open scoped Classical in
 /-- The set of values from the Collatz-Wielandt function is bounded above by the maximum row sum of A. -/
@@ -385,49 +331,6 @@ theorem eigenvalue_le_perron_root_of_positive_eigenvector
     have hv_in : v ∈ nonnegNeZero := ⟨hv_nonneg, hv_ne_zero⟩
     exact Set.mem_image_of_mem (collatzWielandtFn A) hv_in
   simpa [h_r] using h_le
-
-omit [Nonempty n] in
-/-- A left eigenvector of the matrix is a right eigenvector of its transpose -/
-lemma left_eigenvector_of_transpose {r : ℝ} {u : n → ℝ}
-    (hu_left : u ᵥ* A = r • u) :
-    Aᵀ *ᵥ u = r • u := by
-  rwa [← vecMul_eq_mulVec_transpose]
-
-omit [Nonempty n] in
-/-- For any non-negative vector `w`, its Collatz–Wielandt value … -/
-lemma le_eigenvalue_of_left_eigenvector
-    (hA_nonneg : ∀ i j, 0 ≤ A i j) {r : ℝ} (_ : 0 < r)
-    {u : n → ℝ} (hu_pos : ∀ i, 0 < u i) (h_eig : u ᵥ* A = r • u)
-    {w : n → ℝ} (hw_nonneg : ∀ i, 0 ≤ w i) (hw_ne_zero : w ≠ 0) :
-    collatzWielandtFn A w ≤ r := by
-  classical
-  have h_le_mulVec := CollatzWielandt.le_mulVec hA_nonneg hw_nonneg hw_ne_zero
-  have h_intermediate :
-      u ⬝ᵥ ((collatzWielandtFn A w) • w) ≤ u ⬝ᵥ (A *ᵥ w) := by
-    exact dotProduct_le_dotProduct_of_nonneg_left' (fun i => (hu_pos i).le) h_le_mulVec
-  have h_dot_le :
-      (collatzWielandtFn A w) * (u ⬝ᵥ w) ≤ r * (u ⬝ᵥ w) := by
-    simpa [dotProduct_mulVec, h_eig, dotProduct_smul_left, dotProduct_smul,
-      smul_eq_mul] using h_intermediate
-  have h_dot_pos : 0 < u ⬝ᵥ w :=
-    dotProduct_pos_of_pos_of_nonneg_ne_zero hu_pos hw_nonneg hw_ne_zero
-  exact le_of_mul_le_mul_right h_dot_le h_dot_pos
-
-/--
-If `u` is a strictly positive left eigenvector of `A` for eigenvalue `r > 0`,
-then the Perron root of `A` is less than or equal to `r`.
-That is, `perronRoot A ≤ r`.
--/
-lemma perron_root_le_eigenvalue_of_left_eigenvector
-    (hA_nonneg : ∀ i j, 0 ≤ A i j) {r : ℝ} (hr_pos : 0 < r) {u : n → ℝ} (hu_pos : ∀ i, 0 < u i)
-    (h_eig : u ᵥ* A = r • u) :
-    perronRoot A ≤ r := by
-  classical
-  dsimp [perronRoot]
-  apply csSup_le
-  · exact CollatzWielandt.set_nonempty
-  · rintro _ ⟨w, ⟨hw_nonneg, hw_ne_zero⟩, rfl⟩
-    exact CollatzWielandt.le_eigenvalue_of_left_eigenvector hA_nonneg hr_pos hu_pos h_eig hw_nonneg hw_ne_zero
 
 omit [Nonempty n] in
 /--
@@ -618,45 +521,6 @@ lemma collatzWielandtFn_inv_sum_smul_of_nonneg_ne_zero {x : n → ℝ}
     collatzWielandtFn A ((∑ i, x i)⁻¹ • x) = collatzWielandtFn A x :=
   collatzWielandtFn_smul (inv_pos.mpr (sum_pos_of_nonneg_ne_zero hx_nonneg hx_ne_zero))
     hx_nonneg hx_ne_zero
-
-omit [Nonempty n] in
-open scoped Classical in
-private lemma le_of_isMaxOn_stdSimplex {v : n → ℝ}
-    (hv_max : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v)
-    {x : n → ℝ} (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne_zero : x ≠ 0) :
-    collatzWielandtFn A x ≤ collatzWielandtFn A v := by
-  have h_max := hv_max (inv_sum_smul_mem_stdSimplex_of_nonneg_ne_zero hx_nonneg hx_ne_zero)
-  simpa [collatzWielandtFn_inv_sum_smul_of_nonneg_ne_zero (A := A) hx_nonneg hx_ne_zero] using h_max
-
-open scoped Classical in
-/-- A simplex maximizer realizes the Perron root. -/
-lemma perronRoot_eq_of_isMaxOn_stdSimplex
-    (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ}
-    (hv_mem : v ∈ RealRooted.standardSimplex ℝ n)
-    (hv_max : IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v) :
-    perronRoot A = collatzWielandtFn A v := by
-  apply le_antisymm
-  · dsimp [perronRoot]
-    apply csSup_le set_nonempty
-    rintro _ ⟨x, ⟨hx_nonneg, hx_ne_zero⟩, rfl⟩
-    exact le_of_isMaxOn_stdSimplex (A := A) hv_max hx_nonneg hx_ne_zero
-  · dsimp [perronRoot]
-    exact le_csSup (bddAbove A hA_nonneg)
-      (Set.mem_image_of_mem _ ⟨hv_mem.1, ne_zero_of_mem_stdSimplex hv_mem⟩)
-
-omit [Fintype n] [Nonempty n] in
-open scoped Classical in
-lemma maximizer_satisfies_le_mulVec [Fintype n] [Nonempty n]
-    (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
-    let r := perronRoot A
-    ∃ v ∈ RealRooted.standardSimplex ℝ n, r • v ≤ A *ᵥ v := by
-  let r := perronRoot A
-  obtain ⟨v, v_in_simplex, v_is_max⟩ := exists_maximizer (A := A)
-  have r_eq := perronRoot_eq_of_isMaxOn_stdSimplex hA_nonneg v_in_simplex v_is_max
-  have h_le : (perronRoot A) • v ≤ A *ᵥ v := by
-    simpa [r_eq] using le_mulVec hA_nonneg v_in_simplex.1 (ne_zero_of_mem_stdSimplex v_in_simplex)
-  refine ⟨v, v_in_simplex, ?_⟩
-  simpa [r] using h_le
 
 omit [Nonempty n] in
 open scoped Classical in

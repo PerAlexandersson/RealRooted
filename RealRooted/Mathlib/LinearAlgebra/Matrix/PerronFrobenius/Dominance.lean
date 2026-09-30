@@ -52,80 +52,6 @@ lemma eq_mul_div_ofReal_norm_complex (z : ℂ) (hz : ‖z‖ ≠ 0) :
   have hn : (↑‖z‖ : ℂ) ≠ 0 := ofReal_ne_zero.mpr hz
   exact (div_mul_cancel₀ z hn).symm
 
-omit [Fintype n] [DecidableEq n] in
-/-- If a property `P` holds for at least one vertex `i₀` and propagates along the edges
-of an irreducible matrix's graph (`P i ∧ A i j > 0 → P j`), then `P` holds for all vertices. -/
-lemma IsIrreducible.eq_univ_of_propagate (hA_irred : A.IsIrreducible) (P : n → Prop)
-    (h_nonempty : ∃ i₀, P i₀)
-    (h_propagate : ∀ i j, P i → 0 < A i j → P j) :
-    ∀ i, P i := by
-  let S : Set n := {i | P i}
-  let T : Set n := {i | ¬ P i}
-  by_contra h_not_all
-  push Not at h_not_all
-  have hS_nonempty : (S : Set n).Nonempty := h_nonempty
-  have hT_nonempty : (T : Set n).Nonempty := h_not_all
-  have hS_ne_univ : (S : Set n) ≠ Set.univ := by
-    intro h_eq
-    rcases hT_nonempty with ⟨i, hi_T⟩
-    have hPi : P i := by
-      have : i ∈ S := by
-        rw [h_eq]
-        exact Set.mem_univ i
-      simpa [S] using this
-    exact hi_T hPi
-  obtain ⟨i, hi_S, j, hj_not_S, hAij_pos⟩ :=
-    Matrix.Irreducible.exists_edge_out (A := A) hA_irred S hS_nonempty hS_ne_univ
-  have hPi : P i := by
-    simpa [S] using hi_S
-  have hPj : P j := h_propagate i j hPi hAij_pos
-  exact hj_not_S (by
-    simpa [S] using hPj)
-
-omit [DecidableEq n] in
-/-- For an irreducible, non-negative matrix `A`, if `v` is an eigenvector for an eigenvalue `μ`,
-then the vector `w` of absolute values of `v` satisfies the inequality `|μ| • w ≤ A *ᵥ w`.
-This is a key step in the Perron-Frobenius theorem. -/
-lemma abs_eigenvector_inequality
-  (hA_nonneg : ∀ i j, 0 ≤ A i j)
-  {μ : ℝ} {v : n → ℝ} (h_eig : A *ᵥ v = μ • v) :
-  let w := fun i ↦ |v i|; |μ| • w ≤ A *ᵥ w := by
-  intro w i
-  calc
-    (|μ| • w) i = |μ| * |v i| := by simp [w]
-    _ = |μ * v i| := by rw [abs_mul]
-    _ = |(μ • v) i| := by simp
-    _ = |(A *ᵥ v) i| := by rw [← h_eig]
-    _ = |∑ j, A i j * v j| := by simp [mulVec, dotProduct]
-    _ ≤ ∑ j, |A i j * v j| := by exact Finset.abs_sum_le_sum_abs _ _
-    _ = ∑ j, (A i j) * |v j| := by simp_rw [abs_mul, abs_of_nonneg (hA_nonneg i _)]
-    _ = (A *ᵥ w) i := by simp [w, mulVec, dotProduct]
-
-omit [DecidableEq n] in
-/--
-If the triangle equality holds for the complex eigenvector equation `A * x = lam * x`,
-then the vector of norms `‖x‖` is a real eigenvector of `A` with eigenvalue `‖lam‖`.
--/
-lemma norm_eigenvector_is_eigenvector_of_triangle_eq
-    {A : Matrix n n ℝ} (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {lam : ℂ} {x : n → ℂ} (hx_eig : (A.map (algebraMap ℝ ℂ)) *ᵥ x = lam • x)
-    (h_triangle_eq : ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖) :
-    A *ᵥ (fun i => ‖x i‖) = (‖lam‖ : ℝ) • (fun i => ‖x i‖) := by
-  funext i
-  calc
-    (A *ᵥ fun i => ‖x i‖) i
-        = ∑ j, A i j * ‖x j‖ := by
-          change (∑ j, A i j * ‖x j‖) = _
-          rfl
-    _   = ∑ j, ‖(A i j : ℂ)‖ * ‖x j‖ := by simp_rw [Complex.norm_ofReal, abs_of_nonneg (hA_nonneg _ _)]
-    _   = ∑ j, ‖(A i j : ℂ) * x j‖ := by simp_rw [norm_mul]
-    _   = ‖∑ j, (A i j : ℂ) * x j‖ := (h_triangle_eq i).symm
-    _   = ‖((A.map (algebraMap ℝ ℂ)) *ᵥ x) i‖ := by simp; rfl
-    _   = ‖(lam • x) i‖ := by rw [hx_eig]
-    _   = ‖lam * x i‖ := by rw [Pi.smul_apply]; rfl
-    _   = ‖lam‖ * ‖x i‖ := by rw [norm_mul]
-    _   = ((‖lam‖ : ℝ) • fun i => ‖x i‖) i := by simp [smul_eq_mul]
-
 /-! ### Norm sums
 
 `Finset`/`Fintype` vanishing for sums of complex norms, and a consequence of global
@@ -134,59 +60,6 @@ triangle equality. -/
 lemma norm_eq_zero_of_finset_sum_norm_eq_zero {ι : Type*} {s : Finset ι} (v : ι → ℂ)
     (h : ∑ i ∈ s, ‖v i‖ = 0) (i : ι) (hi : i ∈ s) : ‖v i‖ = 0 :=
   (Finset.sum_eq_zero_iff_of_nonneg (fun j _ => norm_nonneg (v j))).1 h i hi
-
-lemma norm_eq_zero_of_fintype_sum_norm_eq_zero {ι : Type*} [Fintype ι] (v : ι → ℂ)
-    (h : ∑ i, ‖v i‖ = 0) (i : ι) : ‖v i‖ = 0 :=
-  norm_eq_zero_of_finset_sum_norm_eq_zero v h i (Finset.mem_univ i)
-
-/-- Triangle equality and one nonzero term imply the complex sum is nonzero. -/
-lemma Fintype.sum_ne_zero_of_triangle_norm_exists_nonzero {ι : Type*} [Fintype ι] {v : ι → ℂ}
-    (hτ : ‖∑ i, v i‖ = ∑ i, ‖v i‖) {j : ι} (hj : v j ≠ 0) : ∑ i, v i ≠ 0 := by
-  intro hsum0
-  have h_norms : ∑ i, ‖v i‖ = 0 := by rw [← hτ, hsum0, norm_zero]
-  exact hj <| norm_eq_zero.mp (norm_eq_zero_of_fintype_sum_norm_eq_zero v h_norms j)
-
-omit [DecidableEq n] in
-/--
-If equality holds in the triangle inequality for `∑ z_j`, then all non-zero `z_j`
-are aligned with the sum.
--/
-lemma aligned_of_all_nonneg_re_im
-    {A : Matrix n n ℝ} {i : n} {x : n → ℂ}
-    (h_sum_eq : ‖∑ j, (A i j : ℂ) * x j‖ =
-                ∑ j, ‖(A i j : ℂ) * x j‖) :
-    ∀ j, (A i j : ℂ) * x j ≠ 0 →
-      ∃ c : ℝ, 0 ≤ c ∧
-        (A i j : ℂ) * x j = c • (∑ k, (A i k : ℂ) * x k) := by
-  let z : n → ℂ := fun j => (A i j : ℂ) * x j
-  let s : ℂ     := ∑ j, z j
-  have h_z_sum : ‖s‖ = ∑ j, ‖z j‖ := by
-    simpa [z, s] using h_sum_eq
-  intro j hz_ne_zero
-  have hs_ne_zero : s ≠ 0 := by
-    simpa [s] using Fintype.sum_ne_zero_of_triangle_norm_exists_nonzero
-      (show ‖∑ j : n, z j‖ = ∑ j : n, ‖z j‖ by simpa [z, s] using h_z_sum) hz_ne_zero
-  have h_align :=
-    Complex.each_term_is_nonneg_real_multiple_of_sum_of_triangle_eq
-      (s := Finset.univ)
-      (v := z)
-      (u := s)
-      (by simp [s])
-      (by simpa [s] using h_z_sum)
-      hs_ne_zero
-  rcases h_align j (by simp) with ⟨c, hc_nonneg, hcz⟩
-  refine ⟨c, hc_nonneg, ?_⟩
-  simpa [z, s, smul_eq_mul] using hcz
-
-omit [DecidableEq n] in
-/-- For a non-negative matrix A, if the row sums are all equal to λ, then λ is an eigenvalue
-    with the all-ones vector as its eigenvector. -/
-lemma row_sum_eigenvalue
-    (_ : ∀ i j, 0 ≤ A i j) (lambda : ℝ) (h_row_sums : ∀ i, ∑ j, A i j = lambda) :
-    A *ᵥ (fun _ => (1 : ℝ)) = lambda • (fun _ => (1 : ℝ)) := by
-  ext i
-  change (∑ j, A i j * 1) = lambda * 1
-  simpa using h_row_sums i
 
 omit [DecidableEq n] in
 /-- If the dot product of a non-negative vector `v` and a strictly positive vector `w` is zero,
@@ -259,32 +132,6 @@ theorem eigenvalue_abs_subinvariant
       simp only [Complex.norm_mul, norm_real, Real.norm_eq_abs, abs_of_nonneg (hA_nonneg _ _)]
     _ = (A *ᵥ fun i => ‖x i‖) i := by
       rfl
-
-omit [DecidableEq n] in
-/--
-Under the conditions of the main theorem, the eigenvalue `lam` must be non-zero.
--/
-lemma eigenvalue_ne_zero_of_irreducible
-    {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
-    {lam : ℂ} {x : n → ℂ} (hx_ne_zero : x ≠ 0)
-    (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (‖lam‖ : ℝ) • (fun i => ‖x i‖)) :
-    lam ≠ 0 := by
-  intro h_lam_zero
-  have h_norm_lam_zero : ‖lam‖ = 0 := by rwa [norm_eq_zero]
-  have h_eig_zero_smul : A *ᵥ (fun i => ‖x i‖) = (0 : ℝ) • (fun i => ‖x i‖) := by
-    rw [h_norm_lam_zero] at h_x_abs_eig
-    exact h_x_abs_eig
-  have h_eig_zero : A *ᵥ (fun i => ‖x i‖) = 0 := by
-    simpa [zero_smul] using h_eig_zero_smul
-  have h_x_abs_nonneg : ∀ i, 0 ≤ ‖x i‖ := fun i => norm_nonneg _
-  have h_x_abs_ne_zero : (fun i => ‖x i‖) ≠ 0 := normFun_complex_ne_zero_of_ne_zero hx_ne_zero
-  have h_x_abs_pos : ∀ i, 0 < ‖x i‖ :=
-    eigenvector_is_positive_of_irreducible hA_irred h_eig_zero_smul h_x_abs_nonneg h_x_abs_ne_zero
-  obtain ⟨i, j, hAij_pos⟩ := Matrix.Irreducible.exists_pos_entry (A := A) hA_irred
-  have h_Axi : (A *ᵥ fun k => ‖x k‖) i = 0 := by rw [h_eig_zero]; rfl
-  have h_pos : 0 < (A *ᵥ fun k => ‖x k‖) i :=
-    mulVec_pos_of_exists_pos_mul_pos i j (fun k => hA_irred.nonneg i k) h_x_abs_pos hAij_pos
-  exact h_pos.ne' h_Axi
 
 omit [DecidableEq n] in
 open scoped Classical in
@@ -376,29 +223,6 @@ lemma dotProduct_left_perron_sub_eq_zero
     u ⬝ᵥ (A *ᵥ y - perronRoot A • y) = 0 := by
   rw [dotProduct_sub, dotProduct_mulVec, hu_left_eig, dotProduct_smul_left,
     dotProduct_smul, smul_eq_mul, sub_self]
-
-omit [DecidableEq n] in
-open scoped Classical in
-/--
-If for a non-negative, irreducible matrix `A`, there exists
-a non-negative, non-zero vector `y` and a positive scalar `s` such that `A *ᵥ y ≤ s • y`,
-then the Perron root of `A` is at most `s`.
--/
-lemma perron_root_le_of_subinvariant
-    (hA_irred : A.IsIrreducible)
-    (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {s : ℝ} (_ : 0 < s)
-    {y : n → ℝ} (hy_nonneg : ∀ i, 0 ≤ y i)
-    (hy_ne_zero : y ≠ 0)
-    (h_subinv : A *ᵥ y ≤ s • y) :
-    perronRoot A ≤ s := by
-  obtain ⟨u, hu_pos, hu_left_eig⟩ :=
-    exists_positive_left_perron_eigenvector hA_irred hA_nonneg
-  have h_dot_le : u ⬝ᵥ (A *ᵥ y) ≤ u ⬝ᵥ (s • y) :=
-    dotProduct_le_dotProduct_of_nonneg_left' (fun i => (hu_pos i).le) h_subinv
-  rw [dotProduct_mulVec, hu_left_eig, dotProduct_smul_left, dotProduct_smul] at h_dot_le
-  have h_dot_pos : 0 < u ⬝ᵥ y := dotProduct_pos_of_pos_of_nonneg_ne_zero hu_pos hy_nonneg hy_ne_zero
-  exact le_of_mul_le_mul_right h_dot_le h_dot_pos
 
 omit [DecidableEq n] in
 open scoped Classical in
@@ -589,77 +413,6 @@ theorem irreducible_nonnegative_matrix_has_positive_eigenvector_at_spectralRadiu
   rw [h_eq]
   exact ⟨by rw [Module.End.mem_eigenspace_iff, toLin'_apply]; exact h_eig,
          Pi.ne_zero_of_pos hv_pos⟩
-omit [Nonempty n] [DecidableEq n] in
-open scoped Classical in
-/-- If an eigenvalue `μ` has a norm equal to the Perron root `r`, then the triangle inequality
-for the eigenvector equation holds with equality. -/
-lemma triangle_equality_of_norm_eq_perron_root
-    {A : Matrix n n ℝ} (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {μ : ℂ} {x : n → ℂ} (hx_eig : (A.map (algebraMap ℝ ℂ)) *ᵥ x = μ • x)
-    {r : ℝ} (h_norm_eq_r : ‖μ‖ = r)
-    (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = r • (fun i => ‖x i‖)) :
-    ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖ := by
-  intro i
-  let x_abs := fun i => ‖x i‖
-  calc
-    ‖∑ j, (A i j : ℂ) * x j‖ = ‖((A.map (algebraMap ℝ ℂ)) *ᵥ x) i‖ := by simp; rfl
-    _ = ‖(μ • x) i‖ := by rw [hx_eig]
-    _ = ‖μ‖ * ‖x i‖ := by simp
-    _ = r * x_abs i := by rw [h_norm_eq_r];
-    _ = (r • x_abs) i := by simp [smul_eq_mul]
-    _ = (A *ᵥ x_abs) i := by rw [h_x_abs_eig]
-    _ = ∑ j, A i j * x_abs j := by
-      change (∑ j, A i j * x_abs j) = _
-      rfl
-    _ = ∑ j, ‖(A i j : ℂ) * x j‖ := by
-        simp_rw [x_abs, norm_mul, norm_ofReal, abs_of_nonneg (hA_nonneg _ _)]
-
-omit [DecidableEq n] in
-open scoped Classical in
-/--
-If `|x|` is a positive eigenvector of an irreducible non-negative matrix `A`, then for any `i`,
-the `i`-th component of `A * |x|` is positive.
--/
-lemma mulVec_x_abs_pos_of_irreducible {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
-    {x_abs : n → ℝ} (h_x_abs_nonneg : ∀ i, 0 ≤ x_abs i)
-    (h_x_abs_eig : A *ᵥ x_abs = (perronRoot A) • x_abs)
-    (hx_abs_ne_zero : x_abs ≠ 0) (i : n) :
-    0 < (A *ᵥ x_abs) i := by
-  have h_x_abs_pos : ∀ k, 0 < x_abs k :=
-    eigenvector_is_positive_of_irreducible hA_irred h_x_abs_eig h_x_abs_nonneg hx_abs_ne_zero
-  have h_r_pos : 0 < perronRoot A := perronRoot_pos_of_irreducible hA_irred hA_irred.nonneg
-  have h_eq_i : (A *ᵥ x_abs) i = (perronRoot A) * x_abs i := by
-    simpa [Pi.smul_apply, smul_eq_mul] using congrFun h_x_abs_eig i
-  have : 0 < (perronRoot A) * x_abs i :=
-    mul_pos h_r_pos (h_x_abs_pos i)
-  simpa [h_eq_i] using this
-
-omit [DecidableEq n] in
-open scoped Classical in
-/--
-If the triangle equality holds for an eigenvector `x` of a non-negative irreducible matrix `A`,
-then the sum `s = (A * x) i` is non-zero.
--/
-lemma sum_s_ne_zero_of_triangle_eq {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
-    (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {x : n → ℂ} (h_triangle_eq : ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖)
-    (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (perronRoot A) • (fun i => ‖x i‖))
-    (hx_ne_zero : x ≠ 0) (i : n) :
-    (∑ j, (A i j : ℂ) * x j) ≠ 0 := by
-  let x_abs := fun i => ‖x i‖
-  have hx_abs_ne_zero : x_abs ≠ 0 := normFun_complex_ne_zero_of_ne_zero hx_ne_zero
-  intro hs_zero
-  have h_norm_s_zero : ‖∑ j, (A i j : ℂ) * x j‖ = 0 := by rw [hs_zero]; exact norm_zero
-  have h_sum_norm_zero : ∑ j, ‖(A i j : ℂ) * x j‖ = 0 := h_triangle_eq i ▸ h_norm_s_zero
-  have h_sum_A_x_abs_zero : ∑ j, A i j * x_abs j = 0 := by
-    simpa [norm_mul, norm_ofReal, abs_of_nonneg (hA_nonneg _ _)] using h_sum_norm_zero
-  have h_Ax_abs_i_zero : (A *ᵥ x_abs) i = 0 := by simpa [mulVec_apply]
-  have h_pos := mulVec_x_abs_pos_of_irreducible hA_irred
-      (by
-        intro k
-        simp)
-      h_x_abs_eig hx_abs_ne_zero i
-  exact h_pos.ne' h_Ax_abs_i_zero
 
 omit [Fintype n] [Nonempty n] [DecidableEq n] in
 /-- If `A i j > 0` and `x j ≠ 0`, then the term `(A i j : ℂ) * x j` is non-zero. -/
@@ -668,103 +421,9 @@ lemma term_ne_zero_of_pos_entry {A : Matrix n n ℝ} {x : n → ℂ}
     (A i j : ℂ) * x j ≠ 0 :=
   mul_ne_zero (ofReal_ne_zero.mpr hAij_pos.ne') hxj_ne_zero
 
-omit [DecidableEq n] in
-/-- From an irreducible Perron eigenvector equation on `‖x‖`, every component `‖x k‖` is positive. -/
-lemma norm_entries_pos_of_irreducible_abs_perron_eigenvector {x : n → ℂ}
-    (hA_irred : A.IsIrreducible)
-    (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (perronRoot A) • (fun i => ‖x i‖))
-    (hx_ne_zero : x ≠ 0) : ∀ k, 0 < ‖x k‖ :=
-  eigenvector_is_positive_of_irreducible hA_irred h_x_abs_eig (fun _ => norm_nonneg _)
-    (normFun_complex_ne_zero_of_ne_zero hx_ne_zero)
-
-omit [DecidableEq n] in
-open scoped Classical in
-/-- For any row `k` of an irreducible matrix with triangle equality,
-all `x l` where `A k l > 0` have the same phase. -/
-lemma aligned_neighbors_of_triangle_eq {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
-    (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {x : n → ℂ} (hx_ne_zero : x ≠ 0)
-    (h_triangle_eq : ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖)
-    (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (perronRoot A) • (fun i => ‖x i‖)) :
-    ∀ k l m, 0 < A k l → 0 < A k m → x l / ↑‖x l‖ = x m / ↑‖x m‖ := by
-  intro k l m hAkl_pos hAkm_pos
-  let z l' := (A k l' : ℂ) * x l'
-  let s := ∑ l', z l'
-  have hs_ne_zero : s ≠ 0 :=
-    sum_s_ne_zero_of_triangle_eq hA_irred hA_nonneg h_triangle_eq h_x_abs_eig hx_ne_zero k
-  have hx_pos := norm_entries_pos_of_irreducible_abs_perron_eigenvector hA_irred h_x_abs_eig hx_ne_zero
-  have h_sum_term (l' : n) (hl' : z l' ≠ 0) : z l' / ↑‖z l'‖ = s / ↑‖s‖ :=
-    Complex.aligned_of_triangle_eq rfl (h_triangle_eq k) hs_ne_zero l' (by simp) hl'
-  have h_zl_ne_zero : z l ≠ 0 := term_ne_zero_of_pos_entry hAkl_pos (norm_pos_iff.mp (hx_pos l))
-  have h_zm_ne_zero : z m ≠ 0 := term_ne_zero_of_pos_entry hAkm_pos (norm_pos_iff.mp (hx_pos m))
-  have hxl_nz : x l ≠ 0 := norm_pos_iff.mp (hx_pos l)
-  have hxm_nz : x m ≠ 0 := norm_pos_iff.mp (hx_pos m)
-  calc
-    x l / ↑‖x l‖ = z l / ↑‖z l‖ := (Complex.aligned_of_mul_of_real_pos hAkl_pos rfl hxl_nz).symm
-    _ = z m / ↑‖z m‖ := (h_sum_term l h_zl_ne_zero).trans (h_sum_term m h_zm_ne_zero).symm
-    _ = x m / ↑‖x m‖ := Complex.aligned_of_mul_of_real_pos hAkm_pos rfl hxm_nz
-
-omit [DecidableEq n] in
-/-- The reference phase has norm 1. -/
-lemma reference_phase_norm_one {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
-    {x : n → ℂ} (hx_ne_zero : x ≠ 0)
-    (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (perronRoot A) • (fun i => ‖x i‖))
-    (j₀ : n) :
-    ‖x j₀ / ↑‖x j₀‖‖ = 1 := by
-  have h_pos := norm_entries_pos_of_irreducible_abs_perron_eigenvector hA_irred h_x_abs_eig hx_ne_zero j₀
-  simp_rw [norm_div, Complex.norm_ofReal, abs_of_nonneg (norm_nonneg _)]
-  exact div_self h_pos.ne'
-
-omit [DecidableEq n] in
-open scoped Classical in
-/--
-All non-zero entries in the same row have aligned phases when triangle equality holds.
--/
-lemma row_entries_aligned_of_triangle_eq {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
-    (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {x : n → ℂ} (hx_ne_zero : x ≠ 0)
-    (h_triangle_eq : ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖)
-    (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (perronRoot A) • (fun i => ‖x i‖))
-    (k : n) :
-    ∀ l m, 0 < A k l → 0 < A k m → x l / ↑‖x l‖ = x m / ↑‖x m‖ :=
-  aligned_neighbors_of_triangle_eq hA_irred hA_nonneg hx_ne_zero h_triangle_eq h_x_abs_eig k
-
-omit [Fintype n] [DecidableEq n] in
-open scoped Classical in
-/-- For an irreducible matrix, every row has at least one positive entry. -/
-lemma IsIrreducible.exists_pos_entry_in_row {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) (i : n) :
-    ∃ j, 0 < A i j := by
-  by_contra h_no_pos
-  push Not at h_no_pos
-  have h_row_zero : ∀ j, A i j = 0 := fun j =>
-    le_antisymm (h_no_pos j) (hA_irred.nonneg i j)
-  obtain ⟨_, j₀, _⟩ := Matrix.Irreducible.exists_pos_entry (A := A) hA_irred
-  let _ : Quiver n := toQuiver A
-  have hconn := hA_irred.connected i j₀
-  obtain ⟨p, hp_pos⟩ := hconn
-  have h_pos : p.length > 0 := hp_pos
-  obtain ⟨c, e, p', hp_eq, hp_len_eq⟩ :=
-    Quiver.Path.path_decomposition_first_edge p h_pos
-  have hic_pos : 0 < A i c := e.down
-  exact (h_row_zero c).symm.not_lt hic_pos
-
 /-! ### Triangle equality and phases
 
 Further lemmas building on norm-sum layer (`aligned_term_of_triangle_eq`, etc.). -/
-
-lemma phase_eq_of_positive_real_multiple {z w : ℂ} {c : ℝ}
-    (h_c_pos : 0 < c) (h_eq : z = (c : ℂ) * w) (h_w_ne_zero : w ≠ 0) :
-    z / ↑‖z‖ = w / ↑‖w‖ := by
-  have hc0 : (c : ℂ) ≠ 0 := ofReal_ne_zero.mpr h_c_pos.ne'
-  have hw_pos : 0 < ‖w‖ := norm_pos_iff.mpr h_w_ne_zero
-  have hnorm : ‖z‖ = c * ‖w‖ := by
-    rw [h_eq, norm_mul, norm_ofReal, abs_of_nonneg h_c_pos.le]
-  have hzℂ : (↑‖z‖ : ℂ) = (c : ℂ) * ↑‖w‖ := by
-    rw [← ofReal_mul, hnorm]
-  calc
-    z / ↑‖z‖ = ((c : ℂ) * w) / ((c : ℂ) * ↑‖w‖) := by
-      rw [hzℂ, h_eq]
-    _ = w / ↑‖w‖ := by rw [mul_div_mul_left w (↑‖w‖) hc0]
 
 lemma aligned_term_of_triangle_eq {ι : Type*} {s : Finset ι} {v : ι → ℂ}
     (h_sum : ‖∑ i ∈ s, v i‖ = ∑ i ∈ s, ‖v i‖)
@@ -788,156 +447,6 @@ lemma Complex.phase_eq_of_fintype_triangle_eq {ι : Type*} [Fintype ι] {v : ι 
     (aligned_term_of_triangle_eq hτ (Finset.mem_univ i) hi).trans
     (aligned_term_of_triangle_eq hτ (Finset.mem_univ j) hj).symm
 
-/-- Common phase alignment identifies `(∑ i, v i) / ‖∑ i, v i‖` with the shared phase `c`. -/
-lemma Complex.norm_div_norm_eq_of_triangle_aligned {ι : Type*} [Fintype ι] {v : ι → ℂ} {c : ℂ}
-    (hτ : ‖∑ i, v i‖ = ∑ i, ‖v i‖)
-    (h_alg : ∀ i, v i ≠ 0 → v i / ↑‖v i‖ = c) {j : ι} (hj : v j ≠ 0) :
-    (∑ i, v i) / ↑‖∑ i, v i‖ = c :=
-  (aligned_term_of_triangle_eq hτ (Finset.mem_univ j) hj).symm.trans (h_alg j hj)
-
-/-- When triangle equality holds for a sum and all non-zero terms have the same phase factor,
-    then the sum equals the sum of magnitudes times that common phase factor.
-    This is a key property for proving eigenvalue relationships in the complex case. -/
-lemma Complex.triangle_eq_sum_with_common_phase {ι : Type*} [Fintype ι]
-    {v : ι → ℂ} {c : ℂ} (_ : ‖c‖ = 1)
-    (h_triangle_eq : ‖∑ i, v i‖ = ∑ i, ‖v i‖)
-    (h_aligned : ∀ i, v i ≠ 0 → v i / ↑‖v i‖ = c) :
-    ∑ i, v i = (∑ i, ‖v i‖ : ℂ) * c := by
-  by_cases h_all_zero : ∀ i, v i = 0
-  · simp only [h_all_zero, Finset.sum_const_zero, norm_zero, ofReal_zero, zero_mul]
-  push Not at h_all_zero
-  rcases h_all_zero with ⟨j, hj_ne_zero⟩
-  have hsum_ne := Fintype.sum_ne_zero_of_triangle_norm_exists_nonzero h_triangle_eq hj_ne_zero
-  have h_phase := Complex.norm_div_norm_eq_of_triangle_aligned h_triangle_eq h_aligned hj_ne_zero
-  calc ∑ i, v i
-      = ‖∑ i, v i‖ * ((∑ i, v i) / ↑‖∑ i, v i‖) := by
-          rw [← mul_comm]; exact eq_mul_div_ofReal_norm_complex _ (norm_ne_zero_iff.mpr hsum_ne)
-      _ = ‖∑ i, v i‖ * c := by rw [h_phase]
-      _ = (∑ i, ‖v i‖ : ℂ) * c := by rw [h_triangle_eq, ofReal_sum]
-
-omit [Fintype n] [Nonempty n] [DecidableEq n] in
-/-- Multiplication by a positive real scalar preserves the phase of a complex term. -/
-lemma weighted_phase_aligned_of_nonzero
-    {A : Matrix n n ℝ} (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {x : n → ℂ} {i j : n} {c : ℂ}
-    (h_aligned : ∀ j, 0 < A i j → x j ≠ 0 → x j / ↑‖x j‖ = c)
-    (hz : (A i j : ℂ) * x j ≠ 0) :
-    ((A i j : ℂ) * x j) / ↑‖(A i j : ℂ) * x j‖ = c := by
-  have hA_pos : 0 < A i j := by
-    by_contra h_not_pos
-    exact hz <| by simp [le_antisymm (not_lt.mp h_not_pos) (hA_nonneg i j)]
-  have hx_ne_zero : x j ≠ 0 := by
-    intro hx_zero
-    exact hz <| by simp [hx_zero]
-  rw [Complex.aligned_of_mul_of_real_pos hA_pos rfl hx_ne_zero]
-  exact h_aligned j hA_pos hx_ne_zero
-
-omit [Nonempty n] [DecidableEq n] in
-/-- The row sum of weighted complex norms is the real matrix-vector product on norms. -/
-lemma sum_norm_weighted_row_eq_mulVec_norm
-    {A : Matrix n n ℝ} (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    (x : n → ℂ) (i : n) :
-    ∑ j, ‖(A i j : ℂ) * x j‖ = (A *ᵥ (fun j => ‖x j‖)) i := by
-  calc
-    ∑ j, ‖(A i j : ℂ) * x j‖ = ∑ j, A i j * ‖x j‖ := by
-      refine Finset.sum_congr rfl ?_
-      intro j _
-      rw [norm_mul, norm_ofReal, abs_of_nonneg (hA_nonneg i j)]
-    _ = (A *ᵥ (fun j => ‖x j‖)) i := by
-      rfl
-
-open scoped Classical in
-/-- In the specific context of the Perron-Frobenius theorem, if we have an irreducible
-    non-negative matrix A with triangle equality for the eigenvector equation,
-    then the complex sum equals the real Perron root times the phase-aligned eigenvector. -/
-lemma sum_eq_perron_root_times_phase_aligned_vector
-    {n : Type*} [Fintype n] [Nonempty n]
-    {A : Matrix n n ℝ} (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {x : n → ℂ}
-    (h_triangle_eq : ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖)
-    (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (perronRoot A) • (fun i => ‖x i‖))
-    {i : n} (c : ℂ) (h_norm_c : ‖c‖ = 1)
-    (h_aligned : ∀ j, A i j > 0 → x j ≠ 0 → x j / ↑‖x j‖ = c) :
-    ∑ j, (A i j : ℂ) * x j = (perronRoot A : ℂ) * (‖x i‖ : ℂ) * c := by
-  let z : n → ℂ := fun j => (A i j : ℂ) * x j
-  have h_z_aligned : ∀ j, z j ≠ 0 → z j / ↑‖z j‖ = c := by
-    intro j hz_ne_zero
-    exact weighted_phase_aligned_of_nonzero hA_nonneg h_aligned (by simpa [z] using hz_ne_zero)
-  have h_sum_eq := Complex.triangle_eq_sum_with_common_phase h_norm_c (h_triangle_eq i) h_z_aligned
-  have h_sum_norms : ∑ j, ‖z j‖ = perronRoot A * ‖x i‖ := by
-    calc ∑ j, ‖z j‖
-      = (A *ᵥ (fun j => ‖x j‖)) i := by
-          simpa [z] using sum_norm_weighted_row_eq_mulVec_norm hA_nonneg x i
-      _ = ((perronRoot A) • (fun j => ‖x j‖)) i := by rw [h_x_abs_eig]
-      _ = perronRoot A * ‖x i‖ := by simp [Pi.smul_apply, smul_eq_mul]
-  calc ∑ j, z j
-    = (∑ j, ‖z j‖ : ℂ) * c := h_sum_eq
-    _ = (perronRoot A * ‖x i‖ : ℂ) * c := by
-        have h_sum_norms_cast : (∑ j, ‖z j‖ : ℂ) = (perronRoot A * ‖x i‖ : ℂ) := by
-          rw [← ofReal_mul, ← h_sum_norms]; rw [ofReal_eq_coe]; exact
-            Eq.symm (ofReal_sum Finset.univ fun i ↦ ‖z i‖)
-        rw [h_sum_norms_cast]
-
-open scoped Classical in
-/-- When triangle equality holds for a complex eigenvector equation, the vector of component norms
-    is an eigenvector of the real matrix with eigenvalue equal to the norm of the complex eigenvalue. -/
-lemma norm_vector_is_eigenvector_of_triangle_eq
-    {n : Type*} [Fintype n]
-    {A : Matrix n n ℝ} (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {μ : ℂ} {x : n → ℂ}
-    (hx_eig : (A.map (algebraMap ℝ ℂ)) *ᵥ x = μ • x)
-    (h_triangle_eq : ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖) :
-    A *ᵥ (fun i => ‖x i‖) = (‖μ‖ : ℝ) • (fun i => ‖x i‖) := by
-  exact norm_eigenvector_is_eigenvector_of_triangle_eq hA_nonneg hx_eig h_triangle_eq
-
-open scoped Classical in
-/-- For an irreducible non-negative matrix, if the absolute values of a complex eigenvector form
-    a real eigenvector, then the eigenvalue's norm equals the Perron root. -/
-lemma eigenvalue_norm_eq_perron_root_of_triangle_eq
-    {n : Type*} [Fintype n] [Nonempty n]
-    {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {μ : ℂ} {x : n → ℂ} (hx_ne_zero : x ≠ 0)
-    (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (‖μ‖ : ℝ) • (fun i => ‖x i‖)) :
-    ‖μ‖ = perronRoot A := by
-  let x_abs := fun i => ‖x i‖
-  have hx_abs_nonneg : ∀ i, 0 ≤ x_abs i := fun i => norm_nonneg _
-  have hx_abs_ne_zero : x_abs ≠ 0 := normFun_complex_ne_zero_of_ne_zero hx_ne_zero
-  have hx_abs_pos : ∀ i, 0 < x_abs i :=
-    eigenvector_is_positive_of_irreducible hA_irred h_x_abs_eig hx_abs_nonneg hx_abs_ne_zero
-  have h_mu_norm_pos : 0 < ‖μ‖ := by
-    have h_mu_ne_zero : μ ≠ 0 :=
-      eigenvalue_ne_zero_of_irreducible hA_irred hx_ne_zero h_x_abs_eig
-    exact norm_pos_iff.mpr h_mu_ne_zero
-  exact eigenvalue_is_perron_root_of_positive_eigenvector
-    hA_irred hA_nonneg h_mu_norm_pos hx_abs_pos h_x_abs_eig
-
-open scoped Classical in
-/-- In a matrix with triangle equality, vertices that share a common predecessor have aligned phases. -/
-lemma phase_aligned_within_row
-    {n : Type*} [Fintype n] [Nonempty n]
-    {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {x : n → ℂ} (hx_ne_zero : x ≠ 0)
-    (h_triangle_eq : ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖)
-    (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (perronRoot A) • (fun i => ‖x i‖))
-    (i : n) (j k : n) (h_ij_pos : 0 < A i j) (h_ik_pos : 0 < A i k) :
-    x j / ↑‖x j‖ = x k / ↑‖x k‖ := by
-  apply row_entries_aligned_of_triangle_eq hA_irred hA_nonneg hx_ne_zero
-        h_triangle_eq h_x_abs_eig i j k h_ij_pos h_ik_pos
-
-open scoped Classical in
-/-- Phase propagation within a row: if vertices j and k both have incoming edges from i,
-    then they share the same phase. This is already proven as `phase_aligned_within_row`. -/
-lemma phase_propagates_within_row
-    {n : Type*} [Fintype n] [Nonempty n]
-    {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {x : n → ℂ} (hx_ne_zero : x ≠ 0)
-    (h_triangle_eq : ∀ i, ‖∑ j, (A i j : ℂ) * x j‖ = ∑ j, ‖(A i j : ℂ) * x j‖)
-    (h_x_abs_eig : A *ᵥ (fun i => ‖x i‖) = (perronRoot A) • (fun i => ‖x i‖))
-    {i j k : n} (h_ij_pos : 0 < A i j) (h_ik_pos : 0 < A i k) :
-    x j / ↑‖x j‖ = x k / ↑‖x k‖ :=
-  row_entries_aligned_of_triangle_eq hA_irred hA_nonneg hx_ne_zero
-    h_triangle_eq h_x_abs_eig i j k h_ij_pos h_ik_pos
-
 /--
 If an eigenvalue `μ` of a primitive matrix `A` has norm equal to the Perron root,
 then the vector of norms of its eigenvector `x`, `|x|`, is strictly positive.
@@ -954,14 +463,6 @@ lemma eigenvector_norm_pos_of_primitive_and_norm_eq_perron_root
   have h_r_pos : 0 < perronRoot A :=
     perronRoot_pos_of_irreducible (Matrix.IsPrimitive.isIrreducible hA_prim) hA_nonneg
   exact eigenvector_of_primitive_is_positive hA_prim h_r_pos h_x_abs_eig h_x_abs_nonneg h_x_abs_ne_zero
-
-omit [Fintype n] [Nonempty n] [DecidableEq n] in
-/-- Reference phase is unit: `‖x i₀ / ‖x i₀‖‖ = 1`. -/
-lemma reference_phase_norm_one_of_primitive
-    {_ : Matrix n n ℝ} {x : n → ℂ} {i₀ : n}
-    (hx_abs_pos : 0 < ‖x i₀‖) :
-    ‖x i₀ / ‖x i₀‖‖ = (1 : ℝ) := by
-  simp [hx_abs_pos.ne']
 
 omit [Nonempty n] in
 /-- The norm of a matrix-vector product equals the perron root to the kth power times the norm of the vector component. -/

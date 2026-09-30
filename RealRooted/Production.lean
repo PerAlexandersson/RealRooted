@@ -1334,6 +1334,7 @@ import RealRooted.GeneralizedSnakePosets.SnakeTheorem35
 import RealRooted.GeneralizedSnakePosets.SnakeTheorem41
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 import RealRooted.Challenges.LiuOppositeSigns
+import RealRooted.Challenges.PerronFrobenius
 
 /-!
 # RealRooted production umbrella

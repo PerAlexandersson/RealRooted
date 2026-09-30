@@ -36,13 +36,4 @@ theorem isCompact_standardSimplex (ι : Type*) [Fintype ι] :
 instance (ι : Type*) [Fintype ι] : CompactSpace (standardSimplex ℝ ι) :=
   isCompact_iff_compactSpace.mp (isCompact_standardSimplex ι)
 
-theorem convex_standardSimplex (ι : Type*) [Fintype ι] :
-    Convex ℝ (standardSimplex ℝ ι) := by
-  intro f hf g hg a b ha hb hab
-  constructor
-  · intro i
-    exact add_nonneg (mul_nonneg ha (hf.1 i)) (mul_nonneg hb (hg.1 i))
-  · simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_add_distrib,
-      ← Finset.mul_sum, hf.2, hg.2, mul_one, hab]
-
 end RealRooted

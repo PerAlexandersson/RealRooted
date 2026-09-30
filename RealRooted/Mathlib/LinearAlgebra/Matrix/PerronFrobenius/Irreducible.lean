@@ -181,13 +181,6 @@ theorem exists_positive_eigenvector_of_irreducible [Nonempty n]
   exact ⟨rB - 1, v, hrA_pos, hv_pos, h_eig_A⟩
 
 /-! A non-zero, non-negative eigenvector of an irreducible matrix is in fact **strictly** positive. -/
-omit [DecidableEq n] in
-lemma eigenvector_is_positive_of_irreducible [Nonempty n] {r : ℝ}
-  (hA_irred : A.IsIrreducible)
-    {v : n → ℝ} (h_eig : A *ᵥ v = r • v)
-    (hv_nonneg : ∀ i, 0 ≤ v i) (hv_ne_zero : v ≠ 0) :
-    ∀ i, 0 < v i :=
-  eigenvector_is_positive_of_irreducible_aux hA_irred h_eig hv_nonneg hv_ne_zero
 
 open Finset
 open scoped Classical in

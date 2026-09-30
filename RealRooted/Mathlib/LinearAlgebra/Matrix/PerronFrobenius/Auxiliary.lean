@@ -115,39 +115,8 @@ theorem mul_div_cancel_pos_right {K : Type*} [Field K] [LinearOrder K] [IsStrict
   exact mul_div_cancel_right₀ a hb.ne'
 
 -- Non-positive times positive is non-positive
-theorem mul_nonpos_of_nonpos_of_pos {α : Type*} [Ring α] [LinearOrder α] [IsStrictOrderedRing α]
-    {a b : α} (ha : a ≤ 0) (hb : 0 < b) : a * b ≤ 0 := by
-  rcases le_iff_eq_or_lt.mp ha with (rfl | h)
-  · rw [zero_mul]
-  · exact (mul_neg_of_neg_of_pos h hb).le
 
 namespace Fintype
-
-lemma card_gt_one_of_nonempty_ne {α : Type*} [Fintype α] [Nonempty α] :
-    1 < Fintype.card α ↔ ∃ (i j : α), i ≠ j := by
-  classical
-  constructor
-  · intro h
-    obtain ⟨i⟩ : Nonempty α := ‹Nonempty α›
-    have h_card_ne_one : Fintype.card α ≠ 1 := ne_of_gt h
-    have : ∃ j, j ≠ i := by
-      by_contra h_all_eq
-      push Not at h_all_eq
-      have : ∀ x : α, x = i := h_all_eq
-      have h_card_eq_one : Fintype.card α = 1 := by
-        rw [Fintype.card_eq_one_iff]
-        exact ⟨i, this⟩
-      exact h_card_ne_one h_card_eq_one
-    obtain ⟨j, hj⟩ := this
-    exact ⟨i, j, hj.symm⟩
-  · intro ⟨i, j, hij⟩
-    have : Fintype.card α ≥ 2 := by
-      rw [← Finset.card_univ]
-      have : ({i, j} : Finset α) ⊆ Finset.univ := by simp
-      have : Finset.card ({i, j} : Finset α) ≤ Finset.card Finset.univ := Finset.card_le_card this
-      have : Finset.card ({i, j} : Finset α) = 2 := by simp [hij]
-      linarith
-    linarith
 
 end Fintype
 
@@ -177,14 +146,6 @@ theorem exists_mem_of_sum_pos {α : Type*} {s : Finset α} {f : α → ℝ}
   linarith
 
 -- Multiplication positivity characterization
-theorem mul_pos_iff_of_nonneg {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    0 < a * b ↔ 0 < a ∧ 0 < b := by
-  constructor
-  · intro h_mul_pos
-    refine ⟨lt_of_le_of_ne ha ?_, lt_of_le_of_ne hb ?_⟩
-    · rintro rfl; simp_all only [le_refl, zero_mul, lt_self_iff_false]
-    · rintro rfl; simp_all only [le_refl, mul_zero, lt_self_iff_false]
-  · rintro ⟨ha_pos, hb_pos⟩; exact mul_pos ha_pos hb_pos
 
 /-- The infimum over a non-empty finset is equal to the infimum over the corresponding subtype. -/
 lemma Finset.inf'_eq_ciInf {α β} [ConditionallyCompleteLinearOrder β] {s : Finset α}
@@ -196,29 +157,6 @@ lemma Finset.inf'_eq_ciInf {α β} [ConditionallyCompleteLinearOrder β] {s : Fi
   ext x
   simp [Set.mem_image, Set.mem_range]
 
-/-- The standard simplex is a closed set. -/
-lemma isClosed_stdSimplex' {n : Type*} [Fintype n] : IsClosed (RealRooted.standardSimplex ℝ n) := by
-  have h₁ : IsClosed (⋂ i, {x : n → ℝ | 0 ≤ x i}) :=
-    isClosed_iInter (fun i ↦ isClosed_le continuous_const (continuous_apply i))
-  have h_set_eq : {x : n → ℝ | ∀ i, 0 ≤ x i} = ⋂ i, {x | 0 ≤ x i} := by ext; simp
-  rw [← h_set_eq] at h₁
-  have h₂ : IsClosed {x : n → ℝ | ∑ i, x i = 1} :=
-    isClosed_eq (continuous_finsetSum _ (fun i _ ↦ continuous_apply i)) continuous_const
-  exact IsClosed.inter h₁ h₂
-
-lemma abs_le_of_le_of_neg_le {x y : ℝ} (h_le : x ≤ y) (h_neg_le : -x ≤ y) : |x| ≤ y := by
-  rw [abs_le]
-  constructor
-  · linarith
-  · exact h_le
-
-/-- A sum over a finset can be split into the value at a point `a`
-and the sum over the rest of the finset. -/
-lemma sum_add_sum_erase {n M : Type*} [AddCommMonoid M] [DecidableEq n] {s : Finset n} {f : n → M}
-    (a : n) (ha : a ∈ s) :
-    f a + ∑ i ∈ s.erase a, f i = ∑ i ∈ s, f i := by
-  rw [add_sum_erase s f ha]
-
 /-- A finset `s` is disjoint from its right complement. -/
 @[simp]
 lemma Finset.disjoint_compl_right {n : Type*} [Fintype n] [DecidableEq n] {s : Finset n} :
@@ -226,43 +164,7 @@ lemma Finset.disjoint_compl_right {n : Type*} [Fintype n] [DecidableEq n] {s : F
   rw [@Finset.disjoint_iff_inter_eq_empty]
   rw [@inter_sdiff_self]
 
-/-- The standard simplex is bounded. -/
-lemma bounded_stdSimplex' {n : Type*} [Fintype n] : Bornology.IsBounded (RealRooted.standardSimplex ℝ n) := by
-  classical
-  rw [Metric.isBounded_iff_subset_closedBall 0]
-  use 1
-  intro v hv
-  rw [mem_closedBall_zero_iff, pi_norm_le_iff_of_nonneg zero_le_one]
-  intro i
-  rw [Real.norm_eq_abs]
-  have h_le_one : v i ≤ 1 := by
-    have h_sum_others_nonneg : 0 ≤ ∑ j ∈ univ.erase i, v j :=
-      sum_nonneg fun j _ => hv.1 j
-    have h_split : ∑ j ∈ univ, v j = v i + ∑ j ∈ univ.erase i, v j := by
-      rw [add_sum_erase _ _ (mem_univ i)]
-    linarith [hv.2, h_split, h_sum_others_nonneg]
-  exact abs_le_of_le_of_neg_le h_le_one (by linarith [hv.1 i])
-
 variable {n : Type*}
-
-/-- For a vector on the standard simplex, if the sum of a subset of its components is 1,
-    then the components outside that subset must be zero. -/
-lemma mem_supp_of_sum_eq_one [Fintype n] {v : n → ℝ} (hv : v ∈ RealRooted.standardSimplex ℝ n) (S : Finset n)
-    (h_sum : ∑ i ∈ S, v i = 1) :
-    ∀ i, v i ≠ 0 → i ∈ S := by
-  classical
-  intro i hi_ne_zero
-  by_contra hi_not_in_S
-  have h_sum_all : ∑ j, v j = 1 := hv.2
-  have h_sum_split : ∑ j, v j = (∑ j ∈ S, v j) + (∑ j ∈ Sᶜ, v j) := by
-    rw [Finset.sum_add_sum_compl S v]
-  rw [← h_sum, h_sum_split] at h_sum_all
-  have h_sum_compl_zero : ∑ j ∈ Sᶜ, v j = 0 := by linarith
-  have h_nonneg : ∀ j ∈ Sᶜ, 0 ≤ v j := fun j _ ↦ hv.1 j
-  have h_v_compl_zero : ∀ j ∈ Sᶜ, v j = 0 :=
-    (sum_eq_zero_iff_of_nonneg h_nonneg).mp h_sum_compl_zero
-  specialize h_v_compl_zero i (mem_compl.mpr hi_not_in_S)
-  exact hi_ne_zero h_v_compl_zero
 
 /-- A non-negative, non-zero vector must have a positive component. -/
 lemma exists_pos_of_ne_zero {v : n → ℝ} (h_nonneg : ∀ i, 0 ≤ v i) (h_ne_zero : v ≠ 0) :
@@ -303,15 +205,6 @@ lemma div_le_iff {a b c : ℝ} (hb : 0 < b) : a / b ≤ c ↔ a ≤ c * b := by
   rw [@le_iff_le_iff_lt_iff_lt]
   exact lt_div_iff₀ hb
 
-/-- For real numbers, if `0 < b`, then `a ≤ c * b ↔ a / b ≤ c`. -/
-lemma le_div_iff {a b c : ℝ} (hb : 0 < b) : a ≤ c * b ↔ a / b ≤ c := by
-  rw [←div_le_iff hb]
-
-/-- The ratio (A *ᵥ v) i / v i is nonnegative when A has nonnegative entries and v is nonnegative -/
-lemma ratio_nonneg [Fintype n] (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ}
-    (hv_nonneg : ∀ i, 0 ≤ v i) (i : n) (hv_pos : 0 < v i) : 0 ≤ (A *ᵥ v) i / v i :=
-  div_nonneg (Finset.sum_nonneg fun j _ => mul_nonneg (hA_nonneg i j) (hv_nonneg j)) hv_pos.le
-
 lemma Finset.inf'_pos {α : Type*} {s : Finset α} (hs : s.Nonempty)
     {f : α → ℝ} (h_pos : ∀ a ∈ s, 0 < f a) :
     0 < s.inf' hs f := by
@@ -320,16 +213,9 @@ lemma Finset.inf'_pos {α : Type*} {s : Finset α} (hs : s.Nonempty)
   rw [h_fb_is_inf]
   exact h_fb_pos
 
-lemma lt_not_le {α : Type*} [PartialOrder α] (x y : α) : x < y → ¬ (x ≥ y) := by
-  intro h_lt h_ge
-  exact not_le_of_gt h_lt h_ge
-
 section ConditionallyCompleteLinearOrder
 
 variable {α : Type*} [ConditionallyCompleteLinearOrder α]
-/-- If y is an upper bound of a set s, and x is in s, then x ≤ y -/
-lemma le_of_mem_upperBounds {s : Set α} {x : α} {y : α} (hy : y ∈ upperBounds s) (hx : x ∈ s) : x ≤ y := by
-  exact hy hx
 
 lemma bddAbove_iff_exists_upperBound {s : Set α} : BddAbove s ↔ ∃ b, ∀ x ∈ s, x ≤ b := by exact
   bddAbove_def
@@ -384,60 +270,6 @@ lemma sup'_le_sup'_of_le {α β : Type*} [SemilatticeSup α] {s t : Finset β}
   exact sup'_mono f h hs
 
 -- A non-zero function must be non-zero at some point.
-lemma Function.exists_ne_zero_of_ne_zero {α β} [Zero β] {f : α → β} (h : f ≠ (fun _ => 0)) : ∃ i, f i ≠ 0 := by
-  by_contra hf
-  push Not at hf
-  apply h
-  ext x
-  exact hf x
-
-/-- If the ratio (A *ᵥ v) i / v i = 0 and v i > 0, then (A *ᵥ v) i = 0. -/
-lemma mulVec_eq_zero_of_ratio_zero [Fintype n] (A : Matrix n n ℝ) {v : n → ℝ} (i : n) (hv_pos : 0 < v i)
-    (h_ratio_zero : (A *ᵥ v) i / v i = 0) :
-    (A *ᵥ v) i = 0 := by
-  rw [div_eq_zero_iff] at h_ratio_zero
-  exact h_ratio_zero.resolve_right (ne_of_gt hv_pos)
-
-lemma mul_vec_mul_vec
-  {n : Type*} [Fintype n] [Nonempty n] (A B : Matrix n n ℝ) (v : n → ℝ) :
-  (A * B) *ᵥ v = A *ᵥ (B *ᵥ v) := by
-  ext i
-  simp only [mulVec, dotProduct, mul_apply]
-  simp_rw [Finset.mul_sum]
-  rw [Finset.sum_comm]
-  simp_rw [Finset.sum_mul]
-  rw [Finset.sum_comm]
-  rw [Finset.sum_comm]
-  simp [mul_assoc]
-
-/-- If `A *ᵥ v` is zero on the support `S` of `v`, then for any `i ∈ S`, `A i k` must be zero
-for all `k` where `v` is positive (i.e., `k ∈ S`). -/
-lemma zero_block_of_mulVec_eq_zero [Fintype n] (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j)
-    {v : n → ℝ} (hv_nonneg : ∀ i, 0 ≤ v i) (S : Set n) (hS_def : S = {i | 0 < v i})
-    (h_Av_zero : ∀ i ∈ S, (A *ᵥ v) i = 0) :
-    ∀ i ∈ S, ∀ k ∈ S, A i k = 0 := by
-  intro i hi_S k hk_S
-  have h_sum_Aiv_eq_zero : (A *ᵥ v) i = 0 := h_Av_zero i hi_S
-  rw [mulVec, dotProduct] at h_sum_Aiv_eq_zero
-  have h_sum_terms_nonneg : ∀ l, 0 ≤ A i l * v l :=
-    fun l ↦ mul_nonneg (hA_nonneg i l) (hv_nonneg l)
-  have h_Aik_vk_zero : A i k * v k = 0 :=
-    (sum_eq_zero_iff_of_nonneg (fun l _ ↦ h_sum_terms_nonneg l)).mp h_sum_Aiv_eq_zero k (mem_univ k)
-  rw [hS_def] at hk_S
-  exact (mul_eq_zero.mp h_Aik_vk_zero).resolve_right (ne_of_gt hk_S)
-
-/-- For any natural number `n > 0`, it is either equal to 1 or greater than 1.
-    This is a helper for reasoning about the cardinality of a Fintype. -/
-lemma Nat.eq_one_or_one_lt (n : ℕ) (hn : n ≠ 0) : n = 1 ∨ 1 < n := by
-  rcases n with _ | n
-  · contradiction
-  rcases n with _ | n
-  · exact Or.inl rfl
-  · exact Or.inr (Nat.succ_lt_succ (Nat.succ_pos _))
-
-/-- For a finite type, the infimum over the type is attained at some element. -/
-lemma exists_eq_iInf {α : Type*} [Finite α] [Nonempty α] (f : α → ℝ) : ∃ i, f i = ⨅ j, f j :=
-  exists_eq_ciInf_of_finite
 
 /-- An element of the image of a set is less than or equal to the supremum of that set. -/
 lemma le_csSup_of_mem {α : Type*} {f : α → ℝ} {s : Set α} (hs_bdd : BddAbove (f '' s)) {y : α} (hy : y ∈ s) :
@@ -462,20 +294,6 @@ lemma ones_norm_mem_simplex [Fintype n] [Nonempty n] :
   · simp [Finset.sum_const, Finset.card_univ];
 
 /--
-If a value `y` is a lower bound for a function `f` over a non-empty finset `s` and is
-also attained by `f` for some element in `s`, then `y` is the infimum of `f` over `s`.
--/
-lemma Finset.inf'_eq_of_forall_le_of_exists_le {α β} [LinearOrder β]
-    {s : Finset α} (hs : s.Nonempty) (f : α → β) (y : β)
-    (h_le : ∀ i ∈ s, y ≤ f i) (h_exists : ∃ i ∈ s, f i = y) :
-    s.inf' hs f = y := by
-  apply le_antisymm
-  · obtain ⟨i, hi_mem, hi_eq⟩ := h_exists
-    rw [← hi_eq]
-    exact inf'_le f hi_mem
-  · exact (le_inf'_iff hs f).mpr h_le
-
-/--
 If a vector `x` lies in the standard simplex, then it cannot be the zero vector.
 Indeed, the coordinates of a simplex‐vector sum to `1`, whereas the coordinates of
 the zero vector sum to `0`.
@@ -491,36 +309,7 @@ lemma ne_zero_of_mem_stdSimplex
   have h_sum_one : (∑ i, x i) = 1 := hx.2
   linarith
 
-lemma Real.le_sSup {s : Set ℝ} {y : ℝ} (h_mem : y ∈ s) (h_bdd : BddAbove s) :
-    y ≤ sSup s :=
-  le_csSup h_bdd h_mem
-
-/-- The supremum of the image of `s` under `f` equals the indexed supremum over the subtype. -/
-lemma csSup_image' {α β : Type*} [ConditionallyCompleteLattice α]
-  {f : β → α} {s : Set β} (hs : s.Nonempty) (hb : BddAbove (f '' s)) :
-  sSup (f '' s) = ⨆ i : s, f i := by
-  have h₁ : IsLUB (f '' s) (sSup (f '' s)) := isLUB_csSup (hs.image _) hb
-  have h₂ := isLUB_ciSup_set (f := f) (s := s) hb hs
-  exact h₁.unique h₂
-
-lemma iSup_eq_sSup {α β : Type*} [ConditionallyCompleteLattice α]
-    (f : β → α) (s : Set β) :
-    (⨆ i : s, f i) = sSup (f '' s) := by
-  classical
-  -- `sSup_image'` gives `sSup (f '' s) = ⨆ i : s, f i`
-  simpa using (sSup_image' (f := f) (s := s)).symm
-
 namespace Matrix
-
-/-- The dot product of two strictly positive vectors is positive. -/
-lemma dotProduct_pos_of_pos_of_pos {n : Type*} [Fintype n] [Nonempty n]
-    {u v : n → ℝ} (hu_pos : ∀ i, 0 < u i) (hv_pos : ∀ i, 0 < v i) :
-    0 < u ⬝ᵥ v := by
-  change 0 < ∑ i, u i * v i
-  apply Finset.sum_pos
-  · intro i _
-    exact mul_pos (hu_pos i) (hv_pos i)
-  · apply Finset.univ_nonempty
 
 /-- The dot product of a positive vector with a non-negative, non-zero vector is positive. -/
 lemma dotProduct_pos_of_pos_of_nonneg_ne_zero {n : Type*} [Fintype n]
@@ -548,25 +337,6 @@ lemma dotProduct_smul_left {n : Type*} [Fintype n]
   unfold dotProduct
   simp [smul_eq_mul, Finset.mul_sum, mul_comm, mul_left_comm]
 
-/-- The dot product is linear in the right argument. -/
-lemma dotProduct_smul_right {n : Type*} [Fintype n]
-    (c : ℝ) (v w : n → ℝ) :
-    v ⬝ᵥ (c • w) = c * (v ⬝ᵥ w) := by
-  simp [dotProduct, smul_eq_mul, Finset.mul_sum, mul_left_comm]
-
-/--
-If `u` is a non-negative vector and `v ≤ w` component-wise, then `u ⬝ᵥ v ≤ u ⬝ᵥ w`.
-This is because the dot product is a sum of products, and multiplying by non-negative
-numbers preserves the inequality.
--/
-lemma dotProduct_le_dotProduct_of_nonneg {n : Type*} [Fintype n] {u v w : n → ℝ}
-    (hu_nonneg : ∀ i, 0 ≤ u i) (h_le : v ≤ w) :
-    u ⬝ᵥ v ≤ u ⬝ᵥ w := by
-  simp_rw [dotProduct, Pi.le_def] at h_le ⊢
-  apply Finset.sum_le_sum
-  intro i _
-  exact mul_le_mul_of_nonneg_left (h_le i) (hu_nonneg i)
-
 /--
 The dot product is "associative" with matrix-vector multiplication, in the sense
 that `v ⬝ᵥ (A *ᵥ w) = (Aᵀ *ᵥ v) ⬝ᵥ w`. This is a consequence of the definition of
@@ -580,22 +350,6 @@ lemma dotProduct_mulVec_assoc {n : Type*} [Fintype n]
   simp [mul_comm, mul_left_comm]
 
 -- Matrix-vector multiplication component
-theorem matrix_mulVec_component {n : Type*} [Fintype n]
-    (A : Matrix n n ℝ) (v : n → ℝ) (j : n) :
-    (A *ᵥ v) j = ∑ i, A j i * v i := by
-  simp [Matrix.mulVec]; rfl
-
-/--
-The dot product `v ⬝ᵥ (A *ᵥ w)` can be rewritten by moving the matrix `A`
-to the other argument, where it becomes its transpose `Aᵀ`.
--/
-lemma transpose_mulVec {n : Type*} [Fintype n] (A : Matrix n n ℝ) (v w : n → ℝ) :
-    v ⬝ᵥ (A *ᵥ w) = (Aᵀ *ᵥ v) ⬝ᵥ w := by
-  classical
-  simp only [dotProduct, mulVec_apply,
-        Finset.mul_sum, Finset.sum_mul];
-  rw [Finset.sum_comm]
-  simp [mul_comm, mul_left_comm]
 
 /--
 Commutativity property for dot product with matrix-vector multiplication.
@@ -636,15 +390,3 @@ end Matrix
 variable {α ι : Type*} {f : ι → α} {s : Set ι}
 open Set
 -- Indexed supremum equals the supremum of the image
-theorem iSup_eq_sSup_image [ConditionallyCompleteLattice α] :
-    (⨆ x : s, f x) = sSup (f '' s) := by
-  simp [iSup, image_eq_range]
-
-lemma eq_zero_of_sum_eq_zero {ι : Type*} [Fintype ι]
-  (f : ι → ℝ) (hf : ∀ i, 0 ≤ f i) (hsum : ∑ j, f j = 0) (i : ι) : f i = 0 := by
-  by_contra hne0
-  have hne : ¬ 0 = f i := mt Eq.symm hne0
-  have hgt : 0 < f i := lt_iff_le_and_ne.mpr ⟨hf i, hne⟩
-  have hsum_pos : 0 < ∑ j, f j :=
-    Finset.sum_pos' (fun j _ => hf j) ⟨i, Finset.mem_univ i, hgt⟩
-  simpa [hsum] using ne_of_gt hsum_pos
