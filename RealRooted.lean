@@ -1509,3 +1509,6 @@ import RealRooted.Mathlib.Analysis.Complex.ArgumentPrinciple
 import RealRooted.ProductSequence.Interlacing
 import RealRooted.Tactic.Examples.Product.Interlacing
 import RealRooted.Tactic.Product.Interlacing
+import RealRooted.DerivativeRecurrence.Degree
+import RealRooted.Tactic.Examples.RowData
+import RealRooted.Tactic.RowData

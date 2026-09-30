@@ -33,6 +33,7 @@ import RealRooted.Tactic.PreservingOperatorSequence
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.Product.Interlacing
 import RealRooted.Tactic.RecurrenceIdentification
+import RealRooted.Tactic.RowData
 import RealRooted.Tactic.ReciprocalShift
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
