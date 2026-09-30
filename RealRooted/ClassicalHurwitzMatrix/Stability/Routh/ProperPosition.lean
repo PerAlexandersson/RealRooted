@@ -331,10 +331,4 @@ theorem IsStrictlyHurwitzStable.routhReducedPolynomial_of_oddShape
       hright hodd0.ne'
         (h.noCommonRoot_routhReducedOddPart hoddnn hodd0.ne')
 
-@[deprecated
-  IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
-  (since := "2026-09-18")]
-alias IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_oddShape :=
-  IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
-
 end RealRooted

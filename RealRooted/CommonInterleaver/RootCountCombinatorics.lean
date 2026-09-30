@@ -828,10 +828,6 @@ theorem succDegreeRootCountLowerOriented_of_strictInterl
   rw [hpcard, hqcard]
   constructor <;> lia
 
-@[deprecated succDegreeRootCountLowerOriented_of_strictInterl (since := "2026-09-18")]
-alias succDegreeRootCountLowerOriented_of_prec :=
-  succDegreeRootCountLowerOriented_of_strictInterl
-
 /-- Tight oriented upper-threshold `StrictInterl`-to-root-count bridge for the
 differ-by-one case.
 

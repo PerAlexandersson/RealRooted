@@ -125,11 +125,6 @@ theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     fun r h ↦ hnoRoot r h.1 h.2
   exact ⟨hstrictInterl, (hstrictInterl.hasSimpleRoots_of_no_common_root hno).2⟩
 
-@[deprecated strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
-  (since := "2026-09-18")]
-alias prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail :=
-  strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
-
 /-- A degree-raising recurrence through a derivative-sign auxiliary puts `f`
 in an interlacing relation with `F` and gives `F` simple roots. -/
 theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ

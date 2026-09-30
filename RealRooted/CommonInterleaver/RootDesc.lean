@@ -284,8 +284,5 @@ theorem strictInterl_chain_of_consecutive_of_endpoint (F : ℕ → ℝ[X]) (a b 
     _ ≤ (rootSeqDesc (F a)).getD l 0 := hextD l hla (by lia)
     _ ≤ (rootSeqDesc (F i)).getD l 0 := hrai l hla
 
-@[deprecated strictInterl_chain_of_consecutive_of_endpoint (since := "2026-09-18")]
-alias prec_chain_of_consecutive_of_endpoint := strictInterl_chain_of_consecutive_of_endpoint
-
 end
 end RealRooted

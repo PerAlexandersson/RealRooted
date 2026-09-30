@@ -714,11 +714,6 @@ theorem insertionOperator_data_of_simple_roots_Ioo
         intro hzero
         simp [hzero] at htwo) (by lia) hb
 
-/-! ## Deprecated aliases -/
-
-@[deprecated strictInterl_neg_insertionOperator (since := "2026-09-26")]
-alias prec_neg_insertionOperator := strictInterl_neg_insertionOperator
-
 end ToricContribution
 end ParkingFunctions
 end RealRooted

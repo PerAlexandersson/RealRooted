@@ -319,12 +319,6 @@ alias brandenBasisImage_endpoint_prec := brandenBasisImage_endpoint_strictInterl
 @[deprecated brandenBasisImage_adjacent_strictInterl (since := "2026-09-18")]
 alias brandenBasisImage_adjacent_prec := brandenBasisImage_adjacent_strictInterl
 
-@[deprecated brandenBasisImage_strictInterl (since := "2026-09-18")]
-alias brandenBasisImage_prec := brandenBasisImage_strictInterl
-
-@[deprecated brandenBasisImage_zero_strictInterl (since := "2026-09-18")]
-alias brandenBasisImage_zero_prec := brandenBasisImage_zero_strictInterl
-
 @[deprecated brandenBasisImage_first_strictInterl (since := "2026-09-18")]
 alias brandenBasisImage_first_prec := brandenBasisImage_first_strictInterl
 

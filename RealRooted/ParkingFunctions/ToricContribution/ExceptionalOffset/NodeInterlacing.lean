@@ -1036,13 +1036,6 @@ theorem negOnePow_mul_rPolynomial_hasPosLeadingCoeff (m ε d : ℕ) :
     rPolynomial_natDegree]
   exact rPolynomial_top_signed_coeff_pos m ε d
 
-/-! ## Deprecated aliases -/
-
-@[deprecated rPolynomial_strictInterl_rPolynomial_of_lt
-  (since := "2026-09-26")]
-alias rPolynomial_prec_rPolynomial_of_lt :=
-  rPolynomial_strictInterl_rPolynomial_of_lt
-
 end ToricContribution
 end ParkingFunctions
 end RealRooted

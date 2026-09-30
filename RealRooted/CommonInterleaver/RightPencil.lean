@@ -195,9 +195,6 @@ def CompatibleSuccDegreeStrictInterlStatement : Prop :=
     f.Splits →
     StrictInterl f g
 
-@[deprecated CompatibleSuccDegreeStrictInterlStatement (since := "2026-09-18")]
-abbrev CompatibleSuccDegreePrecStatement := CompatibleSuccDegreeStrictInterlStatement
-
 /-- Exact lower-threshold endpoint-sign comparison expected from the
 left-endpoint/count-stability picture. -/
 def CompatibleSuccDegreeEndpointSignLowerCountEqStatement : Prop :=
@@ -962,9 +959,6 @@ theorem compatibleSuccDegreeStrictInterl_of_allCombo
       hf_pos.ne_zero hf_split hg_rr.1 hg_rr.2 hall (Or.inl hdeg.symm)
   exact StrictInterl.forward_of_orientation_of_succDegree hdeg horient
 
-@[deprecated compatibleSuccDegreeStrictInterl_of_allCombo (since := "2026-09-18")]
-alias compatibleSuccDegreePrec_of_allCombo := compatibleSuccDegreeStrictInterl_of_allCombo
-
 /-- The signed right-pencil target implies the forced succ-degree
 orientation. -/
 theorem compatibleSuccDegreeStrictInterl_of_signedRightFamily
@@ -972,10 +966,6 @@ theorem compatibleSuccDegreeStrictInterl_of_signedRightFamily
     CompatibleSuccDegreeStrictInterlStatement :=
   compatibleSuccDegreeStrictInterl_of_allCombo
     (compatibleSuccDegreeAllCombo_of_signedRightFamily hsigned)
-
-@[deprecated compatibleSuccDegreeStrictInterl_of_signedRightFamily (since := "2026-09-18")]
-alias compatibleSuccDegreePrec_of_signedRightFamily :=
-  compatibleSuccDegreeStrictInterl_of_signedRightFamily
 
 /-- The negative right-pencil target implies the forced succ-degree
 orientation. -/
@@ -985,10 +975,6 @@ theorem compatibleSuccDegreeStrictInterl_of_negativeRightFamily
   compatibleSuccDegreeStrictInterl_of_allCombo
     (compatibleSuccDegreeAllCombo_of_negativeRightFamily hneg)
 
-@[deprecated compatibleSuccDegreeStrictInterl_of_negativeRightFamily (since := "2026-09-18")]
-alias compatibleSuccDegreePrec_of_negativeRightFamily :=
-  compatibleSuccDegreeStrictInterl_of_negativeRightFamily
-
 /-- The nonnegative-coefficient negative right-pencil target implies the forced
 succ-degree orientation. -/
 theorem compatibleSuccDegreeStrictInterl_of_negativeRightFamily_nonnegShift
@@ -996,11 +982,6 @@ theorem compatibleSuccDegreeStrictInterl_of_negativeRightFamily_nonnegShift
     CompatibleSuccDegreeStrictInterlStatement :=
   compatibleSuccDegreeStrictInterl_of_negativeRightFamily
     (compatibleSuccDegreeNegativeRightFamily_of_nonnegShift hneg)
-
-@[deprecated compatibleSuccDegreeStrictInterl_of_negativeRightFamily_nonnegShift
-  (since := "2026-09-18")]
-alias compatibleSuccDegreePrec_of_negativeRightFamily_nonnegShift :=
-  compatibleSuccDegreeStrictInterl_of_negativeRightFamily_nonnegShift
 
 /-- The no-common positive-combination orientation core implies the
 coefficient-free compatible succ-degree orientation target.  Shared roots are
@@ -1018,11 +999,6 @@ theorem compatibleSuccDegreeStrictInterl_of_noCommonOrientation
         hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
       hfg hf_pos hg_pos (by lia) (by lia)
   exact StrictInterl.forward_of_orientation_of_succDegree hdeg horient
-
-@[deprecated compatibleSuccDegreeStrictInterl_of_noCommonOrientation
-  (since := "2026-09-18")]
-alias compatibleSuccDegreePrec_of_noCommonOrientation :=
-  compatibleSuccDegreeStrictInterl_of_noCommonOrientation
 
 /-- The exact lower-count endpoint comparison implies the lower-threshold
 endpoint-sign exact gap obstruction. -/
@@ -1475,11 +1451,6 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl
     dsimp [d] at hd_zero
     linarith
   exact hnot_even (by rw [hfg_zero]; norm_num)
-
-@[deprecated compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl
-  (since := "2026-09-18")]
-alias compatibleSuccDegreeEndpointSignLowerCountEq_of_prec :=
-  compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl
 
 /-- The compatible succ-degree all-combinations target implies the exact
 lower-count endpoint comparison. -/

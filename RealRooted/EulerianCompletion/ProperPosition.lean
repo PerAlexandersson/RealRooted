@@ -42,8 +42,4 @@ theorem loweringEulerStep_strictInterl_self_of_reflect {M : ℕ} {p : ℝ[X]}
   rw [heq]
   exact hcore
 
-@[deprecated loweringEulerStep_strictInterl_self_of_reflect (since := "2026-09-26")]
-alias loweringEulerStep_prec_self_of_reflect :=
-  loweringEulerStep_strictInterl_self_of_reflect
-
 end RealRooted

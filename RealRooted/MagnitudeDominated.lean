@@ -87,11 +87,6 @@ theorem magnitude_cert_of_abs_dominated
     le_abs_self _
   linarith [h₂, hdom, h₁]
 
-@[deprecated strictInterl_of_magnitude_dominated_succ
-  (since := "2026-09-18")]
-alias prec_of_magnitude_dominated_succ :=
-  strictInterl_of_magnitude_dominated_succ
-
 @[deprecated strictInterl_of_magnitude_dominated
   (since := "2026-09-18")]
 alias prec_of_magnitude_dominated := strictInterl_of_magnitude_dominated

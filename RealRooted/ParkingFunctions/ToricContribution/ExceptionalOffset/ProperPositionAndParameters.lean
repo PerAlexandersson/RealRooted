@@ -834,19 +834,6 @@ theorem rPolynomial_exceptional_strictInterl (m ε : ℕ) (hm : 0 < m) :
     ← exceptionalEulerInverse_lower_eq_rPolynomial m ε hm]
   exact exceptionalEulerInverse_upper_strictInterl_lower m ε hm
 
-/-! ## Deprecated aliases -/
-
-@[deprecated exceptionalEulerInverse_strictInterl (since := "2026-09-26")]
-alias exceptionalEulerInverse_prec := exceptionalEulerInverse_strictInterl
-
-@[deprecated exceptionalEulerInverse_upper_strictInterl_lower
-  (since := "2026-09-26")]
-alias exceptionalEulerInverse_upper_prec_lower :=
-  exceptionalEulerInverse_upper_strictInterl_lower
-
-@[deprecated rPolynomial_exceptional_strictInterl (since := "2026-09-26")]
-alias rPolynomial_exceptional_prec := rPolynomial_exceptional_strictInterl
-
 end ToricContribution
 end ParkingFunctions
 end RealRooted

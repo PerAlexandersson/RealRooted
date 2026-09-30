@@ -375,19 +375,6 @@ macro_rules
 end Tactic
 end RealRooted
 namespace RealRooted
-@[deprecated strictInterl_affine_derivative_sequence (since := "2026-09-26")]
-alias prec_affine_derivative_sequence := strictInterl_affine_derivative_sequence
-
-@[deprecated isRealRooted_of_strictInterl_affine_derivative_sequence (since := "2026-09-26")]
-alias isRealRooted_of_prec_affine_derivative_sequence :=
-  isRealRooted_of_strictInterl_affine_derivative_sequence
-
-@[deprecated strictInterl_affine_derivative_nonneg_sequence (since := "2026-09-26")]
-alias prec_affine_derivative_nonneg_sequence := strictInterl_affine_derivative_nonneg_sequence
-
-@[deprecated isRealRooted_of_strictInterl_affine_derivative_nonneg_sequence (since := "2026-09-26")]
-alias isRealRooted_of_prec_affine_derivative_nonneg_sequence :=
-  isRealRooted_of_strictInterl_affine_derivative_nonneg_sequence
 
 end RealRooted
 
@@ -483,7 +470,7 @@ macro_rules
         roots_nonpos := $hroots:term,
         scalar_gt_degree := $hc:term) =>
       `(tactic|
-        exact RealRooted.prec_affine_derivative_deg_one
+        exact RealRooted.strictInterl_affine_derivative_deg_one
           $hsplits $hdeg $hpos $hroots $hc)
   | `(tactic|
       rr_prec_affine_derivative using
@@ -493,7 +480,7 @@ macro_rules
         roots_nonpos := $hroots:term,
         scalar_gt_degree := $hc:term) =>
       `(tactic|
-        exact RealRooted.prec_affine_derivative' $hsplits $hdeg $hpos $hroots $hc)
+        exact RealRooted.strictInterl_affine_derivative' $hsplits $hdeg $hpos $hroots $hc)
   | `(tactic|
       rr_prec_affine_derivative_nonneg using
         splits := $hsplits:term,
@@ -511,7 +498,7 @@ macro_rules
         roots_nonpos := $hroots:term,
         scalar_gt_degree := $hc:term) =>
       `(tactic|
-        exact RealRooted.prec_affine_derivative_sequence
+        exact RealRooted.strictInterl_affine_derivative_sequence
           $hsplits $hdeg $hpos $hroots $hc)
   | `(tactic|
       rr_prec_affine_derivative_sequence_realrooted using
@@ -521,7 +508,7 @@ macro_rules
         roots_nonpos := $hroots:term,
         scalar_gt_degree := $hc:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_affine_derivative_sequence
+        exact RealRooted.isRealRooted_of_strictInterl_affine_derivative_sequence
           $hsplits $hdeg $hpos $hroots $hc)
   | `(tactic|
       rr_prec_affine_derivative_nonneg_sequence using
@@ -530,7 +517,7 @@ macro_rules
         nonneg := $hnn:term,
         scalar_gt_degree := $hc:term) =>
       `(tactic|
-        exact RealRooted.prec_affine_derivative_nonneg_sequence
+        exact RealRooted.strictInterl_affine_derivative_nonneg_sequence
           $hsplits $hdeg $hnn $hc)
   | `(tactic|
       rr_prec_affine_derivative_nonneg_sequence_realrooted using
@@ -539,7 +526,7 @@ macro_rules
         nonneg := $hnn:term,
         scalar_gt_degree := $hc:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_affine_derivative_nonneg_sequence
+        exact RealRooted.isRealRooted_of_strictInterl_affine_derivative_nonneg_sequence
           $hsplits $hdeg $hnn $hc)
 end Tactic
 end RealRooted

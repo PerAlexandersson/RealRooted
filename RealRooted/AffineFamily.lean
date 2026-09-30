@@ -589,10 +589,6 @@ theorem strictInterl_right_pair_of_affine_family_nonneg
     (strictInterl_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
     hfnn hgnn
 
-@[deprecated strictInterl_right_pair_of_affine_family_nonneg (since := "2026-09-18")]
-alias prec_right_pair_of_affine_family_nonneg :=
-  strictInterl_right_pair_of_affine_family_nonneg
-
 /-- Closed affine-segment wrapper for `strictInterl_of_affine_family_nonneg`.
 
 For each positive affine factor `sX+t`, assume the two endpoint polynomials
@@ -985,48 +981,8 @@ lemma interl_one_affine_linear {a b : ℝ} (ha : 0 < a) :
     grind
   exact hInter.toStrictInterl.toInterl
 
-@[deprecated strictInterl_of_affine_segment_endpoints_nonneg (since := "2026-09-18")]
-alias prec_of_affine_segment_endpoints_nonneg :=
-  strictInterl_of_affine_segment_endpoints_nonneg
-
-@[deprecated strictInterl_of_affine_segment_endpoints_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_of_affine_segment_endpoints_sameDegree_nonneg :=
-  strictInterl_of_affine_segment_endpoints_sameDegree_nonneg
-
-@[deprecated strictInterl_of_affine_segment_endpoint_pf_nonneg (since := "2026-09-18")]
-alias prec_of_affine_segment_endpoint_pf_nonneg :=
-  strictInterl_of_affine_segment_endpoint_pf_nonneg
-
 @[deprecated strictInterl_of_affine_segment_endpoint_tnn_nonneg (since := "2026-09-18")]
 alias prec_of_affine_segment_endpoint_tnn_nonneg :=
   strictInterl_of_affine_segment_endpoint_tnn_nonneg
-
-@[deprecated strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_of_affine_segment_endpoint_pf_sameDegree_nonneg :=
-  strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg
-
-@[deprecated strictInterl_of_affine_segment_endpoint_tnn_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg :=
-  strictInterl_of_affine_segment_endpoint_tnn_sameDegree_nonneg
-
-@[deprecated strictInterl_shifted_pair_of_affine_family_nonneg (since := "2026-09-18")]
-alias prec_shifted_pair_of_affine_family_nonneg :=
-  strictInterl_shifted_pair_of_affine_family_nonneg
-
-@[deprecated strictInterl_right_pair_of_affine_family_nonneg_sameDegree
-  (since := "2026-09-18")]
-alias prec_right_pair_of_affine_family_nonneg_sameDegree :=
-  strictInterl_right_pair_of_affine_family_nonneg_sameDegree
-
-@[deprecated strictInterl_of_strictInterl_shifted_pair_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_of_prec_shifted_pair_sameDegree_nonneg :=
-  strictInterl_of_strictInterl_shifted_pair_sameDegree_nonneg
-
-@[deprecated interl_one_affine_linear (since := "2026-09-18")]
-alias prec0_one_affine_linear := interl_one_affine_linear
 
 end RealRooted

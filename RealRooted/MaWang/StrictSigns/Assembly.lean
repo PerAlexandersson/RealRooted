@@ -492,10 +492,6 @@ theorem strictInterl_same_of_strict_signs_of_right_root
   exact ⟨⟨hf_ne, hf_splits⟩, hF, r :: rs', us ++ [uR], hrs_sorted, hws_sorted, hrs_eq, hws_eq,
     Or.inr ⟨hlen_shape, hshape⟩⟩
 
-@[deprecated strictInterl_same_of_strict_signs_of_right_root (since := "2026-09-18")]
-alias prec_same_of_strict_signs_of_right_root :=
-  strictInterl_same_of_strict_signs_of_right_root
-
 /-- Add one outer point on each side of a sorted interlacing layout. -/
 lemma listInterlaces_with_outer :
     ∀ {us rs : List ℝ},
@@ -769,7 +765,7 @@ export MaWangInternal
     interlaces_of_eval_mul_derivative_pos
     mul_neg_of_mul_neg_of_mul_neg
     strictInterl_same_of_strict_signs_of_right_root
-    prec_same_of_strict_signs_of_right_root
+    strictInterl_same_of_strict_signs_of_right_root
     strictInterl_of_strict_signs_of_strict_outer_roots
     strictInterl_of_strict_signs_of_strict_outer_roots
     exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop

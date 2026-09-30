@@ -315,9 +315,6 @@ theorem gwJL_strictInterl {k : ℕ} {g q : ℝ[X]} (h : IsGWKreinSummand g q)
     rw [hq]
     exact gwJL_factor_strictInterl_of_splits (k := k) (u := u) (f := q) hq0 hqs
 
-@[deprecated IsGWKreinSummand.gwJL_strictInterl (since := "2026-09-18")]
-alias gwJL_prec := gwJL_strictInterl
-
 end IsGWKreinSummand
 
 /-- Factor a root of `g` into the one-root-deleted Krein summand and the
@@ -571,14 +568,5 @@ theorem eq_zero_of_dvd_of_natDegree_lt {g h : ℝ[X]}
   · exfalso
     rw [natDegree_mul hg0 hr0] at hlt
     lia
-
-@[deprecated exists_strictInterlLeft_factor_of_right_isRoot (since := "2026-09-18")]
-alias exists_precLeft_factor_of_right_isRoot :=
-  exists_strictInterlLeft_factor_of_right_isRoot
-
-@[deprecated exists_strictInterlResidual_factor_of_right_rootMultiplicity
-  (since := "2026-09-18")]
-alias exists_precResidual_factor_of_right_rootMultiplicity :=
-  exists_strictInterlResidual_factor_of_right_rootMultiplicity
 
 end RealRooted

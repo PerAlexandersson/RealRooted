@@ -283,33 +283,6 @@ theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl
       Interl (Polynomial.chowS n f) g :=
   ⟨h.chowS_nonnegCoeffs, h.chowS_interl⟩
 
-/-! ## Deprecated aliases -/
-
-@[deprecated roots_le_of_strictInterl_of_left_roots_lt_of_right_root
-  (since := "2026-09-26")]
-alias roots_le_of_prec_of_left_roots_lt_of_right_root :=
-  roots_le_of_strictInterl_of_left_roots_lt_of_right_root
-
-@[deprecated chowS_nonnegCoeffs_and_strictInterl_of_triple
-  (since := "2026-09-26")]
-alias chowS_nonnegCoeffs_and_prec_of_triple :=
-  chowS_nonnegCoeffs_and_strictInterl_of_triple
-
-@[deprecated IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_strictInterl
-  (since := "2026-09-26")]
-alias IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec :=
-  IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_strictInterl
-
-@[deprecated IsReflectionInterlacingSeq.chowS_interl
-  (since := "2026-09-26")]
-alias IsReflectionInterlacingSeq.chowS_prec0 :=
-  IsReflectionInterlacingSeq.chowS_interl
-
-@[deprecated IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl
-  (since := "2026-09-26")]
-alias IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0 :=
-  IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl
-
 end BrandenVecchi
 
 end RealRooted

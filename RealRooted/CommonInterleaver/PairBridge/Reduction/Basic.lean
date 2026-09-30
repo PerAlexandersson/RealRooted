@@ -159,11 +159,6 @@ protected lemma CommonInterleaver.PairBridge.strictInterl_or_reverse_of_allCombo
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
   exact strictInterl_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg
 
-@[deprecated CommonInterleaver.PairBridge.strictInterl_or_reverse_of_allComboRealRooted_ordered
-  (since := "2026-09-18")]
-protected alias CommonInterleaver.PairBridge.prec_or_revPrec_of_allComboRealRooted_ordered :=
-  CommonInterleaver.PairBridge.strictInterl_or_reverse_of_allComboRealRooted_ordered
-
 /-- The same affine-family bridge also yields the no-common orientation step,
 since `AllComboRealRooted` can be fed into the completed Obreschkoff converse.
 -/

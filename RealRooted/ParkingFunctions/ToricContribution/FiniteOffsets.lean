@@ -966,18 +966,6 @@ theorem rPolynomial_eval_mul_jPolynomial_derivative_pos_of_isRoot
   exact rPolynomial_eval_mul_jPolynomial_derivative_pos
     m ε d hm hd_pos hd i
 
-/-! ## Deprecated strict same-degree interlacing names -/
-
-@[deprecated IntervalRootData.strictInterl_neg_insertionOperator
-  (since := "2026-09-26")]
-alias IntervalRootData.prec_neg_insertionOperator :=
-  IntervalRootData.strictInterl_neg_insertionOperator
-
-@[deprecated consecutive_signedTriangleFamily_strictInterl
-  (since := "2026-09-26")]
-alias consecutive_signedTriangleFamily_prec :=
-  consecutive_signedTriangleFamily_strictInterl
-
 end ToricContribution
 end ParkingFunctions
 end RealRooted

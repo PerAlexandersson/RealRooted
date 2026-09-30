@@ -69,9 +69,4 @@ theorem interl_chainPolynomial_toLowerTriangularMatrix_succ
     (fun i => Matrix.diagonalTail_apply_diagonal δ A hdiag)
     (hA.diagonalTail hδ.le) n
 
-@[deprecated interl_chainPolynomial_toLowerTriangularMatrix_succ
-  (since := "2026-09-18")]
-alias prec0_chainPolynomial_toLowerTriangularMatrix_succ :=
-  interl_chainPolynomial_toLowerTriangularMatrix_succ
-
 end RealRooted.BrandenLeite

@@ -124,11 +124,6 @@ theorem strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_no
       (by simp_all)
   lia
 
-@[deprecated strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg :=
-  strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_nonneg
-
 /-- Swapping the roles of `f` and `g` gives the symmetric forward transport for
 the left-family pair `(f + g, 2f + g)`. -/
 theorem strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_nonneg
@@ -150,11 +145,6 @@ theorem strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_non
       hno_swap
       (by simpa [add_comm, add_left_comm, add_assoc, mul_comm, mul_left_comm, mul_assoc]
         using hpair)
-
-@[deprecated strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg :=
-  strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_nonneg
 
 /-- If both specialized one-step families point forward, then their common
 middle sum `f + g` is already a common left interleaver for `f` and `g`. This
