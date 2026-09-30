@@ -8,6 +8,12 @@
       "RealRooted.Tactic.Examples."
     ]
   },
+  "forbidden_module_names": [
+    {
+      "pattern": "(^|\\.)Issue[0-9]+",
+      "reason": "name modules by mathematical content; issue numbers belong in history"
+    }
+  ],
   "budgets": {
     "RealRooted": {
       "max_modules": 1506

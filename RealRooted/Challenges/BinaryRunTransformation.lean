@@ -38,6 +38,10 @@ module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
 [[theorems]]
 name = "RealRooted.motzkinWeightedRow_inv_ascPochhammer_strictInterl_succ"
 module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
+
+[[theorems]]
+name = "RealRooted.motzkinWeightedRow_inv_ascPochhammer_succ_strictInterl"
+module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -84,6 +88,13 @@ rows `R_n^γ = J_n(G_n^γ)` form a Sturm chain: `R_n^γ ≪ R_{n+1}^γ` for all
 `n`. This holds in particular for `γ_m = 1/(α)_m` with `α > 0`. The case
 `α = 2`, where `γ_m = 1/(m+1)!`, gives the Motzkin-ascent polynomials
 (OEIS A114580).
+
+The rows also move monotonically in `α`. Write `P_n^(α)` for the row with
+`γ_m = 1/(α)_m`. Then `P_n^(α+1) ≪ P_n^(α)` for every `n` and every `α > 0`.
+The proof uses the shift identity `α G_n^(α) = (Θ + α) G_n^(α+1)`, which
+follows from `α (α+1)_m = (α+m)(α)_m`. A PF polynomial `g` of degree at least
+2 satisfies `g ≪ (Θ + α) g`, and the transform preserves interlacing. The
+rows with `n ≤ 3` are linear or constant and are checked directly.
 
 ## Proof idea
 
