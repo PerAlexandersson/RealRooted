@@ -1355,6 +1355,10 @@ import RealRooted.RootCounting.CrossingExhaustion
 import RealRooted.BinaryRunTransformation.CrossLength
 import RealRooted.BinaryRunTransformation.Interlacing
 import RealRooted.BinaryRunTransformation.KernelIdentities
+import RealRooted.Challenges.BrandenLeite
+import RealRooted.Challenges.CommonInterleaver
+import RealRooted.Challenges.GeneralizedSnakePosets
+import RealRooted.Challenges.MultiplierSequence
 
 /-!
 # RealRooted production umbrella
