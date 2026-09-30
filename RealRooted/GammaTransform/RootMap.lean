@@ -50,7 +50,7 @@ theorem exists_mem_Ioo_gammaRootMap_eq {y : ℝ} (hy : y < 0) :
   simp only [eval_sub, eval_X, eval_mul, eval_C, eval_pow, eval_add, eval_one] at hxzero
   unfold gammaRootMap
   field_simp [hone]
-  nlinarith
+  linarith
 
 /-- The gamma root map identifies a nonzero real number with its reciprocal. -/
 lemma gammaRootMap_inv {x : ℝ} (hx : x ≠ 0) :
@@ -76,11 +76,11 @@ theorem strictMonoOn_gammaRootMap :
   have hone : 0 < 1 - a * b := by
     have hproduct : 0 < (1 + a) * (1 - b) :=
       mul_pos ha1 (by linarith [hb.2])
-    nlinarith
+    linarith
   have hfactor := mul_pos hab_pos hone
   simp only [gammaRootMap]
   rw [div_lt_div_iff₀ (sq_pos_of_pos ha1) (sq_pos_of_pos hb1)]
-  nlinarith
+  linarith
 
 /-- The monotone root-map step in Hoster--Stump, Proposition 2.5:
 mapping roots in `(-1, 0)` by equation (2.1) preserves and reflects their

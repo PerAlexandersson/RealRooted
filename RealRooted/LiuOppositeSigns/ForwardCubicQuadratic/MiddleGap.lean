@@ -57,13 +57,13 @@ private lemma middle_gap_left_deriv_neg_of_side_nonneg
   have hP : 0 ≤ -w * x - 2 * w * y + x * y - x * z + y ^ 2 - 2 * y * z :=
     le_of_not_gt hnot
   have hw_bound : x + 2 * y ≤ w + z := by nlinarith
-  have hP_bound : (w + z) * (x + 2 * y) ≤ y * (x + y) := by nlinarith
+  have hP_bound : (w + z) * (x + 2 * y) ≤ y * (x + y) := by linarith
   have hbig : (x + 2 * y) * (x + 2 * y) ≤ y * (x + y) := by
     nlinarith [mul_le_mul_of_nonneg_right hw_bound (by nlinarith)]
   have hcontra : y * (x + y) < (x + 2 * y) * (x + 2 * y) := by
-    nlinarith [sq_nonneg x, mul_nonneg hx (le_of_lt hy),
+    linarith [sq_nonneg x, mul_nonneg hx (le_of_lt hy),
       sq_pos_of_ne_zero (ne_of_gt hy)]
-  nlinarith
+  linarith
 
 private lemma middle_gap_right_deriv_pos_of_side_nonpos
     {a b c u v : ℝ} (hab : a ≤ b) (hbu : b < u) (huv : u < v)
@@ -104,14 +104,14 @@ private lemma middle_gap_right_deriv_pos_of_side_nonpos
   rw [hP_gap]
   have hS : w * x + 2 * w * y + w * z - x * y - y ^ 2 + z ^ 2 ≤ 0 := by rwa [hS_gap] at hside
   have hden_pos : 0 < x + 2 * y + z := by positivity
-  have hw_upper : w * (x + 2 * y + z) ≤ y * (x + y) - z ^ 2 := by nlinarith
+  have hw_upper : w * (x + 2 * y + z) ≤ y * (x + y) - z ^ 2 := by linarith
   have htarget_bound :
       y * (x + y) - z ^ 2 <
         (x + 2 * y + 2 * z) * (x + 2 * y + z) := by
     nlinarith [sq_nonneg x, sq_nonneg z, mul_nonneg hx (le_of_lt hy),
       mul_pos hy hz]
   have hw_lt : w < x + 2 * y + 2 * z := by nlinarith
-  have hfirst : 0 ≤ y * (x + y) - w * (x + 2 * y + z) - z ^ 2 := by nlinarith
+  have hfirst : 0 ≤ y * (x + y) - w * (x + 2 * y + z) - z ^ 2 := by linarith
   have hdecomp :
       -w * x - 2 * w * y - 2 * w * z + x * y + x * z +
           y ^ 2 + 2 * y * z + z ^ 2 =
@@ -323,7 +323,7 @@ private lemma cubicDiscr_cubicSubQuadratic_middle_double_roots_neg
     exact add_nonneg (le_of_lt hsuc_pos)
       (div_nonneg (sq_nonneg lam) (le_of_lt hden_pos))
   have htail_disc_pos : 0 < (3 * lam ^ 2 + 3) ^ 2 - 3 * lam := by
-    nlinarith only [sq_nonneg (12 * lam - 1), sq_nonneg (lam ^ 2)]
+    linarith only [sq_nonneg (12 * lam - 1), sq_nonneg (lam ^ 2)]
   let β : ℝ := sau + sbu - suc - μ
   have hβ_eq : β = -(extra + (3 * lam ^ 2 + 3)) := by
     dsimp [β, extra, μ]
@@ -335,12 +335,12 @@ private lemma cubicDiscr_cubicSubQuadratic_middle_double_roots_neg
     ring
   have hlead : 0 < β ^ 2 - 3 * (1 : ℝ) * lam := by
     rw [hlead_eq]
-    have htail_nonneg : 0 ≤ 3 * lam ^ 2 + 3 := by nlinarith only [sq_nonneg lam]
+    have htail_nonneg : 0 ≤ 3 * lam ^ 2 + 3 := by linarith only [sq_nonneg lam]
     have hprod_nonneg : 0 ≤ (3 * lam ^ 2 + 3) * extra :=
       mul_nonneg htail_nonneg hextra_nonneg
     have hextra_terms :
         0 ≤ 2 * (3 * lam ^ 2 + 3) * extra + extra ^ 2 := by
-      nlinarith only [hprod_nonneg, sq_nonneg extra]
+      linarith only [hprod_nonneg, sq_nonneg extra]
     have hdecomp' (E L : ℝ) :
         (E + (3 * L ^ 2 + 3)) ^ 2 - 3 * L =
           ((3 * L ^ 2 + 3) ^ 2 - 3 * L) +
@@ -356,10 +356,10 @@ private lemma cubicDiscr_cubicSubQuadratic_middle_double_roots_neg
     ring_nf
   have hval_simple : lam ^ 2 - 3 * β * (-p) < 0 := by
     rw [hval_eq]
-    have hbracket : 0 < suc + 3 * lam ^ 2 + 3 := by nlinarith only [sq_nonneg lam, hsuc_pos]
+    have hbracket : 0 < suc + 3 * lam ^ 2 + 3 := by linarith only [sq_nonneg lam, hsuc_pos]
     have hprod_pos : 0 < 3 * p * (suc + 3 * lam ^ 2 + 3) :=
       mul_pos (mul_pos (by norm_num) hp_pos) hbracket
-    nlinarith only [hprod_pos]
+    linarith only [hprod_pos]
   let P : ℝ[X] :=
     ((X - C a) * (X - C b) * (X - C c)) -
       C μ * ((X - C u) * (X - C u))
@@ -424,7 +424,7 @@ lemma exists_cubicSubQuadratic_not_splits_of_middle_double_roots
     have hden_pos : 0 < 3 * p := by positivity
     have hfrac_nonneg : 0 ≤ lam ^ 2 / (3 * p) :=
       div_nonneg (sq_nonneg lam) (le_of_lt hden_pos)
-    nlinarith [hsau_pos, hsbu_pos, hfrac_nonneg, sq_nonneg lam]
+    linarith [hsau_pos, hsbu_pos, hfrac_nonneg, sq_nonneg lam]
   refine ⟨μ, hμ, ?_⟩
   have hdisc :
       cubicDiscr

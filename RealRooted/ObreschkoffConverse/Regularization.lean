@@ -755,7 +755,7 @@ private theorem strictInterl_or_reverse_of_eq_zero_or_simple_combo_sameDegree
       have hg_eval : g.eval r = 0 := by simp_all
       have hw : 0 < -(f.eval r * g.derivative.eval r) := by
         simpa [wronskian_eval, hg_eval] using hWpos r
-      nlinarith
+      linarith
     right
     exact strictInterl_of_interlaces_eval_mul_neg_same hder hg'_pos hf_pos hdeg.symm hroot_sign
 
@@ -861,7 +861,7 @@ private theorem strictInterl_of_eq_zero_or_simple_combo_succDegree
   have hq_pos : HasPosLeadingCoeff (-wronskianPoly f g) := by
     refine hasPosLeadingCoeff_neg ?_
     rw [leadingCoeff_wronskian_succ hdeg hf_pos hg_pos hf_deg_pos]
-    nlinarith [mul_pos hf_pos hg_pos]
+    linarith [mul_pos hf_pos hg_pos]
   have hq_deg_pos : 0 < (-wronskianPoly f g).degree := by
     have hnat : 0 < (-wronskianPoly f g).natDegree := by
       rw [natDegree_neg, wronskian_natDegree_succ hdeg hf_pos hg_pos hf_deg_pos]

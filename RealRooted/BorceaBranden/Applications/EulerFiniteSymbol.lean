@@ -195,9 +195,9 @@ theorem eulerAffineBidiagonalResidualWithConstant_stable
       0 < (((d : ℝ) + 1) * (z 0).re + c) ^ 2 +
         (((d : ℝ) + 1) * (z 0).im) ^ 2 := by
     have himul : 0 < ((d : ℝ) + 1) * (z 0).im := mul_pos hD hb
-    nlinarith [sq_nonneg (((d : ℝ) + 1) * (z 0).re + c),
+    linarith [sq_nonneg (((d : ℝ) + 1) * (z 0).re + c),
       sq_pos_of_pos himul]
-  nlinarith [mul_pos he hdenpos, mul_pos hb hbracket]
+  linarith [mul_pos he hdenpos, mul_pos hb hbracket]
 
 theorem eulerAffineBidiagonalResidual_stable (d : ℕ) (hd : 1 ≤ d) :
     MvUpperHalfPlaneStable (complexifyMv

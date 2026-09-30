@@ -337,7 +337,7 @@ lemma untransformRoot_mono_of_neg_one_lt {x y : ℝ}
   have h1x_pos : 0 < 1 + x := by linarith
   have h1y_pos : 0 < 1 + y := by linarith
   rw [untransformRoot, untransformRoot, div_le_div_iff₀ h1x_pos h1y_pos]
-  nlinarith
+  linarith
 
 lemma transformedRoot_mono_of_nonpos {r s : ℝ}
     (hrs : r ≤ s) (hs : s ≤ 0) :
@@ -345,7 +345,7 @@ lemma transformedRoot_mono_of_nonpos {r s : ℝ}
   have h1r_pos : 0 < 1 - r := by linarith
   have h1s_pos : 0 < 1 - s := by linarith
   rw [div_le_div_iff₀ h1r_pos h1s_pos]
-  nlinarith
+  linarith
 
 lemma pairwise_map_transformedRoot_of_nonpos :
     ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) →

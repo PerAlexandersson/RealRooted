@@ -457,7 +457,7 @@ theorem cubicDiscr_quadraticCubicPencil_neg_pos (a b p q r t : ℝ) (ht : 0 ≤ 
   · subst t
     norm_num at hneg
     exfalso
-    nlinarith [sq_nonneg (a - b)]
+    linarith [sq_nonneg (a - b)]
 
 /-- A negative mixed-pencil discriminant at a nonnegative parameter is never
 attained at the constant endpoint. -/

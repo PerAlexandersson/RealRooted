@@ -513,7 +513,7 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one
   simp only [sub_eq_add_neg, ← map_neg]
   rw [StrictInterlSameDegree.X_add_C_iff]
   rw [neg_lt_neg_iff, div_lt_div_iff₀ hden₀ hdenₜ]
-  nlinarith [mul_pos ht (by linarith : 0 < β + 1)]
+  linarith [mul_pos ht (by linarith : 0 < β + 1)]
 
 /-- Interlacing form of arbitrary positive first-parameter movement in
 degree one. -/
@@ -1017,7 +1017,7 @@ theorem shiftedJacobiMonic_eval_mul_alpha_add_two_degree_pred_pos (m : ℕ)
         (shiftedJacobi m (α + 2) β).eval x =
       (α + 1) * ((m : ℝ) + α + 1) *
         (shiftedJacobi m α β).eval x := by
-    nlinarith
+    linarith
   have hrawprod : 0 < (shiftedJacobi m α β).eval x *
       (shiftedJacobi m (α + 2) β).eval x := by
     have hsqPrev : 0 < ((shiftedJacobi m α β).eval x) ^ 2 :=
@@ -1037,7 +1037,7 @@ theorem shiftedJacobiMonic_eval_mul_alpha_add_two_degree_pred_pos (m : ℕ)
               (shiftedJacobi m (α + 2) β).eval x) by ring,
         heq]
       ring_nf
-      nlinarith [mul_pos hc hsqPrev]
+      linarith [mul_pos hc hsqPrev]
     exact pos_of_mul_pos_right hleft
       (le_of_lt (mul_pos hA hxSq))
   rw [hraw₀, hraw₂] at hrawprod

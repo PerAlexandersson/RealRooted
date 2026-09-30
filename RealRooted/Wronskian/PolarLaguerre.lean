@@ -99,7 +99,7 @@ private theorem product_laguerre_bounds (c : ℝ) (s : Multiset ℝ) (t : ℝ) :
         simp only [derivative_mul, derivative_sub, derivative_X,
           derivative_C, derivative_add, sub_zero, one_mul, eval_add,
           eval_mul, eval_sub, eval_X, eval_C]
-        nlinarith [mul_nonneg (neg_nonneg.mpr ha) (sq_nonneg (q.eval t)),
+        linarith [mul_nonneg (neg_nonneg.mpr ha) (sq_nonneg (q.eval t)),
           mul_nonneg (sq_nonneg (t - a)) ih']
 
 /-- Laguerre's inequality expressed through `laguerreForm`. -/

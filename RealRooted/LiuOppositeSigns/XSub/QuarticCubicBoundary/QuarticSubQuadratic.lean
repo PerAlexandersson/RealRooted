@@ -160,7 +160,7 @@ lemma quarticSubQuadraticSplits_of_order_a_u_b_v_c_d
     rw [eval_quarticSubQuadratic_at_a]
     have hG_pos : 0 < (a - u) * (a - v) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hau) (sub_neg.mpr (lt_trans hau huv))
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_u_neg : P.eval u < 0 := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_u]
@@ -178,7 +178,7 @@ lemma quarticSubQuadraticSplits_of_order_a_u_b_v_c_d
     rw [eval_quarticSubQuadratic_at_b]
     have hG_neg : (b - u) * (b - v) < 0 :=
       mul_neg_of_pos_of_neg (sub_pos.mpr hub) (sub_neg.mpr hbv)
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_v_pos : 0 < P.eval v := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_v]
@@ -195,13 +195,13 @@ lemma quarticSubQuadraticSplits_of_order_a_u_b_v_c_d
     rw [eval_quarticSubQuadratic_at_c]
     have hG_pos : 0 < (c - u) * (c - v) :=
       mul_pos (sub_pos.mpr huc) (sub_pos.mpr hvc)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_d_neg : P.eval d < 0 := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_d]
     have hG_pos : 0 < (d - u) * (d - v) :=
       mul_pos (sub_pos.mpr hud) (sub_pos.mpr hvd)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hsplits :=
     splits_of_two_sign_change_intervals_and_both_tails_of_le
       (quarticSubQuadratic_ne_zero a b c d u v μ)
@@ -232,7 +232,7 @@ lemma quarticSubQuadraticSplits_of_order_a_u_b_c_v_d
     rw [eval_quarticSubQuadratic_at_a]
     have hG_pos : 0 < (a - u) * (a - v) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hau) (sub_neg.mpr hav)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_u_neg : P.eval u < 0 := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_u]
@@ -250,13 +250,13 @@ lemma quarticSubQuadraticSplits_of_order_a_u_b_c_v_d
     rw [eval_quarticSubQuadratic_at_b]
     have hG_neg : (b - u) * (b - v) < 0 :=
       mul_neg_of_pos_of_neg (sub_pos.mpr hub) (sub_neg.mpr hbv)
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_c_pos : 0 < P.eval c := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_c]
     have hG_neg : (c - u) * (c - v) < 0 :=
       mul_neg_of_pos_of_neg (sub_pos.mpr huc) (sub_neg.mpr hcv)
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_v_neg : P.eval v < 0 := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_v]
@@ -272,7 +272,7 @@ lemma quarticSubQuadraticSplits_of_order_a_u_b_c_v_d
     rw [eval_quarticSubQuadratic_at_d]
     have hG_pos : 0 < (d - u) * (d - v) :=
       mul_pos (sub_pos.mpr hud) (sub_pos.mpr hvd)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hsplits :=
     splits_of_two_sign_change_intervals_and_both_tails_of_le
       (quarticSubQuadratic_ne_zero a b c d u v μ)
@@ -304,13 +304,13 @@ lemma quarticSubQuadraticSplits_of_order_a_b_u_v_c_d
     rw [eval_quarticSubQuadratic_at_a]
     have hG_pos : 0 < (a - u) * (a - v) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hau) (sub_neg.mpr hav)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_b]
     have hG_pos : 0 < (b - u) * (b - v) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hbu) (sub_neg.mpr hbv)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_u_pos : 0 < P.eval u := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_u]
@@ -338,13 +338,13 @@ lemma quarticSubQuadraticSplits_of_order_a_b_u_v_c_d
     rw [eval_quarticSubQuadratic_at_c]
     have hG_pos : 0 < (c - u) * (c - v) :=
       mul_pos (sub_pos.mpr huc) (sub_pos.mpr hvc)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_d_neg : P.eval d < 0 := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_d]
     have hG_pos : 0 < (d - u) * (d - v) :=
       mul_pos (sub_pos.mpr hud) (sub_pos.mpr hvd)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hsplits :=
     splits_of_two_sign_change_intervals_and_both_tails_of_le
       (quarticSubQuadratic_ne_zero a b c d u v μ)
@@ -374,13 +374,13 @@ lemma quarticSubQuadraticSplits_of_order_a_b_u_c_v_d
     rw [eval_quarticSubQuadratic_at_a]
     have hG_pos : 0 < (a - u) * (a - v) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hau) (sub_neg.mpr hav)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_b]
     have hG_pos : 0 < (b - u) * (b - v) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hbu) (sub_neg.mpr hbv)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_u_pos : 0 < P.eval u := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_u]
@@ -397,7 +397,7 @@ lemma quarticSubQuadraticSplits_of_order_a_b_u_c_v_d
     rw [eval_quarticSubQuadratic_at_c]
     have hG_neg : (c - u) * (c - v) < 0 :=
       mul_neg_of_pos_of_neg (sub_pos.mpr huc) (sub_neg.mpr hcv)
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_v_neg : P.eval v < 0 := by
     dsimp [P]
     rw [eval_quarticSubQuadratic_at_v]
@@ -413,7 +413,7 @@ lemma quarticSubQuadraticSplits_of_order_a_b_u_c_v_d
     rw [eval_quarticSubQuadratic_at_d]
     have hG_pos : 0 < (d - u) * (d - v) :=
       mul_pos (sub_pos.mpr hud) (sub_pos.mpr hvd)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hsplits :=
     splits_of_two_sign_change_intervals_and_both_tails_of_le
       (quarticSubQuadratic_ne_zero a b c d u v μ)
@@ -558,7 +558,7 @@ lemma quarticSubQuadraticSplits_of_lower_left_repeated
     rw [eval_quarticSubQuadratic_at_a]
     have hG_pos : 0 < (a - u) * (a - v) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hau_lt) (sub_neg.mpr hav_lt)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_u_pos :
       0 < (quarticSubQuadraticPolynomial a a c d u v μ).eval u := by
     rw [eval_quarticSubQuadratic_at_u]
@@ -574,7 +574,7 @@ lemma quarticSubQuadraticSplits_of_lower_left_repeated
     rw [eval_quarticSubQuadratic_at_d]
     have hG_pos : 0 < (d - u) * (d - v) :=
       mul_pos (sub_pos.mpr hud_lt) (sub_pos.mpr hvd_lt)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   by_cases hvc : v < c
   · have hP_v_pos :
         0 < (quarticSubQuadraticPolynomial a a c d u v μ).eval v := by
@@ -591,7 +591,7 @@ lemma quarticSubQuadraticSplits_of_lower_left_repeated
       rw [eval_quarticSubQuadratic_at_c]
       have hG_pos : 0 < (c - u) * (c - v) :=
         mul_pos (sub_pos.mpr huc_lt) (sub_pos.mpr hvc)
-      nlinarith [mul_pos hμ hG_pos]
+      linarith [mul_pos hμ hG_pos]
     exact splits_of_two_sign_change_intervals_and_both_tails_of_le
       (quarticSubQuadratic_ne_zero a a c d u v μ)
       (by rw [natDegree_quarticSubQuadratic])
@@ -609,7 +609,7 @@ lemma quarticSubQuadraticSplits_of_lower_left_repeated
       rw [eval_quarticSubQuadratic_at_c]
       have hG_neg : (c - u) * (c - v) < 0 :=
         mul_neg_of_pos_of_neg (sub_pos.mpr huc_lt) (sub_neg.mpr hcv)
-      nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+      linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
     have hP_v_neg :
         (quarticSubQuadraticPolynomial a a c d u v μ).eval v < 0 := by
       rw [eval_quarticSubQuadratic_at_v]
@@ -677,7 +677,7 @@ lemma quarticSubQuadraticSplits_of_middle_left_repeated
     rw [eval_quarticSubQuadratic_at_a]
     have hG_pos : 0 < (a - u) * (a - v) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hau_lt) (sub_neg.mpr hav_lt)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_u_neg :
       (quarticSubQuadraticPolynomial a b b d u v μ).eval u < 0 := by
     rw [eval_quarticSubQuadratic_at_u]
@@ -687,13 +687,13 @@ lemma quarticSubQuadraticSplits_of_middle_left_repeated
     have hsq_pos : 0 < (u - b) * (u - b) := mul_pos_of_neg_of_neg hub_neg hub_neg
     have htail_neg : (u - a) * ((u - b) * (u - b)) * (u - d) < 0 :=
       mul_neg_of_pos_of_neg (mul_pos hua_pos hsq_pos) hud_neg
-    nlinarith [htail_neg]
+    linarith [htail_neg]
   have hP_b_pos :
       0 < (quarticSubQuadraticPolynomial a b b d u v μ).eval b := by
     rw [eval_quarticSubQuadratic_at_b]
     have hG_neg : (b - u) * (b - v) < 0 :=
       mul_neg_of_pos_of_neg (sub_pos.mpr hub_lt) (sub_neg.mpr hbv_lt)
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_v_neg :
       (quarticSubQuadraticPolynomial a b b d u v μ).eval v < 0 := by
     rw [eval_quarticSubQuadratic_at_v]
@@ -703,13 +703,13 @@ lemma quarticSubQuadraticSplits_of_middle_left_repeated
     have hsq_pos : 0 < (v - b) * (v - b) := mul_pos hvb_pos hvb_pos
     have htail_neg : (v - a) * ((v - b) * (v - b)) * (v - d) < 0 :=
       mul_neg_of_pos_of_neg (mul_pos hva_pos hsq_pos) hvd_neg
-    nlinarith [htail_neg]
+    linarith [htail_neg]
   have hP_d_neg :
       (quarticSubQuadraticPolynomial a b b d u v μ).eval d < 0 := by
     rw [eval_quarticSubQuadratic_at_d]
     have hG_pos : 0 < (d - u) * (d - v) :=
       mul_pos (sub_pos.mpr hud_lt) (sub_pos.mpr hvd_lt)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   exact splits_of_two_sign_change_intervals_and_both_tails_of_le
     (quarticSubQuadratic_ne_zero a b b d u v μ)
     (by rw [natDegree_quarticSubQuadratic])
@@ -774,13 +774,13 @@ lemma quarticSubQuadraticSplits_of_upper_left_repeated
     rw [eval_quarticSubQuadratic_at_a]
     have hG_pos : 0 < (a - u) * (a - v) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hau_lt) (sub_neg.mpr hav_lt)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_d_neg :
       (quarticSubQuadraticPolynomial a b d d u v μ).eval d < 0 := by
     rw [eval_quarticSubQuadratic_at_d]
     have hG_pos : 0 < (d - u) * (d - v) :=
       mul_pos (sub_pos.mpr hud_lt) (sub_pos.mpr hvd_lt)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   by_cases hub_lt : u < b
   · have hP_u_neg :
         (quarticSubQuadraticPolynomial a b d d u v μ).eval u < 0 := by
@@ -792,13 +792,13 @@ lemma quarticSubQuadraticSplits_of_upper_left_repeated
         mul_pos_of_neg_of_neg hud_neg hud_neg
       have hhead_neg : (u - a) * (u - b) < 0 :=
         mul_neg_of_pos_of_neg hua_pos hub_neg
-      nlinarith [mul_neg_of_neg_of_pos hhead_neg hsq_pos]
+      linarith [mul_neg_of_neg_of_pos hhead_neg hsq_pos]
     have hP_b_pos :
         0 < (quarticSubQuadraticPolynomial a b d d u v μ).eval b := by
       rw [eval_quarticSubQuadratic_at_b]
       have hG_neg : (b - u) * (b - v) < 0 :=
         mul_neg_of_pos_of_neg (sub_pos.mpr hub_lt) (sub_neg.mpr hbv_lt)
-      nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+      linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
     have hP_v_pos :
         0 < (quarticSubQuadraticPolynomial a b d d u v μ).eval v := by
       rw [eval_quarticSubQuadratic_at_v]
@@ -808,7 +808,7 @@ lemma quarticSubQuadraticSplits_of_upper_left_repeated
       have hsq_pos : 0 < (v - d) * (v - d) :=
         mul_pos_of_neg_of_neg hvd_neg hvd_neg
       have hhead_pos : 0 < (v - a) * (v - b) := mul_pos hva_pos hvb_pos
-      nlinarith [mul_pos hhead_pos hsq_pos]
+      linarith [mul_pos hhead_pos hsq_pos]
     exact splits_of_two_sign_change_intervals_and_both_tails_of_le
       (quarticSubQuadratic_ne_zero a b d d u v μ)
       (by rw [natDegree_quarticSubQuadratic])
@@ -826,7 +826,7 @@ lemma quarticSubQuadraticSplits_of_upper_left_repeated
       rw [eval_quarticSubQuadratic_at_b]
       have hG_pos : 0 < (b - u) * (b - v) :=
         mul_pos_of_neg_of_neg (sub_neg.mpr hbu_lt) (sub_neg.mpr hbv_lt)
-      nlinarith [mul_pos hμ hG_pos]
+      linarith [mul_pos hμ hG_pos]
     have hP_u_pos :
         0 < (quarticSubQuadraticPolynomial a b d d u v μ).eval u := by
       rw [eval_quarticSubQuadratic_at_u]
@@ -836,7 +836,7 @@ lemma quarticSubQuadraticSplits_of_upper_left_repeated
       have hsq_pos : 0 < (u - d) * (u - d) :=
         mul_pos_of_neg_of_neg hud_neg hud_neg
       have hhead_pos : 0 < (u - a) * (u - b) := mul_pos hua_pos hub_pos
-      nlinarith [mul_pos hhead_pos hsq_pos]
+      linarith [mul_pos hhead_pos hsq_pos]
     have hP_v_pos :
         0 < (quarticSubQuadraticPolynomial a b d d u v μ).eval v := by
       rw [eval_quarticSubQuadratic_at_v]
@@ -846,7 +846,7 @@ lemma quarticSubQuadraticSplits_of_upper_left_repeated
       have hsq_pos : 0 < (v - d) * (v - d) :=
         mul_pos_of_neg_of_neg hvd_neg hvd_neg
       have hhead_pos : 0 < (v - a) * (v - b) := mul_pos hva_pos hvb_pos
-      nlinarith [mul_pos hhead_pos hsq_pos]
+      linarith [mul_pos hhead_pos hsq_pos]
     exact splits_of_two_sign_change_intervals_and_both_tails_of_le
       (quarticSubQuadratic_ne_zero a b d d u v μ)
       (by rw [natDegree_quarticSubQuadratic])
@@ -887,7 +887,7 @@ lemma quarticSubQuadraticSplits_of_double_left_pair
     rw [eval_quarticSubQuadratic_at_a]
     have hG_pos : 0 < (a - u) * (a - v) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hau_lt) (sub_neg.mpr hav_lt)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_u_pos :
       0 < (quarticSubQuadraticPolynomial a a c c u v μ).eval u := by
     rw [eval_quarticSubQuadratic_at_u]
@@ -896,7 +896,7 @@ lemma quarticSubQuadraticSplits_of_double_left_pair
     have hsq_left : 0 < (u - a) * (u - a) := mul_pos hua_pos hua_pos
     have hsq_right : 0 < (u - c) * (u - c) :=
       mul_pos_of_neg_of_neg huc_neg huc_neg
-    nlinarith [mul_pos hsq_left hsq_right]
+    linarith [mul_pos hsq_left hsq_right]
   have hP_v_pos :
       0 < (quarticSubQuadraticPolynomial a a c c u v μ).eval v := by
     rw [eval_quarticSubQuadratic_at_v]
@@ -905,13 +905,13 @@ lemma quarticSubQuadraticSplits_of_double_left_pair
     have hsq_left : 0 < (v - a) * (v - a) := mul_pos hva_pos hva_pos
     have hsq_right : 0 < (v - c) * (v - c) :=
       mul_pos_of_neg_of_neg hvc_neg hvc_neg
-    nlinarith [mul_pos hsq_left hsq_right]
+    linarith [mul_pos hsq_left hsq_right]
   have hP_c_neg :
       (quarticSubQuadraticPolynomial a a c c u v μ).eval c < 0 := by
     rw [eval_quarticSubQuadratic_at_c]
     have hG_pos : 0 < (c - u) * (c - v) :=
       mul_pos (sub_pos.mpr huc_lt) (sub_pos.mpr hvc_lt)
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   exact splits_of_two_sign_change_intervals_and_both_tails_of_le
     (quarticSubQuadratic_ne_zero a a c c u v μ)
     (by rw [natDegree_quarticSubQuadratic])

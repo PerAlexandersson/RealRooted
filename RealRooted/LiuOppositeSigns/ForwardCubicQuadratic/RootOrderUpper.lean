@@ -54,7 +54,7 @@ lemma not_right_roots_above_of_compatible_natDegree_three_two
     (hgroots : g.roots = {u, v}) :
     ¬ c < u := by
   intro hcu
-  have hcmean : c < (u + v) / 2 := by nlinarith
+  have hcmean : c < (u + v) / 2 := by linarith
   exact
     not_average_above_of_compatible_natDegree_three_two
       hf hg hsgn hcompat hab hbc hfroots hgroots hcmean

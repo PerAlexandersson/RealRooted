@@ -244,7 +244,7 @@ theorem splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two {p : ℝ[X]}
     have hdisc := disc_nonneg_of_isPolyaFreqSeq_natDegree_le_two hpf hdeg
     obtain ⟨x, hx⟩ :=
       exists_root_of_disc_nonneg (a := p.coeff 2) (b := p.coeff 1) (c := p.coeff 0)
-        hc2 (by nlinarith [hdisc])
+        hc2 (by linarith [hdisc])
     have hev : p.eval x = 0 := by
       rw [Polynomial.eval_eq_sum_range, h2]
       simp only [Finset.sum_range_succ, Finset.sum_range_zero]

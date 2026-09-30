@@ -76,7 +76,7 @@ theorem twoSeedRecurrenceCoefficient_hasNonnegCoeffs
   · rw [hj.neg_one_pow]
     linarith [heven hj]
   · rw [hj.neg_one_pow]
-    nlinarith [mul_nonneg hγ ha]
+    linarith [mul_nonneg hγ ha]
 
 /-- A finite even-lag bound implies coefficientwise nonnegativity at every
 lag at least two; beyond the finite range, the second seed vanishes. -/

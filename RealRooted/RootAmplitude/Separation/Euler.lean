@@ -91,7 +91,7 @@ private theorem inner_sum_le {d : ℝ} (hd : 0 < d) (N l : ℕ) :
     rw [hr]
     exact Real.exp_lt_one_iff.mpr (by
       push_cast
-      nlinarith [hd, Nat.cast_nonneg (α := ℝ) l])
+      linarith [hd, Nat.cast_nonneg (α := ℝ) l])
   have hgeo : ∑ j ∈ range N, r ^ (j + 1) ≤ r / (1 - r) :=
     geom_partial_le hr0.le hr1 N
   have hrT : r / (1 - r) ≤ 1 / (((l : ℝ) + 1) * d) := by

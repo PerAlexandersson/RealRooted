@@ -47,7 +47,7 @@ theorem one_sub_exp_neg_le {b : ℝ} (hb : 0 ≤ b) :
         simp
       nlinarith [hE, hpade, hEE, Real.exp_pos b]
   rw [le_div_iff₀ h2b]
-  nlinarith [key]
+  linarith [key]
 
 /-! ### The criterion -/
 
@@ -59,7 +59,7 @@ theorem le_of_inv_le {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
   have hrw : 1 / b + 1 / 2 = (2 + b) / (2 * b) := by field_simp
   rw [hrw, div_le_div_iff₀ ha (by positivity)] at h
   rw [div_le_iff₀ h2b]
-  nlinarith [h, ha, hb]
+  linarith [h, ha, hb]
 
 /-- A logarithmic-gap criterion forces convexity at the corresponding index. -/
 theorem gap_le_gap_of_criterion (g : ℕ → ℝ) (hpos : ∀ i, 0 < g i) (k : ℕ)

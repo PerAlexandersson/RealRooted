@@ -46,7 +46,7 @@ theorem AllComboMvRealStableOrZero.eval_affineRayleighDiscriminant_nonpos
       MvPolynomial.rayleighDifference_C_mul] at h
     simp only [MvPolynomial.eval_add, MvPolynomial.eval_mul,
       MvPolynomial.eval_C] at h
-    nlinarith
+    linarith
   simpa [MvPolynomial.affineRayleighDiscriminant, discrim] using
     (discrim_le_zero hquad)
 

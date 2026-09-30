@@ -99,9 +99,9 @@ private theorem neg_add_mul_div_mul_eventually_lt {a b c B : ℝ} (ha : 0 < a)
     have hBneg : -|B| ≤ B := neg_abs_le B
     have hprod_nonneg : 0 ≤ μ * b := by positivity
     have hle : -(|B| * (μ * b)) ≤ B * (μ * b) := by
-      nlinarith [mul_le_mul_of_nonneg_right hBneg hprod_nonneg]
-    nlinarith
-  have htarget : - (a + μ * c) < B * (μ * b) := by nlinarith
+      linarith [mul_le_mul_of_nonneg_right hBneg hprod_nonneg]
+    linarith
+  have htarget : - (a + μ * c) < B * (μ * b) := by linarith
   have hden : 0 < μ * b := by positivity
   rwa [div_lt_iff₀ hden]
 

@@ -345,7 +345,7 @@ theorem eval_derivative_basis_of_ne {q : ℕ}
     rw [hb, derivative_C_mul, eval_mul, eval_C]]
   change dj⁻¹ * r.derivative.eval (x i) = di / ((x i - x j) * dj)
   field_simp [hsub, hdj]
-  nlinarith [hdi]
+  linarith [hdi]
 
 /-- At a different node, the second cardinal derivative is determined by the
 first and second derivatives of the nodal polynomial. -/
@@ -401,6 +401,6 @@ theorem eval_derivative_derivative_basis_of_ne {q : ℕ}
     (v.derivative.derivative.eval (x i) - 2 * di / (x i - x j)) /
       ((x i - x j) * dj)
   field_simp [hsub, hdj]
-  nlinarith [hsecond]
+  linarith [hsecond]
 
 end Lagrange

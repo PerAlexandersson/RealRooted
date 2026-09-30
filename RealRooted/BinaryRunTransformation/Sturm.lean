@@ -97,7 +97,7 @@ private theorem binaryRunCoeff_recurrence (n m k : ℕ)
         ((m + 1 : ℕ) : ℝ) / (Nat.choose n m : ℝ) := by
     field_simp [hnchoose, hnchoose_succ]
     norm_num only [Nat.cast_add, Nat.cast_one] at hden ⊢
-    nlinarith [hden]
+    linarith [hden]
   simp only [binaryRunCoeff]
   rw [show m + 1 - 1 = m by lia, show k - 1 - 1 = k - 2 by lia,
     show n + 1 - (m + 1) = n - m by lia]

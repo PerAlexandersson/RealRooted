@@ -318,7 +318,7 @@ theorem hurwitz_schurProduct_det_fin_three_of_row0_below {a b : ℕ → ℝ}
   simp only [Matrix.submatrix_apply, Matrix.of_apply]
   rw [hurwitz_apply_eq_zero_of_lt a h,
     hurwitz_apply_eq_zero_of_lt a (by lia : rows 0 < 2 * cols 2)]
-  nlinarith [mul_nonneg hM00 h2]
+  linarith [mul_nonneg hM00 h2]
 
 /-- Triangular reduction along the right column.  If the middle selected row lies
 below the staircase of the last column, then the two entries above the
@@ -343,7 +343,7 @@ theorem hurwitz_schurProduct_det_fin_three_of_row1_below {a b : ℕ → ℝ}
   simp only [Matrix.submatrix_apply, Matrix.of_apply]
   rw [hurwitz_apply_eq_zero_of_lt a h,
     hurwitz_apply_eq_zero_of_lt a (by lia : rows 0 < 2 * cols 2)]
-  nlinarith [mul_nonneg hM22 h2]
+  linarith [mul_nonneg hM22 h2]
 
 /-- Refined in-band `3 × 3` Hurwitz Schur-product core after the two triangular
 reductions have been removed.  The remaining case has
@@ -972,7 +972,7 @@ theorem hadamard_det_fin_three_cornerZero_nonneg
         a00 * b00 * (a12 * b12) * (a21 * b21) -
           a01 * b01 * (a10 * b10) * (a22 * b22) +
             a01 * b01 * (a12 * b12) * (a20 * b20) := by
-  nlinarith [mul_nonneg detA (by positivity : (0 : ℝ) ≤ b00 * b11 * b22),
+  linarith [mul_nonneg detA (by positivity : (0 : ℝ) ≤ b00 * b11 * b22),
     mul_nonneg (mul_nonneg ha01 mA_r12c02) (mul_nonneg mB01 hb22),
     mul_nonneg (mul_nonneg ha12 mA02) (mul_nonneg hb00 mB_r12c12),
     mul_nonneg (mul_nonneg (mul_nonneg ha01 ha12) ha20) detB]
@@ -1369,11 +1369,11 @@ private theorem hurwitzMatrixCriterionCounterexampleRoot_cube :
   · simp [hurwitzMatrixCriterionCounterexampleRoot, pow_succ,
       Complex.mul_re, Complex.mul_im]
     ring_nf
-    nlinarith
+    linarith
   · simp [hurwitzMatrixCriterionCounterexampleRoot, pow_succ,
       Complex.mul_re, Complex.mul_im]
     ring_nf
-    nlinarith
+    linarith
 
 theorem not_isHurwitzStable_hurwitzMatrixCriterionCounterexample :
     ¬ IsHurwitzStable hurwitzMatrixCriterionCounterexample := by
@@ -1670,7 +1670,7 @@ theorem det_hadamard_fin_two_nonneg
     simpa [Matrix.det_fin_two] using h
   rw [Matrix.det_fin_two]
   simp only [Matrix.of_apply]
-  nlinarith [mul_nonneg hM01 hM10, mul_nonneg hN01 hN10,
+  linarith [mul_nonneg hM01 hM10, mul_nonneg hN01 hN10,
     mul_nonneg (mul_nonneg hM01 hM10) hdN, mul_nonneg hdM (mul_nonneg hN01 hN10),
     mul_nonneg hdM hdN]
 

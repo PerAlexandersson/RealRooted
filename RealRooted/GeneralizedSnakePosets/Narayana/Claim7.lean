@@ -46,7 +46,7 @@ theorem auxiliaryG_roots_sum_of_narayanaRecurrence
   have hvieta := hsplit.nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
   rw [hnext, hlead] at hvieta
   apply mul_left_cancel₀ (show (n : ℝ) ≠ 0 by positivity)
-  nlinarith
+  linarith
 
 /-- Braun--Jal Claim `(7)` for the concrete modified Narayana family.
 

@@ -69,7 +69,7 @@ theorem strictInterl_of_allComboRealRooted_of_wronskian_nonneg
       have := congrArg (fun p : ℝ[X] ↦ p.coeff (2 * f.natDegree)) hzero
       rw [hWcoeff] at this
       simp only [coeff_zero] at this
-      nlinarith [mul_pos hg hf]
+      linarith [mul_pos hg hf]
     have hWdeg : (wronskian g f).natDegree ≤ 2 * f.natDegree := by
       have hlt := natDegree_wronskian_lt_add hW0
       rw [← hfsucc] at hlt
@@ -77,7 +77,7 @@ theorem strictInterl_of_allComboRealRooted_of_wronskian_nonneg
     have hcoeff : 0 ≤ (wronskian g f).coeff (2 * f.natDegree) :=
       Polynomial.coeff_nonneg_of_forall_eval_nonneg_of_natDegree_le hW hWdeg
     rw [hWcoeff] at hcoeff
-    nlinarith [mul_pos hg hf]
+    linarith [mul_pos hg hf]
   · apply StrictInterl.forward_of_orientation_of_succDegree hgsucc.symm
     exact strictInterl_of_allComboRealRooted hgrr.1 hgrr.2 hfrr.1 hfrr.2
       (allComboRealRooted_comm hall) (Or.inl hgsucc)

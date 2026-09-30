@@ -282,7 +282,7 @@ theorem jensenPencilBidiagonalPreserver_two_of_beta_two_eq_zero
               (p.coeff 1 ^ 2 - 4 * p.coeff 0 * p.coeff 2) := add_nonneg
         (mul_nonneg (sq_nonneg _) hpencil_discrim')
         (mul_nonneg hfour_alpha02 hinput_discrim)
-      nlinarith [hidentity]
+      linarith [hidentity]
   rw [Polynomial.eq_quadratic_of_degree_le_two
     (Polynomial.degree_le_of_natDegree_le hout_deg)]
   exact quadraticPoly_splits_of_discrim_nonneg_or_linear hout_discrim

@@ -434,7 +434,7 @@ theorem splits_of_monic_of_coeff_approx {f : ℝ[X]} (hf : f.Monic)
       dsimp [ε]
       have hpow : 0 < q ^ f.natDegree := pow_pos hq _
       field_simp
-      nlinarith
+      linarith
     have hbound :
         (((f.natDegree + 1 : ℕ) : ℝ) * ε) ^ ((f.natDegree : ℝ)⁻¹) *
             max ‖z‖ 1 < |z.im| := by

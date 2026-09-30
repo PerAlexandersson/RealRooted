@@ -57,7 +57,7 @@ lemma quadratic_derivative_linear_top_and_above
         rw [habove (n + 1) (by lia)]
         have hn : 0 ≤ (n : K) := by simp
         have hfactor : 0 < s + t * (n : K) - b * (n : K) := by
-          nlinarith [mul_nonneg (sub_nonneg.mpr hbt) hn]
+          linarith [mul_nonneg (sub_nonneg.mpr hbt) hn]
         simp_all
       · intro m hm
         obtain ⟨k, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, by lia⟩
@@ -111,7 +111,7 @@ lemma quadratic_derivative_linear_offset_top_and_above
         have hfactor : 0 < s + t * (n : K) - b * ((n + d : ℕ) : K) := by
           have hdcast : ((n + d : ℕ) : K) = (n : K) + (d : K) := by norm_num
           rw [hdcast]
-          nlinarith [mul_nonneg (sub_nonneg.mpr hbt) hn]
+          linarith [mul_nonneg (sub_nonneg.mpr hbt) hn]
         simp_all
       · intro m hm
         obtain ⟨k, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, by lia⟩
@@ -182,7 +182,7 @@ lemma quadratic_derivative_bilinear_top_and_above
         rw [habove (n + 1) (by lia)]
         have hn : 0 ≤ (n : K) := by simp
         have hfactor : 0 < s + t * (n : K) - b * (n : K) := by
-          nlinarith [mul_nonneg (sub_nonneg.mpr hbt) hn]
+          linarith [mul_nonneg (sub_nonneg.mpr hbt) hn]
         simp_all
       · intro m hm
         obtain ⟨k, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, by lia⟩

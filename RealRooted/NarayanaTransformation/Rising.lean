@@ -57,7 +57,7 @@ theorem generalizedRisingFactorialPreservesPF_of_natDegree_eq_two {μ : ℝ}
     (quadraticPoly_splits_iff_le ha).mp hquad_splits
   have hmu_a : 0 ≤ μ * p.coeff 2 := mul_nonneg hμ ha.le
   have hsquare : p.coeff 1 ^ 2 ≤ (p.coeff 1 + μ * p.coeff 2) ^ 2 := by
-    nlinarith [sq_nonneg (μ * p.coeff 2), mul_nonneg hb hmu_a]
+    linarith [sq_nonneg (μ * p.coeff 2), mul_nonneg hb hmu_a]
   have hdisc' : 4 * p.coeff 2 * p.coeff 0 ≤ (p.coeff 1 + μ * p.coeff 2) ^ 2 :=
     hdisc.trans hsquare
   exact IsPFPolynomial.of_realRooted_nonneg

@@ -276,7 +276,7 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
       push_cast at h_neg
       rw [Nat.cast_sub (by linarith)] at h_neg
       push_cast at h_neg h_discriminant
-      nlinarith [(by norm_cast : (j : ℝ) + 1 < g.natDegree)]
+      linarith [(by norm_cast : (j : ℝ) + 1 < g.natDegree)]
     · linarith
     · linarith
 

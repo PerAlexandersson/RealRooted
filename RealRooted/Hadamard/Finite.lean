@@ -164,7 +164,7 @@ private theorem schurSzegoComp_disc_arith
     ring
   rw [hkey, div_pow, div_le_div_iff₀ (mul_pos hNpos hN1) (pow_pos hNpos 2)]
   rcases le_total (d * g) 0 with hdg | hdg
-  · nlinarith [mul_nonpos_of_nonneg_of_nonpos (mul_nonneg hac (sq_nonneg N)) hdg,
+  · linarith [mul_nonpos_of_nonneg_of_nonpos (mul_nonneg hac (sq_nonneg N)) hdg,
       mul_nonneg (sq_nonneg (b * e)) (mul_pos hNpos hN1).le]
   · have h4dg : (0 : ℝ) ≤ 4 * (d * g) := by linarith
     have hmul : 4 * (a * c) * (4 * (d * g)) ≤ b ^ 2 * e ^ 2 :=
@@ -237,7 +237,7 @@ theorem finiteSchurSzegoComposition_of_factors_natDegree_le_two
       4 * (schurSzegoComp n f p).coeff 2 * (schurSzegoComp n f p).coeff 0 := by
     have := four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp
       hn hf hfdeg hpdeg hsplit
-    nlinarith [this]
+    linarith [this]
   obtain ⟨x, hx⟩ := exists_root_of_disc_nonneg
     (a := (schurSzegoComp n f p).coeff 2)
     (b := (schurSzegoComp n f p).coeff 1)

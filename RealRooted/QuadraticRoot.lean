@@ -73,7 +73,7 @@ lemma roots_quadratic_posLead {a b c : ℝ} (ha : 0 < a)
   · field_simp
     ring
   · field_simp
-    nlinarith [hs₂]
+    linarith [hs₂]
 
 /-- A real polynomial written in quadratic form splits when its discriminant
 is nonnegative; if the quadratic coefficient is zero, this is the linear case.
@@ -95,7 +95,7 @@ lemma quadraticPoly_not_splits_of_discrim_neg {a b c : ℝ} (ha : a ≠ 0)
   set p : ℝ[X] := C a * X ^ 2 + C b * X + C c with hp
   have hdeg : p.natDegree = 2 := natDegree_quadratic ha
   have hne : ∀ s : ℝ, discrim a b c ≠ s ^ 2 := fun s h => by
-    nlinarith [sq_nonneg s]
+    linarith [sq_nonneg s]
   have hnoroot : ∀ x : ℝ, ¬ p.IsRoot x := by
     intro x hx
     have hxeval : a * (x * x) + b * x + c = 0 := by
@@ -256,7 +256,7 @@ theorem quadratic_disc_coeff_le_of_splits_natDegree_two
     linear_combination hxroot
   have hdisc_sq := discrim_eq_sq_of_quadratic_eq_zero hxquad
   unfold discrim at hdisc_sq
-  nlinarith [sq_nonneg (2 * p.coeff 2 * x + p.coeff 1)]
+  linarith [sq_nonneg (2 * p.coeff 2 * x + p.coeff 1)]
 
 /-- A splitting real polynomial of degree at most two has nonnegative
 quadratic discriminant, expressed in coefficient form. -/
@@ -269,6 +269,6 @@ theorem quadratic_disc_coeff_le_of_splits_natDegree_le_two
     have hc2 : p.coeff 2 = 0 :=
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hle1 (by norm_num))
     rw [hc2]
-    nlinarith [sq_nonneg (p.coeff 1)]
+    linarith [sq_nonneg (p.coeff 1)]
 
 end RealRooted

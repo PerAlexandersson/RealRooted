@@ -121,7 +121,7 @@ private lemma false_of_localExtr_neg_eval_div_eval_pos_of_add_left_family_of_no_
         (-(g.eval x / f.eval x)) * (f.eval x) ^ 2 = -(g.eval x * f.eval x) := by
       grind
     have hnum_pos : 0 < -(g.eval x * f.eval x) := by simpa [hcalc] using mul_pos hpos hsq_pos
-    nlinarith
+    linarith
   have hW_zero : f.derivative.eval x * g.eval x - f.eval x * g.derivative.eval x = 0 :=
     wronskian_eq_zero_of_localExtr_neg_eval_div_eval (f := f) (g := g) hlocal hf_eval_ne
   exact (wronskian_eval_ne_zero_of_add_left_family_of_no_common hfamily hno hopp) hW_zero
@@ -146,7 +146,7 @@ private lemma pos_neg_div_of_mul_neg {a b : ℝ}
     0 < -(a / b) := by
   have hsq_pos : 0 < b ^ 2 := sq_pos_of_ne_zero hb
   have hcalc : (-(a / b)) * b ^ 2 = -(a * b) := by grind
-  have hnum_pos : 0 < -(a * b) := by nlinarith
+  have hnum_pos : 0 < -(a * b) := by linarith
   have hmul_pos : 0 < (-(a / b)) * b ^ 2 := by lia
   nlinarith
 

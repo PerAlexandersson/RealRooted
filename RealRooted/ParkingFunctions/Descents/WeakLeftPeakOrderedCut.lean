@@ -100,7 +100,7 @@ private theorem base_cross {m : ℕ} {i j : Fin m} (hij : i ≤ j) :
   have hproduct :
       0 ≤ ((j.val : ℝ) - i.val) * (m : ℝ) :=
     mul_nonneg (sub_nonneg.mpr hij_real) hm_nonneg
-  nlinarith
+  linarith
 
 /-- The rank-zero weak-left-peak P/Q family satisfies all ten ordered cut
 compatibility clauses, including the directed `XQ_i/Q_j` clause. -/
