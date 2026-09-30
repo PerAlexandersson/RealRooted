@@ -10,7 +10,7 @@ Vieta helper for negated roots and the elementary-symmetric Newton inequality
 from `NewtonAux`.
 
 These are the exact-degree-three analogues of the degree-two discriminant lemma
-`four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_two` in
+`quadratic_disc_coeff_le_of_splits_natDegree_two` in
 `RealRooted.MultiplierSequence`.
 -/
 

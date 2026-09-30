@@ -31,33 +31,6 @@ def polyOfDescRootsDesc (xs : List ℝ) : ℝ[X] :=
   simpa [polyOfDescRootsDesc] using
     CommonInterleaver.rootSeqDesc_polyOfDescRoots_eq hxs
 
-/-- Public lower-bound wrapper for a point lying in a root slot. -/
-theorem rootSlot_lower_bound_of_mem
-    {rs : List ℝ} (hrs : rs ≠ []) {j : ℕ} (hj : j < rs.length) {x : ℝ}
-    (hx : x ∈ rootSlotInterval rs ⟨j, by lia⟩) :
-    rs.get ⟨j, hj⟩ ≤ x :=
-  CommonInterleaver.RootSlots.rootSlot_lower_bound hrs hj hx
-
-/-- Public upper-bound wrapper for a point lying in a root slot. -/
-theorem rootSlot_upper_bound_of_mem
-    {rs : List ℝ} (hrs : rs ≠ []) {j : ℕ} (hj0 : 0 < j) (hj : j ≤ rs.length)
-    {x : ℝ}
-    (hx : x ∈ rootSlotInterval rs ⟨j, by lia⟩) :
-    x ≤ rs.get ⟨j - 1, by lia⟩ :=
-  CommonInterleaver.RootSlots.rootSlot_upper_bound hrs hj0 hj hx
-
-/-- Points in later root slots are weakly below points in earlier root slots.
-This public wrapper exposes the monotonicity fact used in the slot-based
-common-interleaver construction. -/
-theorem le_of_mem_rootSlotInterval_of_lt
-    {rs : List ℝ} (hrs_ne : rs ≠ []) (hrs : rs.Pairwise (· ≥ ·))
-    {i j : ℕ} (hij : i < j) (hj : j < rs.length + 1)
-    {x y : ℝ}
-    (hx : x ∈ rootSlotInterval rs ⟨i, by lia⟩)
-    (hy : y ∈ rootSlotInterval rs ⟨j, hj⟩) :
-    y ≤ x :=
-  CommonInterleaver.RootSlots.le_of_mem_rootSlots_of_lt hrs_ne hrs hij hj hx hy
-
 private lemma get_ofFn_eq_apply
     {α : Type*} {n : ℕ} {x : Fin n → α} {xs : List α}
     (hxs : xs = List.ofFn x) {j : ℕ} (hj : j < xs.length) :
@@ -90,7 +63,7 @@ private lemma pairwise_ge_of_rootSlot_points
   have hxj : x j ∈ rootSlotInterval (rootSeqDesc f) ⟨j.1, hj_slot⟩ := by
     simpa using hslot j.1 j.2
   exact
-    le_of_mem_rootSlotInterval_of_lt
+    CommonInterleaver.RootSlots.le_of_mem_rootSlots_of_lt
       (rs := rootSeqDesc f)
       hroot_ne
       rootSeqDesc_pairwise
@@ -123,7 +96,7 @@ private lemma pairwise_ge_of_shifted_rootSlot_points
   have hxj : x j ∈ rootSlotInterval (rootSeqDesc f) ⟨j.1 + 1, hj_slot⟩ := by
     simpa using hslot j.1 j.2
   exact
-    le_of_mem_rootSlotInterval_of_lt
+    CommonInterleaver.RootSlots.le_of_mem_rootSlots_of_lt
       (rs := rootSeqDesc f)
       hroot_ne
       rootSeqDesc_pairwise
@@ -131,19 +104,6 @@ private lemma pairwise_ge_of_shifted_rootSlot_points
       (by lia)
       (by simpa using hj_slot)
       hxi hxj
-
-/-- In a `StrictInterl` witness, the `j`th descending root of the right polynomial lies
-in the `j`th admissible slot of the left polynomial. -/
-theorem mem_rootSlotInterval_of_strictInterl_desc
-    {f g : ℝ[X]} (hfg : StrictInterl f g) (j : Fin g.natDegree) :
-    (rootSeqDesc g).get ⟨j.1, by
-      rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
-      simp [rootSeqDesc, card_roots_of_splits hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
-      ⟨j.1, by
-        have hdeg := hfg.natDegree_le_succ
-        rcases hfg with ⟨hf, hg, _, _, _, _, _, _, _⟩
-        simpa [hf, hg] using lt_of_lt_of_le j.2 hdeg⟩ :=
-  CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl hfg j
 
 /-- A common right interleaver gives matching shifted-slot intersections for a
 close-degree pair.  For all but the last shifted slot we use the corresponding
@@ -177,9 +137,11 @@ theorem shiftedSlotIntersections_of_commonInterleaver
     let x : ℝ := (rootSeqDesc h).get ⟨j + 1, by
       simpa [rootSeqDesc_length hfh.2.1.2] using hjh⟩
     have hmem_f : x ∈ rootSlotInterval (rootSeqDesc f) jf := by
-      simpa [x, jf, jh] using mem_rootSlotInterval_of_strictInterl_desc hfh jh
+      simpa [x, jf, jh] using
+        CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl hfh jh
     have hmem_g : x ∈ rootSlotInterval (rootSeqDesc g) jg := by
-      simpa [x, jg, jh] using mem_rootSlotInterval_of_strictInterl_desc hgh jh
+      simpa [x, jg, jh] using
+        CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl hgh jh
     exact ⟨x, hmem_f, hmem_g⟩
   · have hjh_le : h.natDegree ≤ j + 1 := Nat.le_of_not_gt hjh
     have hjh_ge : j + 1 ≤ h.natDegree := (Nat.succ_le_iff.mpr hjf_nat).trans hfh_lower
@@ -504,31 +466,6 @@ theorem pairHasCommonInterleaver_of_degreeGap_slotData
   pairHasCommonInterleaver_of_degreeGap_slotIntersections
     hf₀ hg₀ hf hg hdeg (fun j hj => hslot j hj _ _)
 
-/-- List-level packaging of the exact degree-gap slot-intersection common
-interleaver constructor. -/
-theorem hasCommonInterleaver_pair_of_degreeGap_slotIntersections
-    {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0) (hf : f.Splits) (hg : g.Splits)
-    (hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1)
-    (hslot :
-      ∀ j (hj : j < f.natDegree + 1),
-        (rootSlotInterval (rootSeqDesc f) ⟨j, by simpa [hf] using hj⟩ ∩
-          rootSlotInterval (rootSeqDesc g)
-            ⟨j, by
-              have : j < g.natDegree + 1 := by rcases hdeg with hdeg | hdeg <;> lia
-              simpa [hg] using this⟩).Nonempty) :
-    HasCommonInterleaver [f, g] := by
-  obtain ⟨h, hfh, hgh⟩ :=
-    pairHasCommonInterleaver_of_degreeGap_slotIntersections
-      hf₀ hg₀ hf hg hdeg hslot
-  exact ⟨h, by
-    intro p hp
-    simp only [List.mem_cons, List.not_mem_nil] at hp
-    rcases hp with rfl | hp
-    · exact hfh
-    · rcases hp with rfl | hp
-      · exact hgh
-      · cases hp⟩
-
 /-- List-level packaging of the exact degree-gap slot-data common interleaver
 constructor. -/
 theorem hasCommonInterleaver_pair_of_degreeGap_slotData
@@ -681,24 +618,6 @@ theorem hasCommonInterleaver_pair_of_degreeGap_le_slotData
       · exact hgh
       · cases hp⟩
 
-/-- Inequality-form degree-gap slot-intersection wrapper for the common
-interleaver constructor. -/
-theorem pairHasCommonInterleaver_of_degreeGap_le_slotIntersections
-    {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0) (hf : f.Splits) (hg : g.Splits)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hslot :
-      ∀ j (hj : j < f.natDegree + 1),
-        (rootSlotInterval (rootSeqDesc f) ⟨j, by simpa [hf] using hj⟩ ∩
-          rootSlotInterval (rootSeqDesc g)
-            ⟨j, by
-              have : j < g.natDegree + 1 := by lia
-              simpa [hg] using this⟩).Nonempty) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
-  have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by lia
-  exact pairHasCommonInterleaver_of_degreeGap_slotIntersections
-    hf₀ hg₀ hf hg hdeg hslot
-
 /-- Bundled-inequality degree-gap slot-intersection wrapper for the common
 interleaver constructor. -/
 theorem pairHasCommonInterleaver_of_degreeGap_le_slotIntersections_and
@@ -712,59 +631,8 @@ theorem pairHasCommonInterleaver_of_degreeGap_le_slotIntersections_and
               have : j < g.natDegree + 1 := by lia
               simpa [hg] using this⟩).Nonempty) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  pairHasCommonInterleaver_of_degreeGap_le_slotIntersections
+  pairHasCommonInterleaver_of_slotIntersections
     hf₀ hg₀ hf hg hdeg.1 hdeg.2 hslot
-
-/-- List-level packaging of the bundled degree-gap slot-intersection common
-interleaver constructor. -/
-theorem hasCommonInterleaver_pair_of_degreeGap_le_slotIntersections_and
-    {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0) (hf : f.Splits) (hg : g.Splits)
-    (hdeg : f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1)
-    (hslot :
-      ∀ j (hj : j < f.natDegree + 1),
-        (rootSlotInterval (rootSeqDesc f) ⟨j, by simpa [hf] using hj⟩ ∩
-          rootSlotInterval (rootSeqDesc g)
-            ⟨j, by
-              have : j < g.natDegree + 1 := by lia
-              simpa [hg] using this⟩).Nonempty) :
-    HasCommonInterleaver [f, g] := by
-  obtain ⟨h, hfh, hgh⟩ :=
-    pairHasCommonInterleaver_of_degreeGap_le_slotIntersections_and
-      hf₀ hg₀ hf hg hdeg hslot
-  exact ⟨h, by
-    intro p hp
-    simp only [List.mem_cons, List.not_mem_nil] at hp
-    rcases hp with rfl | hp
-    · exact hfh
-    · rcases hp with rfl | hp
-      · exact hgh
-      · cases hp⟩
-
-/-- List-level packaging of the unbundled degree-gap slot-intersection common
-interleaver constructor. -/
-theorem hasCommonInterleaver_pair_of_degreeGap_le_slotIntersections
-    {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0) (hf : f.Splits) (hg : g.Splits)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hslot :
-      ∀ j (hj : j < f.natDegree + 1),
-        (rootSlotInterval (rootSeqDesc f) ⟨j, by simpa [hf] using hj⟩ ∩
-          rootSlotInterval (rootSeqDesc g)
-            ⟨j, by
-              have : j < g.natDegree + 1 := by lia
-              simpa [hg] using this⟩).Nonempty) :
-    HasCommonInterleaver [f, g] := by
-  obtain ⟨h, hfh, hgh⟩ :=
-    pairHasCommonInterleaver_of_degreeGap_le_slotIntersections
-      hf₀ hg₀ hf hg hdeg_lo hdeg_hi hslot
-  exact ⟨h, by
-    intro p hp
-    simp only [List.mem_cons, List.not_mem_nil] at hp
-    rcases hp with rfl | hp
-    · exact hfh
-    · rcases hp with rfl | hp
-      · exact hgh
-      · cases hp⟩
 
 /-- Degree-zero edge case of `pairHasCommonInterleaver_of_slotIntersections`. -/
 theorem pairHasCommonInterleaver_of_natDegree_eq_zero

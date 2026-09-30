@@ -147,7 +147,7 @@ theorem not_compatible_cut_pair :
   intro hcompatible
   have hsum := hcompatible 1 1 zero_le_one zero_le_one
   have hnot : ¬ (C 1 * X ^ 2 + C 4 * X + C 5 : ℝ[X]).Splits :=
-    not_splits_quadratic_of_discrim_neg (by norm_num) (by norm_num [discrim])
+    quadraticPoly_not_splits_of_discrim_neg (by norm_num) (by norm_num [discrim])
   simp only [map_one, one_mul] at hsum
   rw [cut_pair_sum] at hsum
   rcases hsum with hzero | hrr

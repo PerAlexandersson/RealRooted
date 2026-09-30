@@ -138,7 +138,7 @@ theorem strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  strictInterl_mw_lw_derivative_lag_sequence_of_root_window
+  strictInterl_lw_derivative_lag_sequence_of_root_window
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
     hbase hpos hdeg_two
     (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
@@ -211,7 +211,7 @@ theorem isRealRooted_of_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_mw_lw_derivative_lag_sequence_of_root_window
+  isRealRooted_of_lw_derivative_lag_sequence_of_root_window
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
     hbase hpos hdeg_two
     (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)

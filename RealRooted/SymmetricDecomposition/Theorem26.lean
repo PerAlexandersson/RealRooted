@@ -280,7 +280,7 @@ private theorem strictInterl_b_component_of_strictInterl_left_of_natDegree_le
       (Or.inl hdeg_aXb)
   have hstrictInterl_aXb : StrictInterl a (X * b) :=
     StrictInterl.forward_of_orientation_of_succDegree hdeg_aXb.symm hstrictInterl_or
-  exact strictInterl_of_strictInterl_mul_X_of_nonneg hstrictInterl_aXb hb_nonneg ha_nonneg
+  exact strictInterl_of_strictInterl_X_mul_of_nonneg hstrictInterl_aXb hb_nonneg ha_nonneg
 
 private theorem natDegree_X_mul_component_eq_or_succ_of_strictInterl_left_top
     {d : ℕ} {p a b : ℝ[X]}
@@ -390,7 +390,7 @@ private theorem strictInterl_b_component_of_strictInterl_left_top_of_sameDegree
       (f := X * b) (g := a) (c := c) (r := 0)
       (by lia)
       hac_le hXb_root0 hc_lt0
-  exact strictInterl_of_strictInterl_mul_X_of_nonneg hstrictInterl_aXb hb_nonneg ha_nonneg
+  exact strictInterl_of_strictInterl_X_mul_of_nonneg hstrictInterl_aXb hb_nonneg ha_nonneg
 
 private theorem strictInterl_b_component_of_strictInterl_left_top
     {d : ℕ} {p a b : ℝ[X]}
@@ -487,7 +487,7 @@ private theorem strictInterl_b_component_of_strictInterl_right_top
       (f := X * b) (g := a) (c := c) (r := 0)
       (by lia)
       hac_le hXb_root0 hc_lt0
-  exact strictInterl_of_strictInterl_mul_X_of_nonneg hstrictInterl_aXb hb_nonneg ha_nonneg
+  exact strictInterl_of_strictInterl_X_mul_of_nonneg hstrictInterl_aXb hb_nonneg ha_nonneg
 
 theorem brandenSolusTheorem26_first_equiv_of_top_degree
     {d : ℕ} {p a b : ℝ[X]}

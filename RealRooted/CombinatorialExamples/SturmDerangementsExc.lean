@@ -57,14 +57,6 @@ lemma sturmDerangementsExc_succ_eq_X_mul_recurrenceCore (n : Nat) (hn : 2 ≤ n)
   simpa [recurrenceCoreSturmDerangementsExc, affineSturmDerangementsExc,
     add_assoc, add_left_comm, add_comm, ofNat_def] using sturmDerangementsExc_recurrence k
 
-/-- If `f` is real-rooted with nonnegative coefficients, then the derivative term
-`(1 - X) * f'` sits on the "right" of `f` in the oriented `StrictInterl` relation. -/
-lemma strictInterl_one_sub_X_derivative_right
-    {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDegree)
-    (hnn : HasNonnegCoeffs f) :
-    StrictInterl f ((1 - X) * f.derivative) :=
-  strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs hf hdeg hnn
-
 /-- Every derangement excedance polynomial has `X` as a factor. In the original variable,
 this says every `P_n` is divisible by `t`. -/
 lemma X_dvd_sturmDerangementsExc : ∀ n : Nat, X ∣ sturmDerangementsExc n
@@ -608,8 +600,8 @@ lemma warmupP_four : warmupP 4 = X ^ 3 + 7 * X ^ 2 + X := sturmDerangementsExc_f
 
 lemma warmupP_five : warmupP 5 = X ^ 4 + 21 * X ^ 3 + 21 * X ^ 2 + X := sturmDerangementsExc_five
 
-@[deprecated strictInterl_one_sub_X_derivative_right (since := "2026-09-26")]
-alias prec_one_sub_X_derivative_right := strictInterl_one_sub_X_derivative_right
+@[deprecated strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs (since := "2026-09-26")]
+alias prec_one_sub_X_derivative_right := strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs
 
 @[deprecated strictInterl_lowerTerm_sturmDerangementsExc (since := "2026-09-26")]
 alias prec_lowerTerm_sturmDerangementsExc := strictInterl_lowerTerm_sturmDerangementsExc

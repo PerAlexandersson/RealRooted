@@ -108,37 +108,6 @@ theorem discrim_neg_of_quadratic_roots_separated
       rw [hval, sub_neg, lt_div_iff₀ hq]
       simp_all
 
-/-- Reusable quadratic obstruction: a real quadratic
-`C a * X ^ 2 + C b * X + C c` with nonzero leading coefficient and negative
-discriminant does not split over `ℝ`.
-
-This packages the "negative discriminant forbids a real root, hence a
-nonconstant polynomial cannot split" step as a standalone lemma. -/
-theorem not_splits_quadratic_of_discrim_neg {a b c : ℝ} (ha : a ≠ 0)
-    (hdisc : discrim a b c < 0) :
-    ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits := by
-  set p : ℝ[X] := C a * X ^ 2 + C b * X + C c with hp
-  have hdeg : p.natDegree = 2 := natDegree_quadratic ha
-  have hne : ∀ s : ℝ, discrim a b c ≠ s ^ 2 := by
-    intro s h
-    have hs2 : (0 : ℝ) ≤ s ^ 2 := sq_nonneg s
-    grind
-  have hnoroot : ∀ x : ℝ, ¬ p.IsRoot x := by
-    intro x hx
-    have hpx : p.eval x = 0 := by simp_all
-    have hxeval : a * (x * x) + b * x + c = 0 := by
-      rw [hp] at hpx
-      simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow] at hpx
-      grind
-    exact quadratic_ne_zero_of_discrim_ne_sq hne x hxeval
-  intro hsplit
-  have hcard : p.roots.card = p.natDegree :=
-    Polynomial.splits_iff_card_roots.1 hsplit
-  rw [hdeg] at hcard
-  have hpos : 0 < p.roots.card := by simp_all
-  obtain ⟨x, hxmem⟩ := Multiset.card_pos_iff_exists_mem.1 hpos
-  simp_all
-
 /-- Polynomial form of the degree-two same-degree obstruction.
 
 If the roots of two real quadratics are separated, then some strictly positive
@@ -156,7 +125,7 @@ theorem exists_pos_combo_not_splits_of_quadratic_roots_separated
         C (1 + t) * X ^ 2 + C (-((a + b) + t * (c + d))) * X +
           C (a * b + t * (c * d)) := by grind
   rw [hpexp]
-  exact not_splits_quadratic_of_discrim_neg h1t.ne' hdisc
+  exact quadraticPoly_not_splits_of_discrim_neg h1t.ne' hdisc
 
 /-- Separated monic quadratic root pairs cannot satisfy the
 `PosComboRealRooted` hypothesis. -/

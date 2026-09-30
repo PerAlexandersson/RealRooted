@@ -850,29 +850,6 @@ theorem card_roots_filter_all_eq_of_no_isRoot_Ioc_lt
     card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hab h,
     card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc_lt hab h⟩
 
-/-- Lower root-count projection from the bundled strict-interval constancy
-theorem. -/
-theorem card_roots_filter_le_eq_of_all_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ b)).card :=
-  (card_roots_filter_all_eq_of_no_isRoot_Ioc_lt hab h).1
-
-/-- Upper root-count projection from the bundled strict-interval constancy
-theorem. -/
-theorem card_roots_filter_gt_eq_of_all_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (a < ·)).card = (p.roots.filter (b < ·)).card :=
-  (card_roots_filter_all_eq_of_no_isRoot_Ioc_lt hab h).2.1
-
-/-- Window-count projection from the bundled strict-interval constancy theorem. -/
-theorem card_roots_filter_Ioc_eq_zero_of_all_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (fun x => a < x ∧ x ≤ b)).card = 0 :=
-  (card_roots_filter_all_eq_of_no_isRoot_Ioc_lt hab h).2.2
-
 /-- Non-strict bundled lower/upper root-count constancy across a root-free
 window. -/
 theorem card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc
@@ -912,11 +889,11 @@ theorem card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt_trans
       (p.roots.filter (a < ·)).card = (p.roots.filter (c < ·)).card := by
   constructor
   · exact
-      (card_roots_filter_le_eq_of_all_no_isRoot_Ioc_lt hab hab_no).trans
-        (card_roots_filter_le_eq_of_all_no_isRoot_Ioc_lt hbc hbc_no)
+      (card_roots_filter_le_eq_of_no_isRoot_Ioc_lt hab hab_no).trans
+        (card_roots_filter_le_eq_of_no_isRoot_Ioc_lt hbc hbc_no)
   · exact
-      (card_roots_filter_gt_eq_of_all_no_isRoot_Ioc_lt hab hab_no).trans
-        (card_roots_filter_gt_eq_of_all_no_isRoot_Ioc_lt hbc hbc_no)
+      (card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hab hab_no).trans
+        (card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hbc hbc_no)
 
 /-- Transitive bundled strict-interval lower/upper/window root-count constancy
 across two adjacent root-free windows. -/

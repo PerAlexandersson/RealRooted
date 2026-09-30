@@ -47,7 +47,7 @@ theorem strictInterl_boundary_right_pair_of_strictInterl_nonneg
   have hgfX : StrictInterl g (X * f) :=
     strictInterl_to_strictInterl_mul_X_of_nonneg hstrictInterl hfnn hgnn
   have hfX : StrictInterl f (X * f) :=
-    strictInterl_self_mul_X_of_nonneg hstrictInterl.1.1 hstrictInterl.1.2 hfnn
+    strictInterl_self_X_mul_of_nonneg hstrictInterl.1.1 hstrictInterl.1.2 hfnn
   have htfX : StrictInterl (C t * f) (X * f) := StrictInterl.C_mul_left hfX ht.ne'
   have htf_pos : HasPosLeadingCoeff (C t * f) :=
     hasPosLeadingCoeff_C_mul ht (hfnn.pos_leadingCoeff hstrictInterl.1.1)
@@ -67,7 +67,7 @@ theorem pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
     (hfnn : HasNonnegCoeffs f) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hstrictInterl.2.1.1 hstrictInterl.2.1.2
-  exact ⟨X * f, strictInterl_self_mul_X_of_nonneg hf.1 hf.2 hfnn, hstrictInterl⟩
+  exact ⟨X * f, strictInterl_self_X_mul_of_nonneg hf.1 hf.2 hfnn, hstrictInterl⟩
 
 /-- In the succ-degree branch, the boundary right pair is automatic as soon as
 the original no-common orientation statement is known: `StrictInterl g f` is ruled out

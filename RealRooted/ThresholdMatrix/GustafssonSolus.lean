@@ -566,20 +566,6 @@ theorem gustafsson_solus_interlacing_recursion_fin_choices_weak_of_interlacing
     (gsPaperChoices_mono_of_adjacent hphi)
     (gsPaperChoices_local_of_fin hlocal) fs hfs_len hfs
 
-/-- Interlacing projection of the finite-indexed Gustafsson--Solus row-choice
-form. -/
-theorem gustafsson_solus_interlacing_recursion_fin_choices_interlaces
-    {q m : ℕ} (phi : Fin (m + 1) → ℕ) (delete : Fin (m + 1) → Bool)
-    (hphi : ∀ i : Fin m, phi i.castSucc ≤ phi i.succ)
-    (hlocal : ∀ i : Fin m, phi i.castSucc = phi i.succ →
-      delete i.castSucc = true → delete i.succ = true)
-    (fs : List ℝ[X]) (hfs_len : fs.length = q)
-    (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeq0Nonneg
-      (matPolyAction (gsChoiceMatrix q (gsPaperChoices m phi delete)) fs) :=
-  (gustafsson_solus_interlacing_recursion_fin_choices_weak_of_interlacing
-    phi delete hphi hlocal fs hfs_len hfs).1
-
 /-- Real-rootedness projection of the finite-indexed Gustafsson--Solus
 row-choice form. -/
 theorem gustafsson_solus_interlacing_recursion_fin_choices_realRooted
@@ -635,7 +621,7 @@ theorem gustafsson_solus_interlacing_recursion_fin_polynomials_interlaces
     IsInterlacingSeq0Nonneg (gsPaperPolynomials q m phi delete fs) :=
   by
     simpa using
-      gustafsson_solus_interlacing_recursion_fin_choices_interlaces
+      GustafssonSolus.gustafsson_solus_interlacing_recursion_fin_choices
         phi delete hphi hlocal fs hfs_len hfs
 
 /-- Gustafsson--Solus Lemma 3.4 in paper-shaped finite-indexed polynomial-list

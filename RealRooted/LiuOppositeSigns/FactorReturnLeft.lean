@@ -809,18 +809,6 @@ theorem theorem21LeftFactorReturnSuccDegreeTranslatedCompatible_of_right_natDegr
   theorem21LeftFactorReturnSuccDegreeTranslatedCompatible_of_right_natDegree_le_three_of_monic
     xSubCubicCubicSplits hf hg hsgn hleft hdeg hcommon hgdeg
 
-/-- Pointwise translated compatibility descent for the same-degree left
-factor-return route. -/
-theorem theorem21LeftFactorReturnSameDegree_of_pointwiseTranslatedCompatible
-    {f g : ℝ[X]} {r s : ℝ}
-    (hleft : LeftRootCountBranch f g r s)
-    (htranslated :
-      Compatible
-        (X * (deleteRootFactor f r).comp (X + C r))
-        (g.comp (X + C r))) :
-    Compatible f g :=
-  theorem21LeftFactorReturn_of_pointwiseTranslatedCompatible hleft htranslated
-
 /-- The translated same-degree target gives the original same-degree
 factor-return leaf by descending through the translation. -/
 theorem theorem21LeftFactorReturnSameDegree_of_translatedCompatible
@@ -829,18 +817,6 @@ theorem theorem21LeftFactorReturnSameDegree_of_translatedCompatible
     theorem21LeftFactorReturnSameDegreeStatement :=
   theorem21LeftFactorReturn_of_translatedCompatibleRelation
     (R := fun m n => m = n) htranslated
-
-/-- Pointwise translated compatibility descent for the successor-degree left
-factor-return route. -/
-theorem theorem21LeftFactorReturnSuccDegree_of_pointwiseTranslatedCompatible
-    {f g : ℝ[X]} {r s : ℝ}
-    (hleft : LeftRootCountBranch f g r s)
-    (htranslated :
-      Compatible
-        (X * (deleteRootFactor f r).comp (X + C r))
-        (g.comp (X + C r))) :
-    Compatible f g :=
-  theorem21LeftFactorReturn_of_pointwiseTranslatedCompatible hleft htranslated
 
 /-- The translated successor-degree target gives the original successor-degree
 factor-return leaf by descending through the translation. -/
