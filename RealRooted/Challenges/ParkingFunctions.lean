@@ -31,7 +31,8 @@ name = "RealRooted.ParkingFunctions.parkingDescentPolynomial_splits"
 module = "RealRooted.ParkingFunctions.Descents.OrdinaryTransfer"
 
 [[theorems]]
-name = "RealRooted.ParkingFunctions.succ_nsmul_parkingDescentPolynomialInt_eq_literalWordDescentPolynomialInt"
+name = """RealRooted.ParkingFunctions.\
+succ_nsmul_parkingDescentPolynomialInt_eq_literalWordDescentPolynomialInt"""
 module = "RealRooted.ParkingFunctions.Descents.OrdinaryTransfer"
 
 [[theorems]]
