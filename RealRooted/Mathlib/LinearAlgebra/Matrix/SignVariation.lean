@@ -644,9 +644,8 @@ theorem interiorNodal_succAbove
     simpa using hnodal i.succ (by simpa using hi)
   · by_cases hik : (i : ℕ) < (k : ℕ)
     · by_cases hnext : (k : ℕ) = (i : ℕ) + 1
-      · have hkeq : k = i.succ := by
-          apply Fin.ext
-          exact hnext
+      · have hkeq : k = i.succ :=
+          Fin.ext hnext
         subst k
         have hn := hnodal i.succ (by simpa using hk)
         have hne := Fin.succAbove_center_ne_zero_of_omit_right_mul_neg x i
@@ -1680,8 +1679,7 @@ theorem Fin.monotone_prefixSignVariations
     Monotone (Fin.prefixSignVariations c) := by
   intro i j hij
   unfold Fin.prefixSignVariations
-  apply List.signVariations_mono_of_prefix
-  exact List.take_prefix_take_left (Nat.add_le_add_right hij 1)
+  exact List.signVariations_mono_of_prefix (List.take_prefix_take_left (Nat.add_le_add_right hij 1))
 
 /-- Prefix sign variation is bounded by full-vector sign variation. -/
 theorem Fin.prefixSignVariations_le_signVariations
@@ -1709,9 +1707,8 @@ theorem Fin.val_signBlockIndex
 theorem Fin.signBlockIndex_last
     {n : ℕ} (c : Fin (n + 1) → ℝ) :
     Fin.signBlockIndex c (Fin.last n) =
-      Fin.last (Fin.signVariations c) := by
-  apply Fin.ext
-  exact Fin.prefixSignVariations_last c
+      Fin.last (Fin.signVariations c) :=
+  Fin.ext (Fin.prefixSignVariations_last c)
 
 /-- Sign-block indices are monotone in the original index. -/
 theorem Fin.monotone_signBlockIndex

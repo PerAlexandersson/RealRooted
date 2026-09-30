@@ -125,9 +125,8 @@ theorem dividedDifference_mul_X_sub_C :
       intro v hv p r
       rw [dividedDifference_succ 0 v, dividedDifference_succ 0 v]
       simp only [dividedDifference_zero_mul_X_sub_C]
-      have hden : v (Fin.last 1) - v 0 ≠ 0 := by
-        apply sub_ne_zero.mpr
-        exact hv.ne (by simp)
+      have hden : v (Fin.last 1) - v 0 ≠ 0 :=
+        sub_ne_zero.mpr (hv.ne (by simp))
       have hsucc : (Fin.succ 0 : Fin 2) = Fin.last 1 := rfl
       have hcast : (Fin.castSucc 0 : Fin 2) = 0 := rfl
       field_simp
@@ -149,18 +148,16 @@ theorem dividedDifference_mul_X_sub_C :
         congr 1
       have hzero : (Fin.castSucc 0 : Fin (n + 3)) = 0 := rfl
       rw [hlast, hmiddle, hzero]
-      have hden : v (Fin.last (n + 2)) - v 0 ≠ 0 := by
-        apply sub_ne_zero.mpr
-        exact hv.ne (by simp)
+      have hden : v (Fin.last (n + 2)) - v 0 ≠ 0 :=
+        sub_ne_zero.mpr (hv.ne (by simp))
       have htail : v (Fin.last (n + 2)) - v (Fin.succ 0) ≠ 0 := by
         apply sub_ne_zero.mpr
         apply hv.ne
         apply Fin.ne_of_gt
         change 1 < n + 2
         exact Nat.lt_of_lt_of_le (by decide) (Nat.le_add_left 2 n)
-      have hinit : v (Fin.last (n + 1)).castSucc - v 0 ≠ 0 := by
-        apply sub_ne_zero.mpr
-        exact hv.ne (by simp)
+      have hinit : v (Fin.last (n + 1)).castSucc - v 0 ≠ 0 :=
+        sub_ne_zero.mpr (hv.ne (by simp))
       field_simp
       ring
 

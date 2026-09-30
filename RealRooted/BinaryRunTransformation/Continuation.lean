@@ -352,10 +352,8 @@ theorem shiftedBinaryRunDeformation_pf_criticalValueMargin_Icc
   let P : ℝ → ℝ[X] := fun u => Q (c u)
   have hc : Continuous c :=
     continuous_subtype_val.comp continuous_projIcc
-  have hPdegree : ∀ u, (P u).natDegree = (n + 1) / 2 := by
-    intro u
-    apply hQdegree (c u)
-    exact (Set.projIcc a b hab u).2
+  have hPdegree : ∀ u, (P u).natDegree = (n + 1) / 2 :=
+    fun u => hQdegree (c u) ((Set.projIcc a b hab u).2)
   have hPcoeff : ∀ k : ℕ, Continuous fun u => (P u).coeff k :=
     fun k => (contDiff_coeff_shiftedBinaryRunDeformation
       hdegree k).continuous.comp hc

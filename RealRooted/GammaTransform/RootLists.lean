@@ -179,8 +179,7 @@ lemma GammaTransformInternal.listInterlaces_reciprocalCenterRoots_same_iff
     rw [interleaveRight_reciprocalCenterRoots_same m hlen,
       isChain_reverse_inv_center_iff m] at hc
     · apply (listAlternates_iff_interleaves_of_length hlen).2
-      apply (List.interleaves_iff_length_isChain_interleaveRight).2
-      exact ⟨Or.inl hlen.symm, hc⟩
+      exact (List.interleaves_iff_length_isChain_interleaveRight).2 ⟨Or.inl hlen.symm, hc⟩
     · intro x hx
       rcases mem_interleaveRight_of_lengths rs ss (Or.inl hlen.symm) hx with hx | hx
       · exact hrs x hx
@@ -219,8 +218,7 @@ lemma GammaTransformInternal.listInterlaces_reciprocalCenterRoots_succ_iff
     rw [interleaveRight_reciprocalCenterRoots_succ m hlen,
       isChain_reverse_inv_center_iff m] at hc
     · apply (listInterlaces_iff_interleaves_of_length hlen).2
-      apply (List.interleaves_iff_length_isChain_interleaveRight).2
-      exact ⟨Or.inr hlen, hc⟩
+      exact (List.interleaves_iff_length_isChain_interleaveRight).2 ⟨Or.inr hlen, hc⟩
     · intro x hx
       rcases mem_interleaveRight_of_lengths ss rs (Or.inr hlen) hx with hx | hx
       · exact hss x hx

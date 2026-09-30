@@ -86,9 +86,8 @@ theorem triangleFamily_intervalRootData
 theorem signedTriangleFamily_intervalRootData
     {N d t : ℕ} {c : ℝ} {J : ℝ[X]}
     (hdata : IntervalRootData (triangleFamily c J d t) (N - d + t)) :
-    IntervalRootData (signedTriangleFamily c J d t) (N - d + t) := by
-  apply hdata.C_mul
-  exact pow_ne_zero d (by norm_num)
+    IntervalRootData (signedTriangleFamily c J d t) (N - d + t) :=
+  hdata.C_mul (pow_ne_zero d (by norm_num))
 
 end ToricContribution
 end ParkingFunctions

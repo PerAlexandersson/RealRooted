@@ -322,9 +322,8 @@ theorem eval_derivative_basis_of_ne {q : ℕ}
   let dj := v.derivative.eval (x j)
   have hsub : x i - x j ≠ 0 := sub_ne_zero.mpr (fun h ↦ hij (hx h))
   have hdj : dj ≠ 0 := eval_derivative_nodal_ne_zero x hx j
-  have hri : r.eval (x i) = 0 := by
-    apply Lagrange.eval_nodal_at_node
-    exact Finset.mem_erase.mpr ⟨hij, mem_univ i⟩
+  have hri : r.eval (x i) = 0 :=
+    Lagrange.eval_nodal_at_node (Finset.mem_erase.mpr ⟨hij, mem_univ i⟩)
   have hv : v = (X - C (x j)) * r :=
     Lagrange.nodal_eq_mul_nodal_erase (mem_univ j)
   have hdi : di = (x i - x j) * r.derivative.eval (x i) := by
@@ -365,9 +364,8 @@ theorem eval_derivative_derivative_basis_of_ne {q : ℕ}
   let dj := v.derivative.eval (x j)
   have hsub : x i - x j ≠ 0 := sub_ne_zero.mpr (fun h ↦ hij (hx h))
   have hdj : dj ≠ 0 := eval_derivative_nodal_ne_zero x hx j
-  have hri : r.eval (x i) = 0 := by
-    apply Lagrange.eval_nodal_at_node
-    exact Finset.mem_erase.mpr ⟨hij, mem_univ i⟩
+  have hri : r.eval (x i) = 0 :=
+    Lagrange.eval_nodal_at_node (Finset.mem_erase.mpr ⟨hij, mem_univ i⟩)
   have hv : v = (X - C (x j)) * r :=
     Lagrange.nodal_eq_mul_nodal_erase (mem_univ j)
   have hdi : di = (x i - x j) * r.derivative.eval (x i) := by

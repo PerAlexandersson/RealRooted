@@ -292,9 +292,8 @@ theorem smirnovSubstitutionSeries_eq_one_add_sum_ending {m : ℕ}
   calc
     (∑' n, smirnovSubstitutionFixed t weight (n + 1)) =
         ∑' n, ∑ i : Fin m,
-          smirnovSubstitutionEndingFixed t weight n i := by
-      apply tsum_congr
-      exact smirnovSubstitutionFixed_succ t weight
+          smirnovSubstitutionEndingFixed t weight n i :=
+      tsum_congr (smirnovSubstitutionFixed_succ t weight)
     _ = ∑ i : Fin m,
           ∑' n, smirnovSubstitutionEndingFixed t weight n i := by
       apply Summable.tsum_finsetSum

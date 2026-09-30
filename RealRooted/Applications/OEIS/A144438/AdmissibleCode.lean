@@ -310,9 +310,8 @@ def admissibleCodeEquivDecoratedNormalized (h : Nat) :
       (c.1.toDecoration c.2).starts_subset⟩
   invFun D :=
     ⟨D.decoration.exceptionalize, D.decoration.exceptionalize_isAdmissible⟩
-  left_inv c := by
-    apply Subtype.ext
-    exact DecoCode.exceptionalize_toDecoration c.1 c.2
+  left_inv c :=
+    Subtype.ext (DecoCode.exceptionalize_toDecoration c.1 c.2)
   right_inv D := by
     apply DecoratedDecoNormalizedCode.ext
     · exact DecoNormalizedCode.Decoration.normalize_exceptionalize D.decoration
