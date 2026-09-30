@@ -72,13 +72,8 @@ theorem IsGWKreinSummand.isPFPolynomial {g q : ℝ[X]}
   · exact hg
   · exact hg.of_X_sub_C_mul_factor hfactor
 
-/-- The monomial chain extends through every PF factor once the quadratic
-closure step is available.
-
-The last hypothesis is the sharp analytic input: the parameter tangent of a
-splitting quadratic pencil follows that pencil in the oriented interlacing
-order.  `strictInterl_quadraticInterlacingRight_of_tangent` then advances the
-two adjacent affine combinations.  All remaining work in this theorem is
+/-- The monomial chain extends through every PF factor.  Quadratic tangent
+closure advances the two adjacent affine combinations; all remaining work is
 algebraic PF factor induction. -/
 theorem preservesPFShiftInterlacingOnDegree_of_monomials
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D : ℕ}
@@ -86,15 +81,7 @@ theorem preservesPFShiftInterlacingOnDegree_of_monomials
     (hTrr : ∀ ⦃p : ℝ[X]⦄, IsPFPolynomial p → p ≠ 0 →
       p.natDegree ≤ D → T p ≠ 0 ∧ (T p).Splits)
     (hmono : ∀ m : ℕ, m + 1 ≤ D →
-      StrictInterl (T (X ^ m)) (T (X ^ (m + 1))))
-    (hquadTangent : ∀ ⦃F G H : ℝ[X]⦄,
-      HasNonnegCoeffs F → HasNonnegCoeffs G → HasNonnegCoeffs H →
-      StrictInterl F G → StrictInterl G H →
-      (∀ b : ℝ, 0 ≤ b →
-        (H + C (2 * b) * G + C (b ^ 2) * F).Splits) →
-      ∀ a : ℝ, 0 ≤ a →
-        StrictInterl (quadraticInterlacingTangent F G a)
-          (quadraticInterlacingPencil F G H a)) :
+      StrictInterl (T (X ^ m)) (T (X ^ (m + 1)))) :
     PreservesPFShiftInterlacingOnDegree T D := by
   let P : ℕ → Prop := fun n =>
     ∀ ⦃p : ℝ[X]⦄ ⦃m : ℕ⦄,
@@ -241,7 +228,8 @@ theorem preservesPFShiftInterlacingOnDegree_of_monomials
                 Polynomial.smul_eq_C_mul]
             rwa [← hmap]
           have ha : 0 ≤ -u := neg_nonneg.mpr hu
-          have hAQ := hquadTangent hFnn hGnn hHnn hFG' hGH' hfamily (-u) ha
+          have hAQ := strictInterl_quadraticInterlacingTangent_pencil
+            hFnn hGnn hHnn hFG' hGH' hfamily ha
           have hAnn : HasNonnegCoeffs
               (quadraticInterlacingTangent F G (-u)) :=
             hGnn.add (nonnegCoeffs_C_mul ha hFnn)

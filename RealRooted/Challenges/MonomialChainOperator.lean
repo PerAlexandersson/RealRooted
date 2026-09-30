@@ -29,10 +29,8 @@ T(1) ≪ T(X) ≪ ⋯ ≪ T(X^D).
 ```
 
 Then `T` preserves oriented interlacing of nonnegative-coefficient
-real-rooted inputs in the same degree box, provided the quadratic tangent
-closure used to propagate the monomial chain through a nonpositive linear
-factor holds. The theorem below keeps that final analytic closure explicit;
-issue #1013 tracks its formal proof.
+real-rooted inputs in the same degree box.  The quadratic tangent theorem
+propagates the monomial chain through each nonpositive linear factor.
 
 The checked operator argument first propagates the monomial chain through all
 PF factors and then uses the Garloff--Wagner Krein expansion to pass from
@@ -46,9 +44,7 @@ the geometry of zeros,” *Journal für die reine und angewandte Mathematik* 658
 (2011), 115–131.
 <!-- /realrooted-catalog-content -->
 
-This module exposes the checked monomial-chain reduction. The quadratic
-tangent hypothesis is intentionally visible until the analytic crossing
-argument in issue #1013 is formalized.
+This module exposes the fully checked monomial-chain upgrade.
 -/
 
 open Polynomial
@@ -58,8 +54,7 @@ namespace Challenges
 namespace MonomialChainOperator
 
 /-- A PF-preserving linear operator whose consecutive monomial images form an
-oriented interlacing chain preserves every oriented PF interlacing pair,
-assuming the quadratic tangent closure needed for the factor induction. -/
+oriented interlacing chain preserves every oriented PF interlacing pair. -/
 theorem preservesInterlacing
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D : ℕ} {f g : ℝ[X]}
     (hfg : StrictInterl f g)
@@ -69,19 +64,11 @@ theorem preservesInterlacing
     (hTrr : ∀ ⦃p : ℝ[X]⦄, IsPFPolynomial p → p ≠ 0 →
       p.natDegree ≤ D → T p ≠ 0 ∧ (T p).Splits)
     (hmono : ∀ m : ℕ, m + 1 ≤ D →
-      StrictInterl (T (X ^ m)) (T (X ^ (m + 1))))
-    (hquadTangent : ∀ ⦃F G H : ℝ[X]⦄,
-      HasNonnegCoeffs F → HasNonnegCoeffs G → HasNonnegCoeffs H →
-      StrictInterl F G → StrictInterl G H →
-      (∀ b : ℝ, 0 ≤ b →
-        (H + C (2 * b) * G + C (b ^ 2) * F).Splits) →
-      ∀ a : ℝ, 0 ≤ a →
-        StrictInterl (quadraticInterlacingTangent F G a)
-          (quadraticInterlacingPencil F G H a)) :
+      StrictInterl (T (X ^ m)) (T (X ^ (m + 1)))) :
     StrictInterl (T f) (T g) :=
   strictInterl_map_of_pfShift hfg hf hg hfdeg hgdeg hTnn hTrr
     (preservesPFShiftInterlacingOnDegree_of_monomials
-      hTnn hTrr hmono hquadTangent)
+      hTnn hTrr hmono)
 
 end MonomialChainOperator
 end Challenges

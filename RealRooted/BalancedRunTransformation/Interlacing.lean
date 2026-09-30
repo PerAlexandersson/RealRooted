@@ -5,8 +5,7 @@ import RealRooted.OperatorInterlacingUpgrade
 # Interlacing preservation for the balanced run transformation
 
 This file specializes the monomial-chain operator upgrade to the balanced run
-kernel.  The only remaining hypothesis is the general quadratic-tangent
-closure isolated by `OperatorInterlacingUpgrade`.
+kernel.
 -/
 
 open Polynomial
@@ -16,21 +15,13 @@ noncomputable section
 namespace RealRooted
 
 /-- The balanced run transform preserves oriented interlacing on its
-increasing-degree range, assuming the general quadratic-tangent closure. -/
+increasing-degree range. -/
 theorem strictInterl_balancedRunTransform
     {n : ℕ} (hn : 2 ≤ n) {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hfdeg : f.natDegree ≤ (n + 1) / 2)
-    (hgdeg : g.natDegree ≤ (n + 1) / 2)
-    (hquadTangent : ∀ ⦃F G H : ℝ[X]⦄,
-      HasNonnegCoeffs F → HasNonnegCoeffs G → HasNonnegCoeffs H →
-      StrictInterl F G → StrictInterl G H →
-      (∀ b : ℝ, 0 ≤ b →
-        (H + C (2 * b) * G + C (b ^ 2) * F).Splits) →
-      ∀ a : ℝ, 0 ≤ a →
-        StrictInterl (quadraticInterlacingTangent F G a)
-          (quadraticInterlacingPencil F G H a)) :
+    (hgdeg : g.natDegree ≤ (n + 1) / 2) :
     StrictInterl (balancedRunTransform n f) (balancedRunTransform n g) := by
   let T := balancedRunTransformLinearMap n
   let D := (n + 1) / 2
@@ -60,7 +51,7 @@ theorem strictInterl_balancedRunTransform
       strictInterl_balancedRunPolynomial_succ_of_two_mul_add_one_le n m hmid
   have hshift : PreservesPFShiftInterlacingOnDegree T D :=
     preservesPFShiftInterlacingOnDegree_of_monomials
-      hTnn hTrr hmono hquadTangent
+      hTnn hTrr hmono
   simpa [T, D] using strictInterl_map_of_pfShift
     hfg hf hg hfdeg hgdeg hTnn hTrr hshift
 
