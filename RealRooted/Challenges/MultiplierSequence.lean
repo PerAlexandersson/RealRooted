@@ -1,4 +1,5 @@
 import RealRooted.MultiplierSequence.InvPochhammer
+import RealRooted.MultiplierSequence.Laguerre
 import RealRooted.MultiplierSequence.PolyaSchur
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
@@ -65,6 +66,14 @@ module = "RealRooted.MultiplierSequence.InvPochhammer"
 [[theorems]]
 name = "RealRooted.isPFMultiplierSequence_inv_factorial"
 module = "RealRooted.MultiplierSequence.InvPochhammer"
+
+[[theorems]]
+name = "RealRooted.isMultiplierSequence_eval_of_roots_nonpos"
+module = "RealRooted.MultiplierSequence.Laguerre"
+
+[[theorems]]
+name = "RealRooted.isPFMultiplierSequence_natCast_add"
+module = "RealRooted.MultiplierSequence.Laguerre"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -94,6 +103,11 @@ The following are formalized:
   type I, where `f` is the generating function; equivalently, one of `±γ_k`
   and `±(-1)^k γ_k` is a PF multiplier sequence.
 - **Log-concavity:** PF multiplier sequences are log-concave.
+- **Laguerre's theorem:** if a polynomial `φ` has only real nonpositive
+  zeros, then `φ(0), φ(1), φ(2), …` is a multiplier sequence. It is a PF
+  multiplier sequence when the leading coefficient is nonnegative. The basic
+  case `k + r`, for real `r ≥ 0`, has Jensen polynomials
+  `(1 + x)^(n-1) ((n + r) x + r)`.
 - **Examples:** for real `α > 0`, the reciprocal rising factorials
   `1 / (α)_k` form a PF multiplier sequence, and so in particular do `1 / k!`.
   After clearing denominators, their Jensen polynomials are generalized
