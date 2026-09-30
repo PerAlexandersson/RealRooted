@@ -7,7 +7,7 @@ This module contains the statement-level factor-return packages, target
 aliases, and left/right symmetry adapters used in the reverse direction of Liu
 Theorem 2.1.
 The proof-heavy degree branches and final theorem assembly remain in
-`RealRooted.LiuOppositeSignsTheorem`.
+`RealRooted.LiuOppositeSigns.Theorem`.
 -/
 
 open Polynomial Filter

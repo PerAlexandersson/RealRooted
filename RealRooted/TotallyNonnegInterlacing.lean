@@ -1,5 +1,5 @@
 import RealRooted.CauchyInterlacing.Polynomial
-import RealRooted.MatrixInterlacingClosure
+import RealRooted.MatrixInterlacing.Closure
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing
 

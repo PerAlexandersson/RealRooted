@@ -19,7 +19,7 @@ module = "RealRooted.Hadamard.Basic"
 
 [[definitions]]
 name = "RealRooted.hadamardProduct"
-module = "RealRooted.HadamardProduct"
+module = "RealRooted.Hadamard.Product"
 
 [[definitions]]
 name = "RealRooted.IsPFPolynomial"

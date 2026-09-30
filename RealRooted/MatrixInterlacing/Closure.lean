@@ -1,4 +1,4 @@
-import RealRooted.InterlacingClosure
+import RealRooted.Interlacing.Closure
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
 
 /-!
@@ -7,7 +7,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
 This file transports weak interlacing through entrywise limits of a pair of
 fixed-size real matrices. Characteristic-polynomial coefficient continuity is
 the only matrix-specific input; polynomial interlacing closure remains in
-`RealRooted.InterlacingClosure`.
+`RealRooted.Interlacing.Closure`.
 -/
 
 open Filter Topology
