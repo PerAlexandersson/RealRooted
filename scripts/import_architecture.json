@@ -234,9 +234,6 @@
     "RealRooted.CommonInterleaver.RootSelectionTree": {
       "max_modules": 100
     },
-    "RealRooted.CommonInterleaver.RootSelectionExamples": {
-      "max_modules": 101
-    },
     "RealRooted.BoundarySpecializationGeneral": {
       "max_modules": 12
     },
@@ -1149,9 +1146,6 @@
     "RealRooted.CommonInterleaver.Sequence": {
       "max_modules": 94
     },
-    "RealRooted.CommonInterleaver.PairBridge.Forward": {
-      "max_modules": 153
-   },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree": {
       "max_modules": 157
    },
@@ -1159,9 +1153,6 @@
       "max_modules": 154
    },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment": {
-      "max_modules": 155
-   },
-    "RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCrossing": {
       "max_modules": 155
    },
     "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot": {

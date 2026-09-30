@@ -1,4 +1,26 @@
-import RealRooted.CommonInterleaver.PairBridge.Forward
+import RealRooted.Compatibility.InterleaverBridge
+import RealRooted.CommonInterleaver.AffineBoundary
+import RealRooted.CommonInterleaver.SuccDegreeEndpoint
+import RealRooted.CommonInterleaver.RootCountCombinatorics
+import RealRooted.CommonInterleaver.RightPencil
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+import RealRooted.CommonInterleaver.IntervalLemmas
+import RealRooted.CommonInterleaver.SameDegreeRootCount
+import RealRooted.CommonInterleaver.Statements
+import RealRooted.PosCombo
+import RealRooted.CommonInterleaverSeq
+import RealRooted.AffineFamily
+import RealRooted.DegreeDropDivXPrec
+import RealRooted.DegreeDropReversal
+import RealRooted.GammaRealRoots
+import RealRooted.PFPolynomial
+import RealRooted.RootOrderBridge
+import RealRooted.RootCountJump
+import RealRooted.RootContinuity
+import RealRooted.SameDegreeCubicRootCount
+import RealRooted.SameDegreeQuadraticRootCount
+import RealRooted.SuccDegreeRootCrossing
+import RealRooted.SuccDegreeLeftEndpoint
 
 /-!
 # Pair bridge succ-degree root-count reductions
@@ -12,33 +34,6 @@ open Polynomial
 noncomputable section
 
 namespace RealRooted
-
-/-- Any no-common orientation core already contains the honest same-degree
-branch in the nonnegative regime: one simply specializes the degree bounds to
-equality. -/
-theorem posComboNoCommonSameDegreeOrientationAlternative_of_noCommonOrientation
-    (hstep : PosComboNoCommonOrientationStatement) :
-    PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement :=
-  fun {_ _} hf_pos hg_pos _ _ hfg hdeg hno =>
-    hstep hfg hf_pos hg_pos (by lia) (by lia) hno
-
-/-- In the succ-degree branch, any no-common orientation core automatically
-forces the forward orientation by degree, so it also packages the honest
-succ-degree orientation statement. -/
-theorem posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation
-    (hstep : PosComboNoCommonOrientationStatement) :
-    PosComboNoCommonSuccDegreeOrientationNonnegStatement :=
-  fun {_ _} hf_pos hg_pos _ _ hfg hsucc hno =>
-    StrictInterl.forward_of_orientation_of_succDegree hsucc <|
-      hstep hfg hf_pos hg_pos (by lia) (by lia) hno
-
-/-- Consequently, any proof of the older no-common orientation core can be fed
-directly into the corrected succ-degree common-interleaver bridge. -/
-theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_noCommonOrientation
-    (hstep : PosComboNoCommonOrientationStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
-    (posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation hstep)
 
 /-- Common-left-interleaver formulation of the succ-degree no-common
 root-count target.  This isolates the Obreschkoff-converse content needed for
@@ -54,15 +49,6 @@ def PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement : Prop :=
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
     f.Splits →
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g
-
-/-- The fixed-orientation succ-degree endpoint supplies the common-left
-interleaver formulation by using `f` as the witness. -/
-theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_orientation
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno _hf_split
-  exact pairHasCommonLeftInterleaver_of_strictInterl <|
-    horient hf_pos hg_pos hfnn hgnn hfg hdeg hno
 
 /-- A common left interleaver gives the lower common-non-root succ-degree
 root-count target.  The degrees force the left interleaver to have the same
@@ -134,22 +120,6 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_rootCount
   exact succDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
 
-/-- The lower- and upper-threshold succ-degree root-count targets are
-equivalent. -/
-theorem posComboNoCommonSuccDegreeRootCountAbove_iff_rootCount :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement ↔
-      PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
-  ⟨posComboNoCommonSuccDegreeRootCount_of_rootCountAbove,
-    posComboNoCommonSuccDegreeRootCountAbove_of_rootCount⟩
-
-/-- The lower-threshold succ-degree root-count target follows from the
-common-non-root upper-threshold variant. -/
-theorem posComboNoCommonSuccDegreeRootCount_of_nonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
-    (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
-
 /-- The lower-threshold succ-degree root-count target follows from the lower
 common-non-root formulation. -/
 theorem posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot
@@ -173,62 +143,6 @@ theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot
     PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
   posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove
     (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
-
-/-- The fixed-orientation succ-degree endpoint implies the upper-threshold
-root-count target. -/
-theorem posComboNoCommonSuccDegreeRootCountAbove_of_orientation
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno _hf_split
-  exact succDegreeRootCountAbove_of_strictInterl
-    (horient hf_pos hg_pos hfnn hgnn hfg hdeg hno) hdeg
-
-/-- The fixed-orientation succ-degree endpoint implies the lower-threshold
-root-count target, via the upper/lower threshold conversion. -/
-theorem posComboNoCommonSuccDegreeRootCount_of_orientation
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
-    (posComboNoCommonSuccDegreeRootCountAbove_of_orientation horient)
-
-/-- Upper-threshold `divX` reduction of the right-zero lead branch.
-
-This is the same reduction as
-`posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount`,
-but with the same-degree comparison supplied in the opposite upper-threshold
-orientation between `g.divX` and `f`. -/
-theorem
-    posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCountAbove
-    (hcount :
-      ∀ ⦃f g : ℝ[X]⦄,
-        HasPosLeadingCoeff f →
-        HasPosLeadingCoeff g →
-        HasNonnegCoeffs f →
-        HasNonnegCoeffs g →
-        PosComboRealRooted f g →
-        g.natDegree = f.natDegree + 1 →
-        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-        f.Splits →
-        f.coeff 0 ≠ 0 →
-        g.coeff 0 = 0 →
-        ∀ x : ℝ,
-          ((g.divX.roots.filter (x < ·)).card : ℤ) ≤
-              (f.roots.filter (x < ·)).card ∧
-          ((f.roots.filter (x < ·)).card : ℤ) ≤
-              (g.divX.roots.filter (x < ·)).card + 1) :
-    PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
-    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x => by
-      have hg_split : g.Splits :=
-        (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
-      have hdiv_split : g.divX.Splits :=
-        (DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero hg0).1 hg_split
-      have hdiv_deg : g.divX.natDegree = f.natDegree := by
-        rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one, hdeg]
-        simp
-      exact (sameDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
-        hf_split hdiv_split hdiv_deg x).mp
-        (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x))
 
 /-- `StrictInterl`/`divX` reduction of the right-zero lead branch.
 
@@ -315,31 +229,6 @@ theorem posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_strictI
       hboth hdivX)
     hres
 
-/-- The upper-threshold succ-degree root-count target follows from the
-residual branch, the both-nonzero lead branch, and the right-zero `divX`
-orientation target. -/
-theorem posComboNoCommonSuccDegreeRootCountAbove_of_residual_bothNonzero_divX_strictInterl
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCountAbove_of_residual_and_lead
-    (posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_strictInterl
-      hboth hdivX)
-    hres
-
-/-- The succ-degree root-crossing target follows from the residual branch, the
-both-nonzero lead branch, and the right-zero `divX` orientation target. -/
-theorem posComboNoCommonSuccDegreeRootCrossing_of_residual_bothNonzero_divX_strictInterl
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCrossing_of_residual_and_lead
-    (posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_strictInterl
-      hboth hdivX)
-    hres
-
 /-- The lower-threshold succ-degree root-count target follows from the
 residual orientation target, the both-nonzero lead branch, and the right-zero
 `divX` orientation target. -/
@@ -350,30 +239,6 @@ theorem
     (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
     PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
   posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_strictInterl
-    hboth hdivX (posComboNoCommonSuccDegreeRootCountResidual_of_strictInterl hresStrictInterl)
-
-/-- The upper-threshold succ-degree root-count target follows from the residual
-orientation target, the both-nonzero lead branch, and the right-zero `divX`
-orientation target. -/
-theorem
-    posComboNoCommonSuccDegreeRootCountAbove_of_residualStrictInterl_bothNonzero_divX_strictInterl
-    (hresStrictInterl : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement)
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCountAbove_of_residual_bothNonzero_divX_strictInterl
-    hboth hdivX (posComboNoCommonSuccDegreeRootCountResidual_of_strictInterl hresStrictInterl)
-
-/-- The succ-degree root-crossing target follows from the residual orientation
-target, the both-nonzero lead branch, and the right-zero `divX` orientation
-target. -/
-theorem
-    posComboNoCommonSuccDegreeRootCrossing_of_residualStrictInterl_bothNonzero_divX_strictInterl
-    (hresStrictInterl : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement)
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
-    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCrossing_of_residual_bothNonzero_divX_strictInterl
     hboth hdivX (posComboNoCommonSuccDegreeRootCountResidual_of_strictInterl hresStrictInterl)
 
 end RealRooted

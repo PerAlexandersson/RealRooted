@@ -1329,23 +1329,17 @@ family-upgrade layer; they are implementation details, not another general
 theorem API. This leaves `CommonInterleaverSeq` as a 937-line public pairwise
 closure façade rather than a mixed 1,791-line implementation.
 
-`CommonInterleaver.PairBridge` is likewise a compatibility façade. Its former
-2,959-line mixed source is layered as `PairBridge.Forward` (208 lines of
-forward/same-degree transport), `PairBridge.SuccDegree.RootCount` (378 lines
-of root-count reductions), `PairBridge.SuccDegree.ClosedSegment` (213 lines
-of closed-segment consequences), `PairBridge.SuccDegree.RootCrossing` (105
-lines of list/root-crossing transport), the 11-line `PairBridge.SuccDegree`
-facade, `PairBridge.SuccDegree.SlotData` (350 lines of slot-data and
-common-interleaver wrappers),
-`PairBridge.Reduction.CommonRoot` (165 lines of quotient nonnegativity and a
-shared-root induction principle), `PairBridge.Reduction.Basic` (184 lines of
-shared degree-split reductions), `PairBridge.Reduction.CommonInterleaver` (283
-lines of common-interleaver recursion), `PairBridge.Reduction.AllCombo` (316
-lines of all-combinations and orientation upgrades), the 10-line
-`PairBridge.Reduction` facade, `PairBridge.Compatibility` (442 lines of
-nonnegative endpoint assembly), and
-`PairBridge.Compatibility.NonnegativeShift` (425 lines of translation-based
-positive-leading wrappers). The latter exports
+`CommonInterleaver.PairBridge` is likewise a compatibility façade over
+`PairBridge.SuccDegree.RootCount` (root-count reductions),
+`PairBridge.SuccDegree.ClosedSegment` (closed-segment consequences),
+`PairBridge.SuccDegree.SlotData` (slot-data and common-interleaver wrappers),
+`PairBridge.Reduction.CommonRoot` (quotient nonnegativity and a shared-root
+induction principle), `PairBridge.Reduction.Basic` (shared degree-split
+reductions), `PairBridge.Reduction.CommonInterleaver` (common-interleaver
+recursion), `PairBridge.Reduction.AllCombo` (all-combinations and orientation
+upgrades), `PairBridge.Compatibility` (nonnegative endpoint assembly), and
+`PairBridge.Compatibility.NonnegativeShift` (translation-based positive-leading
+wrappers). The latter exports
 `pairHasCommonInterleaver_comp_X_add_C_iff`, which centralizes the previously
 duplicated translation-back construction. The public
 `PosComboRealRooted.induction_on_common_roots_nonneg` eliminator centralizes

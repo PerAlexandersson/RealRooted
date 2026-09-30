@@ -38,19 +38,4 @@ theorem isRealRooted_sum_of_pairwiseHasCommonInterleaver
   · simp_all
   · simp_all
 
-/-- Pairwise common left interleavers certify real-rootedness of the sum of
-an arbitrary nonempty finite family. -/
-theorem isRealRooted_sum_of_pairwiseHasCommonLeftInterleaver
-    {fs : List ℝ[X]}
-    (hsplits : ∀ f ∈ fs, f.Splits)
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hpair : PairwiseHasCommonLeftInterleaver fs)
-    (hne : fs ≠ []) :
-    fs.sum ≠ 0 ∧ fs.sum.Splits := by
-  apply isRealRooted_sum_of_commonLeftInterleaver
-  · exact hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
-      hsplits hpos hpair
-  · simp_all
-  · simp_all
-
 end RealRooted

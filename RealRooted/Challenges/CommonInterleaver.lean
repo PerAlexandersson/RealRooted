@@ -1,3 +1,4 @@
+import RealRooted.CommonInterleaver.FamilySum
 import RealRooted.ChudnovskySeymour.Core
 import RealRooted.CommonInterleaver.FamilyUpgrade
 import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
@@ -36,6 +37,10 @@ module = "RealRooted.CommonInterleaver.FamilyUpgrade"
 [[theorems]]
 name = "RealRooted.isRealRooted_sum_of_commonInterleaver"
 module = "RealRooted.CommonInterleaver.FamilyUpgrade"
+
+[[theorems]]
+name = "RealRooted.isRealRooted_sum_of_pairwiseHasCommonInterleaver"
+module = "RealRooted.CommonInterleaver.FamilySum"
 
 [[theorems]]
 name = "RealRooted.familyCompatible_of_commonInterleaver"

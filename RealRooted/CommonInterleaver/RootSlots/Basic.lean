@@ -108,15 +108,6 @@ lemma rootSlotInterval_congr
   subst hxy
   grind
 
-lemma mem_rootSlotInterval_congr
-    {xs ys : List ℝ} {x : ℝ}
-    {jx : Fin (xs.length + 1)}
-    {jy : Fin (ys.length + 1)}
-    (hxy : xs = ys)
-    (hji : jx.1 = jy.1) :
-    x ∈ rootSlotInterval xs jx ↔ x ∈ rootSlotInterval ys jy := by
-  rw [rootSlotInterval_congr hxy hji]
-
 protected lemma
     CommonInterleaver.RootSlots.reverse_get_zero_eq_getLast {xs : List ℝ} (hxs : xs ≠ []) :
     xs.reverse.get ⟨0, by grind⟩ =
@@ -271,36 +262,6 @@ protected lemma CommonInterleaver.RootSlots.rootSlot_upper_bound
     simp_all
   · have hj_lt : j < rs.length := lt_of_le_of_ne hj hlast
     exact (mem_rootSlotInterval_interior_bounds (rs := rs) (j := j) hj0 hj_lt hx).2
-
-private lemma le_of_mem_adjacent_rootSlots
-    {rs : List ℝ} (hrs : rs ≠ []) {j : ℕ} (hj : j + 1 < rs.length + 1)
-    {x y : ℝ}
-    (hx : x ∈ rootSlotInterval rs ⟨j, by lia⟩)
-    (hy : y ∈ rootSlotInterval rs ⟨j + 1, hj⟩) :
-    y ≤ x := by
-  have hj_lt : j < rs.length := by lia
-  have hx_lower : rs.get ⟨j, hj_lt⟩ ≤ x :=
-    CommonInterleaver.RootSlots.rootSlot_lower_bound (rs := rs) hrs hj_lt hx
-  by_cases hlast : j + 1 = rs.length
-  · have hy_last : y ≤ rs.getLast hrs := by
-      have hy' : y ∈ rootSlotInterval rs
-          ⟨rs.length, by simp⟩ := by
-        simpa [hlast] using hy
-      exact mem_rootSlotInterval_last_upper (rs := rs) hrs hy'
-    have hidx : rs.getLast hrs = rs.get ⟨j, hj_lt⟩ := by
-      have hlastIdx : j = rs.length - 1 := by lia
-      calc
-        rs.getLast hrs = rs.get ⟨rs.length - 1, by
-          simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by simp : 0 < 1))⟩ :=
-            getLast_eq_get_lastIndex (rs := rs) hrs
-        _ = rs.get ⟨j, hj_lt⟩ := by simp_all
-    exact le_trans (hidx ▸ hy_last) hx_lower
-  · have hj1_lt : j + 1 < rs.length := by lia
-    have hy_bounds :=
-      mem_rootSlotInterval_interior_bounds (rs := rs) (j := j + 1) (by lia) hj1_lt hy
-    have hy_upper : y ≤ rs.get ⟨j, hj_lt⟩ := by
-      simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hy_bounds.2
-    exact le_trans hy_upper hx_lower
 
 lemma get_le_get_of_pairwise_ge
     {rs : List ℝ} (hrs : rs.Pairwise (· ≥ ·))

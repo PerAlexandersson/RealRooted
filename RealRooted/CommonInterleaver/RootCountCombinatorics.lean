@@ -251,47 +251,6 @@ theorem sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
   have hdegZ : (g.natDegree : ℤ) = f.natDegree := by exact_mod_cast hdeg
   constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
 
-/-- The same-degree upper common-non-root root-count target is equivalent to
-the lower common-non-root root-count target. -/
-theorem posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot :
-    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement ↔
-      PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement := by
-  constructor
-  · intro hcount f g hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg
-    have hf_split : f.Splits :=
-      (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    have hg_split : g.Splits :=
-      (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    exact (sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
-      hf_split hg_split hdeg x).mp
-      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg)
-  · intro hcount f g hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg
-    have hf_split : f.Splits :=
-      (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    have hg_split : g.Splits :=
-      (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    exact (sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
-      hf_split hg_split hdeg x).mpr
-      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg)
-
-/-- The same-degree lower common-non-root target implies the full
-upper-threshold same-degree root-count target. -/
-theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement :=
-  posComboNoCommonSameDegreeRootCountAbove_of_nonRoot
-    (posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mpr
-      hcount)
-
-/-- The same-degree upper common-non-root target implies the full
-lower-threshold same-degree root-count target. -/
-theorem posComboNoCommonSameDegreeRootCount_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement :=
-  posComboNoCommonSameDegreeRootCount_of_nonRoot
-    (posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mp
-      hcount)
-
 /-- Oriented same-cardinality root counts: the lower-threshold comparison
 `f` against `g` is equivalent to the opposite upper-threshold comparison.
 
@@ -754,24 +713,6 @@ theorem succDegreeRootCountAbove_of_strictInterl
   rw [hfcard, hgcard]
   constructor <;> lia
 
-/-- Rolle root-count bound in upper-threshold form.
-
-For a splitting real polynomial of degree at least two, the numbers of roots of
-`p` and `p.derivative` strictly above any threshold differ by at most one. -/
-theorem rootCountAbove_derivative_diff_le_one_of_splits
-    {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
-    ∀ x : ℝ,
-      ((p.derivative.roots.filter (x < ·)).card : ℤ) -
-          (p.roots.filter (x < ·)).card ≤ 1 ∧
-      ((p.roots.filter (x < ·)).card : ℤ) -
-          (p.derivative.roots.filter (x < ·)).card ≤ 1 := by
-  have hstrictInterl : StrictInterl p.derivative p :=
-    (derivative_interlaces hp hdeg).toStrictInterl
-  have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
-    rw [p.natDegree_derivative]
-    lia
-  exact succDegreeRootCountAbove_of_strictInterl hstrictInterl hdeg'
-
 /-- `StrictInterl`-to-root-count bridge in lower-threshold form. -/
 theorem succDegreeRootCount_of_strictInterl
     {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
@@ -781,25 +722,6 @@ theorem succDegreeRootCount_of_strictInterl
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
   succDegreeRootCount_of_rootCountAbove hstrictInterl.1.2 hstrictInterl.2.1.2 hdeg
     (succDegreeRootCountAbove_of_strictInterl hstrictInterl hdeg)
-
-/-- Rolle root-count bound in lower-threshold form.
-
-For a splitting real polynomial of degree at least two, every threshold contains
-at least as many roots of `p` as roots of `p.derivative`, but no more than two
-extra in the succ-degree convention. -/
-theorem rootCount_derivative_diff_le_two_of_splits
-    {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
-    ∀ x : ℝ,
-      ((p.derivative.roots.filter (· ≤ x)).card : ℤ) -
-          (p.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((p.roots.filter (· ≤ x)).card : ℤ) -
-          (p.derivative.roots.filter (· ≤ x)).card ≤ 2 := by
-  have hstrictInterl : StrictInterl p.derivative p :=
-    (derivative_interlaces hp hdeg).toStrictInterl
-  have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
-    rw [p.natDegree_derivative]
-    lia
-  exact succDegreeRootCount_of_strictInterl hstrictInterl hdeg'
 
 /-- Tight oriented lower-threshold `StrictInterl`-to-root-count bridge for the
 differ-by-one case.

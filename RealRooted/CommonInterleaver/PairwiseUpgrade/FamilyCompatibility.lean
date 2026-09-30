@@ -22,16 +22,6 @@ theorem pairwiseHasCommonInterleaver_of_commonInterleaver
     hstrictInterl (fs.get i) (List.get_mem _ _),
     hstrictInterl (fs.get j) (List.get_mem _ _)⟩
 
-/-- A single common left interleaver is in particular a pairwise common left
-interleaver witness. -/
-theorem pairwiseHasCommonLeftInterleaver_of_commonLeftInterleaver
-    {fs : List ℝ[X]}
-    (hcommon : HasCommonLeftInterleaver fs) :
-    PairwiseHasCommonLeftInterleaver fs :=
-  Exists.elim hcommon fun h hstrictInterl i j _ => ⟨h,
-    hstrictInterl (fs.get i) (List.get_mem _ _),
-    hstrictInterl (fs.get j) (List.get_mem _ _)⟩
-
 /-- A common right interleaver yields full family compatibility for all
 nonnegative weighted sums. -/
 theorem familyCompatible_of_commonInterleaver
