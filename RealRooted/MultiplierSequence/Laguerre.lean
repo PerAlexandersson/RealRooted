@@ -1,4 +1,6 @@
 import RealRooted.MultiplierSequence.PolyaSchur
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
+import RealRooted.MultiplierSequence.PolyaSchur.Limit
 
 /-!
 # Laguerre's theorem on multiplier sequences
@@ -20,7 +22,7 @@ case follows by factoring `φ = c ∏ (X - ρ_i)`, with every `ρ_i ≤ 0`, and 
 closure of multiplier sequences under products.
 -/
 
-open Polynomial
+open Polynomial Filter Topology
 
 noncomputable section
 
@@ -104,5 +106,36 @@ theorem isMultiplierSequence_eval_of_roots_nonpos {φ : ℝ[X]} (hφ : φ.Splits
   have h := (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp
     (isPFMultiplierSequence_prod_sub_of_nonpos φ.roots hroots)).1
   simpa [eval_natCast_eq_leadingCoeff_mul_prod hφ] using h.const_mul φ.leadingCoeff
+
+/-- Every PF polynomial `p` gives the PF multiplier sequence `k ↦ p(k)`. -/
+theorem IsPFPolynomial.isPFMultiplierSequence_eval {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPFMultiplierSequence (fun k => p.eval (k : ℝ)) := by
+  rcases hp.2.1 with h0 | hsplit
+  · simpa [h0] using isPFMultiplierSequence_const_sequence (le_refl (0 : ℝ))
+  · exact isPFMultiplierSequence_eval_of_roots_nonpos hsplit hp.2.2
+      (hp.hasNonnegCoeffs p.natDegree)
+
+/-- **Laguerre's theorem for entire functions.**  If `f` lies in the
+Laguerre–Pólya class of type I (a locally uniform limit of PF polynomials),
+then `k ↦ f(k)` is a PF multiplier sequence. -/
+theorem IsLaguerrePolyaTypeI.isPFMultiplierSequence_eval_natCast {f : ℂ → ℂ}
+    (hf : IsLaguerrePolyaTypeI f) :
+    IsPFMultiplierSequence (fun k => (f k).re) := by
+  obtain ⟨p, hp, hlim⟩ := hf
+  refine isPFMultiplierSequence_of_tendsto (gamma := fun n k => (p n).eval (k : ℝ))
+    (fun n => (hp n).isPFMultiplierSequence_eval) (fun k => ?_)
+  have ht : Tendsto (fun n => ((p n).map Complex.ofRealHom).eval (k : ℂ)) atTop
+      (𝓝 (f k)) := by
+    rw [Uniform.tendsto_nhds_right]
+    intro u hu
+    obtain ⟨t, htk, hev⟩ := hlim u hu (k : ℂ)
+    exact hev.mono fun n hn => hn _ (mem_of_mem_nhds htk)
+  have heq : ∀ n, ((p n).map Complex.ofRealHom).eval (k : ℂ) = (((p n).eval (k : ℝ) : ℝ) : ℂ) :=
+    fun n => by
+      rw [show ((k : ℂ)) = Complex.ofRealHom (k : ℝ) by simp, eval_map, eval₂_at_apply]
+      rfl
+  simp_rw [heq] at ht
+  have hre := (Complex.continuous_re.tendsto _).comp ht
+  exact hre
 
 end RealRooted

@@ -74,6 +74,10 @@ module = "RealRooted.MultiplierSequence.Laguerre"
 [[theorems]]
 name = "RealRooted.isPFMultiplierSequence_natCast_add"
 module = "RealRooted.MultiplierSequence.Laguerre"
+
+[[theorems]]
+name = "RealRooted.IsLaguerrePolyaTypeI.isPFMultiplierSequence_eval_natCast"
+module = "RealRooted.MultiplierSequence.Laguerre"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -108,6 +112,9 @@ The following are formalized:
   multiplier sequence when the leading coefficient is nonnegative. The basic
   case `k + r`, for real `r ≥ 0`, has Jensen polynomials
   `(1 + x)^(n-1) ((n + r) x + r)`.
+  More generally, if `f` is a locally uniform limit of PF polynomials (type I
+  in the Laguerre–Pólya class), then `f(0), f(1), f(2), …` is a PF
+  multiplier sequence.
 - **Examples:** for real `α > 0`, the reciprocal rising factorials
   `1 / (α)_k` form a PF multiplier sequence, and so in particular do `1 / k!`.
   After clearing denominators, their Jensen polynomials are generalized
