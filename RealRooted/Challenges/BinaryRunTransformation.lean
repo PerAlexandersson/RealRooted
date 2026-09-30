@@ -1,4 +1,5 @@
 import RealRooted.BinaryRunTransformation.Continuation
+import RealRooted.BinaryRunTransformation.MultiplierMotzkin
 
 /-!
 # Binary-run transformation challenge entry point
@@ -21,6 +22,22 @@ name = "RealRooted.Challenges.BinaryRunTransformation.preservesPF"
 
 [[theorems]]
 name = "RealRooted.Challenges.BinaryRunTransformation.preservesStrictlyNegativeRoots"
+
+[[theorems]]
+name = "RealRooted.strictInterl_binaryRunTransform"
+module = "RealRooted.BinaryRunTransformation.Interlacing"
+
+[[theorems]]
+name = "RealRooted.strictInterl_binaryRunTransform_succ"
+module = "RealRooted.BinaryRunTransformation.CrossLength"
+
+[[theorems]]
+name = "RealRooted.motzkinWeightedRow_strictInterl_succ"
+module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
+
+[[theorems]]
+name = "RealRooted.motzkinWeightedRow_inv_ascPochhammer_strictInterl_succ"
+module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -48,6 +65,25 @@ Equivalently, it is `binaryRunTransform n` after the standard finite
 Narayana/Schur–Szegő diagonal multiplier. Thus this preservation theorem,
 together with preservation by that multiplier, gives the corresponding
 [Narayana transformation theorem](/RealRooted/families/narayana/).
+
+## Interlacing
+
+On inputs of degree at most `(n+1)/2`, the transform also preserves
+interlacing. With `N = n + 1` and `Θ = x d/dx`, it transports interlacing
+across lengths: for a PF polynomial `g` with `g(0) ≠ 0` and
+`2 ≤ deg g ≤ N/2`,
+
+```text
+J_n((N - 2Θ) g)  ≪  J_{n+1}(g).
+```
+
+For a PF multiplier sequence `γ` with positive entries, put
+`G_n^γ(t) = sum_m n! γ_m / (m! (n-2m)!) t^m`, a weighted matching polynomial
+of the complete graph. These satisfy `(N - 2Θ) G_N^γ = N G_n^γ`, so the
+rows `R_n^γ = J_n(G_n^γ)` form a Sturm chain: `R_n^γ ≪ R_{n+1}^γ` for all
+`n`. This holds in particular for `γ_m = 1/(α)_m` with `α > 0`. The case
+`α = 2`, where `γ_m = 1/(m+1)!`, gives the Motzkin-ascent polynomials
+(OEIS A114580).
 
 ## Proof idea
 
