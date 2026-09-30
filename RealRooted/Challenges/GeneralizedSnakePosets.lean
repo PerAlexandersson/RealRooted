@@ -3,6 +3,7 @@ import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
 import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 import RealRooted.GeneralizedSnakePosets.Narayana.Turan
 import RealRooted.GeneralizedSnakePosets.SnakeBoard
+import RealRooted.GeneralizedSnakePosets.SnakeTheorem41
 
 /-!
 # Generalized snake poset challenge entry point
@@ -53,6 +54,20 @@ module = "RealRooted.GeneralizedSnakePosets.Narayana.Recurrence"
 [[theorems]]
 name = "RealRooted.GeneralizedSnakePosets.theorem41NonNestingRook_modified_of_sourceInputs"
 module = "RealRooted.GeneralizedSnakePosets.Narayana.Claim7"
+
+[[theorems]]
+name = "RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.narayanaAuxiliaryGRecurrence_modified"
+module = "RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence"
+
+[[theorems]]
+name = """RealRooted.GeneralizedSnakePosets.\
+generalizedSnakeRookModel_snakePolynomial_of_isConstant"""
+module = "RealRooted.GeneralizedSnakePosets.SnakeConstant"
+
+[[theorems]]
+name = """RealRooted.GeneralizedSnakePosets.\
+theorem41_generalizedSnakeRookModel_of_theorem35"""
+module = "RealRooted.GeneralizedSnakePosets.SnakeTheorem41"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -76,16 +91,22 @@ staircase boards. The following analytic core is fully formalized:
 - **Claim (7) and the matrix induction:** Theorem 4.1 for any family `M`,
   from the combinatorial inputs below.
 
-Those inputs are not yet formalized for the concrete board model, so
-Theorem 4.1 is proved here relative to them:
+For the concrete snake board, all of these inputs except the snake-word
+recurrence (Theorem 3.5) are now proved:
 
-- the auxiliary recurrence `x G_{n-1} = P_n - (1 + x) P_{n-1}`, checked for
-  `n ≤ 8`;
-- nonnegativity of `G_n - G_{n-1}`;
-- the snake-word recurrence (Theorem 3.5);
-- the degree and constant-word identities.
+- the auxiliary recurrence `x G_{n-1} = P_n - (1 + x) P_{n-1}` and the
+  nonnegativity of `G_n - G_{n-1}`, for every `n`, from a column recurrence
+  for truncated-staircase rook polynomials;
+- constant words give `P_{n+1}`: the board is the full staircase, or its
+  half-turn;
+- the degree identity, which follows from Theorem 3.5.
 
-None of these assumes real-rootedness, interlacing, or splitting.
+So Theorem 4.1 for the concrete board is proved relative to Theorem 3.5
+alone. The board is the set of incomparable cross pairs of `P(w)` with the
+column order reversed. With that orientation the non-nesting rook polynomial
+equals the `h^*`-polynomial of the order polytope. This was checked
+independently for every word of length at most 11. Without the reversal the
+two disagree.
 
 ## References
 

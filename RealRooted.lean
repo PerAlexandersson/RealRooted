@@ -1496,3 +1496,6 @@ import RealRooted.Challenges.ParkingFunctions
 import RealRooted.Challenges.ToricContribution
 import RealRooted.MultiplierSequence.InvPochhammer
 import RealRooted.BinaryRunTransformation.MultiplierMotzkin
+import RealRooted.GeneralizedSnakePosets.SnakeConstant
+import RealRooted.GeneralizedSnakePosets.SnakeTheorem41
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
