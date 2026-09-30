@@ -26,25 +26,7 @@ variable {z : ℂ}
 /-- The norm of a real number embedded in the complex numbers is its absolute value. -/
 lemma norm_ofReal (r : ℝ) : ‖(r : ℂ)‖ = |r| := by simp
 
-theorem sq_eq_zero {R : Type*} [MonoidWithZero R] [NoZeroDivisors R] {x : R} : x ^ 2 = 0 ↔ x = 0 := by
-  rw [pow_two, mul_eq_zero]
-  exact or_self_iff
-
-/-- An element of a nonempty set. -/
-lemma Set.mem_of_nonempty {α : Type*} (s : Set α) (h : s.Nonempty) : ∃ x, x ∈ s := h
-
-/--
-An equality between real numbers implies an equality between their complex embeddings.
--/
-lemma ofReal_eq_ofReal {r s : ℝ} : r = s → (r : ℂ) = (s : ℂ) := by
-  intro h
-  rw [h]
-
 variable {ι : Type*} {z : ℂ}
-
-/-- The square of the absolute value of a complex number is its norm squared. -/
-lemma normSq_eq_abs_sq (z : ℂ) : Complex.normSq z = (norm z) ^ 2 := by
-  exact Complex.normSq_eq_norm_sq z
 
 /-- The square of the norm of a complex number is the sum of the squares of its real and imaginary
 parts. -/
@@ -59,19 +41,6 @@ lemma RCLike.norm_conj {K} [RCLike K] (z : K) : ‖star z‖ = ‖z‖ := by exa
 /-- The real part of a sum is the sum of the real parts. -/
 lemma RCLike.re_sum {F : Type*} [RCLike F] {v : ι → F} {s : Finset ι} :
     RCLike.re (∑ i ∈ s, v i) = ∑ i ∈ s, RCLike.re (v i) := by exact map_sum RCLike.re v s
-
-/--
-An equality between a real number `r` and its coercion to the complex numbers `↑r`
-is true by definition.
--/
-lemma ofReal_eq_coe (r : ℝ) : (r : ℂ) = ↑r := rfl
-
-/-- The real part of a product of complex numbers is less than or equal to the product of their norms.
-This is a consequence of the Cauchy-Schwarz inequality. -/
-lemma re_mul_le_norm (z w : ℂ) : re (z * w) ≤ ‖z‖ * ‖w‖ := by
-  calc
-    re (z * w) ≤ ‖z * w‖ := re_le_norm (z * w)
-    _ = ‖z‖ * ‖w‖ := norm_mul z w
 
 /-- If a sum of `f i` equals a sum of `g i`, and `f i ≤ g i` for all `i`, then `f i = g i` for all `i`. -/
 lemma eq_of_sum_eq_of_le {s : Finset ι} {f g : ι → ℝ}
@@ -103,10 +72,6 @@ lemma eq_coe_re_of_mul_eq_norm_mul {z w : ℂ} (h : re (z * star w) = ‖z‖ * 
     rw [norm_mul, norm_star, h]
   exact eq_re_of_norm_eq (id (Eq.symm h_re_eq))
 
-/-- The conjugate of a real number embedded in the complex numbers is the number itself. -/
-lemma star_ofReal (r : ℝ) : star (r : ℂ) = r := by
-  simp
-
 /-- The product of a complex number and its conjugate is the square of its norm,
 as a real number embedded in the complex plane. -/
 lemma star_mul_self (z : ℂ) : z * star z = ↑(‖z‖ ^ 2) := by
@@ -114,37 +79,6 @@ lemma star_mul_self (z : ℂ) : z * star z = ↑(‖z‖ ^ 2) := by
 
 @[simp] lemma re_ofReal (r : ℝ) : (r : ℂ).re = r :=
 rfl
-
-/-- `u = conj z / ‖z‖` satisfies `z * u = ‖z‖`. -/
-lemma unit_of_norm_div_star {z : ℂ} (hz : z ≠ 0) :
-    let u := star z / (‖z‖ : ℂ); z * u = (‖z‖ : ℂ) := by
-  intro u
-  have h₁ : (‖z‖ : ℂ) ≠ 0 := by
-    simpa using (ofReal_ne_zero.mpr ((norm_ne_zero_iff).2 hz))
-  calc
-    z * u = z * (star z / (‖z‖ : ℂ)) := rfl
-    _ = (z * star z) / (‖z‖ : ℂ) := by simp [mul_div_assoc]
-    _ = (↑(‖z‖ ^ 2) : ℂ) / (‖z‖ : ℂ) := by rw [star_mul_self]
-    _ = ((‖z‖ : ℂ) ^ 2) / (‖z‖ : ℂ) := by simp [pow_two]
-    _ = (‖z‖ : ℂ) := by
-      simp [pow_two, h₁]
-
-/--
-If `c` is a complex number of norm 1, and `c^k = 1` and `c^(k+1) = 1` for some
-integer `k ≥ 1`, then `c` must be 1.
--/
-lemma eq_one_of_root_of_unity_of_consecutive_powers
-  {c : ℂ} (k : ℕ) (hk_pos : 1 ≤ k)
-  (h_ck : c ^ k = 1) (h_ck1 : c ^ (k + 1) = 1) : c = 1 := by
-  have hc_ne_zero : c ≠ 0 := by
-    intro hc_zero
-    have : (1 : ℂ) = 0 := by rw [← h_ck, hc_zero, zero_pow (Nat.ne_zero_of_lt hk_pos)]
-    exact one_ne_zero this
-  calc
-    c = c * 1 := (mul_one c).symm
-    _ = c * (c^k) := by rw [h_ck]
-    _ = c^(k+1) := by rw [← pow_succ']
-    _ = 1 := h_ck1
 
 /-- The square of the norm of a sum is the sum of the real parts of the products of each term
 with the conjugate of the sum. -/
@@ -230,56 +164,6 @@ lemma coeff_of_aligned_vector {u vi : ℂ} {k : ℝ}
     simp [k_zero, hvi_zero, norm_zero, zero_div]
   · exact eq_div_of_mul_eq u_norm_ne_zero (id (Eq.symm h_norm_eq))
 
-lemma sum_of_aligned_vectors_factors {u : ℂ} {v : ι → ℂ} {s : Finset ι}
-    (h_eq : u = ∑ i ∈ s, v i)
-    (h_sum : ‖u‖ = ∑ i ∈ s, ‖v i‖)
-    (h_ne : u ≠ 0) :
-    ∑ i ∈ s, v i = (∑ i ∈ s, (‖v i‖ / ‖u‖ : ℂ)) * u := by
-  have h_norm_ne : (‖u‖ : ℝ) ≠ 0 := by
-    exact norm_ne_zero_iff.mpr h_ne
-  have h_sum_div :
-      (∑ i ∈ s, (‖v i‖ / ‖u‖ : ℂ)) =
-      ((∑ i ∈ s, ‖v i‖) / ‖u‖ : ℂ) := by
-    have h_real : (∑ i ∈ s, ‖v i‖ / ‖u‖) =
-        (∑ i ∈ s, ‖v i‖) / ‖u‖ := by exact Eq.symm (sum_div s (fun i ↦ ‖v i‖) ‖u‖)
-    simpa [ofReal_sum, ofReal_div] using congrArg (fun r : ℝ => (r : ℂ)) h_real
-  have h_coeff :
-      ((∑ i ∈ s, ‖v i‖) / ‖u‖ : ℂ) = 1 := by
-    have h_coeff_real : (∑ i ∈ s, ‖v i‖) / ‖u‖ = (1 : ℝ) := by
-      have h_eq : (∑ i ∈ s, ‖v i‖) = ‖u‖ := by
-        simpa using h_sum.symm
-      simp [h_eq, div_self h_norm_ne]
-    simpa using congrArg (fun r : ℝ => (r : ℂ)) h_coeff_real
-  calc
-    ∑ i ∈ s, v i
-        = u := by
-          simpa using h_eq.symm
-    _ = (1 : ℂ) * u := by simp
-    _ = ((∑ i ∈ s, ‖v i‖) / ‖u‖ : ℂ) * u := by
-          simp only [one_mul, ofReal_sum]
-          subst h_eq
-          simp_all only [ne_eq, ofReal_sum, one_mul]
-    _ = (∑ i ∈ s, (‖v i‖ / ‖u‖ : ℂ)) * u := by
-          simp [h_sum_div]
-
-/-- If equality holds in the triangle inequality, the sum of the non-negative real multiples is 1. -/
-lemma sum_of_multiples_is_one_of_triangle_eq
-    {u : ℂ} {v : ι → ℂ} {s : Finset ι}
-    (_ : u = ∑ i ∈ s, v i)
-    (h_sum : ‖u‖ = ∑ i ∈ s, ‖v i‖)
-    (h_ne : u ≠ 0) :
-    ∑ i ∈ s, (‖v i‖ / ‖u‖) = 1 := by
-  have h_norm_ne : (‖u‖ : ℝ) ≠ 0 := by
-    exact norm_ne_zero_iff.mpr h_ne
-  calc
-    ∑ i ∈ s, ‖v i‖ / ‖u‖
-        = (∑ i ∈ s, ‖v i‖) / ‖u‖ := by
-          rw [← Finset.sum_div s (fun i => ‖v i‖) ‖u‖]
-    _   = ‖u‖ / ‖u‖ := by
-          simp [h_sum]
-    _   = (1 : ℝ) := by
-          simp [div_self h_norm_ne]
-
 /-- 2) If `‖u‖ = ∑ i ∈ s, ‖v i‖` then each `v i` aligns with `u`. -/
 lemma align_each_with_sum {u : ℂ} {v : ι → ℂ} {s : Finset ι}
   (h_eq : u = ∑ i ∈ s, v i) (h_sum : ‖u‖ = ∑ i ∈ s, ‖v i‖) (h_ne : u ≠ 0) :
@@ -301,48 +185,6 @@ lemma align_each_with_sum {u : ℂ} {v : ι → ℂ} {s : Finset ι}
     _ = (‖v i‖ : ℂ) • u := by simp [smul_eq_mul, mul_comm]
 
 variable {n : Type*} [Fintype n]
-/-- If equality holds in the triangle inequality for a sum of complex vectors,
-    then all vectors must point in the same direction. -/
-theorem triangle_equality_iff_aligned {v : n → ℂ} (hv_nonzero : ∀ i, v i ≠ 0) [Nonempty n] :
-    ‖∑ i, v i‖ = ∑ i, ‖v i‖ ↔
-    ∃ (c : ℂ), ‖c‖ = 1 ∧ ∀ i, v i = (‖v i‖ : ℂ) * c := by
-  constructor
-  · intro h_eq
-    let u := ∑ i, v i
-    have hu_nonzero : u ≠ 0 := by
-      intro h_u_zero
-      have h_sum_zero : (∑ i, v i) = 0 := h_u_zero
-      rw [h_sum_zero, norm_zero, eq_comm] at h_eq
-      rw [sum_eq_zero_iff_of_nonneg (fun i _ => norm_nonneg (v i))] at h_eq
-      · obtain ⟨i⟩ := univ_nonempty (α := n)
-        specialize hv_nonzero i
-        specialize h_eq i (mem_univ i)
-        rw [norm_eq_zero] at h_eq
-        contradiction
-    let c := u / ↑‖u‖
-    use c
-    have hc_norm_one : ‖c‖ = 1 := by
-      rw [norm_div, Complex.norm_ofReal, abs_of_nonneg (norm_nonneg _),
-        div_self (norm_ne_zero_iff.mpr hu_nonzero)]
-    refine ⟨hc_norm_one, fun i ↦ ?_⟩
-    have h_aligned := align_each_with_sum (s := univ) rfl h_eq hu_nonzero i (Finset.mem_univ i)
-    rw [smul_eq_mul, smul_eq_mul] at h_aligned
-    calc v i
-      _ = (↑‖v i‖ * u) / ↑‖u‖ :=
-        eq_div_of_mul_eq (ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr hu_nonzero))
-          (by rw [← h_aligned, mul_comm])
-      _ = ↑‖v i‖ * (u / ↑‖u‖) := by rw [mul_div_assoc]
-      _ = ↑‖v i‖ * c := rfl
-  · rintro ⟨c, hc_norm_one, h_aligned⟩
-    calc ‖∑ i, v i‖
-        = ‖∑ i, (‖v i‖ : ℂ) * c‖ := by congr; ext i; exact h_aligned i
-      _ = ‖(∑ i, ↑‖v i‖) * c‖ := by rw [Finset.sum_mul]
-      _ = ‖∑ i, (‖v i‖ : ℂ)‖ * ‖c‖ := by rw [norm_mul]
-      _ = ‖(↑(∑ i, ‖v i‖) : ℂ)‖ * ‖c‖ := by rw [ofReal_sum]
-      _ = |∑ i, ‖v i‖| * ‖c‖ := by rw [Complex.norm_ofReal]
-      _ = (∑ i, ‖v i‖) * ‖c‖ := by rw [abs_of_nonneg (sum_nonneg (fun i _ => norm_nonneg _))]
-      _ = (∑ i, ‖v i‖) * 1 := by rw [hc_norm_one]
-      _ = ∑ i, ‖v i‖ := by rw [mul_one]
 
 /--
 If `u = ∑ i in s, v i`, `‖u‖ = ∑ i in s, ‖v i‖`, and `u ≠ 0`, then each `v i`
@@ -397,31 +239,5 @@ lemma aligned_of_mul_of_real_pos
       _   = w * (↑‖z‖ : ℂ) := by
             simp [hz_normC]
   exact (div_eq_div_iff hnormz_neC hnormw_neC).2 hcross
-
-/--
-If `z = λw` for a positive real scalar `λ`, then `z` and `w` are aligned.
--/
-lemma aligned_of_eigenvalue {z w : ℂ} {lam : ℝ}
-    (h_rel : z = (lam : ℂ) * w) (h_lam_pos : 0 < lam) (h_w_ne_zero : w ≠ 0) :
-    z / ↑‖z‖ = w / ↑‖w‖ := by
-  exact Complex.aligned_of_mul_of_real_pos h_lam_pos h_rel h_w_ne_zero
-
-/--
-If `u = ∑ i in s, v i`, `‖u‖ = ∑ i in s, ‖v i‖`, and `u ≠ 0`, then each `v i`
-is aligned with `u`.
--/
-lemma aligned_of_triangle_eq' {u : ℂ} {v : ι → ℂ} {s : Finset ι}
-  (h_eq : u = ∑ i ∈ s, v i) (h_sum : ‖u‖ = ∑ i ∈ s, ‖v i‖) (h_ne : u ≠ 0) :
-  ∀ i ∈ s, v i ≠ 0 → v i / ↑‖v i‖ = u / ↑‖u‖ := by
-  intro i hi hvi_ne_zero
-  have hu_norm_ne_zero : ‖u‖ ≠ 0 := norm_ne_zero_iff.mpr h_ne
-  have hvi_norm_ne_zero : ‖v i‖ ≠ 0 := norm_ne_zero_iff.mpr hvi_ne_zero
-  have h_aligned := align_each_with_sum h_eq h_sum h_ne i hi
-  rw [smul_eq_mul, smul_eq_mul] at h_aligned
-  rw [mul_comm] at h_aligned
-  field_simp [h_aligned, hu_norm_ne_zero, hvi_norm_ne_zero]
-  assumption
-
-
 
 end Complex
