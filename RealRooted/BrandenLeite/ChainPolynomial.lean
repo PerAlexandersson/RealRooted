@@ -1,6 +1,6 @@
 import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 import RealRooted.BrandenLeite.ChainPolynomial.Resolution
-import RealRooted.InterlacingConeBounds
+import RealRooted.Interlacing.ConeBounds
 import RealRooted.RowThresholdOne
 import RealRooted.SymmetricDecomposition.Theorem26
 

@@ -1,4 +1,4 @@
-import RealRooted.HermitePoulain
+import RealRooted.Hermite.Poulain
 
 /-!
 # Hermite--Poulain challenge entry point
@@ -11,11 +11,11 @@ authors = ["Hermite", "Poulain"]
 
 [[definitions]]
 name = "RealRooted.HermitePoulain.applyAsDifferentialOperator"
-module = "RealRooted.HermitePoulain"
+module = "RealRooted.Hermite.Poulain"
 
 [[theorems]]
 name = "RealRooted.HermitePoulain.differential_operator_preserves_real_rooted"
-module = "RealRooted.HermitePoulain"
+module = "RealRooted.Hermite.Poulain"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -38,7 +38,7 @@ https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermitePoulainTheor
 Original references include C. Hermite, G. Polya--I. Schur, N. Obreschkoff,
 and B. Ya. Levin's account of entire functions.
 
-The proof is in `RealRooted.HermitePoulain`.
+The proof is in `RealRooted.Hermite.Poulain`.
 -/
 
 namespace RealRooted

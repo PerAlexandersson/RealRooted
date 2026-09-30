@@ -1,5 +1,5 @@
 import RealRooted.JacobiDeformation.RootGeometry
-import RealRooted.DerivativeSimpleRoots
+import RealRooted.Derivative.SimpleRoots
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity

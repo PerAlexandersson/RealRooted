@@ -1,4 +1,4 @@
-import RealRooted.FiniteFreeAdditiveIdentity
+import RealRooted.FiniteFreeAdditive.Identity
 import RealRooted.HermiteBiehler.Basic
 import RealRooted.LiebSokal
 

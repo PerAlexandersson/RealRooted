@@ -1,6 +1,6 @@
 import RealRooted.Basic
 import RealRooted.Linear
-import RealRooted.WagnerLeftSum
+import RealRooted.Wagner.LeftSum
 
 /-!
 # Weighted sums and interlacing

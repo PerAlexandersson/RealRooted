@@ -547,7 +547,7 @@ def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedStatement : Prop
 This is the sharper one-matrix inequality isolated by an earlier Aristotle
 corner-zeroed run.  It is retained as a named historical branch for existing
 reductions, but it is too strong as a proof route: see
-`RealRooted.Challenges.Issue34SingleMatrixCounterexample` for checked
+`RealRooted.Challenges.HurwitzCornerZeroedCounterexample` for checked
 arithmetic showing a candidate window where the full determinant is positive
 while the corner-zeroed expression is negative.  The two-matrix issue #34
 target is not refuted by that arithmetic witness. -/
@@ -1470,7 +1470,7 @@ theorem not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle :
 /-! ### Hurwitz staircase/Toeplitz normal form for the full-band Schur product
 
 The genuine two-matrix issue #34 target is special to Hurwitz matrices, and
-(as recorded in `RealRooted.Challenges.Issue34WindowObstruction`) cannot be
+(as recorded in `RealRooted.Challenges.TotallyNonnegativeHadamardObstruction`) cannot be
 reached from total nonnegativity of the selected `3 × 3` windows alone.  The
 lemmas below expose the Hurwitz-specific input: the column-shift/staircase
 relation `hurwitz_col_shift_add` identifies, on the nonzero staircase, a

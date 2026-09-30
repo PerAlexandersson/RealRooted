@@ -1,4 +1,4 @@
-import RealRooted.JacobiParameterInterlacing
+import RealRooted.Jacobi.ParameterInterlacing
 import RealRooted.OrderedRoots
 import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
 

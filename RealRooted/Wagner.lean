@@ -8,4 +8,4 @@ This file re-exports the split Wagner modules:
 -/
 import RealRooted.WagnerX
 import RealRooted.WagnerRightSum
-import RealRooted.WagnerLeftSum
+import RealRooted.Wagner.LeftSum

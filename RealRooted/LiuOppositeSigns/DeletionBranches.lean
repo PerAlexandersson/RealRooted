@@ -6,7 +6,7 @@ import RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces
 
 This module keeps Liu's left and right deletion branches together with
 the branch-retaining common-interleaver package.  The later factor-return
-statement and assembly layers remain in `RealRooted.LiuOppositeSignsTheorem`.
+statement and assembly layers remain in `RealRooted.LiuOppositeSigns.Theorem`.
 -/
 
 open Polynomial Filter

@@ -1,5 +1,5 @@
 import RealRooted.Compatibility.Basic
-import RealRooted.DerivativeShiftSequence
+import RealRooted.Derivative.ShiftSequence
 import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
 import RealRooted.Mathlib.Data.Multiset.Rel
 

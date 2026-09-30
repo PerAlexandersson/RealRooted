@@ -1,4 +1,4 @@
-import RealRooted.JacobiBetaZeroOrthogonality
+import RealRooted.Jacobi.BetaZeroOrthogonality
 import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
