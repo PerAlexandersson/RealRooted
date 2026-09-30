@@ -1375,6 +1375,8 @@ import RealRooted.GeneralizedSnakePosets.SnakeTheorem41
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 import RealRooted.Challenges.LiuOppositeSigns
 import RealRooted.Challenges.PerronFrobenius
+import RealRooted.CombinatorialExamples.EvenBinom
+import RealRooted.GeneralizedEulerian.GeneratingFunction
 
 /-!
 # RealRooted production umbrella
