@@ -1,3 +1,4 @@
+import RealRooted.MultiplierSequence.InvPochhammer
 import RealRooted.MultiplierSequence.PolyaSchur
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
@@ -56,6 +57,14 @@ module = "RealRooted.MultiplierSequence.Sign"
 [[theorems]]
 name = "RealRooted.IsPFMultiplierSequence.logConcave"
 module = "RealRooted.MultiplierSequence.PolyaSchur"
+
+[[theorems]]
+name = "RealRooted.isPFMultiplierSequence_inv_ascPochhammer"
+module = "RealRooted.MultiplierSequence.InvPochhammer"
+
+[[theorems]]
+name = "RealRooted.isPFMultiplierSequence_inv_factorial"
+module = "RealRooted.MultiplierSequence.InvPochhammer"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -85,6 +94,10 @@ The following are formalized:
   type I, where `f` is the generating function; equivalently, one of `±γ_k`
   and `±(-1)^k γ_k` is a PF multiplier sequence.
 - **Log-concavity:** PF multiplier sequences are log-concave.
+- **Examples:** for real `α > 0`, the reciprocal rising factorials
+  `1 / (α)_k` form a PF multiplier sequence, and so in particular do `1 / k!`.
+  After clearing denominators, their Jensen polynomials are generalized
+  Laguerre polynomials.
 
 ## References
 

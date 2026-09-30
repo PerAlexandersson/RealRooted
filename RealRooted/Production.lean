@@ -1366,6 +1366,7 @@ import RealRooted.Challenges.LGV
 import RealRooted.Challenges.LaguerrePolynomials
 import RealRooted.Challenges.ParkingFunctions
 import RealRooted.Challenges.ToricContribution
+import RealRooted.MultiplierSequence.InvPochhammer
 
 /-!
 # RealRooted production umbrella
