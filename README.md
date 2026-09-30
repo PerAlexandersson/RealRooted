@@ -107,7 +107,7 @@ emulation. These scripts complement `lake build`; they do not replace it.
 - `VeroneseSectionPair.lean` gives strict proper position for two nonzero
   ordered residues; its `HermiteBiehler` child gives the induced
   upper-half-plane and Hurwitz stability certificates.
-- `RealRooted/HadamardProduct.lean` contains the elementary coefficientwise
+- `RealRooted/Hadamard/Product.lean` contains the elementary coefficientwise
   product API; `GarloffWagner/Algebra.lean` owns the factorial-normalized
   Schur-product and differential-operator algebra, and
   `GarloffWagner/Iterated.lean` owns the `J^k ∘ L` Theorem 11 transport.
@@ -389,7 +389,7 @@ The challenge surface also records theorem-shaped targets as they mature.
 Kurtz's coefficient inequality criterion is implemented in
 `RealRooted.Kurtz` and re-exported by its challenge entry point. The finite
 Hermite--Poulain differential-operator preserver is implemented in
-`RealRooted.HermitePoulain` over the shared
+`RealRooted.Hermite.Poulain` over the shared
 `RealRooted.Derivative.LinearCombination` theorem layer. The full finite complex
 Borcea--Branden classification, including its stable rank-at-most-one branch,
 is implemented in `RealRooted.BorceaBranden.FiniteSymbolClassification`; its

@@ -1,6 +1,6 @@
 import RealRooted.BorceaBranden.FiniteSymbolBasis
 import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
-import RealRooted.MultiaffineReciprocalRight
+import RealRooted.Multiaffine.ReciprocalRight
 
 /-!
 # The source-reciprocal finite-symbol identity

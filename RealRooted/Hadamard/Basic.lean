@@ -1,6 +1,6 @@
 import RealRooted.Apolarity
 import RealRooted.DegreeDropReversal
-import RealRooted.HadamardProduct
+import RealRooted.Hadamard.Product
 import RealRooted.PFPolynomial
 
 open Polynomial

@@ -1,4 +1,4 @@
-import RealRooted.MultiaffineReciprocal
+import RealRooted.Multiaffine.Reciprocal
 
 /-!
 # Signed multiaffine reciprocal in a right variable block

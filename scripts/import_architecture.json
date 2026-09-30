@@ -876,7 +876,7 @@
     "RealRooted.Kurtz": {
       "max_modules": 42
     },
-    "RealRooted.HermitePoulain": {
+    "RealRooted.Hermite.Poulain": {
       "max_modules": 92
     },
     "RealRooted.Challenges.HermitePoulain": {
@@ -948,10 +948,10 @@
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density": {
       "max_modules": 44
     },
-    "RealRooted.InterlacingClosure": {
+    "RealRooted.Interlacing.Closure": {
       "max_modules": 101
     },
-    "RealRooted.MatrixInterlacingClosure": {
+    "RealRooted.MatrixInterlacing.Closure": {
       "max_modules": 105
     },
     "RealRooted.TotallyNonnegInterlacing": {
@@ -1113,10 +1113,10 @@
     "RealRooted.FiniteFreeAdditive.HalfIntegerPreservation": {
       "max_modules": 41
     },
-    "RealRooted.FiniteFreeAdditiveIdentity": {
+    "RealRooted.FiniteFreeAdditive.Identity": {
       "max_modules": 21
     },
-    "RealRooted.FiniteFreeAdditivePreservation": {
+    "RealRooted.FiniteFreeAdditive.Preservation": {
       "max_modules": 35
     },
     "RealRooted.FiniteFreeRootCount": {
@@ -1125,7 +1125,7 @@
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative": {
       "max_modules": 95
     },
-    "RealRooted.CommonInterleaverFamilySum": {
+    "RealRooted.CommonInterleaver.FamilySum": {
       "max_modules": 98
     },
     "RealRooted.CommonInterleaver.RootDesc": {
@@ -1907,8 +1907,8 @@
     "RealRooted.FiniteFreeAdditive.HalfInteger",
     "RealRooted.FiniteFreeAdditive.HalfIntegerConvolution",
     "RealRooted.FiniteFreeAdditive.HalfIntegerPreservation",
-    "RealRooted.FiniteFreeAdditiveIdentity",
-    "RealRooted.FiniteFreeAdditivePreservation",
+    "RealRooted.FiniteFreeAdditive.Identity",
+    "RealRooted.FiniteFreeAdditive.Preservation",
     "RealRooted.BrandenLeite.Network",
     "RealRooted.BrandenLeite.NetworkTotallyNonneg",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator",
@@ -2101,7 +2101,7 @@
     "RealRooted.FiniteFreeRootCount",
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree",
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative",
-    "RealRooted.CommonInterleaverFamilySum",
+    "RealRooted.CommonInterleaver.FamilySum",
     "RealRooted.DerivativeRecurrence",
     "RealRooted.DerivativeRecurrence.GeneralizedLaguerre",
     "RealRooted.DerivativeRecurrence.QuadraticDegree",
@@ -2229,7 +2229,7 @@
     "RealRooted.Tactic.OEIS.ProductParity",
     "RealRooted.Tactic.OEIS",
     "RealRooted.Derivative.LinearCombination",
-    "RealRooted.HermitePoulain",
+    "RealRooted.Hermite.Poulain",
     "RealRooted.Challenges.HermitePoulain",
     "RealRooted.Tactic.HermitePoulain",
     "RealRooted.Tactic.SecondDerivative",

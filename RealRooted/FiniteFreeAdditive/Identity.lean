@@ -1,7 +1,7 @@
 import RealRooted.FiniteFreeAdditive
 import RealRooted.ElementaryDifferential
 import RealRooted.LiebSokalOperator.Linearity
-import RealRooted.MultiaffineReciprocal
+import RealRooted.Multiaffine.Reciprocal
 import RealRooted.Polarization
 
 /-!
