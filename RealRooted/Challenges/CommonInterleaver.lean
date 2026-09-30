@@ -1,6 +1,6 @@
+import RealRooted.ChudnovskySeymour.Core
 import RealRooted.CommonInterleaver.FamilyUpgrade
 import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
-import RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree
 import RealRooted.Compatibility.InterleaverBridge
 
 /-!
@@ -46,8 +46,16 @@ name = "RealRooted.pairwiseCompatible_of_pairwiseHasCommonInterleaver"
 module = "RealRooted.Compatibility.InterleaverBridge"
 
 [[theorems]]
-name = "RealRooted.chudnovskySeymour_fourWay_of_natDegree_le_two"
-module = "RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree"
+name = "RealRooted.chudnovskySeymour_compatiblePairHasCommonInterleaver"
+module = "RealRooted.ChudnovskySeymour.Core"
+
+[[theorems]]
+name = "RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge"
+module = "RealRooted.ChudnovskySeymour.Core"
+
+[[theorems]]
+name = "RealRooted.chudnovskySeymour_pairwiseCompatible_iff_familyCompatible"
+module = "RealRooted.ChudnovskySeymour.Core"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -58,23 +66,27 @@ interleaver** if a single real-rooted `h` satisfies `f_i ≪ h` for every `i`.
 The family is **compatible** if every nonnegative combination
 `c_1 f_1 + ⋯ + c_m f_m` is zero or real-rooted.
 
-For polynomials with positive leading coefficients, the following are
-formalized:
+**Theorem (Chudnovsky–Seymour).** For real-rooted polynomials with positive
+leading coefficients, the following are equivalent:
 
-- **Pairwise to global:** if every pair has a common interleaver, then the
-  whole family has one.
-- **Common interleavers give compatibility:** if the family has a common
-  interleaver, then every nonnegative combination is real-rooted; in
-  particular the sum is real-rooted.
-- **Compatible pairs:** a pair with a common interleaver is compatible.
+1. every pair is compatible;
+2. every pair has a common interleaver;
+3. the whole family has a common interleaver;
+4. the whole family is compatible.
 
-Chudnovsky and Seymour show that for such families all four conditions agree:
-pairwise compatibility, pairwise common interleavers, a common interleaver,
-and compatibility. The library proves this four-way equivalence for degree at
-most two. In general it holds once the two-polynomial converse is supplied:
-a compatible pair has a common interleaver
-(`CompatiblePairHasCommonRightInterleaverStatement`). That converse remains
-open in the library.
+All four are formalized:
+
+- **Compatible pairs have common interleavers:** the two-polynomial case of
+  1 ⇒ 2.
+- **Pairwise compatibility and common interleavers:** 1 ⇔ 3.
+- **Pairwise and family compatibility:** 1 ⇔ 4.
+- **Pairwise to global:** 2 ⇒ 3.
+- **Common interleavers give compatibility:** 3 ⇒ 4. In particular, the sum of
+  a family with a common interleaver is real-rooted.
+
+This is the interlacing input for the real-rootedness of independence
+polynomials of claw-free graphs; see the
+[Chudnovsky–Seymour page](/RealRooted/theorems/chudnovsky-seymour/).
 
 ## References
 
