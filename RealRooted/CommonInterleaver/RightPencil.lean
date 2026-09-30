@@ -668,7 +668,7 @@ theorem rightFamily_not_isRoot_of_eval_mul_pos
     linarith
   by_cases hf_pos : 0 < f.eval x
   · have hg_pos : 0 < g.eval x := by nlinarith
-    have hpos : 0 < f.eval x + μ * g.eval x := by nlinarith
+    have hpos : 0 < f.eval x + μ * g.eval x := by positivity
     linarith
   · have hf_neg : f.eval x < 0 :=
       lt_of_le_of_ne (le_of_not_gt hf_pos) hf_ne

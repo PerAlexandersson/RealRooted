@@ -183,7 +183,7 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag_degree_step
             0 < (a - b * r) * eval r ((P (n + 1)).derivative) ^ 2 +
               c * (eval r (P n) * eval r ((P (n + 1)).derivative)) := by
           have hsquare : 0 < eval r ((P (n + 1)).derivative) ^ 2 := sq_pos_of_ne_zero hderivNe
-          nlinarith [mul_nonneg hc hprevDeriv]
+          positivity
         have heval :
             eval r (P (n + 2)) =
               r * ((a - b * r) * eval r ((P (n + 1)).derivative) +

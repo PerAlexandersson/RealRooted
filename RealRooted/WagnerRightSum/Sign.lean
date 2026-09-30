@@ -265,7 +265,7 @@ private lemma listAlternates_prod_mul_prod_nonpos_at_heads :
       have hs_nonneg : 0 ≤ (r₁ - s) * (r₂ - s) := by
         have hsr₂ : s ≤ r₂ := le_trans hsr₁ (by
           exact listInterlaces_rs_all_ge rest_s (r₂ :: rest) r₁ hint r₂ (by simp))
-        nlinarith
+        positivity
       have htail_nonpos :
           (rest_s.map (r₁ - ·)).prod * (rest_s.map (r₂ - ·)).prod ≤ 0 :=
         listInterlaces_prod_mul_prod_nonpos_at_heads hint

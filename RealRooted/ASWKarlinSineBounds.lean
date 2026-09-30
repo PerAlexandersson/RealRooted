@@ -286,7 +286,7 @@ private lemma signVariations_sin_add_mul_lt_of_last_le_nat_mul_pi_of_theta_pos
             apply Fin.signVariations_eq_zero_of_forall_nonneg
             intro j
             apply Real.sin_nonneg_of_nonneg_of_le_pi
-            · nlinarith [mul_nonneg (Nat.cast_nonneg (j : ℕ)) hθpos.le]
+            · positivity
             · have hj : (j : ℕ) ≤ N := Nat.lt_succ_iff.mp j.isLt
               have hj_cast : ((j : ℕ) : ℝ) ≤ N := by exact_mod_cast hj
               have hangle_le_last :

@@ -113,7 +113,7 @@ theorem extend_pos (hn : 2 ≤ n) (hpos : ∀ i, i < n → 0 < g i)
     have hL := lastGap_pos g n hn hsm
     have hcast : (0 : K) ≤ ((j - (n - 1) : ℕ) : K) := Nat.cast_nonneg _
     rw [extend_of_ge (g := g) (n := n) h]
-    nlinarith
+    positivity
 
 omit [IsStrictOrderedRing K] in
 /-- The amplitude is unchanged because it only reads indices below `n`. -/
