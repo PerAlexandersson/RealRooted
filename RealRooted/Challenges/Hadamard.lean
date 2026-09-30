@@ -1,3 +1,5 @@
+import RealRooted.GarloffWagner.Hadamard
+import RealRooted.GarloffWagner.Theorem12
 import RealRooted.Hadamard
 import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 
@@ -27,6 +29,10 @@ module = "RealRooted.PFPolynomial"
 name = "RealRooted.toeplitz"
 module = "RealRooted.AissenSchoenbergWhitneyBase"
 
+[[definitions]]
+name = "RealRooted.gwSchurProduct"
+module = "RealRooted.GarloffWagner.Algebra"
+
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.finiteSchurSzegoComposition"
 
@@ -41,6 +47,18 @@ name = "RealRooted.Challenges.Hadamard.maloToeplitzHadamard"
 
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.polynomialValueProductPolyaFrequency"
+
+[[theorems]]
+name = "RealRooted.gwHadamardProductPF"
+module = "RealRooted.GarloffWagner.Theorem12"
+
+[[theorems]]
+name = "RealRooted.gwHadamardProductInterl_of_strictInterl"
+module = "RealRooted.GarloffWagner.Hadamard"
+
+[[theorems]]
+name = "RealRooted.gwSchurProductInterl"
+module = "RealRooted.GarloffWagner.Theorem12"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -50,6 +68,16 @@ Schur–Szegő composition and coefficientwise products preserve several
 real-rootedness and interlacing classes. The page also includes the finite
 Pólya–Schur theorem and Maló’s total-nonnegativity theorem for Toeplitz
 matrices.
+
+The Garloff–Wagner results formalized here, for PF polynomials (real-rooted
+with nonnegative coefficients):
+
+- **PF closure:** the Hadamard product `sum_k a_k b_k x^k` of two PF
+  polynomials is PF.
+- **Interlacing:** if `f ≪ g` and `p ≪ q`, then `f ∗ p ≪ g ∗ q`, where `∗`
+  is the Hadamard product.
+- **Schur product (Theorem 12):** the factorial Schur product, with
+  coefficients `k! a_k b_k`, preserves interlacing in its first argument.
 
 ## References
 

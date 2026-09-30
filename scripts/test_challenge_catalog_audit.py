@@ -21,8 +21,8 @@ class ChallengeCatalogAuditTests(unittest.TestCase):
         self.assertIs(audit.catalog_digest, challenge_catalog.catalog_digest)
         pages = audit.load_pages(root)
         self.assertEqual(audit.catalog_digest(pages), challenge_catalog.catalog_digest(pages))
-        self.assertEqual(len(pages), 24)
-        self.assertEqual(len(audit.resolve_records(root, pages)), 97)
+        self.assertEqual(len(pages), 35)
+        self.assertEqual(len(audit.resolve_records(root, pages)), 205)
 
     def test_favard_page_uses_the_full_recurrence_definition(self) -> None:
         root = pathlib.Path(__file__).resolve().parents[1]

@@ -1483,4 +1483,15 @@ import RealRooted.RootCounting.CrossingExhaustion
 import RealRooted.BinaryRunTransformation.CrossLength
 import RealRooted.BinaryRunTransformation.Interlacing
 import RealRooted.BinaryRunTransformation.KernelIdentities
+import RealRooted.Challenges.BrandenLeite
+import RealRooted.Challenges.CommonInterleaver
+import RealRooted.Challenges.GeneralizedSnakePosets
+import RealRooted.Challenges.MultiplierSequence
+import RealRooted.Challenges.BrandenVecchi
+import RealRooted.Challenges.EulerianVariations
+import RealRooted.Challenges.HermitePolynomials
+import RealRooted.Challenges.LGV
+import RealRooted.Challenges.LaguerrePolynomials
+import RealRooted.Challenges.ParkingFunctions
+import RealRooted.Challenges.ToricContribution
 import RealRooted.MultiplierSequence.InvPochhammer
