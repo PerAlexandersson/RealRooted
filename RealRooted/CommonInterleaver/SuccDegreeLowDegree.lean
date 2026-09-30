@@ -216,17 +216,6 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_one
   pairHasCommonInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
-/-- Compatibility-level version of the low-degree common-left endpoint. -/
-theorem compatiblePairHasCommonLeftInterleaver_of_natDegree_le_one
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_deg_le_one : f.natDegree ≤ 1)
-    (hg_deg_le_one : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
-  pairHasCommonLeftInterleaver_of_natDegree_le_one
-    hf_pos hg_pos hf_deg_le_one hg_deg_le_one
-
 /-- Same-degree branch of the honest no-common target is already unconditional
 through degree one. -/
 theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_le_one
@@ -238,16 +227,6 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_le_one
     StrictInterl f g ∨ StrictInterl g f :=
   strictInterl_or_reverse_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one (by lia)
-
-/-- Degree-one base case for the honest same-degree branch: equal-degree linear
-pairs automatically satisfy the Obreschkoff alternative. This is a reusable
-base case for future same-degree no-common work. -/
-theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_one
-    {f g : ℝ[X]}
-    (hdeg : g.natDegree = f.natDegree)
-    (hf_deg1 : f.natDegree = 1) :
-    StrictInterl f g ∨ StrictInterl g f :=
-  PosComboRealRooted.strictInterl_or_reverse_of_same_degree_one hdeg hf_deg1
 
 /-- The old same-degree orientation alternative, when available, still feeds
 the repaired same-degree common-interleaver target. -/
@@ -285,19 +264,6 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlterna
     pairHasCommonInterleaver_of_sameDegree_slotIntersections
       hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hdeg hslot
 
-/-- Low-degree base case for the repaired same-degree no-common target.  Through
-degree one, the common-right-interleaver conclusion is unconditional once the
-two polynomials have positive leading coefficients and equal degree. -/
-theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_degree_le_one
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hf_deg_le_one : f.natDegree ≤ 1) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
-    hf_pos hg_pos hdeg hf_deg_le_one
-
 /-- Low-degree base case for the same-degree root-slot data.  Through degree one,
 the common-right-interleaver base case already supplies every matching slot
 intersection. -/
@@ -313,7 +279,7 @@ theorem sameDegreeSlotData_of_natDegree_le_one
         (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
           rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty := by
   obtain ⟨h, hfh, hgh⟩ :=
-    posComboNoCommonSameDegreePairHasCommonInterleaver_of_degree_le_one
+    pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
       hf_pos hg_pos hdeg hf_deg_le_one
   intro j hj _ _
   have hjg' : j < g.natDegree + 1 := by lia
@@ -419,7 +385,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degre
     fun {s t} hs ht =>
       haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
   have hright : StrictInterl g (X * f) :=
-    strictInterl_right_pair_of_affine_family_nonneg_degree_one
+    AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
       hf0 hg0 hfnn hgnn haff hf_deg1
   exact pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg hright hfnn
 
@@ -1499,7 +1465,7 @@ theorem posComboSameDegreePairHasCommonInterleaver_of_natDegree_le_two
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   by_cases hle : f.natDegree ≤ 1
   · exact
-      posComboNoCommonSameDegreePairHasCommonInterleaver_of_degree_le_one
+      pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
         hf_pos hg_pos hdeg hle
   · have htwo : f.natDegree = 2 := by lia
     have hf_split : f.Splits :=

@@ -717,9 +717,9 @@ macro_rules
         head_neg := $hb_neg:term) =>
       `(tactic|
         rr_first_exact_or_simpa
-          (RealRooted.strictInterl_lw_two_strict_of_neg
+          (RealRooted.MaWangInternal.strictInterl_of_interlaces_evalCoeff_neg
             $hgf $hg_pos $hF_pos $hdeg_lo $hdeg_hi $hno $hb_neg),
-          (RealRooted.strictInterl_lw_two_strict_of_neg
+          (RealRooted.MaWangInternal.strictInterl_of_interlaces_evalCoeff_neg
             $hgf $hg_pos
             (rr_lw_simpa $hF_pos)
             (rr_lw_simpa $hdeg_lo)
@@ -736,9 +736,9 @@ macro_rules
         head_neg := $hb_neg:term) =>
       `(tactic|
         rr_first_exact_or_simpa
-          (RealRooted.strictInterl_lw_two_strict_same_of_neg
+          (RealRooted.MaWangInternal.strictInterl_of_interlaces_evalCoeff_neg_same
             $hgf $hg_pos $hF_pos $hdeg $hno $hb_neg),
-          (RealRooted.strictInterl_lw_two_strict_same_of_neg
+          (RealRooted.MaWangInternal.strictInterl_of_interlaces_evalCoeff_neg_same
             $hgf $hg_pos
             (rr_lw_simpa $hF_pos)
             (rr_lw_simpa $hdeg)
@@ -754,9 +754,9 @@ macro_rules
         head_neg := $hb_neg:term) =>
       `(tactic|
         rr_first_exact_or_simpa
-          (RealRooted.strictInterl_lw_two_strict_succ_of_neg
+          (RealRooted.MaWangInternal.strictInterl_of_interlaces_evalCoeff_neg_succ
             $hgf $hg_pos $hF_pos $hdeg $hno $hb_neg),
-          (RealRooted.strictInterl_lw_two_strict_succ_of_neg
+          (RealRooted.MaWangInternal.strictInterl_of_interlaces_evalCoeff_neg_succ
             $hgf $hg_pos
             (rr_lw_simpa $hF_pos)
             (rr_lw_simpa $hdeg)

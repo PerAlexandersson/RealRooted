@@ -29,11 +29,6 @@ theorem roots_eq_zero_cons_divX_of_coeff_zero {f : ℝ[X]}
   conv_lhs => rw [hX]
   rw [Polynomial.roots_mul hne, Polynomial.roots_X, Multiset.singleton_add]
 
-theorem roots_eq_zero_cons_divX_of_coeff_zero' {f : ℝ[X]}
-    (hf : f ≠ 0) (hf0 : f.coeff 0 = 0) :
-    f.roots = 0 ::ₘ f.divX.roots :=
-  roots_eq_zero_cons_divX_of_coeff_zero hf hf0
-
 /-- List-free additive root-count form of `roots_eq_zero_cons_divX_of_coeff_zero`. -/
 lemma card_divX_roots_succ_eq_card_roots_of_coeff_zero {g : ℝ[X]}
     (hg : g ≠ 0) (hg0 : g.coeff 0 = 0) :
@@ -672,15 +667,6 @@ theorem rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
     divX_realRooted_of_strictInterl_coeff_zero hstrictInterl hg0,
     zero_mem_roots_of_strictInterl_coeff_zero hstrictInterl hg0,
     divX_roots_nonpos_of_strictInterl_hasNonnegCoeffs hstrictInterl hgnn hg0⟩
-
-/-- Orientation projection from the bundled right-zero degree-drop package. -/
-theorem rightZeroDivX_interl_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    {f g : ℝ[X]}
-    (hstrictInterl : StrictInterl f g) (hgnn : HasNonnegCoeffs g)
-    (hg0 : g.coeff 0 = 0) (hdeg : g.natDegree = f.natDegree + 1) :
-    Interl (g.divX) f :=
-  (rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    hstrictInterl hgnn hg0 hdeg).1
 
 /-- Real-rooted projection from the bundled right-zero degree-drop package. -/
 theorem rightZeroDivX_realRooted_of_strictInterl_of_hasNonnegCoeffs_coeff_zero

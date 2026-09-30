@@ -56,7 +56,7 @@ theorem strictInterl_positive_euler_lag_sequence
           StrictInterl.add_of_right_of_posLeadingCoeff
             hderivative hlag hderivative_pos hlag_pos
       exact
-        strictInterl_of_strictInterl_mul_X_of_nonneg hsum (hnonneg (n + 1)) (hnonneg (n + 2))
+        strictInterl_of_strictInterl_X_mul_of_nonneg hsum (hnonneg (n + 1)) (hnonneg (n + 2))
 
 /-- Default proved PF preservation for the `l`-fold iterate of `theta + 1`. -/
 theorem isPFPolynomial_iterateThetaPlusOne

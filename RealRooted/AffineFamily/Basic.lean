@@ -65,20 +65,10 @@ lemma isRealRooted_of_self_2x2 (p : ℝ[X])
   have hdiv : p ∣ (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p) := by simp
   exact isRealRooted_of_dvd hcombo_rr.1 hcombo_rr.2 hp0 hdiv
 
-lemma strictInterl_self_mul_X_of_nonneg {f : ℝ[X]}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hfnn : HasNonnegCoeffs f) :
-    StrictInterl f (X * f) :=
-  strictInterl_self_X_mul_of_nonneg hf_ne hf_splits hfnn
-
 lemma strictInterl_to_strictInterl_mul_X_of_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     StrictInterl g (X * f) :=
   strictInterl_to_X_mul_of_nonneg h hfnn hgnn
-
-lemma strictInterl_of_strictInterl_mul_X_of_nonneg {f g : ℝ[X]}
-    (h : StrictInterl g (X * f)) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    StrictInterl f g :=
-  strictInterl_of_strictInterl_X_mul_of_nonneg h hfnn hgnn
 
 theorem isRealRooted_affine_combo_of_strictInterl_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -88,7 +78,7 @@ theorem isRealRooted_affine_combo_of_strictInterl_nonneg {f g : ℝ[X]}
   have hg : (g ≠ 0 ∧ g.Splits) := h.2.1
   have hXf : ((X * f) ≠ 0 ∧ (X * f).Splits) := isRealRooted_X_mul hf.1 hf.2
   have hg_Xf : StrictInterl g (X * f) := strictInterl_to_strictInterl_mul_X_of_nonneg h hfnn hgnn
-  have hf_Xf : StrictInterl f (X * f) := strictInterl_self_mul_X_of_nonneg hf.1 hf.2 hfnn
+  have hf_Xf : StrictInterl f (X * f) := strictInterl_self_X_mul_of_nonneg hf.1 hf.2 hfnn
   have hsXf : StrictInterl (C s * (X * f)) (X * f) :=
     StrictInterl.C_mul_self hXf.1 hXf.2 hs.ne'
   have htf : StrictInterl (C t * f) (X * f) := StrictInterl.C_mul_left hf_Xf ht.ne'
@@ -119,14 +109,14 @@ theorem has2x2InterlacingProperty_sameColumn_of_strictInterl_nonneg {f g : ℝ[X
   have hrr := isRealRooted_affine_combo_of_strictInterl_nonneg h hfnn hgnn hs ht
   exact StrictInterl.refl hrr.1 hrr.2
 
-@[deprecated strictInterl_self_mul_X_of_nonneg (since := "2026-09-18")]
-alias prec_self_mul_X_of_nonneg := strictInterl_self_mul_X_of_nonneg
+@[deprecated strictInterl_self_X_mul_of_nonneg (since := "2026-09-18")]
+alias prec_self_mul_X_of_nonneg := strictInterl_self_X_mul_of_nonneg
 
 @[deprecated strictInterl_to_strictInterl_mul_X_of_nonneg (since := "2026-09-18")]
 alias prec_to_prec_mul_X_of_nonneg := strictInterl_to_strictInterl_mul_X_of_nonneg
 
-@[deprecated strictInterl_of_strictInterl_mul_X_of_nonneg (since := "2026-09-18")]
-alias prec_of_prec_mul_X_of_nonneg := strictInterl_of_strictInterl_mul_X_of_nonneg
+@[deprecated strictInterl_of_strictInterl_X_mul_of_nonneg (since := "2026-09-18")]
+alias prec_of_prec_mul_X_of_nonneg := strictInterl_of_strictInterl_X_mul_of_nonneg
 
 @[deprecated isRealRooted_affine_combo_of_strictInterl_nonneg (since := "2026-09-18")]
 alias isRealRooted_affine_combo_of_prec_nonneg :=

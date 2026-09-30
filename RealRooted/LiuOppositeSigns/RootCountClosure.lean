@@ -171,7 +171,7 @@ theorem RootCountCompatible.of_forall_pos_exists_close_sameDegreeCompatible
     exact hqq'.length_eq.symm
   have hdeg' : q'.natDegree = p'.natDegree := by rw [hqdeg, hpdeg, hdeg]
   have hcount' :=
-    sameDegreeRootCountAbove_of_nonRoot_bound hp'_ne hq'_ne
+    rootCountAbove_diff_le_one_of_nonRoot_isRoot hp'_ne hq'_ne
       (fun x hpx hqx =>
         hcompat'.rootCountAbove_bounds_of_nonRoot hp'_ne hq'_ne hpx hqx)
   exact ⟨rootSeqDesc p', rootSeqDesc q', hpp', hqq',
@@ -212,7 +212,7 @@ theorem RootCountCompatible.of_forall_pos_exists_close_succDegreeCompatible
     exact hqq'.length_eq.symm
   have hdeg' : q'.natDegree = p'.natDegree + 1 := by rw [hqdeg, hpdeg, hdeg]
   have hcount' :=
-    sameDegreeRootCountAbove_of_nonRoot_bound hp'_ne hq'_ne
+    rootCountAbove_diff_le_one_of_nonRoot_isRoot hp'_ne hq'_ne
       (fun x hpx hqx =>
         hcompat'.rootCountAbove_bounds_of_nonRoot hp'_ne hq'_ne hpx hqx)
   exact ⟨rootSeqDesc p', rootSeqDesc q', hpp', hqq',

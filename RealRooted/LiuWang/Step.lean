@@ -56,59 +56,6 @@ theorem strictInterl_lw_two_of_nonpos_of_recurrence {f g F a b : ℝ[X]}
     (by rw [← hrec, ← hdeg_succ])
     hno hb_nonpos
 
-/-- Strict two-polynomial Liu--Wang wrapper with no tail summands. -/
-theorem strictInterl_lw_two_strict_of_neg {f g a b : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hF_pos : HasPosLeadingCoeff (a * f + b * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + b * g).natDegree)
-    (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    StrictInterl f (a * f + b * g) := by
-  simpa [polynomialWeightedSum] using
-    (strictInterl_generalizedLiuWang_strict
-      (l := ([] : List (ℝ[X] × ℝ[X])))
-      hgf hg_pos (by simp) (by simp) (by simp)
-      (by simpa [polynomialWeightedSum] using hF_pos)
-      (by simpa [polynomialWeightedSum] using hdeg_lo)
-      (by simpa [polynomialWeightedSum] using hdeg_hi)
-      hno hb_neg)
-
-/-- Strict same-degree two-polynomial Liu--Wang wrapper. -/
-theorem strictInterl_lw_two_strict_same_of_neg {f g a b : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hF_pos : HasPosLeadingCoeff (a * f + b * g))
-    (hdeg : (a * f + b * g).natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    StrictInterl f (a * f + b * g) := by
-  simpa [polynomialWeightedSum] using
-    (strictInterl_generalizedLiuWang_strict_same
-      (l := ([] : List (ℝ[X] × ℝ[X])))
-      hgf hg_pos (by simp) (by simp) (by simp)
-      (by simpa [polynomialWeightedSum] using hF_pos)
-      (by simpa [polynomialWeightedSum] using hdeg)
-      hno hb_neg)
-
-/-- Strict successor-degree two-polynomial Liu--Wang wrapper. -/
-theorem strictInterl_lw_two_strict_succ_of_neg {f g a b : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hF_pos : HasPosLeadingCoeff (a * f + b * g))
-    (hdeg : (a * f + b * g).natDegree = f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    StrictInterl f (a * f + b * g) := by
-  simpa [polynomialWeightedSum] using
-    (strictInterl_generalizedLiuWang_strict_succ
-      (l := ([] : List (ℝ[X] × ℝ[X])))
-      hgf hg_pos (by simp) (by simp) (by simp)
-      (by simpa [polynomialWeightedSum] using hF_pos)
-      (by simpa [polynomialWeightedSum] using hdeg)
-      hno hb_neg)
-
 /-- Strict two-polynomial Liu--Wang wrapper with an explicit degree branch. -/
 theorem strictInterl_lw_two_strict_branch_of_neg {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
@@ -121,8 +68,10 @@ theorem strictInterl_lw_two_strict_branch_of_neg {f g a b : ℝ[X]}
     (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
     StrictInterl f (a * f + b * g) := by
   rcases hdegree with hsame | hsucc
-  · exact strictInterl_lw_two_strict_same_of_neg hgf hg_pos hF_pos hsame hno hb_neg
-  · exact strictInterl_lw_two_strict_succ_of_neg hgf hg_pos hF_pos hsucc hno hb_neg
+  · exact MaWangInternal.strictInterl_of_interlaces_evalCoeff_neg_same hgf hg_pos hF_pos hsame
+      hno hb_neg
+  · exact MaWangInternal.strictInterl_of_interlaces_evalCoeff_neg_succ hgf hg_pos hF_pos hsucc
+      hno hb_neg
 
 /-- Positive `t`-lag Liu--Wang step, using an explicit nonpositive-root
 certificate for the current polynomial. -/

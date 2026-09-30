@@ -161,7 +161,7 @@ macro_rules
       rr_succDegree_pair_common_interleaver_rootCountAboveNonRoot using
         root_count_above := $hcount:term) =>
       `(tactic|
-        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
           $hcount)
   | `(tactic|
       rr_succDegree_pair_common_interleaver_closedSegmentCountEq using

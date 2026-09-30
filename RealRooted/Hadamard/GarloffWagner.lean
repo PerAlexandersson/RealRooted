@@ -117,12 +117,6 @@ theorem garloffWagnerHadamardNonnegInterl {f g p q : ℝ[X]}
   gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
 
 
-/-- Linear-factor sanity check for the orientation used in
-`garloffWagnerHadamardNonnegInterl`. -/
-theorem garloffWagnerHadamard_linear_orientation_sanity {a b : ℝ} :
-    StrictInterl (X + C b) (X + C a) ↔ a ≤ b :=
-  StrictInterl.X_add_C_iff
-
 @[deprecated garloffWagnerHadamardNonnegInterl (since := "2026-09-18")]
 alias garloffWagnerHadamardNonnegPrec := garloffWagnerHadamardNonnegInterl
 

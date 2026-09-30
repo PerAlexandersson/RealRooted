@@ -493,7 +493,7 @@ theorem pairHasCommonInterleaver_of_sameDegree {f g : ℝ[X]}
           (g.roots.filter (x < ·)).card ≤ 1 ∧
         ((g.roots.filter (x < ·)).card : ℤ) -
           (f.roots.filter (x < ·)).card ≤ 1 :=
-    sameDegreeRootCountAbove_of_nonRoot_bound
+    rootCountAbove_diff_le_one_of_nonRoot_isRoot
       h.left_pos.ne_zero h.right_pos.ne_zero
       (fun _ hfx hgx => h.rootCountAbove_bounds_of_nonRoot hfx hgx)
   have hcross :=
@@ -524,7 +524,7 @@ theorem pairHasCommonInterleaver_of_succDegree {f g : ℝ[X]}
           (g.roots.filter (x < ·)).card ≤ 1 ∧
         ((g.roots.filter (x < ·)).card : ℤ) -
           (f.roots.filter (x < ·)).card ≤ 1 :=
-    sameDegreeRootCountAbove_of_nonRoot_bound
+    rootCountAbove_diff_le_one_of_nonRoot_isRoot
       h.left_pos.ne_zero h.right_pos.ne_zero
       (fun _ hfx hgx => h.rootCountAbove_bounds_of_nonRoot hfx hgx)
   have hcross :=

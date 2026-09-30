@@ -31,63 +31,6 @@ theorem interlaces_of_quadratic_cubic_root_lists
     hf_ne hf_splits hg_ne hg_splits hfdeg hgdeg hf_roots hg_roots
     hab hbc huv hau hub hbv hvc
 
-/-- Differ-by-one interlacing for a cubic whose roots lie between the ordered
-roots of a quartic. -/
-theorem interlaces_of_cubic_quartic_root_lists
-    {g f : ℝ[X]} {a b c d u v w : ℝ}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hfdeg : f.natDegree = 4) (hgdeg : g.natDegree = 3)
-    (hf_roots : f.roots = (↑[a, b, c, d] : Multiset ℝ))
-    (hg_roots : g.roots = (↑[u, v, w] : Multiset ℝ))
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d)
-    (huv : u ≤ v) (hvw : v ≤ w)
-    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
-    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d) :
-    Interlaces g f :=
-  Interlaces.of_cubic_quartic_root_lists
-    hf_ne hf_splits hg_ne hg_splits hfdeg hgdeg hf_roots hg_roots
-    hab hbc hcd huv hvw hau hub hbv hvc hcw hwd
-
-/-- Differ-by-one interlacing for a quartic whose roots lie between the
-ordered roots of a quintic. -/
-theorem interlaces_of_quartic_quintic_root_lists
-    {g f : ℝ[X]} {a b c d e u v w z : ℝ}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hfdeg : f.natDegree = 5) (hgdeg : g.natDegree = 4)
-    (hf_roots : f.roots = (↑[a, b, c, d, e] : Multiset ℝ))
-    (hg_roots : g.roots = (↑[u, v, w, z] : Multiset ℝ))
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
-    (huv : u ≤ v) (hvw : v ≤ w) (hwz : w ≤ z)
-    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
-    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d)
-    (hdz : d ≤ z) (hze : z ≤ e) :
-    Interlaces g f :=
-  Interlaces.of_quartic_quintic_root_lists
-    hf_ne hf_splits hg_ne hg_splits hfdeg hgdeg hf_roots hg_roots
-    hab hbc hcd hde huv hvw hwz hau hub hbv hvc hcw hwd hdz hze
-
-/-- Differ-by-one interlacing for a quintic whose roots lie between the ordered
-roots of a sextic. -/
-theorem interlaces_of_quintic_sextic_root_lists
-    {g f : ℝ[X]} {a b c d e r u v w z y : ℝ}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hfdeg : f.natDegree = 6) (hgdeg : g.natDegree = 5)
-    (hf_roots : f.roots = (↑[a, b, c, d, e, r] : Multiset ℝ))
-    (hg_roots : g.roots = (↑[u, v, w, z, y] : Multiset ℝ))
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
-    (her : e ≤ r)
-    (huv : u ≤ v) (hvw : v ≤ w) (hwz : w ≤ z) (hzy : z ≤ y)
-    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
-    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d)
-    (hdz : d ≤ z) (hze : z ≤ e) (hey : e ≤ y) (hyr : y ≤ r) :
-    Interlaces g f :=
-  Interlaces.of_quintic_sextic_root_lists
-    hf_ne hf_splits hg_ne hg_splits hfdeg hgdeg hf_roots hg_roots
-    hab hbc hcd hde her huv hvw hwz hzy hau hub hbv hvc hcw hwd hdz hze hey hyr
-
 /-- Exact factorization of the `G_6` auxiliary polynomial. -/
 theorem auxiliaryG_six_factor :
     FiniteSkewBoard.auxiliaryG 6 =
@@ -907,7 +850,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_roots
     (hey : e ≤ auxiliaryG_six_root4) (hyr : auxiliaryG_six_root4 ≤ r) :
     Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
   rcases auxiliaryG_six_root_order_named with ⟨huv, hvw, hwz, hzy⟩
-  exact interlaces_of_quintic_sextic_root_lists
+  exact Interlaces.of_quintic_sextic_root_lists
     modifiedNarayanaPolynomial_six_ne_zero modifiedNarayanaPolynomial_six_splits
     auxiliaryG_six_ne_zero auxiliaryG_six_splits
     modifiedNarayanaPolynomial_six_natDegree auxiliaryG_six_natDegree
