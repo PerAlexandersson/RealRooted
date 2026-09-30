@@ -375,7 +375,7 @@ private theorem schurSzegoComp_pf_disc_arith
       mul_nonneg (sq_nonneg (b * e)) (mul_pos hNpos hN1).le]
   · have hmul : 4 * (a * c) * (2 * N * (d * g)) ≤
         b ^ 2 * ((N - 1) * e ^ 2) :=
-      mul_le_mul hfd hpd (by nlinarith [hdg, hNpos.le]) (sq_nonneg b)
+      mul_le_mul hfd hpd (by positivity) (sq_nonneg b)
     linarith [mul_le_mul_of_nonneg_right hmul hNpos.le, sq_nonneg (b * e)]
 
 /-- **Schur--Szego discriminant inequality with a degree-`≤ 2` PF factor.**

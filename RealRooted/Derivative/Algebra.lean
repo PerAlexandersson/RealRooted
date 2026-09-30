@@ -60,7 +60,7 @@ protected lemma HasPosLeadingCoeff.derivative {f : ℝ[X]}
   unfold HasPosLeadingCoeff at hf_pos ⊢
   rw [leadingCoeff, f.natDegree_derivative, coeff_derivative]
   rw [Nat.sub_add_cancel (by lia), coeff_natDegree] at *
-  nlinarith
+  positivity
 
 lemma HasNonnegCoeffs.iterate_derivative {p : ℝ[X]} :
     ∀ n : ℕ, HasNonnegCoeffs p → HasNonnegCoeffs ((derivative^[n]) p)
