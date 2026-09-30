@@ -89,35 +89,6 @@ def PosComboNoCommonBoundaryRightPairOrientationStatement : Prop :=
     ∀ ⦃t : ℝ⦄, 0 < t →
       StrictInterl (C t * f + g) (X * f) ∨ StrictInterl (X * f) (C t * f + g)
 
-/-- Strong shifted-pair formulation for the same-degree no-common branch after
-the affine/boundary counterexample.  It remains a named conditional hypothesis;
-the downstream bridge now uses the common-right-interleaver target below as the
-weaker endpoint. -/
-def PosComboNoCommonSameDegreeShiftedPairOrientationStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    StrictInterl f (g + X * f)
-
-/-- Legacy fixed-orientation same-degree target in the nonnegative no-common
-regime.  It is retained for older reductions, but the repaired bridge no
-longer treats this as the required same-degree endpoint. -/
-def PosComboNoCommonSameDegreeOrientationNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    StrictInterl f g
-
 /-- Strong same-degree no-common alternative in the nonnegative regime.  This
 weakens the fixed orientation, but it is still stronger than the repaired
 common-right-interleaver endpoint below. -/

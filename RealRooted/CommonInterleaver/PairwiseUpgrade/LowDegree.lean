@@ -67,18 +67,6 @@ theorem family_ne_zero_and_splits_of_natDegree_le_one
     isRealRooted_of_natDegree_le_one
       ((hpos f hf).ne_zero) (hdeg f hf)
 
-/-- Therefore any finite positive-leading family of degree at most one already
-has a global common right interleaver. -/
-theorem hasCommonInterleaver_of_natDegree_le_one
-    {fs : List ℝ[X]}
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
-    HasCommonInterleaver fs := by
-  let hrr := family_ne_zero_and_splits_of_natDegree_le_one hpos hdeg
-  exact
-    commonInterleaverFamilyUpgrade
-      (fun f hf => (hrr f hf).2) hpos (pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg)
-
 /-- Positive-leading degree-`≤ 1` families already have a global common left
 interleaver. -/
 theorem hasCommonLeftInterleaver_of_natDegree_le_one

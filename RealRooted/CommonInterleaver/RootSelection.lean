@@ -260,25 +260,6 @@ theorem exists_mem_largestRoot_le_weightedSum :
           exact ⟨(a, p), by simp, ha_pos, rp, rp, hrp,
             by simpa [weightedSum_cons, hzero_tail] using hrp.C_mul ha_pos.ne', le_rfl⟩
 
-/-- Unweighted finite-family MSS selection. -/
-theorem exists_mem_largestRoot_le_sum
-    {fs : List ℝ[X]} {d : ℕ}
-    (hcommon : HasCommonLeftInterlacerOfDegree fs d)
-    (hdeg : ∀ p ∈ fs, p.natDegree = d)
-    (hpos : ∀ p ∈ fs, HasPosLeadingCoeff p)
-    (hne : fs ≠ []) :
-    ∃ p ∈ fs, ∃ rp rsum, IsLargestRoot p rp ∧
-      IsLargestRoot fs.sum rsum ∧ rp ≤ rsum := by
-  rcases hcommon with ⟨h, hh_deg, hstrictInterl⟩
-  obtain ⟨ap, hap, _, rp, rsum, hrp, hrsum, hle⟩ :=
-    exists_mem_largestRoot_le_weightedSum
-      (l := fs.map fun p => ((1 : ℝ), p)) hh_deg
-      (by simp) (by simp_all) (by simp_all) (by simp_all) (by
-        rcases List.exists_mem_of_ne_nil fs hne with ⟨p, hp⟩
-        exact ⟨(1, p), by simp [hp]⟩)
-  rcases List.mem_map.mp hap with ⟨p, hp, rfl⟩
-  exact ⟨p, hp, rp, rsum, hrp, by simpa using hrsum, hle⟩
-
 @[deprecated StrictInterl.eval_neg_of_left_top_gap (since := "2026-09-16")]
 theorem Prec.eval_neg_of_left_top_gap {h p : ℝ[X]} {x : ℝ}
     (hhp : StrictInterl h p) (hdeg : h.natDegree + 1 = p.natDegree)

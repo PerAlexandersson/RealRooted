@@ -33,48 +33,6 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCo
   · exact hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno
   · exact hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
 
-/-- Honest no-common degree-split reduction of the common-interleaver bridge
-in the nonnegative regime: the same-degree branch only needs the Obreschkoff
-alternative, while the succ-degree branch only asks for a common interleaver.
--/
-theorem posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
-    hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-
-/-- Repaired no-common degree-split reduction with the succ-degree branch
-discharged by the affine-family bridge.  After this reduction, the only
-remaining local branch is the same-degree common-interleaver statement. -/
-theorem posComboNoCommonPairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    hsame
-    (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
-    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-
 private theorem posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonnegCoeffs_ordered
     (hterminal :
       ∀ ⦃f g : ℝ[X]⦄,
@@ -200,65 +158,6 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
           (PosComboRealRooted.comm hfg) hdeg' hclose_left hfdeg with
       ⟨h, hg_strictInterl, hf_strictInterl⟩
     exact ⟨h, hf_strictInterl, hg_strictInterl⟩
-
-/-- Ordered nonnegative-coefficient degree-`≤ 2` pair endpoint.  Shared roots
-are factored out recursively, and the terminal no-common-root case is the
-checked low-degree root-crossing endpoint. -/
-theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboPairHasCommonInterleaver_of_natDegree_le_reduction
-    (N := 2)
-    (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
-      posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
-        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
-    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
-
-/-- Nonnegative-coefficient degree-`≤ 2` pair endpoint, with no degree order
-assumption. -/
-theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hfdeg : f.natDegree ≤ 2)
-    (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
-    (N := 2)
-    (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
-      posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
-        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
-    hf_pos hg_pos hfnn hgnn hfg hfdeg hgdeg
-
-private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs_ordered
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonnegCoeffs_ordered
-    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno =>
-      posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
-        hsame hsucc (f := f) (g := g)
-        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno)
-    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
 /-- Internal ordered degree-split bridge for the endpoint layer. -/
 protected theorem

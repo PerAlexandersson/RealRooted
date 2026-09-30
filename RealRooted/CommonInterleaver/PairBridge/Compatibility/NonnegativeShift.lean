@@ -177,24 +177,6 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
       posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
         hsame hsucc (f := F) (g := G) hF_pos hG_pos hFnn hGnn hFG)
 
-/-- Translation reduces the full positive-leading compatibility bridge to the
-nonnegative-coefficient degree-split package: shift both polynomials far enough
-to the right so all roots become nonpositive, apply the nonnegative theorem,
-then translate the common interleaver back. -/
-theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
-    {f g : ℝ[X]}
-    (_hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits)
-    (_hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
-    hsucc _hf_rr_ne hf_rr_splits _hg_rr_ne hg_rr_splits hf_pos hg_pos hfg
-
 private theorem compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
     (hbridge :
       ∀ ⦃f g : ℝ[X]⦄,
@@ -267,26 +249,6 @@ theorem compatiblePairHasCommonInterleaver_of_rootCount
     (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hsucc)
 
-/-- Shifted compatibility bridge from same-degree lower-threshold root counts
-and succ-degree upper-threshold root counts. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCountAbove
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hsucc)
-
-/-- Shifted compatibility bridge from same-degree upper-threshold root counts
-and succ-degree lower-threshold root counts. -/
-theorem compatiblePairHasCommonInterleaver_of_sameRootCountAbove
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hsame)
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hsucc)
-
 /-- Shifted compatibility bridge from upper-threshold root-count formulations
 in both the same-degree and succ-degree branches. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBoth
@@ -307,28 +269,6 @@ theorem compatiblePairHasCommonInterleaver_of_rootCountNonRoot
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hsucc)
 
-/-- Shifted compatibility bridge from same-degree common-non-root
-lower-threshold root counts and succ-degree common-non-root upper-threshold
-root counts. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCountAboveNonRoot
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot hsucc)
-
-/-- Shifted compatibility bridge from same-degree common-non-root
-upper-threshold root counts and succ-degree common-non-root lower-threshold
-root counts. -/
-theorem compatiblePairHasCommonInterleaver_of_sameRootCountAboveNonRoot
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hsame)
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hsucc)
-
 /-- Shifted compatibility bridge from common-non-root upper-threshold root-count
 formulations in both branches. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
@@ -338,88 +278,5 @@ theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
   compatiblePairHasCommonInterleaver_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot hsucc)
-
-/-- Shifted compatibility bridge from root-crossing formulations, with the
-succ-degree left endpoint supplied by the PF/ASW route. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCrossing_and_forward_asw
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
-    hsame (PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW) hsucc
-
-/-- Shifted compatibility bridge from root-crossing formulations, with the
-succ-degree left endpoint supplied by the splitting-only ASW target. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCrossing_and_forward_asw_splits
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing_and_forward_asw
-    hsame (aissenSchoenbergWhitneyForwardOrZero_of_splits hASW) hsucc
-
-/-- Translation reduces the full positive-leading compatibility bridge to the
-nonnegative-coefficient degree-split package: shift both polynomials far enough
-to the right so all roots become nonpositive, apply the nonnegative theorem,
-then translate the common interleaver back. -/
-theorem compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
-    hsucc
-
-/-- Shifted positive-leading compatibility bridge with the succ-degree branch
-discharged by the affine-family bridge.  This leaves only the same-degree
-orientation alternative as an external hypothesis. -/
-theorem compatiblePairHasCommonInterleaver_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
-    hsame
-    (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
-
-/-- Shifted positive-leading compatibility bridge with the succ-degree branch
-discharged by the affine-family bridge and the same-degree branch stated in the
-repaired common-right-interleaver form. -/
-theorem compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    hsame
-    (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
-
-/-- The stronger boundary-right-pair orientation hypothesis already finishes
-the positive-leading positive-combination bridge after the nonnegative shift
-reduction, provided the summands are individually real-rooted. -/
-theorem posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
-    {f g : ℝ[X]}
-    (hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits) (hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
-    (boundaryRightPairOrientation_implies_sameDegreeOrientationAlternative_nonneg
-      hboundary)
-    (succDegreePairHasCommonInterleaver_nonneg_of_boundaryRightPairOrientation
-      hboundary)
-    hf_rr_ne hf_rr_splits hg_rr_ne hg_rr_splits hf_pos hg_pos hfg
-
-/-- The stronger boundary-right-pair orientation hypothesis already finishes
-the full positive-leading compatibility bridge after the nonnegative shift
-reduction. -/
-theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
-    (boundaryRightPairOrientation_implies_sameDegreeOrientationAlternative_nonneg
-      hboundary)
-    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
 
 end RealRooted

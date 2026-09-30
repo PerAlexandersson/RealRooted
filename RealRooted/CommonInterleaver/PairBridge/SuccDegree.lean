@@ -1,6 +1,5 @@
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCount
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCrossing
 
 /-!
 # Pair bridge succ-degree reductions
