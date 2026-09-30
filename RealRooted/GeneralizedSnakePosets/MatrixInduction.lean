@@ -27,49 +27,6 @@ def theorem41StepMatrix (P G : ℕ → ℝ[X]) (m : ℕ) : List (List ℝ[X]) :=
     (theorem41StepMatrix P G m).length = 2 := by
   simp [theorem41StepMatrix]
 
-/-- Each row of the Braun-Jal step matrix has length two. -/
-theorem theorem41StepMatrix_rect (P G : ℕ → ℝ[X]) (m : ℕ) :
-    ∀ row ∈ theorem41StepMatrix P G m, row.length = 2 := by
-  intro row hrow
-  have hrow' :
-      row = [P (m - 1), G (m - 1)] ∨
-        row = [narayanaDifference P m, auxiliaryDifference G m] := by
-    simpa [theorem41StepMatrix] using hrow
-  rcases hrow' with rfl | rfl <;> simp
-
-/-- Entrywise nonnegativity for the Braun-Jal step matrix. -/
-theorem theorem41StepMatrix_entry_nonneg {P G : ℕ → ℝ[X]} {m : ℕ}
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hQ_nonneg : HasNonnegCoeffs (narayanaDifference P m))
-    (hH_nonneg : HasNonnegCoeffs (auxiliaryDifference G m)) :
-    ∀ row ∈ theorem41StepMatrix P G m, ∀ p ∈ row, HasNonnegCoeffs p := by
-  intro row hrow p hp
-  have hrow' :
-      row = [P (m - 1), G (m - 1)] ∨
-        row = [narayanaDifference P m, auxiliaryDifference G m] := by
-    simpa [theorem41StepMatrix] using hrow
-  rcases hrow' with rfl | rfl
-  · have hp' : p = P (m - 1) ∨ p = G (m - 1) := by simpa using hp
-    rcases hp' with rfl | rfl
-    · exact hP_nonneg (m - 1)
-    · exact hG_nonneg (m - 1)
-  · have hp' :
-        p = narayanaDifference P m ∨ p = auxiliaryDifference G m := by
-      simpa using hp
-    rcases hp' with rfl | rfl
-    · exact hQ_nonneg
-    · exact hH_nonneg
-
-/-- The step matrix action gives the two recurrence sums appearing in the
-nonconstant induction step. -/
-theorem theorem41StepMatrix_action_pair
-    (P G : ℕ → ℝ[X]) (m : ℕ) (f g : ℝ[X]) :
-    matPolyAction (theorem41StepMatrix P G m) [f, X * g] =
-      [f * P (m - 1) + X * g * G (m - 1),
-        f * narayanaDifference P m + X * g * auxiliaryDifference G m] := by
-  simp [theorem41StepMatrix, matPolyAction, mul_comm, mul_left_comm]
-
 /-- The induction hypothesis `g << f` makes `[f, X * g]` a nonnegative
 interlacing input sequence. -/
 theorem theorem41InputPair_interlacingSeqNonneg {f g : ℝ[X]}
@@ -411,70 +368,6 @@ theorem theorem41_of_strictInterl_step
   intro w hw
   exact hmain w.length w rfl hw
 
-/-- Length-induction route from Claim `(7)` to Braun-Jal Theorem 4.1.
-
-The remaining hypotheses expose the parts not proved by the matrix step:
-constant words, the infinite `m = 1` final-suffix family, and the degree bridge
-used to turn `StrictInterl` into `Interlaces`. -/
-theorem theorem41_of_claim7_of_base_cases
-    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
-    (hclaim : Theorem41Claim7Statement P G)
-    (hP : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (P (m - 1)) (P m))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
-    (hdeg :
-      ∀ {w : SnakeWord}, 1 ≤ w.length →
-        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hconst :
-      ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
-        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w))
-    (hstepOne :
-      ∀ {w : SnakeWord} {k : ℕ}, 1 ≤ w.length → ¬ w.IsConstant →
-        w.IsLastChangeIndex k → w.length - (k + 1) = 1 →
-          (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w)) :
-    Theorem41NonNestingRookStatement M := by
-  refine theorem41_of_strictInterl_step (M := M) ?_ hdeg hconst
-  intro w k hconstw hlast hprefix_strictInterl
-  by_cases hk : k + 1 < w.deleteFinal.length
-  · exact theorem41NonconstantStep_strictInterl_of_claim7
-      (M := M) (P := P) (G := G) (w := w) (k := k)
-      hrec hclaim hlast hk hP hG hprefix_strictInterl hP_nonneg hG_nonneg hM_nonneg
-  · have hw : 1 ≤ w.length :=
-      Nat.succ_le_of_lt (lt_of_le_of_lt (Nat.zero_le k) hlast.index_lt_length)
-    have hsuffix : w.length - (k + 1) = 1 := by
-      rw [SnakeWord.length_deleteFinal] at hk
-      have hlast_suffix := hlast.succ_lt_length
-      lia
-    exact (hstepOne hw hconstw hlast hsuffix).2.toStrictInterl
-
-/-- Constant-word branch from a length-model identity.
-
-If constant words evaluate to the family `P` at their length, then consecutive
-interlacing for `P` proves the whole positive-length constant-word branch of
-Theorem 4.1. -/
-theorem theorem41_constant_of_matches_length
-    {M : SnakeWord → ℝ[X]} {P : ℕ → ℝ[X]}
-    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P w.length)
-    (hP_interlaces : ∀ {n : ℕ}, 1 ≤ n → Interlaces (P (n - 1)) (P n)) :
-    ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
-      (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) := by
-  intro w hw hconstw
-  have hdel_const : w.deleteFinal.IsConstant := hconstw.deleteFinal
-  have hlen_del : w.deleteFinal.length = w.length - 1 :=
-    SnakeWord.length_deleteFinal w
-  have hinter : Interlaces (P (w.length - 1)) (P w.length) :=
-    hP_interlaces hw
-  have hright : M w ≠ 0 ∧ (M w).Splits := by simpa [hM_const (w := w) hconstw] using hinter.1
-  have hinter_M : Interlaces (M w.deleteFinal) (M w) := by
-    rw [hM_const (w := w) hconstw]
-    rw [hM_const (w := w.deleteFinal) hdel_const]
-    rw [hlen_del]
-    exact hinter
-  exact ⟨hright, hinter_M⟩
-
 /-- Constant-word branch from a successor-length model identity.
 
 This is the indexing used by the concrete Braun--Jal snake boards: the empty
@@ -612,68 +505,6 @@ theorem theorem41_of_matrixClaim_of_constant_matches_succ_length
     hP_nonneg hG_nonneg hQ_nonneg hH_nonneg hM_nonneg hdeg hconst
     (w := w) hw
 
-/-- The deletion degree bridge follows from the length-indexed degree formula
-for the whole snake-word family. -/
-theorem theorem41_degree_bridge_of_natDegree_length
-    {M : SnakeWord → ℝ[X]}
-    (hdegM : ∀ w : SnakeWord, (M w).natDegree = w.length) :
-    ∀ {w : SnakeWord}, 1 ≤ w.length →
-      (M w.deleteFinal).natDegree + 1 = (M w).natDegree := by
-  intro w hw
-  rw [hdegM w.deleteFinal, hdegM w, SnakeWord.length_deleteFinal]
-  lia
-
-/-- The deletion degree bridge follows from the successor-length degree formula
-for the whole snake-word family. -/
-theorem theorem41_degree_bridge_of_natDegree_succ_length
-    {M : SnakeWord → ℝ[X]}
-    (hdegM : ∀ w : SnakeWord, (M w).natDegree = w.length + 1) :
-    ∀ {w : SnakeWord}, 1 ≤ w.length →
-      (M w.deleteFinal).natDegree + 1 = (M w).natDegree := by
-  intro w hw
-  rw [hdegM w.deleteFinal, hdegM w, SnakeWord.length_deleteFinal]
-  lia
-
-/-- Length-induction route from Claim `(7)` to Braun-Jal Theorem 4.1 with the
-constant-word branch reduced to a length-model identity.
-
-This leaves only standard family hypotheses: the Theorem 3.5 recurrence,
-Claim `(7)`, adjacent `P`/`G` interlacing statements, the `m = 1`
-normalizations, nonnegative coefficients, the degree bridge, consecutive
-interlacing of `P`, and the identity `M w = P w.length` on constant words. -/
-theorem theorem41_of_claim7_of_constant_matches_length
-    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G)
-    (hclaim : Theorem41Claim7Statement P G)
-    (hP_interlaces : ∀ {m : ℕ}, 1 ≤ m → Interlaces (P (m - 1)) (P m))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
-    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
-    (hdeg :
-      ∀ {w : SnakeWord}, 1 ≤ w.length →
-        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P w.length) :
-    Theorem41NonNestingRookStatement M := by
-  have hP : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (P (m - 1)) (P m) := by
-    intro m hm
-    exact (hP_interlaces (m := m)
-      (Nat.le_trans (by decide : 1 ≤ 2) hm)).toStrictInterl
-  have hconst :
-      ∀ {w : SnakeWord}, 1 ≤ w.length → w.IsConstant →
-        (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) :=
-    theorem41_constant_of_matches_length
-      (M := M) (P := P) hM_const hP_interlaces
-  intro w hw
-  exact theorem41_of_claim7_of_constant_cases
-    (M := M) (P := P) (G := G)
-    (hrec := hrec) (hclaim := hclaim) (hP := hP) (hG := hG)
-    (hP_one := hP_one) (hG_one := hG_one)
-    (hP_nonneg := hP_nonneg) (hG_nonneg := hG_nonneg)
-    (hM_nonneg := hM_nonneg) (hdeg := hdeg) (hconst := hconst)
-    (w := w) hw
-
 /-- Length-induction route from Claim `(7)` to Braun-Jal Theorem 4.1 with the
 constant-word branch reduced to a successor-length model identity.
 
@@ -714,34 +545,6 @@ theorem theorem41_of_claim7_of_constant_matches_succ_length
     (w := w) hw
 
 /-- Package the Claim `(7)` induction theorem as the abstract route predicate,
-with the constant-word branch reduced to a length-model identity. -/
-theorem theorem41InductionRoute_of_claim7_of_constant_matches_length
-    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hclaim_of_inputs :
-      Lemma33AuxiliaryGInterlacesStatement P G →
-        Lemma34ModifiedNarayanaInterlacingStatement P →
-          Theorem41Claim7Statement P G)
-    (hP_interlaces : ∀ {m : ℕ}, 1 ≤ m → Interlaces (P (m - 1)) (P m))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
-    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
-    (hdeg :
-      ∀ {w : SnakeWord}, 1 ≤ w.length →
-        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P w.length) :
-    Theorem41InductionRouteStatement M P G := by
-  intro h33 h34 hrec
-  exact theorem41_of_claim7_of_constant_matches_length
-    (M := M) (P := P) (G := G)
-    (hrec := hrec) (hclaim := hclaim_of_inputs h33 h34)
-    (hP_interlaces := hP_interlaces) (hG := hG)
-    (hP_one := hP_one) (hG_one := hG_one)
-    (hP_nonneg := hP_nonneg) (hG_nonneg := hG_nonneg)
-    (hM_nonneg := hM_nonneg) (hdeg := hdeg) (hM_const := hM_const)
-
-/-- Package the Claim `(7)` induction theorem as the abstract route predicate,
 with the constant-word branch reduced to the concrete successor-length identity. -/
 theorem theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
@@ -768,60 +571,6 @@ theorem theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
     (hP_one := hP_one) (hG_one := hG_one)
     (hP_nonneg := hP_nonneg) (hG_nonneg := hG_nonneg)
     (hM_nonneg := hM_nonneg) (hdeg := hdeg) (hM_const := hM_const)
-
-/-- Section 3 equation `(2)` plus the local Claim `(7)` side conditions give
-the abstract induction route, using the concrete successor-length indexing for
-constant words.
-
-Claim `(7)` itself uses equation `(2)`, Lemma 3.4, and the bundled side
-conditions; Lemma 3.3 remains part of the route interface but is not consumed by
-this Claim `(7)` assembly theorem. -/
-theorem theorem41InductionRoute_of_section3_of_constant_matches_succ_length
-    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement P G)
-    (hside : Theorem41Claim7SideConditions P G)
-    (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
-    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
-    (hdeg :
-      ∀ {w : SnakeWord}, 1 ≤ w.length →
-        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
-    Theorem41InductionRouteStatement M P G :=
-  theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
-    (M := M) (P := P) (G := G)
-    (fun _h33 h34 => theorem41Claim7_of_section3_sideConditions hrec2 h34 hside)
-    hP_interlaces hG hP_one hG_one hP_nonneg hG_nonneg hM_nonneg hdeg
-    hM_const
-
-/-- Root-sum version of the Section 3 induction route.
-
-This uses the endpoint-compatible Claim `(7)` assembly theorem in place of the
-older strict-root-bound route. -/
-theorem theorem41InductionRoute_of_section3_rootSum_of_constant_matches_succ_length
-    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement P G)
-    (hside : Theorem41Claim7RootSumSideConditions P G)
-    (hP_interlaces : ∀ n : ℕ, Interlaces (P n) (P (n + 1)))
-    (hG : ∀ {m : ℕ}, 2 ≤ m → StrictInterl (G (m - 1)) (G m))
-    (hP_one : P 1 = 1 + X) (hG_one : G 1 = 1)
-    (hP_nonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hG_nonneg : ∀ n, HasNonnegCoeffs (G n))
-    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
-    (hdeg :
-      ∀ {w : SnakeWord}, 1 ≤ w.length →
-        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const : ∀ {w : SnakeWord}, w.IsConstant → M w = P (w.length + 1)) :
-    Theorem41InductionRouteStatement M P G :=
-  theorem41InductionRoute_of_claim7_of_constant_matches_succ_length
-    (M := M) (P := P) (G := G)
-    (fun _h33 h34 =>
-      theorem41Claim7_of_section3_rootSumSideConditions hrec2 h34 hside)
-    hP_interlaces hG hP_one hG_one hP_nonneg hG_nonneg hM_nonneg hdeg
-    hM_const
 
 end GeneralizedSnakePosets
 end RealRooted

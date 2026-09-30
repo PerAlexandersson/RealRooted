@@ -1,4 +1,4 @@
-import RealRooted.HermitePoulain
+import RealRooted.Hermite.Poulain
 
 /-!
 # Hermite--Poulain tactic frontends

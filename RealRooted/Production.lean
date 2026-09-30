@@ -106,7 +106,6 @@ import RealRooted.BorceaBranden.FiniteSymbolClassification
 import RealRooted.BorceaBranden.FiniteSymbolCoefficient
 import RealRooted.BorceaBranden.FiniteSymbolContraction
 import RealRooted.BorceaBranden.FiniteSymbolDegree
-import RealRooted.BorceaBranden.FiniteSymbolLinearity
 import RealRooted.BorceaBranden.FiniteSymbolPreserver
 import RealRooted.BorceaBranden.FiniteSymbolProduct
 import RealRooted.BorceaBranden.FiniteSymbolReciprocal
@@ -192,8 +191,8 @@ import RealRooted.Challenges.HermiteBiehlerHurwitz
 import RealRooted.Challenges.HermitePoulain
 import RealRooted.Challenges.Interlacing
 import RealRooted.Challenges.LeakeRyder
-import RealRooted.Challenges.Issue34SingleMatrixCounterexample
-import RealRooted.Challenges.Issue34WindowObstruction
+import RealRooted.Challenges.HurwitzCornerZeroedCounterexample
+import RealRooted.Challenges.TotallyNonnegativeHadamardObstruction
 import RealRooted.Challenges.Kurtz
 import RealRooted.Challenges.MatrixInterlacing
 import RealRooted.Challenges.MonomialChainOperator
@@ -311,7 +310,7 @@ import RealRooted.CommonInterleaver.Statements
 import RealRooted.CommonInterleaver.SuccDegreeEndpoint
 import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 import RealRooted.CommonInterleaverExamples
-import RealRooted.CommonInterleaverFamilySum
+import RealRooted.CommonInterleaver.FamilySum
 import RealRooted.CommonInterleaverSeq
 import RealRooted.CommonInterleaverTwo
 import RealRooted.Compatibility.Affine
@@ -360,8 +359,8 @@ import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
 import RealRooted.DerivativeRecurrence.SecondOrderDegree
 import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
 import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
-import RealRooted.DerivativeShiftRootMatching
-import RealRooted.DerivativeShiftSequence
+import RealRooted.Derivative.ShiftRootMatching
+import RealRooted.Derivative.ShiftSequence
 import RealRooted.DeterminantalStability
 import RealRooted.DifferentialBlocks
 import RealRooted.ElementaryDifferential
@@ -396,8 +395,8 @@ import RealRooted.FiniteFreeAdditive
 import RealRooted.FiniteFreeAdditive.HalfInteger
 import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
 import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
-import RealRooted.FiniteFreeAdditiveIdentity
-import RealRooted.FiniteFreeAdditivePreservation
+import RealRooted.FiniteFreeAdditive.Identity
+import RealRooted.FiniteFreeAdditive.Preservation
 import RealRooted.FiniteFreeMultiplicative
 import RealRooted.FiniteFreeRootCount
 import RealRooted.FolkloreLemma
@@ -423,14 +422,12 @@ import RealRooted.GeneralizedSnakePosets.MatrixInduction
 import RealRooted.GeneralizedSnakePosets.Narayana.Claim7
 import RealRooted.GeneralizedSnakePosets.Narayana.Claim7Analytic
 import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
-import RealRooted.GeneralizedSnakePosets.Narayana.LowRank
 import RealRooted.GeneralizedSnakePosets.Narayana.Modified
 import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
 import RealRooted.GeneralizedSnakePosets.Narayana.RankSix
 import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
 import RealRooted.GeneralizedSnakePosets.Narayana.Turan
-import RealRooted.GeneralizedSnakePosets.Narayana.TuranCertificates
 import RealRooted.GeneralizedSnakePosets.Section3Packages
 import RealRooted.GeneralizedSnakePosets.SnakeBoard
 import RealRooted.GeneralizedSnakePosets.SnakeCover
@@ -472,7 +469,7 @@ import RealRooted.Hadamard.GarloffWagner
 import RealRooted.Hadamard.Grace
 import RealRooted.Hadamard.Hurwitz
 import RealRooted.Hadamard.Newton
-import RealRooted.HadamardProduct
+import RealRooted.Hadamard.Product
 import RealRooted.HeilmannLieb
 import RealRooted.Hermite
 import RealRooted.Hermite.Basic
@@ -492,7 +489,7 @@ import RealRooted.HermiteBiehler.LogDerivative
 import RealRooted.HermiteBiehler.OddEven
 import RealRooted.HermiteBiehler.OrientedPencil
 import RealRooted.HermiteBiehler.StablePencil
-import RealRooted.HermitePoulain
+import RealRooted.Hermite.Poulain
 import RealRooted.HomogeneousComponentStability
 import RealRooted.HomogeneousOre
 import RealRooted.HomogeneousOreExamples
@@ -506,8 +503,8 @@ import RealRooted.Interlacing.OuterDifference
 import RealRooted.Interlacing.Residue
 import RealRooted.Interlacing.ResidueCriterion
 import RealRooted.Interlacing.ResidueEulerStep
-import RealRooted.InterlacingClosure
-import RealRooted.InterlacingConeBounds
+import RealRooted.Interlacing.Closure
+import RealRooted.Interlacing.ConeBounds
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequence.NonnegativeShift
 import RealRooted.InterlacingSequenceBasic
@@ -517,10 +514,10 @@ import RealRooted.Jacobi.DifferentialOperator
 import RealRooted.Jacobi.Favard
 import RealRooted.Jacobi.Orthogonality
 import RealRooted.Jacobi.Orthogonality.Integral
-import RealRooted.JacobiBetaZeroOrthogonality
-import RealRooted.JacobiMarkoff
+import RealRooted.Jacobi.BetaZeroOrthogonality
+import RealRooted.Jacobi.Markoff
 import RealRooted.JacobiOrthogonality
-import RealRooted.JacobiParameterInterlacing
+import RealRooted.Jacobi.ParameterInterlacing
 import RealRooted.JensenPencilContraction
 import RealRooted.JensenPencilPositiveContraction
 import RealRooted.Kurtz
@@ -619,7 +616,7 @@ import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Statements
 import RealRooted.LiuOppositeSigns.XSub.QuarticCubicCommonRoot
 import RealRooted.LiuOppositeSigns.XSub.SameDegree
 import RealRooted.LiuOppositeSigns.XSub.SplittingTools
-import RealRooted.LiuOppositeSignsTheorem
+import RealRooted.LiuOppositeSigns.Theorem
 import RealRooted.LiuWang
 import RealRooted.LiuWang.OneAddXPositive
 import RealRooted.LiuWang.SequenceCore
@@ -831,7 +828,7 @@ import RealRooted.MatrixInterlacing.PrincipalInterlacingExamples
 import RealRooted.MatrixInterlacing.SparseTests
 import RealRooted.MatrixInterlacing.TotallyNonnegative
 import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
-import RealRooted.MatrixInterlacingClosure
+import RealRooted.MatrixInterlacing.Closure
 import RealRooted.Multiaffine
 import RealRooted.Multiaffine.AffineCoordinateCriterion
 import RealRooted.Multiaffine.AffineCoordinateExtension
@@ -840,8 +837,8 @@ import RealRooted.Multiaffine.AffineLineRestriction
 import RealRooted.Multiaffine.CoordinateWronskian
 import RealRooted.Multiaffine.Rayleigh
 import RealRooted.Multiaffine.TwoCoordinateSlice
-import RealRooted.MultiaffineReciprocal
-import RealRooted.MultiaffineReciprocalRight
+import RealRooted.Multiaffine.Reciprocal
+import RealRooted.Multiaffine.ReciprocalRight
 import RealRooted.MultiplierSequence
 import RealRooted.MultiplierSequence.Bidiagonal
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen
@@ -988,7 +985,7 @@ import RealRooted.RankTwoMatching.Endpoint
 import RealRooted.RankTwoMatching.Enumeration
 import RealRooted.RankTwoMatching.Orientation
 import RealRooted.RankTwoMatching.Transform
-import RealRooted.RankTwoMatchingModel
+import RealRooted.RankTwoMatching.Model
 import RealRooted.RookPolynomial
 import RealRooted.ReciprocalShift.Interlacing
 import RealRooted.ReciprocalShift.Interlacing.Inversion
@@ -1216,7 +1213,7 @@ import RealRooted.VeroneseSectionPair
 import RealRooted.VeroneseSectionPair.HermiteBiehler
 import RealRooted.Wagner
 import RealRooted.Wagner.NonpositiveRoots
-import RealRooted.WagnerLeftSum
+import RealRooted.Wagner.LeftSum
 import RealRooted.WagnerRightSum
 import RealRooted.WagnerRightSum.Sign
 import RealRooted.WagnerX
@@ -1315,7 +1312,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Sturm
 import RealRooted.RootCounting.Descartes
 import RealRooted.Applications.OEIS.A132885
 import RealRooted.CauchyInterlacing.Submatrix
-import RealRooted.DerivativeSimpleRoots
+import RealRooted.Derivative.SimpleRoots
 import RealRooted.EulerOperator.Polar.RealParameter
 import RealRooted.JacobiDeformation
 import RealRooted.JacobiDeformation.Appell

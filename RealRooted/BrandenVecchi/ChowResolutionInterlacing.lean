@@ -1,6 +1,6 @@
 import RealRooted.BrandenVecchi.ChowResolution
 import RealRooted.BrandenVecchi.ChowRowTransform
-import RealRooted.InterlacingConeBounds
+import RealRooted.Interlacing.ConeBounds
 
 /-!
 # Reflection interlacing for resolved Chow rows

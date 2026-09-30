@@ -1,7 +1,7 @@
 import RealRooted.Bezoutian.LowDegree
 import RealRooted.Derivative
 import RealRooted.Jacobi
-import RealRooted.JacobiMarkoff
+import RealRooted.Jacobi.Markoff
 import RealRooted.Linear
 
 /-!

@@ -1,5 +1,5 @@
 import RealRooted.GarloffWagner
-import RealRooted.HadamardProduct
+import RealRooted.Hadamard.Product
 import RealRooted.HermiteBiehler.OddEven
 import RealRooted.PFPolynomial
 

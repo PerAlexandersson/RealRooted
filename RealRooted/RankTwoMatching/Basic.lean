@@ -1,5 +1,5 @@
 import RealRooted.HeilmannLieb
-import RealRooted.RankTwoMatchingModel
+import RealRooted.RankTwoMatching.Model
 
 open Polynomial
 
