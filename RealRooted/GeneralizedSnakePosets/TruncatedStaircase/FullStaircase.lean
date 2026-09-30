@@ -153,6 +153,19 @@ theorem fullStaircaseReflectedRowList_sortedLE
     | left b1 b2 hrow => exact le_of_lt hrow
     | right a hcol => exact le_rfl)
 
+/-- The reflected-pair encoding of a full-staircase placement has the same
+cardinality as the original placement. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedPairs_card
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedPairs n P).card = P.card := by
+  rw [fullStaircaseReflectedPairs]
+  exact Finset.card_image_of_injOn (by
+    intro a ha b hb hpair
+    have hrow : a.1 = b.1 := by simpa using congrArg (fun x : ℕ × ℕ => x.1) hpair
+    by_contra hne
+    exact hP.row_ne ha hb hne hrow)
+
 /-- The reflected-pair row projection of a full-staircase placement has the
 same cardinality as the placement. -/
 theorem IsNonNestingPlacement.fullStaircaseReflectedPairRows_card
@@ -169,6 +182,26 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedPairColumns_card
     (fullStaircaseReflectedPairColumns n P).card = P.card := by
   rw [fullStaircaseReflectedPairColumns_eq_image_reflectedColumn,
     hP.full_card_image_reflectedColumn]
+
+/-- The row list of the lexicographically sorted reflected pairs has length
+equal to the placement cardinality. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedRowList_length
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedRowList n P).length = P.card := by
+  rw [fullStaircaseReflectedRowList, List.length_map,
+    fullStaircaseReflectedPairLexList, Finset.length_sort,
+    hP.fullStaircaseReflectedPairs_card]
+
+/-- The reflected-column list of the lexicographically sorted reflected pairs
+has length equal to the placement cardinality. -/
+theorem IsNonNestingPlacement.fullStaircaseReflectedColumnList_length
+    {n : ℕ} {P : Finset (ℕ × ℕ)}
+    (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
+    (fullStaircaseReflectedColumnList n P).length = P.card := by
+  rw [fullStaircaseReflectedColumnList, List.length_map,
+    fullStaircaseReflectedPairLexList, Finset.length_sort,
+    hP.fullStaircaseReflectedPairs_card]
 
 /-- The row list of the lexicographically sorted reflected pairs has no
 duplicates for a valid full-staircase placement. -/

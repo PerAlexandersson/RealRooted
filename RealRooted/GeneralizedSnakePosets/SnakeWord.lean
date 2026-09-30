@@ -63,6 +63,16 @@ def IsLastChangeIndex (w : SnakeWord) (k : ℕ) : Prop :=
     w.takePrefix 0 = [] := by
   simp [takePrefix]
 
+/-- The length of the `k`-letter prefix is at most `k`. -/
+theorem length_takePrefix_le (w : SnakeWord) (k : ℕ) :
+    (w.takePrefix k).length ≤ k := by
+  simp [takePrefix]
+
+/-- A prefix of a snake word is no longer than the original word. -/
+theorem length_takePrefix_le_length (w : SnakeWord) (k : ℕ) :
+    (w.takePrefix k).length ≤ w.length := by
+  simp [takePrefix]
+
 /-- Reading before the requested prefix length agrees with reading in the
 original word. -/
 @[simp] theorem getD_takePrefix_of_lt {w : SnakeWord} {k idx : ℕ}
@@ -71,6 +81,18 @@ original word. -/
   rw [takePrefix, List.getD_eq_getElem?_getD,
     List.getD_eq_getElem?_getD, List.getElem?_take]
   simp [hidx]
+
+/-- A prefix equals the whole word exactly when the requested length is large
+enough. -/
+theorem takePrefix_eq_self_iff (w : SnakeWord) {k : ℕ} :
+    w.takePrefix k = w ↔ w.length ≤ k := by
+  simp [takePrefix]
+
+/-- A prefix of length at least the word length is the whole word. -/
+theorem takePrefix_eq_self_of_length_le {w : SnakeWord} {k : ℕ}
+    (hk : w.length ≤ k) :
+    w.takePrefix k = w :=
+  (takePrefix_eq_self_iff w).mpr hk
 
 /-- Final-letter deletion is the prefix of length `w.length - 1`. -/
 theorem deleteFinal_eq_takePrefix (w : SnakeWord) :
@@ -237,6 +259,18 @@ theorem isConstant_iff_changeIndices_eq_nil (w : SnakeWord) :
     w.IsConstant ↔ w.changeIndices = [] :=
   ⟨changeIndices_eq_nil_of_isConstant, isConstant_of_changeIndices_eq_nil⟩
 
+/-- A word has some final-letter change index exactly when it is nonconstant. -/
+theorem changeIndices_ne_nil_iff_not_isConstant (w : SnakeWord) :
+    w.changeIndices ≠ [] ↔ ¬ w.IsConstant := by
+  rw [isConstant_iff_changeIndices_eq_nil]
+
+/-- A nonconstant word has at least one final-letter change index. -/
+theorem exists_mem_changeIndices_of_not_isConstant {w : SnakeWord}
+    (h : ¬ w.IsConstant) :
+    ∃ k, k ∈ w.changeIndices :=
+  List.exists_mem_of_ne_nil w.changeIndices
+    ((changeIndices_ne_nil_iff_not_isConstant w).mpr h)
+
 /-- The computable last-change index is absent exactly for constant words. -/
 theorem lastChangeIndex?_eq_none_iff_isConstant (w : SnakeWord) :
     w.lastChangeIndex? = none ↔ w.IsConstant := by
@@ -268,6 +302,13 @@ theorem mem_changeIndices_of_lastChangeIndex?_eq_some {w : SnakeWord} {k : ℕ}
   rcases h with ⟨ys, hys⟩
   rw [hys]
   simp
+
+/-- A word with a computed last-change index is nonconstant. -/
+theorem not_isConstant_of_lastChangeIndex?_eq_some {w : SnakeWord} {k : ℕ}
+    (h : w.lastChangeIndex? = some k) :
+    ¬ w.IsConstant :=
+  not_isConstant_of_mem_changeIndices
+    (mem_changeIndices_of_lastChangeIndex?_eq_some h)
 
 /-- A computed last-change index satisfies the predicate-form interface. -/
 theorem isLastChangeIndex_of_lastChangeIndex?_eq_some {w : SnakeWord} {k : ℕ}
@@ -311,12 +352,38 @@ theorem lastChangeIndex?_eq_some_of_isLastChangeIndex {w : SnakeWord} {k : ℕ}
   rw [lastChangeIndex?]
   simpa [l, hlast_eq] using hget
 
+/-- The computable and predicate forms of last-change index agree. -/
+theorem lastChangeIndex?_eq_some_iff_isLastChangeIndex (w : SnakeWord) (k : ℕ) :
+    w.lastChangeIndex? = some k ↔ w.IsLastChangeIndex k :=
+  ⟨isLastChangeIndex_of_lastChangeIndex?_eq_some,
+    lastChangeIndex?_eq_some_of_isLastChangeIndex⟩
+
 /-- A nonconstant word has a predicate-form last-change index. -/
 theorem exists_isLastChangeIndex_of_not_isConstant {w : SnakeWord}
     (h : ¬ w.IsConstant) :
     ∃ k, w.IsLastChangeIndex k := by
   rcases exists_lastChangeIndex?_eq_some_of_not_isConstant h with ⟨k, hk⟩
   exact ⟨k, isLastChangeIndex_of_lastChangeIndex?_eq_some hk⟩
+
+/-- A positive-length constant snake word is a replicate word. -/
+theorem exists_eq_replicate_of_isConstant
+    {w : SnakeWord} (hw : 1 ≤ w.length) (h : w.IsConstant) :
+    ∃ a, w = List.replicate w.length a := by
+  rcases List.exists_mem_of_length_pos (by linarith : 0 < w.length) with ⟨a, ha⟩
+  refine ⟨a, ?_⟩
+  rw [List.eq_replicate_length]
+  intro b hb
+  exact h b hb a ha
+
+/-- A positive-length constant snake word is all `L` or all `R`. -/
+theorem eq_replicate_L_or_R_of_isConstant
+    {w : SnakeWord} (hw : 1 ≤ w.length) (h : w.IsConstant) :
+    w = List.replicate w.length SnakeLetter.L ∨
+      w = List.replicate w.length SnakeLetter.R := by
+  rcases exists_eq_replicate_of_isConstant hw h with ⟨a, ha⟩
+  cases a
+  · exact Or.inl ha
+  · exact Or.inr ha
 
 /-- The last-change index is one of the change indices. -/
 theorem IsLastChangeIndex.mem_changeIndices {w : SnakeWord} {k : ℕ}

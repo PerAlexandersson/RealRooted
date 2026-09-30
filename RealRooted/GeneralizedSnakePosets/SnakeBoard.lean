@@ -88,6 +88,97 @@ theorem mem_snakeIncomparableBoard_replicate_L_cells {n r c : ℕ} :
         simp [hfalse]
       · simp [snakeElementReachable_replicate_L_colCode_rowCode_eq_false]
 
+/-- In a final `R` suffix after a last-change index, every board cell whose row
+coordinate lies in the suffix has row weakly below column. -/
+theorem mem_snakeIncomparableBoard_suffix_R_cells_row_le_col
+    {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hr : r ≤ w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R)
+    (hcell : (r, c) ∈ (snakeIncomparableBoard w).cells) :
+    r ≤ c := by
+  by_contra hnot
+  have hcr : c < r := Nat.lt_of_not_ge hnot
+  rw [snakeIncomparableBoard, Finset.mem_filter] at hcell
+  rcases hcell with ⟨_hbound, hcell⟩
+  rw [Bool.and_eq_true] at hcell
+  rcases hcell with ⟨_hrow_col, hcol_row⟩
+  have hreach := snakeElementReachable_suffix_R_colCode_rowCode_of_lt
+    (w := w) (last := last) (c := c) (r := r) hlast hcr hr hfinal
+  simp [hreach] at hcol_row
+
+/-- In a final `R` suffix after a last-change index, the suffix-coordinate
+cells are exactly the all-`R` triangular block. -/
+theorem mem_snakeIncomparableBoard_suffix_R_cells_iff
+    {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hr : r ≤ w.length - (last + 1))
+    (hc : c ≤ w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R) :
+    (r, c) ∈ (snakeIncomparableBoard w).cells ↔ r ≤ c := by
+  constructor
+  · intro hcell
+    exact mem_snakeIncomparableBoard_suffix_R_cells_row_le_col
+      hlast hr hfinal hcell
+  · intro hrc
+    rw [snakeIncomparableBoard, Finset.mem_filter]
+    constructor
+    · simpa [Finset.mem_product] using
+        ⟨le_trans hr (Nat.sub_le _ _), le_trans hc (Nat.sub_le _ _)⟩
+    · rw [Bool.and_eq_true]
+      constructor
+      · have hfalse := snakeElementReachable_suffix_R_rowCode_colCode_eq_false
+          hlast hr hc hfinal
+        simp [hfalse]
+      · have hdrop : snakeRowCode r < snakeColCode c := by
+          simp [snakeRowCode, snakeColCode]
+          lia
+        have hfalse := snakeElementReachable_eq_false_of_target_lt
+          (w := w) (a := snakeColCode c) (b := snakeRowCode r) hdrop
+        simp [hfalse]
+
+/-- In a final `L` suffix after a last-change index, every board cell whose
+column coordinate lies in the suffix has column weakly below row. -/
+theorem mem_snakeIncomparableBoard_suffix_L_cells_col_le_row
+    {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hc : c ≤ w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L)
+    (hcell : (r, c) ∈ (snakeIncomparableBoard w).cells) :
+    c ≤ r := by
+  by_contra hnot
+  have hrc : r < c := Nat.lt_of_not_ge hnot
+  rw [snakeIncomparableBoard, Finset.mem_filter] at hcell
+  rcases hcell with ⟨_hbound, hcell⟩
+  rw [Bool.and_eq_true] at hcell
+  rcases hcell with ⟨hrow_col, _hcol_row⟩
+  have hreach := snakeElementReachable_suffix_L_rowCode_colCode_of_lt
+    (w := w) (last := last) (r := r) (c := c) hlast hrc hc hfinal
+  simp [hreach] at hrow_col
+
+/-- In a final `L` suffix after a last-change index, the suffix-coordinate
+cells are exactly the all-`L` triangular block. -/
+theorem mem_snakeIncomparableBoard_suffix_L_cells_iff
+    {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
+    (hr : r ≤ w.length - (last + 1))
+    (hc : c ≤ w.length - (last + 1))
+    (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L) :
+    (r, c) ∈ (snakeIncomparableBoard w).cells ↔ c ≤ r := by
+  constructor
+  · intro hcell
+    exact mem_snakeIncomparableBoard_suffix_L_cells_col_le_row
+      hlast hc hfinal hcell
+  · intro hcr
+    rw [snakeIncomparableBoard, Finset.mem_filter]
+    constructor
+    · simpa [Finset.mem_product] using
+        ⟨le_trans hr (Nat.sub_le _ _), le_trans hc (Nat.sub_le _ _)⟩
+    · rw [Bool.and_eq_true]
+      constructor
+      · have hfalse := snakeElementReachable_rowCode_colCode_eq_false_of_le
+          (w := w) hcr
+        simp [hfalse]
+      · have hfalse := snakeElementReachable_suffix_L_colCode_rowCode_eq_false
+          hlast hc hr hfinal
+        simp [hfalse]
+
 /-! ## The generalized snake board
 
 The incomparable cross pairs above use the column order of the second chain.
