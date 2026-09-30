@@ -122,6 +122,20 @@ end RealRooted.Challenges.Sample
         with self.assertRaisesRegex(CatalogError, "cannot resolve"):
             validate_sources(self.root, pages)
 
+    def test_question_mark_names_are_distinct_declarations(self) -> None:
+        text = catalog_block(
+            theorems='[[theorems]]\nname = "RealRooted.Challenges.Sample.index?_eq"',
+        ) + '''namespace RealRooted.Challenges.Sample
+def index? : Option Nat := none
+theorem index?_eq : index? = none := rfl
+end RealRooted.Challenges.Sample
+'''
+        self.write("RealRooted/Challenges/Sample.lean", text)
+        resolved = validate_sources(self.root, load_catalog(self.root))
+        self.assertEqual(
+            resolved["RealRooted.Challenges.Sample.index?_eq"].actual_kind, "theorem"
+        )
+
     def test_namespace_modifiers_multiline_and_type_mismatch(self) -> None:
         pages, resolved = self.pages_and_sources()
         self.assertEqual(resolved["RealRooted.Challenges.Sample.family"].actual_kind, "definition")

@@ -27,7 +27,7 @@ from urllib.parse import urlsplit
 BASE_PATH = "/RealRooted/"
 SECTIONS = ("concepts", "families", "theorems")
 ALLOWED_AXIOMS = frozenset({"propext", "Classical.choice", "Quot.sound"})
-NAME_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_'.]*(?:\.[A-Za-z_][A-Za-z0-9_'.]*)+")
+NAME_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_'.?!]*(?:\.[A-Za-z_][A-Za-z0-9_'.?!]*)+")
 SLUG_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 MODULE_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_'.]*(?:\.[A-Za-z_][A-Za-z0-9_'.]*)*")
 METADATA_RE = re.compile(r"<!--\s*realrooted-catalog\s*\n(.*?)-->", re.DOTALL)
@@ -40,7 +40,7 @@ DECLARATION_RE = re.compile(
     r"^\s*(?P<attributes>(?:@\[[^\n]*\]\s*)*)"
     r"(?P<modifiers>(?:(?:private|protected|noncomputable|unsafe|partial)\s+)*)"
     r"(?P<kind>theorem|lemma|def|abbrev|structure|inductive|class|opaque|instance)\s+"
-    r"(?P<name>[A-Za-z_][A-Za-z0-9_'.]*)\b"
+    r"(?P<name>[A-Za-z_][A-Za-z0-9_'.?!]*)(?![A-Za-z0-9_'.?!])"
 )
 NAMESPACE_RE = re.compile(r"^\s*namespace\s+([A-Za-z_][A-Za-z0-9_'.]*)\s*$")
 END_NAMESPACE_RE = re.compile(r"^\s*end\s+([A-Za-z_][A-Za-z0-9_'.]*)\s*$")
