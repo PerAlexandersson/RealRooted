@@ -638,17 +638,6 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hstrictInterl
 
-/-- Garloff--Wagner formula (3), packaged under the Theorem 11(b) hypotheses
-that will be available in the Theorem 11(c) induction. -/
-theorem gwJL_factor_strictInterl_of_nonpos
-    {k : ℕ} {u : ℝ} {f : ℝ[X]}
-    (hu : u ≤ 0) (hf0 : f ≠ 0) (hfs : f.Splits)
-    (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
-    (hfsimple : HasSimpleRootsExcept f 0) :
-    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) :=
-  gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
-    hu hf0 hfs hfpos hfroots hfsimple
-
 /-- Theorem 11(c), in the local orientation:
 Garloff--Wagner's `g $ f` is represented by `StrictInterl f g`. -/
 def gwTheorem11StrictInterlStatement : Prop :=

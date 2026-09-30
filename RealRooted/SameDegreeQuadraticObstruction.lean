@@ -183,25 +183,4 @@ theorem not_posComboRealRooted_quadratic_roots_gap
   not_posComboRealRooted_quadratic_roots_separated hab hcd
     (lt_of_le_of_lt hdz1 (lt_of_lt_of_le hz hz2a))
 
-/-- Symmetric scaled gap form of the separated-root obstruction. -/
-theorem not_posComboRealRooted_pos_scaled_quadratic_roots_gap_symm
-    {A B a b c d z1 z2 : ℝ} (hA : 0 < A) (hB : 0 < B)
-    (hab : a ≤ b) (hcd : c ≤ d)
-    (hz : z1 < z2) (hbz1 : b ≤ z1) (hz2c : z2 ≤ c) :
-    ¬ PosComboRealRooted
-      (C A * ((X - C a) * (X - C b)))
-      (C B * ((X - C c) * (X - C d))) := by
-  intro hpc
-  exact not_posComboRealRooted_pos_scaled_quadratic_roots_gap hB hA hcd hab
-    hz hbz1 hz2c hpc.comm
-
-/-- Symmetric monic gap form of the separated-root obstruction. -/
-theorem not_posComboRealRooted_quadratic_roots_gap_symm
-    {a b c d z1 z2 : ℝ}
-    (hab : a ≤ b) (hcd : c ≤ d)
-    (hz : z1 < z2) (hbz1 : b ≤ z1) (hz2c : z2 ≤ c) :
-    ¬ PosComboRealRooted ((X - C a) * (X - C b)) ((X - C c) * (X - C d)) := by
-  intro hpc
-  exact not_posComboRealRooted_quadratic_roots_gap hcd hab hz hbz1 hz2c hpc.comm
-
 end RealRooted

@@ -317,16 +317,6 @@ theorem specializeZero_monomial
   rw [specializeZero_monomial]
   simp
 
-/-- Zero-specializing one coordinate leaves every other variable polynomial
-unchanged. -/
-theorem specializeZero_X_of_ne
-    {S : Type*} [CommRing S] {i j : σ} (hij : j ≠ i) :
-    specializeZero i (X j : MvPolynomial σ S) = X j := by
-  classical
-  unfold X
-  rw [specializeZero_monomial]
-  simp [hij]
-
 @[simp] theorem eval_specializeZero
     {S : Type*} [CommRing S] [DecidableEq σ]
     (i : σ) (p : MvPolynomial σ S) (z : σ → S) :

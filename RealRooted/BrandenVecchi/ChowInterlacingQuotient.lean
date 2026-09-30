@@ -275,14 +275,6 @@ theorem IsReflectionInterlacingSeq.chowS_interl
     rw [hS_zero]
     exact interl_zero_left g
 
-/-- Complete zero-aware quotient package: the Chow quotient has nonnegative
-coefficients and precedes the second member in `Interl`. -/
-theorem IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl
-    {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g]) :
-    HasNonnegCoeffs (Polynomial.chowS n f) ∧
-      Interl (Polynomial.chowS n f) g :=
-  ⟨h.chowS_nonnegCoeffs, h.chowS_interl⟩
-
 end BrandenVecchi
 
 end RealRooted

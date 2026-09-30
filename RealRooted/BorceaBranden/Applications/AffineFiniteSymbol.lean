@@ -15,17 +15,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Compatibility wrapper for the canonical complexification splitting theorem. -/
-lemma splits_of_complexify_upper_stable {p : ℝ[X]}
-    (hstable : IsUpperHalfPlaneStable (complexify p)) : p.Splits :=
-  hstable.splits_complexify
-
-/-- Compatibility wrapper for the canonical splitness-to-stability theorem. -/
-lemma complexify_upper_stable_of_splits {p : ℝ[X]}
-    (hp : p.Splits) (hp0 : p ≠ 0) :
-    IsUpperHalfPlaneStable (complexify p) :=
-  Polynomial.Splits.isUpperHalfPlaneStable_complexify hp hp0
-
 namespace BorceaBranden
 
 /-- Compatibility name for `complexificationLinearMap`. -/
@@ -50,43 +39,6 @@ lemma complexifyLinearMap_complexify
     (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (p : ℝ[X]) :
     complexifyLinearMap T (complexify p) = complexify (T p) :=
   complexificationLinearMap_complexify T p
-
-/-- Compatibility wrapper for the canonical complexified-symbol identity. -/
-theorem complexFiniteAlgebraicSymbol_complexifyLinearMap
-    (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (d : ℕ) :
-    complexFiniteAlgebraicSymbol d (complexifyLinearMap T) =
-      complexifyMv
-        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T) :=
-  complexFiniteAlgebraicSymbol_complexificationLinearMap d T
-
-/-- Compatibility wrapper for the canonical degree-box symbol identity. -/
-theorem algebraicSymbol_complexifyLinearMapDegreeBox
-    (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (d : ℕ) :
-    MvPolynomial.algebraicSymbol (fun _ : Fin 1 => d)
-        (complexUnivariateDegreeBoxOperator d (complexifyLinearMap T)) =
-      MvPolynomial.rename finOneSumEquivFinTwo.symm
-        (complexifyMv
-          (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)) :=
-  algebraicSymbol_complexificationDegreeBoxOperator d T
-
-/-- Compatibility wrapper for canonical finite-symbol stability preservation. -/
-theorem complexifyLinearMapDegreeBox_preserves_stability
-    (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (d : ℕ)
-    (hSymbol : MvUpperHalfPlaneStable
-      (complexifyMv
-        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
-    (f : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => d))
-    (hf : MvUpperHalfPlaneStable f.1) :
-    MvUpperHalfPlaneStableOrZero
-      (complexUnivariateDegreeBoxOperator d (complexifyLinearMap T) f) :=
-  complexificationLinearMapDegreeBox_preserves_stability T d hSymbol f hf
-
-/-- Compatibility wrapper for the canonical Hermite--Biehler transport. -/
-lemma complexifyLinearMap_hermiteBiehler
-    (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (p q : ℝ[X]) :
-    complexifyLinearMap T (hermiteBiehlerPolynomial p q) =
-      hermiteBiehlerPolynomial (T p) (T q) :=
-  complexificationLinearMap_hermiteBiehler T p q
 
 /-- The complex degree-box bidiagonal operator is the complexification of the
 real bidiagonal operator on a degree-bounded real input. -/

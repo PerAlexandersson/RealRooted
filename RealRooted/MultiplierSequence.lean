@@ -944,14 +944,6 @@ theorem isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_le_two
     isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
       hn hgamma⟩
 
-/-- Degree-two PF-preservation form of finite Pólya--Schur. -/
-theorem isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_two
-    {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
-    IsFinitePFMultiplierSequence 2 gamma ↔
-      IsPFPolynomial (jensenPolynomial 2 gamma) :=
-  isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_le_two
-    le_rfl hgamma
-
 /-- The finite Polya--Schur classification, used in the forward direction. -/
 theorem jensenPolynomial_isPF_of_finiteMultiplierSequence
     (hFPS : finitePolyaSchurNonnegStatement)

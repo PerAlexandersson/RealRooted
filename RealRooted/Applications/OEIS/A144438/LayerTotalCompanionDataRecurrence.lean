@@ -1560,37 +1560,6 @@ theorem decoBottomTotalCompanionRayleighData_one :
       eval_affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_core_one_nonpos
         i j x
 
-/-- Compensation form of the exact next-data criterion under preceding-rank
-stability.  The first condition uses precisely the nonnegative margin already
-recorded in the current companion data. -/
-theorem decoBottomTotalCompanionRayleighData_succ_iff_compensation
-    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
-    (hcompanion : MvPolynomial.IsRayleigh
-      (decoBottomTotalWronskianCompanion n)) :
-    DecoBottomTotalCompanionRayleighData (n + 1) ↔
-      (∀ i x,
-        -MvPolynomial.eval x
-            (MvPolynomial.coordinateWronskian
-              (decoBottomTotalCompanionCore n)
-              (decoBottomTotalWronskianCompanion n) i) ≤
-          MvPolynomial.eval x
-            (decoBottomTotalCompanionWronskianCorrection n i)) ∧
-      (∀ i j x, MvPolynomial.eval x
-        (MvPolynomial.affineRayleighDiscriminant
-          (decoBottomTotalWronskianCompanion n)
-          (decoBottomTotalCompanionSlope n) i j) ≤ 0) ∧
-      (∀ i x, 0 ≤ MvPolynomial.eval x
-        (MvPolynomial.coordinateWronskian
-          (decoBottomTotalCompanionCore (n + 1))
-          (decoBottomTotalWronskianCompanion (n + 1)) i)) ∧
-      (∀ i j x, MvPolynomial.eval x
-        (MvPolynomial.affineRayleighDiscriminant
-          (decoBottomTotalWronskianCompanion (n + 1))
-          (decoBottomTotalCompanionCore (n + 1)) i j) ≤ 0) := by
-  rw [decoBottomTotalCompanionRayleighData_succ_iff_of_stable_companion
-    n hstable hcompanion,
-    eval_coordinateWronskian_companionSlope_companion_nonneg_iff_compensation]
-
 end
 
 end RealRooted.Applications.OEIS

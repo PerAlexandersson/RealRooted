@@ -478,15 +478,6 @@ theorem fullyInterlacingPair_veroneseSectionPairwise {a b : ℕ → ℝ} {r i j 
   VeronesePairFullyInterlacing.sectionPair
     (fullyInterlacingPair_veronesePair h hr) hr hij hj
 
-/-- Fin-indexed form of `VeronesePairFullyInterlacing.sectionPair`, avoiding
-an explicit upper-bound hypothesis on the second index. -/
-theorem VeronesePairFullyInterlacing.sectionPair_fin {a b : ℕ → ℝ} {r : ℕ}
-    (h : VeronesePairFullyInterlacing r a b) (hr : 0 < r)
-    (i j : Fin (2 * r)) (hij : i < j) :
-    FullyInterlacingPair (veronesePairSectionSeq r a b i)
-      (veronesePairSectionSeq r a b j) :=
-  h.sectionPair hr hij j.isLt
-
 /-- Fin-indexed pairwise Veronese theorem for a fully interlacing pair. -/
 theorem fullyInterlacingPair_veroneseSectionPairwise_fin {a b : ℕ → ℝ}
     {r : ℕ} (h : FullyInterlacingPair a b) (hr : 0 < r)
@@ -1227,30 +1218,6 @@ theorem hurwitzOddEvenToHermiteBiehlerRotated_of_hurwitzStableStrictInterl
       have hppos : HasPosLeadingCoeff p :=
         hp.pos_leadingCoeff hp0
       exact hFwd hqpos hppos hstrictInterl
-
-/-- Checked reduction of the interlacing-extraction interface.
-
-`FullyInterlacingPairInterlaceStatement` follows from two named, strictly
-smaller classical inputs, both natural converses of forward interfaces already
-in the project:
-
-* `LegacyFullyInterlacingPairToHurwitzOddEvenStableStatement`, the nonzero-aware
-  converse Hurwitz matrix criterion specialized to the odd/even polynomial,
-  which turns the two-row Lace total-nonnegativity certificate into Hurwitz
-  stability of `q(x^2) + x p(x^2)`; and
-* `HurwitzStableOddEvenToStrictInterlStatement`, the analytic converse
-  Hermite--Biehler/Hurwitz step, which turns that Hurwitz stability into the
-  interlacing relation `StrictInterl p q`.
-
-The interlacing list data demanded by `FullyInterlacingPairInterlaceStatement`
-is then read off directly from the `StrictInterl p q` witness. -/
-theorem fullyInterlacingPairInterlace_of_oddEvenStableToStrictInterl
-    (hStable : LegacyFullyInterlacingPairToHurwitzOddEvenStableStatement)
-    (hStrictInterl : HurwitzStableOddEvenToStrictInterlStatement) :
-    FullyInterlacingPairInterlaceStatement := fun p q hp hq hfull => by
-  have hstable : IsHurwitzStable (oddEvenPolynomial p q) := hStable (Or.inl hp) hfull
-  obtain ⟨_, _, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hStrictInterl hp hq hstable
-  exact ⟨ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
 
 /-- Once a two-row Lace certificate is available, fixed Veronese sections
 preserve polynomial interlacing in the zero-aware sense, assuming the

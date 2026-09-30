@@ -249,19 +249,6 @@ theorem one_notMem_vars_decoBottomTotalAffineSlope (n : Nat) :
   rw [Finset.mem_Icc] at hbounds
   lia
 
-/-- Zero-specializing the new coordinate in the normal affine branch leaves
-its normal base. -/
-theorem specializeZero_one_decoNormalBottomStep_total (n : Nat) :
-    MvPolynomial.specializeZero 1
-        (decoNormalBottomStep (n + 1) (decoBottomTotal (n + 1))) =
-      decoBottomTotalAffineNormalBase n := by
-  rw [decoNormalBottomStep_total_eq_affine,
-    MvPolynomial.specializeZero_add, MvPolynomial.specializeZero_mul,
-    MvPolynomial.specializeZero_eq_self_of_notMem_vars _ _
-      (one_notMem_vars_decoBottomTotalAffineNormalBase n),
-    MvPolynomial.specializeZero_X_self]
-  simp
-
 /-- Differentiating the normal affine branch in its new coordinate returns
 its slope. -/
 theorem pderiv_one_decoNormalBottomStep_total (n : Nat) :

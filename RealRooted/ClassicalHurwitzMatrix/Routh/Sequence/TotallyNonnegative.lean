@@ -66,16 +66,4 @@ theorem hurwitz_routhPolynomialAt_isTotallyNonneg_of_eq_C
   · exact hodd
   · exact hcoeff
 
-/-- Initial-stage specialization of the constant-terminal Routh criterion. -/
-theorem hurwitz_oddEvenPolynomial_isTotallyNonneg_of_routh_eq_C
-    (odd even : ℝ[X]) (n : ℕ) (a : ℝ)
-    (hfinal : routhPolynomialAt odd even n = C a) (ha : 0 ≤ a)
-    (hodd : ∀ i < n, (routhPair odd even i).1.coeff 0 ≠ 0)
-    (hcoeff : ∀ i < n, 0 ≤ routhCoefficient
-      (routhPair odd even i).1 (routhPair odd even i).2) :
-    (hurwitz (oddEvenPolynomial odd even).coeff).IsTotallyNonneg := by
-  simpa using hurwitz_routhPolynomialAt_isTotallyNonneg_of_eq_C
-    odd even 0 n a (by simpa using hfinal) (by simpa using ha)
-      (by simpa using hodd) (by simpa using hcoeff)
-
 end Matrix

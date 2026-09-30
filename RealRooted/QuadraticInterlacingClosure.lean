@@ -469,78 +469,6 @@ private theorem quadratic_inverse_toSpanSingleton_apply
   simp only [ContinuousLinearMap.toSpanSingleton_apply, smul_eq_mul] at h
   exact (eq_div_iff hc).2 h
 
-/-- A simple root of the quadratic pencil admits a local differentiable root
-branch. Its velocity is the implicit quotient of the parameter tangent by the
-spatial derivative. -/
-theorem exists_hasDerivAt_quadraticInterlacingPencil_root
-    {F G H : ℝ[X]} {a r : ℝ}
-    (hr : (quadraticInterlacingPencil F G H a).IsRoot r)
-    (hregular :
-      (quadraticInterlacingPencil F G H a).derivative.eval r ≠ 0) :
-    ∃ ρ : ℝ → ℝ,
-      HasDerivAt ρ
-        (-2 * (quadraticInterlacingTangent F G a).eval r /
-          (quadraticInterlacingPencil F G H a).derivative.eval r) a ∧
-        ρ a = r ∧
-          ∀ᶠ b in 𝓝 a,
-            (quadraticInterlacingPencil F G H b).IsRoot (ρ b) := by
-  let p : ℝ → ℝ[X] := fun b => quadraticInterlacingPencil F G H b
-  let Φ : ℝ × ℝ → ℝ := fun z => (p z.1).eval z.2
-  have hcont : ContDiffAt ℝ ∞ Φ (a, r) := by
-    exact (contDiff_quadraticInterlacingPencil_eval_prod F G H).contDiffAt
-  let A : ℝ →L[ℝ] ℝ :=
-    fderiv ℝ Φ (a, r) ∘L ContinuousLinearMap.inr ℝ ℝ ℝ
-  let B : ℝ →L[ℝ] ℝ :=
-    fderiv ℝ Φ (a, r) ∘L ContinuousLinearMap.inl ℝ ℝ ℝ
-  have hfull : HasFDerivAt Φ (fderiv ℝ Φ (a, r)) (a, r) :=
-    (hcont.differentiableAt (by simp)).hasFDerivAt
-  have hA : A = ContinuousLinearMap.toSpanSingleton ℝ
-      ((p a).derivative.eval r) := by
-    apply HasFDerivAt.unique
-    · exact hfull.comp r (hasFDerivAt_prodMk_right a r)
-    · exact (p a).hasFDerivAt r
-  have hparam : HasDerivAt (fun b => (p b).eval r)
-      (2 * (quadraticInterlacingTangent F G a).eval r) a := by
-    simp only [p, quadraticInterlacingPencil, quadraticInterlacingTangent,
-      eval_add, eval_mul, eval_C]
-    convert (((hasDerivAt_const a (H.eval r)).add
-      ((hasDerivAt_id a).const_mul (2 * G.eval r))).add
-      ((hasDerivAt_pow 2 a).mul_const (F.eval r))) using 1
-    · funext b
-      dsimp
-      ring
-    · ring
-  have hB : B = ContinuousLinearMap.toSpanSingleton ℝ
-      (2 * (quadraticInterlacingTangent F G a).eval r) := by
-    apply HasFDerivAt.unique
-    · exact hfull.comp a (hasFDerivAt_prodMk_left a r)
-    · exact hparam.hasFDerivAt
-  have hAinv : A.IsInvertible := by
-    rw [hA]
-    exact quadratic_toSpanSingleton_isInvertible hregular
-  let ρ : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
-  have hρbase : ρ a = r :=
-    hcont.implicitFunction_apply_self (by simp) hAinv
-  have hρroot : ∀ᶠ b in 𝓝 a, (p b).IsRoot (ρ b) := by
-    have heq := hcont.eventually_apply_implicitFunction (by simp) hAinv
-    filter_upwards [heq] with b hb
-    rw [Polynomial.IsRoot.def]
-    change Φ (b, ρ b) = 0
-    simpa only [Φ, Polynomial.IsRoot.def] using hb.trans (by simpa [p] using hr)
-  have hρstrict := hcont.hasStrictFDerivAt_implicitFunction (by simp) hAinv
-  have hρderiv : HasDerivAt ρ ((-(A.inverse ∘L B)) 1) a := by
-    simpa only [ρ, A, B] using hρstrict.hasFDerivAt.hasDerivAt
-  have hquotient : (-(A.inverse ∘L B)) 1 =
-      -2 * (quadraticInterlacingTangent F G a).eval r /
-        (quadraticInterlacingPencil F G H a).derivative.eval r := by
-    rw [neg_apply, ContinuousLinearMap.comp_apply, hB,
-      ContinuousLinearMap.toSpanSingleton_apply, one_smul, hA]
-    rw [quadratic_inverse_toSpanSingleton_apply hregular]
-    ring
-  refine ⟨ρ, ?_, hρbase, ?_⟩
-  · rwa [hquotient] at hρderiv
-  · simpa only [p] using hρroot
-
 /-- Local multiplicity preservation for a simple member of a quadratic
 interlacing pencil. -/
 theorem exists_eps_forall_quadraticInterlacingPencil_root_count_le_near
@@ -612,31 +540,6 @@ theorem iterateTDeriv_quadraticInterlacingRight
         (iterateTDeriv eps k H) a := by
   simp [quadraticInterlacingRight, iterateTDeriv_add,
     iterateTDeriv_C_mul]
-
-/-- A quadratic closure proof for every positive derivative regularization
-descends to the original pair. This is the fixed-triple interface used to
-reduce the general quadratic lemma to its simple-root case. -/
-theorem strictInterl_quadraticInterlacingRight_of_regularized
-    {F G H : ℝ[X]} {a : ℝ} {k : ℕ}
-    (hTangent_nonneg :
-      HasNonnegCoeffs (quadraticInterlacingTangent F G a))
-    (hRight_nonneg : HasNonnegCoeffs (quadraticInterlacingRight G H a))
-    (hTangent_ne : quadraticInterlacingTangent F G a ≠ 0)
-    (hRight_ne : quadraticInterlacingRight G H a ≠ 0)
-    (hreg : ∀ eps : ℝ, 0 < eps →
-      StrictInterl
-        (quadraticInterlacingTangent (iterateTDeriv (-eps) k F)
-          (iterateTDeriv (-eps) k G) a)
-        (quadraticInterlacingRight (iterateTDeriv (-eps) k G)
-          (iterateTDeriv (-eps) k H) a)) :
-    StrictInterl (quadraticInterlacingTangent F G a)
-      (quadraticInterlacingRight G H a) := by
-  apply strictInterl_of_iterateTDeriv_neg hTangent_nonneg hRight_nonneg
-    hTangent_ne hRight_ne k
-  intro eps heps
-  rw [iterateTDeriv_quadraticInterlacingTangent,
-    iterateTDeriv_quadraticInterlacingRight]
-  exact hreg eps heps
 
 /-- A common negative derivative shift makes every member of a split
 quadratic pencil simple once the iteration count dominates its degree. -/
@@ -963,16 +866,6 @@ theorem quadraticParameterEvaluation_natDegree
   rw [quadraticParameterEvaluation]
   compute_degree <;> simp_all
 
-/-- A genuine quadratic parameter evaluation splits as soon as one real
-parameter root is known. -/
-theorem quadraticParameterEvaluation_splits_of_isRoot
-    {F G H : ℝ[X]} {r a : ℝ} (hrF : ¬F.IsRoot r)
-    (ha : (quadraticParameterEvaluation F G H r).IsRoot a) :
-    (quadraticParameterEvaluation F G H r).Splits := by
-  apply Polynomial.Splits.of_natDegree_eq_two
-    (quadraticParameterEvaluation_natDegree hrF)
-  exact Polynomial.IsRoot.def.mp ha
-
 /-- The distinct positive parameter values at which the quadratic pencil
 crosses a fixed spatial level, listed in increasing order. -/
 noncomputable def positiveQuadraticParameterRoots
@@ -1113,28 +1006,6 @@ theorem quadraticParameterEvaluation_not_isRoot_after_last_positive
   · simp only [List.mem_singleton] at hzlast
     subst z
     exact (lt_irrefl a haz).elim
-
-/-- Beyond the Cauchy bound, the parameter evaluation has no roots.  This
-provides a canonical terminal chamber to the right of every positive crossing. -/
-theorem quadraticParameterEvaluation_not_isRoot_above_cauchyBound
-    {F G H : ℝ[X]} {r A z : ℝ} (hrF : ¬F.IsRoot r)
-    (hA : ((quadraticParameterEvaluation F G H r).cauchyBound : ℝ) ≤ A)
-    (hAz : A ≤ z) :
-    ¬(quadraticParameterEvaluation F G H r).IsRoot z := by
-  let q := quadraticParameterEvaluation F G H r
-  have hqdeg : q.natDegree = 2 := quadraticParameterEvaluation_natDegree hrF
-  have hqne : q ≠ 0 := by
-    intro hzero
-    rw [hzero] at hqdeg
-    simp at hqdeg
-  intro hzroot
-  have hzlt : |z| < (q.cauchyBound : ℝ) := by
-    have hlt := hzroot.norm_lt_cauchyBound hqne
-    exact_mod_cast hlt
-  have hznonneg : 0 ≤ z :=
-    (NNReal.coe_nonneg q.cauchyBound).trans (hA.trans hAz)
-  rw [abs_of_nonneg hznonneg] at hzlt
-  exact (not_lt_of_ge (hA.trans hAz)) hzlt
 
 /-- The constant and leading coefficients of the parameter evaluation are
 the endpoint evaluations `H(r)` and `F(r)`. -/
@@ -1490,78 +1361,6 @@ theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
   · constructor
     · omega
     · constructor <;> omega
-
-/-- Under the simple fixed-degree pencil hypotheses, every positive root of
-the parameter evaluation is simple.  The proof selects the root-count endpoint
-at infinity and exhausts the ordered list of at most two crossings. -/
-theorem quadraticParameterEvaluation_positive_root_count_eq_one
-    {F G H : ℝ[X]} {D K : ℕ}
-    (hFpos : HasPosLeadingCoeff F) (hGpos : HasPosLeadingCoeff G)
-    (hHpos : HasPosLeadingCoeff H) (hFG : StrictInterl F G)
-    (hGH : StrictInterl G H) (hD : D ≠ 0)
-    (hFdeg : F.natDegree ≤ K) (hGdeg : G.natDegree ≤ K)
-    (hHdeg : H.natDegree ≤ K)
-    (hdegree : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil F G H b).natDegree = D)
-    (hdegree_local : ∀ b : ℝ, 0 ≤ b → ∀ᶠ c in 𝓝 b,
-      (quadraticInterlacingPencil F G H c).natDegree = D)
-    (hsplits : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil F G H b).Splits)
-    (hsimple : ∀ b : ℝ, 0 ≤ b →
-      HasSimpleRoots (quadraticInterlacingPencil F G H b))
-    (hsplits_recip : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil H G F b).Splits)
-    (hcoeff0_recip : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil H G F b).coeff 0 ≠ 0)
-    (hneg_recip : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
-      (quadraticInterlacingPencil H G F b).roots, q < 0)
-    {r a : ℝ} (hr : r < 0) (hrF : ¬F.IsRoot r)
-    (hrG : ¬G.IsRoot r) (hrH : ¬H.IsRoot r)
-    (ha : 0 < a) (haroot : (quadraticParameterEvaluation F G H r).IsRoot a) :
-    (quadraticParameterEvaluation F G H r).roots.count a = 1 := by
-  let q := quadraticParameterEvaluation F G H r
-  have hqdeg : q.natDegree = 2 := quadraticParameterEvaluation_natDegree hrF
-  have hqne : q ≠ 0 := by
-    intro hzero
-    rw [hzero] at hqdeg
-    simp at hqdeg
-  have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
-    rw [mem_positiveQuadraticParameterRoots_iff]
-    exact ⟨(Polynomial.mem_roots hqne).2 haroot, ha⟩
-  have hlen := positiveQuadraticParameterRoots_length_le_two
-    (F := F) (G := G) (H := H) (r := r) hrF
-  generalize hrs : positiveQuadraticParameterRoots F G H r = xs at hamem hlen
-  have hend := eventually_quadraticInterlacingPencil_card_roots_gt_eq_atTop
-    hFdeg hGdeg hHdeg hsplits_recip hcoeff0_recip hneg_recip hr hrF
-  rcases xs with _ | ⟨c, xs⟩
-  · simp at hamem
-  · rcases xs with _ | ⟨d, xs⟩
-    · have hac : a = c := by simpa using hamem
-      subst a
-      obtain ⟨R, hRcount, hcR⟩ :=
-        (hend.and (Filter.eventually_gt_atTop c)).exists
-      have hexact := quadraticInterlacingPencil_one_positive_crossing_exact_drop
-        hFpos hGpos hHpos hFG hGH hrF hrG hrH hrs hcR hD
-        (fun μ hμ => hdegree μ hμ.1)
-        (fun μ hμ => hdegree_local μ hμ.1)
-        (fun μ hμ => hsplits μ hμ.1)
-        (fun μ hμ => hsimple μ hμ.1) hRcount
-      simpa only [q] using hexact.2
-    · have hxsNil : xs = [] := by
-        simpa using hlen
-      subst xs
-      have haCases : a = c ∨ a = d := by simpa using hamem
-      obtain ⟨R, hRcount, hdR⟩ :=
-        (hend.and (Filter.eventually_gt_atTop d)).exists
-      have hexact := quadraticInterlacingPencil_two_positive_crossings_exact_drop
-        hFpos hGpos hHpos hFG hGH hrF hrG hrH hrs hdR hD
-        (fun μ hμ => hdegree μ hμ.1)
-        (fun μ hμ => hdegree_local μ hμ.1)
-        (fun μ hμ => hsplits μ hμ.1)
-        (fun μ hμ => hsimple μ hμ.1) hRcount
-      rcases haCases with rfl | rfl
-      · simpa only [q] using hexact.2.2.1
-      · simpa only [q] using hexact.2.2.2
 
 /-- At a spatial level avoiding the three coefficient polynomials, the
 ordered-crossing exhaustion gives a nonnegative tangent residue at every
@@ -2345,23 +2144,5 @@ theorem strictInterl_quadraticInterlacingRight_of_tangent
     exact hWQ x
   exact strictInterl_of_allComboRealRooted_of_wronskian_nonneg
     hBpos hApos (allComboRealRooted_comm hallAB) hWB
-
-/-- A nonpositive upper-half-plane logarithmic ratio gives the full
-quadratic-closure conclusion.  This packages the Hermite--Biehler endpoint
-with the algebraic change from the pencil to `H + a G`. -/
-theorem strictInterl_quadraticInterlacingRight_of_im_ratio_nonpos
-    {F G H : ℝ[X]} {a : ℝ}
-    (hApos : HasPosLeadingCoeff (quadraticInterlacingTangent F G a))
-    (hBpos : HasPosLeadingCoeff (quadraticInterlacingRight G H a))
-    (hQpos : HasPosLeadingCoeff (quadraticInterlacingPencil F G H a))
-    (hQsplit : (quadraticInterlacingPencil F G H a).Splits)
-    (hratio : ∀ z : ℂ, 0 < z.im →
-      ((complexify (quadraticInterlacingTangent F G a)).eval z /
-        (complexify (quadraticInterlacingPencil F G H a)).eval z).im ≤ 0) :
-    StrictInterl (quadraticInterlacingTangent F G a)
-      (quadraticInterlacingRight G H a) := by
-  apply strictInterl_quadraticInterlacingRight_of_tangent hApos hBpos hQpos
-  exact strictInterl_quadraticInterlacingTangent_pencil_of_im_ratio_nonpos
-    hQpos hApos hQsplit hratio
 
 end RealRooted

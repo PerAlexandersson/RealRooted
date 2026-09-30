@@ -1474,26 +1474,6 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_de
   refine ⟨b, ?_, hb_dist⟩
   simpa [iterate_derivative_iterateTDeriv] using hb_root
 
-/-- Root-multiplicity wrapper for the iterated-derivative nearby-root theorem.
-If `k < rootMultiplicity a p`, then the `k`-th derivative already vanishes at
-`a`, so the regularized family has a nearby root in the same derivative level. -/
-theorem exists_delta_and_real_root_near_iterateTDeriv_of_lt_rootMultiplicity
-    (n k : ℕ) {p : ℝ[X]} {a ε : ℝ}
-    (ha : k < p.rootMultiplicity a)
-    (hp_ne : ((derivative^[k]) p) ≠ 0) (hp_splits : ((derivative^[k]) p).Splits)
-    (hε : 0 < ε) :
-    ∃ δ > 0, ∀ ⦃eps : ℝ⦄, 0 < eps → ‖eps‖ < δ →
-      ∃ b : ℝ, ((derivative^[k]) (iterateTDeriv eps n p)).IsRoot b ∧
-        ‖a - b‖ <
-          ((((derivative^[k]) p).natDegree + 1) * ε) ^
-            ((((derivative^[k]) p).natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
-  apply exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_derivative
-    (n := n) (k := k) (p := p) (a := a) (ε := ε)
-  · exact isRoot_iterate_derivative_of_lt_rootMultiplicity ha
-  · simp_all
-  · grind
-  · grind
-
 /-- If `rootMultiplicity a p ≥ 1` and `rootMultiplicity a (T_ε p) ≥ 2`, then
     `rootMultiplicity a p ≥ 2` and the exact formula applies. In other words,
     a simple root can't produce a double root (it vanishes instead). -/

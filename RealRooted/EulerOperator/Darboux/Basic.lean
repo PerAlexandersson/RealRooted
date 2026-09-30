@@ -125,14 +125,6 @@ theorem darbouxOperator_add_parameters {R : Type*} [CommRing R]
   simp only [darbouxOperator, map_add]
   ring
 
-/-- Difference form of `darbouxOperator_add_parameters`. -/
-theorem darbouxOperator_shift_sub {R : Type*} [CommRing R]
-    (a b s : R) (p : R[X]) :
-    darbouxOperator (a + s) (b + s) p - darbouxOperator a b p =
-      C s * (1 - X) * p := by
-  rw [darbouxOperator_add_parameters]
-  abel
-
 /-- Abstract Darboux-square identity. The displayed scalar relation is the
 only compatibility required between the four parameters. -/
 theorem darbouxOperator_comp_commute {R : Type*} [CommRing R]

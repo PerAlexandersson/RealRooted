@@ -215,25 +215,6 @@ theorem strictInterl_mw_derivative_C_neg_mul_X_sq_sequence
         eval_neg_C_mul_X_sq_nonpos_of_nonneg (c := c n) (r := r) (hc n))
     hrec hdeg_lo hdeg_hi
 
-/-- Real-rootedness corollary for the `C(-c_n)X^2P'` sequence wrapper. -/
-theorem isRealRooted_of_mw_derivative_C_neg_mul_X_sq_sequence
-    {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
-    (hc : ∀ n : Nat, 0 ≤ c n)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) + (C (-(c n)) * X ^ 2) * (P (n + 1)).derivative)
-    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
-    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_mw_derivative_nonpos_sequence hbase hpos hdeg_two
-    (fun n r _ => by
-      simpa [mul_assoc] using
-        eval_neg_C_mul_X_sq_nonpos_of_nonneg (c := c n) (r := r) (hc n))
-    hrec hdeg_lo hdeg_hi
-
 theorem strictInterl_mw_derivative_neg_C_mul_X_sq_product_sequence
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
@@ -247,25 +228,6 @@ theorem strictInterl_mw_derivative_neg_C_mul_X_sq_product_sequence
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   strictInterl_mw_derivative_nonpos_sequence hbase hpos hdeg_two
-    (fun n r _ => by
-      simpa [neg_mul, mul_assoc] using
-        eval_neg_C_mul_X_sq_nonpos_of_nonneg (c := c n) (r := r) (hc n))
-    hrec hdeg_lo hdeg_hi
-
-/-- Real-rootedness corollary for the `-(C c_n * X^2)P'` sequence wrapper. -/
-theorem isRealRooted_of_mw_derivative_neg_C_mul_X_sq_product_sequence
-    {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
-    (hc : ∀ n : Nat, 0 ≤ c n)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) + (-(C (c n) * X ^ 2)) * (P (n + 1)).derivative)
-    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
-    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_mw_derivative_nonpos_sequence hbase hpos hdeg_two
     (fun n r _ => by
       simpa [neg_mul, mul_assoc] using
         eval_neg_C_mul_X_sq_nonpos_of_nonneg (c := c n) (r := r) (hc n))

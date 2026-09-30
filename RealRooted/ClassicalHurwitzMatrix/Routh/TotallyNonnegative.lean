@@ -230,21 +230,6 @@ theorem IsTotallyNonneg.hurwitz_routhReducedPolynomial_minor_nonneg_of_odd_prede
   exact hM.hurwitz_minor_nonneg_of_routhExpand_of_odd_predecessors
     rows cols hrows hcols hclosed
 
-/-- Ratio-specialized predecessor-closed minor consequence for one Routh
-reduction. -/
-theorem IsTotallyNonneg.hurwitz_routhReducedPolynomial_minor_nonneg_ratio_of_odd_predecessors
-    {odd even : ℝ[X]}
-    (hM : (hurwitz (oddEvenPolynomial odd even).coeff).IsTotallyNonneg)
-    (hodd : odd.coeff 0 ≠ 0)
-    {n : ℕ} (rows cols : Fin n → ℕ)
-    (hrows : StrictMono rows) (hcols : StrictMono cols)
-    (hclosed : ∀ i, Odd (rows i) → ∃ k, rows k + 1 = rows i) :
-    0 ≤ ((hurwitz (routhReducedPolynomial
-      (routhCoefficient odd even) odd even).coeff).submatrix rows cols).det :=
-  hM.hurwitz_routhReducedPolynomial_minor_nonneg_of_odd_predecessors
-    (routhCoefficient_mul_coeff_zero odd even hodd)
-    rows cols hrows hcols hclosed
-
 /-- A nonnegative Routh coefficient and total nonnegativity of the reduced
 Hurwitz matrix imply total nonnegativity of the original Hurwitz matrix. -/
 theorem IsTotallyNonneg.hurwitz_oddEvenPolynomial_of_routhReduced

@@ -27,13 +27,6 @@ theorem gammaOperator_preservesRealRootedUpTo (n : ℕ) (hn : 2 ≤ n) :
   apply BorceaBranden.finiteSymbol_preservesRealRootedUpTo
   exact finiteAlgebraicSymbol_gammaOperator_stable n hn
 
-/-- Direct split-or-zero form of the gamma-operator preserver. -/
-theorem gammaOperator_splits_or_zero
-    {n : ℕ} (hn : 2 ≤ n) {p : ℝ[X]}
-    (hdeg : p.natDegree ≤ n / 2) (hp : p.Splits) :
-    gammaOperator n p = 0 ∨ (gammaOperator n p).Splits :=
-  gammaOperator_preservesRealRootedUpTo n hn hdeg hp
-
 /-- The gamma operator transports an all-real-combination pair when both
 inputs lie in its canonical degree box. -/
 theorem gammaOperator_allComboRealRooted

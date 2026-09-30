@@ -143,24 +143,6 @@ theorem exists_phase_avoidsZeros_with_last_lt_nat_mul_pi
   dsimp [ε] at hphase_lt
   linarith
 
-/-- ASW-indexed form of
-`exists_phase_avoidsZeros_with_last_lt_nat_mul_pi`, using the final sampled
-index and target variation count from Karlin's repeated matrix. -/
-theorem exists_phase_avoidsZeros_aswKarlin_with_last_lt_order_pi
-    {θ : ℝ} {degree order blocks : ℕ}
-    (hmargin :
-      ((blocks * (degree + order - 1) : ℕ) : ℝ) * θ <
-        ((blocks * order : ℕ) : ℝ) * Real.pi) :
-    ∃ phase : ℝ,
-      AswKarlinPhaseAvoidsZeros phase θ degree order blocks ∧
-        0 < phase ∧
-          phase + ((blocks * (degree + order - 1) : ℕ) : ℝ) * θ <
-            ((blocks * order : ℕ) : ℝ) * Real.pi := by
-  exact
-    exists_phase_avoidsZeros_with_last_lt_nat_mul_pi
-      (N := blocks * (degree + order - 1))
-      (orderBound := blocks * order) hmargin degree order blocks
-
 @[simp]
 lemma aswKarlinPhasedRootVector_zero_phase (z : ℂ) (degree order blocks : ℕ) :
     aswKarlinPhasedRootVector z 0 degree order blocks =

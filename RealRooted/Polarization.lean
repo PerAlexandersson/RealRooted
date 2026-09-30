@@ -333,18 +333,6 @@ theorem diagonalProjection_polarizationDegreeBox {n : ℕ} {p : ℂ[X]}
   rw [rename_polarization_const hp]
   exact (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).apply_symm_apply p
 
-/-- Degree-box form of the source reconstruction identity
-`Π↓ₙ (Π↑ₙ p) = p`. -/
-theorem coe_diagonalProjectionDegreeBox_polarizationDegreeBox
-    {n : ℕ} {p : ℂ[X]} (hp : p.natDegree ≤ n) :
-    (diagonalProjectionDegreeBox n (polarizationDegreeBox n p) :
-      MvPolynomial (Fin 1) ℂ) =
-      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p := by
-  change (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
-    (diagonalProjection n (polarizationDegreeBox n p)) =
-      (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p
-  rw [diagonalProjection_polarizationDegreeBox hp]
-
 /-- Source-side equation (2.2): diagonal projection is a left inverse to the
 linear polarization map on the one-variable degree box. -/
 theorem diagonalProjectionDegreeBox_comp_polarizationDegreeBoxLinearMap

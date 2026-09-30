@@ -698,23 +698,6 @@ theorem exists_forall_abs_lt_not_isRoot_add_right_of_left_not_isRoot_Icc
   intro μ hμ z hz hroot
   exact (not_le_of_gt hμ) (hm_bound μ z hz hroot)
 
-/-- Specialization of `eval_endpoint_pos_of_forall_ne_zero` to the affine
-left-family `C t * f + g` used throughout the Chudnovsky--Seymour route. -/
-theorem eval_endpoint_pos_left_family
-    {f g : ℝ[X]} {a t₀ t₁ : ℝ}
-    (hle : t₀ ≤ t₁)
-    (hne : ∀ t ∈ Set.Icc t₀ t₁, ¬ (C t * f + g).IsRoot a) :
-    0 < (C t₀ * f + g).eval a * (C t₁ * f + g).eval a := by
-  have hcont : ContinuousOn (fun t => (C t * f + g).eval a) (Set.Icc t₀ t₁) := by
-    have hrw : (fun t : ℝ => (C t * f + g).eval a)
-        = fun t : ℝ => t * f.eval a + g.eval a := by
-      funext t
-      simp
-    rw [hrw]
-    fun_prop
-  exact eval_endpoint_pos_of_forall_ne_zero (p := fun t => C t * f + g) hle hcont
-    (fun t ht => hne t ht)
-
 /-- Fixed-threshold no-crossing constancy of the lower root count. -/
 theorem card_roots_filter_le_eq_of_no_isRoot_Ioc
     {p : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
@@ -830,15 +813,6 @@ theorem card_roots_filter_Ioc_eq_one_of_count_eq_one_of_no_isRoot_ne
   by_contra hzc
   exact hno z haz hzb hzc ((Polynomial.mem_roots hp).mp hz)
 
-/-- Bundled strict-interval lower/upper root-count constancy. -/
-theorem card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ b)).card ∧
-      (p.roots.filter (a < ·)).card = (p.roots.filter (b < ·)).card :=
-  ⟨card_roots_filter_le_eq_of_no_isRoot_Ioc_lt hab h,
-    card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hab h⟩
-
 /-- Bundled strict-interval lower/upper/window root-count constancy. -/
 theorem card_roots_filter_all_eq_of_no_isRoot_Ioc_lt
     {p : ℝ[X]} {a b : ℝ} (hab : a < b)
@@ -849,16 +823,6 @@ theorem card_roots_filter_all_eq_of_no_isRoot_Ioc_lt
   ⟨card_roots_filter_le_eq_of_no_isRoot_Ioc_lt hab h,
     card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hab h,
     card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc_lt hab h⟩
-
-/-- Non-strict bundled lower/upper root-count constancy across a root-free
-window. -/
-theorem card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc
-    {p : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ b)).card ∧
-      (p.roots.filter (a < ·)).card = (p.roots.filter (b < ·)).card :=
-  ⟨card_roots_filter_le_eq_of_no_isRoot_Ioc hab h,
-    card_roots_filter_gt_eq_of_no_isRoot_Ioc hab h⟩
 
 /-- Non-strict bundled lower/upper/window root-count constancy. -/
 theorem card_roots_filter_all_eq_of_no_isRoot_Ioc
@@ -909,33 +873,6 @@ theorem card_roots_filter_all_eq_of_no_isRoot_Ioc_lt_trans
   rcases le_or_gt x b with hxb | hbx
   · exact hab_no x hax hxb
   · exact hbc_no x hbx hxc
-
-/-- Lower root-count projection from the transitive bundled theorem. -/
-theorem card_roots_filter_le_eq_of_no_isRoot_Ioc_lt_trans
-    {p : ℝ[X]} {a b c : ℝ} (hab : a < b) (hbc : b < c)
-    (hab_no : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x)
-    (hbc_no : ∀ x, b < x → x ≤ c → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ c)).card :=
-  (card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt_trans
-    hab hbc hab_no hbc_no).1
-
-/-- Upper root-count projection from the transitive bundled theorem. -/
-theorem card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt_trans
-    {p : ℝ[X]} {a b c : ℝ} (hab : a < b) (hbc : b < c)
-    (hab_no : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x)
-    (hbc_no : ∀ x, b < x → x ≤ c → ¬ p.IsRoot x) :
-    (p.roots.filter (a < ·)).card = (p.roots.filter (c < ·)).card :=
-  (card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt_trans
-    hab hbc hab_no hbc_no).2
-
-/-- Window-count projection from the transitive bundled theorem. -/
-theorem card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc_lt_trans
-    {p : ℝ[X]} {a b c : ℝ} (hab : a < b) (hbc : b < c)
-    (hab_no : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x)
-    (hbc_no : ∀ x, b < x → x ≤ c → ¬ p.IsRoot x) :
-    (p.roots.filter (fun x => a < x ∧ x ≤ c)).card = 0 :=
-  (card_roots_filter_all_eq_of_no_isRoot_Ioc_lt_trans
-    hab hbc hab_no hbc_no).2.2
 
 /-!
 ### Closed-segment and two-polynomial count-stability wrappers

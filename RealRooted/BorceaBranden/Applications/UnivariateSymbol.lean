@@ -69,37 +69,6 @@ lemma univariateDegreeBoxOperator_basis (d : ℕ) (T : ℝ[X] →ₗ[ℝ] ℝ[X]
   rw [coe_basisDegreeOfLE, MvPolynomial.uniqueAlgEquiv_monomial]
   simp [Polynomial.X_pow_eq_monomial]
 
-/-- The general algebraic symbol specializes to the existing univariate
-finite-symbol normalization. -/
-theorem rename_algebraicSymbol_univariateDegreeBoxOperator
-    (d : ℕ) (T : ℝ[X] →ₗ[ℝ] ℝ[X]) :
-    rename finOneSumToFinTwo
-        (algebraicSymbol (fun _ : Fin 1 => d) (univariateDegreeBoxOperator d T)) =
-      finiteAlgebraicSymbol d T := by
-  classical
-  rw [algebraicSymbol, map_sum]
-  let g : ℕ → MvPolynomial (Fin 2) ℝ := fun k =>
-    MvPolynomial.C (Nat.choose d k : ℝ) *
-      polynomialInFirstMv (T (Polynomial.X ^ k)) * MvPolynomial.X 1 ^ (d - k)
-  calc
-    ∑ m : {m : Fin 1 →₀ ℕ // ∀ i, m i ≤ d},
-        rename finOneSumToFinTwo
-          (MvPolynomial.C (boxChoose (fun _ : Fin 1 => d) m.1 : ℝ) *
-            rename (Sum.inl : Fin 1 → Fin 1 ⊕ Fin 1)
-              (univariateDegreeBoxOperator d T
-                (basisDegreeOfLE (fun _ : Fin 1 => d) m)) *
-              rightComplementMonomial (fun _ : Fin 1 => d) m.1) =
-      ∑ k : Fin (d + 1), g k := by
-        apply Fintype.sum_equiv (degreeOfLEFinOneEquiv d)
-        intro m
-        simp only [map_mul, rename_C]
-        rw [univariateDegreeBoxOperator_basis,
-          rename_uniqueAlgEquiv_symm_eq_polynomialInFirstMv,
-          rename_rightComplementMonomial_finOne]
-        simp [g, boxChoose, degreeOfLEFinOneEquiv_val]
-    _ = finiteAlgebraicSymbol d T := by
-      simpa [g, finiteAlgebraicSymbol] using Fin.sum_univ_eq_sum_range g (d + 1)
-
 end
 
 end RealRooted.BorceaBranden

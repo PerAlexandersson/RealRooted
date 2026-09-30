@@ -123,14 +123,6 @@ theorem hurwitz_hadamardProduct_det_fin_three_of_band_fail
   simpa [hurwitz_hadamardProduct_matrix] using
     hurwitz_schurProduct_det_fin_three_of_band_fail hrows hcols l hl
 
-/-- Nonnegativity form of the structural `3 × 3` band-fail case for the
-Hurwitz matrix of a Hadamard product. -/
-theorem hurwitz_hadamardProduct_det_fin_three_nonneg_of_band_fail
-    {a b : ℝ[X]} {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows)
-    (hcols : StrictMono cols) (l : Fin 3) (hl : rows l < 2 * cols l) :
-    0 ≤ ((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det := by
-  rw [hurwitz_hadamardProduct_det_fin_three_of_band_fail hrows hcols l hl]
-
 /-- `3 × 3` Hurwitz-matrix Hadamard minors from the pure in-band `3 × 3`
 matrix core.  The out-of-band case is handled structurally by the
 band-fail zero lemma. -/
@@ -261,11 +253,4 @@ theorem hadamardProduct_evenCoeff_isPolyaFreqSeq_of_matrixTN
     IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n)) :=
   hurwitz_isPolyaFreqSeq_even (h ha hb)
 
-/-- Bundled odd/even PF consequence of the Hurwitz-matrix Hadamard leaf. -/
-theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
-    (h : hadamardPreservesHurwitzMatrixTNStatement) :
-    hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
-  fun ha hb =>
-    ⟨hurwitz_isPolyaFreqSeq_odd (h ha hb),
-      hurwitz_isPolyaFreqSeq_even (h ha hb)⟩
 end RealRooted

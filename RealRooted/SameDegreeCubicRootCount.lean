@@ -165,15 +165,6 @@ theorem cubicDiscr_monicCubicPencil_eq (a b c p q r s : ℝ) :
         - 27 * (1 + s) ^ 2 * (-(a * b * c + s * (p * q * r))) ^ 2 := by
   rw [monicCubicPencil_eq, cubicDiscr_of_coeffs]
 
-/-- Constant term of the quartic-in-`s` cubic discriminant of the monic root
-pencil. -/
-theorem cubicDiscr_monicCubicPencil_apply_zero (a b c p q r : ℝ) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)
-        + C (0 : ℝ) * ((X - C p) * (X - C q) * (X - C r)))
-      = ((a - b) * (b - c) * (a - c)) ^ 2 := by
-  rw [cubicDiscr_monicCubicPencil_eq]
-  ring
-
 /-- The monic cubic root pencil has `natDegree` at most three. -/
 theorem natDegree_monicCubicPencil_le (a b c p q r s : ℝ) :
     ((X - C a) * (X - C b) * (X - C c)
@@ -190,37 +181,6 @@ theorem cubicDiscr_monicCubicPencil_neg_iff_not_splits (a b c p q r s : ℝ) :
   rw [← not_le,
     cubicDiscr_nonneg_iff_splits_of_natDegree_le_three
       (natDegree_monicCubicPencil_le a b c p q r s)]
-
-/-- In the strict two-below configuration with `a < r`, the monic pencil is
-negative at the least root `a` of the first cubic for every positive
-parameter. -/
-theorem eval_monicCubicPencil_at_a_neg_twoBelow
-    {a b c p q r s : ℝ} (hqa : q < a) (har : a < r) (hs : 0 < s)
-    (hpq : p ≤ q) :
-    ((X - C a) * (X - C b) * (X - C c)
-      + C s * ((X - C p) * (X - C q) * (X - C r))).eval a < 0 := by
-  rw [eval_monicCubicPencil]
-  have hz : (a - a) * (a - b) * (a - c) = 0 := by ring
-  rw [hz, zero_add]
-  have hpa : 0 < a - p := by linarith
-  have hqa' : 0 < a - q := by linarith
-  have har' : a - r < 0 := by linarith
-  have hg : (a - p) * (a - q) * (a - r) < 0 := by nlinarith [mul_pos hpa hqa']
-  linarith [mul_neg_of_pos_of_neg hs hg]
-
-/-- In the two-above configuration, the monic pencil is positive at the middle
-root `b` of the first cubic for every positive parameter. -/
-theorem eval_monicCubicPencil_at_b_pos_twoAbove
-    {a b c p q r s : ℝ} (hqr : q ≤ r) (hpq : p ≤ q) (hrb : r < b)
-    (hs : 0 < s) :
-    0 < ((X - C a) * (X - C b) * (X - C c)
-      + C s * ((X - C p) * (X - C q) * (X - C r))).eval b := by
-  rw [eval_monicCubicPencil]
-  have hz : (b - a) * (b - b) * (b - c) = 0 := by ring
-  rw [hz, zero_add]
-  have hpb : 0 < b - p := by linarith
-  have hqb : 0 < b - q := by linarith
-  simp_all
 
 /-- No-real-critical-point criterion for a negative cubic discriminant.
 
@@ -429,45 +389,6 @@ theorem cubicDiscrMonicPencilNegTwoBelow_of_coeff_ineqs
       let ⟨hA, hB, hdisc⟩ := H a b c p q r hab hbc hpq hqr hqa har
       exists_deriv_disc_neg_of_coeffs a b c p q r hA hB hdisc)
 
-/-- #41-only refined two-below wrapper.  Since `q < a ≤ r` forces `q < r`,
-`derivDiscA_pos_of_lt` supplies the leading-coefficient inequality. -/
-theorem cubicDiscrMonicPencilNegTwoBelow_of_coeff_ineqs'
-    (H : ∀ a b c p q r : ℝ, a ≤ b → b ≤ c → p ≤ q → q ≤ r →
-      q < a → a ≤ r →
-        2 * (a + b + c) * (p + q + r) -
-            3 * (a * b + b * c + c * a) -
-            3 * (p * q + q * r + r * p) < 0 ∧
-        4 * ((p + q + r) ^ 2 - 3 * (p * q + q * r + r * p)) *
-            ((a + b + c) ^ 2 - 3 * (a * b + b * c + c * a)) <
-          (2 * (a + b + c) * (p + q + r) -
-              3 * (a * b + b * c + c * a) -
-              3 * (p * q + q * r + r * p)) ^ 2) :
-    CubicDiscrMonicPencilNegTwoBelowStatement :=
-  cubicDiscrMonicPencilNegTwoBelow_of_coeff_ineqs
-    (fun a b c p q r hab hbc hpq hqr hqa har =>
-      let ⟨hB, hdisc⟩ := H a b c p q r hab hbc hpq hqr hqa har
-      ⟨derivDiscA_pos_of_lt (lt_of_lt_of_le hqa har), hB, hdisc⟩)
-
-/-- #41-only wrapper reducing `CubicDiscrMonicPencilNegTwoAboveStatement` to
-compact ordered-root coefficient inequalities. -/
-theorem cubicDiscrMonicPencilNegTwoAbove_of_coeff_ineqs
-    (H : ∀ a b c p q r : ℝ, a ≤ b → b ≤ c → p ≤ q → q ≤ r →
-      a ≤ r → r < b →
-        0 < (p + q + r) ^ 2 - 3 * (p * q + q * r + r * p) ∧
-        2 * (a + b + c) * (p + q + r) -
-            3 * (a * b + b * c + c * a) -
-            3 * (p * q + q * r + r * p) < 0 ∧
-        4 * ((p + q + r) ^ 2 - 3 * (p * q + q * r + r * p)) *
-            ((a + b + c) ^ 2 - 3 * (a * b + b * c + c * a)) <
-          (2 * (a + b + c) * (p + q + r) -
-              3 * (a * b + b * c + c * a) -
-              3 * (p * q + q * r + r * p)) ^ 2) :
-    CubicDiscrMonicPencilNegTwoAboveStatement :=
-  cubicDiscrMonicPencilNegTwoAbove_of_deriv_disc
-    (fun a b c p q r hab hbc hpq hqr har hrb =>
-      let ⟨hA, hB, hdisc⟩ := H a b c p q r hab hbc hpq hqr har hrb
-      exists_deriv_disc_neg_of_coeffs a b c p q r hA hB hdisc)
-
 /-- Non-splitting reformulation of the `2`-below negative-discriminant leaf. -/
 def CubicMonicPencilNotSplitsTwoBelowStatement : Prop :=
   ∀ a b c p q r : ℝ,
@@ -627,24 +548,6 @@ theorem sameDegree_cubic_rootCount_le_two
   rw [hfroots, hgroots, card_filter_le_triple, card_filter_le_triple]
   grind
 
-/-- Finite indicator-level core for the cubic same-degree root-count bound of
-`1`.  For ordered triples `a ≤ b ≤ c` and `p ≤ q ≤ r` satisfying the four
-interleaving inequalities `p ≤ b`, `q ≤ c`, `a ≤ q`, `b ≤ r`, the two
-threshold indicator counts differ by at most one, in both directions.  This is
-the degree-three analogue of `count_pair_diff_le_one`. -/
-theorem card_filter_triple_diff_le_one
-    (a b c p q r x : ℝ)
-    (hab : a ≤ b) (hbc : b ≤ c) (hpq : p ≤ q) (hqr : q ≤ r)
-    (hpb : p ≤ b) (hqc : q ≤ c) (haq : a ≤ q) (hbr : b ≤ r) :
-    (((if a ≤ x then 1 else 0) + (if b ≤ x then 1 else 0) +
-          (if c ≤ x then 1 else 0) : ℤ) -
-        ((if p ≤ x then 1 else 0) + (if q ≤ x then 1 else 0) +
-          (if r ≤ x then 1 else 0)) ≤ 1) ∧
-    (((if p ≤ x then 1 else 0) + (if q ≤ x then 1 else 0) +
-          (if r ≤ x then 1 else 0) : ℤ) -
-        ((if a ≤ x then 1 else 0) + (if b ≤ x then 1 else 0) +
-          (if c ≤ x then 1 else 0)) ≤ 1) := by grind
-
 /-- Partial-separation-free leaf for the cubic same-degree root count.
 
 For a split cubic positive-combination pair with positive leading coefficients,
@@ -748,17 +651,6 @@ theorem cubicInteriorTwoAbove_of_discr_monicPencil_neg
   obtain ⟨s, hs, hlt⟩ := hneg a b c p q r hab hbc hpq hqr har hrb
   grind
 
-/-- Normalized two-above negative-discriminant data implies the interior
-two-above obstruction. -/
-theorem cubicInteriorTwoAbove_of_normalized
-    (H : ∀ a c p q : ℝ, a ≤ 0 → 1 ≤ c → p ≤ q → q ≤ 0 →
-      ∃ s : ℝ, 0 < s ∧
-        cubicDiscr ((X - C a) * (X - C (1 : ℝ)) * (X - C c)
-          + C s * ((X - C p) * (X - C q) * (X - C (0 : ℝ)))) < 0) :
-    CubicInteriorTwoAboveStatement :=
-  cubicInteriorTwoAbove_of_discr_monicPencil_neg
-    (cubicDiscrMonicPencilNegTwoAbove_of_normalized H)
-
 /-- The two interior cubic obstructions imply the second-root bound leaf. -/
 theorem cubicSecondRootBound_of_interior
     (hbelow : CubicInteriorTwoBelowStatement)
@@ -794,21 +686,6 @@ theorem cubicSecondRootBound_of_discr_monicPencil_neg
   cubicSecondRootBound_of_interior
     (cubicInteriorTwoBelow_of_discr_monicPencil_neg hbelow)
     (cubicInteriorTwoAbove_of_discr_monicPencil_neg habove)
-
-/-- Normalized negative-discriminant leaves imply the cubic second-root bound. -/
-theorem cubicSecondRootBound_of_normalized
-    (hbelow : ∀ b c p r : ℝ, 1 ≤ b → b ≤ c → p ≤ 0 → 1 ≤ r →
-      ∃ s : ℝ, 0 < s ∧
-        cubicDiscr ((X - C (1 : ℝ)) * (X - C b) * (X - C c)
-          + C s * ((X - C p) * (X - C (0 : ℝ)) * (X - C r))) < 0)
-    (habove : ∀ a c p q : ℝ, a ≤ 0 → 1 ≤ c → p ≤ q → q ≤ 0 →
-      ∃ s : ℝ, 0 < s ∧
-        cubicDiscr ((X - C a) * (X - C (1 : ℝ)) * (X - C c)
-          + C s * ((X - C p) * (X - C q) * (X - C (0 : ℝ)))) < 0) :
-    CubicSecondRootBoundStatement :=
-  cubicSecondRootBound_of_discr_monicPencil_neg
-    (cubicDiscrMonicPencilNegTwoBelow_of_normalized hbelow)
-    (cubicDiscrMonicPencilNegTwoAbove_of_normalized habove)
 
 /-- Non-splitting formulation implies the `2`-below interior obstruction. -/
 theorem cubicInteriorTwoBelow_of_notSplits
@@ -950,30 +827,6 @@ theorem sameDegree_cubic_rootCount_le_one_of_normalized_posCombo
   exact sameDegree_cubic_rootCount_le_one_of_normalized
     hbelow habove hfdeg hgdeg hf hg hf_pos hg_pos hpc
 
-/-- Bundled-degree all-threshold version of
-`sameDegree_cubic_rootCount_le_one_of_normalized_posCombo`. -/
-theorem sameDegree_cubic_rootCount_le_one_of_normalized_posCombo_forall
-    (hbelow : ∀ b c p r : ℝ, 1 ≤ b → b ≤ c → p ≤ 0 → 1 ≤ r →
-      ∃ s : ℝ, 0 < s ∧
-        cubicDiscr ((X - C (1 : ℝ)) * (X - C b) * (X - C c)
-          + C s * ((X - C p) * (X - C (0 : ℝ)) * (X - C r))) < 0)
-    (habove : ∀ a c p q : ℝ, a ≤ 0 → 1 ≤ c → p ≤ q → q ≤ 0 →
-      ∃ s : ℝ, 0 < s ∧
-        cubicDiscr ((X - C a) * (X - C (1 : ℝ)) * (X - C c)
-          + C s * ((X - C p) * (X - C q) * (X - C (0 : ℝ)))) < 0)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hpc : PosComboRealRooted f g)
-    (hdeg : f.natDegree = 3 ∧ g.natDegree = 3) :
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) -
-          (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) -
-          (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hsame : g.natDegree = f.natDegree := by simp_all
-  exact sameDegree_cubic_rootCount_le_one_of_normalized_posCombo
-    hbelow habove hf_pos hg_pos hpc hsame hdeg.1
-
 /-- Same-degree positive-combination cubic root-count wrapper from the
 negative-discriminant monic-pencil leaves. -/
 theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo
@@ -993,24 +846,6 @@ theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo
   exact
     sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg
       hbelow habove hdeg.1 hdeg.2 hf hg hf_pos hg_pos hpc x
-
-/-- Bundled-degree all-threshold version of
-`sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo`. -/
-theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo_forall
-    (hbelow : CubicDiscrMonicPencilNegTwoBelowStatement)
-    (habove : CubicDiscrMonicPencilNegTwoAboveStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hpc : PosComboRealRooted f g)
-    (hdeg : f.natDegree = 3 ∧ g.natDegree = 3) :
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) -
-          (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) -
-          (f.roots.filter (· ≤ x)).card ≤ 1 :=
-  fun x =>
-    sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo
-      hbelow habove hf_pos hg_pos hpc hdeg x
 
 /-- End-to-end reduction of the cubic root-count bound to the non-splitting
 monic-pencil leaves. -/
@@ -1032,29 +867,6 @@ theorem sameDegree_cubic_rootCount_le_one_of_notSplits
     (cubicInteriorTwoAbove_of_notSplits habove)
     hfdeg hgdeg hf hg hf_pos hg_pos hpc
 
-/-- End-to-end positive-combination cubic root-count wrapper from the
-negative-discriminant monic-pencil leaves through the non-splitting bridge. -/
-theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_via_notSplits
-    (hbelow : CubicDiscrMonicPencilNegTwoBelowStatement)
-    (habove : CubicDiscrMonicPencilNegTwoAboveStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hpc : PosComboRealRooted f g)
-    (hdeg : f.natDegree = 3 ∧ g.natDegree = 3) :
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) -
-          (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) -
-          (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hsame : g.natDegree = f.natDegree := by simp_all
-  have hf : f.Splits := (hpc.isRealRooted_left_of_sameDegree hf_pos hg_pos hsame).2
-  have hg : g.Splits := (hpc.isRealRooted_right_of_sameDegree hf_pos hg_pos hsame).2
-  exact
-    sameDegree_cubic_rootCount_le_one_of_notSplits
-      (cubicDiscrMonicPencilNegTwoBelow_iff_notSplits.mp hbelow)
-      (cubicDiscrMonicPencilNegTwoAbove_iff_notSplits.mp habove)
-      hdeg.1 hdeg.2 hf hg hf_pos hg_pos hpc
-
 /-- Same-degree positive-combination cubic root-count wrapper from the
 non-splitting monic-pencil leaves. -/
 theorem sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo
@@ -1075,23 +887,5 @@ theorem sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo
   have hgdeg : g.natDegree = 3 := by simp_all
   exact sameDegree_cubic_rootCount_le_one_of_notSplits
     hbelow habove hfdeg hgdeg hf hg hf_pos hg_pos hpc
-
-/-- Bundled-degree all-threshold version of
-`sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo`. -/
-theorem sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo_forall
-    (hbelow : CubicMonicPencilNotSplitsTwoBelowStatement)
-    (habove : CubicMonicPencilNotSplitsTwoAboveStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hpc : PosComboRealRooted f g)
-    (hdeg : f.natDegree = 3 ∧ g.natDegree = 3) :
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) -
-          (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) -
-          (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hsame : g.natDegree = f.natDegree := by simp_all
-  exact sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo
-    hbelow habove hf_pos hg_pos hpc hsame hdeg.1
 
 end RealRooted

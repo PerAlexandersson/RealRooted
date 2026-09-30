@@ -161,31 +161,6 @@ theorem toeplitzChowSeries_mul_denominator
     _ = (1 - PowerSeries.C X) * toeplitzCoefficientSeries a := by
       ring
 
-/-- Equivalent product form of the Toeplitz Chow denominator identity. -/
-theorem rescale_mul_toeplitzChowSeries
-    (a : ℕ → R) (ha0 : a 0 = 1) :
-    PowerSeries.rescale X (toeplitzCoefficientSeries a) *
-        toeplitzChowSeries a =
-      toeplitzCoefficientSeries a *
-        (1 - PowerSeries.C X +
-          PowerSeries.C X * toeplitzChowSeries a) := by
-  have h := toeplitzChowDerangementSeries_mul_rescale a ha0
-  rw [toeplitzChowSeries_eq_mul] at h ⊢
-  calc
-    PowerSeries.rescale X (toeplitzCoefficientSeries a) *
-          (toeplitzCoefficientSeries a *
-            toeplitzChowDerangementSeries a) =
-        toeplitzCoefficientSeries a *
-          (toeplitzChowDerangementSeries a *
-            PowerSeries.rescale X (toeplitzCoefficientSeries a)) := by
-      ring
-    _ = toeplitzCoefficientSeries a *
-          (1 - PowerSeries.C X +
-            PowerSeries.C X *
-              (toeplitzCoefficientSeries a *
-                toeplitzChowDerangementSeries a)) := by
-      rw [h]
-
 /-- Uniqueness form of the Toeplitz Chow product equation. Any formal series
 satisfying the same marked/unmarked equation is the Chow series. -/
 theorem eq_toeplitzChowSeries_of_rescale_mul

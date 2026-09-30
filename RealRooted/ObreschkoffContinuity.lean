@@ -585,36 +585,6 @@ theorem mul_isRoot_iff_or {f g : ℝ[X]} {a : ℝ} :
 theorem mul_aeval_eq_zero_iff_or {f g : ℝ[X]} {z : ℂ} :
     (f * g).aeval z = 0 ↔ f.aeval z = 0 ∨ g.aeval z = 0 := by simp
 
-/-- Product-root form of closed-segment real-root continuity. -/
-theorem exists_beta_and_root_near_closedSegment_of_mul_isRoot
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
-    {a ε : ℝ}
-    (ha : (f * g).IsRoot a)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (hε : 0 < ε) :
-    ∃ β : ℝ, 0 < β ∧ β < 1 ∧
-      ∃ b : ℝ, (C (1 - β) * f + C β * g).IsRoot b ∧
-        ‖a - b‖ <
-          ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 :=
-  exists_beta_and_root_near_closedSegment_or hfg (mul_isRoot_iff_or.mp ha)
-    hf_monic hg_monic hdeg hε
-
-/-- Product-root form of closed-segment complex-root continuity. -/
-theorem exists_beta_and_complex_aroot_near_closedSegment_of_mul_aeval
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
-    {z : ℂ} {ε : ℝ}
-    (hz : (f * g).aeval z = 0)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (hε : 0 < ε) :
-    ∃ β : ℝ, 0 < β ∧ β < 1 ∧
-      ∃ w : ℂ, w ∈ (C (1 - β) * f + C β * g).aroots ℂ ∧
-        ‖z - w‖ <
-          ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 :=
-  exists_beta_and_complex_aroot_near_closedSegment_or hfg
-    (mul_aeval_eq_zero_iff_or.mp hz) hf_monic hg_monic hdeg hε
-
 /-- Multiset-`roots` form of closed-segment real-root continuity. -/
 theorem exists_beta_and_mem_roots_closedSegment_or
     {f g : ℝ[X]} (hfg : PosComboHyp f g)
@@ -633,21 +603,6 @@ theorem exists_beta_and_mem_roots_closedSegment_or
   have hne : (C (1 - β) * f + C β * g) ≠ 0 :=
     (isRealRooted_closedSegment hfg hβ0 hβ1).1
   simp_all
-
-/-- Product-root, multiset-`roots` form of closed-segment real-root continuity. -/
-theorem exists_beta_and_mem_roots_closedSegment_of_mul_isRoot
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
-    {a ε : ℝ}
-    (ha : (f * g).IsRoot a)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (hε : 0 < ε) :
-    ∃ β : ℝ, 0 < β ∧ β < 1 ∧
-      ∃ b : ℝ, b ∈ (C (1 - β) * f + C β * g).roots ∧
-        ‖a - b‖ <
-          ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 :=
-  exists_beta_and_mem_roots_closedSegment_or hfg (mul_isRoot_iff_or.mp ha)
-    hf_monic hg_monic hdeg hε
 
 /-- Left-endpoint continuity that also returns the right-ordered coefficient
 smallness witness. -/
@@ -692,98 +647,6 @@ theorem splits_closedSegment {f g : ℝ[X]} (hfg : PosComboHyp f g)
     {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
     (C (1 - β) * f + C β * g).Splits :=
   (isRealRooted_closedSegment hfg hβ0 hβ1).2
-
-/-- Bundled interior-parameter selection with the closed-segment member's
-nonvanishing and the normalized coefficient smallness.
-
-This is direct #42 support (closed-segment/root-count): it packages, in
-downstream-friendly binder order, the three facts a closed-segment root-count
-step needs before a continuity transfer -- a valid interior parameter
-`0 < β < 1`, nonvanishing of the segment member `C (1 - β) * f + C β * g`, and
-the normalized coefficient bound. -/
-theorem exists_beta_closedSegment_ne_and_bound
-    {f g : ℝ[X]} (hfg : PosComboHyp f g) {ε : ℝ} (hε : 0 < ε) :
-    ∃ β : ℝ, 0 < β ∧ β < 1 ∧
-      (C (1 - β) * f + C β * g) ≠ 0 ∧
-      β * (coeffSumRange f + coeffSumRange g) < ε := by
-  obtain ⟨β, hβ0, hβ1, hbound⟩ :=
-    exists_beta_pos_with_normalized_closedSegment_bound f g hε
-  grind
-
-/-- Right-endpoint, multiset-`roots` form of closed-segment real-root
-continuity.
-
-This is direct #42 support (closed-segment/root-continuity): given a root `a`
-of `g` and `ε > 0`, it produces an interior parameter `0 < β < 1` and a member
-of `(C (1 - β) * f + C β * g).roots` near `a`, with the distance bound stated in
-`g.natDegree`. It is the `g`-first, `roots`-multiset companion of
-`exists_beta_and_mem_roots_closedSegment_or`. -/
-theorem exists_beta_and_mem_roots_closedSegment_right
-    {f g : ℝ[X]} (hfg : PosComboHyp f g) {a ε : ℝ}
-    (ha : g.IsRoot a)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (hε : 0 < ε) :
-    ∃ β : ℝ, 0 < β ∧ β < 1 ∧
-      ∃ b : ℝ, b ∈ (C (1 - β) * f + C β * g).roots ∧
-        ‖a - b‖ <
-          ((g.natDegree + 1) * ε) ^ ((g.natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
-  obtain ⟨β, hβ0, hβ1, b, hb_root, hb_dist⟩ :=
-    exists_beta_and_root_near_closedSegment_right hfg ha hf_monic hg_monic hdeg hε
-  refine ⟨β, hβ0, hβ1, b, ?_, hb_dist⟩
-  exact (mem_roots (ne_zero_closedSegment hfg hβ0 hβ1)).2 hb_root
-
-/-- Left-endpoint multiset-`roots` form of closed-segment root continuity. -/
-theorem exists_beta_and_mem_roots_closedSegment
-    {f g : ℝ[X]} (hfg : PosComboHyp f g) {a ε : ℝ}
-    (ha : f.IsRoot a)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (hε : 0 < ε) :
-    ∃ β : ℝ, 0 < β ∧ β < 1 ∧
-      ∃ b : ℝ, b ∈ (C (1 - β) * f + C β * g).roots ∧
-        ‖a - b‖ <
-          ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
-  obtain ⟨β, hβ0, hβ1, b, hb_root, hb_dist⟩ :=
-    exists_beta_and_root_near_closedSegment hfg ha hf_monic hg_monic hdeg hε
-  refine ⟨β, hβ0, hβ1, b, ?_, hb_dist⟩
-  exact (mem_roots (ne_zero_closedSegment hfg hβ0 hβ1)).2 hb_root
-
-/-- Bundled left-or-right real-root continuity along the closed segment. -/
-theorem exists_beta_and_mem_roots_ne_splits_closedSegment_or
-    {f g : ℝ[X]} (hfg : PosComboHyp f g) {a ε : ℝ}
-    (ha : f.IsRoot a ∨ g.IsRoot a)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (hε : 0 < ε) :
-    ∃ β : ℝ, 0 < β ∧ β < 1 ∧
-      (C (1 - β) * f + C β * g) ≠ 0 ∧
-      (C (1 - β) * f + C β * g).Splits ∧
-      ∃ b : ℝ, b ∈ (C (1 - β) * f + C β * g).roots ∧
-        ‖a - b‖ <
-          ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
-  obtain ⟨β, hβ0, hβ1, b, hb_root, hb_dist⟩ :=
-    exists_beta_and_root_near_closedSegment_or hfg ha hf_monic hg_monic hdeg hε
-  refine ⟨β, hβ0, hβ1, ne_zero_closedSegment hfg hβ0 hβ1,
-    splits_closedSegment hfg hβ0 hβ1, b, ?_, hb_dist⟩
-  exact (mem_roots (ne_zero_closedSegment hfg hβ0 hβ1)).2 hb_root
-
-/-- Bundled left-or-right complex-root continuity along the closed segment. -/
-theorem exists_beta_and_aroots_ne_splits_closedSegment_or
-    {f g : ℝ[X]} (hfg : PosComboHyp f g) {z : ℂ} {ε : ℝ}
-    (hz : f.aeval z = 0 ∨ g.aeval z = 0)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (hε : 0 < ε) :
-    ∃ β : ℝ, 0 < β ∧ β < 1 ∧
-      (C (1 - β) * f + C β * g) ≠ 0 ∧
-      (C (1 - β) * f + C β * g).Splits ∧
-      ∃ w : ℂ, w ∈ (C (1 - β) * f + C β * g).aroots ℂ ∧
-        ‖z - w‖ <
-          ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
-  obtain ⟨β, hβ0, hβ1, w, hw_root, hw_dist⟩ :=
-    exists_beta_and_complex_aroot_near_closedSegment_or hfg hz hf_monic hg_monic hdeg hε
-  grind
 
 end PosComboHyp
 end

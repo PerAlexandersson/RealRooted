@@ -837,28 +837,6 @@ theorem allComboRealRooted_of_affine_family_nonneg
   allComboRealRooted_of_strictInterl
     (strictInterl_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
 
-/-- Public shifted-pair package extracted from a nonnegative affine family.
-This is the corrected same-degree seam after the failed boundary-right-pair
-target: the affine family automatically promotes the shifted pair
-`(g + X * f, f)` into the clean succ-degree positive-combination regime. -/
-theorem shifted_pair_data_of_affine_family_nonneg
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    PosComboRealRooted (g + X * f) f ∧
-    HasNonnegCoeffs (g + X * f) ∧
-    HasNonnegCoeffs f ∧
-    (g + X * f) ≠ 0 ∧
-    f ≠ 0 ∧
-    HasPosLeadingCoeff (g + X * f) ∧
-    HasPosLeadingCoeff f ∧
-    (g + X * f).natDegree = f.natDegree + 1 :=
-  affine_family_shifted_pair_data hf0 hg0 hfnn hgnn haff
-
 /-- A nonnegative affine family already orients the shifted pair:
 `f ≺ g + X * f`. This is the public corrected replacement for the earlier
 false attempt to orient every boundary pair `(C t * f + g, X * f)`. -/

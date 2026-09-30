@@ -118,15 +118,6 @@ theorem hermiteBiehlerStableToHurwitzOddEven_of_upperHalfSubstitution
   hermiteBiehlerStableToHurwitzOddEven_of_firstQuadrant
     (hermiteBiehlerStableToHurwitzOddEvenFirstQuadrant_of_upperHalfSubstitution h)
 
-/-- Packaging form of the analytic Hermite--Biehler-to-Hurwitz odd/even
-bridge, including the coefficient half of `IsHurwitzStable`. -/
-theorem isHurwitzStable_oddEvenPolynomial_of_hermiteBiehlerStableToHurwitz
-    (h : HermiteBiehlerStableToHurwitzOddEvenStatement) {p q : ℝ[X]}
-    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
-    (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p)) :
-    IsHurwitzStable (oddEvenPolynomial p q) :=
-  ⟨hasNonnegCoeffs_oddEvenPolynomial hp hq, h hp hq hstable⟩
-
 theorem hermiteBiehlerStableToHurwitzOddEven_upperHalfSubstitution :
     HermiteBiehlerStableToHurwitzOddEvenUpperHalfSubstitutionStatement := by
   intro p q h_p h_q h_stable w z hwim hzw hzre

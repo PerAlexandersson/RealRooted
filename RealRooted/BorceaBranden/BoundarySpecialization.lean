@@ -58,16 +58,6 @@ theorem eval_specializeZeroList {sigma : Type*} [DecidableEq sigma]
         simp
       · simp [hji]
 
-/-- Repeated zero specialization preserves multiaffineness. -/
-theorem MvPolynomial.IsMultiaffine.specializeZeroList_preserves
-    {sigma : Type*} {P : MvPolynomial sigma ℂ}
-    (hP : MvPolynomial.IsMultiaffine P) (l : List sigma) :
-    MvPolynomial.IsMultiaffine (specializeZeroList l P) := by
-  induction l generalizing P with
-  | nil => exact hP
-  | cons i l ih =>
-      exact ih (hP.specializeZero_preserves i)
-
 /-- Repeated specialization at zero preserves upper-half-plane stability, up
 to the zero polynomial. -/
 theorem MvUpperHalfPlaneStable.specializeZeroList_zero_or
@@ -83,52 +73,6 @@ theorem MvUpperHalfPlaneStable.specializeZeroList_zero_or
       · left
         simp [specializeZeroList_cons, hzero]
       · exact ih hstable (hPma.specializeZero_preserves i)
-
-/-- Specializing an entire finite right block at the real boundary point zero
-preserves upper-half-plane stability up to the zero polynomial. -/
-theorem MvUpperHalfPlaneStable.specializeRight_zero_or
-    {sigma tau : Type*} [Finite sigma] [Finite tau]
-    {P : MvPolynomial (Sum sigma tau) ℂ}
-    (hP : MvUpperHalfPlaneStable P) (hPma : MvPolynomial.IsMultiaffine P) :
-    MvUpperHalfPlaneStableOrZero
-      (_root_.RealRooted.specializeRight (fun _ : tau => 0) P) := by
-  classical
-  let := Fintype.ofFinite sigma
-  let := Fintype.ofFinite tau
-  let l : List (Sum sigma tau) :=
-    (Finset.univ.toList.map (Sum.inr : tau → Sum sigma tau))
-  let Q : MvPolynomial (Sum sigma tau) ℂ := specializeZeroList l P
-  have hQeval (x : sigma → ℂ) (y : tau → ℂ) :
-      MvPolynomial.eval (Sum.elim x y) Q =
-        MvPolynomial.eval (Sum.elim x (fun _ => 0)) P := by
-    change
-      MvPolynomial.eval (Sum.elim x y) (specializeZeroList l P) =
-        MvPolynomial.eval (Sum.elim x (fun _ => 0)) P
-    rw [eval_specializeZeroList]
-    apply congrArg
-      (fun w : Sum sigma tau → ℂ => MvPolynomial.eval w P)
-    funext j
-    cases j <;> simp [l]
-  have hQzero_or : Q = 0 ∨ MvUpperHalfPlaneStable Q := by
-    simpa [Q] using hP.specializeZeroList_zero_or hPma l
-  by_cases hzero :
-      _root_.RealRooted.specializeRight (fun _ : tau => 0) P = 0
-  · exact Or.inl hzero
-  have hQne : Q ≠ 0 := by
-    intro hQzero
-    obtain ⟨x, _hx, heval⟩ := exists_upperHalfPlane_eval_ne_zero hzero
-    apply heval
-    rw [eval_specializeRight, ← hQeval x (fun _ => I), hQzero]
-    simp
-  right
-  have hQstable : MvUpperHalfPlaneStable Q :=
-    hQzero_or.resolve_left hQne
-  intro x hx
-  rw [eval_specializeRight, ← hQeval x (fun _ => I)]
-  exact hQstable (Sum.elim x (fun _ => I)) fun j => by
-    cases j with
-    | inl i => exact hx i
-    | inr _ => simp
 
 end
 

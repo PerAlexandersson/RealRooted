@@ -54,18 +54,6 @@ theorem decoNormalBottomStep_total_isRayleigh (n : Nat)
     ((decoBottomTotalAffineSlope_isMultiaffine n).X_mul_of_notMem_vars
       (one_notMem_vars_decoBottomTotalAffineSlope n))
 
-/-- Under preceding-rank stability, the zero-specialized normal base is
-Rayleigh. -/
-theorem decoBottomTotalAffineNormalBase_isRayleigh (n : Nat)
-    (hstable : MvRealStable (decoLayerTotal (n + 1))) :
-    MvPolynomial.IsRayleigh (decoBottomTotalAffineNormalBase n) := by
-  apply MvRealStable.isRayleigh_of_isMultiaffine
-  · unfold decoBottomTotalAffineNormalBase
-    exact MvRealStable.rename
-      ((decoLayerTotal_mvRealStable_iff_bottomTotal (n + 1)).mp hstable)
-      (fun i : Nat => i + 1)
-  · exact decoBottomTotalAffineNormalBase_isMultiaffine n
-
 /-- Under the earlier-rank stability hypothesis, the exceptional affine base
 is Rayleigh. -/
 theorem decoBottomTotalAffineExceptionalBase_isRayleigh (n : Nat)
@@ -115,17 +103,6 @@ theorem decoBottomTotalCompanionCore_mvRealStable_zero_or (n : Nat)
   have h := decoBottomTotalAffineSlope_mvRealStable_zero_or n hstable
   unfold decoBottomTotalAffineSlope at h
   unfold decoBottomTotalCompanionCore
-  exact MvRealStableOrZero.of_rename h (by intro i j hij; lia)
-
-/-- Under preceding-rank stability, specializing the normal affine step at
-one makes the companion successor slope zero or real stable. -/
-theorem decoBottomTotalCompanionSlope_mvRealStable_zero_or (n : Nat)
-    (hstable : MvRealStable (decoLayerTotal (n + 1))) :
-    MvRealStableOrZero (decoBottomTotalCompanionSlope n) := by
-  have h := (decoNormalBottomStep_total_mvRealStable
-    (n + 1) hstable).specializeAt_zero_or_general 1 1
-  rw [decoNormalBottomStep_total_eq_affine,
-    specializeAt_one_decoBottomTotalAffineNormal_eq_companionSlope] at h
   exact MvRealStableOrZero.of_rename h (by intro i j hij; lia)
 
 /-- Under preceding-rank stability, the unshifted normal core paired with the
@@ -293,24 +270,6 @@ theorem decoBottomTotal_add_two_isRayleigh_of_stable_affine
     (decoBottomTotalAffineSlope_isRayleigh n hstable)
     ((eval_coordinateWronskian_affineSlope_base_nonneg_iff_compensation n).mpr
       hcomp) hdisc
-
-/-- Companion form of the stability-assisted affine criterion. It replaces
-the shifted affine-base endpoint and split normal/exceptional Wronskian
-bookkeeping by two exact conditions on one lower two-rank companion. -/
-theorem decoBottomTotal_add_two_isRayleigh_of_stable_affine_companion
-    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
-    (hbase : MvPolynomial.IsRayleigh
-      (decoBottomTotalWronskianCompanion n))
-    (hcompanion : ∀ i x, 0 ≤ MvPolynomial.eval x
-      (MvPolynomial.coordinateWronskian
-        (decoNormalBottomCore (n + 1) (decoBottomTotal (n + 1)))
-        (decoBottomTotalWronskianCompanion n) i))
-    (hdisc : ∀ i j x, i ≠ 1 → j ≠ 1 → MvPolynomial.eval x
-      (MvPolynomial.affineRayleighDiscriminant
-        (decoBottomTotalAffineBase n) (decoBottomTotalAffineSlope n) i j) ≤ 0) :
-    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) :=
-  (decoBottomTotal_add_two_isRayleigh_iff_stable_affine_companion
-    n hstable).2 ⟨hbase, hcompanion, hdisc⟩
 
 end
 
