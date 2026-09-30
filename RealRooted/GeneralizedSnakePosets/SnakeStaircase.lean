@@ -106,36 +106,36 @@ def finalLSmallerStaircaseCells (m : ℕ) : Finset (ℕ × ℕ) :=
       lia
 
 /-- The final-`R` distinguished segment lies in the concrete snake board. -/
-theorem finalRBoundarySegment_subset_generalizedSnakeBoard_cells
+theorem finalRBoundarySegment_subset_snakeIncomparableBoard_cells
     {w : SnakeWord} {last : ℕ} (hlast : w.IsLastChangeIndex last)
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R) :
     finalRBoundarySegment (w.length - (last + 1)) ⊆
-      (generalizedSnakeBoard w).cells := by
+      (snakeIncomparableBoard w).cells := by
   intro a ha
   rw [mem_finalRBoundarySegment] at ha
   have hrow : a.1 ≤ w.length - (last + 1) := Nat.le_of_lt ha.1
   have hcol : a.2 ≤ w.length - (last + 1) := by rw [ha.2]
-  rw [mem_generalizedSnakeBoard_suffix_R_cells_iff hlast hrow hcol hfinal]
+  rw [mem_snakeIncomparableBoard_suffix_R_cells_iff hlast hrow hcol hfinal]
   rw [ha.2]
   exact Nat.le_of_lt ha.1
 
 /-- The final-`L` distinguished segment lies in the concrete snake board. -/
-theorem finalLBoundarySegment_subset_generalizedSnakeBoard_cells
+theorem finalLBoundarySegment_subset_snakeIncomparableBoard_cells
     {w : SnakeWord} {last : ℕ} (hlast : w.IsLastChangeIndex last)
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L) :
     finalLBoundarySegment (w.length - (last + 1)) ⊆
-      (generalizedSnakeBoard w).cells := by
+      (snakeIncomparableBoard w).cells := by
   intro a ha
   rw [mem_finalLBoundarySegment] at ha
   have hrow : a.1 ≤ w.length - (last + 1) := by rw [ha.1]
   have hcol : a.2 ≤ w.length - (last + 1) := Nat.le_of_lt ha.2
-  rw [mem_generalizedSnakeBoard_suffix_L_cells_iff hlast hrow hcol hfinal]
+  rw [mem_snakeIncomparableBoard_suffix_L_cells_iff hlast hrow hcol hfinal]
   rw [ha.1]
   exact Nat.le_of_lt ha.2
 
 /-- A final `R` suffix block of a concrete generalized snake board becomes the
 straight truncated staircase after reflecting columns. -/
-theorem mem_generalizedSnakeBoard_suffix_R_reflectCol_truncatedStaircase_iff
+theorem mem_snakeIncomparableBoard_suffix_R_reflectCol_truncatedStaircase_iff
     {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
     (hr : r ≤ w.length - (last + 1))
     (hc : c ≤ w.length - (last + 1))
@@ -144,13 +144,13 @@ theorem mem_generalizedSnakeBoard_suffix_R_reflectCol_truncatedStaircase_iff
         (FiniteSkewBoard.truncatedStaircase
           (w.length - (last + 1) + 1)
           (w.length - (last + 1) + 1)).cells ↔
-      (r, c) ∈ (generalizedSnakeBoard w).cells := by
-  rw [mem_generalizedSnakeBoard_suffix_R_cells_iff hlast hr hc hfinal]
+      (r, c) ∈ (snakeIncomparableBoard w).cells := by
+  rw [mem_snakeIncomparableBoard_suffix_R_cells_iff hlast hr hc hfinal]
   exact FiniteSkewBoard.mem_truncatedStaircase_reflectUpperTriangle_iff hr
 
 /-- A final `L` suffix block of a concrete generalized snake board becomes the
 straight truncated staircase after swapping coordinates and reflecting rows. -/
-theorem mem_generalizedSnakeBoard_suffix_L_reflectRow_truncatedStaircase_iff
+theorem mem_snakeIncomparableBoard_suffix_L_reflectRow_truncatedStaircase_iff
     {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
     (hr : r ≤ w.length - (last + 1))
     (hc : c ≤ w.length - (last + 1))
@@ -159,8 +159,8 @@ theorem mem_generalizedSnakeBoard_suffix_L_reflectRow_truncatedStaircase_iff
         (FiniteSkewBoard.truncatedStaircase
           (w.length - (last + 1) + 1)
           (w.length - (last + 1) + 1)).cells ↔
-      (r, c) ∈ (generalizedSnakeBoard w).cells := by
-  rw [mem_generalizedSnakeBoard_suffix_L_cells_iff hlast hr hc hfinal]
+      (r, c) ∈ (snakeIncomparableBoard w).cells := by
+  rw [mem_snakeIncomparableBoard_suffix_L_cells_iff hlast hr hc hfinal]
   exact FiniteSkewBoard.mem_truncatedStaircase_reflectLowerTriangle_iff hc
 
 end GeneralizedSnakePosets

@@ -14,14 +14,14 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
-/-! ## Concrete snake boards -/
+/-! ## Incomparable cross pairs -/
 
-/-- The concrete finite squarecase board attached to a generalized snake word.
-
-The cells are the cross-chain pairs that are incomparable in the generalized
-snake poset `P(w)`, following the Alexandersson--Jal width-two-poset/skew-shape
-correspondence used by Braun--Jal. -/
-def generalizedSnakeBoard (w : SnakeWord) : FiniteSkewBoard where
+/-- The incomparable cross-chain pairs of the generalized snake poset `P(w)`:
+`(r, c)` such that row element `r` and column element `c` are incomparable,
+following the Alexandersson–Jal width-two-poset/skew-shape correspondence.
+The Braun–Jal board `generalizedSnakeBoard` reverses the column order of this
+set. -/
+def snakeIncomparableBoard (w : SnakeWord) : FiniteSkewBoard where
   cells :=
     ((Finset.range (w.length + 1)).product (Finset.range (w.length + 1))).filter
       fun cell =>
@@ -30,12 +30,12 @@ def generalizedSnakeBoard (w : SnakeWord) : FiniteSkewBoard where
 
 /-- The cells of an all-`R` snake board form the upper triangular staircase in
 the `(n + 1) × (n + 1)` square. -/
-theorem mem_generalizedSnakeBoard_replicate_R_cells {n r c : ℕ} :
-    (r, c) ∈ (generalizedSnakeBoard (List.replicate n SnakeLetter.R)).cells ↔
+theorem mem_snakeIncomparableBoard_replicate_R_cells {n r c : ℕ} :
+    (r, c) ∈ (snakeIncomparableBoard (List.replicate n SnakeLetter.R)).cells ↔
       r ≤ n ∧ c ≤ n ∧ r ≤ c := by
   constructor
   · intro h
-    rw [generalizedSnakeBoard, Finset.mem_filter] at h
+    rw [snakeIncomparableBoard, Finset.mem_filter] at h
     simp only [List.length_replicate] at h
     rcases h with ⟨hbound, hcell⟩
     have hbounds : r ≤ n ∧ c ≤ n := by simpa [Finset.mem_product] using hbound
@@ -46,7 +46,7 @@ theorem mem_generalizedSnakeBoard_replicate_R_cells {n r c : ℕ} :
         (n := n) (c := c) (r := r) hbounds.1).mp (by simpa using hcol_row)
     exact ⟨hbounds.1, hbounds.2, hrc⟩
   · rintro ⟨hr, hc, hrc⟩
-    rw [generalizedSnakeBoard, Finset.mem_filter]
+    rw [snakeIncomparableBoard, Finset.mem_filter]
     simp only [List.length_replicate]
     constructor
     · simpa [Finset.mem_product] using ⟨hr, hc⟩
@@ -60,12 +60,12 @@ theorem mem_generalizedSnakeBoard_replicate_R_cells {n r c : ℕ} :
 
 /-- The cells of an all-`L` snake board form the lower triangular staircase in
 the `(n + 1) × (n + 1)` square. -/
-theorem mem_generalizedSnakeBoard_replicate_L_cells {n r c : ℕ} :
-    (r, c) ∈ (generalizedSnakeBoard (List.replicate n SnakeLetter.L)).cells ↔
+theorem mem_snakeIncomparableBoard_replicate_L_cells {n r c : ℕ} :
+    (r, c) ∈ (snakeIncomparableBoard (List.replicate n SnakeLetter.L)).cells ↔
       r ≤ n ∧ c ≤ n ∧ c ≤ r := by
   constructor
   · intro h
-    rw [generalizedSnakeBoard, Finset.mem_filter] at h
+    rw [snakeIncomparableBoard, Finset.mem_filter] at h
     simp only [List.length_replicate] at h
     rcases h with ⟨hbound, hcell⟩
     have hbounds : r ≤ n ∧ c ≤ n := by simpa [Finset.mem_product] using hbound
@@ -76,7 +76,7 @@ theorem mem_generalizedSnakeBoard_replicate_L_cells {n r c : ℕ} :
         (n := n) (r := r) (c := c) hbounds.2).mp (by simpa using hrow_col)
     exact ⟨hbounds.1, hbounds.2, hcr⟩
   · rintro ⟨hr, hc, hcr⟩
-    rw [generalizedSnakeBoard, Finset.mem_filter]
+    rw [snakeIncomparableBoard, Finset.mem_filter]
     simp only [List.length_replicate]
     constructor
     · simpa [Finset.mem_product] using ⟨hr, hc⟩
@@ -90,15 +90,15 @@ theorem mem_generalizedSnakeBoard_replicate_L_cells {n r c : ℕ} :
 
 /-- In a final `R` suffix after a last-change index, every board cell whose row
 coordinate lies in the suffix has row weakly below column. -/
-theorem mem_generalizedSnakeBoard_suffix_R_cells_row_le_col
+theorem mem_snakeIncomparableBoard_suffix_R_cells_row_le_col
     {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
     (hr : r ≤ w.length - (last + 1))
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R)
-    (hcell : (r, c) ∈ (generalizedSnakeBoard w).cells) :
+    (hcell : (r, c) ∈ (snakeIncomparableBoard w).cells) :
     r ≤ c := by
   by_contra hnot
   have hcr : c < r := Nat.lt_of_not_ge hnot
-  rw [generalizedSnakeBoard, Finset.mem_filter] at hcell
+  rw [snakeIncomparableBoard, Finset.mem_filter] at hcell
   rcases hcell with ⟨_hbound, hcell⟩
   rw [Bool.and_eq_true] at hcell
   rcases hcell with ⟨_hrow_col, hcol_row⟩
@@ -108,18 +108,18 @@ theorem mem_generalizedSnakeBoard_suffix_R_cells_row_le_col
 
 /-- In a final `R` suffix after a last-change index, the suffix-coordinate
 cells are exactly the all-`R` triangular block. -/
-theorem mem_generalizedSnakeBoard_suffix_R_cells_iff
+theorem mem_snakeIncomparableBoard_suffix_R_cells_iff
     {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
     (hr : r ≤ w.length - (last + 1))
     (hc : c ≤ w.length - (last + 1))
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R) :
-    (r, c) ∈ (generalizedSnakeBoard w).cells ↔ r ≤ c := by
+    (r, c) ∈ (snakeIncomparableBoard w).cells ↔ r ≤ c := by
   constructor
   · intro hcell
-    exact mem_generalizedSnakeBoard_suffix_R_cells_row_le_col
+    exact mem_snakeIncomparableBoard_suffix_R_cells_row_le_col
       hlast hr hfinal hcell
   · intro hrc
-    rw [generalizedSnakeBoard, Finset.mem_filter]
+    rw [snakeIncomparableBoard, Finset.mem_filter]
     constructor
     · simpa [Finset.mem_product] using
         ⟨le_trans hr (Nat.sub_le _ _), le_trans hc (Nat.sub_le _ _)⟩
@@ -137,15 +137,15 @@ theorem mem_generalizedSnakeBoard_suffix_R_cells_iff
 
 /-- In a final `L` suffix after a last-change index, every board cell whose
 column coordinate lies in the suffix has column weakly below row. -/
-theorem mem_generalizedSnakeBoard_suffix_L_cells_col_le_row
+theorem mem_snakeIncomparableBoard_suffix_L_cells_col_le_row
     {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
     (hc : c ≤ w.length - (last + 1))
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L)
-    (hcell : (r, c) ∈ (generalizedSnakeBoard w).cells) :
+    (hcell : (r, c) ∈ (snakeIncomparableBoard w).cells) :
     c ≤ r := by
   by_contra hnot
   have hrc : r < c := Nat.lt_of_not_ge hnot
-  rw [generalizedSnakeBoard, Finset.mem_filter] at hcell
+  rw [snakeIncomparableBoard, Finset.mem_filter] at hcell
   rcases hcell with ⟨_hbound, hcell⟩
   rw [Bool.and_eq_true] at hcell
   rcases hcell with ⟨hrow_col, _hcol_row⟩
@@ -155,18 +155,18 @@ theorem mem_generalizedSnakeBoard_suffix_L_cells_col_le_row
 
 /-- In a final `L` suffix after a last-change index, the suffix-coordinate
 cells are exactly the all-`L` triangular block. -/
-theorem mem_generalizedSnakeBoard_suffix_L_cells_iff
+theorem mem_snakeIncomparableBoard_suffix_L_cells_iff
     {w : SnakeWord} {last r c : ℕ} (hlast : w.IsLastChangeIndex last)
     (hr : r ≤ w.length - (last + 1))
     (hc : c ≤ w.length - (last + 1))
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L) :
-    (r, c) ∈ (generalizedSnakeBoard w).cells ↔ c ≤ r := by
+    (r, c) ∈ (snakeIncomparableBoard w).cells ↔ c ≤ r := by
   constructor
   · intro hcell
-    exact mem_generalizedSnakeBoard_suffix_L_cells_col_le_row
+    exact mem_snakeIncomparableBoard_suffix_L_cells_col_le_row
       hlast hc hfinal hcell
   · intro hcr
-    rw [generalizedSnakeBoard, Finset.mem_filter]
+    rw [snakeIncomparableBoard, Finset.mem_filter]
     constructor
     · simpa [Finset.mem_product] using
         ⟨le_trans hr (Nat.sub_le _ _), le_trans hc (Nat.sub_le _ _)⟩
@@ -178,6 +178,44 @@ theorem mem_generalizedSnakeBoard_suffix_L_cells_iff
       · have hfalse := snakeElementReachable_suffix_L_colCode_rowCode_eq_false
           hlast hc hr hfinal
         simp [hfalse]
+
+/-! ## The generalized snake board
+
+The incomparable cross pairs above use the column order of the second chain.
+Braun–Jal's non-nesting rook placements live on the board with that column
+order reversed: with `n = w.length`, the cell `(r, c)` of the snake board is the
+incomparable pair `(row r, col (n - c))`.  In this orientation the non-nesting
+rook polynomial is the `h^*`-polynomial of the order polytope of `P(w)`; with
+the unreflected columns it is not.  (Checked against an independent `h^*`
+computation for all 4094 words of length at most 11.) -/
+
+/-- The concrete Braun–Jal board attached to a generalized snake word: the
+incomparable cross pairs with the column order reversed. -/
+def generalizedSnakeBoard (w : SnakeWord) : FiniteSkewBoard where
+  cells := (snakeIncomparableBoard w).cells.image fun cell => (cell.1, w.length - cell.2)
+
+theorem mem_snakeIncomparableBoard_cells_le {w : SnakeWord} {r c : ℕ}
+    (h : (r, c) ∈ (snakeIncomparableBoard w).cells) : r ≤ w.length ∧ c ≤ w.length := by
+  rw [snakeIncomparableBoard, Finset.mem_filter] at h
+  simpa [Finset.mem_product, Nat.lt_succ_iff] using h.1
+
+/-- Membership in the snake board: `(r, c)` is a cell exactly when `c ≤ n` and
+`(row r, col (n - c))` is an incomparable pair. -/
+theorem mem_generalizedSnakeBoard_cells {w : SnakeWord} {r c : ℕ} :
+    (r, c) ∈ (generalizedSnakeBoard w).cells ↔
+      c ≤ w.length ∧ (r, w.length - c) ∈ (snakeIncomparableBoard w).cells := by
+  constructor
+  · intro h
+    rw [generalizedSnakeBoard, Finset.mem_image] at h
+    obtain ⟨⟨r', c'⟩, hmem, hEq⟩ := h
+    simp only [Prod.mk.injEq] at hEq
+    obtain ⟨rfl, rfl⟩ := hEq
+    have hc := (mem_snakeIncomparableBoard_cells_le hmem).2
+    refine ⟨Nat.sub_le _ _, ?_⟩
+    rwa [Nat.sub_sub_self hc]
+  · rintro ⟨hc, hmem⟩
+    rw [generalizedSnakeBoard, Finset.mem_image]
+    exact ⟨(r, w.length - c), hmem, by simp [Nat.sub_sub_self hc]⟩
 
 /-- The concrete finite-board squarecase model for generalized snake words. -/
 def generalizedSnakeRookModel : SquarecaseRookModel :=
