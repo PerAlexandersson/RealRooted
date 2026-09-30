@@ -725,5 +725,15 @@ theorem theorem41_of_section3ShiftedInputs
   theorem41_of_section3Inputs hroute
     (theorem41Section3Inputs_of_shifted hinputs)
 
+/-- Feed computable shifted Section 3 ingredients into the abstract Theorem
+4.1 induction route. -/
+theorem theorem41_of_section3ComputableShiftedInputs
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteStatement M P G)
+    (hinputs : Theorem41Section3ComputableShiftedInputs M P G) :
+    Theorem41NonNestingRookStatement M :=
+  theorem41_of_section3ComputableInputs hroute
+    (theorem41Section3ComputableInputs_of_shifted hinputs)
+
 end GeneralizedSnakePosets
 end RealRooted

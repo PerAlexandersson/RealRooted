@@ -50,6 +50,32 @@ theorem lemma34ModifiedNarayanaInterlacing_modified_zero_zero
         modifiedNarayanaPolynomial (m + 1)) := by
   simpa using modifiedNarayanaPolynomial_strictInterl_succ m
 
+/-- The shifted `λ = 0, μ = 1` specialization of Braun--Jal Lemma 3.4 for the
+concrete modified Narayana family. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacing_modified_zero_one
+    {m : ℕ} (hm : 2 ≤ m) :
+    StrictInterl ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m)
+      ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1)) := by
+  have hbase := lemma34ModifiedNarayanaInterlacing_modified_zero_zero hm
+  have hleft :
+      ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
+          narayanaDifference modifiedNarayanaPolynomial m) =
+        ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
+          modifiedNarayanaPolynomial m) := by
+    rw [narayanaDifference]
+    simp
+  have hright :
+      ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial m +
+          narayanaDifference modifiedNarayanaPolynomial (m + 1)) =
+        ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial m +
+          modifiedNarayanaPolynomial (m + 1)) := by
+    rw [narayanaDifference]
+    simp only [Nat.add_sub_cancel]
+    simp
+  rwa [hleft, hright]
+
 /-- Concrete modified-Narayana wrapper: the shifted Lemma 3.4 target implies
 the paper-shaped Lemma 3.4 target. -/
 theorem lemma34ModifiedNarayanaInterlacing_modified_of_shifted
