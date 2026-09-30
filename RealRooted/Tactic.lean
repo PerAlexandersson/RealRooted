@@ -31,6 +31,7 @@ import RealRooted.Tactic.GeneralizedLaguerre
 import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.PreservingOperatorSequence
 import RealRooted.Tactic.Product
+import RealRooted.Tactic.Product.Interlacing
 import RealRooted.Tactic.RecurrenceIdentification
 import RealRooted.Tactic.ReciprocalShift
 import RealRooted.Tactic.OperatorPreservesInterlacing
