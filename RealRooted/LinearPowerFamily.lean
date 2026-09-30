@@ -313,14 +313,6 @@ theorem interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs {f : ℝ[X]}
     ring
   exact hstrictInterl.toInterlaces hdeg
 
-/-- Unit-slope variant of `interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs`. -/
-theorem interlaces_self_mul_C_add_X_of_nonnegCoeffs {f : ℝ[X]} (hne : f ≠ 0)
-    (hsplits : f.Splits) (hnn : HasNonnegCoeffs f) {c : ℝ} (hc : 0 < c) :
-    Interlaces f ((C c + X) * f) := by
-  simpa [C_1] using
-    interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs hne hsplits hnn hc
-      (by norm_num : (0 : ℝ) < 1)
-
 /-- Consecutive interlacing for a positive constant/linear-base fixed-linear-tail sequence. -/
 theorem linear_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u v : ℝ}
     (hc : 0 < c) (ha : 0 ≤ a) (hb : 0 < b) (hu : 0 < u) (hv : 0 < v)

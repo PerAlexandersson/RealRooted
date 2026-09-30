@@ -158,28 +158,6 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_t
   positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
     xSubCubicCubicSplits hpair hfnn hgnn hdeg hgdeg
 
-/-- Pack the degree-three right endpoint reduction as a predicate-restricted
-same-degree sign-normalized x-subtraction target, modulo the normalized monic
-cubic/cubic arithmetic leaf. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
-    (hmono : xSubCubicCubicSplitsStatement) :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact
-    positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_three_of_monic
-      hmono hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-three right endpoint reduction as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) :=
-  positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
-    xSubCubicCubicSplits
-
 /-- Pack the endpoint cases through degree three as a predicate-restricted
 same-degree sign-normalized x-subtraction target, modulo the normalized monic
 cubic/cubic arithmetic leaf. -/

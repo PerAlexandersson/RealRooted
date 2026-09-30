@@ -535,16 +535,5 @@ theorem
     (xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases_of_quarticSubQuadratic
       hquad)
 
-/-- The endpoint-zero quartic/cubic boundary follows from the left-only
-endpoint-zero package; the right-only endpoint-zero package is proved by the
-quartic-minus-quadratic factor theorem. -/
-theorem xSubQuarticCubicEndpointZeroBoundaryCases_of_left_endpoint_package
-    (hleft :
-      xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCasesStatement) :
-    xSubQuarticCubicEndpointZeroBoundaryCasesStatement :=
-  xSubQuarticCubicEndpointZeroBoundaryCases_of_left_endpoint_quarticSubQuadratic
-    hleft quarticSubQuadraticSplits
-
-
 end LiuOppositeSigns
 end RealRooted

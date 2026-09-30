@@ -240,9 +240,6 @@
     "RealRooted.CommonInterleaver.RootSelectionTree": {
       "max_modules": 100
     },
-    "RealRooted.CommonInterleaver.RootSelectionExamples": {
-      "max_modules": 101
-    },
     "RealRooted.BoundarySpecializationGeneral": {
       "max_modules": 12
     },

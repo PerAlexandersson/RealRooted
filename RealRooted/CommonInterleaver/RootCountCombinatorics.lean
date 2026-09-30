@@ -274,24 +274,6 @@ theorem posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot :
       hf_split hg_split hdeg x).mpr
       (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg)
 
-/-- The same-degree lower common-non-root target implies the full
-upper-threshold same-degree root-count target. -/
-theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement :=
-  posComboNoCommonSameDegreeRootCountAbove_of_nonRoot
-    (posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mpr
-      hcount)
-
-/-- The same-degree upper common-non-root target implies the full
-lower-threshold same-degree root-count target. -/
-theorem posComboNoCommonSameDegreeRootCount_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement :=
-  posComboNoCommonSameDegreeRootCount_of_nonRoot
-    (posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mp
-      hcount)
-
 /-- Oriented same-cardinality root counts: the lower-threshold comparison
 `f` against `g` is equivalent to the opposite upper-threshold comparison.
 

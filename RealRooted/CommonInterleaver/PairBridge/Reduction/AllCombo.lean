@@ -40,25 +40,6 @@ private theorem allComboRealRooted_of_noCommonBridge_and_nonnegCoeffs_ordered
       allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r).2 hall)
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
-private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    AllComboRealRooted f g :=
-  allComboRealRooted_of_noCommonBridge_and_nonnegCoeffs_ordered
-    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno =>
-      allComboRealRooted_of_degreeSplit_and_nonnegCoeffs
-        hsame hsucc (f := f) (g := g)
-        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno)
-    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
-
 /-- An ordered all-combinations bridge plus the nonnegative degree-closeness
 theorem gives the unordered all-combinations bridge. -/
 theorem allComboRealRooted_of_orderedBridge_and_nonnegCoeffs
@@ -93,40 +74,6 @@ theorem allComboRealRooted_of_orderedBridge_and_nonnegCoeffs
       allComboRealRooted_comm <|
         hordered hg_pos hf_pos hgnn hfnn (PosComboRealRooted.comm hfg) hdeg' hclose.1
 
-/-- Recursive upgrade of the honest degree-split no-common package to a full
-all-combinations result in the nonnegative-coefficient regime. Shared roots are
-factored out until one reaches the terminal no-common quotient, where the
-same-degree alternative or succ-degree orientation hypothesis is applied. -/
-theorem allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g) :
-    AllComboRealRooted f g :=
-  allComboRealRooted_of_orderedBridge_and_nonnegCoeffs
-    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
-      allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
-        (f := f) (g := g) hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
-    hf_pos hg_pos hfnn hgnn hfg
-
-/-- The honest same-degree/succ-degree orientation split supplies the
-nonnegative-coefficient negative right-pencil target by upgrading the
-positive-combination pair to all-combinations real-rootedness. -/
-theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_degreeSplit
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyNonnegStatement := by
-  intro f g hcomp hf_pos hg_pos hfnn hgnn _ _ μ _
-  have hall : AllComboRealRooted f g :=
-    allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
-      hsame hsucc hf_pos hg_pos hfnn hgnn
-      (hcomp.toPosComboRealRooted hf_pos hg_pos)
-  simpa using hall 1 μ
-
 /-- In the nonnegative-coefficient regime, all-combinations real-rootedness
 implies the Obreschkoff orientation alternative. -/
 theorem posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
@@ -156,26 +103,6 @@ theorem posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
       strictInterl_of_allComboRealRooted hg_rr.1 hg_rr.2 hf_rr.1 hf_rr.2
         (allComboRealRooted_comm hall) hdeg''
     exact Or.symm hstrictInterl'
-
-/-- The honest degree-split package therefore yields the full Obreschkoff
-orientation alternative for every positive-combination pair with nonnegative
-coefficients, not just in the terminal no-common case. -/
-theorem posComboOrientation_of_posCombo_and_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g) :
-    StrictInterl f g ∨ StrictInterl g f := by
-  have hall : AllComboRealRooted f g :=
-    allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
-      hsame hsucc hf_pos hg_pos hfnn hgnn hfg
-  exact
-    posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
-      hf_pos hg_pos hfnn hgnn hfg hall
 
 private theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs_ordered
     (haffBridge : PosComboNoCommonAffineFamilyStatement)
@@ -214,19 +141,6 @@ theorem allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
         (f := f) (g := g) haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
     hf_pos hg_pos hfnn hgnn hfg
 
-/-- The affine-family bridge supplies the nonnegative-coefficient negative
-right-pencil target by upgrading the positive-combination pair to
-all-combinations real-rootedness. -/
-theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_affineFamilyBridge
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyNonnegStatement := by
-  intro f g hcomp hf_pos hg_pos hfnn hgnn _ _ μ _
-  have hall : AllComboRealRooted f g :=
-    allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
-      haffBridge hf_pos hg_pos hfnn hgnn
-      (hcomp.toPosComboRealRooted hf_pos hg_pos)
-  simpa using hall 1 μ
-
 /-- The affine-family bridge therefore yields the full Obreschkoff orientation
 alternative for every positive-combination pair with nonnegative coefficients,
 not just the no-common case. -/
@@ -245,32 +159,6 @@ theorem posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
   exact
     posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
       hf_pos hg_pos hfnn hgnn hfg hall
-
-/-- The boundary-right-pair orientation statement already yields the full
-all-combinations conclusion in the nonnegative-coefficient regime, by first
-recovering the affine-family hypothesis and then running the common-root
-recursion packaged above. -/
-theorem allComboRealRooted_of_posCombo_and_boundaryRightPairOrientation_and_nonnegCoeffs
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g) :
-    AllComboRealRooted f g :=
-  allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
-    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
-    hf_pos hg_pos hfnn hgnn hfg
-
-/-- The boundary-right-pair orientation bridge supplies the
-nonnegative-coefficient negative right-pencil target through the affine-family
-bridge. -/
-theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_boundaryRightPairOrientation
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyNonnegStatement :=
-  compatibleSuccDegreeNegativeRightFamilyNonneg_of_affineFamilyBridge
-    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
 
 /-- Consequently, the same boundary-right-pair orientation input already gives
 the full Obreschkoff orientation alternative for every positive-combination
@@ -297,20 +185,5 @@ theorem
   fun {_ _} hf_pos hg_pos hfnn hgnn hfg _ _ =>
     posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
       hboundary hf_pos hg_pos hfnn hgnn hfg
-
-/-- The stronger boundary-right-pair hypothesis also contains the corrected
-succ-degree common-interleaver branch in the nonnegative regime. -/
-theorem
-    succDegreePairHasCommonInterleaver_nonneg_of_boundaryRightPairOrientation
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  have hstrictInterl_or :
-      StrictInterl f g ∨ StrictInterl g f :=
-    posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
-      hboundary hf_pos hg_pos hfnn hgnn hfg
-  have hstrictInterl_fg : StrictInterl f g :=
-    StrictInterl.forward_of_orientation_of_succDegree hsucc hstrictInterl_or
-  exact ⟨g, hstrictInterl_fg, StrictInterl.refl hstrictInterl_fg.2.1.1 hstrictInterl_fg.2.1.2⟩
 
 end RealRooted

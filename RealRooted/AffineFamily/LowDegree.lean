@@ -205,36 +205,6 @@ protected lemma AffineFamily.natDegree_cases_of_affine_family
   rw [natDegree_mul X_ne_zero hf0, natDegree_X] at hdeg_pair_hi
   lia
 
-private lemma natDegree_cases_right_pair_of_affine_family
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    g.natDegree = (X * f).natDegree ∨
-      (X * f).natDegree = g.natDegree + 1 := by
-  have hpair₀ :
-      PosComboRealRooted g (X * f) ∧
-      HasNonnegCoeffs g ∧
-      HasNonnegCoeffs (X * f) ∧
-      g ≠ 0 ∧
-      X * f ≠ 0 ∧
-      HasPosLeadingCoeff g ∧
-      HasPosLeadingCoeff (X * f) :=
-    AffineFamily.affine_family_right_pair_data hfnn hgnn hf0 hg0 haff
-  rcases hpair₀ with
-    ⟨hpos_pair, hg_nonneg_pair, hXf_nonneg_pair, hg_ne_pair,
-      hXf_ne_pair, _, _⟩
-  have hdeg_right : g.natDegree ≤ f.natDegree + 1 :=
-    AffineFamily.natDegree_right_le_succ_of_affine_family hf0 hg0 hfnn hgnn haff
-  have hdeg_pair_lo : g.natDegree ≤ (X * f).natDegree := by simp_all
-  have hdeg_pair_hi : (X * f).natDegree ≤ g.natDegree + 1 :=
-    AffineFamily.natDegree_right_le_succ_of_posComboRealRooted_nonneg
-      hpos_pair hg_ne_pair hXf_ne_pair hg_nonneg_pair hXf_nonneg_pair
-  lia
-
 private lemma right_pair_root_zero_reduction_data
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
@@ -292,30 +262,6 @@ private lemma right_pair_root_zero_reduction_data
     simp_all
   grind
 
-private lemma right_pair_root_zero_affine_line_data
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (hg_root0 : g.IsRoot 0) :
-    ∃ qg,
-      g = X * qg ∧
-      HasNonnegCoeffs qg ∧
-      qg ≠ 0 ∧
-      HasPosLeadingCoeff qg ∧
-      PosComboRealRooted qg f ∧
-      qg.natDegree ≤ f.natDegree ∧
-      f.natDegree ≤ qg.natDegree + 1 ∧
-      (∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((X * (C s * f + qg) + C t * f) ≠ 0 ∧ (X * (C s * f + qg) + C t * f).Splits)) := by
-  obtain ⟨qg, hqg, hqg_nonneg, hqg_ne, hqg_pos, hpos_q, hdeg_q_lo, hdeg_q_hi⟩ :=
-    right_pair_root_zero_reduction_data hf0 hg0 hfnn hgnn haff hg_root0
-  refine ⟨qg, hqg, hqg_nonneg, hqg_ne, hqg_pos, hpos_q, hdeg_q_lo, hdeg_q_hi, ?_⟩
-  grind
-
 /-- If `r < 0` is a root of the succ-degree affine right-hand polynomial `g`,
 specializing the affine family to the line `t = -s r` factors out `X - C r`
 and leaves a same-degree positive-combination family for the quotient `qg`. -/
@@ -367,42 +313,6 @@ private lemma neg_root_quotient_posCombo_data_of_affine_family_succDegree
         ⟩
   exact ⟨qg, hqg, hqg_ne, hqg_rr, hqg_pos, hqg_deg, hpos_q_left.comm⟩
 
-/-- In the succ-degree affine branch with `g(0) ≠ 0`, the rightmost root of
-`g` is strictly negative. Factoring it out gives a same-degree quotient pair
-`(qg, f)` with positive-combination real-rootedness. -/
-private lemma rightmost_neg_root_quotient_posCombo_data_of_affine_family_succDegree
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (hsucc : g.natDegree = f.natDegree + 1)
-    (hg_root0 : ¬ g.IsRoot 0) :
-    ∃ r qg,
-      g.IsRoot r ∧
-      r < 0 ∧
-      g = (X - C r) * qg ∧
-      qg ≠ 0 ∧ (qg ≠ 0 ∧ qg.Splits) ∧
-      HasPosLeadingCoeff qg ∧
-      qg.natDegree = f.natDegree ∧
-      (∀ u ∈ qg.roots, u ≤ r) ∧
-      PosComboRealRooted qg f := by
-  have hg_rr : (g ≠ 0 ∧ g.Splits) :=
-    AffineFamily.isRealRooted_right_of_affine_family_succDegree
-      hf0 hg0 hfnn hgnn haff hsucc.symm
-  have hdeg_pos : 1 ≤ g.natDegree := by lia
-  obtain ⟨r, hgr, hr_top⟩ := exists_rightmost_root_of_isRealRooted hg_rr.1 hg_rr.2 hdeg_pos
-  have hr_le : r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hg_rr.2 hgnn r ((mem_roots hg_rr.1).mpr hgr)
-  have hr_neg : r < 0 := by grind
-  obtain ⟨qg, hqg, hqg_ne, hqg_rr, hqg_pos, hqg_deg, hpos_q⟩ :=
-    neg_root_quotient_posCombo_data_of_affine_family_succDegree
-      hf0 hg0 hfnn hgnn haff hsucc hgr hr_neg
-  have hqg_le : ∀ u ∈ qg.roots, u ≤ r := by simp_all
-  grind
-
 private lemma strictInterl_right_pair_sameDegree_of_sign_data
     {f g : ℝ[X]}
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
@@ -424,92 +334,6 @@ private lemma strictInterl_right_pair_sameDegree_of_sign_data
   exact
     PosComboRealRooted.strictInterl_same_of_root_sign_data
       (f := g) (g := X * f) hg_ne hg_splits hXf_pos hdeg hdeg_pos hsign hright
-
-private lemma strictInterl_right_pair_succDegree_no_common_of_sign_data
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hgnn : HasNonnegCoeffs g)
-    (hXf_pos : HasPosLeadingCoeff (X * f))
-    (hsucc : g.natDegree = f.natDegree + 1)
-    (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
-    (hg_root0 : ¬ g.IsRoot 0)
-    (hsign :
-      let rs := g.roots.sort (· ≤ ·)
-      ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
-        rs = pre ++ r₁ :: r₂ :: rest →
-        (X * f).eval r₁ * (X * f).eval r₂ < 0) :
-    StrictInterl g (X * f) := by
-  have hdeg : (X * f).natDegree = g.natDegree := by simp_all
-  have hdeg_pos : 1 ≤ g.natDegree := by lia
-  exact
-    strictInterl_right_pair_sameDegree_of_sign_data
-      hg_ne hg_splits hgnn hXf_pos hdeg hdeg_pos
-      (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg_root0)
-      hsign
-
-private lemma strictInterl_right_pair_sameDegree_no_common_of_end_sign_data
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hXf_pos : HasPosLeadingCoeff (X * f))
-    (hsame : g.natDegree = f.natDegree)
-    (hdeg_pos : 1 ≤ g.natDegree)
-    (hsign :
-      let rs := g.roots.sort (· ≤ ·)
-      ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
-        rs = pre ++ r₁ :: r₂ :: rest →
-        (X * f).eval r₁ * (X * f).eval r₂ < 0)
-    (hright_sign :
-      let rs := g.roots.sort (· ≤ ·)
-      ∀ hrs_ne : rs ≠ [], (X * f).eval (rs.getLast hrs_ne) < 0)
-    (hparity :
-      (Even g.natDegree ∧
-        let rs := g.roots.sort (· ≤ ·)
-        0 < (X * f).eval rs.head!) ∨
-      (Odd g.natDegree ∧
-        let rs := g.roots.sort (· ≤ ·)
-        (X * f).eval rs.head! < 0)) :
-    StrictInterl g (X * f) := by
-  let rs := g.roots.sort (· ≤ ·)
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_eq : (↑rs : Multiset ℝ) = g.roots := Multiset.sort_eq ..
-  have hn : 1 ≤ rs.length := by
-    have hrs_len : rs.length = g.natDegree := by
-      rw [show rs = g.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-        card_roots_of_splits hg_splits]
-    lia
-  have hrs_ne : rs ≠ [] := by grind
-  have hdeg : (X * f).natDegree = g.natDegree + 1 := by simp_all
-  rcases hparity with ⟨hpar, hleft_sign⟩ | ⟨hpar, hleft_sign⟩
-  · exact
-      strictInterl_of_strict_signs_of_endSigns_even
-        (f := g) (F := X * f) (rs := rs)
-        hg_ne hg_splits hXf_pos hrs_sorted hrs_eq hdeg hn hpar
-        (by grind)
-        (by lia)
-        (by lia)
-  · exact
-      strictInterl_of_strict_signs_of_endSigns_odd
-        (f := g) (F := X * f) (rs := rs)
-        hg_ne hg_splits hXf_pos hrs_sorted hrs_eq hdeg hn hpar
-        (by grind)
-        (by lia)
-        (by lia)
-
-/-- In the linear left-hand branch of the affine converse, the right polynomial
-must be nonpositive at the unique root of `f`. Otherwise, after translating
-that root to `0` and choosing a suitable affine slice, one gets a quadratic
-with positive leading coefficient and negative discriminant, contradicting the
-real-rooted affine hypothesis. -/
-private lemma mul_C_mul_X_mul_C_mul_X (s a : ℝ) :
-    (C s * X) * (C a * X) = C (s * a) * X ^ 2 := by
-  grind
-
-private lemma add_quadratic_quadratic (u v w z c : ℝ) :
-    C u * X ^ 2 + C v * X + (C w * X ^ 2 + C z * X + C c)
-      = C (u + w) * X ^ 2 + C (v + z) * X + C c := by
-  grind
 
 private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
     {f g : ℝ[X]}
@@ -747,18 +571,6 @@ protected alias AffineFamily.prec_right_pair_of_affine_family_degree_one :=
   (since := "2026-09-18")]
 alias prec_right_pair_of_affine_family_nonneg_degree_one :=
   AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
-
-/-- If `g` has an explicit factor `X`, any orientation of `(qg, f)` lifts
-immediately to the affine right pair `(g, X * f)` by restoring the common
-factor `X`. -/
-private lemma strictInterl_right_pair_of_root_zero_factor
-    {f g qg : ℝ[X]}
-    (hg : g = X * qg)
-    (hstrictInterl_q : StrictInterl qg f) :
-    StrictInterl g (X * f) := by
-  have hstrictInterl_mul : StrictInterl (X * qg) (X * f) :=
-    hstrictInterl_q.mul_common_factor isRealRooted_X.1 isRealRooted_X.2
-  lia
 
 /-- A second boundary closure hidden in the affine family: after rescaling the
 slice `((C s * X + 1) * f) + g`, one gets `X * f + μ * (f + g)` for every

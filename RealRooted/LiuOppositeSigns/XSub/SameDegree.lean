@@ -259,16 +259,6 @@ theorem
   exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_one
     hpair hfnn hgnn hdeg hgdeg
 
-/-- Pack the low-degree right endpoint terminals as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_one :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 1) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_one
-    hpair hfnn hgnn hdeg hgdeg
-
 /-- Pack the degree-one right endpoint terminal as a predicate-restricted
 right-successor sign-normalized x-subtraction target. -/
 theorem

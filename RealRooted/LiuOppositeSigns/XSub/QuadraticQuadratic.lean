@@ -756,48 +756,5 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_t
   positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_two_of_monic
     xSubQuadraticQuadraticSplits hpair hfnn hgnn hdeg hgdeg
 
-/-- Pack the degree-two right endpoint reduction as a predicate-restricted
-same-degree sign-normalized x-subtraction target, modulo the normalized monic
-quadratic/quadratic leaf. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_two_of_monic
-    (hmono : xSubQuadraticQuadraticSplitsStatement) :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 2) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_two_of_monic
-    hmono hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-two right endpoint terminal as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_two :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 2) :=
-  positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_two_of_monic
-    xSubQuadraticQuadraticSplits
-
-/-- Pack the endpoint cases through degree two as a predicate-restricted
-same-degree sign-normalized x-subtraction target, modulo the normalized monic
-quadratic/quadratic leaf. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two_of_monic
-    (hmono : xSubQuadraticQuadraticSplitsStatement) :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 2) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_two_of_monic
-    hmono hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the endpoint cases through degree two as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 2) :=
-  positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two_of_monic
-    xSubQuadraticQuadraticSplits
-
-
 end LiuOppositeSigns
 end RealRooted

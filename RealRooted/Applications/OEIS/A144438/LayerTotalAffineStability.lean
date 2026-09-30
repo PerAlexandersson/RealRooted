@@ -294,24 +294,6 @@ theorem decoBottomTotal_add_two_isRayleigh_of_stable_affine
     ((eval_coordinateWronskian_affineSlope_base_nonneg_iff_compensation n).mpr
       hcomp) hdisc
 
-/-- Companion form of the stability-assisted affine criterion. It replaces
-the shifted affine-base endpoint and split normal/exceptional Wronskian
-bookkeeping by two exact conditions on one lower two-rank companion. -/
-theorem decoBottomTotal_add_two_isRayleigh_of_stable_affine_companion
-    (n : Nat) (hstable : MvRealStable (decoLayerTotal (n + 1)))
-    (hbase : MvPolynomial.IsRayleigh
-      (decoBottomTotalWronskianCompanion n))
-    (hcompanion : ∀ i x, 0 ≤ MvPolynomial.eval x
-      (MvPolynomial.coordinateWronskian
-        (decoNormalBottomCore (n + 1) (decoBottomTotal (n + 1)))
-        (decoBottomTotalWronskianCompanion n) i))
-    (hdisc : ∀ i j x, i ≠ 1 → j ≠ 1 → MvPolynomial.eval x
-      (MvPolynomial.affineRayleighDiscriminant
-        (decoBottomTotalAffineBase n) (decoBottomTotalAffineSlope n) i j) ≤ 0) :
-    MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) :=
-  (decoBottomTotal_add_two_isRayleigh_iff_stable_affine_companion
-    n hstable).2 ⟨hbase, hcompanion, hdisc⟩
-
 end
 
 end RealRooted.Applications.OEIS

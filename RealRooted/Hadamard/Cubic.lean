@@ -13,16 +13,6 @@ Degree-three PF-factor reductions, normalized diagonal base cases, and the
 finite Polya--Schur equivalence interfaces.
 -/
 
-/-- Nonzero-core version of the arbitrary-level Schur--Szego base case with a
-degree-`≤ 2` PF factor. -/
-theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_two
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 2)
-    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
-    hf hfdeg hpdeg hsplit
-
 /-- If the degree-`n` Jensen polynomial is PF and itself has degree at most
 two, then the diagonal sequence is a finite multiplier sequence through degree
 `n`.
@@ -177,17 +167,6 @@ theorem pfCubicDiscrDiagonalNonnegStatement_of_schurSzego
     · exact cubicDiscr_nonneg_of_splits_natDegree_le_three
         ((natDegree_schurSzegoComp_le_left 3 f q).trans hfdeg) hs
 
-/-- The isolated normalized diagonal base case discharges the level-three
-degree-`≤ 3` PF-factor Schur--Szego composition route. -/
-theorem finiteSchurSzegoComposition_of_pf_factor_three_of_base
-    (h : pfCubicDiscrDiagonalNonnegStatement)
-    {f q : ℝ[X]} (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
-    (hqdeg : q.natDegree ≤ 3) (hsplit : q.Splits) :
-    schurSzegoComp 3 f q = 0 ∨ (schurSzegoComp 3 f q).Splits :=
-  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
-    hf hfdeg hqdeg hsplit
-    (pfCubicDiscrDiagonalNonnegStatement_iff.mp h hf hfdeg hqdeg hsplit)
-
 /-- The isolated level-three diagonal base case proves the reflected
 diagonal-operator discriminant input at every level `n ≥ 3`. -/
 theorem cubicDiscr_reflect_diagonalOperator_nonneg_of_pfCubicDiscrDiagonalNonneg
@@ -243,21 +222,6 @@ theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_leftNatDegree_of_
     (fun hn =>
       cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_natDegree_lt_three
         hn hf hfdeg hfn hpdeg hsplit)
-
-/-- Degree-`≤ 3` Schur--Szego composition reduced to the reflected-derivative
-diagonal-operator discriminant. -/
-theorem finiteSchurSzegoComposition_of_pf_factor_le_three_reflect_diagonalOperator
-    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
-    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
-    (hdisc : 0 ≤ cubicDiscr
-      (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-        (reflect 3 ((derivative^[n - 3]) (reflect n p))))) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
-    hf hfdeg hpdeg hsplit
-    (cubicDiscr_schurSzegoComp_nonneg_of_reflect_diagonalOperator_three
-      hn hfdeg hpdeg hdisc)
 
 /-- The isolated level-three diagonal base case discharges the high-level
 degree-`≤ 3` PF-factor Schur--Szego route. -/
@@ -348,54 +312,6 @@ theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_three_cubic
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
   finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
     hf hfdeg hpdeg hsplit hdisc
-
-/-- Nonzero-core version of the high-level diagonal-base route for degree-`≤ 3`
-PF factors. -/
-theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_le_three_of_pfCubicDiscrDiagonalNonneg
-    (h : pfCubicDiscrDiagonalNonnegStatement)
-    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
-    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_pf_factor_le_three_of_pfCubicDiscrDiagonalNonneg
-    h hn hf hfdeg hpdeg hsplit
-
-/-- Nonzero-core version of the corrected all-level diagonal-base route for
-degree-`≤ 3` PF factors, retaining `f.natDegree ≤ n`. -/
-theorem
-    finiteSchurSzegoCompositionNonzero_of_pf_factor_le_three_leftNatDegree_of_pfDiagonalBase
-    (h : pfCubicDiscrDiagonalNonnegStatement)
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
-    (hfn : f.natDegree ≤ n) (_hp0 : p ≠ 0)
-    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_of_pfCubicDiscrDiagonalNonneg
-    h hf hfdeg hfn hpdeg hsplit
-
-/-- Nonzero-core version of the degree-`≤ 3` PF-factor Schur--Szegő reduction
-to the denominator-cleared cubic-discriminant numerator at levels `n ≥ 3`. -/
-theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_le_three_cubicDiscrNumerator_nonneg
-    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
-    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
-    (hnum : 0 ≤ schurSzegoCompCubicDiscrNumerator n f p) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscrNumerator_nonneg
-    hn hf hfdeg hpdeg hsplit hnum
-
-/-- Nonzero-core version of the corrected all-level denominator-cleared
-numerator route for degree-`≤ 3` PF factors, retaining the original
-fixed-degree Schur--Szegő hypothesis `f.natDegree ≤ n`. -/
-theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_le_three_leftNatDegree_num_nonneg
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
-    (hfn : f.natDegree ≤ n) (_hp0 : p ≠ 0)
-    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
-    (hnum : 3 ≤ n → 0 ≤ schurSzegoCompCubicDiscrNumerator n f p) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_num_nonneg
-    hf hfdeg hfn hpdeg hsplit hnum
 
 /-- The full finite Schur--Szegő theorem implies the finite Pólya--Schur
 theorem. -/

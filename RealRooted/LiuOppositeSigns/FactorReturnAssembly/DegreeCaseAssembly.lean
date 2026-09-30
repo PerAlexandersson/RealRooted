@@ -118,26 +118,6 @@ theorem theorem21DeletionPairCommonInterleaverFactorReturn_of_leftAllComboCases
   theorem21DeletionPairCommonInterleaverFactorReturn_of_leftCases
     (theorem21LeftFactorReturnDegreeCases_of_allComboCases hcases)
 
-/-- Translated compatibility degree cases imply the factor-return principle
-used by the reverse direction. -/
-theorem
-    theorem21DeletionPairCommonInterleaverFactorReturn_of_translatedCompatibleCases
-    (hcases :
-      theorem21LeftFactorReturnTranslatedCompatibleDegreeCasesStatement) :
-    theorem21DeletionPairCommonInterleaverFactorReturnStatement :=
-  theorem21DeletionPairCommonInterleaverFactorReturn_of_leftCases
-    (theorem21LeftFactorReturnDegreeCases_of_translatedCompatibleCases hcases)
-
-/-- Translated right-family degree cases imply the factor-return principle
-used by the reverse direction. -/
-theorem theorem21DeletionPairCommonInterleaverFactorReturn_of_translatedRightFamilyCases
-    (hcases :
-      theorem21LeftFactorReturnTranslatedRightFamilyDegreeCasesStatement) :
-    theorem21DeletionPairCommonInterleaverFactorReturnStatement :=
-  theorem21DeletionPairCommonInterleaverFactorReturn_of_leftCases
-    (theorem21LeftFactorReturnDegreeCases_of_translatedRightFamilyCases
-      hcases)
-
 /-- A bundled sign-normalized positive-split x-subtraction case package
 implies the factor-return principle used by the reverse direction. -/
 theorem theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCasePackage
@@ -177,97 +157,6 @@ theorem theorem21DeletionPairCommonInterleaverFactorReturn_of_xSub :
     theorem21DeletionPairCommonInterleaverFactorReturnStatement :=
   theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCasePackage
     positiveSplitTranslatedXSubRightFamilyDegreeCases
-
-/-- The branch-retaining deletion-pair common-interleaver theorem package
-follows from the isolated forward direction and a bundled sign-normalized
-positive-split x-subtraction case package. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_xSubCasePackage
-    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
-    (hcases :
-      positiveSplitTranslatedXSubRightFamilyDegreeCasesStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_factorReturn
-    hforward
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCasePackage
-      hcases)
-
-/-- The branch-retaining deletion-pair common-interleaver theorem package
-follows from the isolated root-count forward direction and a bundled
-sign-normalized positive-split x-subtraction case package. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIff_of_forward_and_xSubCasePackage
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    (hcases :
-      positiveSplitTranslatedXSubRightFamilyDegreeCasesStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_xSubCasePackage
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
-      hforward)
-    hcases
-
-/-- The nonconstant branch-retaining deletion-pair common-interleaver theorem
-package follows from the isolated nonconstant forward direction and a bundled
-sign-normalized positive-split x-subtraction case package. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_xSubCasePackage
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hcases :
-      positiveSplitTranslatedXSubRightFamilyDegreeCasesStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement :=
-  theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_factorReturn
-    hforward
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCasePackage
-      hcases)
-
-/-- The branch-retaining deletion-pair common-interleaver theorem package
-follows from the isolated forward direction and sign-normalized positive-split
-x-subtraction cases. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_xSubCases
-    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
-    (hrightSucc :
-      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
-    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement)
-    (hleftSucc :
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_xSubCasePackage
-    hforward ⟨hrightSucc, hsame, hleftSucc⟩
-
-/-- The branch-retaining deletion-pair common-interleaver theorem package
-follows from the isolated root-count forward direction and sign-normalized
-positive-split x-subtraction cases. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIff_of_forward_and_xSubCases
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    (hrightSucc :
-      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
-    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement)
-    (hleftSucc :
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_xSubCases
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
-      hforward)
-    hrightSucc hsame hleftSucc
-
-/-- The nonconstant branch-retaining deletion-pair common-interleaver theorem
-package follows from the isolated nonconstant forward direction and
-sign-normalized positive-split x-subtraction cases. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_xSubCases
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hrightSucc :
-      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
-    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement)
-    (hleftSucc :
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement :=
-  theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_xSubCasePackage
-    hforward ⟨hrightSucc, hsame, hleftSucc⟩
 
 /-- The factor-return principle follows from same/succ left leaves and the
 translated two-degree compatibility target. -/

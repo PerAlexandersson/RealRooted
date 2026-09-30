@@ -36,38 +36,6 @@ theorem compatibleCubicPairRootOrder : CompatibleCubicPairRootOrderStatement := 
       hf hg hsgn hcompat hab hbc huv hfroots hgroots
   exact ⟨hub, hav, hvc⟩
 
-/-- Degree `(3, 2)` forward endpoint case. -/
-theorem theorem21RootCountBranches_of_compatible_natDegree_three_two
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
-    (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 2) :
-    theorem21RootCountBranches f g :=
-  theorem21RootCountBranches_of_compatible_natDegree_three_two_of_cubicPairRootOrder
-    compatibleCubicPairRootOrder hf hg hsgn hcompat hfdeg hgdeg
-
-/-- Degree `(2, 3)` no-common forward endpoint case.  The no-common-root
-hypothesis makes the largest-root comparison strict after swapping the pair. -/
-theorem theorem21RootCountBranches_of_compatible_natDegree_two_three
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
-    (hno : NoCommonRoots f g)
-    (hfdeg : f.natDegree = 2) (hgdeg : g.natDegree = 3) :
-    theorem21RootCountBranches f g :=
-  theorem21RootCountBranches_of_compatible_natDegree_two_three_of_cubicPairRootOrder
-    compatibleCubicPairRootOrder hf hg hsgn hcompat hno hfdeg hgdeg
-
-/-- Mixed degree-three/two no-common forward endpoint package. -/
-theorem theorem21RootCountBranches_of_compatible_natDegree_three_two_or_two_three
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
-    (hno : NoCommonRoots f g)
-    (hdeg :
-      (f.natDegree = 3 ∧ g.natDegree = 2) ∨
-        (f.natDegree = 2 ∧ g.natDegree = 3)) :
-    theorem21RootCountBranches f g :=
-  theorem21RootCountBranches_of_compatible_natDegree_three_two_or_two_three_of_cubicPairRootOrder
-    compatibleCubicPairRootOrder hf hg hsgn hcompat hno hdeg
-
 /-- Conditional nonconstant no-common forward direction through endpoint
 degree three, excluding the remaining cubic/cubic corner. -/
 theorem

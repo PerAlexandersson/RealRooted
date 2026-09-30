@@ -68,19 +68,6 @@ theorem theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonFo
     theorem21DeletionPairCommonInterleaverBranches f g :=
   hforward hf hg hsgn hcompat
 
-/-- Projection form of the isolated nonconstant branch-retaining deletion-pair
-common-interleaver forward direction. -/
-theorem
-    theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonForward_nonconstant
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
-    (hcompat : Compatible f g) :
-    theorem21DeletionPairCommonInterleaverBranches f g :=
-  hforward hf hg hsgn hf_deg hg_deg hcompat
-
 /-- The isolated branch-retaining deletion-pair common-interleaver forward
 direction supplies normalized deletion compatibility branches. -/
 theorem theorem21PositiveDeletionCompatibleBranches_of_compatible_of_commonForward
@@ -92,22 +79,6 @@ theorem theorem21PositiveDeletionCompatibleBranches_of_compatible_of_commonForwa
     hsgn
     (theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonForward
       hforward hf hg hsgn hcompat)
-
-/-- The isolated nonconstant branch-retaining deletion-pair common-interleaver
-forward direction supplies normalized deletion compatibility branches. -/
-theorem
-    theorem21PositiveDeletionCompatibleBranches_of_compatible_of_commonForward_nonconstant
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
-    (hcompat : Compatible f g) :
-    theorem21PositiveDeletionCompatibleBranches f g :=
-  theorem21PositiveDeletionCompatibleBranches_of_deletionPairCommonInterleaverBranches
-    hsgn
-    (theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonForward_nonconstant
-      hforward hf hg hsgn hf_deg hg_deg hcompat)
 
 /-- The isolated forward direction of Liu Theorem 2.1 supplies normalized
 deletion compatibility branches. -/

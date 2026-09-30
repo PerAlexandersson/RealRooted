@@ -216,18 +216,6 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_one
   pairHasCommonInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
-/-- Same-degree branch of the honest no-common target is already unconditional
-through degree one. -/
-theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_le_one
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hf_deg_le_one : f.natDegree ≤ 1) :
-    StrictInterl f g ∨ StrictInterl g f :=
-  strictInterl_or_reverse_of_natDegree_le_one
-    hf_pos hg_pos hf_deg_le_one (by lia)
-
 /-- The old same-degree orientation alternative, when available, still feeds
 the repaired same-degree common-interleaver target. -/
 theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
@@ -264,27 +252,6 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlterna
     pairHasCommonInterleaver_of_sameDegree_slotIntersections
       hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hdeg hslot
 
-/-- Low-degree base case for the same-degree root-slot data.  Through degree one,
-the common-right-interleaver base case already supplies every matching slot
-intersection. -/
-theorem sameDegreeSlotData_of_natDegree_le_one
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hf_deg_le_one : f.natDegree ≤ 1) :
-    ∀ j, j < f.natDegree + 1 →
-      ∀ (hjf : j < (rootSeqDesc f).length + 1)
-        (hjg : j < (rootSeqDesc g).length + 1),
-        (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
-          rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty := by
-  obtain ⟨h, hfh, hgh⟩ :=
-    pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
-      hf_pos hg_pos hdeg hf_deg_le_one
-  intro j hj _ _
-  have hjg' : j < g.natDegree + 1 := by lia
-  exact rootSlotInterval_inter_nonempty_of_commonInterleaver hfh hgh j hj hjg'
-
 /-- Succ-degree branch of the honest no-common target is already unconditional
 in the constant-vs-linear endpoint case. -/
 theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
@@ -302,28 +269,6 @@ theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
   exact StrictInterl.of_degree_zero_right_of_degree_one
     hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_deg0 hg_deg1
 
-/-- Any proof of the stronger fixed-orientation succ-degree statement can be
-used immediately as input for the corrected succ-degree pair bridge. -/
-theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  fun {_ _} hf_pos hg_pos hfnn hgnn hfg hsucc hno =>
-    pairHasCommonInterleaver_of_strictInterl <|
-      horient hf_pos hg_pos hfnn hgnn hfg hsucc hno
-
-/-- The corrected succ-degree pair bridge is already unconditional in the
-constant-vs-linear endpoint case. -/
-theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_deg0 : f.natDegree = 0)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  pairHasCommonInterleaver_of_strictInterl <|
-    posComboNoCommonSuccDegreeOrientation_of_degree_zero
-      hf_pos hg_pos hf_deg0 hsucc
-
 /-- The common-left succ-degree pair bridge is already unconditional in the
 constant-vs-linear endpoint case. -/
 theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_degree_zero
@@ -336,58 +281,6 @@ theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_degree_zero
   pairHasCommonLeftInterleaver_of_strictInterl <|
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
-
-/-- Degree-zero base case for the succ-degree root-slot data.  In the
-constant-vs-linear endpoint, the unconditional common interleaver recovers both
-the left real-rootedness and all matching slot intersections. -/
-theorem succDegreeSlotData_of_natDegree_eq_zero
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_deg0 : f.natDegree = 0)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    (f ≠ 0 ∧ f.Splits) ∧
-      ∀ j, j < f.natDegree + 1 →
-        ∀ (hjf : j < (rootSeqDesc f).length + 1)
-          (hjg : j < (rootSeqDesc g).length + 1),
-          (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
-            rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty := by
-  obtain ⟨h, hfh, hgh⟩ :=
-    posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
-      hf_pos hg_pos hf_deg0 hsucc
-  refine ⟨hfh.1, ?_⟩
-  intro j hj _ _
-  have hjg' : j < g.natDegree + 1 := by lia
-  exact rootSlotInterval_inter_nonempty_of_commonInterleaver hfh hgh j hj hjg'
-
-/-- Degree-one left-hand endpoint of the corrected succ-degree branch under
-the affine-family bridge.  The public affine-family degree-one lemma gives the
-stronger right-pair orientation `g ≪ X * f`, so `X * f` is the required common
-right interleaver. -/
-theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degree_one
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hf_deg1 : f.natDegree = 1)
-    (hsucc : g.natDegree = f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
-  have hf0 : f ≠ 0 := hf_pos.ne_zero
-  have hg0 : g ≠ 0 := hg_pos.ne_zero
-  have haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits) :=
-    fun {s t} hs ht =>
-      haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
-  have hright : StrictInterl g (X * f) :=
-    AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
-      hf0 hg0 hfnn hgnn haff hf_deg1
-  exact pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg hright hfnn
 
 /-- The affine-family bridge proves the full corrected succ-degree
 common-right-interleaver branch.  The affine-family right-pair theorem gives
@@ -408,260 +301,6 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
     strictInterl_right_pair_of_affine_family_nonneg
       hf0 hg0 hfnn hgnn haff
   exact pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg hright hfnn
-
-
-/-- Degree-two succ-degree root-order leaf.
-
-For roots listed as `a ≤ b` for the quadratic endpoint and `p ≤ q ≤ r` for
-the cubic endpoint, these three inequalities are exactly the finite root-order
-content needed to rule out the degree-two exact gap-two obstruction. -/
-def SuccDegreeQuadraticCubicRootBoundsStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.Splits →
-    g.Splits →
-    f.natDegree = 2 →
-    g.natDegree = 3 →
-    PosComboRealRooted f g →
-    ∀ a b p q r : ℝ,
-      a ≤ b →
-      p ≤ q →
-      q ≤ r →
-      f.roots = {a, b} →
-      g.roots = {p, q, r} →
-      p ≤ a ∧ q ≤ b ∧ a ≤ r
-
-/-- Degree-two succ-degree obstruction to the first cubic root lying strictly
-above the first quadratic root. -/
-def SuccDegreeQuadraticCubicFirstAboveObstructionStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.Splits →
-    g.Splits →
-    f.natDegree = 2 →
-    g.natDegree = 3 →
-    PosComboRealRooted f g →
-    ∀ a b p q r : ℝ,
-      a ≤ b →
-      p ≤ q →
-      q ≤ r →
-      f.roots = {a, b} →
-      g.roots = {p, q, r} →
-      a < p →
-      False
-
-/-- Degree-two succ-degree obstruction to the second cubic root lying strictly
-above the second quadratic root. -/
-def SuccDegreeQuadraticCubicSecondAboveObstructionStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.Splits →
-    g.Splits →
-    f.natDegree = 2 →
-    g.natDegree = 3 →
-    PosComboRealRooted f g →
-    ∀ a b p q r : ℝ,
-      a ≤ b →
-      p ≤ q →
-      q ≤ r →
-      f.roots = {a, b} →
-      g.roots = {p, q, r} →
-      b < q →
-      False
-
-/-- Degree-two succ-degree obstruction to all cubic roots lying strictly below
-the first quadratic root. -/
-def SuccDegreeQuadraticCubicFullBelowObstructionStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.Splits →
-    g.Splits →
-    f.natDegree = 2 →
-    g.natDegree = 3 →
-    PosComboRealRooted f g →
-    ∀ a b p q r : ℝ,
-      a ≤ b →
-      p ≤ q →
-      q ≤ r →
-      f.roots = {a, b} →
-      g.roots = {p, q, r} →
-      r < a →
-      False
-
-/-- Pure monic-pencil obstruction for the first-above quadratic/cubic
-configuration. -/
-def QuadraticCubicFirstAbovePencilObstructionStatement : Prop :=
-  ∀ ⦃a b p q r : ℝ⦄,
-    a ≤ b →
-    p ≤ q →
-    q ≤ r →
-    a < p →
-    ∃ t : ℝ, 0 < t ∧
-      ¬ (((X - C a) * (X - C b) +
-          C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits
-
-/-- Pure monic-pencil obstruction for the second-above quadratic/cubic
-configuration. -/
-def QuadraticCubicSecondAbovePencilObstructionStatement : Prop :=
-  ∀ ⦃a b p q r : ℝ⦄,
-    a ≤ b →
-    p ≤ q →
-    q ≤ r →
-    b < q →
-    ∃ t : ℝ, 0 < t ∧
-      ¬ (((X - C a) * (X - C b) +
-          C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits
-
-/-- Pure monic-pencil obstruction for the full-below quadratic/cubic
-configuration. -/
-def QuadraticCubicFullBelowPencilObstructionStatement : Prop :=
-  ∀ ⦃a b p q r : ℝ⦄,
-    a ≤ b →
-    p ≤ q →
-    q ≤ r →
-    r < a →
-    ∃ t : ℝ, 0 < t ∧
-      ¬ (((X - C a) * (X - C b) +
-          C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits
-
-/-- The positive-combination splitting hypothesis on a positive scalar
-multiple of a monic quadratic and a positive scalar multiple of a monic cubic
-descends to the corresponding monic right pencil. -/
-theorem quadraticCubic_monic_pencil_splits_of_posCombo
-    {a b p q r A B : ℝ} (hA : 0 < A) (hB : 0 < B)
-    (hpc : ∀ {lam μ : ℝ}, 0 < lam → 0 < μ →
-      (C lam * (C A * ((X - C a) * (X - C b))) +
-          C μ * (C B * ((X - C p) * (X - C q) * (X - C r)))).Splits) :
-    ∀ t : ℝ, 0 < t →
-      (((X - C a) * (X - C b) +
-          C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits := by
-  intro t ht
-  have hcombo := hpc (lam := 1) (μ := t * A / B) one_pos (by positivity)
-  have key : C (1 : ℝ) * (C A * ((X - C a) * (X - C b))) +
-        C (t * A / B) * (C B * ((X - C p) * (X - C q) * (X - C r))) =
-      C A * ((X - C a) * (X - C b) +
-        C t * ((X - C p) * (X - C q) * (X - C r))) := by
-    apply Polynomial.funext
-    intro x
-    simp only [eval_add, eval_mul, eval_sub, eval_C, eval_X, one_mul]
-    field_simp [hB.ne']
-  rw [key] at hcombo
-  exact (splits_C_mul_iff hA.ne' _).1 hcombo
-
-/-- Factor a split quadratic through a specified two-root multiset. -/
-theorem eq_C_leadingCoeff_mul_prod_two
-    {f : ℝ[X]} (hf : f.Splits) (a b : ℝ) (hr : f.roots = {a, b}) :
-    f = C f.leadingCoeff * ((X - C a) * (X - C b)) := by
-  rw [Polynomial.Splits.eq_prod_roots hf, hr]
-  simp [Multiset.map_cons, Multiset.prod_cons]
-
-/-- Pure first-above monic-pencil obstruction implies the corresponding
-polynomial obstruction leaf. -/
-theorem succDegreeQuadraticCubicFirstAboveObstruction_of_pencil
-    (hpencil : QuadraticCubicFirstAbovePencilObstructionStatement) :
-    SuccDegreeQuadraticCubicFirstAboveObstructionStatement := by
-  intro f g hf_pos hg_pos hf_split hg_split _hfdeg _hgdeg hfg
-    a b p q r hab hpq hqr hfroots hgroots hap
-  have hffac : f = C f.leadingCoeff * ((X - C a) * (X - C b)) :=
-    eq_C_leadingCoeff_mul_prod_two hf_split a b hfroots
-  have hgfac : g =
-      C g.leadingCoeff * ((X - C p) * (X - C q) * (X - C r)) :=
-    eq_C_leadingCoeff_mul_prod_three hg_split p q r hgroots
-  have hpc' : ∀ {lam μ : ℝ}, 0 < lam → 0 < μ →
-      (C lam * (C f.leadingCoeff * ((X - C a) * (X - C b))) +
-          C μ * (C g.leadingCoeff *
-            ((X - C p) * (X - C q) * (X - C r)))).Splits := by
-    intro lam μ hlam hμ
-    rw [← hffac, ← hgfac]
-    exact (hfg (lam := lam) (μ := μ) hlam hμ).2
-  obtain ⟨t, ht, hnot⟩ := hpencil hab hpq hqr hap
-  exact hnot
-    (quadraticCubic_monic_pencil_splits_of_posCombo
-      hf_pos hg_pos hpc' t ht)
-
-/-- Pure second-above monic-pencil obstruction implies the corresponding
-polynomial obstruction leaf. -/
-theorem succDegreeQuadraticCubicSecondAboveObstruction_of_pencil
-    (hpencil : QuadraticCubicSecondAbovePencilObstructionStatement) :
-    SuccDegreeQuadraticCubicSecondAboveObstructionStatement := by
-  intro f g hf_pos hg_pos hf_split hg_split _hfdeg _hgdeg hfg
-    a b p q r hab hpq hqr hfroots hgroots hbq
-  have hffac : f = C f.leadingCoeff * ((X - C a) * (X - C b)) :=
-    eq_C_leadingCoeff_mul_prod_two hf_split a b hfroots
-  have hgfac : g =
-      C g.leadingCoeff * ((X - C p) * (X - C q) * (X - C r)) :=
-    eq_C_leadingCoeff_mul_prod_three hg_split p q r hgroots
-  have hpc' : ∀ {lam μ : ℝ}, 0 < lam → 0 < μ →
-      (C lam * (C f.leadingCoeff * ((X - C a) * (X - C b))) +
-          C μ * (C g.leadingCoeff *
-            ((X - C p) * (X - C q) * (X - C r)))).Splits := by
-    intro lam μ hlam hμ
-    rw [← hffac, ← hgfac]
-    exact (hfg (lam := lam) (μ := μ) hlam hμ).2
-  obtain ⟨t, ht, hnot⟩ := hpencil hab hpq hqr hbq
-  exact hnot
-    (quadraticCubic_monic_pencil_splits_of_posCombo
-      hf_pos hg_pos hpc' t ht)
-
-/-- Pure full-below monic-pencil obstruction implies the corresponding
-polynomial obstruction leaf. -/
-theorem succDegreeQuadraticCubicFullBelowObstruction_of_pencil
-    (hpencil : QuadraticCubicFullBelowPencilObstructionStatement) :
-    SuccDegreeQuadraticCubicFullBelowObstructionStatement := by
-  intro f g hf_pos hg_pos hf_split hg_split _hfdeg _hgdeg hfg
-    a b p q r hab hpq hqr hfroots hgroots hra
-  have hffac : f = C f.leadingCoeff * ((X - C a) * (X - C b)) :=
-    eq_C_leadingCoeff_mul_prod_two hf_split a b hfroots
-  have hgfac : g =
-      C g.leadingCoeff * ((X - C p) * (X - C q) * (X - C r)) :=
-    eq_C_leadingCoeff_mul_prod_three hg_split p q r hgroots
-  have hpc' : ∀ {lam μ : ℝ}, 0 < lam → 0 < μ →
-      (C lam * (C f.leadingCoeff * ((X - C a) * (X - C b))) +
-          C μ * (C g.leadingCoeff *
-            ((X - C p) * (X - C q) * (X - C r)))).Splits := by
-    intro lam μ hlam hμ
-    rw [← hffac, ← hgfac]
-    exact (hfg (lam := lam) (μ := μ) hlam hμ).2
-  obtain ⟨t, ht, hnot⟩ := hpencil hab hpq hqr hra
-  exact hnot
-    (quadraticCubic_monic_pencil_splits_of_posCombo
-      hf_pos hg_pos hpc' t ht)
-
-/-- The three elementary quadratic/cubic obstruction leaves imply the
-degree-two succ-degree root-order leaf. -/
-theorem succDegreeQuadraticCubicRootBounds_of_obstructions
-    (hfirst : SuccDegreeQuadraticCubicFirstAboveObstructionStatement)
-    (hsecond : SuccDegreeQuadraticCubicSecondAboveObstructionStatement)
-    (hbelow : SuccDegreeQuadraticCubicFullBelowObstructionStatement) :
-    SuccDegreeQuadraticCubicRootBoundsStatement := by
-  intro f g hf_pos hg_pos hf_split hg_split hfdeg hgdeg hfg
-    a b p q r hab hpq hqr hfroots hgroots
-  refine ⟨?_, ?_, ?_⟩
-  · exact le_of_not_gt
-      (fun hpa => hfirst hf_pos hg_pos hf_split hg_split hfdeg hgdeg hfg
-        a b p q r hab hpq hqr hfroots hgroots hpa)
-  · exact le_of_not_gt
-      (fun hqb => hsecond hf_pos hg_pos hf_split hg_split hfdeg hgdeg hfg
-        a b p q r hab hpq hqr hfroots hgroots hqb)
-  · exact le_of_not_gt
-      (fun har => hbelow hf_pos hg_pos hf_split hg_split hfdeg hgdeg hfg
-        a b p q r hab hpq hqr hfroots hgroots har)
-
-/-- Pure monic-pencil obstruction leaves imply the degree-two succ-degree
-root-order leaf. -/
-theorem succDegreeQuadraticCubicRootBounds_of_pencil_obstructions
-    (hfirst : QuadraticCubicFirstAbovePencilObstructionStatement)
-    (hsecond : QuadraticCubicSecondAbovePencilObstructionStatement)
-    (hbelow : QuadraticCubicFullBelowPencilObstructionStatement) :
-    SuccDegreeQuadraticCubicRootBoundsStatement :=
-  succDegreeQuadraticCubicRootBounds_of_obstructions
-    (succDegreeQuadraticCubicFirstAboveObstruction_of_pencil hfirst)
-    (succDegreeQuadraticCubicSecondAboveObstruction_of_pencil hsecond)
-    (succDegreeQuadraticCubicFullBelowObstruction_of_pencil hbelow)
 
 
 /-- Degree-zero base case for the succ-degree root-count formulation.
@@ -693,22 +332,6 @@ theorem succDegreeRootCount_of_natDegree_eq_zero
   have hgnonneg : (0 : ℤ) ≤ (g.roots.filter (· ≤ x)).card := by
     exact_mod_cast Nat.zero_le (g.roots.filter (· ≤ x)).card
   constructor <;> lia
-
-/-- Degree-zero base case for the succ-degree analytic root-count target in
-the positive-combination/no-common setting. -/
-theorem succDegreeRootCount_of_posCombo_natDegree_eq_zero
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (_hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hf_split : f.Splits) (hfdeg : f.natDegree = 0) (x : ℝ) :
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
-  have hg_split : g.Splits :=
-    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
-  exact succDegreeRootCount_of_natDegree_eq_zero hf_split hg_split hdeg hfdeg x
 
 /-- Degree-zero base case for the upper-threshold succ-degree root-count
 formulation. -/
@@ -813,18 +436,6 @@ private lemma count_above_singleton_pair_le
   simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
   split_ifs <;> (first | linarith | simp_all)
 
-/-- Counting core (lower threshold): for a singleton `{α}` and an ordered pair
-`{β, γ}` with `γ ≤ α`, the singleton never has more elements `≤ x` than the
-pair, and the pair has at most two more. -/
-private lemma count_below_singleton_pair_le
-    {α β γ x : ℝ} (hγα : γ ≤ α) :
-    ((({α} : Multiset ℝ).filter (· ≤ x)).card : ℤ) -
-        (({β, γ} : Multiset ℝ).filter (· ≤ x)).card ≤ 0 ∧
-    ((({β, γ} : Multiset ℝ).filter (· ≤ x)).card : ℤ) -
-        (({α} : Multiset ℝ).filter (· ≤ x)).card ≤ 2 := by
-  simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
-  split_ifs <;> (first | linarith | simp_all)
-
 /-- Degree-one base case for the upper-threshold succ-degree root-count
 formulation in the positive-combination / no-common-root setting.
 
@@ -845,23 +456,6 @@ theorem succDegreeRootCountAbove_of_posCombo_natDegree_eq_one
     smallRoot_le_of_posCombo_natDegree_eq_one hf_pos hg_pos hfg hdeg hf_split hfdeg
   rw [hαroots, hgroots]
   exact count_above_singleton_pair_le hγα
-
-/-- Degree-one base case for the lower-threshold succ-degree root-count
-formulation in the positive-combination / no-common-root setting. -/
-theorem succDegreeRootCount_of_posCombo_natDegree_eq_one
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (_hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hf_split : f.Splits) (hfdeg : f.natDegree = 1) (x : ℝ) :
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
-  obtain ⟨_a, α, _ha, hαroots, _b, β, γ, _hb, _hβγ, hgroots, hγα⟩ :=
-    smallRoot_le_of_posCombo_natDegree_eq_one hf_pos hg_pos hfg hdeg hf_split hfdeg
-  rw [hαroots, hgroots]
-  exact count_below_singleton_pair_le hγα
 
 /-- Degree-one base case for the succ-degree root-crossing target in the
 positive-combination / no-common-root setting, obtained from the
@@ -892,24 +486,6 @@ private lemma nat_eq_zero_or_eq_one_of_le_one {n : ℕ} (hn : n ≤ 1) :
   · exact Or.inl rfl
   · have hn0 : n = 0 := Nat.eq_zero_of_le_zero (Nat.succ_le_succ_iff.mp hn)
     exact Or.inr (by rw [hn0])
-
-/-- Low-degree base case for the upper-threshold succ-degree root-count
-formulation in the positive-combination / no-common-root setting. -/
-theorem succDegreeRootCountAbove_of_posCombo_natDegree_le_one
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 1) (x : ℝ) :
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  rcases nat_eq_zero_or_eq_one_of_le_one hfdeg with hf0 | hf1
-  · exact succDegreeRootCountAbove_of_posCombo_natDegree_eq_zero
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 x
-  · exact succDegreeRootCountAbove_of_posCombo_natDegree_eq_one
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf1 x
 
 /-- Degree-zero compatible-pair base case for the upper-threshold succ-degree
 root-count formulation. -/
@@ -1000,158 +576,6 @@ theorem compatibleSuccDegreeRootCountAbove_le_two_of_natDegree_le_two
       compatibleSuccDegreeRootCountAbove_of_natDegree_le_one
         hcomp hf_pos hg_pos hdeg hf_split hfdeg_le_one x
     constructor <;> linarith
-
-/-- Low-degree base case for the compatible exact gap-two obstruction.  When
-the lower endpoint has degree at most one, the explicit upper root-count bound
-already rules out an endpoint count difference equal to two. -/
-theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_one
-    {f g : ℝ[X]}
-    (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 1) (x : ℝ) :
-      ((f.roots.filter (x < ·)).card : ℤ) -
-          (g.roots.filter (x < ·)).card ≠ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) -
-          (f.roots.filter (x < ·)).card ≠ 2 := by
-  obtain ⟨hfg_le, hgf_le⟩ :=
-    compatibleSuccDegreeRootCountAbove_of_natDegree_le_one
-      hcomp hf_pos hg_pos hdeg hf_split hfdeg x
-  constructor <;> intro hgap <;> linarith
-
-/-- Finite count core for the degree-two succ-degree root-order leaf. -/
-private lemma count_below_pair_triple_of_succ_bounds
-    {a b p q r x : ℝ}
-    (hab : a ≤ b) (hpq : p ≤ q) (hqr : q ≤ r)
-    (hpa : p ≤ a) (hqb : q ≤ b) (har : a ≤ r) :
-    ((({a, b} : Multiset ℝ).filter (· ≤ x)).card : ℤ) -
-        (({p, q, r} : Multiset ℝ).filter (· ≤ x)).card ≤ 0 ∧
-    ((({p, q, r} : Multiset ℝ).filter (· ≤ x)).card : ℤ) -
-        (({a, b} : Multiset ℝ).filter (· ≤ x)).card ≤ 2 := by
-  rw [card_filter_le_pair, card_filter_le_triple]
-  push_cast
-  constructor <;> grind
-
-/-- Degree-two base case for the lower-threshold succ-degree root-count
-formulation, reduced to the quadratic/cubic root-order leaf. -/
-theorem succDegreeRootCount_of_posCombo_natDegree_eq_two_of_rootBounds
-    (hbound : SuccDegreeQuadraticCubicRootBoundsStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : f.natDegree = 2) (x : ℝ) :
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
-  have hgdeg : g.natDegree = 3 := by rw [hdeg, hfdeg]
-  have hg_split : g.Splits :=
-    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
-  obtain ⟨a, b, hab, hfroots, _hffac⟩ :=
-    exists_roots_pair_of_splits_natDegree_two hf_split hfdeg
-  obtain ⟨p, q, r, hpq, hqr, hgroots, _hgfac⟩ :=
-    exists_roots_triple_of_splits_natDegree_three hg_split hgdeg
-  obtain ⟨hpa, hqb, har⟩ :=
-    hbound hf_pos hg_pos hf_split hg_split hfdeg hgdeg hfg
-      a b p q r hab hpq hqr hfroots hgroots
-  rw [hfroots, hgroots]
-  exact count_below_pair_triple_of_succ_bounds hab hpq hqr hpa hqb har
-
-/-- Degree-two base case for the upper-threshold succ-degree root-count
-formulation, reduced to the quadratic/cubic root-order leaf. -/
-theorem succDegreeRootCountAbove_of_posCombo_natDegree_eq_two_of_rootBounds
-    (hbound : SuccDegreeQuadraticCubicRootBoundsStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : f.natDegree = 2) (x : ℝ) :
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  have hg_split : g.Splits :=
-    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
-  exact succDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
-    (fun y =>
-      succDegreeRootCount_of_posCombo_natDegree_eq_two_of_rootBounds
-        hbound hf_pos hg_pos hfg hdeg hf_split hfdeg y)
-    x
-
-/-- Compatible-pair degree-two no-gap base, reduced to the quadratic/cubic
-root-order leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_eq_two_of_rootBounds
-    (hbound : SuccDegreeQuadraticCubicRootBoundsStatement)
-    {f g : ℝ[X]}
-    (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : f.natDegree = 2) (x : ℝ) :
-      ((f.roots.filter (x < ·)).card : ℤ) -
-          (g.roots.filter (x < ·)).card ≠ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) -
-          (f.roots.filter (x < ·)).card ≠ 2 := by
-  obtain ⟨hfg_le, hgf_le⟩ :=
-    succDegreeRootCountAbove_of_posCombo_natDegree_eq_two_of_rootBounds
-      hbound hf_pos hg_pos (hcomp.toPosComboRealRooted hf_pos hg_pos)
-      hdeg hf_split hfdeg x
-  constructor <;> intro hgap <;> linarith
-
-/-- Compatible-pair no-gap base through lower endpoint degree two, reduced to
-the quadratic/cubic root-order leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_rootBounds
-    (hbound : SuccDegreeQuadraticCubicRootBoundsStatement)
-    {f g : ℝ[X]}
-    (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 2) (x : ℝ) :
-      ((f.roots.filter (x < ·)).card : ℤ) -
-          (g.roots.filter (x < ·)).card ≠ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) -
-          (f.roots.filter (x < ·)).card ≠ 2 := by
-  by_cases hle : f.natDegree ≤ 1
-  · exact compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_one
-      hcomp hf_pos hg_pos hdeg hf_split hle x
-  · have htwo : f.natDegree = 2 := by lia
-    exact compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_eq_two_of_rootBounds
-      hbound hcomp hf_pos hg_pos hdeg hf_split htwo x
-
-/-- The three quadratic/cubic obstruction leaves close the compatible
-succ-degree exact no-gap base through lower endpoint degree two. -/
-theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_obstructions
-    (hfirst : SuccDegreeQuadraticCubicFirstAboveObstructionStatement)
-    (hsecond : SuccDegreeQuadraticCubicSecondAboveObstructionStatement)
-    (hbelow : SuccDegreeQuadraticCubicFullBelowObstructionStatement)
-    {f g : ℝ[X]}
-    (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 2) (x : ℝ) :
-      ((f.roots.filter (x < ·)).card : ℤ) -
-          (g.roots.filter (x < ·)).card ≠ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) -
-          (f.roots.filter (x < ·)).card ≠ 2 :=
-  compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_rootBounds
-    (succDegreeQuadraticCubicRootBounds_of_obstructions hfirst hsecond hbelow)
-    hcomp hf_pos hg_pos hdeg hf_split hfdeg x
-
-/-- Pure monic-pencil obstruction leaves close the compatible succ-degree
-exact no-gap base through lower endpoint degree two. -/
-theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_pencil_obstructions
-    (hfirst : QuadraticCubicFirstAbovePencilObstructionStatement)
-    (hsecond : QuadraticCubicSecondAbovePencilObstructionStatement)
-    (hbelow : QuadraticCubicFullBelowPencilObstructionStatement)
-    {f g : ℝ[X]}
-    (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 2) (x : ℝ) :
-      ((f.roots.filter (x < ·)).card : ℤ) -
-          (g.roots.filter (x < ·)).card ≠ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) -
-          (f.roots.filter (x < ·)).card ≠ 2 :=
-  compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_rootBounds
-    (succDegreeQuadraticCubicRootBounds_of_pencil_obstructions
-      hfirst hsecond hbelow)
-    hcomp hf_pos hg_pos hdeg hf_split hfdeg x
 
 /-- An even integer between `-1` and `1` is zero. -/
 private lemma int_eq_zero_of_even_of_le_one_of_neg_le_one {z : ℤ}
@@ -1264,112 +688,6 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_natDegree_le_one
     exact_mod_cast hgpart
   have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by exact_mod_cast hdeg
   linarith
-
-/-- Low-degree base case for closed-segment endpoint count equality through
-degree two, reduced to the quadratic/cubic root-order leaf. -/
-theorem compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_rootBounds
-    (hbound : SuccDegreeQuadraticCubicRootBoundsStatement)
-    {f g : ℝ[X]}
-    (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 2)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
-    (hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-      ¬ (C (1 - β) * f + C β * g).IsRoot x) :
-    (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card := by
-  by_cases hle : f.natDegree ≤ 1
-  · exact compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_one
-      hcomp hf_pos hg_pos hdeg hf_split hle hxf hxg hseg
-  · have hfdeg_eq : f.natDegree = 2 := by lia
-    obtain ⟨hfg_le, hgf_le⟩ :=
-      succDegreeRootCountAbove_of_posCombo_natDegree_eq_two_of_rootBounds
-        hbound hf_pos hg_pos (hcomp.toPosComboRealRooted hf_pos hg_pos)
-        hdeg hf_split hfdeg_eq x
-    exact compatibleSuccDegreeClosedSegmentCountEq_of_rootCountAbove_bounds
-      hcomp hf_pos hg_pos hdeg hf_split hxf hxg hseg hfg_le hgf_le
-
-/-- The three quadratic/cubic obstruction leaves close the closed-segment
-count-equality base through lower endpoint degree two. -/
-theorem compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_obstructions
-    (hfirst : SuccDegreeQuadraticCubicFirstAboveObstructionStatement)
-    (hsecond : SuccDegreeQuadraticCubicSecondAboveObstructionStatement)
-    (hbelow : SuccDegreeQuadraticCubicFullBelowObstructionStatement)
-    {f g : ℝ[X]}
-    (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 2)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
-    (hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-      ¬ (C (1 - β) * f + C β * g).IsRoot x) :
-    (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card :=
-  compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_rootBounds
-    (succDegreeQuadraticCubicRootBounds_of_obstructions hfirst hsecond hbelow)
-    hcomp hf_pos hg_pos hdeg hf_split hfdeg hxf hxg hseg
-
-/-- Pure monic-pencil obstruction leaves close the closed-segment
-count-equality base through lower endpoint degree two. -/
-theorem compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_pencil_obstructions
-    (hfirst : QuadraticCubicFirstAbovePencilObstructionStatement)
-    (hsecond : QuadraticCubicSecondAbovePencilObstructionStatement)
-    (hbelow : QuadraticCubicFullBelowPencilObstructionStatement)
-    {f g : ℝ[X]}
-    (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 2)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
-    (hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-      ¬ (C (1 - β) * f + C β * g).IsRoot x) :
-    (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card :=
-  compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_rootBounds
-    (succDegreeQuadraticCubicRootBounds_of_pencil_obstructions
-      hfirst hsecond hbelow)
-    hcomp hf_pos hg_pos hdeg hf_split hfdeg hxf hxg hseg
-
-/-- The exact no-gap-two upper-count leaf closes the low-degree closed-segment
-endpoint count-equality base. -/
-theorem compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_noGapTwo
-    (hgap : CompatibleSuccDegreeRootCountAboveNoGapTwoStatement)
-    {f g : ℝ[X]}
-    (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 2)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
-    (hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-      ¬ (C (1 - β) * f + C β * g).IsRoot x) :
-    (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card := by
-  obtain ⟨hfg_le2, hgf_le2⟩ :=
-    compatibleSuccDegreeRootCountAbove_le_two_of_natDegree_le_two
-      hcomp hf_pos hg_pos hdeg hf_split hfdeg x
-  obtain ⟨hfg_ne2, hgf_ne2⟩ :=
-    hgap hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
-  exact
-    compatibleSuccDegreeClosedSegmentCountEq_of_rootCountAbove_bounds
-      hcomp hf_pos hg_pos hdeg hf_split hxf hxg hseg
-      (int_le_one_of_le_two_ne_two hfg_le2 hfg_ne2)
-      (int_le_one_of_le_two_ne_two hgf_le2 hgf_ne2)
-
-
-/-- Low-degree base case for the lower-threshold succ-degree root-count
-formulation in the positive-combination / no-common-root setting. -/
-theorem succDegreeRootCount_of_posCombo_natDegree_le_one
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 1) (x : ℝ) :
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
-  rcases nat_eq_zero_or_eq_one_of_le_one hfdeg with hf0 | hf1
-  · exact succDegreeRootCount_of_posCombo_natDegree_eq_zero
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 x
-  · exact succDegreeRootCount_of_posCombo_natDegree_eq_one
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf1 x
 
 /-- Low-degree base case for the succ-degree root-crossing target in the
 positive-combination / no-common-root setting. -/

@@ -637,14 +637,6 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_two
       Polynomial.coeff_X_pow, coeff_X, coeff_C]
     apply Matrix.posDef_fin_two_of_entries <;> norm_num
 
-/-- Interlacing form of the degree-two fractional comparison for the two
-parking-function parity classes. -/
-theorem shiftedJacobiMonic_strictInterl_three_halves_degree_two
-    (ε : ℕ) (hε : ε < 2) :
-    StrictInterl (shiftedJacobiMonic 2 ((ε : ℝ) - 1 / 2) 1)
-      (shiftedJacobiMonic 2 ((ε : ℝ) + 1) 1) :=
-  (shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_two ε hε).toStrictInterl
-
 private theorem shiftedJacobiMonic_three_neg_half_one :
     shiftedJacobiMonic 3 (-(1 / 2) : ℝ) 1 =
       X ^ 3 - C (15 / 13 : ℝ) * X ^ 2 +
@@ -798,14 +790,6 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three
       (l₂₁ := (-4687 / 3457 : ℝ))
       (by norm_num) (by norm_num) (by norm_num) using 1
     norm_num
-
-/-- Interlacing form of the degree-three fractional comparison for the
-two parking-function parity classes. -/
-theorem shiftedJacobiMonic_strictInterl_three_halves_degree_three
-    (ε : ℕ) (hε : ε < 2) :
-    StrictInterl (shiftedJacobiMonic 3 ((ε : ℝ) - 1 / 2) 1)
-      (shiftedJacobiMonic 3 ((ε : ℝ) + 1) 1) :=
-  (shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three ε hε).toStrictInterl
 
 /-- A beta-one shifted Jacobi polynomial and a positive first-parameter shift
 of at most two have no common root. -/
@@ -1134,12 +1118,5 @@ theorem shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred (m : ℕ)
       exact mul_neg_of_neg_of_pos hF₁_neg hF₂_pos
   exact interlaces_of_consecutive_signs_of_natDegree_lt
     hf.1 hf.2 hF_ne hdeg_lt hsign
-
-/-- Interlacing form of the adjacent-degree two-unit endpoint. -/
-theorem shiftedJacobiMonic_strictInterl_alpha_add_two_degree_pred (m : ℕ)
-    {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) :
-    StrictInterl (shiftedJacobiMonic m (α + 2) β)
-      (shiftedJacobiMonic (m + 1) α β) :=
-  (shiftedJacobiMonic_interlaces_alpha_add_two_degree_pred m hα hβ).toStrictInterl
 
 end RealRooted

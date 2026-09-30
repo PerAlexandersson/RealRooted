@@ -263,16 +263,6 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
     exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_two
       hpair hfnn hgnn hdeg htwo
 
-/-- Pack the degree-two right endpoint terminal as a predicate-restricted
-right-successor positive-split x-sub family. -/
-theorem
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_two :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 2) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_two
-    hpair hfnn hgnn hdeg hgdeg
-
 /-- Pack the endpoint cases through degree two as a predicate-restricted
 right-successor positive-split x-sub family. -/
 theorem
