@@ -153,44 +153,6 @@ theorem card_contentTypeSmirnov_eq_succ_mul_card_parking {n : ℕ}
       (fun w => HasContentType μ w ∧ BrandenVecchi.IsSmirnovWord n w)
       (contentTypeSmirnov_cyclicValueShift_iff μ)
 
-/-- Finset form of the fixed-multiplicity-type orbit count. -/
-theorem card_contentTypeSmirnovWords_eq_succ_mul_card_parking {n : ℕ}
-    (μ : Multiset (Fin (n + 1))) :
-    (contentTypeSmirnovWords μ).card =
-      (n + 1) * (parkingContentTypeSmirnovWords μ).card := by
-  classical
-  have hleft :
-      Nat.card
-          {w : Fin n → Fin (n + 1) //
-            HasContentType μ w ∧ BrandenVecchi.IsSmirnovWord n w} =
-        (contentTypeSmirnovWords μ).card := by
-    let := Fintype.subtype (contentTypeSmirnovWords μ)
-      (fun _ => mem_contentTypeSmirnovWords_iff)
-    rw [@Nat.card_eq_fintype_card _ this]
-    exact Fintype.subtype_card (contentTypeSmirnovWords μ)
-      (fun _ => mem_contentTypeSmirnovWords_iff)
-  have hright :
-      Nat.card
-          {w : Fin n → Fin (n + 1) //
-            (HasContentType μ w ∧ BrandenVecchi.IsSmirnovWord n w) ∧
-              IsParkingWord w} =
-        (parkingContentTypeSmirnovWords μ).card := by
-    let := Fintype.subtype (parkingContentTypeSmirnovWords μ)
-      (fun _ => mem_parkingContentTypeSmirnovWords_iff)
-    rw [@Nat.card_eq_fintype_card _ this]
-    exact Fintype.subtype_card (parkingContentTypeSmirnovWords μ)
-      (fun _ => mem_parkingContentTypeSmirnovWords_iff)
-  calc
-    (contentTypeSmirnovWords μ).card = Nat.card
-        {w : Fin n → Fin (n + 1) //
-          HasContentType μ w ∧ BrandenVecchi.IsSmirnovWord n w} := hleft.symm
-    _ = (n + 1) * Nat.card
-        {w : Fin n → Fin (n + 1) //
-          (HasContentType μ w ∧ BrandenVecchi.IsSmirnovWord n w) ∧
-            IsParkingWord w} :=
-      card_contentTypeSmirnov_eq_succ_mul_card_parking μ
-    _ = (n + 1) * (parkingContentTypeSmirnovWords μ).card := by rw [hright]
-
 /-- The empty word is the unique Smirnov word of empty content type. -/
 @[simp]
 theorem card_contentTypeSmirnovWords_zero :

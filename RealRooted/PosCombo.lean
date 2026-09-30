@@ -1270,52 +1270,6 @@ theorem eval_mul_right_family_two_neg_at_root_one_of_no_common
   have hf_ne : f.eval r ≠ 0 := fun hf0 => by simp_all
   simp_all
 
-/-- One-call same-degree data bundle for the specialized right family
-`(f + g, f + 2g)`. -/
-lemma family_root_sign_data_right_one_two {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hdeg : f.natDegree ≤ g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    (PosComboRealRooted (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g) ∧
-      HasPosLeadingCoeff (f + C (1 : ℝ) * g) ∧
-      HasPosLeadingCoeff (f + C (2 : ℝ) * g) ∧
-      (f + C (1 : ℝ) * g).natDegree = g.natDegree ∧
-      (f + C (2 : ℝ) * g).natDegree = g.natDegree ∧
-      IsCoprime (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g)) ∧
-    (∀ r, (f + C (1 : ℝ) * g).IsRoot r → ¬ (f + C (2 : ℝ) * g).IsRoot r) ∧
-    (∀ r, (f + C (2 : ℝ) * g).IsRoot r →
-      (f + C (1 : ℝ) * g).eval r * g.eval r < 0) ∧
-    (∀ r, (f + C (1 : ℝ) * g).IsRoot r →
-      (f + C (2 : ℝ) * g).eval r * f.eval r < 0) :=
-  ⟨family_pair_data_right_one_two hfg hdeg hf_pos hg_pos hno,
-    no_common_root_right_family_one_two_of_no_common hno,
-    eval_mul_right_family_one_neg_at_root_two_of_no_common hno,
-    eval_mul_right_family_two_neg_at_root_one_of_no_common hno⟩
-
-/-- Symmetric one-call same-degree data bundle for the specialized left family
-`(f + g, 2f + g)`. -/
-lemma family_root_sign_data_left_one_two {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree ≤ f.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    (PosComboRealRooted (C (1 : ℝ) * f + g) (C (2 : ℝ) * f + g) ∧
-      HasPosLeadingCoeff (C (1 : ℝ) * f + g) ∧
-      HasPosLeadingCoeff (C (2 : ℝ) * f + g) ∧
-      (C (1 : ℝ) * f + g).natDegree = f.natDegree ∧
-      (C (2 : ℝ) * f + g).natDegree = f.natDegree ∧
-      IsCoprime (C (1 : ℝ) * f + g) (C (2 : ℝ) * f + g)) ∧
-    (∀ r, (C (1 : ℝ) * f + g).IsRoot r → ¬ (C (2 : ℝ) * f + g).IsRoot r) ∧
-    (∀ r, (C (2 : ℝ) * f + g).IsRoot r →
-      (C (1 : ℝ) * f + g).eval r * f.eval r < 0) ∧
-    (∀ r, (C (1 : ℝ) * f + g).IsRoot r →
-      (C (2 : ℝ) * f + g).eval r * g.eval r < 0) :=
-  ⟨family_pair_data_left_one_two hfg hdeg hf_pos hg_pos hno,
-    no_common_root_left_family_one_two_of_no_common hno,
-    eval_mul_left_family_one_neg_at_root_two_of_no_common hno,
-    eval_mul_left_family_two_neg_at_root_one_of_no_common hno⟩
-
 /-- Same-degree `StrictInterl` can be recovered once one has strict sign changes of `g`
 on consecutive roots of `f` and one root of `g` strictly to the right of all
 roots of `f`. This repackages the final Ma--Wang assembly step in the form

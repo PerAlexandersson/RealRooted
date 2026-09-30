@@ -363,23 +363,6 @@ def narayanaPrefix : Nat → List ℝ[X]
 @[simp] lemma narayanaPrefix_succ (n : Nat) :
     narayanaPrefix (n + 1) = narayana (n + 2) :: narayanaPrefix n := rfl
 
-/-- Conditional Sturm-sequence package for the original Narayana polynomials. -/
-theorem isSturmSeq_narayanaPrefix_of_nonnegCoeffs
-    (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
-    ∀ n : Nat, IsSturmSeq (narayanaPrefix n) := by
-  intro n
-  induction n with
-  | zero =>
-      simp [narayanaPrefix, IsSturmSeq]
-  | succ n ih =>
-      cases n with
-      | zero =>
-          simpa [narayanaPrefix, IsSturmSeq] using
-            interlaces_narayana_succ_of_nonnegCoeffs 1 (by lia) hnonneg
-      | succ n =>
-          simpa [narayanaPrefix, IsSturmSeq] using
-            And.intro (interlaces_narayana_succ_of_nonnegCoeffs (n + 2) (by lia) hnonneg) ih
-
 @[deprecated strictInterl_narayanaQuot_succ_of_nonnegCoeffs (since := "2026-09-26")]
 alias prec_narayanaQuot_succ_of_nonnegCoeffs :=
   strictInterl_narayanaQuot_succ_of_nonnegCoeffs

@@ -111,38 +111,6 @@ theorem firstKind_eq_ite_esym (z : R) (n k : ℕ) :
   · exact firstKind_eq_esym_of_le z hk
   · exact firstKind_eq_zero_of_lt z (Nat.lt_of_not_ge hk)
 
-/-- Equivalent `MvPolynomial.esymm` evaluation form of
-`firstKind_eq_esym_of_le`. -/
-theorem firstKind_eq_aeval_esymm_of_le (z : R) {n k : ℕ} (hk : k ≤ n) :
-    firstKind z n k =
-      MvPolynomial.aeval (fun i : Fin (n - 1) => firstKindWeight z i)
-        (MvPolynomial.esymm (Fin (n - 1)) R (n - k)) := by
-  rw [firstKind_eq_esym_of_le z hk,
-    MvPolynomial.aeval_esymm_eq_multiset_esymm]
-  unfold esym
-  congr 1
-  let e : Fin (n - 1) ↪ ℕ := ⟨Fin.val, Fin.val_injective⟩
-  have hfin : (Finset.univ : Finset (Fin (n - 1))).map e =
-      Finset.range (n - 1) := by
-    ext i
-    simp only [Finset.mem_map, Finset.mem_univ, true_and, Finset.mem_range, e]
-    constructor
-    · rintro ⟨a, rfl⟩
-      exact a.isLt
-    · intro hi
-      exact ⟨⟨i, hi⟩, rfl⟩
-  have hval := congrArg Finset.val hfin
-  rw [Finset.map_val] at hval
-  calc
-    Multiset.map (firstKindWeight z) (Finset.range (n - 1)).val =
-        Multiset.map (firstKindWeight z)
-          ((Finset.univ : Finset (Fin (n - 1))).val.map e) := by
-      rw [hval]
-    _ = Multiset.map (fun i : Fin (n - 1) => firstKindWeight z i)
-        Finset.univ.val := by
-      rw [Multiset.map_map]
-      rfl
-
 end
 
 end RealRooted.JacobiStirling

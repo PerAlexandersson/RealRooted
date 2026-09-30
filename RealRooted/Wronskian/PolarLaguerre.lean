@@ -140,13 +140,6 @@ theorem wronskian_derivative_polarTheta (M : ℕ) (p : ℝ[X]) :
   simp [wronskian, polarTheta, theta]
   ring
 
-/-- Pointwise Wronskian form of the polar Laguerre inequality. -/
-theorem wronskian_derivative_polarTheta_eval_nonneg {p : ℝ[X]}
-    (hp : p.Splits) {M : ℕ} (hdeg : p.natDegree ≤ M) (t : ℝ) :
-    0 ≤ (wronskian (derivative p) (polarTheta M p)).eval t := by
-  rw [wronskian_derivative_polarTheta]
-  simpa using polar_laguerreForm_nonneg hp hdeg t
-
 /-- **Theta-Laguerre inequality.** A split polynomial whose roots are all
 nonpositive has nonnegative `thetaLaguerreForm` on the whole real line. -/
 theorem theta_laguerreForm_nonneg_of_roots_nonpos {p : ℝ[X]}
@@ -155,14 +148,6 @@ theorem theta_laguerreForm_nonneg_of_roots_nonpos {p : ℝ[X]}
   have h := (product_laguerre_bounds p.leadingCoeff p.roots t).2 hroots
   rw [← hp.eq_prod_roots] at h
   simpa using h
-
-/-- Nonnegative coefficients package the root-location hypothesis in the
-theta-Laguerre inequality. -/
-theorem theta_laguerreForm_nonneg_of_nonnegCoeffs {p : ℝ[X]}
-    (hp : p.Splits) (hnn : HasNonnegCoeffs p) (t : ℝ) :
-    0 ≤ (thetaLaguerreForm p).eval t :=
-  theta_laguerreForm_nonneg_of_roots_nonpos hp
-    (roots_nonpos_of_hasNonnegCoeffs hnn) t
 
 /-- Zero-aware PF package of the theta-Laguerre inequality. -/
 theorem theta_laguerreForm_nonneg_of_isPF {p : ℝ[X]}
@@ -192,13 +177,6 @@ theorem wronskian_thetaPlusOne_right_eval_nonneg_of_isPF {p : ℝ[X]}
     (hp : IsPFPolynomial p) (t : ℝ) :
     0 ≤ (wronskian p (thetaPlusOne p)).eval t := by
   rw [wronskian_thetaPlusOne_right_eq_thetaLaguerreForm]
-  exact theta_laguerreForm_nonneg_of_isPF hp t
-
-/-- Equivalent polar-Wronskian packaging of the theta-Laguerre inequality. -/
-theorem wronskian_polarTheta_left_eval_nonneg_of_isPF (M : ℕ) {p : ℝ[X]}
-    (hp : IsPFPolynomial p) (t : ℝ) :
-    0 ≤ (wronskian (polarTheta M p) p).eval t := by
-  rw [wronskian_polarTheta_left_eq_thetaLaguerreForm]
   exact theta_laguerreForm_nonneg_of_isPF hp t
 
 end RealRooted

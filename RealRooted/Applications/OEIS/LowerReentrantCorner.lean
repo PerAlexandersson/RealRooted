@@ -34,29 +34,6 @@ theorem lowerReentrantCorner_recurrence (n : ℕ) :
       C ((n : ℝ) + 3) * lowerReentrantCorner (n + 1) +
         (C ((n : ℝ) + 2) * X - C ((n : ℝ) + 1)) * lowerReentrantCorner n := rfl
 
-/-- The height-indexed form of the recurrence, valid from height four. -/
-theorem lowerReentrantCorner_height_recurrence (h : ℕ) (hh : 4 ≤ h) :
-    lowerReentrantCorner (h - 2) =
-      C ((h : ℝ) - 1) * lowerReentrantCorner (h - 3) +
-        (C ((h : ℝ) - 2) * X - C ((h : ℝ) - 3)) *
-          lowerReentrantCorner (h - 4) := by
-  obtain ⟨n, rfl⟩ := Nat.exists_eq_add_of_le hh
-  have h2 : 4 + n - 2 = n + 2 := by lia
-  have h3 : 4 + n - 3 = n + 1 := by lia
-  have h4 : 4 + n - 4 = n := by lia
-  have hc1 : ((4 + n : ℕ) : ℝ) - 1 = (n : ℝ) + 3 := by
-    push_cast
-    ring
-  have hc2 : ((4 + n : ℕ) : ℝ) - 2 = (n : ℝ) + 2 := by
-    push_cast
-    ring
-  have hc3 : ((4 + n : ℕ) : ℝ) - 3 = (n : ℝ) + 1 := by
-    push_cast
-    ring
-  rw [h2, h3, h4]
-  rw [hc1, hc2, hc3]
-  exact lowerReentrantCorner_recurrence n
-
 /-- The first nonconstant row. -/
 theorem lowerReentrantCorner_two :
     lowerReentrantCorner 2 = C 5 + C 2 * X := by

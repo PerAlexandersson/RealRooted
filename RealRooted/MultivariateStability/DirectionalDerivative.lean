@@ -159,19 +159,6 @@ theorem MvRealStable.affineExtension_directionalPDeriv_zero_or
   rw [directionalPDeriv_add_X_mul_rename_some] at hderiv
   exact hderiv
 
-/-- Every real specialization of a differentiated stable affine extension is
-weakly stable. -/
-theorem MvRealStable.affineExtension_directionalPDeriv_specialize
-    {σ : Type*} [Fintype σ] {P Q : MvPolynomial σ ℝ}
-    (hPQ : MvRealStable
-      (MvPolynomial.rename some P + MvPolynomial.X none *
-        MvPolynomial.rename some Q))
-    (c : σ → ℝ) (t s : ℝ) (hc : ∀ i, 0 ≤ c i) (ht : 0 ≤ t) :
-    MvRealStableOrZero
-      (directionalPDeriv c P + MvPolynomial.C t * Q +
-        MvPolynomial.C s * directionalPDeriv c Q) :=
-  (hPQ.affineExtension_directionalPDeriv_zero_or c t hc ht).affineExtension_specialize s
-
 /-- The affine extension obtained by a nonnegative directional derivative is
 stable whenever it is nonzero. -/
 theorem MvRealStable.affineExtension_directionalPDeriv

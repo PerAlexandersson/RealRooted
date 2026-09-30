@@ -892,32 +892,6 @@ theorem
     (decoBottomTotalCompanionSuccessorExtension n)
     (decoBottomTotalCompanionSuccessorSlopeRecurrence n) k
 
-/-- The positive-coordinate recurrence is the corresponding specialization of
-the arbitrary-coordinate Plücker factorization. -/
-theorem
-    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrence_eq_plucker
-    (n : Nat) (i : Fin (n + 1)) :
-    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrence n i =
-      (MvPolynomial.coordinateWronskian
-          (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n)
-          (decoBottomTotalCompanionSuccessorSlopeRecurrence n)
-          (i + 1 : Nat) -
-        MvPolynomial.coordinateWronskian
-          (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
-          (decoBottomTotalCompanionSuccessorExtension n)
-          (i + 1 : Nat)) ^ 2 -
-      4 * MvPolynomial.coordinateWronskian
-          (decoBottomTotalCompanionSuccessorCoreZeroRecurrence n)
-          (decoBottomTotalCompanionSuccessorCoreSlopeRecurrence n)
-          (i + 1 : Nat) *
-        MvPolynomial.coordinateWronskian
-          (decoBottomTotalCompanionSuccessorExtension n)
-          (decoBottomTotalCompanionSuccessorSlopeRecurrence n)
-          (i + 1 : Nat) := by
-  exact
-    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_eq_plucker
-      n (i + 1 : Nat)
-
 /-- In named form, the arbitrary-coordinate discriminant is its skew square
 minus four times its core and companion factors. -/
 theorem
@@ -1017,23 +991,6 @@ theorem
     decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactorRecurrenceAt_eq_neg_cross,
     MvPolynomial.eval_neg]
   exact neg_nonpos
-
-/-- In named form, the unshifted next-row discriminant is its skew square
-minus four times its core and companion factors. -/
-theorem
-    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrence_eq_factors
-    (n : Nat) (i : Fin (n + 1)) :
-    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrence n i =
-      decoBottomTotalCompanionSuccessorCoreRowDiscriminantSkewRecurrence
-          n i ^ 2 -
-        4 *
-          decoBottomTotalCompanionSuccessorCoreRowDiscriminantCoreFactorRecurrence
-            n i *
-          decoBottomTotalCompanionSuccessorCoreRowDiscriminantCompanionFactorRecurrence
-            n i := by
-  exact
-    decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_eq_factors
-      n (i + 1 : Nat)
 
 /-- Pointwise nonpositivity of an arbitrary-coordinate recurrence
 discriminant is exactly its named Plücker square-versus-product inequality. -/
@@ -2369,18 +2326,6 @@ theorem
     exact ⟨h.quadratic_nonneg, h.constant_nonneg,
       (eval_decoBottomTotalCompanionSuccessorCoreRowDiscriminantRecurrenceAt_nonpos_iff_cross_all
         n).mpr h.discriminant_bound⟩
-
-/-- The two complete factor packages differ only by reversing both
-coordinate-Wronskian orientations. -/
-theorem
-    decoBottomTotalCompanionSuccessorCoreFullRecurrenceFactorData_iff_crossFactorData
-    (n : Nat) :
-    DecoBottomTotalCompanionSuccessorCoreFullRecurrenceFactorData n ↔
-      DecoBottomTotalCompanionSuccessorCoreFullRecurrenceCrossFactorData n :=
-  (decoBottomTotalCompanionSuccessorCoreFullRecurrenceQuadraticData_iff_factorData
-    n).symm.trans
-      (decoBottomTotalCompanionSuccessorCoreFullRecurrenceQuadraticData_iff_crossFactorData
-        n)
 
 /-- Complete next-rank coefficient data is exactly its uniform unshifted
 all-coordinate recurrence data, including the row formerly treated as a

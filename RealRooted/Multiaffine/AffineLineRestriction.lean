@@ -48,15 +48,6 @@ theorem MvPolynomial.IsMultiaffine.specializeAt_one_eq_specializeZero_add_pderiv
     hP i 1]
   simp
 
-/-- Scalar specialization preserves multiaffineness. -/
-theorem MvPolynomial.IsMultiaffine.specializeAt_preserves
-    {σ S : Type*} [CommRing S] {P : MvPolynomial σ S}
-    (hP : P.IsMultiaffine) (i : σ) (c : S) :
-    (MvPolynomial.specializeAt i c P).IsMultiaffine := by
-  rw [MvPolynomial.IsMultiaffine.specializeAt_eq_specializeZero_add_C_mul_pderiv
-    hP i c]
-  exact (hP.specializeZero_preserves i).add ((hP.pderiv i).C_mul c)
-
 /-- Restricting a zero-specialization to an affine line is the same as first
 zeroing that coordinate in the line. -/
 theorem realAffineLineRestriction_specializeZero

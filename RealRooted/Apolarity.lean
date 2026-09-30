@@ -395,15 +395,6 @@ theorem apolarPairing_C_right {R : Type*} [CommRing R]
   rw [← monomial_zero_left, apolarPairing_monomial_right]
   simp
 
-/-- Antidiagonal form of the apolar pairing: the sum ranges over all pairs of
-complementary degrees summing to `n`. -/
-theorem apolarPairing_eq_sum_antidiagonal {R : Type*} [CommRing R]
-    (n : Nat) (f g : R[X]) :
-    apolarPairing n f g =
-      Finset.sum (Finset.HasAntidiagonal.antidiagonal n) fun p =>
-        (-1 : R) ^ p.1 * (Nat.choose n p.1 : R) * f.coeff p.1 * g.coeff p.2 := by
-  rw [apolarPairing, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
-
 /-- Two monomials whose degrees do not sum to `n` are always apolar in degree
 `n`, over an arbitrary commutative ring. -/
 theorem areApolar_monomial_monomial_of_add_ne {R : Type*} [CommRing R]

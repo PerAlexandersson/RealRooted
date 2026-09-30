@@ -1015,26 +1015,6 @@ theorem aissenSchoenbergWhitneyForward_of_exactly
   aissenSchoenbergWhitneyForward_of_splits
     (aissenSchoenbergWhitneyForwardSplits_of_exactly hstep)
 
-/-- Degree-induction wrapper for the no-extra-nonnegativity ASW target, with
-the degree-≤2 base case already filled. -/
-theorem aissenSchoenbergWhitneyForwardNoNonneg_of_exactly
-    (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
-        aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardNoNonneg_of_forward
-    (aissenSchoenbergWhitneyForward_of_exactly hstep)
-
-/-- Degree-induction wrapper for the zero-aware forward ASW target, with the
-degree-≤2 base case already filled. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_of_exactly
-    (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
-        aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardOrZero_of_forward
-    (aissenSchoenbergWhitneyForward_of_exactly hstep)
-
 /-- Full forward ASW theorem from a strong exact-degree splitting step. -/
 theorem aissenSchoenbergWhitneyForward_of_strongStep
     (step : ∀ d, 2 < d →
@@ -1171,12 +1151,5 @@ theorem aissenSchoenbergWhitneyForwardOrZero_cardRoots_apply {p : ℝ[X]}
     (p = 0 ∨ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
   ⟨(aissenSchoenbergWhitneyForwardOrZero hnn hpf).1.imp id card_roots_of_splits,
     roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
-
-/-- Zero-aware ASW root-count package with nonnegative coefficients from PF. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_cardRoots_of_isPolyaFreqSeq {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq p.coeff) :
-    (p = 0 ∨ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
-  aissenSchoenbergWhitneyForwardOrZero_cardRoots_apply
-    (hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf) hpf
 
 end RealRooted

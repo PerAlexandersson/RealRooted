@@ -405,11 +405,6 @@ theorem derivative_interl_of_interl {f g : ℝ[X]} (h : Interl f g) :
     Interl f.derivative g.derivative :=
   derivativePreservesInterl h
 
-/-- Explicit-binder variant of `derivative_interl_of_interl`. -/
-theorem derivative_interl_of_interl' (f g : ℝ[X]) (h : Interl f g) :
-    Interl f.derivative g.derivative :=
-  derivativePreservesInterl h
-
 /-- A `StrictInterl` input yields zero-aware derivative preservation. -/
 theorem derivative_interl_of_strictInterl {f g : ℝ[X]} (h : StrictInterl f g) :
     Interl f.derivative g.derivative :=
@@ -418,22 +413,10 @@ theorem derivative_interl_of_strictInterl {f g : ℝ[X]} (h : StrictInterl f g) 
 @[deprecated derivative_interl_of_strictInterl (since := "2026-09-18")]
 alias derivative_prec0_of_prec := derivative_interl_of_strictInterl
 
-/-- Explicit-binder variant of `derivative_interl_of_strictInterl`. -/
-theorem derivative_interl_of_strictInterl' (f g : ℝ[X]) (h : StrictInterl f g) :
-    Interl f.derivative g.derivative :=
-  derivativePreservesInterl h.toInterl
-
 /-- Same-degree derivative preservation, applied form of
 `derivativePreservesStrictInterlSameDegree`. -/
 theorem derivative_interl_of_strictInterl_sameDegree
     {f g : ℝ[X]} (h : StrictInterl f g)
-    (hdeg : f.natDegree = g.natDegree) :
-    Interl f.derivative g.derivative :=
-  derivativePreservesStrictInterlSameDegree h hdeg
-
-/-- Explicit-binder variant of `derivative_interl_of_strictInterl_sameDegree`. -/
-theorem derivative_interl_of_strictInterl_sameDegree'
-    (f g : ℝ[X]) (h : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree) :
     Interl f.derivative g.derivative :=
   derivativePreservesStrictInterlSameDegree h hdeg
@@ -449,13 +432,6 @@ theorem derivative_strictInterl_of_strictInterl_sameDegree
     Polynomial.derivative_ne_zero.mpr (by lia)
   exact
     (derivativePreservesStrictInterlSameDegree h hdeg).toStrictInterl_of_ne hfder_ne hgder_ne
-
-/-- Explicit-binder variant of `derivative_strictInterl_of_strictInterl_sameDegree`. -/
-theorem derivative_strictInterl_of_strictInterl_sameDegree'
-    (f g : ℝ[X]) (h : StrictInterl f g)
-    (hdeg : f.natDegree = g.natDegree) (hpos : 1 ≤ f.natDegree) :
-    StrictInterl f.derivative g.derivative :=
-  derivative_strictInterl_of_strictInterl_sameDegree h hdeg hpos
 
 /-- Strict `StrictInterl` output in the succ-degree case. -/
 theorem derivative_strictInterl_of_strictInterl_succDegree

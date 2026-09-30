@@ -204,18 +204,6 @@ theorem cubicDiscr_monicPencil_affine
   field_simp
   ring
 
-/-- #41-only cubic support, not #42.  Single-monic-cubic special case of
-`cubicDiscr_monicPencil_affine`. -/
-theorem cubicDiscr_prod_three_X_sub_C_affine
-    (k t a b c : ℝ) (hk : k ≠ 0) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) =
-      k ^ 6 * cubicDiscr
-        ((X - C ((a - t) / k)) * (X - C ((b - t) / k)) *
-          (X - C ((c - t) / k))) := by
-  rw [cubicDiscr_prod_three_X_sub_C, cubicDiscr_prod_three_X_sub_C]
-  field_simp
-  ring
-
 /-- Every real cubic has a real root: a degree-three real polynomial without a
 root would be irreducible, contradicting that irreducible real polynomials have
 degree at most two. -/
@@ -228,19 +216,6 @@ lemma cubic_exists_isRoot {p : ℝ[X]} (hdeg : p.natDegree = 3) :
   have hle : p.natDegree ≤ 2 := Irreducible.natDegree_le_two hirr
   rw [hdeg] at hle
   exact absurd hle (by decide)
-
-/-- Pure algebraic identity underlying the discriminant criterion.  With
-`A, B, D` the coefficients of a quadratic `q = A X^2 + B X + D` and `r` a scalar,
-the coefficient discriminant of `(X - r) q` equals `(q.eval r)^2` times the
-quadratic discriminant `B^2 - 4 A D`. -/
-lemma cubicDiscr_factor_identity (A B D r : ℝ) :
-    18 * A * (B - r * A) * (D - r * B) * (-(r * D))
-        - 4 * (B - r * A) ^ 3 * (-(r * D))
-        + (B - r * A) ^ 2 * (D - r * B) ^ 2
-        - 4 * A * (D - r * B) ^ 3
-        - 27 * A ^ 2 * (-(r * D)) ^ 2
-      = (A * r ^ 2 + B * r + D) ^ 2 * (B ^ 2 - 4 * A * D) := by
-  ring
 
 /-- Evaluation of a quadratic `q` at a point in terms of its coefficients. -/
 lemma eval_of_natDegree_two {q : ℝ[X]} (r : ℝ) (hqdeg : q.natDegree = 2) :
@@ -437,12 +412,6 @@ theorem cubicDiscr_prod_three_X_sub_C_pos {a b c : ℝ}
       (sub_ne_zero.mpr hac)
   exact (sq_nonneg _).lt_of_ne (Ne.symm (pow_ne_zero 2 hne))
 
-/-- Nonvanishing form of `cubicDiscr_prod_three_X_sub_C_pos`. -/
-theorem cubicDiscr_prod_three_X_sub_C_ne_zero {a b c : ℝ}
-    (hab : a ≠ b) (hbc : b ≠ c) (hac : a ≠ c) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≠ 0 :=
-  ne_of_gt (cubicDiscr_prod_three_X_sub_C_pos hab hbc hac)
-
 /-- The discriminant of a monic split cubic vanishes exactly when two roots
 coincide. -/
 theorem cubicDiscr_prod_three_X_sub_C_eq_zero_iff (a b c : ℝ) :
@@ -457,32 +426,6 @@ theorem cubicDiscr_prod_three_X_sub_C_nonneg (a b c : ℝ) :
   rw [cubicDiscr_prod_three_X_sub_C]
   exact sq_nonneg _
 
-/-- Nonvanishing criterion for the discriminant of a split monic cubic. -/
-theorem cubicDiscr_prod_three_X_sub_C_ne_zero_iff (a b c : ℝ) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≠ 0
-      ↔ a ≠ b ∧ b ≠ c ∧ a ≠ c := by
-  rw [ne_eq, cubicDiscr_prod_three_X_sub_C_eq_zero_iff]
-  simp [not_or]
-
-/-- Positivity criterion for the discriminant of a split monic cubic. -/
-theorem cubicDiscr_prod_three_X_sub_C_pos_iff (a b c : ℝ) :
-    0 < cubicDiscr ((X - C a) * (X - C b) * (X - C c))
-      ↔ a ≠ b ∧ b ≠ c ∧ a ≠ c := by
-  constructor
-  · intro h
-    have hne : cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≠ 0 := ne_of_gt h
-    rw [ne_eq, cubicDiscr_prod_three_X_sub_C_eq_zero_iff] at hne
-    simpa [not_or] using hne
-  · rintro ⟨hab, hbc, hac⟩
-    exact cubicDiscr_prod_three_X_sub_C_pos hab hbc hac
-
-/-- A split monic cubic has positive discriminant iff its discriminant is nonzero. -/
-theorem cubicDiscr_prod_three_X_sub_C_pos_iff_ne_zero (a b c : ℝ) :
-    0 < cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ↔
-      cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≠ 0 :=
-  ⟨ne_of_gt,
-    fun h => lt_of_le_of_ne (cubicDiscr_prod_three_X_sub_C_nonneg a b c) (Ne.symm h)⟩
-
 /-- A split monic cubic has nonpositive discriminant iff its discriminant
 vanishes. -/
 theorem cubicDiscr_prod_three_X_sub_C_nonpos_iff_eq_zero (a b c : ℝ) :
@@ -491,35 +434,10 @@ theorem cubicDiscr_prod_three_X_sub_C_nonpos_iff_eq_zero (a b c : ℝ) :
   ⟨fun h => le_antisymm h (cubicDiscr_prod_three_X_sub_C_nonneg a b c),
     fun h => le_of_eq h⟩
 
-/-- Reverse-direction form of
-`cubicDiscr_prod_three_X_sub_C_nonpos_iff_eq_zero`. -/
-theorem cubicDiscr_prod_three_X_sub_C_eq_zero_iff_nonpos (a b c : ℝ) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) = 0 ↔
-      cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≤ 0 :=
-  (cubicDiscr_prod_three_X_sub_C_nonpos_iff_eq_zero a b c).symm
-
 /-- A split monic cubic cannot have negative discriminant. -/
 theorem cubicDiscr_prod_three_X_sub_C_not_neg (a b c : ℝ) :
     ¬ cubicDiscr ((X - C a) * (X - C b) * (X - C c)) < 0 :=
   not_lt.mpr (cubicDiscr_prod_three_X_sub_C_nonneg a b c)
-
-/-- Elimination form for an impossible negative discriminant of a split monic
-cubic. -/
-theorem cubicDiscr_prod_three_X_sub_C_neg_elim {a b c : ℝ} {P : Prop}
-    (h : cubicDiscr ((X - C a) * (X - C b) * (X - C c)) < 0) : P :=
-  absurd h (cubicDiscr_prod_three_X_sub_C_not_neg a b c)
-
-/-- Disjunctive elimination form for an impossible negative discriminant of a
-split monic cubic. -/
-theorem cubicDiscr_prod_three_X_sub_C_neg_or_elim {a b c : ℝ} {P : Prop}
-    (h : cubicDiscr ((X - C a) * (X - C b) * (X - C c)) < 0 ∨ P) : P :=
-  h.resolve_left (cubicDiscr_prod_three_X_sub_C_not_neg a b c)
-
-/-- Right-disjunctive elimination form for an impossible negative
-discriminant of a split monic cubic. -/
-theorem cubicDiscr_prod_three_X_sub_C_or_neg_elim {a b c : ℝ} {P : Prop}
-    (h : P ∨ cubicDiscr ((X - C a) * (X - C b) * (X - C c)) < 0) : P :=
-  h.resolve_right (cubicDiscr_prod_three_X_sub_C_not_neg a b c)
 
 /-- Positivity of the cubic discriminant from strictly ordered roots. -/
 theorem cubicDiscr_prod_three_X_sub_C_pos_of_lt {a b c : ℝ}
@@ -527,11 +445,5 @@ theorem cubicDiscr_prod_three_X_sub_C_pos_of_lt {a b c : ℝ}
     0 < cubicDiscr ((X - C a) * (X - C b) * (X - C c)) :=
   cubicDiscr_prod_three_X_sub_C_pos (ne_of_lt hab) (ne_of_lt hbc)
     (ne_of_lt (hab.trans hbc))
-
-/-- Nonvanishing of the cubic discriminant from strictly ordered roots. -/
-theorem cubicDiscr_prod_three_X_sub_C_ne_zero_of_lt {a b c : ℝ}
-    (hab : a < b) (hbc : b < c) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≠ 0 :=
-  ne_of_gt (cubicDiscr_prod_three_X_sub_C_pos_of_lt hab hbc)
 
 end RealRooted

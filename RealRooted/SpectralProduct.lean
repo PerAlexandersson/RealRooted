@@ -543,15 +543,4 @@ theorem matPolyEquiv_adjugate_charmatrix_eq_sortedEigenvalueQuotient {N : ℕ}
   matPolyEquiv_adjugate_charmatrix_eq_evalQuotient A _
     (charpoly_eq_rootsProduct_sortedEigenvalues A hA)
 
-/-- Matrix-of-polynomials form of the characteristic-adjugate Newton
-expansion. -/
-theorem adjugate_charmatrix_eq_sortedEigenvalueQuotient {N : ℕ}
-    (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsHermitian) :
-    adjugate (charmatrix A) =
-      Matrix.evalQuotientMatrix A
-        (List.ofFn fun k : Fin N => sortedEigenvalues A hA k) := by
-  apply matPolyEquiv.injective
-  rw [matPolyEquiv_adjugate_charmatrix_eq_sortedEigenvalueQuotient]
-  exact (Matrix.matPolyEquiv_evalQuotientMatrix A _).symm
-
 end RealRooted

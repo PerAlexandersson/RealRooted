@@ -222,33 +222,6 @@ theorem smirnovDescentPolynomial_splits (m n : ℕ) :
           (smirnovDescentRefined_interlacing m r).1
           (smirnovDescentRefined_interlacing m r).2 hsum).2
 
-/-- The positive finite supersymmetric Chow specialization has nonnegative
-coefficients. -/
-theorem finiteSupersymmetricChow_replicate_one_nil_nonnegCoeffs
-    (m n : ℕ) :
-    HasNonnegCoeffs
-      (finiteSupersymmetricChow (List.replicate m (1 : ℝ)) [] n) := by
-  rw [finiteSupersymmetricChow_replicate_one_nil_eq_smirnov]
-  exact smirnovDescentPolynomial_nonnegCoeffs m n
-
-/-- The positive finite supersymmetric Chow specialization splits over the
-reals. -/
-theorem finiteSupersymmetricChow_replicate_one_nil_splits
-    (m n : ℕ) :
-    (finiteSupersymmetricChow
-      (List.replicate m (1 : ℝ)) [] n).Splits := by
-  rw [finiteSupersymmetricChow_replicate_one_nil_eq_smirnov]
-  exact smirnovDescentPolynomial_splits m n
-
-/-- The positive finite supersymmetric Chow specialization is nonzero in
-every length when at least two positive letters are present. -/
-theorem finiteSupersymmetricChow_replicate_one_nil_ne_zero
-    (m : ℕ) (hm : 1 < m) (n : ℕ) :
-    finiteSupersymmetricChow
-      (List.replicate m (1 : ℝ)) [] n ≠ 0 := by
-  rw [finiteSupersymmetricChow_replicate_one_nil_eq_smirnov]
-  exact smirnovDescentPolynomial_ne_zero m hm n
-
 end
 
 end RealRooted.BrandenVecchi

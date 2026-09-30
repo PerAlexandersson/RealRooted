@@ -183,36 +183,6 @@ theorem natDegree_derivative_eq_of_natDegree_eq {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree) :
     g.derivative.natDegree = f.derivative.natDegree := by simp_all
 
-/-- Explicit-binder variant of `roots_derivative_mem_Ici_of_roots_mem_Ici`,
-taking the polynomial and endpoint as explicit arguments so the endpoint-repair
-route can apply it positionally without local unpacking. -/
-theorem roots_derivative_mem_Ici_of_roots_mem_Ici_explicit
-    (p : ℝ[X]) (u : ℝ) (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
-    (h : ∀ r ∈ p.roots, r ∈ Set.Ici u) :
-    ∀ r ∈ p.derivative.roots, r ∈ Set.Ici u :=
-  roots_derivative_mem_Ici_of_roots_mem_Ici hp hdeg h
-
-/-- Explicit-binder variant of `roots_derivative_mem_Iic_of_roots_mem_Iic`. -/
-theorem roots_derivative_mem_Iic_of_roots_mem_Iic_explicit
-    (p : ℝ[X]) (v : ℝ) (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
-    (h : ∀ r ∈ p.roots, r ∈ Set.Iic v) :
-    ∀ r ∈ p.derivative.roots, r ∈ Set.Iic v :=
-  roots_derivative_mem_Iic_of_roots_mem_Iic hp hdeg h
-
-/-- Explicit-binder variant of `roots_derivative_mem_Ico_of_roots_mem_Ico`. -/
-theorem roots_derivative_mem_Ico_of_roots_mem_Ico_explicit
-    (p : ℝ[X]) (u v : ℝ) (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
-    (h : ∀ r ∈ p.roots, r ∈ Set.Ico u v) :
-    ∀ r ∈ p.derivative.roots, r ∈ Set.Ico u v :=
-  roots_derivative_mem_Ico_of_roots_mem_Ico hp hdeg h
-
-/-- Explicit-binder variant of `roots_derivative_mem_Ioc_of_roots_mem_Ioc`. -/
-theorem roots_derivative_mem_Ioc_of_roots_mem_Ioc_explicit
-    (p : ℝ[X]) (u v : ℝ) (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
-    (h : ∀ r ∈ p.roots, r ∈ Set.Ioc u v) :
-    ∀ r ∈ p.derivative.roots, r ∈ Set.Ioc u v :=
-  roots_derivative_mem_Ioc_of_roots_mem_Ioc hp hdeg h
-
 namespace PosComboRealRooted
 
 /-- Differentiation preserves positive-combination real-rootedness for a
@@ -247,14 +217,6 @@ theorem derivative
     Polynomial.derivative_ne_zero.mpr (by lia)
   rcases derivative_eq_zero_or_ne_zero_and_splits hp_splits with hzero | hsplit <;> simp_all
 
-/-- Call-site-order variant taking degree equality as `f.natDegree = g.natDegree`. -/
-theorem derivative_of_natDegree_eq
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : f.natDegree = g.natDegree) (hpos : 1 ≤ f.natDegree) :
-    PosComboRealRooted f.derivative g.derivative :=
-  hfg.derivative hf hg hdeg.symm hpos
-
 end PosComboRealRooted
 
 /-- Non-namespace wrapper for
@@ -265,17 +227,6 @@ theorem posComboRealRooted_derivative
     (hfg : PosComboRealRooted f g) :
     PosComboRealRooted f.derivative g.derivative :=
   hfg.derivative hf hg hdeg hpos
-
-/-- Explicit-binder applied form of `PosComboRealRooted.derivative` with the two
-polynomials as explicit arguments and degree equality in the call-site order
-`f.natDegree = g.natDegree`.  Handy at call sites that want to pass everything
-positionally without introducing implicit-argument holes. -/
-theorem posComboRealRooted_derivative_explicit
-    (f g : ℝ[X]) (hfg : PosComboRealRooted f g)
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : f.natDegree = g.natDegree) (hpos : 1 ≤ f.natDegree) :
-    PosComboRealRooted f.derivative g.derivative :=
-  hfg.derivative hf hg hdeg.symm hpos
 
 /-- **Iteration bundle for the same-degree derivative route.** From a
 same-degree positive-combination pair with positive leading coefficients and
@@ -325,28 +276,6 @@ theorem PosComboRealRooted.derivative_bundle_two
     rw [f.natDegree_derivative]
     lia
   exact hfg₁.derivative_bundle hf₁ hg₁ hdeg₁ hpos₁
-
-/-- Call-site-order variant of `PosComboRealRooted.derivative_bundle_two`. -/
-theorem PosComboRealRooted.derivative_bundle_two_of_natDegree_eq
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : f.natDegree = g.natDegree) (hpos : 2 ≤ f.natDegree) :
-    PosComboRealRooted f.derivative.derivative g.derivative.derivative ∧
-      HasPosLeadingCoeff f.derivative.derivative ∧
-      HasPosLeadingCoeff g.derivative.derivative ∧
-      g.derivative.derivative.natDegree = f.derivative.derivative.natDegree :=
-  hfg.derivative_bundle_two hf hg hdeg.symm hpos
-
-/-- Non-namespace wrapper for `PosComboRealRooted.derivative_bundle_two`. -/
-theorem posComboRealRooted_derivative_bundle_two
-    {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) (hpos : 2 ≤ f.natDegree)
-    (hfg : PosComboRealRooted f g) :
-    PosComboRealRooted f.derivative.derivative g.derivative.derivative ∧
-      HasPosLeadingCoeff f.derivative.derivative ∧
-      HasPosLeadingCoeff g.derivative.derivative ∧
-      g.derivative.derivative.natDegree = f.derivative.derivative.natDegree :=
-  hfg.derivative_bundle_two hf hg hdeg hpos
 
 /-- Closed-interval preservation for a derivative pair. -/
 theorem roots_derivative_mem_Icc_of_roots_mem_Icc_pair {f g : ℝ[X]} {u v : ℝ}

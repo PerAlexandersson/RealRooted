@@ -136,15 +136,6 @@ theorem signedWordEnumerator_one {q p : ℕ}
     Fintype.sum_equiv (Equiv.funUnique (Fin 1) (SignedLetter q p))
       (fun w => C (weight (w 0))) (fun a => C (weight a)) (fun _ => rfl)
 
-/-- Extensionality of the list-valued specialization. -/
-theorem finiteSignedWordEnumerator_congr {xs xs' ys ys' : List R}
-    (hxs : xs = xs') (hys : ys = ys') (n : ℕ) :
-    finiteSignedWordEnumerator xs ys n =
-      finiteSignedWordEnumerator xs' ys' n := by
-  subst xs'
-  subst ys'
-  rfl
-
 /-! ## Alphabet embeddings -/
 
 /-- Map every letter of a word through an embedding. -/

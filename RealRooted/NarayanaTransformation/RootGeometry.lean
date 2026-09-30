@@ -100,14 +100,6 @@ theorem hasOnlyNonnegRoots_iff_mvRealStable_xyLift {p : ℝ[X]} (hpne : p ≠ 0)
     simpa using this
   simpa [this] using hs
 
-/-- The exact-degree, positive-leading-coefficient form of
-Gribinski--Marcus, Lemma 2.5. -/
-theorem hasOnlyNonnegRoots_iff_realStable_XY {d : ℕ} {p : ℝ[X]}
-    (_hpdeg : p.natDegree = d) (hlead : 0 < p.leadingCoeff) :
-    HasOnlyNonnegRoots p ↔ MvRealStable (xyLift p) :=
-  hasOnlyNonnegRoots_iff_mvRealStable_xyLift
-    (Polynomial.leadingCoeff_ne_zero.mp hlead.ne')
-
 theorem IsPFPolynomial.hasOnlyNonposRoots {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     HasOnlyNonposRoots p :=

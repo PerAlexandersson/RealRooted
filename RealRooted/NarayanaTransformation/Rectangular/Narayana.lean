@@ -64,15 +64,6 @@ theorem rectangularConvolutionGamma_mul_narayanaTransformCoeff
     Nat.cast_ne_zero.mpr (Nat.factorial_pos p).ne'
   field_simp
 
-/-- Symmetric companion of
-`rectangularConvolutionGamma_mul_narayanaTransformCoeff`. -/
-theorem rectangularConvolutionGamma_mul_narayanaTransformCoeff_left
-    (m n i j : ℕ) (h : i + j ≤ n) :
-    rectangularConvolutionGamma m n i j * narayanaTransformCoeff m n i =
-      narayanaTransformCoeff m (n - j) i := by
-  rw [rectangularConvolutionGamma_symm]
-  exact rectangularConvolutionGamma_mul_narayanaTransformCoeff m n j i (by lia)
-
 /-- Rectangular convolution of two generalized Narayana polynomials, expanded
 as the finite coefficient sum before the final Vandermonde evaluation. -/
 theorem rectangularConvolutionCoeff_narayanaPolynomial_of_le

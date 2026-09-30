@@ -877,16 +877,6 @@ theorem eval_right_ne_zero_of_isRoot_of_no_common
   intro hgx
   exact hno x hfx (by simpa [Polynomial.IsRoot.def] using hgx)
 
-/-- Symmetric endpoint-evaluation form of
-`eval_right_ne_zero_of_isRoot_of_no_common`. -/
-theorem eval_left_ne_zero_of_isRoot_of_no_common
-    {f g : ℝ[X]} {x : ℝ}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hgx : g.IsRoot x) :
-    f.eval x ≠ 0 := by
-  intro hfx
-  exact hno x (by simpa [Polynomial.IsRoot.def] using hfx) hgx
-
 /-- At a root of a no-common right pencil, the right endpoint does not vanish. -/
 theorem eval_right_ne_zero_of_isRoot_add_right_of_no_common
     {f g : ℝ[X]} {mu x : ℝ}
@@ -1252,21 +1242,6 @@ theorem PosComboRealRooted.derivative_ne_zero_and_parameter_unique_add_right
     hfg.root_crossing_data_unique_add_right hno hmu hroot
   exact ⟨hder, huniq⟩
 
-/-- Left-family form of
-`PosComboRealRooted.derivative_ne_zero_and_parameter_unique_add_right`. -/
-theorem PosComboRealRooted.derivative_ne_zero_and_parameter_unique_add_left
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {lam x : ℝ}
-    (hlam : 0 < lam)
-    (hroot : (C lam * f + g).IsRoot x) :
-    (C lam * f + g).derivative.eval x ≠ 0 ∧
-      (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam) := by
-  obtain ⟨_, _, _, hder, huniq⟩ :=
-    hfg.root_crossing_data_unique_add_left hno hlam hroot
-  exact ⟨hder, huniq⟩
-
 /-- Endpoint-sign entry point for the right pencil, deriving endpoint
 nonvanishing from the opposite-sign condition. -/
 theorem PosComboRealRooted.exists_unique_pos_parameter_crossing_add_right_of_sign
@@ -1294,22 +1269,5 @@ theorem PosComboRealRooted.exists_unique_pos_parameter_crossing_add_left_of_sign
       (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam) :=
   hfg.exists_unique_pos_parameter_crossing_add_left hno
     (right_ne_zero_of_mul (ne_of_lt hsign)) hsign
-
-/-- Bundled right-and-left endpoint-sign crossing entry point. -/
-theorem PosComboRealRooted.exists_unique_pos_parameters_crossing_of_sign
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {x : ℝ} (hsign : f.eval x * g.eval x < 0) :
-    (∃ mu : ℝ, 0 < mu ∧ (f + C mu * g).IsRoot x ∧
-        mu = -f.eval x / g.eval x ∧
-        (f + C mu * g).derivative.eval x ≠ 0 ∧
-        (∀ nu : ℝ, 0 < nu → (f + C nu * g).IsRoot x → nu = mu)) ∧
-      (∃ lam : ℝ, 0 < lam ∧ (C lam * f + g).IsRoot x ∧
-        lam = -g.eval x / f.eval x ∧
-        (C lam * f + g).derivative.eval x ≠ 0 ∧
-        (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam)) :=
-  ⟨hfg.exists_unique_pos_parameter_crossing_add_right_of_sign hno hsign,
-    hfg.exists_unique_pos_parameter_crossing_add_left_of_sign hno hsign⟩
 
 end RealRooted

@@ -111,12 +111,6 @@ theorem schurSzegoComp_binomialLift (n : Nat) (f₀ g₀ : ℝ[X]) :
     field_simp
   · simp only [ite_eq_right hk]
 
-/-- Evaluation form of `schurSzegoComp_binomialLift`. -/
-theorem schurSzegoComp_eval_eq_apolarEval (n : Nat) (f₀ g₀ : ℝ[X]) (z : ℝ) :
-    (schurSzegoComp n (binomialLift n f₀) (binomialLift n g₀)).eval z =
-      apolarEval n (hadamardProduct f₀ g₀) z := by
-  rw [schurSzegoComp_binomialLift, eval_binomialLift]
-
 theorem choose_mul_coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
     (Nat.choose n k : ℝ) * (schurSzegoComp n f g).coeff k =
       f.coeff k * g.coeff k := by
@@ -356,17 +350,6 @@ theorem schurSzegoComp_eq_jensenPolynomial_three_normalized
     have hfcoeff : f.coeff k = 0 :=
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hfdeg hklt)
     simp [hk3, hfcoeff]
-
-/-- Cubic-discriminant form of
-`schurSzegoComp_eq_jensenPolynomial_three_normalized`. -/
-theorem cubicDiscr_schurSzegoComp_eq_jensenPolynomial_three_normalized
-    {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
-    cubicDiscr (schurSzegoComp n f p) =
-      cubicDiscr
-        (jensenPolynomial 3 (fun k =>
-          (p.coeff k / (Nat.choose n k : ℝ)) *
-            (f.coeff k / (Nat.choose 3 k : ℝ)))) :=
-  congrArg cubicDiscr (schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg)
 
 /-- Diagonal-operator form of
 `schurSzegoComp_eq_jensenPolynomial_three_normalized`: the degree-`≤ 3` factor

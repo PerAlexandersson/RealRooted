@@ -124,16 +124,6 @@ lemma quadraticPoly_not_splits_iff_discrim_neg {a b c : ℝ} (ha : a ≠ 0) :
     ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ discrim a b c < 0 := by
   rw [quadraticPoly_splits_iff_discrim_nonneg ha, not_le]
 
-/-- Splitting is invariant under common nonzero scaling of quadratic
-coefficients. -/
-lemma quadraticPoly_smul_splits_iff {a b c t : ℝ} (ha : a ≠ 0) (ht : t ≠ 0) :
-    ((C (t * a) * X ^ 2 + C (t * b) * X + C (t * c)) : ℝ[X]).Splits ↔
-      ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits := by
-  rw [quadraticPoly_splits_iff_discrim_nonneg (mul_ne_zero ht ha),
-    quadraticPoly_splits_iff_discrim_nonneg ha, discrim_smul]
-  have ht2 : (0 : ℝ) < t ^ 2 := by positivity
-  simp_all
-
 /-- Splitting criterion for a normalized monic real quadratic, phrased with
 the explicit discriminant `b ^ 2 - 4 * c`. -/
 lemma monicQuadraticPoly_splits_iff_discrim_nonneg {b c : ℝ} :
@@ -164,12 +154,6 @@ lemma quadraticPoly_splits_iff_monic_splits {a b c : ℝ} (ha : a ≠ 0) :
     grind
   simp_all
 
-/-- Obstruction form for a monic real quadratic, phrased as `b ^ 2 < 4 * c`. -/
-lemma monicQuadraticPoly_not_splits_iff_lt {b c : ℝ} :
-    ¬ ((X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ b ^ 2 < 4 * c := by
-  rw [monicQuadraticPoly_not_splits_iff_discrim_neg]
-  grind
-
 /-- Splitting criterion for a monic real quadratic, phrased as `4 * c ≤ b ^ 2`. -/
 lemma monicQuadraticPoly_splits_iff_le {b c : ℝ} :
     ((X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ 4 * c ≤ b ^ 2 := by
@@ -196,18 +180,6 @@ lemma quadraticPoly_splits_iff_monic_le {a b c : ℝ} (ha : a ≠ 0) :
       4 * (c / a) ≤ (b / a) ^ 2 := by
   rw [quadraticPoly_splits_iff_monic_splits ha, monicQuadraticPoly_splits_iff_le]
 
-/-- One-directional normalized obstruction for a genuine quadratic. -/
-lemma quadraticPoly_not_splits_of_monic_lt {a b c : ℝ} (ha : a ≠ 0)
-    (h : (b / a) ^ 2 < 4 * (c / a)) :
-    ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits :=
-  (quadraticPoly_not_splits_iff_monic_lt ha).mpr h
-
-/-- One-directional normalized splitting criterion for a genuine quadratic. -/
-lemma quadraticPoly_splits_of_monic_le {a b c : ℝ} (ha : a ≠ 0)
-    (h : 4 * (c / a) ≤ (b / a) ^ 2) :
-    ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits :=
-  (quadraticPoly_splits_iff_monic_le ha).mpr h
-
 /-- Strict-comparison obstruction for a quadratic with positive leading coefficient. -/
 lemma quadraticPoly_not_splits_iff_lt {a b c : ℝ} (ha : 0 < a) :
     ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ b ^ 2 < 4 * a * c := by
@@ -221,13 +193,6 @@ lemma quadraticPoly_splits_iff_le {a b c : ℝ} (ha : 0 < a) :
   rw [quadraticPoly_splits_iff_discrim_nonneg ha.ne']
   rw [discrim]
   grind
-
-/-- One-directional obstruction for a quadratic with positive leading
-coefficient. -/
-lemma quadraticPoly_not_splits_of_lt {a b c : ℝ} (ha : 0 < a)
-    (h : b ^ 2 < 4 * a * c) :
-    ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits :=
-  (quadraticPoly_not_splits_iff_lt ha).mpr h
 
 /-- One-directional splitting criterion for a quadratic with positive leading
 coefficient. -/

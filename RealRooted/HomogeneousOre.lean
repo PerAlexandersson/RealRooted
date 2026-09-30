@@ -574,31 +574,6 @@ theorem homogeneous_induced_two_coordinate_cone_backend_splits_of_eq_combo_of_pe
       (a := a) (b := b) (c := c) (d := d) hT hPimage hQimage)
     hQstate hQnext hR
 
-/-- Nonzero real-rootedness package for a closed-form exit from
-generated-row-facing pencil data. -/
-theorem homogeneous_induced_two_coordinate_cone_backend_ne_zero_and_splits_of_eq_combo_of_pencil
-    {T : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {ell m k : ℕ → ℝ[X]}
-    {P Q R : ℕ → ℝ[X]} {a b c d u v : ℕ → ℝ}
-    (hbase : AllComboRealRooted (P 0) (Q 0))
-    (hT : PreservesRealRootedOnPencilsAlong T P Q)
-    (hPimage : ∀ j : ℕ,
-      oreAffineDerivativeLinearMap (ell j) (m j) (P j) + Q j =
-        C (a j) * T j (P j) + C (b j) * T j (Q j))
-    (hQimage : ∀ j : ℕ,
-      polynomialMulLinearMap (k j) (Q j) =
-        C (c j) * T j (P j) + C (d j) * T j (Q j))
-    (hQstate : ∀ j : ℕ,
-      Q j = P (j + 1) - oreAffineDerivativeLinearMap (ell j) (m j) (P j))
-    (hQnext : ∀ j : ℕ, Q (j + 1) = polynomialMulLinearMap (k j) (Q j))
-    (hR : ∀ j : ℕ, R j = C (u j) * P j + C (v j) * Q j)
-    (hR0 : ∀ j : ℕ, R j ≠ 0) :
-    ∀ j : ℕ, R j ≠ 0 ∧ (R j).Splits :=
-  homogeneous_induced_two_coordinate_cone_backend_ne_zero_and_splits_of_eq_combo
-    hbase
-    (homogeneousInducedConeRowsAlong_of_pencil
-      (a := a) (b := b) (c := c) (d := d) hT hPimage hQimage)
-    hQstate hQnext hR hR0
-
 /-- Closed-form `Splits` exit for scalar triangular rows with the
 identity preserver. -/
 theorem homogeneous_induced_two_coordinate_cone_backend_splits_of_eq_combo_scalar_id

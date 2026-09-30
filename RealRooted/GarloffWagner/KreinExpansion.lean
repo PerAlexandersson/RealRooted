@@ -417,21 +417,6 @@ theorem kreinSummandExpansion_of_summand {g q : ℝ[X]}
     exact h
   · exact ⟨(1, q), List.mem_singleton_self _, by norm_num⟩
 
-/-- Package raw list data as a Krein summand expansion.  This is the shape the
-eventual coefficient proof of Lemma 7 should hand back once the coefficients
-and deleted-root factors have been constructed. -/
-theorem kreinSummandExpansion_of_weightedSum {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
-    (hf : f = weightedSum l)
-    (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hsummand : ∀ ap ∈ l, IsGWKreinSummand g ap.2)
-    (hex : ∃ ap ∈ l, 0 < ap.1) :
-    ∃ l : List (ℝ × ℝ[X]),
-      f = weightedSum l ∧
-        (∀ ap ∈ l, 0 ≤ ap.1) ∧
-        (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
-        ∃ ap ∈ l, 0 < ap.1 :=
-  ⟨l, hf, hnonneg, hsummand, hex⟩
-
 /-- Lemma 7-facing interface for Theorem 11(c).  After normalizing the right
 polynomial to be standard, the left polynomial should expand as a nonnegative
 weighted sum of the right polynomial and its one-root-deleted factors. -/

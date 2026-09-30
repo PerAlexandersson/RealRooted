@@ -180,34 +180,6 @@ private lemma allComboRealRooted_right_family_one_two
     grind
   simpa [hrewrite] using hall (α + β) (α + 2 * β)
 
-/-- Safe degree/leading-coefficient packaging for the right-family reroute.
-
-The heuristic "`(f + g, f + 2g)` regularizes to the top degree" is only
-reliably true after sign-normalizing so both original leading coefficients are
-positive; otherwise the same-degree case can still cancel at the top. This
-helper records the version that is actually stable in Lean. -/
-lemma right_family_degree_data_of_posLeadingCoeff
-    {f g : ℝ[X]}
-    (hdeg : f.natDegree ≤ g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
-    HasPosLeadingCoeff (f + g) ∧
-      HasPosLeadingCoeff (f + C (2 : ℝ) * g) ∧
-      (f + g).natDegree = g.natDegree ∧
-      (f + C (2 : ℝ) * g).natDegree = g.natDegree := by
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · simpa using
-      PosComboRealRooted.family_hasPosLeadingCoeff_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 1) zero_lt_one
-  · simpa using
-      PosComboRealRooted.family_hasPosLeadingCoeff_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 2) (by simp)
-  · simpa using
-      PosComboRealRooted.family_natDegree_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 1) zero_lt_one
-  · simpa using
-      PosComboRealRooted.family_natDegree_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 2) (by simp)
-
 /-- Under the positive-leading and degree-order hypotheses, the stronger
 `AllComboRealRooted` assumption implies the positive-combination hypothesis
 used by the same-degree converse infrastructure. -/

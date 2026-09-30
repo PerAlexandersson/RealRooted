@@ -477,16 +477,6 @@ theorem hurwitzRotatedEvenPart_eq_routh
   rw [hurwitzRotatedEvenPart, h, hurwitzRotatedOddPart]
   ring
 
-/-- Ratio-specialized form of the rotated Routh recurrence. -/
-theorem hurwitzRotatedEvenPart_eq_routh_ratio
-    (odd even : ℝ[X]) (hodd0 : odd.coeff 0 ≠ 0) :
-    hurwitzRotatedEvenPart even =
-      C (routhCoefficient odd even) * odd.comp (-(X ^ 2)) +
-        X * hurwitzRotatedOddPart
-          (routhReducedOddPart (routhCoefficient odd even) odd even) :=
-  hurwitzRotatedEvenPart_eq_routh _ _ _
-    (routhCoefficient_mul_coeff_zero odd even hodd0)
-
 /-- In an even-shape Routh step, division by `X` lowers the dominant even
 input exactly to the degree of the odd input. -/
 theorem natDegree_routhReducedOddPart_of_evenShape

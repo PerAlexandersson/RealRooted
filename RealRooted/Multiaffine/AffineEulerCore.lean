@@ -348,20 +348,6 @@ theorem pderiv_affineEulerCore
     eq_comm, Finset.sum_add_distrib]
   ring
 
-/-- The value-one-section/derivative product of an affine Euler core is the
-product of the corresponding affine Euler cores of the source section and
-source derivative. -/
-theorem specializeAt_one_mul_pderiv_affineEulerCore
-    {R σ ι : Type*} [CommRing R] [Fintype ι]
-    (e : ι → σ) (he : Function.Injective e) (c : R)
-    (P : MvPolynomial σ R) (i : ι) :
-    specializeAt (e i) 1 (affineEulerCore e c P) *
-        pderiv (e i) (affineEulerCore e c P) =
-      affineEulerCore e c (specializeAt (e i) 1 P) *
-        affineEulerCore e (c - 1) (pderiv (e i) P) := by
-  rw [specializeAt_one_affineEulerCore e he c P i,
-    pderiv_affineEulerCore e he c P i]
-
 /-- The Wronskian of an affine Euler core against its source is the source
 derivative plus an affine-weighted row of Rayleigh differences. -/
 theorem coordinateWronskian_affineEulerCore
@@ -454,49 +440,6 @@ theorem IsMultiaffine.notMem_vars_affineEulerRayleighRow
     e i ∉ (affineEulerRayleighRow e P i).vars := by
   rw [← coordinateWronskian_affineEulerCore e he 0 P i]
   exact (hP.affineEulerCore e 0).notMem_vars_coordinateWronskian hP (e i)
-
-/-- For an injective coordinate family, the off-row remainder of a
-multiaffine polynomial does not depend on the selected row coordinate. -/
-theorem IsMultiaffine.notMem_vars_affineEulerRayleighRemainder
-    {R σ ι : Type*} [CommRing R] [Nontrivial R] [Fintype ι]
-    [DecidableEq ι] {P : MvPolynomial σ R} (hP : IsMultiaffine P)
-    (e : ι → σ) (he : Function.Injective e) (i : ι) :
-    e i ∉ (affineEulerRayleighRemainder e P i).vars := by
-  classical
-  have hzero : e i ∉ (specializeZero (e i) P).vars := by
-    intro h
-    have herase := vars_specializeZero_subset_erase P (e i) h
-    exact (Finset.mem_erase.mp herase).1 rfl
-  have hderiv : e i ∉ (MvPolynomial.pderiv (e i) P).vars :=
-    hP.notMem_vars_pderiv_self (e i)
-  have hadd : e i ∉
-      (specializeZero (e i) P + MvPolynomial.pderiv (e i) P).vars := by
-    intro h
-    exact (Finset.mem_union.mp (vars_add_subset _ _ h)).elim hzero hderiv
-  have hproduct : e i ∉
-      ((specializeZero (e i) P + MvPolynomial.pderiv (e i) P) *
-        MvPolynomial.pderiv (e i) P).vars := by
-    intro h
-    exact (Finset.mem_union.mp (vars_mul _ _ h)).elim hadd hderiv
-  have hremainder : affineEulerRayleighRemainder e P i =
-      affineEulerRayleighRow e P i -
-        (specializeZero (e i) P + MvPolynomial.pderiv (e i) P) *
-          MvPolynomial.pderiv (e i) P := by
-    have hrow := hP.affineEulerRayleighRow_eq_erase e i
-    calc
-      _ = ((specializeZero (e i) P + MvPolynomial.pderiv (e i) P) *
-          MvPolynomial.pderiv (e i) P +
-            affineEulerRayleighRemainder e P i) -
-          (specializeZero (e i) P + MvPolynomial.pderiv (e i) P) *
-            MvPolynomial.pderiv (e i) P := by ring
-      _ = _ := by rw [← hrow]
-  rw [hremainder]
-  intro h
-  exact (Finset.mem_union.mp (vars_sub_subset
-    (p := affineEulerRayleighRow e P i)
-    (q := (specializeZero (e i) P + MvPolynomial.pderiv (e i) P) *
-      MvPolynomial.pderiv (e i) P) h)).elim
-    (hP.notMem_vars_affineEulerRayleighRow e he i) hproduct
 
 end
 

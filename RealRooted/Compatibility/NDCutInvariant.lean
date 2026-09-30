@@ -67,12 +67,6 @@ structure OrderedNDCutCompatible {m : ℕ}
 
 namespace OrderedNDCutCompatible
 
-/-- Receiver-style projection to the generic P/Q cut package. -/
-theorem toOrderedCutCompatible {m : ℕ} {N D : Fin m → ℝ[X]}
-    (h : OrderedNDCutCompatible N D) :
-    OrderedCutCompatible (ndCutP N D) (ndCutQ N D) :=
-  h.cutCompatible
-
 /-- Every `N` coordinate has nonnegative coefficients. -/
 theorem n_nonneg {m : ℕ} {N D : Fin m → ℝ[X]}
     (h : OrderedNDCutCompatible N D) (i : Fin m) :

@@ -320,23 +320,6 @@ theorem resolvedChowCombination_endpoint_interl
       exact nonnegCoeffs_C_mul (ha j hjn)
         (hdirect.nonnegCoeffs _ (hmem j hjn))
 
-/-- Strict endpoint form of Theorem 4.16.  All three nonvanishing hypotheses
-are explicit because resolution weights may vanish. -/
-theorem resolvedChowCombination_endpoint_strictInterl_of_ne
-    {A : LowerTriangularMatrix ℝ}
-    (resolution : BrandenLeite.Resolution A) {n : ℕ}
-    {a : ℕ → ℝ} (ha : ∀ j, j ≤ n → 0 ≤ a j)
-    (hfirst : resolvedChowDerangement resolution n 0 ≠ 0)
-    (hcombination : resolvedChowCombination resolution n a ≠ 0)
-    (hlast : resolvedChowDerangement resolution n n ≠ 0) :
-    StrictInterl (resolvedChowDerangement resolution n 0)
-        (resolvedChowCombination resolution n a) ∧
-      StrictInterl (resolvedChowCombination resolution n a)
-        (resolvedChowDerangement resolution n n) := by
-  have hinterl := resolvedChowCombination_endpoint_interl resolution ha
-  exact ⟨hinterl.1.toStrictInterl_of_ne hfirst hcombination,
-    hinterl.2.toStrictInterl_of_ne hcombination hlast⟩
-
 /-- Paper-shaped zero-aware endpoint statement for a nonnegative combination
 of the original resolving row. -/
 theorem chowPolynomial_resolvingRowCombination_endpoint_interl

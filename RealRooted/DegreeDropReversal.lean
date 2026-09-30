@@ -256,16 +256,6 @@ theorem reflect_add_C_mul_eq_X_pow_mul_reverse_add_C_mul_reverse
     (le_of_eq hgN)]
   simp [hgN]
 
-/-- Degree-padded reversal form of a reflected affine polynomial family, when
-the second member has exactly the reflecting degree. -/
-theorem reflect_add_C_mul_eq_X_pow_reverse_add_C_mul_reverse
-    {R : Type*} [Semiring R] (f g : R[X]) (μ : R) {N : ℕ}
-    (hfN : f.natDegree ≤ N) (hgN : g.natDegree = N) :
-    reflect N (f + C μ * g) = X ^ (N - f.natDegree) * f.reverse + C μ * g.reverse := by
-  rw [reflect_add_C_mul_eq_X_pow_mul_reverse_add_C_mul_X_pow_mul_reverse f g μ hfN
-    (le_of_eq hgN)]
-  simp [hgN]
-
 /-- Multiplying the reverse of a split polynomial by the degree-padding power
 of `X` still splits. -/
 theorem splits_X_pow_mul_reverse {p : K[X]} (h : p.Splits) (N : ℕ) :
