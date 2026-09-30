@@ -1,17 +1,18 @@
 import RealRooted.HurwitzMatrix
 
 /-!
-# Issue #34 window-minor obstruction
+# Totally nonnegative windows do not give the Hurwitz Schur product
 
-This file records a small structural obstruction from an Aristotle #34 run.
+This file records a small structural obstruction for the Hurwitz
+Schur-product problem (issue #34).
 The full Hurwitz Schur-product target is special to Hurwitz matrices: the
 corresponding statement for arbitrary totally nonnegative `3` by `3` windows is
-false.  Thus a proof of the issue #34 two-matrix target must use the Hurwitz
+false.  Thus a proof of the two-matrix Schur-product target must use the Hurwitz
 staircase or Toeplitz relations between neighbouring entries, not only total
 nonnegativity of the selected windows.
 -/
 
-namespace RealRooted.Issue34WindowObstruction
+namespace RealRooted.TotallyNonnegativeHadamardObstruction
 
 /-- A `StrictMono` map `Fin n → Fin 3` forces `n ≤ 3`. -/
 theorem strictMono_fin_three_le {n : ℕ} {f : Fin n → Fin 3} (hf : StrictMono f) :
@@ -115,4 +116,4 @@ theorem exists_totallyNonneg_hadamardCornerZeroed_neg :
   ⟨aMat, bMat, aMat_isTotallyNonneg, bMat_isTotallyNonneg,
     by norm_num [hadamardCornerZeroedDet_eq]⟩
 
-end RealRooted.Issue34WindowObstruction
+end RealRooted.TotallyNonnegativeHadamardObstruction
