@@ -86,58 +86,6 @@ theorem
     hpair.left_splits hpair.right_splits hpair.left_pos hpair.right_pos
     hay hyb ha hb hy hμ hy_neg hp_no (hno a ha) (hno b hb) heven
 
-/-- If the endpoints of `[a, b]` are roots of `f`, the polynomials have no
-common roots, and `g` is root-free in `(a, b)`, then all sufficiently small
-right-family perturbations `g + C μ * f` are root-free on `[a, b]`. -/
-theorem NoCommonRoots.exists_forall_abs_lt_not_isRoot_add_right_Icc_of_left_roots
-    {f g : ℝ[X]} (h : NoCommonRoots f g) {a b : ℝ}
-    (hab : a ≤ b) (hfa : f.IsRoot a) (hfb : f.IsRoot b)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z) :
-    ∃ ε : ℝ, 0 < ε ∧
-      ∀ μ : ℝ, |μ| < ε → ∀ z ∈ Set.Icc a b, ¬ (g + C μ * f).IsRoot z :=
-  exists_forall_abs_lt_not_isRoot_add_right_of_left_not_isRoot_Icc hab
-    (h.right_not_isRoot_Icc_of_left_roots hfa hfb hg_no)
-
-/-- Same-`f` gap parameter choice for the Liu odd-interval argument.  If the
-endpoints of `[a, b]` are roots of `f` and `g` is root-free in the open gap,
-then there is a large positive parameter `ν` which bounds all positive crossings
-of `f + C μ * g` at a sample point in the interval, while the reciprocal family
-`g + C ν⁻¹ * f` is root-free on the whole closed gap. -/
-theorem NoCommonRoots.exists_large_add_left_inv_not_isRoot_Icc_of_left_roots
-    {f g : ℝ[X]} (h : NoCommonRoots f g) {a b x : ℝ}
-    (hab : a ≤ b) (hx : x ∈ Set.Icc a b)
-    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z) :
-    ∃ ν : ℝ, 0 < ν ∧
-      (∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → μ ≤ ν) ∧
-      ∀ z ∈ Set.Icc a b, ¬ (g + C ν⁻¹ * f).IsRoot z := by
-  obtain ⟨ν, hν_pos, hν_bound, hν_no⟩ :=
-    exists_large_add_left_inv_not_isRoot_Icc_of_right_not_isRoot_Icc hab
-      (h.right_not_isRoot_Icc_of_left_roots hfa hfb hg_no)
-  refine ⟨ν, hν_pos, ?_, hν_no⟩
-  intro μ hμ_pos hμ_root
-  exact le_of_lt (by simpa [abs_of_pos hμ_pos] using hν_bound μ x hx hμ_root)
-
-/-- Same-`g` gap parameter choice for the Liu odd-interval argument.  If the
-endpoints of `[a, b]` are roots of `g` and `f` is root-free in the open gap,
-then there is a small positive parameter `ν` which is below every positive
-crossing parameter at a sample point in the interval, while `f + C ν * g` is
-root-free on the whole closed gap. -/
-theorem NoCommonRoots.exists_small_add_right_not_isRoot_Icc_of_right_roots
-    {f g : ℝ[X]} (h : NoCommonRoots f g) {a b x : ℝ}
-    (hab : a ≤ b) (hx : x ∈ Set.Icc a b)
-    (hga : g.IsRoot a) (hgb : g.IsRoot b)
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z) :
-    ∃ ν : ℝ, 0 < ν ∧
-      (∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot x → ν ≤ μ) ∧
-      ∀ z ∈ Set.Icc a b, ¬ (f + C ν * g).IsRoot z := by
-  obtain ⟨ν, hν_pos, hν_bound, hν_no⟩ :=
-    exists_small_add_right_not_isRoot_Icc_of_left_not_isRoot_Icc (g := g) hab
-      (h.symm.right_not_isRoot_Icc_of_left_roots hga hgb hf_no)
-  refine ⟨ν, hν_pos, ?_, hν_no⟩
-  intro μ hμ_pos hμ_root
-  exact le_of_lt (by simpa [abs_of_pos hμ_pos] using hν_bound μ x hx hμ_root)
-
 /-- For splitting polynomials with opposite leading signs, odd upper
 root-count difference at a common non-root is equivalent to the absence of a
 positive right-pencil member through that threshold. -/
@@ -154,76 +102,6 @@ theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_
     (Polynomial.not_isRoot_iff_eval_ne_zero g x).mp hxg
   rw [hsgn.odd_intCard_roots_gt_sub_iff_eval_pos_iff hf hg hxf hxg]
   exact (not_exists_pos_isRoot_add_right_iff_eval_pos_iff hfx_eval hgx_eval).symm
-
-/-- Positive-parameter no-crossing form of
-`OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right`.
-This is the shape consumed by local root-count constancy on positive parameter
-intervals. -/
-theorem OppositeLeadingSigns.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hf : f.Splits) (hg : g.Splits)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
-    (Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card) ↔
-      ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot x) := by
-  rw [hsgn.odd_intCard_roots_gt_sub_iff_not_exists_pos_isRoot_add_right
-    hf hg hxf hxg]
-  simp [not_exists]
-
-/-- If a finite open interval contains no roots of either endpoint polynomial,
-then oddness at one sample point gives positive-parameter no-crossing at any
-other sample point in that interval. -/
-theorem OppositeLeadingSigns.forall_pos_not_isRoot_of_odd_roots_gt_sub_of_no_isRoot_Ioo
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
-    (hodd : Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card)) :
-    ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot y := by
-  have hodd_y : Odd (((f.roots.filter (y < ·)).card : ℤ) -
-      (g.roots.filter (y < ·)).card) :=
-    (odd_card_roots_filter_gt_sub_iff_of_no_isRoot_Ioo
-      hf_no hg_no hax hxb hay hyb).mp hodd
-  exact
-    (hsgn.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
-      hf hg (hf_no y hay hyb) (hg_no y hay hyb)).mp hodd_y
-
-/-- If a finite open interval contains no roots of either endpoint polynomial,
-then oddness at one sample point forces same-sign endpoint evaluations at any
-other sample point in that interval. -/
-theorem OppositeLeadingSigns.eval_mul_pos_of_odd_roots_gt_sub_Ioo
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
-    (hodd : Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card)) :
-    0 < f.eval y * g.eval y := by
-  have hno_pos :=
-    hsgn.forall_pos_not_isRoot_of_odd_roots_gt_sub_of_no_isRoot_Ioo
-      hf hg hf_no hg_no hax hxb hay hyb hodd
-  exact eval_mul_pos_of_no_pos_rightFamily_isRoot
-    (hf_no y hay hyb) (hg_no y hay hyb) hno_pos
-
-/-- If a finite open interval contains no roots of either endpoint polynomial,
-then oddness at one sample point rules out closed-segment roots at any other
-sample point in that interval. -/
-theorem OppositeLeadingSigns.closedSegment_not_isRoot_of_odd_roots_gt_sub_Ioo
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hf : f.Splits) (hg : g.Splits) {a b x y β : ℝ}
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
-    (hodd : Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card))
-    (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) :
-    ¬ (C (1 - β) * f + C β * g).IsRoot y :=
-  closedSegment_not_isRoot_of_eval_mul_pos hβ0 hβ1
-    (hsgn.eval_mul_pos_of_odd_roots_gt_sub_Ioo
-      hf hg hf_no hg_no hax hxb hay hyb hodd)
 
 /-- On a positive parameter interval with constant degree and a fixed
 threshold root-free for every positive member, the right-family strict-upper
@@ -250,50 +128,6 @@ theorem rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
     exact hno_pos μ (hpos_interval μ hμ)
   · intro μ hμ ρ hρ
     exact positiveParameter_local_lower_count hsplit hdeg hμ hρ
-
-/-- On a positive parameter interval with constant degree, odd opposite-leading
-strict-upper root-count difference at a common non-root makes the right-family
-strict-upper count locally constant between the interval endpoints. -/
-theorem OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_intCard_roots_gt_sub
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hfg : PosComboRealRooted f g) (hf : f.Splits) (hg : g.Splits)
-    {x μ₀ μ₁ : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
-    (hodd : Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card))
-    (hμ₀_pos : 0 < μ₀) (hμ₀μ₁ : μ₀ ≤ μ₁)
-    (hdeg : ∀ μ ∈ Set.Icc μ₀ μ₁,
-      (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree) :
-    ((f + C μ₀ * g).roots.filter (x < ·)).card =
-      ((f + C μ₁ * g).roots.filter (x < ·)).card := by
-  have hno_pos : ∀ μ : ℝ, 0 < μ → ¬ (f + C μ * g).IsRoot x :=
-    (hsgn.odd_intCard_roots_gt_sub_iff_forall_pos_not_isRoot
-      hf hg hxf hxg).mp hodd
-  exact rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
-    hfg hno_pos hμ₀_pos hμ₀μ₁ hdeg
-
-/-- Open-interval sample-point form of
-`OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_intCard_roots_gt_sub`.
-Oddness at one point in a root-free open interval gives right-family strict
-upper-count constancy at any other point in that interval. -/
-theorem OppositeLeadingSigns.rightFamily_card_roots_gt_eq_of_odd_roots_gt_sub_Ioo
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hfg : PosComboRealRooted f g) (hf : f.Splits) (hg : g.Splits)
-    {a b x y μ₀ μ₁ : ℝ}
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
-    (hodd : Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card))
-    (hμ₀_pos : 0 < μ₀) (hμ₀μ₁ : μ₀ ≤ μ₁)
-    (hdeg : ∀ μ ∈ Set.Icc μ₀ μ₁,
-      (f + C μ * g).natDegree = (f + C μ₀ * g).natDegree) :
-    ((f + C μ₀ * g).roots.filter (y < ·)).card =
-      ((f + C μ₁ * g).roots.filter (y < ·)).card := by
-  have hno_pos :=
-    hsgn.forall_pos_not_isRoot_of_odd_roots_gt_sub_of_no_isRoot_Ioo
-      hf hg hf_no hg_no hax hxb hay hyb hodd
-  exact rightFamily_card_roots_gt_eq_of_forall_pos_not_isRoot
-    hfg hno_pos hμ₀_pos hμ₀μ₁ hdeg
 
 private theorem rightFamily_count_drop_two_iff_of_forall_pos_not_isRoot
     {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
@@ -410,62 +244,6 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots
   refine ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, ?_⟩
   exact rightFamily_eval_endpoint_mul_pos_of_left_roots_of_right_no_isRoot_Icc
     hab hfa hfb hg_no_Icc hμ_pos
-
-/-- Same-owner `f`/`f` local parity package for Liu's odd-indexed interval
-argument.  Under the endpoint-shaped hypotheses, the unique positive
-right-family crossing polynomial has an even number of roots in `(a, b)`. -/
-theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots_even_roots
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
-    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
-    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
-    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card)) :
-    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
-      μ = -f.eval y / g.eval y ∧
-      (f + C μ * g).derivative.eval y ≠ 0 ∧
-      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
-      Even ((f + C μ * g).roots.filter (fun r => a < r ∧ r < b)).card := by
-  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, hendpoint⟩ :=
-    hsgn.exists_unique_pos_crossing_add_right_Ioo_left_roots_endpoint_sign
-      hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
-  have hq_rr : (f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits :=
-    hfg.isRealRooted_add_right hμ_pos
-  have hab : a ≤ b := le_of_lt (lt_trans hax hxb)
-  have heven := even_card_roots_filter_Ioo_of_eval_mul_pos
-    hq_rr.1 hq_rr.2 hab hendpoint
-  exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, heven⟩
-
-/-- Same-owner `f`/`f` local lower-bound package for Liu's odd-indexed
-interval argument.  Under the endpoint-shaped hypotheses, the unique positive
-right-family crossing polynomial has at least two roots in `(a, b)`, counted
-with multiplicity. -/
-theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_left_roots_two_roots
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
-    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
-    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
-    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card)) :
-    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
-      μ = -f.eval y / g.eval y ∧
-      (f + C μ * g).derivative.eval y ≠ 0 ∧
-      (∀ ν : ℝ, 0 < ν → (f + C ν * g).IsRoot y → ν = μ) ∧
-      2 ≤ ((f + C μ * g).roots.filter (fun r => a < r ∧ r < b)).card := by
-  obtain ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, heven⟩ :=
-    hsgn.exists_unique_pos_crossing_add_right_Ioo_left_roots_even_roots
-      hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
-  have hq_ne : (f + C μ * g) ≠ 0 :=
-    (hfg.isRealRooted_add_right hμ_pos).1
-  have htwo := two_le_card_roots_filter_Ioo_of_even_of_isRoot
-    hq_ne hμ_root hay hyb heven
-  exact ⟨μ, hμ_pos, hμ_root, hμ_eq, hμ_der, hμ_unique, htwo⟩
 
 private theorem crossing_count_drop_of_endpoint_sign
     {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
@@ -611,40 +389,6 @@ theorem OppositeLeadingSigns.exists_unique_pos_crossing_add_right_Ioo_right_root
   exact crossing_count_drop_of_endpoint_sign hfg hμ_pos hμ_root hμ_eq hμ_der
     hμ_unique hay hyb hab hendpoint hq_not_b
 
-/-- Same-owner `g`/`g` count-drop obstruction for Liu's odd-indexed interval
-argument.  A `not Odd` sample in such an interval gives a unique positive
-crossing parameter, but exposes only the positive crossing and the transported
-count-drop data needed by the endpoint-ownership argument. -/
-theorem OppositeLeadingSigns.exists_pos_crossing_add_right_Ioo_right_roots_gt_drop_two_le
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
-    (hf : f.Splits) (hg : g.Splits) {a b x y : ℝ}
-    (hga : g.IsRoot a) (hgb : g.IsRoot b)
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
-    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card)) :
-    ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot y ∧
-      ((f + C μ * g).roots.filter (b < ·)).card + 2 ≤
-        ((f + C μ * g).roots.filter (a < ·)).card ∧
-      (∀ ν : ℝ, μ ≤ ν →
-        (∀ τ ∈ Set.Icc μ ν,
-          (f + C τ * g).natDegree = (f + C μ * g).natDegree) →
-        ((f + C ν * g).roots.filter (b < ·)).card + 2 ≤
-          ((f + C ν * g).roots.filter (a < ·)).card) := by
-  obtain ⟨μ, hμ_pos, hμ_root, _hμ_eq, _hμ_der, _hμ_unique, hdrop⟩ :=
-    hsgn.exists_unique_pos_crossing_add_right_Ioo_right_roots_gt_drop_two
-      hfg hno hf hg hga hgb hf_no hg_no hax hxb hay hyb hnot_odd
-  refine ⟨μ, hμ_pos, hμ_root, hdrop, ?_⟩
-  intro ν hμν hdeg
-  have ha_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot a :=
-    fun _ _ => hno.rightFamily_not_isRoot_of_right_root hga
-  have hb_no : ∀ τ : ℝ, 0 < τ → ¬ (f + C τ * g).IsRoot b :=
-    fun _ _ => hno.rightFamily_not_isRoot_of_right_root hgb
-  exact (rightFamily_count_drop_two_iff_of_forall_pos_not_isRoot
-    hfg ha_no hb_no hμ_pos hμν hdeg).mp hdrop
-
 /-- Endpoint-shaped `f`/`f` contradiction for Liu's odd-indexed interval
 argument.  If the transported right-family count drop reaches a parameter
 whose endpoint strict-upper count difference against `g` is stable, then
@@ -681,33 +425,6 @@ private theorem OppositeLeadingSigns.false_of_left_roots_add_right_count_sub_eq_
     hno.right_not_isRoot_Icc_of_left_roots hfa hfb hg_no
   exact false_of_add_right_count_drop_of_count_sub_eq_no_isRoot_Icc
     hab hg_no_Icc hdropν hsub_eq
-
-/-- Endpoint-shaped `f`/`f` contradiction for Liu's odd-indexed interval
-argument.  If the transported right-family count drop reaches a parameter
-whose endpoint strict-upper counts agree with those of `g`, then same-owner
-`f`-endpoints contradict the fact that `g` has no roots in `(a, b]`. -/
-theorem OppositeLeadingSigns.false_of_left_roots_add_right_count_eq_right
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
-    (hf : f.Splits) (hg : g.Splits) {a b x y ν : ℝ}
-    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
-    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card))
-    (hν_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y → μ ≤ ν)
-    (hdeg_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
-      ∀ τ ∈ Set.Icc μ ν,
-        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
-    (ha_eq : ((f + C ν * g).roots.filter (a < ·)).card =
-      (g.roots.filter (a < ·)).card)
-    (hb_eq : ((f + C ν * g).roots.filter (b < ·)).card =
-      (g.roots.filter (b < ·)).card) :
-    False :=
-  hsgn.false_of_left_roots_add_right_count_sub_eq_right
-    hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
-    hν_large hdeg_large (by rw [ha_eq, hb_eq]; simp)
 
 /-- Endpoint-shaped `f`/`f` contradiction using the reciprocal small
 right-family.  This is the large-parameter form of
@@ -746,35 +463,6 @@ theorem OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_sub_eq_right
   exact hsgn.false_of_left_roots_add_right_count_sub_eq_right
     hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
     hν_large hdeg_large (by rw [ha_eq, hb_eq]; exact hinv_sub_eq)
-
-/-- Endpoint-shaped `f`/`f` contradiction using the reciprocal small
-right-family.  This is the large-parameter form of
-`OppositeLeadingSigns.false_of_left_roots_add_right_count_eq_right`: the
-endpoint count equalities are supplied for `g + C ν⁻¹ * f`, then transferred
-to `f + C ν * g` by reciprocal scaling. -/
-theorem OppositeLeadingSigns.false_of_left_roots_add_left_inv_count_eq_right
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
-    (hf : f.Splits) (hg : g.Splits) {a b x y ν : ℝ}
-    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
-    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card))
-    (hν_pos : 0 < ν)
-    (hν_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y → μ ≤ ν)
-    (hdeg_large : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
-      ∀ τ ∈ Set.Icc μ ν,
-        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
-    (ha_inv_eq : ((g + C ν⁻¹ * f).roots.filter (a < ·)).card =
-      (g.roots.filter (a < ·)).card)
-    (hb_inv_eq : ((g + C ν⁻¹ * f).roots.filter (b < ·)).card =
-      (g.roots.filter (b < ·)).card) :
-    False :=
-  hsgn.false_of_left_roots_add_left_inv_count_sub_eq_right
-    hfg hno hf hg hfa hfb hf_no hg_no hax hxb hay hyb hnot_odd
-    hν_pos hν_large hdeg_large (by rw [ha_inv_eq, hb_inv_eq]; simp)
 
 /-- Endpoint-shaped `g`/`g` contradiction using a small positive right-family
 parameter.  If the transported count drop reaches a small parameter whose
@@ -823,34 +511,6 @@ theorem OppositeLeadingSigns.false_of_right_roots_add_right_small_count_sub_eq_l
     hno.symm.right_not_isRoot_Icc_of_left_roots hga hgb hf_no
   exact false_of_add_right_count_drop_of_count_sub_eq_no_isRoot_Icc
     hab hf_no_Icc hdropν hsub_eq
-
-/-- Endpoint-shaped `g`/`g` contradiction using a small positive right-family
-parameter.  If the transported count drop reaches a small parameter whose
-endpoint strict-upper counts agree with those of `f`, then same-owner
-`g`-endpoints contradict the fact that `f` has no roots in `(a, b]`. -/
-theorem OppositeLeadingSigns.false_of_right_roots_add_right_small_count_eq_left
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (hfg : PosComboRealRooted f g) (hno : NoCommonRoots f g)
-    (hf : f.Splits) (hg : g.Splits) {a b x y ν : ℝ}
-    (hga : g.IsRoot a) (hgb : g.IsRoot b)
-    (hf_no : ∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z)
-    (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b)
-    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card))
-    (hν_pos : 0 < ν)
-    (hν_small : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y → ν ≤ μ)
-    (hdeg_small : ∀ μ : ℝ, 0 < μ → (f + C μ * g).IsRoot y →
-      ∀ τ ∈ Set.Icc ν μ,
-        (f + C τ * g).natDegree = (f + C μ * g).natDegree)
-    (ha_eq : ((f + C ν * g).roots.filter (a < ·)).card =
-      (f.roots.filter (a < ·)).card)
-    (hb_eq : ((f + C ν * g).roots.filter (b < ·)).card =
-      (f.roots.filter (b < ·)).card) :
-    False :=
-  hsgn.false_of_right_roots_add_right_small_count_sub_eq_left
-    hfg hno hf hg hga hgb hf_no hg_no hax hxb hay hyb hnot_odd
-    hν_pos hν_small hdeg_small (by rw [ha_eq, hb_eq]; simp)
 
 end LiuOppositeSigns
 end RealRooted

@@ -178,35 +178,6 @@ lemma tendsto_eval_xSubQuadraticCubic_atTop_atTop_of_mu_lt_one
     exact natDegree_pos_iff_degree_pos.mp hnat
   exact P.tendsto_atTop_of_leadingCoeff_nonneg hP_deg_pos hP_pos.le
 
-/-- If `μ < 1`, the normalized quadratic/cubic endpoint polynomial tends to
-`-∞` at `-∞`. -/
-lemma tendsto_eval_xSubQuadraticCubic_atBot_atBot_of_mu_lt_one
-    (a b c d e μ : ℝ) (hμ : μ < 1) :
-    Tendsto
-      (fun x =>
-        (X * ((X - C a) * (X - C b)) -
-          C μ * ((X - C c) * (X - C d) * (X - C e))).eval x)
-      atBot atBot := by
-  let P : ℝ[X] :=
-    X * ((X - C a) * (X - C b)) -
-      C μ * ((X - C c) * (X - C d) * (X - C e))
-  have hP_pos : HasPosLeadingCoeff P := by
-    dsimp [P]
-    exact hasPosLeadingCoeff_xSubQuadraticCubic_of_mu_lt_one a b c d e μ hμ
-  have hP_deg_pos : 0 < P.degree := by
-    have hnat : 0 < P.natDegree := by
-      dsimp [P]
-      rw [natDegree_xSubQuadraticCubic_of_mu_ne_one]
-      · norm_num
-      · exact ne_of_lt hμ
-    exact natDegree_pos_iff_degree_pos.mp hnat
-  have hP_odd : Odd P.natDegree := by
-    dsimp [P]
-    rw [natDegree_xSubQuadraticCubic_of_mu_ne_one]
-    · norm_num
-    · exact ne_of_lt hμ
-  exact tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hP_pos hP_deg_pos hP_odd
-
 /-- If `1 < μ`, the normalized quadratic/cubic endpoint polynomial tends to
 `+∞` at `-∞`. -/
 lemma tendsto_eval_xSubQuadraticCubic_atBot_atTop_of_one_lt_mu
@@ -240,40 +211,6 @@ lemma tendsto_eval_xSubQuadraticCubic_atBot_atTop_of_one_lt_mu
   have htQ : Tendsto (fun x => Q.eval x) atBot atBot :=
     tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hQ_pos hQ_deg_pos hQ_odd
   have htneg := tendsto_neg_atBot_atTop.comp htQ
-  convert htneg using 1
-  ext x
-  dsimp [Q]
-  rw [eval_neg]
-  simp only [eval_sub, eval_mul, eval_X, eval_C, neg_neg]
-  rw [eval_xSubQuadraticCubic]
-
-/-- If `1 < μ`, the normalized quadratic/cubic endpoint polynomial tends to
-`-∞` at `+∞`. -/
-lemma tendsto_eval_xSubQuadraticCubic_atTop_atBot_of_one_lt_mu
-    (a b c d e μ : ℝ) (hμ : 1 < μ) :
-    Tendsto
-      (fun x =>
-        (X * ((X - C a) * (X - C b)) -
-          C μ * ((X - C c) * (X - C d) * (X - C e))).eval x)
-      atTop atBot := by
-  let P : ℝ[X] :=
-    X * ((X - C a) * (X - C b)) -
-      C μ * ((X - C c) * (X - C d) * (X - C e))
-  let Q : ℝ[X] := -P
-  have hQ_pos : HasPosLeadingCoeff Q := by
-    dsimp [Q, P]
-    exact hasPosLeadingCoeff_neg_xSubQuadraticCubic_of_one_lt_mu a b c d e μ hμ
-  have hQ_deg_pos : 0 < Q.degree := by
-    have hnat : 0 < Q.natDegree := by
-      dsimp [Q, P]
-      rw [Polynomial.natDegree_neg]
-      rw [natDegree_xSubQuadraticCubic_of_mu_ne_one]
-      · norm_num
-      · exact ne_of_gt hμ
-    exact natDegree_pos_iff_degree_pos.mp hnat
-  have htQ : Tendsto (fun x => Q.eval x) atTop atTop :=
-    Q.tendsto_atTop_of_leadingCoeff_nonneg hQ_deg_pos hQ_pos.le
-  have htneg := tendsto_neg_atTop_atBot.comp htQ
   convert htneg using 1
   ext x
   dsimp [Q]
@@ -1426,16 +1363,6 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_three_of_monic
   rw [hpoly]
   exact hinner_splits.C_mul A
 
-/-- Degree-two/degree-three positive-split x-subtraction endpoint. -/
-lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_three
-    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpdeg : p.natDegree = 2) (hqdeg : q.natDegree = 3)
-    {μ : ℝ} (hμ : 0 < μ) :
-    (X * p - C μ * q).Splits :=
-  splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_three_of_monic
-    xSubQuadraticCubicSplits hpair hpnn hqnn hpdeg hqdeg hμ
-
 /-- Degree-three right endpoint case for the right-successor sign-normalized
 x-subtraction leaf, modulo the normalized monic quadratic/cubic leaf. -/
 theorem
@@ -1455,20 +1382,6 @@ theorem
   have hGdeg : (g.comp (X + C r)).natDegree = 3 := by simpa [Polynomial.natDegree_comp] using hgdeg
   exact splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_three_of_monic
     hmono (hpair.comp_X_add_C r) hfnn hgnn hFdeg hGdeg hμ
-
-/-- Degree-three right endpoint case for the right-successor sign-normalized
-x-subtraction leaf. -/
-theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_three
-    {f g : ℝ[X]} {r : ℝ}
-    (hpair : PositiveSplitRootCountPair f g)
-    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
-    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hgdeg : g.natDegree = 3) :
-    ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits :=
-  positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_three_of_monic
-    xSubQuadraticCubicSplits hpair hfnn hgnn hdeg hgdeg
 
 /-- Endpoint cases through right degree three for the right-successor
 sign-normalized x-subtraction leaf, modulo the normalized monic
@@ -1504,87 +1417,6 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits :=
   positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
     xSubQuadraticCubicSplits hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-three right endpoint terminal as a predicate-restricted
-right-successor positive-split x-sub family, modulo the normalized monic
-quadratic/cubic leaf. -/
-theorem
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
-    (hmono : xSubQuadraticCubicSplitsStatement) :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_three_of_monic
-      hmono hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-three right endpoint terminal as a predicate-restricted
-right-successor positive-split x-sub family. -/
-theorem
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) :=
-  positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
-    xSubQuadraticCubicSplits
-
-/-- Compatibility alias for the shorter historical degree-three predicate
-name. -/
-theorem
-    positiveSplitRightSuccXSubFamilyPredicate_of_right_natDegree_three_of_monic
-    (hmono : xSubQuadraticCubicSplitsStatement) :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) :=
-  positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
-    hmono
-
-/-- Compatibility alias for the shorter historical degree-three predicate
-name. -/
-theorem positiveSplitRightSuccXSubFamilyPredicate_of_right_natDegree_three :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) :=
-  positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three
-
-/-- Pack the endpoint cases through degree three as a predicate-restricted
-right-successor positive-split x-sub family, modulo the normalized monic
-quadratic/cubic leaf. -/
-theorem
-positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_three_of_monic
-    (hmono : xSubQuadraticCubicSplitsStatement) :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 3) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
-      hmono hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the endpoint cases through degree three as a predicate-restricted
-right-successor positive-split x-sub family. -/
-theorem
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_three :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 3) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three
-    hpair hfnn hgnn hdeg hgdeg
-
-/-- Compatibility alias for the shorter historical degree-three predicate
-name. -/
-theorem
-    positiveSplitRightSuccXSubFamilyPredicate_of_right_natDegree_le_three_of_monic
-    (hmono : xSubQuadraticCubicSplitsStatement) :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 3) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
-      hmono hpair hfnn hgnn hdeg hgdeg
-
-/-- Compatibility alias for the shorter historical degree-three predicate
-name. -/
-theorem positiveSplitRightSuccXSubFamilyPredicate_of_right_natDegree_le_three :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 3) :=
-  positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_three
 
 end LiuOppositeSigns
 end RealRooted

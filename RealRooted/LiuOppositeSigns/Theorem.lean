@@ -1,10 +1,14 @@
 import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
-import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
+import RealRooted.CommonInterleaverTwo
 import RealRooted.LiuOppositeSigns.Corollary22
 import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderAssembly
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderLower
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderUpper
+import RealRooted.LiuOppositeSigns
+import RealRooted.LiuOppositeSigns.NoCommonRoots
+import RealRooted.LiuOppositeSigns.XSub.LeftSucc
+import RealRooted.LiuOppositeSigns.XSub.SplittingTools
+import RealRooted.MaWang
+import RealRooted.LiuOppositeSigns.XSub.QuadraticQuadratic
+import RealRooted.SameDegreeCubicRootCount
 import RealRooted.LiuOppositeSigns.RootCountClosure
 import RealRooted.LiuOppositeSigns.Theorem21Assembly
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
@@ -145,42 +149,6 @@ theorem compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant
         hf hg hsgn hf_deg hg_deg hbranches
     · exact hcommon.compatible
 
-/-- The isolated forward direction of Liu Theorem 2.1 gives the pointwise
-root-count gap bound. -/
-theorem rootCountAtOrAbove_abs_sub_le_two_of_compatible_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
-    ∀ x : ℝ,
-      |((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ))| ≤ 2 :=
-  rootCountAtOrAbove_abs_sub_le_two_of_theorem21RootCountBranches hsgn
-    (hforward hf hg hsgn hcompat)
-
-/-- The isolated forward direction of Liu Theorem 2.1 gives the oriented
-branch-wise pointwise root-count bounds. -/
-theorem rootCountAtOrAbove_branch_bounds_of_compatible_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
-    (∀ x : ℝ,
-      ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 2 ∧
-        ((rootCountAtOrAbove g x : ℤ) - (rootCountAtOrAbove f x : ℤ)) ≤ 1) ∨
-      (∀ x : ℝ,
-        ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 1 ∧
-          ((rootCountAtOrAbove g x : ℤ) - (rootCountAtOrAbove f x : ℤ)) ≤ 2) :=
-  rootCountAtOrAbove_branch_bounds_of_theorem21RootCountBranches hsgn
-    (hforward hf hg hsgn hcompat)
-
-/-- The isolated forward direction of Liu Theorem 2.1 gives the normalized
-positive-deletion count branches. -/
-theorem theorem21PositiveDeletionCountBranches_of_compatible_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
-    theorem21PositiveDeletionCountBranches f g :=
-  theorem21PositiveDeletionCountBranches_of_theorem21RootCountBranches hf hg hsgn
-    (hforward hf hg hsgn hcompat)
-
 /-- Guardrail for the factor-return route: multiplying the higher-degree
 member of a simple quadratic/linear interlacing pair by `X` need not preserve
 all-combinations real-rootedness.  Thus the Liu factor-return proof cannot use
@@ -202,91 +170,6 @@ theorem not_allComboRealRooted_X_mul_quadratic_linear_example :
     norm_num [p, cubicDiscr, coeff_add, coeff_C_mul, coeff_neg, coeff_mul,
       Finset.HasAntidiagonal.antidiagonal, coeff_X, coeff_C, coeff_one]
   linarith
-
-/-- The branch-retaining deletion-pair common-interleaver theorem package
-follows from the isolated forward direction and all-combinations factor-return
-degree cases. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_allComboDegreeCases
-    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
-    (hcases :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_allCombo
-    hforward
-    (theorem21DeletionPairCommonInterleaverFactorReturnAllCombo_of_degreeCases
-      hcases)
-
-/-- The branch-retaining deletion-pair common-interleaver theorem package
-follows from the isolated root-count forward direction and all-combinations
-factor-return degree cases. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIff_of_forward_and_allComboDegreeCases
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    (hcases :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_allComboDegreeCases
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
-      hforward)
-    hcases
-
-/-- The nonconstant branch-retaining deletion-pair common-interleaver theorem
-package follows from the isolated nonconstant forward direction and
-all-combinations factor-return degree cases. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_allComboDegreeCases
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hcases :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement :=
-  theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_allCombo
-    hforward
-    (theorem21DeletionPairCommonInterleaverFactorReturnAllCombo_of_degreeCases
-      hcases)
-
-/-- The branch-retaining deletion-pair common-interleaver theorem package
-follows from the isolated forward direction and left all-combinations
-factor-return degree cases, with right cases supplied by symmetry. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_leftAllComboCases
-    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
-    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_allCombo
-    hforward
-    (theorem21DeletionPairCommonInterleaverFactorReturnAllCombo_of_leftCases
-      hcases)
-
-/-- The branch-retaining deletion-pair common-interleaver theorem package
-follows from the isolated root-count forward direction and left
-all-combinations factor-return degree cases, with right cases supplied by
-symmetry. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIff_of_forward_and_leftAllComboCases
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_leftAllComboCases
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
-      hforward)
-    hcases
-
-/-- The nonconstant branch-retaining deletion-pair common-interleaver theorem
-package follows from the isolated nonconstant forward direction and left
-all-combinations factor-return degree cases, with right cases supplied by
-symmetry. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_leftAllComboCases
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement :=
-  theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_allCombo
-    hforward
-    (theorem21DeletionPairCommonInterleaverFactorReturnAllCombo_of_leftCases
-      hcases)
 
 /-- The constant endpoint omitted by the source formulation of Corollary 2.2:
 compatibility with an oppositely signed nonzero constant forces degree at most two. -/
@@ -353,14 +236,6 @@ lemma natDegree_right_le_two_of_compatible_of_left_natDegree_eq_zero
     g.natDegree ≤ 2 := by
   rw [eq_C_of_natDegree_eq_zero hfdeg] at hsgn hcompat
   exact natDegree_le_two_of_compatible_C_left hg hsgn hcompat
-
-/-- The left polynomial has degree at most two when the right polynomial is constant. -/
-lemma natDegree_left_le_two_of_compatible_of_right_natDegree_eq_zero
-    {f g : ℝ[X]} (hf : f.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hcompat : Compatible f g) (hgdeg : g.natDegree = 0) :
-    f.natDegree ≤ 2 :=
-  natDegree_right_le_two_of_compatible_of_left_natDegree_eq_zero
-    hf hsgn.symm hcompat.comm hgdeg
 
 /-- Corollary 2.2's degree bound when the left polynomial is constant. -/
 lemma natDegree_abs_sub_le_two_of_compatible_of_left_natDegree_eq_zero

@@ -66,15 +66,6 @@ theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate_true_of_xS
   intro f g r hpair hfnn hgnn hdeg _ μ hμ
   exact hsub r hpair hfnn hgnn hdeg μ hμ
 
-/-- A `P := True` positive-split x-sub family gives the unrestricted target. -/
-theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_predicate_true
-    (hsub :
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-        (fun _ => True)) :
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement := by
-  intro f g r hpair hfnn hgnn hdeg μ hμ
-  exact hsub r hpair hfnn hgnn hdeg trivial μ hμ
-
 /-- Quadratic terminal case for the x-subtraction pencil: a degree-one
 positive-leading left endpoint and degree-zero positive-leading right endpoint
 give a splitting polynomial `X * p - μ q` for every `μ > 0`. -/

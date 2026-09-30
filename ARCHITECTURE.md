@@ -641,40 +641,22 @@ directly.
 factor-return theorem route. `LeftDegreeCases` owns the translated and
 x-subtraction realizations of the three left deletion branches;
 `RightDegreeCases` obtains the symmetric right branches and their endpoint
-specializations; `PredicateDegreeCases` combines both orientations under
-lower-endpoint predicates; and `DegreeCaseAssembly` packages the final six-case
-factor-return principle.
-
-`LiuOppositeSigns.XSub.ProperPosition` is a narrow bridge from the ordinary
-positive-leading `StrictInterl` interface to Liu's positive root-count package. It
-then applies the package's same-degree and successor-degree results to the
-general `X * p - μ * q` splitness corollary under nonnegative coefficients.
+specializations; and `PredicateDegreeCases` combines both orientations under
+lower-endpoint predicates.
 
 `LiuOppositeSigns.XSub.IntervalRootCount` is now a compatibility facade over
 the interval-count proof layers: `RootFilters`, `GapCounts`, `UpperTail`, and
 `SplitEndpoints` establish the root-count infrastructure, while
-`RightSuccessor`, `SameDegree`, `LeftSuccessor`, and `TailSigns` own the
-mutually independent degree and endpoint-sign endgames. This follows the
+`RightSuccessor`, `SameDegree`, and `LeftSuccessor` own the mutually
+independent degree endgames. This follows the
 proof's dependencies rather than its former source order.
 This keeps the user-facing proper-position interface out of the interval-root
 count implementation.
 
-`LiuOppositeSigns.XSub.CubicCubic` is likewise a compatibility facade over an
-acyclic cubic/cubic case-analysis package. `CubicSubQuadratic` provides the
-shared root-factor and cubic-minus-quadratic infrastructure; `Basic` records
-the normalized leaf and common-root cases; `LeftOutlier`, `MiddleCases`,
-`RightRepeated`, and `LeftRepeated` own the ordered-root and repeated-root
-families in proof dependency order; and `Endpoints` derives the degree-three
-interface. The facade preserves the previous public import path.
-
-`LiuOppositeSigns.XSub.QuarticCubicBoundary` now exposes the analogous boundary
-dependency graph. `Statements` owns the six proposition-valued package
-interfaces; `RepeatedRight` proves the independent strict-left repeated-right
-branch; `QuarticSubQuadratic` owns the endpoint factor and right-only zero
-package; `RepeatedLeft` builds on that factor; `EndpointZero` combines the two
-completed boundary branches; and `Assembly` derives the normalized terminal.
-The 9-line facade preserves the former import path. The implementation units
-have 88, 434, 1,022, 707, 550, and 200 lines, respectively.
+The finite-degree x-subtraction case packages (`XSub.CubicCubic`,
+`XSub.QuarticCubicBoundary`, `XSub.QuarticCubic` and the forward cubic
+branches) were removed once the derivative-shift regularization proof of the
+forward direction made them unused.
 
 The Cayley-transform extraction is entirely Mathlib-shaped:
 

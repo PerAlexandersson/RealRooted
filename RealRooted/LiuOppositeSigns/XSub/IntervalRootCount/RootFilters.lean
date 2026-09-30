@@ -141,23 +141,6 @@ lemma two_le_card_roots_filter_ge_of_X_mul_of_one_root_ge
   rw [hcard]
   lia
 
-/-- A nonpositive value at `0` and divergence to `+∞` give a root in the
-nonnegative upper tail, counted in the root multiset. -/
-theorem one_le_card_xSub_roots_filter_nonneg_of_right_nonnegCoeffs
-    {p q : ℝ[X]} (hq_nonneg : HasNonnegCoeffs q)
-    {μ : ℝ} (hμ : 0 < μ)
-    (hP_ne : X * p - C μ * q ≠ 0)
-    (htop : Tendsto (fun x => (X * p - C μ * q).eval x) atTop atTop) :
-    1 ≤ ((X * p - C μ * q).roots.filter (fun x => 0 ≤ x)).card := by
-  have hq0 : 0 ≤ q.eval 0 := by simpa [Polynomial.coeff_zero_eq_eval_zero] using hq_nonneg 0
-  have hP0 : (X * p - C μ * q).eval 0 ≤ 0 := by
-    have hmul : 0 ≤ μ * q.eval 0 := mul_nonneg hμ.le hq0
-    have hneg : -(μ * q.eval 0) ≤ 0 := neg_nonpos.mpr hmul
-    simpa [eval_sub, eval_mul] using hneg
-  obtain ⟨u, hu_nonneg, hu_root⟩ :=
-    exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop hP0 htop
-  exact one_le_card_roots_filter_ge_of_isRoot hP_ne hu_nonneg hu_root
-
 /-- A left-endpoint root with nonnegative right-endpoint value and divergence
 to `+∞` gives a root of the x-subtraction pencil in the upper tail. -/
 theorem one_le_card_xSub_roots_filter_ge_of_left_root_right_eval_nonneg
@@ -173,25 +156,6 @@ theorem one_le_card_xSub_roots_filter_ge_of_left_root_right_eval_nonneg
   obtain ⟨u, ha_le, hu_root⟩ :=
     exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop hP_a htop
   exact one_le_card_roots_filter_ge_of_isRoot hP_ne ha_le hu_root
-
-/-- A left-endpoint root with nonpositive right-endpoint value and divergence
-to `-∞` gives a root of the x-subtraction pencil in the upper tail. -/
-theorem one_le_card_xSub_roots_filter_ge_of_left_root_right_eval_nonpos
-    {p q : ℝ[X]} {a μ : ℝ}
-    (ha : p.IsRoot a) (hq_a : q.eval a ≤ 0) (hμ : 0 < μ)
-    (hP_ne : X * p - C μ * q ≠ 0)
-    (htop : Tendsto (fun x => (X * p - C μ * q).eval x) atTop atBot) :
-    1 ≤ ((X * p - C μ * q).roots.filter (fun x => a ≤ x)).card := by
-  let P := X * p - C μ * q
-  have hP_a : 0 ≤ P.eval a := by
-    have hmul : μ * q.eval a ≤ 0 :=
-      mul_nonpos_of_nonneg_of_nonpos hμ.le hq_a
-    have hneg : 0 ≤ -(μ * q.eval a) := neg_nonneg.mpr hmul
-    simpa [P, eval_X_mul_sub_C_mul_of_left_isRoot ha, neg_mul] using hneg
-  obtain ⟨u, ha_le, hu_root⟩ :=
-    exists_isRoot_ge_of_eval_nonneg_of_tendsto_atTop_atBot hP_a
-      (by simpa [P] using htop)
-  exact one_le_card_roots_filter_ge_of_isRoot (by simpa [P] using hP_ne) ha_le hu_root
 
 /-- A left-endpoint root with nonnegative right-endpoint value and divergence
 to `+∞` at `-∞` gives a root of the x-subtraction pencil in the lower tail. -/
@@ -282,36 +246,5 @@ theorem NoCommonRoots.xSub_ne_zero_of_left_root
   intro hzero
   exact hno.not_isRoot_xSub_of_left_root ha hμ (by rw [hzero]; simp)
 
-/-- At a left root, the closed upper tail of the x-subtraction root multiset
-equals the strict upper tail. -/
-theorem NoCommonRoots.card_xSub_roots_filter_ge_eq_filter_gt_of_left_root
-    {p q : ℝ[X]} (hno : NoCommonRoots p q) {a μ : ℝ}
-    (ha : p.IsRoot a) (hμ : μ ≠ 0) :
-    ((X * p - C μ * q).roots.filter (fun x => a ≤ x)).card =
-      ((X * p - C μ * q).roots.filter (a < ·)).card := by
-  let P := X * p - C μ * q
-  have hP_ne : P ≠ 0 := by simpa [P] using hno.xSub_ne_zero_of_left_root ha hμ
-  have hnot : ¬ P.IsRoot a := by simpa [P] using hno.not_isRoot_xSub_of_left_root ha hμ
-  have ha_not_mem : a ∉ P.roots := by
-    intro ha_mem
-    exact hnot ((Polynomial.mem_roots hP_ne).mp ha_mem)
-  simpa [P] using congrArg Multiset.card
-    (Multiset.filter_ge_eq_filter_gt_of_not_mem P.roots ha_not_mem)
-
-/-- At a left root, the closed lower tail of the x-subtraction root multiset
-equals the strict lower tail. -/
-theorem NoCommonRoots.card_xSub_roots_filter_le_eq_filter_lt_of_left_root
-    {p q : ℝ[X]} (hno : NoCommonRoots p q) {a μ : ℝ}
-    (ha : p.IsRoot a) (hμ : μ ≠ 0) :
-    ((X * p - C μ * q).roots.filter (fun x => x ≤ a)).card =
-      ((X * p - C μ * q).roots.filter (· < a)).card := by
-  let P := X * p - C μ * q
-  have hP_ne : P ≠ 0 := by simpa [P] using hno.xSub_ne_zero_of_left_root ha hμ
-  have hnot : ¬ P.IsRoot a := by simpa [P] using hno.not_isRoot_xSub_of_left_root ha hμ
-  have ha_not_mem : a ∉ P.roots := by
-    intro ha_mem
-    exact hnot ((Polynomial.mem_roots hP_ne).mp ha_mem)
-  simpa [P] using congrArg Multiset.card
-    (Multiset.filter_le_eq_filter_lt_of_not_mem P.roots ha_not_mem)
 end LiuOppositeSigns
 end RealRooted

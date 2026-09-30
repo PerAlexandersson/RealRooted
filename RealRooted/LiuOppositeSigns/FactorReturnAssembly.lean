@@ -1,4 +1,4 @@
-import RealRooted.LiuOppositeSigns.FactorReturnAssembly.DegreeCaseAssembly
+import RealRooted.LiuOppositeSigns.FactorReturnAssembly.PredicateDegreeCases
 
 /-!
 # Liu factor-return case packages
