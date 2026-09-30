@@ -25,7 +25,8 @@ name = "RealRooted.peakValuePolynomial"
 module = "RealRooted.CombinatorialExamples.PeakValues"
 
 [[theorems]]
-name = "RealRooted.Applications.EulerianVariations.cyclicPathDescentPolynomial_simple_root_description"
+name = """RealRooted.Applications.EulerianVariations.\
+cyclicPathDescentPolynomial_simple_root_description"""
 module = "RealRooted.Applications.EulerianVariations.CyclicPathDescents"
 
 [[theorems]]
@@ -37,7 +38,8 @@ name = "RealRooted.Applications.EulerianVariations.peakValuePolynomial_stable"
 module = "RealRooted.Applications.EulerianVariations.PeakValues"
 
 [[theorems]]
-name = "RealRooted.Applications.EulerianVariations.peakValueWeightedDiagonal_consecutive_strictInterl"
+name = """RealRooted.Applications.EulerianVariations.\
+peakValueWeightedDiagonal_consecutive_strictInterl"""
 module = "RealRooted.Applications.EulerianVariations.PeakValues"
 
 [[theorems]]

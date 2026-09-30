@@ -48,7 +48,8 @@ name = "RealRooted.GeneralizedSnakePosets.lemma34ModifiedNarayanaInterlacing_mod
 module = "RealRooted.GeneralizedSnakePosets.Narayana.Turan"
 
 [[theorems]]
-name = "RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaPolynomial"
+name = """RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.\
+truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaPolynomial"""
 module = "RealRooted.GeneralizedSnakePosets.Narayana.Recurrence"
 
 [[theorems]]

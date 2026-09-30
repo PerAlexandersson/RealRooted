@@ -24,11 +24,13 @@ name = "RealRooted.ParkingFunctions.ToricContribution.toricContributionRow_isInt
 module = "RealRooted.ParkingFunctions.ToricContribution.ContributionReversal"
 
 [[theorems]]
-name = "RealRooted.ParkingFunctions.ToricContribution.normalizedRPolynomialFamily_hasCommonLeftInterleaver"
+name = """RealRooted.ParkingFunctions.ToricContribution.\
+normalizedRPolynomialFamily_hasCommonLeftInterleaver"""
 module = "RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer"
 
 [[theorems]]
-name = "RealRooted.ParkingFunctions.ToricContribution.weightedNormalizedReversedContributionFamily_sum_splits"
+name = """RealRooted.ParkingFunctions.ToricContribution.\
+weightedNormalizedReversedContributionFamily_sum_splits"""
 module = "RealRooted.ParkingFunctions.ToricContribution.ContributionReversal"
 -->
 
