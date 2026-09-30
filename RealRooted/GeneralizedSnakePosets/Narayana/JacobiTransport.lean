@@ -21,6 +21,55 @@ Braun--Jal Lemma 3.1. -/
 def jacobi11ChangeOfVariables (r : ℝ) : ℝ :=
   (r + 1) / (r - 1)
 
+/-- For `r ≤ 0`, the Braun--Jal Jacobi change of variables lands in
+`[-1, 1]`, the interval where Gasper's Turan theorem applies. -/
+theorem jacobi11ChangeOfVariables_mem_Icc_of_nonpos {r : ℝ} (hr : r ≤ 0) :
+    jacobi11ChangeOfVariables r ∈ Set.Icc (-1 : ℝ) 1 := by
+  constructor
+  · have hden : r - 1 < 0 := by linarith
+    rw [jacobi11ChangeOfVariables, le_div_iff_of_neg hden]
+    linarith
+  · have hden : r - 1 < 0 := by linarith
+    rw [jacobi11ChangeOfVariables, div_le_iff_of_neg hden]
+    linarith
+
+/-- The Braun--Jal change of variables never maps a real number to `1`. -/
+theorem jacobi11ChangeOfVariables_ne_one (x : ℝ) :
+    jacobi11ChangeOfVariables x ≠ 1 := by
+  intro h
+  by_cases hx : x = 1
+  · subst x
+    norm_num [jacobi11ChangeOfVariables] at h
+  · have hden : x - 1 ≠ 0 := sub_ne_zero.mpr hx
+    have hmul := congrArg (fun y : ℝ => y * (x - 1)) h
+    rw [jacobi11ChangeOfVariables, div_mul_cancel₀ _ hden, one_mul] at hmul
+    linarith
+
+/-- Away from the endpoint `1`, the Braun--Jal change of variables maps
+`[-1, 1]` to nonpositive inputs. -/
+theorem jacobi11ChangeOfVariables_nonpos_of_mem_Icc
+    {x : ℝ} (hx : x ∈ Set.Icc (-1 : ℝ) 1) (hx1 : x ≠ 1) :
+    jacobi11ChangeOfVariables x ≤ 0 := by
+  have hxleft : -1 ≤ x := hx.1
+  have hxright : x ≤ 1 := hx.2
+  have hlt : x < 1 := lt_of_le_of_ne hxright hx1
+  rw [jacobi11ChangeOfVariables]
+  exact div_nonpos_of_nonneg_of_nonpos (by linarith) (by linarith)
+
+/-- The Braun--Jal change of variables is an involution away from the point
+where its denominator vanishes. -/
+theorem jacobi11ChangeOfVariables_involutive {x : ℝ} (hx : x ≠ 1) :
+    jacobi11ChangeOfVariables (jacobi11ChangeOfVariables x) = x := by
+  rw [jacobi11ChangeOfVariables]
+  unfold jacobi11ChangeOfVariables
+  field_simp [sub_ne_zero.mpr hx]
+  ring
+
+/-- The even power scale factor in Braun--Jal Lemma 3.1 is nonnegative. -/
+theorem jacobi11TuranScale_nonneg (n : ℕ) (r : ℝ) :
+    0 ≤ (r - 1) ^ (2 * n) := by
+  simpa [pow_mul] using pow_nonneg (sq_nonneg (r - 1)) n
+
 /-- Coefficients obtained after substituting
 `x = (t + 1) / (t - 1)` into the normalized Jacobi polynomial
 `R_n^(1,1)(x)`, multiplying by `(t - 1)^n`, and canceling the powers of `2`.
@@ -277,6 +326,27 @@ theorem narayanaDifference_modified_posLeadingCoeff {n : ℕ} (hn : 1 ≤ n) :
   exact hasPosLeadingCoeff_add_of_natDegree_lt_left hdeg
     (modifiedNarayanaPolynomial_posLeadingCoeff n)
 
+/-- The named difference `Q_n = P_n - P_{n-1}` is nonzero for the concrete
+modified Narayana family. -/
+theorem narayanaDifference_modified_ne_zero {n : ℕ} (hn : 1 ≤ n) :
+    narayanaDifference modifiedNarayanaPolynomial n ≠ 0 :=
+  (narayanaDifference_modified_posLeadingCoeff hn).ne_zero
+
+private theorem affineLinear_natDegree_le {lam mu : ℝ} :
+    (C lam * X + C mu : ℝ[X]).natDegree ≤ 1 := by
+  have hleft : (C lam * X : ℝ[X]).natDegree ≤ 1 := by
+    calc
+      (C lam * X : ℝ[X]).natDegree ≤
+          (C lam : ℝ[X]).natDegree + (X : ℝ[X]).natDegree :=
+        Polynomial.natDegree_mul_le
+      _ = 0 + 1 := by rw [Polynomial.natDegree_C, Polynomial.natDegree_X]
+      _ = 1 := by norm_num
+  have hright : (C mu : ℝ[X]).natDegree ≤ 1 := by
+    rw [Polynomial.natDegree_C]
+    norm_num
+  exact (Polynomial.natDegree_add_le (C lam * X : ℝ[X]) (C mu)).trans
+    (max_le hleft hright)
+
 private theorem affineLinear_natDegree_of_lam_pos
     {lam mu : ℝ} (hlam : 0 < lam) :
     (C lam * X + C mu : ℝ[X]).natDegree = 1 := by
@@ -301,6 +371,20 @@ private theorem affineLinear_posLeadingCoeff_of_lam_pos
       Polynomial.natDegree_X]
     norm_num
   exact hasPosLeadingCoeff_add_of_natDegree_lt_left hdeg hCX_pos
+
+/-- The affine-linear modified Narayana product has degree at most `n + 1`. -/
+theorem modifiedNarayana_affine_natDegree_le
+    {n : ℕ} {lam mu : ℝ} :
+    ((C lam * X + C mu) * modifiedNarayanaPolynomial n).natDegree ≤ n + 1 := by
+  calc
+    ((C lam * X + C mu) * modifiedNarayanaPolynomial n).natDegree ≤
+        (C lam * X + C mu : ℝ[X]).natDegree +
+          (modifiedNarayanaPolynomial n).natDegree :=
+      Polynomial.natDegree_mul_le
+    _ ≤ 1 + n :=
+      Nat.add_le_add affineLinear_natDegree_le
+        (le_of_eq (modifiedNarayanaPolynomial_natDegree n))
+    _ = n + 1 := by rw [Nat.add_comm]
 
 /-- Constant multiples of modified Narayana polynomials do not increase
 degree. -/
@@ -593,6 +677,13 @@ theorem lemma34ModifiedNarayanaShifted_right_natDegree
     simpa [hQ_deg] using
       natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hA_lt hQ_pos
 
+/-- The right-hand polynomial in Braun--Jal's shifted Lemma 3.4 is nonzero. -/
+theorem lemma34ModifiedNarayanaShifted_right_ne_zero
+    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    (C lam * X + C mu) * modifiedNarayanaPolynomial m +
+      narayanaDifference modifiedNarayanaPolynomial (m + 1) ≠ 0 :=
+  (lemma34ModifiedNarayanaShifted_right_posLeadingCoeff hlam hmu).ne_zero
+
 /-- The left-hand polynomial in the shifted Lemma 3.4 route has no positive
 roots. -/
 theorem lemma34ModifiedNarayanaShifted_left_roots_nonpos
@@ -614,6 +705,29 @@ theorem lemma34ModifiedNarayanaShifted_left_isRoot_nonpos
       (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
         narayanaDifference modifiedNarayanaPolynomial m).IsRoot r) → r ≤ 0 :=
   fun r hr => lemma34ModifiedNarayanaShifted_left_roots_nonpos hm hlam hmu r
+    ((Polynomial.mem_roots hne).mpr hr)
+
+/-- The right-hand polynomial in the shifted Lemma 3.4 route has no positive
+roots. -/
+theorem lemma34ModifiedNarayanaShifted_right_roots_nonpos
+    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    ∀ r ∈ (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
+      narayanaDifference modifiedNarayanaPolynomial (m + 1)).roots), r ≤ 0 :=
+  roots_nonpos_of_hasNonnegCoeffs
+    (lemma34ModifiedNarayanaShifted_right_hasNonnegCoeffs hlam hmu)
+
+/-- IsRoot-facing form of
+`lemma34ModifiedNarayanaShifted_right_roots_nonpos`. -/
+theorem lemma34ModifiedNarayanaShifted_right_isRoot_nonpos
+    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
+    (hne :
+      (C lam * X + C mu) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1) ≠ 0) :
+    ∀ r,
+      (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1)).IsRoot r) →
+          r ≤ 0 :=
+  fun r hr => lemma34ModifiedNarayanaShifted_right_roots_nonpos hlam hmu r
     ((Polynomial.mem_roots hne).mpr hr)
 
 private theorem lemma34ModifiedNarayanaShifted_left_eq_paper
@@ -686,6 +800,14 @@ theorem lemma34ModifiedNarayana_left_natDegree
       (m := m) (lam := lam) (mu := nu + 1) hm hlam hmu
   simpa [lemma34ModifiedNarayanaShifted_left_eq_paper] using hbase
 
+/-- The paper-shaped left-hand polynomial in Braun--Jal Lemma 3.4 is nonzero
+when `ν ≥ -1`. -/
+theorem lemma34ModifiedNarayana_left_ne_zero
+    {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    (C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+      modifiedNarayanaPolynomial m ≠ 0 :=
+  (lemma34ModifiedNarayana_left_posLeadingCoeff hm hlam hnu).ne_zero
+
 /-- The paper-shaped right-hand polynomial in Braun--Jal Lemma 3.4 has
 positive leading coefficient when `ν ≥ -1`. -/
 theorem lemma34ModifiedNarayana_right_posLeadingCoeff
@@ -698,6 +820,26 @@ theorem lemma34ModifiedNarayana_right_posLeadingCoeff
     lemma34ModifiedNarayanaShifted_right_posLeadingCoeff
       (m := m) (lam := lam) (mu := nu + 1) hlam hmu
   simpa [lemma34ModifiedNarayanaShifted_right_eq_paper] using hbase
+
+/-- The paper-shaped right-hand polynomial in Braun--Jal Lemma 3.4 has degree
+`m + 1` when `ν ≥ -1`. -/
+theorem lemma34ModifiedNarayana_right_natDegree
+    {m : ℕ} {lam nu : ℝ} (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+        modifiedNarayanaPolynomial (m + 1)).natDegree = m + 1) := by
+  have hmu : 0 ≤ nu + 1 := by linarith
+  have hbase :=
+    lemma34ModifiedNarayanaShifted_right_natDegree
+      (m := m) (lam := lam) (mu := nu + 1) hlam hmu
+  simpa [lemma34ModifiedNarayanaShifted_right_eq_paper] using hbase
+
+/-- The paper-shaped right-hand polynomial in Braun--Jal Lemma 3.4 is nonzero
+when `ν ≥ -1`. -/
+theorem lemma34ModifiedNarayana_right_ne_zero
+    {m : ℕ} {lam nu : ℝ} (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    (C lam * X + C nu) * modifiedNarayanaPolynomial m +
+      modifiedNarayanaPolynomial (m + 1) ≠ 0 :=
+  (lemma34ModifiedNarayana_right_posLeadingCoeff hlam hnu).ne_zero
 
 /-- The paper-shaped left-hand polynomial in Braun--Jal Lemma 3.4 has no
 positive roots. -/
@@ -716,6 +858,28 @@ theorem lemma34ModifiedNarayana_right_roots_nonpos
       modifiedNarayanaPolynomial (m + 1)).roots), r ≤ 0 :=
   roots_nonpos_of_hasNonnegCoeffs
     (lemma34ModifiedNarayana_right_hasNonnegCoeffs hlam hnu)
+
+/-- IsRoot-facing form of `lemma34ModifiedNarayana_left_roots_nonpos`. -/
+theorem lemma34ModifiedNarayana_left_isRoot_nonpos
+    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
+    (hr :
+      (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m).IsRoot r)) :
+    r ≤ 0 :=
+  lemma34ModifiedNarayana_left_roots_nonpos hm hlam hnu r
+    ((Polynomial.mem_roots
+      (lemma34ModifiedNarayana_left_ne_zero hm hlam hnu)).mpr hr)
+
+/-- IsRoot-facing form of `lemma34ModifiedNarayana_right_roots_nonpos`. -/
+theorem lemma34ModifiedNarayana_right_isRoot_nonpos
+    {m : ℕ} {lam nu r : ℝ} (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
+    (hr :
+      (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+        modifiedNarayanaPolynomial (m + 1)).IsRoot r)) :
+    r ≤ 0 :=
+  lemma34ModifiedNarayana_right_roots_nonpos hlam hnu r
+    ((Polynomial.mem_roots
+      (lemma34ModifiedNarayana_right_ne_zero hlam hnu)).mpr hr)
 
 end GeneralizedSnakePosets
 end RealRooted

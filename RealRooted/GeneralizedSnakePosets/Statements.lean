@@ -40,7 +40,30 @@ abbrev SquarecaseRookModelTheorem41Statement
     (model : SquarecaseRookModel) : Prop :=
   Theorem41NonNestingRookStatement model.snakePolynomial
 
+/-- The real-rootedness part of Braun--Jal Theorem 4.1. -/
+theorem nonNestingRook_ne_zero_and_splits_of_theorem41
+    {M : SnakeWord → ℝ[X]}
+    (hBJ : Theorem41NonNestingRookStatement M)
+    {w : SnakeWord} (hw : 1 ≤ w.length) :
+    M w ≠ 0 ∧ (M w).Splits :=
+  (hBJ (w := w) hw).1
+
+/-- The final-letter-deletion interlacing part of Braun--Jal Theorem 4.1. -/
+theorem nonNestingRook_deleteFinal_interlaces_of_theorem41
+    {M : SnakeWord → ℝ[X]}
+    (hBJ : Theorem41NonNestingRookStatement M)
+    {w : SnakeWord} (hw : 1 ≤ w.length) :
+    Interlaces (M w.deleteFinal) (M w) :=
+  (hBJ (w := w) hw).2
+
 /-! ## Narayana and recurrence interfaces from Section 3 -/
+
+/-- A family `P` is the modified Narayana family attached to Narayana
+polynomials `N` when `N_{n+1} = X * P_n`, i.e. `P_n(t) = t^{-1} N_{n+1}(t)`.
+-/
+def ModifiedNarayanaFamilyStatement
+    (N P : ℕ → ℝ[X]) : Prop :=
+  P 0 = 1 ∧ ∀ n : ℕ, N (n + 1) = X * P n
 
 /-- The auxiliary polynomial `G_n` as the sum of non-nesting rook polynomials
 of truncated staircases `mu_{n,i}` for `i = 0, ..., n - 1`. -/
@@ -101,6 +124,152 @@ theorem lemma34ModifiedNarayanaInterlacing_of_shifted
     simp only [Nat.add_sub_cancel]
     ring_nf
   rwa [hleft, hright] at hbase
+
+/-- The paper's `nu ≥ -1` Lemma 3.4 form implies the shifted
+nonnegative-parameter form. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacing_of_lemma34
+    {P : ℕ → ℝ[X]}
+    (h : Lemma34ModifiedNarayanaInterlacingStatement P) :
+    Lemma34ModifiedNarayanaShiftedInterlacingStatement P := by
+  intro m lam mu hm hlam hmu
+  have hnu : -1 ≤ mu - 1 := by linarith
+  have hbase := h (m := m) (lam := lam) (nu := mu - 1) hm hlam hnu
+  have hC : (C (mu - 1) : ℝ[X]) = C mu - 1 := by simp
+  have hleft :
+      ((C lam * X + C (mu - 1)) * P (m - 1) + P m) =
+        ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m) := by
+    rw [narayanaDifference, hC]
+    ring_nf
+  have hright :
+      ((C lam * X + C (mu - 1)) * P m + P (m + 1)) =
+        ((C lam * X + C mu) * P m + narayanaDifference P (m + 1)) := by
+    rw [narayanaDifference, hC]
+    simp only [Nat.add_sub_cancel]
+    ring_nf
+  rwa [hleft, hright] at hbase
+
+/-- Equivalence between the paper's Lemma 3.4 statement and the shifted
+nonnegative-parameter form. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacing_iff_lemma34
+    (P : ℕ → ℝ[X]) :
+    Lemma34ModifiedNarayanaShiftedInterlacingStatement P ↔
+      Lemma34ModifiedNarayanaInterlacingStatement P :=
+  ⟨lemma34ModifiedNarayanaInterlacing_of_shifted,
+    lemma34ModifiedNarayanaShiftedInterlacing_of_lemma34⟩
+
+/-- Bounded form of Braun--Jal equation (2), useful while finite initial
+cases are being formalized before the all-`n` recurrence is available. -/
+def NarayanaAuxiliaryGRecurrenceUpToStatement
+    (P G : ℕ → ℝ[X]) (N : ℕ) : Prop :=
+  ∀ {n : ℕ}, 1 ≤ n → n ≤ N →
+    X * G (n - 1) = P n - (1 + X) * P (n - 1)
+
+/-- Bounded form of Braun--Jal Lemma 3.3. -/
+def Lemma33AuxiliaryGInterlacesUpToStatement
+    (P G : ℕ → ℝ[X]) (N : ℕ) : Prop :=
+  ∀ {n : ℕ}, 1 ≤ n → n ≤ N → StrictInterl (G n) (P n)
+
+/-- Bounded form of Braun--Jal Lemma 3.4. -/
+def Lemma34ModifiedNarayanaInterlacingUpToStatement
+    (P : ℕ → ℝ[X]) (N : ℕ) : Prop :=
+  ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → m ≤ N → 0 ≤ lam → -1 ≤ nu →
+    StrictInterl ((C lam * X + C nu) * P (m - 1) + P m)
+      ((C lam * X + C nu) * P m + P (m + 1))
+
+/-- Bounded shifted nonnegative-parameter form of Braun--Jal Lemma 3.4. -/
+def Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement
+    (P : ℕ → ℝ[X]) (N : ℕ) : Prop :=
+  ∀ {m : ℕ} {lam mu : ℝ}, 2 ≤ m → m ≤ N → 0 ≤ lam → 0 ≤ mu →
+    StrictInterl ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
+      ((C lam * X + C mu) * P m + narayanaDifference P (m + 1))
+
+/-- The all-`n` recurrence implies every bounded recurrence package. -/
+theorem narayanaAuxiliaryGRecurrenceUpTo_of_statement
+    {P G : ℕ → ℝ[X]} (h : NarayanaAuxiliaryGRecurrenceStatement P G)
+    (N : ℕ) :
+    NarayanaAuxiliaryGRecurrenceUpToStatement P G N := by
+  intro n hn _hnN
+  exact h hn
+
+/-- The all-`n` Lemma 3.3 statement implies every bounded Lemma 3.3 package. -/
+theorem lemma33AuxiliaryGInterlacesUpTo_of_statement
+    {P G : ℕ → ℝ[X]} (h : Lemma33AuxiliaryGInterlacesStatement P G)
+    (N : ℕ) :
+    Lemma33AuxiliaryGInterlacesUpToStatement P G N := by
+  intro n hn _hnN
+  exact h hn
+
+/-- The all-`n` Lemma 3.4 statement implies every bounded Lemma 3.4 package. -/
+theorem lemma34ModifiedNarayanaInterlacingUpTo_of_statement
+    {P : ℕ → ℝ[X]} (h : Lemma34ModifiedNarayanaInterlacingStatement P)
+    (N : ℕ) :
+    Lemma34ModifiedNarayanaInterlacingUpToStatement P N := by
+  intro m lam nu hm _hmN hlam hnu
+  exact h hm hlam hnu
+
+/-- The all-`n` shifted Lemma 3.4 statement implies every bounded shifted
+Lemma 3.4 package. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_statement
+    {P : ℕ → ℝ[X]}
+    (h : Lemma34ModifiedNarayanaShiftedInterlacingStatement P) (N : ℕ) :
+    Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N := by
+  intro m lam mu hm _hmN hlam hmu
+  exact h hm hlam hmu
+
+/-- A bounded shifted Lemma 3.4 package implies the bounded paper-shaped
+`nu ≥ -1` package. -/
+theorem lemma34ModifiedNarayanaInterlacingUpTo_of_shifted
+    {P : ℕ → ℝ[X]} {N : ℕ}
+    (h : Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N) :
+    Lemma34ModifiedNarayanaInterlacingUpToStatement P N := by
+  intro m lam nu hm hmN hlam hnu
+  have hmu : 0 ≤ nu + 1 := by linarith
+  have hbase := h (m := m) (lam := lam) (mu := nu + 1) hm hmN hlam hmu
+  have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by simp
+  have hleft :
+      ((C lam * X + C (nu + 1)) * P (m - 1) + narayanaDifference P m) =
+        ((C lam * X + C nu) * P (m - 1) + P m) := by
+    rw [narayanaDifference, hC]
+    ring_nf
+  have hright :
+      ((C lam * X + C (nu + 1)) * P m + narayanaDifference P (m + 1)) =
+        ((C lam * X + C nu) * P m + P (m + 1)) := by
+    rw [narayanaDifference, hC]
+    simp only [Nat.add_sub_cancel]
+    ring_nf
+  rwa [hleft, hright] at hbase
+
+/-- A bounded paper-shaped Lemma 3.4 package implies the bounded shifted
+nonnegative-parameter package. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_lemma34
+    {P : ℕ → ℝ[X]} {N : ℕ}
+    (h : Lemma34ModifiedNarayanaInterlacingUpToStatement P N) :
+    Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N := by
+  intro m lam mu hm hmN hlam hmu
+  have hnu : -1 ≤ mu - 1 := by linarith
+  have hbase := h (m := m) (lam := lam) (nu := mu - 1) hm hmN hlam hnu
+  have hC : (C (mu - 1) : ℝ[X]) = C mu - 1 := by simp
+  have hleft :
+      ((C lam * X + C (mu - 1)) * P (m - 1) + P m) =
+        ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m) := by
+    rw [narayanaDifference, hC]
+    ring_nf
+  have hright :
+      ((C lam * X + C (mu - 1)) * P m + P (m + 1)) =
+        ((C lam * X + C mu) * P m + narayanaDifference P (m + 1)) := by
+    rw [narayanaDifference, hC]
+    simp only [Nat.add_sub_cancel]
+    ring_nf
+  rwa [hleft, hright] at hbase
+
+/-- Bounded equivalence between the paper-shaped Lemma 3.4 statement and the
+shifted nonnegative-parameter form. -/
+theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_iff_lemma34
+    (P : ℕ → ℝ[X]) (N : ℕ) :
+    Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N ↔
+      Lemma34ModifiedNarayanaInterlacingUpToStatement P N :=
+  ⟨lemma34ModifiedNarayanaInterlacingUpTo_of_shifted,
+    lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_lemma34⟩
 
 /-- Difference `H_n = G_n - G_{n-1}` used in the Theorem 4.1 matrix step. -/
 def auxiliaryDifference (G : ℕ → ℝ[X]) (n : ℕ) : ℝ[X] :=
@@ -396,6 +565,16 @@ def Theorem35GeneralizedSnakeRecurrenceComputableStatement
     M w = M (w.takePrefix (k + 1)) * P (w.length - (k + 1)) +
       X * M (w.takePrefix k) * G (w.length - (k + 1))
 
+/-- The predicate-form recurrence implies the computable `lastChangeIndex?`
+form. -/
+theorem theorem35Computable_of_theorem35
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G) :
+    Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G := by
+  intro w k hlast
+  exact hrec (SnakeWord.not_isConstant_of_lastChangeIndex?_eq_some hlast)
+    (SnakeWord.isLastChangeIndex_of_lastChangeIndex?_eq_some hlast)
+
 /-- The computable `lastChangeIndex?` recurrence implies the predicate-form
 recurrence. -/
 theorem theorem35_of_theorem35Computable
@@ -404,6 +583,14 @@ theorem theorem35_of_theorem35Computable
     Theorem35GeneralizedSnakeRecurrenceStatement M P G := by
   intro w k _hconst hlast
   exact hrec (SnakeWord.lastChangeIndex?_eq_some_of_isLastChangeIndex hlast)
+
+/-- The predicate-form and computable forms of the generalized snake
+recurrence are equivalent. -/
+theorem theorem35Computable_iff_theorem35
+    (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) :
+    Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G ↔
+      Theorem35GeneralizedSnakeRecurrenceStatement M P G :=
+  ⟨theorem35_of_theorem35Computable, theorem35Computable_of_theorem35⟩
 
 /-- Statement-level package for the induction route from the Section 3
 Narayana and recurrence ingredients to Theorem 4.1. -/
@@ -421,6 +608,32 @@ def Theorem41InductionRouteComputableStatement
     Lemma34ModifiedNarayanaInterlacingStatement P →
     Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G →
       Theorem41NonNestingRookStatement M
+
+/-- The predicate-form induction route also accepts a computable recurrence
+input. -/
+theorem theorem41InductionRouteComputable_of_theorem41InductionRoute
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteStatement M P G) :
+    Theorem41InductionRouteComputableStatement M P G := by
+  intro h33 h34 hrec
+  exact hroute h33 h34 (theorem35_of_theorem35Computable hrec)
+
+/-- The computable-recursion induction route implies the predicate-form route. -/
+theorem theorem41InductionRoute_of_theorem41InductionRouteComputable
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteComputableStatement M P G) :
+    Theorem41InductionRouteStatement M P G := by
+  intro h33 h34 hrec
+  exact hroute h33 h34 (theorem35Computable_of_theorem35 hrec)
+
+/-- Predicate and computable forms of the Theorem 4.1 induction route are
+equivalent. -/
+theorem theorem41InductionRouteComputable_iff_theorem41InductionRoute
+    (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) :
+    Theorem41InductionRouteComputableStatement M P G ↔
+      Theorem41InductionRouteStatement M P G :=
+  ⟨theorem41InductionRoute_of_theorem41InductionRouteComputable,
+    theorem41InductionRouteComputable_of_theorem41InductionRoute⟩
 
 /-- Bundled Section 3 ingredients needed by the current Theorem 4.1 induction
 interface. -/
@@ -500,6 +713,16 @@ theorem theorem41_of_section3Inputs
     Theorem41NonNestingRookStatement M :=
   hroute hinputs.lemma33 hinputs.lemma34 hinputs.recurrence
 
+/-- Feed computable Section 3 ingredients into the abstract Theorem 4.1
+induction route. -/
+theorem theorem41_of_section3ComputableInputs
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteStatement M P G)
+    (hinputs : Theorem41Section3ComputableInputs M P G) :
+    Theorem41NonNestingRookStatement M :=
+  theorem41_of_section3Inputs hroute
+    (theorem41Section3Inputs_of_computable hinputs)
+
 /-- Feed shifted Section 3 ingredients into the abstract Theorem 4.1 induction
 route. -/
 theorem theorem41_of_section3ShiftedInputs
@@ -509,6 +732,16 @@ theorem theorem41_of_section3ShiftedInputs
     Theorem41NonNestingRookStatement M :=
   theorem41_of_section3Inputs hroute
     (theorem41Section3Inputs_of_shifted hinputs)
+
+/-- Feed computable shifted Section 3 ingredients into the abstract Theorem
+4.1 induction route. -/
+theorem theorem41_of_section3ComputableShiftedInputs
+    {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
+    (hroute : Theorem41InductionRouteStatement M P G)
+    (hinputs : Theorem41Section3ComputableShiftedInputs M P G) :
+    Theorem41NonNestingRookStatement M :=
+  theorem41_of_section3ComputableInputs hroute
+    (theorem41Section3ComputableInputs_of_shifted hinputs)
 
 end GeneralizedSnakePosets
 end RealRooted
