@@ -1512,3 +1512,7 @@ import RealRooted.Tactic.Product.Interlacing
 import RealRooted.DerivativeRecurrence.Degree
 import RealRooted.Tactic.Examples.RowData
 import RealRooted.Tactic.RowData
+import RealRooted.Tactic.Examples.RowInterlacing
+import RealRooted.Tactic.RowInterlacing
+import RealRooted.ThreeTermRecurrence.Degree
+import RealRooted.ThreeTermRecurrence.Interlacing
