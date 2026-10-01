@@ -673,35 +673,66 @@ def _safe_url(url: str) -> str | None:
     return url
 
 
+LINK_DEFINITION_RE = re.compile(r"\s{0,3}\[([^\]]+)\]:\s*(\S+)\s*")
+LIST_ITEM_RE = re.compile(r"(\s*)(?:([-*])|(\d+)\.)\s+(.+)")
+
+
 def render_markdown(markdown: str) -> str:
-    """Render the deliberate Markdown subset, escaping raw HTML by default."""
+    """Render the deliberate Markdown subset, escaping raw HTML by default.
+
+    Supported: headings, paragraphs, `-`/`*` and numbered lists whose items may
+    continue on indented lines, fenced code blocks (also indented inside a
+    list item), inline code, `**strong**`, `*emphasis*`, and inline or
+    reference-style links (`[text](url)`, `[text][id]` with `[id]: url`).
+    """
+    lines = markdown.splitlines()
+    references: dict[str, str] = {}
+    body: list[str] = []
+    for line in lines:
+        definition = LINK_DEFINITION_RE.fullmatch(line)
+        if definition:
+            references[definition.group(1).casefold()] = definition.group(2)
+        else:
+            body.append(line)
+
     blocks: list[str] = []
     paragraph: list[str] = []
-    list_items: list[str] = []
+    list_items: list[list[str]] = []
+    list_kind = ""
     code_lines: list[str] = []
     in_code = False
+    code_indent = 0
+
+    def inline(text: str) -> str:
+        return _inline(text, references)
 
     def flush_paragraph() -> None:
         if paragraph:
-            blocks.append(f"<p>{_inline(' '.join(paragraph))}</p>")
+            blocks.append(f"<p>{inline(' '.join(paragraph))}</p>")
             paragraph.clear()
 
     def flush_list() -> None:
+        nonlocal list_kind
         if list_items:
-            blocks.append("<ul>" + "".join(f"<li>{_inline(item)}</li>" for item in list_items) + "</ul>")
+            items = "".join(f"<li>{inline(' '.join(item))}</li>" for item in list_items)
+            blocks.append(f"<{list_kind}>{items}</{list_kind}>")
             list_items.clear()
+        list_kind = ""
 
-    for line in markdown.splitlines():
-        if line.startswith("```"):
+    for line in body:
+        stripped = line.strip()
+        if stripped.startswith("```"):
             flush_paragraph()
             flush_list()
             if in_code:
                 blocks.append("<pre><code>" + html.escape("\n".join(code_lines)) + "</code></pre>")
                 code_lines.clear()
+            else:
+                code_indent = len(line) - len(line.lstrip())
             in_code = not in_code
             continue
         if in_code:
-            code_lines.append(line)
+            code_lines.append(line[code_indent:] if line[:code_indent].strip() == "" else line)
             continue
         heading = re.fullmatch(r"(#{1,3})\s+(.+?)\s*", line)
         if heading:
@@ -710,19 +741,26 @@ def render_markdown(markdown: str) -> str:
             level = len(heading.group(1))
             text = heading.group(2)
             identifier = _anchor(text)
-            blocks.append(f"<h{level} id=\"{identifier}\">{_inline(text)}</h{level}>")
+            blocks.append(f"<h{level} id=\"{identifier}\">{inline(text)}</h{level}>")
             continue
-        bullet = re.fullmatch(r"[-*]\s+(.+)", line)
-        if bullet:
+        item = LIST_ITEM_RE.fullmatch(line)
+        if item and not item.group(1):
             flush_paragraph()
-            list_items.append(bullet.group(1))
+            kind = "ol" if item.group(3) else "ul"
+            if list_kind and kind != list_kind:
+                flush_list()
+            list_kind = kind
+            list_items.append([item.group(4)])
             continue
-        if not line.strip():
+        if not stripped:
             flush_paragraph()
             flush_list()
             continue
+        if list_items and line[:1].isspace():
+            list_items[-1].append(stripped)
+            continue
         flush_list()
-        paragraph.append(line.strip())
+        paragraph.append(stripped)
     if in_code:
         raise CatalogError("unterminated Markdown code fence")
     flush_paragraph()
@@ -735,21 +773,35 @@ def _anchor(text: str) -> str:
     return plain or "section"
 
 
-def _inline(text: str) -> str:
+def _inline(text: str, references: dict[str, str] | None = None) -> str:
+    references = references or {}
     escaped = html.escape(text, quote=False)
-    pattern = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
+    # protect code spans from emphasis and link rewriting
+    codes: list[str] = []
 
-    def link(match: re.Match[str]) -> str:
-        target = html.unescape(match.group(2).strip())
-        safe = _safe_url(target)
-        label = match.group(1)
+    def stash(match: re.Match[str]) -> str:
+        codes.append(match.group(1))
+        return f"\x00{len(codes) - 1}\x00"
+
+    rendered = re.sub(r"`([^`\n]+)`", stash, escaped)
+
+    def anchor(label: str, target: str) -> str:
+        safe = _safe_url(html.unescape(target.strip()))
         if safe is None:
-            return html.escape(label, quote=False)
+            return label
         return f'<a href="{html.escape(safe, quote=True)}">{label}</a>'
 
-    rendered = pattern.sub(link, escaped)
-    rendered = re.sub(r"`([^`\n]+)`", r"<code>\1</code>", rendered)
-    return re.sub(r"\*([^*\n]+)\*", r"<em>\1</em>", rendered)
+    rendered = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", lambda m: anchor(m.group(1), m.group(2)), rendered)
+
+    def reference(match: re.Match[str]) -> str:
+        key = (match.group(2) or match.group(1)).casefold()
+        target = references.get(html.unescape(key))
+        return anchor(match.group(1), target) if target else match.group(0)
+
+    rendered = re.sub(r"\[([^\]]+)\]\[([^\]]*)\]", reference, rendered)
+    rendered = re.sub(r"\*\*([^*\n]+)\*\*", r"<strong>\1</strong>", rendered)
+    rendered = re.sub(r"(?<![\w*])\*([^*\n]+)\*(?![\w*])", r"<em>\1</em>", rendered)
+    return re.sub(r"\x00(\d+)\x00", lambda m: f"<code>{codes[int(m.group(1))]}</code>", rendered)
 
 
 def _source_link(revision: str, source: SourceDeclaration) -> str:
@@ -806,7 +858,7 @@ def _authors_label(authors: tuple[str, ...]) -> str:
 
 def _years_label(years: tuple[int, ...]) -> str:
     if not years:
-        return "Classical"
+        return ""
     if len(years) == 1:
         return str(years[0])
     return f"{years[0]}–{years[-1]}"
@@ -880,7 +932,7 @@ def _headline_card(page: CatalogPage, item: CatalogItem, href: str) -> str:
         '<span class="card-top"><span class="kind-badge kind-badge--theorem">'
         '<span aria-hidden="true">⊢</span> Theorem</span></span>'
         f'<strong class="card-title">{html.escape(title)}</strong>'
-        f'<span class="card-context">on <em>{html.escape(page.title)}</em></span>'
+        f'<span class="card-context">from <em>{html.escape(page.title)}</em></span>'
         f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
         '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
     )
@@ -971,8 +1023,8 @@ def _results_page(
     return (
         "<main class=\"results-page\"><p class=\"eyebrow\">Browse the catalog</p>"
         "<h1>All results</h1>"
-        f"<p class=\"lede\">Every catalogued declaration: {_plural(definitions, 'definition')} and "
-        f"{_plural(theorems, 'theorem')}, each checked by Lean.</p>"
+        f"<p class=\"lede\">All {_plural(definitions, 'definition')} and "
+        f"{_plural(theorems, 'theorem')} in the catalog.</p>"
         '<div class="results-toolbar" data-results-filter>'
         '<label class="results-search"><span class="visually-hidden">Filter results</span>'
         '<input type="search" placeholder="Filter by name, page or author" data-results-query></label>'
@@ -1061,24 +1113,24 @@ def render_site(
         "<main class=\"catalog-home\"><section class=\"hero\">"
         "<p class=\"eyebrow\">Reference catalog</p>"
         "<h1>Real-rooted polynomials</h1>"
-        "<p class=\"lede\">Concepts, polynomial families and theorems, with links to their "
-        "formal sources.</p>"
+        "<p class=\"lede\">Definitions and theorems on real-rooted polynomials, interlacing "
+        "and total positivity, formalized in Lean. Each statement links to its Lean source.</p>"
         f"<p class=\"hero-stats\"><a href=\"results/\">{_plural(total_definitions, 'definition')} and "
-        f"{_plural(total_theorems, 'theorem')}</a>, each checked by Lean.</p></section>"
+        f"{_plural(total_theorems, 'theorem')}</a>.</p></section>"
         + _sort_controls()
         + '<div class="catalog-groups">'
         + _catalog_group(
             "topics",
             "Concepts and families",
-            "Each page defines a concept or a polynomial family and collects what is proved "
-            "about it. The counts show its definitions (≔) and theorems (⊢).",
+            "Concepts and polynomial families, with the number of definitions (≔) and "
+            "theorems (⊢) on each page.",
             "".join(_page_card(page, f"{page.section}/{page.slug}/") for page in topic_pages),
         )
         + _catalog_group(
             "theorems",
             "Theorems",
-            "Theorem pages, together with the main results stated on concept and family "
-            "pages. Every declaration is listed under <a href=\"results/\">All results</a>.",
+            "Theorem pages, and the main results from the concept and family pages. "
+            "The complete list is under <a href=\"results/\">All results</a>.",
             "".join(card for _, card in theorem_cards),
         )
         + "</div></main>"
@@ -1122,9 +1174,9 @@ def render_site(
             + "</article><div class=\"lean-results\">"
             + selected
             + "</div>"
-            + f"<p class=\"verification\"><span>Source revision</span> "
-            + f"<code>{html.escape(revision)}</code> · "
-            + f"<a href=\"{source}\">challenge module</a>.</p></main>"
+            + f"<p class=\"verification\"><span>Lean source</span> "
+            + f"<a href=\"{source}\">{html.escape(page.source_path)}</a> at revision "
+            + f"<code>{html.escape(revision[:8])}</code>.</p></main>"
         )
         files[f"{page.section}/{page.slug}/index.html"] = _template(
             repo_root, body, page.title, page.url

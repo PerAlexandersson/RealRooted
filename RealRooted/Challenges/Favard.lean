@@ -13,12 +13,15 @@ years = [1935]
 [[definitions]]
 name = "RealRooted.SatisfiesFavardRecurrence"
 module = "RealRooted.Favard.Recurrence"
+label = "Favard three-term recurrence"
 
 [[theorems]]
 name = "RealRooted.Challenges.Favard.interlacing"
+label = "Consecutive polynomials interlace"
 
 [[theorems]]
 name = "RealRooted.Challenges.Favard.realRooted"
+label = "Favard polynomials are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->

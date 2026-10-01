@@ -16,38 +16,47 @@ years = [1973, 1985]
 [[definitions]]
 name = "RealRooted.StrictToeplitzMinorIndex"
 module = "RealRooted.LGV.Toeplitz"
+label = "Index set of a Toeplitz minor"
 
 [[definitions]]
 name = "RealRooted.LGV.ChipNetwork.Chip"
 module = "RealRooted.LGV.ChipNetwork.Word"
+label = "Lower-bidiagonal chip"
 
 [[definitions]]
 name = "RealRooted.LGV.ChipNetwork.wordMatrix"
 module = "RealRooted.LGV.ChipNetwork.Word"
+label = "Matrix of a word of chips"
 
 [[definitions]]
 name = "RealRooted.LGV.RepeatedChip.kernelSequence"
 module = "RealRooted.LGV.RepeatedChip"
+label = "Repeated-chip kernel sequence"
 
 [[theorems]]
 name = "LGV.FinitePathNetwork.matrix_isTotallyNonneg_of_orderedCertificates"
 module = "RealRooted.LGV.TotallyNonnegative"
+label = "Path networks give totally nonnegative matrices"
 
 [[theorems]]
 name = "RealRooted.isPolyaFreqSeq_of_minorOrderedCertificates"
 module = "RealRooted.LGV.PolyaFrequency"
+label = "Path networks give Pólya frequency sequences"
 
 [[theorems]]
 name = "RealRooted.LGV.RepeatedChip.kernelSequence_isPolyaFreqSeq"
 module = "RealRooted.LGV.RepeatedChip"
+label = "Repeated-chip kernel sequences are PF"
 
 [[theorems]]
 name = "RealRooted.LGV.RepeatedChip.kernelRow_isPFPolynomial"
 module = "RealRooted.LGV.RepeatedChip"
+label = "Repeated-chip kernel rows are PF polynomials"
 
 [[theorems]]
 name = "Quiver.Path.sum_weight_exactLength_eq_edgeSumMatrix_pow"
 module = "RealRooted.LGV.PathMatrix"
+label = "Paths of length n and powers of the edge matrix"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -58,8 +67,7 @@ matrix as a signed count of families of vertex-disjoint paths. When every
 crossing family cancels against another, only nonintersecting families
 survive, and the minor is a sum of nonnegative path weights.
 
-The following are formalized, on top of the path-cancellation proof in the
-LeanLGV library:
+Building on the path-cancellation proof in the LeanLGV library:
 
 - **Total nonnegativity:** a finite path network with nonnegative weights
   and ordered cancellation certificates for every pair of increasing row and

@@ -12,40 +12,50 @@ slug = "binary-run-transformation"
 [[definitions]]
 name = "RealRooted.binaryRunPolynomial"
 module = "RealRooted.BinaryRunTransformation.Coefficients"
+label = "Binary-run basis polynomials"
 
 [[definitions]]
 name = "RealRooted.binaryRunTransform"
 module = "RealRooted.BinaryRunTransformation.Coefficients"
+label = "Binary-run transformation"
 
 [[theorems]]
 name = "RealRooted.Challenges.BinaryRunTransformation.preservesPF"
+label = "The transformation preserves PF polynomials"
 
 [[theorems]]
 name = "RealRooted.Challenges.BinaryRunTransformation.preservesStrictlyNegativeRoots"
+label = "Positive constant term gives strictly negative zeros"
 
 [[theorems]]
 name = "RealRooted.strictInterl_binaryRunTransform"
 module = "RealRooted.BinaryRunTransformation.Interlacing"
+label = "The transformation preserves interlacing"
 
 [[theorems]]
 name = "RealRooted.strictInterl_binaryRunTransform_succ"
 module = "RealRooted.BinaryRunTransformation.CrossLength"
+label = "Interlacing across lengths"
 
 [[theorems]]
 name = "RealRooted.motzkinWeightedRow_strictInterl_succ"
 module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
+label = "Weighted Motzkin rows form a Sturm chain"
 
 [[theorems]]
 name = "RealRooted.motzkinWeightedRow_inv_ascPochhammer_strictInterl_succ"
 module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
+label = "The Sturm chain for γ_m = 1/(α)_m"
 
 [[theorems]]
 name = "RealRooted.motzkinWeightedRow_inv_ascPochhammer_succ_strictInterl"
 module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
+label = "Monotonicity in α"
 
 [[theorems]]
 name = "RealRooted.motzkinAscentRow_strictInterl_succ"
 module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
+label = "Motzkin-ascent polynomials (A114580) form a Sturm chain"
 -->
 
 <!-- realrooted-catalog-content -->

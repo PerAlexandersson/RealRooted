@@ -13,20 +13,25 @@ years = [2006, 2015]
 [[definitions]]
 name = "RealRooted.matPolyAction"
 module = "RealRooted.MatrixInterlacing.Action"
+label = "A polynomial matrix acting on a sequence"
 
 [[definitions]]
 name = "RealRooted.Has2x2InterlacingProperty"
 module = "RealRooted.AffineFamily.Basic"
+label = "2 × 2 interlacing condition"
 
 [[definitions]]
 name = "RealRooted.Has2x2InterlacingProperty0"
 module = "RealRooted.AffineFamily.Basic"
+label = "2 × 2 interlacing condition, allowing zeros"
 
 [[theorems]]
 name = "RealRooted.Challenges.MatrixInterlacing.preserves_interlacing_sequences"
+label = "Such matrices preserve interlacing sequences"
 
 [[theorems]]
 name = "RealRooted.Challenges.MatrixInterlacing.preserves_interlacing_sequences_zeroAware"
+label = "The same, allowing zero rows"
 -->
 
 <!-- realrooted-catalog-content -->

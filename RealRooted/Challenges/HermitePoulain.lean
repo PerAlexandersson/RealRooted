@@ -12,24 +12,26 @@ authors = ["Hermite", "Poulain"]
 [[definitions]]
 name = "RealRooted.HermitePoulain.applyAsDifferentialOperator"
 module = "RealRooted.Hermite.Poulain"
+label = "The operator f(D)"
 
 [[theorems]]
 name = "RealRooted.HermitePoulain.differential_operator_preserves_real_rooted"
 module = "RealRooted.Hermite.Poulain"
+label = "Hermite–Poulain theorem"
 -->
 
 <!-- realrooted-catalog-content -->
 # Hermite–Poulain theorem
 
-Replace each power in `f` by the corresponding derivative operator. If `f`
-and the input polynomial are real-rooted, the output is zero or real-rooted.
+For a polynomial `f(x) = ∑_k a_k x^k`, write `f(D) = ∑_k a_k D^k`, where
+`D = d/dx`. If `f` and `p` are real-rooted, then `f(D) p` is zero or
+real-rooted.
 
 ## References
 
-This classical preservation theorem originates in work of Hermite and
-Poulain; see the
-[Hermite–Poulain overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermitePoulainTheorem)
-for context and further references.
+The theorem goes back to Hermite and Poulain; see the
+[Hermite–Poulain theorem on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermitePoulainTheorem)
+for further references.
 <!-- /realrooted-catalog-content -->
 
 Human statement:

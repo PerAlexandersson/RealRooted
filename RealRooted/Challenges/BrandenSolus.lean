@@ -15,9 +15,11 @@ years = [2019]
 [[definitions]]
 name = "RealRooted.IsIdDecomposition"
 module = "RealRooted.SymmetricDecomposition.Definitions"
+label = "Symmetric I_d-decomposition"
 
 [[theorems]]
 name = "RealRooted.Challenges.BrandenSolus.theorem26"
+label = "Brändén–Solus, Theorem 2.6"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -30,7 +32,7 @@ Theorem 2.6, these two pieces interlace.
 ## References
 
 P. Brändén and L. Solus, “Symmetric decompositions and real-rootedness,”
-*International Mathematics Research Notices* 2021 (2019), 7764–7798.  See the
+*International Mathematics Research Notices* 2021 (2021), 7764–7798.  See the
 [symmetric-decomposition overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#symmetricIDecomposition).
 <!-- /realrooted-catalog-content -->
 

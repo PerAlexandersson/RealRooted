@@ -13,25 +13,28 @@ years = [1952]
 [[definitions]]
 name = "RealRooted.IsPolyaFreqSeq"
 module = "RealRooted.AissenSchoenbergWhitneyBase"
+label = "Pólya frequency sequence"
 
 [[theorems]]
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.forwardTheorem"
+label = "PF coefficients give real nonpositive zeros"
 
 [[theorems]]
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.reverseTheorem"
+label = "Real nonpositive zeros give PF coefficients"
 -->
 
 <!-- realrooted-catalog-content -->
 # Aissen–Schoenberg–Whitney
 
-A finite nonnegative sequence is Pólya-frequency exactly when its generating
-polynomial has only real nonpositive roots. The selected theorems prove both
-directions for polynomial coefficients.
+A finite sequence of nonnegative reals is a Pólya frequency sequence if and only
+if its generating polynomial has only real, nonpositive zeros. Both directions
+are proved.
 
 ## References
 
 M. Aissen, I. J. Schoenberg, and A. M. Whitney, “On the generating functions
-of totally positive sequences. I,” *Journal of Analyse Mathématique* 2 (1952),
+of totally positive sequences. I,” *Journal d’Analyse Mathématique* 2 (1952),
 93–103.  See the
 [Pólya-frequency overview on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#aissenSchoenbergWhitney).
 <!-- /realrooted-catalog-content -->

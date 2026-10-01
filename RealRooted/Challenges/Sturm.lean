@@ -13,22 +13,27 @@ years = [1829]
 [[definitions]]
 name = "Polynomial.signedRemainderSequence"
 module = "RealRooted.Mathlib.Algebra.Polynomial.Sturm"
+label = "Signed remainder sequence"
 
 [[definitions]]
 name = "RealRooted.sturmVariations"
 module = "RealRooted.RootCounting.Sturm"
+label = "Sign variations of the Sturm sequence"
 
 [[definitions]]
 name = "RealRooted.distinctRootCountIoo"
 module = "RealRooted.RootCounting.Sturm"
+label = "Number of distinct roots in an interval"
 
 [[theorems]]
 name = "RealRooted.distinctRootCountIoo_eq_distinctSturmVariations_sub"
 module = "RealRooted.RootCounting.Sturm"
+label = "Sturm's theorem"
 
 [[theorems]]
 name = "RealRooted.splits_iff_distinctSturmVariations_sub_eq_natDegree"
 module = "RealRooted.RootCounting.Sturm"
+label = "A Sturm test for real-rootedness"
 -->
 
 <!-- realrooted-catalog-content -->

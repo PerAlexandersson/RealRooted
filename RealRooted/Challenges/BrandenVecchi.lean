@@ -18,50 +18,62 @@ years = [2025]
 [[definitions]]
 name = "RealRooted.BrandenVecchi.chowDerangement"
 module = "RealRooted.BrandenVecchi.Chow"
+label = "Chow derangement polynomials"
 
 [[definitions]]
 name = "RealRooted.BrandenVecchi.chowPolynomial"
 module = "RealRooted.BrandenVecchi.Chow"
+label = "Chow polynomials of a lower-triangular matrix"
 
 [[definitions]]
 name = "RealRooted.BrandenVecchi.aswEdreiChow"
 module = "RealRooted.BrandenVecchi.ChowInfinitePF"
+label = "Chow polynomials of a Pólya frequency symbol"
 
 [[definitions]]
 name = "RealRooted.BrandenVecchi.finiteSupersymmetricChow"
 module = "RealRooted.BrandenVecchi.ChowSupersymmetric"
+label = "Chow polynomials of a supersymmetric symbol"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowPolynomial_nonnegCoeffs_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
+label = "Chow polynomials have nonnegative coefficients"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowPolynomial_eq_zero_or_splits_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
+label = "Chow polynomials are real-rooted"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowPolynomial_interl_succ_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
+label = "Consecutive Chow polynomials interlace"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowPolynomial_interl_chowDerangement_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
+label = "c_n interlaces d_n"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.aswEdreiFullProjectiveChow_theorem"
 module = "RealRooted.BrandenVecchi.ChowFullProjective"
+label = "Pólya frequency symbols give PF Chow polynomials"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.finiteSupersymmetricChow_eq_finiteSignedWordEnumerator"
 module = "RealRooted.BrandenVecchi.ChowSignedWords"
+label = "Chow polynomials as signed-word enumerators"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.finiteSupersymmetricChow_replicate_one_nil_eq_smirnov"
 module = "RealRooted.BrandenVecchi.SmirnovSpecialization"
+label = "Specialization to Smirnov word polynomials"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowPolynomial_three_zero_prefix_six_not_splits"
 module = "RealRooted.BrandenVecchi.ChowZeroPrefix"
+label = "A zero prefix of length three breaks real-rootedness"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -83,7 +95,7 @@ and totally nonnegative, then `c_n` and `d_n` have nonnegative coefficients
 and only real zeros. Moreover `c_n` interlaces `c_{n+1}`, and `c_n`
 interlaces `d_n`.
 
-Further results are formalized:
+Further results:
 
 - **Pólya frequency symbols:** for the Toeplitz matrix of an
   Aissen–Schoenberg–Whitney–Edrei symbol

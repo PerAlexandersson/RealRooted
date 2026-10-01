@@ -17,12 +17,15 @@ years = [2003]
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_forward"
+label = "Hermite–Biehler: interlacing gives stability"
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_converse"
+label = "Hermite–Biehler: stability gives interlacing"
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.classicalHurwitzCriterion"
+label = "Hurwitz criterion via total nonnegativity"
 -->
 
 <!-- realrooted-catalog-content -->

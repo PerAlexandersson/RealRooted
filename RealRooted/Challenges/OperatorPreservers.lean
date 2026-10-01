@@ -15,13 +15,16 @@ years = [2011]
 [[definitions]]
 name = "RealRooted.PreservesRealRootedOrZero"
 module = "RealRooted.OperatorPreservesInterlacing"
+label = "Real-rootedness preserver"
 
 [[definitions]]
 name = "RealRooted.PreservesInterlacingPairsUpToOrder0"
 module = "RealRooted.OperatorPreservesInterlacing"
+label = "Interlacing preserver, up to orientation"
 
 [[theorems]]
 name = "RealRooted.Challenges.OperatorPreservers.realRootedPreserver_preservesInterlacing"
+label = "Real-rootedness preservers preserve interlacing"
 -->
 
 <!-- realrooted-catalog-content -->

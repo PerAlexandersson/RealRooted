@@ -11,23 +11,26 @@ slug = "veronese-sections"
 [[definitions]]
 name = "RealRooted.veroneseSectionPolynomial"
 module = "RealRooted.VeroneseSection"
+label = "Veronese section"
 
 [[theorems]]
 name = "RealRooted.Challenges.VeroneseSections.preserve_realRooted_nonneg"
+label = "Veronese sections preserve real-rootedness"
 -->
 
 <!-- realrooted-catalog-content -->
 # Veronese sections
 
-The `k`th `r`-Veronese section keeps coefficients with indices congruent to
-`k` modulo `r`. Every section of a nonzero real-rooted polynomial with
-nonnegative coefficients is zero or real-rooted.
+The `k`th `r`-Veronese section of a polynomial keeps the coefficients whose
+indices are congruent to `k` modulo `r`. Every Veronese section of a nonzero
+real-rooted polynomial with nonnegative coefficients is zero or real-rooted.
+This follows from the Pólya frequency characterization and total
+nonnegativity.
 
 ## References
 
-The result is a standard consequence of the Pólya-frequency characterization
-and total nonnegativity.  See the
-[Veronese-section discussion on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#veroneseSectionsRealRooted).
+See the
+[Veronese sections on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#veroneseSectionsRealRooted).
 <!-- /realrooted-catalog-content -->
 
 Human statement:

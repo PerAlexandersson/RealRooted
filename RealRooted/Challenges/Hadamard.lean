@@ -16,61 +16,74 @@ years = [1895, 1914, 1992, 1996]
 [[definitions]]
 name = "RealRooted.schurSzegoComp"
 module = "RealRooted.Hadamard.Basic"
+label = "Schur–Szegő composition"
 
 [[definitions]]
 name = "RealRooted.hadamardProduct"
 module = "RealRooted.Hadamard.Product"
+label = "Hadamard product"
 
 [[definitions]]
 name = "RealRooted.IsPFPolynomial"
 module = "RealRooted.PFPolynomial"
+label = "PF polynomial"
 
 [[definitions]]
 name = "RealRooted.toeplitz"
 module = "RealRooted.AissenSchoenbergWhitneyBase"
+label = "Toeplitz matrix of a sequence"
 
 [[definitions]]
 name = "RealRooted.gwSchurProduct"
 module = "RealRooted.GarloffWagner.Algebra"
+label = "Factorial Schur product"
 
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.finiteSchurSzegoComposition"
+label = "Schur–Szegő composition preserves real-rootedness"
 
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.finitePolyaSchur_nonneg"
+label = "Finite Pólya–Schur theorem"
 
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.garloffWagnerHadamardNonnegInterl"
+label = "Hadamard products preserve interlacing"
 
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.maloToeplitzHadamard"
+label = "Maló: Hadamard products of totally nonnegative Toeplitz matrices"
 
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.polynomialValueProductPolyaFrequency"
+label = "Products of polynomial value sequences are PF"
 
 [[theorems]]
 name = "RealRooted.gwHadamardProductPF"
 module = "RealRooted.GarloffWagner.Theorem12"
+label = "Garloff–Wagner: Hadamard products of PF polynomials are PF"
 
 [[theorems]]
 name = "RealRooted.gwHadamardProductInterl_of_strictInterl"
 module = "RealRooted.GarloffWagner.Hadamard"
+label = "Garloff–Wagner: Hadamard products preserve interlacing"
 
 [[theorems]]
 name = "RealRooted.gwSchurProductInterl"
 module = "RealRooted.GarloffWagner.Theorem12"
+label = "Garloff–Wagner, Theorem 12: the Schur product preserves interlacing"
 -->
 
 <!-- realrooted-catalog-content -->
 # Hadamard products and Schur–Szegő composition
 
 Schur–Szegő composition and coefficientwise products preserve several
-real-rootedness and interlacing classes. The page also includes the finite
-Pólya–Schur theorem and Maló’s total-nonnegativity theorem for Toeplitz
+real-rootedness and interlacing classes. This page also covers the finite
+Pólya–Schur theorem and Maló’s theorem on totally nonnegative Toeplitz
 matrices.
 
-The Garloff–Wagner results formalized here, for PF polynomials (real-rooted
-with nonnegative coefficients):
+The results of Garloff and Wagner for PF polynomials (real-rooted with
+nonnegative coefficients):
 
 - **PF closure:** the Hadamard product `sum_k a_k b_k x^k` of two PF
   polynomials is PF.

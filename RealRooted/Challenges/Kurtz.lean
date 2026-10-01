@@ -13,14 +13,17 @@ years = [1992]
 [[definitions]]
 name = "RealRooted.Kurtz.PositiveCoeffsUpToDegree"
 module = "RealRooted.Kurtz"
+label = "Positive coefficients"
 
 [[definitions]]
 name = "RealRooted.Kurtz.KurtzStrictInequalities"
 module = "RealRooted.Kurtz"
+label = "Kurtz inequalities a_k² > 4 a_{k-1} a_{k+1}"
 
 [[theorems]]
 name = "RealRooted.Kurtz.coefficient_criterion"
 module = "RealRooted.Kurtz"
+label = "Kurtz's criterion"
 -->
 
 <!-- realrooted-catalog-content -->

@@ -15,30 +15,37 @@ years = [2009]
 [[definitions]]
 name = "RealRooted.BorceaBranden.PreservesComplexStabilityOnDegreeBox"
 module = "RealRooted.BorceaBranden.FiniteSymbolClassification"
+label = "Stability preserver on a degree box"
 
 [[definitions]]
 name = "RealRooted.BorceaBranden.HasStableRankOneRepresentation"
 module = "RealRooted.BorceaBranden.FiniteSymbolClassification"
+label = "Rank-one operator with stable image"
 
 [[definitions]]
 name = "RealRooted.BorceaBranden.finiteAlgebraicSymbol"
 module = "RealRooted.BorceaBranden.UnivariateFiniteSymbol"
+label = "Algebraic symbol of an operator"
 
 [[definitions]]
 name = "RealRooted.BorceaBranden.PreservesRealRootedUpTo"
 module = "RealRooted.BorceaBranden.UnivariateFiniteSymbol"
+label = "Real-rootedness preserver up to degree d"
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.finiteComplexSymbolClassification"
 module = "RealRooted.BorceaBranden.FiniteSymbolClassification"
+label = "Classification of stability preservers on a degree box"
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.finiteSymbolTheorem"
 module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
+label = "Finite-symbol theorem for real-rootedness preservers"
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.finiteSymbol_preservesRealRootedUpTo"
 module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
+label = "A stable symbol gives a real-rootedness preserver"
 -->
 
 <!-- realrooted-catalog-content -->

@@ -13,20 +13,25 @@ years = [1963, 1992]
 [[definitions]]
 name = "RealRooted.AllComboRealRooted"
 module = "RealRooted.AllCombo"
+label = "Every real combination is real-rooted"
 
 [[definitions]]
 name = "RealRooted.HasPosLeadingCoeff"
 module = "RealRooted.Basic.Coefficients"
+label = "Positive leading coefficient"
 
 [[theorems]]
 name = "RealRooted.Challenges.Obreschkoff.allCombinationsRealRooted_of_interlaces"
+label = "Interlacing gives a real-rooted pencil"
 
 [[theorems]]
 name = "RealRooted.Challenges.Obreschkoff.interlaces_or_reverse_of_allCombinationsRealRooted"
+label = "A real-rooted pencil gives interlacing"
 
 [[theorems]]
 name = """RealRooted.Challenges.Obreschkoff.\
 interlaces_or_reverse_of_allCombinationsRealRooted_posLeading"""
+label = "The converse for positive leading coefficients"
 -->
 
 <!-- realrooted-catalog-content -->

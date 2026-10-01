@@ -14,26 +14,32 @@ years = [2019]
 [[definitions]]
 name = "RealRooted.SamePhaseStable"
 module = "RealRooted.SamePhaseStability"
+label = "Same-phase stability"
 
 [[definitions]]
 name = "RealRooted.Graph.multivariateIndepPoly"
 module = "RealRooted.Graph.IndependencePolynomial.Multivariate"
+label = "Multivariate independence polynomial"
 
 [[definitions]]
 name = "RealRooted.Graph.multivariateMatchingPolynomialByEdges"
 module = "RealRooted.Graph.MatchingPolynomial.Multivariate"
+label = "Edge-variable matching polynomial"
 
 [[theorems]]
 name = "RealRooted.Graph.multivariateIndepPoly_samePhaseStable_iff_clawFree"
 module = "RealRooted.Graph.LeakeRyder"
+label = "Leake–Ryder: same-phase stable if and only if claw-free"
 
 [[theorems]]
 name = "RealRooted.Graph.ClawFree.indepPoly_splits_of_leakeRyder"
 module = "RealRooted.Graph.LeakeRyder"
+label = "Chudnovsky–Seymour via Leake–Ryder"
 
 [[theorems]]
 name = "RealRooted.Graph.multivariateMatchingPolynomialByEdges_samePhaseStable"
 module = "RealRooted.Graph.MatchingPolynomial.Multivariate"
+label = "The matching polynomial is same-phase stable"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -43,7 +49,7 @@ A multivariate polynomial is same-phase stable when every nonnegative
 one-dimensional specialization is real-rooted. Leake and Ryder proved that the
 multivariate independence polynomial is same-phase stable exactly for
 claw-free graphs. Their result also gives same-phase stability of the
-edge-variable matching polynomial and recovers the Chudnovsky--Seymour theorem
+edge-variable matching polynomial and recovers the Chudnovsky–Seymour theorem
 by setting every variable equal to the same univariate variable.
 
 ## References

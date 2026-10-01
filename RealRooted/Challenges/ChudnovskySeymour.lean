@@ -15,13 +15,16 @@ years = [2007]
 [[definitions]]
 name = "RealRooted.Graph.ClawFree"
 module = "RealRooted.Graph.ClawFree"
+label = "Claw-free graph"
 
 [[definitions]]
 name = "RealRooted.Graph.indepPoly"
 module = "RealRooted.Graph.IndependencePolynomial.Basic"
+label = "Independence polynomial"
 
 [[theorems]]
 name = "RealRooted.Challenges.ChudnovskySeymour.clawFree_indepPoly_splits"
+label = "Chudnovsky–Seymour: claw-free graphs have real-rooted independence polynomials"
 -->
 
 <!-- realrooted-catalog-content -->

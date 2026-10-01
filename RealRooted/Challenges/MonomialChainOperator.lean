@@ -11,9 +11,11 @@ slug = "monomial-chain-operator"
 [[definitions]]
 name = "RealRooted.PreservesPFShiftInterlacingOnDegree"
 module = "RealRooted.OperatorInterlacingUpgrade"
+label = "Monomial-chain condition"
 
 [[theorems]]
 name = "RealRooted.Challenges.MonomialChainOperator.preservesInterlacing"
+label = "The monomial chain gives interlacing preservation"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -32,9 +34,9 @@ Then `T` preserves oriented interlacing of nonnegative-coefficient
 real-rooted inputs in the same degree box.  The quadratic tangent theorem
 propagates the monomial chain through each nonpositive linear factor.
 
-The checked operator argument first propagates the monomial chain through all
-PF factors and then uses the Garloff--Wagner Krein expansion to pass from
-one-root deletions to every oriented interlacing pair.
+The proof first propagates the monomial chain through all PF factors, and then
+uses the Garloff–Wagner Krein expansion to pass from one-root deletions to every
+oriented interlacing pair.
 
 ## References
 
