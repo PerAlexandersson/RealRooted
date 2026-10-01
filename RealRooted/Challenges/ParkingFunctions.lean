@@ -13,39 +13,51 @@ slug = "parking-functions"
 [[definitions]]
 name = "RealRooted.ParkingFunctions.IsParkingFunction"
 module = "RealRooted.ParkingFunctions.Descents.Basic"
+label = "Parking functions"
 
 [[definitions]]
 name = "RealRooted.ParkingFunctions.parkingDescentPolynomial"
 module = "RealRooted.ParkingFunctions.Descents.Basic"
+label = "Descent polynomial of parking functions"
 
 [[definitions]]
 name = "RealRooted.ParkingFunctions.tielessParkingDescentPolynomial"
 module = "RealRooted.ParkingFunctions.Descents.Tieless"
+label = "Descent polynomial of tieless parking functions"
 
 [[definitions]]
 name = "RealRooted.ParkingFunctions.parkingWeakLeftPeakPolynomialInt"
 module = "RealRooted.ParkingFunctions.Descents.WeakLeftPeak"
+label = "Weak left peak polynomial of parking functions"
 
 [[theorems]]
 name = "RealRooted.ParkingFunctions.parkingDescentPolynomial_splits"
 module = "RealRooted.ParkingFunctions.Descents.OrdinaryTransfer"
+label = "Parking function descent polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = """RealRooted.ParkingFunctions.\
 succ_nsmul_parkingDescentPolynomialInt_eq_literalWordDescentPolynomialInt"""
 module = "RealRooted.ParkingFunctions.Descents.OrdinaryTransfer"
+label = "Pollak's cyclic action: descents of parking functions and of words"
 
 [[theorems]]
 name = "RealRooted.ParkingFunctions.map_tielessParkingDescentPolynomial_splits"
 module = "RealRooted.ParkingFunctions.Descents.TielessTransfer"
+label = "Tieless parking function descent polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.ParkingFunctions.succ_nsmul_tielessParkingDescentPolynomial_eq_chowPolynomial"
 module = "RealRooted.ParkingFunctions.Descents.TielessTransfer"
+label = "Tieless descents and a Brändén–Vecchi Chow polynomial"
 
 [[theorems]]
 name = "RealRooted.ParkingFunctions.map_parkingWeakLeftPeakPolynomialInt_splits"
 module = "RealRooted.ParkingFunctions.Descents.WeakLeftPeakInterlacing"
+label = "Parking function weak left peak polynomials are real-rooted"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

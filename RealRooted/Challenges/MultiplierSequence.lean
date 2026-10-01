@@ -18,66 +18,86 @@ years = [1914]
 [[definitions]]
 name = "RealRooted.diagonalOperator"
 module = "RealRooted.MultiplierSequence"
+label = "Diagonal operator of a sequence"
 
 [[definitions]]
 name = "RealRooted.jensenPolynomial"
 module = "RealRooted.MultiplierSequence"
+label = "Jensen polynomials"
 
 [[definitions]]
 name = "RealRooted.IsFiniteMultiplierSequence"
 module = "RealRooted.MultiplierSequence"
+label = "Finite multiplier sequence"
 
 [[definitions]]
 name = "RealRooted.IsMultiplierSequence"
 module = "RealRooted.MultiplierSequence.Infinite"
+label = "Multiplier sequence"
 
 [[definitions]]
 name = "RealRooted.IsPFMultiplierSequence"
 module = "RealRooted.MultiplierSequence.Infinite"
+label = "PF multiplier sequence"
 
 [[definitions]]
 name = "RealRooted.IsLaguerrePolyaTypeI"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI"
+label = "Laguerre–Pólya class of type I"
 
 [[theorems]]
 name = "RealRooted.isMultiplierSequence_iff_jensenPolynomial_isPF"
 module = "RealRooted.MultiplierSequence.PolyaSchur"
+label = "Pólya–Schur: multiplier sequences via Jensen polynomials"
+headline = true
 
 [[theorems]]
 name = "RealRooted.isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse"
+label = "Pólya–Schur: PF multiplier sequences are the Laguerre–Pólya type I class"
+headline = true
 
 [[theorems]]
 name = "RealRooted.isMultiplierSequence_iff_isLaguerrePolyaTypeISigned_complexExpGeneratingFunction"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned"
+label = "Pólya–Schur: classification of all multiplier sequences"
+headline = true
 
 [[theorems]]
 name = "RealRooted.IsMultiplierSequence.exists_pf_sign_normalization"
 module = "RealRooted.MultiplierSequence.Sign"
+label = "Every multiplier sequence is a PF one up to signs"
 
 [[theorems]]
 name = "RealRooted.IsPFMultiplierSequence.logConcave"
 module = "RealRooted.MultiplierSequence.PolyaSchur"
+label = "PF multiplier sequences are log-concave"
 
 [[theorems]]
 name = "RealRooted.isPFMultiplierSequence_inv_ascPochhammer"
 module = "RealRooted.MultiplierSequence.InvPochhammer"
+label = "Reciprocal rising factorials 1/(α)ₖ form a PF multiplier sequence"
 
 [[theorems]]
 name = "RealRooted.isPFMultiplierSequence_inv_factorial"
 module = "RealRooted.MultiplierSequence.InvPochhammer"
+label = "1/k! is a PF multiplier sequence"
 
 [[theorems]]
 name = "RealRooted.isMultiplierSequence_eval_of_roots_nonpos"
 module = "RealRooted.MultiplierSequence.Laguerre"
+label = "Laguerre's theorem: φ(0), φ(1), … is a multiplier sequence"
+headline = true
 
 [[theorems]]
 name = "RealRooted.isPFMultiplierSequence_natCast_add"
 module = "RealRooted.MultiplierSequence.Laguerre"
+label = "k + r is a PF multiplier sequence for r ≥ 0"
 
 [[theorems]]
 name = "RealRooted.IsLaguerrePolyaTypeI.isPFMultiplierSequence_eval_natCast"
 module = "RealRooted.MultiplierSequence.Laguerre"
+label = "Type I functions sampled at 0, 1, 2, … are PF multiplier sequences"
 -->
 
 <!-- realrooted-catalog-content -->

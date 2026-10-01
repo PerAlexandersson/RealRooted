@@ -63,6 +63,13 @@ class CatalogItem:
     name: str
     expected_kind: str
     module: str | None
+    label: str | None = None
+    headline: bool = False
+
+    @property
+    def anchor(self) -> str:
+        """The fragment identifying this declaration on its catalog page."""
+        return "decl-" + re.sub(r"[^A-Za-z0-9_-]+", "-", self.name).strip("-")
 
 
 @dataclass(frozen=True)
@@ -186,10 +193,22 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
     result: list[CatalogItem] = []
     seen: set[str] = set()
     for index, record in enumerate(raw, start=1):
-        if not isinstance(record, dict) or set(record) - {"name", "module"}:
+        if not isinstance(record, dict) or set(record) - {"name", "module", "label", "headline"}:
             raise _source_error(path, f"invalid {expected_kind} record {index}")
         name = record.get("name")
         module = record.get("module")
+        label = record.get("label")
+        headline = record.get("headline", False)
+        if label is not None and (
+            not isinstance(label, str) or not label.strip() or label.strip() != label or "\n" in label
+        ):
+            raise _source_error(path, f"{expected_kind} record {index} has an invalid label")
+        if not isinstance(headline, bool):
+            raise _source_error(path, f"{expected_kind} record {index}: headline must be a boolean")
+        if headline and expected_kind != "theorem":
+            raise _source_error(path, f"{expected_kind} record {index}: only theorems can be headlines")
+        if headline and label is None:
+            raise _source_error(path, f"{expected_kind} record {index}: a headline needs a label")
         if not isinstance(name, str) or not NAME_RE.fullmatch(name):
             raise _source_error(path, f"{expected_kind} record {index} needs a fully qualified name")
         if module is not None:
@@ -208,7 +227,7 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
         if name in seen:
             raise _source_error(path, f"duplicate {expected_kind} declaration {name}")
         seen.add(name)
-        result.append(CatalogItem(name, expected_kind, module))
+        result.append(CatalogItem(name, expected_kind, module, label, headline))
     return tuple(result)
 
 
@@ -766,9 +785,15 @@ def _template(repo_root: pathlib.Path, body: str, title: str, current_url: str) 
     home = _relative_url(BASE_PATH, current_url)
     stylesheet = _relative_url(f"{BASE_PATH}assets/site.css", current_url)
     script = _relative_url(f"{BASE_PATH}assets/site.js", current_url)
-    return template.replace("{{ title }}", html.escape(title)).replace("{{ body }}", body).replace(
-        "{{ home }}", home
-    ).replace("{{ stylesheet }}", stylesheet).replace("{{ script }}", script)
+    results = _relative_url(f"{BASE_PATH}results/", current_url)
+    return (
+        template.replace("{{ title }}", html.escape(title))
+        .replace("{{ body }}", body)
+        .replace("{{ home }}", home)
+        .replace("{{ stylesheet }}", stylesheet)
+        .replace("{{ script }}", script)
+        .replace("{{ results }}", results)
+    )
 
 
 def _authors_label(authors: tuple[str, ...]) -> str:
@@ -787,22 +812,76 @@ def _years_label(years: tuple[int, ...]) -> str:
     return f"{years[0]}–{years[-1]}"
 
 
+SECTION_LABELS = {"concepts": "Concept", "families": "Family", "theorems": "Theorem"}
+
+
+def _plural(count: int, word: str) -> str:
+    return f"{count} {word}" + ("" if count == 1 else "s")
+
+
+def _attribution(page: CatalogPage) -> str:
+    parts = [part for part in (_authors_label(page.authors), _years_label(page.years)) if part]
+    return " · ".join(parts)
+
+
+def _count(count: int, word: str, symbol: str, kind: str) -> str:
+    words = _plural(count, word)
+    return (
+        f'<span class="count count--{kind}" title="{words}">'
+        f'<span aria-hidden="true">{symbol}</span> {count}'
+        f'<span class="visually-hidden"> {words.split(" ", 1)[1]}</span></span>'
+    )
+
+
+def _counts(page: CatalogPage) -> str:
+    """What a page contains: its numbers of definitions and theorems."""
+    parts = []
+    if page.definitions:
+        parts.append(_count(len(page.definitions), "definition", "≔", "definition"))
+    if page.theorems:
+        parts.append(_count(len(page.theorems), "theorem", "⊢", "theorem"))
+    return '<span class="card-counts">' + "".join(parts) + "</span>"
+
+
 def _page_card(page: CatalogPage, href: str) -> str:
     kind = "theorem" if page.section == "theorems" else "definition"
-    symbol = "⊢" if kind == "theorem" else "≔"
-    label = kind.title()
-    attribution_parts = [
-        part for part in (_authors_label(page.authors), _years_label(page.years)) if part
-    ]
-    attribution = " · ".join(attribution_parts)
+    label = SECTION_LABELS[page.section]
     year = page.years[0] if page.years else ""
+    headlines = [item.label for item in page.theorems if item.headline and item.label]
+    headline_html = ""
+    if headlines and page.section != "theorems":
+        shown = "; ".join(headlines[:2]) + ("; …" if len(headlines) > 2 else "")
+        headline_html = (
+            '<span class="card-headlines"><span>Main results:</span> '
+            + html.escape(shown)
+            + "</span>"
+        )
     return (
-        f'<li class="catalog-card catalog-card--{kind}" '
+        f'<li class="catalog-card catalog-card--{kind} catalog-card--{page.section}" '
         f'data-title="{html.escape(page.title.casefold(), quote=True)}" data-year="{year}">'
         f'<a href="{html.escape(href, quote=True)}">'
-        f'<span class="kind-badge kind-badge--{kind}"><span aria-hidden="true">{symbol}</span>'
-        f'<span>{label}</span></span><strong class="card-title">{html.escape(page.title)}</strong>'
-        f'<span class="card-attribution">{html.escape(attribution)}</span>'
+        f'<span class="card-top"><span class="kind-badge kind-badge--{kind}">{label}</span>'
+        + _counts(page)
+        + f'</span><strong class="card-title">{html.escape(page.title)}</strong>'
+        + headline_html
+        + f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
+        '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
+    )
+
+
+def _headline_card(page: CatalogPage, item: CatalogItem, href: str) -> str:
+    """A headline theorem stated on a concept or family page."""
+    year = page.years[0] if page.years else ""
+    title = item.label or item.name
+    return (
+        '<li class="catalog-card catalog-card--theorem catalog-card--headline" '
+        f'data-title="{html.escape(title.casefold(), quote=True)}" data-year="{year}">'
+        f'<a href="{html.escape(href, quote=True)}">'
+        '<span class="card-top"><span class="kind-badge kind-badge--theorem">'
+        '<span aria-hidden="true">⊢</span> Theorem</span></span>'
+        f'<strong class="card-title">{html.escape(title)}</strong>'
+        f'<span class="card-context">on <em>{html.escape(page.title)}</em></span>'
+        f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
         '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
     )
 
@@ -819,13 +898,10 @@ def _sort_controls() -> str:
     )
 
 
-def _catalog_group(kind: str, pages: Iterable[CatalogPage]) -> str:
-    title = kind.title()
-    symbol = "≔" if kind == "definitions" else "⊢"
-    rows = "".join(_page_card(page, f"{page.section}/{page.slug}/") for page in pages)
+def _catalog_group(identifier: str, title: str, intro: str, rows: str) -> str:
     return (
-        f'<section class="catalog-group" id="{kind}">'
-        f'<h2><span aria-hidden="true">{symbol}</span> {title}</h2>'
+        f'<section class="catalog-group" id="{identifier}">'
+        f"<h2>{title}</h2><p class=\"group-intro\">{intro}</p>"
         f'<ul class="catalog-index" data-catalog-list>{rows}</ul></section>'
     )
 
@@ -836,8 +912,18 @@ def _item_list(
     rows: list[str] = []
     for item in items:
         source = resolved[item.name]
+        label = ""
+        if item.label:
+            label = (
+                "<p class=\"declaration-label\">"
+                + html.escape(item.label)
+                + ("<span class=\"headline-tag\">Main result</span>" if item.headline else "")
+                + "</p>"
+            )
         rows.append(
-            "<li><div class=\"declaration-meta\"><code class=\"declaration-name\">"
+            f"<li id=\"{item.anchor}\">"
+            + label
+            + "<div class=\"declaration-meta\"><code class=\"declaration-name\">"
             + html.escape(item.name)
             + "</code><a class=\"source\" href=\""
             + html.escape(_source_link(revision, source), quote=True)
@@ -846,6 +932,64 @@ def _item_list(
             + "</code></pre></li>"
         )
     return "<ul class=\"declarations\">" + "".join(rows) + "</ul>"
+
+
+def _results_page(
+    pages: Iterable[CatalogPage], resolved: dict[str, SourceDeclaration], revision: str
+) -> str:
+    """Every selected declaration, filterable by text and kind."""
+    rows: list[str] = []
+    entries = [
+        (page, item) for page in pages for item in page.items
+    ]
+    entries.sort(key=lambda entry: ((entry[1].label or entry[1].name).casefold(), entry[1].name))
+    for page, item in entries:
+        kind = item.expected_kind
+        symbol = "⊢" if kind == "theorem" else "≔"
+        title = item.label or ""
+        search = " ".join(
+            part for part in (title, item.name, page.title, _attribution(page)) if part
+        ).casefold()
+        href = f"../{page.section}/{page.slug}/#{item.anchor}"
+        rows.append(
+            f'<tr data-kind="{kind}" data-search="{html.escape(search, quote=True)}">'
+            f'<td class="result-kind result-kind--{kind}"><span aria-hidden="true">{symbol}</span>'
+            f'<span class="visually-hidden">{kind}</span></td>'
+            "<td class=\"result-name\">"
+            + (f"<span class=\"result-label\">{html.escape(title)}</span>" if title else "")
+            + ("<span class=\"headline-tag\">Main result</span>" if item.headline else "")
+            + f"<a href=\"{html.escape(href, quote=True)}\"><code>{html.escape(item.name)}</code></a></td>"
+            + f"<td class=\"result-page\"><a href=\"../{page.section}/{page.slug}/\">"
+            + html.escape(page.title)
+            + "</a></td>"
+            + "<td class=\"result-source\"><a href=\""
+            + html.escape(_source_link(revision, resolved[item.name]), quote=True)
+            + "\">source</a></td></tr>"
+        )
+    definitions = sum(1 for _, item in entries if item.expected_kind == "definition")
+    theorems = len(entries) - definitions
+    return (
+        "<main class=\"results-page\"><p class=\"eyebrow\">Browse the catalog</p>"
+        "<h1>All results</h1>"
+        f"<p class=\"lede\">Every catalogued declaration: {_plural(definitions, 'definition')} and "
+        f"{_plural(theorems, 'theorem')}, each checked by Lean.</p>"
+        '<div class="results-toolbar" data-results-filter>'
+        '<label class="results-search"><span class="visually-hidden">Filter results</span>'
+        '<input type="search" placeholder="Filter by name, page or author" data-results-query></label>'
+        '<div class="catalog-toolbar" role="group" aria-label="Kind">'
+        + "".join(
+            '<label class="catalog-sort-option"><input type="radio" name="results-kind" '
+            f'value="{value}"{" checked" if value == "all" else ""}>'
+            '<span class="catalog-sort-indicator" aria-hidden="true"></span>'
+            f"<span>{text}</span></label>"
+            for value, text in (("all", "All"), ("definition", "Definitions"), ("theorem", "Theorems"))
+        )
+        + "</div></div>"
+        '<table class="results-table"><thead><tr><th><span class="visually-hidden">Kind</span></th>'
+        "<th>Result</th><th>Page</th><th><span class=\"visually-hidden\">Source</span></th></tr></thead>"
+        "<tbody>" + "".join(rows) + "</tbody></table>"
+        '<p class="results-empty" data-results-empty hidden>No matching results.</p></main>'
+    )
 
 
 class _HrefCollector(HTMLParser):
@@ -895,18 +1039,48 @@ def render_site(
     files: dict[str, str] = {}
     grouped = {section: [page for page in pages if page.section == section] for section in SECTIONS}
     index_pages = sorted(pages, key=lambda page: (page.title.casefold(), page.slug))
-    definition_pages = [page for page in index_pages if page.section != "theorems"]
-    theorem_pages = [page for page in index_pages if page.section == "theorems"]
+    topic_pages = [page for page in index_pages if page.section != "theorems"]
+    theorem_cards = [
+        ((page.title.casefold(), page.slug), _page_card(page, f"{page.section}/{page.slug}/"))
+        for page in index_pages
+        if page.section == "theorems"
+    ] + [
+        (
+            ((item.label or item.name).casefold(), item.name),
+            _headline_card(page, item, f"{page.section}/{page.slug}/#{item.anchor}"),
+        )
+        for page in index_pages
+        if page.section != "theorems"
+        for item in page.theorems
+        if item.headline
+    ]
+    theorem_cards.sort(key=lambda entry: entry[0])
+    total_definitions = sum(len(page.definitions) for page in pages)
+    total_theorems = sum(len(page.theorems) for page in pages)
     index_body = (
         "<main class=\"catalog-home\"><section class=\"hero\">"
         "<p class=\"eyebrow\">Reference catalog</p>"
         "<h1>Real-rooted polynomials</h1>"
-        "<p class=\"lede\">Definitions and proved theorems, with links to their "
-        "formal sources.</p></section>"
+        "<p class=\"lede\">Concepts, polynomial families and theorems, with links to their "
+        "formal sources.</p>"
+        f"<p class=\"hero-stats\"><a href=\"results/\">{_plural(total_definitions, 'definition')} and "
+        f"{_plural(total_theorems, 'theorem')}</a>, each checked by Lean.</p></section>"
         + _sort_controls()
         + '<div class="catalog-groups">'
-        + _catalog_group("definitions", definition_pages)
-        + _catalog_group("theorems", theorem_pages)
+        + _catalog_group(
+            "topics",
+            "Concepts and families",
+            "Each page defines a concept or a polynomial family and collects what is proved "
+            "about it. The counts show its definitions (≔) and theorems (⊢).",
+            "".join(_page_card(page, f"{page.section}/{page.slug}/") for page in topic_pages),
+        )
+        + _catalog_group(
+            "theorems",
+            "Theorems",
+            "Theorem pages, together with the main results stated on concept and family "
+            "pages. Every declaration is listed under <a href=\"results/\">All results</a>.",
+            "".join(card for _, card in theorem_cards),
+        )
         + "</div></main>"
     )
     files["index.html"] = _template(repo_root, index_body, "RealRooted catalog", BASE_PATH)
@@ -955,6 +1129,9 @@ def render_site(
         files[f"{page.section}/{page.slug}/index.html"] = _template(
             repo_root, body, page.title, page.url
         )
+    files["results/index.html"] = _template(
+        repo_root, _results_page(pages, resolved, revision), "All results", f"{BASE_PATH}results/"
+    )
     manifest = {
         "schema_version": 1,
         "revision": revision,
@@ -968,6 +1145,8 @@ def render_site(
                 "years": list(page.years),
                 "definitions": [item.name for item in page.definitions],
                 "theorems": [item.name for item in page.theorems],
+                "headlines": [item.name for item in page.theorems if item.headline],
+                "labels": {item.name: item.label for item in page.items if item.label},
             }
             for page in pages
         ],

@@ -247,23 +247,30 @@ end RealRooted.Challenges.Sample
         self.assertEqual(first, second)
         self.assertIn("theorems/sample/index.html", first)
         self.assertIn('class="catalog-home"', first["index.html"])
-        self.assertIn('class="catalog-card catalog-card--theorem"', first["index.html"])
+        self.assertIn(
+            'class="catalog-card catalog-card--theorem catalog-card--theorems"', first["index.html"]
+        )
         self.assertIn('class="kind-badge kind-badge--theorem"', first["index.html"])
+        self.assertIn('class="count count--theorem" title="1 theorem"', first["index.html"])
         self.assertIn("Canonical &amp; Author · 1914–1996", first["index.html"])
         self.assertIn('data-catalog-sort', first["index.html"])
         self.assertEqual(first["index.html"].count('type="radio"'), 2)
         self.assertNotIn("<select", first["index.html"])
-        self.assertIn('href="./#definitions">Definitions</a>', first["index.html"])
+        self.assertIn('href="./#topics">Topics</a>', first["index.html"])
         self.assertIn('href="./#theorems">Theorems</a>', first["index.html"])
+        self.assertIn('href="results/">All results</a>', first["index.html"])
+        self.assertIn('href="../../results/">All results</a>', first["theorems/sample/index.html"])
+        self.assertIn("results/index.html", first)
         self.assertIn("<h1>Real-rooted polynomials</h1>", first["index.html"])
         self.assertNotIn("made explorable", first["index.html"])
         self.assertIn("catalog-manifest.json", first)
         self.assertIn("assets/site.js", first)
         self.assertNotIn("catalogue-manifest.json", first)
         self.assertIn(
-            "Definitions and proved theorems, with links to their formal sources.",
+            "Concepts, polynomial families and theorems, with links to their formal sources.",
             first["index.html"],
         )
+        self.assertIn("0 definitions and 1 theorem</a>", first["index.html"])
         self.assertNotIn("Every declaration links", first["index.html"])
         self.assertIn('class="brand"', first["theorems/sample/index.html"])
         self.assertIn(
@@ -303,9 +310,94 @@ end RealRooted.Challenges.Sample
         pages = load_catalog(self.root)
         output = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
         home = output["index.html"]
-        self.assertLess(home.index('id="definitions"'), home.index('id="theorems"'))
+        self.assertLess(home.index('id="topics"'), home.index('id="theorems"'))
         self.assertIn('href="families/sample/"', home)
         self.assertIn('href="theorems/other/"', home)
+
+    def test_family_page_shows_counts_and_headline_theorems(self) -> None:
+        self.write(
+            "RealRooted/Challenges/Sample.lean",
+            catalog_block(
+                years="years = [1914]",
+                definitions=(
+                    '[[definitions]]\nname = "RealRooted.Challenges.Sample.family"\n'
+                    'label = "Sample family"'
+                ),
+                theorems=(
+                    '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\n'
+                    'label = "Sample family is real-rooted"\nheadline = true\n\n'
+                    '[[theorems]]\nname = "RealRooted.Challenges.Sample.minor"'
+                ),
+            )
+            + "namespace RealRooted.Challenges.Sample\n"
+            + "noncomputable abbrev family\n  : Nat := 1\n"
+            + "theorem proven\n  : True := by trivial\n"
+            + "theorem minor\n  : True := by trivial\n"
+            + "end RealRooted.Challenges.Sample\n",
+        )
+        pages = load_catalog(self.root)
+        output = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
+        home = output["index.html"]
+        topics, theorems = home.split('id="theorems"', 1)
+        # the family card lives with the topics, shows what it contains, and names its main result
+        self.assertIn('href="families/sample/"', topics)
+        self.assertIn('title="1 definition"', topics)
+        self.assertIn('title="2 theorems"', topics)
+        self.assertIn("Main results:</span> Sample family is real-rooted", topics)
+        self.assertNotIn("≔</span><span>Definition", home)
+        # the headline theorem also appears among the theorems, linked to its declaration
+        anchor = "decl-RealRooted-Challenges-Sample-proven"
+        self.assertIn(f'href="families/sample/#{anchor}"', theorems)
+        self.assertIn('class="catalog-card catalog-card--theorem catalog-card--headline"', theorems)
+        self.assertNotIn("minor", theorems)
+        page = output["families/sample/index.html"]
+        self.assertIn(f'<li id="{anchor}">', page)
+        self.assertIn("Sample family is real-rooted<span class=\"headline-tag\">Main result</span>", page)
+        results = output["results/index.html"]
+        self.assertEqual(results.count("<tr data-kind="), 3)
+        self.assertIn('<tr data-kind="definition"', results)
+        self.assertIn(f'href="../families/sample/#{anchor}"', results)
+        self.assertIn("1 definition and 2 theorems", results)
+        manifest = json.loads(output["catalog-manifest.json"])
+        self.assertEqual(manifest["pages"][0]["headlines"], ["RealRooted.Challenges.Sample.proven"])
+
+    def test_labels_and_headlines_are_validated(self) -> None:
+        bad_records = (
+            '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\nheadline = true',
+            '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\nlabel = ""',
+            '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\nlabel = 3',
+            '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\nlabel = "x"\nheadline = "yes"',
+        )
+        for theorems in bad_records:
+            with self.subTest(theorems=theorems):
+                self.write("RealRooted/Challenges/Sample.lean", catalog_block(theorems=theorems))
+                with self.assertRaises(CatalogError):
+                    load_catalog(self.root)
+        self.write(
+            "RealRooted/Challenges/Sample.lean",
+            catalog_block(
+                definitions=(
+                    '[[definitions]]\nname = "RealRooted.Challenges.Sample.family"\n'
+                    'label = "Family"\nheadline = true'
+                )
+            ),
+        )
+        with self.assertRaises(CatalogError):
+            load_catalog(self.root)
+
+    def test_labels_do_not_change_the_catalog_digest(self) -> None:
+        self.write("RealRooted/Challenges/Sample.lean", catalog_block())
+        plain = catalog_digest(load_catalog(self.root))
+        self.write(
+            "RealRooted/Challenges/Sample.lean",
+            catalog_block(
+                theorems=(
+                    '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\n'
+                    'label = "Proven"\nheadline = true'
+                )
+            ),
+        )
+        self.assertEqual(catalog_digest(load_catalog(self.root)), plain)
 
     def test_attribution_metadata_is_validated(self) -> None:
         bad_authors = catalog_block(authors='authors = ["Repeated", "Repeated"]')

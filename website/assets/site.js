@@ -22,3 +22,27 @@ for (const control of document.querySelectorAll("[data-catalog-sort]")) {
     }
   });
 }
+
+for (const control of document.querySelectorAll("[data-results-filter]")) {
+  const main = control.closest("main");
+  const rows = Array.from(main?.querySelectorAll("tbody tr") ?? []);
+  const query = control.querySelector("[data-results-query]");
+  const empty = main?.querySelector("[data-results-empty]");
+
+  const update = () => {
+    const words = (query?.value ?? "").toLocaleLowerCase("en").split(/\s+/).filter(Boolean);
+    const kind = control.querySelector('input[name="results-kind"]:checked')?.value ?? "all";
+    let shown = 0;
+    for (const row of rows) {
+      const visible =
+        (kind === "all" || row.dataset.kind === kind) &&
+        words.every((word) => row.dataset.search.includes(word));
+      row.hidden = !visible;
+      if (visible) shown += 1;
+    }
+    if (empty) empty.hidden = shown > 0;
+  };
+
+  control.addEventListener("input", update);
+  control.addEventListener("change", update);
+}

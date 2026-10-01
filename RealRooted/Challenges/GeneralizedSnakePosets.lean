@@ -18,60 +18,76 @@ years = [2026]
 [[definitions]]
 name = "RealRooted.GeneralizedSnakePosets.SnakeLetter"
 module = "RealRooted.GeneralizedSnakePosets.SnakeWord"
+label = "Letters L and R of a snake word"
 
 [[definitions]]
 name = "RealRooted.GeneralizedSnakePosets.generalizedSnakeBoard"
 module = "RealRooted.GeneralizedSnakePosets.SnakeBoard"
+label = "Board of a generalized snake poset"
 
 [[definitions]]
 name = "RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.rookPolynomial"
 module = "RealRooted.GeneralizedSnakePosets.FiniteBoard"
+label = "Non-nesting rook polynomial of a board"
 
 [[definitions]]
 name = "RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial"
 module = "RealRooted.GeneralizedSnakePosets.Narayana.Modified"
+label = "Modified Narayana polynomials Pₙ"
 
 [[definitions]]
 name = "RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.auxiliaryG"
 module = "RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary"
+label = "Auxiliary polynomials Gₙ"
 
 [[theorems]]
 name = "RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial_isPFPolynomial"
 module = "RealRooted.GeneralizedSnakePosets.Narayana.PFFacts"
+label = "Modified Narayana polynomials are Pólya-frequency"
 
 [[theorems]]
 name = "RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial_strictInterl_succ"
 module = "RealRooted.GeneralizedSnakePosets.Narayana.Recurrence"
+label = "Consecutive modified Narayana polynomials interlace"
 
 [[theorems]]
 name = "RealRooted.GeneralizedSnakePosets.lemma34ModifiedNarayanaInterlacing_modified"
 module = "RealRooted.GeneralizedSnakePosets.Narayana.Turan"
+label = "Braun–Jal, Lemma 3.4"
 
 [[theorems]]
 name = """RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.\
 truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaPolynomial"""
 module = "RealRooted.GeneralizedSnakePosets.Narayana.Recurrence"
+label = "Full truncated staircases have rook polynomial Pₙ"
 
 [[theorems]]
 name = "RealRooted.GeneralizedSnakePosets.theorem41NonNestingRook_modified_of_sourceInputs"
 module = "RealRooted.GeneralizedSnakePosets.Narayana.Claim7"
+label = "Theorem 4.1 from the combinatorial inputs"
 
 [[theorems]]
 name = "RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.narayanaAuxiliaryGRecurrence_modified"
 module = "RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence"
+label = "Column recurrence for the auxiliary polynomials Gₙ"
 
 [[theorems]]
 name = """RealRooted.GeneralizedSnakePosets.\
 generalizedSnakeRookModel_snakePolynomial_of_isConstant"""
 module = "RealRooted.GeneralizedSnakePosets.SnakeConstant"
+label = "Constant words give modified Narayana polynomials"
 
 [[theorems]]
 name = "RealRooted.GeneralizedSnakePosets.generalizedSnakeTheorem35"
 module = "RealRooted.GeneralizedSnakePosets.SnakeTheorem35"
+label = "Braun–Jal, Theorem 3.5: the snake recurrence"
+headline = true
 
 [[theorems]]
 name = "RealRooted.GeneralizedSnakePosets.theorem41_generalizedSnakeRookModel"
 module = "RealRooted.GeneralizedSnakePosets.SnakeTheorem35"
+label = "Braun–Jal, Theorem 4.1: snake polynomials are real-rooted and interlace"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

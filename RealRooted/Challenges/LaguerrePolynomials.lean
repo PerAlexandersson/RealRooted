@@ -13,30 +13,38 @@ slug = "laguerre-polynomials"
 [[definitions]]
 name = "Polynomial.generalizedLaguerre"
 module = "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic"
+label = "Generalized Laguerre polynomials"
 
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_splits"
 module = "RealRooted.Laguerre.Roots"
+label = "Generalized Laguerre polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_roots_neg"
 module = "RealRooted.Laguerre.Roots"
+label = "Generalized Laguerre polynomials have negative roots for α > -1"
 
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_hasSimpleRoots"
 module = "RealRooted.Laguerre.Roots"
+label = "Generalized Laguerre polynomials have simple roots"
 
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_strictInterl_succ"
 module = "RealRooted.Laguerre.Roots"
+label = "Consecutive generalized Laguerre polynomials interlace"
 
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_satisfiesFavardRecurrence"
 module = "RealRooted.Laguerre.Favard"
+label = "Generalized Laguerre polynomials satisfy a Favard recurrence"
 
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_integral_orthogonal"
 module = "RealRooted.Laguerre.Orthogonality.Integral"
+label = "Generalized Laguerre polynomials are orthogonal on the half-line"
 -->
 
 <!-- realrooted-catalog-content -->
