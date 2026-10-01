@@ -61,23 +61,19 @@ label = "Motzkin-ascent polynomials (A114580) form a Sturm chain"
 <!-- realrooted-catalog-content -->
 # The binary-run transformation
 
-For fixed `n`, the linear map `binaryRunTransform n` sends `1` to `1` and
-sends `X ^ m`, for `1 ≤ m ≤ n`, to
+For fixed $n$, the linear map `binaryRunTransform n` sends $1$ to $1$ and
+sends $X^m$, for $1 \leq m \leq n$, to
 
-```text
-1 / choose(n,m) * sum_k choose(m-1,k-1) choose(n+1-m,k) X^k.
-```
+$$\frac{1}{\binom{n}{m}} \sum_k \binom{m-1}{k-1}\binom{n+1-m}{k} X^k.$$
 
-If the input has degree at most `n`, nonnegative coefficients, and only real
+If the input has degree at most $n$, nonnegative coefficients, and only real
 nonpositive zeros, then its image has the same properties. If the input has
 positive constant coefficient, every zero of the image is strictly negative.
 
 The fixed-sum Narayana-type transform is the reweighted version with basis
 images
 
-```text
-T_n(X^m) = choose(n,m) / (m+1) * binaryRunPolynomial n m.
-```
+$$T_n(X^m) = \frac{\binom{n}{m}}{m+1}\, \mathtt{binaryRunPolynomial}\ n\ m.$$
 
 Equivalently, it is `binaryRunTransform n` after the standard finite
 Narayana/Schur–Szegő diagonal multiplier. Thus this preservation theorem,
@@ -86,29 +82,27 @@ together with preservation by that multiplier, gives the corresponding
 
 ## Interlacing
 
-On inputs of degree at most `(n+1)/2`, the transform also preserves
-interlacing. With `N = n + 1` and `Θ = x d/dx`, it transports interlacing
-across lengths: for a PF polynomial `g` with `g(0) ≠ 0` and
-`2 ≤ deg g ≤ N/2`,
+On inputs of degree at most $(n+1)/2$, the transform also preserves
+interlacing. With $N = n + 1$ and $\Theta = x\, d/dx$, it transports interlacing
+across lengths: for a PF polynomial $g$ with $g(0) \neq 0$ and
+$2 \leq \deg g \leq N/2$,
 
-```text
-J_n((N - 2Θ) g)  ≪  J_{n+1}(g).
-```
+$$J_n\bigl((N - 2\Theta)\, g\bigr) \ll J_{n+1}(g).$$
 
-For a PF multiplier sequence `γ` with positive entries, put
-`G_n^γ(t) = sum_m n! γ_m / (m! (n-2m)!) t^m`, a weighted matching polynomial
-of the complete graph. These satisfy `(N - 2Θ) G_N^γ = N G_n^γ`, so the
-rows `R_n^γ = J_n(G_n^γ)` form a Sturm chain: `R_n^γ ≪ R_{n+1}^γ` for all
-`n`. This holds in particular for `γ_m = 1/(α)_m` with `α > 0`. The case
-`α = 2`, where `γ_m = 1/(m+1)!`, gives the Motzkin-ascent polynomials
-(OEIS A114580).
+For a PF multiplier sequence $\gamma$ with positive entries, put
+$G_n^{\gamma}(t) = \sum_m \frac{n!\,\gamma_m}{m!\,(n-2m)!}\, t^m$, a weighted matching polynomial of
+the complete graph. These satisfy $(N-2\Theta)\, G_N^{\gamma} = N G_n^{\gamma}$, so the rows
+$R_n^{\gamma} = J_n(G_n^{\gamma})$ form a Sturm chain: $R_n^{\gamma} \ll R_{n+1}^{\gamma}$ for all
+$n$. This holds in particular for $\gamma_m = 1/(\alpha)_m$ with $\alpha > 0$. The case
+$\alpha = 2$, where $\gamma_m = 1/(m+1)!$, gives the Motzkin-ascent polynomials (OEIS A114580).
 
-The rows also move monotonically in `α`. Write `P_n^(α)` for the row with
-`γ_m = 1/(α)_m`. Then `P_n^(α+1) ≪ P_n^(α)` for every `n` and every `α > 0`.
-The proof uses the shift identity `α G_n^(α) = (Θ + α) G_n^(α+1)`, which
-follows from `α (α+1)_m = (α+m)(α)_m`. A PF polynomial `g` of degree at least
-2 satisfies `g ≪ (Θ + α) g`, and the transform preserves interlacing. The
-rows with `n ≤ 3` are linear or constant and are checked directly.
+The rows also move monotonically in $\alpha$. Write $P_n^{(\alpha)}$ for the row with
+$\gamma_m = 1/(\alpha)_m$. Then $P_n^{(\alpha+1)} \ll P_n^{(\alpha)}$ for every $n$ and every
+$\alpha > 0$. The proof uses the shift identity
+$\alpha\, G_n^{(\alpha)} = (\Theta + \alpha)\, G_n^{(\alpha+1)}$, which follows from
+$\alpha\, (\alpha+1)_m = (\alpha+m)(\alpha)_m$. A PF polynomial $g$ of degree at least 2 satisfies
+$g \ll (\Theta + \alpha)\, g$, and the transform preserves interlacing. The rows with $n \leq 3$ are
+linear or constant and are checked directly.
 
 ## Proof idea
 

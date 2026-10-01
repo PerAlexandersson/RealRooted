@@ -45,10 +45,10 @@ label = "Consecutive type B Eulerian polynomials interlace"
 <!-- realrooted-catalog-content -->
 # Eulerian polynomials
 
-Let `A_n(t) = ∑_{σ ∈ S_n} t^{des(σ)}` be the Eulerian polynomial. The library
-uses the shifted version `eulerianTilde n = t A_{n+1}(t)`, which satisfies
-`P_0 = t` and `P_{n+1} = t ((n+2) P_n + (1-t) P_n')`. The type `B` Eulerian
-polynomials satisfy `B_0 = 1` and `B_{n+1} = (1 + (2n+1)t) B_n + 2t(1-t) B_n'`.
+Let $A_n(t) = \sum_{\sigma \in \mathfrak{S}_n} t^{\operatorname{des}(\sigma)}$ be the Eulerian
+polynomial. The library uses the shifted version `eulerianTilde n` $= t A_{n+1}(t)$, which satisfies
+$P_0 = t$ and $P_{n+1} = t\bigl((n+2) P_n + (1-t) P_n'\bigr)$. The type $B$ Eulerian polynomials
+satisfy $B_0 = 1$ and $B_{n+1} = \bigl(1 + (2n+1)t\bigr) B_n + 2t(1-t) B_n'$.
 
 Both families are real-rooted, and consecutive polynomials interlace.
 
@@ -57,7 +57,7 @@ Both families are real-rooted, and consecutive polynomials interlace.
 The ordinary Eulerian recurrence and its real-rootedness go back to
 F. G. Frobenius, “Über die Bernoullischen Zahlen und die Eulerschen Polynome,”
 Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften
-(1910), 809–847.  For type `B`, see F. Brenti, [“q-Eulerian polynomials arising
+(1910), 809–847.  For type $B$, see F. Brenti, [“q-Eulerian polynomials arising
 from Coxeter groups,”](https://doi.org/10.1006/eujc.1994.1046) *European Journal
 of Combinatorics* 15 (1994), 417–441.  See also the
 [Eulerian polynomials on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedWords.htm#eulerianPolynomial).

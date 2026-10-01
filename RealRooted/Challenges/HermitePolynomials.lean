@@ -54,24 +54,20 @@ label = "Hermite polynomials are orthogonal for the Gaussian weight"
 <!-- realrooted-catalog-content -->
 # Hermite polynomials
 
-The probabilists' Hermite polynomials satisfy `H_0 = 1`, `H_1 = x` and
+The probabilists' Hermite polynomials satisfy $H_0 = 1$, $H_1 = x$ and
 
-```text
-H_{n+2}(x) = x H_{n+1}(x) - (n + 1) H_n(x).
-```
+$$H_{n+2}(x) = x\, H_{n+1}(x) - (n+1)\, H_n(x).$$
 
 The following hold:
 
-- each `H_n` is monic of degree `n`, with only real and simple zeros;
-- consecutive polynomials strictly interlace, and `H_n, H_{n-1}, …, H_0` is a
+- each $H_n$ is monic of degree $n$, with only real and simple zeros;
+- consecutive polynomials strictly interlace, and $H_n, H_{n-1}, \dotsc, H_0$ is a
   Sturm sequence;
-- the recurrence is a Favard recurrence with diagonal `0` and subdiagonal
-  `n`;
+- the recurrence is a Favard recurrence with diagonal $0$ and subdiagonal
+  $n$;
 - the polynomials are orthogonal for the Gaussian weight:
 
-  ```text
-  ∫ H_i(x) H_j(x) e^{-x²/2} dx = δ_{ij} √(2π) i!.
-  ```
+  $$\int_{-\infty}^{\infty} H_i(x) H_j(x)\, e^{-x^2/2}\, dx = \delta_{ij} \sqrt{2\pi}\, i!.$$
 
 The root and interlacing statements follow from the general
 [Favard theory](/RealRooted/theorems/favard/), because the subdiagonal is

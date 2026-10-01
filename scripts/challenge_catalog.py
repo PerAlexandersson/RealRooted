@@ -682,8 +682,10 @@ def render_markdown(markdown: str) -> str:
 
     Supported: headings, paragraphs, `-`/`*` and numbered lists whose items may
     continue on indented lines, fenced code blocks (also indented inside a
-    list item), inline code, `**strong**`, `*emphasis*`, and inline or
-    reference-style links (`[text](url)`, `[text][id]` with `[id]: url`).
+    list item), inline code, `**strong**`, `*emphasis*`, inline or
+    reference-style links (`[text](url)`, `[text][id]` with `[id]: url`), and
+    TeX math `$…$` and `$$…$$`, which is left untouched for KaTeX.  A paragraph
+    that consists of one `$$…$$` formula is rendered as display math.
     """
     lines = markdown.splitlines()
     references: dict[str, str] = {}
@@ -708,7 +710,11 @@ def render_markdown(markdown: str) -> str:
 
     def flush_paragraph() -> None:
         if paragraph:
-            blocks.append(f"<p>{inline(' '.join(paragraph))}</p>")
+            text = " ".join(paragraph)
+            if re.fullmatch(r"\$\$.+\$\$[.,;]?", text, re.DOTALL):
+                blocks.append(f'<div class="math-display">{inline(text)}</div>')
+            else:
+                blocks.append(f"<p>{inline(text)}</p>")
             paragraph.clear()
 
     def flush_list() -> None:
@@ -784,6 +790,14 @@ def _inline(text: str, references: dict[str, str] | None = None) -> str:
         return f"\x00{len(codes) - 1}\x00"
 
     rendered = re.sub(r"`([^`\n]+)`", stash, escaped)
+    # protect TeX math from emphasis and link rewriting
+    maths: list[str] = []
+
+    def stash_math(match: re.Match[str]) -> str:
+        maths.append(match.group(0))
+        return f"\x01{len(maths) - 1}\x01"
+
+    rendered = re.sub(r"\$\$.+?\$\$|\$[^$\n]+?\$", stash_math, rendered)
 
     def anchor(label: str, target: str) -> str:
         safe = _safe_url(html.unescape(target.strip()))
@@ -801,6 +815,7 @@ def _inline(text: str, references: dict[str, str] | None = None) -> str:
     rendered = re.sub(r"\[([^\]]+)\]\[([^\]]*)\]", reference, rendered)
     rendered = re.sub(r"\*\*([^*\n]+)\*\*", r"<strong>\1</strong>", rendered)
     rendered = re.sub(r"(?<![\w*])\*([^*\n]+)\*(?![\w*])", r"<em>\1</em>", rendered)
+    rendered = re.sub(r"\x01(\d+)\x01", lambda m: maths[int(m.group(1))], rendered)
     return re.sub(r"\x00(\d+)\x00", lambda m: f"<code>{codes[int(m.group(1))]}</code>", rendered)
 
 

@@ -52,23 +52,19 @@ label = "Generalized Laguerre polynomials are orthogonal on the half-line"
 
 The library uses the monic, sign-reversed normalization
 
-```text
-P_n^{(α)}(x) = n! L_n^{(α)}(-x)
-             = sum_k choose(n,k) (α+k+1)_{n-k} x^k,
-```
+$$P_n^{(\alpha)}(x) = n!\, L_n^{(\alpha)}(-x) = \sum_k \binom{n}{k} (\alpha+k+1)_{n-k}\, x^k,$$
 
-so that the zeros are nonpositive. For `α ≥ -1`:
+so that the zeros are nonpositive. For $\alpha \geq -1$:
 
-- every `P_n^{(α)}` has only real, simple zeros, and they are strictly negative
-  when `α > -1`;
+- every $P_n^{(\alpha)}$ has only real, simple zeros, and they are strictly negative
+  when $\alpha > -1$;
 - consecutive polynomials strictly interlace;
 - the family satisfies a Favard three-term recurrence.
 
-For `α > -1` the family is also orthogonal on the positive half-line:
+For $\alpha > -1$ the family is also orthogonal on the positive half-line:
 
-```text
-∫_0^∞ P_m^{(α)}(-x) P_n^{(α)}(-x) x^α e^{-x} dx = 0   (m ≠ n).
-```
+$$\int_0^\infty P_m^{(\alpha)}(-x)\, P_n^{(\alpha)}(-x)\, x^\alpha e^{-x}\, dx = 0
+  \qquad (m \neq n).$$
 
 ## References
 

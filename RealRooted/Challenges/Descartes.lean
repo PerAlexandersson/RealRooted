@@ -36,7 +36,7 @@ label = "Descartes' rule of signs for negative roots"
 
 The number of positive real roots of a polynomial, counted with multiplicity,
 is at most the number of sign changes in its nonzero coefficients. The
-difference is even. Replacing `X` by `-X` gives the corresponding statement
+difference is even. Replacing $X$ by $-X$ gives the corresponding statement
 for negative roots.
 
 ## References

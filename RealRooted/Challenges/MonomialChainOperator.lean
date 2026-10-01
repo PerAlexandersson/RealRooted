@@ -21,16 +21,14 @@ label = "The monomial chain gives interlacing preservation"
 <!-- realrooted-catalog-content -->
 # Interlacing from a monomial chain
 
-Let `T` be a real-linear operator on polynomials of degree at most `D`.
-Suppose that `T` preserves nonnegative coefficients, sends every nonzero PF
+Let $T$ be a real-linear operator on polynomials of degree at most $D$.
+Suppose that $T$ preserves nonnegative coefficients, sends every nonzero PF
 polynomial in the degree box to a nonzero real-rooted polynomial, and its
 monomial images form the oriented chain
 
-```text
-T(1) ≪ T(X) ≪ ⋯ ≪ T(X^D).
-```
+$$T(1) \ll T(X) \ll \dotsb \ll T(X^D).$$
 
-Then `T` preserves oriented interlacing of nonnegative-coefficient
+Then $T$ preserves oriented interlacing of nonnegative-coefficient
 real-rooted inputs in the same degree box.  The quadratic tangent theorem
 propagates the monomial chain through each nonpositive linear factor.
 

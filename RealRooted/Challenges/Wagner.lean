@@ -26,9 +26,9 @@ label = "Multiplication by x reverses interlacing"
 <!-- realrooted-catalog-content -->
 # Wagner’s lemma
 
-If `f` and `g` both interlace `h`, then `f + g` interlaces `h`; the analogous
+If $f$ and $g$ both interlace $h$, then $f + g$ interlaces $h$; the analogous
 common-left statement also holds. For polynomials with nonpositive roots,
-multiplication by `X` reverses the interlacing orientation.
+multiplication by $X$ reverses the interlacing orientation.
 
 ## References
 

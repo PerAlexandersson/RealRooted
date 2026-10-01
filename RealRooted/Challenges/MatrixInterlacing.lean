@@ -38,7 +38,7 @@ label = "The same, allowing zero rows"
 # Matrices preserving interlacing sequences
 
 A nonnegative polynomial matrix preserves interlacing sequences when every
-ordered `2 × 2` submatrix satisfies the affine interlacing condition. A
+ordered $2 \times 2$ submatrix satisfies the affine interlacing condition. A
 zero-aware form allows output rows to vanish.
 
 ## References

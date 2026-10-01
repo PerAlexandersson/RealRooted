@@ -25,8 +25,8 @@ label = "Brändén–Solus, Theorem 2.6"
 <!-- realrooted-catalog-content -->
 # Brändén–Solus symmetric decomposition
 
-The `I_d`-decomposition writes a polynomial as `a + X b` with reciprocal
-symmetry conditions on `a` and `b`. Under the hypotheses of Brändén–Solus
+The $I_d$-decomposition writes a polynomial as $a + Xb$ with reciprocal
+symmetry conditions on $a$ and $b$. Under the hypotheses of Brändén–Solus
 Theorem 2.6, these two pieces interlace.
 
 ## References

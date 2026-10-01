@@ -29,16 +29,16 @@ label = "Interlacing with degrees differing by one"
 <!-- realrooted-catalog-content -->
 # Polynomial interlacing
 
-Let `f` and `g` be nonzero real-rooted polynomials with roots
-`s_1 ≤ ⋯ ≤ s_k` and `r_1 ≤ ⋯ ≤ r_m`, listed with multiplicity. We write
-`f ≪ g` (`StrictInterl f g`) if either
+Let $f$ and $g$ be nonzero real-rooted polynomials with roots
+$s_1 \leq \dotsb \leq s_k$ and $r_1 \leq \dotsb \leq r_m$, listed with multiplicity. We write
+$f \ll g$ (`StrictInterl f g`) if either
 
-- `m = k + 1` and `r_1 ≤ s_1 ≤ r_2 ≤ s_2 ≤ ⋯ ≤ s_k ≤ r_{k+1}`, or
-- `m = k` and `s_1 ≤ r_1 ≤ s_2 ≤ r_2 ≤ ⋯ ≤ s_k ≤ r_k`.
+- $m = k + 1$ and $r_1 \leq s_1 \leq r_2 \leq s_2 \leq \dotsb \leq s_k \leq r_{k+1}$, or
+- $m = k$ and $s_1 \leq r_1 \leq s_2 \leq r_2 \leq \dotsb \leq s_k \leq r_k$.
 
-In both cases `g` has the largest root. Shared and repeated roots are allowed.
-The relation `Interl f g` also holds when `f` or `g` is zero, and
-`Interlaces f g` is the case `m = k + 1` alone.
+In both cases $g$ has the largest root. Shared and repeated roots are allowed.
+The relation `Interl f g` also holds when $f$ or $g$ is zero, and
+`Interlaces f g` is the case $m = k + 1$ alone.
 
 ## References
 

@@ -85,12 +85,12 @@ matrices.
 The results of Garloff and Wagner for PF polynomials (real-rooted with
 nonnegative coefficients):
 
-- **PF closure:** the Hadamard product `sum_k a_k b_k x^k` of two PF
+- **PF closure:** the Hadamard product $\sum_k a_k b_k x^k$ of two PF
   polynomials is PF.
-- **Interlacing:** if `f ≪ g` and `p ≪ q`, then `f ∗ p ≪ g ∗ q`, where `∗`
+- **Interlacing:** if $f \ll g$ and $p \ll q$, then $f \ast p \ll g \ast q$, where $\ast$
   is the Hadamard product.
 - **Schur product (Theorem 12):** the factorial Schur product, with
-  coefficients `k! a_k b_k`, preserves interlacing in its first argument.
+  coefficients $k!\, a_k b_k$, preserves interlacing in its first argument.
 
 ## References
 
