@@ -13,22 +13,29 @@ years = [2013, 2026]
 [[definitions]]
 name = "RealRooted.narayanaPolynomial"
 module = "RealRooted.NarayanaTransformation.Coefficients"
+label = "Generalized Narayana polynomials"
 
 [[definitions]]
 name = "RealRooted.narayanaTransform"
 module = "RealRooted.NarayanaTransformation.Coefficients"
+label = "Narayana transform"
 
 [[theorems]]
 name = "RealRooted.splits_narayanaPolynomial"
 module = "RealRooted.NarayanaTransformation.Endpoints"
+label = "Generalized Narayana polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.narayanaPolynomialRootLocation"
 module = "RealRooted.NarayanaTransformation.Endpoints"
+label = "Generalized Narayana polynomials are Pólya-frequency"
 
 [[theorems]]
 name = "RealRooted.narayanaTransformPreservesPF"
 module = "RealRooted.NarayanaTransformation.Endpoints"
+label = "The Narayana transform preserves Pólya-frequency polynomials"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

@@ -17,50 +17,64 @@ years = [2007]
 [[definitions]]
 name = "RealRooted.HasCommonInterleaver"
 module = "RealRooted.CommonInterleaver.RootDesc"
+label = "Common interleaver of a family"
 
 [[definitions]]
 name = "RealRooted.PairwiseHasCommonInterleaver"
 module = "RealRooted.CommonInterleaver.RootDesc"
+label = "Pairwise common interleavers"
 
 [[definitions]]
 name = "RealRooted.Compatible"
 module = "RealRooted.Compatibility.Pair"
+label = "Compatible pair"
 
 [[definitions]]
 name = "RealRooted.FamilyCompatible"
 module = "RealRooted.Compatibility.Basic"
+label = "Compatible family"
 
 [[theorems]]
 name = "RealRooted.hasCommonInterleaver_of_pairwiseHasCommonInterleaver"
 module = "RealRooted.CommonInterleaver.FamilyUpgrade"
+label = "Pairwise common interleavers give a common interleaver"
 
 [[theorems]]
 name = "RealRooted.isRealRooted_sum_of_commonInterleaver"
 module = "RealRooted.CommonInterleaver.FamilyUpgrade"
+label = "A family with a common interleaver has a real-rooted sum"
 
 [[theorems]]
 name = "RealRooted.isRealRooted_sum_of_pairwiseHasCommonInterleaver"
 module = "RealRooted.CommonInterleaver.FamilySum"
+label = "Pairwise common interleavers give a real-rooted sum"
 
 [[theorems]]
 name = "RealRooted.familyCompatible_of_commonInterleaver"
 module = "RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility"
+label = "A common interleaver gives a compatible family"
 
 [[theorems]]
 name = "RealRooted.pairwiseCompatible_of_pairwiseHasCommonInterleaver"
 module = "RealRooted.Compatibility.InterleaverBridge"
+label = "Pairwise common interleavers give pairwise compatibility"
 
 [[theorems]]
 name = "RealRooted.chudnovskySeymour_compatiblePairHasCommonInterleaver"
 module = "RealRooted.ChudnovskySeymour.Core"
+label = "Chudnovsky–Seymour: a compatible pair has a common interleaver"
 
 [[theorems]]
 name = "RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge"
 module = "RealRooted.ChudnovskySeymour.Core"
+label = "Chudnovsky–Seymour: pairwise compatible ⇔ common interleaver"
+headline = true
 
 [[theorems]]
 name = "RealRooted.chudnovskySeymour_pairwiseCompatible_iff_familyCompatible"
 module = "RealRooted.ChudnovskySeymour.Core"
+label = "Chudnovsky–Seymour: pairwise compatible ⇔ compatible family"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

@@ -12,34 +12,43 @@ slug = "hermite-polynomials"
 [[definitions]]
 name = "RealRooted.hermiteReal"
 module = "RealRooted.Hermite.Basic"
+label = "Probabilists' Hermite polynomials"
 
 [[definitions]]
 name = "RealRooted.hermiteGaussianWeight"
 module = "RealRooted.Hermite.Orthogonality.Integral"
+label = "Gaussian weight"
 
 [[theorems]]
 name = "RealRooted.hermiteReal_isRealRooted"
 module = "RealRooted.Hermite.Roots"
+label = "Hermite polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.hermiteReal_hasSimpleRoots"
 module = "RealRooted.Hermite.Roots"
+label = "Hermite polynomials have simple roots"
 
 [[theorems]]
 name = "RealRooted.hermiteReal_strictInterl_succ"
 module = "RealRooted.Hermite.Roots"
+label = "Consecutive Hermite polynomials interlace"
 
 [[theorems]]
 name = "RealRooted.hermiteReal_isSturmSeq"
 module = "RealRooted.Hermite.Roots"
+label = "Hermite polynomials form a Sturm sequence"
 
 [[theorems]]
 name = "RealRooted.hermiteReal_satisfiesFavardRecurrence"
 module = "RealRooted.Hermite.Favard"
+label = "Hermite polynomials satisfy a Favard recurrence"
 
 [[theorems]]
 name = "RealRooted.hermiteReal_integral_orthogonal"
 module = "RealRooted.Hermite.Orthogonality.Integral"
+label = "Hermite polynomials are orthogonal for the Gaussian weight"
 -->
 
 <!-- realrooted-catalog-content -->
