@@ -1378,6 +1378,8 @@ import RealRooted.Challenges.PerronFrobenius
 import RealRooted.CombinatorialExamples.EvenBinom
 import RealRooted.GeneralizedEulerian.GeneratingFunction
 import RealRooted.Mathlib.Analysis.Complex.ArgumentPrinciple
+import RealRooted.ProductSequence.Interlacing
+import RealRooted.Tactic.Product.Interlacing
 
 /-!
 # RealRooted production umbrella
