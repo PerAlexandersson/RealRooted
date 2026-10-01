@@ -96,6 +96,31 @@ theorem A075499_natDegree (n : ℕ) : (A075499 n).natDegree = n + 2 := by rr_row
 theorem A075499_interlaces (n : ℕ) : Interlaces (A075499 n) (A075499 (n + 1)) := by
   rr_row_interlaces
 
+/-- Root window `[-1, 0]`: `A = X (X + 1)` is nonpositive only there (A019538). -/
+def A019538 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (X + X ^ 2) * (A019538 n).derivative + (1 + 2 * X) * A019538 n
+
+theorem A019538_interlaces (n : ℕ) : Interlaces (A019538 n) (A019538 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Root window `(-∞, -1]`: `A = X + 1` (A137597). -/
+def A137597 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (1 + X) * (A137597 n).derivative + (2 + X) * A137597 n
+
+theorem A137597_interlaces (n : ℕ) : Interlaces (A137597 n) (A137597 (n + 1)) := by
+  rr_row_interlaces
+
+/-- A three-term recurrence with root window `[-1, 0]`: `b = X (X + 1)` (A111006). -/
+def A111006 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => X * A111006 (n + 1) + (X + X ^ 2) * A111006 n
+
+theorem A111006_interlaces (n : ℕ) : Interlaces (A111006 n) (A111006 (n + 1)) := by
+  rr_row_interlaces
+
 end
 
 end RealRooted.Tactic.RowInterlacingExamples

@@ -18,7 +18,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **174 IDs**; **1 formalized**, **145 shells**, **13 fragments**, and **15 documented-only**.
+Current totals: **177 IDs**; **1 formalized**, **145 shells**, **13 fragments**, and **18 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -35,6 +35,7 @@ Current totals: **174 IDs**; **1 formalized**, **145 shells**, **13 fragments**,
 | A010054 | `shell` | -style product exit: the active rows are constant in `n`. | `rr_product_identity_sequence` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A010892 | `shell` | -style sequence shell: repeated lag `-(t^2+t+1)`. | `rr_lw_negative_quadratic_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A013612 | `documented` | def : ℕ → ℝ[X]<br>\| n + 1 => (1 + 5 * X) * n<br>+2 additional test intents | none | not recorded | executable tactic route and its certificates |
+| A019538 | `documented` | Root window `[-1, 0]`: `A = X (X + 1)` is nonpositive only there ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A021009 | `fragment` | Family B: generic `t R(t)` once `R` is nonnegative at roots. | `rr_sign_at_roots_with_factor` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
 | A021010 | `shell` | `/`: `v_n(t)=-t^2`. | `rr_mw_derivative_neg_X_sq_auto` | `degree_lower`, `degree_two`, `degree_upper`, `source_pos_lc`, `splits`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A026729 | `shell` | `/`: `P_n=tP_{n-1}+tP_{n-2}`. | `rr_lw_current_X_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
@@ -98,6 +99,7 @@ Current totals: **174 IDs**; **1 formalized**, **145 shells**, **13 fragments**,
 | A106828 | `shell` | OEIS shape : `P_n = n P_{n-1} + n t P_{n-2}`.<br>OEIS shape : `P_n = n P_{n-1} + n t P_{n-2}` on the | `rr_lw_positive_t_auto`, `rr_strict_interl_pos_X_lag_combo` | `current_coeff_pos`, `degree_lower`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `lag_coeff_pos`, `left_nonneg`, `no_common_roots`, `proper`, `right_nonneg`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A108426 | `shell` | Family C2 direct-outer Ma--Wang shell for the `/` bucket. | `rr_mw_derivative_neg_X_one_add_outer_auto` | `degree_lower`, `degree_two`, `degree_upper`, `root_upper`, `source_pos_lc`, `splits`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A110162 | `shell` | OEIS shape `/`: `P_{n+2}=(t-2)P_{n+1}-P_n`. | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
+| A111006 | `documented` | A three-term recurrence with root window `[-1, 0]`: `b = X (X + 1)` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A111125 | `shell` | OEIS shapes `//`: | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
 | A111596 | `shell` | inverse-Lah stage recurrence `Xf-2Xf'+Xf''=(-1+D)(-(X+1)f+Xf')`. | `rr_neg_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `degree_two`, `inner_degree_lower`, `inner_degree_upper`, `inner_neg_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonneg` | concrete row definition and proofs of the listed certificates |
 | A111999 | `shell` | unscaled inner-window shape `t(1+t)P'`. | `rr_mw_derivative_X_one_add_sequence_nonneg` | `base`, `degree_succ`, `degree_two`, `nonneg_coeffs`, `pos_lc`, `recurrence`, `root_lower` | concrete row definition and proofs of the listed certificates |
@@ -123,6 +125,7 @@ Current totals: **174 IDs**; **1 formalized**, **145 shells**, **13 fragments**,
 | A137286 | `shell` | parameterized Favard step `P_m=tP_{m-1}-(m+1)P_{m-2}`. | `rr_favard_param_auto` | `alpha`, `base_one`, `base_zero`, `beta`, `step` | concrete row definition and proofs of the listed certificates |
 | A137338 | `shell` | parameterized Favard step `P_m=(t+1-m)P_{m-1}-(m-1)P_{m-2}`.<br>-shaped row-sign surface for n-dependent Favard coefficients. | `rr_favard_param_auto`, `rr_favard_param_row_sign_auto` | `alpha`, `base_one`, `base_zero`, `beta`, `step` | concrete row definition and proofs of the listed certificates |
 | A137477 | `shell` | -style route: prove the even quotient by supplied product factors, | `rr_even_product_odd_X_scalar_sequence`, `rr_product_factor_sequence` | `base`, `even_factorization`, `even_realrooted`, `factor_realrooted`, `odd_factorization`, `recurrence`, `scalar_ne` | concrete row definition and proofs of the listed certificates |
+| A137597 | `documented` | Root window `(-∞, -1]`: `A = X + 1` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A142963 | `shell` | half-line factor `t-4t^2=t(1-4t)`. | `rr_mw_derivative_nonpos_nonneg_sequence_sign_auto` | `base`, `degree_succ`, `degree_two`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A144436 | `shell` | same derivative term with lag coefficient `4t`. | `rr_mw_lw_derivative_lag_sequence_realrooted_sign_auto` | `base`, `degree_succ`, `degree_two`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A144438 | `shell` | `P_n=(1-t+nt)P_{n-1}+t(1-t)P'_{n-1}+tP_{n-2}`.<br>Scalar-denominator presentation of the derivative-lag shape. | `rr_mw_lw_derivative_lag_sequence_den_coeff_sign_auto`, `rr_mw_lw_derivative_lag_sequence_sign_auto` | `base`, `degree_succ`, `degree_two`, `den`, `deriv_factor`, `lag_factor`, `no_common_roots`, `nonneg_coeffs`, `norm_deriv_coeff`, `norm_lag_coeff`, `pos_lc`, `raw_deriv_coeff`, `raw_lag_coeff`, `raw_recurrence`, `recurrence` | concrete row definition and proofs of the listed certificates |
