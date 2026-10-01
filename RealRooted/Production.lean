@@ -1382,6 +1382,10 @@ import RealRooted.ProductSequence.Interlacing
 import RealRooted.Tactic.Product.Interlacing
 import RealRooted.DerivativeRecurrence.Degree
 import RealRooted.Tactic.RowData
+import RealRooted.Tactic.RowInterlacing
+import RealRooted.ThreeTermRecurrence.Degree
+import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.DerivativeRecurrence.Interlacing
 
 /-!
 # RealRooted production umbrella
