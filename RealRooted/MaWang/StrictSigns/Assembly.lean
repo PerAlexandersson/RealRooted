@@ -30,7 +30,7 @@ theorem exists_strictSignInterleaving {F : ℝ[X]} :
         have hr₁r₂_le : r₁ ≤ r₂ := List.rel_of_pairwise_cons hrs_sorted (by simp)
         by_contra hEq
         have : F.eval r₁ * F.eval r₂ = (F.eval r₁) ^ 2 := by grind
-        nlinarith [sq_nonneg (F.eval r₁)]
+        linarith [sq_nonneg (F.eval r₁)]
       obtain ⟨u, hu₁, hu₂, hu_root⟩ :=
         exists_isRoot_between_of_eval_mul_neg hr₁r₂ (by simpa using hsign [] rfl)
       have htail_sorted : (r₂ :: rest).Pairwise (· ≤ ·) :=
@@ -378,8 +378,8 @@ lemma countP_lt_of_eq_max_isRoot
     have hr_mem : r ∈ ts := by
       apply Multiset.mem_coe.mp
       simp_all
-    have hlt : ts.countP (· < r) < ts.countP (· ≤ r) := by
-      exact countP_lt_countP_of_exists (by grind) hr_mem (by simp) (by simp)
+    have hlt : ts.countP (· < r) < ts.countP (· ≤ r) :=
+      countP_lt_countP_of_exists (by grind) hr_mem (by simp) (by simp)
     lia
 
 lemma mul_neg_of_mul_neg_of_mul_neg {a b c d : ℝ}
@@ -491,10 +491,6 @@ theorem strictInterl_same_of_strict_signs_of_right_root
   have hlen_shape : (r :: rs').length = (us ++ [uR]).length := by lia
   exact ⟨⟨hf_ne, hf_splits⟩, hF, r :: rs', us ++ [uR], hrs_sorted, hws_sorted, hrs_eq, hws_eq,
     Or.inr ⟨hlen_shape, hshape⟩⟩
-
-@[deprecated strictInterl_same_of_strict_signs_of_right_root (since := "2026-09-18")]
-alias prec_same_of_strict_signs_of_right_root :=
-  strictInterl_same_of_strict_signs_of_right_root
 
 /-- Add one outer point on each side of a sorted interlacing layout. -/
 lemma listInterlaces_with_outer :
@@ -759,15 +755,6 @@ theorem strictInterl_of_strict_signs_of_endSigns_odd
 alias prec_of_strict_signs_of_endSigns_even :=
   strictInterl_of_strict_signs_of_endSigns_even
 
-@[deprecated strictInterl_of_strict_signs_of_endSigns_odd (since := "2026-09-18")]
-alias prec_of_strict_signs_of_endSigns_odd :=
-  strictInterl_of_strict_signs_of_endSigns_odd
-
-@[deprecated strictInterl_of_strict_signs_of_strict_outer_roots
-  (since := "2026-09-18")]
-alias prec_of_strict_signs_of_strict_outer_roots :=
-  strictInterl_of_strict_signs_of_strict_outer_roots
-
 end RealRooted.MaWangInternal
 
 namespace RealRooted
@@ -778,9 +765,9 @@ export MaWangInternal
     interlaces_of_eval_mul_derivative_pos
     mul_neg_of_mul_neg_of_mul_neg
     strictInterl_same_of_strict_signs_of_right_root
-    prec_same_of_strict_signs_of_right_root
+    strictInterl_same_of_strict_signs_of_right_root
     strictInterl_of_strict_signs_of_strict_outer_roots
-    prec_of_strict_signs_of_strict_outer_roots
+    strictInterl_of_strict_signs_of_strict_outer_roots
     exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop
     exists_isRoot_ge_of_eval_nonneg_of_tendsto_atTop_atBot
     exists_isRoot_le_of_eval_nonpos_of_tendsto_atBot_atTop
@@ -788,6 +775,6 @@ export MaWangInternal
     strictInterl_of_strict_signs_of_endSigns_even
     strictInterl_of_strict_signs_of_endSigns_odd
     prec_of_strict_signs_of_endSigns_even
-    prec_of_strict_signs_of_endSigns_odd)
+    strictInterl_of_strict_signs_of_endSigns_odd)
 
 end RealRooted

@@ -214,8 +214,8 @@ theorem insert_exceptionalize_pair {h : Nat}
     have hsuccEligible := mem_eligibleStarts.mp (E.starts_subset hmem)
     exact eligible_succ_ne j.2 hsuccEligible rfl
   have hsuccNotMemD :
-      (⟨j.1.1 + 1, j.2.2.choose⟩ : Fin h) ∉ D.starts := by
-    exact fun hmem => hsuccNotMemE (by
+      (⟨j.1.1 + 1, j.2.2.choose⟩ : Fin h) ∉ D.starts :=
+    fun hmem => hsuccNotMemE (by
       change (⟨j.1.1 + 1, j.2.2.choose⟩ : Fin h) ∈
         (ofEligibleFinset (insert j s)).starts
       change (⟨j.1.1 + 1, j.2.2.choose⟩ : Fin h) ∈
@@ -227,12 +227,12 @@ theorem insert_exceptionalize_pair {h : Nat}
   have hsuccNoPreviousD :
       ¬∃ i ∈ D.starts, i.1 + 1 = j.1.1 + 1 := by
     rintro ⟨i, hi, hij⟩
-    have hiMap : i ∈ s.map eligibleStartValEmbedding := by
-      exact hi
+    have hiMap : i ∈ s.map eligibleStartValEmbedding :=
+      hi
     rw [Finset.mem_map] at hiMap
     obtain ⟨a, ha, hai⟩ := hiMap
-    have haiVal : a.1.1 = i.1 := by
-      exact congrArg Fin.val hai
+    have haiVal : a.1.1 = i.1 :=
+      congrArg Fin.val hai
     have haVal : a.1.1 = j.1.1 := by
       change i.1 + 1 = j.1.1 + 1 at hij
       lia
@@ -354,8 +354,7 @@ noncomputable def eligibleStartEmbedding {h : Nat}
   toFun j := ⟨j.1, mem_eligibleStarts.mp (D.starts_subset j.2)⟩
   inj' := by
     intro i j hij
-    apply Subtype.ext
-    exact congrArg (fun z : EligibleStart c => z.1) hij
+    exact Subtype.ext (congrArg (fun z : EligibleStart c => z.1) hij)
 
 noncomputable def eligibleFinset {h : Nat} {c : DecoNormalizedCode h}
     (D : Decoration c) : Finset (EligibleStart c) :=
@@ -393,9 +392,8 @@ noncomputable def eligibleFinset {h : Nat} {c : DecoNormalizedCode h}
     have hkEligible := mem_eligibleStarts.mp (D.starts_subset hk)
     let j : EligibleStart c := ⟨k, hkEligible⟩
     rw [ofEligibleFinset_starts, Finset.mem_map]
-    have hj : j ∈ D.eligibleFinset := by
-      apply (mem_eligibleFinset D j).mpr
-      exact hk
+    have hj : j ∈ D.eligibleFinset :=
+      (mem_eligibleFinset D j).mpr hk
     exact ⟨j, hj, rfl⟩
 
 @[simp] theorem eligibleFinset_ofEligibleFinset {h : Nat}

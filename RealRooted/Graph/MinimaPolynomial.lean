@@ -125,8 +125,8 @@ theorem minimaPolynomialModel_splits (G : _root_.SimpleGraph V) :
   have hscaled :
       (C (minimaNormalization G) *
         (weightedMatchingGeneratingPolynomial G (minimaEdgeWeight G)).comp
-          (X - C 1)).Splits := by
-    exact (show (C (minimaNormalization G) : ℝ[X]).Splits by simp).mul hshift
+          (X - C 1)).Splits :=
+    (show (C (minimaNormalization G) : ℝ[X]).Splits by simp).mul hshift
   simpa [minimaPolynomialModel] using hscaled
 
 /-!
@@ -143,8 +143,8 @@ omit [Fintype V] in
 theorem minimaWeightedMatchingSupport_empty
     (G : _root_.SimpleGraph V) [DecidableRel G.lineGraph.Adj] :
     weightedIndepPolyOn G.lineGraph (∅ : Finset G.edgeSet)
-      (minimaEdgeWeight G) = 1 := by
-  exact weightedIndepPolyOn_empty G.lineGraph (minimaEdgeWeight G)
+      (minimaEdgeWeight G) = 1 :=
+  weightedIndepPolyOn_empty G.lineGraph (minimaEdgeWeight G)
 
 omit [Fintype V] in
 theorem minimaWeightedMatchingSupport_erase
@@ -155,8 +155,8 @@ theorem minimaWeightedMatchingSupport_erase
         C (minimaEdgeWeight G e) * X *
           weightedIndepPolyOn G.lineGraph
             (deleteClosedNeighborSupport G.lineGraph S e)
-            (minimaEdgeWeight G) := by
-  exact weightedIndepPolyOn_erase G.lineGraph (minimaEdgeWeight G) he
+            (minimaEdgeWeight G) :=
+  weightedIndepPolyOn_erase G.lineGraph (minimaEdgeWeight G) he
 
 end Graph
 end RealRooted

@@ -76,7 +76,7 @@ theorem twoSeedRecurrenceCoefficient_hasNonnegCoeffs
   · rw [hj.neg_one_pow]
     linarith [heven hj]
   · rw [hj.neg_one_pow]
-    nlinarith [mul_nonneg hγ ha]
+    linarith [mul_nonneg hγ ha]
 
 /-- A finite even-lag bound implies coefficientwise nonnegativity at every
 lag at least two; beyond the finite range, the second seed vanishes. -/
@@ -236,9 +236,6 @@ theorem shiftedRationalRodRow_two_seed_recurrence
   intro j hj
   simp [twoSeedRecurrenceCoefficient]
   ring
-
-@[deprecated shiftedRationalRodRows_pf_and_interl (since := "2026-09-18")]
-alias shiftedRationalRodRows_pf_and_prec0 := shiftedRationalRodRows_pf_and_interl
 
 end
 

@@ -223,10 +223,6 @@ private lemma interl_hz_linear_to_quadratic_of_eval_nonpos
       hInter hasPosLeadingCoeff_one hF_ne hF_splits hF_pos
       (by lia) (by lia) hno hroot).toInterl
 
-private lemma interl_hz_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
-    Interl (C s * X + C t + 1) (C s * X + C t + 1) :=
-  interl_affine_add_one_self hs
-
 private lemma interl_hz_affine_add_one_affine_add_one_add_X
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + 1) (C s * X + C t + (1 + X)) := by
@@ -245,11 +241,6 @@ private lemma interl_hz_affine_add_one_add_X_self {s t : ℝ} (hs : 0 < s) :
   exact Interl.refl fun _ =>
     (isRealRooted_affine_factor (s := s + 1) (t := t + 1) (by positivity)).2
 
-private lemma interl_hz_affine_add_one_affine_add_X
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t + 1) (C s * X + C t + X) := by
-  exact interl_affine_add_one_affine_add_X hs ht
-
 private lemma interl_hz_affine_add_one_add_X_affine_add_X
     {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + (1 + X)) (C s * X + C t + X) := by
@@ -260,10 +251,6 @@ private lemma interl_hz_affine_add_one_add_X_affine_add_X
     interl_affine_linear_affine_linear_of_cross
       (u := s + 1) (v := t + 1) (U := s + 1) (V := t)
       (by positivity) (by positivity) (by nlinarith)
-
-private lemma interl_hz_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
-    Interl (C s * X + C t + X) (C s * X + C t + X) :=
-  interl_affine_add_X_self hs
 
 private lemma interl_hz_affine_add_one_middleQuadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
@@ -341,7 +328,7 @@ private lemma interl_hz_affine_add_one_XAffineAddOne
   have hf_nn : HasNonnegCoeffs (C s * X + C t + 1 : ℝ[X]) := by
     rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
     exact hasNonnegCoeffs_affine_linear hs.le (by nlinarith)
-  simpa using (strictInterl_self_mul_X_of_nonneg hf_rr.1 hf_rr.2 hf_nn).toInterl
+  simpa using (strictInterl_self_X_mul_of_nonneg hf_rr.1 hf_rr.2 hf_nn).toInterl
 
 private lemma interl_hz_affine_add_one_add_X_XAffineAddOne
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
@@ -510,12 +497,12 @@ private lemma HZ2x2EntryShape.has2x2 {a b c d : ℝ[X]}
   rcases h with
     h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h <;>
     rcases h with ⟨rfl, rfl, rfl, rfl⟩
-  · simpa using interl_hz_affine_add_one_self hs
+  · simpa using interl_affine_add_one_self hs
   · simpa using interl_hz_affine_add_one_affine_add_one_add_X hs ht
   · simpa using interl_hz_affine_add_one_add_X_self hs
-  · simpa using interl_hz_affine_add_one_affine_add_X hs ht
+  · simpa using interl_affine_add_one_affine_add_X hs ht
   · simpa using interl_hz_affine_add_one_add_X_affine_add_X hs
-  · simpa using interl_hz_affine_add_X_self hs
+  · simpa using interl_affine_add_X_self hs
   · simpa [mul_add, add_mul, add_assoc, add_comm, add_left_comm] using
       interl_hz_affine_add_one_mul_one_add_X hs
   · simpa using interl_hz_affine_add_one_middleQuadratic hs ht

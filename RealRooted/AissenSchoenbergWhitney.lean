@@ -65,9 +65,8 @@ protected theorem IsPolyaFreqSeq.tail_of_zeros {a : ℕ → ℝ}
   | succ s ih =>
       have h0 : a 0 = 0 := hzero 0 (Nat.succ_pos s)
       have htail : IsPolyaFreqSeq (fun n => a (n + 1)) := hpf.tail_of_zero h0
-      have htail_zero : ∀ k < s, a (k + 1) = 0 := by
-        intro k hk
-        exact hzero (k + 1) (by lia)
+      have htail_zero : ∀ k < s, a (k + 1) = 0 :=
+        fun k _ => hzero (k + 1) (by lia)
       simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
         ih htail htail_zero
 
@@ -245,7 +244,7 @@ theorem splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two {p : ℝ[X]}
     have hdisc := disc_nonneg_of_isPolyaFreqSeq_natDegree_le_two hpf hdeg
     obtain ⟨x, hx⟩ :=
       exists_root_of_disc_nonneg (a := p.coeff 2) (b := p.coeff 1) (c := p.coeff 0)
-        hc2 (by nlinarith [hdisc])
+        hc2 (by linarith [hdisc])
     have hev : p.eval x = 0 := by
       rw [Polynomial.eval_eq_sum_range, h2]
       simp only [Finset.sum_range_succ, Finset.sum_range_zero]

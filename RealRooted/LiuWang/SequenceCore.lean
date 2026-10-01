@@ -440,23 +440,11 @@ theorem isRealRooted_of_lw_negative_quadratic_lag_sequence_den_coeff
     strictInterl_lw_negative_quadratic_lag_sequence_den_coeff
       hbase hpos ha hc hdisc hden ha_coeff hb_coeff hc_coeff hraw hdeg_succ hno
 
-@[deprecated strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
-  (since := "2026-09-18")]
-alias prec_lw_nonpos_lag_sequence_of_inductive_nonpos :=
-  strictInterl_lw_nonpos_lag_sequence_of_inductive_nonpos
-
 @[deprecated strictInterl_lw_nonpos_lag_sequence (since := "2026-09-26")]
 alias prec_lw_nonpos_lag_sequence := strictInterl_lw_nonpos_lag_sequence
 
-@[deprecated strictInterl_lw_nonpos_lag_sequence_den (since := "2026-09-26")]
-alias prec_lw_nonpos_lag_sequence_den := strictInterl_lw_nonpos_lag_sequence_den
-
 @[deprecated strictInterl_lw_negative_const_lag_sequence (since := "2026-09-26")]
 alias prec_lw_negative_const_lag_sequence := strictInterl_lw_negative_const_lag_sequence
-
-@[deprecated strictInterl_lw_negative_const_C_neg_lag_sequence (since := "2026-09-26")]
-alias prec_lw_negative_const_C_neg_lag_sequence :=
-  strictInterl_lw_negative_const_C_neg_lag_sequence
 
 @[deprecated strictInterl_lw_negative_square_lag_sequence (since := "2026-09-26")]
 alias prec_lw_negative_square_lag_sequence := strictInterl_lw_negative_square_lag_sequence
@@ -468,16 +456,5 @@ alias prec_lw_negative_square_lag_sequence_unit :=
 @[deprecated strictInterl_lw_negative_square_lag_sequence_den_coeff (since := "2026-09-26")]
 alias prec_lw_negative_square_lag_sequence_den_coeff :=
   strictInterl_lw_negative_square_lag_sequence_den_coeff
-
-@[deprecated strictInterl_lw_negative_monic_quadratic_lag_sequence (since := "2026-09-26")]
-alias prec_lw_negative_monic_quadratic_lag_sequence :=
-  strictInterl_lw_negative_monic_quadratic_lag_sequence
-
-@[deprecated strictInterl_lw_negative_quadratic_lag_sequence (since := "2026-09-26")]
-alias prec_lw_negative_quadratic_lag_sequence := strictInterl_lw_negative_quadratic_lag_sequence
-
-@[deprecated strictInterl_lw_negative_quadratic_lag_sequence_den_coeff (since := "2026-09-26")]
-alias prec_lw_negative_quadratic_lag_sequence_den_coeff :=
-  strictInterl_lw_negative_quadratic_lag_sequence_den_coeff
 
 end RealRooted

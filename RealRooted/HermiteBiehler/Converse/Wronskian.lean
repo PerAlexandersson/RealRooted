@@ -54,6 +54,20 @@ theorem im_deriv_mul_conj_eq (p : ℂ[X]) (x : ℝ) :
     ring
   simp_all
 
+/-- A stable complex polynomial has nonpositive logarithmic Wronskian on the
+real axis. -/
+theorem im_deriv_mul_conj_nonpos_of_stable {p : ℂ[X]}
+    (hp : IsUpperHalfPlaneStable p) (r : ℝ) :
+    (p.derivative.eval (r : ℂ) *
+      (starRingEnd ℂ) (p.eval (r : ℂ))).im ≤ 0 := by
+  rw [im_deriv_mul_conj_eq]
+  apply mul_nonpos_of_nonneg_of_nonpos (Complex.normSq_nonneg _)
+  apply multiset_sum_nonpos
+  intro y hy
+  obtain ⟨z, hz, rfl⟩ := Multiset.mem_map.mp hy
+  exact mul_nonpos_of_nonneg_of_nonpos (Complex.normSq_nonneg _)
+    (im_nonpos_of_stable_root hp (isRoot_of_mem_roots hz))
+
 theorem im_deriv_mul_conj_neg {p : ℂ[X]}
     (hroots : ∀ w ∈ p.roots, w.im ≤ 0)
     {x : ℝ} (hne : p.eval (x : ℂ) ≠ 0)
@@ -172,16 +186,5 @@ theorem strictInterl_of_stable_succ_degree {f g : ℝ[X]}
   obtain ⟨hfs, hgs⟩ := splits_of_stable hf hg hstab
   exact strictInterl_of_wronskian_pos_succ hf hg hdeg rfl hfs hgs
     (fun t => wronskian_pos_of_stable hstab hnoreal hw₀mem hw₀neg t)
-
-@[deprecated strictInterl_of_stable_same_degree (since := "2026-09-18")]
-alias prec_of_stable_same_degree := strictInterl_of_stable_same_degree
-
-@[deprecated strictInterl_of_stable_same_degree_no_common
-  (since := "2026-09-18")]
-alias prec_of_stable_same_degree_no_common :=
-  strictInterl_of_stable_same_degree_no_common
-
-@[deprecated strictInterl_of_stable_succ_degree (since := "2026-09-18")]
-alias prec_of_stable_succ_degree := strictInterl_of_stable_succ_degree
 
 end RealRooted

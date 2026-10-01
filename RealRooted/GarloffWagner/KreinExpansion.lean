@@ -24,17 +24,15 @@ theorem exists_kreinRootDeletedExpansion_right {f g : ℝ[X]}
       hfg.natDegree_le with ⟨c, hcdeg⟩
   let roots : List ℝ := g.roots.toFinset.toList
   have hroots_nodup : roots.Nodup := Finset.nodup_toList _
-  have hroot : ∀ u ∈ roots, g.IsRoot u := by
-    intro u hu
-    exact (mem_roots hfg.2.1.1).mp
+  have hroot : ∀ u ∈ roots, g.IsRoot u :=
+    fun _ hu => (mem_roots hfg.2.1.1).mp
       (Multiset.mem_toFinset.mp (Finset.mem_toList.mp hu))
   have hdata : ∀ u ∈ roots, ∃ a : ℝ, ∃ q : ℝ[X],
       g = (X - C u) * q ∧
         IsGWKreinSummand g q ∧
         (X - C u) ^ (g.rootMultiplicity u) ∣
-          f - C c * g - C a * q := by
-    intro u hu
-    exact exists_kreinCoefficientData_of_right_isRoot hfg hfg.2.1.2 c (hroot u hu)
+          f - C c * g - C a * q :=
+    fun u hu => exists_kreinCoefficientData_of_right_isRoot hfg hfg.2.1.2 c (hroot u hu)
   choose a q hfactor hsummand hgain using hdata
   let a' : ℝ → ℝ := fun u => if hu : u ∈ roots then a u hu else 0
   let q' : ℝ → ℝ[X] := fun u => if hu : u ∈ roots then q u hu else 0
@@ -52,9 +50,8 @@ theorem exists_kreinRootDeletedExpansion_right {f g : ℝ[X]}
       fullRootMultiplicity_dvd_sub_weightedSum_rootDeleted
         hfg.2.1.1 roots hroots_nodup a' q' hfactor' hgain'
   have hdiv_all_roots : ∀ u ∈ g.roots,
-      (X - C u) ^ (g.rootMultiplicity u) ∣ f - C c * g - weightedSum l := by
-    intro u hu
-    exact hdiv_roots u (by
+      (X - C u) ^ (g.rootMultiplicity u) ∣ f - C c * g - weightedSum l :=
+    fun u hu => hdiv_roots u (by
       rw [Finset.mem_toList, Multiset.mem_toFinset]
       exact hu)
   have hdiv : g ∣ f - C c * g - weightedSum l :=
@@ -90,8 +87,8 @@ theorem strictInterl_self_X_sub_C_mul {r : ℝ[X]} (hr0 : r ≠ 0) (hrs : r.Spli
     have hlin_splits : (C α + C β * (X - C u : ℝ[X])).Splits := by
       apply Polynomial.Splits.of_natDegree_le_one
       have hdegC : (C α : ℝ[X]).natDegree ≤ 1 := by simp
-      have hdegmul : (C β * (X - C u : ℝ[X])).natDegree ≤ 1 := by
-        exact (natDegree_C_mul_le β (X - C u : ℝ[X])).trans (by simp)
+      have hdegmul : (C β * (X - C u : ℝ[X])).natDegree ≤ 1 :=
+        (natDegree_C_mul_le β (X - C u : ℝ[X])).trans (by simp)
       exact natDegree_add_le_of_le hdegC hdegmul
     have hfact :
         C α * r + C β * ((X - C u) * r) =
@@ -243,18 +240,16 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree {f g : ℝ[X]
       hfg.natDegree_le with ⟨c, hc_nonneg, hcdeg⟩
   let roots : List ℝ := g.roots.toFinset.toList
   have hroots_nodup : roots.Nodup := Finset.nodup_toList _
-  have hroot : ∀ u ∈ roots, g.IsRoot u := by
-    intro u hu
-    exact (mem_roots hfg.2.1.1).mp
+  have hroot : ∀ u ∈ roots, g.IsRoot u :=
+    fun _ hu => (mem_roots hfg.2.1.1).mp
       (Multiset.mem_toFinset.mp (Finset.mem_toList.mp hu))
   have hdata : ∀ u ∈ roots, ∃ a : ℝ, ∃ q : ℝ[X],
       0 ≤ a ∧
         g = (X - C u) * q ∧
         IsGWKreinSummand g q ∧
         (X - C u) ^ (g.rootMultiplicity u) ∣
-          f - C c * g - C a * q := by
-    intro u hu
-    exact exists_kreinCoefficientData_nonneg_of_right_isRoot hfg hfpos hgpos
+          f - C c * g - C a * q :=
+    fun u hu => exists_kreinCoefficientData_nonneg_of_right_isRoot hfg hfpos hgpos
       hfg.2.1.2 c (hroot u hu)
   choose a q ha hfactor hsummand hgain using hdata
   let a' : ℝ → ℝ := fun u => if hu : u ∈ roots then a u hu else 0
@@ -276,9 +271,8 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree {f g : ℝ[X]
         hfg.2.1.1 roots hroots_nodup a' q' hfactor' hgain'
   have hdiv_all_roots : ∀ u ∈ g.roots,
       (X - C u) ^ (g.rootMultiplicity u) ∣
-        f - C c * g - weightedSum tail := by
-    intro u hu
-    exact hdiv_roots u (by
+        f - C c * g - weightedSum tail :=
+    fun u hu => hdiv_roots u (by
       rw [Finset.mem_toList, Multiset.mem_toFinset]
       exact hu)
   have hdiv : g ∣ f - C c * g - weightedSum tail :=
@@ -315,9 +309,8 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree {f g : ℝ[X]
       simp [q', hu, hsummand u hu]
   have hex : ∃ ap ∈ l, 0 < ap.1 := by
     by_contra hnot
-    have hzero_weights : ∀ ap ∈ l, ap.1 = 0 := by
-      intro ap hap
-      exact le_antisymm
+    have hzero_weights : ∀ ap ∈ l, ap.1 = 0 :=
+      fun ap hap => le_antisymm
         (not_lt.mp fun hpos => hnot ⟨ap, hap, hpos⟩)
         (hnonneg ap hap)
     have hws0 : weightedSum l = 0 :=
@@ -504,24 +497,8 @@ theorem gwTheorem11StrictInterl :
 @[deprecated strictInterl_self_X_sub_C_mul (since := "2026-09-18")]
 alias prec_self_X_sub_C_mul := strictInterl_self_X_sub_C_mul
 
-@[deprecated gwJL_strictInterl_of_kreinSummandExpansion (since := "2026-09-18")]
-alias gwJL_prec_of_kreinSummandExpansion := gwJL_strictInterl_of_kreinSummandExpansion
-
-@[deprecated gwTheorem11StrictInterlKreinSummandExpansionStatement
-  (since := "2026-09-18")]
-abbrev gwTheorem11PrecKreinSummandExpansionStatement :=
-  gwTheorem11StrictInterlKreinSummandExpansionStatement
-
-@[deprecated gwTheorem11StrictInterl_of_kreinSummandExpansion
-  (since := "2026-09-18")]
-alias gwTheorem11Prec_of_kreinSummandExpansion :=
-  gwTheorem11StrictInterl_of_kreinSummandExpansion
-
 @[deprecated gwTheorem11StrictInterlKreinSummandExpansion (since := "2026-09-18")]
 alias gwTheorem11PrecKreinSummandExpansion :=
   gwTheorem11StrictInterlKreinSummandExpansion
-
-@[deprecated gwTheorem11StrictInterl (since := "2026-09-18")]
-alias gwTheorem11Prec := gwTheorem11StrictInterl
 
 end RealRooted

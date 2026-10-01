@@ -64,18 +64,18 @@ theorem cast_choose_sq_sub_choose_pred_mul_choose_succ_eq
         (Nat.choose n k : R) * (k : R) / ((n + 1 - k : ℕ) : R) := by
     rw [← hden_prev_nat]
     field_simp [hden_prev_ne]
-    nlinarith [hprev_raw]
+    linarith [hprev_raw]
   have hnext :
       (Nat.choose n (k + 1) : R) =
         (Nat.choose n k : R) * ((n - k : ℕ) : R) / (k + 1 : R) := by
     field_simp [hk_succ_ne]
-    nlinarith [hnext_raw]
+    linarith [hnext_raw]
   have hsucc :
       (Nat.choose (n + 1) k : R) =
         (Nat.choose n k : R) * ((n + 1 : ℕ) : R) /
           ((n + 1 - k : ℕ) : R) := by
     field_simp [hden_succ_ne]
-    nlinarith [hsucc_raw]
+    linarith [hsucc_raw]
   have hnk_cast : ((n - k : ℕ) : R) = (n : R) - (k : R) := by rw [Nat.cast_sub hkn]
   have hnkp1_cast : ((n + 1 - k : ℕ) : R) = (n : R) + 1 - (k : R) := by
     rw [Nat.cast_sub (by lia : k ≤ n + 1)]

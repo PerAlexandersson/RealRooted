@@ -434,7 +434,7 @@ theorem splits_of_monic_of_coeff_approx {f : ℝ[X]} (hf : f.Monic)
       dsimp [ε]
       have hpow : 0 < q ^ f.natDegree := pow_pos hq _
       field_simp
-      nlinarith
+      linarith
     have hbound :
         (((f.natDegree + 1 : ℕ) : ℝ) * ε) ^ ((f.natDegree : ℝ)⁻¹) *
             max ‖z‖ 1 < |z.im| := by
@@ -520,8 +520,8 @@ theorem eval_endpoint_pos_of_forall_ne_zero
     (hle : t₀ ≤ t₁)
     (hcont : ContinuousOn (fun t => (p t).eval a) (Set.Icc t₀ t₁))
     (hne : ∀ t ∈ Set.Icc t₀ t₁, (p t).eval a ≠ 0) :
-    0 < (p t₀).eval a * (p t₁).eval a := by
-  exact mul_pos_of_forall_ne_zero_Icc hle hcont hne
+    0 < (p t₀).eval a * (p t₁).eval a :=
+  mul_pos_of_forall_ne_zero_Icc hle hcont hne
 
 /-- A polynomial with no roots on a closed real interval has endpoint
 evaluations with the same nonzero sign. -/
@@ -541,9 +541,8 @@ theorem exists_forall_isRoot_add_right_abs_le_of_right_not_isRoot_Icc
     ∃ K : ℝ, 0 < K ∧
       ∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → |μ| ≤ K := by
   let ρ : ℝ → ℝ := fun z => - f.eval z / g.eval z
-  have hg_eval_ne : ∀ z ∈ Set.Icc a b, g.eval z ≠ 0 := by
-    intro z hz
-    exact (Polynomial.not_isRoot_iff_eval_ne_zero g z).mp (hg_no z hz)
+  have hg_eval_ne : ∀ z ∈ Set.Icc a b, g.eval z ≠ 0 :=
+    fun z hz => (Polynomial.not_isRoot_iff_eval_ne_zero g z).mp (hg_no z hz)
   have hρ_cont : ContinuousOn ρ (Set.Icc a b) := by
     have hf_cont : ContinuousOn (fun z : ℝ => - f.eval z) (Set.Icc a b) :=
       f.continuous.neg.continuousOn
@@ -851,29 +850,6 @@ theorem card_roots_filter_all_eq_of_no_isRoot_Ioc_lt
     card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hab h,
     card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc_lt hab h⟩
 
-/-- Lower root-count projection from the bundled strict-interval constancy
-theorem. -/
-theorem card_roots_filter_le_eq_of_all_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ b)).card :=
-  (card_roots_filter_all_eq_of_no_isRoot_Ioc_lt hab h).1
-
-/-- Upper root-count projection from the bundled strict-interval constancy
-theorem. -/
-theorem card_roots_filter_gt_eq_of_all_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (a < ·)).card = (p.roots.filter (b < ·)).card :=
-  (card_roots_filter_all_eq_of_no_isRoot_Ioc_lt hab h).2.1
-
-/-- Window-count projection from the bundled strict-interval constancy theorem. -/
-theorem card_roots_filter_Ioc_eq_zero_of_all_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (fun x => a < x ∧ x ≤ b)).card = 0 :=
-  (card_roots_filter_all_eq_of_no_isRoot_Ioc_lt hab h).2.2
-
 /-- Non-strict bundled lower/upper root-count constancy across a root-free
 window. -/
 theorem card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc
@@ -913,11 +889,11 @@ theorem card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt_trans
       (p.roots.filter (a < ·)).card = (p.roots.filter (c < ·)).card := by
   constructor
   · exact
-      (card_roots_filter_le_eq_of_all_no_isRoot_Ioc_lt hab hab_no).trans
-        (card_roots_filter_le_eq_of_all_no_isRoot_Ioc_lt hbc hbc_no)
+      (card_roots_filter_le_eq_of_no_isRoot_Ioc_lt hab hab_no).trans
+        (card_roots_filter_le_eq_of_no_isRoot_Ioc_lt hbc hbc_no)
   · exact
-      (card_roots_filter_gt_eq_of_all_no_isRoot_Ioc_lt hab hab_no).trans
-        (card_roots_filter_gt_eq_of_all_no_isRoot_Ioc_lt hbc hbc_no)
+      (card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hab hab_no).trans
+        (card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hbc hbc_no)
 
 /-- Transitive bundled strict-interval lower/upper/window root-count constancy
 across two adjacent root-free windows. -/

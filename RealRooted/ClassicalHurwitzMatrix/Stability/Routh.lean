@@ -346,7 +346,7 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_oddShape
     simp only [Polynomial.derivative_C_mul, Polynomial.eval_mul,
       Polynomial.eval_C]
     dsimp only [t]
-    have hsquare' : s ^ 2 = 1 := by nlinarith [hsquare]
+    have hsquare' : s ^ 2 = 1 := by linarith [hsquare]
     ring_nf
     rw [hsquare']
     ring
@@ -395,7 +395,7 @@ theorem IsStrictlyHurwitzStable.strictInterl_parts_of_evenShape
   have hprod : 0 < even.derivative.eval r * odd.eval r :=
     pos_of_mul_pos_right hW (by positivity)
   simp only [mul_zero, zero_sub]
-  nlinarith
+  linarith
 
 /-- In the odd-degree parity shape, strict stability descends from the
 rotated Hermite--Biehler pair to strict same-degree interlacing of the
@@ -671,21 +671,5 @@ theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
       hstrictInterlQ hqnn hq0 (by lia)
   change StrictInterl q.divX odd ∧ HasNonnegCoeffs q.divX
   exact ⟨hredStrictInterl, hqnn.divX⟩
-
-@[deprecated IsStrictlyHurwitzStable.strictInterl_parts_of_evenShape
-  (since := "2026-09-18")]
-alias IsStrictlyHurwitzStable.prec_parts_of_evenShape :=
-  IsStrictlyHurwitzStable.strictInterl_parts_of_evenShape
-
-@[deprecated IsStrictlyHurwitzStable.strictInterl_parts_of_oddShape
-  (since := "2026-09-18")]
-alias IsStrictlyHurwitzStable.prec_parts_of_oddShape :=
-  IsStrictlyHurwitzStable.strictInterl_parts_of_oddShape
-
-@[deprecated
-  IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
-  (since := "2026-09-18")]
-alias IsStrictlyHurwitzStable.prec_routhReducedOddPart_of_evenShape :=
-  IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
 
 end RealRooted

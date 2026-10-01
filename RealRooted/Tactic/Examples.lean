@@ -124,6 +124,9 @@ import RealRooted.Tactic.Examples.OEISTestbed.MixedDenominator
 import RealRooted.Tactic.Examples.OEISTestbed.NegativeSquare
 import RealRooted.Tactic.Examples.OEISTestbed.PromotedMixed
 import RealRooted.Tactic.Examples.OEISTestbedLS4
+import RealRooted.Tactic.Examples.Product.Interlacing
+import RealRooted.Tactic.Examples.RowData
+import RealRooted.Tactic.Examples.RowInterlacing
 
 /-!
 # RealRooted tactic examples

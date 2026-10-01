@@ -183,21 +183,6 @@ def CompatibleSuccDegreeNegativeRightFamilyNonnegStatement : Prop :=
     f.Splits →
     ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits
 
-/-- Coefficient-free compatible succ-degree orientation shortcut.  The forced
-interlacing orientation `f ≪ g` is false in general; this statement remains
-only as a named failed route. -/
-def CompatibleSuccDegreeStrictInterlStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    StrictInterl f g
-
-@[deprecated CompatibleSuccDegreeStrictInterlStatement (since := "2026-09-18")]
-abbrev CompatibleSuccDegreePrecStatement := CompatibleSuccDegreeStrictInterlStatement
-
 /-- Exact lower-threshold endpoint-sign comparison expected from the
 left-endpoint/count-stability picture. -/
 def CompatibleSuccDegreeEndpointSignLowerCountEqStatement : Prop :=
@@ -671,7 +656,7 @@ theorem rightFamily_not_isRoot_of_eval_mul_pos
     linarith
   by_cases hf_pos : 0 < f.eval x
   · have hg_pos : 0 < g.eval x := by nlinarith
-    have hpos : 0 < f.eval x + μ * g.eval x := by nlinarith
+    have hpos : 0 < f.eval x + μ * g.eval x := by positivity
     linarith
   · have hf_neg : f.eval x < 0 :=
       lt_of_le_of_ne (le_of_not_gt hf_pos) hf_ne
@@ -740,8 +725,8 @@ theorem closedSegment_not_isRoot_add_right_of_nonneg
     rw [div_le_one hden_pos]
     linarith
   intro hroot
-  have hseg_root : (C (1 - μ / (μ + 1)) * f + C (μ / (μ + 1)) * g).IsRoot x := by
-    exact (closedSegment_isRoot_iff_add_right_of_nonneg (f := f) (g := g)
+  have hseg_root : (C (1 - μ / (μ + 1)) * f + C (μ / (μ + 1)) * g).IsRoot x :=
+    (closedSegment_isRoot_iff_add_right_of_nonneg (f := f) (g := g)
       (x := x) hμ).2 hroot
   exact hseg hβ0 hβ1 hseg_root
 
@@ -812,78 +797,6 @@ theorem compatibleSuccDegreeNegativeRightFamily_of_allCombo
   exact compatibleSuccDegreeSignedRightFamily_of_allCombo hallTarget
     hcomp hf_pos hg_pos hdeg hf_split μ
 
-/-- The all-combinations target implies the nonnegative-coefficient negative
-right-pencil target. -/
-theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_allCombo
-    (hallTarget : CompatibleSuccDegreeAllComboStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyNonnegStatement := by
-  intro f g hcomp hf_pos hg_pos _ _ hdeg hf_split μ hμ
-  exact compatibleSuccDegreeNegativeRightFamily_of_allCombo hallTarget
-    hcomp hf_pos hg_pos hdeg hf_split μ hμ
-
-/-- Degree-zero base case for the nonnegative-coefficient negative right-pencil
-target.  If the lower-degree endpoint is constant, the pencil has degree at
-most one for every parameter. -/
-theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_natDegree_eq_zero
-    {f g : ℝ[X]}
-    (_hcomp : Compatible f g)
-    (_hf_pos : HasPosLeadingCoeff f)
-    (_hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f)
-    (_hgnn : HasNonnegCoeffs g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (_hf_split : f.Splits)
-    (hfdeg : f.natDegree = 0)
-    (μ : ℝ) (_hμ : μ < 0) :
-    (f + C μ * g).Splits := by
-  apply Polynomial.Splits.of_natDegree_le_one
-  calc
-    (f + C μ * g).natDegree ≤ max f.natDegree (C μ * g).natDegree :=
-      Polynomial.natDegree_add_le _ _
-    _ ≤ 1 := by
-      have hmul : (C μ * g).natDegree ≤ g.natDegree :=
-        Polynomial.natDegree_C_mul_le μ g
-      rw [hdeg, hfdeg] at hmul
-      rw [hfdeg]
-      exact max_le (by norm_num) (by simpa using hmul)
-
-/-- The signed right-pencil family gives the whole all-combinations target by
-scaling every nonzero left coefficient to `1`. -/
-theorem compatibleSuccDegreeAllCombo_of_signedRightFamily
-    (hsigned : CompatibleSuccDegreeSignedRightFamilyStatement) :
-    CompatibleSuccDegreeAllComboStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split α β
-  by_cases hα : α = 0
-  · have hfg : PosComboRealRooted f g :=
-      hcomp.toPosComboRealRooted hf_pos hg_pos
-    have hg_split : g.Splits :=
-      (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
-    simpa [hα] using (Polynomial.Splits.C (R := ℝ) β).mul hg_split
-  · have hright : (f + C (β / α) * g).Splits :=
-      hsigned hcomp hf_pos hg_pos hdeg hf_split (β / α)
-    have hscale : C α * (f + C (β / α) * g) = C α * f + C β * g := by
-      rw [mul_add]
-      congr 1
-      have hαβ : α * (β / α) = β := by field_simp [hα]
-      calc
-        C α * (C (β / α) * g) = C (α * (β / α)) * g := by grind
-        _ = C β * g := by rw [hαβ]
-    rw [← hscale]
-    exact (Polynomial.Splits.C (R := ℝ) α).mul hright
-
-/-- It is enough to prove the negative half of the right pencil: compatibility
-already gives the nonnegative half. -/
-theorem compatibleSuccDegreeSignedRightFamily_of_negativeRightFamily
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyStatement) :
-    CompatibleSuccDegreeSignedRightFamilyStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split μ
-  by_cases hμ : 0 ≤ μ
-  · rcases hcomp 1 μ zero_le_one hμ with hzero | hrr
-    · have htarget_zero : f + C μ * g = 0 := by simpa using hzero
-      simp [htarget_zero]
-    · simpa using hrr.2
-  · exact hneg hcomp hf_pos hg_pos hdeg hf_split μ (lt_of_not_ge hμ)
-
 /-- Splitting descends through translation by `X + r`. -/
 lemma splits_of_comp_X_add_C_splits
     {p : ℝ[X]} (r : ℝ) (hp : (p.comp (X + C r)).Splits) :
@@ -894,135 +807,6 @@ lemma splits_of_comp_X_add_C_splits
     have hback := isRealRooted_comp_X_add_C hq0 hp (-r)
     simpa [Polynomial.comp_assoc, add_assoc, add_left_comm, add_comm, sub_eq_add_neg]
       using hback.2
-
-/-- The coefficient-free negative right-pencil target reduces to the
-nonnegative-coefficient target by translating both endpoints far enough that
-their roots are nonpositive. -/
-theorem compatibleSuccDegreeNegativeRightFamily_of_nonnegShift
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyNonnegStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split μ hμ
-  have hfg : PosComboRealRooted f g :=
-    hcomp.toPosComboRealRooted hf_pos hg_pos
-  have hg_split : g.Splits :=
-    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
-  obtain ⟨rf, hrf⟩ := exists_root_upper_bound f
-  obtain ⟨rg, hrg⟩ := exists_root_upper_bound g
-  let r : ℝ := max rf rg
-  let f' : ℝ[X] := f.comp (X + C r)
-  let g' : ℝ[X] := g.comp (X + C r)
-  have hcomp' : Compatible f' g' := by simpa [f', g'] using hcomp.comp_X_add_C r
-  have hf'_pos : HasPosLeadingCoeff f' := by simpa [f'] using hf_pos.comp_X_add_C r
-  have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
-  have hfnn : HasNonnegCoeffs f' := by
-    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hf_pos hf_split ?_
-    grind
-  have hgnn : HasNonnegCoeffs g' := by
-    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hg_pos hg_split ?_
-    grind
-  have hdeg' : g'.natDegree = f'.natDegree + 1 := by
-    simpa [f', g', Polynomial.natDegree_comp] using hdeg
-  have hf'_split : f'.Splits :=
-    (isRealRooted_comp_X_add_C hf_pos.ne_zero hf_split r).2
-  have hshift : (f' + C μ * g').Splits :=
-    hneg hcomp' hf'_pos hg'_pos hfnn hgnn hdeg' hf'_split μ hμ
-  have htranslate :
-      (f + C μ * g).comp (X + C r) = f' + C μ * g' := by
-    simp [f', g']
-  exact splits_of_comp_X_add_C_splits r (by simpa [htranslate] using hshift)
-
-/-- The negative right-pencil target implies the all-combinations target. -/
-theorem compatibleSuccDegreeAllCombo_of_negativeRightFamily
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyStatement) :
-    CompatibleSuccDegreeAllComboStatement :=
-  compatibleSuccDegreeAllCombo_of_signedRightFamily
-    (compatibleSuccDegreeSignedRightFamily_of_negativeRightFamily hneg)
-
-/-- The nonnegative-coefficient negative right-pencil target implies the
-all-combinations target. -/
-theorem compatibleSuccDegreeAllCombo_of_negativeRightFamily_nonnegShift
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyNonnegStatement) :
-    CompatibleSuccDegreeAllComboStatement :=
-  compatibleSuccDegreeAllCombo_of_negativeRightFamily
-    (compatibleSuccDegreeNegativeRightFamily_of_nonnegShift hneg)
-
-/-- The compatible succ-degree all-combinations target implies the forced
-interlacing orientation, by Obreschkoff's converse and degree orientation.
--/
-theorem compatibleSuccDegreeStrictInterl_of_allCombo
-    (hallTarget : CompatibleSuccDegreeAllComboStatement) :
-    CompatibleSuccDegreeStrictInterlStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split
-  have hall : AllComboRealRooted f g :=
-    hallTarget hcomp hf_pos hg_pos hdeg hf_split
-  have hg_rr : (g ≠ 0 ∧ g.Splits) :=
-    hall.isRealRooted_right hg_pos.ne_zero
-  have horient : StrictInterl f g ∨ StrictInterl g f :=
-    strictInterl_of_allComboRealRooted
-      hf_pos.ne_zero hf_split hg_rr.1 hg_rr.2 hall (Or.inl hdeg.symm)
-  exact StrictInterl.forward_of_orientation_of_succDegree hdeg horient
-
-@[deprecated compatibleSuccDegreeStrictInterl_of_allCombo (since := "2026-09-18")]
-alias compatibleSuccDegreePrec_of_allCombo := compatibleSuccDegreeStrictInterl_of_allCombo
-
-/-- The signed right-pencil target implies the forced succ-degree
-orientation. -/
-theorem compatibleSuccDegreeStrictInterl_of_signedRightFamily
-    (hsigned : CompatibleSuccDegreeSignedRightFamilyStatement) :
-    CompatibleSuccDegreeStrictInterlStatement :=
-  compatibleSuccDegreeStrictInterl_of_allCombo
-    (compatibleSuccDegreeAllCombo_of_signedRightFamily hsigned)
-
-@[deprecated compatibleSuccDegreeStrictInterl_of_signedRightFamily (since := "2026-09-18")]
-alias compatibleSuccDegreePrec_of_signedRightFamily :=
-  compatibleSuccDegreeStrictInterl_of_signedRightFamily
-
-/-- The negative right-pencil target implies the forced succ-degree
-orientation. -/
-theorem compatibleSuccDegreeStrictInterl_of_negativeRightFamily
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyStatement) :
-    CompatibleSuccDegreeStrictInterlStatement :=
-  compatibleSuccDegreeStrictInterl_of_allCombo
-    (compatibleSuccDegreeAllCombo_of_negativeRightFamily hneg)
-
-@[deprecated compatibleSuccDegreeStrictInterl_of_negativeRightFamily (since := "2026-09-18")]
-alias compatibleSuccDegreePrec_of_negativeRightFamily :=
-  compatibleSuccDegreeStrictInterl_of_negativeRightFamily
-
-/-- The nonnegative-coefficient negative right-pencil target implies the forced
-succ-degree orientation. -/
-theorem compatibleSuccDegreeStrictInterl_of_negativeRightFamily_nonnegShift
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyNonnegStatement) :
-    CompatibleSuccDegreeStrictInterlStatement :=
-  compatibleSuccDegreeStrictInterl_of_negativeRightFamily
-    (compatibleSuccDegreeNegativeRightFamily_of_nonnegShift hneg)
-
-@[deprecated compatibleSuccDegreeStrictInterl_of_negativeRightFamily_nonnegShift
-  (since := "2026-09-18")]
-alias compatibleSuccDegreePrec_of_negativeRightFamily_nonnegShift :=
-  compatibleSuccDegreeStrictInterl_of_negativeRightFamily_nonnegShift
-
-/-- The no-common positive-combination orientation core implies the
-coefficient-free compatible succ-degree orientation target.  Shared roots are
-handled by the existing positive-combination common-root induction, and the
-succ-degree hypothesis selects the forward orientation. -/
-theorem compatibleSuccDegreeStrictInterl_of_noCommonOrientation
-    (hstep : PosComboNoCommonOrientationStatement) :
-    CompatibleSuccDegreeStrictInterlStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg _hf_split
-  have hfg : PosComboRealRooted f g :=
-    hcomp.toPosComboRealRooted hf_pos hg_pos
-  have horient : StrictInterl f g ∨ StrictInterl g f :=
-    PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
-      (hstep := fun {f g} hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
-        hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
-      hfg hf_pos hg_pos (by lia) (by lia)
-  exact StrictInterl.forward_of_orientation_of_succDegree hdeg horient
-
-@[deprecated compatibleSuccDegreeStrictInterl_of_noCommonOrientation
-  (since := "2026-09-18")]
-alias compatibleSuccDegreePrec_of_noCommonOrientation :=
-  compatibleSuccDegreeStrictInterl_of_noCommonOrientation
 
 /-- The exact lower-count endpoint comparison implies the lower-threshold
 endpoint-sign exact gap obstruction. -/
@@ -1061,22 +845,6 @@ theorem compatibleSuccDegreeEndpointSignNoGapTwo_of_lowerCountEq
   compatibleSuccDegreeEndpointSignNoGapTwo_of_lower
     (compatibleSuccDegreeEndpointSignLowerNoGap_of_lowerCountEq hcount)
 
-/-- The lower-threshold endpoint-sign target implies the right-family
-no-gap-two theorem. -/
-theorem compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    CompatibleSuccDegreeRightFamilyNoGapTwoStatement :=
-  compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSign
-    (compatibleSuccDegreeEndpointSignNoGapTwo_of_lower hlower)
-
-/-- The exact lower-count endpoint comparison implies the right-family
-no-gap-two theorem. -/
-theorem compatibleSuccDegreeRightFamilyNoGapTwo_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeRightFamilyNoGapTwoStatement :=
-  compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSign
-    (compatibleSuccDegreeEndpointSignNoGapTwo_of_lowerCountEq hcount)
-
 /-- The endpoint-sign no-gap-two theorem implies the closed-segment
 no-gap-two theorem. -/
 theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSign
@@ -1102,22 +870,6 @@ theorem compatibleSuccDegreeClosedSegmentNoGapTwo_iff_endpointSign :
       CompatibleSuccDegreeEndpointSignNoGapTwoStatement :=
   ⟨compatibleSuccDegreeEndpointSignNoGapTwo_of_closedSegment,
     compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSign⟩
-
-/-- The lower-threshold endpoint-sign target implies the closed-segment
-no-gap-two theorem. -/
-theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement :=
-  compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSign
-    (compatibleSuccDegreeEndpointSignNoGapTwo_of_lower hlower)
-
-/-- The exact lower-count endpoint comparison implies the closed-segment
-no-gap-two theorem. -/
-theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement :=
-  compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSign
-    (compatibleSuccDegreeEndpointSignNoGapTwo_of_lowerCountEq hcount)
 
 /-- Closed-segment endpoint count equality excludes both exact upper
 root-count gaps of two. -/
@@ -1200,31 +952,6 @@ theorem compatibleSuccDegreeClosedSegmentCountEq_iff_lowerCountEq :
   ⟨compatibleSuccDegreeEndpointSignLowerCountEq_of_closedSegmentCountEq,
     compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq⟩
 
-/-- Closed-segment endpoint count equality gives interval count equality
-between any two common non-root thresholds that are not crossed by the closed
-segment.  This is the interval-count bookkeeping used in the
-Chudnovsky--Seymour `3.3` route. -/
-theorem compatibleSuccDegree_roots_Ioo_eq_of_closedSegmentCountEq
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement)
-    {f g : ℝ[X]}
-    (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits)
-    {a b : ℝ} (hab : a ≤ b)
-    (hfa : ¬ f.IsRoot a) (hga : ¬ g.IsRoot a)
-    (hfb : ¬ f.IsRoot b) (hgb : ¬ g.IsRoot b)
-    (hsega : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-      ¬ (C (1 - β) * f + C β * g).IsRoot a)
-    (hsegb : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-      ¬ (C (1 - β) * f + C β * g).IsRoot b) :
-    (f.roots.filter (fun r => a < r ∧ r < b)).card =
-      (g.roots.filter (fun r => a < r ∧ r < b)).card :=
-  card_roots_filter_Ioo_eq_of_card_filter_gt_eq
-    hf_pos.ne_zero hg_pos.ne_zero hab hfb hgb
-    (hcount hcomp hf_pos hg_pos hdeg hf_split a hfa hga hsega)
-    (hcount hcomp hf_pos hg_pos hdeg hf_split b hfb hgb hsegb)
-
 /-- The closed-segment no-gap-two theorem implies the compatible exact
 gap-two obstruction, since an assumed exact gap two supplies the required
 closed-segment nonvanishing by the endpoint sign lemma. -/
@@ -1249,15 +976,6 @@ theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegment
         compatibleSuccDegree_closedSegment_not_isRoot_of_rev_roots_gt_count_sub_eq_two
           hcomp hf_pos hg_pos hdeg hf_split hβ0 hβ1 hxf hxg hcount
     exact (hclosed hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg).2 hcount
-
-/-- A gap-at-most-two theorem plus the closed-segment no-gap-two theorem gives
-the compatible succ-degree common-non-root upper root-count leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_closedSegment
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
-  compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo hle2
-    (compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegment hclosed)
 
 /-- The right-pencil no-gap-two theorem implies the compatible exact gap-two
 obstruction. -/
@@ -1289,50 +1007,6 @@ theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_lowerCountEq
     (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
     CompatibleSuccDegreeRootCountAboveNoGapTwoStatement :=
   compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSign
-    (compatibleSuccDegreeEndpointSignNoGapTwo_of_lowerCountEq hcount)
-
-/-- Closed-segment endpoint count equality implies the compatible exact
-gap-two obstruction. -/
-theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegmentCountEq
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    CompatibleSuccDegreeRootCountAboveNoGapTwoStatement :=
-  compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegment
-    (compatibleSuccDegreeClosedSegmentNoGapTwo_of_countEq hcount)
-
-/-- A gap-at-most-two theorem plus the right-pencil no-gap-two theorem gives
-the compatible succ-degree common-non-root upper root-count leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_rightFamily
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
-  compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo hle2
-    (compatibleSuccDegreeRootCountAboveNoGapTwo_of_rightFamily hright)
-
-/-- A gap-at-most-two theorem plus the endpoint-sign no-gap-two theorem gives
-the compatible succ-degree common-non-root upper root-count leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_endpointSign
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
-  compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo hle2
-    (compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSign hsign)
-
-/-- A gap-at-most-two theorem plus the lower-threshold endpoint-sign target
-gives the compatible succ-degree common-non-root upper root-count leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_endpointSignLower
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
-  compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_endpointSign hle2
-    (compatibleSuccDegreeEndpointSignNoGapTwo_of_lower hlower)
-
-/-- A gap-at-most-two theorem plus the exact lower-count endpoint comparison
-gives the compatible succ-degree common-non-root upper root-count leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_lowerCountEq
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
-  compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_endpointSign hle2
     (compatibleSuccDegreeEndpointSignNoGapTwo_of_lowerCountEq hcount)
 
 /-- If the threshold is never a root of a nonnegative right-pencil member, then
@@ -1433,84 +1107,5 @@ theorem succDegree_even_roots_le_count_sub_iff_eval_mul_neg
   exact (succDegree_even_roots_le_count_sub_iff_exists_pos_isRoot_add_right
     hf_pos hg_pos hfg hdeg hf_split hxf hxg).trans
     (exists_pos_isRoot_add_right_iff_eval_mul_neg hfx_eval)
-
-/-- The compatible succ-degree orientation target implies the exact
-lower-count endpoint comparison.  The oriented `StrictInterl` count bounds leave only
-the cases `g_le - f_le = 0` and `g_le - f_le = 1`; same-sign endpoint
-evaluations rule out the even zero case by the succ-degree lower-count parity
-bridge. -/
-theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl
-    (hstrictInterlTarget : CompatibleSuccDegreeStrictInterlStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
-  have hstrictInterl : StrictInterl f g :=
-    hstrictInterlTarget hcomp hf_pos hg_pos hdeg hf_split
-  obtain ⟨hfg_le, hgf_le⟩ :=
-    succDegreeRootCountLowerOriented_of_strictInterl hstrictInterl hdeg x
-  have hnot_even :
-      ¬ Even (((f.roots.filter (· ≤ x)).card : ℤ) -
-        (g.roots.filter (· ≤ x)).card) := by
-    intro heven
-    have hneg :=
-      (succDegree_even_roots_le_count_sub_iff_eval_mul_neg
-        hf_pos hg_pos (hcomp.toPosComboRealRooted hf_pos hg_pos)
-        hdeg hf_split hxf hxg).mp heven
-    linarith
-  by_contra hne
-  let d : ℤ :=
-    ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card
-  have hd_nonneg : 0 ≤ d := by
-    dsimp [d]
-    linarith
-  have hd_le_one : d ≤ 1 := by
-    dsimp [d]
-    linarith
-  have hd_ne_one : d ≠ 1 := by simpa [d] using hne
-  have hd_le_zero : d ≤ 0 :=
-    Int.lt_add_one_iff.mp (lt_of_le_of_ne hd_le_one hd_ne_one)
-  have hd_zero : d = 0 := le_antisymm hd_le_zero hd_nonneg
-  have hfg_zero :
-      ((f.roots.filter (· ≤ x)).card : ℤ) -
-        (g.roots.filter (· ≤ x)).card = 0 := by
-    dsimp [d] at hd_zero
-    linarith
-  exact hnot_even (by rw [hfg_zero]; norm_num)
-
-@[deprecated compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl
-  (since := "2026-09-18")]
-alias compatibleSuccDegreeEndpointSignLowerCountEq_of_prec :=
-  compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl
-
-/-- The compatible succ-degree all-combinations target implies the exact
-lower-count endpoint comparison. -/
-theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_allCombo
-    (hallTarget : CompatibleSuccDegreeAllComboStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement :=
-  compatibleSuccDegreeEndpointSignLowerCountEq_of_strictInterl
-    (compatibleSuccDegreeStrictInterl_of_allCombo hallTarget)
-
-/-- The signed right-pencil target implies the exact lower-count endpoint
-comparison. -/
-theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_signedRightFamily
-    (hsigned : CompatibleSuccDegreeSignedRightFamilyStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement :=
-  compatibleSuccDegreeEndpointSignLowerCountEq_of_allCombo
-    (compatibleSuccDegreeAllCombo_of_signedRightFamily hsigned)
-
-/-- The negative right-pencil target implies the exact lower-count endpoint
-comparison. -/
-theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_negativeRightFamily
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement :=
-  compatibleSuccDegreeEndpointSignLowerCountEq_of_allCombo
-    (compatibleSuccDegreeAllCombo_of_negativeRightFamily hneg)
-
-/-- The nonnegative-coefficient negative right-pencil target implies the exact
-lower-count endpoint comparison. -/
-theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_negativeRightFamily_nonnegShift
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyNonnegStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement :=
-  compatibleSuccDegreeEndpointSignLowerCountEq_of_negativeRightFamily
-    (compatibleSuccDegreeNegativeRightFamily_of_nonnegShift hneg)
 
 end RealRooted

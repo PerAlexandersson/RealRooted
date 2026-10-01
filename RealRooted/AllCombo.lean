@@ -183,6 +183,16 @@ lemma allComboRealRooted_iterateTDeriv
     AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g) :=
   fun α β ↦ by simpa [iterateTDeriv_linear_combo] using splits_iterateTDeriv heps <| hall α β
 
+/-- Applying the same iterated derivative shift to both members preserves the
+full real-rooted pencil, with no sign restriction on the shift. -/
+lemma allComboRealRooted_iterateTDeriv_all
+    {f g : ℝ[X]} (hall : AllComboRealRooted f g)
+    (eps : ℝ) (k : ℕ) :
+    AllComboRealRooted (iterateTDeriv eps k f) (iterateTDeriv eps k g) := by
+  intro a b
+  rw [← iterateTDeriv_linear_combo]
+  exact splits_iterateTDeriv_all (hall a b) k
+
 lemma hasSimpleRoots_tderiv
     {eps : ℝ} {p : ℝ[X]}
     (heps : 0 < eps)

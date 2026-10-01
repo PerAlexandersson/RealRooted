@@ -122,7 +122,7 @@ theorem quadraticBidiagonalPFPreserver_of_cubicResidualCertificate
     BidiagonalPFPreserver
       (quadraticJensenWeight aa ab ac)
       (quadraticJensenWeight ba bb bc) d :=
-  bidiagonalPFPreserver_of_cubicResidualCertificate
+  BidiagonalCubicResidualCertificate.toPFPreserver
     (quadraticBidiagonalCubicResidualCertificate aa ab ac ba bb bc hd hA hB hS)
 
 /-- Quadratic residual certificate route for the canonical coefficient
@@ -140,7 +140,7 @@ theorem secondDerivativeBidiagonalPFPreserver_of_cubicResidualCertificate
     BidiagonalPFPreserver
       (fun k => secondDerivativeQuadraticCoeff a0 b1 c2 k)
       (fun k => secondDerivativeQuadraticCoeff a1 b2 c3 k) d :=
-  bidiagonalPFPreserver_of_cubicResidualCertificate
+  BidiagonalCubicResidualCertificate.toPFPreserver
     (secondDerivativeBidiagonalCubicResidualCertificate hd hA hB hS)
 
 

@@ -1,4 +1,4 @@
-import RealRooted.MultiaffineReciprocal
+import RealRooted.Multiaffine.Reciprocal
 import RealRooted.RectangularPolarization
 
 /-!

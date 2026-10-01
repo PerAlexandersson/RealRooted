@@ -98,7 +98,7 @@ lemma splits_X_mul_sub_C_mul_of_natDegree_one_zero
   have hprod : 0 < 4 * a * μ * c := by positivity
   have hdisc : 0 ≤ discrim a b (-μ * c) := by
     rw [discrim]
-    nlinarith [sq_nonneg b, hprod]
+    linarith [sq_nonneg b, hprod]
   simpa [hpoly] using quadraticPoly_splits_of_discrim_nonneg ha_pos.ne' hdisc
 
 /-- Degree-zero right endpoint base case for the sign-normalized x-subtraction

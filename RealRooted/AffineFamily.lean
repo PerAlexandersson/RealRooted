@@ -501,7 +501,7 @@ private lemma strictInterl_right_pair_of_affine_family_high_degree
           (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
       -- Step back: StrictInterl f (g + X * f) from StrictInterl (g + X * f) (X * f).
       have hstrictInterl_f_shift : StrictInterl f (g + X * f) :=
-        strictInterl_of_strictInterl_mul_X_of_nonneg hstrictInterl_shift hfnn hshift_nonneg
+        strictInterl_of_strictInterl_X_mul_of_nonneg hstrictInterl_shift hfnn hshift_nonneg
       -- Conclude: StrictInterl g (X * f) from the shifted-pair StrictInterl.
       exact
         strictInterl_right_pair_of_strictInterl_shifted_pair_sameDegree
@@ -568,7 +568,7 @@ theorem strictInterl_of_affine_family_nonneg
   have hdegf2 : 2 ≤ f.natDegree := by lia
   have hstrictInterl_pair : StrictInterl g (X * f) :=
     strictInterl_right_pair_of_affine_family_high_degree hf0 hg0 hfnn hgnn haff hdegf2
-  exact strictInterl_of_strictInterl_mul_X_of_nonneg hstrictInterl_pair hfnn hgnn
+  exact strictInterl_of_strictInterl_X_mul_of_nonneg hstrictInterl_pair hfnn hgnn
 
 @[deprecated strictInterl_of_affine_family_nonneg (since := "2026-09-18")]
 alias prec_of_affine_family_nonneg := strictInterl_of_affine_family_nonneg
@@ -588,10 +588,6 @@ theorem strictInterl_right_pair_of_affine_family_nonneg
   strictInterl_to_strictInterl_mul_X_of_nonneg
     (strictInterl_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
     hfnn hgnn
-
-@[deprecated strictInterl_right_pair_of_affine_family_nonneg (since := "2026-09-18")]
-alias prec_right_pair_of_affine_family_nonneg :=
-  strictInterl_right_pair_of_affine_family_nonneg
 
 /-- Closed affine-segment wrapper for `strictInterl_of_affine_family_nonneg`.
 
@@ -917,19 +913,6 @@ theorem strictInterl_of_strictInterl_shifted_pair_sameDegree_nonneg
   strictInterl_of_strictInterl_shifted_pair_sameDegree
     h hf0 hg0 hfnn hgnn hdeg
 
-/-- Public wrapper of the internal positive-family degree-gap obstruction:
-for a positive-combination real-rooted pair with nonnegative coefficients,
-the right degree is at most one more than the left degree. -/
-theorem natDegree_right_le_succ_of_posComboRealRooted_of_nonnegCoeffs
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g) :
-    g.natDegree ≤ f.natDegree + 1 :=
-  AffineFamily.natDegree_right_le_succ_of_posComboRealRooted_nonneg
-    hfg hf0 hg0 hfnn hgnn
-
 /-- Symmetric degree closeness for positive-combination real-rooted pairs with
 nonnegative coefficients. -/
 theorem natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
@@ -942,10 +925,10 @@ theorem natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
       g.natDegree ≤ f.natDegree + 1 := by
   constructor
   · simpa using
-      natDegree_right_le_succ_of_posComboRealRooted_of_nonnegCoeffs
+      AffineFamily.natDegree_right_le_succ_of_posComboRealRooted_nonneg
         (f := g) (g := f) (PosComboRealRooted.comm hfg) hg0 hf0 hgnn hfnn
   · exact
-      natDegree_right_le_succ_of_posComboRealRooted_of_nonnegCoeffs
+      AffineFamily.natDegree_right_le_succ_of_posComboRealRooted_nonneg
         (f := f) (g := g) hfg hf0 hg0 hfnn hgnn
 
 lemma isRealRooted_affine_factor {s t : ℝ} (hs : 0 < s) :
@@ -985,48 +968,8 @@ lemma interl_one_affine_linear {a b : ℝ} (ha : 0 < a) :
     grind
   exact hInter.toStrictInterl.toInterl
 
-@[deprecated strictInterl_of_affine_segment_endpoints_nonneg (since := "2026-09-18")]
-alias prec_of_affine_segment_endpoints_nonneg :=
-  strictInterl_of_affine_segment_endpoints_nonneg
-
-@[deprecated strictInterl_of_affine_segment_endpoints_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_of_affine_segment_endpoints_sameDegree_nonneg :=
-  strictInterl_of_affine_segment_endpoints_sameDegree_nonneg
-
-@[deprecated strictInterl_of_affine_segment_endpoint_pf_nonneg (since := "2026-09-18")]
-alias prec_of_affine_segment_endpoint_pf_nonneg :=
-  strictInterl_of_affine_segment_endpoint_pf_nonneg
-
 @[deprecated strictInterl_of_affine_segment_endpoint_tnn_nonneg (since := "2026-09-18")]
 alias prec_of_affine_segment_endpoint_tnn_nonneg :=
   strictInterl_of_affine_segment_endpoint_tnn_nonneg
-
-@[deprecated strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_of_affine_segment_endpoint_pf_sameDegree_nonneg :=
-  strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg
-
-@[deprecated strictInterl_of_affine_segment_endpoint_tnn_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg :=
-  strictInterl_of_affine_segment_endpoint_tnn_sameDegree_nonneg
-
-@[deprecated strictInterl_shifted_pair_of_affine_family_nonneg (since := "2026-09-18")]
-alias prec_shifted_pair_of_affine_family_nonneg :=
-  strictInterl_shifted_pair_of_affine_family_nonneg
-
-@[deprecated strictInterl_right_pair_of_affine_family_nonneg_sameDegree
-  (since := "2026-09-18")]
-alias prec_right_pair_of_affine_family_nonneg_sameDegree :=
-  strictInterl_right_pair_of_affine_family_nonneg_sameDegree
-
-@[deprecated strictInterl_of_strictInterl_shifted_pair_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_of_prec_shifted_pair_sameDegree_nonneg :=
-  strictInterl_of_strictInterl_shifted_pair_sameDegree_nonneg
-
-@[deprecated interl_one_affine_linear (since := "2026-09-18")]
-alias prec0_one_affine_linear := interl_one_affine_linear
 
 end RealRooted

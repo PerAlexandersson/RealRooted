@@ -655,8 +655,8 @@ theorem narayanaPolynomial_one_succ_succ (n : ℕ) :
       narayanaCoeffA (n + 1) * narayanaPolynomial 1 (n + 1) +
         narayanaCoeffB (n + 1) * narayanaPolynomial 1 n := by
   have hrec := narayanaPolynomial_pure_rec 1 n
-  have hden : (C ((n : ℝ) + 4) : ℝ[X]) ≠ 0 := by
-    exact Polynomial.C_ne_zero.mpr (by positivity)
+  have hden : (C ((n : ℝ) + 4) : ℝ[X]) ≠ 0 :=
+    Polynomial.C_ne_zero.mpr (by positivity)
   have hA : C ((n : ℝ) + 4) * narayanaCoeffA (n + 1) =
       C ((2 * n : ℝ) + 5) * (1 + X) := by
     unfold narayanaCoeffA
@@ -842,21 +842,6 @@ theorem modifiedNarayanaPolynomial_six_ne_zero : modifiedNarayanaPolynomial 6 �
               C (1210 : ℝ) * X ^ 9 + C (66 : ℝ) * X ^ 10 + X ^ 11 := by
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
     modifiedNarayanaCoeffPolynomial_eleven]
-
-@[deprecated modifiedNarayanaPolynomial_strictInterl_succ_of_nonnegCoeffs
-  (since := "2026-09-26")]
-alias modifiedNarayanaPolynomial_prec_succ_of_nonnegCoeffs :=
-  modifiedNarayanaPolynomial_strictInterl_succ_of_nonnegCoeffs
-
-@[deprecated modifiedNarayanaPolynomial_zero_strictInterl_one
-  (since := "2026-09-26")]
-alias modifiedNarayanaPolynomial_zero_prec_one :=
-  modifiedNarayanaPolynomial_zero_strictInterl_one
-
-@[deprecated modifiedNarayanaCoeffPolynomial_one_strictInterl_two
-  (since := "2026-09-26")]
-alias modifiedNarayanaCoeffPolynomial_one_prec_two :=
-  modifiedNarayanaCoeffPolynomial_one_strictInterl_two
 
 end GeneralizedSnakePosets
 end RealRooted

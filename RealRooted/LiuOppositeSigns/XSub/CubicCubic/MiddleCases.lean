@@ -39,7 +39,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_b_v_w_c {a b c u v w μ : ℝ}
       mul_pos_of_neg_of_neg hau_neg hav_neg
     have hG_neg : (a - u) * (a - v) * (a - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos haw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_u_neg : P.eval u < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -52,7 +52,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_b_v_w_c {a b c u v w μ : ℝ}
       mul_pos_of_neg_of_neg h12_neg huc_neg
     have hleft_neg : u * ((u - a) * (u - b) * (u - c)) < 0 :=
       mul_neg_of_neg_of_pos hu0 hprod_pos
-    nlinarith
+    linarith
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -63,7 +63,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_b_v_w_c {a b c u v w μ : ℝ}
       mul_neg_of_pos_of_neg hbu_pos hbv_neg
     have hG_pos : 0 < (b - u) * (b - v) * (b - w) :=
       mul_pos_of_neg_of_neg h12_neg hbw_neg
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_v_pos : 0 < P.eval v := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -75,7 +75,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_b_v_w_c {a b c u v w μ : ℝ}
       mul_neg_of_pos_of_neg h12_pos hvc_neg
     have hleft_pos : 0 < v * ((v - a) * (v - b) * (v - c)) :=
       mul_pos_of_neg_of_neg hv0 hprod_neg
-    nlinarith
+    linarith
   have hP_w_pos : 0 < P.eval w := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -87,7 +87,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_b_v_w_c {a b c u v w μ : ℝ}
       mul_neg_of_pos_of_neg h12_pos hwc_neg
     have hleft_pos : 0 < w * ((w - a) * (w - b) * (w - c)) :=
       mul_pos_of_neg_of_neg hw0 hprod_neg
-    nlinarith
+    linarith
   have hP_c_neg : P.eval c < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -97,7 +97,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_b_v_w_c {a b c u v w μ : ℝ}
     have h12_pos : 0 < (c - u) * (c - v) := mul_pos hcu_pos hcv_pos
     have hG_pos : 0 < (c - u) * (c - v) * (c - w) :=
       mul_pos h12_pos hcw_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -107,7 +107,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_b_v_w_c {a b c u v w μ : ℝ}
     have h12_pos : 0 < (0 - u) * (0 - v) := mul_pos h0u_pos h0v_pos
     have hG_pos : 0 < (0 - u) * (0 - v) * (0 - w) :=
       mul_pos h12_pos h0w_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_ne : P ≠ 0 := by
     dsimp [P]
     exact xSubCubicCubic_ne_zero a b c u v w μ
@@ -158,7 +158,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_c_w {a b c u v w μ : ℝ}
       mul_pos_of_neg_of_neg hau_neg hav_neg
     have hG_neg : (a - u) * (a - v) * (a - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos haw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_u_neg : P.eval u < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -171,7 +171,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_c_w {a b c u v w μ : ℝ}
       mul_pos_of_neg_of_neg h12_neg huc_neg
     have hleft_neg : u * ((u - a) * (u - b) * (u - c)) < 0 :=
       mul_neg_of_neg_of_pos hu0 hprod_pos
-    nlinarith
+    linarith
   have hP_v_neg : P.eval v < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -184,7 +184,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_c_w {a b c u v w μ : ℝ}
       mul_pos_of_neg_of_neg h12_neg hvc_neg
     have hleft_neg : v * ((v - a) * (v - b) * (v - c)) < 0 :=
       mul_neg_of_neg_of_pos hv0 hprod_pos
-    nlinarith
+    linarith
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -194,7 +194,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_c_w {a b c u v w μ : ℝ}
     have h12_pos : 0 < (b - u) * (b - v) := mul_pos hbu_pos hbv_pos
     have hG_neg : (b - u) * (b - v) * (b - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos hbw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_c_pos : 0 < P.eval c := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -204,7 +204,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_c_w {a b c u v w μ : ℝ}
     have h12_pos : 0 < (c - u) * (c - v) := mul_pos hcu_pos hcv_pos
     have hG_neg : (c - u) * (c - v) * (c - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos hcw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_w_neg : P.eval w < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -215,7 +215,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_c_w {a b c u v w μ : ℝ}
       mul_pos (mul_pos hwa_pos hwb_pos) hwc_pos
     have hleft_neg : w * ((w - a) * (w - b) * (w - c)) < 0 :=
       mul_neg_of_neg_of_pos hw0 hprod_pos
-    nlinarith
+    linarith
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -225,7 +225,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_c_w {a b c u v w μ : ℝ}
     have h12_pos : 0 < (0 - u) * (0 - v) := mul_pos h0u_pos h0v_pos
     have hG_pos : 0 < (0 - u) * (0 - v) * (0 - w) :=
       mul_pos h12_pos h0w_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_ne : P ≠ 0 := by
     dsimp [P]
     exact xSubCubicCubic_ne_zero a b c u v w μ
@@ -275,7 +275,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_w_c {a b c u v w μ : ℝ}
       mul_pos_of_neg_of_neg hau_neg hav_neg
     have hG_neg : (a - u) * (a - v) * (a - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos haw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_u_neg : P.eval u < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -288,7 +288,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_w_c {a b c u v w μ : ℝ}
       mul_pos_of_neg_of_neg h12_neg huc_neg
     have hleft_neg : u * ((u - a) * (u - b) * (u - c)) < 0 :=
       mul_neg_of_neg_of_pos hu0 hprod_pos
-    nlinarith
+    linarith
   have hP_v_neg : P.eval v < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -301,7 +301,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_w_c {a b c u v w μ : ℝ}
       mul_pos_of_neg_of_neg h12_neg hvc_neg
     have hleft_neg : v * ((v - a) * (v - b) * (v - c)) < 0 :=
       mul_neg_of_neg_of_pos hv0 hprod_pos
-    nlinarith
+    linarith
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -311,7 +311,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_w_c {a b c u v w μ : ℝ}
     have h12_pos : 0 < (b - u) * (b - v) := mul_pos hbu_pos hbv_pos
     have hG_neg : (b - u) * (b - v) * (b - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos hbw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_w_pos : 0 < P.eval w := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -323,7 +323,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_w_c {a b c u v w μ : ℝ}
       mul_neg_of_pos_of_neg h12_pos hwc_neg
     have hleft_pos : 0 < w * ((w - a) * (w - b) * (w - c)) :=
       mul_pos_of_neg_of_neg hw0 hprod_neg
-    nlinarith
+    linarith
   have hP_c_neg : P.eval c < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -333,7 +333,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_w_c {a b c u v w μ : ℝ}
     have h12_pos : 0 < (c - u) * (c - v) := mul_pos hcu_pos hcv_pos
     have hG_pos : 0 < (c - u) * (c - v) * (c - w) :=
       mul_pos h12_pos hcw_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -343,7 +343,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_v_b_w_c {a b c u v w μ : ℝ}
     have h12_pos : 0 < (0 - u) * (0 - v) := mul_pos h0u_pos h0v_pos
     have hG_pos : 0 < (0 - u) * (0 - v) * (0 - w) :=
       mul_pos h12_pos h0w_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_ne : P ≠ 0 := by
     dsimp [P]
     exact xSubCubicCubic_ne_zero a b c u v w μ
@@ -388,7 +388,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_w_c {a b c u w μ : ℝ}
       mul_pos_of_neg_of_neg hau_neg hau_neg
     have hG_neg : (a - u) * (a - u) * (a - w) < 0 :=
       mul_neg_of_pos_of_neg hsq_pos haw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_u_neg : P.eval u < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -401,7 +401,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_w_c {a b c u w μ : ℝ}
       mul_pos_of_neg_of_neg h12_neg huc_neg
     have hleft_neg : u * ((u - a) * (u - b) * (u - c)) < 0 :=
       mul_neg_of_neg_of_pos hu0 hprod_pos
-    nlinarith
+    linarith
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -410,7 +410,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_w_c {a b c u w μ : ℝ}
     have hsq_pos : 0 < (b - u) * (b - u) := mul_pos hbu_pos hbu_pos
     have hG_neg : (b - u) * (b - u) * (b - w) < 0 :=
       mul_neg_of_pos_of_neg hsq_pos hbw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_w_pos : 0 < P.eval w := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -422,7 +422,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_w_c {a b c u w μ : ℝ}
       mul_neg_of_pos_of_neg h12_pos hwc_neg
     have hleft_pos : 0 < w * ((w - a) * (w - b) * (w - c)) :=
       mul_pos_of_neg_of_neg hw0 hprod_neg
-    nlinarith
+    linarith
   have hP_c_neg : P.eval c < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -431,7 +431,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_w_c {a b c u w μ : ℝ}
     have hsq_pos : 0 < (c - u) * (c - u) := mul_pos hcu_pos hcu_pos
     have hG_pos : 0 < (c - u) * (c - u) * (c - w) :=
       mul_pos hsq_pos hcw_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -440,7 +440,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_w_c {a b c u w μ : ℝ}
     have hsq_pos : 0 < (0 - u) * (0 - u) := mul_pos h0u_pos h0u_pos
     have hG_pos : 0 < (0 - u) * (0 - u) * (0 - w) :=
       mul_pos hsq_pos h0w_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_ne : P ≠ 0 := by
     dsimp [P]
     exact xSubCubicCubic_ne_zero a b c u u w μ
@@ -486,7 +486,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_c_w {a b c u w μ : ℝ}
       mul_pos_of_neg_of_neg hau_neg hau_neg
     have hG_neg : (a - u) * (a - u) * (a - w) < 0 :=
       mul_neg_of_pos_of_neg hsq_pos haw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_u_neg : P.eval u < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -499,7 +499,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_c_w {a b c u w μ : ℝ}
       mul_pos_of_neg_of_neg h12_neg huc_neg
     have hleft_neg : u * ((u - a) * (u - b) * (u - c)) < 0 :=
       mul_neg_of_neg_of_pos hu0 hprod_pos
-    nlinarith
+    linarith
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -508,7 +508,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_c_w {a b c u w μ : ℝ}
     have hsq_pos : 0 < (b - u) * (b - u) := mul_pos hbu_pos hbu_pos
     have hG_neg : (b - u) * (b - u) * (b - w) < 0 :=
       mul_neg_of_pos_of_neg hsq_pos hbw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_c_pos : 0 < P.eval c := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -517,7 +517,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_c_w {a b c u w μ : ℝ}
     have hsq_pos : 0 < (c - u) * (c - u) := mul_pos hcu_pos hcu_pos
     have hG_neg : (c - u) * (c - u) * (c - w) < 0 :=
       mul_neg_of_pos_of_neg hsq_pos hcw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_w_neg : P.eval w < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -528,7 +528,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_c_w {a b c u w μ : ℝ}
       mul_pos (mul_pos hwa_pos hwb_pos) hwc_pos
     have hleft_neg : w * ((w - a) * (w - b) * (w - c)) < 0 :=
       mul_neg_of_neg_of_pos hw0 hprod_pos
-    nlinarith
+    linarith
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubCubicCubic]
@@ -537,7 +537,7 @@ lemma xSubCubicCubicSplits_of_order_a_u_u_b_c_w {a b c u w μ : ℝ}
     have hsq_pos : 0 < (0 - u) * (0 - u) := mul_pos h0u_pos h0u_pos
     have hG_pos : 0 < (0 - u) * (0 - u) * (0 - w) :=
       mul_pos hsq_pos h0w_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_ne : P ≠ 0 := by
     dsimp [P]
     exact xSubCubicCubic_ne_zero a b c u u w μ

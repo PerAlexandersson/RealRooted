@@ -30,8 +30,8 @@ theorem tendsto_coeff_regularizedKernelRow
   by_cases hq : q < N + 1
   · rw [coeff_regularizedKernelRow, ite_eq_left hq]
     simp_rw [coeff_regularizedKernelRow, ite_eq_left hq]
-    have hHmat : Tendsto H atTop (𝓝 K) := by
-      exact tendsto_pi_nhds.mpr fun a => tendsto_pi_nhds.mpr (hH a)
+    have hHmat : Tendsto H atTop (𝓝 K) :=
+      tendsto_pi_nhds.mpr fun a => tendsto_pi_nhds.mpr (hH a)
     have hGHmat : Tendsto (fun m => G * H m) atTop (𝓝 (G * K)) :=
       tendsto_const_nhds.mul hHmat
     have hLmat : Tendsto
@@ -127,12 +127,10 @@ theorem kernelRows_pf_and_interl_of_tendsto
     (∀ i, IsPFPolynomial (kernelRow G K i)) ∧
       ∀ i : Fin N, Interl (kernelRow G K i.castSucc)
         (kernelRow G K i.succ) := by
-  have hKlower : ∀ i j, i < j → K i j = 0 := by
-    intro i j hij
-    exact hKstrict i j (Fin.mk_le_mk.mpr hij.le)
-  have hGKdiag : ∀ i, (G * K) i i = 0 := by
-    intro i
-    exact Matrix.mul_apply_eq_zero_of_le_of_lower_strictLower G K hGlower
+  have hKlower : ∀ i j, i < j → K i j = 0 :=
+    fun i j hij => hKstrict i j (Fin.mk_le_mk.mpr hij.le)
+  have hGKdiag : ∀ i, (G * K) i i = 0 :=
+    fun i => Matrix.mul_apply_eq_zero_of_le_of_lower_strictLower G K hGlower
       hKstrict (le_refl i.val)
   have hregularized_eq : ∀ i, regularizedKernelRow G K i = kernelRow G K i :=
     fun i => regularizedKernelRow_eq_kernelRow_of_diagonal_zero G K hGlower
@@ -158,12 +156,6 @@ theorem kernelRows_pf_and_interl_of_tendsto
       (fun m => natDegree_regularizedKernelRow_le_row G (H m) hGlower i.succ)
       (tendsto_coeff_regularizedKernelRow G hlim i.castSucc)
       (tendsto_coeff_regularizedKernelRow G hlim i.succ)
-
-@[deprecated interl_regularizedKernelRow_succ (since := "2026-09-18")]
-alias prec0_regularizedKernelRow_succ := interl_regularizedKernelRow_succ
-
-@[deprecated kernelRows_pf_and_interl_of_tendsto (since := "2026-09-18")]
-alias kernelRows_pf_and_prec0_of_tendsto := kernelRows_pf_and_interl_of_tendsto
 
 end
 

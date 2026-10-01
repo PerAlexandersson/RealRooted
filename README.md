@@ -107,7 +107,7 @@ emulation. These scripts complement `lake build`; they do not replace it.
 - `VeroneseSectionPair.lean` gives strict proper position for two nonzero
   ordered residues; its `HermiteBiehler` child gives the induced
   upper-half-plane and Hurwitz stability certificates.
-- `RealRooted/HadamardProduct.lean` contains the elementary coefficientwise
+- `RealRooted/Hadamard/Product.lean` contains the elementary coefficientwise
   product API; `GarloffWagner/Algebra.lean` owns the factorial-normalized
   Schur-product and differential-operator algebra, and
   `GarloffWagner/Iterated.lean` owns the `J^k ∘ L` Theorem 11 transport.
@@ -185,6 +185,15 @@ emulation. These scripts complement `lake build`; they do not replace it.
   its concrete moment pairing with the normalized Favard pairing. The
   beta-zero and beta-one modules retain their historical rational APIs as
   compatibility specializations.
+- `RealRooted/JacobiDeformation/` proves the root theory of the Jacobi
+  deformation `J_{m,δ}^{c,d}(X, U, V)` by a finite algebraic argument: a
+  diagonal Jacobi kernel expansion, entrywise positivity of a quasi-Jacobi
+  collocation matrix, the Micchelli--Willoughby spectral-product theorem in
+  `RealRooted/SpectralProduct.lean`, and critical-point signs.
+  `JacobiDeformation.lean` is its facade. `RealRooted/Applications/OEIS/A132885.lean`
+  specializes it to the central-trinomial rows of OEIS A132885, using
+  `Nat.centralTrinomial` from
+  `RealRooted/Mathlib/Combinatorics/Enumerative/CentralTrinomial.lean`.
 - `RealRooted/RootVieta/Newton.lean` exposes Newton recurrences for multisets,
   ordinary polynomial roots, and reversed polynomial roots. Its Mathlib-shaped shims evaluate
   multivariate power sums and orient Vieta formulas for direct reuse; no
@@ -365,12 +374,22 @@ the checked or challenge-facing highlights are:
   and
   `LowerTriangularMatrix.maoWang_matrixProduct_rowGeneratingFunctions_nonposRoots`;
   reference: Mao--Wang (2026).
+- Jacobi deformation and A132885: for `0 < δ < 1` and positive parameters,
+  the Jacobi deformation `J_{m,δ}^{c,d}(X, U, V)` has `m` simple strictly
+  negative roots and is strictly interlaced by the derivative of `J_{m,0}`;
+  for every `δ ≥ 0` it splits with strictly negative roots. Consequently every
+  nonconstant row `∑_k C(n - k, k) T(n - 2k) X ^ k` of OEIS A132885, with
+  central trinomial coefficients `T`, has exactly `n / 2` simple negative
+  roots. See `JacobiDeformation.polynomial_strict_package`,
+  `JacobiDeformation.polynomial_all_rank_nonneg_parameter`, and
+  `Applications.OEIS.A132885.splits_simple_roots_neg`; the spectral step uses
+  Micchelli--Willoughby (1979).
 
 The challenge surface also records theorem-shaped targets as they mature.
 Kurtz's coefficient inequality criterion is implemented in
 `RealRooted.Kurtz` and re-exported by its challenge entry point. The finite
 Hermite--Poulain differential-operator preserver is implemented in
-`RealRooted.HermitePoulain` over the shared
+`RealRooted.Hermite.Poulain` over the shared
 `RealRooted.Derivative.LinearCombination` theorem layer. The full finite complex
 Borcea--Branden classification, including its stable rank-at-most-one branch,
 is implemented in `RealRooted.BorceaBranden.FiniteSymbolClassification`; its
@@ -717,6 +736,8 @@ RealRooted is distributed under the Apache License, Version 2.0. See
   Algebra Appl. 372 (2003), 105--110.
 - D. C. Kurtz, *A sufficient condition for all the roots of a polynomial to be
   real*, Amer. Math. Monthly 99 (1992), 259--263.
+- C. A. Micchelli and R. A. Willoughby, *On functions which preserve the class
+  of Stieltjes matrices*, Linear Algebra Appl. 23 (1979), 141--156.
 - N. Obreschkoff, *Verteilung und Berechnung der Nullstellen reeller
   Polynome*, VEB Deutscher Verlag der Wissenschaften, Berlin, 1963.
 - D. G. Wagner, *Total positivity of Hadamard products*, J. Math. Anal. Appl.

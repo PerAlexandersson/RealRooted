@@ -283,15 +283,6 @@ theorem generalizedLiuWangCriterion :
   exact strictInterl_generalizedLiuWang_of_no_common
     hgf hg_pos hl_inter hl_pos hl_nonpos hF_pos hdeg_lo hdeg_hi hno hb_nonpos
 
-@[deprecated strictInterl_generalizedLiuWang_strict_same (since := "2026-09-26")]
-alias prec_generalizedLiuWang_strict_same := strictInterl_generalizedLiuWang_strict_same
-
-@[deprecated strictInterl_generalizedLiuWang_strict_succ (since := "2026-09-26")]
-alias prec_generalizedLiuWang_strict_succ := strictInterl_generalizedLiuWang_strict_succ
-
-@[deprecated strictInterl_generalizedLiuWang_strict (since := "2026-09-26")]
-alias prec_generalizedLiuWang_strict := strictInterl_generalizedLiuWang_strict
-
 @[deprecated strictInterl_generalizedLiuWang_of_no_common (since := "2026-09-26")]
 alias prec_generalizedLiuWang_of_no_common := strictInterl_generalizedLiuWang_of_no_common
 

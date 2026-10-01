@@ -20,15 +20,15 @@ noncomputable section
 @[simp] theorem commonPhaseRestriction_add {σ : Type*}
     (wt : σ → ℝ) (P Q : MvPolynomial σ ℝ) :
     commonPhaseRestriction wt (P + Q) =
-      commonPhaseRestriction wt P + commonPhaseRestriction wt Q := by
-  exact map_add (MvPolynomial.eval₂Hom Polynomial.C
+      commonPhaseRestriction wt P + commonPhaseRestriction wt Q :=
+  map_add (MvPolynomial.eval₂Hom Polynomial.C
     (fun i => Polynomial.C (wt i) * Polynomial.X)) P Q
 
 @[simp] theorem commonPhaseRestriction_mul {σ : Type*}
     (wt : σ → ℝ) (P Q : MvPolynomial σ ℝ) :
     commonPhaseRestriction wt (P * Q) =
-      commonPhaseRestriction wt P * commonPhaseRestriction wt Q := by
-  exact map_mul (MvPolynomial.eval₂Hom Polynomial.C
+      commonPhaseRestriction wt P * commonPhaseRestriction wt Q :=
+  map_mul (MvPolynomial.eval₂Hom Polynomial.C
     (fun i => Polynomial.C (wt i) * Polynomial.X)) P Q
 
 /-- A nonzero polynomial with nonnegative coefficients is positive at a
@@ -223,17 +223,7 @@ theorem commonPhaseRestriction_eq_constant_add_X_mul_pderiv
 
 end
 
-@[deprecated strictInterl_of_upperHalfPlaneStable_hermiteBiehler
-    (since := "2026-09-26")]
-alias prec_of_upperHalfPlaneStable_hermiteBiehler :=
-  strictInterl_of_upperHalfPlaneStable_hermiteBiehler
-
 @[deprecated strictInterl_add_X_mul_of_strictInterl (since := "2026-09-26")]
 alias prec_add_X_mul_of_prec := strictInterl_add_X_mul_of_strictInterl
-
-@[deprecated MvRealStable.strictInterl_commonPhaseRestriction_pderiv
-    (since := "2026-09-26")]
-alias MvRealStable.prec_commonPhaseRestriction_pderiv :=
-  MvRealStable.strictInterl_commonPhaseRestriction_pderiv
 
 end RealRooted

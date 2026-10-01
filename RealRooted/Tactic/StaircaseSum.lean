@@ -118,8 +118,6 @@ end Tactic
 end RealRooted
 namespace RealRooted
 namespace Tactic
-@[deprecated staircaseSum_sequence_strictInterl (since := "2026-09-26")]
-alias staircaseSum_sequence_prec := staircaseSum_sequence_strictInterl
 
 end Tactic
 end RealRooted
@@ -154,6 +152,6 @@ macro_rules
         interlacing_nonneg := $hfs:term,
         index_lt := $hm:term) =>
       `(tactic|
-        exact RealRooted.Tactic.staircaseSum_sequence_prec $hfs $hm)
+        exact RealRooted.Tactic.staircaseSum_sequence_strictInterl $hfs $hm)
 end Tactic
 end RealRooted

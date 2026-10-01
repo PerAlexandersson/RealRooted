@@ -1,6 +1,6 @@
 import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 import RealRooted.BrandenLeite.ChainPolynomial.Resolution
-import RealRooted.InterlacingConeBounds
+import RealRooted.Interlacing.ConeBounds
 import RealRooted.RowThresholdOne
 import RealRooted.SymmetricDecomposition.Theorem26
 
@@ -29,9 +29,6 @@ theorem interl_fPolynomial {d : ℕ} {p q : ℝ[X]}
   · simp [interl_zero_left]
   · simp [interl_zero_right]
   · exact (strictInterlFPolynomialTransport hpdeg hqdeg hpnn hqnn).2 hpq |>.toInterl
-
-@[deprecated interl_fPolynomial (since := "2026-09-18")]
-alias prec0_fPolynomial := interl_fPolynomial
 
 theorem isInterlacingSeq0NonnegRealRooted_map_fPolynomial
     {d : ℕ} {fs : List ℝ[X]}
@@ -243,8 +240,8 @@ private theorem exists_fPolynomial_preimage_row
         exact (Polynomial.natDegree_C_mul_le _ _).trans
           (hdeg j (Nat.le_of_lt_succ hj))
       have hwrow :
-          IsInterlacingSeq0NonnegRealRooted ((List.range (n + 1)).map w) := by
-        exact scale_range_interlacing hrow fun j hj =>
+          IsInterlacingSeq0NonnegRealRooted ((List.range (n + 1)).map w) :=
+        scale_range_interlacing hrow fun j hj =>
           resolution.lambda_nonneg n j (Nat.le_of_lt_succ hj)
       have hh'row :
           IsInterlacingSeq0NonnegRealRooted ((List.range (n + 2)).map h') := by
@@ -327,8 +324,8 @@ theorem chainPolynomial_eq_zero_or_splits
     chainPolynomial R n = 0 ∨ (chainPolynomial R n).Splits := by
   have hrow := subdivisionRow_interlacing resolution n
   have hmem : subdivisionOperator R (resolution.polynomial n n) ∈
-      subdivisionRow resolution n := by
-    exact List.mem_map.mpr ⟨n, by simp, rfl⟩
+      subdivisionRow resolution n :=
+    List.mem_map.mpr ⟨n, by simp, rfl⟩
   by_cases h0 : chainPolynomial R n = 0
   · exact Or.inl h0
   · have hmem' : chainPolynomial R n ∈ subdivisionRow resolution n := by
@@ -363,9 +360,8 @@ theorem interl_chainPolynomial_succ
     subdivisionOperator R (resolution.polynomial n j)
   let S : ℝ[X] := ∑ j ∈ Finset.range (n + 1), C (resolution.lambda n j) * F j
   have hrow := subdivisionRow_interlacing resolution n
-  have hmem : ∀ j, j ≤ n → F j ∈ subdivisionRow resolution n := by
-    intro j hj
-    exact List.mem_map.mpr ⟨j, by simpa using hj, rfl⟩
+  have hmem : ∀ j, j ≤ n → F j ∈ subdivisionRow resolution n :=
+    fun j hj => List.mem_map.mpr ⟨j, by simpa using hj, rfl⟩
   have hbase : ∀ j, j ≤ n → Interl (F j) (F n) := by
     intro j hj
     rcases eq_or_lt_of_le hj with hEq | hjn
@@ -401,9 +397,6 @@ theorem interl_chainPolynomial_succ
   rw [chainPolynomial_succ_eq_resolution_sum resolution]
   simpa [S, F] using hstep
 
-@[deprecated interl_chainPolynomial_succ (since := "2026-09-18")]
-alias prec0_chainPolynomial_succ := interl_chainPolynomial_succ
-
 /-- Strict form of Theorem 3.7 when both adjacent chain polynomials are
 nonzero. -/
 theorem strictInterl_chainPolynomial_succ_of_ne
@@ -411,8 +404,5 @@ theorem strictInterl_chainPolynomial_succ_of_ne
     (hn : chainPolynomial R n ≠ 0) (hsucc : chainPolynomial R (n + 1) ≠ 0) :
     StrictInterl (chainPolynomial R n) (chainPolynomial R (n + 1)) :=
   (interl_chainPolynomial_succ resolution n).toStrictInterl_of_ne hn hsucc
-
-@[deprecated strictInterl_chainPolynomial_succ_of_ne (since := "2026-09-18")]
-alias prec_chainPolynomial_succ_of_ne := strictInterl_chainPolynomial_succ_of_ne
 
 end RealRooted.BrandenLeite

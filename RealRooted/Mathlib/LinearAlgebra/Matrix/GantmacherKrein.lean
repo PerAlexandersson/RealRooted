@@ -190,8 +190,8 @@ theorem perronRoot_rootMultiplicity_eq_one_of_irreducible
   obtain ⟨u, hu_pos, hu_left_eig⟩ :=
     exists_positive_left_perron_eigenvector hA_irred hA_irred.nonneg
   let L : (ι → ℝ) →ₗ[ℝ] ℝ := (dotProductBilin ℝ ℝ) u
-  have hLv : L v ≠ 0 := by
-    exact (dotProduct_pos_of_pos_of_nonneg_ne_zero hu_pos
+  have hLv : L v ≠ 0 :=
+    (dotProduct_pos_of_pos_of_nonneg_ne_zero hu_pos
       (fun i => (hv_pos i).le) hv_ne_zero).ne'
   have hL : ∀ x, L (A.toLin' x - perronRoot A • x) = 0 := by
     intro x
@@ -486,8 +486,7 @@ theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
         Set.powersetCard.mem_iff.mpr (hswap.1.trans (topFinset_card hqn))⟩
     have hs_ne : sTop ≠ sAlt := by
       intro h
-      apply hswap.2.2
-      exact (congrArg Subtype.val h).symm
+      exact hswap.2.2 ((congrArg Subtype.val h).symm)
     let g : Set.powersetCard (Fin n) q → ℂ :=
       fun s => ∏ k, μc (powersetEnum s k)
     have hg_eq : g sTop = g sAlt := by
@@ -585,9 +584,8 @@ theorem strictInterlace_charpoly_of_interlace_of_noCommonRoot
     intro j
     rw [hB, Polynomial.IsRoot.def, Polynomial.eval_prod]
     exact Finset.prod_eq_zero (Finset.mem_univ j) (by simp)
-  have hne : ∀ i j, lam i ≠ μ j := by
-    intro i j hij
-    exact hno (lam i) (hrootA i) (by simpa [hij] using hrootB j)
+  have hne : ∀ i j, lam i ≠ μ j :=
+    fun i j hij => hno (lam i) (hrootA i) (by simpa [hij] using hrootB j)
   intro k
   exact ⟨lt_of_le_of_ne (hinter k).1 (hne k.succ k),
     lt_of_le_of_ne (hinter k).2 (hne k.castSucc k).symm⟩

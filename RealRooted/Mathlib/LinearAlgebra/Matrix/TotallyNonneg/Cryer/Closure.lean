@@ -25,13 +25,12 @@ theorem HasNonnegInitialColumnMinors.isTotallyNonneg_of_upper_zero_of_det_ne_zer
     A.IsTotallyNonneg := by
   have hAinj : Function.Injective A.mulVec := by
     apply Matrix.mulVec_injective_iff_isUnit.mpr
-    apply A.isUnit_iff_isUnit_det.mpr
-    exact isUnit_iff_ne_zero.mpr hdet
+    exact A.isUnit_iff_isUnit_det.mpr (isUnit_iff_ne_zero.mpr hdet)
   intro k rows cols hrows hcols
   let D : ℝ → ℝ := fun a =>
     ((gaussianMatrix N a * A).submatrix rows cols).det
-  have hDlim : Tendsto D atTop (𝓝 ((A.submatrix rows cols).det)) := by
-    exact ((continuous_id.matrix_submatrix rows cols).matrix_det.continuousAt.tendsto).comp
+  have hDlim : Tendsto D atTop (𝓝 ((A.submatrix rows cols).det)) :=
+    ((continuous_id.matrix_submatrix rows cols).matrix_det.continuousAt.tendsto).comp
       (tendsto_gaussianMatrix_mul_atTop A)
   refine le_of_tendsto_of_tendsto tendsto_const_nhds hDlim ?_
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with a ha

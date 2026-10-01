@@ -45,9 +45,8 @@ def orderEmbeddingEquivFinsetCard (k m : ℕ) :
     symm
     apply Finset.orderEmbOfFin_unique'
     simp
-  right_inv s := by
-    apply Subtype.ext
-    exact Finset.image_orderEmbOfFin_univ s.1 s.2
+  right_inv s :=
+    Subtype.ext (Finset.image_orderEmbOfFin_univ s.1 s.2)
 
 /-- A decreasing word is determined by the subset of alphabet letters that
 it uses. -/
@@ -116,14 +115,6 @@ theorem strictDecreasingWordEnumerator_zero_alphabet (k : ℕ) :
       rw [(Finset.powersetCard_eq_empty).2]
       · simp
       · simp
-
-/-- The strict-block enumerator is invariant under alphabet renaming. -/
-theorem rename_strictDecreasingWordEnumerator (k m : ℕ)
-    (e : Equiv.Perm (Fin m)) :
-    MvPolynomial.rename e (strictDecreasingWordEnumerator k m) =
-      strictDecreasingWordEnumerator k m := by
-  rw [strictDecreasingWordEnumerator_eq_esymm,
-    MvPolynomial.rename_esymm]
 
 end
 

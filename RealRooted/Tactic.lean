@@ -31,7 +31,10 @@ import RealRooted.Tactic.GeneralizedLaguerre
 import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.PreservingOperatorSequence
 import RealRooted.Tactic.Product
+import RealRooted.Tactic.Product.Interlacing
 import RealRooted.Tactic.RecurrenceIdentification
+import RealRooted.Tactic.RowData
+import RealRooted.Tactic.RowInterlacing
 import RealRooted.Tactic.ReciprocalShift
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
@@ -70,7 +73,5 @@ The initial implementation goal is intentionally modest: automate the
 repeated proof shell in the combinatorial examples, while keeping recurrence,
 degree, root-bound, and sign certificates explicit.
 
-See `RealRooted/Tactic/PLAN.md` for the implementation plan.  The repository
-normally ignores new Markdown files, so `.gitignore` has a narrow exception
-for this tactic plan.
+The tactic roadmap is tracked in GitHub issue #1061.
 -/

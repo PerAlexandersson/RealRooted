@@ -105,8 +105,8 @@ theorem even_signVariations_of_positiveRootCount_eq_zero
   by_contra hsign
   obtain ⟨x, hx, hroot⟩ := exists_pos_isRoot_of_sign_endpoints_ne hp hsign
   have hxmem : x ∈ p.roots := (mem_roots hp).2 hroot
-  have : 0 < p.positiveRootCount := by
-    exact Multiset.countP_pos_of_mem hxmem hx
+  have : 0 < p.positiveRootCount :=
+    Multiset.countP_pos_of_mem hxmem hx
   lia
 
 /-- The parity form of Descartes' rule of signs for positive roots. -/
@@ -150,8 +150,8 @@ theorem even_signVariations_sub_positiveRootCount (p : ℝ[X]) :
 and the difference from the coefficient sign-variation count is even. -/
 theorem descartes_rule_of_signs (p : ℝ[X]) :
     p.positiveRootCount ≤ p.signVariations ∧
-      Even (p.signVariations - p.positiveRootCount) := by
-  exact ⟨roots_countP_pos_le_signVariations p,
+      Even (p.signVariations - p.positiveRootCount) :=
+  ⟨roots_countP_pos_le_signVariations p,
     even_signVariations_sub_positiveRootCount p⟩
 
 /-- Descartes' rule of signs for negative roots, obtained by applying the

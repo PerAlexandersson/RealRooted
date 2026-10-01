@@ -184,7 +184,4 @@ theorem strictInterl_of_stable_general {f g : ℝ[X]}
       · exact strictInterl_of_stable_same_degree_no_common hf hg hstab
           (fun ⟨r, hrf, hrg⟩ => hcom r hrf hrg) (by lia) h_deg₁
 
-@[deprecated strictInterl_of_stable_general (since := "2026-09-18")]
-alias prec_of_stable_general := strictInterl_of_stable_general
-
 end RealRooted

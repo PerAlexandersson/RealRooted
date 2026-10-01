@@ -21,10 +21,10 @@ theorem sum_edgeOrientationWeight (a b : V → ℝ)
       completeGraphRankTwoWeight a b e := by
   rcases e with ⟨⟨i, j⟩, hij⟩
   have hne : i ≠ j := by simpa using hij
-  have hi_other (hi : i ∈ s(i, j)) : Sym2.Mem.other' hi = j := by
-    exact Sym2.congr_right.mp (Sym2.other_spec' hi)
-  have hj_other (hj : j ∈ s(i, j)) : Sym2.Mem.other' hj = i := by
-    exact Sym2.congr_right.mp ((Sym2.other_spec' hj).trans Sym2.eq_swap)
+  have hi_other (hi : i ∈ s(i, j)) : Sym2.Mem.other' hi = j :=
+    Sym2.congr_right.mp (Sym2.other_spec' hi)
+  have hj_other (hj : j ∈ s(i, j)) : Sym2.Mem.other' hj = i :=
+    Sym2.congr_right.mp ((Sym2.other_spec' hj).trans Sym2.eq_swap)
   rw [Sym2.toFinset_mk_eq]
   simp [edgeOrientationWeight, completeGraphRankTwoWeight, hne, hne.symm,
     hi_other, hj_other]
@@ -70,8 +70,8 @@ theorem matchingOrientation_other_injective
     (o : ∀ e, e ∈ M → V)
     (ho : ∀ e (he : e ∈ M), o e he ∈ e.1) :
     Function.Injective (fun e : M ↦
-      Sym2.Mem.other' (ho e.1 e.2)) := by
-  exact matchingOrientation_injective hM
+      Sym2.Mem.other' (ho e.1 e.2)) :=
+  matchingOrientation_injective hM
     (fun e he ↦ Sym2.Mem.other' (ho e he))
     (fun e he ↦ Sym2.other_mem' (ho e he))
 
@@ -118,8 +118,8 @@ theorem orientationLeftVertices_card
     (ho : ∀ e (he : e ∈ M), o e he ∈ e.1) :
     (orientationLeftVertices o).card = M.card := by
   calc
-    (orientationLeftVertices o).card = M.attach.card := by
-      exact Finset.card_image_of_injective M.attach
+    (orientationLeftVertices o).card = M.attach.card :=
+      Finset.card_image_of_injective M.attach
         (matchingOrientation_injective hM o ho)
     _ = M.card := by simp
 
@@ -131,8 +131,8 @@ theorem orientationRightVertices_card
     (ho : ∀ e (he : e ∈ M), o e he ∈ e.1) :
     (orientationRightVertices o ho).card = M.card := by
   calc
-    (orientationRightVertices o ho).card = M.attach.card := by
-      exact Finset.card_image_of_injective M.attach
+    (orientationRightVertices o ho).card = M.attach.card :=
+      Finset.card_image_of_injective M.attach
         (matchingOrientation_other_injective hM o ho)
     _ = M.card := by simp
 

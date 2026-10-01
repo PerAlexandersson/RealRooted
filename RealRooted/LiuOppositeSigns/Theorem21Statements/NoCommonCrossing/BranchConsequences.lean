@@ -63,8 +63,8 @@ theorem theorem21RootCountBranches_of_no_isRoot_Ioo
       (∀ z : ℝ, a < z → z < b → ¬ f.IsRoot z ∧ ¬ g.IsRoot z) →
       ∀ z : ℝ, a < z → z < b →
         ¬ (f + C (νR x) * g).IsRoot z) :
-    theorem21RootCountBranches f g := by
-  exact theorem21RootCountBranches_of_crossOwned hsgn hf hg
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_crossOwned hsgn hf hg
     hf_deg hg_deg hsimple_f hsimple_g hno
     (hsgn.crossOwnedNotOddGaps_of_no_isRoot_Ioo
       hfg hno hf hg νL νR hνL_pos hνL_large hdegL hleft_no
@@ -246,8 +246,8 @@ theorem theorem21RootCountBranches_of_parameter_bounds
         (f + C τ * g).natDegree = (f + C μ * g).natDegree)
     (hdegR_zero : ∀ x η : ℝ, η ∈ Set.Icc (0 : ℝ) (νR x) →
       (f + C η * g).natDegree = (f + C (0 : ℝ) * g).natDegree) :
-    theorem21RootCountBranches f g := by
-  exact theorem21RootCountBranches_of_crossOwned hsgn hf hg
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_crossOwned hsgn hf hg
     hf_deg hg_deg hsimple_f hsimple_g hno
     (hsgn.crossOwnedNotOddGaps_of_parameter_bounds
       hfg hno hf hg νL νR hνL_pos hνL_large hdegL hdegL_inv

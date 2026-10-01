@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import pathlib
 import sys
+import tempfile
 
 sys.dont_write_bytecode = True
 
@@ -31,6 +32,11 @@ def parse_args() -> argparse.Namespace:
     actions = parser.add_mutually_exclusive_group(required=True)
     actions.add_argument("--check", action="store_true", help="validate sources without writing output")
     actions.add_argument("--output", type=pathlib.Path, help="directory for generated static files")
+    actions.add_argument(
+        "--preview",
+        action="store_true",
+        help="render a source-only local preview in the system temporary directory",
+    )
     parser.add_argument(
         "--audit-report",
         type=pathlib.Path,
@@ -51,12 +57,18 @@ def main() -> int:
         if args.check:
             print(f"ok: validated {len(pages)} curated catalog pages")
             return 0
-        output = args.output.resolve()
+        output = (
+            pathlib.Path(tempfile.gettempdir()) / "realrooted-pages"
+            if args.preview
+            else args.output.resolve()
+        )
         if output == root or output.is_relative_to(root):
             raise CatalogError("generated pages must use an output directory outside the repository")
         files = render_site(root, pages, resolved, revision)
         write_site(output, files)
-        print(f"ok: wrote {len(files)} catalog files to {args.output}")
+        print(f"ok: wrote {len(files)} catalog files to {output}")
+        if args.preview:
+            print(f"preview: python3 -m http.server 8000 --directory {output}")
         return 0
     except CatalogError as error:
         print(f"error: {error}", file=sys.stderr)

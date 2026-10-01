@@ -367,15 +367,6 @@ lemma prec0_finsetSum_left_of_nonneg {ι : Type}
     Interl h (s.sum f) :=
   Interl.finsetSum_left_of_nonneg h s f hinterl hnn
 
-@[deprecated Interl.finsetSum_pairwise_of_nonneg (since := "2026-09-18")]
-lemma prec0_finsetSum_pairwise_of_nonneg {ι κ : Type}
-    (s : Finset ι) (t : Finset κ) (f : ι → ℝ[X]) (g : κ → ℝ[X])
-    (hinterl : ∀ i ∈ s, ∀ j ∈ t, Interl (f i) (g j))
-    (hfnn : ∀ i ∈ s, HasNonnegCoeffs (f i))
-    (hgnn : ∀ j ∈ t, HasNonnegCoeffs (g j)) :
-    Interl (s.sum f) (t.sum g) :=
-  Interl.finsetSum_pairwise_of_nonneg s t f g hinterl hfnn hgnn
-
 /-- Same-degree shift on the left: if `f ≪ g`, both have positive leading
 coefficient, and all roots lie at most `r`, then `g ≪ g + (X - C r) * f`. -/
 theorem StrictInterl.add_of_sameDegree_shift_left_of_roots_le
@@ -1279,52 +1270,6 @@ theorem eval_mul_right_family_two_neg_at_root_one_of_no_common
   have hf_ne : f.eval r ≠ 0 := fun hf0 => by simp_all
   simp_all
 
-/-- One-call same-degree data bundle for the specialized right family
-`(f + g, f + 2g)`. -/
-lemma family_root_sign_data_right_one_two {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hdeg : f.natDegree ≤ g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    (PosComboRealRooted (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g) ∧
-      HasPosLeadingCoeff (f + C (1 : ℝ) * g) ∧
-      HasPosLeadingCoeff (f + C (2 : ℝ) * g) ∧
-      (f + C (1 : ℝ) * g).natDegree = g.natDegree ∧
-      (f + C (2 : ℝ) * g).natDegree = g.natDegree ∧
-      IsCoprime (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g)) ∧
-    (∀ r, (f + C (1 : ℝ) * g).IsRoot r → ¬ (f + C (2 : ℝ) * g).IsRoot r) ∧
-    (∀ r, (f + C (2 : ℝ) * g).IsRoot r →
-      (f + C (1 : ℝ) * g).eval r * g.eval r < 0) ∧
-    (∀ r, (f + C (1 : ℝ) * g).IsRoot r →
-      (f + C (2 : ℝ) * g).eval r * f.eval r < 0) :=
-  ⟨family_pair_data_right_one_two hfg hdeg hf_pos hg_pos hno,
-    no_common_root_right_family_one_two_of_no_common hno,
-    eval_mul_right_family_one_neg_at_root_two_of_no_common hno,
-    eval_mul_right_family_two_neg_at_root_one_of_no_common hno⟩
-
-/-- Symmetric one-call same-degree data bundle for the specialized left family
-`(f + g, 2f + g)`. -/
-lemma family_root_sign_data_left_one_two {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree ≤ f.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    (PosComboRealRooted (C (1 : ℝ) * f + g) (C (2 : ℝ) * f + g) ∧
-      HasPosLeadingCoeff (C (1 : ℝ) * f + g) ∧
-      HasPosLeadingCoeff (C (2 : ℝ) * f + g) ∧
-      (C (1 : ℝ) * f + g).natDegree = f.natDegree ∧
-      (C (2 : ℝ) * f + g).natDegree = f.natDegree ∧
-      IsCoprime (C (1 : ℝ) * f + g) (C (2 : ℝ) * f + g)) ∧
-    (∀ r, (C (1 : ℝ) * f + g).IsRoot r → ¬ (C (2 : ℝ) * f + g).IsRoot r) ∧
-    (∀ r, (C (2 : ℝ) * f + g).IsRoot r →
-      (C (1 : ℝ) * f + g).eval r * f.eval r < 0) ∧
-    (∀ r, (C (1 : ℝ) * f + g).IsRoot r →
-      (C (2 : ℝ) * f + g).eval r * g.eval r < 0) :=
-  ⟨family_pair_data_left_one_two hfg hdeg hf_pos hg_pos hno,
-    no_common_root_left_family_one_two_of_no_common hno,
-    eval_mul_left_family_one_neg_at_root_two_of_no_common hno,
-    eval_mul_left_family_two_neg_at_root_one_of_no_common hno⟩
-
 /-- Same-degree `StrictInterl` can be recovered once one has strict sign changes of `g`
 on consecutive roots of `f` and one root of `g` strictly to the right of all
 roots of `f`. This repackages the final Ma--Wang assembly step in the form
@@ -1429,9 +1374,6 @@ theorem strictInterl_or_reverse_of_same_degree_one
     · simp [hrg_eq]
     · simp [hrf_eq]
     · exact Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces, hge]⟩
-
-@[deprecated strictInterl_or_reverse_of_same_degree_one (since := "2026-09-18")]
-alias prec_or_revPrec_of_same_degree_one := strictInterl_or_reverse_of_same_degree_one
 
 end PosComboRealRooted
 
@@ -1561,10 +1503,6 @@ lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ
 @[deprecated StrictInterl.weightedSum_left_of_common_left (since := "2026-09-18")]
 alias prec_weightedSum_left_of_common_left := StrictInterl.weightedSum_left_of_common_left
 
-@[deprecated StrictInterl.weightedSum_left_of_common_left_signed (since := "2026-09-18")]
-alias prec_weightedSum_left_of_common_left_signed :=
-  StrictInterl.weightedSum_left_of_common_left_signed
-
 @[deprecated StrictInterl.sum_left_of_common_left (since := "2026-09-18")]
 alias prec_sum_left_of_common_left := StrictInterl.sum_left_of_common_left
 
@@ -1594,17 +1532,5 @@ alias isRealRooted_pos_combo_of_prec := StrictInterl.isRealRooted_pos_combo
 
 @[deprecated PosComboRealRooted.of_strictInterl (since := "2026-09-18")]
 alias PosComboRealRooted.of_prec := PosComboRealRooted.of_strictInterl
-
-@[deprecated StrictInterl.nonneg_combo_left (since := "2026-09-18")]
-alias prec_nonneg_combo_left := StrictInterl.nonneg_combo_left
-
-@[deprecated StrictInterl.convex_right (since := "2026-09-18")]
-alias prec_convex_right := StrictInterl.convex_right
-
-@[deprecated StrictInterl.convex_left (since := "2026-09-18")]
-alias prec_convex_left := StrictInterl.convex_left
-
-@[deprecated StrictInterl.convex_left_of_common_factor (since := "2026-09-18")]
-alias prec_convex_left_of_common_factor := StrictInterl.convex_left_of_common_factor
 
 end RealRooted

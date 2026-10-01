@@ -117,12 +117,12 @@ theorem terminalNDOrderReal_succ (m r : ℕ) :
       List.ofFn (terminalPrefixPairMixReal m r) ++
         (List.ofFn (terminalStrictSuffixXPairMixReal m r)).reverse := by
   have hN : List.ofFn (terminalNonDescentReal m (r + 1)) =
-      List.ofFn (terminalPrefixPairMixReal m r) := by
-    exact congrArg List.ofFn <| funext fun j =>
+      List.ofFn (terminalPrefixPairMixReal m r) :=
+    congrArg List.ofFn <| funext fun j =>
       terminalNonDescentReal_succ m r j
   have hD : List.ofFn (terminalDescentReal m (r + 1)) =
-      List.ofFn (terminalStrictSuffixXPairMixReal m r) := by
-    exact congrArg List.ofFn <| funext fun j =>
+      List.ofFn (terminalStrictSuffixXPairMixReal m r) :=
+    congrArg List.ofFn <| funext fun j =>
       terminalDescentReal_succ m r j
   simp [terminalNDOrderReal, hN, hD]
 

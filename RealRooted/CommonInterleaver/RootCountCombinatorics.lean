@@ -274,24 +274,6 @@ theorem posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot :
       hf_split hg_split hdeg x).mpr
       (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg)
 
-/-- The same-degree lower common-non-root target implies the full
-upper-threshold same-degree root-count target. -/
-theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement :=
-  posComboNoCommonSameDegreeRootCountAbove_of_nonRoot
-    (posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mpr
-      hcount)
-
-/-- The same-degree upper common-non-root target implies the full
-lower-threshold same-degree root-count target. -/
-theorem posComboNoCommonSameDegreeRootCount_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement :=
-  posComboNoCommonSameDegreeRootCount_of_nonRoot
-    (posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mp
-      hcount)
-
 /-- Oriented same-cardinality root counts: the lower-threshold comparison
 `f` against `g` is equivalent to the opposite upper-threshold comparison.
 
@@ -754,9 +736,6 @@ theorem succDegreeRootCountAbove_of_strictInterl
   rw [hfcard, hgcard]
   constructor <;> lia
 
-@[deprecated succDegreeRootCountAbove_of_strictInterl (since := "2026-09-18")]
-alias succDegreeRootCountAbove_of_prec := succDegreeRootCountAbove_of_strictInterl
-
 /-- Rolle root-count bound in upper-threshold form.
 
 For a splitting real polynomial of degree at least two, the numbers of roots of
@@ -784,9 +763,6 @@ theorem succDegreeRootCount_of_strictInterl
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
   succDegreeRootCount_of_rootCountAbove hstrictInterl.1.2 hstrictInterl.2.1.2 hdeg
     (succDegreeRootCountAbove_of_strictInterl hstrictInterl hdeg)
-
-@[deprecated succDegreeRootCount_of_strictInterl (since := "2026-09-18")]
-alias succDegreeRootCount_of_prec := succDegreeRootCount_of_strictInterl
 
 /-- Rolle root-count bound in lower-threshold form.
 
@@ -834,10 +810,6 @@ theorem succDegreeRootCountLowerOriented_of_strictInterl
   rw [hpcard, hqcard]
   constructor <;> lia
 
-@[deprecated succDegreeRootCountLowerOriented_of_strictInterl (since := "2026-09-18")]
-alias succDegreeRootCountLowerOriented_of_prec :=
-  succDegreeRootCountLowerOriented_of_strictInterl
-
 /-- Tight oriented upper-threshold `StrictInterl`-to-root-count bridge for the
 differ-by-one case.
 
@@ -853,10 +825,6 @@ theorem succDegreeRootCountAboveOriented_of_strictInterl
   (succDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
     hstrictInterl.1.2 hstrictInterl.2.1.2 hdeg x).mpr
     (succDegreeRootCountLowerOriented_of_strictInterl hstrictInterl hdeg x)
-
-@[deprecated succDegreeRootCountAboveOriented_of_strictInterl (since := "2026-09-18")]
-alias succDegreeRootCountAboveOriented_of_prec :=
-  succDegreeRootCountAboveOriented_of_strictInterl
 
 /-- Oriented Rolle root-count bound in upper-threshold form. -/
 theorem rootCountAbove_derivative_oriented_of_splits
@@ -1000,9 +968,6 @@ theorem sameDegreeRootCountOriented_of_strictInterl
     rw [← hrs_eq, Multiset.filter_coe, Multiset.coe_card]
   rw [hpcard, hqcard]
   constructor <;> lia
-
-@[deprecated sameDegreeRootCountOriented_of_strictInterl (since := "2026-09-18")]
-alias sameDegreeRootCountOriented_of_prec := sameDegreeRootCountOriented_of_strictInterl
 
 /-- The succ-degree upper root-count target follows from its common-non-root
 variant. -/

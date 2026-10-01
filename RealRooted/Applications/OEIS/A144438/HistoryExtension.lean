@@ -101,8 +101,8 @@ theorem last_eq_zero_of_exceptionalHistory_exceptional {n : Nat}
       DecoExceptionalHistory.exceptional H) :
     c (Fin.last (n + 3)) = 0 := by
   let j : Fin (n + 4) := (Fin.last (n + 2)).castSucc
-  have hjOne : c j = 1 := by
-    exact penultimate_eq_one_of_exceptionalHistory_exceptional H hc hhistory
+  have hjOne : c j = 1 :=
+    penultimate_eq_one_of_exceptionalHistory_exceptional H hc hhistory
   obtain ⟨_, hjBound, hjZero⟩ := hc j hjOne
   have hindex : (⟨j.1 + 1, hjBound⟩ : Fin (n + 4)) =
       Fin.last (n + 3) := by
@@ -198,14 +198,12 @@ def normalHistoryExtensionEquiv {n : Nat}
     apply Subtype.ext
     apply Prod.ext
     · apply Subtype.ext
-      apply Subtype.ext
-      exact DecoCode.init_snoc _ _
+      exact Subtype.ext (DecoCode.init_snoc _ _)
     · apply Fin.ext
       simp [normalHistoryExtension, normalHistoryRestriction]
   right_inv c := by
     apply Subtype.ext
-    apply Subtype.ext
-    exact DecoCode.snoc_init_last _
+    exact Subtype.ext (DecoCode.snoc_init_last _)
 
 /-- Append the exceptional pair to a fixed-history admissible code. -/
 def exceptionalHistoryExtension {n : Nat}

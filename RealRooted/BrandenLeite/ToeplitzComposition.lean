@@ -115,8 +115,4 @@ theorem interl_compositionRow_positivePartSeries_succ
     simp [toeplitz_apply]
   · exact ha
 
-@[deprecated interl_compositionRow_positivePartSeries_succ (since := "2026-09-18")]
-alias prec0_compositionRow_positivePartSeries_succ :=
-  interl_compositionRow_positivePartSeries_succ
-
 end RealRooted.BrandenLeite

@@ -182,8 +182,8 @@ theorem MvRealStable.eval_coordinateWronskian_nonneg_of_homogeneous_affineExtens
     dsimp only [δ]
     rw [div_mul_eq_mul_div]
     apply (div_lt_iff₀ hden).2
-    nlinarith [abs_nonneg S]
-  nlinarith
+    linarith [abs_nonneg S]
+  linarith
 
 end
 

@@ -193,23 +193,11 @@ alias prec_wagner_derivative_gap_lag_sequence := strictInterl_wagner_derivative_
 alias isRealRooted_of_prec_wagner_derivative_gap_lag_sequence :=
   isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence
 
-@[deprecated strictInterl_wagner_derivative_gap_lag_sequence_den (since := "2026-09-26")]
-alias prec_wagner_derivative_gap_lag_sequence_den :=
-  strictInterl_wagner_derivative_gap_lag_sequence_den
-
-@[deprecated isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence_den
-  (since := "2026-09-26")]
-alias isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den :=
-  isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence_den
-
 @[deprecated strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg (since := "2026-09-26")]
 alias prec_X_mul_derivative_X_mul_self_of_splits_nonneg :=
   strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg
 
 @[deprecated strictInterl_wagner_derivative_gap_lag_step (since := "2026-09-26")]
 alias prec_wagner_derivative_gap_lag_step := strictInterl_wagner_derivative_gap_lag_step
-
-@[deprecated strictInterl_wagner_derivative_gap_lag_step_den (since := "2026-09-26")]
-alias prec_wagner_derivative_gap_lag_step_den := strictInterl_wagner_derivative_gap_lag_step_den
 
 end RealRooted

@@ -128,12 +128,12 @@ lemma bezoutMatrix.quadratic_posDef_two_of_const_strictInterleaves {a b c d : �
       have hb_pos : 0 < b ^ 2 + (b - a) * (c - b) :=
         add_pos_of_pos_of_nonneg (sq_pos_of_ne_zero hb0)
           (mul_nonneg hba.le hcb.le)
-      nlinarith
+      positivity
     · have hleft : 0 < (b - a) * c ^ 2 :=
         mul_pos hba (sq_pos_of_ne_zero hc0)
       have h_nonneg : 0 ≤ (d - c) * (b ^ 2 + (b - a) * (c - b)) :=
         mul_nonneg hdc.le (add_nonneg (sq_nonneg b) (mul_nonneg hba.le hcb.le))
-      nlinarith
+      linarith
   · have hdet_eq :
         ((a + c) * (b * d) - (b + d) * (a * c)) * (b + d - (a + c)) -
           (b * d - a * c) * (b * d - a * c) =

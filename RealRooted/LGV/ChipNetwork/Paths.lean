@@ -163,8 +163,8 @@ theorem vertexAt_zero {v w : Vertex S N} (p : Quiver.Path v w) :
 
 /-- Every indexed path vertex occurs in the underlying vertex list. -/
 theorem vertexAt_mem_vertices {v w : Vertex S N} (p : Quiver.Path v w)
-    (r : Fin (p.length + 1)) : vertexAt p r ∈ p.vertices := by
-  exact List.get_mem _ _
+    (r : Fin (p.length + 1)) : vertexAt p r ∈ p.vertices :=
+  List.get_mem _ _
 
 /-- A chip-strip path visits at most one vertex at each stage. -/
 theorem eq_of_mem_vertices_of_stage_eq {v w x y : Vertex S N}
@@ -291,8 +291,8 @@ theorem not_vertexDisjoint_of_nested_top_bottom
   have hqbound (r : Fin (p.length + 1)) : offset + r.val < q.length + 1 := by
     have hpstage := stage_add_length p
     have hqstage := stage_add_length q
-    have hoffset : stage c + offset = stage a := by
-      exact Nat.add_sub_of_le hleft
+    have hoffset : stage c + offset = stage a :=
+      Nat.add_sub_of_le hleft
     have hrle : r.val ≤ p.length := Nat.le_of_lt_succ r.isLt
     dsimp only [offset]
     lia
@@ -306,9 +306,8 @@ theorem not_vertexDisjoint_of_nested_top_bottom
   have hend : u (Fin.last p.length) ≤ z (Fin.last p.length) := by
     rw [show u (Fin.last p.length) = level b by simp [u], habottom]
     exact Nat.zero_le _
-  have hu : ∀ r : Fin p.length, u r.castSucc ≤ u r.succ + 1 := by
-    intro r
-    exact level_vertexAt_le_succ_add_one p r
+  have hu : ∀ r : Fin p.length, u r.castSucc ≤ u r.succ + 1 :=
+    fun r => level_vertexAt_le_succ_add_one p r
   have hz : ∀ r : Fin p.length, z r.succ ≤ z r.castSucc := by
     intro r
     let s : Fin q.length := ⟨offset + r.val, by

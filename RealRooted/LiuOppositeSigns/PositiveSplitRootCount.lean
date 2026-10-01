@@ -148,8 +148,8 @@ theorem hasPosLeadingCoeff_neg_X_mul_sub_C_mul_of_right_natDegree_eq_left_add_on
     {p q : ℝ[X]} (h : PositiveSplitRootCountPair p q)
     (hdeg : q.natDegree = p.natDegree + 1) {μ : ℝ}
     (hcoeff : p.leadingCoeff - μ * q.leadingCoeff < 0) :
-    HasPosLeadingCoeff (-(X * p - C μ * q)) := by
-  exact hasPosLeadingCoeff_neg <|
+    HasPosLeadingCoeff (-(X * p - C μ * q)) :=
+  hasPosLeadingCoeff_neg <|
     by
       rw [h.leadingCoeff_X_mul_sub_C_mul_of_right_natDegree_eq_left_add_one
         hdeg (ne_of_lt hcoeff)]

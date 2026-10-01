@@ -48,9 +48,8 @@ theorem
   have htop : Tendsto (fun x => P.eval x) atTop atTop :=
     P.tendsto_atTop_of_leadingCoeff_nonneg hP_degree_pos hP_pos.le
   have hupper_nonpos :
-      ∀ y ∈ q.roots, (b :: xs).getLast (List.cons_ne_nil b xs) < y → y ≤ 0 := by
-    intro y hy _hy
-    exact roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
+      ∀ y ∈ q.roots, (b :: xs).getLast (List.cons_ne_nil b xs) < y → y ≤ 0 :=
+    fun y hy _ => roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
   have hlower_one :
       1 ≤ (P.roots.filter (fun x => x ≤ a)).card := by
     rcases Nat.even_or_odd q.natDegree with hq_even | hq_odd

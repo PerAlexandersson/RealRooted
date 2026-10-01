@@ -119,11 +119,6 @@ theorem not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
     lia
   exact hstrictInterl.not_of_left_natDegree_succ_lt_right hgap
 
-@[deprecated not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
-  (since := "2026-09-26")]
-alias not_positiveSplitLeftSuccDegreeTranslatedXPrec :=
-  not_positiveSplitLeftSuccDegreeTranslatedXStrictInterl
-
 /-- Quadratic terminal case for the x-subtraction pencil with two degree-one
 endpoints and a nonnegative constant term on the right endpoint. -/
 lemma splits_X_mul_sub_C_mul_of_natDegree_one_one_right_nonneg
@@ -150,7 +145,7 @@ lemma splits_X_mul_sub_C_mul_of_natDegree_one_one_right_nonneg
   have hprod_nonneg : 0 ≤ 4 * a * μ * d := by positivity
   have hdisc : 0 ≤ discrim a (b - μ * c) (-μ * d) := by
     rw [discrim]
-    nlinarith [sq_nonneg (b - μ * c), hprod_nonneg]
+    linarith [sq_nonneg (b - μ * c), hprod_nonneg]
   simpa [hpoly] using quadraticPoly_splits_of_discrim_nonneg ha_pos.ne' hdisc
 
 /-- Linear-or-constant terminal case for the x-subtraction pencil. -/
@@ -262,16 +257,6 @@ theorem
       (fun n => n = 1) := by
   intro f g r hpair hfnn hgnn hdeg hgdeg
   exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_one
-    hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the low-degree right endpoint terminals as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_one :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 1) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_one
     hpair hfnn hgnn hdeg hgdeg
 
 /-- Pack the degree-one right endpoint terminal as a predicate-restricted

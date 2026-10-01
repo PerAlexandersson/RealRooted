@@ -403,7 +403,7 @@ protected lemma AffineFamily.hasSimpleRoots_right_of_affine_family_succDegree_no
     exists_delta_eval_mul_pos_iterateTDeriv_at_zero k
       (p := qNeg) (x := r) hqNeg_eval_ne
   let η : ℝ := min δPos δNeg / 2
-  have hη_pos : 0 < η := by exact half_pos (lt_min_iff.mpr ⟨hδPos, hδNeg⟩)
+  have hη_pos : 0 < η := half_pos (lt_min_iff.mpr ⟨hδPos, hδNeg⟩)
   have hη_smallPos : ‖η‖ < δPos := by
     have hη_norm : ‖η‖ = min δPos δNeg / 2 := by
       rw [Real.norm_eq_abs, show η = min δPos δNeg / 2 by rfl, abs_of_pos hη_pos]
@@ -756,9 +756,8 @@ theorem PosComboRealRooted.hasSimpleRoots_add_left
     {lam : ℝ}
     (hlam : 0 < lam) :
     HasSimpleRoots (C lam * f + g) := by
-  have hno' : ∀ r, g.IsRoot r → ¬ f.IsRoot r := by
-    intro r hg hf
-    exact hno r hf hg
+  have hno' : ∀ r, g.IsRoot r → ¬ f.IsRoot r :=
+    fun r hg hf => hno r hf hg
   simpa [add_comm] using
     PosComboRealRooted.hasSimpleRoots_add_right
       (f := g) (g := f) (PosComboRealRooted.comm hfg) hno' hlam

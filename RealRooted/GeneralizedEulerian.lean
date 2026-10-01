@@ -147,7 +147,7 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
             · have hfactor : 0 ≤ 1 + c * ((n : ℝ) - (k : ℝ)) := by
                 have hle : (k : ℝ) ≤ (n : ℝ) := by simp_all
                 have hdiff : 0 ≤ (n : ℝ) - (k : ℝ) := sub_nonneg.mpr hle
-                nlinarith [mul_nonneg hc.le hdiff]
+                linarith [mul_nonneg hc.le hdiff]
               exact add_nonneg (mul_nonneg (by positivity) hk) (mul_nonneg hfactor hk')
             · have hkzero : (generalizedEulerian c n).coeff (k + 1) = 0 :=
                 coeff_eq_zero_of_natDegree_lt (by lia)
@@ -172,8 +172,8 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
             have ha : (f.natDegree : ℝ) < a := by
               dsimp only [a]
               simp_all
-            have hgf : StrictInterl g f := by
-              exact strictInterl_affine_derivative_of_nonnegCoeffs hsplits
+            have hgf : StrictInterl g f :=
+              strictInterl_affine_derivative_of_nonnegCoeffs hsplits
                 (by lia) hnn ha
             have hgroots : ∀ r ∈ g.roots, r ≤ 0 :=
               hgf.roots_le_of_right

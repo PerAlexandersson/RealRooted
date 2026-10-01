@@ -138,7 +138,7 @@ theorem strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  strictInterl_mw_lw_derivative_lag_sequence_of_root_window
+  strictInterl_lw_derivative_lag_sequence_of_root_window
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
     hbase hpos hdeg_two
     (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
@@ -211,7 +211,7 @@ theorem isRealRooted_of_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_mw_lw_derivative_lag_sequence_of_root_window
+  isRealRooted_of_lw_derivative_lag_sequence_of_root_window
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
     hbase hpos hdeg_two
     (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
@@ -671,61 +671,6 @@ theorem isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_c
     (fun n _ hr =>
       eval_C_mul_X_mul_one_sub_X_nonpos_of_nonneg_of_nonpos (hc n) hr)
     hrec hdeg_lo hdeg_hi
-
-@[deprecated strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs :=
-  strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
-  (since := "2026-09-26")]
-alias prec_mw_lw_derivative_lag_sequence_den_coeff_of_root_window :=
-  strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
-
-@[deprecated strictInterl_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_X_mul_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_X_mul_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_X_mul_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_X_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_X_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_X_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
-
-@[deprecated strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
-  (since := "2026-09-26")]
-alias prec_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence :=
-  strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
 
 @[deprecated strictInterl_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
   (since := "2026-09-26")]

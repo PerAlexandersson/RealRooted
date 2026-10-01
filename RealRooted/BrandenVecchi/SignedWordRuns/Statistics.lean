@@ -201,9 +201,8 @@ private theorem adjacentCount_expand_runs {α : Type*}
   | (a, length) :: runs, hpos => by
       have hlength : 0 < length := hpos (a, length) (by simp)
       obtain ⟨n, hn⟩ := Nat.exists_eq_add_of_le' hlength
-      have htail_pos : ∀ run ∈ runs, 0 < run.2 := by
-        intro run hrun
-        exact hpos run (by simp [hrun])
+      have htail_pos : ∀ run ∈ runs, 0 < run.2 :=
+        fun run hrun => hpos run (by simp [hrun])
       have ih := adjacentCount_expand_runs relation runs htail_pos
       cases runs with
       | nil =>
@@ -242,8 +241,8 @@ theorem adjacentCount_expand {α : Type*}
     (data : RunLengthData α) :
     adjacentCount relation data.expand =
       adjacentCount relation data.representatives +
-        data.adjacentExcess relation := by
-  exact adjacentCount_expand_runs relation data.runs data.lengths_pos
+        data.adjacentExcess relation :=
+  adjacentCount_expand_runs relation data.runs data.lengths_pos
 
 /-- The descent number of the expanded signed word is the descent number of
 its Smirnov skeleton. -/

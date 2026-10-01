@@ -112,8 +112,8 @@ theorem mem_weakLeftPeakSet_iff {n : ℕ} {α : Type*} [LT α]
     (w : Fin (n + 1) → α) (i : Fin n) :
     i ∈ weakLeftPeakSet w ↔
       i ∈ descentSet w ∧
-        0 < i.val ∧ previousPosition i ∉ descentSet w := by
-  exact mem_weakLeftPeakSetFromDescentSet_iff (descentSet w) i
+        0 < i.val ∧ previousPosition i ∉ descentSet w :=
+  mem_weakLeftPeakSetFromDescentSet_iff (descentSet w) i
 
 /-- The total weak-left-peak statistic on finite words. -/
 def wordWeakLeftPeakNumber {n : ℕ} {α : Type*} [LT α]

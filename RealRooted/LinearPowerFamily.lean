@@ -25,7 +25,7 @@ theorem strictInterl_X_pow_succ (n : ℕ) : StrictInterl ((X : ℝ[X]) ^ n) (X ^
     intro m
     rw [coeff_X_pow]
     split <;> norm_num
-  have hstrictInterl := strictInterl_self_mul_X_of_nonneg hne hsplits hnn
+  have hstrictInterl := strictInterl_self_X_mul_of_nonneg hne hsplits hnn
   rwa [show (X : ℝ[X]) * X ^ n = X ^ (n + 1) by ring] at hstrictInterl
 
 /-- Multiplying both members of a nonnegative strictly interlacing pair by the same
@@ -313,14 +313,6 @@ theorem interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs {f : ℝ[X]}
     ring
   exact hstrictInterl.toInterlaces hdeg
 
-/-- Unit-slope variant of `interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs`. -/
-theorem interlaces_self_mul_C_add_X_of_nonnegCoeffs {f : ℝ[X]} (hne : f ≠ 0)
-    (hsplits : f.Splits) (hnn : HasNonnegCoeffs f) {c : ℝ} (hc : 0 < c) :
-    Interlaces f ((C c + X) * f) := by
-  simpa [C_1] using
-    interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs hne hsplits hnn hc
-      (by norm_num : (0 : ℝ) < 1)
-
 /-- Consecutive interlacing for a positive constant/linear-base fixed-linear-tail sequence. -/
 theorem linear_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u v : ℝ}
     (hc : 0 < c) (ha : 0 ≤ a) (hb : 0 < b) (hu : 0 < u) (hv : 0 < v)
@@ -455,7 +447,7 @@ theorem monomial_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u : ℝ}
       have hnn :=
         monomial_tail_sequence_nonneg (A := A) hc.le ha hb.le hu.le h0 h1 hstep (n + 1)
       have hstrictInterlX : StrictInterl (A (n + 1)) (X * A (n + 1)) :=
-        strictInterl_self_mul_X_of_nonneg hne hsplits hnn
+        strictInterl_self_X_mul_of_nonneg hne hsplits hnn
       have hstrictInterl : StrictInterl (A (n + 1)) ((C u * X) * A (n + 1)) := by
         have hscaled := StrictInterl.C_mul_right hstrictInterlX hu.ne'
         simpa [mul_assoc] using hscaled
@@ -537,8 +529,8 @@ theorem commonFactorLinearPowerStep_interlaces {fixed : ℝ[X]} {a b : ℝ}
     (hfixed : fixed ≠ 0 ∧ fixed.Splits) (hb : 0 < b) (n : Nat) :
     Interlaces
       (fixed * (C a + C b * X) ^ n)
-      (fixed * (C a + C b * X) ^ (n + 1)) := by
-  exact ((interlaces_linear_pow a b hb n).toStrictInterl.mul_common_factor
+      (fixed * (C a + C b * X) ^ (n + 1)) :=
+  ((interlaces_linear_pow a b hb n).toStrictInterl.mul_common_factor
     hfixed.1 hfixed.2).toInterlaces (by
     rw [fixedMulLinearFactorPow_natDegree hfixed.1 hb.ne' n,
       fixedMulLinearFactorPow_natDegree hfixed.1 hb.ne' (n + 1)]

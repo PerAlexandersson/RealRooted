@@ -33,9 +33,8 @@ private theorem exponential_bound_of_nonneg_logConcave_zero_tail
         by_cases hz : a (n + 1) = 0
         · have htail' : a (n + 2) = 0 := htail hz (by lia)
           simp [hz, htail']
-        · have hprevne : a n ≠ 0 := by
-            intro hzero
-            exact hz (htail hzero (by lia))
+        · have hprevne : a n ≠ 0 :=
+            fun hzero => hz (htail hzero (by lia))
           have hprev : 0 < a n :=
             lt_of_le_of_ne (hnonneg _) (Ne.symm hprevne)
           have hmul : a n * a (n + 2) ≤ a n * (r * a (n + 1)) := by

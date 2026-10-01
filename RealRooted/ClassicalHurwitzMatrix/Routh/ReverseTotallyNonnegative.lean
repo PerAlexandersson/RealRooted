@@ -281,8 +281,8 @@ theorem IsTotallyNonneg.hurwitz_routhReducedPolynomial_ratio
     (h : (hurwitz (oddEvenPolynomial odd even).coeff).IsTotallyNonneg)
     (hodd : 0 < odd.coeff 0) :
     (hurwitz (routhReducedPolynomial
-      (routhCoefficient odd even) odd even).coeff).IsTotallyNonneg := by
-  exact h.hurwitz_routhReducedPolynomial hodd
+      (routhCoefficient odd even) odd even).coeff).IsTotallyNonneg :=
+  h.hurwitz_routhReducedPolynomial hodd
     (routhCoefficient_mul_coeff_zero odd even hodd.ne')
 
 end Matrix

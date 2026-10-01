@@ -43,14 +43,6 @@ theorem lowerHessenbergTwo_eq_bandedLowerHessenberg
       else 0 :=
   rfl
 
-/-- Laplace expansion when the last column is zero above its final entry. -/
-theorem det_eq_last_apply_mul_det_castSucc {R : Type*} [CommRing R]
-    {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) R)
-    (hzero : ∀ i : Fin n, A i.castSucc (Fin.last n) = 0) :
-    A.det = A (Fin.last n) (Fin.last n) *
-      (A.submatrix Fin.castSucc Fin.castSucc).det := by
-  exact Matrix.det_eq_last_apply_mul_det_castSucc_of_above_eq_zero A hzero
-
 /-- The cofactor obtained by deleting the final row and penultimate column. -/
 def lowerHessenbergTwoPenultimateCofactor {R : Type*} [CommRing R]
     (a b : ℕ → R) (x : R) (n : ℕ) :
@@ -86,7 +78,7 @@ lemma lowerHessenbergTwoPenultimateCofactor_det {R : Type*}
     [CommRing R] (a b : ℕ → R) (x : R) (n : ℕ) :
     (lowerHessenbergTwoPenultimateCofactor a b x n).det =
       x * (lowerHessenbergTwo a b x (n + 1)).det := by
-  rw [det_eq_last_apply_mul_det_castSucc]
+  rw [Matrix.det_eq_last_apply_mul_det_castSucc_of_above_eq_zero]
   · rw [lowerHessenbergTwoPenultimateCofactor_castSucc]
     simp [lowerHessenbergTwoPenultimateCofactor_lastColumn]
   · intro i
@@ -155,7 +147,7 @@ lemma lowerHessenbergTwoAntepenultimateInnerCofactor_det {R : Type*}
     [CommRing R] (a b : ℕ → R) (x : R) (n : ℕ) :
     (lowerHessenbergTwoAntepenultimateInnerCofactor a b x n).det =
       x * (lowerHessenbergTwo a b x n).det := by
-  rw [det_eq_last_apply_mul_det_castSucc]
+  rw [Matrix.det_eq_last_apply_mul_det_castSucc_of_above_eq_zero]
   · rw [lowerHessenbergTwoAntepenultimateInnerCofactor_castSucc]
     simp [lowerHessenbergTwoAntepenultimateInnerCofactor_lastColumn]
   · intro i
@@ -166,7 +158,7 @@ lemma lowerHessenbergTwoAntepenultimateCofactor_det {R : Type*}
     [CommRing R] (a b : ℕ → R) (x : R) (n : ℕ) :
     (lowerHessenbergTwoAntepenultimateCofactor a b x n).det =
       x ^ 2 * (lowerHessenbergTwo a b x n).det := by
-  rw [det_eq_last_apply_mul_det_castSucc]
+  rw [Matrix.det_eq_last_apply_mul_det_castSucc_of_above_eq_zero]
   · rw [lowerHessenbergTwoAntepenultimateCofactor_lastColumn]
     simp only [ite_eq_left]
     change x *

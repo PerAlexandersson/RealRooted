@@ -16,22 +16,30 @@ years = [1910, 1994]
 [[definitions]]
 name = "RealRooted.eulerianTilde"
 module = "RealRooted.CombinatorialExamples.Eulerian"
+label = "Eulerian polynomials"
 
 [[definitions]]
 name = "RealRooted.typeBEulerian"
 module = "RealRooted.CombinatorialExamples.TypeBEulerian"
+label = "Type B Eulerian polynomials"
 
 [[theorems]]
 name = "RealRooted.Challenges.Eulerian.realRooted"
+label = "Eulerian polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.Eulerian.interlaces_succ"
+label = "Consecutive Eulerian polynomials interlace"
 
 [[theorems]]
 name = "RealRooted.Challenges.Eulerian.typeB_realRooted"
+label = "Type B Eulerian polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.Eulerian.typeB_interlaces_succ"
+label = "Consecutive type B Eulerian polynomials interlace"
 -->
 
 <!-- realrooted-catalog-content -->

@@ -81,8 +81,7 @@ theorem coe_basisDegreeOfLE (κ : σ → ℕ) :
       MvPolynomial σ R) = monomial m.1 1 :=
   fun m => by
     rw [← Module.Basis.repr_symm_single_one]
-    apply AddMonoidAlgebra.ext
-    exact Finsupp.supportedEquivFinsupp_symm_single (R := R) _ _ _
+    exact AddMonoidAlgebra.ext (Finsupp.supportedEquivFinsupp_symm_single (R := R) _ _ _)
 
 @[simp]
 theorem basisDegreeOfLE_repr_apply (κ : σ → ℕ)

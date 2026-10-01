@@ -12,16 +12,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Low-degree base case for the succ-degree root-crossing target.  In the
-constant-vs-linear case all crossing inequalities are vacuous. -/
-theorem succDegreeRootCrossing_of_natDegree_eq_zero
-    {f g : ℝ[X]} (hf_deg0 : f.natDegree = 0) :
-    (∀ j, 1 ≤ j → j ≤ f.natDegree →
-        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
-    (∀ j, 1 ≤ j → j < f.natDegree →
-        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
-  refine ⟨?_, ?_⟩ <;> intro j hj1 hjlt <;> exfalso <;> lia
-
 private lemma succCross_getD_mono
     {rs : List ℝ} (hrs : rs.Pairwise (· ≤ ·))
     {i j : ℕ} (hij : i ≤ j) (hj : j < rs.length) :

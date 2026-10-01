@@ -39,9 +39,8 @@ theorem MvRealStable.samePhaseStable {σ : Type*}
   have hδpos (n : ℕ) : 0 < δ n := by
     dsimp [δ]
     positivity
-  have hwtApprox (n : ℕ) : ∀ i, 0 < wtApprox n i := by
-    intro i
-    exact add_pos_of_nonneg_of_pos (hwt i) (hδpos n)
+  have hwtApprox (n : ℕ) : ∀ i, 0 < wtApprox n i :=
+    fun i => add_pos_of_nonneg_of_pos (hwt i) (hδpos n)
   have hq_splits (n : ℕ) : (q n).Splits :=
     (hP.commonPhaseRestriction_splits_ne_zero_of_pos
       (wtApprox n) (hwtApprox n)).1

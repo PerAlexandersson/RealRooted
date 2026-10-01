@@ -61,8 +61,8 @@ theorem descPochhammerRatio_two_mul {R : Type*} [Field R] [CharZero R]
   have hdup (r : ℕ) :
       (descPochhammer R (2 * r)).eval (2 * x) =
         (4 : R) ^ r * (descPochhammer R r).eval x *
-          (descPochhammer R r).eval (x - 1 / 2) := by
-    exact descPochhammer_eval_two_mul r x
+          (descPochhammer R r).eval (x - 1 / 2) :=
+    descPochhammer_eval_two_mul r x
   let a := (descPochhammer R (i + j)).eval x
   let b := (descPochhammer R (i + j)).eval (x - 1 / 2)
   let ai := (descPochhammer R i).eval x

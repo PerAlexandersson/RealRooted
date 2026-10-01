@@ -473,15 +473,6 @@ lemma strictInterl_of_strictInterl_X_mul_of_nonneg {f g : ℝ[X]}
       (roots_nonpos_of_nonneg_coeffs hf.2 hfnn)
       (roots_nonpos_of_nonneg_coeffs h.1.2 hgnn)
 
-@[deprecated strictInterl_self_X_mul_of_nonneg (since := "2026-09-18")]
-alias prec_self_X_mul_of_nonneg := strictInterl_self_X_mul_of_nonneg
-
-@[deprecated strictInterl_to_X_mul_of_nonneg (since := "2026-09-18")]
-alias prec_to_X_mul_of_nonneg := strictInterl_to_X_mul_of_nonneg
-
-@[deprecated strictInterl_of_strictInterl_X_mul_of_nonneg (since := "2026-09-18")]
-alias prec_of_prec_X_mul_of_nonneg := strictInterl_of_strictInterl_X_mul_of_nonneg
-
 /-- Nonnegative-coefficient form of the common-factor Wagner `X` bridge. -/
 theorem StrictInterl.mul_X_both_of_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
@@ -565,11 +556,5 @@ theorem Interl.mul_X_both_iff_of_nonneg {f g : ℝ[X]}
     Interl f g ↔ Interl (X * f) (X * g) :=
   ⟨fun h => h.mul_X_both_of_nonneg hfnn hgnn,
     fun h => h.of_mul_X_both_of_nonneg hfnn hgnn⟩
-
-@[deprecated Interl.mul_X_both_iff_of_nonneg (since := "2026-09-18")]
-theorem prec0_iff_prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Interl f g ↔ Interl (X * f) (X * g) :=
-  Interl.mul_X_both_iff_of_nonneg hfnn hgnn
 
 end RealRooted

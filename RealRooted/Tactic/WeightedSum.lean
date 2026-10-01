@@ -338,20 +338,6 @@ end Tactic
 end RealRooted
 namespace RealRooted
 namespace Tactic
-@[deprecated weightedCompatibleLeft_sequence_strictInterl (since := "2026-09-26")]
-alias weightedCompatibleLeft_sequence_prec := weightedCompatibleLeft_sequence_strictInterl
-
-@[deprecated weightedSum_sequence_left_strictInterl (since := "2026-09-26")]
-alias weightedSum_sequence_left_prec := weightedSum_sequence_left_strictInterl
-
-@[deprecated sum_sequence_left_strictInterl (since := "2026-09-26")]
-alias sum_sequence_left_prec := sum_sequence_left_strictInterl
-
-@[deprecated weightedSum_sequence_right_strictInterl (since := "2026-09-26")]
-alias weightedSum_sequence_right_prec := weightedSum_sequence_right_strictInterl
-
-@[deprecated sum_sequence_right_strictInterl (since := "2026-09-26")]
-alias sum_sequence_right_prec := sum_sequence_right_strictInterl
 
 end Tactic
 end RealRooted
@@ -525,15 +511,15 @@ macro_rules
   | `(tactic| rr_weighted_compatible_left_prec using compatible := $hl:term) =>
       `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl $hl)
   | `(tactic| rr_weighted_compatible_left_sequence_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.Tactic.weightedCompatibleLeft_sequence_prec $hl)
+      `(tactic| exact RealRooted.Tactic.weightedCompatibleLeft_sequence_strictInterl $hl)
   | `(tactic| rr_weighted_sum_left_prec using compatible := $hl:term) =>
       `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl $hl)
   | `(tactic| rr_weighted_sum_sequence_left_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.Tactic.weightedSum_sequence_left_prec $hl)
+      `(tactic| exact RealRooted.Tactic.weightedSum_sequence_left_strictInterl $hl)
   | `(tactic| rr_sum_left_prec using compatible := $hl:term) =>
       `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl_sum $hl)
   | `(tactic| rr_sum_sequence_left_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.Tactic.sum_sequence_left_prec $hl)
+      `(tactic| exact RealRooted.Tactic.sum_sequence_left_strictInterl $hl)
   | `(tactic|
       rr_weighted_sum_right_prec using
         weights_nonneg := $hnonneg:term,
@@ -550,7 +536,7 @@ macro_rules
         terms_pos_lc := $hpos:term,
         some_weight_pos := $hex:term) =>
       `(tactic|
-        exact RealRooted.Tactic.weightedSum_sequence_right_prec
+        exact RealRooted.Tactic.weightedSum_sequence_right_strictInterl
           $hnonneg $hprec $hpos $hex)
   | `(tactic|
       rr_sum_right_prec using
@@ -563,6 +549,6 @@ macro_rules
         all_prec := $hprec:term,
         terms_pos_lc := $hpos:term,
         nonempty := $hne:term) =>
-      `(tactic| exact RealRooted.Tactic.sum_sequence_right_prec $hprec $hpos $hne)
+      `(tactic| exact RealRooted.Tactic.sum_sequence_right_strictInterl $hprec $hpos $hne)
 end Tactic
 end RealRooted

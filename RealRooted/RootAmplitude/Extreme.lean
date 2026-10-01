@@ -22,7 +22,7 @@ theorem sq_ratio_ge {x0 x1 s1 s2 : K} (hs2 : 0 ≤ s2)
     s2 * x1 ^ 2 ≤ (s1 ^ 2 - s2) * x0 ^ 2 := by
   have h1 : s2 * x1 ^ 2 ≤ s2 * (s2 - x0 ^ 2) := by nlinarith
   have h2 : s2 ^ 2 ≤ s1 ^ 2 * x0 ^ 2 := by nlinarith
-  nlinarith
+  linarith
 
 /-- A square-ratio bound with a positive denominator gives a ratio lower bound. -/
 theorem ratio_sq_ge {x0 x1 s1 s2 c : K} (hx1 : 0 < x1) (hs2 : 0 ≤ s2)
@@ -128,7 +128,7 @@ theorem mul_three_pow_le_four_pow (C : K) (hC : 0 ≤ C) (N : ℕ) (hN : 3 ≤ N
         mul_nonneg (mul_nonneg hC (le_of_lt hp)) (by linarith)
       push_cast
       rw [h3, h4]
-      nlinarith [ih, hslack]
+      linarith [ih, hslack]
 
 /-- The explicit numerical threshold `exp 4 < 55`. -/
 theorem exp_four_lt : Real.exp 4 < 55 := by

@@ -361,16 +361,6 @@ alias prec_derivative_polarTheta := strictInterl_derivative_polarTheta
 @[deprecated strictInterl_derivative_polarTheta_boundary (since := "2026-09-26")]
 alias prec_derivative_polarTheta_boundary := strictInterl_derivative_polarTheta_boundary
 
-@[deprecated interl_derivative_polarTheta_boundary (since := "2026-09-26")]
-alias prec0_derivative_polarTheta_boundary := interl_derivative_polarTheta_boundary
-
-@[deprecated strictInterl_polarTheta_thetaPlusOne (since := "2026-09-26")]
-alias prec_polarTheta_thetaPlusOne := strictInterl_polarTheta_thetaPlusOne
-
-@[deprecated strictInterl_thetaPlusOne_X_polarTheta_boundary (since := "2026-09-26")]
-alias prec_thetaPlusOne_X_polarTheta_boundary :=
-  strictInterl_thetaPlusOne_X_polarTheta_boundary
-
 @[deprecated strictInterl_polarTheta_thetaPlusOne_boundary (since := "2026-09-26")]
 alias prec_polarTheta_thetaPlusOne_boundary :=
   strictInterl_polarTheta_thetaPlusOne_boundary

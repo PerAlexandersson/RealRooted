@@ -56,7 +56,7 @@ theorem strictInterl_positive_euler_lag_sequence
           StrictInterl.add_of_right_of_posLeadingCoeff
             hderivative hlag hderivative_pos hlag_pos
       exact
-        strictInterl_of_strictInterl_mul_X_of_nonneg hsum (hnonneg (n + 1)) (hnonneg (n + 2))
+        strictInterl_of_strictInterl_X_mul_of_nonneg hsum (hnonneg (n + 1)) (hnonneg (n + 2))
 
 /-- Default proved PF preservation for the `l`-fold iterate of `theta + 1`. -/
 theorem isPFPolynomial_iterateThetaPlusOne
@@ -332,21 +332,11 @@ macro_rules
 end Tactic
 end RealRooted
 namespace RealRooted
-@[deprecated strictInterl_positive_euler_lag_sequence (since := "2026-09-26")]
-alias prec_positive_euler_lag_sequence := strictInterl_positive_euler_lag_sequence
-
-@[deprecated interl_iterateThetaPlusOne (since := "2026-09-26")]
-alias prec0_iterateThetaPlusOne := interl_iterateThetaPlusOne
 
 end RealRooted
 
 namespace RealRooted
 namespace Tactic
-@[deprecated thetaPlusOne_sequence_interl (since := "2026-09-26")]
-alias thetaPlusOne_sequence_prec0 := thetaPlusOne_sequence_interl
-
-@[deprecated iterateThetaPlusOne_sequence_interl (since := "2026-09-26")]
-alias iterateThetaPlusOne_sequence_prec0 := iterateThetaPlusOne_sequence_interl
 
 end Tactic
 end RealRooted
@@ -404,7 +394,7 @@ macro_rules
         lag_positive := $hc:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.prec_positive_euler_lag_sequence
+        exact RealRooted.strictInterl_positive_euler_lag_sequence
           $hbase $hnonneg $hpos $hc $hrec)
   | `(tactic|
       rr_thetaPlusOne_prec0 using
@@ -417,14 +407,14 @@ macro_rules
         left_pf := $hp:term,
         right_pf := $hq:term,
         prec0 := $hpq:term) =>
-      `(tactic| exact RealRooted.Tactic.thetaPlusOne_sequence_prec0 $hp $hq $hpq)
+      `(tactic| exact RealRooted.Tactic.thetaPlusOne_sequence_interl $hp $hq $hpq)
   | `(tactic|
       rr_iterateThetaPlusOne_prec0 using
         index := $l:term,
         left_pf := $hp:term,
         right_pf := $hq:term,
         prec0 := $hpq:term) =>
-      `(tactic| exact RealRooted.prec0_iterateThetaPlusOne $l $hp $hq $hpq)
+      `(tactic| exact RealRooted.interl_iterateThetaPlusOne $l $hp $hq $hpq)
   | `(tactic|
       rr_iterateThetaPlusOne_sequence_prec0 using
         index := $l:term,
@@ -432,7 +422,7 @@ macro_rules
         right_pf := $hq:term,
         prec0 := $hpq:term) =>
       `(tactic|
-        exact RealRooted.Tactic.iterateThetaPlusOne_sequence_prec0
+        exact RealRooted.Tactic.iterateThetaPlusOne_sequence_interl
           (l := $l) $hp $hq $hpq)
 end Tactic
 end RealRooted

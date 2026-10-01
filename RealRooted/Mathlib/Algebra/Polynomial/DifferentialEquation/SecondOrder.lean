@@ -73,8 +73,8 @@ theorem eval_derivative_ne_zero_of_second_order_ode
       (X - C r) ^ (k - 1) ∣ T.derivative := by
     apply (le_rootMultiplicity_iff hder_ne).mp
     rw [hmult_der]
-  have hdiv_T : (X - C r) ^ (k - 1) ∣ T := by
-    exact (pow_dvd_pow (X - C r) (by lia : k - 1 ≤ k)).trans
+  have hdiv_T : (X - C r) ^ (k - 1) ∣ T :=
+    (pow_dvd_pow (X - C r) (by lia : k - 1 ≤ k)).trans
       (pow_rootMultiplicity_dvd T r)
   have hdiv_lower :
       (X - C r) ^ (k - 1) ∣ B * T.derivative + C₀ * T :=

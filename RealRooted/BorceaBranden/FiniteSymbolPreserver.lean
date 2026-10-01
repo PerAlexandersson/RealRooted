@@ -75,8 +75,8 @@ theorem finiteSymbol_preserves_stability
     · exact hstable.specializeRight_zero_or_of_degreeOf_le_one hQDegree
   have hQeq :
       Q = MvPolynomial.rename paperTargetInputEmbedding
-        (paperDifferentialSum T f) := by
-    exact contractMappedVariablePairs_paperThreeBlock T f
+        (paperDifferentialSum T f) :=
+    contractMappedVariablePairs_paperThreeBlock T f
   have hReconstruct :
       specializeRight (fun _ : sigma ⊕ sigma => 0) Q = T f := by
     rw [hQeq, specializeRight_zero_rename_paperTargetInputEmbedding,

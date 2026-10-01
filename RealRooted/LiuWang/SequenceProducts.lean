@@ -377,36 +377,11 @@ theorem isRealRooted_of_lw_current_one_add_X_positive_t_lag_sequence
     strictInterl_lw_current_one_add_X_positive_t_lag_sequence
       hbase hpos hnonneg hc hrec hdeg_succ hno
 
-@[deprecated strictInterl_lw_c_tR_lag_sequence (since := "2026-09-18")]
-alias prec_lw_c_tR_lag_sequence := strictInterl_lw_c_tR_lag_sequence
-
 @[deprecated strictInterl_lw_positive_X_mul_lag_sequence (since := "2026-09-26")]
 alias prec_lw_positive_X_mul_lag_sequence := strictInterl_lw_positive_X_mul_lag_sequence
 
-@[deprecated strictInterl_lw_positive_C_mul_X_mul_lag_sequence (since := "2026-09-26")]
-alias prec_lw_positive_C_mul_X_mul_lag_sequence :=
-  strictInterl_lw_positive_C_mul_X_mul_lag_sequence
-
 @[deprecated strictInterl_lw_tR_lag_sequence (since := "2026-09-26")]
 alias prec_lw_tR_lag_sequence := strictInterl_lw_tR_lag_sequence
-
-@[deprecated strictInterl_lw_X_mul_one_sub_X_lag_sequence (since := "2026-09-26")]
-alias prec_lw_X_mul_one_sub_X_lag_sequence := strictInterl_lw_X_mul_one_sub_X_lag_sequence
-
-@[deprecated strictInterl_lw_X_mul_C_sub_C_mul_X_lag_sequence (since := "2026-09-26")]
-alias prec_lw_X_mul_C_sub_C_mul_X_lag_sequence := strictInterl_lw_X_mul_C_sub_C_mul_X_lag_sequence
-
-@[deprecated strictInterl_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence (since := "2026-09-26")]
-alias prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence :=
-  strictInterl_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
-
-@[deprecated strictInterl_lw_current_CX_positive_t_lag_sequence (since := "2026-09-26")]
-alias prec_lw_current_CX_positive_t_lag_sequence :=
-  strictInterl_lw_current_CX_positive_t_lag_sequence
-
-@[deprecated strictInterl_lw_current_X_positive_t_lag_sequence (since := "2026-09-26")]
-alias prec_lw_current_X_positive_t_lag_sequence :=
-  strictInterl_lw_current_X_positive_t_lag_sequence
 
 @[deprecated strictInterl_lw_current_one_add_X_positive_t_lag_sequence (since := "2026-09-26")]
 alias prec_lw_current_one_add_X_positive_t_lag_sequence :=

@@ -17,19 +17,6 @@ noncomputable section
 
 namespace RealRooted
 
-private theorem add_ne_zero_of_nonnegCoeffs_of_right_ne_zero
-    {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
-    (hq_ne : q ≠ 0) : p + q ≠ 0 := by
-  let d : ℕ := q.natDegree
-  have hp_coeff : 0 ≤ p.coeff d := hp d
-  have hq_pos : 0 < q.coeff d := by
-    have hq_lc : 0 < q.leadingCoeff := hq.pos_leadingCoeff hq_ne
-    simpa [d] using hq_lc
-  intro hsum_zero
-  have hcoeff_zero : (p + q).coeff d = 0 := by simp [hsum_zero]
-  rw [coeff_add] at hcoeff_zero
-  linarith
-
 private theorem pairwise_interl_of_filter_ne_zero_pairwise_strictInterl :
     ∀ fs : List ℝ[X], (fs.filter (· ≠ 0)).Pairwise StrictInterl → fs.Pairwise Interl
   | [], _ => by simp
@@ -75,18 +62,18 @@ private theorem isInterlacingSeqNonneg_of_getD_chain
     rcases List.get_of_mem hp with ⟨i, rfl⟩
     have hi : i.val ≤ fs.length - 1 := by lia
     have hii := hall i.val i.val (by simp) le_rfl hi
-    have hget : F i.val = fs.get i := by
-      exact List.getD_eq_getElem fs 0 i.isLt
+    have hget : F i.val = fs.get i :=
+      List.getD_eq_getElem fs 0 i.isLt
     exact ⟨by simpa [hget] using hii.1, hnonneg _ (List.get_mem fs i)⟩
   · rw [isInterlacingSeq_iff_pairwise, List.pairwise_iff_get]
     intro i j hij
     have hi : i.val ≤ fs.length - 1 := by lia
     have hj : j.val ≤ fs.length - 1 := by lia
     have hij' := hall i.val j.val (by simp) hij.le hj
-    have hgeti : F i.val = fs.get i := by
-      exact List.getD_eq_getElem fs 0 i.isLt
-    have hgetj : F j.val = fs.get j := by
-      exact List.getD_eq_getElem fs 0 j.isLt
+    have hgeti : F i.val = fs.get i :=
+      List.getD_eq_getElem fs 0 i.isLt
+    have hgetj : F j.val = fs.get j :=
+      List.getD_eq_getElem fs 0 j.isLt
     simpa [hgeti, hgetj] using hij'
 
 namespace BrandenVecchi
@@ -168,12 +155,12 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     simpa [S] using natDegree_chowS_le n f hfdegree
   have hTdegree : T.natDegree ≤ n := by
     simpa [T] using natDegree_chowS_le n g hgdegree
-  have hfrdegree : fr.natDegree ≤ n := by
-    exact (by
+  have hfrdegree : fr.natDegree ≤ n :=
+    (by
       simpa [fr] using (natDegree_reflect_le (N := n) (p := f)).trans
         (max_le le_rfl hfdegree))
-  have hgrdegree : gr.natDegree ≤ n := by
-    exact (by
+  have hgrdegree : gr.natDegree ≤ n :=
+    (by
       simpa [gr] using (natDegree_reflect_le (N := n) (p := g)).trans
         (max_le le_rfl hgdegree))
   have hfnn : HasNonnegCoeffs f :=
@@ -312,8 +299,8 @@ theorem IsReflectionInterlacingSeq.chowSExtension
           intro hgr_zero
           exact hg_ne ((reflect_eq_zero_iff (f := g) (N := n)).mp
             (by simpa [gr] using hgr_zero))
-        have hq_ne : q ≠ 0 := by
-          exact add_ne_zero_of_nonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
+        have hq_ne : q ≠ 0 :=
+          add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
         have hfg := hfg0.toStrictInterl_of_ne hf_ne hg_ne
         have hgq := hgq0.toStrictInterl_of_ne hg_ne hq_ne
         have hqq := StrictInterl.refl hq_ne (hqreal hq_ne)
@@ -420,7 +407,7 @@ theorem IsReflectionInterlacingSeq.chowSExtension
           exact hg_ne ((reflect_eq_zero_iff (f := g) (N := n)).mp
             (by simpa [gr] using hgr_zero))
         have hq_ne : q ≠ 0 :=
-          add_ne_zero_of_nonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
+          add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
         have hgq := hgq0.toStrictInterl_of_ne hg_ne hq_ne
         have hqq := StrictInterl.refl hq_ne (hqreal hq_ne)
         have hqgr := hqgr0.toStrictInterl_of_ne hq_ne hgr_ne
@@ -464,11 +451,6 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     have hclosure : reflectionClosure n [S, f, g, q] = closed := by
       simp [reflectionClosure, closed, hrefS, hrefq, fr, gr]
     simpa [S, T, q] using hclosure.symm ▸ hclosed
-
-@[deprecated IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
-  (since := "2026-09-26")]
-alias IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_prec0_self_reflect :=
-  IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
 
 end BrandenVecchi
 

@@ -37,12 +37,6 @@ theorem xSub_splits_of_strictInterl_of_nonneg
   · exact hpair.xSub_splits_of_same_degree_nonneg hpnn hqnn hdeg.symm hμ
   · exact hpair.xSub_splits_of_right_successor_nonneg hpnn hqnn hsucc hμ
 
-@[deprecated positiveSplitRootCountPair_of_strictInterl (since := "2026-09-26")]
-alias positiveSplitRootCountPair_of_prec := positiveSplitRootCountPair_of_strictInterl
-
-@[deprecated xSub_splits_of_strictInterl_of_nonneg (since := "2026-09-26")]
-alias xSub_splits_of_prec_of_nonneg := xSub_splits_of_strictInterl_of_nonneg
-
 end
 
 end RealRooted

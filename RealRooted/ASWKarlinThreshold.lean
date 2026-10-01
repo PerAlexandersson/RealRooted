@@ -26,7 +26,7 @@ lemma aswSectorThreshold_denom_pos (degree order : ℕ) (hdegree : 0 < degree)
     (horder : 0 < order) : 0 < (order : ℝ) + degree - 1 := by
   have hdegree' : (1 : ℝ) ≤ degree := by exact_mod_cast hdegree
   have horder' : (0 : ℝ) < order := by exact_mod_cast horder
-  nlinarith
+  linarith
 
 /-- Karlin's finite-order threshold is positive. -/
 lemma aswSectorThreshold_pos (degree order : ℕ) (hdegree : 0 < degree)
@@ -68,7 +68,7 @@ lemma aswSectorThreshold_le_pi (degree order : ℕ) (hdegree : 0 < degree)
   have hden_pos := aswSectorThreshold_denom_pos degree order hdegree horder
   have horder_le_den : (order : ℝ) ≤ (order : ℝ) + degree - 1 := by
     have hdegree' : (1 : ℝ) ≤ degree := by exact_mod_cast hdegree
-    nlinarith
+    linarith
   have hratio : (order : ℝ) / ((order : ℝ) + degree - 1) ≤ 1 := by
     rw [div_le_one hden_pos]
     exact horder_le_den
@@ -86,7 +86,7 @@ lemma aswSectorThreshold_lt_pi (degree order : ℕ) (hdegree : 1 < degree)
     aswSectorThreshold_denom_pos degree order (by lia) horder
   have horder_lt_den : (order : ℝ) < (order : ℝ) + degree - 1 := by
     have hdegree' : (1 : ℝ) < degree := by exact_mod_cast hdegree
-    nlinarith
+    linarith
   have hratio : (order : ℝ) / ((order : ℝ) + degree - 1) < 1 := by
     rw [div_lt_one hden_pos]
     exact horder_lt_den

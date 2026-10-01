@@ -150,7 +150,7 @@ theorem modifiedNarayanaTuran_ten (r : ℝ) :
 private theorem modifiedNarayanaTuran_two_factor_nonneg (r : ℝ) :
     0 ≤ r ^ 2 + r + 1 := by
   have hs : 0 ≤ (2 * r + 1) ^ 2 := sq_nonneg (2 * r + 1)
-  nlinarith
+  linarith
 
 private theorem modifiedNarayanaTuran_three_factor_nonneg_of_nonpos
     {r : ℝ} (hr : r ≤ 0) :
@@ -179,7 +179,7 @@ private theorem modifiedNarayanaTuran_four_factor_nonneg (r : ℝ) :
   let y : ℝ := -r
   have hquad : 0 ≤ 3 * y ^ 2 - 4 * y + 3 := by
     have hs : 0 ≤ (3 * y - 2) ^ 2 := sq_nonneg (3 * y - 2)
-    nlinarith
+    linarith
   have hdecomp :
       y ^ 6 - 6 * y ^ 5 + 21 * y ^ 4 - 28 * y ^ 3 +
         21 * y ^ 2 - 6 * y + 1 =
@@ -728,198 +728,6 @@ theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_ten :
     ModifiedNarayanaTuranNonnegOnNonposUpToStatement 10 := by
   intro m r hm₁ hm₁₀ hr
   exact modifiedNarayanaTuran_nonneg_of_le_ten hm₁ hm₁₀ hr
-
-/-- Checked shifted Lemma 3.4 root-sign test through `m = 3`. -/
-theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_three
-    {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hm₃ : m ≤ 3)
-    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
-    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
-        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
-        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₃ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_three hr
-
-/-- Checked shifted Lemma 3.4 root-sign test through `m = 4`. -/
-theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_four
-    {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hm₄ : m ≤ 4)
-    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
-    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
-        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
-        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₄ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_four hr
-
-/-- Checked shifted Lemma 3.4 root-sign test through `m = 5`. -/
-theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_five
-    {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hm₅ : m ≤ 5)
-    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
-    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
-        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
-        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₅ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_five hr
-
-/-- Checked shifted Lemma 3.4 root-sign test through `m = 6`. -/
-theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_six
-    {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hm₆ : m ≤ 6)
-    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
-    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
-        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
-        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₆ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_six hr
-
-/-- Checked shifted Lemma 3.4 root-sign test through `m = 7`. -/
-theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_seven
-    {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hm₇ : m ≤ 7)
-    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
-    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
-        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
-        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₇ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_seven hr
-
-/-- Checked shifted Lemma 3.4 root-sign test through `m = 8`. -/
-theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_eight
-    {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hm₈ : m ≤ 8)
-    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
-    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
-        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
-        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₈ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_eight hr
-
-/-- Checked shifted Lemma 3.4 root-sign test through `m = 9`. -/
-theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_nine
-    {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hm₉ : m ≤ 9)
-    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
-    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
-        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
-        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₉ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_nine hr
-
-/-- Checked shifted Lemma 3.4 root-sign test through `m = 10`. -/
-theorem lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_le_ten
-    {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hm₁₀ : m ≤ 10)
-    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
-    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
-        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
-        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₁₀ hlam hmu modifiedNarayanaTuranNonnegOnNonpos_upTo_ten hr
-
-/-- Checked paper-shaped Lemma 3.4 root-sign test through `m = 3`. -/
-theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_three
-    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hm₃ : m ≤ 3)
-    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
-    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
-        modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₃ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_three hr
-
-/-- Checked paper-shaped Lemma 3.4 root-sign test through `m = 4`. -/
-theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_four
-    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hm₄ : m ≤ 4)
-    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
-    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
-        modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₄ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_four hr
-
-/-- Checked paper-shaped Lemma 3.4 root-sign test through `m = 5`. -/
-theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_five
-    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hm₅ : m ≤ 5)
-    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
-    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
-        modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₅ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_five hr
-
-/-- Checked paper-shaped Lemma 3.4 root-sign test through `m = 6`. -/
-theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_six
-    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hm₆ : m ≤ 6)
-    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
-    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
-        modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₆ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_six hr
-
-/-- Checked paper-shaped Lemma 3.4 root-sign test through `m = 7`. -/
-theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_seven
-    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hm₇ : m ≤ 7)
-    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
-    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
-        modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₇ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_seven hr
-
-/-- Checked paper-shaped Lemma 3.4 root-sign test through `m = 8`. -/
-theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_eight
-    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hm₈ : m ≤ 8)
-    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
-    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
-        modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₈ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_eight hr
-
-/-- Checked paper-shaped Lemma 3.4 root-sign test through `m = 9`. -/
-theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_nine
-    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hm₉ : m ≤ 9)
-    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
-    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
-        modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₉ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_nine hr
-
-/-- Checked paper-shaped Lemma 3.4 root-sign test through `m = 10`. -/
-theorem lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_le_ten
-    {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hm₁₀ : m ≤ 10)
-    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
-    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
-        modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  lemma34ModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    hm hm₁₀ hlam hnu modifiedNarayanaTuranNonnegOnNonpos_upTo_ten hr
 
 end GeneralizedSnakePosets
 end RealRooted

@@ -360,10 +360,6 @@ theorem wronskian_pos_of_strictInterl_succ {p q : ℝ[X]}
   rw [e3, e4] at hW_lo
   nlinarith [hW_up, hW_lo, htM, hmt]
 
-@[deprecated wronskian_pos_of_strictInterlSameDegree (since := "2026-09-18")]
-alias wronskian_pos_of_strictPrecSameDegree :=
-  wronskian_pos_of_strictInterlSameDegree
-
 @[deprecated wronskian_pos_of_strictInterl_succ (since := "2026-09-26")]
 alias wronskian_pos_of_prec_succ := wronskian_pos_of_strictInterl_succ
 

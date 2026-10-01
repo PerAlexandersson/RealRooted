@@ -19,109 +19,11 @@ namespace GustafssonSolus
 
 /-! ### Finite-entry shape helpers -/
 
-private lemma interl_gs_quadratic_self {s t : ℝ} (hs : 0 < s) :
-    Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X + X) :=
-  Interl.refl fun _ => (isRealRooted_affine_mul_X_add_X hs).2
-
-private lemma interl_gs_X_quadratic {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl X ((C s * X + C t) * X + X) := by
-  rw [affine_mul_X_add_X_eq]
-  simpa using
-    interl_affine_to_X_mul_affine
-      (u := s) (v := t + 1) (U := 1) (V := 0)
-      hs zero_lt_one (by nlinarith) (by positivity) le_rfl
-
-private lemma interl_gs_affine_add_X_quadratic
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t + X) ((C s * X + C t) * X + X) := by
-  rw [affine_mul_X_add_X_eq]
-  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  exact
-    interl_affine_to_X_mul_affine
-      (u := s) (v := t + 1) (U := s + 1) (V := t)
-      hs (by positivity) (by nlinarith [hs, ht]) (by positivity) ht.le
-
-private lemma interl_gs_affine_quadratic {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t) ((C s * X + C t) * X + X) := by
-  rw [affine_mul_X_add_X_eq]
-  exact
-    interl_affine_to_X_mul_affine
-      (u := s) (v := t + 1) (U := s) (V := t)
-      hs hs (by nlinarith [hs]) (by positivity) ht.le
-
-private lemma interl_gs_affine_add_one_quadratic
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t + 1) ((C s * X + C t) * X + X) := by
-  rw [affine_mul_X_add_X_eq]
-  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  exact
-    interl_affine_to_X_mul_affine
-      (u := s) (v := t + 1) (U := s) (V := t + 1)
-      hs hs le_rfl (by nlinarith) (by nlinarith)
-
-private lemma interl_gs_affine_add_X_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t + X) X := by
-  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  simpa using
-    interl_affine_linear_affine_linear_of_cross
-      (u := s + 1) (v := t) (U := 1) (V := 0)
-      (by positivity) zero_lt_one (by nlinarith [ht])
-
-private lemma interl_gs_affine_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t) X := by
-  simpa using
-    interl_affine_linear_affine_linear_of_cross
-      (u := s) (v := t) (U := 1) (V := 0)
-      hs zero_lt_one (by nlinarith [ht])
-
-private lemma interl_gs_affine_add_one_X
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t + 1) X := by
-  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  simpa using
-    interl_affine_linear_affine_linear_of_cross
-      (u := s) (v := t + 1) (U := 1) (V := 0)
-      hs zero_lt_one (by nlinarith [ht])
-
-private lemma interl_gs_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
-    Interl (C s * X + C t + X) (C s * X + C t + X) :=
-  interl_affine_add_X_self hs
-
-private lemma interl_gs_affine_self {s t : ℝ} (hs : 0 < s) :
-    Interl (C s * X + C t) (C s * X + C t) :=
-  Interl.refl fun _ => (isRealRooted_affine_factor (s := s) (t := t) hs).2
-
-private lemma interl_gs_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
-    Interl (C s * X + C t + 1) (C s * X + C t + 1) :=
-  interl_affine_add_one_self hs
-
 private lemma interl_gs_X_X : Interl (X : ℝ[X]) X :=
   Interl.refl fun _ => isRealRooted_X.2
 
 private lemma interl_gs_one_one : Interl (1 : ℝ[X]) 1 := by
   simpa using interl_C_C (1 : ℝ) (1 : ℝ)
-
-private lemma interl_gs_affine_affine_add_X
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t) (C s * X + C t + X) := by
-  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  exact
-    interl_affine_linear_affine_linear_of_cross
-      (u := s) (v := t) (U := s + 1) (V := t)
-      hs (by positivity) (by nlinarith [ht])
-
-private lemma interl_gs_affine_add_one_affine_add_X
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t + 1) (C s * X + C t + X) := by
-  exact interl_affine_add_one_affine_add_X hs ht
-
-private lemma interl_gs_affine_add_one_affine {s t : ℝ} (hs : 0 < s) :
-    Interl (C s * X + C t + 1) (C s * X + C t) := by
-  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  exact
-    interl_affine_linear_affine_linear_of_cross
-      (u := s) (v := t + 1) (U := s) (V := t)
-      hs hs (by nlinarith [hs])
 
 private def GS2x2EntryShape (a b c d : ℝ[X]) : Prop :=
   Threshold2x2EntryTuple a b c d 0 0 0 0 ∨
@@ -153,21 +55,21 @@ private lemma GS2x2EntryShape.has2x2 {a b c d : ℝ[X]}
   · simpa using interl_zero_zero
   · simpa using interl_gs_X_X
   · simpa using (interl_zero_right (C s * X + C t + 1 : ℝ[X]))
-  · simpa using interl_gs_affine_X hs ht
-  · simpa using interl_gs_affine_add_one_X hs ht
-  · simpa using interl_gs_affine_add_X_X hs ht
-  · simpa using interl_gs_affine_self hs
-  · simpa using interl_gs_affine_add_one_affine hs
-  · simpa using interl_gs_affine_add_one_self hs
-  · simpa using interl_gs_affine_affine_add_X hs ht
-  · simpa using interl_gs_affine_add_one_affine_add_X hs ht
-  · simpa using interl_gs_affine_add_X_self hs
+  · simpa using interl_affine_X hs ht
+  · simpa using interl_affine_add_one_X hs ht
+  · simpa using interl_affine_add_X_X hs ht
+  · simpa using interl_affine_self hs
+  · simpa using interl_affine_add_one_affine hs
+  · simpa using interl_affine_add_one_self hs
+  · simpa using interl_affine_affine_add_X hs ht
+  · simpa using interl_affine_add_one_affine_add_X hs ht
+  · simpa using interl_affine_add_X_self hs
   · simpa using (interl_zero_left (((C s * X + C t) * X + X : ℝ[X])))
-  · simpa using interl_gs_X_quadratic hs ht
-  · simpa using interl_gs_affine_quadratic hs ht
-  · simpa using interl_gs_affine_add_one_quadratic hs ht
-  · simpa using interl_gs_affine_add_X_quadratic hs ht
-  · simpa using interl_gs_quadratic_self hs
+  · simpa using interl_X_affine_mul_X_add_X hs ht
+  · simpa using interl_affine_affine_mul_X_add_X hs ht
+  · simpa using interl_affine_add_one_affine_mul_X_add_X hs ht
+  · simpa using interl_affine_add_X_affine_mul_X_add_X hs ht
+  · simpa using interl_affine_mul_X_add_X_self hs
 
 private lemma gsEntry_shape
     {t₁ t₂ j₁ j₂ : ℕ} {α₁ α₂ : ℝ[X]}
@@ -662,20 +564,6 @@ theorem gustafsson_solus_interlacing_recursion_fin_choices_weak_of_interlacing
     (gsPaperChoices_mono_of_adjacent hphi)
     (gsPaperChoices_local_of_fin hlocal) fs hfs_len hfs
 
-/-- Interlacing projection of the finite-indexed Gustafsson--Solus row-choice
-form. -/
-theorem gustafsson_solus_interlacing_recursion_fin_choices_interlaces
-    {q m : ℕ} (phi : Fin (m + 1) → ℕ) (delete : Fin (m + 1) → Bool)
-    (hphi : ∀ i : Fin m, phi i.castSucc ≤ phi i.succ)
-    (hlocal : ∀ i : Fin m, phi i.castSucc = phi i.succ →
-      delete i.castSucc = true → delete i.succ = true)
-    (fs : List ℝ[X]) (hfs_len : fs.length = q)
-    (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeq0Nonneg
-      (matPolyAction (gsChoiceMatrix q (gsPaperChoices m phi delete)) fs) :=
-  (gustafsson_solus_interlacing_recursion_fin_choices_weak_of_interlacing
-    phi delete hphi hlocal fs hfs_len hfs).1
-
 /-- Real-rootedness projection of the finite-indexed Gustafsson--Solus
 row-choice form. -/
 theorem gustafsson_solus_interlacing_recursion_fin_choices_realRooted
@@ -731,7 +619,7 @@ theorem gustafsson_solus_interlacing_recursion_fin_polynomials_interlaces
     IsInterlacingSeq0Nonneg (gsPaperPolynomials q m phi delete fs) :=
   by
     simpa using
-      gustafsson_solus_interlacing_recursion_fin_choices_interlaces
+      GustafssonSolus.gustafsson_solus_interlacing_recursion_fin_choices
         phi delete hphi hlocal fs hfs_len hfs
 
 /-- Gustafsson--Solus Lemma 3.4 in paper-shaped finite-indexed polynomial-list

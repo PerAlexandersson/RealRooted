@@ -39,8 +39,21 @@ the page's references.  Years must be strictly increasing; the first year is
 the sorting key, and multiple years display as a range.  A declaration record
 has a fully qualified `name` and may add `module`, either a Lean module name or
 a repository-relative `.lean` path, when the selected declaration is owned by
-an imported canonical module.  The optional record arrays are `[[definitions]]`
-and `[[theorems]]`.  The displayed Markdown must have one H1 and a nonempty
+an imported canonical module.  A record may also add a human-readable `label`
+(one line, shown above the Lean name), and a theorem record may set
+`headline = true` (which requires a `label`).  The optional record arrays are
+`[[definitions]]` and `[[theorems]]`.
+
+Headlines are how a concept or family page surfaces its main results: they are
+named on the page's overview card and listed alongside the theorem pages in the
+overview's Theorems group, linking to the declaration on its page.  Mark the
+main theorem of a paper, and every named theorem, as a headline.  Labels and
+headlines are presentation only and do not enter the selected-declaration
+digest below.
+
+The overview cards show what each page contains (its numbers of definitions
+and theorems), and `results/` lists every selected declaration with a text and
+kind filter.  The displayed Markdown must have one H1 and a nonempty
 `## References` section.
 
 The selected-declaration digest is the SHA-256 of UTF-8 canonical JSON with
@@ -75,6 +88,17 @@ Run source-only validation without touching an output directory:
 ```bash
 python3 scripts/build_challenge_pages.py --check
 ```
+
+Build a source-only local preview without invoking Lake or Lean:
+
+```bash
+python3 scripts/build_challenge_pages.py --preview
+```
+
+The command writes to the system temporary directory and prints a ready-to-run
+`python3 -m http.server` command.  It does not perform the post-Lean publication
+audit; that remains a CI/release check rather than a prerequisite for styling
+or editorial work.
 
 Render a local static site (use an external temporary directory):
 

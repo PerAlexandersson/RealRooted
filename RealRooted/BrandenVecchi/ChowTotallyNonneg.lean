@@ -79,9 +79,8 @@ private theorem resolvedChowWeightSum_endpoint_pairs
   let d : ℕ → ℝ[X] := fun j => resolvedChowDerangement resolution n j
   let a : ℕ → ℝ := fun j => resolution.lambda n j
   let F : ℝ[X] := resolvedChowWeightSum resolution n
-  have ha : ∀ j, j ≤ n → 0 ≤ a j := by
-    intro j hj
-    exact resolution.lambda_nonneg n j hj
+  have ha : ∀ j, j ≤ n → 0 ≤ a j :=
+    fun j hj => resolution.lambda_nonneg n j hj
   have hrow := resolvedChowRow_reflectionInterlacing resolution n
   have hclosed := hrow.closedSequence
   have hpairwise :
@@ -92,28 +91,23 @@ private theorem resolvedChowWeightSum_endpoint_pairs
       isInterlacingSeq0_iff_pairwise.mp hclosed.interlacingSeq0
   have hdirect := (List.pairwise_append.mp hpairwise).1
   have hcross := (List.pairwise_append.mp hpairwise).2.2
-  have hmem : ∀ j, j ≤ n → d j ∈ resolvedChowRow resolution n := by
-    intro j hj
-    exact List.mem_map.mpr ⟨j, by simpa using hj, rfl⟩
+  have hmem : ∀ j, j ≤ n → d j ∈ resolvedChowRow resolution n :=
+    fun j hj => List.mem_map.mpr ⟨j, by simpa using hj, rfl⟩
   have hrefmem : ∀ j, j ≤ n →
       (d j).reflect n ∈
         ((resolvedChowRow resolution n).map fun p => p.reflect n).reverse := by
     intro j hj
     rw [List.mem_reverse]
     exact List.mem_map.mpr ⟨d j, hmem j hj, rfl⟩
-  have hdnn : ∀ j, j ≤ n → HasNonnegCoeffs (d j) := by
-    intro j hj
-    exact resolvedChowDerangement_nonnegCoeffs resolution hj
-  have hdpf : ∀ j, j ≤ n → IsPFPolynomial (d j) := by
-    intro j hj
-    exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits (hdnn j hj)
+  have hdnn : ∀ j, j ≤ n → HasNonnegCoeffs (d j) :=
+    fun _ hj => resolvedChowDerangement_nonnegCoeffs resolution hj
+  have hdpf : ∀ j, j ≤ n → IsPFPolynomial (d j) :=
+    fun j hj => IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits (hdnn j hj)
       (resolvedChowDerangement_eq_zero_or_splits resolution hj)
-  have hddeg : ∀ j, j ≤ n → (d j).natDegree ≤ n := by
-    intro j hj
-    exact hrow.natDegree_le (hmem j hj)
-  have hdself : ∀ j, j ≤ n → Interl (d j) (d j) := by
-    intro j hj
-    exact (hdpf j hj).interl_self
+  have hddeg : ∀ j, j ≤ n → (d j).natDegree ≤ n :=
+    fun j hj => hrow.natDegree_le (hmem j hj)
+  have hdself : ∀ j, j ≤ n → Interl (d j) (d j) :=
+    fun j hj => (hdpf j hj).interl_self
   have hleft : ∀ j, j ≤ n → Interl (d 0) (d j) := by
     intro j hj
     rcases eq_or_lt_of_le (Nat.zero_le j) with rfl | hjpos
@@ -136,18 +130,15 @@ private theorem resolvedChowWeightSum_endpoint_pairs
       simpa [current, last, d, resolvedChowRow] using
         hdirect.rel_get_of_lt (a := current) (b := last) hjlt
   have hdirectReflect : ∀ i, i ≤ n → ∀ j, j ≤ n →
-      Interl (d i) ((d j).reflect n) := by
-    intro i hi j hj
-    exact hcross (d i) (hmem i hi) ((d j).reflect n) (hrefmem j hj)
+      Interl (d i) ((d j).reflect n) :=
+    fun i hi j hj => hcross (d i) (hmem i hi) ((d j).reflect n) (hrefmem j hj)
   have hreflectLeft : ∀ j, j ≤ n →
-      Interl ((d j).reflect n) ((d 0).reflect n) := by
-    intro j hj
-    exact reflect_reverses_interl_of_pf (hdpf 0 (Nat.zero_le n))
+      Interl ((d j).reflect n) ((d 0).reflect n) :=
+    fun j hj => reflect_reverses_interl_of_pf (hdpf 0 (Nat.zero_le n))
       (hdpf j hj) (hddeg 0 (Nat.zero_le n)) (hddeg j hj) (hleft j hj)
   have hreflectRight : ∀ j, j ≤ n →
-      Interl ((d n).reflect n) ((d j).reflect n) := by
-    intro j hj
-    exact reflect_reverses_interl_of_pf (hdpf j hj) (hdpf n le_rfl)
+      Interl ((d n).reflect n) ((d j).reflect n) :=
+    fun j hj => reflect_reverses_interl_of_pf (hdpf j hj) (hdpf n le_rfl)
       (hddeg j hj) (hddeg n le_rfl) (hright j hj)
   have hFpf : IsPFPolynomial F := by
     simpa [F, a, resolvedChowWeightSum, resolvedChowCombination] using
@@ -420,36 +411,6 @@ theorem chowDerangement_strictInterl_succ_of_isTotallyNonneg_of_ne
     StrictInterl (chowDerangement A n) (chowDerangement A (n + 1)) :=
   (chowDerangement_interl_succ_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
     hn hsucc
-
-@[deprecated chowPolynomial_interl_chowDerangement_of_isTotallyNonneg
-  (since := "2026-09-26")]
-alias chowPolynomial_prec0_chowDerangement_of_isTotallyNonneg :=
-  chowPolynomial_interl_chowDerangement_of_isTotallyNonneg
-
-@[deprecated chowPolynomial_strictInterl_chowDerangement_of_isTotallyNonneg_of_ne
-  (since := "2026-09-26")]
-alias chowPolynomial_prec_chowDerangement_of_isTotallyNonneg_of_ne :=
-  chowPolynomial_strictInterl_chowDerangement_of_isTotallyNonneg_of_ne
-
-@[deprecated chowPolynomial_interl_succ_of_isTotallyNonneg
-  (since := "2026-09-26")]
-alias chowPolynomial_prec0_succ_of_isTotallyNonneg :=
-  chowPolynomial_interl_succ_of_isTotallyNonneg
-
-@[deprecated chowPolynomial_strictInterl_succ_of_isTotallyNonneg_of_ne
-  (since := "2026-09-26")]
-alias chowPolynomial_prec_succ_of_isTotallyNonneg_of_ne :=
-  chowPolynomial_strictInterl_succ_of_isTotallyNonneg_of_ne
-
-@[deprecated chowDerangement_interl_succ_of_isTotallyNonneg
-  (since := "2026-09-26")]
-alias chowDerangement_prec0_succ_of_isTotallyNonneg :=
-  chowDerangement_interl_succ_of_isTotallyNonneg
-
-@[deprecated chowDerangement_strictInterl_succ_of_isTotallyNonneg_of_ne
-  (since := "2026-09-26")]
-alias chowDerangement_prec_succ_of_isTotallyNonneg_of_ne :=
-  chowDerangement_strictInterl_succ_of_isTotallyNonneg_of_ne
 
 end
 

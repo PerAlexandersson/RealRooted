@@ -75,16 +75,6 @@ def theorem21RootCountBranchesToCompatiblePredicateStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       theorem21RootCountBranchesPredicate P f g → Compatible f g
 
-/-- Predicate-restricted reverse directions transport along endpoint predicate
-implications. -/
-theorem theorem21RootCountBranchesToCompatiblePredicateStatement_of_imp
-    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ : theorem21RootCountBranchesToCompatiblePredicateStatement Q) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement P := by
-  intro f g hf hg hsgn hbranches
-  exact hQ hf hg hsgn
-    (theorem21RootCountBranchesPredicate_of_imp hPQ hbranches)
-
 /-- Reassemble Liu Theorem 2.1 from separately proved forward and reverse
 directions. -/
 theorem theorem21CompatibleRootCount_of_forward_and_reverse
@@ -101,18 +91,6 @@ def theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
     f.Splits → g.Splits → OppositeLeadingSigns f g →
       f.natDegree ≠ 0 → g.natDegree ≠ 0 →
         theorem21RootCountBranchesPredicate P f g → Compatible f g
-
-/-- Nonconstant predicate-restricted reverse directions transport along
-endpoint predicate implications. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement_of_imp
-    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ :
-      theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement Q) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P := by
-  intro f g hf hg hsgn hf_deg hg_deg hbranches
-  exact hQ hf hg hsgn hf_deg hg_deg
-    (theorem21RootCountBranchesPredicate_of_imp hPQ hbranches)
 
 /-- The branch-retaining deletion-pair package reduces the reverse direction
 of Liu Theorem 2.1 to the explicit factor-return principle. -/
@@ -154,33 +132,6 @@ theorem theorem21CompatibleRootCountReduced_of_noCommonForward_and_factorReturn
     (theorem21CompatibleToRootCountBranchesReduced_of_noCommonForward hforward)
     (theorem21RootCountBranchesReducedToCompatible_of_factorReturn hreturn)
 
-/-- All-combinations factor-return proves the reverse root-count direction. -/
-theorem theorem21RootCountBranchesToCompatible_of_deletionPairFactorReturnAllCombo
-    (hreturn :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
-    theorem21RootCountBranchesToCompatibleStatement :=
-  theorem21RootCountBranchesToCompatible_of_deletionPairFactorReturn
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allCombo hreturn)
-
-/-- All-combinations factor-return degree cases prove the reverse root-count
-direction. -/
-theorem theorem21RootCountBranchesToCompatible_of_allComboDegreeCases
-    (hcases :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
-    theorem21RootCountBranchesToCompatibleStatement :=
-  theorem21RootCountBranchesToCompatible_of_deletionPairFactorReturn
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allComboDegreeCases
-      hcases)
-
-/-- Left all-combinations factor-return degree cases prove the reverse
-root-count direction, with right cases supplied by symmetry. -/
-theorem theorem21RootCountBranchesToCompatible_of_leftAllComboCases
-    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
-    theorem21RootCountBranchesToCompatibleStatement :=
-  theorem21RootCountBranchesToCompatible_of_deletionPairFactorReturn
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_leftAllComboCases
-      hcases)
-
 /-- A bundled sign-normalized positive-split x-subtraction case package proves
 the reverse root-count direction. -/
 theorem theorem21RootCountBranchesToCompatible_of_xSubCasePackage
@@ -190,18 +141,6 @@ theorem theorem21RootCountBranchesToCompatible_of_xSubCasePackage
   theorem21RootCountBranchesToCompatible_of_deletionPairFactorReturn
     (theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCasePackage
       hcases)
-
-/-- Sign-normalized positive-split x-subtraction cases prove the reverse
-root-count direction. -/
-theorem theorem21RootCountBranchesToCompatible_of_xSubCases
-    (hrightSucc :
-      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
-    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement)
-    (hleftSucc :
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement) :
-    theorem21RootCountBranchesToCompatibleStatement :=
-  theorem21RootCountBranchesToCompatible_of_xSubCasePackage
-    ⟨hrightSucc, hsame, hleftSucc⟩
 
 /-- The proved sign-normalized positive-split x-subtraction cases prove the
 reverse root-count direction. -/
@@ -235,69 +174,6 @@ theorem
   · exact (hreturn hf hg hsgn).2 hright.1
       (hright.1.deletePairHasCommonInterleaver hsgn hf hg) hright.2
 
-/-- Endpoint factor-return case packages prove the corresponding
-predicate-restricted reverse root-count direction. -/
-theorem theorem21RootCountBranchesToCompatiblePredicate_of_endpointDegreeCases
-    {P : ℕ → Prop}
-    (hcases : theorem21EndpointFactorReturnPredicateDegreeCasesStatement P) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturnPredicate
-    (theorem21FactorReturnPredicate_of_endpointDegreeCases hcases)
-
-/-- Left endpoint factor-return case packages prove the corresponding
-predicate-restricted reverse root-count direction, with right cases supplied by
-symmetry. -/
-theorem theorem21RootCountBranchesToCompatiblePredicate_of_leftEndpointCases
-    {P : ℕ → Prop}
-    (hcases :
-      theorem21LeftFactorReturnEndpointDegreeCasesPredicateStatement P) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturnPredicate
-    (theorem21FactorReturnPredicate_of_leftEndpointCases hcases)
-
-/-- Predicate-restricted translated compatibility case packages prove the
-corresponding predicate-restricted reverse root-count direction. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicate_of_translatedCompatibleCases
-    {P : ℕ → Prop}
-    (hcases :
-      theorem21LeftFactorReturnTranslatedCompatibleDegreeCasesPredicateStatement
-        P) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturnPredicate
-    (theorem21FactorReturnPredicate_of_translatedCompatibleCasesPredicate
-      hcases)
-
-/-- Predicate-restricted translated right-family case packages prove the
-corresponding predicate-restricted reverse root-count direction. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicate_of_translatedRightFamilyCases
-    {P : ℕ → Prop}
-    (hcases :
-      theorem21LeftFactorReturnTranslatedRightFamilyDegreeCasesPredicateStatement
-        P) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturnPredicate
-    (theorem21FactorReturnPredicate_of_translatedRightFamilyCasesPredicate
-      hcases)
-
-/-- Predicate-restricted positive-split x-subtraction case packages prove the
-corresponding predicate-restricted reverse root-count direction. -/
-theorem theorem21RootCountBranchesToCompatiblePredicate_of_xSubCases
-    {P : ℕ → Prop}
-    (hrightSucc :
-      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-        P)
-    (hsame :
-      positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement P)
-    (hleftSucc :
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-        P) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturnPredicate
-    (theorem21FactorReturnPredicate_of_xSubCasesPredicate
-      hrightSucc hsame hleftSucc)
-
 /-- Bundled predicate-restricted positive-split x-subtraction case packages
 prove the corresponding predicate-restricted reverse root-count direction. -/
 theorem theorem21RootCountBranchesToCompatiblePredicate_of_xSubCasePackage
@@ -326,39 +202,6 @@ theorem theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorRet
     (theorem21DeletionPairCommonInterleaverFactorReturnPredicate_of_factorReturn
       hreturn)
 
-/-- All-combinations factor-return proves every predicate-restricted reverse
-root-count direction. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturnAllCombo
-    {P : ℕ → Prop}
-    (hreturn :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturn
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allCombo hreturn)
-
-/-- All-combinations factor-return degree cases prove every predicate-restricted
-reverse root-count direction. -/
-theorem theorem21RootCountBranchesToCompatiblePredicate_of_allComboDegreeCases
-    {P : ℕ → Prop}
-    (hcases :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturn
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allComboDegreeCases
-      hcases)
-
-/-- Left all-combinations factor-return degree cases prove every
-predicate-restricted reverse root-count direction, with right cases supplied by
-symmetry. -/
-theorem theorem21RootCountBranchesToCompatiblePredicate_of_leftAllComboCases
-    {P : ℕ → Prop}
-    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturn
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_leftAllComboCases
-      hcases)
-
 /-- A `P := True` predicate-restricted reverse direction gives the ordinary
 reverse root-count direction. -/
 theorem theorem21RootCountBranchesToCompatible_of_predicate_true
@@ -378,18 +221,6 @@ theorem theorem21RootCountBranchesToCompatiblePredicate_true_iff :
   ⟨theorem21RootCountBranchesToCompatible_of_predicate_true,
     theorem21RootCountBranchesToCompatiblePredicate_of_reverse⟩
 
-/-- Predicate-`True` factor-return proves the ordinary reverse root-count
-direction. -/
-theorem
-    theorem21RootCountBranchesToCompatible_of_deletionPairFactorReturnPredicate_true
-    (hreturn :
-      theorem21DeletionPairCommonInterleaverFactorReturnPredicateStatement
-        (fun _ => True)) :
-    theorem21RootCountBranchesToCompatibleStatement :=
-  theorem21RootCountBranchesToCompatible_of_deletionPairFactorReturn
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_predicate_true
-      hreturn)
-
 /-- A predicate-restricted reverse direction also gives the corresponding
 nonconstant predicate-restricted reverse direction. -/
 theorem
@@ -399,86 +230,6 @@ theorem
     theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P := by
   intro f g hf hg hsgn _hf_deg _hg_deg hbranches
   exact hreverse hf hg hsgn hbranches
-
-/-- Predicate-restricted factor-return proves the nonconstant
-predicate-restricted reverse root-count direction. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_deletionPairFactorReturnPredicate
-    {P : ℕ → Prop}
-    (hreturn :
-      theorem21DeletionPairCommonInterleaverFactorReturnPredicateStatement P) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    (theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturnPredicate
-      hreturn)
-
-/-- Endpoint factor-return case packages prove the corresponding nonconstant
-predicate-restricted reverse root-count direction. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpointDegreeCases
-    {P : ℕ → Prop}
-    (hcases : theorem21EndpointFactorReturnPredicateDegreeCasesStatement P) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    (theorem21RootCountBranchesToCompatiblePredicate_of_endpointDegreeCases
-      hcases)
-
-/-- Left endpoint factor-return case packages prove the corresponding
-nonconstant predicate-restricted reverse root-count direction, with right cases
-supplied by symmetry. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_leftEndpointCases
-    {P : ℕ → Prop}
-    (hcases :
-      theorem21LeftFactorReturnEndpointDegreeCasesPredicateStatement P) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    (theorem21RootCountBranchesToCompatiblePredicate_of_leftEndpointCases
-      hcases)
-
-/-- Predicate-restricted translated compatibility case packages prove the
-corresponding nonconstant predicate-restricted reverse root-count direction. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_translatedCompatibleCases
-    {P : ℕ → Prop}
-    (hcases :
-      theorem21LeftFactorReturnTranslatedCompatibleDegreeCasesPredicateStatement
-        P) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    (theorem21RootCountBranchesToCompatiblePredicate_of_translatedCompatibleCases
-      hcases)
-
-/-- Predicate-restricted translated right-family case packages prove the
-corresponding nonconstant predicate-restricted reverse root-count direction. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_translatedRightFamilyCases
-    {P : ℕ → Prop}
-    (hcases :
-      theorem21LeftFactorReturnTranslatedRightFamilyDegreeCasesPredicateStatement
-        P) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    (theorem21RootCountBranchesToCompatiblePredicate_of_translatedRightFamilyCases
-      hcases)
-
-/-- Predicate-restricted positive-split x-subtraction case packages prove the
-corresponding nonconstant predicate-restricted reverse root-count direction. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_xSubCases
-    {P : ℕ → Prop}
-    (hrightSucc :
-      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-        P)
-    (hsame :
-      positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement P)
-    (hleftSucc :
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-        P) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    (theorem21RootCountBranchesToCompatiblePredicate_of_xSubCases
-      hrightSucc hsame hleftSucc)
 
 /-- Bundled predicate-restricted positive-split x-subtraction case packages
 prove the corresponding nonconstant predicate-restricted reverse root-count
@@ -513,42 +264,6 @@ theorem
     (theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturn
       hreturn)
 
-/-- All-combinations factor-return proves every nonconstant
-predicate-restricted reverse root-count direction. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_deletionPairFactorReturnAllCombo
-    {P : ℕ → Prop}
-    (hreturn :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    (theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturnAllCombo
-      hreturn)
-
-/-- All-combinations factor-return degree cases prove every nonconstant
-predicate-restricted reverse root-count direction. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_allComboDegreeCases
-    {P : ℕ → Prop}
-    (hcases :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    (theorem21RootCountBranchesToCompatiblePredicate_of_allComboDegreeCases
-      hcases)
-
-/-- Left all-combinations factor-return degree cases prove every nonconstant
-predicate-restricted reverse root-count direction, with right cases supplied
-by symmetry. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_leftAllComboCases
-    {P : ℕ → Prop}
-    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement P :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    (theorem21RootCountBranchesToCompatiblePredicate_of_leftAllComboCases
-      hcases)
-
 /-- A `P := True` predicate-restricted nonconstant reverse direction gives the
 ordinary nonconstant reverse root-count direction. -/
 theorem theorem21RootCountBranchesToCompatibleNonconstant_of_predicate_true
@@ -559,18 +274,6 @@ theorem theorem21RootCountBranchesToCompatibleNonconstant_of_predicate_true
   intro f g hf hg hsgn hf_deg hg_deg hbranches
   exact hreverse hf hg hsgn hf_deg hg_deg
     (theorem21RootCountBranchesPredicate_true_iff.mpr hbranches)
-
-/-- Predicate-`True` factor-return proves the ordinary nonconstant reverse
-root-count direction. -/
-theorem
-    theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturnPredicate_true
-    (hreturn :
-      theorem21DeletionPairCommonInterleaverFactorReturnPredicateStatement
-        (fun _ => True)) :
-    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
-  theorem21RootCountBranchesToCompatibleNonconstant_of_predicate_true
-    (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_deletionPairFactorReturnPredicate
-      hreturn)
 
 /-- The proved sign-normalized positive-split x-subtraction cases prove the
 nonconstant reverse root-count direction. -/
@@ -813,68 +516,6 @@ theorem theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorR
     (theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_deletionPairFactorReturn
       hreturn)
 
-/-- All-combinations factor-return proves the nonconstant reverse root-count
-direction. -/
-theorem
-    theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturnAllCombo
-    (hreturn :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
-    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
-  theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturn
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allCombo hreturn)
-
-/-- All-combinations factor-return degree cases prove the nonconstant reverse
-root-count direction. -/
-theorem theorem21RootCountBranchesToCompatibleNonconstant_of_allComboDegreeCases
-    (hcases :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboDegreeCasesStatement) :
-    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
-  theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturn
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allComboDegreeCases
-      hcases)
-
-/-- Left all-combinations factor-return degree cases prove the nonconstant
-reverse root-count direction, with right cases supplied by symmetry. -/
-theorem theorem21RootCountBranchesToCompatibleNonconstant_of_leftAllComboCases
-    (hcases : theorem21LeftFactorReturnAllComboDegreeCasesStatement) :
-    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
-  theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturn
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_leftAllComboCases
-      hcases)
-
-/-- A bundled sign-normalized positive-split x-subtraction case package proves
-the nonconstant reverse root-count direction. -/
-theorem theorem21RootCountBranchesToCompatibleNonconstant_of_xSubCasePackage
-    (hcases :
-      positiveSplitTranslatedXSubRightFamilyDegreeCasesStatement) :
-    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
-  theorem21RootCountBranchesToCompatibleNonconstant_of_deletionPairFactorReturn
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_xSubCasePackage
-      hcases)
-
-/-- Sign-normalized positive-split x-subtraction cases prove the nonconstant
-reverse root-count direction. -/
-theorem theorem21RootCountBranchesToCompatibleNonconstant_of_xSubCases
-    (hrightSucc :
-      positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement)
-    (hsame : positiveSplitSameDegreeTranslatedXSubRightFamilyStatement)
-    (hleftSucc :
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement) :
-    theorem21RootCountBranchesToCompatibleNonconstantStatement :=
-  theorem21RootCountBranchesToCompatibleNonconstant_of_xSubCasePackage
-    ⟨hrightSucc, hsame, hleftSucc⟩
-
-/-- Current low-endpoint reverse route: same/succ left factor-return leaves
-prove the reverse Liu direction for branches whose lower-degree endpoint has
-degree at most two. -/
-theorem theorem21RootCountBranchesToCompatiblePredicate_of_sameSucc_and_endpoint_le_two
-    (hsame : theorem21LeftFactorReturnSameDegreeStatement)
-    (hsucc : theorem21LeftFactorReturnSuccDegreeStatement) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement
-      (fun n => n ≤ 2) :=
-  theorem21RootCountBranchesToCompatiblePredicate_of_deletionPairFactorReturnPredicate
-    (theorem21FactorReturnPredicate_of_sameSucc_and_endpoint_le_two hsame hsucc)
-
 /-- Current low-endpoint reverse route: Liu's reverse direction holds for
 branches whose lower-degree endpoint has degree at most two. -/
 theorem theorem21RootCountBranchesToCompatiblePredicate_of_endpoint_le_two :
@@ -935,43 +576,11 @@ theorem theorem21RootCountBranchesToCompatible_of_natDegree_le_two
     (theorem21RootCountBranchesEndpointLeTwo_of_natDegree_le_two
       hfdeg hgdeg hbranches)
 
-/-- Conditional low-endpoint reverse route: once the normalized quartic/cubic
-arithmetic terminal is proved, Liu's reverse direction holds for branches whose
-lower-degree endpoint has degree at most three. -/
-theorem theorem21RootCountBranchesToCompatiblePredicate_of_endpoint_le_three_of_monic
-    (hmono : xSubQuarticCubicSplitsStatement) :
-    theorem21RootCountBranchesToCompatiblePredicateStatement
-      (fun n => n ≤ 3) :=
-  theorem21RootCountBranchesToCompatiblePredicate_of_xSubCasePackage
-    (positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_of_endpoint_le_three_of_monic
-      hmono)
-
-/-- Low-endpoint reverse route: Liu's reverse direction holds for branches
-whose lower-degree endpoint has degree at most three. -/
-theorem theorem21RootCountBranchesToCompatiblePredicate_of_endpoint_le_three :
-    theorem21RootCountBranchesToCompatiblePredicateStatement
-      (fun n => n ≤ 3) :=
-  theorem21RootCountBranchesToCompatiblePredicate_of_xSubCasePackage
-    positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_of_endpoint_le_three
-
 /-- Endpoint-degree-three branch data for the current bounded Liu reverse
 route.  This is just the predicate-restricted branch statement with predicate
 `n ≤ 3` on the lower-degree endpoint. -/
 def theorem21RootCountBranchesEndpointLeThree (f g : ℝ[X]) : Prop :=
   theorem21RootCountBranchesPredicate (fun n => n ≤ 3) f g
-
-/-- Bundled predicate-restricted x-subtraction cases prove the
-endpoint-degree-three reverse route. -/
-theorem theorem21RootCountBranchesToCompatible_of_endpoint_le_three_xSubCasePackage
-    (hcases :
-      positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicateStatement
-        (fun n => n ≤ 3)) :
-    ∀ {f g : ℝ[X]},
-      f.Splits → g.Splits → OppositeLeadingSigns f g →
-        theorem21RootCountBranchesEndpointLeThree f g → Compatible f g := by
-  intro f g hf hg hsgn hbranches
-  exact theorem21RootCountBranchesToCompatiblePredicate_of_xSubCasePackage
-    hcases hf hg hsgn hbranches
 
 /-- Left-branch constructor for endpoint-degree-three branch data. -/
 theorem theorem21RootCountBranchesEndpointLeThree_of_left
@@ -1006,17 +615,6 @@ theorem theorem21RootCountBranchesEndpointLeThree_of_endpoint_le_two
   theorem21RootCountBranchesPredicate_of_imp fun _ hn =>
     hn.trans (by norm_num)
 
-/-- Low-endpoint reverse route for explicit endpoint-degree-three branch data.
--/
-theorem theorem21RootCountBranchesToCompatible_of_endpoint_le_three :
-    ∀ {f g : ℝ[X]},
-      f.Splits → g.Splits → OppositeLeadingSigns f g →
-        theorem21RootCountBranchesEndpointLeThree f g → Compatible f g := by
-  intro f g hf hg hsgn hbranches
-  exact theorem21RootCountBranchesToCompatible_of_endpoint_le_three_xSubCasePackage
-    positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_of_endpoint_le_three
-    hf hg hsgn hbranches
-
 /-- Bundled predicate-restricted x-subtraction cases prove the nonconstant
 endpoint-degree-three reverse route. -/
 theorem
@@ -1044,153 +642,6 @@ theorem theorem21RootCountBranchesToCompatibleNonconstant_of_endpoint_le_three :
       positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_of_endpoint_le_three
       hf hg hsgn _hf_deg _hg_deg hbranches
 
-/-- Endpoint factor-return case packages prove the endpoint-degree-three
-reverse route. -/
-theorem theorem21RootCountBranchesToCompatible_of_endpointDegreeCases
-    (hcases :
-      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
-        (fun n => n ≤ 3)) :
-    ∀ {f g : ℝ[X]},
-      f.Splits → g.Splits → OppositeLeadingSigns f g →
-        theorem21RootCountBranchesEndpointLeThree f g → Compatible f g := by
-  intro f g hf hg hsgn hbranches
-  exact theorem21RootCountBranchesToCompatiblePredicate_of_endpointDegreeCases
-    hcases hf hg hsgn hbranches
-
-/-- Left endpoint factor-return case packages prove the endpoint-degree-three
-reverse route, with right cases supplied by symmetry. -/
-theorem theorem21RootCountBranchesToCompatible_of_leftEndpointCases
-    (hcases :
-      theorem21LeftFactorReturnEndpointDegreeCasesPredicateStatement
-        (fun n => n ≤ 3)) :
-    ∀ {f g : ℝ[X]},
-      f.Splits → g.Splits → OppositeLeadingSigns f g →
-        theorem21RootCountBranchesEndpointLeThree f g → Compatible f g := by
-  intro f g hf hg hsgn hbranches
-  exact theorem21RootCountBranchesToCompatiblePredicate_of_leftEndpointCases
-    hcases hf hg hsgn hbranches
-
-/-- Endpoint factor-return case packages prove the nonconstant
-endpoint-degree-three reverse route. -/
-theorem theorem21RootCountBranchesToCompatibleNonconstant_of_endpointDegreeCases
-    (hcases :
-      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
-        (fun n => n ≤ 3)) :
-    ∀ {f g : ℝ[X]},
-      f.Splits → g.Splits → OppositeLeadingSigns f g →
-        f.natDegree ≠ 0 → g.natDegree ≠ 0 →
-          theorem21RootCountBranchesEndpointLeThree f g → Compatible f g := by
-  intro f g hf hg hsgn hf_deg hg_deg hbranches
-  exact theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpointDegreeCases
-    hcases hf hg hsgn hf_deg hg_deg hbranches
-
-/-- Left endpoint factor-return case packages prove the nonconstant
-endpoint-degree-three reverse route, with right cases supplied by symmetry. -/
-theorem theorem21RootCountBranchesToCompatibleNonconstant_of_leftEndpointCases
-    (hcases :
-      theorem21LeftFactorReturnEndpointDegreeCasesPredicateStatement
-        (fun n => n ≤ 3)) :
-    ∀ {f g : ℝ[X]},
-      f.Splits → g.Splits → OppositeLeadingSigns f g →
-        f.natDegree ≠ 0 → g.natDegree ≠ 0 →
-          theorem21RootCountBranchesEndpointLeThree f g → Compatible f g := by
-  intro f g hf hg hsgn hf_deg hg_deg hbranches
-  exact theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_leftEndpointCases
-    hcases hf hg hsgn hf_deg hg_deg hbranches
-
-/-- Low-degree endpoints turn the current endpoint-degree-three reverse route
-into an ordinary reverse implication. -/
-theorem theorem21RootCountBranchesToCompatible_of_natDegree_le_three
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hfdeg : f.natDegree ≤ 3) (hgdeg : g.natDegree ≤ 3)
-    (hbranches : theorem21RootCountBranches f g) :
-    Compatible f g :=
-  theorem21RootCountBranchesToCompatible_of_endpoint_le_three hf hg hsgn
-    (theorem21RootCountBranchesEndpointLeThree_of_natDegree_le_three
-      hfdeg hgdeg hbranches)
-
-/-- Nonconstant wrapper for the low-degree ordinary reverse implication. -/
-theorem theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_three
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hfdeg_ne : f.natDegree ≠ 0) (hgdeg_ne : g.natDegree ≠ 0)
-    (hfdeg_le : f.natDegree ≤ 3) (hgdeg_le : g.natDegree ≤ 3)
-    (hbranches : theorem21RootCountBranches f g) :
-    Compatible f g :=
-  theorem21RootCountBranchesToCompatibleNonconstant_of_endpoint_le_three
-    hf hg hsgn hfdeg_ne hgdeg_ne
-    (theorem21RootCountBranchesEndpointLeThree_of_natDegree_le_three
-      hfdeg_le hgdeg_le hbranches)
-
-/-- Endpoint factor-return case packages give the low-degree ordinary reverse
-implication. -/
-theorem theorem21RootCountBranchesToCompatible_of_natDegree_le_three_endpointDegreeCases
-    (hcases :
-      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
-        (fun n => n ≤ 3))
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hfdeg : f.natDegree ≤ 3) (hgdeg : g.natDegree ≤ 3)
-    (hbranches : theorem21RootCountBranches f g) :
-    Compatible f g :=
-  theorem21RootCountBranchesToCompatible_of_endpointDegreeCases
-    hcases hf hg hsgn
-    (theorem21RootCountBranchesEndpointLeThree_of_natDegree_le_three
-      hfdeg hgdeg hbranches)
-
-/-- Left endpoint factor-return case packages give the low-degree ordinary
-reverse implication, with right cases supplied by symmetry. -/
-theorem theorem21RootCountBranchesToCompatible_of_natDegree_le_three_leftEndpointCases
-    (hcases :
-      theorem21LeftFactorReturnEndpointDegreeCasesPredicateStatement
-        (fun n => n ≤ 3))
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hfdeg : f.natDegree ≤ 3) (hgdeg : g.natDegree ≤ 3)
-    (hbranches : theorem21RootCountBranches f g) :
-    Compatible f g :=
-  theorem21RootCountBranchesToCompatible_of_leftEndpointCases
-    hcases hf hg hsgn
-    (theorem21RootCountBranchesEndpointLeThree_of_natDegree_le_three
-      hfdeg hgdeg hbranches)
-
-/-- Endpoint factor-return case packages give the low-degree nonconstant
-ordinary reverse implication. -/
-theorem
-    theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_three_endpointDegreeCases
-    (hcases :
-      theorem21EndpointFactorReturnPredicateDegreeCasesStatement
-        (fun n => n ≤ 3))
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hfdeg_ne : f.natDegree ≠ 0) (hgdeg_ne : g.natDegree ≠ 0)
-    (hfdeg_le : f.natDegree ≤ 3) (hgdeg_le : g.natDegree ≤ 3)
-    (hbranches : theorem21RootCountBranches f g) :
-    Compatible f g :=
-  theorem21RootCountBranchesToCompatibleNonconstant_of_endpointDegreeCases
-    hcases hf hg hsgn hfdeg_ne hgdeg_ne
-    (theorem21RootCountBranchesEndpointLeThree_of_natDegree_le_three
-      hfdeg_le hgdeg_le hbranches)
-
-/-- Left endpoint factor-return case packages give the low-degree nonconstant
-ordinary reverse implication, with right cases supplied by symmetry. -/
-theorem
-    theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_three_leftEndpointCases
-    (hcases :
-      theorem21LeftFactorReturnEndpointDegreeCasesPredicateStatement
-        (fun n => n ≤ 3))
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hfdeg_ne : f.natDegree ≠ 0) (hgdeg_ne : g.natDegree ≠ 0)
-    (hfdeg_le : f.natDegree ≤ 3) (hgdeg_le : g.natDegree ≤ 3)
-    (hbranches : theorem21RootCountBranches f g) :
-    Compatible f g :=
-  theorem21RootCountBranchesToCompatibleNonconstant_of_leftEndpointCases
-    hcases hf hg hsgn hfdeg_ne hgdeg_ne
-    (theorem21RootCountBranchesEndpointLeThree_of_natDegree_le_three
-      hfdeg_le hgdeg_le hbranches)
-
 /-- Degree-case-aware low-endpoint branch data for the current reverse Liu route.
 The same-degree and successor-degree branches are available through endpoint
 degree three, while the two-degree-gap branch is available through endpoint
@@ -1206,64 +657,6 @@ def theorem21RootCountBranchesEndpointLeThreeTwo (f g : ℝ[X]) :
         ((g.natDegree = f.natDegree ∧ f.natDegree ≤ 3) ∨
           (g.natDegree = f.natDegree + 1 ∧ f.natDegree ≤ 3) ∨
             (g.natDegree = f.natDegree + 2 ∧ f.natDegree ≤ 2)))
-
-/-- The older endpoint-`3,2` branch package is a subcase of the uniform
-endpoint-degree-three package. -/
-theorem theorem21RootCountBranchesEndpointLeThree_of_endpoint_le_three_two
-    {f g : ℝ[X]} :
-    theorem21RootCountBranchesEndpointLeThreeTwo f g →
-      theorem21RootCountBranchesEndpointLeThree f g := by
-  intro hbranches
-  rcases hbranches with ⟨r, s, hleft | hright⟩
-  · rcases hleft with ⟨hleft, hcase⟩
-    rcases hcase with hsame | hsucc | htwo
-    · exact theorem21RootCountBranchesEndpointLeThree_of_left hleft hsame.2
-    · exact theorem21RootCountBranchesEndpointLeThree_of_left hleft hsucc.2
-    · exact theorem21RootCountBranchesEndpointLeThree_of_left hleft
-        (htwo.2.trans (by norm_num))
-  · rcases hright with ⟨hright, hcase⟩
-    rcases hcase with hsame | hsucc | htwo
-    · exact theorem21RootCountBranchesEndpointLeThree_of_right hright hsame.2
-    · exact theorem21RootCountBranchesEndpointLeThree_of_right hright hsucc.2
-    · exact theorem21RootCountBranchesEndpointLeThree_of_right hright
-        (htwo.2.trans (by norm_num))
-
-/-- Current degree-case-aware low-endpoint reverse route: Liu's reverse
-direction holds for same/succ branches through endpoint degree three and
-two-degree-gap branches through endpoint degree two. -/
-theorem theorem21RootCountBranchesToCompatible_of_endpoint_le_three_two :
-    ∀ {f g : ℝ[X]},
-      f.Splits → g.Splits → OppositeLeadingSigns f g →
-        theorem21RootCountBranchesEndpointLeThreeTwo f g → Compatible f g := by
-  intro f g hf hg hsgn hbranches
-  exact theorem21RootCountBranchesToCompatible_of_endpoint_le_three
-    hf hg hsgn
-    (theorem21RootCountBranchesEndpointLeThree_of_endpoint_le_three_two
-      hbranches)
-
-/-- Nonconstant wrapper for the degree-case-aware low-endpoint reverse route. -/
-theorem
-    theorem21RootCountBranchesToCompatibleNonconstant_of_endpoint_le_three_two :
-    ∀ {f g : ℝ[X]},
-      f.Splits → g.Splits → OppositeLeadingSigns f g →
-        f.natDegree ≠ 0 → g.natDegree ≠ 0 →
-          theorem21RootCountBranchesEndpointLeThreeTwo f g → Compatible f g := by
-  intro f g hf hg hsgn hf_deg hg_deg hbranches
-  exact theorem21RootCountBranchesToCompatibleNonconstant_of_endpoint_le_three
-    hf hg hsgn hf_deg hg_deg
-    (theorem21RootCountBranchesEndpointLeThree_of_endpoint_le_three_two
-      hbranches)
-
-/-- Current low-endpoint nonconstant reverse route. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_sameSucc_and_endpoint_le_two
-    (hsame : theorem21LeftFactorReturnSameDegreeStatement)
-    (hsucc : theorem21LeftFactorReturnSuccDegreeStatement) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
-      (fun n => n ≤ 2) :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    (theorem21RootCountBranchesToCompatiblePredicate_of_sameSucc_and_endpoint_le_two
-      hsame hsucc)
 
 /-- Current low-endpoint nonconstant reverse route, with all degree branches
 closed through endpoint degree two. -/
@@ -1297,25 +690,6 @@ theorem theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_two
     hf hg hsgn hfdeg_ne hgdeg_ne
     (theorem21RootCountBranchesEndpointLeTwo_of_natDegree_le_two
       hfdeg_le hgdeg_le hbranches)
-
-/-- Conditional low-endpoint nonconstant reverse route through endpoint degree
-three, modulo the normalized monic quartic/cubic arithmetic leaf. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpoint_le_three_of_monic
-    (hmono : xSubQuarticCubicSplitsStatement) :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
-      (fun n => n ≤ 3) :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    (theorem21RootCountBranchesToCompatiblePredicate_of_endpoint_le_three_of_monic
-      hmono)
-
-/-- Low-endpoint nonconstant reverse route through endpoint degree three. -/
-theorem
-    theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpoint_le_three :
-    theorem21RootCountBranchesToCompatiblePredicateNonconstantStatement
-      (fun n => n ≤ 3) :=
-  theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
-    theorem21RootCountBranchesToCompatiblePredicate_of_endpoint_le_three
 
 end LiuOppositeSigns
 end RealRooted

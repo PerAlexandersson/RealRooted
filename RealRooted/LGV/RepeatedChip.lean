@@ -36,13 +36,13 @@ def minorBound {n : ℕ} (I : StrictToeplitzMinorIndex n) : ℕ :=
   max (Finset.univ.sup I.sourceRow) (Finset.univ.sup I.sinkColumn)
 
 theorem sourceRow_le_minorBound {n : ℕ} (I : StrictToeplitzMinorIndex n)
-    (i : Fin n) : I.sourceRow i ≤ minorBound I := by
-  exact (Finset.le_sup (f := I.sourceRow) (Finset.mem_univ i)).trans
+    (i : Fin n) : I.sourceRow i ≤ minorBound I :=
+  (Finset.le_sup (f := I.sourceRow) (Finset.mem_univ i)).trans
     (Nat.le_max_left _ _)
 
 theorem sinkColumn_le_minorBound {n : ℕ} (I : StrictToeplitzMinorIndex n)
-    (i : Fin n) : I.sinkColumn i ≤ minorBound I := by
-  exact (Finset.le_sup (f := I.sinkColumn) (Finset.mem_univ i)).trans
+    (i : Fin n) : I.sinkColumn i ≤ minorBound I :=
+  (Finset.le_sup (f := I.sinkColumn) (Finset.mem_univ i)).trans
     (Nat.le_max_right _ _)
 
 /-- Source vertices for a strict Toeplitz minor.  Larger row indices start
@@ -254,9 +254,8 @@ theorem minorNetwork_pathWeight_nonneg
     (p : (minorNetwork G K I).Path i j) :
     0 ≤ (minorNetwork G K I).weight p := by
   let word := repeatedStrip G K (minorBound I)
-  have hword : ∀ c ∈ word, c.IsNonnegative := by
-    intro c hc
-    exact (mem_repeatedStrip G K (minorBound I) hc).elim (hG c) (hK c)
+  have hword : ∀ c ∈ word, c.IsNonnegative :=
+    fun c hc => (mem_repeatedStrip G K (minorBound I) hc).elim (hG c) (hK c)
   exact rankedNetwork_pathWeight_nonneg
     (wordDiagonal word) (wordSubdiagonal word)
     (minorSource G K I) (minorSink G K I)

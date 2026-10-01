@@ -510,40 +510,6 @@ order so downstream `CommonInterleaverTwo` call sites can use the endpoint
 facts without local hypothesis shuffling.
 -/
 
-/-- Explicit-binder variant of `left_splits_closedSegment_of_succDegree`. -/
-theorem left_splits_closedSegment_of_succDegree' (f g : ℝ[X])
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    f.Splits :=
-  left_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Explicit-binder variant of `right_splits_closedSegment_of_succDegree`. -/
-theorem right_splits_closedSegment_of_succDegree' (f g : ℝ[X])
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    g.Splits :=
-  right_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Explicit-binder variant of
-`left_ne_zero_and_splits_closedSegment_of_succDegree`. -/
-theorem left_ne_zero_and_splits_closedSegment_of_succDegree' (f g : ℝ[X])
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    f ≠ 0 ∧ f.Splits :=
-  left_ne_zero_and_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Explicit-binder variant of
-`right_ne_zero_and_splits_closedSegment_of_succDegree`. -/
-theorem right_ne_zero_and_splits_closedSegment_of_succDegree' (f g : ℝ[X])
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    g ≠ 0 ∧ g.Splits :=
-  right_ne_zero_and_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
 /-- Dot-notation variant of the lower-degree endpoint packaged as
 `≠ 0 ∧ Splits`. -/
 theorem PosComboRealRooted.left_ne_zero_and_splits_closedSegment_of_succDegree
@@ -563,38 +529,6 @@ theorem PosComboRealRooted.right_ne_zero_and_splits_closedSegment_of_succDegree
     g ≠ 0 ∧ g.Splits :=
   _root_.RealRooted.right_ne_zero_and_splits_closedSegment_of_succDegree
     hf_pos hg_pos hfg hsucc
-
-/-- Curried strict-implicit form of the lower-degree endpoint. -/
-theorem left_splits_closedSegment_of_succDegree_curried :
-    ∀ ⦃f g : ℝ[X]⦄, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-      PosComboRealRooted f g → g.natDegree = f.natDegree + 1 → f.Splits :=
-  fun _ _ hf_pos hg_pos hfg hsucc =>
-    left_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Curried strict-implicit form of the higher-degree endpoint. -/
-theorem right_splits_closedSegment_of_succDegree_curried :
-    ∀ ⦃f g : ℝ[X]⦄, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-      PosComboRealRooted f g → f.natDegree = g.natDegree + 1 → g.Splits :=
-  fun _ _ hf_pos hg_pos hfg hsucc =>
-    right_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Curried strict-implicit form of the lower-degree endpoint, packaged as
-`≠ 0 ∧ Splits`. -/
-theorem left_ne_zero_and_splits_closedSegment_of_succDegree_curried :
-    ∀ ⦃f g : ℝ[X]⦄, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-      PosComboRealRooted f g → g.natDegree = f.natDegree + 1 →
-      f ≠ 0 ∧ f.Splits :=
-  fun _ _ hf_pos hg_pos hfg hsucc =>
-    left_ne_zero_and_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Curried strict-implicit form of the higher-degree endpoint, packaged as
-`≠ 0 ∧ Splits`. -/
-theorem right_ne_zero_and_splits_closedSegment_of_succDegree_curried :
-    ∀ ⦃f g : ℝ[X]⦄, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-      PosComboRealRooted f g → f.natDegree = g.natDegree + 1 →
-      g ≠ 0 ∧ g.Splits :=
-  fun _ _ hf_pos hg_pos hfg hsucc =>
-    right_ne_zero_and_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
 
 /-!
 ### Nonnegative-coefficient statement-shaped endpoint wrappers
@@ -638,40 +572,6 @@ theorem right_ne_zero_and_splits_nonneg_closedSegment_of_succDegree {f g : ℝ[X
     (hsucc : f.natDegree = g.natDegree + 1) :
     g ≠ 0 ∧ g.Splits :=
   right_ne_zero_and_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Curried strict-implicit nonneg-shaped lower-degree endpoint. -/
-theorem left_splits_nonneg_closedSegment_of_succDegree_curried :
-    ∀ ⦃f g : ℝ[X]⦄, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-      HasNonnegCoeffs f → HasNonnegCoeffs g →
-      PosComboRealRooted f g → g.natDegree = f.natDegree + 1 → f.Splits :=
-  fun _ _ hf_pos hg_pos _ _ hfg hsucc =>
-    left_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Curried strict-implicit nonneg-shaped higher-degree endpoint. -/
-theorem right_splits_nonneg_closedSegment_of_succDegree_curried :
-    ∀ ⦃f g : ℝ[X]⦄, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-      HasNonnegCoeffs f → HasNonnegCoeffs g →
-      PosComboRealRooted f g → f.natDegree = g.natDegree + 1 → g.Splits :=
-  fun _ _ hf_pos hg_pos _ _ hfg hsucc =>
-    right_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Curried strict-implicit nonneg-shaped lower-degree endpoint with `≠ 0`. -/
-theorem left_ne_zero_and_splits_nonneg_closedSegment_of_succDegree_curried :
-    ∀ ⦃f g : ℝ[X]⦄, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-      HasNonnegCoeffs f → HasNonnegCoeffs g →
-      PosComboRealRooted f g → g.natDegree = f.natDegree + 1 →
-      f ≠ 0 ∧ f.Splits :=
-  fun _ _ hf_pos hg_pos _ _ hfg hsucc =>
-    left_ne_zero_and_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Curried strict-implicit nonneg-shaped higher-degree endpoint with `≠ 0`. -/
-theorem right_ne_zero_and_splits_nonneg_closedSegment_of_succDegree_curried :
-    ∀ ⦃f g : ℝ[X]⦄, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-      HasNonnegCoeffs f → HasNonnegCoeffs g →
-      PosComboRealRooted f g → f.natDegree = g.natDegree + 1 →
-      g ≠ 0 ∧ g.Splits :=
-  fun _ _ hf_pos hg_pos _ _ hfg hsucc =>
-    right_ne_zero_and_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
 
 /-!
 ### Inclusive closed-segment endpoint wrappers

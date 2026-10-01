@@ -70,8 +70,8 @@ private theorem a144696Polynomial_succ_scaled_shift (n : ℕ) :
 
 /-- The `n`th A144696 row polynomial has degree exactly `n`. -/
 theorem natDegree_a144696Polynomial (n : ℕ) :
-    (a144696Polynomial n).natDegree = n := by
-  exact natDegree_of_quadratic_derivative_shift
+    (a144696Polynomial n).natDegree = n :=
+  natDegree_of_quadratic_derivative_shift
     a144696Polynomial 2 a144696Polynomial_zero
       a144696Polynomial_succ_scaled_shift (by norm_num) n
 
@@ -109,8 +109,8 @@ theorem leadingCoeff_a144696Polynomial (n : ℕ) :
 theorem coeff_succ_a144696Polynomial (n k : ℕ) :
     (a144696Polynomial (n + 1)).coeff (k + 1) =
       ((k : ℝ) + 2) * (a144696Polynomial n).coeff (k + 1) +
-        (2 + (n : ℝ) - (k : ℝ)) * (a144696Polynomial n).coeff k := by
-  exact quadratic_derivative_shift_coeff_succ
+        (2 + (n : ℝ) - (k : ℝ)) * (a144696Polynomial n).coeff k :=
+  quadratic_derivative_shift_coeff_succ
     a144696Polynomial 2 a144696Polynomial_succ_scaled_shift n k
 
 /-- Every coefficient of an A144696 row is nonnegative. -/
@@ -178,12 +178,12 @@ def a144696Transform (p : ℝ[X]) : ℝ[X] :=
   Polynomial.basisTransform a144696Polynomial p
 
 @[simp] theorem a144696Transform_X_pow (n : ℕ) :
-    a144696Transform (X ^ n) = a144696Polynomial n := by
-  exact Polynomial.basisTransform_X_pow a144696Polynomial n
+    a144696Transform (X ^ n) = a144696Polynomial n :=
+  Polynomial.basisTransform_X_pow a144696Polynomial n
 
 theorem a144696Transform_add (p q : ℝ[X]) :
-    a144696Transform (p + q) = a144696Transform p + a144696Transform q := by
-  exact Polynomial.basisTransform_add a144696Polynomial p q
+    a144696Transform (p + q) = a144696Transform p + a144696Transform q :=
+  Polynomial.basisTransform_add a144696Polynomial p q
 
 theorem a144696Transform_C_mul (a : ℝ) (p : ℝ[X]) :
     a144696Transform (C a * p) = C a * a144696Transform p := by
@@ -196,8 +196,8 @@ theorem a144696Transform_X_mul (p : ℝ[X]) :
     a144696Transform (X * p) =
       (1 + C 2 * X) * a144696Transform p +
         X * a144696Transform (X * p.derivative) +
-        X * (1 - X) * (a144696Transform p).derivative := by
-  exact Polynomial.basisTransform_X_mul_of_succ_index_derivative
+        X * (1 - X) * (a144696Transform p).derivative :=
+  Polynomial.basisTransform_X_mul_of_succ_index_derivative
     a144696Polynomial (1 + C 2 * X) X (X * (1 - X))
       a144696Polynomial_succ_index p
 

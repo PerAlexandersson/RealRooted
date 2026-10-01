@@ -647,7 +647,7 @@ example {f g : ℝ[X]} {n : ℝ}
         f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     StrictInterl f ((1 + X : ℝ[X]) * f + (C (n ^ 2 + n - 1) * X) * g) := by
-  have hc : 0 ≤ n ^ 2 + n - 1 := by nlinarith [sq_nonneg n]
+  have hc : 0 ≤ n ^ 2 + n - 1 := by linarith [sq_nonneg n]
   rr_lw_positive_t_auto using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,

@@ -119,8 +119,8 @@ private theorem whitney_adjacent_selector_identities {q : ℕ} {ι : Type*}
       have hne' : i.succ ≠ r.succ := by simpa
       simp [base, replaced, Fin.removeNth,
         Fin.succAbove_castSucc_of_le _ _ hri.le, Function.update, hne, hne']
-  have hDA : r.succ.insertNth changed (Function.update base r prior) = rows := by
-    exact Fin.insertNth_eq_iff.2 ⟨hchanged.symm, hP⟩
+  have hDA : r.succ.insertNth changed (Function.update base r prior) = rows :=
+    Fin.insertNth_eq_iff.2 ⟨hchanged.symm, hP⟩
   have hQ : r.succ.insertNth changed base =
       Function.update rows r.castSucc pivot := by
     apply Fin.insertNth_eq_iff.2
@@ -135,8 +135,8 @@ private theorem whitney_adjacent_selector_identities {q : ℕ} {ι : Type*}
           Fin.succAbove_succ_of_le _ _ hir.le, Function.update,
           ne_of_lt hir, ne_of_lt hir']
       · simp [base, replaced, Fin.removeNth, Function.update]
-      · have hne : i.succ ≠ r.castSucc := by
-          exact ne_of_gt (lt_trans r.castSucc_lt_succ (Fin.succ_lt_succ_iff.2 hri))
+      · have hne : i.succ ≠ r.castSucc :=
+          ne_of_gt (lt_trans r.castSucc_lt_succ (Fin.succ_lt_succ_iff.2 hri))
         have hne' : i.succ ≠ r.succ := by simpa using ne_of_gt hri
         simp [base, replaced, Fin.removeNth,
           Fin.succAbove_castSucc_of_le _ _ hri.le,
@@ -676,9 +676,8 @@ private theorem exists_pos_deleted_minor_of_det_pos {q : ℕ}
   by_contra h
   simp only [not_exists, not_lt] at h
   have hzero : ∀ j : Fin (q + 1),
-      (M.submatrix r.succAbove j.succAbove).det = 0 := by
-    intro j
-    exact le_antisymm (h j) (hminor j)
+      (M.submatrix r.succAbove j.succAbove).det = 0 :=
+    fun j => le_antisymm (h j) (hminor j)
   rw [Matrix.det_succ_row M r] at hdet
   simp [hzero] at hdet
 
@@ -738,8 +737,8 @@ theorem IsTotallyNonnegRect.whitneyEliminateFirst {m n : ℕ}
             have hqrows : StrictMono qrows := by
               apply strictMono_update_at rows r.castSucc s.castSucc hrows
               · intro i hi
-                have hir : rows i < prior := by
-                  exact hrows hi
+                have hir : rows i < prior :=
+                  hrows hi
                 have hpriorLt : prior < s.castSucc := by
                   have hlt : prior < s.succ := by
                     rw [← hp']
@@ -1906,9 +1905,8 @@ theorem exists_whitneyTridiagonal {N : ℕ}
     exact hHdet
   obtain ⟨T, hT, hTdet, hTchar, hTtrailing, hTupper, hTlower⟩ :=
     exists_whitneyUpperHessenberg H.transpose hHT hHTdet
-  have hHTupper : ∀ i j, i.val + 1 < j.val → H.transpose i j = 0 := by
-    intro i j hij
-    exact hHlower j i hij
+  have hHTupper : ∀ i j, i.val + 1 < j.val → H.transpose i j = 0 :=
+    fun i j hij => hHlower j i hij
   refine ⟨T, hT, hTdet, ?_, ?_, hTlower, hTupper hHTupper⟩
   · calc
       T.charpoly = H.transpose.charpoly := hTchar
@@ -2291,8 +2289,8 @@ private theorem IsTotallyNonneg.firstColumn_pred_pos_of_pos
   have hnonneg := hA.nonneg (i.pred hi0).castSucc 0
   by_cases hzero : A (i.pred hi0).castSucc 0 = 0
   · have htail := hA.firstColumn_zero_tail_of_diagonal_pos hdiag hzero i
-    have hlt : (i.pred hi0).castSucc < i := by
-      exact Fin.castSucc_pred_lt hi0
+    have hlt : (i.pred hi0).castSucc < i :=
+      Fin.castSucc_pred_lt hi0
     exact (hi.ne' (htail hlt)).elim
   · exact lt_of_le_of_ne hnonneg (Ne.symm hzero)
 
@@ -2891,9 +2889,8 @@ theorem exists_whitneyTridiagonal_adjacent_pos {N : ℕ}
       hTsuper, hTsub⟩ :=
     exists_whitneyUpperHessenberg_adjacent_pos H.transpose hHT hHTdet
       hHTsuper hHTsub
-  have hHTupper : ∀ i j, i.val + 1 < j.val → H.transpose i j = 0 := by
-    intro i j hij
-    exact hHlower j i hij
+  have hHTupper : ∀ i j, i.val + 1 < j.val → H.transpose i j = 0 :=
+    fun i j hij => hHlower j i hij
   refine ⟨T, hT, hTdet, ?_, ?_, hTlower, hTupper hHTupper,
     hTsuper, hTsub⟩
   · calc
@@ -3222,12 +3219,10 @@ theorem geometricSymmetrization_charpoly_eq_and_trailing {N : ℕ}
       simp [hmatrix]
   | succ N ih =>
       let U := T.submatrix Fin.succ Fin.succ
-      have hUlower : ∀ r k, k.val + 1 < r.val → U r k = 0 := by
-        intro r k hrk
-        exact hlower r.succ k.succ (by simpa [U] using hrk)
-      have hUupper : ∀ i j, i.val + 1 < j.val → U i j = 0 := by
-        intro i j hij
-        exact hupper i.succ j.succ (by simpa [U] using hij)
+      have hUlower : ∀ r k, k.val + 1 < r.val → U r k = 0 :=
+        fun r k hrk => hlower r.succ k.succ (by simpa [U] using hrk)
+      have hUupper : ∀ i j, i.val + 1 < j.val → U i j = 0 :=
+        fun i j hij => hupper i.succ j.succ (by simpa [U] using hij)
       have hUprod : ∀ i : Fin N,
           0 ≤ U i.castSucc i.succ * U i.succ i.castSucc := by
         intro i
@@ -3271,8 +3266,8 @@ theorem exists_hermitianModel_of_tridiagonal_of_nonneg_product {N : ℕ}
     ∃ S : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ,
       S.IsHermitian ∧ S.charpoly = T.charpoly ∧
         (S.submatrix Fin.succ Fin.succ).charpoly =
-          (T.submatrix Fin.succ Fin.succ).charpoly := by
-  exact ⟨geometricSymmetrization T,
+          (T.submatrix Fin.succ Fin.succ).charpoly :=
+  ⟨geometricSymmetrization T,
     geometricSymmetrization_isHermitian T,
     geometricSymmetrization_charpoly_eq_and_trailing T hlower hupper hprod⟩
 
@@ -3292,12 +3287,10 @@ private theorem charpoly_tridiagonal_no_common_root {N : ℕ}
   | succ N ih =>
       intro x hroots
       let B := T.submatrix Fin.succ Fin.succ
-      have hBlower : ∀ r k, k.val + 1 < r.val → B r k = 0 := by
-        intro r k hrk
-        exact hlower r.succ k.succ (by simpa [B] using hrk)
-      have hBupper : ∀ i j, i.val + 1 < j.val → B i j = 0 := by
-        intro i j hij
-        exact hupper i.succ j.succ (by simpa [B] using hij)
+      have hBlower : ∀ r k, k.val + 1 < r.val → B r k = 0 :=
+        fun r k hrk => hlower r.succ k.succ (by simpa [B] using hrk)
+      have hBupper : ∀ i j, i.val + 1 < j.val → B i j = 0 :=
+        fun i j hij => hupper i.succ j.succ (by simpa [B] using hij)
       have hBsuper : ∀ i : Fin N, 0 < B i.castSucc i.succ := by
         intro i
         simpa [B, Matrix.submatrix] using hsuper i.succ

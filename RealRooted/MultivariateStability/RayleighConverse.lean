@@ -42,12 +42,12 @@ theorem MvPolynomial.IsMultiaffine.vars_combo_specializeZero_pderiv_subset_erase
       P.vars.erase i := by
   have hleft :
       (MvPolynomial.C α * MvPolynomial.specializeZero i P).vars ⊆
-        (MvPolynomial.specializeZero i P).vars := by
-    exact (MvPolynomial.vars_mul _ _).trans (by simp)
+        (MvPolynomial.specializeZero i P).vars :=
+    (MvPolynomial.vars_mul _ _).trans (by simp)
   have hright :
       (MvPolynomial.C β * MvPolynomial.pderiv i P).vars ⊆
-        (MvPolynomial.pderiv i P).vars := by
-    exact (MvPolynomial.vars_mul _ _).trans (by simp)
+        (MvPolynomial.pderiv i P).vars :=
+    (MvPolynomial.vars_mul _ _).trans (by simp)
   exact (MvPolynomial.vars_add_subset _ _).trans
     (Finset.union_subset
       (hleft.trans (MvPolynomial.vars_specializeZero_subset_erase P i))

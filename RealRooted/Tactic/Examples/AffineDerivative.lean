@@ -11,8 +11,8 @@ boundaries of the generic affine Euler degree API. -/
 example :
     (C (3 : ℤ) * (0 : ℤ[X]) +
       (C 2 + C (-1 : ℤ) * X) * (0 : ℤ[X]).derivative).natDegree ≤
-      (0 : ℤ[X]).natDegree := by
-  exact Polynomial.natDegree_C_mul_add_affine_mul_derivative_le
+      (0 : ℤ[X]).natDegree :=
+  Polynomial.natDegree_C_mul_add_affine_mul_derivative_le
     (0 : ℤ[X]) 3 2 (-1)
 
 example :

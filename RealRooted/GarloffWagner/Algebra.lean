@@ -1,4 +1,4 @@
-import RealRooted.HadamardProduct
+import RealRooted.Hadamard.Product
 import RealRooted.IteratedDerivativeShift
 import RealRooted.ObreschkoffConverse
 import RealRooted.WeightedSum

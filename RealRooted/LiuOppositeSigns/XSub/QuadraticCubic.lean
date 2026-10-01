@@ -20,8 +20,8 @@ lemma roots_order_of_positiveSplitRootCountPair_two_three
     {f g : ℝ[X]} (h : PositiveSplitRootCountPair f g)
     {a b c d e : ℝ} (hab : a ≤ b) (hcd : c ≤ d) (hde : d ≤ e)
     (hfroots : f.roots = {a, b}) (hgroots : g.roots = {c, d, e}) :
-    c ≤ a ∧ d ≤ b ∧ a ≤ e := by
-  exact roots_order_of_positiveSplitRootCountPair_three_two
+    c ≤ a ∧ d ≤ b ∧ a ≤ e :=
+  roots_order_of_positiveSplitRootCountPair_three_two
     h.symm hcd hde hab hgroots hfroots
 
 /-- A `(2, 3)` positive split root-count pair admits ordered root data with
@@ -178,35 +178,6 @@ lemma tendsto_eval_xSubQuadraticCubic_atTop_atTop_of_mu_lt_one
     exact natDegree_pos_iff_degree_pos.mp hnat
   exact P.tendsto_atTop_of_leadingCoeff_nonneg hP_deg_pos hP_pos.le
 
-/-- If `μ < 1`, the normalized quadratic/cubic endpoint polynomial tends to
-`-∞` at `-∞`. -/
-lemma tendsto_eval_xSubQuadraticCubic_atBot_atBot_of_mu_lt_one
-    (a b c d e μ : ℝ) (hμ : μ < 1) :
-    Tendsto
-      (fun x =>
-        (X * ((X - C a) * (X - C b)) -
-          C μ * ((X - C c) * (X - C d) * (X - C e))).eval x)
-      atBot atBot := by
-  let P : ℝ[X] :=
-    X * ((X - C a) * (X - C b)) -
-      C μ * ((X - C c) * (X - C d) * (X - C e))
-  have hP_pos : HasPosLeadingCoeff P := by
-    dsimp [P]
-    exact hasPosLeadingCoeff_xSubQuadraticCubic_of_mu_lt_one a b c d e μ hμ
-  have hP_deg_pos : 0 < P.degree := by
-    have hnat : 0 < P.natDegree := by
-      dsimp [P]
-      rw [natDegree_xSubQuadraticCubic_of_mu_ne_one]
-      · norm_num
-      · exact ne_of_lt hμ
-    exact natDegree_pos_iff_degree_pos.mp hnat
-  have hP_odd : Odd P.natDegree := by
-    dsimp [P]
-    rw [natDegree_xSubQuadraticCubic_of_mu_ne_one]
-    · norm_num
-    · exact ne_of_lt hμ
-  exact tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hP_pos hP_deg_pos hP_odd
-
 /-- If `1 < μ`, the normalized quadratic/cubic endpoint polynomial tends to
 `+∞` at `-∞`. -/
 lemma tendsto_eval_xSubQuadraticCubic_atBot_atTop_of_one_lt_mu
@@ -240,40 +211,6 @@ lemma tendsto_eval_xSubQuadraticCubic_atBot_atTop_of_one_lt_mu
   have htQ : Tendsto (fun x => Q.eval x) atBot atBot :=
     tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hQ_pos hQ_deg_pos hQ_odd
   have htneg := tendsto_neg_atBot_atTop.comp htQ
-  convert htneg using 1
-  ext x
-  dsimp [Q]
-  rw [eval_neg]
-  simp only [eval_sub, eval_mul, eval_X, eval_C, neg_neg]
-  rw [eval_xSubQuadraticCubic]
-
-/-- If `1 < μ`, the normalized quadratic/cubic endpoint polynomial tends to
-`-∞` at `+∞`. -/
-lemma tendsto_eval_xSubQuadraticCubic_atTop_atBot_of_one_lt_mu
-    (a b c d e μ : ℝ) (hμ : 1 < μ) :
-    Tendsto
-      (fun x =>
-        (X * ((X - C a) * (X - C b)) -
-          C μ * ((X - C c) * (X - C d) * (X - C e))).eval x)
-      atTop atBot := by
-  let P : ℝ[X] :=
-    X * ((X - C a) * (X - C b)) -
-      C μ * ((X - C c) * (X - C d) * (X - C e))
-  let Q : ℝ[X] := -P
-  have hQ_pos : HasPosLeadingCoeff Q := by
-    dsimp [Q, P]
-    exact hasPosLeadingCoeff_neg_xSubQuadraticCubic_of_one_lt_mu a b c d e μ hμ
-  have hQ_deg_pos : 0 < Q.degree := by
-    have hnat : 0 < Q.natDegree := by
-      dsimp [Q, P]
-      rw [Polynomial.natDegree_neg]
-      rw [natDegree_xSubQuadraticCubic_of_mu_ne_one]
-      · norm_num
-      · exact ne_of_gt hμ
-    exact natDegree_pos_iff_degree_pos.mp hnat
-  have htQ : Tendsto (fun x => Q.eval x) atTop atTop :=
-    Q.tendsto_atTop_of_leadingCoeff_nonneg hQ_deg_pos hQ_pos.le
-  have htneg := tendsto_neg_atTop_atBot.comp htQ
   convert htneg using 1
   ext x
   dsimp [Q]
@@ -398,7 +335,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_b_e
       mul_pos_of_neg_of_neg hca_neg hcb_neg
     have hleft_neg : c * ((c - a) * (c - b)) < 0 :=
       mul_neg_of_neg_of_pos hc0 hprod_pos
-    nlinarith
+    linarith
   have hP_a_neg : P.eval a < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -407,8 +344,8 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_b_e
     have hae_neg : a - e < 0 := sub_neg.mpr hae
     have htail_pos : 0 < (a - d) * (a - e) :=
       mul_pos_of_neg_of_neg had_neg hae_neg
-    have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by nlinarith [mul_pos hac_pos htail_pos]
-    nlinarith [mul_pos hμ hG_pos]
+    have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by linarith [mul_pos hac_pos htail_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_d_pos : 0 < P.eval d := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -418,7 +355,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_b_e
       mul_neg_of_pos_of_neg hda_pos hdb_neg
     have hleft_pos : 0 < d * ((d - a) * (d - b)) :=
       mul_pos_of_neg_of_neg hd0 hprod_neg
-    nlinarith
+    linarith
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -427,8 +364,8 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_b_e
     have hbe_neg : b - e < 0 := sub_neg.mpr hbe
     have hhead_pos : 0 < (b - c) * (b - d) := mul_pos hbc_pos hbd_pos
     have hG_neg : (b - c) * (b - d) * (b - e) < 0 := by
-      nlinarith [mul_neg_of_pos_of_neg hhead_pos hbe_neg]
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+      linarith [mul_neg_of_pos_of_neg hhead_pos hbe_neg]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_e_neg : P.eval e < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -437,7 +374,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_b_e
     have hprod_pos : 0 < (e - a) * (e - b) := mul_pos hea_pos heb_pos
     have hleft_neg : e * ((e - a) * (e - b)) < 0 :=
       mul_neg_of_neg_of_pos he0 hprod_pos
-    nlinarith
+    linarith
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -447,7 +384,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_b_e
     have hhead_pos : 0 < (0 - c) * (0 - d) := mul_pos hzc_pos hzd_pos
     have hG_pos : 0 < (0 - c) * (0 - d) * (0 - e) :=
       mul_pos hhead_pos hze_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   obtain ⟨r₁, ha_r₁, hr₁_d, hr₁_root⟩ :=
     exists_isRoot_between_of_eval_mul_neg had
       (mul_neg_of_neg_of_pos hP_a_neg hP_d_pos)
@@ -490,7 +427,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_b_e
       mul_pos_of_neg_of_neg hca_neg hcb_neg
     have hleft_neg : c * ((c - a) * (c - b)) < 0 :=
       mul_neg_of_neg_of_pos hc0 hprod_pos
-    nlinarith
+    linarith
   have hP_d_neg : P.eval d < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -500,7 +437,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_b_e
       mul_pos_of_neg_of_neg hda_neg hdb_neg
     have hleft_neg : d * ((d - a) * (d - b)) < 0 :=
       mul_neg_of_neg_of_pos hd0 hprod_pos
-    nlinarith
+    linarith
   have hP_a_pos : 0 < P.eval a := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -509,8 +446,8 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_b_e
     have hae_neg : a - e < 0 := sub_neg.mpr hae
     have hhead_pos : 0 < (a - c) * (a - d) := mul_pos hac_pos had_pos
     have hG_neg : (a - c) * (a - d) * (a - e) < 0 := by
-      nlinarith [mul_neg_of_pos_of_neg hhead_pos hae_neg]
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+      linarith [mul_neg_of_pos_of_neg hhead_pos hae_neg]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -519,8 +456,8 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_b_e
     have hbe_neg : b - e < 0 := sub_neg.mpr hbe
     have hhead_pos : 0 < (b - c) * (b - d) := mul_pos hbc_pos hbd_pos
     have hG_neg : (b - c) * (b - d) * (b - e) < 0 := by
-      nlinarith [mul_neg_of_pos_of_neg hhead_pos hbe_neg]
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+      linarith [mul_neg_of_pos_of_neg hhead_pos hbe_neg]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_e_neg : P.eval e < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -529,7 +466,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_b_e
     have hprod_pos : 0 < (e - a) * (e - b) := mul_pos hea_pos heb_pos
     have hleft_neg : e * ((e - a) * (e - b)) < 0 :=
       mul_neg_of_neg_of_pos he0 hprod_pos
-    nlinarith
+    linarith
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -539,7 +476,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_b_e
     have hhead_pos : 0 < (0 - c) * (0 - d) := mul_pos hzc_pos hzd_pos
     have hG_pos : 0 < (0 - c) * (0 - d) * (0 - e) :=
       mul_pos hhead_pos hze_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   obtain ⟨r₁, hd_r₁, hr₁_a, hr₁_root⟩ :=
     exists_isRoot_between_of_eval_mul_neg hda
       (mul_neg_of_neg_of_pos hP_d_neg hP_a_pos)
@@ -580,7 +517,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_e_b
       mul_pos_of_neg_of_neg hca_neg hcb_neg
     have hleft_neg : c * ((c - a) * (c - b)) < 0 :=
       mul_neg_of_neg_of_pos hc0 hprod_pos
-    nlinarith
+    linarith
   have hP_a_neg : P.eval a < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -589,8 +526,8 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_e_b
     have hae_neg : a - e < 0 := sub_neg.mpr hae
     have htail_pos : 0 < (a - d) * (a - e) :=
       mul_pos_of_neg_of_neg had_neg hae_neg
-    have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by nlinarith [mul_pos hac_pos htail_pos]
-    nlinarith [mul_pos hμ hG_pos]
+    have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by linarith [mul_pos hac_pos htail_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_d_pos : 0 < P.eval d := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -600,7 +537,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_e_b
       mul_neg_of_pos_of_neg hda_pos hdb_neg
     have hleft_pos : 0 < d * ((d - a) * (d - b)) :=
       mul_pos_of_neg_of_neg hd0 hprod_neg
-    nlinarith
+    linarith
   have hP_e_pos : 0 < P.eval e := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -610,7 +547,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_e_b
       mul_neg_of_pos_of_neg hea_pos heb_neg
     have hleft_pos : 0 < e * ((e - a) * (e - b)) :=
       mul_pos_of_neg_of_neg he0 hprod_neg
-    nlinarith
+    linarith
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -620,7 +557,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_e_b
     have hhead_pos : 0 < (b - c) * (b - d) := mul_pos hbc_pos hbd_pos
     have hG_pos : 0 < (b - c) * (b - d) * (b - e) :=
       mul_pos hhead_pos hbe_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -630,7 +567,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_a_d_e_b
     have hhead_pos : 0 < (0 - c) * (0 - d) := mul_pos hzc_pos hzd_pos
     have hG_pos : 0 < (0 - c) * (0 - d) * (0 - e) :=
       mul_pos hhead_pos hze_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   obtain ⟨r₁, ha_r₁, hr₁_d, hr₁_root⟩ :=
     exists_isRoot_between_of_eval_mul_neg had
       (mul_neg_of_neg_of_pos hP_a_neg hP_d_pos)
@@ -670,7 +607,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_e_b
       mul_pos_of_neg_of_neg hca_neg hcb_neg
     have hleft_neg : c * ((c - a) * (c - b)) < 0 :=
       mul_neg_of_neg_of_pos hc0 hprod_pos
-    nlinarith
+    linarith
   have hP_d_neg : P.eval d < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -680,7 +617,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_e_b
       mul_pos_of_neg_of_neg hda_neg hdb_neg
     have hleft_neg : d * ((d - a) * (d - b)) < 0 :=
       mul_neg_of_neg_of_pos hd0 hprod_pos
-    nlinarith
+    linarith
   have hP_a_pos : 0 < P.eval a := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -689,8 +626,8 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_e_b
     have hae_neg : a - e < 0 := sub_neg.mpr hae
     have hhead_pos : 0 < (a - c) * (a - d) := mul_pos hac_pos had_pos
     have hG_neg : (a - c) * (a - d) * (a - e) < 0 := by
-      nlinarith [mul_neg_of_pos_of_neg hhead_pos hae_neg]
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+      linarith [mul_neg_of_pos_of_neg hhead_pos hae_neg]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_e_pos : 0 < P.eval e := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -700,7 +637,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_e_b
       mul_neg_of_pos_of_neg hea_pos heb_neg
     have hleft_pos : 0 < e * ((e - a) * (e - b)) :=
       mul_pos_of_neg_of_neg he0 hprod_neg
-    nlinarith
+    linarith
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -710,7 +647,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_e_b
     have hhead_pos : 0 < (b - c) * (b - d) := mul_pos hbc_pos hbd_pos
     have hG_pos : 0 < (b - c) * (b - d) * (b - e) :=
       mul_pos hhead_pos hbe_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -720,7 +657,7 @@ lemma xSubQuadraticCubicSplits_of_order_c_d_a_e_b
     have hhead_pos : 0 < (0 - c) * (0 - d) := mul_pos hzc_pos hzd_pos
     have hG_pos : 0 < (0 - c) * (0 - d) * (0 - e) :=
       mul_pos hhead_pos hze_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   obtain ⟨r₁, hd_r₁, hr₁_a, hr₁_root⟩ :=
     exists_isRoot_between_of_eval_mul_neg hda
       (mul_neg_of_neg_of_pos hP_d_neg hP_a_pos)
@@ -934,7 +871,7 @@ lemma xSubQuadraticCubicSplits_of_left_double_root
       mul_pos_of_neg_of_neg hca_neg hca_neg
     have hleft_neg : c * ((c - a) * (c - a)) < 0 :=
       mul_neg_of_neg_of_pos hc0 hprod_pos
-    nlinarith
+    linarith
   have hP_d_neg : P.eval d < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -943,7 +880,7 @@ lemma xSubQuadraticCubicSplits_of_left_double_root
       mul_pos_of_neg_of_neg hda_neg hda_neg
     have hleft_neg : d * ((d - a) * (d - a)) < 0 :=
       mul_neg_of_neg_of_pos hd0 hprod_pos
-    nlinarith
+    linarith
   have hP_a_pos : 0 < P.eval a := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -953,7 +890,7 @@ lemma xSubQuadraticCubicSplits_of_left_double_root
     have hhead_pos : 0 < (a - c) * (a - d) := mul_pos hac_pos had_pos
     have hG_neg : (a - c) * (a - d) * (a - e) < 0 :=
       mul_neg_of_pos_of_neg hhead_pos hae_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_e_neg : P.eval e < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -961,7 +898,7 @@ lemma xSubQuadraticCubicSplits_of_left_double_root
     have hprod_pos : 0 < (e - a) * (e - a) := mul_pos hea_pos hea_pos
     have hleft_neg : e * ((e - a) * (e - a)) < 0 :=
       mul_neg_of_neg_of_pos he0 hprod_pos
-    nlinarith
+    linarith
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -971,7 +908,7 @@ lemma xSubQuadraticCubicSplits_of_left_double_root
     have hhead_pos : 0 < (0 - c) * (0 - d) := mul_pos hzc_pos hzd_pos
     have hG_pos : 0 < (0 - c) * (0 - d) * (0 - e) :=
       mul_pos hhead_pos hze_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   obtain ⟨r₁, hd_r₁, hr₁_a, hr₁_root⟩ :=
     exists_isRoot_between_of_eval_mul_neg hda
       (mul_neg_of_neg_of_pos hP_d_neg hP_a_pos)
@@ -1007,7 +944,7 @@ lemma xSubQuadraticCubicSplits_of_lower_cubic_double_root
       mul_pos_of_neg_of_neg hca_neg hcb_neg
     have hleft_neg : c * ((c - a) * (c - b)) < 0 :=
       mul_neg_of_neg_of_pos hc0 hprod_pos
-    nlinarith
+    linarith
   have hP_a_pos : 0 < P.eval a := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1016,7 +953,7 @@ lemma xSubQuadraticCubicSplits_of_lower_cubic_double_root
     have hhead_pos : 0 < (a - c) * (a - c) := mul_pos hac_pos hac_pos
     have hG_neg : (a - c) * (a - c) * (a - e) < 0 :=
       mul_neg_of_pos_of_neg hhead_pos hae_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1025,7 +962,7 @@ lemma xSubQuadraticCubicSplits_of_lower_cubic_double_root
     have hhead_pos : 0 < (b - c) * (b - c) := mul_pos hbc_pos hbc_pos
     have hG_neg : (b - c) * (b - c) * (b - e) < 0 :=
       mul_neg_of_pos_of_neg hhead_pos hbe_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_e_neg : P.eval e < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1034,7 +971,7 @@ lemma xSubQuadraticCubicSplits_of_lower_cubic_double_root
     have hprod_pos : 0 < (e - a) * (e - b) := mul_pos hea_pos heb_pos
     have hleft_neg : e * ((e - a) * (e - b)) < 0 :=
       mul_neg_of_neg_of_pos he0 hprod_pos
-    nlinarith
+    linarith
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1043,7 +980,7 @@ lemma xSubQuadraticCubicSplits_of_lower_cubic_double_root
     have hhead_pos : 0 < (0 - c) * (0 - c) := mul_pos hzc_pos hzc_pos
     have hG_pos : 0 < (0 - c) * (0 - c) * (0 - e) :=
       mul_pos hhead_pos hze_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   obtain ⟨r₁, hc_r₁, hr₁_a, hr₁_root⟩ :=
     exists_isRoot_between_of_eval_mul_neg hca
       (mul_neg_of_neg_of_pos hP_c_neg hP_a_pos)
@@ -1078,7 +1015,7 @@ lemma xSubQuadraticCubicSplits_of_lower_cubic_double_root_right
       mul_pos_of_neg_of_neg hca_neg hcb_neg
     have hleft_neg : c * ((c - a) * (c - b)) < 0 :=
       mul_neg_of_neg_of_pos hc0 hprod_pos
-    nlinarith
+    linarith
   have hP_a_pos : 0 < P.eval a := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1087,7 +1024,7 @@ lemma xSubQuadraticCubicSplits_of_lower_cubic_double_root_right
     have hhead_pos : 0 < (a - c) * (a - c) := mul_pos hac_pos hac_pos
     have hG_neg : (a - c) * (a - c) * (a - e) < 0 :=
       mul_neg_of_pos_of_neg hhead_pos hae_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_e_pos : 0 < P.eval e := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1097,7 +1034,7 @@ lemma xSubQuadraticCubicSplits_of_lower_cubic_double_root_right
       mul_neg_of_pos_of_neg hea_pos heb_neg
     have hleft_pos : 0 < e * ((e - a) * (e - b)) :=
       mul_pos_of_neg_of_neg he0 hprod_neg
-    nlinarith
+    linarith
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1106,7 +1043,7 @@ lemma xSubQuadraticCubicSplits_of_lower_cubic_double_root_right
     have hhead_pos : 0 < (b - c) * (b - c) := mul_pos hbc_pos hbc_pos
     have hG_pos : 0 < (b - c) * (b - c) * (b - e) :=
       mul_pos hhead_pos hbe_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1115,7 +1052,7 @@ lemma xSubQuadraticCubicSplits_of_lower_cubic_double_root_right
     have hhead_pos : 0 < (0 - c) * (0 - c) := mul_pos hzc_pos hzc_pos
     have hG_pos : 0 < (0 - c) * (0 - c) * (0 - e) :=
       mul_pos hhead_pos hze_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   obtain ⟨r₁, hc_r₁, hr₁_a, hr₁_root⟩ :=
     exists_isRoot_between_of_eval_mul_neg hca
       (mul_neg_of_neg_of_pos hP_c_neg hP_a_pos)
@@ -1150,7 +1087,7 @@ lemma xSubQuadraticCubicSplits_of_upper_cubic_double_root
       mul_pos_of_neg_of_neg hca_neg hcb_neg
     have hleft_neg : c * ((c - a) * (c - b)) < 0 :=
       mul_neg_of_neg_of_pos hc0 hprod_pos
-    nlinarith
+    linarith
   have hP_a_neg : P.eval a < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1158,8 +1095,8 @@ lemma xSubQuadraticCubicSplits_of_upper_cubic_double_root
     have had_neg : a - d < 0 := sub_neg.mpr had
     have htail_pos : 0 < (a - d) * (a - d) :=
       mul_pos_of_neg_of_neg had_neg had_neg
-    have hG_pos : 0 < (a - c) * (a - d) * (a - d) := by nlinarith [mul_pos hac_pos htail_pos]
-    nlinarith [mul_pos hμ hG_pos]
+    have hG_pos : 0 < (a - c) * (a - d) * (a - d) := by linarith [mul_pos hac_pos htail_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_d_pos : 0 < P.eval d := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1169,15 +1106,15 @@ lemma xSubQuadraticCubicSplits_of_upper_cubic_double_root
       mul_neg_of_pos_of_neg hda_pos hdb_neg
     have hleft_pos : 0 < d * ((d - a) * (d - b)) :=
       mul_pos_of_neg_of_neg hd0 hprod_neg
-    nlinarith
+    linarith
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
     have hbc_pos : 0 < b - c := sub_pos.mpr hcb
     have hbd_pos : 0 < b - d := sub_pos.mpr hdb
     have htail_pos : 0 < (b - d) * (b - d) := mul_pos hbd_pos hbd_pos
-    have hG_pos : 0 < (b - c) * (b - d) * (b - d) := by nlinarith [mul_pos hbc_pos htail_pos]
-    nlinarith [mul_pos hμ hG_pos]
+    have hG_pos : 0 < (b - c) * (b - d) * (b - d) := by linarith [mul_pos hbc_pos htail_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1186,7 +1123,7 @@ lemma xSubQuadraticCubicSplits_of_upper_cubic_double_root
     have hhead_pos : 0 < (0 - c) * (0 - d) := mul_pos hzc_pos hzd_pos
     have hG_pos : 0 < (0 - c) * (0 - d) * (0 - d) :=
       mul_pos hhead_pos hzd_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   obtain ⟨r₁, ha_r₁, hr₁_d, hr₁_root⟩ :=
     exists_isRoot_between_of_eval_mul_neg had
       (mul_neg_of_neg_of_pos hP_a_neg hP_d_pos)
@@ -1221,7 +1158,7 @@ lemma xSubQuadraticCubicSplits_of_left_root_zero
       mul_pos_of_neg_of_neg hca_neg hc_neg
     have hleft_neg : c * ((c - a) * (c - 0)) < 0 :=
       mul_neg_of_neg_of_pos hc0 hprod_pos
-    nlinarith
+    linarith
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1231,7 +1168,7 @@ lemma xSubQuadraticCubicSplits_of_left_root_zero
     have hhead_pos : 0 < (0 - c) * (0 - d) := mul_pos hzc_pos hzd_pos
     have hG_pos : 0 < (0 - c) * (0 - d) * (0 - e) :=
       mul_pos hhead_pos hze_pos
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_e_pos : 0 < P.eval e := by
     dsimp [P]
     rw [eval_xSubQuadraticCubic]
@@ -1241,7 +1178,7 @@ lemma xSubQuadraticCubicSplits_of_left_root_zero
       mul_neg_of_pos_of_neg hea_pos he_neg
     have hleft_pos : 0 < e * ((e - a) * (e - 0)) :=
       mul_pos_of_neg_of_neg he0 hprod_neg
-    nlinarith
+    linarith
   rcases lt_or_gt_of_ne had_ne with had | hda
   · have hP_a_neg : P.eval a < 0 := by
       dsimp [P]
@@ -1251,8 +1188,8 @@ lemma xSubQuadraticCubicSplits_of_left_root_zero
       have hae_neg : a - e < 0 := sub_neg.mpr hae
       have htail_pos : 0 < (a - d) * (a - e) :=
         mul_pos_of_neg_of_neg had_neg hae_neg
-      have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by nlinarith [mul_pos hac_pos htail_pos]
-      nlinarith [mul_pos hμ hG_pos]
+      have hG_pos : 0 < (a - c) * (a - d) * (a - e) := by linarith [mul_pos hac_pos htail_pos]
+      linarith [mul_pos hμ hG_pos]
     have hP_d_pos : 0 < P.eval d := by
       dsimp [P]
       rw [eval_xSubQuadraticCubic]
@@ -1262,7 +1199,7 @@ lemma xSubQuadraticCubicSplits_of_left_root_zero
         mul_neg_of_pos_of_neg hda_pos hd_neg
       have hleft_pos : 0 < d * ((d - a) * (d - 0)) :=
         mul_pos_of_neg_of_neg hd0 hprod_neg
-      nlinarith
+      linarith
     obtain ⟨r₁, ha_r₁, hr₁_d, hr₁_root⟩ :=
       exists_isRoot_between_of_eval_mul_neg had
         (mul_neg_of_neg_of_pos hP_a_neg hP_d_pos)
@@ -1282,7 +1219,7 @@ lemma xSubQuadraticCubicSplits_of_left_root_zero
         mul_pos_of_neg_of_neg hda_neg hd_neg
       have hleft_neg : d * ((d - a) * (d - 0)) < 0 :=
         mul_neg_of_neg_of_pos hd0 hprod_pos
-      nlinarith
+      linarith
     have hP_a_pos : 0 < P.eval a := by
       dsimp [P]
       rw [eval_xSubQuadraticCubic]
@@ -1292,7 +1229,7 @@ lemma xSubQuadraticCubicSplits_of_left_root_zero
       have hhead_pos : 0 < (a - c) * (a - d) := mul_pos hac_pos had_pos
       have hG_neg : (a - c) * (a - d) * (a - e) < 0 :=
         mul_neg_of_pos_of_neg hhead_pos hae_neg
-      nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+      linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
     obtain ⟨r₁, hd_r₁, hr₁_a, hr₁_root⟩ :=
       exists_isRoot_between_of_eval_mul_neg hda
         (mul_neg_of_neg_of_pos hP_d_neg hP_a_pos)
@@ -1505,58 +1442,6 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
   positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
     xSubQuadraticCubicSplits hpair hfnn hgnn hdeg hgdeg
 
-/-- Pack the degree-three right endpoint terminal as a predicate-restricted
-right-successor positive-split x-sub family, modulo the normalized monic
-quadratic/cubic leaf. -/
-theorem
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
-    (hmono : xSubQuadraticCubicSplitsStatement) :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_three_of_monic
-      hmono hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-three right endpoint terminal as a predicate-restricted
-right-successor positive-split x-sub family. -/
-theorem
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) :=
-  positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
-    xSubQuadraticCubicSplits
-
-/-- Compatibility alias for the shorter historical degree-three predicate
-name. -/
-theorem
-    positiveSplitRightSuccXSubFamilyPredicate_of_right_natDegree_three_of_monic
-    (hmono : xSubQuadraticCubicSplitsStatement) :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) :=
-  positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
-    hmono
-
-/-- Compatibility alias for the shorter historical degree-three predicate
-name. -/
-theorem positiveSplitRightSuccXSubFamilyPredicate_of_right_natDegree_three :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) :=
-  positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three
-
-/-- Pack the endpoint cases through degree three as a predicate-restricted
-right-successor positive-split x-sub family, modulo the normalized monic
-quadratic/cubic leaf. -/
-theorem
-positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_three_of_monic
-    (hmono : xSubQuadraticCubicSplitsStatement) :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 3) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
-      hmono hpair hfnn hgnn hdeg hgdeg
-
 /-- Pack the endpoint cases through degree three as a predicate-restricted
 right-successor positive-split x-sub family. -/
 theorem
@@ -1578,13 +1463,6 @@ theorem
   exact
     positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
       hmono hpair hfnn hgnn hdeg hgdeg
-
-/-- Compatibility alias for the shorter historical degree-three predicate
-name. -/
-theorem positiveSplitRightSuccXSubFamilyPredicate_of_right_natDegree_le_three :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 3) :=
-  positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_three
 
 end LiuOppositeSigns
 end RealRooted

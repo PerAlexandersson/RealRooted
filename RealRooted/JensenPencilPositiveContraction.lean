@@ -65,8 +65,8 @@ private theorem natDegree_monicSignedReciprocal_eq {d : ℕ} {F : ℝ[X]}
 
 private theorem monicSignedReciprocal_splits {d : ℕ} {F : ℝ[X]}
     (hFdeg : F.natDegree ≤ d) (hFs : F.Splits) :
-    (monicSignedReciprocal d F).Splits := by
-  exact (signedReciprocal_splits_of_splits hFdeg hFs).C_mul _
+    (monicSignedReciprocal d F).Splits :=
+  (signedReciprocal_splits_of_splits hFdeg hFs).C_mul _
 
 private theorem roots_monicSignedReciprocal {d : ℕ} {F : ℝ[X]}
     (hF0 : F.coeff 0 ≠ 0) :
@@ -150,8 +150,8 @@ private theorem rootCount_band_monicSignedReciprocal
       · rw [min_eq_left hd2]
         lia
       · have hPAcard :
-            (A.roots.filter (-s⁻¹ ≤ ·)).card ≤ d := by
-          exact (Multiset.card_le_card (Multiset.filter_le _ _)).trans (by
+            (A.roots.filter (-s⁻¹ ≤ ·)).card ≤ d :=
+          (Multiset.card_le_card (Multiset.filter_le _ _)).trans (by
             rw [card_roots_of_splits
               (hA.2.1.resolve_left (by
                 intro h
@@ -337,12 +337,10 @@ theorem compatible_schurSzego_jensen_of_pos_coeff_zero
     have hUne : U ≠ 0 := ne_zero_of_coeff_zero_pos hU0
     have hVne : V ≠ 0 := ne_zero_of_coeff_zero_pos hV0
     have hXVne : X * V ≠ 0 := mul_ne_zero X_ne_zero hVne
-    have hUdeg : U.natDegree = 0 := by
-      apply Nat.eq_zero_of_le_zero
-      exact (natDegree_schurSzegoComp_le_right d A p).trans hpdeg0.le
-    have hVdeg : V.natDegree = 0 := by
-      apply Nat.eq_zero_of_le_zero
-      exact (natDegree_schurSzegoComp_le_right d B p).trans hpdeg0.le
+    have hUdeg : U.natDegree = 0 :=
+      Nat.eq_zero_of_le_zero ((natDegree_schurSzegoComp_le_right d A p).trans hpdeg0.le)
+    have hVdeg : V.natDegree = 0 :=
+      Nat.eq_zero_of_le_zero ((natDegree_schurSzegoComp_le_right d B p).trans hpdeg0.le)
     have hXVdeg : (X * V).natDegree ≤ 1 := by rw [Polynomial.natDegree_X_mul hVne, hVdeg]
     have hcount :=
       LiuOppositeSigns.RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one

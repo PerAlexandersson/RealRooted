@@ -7,7 +7,7 @@ This module contains the statement-level factor-return packages, target
 aliases, and left/right symmetry adapters used in the reverse direction of Liu
 Theorem 2.1.
 The proof-heavy degree branches and final theorem assembly remain in
-`RealRooted.LiuOppositeSignsTheorem`.
+`RealRooted.LiuOppositeSigns.Theorem`.
 -/
 
 open Polynomial Filter
@@ -39,16 +39,6 @@ theorem theorem21DeletionPairCommonInterleaverBranchesToCompatible_of_factorRetu
   · exact (hreturn hf hg hsgn).1 hleft.1 hleft.2
   · exact (hreturn hf hg hsgn).2 hright.1 hright.2
 
-/-- The factor-return principle proves the nonconstant branch-retaining
-common-interleaver reverse direction. -/
-theorem
-    theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstant_of_factorReturn
-    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
-    theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstantStatement :=
-  theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstant_of_reverse
-    (theorem21DeletionPairCommonInterleaverBranchesToCompatible_of_factorReturn
-      hreturn)
-
 /-- The branch-retaining deletion-pair common-interleaver theorem package
 follows from the isolated forward direction and factor-return principle. -/
 theorem
@@ -59,33 +49,6 @@ theorem
   theorem21CompatibleDeletionPairCommonInterleaverBranches_of_forward_and_reverse
     hforward
     (theorem21DeletionPairCommonInterleaverBranchesToCompatible_of_factorReturn
-      hreturn)
-
-/-- The branch-retaining deletion-pair common-interleaver theorem package
-follows from the isolated root-count forward direction and factor-return
-principle. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIff_of_forward_and_factorReturn
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_factorReturn
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
-      hforward)
-    hreturn
-
-/-- The nonconstant branch-retaining deletion-pair common-interleaver theorem
-package follows from the isolated nonconstant forward direction and
-factor-return principle. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_factorReturn
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hreturn : theorem21DeletionPairCommonInterleaverFactorReturnStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement :=
-  theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstant_of_forward_and_reverse
-    hforward
-    (theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstant_of_factorReturn
       hreturn)
 
 /-- Stronger all-real-combination version of the factor-return principle. -/
@@ -114,47 +77,6 @@ theorem theorem21DeletionPairCommonInterleaverFactorReturn_of_allCombo
   · intro hright hcommon
     exact Compatible.of_allComboRealRooted
       ((hreturn hf hg hsgn).2 hright hcommon)
-
-/-- The branch-retaining deletion-pair common-interleaver theorem package
-follows from the isolated forward direction and all-combinations factor-return
-principle. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_allCombo
-    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
-    (hreturn :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_factorReturn
-    hforward
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allCombo hreturn)
-
-/-- The branch-retaining deletion-pair common-interleaver theorem package
-follows from the isolated root-count forward direction and all-combinations
-factor-return principle. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIff_of_forward_and_allCombo
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    (hreturn :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21DeletionPairCommonInterleaverIff_of_commonForward_and_allCombo
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
-      hforward)
-    hreturn
-
-/-- The nonconstant branch-retaining deletion-pair common-interleaver theorem
-package follows from the isolated nonconstant forward direction and
-all-combinations factor-return principle. -/
-theorem
-    theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_allCombo
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hreturn :
-      theorem21DeletionPairCommonInterleaverFactorReturnAllComboStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement :=
-  theorem21DeletionPairCommonInterleaverIffNonconstant_of_commonForward_and_factorReturn
-    hforward
-    (theorem21DeletionPairCommonInterleaverFactorReturn_of_allCombo hreturn)
 
 /-- Swap the common-right-interleaver witness in a right deletion pair. -/
 theorem rightDeletionPairCommonInterleaver_symm {f g : ℝ[X]} {s : ℝ}
@@ -389,15 +311,6 @@ def theorem21LeftFactorReturnPredicateRelationStatement
           (∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) →
             P g.natDegree → Compatible f g
 
-/-- Predicate-restricted left factor-return relation targets transport along
-endpoint predicate implications. -/
-theorem theorem21LeftFactorReturnPredicateRelationStatement_of_imp
-    {R : ℕ → ℕ → Prop} {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ : theorem21LeftFactorReturnPredicateRelationStatement R Q) :
-    theorem21LeftFactorReturnPredicateRelationStatement R P := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg
-  exact hQ hf hg hsgn hleft hdeg hcommon (hPQ _ hgdeg)
-
 /-- The unrestricted left factor-return relation target is the `P := True`
 case of the predicate-restricted relation target. -/
 theorem theorem21LeftFactorReturnPredicateRelation_true_of_relation
@@ -454,33 +367,6 @@ def theorem21LeftFactorReturnTwoDegreePredicateStatement
     (P : ℕ → Prop) : Prop :=
   theorem21LeftFactorReturnPredicateRelationStatement
     (fun m n => m = n + 2) P
-
-/-- Predicate-restricted original two-degree factor-return targets transport
-along endpoint predicate implications. -/
-theorem theorem21LeftFactorReturnTwoDegreePredicateStatement_of_imp
-    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ : theorem21LeftFactorReturnTwoDegreePredicateStatement Q) :
-    theorem21LeftFactorReturnTwoDegreePredicateStatement P :=
-  theorem21LeftFactorReturnPredicateRelationStatement_of_imp
-    (R := fun m n => m = n + 2) hPQ hQ
-
-/-- Predicate-restricted same-degree factor-return targets transport along
-endpoint predicate implications. -/
-theorem theorem21LeftFactorReturnSameDegreePredicateStatement_of_imp
-    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ : theorem21LeftFactorReturnSameDegreePredicateStatement Q) :
-    theorem21LeftFactorReturnSameDegreePredicateStatement P :=
-  theorem21LeftFactorReturnPredicateRelationStatement_of_imp
-    (R := fun m n => m = n) hPQ hQ
-
-/-- Predicate-restricted successor-degree factor-return targets transport
-along endpoint predicate implications. -/
-theorem theorem21LeftFactorReturnSuccDegreePredicateStatement_of_imp
-    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ : theorem21LeftFactorReturnSuccDegreePredicateStatement Q) :
-    theorem21LeftFactorReturnSuccDegreePredicateStatement P :=
-  theorem21LeftFactorReturnPredicateRelationStatement_of_imp
-    (R := fun m n => m = n + 1) hPQ hQ
 
 /-- A left all-combinations factor-return leaf for any degree relation gives
 the corresponding compatibility factor-return leaf. -/
@@ -544,30 +430,6 @@ def theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
               Compatible
                 (X * (deleteRootFactor f r).comp (X + C r))
                 (g.comp (X + C r))
-
-/-- Predicate-restricted translated compatibility relation targets transport
-along endpoint predicate implications. -/
-theorem
-    theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement_of_imp
-    {R : ℕ → ℕ → Prop} {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ :
-      theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
-        R Q) :
-    theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
-      R P := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg
-  exact hQ hf hg hsgn hleft hdeg hcommon (hPQ _ hgdeg)
-
-/-- The unrestricted translated compatibility relation target is the
-`P := True` case of the predicate-restricted relation target. -/
-theorem theorem21LeftFactorReturnTranslatedCompatiblePredicateRelation_true_of_relation
-    {R : ℕ → ℕ → Prop}
-    (htranslated :
-      theorem21LeftFactorReturnTranslatedCompatibleRelationStatement R) :
-    theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
-      R (fun _ => True) := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon _
-  exact htranslated hf hg hsgn hleft hdeg hcommon
 
 /-- A `P := True` translated compatibility predicate relation target gives the
 unrestricted translated compatibility relation target. -/
@@ -680,19 +542,6 @@ def theorem21LeftFactorReturnTwoDegreeTranslatedCompatiblePredicateStatement
   theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement
     (fun m n => m = n + 2) P
 
-/-- Predicate-restricted translated compatibility targets transport along
-endpoint predicate implications. -/
-theorem
-    theorem21LeftFactorReturnTwoDegreeTranslatedCompatiblePredicateStatement_of_imp
-    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ :
-      theorem21LeftFactorReturnTwoDegreeTranslatedCompatiblePredicateStatement
-        Q) :
-    theorem21LeftFactorReturnTwoDegreeTranslatedCompatiblePredicateStatement
-      P :=
-  theorem21LeftFactorReturnTranslatedCompatiblePredicateRelationStatement_of_imp
-    (R := fun m n => m = n + 2) hPQ hQ
-
 /-- One-parameter positive right-pencil version of a translated Liu
 left-branch target for an arbitrary endpoint degree relation. -/
 def theorem21LeftFactorReturnTranslatedRightFamilyRelationStatement
@@ -720,19 +569,6 @@ def theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
               ∀ μ : ℝ, 0 < μ →
                 (X * (deleteRootFactor f r).comp (X + C r) +
                     C μ * g.comp (X + C r)).Splits
-
-/-- Predicate-restricted translated right-family relation targets transport
-along endpoint predicate implications. -/
-theorem
-    theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement_of_imp
-    {R : ℕ → ℕ → Prop} {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ :
-      theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
-        R Q) :
-    theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
-      R P := by
-  intro f g r s hf hg hsgn hleft hdeg hcommon hgdeg μ hμ
-  exact hQ hf hg hsgn hleft hdeg hcommon (hPQ _ hgdeg) μ hμ
 
 /-- The unrestricted translated right-family relation target is the `P := True`
 case of the predicate-restricted relation target. -/
@@ -880,18 +716,6 @@ def theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement
     (P : ℕ → Prop) : Prop :=
   theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement
     (fun m n => m = n + 2) P
-
-/-- Predicate-restricted translated right-family targets transport along
-endpoint predicate implications. -/
-theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement_of_imp
-    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ :
-      theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement
-        Q) :
-    theorem21LeftFactorReturnTwoDegreeTranslatedRightFamilyPredicateStatement
-      P :=
-  theorem21LeftFactorReturnTranslatedRightFamilyPredicateRelationStatement_of_imp
-    (R := fun m n => m = n + 2) hPQ hQ
 
 end LiuOppositeSigns
 end RealRooted

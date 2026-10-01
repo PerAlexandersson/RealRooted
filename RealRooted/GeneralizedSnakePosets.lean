@@ -326,7 +326,7 @@ theorem deleteFirstColumnPlacement_isNonNestingPlacement
     have hcol_ne : col ≠ 1 := by
       intro hcol
       exact hfree row (by simpa [hcol] using ha)
-    have hcol_gt : 1 < col := by exact lt_of_le_of_ne (Nat.succ_le_of_lt ha_cell.2.1) hcol_ne.symm
+    have hcol_gt : 1 < col := lt_of_le_of_ne (Nat.succ_le_of_lt ha_cell.2.1) hcol_ne.symm
     refine ⟨by simpa [partitionSubOne] using ha_cell.1,
       Nat.sub_pos_of_lt hcol_gt, ?_⟩
     rw [partitionSubOne_getD]
@@ -352,8 +352,8 @@ theorem deleteFirstColumnPlacement_isNonNestingPlacement
       intro hcol_one
       have hb_eq : (b.1, 1) = b := by ext <;> simp [hcol_one]
       exact hfree b.1 (by simpa [hb_eq] using hb)
-    have hb_col_gt : 1 < b.2 := by
-      exact lt_of_le_of_ne (Nat.succ_le_of_lt hb_cell.2.1) hb_col_ne.symm
+    have hb_col_gt : 1 < b.2 :=
+      lt_of_le_of_ne (Nat.succ_le_of_lt hb_cell.2.1) hb_col_ne.symm
     exact Nat.sub_lt_sub_right hb_cell.2.1 hcol
 
 /-- Adding a first column sends a placement of `partitionSubOne lam` back to a
@@ -938,8 +938,8 @@ theorem sum_firstColumnCells_nonNestingPlacementsWithCell_eq_mul_sum
           ext i
           simp
     _ = X * ((List.range lam.length).map fun i =>
-          ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i)).sum := by
-          exact List.sum_map_mul_left (List.range lam.length)
+          ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i)).sum :=
+          List.sum_map_mul_left (List.range lam.length)
             (fun i => ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i)) X
 
 /-- Braun--Jal Proposition 3.2 for the concrete finite Ferrers-board

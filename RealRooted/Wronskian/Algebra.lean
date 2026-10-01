@@ -113,7 +113,7 @@ private lemma laguerre_form_nonneg_prod (c : ℝ) (s : Multiset ℝ) (t : ℝ) :
       simp only [derivative_mul, derivative_sub, derivative_X, derivative_C,
         derivative_add, sub_zero, one_mul, eval_add, eval_mul, eval_sub,
         eval_X, eval_C]
-      nlinarith [mul_nonneg (sq_nonneg (t - a)) ih, sq_nonneg (q.eval t)]
+      linarith [mul_nonneg (sq_nonneg (t - a)) ih, sq_nonneg (q.eval t)]
 
 /-- **Laguerre's inequality.**  If a real polynomial has all real roots,
 then `p'(t)^2 - p(t) * p''(t) ≥ 0` for every real `t`. -/
@@ -576,6 +576,6 @@ theorem wronskian_thetaPlusOne_sq_X_mul_eval_ge {p : ℝ[X]} (hp : p.Splits)
             (derivative (derivative (derivative p))).eval t) ≤
       (wronskian (thetaPlusOne (thetaPlusOne p)) (X * p)).eval t := by
   rw [wronskian_thetaPlusOne_sq_X_mul_eval]
-  nlinarith [mul_nonneg (sq_nonneg t) (laguerre_form_nonneg hp t)]
+  linarith [mul_nonneg (sq_nonneg t) (laguerre_form_nonneg hp t)]
 
 end RealRooted

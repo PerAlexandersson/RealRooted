@@ -141,55 +141,6 @@ theorem narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
     modifiedNarayanaPolynomial_eq_coeffPolynomial 6]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five hG5
 
-/-- The `n = 6` Braun--Jal equation (2), for the quotient-style modified
-Narayana family, reduces to the remaining three-row and four-row
-truncated-staircase rook-polynomial computations. -/
-theorem narayanaAuxiliaryGRecurrence_modified_six_of_staircase_five_tail
-    (h53 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 =
-      1 + C (12 : ℝ) * X + C (25 : ℝ) * X ^ 2 + C (10 : ℝ) * X ^ 3)
-    (h54 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 4 =
-      1 + C (14 : ℝ) * X + C (40 : ℝ) * X ^ 2 +
-        C (30 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4) :
-    X * FiniteSkewBoard.auxiliaryG 5 =
-      modifiedNarayanaPolynomial 6 -
-        (1 + X) * modifiedNarayanaPolynomial 5 :=
-  narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
-    (FiniteSkewBoard.auxiliaryG_five_of_truncatedStaircaseRookPolynomial_five_three_four
-      h53 h54)
-
-/-- The `n = 6` Braun--Jal equation (2), for the quotient-style modified
-Narayana family, reduces to the bottom-row expansions for the two remaining
-`n = 5` truncated-staircase rook-polynomial rows. -/
-theorem narayanaAuxiliaryGRecurrence_modified_six_of_bottom_row_expansions
-    (hbottom53 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 =
-      FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 2 +
-        X * (FiniteSkewBoard.truncatedStaircaseRookPolynomial 4 2 +
-          FiniteSkewBoard.truncatedStaircaseRookPolynomial 3 2 +
-            FiniteSkewBoard.truncatedStaircaseRookPolynomial 2 2))
-    (hbottom54 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 4 =
-      FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 +
-        X * (FiniteSkewBoard.truncatedStaircaseRookPolynomial 4 3 +
-          FiniteSkewBoard.truncatedStaircaseRookPolynomial 3 3)) :
-    X * FiniteSkewBoard.auxiliaryG 5 =
-      modifiedNarayanaPolynomial 6 -
-        (1 + X) * modifiedNarayanaPolynomial 5 :=
-  narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
-    (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansions
-      hbottom53 hbottom54)
-
-/-- The `n = 6` Braun--Jal equation (2), for the quotient-style modified
-Narayana family, reduces to the named bottom-row expansion predicate for the
-two remaining `n = 5` truncated-staircase rows. -/
-theorem narayanaAuxiliaryGRecurrence_modified_six_of_bottom_row_expansion_statements
-    (hbottom53 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 2)
-    (hbottom54 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 3) :
-    X * FiniteSkewBoard.auxiliaryG 5 =
-      modifiedNarayanaPolynomial 6 -
-        (1 + X) * modifiedNarayanaPolynomial 5 :=
-  narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
-    (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansion_statements
-      hbottom53 hbottom54)
-
 /-- The `n = 6` case of Braun--Jal equation (2), for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_six :
@@ -291,8 +242,8 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_four
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₄ : n ≤ 4) :
     X * FiniteSkewBoard.auxiliaryG (n - 1) =
       modifiedNarayanaPolynomial n -
-        (1 + X) * modifiedNarayanaPolynomial (n - 1) := by
-  exact narayanaAuxiliaryGRecurrence_modified_of_le_four_of_auxiliaryG_three
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
+  narayanaAuxiliaryGRecurrence_modified_of_le_four_of_auxiliaryG_three
     FiniteSkewBoard.auxiliaryG_three hn₁ hn₄
 
 /-- The checked initial cases `n = 1, 2, 3, 4`, plus the conditional `n = 5`
@@ -319,8 +270,8 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_five
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₅ : n ≤ 5) :
     X * FiniteSkewBoard.auxiliaryG (n - 1) =
       modifiedNarayanaPolynomial n -
-        (1 + X) * modifiedNarayanaPolynomial (n - 1) := by
-  exact narayanaAuxiliaryGRecurrence_modified_of_le_five_of_auxiliaryG_four
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
+  narayanaAuxiliaryGRecurrence_modified_of_le_five_of_auxiliaryG_four
     FiniteSkewBoard.auxiliaryG_four hn₁ hn₅
 
 /-- The checked initial cases `n = 1, 2, 3, 4, 5`, plus the conditional `n = 6`
@@ -341,60 +292,6 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
   · exact narayanaAuxiliaryGRecurrence_modified_four
   · exact narayanaAuxiliaryGRecurrence_modified_five
   · exact narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five hG5
-
-/-- The checked initial cases through `n = 6`, reducing the last case to the
-remaining three-row and four-row truncated-staircase computations. -/
-theorem narayanaAuxiliaryGRecurrence_modified_of_le_six_of_staircase_five_tail
-    (h53 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 =
-      1 + C (12 : ℝ) * X + C (25 : ℝ) * X ^ 2 + C (10 : ℝ) * X ^ 3)
-    (h54 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 4 =
-      1 + C (14 : ℝ) * X + C (40 : ℝ) * X ^ 2 +
-        C (30 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4)
-    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
-    X * FiniteSkewBoard.auxiliaryG (n - 1) =
-      modifiedNarayanaPolynomial n -
-        (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
-  narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
-    (FiniteSkewBoard.auxiliaryG_five_of_truncatedStaircaseRookPolynomial_five_three_four
-      h53 h54)
-    hn₁ hn₆
-
-/-- The checked initial cases through `n = 6`, reducing the last case to the
-bottom-row expansions for the two remaining `n = 5` truncated-staircase
-rook-polynomial rows. -/
-theorem narayanaAuxiliaryGRecurrence_modified_of_le_six_of_bottom_row_expansions
-    (hbottom53 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 =
-      FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 2 +
-        X * (FiniteSkewBoard.truncatedStaircaseRookPolynomial 4 2 +
-          FiniteSkewBoard.truncatedStaircaseRookPolynomial 3 2 +
-            FiniteSkewBoard.truncatedStaircaseRookPolynomial 2 2))
-    (hbottom54 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 4 =
-      FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 +
-        X * (FiniteSkewBoard.truncatedStaircaseRookPolynomial 4 3 +
-          FiniteSkewBoard.truncatedStaircaseRookPolynomial 3 3))
-    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
-    X * FiniteSkewBoard.auxiliaryG (n - 1) =
-      modifiedNarayanaPolynomial n -
-        (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
-  narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
-    (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansions
-      hbottom53 hbottom54)
-    hn₁ hn₆
-
-/-- The checked initial cases through `n = 6`, reducing the last case to the
-named bottom-row expansion predicate for the two remaining `n = 5`
-truncated-staircase rows. -/
-theorem narayanaAuxiliaryGRecurrence_modified_of_le_six_of_bottom_row_expansion_statements
-    (hbottom53 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 2)
-    (hbottom54 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 3)
-    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
-    X * FiniteSkewBoard.auxiliaryG (n - 1) =
-      modifiedNarayanaPolynomial n -
-        (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
-  narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
-    (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansion_statements
-      hbottom53 hbottom54)
-    hn₁ hn₆
 
 /-- The checked initial cases through `n = 6` of Braun--Jal equation (2), for
 the quotient-style modified Narayana family and finite-board auxiliary `G`. -/
@@ -518,7 +415,7 @@ theorem auxiliaryG_coeff_sub_two_of_narayanaRecurrence
   rw [show n + 1 - 2 = n - 1 by lia] at hPsucc
   rw [hPsucc, hPnext, hPsecond] at hcoeff
   push_cast at hcoeff ⊢
-  nlinarith
+  linarith
 
 /-- Equation `(2)` forces the coefficient one place above the leading
 candidate coefficient of `G_n` to vanish. -/
@@ -577,8 +474,8 @@ theorem auxiliaryG_natDegree_of_narayanaRecurrence
     simp
   have hrec := hrec2 (n := n + 1) (by lia)
   simp only [Nat.add_sub_cancel] at hrec
-  have hlin : (1 + X : ℝ[X]).natDegree ≤ 1 := by
-    exact (natDegree_add_le (1 : ℝ[X]) X).trans (by simp)
+  have hlin : (1 + X : ℝ[X]).natDegree ≤ 1 :=
+    (natDegree_add_le (1 : ℝ[X]) X).trans (by simp)
   have hprod_le :
       ((1 + X) * modifiedNarayanaPolynomial n).natDegree ≤ n + 1 := by
     calc
@@ -635,8 +532,8 @@ theorem auxiliaryGPencil_natDegree_of_narayanaRecurrence
       _ = m - 1 := by lia
   have hle :
       ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).natDegree ≤ m - 1 := by
-    exact (natDegree_add_le _ _).trans (max_le hprod (by rw [hGm_deg]))
+        FiniteSkewBoard.auxiliaryG m).natDegree ≤ m - 1 :=
+    (natDegree_add_le _ _).trans (max_le hprod (by rw [hGm_deg]))
   have hGprev_top :
       (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 2) =
         ((m - 1 : ℕ) : ℝ) := by
@@ -671,9 +568,6 @@ theorem auxiliaryGPencil_natDegree_of_narayanaRecurrence
   apply natDegree_eq_of_le_of_coeff_ne_zero hle
   rw [hcoeff]
   positivity
-
-@[deprecated modifiedNarayanaPolynomial_strictInterl_succ (since := "2026-09-26")]
-alias modifiedNarayanaPolynomial_prec_succ := modifiedNarayanaPolynomial_strictInterl_succ
 
 end GeneralizedSnakePosets
 end RealRooted

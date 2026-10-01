@@ -99,7 +99,7 @@ private lemma isChain_reverse_inv_center_iff
       have hzlt : z⁻¹ < -1 := by
         rw [inv_eq_one_div]
         exact (div_lt_iff_of_neg (hlmem z hzmem).2).2
-          (by nlinarith [(hlmem z hzmem).1])
+          (by linarith [(hlmem z hzmem).1])
       have hy' : y = -1 := by simpa [c] using hy
       linarith
     have hacl : ((a ++ c) ++ l).Pairwise (· ≤ ·) := by
@@ -115,7 +115,7 @@ private lemma isChain_reverse_inv_center_iff
         have hzlt : z⁻¹ < -1 := by
           rw [inv_eq_one_div]
           exact (div_lt_iff_of_neg (hlmem z hzmem).2).2
-            (by nlinarith [(hlmem z hzmem).1])
+            (by linarith [(hlmem z hzmem).1])
         linarith [(hlmem y hy).1]
       · have hx' : x = -1 := by simpa [c] using hx
         linarith [(hlmem y hy).1]
@@ -179,8 +179,7 @@ lemma GammaTransformInternal.listInterlaces_reciprocalCenterRoots_same_iff
     rw [interleaveRight_reciprocalCenterRoots_same m hlen,
       isChain_reverse_inv_center_iff m] at hc
     · apply (listAlternates_iff_interleaves_of_length hlen).2
-      apply (List.interleaves_iff_length_isChain_interleaveRight).2
-      exact ⟨Or.inl hlen.symm, hc⟩
+      exact (List.interleaves_iff_length_isChain_interleaveRight).2 ⟨Or.inl hlen.symm, hc⟩
     · intro x hx
       rcases mem_interleaveRight_of_lengths rs ss (Or.inl hlen.symm) hx with hx | hx
       · exact hrs x hx
@@ -219,8 +218,7 @@ lemma GammaTransformInternal.listInterlaces_reciprocalCenterRoots_succ_iff
     rw [interleaveRight_reciprocalCenterRoots_succ m hlen,
       isChain_reverse_inv_center_iff m] at hc
     · apply (listInterlaces_iff_interleaves_of_length hlen).2
-      apply (List.interleaves_iff_length_isChain_interleaveRight).2
-      exact ⟨Or.inr hlen, hc⟩
+      exact (List.interleaves_iff_length_isChain_interleaveRight).2 ⟨Or.inr hlen, hc⟩
     · intro x hx
       rcases mem_interleaveRight_of_lengths ss rs (Or.inr hlen) hx with hx | hx
       · exact hss x hx
@@ -264,12 +262,12 @@ theorem roots_gammaTransform_eq_reciprocal_add_neg_one_add
   have hinv_Ioo {x : Real} (hx : x < -1) : x⁻¹ ∈ Set.Ioo (-1 : Real) 0 := by
     constructor
     · rw [inv_eq_one_div]
-      exact (lt_div_iff_of_neg (by linarith)).2 (by nlinarith)
+      exact (lt_div_iff_of_neg (by linarith)).2 (by linarith)
     · exact inv_lt_zero.mpr (by linarith)
   have hinv_lt_neg_one {x : Real} (hx : x ∈ Set.Ioo (-1 : Real) 0) :
       x⁻¹ < -1 := by
     rw [inv_eq_one_div]
-    exact (div_lt_iff_of_neg hx.2).2 (by nlinarith [hx.1])
+    exact (div_lt_iff_of_neg hx.2).2 (by linarith [hx.1])
   refine Multiset.ext.mpr fun x => ?_
   by_cases hxlt : x < -1
   · have hx0 : x ≠ 0 := by linarith
@@ -410,8 +408,8 @@ theorem roots_eq_map_filter_roots_gammaTransform
             (s.filter
               (fun z => gammaRootMap x = gammaRootMap z)).card :=
           Multiset.count_map gammaRootMap s (gammaRootMap x)
-        _ = (s.filter (fun z => x = z)).card := by
-          exact congrArg Multiset.card <|
+        _ = (s.filter (fun z => x = z)).card :=
+          congrArg Multiset.card <|
             Multiset.filter_congr fun z hz =>
               strictMonoOn_gammaRootMap.injOn.eq_iff hx (hs_Ioo hz)
         _ = s.count x :=

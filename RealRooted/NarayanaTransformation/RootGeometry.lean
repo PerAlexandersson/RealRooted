@@ -66,9 +66,8 @@ theorem hasOnlyNonnegRoots_iff_mvRealStable_xyLift {p : ℝ[X]} (hpne : p ≠ 0)
       (hzroot : (p.map Complex.ofRealHom).IsRoot z) :
       ∃ r : ℝ, 0 ≤ r ∧ z = r := by
     by_contra houtside
-    have hzoutside : ∀ r : ℝ, 0 ≤ r → z ≠ r := by
-      intro r hr hzr
-      exact houtside ⟨r, hr, hzr⟩
+    have hzoutside : ∀ r : ℝ, 0 ≤ r → z ≠ r :=
+      fun r hr hzr => houtside ⟨r, hr, hzr⟩
     obtain ⟨x, y, hx, hy, hxy⟩ := exists_upperHalfPlane_mul_eq hzoutside
     have hnonzero := hstable ![x, y] (by
       intro i

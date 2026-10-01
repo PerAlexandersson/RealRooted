@@ -49,34 +49,6 @@ theorem theorem41InductionRoute_modified_of_section3_of_constant_matches_succ_le
     modifiedNarayanaPolynomial_hasNonnegCoeffs
     FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
 
-/-- Endpoint-compatible modified-Narayana route for Braun--Jal Theorem 4.1,
-using root sums to orient Claim `(7)`. -/
-theorem theorem41InductionRoute_modified_of_section3_rootSum_of_constant_matches_succ_length
-    {M : SnakeWord → ℝ[X]}
-    (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hside :
-      Theorem41Claim7RootSumSideConditions
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hG : ∀ {m : ℕ}, 2 ≤ m →
-      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1)) (FiniteSkewBoard.auxiliaryG m))
-    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
-    (hdeg :
-      ∀ {w : SnakeWord}, 1 ≤ w.length →
-        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const :
-      ∀ {w : SnakeWord}, w.IsConstant →
-        M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    Theorem41InductionRouteStatement
-      M modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
-  theorem41InductionRoute_of_section3_rootSum_of_constant_matches_succ_length
-    (M := M) (P := modifiedNarayanaPolynomial) (G := FiniteSkewBoard.auxiliaryG)
-    hrec2 hside modifiedNarayanaPolynomial_interlaces_succ hG
-    modifiedNarayanaPolynomial_one FiniteSkewBoard.auxiliaryG_one
-    modifiedNarayanaPolynomial_hasNonnegCoeffs
-    FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
-
 /-- Arithmetic comparison between the Vieta expressions predicted by the
 leading and next coefficients of the modified-Narayana `U` window and the
 auxiliary-`G` `V` window. -/
@@ -172,8 +144,8 @@ theorem theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
       _ = (X * modifiedNarayanaPolynomial (m - 1)).coeff ((m - 1) + 1) :=
         congr_arg
           (fun k => (X * modifiedNarayanaPolynomial (m - 1)).coeff k) (by lia)
-      _ = (modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) := by
-        exact coeff_X_mul (modifiedNarayanaPolynomial (m - 1)) (m - 1)
+      _ = (modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) :=
+        coeff_X_mul (modifiedNarayanaPolynomial (m - 1)) (m - 1)
       _ = 1 := hPprevLead
   have hXPprevNext :
       (X * modifiedNarayanaPolynomial (m - 1)).coeff (m - 1) =
@@ -253,7 +225,7 @@ theorem theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
     have hm_real : (2 : ℝ) ≤ m := by exact_mod_cast (show 2 ≤ m by lia)
     have hterm : 0 ≤ lam * ((m : ℝ) - 1) :=
       mul_nonneg hlam (by linarith)
-    nlinarith
+    linarith
   rw [hU_split.sum_roots_eq_neg_nextCoeff_div_leadingCoeff hUlc_ne,
     hV_split.sum_roots_eq_neg_nextCoeff_div_leadingCoeff hVlc_ne,
     hUnext, hUlc, hVnext, hVlc]
@@ -381,8 +353,8 @@ theorem modifiedNarayanaPencil_natDegree {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m)
     calc
       _ ≤ (C lam * X + C nu : ℝ[X]).natDegree +
           (modifiedNarayanaPolynomial (m - 1)).natDegree := natDegree_mul_le
-      _ ≤ 1 + (m - 1) := by
-        exact Nat.add_le_add hfac (by
+      _ ≤ 1 + (m - 1) :=
+        Nat.add_le_add hfac (by
           rw [modifiedNarayanaPolynomial_natDegree])
       _ = m := by lia
   have hle :

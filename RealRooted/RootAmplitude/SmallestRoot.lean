@@ -112,12 +112,12 @@ theorem amplitude_at_smallest_root_of_sq_ratio
   have hscaled : (-s) * V.sum ≤ 1 / c := by
     rw [le_div_iff₀ hcpos]
     have hmul := mul_le_mul_of_nonneg_left hmax (neg_pos.mpr hsneg).le
-    nlinarith [hmul, hms]
+    linarith [hmul, hms]
   have hWbound : W.sum ≤ (1 - c) / c := by
     rw [hWsum]
     have hrewrite : (1 - c) / c = 1 / c - 1 := by field_simp
     rw [hrewrite]
-    nlinarith [hscaled, hms]
+    linarith [hscaled, hms]
   have hWnonnegative : ∀ x ∈ W, 0 ≤ x := by
     intro x hx
     rw [hW, Multiset.mem_map] at hx
@@ -140,8 +140,8 @@ theorem amplitude_at_smallest_root_of_sq_ratio
       ring
     rw [hidentity]
     linarith
-  have hlowerPos : 0 < (2 * c - 1) / c := by
-    exact div_pos (by linarith) hcpos
+  have hlowerPos : 0 < (2 * c - 1) / c :=
+    div_pos (by linarith) hcpos
   have hproductNonnegative : 0 ≤ (W.map (fun x => 1 - x)).prod :=
     le_trans hlowerPos.le hlower
   have hproductRewrite :
@@ -197,7 +197,7 @@ theorem amplitude_at_smallest_root {p : ℝ[X]}
       = p.eval 0 * (V.sum ^ 2 - (V.map (fun x => x ^ 2)).sum) := by
     rw [hcoeffZero] at hsquare'
     field_simp [hzero'] at hsquare'
-    nlinarith
+    linarith
   have hratio : (5 / 9) * V.sum ^ 2
       ≤ (V.map (fun x => x ^ 2)).sum := by
     rw [hcoeffZero, hcoeffOne] at hNewton

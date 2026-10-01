@@ -35,12 +35,12 @@ private theorem pConst_nonneg (i : Fin 2) : 0 ≤ pConst i := by
 private theorem qConst_nonneg (i : Fin 2) : 0 ≤ qConst i := by
   fin_cases i <;> norm_num [qConst]
 
-private theorem P_nonneg (i : Fin 2) : HasNonnegCoeffs (P i) := by
-  exact (nonnegCoeffs_C_mul zero_le_one hasNonnegCoeffs_X).add
+private theorem P_nonneg (i : Fin 2) : HasNonnegCoeffs (P i) :=
+  (nonnegCoeffs_C_mul zero_le_one hasNonnegCoeffs_X).add
     (hasNonnegCoeffs_C (pConst_nonneg i))
 
-private theorem Q_nonneg (i : Fin 2) : HasNonnegCoeffs (Q i) := by
-  exact (nonnegCoeffs_C_mul zero_le_one hasNonnegCoeffs_X).add
+private theorem Q_nonneg (i : Fin 2) : HasNonnegCoeffs (Q i) :=
+  (nonnegCoeffs_C_mul zero_le_one hasNonnegCoeffs_X).add
     (hasNonnegCoeffs_C (qConst_nonneg i))
 
 private theorem P_pos (i : Fin 2) : HasPosLeadingCoeff (P i) := by
@@ -53,12 +53,12 @@ private theorem Q_pos (i : Fin 2) : HasPosLeadingCoeff (Q i) := by
   exact (isRealRooted_affine_factor
     (s := 1) (t := qConst i) (by norm_num)).1
 
-private theorem P_degree (i : Fin 2) : (P i).natDegree ≤ 1 := by
-  exact (Polynomial.natDegree_linear
+private theorem P_degree (i : Fin 2) : (P i).natDegree ≤ 1 :=
+  (Polynomial.natDegree_linear
     (a := 1) (b := pConst i) one_ne_zero).le
 
-private theorem Q_degree (i : Fin 2) : (Q i).natDegree ≤ 1 := by
-  exact (Polynomial.natDegree_linear
+private theorem Q_degree (i : Fin 2) : (Q i).natDegree ≤ 1 :=
+  (Polynomial.natDegree_linear
     (a := 1) (b := qConst i) one_ne_zero).le
 
 private theorem xpp_reverse {i j : Fin 2} (hij : i ≤ j) :
@@ -147,7 +147,7 @@ theorem not_compatible_cut_pair :
   intro hcompatible
   have hsum := hcompatible 1 1 zero_le_one zero_le_one
   have hnot : ¬ (C 1 * X ^ 2 + C 4 * X + C 5 : ℝ[X]).Splits :=
-    not_splits_quadratic_of_discrim_neg (by norm_num) (by norm_num [discrim])
+    quadraticPoly_not_splits_of_discrim_neg (by norm_num) (by norm_num [discrim])
   simp only [map_one, one_mul] at hsum
   rw [cut_pair_sum] at hsum
   rcases hsum with hzero | hrr

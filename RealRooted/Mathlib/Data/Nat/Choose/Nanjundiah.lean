@@ -13,7 +13,9 @@ open Finset
 
 namespace Nat
 
-private theorem weighted_vandermonde
+/-- Weighted Vandermonde convolution obtained by choosing `j` elements from
+`A`, `n - j` from `B`, and then `r` marked elements among the first `j`. -/
+theorem weighted_vandermonde
     (A B n r : ℕ) (hrn : r ≤ n) :
     (∑ j ∈ Finset.range (n + 1),
       Nat.choose A j * Nat.choose B (n - j) * Nat.choose j r) =

@@ -26,7 +26,7 @@ lemma eval_xSubQuarticCubic_at_left_endpoint_zero_neg
     mul_pos h0u_pos h0v_pos
   have hG_pos : 0 < (0 - u) * (0 - v) * (0 - w) :=
     mul_pos hhead_pos h0w_pos
-  nlinarith [mul_pos hμ hG_pos]
+  linarith [mul_pos hμ hG_pos]
 
 /-- Strict endpoint order `a < u < b < v < c < w < 0` for the normalized
 quartic/cubic terminal with left endpoint zero. -/
@@ -54,7 +54,7 @@ lemma xSubQuarticCubicSplits_of_order_a_u_b_v_c_w_zero
       mul_pos_of_neg_of_neg hau_neg hav_neg
     have hG_neg : (a - u) * (a - v) * (a - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos haw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_u_pos :
       0 < (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval u := by
     rw [eval_xSubQuarticCubic_at_u]
@@ -79,7 +79,7 @@ lemma xSubQuarticCubicSplits_of_order_a_u_b_v_c_w_zero
       mul_neg_of_pos_of_neg hbu_pos hbv_neg
     have hG_pos : 0 < (b - u) * (b - v) * (b - w) :=
       mul_pos_of_neg_of_neg h12_neg hbw_neg
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_v_neg :
       (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval v < 0 := by
     rw [eval_xSubQuarticCubic_at_v]
@@ -102,7 +102,7 @@ lemma xSubQuarticCubicSplits_of_order_a_u_b_v_c_w_zero
     have h12_pos : 0 < (c - u) * (c - v) := mul_pos hcu_pos hcv_pos
     have hG_neg : (c - u) * (c - v) * (c - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos hcw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_w_pos :
       0 < (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval w := by
     rw [eval_xSubQuarticCubic_at_w]
@@ -152,7 +152,7 @@ lemma xSubQuarticCubicSplits_of_order_a_u_b_c_v_w_zero
       mul_pos_of_neg_of_neg hau_neg hav_neg
     have hG_neg : (a - u) * (a - v) * (a - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos haw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_u_pos :
       0 < (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval u := by
     rw [eval_xSubQuarticCubic_at_u]
@@ -177,7 +177,7 @@ lemma xSubQuarticCubicSplits_of_order_a_u_b_c_v_w_zero
       mul_neg_of_pos_of_neg hbu_pos hbv_neg
     have hG_pos : 0 < (b - u) * (b - v) * (b - w) :=
       mul_pos_of_neg_of_neg h12_neg hbw_neg
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_c_neg :
       (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval c < 0 := by
     rw [eval_xSubQuarticCubic_at_c]
@@ -188,7 +188,7 @@ lemma xSubQuarticCubicSplits_of_order_a_u_b_c_v_w_zero
       mul_neg_of_pos_of_neg hcu_pos hcv_neg
     have hG_pos : 0 < (c - u) * (c - v) * (c - w) :=
       mul_pos_of_neg_of_neg h12_neg hcw_neg
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_v_pos :
       0 < (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval v := by
     rw [eval_xSubQuarticCubic_at_v]
@@ -252,7 +252,7 @@ lemma xSubQuarticCubicSplits_of_order_a_b_u_v_c_w_zero
       mul_pos_of_neg_of_neg hau_neg hav_neg
     have hG_neg : (a - u) * (a - v) * (a - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos haw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_b_pos :
       0 < (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval b := by
     rw [eval_xSubQuarticCubic_at_b]
@@ -263,7 +263,7 @@ lemma xSubQuarticCubicSplits_of_order_a_b_u_v_c_w_zero
       mul_pos_of_neg_of_neg hbu_neg hbv_neg
     have hG_neg : (b - u) * (b - v) * (b - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos hbw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_u_neg :
       (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval u < 0 := by
     rw [eval_xSubQuarticCubic_at_u]
@@ -299,7 +299,7 @@ lemma xSubQuarticCubicSplits_of_order_a_b_u_v_c_w_zero
     have h12_pos : 0 < (c - u) * (c - v) := mul_pos hcu_pos hcv_pos
     have hG_neg : (c - u) * (c - v) * (c - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos hcw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_w_pos :
       0 < (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval w := by
     rw [eval_xSubQuarticCubic_at_w]
@@ -349,7 +349,7 @@ lemma xSubQuarticCubicSplits_of_order_a_b_u_c_v_w_zero
       mul_pos_of_neg_of_neg hau_neg hav_neg
     have hG_neg : (a - u) * (a - v) * (a - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos haw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_b_pos :
       0 < (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval b := by
     rw [eval_xSubQuarticCubic_at_b]
@@ -360,7 +360,7 @@ lemma xSubQuarticCubicSplits_of_order_a_b_u_c_v_w_zero
       mul_pos_of_neg_of_neg hbu_neg hbv_neg
     have hG_neg : (b - u) * (b - v) * (b - w) < 0 :=
       mul_neg_of_pos_of_neg h12_pos hbw_neg
-    nlinarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
   have hP_u_neg :
       (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval u < 0 := by
     rw [eval_xSubQuarticCubic_at_u]
@@ -384,7 +384,7 @@ lemma xSubQuarticCubicSplits_of_order_a_b_u_c_v_w_zero
       mul_neg_of_pos_of_neg hcu_pos hcv_neg
     have hG_pos : 0 < (c - u) * (c - v) * (c - w) :=
       mul_pos_of_neg_of_neg h12_neg hcw_neg
-    nlinarith [mul_pos hμ hG_pos]
+    linarith [mul_pos hμ hG_pos]
   have hP_v_pos :
       0 < (xSubQuarticCubicPolynomial a b c 0 u v w μ).eval v := by
     rw [eval_xSubQuarticCubic_at_v]
@@ -534,17 +534,6 @@ theorem
   xSubQuarticCubicEndpointZeroBoundaryCases_of_single_endpoint_packages hleft
     (xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases_of_quarticSubQuadratic
       hquad)
-
-/-- The endpoint-zero quartic/cubic boundary follows from the left-only
-endpoint-zero package; the right-only endpoint-zero package is proved by the
-quartic-minus-quadratic factor theorem. -/
-theorem xSubQuarticCubicEndpointZeroBoundaryCases_of_left_endpoint_package
-    (hleft :
-      xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCasesStatement) :
-    xSubQuarticCubicEndpointZeroBoundaryCasesStatement :=
-  xSubQuarticCubicEndpointZeroBoundaryCases_of_left_endpoint_quarticSubQuadratic
-    hleft quarticSubQuadraticSplits
-
 
 end LiuOppositeSigns
 end RealRooted

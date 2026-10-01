@@ -32,9 +32,8 @@ theorem bezout_no_common_root_of_posDef
     {p q : ℝ[X]} {n : Nat}
     (hn : n ≠ 0) (hp_deg : p.natDegree ≤ n) (hq_deg : q.natDegree ≤ n)
     (hpos : (bezoutMatrix n q p).PosDef) :
-    ∀ r : ℝ, p.IsRoot r → ¬ q.IsRoot r := by
-  intro r hp hq
-  exact bezoutMatrix.no_common_real_root_of_posDef
+    ∀ r : ℝ, p.IsRoot r → ¬ q.IsRoot r :=
+  fun r hp hq => bezoutMatrix.no_common_real_root_of_posDef
     hn hq_deg hp_deg hpos r ⟨hq, hp⟩
 
 theorem bezout_sequence_posDef_of_strictInterlSameDegree
@@ -58,16 +57,6 @@ theorem bezout_sequence_strictInterlSameDegree_of_posDef
     ∀ i : Nat, StrictInterlSameDegree (P i) (Q i) := fun i =>
   (strictInterlSameDegree_iff_bezoutMatrix_posDef
     (hP_pos i) (hQ_pos i) (hP_deg i) (hQ_deg i)).2 (hpos i)
-
-@[deprecated bezout_sequence_posDef_of_strictInterlSameDegree
-  (since := "2026-09-18")]
-alias bezout_sequence_posDef_of_strictPrecSameDegree :=
-  bezout_sequence_posDef_of_strictInterlSameDegree
-
-@[deprecated bezout_sequence_strictInterlSameDegree_of_posDef
-  (since := "2026-09-18")]
-alias bezout_sequence_strictPrecSameDegree_of_posDef :=
-  bezout_sequence_strictInterlSameDegree_of_posDef
 
 theorem bezout_sequence_strictInterl_of_posDef
     {d : Nat → Nat} {P Q : Nat → ℝ[X]}
@@ -310,8 +299,6 @@ end Tactic
 end RealRooted
 namespace RealRooted
 namespace Tactic
-@[deprecated bezout_sequence_strictInterl_of_posDef (since := "2026-09-26")]
-alias bezout_sequence_prec_of_posDef := bezout_sequence_strictInterl_of_posDef
 
 end Tactic
 end RealRooted
@@ -402,7 +389,7 @@ macro_rules
         right_degree := $hQ_deg:term,
         pos_def := $hpos:term) =>
       `(tactic|
-        exact RealRooted.Tactic.bezout_sequence_prec_of_posDef
+        exact RealRooted.Tactic.bezout_sequence_strictInterl_of_posDef
           $hP_pos $hQ_pos $hP_deg $hQ_deg $hpos)
   | `(tactic|
       rr_bezout_strict_prec_same_degree_iff using

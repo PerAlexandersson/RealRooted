@@ -37,7 +37,7 @@ theorem sum_pow_le {s : Finset ℕ} (hs : ∀ d ∈ s, 1 ≤ d) {r : ℝ}
   have hgeometric : (∑ d ∈ Finset.range (s.sup id + 1), r ^ d) * (1 - r) ≤ 1 := by
     have hsum := geom_sum_mul r (s.sup id + 1)
     have hpower : (0 : ℝ) ≤ r ^ (s.sup id + 1) := by positivity
-    nlinarith [hsum, hpower]
+    linarith [hsum, hpower]
   rw [le_div_iff₀ hdenom]
   nlinarith [hsplit, hgeometric, hdenom]
 

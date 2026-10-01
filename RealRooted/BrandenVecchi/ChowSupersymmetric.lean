@@ -54,8 +54,8 @@ theorem finiteSupersymmetricToeplitz_isTotallyNonneg
 theorem finiteSupersymmetricChow_nonnegCoeffs
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
-    HasNonnegCoeffs (finiteSupersymmetricChow xs ys n) := by
-  exact chowPolynomial_nonnegCoeffs_of_isTotallyNonneg
+    HasNonnegCoeffs (finiteSupersymmetricChow xs ys n) :=
+  chowPolynomial_nonnegCoeffs_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
 
@@ -64,8 +64,8 @@ theorem finiteSupersymmetricChow_eq_zero_or_splits
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
     finiteSupersymmetricChow xs ys n = 0 ∨
-      (finiteSupersymmetricChow xs ys n).Splits := by
-  exact chowPolynomial_eq_zero_or_splits_of_isTotallyNonneg
+      (finiteSupersymmetricChow xs ys n).Splits :=
+  chowPolynomial_eq_zero_or_splits_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
 
@@ -74,8 +74,8 @@ coefficients. -/
 theorem finiteSupersymmetricChowDerangement_nonnegCoeffs
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
-    HasNonnegCoeffs (finiteSupersymmetricChowDerangement xs ys n) := by
-  exact chowDerangement_nonnegCoeffs_of_isTotallyNonneg
+    HasNonnegCoeffs (finiteSupersymmetricChowDerangement xs ys n) :=
+  chowDerangement_nonnegCoeffs_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
 
@@ -84,8 +84,8 @@ theorem finiteSupersymmetricChowDerangement_eq_zero_or_splits
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
     finiteSupersymmetricChowDerangement xs ys n = 0 ∨
-      (finiteSupersymmetricChowDerangement xs ys n).Splits := by
-  exact chowDerangement_eq_zero_or_splits_of_isTotallyNonneg
+      (finiteSupersymmetricChowDerangement xs ys n).Splits :=
+  chowDerangement_eq_zero_or_splits_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
 
@@ -95,8 +95,8 @@ theorem finiteSupersymmetricChow_interl_derangement
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
     Interl (finiteSupersymmetricChow xs ys n)
-      (finiteSupersymmetricChowDerangement xs ys n) := by
-  exact chowPolynomial_interl_chowDerangement_of_isTotallyNonneg
+      (finiteSupersymmetricChowDerangement xs ys n) :=
+  chowPolynomial_interl_chowDerangement_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
 
@@ -106,8 +106,8 @@ theorem finiteSupersymmetricChow_interl_succ
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
     Interl (finiteSupersymmetricChow xs ys n)
-      (finiteSupersymmetricChow xs ys (n + 1)) := by
-  exact chowPolynomial_interl_succ_of_isTotallyNonneg
+      (finiteSupersymmetricChow xs ys (n + 1)) :=
+  chowPolynomial_interl_succ_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
 
@@ -117,23 +117,10 @@ theorem finiteSupersymmetricChowDerangement_interl_succ
     {xs ys : List ℝ} (hxs : ∀ x ∈ xs, 0 ≤ x)
     (hys : ∀ y ∈ ys, 0 ≤ y) (n : ℕ) :
     Interl (finiteSupersymmetricChowDerangement xs ys n)
-      (finiteSupersymmetricChowDerangement xs ys (n + 1)) := by
-  exact chowDerangement_interl_succ_of_isTotallyNonneg
+      (finiteSupersymmetricChowDerangement xs ys (n + 1)) :=
+  chowDerangement_interl_succ_of_isTotallyNonneg
     (finiteSupersymmetricToeplitz_isLowerUnitriangular xs ys)
     (finiteSupersymmetricToeplitz_isTotallyNonneg hxs hys) n
-
-@[deprecated finiteSupersymmetricChow_interl_derangement
-  (since := "2026-09-26")]
-alias finiteSupersymmetricChow_prec0_derangement :=
-  finiteSupersymmetricChow_interl_derangement
-
-@[deprecated finiteSupersymmetricChow_interl_succ (since := "2026-09-26")]
-alias finiteSupersymmetricChow_prec0_succ := finiteSupersymmetricChow_interl_succ
-
-@[deprecated finiteSupersymmetricChowDerangement_interl_succ
-  (since := "2026-09-26")]
-alias finiteSupersymmetricChowDerangement_prec0_succ :=
-  finiteSupersymmetricChowDerangement_interl_succ
 
 end
 

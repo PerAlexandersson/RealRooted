@@ -157,7 +157,7 @@ lemma cubicDiscr_cubicSubLinear_slope_right_neg
         270 * (c - b) * (u - c) ^ 2 +
         135 * (u - c) ^ 3 := by
     positivity
-  nlinarith [mul_pos (mul_pos (mul_pos huc hub) hua) hbracket]
+  linarith [mul_pos (mul_pos (mul_pos huc hub) hua) hbracket]
 
 /-- Choosing the tangent slope at a left-outside point gives a monic
 cubic-minus-linear pencil with negative discriminant. -/
@@ -197,7 +197,7 @@ lemma cubicDiscr_cubicSubLinear_slope_left_neg
         48 * (b - a) ^ 2 * (c - b) +
         24 * (b - a) * (c - b) ^ 2 + 4 * (c - b) ^ 3 := by
     positivity
-  nlinarith [mul_pos (mul_pos (mul_pos hau hbu) hcu) hbracket]
+  linarith [mul_pos (mul_pos (mul_pos hau hbu) hcu) hbracket]
 
 /-- If the linear root lies strictly above the cubic roots, then some positive
 subtraction coefficient makes the monic cubic-minus-linear pencil fail to

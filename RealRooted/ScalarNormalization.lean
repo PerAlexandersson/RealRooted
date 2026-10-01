@@ -71,13 +71,6 @@ theorem eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul {d b c : ℝ}
     _ = C (d⁻¹ * b) * Q := by rw [C_mul]
     _ = C c * Q := by rw [hbc]
 
-/-- Symmetric variant of `eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul`. -/
-theorem eq_add_C_mul_of_C_mul_eq_C_mul_add_comm_C_mul {d b c : ℝ}
-    (hd : d ≠ 0) (hbc : d⁻¹ * b = c) {F A Q : ℝ[X]}
-    (h : C d * F = C b * Q + C d * A) :
-    F = A + C c * Q :=
-  eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul hd hbc (by simpa [add_comm] using h)
-
 /-- Divide a split recurrence and simplify two scalar coefficients in the extra
 summands. -/
 theorem eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
@@ -89,7 +82,7 @@ theorem eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
   ext k
   simp [hd, mul_add, add_assoc]
   ring_nf
-  nlinarith [congrArg (fun x => x * Q.coeff k) hbc,
+  linarith [congrArg (fun x => x * Q.coeff k) hbc,
     congrArg (fun x => x * R.coeff k) hef]
 
 

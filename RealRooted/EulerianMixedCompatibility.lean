@@ -211,78 +211,6 @@ private theorem residue_div_neg_lt_eval_ratio_of_natDegree_ge_two
 
 /-! ## Nonnegative simple regularization -/
 
-private theorem splits_iterateTDeriv_neg
-    {eps : ℝ} (_heps : 0 < eps) {p : ℝ[X]} (hp : p.Splits) :
-    ∀ k, (iterateTDeriv (-eps) k p).Splits := by
-  intro k
-  induction k with
-  | zero => simpa
-  | succ k ih =>
-      rw [iterateTDeriv_succ]
-      exact splits_tderiv_all ih
-
-private theorem HasNonnegCoeffs.iterateTDeriv_neg
-    {eps : ℝ} (heps : 0 ≤ eps) {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
-    ∀ k, HasNonnegCoeffs (iterateTDeriv (-eps) k p) := by
-  intro k
-  induction k with
-  | zero => simpa
-  | succ k ih =>
-      rw [iterateTDeriv_succ]
-      intro i
-      simp only [TDeriv, coeff_sub, coeff_C_mul, coeff_derivative]
-      have hi := ih i
-      have hisucc := ih (i + 1)
-      simp only [neg_mul, sub_neg_eq_add]
-      exact add_nonneg hi (mul_nonneg heps (mul_nonneg hisucc (by positivity)))
-
-/-- Iterating `p ↦ p + eps * p'` at least `deg p` times makes every root
-simple.  The existing multiplicity transport is sign-independent; only the
-split-preservation input differs from the positive `TDeriv` theorem. -/
-private theorem hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
-    {eps : ℝ} (heps : 0 < eps) {p : ℝ[X]} (hp_ne : p ≠ 0)
-    (hp_splits : p.Splits) {k : ℕ} (hdeg : p.natDegree ≤ k) :
-    HasSimpleRoots (iterateTDeriv (-eps) k p) := by
-  intro a ha
-  by_contra hmult
-  push Not at hmult
-  have hge2 : 2 ≤ (iterateTDeriv (-eps) k p).rootMultiplicity a := by
-    have hpos := (rootMultiplicity_pos (iterateTDeriv_ne_zero hp_ne)).mpr ha
-    lia
-  have hsteps : ∀ j, j ≤ k →
-      2 + j ≤ (iterateTDeriv (-eps) (k - j) p).rootMultiplicity a := by
-    intro j
-    induction j with
-    | zero => simpa using hge2
-    | succ j ih =>
-        intro hj
-        have hprev := ih (by lia)
-        have hstep : k - j = (k - (j + 1)) + 1 := by lia
-        rw [hstep, iterateTDeriv_succ] at hprev
-        have hback := rootMultiplicity_eq_succ_of_TDeriv_ge_two_of_ne
-          (neg_ne_zero.mpr heps.ne')
-          (splits_iterateTDeriv_neg heps hp_splits (k - (j + 1)))
-          (by linarith :
-            2 ≤ (TDeriv (-eps) (iterateTDeriv (-eps) (k - (j + 1)) p)).rootMultiplicity a)
-        lia
-  have hzero := hsteps k le_rfl
-  simp only [Nat.sub_self, iterateTDeriv_zero] at hzero
-  have hmult_le : p.rootMultiplicity a ≤ p.natDegree := by
-    calc
-      p.rootMultiplicity a = p.roots.count a := (count_roots p).symm
-      _ ≤ p.roots.card := p.roots.count_le_card a
-      _ ≤ p.natDegree := card_roots' p
-  lia
-
-private theorem allComboRealRooted_iterateTDeriv_neg
-    {f g : ℝ[X]} (hall : AllComboRealRooted f g)
-    {eps : ℝ} (heps : 0 < eps) (k : ℕ) :
-    AllComboRealRooted
-      (iterateTDeriv (-eps) k f) (iterateTDeriv (-eps) k g) := by
-  intro a b
-  rw [← iterateTDeriv_linear_combo]
-  exact splits_iterateTDeriv_neg heps (hall a b) k
-
 private theorem tendsto_coeff_eulerInsertionStep_iterateTDeriv
     (c : ℝ) (d iterations i : ℕ) (p : ℝ[X])
     {eps : ℕ → ℝ} (heps : Filter.Tendsto eps Filter.atTop (nhds 0)) :
@@ -325,15 +253,15 @@ private theorem regularized_strictInterl_no_common
   have hall : AllComboRealRooted g f := allComboRealRooted_of_strictInterl hgf
   have hallε : AllComboRealRooted gε fε := by
     dsimp [fε, gε, k]
-    exact allComboRealRooted_iterateTDeriv_neg hall heps f.natDegree
+    exact allComboRealRooted_iterateTDeriv_all hall (-eps) f.natDegree
   have hfε_ne : fε ≠ 0 := iterateTDeriv_ne_zero hf_pos.ne_zero
   have hgε_ne : gε ≠ 0 := iterateTDeriv_ne_zero hg_pos.ne_zero
   have hfε_splits : fε.Splits := by
     dsimp [fε, k]
-    exact splits_iterateTDeriv_neg heps hgf.2.1.2 f.natDegree
+    exact splits_iterateTDeriv_all hgf.2.1.2 f.natDegree
   have hgε_splits : gε.Splits := by
     dsimp [gε, k]
-    exact splits_iterateTDeriv_neg heps hgf.1.2 f.natDegree
+    exact splits_iterateTDeriv_all hgf.1.2 f.natDegree
   have hdegε : gε.natDegree + 1 = fε.natDegree := by
     dsimp [fε, gε]
     simpa using hdeg
@@ -870,7 +798,7 @@ theorem mixedEulerStep_splits
     simpa [fM] using hfdeg
   have hgM_splits (M : ℕ) : (gM M).Splits := by
     dsimp [gM]
-    exact splits_iterateTDeriv_neg (hdelta_pos M) hgf.1.2 f.natDegree
+    exact splits_iterateTDeriv_all hgf.1.2 f.natDegree
   have hPM_data (M : ℕ) :
       HasNonnegCoeffs (PM M) ∧
         (PM M).natDegree = (fM M).natDegree + 1 ∧

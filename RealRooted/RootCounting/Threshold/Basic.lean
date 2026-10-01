@@ -137,11 +137,11 @@ theorem parity_of_dominant {p : K[X]} {s : K} (hs : 0 < s)
   · rw [hA] at h₁
     rw [hB] at h₂
     exfalso
-    nlinarith [h₁, h₂]
+    linarith [h₁, h₂]
   · rw [hA] at h₁
     rw [hB] at h₂
     exfalso
-    nlinarith [h₁, h₂]
+    linarith [h₁, h₂]
   · rw [hA, hB]
 
 /-- Different count parities force a strict increase of the root count. -/

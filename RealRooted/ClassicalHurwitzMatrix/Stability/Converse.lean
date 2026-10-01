@@ -169,8 +169,8 @@ theorem strictlyHurwitzStable_of_hurwitzLeadingPrincipal_det_pos
   let even := Polynomial.contract 2 p
   let c := routhCoefficient odd even
   let q := routhReducedPolynomial c odd even
-  have hreconstruct : oddEvenPolynomial odd even = p := by
-    exact oddEvenPolynomial_contract_divX_contract p
+  have hreconstruct : oddEvenPolynomial odd even = p :=
+    oddEvenPolynomial_contract_divX_contract p
   have hevenZero : 0 < even.coeff 0 := by
     have hfirst := hdet 1 (by simp) (by lia)
     rw [← hreconstruct] at hfirst

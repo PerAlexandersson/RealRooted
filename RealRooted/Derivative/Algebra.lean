@@ -19,8 +19,8 @@ using API that is stable across the Mathlib versions this file is built against.
 
 /-- Exact `natDegree` of a derivative over `ℝ` (a characteristic-zero field). -/
 lemma natDegree_derivative_eq (p : ℝ[X]) :
-    p.derivative.natDegree = p.natDegree - 1 := by
-  exact p.natDegree_derivative
+    p.derivative.natDegree = p.natDegree - 1 :=
+  p.natDegree_derivative
 
 /-- A polynomial of `natDegree` zero has vanishing derivative. -/
 lemma derivative_eq_zero_of_natDegree_eq_zero {p : ℝ[X]} (h : p.natDegree = 0) :
@@ -60,7 +60,7 @@ protected lemma HasPosLeadingCoeff.derivative {f : ℝ[X]}
   unfold HasPosLeadingCoeff at hf_pos ⊢
   rw [leadingCoeff, f.natDegree_derivative, coeff_derivative]
   rw [Nat.sub_add_cancel (by lia), coeff_natDegree] at *
-  nlinarith
+  positivity
 
 lemma HasNonnegCoeffs.iterate_derivative {p : ℝ[X]} :
     ∀ n : ℕ, HasNonnegCoeffs p → HasNonnegCoeffs ((derivative^[n]) p)

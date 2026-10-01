@@ -192,8 +192,8 @@ theorem leadingCoeff_signedReciprocal_eq_coeff_zero
 /-- Signed reciprocal reversal preserves splitting inside its degree box. -/
 theorem signedReciprocal_splits_of_splits
     {d : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ d) (hsplit : p.Splits) :
-    (signedReciprocal d p).Splits := by
-  exact DegreeDropReversal.splits_reflect_of_splits hsplit.comp_neg_X
+    (signedReciprocal d p).Splits :=
+  DegreeDropReversal.splits_reflect_of_splits hsplit.comp_neg_X
     (natDegree_comp_neg_X_le hp)
 
 /-- Applying degree-`d` signed reciprocal reversal twice gives the parity

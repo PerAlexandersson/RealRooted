@@ -13,8 +13,8 @@ def leanderAffineFactor (a b : ℝ) : ℝ[X] := C a + C b * X
 
 theorem leanderAffineFactor_hasNonnegCoeffs {a b : ℝ}
     (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    HasNonnegCoeffs (leanderAffineFactor a b) := by
-  exact (hasNonnegCoeffs_C ha).add
+    HasNonnegCoeffs (leanderAffineFactor a b) :=
+  (hasNonnegCoeffs_C ha).add
     (nonnegCoeffs_C_mul hb hasNonnegCoeffs_X)
 
 theorem leanderAffineFactor_eq_zero_iff (a b : ℝ) :

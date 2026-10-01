@@ -104,19 +104,6 @@ lemma scaledLinearFamily_pairwiseCompatible_iff_familyCompatible :
     PairwiseCompatible scaledLinearFamily ↔ FamilyCompatible scaledLinearFamily :=
   ⟨fun _ => scaledLinearFamily_familyCompatible, fun _ => scaledLinearFamily_pairwiseCompatible⟩
 
-/-- Concrete specialization of the packaged nonnegative `1 ↔ 4` direction.
-Once the outstanding two-polynomial all-combinations bridge is discharged, this
-family becomes an immediate end-to-end Chudnovsky--Seymour regression. -/
-lemma scaledLinearFamily_pairwiseCompatible_iff_familyCompatible_of_allComboBridge
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
-    PairwiseCompatible scaledLinearFamily ↔ FamilyCompatible scaledLinearFamily :=
-  pairwiseCompatible_iff_familyCompatible_of_allComboBridge_and_nonnegCoeffs
-    (fs := scaledLinearFamily)
-    scaledLinearFamily_isRealRooted
-    scaledLinearFamily_hasPosLeadingCoeff
-    scaledLinearFamily_hasNonnegCoeffs
-    hallBridge
-
 private lemma xAddOne_natDegree :
     (X + 1 : ℝ[X]).natDegree = 1 := by
   simp
@@ -220,13 +207,6 @@ private lemma xAddFiveHalves_strictInterl_xSq_add_fiveX_add_six :
   · rw [xSq_add_fiveX_add_six_roots]
     rfl
   · exact Or.inl ⟨by simp, by norm_num [ListInterlaces]⟩
-
-/-- A concrete common left interleaver for the linear / quadratic counterexample
-to the naive succ-degree orientation target. -/
-lemma xAddOne_xSq_add_fiveX_add_six_commonLeftInterleaver :
-    ∃ h : ℝ[X], StrictInterl h (X + 1) ∧ StrictInterl h (((X + 2) * (X + 3)) : ℝ[X]) :=
-  ⟨X + C (5 / 2 : ℝ), xAddFiveHalves_strictInterl_xAddOne,
-    xAddFiveHalves_strictInterl_xSq_add_fiveX_add_six⟩
 
 /-- The quadratic pair `(X + 1, (X + 2)(X + 3))` still satisfies the positive-
 combination hypothesis: the common left interleaver `X + 5/2` witnesses the
@@ -375,27 +355,6 @@ private lemma xAddOne_xAddTwo_badAffineSlice_eq :
                 [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
                   coeff_X, coeff_one]
 
-private lemma xSq_add_threeX_add_three_not_isRealRooted :
-    ¬ ((X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]) ≠ 0 ∧
-      (X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]).Splits) := by
-  intro hrr
-  have hdeg : (X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]).natDegree = 2 := by
-    simpa using
-      (Polynomial.natDegree_quadratic (a := (1 : ℝ)) (b := (3 : ℝ)) (c := (3 : ℝ))
-        (by simp))
-  obtain ⟨x, hx⟩ :=
-    exists_isRoot_of_isRealRooted_of_not_isUnit hrr.1 hrr.2
-      (not_isUnit_of_natDegree_pos _ (by lia))
-  have hx_eval : (X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]).eval x = 0 := by simp_all
-  have hquad : (1 : ℝ) * (x * x) + 3 * x + 3 = 0 := by
-    simpa [eval_add, eval_mul, eval_C, eval_X, eval_pow, pow_two] using hx_eval
-  have hdisc_sq : discrim (1 : ℝ) 3 3 = (2 * (1 : ℝ) * x + 3) ^ 2 :=
-    discrim_eq_sq_of_quadratic_eq_zero hquad
-  have hdisc_nonneg : 0 ≤ discrim (1 : ℝ) 3 3 := by
-    rw [hdisc_sq]
-    positivity
-  norm_num [discrim] at hdisc_nonneg
-
 private lemma xAddOne_xAddTwo_badShiftedPair_eq :
     (((X + 2) + X * (X + 1)) : ℝ[X]) =
       X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) := by
@@ -418,27 +377,6 @@ private lemma xAddOne_xAddTwo_badShiftedPair_eq :
               norm_num
                 [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
                   coeff_X, coeff_one]
-
-private lemma xSq_add_twoX_add_two_not_isRealRooted :
-    ¬ ((X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]) ≠ 0 ∧
-      (X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]).Splits) := by
-  intro hrr
-  have hdeg : (X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]).natDegree = 2 := by
-    simpa using
-      (Polynomial.natDegree_quadratic (a := (1 : ℝ)) (b := (2 : ℝ)) (c := (2 : ℝ))
-        (by simp))
-  obtain ⟨x, hx⟩ :=
-    exists_isRoot_of_isRealRooted_of_not_isUnit hrr.1 hrr.2
-      (not_isUnit_of_natDegree_pos _ (by lia))
-  have hx_eval : (X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]).eval x = 0 := by simp_all
-  have hquad : (1 : ℝ) * (x * x) + 2 * x + 2 = 0 := by
-    simpa [eval_add, eval_mul, eval_C, eval_X, eval_pow, pow_two] using hx_eval
-  have hdisc_sq : discrim (1 : ℝ) 2 2 = (2 * (1 : ℝ) * x + 2) ^ 2 :=
-    discrim_eq_sq_of_quadratic_eq_zero hquad
-  have hdisc_nonneg : 0 ≤ discrim (1 : ℝ) 2 2 := by
-    rw [hdisc_sq]
-    positivity
-  norm_num [discrim] at hdisc_nonneg
 
 private lemma xAddOne_xAddTwo_not_strictInterl :
     ¬ StrictInterl (X + 1 : ℝ[X]) (X + 2) := by
@@ -485,72 +423,6 @@ private lemma xAddOne_xAddTwo_not_strictInterl :
                   simp at hrs_len
       | cons s₂ ss'' =>
           simp at hss_len
-
-/-- The current nonnegative affine-family bridge target is false: the pair
-`X + 1, X + 2` satisfies the positive-combo/no-common hypotheses, but the
-affine slice at `s = t = 1` is `X^2 + 3 X + 3`, which is not real-rooted. -/
-lemma not_posComboNoCommonAffineFamilyStatement :
-    ¬ PosComboNoCommonAffineFamilyStatement := by
-  intro haff
-  have hrr :
-      (((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]) ≠ 0 ∧
-        ((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]).Splits) :=
-      haff
-        xAddOne_hasPosLeadingCoeff
-        xAddTwo_hasPosLeadingCoeff
-        xAddOne_hasNonnegCoeffs
-        xAddTwo_hasNonnegCoeffs
-        xAddOne_xAddTwo_posComboRealRooted
-        (by simp [xAddTwo_natDegree])
-        (by simp [xAddTwo_natDegree])
-        xAddOne_xAddTwo_noCommon
-        (show 0 < (1 : ℝ) by simp)
-        (show 0 < (1 : ℝ) by simp)
-  rw [xAddOne_xAddTwo_badAffineSlice_eq] at hrr
-  exact xSq_add_threeX_add_three_not_isRealRooted hrr
-
-/-- The sharper boundary-right-pair target is also false, because it implies
-the affine-family target already refuted above. -/
-lemma not_posComboNoCommonBoundaryRightPairOrientationStatement :
-    ¬ PosComboNoCommonBoundaryRightPairOrientationStatement :=
-  fun hboundary =>
-    not_posComboNoCommonAffineFamilyStatement
-      (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
-
-/-- The fixed-order same-degree shifted-pair target is also false: for
-`f = X + 1`, `g = X + 2`, the shifted pair polynomial `g + X * f` is
-`X^2 + 2 X + 2`, which is not real-rooted. -/
-lemma not_posComboNoCommonSameDegreeShiftedPairOrientationStatement :
-    ¬ PosComboNoCommonSameDegreeShiftedPairOrientationStatement := by
-  intro hshift
-  have hstrictInterl : StrictInterl (X + 1 : ℝ[X]) ((X + 2) + X * (X + 1)) :=
-      hshift
-        xAddOne_hasPosLeadingCoeff
-        xAddTwo_hasPosLeadingCoeff
-        xAddOne_hasNonnegCoeffs
-        xAddTwo_hasNonnegCoeffs
-        xAddOne_xAddTwo_posComboRealRooted
-        (by simp [xAddTwo_natDegree])
-        xAddOne_xAddTwo_noCommon
-  have hrr : ((((X + 2) + X * (X + 1)) : ℝ[X]) ≠ 0 ∧
-    (((X + 2) + X * (X + 1)) : ℝ[X]).Splits) := hstrictInterl.2.1
-  rw [xAddOne_xAddTwo_badShiftedPair_eq] at hrr
-  exact xSq_add_twoX_add_two_not_isRealRooted hrr
-
-/-- The fixed-order same-degree orientation target is false as well: on the
-same linear example, the correct orientation is not `StrictInterl (X + 1) (X + 2)`. -/
-lemma not_posComboNoCommonSameDegreeOrientationNonnegStatement :
-    ¬ PosComboNoCommonSameDegreeOrientationNonnegStatement :=
-  fun hsame =>
-    xAddOne_xAddTwo_not_strictInterl
-      (hsame
-        xAddOne_hasPosLeadingCoeff
-        xAddTwo_hasPosLeadingCoeff
-        xAddOne_hasNonnegCoeffs
-        xAddTwo_hasNonnegCoeffs
-        xAddOne_xAddTwo_posComboRealRooted
-        (by simp [xAddTwo_natDegree])
-        xAddOne_xAddTwo_noCommon)
 
 /-- The honest succ-degree orientation target is false as well: the pair
 `X + 1, (X + 2)(X + 3)` satisfies the positive-combo/no-common hypotheses and
@@ -644,25 +516,6 @@ lemma not_compatibleSuccDegreeAllComboStatement :
   fun hall =>
     not_compatibleSuccDegreeNegativeRightFamilyStatement
       (compatibleSuccDegreeNegativeRightFamily_of_allCombo hall)
-
-/-- The forced compatible succ-degree `StrictInterl` shortcut is false.  The same
-linear/quadratic pair is compatible, but both quadratic roots lie to the left
-of the linear root. -/
-lemma not_compatibleSuccDegreeStrictInterlStatement :
-    ¬ CompatibleSuccDegreeStrictInterlStatement := by
-  intro hstrictInterl
-  have hcomp : Compatible (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) :=
-    Compatible.of_posComboRealRooted
-      xAddOne_xSq_add_fiveX_add_six_posComboRealRooted
-      xAddOne_isRealRooted
-      xSq_add_fiveX_add_six_isRealRooted
-  exact
-    xAddOne_xSq_add_fiveX_add_six_not_strictInterl
-      (hstrictInterl hcomp
-        xAddOne_hasPosLeadingCoeff
-        xSq_add_fiveX_add_six_hasPosLeadingCoeff
-        (by simp [xSq_add_fiveX_add_six_natDegree])
-        xAddOne_isRealRooted.2)
 
 /-! ### The general no-common orientation statement is false
 
@@ -799,17 +652,6 @@ private lemma orientCex_not_strictInterl :
     · simp only [ListAlternates, ListInterlaces] at halt
       simp_all
 
-/-- The general no-common orientation statement is false. -/
-lemma not_posComboNoCommonOrientationStatement :
-    ¬ PosComboNoCommonOrientationStatement := by
-  intro horient
-  refine orientCex_not_strictInterl ?_
-  exact horient orientCex_posComboRealRooted
-    orientCexF_hasPosLeadingCoeff orientCexG_hasPosLeadingCoeff
-    (by have h1 := orientCexF_natDegree; have h2 := orientCexG_natDegree; lia)
-    (by have h1 := orientCexF_natDegree; have h2 := orientCexG_natDegree; lia)
-    orientCex_noCommon
-
 /-! ### The residual succ-degree orientation target is false
 
 The residual branch of the succ-degree no-common orientation problem
@@ -905,35 +747,6 @@ private lemma X_not_strictInterl_xAddOne_xAddTwo :
   have hf_le := hstrictInterl.roots_le_of_right hg_le
   have h0 : (0 : ℝ) ∈ (X : ℝ[X]).roots := by simp
   grind
-
-/-- The residual succ-degree orientation target
-`PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement` is false.
-Witnessed by `f = X`, `g = (X + 1)(X + 2)`. -/
-lemma not_posComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement :
-    ¬ PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement :=
-  fun hres =>
-    X_not_strictInterl_xAddOne_xAddTwo
-      (hres
-        X_hasPosLeadingCoeff
-        xAddOne_xAddTwo_hasPosLeadingCoeff
-        X_hasNonnegCoeffs
-        xAddOne_xAddTwo_hasNonnegCoeffs
-        X_xAddOne_xAddTwo_posComboRealRooted
-        (by norm_num [xAddOne_xAddTwo_natDegree, natDegree_X])
-        X_xAddOne_xAddTwo_noCommon
-        X_isRealRooted.2
-        X_coeff_zero
-        xAddOne_xAddTwo_coeff_zero_ne)
-
-@[deprecated not_compatibleSuccDegreeStrictInterlStatement
-  (since := "2026-09-24")]
-alias not_compatibleSuccDegreePrecStatement :=
-  not_compatibleSuccDegreeStrictInterlStatement
-
-@[deprecated not_posComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement
-  (since := "2026-09-24")]
-alias not_posComboNoCommonSuccDegreeRootCountResidualPrecStatement :=
-  not_posComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement
 
 end CommonInterleaverExamples
 

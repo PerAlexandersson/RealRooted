@@ -148,8 +148,8 @@ private theorem partialFiberNormalForm_empty {R : Type*} [CommSemiring R]
     obtain ⟨j, hj, hjx⟩ := hactive
     have hnot := j.2.leftLabel_not_mem_fixedBottomSupport
     apply hnot
-    have hlabel : leftLabel h j.1 = x := by
-      exact hjx
+    have hlabel : leftLabel h j.1 = x :=
+      hjx
     rw [hlabel]
     exact hfixed
   unfold MvPolynomial.finsetMonomial
@@ -442,8 +442,8 @@ theorem weightedFiberNormalForm_mvRealStable {h : Nat}
     (hleft : ∀ j, 0 ≤ leftWeight j)
     (hright : ∀ j, 0 ≤ rightWeight j)
     (hpos : ∀ j, 0 < leftWeight j ∨ 0 < rightWeight j) :
-    MvRealStable (weightedFiberNormalForm c leftWeight rightWeight) := by
-  exact RealRooted.weightedBooleanSwapOrbitNormalForm_mvRealStable_of_nonneg
+    MvRealStable (weightedFiberNormalForm c leftWeight rightWeight) :=
+  RealRooted.weightedBooleanSwapOrbitNormalForm_mvRealStable_of_nonneg
     c.inactiveEligibleStarts c.fixedBottomSupport c.activeEligibleStarts
       (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
         leftWeight rightWeight (fun j _ => hleft j)
@@ -457,8 +457,8 @@ theorem weightedFiberNormalForm_hasNonnegCoeffs {h : Nat}
     (hleft : ∀ j, 0 ≤ leftWeight j)
     (hright : ∀ j, 0 ≤ rightWeight j) :
     MvPolynomial.HasNonnegCoeffs
-      (weightedFiberNormalForm c leftWeight rightWeight) := by
-  exact RealRooted.weightedBooleanSwapOrbitNormalForm_hasNonnegCoeffs
+      (weightedFiberNormalForm c leftWeight rightWeight) :=
+  RealRooted.weightedBooleanSwapOrbitNormalForm_hasNonnegCoeffs
     c.inactiveEligibleStarts c.fixedBottomSupport c.activeEligibleStarts
       (fun j => leftLabel h j.1) (fun j => rightLabel h j.1)
         leftWeight rightWeight (fun j _ => hleft j) (fun j _ => hright j)

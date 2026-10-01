@@ -234,8 +234,8 @@ theorem eval_update_eq_eval_pderiv_mul_add
     (i : σ) (z : σ → S) (t : S) :
     MvPolynomial.eval (Function.update z i t) p =
       MvPolynomial.eval z (MvPolynomial.pderiv i p) * t +
-        MvPolynomial.eval (Function.update z i 0) p := by
-  exact MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
+        MvPolynomial.eval (Function.update z i 0) p :=
+  MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
     (hp i) z t
 
 /-- The partial derivative of a multiaffine polynomial is independent of the
@@ -553,8 +553,8 @@ theorem rename {p : MvPolynomial σ R} (hp : IsMultiaffine p)
   · obtain ⟨i, hi, rfl⟩ := MvPolynomial.mem_vars_rename f p hj
     rw [MvPolynomial.degreeOf_rename_of_injective hf]
     exact hp i
-  · have hzero : (MvPolynomial.rename f p).degreeOf j = 0 := by
-      exact not_ne_iff.mp
+  · have hzero : (MvPolynomial.rename f p).degreeOf j = 0 :=
+      not_ne_iff.mp
         ((MvPolynomial.mem_vars_iff_degreeOf_ne_zero).not.mp hj)
     simp [hzero]
 
@@ -575,12 +575,12 @@ theorem mul_of_disjoint_vars {p q : MvPolynomial σ R}
   refine (MvPolynomial.degreeOf_mul_le i p q).trans ?_
   by_cases hi : i ∈ p.vars
   · have hqi : i ∉ q.vars := Finset.disjoint_left.mp hdisj hi
-    have hqzero : q.degreeOf i = 0 := by
-      exact not_ne_iff.mp
+    have hqzero : q.degreeOf i = 0 :=
+      not_ne_iff.mp
         ((MvPolynomial.mem_vars_iff_degreeOf_ne_zero).not.mp hqi)
     simpa [hqzero] using hp i
-  · have hpzero : p.degreeOf i = 0 := by
-      exact not_ne_iff.mp
+  · have hpzero : p.degreeOf i = 0 :=
+      not_ne_iff.mp
         ((MvPolynomial.mem_vars_iff_degreeOf_ne_zero).not.mp hi)
     simpa [hpzero] using hq i
 
@@ -626,8 +626,8 @@ theorem IsMultiaffine.partialSymmetrization
     {σ R : Type*} [CommRing R]
     {p : MvPolynomial σ R} (hp : IsMultiaffine p)
     (t : R) (e : Equiv.Perm σ) :
-    IsMultiaffine (MvPolynomial.partialSymmetrization t e p) := by
-  exact (hp.C_mul t).add
+    IsMultiaffine (MvPolynomial.partialSymmetrization t e p) :=
+  (hp.C_mul t).add
     ((hp.rename e.injective).C_mul (1 - t))
 
 end MvPolynomial

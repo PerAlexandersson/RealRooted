@@ -125,11 +125,6 @@ theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
     fun r h ↦ hnoRoot r h.1 h.2
   exact ⟨hstrictInterl, (hstrictInterl.hasSimpleRoots_of_no_common_root hno).2⟩
 
-@[deprecated strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
-  (since := "2026-09-18")]
-alias prec_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail :=
-  strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ_add_tail
-
 /-- A degree-raising recurrence through a derivative-sign auxiliary puts `f`
 in an interlacing relation with `F` and gives `F` simple roots. -/
 theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
@@ -148,11 +143,6 @@ theorem strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
   · exact hq_sign
   · exact hv_neg
   · simp
-
-@[deprecated strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
-  (since := "2026-09-18")]
-alias prec_and_hasSimpleRoots_of_auxiliary_sign_succ :=
-  strictInterl_and_hasSimpleRoots_of_auxiliary_sign_succ
 
 /-- A strict differ-by-one Ma--Wang step puts `f` in an interlacing relation with `F`
 and propagates simple real roots. -/
@@ -195,10 +185,5 @@ theorem strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v
     obtain ⟨r, hFr, hfr⟩ := exists_common_root_of_not_nodup hstrictInterl hnot
     exact hno r (isRoot_of_mem_roots hfr) (isRoot_of_mem_roots hFr)
   exact ⟨hstrictInterl, HasSimpleRoots.of_roots_nodup hF_pos.ne_zero hnodup⟩
-
-@[deprecated strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ
-  (since := "2026-09-18")]
-alias prec_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ :=
-  strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ
 
 end RealRooted

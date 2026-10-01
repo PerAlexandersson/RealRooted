@@ -68,7 +68,7 @@ theorem strictInterl_narayanaPolynomial_one_two (m : ℕ) :
     ring
   have hprod : r₁ * r₂ = 1 := by
     rw [hr₁_def, hr₂_def]
-    nlinarith [hd_sq]
+    linarith [hd_sq]
   have hfactor : narayanaPolynomial m 2 = (X - C r₁) * (X - C r₂) := by
     rw [hN₂]
     symm
@@ -160,9 +160,6 @@ theorem strictInterl_narayanaPolynomial_succ (m n : ℕ) :
     (W := fun _ => 0)
     hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
   simpa [P] using hbuild n
-
-@[deprecated strictInterl_narayanaPolynomial_one_two (since := "2026-09-26")]
-alias prec_narayanaPolynomial_one_two := strictInterl_narayanaPolynomial_one_two
 
 @[deprecated strictInterl_narayanaPolynomial_succ (since := "2026-09-26")]
 alias prec_narayanaPolynomial_succ := strictInterl_narayanaPolynomial_succ

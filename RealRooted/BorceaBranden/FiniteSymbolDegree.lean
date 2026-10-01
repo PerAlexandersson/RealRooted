@@ -68,8 +68,8 @@ theorem degreeOf_algebraicSymbol_inr_le
     have hleft :
         (C (boxChoose κ m.1 : R) *
           rename (Sum.inl : tau → tau ⊕ sigma)
-            (T (basisDegreeOfLE κ m))).degreeOf (Sum.inr i) ≤ 0 := by
-      exact (degreeOf_C_mul_le _ _ _).trans_eq hrename
+            (T (basisDegreeOfLE κ m))).degreeOf (Sum.inr i) ≤ 0 :=
+      (degreeOf_C_mul_le _ _ _).trans_eq hrename
     have hright :
         (rightComplementMonomial (R := R) (τ := tau)
           κ m.1).degreeOf (Sum.inr i) ≤ κ i := by
@@ -96,8 +96,8 @@ theorem degreeOf_algebraicSymbol_inr_le
 theorem degreeOf_algebraicSymbol_one_inr_le
     (T : degreeOfLE sigma R (fun _ => 1) →ₗ[R] MvPolynomial tau R)
     (i : sigma) :
-    (algebraicSymbol (fun _ : sigma => 1) T).degreeOf (Sum.inr i) ≤ 1 := by
-  exact degreeOf_algebraicSymbol_inr_le (fun _ : sigma => 1) T i
+    (algebraicSymbol (fun _ : sigma => 1) T).degreeOf (Sum.inr i) ≤ 1 :=
+  degreeOf_algebraicSymbol_inr_le (fun _ : sigma => 1) T i
 
 end
 

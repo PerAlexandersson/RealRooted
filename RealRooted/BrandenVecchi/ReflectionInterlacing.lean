@@ -221,15 +221,13 @@ theorem nonnegScalarMultiples {n : ℕ} {fs gs : List ℝ[X]}
       (hfs.1 _ (List.get_mem _ _))
   · apply hfs.2.nonnegScalarMultiples
     apply List.rel_append hscale
-    apply List.rel_reverse
-    exact List.rel_map (fun _ _ h => h.reflect n) hscale
+    exact List.rel_reverse (List.rel_map (fun _ _ h => h.reflect n) hscale)
 
 theorem sublist {n : ℕ} {fs gs : List ℝ[X]}
     (hfs : IsReflectionInterlacingSeq n fs) (hgs : gs.Sublist fs) :
     IsReflectionInterlacingSeq n gs := by
   refine ⟨fun g hg => hfs.1 g (hgs.subset hg), ?_⟩
-  apply hfs.2.sublist
-  exact hgs.append (hgs.map fun f => f.reflect n).reverse
+  exact hfs.2.sublist (hgs.append (hgs.map fun f => f.reflect n).reverse)
 
 /-- Inserting the sum of two adjacent members preserves reflection
 interlacing. The reflected half receives the corresponding adjacent sum in

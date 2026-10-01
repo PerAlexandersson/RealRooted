@@ -91,22 +91,22 @@ theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
   have h2le28 : (2 : ℝ) ≤ Real.sqrt (28 : ℝ) := by nlinarith
   have hab : a ≤ b := by
     dsimp [a, b]
-    nlinarith
+    linarith
   have hbc : b ≤ c := by
     dsimp [b, c]
-    nlinarith
+    linarith
   have huv : u ≤ v := by
     dsimp [u, v]
-    nlinarith
+    linarith
   have hau : a ≤ u := by
     dsimp [a, u]
     nlinarith
   have hub : u ≤ b := by
     dsimp [u, b]
-    nlinarith
+    linarith
   have hbv : b ≤ v := by
     dsimp [b, v]
-    nlinarith
+    linarith
   have hvc : v ≤ c := by
     dsimp [v, c]
     nlinarith [sq_nonneg (3 * Real.sqrt (21 : ℝ) - (7 + Real.sqrt (28 : ℝ)))]
@@ -116,8 +116,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
 /-- The `n = 3` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_three :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 3) (modifiedNarayanaPolynomial 3) := by
-  exact lemma33AuxiliaryGInterlaces_modified_three_interlaces.toStrictInterl
+    StrictInterl (FiniteSkewBoard.auxiliaryG 3) (modifiedNarayanaPolynomial 3) :=
+  lemma33AuxiliaryGInterlaces_modified_three_interlaces.toStrictInterl
 
 /-- The checked initial cases `n = 1, 2, 3` of Braun--Jal Lemma 3.3, for the
 concrete modified Narayana family and the finite-board auxiliary `G`. -/
@@ -237,10 +237,10 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
     exact Real.sqrt_nonneg _
   have hdiscA :
       ((5 : ℝ) + s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) = (28 : ℝ) + 10 * s := by
-    nlinarith [hs_sq]
+    linarith [hs_sq]
   have hdiscB :
       ((5 : ℝ) - s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) = (28 : ℝ) - 10 * s := by
-    nlinarith [hs_sq]
+    linarith [hs_sq]
   have hdiscA_nonneg :
       0 ≤ ((5 : ℝ) + s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) := by
     rw [hdiscA]
@@ -283,7 +283,7 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
   have hβ_sq : β ^ 2 = (28 : ℝ) - 10 * s := by
     dsimp [β]
     apply Real.sq_sqrt
-    nlinarith [sq_nonneg (s - 5)]
+    linarith [sq_nonneg (s - 5)]
   have hγ_sq : γ ^ 2 = (12 : ℝ) := by
     dsimp [γ]
     exact Real.sq_sqrt (by norm_num)
@@ -314,11 +314,11 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
   have hβ_le2 : β ≤ (2 : ℝ) := by
     dsimp [β]
     rw [Real.sqrt_le_left (by norm_num)]
-    nlinarith [hs_ge5div2]
+    linarith [hs_ge5div2]
   have hβ_ge1 : (1 : ℝ) ≤ β := by
     dsimp [β]
     apply Real.le_sqrt_of_sq_le
-    nlinarith [hs_le8div3]
+    linarith [hs_le8div3]
   have hγ_ge1 : (1 : ℝ) ≤ γ := by
     dsimp [γ]
     exact Real.le_sqrt_of_sq_le (by norm_num)
@@ -332,11 +332,11 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
   have hα_ge1 : (1 : ℝ) ≤ α := by
     dsimp [α]
     apply Real.le_sqrt_of_sq_le
-    nlinarith [hs_nonneg]
+    linarith [hs_nonneg]
   have h2s2_leα : 2 * s + 2 ≤ α := by
     dsimp [α]
     apply Real.le_sqrt_of_sq_le
-    nlinarith [hs_sq, hs_ge2]
+    linarith [hs_sq, hs_ge2]
   have hsumβ_leα : 2 * s + β ≤ α := by linarith
   have hsumβγ_le : s + β - 1 ≤ γ := by
     dsimp [γ]
@@ -344,14 +344,14 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
     have hs1_nonneg : 0 ≤ s - 1 := by linarith
     have hmul : β * (s - 1) ≤ 2 * (s - 1) :=
       mul_le_mul_of_nonneg_right hβ_le2 hs1_nonneg
-    nlinarith [hs_sq, hβ_sq, hmul, hs_ge5div2]
+    linarith [hs_sq, hβ_sq, hmul, hs_ge5div2]
   have hsumγα_le : γ + s + 1 ≤ α := by
     dsimp [α]
     apply Real.le_sqrt_of_sq_le
     have hsp1_nonneg : 0 ≤ s + 1 := by positivity
     have hmul : γ * (s + 1) ≤ 4 * (s + 1) :=
       mul_le_mul_of_nonneg_right hγ_le4 hsp1_nonneg
-    nlinarith [hs_sq, hγ_sq, hmul]
+    linarith [hs_sq, hγ_sq, hmul]
   have hab : a ≤ b := by
     dsimp [a, b]
     linarith
@@ -385,14 +385,14 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
   have hwd : w ≤ d := by
     dsimp [w, d]
     linarith
-  exact interlaces_of_cubic_quartic_root_lists hP_ne hP_splits hG_ne hG_splits
+  exact Interlaces.of_cubic_quartic_root_lists hP_ne hP_splits hG_ne hG_splits
     hPdeg hGdeg hP_roots hG_roots hab hbc hcd huv hvw hau hub hbv hvc hcw hwd
 
 /-- The `n = 4` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_four :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 4) (modifiedNarayanaPolynomial 4) := by
-  exact lemma33AuxiliaryGInterlaces_modified_four_interlaces.toStrictInterl
+    StrictInterl (FiniteSkewBoard.auxiliaryG 4) (modifiedNarayanaPolynomial 4) :=
+  lemma33AuxiliaryGInterlaces_modified_four_interlaces.toStrictInterl
 
 /-- The checked initial cases `n = 1, 2, 3, 4` of Braun--Jal Lemma 3.3, for the
 concrete modified Narayana family and the finite-board auxiliary `G`. -/
@@ -556,8 +556,8 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
     rw [Real.sqrt_le_left (by norm_num)]
     norm_num
   have ht_le4 : t ≤ (4 : ℝ) := by linarith
-  have h15_sub_8s_nonneg : 0 ≤ (15 : ℝ) - 8 * s := by nlinarith only [hs_le7div4]
-  have h60_sub_14t_nonneg : 0 ≤ (60 : ℝ) - 14 * t := by nlinarith only [ht_le4]
+  have h15_sub_8s_nonneg : 0 ≤ (15 : ℝ) - 8 * s := by linarith only [hs_le7div4]
+  have h60_sub_14t_nonneg : 0 ≤ (60 : ℝ) - 14 * t := by linarith only [ht_le4]
   have hα_sq : α ^ 2 = (15 : ℝ) + 8 * s := by
     dsimp [α]
     exact Real.sq_sqrt (by positivity)
@@ -585,55 +585,55 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
   have hα_ge5 : (5 : ℝ) ≤ α := by
     dsimp [α]
     apply Real.le_sqrt_of_sq_le
-    nlinarith only [hs_ge8div5]
+    linarith only [hs_ge8div5]
   have hα_ge21div4 : (21 / 4 : ℝ) ≤ α := by
     dsimp [α]
     apply Real.le_sqrt_of_sq_le
-    nlinarith only [hs_ge8div5]
+    linarith only [hs_ge8div5]
   have hα_le6 : α ≤ (6 : ℝ) := by
     dsimp [α]
     rw [Real.sqrt_le_left (by norm_num)]
-    nlinarith only [hs_le7div4]
+    linarith only [hs_le7div4]
   have hα_le27div5 : α ≤ (27 / 5 : ℝ) := by
     dsimp [α]
     rw [Real.sqrt_le_left (by norm_num)]
-    nlinarith only [hs_le7div4]
+    linarith only [hs_le7div4]
   have hβ_le3div2 : β ≤ (3 / 2 : ℝ) := by
     dsimp [β]
     rw [Real.sqrt_le_left (by norm_num)]
-    nlinarith only [hs_ge8div5]
+    linarith only [hs_ge8div5]
   have hβ_le11div10 : β ≤ (11 / 10 : ℝ) := by
     dsimp [β]
     rw [Real.sqrt_le_left (by norm_num)]
-    nlinarith only [hs_ge69div40]
+    linarith only [hs_ge69div40]
   have hβ_ge1 : (1 : ℝ) ≤ β := by
     dsimp [β]
     apply Real.le_sqrt_of_sq_le
-    nlinarith only [hs_le7div4]
+    linarith only [hs_le7div4]
   have hγ_ge3 : (3 : ℝ) ≤ γ := by
     dsimp [γ]
     apply Real.le_sqrt_of_sq_le
-    nlinarith only [ht_nonneg]
+    linarith only [ht_nonneg]
   have hγ_ge6 : (6 : ℝ) ≤ γ := by
     dsimp [γ]
     apply Real.le_sqrt_of_sq_le
-    nlinarith only [ht_nonneg]
+    linarith only [ht_nonneg]
   have hγ_ge533div50 : (533 / 50 : ℝ) ≤ γ := by
     dsimp [γ]
     apply Real.le_sqrt_of_sq_le
-    nlinarith only [ht_ge77div20]
+    linarith only [ht_ge77div20]
   have hδ_ge2 : (2 : ℝ) ≤ δ := by
     dsimp [δ]
     apply Real.le_sqrt_of_sq_le
-    nlinarith only [ht_le4]
+    linarith only [ht_le4]
   have hδ_le5div2 : δ ≤ (5 / 2 : ℝ) := by
     dsimp [δ]
     rw [Real.sqrt_le_left (by norm_num)]
-    nlinarith only [ht_ge77div20]
+    linarith only [ht_ge77div20]
   have hδ_le3 : δ ≤ (3 : ℝ) := by
     dsimp [δ]
     rw [Real.sqrt_le_left (by norm_num)]
-    nlinarith only [ht_ge15div4]
+    linarith only [ht_ge15div4]
   have h2sβ_leα : 2 * s + β ≤ α := by linarith
   have h2tδ_leγ : 2 * t + δ ≤ γ := by linarith
   have htwo_sub_s_leβ : 2 - s ≤ β := by linarith only [hs_ge6div5, hβ_ge1]
@@ -644,9 +644,9 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
       (quadraticPoly_splits_of_discrim_nonneg (by norm_num) ?_).mul
         (quadraticPoly_splits_of_discrim_nonneg (by norm_num) ?_)
     · norm_num [discrim]
-      nlinarith only [hs_sq, hs_nonneg]
+      linarith only [hs_sq, hs_nonneg]
     · norm_num [discrim]
-      nlinarith only [hs_sq, h15_sub_8s_nonneg]
+      linarith only [hs_sq, h15_sub_8s_nonneg]
   have hG_roots :
       (FiniteSkewBoard.auxiliaryG 5).roots = (↑[u, v, w, z] : Multiset ℝ) := by
     rw [hGfactor]
@@ -656,14 +656,14 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
     rw [roots_C, roots_mul (mul_ne_zero hquadGA_ne hquadGB_ne)]
     have hdiscA : ((4 : ℝ) + s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) =
         (15 : ℝ) + 8 * s := by
-      nlinarith only [hs_sq]
+      linarith only [hs_sq]
     have hdiscA_nonneg :
         0 ≤ ((4 : ℝ) + s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) := by
       rw [hdiscA]
       positivity
     have hdiscB : ((4 : ℝ) - s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) =
         (15 : ℝ) - 8 * s := by
-      nlinarith only [hs_sq]
+      linarith only [hs_sq]
     have hdiscB_nonneg :
         0 ≤ ((4 : ℝ) - s) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) := by
       rw [hdiscB]
@@ -695,14 +695,14 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
     rw [roots_mul (mul_ne_zero hquadPA_ne hquadPB_ne)]
     have hdiscA : ((7 : ℝ) + t) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) =
         (60 : ℝ) + 14 * t := by
-      nlinarith only [ht_sq]
+      linarith only [ht_sq]
     have hdiscA_nonneg :
         0 ≤ ((7 : ℝ) + t) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) := by
       rw [hdiscA]
       positivity
     have hdiscB : ((7 : ℝ) - t) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) =
         (60 : ℝ) - 14 * t := by
-      nlinarith only [ht_sq]
+      linarith only [ht_sq]
     have hdiscB_nonneg :
         0 ≤ ((7 : ℝ) - t) ^ 2 - 4 * (1 : ℝ) * (1 : ℝ) := by
       rw [hdiscB]
@@ -783,15 +783,15 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
   have hze : z ≤ e := by
     dsimp [z, e]
     linarith
-  exact interlaces_of_quartic_quintic_root_lists hP_ne hP_splits hG_ne hG_splits
+  exact Interlaces.of_quartic_quintic_root_lists hP_ne hP_splits hG_ne hG_splits
     hPdeg hGdeg hP_roots hG_roots hab hbc hcd hde huv hvw hwz hau hub hbv hvc
     hcw hwd hdz hze
 
 /-- The `n = 5` case of Braun--Jal Lemma 3.3, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem lemma33AuxiliaryGInterlaces_modified_five :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 5) (modifiedNarayanaPolynomial 5) := by
-  exact lemma33AuxiliaryGInterlaces_modified_five_interlaces.toStrictInterl
+    StrictInterl (FiniteSkewBoard.auxiliaryG 5) (modifiedNarayanaPolynomial 5) :=
+  lemma33AuxiliaryGInterlaces_modified_five_interlaces.toStrictInterl
 
 /-- The checked initial cases `n = 1, 2, 3, 4, 5` of Braun--Jal Lemma 3.3, for
 the concrete modified Narayana family and the finite-board auxiliary `G`. -/

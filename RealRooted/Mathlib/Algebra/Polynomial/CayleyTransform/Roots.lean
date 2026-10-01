@@ -115,9 +115,8 @@ theorem cayleyTransform_leadingCoeff_norm_eq_one
   have hqsplit : q.Splits := cayleyTransform_splits hp hdeg
   have hqdeg : q.natDegree = n :=
     cayleyTransform_natDegree hp0 hp hdeg hline
-  have hqroot : ∀ z ∈ q.roots, ‖z‖ = 1 := by
-    intro z hz
-    exact cayleyTransform_root_norm_eq_one hp0 hp hdeg hline hz
+  have hqroot : ∀ z ∈ q.roots, ‖z‖ = 1 :=
+    fun _ hz => cayleyTransform_root_norm_eq_one hp0 hp hdeg hline hz
   have hprod : ‖q.roots.prod‖ = 1 := by
     let normHom : ℂ →* ℝ :=
       { toFun := norm

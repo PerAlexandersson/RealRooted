@@ -98,7 +98,7 @@ private theorem quartic_one_pos (x : ℝ) :
       11268900 * (839 * x ^ 2 + 2757 * x) ^ 2 +
         (11268900 * x + 15358734) ^ 2 + 839 * 73813365396 by ring]
     positivity
-  nlinarith
+  linarith
 
 private theorem quartic_two_pos (x : ℝ) :
     0 < 1436 * x ^ 4 + 4444 * x ^ 3 + 13431 * x ^ 2 + 9088 * x + 9176 := by
@@ -109,7 +109,7 @@ private theorem quartic_two_pos (x : ℝ) :
       14349632 * (1436 * x ^ 2 + 2222 * x) ^ 2 +
         (14349632 * x + 6525184) ^ 2 + 1436 * 102021787136 by ring]
     positivity
-  nlinarith
+  linarith
 
 private theorem quartic_three_pos (x : ℝ) :
     0 < 8876 * x ^ 4 + 9076 * x ^ 3 + 13683 * x ^ 2 + 5086 * x + 1583 := by
@@ -120,7 +120,7 @@ private theorem quartic_three_pos (x : ℝ) :
       100856864 * (8876 * x ^ 2 + 4538 * x) ^ 2 +
         (100856864 * x + 22571668) ^ 2 + 8876 * 102256663988 by ring]
     positivity
-  nlinarith
+  linarith
 
 private theorem quadratic_one_pos (x : ℝ) : 0 < 8 * x ^ 2 + 58 * x + 150 := by
   simpa [pow_two] using quadratic_pos_of_pos_of_discrim_neg
@@ -162,10 +162,10 @@ private theorem rayleighDifference_one_two_nonneg (x : Nat → ℝ) :
       (37 * x 4 ^ 2 + 211 * x 4 + 210)
       (69 * x 4 ^ 2 + 160 * x 4 + 126) ≤ 0 := by
     rw [discrim]
-    nlinarith [quartic_one_pos (x 4)]
+    linarith [quartic_one_pos (x 4)]
   have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
     (quadratic_one_pos (x 4)) hdisc (x 3)
-  nlinarith
+  linarith
 
 private theorem rayleighDifference_one_three_nonneg (x : Nat → ℝ) :
     0 ≤ MvPolynomial.eval x
@@ -177,10 +177,10 @@ private theorem rayleighDifference_one_three_nonneg (x : Nat → ℝ) :
       (11 * x 4 ^ 2 + 59 * x 4 + 120)
       (16 * x 4 ^ 2 + 41 * x 4 + 51) ≤ 0 := by
     rw [discrim]
-    nlinarith [quartic_one_pos (x 4)]
+    linarith [quartic_one_pos (x 4)]
   have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
     (quadratic_two_pos (x 4)) hdisc (x 2)
-  nlinarith
+  linarith
 
 private theorem rayleighDifference_one_four_nonneg (x : Nat → ℝ) :
     0 ≤ MvPolynomial.eval x
@@ -192,10 +192,10 @@ private theorem rayleighDifference_one_four_nonneg (x : Nat → ℝ) :
       (18 * x 3 ^ 2 + 65 * x 3 + 70)
       (22 * x 3 ^ 2 + 21 * x 3 + 23) ≤ 0 := by
     rw [discrim]
-    nlinarith [quartic_two_pos (x 3)]
+    linarith [quartic_two_pos (x 3)]
   have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
     (quadratic_four_pos (x 3)) hdisc (x 2)
-  nlinarith
+  linarith
 
 private theorem rayleighDifference_two_three_nonneg (x : Nat → ℝ) :
     0 ≤ MvPolynomial.eval x
@@ -207,10 +207,10 @@ private theorem rayleighDifference_two_three_nonneg (x : Nat → ℝ) :
       (29 * x 4 ^ 2 + 111 * x 4 + 138)
       (10 * x 4 ^ 2 + 24 * x 4 + 26) ≤ 0 := by
     rw [discrim]
-    nlinarith [quartic_one_pos (x 4)]
+    linarith [quartic_one_pos (x 4)]
   have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
     (quadratic_three_pos (x 4)) hdisc (x 1)
-  nlinarith
+  linarith
 
 private theorem rayleighDifference_two_four_nonneg (x : Nat → ℝ) :
     0 ≤ MvPolynomial.eval x
@@ -222,10 +222,10 @@ private theorem rayleighDifference_two_four_nonneg (x : Nat → ℝ) :
       (34 * x 3 ^ 2 + 49 * x 3 + 52)
       (12 * x 3 ^ 2 + 8 * x 3 + 11) ≤ 0 := by
     rw [discrim]
-    nlinarith [quartic_two_pos (x 3)]
+    linarith [quartic_two_pos (x 3)]
   have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
     (quadratic_five_pos (x 3)) hdisc (x 1)
-  nlinarith
+  linarith
 
 private theorem rayleighDifference_three_four_nonneg (x : Nat → ℝ) :
     0 ≤ MvPolynomial.eval x
@@ -237,10 +237,10 @@ private theorem rayleighDifference_three_four_nonneg (x : Nat → ℝ) :
       (134 * x 2 ^ 2 + 197 * x 2 + 53)
       (52 * x 2 ^ 2 + 28 * x 2 + 6) ≤ 0 := by
     rw [discrim]
-    nlinarith [quartic_three_pos (x 2)]
+    linarith [quartic_three_pos (x 2)]
   have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
     (quadratic_six_pos (x 2)) hdisc (x 1)
-  nlinarith
+  linarith
 
 /-- The recurrence-defined ordinary-coordinate total at rank four is
 Rayleigh. -/
@@ -382,7 +382,7 @@ private theorem companion_slope_quartic_one_pos (x : ℝ) :
           (16629350 * x + 22418172) ^ 2 +
           1071 * 116212349146 by ring]
     positivity
-  nlinarith
+  linarith
 
 private theorem companion_slope_quartic_two_pos (x : ℝ) :
     0 < 1856 * x ^ 4 + 5536 * x ^ 3 + 15420 * x ^ 2 +
@@ -397,7 +397,7 @@ private theorem companion_slope_quartic_two_pos (x : ℝ) :
           (20957696 * x + 9673472) ^ 2 +
           1856 * 163098870784 by ring]
     positivity
-  nlinarith
+  linarith
 
 private theorem companion_slope_quartic_three_pos (x : ℝ) :
     0 < 11648 * x ^ 4 + 8768 * x ^ 3 + 14076 * x ^ 2 +
@@ -412,7 +412,7 @@ private theorem companion_slope_quartic_three_pos (x : ℝ) :
           (144737792 * x + 28304640) ^ 2 +
           11648 * 160339649536 by ring]
     positivity
-  nlinarith
+  linarith
 
 /-- Every affine Rayleigh discriminant between the rank-two companion and
 its successor slope is nonpositive.  The finite-support theorem reduces the
@@ -433,15 +433,15 @@ theorem
   · rw [affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_one_two]
     simp only [map_neg, map_add, map_mul, map_pow, map_ofNat,
       MvPolynomial.eval_X]
-    nlinarith [companion_slope_quartic_one_pos (y 3)]
+    linarith [companion_slope_quartic_one_pos (y 3)]
   · rw [affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_one_three]
     simp only [map_neg, map_add, map_mul, map_pow, map_ofNat,
       MvPolynomial.eval_X]
-    nlinarith [companion_slope_quartic_two_pos (y 2)]
+    linarith [companion_slope_quartic_two_pos (y 2)]
   · rw [affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_two_three]
     simp only [map_neg, map_add, map_mul, map_pow, map_ofNat,
       MvPolynomial.eval_X]
-    nlinarith [companion_slope_quartic_three_pos (y 1)]
+    linarith [companion_slope_quartic_three_pos (y 1)]
 
 /-- After discharging the current companion/slope discriminants, the exact
 rank-two successor criterion consists only of the finite zero-locus package,

@@ -57,7 +57,7 @@ theorem discrim_neg_of_quadratic_roots_separated
   have had : 0 < a - d := by linarith
   by_cases hcd0 : c = d
   · subst hcd0
-    have hden : 0 < (b - c) * (a - c) := by nlinarith
+    have hden : 0 < (b - c) * (a - c) := by linarith
     refine ⟨((a - b) ^ 2 + 1) / (2 * ((b - c) * (a - c))), ?_, ?_⟩
     · exact div_pos (by positivity) (by linarith)
     · rw [discrim_pencil_quadratics]
@@ -69,7 +69,7 @@ theorem discrim_neg_of_quadratic_roots_separated
                 (((a - b) ^ 2 + 1) / (2 * ((b - c) * (a - c)))) ^ 2 =
             -(a - b) ^ 2 - 2 := by grind
       rw [hval]
-      nlinarith [sq_nonneg (a - b)]
+      linarith [sq_nonneg (a - b)]
   · have hcd' : c < d := lt_of_le_of_ne hcd hcd0
     have hq : 0 < (c - d) ^ 2 := by
       have : c - d ≠ 0 := by grind
@@ -79,11 +79,11 @@ theorem discrim_neg_of_quadratic_roots_separated
     have hlin :
         (b - a) * (d - c) <
           (b - c) * (a - d) + (b - d) * (a - c) := by
-      nlinarith [mul_pos had hbc]
+      linarith [mul_pos had hbc]
     have hSsq :
         (a - b) ^ 2 * (c - d) ^ 2 <
           ((b - c) * (a - d) + (b - d) * (a - c)) ^ 2 := by
-      nlinarith
+      linarith
         [mul_pos
           (show
             (0 : ℝ) <
@@ -108,37 +108,6 @@ theorem discrim_neg_of_quadratic_roots_separated
       rw [hval, sub_neg, lt_div_iff₀ hq]
       simp_all
 
-/-- Reusable quadratic obstruction: a real quadratic
-`C a * X ^ 2 + C b * X + C c` with nonzero leading coefficient and negative
-discriminant does not split over `ℝ`.
-
-This packages the "negative discriminant forbids a real root, hence a
-nonconstant polynomial cannot split" step as a standalone lemma. -/
-theorem not_splits_quadratic_of_discrim_neg {a b c : ℝ} (ha : a ≠ 0)
-    (hdisc : discrim a b c < 0) :
-    ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits := by
-  set p : ℝ[X] := C a * X ^ 2 + C b * X + C c with hp
-  have hdeg : p.natDegree = 2 := natDegree_quadratic ha
-  have hne : ∀ s : ℝ, discrim a b c ≠ s ^ 2 := by
-    intro s h
-    have hs2 : (0 : ℝ) ≤ s ^ 2 := sq_nonneg s
-    grind
-  have hnoroot : ∀ x : ℝ, ¬ p.IsRoot x := by
-    intro x hx
-    have hpx : p.eval x = 0 := by simp_all
-    have hxeval : a * (x * x) + b * x + c = 0 := by
-      rw [hp] at hpx
-      simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow] at hpx
-      grind
-    exact quadratic_ne_zero_of_discrim_ne_sq hne x hxeval
-  intro hsplit
-  have hcard : p.roots.card = p.natDegree :=
-    Polynomial.splits_iff_card_roots.1 hsplit
-  rw [hdeg] at hcard
-  have hpos : 0 < p.roots.card := by simp_all
-  obtain ⟨x, hxmem⟩ := Multiset.card_pos_iff_exists_mem.1 hpos
-  simp_all
-
 /-- Polynomial form of the degree-two same-degree obstruction.
 
 If the roots of two real quadratics are separated, then some strictly positive
@@ -156,7 +125,7 @@ theorem exists_pos_combo_not_splits_of_quadratic_roots_separated
         C (1 + t) * X ^ 2 + C (-((a + b) + t * (c + d))) * X +
           C (a * b + t * (c * d)) := by grind
   rw [hpexp]
-  exact not_splits_quadratic_of_discrim_neg h1t.ne' hdisc
+  exact quadraticPoly_not_splits_of_discrim_neg h1t.ne' hdisc
 
 /-- Separated monic quadratic root pairs cannot satisfy the
 `PosComboRealRooted` hypothesis. -/
@@ -213,26 +182,5 @@ theorem not_posComboRealRooted_quadratic_roots_gap
     ¬ PosComboRealRooted ((X - C a) * (X - C b)) ((X - C c) * (X - C d)) :=
   not_posComboRealRooted_quadratic_roots_separated hab hcd
     (lt_of_le_of_lt hdz1 (lt_of_lt_of_le hz hz2a))
-
-/-- Symmetric scaled gap form of the separated-root obstruction. -/
-theorem not_posComboRealRooted_pos_scaled_quadratic_roots_gap_symm
-    {A B a b c d z1 z2 : ℝ} (hA : 0 < A) (hB : 0 < B)
-    (hab : a ≤ b) (hcd : c ≤ d)
-    (hz : z1 < z2) (hbz1 : b ≤ z1) (hz2c : z2 ≤ c) :
-    ¬ PosComboRealRooted
-      (C A * ((X - C a) * (X - C b)))
-      (C B * ((X - C c) * (X - C d))) := by
-  intro hpc
-  exact not_posComboRealRooted_pos_scaled_quadratic_roots_gap hB hA hcd hab
-    hz hbz1 hz2c hpc.comm
-
-/-- Symmetric monic gap form of the separated-root obstruction. -/
-theorem not_posComboRealRooted_quadratic_roots_gap_symm
-    {a b c d z1 z2 : ℝ}
-    (hab : a ≤ b) (hcd : c ≤ d)
-    (hz : z1 < z2) (hbz1 : b ≤ z1) (hz2c : z2 ≤ c) :
-    ¬ PosComboRealRooted ((X - C a) * (X - C b)) ((X - C c) * (X - C d)) := by
-  intro hpc
-  exact not_posComboRealRooted_quadratic_roots_gap hcd hab hz hbz1 hz2c hpc.comm
 
 end RealRooted

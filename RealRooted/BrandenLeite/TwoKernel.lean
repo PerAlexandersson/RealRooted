@@ -43,9 +43,8 @@ theorem finiteToeplitz_kernelRows_pf_and_interl
     fun m => finiteToeplitz (a m) N
   let K : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ := finiteToeplitz h N
   have hG : G.IsTotallyNonneg := finiteToeplitz_isTotallyNonneg hg N
-  have hH : ∀ m, (H m).IsTotallyNonneg := by
-    intro m
-    exact finiteToeplitz_isTotallyNonneg (ha_pf m) N
+  have hH : ∀ m, (H m).IsTotallyNonneg :=
+    fun m => finiteToeplitz_isTotallyNonneg (ha_pf m) N
   have hGlower : ∀ i j, i < j → G i j = 0 := by
     intro i j hij
     change finiteToeplitz g N i j = 0
@@ -140,15 +139,6 @@ theorem interl_twoKernelRow_succ
       (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) n)
       (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) (n + 1)) :=
   (twoKernelRows_pf_and_interl hg hh hg0 hh0).2 n
-
-@[deprecated finiteToeplitz_kernelRows_pf_and_interl (since := "2026-09-18")]
-alias finiteToeplitz_kernelRows_pf_and_prec0 := finiteToeplitz_kernelRows_pf_and_interl
-
-@[deprecated twoKernelRows_pf_and_interl (since := "2026-09-18")]
-alias twoKernelRows_pf_and_prec0 := twoKernelRows_pf_and_interl
-
-@[deprecated interl_twoKernelRow_succ (since := "2026-09-18")]
-alias prec0_twoKernelRow_succ := interl_twoKernelRow_succ
 
 end
 

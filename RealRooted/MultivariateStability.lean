@@ -704,8 +704,8 @@ theorem MvUpperHalfPlaneStable.of_translate_add_real {sigma : Type*}
   have htranslated :
       MvPolynomial.aeval (fun i => z i - (a i : ℂ))
         (MvPolynomial.aeval
-          (fun i => MvPolynomial.C (a i : ℂ) + MvPolynomial.X i) P) ≠ 0 := by
-    exact hP (fun i => z i - (a i : ℂ)) (by
+          (fun i => MvPolynomial.C (a i : ℂ) + MvPolynomial.X i) P) ≠ 0 :=
+    hP (fun i => z i - (a i : ℂ)) (by
       intro i
       simpa using hz i)
   rw [MvPolynomial.comp_aeval_apply] at htranslated
@@ -1052,7 +1052,7 @@ theorem mul_ne_ofReal_of_im_pos {z w : ℂ} (hz : 0 < z.im) (hw : 0 < w.im)
   have hre : z.re * w.re - z.im * w.im = r := by
     have := congrArg Complex.re hmul
     simpa using this
-  have hnorm : 0 < z.re ^ 2 + z.im ^ 2 := by nlinarith [sq_nonneg z.re]
+  have hnorm : 0 < z.re ^ 2 + z.im ^ 2 := by positivity
   have hprod : 0 < w.im * (z.re ^ 2 + z.im ^ 2) :=
     mul_pos hw hnorm
   have hrim : 0 ≤ r * z.im := mul_nonneg hr hz.le

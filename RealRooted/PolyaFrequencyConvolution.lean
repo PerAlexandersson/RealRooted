@@ -299,8 +299,8 @@ def bidiagonalOneFin (N : ℕ) : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
   (bidiagonal 1).submatrix (fun i => i.val) (fun j => j.val)
 
 theorem bidiagonalOneFin_isTotallyNonneg (N : ℕ) :
-    (bidiagonalOneFin N).IsTotallyNonneg := by
-  exact Matrix.IsTotallyNonneg.submatrix
+    (bidiagonalOneFin N).IsTotallyNonneg :=
+  Matrix.IsTotallyNonneg.submatrix
     (bidiagonal_isTotallyNonneg 1 (by norm_num)) Fin.val_strictMono Fin.val_strictMono
 
 /-- Finite lower-triangular matrix with diagonal one and all lower entries two. -/

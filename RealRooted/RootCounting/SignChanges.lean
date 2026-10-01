@@ -172,7 +172,7 @@ theorem splits_of_sign_changes_with_left_endpoint {p : ℝ[X]} {d : ℕ}
               (p.eval R * p.eval (r ⟨0, hd⟩))) := by ring
           _ = _ := by rw [hss]; ring
       rw [heq] at hprod
-      nlinarith
+      linarith
     · rw [hqpos i.castSucc (Nat.pos_of_ne_zero hi), hqsucc]
       simpa only [Fin.val_castSucc,
         Nat.sub_add_cancel (Nat.pos_of_ne_zero hi)] using

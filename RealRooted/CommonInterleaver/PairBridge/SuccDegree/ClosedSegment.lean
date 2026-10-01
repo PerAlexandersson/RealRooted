@@ -87,9 +87,8 @@ theorem compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
                 ((f.derivative.roots.filter (y < ·)).card : ℤ) -
                     (g.derivative.roots.filter (y < ·)).card ≤ 1 ∧
                 ((g.derivative.roots.filter (y < ·)).card : ℤ) -
-                    (f.derivative.roots.filter (y < ·)).card ≤ 1 := by
-          intro y hyf hyg
-          exact ih f.derivative.natDegree hfder_lt rfl hcomp.derivative
+                    (f.derivative.roots.filter (y < ·)).card ≤ 1 :=
+          fun y hyf hyg => ih f.derivative.natDegree hfder_lt rfl hcomp.derivative
             hf'_pos hg'_pos hdeg' hf'_split y hyf hyg
         obtain ⟨hfg_le2, hgf_le2⟩ :=
           compatibleSuccDegreeRootCountAbove_le_two_of_derivative_bound

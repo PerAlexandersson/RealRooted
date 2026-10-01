@@ -183,14 +183,6 @@ def Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement
     StrictInterl ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
       ((C lam * X + C mu) * P m + narayanaDifference P (m + 1))
 
-/-- The all-`n` recurrence implies every bounded recurrence package. -/
-theorem narayanaAuxiliaryGRecurrenceUpTo_of_statement
-    {P G : ℕ → ℝ[X]} (h : NarayanaAuxiliaryGRecurrenceStatement P G)
-    (N : ℕ) :
-    NarayanaAuxiliaryGRecurrenceUpToStatement P G N := by
-  intro n hn _hnN
-  exact h hn
-
 /-- The all-`n` Lemma 3.3 statement implies every bounded Lemma 3.3 package. -/
 theorem lemma33AuxiliaryGInterlacesUpTo_of_statement
     {P G : ℕ → ℝ[X]} (h : Lemma33AuxiliaryGInterlacesStatement P G)

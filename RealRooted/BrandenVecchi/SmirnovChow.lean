@@ -41,8 +41,7 @@ theorem sum_fin_val_lt_succ {A : Type*} [AddCommMonoid A]
         intro hi
         have hle : i.val ≤ k := Nat.lt_succ_iff.mp (by simpa using hi)
         have hge : k ≤ i.val := Nat.le_of_not_gt hik
-        apply hieq
-        exact Fin.ext (le_antisymm hle hge)
+        exact hieq (Fin.ext (le_antisymm hle hge))
       simp [hik, hieq, hisucc]
 
 /-- Splitting the complementary finite sum at the next natural cut. -/
@@ -98,8 +97,7 @@ theorem prod_fin_val_lt_succ {A : Type*} [CommMonoid A]
         intro hi
         have hle : i.val ≤ k := Nat.lt_succ_iff.mp (by simpa using hi)
         have hge : k ≤ i.val := Nat.le_of_not_gt hik
-        apply hieq
-        exact Fin.ext (le_antisymm hle hge)
+        exact hieq (Fin.ext (le_antisymm hle hge))
       simp [hik, hieq, hisucc]
 
 /-- A finite word is Smirnov when adjacent letters are distinct. -/
@@ -163,8 +161,8 @@ theorem smirnovWordWeight_snoc {m n : ℕ} (weight : Fin m → R)
 theorem smirnovWordWeight_eq_zero_of_exists {m n : ℕ}
     (weight : Fin m → R) (word : Fin n → Fin m) {i : Fin n}
     (hi : weight (word i) = 0) :
-    smirnovWordWeight weight word = 0 := by
-  exact Finset.prod_eq_zero (Finset.mem_univ i) hi
+    smirnovWordWeight weight word = 0 :=
+  Finset.prod_eq_zero (Finset.mem_univ i) hi
 
 /-- Compatibility name for the descent number of a possibly empty word. -/
 abbrev smirnovDescentNumber {m : ℕ} :
@@ -173,21 +171,21 @@ abbrev smirnovDescentNumber {m : ℕ} :
 
 @[simp]
 theorem smirnovDescentNumber_zero {m : ℕ} (word : Fin 0 → Fin m) :
-    smirnovDescentNumber word = 0 := by
-  exact RealRooted.ParkingFunctions.wordDescentNumber_zero word
+    smirnovDescentNumber word = 0 :=
+  RealRooted.ParkingFunctions.wordDescentNumber_zero word
 
 @[simp]
 theorem smirnovDescentNumber_one {m : ℕ} (word : Fin 1 → Fin m) :
-    smirnovDescentNumber word = 0 := by
-  exact RealRooted.ParkingFunctions.wordDescentNumber_one word
+    smirnovDescentNumber word = 0 :=
+  RealRooted.ParkingFunctions.wordDescentNumber_one word
 
 @[simp]
 theorem smirnovDescentNumber_snoc {m n : ℕ}
     (word : Fin (n + 1) → Fin m) (i : Fin m) :
     smirnovDescentNumber (Fin.snoc word i) =
       smirnovDescentNumber word +
-        if i < word (Fin.last n) then 1 else 0 := by
-  exact RealRooted.ParkingFunctions.wordDescentNumber_snoc word i
+        if i < word (Fin.last n) then 1 else 0 :=
+  RealRooted.ParkingFunctions.wordDescentNumber_snoc word i
 
 /-- Literal weighted descent enumerator of length-`n` Smirnov words. -/
 def weightedSmirnovPolynomial {m : ℕ} (weight : Fin m → R)
@@ -247,8 +245,8 @@ theorem weightedSmirnovEnding_zero {m : ℕ}
     (weight : Fin m → R) (i : Fin m) :
     weightedSmirnovEnding weight 0 i = C (weight i) := by
   have hsnoc (word : Fin 0 → Fin m) :
-      Fin.snoc word i = fun _ => i := by
-    exact Fin.snoc_zero word i
+      Fin.snoc word i = fun _ => i :=
+    Fin.snoc_zero word i
   rw [weightedSmirnovEnding]
   unfold weightedSmirnovEndingSummand
   simp_rw [hsnoc]

@@ -86,9 +86,4 @@ theorem interlaces_of_allComboRealRooted_succDegree
 alias prec_deriv_eval_mul_deriv_nonneg :=
   strictInterl_deriv_eval_mul_deriv_nonneg
 
-@[deprecated strictInterl_of_magnitude_dominated_auto
-  (since := "2026-09-18")]
-alias prec_of_magnitude_dominated_auto :=
-  strictInterl_of_magnitude_dominated_auto
-
 end RealRooted

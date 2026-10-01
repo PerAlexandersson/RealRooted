@@ -76,9 +76,8 @@ theorem rootCountAbove_left_sub_le_one_of_compatible_sameDegree {f g : ℝ[X]}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
       ((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card ≤ 1 := by
-  intro x hfx hgx
-  exact (_root_.RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
+        (g.roots.filter (x < ·)).card ≤ 1 :=
+  fun x hfx hgx => (_root_.RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
     hf_pos hg_pos (hcompat.toPosComboRealRooted hf_pos hg_pos) hdeg hno
     x hfx hgx).1
 
@@ -89,8 +88,8 @@ theorem RootCountCompatible.of_compatible_sameDegree {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    RootCountCompatible f g := by
-  exact RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
+    RootCountCompatible f g :=
+  RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
     hf_pos.ne_zero hg_pos.ne_zero
     (fun x hfx hgx =>
       ⟨rootCountAbove_left_sub_le_one_of_compatible_sameDegree
@@ -132,8 +131,8 @@ theorem RootCountCompatible.of_compatible_of_succDegreeRootCountAboveNonRoot
     {f g : ℝ[X]} (hcompat : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    RootCountCompatible f g := by
-  exact RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
+    RootCountCompatible f g :=
+  RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
     hf_pos.ne_zero hg_pos.ne_zero
     (fun x hfx hgx =>
       ⟨rootCountAbove_left_sub_le_one_of_compatible_of_succDegreeRootCountAboveNonRoot
@@ -494,7 +493,7 @@ theorem pairHasCommonInterleaver_of_sameDegree {f g : ℝ[X]}
           (g.roots.filter (x < ·)).card ≤ 1 ∧
         ((g.roots.filter (x < ·)).card : ℤ) -
           (f.roots.filter (x < ·)).card ≤ 1 :=
-    sameDegreeRootCountAbove_of_nonRoot_bound
+    rootCountAbove_diff_le_one_of_nonRoot_isRoot
       h.left_pos.ne_zero h.right_pos.ne_zero
       (fun _ hfx hgx => h.rootCountAbove_bounds_of_nonRoot hfx hgx)
   have hcross :=
@@ -525,7 +524,7 @@ theorem pairHasCommonInterleaver_of_succDegree {f g : ℝ[X]}
           (g.roots.filter (x < ·)).card ≤ 1 ∧
         ((g.roots.filter (x < ·)).card : ℤ) -
           (f.roots.filter (x < ·)).card ≤ 1 :=
-    sameDegreeRootCountAbove_of_nonRoot_bound
+    rootCountAbove_diff_le_one_of_nonRoot_isRoot
       h.left_pos.ne_zero h.right_pos.ne_zero
       (fun _ hfx hgx => h.rootCountAbove_bounds_of_nonRoot hfx hgx)
   have hcross :=

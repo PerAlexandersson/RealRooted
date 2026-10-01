@@ -42,19 +42,6 @@ theorem
     (deleteRootFactor_splits_of_isRoot hf_splits hr) hg_splits
     hdelete_deg hgdeg
 
-theorem
-    rootCountCompatible_left_deleteRootFactor_of_left_le_one_right_le_two
-    {f g : ℝ[X]} {s : ℝ}
-    (hf_splits : f.Splits) (hg_splits : g.Splits)
-    (hs : g.IsRoot s) (hfdeg : f.natDegree ≤ 1)
-    (hgdeg : g.natDegree ≤ 2) :
-    RootCountCompatible f (deleteRootFactor g s) := by
-  have hdelete_deg : (deleteRootFactor g s).natDegree ≤ 1 := by
-    rw [natDegree_deleteRootFactor]
-    lia
-  exact RootCountCompatible.of_natDegree_le_one hf_splits
-    (deleteRootFactor_splits_of_isRoot hg_splits hs) hfdeg hdelete_deg
-
 theorem leadingCoeff_deleteRootFactor_of_isRoot {p : ℝ[X]} {r : ℝ}
     (hp_ne : p ≠ 0) (hr : p.IsRoot r) :
     (deleteRootFactor p r).leadingCoeff = p.leadingCoeff := by

@@ -6,7 +6,7 @@ import RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces
 
 This module keeps Liu's left and right deletion branches together with
 the branch-retaining common-interleaver package.  The later factor-return
-statement and assembly layers remain in `RealRooted.LiuOppositeSignsTheorem`.
+statement and assembly layers remain in `RealRooted.LiuOppositeSigns.Theorem`.
 -/
 
 open Polynomial Filter
@@ -311,16 +311,6 @@ theorem theorem21CompatibleToRootCountBranches_of_commonForward
   exact theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
     (hforward hf hg hsgn hcompat)
 
-/-- The branch-retaining common-interleaver reverse direction restricts to the
-nonconstant setting. -/
-theorem
-    theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstant_of_reverse
-    (hreverse :
-      theorem21DeletionPairCommonInterleaverBranchesToCompatibleStatement) :
-    theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstantStatement := by
-  intro f g hf hg hsgn _hf_deg _hg_deg hbranches
-  exact hreverse hf hg hsgn hbranches
-
 /-- The isolated reverse root-count direction supplies the branch-retaining
 common-interleaver reverse direction. -/
 theorem theorem21DeletionPairCommonInterleaverBranchesToCompatible_of_reverse
@@ -328,17 +318,6 @@ theorem theorem21DeletionPairCommonInterleaverBranchesToCompatible_of_reverse
     theorem21DeletionPairCommonInterleaverBranchesToCompatibleStatement := by
   intro f g hf hg hsgn hbranches
   exact hreverse hf hg hsgn
-    (theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
-      hbranches)
-
-/-- The isolated nonconstant reverse root-count direction supplies the
-branch-retaining common-interleaver reverse direction. -/
-theorem
-    theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstant_of_rootCountReverse
-    (hreverse : theorem21RootCountBranchesToCompatibleNonconstantStatement) :
-    theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstantStatement := by
-  intro f g hf hg hsgn hf_deg hg_deg hbranches
-  exact hreverse hf hg hsgn hf_deg hg_deg
     (theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
       hbranches)
 
@@ -368,20 +347,6 @@ theorem theorem21CompatibleDeletionPairCommonInterleaverBranches_of_forward_and_
   unfold theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement
   intro f g hf hg hsgn
   exact ⟨hforward hf hg hsgn, hreverse hf hg hsgn⟩
-
-/-- Reassemble the nonconstant branch-retaining common-interleaver theorem
-package from its isolated forward and reverse directions. -/
-theorem
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstant_of_forward_and_reverse
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    (hreverse :
-      theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstantStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement := by
-  unfold theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement
-  intro f g hf hg hsgn hf_deg hg_deg
-  exact ⟨hforward hf hg hsgn hf_deg hg_deg,
-    hreverse hf hg hsgn hf_deg hg_deg⟩
 
 /-- Liu's root-count theorem package gives the branch-retaining deletion-pair
 common-interleaver iff package. -/

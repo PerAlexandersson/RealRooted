@@ -105,7 +105,7 @@ theorem row_lt_of_mem_erase_bottomRook
   have ha_cell := hP.1 haP
   rw [mem_truncatedStaircase_cells] at ha_cell
   have hrow_le : a.1 ≤ i := Nat.lt_succ_iff.mp ha_cell.1
-  have hrow_ne : a.1 ≠ i := by exact hP.2.1 a haP (i, c) hbottom (Finset.mem_erase.mp ha).1
+  have hrow_ne : a.1 ≠ i := hP.2.1 a haP (i, c) hbottom (Finset.mem_erase.mp ha).1
   exact lt_of_le_of_ne hrow_le hrow_ne
 
 /-- Any rook left after removing a bottom-row rook from a valid placement lies
@@ -539,9 +539,8 @@ theorem bottomRookExtension_bottomRookRemainder
     (hbottom : (i, c) ∈ P) :
     bottomRookExtension i c (bottomRookRemainder i c P) = P := by
   rw [bottomRookExtension, bottomRookRemainder]
-  have hcol : ∀ a ∈ P.erase (i, c), c < a.2 := by
-    intro a ha
-    exact bottom_col_lt_of_mem_erase_bottomRook hP hbottom ha
+  have hcol : ∀ a ∈ P.erase (i, c), c < a.2 :=
+    fun _ ha => bottom_col_lt_of_mem_erase_bottomRook hP hbottom ha
   rw [unshiftColumnsAfter_shiftColumnsAfter_of_forall_col_gt hcol]
   exact Finset.insert_erase hbottom
 
@@ -671,8 +670,8 @@ theorem sum_bottomRowCells_nonNestingPlacementsWithCell_eq_mul_sum
           ext c
           simp
     _ = X * ((List.range (n - i)).map fun c =>
-          truncatedStaircaseRookPolynomial (n - c - 1) i).sum := by
-          exact List.sum_map_mul_left (List.range (n - i))
+          truncatedStaircaseRookPolynomial (n - c - 1) i).sum :=
+          List.sum_map_mul_left (List.range (n - i))
             (fun c => truncatedStaircaseRookPolynomial (n - c - 1) i) X
 
 /-- The truncated staircase with zero rows is the empty board. -/

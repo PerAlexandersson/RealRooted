@@ -693,15 +693,6 @@ theorem interl_zipWith_sum_pair_of_2x2_weak
       (f := F) (g := G) hF_zero hG_zero hF_nonneg hG_nonneg haff
   simpa [F, G] using hFG.toInterl
 
-@[deprecated strictInterl_zipWith_sum_pair_of_2x2 (since := "2026-09-18")]
-alias prec_zipWith_sum_pair_of_2x2 := strictInterl_zipWith_sum_pair_of_2x2
-
-@[deprecated strictInterl_add_mul_pair_of_2x2 (since := "2026-09-18")]
-alias prec_add_mul_pair_of_2x2 := strictInterl_add_mul_pair_of_2x2
-
-@[deprecated interl_zipWith_sum_pair_of_2x2 (since := "2026-09-18")]
-alias prec0_zipWith_sum_pair_of_2x2 := interl_zipWith_sum_pair_of_2x2
-
 @[deprecated interl_zipWith_sum_pair_of_2x2_weak (since := "2026-09-18")]
 alias prec0_zipWith_sum_pair_of_2x2_weak :=
   interl_zipWith_sum_pair_of_2x2_weak

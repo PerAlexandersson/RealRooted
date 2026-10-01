@@ -106,7 +106,7 @@ private lemma abs_coeff_prod_X_sub_C_le (s : Multiset ℝ) (ρ : ℝ) (hρ : 0 <
           have hwρ : 1 + |w| ≤ |w| * (1 + ρ⁻¹) := by grind
           have hkey : |P.coeff k| + |w| * |P.coeff (k + 1)|
               ≤ |w| * |P.coeff 0| * ((1 + ρ⁻¹) ^ t.card * (1 + ρ⁻¹)) := by
-            nlinarith [ihP k, ihP (k + 1), mul_le_mul_of_nonneg_left hwρ hPnn,
+            linarith [ihP k, ihP (k + 1), mul_le_mul_of_nonneg_left hwρ hPnn,
               abs_nonneg w, mul_le_mul_of_nonneg_left (ihP (k + 1)) (abs_nonneg w)]
           grind
 

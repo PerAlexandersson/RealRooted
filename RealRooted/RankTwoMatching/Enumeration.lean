@@ -77,9 +77,8 @@ abbrev DisjointEquivIndex (k : ℕ) :=
 
 theorem orientedKMatching_mem
     {k : ℕ} (x : OrientedKMatching (V := V) k) :
-    ∀ e (he : e ∈ x.1.1), (x.2 ⟨e, he⟩).1 ∈ e.1 := by
-  intro e he
-  exact (x.2 ⟨e, he⟩).2
+    ∀ e (he : e ∈ x.1.1), (x.2 ⟨e, he⟩).1 ∈ e.1 :=
+  fun e he => (x.2 ⟨e, he⟩).2
 
 def orientedKMatchingOrientation
     {k : ℕ} (x : OrientedKMatching (V := V) k) :
@@ -175,8 +174,8 @@ theorem orientationOf_orientationVertexEquiv_eq
   let hdisj := orientationVertices_disjoint hM o ho
   let f := orientationVertexEquiv hM o ho
   let x := orientationOfDisjointEquiv hdisj f e he'
-  have hxA : x ∈ orientationLeftVertices o := by
-    exact ((edgeIndexEquiv hdisj f).symm ⟨e, he'⟩).2
+  have hxA : x ∈ orientationLeftVertices o :=
+    ((edgeIndexEquiv hdisj f).symm ⟨e, he'⟩).2
   have hxedge : x ∈ e.1 :=
     orientationOfDisjointEquiv_mem hdisj f e he'
   have hspec : s(o e he, Sym2.Mem.other' (ho e he)) = e.1 :=
@@ -270,10 +269,10 @@ theorem orientationVertexEquiv_ofDisjointEquiv_val
   let hM := matchingOfDisjointEquiv_isMatching hAB f
   let ho := orientationOfDisjointEquiv_mem hAB f
   let e : M := (orientationLeftEquiv hM o ho).symm i
-  have heleft : o e.1 e.2 = i.1 := by
-    exact congrArg Subtype.val
+  have heleft : o e.1 e.2 = i.1 :=
+    congrArg Subtype.val
       ((orientationLeftEquiv hM o ho).apply_symm_apply i)
-  have hedgeIndex : ((edgeIndexEquiv hAB f).symm e).1 = j.1 := by exact heleft.trans hij
+  have hedgeIndex : ((edgeIndexEquiv hAB f).symm e).1 = j.1 := heleft.trans hij
   change Sym2.Mem.other' (ho e.1 e.2) = (f j).1
   rw [other_orientationOfDisjointEquiv hAB f e.1 e.2]
   exact congrArg Subtype.val (congrArg f (Subtype.ext hedgeIndex))
@@ -357,8 +356,8 @@ theorem orientedKMatchingEquivDisjointEquiv_weight
     (a b : V → ℝ) {k : ℕ} (x : OrientedKMatching (V := V) k) :
     orientedKMatchingWeight a b x =
       disjointEquivIndexWeight a b
-        (orientedKMatchingEquivDisjointEquiv k x) := by
-  exact orientationWeightProduct a b (orientedKMatching_isMatching x)
+        (orientedKMatchingEquivDisjointEquiv k x) :=
+  orientationWeightProduct a b (orientedKMatching_isMatching x)
     (orientedKMatchingOrientation x) (orientedKMatching_mem x)
 
 theorem orientedMatchingWeightSum_eq_piOrientedKMatching_sum

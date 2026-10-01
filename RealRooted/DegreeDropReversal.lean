@@ -361,16 +361,11 @@ theorem splits_of_divX_splits_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0)
     (hdiv : p.divX.Splits) : p.Splits :=
   (splits_iff_divX_splits_of_coeff_zero h0).2 hdiv
 
-/-- Alias for `reverse_divX_of_coeff_zero` matching the right-zero branch. -/
-theorem reverse_eq_reverse_divX_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0) :
-    p.reverse = p.divX.reverse :=
-  reverse_divX_of_coeff_zero h0
-
 /-- In the zero-constant branch, `p.reverse` splits iff `p.divX` splits. -/
 theorem splits_reverse_iff_divX_splits_of_coeff_zero {p : K[X]}
     (h0 : p.coeff 0 = 0) :
     p.reverse.Splits ↔ p.divX.Splits := by
-  rw [reverse_eq_reverse_divX_of_coeff_zero h0, splits_reverse_iff]
+  rw [DegreeDropReversal.reverse_divX_of_coeff_zero h0, splits_reverse_iff]
 
 /-- The reflected degree-padded family splits if and only if the original
 family splits. -/
@@ -554,6 +549,76 @@ theorem card_roots_reflect_Ioi {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     Multiset.filter_add, Multiset.card_add, Polynomial.roots_pow,
     Polynomial.roots_X, card_roots_reverse_Ioi hp h0 ha, hpad,
     Multiset.card_zero, zero_add]
+
+/-- On the negative half-line, inversion reverses a strict-upper comparison. -/
+theorem mem_Ioi_inv_iff_of_neg {a r : K} (ha : a < 0) (hr : r < 0) :
+    a < r⁻¹ ↔ r < a⁻¹ := by
+  simpa using inv_lt_inv_of_neg (inv_lt_zero'.2 ha) hr
+
+/-- Strict-upper root-count transport under reversal at a negative threshold,
+assuming all original roots are strictly negative. -/
+theorem card_roots_reverse_Ioi_of_neg {p : K[X]} (hp : p.Splits)
+    (h0 : p.coeff 0 ≠ 0) {a : K} (ha : a < 0)
+    (hneg : ∀ r ∈ p.roots, r < 0) :
+    (p.reverse.roots.filter (fun x => a < x)).card =
+      (p.roots.filter (fun r => r < a⁻¹)).card := by
+  rw [card_filter_reverse_roots hp h0]
+  exact congrArg Multiset.card <|
+    Multiset.filter_congr fun r hr => mem_Ioi_inv_iff_of_neg ha (hneg r hr)
+
+/-- At a negative threshold, the reflected strict-upper count consists of all
+degree-padding zeros together with the original roots lying below the inverse
+threshold. -/
+theorem card_roots_reflect_Ioi_of_neg {p : K[X]} (hp : p.Splits)
+    (h0 : p.coeff 0 ≠ 0) {N : ℕ} (hN : p.natDegree ≤ N)
+    {a : K} (ha : a < 0) (hneg : ∀ r ∈ p.roots, r < 0) :
+    ((reflect N p).roots.filter (fun x => a < x)).card =
+      (N - p.natDegree) +
+        (p.roots.filter (fun r => r < a⁻¹)).card := by
+  rw [reflect_eq_X_pow_mul_reverse p hN,
+    Polynomial.roots_mul
+      (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero)
+        (reverse_ne_zero_of_coeff_zero_ne h0)),
+    Multiset.filter_add, Multiset.card_add, Polynomial.roots_pow,
+    Polynomial.roots_X, card_roots_reverse_Ioi_of_neg hp h0 ha hneg]
+  rw [Multiset.filter_nsmul]
+  rw [Multiset.filter_singleton, ite_eq_left ha]
+  simp
+
+/-- Complement form of negative-threshold root-count transport under
+reflection. The number of original roots above `r < 0` is the complement in
+the fixed reflection degree of the reflected roots above `r⁻¹`.
+
+This is the endpoint bookkeeping needed when roots escape to `-∞`: the added
+zero roots of the reflection are counted on the reflected strict-upper side
+and hence disappear after taking the complement. -/
+theorem card_roots_filter_gt_eq_reflect_compl {p : K[X]} (hp : p.Splits)
+    (h0 : p.coeff 0 ≠ 0) {N : ℕ} (hN : p.natDegree ≤ N)
+    {r : K} (hr : r < 0) (hrroot : ¬p.IsRoot r)
+    (hneg : ∀ q ∈ p.roots, q < 0) :
+    (p.roots.filter (fun q => r < q)).card =
+      N - ((reflect N p).roots.filter (fun x => r⁻¹ < x)).card := by
+  have hrmem : r ∉ p.roots := fun h => hrroot (Polynomial.isRoot_of_mem_roots h)
+  have hpartition :
+      (p.roots.filter (fun q => q < r)).card +
+          (p.roots.filter (fun q => r < q)).card = p.roots.card := by
+    have hfilter : p.roots.filter (fun q => ¬q < r) =
+        p.roots.filter (fun q => r < q) :=
+      Multiset.filter_congr fun q hq => by
+      have hqr : q ≠ r := fun h => hrmem (h ▸ hq)
+      constructor
+      · intro hnlt
+        exact lt_of_le_of_ne (le_of_not_gt hnlt) hqr.symm
+      · exact fun hgt => not_lt_of_ge hgt.le
+    have hsum := Multiset.filter_add_not (p := fun q => q < r) p.roots
+    rw [hfilter] at hsum
+    simpa using congrArg Multiset.card hsum
+  have hreflect := card_roots_reflect_Ioi_of_neg hp h0 hN
+    (inv_lt_zero'.2 hr) hneg
+  rw [inv_inv] at hreflect
+  have hcard : p.roots.card = p.natDegree :=
+    hp.natDegree_eq_card_roots.symm
+  omega
 
 /-- No-gap emptiness on a positive interval under reversal. -/
 theorem card_roots_reverse_Ioo_eq_zero_iff {p : K[X]} (hp : p.Splits)

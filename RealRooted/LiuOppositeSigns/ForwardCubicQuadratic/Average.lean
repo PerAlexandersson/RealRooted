@@ -75,7 +75,7 @@ lemma cubicSubQuadratic_average_above_mu_pos {a b c u v : ℝ}
     ring
   change 0 < 3 * m - (a + b + c)
   rw [hsum]
-  nlinarith
+  linarith
 
 /-- With the midpoint tangent coefficient, the derivative discriminant of the
 cubic-minus-quadratic pencil is negative when the average of the quadratic
@@ -97,7 +97,7 @@ lemma cubicSubQuadratic_average_above_deriv_disc_neg {a b c u v : ℝ}
   have hsum_pos :
       0 < (m - a) * (m - b) + (m - a) * (m - c) +
         (m - b) * (m - c) := by
-    nlinarith
+    linarith
   have hdelta :
       3 *
           (a * b + a * c + b * c +
@@ -107,7 +107,7 @@ lemma cubicSubQuadratic_average_above_deriv_disc_neg {a b c u v : ℝ}
           (m - b) * (m - c)) := by
     dsimp [m]
     ring
-  nlinarith
+  linarith
 
 /-- Derivative-discriminant certificate for a negative cubic discriminant of a
 monic cubic-minus-quadratic pencil. -/
@@ -123,7 +123,7 @@ lemma cubicDiscr_cubicSubQuadratic_neg_of_deriv_disc_neg
   have hderiv' :
       (-(a + b + c + μ)) ^ 2 <
         3 * 1 * (a * b + a * c + b * c + μ * (u + v)) := by
-    nlinarith
+    linarith
   exact
     cubicDiscr_neg_of_deriv_disc_neg
       1
@@ -152,7 +152,7 @@ lemma cubicDiscr_cubicSubQuadratic_neg_of_critical_value
   have hcrit' :
       3 * t ^ 2 + 2 * (-(a + b + c + μ)) * t +
         (a * b + a * c + b * c + μ * (u + v)) = 0 := by
-    nlinarith
+    linarith
   have hvalue' :
       y =
       t ^ 3 + (-(a + b + c + μ)) * t ^ 2 +
@@ -226,42 +226,11 @@ lemma exists_cubicSubQuadratic_not_splits_of_average_above
     ∃ μ : ℝ, 0 < μ ∧
       ¬ (((X - C a) * (X - C b) * (X - C c)) -
         C μ * ((X - C u) * (X - C v))).Splits := by
-  have hμ : 0 < 3 * ((u + v) / 2) - (a + b + c) := by
-    exact cubicSubQuadratic_average_above_mu_pos hab hbc hcmean
+  have hμ : 0 < 3 * ((u + v) / 2) - (a + b + c) :=
+    cubicSubQuadratic_average_above_mu_pos hab hbc hcmean
   exact
     exists_cubicSubQuadratic_not_splits_of_deriv_disc_neg hμ
       (cubicSubQuadratic_average_above_deriv_disc_neg hab hbc hcmean)
-
-/-- The midpoint tangent coefficient is positive when both quadratic roots lie
-strictly above the cubic root interval. -/
-lemma cubicSubQuadratic_right_roots_above_mu_pos {a b c u v : ℝ}
-    (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u) (huv : u ≤ v) :
-    0 < 3 * ((u + v) / 2) - (a + b + c) := by
-  have hcmean : c < (u + v) / 2 := by nlinarith
-  exact cubicSubQuadratic_average_above_mu_pos hab hbc hcmean
-
-/-- With the midpoint tangent coefficient, the derivative discriminant of the
-cubic-minus-quadratic pencil is negative. -/
-lemma cubicSubQuadratic_right_roots_above_deriv_disc_neg {a b c u v : ℝ}
-    (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u) (huv : u ≤ v) :
-    (a + b + c + (3 * ((u + v) / 2) - (a + b + c))) ^ 2 <
-      3 *
-        (a * b + a * c + b * c +
-          (3 * ((u + v) / 2) - (a + b + c)) * (u + v)) := by
-  have hcmean : c < (u + v) / 2 := by nlinarith
-  exact cubicSubQuadratic_average_above_deriv_disc_neg hab hbc hcmean
-
-/-- If both quadratic roots lie strictly above the cubic roots, then the
-midpoint tangent coefficient gives a negative cubic discriminant. -/
-lemma cubicDiscr_cubicSubQuadratic_right_roots_above_neg
-    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hcu : c < u)
-    (huv : u ≤ v) :
-    cubicDiscr
-      (((X - C a) * (X - C b) * (X - C c)) -
-        C (3 * ((u + v) / 2) - (a + b + c)) *
-          ((X - C u) * (X - C v))) < 0 := by
-  have hcmean : c < (u + v) / 2 := by nlinarith
-  exact cubicDiscr_cubicSubQuadratic_average_above_neg hab hbc hcmean
 
 /-- If both quadratic roots lie strictly above the cubic roots, then some
 positive subtraction coefficient makes the monic cubic-minus-quadratic pencil
@@ -272,7 +241,7 @@ lemma exists_cubicSubQuadratic_not_splits_of_right_roots_above
     ∃ μ : ℝ, 0 < μ ∧
       ¬ (((X - C a) * (X - C b) * (X - C c)) -
         C μ * ((X - C u) * (X - C v))).Splits := by
-  have hcmean : c < (u + v) / 2 := by nlinarith
+  have hcmean : c < (u + v) / 2 := by linarith
   exact exists_cubicSubQuadratic_not_splits_of_average_above hab hbc hcmean
 
 /-- A negative-discriminant subtraction pencil obstructs compatibility of
@@ -382,7 +351,7 @@ lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_right_roots_above
     ¬ Compatible
       (C A * ((X - C a) * (X - C b) * (X - C c)))
       (C B * ((X - C u) * (X - C v))) := by
-  have hcmean : c < (u + v) / 2 := by nlinarith
+  have hcmean : c < (u + v) / 2 := by linarith
   exact
     not_compatible_scaled_cubic_quadratic_of_opposite_of_average_above
       hAB hab hbc hcmean

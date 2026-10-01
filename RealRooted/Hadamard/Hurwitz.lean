@@ -261,11 +261,4 @@ theorem hadamardProduct_evenCoeff_isPolyaFreqSeq_of_matrixTN
     IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n)) :=
   hurwitz_isPolyaFreqSeq_even (h ha hb)
 
-/-- Bundled odd/even PF consequence of the Hurwitz-matrix Hadamard leaf. -/
-theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
-    (h : hadamardPreservesHurwitzMatrixTNStatement) :
-    hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
-  fun ha hb =>
-    ⟨hurwitz_isPolyaFreqSeq_odd (h ha hb),
-      hurwitz_isPolyaFreqSeq_even (h ha hb)⟩
 end RealRooted

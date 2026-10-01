@@ -123,8 +123,8 @@ theorem allComboRealRooted_step_linear_change_of_pencil
     (hT : PreservesRealRootedOnPencil T f g)
     (hp : p = C a * T f + C b * T g)
     (hq : q = C c * T f + C d * T g) :
-    AllComboRealRooted p q := by
-  exact allComboRealRooted_linear_recombination hp hq
+    AllComboRealRooted p q :=
+  allComboRealRooted_linear_recombination hp hq
     (allComboRealRooted_map_of_pencil hall hT)
 
 /-- Single triangular Ore-shaped step through a pencil-local image operator.
@@ -574,31 +574,6 @@ theorem homogeneous_induced_two_coordinate_cone_backend_splits_of_eq_combo_of_pe
       (a := a) (b := b) (c := c) (d := d) hT hPimage hQimage)
     hQstate hQnext hR
 
-/-- Nonzero real-rootedness package for a closed-form exit from
-generated-row-facing pencil data. -/
-theorem homogeneous_induced_two_coordinate_cone_backend_ne_zero_and_splits_of_eq_combo_of_pencil
-    {T : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {ell m k : ℕ → ℝ[X]}
-    {P Q R : ℕ → ℝ[X]} {a b c d u v : ℕ → ℝ}
-    (hbase : AllComboRealRooted (P 0) (Q 0))
-    (hT : PreservesRealRootedOnPencilsAlong T P Q)
-    (hPimage : ∀ j : ℕ,
-      oreAffineDerivativeLinearMap (ell j) (m j) (P j) + Q j =
-        C (a j) * T j (P j) + C (b j) * T j (Q j))
-    (hQimage : ∀ j : ℕ,
-      polynomialMulLinearMap (k j) (Q j) =
-        C (c j) * T j (P j) + C (d j) * T j (Q j))
-    (hQstate : ∀ j : ℕ,
-      Q j = P (j + 1) - oreAffineDerivativeLinearMap (ell j) (m j) (P j))
-    (hQnext : ∀ j : ℕ, Q (j + 1) = polynomialMulLinearMap (k j) (Q j))
-    (hR : ∀ j : ℕ, R j = C (u j) * P j + C (v j) * Q j)
-    (hR0 : ∀ j : ℕ, R j ≠ 0) :
-    ∀ j : ℕ, R j ≠ 0 ∧ (R j).Splits :=
-  homogeneous_induced_two_coordinate_cone_backend_ne_zero_and_splits_of_eq_combo
-    hbase
-    (homogeneousInducedConeRowsAlong_of_pencil
-      (a := a) (b := b) (c := c) (d := d) hT hPimage hQimage)
-    hQstate hQnext hR hR0
-
 /-- Closed-form `Splits` exit for scalar triangular rows with the
 identity preserver. -/
 theorem homogeneous_induced_two_coordinate_cone_backend_splits_of_eq_combo_scalar_id
@@ -646,9 +621,6 @@ theorem interl_or_reverse_sequence_of_pencil
   interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_sequence_of_pencil hbase hT hP hQ j)
 
-@[deprecated interl_or_reverse_sequence_of_pencil (since := "2026-09-18")]
-alias prec0_or_revPrec0_sequence_of_pencil := interl_or_reverse_sequence_of_pencil
-
 /-- Unoriented `Interl` consequence of sequence-level pencil transport with a
 post-map two-coordinate linear change at each step. -/
 theorem interl_or_reverse_sequence_linear_change_of_pencil
@@ -663,11 +635,6 @@ theorem interl_or_reverse_sequence_linear_change_of_pencil
     ∀ j : ℕ, Interl (P j) (Q j) ∨ Interl (Q j) (P j) := fun j =>
   interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_sequence_linear_change_of_pencil hbase hT hP hQ j)
-
-@[deprecated interl_or_reverse_sequence_linear_change_of_pencil
-  (since := "2026-09-18")]
-alias prec0_or_revPrec0_sequence_linear_change_of_pencil :=
-  interl_or_reverse_sequence_linear_change_of_pencil
 
 /-- Unoriented `Interl` consequence of triangular Ore-shaped state transport. -/
 theorem interl_or_reverse_triangular_sequence_of_pencil
@@ -688,11 +655,6 @@ theorem interl_or_reverse_triangular_sequence_of_pencil
     (allComboRealRooted_triangular_sequence_of_pencil
       hbase hT hP hQ hPimage hQimage j)
 
-@[deprecated interl_or_reverse_triangular_sequence_of_pencil
-  (since := "2026-09-18")]
-alias prec0_or_revPrec0_triangular_sequence_of_pencil :=
-  interl_or_reverse_triangular_sequence_of_pencil
-
 /-- Unoriented `Interl` consequence of triangular row-certificate transport. -/
 theorem interl_or_reverse_triangular_sequence_of_certificates
     {T A K : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {P Q : ℕ → ℝ[X]}
@@ -704,10 +666,5 @@ theorem interl_or_reverse_triangular_sequence_of_certificates
   interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_triangular_sequence_of_certificates
       hbase hrow hP hQ j)
-
-@[deprecated interl_or_reverse_triangular_sequence_of_certificates
-  (since := "2026-09-18")]
-alias prec0_or_revPrec0_triangular_sequence_of_certificates :=
-  interl_or_reverse_triangular_sequence_of_certificates
 
 end RealRooted

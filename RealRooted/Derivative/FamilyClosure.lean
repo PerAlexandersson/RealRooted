@@ -102,16 +102,6 @@ theorem posFamily_derivative_eq_zero_or_ne_zero_and_splits
     (derivative_eq_zero_or_ne_zero_and_splits
       (p := f + C μ * g) (hfam hμ).2)
 
-/-- Explicit-binder variant of `posFamily_derivative_eq_zero_or_ne_zero_and_splits`. -/
-theorem posFamily_derivative_eq_zero_or_ne_zero_and_splits_explicit
-    {f g : ℝ[X]}
-    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits)) :
-    ∀ μ : ℝ, 0 < μ →
-      (f.derivative + C μ * g.derivative = 0) ∨
-        ((f.derivative + C μ * g.derivative) ≠ 0 ∧
-          (f.derivative + C μ * g.derivative).Splits) :=
-  fun _ hμ => posFamily_derivative_eq_zero_or_ne_zero_and_splits hfam hμ
-
 /-- Zero-or-splits projection for a derivative member of a positive right
 family. -/
 theorem posFamily_derivative_eq_zero_or_splits
@@ -123,16 +113,6 @@ theorem posFamily_derivative_eq_zero_or_splits
   rcases posFamily_derivative_eq_zero_or_ne_zero_and_splits hfam hμ with hzero | hsplit
   · exact Or.inl hzero
   · exact Or.inr hsplit.2
-
-/-- Explicit-binder zero-or-splits projection for derivative members of a
-positive right family. -/
-theorem posFamily_derivative_eq_zero_or_splits_explicit
-    {f g : ℝ[X]}
-    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits)) :
-    ∀ μ : ℝ, 0 < μ →
-      (f.derivative + C μ * g.derivative = 0) ∨
-        (f.derivative + C μ * g.derivative).Splits :=
-  fun _ hμ => posFamily_derivative_eq_zero_or_splits hfam hμ
 
 /-- Nonzero members of the derivative of a real-rooted right family
 `f + C μ * g`, for `μ > 0`, are real-rooted. -/

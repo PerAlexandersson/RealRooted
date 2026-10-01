@@ -114,7 +114,7 @@ lemma exists_quadraticSubLinear_not_splits_of_upper_lt_right_root
       unfold discrim
       ring_nf
     rw [hdisc_eq]
-    nlinarith
+    linarith
   intro hsplit
   exact (quadraticPoly_not_splits_of_discrim_neg one_ne_zero hdisc) (by
     simpa [hpoly] using hsplit)
@@ -215,7 +215,7 @@ lemma discrim_quadraticSubQuadratic_inner_vertex {u v w : ℝ}
         -4 * u * w * (u + v) * (v + w) / v ^ 2 := by
   intro μ
   dsimp [μ]
-  have hv2_ne : v ^ 2 ≠ 0 := by exact pow_ne_zero 2 hv
+  have hv2_ne : v ^ 2 ≠ 0 := pow_ne_zero 2 hv
   unfold discrim
   field_simp [hv2_ne]
   ring
@@ -241,7 +241,7 @@ lemma exists_quadraticSubQuadratic_not_splits_of_inner_roots
     have hμ_gt_one : 1 < μ := by
       dsimp [μ]
       have hnum_gt : 4 * (c - a) * (b - c) < (b - a) ^ 2 + 1 := by
-        nlinarith [sq_nonneg ((c - a) - (b - c))]
+        linarith [sq_nonneg ((c - a) - (b - c))]
       rw [one_lt_div hden_pos]
       linarith
     refine ⟨μ, hμ_pos, ?_⟩
@@ -290,7 +290,7 @@ lemma exists_quadraticSubQuadratic_not_splits_of_inner_roots
     have hμ_gt_one : 1 < μ := by
       dsimp [μ]
       have hnum_gt : v ^ 2 < u * v + 2 * u * w + v ^ 2 + v * w := by
-        nlinarith [mul_pos hu hv, mul_pos hu hw, mul_pos hv hw]
+        linarith [mul_pos hu hv, mul_pos hu hw, mul_pos hv hw]
       rw [one_lt_div (by positivity : 0 < v ^ 2)]
       linarith
     refine ⟨μ, hμ_pos, ?_⟩
@@ -493,23 +493,6 @@ theorem theorem21RootCountBranches_of_compatible_natDegree_one_two_of_no_common
     exact (hno r hr.isRoot) (by simpa [hrs] using hs.isRoot)
   exact theorem21RootCountBranches_of_compatible_natDegree_one_two_of_largest_ne
     hf hg hsgn hcompat hfdeg hgdeg hr hs hrs_ne
-
-/-- Mixed endpoint degree-two no-common forward case.  This combines the
-checked `(2, 1)` obstruction with its `(1, 2)` no-common counterpart. -/
-theorem
-    theorem21RootCountBranches_of_compatible_natDegree_one_two_or_two_one_of_no_common
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
-    (hno : NoCommonRoots f g)
-    (hdeg :
-      (f.natDegree = 2 ∧ g.natDegree = 1) ∨
-        (f.natDegree = 1 ∧ g.natDegree = 2)) :
-    theorem21RootCountBranches f g := by
-  rcases hdeg with hdeg | hdeg
-  · exact theorem21RootCountBranches_of_compatible_natDegree_two_one
-      hf hg hsgn hcompat hdeg.1 hdeg.2
-  · exact theorem21RootCountBranches_of_compatible_natDegree_one_two_of_no_common
-      hf hg hsgn hcompat hdeg.1 hdeg.2 hno
 
 /-- No-common quadratic/quadratic forward endpoint case.  If the largest root
 of one side lies to the right, deleting it leaves a singleton/two-root

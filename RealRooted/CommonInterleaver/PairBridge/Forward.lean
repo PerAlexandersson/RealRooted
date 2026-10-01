@@ -34,37 +34,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- The corrected shifted-pair same-degree hypothesis already implies the
-original same-degree orientation statement in the nonnegative regime, via the
-public shifted-pair subtraction theorem from `AffineFamily`. -/
-theorem posComboNoCommonSameDegreeOrientation_of_shiftedPairOrientation_and_nonnegCoeffs
-    (hshift : PosComboNoCommonSameDegreeShiftedPairOrientationStatement) :
-    PosComboNoCommonSameDegreeOrientationNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  have hf0 : f ≠ 0 := hf_pos.ne_zero
-  have hg0 : g ≠ 0 := hg_pos.ne_zero
-  exact
-    strictInterl_of_strictInterl_shifted_pair_sameDegree_nonneg
-      (hshift hf_pos hg_pos hfnn hgnn hfg hdeg hno)
-      hf0 hg0 hfnn hgnn hdeg
-
-/-- Consequently, the corrected shifted-pair same-degree hypothesis already
-gives the same-degree all-combinations bridge in the nonnegative regime. -/
-theorem allComboRealRooted_of_sameDegreeShiftedPairOrientation_and_nonnegCoeffs
-    (hshift : PosComboNoCommonSameDegreeShiftedPairOrientationStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    AllComboRealRooted f g :=
-  allComboRealRooted_of_strictInterl
-    ((posComboNoCommonSameDegreeOrientation_of_shiftedPairOrientation_and_nonnegCoeffs
-        hshift) hf_pos hg_pos hfnn hgnn hfg hdeg hno)
-
 /-- Forward orientation of the right-family pair `(f + g, f + 2g)` already
 forces the sum `f + g` to interlace `g` on the left in the high-degree
 same-degree nonnegative branch. This is the first concrete transport step
@@ -124,11 +93,6 @@ theorem strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_no
       (by simp_all)
   lia
 
-@[deprecated strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg :=
-  strictInterl_sum_left_of_strictInterl_right_family_forward_sameDegree_nonneg
-
 /-- Swapping the roles of `f` and `g` gives the symmetric forward transport for
 the left-family pair `(f + g, 2f + g)`. -/
 theorem strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_nonneg
@@ -150,11 +114,6 @@ theorem strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_non
       hno_swap
       (by simpa [add_comm, add_left_comm, add_assoc, mul_comm, mul_left_comm, mul_assoc]
         using hpair)
-
-@[deprecated strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_nonneg
-  (since := "2026-09-18")]
-alias prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg :=
-  strictInterl_sum_left_of_strictInterl_left_family_forward_sameDegree_nonneg
 
 /-- If both specialized one-step families point forward, then their common
 middle sum `f + g` is already a common left interleaver for `f` and `g`. This
@@ -196,23 +155,5 @@ theorem compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
     pairHasCommonLeftInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
       hf_pos hg_pos hfg hdeg hdeg_pos hno hright hleft
   exact Compatible.of_commonLeftInterleaver hhf hhg hf_pos hg_pos
-
-/-- Consequently, any generic two-polynomial compatibility bridge can consume
-the forward one-two-family hypotheses directly. -/
-theorem pairHasCommonInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
-    (htwo : CompatiblePairHasCommonInterleaverStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hdeg_pos : 1 ≤ g.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hright : StrictInterl (f + g) (f + C (2 : ℝ) * g))
-    (hleft : StrictInterl (f + g) (C (2 : ℝ) * f + g)) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  htwo hf_pos hg_pos
-    (compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
-      hf_pos hg_pos hfg hdeg hdeg_pos hno hright hleft)
 
 end RealRooted

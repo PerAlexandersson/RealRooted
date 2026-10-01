@@ -68,19 +68,6 @@ theorem theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonFo
     theorem21DeletionPairCommonInterleaverBranches f g :=
   hforward hf hg hsgn hcompat
 
-/-- Projection form of the isolated nonconstant branch-retaining deletion-pair
-common-interleaver forward direction. -/
-theorem
-    theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonForward_nonconstant
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
-    (hcompat : Compatible f g) :
-    theorem21DeletionPairCommonInterleaverBranches f g :=
-  hforward hf hg hsgn hf_deg hg_deg hcompat
-
 /-- The isolated branch-retaining deletion-pair common-interleaver forward
 direction supplies normalized deletion compatibility branches. -/
 theorem theorem21PositiveDeletionCompatibleBranches_of_compatible_of_commonForward
@@ -92,22 +79,6 @@ theorem theorem21PositiveDeletionCompatibleBranches_of_compatible_of_commonForwa
     hsgn
     (theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonForward
       hforward hf hg hsgn hcompat)
-
-/-- The isolated nonconstant branch-retaining deletion-pair common-interleaver
-forward direction supplies normalized deletion compatibility branches. -/
-theorem
-    theorem21PositiveDeletionCompatibleBranches_of_compatible_of_commonForward_nonconstant
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
-    (hcompat : Compatible f g) :
-    theorem21PositiveDeletionCompatibleBranches f g :=
-  theorem21PositiveDeletionCompatibleBranches_of_deletionPairCommonInterleaverBranches
-    hsgn
-    (theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonForward_nonconstant
-      hforward hf hg hsgn hf_deg hg_deg hcompat)
 
 /-- The isolated forward direction of Liu Theorem 2.1 supplies normalized
 deletion compatibility branches. -/
@@ -183,23 +154,13 @@ theorem
     exact (hsucc hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
       |>.pairHasCommonInterleaver_of_succDegree hdeg
 
-/-- The strict-upper non-root count leaves also route through the
-positive-split package before reaching the common-interleaver endpoint. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCountAboveNonRoot_via_positiveSplit
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_positiveSplitRootCountAboveNonRoot
-    (positiveSplitSameDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot hsame)
-    (positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot hsucc)
-
 /-- The checked same-degree analytic count spine and the succ-degree
 common-left-interleaver reduction supply the compatible-pair endpoint. -/
 theorem
     compatiblePairHasCommonInterleaver_of_sameDegreeAnalytic_and_succCommonLeftInterleaver
     (hsucc : PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCountAboveNonRoot_via_positiveSplit
+  compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
     _root_.RealRooted.posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
     (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_commonLeftInterleaver
       hsucc)

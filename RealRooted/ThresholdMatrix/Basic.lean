@@ -203,8 +203,7 @@ theorem isRealRooted_sum_of_isInterlacingSeq0Nonneg
     intro hnil
     have hsum_filter : (fs.filter (· ≠ 0)).sum = fs.sum := sum_filter_ne_zero fs
     have hsum_zero : (fs.filter (· ≠ 0)).sum = 0 := by simpa using congrArg List.sum hnil
-    apply hsum_ne
-    exact hsum_filter.symm.trans hsum_zero
+    exact hsum_ne (hsum_filter.symm.trans hsum_zero)
   have hlen_pos : 0 < (fs.filter (· ≠ 0)).length := by
     cases hfilter : fs.filter (· ≠ 0) with
     | nil => exact False.elim (hfilter_ne hfilter)
@@ -225,24 +224,6 @@ polynomial. -/
 theorem interl_refl_of_realRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     Interl p p :=
   Interl.refl fun _ => hp.2
-
-@[deprecated interl_refl_of_realRooted (since := "2026-09-26")]
-alias prec0_refl_of_realRooted := interl_refl_of_realRooted
-
-/-- A positive affine form precedes the `X`-multiple of another one under the
-cross inequality. -/
-theorem interl_affine_to_X_mul_affine
-    {u v U V : ℝ}
-    (hu : 0 < u) (hU : 0 < U) (hcross : u * V ≤ U * v)
-    (hv : 0 ≤ v) (hV : 0 ≤ V) :
-    Interl (C U * X + C V) (X * (C u * X + C v)) :=
-  (strictInterl_to_strictInterl_mul_X_of_nonneg
-    (strictInterl_affine_linear_affine_linear_of_cross hu hU hcross)
-    (hasNonnegCoeffs_affine_linear hu.le hv)
-    (hasNonnegCoeffs_affine_linear hU.le hV)).toInterl
-
-@[deprecated interl_affine_to_X_mul_affine (since := "2026-09-26")]
-alias prec0_affine_to_X_mul_affine := interl_affine_to_X_mul_affine
 
 def Threshold2x2EntryTuple
     (a b c d A B C D : ℝ[X]) : Prop :=

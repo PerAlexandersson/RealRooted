@@ -84,7 +84,7 @@ theorem decoBottomTotal_three_mvRealStable :
       simp only [Complex.add_re, Complex.re_ofNat, Complex.add_im,
         Complex.im_ofNat, zero_add, Complex.mul_re, Complex.mul_im]
       ring_nf
-      nlinarith
+      linarith
     · exact Complex.normSq_pos.mpr hd
   have hq : ∀ x : ℂ, 0 < x.im →
       0 < ((a + b * x) / (c + d * x)).im := by
@@ -101,14 +101,14 @@ theorem decoBottomTotal_three_mvRealStable :
       have hzquad : 0 <
           8 * (z 3).re ^ 2 + 21 * (z 3).re +
             8 * (z 3).im ^ 2 + 25 := by
-        nlinarith [sq_nonneg (16 * (z 3).re + 21),
+        linarith [sq_nonneg (16 * (z 3).re + 21),
           sq_nonneg (z 3).im]
       have hxquad : 0 <
           27 * x.re ^ 2 + 17 * x.re + 27 * x.im ^ 2 + 6 := by
-        nlinarith [sq_nonneg (54 * x.re + 17), sq_nonneg x.im]
+        linarith [sq_nonneg (54 * x.re + 17), sq_nonneg x.im]
       have hv := mul_pos hx hzquad
       have ht := mul_pos hz3 hxquad
-      nlinarith
+      linarith
     · exact Complex.normSq_pos.mpr hden
   have htarget : a + b * z 1 + c * z 2 + d * z 1 * z 2 ≠ 0 := by
     apply RealRooted.bivariate_ne_zero_of_im_div_pos_of_quotient_im_pos

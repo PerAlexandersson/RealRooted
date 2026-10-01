@@ -492,8 +492,8 @@ theorem orderedSubsetPairFullStaircasePlacement_isNonNestingPlacement
       exact not_lt_of_ge hle_ji hrow_ij
     have hcols_pairwise : List.Pairwise (· < ·) cols := by
       simpa [cols] using (Finset.sortedLT_sort B).pairwise
-    have hcol_lt : cols[i] < cols[j] := by
-      exact (List.pairwise_iff_getElem.mp hcols_pairwise) i j hi_cols hj_cols hij_lt
+    have hcol_lt : cols[i] < cols[j] :=
+      (List.pairwise_iff_getElem.mp hcols_pairwise) i j hi_cols hj_cols hij_lt
     have hcolj_mem : cols[j] ∈ B := by
       rw [← Finset.mem_sort (s := B) (r := (· ≤ ·))]
       exact List.getElem_mem hj_cols

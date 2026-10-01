@@ -234,7 +234,7 @@ theorem loweringEulerResidual_stable
   have hMpos : 0 < (M : ℝ) := by
     have hDpos : 0 < D := hD
     exact_mod_cast (lt_of_lt_of_le hDpos (by lia : D ≤ M))
-  nlinarith [mul_pos hMD (hz 0), mul_pos hMpos (hz 1)]
+  linarith [mul_pos hMD (hz 0), mul_pos hMpos (hz 1)]
 
 /-- The genuine finite algebraic symbol of the lowering Euler operator is
 upper-half-plane stable. -/
@@ -298,9 +298,6 @@ theorem loweringEulerStep_strictInterl
         exact hD)
   simpa only [BorceaBranden.loweringEulerLinearMap_apply] using hStrictInterl
 
-@[deprecated loweringEulerStep_strictInterl (since := "2026-09-26")]
-alias loweringEulerStep_prec := loweringEulerStep_strictInterl
-
 /-- The positive-boundary Euler insertion operator preserves an oriented PF
 interlacing pair inside a fixed degree box. -/
 theorem eulerInsertionStep_one_strictInterl
@@ -327,9 +324,6 @@ theorem eulerInsertionStep_one_strictInterl
   exact BorceaBranden.eulerBidiagonalStepWithConstant_strictInterl
       (by norm_num) hd hpdeg hqdeg hpq hpPos hqPos hpout.2 hqout.2
       (by rw [hpout.1]; lia)
-
-@[deprecated eulerInsertionStep_one_strictInterl (since := "2026-09-26")]
-alias eulerInsertionStep_one_prec := eulerInsertionStep_one_strictInterl
 
 theorem loweringEulerStep_theta_eq
     {M : ℕ} (hM : 2 ≤ M) (p : ℝ[X]) :
@@ -460,10 +454,5 @@ theorem crossedEulerCompletion_commonLeftInterleaver
   · exact hT_p1
   · exact hU_p
   · exact hU_p1
-
-@[deprecated eulerInsertionStep_derivative_strictInterl_zeroStep
-    (since := "2026-09-26")]
-alias eulerInsertionStep_derivative_prec_zeroStep :=
-  eulerInsertionStep_derivative_strictInterl_zeroStep
 
 end RealRooted

@@ -94,8 +94,8 @@ theorem rationalRodDenominator_mul_generatingSeries
   let g := rationalBackgroundSeries ys
   let h := markedFactorSeries c r xs
   let F := twoKernelGeneratingSeries g h
-  have hzero : PowerSeries.constantCoeff h = 0 := by
-    exact constantCoeff_markedFactorSeries c hr xs
+  have hzero : PowerSeries.constantCoeff h = 0 :=
+    constantCoeff_markedFactorSeries c hr xs
   have hQg : Q * g = 1 := rationalBackgroundDenominator_mul_series ys
   have hbase :
       (1 - PowerSeries.C X * polynomialLift (g * h)) * F =
@@ -346,12 +346,6 @@ theorem monomerRodRow_roots_neg
   have hpf := (monomerRodRows_pf_and_interl hb.le hc hr hxs).1 n
   apply hpf.roots_neg_of_coeff_zero_ne
   simp [hr, pow_ne_zero _ hb.ne']
-
-@[deprecated rationalRodRows_pf_and_interl (since := "2026-09-18")]
-alias rationalRodRows_pf_and_prec0 := rationalRodRows_pf_and_interl
-
-@[deprecated monomerRodRows_pf_and_interl (since := "2026-09-18")]
-alias monomerRodRows_pf_and_prec0 := monomerRodRows_pf_and_interl
 
 end
 

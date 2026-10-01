@@ -76,8 +76,8 @@ theorem shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
         (compositionRow
           (PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys)) n)
         (compositionRow
-          (PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys)) (n + 1)) := by
-  exact compositionRows_mk_pf_and_interl_of_zero
+          (PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys)) (n + 1)) :=
+  compositionRows_mk_pf_and_interl_of_zero
     (shiftedFiniteSupersymmetricCoeff_isPolyaFreqSeq hxs hys)
     (shiftedFiniteSupersymmetricCoeff_zero xs ys)
 
@@ -196,8 +196,8 @@ theorem binomialCompositionRow_exact_X_power
         (PowerSeries.mk (binomialCompositionKernel d)) n := by
   let m := n ⌈/⌉ (d + 1)
   have hden : 0 < d + 1 := by positivity
-  have hnle : n ≤ (d + 1) * m := by
-    exact (ceilDiv_le_iff_le_mul hden).mp le_rfl
+  have hnle : n ≤ (d + 1) * m :=
+    (ceilDiv_le_iff_le_mul hden).mp le_rfl
   have hmle : m ≤ n := by
     rw [ceilDiv_le_iff_le_mul hden]
     simp [Nat.add_mul, Nat.add_comm]
@@ -253,8 +253,8 @@ theorem binomialCompositionRow_nonzero_roots_neg
     (d n : ℕ) {r : ℝ}
     (hr : r ∈ (compositionRow
       (PowerSeries.mk (binomialCompositionKernel d)) n).roots)
-    (hr0 : r ≠ 0) : r < 0 := by
-  exact lt_of_le_of_ne
+    (hr0 : r ≠ 0) : r < 0 :=
+  lt_of_le_of_ne
     ((binomialCompositionRows_pf_and_interl d).1 n |>.roots_nonpos r hr)
     hr0
 
@@ -288,8 +288,8 @@ theorem coeff_inversePowerCompositionKernel_pow
       (Nat.choose (e * k - 1 + (n - k)) (e * k - 1) : ℝ) := by
   rw [mk_inversePowerCompositionKernel, mul_pow, ← pow_mul]
   rw [PowerSeries.coeff_X_pow_mul', ite_eq_left hkn]
-  have hek : e * k = (e * k - 1) + 1 := by
-    exact (Nat.sub_add_cancel
+  have hek : e * k = (e * k - 1) + 1 :=
+    (Nat.sub_add_cancel
       (Nat.succ_le_iff.mpr (Nat.mul_pos (by lia) (by lia)))).symm
   rw [hek, PowerSeries.mk_one_pow_eq_mk_choose_add]
   simp
@@ -378,17 +378,14 @@ theorem inversePowerCompositionRows_pf_and_interl (e : ℕ) :
     (shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
       (xs := []) (ys := List.replicate e 1) (by simp) (by simp))
 
-@[deprecated inversePowerCompositionRows_pf_and_interl (since := "2026-09-18")]
-alias inversePowerCompositionRows_pf_and_prec0 := inversePowerCompositionRows_pf_and_interl
-
 /-- Every nonzero root of an inverse-power composition row is strictly
 negative. -/
 theorem inversePowerCompositionRow_nonzero_roots_neg
     (e n : ℕ) {r : ℝ}
     (hr : r ∈ (compositionRow
       (PowerSeries.mk (inversePowerCompositionKernel e)) n).roots)
-    (hr0 : r ≠ 0) : r < 0 := by
-  exact lt_of_le_of_ne
+    (hr0 : r ≠ 0) : r < 0 :=
+  lt_of_le_of_ne
     ((inversePowerCompositionRows_pf_and_interl e).1 n |>.roots_nonpos r hr)
     hr0
 
@@ -435,8 +432,8 @@ theorem a207327Rows_pf_and_interl :
 /-- Every nonzero root of an A207327 row is strictly negative. -/
 theorem a207327Row_nonzero_roots_neg
     (n : ℕ) {r : ℝ} (hr : r ∈ (a207327Row n).roots)
-    (hr0 : r ≠ 0) : r < 0 := by
-  exact lt_of_le_of_ne
+    (hr0 : r ≠ 0) : r < 0 :=
+  lt_of_le_of_ne
     ((a207327Rows_pf_and_interl.1 n).roots_nonpos r hr) hr0
 
 /-- The polynomial-valued denominator
@@ -595,8 +592,8 @@ theorem a207327Row_recurrence (n : ℕ) :
         (2 * X) * a207327Row (n + 1) + X * a207327Row n := by
   have h := a207327Row_finite_denominator (n + 3)
   have hsubset :
-      Finset.range 4 ⊆ Finset.range (n + 3 + 1) := by
-    exact Finset.range_mono (by lia)
+      Finset.range 4 ⊆ Finset.range (n + 3 + 1) :=
+    Finset.range_mono (by lia)
   have hsum :
       (∑ j ∈ Finset.range 4,
           PowerSeries.coeff j a207327DenominatorSeries *
@@ -681,14 +678,14 @@ def a116088Row (n : ℕ) : ℝ[X] :=
 theorem a116088Row_eq_sum_choose (n : ℕ) :
     a116088Row n =
       ∑ k ∈ Finset.range (n + 1),
-        C (Nat.choose (2 * k) (n - k) : ℝ) * X ^ k := by
-  exact compositionRow_binomialCompositionKernel 2 n
+        C (Nat.choose (2 * k) (n - k) : ℝ) * X ^ k :=
+  compositionRow_binomialCompositionKernel 2 n
 
 /-- A116088 rows are PF and consecutively in zero-aware interlacing. -/
 theorem a116088Rows_pf_and_interl :
     (∀ n, IsPFPolynomial (a116088Row n)) ∧
-      ∀ n, Interl (a116088Row n) (a116088Row (n + 1)) := by
-  exact binomialCompositionRows_pf_and_interl 2
+      ∀ n, Interl (a116088Row n) (a116088Row (n + 1)) :=
+  binomialCompositionRows_pf_and_interl 2
 
 /-- The zero root of a positive A116088 row has multiplicity
 `ceil(n/3)`. -/
@@ -701,8 +698,8 @@ theorem a116088Row_exact_X_power (n : ℕ) :
 /-- Every nonzero root of an A116088 row is strictly negative. -/
 theorem a116088Row_nonzero_roots_neg
     (n : ℕ) {r : ℝ} (hr : r ∈ (a116088Row n).roots)
-    (hr0 : r ≠ 0) : r < 0 := by
-  exact binomialCompositionRow_nonzero_roots_neg 2 n hr hr0
+    (hr0 : r ≠ 0) : r < 0 :=
+  binomialCompositionRow_nonzero_roots_neg 2 n hr hr0
 
 /-- A116089 is the cubic binomial composition family. -/
 def a116089Row (n : ℕ) : ℝ[X] :=
@@ -712,14 +709,14 @@ def a116089Row (n : ℕ) : ℝ[X] :=
 theorem a116089Row_eq_sum_choose (n : ℕ) :
     a116089Row n =
       ∑ k ∈ Finset.range (n + 1),
-        C (Nat.choose (3 * k) (n - k) : ℝ) * X ^ k := by
-  exact compositionRow_binomialCompositionKernel 3 n
+        C (Nat.choose (3 * k) (n - k) : ℝ) * X ^ k :=
+  compositionRow_binomialCompositionKernel 3 n
 
 /-- A116089 rows are PF and consecutively in zero-aware interlacing. -/
 theorem a116089Rows_pf_and_interl :
     (∀ n, IsPFPolynomial (a116089Row n)) ∧
-      ∀ n, Interl (a116089Row n) (a116089Row (n + 1)) := by
-  exact binomialCompositionRows_pf_and_interl 3
+      ∀ n, Interl (a116089Row n) (a116089Row (n + 1)) :=
+  binomialCompositionRows_pf_and_interl 3
 
 /-- The zero root of a positive A116089 row has multiplicity
 `ceil(n/4)`. -/
@@ -732,8 +729,8 @@ theorem a116089Row_exact_X_power (n : ℕ) :
 /-- Every nonzero root of an A116089 row is strictly negative. -/
 theorem a116089Row_nonzero_roots_neg
     (n : ℕ) {r : ℝ} (hr : r ∈ (a116089Row n).roots)
-    (hr0 : r ≠ 0) : r < 0 := by
-  exact binomialCompositionRow_nonzero_roots_neg 3 n hr hr0
+    (hr0 : r ≠ 0) : r < 0 :=
+  binomialCompositionRow_nonzero_roots_neg 3 n hr hr0
 
 /-- A206294 is the cubic inverse-power composition family. -/
 def a206294Row (n : ℕ) : ℝ[X] :=
@@ -743,45 +740,25 @@ def a206294Row (n : ℕ) : ℝ[X] :=
 theorem a206294Row_eq_sum_choose (n : ℕ) :
     a206294Row n =
       ∑ k ∈ Finset.range (n + 1),
-        C (inversePowerCompositionRowCoeff 3 n k) * X ^ k := by
-  exact compositionRow_inversePowerCompositionKernel (by norm_num) n
+        C (inversePowerCompositionRowCoeff 3 n k) * X ^ k :=
+  compositionRow_inversePowerCompositionKernel (by norm_num) n
 
 /-- A206294 rows are PF and consecutively in zero-aware interlacing. -/
 theorem a206294Rows_pf_and_interl :
     (∀ n, IsPFPolynomial (a206294Row n)) ∧
-      ∀ n, Interl (a206294Row n) (a206294Row (n + 1)) := by
-  exact inversePowerCompositionRows_pf_and_interl 3
+      ∀ n, Interl (a206294Row n) (a206294Row (n + 1)) :=
+  inversePowerCompositionRows_pf_and_interl 3
 
 /-- Every positive-index A206294 row has a simple zero. -/
 theorem a206294Row_exact_X {n : ℕ} (hn : 1 ≤ n) :
-    X ∣ a206294Row n ∧ ¬X ^ 2 ∣ a206294Row n := by
-  exact inversePowerCompositionRow_exact_X (by norm_num) hn
+    X ∣ a206294Row n ∧ ¬X ^ 2 ∣ a206294Row n :=
+  inversePowerCompositionRow_exact_X (by norm_num) hn
 
 /-- Every nonzero root of an A206294 row is strictly negative. -/
 theorem a206294Row_nonzero_roots_neg
     (n : ℕ) {r : ℝ} (hr : r ∈ (a206294Row n).roots)
-    (hr0 : r ≠ 0) : r < 0 := by
-  exact inversePowerCompositionRow_nonzero_roots_neg 3 n hr hr0
-
-@[deprecated shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
-  (since := "2026-09-18")]
-alias shiftedFiniteSupersymmetricCompositionRows_pf_and_prec0 :=
-  shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
-
-@[deprecated binomialCompositionRows_pf_and_interl (since := "2026-09-18")]
-alias binomialCompositionRows_pf_and_prec0 := binomialCompositionRows_pf_and_interl
-
-@[deprecated a207327Rows_pf_and_interl (since := "2026-09-18")]
-alias a207327Rows_pf_and_prec0 := a207327Rows_pf_and_interl
-
-@[deprecated a116088Rows_pf_and_interl (since := "2026-09-18")]
-alias a116088Rows_pf_and_prec0 := a116088Rows_pf_and_interl
-
-@[deprecated a116089Rows_pf_and_interl (since := "2026-09-18")]
-alias a116089Rows_pf_and_prec0 := a116089Rows_pf_and_interl
-
-@[deprecated a206294Rows_pf_and_interl (since := "2026-09-18")]
-alias a206294Rows_pf_and_prec0 := a206294Rows_pf_and_interl
+    (hr0 : r ≠ 0) : r < 0 :=
+  inversePowerCompositionRow_nonzero_roots_neg 3 n hr hr0
 
 end
 

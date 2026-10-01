@@ -29,11 +29,6 @@ theorem roots_eq_zero_cons_divX_of_coeff_zero {f : ℝ[X]}
   conv_lhs => rw [hX]
   rw [Polynomial.roots_mul hne, Polynomial.roots_X, Multiset.singleton_add]
 
-theorem roots_eq_zero_cons_divX_of_coeff_zero' {f : ℝ[X]}
-    (hf : f ≠ 0) (hf0 : f.coeff 0 = 0) :
-    f.roots = 0 ::ₘ f.divX.roots :=
-  roots_eq_zero_cons_divX_of_coeff_zero hf hf0
-
 /-- List-free additive root-count form of `roots_eq_zero_cons_divX_of_coeff_zero`. -/
 lemma card_divX_roots_succ_eq_card_roots_of_coeff_zero {g : ℝ[X]}
     (hg : g ≠ 0) (hg0 : g.coeff 0 = 0) :
@@ -290,8 +285,8 @@ theorem strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_
     rw [← hrs_eq]
     exact Multiset.mem_coe.mpr hm_mem
   have hm_nonpos : m ≤ 0 := hroots m hm_root
-  have h0_le_m : (0 : ℝ) ≤ m := by
-    exact List.Pairwise.rel_getLast hrs_sorted h0_mem
+  have h0_le_m : (0 : ℝ) ≤ m :=
+    List.Pairwise.rel_getLast hrs_sorted h0_mem
   have hm0 : m = 0 := le_antisymm hm_nonpos h0_le_m
   have hdivX_roots : (↑(rs.dropLast) : Multiset ℝ) = g.divX.roots :=
     divX_roots_eq_dropLast_of_coeff_zero hg.1 hg0 hrs_eq hrs_ne
@@ -518,38 +513,6 @@ lemma sameDegreePair_divX_natDegree_eq_of_succDegree_of_coeff_zero
   (sameDegreePair_divX_data_of_succDegree_of_coeff_zero
     hfnn hgnn hg hg_split hg0 hdeg).1
 
-/-- Nat-degree component projection from the bundled right-zero succ-degree
-`divX` data. -/
-lemma sameDegreePair_divX_natDegree_component_eq_of_succDegree_of_coeff_zero
-    {f g : ℝ[X]}
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hg : g ≠ 0) (hg_split : g.Splits)
-    (hg0 : g.coeff 0 = 0) (hdeg : g.natDegree = f.natDegree + 1) :
-    g.divX.natDegree = f.natDegree :=
-  (sameDegreePair_divX_natDegree_eq_of_succDegree_of_coeff_zero
-    hfnn hgnn hg hg_split hg0 hdeg).1
-
-/-- Root-cardinality projection from the bundled right-zero succ-degree
-`divX` data. -/
-lemma sameDegreePair_divX_roots_card_eq_of_succDegree_of_coeff_zero
-    {f g : ℝ[X]}
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hg : g ≠ 0) (hg_split : g.Splits)
-    (hg0 : g.coeff 0 = 0) (hdeg : g.natDegree = f.natDegree + 1) :
-    Multiset.card g.divX.roots = f.natDegree :=
-  (sameDegreePair_divX_natDegree_eq_of_succDegree_of_coeff_zero
-    hfnn hgnn hg hg_split hg0 hdeg).2
-
-/-- Nat-degree projection from the bundled right-zero succ-degree `divX` data. -/
-lemma sameDegreePair_divX_natDegree_only_eq_of_succDegree_of_coeff_zero
-    {f g : ℝ[X]}
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hg : g ≠ 0) (hg_split : g.Splits)
-    (hg0 : g.coeff 0 = 0) (hdeg : g.natDegree = f.natDegree + 1) :
-    g.divX.natDegree = f.natDegree :=
-  (sameDegreePair_divX_natDegree_eq_of_succDegree_of_coeff_zero
-    hfnn hgnn hg hg_split hg0 hdeg).1
-
 /-! ## Splitting / real-rooted transport across the right-zero `divX` step
 
 The main degree-drop theorems above re-derive `g.divX ≠ 0` and `g.divX.Splits`
@@ -673,125 +636,12 @@ theorem rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
     zero_mem_roots_of_strictInterl_coeff_zero hstrictInterl hg0,
     divX_roots_nonpos_of_strictInterl_hasNonnegCoeffs hstrictInterl hgnn hg0⟩
 
-/-- Orientation projection from the bundled right-zero degree-drop package. -/
-theorem rightZeroDivX_interl_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    {f g : ℝ[X]}
-    (hstrictInterl : StrictInterl f g) (hgnn : HasNonnegCoeffs g)
-    (hg0 : g.coeff 0 = 0) (hdeg : g.natDegree = f.natDegree + 1) :
-    Interl (g.divX) f :=
-  (rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    hstrictInterl hgnn hg0 hdeg).1
-
-/-- Real-rooted projection from the bundled right-zero degree-drop package. -/
-theorem rightZeroDivX_realRooted_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    {f g : ℝ[X]}
-    (hstrictInterl : StrictInterl f g) (hgnn : HasNonnegCoeffs g)
-    (hg0 : g.coeff 0 = 0) (hdeg : g.natDegree = f.natDegree + 1) :
-    g.divX ≠ 0 ∧ g.divX.Splits :=
-  (rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    hstrictInterl hgnn hg0 hdeg).2.1
-
-/-- Zero-root-membership projection from the bundled right-zero degree-drop package. -/
-theorem rightZeroDivX_zero_mem_roots_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    {f g : ℝ[X]}
-    (hstrictInterl : StrictInterl f g) (hgnn : HasNonnegCoeffs g)
-    (hg0 : g.coeff 0 = 0) (hdeg : g.natDegree = f.natDegree + 1) :
-    (0 : ℝ) ∈ g.roots :=
-  (rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    hstrictInterl hgnn hg0 hdeg).2.2.1
-
-/-- Nonpositive-roots projection from the bundled right-zero degree-drop package. -/
-theorem rightZeroDivX_roots_nonpos_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    {f g : ℝ[X]}
-    (hstrictInterl : StrictInterl f g) (hgnn : HasNonnegCoeffs g)
-    (hg0 : g.coeff 0 = 0) (hdeg : g.natDegree = f.natDegree + 1) :
-    ∀ a ∈ g.divX.roots, a ≤ 0 :=
-  (rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    hstrictInterl hgnn hg0 hdeg).2.2.2
-
 /-! ## Deprecated `Prec` / `Prec0` compatibility names -/
-
-@[deprecated divX_realRooted_of_strictInterl_coeff_zero
-  (since := "2026-09-18")]
-alias divX_realRooted_of_prec_coeff_zero :=
-  divX_realRooted_of_strictInterl_coeff_zero
-
-@[deprecated divX_roots_nonpos_of_strictInterl_hasNonnegCoeffs
-  (since := "2026-09-18")]
-alias divX_roots_nonpos_of_prec_hasNonnegCoeffs :=
-  divX_roots_nonpos_of_strictInterl_hasNonnegCoeffs
-
-@[deprecated interl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias prec0_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  interl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated
-  strictInterl_divX_left_of_strictInterl_sameDegree_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias prec_divX_left_of_prec_sameDegree_of_hasNonnegCoeffs_coeff_zero :=
-  strictInterl_divX_left_of_strictInterl_sameDegree_of_hasNonnegCoeffs_coeff_zero
 
 @[deprecated strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
   (since := "2026-09-18")]
 alias prec_iff_prec_divX_left_of_hasNonnegCoeffs_coeff_zero :=
   strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias rightZeroDivX_package_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated rightZeroDivX_interl_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias rightZeroDivX_prec0_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  rightZeroDivX_interl_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated
-  rightZeroDivX_realRooted_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias rightZeroDivX_realRooted_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  rightZeroDivX_realRooted_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated
-  rightZeroDivX_roots_nonpos_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias rightZeroDivX_roots_nonpos_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  rightZeroDivX_roots_nonpos_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated
-  rightZeroDivX_zero_mem_roots_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias rightZeroDivX_zero_mem_roots_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  rightZeroDivX_zero_mem_roots_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated
-  sameDegreePair_divX_strictInterl_backward_of_succDegree_of_coeff_zero
-  (since := "2026-09-18")]
-alias sameDegreePair_divX_prec_backward_of_succDegree_of_coeff_zero :=
-  sameDegreePair_divX_strictInterl_backward_of_succDegree_of_coeff_zero
-
-@[deprecated
-  sameDegreePair_divX_strictInterl_forward_of_succDegree_of_coeff_zero
-  (since := "2026-09-18")]
-alias sameDegreePair_divX_prec_forward_of_succDegree_of_coeff_zero :=
-  sameDegreePair_divX_strictInterl_forward_of_succDegree_of_coeff_zero
-
-@[deprecated sameDegreePair_divX_strictInterl_iff_of_succDegree_of_coeff_zero
-  (since := "2026-09-18")]
-alias sameDegreePair_divX_prec_iff_of_succDegree_of_coeff_zero :=
-  sameDegreePair_divX_strictInterl_iff_of_succDegree_of_coeff_zero
-
-@[deprecated zero_mem_roots_of_strictInterl_coeff_zero
-  (since := "2026-09-18")]
-alias zero_mem_roots_of_prec_coeff_zero :=
-  zero_mem_roots_of_strictInterl_coeff_zero
-
-@[deprecated
-  strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero
-  (since := "2026-09-18")]
-alias prec_divX_left_of_prec_sameDegree_of_roots_nonpos_coeff_zero :=
-  strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero
 
 @[deprecated strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
   (since := "2026-09-18")]

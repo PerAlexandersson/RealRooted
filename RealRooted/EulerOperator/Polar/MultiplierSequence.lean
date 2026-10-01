@@ -114,7 +114,7 @@ theorem not_isMultiplierSequence_polarThetaMultiplier_three :
         (C 6 * X ^ 2 + C 8 * X + C 3 : ℝ[X]).natDegree = 2 := by
       compute_degree <;> norm_num
     have hdisc :=
-      four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_two
+      quadratic_disc_coeff_le_of_splits_natDegree_two
         hdeg hsplits
     norm_num [coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C] at hdisc
 

@@ -202,8 +202,8 @@ private theorem det_border_update_old_row {q : ℕ}
       _ = ∑ k, coeff k • E k :=
         Equiv.sum_comp sigma (fun k ↦ coeff k • E k)
       _ = Fin.snoc y beta := hcoeff
-  have hrz : r ≠ z := by
-    exact Fin.castSucc_ne_last r0
+  have hrz : r ≠ z :=
+    Fin.castSucc_ne_last r0
   have hupdate : H.updateRow z (∑ k, f k • H k) =
       (border A b y beta).updateRow r (Fin.snoc 0 1) := by
     ext i j
@@ -215,8 +215,8 @@ private theorem det_border_update_old_row {q : ℕ}
       · subst i
         rw [Matrix.updateRow_ne hrz, Matrix.updateRow_self]
         simp [H, sigma, E, border, z]
-      · have hsigma : sigma i = i := by
-          exact Equiv.swap_apply_of_ne_of_ne hir hi
+      · have hsigma : sigma i = i :=
+          Equiv.swap_apply_of_ne_of_ne hir hi
         rw [Matrix.updateRow_ne hi, Matrix.updateRow_ne hir]
         change E (sigma i) j = border A b y beta i j
         rw [hsigma]
@@ -268,8 +268,8 @@ theorem det_border_plucker {q : ℕ}
     rw [Matrix.det_updateRow_sum, smul_eq_mul]
     simp [u, r]
   have hsecond : (By.updateRow r e).det =
-      -d r0 * A.det := by
-    exact det_border_update_old_row A r0 b y d beta hy
+      -d r0 * A.det :=
+    det_border_update_old_row A r0 b y d beta hy
   have hAx : (A.updateRow r0 x).det = c r0 * A.det := by
     have hsum : ∑ k, c k • A k = x := by
       rw [← Matrix.vecMul_eq_sum]

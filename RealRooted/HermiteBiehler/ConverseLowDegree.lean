@@ -21,26 +21,14 @@ namespace RealRooted
 
 theorem splits_of_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0)
     (h : 0 ≤ discrim a b c) :
-    (C a * X ^ 2 + C b * X + C c).Splits := by
-  exact quadraticPoly_splits_of_discrim_nonneg ha h
+    (C a * X ^ 2 + C b * X + C c).Splits :=
+  quadraticPoly_splits_of_discrim_nonneg ha h
 
 theorem eval_hermiteBiehler_neg_conj (f g : ℝ[X]) (z : ℂ) :
     (hermiteBiehlerPolynomial f (-g)).eval (starRingEnd ℂ z)
       = starRingEnd ℂ ((hermiteBiehlerPolynomial f g).eval z) := by
   simp [hermiteBiehlerPolynomial, eval_complexify_conj]
   simp [complexify]
-
-theorem no_lower_root_hermiteBiehler_neg_of_stable {f g : ℝ[X]}
-    (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
-    ∀ z : ℂ, z.im < 0 → (hermiteBiehlerPolynomial f (-g)).eval z ≠ 0 := by
-  intro z hz hzero
-  have hconj_im : 0 < (starRingEnd ℂ z).im := by simp [*]
-  apply hstab (starRingEnd ℂ z) hconj_im
-  have hthis := eval_hermiteBiehler_neg_conj f g (starRingEnd ℂ z)
-  rw [Complex.conj_conj] at hthis
-  rw [hthis] at hzero
-  have := congrArg (starRingEnd ℂ) hzero
-  rwa [Complex.conj_conj, map_zero] at this
 
 theorem no_common_nonreal_root_of_stable {f g : ℝ[X]}
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
@@ -59,14 +47,14 @@ lemma discrim_nonneg_of_im_nonpos
     {u₁ u₂ v₁ v₂ : ℝ} (hv₁ : v₁ ≤ 0) (hv₂ : v₂ ≤ 0) :
     0 ≤ (-(u₁ + u₂) + (v₁ + v₂)) ^ 2
       - 4 * (u₁ * u₂ - v₁ * v₂ - u₁ * v₂ - u₂ * v₁) := by
-  nlinarith [sq_nonneg (u₁ - u₂ - v₁ + v₂),
+  linarith [sq_nonneg (u₁ - u₂ - v₁ + v₂),
     mul_nonneg_of_nonpos_of_nonpos hv₁ hv₂]
 
 lemma discrim_nonneg_of_im_nonpos'
     {u₁ u₂ v₁ v₂ : ℝ} (hv₁ : v₁ ≤ 0) (hv₂ : v₂ ≤ 0) :
     0 ≤ (-(u₁ + u₂) - (v₁ + v₂)) ^ 2
       - 4 * (u₁ * u₂ - v₁ * v₂ + u₁ * v₂ + u₂ * v₁) := by
-  nlinarith [sq_nonneg (u₁ - u₂ + v₁ - v₂),
+  linarith [sq_nonneg (u₁ - u₂ + v₁ - v₂),
     mul_nonneg_of_nonpos_of_nonpos hv₁ hv₂]
 
 lemma hermiteBiehler_coeff (f g : ℝ[X]) (n : ℕ) :
@@ -168,11 +156,11 @@ theorem splits_of_stable_monic_two {f g : ℝ[X]}
   have hdiscf : 0 ≤ discrim 1 (f.coeff 1) (f.coeff 0) := by
     rw [discrim, hb₁, hcf]
     have := discrim_nonneg_of_im_nonpos (u₁ := w₁.re) (u₂ := w₂.re) hv₁ hv₂
-    nlinarith [this]
+    linarith [this]
   have hdiscg : 0 ≤ discrim 1 (g.coeff 1) (g.coeff 0) := by
     rw [discrim, hb₂, hcg]
     have := discrim_nonneg_of_im_nonpos' (u₁ := w₁.re) (u₂ := w₂.re) hv₁ hv₂
-    nlinarith [this]
+    linarith [this]
   have hfexp : f = C 1 * X ^ 2 + C (f.coeff 1) * X + C (f.coeff 0) := by
     have h₂ : f.coeff 2 = 1 := by
       rw [← hf₂]
@@ -233,7 +221,7 @@ lemma interlace_core {u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ}
         (b₁ ^ 2 - 4 * c₁) * (b₂ ^ 2 - 4 * c₂) := by
       rw [mul_pow, hA₂, hB₂]
     rw [hABsq, hDf, hDg]
-    nlinarith [mul_nonneg hvv (by positivity : (0 : ℝ) ≤ (u₁ - u₂) ^ 2 + (v₁ - v₂) ^ 2),
+    linarith [mul_nonneg hvv (by positivity : (0 : ℝ) ≤ (u₁ - u₂) ^ 2 + (v₁ - v₂) ^ 2),
       sq_nonneg (v₁ * v₂)]
   have hle₁ : (u₁ - u₂) ^ 2 - (v₁ - v₂) ^ 2 ≤ A * B := by nlinarith [hprodsq, hAB₀]
   have hle₂ : -((u₁ - u₂) ^ 2 - (v₁ - v₂) ^ 2) ≤ A * B := by nlinarith [hprodsq, hAB₀]
@@ -257,7 +245,7 @@ lemma roots_monic_quadratic {b c : ℝ} (hd : 0 ≤ b ^ 2 - 4 * c) :
   · field_simp
     ring
   · field_simp
-    nlinarith [hs₂]
+    linarith [hs₂]
 
 lemma hermiteBiehler_vieta_two {f g : ℝ[X]}
     (hf : f.Monic) (hg : g.Monic) (hf₂ : f.natDegree = 2) (hg₂ : g.natDegree = 2)
@@ -308,74 +296,12 @@ lemma hermiteBiehler_vieta_two {f g : ℝ[X]}
     simp [Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im] at this
     linarith
 
-theorem strictInterl_of_stable_monic_two {f g : ℝ[X]}
-    (hf : f.Monic) (hg : g.Monic) (hf₂ : f.natDegree = 2) (hg₂ : g.natDegree = 2)
-    (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
-    StrictInterl g f := by
-  obtain ⟨hfs, hgs⟩ := splits_of_stable_monic_two hf hg hf₂ hg₂ hstab
-  obtain ⟨u₁, u₂, v₁, v₂, hv₁, hv₂, hb₁, hb₂, hcf, hcg⟩ :=
-    hermiteBiehler_vieta_two hf hg hf₂ hg₂ hstab
-  have hfexp : f = C 1 * X ^ 2 + C (f.coeff 1) * X + C (f.coeff 0) := by
-    have h₂ : f.coeff 2 = 1 := by
-      rw [← hf₂]
-      exact hf
-    simpa [h₂] using eq_X_sq_add_X_add_C_of_natDegree_le_two (p := f) (by lia)
-  have hgexp : g = C 1 * X ^ 2 + C (g.coeff 1) * X + C (g.coeff 0) := by
-    have h₂ : g.coeff 2 = 1 := by
-      rw [← hg₂]
-      exact hg
-    simpa [h₂] using eq_X_sq_add_X_add_C_of_natDegree_le_two (p := g) (by lia)
-  set b₁ := f.coeff 1 with hb₁def
-  set c₁ := f.coeff 0 with hc₁def
-  set b₂ := g.coeff 1 with hb₂def
-  set c₂ := g.coeff 0 with hc₂def
-  have : 0 ≤ v₁ * v₂ := mul_nonneg_of_nonpos_of_nonpos hv₁ hv₂
-  have hDf₀ : 0 ≤ b₁ ^ 2 - 4 * c₁ := by
-    have : b₁ ^ 2 - 4 * c₁ = (u₁ - u₂ - v₁ + v₂) ^ 2 + 8 * (v₁ * v₂) := by
-      rw [hb₁, hcf]
-      ring
-    rw [this]
-    positivity
-  have hDg₀ : 0 ≤ b₂ ^ 2 - 4 * c₂ := by
-    have : b₂ ^ 2 - 4 * c₂ = (u₁ - u₂ + v₁ - v₂) ^ 2 + 8 * (v₁ * v₂) := by
-      rw [hb₂, hcg]
-      ring
-    rw [this]
-    positivity
-  have hfroots : f.roots = {(-b₁ - Real.sqrt (b₁ ^ 2 - 4 * c₁)) / 2,
-      (-b₁ + Real.sqrt (b₁ ^ 2 - 4 * c₁)) / 2} := by
-    conv_lhs => rw [hfexp]
-    exact roots_monic_quadratic hDf₀
-  have hgroots : g.roots = {(-b₂ - Real.sqrt (b₂ ^ 2 - 4 * c₂)) / 2,
-      (-b₂ + Real.sqrt (b₂ ^ 2 - 4 * c₂)) / 2} := by
-    conv_lhs => rw [hgexp]
-    exact roots_monic_quadratic hDg₀
-  obtain ⟨h₁, h₂, h₃⟩ := interlace_core hv₁ hv₂ hb₁ hb₂ hcf hcg
-  have hA₀ : 0 ≤ Real.sqrt (b₁ ^ 2 - 4 * c₁) := Real.sqrt_nonneg _
-  have hB₀ : 0 ≤ Real.sqrt (b₂ ^ 2 - 4 * c₂) := Real.sqrt_nonneg _
-  refine ⟨⟨hg.ne_zero, hgs⟩, ⟨hf.ne_zero, hfs⟩,
-    [(-b₂ - Real.sqrt (b₂ ^ 2 - 4 * c₂)) / 2, (-b₂ + Real.sqrt (b₂ ^ 2 - 4 * c₂)) / 2],
-    [(-b₁ - Real.sqrt (b₁ ^ 2 - 4 * c₁)) / 2, (-b₁ + Real.sqrt (b₁ ^ 2 - 4 * c₁)) / 2],
-    ?_, ?_, ?_, ?_, Or.inr ⟨rfl, ?_⟩⟩
-  · simp only [List.pairwise_cons, List.mem_cons, List.not_mem_nil, or_false,
-      forall_eq, false_implies, implies_true, and_true, List.Pairwise.nil]
-    linarith
-  · simp only [List.pairwise_cons, List.mem_cons, List.not_mem_nil, or_false,
-      forall_eq, false_implies, implies_true, and_true, List.Pairwise.nil]
-    linarith
-  · rw [hgroots]
-    rfl
-  · rw [hfroots]
-    rfl
-  · simp only [ListAlternates, ListInterlaces, and_true]
-    exact ⟨h₁, h₂, h₃⟩
-
 lemma discrim_nonneg_of_im_nonpos_f {a b u₁ u₂ v₁ v₂ : ℝ}
     (hv₁ : v₁ ≤ 0) (hv₂ : v₂ ≤ 0) :
     0 ≤ (-(a * (u₁ + u₂)) + b * (v₁ + v₂)) ^ 2
       - 4 * a * (a * (u₁ * u₂ - v₁ * v₂) - b * (u₁ * v₂ + u₂ * v₁)) := by
   have hvv := mul_nonneg_of_nonpos_of_nonpos hv₁ hv₂
-  nlinarith [sq_nonneg (a * (u₁ - u₂) - b * (v₁ - v₂)),
+  linarith [sq_nonneg (a * (u₁ - u₂) - b * (v₁ - v₂)),
     mul_nonneg (show 0 ≤ 4 * (a ^ 2 + b ^ 2) by positivity) hvv]
 
 lemma discrim_nonneg_of_im_nonpos_g {a b u₁ u₂ v₁ v₂ : ℝ}
@@ -383,7 +309,7 @@ lemma discrim_nonneg_of_im_nonpos_g {a b u₁ u₂ v₁ v₂ : ℝ}
     0 ≤ (-(a * (v₁ + v₂)) - b * (u₁ + u₂)) ^ 2
       - 4 * b * (a * (u₁ * v₂ + u₂ * v₁) + b * (u₁ * u₂ - v₁ * v₂)) := by
   have hvv := mul_nonneg_of_nonpos_of_nonpos hv₁ hv₂
-  nlinarith [sq_nonneg (b * (u₁ - u₂) + a * (v₁ - v₂)),
+  linarith [sq_nonneg (b * (u₁ - u₂) + a * (v₁ - v₂)),
     mul_nonneg (show 0 ≤ 4 * (a ^ 2 + b ^ 2) by positivity) hvv]
 
 lemma hermiteBiehler_natDegree_of_posLead {f g : ℝ[X]} {d : ℕ}
@@ -550,11 +476,11 @@ lemma interlace_core_abstract {a b b₁ b₂ c₁ c₂ p q K : ℝ}
   obtain ⟨h₁, h₂, h₃⟩ := triangle_of_sq hA'0 hB'0 ht0 ht2' hle1 hle2
   refine ⟨?_, ?_, ?_⟩
   · rw [div_le_div_iff₀ (by simp [*]) (by simp [*])]
-    nlinarith [h₁]
+    linarith [h₁]
   · rw [div_le_div_iff₀ (by simp [*]) (by simp [*])]
-    nlinarith [h₃]
+    linarith [h₃]
   · rw [div_le_div_iff₀ (by simp [*]) (by simp [*])]
-    nlinarith [h₂]
+    linarith [h₂]
 
 lemma interlace_core_posLead {a b u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ}
     (ha : 0 < a) (hb : 0 < b) (hv₁ : v₁ ≤ 0) (hv₂ : v₂ ≤ 0)
@@ -857,7 +783,7 @@ lemma interlace_core_two_one {a u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ} (
       -c₂ / b₂ ≤ (-b₁ + Real.sqrt (b₁ ^ 2 - 4 * a * c₁)) / (2 * a) := by
   have hvv : 0 ≤ v₁ * v₂ := mul_nonneg_of_nonpos_of_nonpos hv₁ hv₂
   have hinner : 0 ≤ (u₁ - u₂) ^ 2 + 4 * (v₁ * v₂) := by
-    nlinarith [sq_nonneg (u₁ - u₂)]
+    linarith [sq_nonneg (u₁ - u₂)]
   have hd : b₁ ^ 2 - 4 * a * c₁ =
       a ^ 2 * ((u₁ - u₂) ^ 2 + 4 * (v₁ * v₂)) := by
     rw [hb₁, hc₁]
@@ -892,10 +818,10 @@ lemma interlace_core_two_one {a u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ} (
   constructor
   · rw [div_le_div_iff₀ (by simp [*]) hb₂_pos]
     rw [hb₁, hb₂, hc₂]
-    nlinarith [hle₁]
+    linarith [hle₁]
   · rw [div_le_div_iff₀ hb₂_pos (by simp [*])]
     rw [hb₁, hb₂, hc₂]
-    nlinarith [hle₂]
+    linarith [hle₂]
 
 lemma hermiteBiehler_factor_two_left {f g : ℝ[X]} (h_f_ne : f ≠ 0)
     (hf₂ : f.natDegree = 2) (hgd : g.natDegree < 2) :
@@ -1003,7 +929,7 @@ theorem strictInterl_of_stable_two_one {f g : ℝ[X]}
       rw [hb₁, hc₁]
       ring
     rw [hdd]
-    exact mul_nonneg (sq_nonneg a) (by nlinarith [sq_nonneg (u₁ - u₂)])
+    exact mul_nonneg (sq_nonneg a) (by linarith [sq_nonneg (u₁ - u₂)])
   have hfroots : f.roots = {(-b₁ - Real.sqrt (b₁ ^ 2 - 4 * a * c₁)) / (2 * a),
       (-b₁ + Real.sqrt (b₁ ^ 2 - 4 * a * c₁)) / (2 * a)} := by
     conv_lhs => rw [hfexp]
@@ -1047,14 +973,5 @@ theorem hermiteBiehlerConverse_of_natDegree_le_two {f g : ℝ[X]}
       exact Or.inl (strictInterl_of_stable_two_one hf hg hf₂ hg₁ hstab)
     · have hg₂ : g.natDegree = 2 := by lia
       exact Or.inl (strictInterl_of_stable_two hf hg hf₂ hg₂ hstab)
-
-@[deprecated strictInterl_of_stable_monic_two (since := "2026-09-18")]
-alias prec_of_stable_monic_two := strictInterl_of_stable_monic_two
-
-@[deprecated strictInterl_of_stable_two (since := "2026-09-18")]
-alias prec_of_stable_two := strictInterl_of_stable_two
-
-@[deprecated strictInterl_of_stable_two_one (since := "2026-09-18")]
-alias prec_of_stable_two_one := strictInterl_of_stable_two_one
 
 end RealRooted

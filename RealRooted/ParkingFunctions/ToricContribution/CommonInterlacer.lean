@@ -31,15 +31,15 @@ def normalizedRPolynomialFamily (m ε : ℕ) : List ℝ[X] :=
   (Finset.range (m + 1)).toList.map (normalizedRPolynomial m ε)
 
 theorem normalizedRPolynomial_hasPosLeadingCoeff (m ε d : ℕ) :
-    HasPosLeadingCoeff (normalizedRPolynomial m ε d) := by
-  exact negOnePow_mul_rPolynomial_hasPosLeadingCoeff m ε d
+    HasPosLeadingCoeff (normalizedRPolynomial m ε d) :=
+  negOnePow_mul_rPolynomial_hasPosLeadingCoeff m ε d
 
 /-- The normalized reverse-offset polynomials inherit the fixed-row proper
 position orientation. -/
 theorem normalizedRPolynomial_strictInterl_of_lt
     (m ε d e : ℕ) (hm : 0 < m) (hde : d < e) (he : e ≤ m) :
-    StrictInterl (normalizedRPolynomial m ε e) (normalizedRPolynomial m ε d) := by
-  exact StrictInterl.C_mul_right
+    StrictInterl (normalizedRPolynomial m ε e) (normalizedRPolynomial m ε d) :=
+  StrictInterl.C_mul_right
     (StrictInterl.C_mul_left
       (rPolynomial_strictInterl_rPolynomial_of_lt m ε d e hm hde he)
       (pow_ne_zero m (by norm_num)))
@@ -129,12 +129,6 @@ theorem normalizedRPolynomialFamily_weighted_sum_splits
       (normalizedRPolynomial_hasPosLeadingCoeff m ε d)
   exact (isRealRooted_sum_of_commonLeftInterleaver hcommon hpositive
     (by simp [fs, weightedNormalizedRPolynomialFamily])).2
-
-/-! ## Deprecated aliases -/
-
-@[deprecated normalizedRPolynomial_strictInterl_of_lt
-  (since := "2026-09-26")]
-alias normalizedRPolynomial_prec_of_lt := normalizedRPolynomial_strictInterl_of_lt
 
 end ToricContribution
 end ParkingFunctions

@@ -219,22 +219,13 @@ private theorem inversePeakEulerian_degree_step (n : ℕ) :
   split_ifs <;> simp
 
 private theorem half_two_mul_add_one (j : ℕ) : (2 * j + 1) / 2 = j := by
-  calc
-    (2 * j + 1) / 2 = (1 + 2 * j) / 2 := by congr 1; ring
-    _ = 1 / 2 + j := Nat.add_mul_div_left 1 j (by decide)
-    _ = j := by simp
+  lia
 
 private theorem half_two_mul_add_two (j : ℕ) : (2 * j + 2) / 2 = j + 1 := by
-  calc
-    (2 * j + 2) / 2 = (0 + 2 * (j + 1)) / 2 := by congr 1; ring
-    _ = 0 / 2 + (j + 1) := Nat.add_mul_div_left 0 (j + 1) (by decide)
-    _ = j + 1 := by simp
+  lia
 
 private theorem half_two_mul_add_three (j : ℕ) : (2 * j + 3) / 2 = j + 1 := by
-  calc
-    (2 * j + 3) / 2 = (1 + 2 * (j + 1)) / 2 := by congr 1; ring
-    _ = 1 / 2 + (j + 1) := Nat.add_mul_div_left 1 (j + 1) (by decide)
-    _ = j + 1 := by simp
+  lia
 
 private theorem inversePeakEulerian_base_strictInterl :
     StrictInterl (inversePeakEulerian 0) (inversePeakEulerian 1) := by
@@ -319,15 +310,5 @@ theorem inversePeakEulerian_even_interlaces (j : ℕ) :
   apply inversePeakEulerian_interlaces_of_degree_succ
   rw [inversePeakEulerian_natDegree, inversePeakEulerian_natDegree,
     half_two_mul_add_one, half_two_mul_add_two]
-
-/-! ## Deprecated aliases -/
-
-@[deprecated inversePeakEulerian_strictInterl_and_noCommonRoot
-  (since := "2026-09-26")]
-alias inversePeakEulerian_prec_and_noCommonRoot :=
-  inversePeakEulerian_strictInterl_and_noCommonRoot
-
-@[deprecated inversePeakEulerian_strictInterl (since := "2026-09-26")]
-alias inversePeakEulerian_prec := inversePeakEulerian_strictInterl
 
 end RealRooted.Applications.OEIS

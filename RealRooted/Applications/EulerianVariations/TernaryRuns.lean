@@ -87,9 +87,4 @@ theorem ternaryRunPolynomial_isPF (n : ℕ) :
   | zero => simp [ternaryRunPolynomial]
   | succ n => exact (ternaryRunPolynomial_strictInterl n).2.1.2
 
-/-! ## Deprecated aliases -/
-
-@[deprecated ternaryRunPolynomial_strictInterl (since := "2026-09-26")]
-alias ternaryRunPolynomial_prec := ternaryRunPolynomial_strictInterl
-
 end RealRooted.Applications.EulerianVariations

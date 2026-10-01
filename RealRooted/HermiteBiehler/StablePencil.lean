@@ -19,6 +19,89 @@ def IsUpperHalfPlaneStablePencil (f g : ℝ[X]) : Prop :=
   ∀ z w : ℂ, 0 < z.im → 0 < w.im →
     (complexify f).eval z + w * (complexify g).eval z ≠ 0
 
+/-- The bivariate realization `f(z) + w g(z)` of a real polynomial pencil. -/
+def bivariatePencil (f g : ℝ[X]) : MvPolynomial (Fin 2) ℂ :=
+  (complexify f).eval₂ (MvPolynomial.C : ℂ →+* MvPolynomial (Fin 2) ℂ)
+      (MvPolynomial.X 0) +
+    MvPolynomial.X 1 *
+      (complexify g).eval₂ (MvPolynomial.C : ℂ →+* MvPolynomial (Fin 2) ℂ)
+        (MvPolynomial.X 0)
+
+@[simp] theorem eval_bivariatePencil (f g : ℝ[X]) (z : Fin 2 → ℂ) :
+    MvPolynomial.eval z (bivariatePencil f g) =
+      (complexify f).eval (z 0) + z 1 * (complexify g).eval (z 0) := by
+  have hC :
+      (MvPolynomial.eval z).comp
+          (MvPolynomial.C : ℂ →+* MvPolynomial (Fin 2) ℂ) =
+        RingHom.id ℂ := by
+    ext r
+    simp
+  simp [bivariatePencil, Polynomial.hom_eval₂, hC]
+
+/-- Multivariate upper-half-plane stability of `f(z) + w g(z)` is exactly the
+nonvanishing statement needed for a stable univariate pencil. -/
+theorem MvUpperHalfPlaneStable.isUpperHalfPlaneStablePencil {f g : ℝ[X]}
+    (h : MvUpperHalfPlaneStable (bivariatePencil f g)) :
+    IsUpperHalfPlaneStablePencil f g := by
+  intro z w hz hw
+  simpa using h ![z, w] (by
+    intro i
+    fin_cases i
+    · simpa using hz
+    · simpa using hw)
+
+/-- A weakly stable bivariate pencil either has both endpoints zero or gives a
+genuine stable pencil. -/
+theorem MvUpperHalfPlaneStableOrZero.eq_zero_pair_or_stablePencil
+    {f g : ℝ[X]}
+    (h : MvUpperHalfPlaneStableOrZero (bivariatePencil f g)) :
+    (f = 0 ∧ g = 0) ∨ IsUpperHalfPlaneStablePencil f g := by
+  rcases h with hzero | hstable
+  · left
+    have hfmap : complexify f = 0 := by
+      apply Polynomial.funext
+      intro z
+      have heval := congrArg (MvPolynomial.eval ![z, 0]) hzero
+      simpa using heval
+    have hf : f = 0 :=
+      (Polynomial.map_eq_zero_iff Complex.ofReal_injective).mp hfmap
+    subst f
+    have hgmap : complexify g = 0 := by
+      apply Polynomial.funext
+      intro z
+      have heval := congrArg (MvPolynomial.eval ![z, 1]) hzero
+      simpa using heval
+    exact ⟨rfl,
+      (Polynomial.map_eq_zero_iff Complex.ofReal_injective).mp hgmap⟩
+  · exact Or.inr hstable.isUpperHalfPlaneStablePencil
+
+/-- Specializing a stable pencil at `w = i` gives a stable
+Hermite--Biehler polynomial. -/
+theorem IsUpperHalfPlaneStablePencil.hermiteBiehler {f g : ℝ[X]}
+    (h : IsUpperHalfPlaneStablePencil f g) :
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) := by
+  intro z hz
+  simpa [eval_hermiteBiehlerPolynomial] using
+    h z Complex.I hz (by norm_num)
+
+/-- A stable pencil `-b + w a` has the nonpositive Wronskian orientation
+`W(a, b) ≤ 0` on the real axis. -/
+theorem IsUpperHalfPlaneStablePencil.wronskian_nonpos {a b : ℝ[X]}
+    (h : IsUpperHalfPlaneStablePencil (-b) a) (r : ℝ) :
+    (wronskian a b).eval r ≤ 0 := by
+  have him := im_deriv_mul_conj_nonpos_of_stable h.hermiteBiehler r
+  rw [im_hb_deriv_mul_conj] at him
+  simpa [wronskian, eval_sub, eval_mul, mul_comm] using him
+
+/-- At a real root of the second member of a stable pencil `-b + w a`, its
+derivative has the opposite weak sign from the value of the first member. -/
+theorem IsUpperHalfPlaneStablePencil.derivative_mul_nonpos_at_root
+    {a b : ℝ[X]} (h : IsUpperHalfPlaneStablePencil (-b) a)
+    {r : ℝ} (hr : b.eval r = 0) :
+    b.derivative.eval r * a.eval r ≤ 0 := by
+  have hw := h.wronskian_nonpos r
+  simpa [wronskian, eval_sub, eval_mul, hr, mul_comm] using hw
+
 /-- Swapping a stable pencil and negating its old base preserves stability.
 The parameter change is the upper-half-plane involution `w ↦ -w⁻¹`. -/
 theorem IsUpperHalfPlaneStablePencil.swap_neg {f g : ℝ[X]}
@@ -141,15 +224,5 @@ theorem isUpperHalfPlaneStablePencil_of_strictInterl
     nlinarith
 
 end
-
-@[deprecated isUpperHalfPlaneStablePencil_of_strictInterl_of_natDegree_pos
-  (since := "2026-09-18")]
-alias isUpperHalfPlaneStablePencil_of_prec_of_natDegree_pos :=
-  isUpperHalfPlaneStablePencil_of_strictInterl_of_natDegree_pos
-
-@[deprecated isUpperHalfPlaneStablePencil_of_strictInterl
-  (since := "2026-09-18")]
-alias isUpperHalfPlaneStablePencil_of_prec :=
-  isUpperHalfPlaneStablePencil_of_strictInterl
 
 end RealRooted

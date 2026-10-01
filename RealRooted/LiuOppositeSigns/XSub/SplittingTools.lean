@@ -45,7 +45,7 @@ lemma not_isRoot_X_mul_sub_C_mul_of_left_isRoot
   intro hP
   have hprod : -μ * q.eval x = 0 := by
     simpa [Polynomial.IsRoot.def, eval_X_mul_sub_C_mul_of_left_isRoot hx] using hP
-  have hqeval : q.eval x = 0 := by exact (mul_eq_zero.mp hprod).resolve_left (neg_ne_zero.mpr hμ)
+  have hqeval : q.eval x = 0 := (mul_eq_zero.mp hprod).resolve_left (neg_ne_zero.mpr hμ)
   exact hq (by simpa [Polynomial.IsRoot.def] using hqeval)
 
 /-- Evaluate the x-subtraction pencil at a root of the right endpoint. -/

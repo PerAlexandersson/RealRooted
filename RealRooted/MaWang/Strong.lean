@@ -421,11 +421,6 @@ alias prec_of_interlaces_eval_mul_neg_succ :=
 alias prec_of_interlaces_eval_mul_neg_same :=
   strictInterl_of_interlaces_eval_mul_neg_same
 
-@[deprecated strictInterl_of_interlaces_endpoint_sign_of_no_crossing
-  (since := "2026-09-18")]
-alias prec_of_interlaces_endpoint_sign_of_no_crossing :=
-  strictInterl_of_interlaces_endpoint_sign_of_no_crossing
-
 @[deprecated strictInterl_of_interlaces_evalCoeff_neg_succ (since := "2026-09-18")]
 alias prec_of_interlaces_evalCoeff_neg_succ :=
   strictInterl_of_interlaces_evalCoeff_neg_succ
@@ -433,14 +428,6 @@ alias prec_of_interlaces_evalCoeff_neg_succ :=
 @[deprecated strictInterl_of_interlaces_evalCoeff_neg_same (since := "2026-09-18")]
 alias prec_of_interlaces_evalCoeff_neg_same :=
   strictInterl_of_interlaces_evalCoeff_neg_same
-
-@[deprecated strictInterl_of_interlaces_evalCoeff_neg (since := "2026-09-18")]
-alias prec_of_interlaces_evalCoeff_neg := strictInterl_of_interlaces_evalCoeff_neg
-
-@[deprecated strictInterl_mul_X_sub_C_of_linearCombo_quotient
-  (since := "2026-09-18")]
-alias prec_mul_X_sub_C_of_linearCombo_quotient :=
-  strictInterl_mul_X_sub_C_of_linearCombo_quotient
 
 end RealRooted.MaWangInternal
 
@@ -455,10 +442,10 @@ export MaWangInternal
     strictInterl_of_interlaces_evalCoeff_neg
     prec_of_interlaces_eval_mul_neg_succ
     prec_of_interlaces_eval_mul_neg_same
-    prec_of_interlaces_endpoint_sign_of_no_crossing
+    strictInterl_of_interlaces_endpoint_sign_of_no_crossing
     prec_of_interlaces_evalCoeff_neg_succ
     prec_of_interlaces_evalCoeff_neg_same
-    prec_of_interlaces_evalCoeff_neg
+    strictInterl_of_interlaces_evalCoeff_neg
     natDegree_sub_C_mul_eq_of_interlaces_degree_lower_bound
     hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound)
 

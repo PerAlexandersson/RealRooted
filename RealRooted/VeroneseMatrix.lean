@@ -205,7 +205,7 @@ lemma interl_C_mul_affine_linear_X_mul_affine_linear
     isRealRooted_affine_factor (s := u) (t := v) hu
   have hfnn : HasNonnegCoeffs (C u * X + C v : ℝ[X]) :=
     hasNonnegCoeffs_affine_linear hu.le hv
-  exact (StrictInterl.C_mul_left (strictInterl_self_mul_X_of_nonneg hf.1 hf.2 hfnn) ha0).toInterl
+  exact (StrictInterl.C_mul_left (strictInterl_self_X_mul_of_nonneg hf.1 hf.2 hfnn) ha0).toInterl
 
 @[deprecated interl_const_entry_affine_plus_const_to_affine_plus_X
     (since := "2026-09-26")]
@@ -379,7 +379,7 @@ lemma veroneseLinearFactorConstEntry_det_nonneg
   have hi_nat : i₁.1 ≤ i₂.1 := by lia
   have hj_nat : j₁.1 ≤ j₂.1 := by lia
   unfold veroneseLinearFactorConstEntry
-  split_ifs <;> (first | lia | simp <;> nlinarith [ha, sq_nonneg a])
+  split_ifs <;> (first | lia | simp <;> linarith [ha, sq_nonneg a])
 
 theorem veroneseLinearFactorMatrixDesc_has2x2_nonlast
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a)
@@ -446,7 +446,7 @@ lemma veroneseLinearFactorConstLastEntry_det_nonneg
         veroneseLinearFactorLastConstEntry a j₂ := by
   have hj_nat : j₁.1 ≤ j₂.1 := by lia
   unfold veroneseLinearFactorConstEntry veroneseLinearFactorLastConstEntry
-  split_ifs <;> (first | lia | simp <;> nlinarith [ha, sq_nonneg a])
+  split_ifs <;> (first | lia | simp <;> linarith [ha, sq_nonneg a])
 
 theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) (hr2 : 2 ≤ r)

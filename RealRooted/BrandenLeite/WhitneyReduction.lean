@@ -187,8 +187,8 @@ theorem whitneyClearFirst_trailing_eq_principalSection_whitneyReduce
 
 theorem principalSection_isTotallyNonneg
     {R : LowerTriangularMatrix ℝ} (hR : Matrix.IsTotallyNonneg R) (N : ℕ) :
-    Matrix.IsTotallyNonneg (principalSection R N) := by
-  exact hR.submatrix Fin.val_strictMono Fin.val_strictMono
+    Matrix.IsTotallyNonneg (principalSection R N) :=
+  hR.submatrix Fin.val_strictMono Fin.val_strictMono
 
 theorem isTotallyNonneg_of_principalSections (M : Matrix ℕ ℕ ℝ)
     (hM : ∀ N, Matrix.IsTotallyNonneg
@@ -264,8 +264,8 @@ theorem whitneyReduce_isLowerUnitriangular
 
 theorem firstColumnRatio_nonneg
     {R : LowerTriangularMatrix ℝ} (hR : Matrix.IsTotallyNonneg R) (n : ℕ) :
-    0 ≤ firstColumnRatio R n := by
-  exact div_nonneg (hR.nonneg (n + 1) 0) (hR.nonneg n 0)
+    0 ≤ firstColumnRatio R n :=
+  div_nonneg (hR.nonneg (n + 1) 0) (hR.nonneg n 0)
 
 /-- A zero in the first column of a lower unitriangular TN matrix propagates
 one row downward. -/

@@ -29,14 +29,14 @@ theorem Eligible.leftLabel_ne_rightLabel {h : Nat}
 @[simp] theorem Eligible.finalSwap_leftLabel {h : Nat}
     {c : DecoNormalizedCode h} {j : Fin h} (_hj : c.Eligible j) :
     Equiv.swap (leftLabel h j) (rightLabel h j) (leftLabel h j) =
-      rightLabel h j := by
-  exact Equiv.swap_apply_left _ _
+      rightLabel h j :=
+  Equiv.swap_apply_left _ _
 
 @[simp] theorem Eligible.finalSwap_rightLabel {h : Nat}
     {c : DecoNormalizedCode h} {j : Fin h} (_hj : c.Eligible j) :
     Equiv.swap (leftLabel h j) (rightLabel h j) (rightLabel h j) =
-      leftLabel h j := by
-  exact Equiv.swap_apply_right _ _
+      leftLabel h j :=
+  Equiv.swap_apply_right _ _
 
 /-- The final-label swap at one eligible start fixes the left label of every
 other eligible start. -/
@@ -100,8 +100,8 @@ theorem Eligible.rightLabel_not_mem_comparisonBottomSupport {h : Nat}
     dsimp [localWord]
     rw [MinimumInsertionWord.length_step (by rw [hinnerLength]; lia),
       hinnerLength]
-  have hlocalPos : MinimumInsertionWord.IsPositive localWord := by
-    exact MinimumInsertionWord.isPositive_step 2
+  have hlocalPos : MinimumInsertionWord.IsPositive localWord :=
+    MinimumInsertionWord.isPositive_step 2
       (MinimumInsertionWord.step 0 (a :: w))
   have hsuffixValid : MinimumInsertionWord.ValidFrom localWord.length suffix := by
     have hdrop := c.toDecoCode.validFrom_entryList.drop

@@ -259,15 +259,13 @@ theorem affineEulerRayleighRemainder_rename_succ
   have hnewErase :
       (∑ j ∈ (Finset.univ : Finset (Fin (m + 1))).erase i.succ,
           newTerm j) =
-        (∑ j : Fin (m + 1), newTerm j) - newTerm i.succ := by
-    apply eq_sub_of_add_eq
-    exact Finset.sum_erase_add _ _ (Finset.mem_univ i.succ)
+        (∑ j : Fin (m + 1), newTerm j) - newTerm i.succ :=
+    eq_sub_of_add_eq (Finset.sum_erase_add _ _ (Finset.mem_univ i.succ))
   have holdErase :
       (∑ j ∈ (Finset.univ : Finset (Fin m)).erase i,
           oldTerm j) =
-        (∑ j : Fin m, oldTerm j) - oldTerm i := by
-    apply eq_sub_of_add_eq
-    exact Finset.sum_erase_add _ _ (Finset.mem_univ i)
+        (∑ j : Fin m, oldTerm j) - oldTerm i :=
+    eq_sub_of_add_eq (Finset.sum_erase_add _ _ (Finset.mem_univ i))
   unfold affineEulerRayleighRemainder
   change (∑ j ∈ (Finset.univ : Finset (Fin (m + 1))).erase i.succ,
       newTerm j) = rename (fun j : Nat => j + 1)

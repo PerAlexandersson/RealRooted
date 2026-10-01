@@ -95,7 +95,7 @@ lemma eval_cross_le_of_strictInterl_sameDegree_of_nonneg
   rw [eval_eq_leadingCoeff_mul_prod_sub hf.2 0,
     eval_eq_leadingCoeff_mul_prod_sub hg.2 0, ← hss_eq, ← hrs_eq]
   simp only [Multiset.map_coe, Multiset.prod_coe]
-  nlinarith [mul_le_mul_of_nonneg_left hprod (le_of_lt (mul_pos hflc hglc))]
+  linarith [mul_le_mul_of_nonneg_left hprod (le_of_lt (mul_pos hflc hglc))]
 
 /-- A strict normalized endpoint comparison selects the forward branch of
 Obreschkoff's same-degree orientation alternative. -/
@@ -121,10 +121,5 @@ theorem strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross
   (since := "2026-09-26")]
 alias eval_cross_le_of_prec_sameDegree_of_nonneg :=
   eval_cross_le_of_strictInterl_sameDegree_of_nonneg
-
-@[deprecated strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
-  (since := "2026-09-26")]
-alias prec_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt :=
-  strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
 
 end RealRooted

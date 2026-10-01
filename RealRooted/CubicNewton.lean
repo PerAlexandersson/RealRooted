@@ -10,7 +10,7 @@ Vieta helper for negated roots and the elementary-symmetric Newton inequality
 from `NewtonAux`.
 
 These are the exact-degree-three analogues of the degree-two discriminant lemma
-`four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_two` in
+`quadratic_disc_coeff_le_of_splits_natDegree_two` in
 `RealRooted.MultiplierSequence`.
 -/
 
@@ -25,8 +25,8 @@ theorem newton_symm_three (a b c : ℝ) :
     3 * (a * b + a * c + b * c) ≤ (a + b + c) ^ 2 ∧
       3 * ((a + b + c) * (a * b * c)) ≤ (a * b + a * c + b * c) ^ 2 := by
   constructor
-  · nlinarith [sq_nonneg (a - b), sq_nonneg (a - c), sq_nonneg (b - c)]
-  · nlinarith [sq_nonneg (a * b - a * c), sq_nonneg (a * b - b * c),
+  · linarith [sq_nonneg (a - b), sq_nonneg (a - c), sq_nonneg (b - c)]
+  · linarith [sq_nonneg (a * b - a * c), sq_nonneg (a * b - b * c),
       sq_nonneg (a * c - b * c)]
 
 /-- Newton's first coefficient inequality for a real cubic that splits:
@@ -98,15 +98,15 @@ theorem three_mul_coeff_newton_of_natDegree_le_three
     refine ⟨?_, ?_⟩
     · by_cases h2 : p.natDegree = 2
       · have hquad := quadratic_disc_coeff_le_of_splits_natDegree_two h2 hsplits
-        nlinarith [hquad, sq_nonneg (p.coeff 1)]
+        linarith [hquad, sq_nonneg (p.coeff 1)]
       · have hle1 : p.natDegree ≤ 1 :=
           Nat.lt_succ_iff.mp (lt_of_le_of_ne hle2 h2)
         have hc2 : p.coeff 2 = 0 :=
           coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hle1 (by norm_num))
         rw [hc2]
-        nlinarith [sq_nonneg (p.coeff 1)]
+        linarith [sq_nonneg (p.coeff 1)]
     · rw [hc3]
-      nlinarith [sq_nonneg (p.coeff 2)]
+      linarith [sq_nonneg (p.coeff 2)]
 
 /-- Jensen-normalized cubic log-concavity from splitting of a polynomial whose
 coefficients are the binomially weighted `gᵢ`. -/
@@ -119,6 +119,6 @@ theorem jensen_three_logConcave_of_natDegree_le_three
   obtain ⟨hleft, hright⟩ := three_mul_coeff_newton_of_natDegree_le_three hdeg hs
   rw [h0, h1, h2] at hleft
   rw [h1, h2, h3] at hright
-  exact ⟨by nlinarith [hleft], by nlinarith [hright]⟩
+  exact ⟨by linarith [hleft], by linarith [hright]⟩
 
 end RealRooted

@@ -98,17 +98,6 @@ theorem add_C_mul_left_of_pairwise_three
     (s := 1) (t := r) zero_le_one hr ha hb hc hapos hbpos hcpos
       hann hbnn hcnn hab hac hbc
 
-/-- Unscaled specialization of `Compatible.add_C_mul_left_of_pairwise_three`. -/
-theorem add_left_of_pairwise_three {a b c : ℝ[X]}
-    (ha : a ≠ 0 ∧ a.Splits) (hb : b ≠ 0 ∧ b.Splits) (hc : c ≠ 0 ∧ c.Splits)
-    (hapos : HasPosLeadingCoeff a) (hbpos : HasPosLeadingCoeff b)
-    (hcpos : HasPosLeadingCoeff c) (hann : HasNonnegCoeffs a)
-    (hbnn : HasNonnegCoeffs b) (hcnn : HasNonnegCoeffs c)
-    (hab : Compatible a b) (hac : Compatible a c) (hbc : Compatible b c) :
-    Compatible (a + b) c := by
-  simpa using add_C_mul_left_of_pairwise_three
-    (r := 1) zero_le_one ha hb hc hapos hbpos hcpos hann hbnn hcnn hab hac hbc
-
 end Compatible
 
 /-- If both `f` and its `X`-multiple are compatible with `g`, then the
@@ -144,10 +133,5 @@ theorem strictInterl_of_compatible_and_X_mul_left
       (hasNonnegCoeffs_affine_mul hs.le ht.le hf_nonneg) hg_nonneg hg_rr.1
   exact ⟨by simpa [hrewrite] using hne,
     by simpa [hrewrite] using hcompat.splits_add hne⟩
-
-@[deprecated strictInterl_of_compatible_and_X_mul_left
-  (since := "2026-09-18")]
-alias prec_of_compatible_and_X_mul_left :=
-  strictInterl_of_compatible_and_X_mul_left
 
 end RealRooted

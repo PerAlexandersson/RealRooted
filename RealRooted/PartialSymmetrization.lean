@@ -51,8 +51,8 @@ theorem im_bivariateQuotient_eq_bivariateV2_div_normSq
     (a b c d : ℂ) (x : ℝ) :
     ((a + c * (x : ℂ)) / (b + d * (x : ℂ))).im =
       bivariateV2 a b c d x /
-        Complex.normSq (b + d * (x : ℂ)) := by
-  exact im_bivariateQuotient_eq_bivariateV1_div_normSq a c b d x
+        Complex.normSq (b + d * (x : ℂ)) :=
+  im_bivariateQuotient_eq_bivariateV1_div_normSq a c b d x
 
 /-- A positive imaginary part of `c / d` keeps `c + d * z` nonzero on the
 closed upper half-plane. This is the denominator observation in Part II,
@@ -81,8 +81,8 @@ theorem add_mul_ne_zero_of_im_div_pos
 `add_mul_ne_zero_of_im_div_pos`. -/
 theorem add_mul_real_ne_zero_of_im_div_pos
     (c d : ℂ) (x : ℝ) (h : 0 < (c / d).im) :
-    c + d * (x : ℂ) ≠ 0 := by
-  exact add_mul_ne_zero_of_im_div_pos c d x h (by simp)
+    c + d * (x : ℂ) ≠ 0 :=
+  add_mul_ne_zero_of_im_div_pos c d x h (by simp)
 
 /-- When the cross determinant vanishes, the solved quotient is the constant
 `b / d`. This is the constant branch in Part II, Lemma 1.4. -/
@@ -171,8 +171,8 @@ on the upper half-plane. This is the algebraic direction preceding (1.2). -/
 theorem bivariate_ne_zero_of_im_div_pos_of_quotient_im_pos
     (a b c d z w : ℂ) (hcd : 0 < (c / d).im) (hz : 0 ≤ z.im)
     (hq : 0 < ((a + b * z) / (c + d * z)).im) (hw : 0 < w.im) :
-    a + b * z + c * w + d * z * w ≠ 0 := by
-  exact bivariate_ne_zero_of_quotient_im_pos a b c d z w
+    a + b * z + c * w + d * z * w ≠ 0 :=
+  bivariate_ne_zero_of_quotient_im_pos a b c d z w
     (add_mul_ne_zero_of_im_div_pos c d z hcd hz) hq hw
 
 /-- The quotient-positivity condition in (1.2) implies upper-half-plane
@@ -224,8 +224,8 @@ theorem im_bivariateQuotient_pos_iff_bivariateV1_pos
 theorem im_bivariateQuotient_pos_iff_bivariateV2_pos
     (a b c d : ℂ) (x : ℝ) (h : 0 < (b / d).im) :
     0 < ((a + c * (x : ℂ)) / (b + d * (x : ℂ))).im ↔
-      0 < bivariateV2 a b c d x := by
-  exact im_bivariateQuotient_pos_iff_bivariateV1_pos a c b d x h
+      0 < bivariateV2 a b c d x :=
+  im_bivariateQuotient_pos_iff_bivariateV1_pos a c b d x h
 
 /-- Under partial transposition averaging, V1 is the corresponding convex
 combination of the original V1 and V2. -/
@@ -247,7 +247,7 @@ theorem bivariateV2_partialSymmetrization
         ((t : ℂ) * b + (1 - t : ℝ) * c)
         ((t : ℂ) * c + (1 - t : ℝ) * b) d x =
       t * bivariateV2 a b c d x +
-        (1 - t) * bivariateV1 a b c d x := by
-  exact bivariateV1_partialSymmetrization a c b d t x
+        (1 - t) * bivariateV1 a b c d x :=
+  bivariateV1_partialSymmetrization a c b d t x
 
 end RealRooted

@@ -231,8 +231,8 @@ namespace HasNonnegCoeffs
 coefficientwise nonnegativity. -/
 theorem bfjOutput {P Q : MvPolynomial (Fin 2) ℝ}
     (hP : HasNonnegCoeffs P) (hQ : HasNonnegCoeffs Q) (b : ℕ) :
-    RealRooted.HasNonnegCoeffs (MvPolynomial.bfjOutput P Q b) := by
-  exact (hP.bfjCoefficient hQ b).aeval_X_one
+    RealRooted.HasNonnegCoeffs (MvPolynomial.bfjOutput P Q b) :=
+  (hP.bfjCoefficient hQ b).aeval_X_one
 
 end HasNonnegCoeffs
 

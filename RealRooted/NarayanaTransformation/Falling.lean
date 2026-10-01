@@ -39,8 +39,8 @@ private theorem brentiFallingFactorial_of_natDegree_eq_two_pos_leading {p : ℝ[
     HasOnlyNonposRoots p := by
   let q := basisTransform fallingFactorialPolynomial p
   have hqform : q = C (p.coeff 2) * X ^ 2 + C (p.coeff 1 - p.coeff 2) * X +
-      C (p.coeff 0) := by
-    exact basisTransform_fallingFactorial_eq_quadratic_of_natDegree_eq_two hpdeg
+      C (p.coeff 0) :=
+    basisTransform_fallingFactorial_eq_quadratic_of_natDegree_eq_two hpdeg
   have hqdeg : q.natDegree = 2 := by
     rw [hqform]
     exact Polynomial.natDegree_quadratic hpos.ne'
@@ -64,7 +64,7 @@ private theorem brentiFallingFactorial_of_natDegree_eq_two_pos_leading {p : ℝ[
     have hcoeff := hqnn 0
     rw [hqform] at hcoeff
     simpa using hcoeff
-  have hb : 0 ≤ p.coeff 1 := by nlinarith
+  have hb : 0 ≤ p.coeff 1 := by linarith
   have hpform : p = C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X + C (p.coeff 0) :=
     Polynomial.eq_quadratic_of_degree_le_two (p := p)
       (Polynomial.degree_le_of_natDegree_le (by rw [hpdeg]))
@@ -78,7 +78,7 @@ private theorem brentiFallingFactorial_of_natDegree_eq_two_pos_leading {p : ℝ[
   have hdisc_q : 4 * p.coeff 2 * p.coeff 0 ≤ (p.coeff 1 - p.coeff 2) ^ 2 :=
     (quadraticPoly_splits_iff_le hpos).mp hqquad_splits
   have hdisc_p : 4 * p.coeff 2 * p.coeff 0 ≤ p.coeff 1 ^ 2 := by
-    nlinarith [sq_nonneg (p.coeff 2), mul_nonneg hd hpos.le]
+    linarith [sq_nonneg (p.coeff 2), mul_nonneg hd hpos.le]
   have hpsplits_quad : (C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X +
       C (p.coeff 0) : ℝ[X]).Splits :=
     quadraticPoly_splits_of_le hpos hdisc_p

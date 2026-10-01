@@ -26,24 +26,6 @@ lemma hasNonnegCoeffs_affine_mul {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t)
   have hsum : HasNonnegCoeffs (C s * (X * p) + C t * p) := hsXp.add htp
   grind
 
-/-- A finite sum of nonnegative-coefficient polynomials cannot vanish if one of
-the summands is already nonzero. This is the no-cancellation fact needed when
-matrix row sums are built from nonnegative product terms. -/
-lemma add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-    {p q : ℝ[X]}
-    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
-    (hq_ne : q ≠ 0) :
-    p + q ≠ 0 := by
-  let d : ℕ := q.natDegree
-  have hp_coeff : 0 ≤ p.coeff d := hp d
-  have hq_pos : 0 < q.coeff d := by
-    have hq_lc : 0 < q.leadingCoeff := hq.pos_leadingCoeff hq_ne
-    simpa [d] using hq_lc
-  intro hsum0
-  have hcoeff0 : (p + q).coeff d = 0 := by simp_all
-  rw [coeff_add] at hcoeff0
-  linarith
-
 lemma sum_ne_zero_of_hasNonnegCoeffs_of_mem_ne_zero
     {ps : List ℝ[X]} {p : ℝ[X]}
     (hps : ∀ q ∈ ps, HasNonnegCoeffs q)
@@ -542,8 +524,8 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
     simpa [fs'] using interlacingSeqNonneg_filterLeftNonzero
       (fs := fs) (gs := gs.reverse) (by simp_all)
       ⟨hfs, hfs_real⟩
-  have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse := by
-    exact interlacingSeqNonneg_reverse_of_sublist_reverse hgs <| by
+  have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse :=
+    interlacingSeqNonneg_reverse_of_sublist_reverse hgs <| by
       simpa [gs'] using filterRightByLeftNonzero_sublist_right fs gs.reverse
   have hlen' : fs'.length = gs'.length := by
     simpa [fs', gs'] using length_filterLeftNonzero_eq_filterRightByLeftNonzero fs gs.reverse

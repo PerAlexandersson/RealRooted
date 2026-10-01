@@ -123,8 +123,8 @@ theorem exceptionalEulerInverse_roots_pos
     norm_num at hroot
   have hrneg : r < 0 := lt_of_le_of_ne hrle hrzero
   let tail := R.roots.erase r
-  have hcons : r ::ₘ tail = R.roots := by
-    exact Multiset.cons_erase hr
+  have hcons : r ::ₘ tail = R.roots :=
+    Multiset.cons_erase hr
   have htailCard : tail.card = m - 1 := by
     dsimp only [tail]
     rw [Multiset.card_erase_of_mem hr, hcardRoots]
@@ -141,8 +141,8 @@ theorem exceptionalEulerInverse_roots_pos
     · exact Multiset.card_le_card (Multiset.filter_le _ _)
     · rw [htailCard, ← hfilterEq]
       exact hcardInterior
-  have htailAll : ∀ x ∈ tail, 0 < x ∧ x < 1 := by
-    exact Multiset.filter_eq_self.mp
+  have htailAll : ∀ x ∈ tail, 0 < x ∧ x < 1 :=
+    Multiset.filter_eq_self.mp
       (Multiset.eq_of_le_of_card_le
         (Multiset.filter_le _ _) hfilterTail.ge)
   have htailProd : 0 < tail.prod := by
@@ -579,9 +579,8 @@ private theorem exceptionalEulerInverse_lower_allComboRealRooted
       _ < γ := by
         dsimp only [gap, A]
         linarith
-  have hγnPos : ∀ n, 0 < γn n := by
-    intro n
-    exact hA.trans (hγnLower n)
+  have hγnPos : ∀ n, 0 < γn n :=
+    fun n => hA.trans (hγnLower n)
   have hD : ∀ n, D n ≠ 0 := by
     intro n
     dsimp only [D, R]
@@ -737,9 +736,8 @@ private theorem exceptionalEulerInverse_lower_allComboRealRooted
     dsimp only [qn, q]
     rw [Polynomial.natDegree_C_mul (inv_ne_zero hQlead),
       Polynomial.natDegree_C_mul (inv_ne_zero hQlead), hQnDegree]
-  have hqnSplits : ∀ n, (qn n).Splits := by
-    intro n
-    exact (hQnSplits n).C_mul Q.leadingCoeff⁻¹
+  have hqnSplits : ∀ n, (qn n).Splits :=
+    fun n => (hQnSplits n).C_mul Q.leadingCoeff⁻¹
   have hqnCoeffTendsto : ∀ k,
       Filter.Tendsto (fun n => (qn n).coeff k) Filter.atTop
         (nhds (q.coeff k)) := by
@@ -835,19 +833,6 @@ theorem rPolynomial_exceptional_strictInterl (m ε : ℕ) (hm : 0 < m) :
   rw [← exceptionalEulerInverse_upper_eq_rPolynomial m ε,
     ← exceptionalEulerInverse_lower_eq_rPolynomial m ε hm]
   exact exceptionalEulerInverse_upper_strictInterl_lower m ε hm
-
-/-! ## Deprecated aliases -/
-
-@[deprecated exceptionalEulerInverse_strictInterl (since := "2026-09-26")]
-alias exceptionalEulerInverse_prec := exceptionalEulerInverse_strictInterl
-
-@[deprecated exceptionalEulerInverse_upper_strictInterl_lower
-  (since := "2026-09-26")]
-alias exceptionalEulerInverse_upper_prec_lower :=
-  exceptionalEulerInverse_upper_strictInterl_lower
-
-@[deprecated rPolynomial_exceptional_strictInterl (since := "2026-09-26")]
-alias rPolynomial_exceptional_prec := rPolynomial_exceptional_strictInterl
 
 end ToricContribution
 end ParkingFunctions

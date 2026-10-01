@@ -169,8 +169,8 @@ theorem rootCountAtOrAbove_le_natDegree_of_splits {p : ℝ[X]}
 
 theorem rootCountAtOrAbove_eq_zero_of_splits_natDegree_eq_zero {p : ℝ[X]}
     (hp_splits : p.Splits) (hpdeg : p.natDegree = 0) (x : ℝ) :
-    rootCountAtOrAbove p x = 0 := by
-  exact Nat.eq_zero_of_le_zero
+    rootCountAtOrAbove p x = 0 :=
+  Nat.eq_zero_of_le_zero
     (by simpa [hpdeg] using rootCountAtOrAbove_le_natDegree_of_splits hp_splits x)
 
 theorem RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one
@@ -626,7 +626,7 @@ theorem exists_threshold_no_mem_Ico_left (s : Multiset ℝ) (x : ℝ) :
   by_cases hSne : S.Nonempty
   · set m : ℝ := S.max' hSne with hm
     have hmS : m ∈ S := Finset.max'_mem S hSne
-    have hmx : m < x := by exact (Finset.mem_filter.mp hmS).2
+    have hmx : m < x := (Finset.mem_filter.mp hmS).2
     refine ⟨(m + x) / 2, by linarith, ?_⟩
     intro r hr
     by_cases hrx : r < x

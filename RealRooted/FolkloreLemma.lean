@@ -462,34 +462,9 @@ theorem strictInterl_component_of_strictInterl_next_eq_add_X_mul
 @[deprecated strictInterl_sub_X_mul_right (since := "2026-09-18")]
 alias prec_sub_X_mul_right := strictInterl_sub_X_mul_right
 
-@[deprecated strictInterl_sub_X_mul_left (since := "2026-09-26")]
-alias prec_sub_X_mul_left := strictInterl_sub_X_mul_left
-
-@[deprecated strictInterl_sub_X_mul_pair_of_posLeadingCoeff (since := "2026-09-26")]
-alias prec_sub_X_mul_pair_of_posLeadingCoeff :=
-  strictInterl_sub_X_mul_pair_of_posLeadingCoeff
-
-@[deprecated strictInterl_sub_X_mul_pair_of_eq_posLeadingCoeff (since := "2026-09-26")]
-alias prec_sub_X_mul_pair_of_eq_posLeadingCoeff :=
-  strictInterl_sub_X_mul_pair_of_eq_posLeadingCoeff
-
-@[deprecated strictInterl_right_shear_of_scaled_cancellation (since := "2026-09-26")]
-alias prec_right_shear_of_scaled_cancellation :=
-  strictInterl_right_shear_of_scaled_cancellation
-
-@[deprecated strictInterl_component_of_strictInterl_mul_X_of_roots_nonpos
-  (since := "2026-09-26")]
-alias prec_component_of_prec_mul_X_of_roots_nonpos :=
-  strictInterl_component_of_strictInterl_mul_X_of_roots_nonpos
-
 @[deprecated strictInterl_component_of_strictInterl_next_eq_add_X_mul_of_roots_sum_le
   (since := "2026-09-26")]
 alias prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le :=
   strictInterl_component_of_strictInterl_next_eq_add_X_mul_of_roots_sum_le
-
-@[deprecated strictInterl_component_of_strictInterl_next_eq_add_X_mul
-  (since := "2026-09-26")]
-alias prec_component_of_prec_next_eq_add_X_mul :=
-  strictInterl_component_of_strictInterl_next_eq_add_X_mul
 
 end RealRooted

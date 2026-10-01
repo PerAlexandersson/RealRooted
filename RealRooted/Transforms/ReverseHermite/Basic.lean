@@ -53,13 +53,13 @@ def reverseHermiteTransform (p : R[X]) : R[X] :=
 
 theorem reverseHermiteTransform_add (p q : R[X]) :
     reverseHermiteTransform (p + q) =
-      reverseHermiteTransform p + reverseHermiteTransform q := by
-  exact basisTransform_add reverseHermiteBasis p q
+      reverseHermiteTransform p + reverseHermiteTransform q :=
+  basisTransform_add reverseHermiteBasis p q
 
 theorem reverseHermiteTransform_smul (a : R) (p : R[X]) :
     reverseHermiteTransform (a • p) =
-      C a * reverseHermiteTransform p := by
-  exact basisTransform_smul reverseHermiteBasis a p
+      C a * reverseHermiteTransform p :=
+  basisTransform_smul reverseHermiteBasis a p
 
 theorem reverseHermiteTransform_C_mul (a : R) (p : R[X]) :
     reverseHermiteTransform (C a * p) =
@@ -76,13 +76,13 @@ theorem reverseHermiteTransform_C_mul (a : R) (p : R[X]) :
   simp only [reverseHermiteBasis_zero, mul_one]
 
 @[simp] theorem reverseHermiteTransform_X_pow (n : ℕ) :
-    reverseHermiteTransform (X ^ n : R[X]) = reverseHermiteBasis n := by
-  exact basisTransform_X_pow reverseHermiteBasis n
+    reverseHermiteTransform (X ^ n : R[X]) = reverseHermiteBasis n :=
+  basisTransform_X_pow reverseHermiteBasis n
 
 @[simp] theorem reverseHermiteTransform_monomial (n : ℕ) (a : R) :
     reverseHermiteTransform (monomial n a) =
-      C a * reverseHermiteBasis n := by
-  exact basisTransform_monomial reverseHermiteBasis n a
+      C a * reverseHermiteBasis n :=
+  basisTransform_monomial reverseHermiteBasis n a
 
 @[simp] theorem reverseHermiteTransform_one :
     reverseHermiteTransform (1 : R[X]) = 1 := by

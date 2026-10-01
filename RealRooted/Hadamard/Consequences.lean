@@ -264,66 +264,14 @@ theorem maloToeplitzHadamard_isTotallyNonneg {p q : ℝ[X]}
   rw [hcoeff]
   exact polyaFrequencyHadamardCoeff hp hq
 
-@[deprecated garloffWagnerHadamardNonnegInterl_of_oddEven
-  (since := "2026-09-18")]
-alias garloffWagnerHadamardNonnegPrec_of_oddEven :=
-  garloffWagnerHadamardNonnegInterl_of_oddEven
-
-@[deprecated garloffWagnerHadamardPFStrictInterlStatement
-  (since := "2026-09-18")]
-abbrev garloffWagnerHadamardPFPrecStatement :=
-  garloffWagnerHadamardPFStrictInterlStatement
-
 @[deprecated garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl
   (since := "2026-09-18")]
 alias garloffWagnerHadamardPFPrec_of_nonnegPrec :=
   garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl
 
-@[deprecated garloffWagnerHadamardPFInterlStatement (since := "2026-09-18")]
-abbrev garloffWagnerHadamardPFPrec0Statement :=
-  garloffWagnerHadamardPFInterlStatement
-
-@[deprecated garloffWagnerHadamardPFInterl_of_strictInterl
-  (since := "2026-09-18")]
-alias garloffWagnerHadamardPFPrec0_of_prec :=
-  garloffWagnerHadamardPFInterl_of_strictInterl
-
-@[deprecated garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
-  (since := "2026-09-18")]
-alias garloffWagnerHadamardPFPrec0_of_nonnegPrec :=
-  garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
-
 @[deprecated hadamardProduct_preserves_pf_of_nonnegStrictInterl
   (since := "2026-09-18")]
 alias hadamardProduct_preserves_pf_of_nonnegPrec :=
   hadamardProduct_preserves_pf_of_nonnegStrictInterl
-
-@[deprecated schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegStrictInterl
-  (since := "2026-09-18")]
-alias schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec :=
-  schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegStrictInterl
-
-@[deprecated garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl
-  (since := "2026-09-18")]
-alias garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec :=
-  garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl
-
-@[deprecated hadamardProduct_preserves_interl_right (since := "2026-09-18")]
-alias hadamardProduct_preserves_prec0_right :=
-  hadamardProduct_preserves_interl_right
-
-@[deprecated hadamardProduct_preserves_interl_left (since := "2026-09-18")]
-alias hadamardProduct_preserves_prec0_left :=
-  hadamardProduct_preserves_interl_left
-
-@[deprecated hadamardReciprocalConeClosure_of_garloffWagner_interl
-  (since := "2026-09-18")]
-alias hadamardReciprocalConeClosure_of_garloffWagner_prec0 :=
-  hadamardReciprocalConeClosure_of_garloffWagner_interl
-
-@[deprecated hadamardReciprocalConeClosure_of_garloffWagner_strictInterl
-  (since := "2026-09-18")]
-alias hadamardReciprocalConeClosure_of_garloffWagner_prec :=
-  hadamardReciprocalConeClosure_of_garloffWagner_strictInterl
 
 end RealRooted

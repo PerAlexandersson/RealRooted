@@ -61,7 +61,7 @@ theorem wangYeh_triangularRows_pf
             0 ≤ (n : ℝ) * (r * b - a * s) :=
           mul_nonneg hn (sub_nonneg.mpr hrb)
         dsimp [A, B]
-        nlinarith
+        linarith
       rw [hstep]
       apply ih.wangYeh_bidiagonal hdet
       rw [← hstep]

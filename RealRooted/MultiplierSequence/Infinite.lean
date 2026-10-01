@@ -1,5 +1,5 @@
 import RealRooted.EulerOperator.Shift
-import RealRooted.HadamardProduct
+import RealRooted.Hadamard.Product
 
 /-!
 # Infinite multiplier sequences

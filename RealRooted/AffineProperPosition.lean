@@ -174,7 +174,7 @@ lemma interl_affine_add_one_affine_add_X
   exact
     interl_affine_linear_affine_linear_of_cross
       (u := s) (v := t + 1) (U := s + 1) (V := t)
-      hs (by positivity) (by nlinarith [hs, ht])
+      hs (by positivity) (by linarith [hs, ht])
 
 lemma interl_affine_add_X_self {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + X) (C s * X + C t + X) := by
@@ -200,9 +200,6 @@ alias prec_affine_linear_affine_linear_of_cross :=
 alias prec0_affine_linear_affine_linear_of_cross :=
   interl_affine_linear_affine_linear_of_cross
 
-@[deprecated interl_C_affine_linear (since := "2026-09-18")]
-alias prec0_C_affine_linear := interl_C_affine_linear
-
 @[deprecated interl_congr (since := "2026-09-18")]
 alias prec0_congr := interl_congr
 
@@ -211,15 +208,164 @@ alias prec0_congr := interl_congr
 alias prec0_const_entries_affine_of_det_nonneg :=
   interl_const_entries_affine_of_det_nonneg
 
-@[deprecated interl_affine_add_one_affine_add_X
-  (since := "2026-09-18")]
-alias prec0_affine_add_one_affine_add_X :=
-  interl_affine_add_one_affine_add_X
+/-- A positive affine form precedes the `X`-multiple of another one under the
+cross inequality. -/
+theorem interl_affine_to_X_mul_affine
+    {u v U V : ℝ}
+    (hu : 0 < u) (hU : 0 < U) (hcross : u * V ≤ U * v)
+    (hv : 0 ≤ v) (hV : 0 ≤ V) :
+    Interl (C U * X + C V) (X * (C u * X + C v)) :=
+  (strictInterl_to_strictInterl_mul_X_of_nonneg
+    (strictInterl_affine_linear_affine_linear_of_cross hu hU hcross)
+    (hasNonnegCoeffs_affine_linear hu.le hv)
+    (hasNonnegCoeffs_affine_linear hU.le hV)).toInterl
 
-@[deprecated interl_affine_add_X_self (since := "2026-09-18")]
-alias prec0_affine_add_X_self := interl_affine_add_X_self
+/-! ### Affine interlacing certificates
 
-@[deprecated interl_affine_add_one_self (since := "2026-09-18")]
-alias prec0_affine_add_one_self := interl_affine_add_one_self
+Interlacing between the constants `1` and `X`, the affine forms `s X + t`, and
+their `X`-multiples, used by the 2×2 matrix-interlacing and threshold-matrix
+certificates. -/
+
+theorem interl_one_one : Interl (1 : ℝ[X]) 1 := by
+  simpa using interl_C_C (1 : ℝ) 1
+
+theorem interl_one_X : Interl (1 : ℝ[X]) X := by
+  simpa using interl_C_affine_linear (c := 1) (u := 1) (v := 0) zero_lt_one
+
+theorem interl_one_affine {s t : ℝ} (hs : 0 < s) :
+    Interl (1 : ℝ[X]) (C s * X + C t) := by
+  simpa using interl_C_affine_linear (c := 1) (u := s) (v := t) hs
+
+theorem interl_one_affine_add_one {s t : ℝ} (hs : 0 < s) :
+    Interl (1 : ℝ[X]) (C s * X + C t + 1) := by
+  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
+  exact interl_C_affine_linear hs
+
+theorem interl_one_affine_add_X {s t : ℝ} (hs : 0 < s) :
+    Interl (1 : ℝ[X]) (C s * X + C t + X) := by
+  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
+  exact interl_C_affine_linear (by positivity)
+
+theorem interl_X_X : Interl (X : ℝ[X]) X :=
+  Interl.refl fun _ => isRealRooted_X.2
+
+theorem interl_affine_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl (C s * X + C t) X := by
+  simpa using interl_affine_linear_affine_linear_of_cross
+    (u := s) (v := t) (U := 1) (V := 0) hs zero_lt_one (by nlinarith)
+
+theorem interl_affine_add_one_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl (C s * X + C t + 1) X := by
+  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
+  simpa using interl_affine_linear_affine_linear_of_cross
+    (u := s) (v := t + 1) (U := 1) (V := 0)
+    hs zero_lt_one (by nlinarith)
+
+theorem interl_affine_add_X_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl (C s * X + C t + X) X := by
+  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
+  simpa using interl_affine_linear_affine_linear_of_cross
+    (u := s + 1) (v := t) (U := 1) (V := 0)
+    (by positivity) zero_lt_one (by nlinarith)
+
+theorem interl_affine_self {s t : ℝ} (hs : 0 < s) :
+    Interl (C s * X + C t) (C s * X + C t) :=
+  Interl.refl fun _ => (isRealRooted_affine_factor hs).2
+
+theorem interl_affine_add_one_affine {s t : ℝ} (hs : 0 < s) :
+    Interl (C s * X + C t + 1) (C s * X + C t) := by
+  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
+  exact interl_affine_linear_affine_linear_of_cross hs hs (by nlinarith)
+
+theorem interl_affine_affine_add_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl (C s * X + C t) (C s * X + C t + X) := by
+  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
+  exact interl_affine_linear_affine_linear_of_cross
+    hs (by positivity) (by nlinarith)
+
+theorem interl_X_affine_mul_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl X ((C s * X + C t) * X) := by
+  rw [mul_comm]
+  simpa using interl_affine_to_X_mul_affine
+    (u := s) (v := t) (U := 1) (V := 0)
+    hs zero_lt_one (by nlinarith) ht.le le_rfl
+
+theorem interl_X_affine_mul_X_add_X
+    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl X ((C s * X + C t) * X + X) := by
+  rw [show ((C s * X + C t) * X + X : ℝ[X]) =
+    X * (C s * X + C (t + 1)) by grind]
+  simpa using interl_affine_to_X_mul_affine
+    (u := s) (v := t + 1) (U := 1) (V := 0)
+    hs zero_lt_one (by nlinarith) (by positivity) le_rfl
+
+theorem interl_affine_affine_mul_X
+    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl (C s * X + C t) ((C s * X + C t) * X) := by
+  rw [show ((C s * X + C t) * X : ℝ[X]) = X * (C s * X + C t) by ring]
+  exact interl_affine_to_X_mul_affine
+    (u := s) (v := t) (U := s) (V := t) hs hs le_rfl ht.le ht.le
+
+theorem interl_affine_add_X_affine_mul_X
+    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl (C s * X + C t + X) ((C s * X + C t) * X) := by
+  rw [show ((C s * X + C t) * X : ℝ[X]) = X * (C s * X + C t) by ring]
+  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
+  exact interl_affine_to_X_mul_affine
+    (u := s) (v := t) (U := s + 1) (V := t)
+    hs (by positivity) (by nlinarith) ht.le ht.le
+
+theorem interl_affine_affine_mul_X_add_X
+    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl (C s * X + C t) ((C s * X + C t) * X + X) := by
+  rw [show ((C s * X + C t) * X + X : ℝ[X]) =
+    X * (C s * X + C (t + 1)) by grind]
+  exact interl_affine_to_X_mul_affine
+    hs hs (by nlinarith) (by positivity) ht.le
+
+theorem interl_affine_add_one_affine_mul_X_add_X
+    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl (C s * X + C t + 1) ((C s * X + C t) * X + X) := by
+  rw [show ((C s * X + C t) * X + X : ℝ[X]) =
+    X * (C s * X + C (t + 1)) by grind]
+  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
+  exact interl_affine_to_X_mul_affine hs hs le_rfl (by positivity) (by positivity)
+
+theorem interl_affine_add_X_affine_mul_X_add_X
+    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl (C s * X + C t + X) ((C s * X + C t) * X + X) := by
+  rw [show ((C s * X + C t) * X + X : ℝ[X]) =
+    X * (C s * X + C (t + 1)) by grind]
+  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
+  exact interl_affine_to_X_mul_affine
+    hs (by positivity) (by nlinarith [hs, ht]) (by positivity) ht.le
+
+theorem interl_affine_mul_X_self {s t : ℝ} (hs : 0 < s) :
+    Interl ((C s * X + C t) * X) ((C s * X + C t) * X) := by
+  rw [show ((C s * X + C t) * X : ℝ[X]) = X * (C s * X + C t) by ring]
+  exact Interl.refl fun _ => (isRealRooted_X_mul (isRealRooted_affine_factor hs).1
+    (isRealRooted_affine_factor hs).2).2
+
+theorem interl_affine_mul_X_add_X_affine_mul_X
+    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X) := by
+  rw [show ((C s * X + C t) * X + X : ℝ[X]) =
+    X * (C s * X + C (t + 1)) by grind]
+  rw [show ((C s * X + C t) * X : ℝ[X]) = X * (C s * X + C t) by ring]
+  have hleft_nonneg : HasNonnegCoeffs (C s * X + C t + 1 : ℝ[X]) := by
+    rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
+    exact hasNonnegCoeffs_affine_linear hs.le (by positivity)
+  simpa [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind] using
+    (interl_affine_add_one_affine (t := t) hs).mul_X_both_of_nonneg
+      hleft_nonneg
+      (hasNonnegCoeffs_affine_linear (a := s) (b := t) hs.le ht.le)
+
+theorem interl_affine_mul_X_add_X_self {s t : ℝ} (hs : 0 < s) :
+    Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X + X) := by
+  rw [show ((C s * X + C t) * X + X : ℝ[X]) =
+    X * (C s * X + C (t + 1)) by grind]
+  exact Interl.refl fun _ => (isRealRooted_X_mul
+    (isRealRooted_affine_factor (t := t + 1) hs).1
+    (isRealRooted_affine_factor (t := t + 1) hs).2).2
 
 end RealRooted

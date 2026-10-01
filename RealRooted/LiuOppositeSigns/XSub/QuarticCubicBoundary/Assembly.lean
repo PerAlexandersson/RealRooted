@@ -153,19 +153,6 @@ theorem xSubQuarticCubicSplits_of_left_endpoint_boundary_packages
       hleft hend)
     hend
 
-/-- The full normalized quartic/cubic terminal follows from the repeated-left
-boundary package and the two disjoint single-endpoint zero packages. -/
-theorem xSubQuarticCubicSplits_of_left_single_endpoint_boundary_packages
-    (hleft : xSubQuarticCubicRepeatedLeftBoundaryCasesStatement)
-    (hleftZero :
-      xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCasesStatement)
-    (hrightZero :
-      xSubQuarticCubicRightOnlyEndpointZeroBoundaryCasesStatement) :
-    xSubQuarticCubicSplitsStatement :=
-  xSubQuarticCubicSplits_of_left_endpoint_boundary_packages hleft
-    (xSubQuarticCubicEndpointZeroBoundaryCases_of_single_endpoint_packages
-      hleftZero hrightZero)
-
 /-- The full normalized quartic/cubic terminal follows from repeated-left and
 left-only endpoint packages, plus the quartic-minus-quadratic right endpoint
 factor. -/

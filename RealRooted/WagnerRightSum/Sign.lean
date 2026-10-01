@@ -265,7 +265,7 @@ private lemma listAlternates_prod_mul_prod_nonpos_at_heads :
       have hs_nonneg : 0 ≤ (r₁ - s) * (r₂ - s) := by
         have hsr₂ : s ≤ r₂ := le_trans hsr₁ (by
           exact listInterlaces_rs_all_ge rest_s (r₂ :: rest) r₁ hint r₂ (by simp))
-        nlinarith
+        positivity
       have htail_nonpos :
           (rest_s.map (r₁ - ·)).prod * (rest_s.map (r₂ - ·)).prod ≤ 0 :=
         listInterlaces_prod_mul_prod_nonpos_at_heads hint
@@ -373,7 +373,7 @@ lemma eval_add_mul_eval_left_nonneg_of_strictInterl_right {f g h : ℝ[X]}
     0 ≤ (f + g).eval r * f.eval r := by
   rw [Polynomial.eval_add]
   have hsign := eval_mul_eval_nonneg_of_strictInterl_right hfh hgh hf_pos hg_pos hr
-  nlinarith [sq_nonneg (f.eval r), hsign]
+  linarith [sq_nonneg (f.eval r), hsign]
 
 /-- At each root of the common right-hand polynomial, `f + g` has the same sign
 as `g`. -/
@@ -384,7 +384,7 @@ lemma eval_add_mul_eval_right_nonneg_of_strictInterl_right {f g h : ℝ[X]}
     0 ≤ (f + g).eval r * g.eval r := by
   rw [Polynomial.eval_add]
   have hsign := eval_mul_eval_nonneg_of_strictInterl_right hfh hgh hf_pos hg_pos hr
-  nlinarith [sq_nonneg (g.eval r), hsign]
+  linarith [sq_nonneg (g.eval r), hsign]
 
 /-- If the sum `f + g` vanishes at a root of the common right-hand polynomial,
 then both summands already vanish there. This is the key boundary-collision
@@ -494,7 +494,7 @@ lemma opposite_sign_at_interlacing_roots {f g : ℝ[X]}
       ← Multiset.prod_map_erase (f := (t - ·)) hs_mem]
   set Pg := (Multiset.map (s - ·) (g.roots.erase t)).prod
   set Pf := (Multiset.map (t - ·) (f.roots.erase s)).prod
-  have hst_neg : (s - t) * (t - s) ≤ 0 := by nlinarith [sq_nonneg (t - s)]
+  have hst_neg : (s - t) * (t - s) ≤ 0 := by linarith [sq_nonneg (t - s)]
   -- For each element r in the erased multisets:
   -- If r ≤ a: (s - r) ≥ 0 and (t - r) ≥ 0
   -- If r ≥ b: (s - r) ≤ 0 and (t - r) ≤ 0
@@ -647,11 +647,6 @@ lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
   (since := "2026-09-18")]
 alias eval_add_mul_eval_left_nonneg_of_prec_right :=
   eval_add_mul_eval_left_nonneg_of_strictInterl_right
-
-@[deprecated eval_add_mul_eval_right_nonneg_of_strictInterl_right
-  (since := "2026-09-18")]
-alias eval_add_mul_eval_right_nonneg_of_prec_right :=
-  eval_add_mul_eval_right_nonneg_of_strictInterl_right
 
 end
 end RealRooted

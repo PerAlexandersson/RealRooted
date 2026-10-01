@@ -43,8 +43,8 @@ def matchingOfDisjointEquiv {A B : Finset V} (hAB : Disjoint A B)
 omit [Fintype V] in
 theorem matchingOfDisjointEquiv_card {A B : Finset V}
     (hAB : Disjoint A B) (f : A ≃ B) :
-    (matchingOfDisjointEquiv hAB f).card = A.card := by
-  exact (Finset.card_image_of_injective Finset.univ
+    (matchingOfDisjointEquiv hAB f).card = A.card :=
+  (Finset.card_image_of_injective Finset.univ
     (edgeOfDisjointEquiv_injective hAB f)).trans (by simp)
 
 omit [Fintype V] in
@@ -160,8 +160,8 @@ theorem orientationOfDisjointEquiv_mem {A B : Finset V}
     (he : e ∈ matchingOfDisjointEquiv hAB f) :
     orientationOfDisjointEquiv hAB f e he ∈ e.1 := by
   let i : A := (edgeIndexEquiv hAB f).symm ⟨e, he⟩
-  have hei : edgeOfDisjointEquiv hAB f i = e := by
-    exact congrArg Subtype.val ((edgeIndexEquiv hAB f).apply_symm_apply ⟨e, he⟩)
+  have hei : edgeOfDisjointEquiv hAB f i = e :=
+    congrArg Subtype.val ((edgeIndexEquiv hAB f).apply_symm_apply ⟨e, he⟩)
   change i.1 ∈ e.1
   have hi : i.1 ∈ (edgeOfDisjointEquiv hAB f i).1 := Sym2.mem_mk_left _ _
   simpa only [hei] using hi
@@ -193,12 +193,11 @@ theorem other_orientationOfDisjointEquiv {A B : Finset V}
     Sym2.Mem.other' (orientationOfDisjointEquiv_mem hAB f e he) =
       (f ((edgeIndexEquiv hAB f).symm ⟨e, he⟩)).1 := by
   let i : A := (edgeIndexEquiv hAB f).symm ⟨e, he⟩
-  have hei : edgeOfDisjointEquiv hAB f i = e := by
-    exact congrArg Subtype.val ((edgeIndexEquiv hAB f).apply_symm_apply ⟨e, he⟩)
+  have hei : edgeOfDisjointEquiv hAB f i = e :=
+    congrArg Subtype.val ((edgeIndexEquiv hAB f).apply_symm_apply ⟨e, he⟩)
   have hs := Sym2.other_spec' (orientationOfDisjointEquiv_mem hAB f e he)
   change s(i.1, Sym2.Mem.other' (orientationOfDisjointEquiv_mem hAB f e he)) = e.1 at hs
-  apply Sym2.congr_right.mp
-  exact hs.trans (congrArg Subtype.val hei).symm
+  exact Sym2.congr_right.mp (hs.trans (congrArg Subtype.val hei).symm)
 
 omit [Fintype V] in
 theorem orientationRightVertices_ofDisjointEquiv {A B : Finset V}

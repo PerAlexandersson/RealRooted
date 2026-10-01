@@ -213,9 +213,8 @@ private lemma exists_mem_eq_foldr_min_of_forall_le
         refine ⟨x, by simp, ?_⟩
         simp [List.foldr_cons, Nat.min_eq_left (hseed x (by simp))]
       | cons y ys =>
-        have hseed_tail : ∀ a ∈ y :: ys, a ≤ seed := by
-          intro a ha
-          exact hseed a (by simp [ha])
+        have hseed_tail : ∀ a ∈ y :: ys, a ≤ seed :=
+          fun a ha => hseed a (by simp [ha])
         obtain ⟨a, ha, haeq⟩ := ih (by simp) hseed_tail
         by_cases hx : x ≤ (y :: ys).foldr Nat.min seed
         · refine ⟨x, by simp, ?_⟩

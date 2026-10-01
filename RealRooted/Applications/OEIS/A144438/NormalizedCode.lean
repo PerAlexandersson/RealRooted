@@ -104,8 +104,8 @@ theorem eligible_succ_ne {h : ℕ} {c : DecoNormalizedCode h} {i j : Fin h}
 
 /-- Eligible `(0, 2)` pairs cannot overlap from right to left. -/
 theorem eligible_ne_succ {h : ℕ} {c : DecoNormalizedCode h} {i j : Fin h}
-    (hi : c.Eligible i) (hj : c.Eligible j) : i.1 ≠ j.1 + 1 := by
-  exact fun hij => eligible_succ_ne hj hi hij.symm
+    (hi : c.Eligible i) (hj : c.Eligible j) : i.1 ≠ j.1 + 1 :=
+  fun hij => eligible_succ_ne hj hi hij.symm
 
 /-- A choice of eligible pairs to turn back into exceptional `(1, 0)` pairs. -/
 structure Decoration {h : ℕ} (c : DecoNormalizedCode h) where
@@ -246,8 +246,7 @@ theorem exceptionalize_apply_of_not_mem_of_no_predecessor {h : ℕ}
           ¬∃ i : Fin h, i.1 + 1 = j.1 ∧ D.exceptionalize i = 1 := by
         intro hexists
         rcases hexists with ⟨i, hij, hiOne⟩
-        apply hprevious
-        exact ⟨i, (exceptionalize_apply_eq_one_iff D i).1 hiOne, hij⟩
+        exact hprevious ⟨i, (exceptionalize_apply_eq_one_iff D i).1 hiOne, hij⟩
       have hjBase : D.exceptionalize j = c j := by
         simp [exceptionalize, hj, hprevious]
       change (if D.exceptionalize j = 1 then 0

@@ -10,22 +10,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma gammaTransform_succ_of_natDegree_le
-    {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) :
-    gammaTransform (d + 1) γ = (X + 1) * gammaTransform d γ := by
-  rcases Nat.mod_two_eq_zero_or_one d with hd | hd
-  · have hd' : d = 2 * (d / 2) := by lia
-    rw [hd']
-    exact gammaTransform_odd (d / 2) γ
-  · have hd' : d = 2 * (d / 2) + 1 := by lia
-    have hcoeff : γ.coeff (d / 2 + 1) = 0 :=
-      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ (by lia))
-    rw [hd']
-    change gammaTransform (2 * (d / 2 + 1)) γ =
-      (X + 1) * gammaTransform (2 * (d / 2) + 1) γ
-    rw [gammaTransform_even_succ, hcoeff]
-    simp
-
 /-- The binomial-square Narayana gamma rows satisfy the transported pure
 three-term recurrence. -/
 theorem narayanaZeroGammaPolynomial_pure_rec (n : ℕ) :
@@ -55,8 +39,8 @@ theorem narayanaZeroGammaPolynomial_pure_rec (n : ℕ) :
         · compute_degree!
         · exact natDegree_narayanaZeroGammaPolynomial_le n
       _ ≤ (n + 2) / 2 := by lia
-  have hγsub : (γ₁ - γ₀).natDegree ≤ (n + 2) / 2 := by
-    exact (natDegree_sub_le γ₁ γ₀).trans
+  have hγsub : (γ₁ - γ₀).natDegree ≤ (n + 2) / 2 :=
+    (natDegree_sub_le γ₁ γ₀).trans
       (max_le hγ₁ hγ₀)
   apply gammaTransform_injective_of_natDegree_le hγ₂ hγsub
   dsimp [γ₂, γ₁, γ₀]
@@ -71,7 +55,7 @@ theorem narayanaZeroGammaPolynomial_pure_rec (n : ℕ) :
               ring]
   rw [gammaTransform_add, gammaTransform_C_mul, gammaTransform_C_mul,
     gammaTransform_add, gammaTransform_C_mul,
-    gammaTransform_succ_of_natDegree_le
+    gammaTransform_pad_one
       (natDegree_narayanaZeroGammaPolynomial_le (n + 1)),
     gammaTransform_pad_two (natDegree_narayanaZeroGammaPolynomial_le n),
     gammaTransform_X_mul_two]
@@ -189,7 +173,7 @@ theorem coeff_narayanaZeroGammaPolynomial_deriv_rec
       rw [factorial_succ_cast n, factorial_cast_pred hkpos]
       have heqR := congrArg (fun m : ℕ ↦ (m : ℝ)) heq
       push_cast at heqR ⊢
-      have hnR : (n : ℝ) = 2 * (k : ℝ) - 1 := by nlinarith
+      have hnR : (n : ℝ) = 2 * (k : ℝ) - 1 := by linarith
       rw [hnR]
       ring
     · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by lia),
@@ -198,7 +182,7 @@ theorem coeff_narayanaZeroGammaPolynomial_deriv_rec
       · have heq : 2 * k = n + 2 := by lia
         have heqR := congrArg (fun m : ℕ ↦ (m : ℝ)) heq
         push_cast at heqR
-        have hfactor : 4 * (n : ℝ) + 8 - 8 * (k : ℝ) = 0 := by nlinarith
+        have hfactor : 4 * (n : ℝ) + 8 - 8 * (k : ℝ) = 0 := by linarith
         rw [hfactor]
         ring
       · rw [coeff_narayanaZeroGammaPolynomial_of_lt (by lia)]

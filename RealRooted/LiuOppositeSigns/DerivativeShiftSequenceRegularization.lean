@@ -1,5 +1,5 @@
 import RealRooted.Compatibility.Basic
-import RealRooted.DerivativeShiftSequence
+import RealRooted.Derivative.ShiftSequence
 import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
 import RealRooted.Mathlib.Data.Multiset.Rel
 
@@ -190,9 +190,8 @@ theorem NoCommonRoots.exists_simple_applyTDerivList
   obtain ⟨epss, hlength, hbounds, hcomp_final, hno_final⟩ :=
     hno.exists_applyTDerivList hcomp hf_ne hg_ne hf hg hκ
       (max f.natDegree g.natDegree)
-  have hpos : ∀ eps ∈ epss, 0 < eps := by
-    intro eps heps
-    exact (hbounds eps heps).1
+  have hpos : ∀ eps ∈ epss, 0 < eps :=
+    fun eps heps => (hbounds eps heps).1
   have hf_simple : HasSimpleRoots (applyTDerivList epss f) := by
     apply hasSimpleRoots_applyTDerivList_of_natDegree_le_length hpos hf_ne hf
     rw [hlength]
