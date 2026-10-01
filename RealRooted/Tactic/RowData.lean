@@ -467,7 +467,7 @@ elab "rr_row_natDegree" : tactic => withMainContext do
     return
   rowDriver P shape "natDegree" (← mainRowIndex P) fun Q t thm d D₀ => do
     evalTactic (← `(tactic|
-      refine (?_ : ($Q $t).natDegree = $(numLit D₀) + $(numLit d) * $t).trans (by omega)))
+      refine (?_ : ($Q $t).natDegree = $(numLit D₀) + $(numLit d) * $t).trans (by lia)))
     applyRowThm Q shape thm d D₀
 
 end RealRooted.Tactic

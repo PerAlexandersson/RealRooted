@@ -43,7 +43,7 @@ theorem nat_crossing_exhaustion
     intro i hi
     have h := hjump i hi
     dsimp [e]
-    omega
+    lia
   have hsum_e :
       (∑ i ∈ Finset.range K, e i) =
         (∑ i ∈ Finset.range K, (m i : ℤ)) + N K - N 0 := by
@@ -68,13 +68,13 @@ theorem nat_crossing_exhaustion
     exact_mod_cast hend
   have hsum_e_zero : ∑ i ∈ Finset.range K, e i = 0 := by
     rw [hsum_e]
-    omega
+    lia
   have he_zero : ∀ i ∈ Finset.range K, e i = 0 :=
     (Finset.sum_eq_zero_iff_of_nonneg
       (fun i hi => he_nonneg i (Finset.mem_range.mp hi))).mp hsum_e_zero
   intro i hi
   have hz := he_zero i (Finset.mem_range.mpr hi)
   dsimp [e] at hz
-  omega
+  lia
 
 end RealRooted

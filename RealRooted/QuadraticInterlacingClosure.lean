@@ -394,7 +394,7 @@ theorem eventually_reciprocalQuadraticInterlacingPencil_card_roots_gt_eq
     (DegreeDropReversal.splits_reflect_of_splits hbsplit hbdegree)
   change ((reflect D (quadraticInterlacingPencil H G F b)).roots.filter
       (r⁻¹ < ·)).card = ((reflect D F).roots.filter (r⁻¹ < ·)).card at hreflect_eq
-  omega
+  lia
 
 /-- Original-parameter form of the root-count endpoint at `a → ∞`. -/
 theorem eventually_quadraticInterlacingPencil_card_roots_gt_eq_atTop
@@ -770,7 +770,7 @@ theorem quadraticInterlacingPencil_card_roots_gt_left_le_right_add_one
     (fun μ hμ => hsplits μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
     (fun μ hμ => hsimple μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
     (fun μ hμ => hnoRight μ ⟨habR.trans_le hμ.1, hμ.2⟩)
-  omega
+  lia
 
 /-- If a single isolated crossing realizes an exact downward jump of one,
 then the strict-upper root count at the crossing equals the right-chamber
@@ -831,7 +831,7 @@ theorem quadraticInterlacingPencil_card_roots_gt_at_crossing_eq_right
     (fun μ hμ => hsplits μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
     (fun μ hμ => hsimple μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
     (fun μ hμ => hnoRight μ ⟨habR.trans_le hμ.1, hμ.2⟩)
-  omega
+  lia
 
 /-- An exact downward chamber jump forces a nonnegative tangent residue at the
 crossing.  The proof uses right-chamber evaluation signs and then lets the
@@ -905,7 +905,7 @@ theorem quadraticInterlacingTangent_residue_nonneg_of_exact_crossing
     have hbCount : ((Q b).roots.filter (r < ·)).card =
         ((Q a).roots.filter (r < ·)).card := by
       dsimp only [Q] at hright hcountAt ⊢
-      omega
+      lia
     have hbNotRoot : ¬(Q b).IsRoot r := by
       intro hbr
       exact hnoRight b ⟨hab, hbμR.le⟩
@@ -1353,9 +1353,9 @@ theorem quadraticInterlacingPencil_one_positive_crossing_exact_drop
   change q.roots.count a ≤ _ at hbudget
   have hmult_eq_drop : q.roots.count a =
       (H.roots.filter (r < ·)).card - (F.roots.filter (r < ·)).card := by
-    omega
+    lia
   rw [hmult_eq_drop]
-  constructor <;> omega
+  constructor <;> lia
 
 /-- With two positive crossing parameters, both successive chamber-count
 jumps are downward and equal their full parameter-root multiplicities. -/
@@ -1484,12 +1484,12 @@ theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
   change q.roots.count a + q.roots.count b ≤ _ at hbudget
   have hmult_eq_drop : q.roots.count a + q.roots.count b =
       (H.roots.filter (r < ·)).card - (F.roots.filter (r < ·)).card := by
-    omega
+    lia
   constructor
-  · omega
+  · lia
   · constructor
-    · omega
-    · constructor <;> omega
+    · lia
+    · constructor <;> lia
 
 /-- Under the simple fixed-degree pencil hypotheses, every positive root of
 the parameter evaluation is simple.  The proof selects the root-count endpoint
@@ -1883,7 +1883,7 @@ theorem im_ratio_nonpos_of_residue_nonneg
       (fun s => g.eval s / f.derivative.eval s) hres
     rw [complexify_ratio_eq_partialfraction hfs hfnd hfdeg hgdegree hz]
     simp
-  · have heq : g.natDegree = f.natDegree := by omega
+  · have heq : g.natDegree = f.natDegree := by lia
     set c₀ := g.leadingCoeff / f.leadingCoeff with hc₀
     set g' := g - C c₀ * f with hg'
     have hg'deg : g'.degree < f.natDegree :=

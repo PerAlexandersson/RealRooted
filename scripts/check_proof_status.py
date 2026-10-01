@@ -43,6 +43,8 @@ OMEGA_RE = re.compile(r"(?<![.'])\bomega\b(?!['?])")
 COMBINATOR_RE = re.compile(r"(?<![.'])\b(try|all_goals|any_goals)\b(?!['?])")
 COMMAND_START_RE = re.compile(r"^(?:@\[[^\]]*\]\s*)?(?:(?:local|scoped)\s+)?([a-z_]+)\b")
 TACTIC_IMPLEMENTATION_COMMANDS = frozenset({"macro", "macro_rules", "elab", "elab_rules"})
+# A `def` whose type lives in one of these monads is a tactic implementation too.
+META_MONAD_RE = re.compile(r"\b(?:TacticM|MetaM|TermElabM|CommandElabM|MacroM)\b")
 STATEMENT_NAME_RE = re.compile(r"(?:Statement|Target|Route|Inputs|Backend)$")
 IDENTIFIER_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")
 STATEMENT_DECLARATION_KINDS = frozenset({"def", "abbrev", "structure", "class"})
@@ -138,7 +140,8 @@ def scan_text(path: str, text: str) -> tuple[list[Finding], list[StatementDeclar
     statements: list[StatementDeclaration] = []
     current_declaration = "<unknown>"
     in_tactic_implementation = False
-    for line_number, line in enumerate(clean.splitlines(), start=1):
+    lines = clean.splitlines()
+    for line_number, line in enumerate(lines, start=1):
         command_match = COMMAND_START_RE.match(line)
         if command_match:
             in_tactic_implementation = (
@@ -148,6 +151,10 @@ def scan_text(path: str, text: str) -> tuple[list[Finding], list[StatementDeclar
         if declaration_match:
             declaration_kind = declaration_match.group(1)
             current_declaration = declaration_match.group(2)
+            if declaration_kind == "def":
+                header = "\n".join(lines[line_number - 1 : line_number + 7])
+                header = header.split(":=", 1)[0]
+                in_tactic_implementation = bool(META_MONAD_RE.search(header))
             if (
                 declaration_kind in STATEMENT_DECLARATION_KINDS
                 and not line.lstrip().startswith("private ")
@@ -269,7 +276,9 @@ def run_self_test() -> int:
         "-- omega try all_goals in comments are ignored\n"
         "macro_rules\n  | `(tactic| foo) => `(tactic| all_goals try simp)\n"
         "elab \"bar\" : tactic => do\n  evalTactic (← `(tactic| try rfl))\n"
-        "theorem e : True := by\n  first | try trivial | trivial\n",
+        "theorem e : True := by\n  first | try trivial | trivial\n"
+        "def side (x : Nat) :\n    TacticM Unit := do\n  evalTactic (← `(tactic| all_goals try rfl))\n"
+        "def plain : Nat := by\n  try exact 0\n",
     )
     assert [(item.line, item.declaration) for item in forbidden] == [
         (1, "set_option"),
@@ -280,6 +289,7 @@ def run_self_test() -> int:
         (7, "simp_all +decide"),
         (9, "any_goals"),
         (16, "try"),
+        (21, "try"),
     ], forbidden
     assert all("forbidden" in error for error in admission_errors(forbidden, {}))
     assert not admission_errors(
