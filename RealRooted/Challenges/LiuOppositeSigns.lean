@@ -13,32 +13,39 @@ years = [2012]
 [[definitions]]
 name = "RealRooted.LiuOppositeSigns.OppositeLeadingSigns"
 module = "RealRooted.LiuOppositeSigns.RootCount"
+label = "Opposite leading signs"
 
 [[definitions]]
 name = "RealRooted.LiuOppositeSigns.rootCountAtOrAbove"
 module = "RealRooted.LiuOppositeSigns.RootCount"
+label = "Number of roots in [x, ∞)"
 
 [[definitions]]
 name = "RealRooted.LiuOppositeSigns.theorem21RootCountBranchesWithCommon"
 module = "RealRooted.LiuOppositeSigns.Theorem21Statements.CommonRootDeletion"
+label = "Root-count condition of the corrected Theorem 2.1"
 
 [[theorems]]
 name = """RealRooted.LiuOppositeSigns.\
 compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant"""
 module = "RealRooted.LiuOppositeSigns.Theorem"
+label = "Liu, Theorem 2.1 (corrected)"
 
 [[theorems]]
 name = "RealRooted.LiuOppositeSigns.theorem21CompatibleRootCountNoCommonNonconstant"
 module = "RealRooted.LiuOppositeSigns.Theorem"
+label = "Theorem 2.1 for pairs without common roots"
 
 [[theorems]]
 name = """RealRooted.LiuOppositeSigns.\
 not_theorem21CompatibleToRootCountBranchesNonconstantStatement"""
 module = "RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces"
+label = "The published Theorem 2.1 fails"
 
 [[theorems]]
 name = "RealRooted.LiuOppositeSigns.corollary22DegreeDiff_proof"
 module = "RealRooted.LiuOppositeSigns.Theorem"
+label = "Liu, Corollary 2.2: degrees differ by at most two"
 -->
 
 <!-- realrooted-catalog-content -->

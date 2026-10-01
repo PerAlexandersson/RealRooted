@@ -101,7 +101,7 @@ are the incomparable cross-chain pairs of `P(w)`.
 **Theorem (Braun–Jal, Theorem 4.1).** Each `M_w` is real-rooted, and deleting
 the last letter of `w` gives a polynomial interlacing `M_w`.
 
-This theorem is fully formalized for the concrete snake board
+The Lean proof covers the concrete snake board
 (`theorem41_generalizedSnakeRookModel`).
 
 The proof runs through the **modified Narayana polynomials**

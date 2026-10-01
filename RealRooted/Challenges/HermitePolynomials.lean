@@ -60,7 +60,7 @@ The probabilists' Hermite polynomials satisfy `H_0 = 1`, `H_1 = x` and
 H_{n+2}(x) = x H_{n+1}(x) - (n + 1) H_n(x).
 ```
 
-The following are formalized:
+The following hold:
 
 - each `H_n` is monic of degree `n`, with only real and simple zeros;
 - consecutive polynomials strictly interlace, and `H_n, H_{n-1}, …, H_0` is a

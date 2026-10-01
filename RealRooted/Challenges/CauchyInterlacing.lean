@@ -12,9 +12,11 @@ years = [2005]
 
 [[theorems]]
 name = "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_eigenvalues_interlace"
+label = "Eigenvalues of a principal submatrix interlace"
 
 [[theorems]]
 name = "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_charpoly_interlaces"
+label = "Characteristic polynomials of a principal submatrix interlace"
 -->
 
 <!-- realrooted-catalog-content -->

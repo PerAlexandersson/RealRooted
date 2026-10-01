@@ -114,7 +114,7 @@ sends every real-rooted polynomial to a real-rooted polynomial (or zero). It is
 a **PF multiplier sequence** if it preserves real-rootedness with nonnegative
 coefficients. The finite version restricts to inputs of degree at most `n`.
 
-The following are formalized:
+The following hold:
 
 - **Jensen polynomials** (Pólya–Schur): a nonnegative sequence is a multiplier
   sequence if and only if every Jensen polynomial

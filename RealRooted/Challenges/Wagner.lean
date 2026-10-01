@@ -12,12 +12,15 @@ years = [1992]
 
 [[theorems]]
 name = "RealRooted.Challenges.Wagner.commonRight_add"
+label = "A sum of polynomials interlacing h interlaces h"
 
 [[theorems]]
 name = "RealRooted.Challenges.Wagner.commonLeft_add"
+label = "The common-left version"
 
 [[theorems]]
 name = "RealRooted.Challenges.Wagner.mulX_iff"
+label = "Multiplication by x reverses interlacing"
 -->
 
 <!-- realrooted-catalog-content -->

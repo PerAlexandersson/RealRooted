@@ -20,62 +20,77 @@ years = [2024]
 [[definitions]]
 name = "RealRooted.BrandenLeite.chainPolynomial"
 module = "RealRooted.BrandenLeite.ChainPolynomial.Algebra"
+label = "Chain polynomials"
 
 [[definitions]]
 name = "RealRooted.BrandenLeite.IsResolvable"
 module = "RealRooted.BrandenLeite.Resolvable"
+label = "Resolvable matrix"
 
 [[definitions]]
 name = "RealRooted.BrandenLeite.compositionRow"
 module = "RealRooted.BrandenLeite.CompositionRow"
+label = "Rows of 1 / (1 - x h(z))"
 
 [[definitions]]
 name = "RealRooted.BrandenLeite.twoKernelRow"
 module = "RealRooted.BrandenLeite.TwoKernelAlgebra"
+label = "Rows of g / (1 - x g h)"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.interl_chainPolynomial_succ_of_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.Theorem37"
+label = "Consecutive chain polynomials interlace"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.roots_chainPolynomial_mem_Icc_of_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.Theorem37"
+label = "Zeros of chain polynomials lie in [-1, 0]"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.chainPolynomial_hasNonnegCoeffs_of_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.Theorem37"
+label = "Chain polynomials have nonnegative coefficients"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.isResolvable_iff_lowerUnitriangular_and_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.ResolvableTotallyNonneg"
+label = "Resolvable if and only if totally nonnegative"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.chainPolynomial_isPFPolynomial_of_pos_constantDiagonal"
 module = "RealRooted.BrandenLeite.ConstantDiagonal"
+label = "Positive constant diagonal"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.compositionRows_mk_pf_and_interl_of_zero"
 module = "RealRooted.BrandenLeite.ZeroConstant"
+label = "Rows of 1 / (1 - x h(z)) are PF and interlace"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.twoKernelRows_pf_and_interl"
 module = "RealRooted.BrandenLeite.TwoKernel"
+label = "Rows of g / (1 - x g h) are PF and interlace"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.binomialCompositionRows_pf_and_interl"
 module = "RealRooted.BrandenLeite.CompositionFamilies"
+label = "Rows of 1 / (1 - x z (1+z)^d)"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.inversePowerCompositionRows_pf_and_interl"
 module = "RealRooted.BrandenLeite.CompositionFamilies"
+label = "Rows of 1 / (1 - x z / (1-z)^e)"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.networkMatrix_resolutionLambda_eq"
 module = "RealRooted.BrandenLeite.NetworkWhitney"
+label = "Planar networks from Whitney elimination"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.weightedShiftTilingRow_separated_isPFPolynomial"
 module = "RealRooted.BrandenLeite.WeightedShiftTiling"
+label = "Tiling polynomials of weighted lower shifts are PF"
 -->
 
 <!-- realrooted-catalog-content -->

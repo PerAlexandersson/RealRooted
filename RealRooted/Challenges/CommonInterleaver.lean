@@ -93,7 +93,7 @@ leading coefficients, the following are equivalent:
 3. the whole family has a common interleaver;
 4. the whole family is compatible.
 
-All four are formalized:
+The library proves each implication:
 
 - **Compatible pairs have common interleavers:** the two-polynomial case of
   1 ⇒ 2.

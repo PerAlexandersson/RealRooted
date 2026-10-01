@@ -16,26 +16,32 @@ years = [1907, 1912]
 [[definitions]]
 name = "Matrix.CollatzWielandt.perronRoot"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt"
+label = "Perron root"
 
 [[theorems]]
 name = "Matrix.exists_nonneg_mulVec_eq_perronRoot_smul"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg"
+label = "The Perron root has a nonnegative eigenvector"
 
 [[theorems]]
 name = "Matrix.exists_positive_eigenvector_of_irreducible"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible"
+label = "Irreducible matrices have a positive eigenvector"
 
 [[theorems]]
 name = "Matrix.pft_primitive"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible"
+label = "Primitive matrices: uniqueness of the eigenvector"
 
 [[theorems]]
 name = "Matrix.perron_root_is_spectral_radius"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance"
+label = "The Perron root is the spectral radius"
 
 [[theorems]]
 name = "Matrix.CollatzWielandt.eq_perron_root_of_positive_eigenvector"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt"
+label = "A positive eigenvector belongs to the Perron root"
 -->
 
 <!-- realrooted-catalog-content -->

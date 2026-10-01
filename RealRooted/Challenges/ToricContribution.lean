@@ -14,24 +14,29 @@ years = [2026]
 [[definitions]]
 name = "RealRooted.ParkingFunctions.ToricContribution.toricContribution"
 module = "RealRooted.ParkingFunctions.ToricContribution.ContributionReversal"
+label = "Toric g-contribution polynomial"
 
 [[definitions]]
 name = "RealRooted.ParkingFunctions.ToricContribution.rPolynomial"
 module = "RealRooted.ParkingFunctions.ToricContribution.Definitions"
+label = "Hypergeometric polynomials R_d"
 
 [[theorems]]
 name = "RealRooted.ParkingFunctions.ToricContribution.toricContributionRow_isInterlacingSeq"
 module = "RealRooted.ParkingFunctions.ToricContribution.ContributionReversal"
+label = "Xiao's Conjecture 4.2"
 
 [[theorems]]
 name = """RealRooted.ParkingFunctions.ToricContribution.\
 normalizedRPolynomialFamily_hasCommonLeftInterleaver"""
 module = "RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer"
+label = "The R_d have a common interleaver"
 
 [[theorems]]
 name = """RealRooted.ParkingFunctions.ToricContribution.\
 weightedNormalizedReversedContributionFamily_sum_splits"""
 module = "RealRooted.ParkingFunctions.ToricContribution.ContributionReversal"
+label = "Positive weighted sums are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->

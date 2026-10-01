@@ -41,9 +41,15 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Generalized Narayana polynomials
 
-`narayanaPolynomial m n` is the generalized Narayana polynomial with
-parameters `(m, n)`. These polynomials are Pólya-frequency, and the associated
-Narayana transform preserves Pólya-frequency polynomials.
+For `m, n ≥ 0`, the generalized Narayana polynomial is
+
+```text
+N_{n,m}(x) = ∑_{k=0}^{n} C(n,k) C(n+m,k) / C(m+k,k) · x^k.
+```
+
+For `m = 1` the coefficients are Narayana numbers; for example
+`N_{2,1}(x) = 1 + 3x + x^2`. These polynomials are Pólya-frequency, and the Narayana transform
+`x^n ↦ N_{n,m}(x)` preserves Pólya-frequency polynomials.
 
 ## References
 
@@ -52,8 +58,8 @@ Narayana transformation,”](https://arxiv.org/abs/2607.01572) arXiv:2607.01572
 (2026), Eq. (1.2).  The root-location input is D. Dominici, S. J. Johnston,
 and K. Jordaan, [“Real zeros of 2F1 hypergeometric
 polynomials,”](https://arxiv.org/abs/1301.4771) *Journal of Computational and
-Applied Mathematics* 247 (2013), 152–161, used as Lemma 2.5 in the
-transformation development.  See also the
+Applied Mathematics* 247 (2013), 152–161, which is Lemma 2.5 in Mao–Wang.
+See also the
 [Narayana real-rootedness examples on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedCatalan.htm#ex:narayanaSturm).
 <!-- /realrooted-catalog-content -->
 -/

@@ -65,9 +65,8 @@ headline = true
 
 A parking function of length `n` is a word `w` with letters in
 `{0, …, n-1}` such that, for every `k ≤ n`, at least `k` of its letters are
-smaller than `k`. The following
-generating polynomials over parking functions of length `n` are formalized as
-real-rooted:
+smaller than `k`. The following generating polynomials over parking functions
+of length `n` are real-rooted:
 
 - **Descents:** `sum_w x^des(w)`. The proof passes through Pollak's cyclic
   action: `(n+1)` times this polynomial equals the descent polynomial of all

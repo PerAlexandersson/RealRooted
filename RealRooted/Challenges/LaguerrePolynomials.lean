@@ -57,7 +57,7 @@ P_n^{(α)}(x) = n! L_n^{(α)}(-x)
              = sum_k choose(n,k) (α+k+1)_{n-k} x^k,
 ```
 
-so that the zeros are nonpositive. For `α ≥ -1` the following are formalized:
+so that the zeros are nonpositive. For `α ≥ -1`:
 
 - every `P_n^{(α)}` has only real, simple zeros, and they are strictly negative
   when `α > -1`;

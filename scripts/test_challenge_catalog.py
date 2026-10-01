@@ -267,10 +267,11 @@ end RealRooted.Challenges.Sample
         self.assertIn("assets/site.js", first)
         self.assertNotIn("catalogue-manifest.json", first)
         self.assertIn(
-            "Concepts, polynomial families and theorems, with links to their formal sources.",
+            "Definitions and theorems on real-rooted polynomials, interlacing and total "
+            "positivity, formalized in Lean. Each statement links to its Lean source.",
             first["index.html"],
         )
-        self.assertIn("0 definitions and 1 theorem</a>", first["index.html"])
+        self.assertIn("0 definitions and 1 theorem</a>.", first["index.html"])
         self.assertNotIn("Every declaration links", first["index.html"])
         self.assertIn('class="brand"', first["theorems/sample/index.html"])
         self.assertIn(
@@ -280,7 +281,8 @@ end RealRooted.Challenges.Sample
         self.assertIn('class="lean-declaration"', first["theorems/sample/index.html"])
         self.assertIn("protected theorem canonical : True", first["theorems/sample/index.html"])
         self.assertNotIn("by trivial", first["theorems/sample/index.html"])
-        self.assertIn("Source revision", first["theorems/sample/index.html"])
+        self.assertIn("Lean source", first["theorems/sample/index.html"])
+        self.assertIn("at revision <code>aaaaaaaa</code>", first["theorems/sample/index.html"])
         self.assertIn('href="../../assets/site.css"', first["theorems/sample/index.html"])
         self.assertIn('src="../../assets/site.js"', first["theorems/sample/index.html"])
         self.assertIn("RealRooted/Canonical.lean#L2", first["theorems/sample/index.html"])
@@ -357,9 +359,26 @@ end RealRooted.Challenges.Sample
         self.assertEqual(results.count("<tr data-kind="), 3)
         self.assertIn('<tr data-kind="definition"', results)
         self.assertIn(f'href="../families/sample/#{anchor}"', results)
-        self.assertIn("1 definition and 2 theorems", results)
+        self.assertIn("All 1 definition and 2 theorems in the catalog.", results)
         manifest = json.loads(output["catalog-manifest.json"])
         self.assertEqual(manifest["pages"][0]["headlines"], ["RealRooted.Challenges.Sample.proven"])
+
+    def test_markdown_subset(self) -> None:
+        from challenge_catalog import render_markdown
+
+        html_out = render_markdown(
+            "A **strong** and *em* word, `a*b*c`.\n\n"
+            "1. first;\n2. second item\n   continued.\n\n"
+            "- **Bold:** an item\n  that wraps.\n\n"
+            "See [the overview][ov].\n\n[ov]: https://example.org/x\n"
+        )
+        self.assertIn("<strong>strong</strong>", html_out)
+        self.assertIn("<em>em</em>", html_out)
+        self.assertIn("<code>a*b*c</code>", html_out)
+        self.assertIn("<ol><li>first;</li><li>second item continued.</li></ol>", html_out)
+        self.assertIn("<li><strong>Bold:</strong> an item that wraps.</li>", html_out)
+        self.assertIn('<a href="https://example.org/x">the overview</a>', html_out)
+        self.assertNotIn("[ov]", html_out)
 
     def test_labels_and_headlines_are_validated(self) -> None:
         bad_records = (

@@ -13,18 +13,22 @@ years = [1637]
 [[definitions]]
 name = "Polynomial.positiveRootCount"
 module = "RealRooted.RootCounting.Descartes"
+label = "Number of positive roots"
 
 [[definitions]]
 name = "Polynomial.negativeRootCount"
 module = "RealRooted.RootCounting.Descartes"
+label = "Number of negative roots"
 
 [[theorems]]
 name = "Polynomial.descartes_rule_of_signs"
 module = "RealRooted.RootCounting.Descartes"
+label = "Descartes' rule of signs"
 
 [[theorems]]
 name = "Polynomial.descartes_rule_of_signs_negative"
 module = "RealRooted.RootCounting.Descartes"
+label = "Descartes' rule of signs for negative roots"
 -->
 
 <!-- realrooted-catalog-content -->

@@ -13,26 +13,33 @@ years = [1976]
 [[definitions]]
 name = "RealRooted.Rook.IsRookPlacement"
 module = "RealRooted.RookPolynomial"
+label = "Rook placement"
 
 [[definitions]]
 name = "RealRooted.Rook.weightedRookPolynomial"
 module = "RealRooted.RookPolynomial"
+label = "Weighted rook polynomial"
 
 [[definitions]]
 name = "RealRooted.Rook.nijenhuisRookPolynomial"
 module = "RealRooted.RookPolynomial"
+label = "Nijenhuis's signed rook polynomial"
 
 [[theorems]]
 name = "RealRooted.Challenges.Nijenhuis.bipartiteMatchingIdentity"
+label = "Rook polynomials are bipartite matching polynomials"
 
 [[theorems]]
 name = "RealRooted.Challenges.Nijenhuis.weightedRealRooted"
+label = "Weighted rook polynomials are real-rooted"
 
 [[theorems]]
 name = "RealRooted.Challenges.Nijenhuis.signedRoots_nonnegative"
+label = "The signed rook polynomial has nonnegative roots"
 
 [[theorems]]
 name = "RealRooted.Challenges.Nijenhuis.ordinaryRealRooted"
+label = "Rook polynomials of boards are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
