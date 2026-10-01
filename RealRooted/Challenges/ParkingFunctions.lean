@@ -63,18 +63,18 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Parking functions
 
-A parking function of length `n` is a word `w` with letters in
-`{0, …, n-1}` such that, for every `k ≤ n`, at least `k` of its letters are
-smaller than `k`. The following generating polynomials over parking functions
-of length `n` are real-rooted:
+A parking function of length $n$ is a word $w$ with letters in
+$\{0, \dotsc, n-1\}$ such that, for every $k \leq n$, at least $k$ of its letters are
+smaller than $k$. The following generating polynomials over parking functions
+of length $n$ are real-rooted:
 
-- **Descents:** `sum_w x^des(w)`. The proof passes through Pollak's cyclic
-  action: `(n+1)` times this polynomial equals the descent polynomial of all
-  words of length `n` over an alphabet of size `n+1`.
+- **Descents:** $\sum_w x^{\operatorname{des}(w)}$. The proof passes through Pollak's cyclic
+  action: $(n+1)$ times this polynomial equals the descent polynomial of all
+  words of length $n$ over an alphabet of size $n+1$.
 - **Tieless descents:** the same count over parking functions with no two
-  equal adjacent entries. `(n+1)` times this polynomial equals a
+  equal adjacent entries. $(n+1)$ times this polynomial equals a
   Brändén–Vecchi Chow polynomial of an elementary Toeplitz matrix.
-- **Weak left peaks:** `sum_w x^wlpk(w)`.
+- **Weak left peaks:** $\sum_w x^{\operatorname{wlpk}(w)}$.
 
 ## References
 

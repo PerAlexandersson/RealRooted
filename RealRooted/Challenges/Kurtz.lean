@@ -30,7 +30,7 @@ label = "Kurtz's criterion"
 # Kurtz’s coefficient criterion
 
 If a polynomial has positive coefficients and
-`aₖ² > 4 aₖ₋₁ aₖ₊₁` at every interior index, then all its roots are real and
+$a_k^2 > 4a_{k-1}a_{k+1}$ at every interior index, then all its roots are real and
 distinct.
 
 ## References

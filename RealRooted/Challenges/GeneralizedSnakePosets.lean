@@ -93,36 +93,36 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Generalized snake posets
 
-A generalized snake poset `P(w)` is a width-two poset built from a word `w` in
-the letters `L` and `R`. By Braun and Jal, the `h^*`-polynomial of its order
-polytope is the non-nesting rook polynomial `M_w` of a skew board whose cells
-are the incomparable cross-chain pairs of `P(w)`.
+A generalized snake poset $P(w)$ is a width-two poset built from a word $w$ in
+the letters $L$ and $R$. By Braun and Jal, the $h^*$-polynomial of its order
+polytope is the non-nesting rook polynomial $M_w$ of a skew board whose cells
+are the incomparable cross-chain pairs of $P(w)$.
 
-**Theorem (Braun–Jal, Theorem 4.1).** Each `M_w` is real-rooted, and deleting
-the last letter of `w` gives a polynomial interlacing `M_w`.
+**Theorem (Braun–Jal, Theorem 4.1).** Each $M_w$ is real-rooted, and deleting
+the last letter of $w$ gives a polynomial interlacing $M_w$.
 
 The Lean proof covers the concrete snake board
 (`theorem41_generalizedSnakeRookModel`).
 
 The proof runs through the **modified Narayana polynomials**
-`P_n = t^{-1} N_{n+1}`, which are the rook polynomials of the full truncated
-staircase boards, and `G_n = sum_{i<n} R(n, i)`, a sum of truncated-staircase
+$P_n = t^{-1} N_{n+1}$, which are the rook polynomials of the full truncated
+staircase boards, and $G_n = \sum_{i<n} R(n,i)$, a sum of truncated-staircase
 rook polynomials.
 
-- **Analytic core.** Every `P_n` is a PF polynomial and `P_n ≪ P_{n+1}`.
-  Lemma 3.4: for `m ≥ 2`, `λ ≥ 0` and `ν ≥ -1`,
-  `(λx + ν) P_{m-1} + P_m ≪ (λx + ν) P_m + P_{m+1}`. Claim (7) and a matrix
+- **Analytic core.** Every $P_n$ is a PF polynomial and $P_n \ll P_{n+1}$.
+  Lemma 3.4: for $m \geq 2$, $\lambda \geq 0$ and $\nu \geq -1$,
+  $(\lambda x+\nu) P_{m-1} + P_m \ll (\lambda x+\nu) P_m + P_{m+1}$. Claim (7) and a matrix
   induction then give Theorem 4.1 for any family satisfying the combinatorial
   inputs below.
-- **Theorem 3.5** (`generalizedSnakeTheorem35`). If `k` is the last position
-  where `w` differs from its final letter and `s = |w| - k - 1`, then
-  `M_w = M_{w[:k+1]} P_s + x M_{w[:k]} G_s`.
-- **Staircase inputs.** `x G_{n-1} = P_n - (1 + x) P_{n-1}`, and `G_n - G_{n-1}`
+- **Theorem 3.5** (`generalizedSnakeTheorem35`). If $k$ is the last position
+  where $w$ differs from its final letter and $s = |w| - k - 1$, then
+  $M_w = M_{w[:k+1]}\, P_s + x\, M_{w[:k]}\, G_s$.
+- **Staircase inputs.** $x\, G_{n-1} = P_n - (1+x) P_{n-1}$, and $G_n - G_{n-1}$
   has nonnegative coefficients, both from a column recurrence for
-  truncated-staircase rook polynomials. Constant words give `P_{n+1}`.
+  truncated-staircase rook polynomials. Constant words give $P_{n+1}$.
 
-For Theorem 3.5, the incomparable pairs `(i, j)` of `P(w)` are the cells whose
-gaps between `i` and `j` all carry one letter: `R` above the diagonal, `L`
+For Theorem 3.5, the incomparable pairs $(i,j)$ of $P(w)$ are the cells whose
+gaps between $i$ and $j$ all carry one letter: $R$ above the diagonal, $L$
 below it. The Braun–Jal board reverses the column order, which turns
 non-nesting placements into chains that increase in both coordinates. The
 final constant block cuts this band into a staircase, one column of cells, and
@@ -130,7 +130,7 @@ the band of the prefix, and the recurrence follows by expanding along that
 column.
 
 The reversed column orientation matters. The non-nesting rook polynomial of the
-reversed board agrees with an independent `h^*`-polynomial computation for
+reversed board agrees with an independent $h^*$-polynomial computation for
 every word of length at most 11. The non-nesting rook polynomial of the
 unreversed board does not.
 

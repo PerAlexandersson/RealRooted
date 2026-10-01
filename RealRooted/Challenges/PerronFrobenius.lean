@@ -47,28 +47,26 @@ label = "A positive eigenvector belongs to the Perron root"
 <!-- realrooted-catalog-content -->
 # Perron–Frobenius theorem
 
-For a square matrix `A` with nonnegative real entries, the **Perron root** is
+For a square matrix $A$ with nonnegative real entries, the **Perron root** is
 the Collatz–Wielandt value
 
-```text
-r(A) = sup over nonnegative v ≠ 0 of  min over i with v_i > 0 of (A v)_i / v_i.
-```
+$$r(A) = \sup_{v \geq 0,\ v \neq 0}\ \min_{i\,:\,v_i > 0} \frac{(Av)_i}{v_i}.$$
 
 **Theorem (Perron–Frobenius).**
 
-- Every nonnegative matrix has `r(A)` as an eigenvalue, with a nonnegative
+- Every nonnegative matrix has $r(A)$ as an eigenvalue, with a nonnegative
   eigenvector.
-- If `A` is irreducible, the eigenvalue `r(A)` is positive and has a strictly
-  positive eigenvector. Moreover `r(A)` is the spectral radius: every real
-  eigenvalue `μ` satisfies `|μ| ≤ r(A)`.
-- If `A` is primitive (some power is entrywise positive), a nonnegative
+- If $A$ is irreducible, the eigenvalue $r(A)$ is positive and has a strictly
+  positive eigenvector. Moreover $r(A)$ is the spectral radius: every real
+  eigenvalue $\mu$ satisfies $|\mu| \leq r(A)$.
+- If $A$ is primitive (some power is entrywise positive), a nonnegative
   eigenvector with positive eigenvalue is unique up to scaling.
-- A strictly positive eigenvector can only belong to the eigenvalue `r(A)`.
+- A strictly positive eigenvector can only belong to the eigenvalue $r(A)$.
 
 The proofs go through the Collatz–Wielandt function on the standard simplex,
 upper semicontinuity and compactness for existence, and a triangle-equality
 phase argument for dominance. The irreducible case is reduced to the primitive
-one through `1 + A`.
+one through $1 + A$.
 
 ## References
 

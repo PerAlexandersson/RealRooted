@@ -42,16 +42,16 @@ label = "Positive weighted sums are real-rooted"
 <!-- realrooted-catalog-content -->
 # Toric g-contribution polynomials
 
-Xiao studies the toric `g`-contribution polynomials `g_{n,j}(x)`, whose
+Xiao studies the toric $g$-contribution polynomials $g_{n,j}(x)$, whose
 coefficients are built from binomial coefficients and Catalan numbers.
-Xiao's Conjecture 4.2 states that, for each `n = 2m + ε` with `ε ∈ {0, 1}`,
-the row `(g_{n,0}, g_{n,1}, …, g_{n,⌊n/2⌋})` is an interlacing sequence.
+Xiao's Conjecture 4.2 states that, for each $n = 2m + \varepsilon$ with $\varepsilon \in \{0, 1\}$,
+the row $(g_{n,0}, g_{n,1}, \dotsc, g_{n,\lfloor n/2\rfloor})$ is an interlacing sequence.
 
-**Theorem (Xiao's Conjecture 4.2).** For all `m` and `ε ≤ 1`, the toric
+**Theorem (Xiao's Conjecture 4.2).** For all $m$ and $\varepsilon \leq 1$, the toric
 contribution row is an interlacing sequence.
 
 The proof finds a common left interleaver for the normalized family: the
-terminating hypergeometric polynomials `R_d` share a Jacobi-type interlacer.
+terminating hypergeometric polynomials $R_d$ share a Jacobi-type interlacer.
 It follows that every strictly positive weighted sum of the normalized
 reversed contributions is real-rooted.
 

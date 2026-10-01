@@ -80,10 +80,10 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Common interleavers
 
-A finite family of real-rooted polynomials `f_1, …, f_m` has a **common
-interleaver** if a single real-rooted `h` satisfies `f_i ≪ h` for every `i`.
+A finite family of real-rooted polynomials $f_1, \dotsc, f_m$ has a **common
+interleaver** if a single real-rooted $h$ satisfies $f_i \ll h$ for every $i$.
 The family is **compatible** if every nonnegative combination
-`c_1 f_1 + ⋯ + c_m f_m` is zero or real-rooted.
+$c_1 f_1 + \dotsb + c_m f_m$ is zero or real-rooted.
 
 **Theorem (Chudnovsky–Seymour).** For real-rooted polynomials with positive
 leading coefficients, the following are equivalent:

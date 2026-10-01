@@ -96,18 +96,16 @@ label = "Tiling polynomials of weighted lower shifts are PF"
 <!-- realrooted-catalog-content -->
 # Totally nonnegative matrices and chain polynomials
 
-A lower-triangular matrix `A` defines chain polynomials by `P_0 = 1` and
+A lower-triangular matrix $A$ defines chain polynomials by $P_0 = 1$ and
 
-```text
-P_{n+1}(x) = x * sum_{k ≤ n} A(n+1,k) P_k(x).
-```
+$$P_{n+1}(x) = x \sum_{k \leq n} A(n+1,k)\, P_k(x).$$
 
-When `A` counts weighted chains in a poset, `P_n` enumerates the chains by
+When $A$ counts weighted chains in a poset, $P_n$ enumerates the chains by
 length.
 
-**Theorem (Brändén–Saud Leite, Theorem 3.7).** If `A` is lower unitriangular
-and totally nonnegative, then every `P_n` has nonnegative coefficients and
-only real zeros in `[-1, 0]`, and `P_n` interlaces `P_{n+1}`.
+**Theorem (Brändén–Saud Leite, Theorem 3.7).** If $A$ is lower unitriangular
+and totally nonnegative, then every $P_n$ has nonnegative coefficients and
+only real zeros in $[-1, 0]$, and $P_n$ interlaces $P_{n+1}$.
 
 The matrices covered are exactly the resolvable ones: a lower-unitriangular
 matrix admits a resolution by nonnegative weights and monic polynomials if and
@@ -118,12 +116,12 @@ Applied to power-series kernels built from Pólya frequency sequences, the
 theorem gives PF polynomials whose consecutive rows interlace, for two row
 families:
 
-- the rows of `1 / (1 - x h(z))` when `h(0) = 0`;
-- the rows of `g / (1 - x g h)`.
+- the rows of $1/\bigl(1 - x\,h(z)\bigr)$ when $h(0) = 0$;
+- the rows of $g/(1 - xgh)$.
 
-In particular, the rows of `1 / (1 - x z (1+z)^d)` and of
-`1 / (1 - x z / (1-z)^e)` are PF and interlace. These include OEIS A116088
-(`d = 2`), A116089 (`d = 3`) and A206294 (`e = 3`).
+In particular, the rows of $1/\bigl(1 - xz(1+z)^d\bigr)$ and of
+$1/\bigl(1 - xz/(1-z)^e\bigr)$ are PF and interlace. These include OEIS A116088
+($d = 2$), A116089 ($d = 3$) and A206294 ($e = 3$).
 
 The resolution theorem has a network form. Every lower-unitriangular totally
 nonnegative matrix is the path matrix of a triangular planar network whose
@@ -133,7 +131,7 @@ rows for tiling polynomials built from weighted lower shifts.
 ## Proof idea
 
 Whitney elimination factors a totally nonnegative unitriangular matrix into
-nonnegative resolution data. The subdivision operator `X^n ↦ P_n` sends each
+nonnegative resolution data. The subdivision operator $X^n \mapsto P_n$ sends each
 row of the resolution to an interlacing sequence, and interlacing is preserved
 under the nonnegative combinations that assemble the chain polynomials.
 

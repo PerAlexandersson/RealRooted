@@ -1,5 +1,19 @@
 "use strict";
 
+// Typeset $…$ and $$…$$ with KaTeX; Lean declarations in <pre>/<code> are skipped.
+window.addEventListener("DOMContentLoaded", () => {
+  if (typeof renderMathInElement !== "function") return;
+  for (const element of document.querySelectorAll("main .prose")) {
+    renderMathInElement(element, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+      ],
+      throwOnError: false,
+    });
+  }
+});
+
 for (const control of document.querySelectorAll("[data-catalog-sort]")) {
   const lists = Array.from(control.closest("main")?.querySelectorAll("[data-catalog-list]") ?? []);
   if (!lists.length) continue;

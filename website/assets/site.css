@@ -366,6 +366,9 @@ h3 { font-size: 1.25rem; }
 .result-source { width: 4.5rem; text-align: right; }
 .results-empty { color: var(--muted); }
 
+.math-display { margin: 1.1rem 0; overflow-x: auto; overflow-y: hidden; }
+.prose .katex { font-size: 1.05em; }
+
 .breadcrumb { margin-bottom: 1.5rem; }
 .breadcrumb a {
   display: inline-flex;

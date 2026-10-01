@@ -103,40 +103,39 @@ label = "Type I functions sampled at 0, 1, 2, … are PF multiplier sequences"
 <!-- realrooted-catalog-content -->
 # Multiplier sequences
 
-A real sequence `γ = (γ_0, γ_1, …)` is a **multiplier sequence** if the
+A real sequence $\gamma = (\gamma_0, \gamma_1, \dotsc)$ is a **multiplier sequence** if the
 diagonal operator
 
-```text
-a_0 + a_1 x + ⋯ + a_n x^n  ↦  γ_0 a_0 + γ_1 a_1 x + ⋯ + γ_n a_n x^n
-```
+$$a_0 + a_1 x + \dotsb + a_n x^n \;\mapsto\;
+  \gamma_0 a_0 + \gamma_1 a_1 x + \dotsb + \gamma_n a_n x^n$$
 
 sends every real-rooted polynomial to a real-rooted polynomial (or zero). It is
 a **PF multiplier sequence** if it preserves real-rootedness with nonnegative
-coefficients. The finite version restricts to inputs of degree at most `n`.
+coefficients. The finite version restricts to inputs of degree at most $n$.
 
 The following hold:
 
 - **Jensen polynomials** (Pólya–Schur): a nonnegative sequence is a multiplier
   sequence if and only if every Jensen polynomial
-  `g_n(x) = sum_k choose(n,k) γ_k x^k` has only real nonpositive zeros.
+  $g_n(x) = \sum_k \binom{n}{k} \gamma_k x^k$ has only real nonpositive zeros.
 - **Laguerre–Pólya classification** (Pólya–Schur): under a growth condition,
-  `γ` is a PF multiplier sequence if and only if its exponential generating
-  function `sum_k γ_k z^k / k!` is a locally uniform limit of PF polynomials,
+  $\gamma$ is a PF multiplier sequence if and only if its exponential generating
+  function $\sum_k \gamma_k z^k/k!$ is a locally uniform limit of PF polynomials,
   that is, lies in the Laguerre–Pólya class of type I. Without the sign
-  condition, `γ` is a multiplier sequence if and only if one of `±f(±z)` is of
-  type I, where `f` is the generating function; equivalently, one of `±γ_k`
-  and `±(-1)^k γ_k` is a PF multiplier sequence.
+  condition, $\gamma$ is a multiplier sequence if and only if one of $\pm f(\pm z)$ is of
+  type I, where $f$ is the generating function; equivalently, one of $\pm\gamma_k$
+  and $\pm(-1)^k \gamma_k$ is a PF multiplier sequence.
 - **Log-concavity:** PF multiplier sequences are log-concave.
-- **Laguerre's theorem:** if a polynomial `φ` has only real nonpositive
-  zeros, then `φ(0), φ(1), φ(2), …` is a multiplier sequence. It is a PF
+- **Laguerre's theorem:** if a polynomial $\varphi$ has only real nonpositive
+  zeros, then $\varphi(0), \varphi(1), \varphi(2), \dotsc$ is a multiplier sequence. It is a PF
   multiplier sequence when the leading coefficient is nonnegative. The basic
-  case `k + r`, for real `r ≥ 0`, has Jensen polynomials
-  `(1 + x)^(n-1) ((n + r) x + r)`.
-  More generally, if `f` is a locally uniform limit of PF polynomials (type I
-  in the Laguerre–Pólya class), then `f(0), f(1), f(2), …` is a PF
+  case $k + r$, for real $r \geq 0$, has Jensen polynomials
+  $(1+x)^{n-1}\bigl((n+r)x+r\bigr)$.
+  More generally, if $f$ is a locally uniform limit of PF polynomials (type I
+  in the Laguerre–Pólya class), then $f(0), f(1), f(2), \dotsc$ is a PF
   multiplier sequence.
-- **Examples:** for real `α > 0`, the reciprocal rising factorials
-  `1 / (α)_k` form a PF multiplier sequence, and so in particular do `1 / k!`.
+- **Examples:** for real $\alpha > 0$, the reciprocal rising factorials
+  $1/(\alpha)_k$ form a PF multiplier sequence, and so in particular do $1/k!$.
   After clearing denominators, their Jensen polynomials are generalized
   Laguerre polynomials.
 

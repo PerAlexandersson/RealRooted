@@ -75,12 +75,12 @@ Building on the path-cancellation proof in the LeanLGV library:
 - **Pólya frequency sequences:** if every strictly increasing Toeplitz minor
   of a sequence is realized by such a network, then the sequence is a Pólya
   frequency sequence.
-- **Chip networks:** for words of nonnegative lower-bidiagonal chips `G` and
-  `K`, with `K` strictly lower triangular, the repeated-chip kernel sequence
+- **Chip networks:** for words of nonnegative lower-bidiagonal chips $G$ and
+  $K$, with $K$ strictly lower triangular, the repeated-chip kernel sequence
   is a Pólya frequency sequence. The associated kernel row, in the sense of
   Brändén and Saud Leite, is a PF polynomial.
-- **Path counting:** weighted paths of exact length `n` are counted by the
-  `n`-th power of the edge-sum matrix.
+- **Path counting:** weighted paths of exact length $n$ are counted by the
+  $n$-th power of the edge-sum matrix.
 
 ## References
 

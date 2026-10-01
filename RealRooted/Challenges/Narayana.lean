@@ -41,15 +41,13 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Generalized Narayana polynomials
 
-For `m, n ≥ 0`, the generalized Narayana polynomial is
+For $m, n \geq 0$, the generalized Narayana polynomial is
 
-```text
-N_{n,m}(x) = ∑_{k=0}^{n} C(n,k) C(n+m,k) / C(m+k,k) · x^k.
-```
+$$N_{n,m}(x) = \sum_{k=0}^{n} \frac{\binom{n}{k}\binom{n+m}{k}}{\binom{m+k}{k}}\, x^k.$$
 
-For `m = 1` the coefficients are Narayana numbers; for example
-`N_{2,1}(x) = 1 + 3x + x^2`. These polynomials are Pólya-frequency, and the Narayana transform
-`x^n ↦ N_{n,m}(x)` preserves Pólya-frequency polynomials.
+For $m = 1$ the coefficients are Narayana numbers; for example
+$N_{2,1}(x) = 1 + 3x + x^2$. These polynomials are Pólya-frequency, and the Narayana transform
+$x^n \mapsto N_{n,m}(x)$ preserves Pólya-frequency polynomials.
 
 ## References
 

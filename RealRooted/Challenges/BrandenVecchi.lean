@@ -79,29 +79,26 @@ label = "A zero prefix of length three breaks real-rootedness"
 <!-- realrooted-catalog-content -->
 # Chow polynomials of totally nonnegative matrices
 
-For a lower-triangular matrix `A`, the Chow derangement polynomials `d_n`
-satisfy a triangular recurrence driven by the rows of `A`. The Chow
+For a lower-triangular matrix $A$, the Chow derangement polynomials $d_n$
+satisfy a triangular recurrence driven by the rows of $A$. The Chow
 polynomials are
 
-```text
-c_n = sum_{k ≤ n} A(n,k) d_k.
-```
+$$c_n = \sum_{k \leq n} A(n,k)\, d_k.$$
 
 For the incidence data of a poset, these generalize the Chow polynomials of
 matroids and posets.
 
-**Theorem (Brändén–Vecchi, Theorem 4.18).** If `A` is lower unitriangular
-and totally nonnegative, then `c_n` and `d_n` have nonnegative coefficients
-and only real zeros. Moreover `c_n` interlaces `c_{n+1}`, and `c_n`
-interlaces `d_n`.
+**Theorem (Brändén–Vecchi, Theorem 4.18).** If $A$ is lower unitriangular
+and totally nonnegative, then $c_n$ and $d_n$ have nonnegative coefficients
+and only real zeros. Moreover $c_n$ interlaces $c_{n+1}$, and $c_n$
+interlaces $d_n$.
 
 Further results:
 
-- **Pólya frequency symbols:** for the Toeplitz matrix of an
-  Aissen–Schoenberg–Whitney–Edrei symbol
-  `e^{γz} ∏ (1 + α_i z) / ∏ (1 - β_i z)` (Theorem 8.4), the Chow polynomials
-  are PF polynomials and interlace consecutively. This also holds in the full
-  projective form, with an outer scalar, a zero prefix and a shift.
+- **Pólya frequency symbols:** for the Toeplitz matrix of an Aissen–Schoenberg–Whitney–Edrei symbol
+  $e^{\gamma z} \prod_i (1 + \alpha_i z) \big/ \prod_i (1 - \beta_i z)$ (Theorem 8.4), the Chow
+  polynomials are PF polynomials and interlace consecutively. This also holds in the full projective
+  form, with an outer scalar, a zero prefix and a shift.
 - **Signed words:** for finite supersymmetric symbols, the Chow polynomial
   equals a signed-word enumerator by descents and collisions (Theorem 8.11).
   It specializes to the Smirnov word polynomials.

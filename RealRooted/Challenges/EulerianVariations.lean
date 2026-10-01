@@ -67,8 +67,8 @@ Three Eulerian-type families, coming from permutations, words and paths, are
 real-rooted.
 
 - **Cyclic path descents:** the polynomial with coefficients
-  `2 C(n,k) C(n-1,k-1)` equals `(2/n) x N_n'(x)`, where `N_n` is the
-  Narayana polynomial. Its zeros are simple: `0`, together with `n - 1`
+  $2\binom{n}{k}\binom{n-1}{k-1}$ equals $\tfrac{2}{n}\, x N_n'(x)$, where $N_n$ is the
+  Narayana polynomial. Its zeros are simple: $0$, together with $n - 1$
   negative zeros.
 - **Peak values:** the multivariate peak-value polynomial is real stable.
   For every choice of positive weights, consecutive weighted diagonals

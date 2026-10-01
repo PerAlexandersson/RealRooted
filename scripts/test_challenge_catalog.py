@@ -380,6 +380,23 @@ end RealRooted.Challenges.Sample
         self.assertIn('<a href="https://example.org/x">the overview</a>', html_out)
         self.assertNotIn("[ov]", html_out)
 
+    def test_math_is_left_for_katex(self) -> None:
+        from challenge_catalog import render_markdown
+
+        html_out = render_markdown(
+            "Let $h^* = a*b*c$ and $x_{*}$, with `f*g`.\n\n"
+            "$$\\sum_k a_k x^k \\;\\mapsto\\;\n  \\sum_k *b_k* x^k.$$\n"
+        )
+        self.assertIn("$h^* = a*b*c$", html_out)
+        self.assertIn("$x_{*}$", html_out)
+        self.assertIn("<code>f*g</code>", html_out)
+        self.assertNotIn("<em>", html_out)
+        self.assertIn(
+            '<div class="math-display">$$\\sum_k a_k x^k \\;\\mapsto\\; '
+            "\\sum_k *b_k* x^k.$$</div>",
+            html_out,
+        )
+
     def test_labels_and_headlines_are_validated(self) -> None:
         bad_records = (
             '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\nheadline = true',

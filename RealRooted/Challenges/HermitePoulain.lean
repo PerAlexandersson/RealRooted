@@ -23,8 +23,8 @@ label = "Hermite–Poulain theorem"
 <!-- realrooted-catalog-content -->
 # Hermite–Poulain theorem
 
-For a polynomial `f(x) = ∑_k a_k x^k`, write `f(D) = ∑_k a_k D^k`, where
-`D = d/dx`. If `f` and `p` are real-rooted, then `f(D) p` is zero or
+For a polynomial $f(x) = \sum_k a_k x^k$, write $f(D) = \sum_k a_k D^k$, where
+$D = d/dx$. If $f$ and $p$ are real-rooted, then $f(D)\,p$ is zero or
 real-rooted.
 
 ## References
