@@ -53,7 +53,7 @@ end RealRooted
 namespace RealRooted.Tactic
 
 /-- Is `c` a constant of type `ℕ → ℝ[X]`? -/
-private def isPolySeqConst (c : Name) (us : List Level) : MetaM Bool := do
+def isPolySeqConst (c : Name) (us : List Level) : MetaM Bool := do
   let ty ← whnfR (← inferType (.const c us))
   match ty with
   | .forallE _ dom body _ =>
@@ -62,7 +62,7 @@ private def isPolySeqConst (c : Name) (us : List Level) : MetaM Bool := do
   | _ => return false
 
 /-- The first constant `P : ℕ → ℝ[X]` applied to an argument in `e`. -/
-private partial def findPolySeqConst? (e : Expr) : MetaM (Option Name) := do
+partial def findPolySeqConst? (e : Expr) : MetaM (Option Name) := do
   match e with
   | .app (.const c us) a =>
       if ← isPolySeqConst c us then return some c else findPolySeqConst? a
@@ -76,7 +76,7 @@ private partial def findPolySeqConst? (e : Expr) : MetaM (Option Name) := do
 
 Every alternative ends in `done` and avoids nested `by` blocks, which would
 recover from errors and make `first` commit to a failing branch. -/
-private def productSideGoals (P : Ident) : TacticM Unit := do
+def productSideGoals (P : Ident) : TacticM Unit := do
   evalTactic (← `(tactic| all_goals first
     | (intro k; beta_reduce; compute_degree!; done)
     | (intro k; beta_reduce; compute_degree <;>
