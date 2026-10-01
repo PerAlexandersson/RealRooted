@@ -72,7 +72,7 @@ theorem binomialShiftedRecurrenceCoefficient_eq
         (Nat.choose j 2 : ℝ) * (Nat.choose m j : ℝ) := by
     exact_mod_cast choose_two_mul_choose_sub_two hj
   rw [hchoose]
-  ring
+  ring_nf
 
 /-- The first lag is the constant coefficient `Nat.choose m 1`. -/
 @[simp]

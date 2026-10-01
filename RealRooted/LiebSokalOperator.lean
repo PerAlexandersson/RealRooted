@@ -124,8 +124,8 @@ def contractVariables {R sigma : Type*} [CommRing R]
 
 /-- Contracting two variables does not increase the degree in any coordinate. -/
 theorem degreeOf_contractVariables_le
-    {R omega : Type*} [CommRing R]
-    (P : MvPolynomial omega R) (i j k : omega) :
+    {R ω : Type*} [CommRing R]
+    (P : MvPolynomial ω R) (i j k : ω) :
     (contractVariables i j P).degreeOf k ≤ P.degreeOf k := by
   refine (MvPolynomial.degreeOf_sub_le k _ _).trans (max_le ?_ ?_)
   · exact MvPolynomial.degreeOf_specializeZero_le P i k
@@ -134,37 +134,37 @@ theorem degreeOf_contractVariables_le
         (MvPolynomial.degreeOf_pderiv_le P i k)
 
 @[simp] theorem contractVariables_zero
-    {R omega : Type*} [CommRing R] (i j : omega) :
-    contractVariables i j (0 : MvPolynomial omega R) = 0 := by
+    {R ω : Type*} [CommRing R] (i j : ω) :
+    contractVariables i j (0 : MvPolynomial ω R) = 0 := by
   simp [contractVariables]
 
 /-- Successively contract pairs of variables selected by two maps into an
 arbitrary ambient variable type. -/
 def contractMappedVariablePairs
-    {R sigma omega : Type*} [CommRing R]
-    (left right : sigma → omega) (l : List sigma)
-    (P : MvPolynomial omega R) : MvPolynomial omega R :=
+    {R sigma ω : Type*} [CommRing R]
+    (left right : sigma → ω) (l : List sigma)
+    (P : MvPolynomial ω R) : MvPolynomial ω R :=
   l.foldl (fun Q i => contractVariables (left i) (right i) Q) P
 
 @[simp] theorem contractMappedVariablePairs_nil
-    {R sigma omega : Type*} [CommRing R]
-    (left right : sigma → omega) (P : MvPolynomial omega R) :
+    {R sigma ω : Type*} [CommRing R]
+    (left right : sigma → ω) (P : MvPolynomial ω R) :
     contractMappedVariablePairs left right [] P = P := by
   rfl
 
 @[simp] theorem contractMappedVariablePairs_cons
-    {R sigma omega : Type*} [CommRing R]
-    (left right : sigma → omega) (i : sigma) (l : List sigma)
-    (P : MvPolynomial omega R) :
+    {R sigma ω : Type*} [CommRing R]
+    (left right : sigma → ω) (i : sigma) (l : List sigma)
+    (P : MvPolynomial ω R) :
     contractMappedVariablePairs left right (i :: l) P =
       contractMappedVariablePairs left right l
         (contractVariables (left i) (right i) P) := by
   rfl
 
 @[simp] theorem contractMappedVariablePairs_zero
-    {R sigma omega : Type*} [CommRing R]
-    (left right : sigma → omega) (l : List sigma) :
-    contractMappedVariablePairs left right l (0 : MvPolynomial omega R) = 0 := by
+    {R sigma ω : Type*} [CommRing R]
+    (left right : sigma → ω) (l : List sigma) :
+    contractMappedVariablePairs left right l (0 : MvPolynomial ω R) = 0 := by
   induction l with
   | nil => rfl
   | cons i l ih =>
@@ -174,9 +174,9 @@ def contractMappedVariablePairs
 /-- Iterated mapped contraction does not increase the degree in any ambient
 coordinate. -/
 theorem degreeOf_contractMappedVariablePairs_le
-    {R sigma omega : Type*} [CommRing R]
-    (left right : sigma → omega) (l : List sigma)
-    (P : MvPolynomial omega R) (k : omega) :
+    {R sigma ω : Type*} [CommRing R]
+    (left right : sigma → ω) (l : List sigma)
+    (P : MvPolynomial ω R) (k : ω) :
     (contractMappedVariablePairs left right l P).degreeOf k ≤ P.degreeOf k := by
   induction l generalizing P with
   | nil => exact le_rfl
@@ -187,9 +187,9 @@ theorem degreeOf_contractMappedVariablePairs_le
 
 /-- An affine coordinate remains affine after iterated mapped contraction. -/
 theorem degreeOf_contractMappedVariablePairs_le_one
-    {R sigma omega : Type*} [CommRing R]
-    (left right : sigma → omega) (l : List sigma)
-    (P : MvPolynomial omega R) (k : omega) (hk : P.degreeOf k ≤ 1) :
+    {R sigma ω : Type*} [CommRing R]
+    (left right : sigma → ω) (l : List sigma)
+    (P : MvPolynomial ω R) (k : ω) (hk : P.degreeOf k ≤ 1) :
     (contractMappedVariablePairs left right l P).degreeOf k ≤ 1 :=
   (degreeOf_contractMappedVariablePairs_le left right l P k).trans hk
 

@@ -618,7 +618,7 @@ theorem card_roots_filter_gt_eq_reflect_compl {p : K[X]} (hp : p.Splits)
   rw [inv_inv] at hreflect
   have hcard : p.roots.card = p.natDegree :=
     hp.natDegree_eq_card_roots.symm
-  omega
+  lia
 
 /-- No-gap emptiness on a positive interval under reversal. -/
 theorem card_roots_reverse_Ioo_eq_zero_iff {p : K[X]} (hp : p.Splits)

@@ -66,10 +66,10 @@ theorem hasDerivAt_shiftedBinaryRunDeformation_criticalValue
     intro m hm
     convert
       ((hasDerivAt_pow m t).const_mul (p.coeff m)).mul
-        (((B m).hasDerivAt (ξ t)).comp t hξ) using 1
-    all_goals first
-      | rfl
-      | simp [Function.comp_apply, hξbase]
+        (((B m).hasDerivAt (ξ t)).comp t hξ) using 1 <;>
+      first
+        | rfl
+        | simp [Function.comp_apply, hξbase]
   have hfixed : HasDerivAt
       (fun u => ∑ m ∈ Finset.range (n + 1),
         (p.coeff m * u ^ m) * (B m).eval x)

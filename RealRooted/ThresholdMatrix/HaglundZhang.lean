@@ -495,8 +495,7 @@ private lemma HZ2x2EntryShape.has2x2 {a b c d : ℝ[X]}
     Has2x2InterlacingProperty0 a b c d := by
   intro s t hs ht
   rcases h with
-    h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h
-  all_goals
+    h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h <;>
     rcases h with ⟨rfl, rfl, rfl, rfl⟩
   · simpa using interl_affine_add_one_self hs
   · simpa using interl_hz_affine_add_one_affine_add_one_add_X hs ht
@@ -542,13 +541,12 @@ private lemma hzEntry_shape
     HZ2x2EntryShape
       (hzEntry t₁ α₁ j₁) (hzEntry t₁ α₁ j₂)
       (hzEntry t₂ α₂ j₁) (hzEntry t₂ α₂ j₂) := by
-  rcases hα₁ with rfl | rfl <;> rcases hα₂ with rfl | rfl
-  all_goals
-    simp at hcompat
-    unfold HZ2x2EntryShape Threshold2x2EntryTuple
-    simp only [thresholdEntry]
-    split_ifs with h₁ h₂ h₃ h₄ h₅ h₆ h₇ h₈
-    all_goals try lia
+  rcases hα₁ with rfl | rfl <;> rcases hα₂ with rfl | rfl <;>
+    simp at hcompat <;>
+    unfold HZ2x2EntryShape Threshold2x2EntryTuple <;>
+    simp only [thresholdEntry] <;>
+    split_ifs <;>
+    lia
 
 /-- The finite entrywise Haglund--Zhang `2 x 2` threshold check. -/
 def HZEntryHas2x2Statement : Prop :=

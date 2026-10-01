@@ -29,8 +29,8 @@ theorem derivative_interlaces_of_pos {f : ℝ[X]} (hf : f.Splits) (hpos : 0 < f.
   · exact derivative_interlaces hf hdeg
   · refine interlaces_of_natDegree_eq_zero_of_natDegree_eq_one ?_ ?_ hdeg.symm
     · exact leadingCoeff_ne_zero.mp
-        (HasPosLeadingCoeff.derivative hpos (by omega)).ne'
-    · exact Nat.le_zero.mp ((natDegree_derivative_le f).trans (by omega))
+        (HasPosLeadingCoeff.derivative hpos (by lia)).ne'
+    · exact Nat.le_zero.mp ((natDegree_derivative_le f).trans (by lia))
 
 variable {P A B : ℕ → ℝ[X]} {D₀ : ℕ}
 
@@ -42,14 +42,14 @@ theorem derivRec_interlaces_step (hrec : ∀ n, P (n + 1) = A n * (P n).derivati
   have hF : P (n + 1) = B n * P n + A n * (P n).derivative := by
     rw [hrec n, add_comm]
   have hInter : Interlaces (P n).derivative (P n) :=
-    derivative_interlaces_of_pos hs (hpos n) (by rw [hdeg]; omega)
+    derivative_interlaces_of_pos hs (hpos n) (by rw [hdeg]; lia)
   have hprec : StrictInterl (P n) (B n * P n + A n * (P n).derivative) :=
     strictInterl_of_interlaces_evalCoeff_nonpos hInter
-      (HasPosLeadingCoeff.derivative (hpos n) (by rw [hdeg]; omega))
+      (HasPosLeadingCoeff.derivative (hpos n) (by rw [hdeg]; lia))
       (by rw [← hF]; exact hpos (n + 1))
-      (by rw [← hF, hdeg, hdeg]; omega) (by rw [← hF, hdeg, hdeg]; omega) hA
+      (by rw [← hF, hdeg, hdeg]; lia) (by rw [← hF, hdeg, hdeg]; lia) hA
   rw [← hF] at hprec
-  exact hprec.toInterlaces (by rw [hdeg, hdeg]; omega)
+  exact hprec.toInterlaces (by rw [hdeg, hdeg]; lia)
 
 theorem derivRec_interlaces (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
@@ -59,7 +59,7 @@ theorem derivRec_interlaces (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + 
   induction n with
   | zero => exact h01
   | succ n ih =>
-      exact derivRec_interlaces_step hrec hdeg hpos (n + 1) (hA (n + 1)) ih.1.2 (by omega)
+      exact derivRec_interlaces_step hrec hdeg hpos (n + 1) (hA (n + 1)) ih.1.2 (by lia)
 
 /-- Starting from a real-rooted row of positive degree, no base interlacing is
 needed. -/
@@ -69,9 +69,9 @@ theorem derivRec_interlaces_of_splits
     (hA : ∀ n r, (P n).IsRoot r → (A n).eval r ≤ 0) (h0 : (P 0).Splits) (n : ℕ) :
     Interlaces (P n) (P (n + 1)) := by
   induction n with
-  | zero => exact derivRec_interlaces_step hrec hdeg hpos 0 (hA 0) h0 (by omega)
+  | zero => exact derivRec_interlaces_step hrec hdeg hpos 0 (hA 0) h0 (by lia)
   | succ n ih =>
-      exact derivRec_interlaces_step hrec hdeg hpos (n + 1) (hA (n + 1)) ih.1.2 (by omega)
+      exact derivRec_interlaces_step hrec hdeg hpos (n + 1) (hA (n + 1)) ih.1.2 (by lia)
 
 theorem derivRec_interlaces_of_splits_of_eval_nonpos
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
@@ -152,7 +152,7 @@ theorem derivRec_hasNonnegCoeffs_of_mult {d : ℕ}
       · rw [coeff_X_mul]
         by_cases hj : j ≤ D₀ + d * n
         · nlinarith [mul_nonneg (hmult n i j hj) (ih j)]
-        · rw [coeff_eq_zero_of_natDegree_lt ((hdeg n).trans_lt (by omega))]
+        · rw [coeff_eq_zero_of_natDegree_lt ((hdeg n).trans_lt (by lia))]
           ring_nf
           rfl
 

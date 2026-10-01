@@ -100,7 +100,7 @@ theorem sum_sq_eq (s : Multiset ℝ) (h : ∀ ξ ∈ s, ξ ≠ 0) :
       field_simp
       rw [hAdef, hBdef]
       simp only [one_div]
-      ring
+      ring_nf
 
 /-! ### Transfer to an arbitrary polynomial with a full set of roots -/
 

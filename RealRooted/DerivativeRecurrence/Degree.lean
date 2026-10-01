@@ -42,10 +42,10 @@ theorem coeff_mul_add_of_natDegree_le {p q : ℝ[X]} {m n : ℕ} (hp : p.natDegr
     (hq : q.natDegree ≤ n) : (p * q).coeff (m + n) = p.coeff m * q.coeff n := by
   rcases hp.lt_or_eq with hp | rfl
   · rw [coeff_eq_zero_of_natDegree_lt hp, zero_mul,
-      coeff_eq_zero_of_natDegree_lt (natDegree_mul_le.trans_lt (by omega))]
+      coeff_eq_zero_of_natDegree_lt (natDegree_mul_le.trans_lt (by lia))]
   rcases hq.lt_or_eq with hq | rfl
   · rw [coeff_eq_zero_of_natDegree_lt hq, mul_zero,
-      coeff_eq_zero_of_natDegree_lt (natDegree_mul_le.trans_lt (by omega))]
+      coeff_eq_zero_of_natDegree_lt (natDegree_mul_le.trans_lt (by lia))]
   exact coeff_mul_degree_add_degree p q
 
 variable {A p : ℝ[X]} {d j D : ℕ}
@@ -57,7 +57,7 @@ theorem natDegree_mul_iterate_derivative_le (hA : A.natDegree ≤ d + j) (hp : p
     exact Nat.zero_le _
   · refine (natDegree_mul_le_of_le hA ((natDegree_iterate_derivative p j).trans
       (Nat.sub_le_sub_right hp j))).trans ?_
-    omega
+    lia
 
 theorem coeff_mul_iterate_derivative_of_natDegree_le (hA : A.natDegree ≤ d + j)
     (hp : p.natDegree ≤ D) :
@@ -68,7 +68,7 @@ theorem coeff_mul_iterate_derivative_of_natDegree_le (hA : A.natDegree ≤ d + j
       Nat.descFactorial_eq_zero_iff_lt.mpr hDj, Nat.cast_zero, mul_zero, zero_mul]
   · have hq : (derivative^[j] p).natDegree ≤ D - j :=
       (natDegree_iterate_derivative p j).trans (Nat.sub_le_sub_right hp j)
-    rw [show D + d = (d + j) + (D - j) by omega, coeff_mul_add_of_natDegree_le hA hq,
+    rw [show D + d = (d + j) + (D - j) by lia, coeff_mul_add_of_natDegree_le hA hq,
       coeff_iterate_derivative, Nat.sub_add_cancel hDj, nsmul_eq_mul]
     ring
 

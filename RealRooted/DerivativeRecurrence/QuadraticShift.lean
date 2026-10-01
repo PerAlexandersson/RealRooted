@@ -80,8 +80,7 @@ lemma strictInterl_step_of_quadratic_derivative_shift
       r ((mem_roots hne).mpr hr)
   have hInter : Interlaces (P m).derivative (P m) :=
     derivative_interlaces hsp (by
-      rw [natDegree_of_quadratic_derivative_shift P s h0 hrec hs]
-      assumption)
+      rwa [natDegree_of_quadratic_derivative_shift P s h0 hrec hs])
   have hg_pos : HasPosLeadingCoeff (P m).derivative :=
     (hasPosLeadingCoeff_of_quadratic_derivative_shift P s h0 hrec hs m).derivative (by
       rw [natDegree_of_quadratic_derivative_shift P s h0 hrec hs]

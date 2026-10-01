@@ -369,7 +369,7 @@ theorem shiftedJacobi_beta_add_one (n : ℕ) (α β : ℝ) (hn : 0 < n) :
                 (n + α + β + 1) *
                   Ring.choose (n + α + β + (d + 1)) d := by
             convert succ_mul_choose_add (n + α + β + 1) d using 1 <;>
-              ring
+              ring_nf
           rw [Ring.choose_succ_succ]
           norm_num only [Nat.cast_add, Nat.cast_one] at hleft hright ⊢
           linear_combination
@@ -621,11 +621,11 @@ theorem shiftedJacobi_alpha_lowering (m : ℕ) (α β : ℝ) :
           ring
         have hBF' : (k + 1) * F = (m + α + β + 1) * B := by
           dsimp only [B, F]
-          convert hBF using 1 <;> ring
+          convert hBF using 1 <;> ring_nf
         have hPascal' : D = B + F := by
           dsimp only [B, D, F]
           convert hPascal using 1
-          ring
+          ring_nf
         have hclean :
             (α + β + 2 * m + 2) * ((-1 : ℝ) ^ k * A * B) +
                 (m + 1) * ((-1 : ℝ) ^ (k + 1) * A * D) =
@@ -636,7 +636,7 @@ theorem shiftedJacobi_alpha_lowering (m : ℕ) (α β : ℝ) :
               ((-1 : ℝ) ^ k * A) * hBF' -
               ((-1 : ℝ) ^ k * F) * hAE'
         dsimp only [A, B, D, E, F] at hclean
-        convert hclean using 1 <;> ring
+        convert hclean using 1 <;> ring_nf
       · by_cases hkm : k = m
         · subst k
           rw [coeff_shiftedJacobi m m, ite_eq_left le_rfl,
@@ -979,7 +979,7 @@ private lemma succ_mul_ringChoose_same (x : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose x (k + 1) =
         x * Ring.choose (x - 1) k := hleft
     _ = (x - k) * Ring.choose x k := by
-      convert hright.symm using 1 <;> ring
+      convert hright.symm using 1 <;> ring_nf
 
 /-- Raising the degree while lowering the second Jacobi parameter is a
 first-order differential operation. -/
@@ -1008,7 +1008,7 @@ theorem shiftedJacobi_degree_add_one_beta_sub_one (n : ℕ) (α β : ℝ) :
       norm_num only [Nat.cast_zero, pow_zero, Ring.choose_zero_right, mul_one,
         Nat.sub_zero, Nat.zero_add, Nat.cast_add, Nat.cast_one]
       have hchoose := succ_mul_choose_succ (n + α) n
-      convert hchoose.symm using 1 <;> ring
+      convert hchoose.symm using 1 <;> ring_nf
   | succ k =>
       simp only [coeff_sub, coeff_add, coeff_X_mul, coeff_C_mul,
         coeff_derivative, coeff_X_mul_derivative]
@@ -1041,7 +1041,7 @@ theorem shiftedJacobi_degree_add_one_beta_sub_one (n : ℕ) (α β : ℝ) :
               (n + α + β + k + 1) *
                 Ring.choose (n + α + β + k) k := by
           convert hsecond using 1
-          · ring
+          · ring_nf
         have hfirstScaled := congrArg
           (((-1 : ℝ) ^ k *
             Ring.choose (n + α + β + (k + 1)) (k + 1)) * ·) hfirst'
@@ -1120,11 +1120,11 @@ private lemma coeff_shiftedJacobi_pred_degree
       ((n - k : ℕ) : ℝ) * Ring.choose (n + α) (n - k) =
         (n + α) * Ring.choose (n - 1 + α) (n - 1 - k) := by
     rw [hcastsub]
-    convert hfirst using 1 <;> ring
+    convert hfirst using 1 <;> ring_nf
   have hsecond' :
       (n + α + β) * Ring.choose (n + α + β + k) k =
         (n + α + β + k) * Ring.choose (n - 1 + α + β + k) k := by
-    convert hsecond using 1 <;> ring
+    convert hsecond using 1 <;> ring_nf
   calc
     _ = (-1 : ℝ) ^ k *
         ((n + α) * Ring.choose (n - 1 + α) (n - 1 - k)) *
@@ -1146,20 +1146,20 @@ private lemma leading_choose_succ_degree (n : ℕ) (α β : ℝ) :
   have hfirst' :
       (n + 1) * Ring.choose (2 * n + α + β + 2) (n + 1) =
         (2 * n + α + β + 2) * Ring.choose (2 * n + α + β + 1) n := by
-    convert hfirst using 1 <;> ring
+    convert hfirst using 1 <;> ring_nf
   have hsecond' :
       (n + α + β + 1) * Ring.choose (2 * n + α + β + 1) n =
         (2 * n + α + β + 1) * Ring.choose (2 * n + α + β) n := by
     convert hsecond using 1 ; ring
   calc
     _ = ((n + 1) * Ring.choose (2 * n + α + β + 2) (n + 1)) *
-        (n + α + β + 1) := by ring
+        (n + α + β + 1) := by ring_nf
     _ = ((2 * n + α + β + 2) *
           Ring.choose (2 * n + α + β + 1) n) *
         (n + α + β + 1) := by rw [hfirst']
     _ = (2 * n + α + β + 2) *
         ((n + α + β + 1) * Ring.choose (2 * n + α + β + 1) n) := by ring
-    _ = _ := by rw [hsecond']; ring
+    _ = _ := by rw [hsecond']; ring_nf
 
 private lemma leading_scale_succ_degree (n : ℕ) (α β : ℝ) :
     (n + 1) * (n + α + β + 1) *
@@ -1435,7 +1435,7 @@ theorem shiftedJacobiMonic_recurrence_of_two_le (n : ℕ) (α β : ℝ)
       rw [Nat.cast_sub (by lia : 1 ≤ n)]
       ring
     rw [harg]
-    convert h using 1 <;> ring
+    convert h using 1 <;> ring_nf
   have hdu : d * lUp = u * l := by
     dsimp [d, u]
     linear_combination 2 * (2 * n + α + β) * hleadUp

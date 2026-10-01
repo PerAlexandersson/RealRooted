@@ -5,12 +5,10 @@ Authors: Matteo Cipollina
 
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.  Original path: MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Uniqueness.lean
+adaptations to the pinned Mathlib.  Original path:
+MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Uniqueness.lean
 -/
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
-
--- Ported third-party code; keep original line layout.
-set_option linter.style.longLine false
 
 /-!
 # Perron-Frobenius Theorem: Uniqueness of the Eigenvector
@@ -96,12 +94,15 @@ theorem uniqueness_of_positive_eigenvector (hA_prim : IsPrimitive A) (hr_pos : 0
     ext i
     simpa [z, sub_eq_zero] using congr_fun h_z_is_zero i
   · have hz_has_zero : ∃ i₀, z i₀ = 0 := by
-      obtain ⟨i₀, _, hi₀_eq_inf⟩ := Finset.exists_mem_eq_inf' Finset.univ_nonempty (fun i => v i / w i)
+      obtain ⟨i₀, _, hi₀_eq_inf⟩ :=
+        Finset.exists_mem_eq_inf' Finset.univ_nonempty (fun i => v i / w i)
       use i₀
       simp only [z, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, sub_eq_zero]
       exact eq_mul_of_eq_div (ne_of_gt (hw_pos i₀)) hi₀_eq_inf
     obtain ⟨i₀, hi₀_zero⟩ := hz_has_zero
-    have h_contra := eigenvector_no_zero_entries_of_primitive hA_prim hr_pos hz_eig hz_nonneg h_z_is_zero i₀ hi₀_zero
+    have h_contra :=
+      eigenvector_no_zero_entries_of_primitive hA_prim hr_pos hz_eig hz_nonneg h_z_is_zero i₀
+        hi₀_zero
     exact h_contra.elim
 
 end Matrix

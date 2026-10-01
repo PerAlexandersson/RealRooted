@@ -39,7 +39,7 @@ private theorem signedMultiaffineReciprocal_polarization_eq_sum
   rw [Nat.choose_symm hi']
   rw [← mul_assoc, ← MvPolynomial.C_mul]
   congr 1
-  ring
+  ring_nf
 
 private theorem polarization_reflect_eq_sum (d : ℕ) (p : ℂ[X]) :
     polarization d p =
@@ -191,7 +191,7 @@ theorem diagonal_applyNegDifferential_signedPolarization
           Complex.ofReal_natCast]
       rw [hgamma]
       congr 1
-      ring
+      ring_nf
     · rw [ite_eq_right hij]
       have hijd : ¬ i ≤ d - j := by
         intro h
@@ -257,7 +257,7 @@ theorem diagonal_applyNegDifferential_signedPolarization
       rw [Nat.sub_sub_sub_cancel_right hk']
       rw [← mul_assoc, ← Polynomial.C_mul]
       congr 1
-      ring
+      ring_nf
     _ = Polynomial.C ((-1 : ℂ) ^ d) *
           ∑ k ∈ Finset.range (m + 1),
             Polynomial.C

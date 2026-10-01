@@ -1043,7 +1043,7 @@ theorem coeff_zero_iterateTDeriv_neg_pos_of_natDegree_le
   induction k generalizing p with
   | zero =>
       intro hdeg
-      have hpdeg : p.natDegree = 0 := by omega
+      have hpdeg : p.natDegree = 0 := by lia
       have hlead := hp.pos_leadingCoeff hpne
       rw [iterateTDeriv_eq_of_natDegree_zero (-eps) hpdeg]
       simpa [HasPosLeadingCoeff, leadingCoeff, hpdeg] using hlead
@@ -1057,7 +1057,7 @@ theorem coeff_zero_iterateTDeriv_neg_pos_of_natDegree_le
           (p.derivative_ne_zero).2 hpdeg
         have hpderdeg : p.derivative.natDegree ≤ k := by
           rw [p.natDegree_derivative]
-          omega
+          lia
         have hderpos := ih hp.derivative hpderne hpderdeg
         have hcoeffOne : 0 < (iterateTDeriv (-eps) k p).coeff 1 := by
           have hcomm := iterate_derivative_iterateTDeriv (-eps) k 1 p

@@ -5,19 +5,18 @@ Authors: Matteo Cipollina
 
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.  Original path: MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Lemmas.lean
+adaptations to the pinned Mathlib.  Original path:
+MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Lemmas.lean
 -/
 import Mathlib.Data.Matrix.Mul
 import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.QuiverPath
 
--- Ported third-party code; keep original line layout.
-set_option linter.style.longLine false
-
 /-!
 # Perron-Frobenius support lemmas
 
-These results connect `Matrix.IsIrreducible` and `Matrix.IsPrimitive` to the quiver `Matrix.toQuiver A`.
+These results connect `Matrix.IsIrreducible` and `Matrix.IsPrimitive` to the quiver
+`Matrix.toQuiver A`.
 
 ## Main statements
 
@@ -37,8 +36,8 @@ These results connect `Matrix.IsIrreducible` and `Matrix.IsPrimitive` to the qui
   homomorphism entrywise (`Matrix.map`).
 - `Matrix.one_add_apply_nonneg` / `Matrix.one_add_diag_pos` package the entrywise bounds for `1 + A`
   used when passing from `A` to a primitive shift `1 + A`.
-- `Matrix.forall_eq_zero_of_finset_sum_eq_zero_of_nonneg` turns a vanishing finite sum of nonnegative
-  reals into pointwise vanishing (used for nonnegative matrix rows).
+- `Matrix.forall_eq_zero_of_finset_sum_eq_zero_of_nonneg` turns a vanishing finite sum of
+  nonnegative reals into pointwise vanishing (used for nonnegative matrix rows).
 - `Matrix.mul_eq_zero_of_mulVec_eq_zero_of_row_nonneg` packages the same principle for one row of
   `A *ᵥ v`.
 - `Matrix.sum_mul_le_sum_mul_const_of_forall_le` bounds a weighted sum by the total weight times the
@@ -47,8 +46,8 @@ These results connect `Matrix.IsIrreducible` and `Matrix.IsPrimitive` to the qui
   input vector, when that row of `A` is nonnegative and the scaling holds entrywise.
 - `Matrix.mulVec_apply_eq_zero_of_eigenvector_apply_eq_zero` rewrites one coordinate of `A *ᵥ v`
   from `A *ᵥ v = r • v` when `v j = 0`.
-- `Matrix.mulVec_sub_smul_eq_smul_sub_of_mulVec_smul`: a difference of two `r`-eigenvectors scaled by
-  `c` is still an `r`-eigenvector.
+- `Matrix.mulVec_sub_smul_eq_smul_sub_of_mulVec_smul`: a difference of two `r`-eigenvectors
+  scaled by `c` is still an `r`-eigenvector.
 - `Matrix.mulVec_pos_of_exists_pos_mul_pos` gives `(A *ᵥ v) i > 0` from one positive summand
   `A i j * v j` in a nonnegative row against a positive vector.
 - `Matrix.row_sum_pos_of_irreducible_nonneg`: each row sum of an irreducible nonnegative matrix is
@@ -135,7 +134,8 @@ variable {A : Matrix n n ℝ} --[DecidableEq n] [Nonempty n]
 /-! ### Entrywise bounds for `1 + A` -/
 
 /-- For a nonnegative real matrix `A`, every entry of `1 + A` is nonnegative. -/
-lemma one_add_apply_nonneg [DecidableEq n] {A : Matrix n n ℝ} (h_nonneg : ∀ i j, 0 ≤ A i j) (i j : n) :
+lemma one_add_apply_nonneg [DecidableEq n] {A : Matrix n n ℝ} (h_nonneg : ∀ i j, 0 ≤ A i j)
+    (i j : n) :
     0 ≤ (1 + A) i j := by
   by_cases h : i = j
   · subst h
@@ -156,7 +156,8 @@ lemma forall_eq_zero_of_finset_sum_eq_zero_of_nonneg {ι : Type*} [Fintype ι] {
 
 /-- If `(A *ᵥ v) j = 0` and row `j` of `A` and `v` are nonnegative, then each product `A j k * v k`
 is zero. -/
-lemma mul_eq_zero_of_mulVec_eq_zero_of_row_nonneg [Fintype n] {A : Matrix n n ℝ} {v : n → ℝ} (j k : n)
+lemma mul_eq_zero_of_mulVec_eq_zero_of_row_nonneg [Fintype n] {A : Matrix n n ℝ} {v : n → ℝ}
+    (j k : n)
     (hAj : ∀ l, 0 ≤ A j l) (hv : ∀ l, 0 ≤ v l) (hAv : (A *ᵥ v) j = 0) :
     A j k * v k = 0 := by
   rw [mulVec, dotProduct] at hAv
@@ -164,13 +165,15 @@ lemma mul_eq_zero_of_mulVec_eq_zero_of_row_nonneg [Fintype n] {A : Matrix n n �
     (fun l => mul_nonneg (hAj l) (hv l)) hAv k
 
 /-- If `A *ᵥ v = r • v` and `v j = 0`, then `(A *ᵥ v) j = 0`. -/
-lemma mulVec_apply_eq_zero_of_eigenvector_apply_eq_zero [Fintype n] {A : Matrix n n ℝ} {r : ℝ} {v : n → ℝ}
+lemma mulVec_apply_eq_zero_of_eigenvector_apply_eq_zero [Fintype n] {A : Matrix n n ℝ} {r : ℝ}
+    {v : n → ℝ}
     (j : n) (h : A *ᵥ v = r • v) (hj : v j = 0) :
     (A *ᵥ v) j = 0 := by
   rw [congrFun h j, Pi.smul_apply, hj, smul_zero]
 
 /-- If `A *ᵥ v = r • v` and `A *ᵥ w = r • w`, then `v - c • w` is again an `r`-eigenvector. -/
-lemma mulVec_sub_smul_eq_smul_sub_of_mulVec_smul [Fintype n] {A : Matrix n n ℝ} {r c : ℝ} {v w : n → ℝ}
+lemma mulVec_sub_smul_eq_smul_sub_of_mulVec_smul [Fintype n] {A : Matrix n n ℝ} {r c : ℝ}
+    {v w : n → ℝ}
     (hv : A *ᵥ v = r • v) (hw : A *ᵥ w = r • w) :
     A *ᵥ (v - c • w) = r • (v - c • w) := by
   calc
@@ -197,7 +200,8 @@ lemma sum_mul_le_sum_mul_const_of_forall_le {ι : Type*} [Fintype ι] (a f : ι 
     (ha : ∀ j, 0 ≤ a j) (hf : ∀ j, f j ≤ f k) :
     ∑ j, a j * f j ≤ (∑ j, a j) * f k := by
   calc
-    ∑ j, a j * f j ≤ ∑ j, a j * f k := Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_left (hf j) (ha j)
+    ∑ j, a j * f j ≤ ∑ j, a j * f k :=
+      Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_left (hf j) (ha j)
     _ = (∑ j, a j) * f k := by rw [Finset.sum_mul]
 
 /-- If row `i` of `A` is nonnegative and `c * w j ≤ v j` for every `j`, then
@@ -285,7 +289,8 @@ lemma entry_eq_zero_of_mulVec_eq_zero [Fintype n]
     (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ} (hv_nonneg : ∀ i, 0 ≤ v i) {i j : n}
     (h_Av_i_zero : (A *ᵥ v) i = 0) (hv_j_pos : 0 < v j) :
     A i j = 0 := by
-  have hmul := mul_eq_zero_of_mulVec_eq_zero_of_row_nonneg i j (fun l => hA_nonneg i l) hv_nonneg h_Av_i_zero
+  have hmul := mul_eq_zero_of_mulVec_eq_zero_of_row_nonneg i j (fun l => hA_nonneg i l) hv_nonneg
+    h_Av_i_zero
   exact (mul_eq_zero.mp hmul).resolve_right (ne_of_gt hv_j_pos)
 
 /-- A nonnegative matrix that annihilates a strictly positive vector is the zero matrix. -/
@@ -397,7 +402,7 @@ theorem IsPrimitive.of_irreducible_pos_diagonal [Fintype n] [Nonempty n] [Decida
     have h_card_pos : 0 < N := Fintype.card_pos
     rcases Nat.eq_or_lt_of_le (Nat.one_le_of_lt h_card_pos) with hN | hN_lt
     · simp_all only [le_refl, tsub_self, List.Nat.eq_of_le_zero, zero_mul, zero_add, N, k]
-    · omega
+    · lia
   constructor
   · exact hA_nonneg
   · use k, hk_pos
@@ -498,5 +503,3 @@ end ShiftAndMap
 end PerronFrobenius
 
 end Matrix
-
-#lint

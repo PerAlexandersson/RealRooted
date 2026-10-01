@@ -33,7 +33,7 @@ lemma scaledLowerShiftFin_mul_scaledLowerFin (N : ℕ)
       simp [scaledLowerShiftFin, scaledLowerFin, hd]
     · have hk' : k ≠ (0 : Fin (N + 1)) := by simpa using hk
       simp [scaledLowerShiftFin, scaledLowerFin, hk', Ne.symm hk']
-  · let j₀ : Fin (N + 1) := ⟨r, by omega⟩
+  · let j₀ : Fin (N + 1) := ⟨r, by lia⟩
     rw [Finset.sum_eq_single j₀]
     · by_cases hk : k.val ≤ r
       · have hkj₀ : k ≤ j₀ := hk
@@ -42,7 +42,7 @@ lemma scaledLowerShiftFin_mul_scaledLowerFin (N : ℕ)
         have hik : (⟨r + 1, hir⟩ : Fin (N + 1)) ≠ k := by
           intro h
           have hv : r + 1 = k.val := by simpa using congrArg Fin.val h
-          omega
+          lia
         simp [scaledLowerShiftFin, scaledLowerFin, j₀, hkj₀, hki, hik]
         field_simp [hd]
       · by_cases hkeq : k.val = r + 1
@@ -54,7 +54,7 @@ lemma scaledLowerShiftFin_mul_scaledLowerFin (N : ℕ)
             exact hk h
           have hki : ¬k ≤ (⟨r + 1, hir⟩ : Fin (N + 1)) := by
             change ¬k.val ≤ r + 1
-            omega
+            lia
           have hik : (⟨r + 1, hir⟩ : Fin (N + 1)) ≠ k := by
             intro h
             exact hkeq (congrArg Fin.val h).symm
@@ -86,10 +86,10 @@ lemma scaledLowerShiftFin_mul_apply_succ (N : ℕ)
     (j : Fin (N + 1)) :
     (scaledLowerShiftFin N d * scaledLowerShiftFin N e)
         ⟨r + 1, hr⟩ j =
-      (d ⟨r + 1, hr⟩ / d ⟨r, by omega⟩) *
-        (if r = j.val + 1 then e ⟨r, by omega⟩ / e j else 0) := by
+      (d ⟨r + 1, hr⟩ / d ⟨r, by lia⟩) *
+        (if r = j.val + 1 then e ⟨r, by lia⟩ / e j else 0) := by
   classical
-  rw [Matrix.mul_apply, Finset.sum_eq_single (⟨r, by omega⟩ : Fin (N + 1))]
+  rw [Matrix.mul_apply, Finset.sum_eq_single (⟨r, by lia⟩ : Fin (N + 1))]
   · simp [scaledLowerShiftFin]
   · intro k hk hne
     have hval : r ≠ k.val := by
@@ -123,7 +123,7 @@ def arrayVWeight (n : ℕ) : ℝ :=
   1 / ((n : ℝ) * ((n : ℝ) - 1) ^ 2)
 
 lemma arrayUScale_succ_div (N r : ℕ) (hr : r + 1 < N + 1) :
-    arrayUScale (N := N) ⟨r + 1, hr⟩ / arrayUScale (N := N) ⟨r, by omega⟩ =
+    arrayUScale (N := N) ⟨r + 1, hr⟩ / arrayUScale (N := N) ⟨r, by lia⟩ =
       arrayUWeight (r + 2) := by
   have hf : (Nat.factorial r : ℝ) ≠ 0 :=
     Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero r)
@@ -139,7 +139,7 @@ lemma arrayUScale_succ_div (N r : ℕ) (hr : r + 1 < N + 1) :
     mul_div_cancel_left₀ _ hr1]
 
 lemma arrayVScale_succ_div (N r : ℕ) (hr : r + 1 < N + 1) :
-    arrayVScale (N := N) ⟨r + 1, hr⟩ / arrayVScale (N := N) ⟨r, by omega⟩ =
+    arrayVScale (N := N) ⟨r + 1, hr⟩ / arrayVScale (N := N) ⟨r, by lia⟩ =
       arrayVWeight (r + 2) := by
   have hf : (Nat.factorial r : ℝ) ≠ 0 :=
     Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero r)
@@ -176,7 +176,7 @@ lemma arrayUWeight_mul_arrayVWeight_pred (n : ℕ) (hn : 3 ≤ n) :
     have hp : 0 < ((n : ℝ) - 2) ^ 2 := sq_pos_of_ne_zero hn2
     nlinarith
   have hcast : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by
-    rw [Nat.cast_sub (by omega)]
+    rw [Nat.cast_sub (by lia)]
     norm_num
   unfold arrayUWeight arrayVWeight betaC
   rw [hcast]
@@ -189,7 +189,7 @@ lemma scaledLowerShiftFin_arrayUScale_apply_succ (N r : ℕ)
     scaledLowerShiftFin N arrayUScale ⟨r + 1, hr⟩ j =
       if r = j.val then arrayUWeight (r + 2) else 0 := by
   by_cases h : r = j.val
-  · have hj : j = (⟨r, by omega⟩ : Fin (N + 1)) := Fin.ext h.symm
+  · have hj : j = (⟨r, by lia⟩ : Fin (N + 1)) := Fin.ext h.symm
     rw [hj]
     simp [scaledLowerShiftFin, arrayUScale_succ_div N r hr]
   · simp [scaledLowerShiftFin, h]
@@ -199,7 +199,7 @@ lemma scaledLowerShiftFin_arrayVScale_apply_succ (N r : ℕ)
     scaledLowerShiftFin N arrayVScale ⟨r + 1, hr⟩ j =
       if r = j.val then arrayVWeight (r + 2) else 0 := by
   by_cases h : r = j.val
-  · have hj : j = (⟨r, by omega⟩ : Fin (N + 1)) := Fin.ext h.symm
+  · have hj : j = (⟨r, by lia⟩ : Fin (N + 1)) := Fin.ext h.symm
     rw [hj]
     simp [scaledLowerShiftFin, arrayVScale_succ_div N r hr]
   · simp [scaledLowerShiftFin, h]
@@ -225,29 +225,29 @@ lemma arrayBandBaseFin_apply (N : ℕ) (i j : Fin (N + 1)) :
     · have hij : (⟨r + 1, hir⟩ : Fin (N + 1)) ≠ j := by
         intro h
         have hv : r + 1 = j.val := by simpa using congrArg Fin.val h
-        omega
-      have hrow1 : r + 1 = j.val + 1 := by omega
-      have hinner : r ≠ j.val + 1 := by omega
+        lia
+      have hrow1 : r + 1 = j.val + 1 := by lia
+      have hinner : r ≠ j.val + 1 := by lia
       simp only [ite_eq_right hij, ite_eq_left hsub, ite_eq_left hrow1, ite_eq_right hinner,
         mul_zero, sub_zero]
       rw [show 0 - arrayUWeight (r + 2) - arrayVWeight (r + 2) =
         -(arrayUWeight (r + 2) + arrayVWeight (r + 2)) by ring]
-      rw [arrayUWeight_add_arrayVWeight (r + 2) (by omega)]
+      rw [arrayUWeight_add_arrayVWeight (r + 2) (by lia)]
     · by_cases hsub2 : r = j.val + 1
       · have hij : (⟨r + 1, hir⟩ : Fin (N + 1)) ≠ j := by
           intro h
           have hv : r + 1 = j.val := by simpa using congrArg Fin.val h
-          omega
-        have hnot1 : r + 1 ≠ j.val + 1 := by omega
-        have hrow2 : r + 1 = j.val + 2 := by omega
+          lia
+        have hnot1 : r + 1 ≠ j.val + 1 := by lia
+        have hrow2 : r + 1 = j.val + 2 := by lia
         have hratio :
-            arrayVScale (N := N) ⟨r, by omega⟩ / arrayVScale (N := N) j =
+            arrayVScale (N := N) ⟨r, by lia⟩ / arrayVScale (N := N) j =
               arrayVWeight (r + 1) := by
           subst r
-          simpa using arrayVScale_succ_div N j.val (by omega)
+          simpa using arrayVScale_succ_div N j.val (by lia)
         have hprod :
             arrayUWeight (r + 2) * arrayVWeight (r + 1) = betaC (r + 2) := by
-          simpa using arrayUWeight_mul_arrayVWeight_pred (r + 2) (by omega)
+          simpa using arrayUWeight_mul_arrayVWeight_pred (r + 2) (by lia)
         simp only [ite_eq_right hij, ite_eq_right hsub, ite_eq_left hsub2, ite_eq_right hnot1,
           ite_eq_left hrow2, sub_zero, zero_sub]
         rw [hratio, hprod]
@@ -256,8 +256,8 @@ lemma arrayBandBaseFin_apply (N : ℕ) (i j : Fin (N + 1)) :
         · have hij : (⟨r + 1, hir⟩ : Fin (N + 1)) = j := Fin.ext hdiag
           simp only [ite_eq_left hij, ite_eq_right hsub, ite_eq_right hsub2, sub_zero]
           ring
-        · have hnot1 : r + 1 ≠ j.val + 1 := by omega
-          have hnot2 : r + 1 ≠ j.val + 2 := by omega
+        · have hnot1 : r + 1 ≠ j.val + 1 := by lia
+          have hnot2 : r + 1 ≠ j.val + 2 := by lia
           have hij : (⟨r + 1, hir⟩ : Fin (N + 1)) ≠ j := by
             intro h
             exact hdiag (by simpa using congrArg Fin.val h)
@@ -282,20 +282,20 @@ lemma arrayBandPolynomialMatrix_eq (N : ℕ) :
       upperBidiagonalFin_apply]
   · have hji : j ≠ i := Ne.symm hij
     by_cases hsuper : j.val = i.val + 1
-    · have hfalse1 : i.val ≠ i.val + 1 + 1 := by omega
-      have hfalse2 : i.val ≠ i.val + 1 + 2 := by omega
+    · have hfalse1 : i.val ≠ i.val + 1 + 1 := by lia
+      have hfalse2 : i.val ≠ i.val + 1 + 2 := by lia
       simp [arrayBandBaseFin_apply, lowerHessenbergTwo,
         upperBidiagonalFin_apply, hij, hji, hsuper, hfalse1, hfalse2]
     · by_cases hsub : i.val = j.val + 1
-      · have hsub2 : i.val ≠ j.val + 2 := by omega
+      · have hsub2 : i.val ≠ j.val + 2 := by lia
         simp [arrayBandBaseFin_apply, lowerHessenbergTwo,
           upperBidiagonalFin_apply, hij, hji, hsub]
-        have hfalse : j.val ≠ j.val + 1 + 1 := by omega
+        have hfalse : j.val ≠ j.val + 1 + 1 := by lia
         simp [hfalse]
       · by_cases hsub2 : i.val = j.val + 2
         · simp [arrayBandBaseFin_apply, lowerHessenbergTwo,
             upperBidiagonalFin_apply, hij, hji, hsub2]
-          have hfalse : j.val ≠ j.val + 2 + 1 := by omega
+          have hfalse : j.val ≠ j.val + 2 + 1 := by lia
           simp [hfalse]
         · have hval : i.val ≠ j.val := fun h => hij (Fin.ext h)
           simp only [Matrix.add_apply, map_apply, Matrix.smul_apply,

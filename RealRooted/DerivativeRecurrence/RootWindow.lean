@@ -53,14 +53,14 @@ theorem derivative_eval_nonneg_of_roots_le (hs : p.Splits) (hpos : 0 < p.leading
   rcases Nat.lt_or_ge p.natDegree 2 with hd | hd
   · -- `p'` is a nonnegative constant
     rw [eq_C_of_natDegree_le_zero (p := p.derivative)
-      ((natDegree_derivative_le p).trans (by omega)), eval_C, coeff_derivative]
+      ((natDegree_derivative_le p).trans (by lia)), eval_C, coeff_derivative]
     rcases Nat.lt_or_ge p.natDegree 1 with hd1 | hd1
-    · rw [coeff_eq_zero_of_natDegree_lt (by omega)]; simp
+    · rw [coeff_eq_zero_of_natDegree_lt (by lia)]; simp
     · rw [show p.coeff (0 + 1) = p.leadingCoeff by
-        rw [leadingCoeff, show p.natDegree = 1 by omega]]
+        rw [leadingCoeff, show p.natDegree = 1 by lia]]
       positivity
   · exact (eval_pos_of_roots_le (splits_derivative_of_two_le_natDegree hs hd)
-      (HasPosLeadingCoeff.derivative hpos (by omega))
+      (HasPosLeadingCoeff.derivative hpos (by lia))
       (roots_derivative_le_of_roots_le hs hd h) hx).le
 
 theorem derivative_neg_one_pow_mul_eval_nonneg_of_roots_ge (hs : p.Splits)
@@ -68,19 +68,19 @@ theorem derivative_neg_one_pow_mul_eval_nonneg_of_roots_ge (hs : p.Splits)
     0 ≤ (-1) ^ (p.natDegree + 1) * p.derivative.eval x := by
   rcases Nat.lt_or_ge p.natDegree 2 with hd | hd
   · rw [eq_C_of_natDegree_le_zero (p := p.derivative)
-      ((natDegree_derivative_le p).trans (by omega)), eval_C, coeff_derivative]
+      ((natDegree_derivative_le p).trans (by lia)), eval_C, coeff_derivative]
     rcases Nat.lt_or_ge p.natDegree 1 with hd1 | hd1
-    · rw [coeff_eq_zero_of_natDegree_lt (by omega)]; simp
+    · rw [coeff_eq_zero_of_natDegree_lt (by lia)]; simp
     · rw [show p.coeff (0 + 1) = p.leadingCoeff by
-        rw [leadingCoeff, show p.natDegree = 1 by omega], show p.natDegree = 1 by omega]
+        rw [leadingCoeff, show p.natDegree = 1 by lia], show p.natDegree = 1 by lia]
       norm_num
       positivity
   · have hpow : (-1 : ℝ) ^ (p.natDegree + 1) = (-1) ^ p.derivative.natDegree := by
-      rw [natDegree_derivative, show p.natDegree + 1 = (p.natDegree - 1) + 2 by omega, pow_add]
+      rw [natDegree_derivative, show p.natDegree + 1 = (p.natDegree - 1) + 2 by lia, pow_add]
       norm_num
     rw [hpow]
     exact (neg_one_pow_mul_eval_pos_of_roots_ge (splits_derivative_of_two_le_natDegree hs hd)
-      (HasPosLeadingCoeff.derivative hpos (by omega))
+      (HasPosLeadingCoeff.derivative hpos (by lia))
       (le_roots_derivative_of_le_roots hs hd h) hx).le
 
 end Signs
@@ -144,12 +144,12 @@ theorem derivRec_interlaces_of_window (W : ℝ → Prop)
         refine ⟨h0, hW0, ?_⟩
         rcases Nat.eq_zero_or_pos D₀ with hD | hD
         · exact h01 hD
-        · exact derivRec_interlaces_step hrec hdeg hpos 0 (hroot 0 hW0) h0 (by omega)
+        · exact derivRec_interlaces_step hrec hdeg hpos 0 (hroot 0 hW0) h0 (by lia)
     | succ n ih =>
         obtain ⟨hs, hw, hi⟩ := ih
         have hw' := hW n hs hw
         exact ⟨hi.1.2, hw', derivRec_interlaces_step hrec hdeg hpos (n + 1)
-          (hroot (n + 1) hw') hi.1.2 (by omega)⟩
+          (hroot (n + 1) hw') hi.1.2 (by lia)⟩
   exact fun n => (key n).2.2
 
 /-- Roots in `[L, U]`: `A n ≤ 0` on `[L, U]`; beyond the window `A n ≥ 0`,
@@ -245,10 +245,10 @@ theorem threeTerm_interlaces_of_window (W : ℝ → Prop)
         have hprec : StrictInterl (P (n + 1)) (a n * P (n + 1) + b n * P n) :=
           strictInterl_of_interlaces_evalCoeff_nonpos hi (hpos n)
             (by rw [← hF]; exact hpos (n + 2))
-            (by rw [← hF, hdeg, hdeg]; omega) (by rw [← hF, hdeg, hdeg]; omega)
+            (by rw [← hF, hdeg, hdeg]; lia) (by rw [← hF, hdeg, hdeg]; lia)
             (fun r hr => hb n r (hw1 r ((mem_roots hne).mpr hr)))
         rw [← hF] at hprec
-        have hi' := hprec.toInterlaces (by rw [hdeg, hdeg]; omega)
+        have hi' := hprec.toInterlaces (by rw [hdeg, hdeg]; lia)
         exact ⟨hw1, hW n hi.2.1.2 hi.1.2 hw0 hw1, hi'⟩
   exact fun n => (key n).2.2
 
@@ -266,7 +266,7 @@ theorem threeTerm_interlaces_of_roots_mem_Icc {L U : ℝ}
     (fun n x hx => hb n x hx.1 hx.2)
     (fun n hs0 hs1 hw0 hw1 t ht =>
       ⟨threeTerm_roots_ge_step (hrec n) hs1 (hpos (n + 1)) hs0 (hpos n)
-          (by rw [hdeg, hdeg]; omega) (fun t ht => (hw1 t ht).1) (fun t ht => (hw0 t ht).1)
+          (by rw [hdeg, hdeg]; lia) (fun t ht => (hw1 t ht).1) (fun t ht => (hw0 t ht).1)
           (haL n) (hbL n) t ht,
         threeTerm_roots_le_step (hrec n) hs1 (hpos (n + 1)) hs0 (hpos n)
           (fun t ht => (hw1 t ht).2) (fun t ht => (hw0 t ht).2) (haU n) (hbU n) t ht⟩)

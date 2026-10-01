@@ -96,8 +96,7 @@ lemma second_derivative_family_top_and_above
       · intro m hm
         rw [h1]
         apply coeff_eq_zero_of_natDegree_lt
-        rw [show (1 + X : ℝ[X]).natDegree = 1 by compute_degree!]
-        assumption
+        rwa [show (1 + X : ℝ[X]).natDegree = 1 by compute_degree!]
   | n + 2 => by
       rcases second_derivative_family_top_and_above P b h0 h1 hrec (n + 1) with
         ⟨htop₁, habove₁⟩

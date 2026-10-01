@@ -24,7 +24,7 @@ section Criteria
 
 private theorem eval_eq_of_natDegree_le_two {p : ℝ[X]} (h : p.natDegree ≤ 2) (r : ℝ) :
     p.eval r = p.coeff 2 * r ^ 2 + p.coeff 1 * r + p.coeff 0 := by
-  rw [eval_eq_sum_range' (n := 3) (by omega)]
+  rw [eval_eq_sum_range' (n := 3) (by lia)]
   simp [Finset.sum_range_succ]
   ring
 
@@ -58,7 +58,7 @@ theorem hasNonnegCoeffs_of_natDegree_le_two {p : ℝ[X]} (hdeg : p.natDegree ≤
   · exact h0
   · exact h1
   · exact h2
-  · rw [coeff_eq_zero_of_natDegree_lt (by omega)]
+  · rw [coeff_eq_zero_of_natDegree_lt (by lia)]
 
 /-- Sequence form of `eval_nonpos_of_natDegree_le_two`. -/
 theorem eval_nonpos_seq {b : ℕ → ℝ[X]} (hdeg : ∀ n, (b n).natDegree ≤ 2)
@@ -101,9 +101,9 @@ theorem threeTerm_interlaces (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * 
       have hprec : StrictInterl (P (n + 1)) (a n * P (n + 1) + b n * P n) :=
         strictInterl_of_interlaces_evalCoeff_nonpos ih (hpos n)
           (by rw [← hF]; exact hpos (n + 2))
-          (by rw [← hF, hdeg, hdeg]; omega) (by rw [← hF, hdeg, hdeg]; omega) (hb n)
+          (by rw [← hF, hdeg, hdeg]; lia) (by rw [← hF, hdeg, hdeg]; lia) (hb n)
       rw [← hF] at hprec
-      exact hprec.toInterlaces (by rw [hdeg, hdeg]; omega)
+      exact hprec.toInterlaces (by rw [hdeg, hdeg]; lia)
 
 theorem threeTerm_interlaces_of_eval_nonpos
     (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)

@@ -116,7 +116,8 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
     · intro μ hμ
       simpa [add_comm] using hfamilyN hμ
     · exact hfN_nonneg.pos_leadingCoeff hfN_ne
-    all_goals lia
+    · lia
+    · lia
   have hposComboN : PosComboRealRooted gN fN :=
     PosComboRealRooted.of_add_right hfamilyN
   have hposComboC : PosComboRealRooted gN (C (fN.coeff 0)) := by lia
@@ -615,7 +616,9 @@ protected lemma AffineFamily.isRealRooted_X_mul_of_affine_family
       grind
     rw [hEq] at hscaled
     simpa using hscaled
-  all_goals lia
+  · lia
+  · assumption
+  · lia
 
 /-- Left-endpoint form of the affine-family converse: the two-parameter
 positive affine family already forces the lower member `f` to be real-rooted. -/

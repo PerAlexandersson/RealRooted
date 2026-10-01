@@ -499,7 +499,7 @@ theorem natDegree_coApolarPoint_le {R : Type*} [CommRing R] (n : Nat) (z : R) :
 theorem eval_binomialLift {R : Type*} [CommRing R] (n : Nat) (f : R[X]) (z : R) :
     (binomialLift n f).eval z = apolarEval n f z := by
   unfold apolarEval binomialLift
-  simp +decide [Polynomial.eval_finsetSum]
+  simp [Polynomial.eval_finsetSum]
 
 /-- Key evaluation identity: pairing `f` against `coApolarPoint n z` recovers the
 binomial evaluation of `f` at `z`. -/
@@ -729,7 +729,7 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
           ext
           simp only [Complex.mul_re, Set.mem_ofPred_eq, Metric.mem_closedBall]
           rw [dist_eq_norm, Complex.norm_def]
-          simp +decide [Complex.normSq, Complex.div_re, Complex.div_im]
+          simp [Complex.normSq, Complex.div_re, Complex.div_im]
           ring_nf
           norm_num [hA_pos.le]
           rw [Real.sqrt_le_left] <;> ring_nf <;> norm_num [hA_pos.le, hA_pos.ne']
@@ -746,24 +746,24 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
         convert h_reciprocal_in_S_ζ.sum_mem _ _ _ <;> aesop;
       convert h_reciprocal_in_S_ζ ( S.toFinset ) ( fun i => ( S.count i : ℝ ) / S.card )
         ( fun i => 1 / ( w - i ) ) _ _ _ using 1 <;> norm_num;
-      · simp +decide [ div_eq_inv_mul, Finset.sum_multiset_map_count ];
-        simp +decide only [Finset.mul_sum _ _ _, mul_assoc];
+      · simp [ div_eq_inv_mul, Finset.sum_multiset_map_count ];
+        simp only [Finset.mul_sum _ _ _, mul_assoc];
       · exact fun _ _ => div_nonneg ( Nat.cast_nonneg _ ) ( Nat.cast_nonneg _ );
       · rw [ ← Finset.sum_div, div_eq_iff ] <;> norm_cast <;>
-          simp_all +decide [ Finset.sum_multiset_count ];
+          simp_all [ Finset.sum_multiset_count ];
       · intro z hz; specialize h_reciprocal_in_S z hz; aesop;
     convert h_reciprocal_in_S_ζ using 1;
     rw [ ← hζ, inv_mul_eq_div, div_eq_mul_inv ] ; ring_nf ; aesop;
   by_cases h : w - ζ = 0
-  · simp_all +decide only [ne_eq, Metric.mem_closedBall, not_le, div_eq_mul_inv,
+  · simp_all only [ne_eq, Metric.mem_closedBall, not_le, div_eq_mul_inv,
       inv_zero, mul_zero, one_mul, Complex.mul_re, Set.mem_ofPred_eq, map_inv₀,
       Complex.inv_re, Complex.sub_re, Complex.inv_im, Complex.sub_im, neg_sub,
       neg_mul, mul_neg, sub_neg_eq_add, ge_iff_le]
     norm_num [ ← hζ ] at *
-  · simp_all +decide only [ne_eq, Metric.mem_closedBall, not_le, div_eq_mul_inv,
+  · simp_all only [ne_eq, Metric.mem_closedBall, not_le, div_eq_mul_inv,
       one_mul, Complex.mul_re, Set.mem_ofPred_eq, map_inv₀, Complex.inv_re,
       Complex.sub_re, Complex.inv_im, Complex.sub_im, neg_sub, ge_iff_le]
-    simp_all +decide only [dist_eq_norm, Complex.norm_def, Complex.normSq,
+    simp_all only [dist_eq_norm, Complex.norm_def, Complex.normSq,
       MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, Complex.sub_re, Complex.sub_im]
     simp +zetaDelta only [sub_pos, Complex.sub_re, Complex.sub_im] at *
     rw [ Real.sqrt_le_left hr ]
@@ -789,16 +789,16 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
   rcases k with _ | k
   · unfold polarDeriv binomialLift polarShift;
     simp only [Polynomial.coeff_C_mul]
-    simp +decide [ Polynomial.coeff_derivative, Polynomial.coeff_C, Polynomial.coeff_X,
+    simp [ Polynomial.coeff_derivative, Polynomial.coeff_C, Polynomial.coeff_X,
       mul_comm ] ;
-    rcases n <;> simp_all +decide [ Polynomial.coeff_monomial ];
+    rcases n <;> simp_all [ Polynomial.coeff_monomial ];
     ring;
   · simp only [Polynomial.coeff_C_mul]
     by_cases hk : k + 1 ≤ n
-    · simp_all +decide only [Order.add_one_le_iff, polarDeriv, map_natCast,
+    · simp_all only [Order.add_one_le_iff, polarDeriv, map_natCast,
         binomialLift, map_sum, coeff_add, coeff_natCast_mul, finsetSum_coeff,
         Nat.sub_add_cancel, coeff_polarShift]
-      simp +decide only [coeff_monomial, Finset.sum_ite_eq', Finset.mem_range,
+      simp only [coeff_monomial, Finset.sum_ite_eq', Finset.mem_range,
         Order.lt_add_one_iff, Order.add_one_le_iff, mul_ite, mul_zero,
         Finset.sum_range_succ, Nat.choose_self, Nat.cast_one, one_mul, sub_mul,
         coeff_sub, coeff_C_mul, coeff_add, finsetSum_coeff, coeff_derivative,
@@ -816,7 +816,7 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
         · simp only [show ¬n = k + 1 by lia, ↓reduceIte, show ¬n = k + 1 + 1 by lia]
           rcases n with _ | n
           · simp_all
-          · simp_all +decide only [le_add_iff_nonneg_left, zero_le,
+          · simp_all only [le_add_iff_nonneg_left, zero_le,
               Order.lt_add_one_iff, Order.add_one_le_iff,
               Nat.cast_add, Nat.cast_one,
               Nat.choose_succ_succ, Nat.succ_eq_add_one, add_mul, mul_add,
@@ -837,10 +837,10 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
             ring_nf at hChooseK hChooseSucc ⊢
             linear_combination (f.coeff (1 + k)) * hChooseK +
               (-(ζ * f.coeff (2 + k))) * hChooseSucc
-    · simp_all +decide only [Order.add_one_le_iff, not_lt, polarDeriv,
+    · simp_all only [Order.add_one_le_iff, not_lt, polarDeriv,
         map_natCast, binomialLift, map_sum, coeff_add, coeff_natCast_mul,
         finsetSum_coeff, Nat.sub_add_cancel, coeff_polarShift]
-      simp +decide only [coeff_monomial, Finset.sum_ite_eq', Finset.mem_range,
+      simp only [coeff_monomial, Finset.sum_ite_eq', Finset.mem_range,
         Order.lt_add_one_iff, Order.add_one_le_iff, mul_ite, mul_zero,
         Finset.sum_range_succ', derivative_monomial_succ, mul_assoc,
         Nat.choose_zero_right, Nat.cast_one, one_mul, monomial_zero_left,
@@ -904,11 +904,11 @@ theorem multiset_avg_mem_closedBall {c : ℂ} {r : ℝ} (S : Multiset ℂ) (hS :
       convex_closedBall c r
     convert h_convex.sum_mem _ _ _ <;> aesop;
   convert h_convex ( S.toFinset ) ( fun z => ( S.count z : ℝ ) / S.card ) _ _ _ using 1;
-  · simp +decide [ div_eq_inv_mul ];
-    simp +decide [ ← Finset.mul_sum _ _ _, mul_assoc, Finset.sum_multiset_count ];
+  · simp [ div_eq_inv_mul ];
+    simp [ ← Finset.mul_sum _ _ _, mul_assoc, Finset.sum_multiset_count ];
   · exact fun z hz => div_nonneg ( Nat.cast_nonneg _ ) ( Nat.cast_nonneg _ );
   · rw [ ← Finset.sum_div, div_eq_iff ] <;> norm_cast <;>
-      simp_all +decide;
+      simp_all;
   · grind
 
 /-
@@ -922,13 +922,13 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
     (polarDeriv n ζ A).natDegree = n - 1 := by
   refine le_antisymm ?_ ?_
   · rw [ Polynomial.natDegree_le_iff_degree_le, Polynomial.degree_le_iff_coeff_zero ];
-    unfold polarDeriv; simp_all +decide only [Nat.cast_lt, map_natCast, coeff_add,
+    unfold polarDeriv; simp_all only [Nat.cast_lt, map_natCast, coeff_add,
       coeff_natCast_mul];
     intro m hm;
     rcases m with ( _ | m ) <;>
-      simp_all +decide [ Polynomial.coeff_eq_zero_of_natDegree_lt, Polynomial.coeff_derivative,
+      simp_all [ Polynomial.coeff_eq_zero_of_natDegree_lt, Polynomial.coeff_derivative,
         sub_mul ] ;
-    cases hm.eq_or_lt <;> simp_all +decide [ Polynomial.coeff_eq_zero_of_natDegree_lt ];
+    cases hm.eq_or_lt <;> simp_all [ Polynomial.coeff_eq_zero_of_natDegree_lt ];
     ring;
   · refine Polynomial.le_natDegree_of_ne_zero ?_
     have h_coeff : (polarDeriv n ζ A).coeff (n - 1)
@@ -936,11 +936,11 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
       have h_coeff : (polarDeriv n ζ A).coeff (n - 1)
           = ((n : ℂ) - (n - 1)) * A.coeff (n - 1) + ζ * (n : ℂ) * A.coeff n := by
         unfold polarDeriv;
-        simp +decide only [map_natCast, sub_mul, coeff_add, coeff_natCast_mul,
+        simp only [map_natCast, sub_mul, coeff_add, coeff_natCast_mul,
           coeff_sub, coeff_C_mul, coeff_derivative, sub_sub_cancel, one_mul,
           mul_assoc]
         rcases n with ( _ | _ | n ) <;>
-          simp_all +decide [ Polynomial.coeff_derivative, mul_comm ];
+          simp_all [ Polynomial.coeff_derivative, mul_comm ];
         ring;
       have h_vieta : A.coeff (n - 1)
           = A.leadingCoeff * (-1) ^ (n - (n - 1)) * Multiset.esymm A.roots (n - (n - 1)) := by
@@ -949,11 +949,11 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
           (show n - 1 ≤ A.natDegree by lia)
         rw [hA] at h_eq
         exact h_eq
-      rcases n with ( _ | _ | n ) <;> simp_all +decide [ Multiset.esymm ];
-      · simp_all +decide [ Multiset.powersetCard_one, mul_sub ] ; ring_nf;
+      rcases n with ( _ | _ | n ) <;> simp_all [ Multiset.esymm ];
+      · simp_all [ Multiset.powersetCard_one, mul_sub ] ; ring_nf;
         rw [ Polynomial.leadingCoeff, hA ] ; ring;
-      · simp_all +decide [ Multiset.powersetCard_one, Polynomial.leadingCoeff ] ; ring;
-    simp_all +decide only [ ne_eq ];
+      · simp_all [ Multiset.powersetCard_one, Polynomial.leadingCoeff ] ; ring;
+    simp_all only [ ne_eq ];
     refine mul_ne_zero ?_ ?_
     · rw [ ← hA, Polynomial.coeff_natDegree ] ; aesop;
     · intro h;
@@ -969,7 +969,7 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
         rw [ ← hA, Polynomial.natDegree_eq_of_degree_eq_some
           ( Polynomial.degree_eq_natDegree <| by aesop ) ] ;
         exact Polynomial.splits_iff_card_roots.mp <| IsAlgClosed.splits _ ] at h_avg ;
-      simp_all +decide [ mul_div_cancel₀, ne_of_gt ( zero_lt_one.trans_le hn ) ];
+      simp_all [ mul_div_cancel₀, ne_of_gt ( zero_lt_one.trans_le hn ) ];
       linarith
 
 /-
@@ -984,8 +984,8 @@ theorem apolarPairing_eq_sum_binomialLift (n : Nat) (f g : ℂ[X]) :
   -- at position `n - k`.
   have h_coeff : ∀ k ∈ Finset.range (n + 1),
       (binomialLift n g).coeff (n - k) = (Nat.choose n (n - k) : ℂ) * g.coeff (n - k) := by
-    simp +decide [ binomialLift ];
-    simp +decide [ Polynomial.coeff_monomial ];
+    simp [ binomialLift ];
+    simp [ Polynomial.coeff_monomial ];
   exact Finset.sum_congr rfl fun x hx => by
     rw [ h_coeff x hx, Nat.choose_symm ( Finset.mem_range_succ_iff.mp hx ) ] ; ring;
 
@@ -1001,7 +1001,7 @@ theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : �
     ( fun x : ℂ[X] => apolarPairing ( n - 1 ) ( polarShift ζ f ) g' ) hdefl ) using 1;
   obtain ⟨ m, rfl ⟩ := Nat.exists_eq_add_of_le hn;
   rw [ apolarPairing_eq_sum_binomialLift, apolarPairing_eq_sum_binomialLift ];
-  simp +decide only [← hdefl, add_tsub_cancel_left, mul_comm, mul_sub,
+  simp only [← hdefl, add_tsub_cancel_left, mul_comm, mul_sub,
     coeff_sub, coeff_mul_C, mul_left_comm, Finset.sum_sub_distrib,
     Finset.sum_range_succ', pow_zero, tsub_zero, one_mul, coeff_polarShift,
     zero_add]
@@ -1012,14 +1012,14 @@ theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : �
   rw [ add_comm 1 m, Finset.sum_range_succ' ] ;
   norm_num [ Polynomial.coeff_X, mul_assoc, mul_left_comm, mul_comm, Finset.sum_range_succ ] ;
   ring_nf;
-  simp +decide [ add_comm 1, add_comm 2, mul_assoc, mul_left_comm ] ;
+  simp [ add_comm 1, add_comm 2, mul_assoc, mul_left_comm ] ;
   ring_nf;
   rw [ show ( binomialLift m g' ).coeff ( 1 + m ) = 0 from _ ];
   · ring_nf;
     rw [ Finset.sum_congr rfl fun x hx => by
         rw [ show m - x = m - ( 1 + x ) + 1 by
           rw [ tsub_add_eq_add_tsub ( by linarith [ Finset.mem_range.mp hx ] ) ] ;
-          simp +decide [ add_comm ] ] ] ;
+          simp [ add_comm ] ] ] ;
       norm_num [ Polynomial.coeff_X, mul_assoc, mul_left_comm, Finset.sum_add_distrib,
         Finset.mul_sum _ _ _, Finset.sum_mul _ _ _, pow_succ' ] ;
       ring;
@@ -1040,27 +1040,27 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
   intro n ih f g hf hg hap hroots
   by_cases hn : n = 0
   · by_cases h : g.coeff 0 = 0
-    · simp_all +decide only [not_lt_zero, not_isEmpty_of_nonempty,
+    · simp_all only [not_lt_zero, not_isEmpty_of_nonempty,
         IsEmpty.forall_iff, implies_true]
       refine ⟨ c, ?_, ?_ ⟩
-      · simp_all +decide only [binomialLift, zero_add, Finset.range_one,
+      · simp_all only [binomialLift, zero_add, Finset.range_one,
           Finset.sum_singleton, Nat.choose_self, Nat.cast_one, one_mul,
           monomial_zero_left, natDegree_C, mul_zero, monomial_zero_right,
           natDegree_zero, IsRoot.def, eval_zero]
-      · simp_all +decide only [binomialLift, zero_add, Finset.range_one,
+      · simp_all only [binomialLift, zero_add, Finset.range_one,
           Finset.sum_singleton, Nat.choose_self, Nat.cast_one, one_mul,
           monomial_zero_left, natDegree_C, mul_zero, monomial_zero_right,
           natDegree_zero, Metric.mem_closedBall, dist_self]
-    · simp_all +decide only [not_lt_zero, not_isEmpty_of_nonempty,
+    · simp_all only [not_lt_zero, not_isEmpty_of_nonempty,
         IsEmpty.forall_iff, implies_true]
       have h_contra : f.coeff 0 = 0 := by
         unfold AreApolar at hap;
-        simp_all +decide only [apolarPairing, zero_add, Finset.range_one,
+        simp_all only [apolarPairing, zero_add, Finset.range_one,
           zero_tsub, Finset.sum_singleton, pow_zero, Nat.choose_self,
           Nat.cast_one, mul_one, one_mul, mul_eq_zero, or_false]
       contrapose! hroots;
       unfold RootsIn;
-      simp_all +decide only [binomialLift, zero_add, Finset.range_one,
+      simp_all only [binomialLift, zero_add, Finset.range_one,
         Finset.sum_singleton, Nat.choose_self, Nat.cast_one, mul_zero,
         monomial_zero_right, natDegree_zero, one_mul, monomial_zero_left,
         natDegree_C, IsRoot.def, eval_zero, Metric.mem_closedBall,
@@ -1114,7 +1114,7 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
             rw [ Polynomial.natDegree_mul' ] at hg' <;> norm_num at *
             · lia
             · intro H
-              simp_all +decide) hap' hf'_roots;
+              simp_all) hap' hf'_roots;
       exact ⟨ w, by replace hg' := congr_arg ( Polynomial.eval w ) hg'; aesop ⟩
 
 /-- **Grace's apolarity theorem** (closed-disk case), phrased for the binomial

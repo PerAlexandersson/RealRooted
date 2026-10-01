@@ -81,7 +81,7 @@ def productSideGoals (P : Ident) : TacticM Unit := do
     | (intro k; beta_reduce; compute_degree!; done)
     | (intro k; beta_reduce; compute_degree <;>
         first
-          | (omega; done)
+          | (lia; done)
           | (norm_num; done)
           | (refine ne_of_gt ?_; positivity)
           | (refine ne_of_lt ?_; nlinarith [sq_nonneg ((k : ℝ) + 1)])
@@ -125,25 +125,25 @@ elab "rr_product_natDegree" : tactic => withMainContext do
   evalTactic (← `(tactic| first
     | (have hbase : ($Pid 0).natDegree = 0 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | omega | ring | simp)
+       rw [hbase]; first | lia | ring | simp)
     | (have hbase : ($Pid 0).natDegree = 1 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | omega | ring | simp)
+       rw [hbase]; first | lia | ring | simp)
     | (have hbase : ($Pid 0).natDegree = 2 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | omega | ring | simp)
+       rw [hbase]; first | lia | ring | simp)
     | (have hbase : ($Pid 0).natDegree = 3 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | omega | ring | simp)
+       rw [hbase]; first | lia | ring | simp)
     | (have hbase : ($Pid 0).natDegree = 4 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | omega | ring | simp)
+       rw [hbase]; first | lia | ring | simp)
     | (have hbase : ($Pid 0).natDegree = 5 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | omega | ring | simp)
+       rw [hbase]; first | lia | ring | simp)
     | (have hbase : ($Pid 0).natDegree = 6 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | omega | ring | simp)))
+       rw [hbase]; first | lia | ring | simp)))
   productSideGoals Pid
 
 end RealRooted.Tactic

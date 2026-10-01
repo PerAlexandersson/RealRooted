@@ -429,7 +429,7 @@ private theorem truncatedStaircaseRookPolynomial_three_rows_tail_sum_direct
       simp only [Nat.choose_one_right, Nat.cast_add, Nat.cast_ofNat, Nat.cast_one]
       rw [hchoose2_prev, hchoose2_head]
       congr 1
-      all_goals ring_nf
+      ring_nf
 
 /-- Tail sum of three-row truncated-staircase rook polynomials. -/
 private theorem truncatedStaircaseRookPolynomial_three_rows_tail_sum (n : ℕ)
@@ -494,7 +494,7 @@ theorem truncatedStaircaseRookPolynomial_four_rows (n : ℕ) (hn : 4 ≤ n) :
     ring_nf
   rw [add_X_mul_cubic_coeffs, hchoose2_n, hchoose2_tail]
   congr 1
-  all_goals ring_nf
+  ring_nf
 
 /-- Tail sum of four-row truncated-staircase rook polynomials. -/
 private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum_direct
@@ -570,7 +570,7 @@ private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum_direct
       simp only [Nat.choose_one_right, Nat.cast_add, Nat.cast_ofNat, Nat.cast_one]
       rw [hchoose2_head]
       congr 1
-      all_goals ring_nf
+      ring_nf
 
 /-- Tail sum of four-row truncated-staircase rook polynomials. -/
 private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum (n : ℕ)
@@ -615,7 +615,7 @@ theorem truncatedStaircaseRookPolynomial_five_rows (n : ℕ) (hn : 5 ≤ n) :
     nat_choose_two_cast_real n
   rw [add_X_mul_quartic_coeffs, hchoose2_n]
   congr 1
-  all_goals ring_nf
+  ring_nf
 
 /-- Tail sum of five-row truncated-staircase rook polynomials. -/
 private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum_direct
@@ -701,7 +701,7 @@ private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum_direct
       simp only [Nat.choose_one_right, Nat.cast_add, Nat.cast_ofNat, Nat.cast_one]
       rw [hchoose2_head]
       congr 1
-      all_goals ring_nf
+      ring_nf
 
 /-- Tail sum of five-row truncated-staircase rook polynomials. -/
 private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum (n : ℕ)
@@ -750,7 +750,7 @@ theorem truncatedStaircaseRookPolynomial_six_rows (n : ℕ) (hn : 6 ≤ n) :
   rw [hcast_sub_five]
   rw [add_X_mul_quintic_coeffs]
   congr 1
-  all_goals ring_nf
+  ring_nf
 
 end FiniteSkewBoard
 

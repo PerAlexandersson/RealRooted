@@ -229,11 +229,11 @@ theorem polarDeriv_natDegree_lowerHalf {n : Nat} {b : ℝ} {ζ : ℂ}
   refine le_antisymm ?_ ?_
   · rw [Polynomial.natDegree_le_iff_degree_le, Polynomial.degree_le_iff_coeff_zero]
     unfold polarDeriv
-    simp_all +decide only [Nat.cast_lt, map_natCast, coeff_add,
+    simp_all only [Nat.cast_lt, map_natCast, coeff_add,
       coeff_natCast_mul]
     intro m hm
     rcases m with (_ | m) <;>
-      simp_all +decide [ Polynomial.coeff_eq_zero_of_natDegree_lt, Polynomial.coeff_derivative,
+      simp_all [ Polynomial.coeff_eq_zero_of_natDegree_lt, Polynomial.coeff_derivative,
         sub_mul ]
     cases hm.eq_or_lt <;> simp_all [Polynomial.coeff_eq_zero_of_natDegree_lt]
     grind
@@ -347,7 +347,7 @@ private theorem grace_aux_lowerHalf {b : ℝ} :
             rw [Polynomial.natDegree_mul'] at hg' <;> norm_num at *
             · lia
             · intro H
-              simp_all +decide) hap' hf'_roots
+              simp_all) hap' hf'_roots
       exact ⟨w, by replace hg' := congr_arg (Polynomial.eval w) hg'; simp_all⟩
 
 theorem grace_apolarity_lowerHalf {n : Nat} {b : ℝ} {f g : ℂ[X]}

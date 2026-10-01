@@ -158,18 +158,15 @@ theorem exists_isHermitian_mul_self_of_posSemidef {A : Matrix m m ℝ} (hA : A.P
   rw [← sq]
   exact CFC.sq_sqrt A
 
--- `PosSemidef` needs only `Finite m` in its statement, but the real square root
--- used in the proof needs the full `Fintype`/`DecidableEq` data, so the
--- unused-in-type linter cannot be satisfied by weakening the binders here.
-set_option linter.unusedFintypeInType false in
-omit [DecidableEq m] in
+omit [Fintype m] [DecidableEq m] in
 /-- **Real-to-complex transfer of positive semidefiniteness.**  Complexifying a
 real positive semidefinite matrix keeps it positive semidefinite.  Mathlib has
 no such transfer, so it is proved here through the real square root: `A = S * S`
 with `S` Hermitian gives `A_ℂ = S_ℂᴴ * S_ℂ`. -/
-theorem posSemidef_map_ofReal {A : Matrix m m ℝ} (hA : A.PosSemidef) :
+theorem posSemidef_map_ofReal [Finite m] {A : Matrix m m ℝ} (hA : A.PosSemidef) :
     (A.map (Complex.ofReal)).PosSemidef := by
   classical
+  have := Fintype.ofFinite m
   obtain ⟨S, hSherm, hSS⟩ := exists_isHermitian_mul_self_of_posSemidef hA
   have hsemi : Function.Semiconj (Complex.ofReal) star star := fun r => by simp
   have hHerm : (S.map (Complex.ofReal)).IsHermitian := hSherm.map _ hsemi

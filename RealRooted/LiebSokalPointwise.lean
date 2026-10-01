@@ -858,10 +858,10 @@ theorem MvUpperHalfPlaneStable.contractVariables_zero_or
 /-- A finite sequence of mapped contractions preserves stability, up to zero,
 provided only the listed contracted coordinates are affine. -/
 theorem MvUpperHalfPlaneStable.contractMappedVariablePairs_zero_or_of_degreeOf_le_one
-    {sigma omega : Type*}
-    {P : MvPolynomial omega ℂ}
+    {sigma ω : Type*}
+    {P : MvPolynomial ω ℂ}
     (hP : MvUpperHalfPlaneStable P)
-    (left right : sigma → omega) (l : List sigma)
+    (left right : sigma → ω) (l : List sigma)
     (hPaffine : ∀ i ∈ l,
       P.degreeOf (left i) ≤ 1 ∧ P.degreeOf (right i) ≤ 1) :
     contractMappedVariablePairs left right l P = 0 ∨
