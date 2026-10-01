@@ -37,7 +37,7 @@ variable {P A B : ℕ → ℝ[X]} {D₀ : ℕ}
 /-- One step: a real-rooted row of positive degree interlaces the next row. -/
 theorem derivRec_interlaces_step (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
-    (hA : ∀ n r, (P n).IsRoot r → (A n).eval r ≤ 0) (n : ℕ) (hs : (P n).Splits)
+    (n : ℕ) (hA : ∀ r, (P n).IsRoot r → (A n).eval r ≤ 0) (hs : (P n).Splits)
     (hn : 1 ≤ D₀ + n) : Interlaces (P n) (P (n + 1)) := by
   have hF : P (n + 1) = B n * P n + A n * (P n).derivative := by
     rw [hrec n, add_comm]
@@ -47,7 +47,7 @@ theorem derivRec_interlaces_step (hrec : ∀ n, P (n + 1) = A n * (P n).derivati
     strictInterl_of_interlaces_evalCoeff_nonpos hInter
       (HasPosLeadingCoeff.derivative (hpos n) (by rw [hdeg]; omega))
       (by rw [← hF]; exact hpos (n + 1))
-      (by rw [← hF, hdeg, hdeg]; omega) (by rw [← hF, hdeg, hdeg]; omega) (hA n)
+      (by rw [← hF, hdeg, hdeg]; omega) (by rw [← hF, hdeg, hdeg]; omega) hA
   rw [← hF] at hprec
   exact hprec.toInterlaces (by rw [hdeg, hdeg]; omega)
 
@@ -58,7 +58,8 @@ theorem derivRec_interlaces (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + 
     Interlaces (P n) (P (n + 1)) := by
   induction n with
   | zero => exact h01
-  | succ n ih => exact derivRec_interlaces_step hrec hdeg hpos hA (n + 1) ih.1.2 (by omega)
+  | succ n ih =>
+      exact derivRec_interlaces_step hrec hdeg hpos (n + 1) (hA (n + 1)) ih.1.2 (by omega)
 
 /-- Starting from a real-rooted row of positive degree, no base interlacing is
 needed. -/
@@ -68,8 +69,9 @@ theorem derivRec_interlaces_of_splits
     (hA : ∀ n r, (P n).IsRoot r → (A n).eval r ≤ 0) (h0 : (P 0).Splits) (n : ℕ) :
     Interlaces (P n) (P (n + 1)) := by
   induction n with
-  | zero => exact derivRec_interlaces_step hrec hdeg hpos hA 0 h0 (by omega)
-  | succ n ih => exact derivRec_interlaces_step hrec hdeg hpos hA (n + 1) ih.1.2 (by omega)
+  | zero => exact derivRec_interlaces_step hrec hdeg hpos 0 (hA 0) h0 (by omega)
+  | succ n ih =>
+      exact derivRec_interlaces_step hrec hdeg hpos (n + 1) (hA (n + 1)) ih.1.2 (by omega)
 
 theorem derivRec_interlaces_of_splits_of_eval_nonpos
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)

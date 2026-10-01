@@ -1,4 +1,4 @@
-import RealRooted.DerivativeRecurrence.Interlacing
+import RealRooted.DerivativeRecurrence.RootWindow
 import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.Tactic.RowData
 
@@ -28,6 +28,18 @@ the row-data side-goal engine discharges.
 open Lean Elab Tactic Meta Polynomial
 
 namespace RealRooted.Tactic
+
+/-- Close a polynomial sign goal such as `∀ n x, L ≤ x → x ≤ U → (A n).eval x ≤ 0`:
+evaluate, then `positivity`, `nlinarith` (with the hypotheses as products) or
+`rr_row_field` for rational coefficients. -/
+elab "rr_row_eval_sign" : tactic => withMainContext do
+  evalTactic (← `(tactic| (
+    intros
+    simp only [Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
+      Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow, Polynomial.eval_neg,
+      Polynomial.eval_one, Polynomial.eval_zero, Polynomial.eval_ofNat] at *
+    push_cast at *
+    first | positivity | nlinarith | rr_row_field | fail)))
 
 /-- The multiplier goal `∀ n i j, j ≤ D → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i`
 of `RealRooted.derivRec_hasNonnegCoeffs_of_mult`, for `A n`, `B n` of degree at most
@@ -63,9 +75,27 @@ private def interlaceSideGoal (P : Ident) (shape : RecShape) (D₀ : Nat) : Tact
       [do
         evalTactic (← `(tactic|
           apply RealRooted.interlaces_of_natDegree_eq_zero_of_natDegree_eq_one))
+        rowSideGoals P,
+       -- `D₀ = 0 → Interlaces (P 0) (P 1)`
+       do evalTactic (← `(tactic| (intro h; simp at h))),
+       do
+        evalTactic (← `(tactic| intro _))
+        evalTactic (← `(tactic|
+          apply RealRooted.interlaces_of_natDegree_eq_zero_of_natDegree_eq_one))
         rowSideGoals P]
+    else if has ``Polynomial.roots then
+      [do evalTactic (← `(tactic| (intro t ht; simp [$P:ident] at ht))),
+       -- an explicit low-degree row: evaluate at the root
+       do evalTactic (← `(tactic| (
+          intro t ht
+          have h := Polynomial.isRoot_of_mem_roots ht
+          simp only [$P:ident, Polynomial.IsRoot.def, Polynomial.eval_add, Polynomial.eval_mul,
+            Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow, Polynomial.eval_one,
+            Polynomial.eval_ofNat, Polynomial.eval_neg] at h
+          first | (constructor <;> nlinarith) | nlinarith)))]
     else if has ``Polynomial.eval then
-      [do evalTactic (← `(tactic| apply RealRooted.eval_nonpos_seq)); rowSideGoals P,
+      [do evalTactic (← `(tactic| rr_row_eval_sign)),
+       do evalTactic (← `(tactic| apply RealRooted.eval_nonpos_seq)); rowSideGoals P,
        do evalTactic (← `(tactic| apply RealRooted.eval_nonpos_of_nonpos_seq)); rowSideGoals P]
     else if has ``RealRooted.HasNonnegCoeffs then
       [do
@@ -138,6 +168,39 @@ elab "rr_row_interlaces" : tactic => withMainContext do
           interlaceSideGoal P shape D₀
         unless (← getGoals).isEmpty do throwError "goals remain") then
       return
+  -- root windows `[L, U]` and `(-∞, U]`
+  if shape == .deriv₁ || shape == .lag then
+    let (icc, iic) := if shape == .deriv₁ then
+        (``RealRooted.derivRec_interlaces_of_roots_mem_Icc,
+          ``RealRooted.derivRec_interlaces_of_roots_le)
+      else
+        (``RealRooted.threeTerm_interlaces_of_roots_mem_Icc,
+          ``RealRooted.threeTerm_interlaces_of_roots_le)
+    let windows : List (Option String × String) :=
+      [(some "-1", "0"), (some "-1 / 2", "0"), (some "-2", "0"), (some "-4", "0"),
+        (none, "-1"), (none, "-1 / 2"), (none, "-2")]
+    for (lo, hi) in windows do
+      let parse (r : String) : TacticM Term := do
+        let some t := (Parser.runParserCategory (← getEnv) `term r).toOption
+          | throwError "rr_row_interlaces: bad window {r}"
+        return ⟨t⟩
+      let U ← parse hi
+      if ← rowSucceeds (do
+          match lo with
+          | some l =>
+              let L ← parse l
+              evalTactic (← `(tactic|
+                apply $(mkIdent icc):ident (P := $P) (D₀ := $Dq)
+                  (L := ($L : ℝ)) (U := ($U : ℝ)) $hrec))
+          | none =>
+              evalTactic (← `(tactic|
+                apply $(mkIdent iic):ident (P := $P) (D₀ := $Dq)
+                  (U := ($U : ℝ)) $hrec))
+          for g in ← getGoals do
+            setGoals [g]
+            interlaceSideGoal P shape D₀
+          unless (← getGoals).isEmpty do throwError "goals remain") then
+        return
   throwError "rr_row_interlaces: could not verify the sign or degree conditions for {P}"
 
 end RealRooted.Tactic
