@@ -5,7 +5,8 @@ import RealRooted.Tactic.RowInterlacing
 
 Regression tests for `rr_row_natDegree`, `rr_row_ne_zero`,
 `rr_row_leadingCoeff_pos` and `rr_row_interlaces` on OEIS rows defined by
-`P (n + 2) = a n * P (n + 1) + b n * P n`, drawn from `real-rooted-oeis-proofs`.
+`P (n + 2) = a n * P (n + 1) + b n * P n` or `P (n + 1) = A n * (P n)' + B n * P n`,
+drawn from `real-rooted-oeis-proofs`.
 -/
 
 open Polynomial
@@ -66,6 +67,34 @@ def A008459 : ℕ → ℝ[X]
 
 theorem A008459_natDegree (n : ℕ) : (A008459 n).natDegree = n := by rr_row_natDegree
 theorem A008459_ne_zero (n : ℕ) : A008459 n ≠ 0 := by rr_row_ne_zero
+
+/-- Stirling numbers of the second kind: a derivative recurrence with
+nonnegative `A`, `B` (A008277). -/
+def A008277 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => X * (A008277 n).derivative + (1 + X) * A008277 n
+
+theorem A008277_interlaces (n : ℕ) : Interlaces (A008277 n) (A008277 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Eulerian numbers: `A = X (1 - X)` has a negative coefficient, so nonnegativity of
+the rows comes from the multiplier bound `n + 1 - j ≥ 0` (A008292). -/
+def A008292 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (C 1 * X + C (-1) * X ^ 2) * (A008292 n).derivative +
+      (C 1 + C (1 + (n : ℝ)) * X) * A008292 n
+
+theorem A008292_interlaces (n : ℕ) : Interlaces (A008292 n) (A008292 (n + 1)) := by
+  rr_row_interlaces
+
+/-- A real-rooted quadratic base row: no base interlacing is needed (A075499). -/
+def A075499 : ℕ → ℝ[X]
+  | 0 => 16 + 12 * X + X ^ 2
+  | n + 1 => (4 * X) * (A075499 n).derivative + (4 + X) * A075499 n
+
+theorem A075499_natDegree (n : ℕ) : (A075499 n).natDegree = n + 2 := by rr_row_natDegree
+theorem A075499_interlaces (n : ℕ) : Interlaces (A075499 n) (A075499 (n + 1)) := by
+  rr_row_interlaces
 
 end
 

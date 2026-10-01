@@ -257,6 +257,20 @@ private def sideAlternatives (P : Ident) (ty : Expr) : TacticM (List (TSyntax `t
       ← `(tactic| (
           beta_reduce
           simp only [Nat.zero_add, $P:ident]
+          refine Polynomial.Splits.of_natDegree_le_one ?_
+          compute_degree!
+          done)),
+      ← `(tactic| (
+          beta_reduce
+          simp only [Nat.zero_add, $P:ident]
+          refine RealRooted.splits_of_natDegree_eq_two_of_discrim_nonneg ?_ ?_
+          · compute_degree!; done
+          · simp [discrim, Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow]
+            try norm_num
+            done)),
+      ← `(tactic| (
+          beta_reduce
+          simp only [Nat.zero_add, $P:ident]
           intro h
           have h' := congrArg (fun p : ℝ[X] => p.coeff 0) h
           simp [Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow] at h'
