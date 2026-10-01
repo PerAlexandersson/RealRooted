@@ -1170,8 +1170,8 @@ identifies its distinguished parameters; and `NodeInterlacing` combines the
 exceptional endpoint with the finite offsets and packages the Jacobi-node and
 all-offset conclusions.
 
-The maintained candidate inventory and extraction prerequisites are recorded
-in [`OEIS_THEORY_AUDIT.md`](OEIS_THEORY_AUDIT.md).
+The candidate inventory and extraction prerequisites are tracked in issue
+#530; the current roadmap is issue #1061.
 
 ## Baseline
 
