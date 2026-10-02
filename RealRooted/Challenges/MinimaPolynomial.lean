@@ -7,6 +7,8 @@ import RealRooted.Graph.MinimaForest
 version = 1
 section = "families"
 slug = "minima-polynomial"
+authors = ["Alexandersson", "Leite"]
+years = [2026]
 
 [[definitions]]
 name = "RealRooted.Graph.LocalOrder"
@@ -85,6 +87,8 @@ For sinks of acyclic orientations, see the pages on
 [all orientations of claw-free graphs](/RealRooted/families/claw-free-orientation-sinks/).
 
 ## References
+
+P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).
 
 The counting identity was proved with Aristotle (Harmonic).
 <!-- /realrooted-catalog-content -->

@@ -7,6 +7,8 @@ import RealRooted.UnitIntervalGraph.AcyclicSink
 version = 1
 section = "families"
 slug = "unit-interval-acyclic-sinks"
+authors = ["Alexandersson", "Leite"]
+years = [2026]
 
 [[definitions]]
 name = "RealRooted.UnitIntervalGraph.Data"
@@ -63,6 +65,8 @@ unit interval graphs are claw-free, so that polynomial is real-rooted by the
 weighted form of the [Chudnovsky–Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
 
 ## References
+
+P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).
 
 The orientation theorem was formalized in RealRooted issue #639. For the
 claw-free background, see the

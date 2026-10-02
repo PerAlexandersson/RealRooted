@@ -7,6 +7,8 @@ import RealRooted.Graph.ChordalAcyclicSink
 version = 1
 section = "families"
 slug = "chordal-claw-free-acyclic-sinks"
+authors = ["Alexandersson", "Leite"]
+years = [2026]
 
 [[definitions]]
 name = "RealRooted.Graph.ordinaryAcyclicSinkPolynomial"
@@ -62,6 +64,8 @@ For the refined polynomial of natural unit interval graphs, see
 [acyclic sinks of natural unit interval graphs](/RealRooted/families/unit-interval-acyclic-sinks/).
 
 ## References
+
+P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).
 
 The theorem was formalized in RealRooted issue #677. For the claw-free
 background, see the
