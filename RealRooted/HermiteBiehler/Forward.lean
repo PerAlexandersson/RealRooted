@@ -350,11 +350,10 @@ theorem isUpperHalfPlaneStable_of_cofactor {f g : ℝ[X]} {r : ℝ}
   intro h
   exact hz.ne' (by simpa using congrArg Complex.im h)
 
-/-- Sign-normalized forward Hermite--Biehler bridge.
-
-This is the minimal sign-stable form used in downstream plumbing:
-positive leading coefficients on both inputs prevent the false counterexample.
--/
+/-- Proposition form of the sign-normalized forward Hermite--Biehler theorem
+`hermiteBiehlerForwardPos`.  Positive leading coefficients on both inputs
+exclude the sign counterexample.  It is kept for callers that take the theorem
+as a hypothesis. -/
 abbrev hermiteBiehlerForwardPosStatement : Prop :=
   ∀ {f g : ℝ[X]},
     HasPosLeadingCoeff f →

@@ -15,11 +15,10 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Planning stub for the converse Hermite--Biehler theorem.
-
-The exact orientation hypotheses may still be adjusted, but the target is that
-upper-half-plane stability of `f + i g` forces an interlacing relation between
--/
+/-- Proposition form of the converse Hermite--Biehler theorem
+`hermiteBiehlerConverse`: upper-half-plane stability of `f + i g` forces an
+interlacing relation between `f` and `g`.  It is kept for callers that take the
+theorem as a hypothesis. -/
 abbrev hermiteBiehlerConverseStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
     HasPosLeadingCoeff f →

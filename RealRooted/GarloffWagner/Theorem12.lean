@@ -322,54 +322,6 @@ theorem gwL_sub_C_mul_gwD_gwL_pf {p : ℝ[X]} {u : ℝ}
     exact False.elim (hT0 hTzero)
   · exact IsPFPolynomial.of_realRooted_nonneg hTnn hstrict.1.2
 
-/-- Theorem 12(a), zero-aware PF-cone form for the factorial Schur product. -/
-def gwSchurProductPFStatement : Prop :=
-  ∀ {f p : ℝ[X]},
-    IsPFPolynomial f →
-    IsPFPolynomial p →
-    IsPFPolynomial (gwSchurProduct f p)
-
-/-- Theorem 12(b), one fixed Schur-product factor, in the local orientation. -/
-def gwSchurProductStrictInterlStatement : Prop :=
-  ∀ {f g p : ℝ[X]},
-    IsPFPolynomial f →
-    IsPFPolynomial g →
-    IsPFPolynomial p →
-    StrictInterl f g →
-    Interl (gwSchurProduct f p) (gwSchurProduct g p)
-
-theorem gwSchurProductPF_of_strictInterl
-    (h : gwSchurProductStrictInterlStatement) :
-    gwSchurProductPFStatement := by
-  intro f p hf hp
-  by_cases hf0 : f = 0
-  · simpa [hf0] using IsPFPolynomial.zero
-  have hfs := hf.ne_zero_and_splits hf0
-  exact IsPFPolynomial.of_interl_self
-    (hf.hasNonnegCoeffs.gwSchurProduct hp.hasNonnegCoeffs)
-    (h hf hf hp (StrictInterl.refl hfs.1 hfs.2))
-
-theorem gwSchurProductInterl_of_strictInterl
-    (h : gwSchurProductStrictInterlStatement) :
-    ∀ {f g p : ℝ[X]},
-      IsPFPolynomial f →
-      IsPFPolynomial g →
-      IsPFPolynomial p →
-      Interl f g →
-      Interl (gwSchurProduct f p) (gwSchurProduct g p) := by
-  intro f g p hf hg hp hfg
-  rcases hfg with hf0 | hg0 | hstrict
-  · simpa [hf0] using interl_zero_left (gwSchurProduct g p)
-  · simpa [hg0] using interl_zero_right (gwSchurProduct f p)
-  · exact h hf hg hp hstrict
-
-theorem gwSchurProduct_derivative_interl_self_of_strictInterl
-    (h : gwSchurProductStrictInterlStatement) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) :
-    Interl (gwSchurProduct (gwD f) p) (gwSchurProduct f p) := by
-  simpa [gwD] using
-    gwSchurProductInterl_of_strictInterl h hf.derivative hf hp hf.derivative_interl_self
-
 /-- Symmetric form of the Theorem 12(a) linear-factor step, used for
 one-root-deleted Krein summands in Theorem 12(b). -/
 theorem gwSchurProduct_interl_left_linearFactor_of_derivative_interl
@@ -468,7 +420,10 @@ same-measure result as the common-right PF input for the fixed-factor
 interlacing statement.  All derivative and one-root-deleted calls have
 strictly smaller total degree. -/
 theorem gwSchurProductPFAndStrictInterl :
-    gwSchurProductPFStatement ∧ gwSchurProductStrictInterlStatement := by
+    (∀ {f p : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial p →
+      IsPFPolynomial (gwSchurProduct f p)) ∧
+    (∀ {f g p : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
+      StrictInterl f g → Interl (gwSchurProduct f p) (gwSchurProduct g p)) := by
   classical
   let P : ℕ → Prop := fun n =>
     (∀ {f p : ℝ[X]},
@@ -627,9 +582,11 @@ theorem gwSchurProductPFAndStrictInterl :
   · intro f g p hf hg hp hfg
     exact (hP (g.natDegree + p.natDegree)).2 hf hg hp hfg.toInterl rfl
 
-theorem gwSchurProductPF :
-    gwSchurProductPFStatement :=
-  gwSchurProductPFAndStrictInterl.1
+/-- Garloff--Wagner, Theorem 12(a): the factorial Schur product preserves the
+zero-aware PF cone. -/
+theorem gwSchurProductPF {f p : ℝ[X]} (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) :
+    IsPFPolynomial (gwSchurProduct f p) :=
+  gwSchurProductPFAndStrictInterl.1 hf hp
 
 /-- Ordinary Hadamard products preserve PF polynomials, obtained by applying
 the Schur-product theorem to the `L`-normalized left input. -/
@@ -659,18 +616,32 @@ theorem gwL_interl {f g : ℝ[X]} (hfg : Interl f g) :
     exact interl_zero_right (gwL f)
   · exact (gwL_strictInterl hstrict).toInterl
 
-theorem gwSchurProductStrictInterl :
-    gwSchurProductStrictInterlStatement :=
-  gwSchurProductPFAndStrictInterl.2
+/-- Garloff--Wagner, Theorem 12(b), one fixed Schur-product factor, in the local
+orientation. -/
+theorem gwSchurProductStrictInterl {f g p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
+    (hfg : StrictInterl f g) :
+    Interl (gwSchurProduct f p) (gwSchurProduct g p) :=
+  gwSchurProductPFAndStrictInterl.2 hf hg hp hfg
 
-theorem gwSchurProductInterl :
-    ∀ {f g p : ℝ[X]},
-      IsPFPolynomial f →
-      IsPFPolynomial g →
-      IsPFPolynomial p →
-      Interl f g →
-      Interl (gwSchurProduct f p) (gwSchurProduct g p) :=
-  gwSchurProductInterl_of_strictInterl gwSchurProductStrictInterl
+/-- Garloff--Wagner, Theorem 12(b), zero-aware form: the factorial Schur product
+with a fixed PF factor preserves interlacing. -/
+theorem gwSchurProductInterl {f g p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
+    (hfg : Interl f g) :
+    Interl (gwSchurProduct f p) (gwSchurProduct g p) := by
+  rcases hfg with hf0 | hg0 | hstrict
+  · simpa [hf0] using interl_zero_left (gwSchurProduct g p)
+  · simpa [hg0] using interl_zero_right (gwSchurProduct f p)
+  · exact gwSchurProductStrictInterl hf hg hp hstrict
+
+/-- The Schur product with a fixed PF factor sends `f' ≪ f` to the
+corresponding Schur-product relation. -/
+theorem gwSchurProduct_derivative_interl_self {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) :
+    Interl (gwSchurProduct (gwD f) p) (gwSchurProduct f p) := by
+  simpa [gwD] using
+    gwSchurProductInterl hf.derivative hf hp hf.derivative_interl_self
 
 /-- Symmetric fixed-factor form of `gwSchurProductInterl`. -/
 theorem gwSchurProductInterl_left {f p q : ℝ[X]}

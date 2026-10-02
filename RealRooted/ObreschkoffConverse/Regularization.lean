@@ -904,9 +904,9 @@ real-rooted with simple roots, the remaining proof is only bookkeeping:
 2. dispatch to the same-degree / succ-degree simple-pair theorem above; and
 3. scale back to the original pair.
 
-This isolates the still-missing bridge in `strictInterl_of_allComboRealRooted`:
-producing the `hcombo` hypothesis for the *original* pair from
-`AllComboRealRooted` plus the no-common-roots assumption. -/
+`strictInterl_of_allComboRealRooted` applies this after producing the `hcombo`
+hypothesis for the *original* pair from `AllComboRealRooted` plus the
+no-common-roots assumption. -/
 theorem ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
