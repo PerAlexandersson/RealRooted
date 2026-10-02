@@ -3,10 +3,10 @@ import RealRooted.SameDegreeCubicRootCount
 import RealRooted.SameDegreeCountFromAnalytic
 
 /-!
-# Liu positive-split pair bridge
+# Liu positive-split root-count pairs
 
-This module contains the PositiveSplitRootCountPair bridge from Liu's
-root-count packages to common interleavers and compatibility.
+This module relates `PositiveSplitRootCountPair` to Liu's root-count
+conditions, common interleavers, and compatibility.
 -/
 
 open Polynomial
@@ -14,58 +14,23 @@ open Polynomial
 namespace RealRooted
 namespace LiuOppositeSigns
 
-/-- Same-degree positive-leading root-count leaf, phrased as a
-`PositiveSplitRootCountPair` production target. -/
-def positiveSplitSameDegreeRootCountAboveNonRootStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    PositiveSplitRootCountPair f g
-
-/-- Succ-degree positive-leading root-count leaf, phrased as a
-`PositiveSplitRootCountPair` production target. -/
-def positiveSplitSuccDegreeRootCountAboveNonRootStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    PositiveSplitRootCountPair f g
-
-/-- A strict-upper non-root count proof supplies the positive-split
-same-degree Liu root-count package. -/
-theorem positiveSplitSameDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    positiveSplitSameDegreeRootCountAboveNonRootStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+/-- A positive-leading, coefficientwise nonnegative same-degree pair without
+common roots whose positive combinations are real-rooted is a positive-split
+root-count pair. -/
+theorem positiveSplitSameDegreeRootCountAboveNonRoot {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    PositiveSplitRootCountPair f g := by
   have hf_split : f.Splits :=
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
   exact PositiveSplitRootCountPair.of_rootCountAbove_bounds_of_nonRoot
     hf_pos hg_pos hf_split hg_split
-    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
-
-/-- A strict-upper non-root count proof supplies the positive-split
-successor-degree Liu root-count package. -/
-theorem positiveSplitSuccDegreeRootCountAboveNonRoot_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    positiveSplitSuccDegreeRootCountAboveNonRootStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
-  have hg_split : g.Splits :=
-    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
-  exact PositiveSplitRootCountPair.of_rootCountAbove_bounds_of_nonRoot
-    hf_pos hg_pos hf_split hg_split
-    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
+    (posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- One oriented strict-upper non-root count bound for a positive-leading
 same-degree compatible pair with no common roots. -/
@@ -96,49 +61,6 @@ theorem RootCountCompatible.of_compatible_sameDegree {f g : ℝ[X]}
           hcompat hf_pos hg_pos hdeg hno x hfx hgx,
         rootCountAbove_left_sub_le_one_of_compatible_sameDegree
           hcompat.comm hg_pos hf_pos hdeg.symm (fun r hgr hfr => hno r hfr hgr)
-          x hgx hfx⟩)
-
-/-- One oriented strict-upper non-root count bound for a positive-leading
-compatible pair, assuming the successor-degree root-count leaf is available. -/
-theorem rootCountAbove_left_sub_le_one_of_compatible_of_succDegreeRootCountAboveNonRoot
-    (hsucc : CompatibleSuccDegreeRootCountAboveNonRootStatement)
-    {f g : ℝ[X]} (hcompat : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card ≤ 1 := by
-  intro x hfx hgx
-  have hclose := hcompat.natDegree_close hf_pos hg_pos
-  by_cases hsame : g.natDegree = f.natDegree
-  · exact rootCountAbove_left_sub_le_one_of_compatible_sameDegree
-      hcompat hf_pos hg_pos hsame hno x hfx hgx
-  · rcases Nat.lt_or_gt_of_ne hsame with hgf_lt | hfg_lt
-    · have hdeg : f.natDegree = g.natDegree + 1 :=
-        Nat.le_antisymm hclose.1 (Nat.succ_le_of_lt hgf_lt)
-      have hg_splits : g.Splits := (hcompat.isRealRooted_right hg_pos).2
-      exact (hsucc hcompat.comm hg_pos hf_pos hdeg hg_splits x hgx hfx).2
-    · have hdeg : g.natDegree = f.natDegree + 1 :=
-        Nat.le_antisymm hclose.2 (Nat.succ_le_of_lt hfg_lt)
-      have hf_splits : f.Splits := (hcompat.isRealRooted_left hf_pos).2
-      exact (hsucc hcompat hf_pos hg_pos hdeg hf_splits x hfx hgx).1
-
-/-- A positive-leading compatible pair with no common roots satisfies Liu's
-root-count compatibility condition, assuming the successor-degree root-count
-leaf is available. -/
-theorem RootCountCompatible.of_compatible_of_succDegreeRootCountAboveNonRoot
-    (hsucc : CompatibleSuccDegreeRootCountAboveNonRootStatement)
-    {f g : ℝ[X]} (hcompat : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    RootCountCompatible f g :=
-  RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
-    hf_pos.ne_zero hg_pos.ne_zero
-    (fun x hfx hgx =>
-      ⟨rootCountAbove_left_sub_le_one_of_compatible_of_succDegreeRootCountAboveNonRoot
-          hsucc hcompat hf_pos hg_pos hno x hfx hgx,
-        rootCountAbove_left_sub_le_one_of_compatible_of_succDegreeRootCountAboveNonRoot
-          hsucc hcompat.comm hg_pos hf_pos (fun r hgr hfr => hno r hfr hgr)
           x hgx hfx⟩)
 
 /-- A positive-leading, splitting, degree-one polynomial has one real root and

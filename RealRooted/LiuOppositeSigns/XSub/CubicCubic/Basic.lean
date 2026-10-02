@@ -8,18 +8,6 @@ open Polynomial Filter
 
 namespace RealRooted
 namespace LiuOppositeSigns
-/-- Normalized monic arithmetic leaf for the degree-three/degree-three
-same-degree positive-split x-subtraction endpoint.  The finite root-order
-inequalities are exactly those supplied by a `(3, 3)`
-`PositiveSplitRootCountPair`. -/
-def xSubCubicCubicSplitsStatement : Prop :=
-  ∀ {a b c u v w μ : ℝ},
-    a ≤ b → b ≤ c → u ≤ v → v ≤ w →
-      u ≤ b → v ≤ c → a ≤ v → b ≤ w →
-        c ≤ 0 → w ≤ 0 → 0 < μ →
-          (X * ((X - C a) * (X - C b) * (X - C c)) -
-              C μ * ((X - C u) * (X - C v) * (X - C w))).Splits
-
 /-- The normalized cubic/cubic x-subtraction polynomial is a genuine quartic. -/
 lemma natDegree_xSubCubicCubic (a b c u v w μ : ℝ) :
     (X * ((X - C a) * (X - C b) * (X - C c)) -

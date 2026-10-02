@@ -659,9 +659,11 @@ lemma xSubQuarticCubicSplits_of_double_left_pair
     (mul_neg_of_pos_of_neg hP_c_pos hP_w_neg)
 
 /-- The repeated-left-root quartic/cubic boundary package. -/
-theorem xSubQuarticCubicRepeatedLeftBoundaryCases :
-    xSubQuarticCubicRepeatedLeftBoundaryCasesStatement := by
-  intro a b c d u v w μ hab hbc hcd huv hvw hau hbv hcw huc hvd hd0 hw0 hμ hrep
+theorem xSubQuarticCubicRepeatedLeftBoundaryCases {a b c d u v w μ : ℝ} (hab : a ≤ b)
+    (hbc : b ≤ c) (hcd : c ≤ d) (huv : u ≤ v) (hvw : v ≤ w) (hau : a ≤ u) (hbv : b ≤ v)
+    (hcw : c ≤ w) (huc : u ≤ c) (hvd : v ≤ d) (hd0 : d ≤ 0) (hw0 : w ≤ 0) (hμ : 0 < μ)
+    (hrep : a = b ∨ b = c ∨ c = d) :
+    (xSubQuarticCubicPolynomial a b c d u v w μ).Splits := by
   by_cases hab_eq : a = b
   · subst b
     by_cases hac_eq : a = c
