@@ -1,8 +1,8 @@
 import RealRooted.GeneralizedSnakePosets.SnakeBand
-import RealRooted.GeneralizedSnakePosets.SnakeTheorem41
+import RealRooted.GeneralizedSnakePosets.SnakeInterlacing
 
 /-!
-# Braun–Jal Theorem 3.5 for the concrete snake board
+# The snake recurrence for the concrete snake board
 
 Let `w` have last-change index `k`, with a final constant block of length
 `s = |w| - (k + 1)`.  In band coordinates (`SnakeBand`) the final block is gaps
@@ -197,7 +197,7 @@ theorem chainPolynomial_bandCells_split_R {m : ℕ} (htail : ∀ g < s, ℓ g = 
 
 /-- **The band splitting.** If the gaps below `s` all carry the letter `b`
 and gap `s` does not, the band polynomial splits as in Braun–Jal
-Theorem 3.5. -/
+the snake recurrence. -/
 theorem chainPolynomial_bandCells_split {m : ℕ} {b : SnakeLetter}
     (htail : ∀ g < s, ℓ g = b) (hchange : ℓ s ≠ b) :
     chainPolynomial incRel (bandCells (m + 1 + s) ℓ) =
@@ -221,8 +221,8 @@ theorem chainPolynomial_bandCells_split {m : ℕ} {b : SnakeLetter}
 
 end Split
 
-/-- **Braun–Jal Theorem 3.5 for the concrete snake board.** -/
-theorem generalizedSnakeTheorem35 : GeneralizedSnakeTheorem35 := by
+/-- **The snake recurrence for the concrete snake board.** -/
+theorem generalizedSnakeRecurrence : GeneralizedSnakeRecurrenceHolds := by
   intro w k _ hk
   have hk1 := hk.succ_lt_length
   obtain ⟨s, hs⟩ : ∃ s, w.length = k + 1 + s := ⟨w.length - (k + 1), by lia⟩
@@ -259,13 +259,13 @@ theorem generalizedSnakeTheorem35 : GeneralizedSnakeTheorem35 := by
 /-- Every generalized snake polynomial has degree `|w| + 1`. -/
 theorem generalizedSnakeRookModel_natDegree_eq (w : SnakeWord) :
     (generalizedSnakeRookModel.snakePolynomial w).natDegree = w.length + 1 :=
-  generalizedSnakeRookModel_natDegree generalizedSnakeTheorem35 w
+  generalizedSnakeRookModel_natDegree generalizedSnakeRecurrence w
 
-/-- **Braun–Jal Theorem 4.1.** Every generalized snake polynomial is
+/-- **The snake interlacing theorem.** Every generalized snake polynomial is
 real-rooted, and deleting the final letter gives an interlacing polynomial. -/
-theorem theorem41_generalizedSnakeRookModel :
-    Theorem41NonNestingRookStatement generalizedSnakeRookModel.snakePolynomial :=
-  theorem41_generalizedSnakeRookModel_of_theorem35 generalizedSnakeTheorem35
+theorem snakeInterlacing_generalizedSnakeRookModel :
+    NonNestingRookInterlacingStatement generalizedSnakeRookModel.snakePolynomial :=
+  snakeInterlacing_generalizedSnakeRookModel_of_snakeRecurrence generalizedSnakeRecurrence
 
 end GeneralizedSnakePosets
 end RealRooted

@@ -1,9 +1,9 @@
-import RealRooted.GeneralizedSnakePosets.Narayana.Claim7
+import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
 import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
 import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 import RealRooted.GeneralizedSnakePosets.Narayana.Turan
 import RealRooted.GeneralizedSnakePosets.SnakeBoard
-import RealRooted.GeneralizedSnakePosets.SnakeTheorem35
+import RealRooted.GeneralizedSnakePosets.SnakeRecurrence
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 
 /-!
@@ -139,7 +139,7 @@ theorem snakePolynomial_realRooted_interlaces {w : SnakeWord} (hw : 1 ≤ w.leng
         (generalizedSnakeRookModel.snakePolynomial w).Splits) ∧
       Interlaces (generalizedSnakeRookModel.snakePolynomial w.deleteFinal)
         (generalizedSnakeRookModel.snakePolynomial w) :=
-  theorem41_generalizedSnakeRookModel hw
+  snakeInterlacing_generalizedSnakeRookModel hw
 
 /-- If `k` is the last position where `w` differs from its final letter, then
 `M_w = M_{w[:k+1]} P_s + X M_{w[:k]} G_s` with `s = |w| - k - 1`. -/
@@ -150,7 +150,7 @@ theorem snakePolynomial_recurrence {w : SnakeWord} {k : ℕ} (hw : ¬ w.IsConsta
           modifiedNarayanaPolynomial (w.length - (k + 1)) +
         X * generalizedSnakeRookModel.snakePolynomial (w.takePrefix k) *
           FiniteSkewBoard.auxiliaryG (w.length - (k + 1)) :=
-  generalizedSnakeTheorem35 hw hk
+  generalizedSnakeRecurrence hw hk
 
 /-- Affine combinations of consecutive modified Narayana polynomials interlace. -/
 theorem modifiedNarayana_affine_strictInterl {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m)
@@ -159,7 +159,7 @@ theorem modifiedNarayana_affine_strictInterl {m : ℕ} {lam nu : ℝ} (hm : 2 �
       ((lam • X + nu • 1) * modifiedNarayanaPolynomial (m - 1) + modifiedNarayanaPolynomial m)
       ((lam • X + nu • 1) * modifiedNarayanaPolynomial m +
         modifiedNarayanaPolynomial (m + 1)) := by
-  have h := lemma34ModifiedNarayanaInterlacing_modified hm hlam hnu
+  have h := affineModifiedNarayanaInterlacing_modified hm hlam hnu
   rwa [show C lam * X + C nu = lam • X + nu • (1 : ℝ[X]) by
     simp [Polynomial.smul_eq_C_mul]] at h
 

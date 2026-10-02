@@ -1,19 +1,19 @@
-import RealRooted.GeneralizedSnakePosets.Narayana.Claim7
+import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
 import RealRooted.GeneralizedSnakePosets.SnakeConstant
 
 /-!
-# Braun–Jal Theorem 4.1 for the concrete snake board
+# The snake interlacing theorem for the concrete snake board
 
 This module discharges every source input of
-`theorem41NonNestingRook_modified_of_sourceInputs` for the concrete model
-`generalizedSnakeRookModel` except Theorem 3.5 itself:
+`nonNestingRookInterlacing_modified_of_sourceInputs` for the concrete model
+`generalizedSnakeRookModel` except snake recurrence itself:
 
-* equation (2) and nonnegativity of `G_n - G_{n-1}` hold for every `n`
+* the auxiliary recurrence and nonnegativity of `G_n - G_{n-1}` hold for every `n`
   (`TruncatedStaircase.ColumnRecurrence`);
 * snake polynomials are rook polynomials, so they have nonnegative
   coefficients;
 * constant words give `P_{n+1}` (`SnakeConstant`);
-* the degree identity follows from Theorem 3.5 and the constant case, since
+* the degree identity follows from the snake recurrence and the constant case, since
   `deg M_w = |w| + 1`.
 -/
 
@@ -26,13 +26,13 @@ namespace GeneralizedSnakePosets
 
 open FiniteSkewBoard
 
-/-- Theorem 3.5 for the concrete snake model. -/
-abbrev GeneralizedSnakeTheorem35 : Prop :=
-  Theorem35GeneralizedSnakeRecurrenceStatement generalizedSnakeRookModel.snakePolynomial
+/-- The snake recurrence for the concrete snake model. -/
+abbrev GeneralizedSnakeRecurrenceHolds : Prop :=
+  GeneralizedSnakeRecurrenceStatement generalizedSnakeRookModel.snakePolynomial
     modifiedNarayanaPolynomial auxiliaryG
 
-/-- Given Theorem 3.5, every snake polynomial has degree `|w| + 1`. -/
-theorem generalizedSnakeRookModel_natDegree (hrec : GeneralizedSnakeTheorem35)
+/-- Given the snake recurrence, every snake polynomial has degree `|w| + 1`. -/
+theorem generalizedSnakeRookModel_natDegree (hrec : GeneralizedSnakeRecurrenceHolds)
     (w : SnakeWord) :
     (generalizedSnakeRookModel.snakePolynomial w).natDegree = w.length + 1 := by
   induction hn : w.length using Nat.strong_induction_on generalizing w with
@@ -69,13 +69,14 @@ theorem generalizedSnakeRookModel_natDegree (hrec : GeneralizedSnakeTheorem35)
           rw [natDegree_X, hv]; lia
         rw [hrec hc hk, natDegree_add_eq_left_of_natDegree_lt (by rw [hdeg1]; lia), hdeg1]
 
-/-- **Braun–Jal Theorem 4.1 for the concrete snake board, from Theorem 3.5.**
-Given the snake-word recurrence (Theorem 3.5), every generalized snake
+/-- **The snake interlacing theorem for the concrete snake board, from the snake recurrence.**
+Given the snake-word recurrence (the snake recurrence), every generalized snake
 polynomial is real-rooted, and deleting the final letter gives an interlacing
 polynomial. -/
-theorem theorem41_generalizedSnakeRookModel_of_theorem35 (hrec : GeneralizedSnakeTheorem35) :
-    Theorem41NonNestingRookStatement generalizedSnakeRookModel.snakePolynomial :=
-  theorem41NonNestingRook_modified_of_sourceInputs
+theorem snakeInterlacing_generalizedSnakeRookModel_of_snakeRecurrence
+    (hrec : GeneralizedSnakeRecurrenceHolds) :
+    NonNestingRookInterlacingStatement generalizedSnakeRookModel.snakePolynomial :=
+  nonNestingRookInterlacing_modified_of_sourceInputs
     narayanaAuxiliaryGRecurrence_modified
     (fun _ hn => auxiliaryG_sub_hasNonnegCoeffs hn)
     hrec

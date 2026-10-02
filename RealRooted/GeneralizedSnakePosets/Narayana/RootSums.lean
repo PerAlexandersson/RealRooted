@@ -4,7 +4,7 @@ import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 /-!
 # Modified-Narayana root-sum orientation
 
-This module derives the Vieta/root-sum comparison used in Braun--Jal Claim 7,
+This module derives the Vieta/root-sum comparison used in the shifted difference interlacing claim,
 packages the corresponding induction routes, and records the obstruction to
 the older uniformly strict root-bound interface.
 -/
@@ -16,20 +16,20 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
-/-- Concrete modified-Narayana/auxiliary-`G` route for Braun--Jal Theorem 4.1.
+/-- Concrete modified-Narayana/auxiliary-`G` route for the snake interlacing theorem.
 
 This discharges the standard modified-Narayana facts and the elementary
-auxiliary-`G` facts from the generic Section 3 route.  The remaining hypotheses
-are the all-`n` equation `(2)`, Claim `(7)` side conditions, adjacent
+auxiliary-`G` facts from the generic combinatorial route.  The remaining hypotheses
+are the all-`n` auxiliary recurrence, the shifted difference-interlacing side conditions, adjacent
 interlacing of the auxiliary `G` column, and the word-family side conditions.
 -/
-theorem theorem41InductionRoute_modified_of_section3_of_constant_matches_succ_length
+theorem snakeInterlacingInductionRoute_modified_of_combinatorial_of_constant_matches_succ_length
     {M : SnakeWord → ℝ[X]}
     (hrec2 :
       NarayanaAuxiliaryGRecurrenceStatement
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (hside :
-      Theorem41Claim7SideConditions
+      ShiftedDifferenceInterlacingSideConditions
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (hG : ∀ {m : ℕ}, 2 ≤ m →
       StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1)) (FiniteSkewBoard.auxiliaryG m))
@@ -40,9 +40,9 @@ theorem theorem41InductionRoute_modified_of_section3_of_constant_matches_succ_le
     (hM_const :
       ∀ {w : SnakeWord}, w.IsConstant →
         M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    Theorem41InductionRouteStatement
+    SnakeInterlacingInductionRouteStatement
       M modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
-  theorem41InductionRoute_of_section3_of_constant_matches_succ_length
+  snakeInterlacingInductionRoute_of_combinatorial_of_constant_matches_succ_length
     (M := M) (P := modifiedNarayanaPolynomial) (G := FiniteSkewBoard.auxiliaryG)
     hrec2 hside modifiedNarayanaPolynomial_interlaces_succ hG
     modifiedNarayanaPolynomial_one FiniteSkewBoard.auxiliaryG_one
@@ -52,7 +52,7 @@ theorem theorem41InductionRoute_modified_of_section3_of_constant_matches_succ_le
 /-- Arithmetic comparison between the Vieta expressions predicted by the
 leading and next coefficients of the modified-Narayana `U` window and the
 auxiliary-`G` `V` window. -/
-theorem theorem41Claim7_modified_rootSum_ratio_le
+theorem shiftedDifferenceInterlacing_modified_rootSum_ratio_le
     (d lam nu : ℝ) (hd : 2 ≤ d) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
     -(d * (d + 1) / 2 + lam * (d - 1) * d / 2 + nu) / (lam + 1) ≤
       -((d + 1) * d * (d - 1) / 3 +
@@ -64,10 +64,10 @@ theorem theorem41Claim7_modified_rootSum_ratio_le
   nlinarith [mul_nonneg h2 (sq_nonneg (d - 2)), mul_nonneg hlam h2,
     sq_nonneg lam]
 
-/-- For `m ≥ 3`, equation `(2)`, the expected window degrees, and splitting
+/-- For `m ≥ 3`, the auxiliary recurrence, the expected window degrees, and splitting
 identify the two root sums with the Vieta expressions compared by
-`theorem41Claim7_modified_rootSum_ratio_le`. -/
-theorem theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
+`shiftedDifferenceInterlacing_modified_rootSum_ratio_le`. -/
+theorem shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence_of_three_le
     (hrec2 :
       NarayanaAuxiliaryGRecurrenceStatement
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
@@ -229,11 +229,11 @@ theorem theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
   rw [hU_split.sum_roots_eq_neg_nextCoeff_div_leadingCoeff hUlc_ne,
     hV_split.sum_roots_eq_neg_nextCoeff_div_leadingCoeff hVlc_ne,
     hUnext, hUlc, hVnext, hVlc]
-  exact theorem41Claim7_modified_rootSum_ratio_le m lam nu
+  exact shiftedDifferenceInterlacing_modified_rootSum_ratio_le m lam nu
     (by exact_mod_cast (show 2 ≤ m by lia)) hlam hnu
 
 /-- The endpoint `m = 2` case of the modified-Narayana root-sum comparison. -/
-theorem theorem41Claim7_modified_roots_sum_le_two
+theorem shiftedDifferenceInterlacing_modified_roots_sum_le_two
     {lam nu : ℝ} (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
     (hU_split :
       ((C lam * X + C nu) * modifiedNarayanaPolynomial (2 - 1) +
@@ -298,13 +298,13 @@ theorem theorem41Claim7_modified_roots_sum_le_two
   rw [hU_split.sum_roots_eq_neg_nextCoeff_div_leadingCoeff hUlc_ne,
     hV_split.sum_roots_eq_neg_nextCoeff_div_leadingCoeff hVlc_ne,
     hUnext, hUlc, hVnext, hVlc]
-  convert theorem41Claim7_modified_rootSum_ratio_le 2 lam nu (by norm_num) hlam hnu
+  convert shiftedDifferenceInterlacing_modified_rootSum_ratio_le 2 lam nu (by norm_num) hlam hnu
       using 1 <;>
     ring
 
-/-- Uniform modified-Narayana root-sum comparison from equation `(2)`, the
+/-- Uniform modified-Narayana root-sum comparison from the auxiliary recurrence, the
 expected window degrees, and splitting. -/
-theorem theorem41Claim7_modified_roots_sum_le_of_recurrence
+theorem shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence
     (hrec2 :
       NarayanaAuxiliaryGRecurrenceStatement
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
@@ -327,13 +327,14 @@ theorem theorem41Claim7_modified_roots_sum_le_of_recurrence
         FiniteSkewBoard.auxiliaryG m).roots.sum := by
   by_cases hm2 : m = 2
   · subst m
-    exact theorem41Claim7_modified_roots_sum_le_two hlam hnu
+    exact shiftedDifferenceInterlacing_modified_roots_sum_le_two hlam hnu
       hU_split hV_split hUdeg hVdeg
-  · exact theorem41Claim7_modified_roots_sum_le_of_recurrence_of_three_le
+  · exact shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence_of_three_le
       hrec2 (by lia) hlam hnu hU_split hV_split hUdeg hVdeg
 
-/-- Section 3 provider for the root-sum field in the corrected Claim `(7)`
-bundle. Lemma 3.4 supplies splitting of `U`, while the existing degree-gap
+/-- Combinatorial provider for the root-sum field in the corrected shifted difference-interlacing
+bundle. The affine Narayana interlacing lemma supplies splitting of `U`, while the existing
+degree-gap
 field determines the absolute degree of `V`. -/
 theorem modifiedNarayanaPencil_natDegree {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m)
     (hlam : 0 ≤ lam) :
@@ -391,11 +392,11 @@ theorem modifiedNarayanaPencil_natDegree {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m)
   rw [hXPprevLead, hPprevAbove, hPmLead]
   linarith
 
-theorem theorem41Claim7_modified_u_v_roots_sum_of_section3
+theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial
     (hrec2 :
       NarayanaAuxiliaryGRecurrenceStatement
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (h34 : Lemma34ModifiedNarayanaInterlacingStatement
+    (h34 : AffineModifiedNarayanaInterlacingStatement
       modifiedNarayanaPolynomial)
     (hV_split :
       ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
@@ -427,13 +428,13 @@ theorem theorem41Claim7_modified_u_v_roots_sum_of_section3
         FiniteSkewBoard.auxiliaryG m).natDegree = m - 1 := by
     have hgap := hdeg_VU hm hlam hnu
     lia
-  exact theorem41Claim7_modified_roots_sum_le_of_recurrence hrec2
+  exact shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence hrec2
     hm hlam hnu hU_split (hV_split hm hlam hnu) hUdeg' hVdeg'
 
 /-- Boundary polynomial showing that the strict negative `U`-root bound in the
-current Claim `(7)` side-condition bundle cannot be discharged uniformly at
+current shifted difference-interlacing side-condition bundle cannot be discharged uniformly at
 `ν = -1`. -/
-theorem theorem41Claim7_modified_left_boundary_eq :
+theorem shiftedDifferenceInterlacing_modified_left_boundary_eq :
     (C (0 : ℝ) * X + C (-1 : ℝ)) * modifiedNarayanaPolynomial (2 - 1) +
         modifiedNarayanaPolynomial 2 =
       -X + C (3 : ℝ) * X + X ^ 2 := by
@@ -442,15 +443,15 @@ theorem theorem41Claim7_modified_left_boundary_eq :
 
 /-- In the boundary case `m = 2`, `λ = 0`, `ν = -1`, the left polynomial
 `U = (λ X + ν) P_{m-1} + P_m` has zero as a root. -/
-theorem theorem41Claim7_modified_left_boundary_isRoot_zero :
+theorem shiftedDifferenceInterlacing_modified_left_boundary_isRoot_zero :
     ((C (0 : ℝ) * X + C (-1 : ℝ)) * modifiedNarayanaPolynomial (2 - 1) +
         modifiedNarayanaPolynomial 2).IsRoot 0 := by
-  rw [theorem41Claim7_modified_left_boundary_eq, Polynomial.IsRoot.def]
+  rw [shiftedDifferenceInterlacing_modified_left_boundary_eq, Polynomial.IsRoot.def]
   simp
 
-/-- The strict negative upper bound requested by the current Claim `(7)` side
+/-- The strict negative upper bound requested by the current shifted difference-interlacing side
 condition fails for the modified Narayana boundary case `λ = 0`, `ν = -1`. -/
-theorem theorem41Claim7_modified_left_boundary_not_strictRootBound :
+theorem shiftedDifferenceInterlacing_modified_left_boundary_not_strictRootBound :
     ¬ ∃ c : ℝ,
       (∀ s ∈ (((C (0 : ℝ) * X + C (-1 : ℝ)) *
         modifiedNarayanaPolynomial (2 - 1) + modifiedNarayanaPolynomial 2).roots),
@@ -464,25 +465,25 @@ theorem theorem41Claim7_modified_left_boundary_not_strictRootBound :
       (C (0 : ℝ) * X + C (-1 : ℝ)) *
           modifiedNarayanaPolynomial (2 - 1) + modifiedNarayanaPolynomial 2 ≠
         0 := by
-    rw [theorem41Claim7_modified_left_boundary_eq]
+    rw [shiftedDifferenceInterlacing_modified_left_boundary_eq]
     exact hpoly_ne
   have hzero_mem :
       (0 : ℝ) ∈ (((C (0 : ℝ) * X + C (-1 : ℝ)) *
         modifiedNarayanaPolynomial (2 - 1) + modifiedNarayanaPolynomial 2).roots) :=
     (Polynomial.mem_roots hboundary_ne).mpr
-      theorem41Claim7_modified_left_boundary_isRoot_zero
+      shiftedDifferenceInterlacing_modified_left_boundary_isRoot_zero
   have hzero_le : (0 : ℝ) ≤ c := hle 0 hzero_mem
   linarith
 
-/-- Consequently, the current bundled Claim `(7)` side-condition interface is
+/-- Consequently, the current bundled shifted difference-interlacing side-condition interface is
 not satisfiable by the concrete modified-Narayana / auxiliary-`G` data.  The
 endpoint `ν = -1` needs a refined conversion route instead of a uniform strict
 negative bound on the roots of `U`. -/
-theorem not_theorem41Claim7SideConditions_modified_auxiliaryG :
-    ¬ Theorem41Claim7SideConditions
+theorem not_shiftedDifferenceInterlacingSideConditions_modified_auxiliaryG :
+    ¬ ShiftedDifferenceInterlacingSideConditions
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG := by
   intro hside
-  exact theorem41Claim7_modified_left_boundary_not_strictRootBound
+  exact shiftedDifferenceInterlacing_modified_left_boundary_not_strictRootBound
     (hside.u_bound (m := 2) (lam := 0) (nu := -1)
       (by norm_num) (by norm_num) (by norm_num))
 

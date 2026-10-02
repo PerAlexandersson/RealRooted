@@ -1,5 +1,5 @@
 import RealRooted.GeneralizedSnakePosets.SnakeStaircase
-import RealRooted.GeneralizedSnakePosets.Section3Packages
+import RealRooted.GeneralizedSnakePosets.CombinatorialPackages
 import RealRooted.GeneralizedSnakePosets.MatrixInduction
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
 
@@ -10,9 +10,9 @@ This file contains the concrete finite-board interfaces for Braun--Jal,
 *Order polytopes of generalized snake posets are h^*-real-rooted*,
 arXiv:2607.00922v1.
 
-The paper-facing theorem statements and Section 3 packages live in
+The paper-facing theorem statements and the combinatorial packages live in
 `RealRooted.GeneralizedSnakePosets.Statements` and
-`RealRooted.GeneralizedSnakePosets.Section3Packages`.  This module imports the
+`RealRooted.GeneralizedSnakePosets.CombinatorialPackages`.  This module imports the
 package layer as an umbrella, so downstream files that import
 `RealRooted.GeneralizedSnakePosets` keep the same public API.
 -/
@@ -108,7 +108,7 @@ def firstColumnRemainder (i : ℕ) (P : Finset (ℕ × ℕ)) :
     Finset (ℕ × ℕ) :=
   (P.erase (i, 1)).image fun a => (a.1, a.2 - 1)
 
-/-- Shift a placement right by one column and reinsert the first-column rook. -/
+/-- Shift a placement right by one column and reinsert first-column rook. -/
 def firstColumnExtension (i : ℕ) (P : Finset (ℕ × ℕ)) :
     Finset (ℕ × ℕ) :=
   insert (i, 1) (P.image fun a => (a.1, a.2 + 1))
@@ -153,7 +153,7 @@ theorem ferrersRookPolynomial_ne_zero (lam : List ℕ) :
     ferrersRookPolynomial lam ≠ 0 :=
   rookPolynomial_ne_zero _
 
-/-- Braun--Jal Proposition 3.2, stated for a straight Ferrers rook-polynomial
+/-- The first-column deletion identity, stated for a straight Ferrers rook-polynomial
 family indexed by integer partitions.  The partition hypothesis is needed:
 without positive row lengths, the one-row list `[0]` gives the false identity
 `1 = 1 + X`. -/
@@ -164,7 +164,7 @@ def FerrersFirstColumnDeletionStatement (M : List ℕ → ℝ[X]) : Prop :=
         X * ((List.range lam.length).map fun i =>
           M (partitionPrefix (partitionSubOne lam) i)).sum
 
-/-- Braun--Jal Proposition 3.2 as the target statement for the concrete finite
+/-- The first-column deletion identity as the target statement for the concrete finite
 Ferrers-board rook-polynomial model. -/
 def ferrersFirstColumnDeletionStatement : Prop :=
   FerrersFirstColumnDeletionStatement ferrersRookPolynomial
@@ -482,7 +482,7 @@ theorem one_lt_col_of_mem_withoutFirstColumn
       simpa [ha_eq] using ha)
   exact lt_of_le_of_ne (Nat.succ_le_of_lt ha_cell.2.1) hcol_ne.symm
 
-/-- Deleting the first column identifies the first-column-free placement slice
+/-- Deleting the first column identifies first-column-free placement slice
 with placements on `partitionSubOne lam`. -/
 theorem deleteFirstColumnPlacement_image_withoutFirstColumn (lam : List ℕ) :
     (nonNestingPlacementsWithoutFirstColumn lam).image deleteFirstColumnPlacement =
@@ -582,7 +582,7 @@ theorem one_lt_col_of_mem_erase_firstColumn
   have hrow := row_lt_of_mem_erase_firstColumn hP hfirst ha
   exact hP.2.2 a haP (i, 1) hfirst hrow
 
-/-- If a valid Ferrers placement contains the first-column rook `(i,1)`, then
+/-- If a valid Ferrers placement contains first-column rook `(i,1)`, then
 erasing it and shifting columns left gives a placement on the first `i` rows of
 `partitionSubOne lam`. -/
 theorem firstColumnRemainder_isNonNestingPlacement
@@ -732,7 +732,7 @@ theorem firstColumnRemainder_card_add_one
   rw [Finset.card_image_of_injOn hinj]
   exact Finset.card_erase_add_one hfirst
 
-/-- Shifting a valid fixed-row remainder right and inserting the first-column
+/-- Shifting a valid fixed-row remainder right and inserting first-column
 rook increases cardinality by one. -/
 theorem firstColumnExtension_card
     {lam : List ℕ} {Q : Finset (ℕ × ℕ)} {i : ℕ}
@@ -812,7 +812,7 @@ theorem firstColumnExtension_firstColumnRemainder
   rw [hrecover]
   exact Finset.insert_erase hfirst
 
-/-- On placements containing a fixed first-column rook, taking the shifted
+/-- On placements containing a fixed first-column rook, taking shifted
 remainder is injective. -/
 theorem firstColumnRemainder_injOn_nonNestingPlacementsWithCell
     {lam : List ℕ} {i : ℕ} :
@@ -942,7 +942,7 @@ theorem sum_firstColumnCells_nonNestingPlacementsWithCell_eq_mul_sum
           List.sum_map_mul_left (List.range lam.length)
             (fun i => ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i)) X
 
-/-- Braun--Jal Proposition 3.2 for the concrete finite Ferrers-board
+/-- The first-column deletion identity for the concrete finite Ferrers-board
 non-nesting rook-polynomial model. -/
 theorem ferrersFirstColumnDeletionStatement_holds :
     ferrersFirstColumnDeletionStatement := by

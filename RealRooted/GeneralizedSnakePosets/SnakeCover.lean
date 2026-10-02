@@ -48,7 +48,7 @@ def snakeCodeBound (w : SnakeWord) : ℕ :=
   2 * (w.length + 1)
 
 /-- Arithmetic core of the constant-suffix reachability calculation in
-Braun--Jal Theorem 3.5: a final constant suffix has a cross edge from some
+the snake recurrence: a final constant suffix has a cross edge from some
 column `d` to a row above it exactly when the starting column is strictly below
 the target row. -/
 theorem exists_constantSuffixCrossIndex_iff_lt {n c r : ℕ} (hr : r ≤ n) :

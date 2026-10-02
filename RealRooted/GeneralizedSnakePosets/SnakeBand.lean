@@ -12,7 +12,7 @@ exactly when some gap `g` with `j ≤ g < i` carries `R`.
 So `(i, j)` is an incomparable cross pair exactly when the gaps between `i` and
 `j` are all `R` (if `i < j`) or all `L` (if `j < i`).  These are the band cells
 `bandCells n (gapLetter w)`.  After reversing the column order, non-nesting
-placements become chains that increase in both coordinates, so the snake
+placements become chains that increase in both coordinates, so snake
 polynomial is the `incRel` chain polynomial of the band.
 -/
 

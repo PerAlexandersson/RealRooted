@@ -544,7 +544,7 @@ theorem bottomRookExtension_bottomRookRemainder
   rw [unshiftColumnsAfter_shiftColumnsAfter_of_forall_col_gt hcol]
   exact Finset.insert_erase hbottom
 
-/-- On placements containing a fixed bottom-row rook, taking the shifted
+/-- On placements containing a fixed bottom-row rook, taking shifted
 remainder is injective. -/
 theorem bottomRookRemainder_injOn_nonNestingPlacementsWithCell
     {n i c : ℕ} :

@@ -6,7 +6,7 @@ import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
 
 This module relates the final constant suffix blocks of concrete generalized
 snake boards to the truncated-staircase coordinate convention used by the
-Braun--Jal Section 3 recurrence.
+combinatorial recurrence.
 -/
 
 noncomputable section
@@ -27,13 +27,13 @@ def shiftedCells (m : ℕ) (S : Finset (ℕ × ℕ)) : Finset (ℕ × ℕ) :=
   classical
   simp [shiftedCells]
 
-/-- The distinguished final-`R` boundary segment from Braun--Jal Theorem 3.5,
+/-- The distinguished final-`R` boundary segment from the snake recurrence,
 in the local suffix coordinates.  For suffix length `m`, this is the final
 column without the corner cell. -/
 def finalRBoundarySegment (m : ℕ) : Finset (ℕ × ℕ) :=
   (Finset.range m).image fun r => (r, m)
 
-/-- The distinguished final-`L` boundary segment from Braun--Jal Theorem 3.5,
+/-- The distinguished final-`L` boundary segment from the snake recurrence,
 in the local suffix coordinates.  For suffix length `m`, this is the final row
 without the corner cell. -/
 def finalLBoundarySegment (m : ℕ) : Finset (ℕ × ℕ) :=

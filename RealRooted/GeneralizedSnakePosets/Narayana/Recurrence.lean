@@ -66,7 +66,7 @@ theorem FiniteSkewBoard.truncatedStaircaseRookPolynomial_full_eq_modifiedNarayan
     FiniteSkewBoard.coeff_truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaCoeff
       n k
 
-/-- The `n = 2` case of Braun--Jal equation (2), for the quotient-style
+/-- The `n = 2` case of the auxiliary recurrence, for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_two :
     X * FiniteSkewBoard.auxiliaryG 1 =
@@ -76,7 +76,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_two :
     modifiedNarayanaPolynomial_eq_coeffPolynomial 2]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_two
 
-/-- The `n = 3` case of Braun--Jal equation (2), for the quotient-style
+/-- The `n = 3` case of the auxiliary recurrence, for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_three :
     X * FiniteSkewBoard.auxiliaryG 2 =
@@ -86,7 +86,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_three :
     modifiedNarayanaPolynomial_eq_coeffPolynomial 3]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_three
 
-/-- The `n = 4` Braun--Jal equation (2), for the quotient-style modified
+/-- The `n = 4` the auxiliary recurrence, for the quotient-style modified
 Narayana family, reduces to the concrete `G_3` finite-board computation. -/
 theorem narayanaAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three
     (hG3 : FiniteSkewBoard.auxiliaryG 3 =
@@ -98,7 +98,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three
     modifiedNarayanaPolynomial_eq_coeffPolynomial 4]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three hG3
 
-/-- The `n = 4` case of Braun--Jal equation (2), for the quotient-style
+/-- The `n = 4` case of the auxiliary recurrence, for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_four :
     X * FiniteSkewBoard.auxiliaryG 3 =
@@ -107,7 +107,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_four :
   narayanaAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three
     FiniteSkewBoard.auxiliaryG_three
 
-/-- The `n = 5` Braun--Jal equation (2), for the quotient-style modified
+/-- The `n = 5` the auxiliary recurrence, for the quotient-style modified
 Narayana family, reduces to the concrete `G_4` finite-board computation. -/
 theorem narayanaAuxiliaryGRecurrence_modified_five_of_auxiliaryG_four
     (hG4 : FiniteSkewBoard.auxiliaryG 4 =
@@ -119,7 +119,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_five_of_auxiliaryG_four
     modifiedNarayanaPolynomial_eq_coeffPolynomial 5]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_five_of_auxiliaryG_four hG4
 
-/-- The `n = 5` case of Braun--Jal equation (2), for the quotient-style
+/-- The `n = 5` case of the auxiliary recurrence, for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_five :
     X * FiniteSkewBoard.auxiliaryG 4 =
@@ -128,7 +128,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_five :
   narayanaAuxiliaryGRecurrence_modified_five_of_auxiliaryG_four
     FiniteSkewBoard.auxiliaryG_four
 
-/-- The `n = 6` Braun--Jal equation (2), for the quotient-style modified
+/-- The `n = 6` the auxiliary recurrence, for the quotient-style modified
 Narayana family, reduces to the concrete `G_5` finite-board computation. -/
 theorem narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
     (hG5 : FiniteSkewBoard.auxiliaryG 5 =
@@ -141,7 +141,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
     modifiedNarayanaPolynomial_eq_coeffPolynomial 6]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five hG5
 
-/-- The `n = 6` case of Braun--Jal equation (2), for the quotient-style
+/-- The `n = 6` case of the auxiliary recurrence, for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_six :
     X * FiniteSkewBoard.auxiliaryG 5 =
@@ -150,7 +150,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_six :
   narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
     FiniteSkewBoard.auxiliaryG_five
 
-/-- The `n = 7` Braun--Jal equation (2), for the quotient-style modified
+/-- The `n = 7` the auxiliary recurrence, for the quotient-style modified
 Narayana family, reduces to the concrete `G_6` finite-board computation. -/
 theorem narayanaAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six
     (hG6 : FiniteSkewBoard.auxiliaryG 6 =
@@ -164,7 +164,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six
     modifiedNarayanaPolynomial_eq_coeffPolynomial 7]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six hG6
 
-/-- The `n = 7` case of Braun--Jal equation (2), for the quotient-style
+/-- The `n = 7` case of the auxiliary recurrence, for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_seven :
     X * FiniteSkewBoard.auxiliaryG 6 =
@@ -173,7 +173,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_seven :
   narayanaAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six
     FiniteSkewBoard.auxiliaryG_six
 
-/-- The `n = 8` Braun--Jal equation (2), for the quotient-style modified
+/-- The `n = 8` the auxiliary recurrence, for the quotient-style modified
 Narayana family, reduces to the concrete `G_7` finite-board computation. -/
 theorem narayanaAuxiliaryGRecurrence_modified_eight_of_auxiliaryG_seven
     (hG7 : FiniteSkewBoard.auxiliaryG 7 =
@@ -187,7 +187,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_eight_of_auxiliaryG_seven
     modifiedNarayanaPolynomial_eq_coeffPolynomial 8]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_eight_of_auxiliaryG_seven hG7
 
-/-- The `n = 8` case of Braun--Jal equation (2), for the quotient-style
+/-- The `n = 8` case of the auxiliary recurrence, for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_eight :
     X * FiniteSkewBoard.auxiliaryG 7 =
@@ -196,7 +196,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_eight :
   narayanaAuxiliaryGRecurrence_modified_eight_of_auxiliaryG_seven
     FiniteSkewBoard.auxiliaryG_seven
 
-/-- The checked initial cases `n = 1, 2` of Braun--Jal equation (2), for the
+/-- The checked initial cases `n = 1, 2` of the auxiliary recurrence, for the
 quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_two
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₂ : n ≤ 2) :
@@ -207,7 +207,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_two
   · exact narayanaAuxiliaryGRecurrence_modified_base
   · exact narayanaAuxiliaryGRecurrence_modified_two
 
-/-- The checked initial cases `n = 1, 2, 3` of Braun--Jal equation (2), for the
+/-- The checked initial cases `n = 1, 2, 3` of the auxiliary recurrence, for the
 quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_three
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₃ : n ≤ 3) :
@@ -220,7 +220,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_three
   · exact narayanaAuxiliaryGRecurrence_modified_three
 
 /-- The checked initial cases `n = 1, 2, 3`, plus the conditional `n = 4` case
-of Braun--Jal equation (2), for the quotient-style modified Narayana family and
+of the auxiliary recurrence, for the quotient-style modified Narayana family and
 the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_four_of_auxiliaryG_three
     (hG3 : FiniteSkewBoard.auxiliaryG 3 =
@@ -235,7 +235,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_four_of_auxiliaryG_three
   · exact narayanaAuxiliaryGRecurrence_modified_three
   · exact narayanaAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three hG3
 
-/-- The checked initial cases `n = 1, 2, 3, 4` of Braun--Jal equation (2),
+/-- The checked initial cases `n = 1, 2, 3, 4` of the auxiliary recurrence,
 for the quotient-style modified Narayana family and the finite-board
 auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_four
@@ -247,7 +247,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_four
     FiniteSkewBoard.auxiliaryG_three hn₁ hn₄
 
 /-- The checked initial cases `n = 1, 2, 3, 4`, plus the conditional `n = 5`
-case of Braun--Jal equation (2), for the quotient-style modified Narayana
+case of the auxiliary recurrence, for the quotient-style modified Narayana
 family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_five_of_auxiliaryG_four
     (hG4 : FiniteSkewBoard.auxiliaryG 4 =
@@ -263,7 +263,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_five_of_auxiliaryG_four
   · exact narayanaAuxiliaryGRecurrence_modified_four
   · exact narayanaAuxiliaryGRecurrence_modified_five_of_auxiliaryG_four hG4
 
-/-- The checked initial cases `n = 1, 2, 3, 4, 5` of Braun--Jal equation (2),
+/-- The checked initial cases `n = 1, 2, 3, 4, 5` of the auxiliary recurrence,
 for the quotient-style modified Narayana family and the finite-board
 auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_five
@@ -275,7 +275,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_five
     FiniteSkewBoard.auxiliaryG_four hn₁ hn₅
 
 /-- The checked initial cases `n = 1, 2, 3, 4, 5`, plus the conditional `n = 6`
-case of Braun--Jal equation (2), for the quotient-style modified Narayana
+case of the auxiliary recurrence, for the quotient-style modified Narayana
 family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
     (hG5 : FiniteSkewBoard.auxiliaryG 5 =
@@ -293,7 +293,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
   · exact narayanaAuxiliaryGRecurrence_modified_five
   · exact narayanaAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five hG5
 
-/-- The checked initial cases through `n = 6` of Braun--Jal equation (2), for
+/-- The checked initial cases through `n = 6` of the auxiliary recurrence, for
 the quotient-style modified Narayana family and finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_six
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
@@ -303,7 +303,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_six
   narayanaAuxiliaryGRecurrence_modified_of_le_six_of_auxiliaryG_five
     FiniteSkewBoard.auxiliaryG_five hn₁ hn₆
 
-/-- The checked initial cases through `n = 7` of Braun--Jal equation (2), for
+/-- The checked initial cases through `n = 7` of the auxiliary recurrence, for
 the quotient-style modified Narayana family and finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_seven
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₇ : n ≤ 7) :
@@ -319,7 +319,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_seven
   · exact narayanaAuxiliaryGRecurrence_modified_six
   · exact narayanaAuxiliaryGRecurrence_modified_seven
 
-/-- The checked initial cases through `n = 8` of Braun--Jal equation (2), for
+/-- The checked initial cases through `n = 8` of the auxiliary recurrence, for
 the quotient-style modified Narayana family and finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_eight
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₈ : n ≤ 8) :
@@ -336,7 +336,7 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_eight
   · exact narayanaAuxiliaryGRecurrence_modified_seven
   · exact narayanaAuxiliaryGRecurrence_modified_eight
 
-/-- The checked initial cases `n = 1, ..., 8` of Braun--Jal equation (2),
+/-- The checked initial cases `n = 1, ..., 8` of the auxiliary recurrence,
 packaged in the generic bounded recurrence interface. -/
 theorem narayanaAuxiliaryGRecurrence_modified_upTo_eight :
     NarayanaAuxiliaryGRecurrenceUpToStatement
@@ -358,7 +358,7 @@ theorem modifiedNarayanaPolynomial_interlaces_succ (n : ℕ) :
   modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs n
     narayanaQuot_hasNonnegCoeffs
 
-/-- Equation `(2)` determines the leading candidate coefficient of the
+/-- Auxiliary-recurrence determines the leading candidate coefficient of the
 auxiliary polynomial `G_n`. -/
 theorem auxiliaryG_coeff_sub_one_of_narayanaRecurrence
     (hrec2 :
@@ -390,7 +390,7 @@ theorem auxiliaryG_coeff_sub_one_of_narayanaRecurrence
   push_cast at hcoeff
   linarith
 
-/-- Equation `(2)` also determines the coefficient immediately below the
+/-- The auxiliary recurrence also determines the coefficient immediately below the
 leading candidate coefficient of `G_n`. -/
 theorem auxiliaryG_coeff_sub_two_of_narayanaRecurrence
     (hrec2 :
@@ -417,7 +417,7 @@ theorem auxiliaryG_coeff_sub_two_of_narayanaRecurrence
   push_cast at hcoeff ⊢
   linarith
 
-/-- Equation `(2)` forces the coefficient one place above the leading
+/-- Auxiliary-recurrence forces the coefficient one place above the leading
 candidate coefficient of `G_n` to vanish. -/
 theorem auxiliaryG_coeff_self_of_narayanaRecurrence
     (hrec2 :
@@ -454,7 +454,7 @@ theorem auxiliaryG_coeff_self_of_narayanaRecurrence
   rw [hPsucc, hPabove, hPlead] at hcoeff
   linarith
 
-/-- Equation `(2)` and its two leading coefficients determine the degree of
+/-- The auxiliary recurrence and its two leading coefficients determine the degree of
 the auxiliary polynomial `G_n`. -/
 theorem auxiliaryG_natDegree_of_narayanaRecurrence
     (hrec2 :
@@ -502,7 +502,7 @@ theorem auxiliaryG_natDegree_of_narayanaRecurrence
     · exact (natDegree_le_iff_coeff_eq_zero.mp hG_le_n) N (by lia)
   exact natDegree_eq_of_le_of_coeff_ne_zero hG_le hcoeff_ne
 
-/-- Equation `(2)` determines the degree of the auxiliary Braun--Jal pencil. -/
+/-- Auxiliary-recurrence determines the degree of the auxiliary Braun--Jal pencil. -/
 theorem auxiliaryGPencil_natDegree_of_narayanaRecurrence
     (hrec2 :
       NarayanaAuxiliaryGRecurrenceStatement

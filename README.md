@@ -531,15 +531,14 @@ Garloff--Wagner Hadamard proper-position is now proved directly in
 `garloffWagnerHadamardNonnegInterl`. It no longer remains as an external
 standard fact for the `SuperEulerian` project.
 
-The Braun--Jal generalized-snake development now checks the recurrence,
-Liu--Wang proper-position, Claim 7, matrix-induction, real-rootedness, and
-interlacing deductions.  The public route is
-`theorem41NonNestingRook_modified_of_modelInputs`.  The paper's board-model
-identities and the Stanley / Alexandersson--Jal
-`h^*`-to-rook correspondence remain explicit combinatorial inputs.  In
-particular, the development does not claim an unconditional theorem for an
-arbitrary polynomial family satisfying only the statement-interface type;
-issue #71 tracks the remaining theorem proof.
+The Braun--Jal generalized-snake development proves, for the concrete snake
+board, that every snake polynomial is real-rooted and that deleting the last
+letter gives an interlacing polynomial
+(`snakeInterlacing_generalizedSnakeRookModel`).  The route goes through the
+snake recurrence, the shifted difference-interlacing claim and a matrix
+induction.  The identification of these rook polynomials with the
+`h^*`-polynomials of the order polytopes (the Stanley / Alexandersson--Jal
+correspondence) is not formalized.
 
 Documentation and onboarding use concise challenge entry-point files in
 `RealRooted/Challenges/`.  This directory is a positive ledger of completed

@@ -8,7 +8,7 @@ subsets of `D` whose distinct elements are pairwise `r`-related, by size.
 Non-nesting rook polynomials are the chain polynomials of the relation
 "row increases and column decreases".
 
-This file proves the general tools used for the Braun–Jal Theorem 3.5
+This file proves the general tools used for the snake-recurrence
 decomposition:
 
 * transport along a relation-preserving injection;
