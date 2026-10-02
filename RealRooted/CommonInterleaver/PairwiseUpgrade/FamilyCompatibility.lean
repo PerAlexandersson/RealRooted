@@ -70,16 +70,4 @@ theorem pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward
   ⟨fun hpair => familyCompatible_of_commonInterleaver (hcommon hpair) hpos,
     pairwiseCompatible_of_familyCompatible⟩
 
-/-- Roadmap target for the common-interlacing form of the
-Chudnovsky--Seymour theorem used in `INTERLACING.md`.
-
-The finite-family left-handed Helly upgrade is now packaged as
-`CommonLeftInterleaverFamilyUpgradeStatement`, so the remaining input is the
-two-polynomial bridge
-`Compatible f g -> ∃ h, StrictInterl h f ∧ StrictInterl h g`. -/
-def chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_statement : Prop :=
-  ∀ {fs : List ℝ[X]},
-    (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
-    (∀ f ∈ fs, HasPosLeadingCoeff f) →
-    (PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs)
 end RealRooted

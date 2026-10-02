@@ -227,9 +227,7 @@ import RealRooted.Challenges.Obreschkoff
 import RealRooted.Challenges.OperatorPreservers
 import RealRooted.Challenges.VeroneseSections
 import RealRooted.Challenges.Wagner
-import RealRooted.ChudnovskySeymour
 import RealRooted.ChudnovskySeymour.Core
-import RealRooted.ChudnovskySeymour.Reductions
 import RealRooted.ClosedSegmentCountEqFromAnalytic
 import RealRooted.CoefficientDominance
 import RealRooted.CoefficientDominance.LogConcavity

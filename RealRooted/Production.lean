@@ -202,9 +202,7 @@ import RealRooted.Challenges.Obreschkoff
 import RealRooted.Challenges.OperatorPreservers
 import RealRooted.Challenges.VeroneseSections
 import RealRooted.Challenges.Wagner
-import RealRooted.ChudnovskySeymour
 import RealRooted.ChudnovskySeymour.Core
-import RealRooted.ChudnovskySeymour.Reductions
 import RealRooted.ClassicalHurwitzMatrix
 import RealRooted.ClassicalHurwitzMatrix.Routh
 import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant

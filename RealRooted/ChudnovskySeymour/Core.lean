@@ -9,94 +9,64 @@ namespace RealRooted
 
 open Polynomial
 
-/-- Checked positive-leading two-polynomial Chudnovsky--Seymour common-right
-bridge assembled from the same-degree and successor-degree analytic endpoints.
--/
+/-- Chudnovsky--Seymour for two polynomials: compatible polynomials with positive
+leading coefficients have a common (right) interleaver.  The proof splits into
+the same-degree and successor-degree cases. -/
 theorem chudnovskySeymour_compatiblePairHasCommonInterleaver :
     CompatiblePairHasCommonInterleaverStatement :=
   compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonneg
 
-/-- Checked positive-leading two-polynomial Chudnovsky--Seymour common-left
-bridge, derived from the common-right bridge by the existing left/right
-conversion.
--/
+/-- Chudnovsky--Seymour for two polynomials, common-left form: compatible
+polynomials with positive leading coefficients have a common left interleaver. -/
 theorem chudnovskySeymour_compatiblePairHasCommonLeftInterleaver :
     CompatiblePairHasCommonLeftInterleaverPosStatement :=
   compatiblePairHasCommonLeftInterleaverPos_of_pairBridge
     chudnovskySeymour_compatiblePairHasCommonInterleaver
 
-/-- Pair-level common-right interleaver form of the checked
-Chudnovsky--Seymour bridge. -/
+/-- Two compatible polynomials with positive leading coefficients have a common
+interleaver. -/
 theorem compatiblePairHasCommonInterleaver_chudnovskySeymour
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (h : Compatible f g) :
     ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl g k :=
   chudnovskySeymour_compatiblePairHasCommonInterleaver hf hg h
 
-/-- Pair-level common-left interleaver form of the checked
-Chudnovsky--Seymour bridge. -/
+/-- Two compatible polynomials with positive leading coefficients have a common
+left interleaver. -/
 theorem compatiblePairHasCommonLeftInterleaver_chudnovskySeymour
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (h : Compatible f g) :
     ∃ k : ℝ[X], StrictInterl k f ∧ StrictInterl k g :=
   chudnovskySeymour_compatiblePairHasCommonLeftInterleaver hf hg h
 
-/--
-Roadmap stub for the full Chudnovsky–Seymour compatibility direction.
+/-- **Chudnovsky--Seymour.** A finite family of real-rooted polynomials with
+positive leading coefficients is pairwise compatible if and only if it has a
+common interleaver. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos hrr hpos
+    (fun _ _ hf hg h => compatiblePairHasCommonInterleaver_chudnovskySeymour hf hg h)
 
-This file is intentionally a placeholder for the remaining global theorem:
-pairwise compatibility should be equivalent to common interleaver data under
-the usual real-rooted/splits and positivity hypotheses.
--/
-def chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target : Prop :=
-  chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_statement
+/-- **Chudnovsky--Seymour**, common-left form: a finite family of real-rooted
+polynomials with positive leading coefficients is pairwise compatible if and
+only if it has a common left interleaver. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
+  pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
+    chudnovskySeymour_compatiblePairHasCommonLeftInterleaver
+    (fun f hf => (hrr f hf).2) hpos
 
-/-- Direct roadmap wrapper after the finite-family common-left upgrade: the
-common-left Chudnovsky--Seymour target now only needs the two-polynomial
-common-left bridge. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
-    : chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
-  fun {fs} hrr hpos =>
-    pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
-      chudnovskySeymour_compatiblePairHasCommonLeftInterleaver
-      (fs := fs) (fun f hf => (hrr f hf).2) hpos
-
-/-- The common-left roadmap target follows from the positive-leading common
-right two-polynomial bridge. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairBridge
-    (hright : CompatiblePairHasCommonInterleaverStatement) :
-    chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
-  fun {fs} hrr hpos =>
-    pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridgePos_direct
-      (fs := fs) (fun f hf => (hrr f hf).2) hpos
-      (compatiblePairHasCommonLeftInterleaverPos_of_pairBridge hright)
-
-/-- The proved #41 same-degree endpoint and #42 successor-degree endpoint close
-the left-oriented pairwise/common-left-interleaver Chudnovsky--Seymour target.
--/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver :
-    chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
-  chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairBridge
-    chudnovskySeymour_compatiblePairHasCommonInterleaver
-
-/--
-Pairwise compatibility is equivalent to a common interleaver for the whole
-family.  This statement is proved, without hypotheses, by
-`chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge`.
--/
-def chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target : Prop :=
-  ∀ {fs : List ℝ[X]},
-    (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
-    (∀ f ∈ fs, HasPosLeadingCoeff f) →
-    (PairwiseCompatible fs ↔ HasCommonInterleaver fs)
-
-/-- Chudnovsky--Seymour pairwise-to-family compatibility equivalence.
-
-This is the `1 ↔ 4` Chudnovsky--Seymour surface under the same standard
-real-rooted/splits and positive-leading hypotheses as
-`chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target`. -/
+/-- **Chudnovsky--Seymour.** A finite family of real-rooted polynomials with
+positive leading coefficients is pairwise compatible if and only if every
+nonnegative combination of its members is zero or real-rooted. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
@@ -133,193 +103,27 @@ theorem IsInterlacingSeqNonneg.weightedSum_isPFPolynomial
   exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hnonneg <|
     (hfs.familyCompatible ws hmem hweights).imp_right And.right
 
-private abbrev chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target : Prop :=
-  ∀ {fs : List ℝ[X]},
-    (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
-    (∀ f ∈ fs, HasPosLeadingCoeff f) →
-    (PairwiseCompatible fs ↔ FamilyCompatible fs)
-
-/--
-Roadmap target for the nonnegative-coefficient form of the direct
-pairwise-to-common interleaver equivalence.
-
-This is the theorem surface most directly connected to the current
-same-degree/succ-degree endpoint work.
--/
-def chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :
-    Prop :=
-  ∀ {fs : List ℝ[X]},
-    (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
-    (∀ f ∈ fs, HasPosLeadingCoeff f) →
-    (∀ f ∈ fs, HasNonnegCoeffs f) →
-    (PairwiseCompatible fs ↔ HasCommonInterleaver fs)
-
-/--
-Roadmap target for the nonnegative-coefficient form of the finite-family
-compatibility equivalence.
-
-This packages the `1 ↔ 4` Chudnovsky--Seymour surface in the same
-nonnegative-coefficient regime as
-`chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target`.
--/
-def chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :
-    Prop :=
-  ∀ {fs : List ℝ[X]},
-    (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
-    (∀ f ∈ fs, HasPosLeadingCoeff f) →
-    (∀ f ∈ fs, HasNonnegCoeffs f) →
-    (PairwiseCompatible fs ↔ FamilyCompatible fs)
-
-/--
-Roadmap target for the nonnegative-coefficient four-way
-Chudnovsky--Seymour package.
-
-This is the strongest finite-family target currently exposed in the
-nonnegative-coefficient regime; the common-interleaver and family-compatible
-targets are projections from it.
--/
-def chudnovskySeymour_fourWay_nonnegCoeffs_target : Prop :=
-  ∀ {fs : List ℝ[X]},
-    (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
-    (∀ f ∈ fs, HasPosLeadingCoeff f) →
-    (∀ f ∈ fs, HasNonnegCoeffs f) →
-    ChudnovskySeymourFourWayPackage fs
-
-/-- The roadmap target follows from the natural positive-leading two-polynomial
-bridge used by the finite-family machinery. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge :
-    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
-  fun hrr hpos =>
-    pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos hrr hpos
-      (fun _ _ hf hg h =>
-        compatiblePairHasCommonInterleaver_chudnovskySeymour hf hg h)
-
-/-- The finite-family compatibility roadmap target is a formal consequence of
-the corresponding common-interleaver target. -/
-theorem
-    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
-    (hcommon : chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target) :
-    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
-  fun hrr hpos =>
-    pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos
-      (hcommon hrr hpos).1
-
-/-- The finite-family compatibility roadmap target follows from the natural
-positive-leading two-polynomial bridge. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairBridge :
-    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
-    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
-
-/-- The roadmap target follows from the same-degree and successor-degree
-two-polynomial bridges. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSplit
-    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
-    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
-    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
-  fun hrr hpos =>
-    pairwiseCompatible_iff_hasCommonInterleaver_of_compatibleDegreeSplit
-      hrr hpos hsame hsucc
-
-/-- The roadmap target follows from the nonnegative-shift route, with the
-succ-degree branch discharged by the affine-family bridge. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
-    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
-  fun hrr hpos =>
-    pairwiseCompatible_iff_hasCommonInterleaver_via_nonnegShift
-      hrr hpos hsame haffBridge
-
-/-- The roadmap target follows from the concrete slot-data endpoints after the
-nonnegative-shift reduction. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_slotData
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
-    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
-  fun hrr hpos =>
-    pairwiseCompatible_iff_hasCommonInterleaver_of_slotData_via_nonnegShift
-      hrr hpos hsame hsucc
-
-/-- The roadmap target follows from the root-crossing formulations of the
-same-degree and succ-degree endpoints after the nonnegative-shift reduction. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
-  fun hrr hpos =>
-    pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
-      hrr hpos hsame hsplit hsucc
-
-/-- The nonnegative four-way package target follows from the root-crossing
-formulations alone; root continuity supplies the succ-degree left endpoint. -/
-theorem chudnovskySeymour_fourWay_of_rootCrossing_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  fun hrr hpos _ =>
-    RealRooted.chudnovskySeymour_fourWay_of_rootCrossing
-      hrr hpos hsame hsucc
-
-/-- The nonnegative-coefficient common-interleaver target is a projection of
-the nonnegative four-way package target. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
-    (hfour : chudnovskySeymour_fourWay_nonnegCoeffs_target) :
-    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  fun hrr hpos hnn =>
-    pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay (hfour hrr hpos hnn)
-
-/-- The nonnegative-coefficient finite-family compatibility target is a
-projection of the nonnegative four-way package target. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_nonneg
-    (hfour : chudnovskySeymour_fourWay_nonnegCoeffs_target) :
-    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  fun hrr hpos hnn =>
-    pairwiseCompatible_iff_familyCompatible_of_fourWay (hfour hrr hpos hnn)
-
-/-- The nonnegative four-way package target follows from the repaired
-same-degree and successor-degree no-common pair bridges. -/
-theorem chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  fun hrr hpos hnn =>
-    chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
-      hrr hpos hnn hsame hsucc
-
-/-- The nonnegative-coefficient roadmap target follows from the repaired
-same-degree and successor-degree no-common pair bridges. -/
-theorem
-    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
-    (chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg hsame hsucc)
-
-/-- The proved #41 same-degree endpoint and #42 successor-degree endpoint close
-the nonnegative-coefficient four-way Chudnovsky--Seymour package. -/
-theorem chudnovskySeymour_fourWay_nonnegCoeffs :
-    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
-  chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg
+/-- The four equivalent Chudnovsky--Seymour conditions for a family with
+nonnegative coefficients: pairwise compatibility, pairwise and common
+interleavers, and family compatibility. -/
+theorem chudnovskySeymour_fourWay_nonnegCoeffs
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f) :
+    ChudnovskySeymourFourWayPackage fs :=
+  chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs hrr hpos hnn
     PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonneg
 
-/-- The proved #41 same-degree endpoint and #42 successor-degree endpoint close
-the nonnegative-coefficient pairwise/common-interleaver form of
-Chudnovsky--Seymour. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs :
-    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
-    chudnovskySeymour_fourWay_nonnegCoeffs
-
-/-- The nonnegative-coefficient finite-family compatibility form follows from
-the proved #41/#42 endpoint package. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs :
-    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_nonneg
-    chudnovskySeymour_fourWay_nonnegCoeffs
-
+/-- `chudnovskySeymour_pairwiseCompatible_iff_familyCompatible` with an unused
+nonnegativity hypothesis, kept for existing callers. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (_hnn : ∀ f ∈ fs, HasNonnegCoeffs f) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible hrr hpos
 
 end RealRooted
