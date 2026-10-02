@@ -1531,3 +1531,5 @@ import RealRooted.Graph.AllOrientationSinkIdentity
 import RealRooted.Interlacing.Euclid
 import RealRooted.Tactic.Examples.InterlacesExplicit
 import RealRooted.Tactic.InterlacesExplicit
+import RealRooted.Challenges.MinimaPolynomial
+import RealRooted.Graph.MinimaLocalOrder
