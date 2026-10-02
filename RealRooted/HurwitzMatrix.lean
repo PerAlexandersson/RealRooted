@@ -270,9 +270,9 @@ theorem hurwitz_schurProduct_det_fin_three_of_row1_below {a b : ℕ → ℝ}
 /-! ### Band bookkeeping and the column-shift structure -/
 
 /-- Arithmetic band bookkeeping for a `3 × 3` window. Under the two hypotheses
-`2 * cols 1 ≤ rows 0` and `2 * cols 2 ≤ rows 1`, monotonicity of the selected rows and columns forces
-every selected entry except possibly the top-right corner `(0, 2)` onto the
-nonzero staircase. -/
+`2 * cols 1 ≤ rows 0` and `2 * cols 2 ≤ rows 1`, monotonicity of the selected
+rows and columns forces every selected entry except possibly the top-right
+corner `(0, 2)` onto the nonzero staircase. -/
 theorem hurwitz_schurProduct_core_inband_entries
     {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
     (h01 : 2 * cols 1 ≤ rows 0) (h12 : 2 * cols 2 ≤ rows 1) :
