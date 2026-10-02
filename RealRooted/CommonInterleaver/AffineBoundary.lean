@@ -64,36 +64,4 @@ theorem pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg
   have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hstrictInterl.2.1.1 hstrictInterl.2.1.2
   exact ⟨X * f, strictInterl_self_X_mul_of_nonneg hf.1 hf.2 hfnn, hstrictInterl⟩
 
-/-- Orienting each boundary pair `(C t * f + g, X * f)` is already enough to
-recover the full affine-family hypothesis. The no-common condition for the
-boundary pair is automatic from nonnegative coefficients and the original
-no-common hypothesis. -/
-theorem posComboNoCommonAffineFamily_of_boundaryRightPairOrientation
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
-    PosComboNoCommonAffineFamilyStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno s t hs ht
-  let p : ℝ[X] := C t * f + g
-  have hp_rr : (p ≠ 0 ∧ p.Splits) := by
-    dsimp [p]
-    simpa using PosComboRealRooted.isRealRooted_add_left hfg ht
-  have hp_nn : HasNonnegCoeffs p := by
-    dsimp [p]
-    exact (nonnegCoeffs_C_mul ht.le hfnn).add hgnn
-  have hp_pos : HasPosLeadingCoeff p := hp_nn.pos_leadingCoeff hp_rr.1
-  have hXf_pos : HasPosLeadingCoeff (X * f) := hf_pos.X_mul
-  have hstrictInterl_or : StrictInterl p (X * f) ∨ StrictInterl (X * f) p := by
-    dsimp [p]
-    exact hboundary hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno ht
-  have hno_right : ∀ r, p.IsRoot r → ¬ (X * f).IsRoot r := by
-    dsimp [p]
-    exact no_common_boundary_right_pair_of_no_common_nonneg hfnn hgnn hno ht
-  have hstrictInterl : StrictInterl p (X * f) :=
-    strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
-      hstrictInterl_or hp_rr.1 hp_rr.2 hp_nn hno_right
-  have hcombo_rr :
-      ((C (1 : ℝ) * p + C s * (X * f)) ≠ 0 ∧ (C (1 : ℝ) * p + C s * (X * f)).Splits) :=
-    StrictInterl.isRealRooted_nonneg_combo
-      hstrictInterl hp_pos hXf_pos (by simp) hs.le (Or.inl zero_lt_one)
-  grind
-
 end RealRooted

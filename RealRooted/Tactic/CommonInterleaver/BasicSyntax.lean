@@ -260,14 +260,6 @@ syntax (name := rr_common_left_interleaver_of_pairwise_named)
     "pairwise_common_left" ":=" term :
   tactic
 
-syntax (name := rr_common_interleaver_family_upgrade_named)
-  "rr_common_interleaver_family_upgrade" :
-  tactic
-
-syntax (name := rr_common_left_interleaver_family_upgrade_named)
-  "rr_common_left_interleaver_family_upgrade" :
-  tactic
-
 syntax (name := rr_common_interleaver_sum_realrooted_named)
   "rr_common_interleaver_sum_realrooted" " using "
     "common_right" ":=" term ","

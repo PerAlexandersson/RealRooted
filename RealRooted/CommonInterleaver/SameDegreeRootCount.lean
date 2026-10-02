@@ -63,31 +63,6 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_slotData
       hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hdeg <|
         fun j hj => hstmt hf_pos hg_pos hfnn hgnn hfg hdeg hno j hj _ _
 
-/-- **Converse of the same-degree slot-data reduction for #41.**
-
-A common right interleaver for the same-degree pair `(f, g)` recovers the
-matching root-slot intersections through
-`rootSlotInterval_inter_nonempty_of_commonInterleaver`. -/
-theorem posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver
-    (hstmt : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement) :
-    PosComboNoCommonSameDegreeSlotDataNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  obtain ⟨h, hfh, hgh⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  intro j hj _ _
-  have hjg' : j < g.natDegree + 1 := by lia
-  exact rootSlotInterval_inter_nonempty_of_commonInterleaver hfh hgh j hj hjg'
-
-/-- **The #41 same-degree slot-data reformulation is equivalent to the target.**
-
-The matching root-slot statement holds if and only if the repaired
-same-degree common-right-interleaver statement holds, so the #41 reduction to
-slot data loses no information. -/
-theorem posComboNoCommonSameDegreeSlotData_iff_pairHasCommonInterleaver :
-    PosComboNoCommonSameDegreeSlotDataNonnegStatement ↔
-      PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
-  ⟨sameDegreePairHasCommonInterleaver_nonneg_of_slotData,
-    posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver⟩
-
 /-- **Combinatorial core of the same-degree slot bound.**
 
 For descending real lists `rf` and `rg` of the same length, if their interior
@@ -168,25 +143,6 @@ def PosComboNoCommonSameDegreeRootCrossingNonnegStatement : Prop :=
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
 
-/-- **Analytic root-count formulation of milestone B1.**
-
-For a nonnegative positive-combination same-degree pair with no common roots,
-the two threshold root-count functions should differ by at most one.  The
-pure order bridge `rootCrossing_of_rootCount_diff_le_one` turns this into the
-descending-root crossing inequalities. -/
-def PosComboNoCommonSameDegreeRootCountNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1
-
 /-- **Upper-threshold version of the same-degree root-count formulation.**
 
 This is the form naturally paired with sign-count lemmas, since the sign of a
@@ -204,23 +160,6 @@ def PosComboNoCommonSameDegreeRootCountAboveNonnegStatement : Prop :=
     ∀ x : ℝ,
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
-
-/-- Non-root-threshold version of the same-degree lower root-count target.
-
-The `RootCountJump` local-constancy bridge reduces the full lower-threshold
-target to this common-non-root form. -/
-def PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1
 
 /-- Non-root-threshold version of the same-degree upper root-count target. -/
 def PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement : Prop :=
@@ -517,19 +456,6 @@ theorem sameDegreeRootCountAbove_of_rootCount
   have hNcard : g.roots.card = f.natDegree := by rw [card_roots_of_splits hg, hdeg]
   exact count_gt_diff_le_one_of_count_le_diff_le_one hMcard hNcard hcount
 
-/-- The same-degree root-count formulation implies the descending-root
-crossing formulation. -/
-theorem posComboNoCommonSameDegreeRootCrossing_of_rootCount
-    (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCrossingNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  have hf_split : f.Splits :=
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-  have hg_split : g.Splits :=
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-  exact rootCrossing_of_rootCount_diff_le_one hf_split hg_split hdeg
-    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
-
 /-- The upper-threshold same-degree root-count formulation implies the
 descending-root crossing formulation. -/
 theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove
@@ -541,80 +467,6 @@ theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
   exact rootCrossing_of_rootCountAbove_diff_le_one hf_split hg_split hdeg
-    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
-
-/-- The same-degree descending-root crossing formulation implies the
-same-degree root-count formulation. -/
-theorem posComboNoCommonSameDegreeRootCount_of_rootCrossing
-    (hcross : PosComboNoCommonSameDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  have hf_split : f.Splits :=
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-  have hg_split : g.Splits :=
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-  exact sameDegreeRootCount_of_rootCrossing hf_split hg_split hdeg
-    (hcross hf_pos hg_pos hfnn hgnn hfg hdeg hno)
-
-/-- The upper-threshold same-degree root-count target implies the
-lower-threshold root-count target. -/
-theorem posComboNoCommonSameDegreeRootCount_of_rootCountAbove
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  have hf_split : f.Splits :=
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-  have hg_split : g.Splits :=
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-  exact sameDegreeRootCount_of_rootCountAbove hf_split hg_split hdeg
-    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
-
-/-- The lower-threshold same-degree root-count target implies the
-upper-threshold root-count target. -/
-theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCount
-    (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  have hf_split : f.Splits :=
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-  have hg_split : g.Splits :=
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-  exact sameDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
-    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
-
-/-- The lower-threshold and upper-threshold same-degree root-count targets are
-equivalent. -/
-theorem posComboNoCommonSameDegreeRootCountAbove_iff_rootCount :
-    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement ↔
-      PosComboNoCommonSameDegreeRootCountNonnegStatement :=
-  ⟨posComboNoCommonSameDegreeRootCount_of_rootCountAbove,
-    posComboNoCommonSameDegreeRootCountAbove_of_rootCount⟩
-
-/-- The same-degree root-crossing target is equivalent to the lower-threshold
-root-count target. -/
-theorem posComboNoCommonSameDegreeRootCrossing_iff_rootCount :
-    PosComboNoCommonSameDegreeRootCrossingNonnegStatement ↔
-      PosComboNoCommonSameDegreeRootCountNonnegStatement :=
-  ⟨posComboNoCommonSameDegreeRootCount_of_rootCrossing,
-    posComboNoCommonSameDegreeRootCrossing_of_rootCount⟩
-
-/-- The same-degree root-crossing target is equivalent to the upper-threshold
-root-count target. -/
-theorem posComboNoCommonSameDegreeRootCrossing_iff_rootCountAbove :
-    PosComboNoCommonSameDegreeRootCrossingNonnegStatement ↔
-      PosComboNoCommonSameDegreeRootCountAboveNonnegStatement :=
-  ⟨fun hcross =>
-      posComboNoCommonSameDegreeRootCountAbove_of_rootCount
-        (posComboNoCommonSameDegreeRootCount_of_rootCrossing hcross),
-    posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove⟩
-
-/-- The same-degree lower root-count target follows from its common-non-root
-variant. -/
-theorem posComboNoCommonSameDegreeRootCount_of_nonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  exact rootCount_diff_le_one_of_nonRoot_isRoot hf_pos.ne_zero hg_pos.ne_zero
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- The same-degree upper root-count target follows from its common-non-root
@@ -902,67 +754,6 @@ theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
       rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
         hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg x)
 
-/-- Degree-`≤ 3` same-degree slot-data route, assuming the two cubic interior
-partial-separation leaves. -/
-theorem sameDegreeSlotData_of_posCombo_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hfdeg : f.natDegree ≤ 3) :
-    ∀ j, j < f.natDegree + 1 →
-      ∀ (hjf : j < (rootSeqDesc f).length + 1)
-        (hjg : j < (rootSeqDesc g).length + 1),
-        (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
-          rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty := by
-  have hf_split : f.Splits :=
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-  have hg_split : g.Splits :=
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-  obtain ⟨hc1, hc2⟩ :=
-    sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
-      hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg
-  have hlenf : (rootSeqDesc f).length = f.natDegree :=
-    rootSeqDesc_length hf_split
-  have hleng : (rootSeqDesc g).length = g.natDegree :=
-    rootSeqDesc_length hg_split
-  intro j _ hjf hjg
-  exact
-    rootSlotInterval_inter_nonempty_of_sameDegree_crossing
-      (rootSeqDesc f) (rootSeqDesc g) rootSeqDesc_pairwise rootSeqDesc_pairwise
-      (by rw [hleng, hlenf, hdeg])
-      (fun k hk1 hk2 => hc1 k hk1 (by rw [hlenf] at hk2; exact hk2))
-      (fun k hk1 hk2 => hc2 k hk1 (by rw [hlenf] at hk2; exact hk2))
-      j hjf hjg
-
-/-- Degree-`≤ 3` same-degree common-interleaver endpoint, assuming the two
-cubic interior partial-separation leaves. -/
-theorem sameDegreePairHasCommonInterleaver_nonneg_of_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hfdeg : f.natDegree ≤ 3) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
-  have hf_rr : f ≠ 0 ∧ f.Splits :=
-    hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
-  have hg_rr : g ≠ 0 ∧ g.Splits :=
-    hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg
-  exact
-    pairHasCommonInterleaver_of_sameDegree_slotIntersections
-      hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hdeg <|
-        fun j hj =>
-          sameDegreeSlotData_of_posCombo_natDegree_le_three_of_cubicInterior
-            hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg j hj _ _
-
 /-- **Reduction of milestone B1 to its root-crossing content.**
 
 The same-degree slot-data statement follows from the descending-root crossing
@@ -997,28 +788,12 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSameDegreeSlotData_of_rootCrossing hcross)
 
 /-- The repaired same-degree pair-interleaver endpoint follows directly from
-the analytic root-count formulation. -/
-theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCount
-    (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
-  sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hcount)
-
-/-- The repaired same-degree pair-interleaver endpoint follows directly from
 the upper-threshold analytic root-count formulation. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
     (hcount : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement) :
     PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hcount)
-
-/-- Same-degree root crossing from the common-non-root lower-threshold
-root-count formulation. -/
-theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCrossingNonnegStatement :=
-  posComboNoCommonSameDegreeRootCrossing_of_rootCount
-    (posComboNoCommonSameDegreeRootCount_of_nonRoot hcount)
 
 /-- Same-degree root crossing from the common-non-root upper-threshold
 root-count formulation. -/
@@ -1027,14 +802,6 @@ theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot
     PosComboNoCommonSameDegreeRootCrossingNonnegStatement :=
   posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove
     (posComboNoCommonSameDegreeRootCountAbove_of_nonRoot hcount)
-
-/-- The repaired same-degree pair-interleaver endpoint follows from the
-common-non-root lower-threshold root-count formulation. -/
-theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
-  sameDegreePairHasCommonInterleaver_nonneg_of_rootCount
-    (posComboNoCommonSameDegreeRootCount_of_nonRoot hcount)
 
 /-- The repaired same-degree pair-interleaver endpoint follows from the
 common-non-root upper-threshold root-count formulation. -/

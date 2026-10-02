@@ -41,27 +41,6 @@ def PosComboNoCommonSuccDegreeRootCrossingNonnegStatement : Prop :=
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
 
-/-- **Analytic root-count formulation of the succ-degree root-crossing target.**
-
-For a succ-degree positive-combination pair with no common roots, the lower
-threshold root count for `f` should be at most the lower threshold root count
-for `g`, and the count for `g` should exceed the count for `f` by at most two.
-Equivalently, the numbers of roots strictly above a threshold differ by at most
-one, with the extra `g` root accounted for. -/
-def PosComboNoCommonSuccDegreeRootCountNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
-
 /-- **Upper-threshold version of the succ-degree root-count formulation.**
 
 This is the form naturally suggested by the root-continuity proof route: the
@@ -110,19 +89,6 @@ def CompatibleSuccDegreeRootCountAboveNonRootStatement : Prop :=
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
 
-/-- Compatible-pair gap-at-most-two version of the succ-degree
-common-non-root upper root-count leaf. -/
-def CompatibleSuccDegreeRootCountAboveLeTwoStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 2
-
 /-- Exact gap-two obstruction for the compatible succ-degree common-non-root
 upper root-count leaf. -/
 def CompatibleSuccDegreeRootCountAboveNoGapTwoStatement : Prop :=
@@ -142,20 +108,6 @@ theorem int_le_one_of_le_two_ne_two {z : ℤ} (hzle : z ≤ 2) (hzne : z ≠ 2) 
   have hzlt : z < 2 := lt_of_le_of_ne hzle hzne
   exact Int.lt_add_one_iff.mp (by simpa using hzlt)
 
-/-- A gap-at-most-two theorem plus exclusion of exact gap two gives the full
-compatible succ-degree common-non-root upper root-count leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hgap : CompatibleSuccDegreeRootCountAboveNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
-  obtain ⟨hfg_le2, hgf_le2⟩ :=
-    hle2 hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
-  obtain ⟨hfg_ne2, hgf_ne2⟩ :=
-    hgap hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
-  exact ⟨int_le_one_of_le_two_ne_two hfg_le2 hfg_ne2,
-    int_le_one_of_le_two_ne_two hgf_le2 hgf_ne2⟩
-
 /-- The compatible CS 3.4 root-count leaf implies the #42 positive-combo
 succ-degree root-count leaf. -/
 theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
@@ -174,47 +126,6 @@ theorem succDegree_derivative_natDegree_eq
     g.derivative.natDegree = f.derivative.natDegree + 1 := by
   rw [f.natDegree_derivative, g.natDegree_derivative, hdeg]
   lia
-
-/-- Applying the compatible succ-degree root-count theorem to derivatives. -/
-theorem compatibleSuccDegreeRootCountAboveNonRoot_derivative
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement)
-    {f g : ℝ[X]} (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : 2 ≤ f.natDegree) :
-    ∀ x : ℝ, ¬ f.derivative.IsRoot x → ¬ g.derivative.IsRoot x →
-      ((f.derivative.roots.filter (x < ·)).card : ℤ) -
-          (g.derivative.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.derivative.roots.filter (x < ·)).card : ℤ) -
-          (f.derivative.roots.filter (x < ·)).card ≤ 1 := by
-  have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
-  have hg'_pos : HasPosLeadingCoeff g.derivative :=
-    hg_pos.derivative (by rw [hdeg]; lia)
-  have hdeg' : g.derivative.natDegree = f.derivative.natDegree + 1 :=
-    succDegree_derivative_natDegree_eq hdeg (by lia)
-  have hf'_split : f.derivative.Splits :=
-    (derivative_interlaces hf_split hfdeg).2.1.2
-  exact hcount hcomp.derivative hf'_pos hg'_pos hdeg' hf'_split
-
-/-- Derivative application of the compatible succ-degree root-count theorem,
-promoted from common non-root thresholds to all thresholds. -/
-theorem compatibleSuccDegreeRootCountAbove_derivative
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement)
-    {f g : ℝ[X]} (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : 2 ≤ f.natDegree) :
-    ∀ x : ℝ,
-      ((f.derivative.roots.filter (x < ·)).card : ℤ) -
-          (g.derivative.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.derivative.roots.filter (x < ·)).card : ℤ) -
-          (f.derivative.roots.filter (x < ·)).card ≤ 1 := by
-  have hf'_ne : f.derivative ≠ 0 := Polynomial.derivative_ne_zero.mpr (by lia)
-  have hg'_ne : g.derivative ≠ 0 :=
-    Polynomial.derivative_ne_zero.mpr (by rw [hdeg]; lia)
-  exact rootCountAbove_diff_le_one_of_nonRoot_isRoot hf'_ne hg'_ne
-    (compatibleSuccDegreeRootCountAboveNonRoot_derivative
-      hcount hcomp hf_pos hg_pos hdeg hf_split hfdeg)
 
 /-- Partition roots of a splitting polynomial by a threshold. -/
 theorem card_roots_filter_gt_add_le_of_splits {p : ℝ[X]} (hp : p.Splits)
@@ -250,29 +161,6 @@ theorem sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
         g.natDegree := by exact_mod_cast hgpart
   have hdegZ : (g.natDegree : ℤ) = f.natDegree := by exact_mod_cast hdeg
   constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
-
-/-- The same-degree upper common-non-root root-count target is equivalent to
-the lower common-non-root root-count target. -/
-theorem posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot :
-    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement ↔
-      PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement := by
-  constructor
-  · intro hcount f g hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg
-    have hf_split : f.Splits :=
-      (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    have hg_split : g.Splits :=
-      (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    exact (sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
-      hf_split hg_split hdeg x).mp
-      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg)
-  · intro hcount f g hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg
-    have hf_split : f.Splits :=
-      (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    have hg_split : g.Splits :=
-      (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    exact (sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
-      hf_split hg_split hdeg x).mpr
-      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg)
 
 /-- Oriented same-cardinality root counts: the lower-threshold comparison
 `f` against `g` is equivalent to the opposite upper-threshold comparison.
@@ -919,29 +807,6 @@ theorem compatibleSuccDegreeRootCountAbove_le_two_of_derivative_bound
     have hder_le := (hder_full x).2
     lia
 
-/-- Derivative induction rules out all upper-count gaps of size at least
-three for a succ-degree compatible pair.
-
-This is the CS 3.4 induction step up to the remaining exact gap-two case. -/
-theorem compatibleSuccDegreeRootCountAbove_le_two_of_derivative
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement)
-    {f g : ℝ[X]} (hcomp : Compatible f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hf_split : f.Splits) (hfdeg : 2 ≤ f.natDegree) :
-    ∀ x : ℝ,
-      ((f.roots.filter (x < ·)).card : ℤ) -
-          (g.roots.filter (x < ·)).card ≤ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) -
-          (f.roots.filter (x < ·)).card ≤ 2 := by
-  refine compatibleSuccDegreeRootCountAbove_le_two_of_derivative_bound
-    hcomp hf_pos hg_pos hdeg hf_split hfdeg ?_
-  intro x _hxf _hxg
-  exact
-    compatibleSuccDegreeRootCountAbove_derivative
-      hcount hcomp hf_pos hg_pos hdeg hf_split hfdeg
-      x
-
 /-- Oriented same-degree `StrictInterl`-to-root-count bridge in lower-threshold form.
 
 For splitting real polynomials `p, q` of equal degree, the same-degree
@@ -979,14 +844,5 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).1
   exact rootCountAbove_diff_le_one_of_nonRoot_isRoot hf_pos.ne_zero hg_ne
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
-
-/-- The succ-degree lower common-non-root root-count target implies the full
-upper-threshold succ-degree root-count target. -/
-theorem posComboNoCommonSuccDegreeRootCountAbove_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot
-    (posComboNoCommonSuccDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mpr
-      hcount)
 
 end RealRooted

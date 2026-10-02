@@ -76,7 +76,7 @@ theorem hasCommonLeftInterleaver_of_natDegree_le_one
     HasCommonLeftInterleaver fs := by
   let hrr := family_ne_zero_and_splits_of_natDegree_le_one hpos hdeg
   exact
-    commonLeftInterleaverFamilyUpgrade
+    hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
       (fun f hf => (hrr f hf).2) hpos
       (pairwiseHasCommonLeftInterleaver_of_natDegree_le_one hpos hdeg)
 
