@@ -206,16 +206,6 @@ theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
       posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
         hsame hsucc hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg)
 
-/-- Shifted compatibility bridge from the concrete slot-data endpoints for the
-same-degree and succ-degree nonnegative branches. -/
-theorem compatiblePairHasCommonInterleaver_of_slotData_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame)
-    (succDegreePairHasCommonInterleaver_nonneg_of_slotData hsucc)
-
 /-- Shifted compatibility bridge from the root-crossing formulations of the
 nonnegative same-degree and succ-degree branches.  The succ-degree branch also
 needs the left-splitting input that is part of its slot-data decomposition. -/
@@ -237,37 +227,6 @@ theorem compatiblePairHasCommonInterleaver_of_rootCrossing
     CompatiblePairHasCommonInterleaverStatement :=
   compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
     hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
-
-/-- Shifted compatibility bridge from lower-threshold root-count
-formulations.  The succ-degree left endpoint is supplied by the
-root-continuity theorem before shifting. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCount
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hsucc)
-
-/-- Shifted compatibility bridge from upper-threshold root-count formulations
-in both the same-degree and succ-degree branches. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBoth
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hsame)
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hsucc)
-
-/-- Shifted compatibility bridge from common-non-root lower-threshold root-count
-formulations in both branches. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCountNonRoot
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hsucc)
 
 /-- Shifted compatibility bridge from common-non-root upper-threshold root-count
 formulations in both branches. -/

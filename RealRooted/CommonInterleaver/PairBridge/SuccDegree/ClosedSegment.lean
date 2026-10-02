@@ -12,37 +12,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- The compatible common-non-root root-count leaf implies closed-segment
-endpoint count equality.  The root-count leaf bounds the endpoint upper-count
-difference by one in both directions, while the no-crossing hypothesis forces
-that difference to be even. -/
-theorem compatibleSuccDegreeClosedSegmentCountEq_of_nonRoot
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement) :
-    CompatibleSuccDegreeClosedSegmentCountEqStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
-  obtain ⟨hfg_le, hgf_le⟩ :=
-    hcount hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
-  exact
-    compatibleSuccDegreeClosedSegmentCountEq_of_rootCountAbove_bounds
-      hcomp hf_pos hg_pos hdeg hf_split hxf hxg hseg hfg_le hgf_le
-
-/-- The compatible root-count target gives the gap-at-most-two target: in
-degree at least two this is the derivative induction step, while degrees zero
-and one are handled by the explicit low-degree bases. -/
-theorem compatibleSuccDegreeRootCountAboveLeTwo_of_nonRoot
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement) :
-    CompatibleSuccDegreeRootCountAboveLeTwoStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x _hxf _hxg
-  by_cases hfdeg : 2 ≤ f.natDegree
-  · exact compatibleSuccDegreeRootCountAbove_le_two_of_derivative
-      hcount hcomp hf_pos hg_pos hdeg hf_split hfdeg x
-  · have hfdeg_le_one : f.natDegree ≤ 1 :=
-      Nat.lt_succ_iff.mp (Nat.lt_of_not_ge hfdeg)
-    obtain ⟨hfg, hgf⟩ :=
-      compatibleSuccDegreeRootCountAbove_of_natDegree_le_one
-        hcomp hf_pos hg_pos hdeg hf_split hfdeg_le_one x
-    constructor <;> linarith
-
 /-- The exact gap-two obstruction closes the compatible common-non-root
 root-count target.  The proof is by strong induction on the lower endpoint
 degree: low degrees are explicit, while degree at least two uses derivative
@@ -120,14 +89,6 @@ theorem compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq
   compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegment
     (compatibleSuccDegreeClosedSegmentNoGapTwo_of_countEq hcount)
 
-/-- The closed-segment endpoint count-equality target is equivalent to the
-compatible common-non-root upper root-count leaf. -/
-theorem compatibleSuccDegreeClosedSegmentCountEq_iff_nonRoot :
-    CompatibleSuccDegreeClosedSegmentCountEqStatement ↔
-      CompatibleSuccDegreeRootCountAboveNonRootStatement :=
-  ⟨compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq,
-    compatibleSuccDegreeClosedSegmentCountEq_of_nonRoot⟩
-
 /-- Closed-segment endpoint count equality also supplies the positive-combo
 succ-degree common-non-root upper root-count leaf used by the repaired #42
 pair-interleaver route. -/
@@ -136,77 +97,5 @@ theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq
     PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
   posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
     (compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq hcount)
-
-/-- Closed-segment no-gap-two supplies the positive-combo succ-degree
-common-non-root upper root-count leaf. -/
-theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentNoGapTwo
-    (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
-    (compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegment hclosed)
-
-/-- The right-pencil no-gap-two theorem closes the compatible succ-degree
-common-non-root upper root-count leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNonRoot_of_rightFamily
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
-  compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
-    (compatibleSuccDegreeRootCountAboveNoGapTwo_of_rightFamily hright)
-
-/-- The endpoint-sign no-gap-two theorem closes the compatible succ-degree
-common-non-root upper root-count leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSign
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
-  compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
-    (compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSign hsign)
-
-/-- The lower-threshold endpoint-sign no-gap theorem closes the compatible
-succ-degree common-non-root upper root-count leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
-  compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
-    (compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSignLower hlower)
-
-/-- The exact lower-count endpoint comparison closes the compatible
-succ-degree common-non-root upper root-count leaf. -/
-theorem compatibleSuccDegreeRootCountAboveNonRoot_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
-  compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
-    (compatibleSuccDegreeRootCountAboveNoGapTwo_of_lowerCountEq hcount)
-
-/-- Right-pencil no-gap-two supplies the positive-combo succ-degree
-common-non-root upper root-count leaf. -/
-theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_rightFamilyNoGapTwo
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
-    (compatibleSuccDegreeRootCountAboveNonRoot_of_rightFamily hright)
-
-/-- Endpoint-sign no-gap-two supplies the positive-combo succ-degree
-common-non-root upper root-count leaf. -/
-theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignNoGapTwo
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
-    (compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSign hsign)
-
-/-- Lower endpoint-sign no-gap supplies the positive-combo succ-degree
-common-non-root upper root-count leaf. -/
-theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
-    (compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSignLower hlower)
-
-/-- Exact lower-count endpoint comparison supplies the positive-combo
-succ-degree common-non-root upper root-count leaf. -/
-theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
-  posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
-    (compatibleSuccDegreeRootCountAboveNonRoot_of_lowerCountEq hcount)
 
 end RealRooted

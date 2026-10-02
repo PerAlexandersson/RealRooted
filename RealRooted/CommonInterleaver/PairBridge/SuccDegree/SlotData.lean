@@ -72,35 +72,12 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSuccDegreeSlotData_of_rootCrossing hcross)
 
 /-- The corrected succ-degree pair-interleaver endpoint follows directly from
-the lower-threshold root-count formulation. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCount
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hcount)
-
-/-- Succ-degree slot data from the upper-threshold root-count formulation. -/
-theorem posComboNoCommonSuccDegreeSlotData_of_rootCountAbove
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
-  posComboNoCommonSuccDegreeSlotData_of_rootCrossing
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hcount)
-
-/-- The corrected succ-degree pair-interleaver endpoint follows directly from
 the upper-threshold root-count formulation. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
     (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hcount)
-
-/-- Succ-degree slot data from the common-non-root upper-threshold root-count
-formulation. -/
-theorem posComboNoCommonSuccDegreeSlotData_of_nonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
-  posComboNoCommonSuccDegreeSlotData_of_rootCountAbove
-    (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
 
 /-- The repaired succ-degree pair-interleaver endpoint follows from the
 common-non-root upper-threshold root-count formulation. -/
@@ -117,105 +94,5 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
     (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq hcount)
-
-/-- Closed-segment no-gap-two supplies the repaired succ-degree #42
-pair-interleaver endpoint. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentNoGapTwo
-    (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
-    (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentNoGapTwo hclosed)
-
-/-- Right-pencil no-gap-two supplies the repaired succ-degree #42
-pair-interleaver endpoint. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_rightFamilyNoGapTwo
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
-    (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_rightFamilyNoGapTwo hright)
-
-/-- Endpoint-sign no-gap-two supplies the repaired succ-degree #42
-pair-interleaver endpoint. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_endpointSignNoGapTwo
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
-    (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignNoGapTwo hsign)
-
-/-- Lower endpoint-sign no-gap supplies the repaired succ-degree #42
-pair-interleaver endpoint. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
-    (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignLower hlower)
-
-/-- Exact lower-count endpoint comparison supplies the repaired succ-degree
-#42 pair-interleaver endpoint. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
-    (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_lowerCountEq hcount)
-
-/-- The repaired succ-degree pair-interleaver endpoint follows from the lower
-common-non-root root-count formulation. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  succDegreePairHasCommonInterleaver_nonneg_of_rootCount
-    (posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot hcount)
-
-/-- The repaired succ-degree pair-interleaver endpoint follows from the two
-lower-threshold constant-term root-count branches. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_and_lead
-    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  succDegreePairHasCommonInterleaver_nonneg_of_rootCount
-    (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
-
-/-- The repaired succ-degree pair-interleaver endpoint follows from the
-residual branch, the both-nonzero lead branch, and the right-zero `divX`
-orientation target. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_strictInterl
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  succDegreePairHasCommonInterleaver_nonneg_of_rootCount
-    (posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_strictInterl
-      hboth hdivX hres)
-
-/-- The repaired succ-degree pair-interleaver endpoint follows from the
-residual orientation target, the both-nonzero lead branch, and the right-zero
-`divX` orientation target. -/
-theorem
-    succDegreePairHasCommonInterleaver_nonneg_of_residualStrictInterl_bothNonzero_divX_strictInterl
-    (hresStrictInterl : PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement)
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXStrictInterlStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  succDegreePairHasCommonInterleaver_nonneg_of_rootCount
-    (posComboNoCommonSuccDegreeRootCount_of_residualStrictInterl_bothNonzero_divX_strictInterl
-      hresStrictInterl hboth hdivX)
-
-/-- Succ-degree slot data from left-endpoint real-rootedness and the fixed
-orientation.  The orientation supplies the root-crossing inequalities. -/
-theorem posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_orientation
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
-  posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing hsplit
-    (posComboNoCommonSuccDegreeRootCrossing_of_orientation horient)
-
-/-- The repaired succ-degree pair-interleaver endpoint follows from
-left-endpoint real-rootedness and the fixed orientation. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_orientation
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
-  succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing hsplit
-    (posComboNoCommonSuccDegreeRootCrossing_of_orientation horient)
 
 end RealRooted
