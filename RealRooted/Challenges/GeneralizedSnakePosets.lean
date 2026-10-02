@@ -156,10 +156,12 @@ theorem snakePolynomial_recurrence {w : SnakeWord} {k : ℕ} (hw : ¬ w.IsConsta
 theorem modifiedNarayana_affine_strictInterl {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m)
     (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
     StrictInterl
-      ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) + modifiedNarayanaPolynomial m)
-      ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)) :=
-  lemma34ModifiedNarayanaInterlacing_modified hm hlam hnu
+      ((lam • X + nu • 1) * modifiedNarayanaPolynomial (m - 1) + modifiedNarayanaPolynomial m)
+      ((lam • X + nu • 1) * modifiedNarayanaPolynomial m +
+        modifiedNarayanaPolynomial (m + 1)) := by
+  have h := lemma34ModifiedNarayanaInterlacing_modified hm hlam hnu
+  rwa [show C lam * X + C nu = lam • X + nu • (1 : ℝ[X]) by
+    simp [Polynomial.smul_eq_C_mul]] at h
 
 /-- `X G_{n-1} = P_n - (1 + X) P_{n-1}`. -/
 theorem auxiliaryG_recurrence {n : ℕ} (hn : 1 ≤ n) :
