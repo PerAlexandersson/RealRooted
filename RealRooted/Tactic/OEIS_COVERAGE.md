@@ -18,7 +18,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **180 IDs**; **1 formalized**, **145 shells**, **13 fragments**, and **21 documented-only**.
+Current totals: **181 IDs**; **1 formalized**, **145 shells**, **13 fragments**, and **22 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -95,7 +95,7 @@ Current totals: **180 IDs**; **1 formalized**, **145 shells**, **13 fragments**,
 | A102413 | `shell` | OEIS shapes `///`: | `rr_lw_positive_t_auto` | `degree_lower`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A102587 | `shell` | OEIS shape : `P_{n+2}=(t-1)P_{n+1}-P_n`. | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
 | A103451 | `shell` | -style product exit: each active row gains one root at zero. | `rr_product_root_zero_sequence` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
-| A105278 | `shell` | Lah-type row `P_{n+2}=(2+X)f+(2+2X)f'+Xf''=(1+D)((X+1)f+Xf')`. | `rr_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `degree_two`, `inner_degree_lower`, `inner_degree_upper`, `inner_pos_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonpos` | concrete row definition and proofs of the listed certificates |
+| A105278 | `shell` | Lah-type row `P_{n+2}=(2+X)f+(2+2X)f'+Xf''=(1+D)((X+1)f+Xf')`.<br>Generalized Laguerre rows ().<br>+8 additional test intents | `rr_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `degree_two`, `inner_degree_lower`, `inner_degree_upper`, `inner_pos_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonpos` | concrete row definition and proofs of the listed certificates |
 | A106800 | `shell` | `/`: `v_n(t)=-t^2`. | `rr_mw_derivative_neg_X_sq_auto` | `degree_lower`, `degree_two`, `degree_upper`, `source_pos_lc`, `splits`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A106828 | `shell` | OEIS shape : `P_n = n P_{n-1} + n t P_{n-2}`.<br>OEIS shape : `P_n = n P_{n-1} + n t P_{n-2}` on the | `rr_lw_positive_t_auto`, `rr_strict_interl_pos_X_lag_combo` | `current_coeff_pos`, `degree_lower`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `lag_coeff_pos`, `left_nonneg`, `no_common_roots`, `proper`, `right_nonneg`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A108426 | `shell` | Family C2 direct-outer Ma--Wang shell for the `/` bucket. | `rr_mw_derivative_neg_X_one_add_outer_auto` | `degree_lower`, `degree_two`, `degree_upper`, `root_upper`, `source_pos_lc`, `splits`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
@@ -190,6 +190,7 @@ Current totals: **180 IDs**; **1 formalized**, **145 shells**, **13 fragments**,
 | A321966 | `fragment` | OEIS-stated conjecture target, `v_n(t)=2t`.<br>root-sign package once the current row has nonnegative coefficients. | `rr_sign`, `rr_sign_at_roots` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
 | A322944 | `fragment` | OEIS-stated conjecture target, `v_n(t)=3t`. | `rr_sign` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
 | A327997 | `shell` | shifted active range of `P_m=(t+m+1)P_{m-1}-3(m-2)P_{m-2}`. | `rr_favard_param_auto` | `alpha`, `base_one`, `base_zero`, `beta`, `step` | concrete row definition and proofs of the listed certificates |
+| A331333 | `documented` | An ODE with a rational coefficient, and a recurrence written with `1 / 2` ().<br>def : ℕ → ℝ[X]<br>+8 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A334823 | `shell` | `P_m=(1+2m)P_{m-1}-t^2P_{m-2}`. | `rr_lw_negative_square_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A334824 | `shell` | same negative-square lag with current factor `3+2m`. | `rr_lw_negative_square_sequence_realrooted_auto` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A341287 | `fragment` | `v_n(t)=t-1`. | `rr_sign_at_roots_upper` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
