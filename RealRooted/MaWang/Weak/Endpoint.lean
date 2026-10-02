@@ -63,7 +63,6 @@ end RealRooted.MaWangInternal
 namespace RealRooted
 
 export MaWangInternal
-  (strictInterl_of_interlaces_evalCoeff_nonpos
-    prec_of_interlaces_evalCoeff_nonpos)
+  (strictInterl_of_interlaces_evalCoeff_nonpos)
 
 end RealRooted

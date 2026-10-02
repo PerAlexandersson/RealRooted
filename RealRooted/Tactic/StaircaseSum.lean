@@ -145,7 +145,7 @@ macro_rules
         interlacing_nonneg := $hfs:term,
         index_lt := $hm:term) =>
       `(tactic|
-        exact RealRooted.prec_get_staircaseSum_of_isInterlacingSeqNonneg
+        exact RealRooted.strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg
           $hfs $hm)
   | `(tactic|
       rr_staircaseSum_sequence_prec using

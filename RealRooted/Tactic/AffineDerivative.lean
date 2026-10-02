@@ -461,7 +461,7 @@ macro_rules
         roots_nonpos := $hroots:term,
         scalar_gt_degree := $hc:term) =>
       `(tactic|
-        exact RealRooted.prec_affine_derivative $hsplits $hdeg $hpos $hroots $hc)
+        exact RealRooted.strictInterl_affine_derivative $hsplits $hdeg $hpos $hroots $hc)
   | `(tactic|
       rr_prec_affine_derivative_degree_one using
         splits := $hsplits:term,
@@ -488,7 +488,7 @@ macro_rules
         nonneg := $hnn:term,
         scalar_gt_degree := $hc:term) =>
       `(tactic|
-        exact RealRooted.prec_affine_derivative_of_nonnegCoeffs
+        exact RealRooted.strictInterl_affine_derivative_of_nonnegCoeffs
           $hsplits $hdeg $hnn $hc)
   | `(tactic|
       rr_prec_affine_derivative_sequence using

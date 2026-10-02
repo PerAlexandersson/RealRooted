@@ -344,9 +344,6 @@ namespace RealRooted
 export MaWangInternal
   (strictInterl_of_interlaces_eval_mul_nonpos_same_of_no_common
     strictInterl_of_interlaces_eval_mul_nonpos_succ_of_no_common
-    strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
-    prec_of_interlaces_eval_mul_nonpos_same_of_no_common
-    prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
-    prec_of_interlaces_eval_mul_nonpos_of_no_common)
+    strictInterl_of_interlaces_eval_mul_nonpos_of_no_common)
 
 end RealRooted

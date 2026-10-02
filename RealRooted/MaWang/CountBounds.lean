@@ -384,7 +384,6 @@ export MaWangInternal
     listAlternates_of_count_bounds
     strictInterl_of_count_bounds_succ
     strictInterl_of_count_bounds_same
-    prec_of_count_bounds_succ
     strictInterl_of_count_bounds_same)
 
 end RealRooted

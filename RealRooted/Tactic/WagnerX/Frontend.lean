@@ -480,12 +480,12 @@ macro_rules
         degree_two := $hdeg:term,
         nonneg_coeffs := $hfnn:term) =>
       `(tactic|
-        exact RealRooted.prec_X_mul_derivative_X_mul_self_of_splits_nonneg
+        exact RealRooted.strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg
           $hf $hdeg $hfnn)
   | `(tactic| rr_prec_X_derivative_X_self) =>
       `(tactic|
         exact (by
-          apply RealRooted.prec_X_mul_derivative_X_mul_self_of_splits_nonneg
+          apply RealRooted.strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg
           case hf => rr_lookup
           case hdeg => rr_lookup [rr_degree]
           case hfnn => rr_lookup [rr_nonneg]))
@@ -498,12 +498,12 @@ macro_rules
         lag_coeff_pos := $ha:term,
         derivative_coeff_pos := $hc:term) =>
       `(tactic|
-        exact RealRooted.prec_wagner_derivative_gap_lag_step
+        exact RealRooted.strictInterl_wagner_derivative_gap_lag_step
           $hprec $hfnn $hgnn $hdeg $ha $hc)
   | `(tactic| rr_prec_wagner_derivative_gap_lag) =>
       `(tactic|
         exact (by
-          apply RealRooted.prec_wagner_derivative_gap_lag_step
+          apply RealRooted.strictInterl_wagner_derivative_gap_lag_step
           case h => rr_lookup [rr_base_prec]
           case hfnn => rr_lookup [rr_nonneg]
           case hgnn => rr_lookup [rr_nonneg]
@@ -532,7 +532,7 @@ macro_rules
         derivative_coeff_pos := $hc:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.prec_wagner_derivative_gap_lag_sequence
+        exact RealRooted.strictInterl_wagner_derivative_gap_lag_sequence
           $hbase $hnonneg $hdeg $ha $hc $hrec)
   | `(tactic|
       rr_prec_wagner_derivative_gap_lag_sequence_realrooted using
@@ -544,7 +544,7 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
+          (RealRooted.isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence
             $hbase $hnonneg $hdeg $ha $hc $hrec))
   | `(tactic|
       rr_prec_wagner_derivative_gap_lag_sequence_den using
@@ -580,9 +580,9 @@ macro_rules
         lag_coeff_nonneg := $hc:term) =>
       `(tactic|
         rr_first_exact_or_simpa_mul_add_assoc
-          (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
+          (RealRooted.strictInterl_pos_X_lag_combo_of_strictInterl_nonneg
             $hprec $hfnn $hgnn $ha $hc),
-          (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
+          (RealRooted.strictInterl_pos_X_lag_combo_of_strictInterl_nonneg
             $hprec $hfnn $hgnn $ha $hc))
   | `(tactic|
       rr_prec_pos_X_lag_combo using
@@ -593,9 +593,9 @@ macro_rules
         lag_coeff_pos := $hc:term) =>
       `(tactic|
         rr_first_exact_or_simpa_mul_add_assoc
-          (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
+          (RealRooted.strictInterl_pos_X_lag_combo_of_strictInterl_nonneg
             $hprec $hfnn $hgnn $ha ($hc).le),
-          (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
+          (RealRooted.strictInterl_pos_X_lag_combo_of_strictInterl_nonneg
             $hprec $hfnn $hgnn $ha ($hc).le))
   | `(tactic|
       rr_prec_pos_X_lag_sequence using
@@ -605,7 +605,7 @@ macro_rules
         lag_coeff_nonneg := $hc:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.prec_pos_X_lag_combo_sequence
+        exact RealRooted.strictInterl_pos_X_lag_combo_sequence
           $hbase $hnonneg $ha $hc $hrec)
   | `(tactic|
       rr_prec_pos_X_lag_sequence_auto using
@@ -614,11 +614,11 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         rr_first_exact
-          (RealRooted.prec_pos_X_lag_combo_sequence
+          (RealRooted.strictInterl_pos_X_lag_combo_sequence
               (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
               $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
               (rr_wagner_recurrence_seq $hrec)),
-          (RealRooted.prec_pos_X_lag_combo_sequence
+          (RealRooted.strictInterl_pos_X_lag_combo_sequence
             $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_coeff_sequence_auto using
@@ -628,7 +628,7 @@ macro_rules
         nonneg_coeffs := $hnonneg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.prec_pos_X_lag_combo_sequence
+        exact RealRooted.strictInterl_pos_X_lag_combo_sequence
           (a := $a) (c := $c)
           $hbase $hnonneg rr_side_pos_seq_term rr_side_nonneg_seq_term
           (rr_wagner_recurrence_seq $hrec))
@@ -678,7 +678,7 @@ macro_rules
         lag_coeff_nonneg := $hc:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.prec_pos_X_sub_C_lag_combo_sequence
+        exact RealRooted.strictInterl_pos_X_sub_C_lag_combo_sequence
           (r := $r) $hbase $hnonneg $ha $hc $hrec)
   | `(tactic|
       rr_prec_pos_X_sub_C_lag_sequence_realrooted using
@@ -710,7 +710,7 @@ macro_rules
         nonneg_coeffs := $hnonneg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.prec_pos_X_lag_combo_sequence
+        exact RealRooted.strictInterl_pos_X_lag_combo_sequence
           (a := $a) (c := fun _ => (1 : ℝ))
           $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
           (rr_wagner_recurrence_seq $hrec))
@@ -733,7 +733,7 @@ macro_rules
         nonneg_coeffs := $hnonneg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.prec_pos_X_lag_combo_sequence
+        exact RealRooted.strictInterl_pos_X_lag_combo_sequence
           (a := $c) (c := $c)
           $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
           (rr_wagner_recurrence_seq $hrec))

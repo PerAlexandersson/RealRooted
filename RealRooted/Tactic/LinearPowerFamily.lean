@@ -277,7 +277,7 @@ macro_rules
         right_nonneg := $hgnn:term,
         index := $n:term) =>
       `(tactic|
-        exact RealRooted.prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg
+        exact RealRooted.strictInterl_X_pow_mul_X_pow_succ_of_reverse_strictInterl_nonneg
           $hgf $hfnn $hgnn $n)
 end Tactic
 end RealRooted

@@ -770,7 +770,6 @@ export MaWangInternal
     exists_isRoot_le_of_eval_nonneg_of_tendsto_atBot_atBot
     strictInterl_of_strict_signs_of_endSigns_even
     strictInterl_of_strict_signs_of_endSigns_odd
-    prec_of_strict_signs_of_endSigns_even
     strictInterl_of_strict_signs_of_endSigns_odd)
 
 end RealRooted
