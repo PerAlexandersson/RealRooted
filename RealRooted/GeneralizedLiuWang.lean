@@ -259,26 +259,23 @@ theorem strictInterl_generalizedLiuWang_of_no_common
 
 /-- Finite-sum Liu--Wang criterion in the weak-sign, no-common-roots regime.
 
-The strict theorem above is already formalized. This statement packages the
+The strict theorem above is already formalized. This theorem covers the
 weak-sign version where every coefficient is only assumed nonpositive at roots
 of `f`, with a distinguished head interlacer `g` and no common root between
 `f` and `g`. -/
-def generalizedLiuWangCriterionStatement : Prop :=
-  ∀ {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])},
-    Interlaces g f →
-    HasPosLeadingCoeff g →
-    (∀ bg ∈ l, Interlaces bg.2 f) →
-    (∀ bg ∈ l, HasPosLeadingCoeff bg.2) →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    (∀ r, f.IsRoot r → b.eval r ≤ 0) →
-    (∀ bg ∈ l, ∀ r : ℝ, f.IsRoot r → bg.1.eval r ≤ 0) →
-    HasPosLeadingCoeff (a * f + polynomialWeightedSum ((b, g) :: l)) →
-    f.natDegree ≤ (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree →
-    (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree ≤ f.natDegree + 1 →
-    StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l))
-
 theorem generalizedLiuWangCriterion :
-    generalizedLiuWangCriterionStatement := by
+    ∀ {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])},
+      Interlaces g f →
+      HasPosLeadingCoeff g →
+      (∀ bg ∈ l, Interlaces bg.2 f) →
+      (∀ bg ∈ l, HasPosLeadingCoeff bg.2) →
+      (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+      (∀ r, f.IsRoot r → b.eval r ≤ 0) →
+      (∀ bg ∈ l, ∀ r : ℝ, f.IsRoot r → bg.1.eval r ≤ 0) →
+      HasPosLeadingCoeff (a * f + polynomialWeightedSum ((b, g) :: l)) →
+      f.natDegree ≤ (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree →
+      (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree ≤ f.natDegree + 1 →
+      StrictInterl f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   intro f g a b l hgf hg_pos hl_inter hl_pos hno hb_nonpos hl_nonpos hF_pos hdeg_lo hdeg_hi
   exact strictInterl_generalizedLiuWang_of_no_common
     hgf hg_pos hl_inter hl_pos hl_nonpos hF_pos hdeg_lo hdeg_hi hno hb_nonpos

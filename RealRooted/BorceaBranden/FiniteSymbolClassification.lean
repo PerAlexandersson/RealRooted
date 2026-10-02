@@ -567,19 +567,13 @@ theorem HasStableRankOneRepresentation.preservesComplexStabilityOnDegreeBox
 
 /-- Borcea--Brändén, Theorem 1.1: a complex linear operator on a finite degree
 box preserves upper-half-plane stability if and only if it has a stable
-rank-at-most-one representation or its finite algebraic symbol is stable.
-
-This proposition packages the checked classification theorem below. -/
-def finiteComplexSymbolClassificationStatement : Prop :=
-  ∀ (σ : Type) [Fintype σ] (κ : σ → ℕ)
-      (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ),
-    PreservesComplexStabilityOnDegreeBox κ T ↔
-      HasStableRankOneRepresentation κ T ∨
-        MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T)
-
-/-- Borcea--Brändén finite complex-symbol classification. -/
+rank-at-most-one representation or its finite algebraic symbol is stable. -/
 theorem finiteComplexSymbolClassification :
-    finiteComplexSymbolClassificationStatement := by
+    ∀ (σ : Type) [Fintype σ] (κ : σ → ℕ)
+        (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ),
+      PreservesComplexStabilityOnDegreeBox κ T ↔
+        HasStableRankOneRepresentation κ T ∨
+          MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T) := by
   intro σ _ κ T
   constructor
   · exact rankOne_or_algebraicSymbol_stable_of_preserves
@@ -589,19 +583,15 @@ theorem finiteComplexSymbolClassification :
       exact RealRooted.BorceaBranden.finiteSymbol_preserves_stability_general
         κ T hSymbol p hp
 
-/-- Outside the rank-at-most-one alternative, the main classification has the
-familiar form: an operator preserves stability if and only if its algebraic
-symbol is stable. -/
-def finiteComplexSymbolIffStatement : Prop :=
-  ∀ (σ : Type) [Fintype σ] (κ : σ → ℕ)
-      (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ),
-    ¬HasStableRankOneRepresentation κ T →
-      (PreservesComplexStabilityOnDegreeBox κ T ↔
-        MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T))
-
-/-- Non-rank-one form of the complex finite-symbol classification. -/
+/-- Outside the rank-at-most-one alternative, the complex finite-symbol
+classification has the familiar form: an operator preserves stability if and
+only if its algebraic symbol is stable. -/
 theorem finiteComplexSymbolIff :
-    finiteComplexSymbolIffStatement := by
+    ∀ (σ : Type) [Fintype σ] (κ : σ → ℕ)
+        (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ),
+      ¬HasStableRankOneRepresentation κ T →
+        (PreservesComplexStabilityOnDegreeBox κ T ↔
+          MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T)) := by
   intro σ _ κ T hrank
   rw [finiteComplexSymbolClassification σ κ T]
   simp only [hrank, false_or]

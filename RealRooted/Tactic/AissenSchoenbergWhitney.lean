@@ -66,8 +66,7 @@ macro_rules
       rr_asw_pf_polynomial using
         pf_coeff := $hpf:term) =>
       `(tactic|
-        exact RealRooted.IsPFPolynomial.of_sequence
-          RealRooted.aissenSchoenbergWhitneyForwardOrZero $hpf)
+        exact RealRooted.IsPFPolynomial.of_polyaFreqSeq $hpf)
 
 end Tactic
 end RealRooted

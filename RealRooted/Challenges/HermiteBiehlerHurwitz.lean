@@ -143,9 +143,7 @@ theorem classicalHurwitzLinearPair_isTotallyNonneg :
   rw [show (Polynomial.X + 2 : ℝ[X]) = Polynomial.X + Polynomial.C 2 by rw [map_ofNat],
     show (Polynomial.X + 1 : ℝ[X]) = Polynomial.X + Polynomial.C 1 by rw [map_one]]
   apply Matrix.hurwitz_isTotallyNonneg_of_hurwitzStable
-  apply RealRooted.nonnegStrictInterlToHurwitzOddEven_of_hermiteBiehlerPos
-    @RealRooted.hermiteBiehlerForwardPos
-    @RealRooted.hermiteBiehlerStableToHurwitzOddEven
+  apply RealRooted.isHurwitzStable_oddEvenPolynomial_of_strictInterl
   · exact RealRooted.hasNonnegCoeffs_X_add_C (by norm_num)
   · exact RealRooted.hasNonnegCoeffs_X_add_C (by norm_num)
   · rw [RealRooted.StrictInterl.X_add_C_iff]

@@ -11,15 +11,14 @@ This file starts the formalization of Athanasiadis--Wagner's Veronese-section
 results.  It contains the coefficient-level core: Veronese subsequences
 preserve Toeplitz total nonnegativity, by identifying each Toeplitz minor with
 a subminor of the original Toeplitz matrix.  It also records the two-row Lace
-submatrix statements and conditional polynomial wrappers around
-Aissen--Schoenberg--Whitney, Hermite--Biehler, and Hurwitz-matrix interfaces.
+submatrix statements, the refuted row orientation of the polynomial-to-Lace
+direction, and the converse Hermite--Biehler step for odd/even polynomials.
 
 The unconditional real-rootedness theorem for Veronese sections of
 real-rooted polynomials with nonnegative coefficients is proved separately in
 `RealRooted.VeroneseMatrix`, using a cyclic matrix and interlacing-preserver
 argument.  This file should therefore be read as the Athanasiadis--Wagner
-background and conditional fully-interlacing route, not as the final matrix
-proof of that real-rootedness consequence.
+background, not as the final matrix proof of that real-rootedness consequence.
 -/
 
 open Polynomial Matrix
@@ -549,41 +548,16 @@ theorem fullyInterlacingPair_veronesePairSectionPolynomial_coeff
     coeff_function_veronesePairSectionPolynomial (p := p) (q := q) (i := j) hr] using
     fullyInterlacingPair_veroneseSectionPairwise hfull hr hij hj
 
-/-! ## Conditional bridge to polynomial interlacing -/
+/-! ## Polynomial interlacing and the two-row Lace matrix
 
-/- The former unprefixed polynomial-to-Lace and Hurwitz-to-Lace statement
-names were retired after counterexamples showed that row order to be false.
-The remaining row-oriented false interfaces carry a `Legacy` prefix; new work
-should use the orientation-explicit reverse-row targets below or a genuinely
-corrected matrix orientation. -/
+The row order of `lacePair` is reversed relative to the polynomial-to-Lace
+direction: the strictly interlacing nonnegative pair `X + 2`, `X + 1` has a
+negative `2 × 2` Lace minor.  The propositions carrying a `Legacy` prefix record
+that refuted orientation and sit beside their checked negations. -/
 
-/-- Legacy candidate interface for the polynomial-to-lace direction.
-
-This is stronger than the Athanasiadis--Wagner polynomial setting: plain
-`StrictInterl p q` does not include nonnegative coefficients or the AESW/PF condition.
-It is false for the current row orientation; see
-`not_strictInterlToFullyInterlacingPairStatement` below. -/
-def LegacyStrictInterlToFullyInterlacingPairStatement : Prop :=
-  ∀ {p q : ℝ[X]}, StrictInterl p q →
-    FullyInterlacingPair p.coeff q.coeff
-
-/-- Legacy polynomial-to-lace interface in the AESW/Pólya-frequency regime
-used by Athanasiadis--Wagner.
-
-This statement is also false for the current row orientation; see
-`not_legacyPfStrictInterlToFullyInterlacingPairStatement` below. -/
-def LegacyPfStrictInterlToFullyInterlacingPairStatement : Prop :=
-  ∀ {p q : ℝ[X]},
-    IsPolyaFreqSeq p.coeff →
-    IsPolyaFreqSeq q.coeff →
-    StrictInterl p q →
-    FullyInterlacingPair p.coeff q.coeff
-
-/-- Legacy polynomial-to-lace interface in the real-rooted,
-nonnegative-coefficient regime.
-
-This statement is false for the current row orientation; see
-`not_legacyNonnegStrictInterlToFullyInterlacingPairStatement` below. -/
+/-- Polynomial-to-Lace implication in the historical row orientation.  It is
+false; see `not_legacyNonnegStrictInterlToFullyInterlacingPairStatement`.  It is
+kept only because `RealRooted.Hadamard.Consequences` still mentions it. -/
 def LegacyNonnegStrictInterlToFullyInterlacingPairStatement : Prop :=
   ∀ {p q : ℝ[X]},
     HasNonnegCoeffs p →
@@ -591,32 +565,29 @@ def LegacyNonnegStrictInterlToFullyInterlacingPairStatement : Prop :=
     StrictInterl p q →
     FullyInterlacingPair p.coeff q.coeff
 
-/-- Orientation-explicit replacement target for the strong polynomial-to-lace
-direction with reversed Lace rows.
-
-The legacy target `FullyInterlacingPair p.coeff q.coeff` is refuted by
-`p = X + 2`, `q = X + 1`.  This definition records the reversed row order so
-future bridges do not silently reuse the known-false orientation. -/
-def StrictInterlToReverseFullyInterlacingPairStatement : Prop :=
-  ∀ {p q : ℝ[X]}, StrictInterl p q →
-    FullyInterlacingPair q.coeff p.coeff
-
-/-- Orientation-explicit PF polynomial-to-lace target with reversed Lace rows.
--/
-def PfStrictInterlToReverseFullyInterlacingPairStatement : Prop :=
-  ∀ {p q : ℝ[X]},
-    IsPolyaFreqSeq p.coeff →
-    IsPolyaFreqSeq q.coeff →
-    StrictInterl p q →
-    FullyInterlacingPair q.coeff p.coeff
-
-/-- Orientation-explicit nonnegative-coefficient polynomial-to-lace target with
-reversed Lace rows. -/
-def NonnegStrictInterlToReverseFullyInterlacingPairStatement : Prop :=
-  ∀ {p q : ℝ[X]},
+/-- Nonnegative-coefficient Hurwitz odd/even implication.  It is proved as
+`isHurwitzStable_oddEvenPolynomial_of_strictInterl`; the proposition is kept
+only because `RealRooted.Hadamard.Consequences` still mentions it. -/
+def NonnegStrictInterlToHurwitzOddEvenStatement : Prop :=
+  ∀ ⦃p q : ℝ[X]⦄,
     HasNonnegCoeffs p →
     HasNonnegCoeffs q →
     StrictInterl p q →
+    IsHurwitzStable (oddEvenPolynomial p q)
+
+/-- Hurwitz-to-Lace implication in the historical row orientation.  It is
+false; see `not_hurwitzOddEvenToFullyInterlacingPairStatement`.  It is kept
+only because `RealRooted.Hadamard.Consequences` still mentions it. -/
+def LegacyHurwitzOddEvenToFullyInterlacingPairStatement : Prop :=
+  ∀ ⦃p q : ℝ[X]⦄,
+    IsHurwitzStable (oddEvenPolynomial p q) →
+    FullyInterlacingPair p.coeff q.coeff
+
+/-- Unproved target: Hurwitz stability of `q(x^2) + x p(x^2)` makes the
+reversed two-row Lace matrix of `q` and `p` totally nonnegative. -/
+def HurwitzOddEvenToReverseFullyInterlacingPairStatement : Prop :=
+  ∀ ⦃p q : ℝ[X]⦄,
+    IsHurwitzStable (oddEvenPolynomial p q) →
     FullyInterlacingPair q.coeff p.coeff
 
 /-- The linear pair `X + 2`, `X + 1` violates the current Lace orientation:
@@ -646,300 +617,57 @@ theorem not_legacyNonnegStrictInterlToFullyInterlacingPairStatement :
     (h (p := X + C (2 : ℝ)) (q := X + C (1 : ℝ)) hpnn hqnn
       strictInterl_X_add_C_two_one)
 
-/-- Hermite--Biehler/Hurwitz bridge target for producing the polynomial
-`q(x^2) + x p(x^2)` from an AESW interlacing pair. -/
-def PfStrictInterlToHurwitzOddEvenStatement : Prop :=
-  ∀ {p q : ℝ[X]},
-    IsPolyaFreqSeq p.coeff →
-    IsPolyaFreqSeq q.coeff →
-    StrictInterl p q →
-    IsHurwitzStable (oddEvenPolynomial p q)
+/-- The odd/even polynomial `q(x^2) + x p(x^2)` of a strictly interlacing pair
+with nonnegative coefficients is Hurwitz stable, by the sign-normalized
+Hermite--Biehler theorem. -/
+theorem isHurwitzStable_oddEvenPolynomial_of_strictInterl {p q : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q) (hpq : StrictInterl p q) :
+    IsHurwitzStable (oddEvenPolynomial p q) :=
+  ⟨hasNonnegCoeffs_oddEvenPolynomial hpnn hqnn,
+    hermiteBiehlerStableToHurwitzOddEven hpnn hqnn
+      (hermiteBiehlerForwardPos (hqnn.pos_leadingCoeff hpq.2.1.1)
+        (hpnn.pos_leadingCoeff hpq.1.1) hpq)⟩
 
-/-- Nonnegative-coefficient version of the Hurwitz odd/even bridge.
-
-This is the useful polynomial setting for the sign-normalized
-Hermite--Biehler route: `StrictInterl p q` already supplies nonzeroness, while
-nonnegative coefficients supply positive leading coefficients. -/
-def NonnegStrictInterlToHurwitzOddEvenStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    HasNonnegCoeffs p →
-    HasNonnegCoeffs q →
-    StrictInterl p q →
-    IsHurwitzStable (oddEvenPolynomial p q)
-
-/-- Legacy Hurwitz-to-Lace bridge candidate for the current row-oriented Lace
-matrix.  This statement is false for the current row orientation; see
-`not_hurwitzOddEvenToFullyInterlacingPairStatement` below. -/
-def LegacyHurwitzOddEvenToFullyInterlacingPairStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    IsHurwitzStable (oddEvenPolynomial p q) →
-    FullyInterlacingPair p.coeff q.coeff
-
-/-- Orientation-explicit Hurwitz-to-Lace target with reversed Lace rows.  This
-is a replacement target to investigate instead of the known-false legacy row
-order. -/
-def HurwitzOddEvenToReverseFullyInterlacingPairStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    IsHurwitzStable (oddEvenPolynomial p q) →
-    FullyInterlacingPair q.coeff p.coeff
-
-/-- Legacy row-oriented forward Hurwitz-matrix criterion.  It is false for the
-current coefficient convention; see
-`not_hurwitzStableToMatrixTotallyNonnegativeStatement`. -/
-abbrev LegacyHurwitzStableToMatrixTotallyNonnegativeStatement : Prop :=
-  ∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg
-
-/-- The legacy strong interface implies the PF interface. -/
-theorem pfStrictInterlToFullyInterlacingPair_of_strictInterlToFully
-    (h : LegacyStrictInterlToFullyInterlacingPairStatement) :
-    LegacyPfStrictInterlToFullyInterlacingPairStatement :=
-  fun _ _ => h
-
-/-- The legacy strong interface implies the nonnegative-coefficient interface. -/
-theorem nonnegStrictInterlToFullyInterlacingPair_of_strictInterlToFully
-    (h : LegacyStrictInterlToFullyInterlacingPairStatement) :
-    LegacyNonnegStrictInterlToFullyInterlacingPairStatement :=
-  fun _ _ => h
-
-/-- Reverse ASW turns the PF bridge into the nonnegative-coefficient bridge,
-because real-rooted polynomials with nonnegative coefficients have all roots
-nonpositive. -/
-theorem nonnegStrictInterlToFullyInterlacingPair_of_pfStrictInterl
-    (hPfToFull : LegacyPfStrictInterlToFullyInterlacingPairStatement) :
-    LegacyNonnegStrictInterlToFullyInterlacingPairStatement :=
-  fun hpnn hqnn hpq =>
-    hPfToFull
-    (aissenSchoenbergWhitney_reverse hpnn hpq.1.2 (roots_nonpos_of_nonneg_coeffs hpq.1.2 hpnn))
-    (aissenSchoenbergWhitney_reverse hqnn hpq.2.1.2 (roots_nonpos_of_nonneg_coeffs hpq.2.1.2 hqnn))
-    hpq
-
-/-- The orientation-explicit strong reverse interface implies the PF reverse
-interface. -/
-theorem pfStrictInterlToReverseFullyInterlacingPair_of_strictInterlToReverseFully
-    (h : StrictInterlToReverseFullyInterlacingPairStatement) :
-    PfStrictInterlToReverseFullyInterlacingPairStatement :=
-  fun _ _ => h
-
-/-- The orientation-explicit strong reverse interface implies the
-nonnegative-coefficient reverse interface. -/
-theorem nonnegStrictInterlToReverseFullyInterlacingPair_of_strictInterlToReverseFully
-    (h : StrictInterlToReverseFullyInterlacingPairStatement) :
-    NonnegStrictInterlToReverseFullyInterlacingPairStatement :=
-  fun _ _ => h
-
-/-- Reverse ASW turns the PF reverse bridge into the nonnegative-coefficient
-reverse bridge, because real-rooted polynomials with nonnegative coefficients
-have all roots nonpositive. -/
-theorem nonnegStrictInterlToReverseFullyInterlacingPair_of_pfStrictInterl
-    (hPfToFull : PfStrictInterlToReverseFullyInterlacingPairStatement) :
-    NonnegStrictInterlToReverseFullyInterlacingPairStatement :=
-  fun hpnn hqnn hpq =>
-    hPfToFull
-    (aissenSchoenbergWhitney_reverse hpnn hpq.1.2 (roots_nonpos_of_nonneg_coeffs hpq.1.2 hpnn))
-    (aissenSchoenbergWhitney_reverse hqnn hpq.2.1.2 (roots_nonpos_of_nonneg_coeffs hpq.2.1.2 hqnn))
-    hpq
-
-/-- `LegacyStrictInterlToFullyInterlacingPairStatement` is false as stated. -/
-theorem not_strictInterlToFullyInterlacingPairStatement :
-    ¬ LegacyStrictInterlToFullyInterlacingPairStatement :=
-  fun h => not_legacyNonnegStrictInterlToFullyInterlacingPairStatement
-    (nonnegStrictInterlToFullyInterlacingPair_of_strictInterlToFully h)
-
-/-- `LegacyPfStrictInterlToFullyInterlacingPairStatement` is false as stated. -/
-theorem not_legacyPfStrictInterlToFullyInterlacingPairStatement :
-    ¬ LegacyPfStrictInterlToFullyInterlacingPairStatement :=
-  fun h => not_legacyNonnegStrictInterlToFullyInterlacingPairStatement
-    (nonnegStrictInterlToFullyInterlacingPair_of_pfStrictInterl h)
-
-/-- Positive-leading-coefficient form used when zero coefficients are ruled out
-explicitly. -/
-theorem pfStrictInterlToHurwitzOddEven_of_hermiteBiehlerPosCoeffs
-    (hHB : hermiteBiehlerForwardPosStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement) :
-    ∀ {p q : ℝ[X]},
-      HasNonnegCoeffs p →
-      HasNonnegCoeffs q →
-      p ≠ 0 →
-      q ≠ 0 →
-      StrictInterl p q →
-      IsHurwitzStable (oddEvenPolynomial p q) := fun {p q} hpnn hqnn hp0 hq0 hpq => by
-  have hp : HasPosLeadingCoeff p :=
-    hpnn.pos_leadingCoeff hp0
-  have hq : HasPosLeadingCoeff q :=
-    hqnn.pos_leadingCoeff hq0
-  refine ⟨hasNonnegCoeffs_oddEvenPolynomial hpnn hqnn, ?_⟩
-  exact hHBToHurwitz hpnn hqnn (hHB (f := q) (g := p) hq hp hpq)
-
-/-- Sign-normalized Hermite--Biehler gives the nonnegative-coefficient
-Hurwitz odd/even bridge. -/
-theorem nonnegStrictInterlToHurwitzOddEven_of_hermiteBiehlerPos
-    (hHB : hermiteBiehlerForwardPosStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement) :
-    NonnegStrictInterlToHurwitzOddEvenStatement :=
-  fun ⦃_ _⦄ hpnn hqnn hpq =>
-    pfStrictInterlToHurwitzOddEven_of_hermiteBiehlerPosCoeffs hHB hHBToHurwitz
-      hpnn hqnn hpq.1.1 hpq.2.1.1 hpq
-
-/-- Sign-normalized Hermite--Biehler also gives the PF/AESW Hurwitz odd/even
-bridge, since PF coefficients are nonnegative. -/
-theorem pfStrictInterlToHurwitzOddEven_of_hermiteBiehlerPos
-    (hHB : hermiteBiehlerForwardPosStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement) :
-    PfStrictInterlToHurwitzOddEvenStatement :=
-  fun hppf hqpf =>
-    nonnegStrictInterlToHurwitzOddEven_of_hermiteBiehlerPos hHB hHBToHurwitz hppf.nonneg hqpf.nonneg
-
-/-- The planned Hermite--Biehler/Hurwitz route implies the PF polynomial-to-Lace
-bridge. -/
-theorem pfStrictInterlToFullyInterlacingPair_of_hurwitzOddEven
-    (hStrictInterlToHurwitz : PfStrictInterlToHurwitzOddEvenStatement)
-    (hHurwitzToFull : LegacyHurwitzOddEvenToFullyInterlacingPairStatement) :
-    LegacyPfStrictInterlToFullyInterlacingPairStatement :=
-  fun hppf hqpf hpq => hHurwitzToFull (hStrictInterlToHurwitz hppf hqpf hpq)
-
-/-- The nonnegative-coefficient Hurwitz odd/even bridge implies the
-nonnegative-coefficient polynomial-to-Lace bridge. -/
-theorem nonnegStrictInterlToFullyInterlacingPair_of_hurwitzOddEvenDirect
-    (hStrictInterlToHurwitz : NonnegStrictInterlToHurwitzOddEvenStatement)
-    (hHurwitzToFull : LegacyHurwitzOddEvenToFullyInterlacingPairStatement) :
-    LegacyNonnegStrictInterlToFullyInterlacingPairStatement :=
-  fun hpnn hqnn hpq => hHurwitzToFull (hStrictInterlToHurwitz hpnn hqnn hpq)
-
-/-- `LegacyHurwitzOddEvenToFullyInterlacingPairStatement` is false for the current
-row-oriented Lace matrix. -/
+/-- `LegacyHurwitzOddEvenToFullyInterlacingPairStatement` is false for the
+current row-oriented Lace matrix. -/
 theorem not_hurwitzOddEvenToFullyInterlacingPairStatement :
-    ¬ LegacyHurwitzOddEvenToFullyInterlacingPairStatement := by
-  intro h
-  exact not_legacyNonnegStrictInterlToFullyInterlacingPairStatement
-    (nonnegStrictInterlToFullyInterlacingPair_of_hurwitzOddEvenDirect
-      (nonnegStrictInterlToHurwitzOddEven_of_hermiteBiehlerPos
-        @hermiteBiehlerForwardPos @hermiteBiehlerStableToHurwitzOddEven)
-      h)
-
-/-- Combining reverse ASW with the Hermite--Biehler/Hurwitz route gives the
-nonnegative-coefficient polynomial-to-Lace bridge. -/
-theorem nonnegStrictInterlToFullyInterlacingPair_of_hurwitzOddEven
-    (hStrictInterlToHurwitz : PfStrictInterlToHurwitzOddEvenStatement)
-    (hHurwitzToFull : LegacyHurwitzOddEvenToFullyInterlacingPairStatement) :
-    LegacyNonnegStrictInterlToFullyInterlacingPairStatement :=
-  nonnegStrictInterlToFullyInterlacingPair_of_pfStrictInterl
-    (pfStrictInterlToFullyInterlacingPair_of_hurwitzOddEven hStrictInterlToHurwitz hHurwitzToFull)
+    ¬ LegacyHurwitzOddEvenToFullyInterlacingPairStatement := fun h =>
+  not_legacyNonnegStrictInterlToFullyInterlacingPairStatement fun hpnn hqnn hpq =>
+    h (isHurwitzStable_oddEvenPolynomial_of_strictInterl hpnn hqnn hpq)
 
 /-- The forward Hurwitz-matrix criterion is false for the row orientation used
-by `hurwitz`: together with the checked Hermite--Biehler bridges it would imply
-the refuted polynomial-to-Lace interface. -/
-theorem not_hurwitzStableToMatrixTotallyNonnegativeStatement :
-    ¬ LegacyHurwitzStableToMatrixTotallyNonnegativeStatement := by
-  intro h
-  exact not_legacyNonnegStrictInterlToFullyInterlacingPairStatement
-    (fun hpnn hqnn hpq =>
-      (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair _ _).1
-        (h (nonnegStrictInterlToHurwitzOddEven_of_hermiteBiehlerPos
-          @hermiteBiehlerForwardPos @hermiteBiehlerStableToHurwitzOddEven
-          hpnn hqnn hpq)))
+by `hurwitz`: Hurwitz stability does not force the row-oriented Hurwitz matrix
+to be totally nonnegative. -/
+theorem not_forall_isHurwitzStable_hurwitz_isTotallyNonneg :
+    ¬ ∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg := fun h =>
+  not_legacyNonnegStrictInterlToFullyInterlacingPairStatement fun hpnn hqnn hpq =>
+    (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair _ _).1
+      (h (isHurwitzStable_oddEvenPolynomial_of_strictInterl hpnn hqnn hpq))
 
-/-- Zero-aware interface from the two-row Lace condition back to polynomial
-interlacing.  This is the conservative target, since a Veronese section may be
-the zero polynomial. -/
+/-- Unproved Lace-to-polynomial interface in the historical row orientation.
+It is kept only because `RealRooted.Hadamard.Consequences` still mentions it.
+It is expected to be false: numerically `lacePair (X + 1).coeff (X + 2).coeff`
+has no negative minor, while `Interl (X + 1) (X + 2)` fails. -/
 def FullyInterlacingPairToInterlStatement : Prop :=
   ∀ {p q : ℝ[X]},
     FullyInterlacingPair p.coeff q.coeff → Interl p q
 
-/-- Strict interface from the two-row Lace condition back to polynomial
-interlacing.  This is useful in nondegenerate applications where the relevant
-sections are known to be nonzero. -/
-def FullyInterlacingPairToStrictInterlStatement : Prop :=
-  ∀ {p q : ℝ[X]},
-    FullyInterlacingPair p.coeff q.coeff → StrictInterl p q
-
-/-- Interlacing-extraction interface for the converse lace-to-polynomial
-bridge.  Given two nonzero polynomials whose coefficient sequences form a
-fully interlacing pair, the two-row Lace total-nonnegativity certificate should
-produce sorted root lists witnessing the interlacing root configuration of
-`StrictInterl`.
-
-This isolates the genuinely combinatorial heart of the converse direction:
-total nonnegativity of the cross `2 × 2` Lace minors forces the roots of the
-two polynomials to interlace.  Real-rootedness itself, the `Splits` part of
-`StrictInterl`, is supplied separately by the forward Aissen--Schoenberg--Whitney
-theorem, so this statement only asks for the interlacing data. -/
-def FullyInterlacingPairInterlaceStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 →
-    FullyInterlacingPair p.coeff q.coeff →
-    ∃ ss rs : List ℝ,
-      ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
-      (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧
-        ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
-          (ss.length = rs.length ∧ ListAlternates ss rs))
-
-/-- Checked reduction for the converse lace-to-interlacing bridge.
-
-The zero-aware target `FullyInterlacingPairToInterlStatement` follows from two
-classical inputs:
-
-* the forward Aissen--Schoenberg--Whitney theorem
-  `aissenSchoenbergWhitneyForward`, which turns the two
-  Pólya-frequency coefficient rows (`FullyInterlacingPair.left_pf` and
-  `FullyInterlacingPair.right_pf`) into real-rootedness of each polynomial; and
-* the interlacing-extraction interface `FullyInterlacingPairInterlaceStatement`,
-  which supplies the interlacing root data from the cross Lace minors.
-
-The zero polynomial cases are discharged directly by `interl_zero_left` and
-`interl_zero_right`. -/
-theorem fullyInterlacingPairToInterl_of_forwardASW_interlace
-    (hInt : FullyInterlacingPairInterlaceStatement) :
-    FullyInterlacingPairToInterlStatement := fun {p q} hfull => by
-  rcases eq_or_ne p 0 with rfl | hp0
-  · exact interl_zero_left q
-  rcases eq_or_ne q 0 with rfl | hq0
-  · exact interl_zero_right p
-  refine Or.inr (Or.inr ?_)
-  have hp_pf : IsPolyaFreqSeq p.coeff := hfull.left_pf
-  have hq_pf : IsPolyaFreqSeq q.coeff := hfull.right_pf
-  have hp_split := (aissenSchoenbergWhitneyForward hp_pf).1
-  have hq_split := (aissenSchoenbergWhitneyForward hq_pf).1
-  obtain ⟨ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hInt hp0 hq0 hfull
-  exact ⟨⟨hp0, hp_split⟩, ⟨hq0, hq_split⟩, ss, rs, hss, hrs,
-    hss_eq, hrs_eq, hshape⟩
-
-/-- Converse Hurwitz-matrix interface specialized to the odd/even polynomial.
-
-This is the orientation of the classical total-nonnegativity criterion needed
-for the converse Lace bridge: total nonnegativity of the two-row Lace matrix of
-`p` and `q`, equivalently of the Hurwitz matrix of `q(x^2) + x p(x^2)`, forces
-Hurwitz stability of `q(x^2) + x p(x^2)` when that odd/even polynomial is
-nonzero. It is the exact converse of the forward interface
-`LegacyHurwitzOddEvenToFullyInterlacingPairStatement` and follows from the matrix
-Hurwitz criterion
-`LegacyHurwitzMatrixTotallyNonnegativeToStableStatement` via
-`hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair`. -/
+/-- Lace-to-Hurwitz interface in the historical row orientation.  It is kept
+only because `RealRooted.HurwitzMatrix` still mentions it.  It is expected to
+be false: numerically `lacePair (X + 1).coeff (X + 2).coeff` has no negative
+minor, while `X^3 + X^2 + X + 2` is not Hurwitz stable. -/
 def LegacyFullyInterlacingPairToHurwitzOddEvenStableStatement : Prop :=
   ∀ ⦃p q : ℝ[X]⦄,
     p ≠ 0 ∨ q ≠ 0 →
     FullyInterlacingPair p.coeff q.coeff →
     IsHurwitzStable (oddEvenPolynomial p q)
 
-/-- Analytic converse interface (converse Hermite--Biehler / Hurwitz step).
+/-! ## Converse Hermite--Biehler step for odd/even polynomials -/
 
-Hurwitz stability of the odd/even polynomial `q(x^2) + x p(x^2)` of two nonzero
-polynomials forces interlacing `StrictInterl p q`. This isolates the genuinely
-analytic heart of the converse direction: once the two-row Lace certificate has
-been turned into Hurwitz stability of `q(x^2) + x p(x^2)`, the roots of `p` and
-`q` interlace in the `p ≪ q` orientation. Real-rootedness (`Splits`) is part of
-`StrictInterl`, so it is supplied here as well. -/
-def HurwitzStableOddEvenToStrictInterlStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 →
-    IsHurwitzStable (oddEvenPolynomial p q) → StrictInterl p q
-
-/-- Converse analytic substitution interface (converse of
-`HermiteBiehlerStableToHurwitzOddEvenStatement`).
-
-Right-half-plane stability of the odd/even polynomial `q(x^2) + x p(x^2)`
-forces upper-half-plane stability of the Hermite--Biehler combination
-`q + i p`.  This is the exact reverse of the classical conformal-substitution
-bridge `HermiteBiehlerStableToHurwitzOddEvenStatement`, recovering the
-Hermite--Biehler factor from the Hurwitz factor by inverting the quadratic
-substitution `z ↦ z^2`. -/
+/-- Unproved target: converse of the conformal substitution
+`hermiteBiehlerStableToHurwitzOddEven`.  Right-half-plane stability of the
+odd/even polynomial `q(x^2) + x p(x^2)` forces upper-half-plane stability of
+the Hermite--Biehler combination `q + i p`. -/
 def HurwitzOddEvenToHermiteBiehlerStableStatement : Prop :=
   ∀ ⦃p q : ℝ[X]⦄,
     HasNonnegCoeffs p →
@@ -952,8 +680,7 @@ open upper half-plane.
 
 Consequently, a complex polynomial `P` is upper-half-plane stable exactly when
 its rotation `P(i * z)`, implemented by substituting `X ↦ C Complex.I * X`, is
-right-half-plane stable.  This elementary equivalence isolates the remaining
-analytic content of the converse Hurwitz/Hermite--Biehler bridge below. -/
+right-half-plane stable. -/
 theorem isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp (P : ℂ[X]) :
     IsUpperHalfPlaneStable P ↔
       IsRightHalfPlaneStable (P.comp (C Complex.I * X)) := by
@@ -970,39 +697,10 @@ theorem isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp (P : ℂ[X]) :
       simp [Complex.I_sq]
     simpa [key] using h (-Complex.I * w) (by simpa [Complex.mul_re] using hw)
 
-/-- Minimal conformal-substitution interface for the converse Hurwitz/
-Hermite--Biehler bridge.
-
-This is the remaining analytic input after the elementary half-plane rotation:
-right-half-plane stability of the odd/even Hurwitz polynomial `q(x^2)+x p(x^2)`
-forces right-half-plane stability of the rotated Hermite--Biehler combination
-`(q + i p)(i * z)`. -/
-def HurwitzOddEvenToHermiteBiehlerRotatedStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    HasNonnegCoeffs p →
-    HasNonnegCoeffs q →
-    IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q)) →
-    IsRightHalfPlaneStable
-      ((hermiteBiehlerPolynomial q p).comp (C Complex.I * X))
-
-/-- Checked reduction of the converse analytic-substitution interface to the
-rotated right-half-plane version. -/
-theorem hurwitzOddEvenToHermiteBiehlerStable_of_rotated
-    (hRot : HurwitzOddEvenToHermiteBiehlerRotatedStatement) :
-    HurwitzOddEvenToHermiteBiehlerStableStatement :=
-  fun p q hp hq hrhp => by
-    simpa [isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp] using hRot hp hq hrhp
-
-/-- Oriented converse Hermite--Biehler interface (oriented converse of
-`hermiteBiehlerForwardPosStatement`).
-
-For polynomials `f`, `g` with positive leading coefficients, upper-half-plane
-stability of the combination `f + i g` forces the oriented interlacing
-`StrictInterl g f`.  This is strictly stronger than the disjunctive
-`hermiteBiehlerConverseStatement` already recorded in
-`RealRooted.HermiteBiehler`: it commits to the orientation matching the forward
-bridge `hermiteBiehlerForwardPosStatement`, where `StrictInterl g f` produces
-upper-half-plane stability of `f + i g`. -/
+/-- Unproved target: oriented converse of `hermiteBiehlerForwardPos`.  For
+polynomials `f`, `g` with positive leading coefficients, upper-half-plane
+stability of `f + i g` forces `StrictInterl g f`.  The checked converse
+`hermiteBiehlerConverse` only gives `StrictInterl g f ∨ StrictInterl f g`. -/
 def HermiteBiehlerConverseOrientedStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
     HasPosLeadingCoeff f →
@@ -1010,83 +708,27 @@ def HermiteBiehlerConverseOrientedStatement : Prop :=
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
     StrictInterl g f
 
-/-- Orientation-selection interface for the converse Hermite--Biehler theorem.
-
-The disjunctive converse `hermiteBiehlerConverseStatement` in
-`RealRooted.HermiteBiehler` only concludes `StrictInterl g f ∨ StrictInterl f g`, leaving the
-orientation open.  This interface records the single remaining analytic fact
-needed to commit to the orientation matching the forward bridge
-`hermiteBiehlerForwardPosStatement`: for `f`, `g` with positive leading
-coefficients, upper-half-plane stability of `f + i g` excludes the reversed
-interlacing, so the reversed branch `StrictInterl f g` can only occur together with
-the oriented one `StrictInterl g f`. -/
-def HermiteBiehlerOrientationStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
-    StrictInterl f g → StrictInterl g f
-
-/-- Checked reduction of the oriented converse Hermite--Biehler interface.
-
-`HermiteBiehlerConverseOrientedStatement` follows from the disjunctive converse
-Hermite--Biehler theorem `hermiteBiehlerConverseStatement` together with the
-orientation-selection input `HermiteBiehlerOrientationStatement`.  The
-disjunctive converse supplies `StrictInterl g f ∨ StrictInterl f g` from positive leading
-coefficients and upper-half-plane stability; the orientation input selects the
-oriented branch. -/
-theorem hermiteBiehlerConverseOriented_of_orientation
-    (hConv : hermiteBiehlerConverseStatement)
-    (hOrient : HermiteBiehlerOrientationStatement) :
-    HermiteBiehlerConverseOrientedStatement :=
-  fun _ _ hf hg hstable => (hConv hf hg hstable).elim id (hOrient hf hg hstable)
-
-/-- Checked reduction of the analytic converse step
-`HurwitzStableOddEvenToStrictInterlStatement`.
-
-The analytic converse Hermite--Biehler/Hurwitz step factors through the
-Hermite--Biehler combination `q + i p`, via two named, strictly smaller
-classical inputs, each a converse of a forward interface already present in the
-project:
-
-* `HurwitzOddEvenToHermiteBiehlerStableStatement`, the converse analytic
-  substitution, which turns right-half-plane stability of `q(x^2) + x p(x^2)`
-  into upper-half-plane stability of `q + i p`; and
-* `HermiteBiehlerConverseOrientedStatement`, the oriented converse
-  Hermite--Biehler theorem, which turns that upper-half-plane stability into the
-  interlacing relation `StrictInterl p q`.
-
-The nonnegativity halves of `IsHurwitzStable` supply the positive leading
-coefficients needed by the oriented Hermite--Biehler input through
-`HasNonnegCoeffs.pos_leadingCoeff`. -/
-theorem hurwitzStableOddEvenToStrictInterl_of_converse
+/-- Converse Hermite--Biehler step for odd/even polynomials, reduced to the
+converse conformal substitution and the oriented converse Hermite--Biehler
+theorem.  The nonnegativity half of `IsHurwitzStable` supplies the positive
+leading coefficients. -/
+theorem strictInterl_of_isHurwitzStable_oddEvenPolynomial
     (hSub : HurwitzOddEvenToHermiteBiehlerStableStatement)
-    (hHB : HermiteBiehlerConverseOrientedStatement) :
-    HurwitzStableOddEvenToStrictInterlStatement := fun ⦃p q⦄ hp hq hstable => by
+    (hHB : HermiteBiehlerConverseOrientedStatement)
+    {p q : ℝ[X]} (hp : p ≠ 0) (hq : q ≠ 0)
+    (hstable : IsHurwitzStable (oddEvenPolynomial p q)) : StrictInterl p q := by
   obtain ⟨hnn, hrhp⟩ := hstable
   have hpnn : HasNonnegCoeffs p := hasNonnegCoeffs_left_of_oddEvenPolynomial hnn
   have hqnn : HasNonnegCoeffs q := hasNonnegCoeffs_right_of_oddEvenPolynomial hnn
-  have hupper : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) :=
-    hSub hpnn hqnn hrhp
-  have hqpos : HasPosLeadingCoeff q :=
-    hqnn.pos_leadingCoeff hq
-  have hppos : HasPosLeadingCoeff p :=
-    hpnn.pos_leadingCoeff hp
-  exact hHB hqpos hppos hupper
+  exact hHB (hqnn.pos_leadingCoeff hq) (hpnn.pos_leadingCoeff hp) (hSub hpnn hqnn hrhp)
 
 /-! ## Degree-based orientation of the converse Hermite--Biehler step
 
-The oriented converse Hermite--Biehler interface
-`HermiteBiehlerConverseOrientedStatement` (and hence the analytic step
-`HurwitzStableOddEvenToStrictInterlStatement`) is only genuinely analytic in the
-*equal-degree* regime.  Once the two factors have strictly ordered degrees, the
-orientation is forced by the elementary degree constraint carried by `StrictInterl`, so
-the orientation-selection input is unnecessary and the *disjunctive* converse
-`hermiteBiehlerConverseStatement` already suffices.
-
-This isolates exactly where the orientation analytic content is needed: it is
-used only when the two polynomials have equal degree (equivalently, for the
-odd/even polynomial, only when its degree is odd). -/
+Once the two factors have strictly ordered degrees, the orientation is forced
+by the elementary degree constraint carried by `StrictInterl`, so the checked
+disjunctive converse `hermiteBiehlerConverse` already suffices.  The orientation
+content of `HermiteBiehlerConverseOrientedStatement` is therefore confined to
+the equal-degree case. -/
 
 /-- Elementary orientation resolution by degree.  A disjunctive interlacing
 conclusion `StrictInterl g f ∨ StrictInterl f g` collapses to the oriented branch
@@ -1098,55 +740,33 @@ theorem strictInterl_of_or_of_natDegree_lt {f g : ℝ[X]}
     (hgf : g.natDegree < f.natDegree) : StrictInterl g f :=
   h.elim id fun h => absurd h.natDegree_le (by lia)
 
-/-- Degree-restricted oriented converse Hermite--Biehler step, *without* any
-orientation-selection input.
-
-For `f, g` with positive leading coefficients and strictly ordered degrees
-`g.natDegree < f.natDegree`, upper-half-plane stability of `f + i g` forces the
-oriented interlacing `StrictInterl g f`, using only the disjunctive converse
-`hermiteBiehlerConverseStatement`.  This is the part of
-`HermiteBiehlerConverseOrientedStatement` that needs no extra analytic
-orientation fact: the orientation is pinned by the degree gap.  The remaining,
-genuinely analytic, orientation content of the oriented converse is therefore
-confined to the equal-degree case. -/
-theorem hermiteBiehlerConverseOriented_of_natDegree_lt
-    (hConv : hermiteBiehlerConverseStatement) {f g : ℝ[X]}
+/-- Oriented converse Hermite--Biehler theorem in the strict-degree case.
+For `f, g` with positive leading coefficients and `g.natDegree < f.natDegree`,
+upper-half-plane stability of `f + i g` forces `StrictInterl g f`. -/
+theorem hermiteBiehlerConverseOriented_of_natDegree_lt {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hdeg : g.natDegree < f.natDegree)
     (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
     StrictInterl g f :=
-  strictInterl_of_or_of_natDegree_lt (hConv hf hg hstable) hdeg
+  strictInterl_of_or_of_natDegree_lt (hermiteBiehlerConverse hf hg hstable) hdeg
 
-/-- Strict-degree case of the analytic converse step
-`HurwitzStableOddEvenToStrictInterlStatement`, *without* the oriented converse interface.
+/-- Strict-degree case of `strictInterl_of_isHurwitzStable_oddEvenPolynomial`,
+needing only the converse conformal substitution.
 
 When `p.natDegree < q.natDegree` (equivalently, when `oddEvenPolynomial p q` has
-even degree, see
-`natDegree_lt_iff_even_natDegree_oddEvenPolynomial`), Hurwitz stability of
-`q(x²) + x p(x²)` forces `StrictInterl p q` using only the converse substitution
-interface `HurwitzOddEvenToHermiteBiehlerStableStatement` and the *disjunctive*
-converse Hermite--Biehler theorem `hermiteBiehlerConverseStatement`.  No
-orientation-selection input (`HermiteBiehlerOrientationStatement` /
-`HermiteBiehlerConverseOrientedStatement`) is needed: the orientation is forced
-by the degree gap.
-
-This sharpens `hurwitzStableOddEvenToStrictInterl_of_converse`, which in general also
-needs the oriented converse, by showing the orientation input is dispensable in
-the strict-degree (even-degree) regime; only the equal-degree (odd-degree)
-regime retains genuinely analytic orientation content. -/
-theorem hurwitzStableOddEvenToStrictInterl_of_converse_natDegree_lt
+even degree, see `natDegree_lt_iff_even_natDegree_oddEvenPolynomial`), Hurwitz
+stability of `q(x²) + x p(x²)` forces `StrictInterl p q`: the orientation is
+forced by the degree gap. -/
+theorem strictInterl_of_isHurwitzStable_oddEvenPolynomial_of_natDegree_lt
     (hSub : HurwitzOddEvenToHermiteBiehlerStableStatement)
-    (hConv : hermiteBiehlerConverseStatement)
     {p q : ℝ[X]} (hp : p ≠ 0) (hq : q ≠ 0)
     (hdeg : p.natDegree < q.natDegree)
     (hstable : IsHurwitzStable (oddEvenPolynomial p q)) : StrictInterl p q := by
   obtain ⟨hnn, hrhp⟩ := hstable
   have hpnn := hasNonnegCoeffs_left_of_oddEvenPolynomial hnn
   have hqnn := hasNonnegCoeffs_right_of_oddEvenPolynomial hnn
-  have hupper := hSub hpnn hqnn hrhp
-  have hqpos := hqnn.pos_leadingCoeff hq
-  exact hermiteBiehlerConverseOriented_of_natDegree_lt hConv hqpos
-    (hpnn.pos_leadingCoeff hp) hdeg hupper
+  exact hermiteBiehlerConverseOriented_of_natDegree_lt (hqnn.pos_leadingCoeff hq)
+    (hpnn.pos_leadingCoeff hp) hdeg (hSub hpnn hqnn hrhp)
 
 /-- Existence of a right-half-plane square root.
 
@@ -1202,318 +822,6 @@ theorem isUpperHalfPlaneStable_hermiteBiehler_of_rhp_right_zero
   simp only [Polynomial.eval_zero, zero_add]
   exact mul_ne_zero Complex.I_ne_zero fun h0 => h (by rw [h0, mul_zero])
 
-/-- Checked reduction of the rotated converse conformal-substitution interface.
-
-`HurwitzOddEvenToHermiteBiehlerRotatedStatement` follows from the real-variable
-converse Hurwitz/Hermite--Biehler interlacing step
-`HurwitzStableOddEvenToStrictInterlStatement` together with the established forward
-Hermite--Biehler bridge `hermiteBiehlerForwardPosStatement`. -/
-theorem hurwitzOddEvenToHermiteBiehlerRotated_of_hurwitzStableStrictInterl
-    (hStrictInterl : HurwitzStableOddEvenToStrictInterlStatement)
-    (hFwd : hermiteBiehlerForwardPosStatement) :
-    HurwitzOddEvenToHermiteBiehlerRotatedStatement := fun p q hp hq hrhp => by
-  rw [← isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp]
-  by_cases hp0 : p = 0
-  · subst hp0
-    exact isUpperHalfPlaneStable_hermiteBiehler_of_rhp_left_zero hrhp
-  · by_cases hq0 : q = 0
-    · subst hq0
-      exact isUpperHalfPlaneStable_hermiteBiehler_of_rhp_right_zero hrhp
-    · have hO : IsHurwitzStable (oddEvenPolynomial p q) :=
-        ⟨hasNonnegCoeffs_oddEvenPolynomial hp hq, hrhp⟩
-      have hstrictInterl : StrictInterl p q := hStrictInterl hp0 hq0 hO
-      have hqpos : HasPosLeadingCoeff q :=
-        hq.pos_leadingCoeff hq0
-      have hppos : HasPosLeadingCoeff p :=
-        hp.pos_leadingCoeff hp0
-      exact hFwd hqpos hppos hstrictInterl
-
-/-- Once a two-row Lace certificate is available, fixed Veronese sections
-preserve polynomial interlacing in the zero-aware sense, assuming the
-lace-to-polynomial bridge. -/
-theorem interl_veroneseSectionPolynomial_of_fullyInterlacingPair
-    {p q : ℝ[X]} {r k : ℕ}
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hfull : FullyInterlacingPair p.coeff q.coeff)
-    (hr : 0 < r) (hk : k < r) :
-    Interl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  hFullToInterl (fullyInterlacingPair_veroneseSectionPolynomial_coeff hfull hr hk)
-
-/-- Strict version of
-`interl_veroneseSectionPolynomial_of_fullyInterlacingPair`. -/
-theorem strictInterl_veroneseSectionPolynomial_of_fullyInterlacingPair
-    {p q : ℝ[X]} {r k : ℕ}
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hfull : FullyInterlacingPair p.coeff q.coeff)
-    (hr : 0 < r) (hk : k < r) :
-    StrictInterl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  hFullToStrictInterl (fullyInterlacingPair_veroneseSectionPolynomial_coeff hfull hr hk)
-
-/-- Lace-certificate version of the pairwise Veronese polynomial theorem. -/
-theorem interl_veronesePairSectionPolynomial_of_fullyInterlacingPair
-    {p q : ℝ[X]} {r i j : ℕ}
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hfull : FullyInterlacingPair p.coeff q.coeff)
-    (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
-    Interl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  hFullToInterl
-    (fullyInterlacingPair_veronesePairSectionPolynomial_coeff hfull hr hij hj)
-
-/-- Strict lace-certificate version of the pairwise Veronese polynomial
-theorem. -/
-theorem strictInterl_veronesePairSectionPolynomial_of_fullyInterlacingPair
-    {p q : ℝ[X]} {r i j : ℕ}
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hfull : FullyInterlacingPair p.coeff q.coeff)
-    (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
-    StrictInterl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  hFullToStrictInterl
-    (fullyInterlacingPair_veronesePairSectionPolynomial_coeff hfull hr hij hj)
-
-/-- Fin-indexed zero-aware lace-certificate version. -/
-theorem interl_veronesePairSectionPolynomial_fin_of_fullyInterlacingPair
-    {p q : ℝ[X]} {r : ℕ}
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hfull : FullyInterlacingPair p.coeff q.coeff)
-    (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    Interl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  interl_veronesePairSectionPolynomial_of_fullyInterlacingPair
-    hFullToInterl hfull hr hij j.isLt
-
-/-- Fin-indexed strict lace-certificate version. -/
-theorem strictInterl_veronesePairSectionPolynomial_fin_of_fullyInterlacingPair
-    {p q : ℝ[X]} {r : ℕ}
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hfull : FullyInterlacingPair p.coeff q.coeff)
-    (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    StrictInterl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  strictInterl_veronesePairSectionPolynomial_of_fullyInterlacingPair
-    hFullToStrictInterl hfull hr hij j.isLt
-
-/-- PF/AESW version of the fixed-section Veronese interlacing theorem. -/
-theorem interl_veroneseSectionPolynomial_of_pf_strictInterl {p q : ℝ[X]} {r k : ℕ}
-    (hPfToFull : LegacyPfStrictInterlToFullyInterlacingPairStatement)
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hppf : IsPolyaFreqSeq p.coeff)
-    (hqpf : IsPolyaFreqSeq q.coeff)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hk : k < r) :
-    Interl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  interl_veroneseSectionPolynomial_of_fullyInterlacingPair
-    hFullToInterl (hPfToFull hppf hqpf hpq) hr hk
-
-/-- Strict PF/AESW version of the fixed-section Veronese interlacing theorem. -/
-theorem strictInterl_veroneseSectionPolynomial_of_pf_strictInterl {p q : ℝ[X]} {r k : ℕ}
-    (hPfToFull : LegacyPfStrictInterlToFullyInterlacingPairStatement)
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hppf : IsPolyaFreqSeq p.coeff)
-    (hqpf : IsPolyaFreqSeq q.coeff)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hk : k < r) :
-    StrictInterl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  strictInterl_veroneseSectionPolynomial_of_fullyInterlacingPair
-    hFullToStrictInterl (hPfToFull hppf hqpf hpq) hr hk
-
-/-- Nonnegative-coefficient version of the fixed-section Veronese interlacing
-theorem, using the corrected polynomial-to-lace interface. -/
-theorem interl_veroneseSectionPolynomial_of_nonneg_strictInterl {p q : ℝ[X]} {r k : ℕ}
-    (hNonnegToFull : LegacyNonnegStrictInterlToFullyInterlacingPairStatement)
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hk : k < r) :
-    Interl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  interl_veroneseSectionPolynomial_of_fullyInterlacingPair
-    hFullToInterl (hNonnegToFull hpnn hqnn hpq) hr hk
-
-/-- Strict nonnegative-coefficient version of the fixed-section Veronese
-interlacing theorem. -/
-theorem strictInterl_veroneseSectionPolynomial_of_nonneg_strictInterl {p q : ℝ[X]} {r k : ℕ}
-    (hNonnegToFull : LegacyNonnegStrictInterlToFullyInterlacingPairStatement)
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hk : k < r) :
-    StrictInterl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  strictInterl_veroneseSectionPolynomial_of_fullyInterlacingPair
-    hFullToStrictInterl (hNonnegToFull hpnn hqnn hpq) hr hk
-
-/-- PF/AESW pairwise Veronese interlacing theorem. -/
-theorem interl_veronesePairSectionPolynomial_of_pf_strictInterl
-    {p q : ℝ[X]} {r i j : ℕ}
-    (hPfToFull : LegacyPfStrictInterlToFullyInterlacingPairStatement)
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hppf : IsPolyaFreqSeq p.coeff)
-    (hqpf : IsPolyaFreqSeq q.coeff)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
-    Interl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  interl_veronesePairSectionPolynomial_of_fullyInterlacingPair
-    hFullToInterl (hPfToFull hppf hqpf hpq) hr hij hj
-
-/-- Strict PF/AESW pairwise Veronese interlacing theorem. -/
-theorem strictInterl_veronesePairSectionPolynomial_of_pf_strictInterl
-    {p q : ℝ[X]} {r i j : ℕ}
-    (hPfToFull : LegacyPfStrictInterlToFullyInterlacingPairStatement)
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hppf : IsPolyaFreqSeq p.coeff)
-    (hqpf : IsPolyaFreqSeq q.coeff)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
-    StrictInterl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  strictInterl_veronesePairSectionPolynomial_of_fullyInterlacingPair
-    hFullToStrictInterl (hPfToFull hppf hqpf hpq) hr hij hj
-
-/-- Nonnegative-coefficient pairwise Veronese interlacing theorem. -/
-theorem interl_veronesePairSectionPolynomial_of_nonneg_strictInterl
-    {p q : ℝ[X]} {r i j : ℕ}
-    (hNonnegToFull : LegacyNonnegStrictInterlToFullyInterlacingPairStatement)
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
-    Interl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  interl_veronesePairSectionPolynomial_of_fullyInterlacingPair
-    hFullToInterl (hNonnegToFull hpnn hqnn hpq) hr hij hj
-
-/-- Strict nonnegative-coefficient pairwise Veronese interlacing theorem. -/
-theorem strictInterl_veronesePairSectionPolynomial_of_nonneg_strictInterl
-    {p q : ℝ[X]} {r i j : ℕ}
-    (hNonnegToFull : LegacyNonnegStrictInterlToFullyInterlacingPairStatement)
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
-    StrictInterl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  strictInterl_veronesePairSectionPolynomial_of_fullyInterlacingPair
-    hFullToStrictInterl (hNonnegToFull hpnn hqnn hpq) hr hij hj
-
-/-- Fin-indexed PF/AESW pairwise Veronese interlacing theorem. -/
-theorem interl_veronesePairSectionPolynomial_fin_of_pf_strictInterl
-    {p q : ℝ[X]} {r : ℕ}
-    (hPfToFull : LegacyPfStrictInterlToFullyInterlacingPairStatement)
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hppf : IsPolyaFreqSeq p.coeff)
-    (hqpf : IsPolyaFreqSeq q.coeff)
-    (hpq : StrictInterl p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    Interl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  interl_veronesePairSectionPolynomial_fin_of_fullyInterlacingPair
-    hFullToInterl (hPfToFull hppf hqpf hpq) hr i j hij
-
-/-- Strict Fin-indexed PF/AESW pairwise Veronese interlacing theorem. -/
-theorem strictInterl_veronesePairSectionPolynomial_fin_of_pf_strictInterl
-    {p q : ℝ[X]} {r : ℕ}
-    (hPfToFull : LegacyPfStrictInterlToFullyInterlacingPairStatement)
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hppf : IsPolyaFreqSeq p.coeff)
-    (hqpf : IsPolyaFreqSeq q.coeff)
-    (hpq : StrictInterl p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    StrictInterl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  strictInterl_veronesePairSectionPolynomial_fin_of_fullyInterlacingPair
-    hFullToStrictInterl (hPfToFull hppf hqpf hpq) hr i j hij
-
-/-- Fin-indexed nonnegative-coefficient pairwise Veronese interlacing
-theorem. -/
-theorem interl_veronesePairSectionPolynomial_fin_of_nonneg_strictInterl
-    {p q : ℝ[X]} {r : ℕ}
-    (hNonnegToFull : LegacyNonnegStrictInterlToFullyInterlacingPairStatement)
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpq : StrictInterl p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    Interl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  interl_veronesePairSectionPolynomial_fin_of_fullyInterlacingPair
-    hFullToInterl (hNonnegToFull hpnn hqnn hpq) hr i j hij
-
-/-- Strict Fin-indexed nonnegative-coefficient pairwise Veronese interlacing
-theorem. -/
-theorem strictInterl_veronesePairSectionPolynomial_fin_of_nonneg_strictInterl
-    {p q : ℝ[X]} {r : ℕ}
-    (hNonnegToFull : LegacyNonnegStrictInterlToFullyInterlacingPairStatement)
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpq : StrictInterl p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    StrictInterl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  strictInterl_veronesePairSectionPolynomial_fin_of_fullyInterlacingPair
-    hFullToStrictInterl (hNonnegToFull hpnn hqnn hpq) hr i j hij
-
-/-! ### Veronese wrappers from the sign-normalized Hermite--Biehler/Hurwitz route -/
-
-/-- Conditional polynomial version of Athanasiadis--Wagner Corollary 5.6:
-assuming the bridge between classical polynomial interlacing and the two-row
-Lace condition, fixed Veronese sections preserve interlacing in the zero-aware
-`Interl` sense. -/
-theorem interl_veroneseSectionPolynomial_of_strictInterl {p q : ℝ[X]} {r k : ℕ}
-    (hStrictInterlToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hk : k < r) :
-    Interl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  interl_veroneseSectionPolynomial_of_fullyInterlacingPair
-    hFullToInterl (hStrictInterlToFull hpq) hr hk
-
-/-- Strict version of `interl_veroneseSectionPolynomial_of_strictInterl`, for
-applications where the two-row Lace condition is known to imply the strict
-local `StrictInterl` relation. -/
-theorem strictInterl_veroneseSectionPolynomial_of_strictInterl {p q : ℝ[X]} {r k : ℕ}
-    (hStrictInterlToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hk : k < r) :
-    StrictInterl (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  strictInterl_veroneseSectionPolynomial_of_fullyInterlacingPair
-    hFullToStrictInterl (hStrictInterlToFull hpq) hr hk
-
-/-- Conditional polynomial version of the pairwise form of
-Athanasiadis--Wagner Corollary 5.6.  Among the interleaved sequence
-`S_0 p, S_0 q, S_1 p, S_1 q, ...`, every ordered pair is interlacing in the
-zero-aware `Interl` sense, assuming the `StrictInterl`/Lace bridge interfaces. -/
-theorem interl_veronesePairSectionPolynomial_of_strictInterl {p q : ℝ[X]} {r i j : ℕ}
-    (hStrictInterlToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
-    Interl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  interl_veronesePairSectionPolynomial_of_fullyInterlacingPair
-    hFullToInterl (hStrictInterlToFull hpq) hr hij hj
-
-/-- Strict version of `interl_veronesePairSectionPolynomial_of_strictInterl`, for
-nondegenerate applications where the Lace condition is known to imply the
-strict local `StrictInterl` relation. -/
-theorem strictInterl_veronesePairSectionPolynomial_of_strictInterl {p q : ℝ[X]} {r i j : ℕ}
-    (hStrictInterlToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hpq : StrictInterl p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
-    StrictInterl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  strictInterl_veronesePairSectionPolynomial_of_fullyInterlacingPair
-    hFullToStrictInterl (hStrictInterlToFull hpq) hr hij hj
-
-/-- Fin-indexed version of
-`interl_veronesePairSectionPolynomial_of_strictInterl`.  This states the pairwise
-interlacing property for any two ordered entries of the `2*r`-term interleaved
-Veronese sequence. -/
-theorem interl_veronesePairSectionPolynomial_fin_of_strictInterl {p q : ℝ[X]} {r : ℕ}
-    (hStrictInterlToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
-    (hFullToInterl : FullyInterlacingPairToInterlStatement)
-    (hpq : StrictInterl p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    Interl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  interl_veronesePairSectionPolynomial_of_strictInterl
-    hStrictInterlToFull hFullToInterl hpq hr hij j.isLt
-
-/-- Strict Fin-indexed version of
-`strictInterl_veronesePairSectionPolynomial_of_strictInterl`. -/
-theorem strictInterl_veronesePairSectionPolynomial_fin_of_strictInterl {p q : ℝ[X]} {r : ℕ}
-    (hStrictInterlToFull : LegacyStrictInterlToFullyInterlacingPairStatement)
-    (hFullToStrictInterl : FullyInterlacingPairToStrictInterlStatement)
-    (hpq : StrictInterl p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    StrictInterl (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  strictInterl_veronesePairSectionPolynomial_of_strictInterl
-    hStrictInterlToFull hFullToStrictInterl hpq hr hij j.isLt
-
 /-- Veronese subsequences preserve Toeplitz total nonnegativity.
 
 The hypothesis `k < r` is essential for the Toeplitz submatrix identification:
@@ -1559,7 +867,7 @@ theorem IsPolyaFreqSeq_veroneseSectionPolynomial_coeff {p : ℝ[X]}
     IsPolyaFreqSeq (veroneseSectionPolynomial r k p).coeff := by
   simpa [coeff_function_veroneseSectionPolynomial hr] using hp.veroneseSectionSeq hr hk
 
-/-- Conditional real-rootedness of Veronese sections from the forward ASW
+/-- Real-rootedness of Veronese sections from the forward ASW
 theorem and a PF certificate for the original polynomial. -/
 theorem splits_veroneseSectionPolynomial_of_pf {p : ℝ[X]}
     (hp : IsPolyaFreqSeq p.coeff) {r k : ℕ}
@@ -1579,7 +887,7 @@ theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_pf {p : ℝ[X]}
       (veroneseSectionPolynomial r k p).Splits :=
   splits_veroneseSectionPolynomial_of_pf hp hr hk
 
-/-- Conditional PF preservation for Veronese sections of real-rooted
+/-- PF preservation for Veronese sections of real-rooted
 nonnegative-coefficient polynomials, using the reverse ASW theorem. -/
 theorem IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg
     {p : ℝ[X]}
@@ -1590,8 +898,8 @@ theorem IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg
     (aissenSchoenbergWhitney_reverse hpnn hprr (roots_nonpos_of_nonneg_coeffs hprr hpnn))
     hr hk
 
-/-- Conditional real-rootedness of Veronese sections of real-rooted
-nonnegative-coefficient polynomials, assuming both directions of ASW. -/
+/-- Real-rootedness of Veronese sections of real-rooted
+nonnegative-coefficient polynomials, from both directions of ASW. -/
 theorem splits_veroneseSectionPolynomial_of_splits_nonneg {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hprr : p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
@@ -1602,7 +910,7 @@ theorem splits_veroneseSectionPolynomial_of_splits_nonneg {p : ℝ[X]}
       (IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg hpnn hprr hr hk)).1
 
 /-- Zero-aware real-rootedness of Veronese sections of real-rooted
-nonnegative-coefficient polynomials, assuming both directions of ASW. -/
+nonnegative-coefficient polynomials, from both directions of ASW. -/
 theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
     {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hprr_splits : p.Splits) {r k : ℕ}
@@ -1611,7 +919,5 @@ theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
       (veroneseSectionPolynomial r k p).Splits :=
   splits_veroneseSectionPolynomial_of_splits_nonneg
     hpnn hprr_splits hr hk
-
-/-! Deprecated aliases for the pre-canonical statement and bridge names. -/
 
 end RealRooted

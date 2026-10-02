@@ -92,14 +92,11 @@ export RealRooted.BorceaBranden
     rankOne_or_algebraicSymbol_stable_of_preserves_of_robust_perturbations
     rankOne_or_algebraicSymbol_stable_of_preserves
     HasStableRankOneRepresentation.preservesComplexStabilityOnDegreeBox
-    finiteComplexSymbolClassificationStatement
     finiteComplexSymbolClassification
-    finiteComplexSymbolIffStatement
     finiteComplexSymbolIff
     polynomialInFirstMv
     finiteAlgebraicSymbol
     PreservesRealRootedUpTo
-    finiteSymbolTheoremStatement
     finiteSymbolTheorem
     finiteSymbol_preservesRealRootedUpTo)
 

@@ -18,12 +18,10 @@ Eulerian-row arguments:
 * `thetaPlusOne p = theta p + p = (X * p).derivative`;
 * `polarTheta N p = C N * p - theta p`.
 
-The coefficient, nonnegative-coefficient, PF-preservation, and some
-interlacing preservation lemmas below are proved directly when they reduce
-to the existing derivative/PF API.  The remaining bounded-degree
-interlacing preservation results are recorded as statement interfaces,
-since their proofs are the classical Rolle/polar derivative input for the later
-formalization.
+The coefficient, nonnegative-coefficient, PF-preservation, and interlacing
+preservation lemmas below reduce to the existing derivative/PF API.  The
+bounded-degree polar-theta interlacing theorem is
+`polarTheta_preserves_interl` in `RealRooted.EulerOperator.Polar.ProperPosition`.
 -/
 
 /-- Euler operator `theta = X d/dX`. -/
@@ -121,34 +119,21 @@ theorem HasNonnegCoeffs.polarTheta {N : ℕ} {p : ℝ[X]}
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdeg hNn)
     simp [hpcoeff]
 
-/-- Classical Rolle input: `theta` preserves real-rootedness and nonpositive
-roots on the polynomial PF cone. -/
-def thetaPreservesRealRootedOrZeroStatement : Prop :=
-  ∀ {p : ℝ[X]},
-    IsPFPolynomial p →
-    (theta p = 0 ∨ (theta p).Splits) ∧ ∀ r ∈ (theta p).roots, r ≤ 0
-
-/-- Classical Rolle input: `theta` preserves the polynomial PF cone. -/
-def thetaPreservesPFStatement : Prop :=
-  ∀ {p : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial (theta p)
-
-theorem thetaPreservesPF_of_realRootedOrZero
-    (hθ : thetaPreservesRealRootedOrZeroStatement) :
-    thetaPreservesPFStatement :=
-  fun {_} hp => ⟨hp.hasNonnegCoeffs.theta, (hθ hp).1, (hθ hp).2⟩
-
-theorem theta_preserves_pf : thetaPreservesPFStatement := by
-  intro p hp
+/-- `theta` preserves the polynomial PF cone. -/
+theorem theta_preserves_pf {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPFPolynomial (theta p) := by
   dsimp [theta]
   exact hp.derivative.X_mul
 
-theorem thetaPreservesRealRootedOrZero : thetaPreservesRealRootedOrZeroStatement := by
-  intro p hp
-  have htheta : IsPFPolynomial (theta p) := theta_preserves_pf hp
-  exact ⟨htheta.eq_zero_or_splits, htheta.roots_nonpos⟩
+/-- `theta` preserves real-rootedness and nonpositive roots on the polynomial
+PF cone. -/
+theorem thetaPreservesRealRootedOrZero {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    (theta p = 0 ∨ (theta p).Splits) ∧ ∀ r ∈ (theta p).roots, r ≤ 0 :=
+  ⟨(theta_preserves_pf hp).eq_zero_or_splits, (theta_preserves_pf hp).roots_nonpos⟩
 
-/-- Classical Rolle input: `theta` preserves weak interlacing on the
-polynomial PF cone. -/
+/-- `theta` preserves weak interlacing on the polynomial PF cone.  This
+proposition is proved by `thetaPreservesInterl`; the name is kept for
+downstream users. -/
 def thetaPreservesInterlStatement : Prop :=
   ∀ {p q : ℝ[X]},
     IsPFPolynomial p →
@@ -156,82 +141,33 @@ def thetaPreservesInterlStatement : Prop :=
     Interl p q →
     Interl (theta p) (theta q)
 
-theorem thetaPreservesInterl_of_derivative
-    (hderiv : derivativePreservesInterlStatement) : thetaPreservesInterlStatement := by
-  intro p q hp hq hpq
-  simpa [theta] using
-    interl_X_mul_both_of_pf hp.derivative hq.derivative (hderiv hpq)
-
 /-- `theta` preserves weak interlacing on the polynomial PF cone, obtained
 from the derivative preservation theorem and multiplication by `X`. -/
-theorem thetaPreservesInterl : thetaPreservesInterlStatement :=
-  thetaPreservesInterl_of_derivative derivativePreservesInterl
+theorem thetaPreservesInterl {p q : ℝ[X]}
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
+    Interl (theta p) (theta q) := by
+  simpa [theta] using
+    interl_X_mul_both_of_pf hp.derivative hq.derivative (derivativePreservesInterl hpq)
 
-/-- Classical Rolle input: `theta + 1` preserves real-rootedness and
-nonpositive roots on the polynomial PF cone. -/
-def thetaPlusOnePreservesRealRootedOrZeroStatement : Prop :=
-  ∀ {p : ℝ[X]},
-    IsPFPolynomial p →
-    (thetaPlusOne p = 0 ∨ (thetaPlusOne p).Splits) ∧
-      ∀ r ∈ (thetaPlusOne p).roots, r ≤ 0
-
-/-- Classical Rolle input: `theta + 1` preserves the polynomial PF cone. -/
-def thetaPlusOnePreservesPFStatement : Prop :=
-  ∀ {p : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial (thetaPlusOne p)
-
-theorem thetaPlusOnePreservesPF_of_realRootedOrZero
-    (hθ : thetaPlusOnePreservesRealRootedOrZeroStatement) :
-    thetaPlusOnePreservesPFStatement :=
-  fun {_} hp => ⟨hp.hasNonnegCoeffs.thetaPlusOne, (hθ hp).1, (hθ hp).2⟩
-
-theorem thetaPlusOne_preserves_pf : thetaPlusOnePreservesPFStatement := by
-  intro p hp
+/-- `theta + 1` preserves the polynomial PF cone. -/
+theorem thetaPlusOne_preserves_pf {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPFPolynomial (thetaPlusOne p) := by
   simpa [thetaPlusOne_eq_derivative_X_mul] using hp.X_mul.derivative
 
-/-- Classical Rolle input: `theta + 1` preserves weak interlacing on the
-polynomial PF cone. -/
-def thetaPlusOnePreservesInterlStatement : Prop :=
-  ∀ {p q : ℝ[X]},
-    IsPFPolynomial p →
-    IsPFPolynomial q →
-    Interl p q →
-    Interl (thetaPlusOne p) (thetaPlusOne q)
+/-- `theta + 1` preserves weak interlacing on the polynomial PF cone, obtained
+from the derivative preservation theorem. -/
+theorem thetaPlusOnePreservesInterl {p q : ℝ[X]}
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
+    Interl (thetaPlusOne p) (thetaPlusOne q) := by
+  simpa [thetaPlusOne_eq_derivative_X_mul] using
+    derivativePreservesInterl (interl_X_mul_both_of_pf hp hq hpq)
 
-theorem thetaPlusOnePreservesInterl_of_derivative
-    (hderiv : derivativePreservesInterlStatement) :
-    thetaPlusOnePreservesInterlStatement := by
-  intro p q hp hq hpq
-  simpa [thetaPlusOne_eq_derivative_X_mul] using hderiv (interl_X_mul_both_of_pf hp hq hpq)
-
-/-- `theta + 1` preserves weak interlacing on the polynomial PF cone,
-obtained from the derivative preservation theorem via
-`thetaPlusOnePreservesInterl_of_derivative`. -/
-theorem thetaPlusOnePreservesInterl : thetaPlusOnePreservesInterlStatement :=
-  thetaPlusOnePreservesInterl_of_derivative derivativePreservesInterl
-
-/-- Classical Rolle input: a PF polynomial is in weak interlacing with
-each of its iterates under `theta + 1`. -/
+/-- Unproved target: a PF polynomial is in weak interlacing with each of its
+iterates under `theta + 1`. -/
 def iterateThetaPlusOneSelfInterlStatement : Prop :=
   ∀ {p : ℝ[X]} (l : ℕ),
     IsPFPolynomial p →
     Interl p (iterateThetaPlusOne l p)
-
-/-- Classical polar-derivative input: `N - theta` preserves real-rootedness and
-nonpositive roots for polynomial PF-cone elements of degree at most `N`. -/
-def polarThetaPreservesRealRootedOrZeroStatement : Prop :=
-  ∀ {N : ℕ} {p : ℝ[X]},
-    IsPFPolynomial p →
-    p.natDegree ≤ N →
-    (polarTheta N p = 0 ∨ (polarTheta N p).Splits) ∧
-      ∀ r ∈ (polarTheta N p).roots, r ≤ 0
-
-/-- The polar-theta operator `N - theta` preserves the polynomial PF cone for
-polynomials of degree at most `N`. -/
-def polarThetaPreservesPFStatement : Prop :=
-  ∀ {N : ℕ} {p : ℝ[X]},
-    IsPFPolynomial p →
-    p.natDegree ≤ N →
-    IsPFPolynomial (polarTheta N p)
 
 theorem polarTheta_eq_reciprocalShift_derivative_reciprocalShift
     (N : ℕ) (p : ℝ[X]) (hdeg : p.natDegree ≤ N) :
@@ -276,8 +212,11 @@ theorem polarTheta_eq_reciprocalShift_derivative_reciprocalShift
         coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdeg hNklt)
       simp [hpcoeff]
 
-theorem polarTheta_preserves_pf : polarThetaPreservesPFStatement := by
-  intro N p hp hdeg
+/-- The polar-theta operator `N - theta` preserves the polynomial PF cone for
+polynomials of degree at most `N`. -/
+theorem polarTheta_preserves_pf {N : ℕ} {p : ℝ[X]}
+    (hp : IsPFPolynomial p) (hdeg : p.natDegree ≤ N) :
+    IsPFPolynomial (polarTheta N p) := by
   rw [polarTheta_eq_reciprocalShift_derivative_reciprocalShift N p hdeg]
   have hshift : IsPFPolynomial (reciprocalShift N p) :=
     reciprocalShift_preserves_pf hp hdeg
@@ -290,14 +229,9 @@ theorem polarTheta_preserves_pf : polarThetaPreservesPFStatement := by
     exact Nat.sub_le_sub_right hdeg_shift 1
   exact reciprocalShift_preserves_pf hshift.derivative hder_deg
 
-theorem polarThetaPreservesPF_of_realRootedOrZero
-    (hNθ : polarThetaPreservesRealRootedOrZeroStatement) :
-    polarThetaPreservesPFStatement :=
-  fun {_ _} hp hdeg =>
-    ⟨hp.hasNonnegCoeffs.polarTheta hdeg, (hNθ hp hdeg).1, (hNθ hp hdeg).2⟩
-
-/-- Polar-theta interlacing target. A checked witness is
-`RealRooted.polarTheta_preserves_interl` in `EulerOperator.Polar.ProperPosition`. -/
+/-- Polar-theta interlacing preservation on the bounded-degree PF cone.  This
+proposition is proved by `RealRooted.polarTheta_preserves_interl` in
+`EulerOperator.Polar.ProperPosition`; the name is kept for downstream users. -/
 def polarThetaPreservesInterlStatement : Prop :=
   ∀ {N : ℕ} {p q : ℝ[X]},
     IsPFPolynomial p →
@@ -307,19 +241,18 @@ def polarThetaPreservesInterlStatement : Prop :=
     Interl p q →
     Interl (polarTheta N p) (polarTheta N q)
 
+/-- PF preservation for the `l`-fold iterate of `theta + 1`. -/
 theorem iterateThetaPlusOne_preserves_pf
-    (hθ : thetaPlusOnePreservesPFStatement)
     (l : ℕ) {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (iterateThetaPlusOne l p) := by
   induction l generalizing p with
   | zero =>
       simpa using hp
   | succ l ih =>
-      simpa [iterateThetaPlusOne_succ] using hθ (ih hp)
+      simpa [iterateThetaPlusOne_succ] using thetaPlusOne_preserves_pf (ih hp)
 
+/-- `Interl` preservation for the `l`-fold iterate of `theta + 1`. -/
 theorem iterateThetaPlusOne_preserves_interl
-    (hθpf : thetaPlusOnePreservesPFStatement)
-    (hθinterl : thetaPlusOnePreservesInterlStatement)
     (l : ℕ) {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
     Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q) := by
@@ -327,9 +260,9 @@ theorem iterateThetaPlusOne_preserves_interl
   | zero =>
       simpa using hpq
   | succ l ih =>
-      simpa [iterateThetaPlusOne_succ] using hθinterl
-        (iterateThetaPlusOne_preserves_pf hθpf l hp)
-        (iterateThetaPlusOne_preserves_pf hθpf l hq)
+      simpa [iterateThetaPlusOne_succ] using thetaPlusOnePreservesInterl
+        (iterateThetaPlusOne_preserves_pf l hp)
+        (iterateThetaPlusOne_preserves_pf l hq)
         (ih hp hq hpq)
 
 end RealRooted

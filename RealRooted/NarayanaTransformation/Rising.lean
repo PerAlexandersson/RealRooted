@@ -10,12 +10,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Su--Yang--Zhang generalized rising-factorial transform, paper Lemma 3.11.
--/
-abbrev generalizedRisingFactorialPreservesPFStatement : Prop :=
-  ∀ {μ : ℝ}, 0 < μ → ∀ {p : ℝ[X]},
-    IsPFPolynomial p → IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p)
-
 /-- Degree-zero case of the Su--Yang--Zhang generalized rising-factorial
 transform. -/
 theorem generalizedRisingFactorialPreservesPF_of_natDegree_eq_zero {μ : ℝ}
@@ -102,24 +96,12 @@ private theorem generalizedRisingFactorialPreservesPF_shiftStrictInterl {μ : �
         rw [hfactor', basisTransform_risingFactorial_mul_X_add_C]
         exact hstep
 
-/-- Positive-degree leaf for the Su--Yang--Zhang generalized rising-factorial
-transform. -/
-abbrev generalizedRisingFactorialPreservesPFPositiveDegreeStatement : Prop :=
-  ∀ {μ : ℝ}, 0 < μ → ∀ {p : ℝ[X]},
-    0 < p.natDegree →
-    IsPFPolynomial p → IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p)
-
-/-- Degree-at-least-three leaf for the Su--Yang--Zhang generalized
-rising-factorial transform. -/
-abbrev generalizedRisingFactorialPreservesPFDegreeAtLeastThreeStatement : Prop :=
-  ∀ {μ : ℝ}, 0 < μ → ∀ {p : ℝ[X]},
-    3 ≤ p.natDegree →
-    IsPFPolynomial p → IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p)
-
 /-- Degree-at-least-three case of the Su--Yang--Zhang generalized rising-factorial
 transform. -/
 theorem generalizedRisingFactorialPreservesPF_degreeAtLeastThree :
-    generalizedRisingFactorialPreservesPFDegreeAtLeastThreeStatement := by
+    ∀ {μ : ℝ}, 0 < μ → ∀ {p : ℝ[X]},
+      3 ≤ p.natDegree →
+      IsPFPolynomial p → IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
   intro μ hμ p hpdeg hp
   exact (generalizedRisingFactorialPreservesPF_shiftStrictInterl hμ p.natDegree p rfl
     (by intro hpzero; simp [hpzero] at hpdeg) hp).1
@@ -136,7 +118,9 @@ theorem generalizedRisingFactorialPreservesPF_degreeAtLeastTwo {μ : ℝ} (hμ :
 /-- Positive-degree case of the Su--Yang--Zhang generalized rising-factorial
 transform. -/
 theorem generalizedRisingFactorialPreservesPF_positiveDegree :
-    generalizedRisingFactorialPreservesPFPositiveDegreeStatement := by
+    ∀ {μ : ℝ}, 0 < μ → ∀ {p : ℝ[X]},
+      0 < p.natDegree →
+      IsPFPolynomial p → IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
   intro μ hμ p hpdeg hp
   by_cases hdeg1 : p.natDegree = 1
   · exact generalizedRisingFactorialPreservesPF_of_natDegree_eq_one hdeg1 hp
@@ -144,7 +128,8 @@ theorem generalizedRisingFactorialPreservesPF_positiveDegree :
 
 /-- Su--Yang--Zhang generalized rising-factorial transform preserves PF polynomials. -/
 theorem generalizedRisingFactorialPreservesPF :
-    generalizedRisingFactorialPreservesPFStatement := by
+    ∀ {μ : ℝ}, 0 < μ → ∀ {p : ℝ[X]},
+      IsPFPolynomial p → IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
   intro μ hμ p hp
   rcases Nat.eq_zero_or_pos p.natDegree with hpdeg | hpdeg
   · exact generalizedRisingFactorialPreservesPF_of_natDegree_eq_zero hpdeg hp

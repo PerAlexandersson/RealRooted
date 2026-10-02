@@ -381,22 +381,6 @@ theorem narayanaTransform_coeff_sum_reflect
   have hj_le : j ≤ n - i := by lia
   rw [coeff_narayanaPolynomial_of_le hj_le]
 
-/-- Dominici--Johnston--Jordaan root-location input for the generalized
-Narayana polynomials, paper Lemma 2.5. -/
-abbrev narayanaPolynomialRootLocationStatement : Prop :=
-  ∀ m n : ℕ, IsPFPolynomial (narayanaPolynomial m n)
-
-/-- Mao--Wang Theorem 1.1 in zero-aware PF-polynomial form. -/
-abbrev narayanaTransformPreservesPFStatement : Prop :=
-  ∀ (m : ℕ) {p : ℝ[X]},
-    IsPFPolynomial p → IsPFPolynomial (narayanaTransform m p)
-
-/-- Mao--Wang Theorem 1.1 in the paper-facing nonpositive-root form. -/
-abbrev narayanaTransformPreservesNonposRootsStatement : Prop :=
-  ∀ (m : ℕ) {p : ℝ[X]},
-    HasNonnegCoeffs p → p.Splits →
-      HasOnlyNonposRoots (narayanaTransform m p)
-
 @[simp] theorem rectangularConvolutionCoeff_zero (m : ℕ) (f g : ℝ[X]) :
     rectangularConvolutionCoeff m 0 f g 0 = f.coeff 0 * g.coeff 0 := by
   simp [rectangularConvolutionCoeff, rectangularConvolutionGamma]

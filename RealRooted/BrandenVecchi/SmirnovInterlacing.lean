@@ -73,7 +73,7 @@ private theorem smirnovDescentRefinedList_step
     (gustafssonSolusMatrix (id : Fin m → Fin m) (fun _ => true))
     (gustafssonSolusMatrix_rect _ _)
     (smirnovRecurrenceMatrix_nonneg m)
-    (GustafssonSolus2x2FromNoSwitchStatement
+    (gustafssonSolusHas2x2_of_noSwitch
       (id : Fin m → Fin m) (fun _ => true)
       (smirnovThreshold_weaklyIncreasing m)
       (smirnovDropPivot_noSwitchAfterDrop m))

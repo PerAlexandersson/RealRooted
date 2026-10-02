@@ -8,18 +8,14 @@ noncomputable section
 
 namespace RealRooted
 
-/-- The proposition form of Favard's theorem used in this project: strictly
-positive recurrence coefficients force a Sturm/interlacing sequence, and
-hence real-rootedness of every `P n`. The theorem `favardInterlacing` below is
-a checked witness. -/
-def favardInterlacingStatement : Prop :=
-  ∀ {P : Nat → ℝ[X]} {α β : Nat → ℝ},
-    SatisfiesFavardRecurrence P α β →
-    (∀ n : Nat, 0 < β (n + 1)) →
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1))
-
+/-- Favard's theorem in the form used in this project: strictly positive
+recurrence coefficients force a Sturm/interlacing sequence, and hence
+real-rootedness of every `P n`. -/
 theorem favardInterlacing :
-    favardInterlacingStatement :=
+    ∀ {P : Nat → ℝ[X]} {α β : Nat → ℝ},
+      SatisfiesFavardRecurrence P α β →
+      (∀ n : Nat, 0 < β (n + 1)) →
+      ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   fun {P α β} hrec hβ => by
   rcases hrec with ⟨hP0, hP1, hstep⟩
   let Q : Nat → Prop := fun n =>

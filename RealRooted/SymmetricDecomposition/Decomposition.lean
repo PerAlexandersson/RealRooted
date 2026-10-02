@@ -352,19 +352,14 @@ theorem isIdDecomposition_formula {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d
     natDegree_idDecompositionBFormula_le hd, idDecompositionAFormula_fixed hd,
     idDecompositionBFormula_fixed hd⟩
 
-/-- Planning target for Brändén--Solus Lemma 2.1: every polynomial of degree at
-most `d` has a unique symmetric `I_d`-decomposition, and the explicit formulas
-agree with the abstract pair. -/
-def idDecompositionExistsUniqueStatement : Prop :=
-  ∀ {d : ℕ} {p : ℝ[X]},
-    p.natDegree ≤ d →
+/-- Brändén--Solus Lemma 2.1: every polynomial of degree at most `d` has a
+unique symmetric `I_d`-decomposition, and the explicit formulas agree with the
+abstract pair. -/
+theorem idDecompositionExistsUnique {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     ∃! ab : ℝ[X] × ℝ[X],
       IsIdDecomposition d p ab.1 ab.2 ∧
       ab.1 = idDecompositionAFormula d p ∧
-      ab.2 = idDecompositionBFormula d p
-
-theorem idDecompositionExistsUnique : idDecompositionExistsUniqueStatement := by
-  intro d p hd
+      ab.2 = idDecompositionBFormula d p := by
   refine ⟨⟨idDecompositionAFormula d p, idDecompositionBFormula d p⟩, ?_, ?_⟩
   · exact ⟨isIdDecomposition_formula hd, rfl, rfl⟩
   · lia
@@ -626,19 +621,13 @@ theorem isRdDecomposition_formula {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d
     natDegree_rdDecompositionBFormula_le hd, rdDecompositionAFormula_fixed hd,
     rdDecompositionBFormula_fixed hd⟩
 
-/-- Planning target for Brändén--Solus Lemma 2.2: every polynomial of degree at
-most `d` has a unique symmetric `R_d`-decomposition, again matching the
-explicit formulas. -/
-def rdDecompositionExistsUniqueStatement : Prop :=
-  ∀ {d : ℕ} {p : ℝ[X]},
-    p.natDegree ≤ d →
+/-- Brändén--Solus Lemma 2.2: every polynomial of degree at most `d` has a
+unique symmetric `R_d`-decomposition, again matching the explicit formulas. -/
+theorem rdDecompositionExistsUnique {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     ∃! ab : ℝ[X] × ℝ[X],
       IsRdDecomposition d p ab.1 ab.2 ∧
       ab.1 = rdDecompositionAFormula d p ∧
-      ab.2 = rdDecompositionBFormula d p
-
-theorem rdDecompositionExistsUnique : rdDecompositionExistsUniqueStatement := by
-  intro d p hd
+      ab.2 = rdDecompositionBFormula d p := by
   refine ⟨⟨rdDecompositionAFormula d p, rdDecompositionBFormula d p⟩, ?_, ?_⟩
   · exact ⟨isRdDecomposition_formula hd, rfl, rfl⟩
   · lia
@@ -708,18 +697,13 @@ theorem isRdDecomposition_fPolynomial_of_isIdDecomposition {d : ℕ} {h a b : �
   · rw [RdTransform_fPolynomial, hfixA]
   · rw [RdTransform_fPolynomial, hfixB]
 
-/-- Planning target for Brändén--Solus Lemma 2.3, relating the `I_d`- and
-`R_d`-decompositions through the `f`-polynomial transform. -/
-def fPolynomialDecompositionCompatibilityStatement : Prop :=
-  ∀ {d : ℕ} {h a b aTilde bTilde : ℝ[X]},
-    h.natDegree ≤ d →
-    IsIdDecomposition d h a b →
-    IsRdDecomposition d (fPolynomial d h) aTilde bTilde →
+/-- Brändén--Solus Lemma 2.3, relating the `I_d`- and `R_d`-decompositions
+through the `f`-polynomial transform. -/
+theorem fPolynomialDecompositionCompatibility {d : ℕ} {h a b aTilde bTilde : ℝ[X]}
+    (hd : h.natDegree ≤ d) (hid : IsIdDecomposition d h a b)
+    (hrd : IsRdDecomposition d (fPolynomial d h) aTilde bTilde) :
     aTilde = fPolynomial d a ∧
-    bTilde = fPolynomial (d - 1) b
-
-theorem fPolynomialDecompositionCompatibility : fPolynomialDecompositionCompatibilityStatement := by
-  intro d h a b aTilde bTilde hd hid hrd
+    bTilde = fPolynomial (d - 1) b := by
   have hleft := rdDecomposition_eq_formula_of_isRdDecomposition
     (p := fPolynomial d h) (a := aTilde) (b := bTilde) (fPolynomial_natDegree_le d h) hrd
   have hright := rdDecomposition_eq_formula_of_isRdDecomposition

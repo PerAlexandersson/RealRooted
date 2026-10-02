@@ -447,28 +447,22 @@ theorem maoWangAdmissibleMatrix_listProduct_rightPreservesRowGeneratingFunctions
 
 /-- Mao--Wang matrix-product criterion for right powers of an admissible
 one-step factor. -/
-abbrev maoWangMatrixProductRowGeneratingFunctionsPFStatement : Prop :=
-  ∀ {M B : LowerTriangularMatrix ℝ},
-    MaoWangAdmissibleMatrix B →
-      ∀ r : ℕ,
-        RowGeneratingFunctionsPF M →
-          RowGeneratingFunctionsPF (mul M (pow B r))
-
-/-- Mao--Wang matrix-product criterion for a finite product of admissible
-one-step factors. -/
-abbrev maoWangMatrixListProductRowGeneratingFunctionsPFStatement : Prop :=
-  ∀ {M : LowerTriangularMatrix ℝ} {Bs : List (LowerTriangularMatrix ℝ)},
-    (∀ B ∈ Bs, MaoWangAdmissibleMatrix B) →
-      RowGeneratingFunctionsPF M →
-        RowGeneratingFunctionsPF (mul M (listProduct Bs))
-
 theorem maoWang_matrixProduct_rowGeneratingFunctions_pf :
-    maoWangMatrixProductRowGeneratingFunctionsPFStatement := by
+    ∀ {M B : LowerTriangularMatrix ℝ},
+      MaoWangAdmissibleMatrix B →
+        ∀ r : ℕ,
+          RowGeneratingFunctionsPF M →
+            RowGeneratingFunctionsPF (mul M (pow B r)) := by
   intro M B hB r hM
   exact hB.rightPowersPreserveRowGeneratingFunctionsPF M r hM
 
+/-- Mao--Wang matrix-product criterion for a finite product of admissible
+one-step factors. -/
 theorem maoWang_matrixListProduct_rowGeneratingFunctions_pf :
-    maoWangMatrixListProductRowGeneratingFunctionsPFStatement := by
+    ∀ {M : LowerTriangularMatrix ℝ} {Bs : List (LowerTriangularMatrix ℝ)},
+      (∀ B ∈ Bs, MaoWangAdmissibleMatrix B) →
+        RowGeneratingFunctionsPF M →
+          RowGeneratingFunctionsPF (mul M (listProduct Bs)) := by
   intro M Bs hBs hM
   exact maoWangAdmissibleMatrix_listProduct_rightPreservesRowGeneratingFunctionsPF hBs M hM
 
@@ -486,40 +480,27 @@ theorem RowGeneratingFunctionsPF.hasOnlyNonposRoots
 
 /-- Mao--Wang matrix-product criterion in the paper-facing root-location
 form, for right powers of an admissible one-step factor. -/
-abbrev maoWangMatrixProductRowGeneratingFunctionsNonposRootsStatement : Prop :=
-  ∀ {M B : LowerTriangularMatrix ℝ},
-    MaoWangAdmissibleMatrix B →
-      ∀ r : ℕ,
-        RowGeneratingFunctionsPF M →
-          RowGeneratingFunctionsHaveOnlyNonposRoots (mul M (pow B r))
-
-/-- Mao--Wang matrix-product criterion in the paper-facing root-location
-form, for finite products of admissible one-step factors. -/
-abbrev maoWangMatrixListProductRowGeneratingFunctionsNonposRootsStatement :
-    Prop :=
-  ∀ {M : LowerTriangularMatrix ℝ} {Bs : List (LowerTriangularMatrix ℝ)},
-    (∀ B ∈ Bs, MaoWangAdmissibleMatrix B) →
-      RowGeneratingFunctionsPF M →
-        RowGeneratingFunctionsHaveOnlyNonposRoots (mul M (listProduct Bs))
-
 theorem maoWang_matrixProduct_rowGeneratingFunctions_nonposRoots :
-    maoWangMatrixProductRowGeneratingFunctionsNonposRootsStatement := by
+    ∀ {M B : LowerTriangularMatrix ℝ},
+      MaoWangAdmissibleMatrix B →
+        ∀ r : ℕ,
+          RowGeneratingFunctionsPF M →
+            RowGeneratingFunctionsHaveOnlyNonposRoots (mul M (pow B r)) := by
   intro M B hB r hM
   exact (maoWang_matrixProduct_rowGeneratingFunctions_pf hB r hM).hasOnlyNonposRoots
 
+/-- Mao--Wang matrix-product criterion in the paper-facing root-location
+form, for finite products of admissible one-step factors. -/
 theorem maoWang_matrixListProduct_rowGeneratingFunctions_nonposRoots :
-    maoWangMatrixListProductRowGeneratingFunctionsNonposRootsStatement := by
+    ∀ {M : LowerTriangularMatrix ℝ} {Bs : List (LowerTriangularMatrix ℝ)},
+      (∀ B ∈ Bs, MaoWangAdmissibleMatrix B) →
+        RowGeneratingFunctionsPF M →
+          RowGeneratingFunctionsHaveOnlyNonposRoots (mul M (listProduct Bs)) := by
   intro M Bs hBs hM
   exact (maoWang_matrixListProduct_rowGeneratingFunctions_pf hBs hM).hasOnlyNonposRoots
 
-/-- Rowwise Brenti inverse statement for the falling-factorial coefficient
+/-- Rowwise Brenti inverse theorem for the falling-factorial coefficient
 matrix. -/
-abbrev fallingFactorialMatrixReflectsRowGeneratingFunctionsNonposRootsStatement :
-    Prop :=
-  ∀ {M : LowerTriangularMatrix ℝ},
-    RowGeneratingFunctionsHaveOnlyNonposRoots (mul M fallingFactorialMatrix) →
-      RowGeneratingFunctionsHaveOnlyNonposRoots M
-
 theorem RowGeneratingFunctionsHaveOnlyNonposRoots.of_mul_fallingFactorialMatrix
     {M : LowerTriangularMatrix ℝ}
     (hM : RowGeneratingFunctionsHaveOnlyNonposRoots (mul M fallingFactorialMatrix)) :
@@ -528,11 +509,6 @@ theorem RowGeneratingFunctionsHaveOnlyNonposRoots.of_mul_fallingFactorialMatrix
   have hrow := hM i
   rw [rowPolynomial_mul_fallingFactorialMatrix] at hrow
   exact brentiFallingFactorial hrow
-
-theorem fallingFactorialMatrix_reflectsRowGeneratingFunctionsNonposRoots :
-    fallingFactorialMatrixReflectsRowGeneratingFunctionsNonposRootsStatement := by
-  intro M hM
-  exact hM.of_mul_fallingFactorialMatrix
 
 end LowerTriangularMatrix
 
