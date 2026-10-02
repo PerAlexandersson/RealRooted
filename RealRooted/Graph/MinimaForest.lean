@@ -107,11 +107,12 @@ lemma rel_edgeAt (L : LocalOrder F) (v : V) (a b : F.neighborSet v) :
   · intro h
     exact ⟨v, a, b, rfl, rfl, h⟩
 
-open Classical in
 /-- The orientation of the line graph induced by a local order: the line-graph edge
 between two edges at a vertex `v` points from the larger to the smaller rank at `v`. -/
 def lineOrientation (L : LocalOrder F) : Orientation F.lineGraph where
-  dir e f := decide (Rel L e f)
+  dir e f := by
+    classical
+    exact decide (Rel L e f)
   dir_ne_of_adj := by
     intro e f hef
     obtain ⟨v, a, b, rfl, rfl, hab⟩ := lineGraph_adj_iff.1 hef
@@ -318,11 +319,11 @@ lemma topologicalRank_edgeAt_injective (v : V) :
       (lineGraph_adj_edgeAt (Ne.symm hab))).2 hd
     exact absurd h (O.directed_topologicalRank_lt this).ne'
 
-open Classical in
 /-- The rank at `v` of a neighbour `a`: the number of edges at `v` above `s(v, a)` in
 the acyclic orientation. -/
-def rankAt (v : V) (a : F.neighborSet v) : ℕ :=
-  (univ.filter fun b : F.neighborSet v ↦
+def rankAt (v : V) (a : F.neighborSet v) : ℕ := by
+  classical
+  exact (univ.filter fun b : F.neighborSet v ↦
     O.topologicalRank (edgeAt v a) < O.topologicalRank (edgeAt v b)).card
 
 omit [DecidableEq V] in
@@ -369,10 +370,10 @@ lemma rankAt_injective (v : V) : Function.Injective (rankAt O v) := by
   · exact absurd h (rankAt_lt_rankAt O hlt).ne'
   · exact absurd h (rankAt_lt_rankAt O hgt).ne
 
-open Classical in
 /-- The local order read off from an acyclic orientation of the line graph. -/
-def ofAcyclicOrientation : LocalOrder F := fun v ↦
-  Equiv.ofBijective (fun a ↦ ⟨rankAt O v a, rankAt_lt_card O v a⟩)
+def ofAcyclicOrientation : LocalOrder F := by
+  classical
+  exact fun v ↦ Equiv.ofBijective (fun a ↦ ⟨rankAt O v a, rankAt_lt_card O v a⟩)
     ((Fintype.bijective_iff_injective_and_card _).2
       ⟨fun a b h ↦ rankAt_injective O v (by simpa using h),
         by simp [minimaDegree, Nat.card_eq_fintype_card]⟩)
