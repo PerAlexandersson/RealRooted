@@ -377,9 +377,12 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_right_successor_nonneg
 
 /-- Unrestricted positive-split right-successor translated x-subtraction
 family. -/
-theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement := by
-  intro f g r hpair hfnn hgnn hdeg μ hμ
+theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily {f g : ℝ[X]} (r : ℝ)
+    (hpair : PositiveSplitRootCountPair f g)
+    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
+    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
+    (hdeg : g.natDegree = f.natDegree + 1) (μ : ℝ) (hμ : 0 < μ) :
+    (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   let p := f.comp (X + C r)
   let q := g.comp (X + C r)
   have hpair_shift : PositiveSplitRootCountPair p q := by simpa [p, q] using hpair.comp_X_add_C r
@@ -388,16 +391,6 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily :
   simpa [p, q] using
     hpair_shift.xSub_splits_of_right_successor_nonneg
       hfnn hgnn hdeg_shift hμ
-
-/-- The proved right-successor x-subtraction family gives every predicate
-restriction. -/
-theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate
-    {P : ℕ → Prop} :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement P :=
-  positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement_of_imp
-    (fun _ _ => trivial)
-    (positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
-      positiveSplitRightSuccDegreeTranslatedXSubRightFamily)
 
 end LiuOppositeSigns
 end RealRooted
