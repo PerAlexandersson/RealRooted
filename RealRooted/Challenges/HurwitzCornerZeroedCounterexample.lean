@@ -3,23 +3,23 @@ import RealRooted.HurwitzMatrix
 /-!
 # A corner-zeroed Hurwitz-minor counterexample
 
-This file records checked arithmetic showing that the one-matrix full-band
-corner-zeroed route to the Hurwitz Schur-product problem (issue #34) is too
-strong.  For the
-coefficient sequence
+This file records checked arithmetic showing that a one-matrix full-band
+corner-zeroed inequality for Hurwitz minors fails.  For the coefficient
+sequence
 
 ```text
 [1, 1, 8, 10, 17, 31, 10, 30]
 ```
 
-and the window with rows `6, 7, 8` and columns `0, 1, 2`, all non-total-
-nonnegativity side hypotheses of the single-matrix full-band corner-zeroed
-statement hold, the full `3 × 3` determinant is `2000`, but the corner-zeroed
-expression is `-1000`.
+and the window with rows `6, 7, 8` and columns `0, 1, 2`, all band side
+conditions of the single-matrix full-band corner-zeroed inequality hold, the
+full `3 × 3` determinant is `2000`, but the corner-zeroed expression is
+`-1000`.
 
 This module does not formalize the infinite total-nonnegativity witness for the
-sequence.  It is a checked arithmetic diagnostic for the failed one-matrix
-reduction route; it does not refute the two-matrix Schur-product target.
+sequence; it is a checked arithmetic diagnostic.  The two-matrix
+Schur-product statement for infinite Hurwitz matrices is refuted separately by
+`RealRooted.not_hurwitz_schurProduct_det_fin_three_nonneg`.
 -/
 
 namespace RealRooted.HurwitzCornerZeroedCounterexample
@@ -40,7 +40,7 @@ def cols : Fin 3 → ℕ := ![0, 1, 2]
 def M (i j : ℕ) : ℝ :=
   hurwitz cseq i j
 
-/-- The corner-zeroed determinant expression in the single-matrix subtarget. -/
+/-- The corner-zeroed determinant expression of the window. -/
 def cornerZeroed : ℝ :=
   M 6 0 * (M 7 1 * M 8 2 - M 7 2 * M 8 1) -
     M 6 1 * (M 7 0 * M 8 2 - M 7 2 * M 8 0)
@@ -57,7 +57,7 @@ theorem rows_strictMono : StrictMono rows := by decide
 /-- The selected column indices are strictly increasing. -/
 theorem cols_strictMono : StrictMono cols := by decide
 
-/-- The diagonal band hypotheses of the single-matrix subtarget hold. -/
+/-- The diagonal band hypotheses hold. -/
 theorem band : ∀ l : Fin 3, 2 * cols l ≤ rows l := by decide
 
 /-- The `(0, 1)` full-band side hypothesis holds. -/

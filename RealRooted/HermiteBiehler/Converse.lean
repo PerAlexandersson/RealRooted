@@ -15,18 +15,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Planning stub for the converse Hermite--Biehler theorem.
-
-The exact orientation hypotheses may still be adjusted, but the target is that
-upper-half-plane stability of `f + i g` forces an interlacing relation between
--/
-abbrev hermiteBiehlerConverseStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
-    StrictInterl g f ∨ StrictInterl f g
-
 theorem isUpperHalfPlaneStable_cofactor_of_stable {f g : ℝ[X]} {r : ℝ}
     (hrf : f.IsRoot r) (hrg : g.IsRoot r)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :

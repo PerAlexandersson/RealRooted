@@ -9,8 +9,8 @@ namespace RealRooted
 /-!
 # Cubic Schur--Szego reductions
 
-Degree-three PF-factor reductions, normalized diagonal base cases, and the
-finite Polya--Schur equivalence interfaces.
+Degree-three PF-factor reductions of the Schur--Szegő composition to cubic
+discriminant inequalities.
 -/
 
 /-- If the degree-`n` Jensen polynomial is PF and itself has degree at most
@@ -132,68 +132,6 @@ theorem cubicDiscr_diagonalOperator_normalized_three_eq_cubicDiscr_schurSzegoCom
       cubicDiscr (schurSzegoComp 3 f q) := by
   rw [← schurSzegoComp_eq_diagonalOperator 3 q f, schurSzegoComp_comm]
 
-/-- Level-three normalized diagonal-operator cubic-discriminant base case for
-a degree-`≤ 3` PF factor and a splitting factor. -/
-def pfCubicDiscrDiagonalNonnegStatement : Prop :=
-  ∀ {f q : ℝ[X]},
-    IsPFPolynomial f →
-    f.natDegree ≤ 3 →
-    q.natDegree ≤ 3 →
-    q.Splits →
-    0 ≤ cubicDiscr
-      (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)
-
-/-- The normalized diagonal base case is equivalent to the level-three
-Schur--Szego cubic-discriminant base case. -/
-theorem pfCubicDiscrDiagonalNonnegStatement_iff :
-    pfCubicDiscrDiagonalNonnegStatement ↔
-      ∀ {f q : ℝ[X]},
-        IsPFPolynomial f →
-        f.natDegree ≤ 3 →
-        q.natDegree ≤ 3 →
-        q.Splits →
-        0 ≤ cubicDiscr (schurSzegoComp 3 f q) := by
-  simp only [pfCubicDiscrDiagonalNonnegStatement,
-    cubicDiscr_diagonalOperator_normalized_three_eq_cubicDiscr_schurSzegoComp]
-
-/-- The classical fixed-degree Schur--Szego theorem discharges the isolated
-level-three diagonal cubic-discriminant base case. -/
-theorem pfCubicDiscrDiagonalNonnegStatement_of_schurSzego
-    (hSZ : finiteSchurSzegoCompositionStatement) :
-    pfCubicDiscrDiagonalNonnegStatement :=
-  pfCubicDiscrDiagonalNonnegStatement_iff.mpr fun {f q} hf hfdeg hqdeg hsplit => by
-    rcases hSZ hf hfdeg hqdeg hsplit with hzero | hs
-    · simp [hzero, cubicDiscr]
-    · exact cubicDiscr_nonneg_of_splits_natDegree_le_three
-        ((natDegree_schurSzegoComp_le_left 3 f q).trans hfdeg) hs
-
-/-- The isolated level-three diagonal base case proves the reflected
-diagonal-operator discriminant input at every level `n ≥ 3`. -/
-theorem cubicDiscr_reflect_diagonalOperator_nonneg_of_pfCubicDiscrDiagonalNonneg
-    (h : pfCubicDiscrDiagonalNonnegStatement)
-    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
-    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    0 ≤ cubicDiscr
-      (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-        (reflect 3 ((derivative^[n - 3]) (reflect n p)))) :=
-  h hf hfdeg
-    (natDegree_reflect_iterate_derivative_reflect_le_three hn hpdeg)
-    (reflect_iterate_derivative_reflect_splits_of_splits hn hpdeg hsplit)
-
-/-- The isolated level-three diagonal base case proves high-level
-cubic-discriminant nonnegativity for degree-`≤ 3` PF factors. -/
-theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_of_pfDiagonalBase
-    (h : pfCubicDiscrDiagonalNonnegStatement)
-    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
-    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    0 ≤ cubicDiscr (schurSzegoComp n f p) :=
-  cubicDiscr_schurSzegoComp_nonneg_of_reflect_diagonalOperator_three
-    hn hfdeg hpdeg
-    (cubicDiscr_reflect_diagonalOperator_nonneg_of_pfCubicDiscrDiagonalNonneg
-      h hn hf hfdeg hpdeg hsplit)
-
 /-- Low-level (`n < 3`) cubic-discriminant nonnegativity for a degree-`≤ 3`
 PF factor with `f.natDegree ≤ n`. -/
 private theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_natDegree_lt_three
@@ -206,49 +144,6 @@ private theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_natDegree_lt_three
   · simp [hzero, cubicDiscr]
   · exact cubicDiscr_nonneg_of_splits_natDegree_le_three
       ((natDegree_schurSzegoComp_le_left n f p).trans hfdeg) hs
-
-/-- The isolated level-three diagonal base case proves the corrected all-level
-cubic-discriminant route retaining `f.natDegree ≤ n`. -/
-theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_leftNatDegree_of_pfDiagonalBase
-    (h : pfCubicDiscrDiagonalNonnegStatement)
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
-    (hfn : f.natDegree ≤ n) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    0 ≤ cubicDiscr (schurSzegoComp n f p) :=
-  (le_or_gt 3 n).elim
-    (fun hn =>
-      cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_of_pfDiagonalBase
-        h hn hf hfdeg hpdeg hsplit)
-    (fun hn =>
-      cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_natDegree_lt_three
-        hn hf hfdeg hfn hpdeg hsplit)
-
-/-- The isolated level-three diagonal base case discharges the high-level
-degree-`≤ 3` PF-factor Schur--Szego route. -/
-theorem finiteSchurSzegoComposition_of_pf_factor_le_three_of_pfCubicDiscrDiagonalNonneg
-    (h : pfCubicDiscrDiagonalNonnegStatement)
-    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
-    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
-    hf hfdeg hpdeg hsplit
-    (cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_of_pfDiagonalBase
-      h hn hf hfdeg hpdeg hsplit)
-
-/-- Corrected all-level degree-`≤ 3` PF-factor Schur--Szego route from the
-isolated level-three diagonal base case, retaining `f.natDegree ≤ n`. -/
-theorem
-    finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_of_pfCubicDiscrDiagonalNonneg
-    (h : pfCubicDiscrDiagonalNonnegStatement)
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
-    (hfn : f.natDegree ≤ n) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
-    hf hfdeg hpdeg hsplit
-    (cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_leftNatDegree_of_pfDiagonalBase
-      h hf hfdeg hfn hpdeg hsplit)
 
 /-- Degree-`≤ 3` PF-factor Schur--Szegő composition reduced to the
 denominator-cleared cubic-discriminant numerator at levels `n ≥ 3`. -/
@@ -313,44 +208,4 @@ theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_three_cubic
   finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
     hf hfdeg hpdeg hsplit hdisc
 
-/-- The full finite Schur--Szegő theorem implies the finite Pólya--Schur
-theorem. -/
-theorem finitePolyaSchur_nonneg_of_schurSzego
-    (hSZ : finiteSchurSzegoCompositionStatement) :
-    finitePolyaSchurNonnegStatement :=
-  finitePolyaSchur_nonneg_of_backward
-    (finitePolyaSchurNonnegBackward_of_schurSzego hSZ)
-
-/-- Fixed-degree Schur--Szegő composition and finite Pólya--Schur are
-equivalent classical inputs in the nonnegative-coefficient convention used
-here. -/
-theorem finiteSchurSzegoCompositionStatement_iff_finitePolyaSchur :
-    finiteSchurSzegoCompositionStatement ↔ finitePolyaSchurNonnegStatement :=
-  ⟨finitePolyaSchur_nonneg_of_schurSzego,
-    finiteSchurSzegoComposition_of_finitePolyaSchur⟩
-
-/-- The finite Pólya--Schur theorem implies the nonzero core of fixed-degree
-Schur--Szegő composition. -/
-theorem finiteSchurSzegoCompositionNonzero_of_finitePolyaSchur
-    (hFPS : finitePolyaSchurNonnegStatement) :
-    finiteSchurSzegoCompositionNonzeroStatement :=
-  finiteSchurSzegoCompositionNonzero_of_full
-    (finiteSchurSzegoComposition_of_finitePolyaSchur hFPS)
-
-/-- The nonzero core of fixed-degree Schur--Szegő composition and finite
-Pólya--Schur are equivalent classical inputs in the local convention. -/
-theorem finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchur :
-    finiteSchurSzegoCompositionNonzeroStatement ↔ finitePolyaSchurNonnegStatement :=
-  ⟨finitePolyaSchur_nonneg_of_schurSzegoNonzero,
-    finiteSchurSzegoCompositionNonzero_of_finitePolyaSchur⟩
-
-/-- The nonzero Schur--Szegő core is equivalent to the hard backward direction
-of finite Pólya--Schur. -/
-theorem finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchurBackward :
-    finiteSchurSzegoCompositionNonzeroStatement ↔
-      finitePolyaSchurNonnegBackwardStatement :=
-  ⟨finitePolyaSchurNonnegBackward_of_schurSzegoNonzero,
-    fun hBack =>
-      finiteSchurSzegoCompositionNonzero_of_finitePolyaSchur
-        (finitePolyaSchur_nonneg_of_backward hBack)⟩
 end RealRooted

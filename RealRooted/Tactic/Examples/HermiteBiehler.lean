@@ -5,18 +5,6 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-example :
-    hermiteBiehlerForwardPosStatement := by
-  rr_hermite_biehler_forward_pos_statement
-
-example :
-    hermiteBiehlerConverseStatement := by
-  rr_hermite_biehler_converse_statement
-
-example :
-    HermiteBiehlerStableToHurwitzOddEvenStatement := by
-  rr_hermite_biehler_odd_even_hurwitz_statement
-
 example {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hstrictInterl : StrictInterl g f) :

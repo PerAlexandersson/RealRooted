@@ -54,7 +54,7 @@ theorem isRoot_rotateLeftHalfPlaneToUpper_I_mul_iff (p : ℝ[X]) (z : ℂ) :
   rw [hrotate]
 
 /-- Evaluation of the rotated odd/even polynomial at the negative square of
-the new variable. This fixes the signs used by the Hermite--Biehler bridge. -/
+the new variable. This fixes the signs used in the Hermite--Biehler step. -/
 theorem eval_rotateLeftHalfPlaneToUpper_oddEvenPolynomial
     (odd even : ℝ[X]) (z : ℂ) :
     (rotateLeftHalfPlaneToUpper (oddEvenPolynomial odd even)).eval z =
