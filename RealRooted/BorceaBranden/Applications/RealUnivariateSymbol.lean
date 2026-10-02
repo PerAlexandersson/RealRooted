@@ -143,13 +143,19 @@ theorem complexificationLinearMapDegreeBox_preserves_stability
   rw [algebraicSymbol_complexificationDegreeBoxOperator]
   exact hSymbol.rename
 
-/-- Borcea--Branden positive-symbol sufficiency for real univariate operators.
+/-- The positive-symbol sufficiency direction of Borcea--Branden,
+Theorem 1.2(b), specialized to one real source variable of degree at most `d`.
 
-This is a checked witness of the application-facing statement introduced by
-issue #69. It is derived from `finiteSymbol_finOne_preserves_stability`, not
-assumed as a backend and not routed through the false homogeneous symbol. -/
+The paper's symbol is `T((z + w)^d)`, which is `finiteAlgebraicSymbol d T`
+after expanding in the monomial basis.  This records only the
+application-facing implication to real-rooted inputs and zero-aware outputs,
+not the converse, the signed-symbol branch, or the low-rank alternative.  It is
+derived from `finiteSymbol_finOne_preserves_stability`. -/
 theorem finiteSymbolTheorem :
-    RealRooted.BorceaBranden.finiteSymbolTheoremStatement := by
+    ∀ {d : ℕ} {T : ℝ[X] →ₗ[ℝ] ℝ[X]},
+      MvUpperHalfPlaneStable
+          (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)) →
+        RealRooted.BorceaBranden.PreservesRealRootedUpTo d T := by
   intro d T hSymbol p hdeg hp
   by_cases hp0 : p = 0
   · left

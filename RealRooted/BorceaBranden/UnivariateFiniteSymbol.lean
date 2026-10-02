@@ -36,32 +36,6 @@ def PreservesRealRootedUpTo
     (d : ℕ) (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
   ∀ {p : ℝ[X]}, p.natDegree ≤ d → p.Splits → T p = 0 ∨ (T p).Splits
 
-/-- The positive-symbol sufficiency direction of Borcea--Branden,
-Theorem 1.2(b), specialized to one real source variable of degree at most `d`.
-
-The paper's symbol is `T((z + w)^d)`, which is `finiteAlgebraicSymbol d T`
-after expanding in the monomial basis. The complex counterpart is
-Theorem 1.1(b). The statement below records only the application-facing
-implication to real-rooted inputs and zero-aware outputs, not the converse,
-the signed-symbol branch, or the low-rank alternative. -/
-def finiteSymbolTheoremStatement : Prop :=
-  ∀ {d : ℕ} {T : ℝ[X] →ₗ[ℝ] ℝ[X]},
-    MvUpperHalfPlaneStable (complexifyMv (finiteAlgebraicSymbol d T)) →
-      PreservesRealRootedUpTo d T
-
-/- The checked witness lives in
-`RealRooted.BorceaBranden.Applications.RealUnivariateSymbol`; importing it here
-would create an application/core cycle. -/
-
-/-- Direct use of the finite-symbol theorem interface. -/
-theorem preservesRealRootedUpTo_of_finiteSymbol
-    (hBB : finiteSymbolTheoremStatement)
-    {d : ℕ} {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
-    (hstable :
-      MvUpperHalfPlaneStable (complexifyMv (finiteAlgebraicSymbol d T))) :
-    PreservesRealRootedUpTo d T :=
-  hBB hstable
-
 end
 
 end BorceaBranden

@@ -546,19 +546,6 @@ theorem shiftedSecondDerivativeBeta_eq_quadraticJensenWeight
   simp [shiftedSecondDerivativeBeta, quadraticJensenWeight]
   ring
 
-/-- Algebraic dehomogenization statement connecting the finite symbol to the
-existing Jensen pencil. -/
-def finiteSymbolDehomogStatement : Prop :=
-  ∀ (alpha beta : ℕ → ℝ) (d : ℕ),
-    (finiteSymbol alpha beta d).eval₂ (Polynomial.C : ℝ →+* ℝ[X])
-        (fun i => if i = 0 then Polynomial.X else 1) =
-      bidiagonalJensenPencil alpha beta d 1
-
-/-- The dehomogenization interface is discharged by `finiteSymbol_dehomog`. -/
-theorem finiteSymbolDehomogStatement_valid :
-    finiteSymbolDehomogStatement :=
-  finiteSymbol_dehomog
-
 end
 
 end FiniteSymbolPF
