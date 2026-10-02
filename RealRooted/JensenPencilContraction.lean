@@ -30,13 +30,6 @@ theorem IsPFPolynomial.comp_X_add_C_and_coeff_zero_pos
   · simpa [Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_comp] using
       eval_pos_of_hasNonnegCoeffs hp.hasNonnegCoeffs hp0 heps
 
-/-- Deprecated compatibility name for
-`Polynomial.continuous_coeff_comp_X_add_C`. -/
-@[deprecated Polynomial.continuous_coeff_comp_X_add_C (since := "2026-09-08")]
-theorem continuous_coeff_comp_X_add_C (p : ℝ[X]) (i : ℕ) :
-    Continuous fun eps : ℝ ↦ (p.comp (X + C eps)).coeff i :=
-  p.continuous_coeff_comp_X_add_C i
-
 /-- A coefficientwise continuous curve of PF sequences for positive parameters
 has a PF value at zero. -/
 theorem IsPolyaFreqSeq.of_continuous_curve

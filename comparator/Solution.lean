@@ -24,7 +24,7 @@ def Prec (f g : ℝ[X]) : Prop :=
   RealRooted.StrictInterl f g
 
 def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
-  RealRooted.StrictPrecSameDegree p q
+  RealRooted.StrictInterlSameDegree p q
 
 def IdTransform (d : ℕ) (p : ℝ[X]) : ℝ[X] :=
   RealRooted.IdTransform d p
@@ -71,7 +71,7 @@ theorem strictPrecSameDegree_iff_bezoutMatrix_posDef
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n) :
     StrictPrecSameDegree p q ↔ (bezoutMatrix n q p).PosDef :=
-  RealRooted.strictPrecSameDegree_iff_bezoutMatrix_posDef hp_pos hq_pos hp_deg hq_deg
+  RealRooted.strictInterlSameDegree_iff_bezoutMatrix_posDef hp_pos hq_pos hp_deg hq_deg
 
 end Comparator
 

@@ -122,7 +122,6 @@ protected lemma List.Interleaves.ofFn_succ {n : ℕ}
     rw [List.getElem_ofFn, List.getElem_ofFn]
     exact h_lt₂ ⟨i.val, hi⟩ ⟨j.val, hj⟩ hij
 
-
 protected lemma interlaced_of_interleaves_reverse_left :
     ∀ {ss rs : List ℝ} (h : ss.length + 1 = rs.length)
       (_ : List.Interleaves (· > ·) ss.reverse rs.reverse),
@@ -217,7 +216,6 @@ protected lemma interlaced_of_interleaves_reverse :
         · have h_lt : i_val + 1 < (r :: rs).length := by lia
           exact h_tail.2 ⟨i_val + 1, h_lt⟩ ⟨j_val, Nat.lt_of_succ_lt_succ hj⟩ hij
 
-
 private lemma interleaves_lt_of_le_of_forall_ne :
     ∀ {l₁ l₂ : List ℝ}, List.Interleaves (· ≤ ·) l₁ l₂ →
       (∀ a ∈ l₁, ∀ b ∈ l₂, a ≠ b) → List.Interleaves (· < ·) l₁ l₂
@@ -238,10 +236,6 @@ therefore excludes common roots. -/
 def StrictInterlSameDegree (p q : ℝ[X]) : Prop :=
   (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits) ∧ p.natDegree = q.natDegree ∧
     List.Interleaves (· > ·) (p.roots.sort (· ≤ ·)).reverse (q.roots.sort (· ≤ ·)).reverse
-
-/-- Deprecated compatibility name for `StrictInterlSameDegree`. -/
-@[deprecated StrictInterlSameDegree (since := "2026-09-18")]
-abbrev StrictPrecSameDegree := StrictInterlSameDegree
 
 /-- Equal-degree interlacing is strict when the two polynomials have no
 common root. -/
@@ -311,27 +305,5 @@ theorem StrictInterlSameDegree.toStrictInterl {p q : ℝ[X]}
       q.roots.sort (· ≤ ·), Multiset.pairwise_sort .., Multiset.pairwise_sort ..,
       Multiset.sort_eq _ _, Multiset.sort_eq _ _,
       Or.inr ⟨h_len, (listAlternates_iff_interleaves_of_length h_len).2 h_le⟩⟩
-
-@[deprecated StrictInterlSameDegree.C_mul_C_mul (since := "2026-09-18")]
-lemma StrictPrecSameDegree.C_mul_C_mul {p q : ℝ[X]} (h : StrictInterlSameDegree p q)
-    {u v : ℝ} (hu : u ≠ 0) (hv : v ≠ 0) :
-    StrictInterlSameDegree (C u * p) (C v * q) :=
-  StrictInterlSameDegree.C_mul_C_mul h hu hv
-
-@[deprecated StrictInterlSameDegree.C_mul_C_mul_iff (since := "2026-09-18")]
-lemma StrictPrecSameDegree.C_mul_C_mul_iff {p q : ℝ[X]} {u v : ℝ}
-    (hu : u ≠ 0) (hv : v ≠ 0) :
-    StrictInterlSameDegree (C u * p) (C v * q) ↔ StrictInterlSameDegree p q :=
-  StrictInterlSameDegree.C_mul_C_mul_iff hu hv
-
-@[deprecated StrictInterlSameDegree.toStrictInterl (since := "2026-09-18")]
-theorem StrictPrecSameDegree.toStrictInterl {p q : ℝ[X]}
-    (h : StrictInterlSameDegree p q) : StrictInterl p q :=
-  StrictInterlSameDegree.toStrictInterl h
-
-@[deprecated StrictInterlSameDegree.toStrictInterl (since := "2026-09-16")]
-theorem StrictPrecSameDegree.to_prec {p q : ℝ[X]}
-    (h : StrictInterlSameDegree p q) : StrictInterl p q :=
-  StrictInterlSameDegree.toStrictInterl h
 
 end RealRooted

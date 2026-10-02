@@ -115,11 +115,4 @@ theorem strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross
       hgf hdeg.symm hgnn hfnn
     linarith
 
-/-! ## Deprecated aliases -/
-
-@[deprecated eval_cross_le_of_strictInterl_sameDegree_of_nonneg
-  (since := "2026-09-26")]
-alias eval_cross_le_of_prec_sameDegree_of_nonneg :=
-  eval_cross_le_of_strictInterl_sameDegree_of_nonneg
-
 end RealRooted

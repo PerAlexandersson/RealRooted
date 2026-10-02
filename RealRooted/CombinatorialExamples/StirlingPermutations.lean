@@ -304,10 +304,4 @@ theorem isSturmSeq_stirlingPermutationsPrefix :
           simpa [stirlingPermutationsPrefix, IsSturmSeq] using
             And.intro (interlaces_stirlingPermutations_succ (k + 1)) ih
 
-@[deprecated strictInterl_stirlingPermutations_one_two (since := "2026-09-26")]
-alias prec_stirlingPermutations_one_two := strictInterl_stirlingPermutations_one_two
-
-@[deprecated strictInterl_stirlingPermutations_succ (since := "2026-09-26")]
-alias prec_stirlingPermutations_succ := strictInterl_stirlingPermutations_succ
-
 end RealRooted

@@ -179,25 +179,9 @@ theorem isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence_den
   isRealRooted_of_strictInterl_chain_from_step <|
     strictInterl_wagner_derivative_gap_lag_sequence_den hbase hnonneg hdeg ha hc hd hrec
 
-
-
 end RealRooted
 
 /- Deprecated theorem aliases retained for the #984 Prec migration. -/
 namespace RealRooted
-@[deprecated strictInterl_wagner_derivative_gap_lag_sequence (since := "2026-09-26")]
-alias prec_wagner_derivative_gap_lag_sequence := strictInterl_wagner_derivative_gap_lag_sequence
-
-@[deprecated isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence
-  (since := "2026-09-26")]
-alias isRealRooted_of_prec_wagner_derivative_gap_lag_sequence :=
-  isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence
-
-@[deprecated strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg (since := "2026-09-26")]
-alias prec_X_mul_derivative_X_mul_self_of_splits_nonneg :=
-  strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg
-
-@[deprecated strictInterl_wagner_derivative_gap_lag_step (since := "2026-09-26")]
-alias prec_wagner_derivative_gap_lag_step := strictInterl_wagner_derivative_gap_lag_step
 
 end RealRooted

@@ -223,7 +223,4 @@ theorem commonPhaseRestriction_eq_constant_add_X_mul_pderiv
 
 end
 
-@[deprecated strictInterl_add_X_mul_of_strictInterl (since := "2026-09-26")]
-alias prec_add_X_mul_of_prec := strictInterl_add_X_mul_of_strictInterl
-
 end RealRooted

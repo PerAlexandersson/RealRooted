@@ -164,16 +164,4 @@ lemma HasSimpleRoots.roots_sort_sortedLT (hsimple : HasSimpleRoots p) :
     simpa using hsimple.roots_nodup
   exact hsorted.sortedLT_of_nodup hnodup
 
-@[deprecated StrictInterl.hasSimpleRoots_of_no_common_root (since := "2026-09-16")]
-theorem Prec.hasSimpleRoots_of_no_common_root {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
-    (hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ g.IsRoot r)) :
-    HasSimpleRoots f ∧ HasSimpleRoots g :=
-  StrictInterl.hasSimpleRoots_of_no_common_root hstrictInterl hno
-
-@[deprecated StrictInterl.hasSimpleRoots_of_isCoprime (since := "2026-09-16")]
-theorem Prec.hasSimpleRoots_of_isCoprime {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
-    (hcop : IsCoprime f g) :
-    HasSimpleRoots f ∧ HasSimpleRoots g :=
-  StrictInterl.hasSimpleRoots_of_isCoprime hstrictInterl hcop
-
 end RealRooted

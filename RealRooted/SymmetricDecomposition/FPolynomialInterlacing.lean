@@ -586,37 +586,4 @@ theorem posComboRealRooted_fPolynomial_of_strictInterl
     isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
       hcombo_deg hcombo_rr.1 hcombo_rr.2 hcombo_nonneg
 
-/-! Deprecated aliases for the pre-canonical strict-interlacing names. -/
-
-@[deprecated strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
-  (since := "2026-09-26")]
-alias prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal :=
-  strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
-
-@[deprecated
-  strictInterl_of_strictInterl_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs
-  (since := "2026-09-26")]
-alias prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs :=
-  strictInterl_of_strictInterl_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs
-
-@[deprecated
-  strictInterl_of_strictInterl_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeffs
-  (since := "2026-09-26")]
-alias prec_of_prec_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeffs :=
-  strictInterl_of_strictInterl_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeffs
-
-@[deprecated strictInterl_of_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
-  (since := "2026-09-26")]
-alias prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs :=
-  strictInterl_of_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
-
-@[deprecated strictInterl_iff_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
-  (since := "2026-09-26")]
-alias prec_iff_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs :=
-  strictInterl_iff_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
-
-@[deprecated posComboRealRooted_fPolynomial_of_strictInterl (since := "2026-09-26")]
-alias posComboRealRooted_fPolynomial_of_prec :=
-  posComboRealRooted_fPolynomial_of_strictInterl
-
 end RealRooted

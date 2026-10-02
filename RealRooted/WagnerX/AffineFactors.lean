@@ -41,13 +41,6 @@ theorem StrictInterl.mul_X_sub_C_both_of_roots_le {f g : ℝ[X]}
     (StrictInterl.comp_X_add_C_iff (f := (X - C r) * f) (g := (X - C r) * g) r).1
       htranslated
 
-@[deprecated StrictInterl.mul_X_sub_C_both_of_roots_le (since := "2026-09-18")]
-theorem prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ) (h : StrictInterl f g)
-    (hf_le : ∀ s ∈ f.roots, s ≤ r)
-    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    StrictInterl ((X - C r) * f) ((X - C r) * g) :=
-  h.mul_X_sub_C_both_of_roots_le r hf_le hg_le
-
 /-- Cancelling a common affine factor preserves strict interlacing when all
 remaining roots lie to the factor's left. -/
 theorem StrictInterl.of_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} {r : ℝ}
@@ -78,14 +71,6 @@ theorem StrictInterl.of_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} {r : ℝ}
     exact hX'.of_mul_X_both_of_roots_nonpos hf'_nonpos hg'_nonpos
   exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
-@[deprecated StrictInterl.of_mul_X_sub_C_both_of_roots_le (since := "2026-09-18")]
-theorem prec_of_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
-    (h : StrictInterl ((X - C r) * f) ((X - C r) * g))
-    (hf_le : ∀ s ∈ f.roots, s ≤ r)
-    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    StrictInterl f g :=
-  h.of_mul_X_sub_C_both_of_roots_le hf_le hg_le
-
 /-- Multiplication by a common affine factor is an equivalence on strict
 interlacing when all original roots lie to the factor's left. -/
 theorem StrictInterl.mul_X_sub_C_both_iff_of_roots_le {f g : ℝ[X]} (r : ℝ)
@@ -94,13 +79,6 @@ theorem StrictInterl.mul_X_sub_C_both_iff_of_roots_le {f g : ℝ[X]} (r : ℝ)
     StrictInterl f g ↔ StrictInterl ((X - C r) * f) ((X - C r) * g) :=
   ⟨fun h => h.mul_X_sub_C_both_of_roots_le r hf_le hg_le,
     fun h => h.of_mul_X_sub_C_both_of_roots_le hf_le hg_le⟩
-
-@[deprecated StrictInterl.mul_X_sub_C_both_iff_of_roots_le (since := "2026-09-18")]
-theorem prec_iff_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
-    (hf_le : ∀ s ∈ f.roots, s ≤ r)
-    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    StrictInterl f g ↔ StrictInterl ((X - C r) * f) ((X - C r) * g) :=
-  StrictInterl.mul_X_sub_C_both_iff_of_roots_le r hf_le hg_le
 
 /-- Multiplying both polynomials by the same affine factor preserves strict
 interlacing. -/
@@ -145,11 +123,6 @@ theorem StrictInterl.mul_X_sub_C_both {f g : ℝ[X]} (h : StrictInterl f g) (r :
           List.orderedInsert_length (r := (· ≤ ·)) rs r]
         lia,
         listAlternates_orderedInsert hlen halt r⟩
-
-@[deprecated StrictInterl.mul_X_sub_C_both (since := "2026-09-18")]
-theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : StrictInterl f g) :
-    StrictInterl ((X - C r) * f) ((X - C r) * g) :=
-  h.mul_X_sub_C_both r
 
 /-- Cancelling a common affine factor preserves strict interlacing. -/
 theorem StrictInterl.of_mul_X_sub_C_both {f g : ℝ[X]} {r : ℝ}
@@ -207,12 +180,6 @@ theorem StrictInterl.of_mul_X_sub_C_both {f g : ℝ[X]} {r : ℝ}
       lia
     exact Or.inr ⟨hlen', listAlternates_of_orderedInsert r hlen' hss_sorted hrs_sorted halt⟩
 
-@[deprecated StrictInterl.of_mul_X_sub_C_both (since := "2026-09-18")]
-theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
-    (h : StrictInterl ((X - C r) * f) ((X - C r) * g)) :
-    StrictInterl f g :=
-  h.of_mul_X_sub_C_both
-
 /-- Multiplication by a common nonzero real-rooted factor preserves strict
 interlacing. -/
 theorem StrictInterl.mul_common_factor {d f g : ℝ[X]} (h : StrictInterl f g)
@@ -235,12 +202,6 @@ theorem StrictInterl.mul_common_factor {d f g : ℝ[X]} (h : StrictInterl f g)
     simpa [mul_assoc, mul_left_comm, mul_comm] using hboth
   simpa [C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hd_splits), mul_assoc]
     using hscaled
-
-@[deprecated StrictInterl.mul_common_factor (since := "2026-09-18")]
-theorem prec_mul_common_factor {d f g : ℝ[X]} (hd_ne : d ≠ 0) (hd_splits : d.Splits)
-    (h : StrictInterl f g) :
-    StrictInterl (d * f) (d * g) :=
-  h.mul_common_factor hd_ne hd_splits
 
 theorem strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (hf : f.Splits) (hg : g.Splits)
@@ -291,10 +252,5 @@ theorem strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r 
         comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
     have hfg' : StrictInterl f' g' := hshift.mpr hgxf'
     exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
-
-@[deprecated strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
-  (since := "2026-09-18")]
-alias prec_iff_prec_mul_X_sub_C_of_roots_le :=
-  strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
 
 end RealRooted

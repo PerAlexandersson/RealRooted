@@ -421,10 +421,6 @@ lemma StrictInterl.of_degree_zero_right_of_degree_one
   · simp [hr_eq]
   · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
 
-@[deprecated StrictInterl.of_degree_zero_right_of_degree_one (since := "2026-09-18")]
-alias prec_degree_zero_right_of_degree_one :=
-  StrictInterl.of_degree_zero_right_of_degree_one
-
 /-- The derivative of any nonconstant positive-leading real-rooted polynomial
 interlaces the original polynomial, including the degree-one boundary case. -/
 lemma interlaces_derivative_of_pos_natDegree

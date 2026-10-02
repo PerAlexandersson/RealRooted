@@ -177,9 +177,6 @@ theorem strictInterl_eulerInsertionStep
       simp only [eval_sub, eval_X, eval_pow]
       linarith [sq_nonneg r]
 
-@[deprecated strictInterl_eulerInsertionStep (since := "2026-09-26")]
-alias prec_eulerInsertionStep := strictInterl_eulerInsertionStep
-
 theorem splits_eulerInsertionStep
     {c : ℝ} {d : ℕ} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hp_pos : HasPosLeadingCoeff p)

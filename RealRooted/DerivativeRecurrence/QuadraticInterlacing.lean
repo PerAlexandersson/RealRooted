@@ -526,29 +526,4 @@ theorem strictInterl_of_quadratic_derivative_linear_offset
           hbase_nonneg hbase_top hbase_above hbase_splits hrec
           ha hb hc hsd hbt hd n).2.1.2
 
-@[deprecated strictInterl_step_of_quadratic_derivative_linear (since := "2026-09-18")]
-alias prec_step_of_quadratic_derivative_linear :=
-  strictInterl_step_of_quadratic_derivative_linear
-
-@[deprecated strictInterl_of_quadratic_derivative_linear (since := "2026-09-18")]
-alias prec_of_quadratic_derivative_linear :=
-  strictInterl_of_quadratic_derivative_linear
-
-@[deprecated strictInterl_step_of_quadratic_derivative_bilinear (since := "2026-09-18")]
-alias prec_step_of_quadratic_derivative_bilinear :=
-  strictInterl_step_of_quadratic_derivative_bilinear
-
-@[deprecated strictInterl_of_quadratic_derivative_bilinear (since := "2026-09-18")]
-alias prec_of_quadratic_derivative_bilinear :=
-  strictInterl_of_quadratic_derivative_bilinear
-
-@[deprecated strictInterl_step_of_quadratic_derivative_linear_offset (since := "2026-09-18")]
-alias prec_step_of_quadratic_derivative_linear_offset :=
-  strictInterl_step_of_quadratic_derivative_linear_offset
-
-@[deprecated strictInterl_of_quadratic_derivative_linear_offset (since := "2026-09-18")]
-alias prec_of_quadratic_derivative_linear_offset :=
-  strictInterl_of_quadratic_derivative_linear_offset
-
-
 end RealRooted

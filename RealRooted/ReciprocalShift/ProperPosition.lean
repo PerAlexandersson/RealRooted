@@ -203,9 +203,4 @@ theorem reciprocalShift_reverses_strictInterl
       apply listInterlaces_of_interleaves_of_length (by grind)
       grind
 
-/-! ## Deprecated aliases -/
-
-@[deprecated reciprocalShift_reverses_strictInterl (since := "2026-09-26")]
-alias reciprocalShift_reverses_prec := reciprocalShift_reverses_strictInterl
-
 end RealRooted

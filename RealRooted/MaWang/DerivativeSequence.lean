@@ -739,7 +739,4 @@ theorem isRealRooted_of_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
     (fun n r _ hr_nonpos => hW_nonpos n r hr_nonpos)
     hdeg_succ hno
 
-@[deprecated strictInterl_mw_derivative_nonpos_sequence (since := "2026-09-26")]
-alias prec_mw_derivative_nonpos_sequence := strictInterl_mw_derivative_nonpos_sequence
-
 end RealRooted

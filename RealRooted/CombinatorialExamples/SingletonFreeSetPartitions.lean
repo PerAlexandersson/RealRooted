@@ -312,27 +312,4 @@ theorem isGeneralizedSturmSeq_singletonFreeSetPartitionsPrefix :
               (strictInterl_singletonFreeSetPartitions_succ (n := n + 3) (by lia))
               ih
 
-@[deprecated strictInterl_singletonFreeSetPartitionsCore_of_strictInterl
-  (since := "2026-09-26")]
-alias prec_singletonFreeSetPartitionsCore_of_prec :=
-  strictInterl_singletonFreeSetPartitionsCore_of_strictInterl
-
-@[deprecated strictInterl_singletonFreeSetPartitions_two_three
-  (since := "2026-09-26")]
-alias prec_singletonFreeSetPartitions_two_three :=
-  strictInterl_singletonFreeSetPartitions_two_three
-
-@[deprecated strictInterl_singletonFreeSetPartitions_three_four
-  (since := "2026-09-26")]
-alias prec_singletonFreeSetPartitions_three_four :=
-  strictInterl_singletonFreeSetPartitions_three_four
-
-@[deprecated strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core
-  (since := "2026-09-26")]
-alias prec_singletonFreeSetPartitions_succ_of_prec_core :=
-  strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core
-
-@[deprecated strictInterl_singletonFreeSetPartitions_succ (since := "2026-09-26")]
-alias prec_singletonFreeSetPartitions_succ := strictInterl_singletonFreeSetPartitions_succ
-
 end RealRooted

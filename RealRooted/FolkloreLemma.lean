@@ -459,12 +459,4 @@ theorem strictInterl_component_of_strictInterl_next_eq_add_X_mul
     strictInterl_component_of_strictInterl_mul_X_of_roots_nonpos
       hU_XV hU_pos hV_pos hU_nonpos hV_nonpos hdeg_VU
 
-@[deprecated strictInterl_sub_X_mul_right (since := "2026-09-18")]
-alias prec_sub_X_mul_right := strictInterl_sub_X_mul_right
-
-@[deprecated strictInterl_component_of_strictInterl_next_eq_add_X_mul_of_roots_sum_le
-  (since := "2026-09-26")]
-alias prec_component_of_prec_next_eq_add_X_mul_of_roots_sum_le :=
-  strictInterl_component_of_strictInterl_next_eq_add_X_mul_of_roots_sum_le
-
 end RealRooted

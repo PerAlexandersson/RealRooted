@@ -343,30 +343,6 @@ lemma Interl.finsetSum_pairwise_of_nonneg {ι κ : Type}
 
 /-! ## Deprecated zero-aware cone-sum names -/
 
-@[deprecated Interl.sum_left_of_common_left_of_nonneg (since := "2026-09-18")]
-theorem prec0_sum_left_of_common_left_of_nonneg
-    (l : List ℝ[X]) (h : ℝ[X])
-    (hinterl : ∀ p ∈ l, Interl h p)
-    (hnn : ∀ p ∈ l, HasNonnegCoeffs p) :
-    Interl h l.sum :=
-  Interl.sum_left_of_common_left_of_nonneg l h hinterl hnn
-
-@[deprecated Interl.finsetSum_right_of_nonneg (since := "2026-09-18")]
-lemma prec0_finsetSum_right_of_nonneg {ι : Type}
-    (s : Finset ι) (f : ι → ℝ[X]) (h : ℝ[X])
-    (hinterl : ∀ i ∈ s, Interl (f i) h)
-    (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
-    Interl (s.sum f) h :=
-  Interl.finsetSum_right_of_nonneg s f h hinterl hnn
-
-@[deprecated Interl.finsetSum_left_of_nonneg (since := "2026-09-18")]
-lemma prec0_finsetSum_left_of_nonneg {ι : Type}
-    (h : ℝ[X]) (s : Finset ι) (f : ι → ℝ[X])
-    (hinterl : ∀ i ∈ s, Interl h (f i))
-    (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
-    Interl h (s.sum f) :=
-  Interl.finsetSum_left_of_nonneg h s f hinterl hnn
-
 /-- Same-degree shift on the left: if `f ≪ g`, both have positive leading
 coefficient, and all roots lie at most `r`, then `g ≪ g + (X - C r) * f`. -/
 theorem StrictInterl.add_of_sameDegree_shift_left_of_roots_le
@@ -1056,11 +1032,6 @@ theorem strictInterl_or_reverse_of_posComboRealRooted_of_no_common
       lia
 end PosComboRealRooted
 
-@[deprecated PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
-  (since := "2026-09-18")]
-alias PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common :=
-  PosComboRealRooted.strictInterl_or_reverse_of_posComboRealRooted_of_no_common
-
 namespace PosComboRealRooted
 
 lemma family_pair_data_right {f g : ℝ[X]}
@@ -1303,9 +1274,6 @@ theorem strictInterl_same_of_root_sign_data
       (by grind)
       (by grind)
 
-@[deprecated strictInterl_same_of_root_sign_data (since := "2026-09-18")]
-alias prec_same_of_root_sign_data := strictInterl_same_of_root_sign_data
-
 /-- An equal-degree Obreschkoff alternative can be oriented once we know that
 `f` has a root strictly to the right of an upper bound for all roots of `g`. -/
 theorem strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
@@ -1321,11 +1289,6 @@ theorem strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
     grind
   · lia
 
-@[deprecated strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
-  (since := "2026-09-18")]
-alias prec_of_prec_or_revPrec_of_root_asymmetry :=
-  strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
-
 /-- Symmetric orientation selector for the equal-degree Obreschkoff
 alternative. -/
 theorem reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
@@ -1338,11 +1301,6 @@ theorem reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
   strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
     (f := g) (g := f) (c := c) (r := r) (by lia)
     hf_le hgr hc_lt
-
-@[deprecated reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
-  (since := "2026-09-18")]
-alias revPrec_of_prec_or_revPrec_of_root_asymmetry :=
-  reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
 
 /-- Linear equal-degree case of the same-degree Obreschkoff alternative. -/
 theorem strictInterl_or_reverse_of_same_degree_one
@@ -1475,62 +1433,5 @@ theorem StrictInterl.convex_left_of_common_factor {d f g : ℝ[X]}
   have hmul : StrictInterl (d * f') (d * (C a * f' + C b * g')) :=
     hbase.mul_common_factor hd_ne hd_splits
   grind
-
-/-! ## Deprecated strict-interlacing cone and combination names -/
-
-@[deprecated StrictInterl.mul_X_sub_C_of_sameDegree_of_roots_le (since := "2026-09-18")]
-lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
-    (h : StrictInterl f g)
-    (hdeg : f.natDegree = g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_le : ∀ s ∈ f.roots, s ≤ r)
-    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    StrictInterl g ((X - C r) * f) :=
-  h.mul_X_sub_C_of_sameDegree_of_roots_le r hdeg hf_pos hg_pos hf_le hg_le
-
-@[deprecated StrictInterl.of_mul_X_sub_C_of_sameDegree_of_roots_le (since := "2026-09-18")]
-lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ)
-    (h : StrictInterl g ((X - C r) * f))
-    (hdeg : f.natDegree = g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_le : ∀ s ∈ f.roots, s ≤ r)
-    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    StrictInterl f g :=
-  h.of_mul_X_sub_C_of_sameDegree_of_roots_le hdeg hf_pos hg_pos hf_le hg_le
-
-@[deprecated StrictInterl.weightedSum_left_of_common_left (since := "2026-09-18")]
-alias prec_weightedSum_left_of_common_left := StrictInterl.weightedSum_left_of_common_left
-
-@[deprecated StrictInterl.sum_left_of_common_left (since := "2026-09-18")]
-alias prec_sum_left_of_common_left := StrictInterl.sum_left_of_common_left
-
-@[deprecated StrictInterl.sum_left_of_common_left_signed (since := "2026-09-18")]
-alias prec_sum_left_of_common_left_signed := StrictInterl.sum_left_of_common_left_signed
-
-@[deprecated StrictInterl.add_of_sameDegree_shift_left_of_roots_le (since := "2026-09-18")]
-theorem prec_sameDegree_shift_left_of_roots_le
-    (r : ℝ) {f g : ℝ[X]}
-    (hfg : StrictInterl f g)
-    (hdeg : f.natDegree = g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_le : ∀ s ∈ f.roots, s ≤ r)
-    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    StrictInterl g (g + (X - C r) * f) :=
-  hfg.add_of_sameDegree_shift_left_of_roots_le r hdeg hf_pos hg_pos hf_le hg_le
-
-@[deprecated StrictInterl.nonneg_combo_right (since := "2026-09-18")]
-alias prec_nonneg_combo_right := StrictInterl.nonneg_combo_right
-
-@[deprecated StrictInterl.isRealRooted_nonneg_combo (since := "2026-09-18")]
-alias isRealRooted_nonneg_combo_of_prec := StrictInterl.isRealRooted_nonneg_combo
-
-@[deprecated StrictInterl.isRealRooted_pos_combo (since := "2026-09-18")]
-alias isRealRooted_pos_combo_of_prec := StrictInterl.isRealRooted_pos_combo
-
-@[deprecated PosComboRealRooted.of_strictInterl (since := "2026-09-18")]
-alias PosComboRealRooted.of_prec := PosComboRealRooted.of_strictInterl
 
 end RealRooted

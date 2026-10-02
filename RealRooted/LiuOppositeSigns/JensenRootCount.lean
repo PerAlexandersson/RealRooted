@@ -31,9 +31,6 @@ theorem rootCountAboveOriented_of_strictInterl {p q : ℝ[X]} (hstrictInterl : S
         (sameDegreeRootCountOriented_of_strictInterl hstrictInterl hdeg x)
   · exact succDegreeRootCountAboveOriented_of_strictInterl hstrictInterl hsucc
 
-@[deprecated rootCountAboveOriented_of_strictInterl (since := "2026-09-18")]
-alias rootCountAboveOriented_of_prec := rootCountAboveOriented_of_strictInterl
-
 namespace Compatible
 
 /-- The zero polynomial is compatible on the left with every polynomial that

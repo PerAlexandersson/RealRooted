@@ -287,9 +287,4 @@ theorem A144438_root_neg (n : ℕ) {r : ℝ}
 theorem A144438_hasSimpleRoots (n : ℕ) : HasSimpleRoots (A144438 n) :=
   decoEulerian_hasSimpleRoots n
 
-/-! ## Deprecated aliases -/
-
-@[deprecated A144438_strictInterl (since := "2026-09-26")]
-alias A144438_prec := A144438_strictInterl
-
 end RealRooted.Applications.OEIS

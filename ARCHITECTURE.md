@@ -766,7 +766,7 @@ quadratic calculations; `RootEvaluation` owns evaluation on ordered roots;
 interlacing from Wronskian positivity; and `LowDegree` supplies the degree-zero
 through degree-two characterization. `RealRooted.Bezoutian` is now only the
 historical compatibility facade. This also lets `Wronskian.Converse` reuse
-`StrictPrecSameDegree.to_prec` instead of maintaining a duplicate root-list
+`StrictInterlSameDegree.toStrictInterl` instead of maintaining a duplicate root-list
 argument, while consumers can stop at the first layer they need. The generic
 real-to-complex splitting criterion formerly embedded in that proof lives in
 `Mathlib.Algebra.Polynomial.Splits.Complex`.
@@ -789,7 +789,7 @@ only inverse/reversal transport of equal- and successor-length interleavings.
 The list endpoint shims own padding and deletion.
 
 `ReciprocalShift.ProperPosition` consumes those list APIs to prove the
-polynomial-level `reciprocalShift_reverses_prec` theorem. This completes the
+polynomial-level `reciprocalShift_reverses_strictInterl` theorem. This completes the
 reciprocal-shift side of the bridge without importing the Euler operator;
 the eventual polar-theta witness remains its consumer.
 

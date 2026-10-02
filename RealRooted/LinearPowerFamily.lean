@@ -659,19 +659,4 @@ theorem commonFactorLinearPowerSequence_realRooted
   isRealRooted_of_interlaces_chain <|
     commonFactorLinearPowerSequence_interlaces hfixed hclosed hexponent hb
 
-@[deprecated strictInterl_X_pow_succ (since := "2026-09-26")]
-alias prec_X_pow_succ := strictInterl_X_pow_succ
-
-@[deprecated strictInterl_X_pow_mul_both_of_strictInterl_nonneg (since := "2026-09-26")]
-alias prec_X_pow_mul_both_of_prec_nonneg :=
-  strictInterl_X_pow_mul_both_of_strictInterl_nonneg
-
-@[deprecated strictInterl_X_pow_mul_X_pow_succ_of_reverse_strictInterl_nonneg
-  (since := "2026-09-26")]
-alias prec_X_pow_mul_X_pow_succ_of_reverse_prec_nonneg :=
-  strictInterl_X_pow_mul_X_pow_succ_of_reverse_strictInterl_nonneg
-
-@[deprecated strictInterl_X_add_C_pow_succ (since := "2026-09-26")]
-alias prec_X_add_C_pow_succ := strictInterl_X_add_C_pow_succ
-
 end RealRooted

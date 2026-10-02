@@ -900,10 +900,6 @@ def strictInterlFPolynomialTransportMinimalStatement : Prop :=
     HasNonnegCoeffs v →
     (StrictInterl (fPolynomial d u) (fPolynomial d v) ↔ StrictInterl u v)
 
-@[deprecated strictInterlFPolynomialTransportMinimalStatement (since := "2026-09-18")]
-abbrev precFPolynomialTransportMinimalStatement :=
-  strictInterlFPolynomialTransportMinimalStatement
-
 /-- Honest missing transport problem behind Brändén--Solus Theorem 2.6:
 the `f`-polynomial transform should preserve the oriented interlacing relation
 on nonnegative-coefficient pairs of degree at most `d`. -/
@@ -914,9 +910,6 @@ def strictInterlFPolynomialTransportStatement : Prop :=
     HasNonnegCoeffs u →
     HasNonnegCoeffs v →
     (StrictInterl (fPolynomial d u) (fPolynomial d v) ↔ StrictInterl u v)
-
-@[deprecated strictInterlFPolynomialTransportStatement (since := "2026-09-18")]
-abbrev precFPolynomialTransportStatement := strictInterlFPolynomialTransportStatement
 
 theorem strictInterlFPolynomialTransportMinimal :
     strictInterlFPolynomialTransportMinimalStatement := by
@@ -935,9 +928,6 @@ theorem strictInterlFPolynomialTransportMinimal :
     exact
       strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
         hd h hu_nonneg hv_nonneg
-
-@[deprecated strictInterlFPolynomialTransportMinimal (since := "2026-09-18")]
-alias precFPolynomialTransportMinimal := strictInterlFPolynomialTransportMinimal
 
 theorem strictInterlFPolynomialTransport_of_minimal
     (hminimal : strictInterlFPolynomialTransportMinimalStatement) :
@@ -959,14 +949,8 @@ theorem strictInterlFPolynomialTransport_of_minimal
           strictInterl_iff_strictInterl_mul_X_add_one_pow_both
     _ ↔ StrictInterl u v := hminimal (d := m) rfl hu_nonneg hv_nonneg
 
-@[deprecated strictInterlFPolynomialTransport_of_minimal (since := "2026-09-18")]
-alias precFPolynomialTransport_of_minimal := strictInterlFPolynomialTransport_of_minimal
-
 theorem strictInterlFPolynomialTransport : strictInterlFPolynomialTransportStatement :=
   strictInterlFPolynomialTransport_of_minimal strictInterlFPolynomialTransportMinimal
-
-@[deprecated strictInterlFPolynomialTransport (since := "2026-09-18")]
-alias precFPolynomialTransport := strictInterlFPolynomialTransport
 
 theorem brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
     (htransport : strictInterlFPolynomialTransportStatement)
@@ -983,11 +967,6 @@ theorem brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
   exact (htransport
     (u := IdTransform d p) (v := p)
     (IdTransform_natDegree_le hd) hd hId_nonneg hp_nonneg).symm
-
-@[deprecated brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
-  (since := "2026-09-18")]
-alias brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport :=
-  brandenSolusTheorem26_last_equiv_of_strictInterlFPolynomialTransport
 
 theorem brandenSolusTheorem26_last_equiv
     {d : ℕ} {p a b : ℝ[X]}
@@ -1406,26 +1385,5 @@ theorem brandenSolusTheorem26 :
     brandenSolusTheorem26Statement :=
   brandenSolusTheorem26_of_top_degree_boundary_only
     brandenSolusTheorem26TopDegreeBoundary
-
-/-! Deprecated aliases for the pre-canonical strict-interlacing names. -/
-
-@[deprecated strictInterl_of_interl_of_ne_zero (since := "2026-09-26")]
-alias prec_of_prec0_of_ne_zero := strictInterl_of_interl_of_ne_zero
-
-@[deprecated brandenSolusTheorem26_forward_of_strictInterl_b_a (since := "2026-09-26")]
-alias brandenSolusTheorem26_forward_of_prec_b_a :=
-  brandenSolusTheorem26_forward_of_strictInterl_b_a
-
-@[deprecated brandenSolusTheorem26_forward_of_strictInterl_a_p_top_degree
-  (since := "2026-09-26")]
-alias brandenSolusTheorem26_forward_of_prec_a_p_top_degree :=
-  brandenSolusTheorem26_forward_of_strictInterl_a_p_top_degree
-
-@[deprecated strictInterl_iff_strictInterl_mul_X_add_one_both (since := "2026-09-26")]
-alias prec_iff_prec_mul_X_add_one_both := strictInterl_iff_strictInterl_mul_X_add_one_both
-
-@[deprecated strictInterl_iff_strictInterl_mul_X_add_one_pow_both (since := "2026-09-26")]
-alias prec_iff_prec_mul_X_add_one_pow_both :=
-  strictInterl_iff_strictInterl_mul_X_add_one_pow_both
 
 end RealRooted

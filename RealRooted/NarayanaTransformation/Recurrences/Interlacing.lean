@@ -161,7 +161,4 @@ theorem strictInterl_narayanaPolynomial_succ (m n : ℕ) :
     hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
   simpa [P] using hbuild n
 
-@[deprecated strictInterl_narayanaPolynomial_succ (since := "2026-09-26")]
-alias prec_narayanaPolynomial_succ := strictInterl_narayanaPolynomial_succ
-
 end RealRooted

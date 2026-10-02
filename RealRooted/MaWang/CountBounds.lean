@@ -374,9 +374,6 @@ theorem strictInterl_of_count_bounds_same
       hrs_eq, hts_eq,
       Or.inr ⟨hlen, listAlternates_of_count_bounds hrs_sorted hts_sorted hlen hlt hle⟩⟩
 
-@[deprecated strictInterl_of_count_bounds_succ (since := "2026-09-18")]
-alias prec_of_count_bounds_succ := strictInterl_of_count_bounds_succ
-
 end RealRooted.MaWangInternal
 
 namespace RealRooted

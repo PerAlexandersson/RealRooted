@@ -244,7 +244,4 @@ theorem isRealRooted_of_lw_derivative_lag_sequence_of_root_window
     (fun n r hr => hW_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
     hdeg_succ hno
 
-@[deprecated strictInterl_lw_derivative_lag_of_nonpos (since := "2026-09-26")]
-alias prec_lw_derivative_lag_of_nonpos := strictInterl_lw_derivative_lag_of_nonpos
-
 end RealRooted

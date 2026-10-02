@@ -458,20 +458,4 @@ lemma bezoutMatrix.wronskian_pos_of_posDef
     exact bezoutEntry.wronskian q p (n + 1) t hq_deg hp_deg
   simp_all
 
-/-! ## Deprecated strict same-degree interlacing names -/
-
-@[deprecated StrictInterlSameDegree.interlacing_fin (since := "2026-09-18")]
-alias StrictPrecSameDegree.interlacing_fin := StrictInterlSameDegree.interlacing_fin
-
-@[deprecated StrictInterlSameDegree.roots_nodup (since := "2026-09-18")]
-alias StrictPrecSameDegree.roots_nodup := StrictInterlSameDegree.roots_nodup
-
-@[deprecated StrictInterlSameDegree.derivative_mul_eval_neg (since := "2026-09-18")]
-alias StrictPrecSameDegree.derivative_mul_eval_neg :=
-  StrictInterlSameDegree.derivative_mul_eval_neg
-
-@[deprecated StrictInterlSameDegree.bezoutMatrix_posDef_three_le (since := "2026-09-18")]
-alias StrictPrecSameDegree.bezoutMatrix_posDef_three_le :=
-  StrictInterlSameDegree.bezoutMatrix_posDef_three_le
-
 end RealRooted

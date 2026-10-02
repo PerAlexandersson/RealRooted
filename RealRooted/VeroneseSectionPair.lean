@@ -55,8 +55,4 @@ theorem strictInterl_veroneseSectionPolynomial_of_residue_lt
   rw [hi, hq] at hinterl
   exact hinterl.toStrictInterl_of_ne hk0 hj0
 
-@[deprecated strictInterl_veroneseSectionPolynomial_of_residue_lt (since := "2026-09-26")]
-alias prec_veroneseSectionPolynomial_of_residue_lt :=
-  strictInterl_veroneseSectionPolynomial_of_residue_lt
-
 end RealRooted

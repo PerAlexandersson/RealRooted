@@ -558,21 +558,6 @@ protected lemma AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
       hf0 hg0 hfnn hgnn haff hdegf1)
     hfnn hgnn
 
-@[deprecated AffineFamily.strictInterl_of_affine_family_nonneg_degree_one
-  (since := "2026-09-26")]
-protected alias AffineFamily.prec_of_affine_family_nonneg_degree_one :=
-  AffineFamily.strictInterl_of_affine_family_nonneg_degree_one
-
-@[deprecated AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
-  (since := "2026-09-26")]
-protected alias AffineFamily.prec_right_pair_of_affine_family_degree_one :=
-  AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
-
-@[deprecated AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
-  (since := "2026-09-18")]
-alias prec_right_pair_of_affine_family_nonneg_degree_one :=
-  AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
-
 /-- A second boundary closure hidden in the affine family: after rescaling the
 slice `((C s * X + 1) * f) + g`, one gets `X * f + μ * (f + g)` for every
 `μ > 0`, so the same right-family continuity argument also shows `X * f`

@@ -94,7 +94,6 @@ private lemma strictInterl_right_pair_of_common_root_factor
       (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
   grind
 
-
 /-- Repackage the affine family as a one-parameter positive-combination family
 for the shifted pair `(g + X * f, f)`. This is the natural shifted target for
 the affine converse: proving `StrictInterl f (g + X * f)` would reduce the original
@@ -570,9 +569,6 @@ theorem strictInterl_of_affine_family_nonneg
     strictInterl_right_pair_of_affine_family_high_degree hf0 hg0 hfnn hgnn haff hdegf2
   exact strictInterl_of_strictInterl_X_mul_of_nonneg hstrictInterl_pair hfnn hgnn
 
-@[deprecated strictInterl_of_affine_family_nonneg (since := "2026-09-18")]
-alias prec_of_affine_family_nonneg := strictInterl_of_affine_family_nonneg
-
 /-- Right-pair form of the affine-family converse. This is the degree-free
 public API: the affine-family hypothesis gives `f ≪ g`, and nonnegative
 coefficients transport this to `g ≪ X * f`. -/
@@ -967,9 +963,5 @@ lemma interl_one_affine_linear {a b : ℝ} (ha : 0 < a) :
     refine interlaces_one_linear ?_
     grind
   exact hInter.toStrictInterl.toInterl
-
-@[deprecated strictInterl_of_affine_segment_endpoint_tnn_nonneg (since := "2026-09-18")]
-alias prec_of_affine_segment_endpoint_tnn_nonneg :=
-  strictInterl_of_affine_segment_endpoint_tnn_nonneg
 
 end RealRooted

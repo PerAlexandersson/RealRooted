@@ -232,15 +232,4 @@ theorem isSturmSeq_eulerianTildePrefix :
           simpa [eulerianTildePrefix, IsSturmSeq] using
             And.intro (interlaces_eulerianTilde_succ (n + 1)) ih
 
-@[deprecated strictInterl_affineEulerianTilde (since := "2026-09-26")]
-alias prec_affineEulerianTilde := strictInterl_affineEulerianTilde
-
-@[deprecated strictInterl_eulerianTilde_succ_of_strictInterl_affine
-  (since := "2026-09-26")]
-alias prec_eulerianTilde_succ_of_prec_affine :=
-  strictInterl_eulerianTilde_succ_of_strictInterl_affine
-
-@[deprecated strictInterl_eulerianTilde_succ (since := "2026-09-26")]
-alias prec_eulerianTilde_succ := strictInterl_eulerianTilde_succ
-
 end RealRooted

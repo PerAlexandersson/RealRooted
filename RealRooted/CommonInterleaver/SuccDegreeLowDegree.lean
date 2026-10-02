@@ -53,10 +53,6 @@ theorem strictInterl_or_reverse_of_natDegree_le_one
     · have hg_deg1 : g.natDegree = 1 := by lia
       exact PosComboRealRooted.strictInterl_or_reverse_of_same_degree_one (by lia) hf_deg1
 
-@[deprecated strictInterl_or_reverse_of_natDegree_le_one (since := "2026-09-18")]
-alias prec_or_revPrec_of_natDegree_le_one :=
-  strictInterl_or_reverse_of_natDegree_le_one
-
 /-- A symmetric `StrictInterl` orientation implies all real linear combinations are
 real-rooted, after commuting the pair in the reversed case. -/
 theorem allComboRealRooted_of_strictInterl_or_reverse
@@ -83,9 +79,6 @@ lemma of_allComboRealRooted {f g : ℝ[X]}
 lemma of_strictInterl {f g : ℝ[X]} (h : StrictInterl f g) :
     Compatible f g :=
   of_allComboRealRooted (allComboRealRooted_of_strictInterl h)
-
-@[deprecated of_strictInterl (since := "2026-09-18")]
-alias of_prec := of_strictInterl
 
 /-- Either `StrictInterl` orientation implies Chudnovsky--Seymour nonnegative
 compatibility. -/
@@ -301,7 +294,6 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
     strictInterl_right_pair_of_affine_family_nonneg
       hf0 hg0 hfnn hgnn haff
   exact pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg hright hfnn
-
 
 /-- Degree-zero base case for the succ-degree root-count formulation.
 

@@ -298,7 +298,4 @@ namespace IsGWKreinSummand
 
 end IsGWKreinSummand
 
-@[deprecated gwHadamardProductInterl_of_strictInterl (since := "2026-09-18")]
-alias gwHadamardProductPrec0_of_prec := gwHadamardProductInterl_of_strictInterl
-
 end RealRooted

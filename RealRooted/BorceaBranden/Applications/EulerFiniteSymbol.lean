@@ -361,11 +361,6 @@ theorem eulerBidiagonalStepWithConstant_strictInterl
     (eulerAffineBidiagonalSymbolWithConstant_stable c hc d hd)
     hpdeg hqdeg hpq hp hq hpout hqout hpoutdeg
 
-@[deprecated eulerBidiagonalStepWithConstant_strictInterl
-  (since := "2026-09-18")]
-alias eulerBidiagonalStepWithConstant_prec :=
-  eulerBidiagonalStepWithConstant_strictInterl
-
 /-- The Euler derivative step preserves real-rootedness on its natural degree
 box.  The disjunction is the standard zero-output convention of finite-symbol
 preserver theorems. -/

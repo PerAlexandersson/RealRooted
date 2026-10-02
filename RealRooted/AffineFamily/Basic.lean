@@ -109,17 +109,4 @@ theorem has2x2InterlacingProperty_sameColumn_of_strictInterl_nonneg {f g : ℝ[X
   have hrr := isRealRooted_affine_combo_of_strictInterl_nonneg h hfnn hgnn hs ht
   exact StrictInterl.refl hrr.1 hrr.2
 
-@[deprecated strictInterl_self_X_mul_of_nonneg (since := "2026-09-18")]
-alias prec_self_mul_X_of_nonneg := strictInterl_self_X_mul_of_nonneg
-
-@[deprecated strictInterl_to_strictInterl_mul_X_of_nonneg (since := "2026-09-18")]
-alias prec_to_prec_mul_X_of_nonneg := strictInterl_to_strictInterl_mul_X_of_nonneg
-
-@[deprecated strictInterl_of_strictInterl_X_mul_of_nonneg (since := "2026-09-18")]
-alias prec_of_prec_mul_X_of_nonneg := strictInterl_of_strictInterl_X_mul_of_nonneg
-
-@[deprecated isRealRooted_affine_combo_of_strictInterl_nonneg (since := "2026-09-18")]
-alias isRealRooted_affine_combo_of_prec_nonneg :=
-  isRealRooted_affine_combo_of_strictInterl_nonneg
-
 end RealRooted

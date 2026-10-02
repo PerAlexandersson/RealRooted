@@ -106,9 +106,6 @@ theorem isRealRooted_of_strictInterl_chain_from_step {P : Nat → ℝ[X]}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain (hstrictInterl 0) hstrictInterl
 
-@[deprecated isRealRooted_of_strictInterl_chain_from_step (since := "2026-09-18")]
-alias isRealRooted_of_prec_chain_from_step := isRealRooted_of_strictInterl_chain_from_step
-
 /-- A consecutive `Interlaces` chain gives rowwise nonzero real-rootedness. -/
 theorem isRealRooted_of_interlaces_chain {P : Nat → ℝ[X]}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
@@ -396,16 +393,10 @@ theorem left_ne_zero_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     f ≠ 0 :=
   (left_isRealRooted_of_strictInterl hfg).1
 
-@[deprecated left_ne_zero_of_strictInterl (since := "2026-09-18")]
-alias left_ne_zero_of_prec := left_ne_zero_of_strictInterl
-
 /-- Project left-argument splitting from a `StrictInterl` certificate. -/
 theorem left_splits_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     f.Splits :=
   (left_isRealRooted_of_strictInterl hfg).2
-
-@[deprecated left_splits_of_strictInterl (since := "2026-09-18")]
-alias left_splits_of_prec := left_splits_of_strictInterl
 
 /-- Project left-argument zero-aware splitting from a `StrictInterl` certificate. -/
 theorem left_eq_zero_or_splits_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
@@ -417,16 +408,10 @@ theorem right_ne_zero_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     g ≠ 0 :=
   (right_isRealRooted_of_strictInterl hfg).1
 
-@[deprecated right_ne_zero_of_strictInterl (since := "2026-09-18")]
-alias right_ne_zero_of_prec := right_ne_zero_of_strictInterl
-
 /-- Project right-argument splitting from a `StrictInterl` certificate. -/
 theorem right_splits_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
     g.Splits :=
   (right_isRealRooted_of_strictInterl hfg).2
-
-@[deprecated right_splits_of_strictInterl (since := "2026-09-18")]
-alias right_splits_of_prec := right_splits_of_strictInterl
 
 /-- Project right-argument zero-aware splitting from a `StrictInterl` certificate. -/
 theorem right_eq_zero_or_splits_of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :

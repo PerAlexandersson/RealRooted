@@ -636,22 +636,4 @@ theorem rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
     zero_mem_roots_of_strictInterl_coeff_zero hstrictInterl hg0,
     divX_roots_nonpos_of_strictInterl_hasNonnegCoeffs hstrictInterl hgnn hg0⟩
 
-/-! ## Deprecated `Prec` / `Prec0` compatibility names -/
-
-@[deprecated strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias prec_iff_prec_divX_left_of_hasNonnegCoeffs_coeff_zero :=
-  strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero :=
-  strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-
-@[deprecated
-  strictInterl_of_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
-  (since := "2026-09-18")]
-alias prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero :=
-  strictInterl_of_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
-
 end RealRooted

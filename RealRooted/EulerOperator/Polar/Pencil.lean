@@ -350,24 +350,4 @@ theorem strictInterl_self_add_C_mul_theta_X_polarTheta_boundary
   exact StrictInterl.add_of_right_of_posLeadingCoeff
     hp_right hbtheta_right hp_pos hbtheta_pos
 
-/-! Deprecated names for the pre-canonical polar Euler interlacing APIs. -/
-
-@[deprecated strictInterl_polarTheta_self (since := "2026-09-26")]
-alias prec_polarTheta_self := strictInterl_polarTheta_self
-
-@[deprecated strictInterl_derivative_polarTheta (since := "2026-09-26")]
-alias prec_derivative_polarTheta := strictInterl_derivative_polarTheta
-
-@[deprecated strictInterl_derivative_polarTheta_boundary (since := "2026-09-26")]
-alias prec_derivative_polarTheta_boundary := strictInterl_derivative_polarTheta_boundary
-
-@[deprecated strictInterl_polarTheta_thetaPlusOne_boundary (since := "2026-09-26")]
-alias prec_polarTheta_thetaPlusOne_boundary :=
-  strictInterl_polarTheta_thetaPlusOne_boundary
-
-@[deprecated strictInterl_self_add_C_mul_theta_X_polarTheta_boundary
-    (since := "2026-09-26")]
-alias prec_self_add_C_mul_theta_X_polarTheta_boundary :=
-  strictInterl_self_add_C_mul_theta_X_polarTheta_boundary
-
 end RealRooted

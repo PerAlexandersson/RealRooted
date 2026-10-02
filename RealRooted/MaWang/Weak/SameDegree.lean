@@ -345,17 +345,6 @@ theorem strictInterl_of_interlaces_evalCoeff_nonpos_succ_of_no_common
     strictInterl_of_count_bounds_succ hf.1 hf.2 hF.1 hF.2 hrs_sorted
       hts_sorted hrs_eq hts_eq hdeg hhead hlt hle
 
-@[deprecated strictInterl_of_interlaces_evalCoeff_nonpos_same_of_no_common
-  (since := "2026-09-18")]
-alias prec_of_interlaces_evalCoeff_nonpos_same_of_no_common :=
-  strictInterl_of_interlaces_evalCoeff_nonpos_same_of_no_common
-
-@[deprecated strictInterl_of_interlaces_evalCoeff_nonpos_succ_of_no_common
-  (since := "2026-09-18")]
-alias prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common :=
-  strictInterl_of_interlaces_evalCoeff_nonpos_succ_of_no_common
-
-
 end RealRooted.MaWangInternal
 
 namespace RealRooted

@@ -194,10 +194,4 @@ theorem isSturmSeq_touchardPrefix :
           simpa [touchardPrefix, IsSturmSeq] using
             And.intro (interlaces_touchard_succ (k + 1)) ih
 
-@[deprecated strictInterl_touchard_one_two (since := "2026-09-26")]
-alias prec_touchard_one_two := strictInterl_touchard_one_two
-
-@[deprecated strictInterl_touchard_succ (since := "2026-09-26")]
-alias prec_touchard_succ := strictInterl_touchard_succ
-
 end RealRooted

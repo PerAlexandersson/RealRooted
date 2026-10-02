@@ -742,8 +742,5 @@ end SumCompatibleLeft
 
 /-! ## Deprecated Wagner sum names -/
 
-@[deprecated SumCompatibleLeft.toStrictInterl (since := "2026-09-18")]
-alias prec_sum_of_compatible_left := SumCompatibleLeft.toStrictInterl
-
 end
 end RealRooted

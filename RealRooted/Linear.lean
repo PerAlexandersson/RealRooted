@@ -136,10 +136,6 @@ lemma Interl.X_add_C_iff {a b : ℝ} :
     exact (StrictInterl.X_add_C_iff.mpr hab).toInterl
 
 /- Deprecated compatibility alias for `StrictInterl.X_add_C_iff`. -/
-@[deprecated StrictInterl.X_add_C_iff (since := "2026-09-17")]
-lemma prec_X_add_C_iff {a b : ℝ} :
-    StrictInterl (X + C b) (X + C a) ↔ a ≤ b :=
-  StrictInterl.X_add_C_iff
 
 lemma isRealRooted_of_deg_zero {p : ℝ[X]}
     (hp : p ≠ 0) (hdeg : p.natDegree = 0) :
@@ -553,10 +549,6 @@ lemma Interl.comp_neg_X_of_natDegree_eq {f g : ℝ[X]} (h : Interl f g)
 `StrictInterl.comp_one_sub_X_of_natDegree_eq`. -/
 
 /- Deprecated compatibility alias for `StrictInterl.comp_X_add_C`. -/
-@[deprecated StrictInterl.comp_X_add_C (since := "2026-09-17")]
-lemma prec_comp_X_add_C {f g : ℝ[X]} (h : StrictInterl f g) (r : ℝ) :
-    StrictInterl (f.comp (X + C r)) (g.comp (X + C r)) :=
-  h.comp_X_add_C r
 
 /- Deprecated compatibility alias for `StrictInterl.comp_C_mul_X`. -/
 
@@ -565,27 +557,12 @@ lemma prec_comp_X_add_C {f g : ℝ[X]} (h : StrictInterl f g) (r : ℝ) :
 /- Deprecated compatibility alias for `StrictInterl.comp_neg_X_of_natDegree_eq`. -/
 
 /- Deprecated compatibility alias for `StrictInterl.comp_X_add_C_iff`. -/
-@[deprecated StrictInterl.comp_X_add_C_iff (since := "2026-09-17")]
-lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
-    StrictInterl (f.comp (X + C r)) (g.comp (X + C r)) ↔ StrictInterl f g :=
-  StrictInterl.comp_X_add_C_iff r
 
 /- Deprecated compatibility alias for `StrictInterl.refl`. -/
-@[deprecated StrictInterl.refl (since := "2026-09-17")]
-lemma prec_refl {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) : StrictInterl f f :=
-  StrictInterl.refl hf₀ hf
 
 /- Deprecated compatibility alias for `StrictInterl.C_mul_left`. -/
-@[deprecated StrictInterl.C_mul_left (since := "2026-09-17")]
-lemma prec_C_mul_left {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
-    StrictInterl (C a * f) g :=
-  h.C_mul_left ha
 
 /- Deprecated compatibility alias for `StrictInterl.C_mul_right`. -/
-@[deprecated StrictInterl.C_mul_right (since := "2026-09-17")]
-lemma prec_C_mul_right {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
-    StrictInterl f (C a * g) :=
-  h.C_mul_right ha
 
 lemma interlaces_C_linear {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0)
     (hp_deg : p.natDegree = 1) :
@@ -598,10 +575,6 @@ lemma interlaces_C_linear {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0)
 /- Deprecated compatibility alias for `Interl.C_mul_right_of_nonneg`. -/
 
 /- Deprecated compatibility alias for `StrictInterl.C_mul_self`. -/
-@[deprecated StrictInterl.C_mul_self (since := "2026-09-17")]
-lemma prec_C_mul_self {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) {a : ℝ} (ha : a ≠ 0) :
-    StrictInterl (C a * f) f :=
-  StrictInterl.C_mul_self hf₀ hf ha
 
 /-- If two polynomials have the same degree and positive leading coefficients,
 their top coefficients cannot cancel. -/

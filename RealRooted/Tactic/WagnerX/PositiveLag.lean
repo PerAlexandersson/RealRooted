@@ -264,20 +264,9 @@ theorem isRealRooted_of_strictInterl_pos_X_lag_combo_sequence {P : Nat → ℝ[X
   isRealRooted_of_strictInterl_chain_from_step <|
     strictInterl_pos_X_lag_combo_sequence hbase hnonneg ha hc hrec
 
-
-
 end RealRooted
 
 /- Deprecated theorem aliases retained for the #984 Prec migration. -/
 namespace RealRooted
-@[deprecated strictInterl_pos_X_lag_combo_sequence (since := "2026-09-26")]
-alias prec_pos_X_lag_combo_sequence := strictInterl_pos_X_lag_combo_sequence
-
-@[deprecated strictInterl_pos_X_lag_combo_of_strictInterl_nonneg (since := "2026-09-26")]
-alias prec_pos_X_lag_combo_of_prec_nonneg := strictInterl_pos_X_lag_combo_of_strictInterl_nonneg
-
-@[deprecated strictInterl_left_pos_X_lag_combo_of_strictInterl_nonneg (since := "2026-09-26")]
-alias prec_left_pos_X_lag_combo_of_prec_nonneg :=
-  strictInterl_left_pos_X_lag_combo_of_strictInterl_nonneg
 
 end RealRooted

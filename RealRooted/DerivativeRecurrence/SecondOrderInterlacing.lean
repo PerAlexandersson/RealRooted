@@ -368,11 +368,6 @@ theorem AffineLagSecondOrderCertificate.splits {P : ℕ → ℝ[X]} {n : ℕ}
     (h : AffineLagSecondOrderCertificate P n) : (P n).Splits :=
   h.strictInterl_succ.1.2
 
-@[deprecated AffineLagSecondOrderCertificate.strictInterl_succ
-  (since := "2026-09-26")]
-alias AffineLagSecondOrderCertificate.prec_succ :=
-  AffineLagSecondOrderCertificate.strictInterl_succ
-
 /-- The reusable rankwise package for an independent nonnegative lag. -/
 theorem affine_lag_second_order_derivative_certificate_of_nonneg_lag
     (P : ℕ → ℝ[X]) (a c : ℝ) (ha : 0 < a) (hc : 0 ≤ c)

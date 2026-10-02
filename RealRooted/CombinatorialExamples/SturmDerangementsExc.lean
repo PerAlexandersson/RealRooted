@@ -600,40 +600,4 @@ lemma warmupP_four : warmupP 4 = X ^ 3 + 7 * X ^ 2 + X := sturmDerangementsExc_f
 
 lemma warmupP_five : warmupP 5 = X ^ 4 + 21 * X ^ 3 + 21 * X ^ 2 + X := sturmDerangementsExc_five
 
-@[deprecated strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs (since := "2026-09-26")]
-alias prec_one_sub_X_derivative_right := strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs
-
-@[deprecated strictInterl_lowerTerm_sturmDerangementsExc (since := "2026-09-26")]
-alias prec_lowerTerm_sturmDerangementsExc := strictInterl_lowerTerm_sturmDerangementsExc
-
-@[deprecated strictInterl_affine_sturmDerangementsExc (since := "2026-09-26")]
-alias prec_affine_sturmDerangementsExc := strictInterl_affine_sturmDerangementsExc
-
-@[deprecated strictInterl_sturmDerangementsExc_affine_mul_X (since := "2026-09-26")]
-alias prec_sturmDerangementsExc_affine_mul_X := strictInterl_sturmDerangementsExc_affine_mul_X
-
-@[deprecated strictInterl_X_mul_affine_sturmDerangementsExc (since := "2026-09-26")]
-alias prec_X_mul_affine_sturmDerangementsExc := strictInterl_X_mul_affine_sturmDerangementsExc
-
-@[deprecated strictInterl_X_mul_lowerTerm_sturmDerangementsExc
-  (since := "2026-09-26")]
-alias prec_X_mul_lowerTerm_sturmDerangementsExc :=
-  strictInterl_X_mul_lowerTerm_sturmDerangementsExc
-
-@[deprecated strictInterl_X_mul_recurrenceSummands_sturmDerangementsExc
-  (since := "2026-09-26")]
-alias prec_X_mul_recurrenceSummands_sturmDerangementsExc :=
-  strictInterl_X_mul_recurrenceSummands_sturmDerangementsExc
-
-@[deprecated strictInterl_recurrenceCoreSturmDerangementsExc (since := "2026-09-26")]
-alias prec_recurrenceCoreSturmDerangementsExc := strictInterl_recurrenceCoreSturmDerangementsExc
-
-@[deprecated strictInterl_sturmDerangementsExc_succ_of_strictInterl_recurrenceCore
-  (since := "2026-09-26")]
-alias prec_sturmDerangementsExc_succ_of_prec_recurrenceCore :=
-  strictInterl_sturmDerangementsExc_succ_of_strictInterl_recurrenceCore
-
-@[deprecated strictInterl_sturmDerangementsExc_succ (since := "2026-09-26")]
-alias prec_sturmDerangementsExc_succ := strictInterl_sturmDerangementsExc_succ
-
 end RealRooted

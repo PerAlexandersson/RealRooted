@@ -116,8 +116,4 @@ theorem garloffWagnerHadamardNonnegInterl {f g p q : ℝ[X]}
     Interl (hadamardProduct f p) (hadamardProduct g q) :=
   gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
 
-
-@[deprecated garloffWagnerHadamardNonnegInterl (since := "2026-09-18")]
-alias garloffWagnerHadamardNonnegPrec := garloffWagnerHadamardNonnegInterl
-
 end RealRooted

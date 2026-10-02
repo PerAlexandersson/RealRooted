@@ -372,8 +372,4 @@ theorem strictInterl_gammaTransform_succ_iff
         coe_reciprocalCenterRoots_eq_roots hδdeg hδ hTδneg,
         Or.inl ⟨hfull_len, hfull⟩⟩
 
-@[deprecated strictInterl_gammaTransform_succ_iff (since := "2026-09-26")]
-alias prec_gammaTransform_succ_iff := strictInterl_gammaTransform_succ_iff
-
-
 end RealRooted

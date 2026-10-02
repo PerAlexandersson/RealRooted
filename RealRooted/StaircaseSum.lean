@@ -95,8 +95,4 @@ theorem isRealRooted_staircaseSum_of_isInterlacingSeqNonneg
     (hm : m < fs.length) : ((staircaseSum fs m) ≠ 0 ∧ (staircaseSum fs m).Splits) :=
   (strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg hfs hm).2.1
 
-@[deprecated strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg (since := "2026-09-26")]
-alias prec_get_staircaseSum_of_isInterlacingSeqNonneg :=
-  strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg
-
 end RealRooted

@@ -361,9 +361,6 @@ lemma eval_mul_eval_nonneg_of_strictInterl_right {f g h : ℝ[X]}
   rw [hfactor]
   exact mul_nonneg hlead hprod
 
-@[deprecated eval_mul_eval_nonneg_of_strictInterl_right (since := "2026-09-18")]
-alias eval_mul_eval_nonneg_of_prec_right := eval_mul_eval_nonneg_of_strictInterl_right
-
 /-- At each root of the common right-hand polynomial, `f + g` has the same sign
 as `f`. -/
 lemma eval_add_mul_eval_left_nonneg_of_strictInterl_right {f g h : ℝ[X]}
@@ -642,11 +639,6 @@ lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
     exact lt_irrefl r (hgt r ((mem_roots hp_ne).mpr hr_root))
   · obtain ⟨u, hu_le, hu_root⟩ := exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot hpos ht
     exact not_lt_of_ge hu_le (hgt u ((mem_roots hp_ne).mpr hu_root))
-
-@[deprecated eval_add_mul_eval_left_nonneg_of_strictInterl_right
-  (since := "2026-09-18")]
-alias eval_add_mul_eval_left_nonneg_of_prec_right :=
-  eval_add_mul_eval_left_nonneg_of_strictInterl_right
 
 end
 end RealRooted
