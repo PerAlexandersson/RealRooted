@@ -40,7 +40,6 @@ a production caller.
 | Jensen-pencil degree-two boundary with `beta 2 = 0` | `jensenPencilBidiagonalPreserver_two_of_beta_two_eq_zero` |
 | Jensen certificate gives endpoint compatibility | `BidiagonalJensenPencilCertificate.compatible` |
 | Jensen output as two Schur--Szegő compositions | `bidiagonalOperator_eq_schurSzegoComp` |
-| General Jensen theorem reduced to root-count contraction | `jensenPencilBidiagonalPreserver_of_schurSzegoCompatibility` |
 | Schur--Szegő Jensen compatibility contraction | `schurSzegoPreservesJensenPencilCompatibility` |
 | Liu theorem with common roots | `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant` |
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFInterl_of_nonnegStrictInterl` |

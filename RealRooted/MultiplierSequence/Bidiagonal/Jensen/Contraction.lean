@@ -14,28 +14,9 @@ noncomputable section
 
 namespace RealRooted
 
-/-- The root-count contraction core needed by the general Jensen-pencil
-argument.
-
-This is the zero-aware Schur--Szegő formulation of the finite-free
-multiplicative-convolution step: composing both Jensen endpoints with the
-same PF polynomial preserves compatibility after restoring the explicit
-factor `X` on the second endpoint. -/
-def schurSzegoPreservesJensenPencilCompatibilityStatement : Prop :=
-  ∀ {d : ℕ} {A B p : ℝ[X]},
-    IsPFPolynomial A →
-    IsPFPolynomial (X * B) →
-    IsPFPolynomial p →
-    A.natDegree ≤ d →
-    B.natDegree ≤ d →
-    p.natDegree ≤ d →
-    Compatible A (X * B) →
-    Compatible (schurSzegoComp d A p)
-      (X * schurSzegoComp d B p)
-
-/-- The two endpoint compositions in the Jensen-pencil contraction core are
-individually PF.  Thus the remaining content of the core statement is their
-compatibility, not endpoint real-rootedness or root location. -/
+/-- The two endpoint compositions in the Jensen-pencil contraction are
+individually PF.  Thus the content of `schurSzegoPreservesJensenPencilCompatibility`
+is their compatibility, not endpoint real-rootedness or root location. -/
 theorem schurSzegoJensenEndpoints_pf
     {d : ℕ} {A B p : ℝ[X]}
     (hA : IsPFPolynomial A) (hXB : IsPFPolynomial (X * B))
@@ -46,19 +27,18 @@ theorem schurSzegoJensenEndpoints_pf
   ⟨hA.schurSzegoComp hp hAdeg hpdeg,
     ((isPFPolynomial_of_X_mul hXB).schurSzegoComp hp hBdeg hpdeg).X_mul⟩
 
-/-- The Schur--Szegő compatibility core implies the complete Jensen-pencil
-bidiagonal preserver theorem. -/
-theorem jensenPencilBidiagonalPreserver_of_schurSzegoCompatibility
-    (hcore : schurSzegoPreservesJensenPencilCompatibilityStatement) :
-    ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
-      BidiagonalJensenPencilCertificate alpha beta d →
-      BidiagonalPFPreserver alpha beta d := by
-  intro alpha beta d hcert p hp hdeg
+/-- Jensen-pencil implication for coefficient-bidiagonal PF preservers, from
+the Schur--Szegő compatibility contraction
+`schurSzegoPreservesJensenPencilCompatibility`. -/
+theorem jensenPencilBidiagonalPreserver {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hcert : BidiagonalJensenPencilCertificate alpha beta d) :
+    BidiagonalPFPreserver alpha beta d := by
+  intro p hp hdeg
   have hcompat :
       Compatible
         (schurSzegoComp d (jensenPolynomial d alpha) p)
         (X * schurSzegoComp d (jensenPolynomial d beta) p) :=
-    hcore hcert.1 hcert.2.1 hp
+    schurSzegoPreservesJensenPencilCompatibility hcert.1 hcert.2.1 hp
       (natDegree_jensenPolynomial_le d alpha)
       (natDegree_jensenPolynomial_le d beta) hdeg hcert.compatible
   have hout_nonneg : HasNonnegCoeffs (bidiagonalOperator alpha beta p) :=
@@ -70,14 +50,6 @@ theorem jensenPencilBidiagonalPreserver_of_schurSzegoCompatibility
   rcases hcompat 1 1 (by norm_num) (by norm_num) with hzero | hsplits
   · simpa using Or.inl hzero
   · exact Or.inr (by simpa using hsplits.2)
-
-/-- Jensen-pencil implication for coefficient-bidiagonal PF preservers. -/
-theorem jensenPencilBidiagonalPreserver :
-    ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
-      BidiagonalJensenPencilCertificate alpha beta d →
-      BidiagonalPFPreserver alpha beta d :=
-  jensenPencilBidiagonalPreserver_of_schurSzegoCompatibility
-    schurSzegoPreservesJensenPencilCompatibility
 
 /-- Apply the named Jensen-pencil backend theorem. -/
 theorem bidiagonalPFPreserver_of_jensenPencil
