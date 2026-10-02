@@ -350,17 +350,6 @@ theorem isUpperHalfPlaneStable_of_cofactor {f g : ℝ[X]} {r : ℝ}
   intro h
   exact hz.ne' (by simpa using congrArg Complex.im h)
 
-/-- Proposition form of the sign-normalized forward Hermite--Biehler theorem
-`hermiteBiehlerForwardPos`.  Positive leading coefficients on both inputs
-exclude the sign counterexample.  It is kept for callers that take the theorem
-as a hypothesis. -/
-abbrev hermiteBiehlerForwardPosStatement : Prop :=
-  ∀ {f g : ℝ[X]},
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    StrictInterl g f →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
-
 theorem hermiteBiehlerForwardPos_general {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (hpq : StrictInterl g f) :
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) := by

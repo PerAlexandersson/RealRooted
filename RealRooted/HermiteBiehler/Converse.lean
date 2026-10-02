@@ -15,17 +15,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Proposition form of the converse Hermite--Biehler theorem
-`hermiteBiehlerConverse`: upper-half-plane stability of `f + i g` forces an
-interlacing relation between `f` and `g`.  It is kept for callers that take the
-theorem as a hypothesis. -/
-abbrev hermiteBiehlerConverseStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
-    StrictInterl g f ∨ StrictInterl f g
-
 theorem isUpperHalfPlaneStable_cofactor_of_stable {f g : ℝ[X]} {r : ℝ}
     (hrf : f.IsRoot r) (hrg : g.IsRoot r)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :

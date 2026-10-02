@@ -552,36 +552,8 @@ theorem fullyInterlacingPair_veronesePairSectionPolynomial_coeff
 
 The row order of `lacePair` is reversed relative to the polynomial-to-Lace
 direction: the strictly interlacing nonnegative pair `X + 2`, `X + 1` has a
-negative `2 × 2` Lace minor.  The propositions carrying a `Legacy` prefix record
-that refuted orientation and sit beside their checked negations. -/
-
-/-- Polynomial-to-Lace implication in the historical row orientation.  It is
-false; see `not_legacyNonnegStrictInterlToFullyInterlacingPairStatement`.  It is
-kept only because `RealRooted.Hadamard.Consequences` still mentions it. -/
-def LegacyNonnegStrictInterlToFullyInterlacingPairStatement : Prop :=
-  ∀ {p q : ℝ[X]},
-    HasNonnegCoeffs p →
-    HasNonnegCoeffs q →
-    StrictInterl p q →
-    FullyInterlacingPair p.coeff q.coeff
-
-/-- Nonnegative-coefficient Hurwitz odd/even implication.  It is proved as
-`isHurwitzStable_oddEvenPolynomial_of_strictInterl`; the proposition is kept
-only because `RealRooted.Hadamard.Consequences` still mentions it. -/
-def NonnegStrictInterlToHurwitzOddEvenStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    HasNonnegCoeffs p →
-    HasNonnegCoeffs q →
-    StrictInterl p q →
-    IsHurwitzStable (oddEvenPolynomial p q)
-
-/-- Hurwitz-to-Lace implication in the historical row orientation.  It is
-false; see `not_hurwitzOddEvenToFullyInterlacingPairStatement`.  It is kept
-only because `RealRooted.Hadamard.Consequences` still mentions it. -/
-def LegacyHurwitzOddEvenToFullyInterlacingPairStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    IsHurwitzStable (oddEvenPolynomial p q) →
-    FullyInterlacingPair p.coeff q.coeff
+negative `2 × 2` Lace minor.  The negations below record that refuted
+orientation. -/
 
 /-- Unproved target: Hurwitz stability of `q(x^2) + x p(x^2)` makes the
 reversed two-row Lace matrix of `q` and `p` totally nonnegative. -/
@@ -605,9 +577,14 @@ private theorem strictInterl_X_add_C_two_one : StrictInterl (X + C (2 : ℝ)) (X
   rw [StrictInterl.X_add_C_iff]
   norm_num
 
-/-- `LegacyNonnegStrictInterlToFullyInterlacingPairStatement` is false as stated. -/
-theorem not_legacyNonnegStrictInterlToFullyInterlacingPairStatement :
-    ¬ LegacyNonnegStrictInterlToFullyInterlacingPairStatement := by
+/-- In the historical row orientation, strict interlacing of nonnegative
+polynomials does not make their two-row Lace matrix totally nonnegative. -/
+theorem not_nonnegStrictInterl_fullyInterlacingPair :
+    ¬ ∀ {p q : ℝ[X]},
+      HasNonnegCoeffs p →
+      HasNonnegCoeffs q →
+      StrictInterl p q →
+      FullyInterlacingPair p.coeff q.coeff := by
   intro h
   have hpnn : HasNonnegCoeffs (X + C (2 : ℝ)) :=
     hasNonnegCoeffs_X_add_C (by norm_num)
@@ -628,11 +605,13 @@ theorem isHurwitzStable_oddEvenPolynomial_of_strictInterl {p q : ℝ[X]}
       (hermiteBiehlerForwardPos (hqnn.pos_leadingCoeff hpq.2.1.1)
         (hpnn.pos_leadingCoeff hpq.1.1) hpq)⟩
 
-/-- `LegacyHurwitzOddEvenToFullyInterlacingPairStatement` is false for the
-current row-oriented Lace matrix. -/
-theorem not_hurwitzOddEvenToFullyInterlacingPairStatement :
-    ¬ LegacyHurwitzOddEvenToFullyInterlacingPairStatement := fun h =>
-  not_legacyNonnegStrictInterlToFullyInterlacingPairStatement fun hpnn hqnn hpq =>
+/-- Hurwitz stability of `q(x^2) + x p(x^2)` does not make the current
+row-oriented Lace matrix of `p` and `q` totally nonnegative. -/
+theorem not_isHurwitzStable_oddEven_fullyInterlacingPair :
+    ¬ ∀ ⦃p q : ℝ[X]⦄,
+      IsHurwitzStable (oddEvenPolynomial p q) →
+      FullyInterlacingPair p.coeff q.coeff := fun h =>
+  not_nonnegStrictInterl_fullyInterlacingPair fun hpnn hqnn hpq =>
     h (isHurwitzStable_oddEvenPolynomial_of_strictInterl hpnn hqnn hpq)
 
 /-- The forward Hurwitz-matrix criterion is false for the row orientation used
@@ -640,27 +619,9 @@ by `hurwitz`: Hurwitz stability does not force the row-oriented Hurwitz matrix
 to be totally nonnegative. -/
 theorem not_forall_isHurwitzStable_hurwitz_isTotallyNonneg :
     ¬ ∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg := fun h =>
-  not_legacyNonnegStrictInterlToFullyInterlacingPairStatement fun hpnn hqnn hpq =>
+  not_nonnegStrictInterl_fullyInterlacingPair fun hpnn hqnn hpq =>
     (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair _ _).1
       (h (isHurwitzStable_oddEvenPolynomial_of_strictInterl hpnn hqnn hpq))
-
-/-- Unproved Lace-to-polynomial interface in the historical row orientation.
-It is kept only because `RealRooted.Hadamard.Consequences` still mentions it.
-It is expected to be false: numerically `lacePair (X + 1).coeff (X + 2).coeff`
-has no negative minor, while `Interl (X + 1) (X + 2)` fails. -/
-def FullyInterlacingPairToInterlStatement : Prop :=
-  ∀ {p q : ℝ[X]},
-    FullyInterlacingPair p.coeff q.coeff → Interl p q
-
-/-- Lace-to-Hurwitz interface in the historical row orientation.  It is kept
-only because `RealRooted.HurwitzMatrix` still mentions it.  It is expected to
-be false: numerically `lacePair (X + 1).coeff (X + 2).coeff` has no negative
-minor, while `X^3 + X^2 + X + 2` is not Hurwitz stable. -/
-def LegacyFullyInterlacingPairToHurwitzOddEvenStableStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    p ≠ 0 ∨ q ≠ 0 →
-    FullyInterlacingPair p.coeff q.coeff →
-    IsHurwitzStable (oddEvenPolynomial p q)
 
 /-! ## Converse Hermite--Biehler step for odd/even polynomials -/
 

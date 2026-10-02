@@ -104,8 +104,8 @@ polynomials `p` and `q`. -/
 theorem polyaFrequencyHadamardCoeff {p q : ℝ[X]}
     (hp : IsPolyaFreqSeq p.coeff) (hq : IsPolyaFreqSeq q.coeff) :
     IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n) :=
-  ((IsPFPolynomial.of_sequence aissenSchoenbergWhitneyForwardOrZero hp).hadamardProduct
-    (IsPFPolynomial.of_sequence aissenSchoenbergWhitneyForwardOrZero hq)).to_sequence
+  ((IsPFPolynomial.of_polyaFreqSeq hp).hadamardProduct
+    (IsPFPolynomial.of_polyaFreqSeq hq)).to_sequence
 
 /-- **Maló's theorem (finite-support Toeplitz form).**  The entrywise product
 of two totally nonnegative lower-triangular Toeplitz matrices is totally

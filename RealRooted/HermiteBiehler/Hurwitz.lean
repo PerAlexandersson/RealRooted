@@ -17,17 +17,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Proposition form of `hermiteBiehlerStableToHurwitzOddEven`: the
-Hermite--Biehler stable polynomial `q + i p` gives right-half-plane stability of
-`q(x^2) + x p(x^2)`.  It is kept for callers that take the theorem as a
-hypothesis. -/
-abbrev HermiteBiehlerStableToHurwitzOddEvenStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    HasNonnegCoeffs p →
-    HasNonnegCoeffs q →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
-    IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))
-
 /-- Upper-half-plane substitution form of the forward Hermite--Biehler/Hurwitz
 odd/even theorem: for any upper-half-plane point `w` with a right-half-plane
 square root `z`, the Hurwitz combination `q(w) + z·p(w)` is nonzero.
