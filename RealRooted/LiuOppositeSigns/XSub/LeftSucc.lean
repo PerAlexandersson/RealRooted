@@ -6,74 +6,15 @@ import RealRooted.SameDegreeQuadraticRootCount
 /-!
 # Liu left-successor x-subtraction base cases
 
-This module contains the left-successor positive-split x-subtraction target
-interface and the degree-zero right-endpoint terminal used by the two-degree
-factor-return branch.
+This module contains low-degree right-endpoint cases of the left-successor
+positive-split x-subtraction pencil used by the two-degree factor-return
+branch.
 -/
 
 open Polynomial Filter
 
 namespace RealRooted
 namespace LiuOppositeSigns
-
-/-- Positive-split left-successor subtraction-family target.  After a shift
-that makes the two endpoints coefficientwise nonnegative, the one-sided pencil
-`X * f - μ g`, `μ > 0`, should be real-rooted.  This is the honest
-two-degree Liu factor-return leaf left after the false all-combinations route
-is removed. -/
-def positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄ (r : ℝ),
-    PositiveSplitRootCountPair f g →
-    HasNonnegCoeffs (f.comp (X + C r)) →
-    HasNonnegCoeffs (g.comp (X + C r)) →
-    f.natDegree = g.natDegree + 1 →
-    ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits
-
-/-- Predicate-restricted form of the positive-split left-successor
-subtraction-family target.  The predicate records endpoint restrictions on
-`g.natDegree`. -/
-def positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-    (P : ℕ → Prop) : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄ (r : ℝ),
-    PositiveSplitRootCountPair f g →
-    HasNonnegCoeffs (f.comp (X + C r)) →
-    HasNonnegCoeffs (g.comp (X + C r)) →
-    f.natDegree = g.natDegree + 1 →
-    P g.natDegree →
-    ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits
-
-/-- Predicate-restricted positive-split x-subtraction targets transport along
-endpoint predicate implications. -/
-theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement_of_imp
-    {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ :
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-        Q) :
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      P := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg μ hμ
-  exact hQ r hpair hfnn hgnn hdeg (hPQ _ hgdeg) μ hμ
-
-/-- The unrestricted positive-split x-sub family is the `P := True` case of
-the predicate-restricted target. -/
-theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate_true_of_xSub
-    (hsub :
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement) :
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun _ => True) := by
-  intro f g r hpair hfnn hgnn hdeg _ μ hμ
-  exact hsub r hpair hfnn hgnn hdeg μ hμ
-
-/-- A `P := True` positive-split x-sub family gives the unrestricted target. -/
-theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_predicate_true
-    (hsub :
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-        (fun _ => True)) :
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement := by
-  intro f g r hpair hfnn hgnn hdeg μ hμ
-  exact hsub r hpair hfnn hgnn hdeg trivial μ hμ
 
 /-- Quadratic terminal case for the x-subtraction pencil: a degree-one
 positive-leading left endpoint and degree-zero positive-leading right endpoint

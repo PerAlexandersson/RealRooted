@@ -1442,27 +1442,5 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
   positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
     xSubQuadraticCubicSplits hpair hfnn hgnn hdeg hgdeg
 
-/-- Pack the endpoint cases through degree three as a predicate-restricted
-right-successor positive-split x-sub family. -/
-theorem
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_three :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 3) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three
-    hpair hfnn hgnn hdeg hgdeg
-
-/-- Compatibility alias for the shorter historical degree-three predicate
-name. -/
-theorem
-    positiveSplitRightSuccXSubFamilyPredicate_of_right_natDegree_le_three_of_monic
-    (hmono : xSubQuadraticCubicSplitsStatement) :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 3) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
-      hmono hpair hfnn hgnn hdeg hgdeg
-
 end LiuOppositeSigns
 end RealRooted

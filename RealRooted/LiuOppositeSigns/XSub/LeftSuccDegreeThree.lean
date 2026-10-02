@@ -153,48 +153,5 @@ theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_
   positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
     xSubQuarticCubicSplits hpair hfnn hgnn hdeg hgdeg
 
-/-- Pack the degree-three-right endpoint terminal as a predicate-restricted
-positive-split x-sub family, modulo the normalized monic quartic/cubic
-arithmetic leaf. -/
-theorem
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
-    (hmono : xSubQuarticCubicSplitsStatement) :
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_three_of_monic
-      hmono hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-three-right endpoint terminal as a predicate-restricted
-positive-split x-sub family. -/
-theorem
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three :
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 3) :=
-  positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_three_of_monic
-    xSubQuarticCubicSplits
-
-/-- Pack endpoint cases through degree three as a predicate-restricted
-positive-split x-sub family, modulo the normalized monic quartic/cubic
-arithmetic leaf. -/
-theorem
-    positiveSplitLeftSuccXSubFamilyPredicate_of_right_natDegree_le_three_of_monic
-    (hmono : xSubQuarticCubicSplitsStatement) :
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 3) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
-      hmono hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack endpoint cases through degree three as a predicate-restricted
-positive-split x-sub family. -/
-theorem positiveSplitLeftSuccXSubFamilyPredicate_of_right_natDegree_le_three :
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 3) :=
-  positiveSplitLeftSuccXSubFamilyPredicate_of_right_natDegree_le_three_of_monic
-    xSubQuarticCubicSplits
-
 end LiuOppositeSigns
 end RealRooted

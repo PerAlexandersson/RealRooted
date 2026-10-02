@@ -1,11 +1,11 @@
 import RealRooted.CommonInterleaverTwo
-import RealRooted.LiuOppositeSigns.Corollary22
+import RealRooted.LiuOppositeSigns.ForwardLowDegree
 
 /-!
 # Liu common-interleaver consequences
 
 This module contains the positive-deletion and branch-retaining
-common-interleaver consequences derived from Liu Theorem 2.1 packages.
+common-interleaver consequences of Liu's root-count branches.
 -/
 
 open Polynomial
@@ -58,82 +58,6 @@ theorem theorem21PositiveDeletionCompatibleBranches_of_theorem21RootCountBranche
   theorem21PositiveDeletionCompatibleBranches_of_deletionPairCommonInterleaverBranches
     hsgn (theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
       hf_splits hg_splits hsgn h)
-
-/-- Projection form of the isolated branch-retaining deletion-pair
-common-interleaver forward direction. -/
-theorem theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonForward
-    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
-    theorem21DeletionPairCommonInterleaverBranches f g :=
-  hforward hf hg hsgn hcompat
-
-/-- The isolated branch-retaining deletion-pair common-interleaver forward
-direction supplies normalized deletion compatibility branches. -/
-theorem theorem21PositiveDeletionCompatibleBranches_of_compatible_of_commonForward
-    (hforward : theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
-    theorem21PositiveDeletionCompatibleBranches f g :=
-  theorem21PositiveDeletionCompatibleBranches_of_deletionPairCommonInterleaverBranches
-    hsgn
-    (theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonForward
-      hforward hf hg hsgn hcompat)
-
-/-- The isolated forward direction of Liu Theorem 2.1 supplies normalized
-deletion compatibility branches. -/
-theorem theorem21PositiveDeletionCompatibleBranches_of_compatible_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
-    theorem21PositiveDeletionCompatibleBranches f g :=
-  theorem21PositiveDeletionCompatibleBranches_of_compatible_of_commonForward
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
-      hforward)
-    hf hg hsgn hcompat
-
-/-- The forward direction of Liu Theorem 2.1 supplies normalized deletion
-compatibility branches. -/
-theorem theorem21PositiveDeletionCompatibleBranches_of_compatible
-    (h : theorem21CompatibleRootCountStatement) {f g : ℝ[X]}
-    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hcompat : Compatible f g) :
-    theorem21PositiveDeletionCompatibleBranches f g :=
-  theorem21PositiveDeletionCompatibleBranches_of_compatible_of_forward
-    (theorem21CompatibleToRootCountBranches_of_theorem21CompatibleRootCount h)
-    hf hg hsgn hcompat
-
-/-- The isolated forward direction of Liu Theorem 2.1 supplies
-branch-retaining common interleaver witnesses for the actual deletion pair. -/
-theorem theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
-    theorem21DeletionPairCommonInterleaverBranches f g :=
-  theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_commonForward
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
-      hforward)
-    hf hg hsgn hcompat
-
-/-- The forward direction of Liu Theorem 2.1 supplies branch-retaining common
-interleaver witnesses for the actual deletion pair. -/
-theorem theorem21DeletionPairCommonInterleaverBranches_of_compatible
-    (h : theorem21CompatibleRootCountStatement) {f g : ℝ[X]}
-    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hcompat : Compatible f g) :
-    theorem21DeletionPairCommonInterleaverBranches f g :=
-  theorem21DeletionPairCommonInterleaverBranches_of_compatible_of_forward
-    (theorem21CompatibleToRootCountBranches_of_theorem21CompatibleRootCount h)
-    hf hg hsgn hcompat
-
-/-- Liu Theorem 2.1, restated with branch-retaining deletion-pair
-common-interleaver witnesses. -/
-theorem compatible_iff_theorem21DeletionPairCommonInterleaverBranches
-    (h : theorem21CompatibleRootCountStatement) {f g : ℝ[X]}
-    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g) :
-    Compatible f g ↔ theorem21DeletionPairCommonInterleaverBranches f g :=
-  (theorem21DeletionPairCommonInterleaverIff_of_theorem21CompatibleRootCount
-    h) f g hf hg hsgn
 
 /-- The two positive-split root-count leaves supply the existing
 positive-leading compatibility-to-common-interleaver bridge. -/
