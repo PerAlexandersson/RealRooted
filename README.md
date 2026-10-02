@@ -62,7 +62,7 @@ Useful focused checks for recent theorem areas are:
 
 ```bash
 lake build RealRooted.CommonInterleaverTwo
-lake build RealRooted.ChudnovskySeymour
+lake build RealRooted.ChudnovskySeymour.Core
 lake build RealRooted.Hadamard
 lake build RealRooted.VeroneseMatrix
 lake build RealRooted.VeroneseSection

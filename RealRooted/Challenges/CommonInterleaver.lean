@@ -65,7 +65,7 @@ module = "RealRooted.Challenges.CommonInterleaver"
 label = "Chudnovsky–Seymour: a compatible pair has a common interleaver"
 
 [[theorems]]
-name = "RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge"
+name = "RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver"
 module = "RealRooted.ChudnovskySeymour.Core"
 label = "Chudnovsky–Seymour: pairwise compatible ⇔ common interleaver"
 headline = true

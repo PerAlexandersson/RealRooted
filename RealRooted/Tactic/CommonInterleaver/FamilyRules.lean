@@ -530,7 +530,7 @@ macro_rules
         member_pos_lc := $hpos:term) =>
       `(tactic|
         exact
-          RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
+          RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver
             $hrr $hpos)
   | `(tactic|
       rr_pairwiseCompatible_iff_familyCompatible_rootCrossing using
