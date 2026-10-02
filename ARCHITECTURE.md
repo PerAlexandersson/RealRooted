@@ -1509,14 +1509,14 @@ interface; and `Narayana.PFFacts` owns the PF and base interlacing facts.
 `Narayana.RankSix` contains the explicit rank-six roots, signs, interval
 isolation, and cross inequalities, while `Narayana.LowRank` contains the
 ranks-three-through-five certificates and bounded rank-six assembly.
-`Narayana.Claim7Analytic` owns the pencil leading coefficients, splitness,
+`Narayana.ShiftedDifferenceInterlacingAnalytic` owns the pencil leading coefficients, splitness,
 nonpositive roots, and endpoint-safe Claim 7 package. The historical
 `GeneralizedSnakePosetsNarayana` path is a 10-line compatibility import.
 
 All 135 established declarations retain their names and signatures. The six
 implementation units have 675, 517, 161, 990, 859, and 386 local lines,
 respectively, instead of one 3,527-line mixed source. The high-level
-`Narayana.Claim7` consumer imports the analytic branch directly: its closure
+`Narayana.ShiftedDifferenceInterlacing` consumer imports the analytic branch directly: its closure
 grows from 201 to 202 modules while falling from 86,322 to 83,448 local lines,
 because it no longer loads the PF and finite-certificate branch. The broad
 challenge and compatibility imports deliberately continue to re-export both

@@ -15,7 +15,7 @@ R(n+1, i) = R(n, i) + X * sum_{j < i} R(n, j).
 Two Braun–Jal source inputs follow for every `n`:
 
 * the auxiliary recurrence `X G_{n-1} = P_n - (1 + X) P_{n-1}` (their
-  equation (2)), previously checked only for `n ≤ 8`;
+  the auxiliary recurrence), previously checked only for `n ≤ 8`;
 * nonnegativity of the coefficients of `G_n - G_{n-1}`.
 
 Here `P_n = R(n,n)` is the modified Narayana polynomial and
@@ -75,7 +75,7 @@ theorem truncatedStaircaseRookPolynomial_succ_cols (n : ℕ) :
       rw [Finset.sum_congr rfl hshift, show n + 1 - 0 - 1 = n by lia]
       ring
 
-/-- **Braun–Jal equation (2)** for every `n`:
+/-- **The auxiliary recurrence** for every `n`:
 `X G_{n-1} = P_n - (1 + X) P_{n-1}`. -/
 theorem narayanaAuxiliaryGRecurrence_modified :
     NarayanaAuxiliaryGRecurrenceStatement modifiedNarayanaPolynomial auxiliaryG := by

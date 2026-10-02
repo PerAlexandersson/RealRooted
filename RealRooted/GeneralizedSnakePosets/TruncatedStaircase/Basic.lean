@@ -15,7 +15,7 @@ namespace RealRooted
 namespace GeneralizedSnakePosets
 namespace FiniteSkewBoard
 
-/-- The truncated staircase shape `mu_{n,i}` used in Braun--Jal Section 3,
+/-- The truncated staircase shape `mu_{n,i}` used in the combinatorial inputs,
 modeled as the first `i` rows of the staircase with row lengths
 `n, n - 1, ...`. -/
 def truncatedStaircase (n i : ℕ) : FiniteSkewBoard where

@@ -1,11 +1,11 @@
 import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
 
 /-!
-# Endpoint-safe Braun--Jal Claim 7 bridge
+# Endpoint-safe shifted difference-interlacing bridge
 
 This module supplies concrete pencil degrees and leading coefficients, derives
 auxiliary-pencil splitness and nonpositive roots, and packages the endpoint-safe
-root-sum orientation as Braun--Jal Claim 7.
+root-sum orientation as the shifted difference interlacing claim.
 -/
 
 open Polynomial Filter
@@ -15,10 +15,10 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
-theorem theorem41Claim7_modified_u_v_roots_sum_of_section3_concrete_u_degree
+theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial_concrete_u_degree
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (h34 : Lemma34ModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial)
+    (h34 : AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial)
     (hV_split : ∀ {m : ℕ} {lam nu : ℝ},
       2 ≤ m → 0 ≤ lam → -1 ≤ nu →
         ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
@@ -34,14 +34,14 @@ theorem theorem41Claim7_modified_u_v_roots_sum_of_section3_concrete_u_degree
         modifiedNarayanaPolynomial m).roots.sum ≤
       ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
         FiniteSkewBoard.auxiliaryG m).roots.sum := by
-  apply theorem41Claim7_modified_u_v_roots_sum_of_section3 hrec2 h34 hV_split
+  apply shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial hrec2 h34 hV_split
     (fun hm' hlam' _ => modifiedNarayanaPencil_natDegree (by lia) hlam') hdeg_VU
     hm hlam hnu
 
-theorem theorem41Claim7_modified_u_v_roots_sum_of_section3_concrete_degrees
+theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial_concrete_degrees
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (h34 : Lemma34ModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial)
+    (h34 : AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial)
     (hV_split : ∀ {m : ℕ} {lam nu : ℝ},
       2 ≤ m → 0 ≤ lam → -1 ≤ nu →
         ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
@@ -51,7 +51,7 @@ theorem theorem41Claim7_modified_u_v_roots_sum_of_section3_concrete_degrees
         modifiedNarayanaPolynomial m).roots.sum ≤
       ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
         FiniteSkewBoard.auxiliaryG m).roots.sum := by
-  apply theorem41Claim7_modified_u_v_roots_sum_of_section3_concrete_u_degree
+  apply shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial_concrete_u_degree
     hrec2 h34 hV_split
   · intro m' lam' nu' hm' hlam' _
     rw [auxiliaryGPencil_natDegree_of_narayanaRecurrence hrec2 hm' hlam',
@@ -148,9 +148,9 @@ theorem auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
   rw [auxiliaryGPencil_leadingCoeff_of_narayanaRecurrence hrec2 hm hlam]
   positivity
 
-/-- The two summands in the middle polynomial of Braun--Jal Claim `(7)` have
+/-- The two summands in the middle polynomial of shifted difference interlacing claim have
 the same degree and positive leading coefficient. -/
-theorem theorem41Claim7_modified_middle_hasPosLeadingCoeff
+theorem shiftedDifferenceInterlacing_modified_middle_hasPosLeadingCoeff
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam)
@@ -164,24 +164,25 @@ theorem theorem41Claim7_modified_middle_hasPosLeadingCoeff
     auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
       (nu := nu) hrec2 hm hlam
   apply hasPosLeadingCoeff_add_of_same_natDegree
-  · rw [lemma34ModifiedNarayana_left_natDegree (by lia) hlam hnu,
+  · rw [affineModifiedNarayana_left_natDegree (by lia) hlam hnu,
       Polynomial.natDegree_X_mul hV_pos.ne_zero,
       auxiliaryGPencil_natDegree_of_narayanaRecurrence hrec2 hm hlam]
     lia
-  · exact lemma34ModifiedNarayana_left_posLeadingCoeff (by lia) hlam hnu
+  · exact affineModifiedNarayana_left_posLeadingCoeff (by lia) hlam hnu
   · exact hV_pos.X_mul
 
-/-- Equation `(2)` and Lemma 3.4 imply that the auxiliary pencil splits,
-before the root-sum comparison used to orient Claim `(7)`.
+/-- The auxiliary recurrence and the affine Narayana interlacing lemma imply that the auxiliary
+pencil splits,
+before the root-sum comparison used to orient shifted difference interlacing claim.
 
 The parameter `h34` is explicit because this lower-level module cannot import
 the later Turan module, where
-`lemma34ModifiedNarayanaInterlacing_modified` proves the full parameterized
+`affineModifiedNarayanaInterlacing_modified` proves the full parameterized
 statement. -/
-theorem auxiliaryGPencil_splits_of_section3
+theorem auxiliaryGPencil_splits_of_combinatorial
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (h34 : Lemma34ModifiedNarayanaInterlacingStatement
+    (h34 : AffineModifiedNarayanaInterlacingStatement
       modifiedNarayanaPolynomial)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam)
     (hnu : -1 ≤ nu) :
@@ -200,11 +201,11 @@ theorem auxiliaryGPencil_splits_of_section3
     simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
   have hW_eq : W = (1 + X) * U + X * V := by
     simpa [U, V, W] using
-      theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence
+      shiftedDifferenceInterlacing_next_eq_of_narayanaAuxiliaryGRecurrence
         hrec2 hm lam nu
   have hW_pos : HasPosLeadingCoeff W := by
     simpa [W] using
-      lemma34ModifiedNarayana_right_posLeadingCoeff (m := m) hlam hnu
+      affineModifiedNarayana_right_posLeadingCoeff (m := m) hlam hnu
   have hWU_lc : W.leadingCoeff = U.leadingCoeff := by
     calc
       W.leadingCoeff = lam + 1 := by
@@ -223,13 +224,13 @@ theorem auxiliaryGPencil_splits_of_section3
           (m := m + 1) (nu := nu) (by lia) hlam]
   have hW_nonpos : ∀ r ∈ W.roots, r ≤ 0 := by
     simpa [W] using
-      lemma34ModifiedNarayana_right_roots_nonpos (m := m) hlam hnu
+      affineModifiedNarayana_right_roots_nonpos (m := m) hlam hnu
   have hU_nonpos : ∀ r ∈ U.roots, r ≤ 0 := by
     simpa [U] using
-      lemma34ModifiedNarayana_left_roots_nonpos (m := m) (by lia) hlam hnu
+      affineModifiedNarayana_left_roots_nonpos (m := m) (by lia) hlam hnu
   have hmid_pos : HasPosLeadingCoeff (U + X * V) := by
     simpa [U, V] using
-      theorem41Claim7_modified_middle_hasPosLeadingCoeff hrec2 hm hlam hnu
+      shiftedDifferenceInterlacing_modified_middle_hasPosLeadingCoeff hrec2 hm hlam hnu
   have hmid_eq : W - X * U = U + X * V := by
     rw [hW_eq]
     ring
@@ -254,7 +255,7 @@ theorem auxiliaryGPencil_splits_of_section3
 nonnegativity of the Braun--Jal pencil.
 
 The hypothesis `hH_nonneg` is intentionally explicit. In Braun--Jal's
-Section 4, `H_n = G_n - G_(n-1)` comes from the non-nesting-rook
+the auxiliary difference construction, `H_n = G_n - G_(n-1)` comes from the non-nesting-rook
 interpretation used in the matrix recurrence, so its coefficient
 nonnegativity is a combinatorial input. The present theorem is scoped to the
 analytic consequence of that input and does not formalize the underlying rook
@@ -301,33 +302,33 @@ theorem auxiliaryGPencil_roots_nonpos_of_difference
   roots_nonpos_of_hasNonnegCoeffs
     (auxiliaryGPencil_hasNonnegCoeffs_of_difference hH_nonneg hm hlam hnu)
 
-/-- Braun--Jal Claim `(7)` for the concrete modified Narayana family, using
+/-- The shifted difference interlacing claim for the concrete modified Narayana family, using
 the endpoint-safe root-sum orientation.
 
-The analytic Lemma 3.4 input `h34` is explicit only because this lower-level
+The analytic affine-Narayana input `h34` is explicit only because this lower-level
 module cannot import the later Turan module, where it is proved. The
 coefficientwise hypothesis `hH_nonneg` is different: as explained at
 `auxiliaryGPencil_hasNonnegCoeffs_of_difference`, it is the permitted
 combinatorial input from the non-nesting-rook interpretation, whose full model
 is intentionally outside the scope of this formalization. -/
-theorem theorem41Claim7_modified_of_section3
+theorem shiftedDifferenceInterlacing_modified_of_combinatorial
     (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (h34 : Lemma34ModifiedNarayanaInterlacingStatement
+    (h34 : AffineModifiedNarayanaInterlacingStatement
       modifiedNarayanaPolynomial)
     (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
       HasNonnegCoeffs
         (FiniteSkewBoard.auxiliaryG n -
           FiniteSkewBoard.auxiliaryG (n - 1))) :
-    Theorem41Claim7Statement
+    ShiftedDifferenceInterlacingStatement
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG := by
   have hV_split :
       ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
         ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
           FiniteSkewBoard.auxiliaryG m).Splits := by
     intro m lam nu hm hlam hnu
-    exact auxiliaryGPencil_splits_of_section3 hrec2 h34 hm hlam hnu
-  apply theorem41Claim7_of_section3_rootSumSideConditions hrec2 h34
+    exact auxiliaryGPencil_splits_of_combinatorial hrec2 h34 hm hlam hnu
+  apply shiftedDifferenceInterlacing_of_combinatorial_rootSumSideConditions hrec2 h34
   refine {
     w_pos := ?_
     wu_lc := ?_
@@ -340,7 +341,7 @@ theorem theorem41Claim7_modified_of_section3
     deg_vu := ?_
     u_v_roots_sum := ?_ }
   · intro m lam nu hm hlam hnu
-    exact lemma34ModifiedNarayana_right_posLeadingCoeff hlam hnu
+    exact affineModifiedNarayana_right_posLeadingCoeff hlam hnu
   · intro m lam nu hm hlam hnu
     calc
       ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
@@ -362,11 +363,11 @@ theorem theorem41Claim7_modified_of_section3
         (m := m + 1) (nu := nu) (by lia) hlam
     rw [hUdeg, hWdeg]
   · intro m lam nu hm hlam hnu
-    exact lemma34ModifiedNarayana_right_roots_nonpos hlam hnu
+    exact affineModifiedNarayana_right_roots_nonpos hlam hnu
   · intro m lam nu hm hlam hnu
-    exact lemma34ModifiedNarayana_left_roots_nonpos (by lia) hlam hnu
+    exact affineModifiedNarayana_left_roots_nonpos (by lia) hlam hnu
   · intro m lam nu hm hlam hnu
-    exact theorem41Claim7_modified_middle_hasPosLeadingCoeff
+    exact shiftedDifferenceInterlacing_modified_middle_hasPosLeadingCoeff
       hrec2 hm hlam hnu
   · intro m lam nu hm hlam hnu
     exact auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
@@ -380,7 +381,7 @@ theorem theorem41Claim7_modified_of_section3
         (m := m) (nu := nu) (by lia) hlam]
     lia
   · intro m lam nu hm hlam hnu
-    exact theorem41Claim7_modified_u_v_roots_sum_of_section3_concrete_degrees
+    exact shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial_concrete_degrees
       hrec2 h34 hV_split hm hlam hnu
 
 end GeneralizedSnakePosets

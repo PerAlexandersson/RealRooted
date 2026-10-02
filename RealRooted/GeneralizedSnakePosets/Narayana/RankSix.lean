@@ -5,7 +5,7 @@ import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
 
 This module contains fixed-length root-list bridges and the explicit root,
 sign, interval, and cross-inequality certificate proving the rank-six instance
-of Braun--Jal Lemma 3.3.
+of the auxiliary interlacing lemma.
 -/
 
 open Polynomial Filter
@@ -834,9 +834,9 @@ theorem ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_eval_signs
     hP_roots hab hbc hcd hde her
     (modifiedNarayanaPolynomial_six_rootIntervals_of_eval_signs hsign)
 
-/-- Conditional `n = 6` Lemma 3.3 certificate, reducing the remaining work to
+/-- Conditional `n = 6` auxiliary-interlacing certificate, reducing the remaining work to
 the `P_6` root list and cross inequalities. -/
-theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_roots
+theorem auxiliaryGInterlaces_modified_six_interlaces_of_roots
     {a b c d e r : ℝ}
     (hP_roots :
       (modifiedNarayanaPolynomial 6).roots =
@@ -857,9 +857,9 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_roots
     hP_roots auxiliaryG_six_roots_named hab hbc hcd hde her huv hvw hwz hzy hau
     hub hbv hvc hcw hwd hdz hze hey hyr
 
-/-- Conditional `n = 6` Lemma 3.3 certificate, with the cross inequalities
+/-- Conditional `n = 6` auxiliary-interlacing certificate, with the cross inequalities
 bundled as a single predicate. -/
-theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_root_crosses
+theorem auxiliaryGInterlaces_modified_six_interlaces_of_root_crosses
     {a b c d e r : ℝ}
     (hP_roots :
       (modifiedNarayanaPolynomial 6).roots =
@@ -870,12 +870,12 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_root_crosses
       ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r) :
     Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
   rcases hcross with ⟨hau, hub, hbv, hvc, hcw, hwd, hdz, hze, hey, hyr⟩
-  exact lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_roots hP_roots
+  exact auxiliaryGInterlaces_modified_six_interlaces_of_roots hP_roots
     hab hbc hcd hde her hau hub hbv hvc hcw hwd hdz hze hey hyr
 
-/-- The `n = 6` Braun--Jal Lemma 3.3 interlacing follows from proving the
+/-- The `n = 6` auxiliary-interlacing follows from proving the
 cross inequalities for any sorted `P_6` root list. -/
-theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses
+theorem auxiliaryGInterlaces_modified_six_interlaces_of_crosses
     (hcross :
       ∀ {a b c d e r : ℝ},
         (modifiedNarayanaPolynomial 6).roots =
@@ -885,12 +885,12 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses
     Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
   obtain ⟨a, b, c, d, e, r, hP_roots, hab, hbc, hcd, hde, her⟩ :=
     modifiedNarayanaPolynomial_six_exists_ordered_roots
-  exact lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_root_crosses
+  exact auxiliaryGInterlaces_modified_six_interlaces_of_root_crosses
     hP_roots hab hbc hcd hde her (hcross hP_roots hab hbc hcd hde her)
 
-/-- The `n = 6` Braun--Jal Lemma 3.3 interlacing form follows from proving
+/-- The `n = 6` auxiliary-interlacing form follows from proving
 the cross inequalities for any sorted `P_6` root list. -/
-theorem lemma33AuxiliaryGInterlaces_modified_six_of_crosses
+theorem auxiliaryGInterlaces_modified_six_of_crosses
     (hcross :
       ∀ {a b c d e r : ℝ},
         (modifiedNarayanaPolynomial 6).roots =
@@ -898,29 +898,29 @@ theorem lemma33AuxiliaryGInterlaces_modified_six_of_crosses
         a ≤ b → b ≤ c → c ≤ d → d ≤ e → e ≤ r →
         ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r) :
     StrictInterl (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
-  (lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses hcross).toStrictInterl
+  (auxiliaryGInterlaces_modified_six_interlaces_of_crosses hcross).toStrictInterl
 
-/-- The `n = 6` Braun--Jal Lemma 3.3 interlacing follows from the
+/-- The `n = 6` auxiliary-interlacing follows from the
 `P_6`/`G_6` sign certificate. -/
-theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
+theorem auxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
     (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
     Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
-  apply lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_crosses
+  apply auxiliaryGInterlaces_modified_six_interlaces_of_crosses
   intro a b c d e r hP_roots hab hbc hcd hde her
   exact ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_eval_signs
     (by simpa [modifiedNarayanaPolynomialSix] using hP_roots)
     hab hbc hcd hde her hsign
 
-/-- The checked `n = 6` Braun--Jal Lemma 3.3 interlacing case. -/
-theorem lemma33AuxiliaryGInterlaces_modified_six_interlaces :
+/-- The checked `n = 6` auxiliary-interlacing case. -/
+theorem auxiliaryGInterlaces_modified_six_interlaces :
     Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
-  lemma33AuxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
+  auxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
     modifiedNarayanaPolynomial_six_auxiliaryG_signCertificate
 
-/-- The checked `n = 6` Braun--Jal Lemma 3.3 interlacing case. -/
-theorem lemma33AuxiliaryGInterlaces_modified_six :
+/-- The checked `n = 6` auxiliary-interlacing case. -/
+theorem auxiliaryGInterlaces_modified_six :
     StrictInterl (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
-  lemma33AuxiliaryGInterlaces_modified_six_interlaces.toStrictInterl
+  auxiliaryGInterlaces_modified_six_interlaces.toStrictInterl
 
 end GeneralizedSnakePosets
 end RealRooted

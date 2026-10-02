@@ -3,7 +3,7 @@ import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 /-!
 # Modified-Narayana PF and base interlacing facts
 
-This module contains the low-rank base cases, the shifted/unshifted Lemma 3.4
+This module contains the low-rank base cases, the shifted/unshifted affine-Narayana
 wrappers, and the PF-polynomial consequences used by explicit certificates.
 -/
 
@@ -23,26 +23,26 @@ theorem auxiliaryG_two_eq_C_mul_modifiedNarayanaPolynomial_one :
   rw [hC2]
   ring_nf
 
-/-- The `n = 2` case of Braun--Jal Lemma 3.3, for the concrete modified
+/-- The `n = 2` case of the auxiliary interlacing lemma, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
-theorem lemma33AuxiliaryGInterlaces_modified_two :
+theorem auxiliaryGInterlaces_modified_two :
     StrictInterl (FiniteSkewBoard.auxiliaryG 2) (modifiedNarayanaPolynomial 2) := by
   rw [auxiliaryG_two_eq_C_mul_modifiedNarayanaPolynomial_one]
   exact (modifiedNarayanaPolynomial_strictInterl_succ 1).C_mul_left (by norm_num)
 
-/-- The checked initial cases `n = 1, 2` of Braun--Jal Lemma 3.3, for the
+/-- The checked initial cases `n = 1, 2` of the auxiliary interlacing lemma, for the
 concrete modified Narayana family and the finite-board auxiliary `G`. -/
-theorem lemma33AuxiliaryGInterlaces_modified_of_le_two
+theorem auxiliaryGInterlaces_modified_of_le_two
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₂ : n ≤ 2) :
     StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
   interval_cases n
-  · exact lemma33AuxiliaryGInterlaces_modified_base
-  · exact lemma33AuxiliaryGInterlaces_modified_two
+  · exact auxiliaryGInterlaces_modified_base
+  · exact auxiliaryGInterlaces_modified_two
 
-/-- The `λ = ν = 0` specialization of Braun--Jal Lemma 3.4 for the concrete
-modified Narayana family.  This exposes the Lemma 3.4 target shape while using
+/-- The `λ = ν = 0` specialization of the affine Narayana interlacing lemma for the concrete
+modified Narayana family.  This exposes the affine-Narayana target shape while using
 the checked consecutive interlacing theorem. -/
-theorem lemma34ModifiedNarayanaInterlacing_modified_zero_zero
+theorem affineModifiedNarayanaInterlacing_modified_zero_zero
     {m : ℕ} (_hm : 2 ≤ m) :
     StrictInterl ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m)
@@ -50,15 +50,15 @@ theorem lemma34ModifiedNarayanaInterlacing_modified_zero_zero
         modifiedNarayanaPolynomial (m + 1)) := by
   simpa using modifiedNarayanaPolynomial_strictInterl_succ m
 
-/-- The shifted `λ = 0, μ = 1` specialization of Braun--Jal Lemma 3.4 for the
+/-- The shifted `λ = 0, μ = 1` specialization of the affine Narayana interlacing lemma for the
 concrete modified Narayana family. -/
-theorem lemma34ModifiedNarayanaShiftedInterlacing_modified_zero_one
+theorem affineModifiedNarayanaShiftedInterlacing_modified_zero_one
     {m : ℕ} (hm : 2 ≤ m) :
     StrictInterl ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
         narayanaDifference modifiedNarayanaPolynomial m)
       ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial m +
         narayanaDifference modifiedNarayanaPolynomial (m + 1)) := by
-  have hbase := lemma34ModifiedNarayanaInterlacing_modified_zero_zero hm
+  have hbase := affineModifiedNarayanaInterlacing_modified_zero_zero hm
   have hleft :
       ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
           narayanaDifference modifiedNarayanaPolynomial m) =
@@ -76,22 +76,22 @@ theorem lemma34ModifiedNarayanaShiftedInterlacing_modified_zero_one
     simp
   rwa [hleft, hright]
 
-/-- Concrete modified-Narayana wrapper: the shifted Lemma 3.4 target implies
-the paper-shaped Lemma 3.4 target. -/
-theorem lemma34ModifiedNarayanaInterlacing_modified_of_shifted
+/-- Concrete modified-Narayana wrapper: the shifted affine-Narayana target implies
+the paper-shaped affine-Narayana target. -/
+theorem affineModifiedNarayanaInterlacing_modified_of_shifted
     (h :
-      Lemma34ModifiedNarayanaShiftedInterlacingStatement
+      AffineModifiedNarayanaShiftedInterlacingStatement
         modifiedNarayanaPolynomial) :
-    Lemma34ModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial :=
-  lemma34ModifiedNarayanaInterlacing_of_shifted h
+    AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial :=
+  affineModifiedNarayanaInterlacing_of_shifted h
 
-/-- Concrete modified-Narayana wrapper: the paper-shaped Lemma 3.4 target
-implies the shifted nonnegative-parameter target. -/
-theorem lemma34ModifiedNarayanaShiftedInterlacing_modified_of_lemma34
-    (h : Lemma34ModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial) :
-    Lemma34ModifiedNarayanaShiftedInterlacingStatement
+/-- Concrete modified-Narayana wrapper: the paper-shaped affine-Narayana target
+implies shifted nonnegative-parameter target. -/
+theorem affineModifiedNarayanaShiftedInterlacing_modified_of_affineNarayana
+    (h : AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial) :
+    AffineModifiedNarayanaShiftedInterlacingStatement
       modifiedNarayanaPolynomial :=
-  lemma34ModifiedNarayanaShiftedInterlacing_of_lemma34 h
+  affineModifiedNarayanaShiftedInterlacing_of_affineNarayana h
 
 /-- The coefficient-side modified Narayana family also satisfies the
 Braun--Jal modified-family interface. -/

@@ -5,7 +5,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Roots
 /-!
 # Braun--Jal generalized snake poset statement interfaces
 
-This module contains the paper-facing theorem statements and Section 3 input
+This module contains the paper-facing theorem statements and the combinatorial-input
 interfaces for Braun--Jal, *Order polytopes of generalized snake posets are
 h^*-real-rooted*, arXiv:2607.00922v1.
 
@@ -23,40 +23,40 @@ namespace GeneralizedSnakePosets
 
 universe u
 
-/-- Braun--Jal Theorem 4.1, abstracted over the polynomial model.
+/-- The snake interlacing theorem, abstracted over the polynomial model.
 
 The source theorem concerns the concrete non-nesting rook polynomial `M_w`: it
 asserts real-rootedness and that deleting the final letter gives
 `M_{w'} << M_w`. This interface is only an abstract package for arbitrary `M`.
 A source-facing theorem must instantiate `generalizedSnakeRookModel` and prove
 the degree and model-identification bridges needed to use local `Interlaces`. -/
-def Theorem41NonNestingRookStatement (M : SnakeWord → ℝ[X]) : Prop :=
+def NonNestingRookInterlacingStatement (M : SnakeWord → ℝ[X]) : Prop :=
   ∀ {w : SnakeWord}, 1 ≤ w.length →
     (M w ≠ 0 ∧ (M w).Splits) ∧
       Interlaces (M w.deleteFinal) (M w)
 
-/-- Theorem 4.1 expressed for an abstract squarecase/non-nesting rook model. -/
-abbrev SquarecaseRookModelTheorem41Statement
+/-- Snake-interlacing expressed for an abstract squarecase/non-nesting rook model. -/
+abbrev SquarecaseRookModelSnakeInterlacingStatement
     (model : SquarecaseRookModel) : Prop :=
-  Theorem41NonNestingRookStatement model.snakePolynomial
+  NonNestingRookInterlacingStatement model.snakePolynomial
 
-/-- The real-rootedness part of Braun--Jal Theorem 4.1. -/
-theorem nonNestingRook_ne_zero_and_splits_of_theorem41
+/-- The real-rootedness part of the snake interlacing theorem. -/
+theorem nonNestingRook_ne_zero_and_splits_of_snakeInterlacing
     {M : SnakeWord → ℝ[X]}
-    (hBJ : Theorem41NonNestingRookStatement M)
+    (hBJ : NonNestingRookInterlacingStatement M)
     {w : SnakeWord} (hw : 1 ≤ w.length) :
     M w ≠ 0 ∧ (M w).Splits :=
   (hBJ (w := w) hw).1
 
-/-- The final-letter-deletion interlacing part of Braun--Jal Theorem 4.1. -/
-theorem nonNestingRook_deleteFinal_interlaces_of_theorem41
+/-- The final-letter-deletion interlacing part of the snake interlacing theorem. -/
+theorem nonNestingRook_deleteFinal_interlaces_of_snakeInterlacing
     {M : SnakeWord → ℝ[X]}
-    (hBJ : Theorem41NonNestingRookStatement M)
+    (hBJ : NonNestingRookInterlacingStatement M)
     {w : SnakeWord} (hw : 1 ≤ w.length) :
     Interlaces (M w.deleteFinal) (M w) :=
   (hBJ (w := w) hw).2
 
-/-! ## Narayana and recurrence interfaces from Section 3 -/
+/-! ## Narayana and recurrence interfaces from the combinatorial inputs -/
 
 /-- A family `P` is the modified Narayana family attached to Narayana
 polynomials `N` when `N_{n+1} = X * P_n`, i.e. `P_n(t) = t^{-1} N_{n+1}(t)`.
@@ -71,43 +71,43 @@ def AuxiliaryGMatchesTruncatedStaircasesStatement
     (Mtrunc : ℕ → ℕ → ℝ[X]) (G : ℕ → ℝ[X]) : Prop :=
   ∀ n : ℕ, G n = ((List.range n).map fun i => Mtrunc n i).sum
 
-/-- Equation (2) of Braun--Jal: `X * G_{n-1} = P_n - (1 + X) * P_{n-1}`. -/
+/-- The auxiliary recurrence of Braun--Jal: `X * G_{n-1} = P_n - (1 + X) * P_{n-1}`. -/
 def NarayanaAuxiliaryGRecurrenceStatement
     (P G : ℕ → ℝ[X]) : Prop :=
   ∀ {n : ℕ}, 1 ≤ n → X * G (n - 1) = P n - (1 + X) * P (n - 1)
 
-/-- Lemma 3.3 statement: the auxiliary `G_n` interlaces the modified Narayana
+/-- Auxiliary-interlacing statement: the auxiliary `G_n` interlaces modified Narayana
 polynomial `P_n`. -/
-def Lemma33AuxiliaryGInterlacesStatement
+def AuxiliaryGInterlacesStatement
     (P G : ℕ → ℝ[X]) : Prop :=
   ∀ {n : ℕ}, 1 ≤ n → StrictInterl (G n) (P n)
 
-/-- Lemma 3.4 statement for the modified Narayana family. -/
-def Lemma34ModifiedNarayanaInterlacingStatement
+/-- Affine-Narayana statement for the modified Narayana family. -/
+def AffineModifiedNarayanaInterlacingStatement
     (P : ℕ → ℝ[X]) : Prop :=
   ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
     StrictInterl ((C lam * X + C nu) * P (m - 1) + P m)
       ((C lam * X + C nu) * P m + P (m + 1))
 
-/-- Difference `Q_n = P_n - P_{n-1}` used in the Theorem 4.1 matrix step. -/
+/-- Difference `Q_n = P_n - P_{n-1}` used in the snake-interlacing matrix step. -/
 def narayanaDifference (P : ℕ → ℝ[X]) (n : ℕ) : ℝ[X] :=
   P n - P (n - 1)
 
-/-- Shifted nonnegative-parameter form of Braun--Jal Lemma 3.4, obtained from
+/-- Shifted nonnegative-parameter form of the affine Narayana interlacing lemma, obtained from
 the paper statement by writing `mu = nu + 1`.  This is the form that matches
-the nonnegative matrix parameters in the Theorem 4.1 induction step. -/
-def Lemma34ModifiedNarayanaShiftedInterlacingStatement
+the nonnegative matrix parameters in the snake-interlacing induction step. -/
+def AffineModifiedNarayanaShiftedInterlacingStatement
     (P : ℕ → ℝ[X]) : Prop :=
   ∀ {m : ℕ} {lam mu : ℝ}, 2 ≤ m → 0 ≤ lam → 0 ≤ mu →
     StrictInterl ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
       ((C lam * X + C mu) * P m + narayanaDifference P (m + 1))
 
-/-- The shifted nonnegative-parameter Lemma 3.4 form implies the paper's
+/-- The shifted nonnegative-parameter affine-Narayana form implies the paper's
 `nu ≥ -1` form. -/
-theorem lemma34ModifiedNarayanaInterlacing_of_shifted
+theorem affineModifiedNarayanaInterlacing_of_shifted
     {P : ℕ → ℝ[X]}
-    (h : Lemma34ModifiedNarayanaShiftedInterlacingStatement P) :
-    Lemma34ModifiedNarayanaInterlacingStatement P := by
+    (h : AffineModifiedNarayanaShiftedInterlacingStatement P) :
+    AffineModifiedNarayanaInterlacingStatement P := by
   intro m lam nu hm hlam hnu
   have hmu : 0 ≤ nu + 1 := by linarith
   have hbase := h (m := m) (lam := lam) (mu := nu + 1) hm hlam hmu
@@ -125,12 +125,12 @@ theorem lemma34ModifiedNarayanaInterlacing_of_shifted
     ring_nf
   rwa [hleft, hright] at hbase
 
-/-- The paper's `nu ≥ -1` Lemma 3.4 form implies the shifted
+/-- The paper's `nu ≥ -1` affine-Narayana form implies shifted
 nonnegative-parameter form. -/
-theorem lemma34ModifiedNarayanaShiftedInterlacing_of_lemma34
+theorem affineModifiedNarayanaShiftedInterlacing_of_affineNarayana
     {P : ℕ → ℝ[X]}
-    (h : Lemma34ModifiedNarayanaInterlacingStatement P) :
-    Lemma34ModifiedNarayanaShiftedInterlacingStatement P := by
+    (h : AffineModifiedNarayanaInterlacingStatement P) :
+    AffineModifiedNarayanaShiftedInterlacingStatement P := by
   intro m lam mu hm hlam hmu
   have hnu : -1 ≤ mu - 1 := by linarith
   have hbase := h (m := m) (lam := lam) (nu := mu - 1) hm hlam hnu
@@ -148,72 +148,73 @@ theorem lemma34ModifiedNarayanaShiftedInterlacing_of_lemma34
     ring_nf
   rwa [hleft, hright] at hbase
 
-/-- Equivalence between the paper's Lemma 3.4 statement and the shifted
+/-- Equivalence between the paper's affine-Narayana statement and the shifted
 nonnegative-parameter form. -/
-theorem lemma34ModifiedNarayanaShiftedInterlacing_iff_lemma34
+theorem affineModifiedNarayanaShiftedInterlacing_iff_affineNarayana
     (P : ℕ → ℝ[X]) :
-    Lemma34ModifiedNarayanaShiftedInterlacingStatement P ↔
-      Lemma34ModifiedNarayanaInterlacingStatement P :=
-  ⟨lemma34ModifiedNarayanaInterlacing_of_shifted,
-    lemma34ModifiedNarayanaShiftedInterlacing_of_lemma34⟩
+    AffineModifiedNarayanaShiftedInterlacingStatement P ↔
+      AffineModifiedNarayanaInterlacingStatement P :=
+  ⟨affineModifiedNarayanaInterlacing_of_shifted,
+    affineModifiedNarayanaShiftedInterlacing_of_affineNarayana⟩
 
-/-- Bounded form of Braun--Jal equation (2), useful while finite initial
+/-- Bounded form of the auxiliary recurrence, useful while finite initial
 cases are being formalized before the all-`n` recurrence is available. -/
 def NarayanaAuxiliaryGRecurrenceUpToStatement
     (P G : ℕ → ℝ[X]) (N : ℕ) : Prop :=
   ∀ {n : ℕ}, 1 ≤ n → n ≤ N →
     X * G (n - 1) = P n - (1 + X) * P (n - 1)
 
-/-- Bounded form of Braun--Jal Lemma 3.3. -/
-def Lemma33AuxiliaryGInterlacesUpToStatement
+/-- Bounded form of the auxiliary interlacing lemma. -/
+def AuxiliaryGInterlacesUpToStatement
     (P G : ℕ → ℝ[X]) (N : ℕ) : Prop :=
   ∀ {n : ℕ}, 1 ≤ n → n ≤ N → StrictInterl (G n) (P n)
 
-/-- Bounded form of Braun--Jal Lemma 3.4. -/
-def Lemma34ModifiedNarayanaInterlacingUpToStatement
+/-- Bounded form of the affine Narayana interlacing lemma. -/
+def AffineModifiedNarayanaInterlacingUpToStatement
     (P : ℕ → ℝ[X]) (N : ℕ) : Prop :=
   ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → m ≤ N → 0 ≤ lam → -1 ≤ nu →
     StrictInterl ((C lam * X + C nu) * P (m - 1) + P m)
       ((C lam * X + C nu) * P m + P (m + 1))
 
-/-- Bounded shifted nonnegative-parameter form of Braun--Jal Lemma 3.4. -/
-def Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement
+/-- Bounded shifted nonnegative-parameter form of the affine Narayana interlacing lemma. -/
+def AffineModifiedNarayanaShiftedInterlacingUpToStatement
     (P : ℕ → ℝ[X]) (N : ℕ) : Prop :=
   ∀ {m : ℕ} {lam mu : ℝ}, 2 ≤ m → m ≤ N → 0 ≤ lam → 0 ≤ mu →
     StrictInterl ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
       ((C lam * X + C mu) * P m + narayanaDifference P (m + 1))
 
-/-- The all-`n` Lemma 3.3 statement implies every bounded Lemma 3.3 package. -/
-theorem lemma33AuxiliaryGInterlacesUpTo_of_statement
-    {P G : ℕ → ℝ[X]} (h : Lemma33AuxiliaryGInterlacesStatement P G)
+/-- The all-`n` auxiliary-interlacing statement implies every bounded auxiliary-interlacing
+package. -/
+theorem auxiliaryGInterlacesUpTo_of_statement
+    {P G : ℕ → ℝ[X]} (h : AuxiliaryGInterlacesStatement P G)
     (N : ℕ) :
-    Lemma33AuxiliaryGInterlacesUpToStatement P G N := by
+    AuxiliaryGInterlacesUpToStatement P G N := by
   intro n hn _hnN
   exact h hn
 
-/-- The all-`n` Lemma 3.4 statement implies every bounded Lemma 3.4 package. -/
-theorem lemma34ModifiedNarayanaInterlacingUpTo_of_statement
-    {P : ℕ → ℝ[X]} (h : Lemma34ModifiedNarayanaInterlacingStatement P)
+/-- The all-`n` affine-Narayana statement implies every bounded affine-Narayana package. -/
+theorem affineModifiedNarayanaInterlacingUpTo_of_statement
+    {P : ℕ → ℝ[X]} (h : AffineModifiedNarayanaInterlacingStatement P)
     (N : ℕ) :
-    Lemma34ModifiedNarayanaInterlacingUpToStatement P N := by
+    AffineModifiedNarayanaInterlacingUpToStatement P N := by
   intro m lam nu hm _hmN hlam hnu
   exact h hm hlam hnu
 
-/-- The all-`n` shifted Lemma 3.4 statement implies every bounded shifted
-Lemma 3.4 package. -/
-theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_statement
+/-- The all-`n` shifted affine-Narayana statement implies every bounded shifted
+the affine-Narayana package. -/
+theorem affineModifiedNarayanaShiftedInterlacingUpTo_of_statement
     {P : ℕ → ℝ[X]}
-    (h : Lemma34ModifiedNarayanaShiftedInterlacingStatement P) (N : ℕ) :
-    Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N := by
+    (h : AffineModifiedNarayanaShiftedInterlacingStatement P) (N : ℕ) :
+    AffineModifiedNarayanaShiftedInterlacingUpToStatement P N := by
   intro m lam mu hm _hmN hlam hmu
   exact h hm hlam hmu
 
-/-- A bounded shifted Lemma 3.4 package implies the bounded paper-shaped
+/-- A bounded shifted affine-Narayana package implies the bounded paper-shaped
 `nu ≥ -1` package. -/
-theorem lemma34ModifiedNarayanaInterlacingUpTo_of_shifted
+theorem affineModifiedNarayanaInterlacingUpTo_of_shifted
     {P : ℕ → ℝ[X]} {N : ℕ}
-    (h : Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N) :
-    Lemma34ModifiedNarayanaInterlacingUpToStatement P N := by
+    (h : AffineModifiedNarayanaShiftedInterlacingUpToStatement P N) :
+    AffineModifiedNarayanaInterlacingUpToStatement P N := by
   intro m lam nu hm hmN hlam hnu
   have hmu : 0 ≤ nu + 1 := by linarith
   have hbase := h (m := m) (lam := lam) (mu := nu + 1) hm hmN hlam hmu
@@ -231,12 +232,12 @@ theorem lemma34ModifiedNarayanaInterlacingUpTo_of_shifted
     ring_nf
   rwa [hleft, hright] at hbase
 
-/-- A bounded paper-shaped Lemma 3.4 package implies the bounded shifted
+/-- A bounded paper-shaped affine-Narayana package implies the bounded shifted
 nonnegative-parameter package. -/
-theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_lemma34
+theorem affineModifiedNarayanaShiftedInterlacingUpTo_of_affineNarayana
     {P : ℕ → ℝ[X]} {N : ℕ}
-    (h : Lemma34ModifiedNarayanaInterlacingUpToStatement P N) :
-    Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N := by
+    (h : AffineModifiedNarayanaInterlacingUpToStatement P N) :
+    AffineModifiedNarayanaShiftedInterlacingUpToStatement P N := by
   intro m lam mu hm hmN hlam hmu
   have hnu : -1 ≤ mu - 1 := by linarith
   have hbase := h (m := m) (lam := lam) (nu := mu - 1) hm hmN hlam hnu
@@ -254,40 +255,42 @@ theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_lemma34
     ring_nf
   rwa [hleft, hright] at hbase
 
-/-- Bounded equivalence between the paper-shaped Lemma 3.4 statement and the
+/-- Bounded equivalence between the paper-shaped affine-Narayana statement and the
 shifted nonnegative-parameter form. -/
-theorem lemma34ModifiedNarayanaShiftedInterlacingUpTo_iff_lemma34
+theorem affineModifiedNarayanaShiftedInterlacingUpTo_iff_affineNarayana
     (P : ℕ → ℝ[X]) (N : ℕ) :
-    Lemma34ModifiedNarayanaShiftedInterlacingUpToStatement P N ↔
-      Lemma34ModifiedNarayanaInterlacingUpToStatement P N :=
-  ⟨lemma34ModifiedNarayanaInterlacingUpTo_of_shifted,
-    lemma34ModifiedNarayanaShiftedInterlacingUpTo_of_lemma34⟩
+    AffineModifiedNarayanaShiftedInterlacingUpToStatement P N ↔
+      AffineModifiedNarayanaInterlacingUpToStatement P N :=
+  ⟨affineModifiedNarayanaInterlacingUpTo_of_shifted,
+    affineModifiedNarayanaShiftedInterlacingUpTo_of_affineNarayana⟩
 
-/-- Difference `H_n = G_n - G_{n-1}` used in the Theorem 4.1 matrix step. -/
+/-- Difference `H_n = G_n - G_{n-1}` used in the snake-interlacing matrix step. -/
 def auxiliaryDifference (G : ℕ → ℝ[X]) (n : ℕ) : ℝ[X] :=
   G n - G (n - 1)
 
-/-- The claim labeled `(6)` in Braun--Jal's proof of Theorem 4.1. -/
-def Theorem41MatrixClaimStatement
+/-- The difference interlacing claim in Braun--Jal's proof of the snake interlacing theorem. -/
+def SnakeDifferenceInterlacingStatement
     (P G : ℕ → ℝ[X]) : Prop :=
   ∀ {m : ℕ} {lam mu : ℝ}, 2 ≤ m → 0 ≤ lam → 0 ≤ mu →
     StrictInterl ((C lam * X + C mu) * G (m - 1) + auxiliaryDifference G m)
       ((C lam * X + C mu) * P (m - 1) + narayanaDifference P m)
 
-/-- The reindexed claim labeled `(7)` in Braun--Jal's proof of Theorem 4.1. -/
-def Theorem41Claim7Statement
+/-- The shifted difference interlacing claim in Braun--Jal's proof of the snake interlacing
+theorem. -/
+def ShiftedDifferenceInterlacingStatement
     (P G : ℕ → ℝ[X]) : Prop :=
   ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
     StrictInterl ((C lam * X + C nu) * G (m - 1) + G m)
       ((C lam * X + C nu) * P (m - 1) + P m)
 
 /-- Leading-coefficient, degree, and root-location side conditions used by
-the univariate conversion step in the proof of Braun--Jal Claim `(7)`.
+the univariate conversion step in the proof of shifted difference interlacing claim.
 
-The bundle intentionally does not include equation `(2)` or Lemma 3.4: those
-are the structural Section 3 inputs, while these are the local facts about the
+The bundle intentionally does not include the auxiliary recurrence or the affine Narayana
+interlacing lemma: those
+are the structural combinatorial inputs, while these are the local facts about the
 three windows `U`, `V`, and `W` consumed by the conversion theorem. -/
-structure Theorem41Claim7SideConditions
+structure ShiftedDifferenceInterlacingSideConditions
     (P G : ℕ → ℝ[X]) : Prop where
   w_pos :
     ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
@@ -324,13 +327,13 @@ structure Theorem41Claim7SideConditions
         (∀ s ∈ (((C lam * X + C nu) * P (m - 1) + P m).roots), s ≤ c) ∧
           c < 0
 
-/-- Root-sum replacement for `Theorem41Claim7SideConditions`.
+/-- Root-sum replacement for `ShiftedDifferenceInterlacingSideConditions`.
 
 The strict negative upper bound in the older bundle fails at legitimate
 zero-root endpoints.  This bundle instead records nonpositivity of the roots
 of `U` explicitly and orients the same-degree Obreschkoff alternative by the
 root-sum comparison between `U` and `V`. -/
-structure Theorem41Claim7RootSumSideConditions
+structure ShiftedDifferenceInterlacingRootSumSideConditions
     (P G : ℕ → ℝ[X]) : Prop where
   w_pos :
     ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
@@ -369,9 +372,9 @@ structure Theorem41Claim7RootSumSideConditions
       ((C lam * X + C nu) * P (m - 1) + P m).roots.sum ≤
         ((C lam * X + C nu) * G (m - 1) + G m).roots.sum
 
-/-- Equation `(2)` rewrites the next modified Narayana combination in the
-form used in Braun--Jal's proof of Claim `(7)`. -/
-theorem theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence
+/-- Auxiliary-recurrence rewrites the next modified Narayana combination in the
+form used in Braun--Jal's proof of shifted difference interlacing claim. -/
+theorem shiftedDifferenceInterlacing_next_eq_of_narayanaAuxiliaryGRecurrence
     {P G : ℕ → ℝ[X]} (hrec : NarayanaAuxiliaryGRecurrenceStatement P G)
     {m : ℕ} (hm : 2 ≤ m) (lam nu : ℝ) :
     (C lam * X + C nu) * P m + P (m + 1) =
@@ -389,16 +392,18 @@ theorem theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence
   rw [hrec_m, hrec_succ]
   ring
 
-/-- Assembly theorem for Braun--Jal Claim `(7)` from equation `(2)`, Lemma
+/-- Assembly theorem for the shifted difference interlacing claim from the auxiliary recurrence,
+Lemma
 3.4, and the local side conditions used by the univariate conversion step.
 
-Lemma 3.3 is not hidden in this theorem: the remaining `G`-side root and degree
+The auxiliary interlacing lemma is not hidden in this theorem: the remaining `G`-side root and
+degree
 facts are passed explicitly so later concrete work can discharge them without
 changing the assembly proof. -/
-theorem theorem41Claim7_of_section3
+theorem shiftedDifferenceInterlacing_of_combinatorial
     {P G : ℕ → ℝ[X]}
     (hrec : NarayanaAuxiliaryGRecurrenceStatement P G)
-    (h34 : Lemma34ModifiedNarayanaInterlacingStatement P)
+    (h34 : AffineModifiedNarayanaInterlacingStatement P)
     (hW_pos :
       ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
         HasPosLeadingCoeff ((C lam * X + C nu) * P m + P (m + 1)))
@@ -433,7 +438,7 @@ theorem theorem41Claim7_of_section3
         ∃ c : ℝ,
           (∀ s ∈ (((C lam * X + C nu) * P (m - 1) + P m).roots), s ≤ c) ∧
             c < 0) :
-    Theorem41Claim7Statement P G := by
+    ShiftedDifferenceInterlacingStatement P G := by
   intro m lam nu hm hlam hnu
   let U : ℝ[X] := (C lam * X + C nu) * P (m - 1) + P m
   let V : ℝ[X] := (C lam * X + C nu) * G (m - 1) + G m
@@ -442,7 +447,7 @@ theorem theorem41Claim7_of_section3
     simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
   have hW_eq : W = (1 + X) * U + X * V := by
     simpa [U, V, W] using
-      theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence hrec hm lam nu
+      shiftedDifferenceInterlacing_next_eq_of_narayanaAuxiliaryGRecurrence hrec hm lam nu
   have hU_nonpos : ∀ r ∈ U.roots, r ≤ 0 := by
     rcases hU_bound hm hlam hnu with ⟨c, hU_le, hc_lt⟩
     intro r hr
@@ -460,27 +465,27 @@ theorem theorem41Claim7_of_section3
       (by simpa [U, V] using hdeg_VU hm hlam hnu)
       (by simpa [U] using hU_bound hm hlam hnu)
 
-/-- Bundled-side-condition form of `theorem41Claim7_of_section3`. -/
-theorem theorem41Claim7_of_section3_sideConditions
+/-- Bundled-side-condition form of `shiftedDifferenceInterlacing_of_combinatorial`. -/
+theorem shiftedDifferenceInterlacing_of_combinatorial_sideConditions
     {P G : ℕ → ℝ[X]}
     (hrec : NarayanaAuxiliaryGRecurrenceStatement P G)
-    (h34 : Lemma34ModifiedNarayanaInterlacingStatement P)
-    (hside : Theorem41Claim7SideConditions P G) :
-    Theorem41Claim7Statement P G :=
-  theorem41Claim7_of_section3 hrec h34
+    (h34 : AffineModifiedNarayanaInterlacingStatement P)
+    (hside : ShiftedDifferenceInterlacingSideConditions P G) :
+    ShiftedDifferenceInterlacingStatement P G :=
+  shiftedDifferenceInterlacing_of_combinatorial hrec h34
     hside.w_pos hside.wu_lc hside.deg_uw hside.w_nonpos hside.mid_pos
     hside.v_pos hside.v_nonpos hside.deg_vu hside.u_bound
 
-/-- Bundled root-sum assembly theorem for Braun--Jal Claim `(7)`.
+/-- Bundled root-sum assembly theorem for the shifted difference interlacing claim.
 
-Unlike `theorem41Claim7_of_section3_sideConditions`, this route remains
+Unlike `shiftedDifferenceInterlacing_of_combinatorial_sideConditions`, this route remains
 applicable when `U` has a root at zero. -/
-theorem theorem41Claim7_of_section3_rootSumSideConditions
+theorem shiftedDifferenceInterlacing_of_combinatorial_rootSumSideConditions
     {P G : ℕ → ℝ[X]}
     (hrec : NarayanaAuxiliaryGRecurrenceStatement P G)
-    (h34 : Lemma34ModifiedNarayanaInterlacingStatement P)
-    (hside : Theorem41Claim7RootSumSideConditions P G) :
-    Theorem41Claim7Statement P G := by
+    (h34 : AffineModifiedNarayanaInterlacingStatement P)
+    (hside : ShiftedDifferenceInterlacingRootSumSideConditions P G) :
+    ShiftedDifferenceInterlacingStatement P G := by
   intro m lam nu hm hlam hnu
   let U : ℝ[X] := (C lam * X + C nu) * P (m - 1) + P m
   let V : ℝ[X] := (C lam * X + C nu) * G (m - 1) + G m
@@ -489,7 +494,7 @@ theorem theorem41Claim7_of_section3_rootSumSideConditions
     simpa [U, W] using h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu
   have hW_eq : W = (1 + X) * U + X * V := by
     simpa [U, V, W] using
-      theorem41Claim7_next_eq_of_narayanaAuxiliaryGRecurrence hrec hm lam nu
+      shiftedDifferenceInterlacing_next_eq_of_narayanaAuxiliaryGRecurrence hrec hm lam nu
   exact
     strictInterl_component_of_strictInterl_next_eq_add_X_mul_of_roots_sum_le hUW hW_eq
       (by simpa [W] using hside.w_pos hm hlam hnu)
@@ -503,10 +508,11 @@ theorem theorem41Claim7_of_section3_rootSumSideConditions
       (by simpa [U, V] using hside.deg_vu hm hlam hnu)
       (by simpa [U, V] using hside.u_v_roots_sum hm hlam hnu)
 
-/-- The matrix claim `(6)` and the reindexed claim `(7)` in Braun--Jal's
-proof of Theorem 4.1 are the same statement after writing `nu = mu - 1`. -/
-theorem theorem41MatrixClaim_iff_claim7 (P G : ℕ → ℝ[X]) :
-    Theorem41MatrixClaimStatement P G ↔ Theorem41Claim7Statement P G := by
+/-- The matrix difference interlacing claim and the shifted difference interlacing claim in
+Braun--Jal's
+proof of the snake interlacing theorem are the same statement after writing `nu = mu - 1`. -/
+theorem snakeDifferenceInterlacing_iff_shiftedDifferenceInterlacing (P G : ℕ → ℝ[X]) :
+    SnakeDifferenceInterlacingStatement P G ↔ ShiftedDifferenceInterlacingStatement P G := by
   constructor
   · intro hclaim m lam nu hm hlam hnu
     have hmu : 0 ≤ nu + 1 := by linarith
@@ -539,19 +545,19 @@ theorem theorem41MatrixClaim_iff_claim7 (P G : ℕ → ℝ[X]) :
       ring_nf
     rwa [hleft, hright] at hbase
 
-/-- The generalized snake recurrence, Theorem 3.5, in zero-based list
+/-- The generalized snake recurrence, the snake recurrence, in zero-based list
 coordinates.  If `k` is the last position where `w` differs from its final
 letter, then paper notation `w[:k+1]` and `w[:k]` become `takePrefix (k+1)`
 and `takePrefix k` for the list of letters following `epsilon`. -/
-def Theorem35GeneralizedSnakeRecurrenceStatement
+def GeneralizedSnakeRecurrenceStatement
     (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop :=
   ∀ {w : SnakeWord} {k : ℕ}, ¬ w.IsConstant → w.IsLastChangeIndex k →
     M w = M (w.takePrefix (k + 1)) * P (w.length - (k + 1)) +
       X * M (w.takePrefix k) * G (w.length - (k + 1))
 
-/-- Computable form of Theorem 3.5, using `lastChangeIndex?` instead of a
+/-- Computable form of the snake recurrence, using `lastChangeIndex?` instead of a
 separate predicate-form witness. -/
-def Theorem35GeneralizedSnakeRecurrenceComputableStatement
+def GeneralizedSnakeRecurrenceComputableStatement
     (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop :=
   ∀ {w : SnakeWord} {k : ℕ}, w.lastChangeIndex? = some k →
     M w = M (w.takePrefix (k + 1)) * P (w.length - (k + 1)) +
@@ -559,181 +565,181 @@ def Theorem35GeneralizedSnakeRecurrenceComputableStatement
 
 /-- The predicate-form recurrence implies the computable `lastChangeIndex?`
 form. -/
-theorem theorem35Computable_of_theorem35
+theorem snakeRecurrenceComputable_of_snakeRecurrence
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hrec : Theorem35GeneralizedSnakeRecurrenceStatement M P G) :
-    Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G := by
+    (hrec : GeneralizedSnakeRecurrenceStatement M P G) :
+    GeneralizedSnakeRecurrenceComputableStatement M P G := by
   intro w k hlast
   exact hrec (SnakeWord.not_isConstant_of_lastChangeIndex?_eq_some hlast)
     (SnakeWord.isLastChangeIndex_of_lastChangeIndex?_eq_some hlast)
 
 /-- The computable `lastChangeIndex?` recurrence implies the predicate-form
 recurrence. -/
-theorem theorem35_of_theorem35Computable
+theorem snakeRecurrence_of_snakeRecurrenceComputable
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hrec : Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G) :
-    Theorem35GeneralizedSnakeRecurrenceStatement M P G := by
+    (hrec : GeneralizedSnakeRecurrenceComputableStatement M P G) :
+    GeneralizedSnakeRecurrenceStatement M P G := by
   intro w k _hconst hlast
   exact hrec (SnakeWord.lastChangeIndex?_eq_some_of_isLastChangeIndex hlast)
 
 /-- The predicate-form and computable forms of the generalized snake
 recurrence are equivalent. -/
-theorem theorem35Computable_iff_theorem35
+theorem snakeRecurrenceComputable_iff_snakeRecurrence
     (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) :
-    Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G ↔
-      Theorem35GeneralizedSnakeRecurrenceStatement M P G :=
-  ⟨theorem35_of_theorem35Computable, theorem35Computable_of_theorem35⟩
+    GeneralizedSnakeRecurrenceComputableStatement M P G ↔
+      GeneralizedSnakeRecurrenceStatement M P G :=
+  ⟨snakeRecurrence_of_snakeRecurrenceComputable, snakeRecurrenceComputable_of_snakeRecurrence⟩
 
-/-- Statement-level package for the induction route from the Section 3
-Narayana and recurrence ingredients to Theorem 4.1. -/
-def Theorem41InductionRouteStatement
+/-- Statement-level package for the induction route from the combinatorial inputs
+Narayana and recurrence ingredients to the snake interlacing theorem. -/
+def SnakeInterlacingInductionRouteStatement
     (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop :=
-  Lemma33AuxiliaryGInterlacesStatement P G →
-    Lemma34ModifiedNarayanaInterlacingStatement P →
-    Theorem35GeneralizedSnakeRecurrenceStatement M P G →
-      Theorem41NonNestingRookStatement M
+  AuxiliaryGInterlacesStatement P G →
+    AffineModifiedNarayanaInterlacingStatement P →
+    GeneralizedSnakeRecurrenceStatement M P G →
+      NonNestingRookInterlacingStatement M
 
-/-- Computable-recursion variant of the current Theorem 4.1 induction route. -/
-def Theorem41InductionRouteComputableStatement
+/-- Computable-recursion variant of the current snake-interlacing induction route. -/
+def SnakeInterlacingInductionRouteComputableStatement
     (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop :=
-  Lemma33AuxiliaryGInterlacesStatement P G →
-    Lemma34ModifiedNarayanaInterlacingStatement P →
-    Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G →
-      Theorem41NonNestingRookStatement M
+  AuxiliaryGInterlacesStatement P G →
+    AffineModifiedNarayanaInterlacingStatement P →
+    GeneralizedSnakeRecurrenceComputableStatement M P G →
+      NonNestingRookInterlacingStatement M
 
 /-- The predicate-form induction route also accepts a computable recurrence
 input. -/
-theorem theorem41InductionRouteComputable_of_theorem41InductionRoute
+theorem snakeInterlacingInductionRouteComputable_of_snakeInterlacingInductionRoute
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hroute : Theorem41InductionRouteStatement M P G) :
-    Theorem41InductionRouteComputableStatement M P G := by
+    (hroute : SnakeInterlacingInductionRouteStatement M P G) :
+    SnakeInterlacingInductionRouteComputableStatement M P G := by
   intro h33 h34 hrec
-  exact hroute h33 h34 (theorem35_of_theorem35Computable hrec)
+  exact hroute h33 h34 (snakeRecurrence_of_snakeRecurrenceComputable hrec)
 
 /-- The computable-recursion induction route implies the predicate-form route. -/
-theorem theorem41InductionRoute_of_theorem41InductionRouteComputable
+theorem snakeInterlacingInductionRoute_of_snakeInterlacingInductionRouteComputable
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hroute : Theorem41InductionRouteComputableStatement M P G) :
-    Theorem41InductionRouteStatement M P G := by
+    (hroute : SnakeInterlacingInductionRouteComputableStatement M P G) :
+    SnakeInterlacingInductionRouteStatement M P G := by
   intro h33 h34 hrec
-  exact hroute h33 h34 (theorem35Computable_of_theorem35 hrec)
+  exact hroute h33 h34 (snakeRecurrenceComputable_of_snakeRecurrence hrec)
 
-/-- Predicate and computable forms of the Theorem 4.1 induction route are
+/-- Predicate and computable forms of the snake-interlacing induction route are
 equivalent. -/
-theorem theorem41InductionRouteComputable_iff_theorem41InductionRoute
+theorem snakeInterlacingInductionRouteComputable_iff_snakeInterlacingInductionRoute
     (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) :
-    Theorem41InductionRouteComputableStatement M P G ↔
-      Theorem41InductionRouteStatement M P G :=
-  ⟨theorem41InductionRoute_of_theorem41InductionRouteComputable,
-    theorem41InductionRouteComputable_of_theorem41InductionRoute⟩
+    SnakeInterlacingInductionRouteComputableStatement M P G ↔
+      SnakeInterlacingInductionRouteStatement M P G :=
+  ⟨snakeInterlacingInductionRoute_of_snakeInterlacingInductionRouteComputable,
+    snakeInterlacingInductionRouteComputable_of_snakeInterlacingInductionRoute⟩
 
-/-- Bundled Section 3 ingredients needed by the current Theorem 4.1 induction
+/-- Bundled the combinatorial ingredients needed by the current snake-interlacing induction
 interface. -/
-structure Theorem41Section3Inputs
+structure SnakeInterlacingInputs
     (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop where
-  lemma33 : Lemma33AuxiliaryGInterlacesStatement P G
-  lemma34 : Lemma34ModifiedNarayanaInterlacingStatement P
-  recurrence : Theorem35GeneralizedSnakeRecurrenceStatement M P G
+  auxiliaryGInterlacing : AuxiliaryGInterlacesStatement P G
+  affineNarayana : AffineModifiedNarayanaInterlacingStatement P
+  recurrence : GeneralizedSnakeRecurrenceStatement M P G
 
-/-- Bundled Section 3 ingredients using the computable recurrence form. -/
-structure Theorem41Section3ComputableInputs
+/-- Bundled the combinatorial ingredients using the computable recurrence form. -/
+structure SnakeInterlacingComputableInputs
     (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop where
-  lemma33 : Lemma33AuxiliaryGInterlacesStatement P G
-  lemma34 : Lemma34ModifiedNarayanaInterlacingStatement P
-  recurrence : Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G
+  auxiliaryGInterlacing : AuxiliaryGInterlacesStatement P G
+  affineNarayana : AffineModifiedNarayanaInterlacingStatement P
+  recurrence : GeneralizedSnakeRecurrenceComputableStatement M P G
 
-/-- Bundled Section 3 ingredients using the shifted nonnegative-parameter
-Lemma 3.4 form. -/
-structure Theorem41Section3ShiftedInputs
+/-- Bundled the combinatorial ingredients using shifted nonnegative-parameter
+the affine-Narayana form. -/
+structure SnakeInterlacingShiftedInputs
     (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop where
-  lemma33 : Lemma33AuxiliaryGInterlacesStatement P G
-  lemma34 : Lemma34ModifiedNarayanaShiftedInterlacingStatement P
-  recurrence : Theorem35GeneralizedSnakeRecurrenceStatement M P G
+  auxiliaryGInterlacing : AuxiliaryGInterlacesStatement P G
+  affineNarayana : AffineModifiedNarayanaShiftedInterlacingStatement P
+  recurrence : GeneralizedSnakeRecurrenceStatement M P G
 
-/-- Bundled Section 3 ingredients using the shifted Lemma 3.4 form and the
+/-- Bundled the combinatorial ingredients using shifted the affine-Narayana form and the
 computable recurrence form. -/
-structure Theorem41Section3ComputableShiftedInputs
+structure SnakeInterlacingComputableShiftedInputs
     (M : SnakeWord → ℝ[X]) (P G : ℕ → ℝ[X]) : Prop where
-  lemma33 : Lemma33AuxiliaryGInterlacesStatement P G
-  lemma34 : Lemma34ModifiedNarayanaShiftedInterlacingStatement P
-  recurrence : Theorem35GeneralizedSnakeRecurrenceComputableStatement M P G
+  auxiliaryGInterlacing : AuxiliaryGInterlacesStatement P G
+  affineNarayana : AffineModifiedNarayanaShiftedInterlacingStatement P
+  recurrence : GeneralizedSnakeRecurrenceComputableStatement M P G
 
-/-- Convert computable Section 3 inputs into the predicate-form bundle. -/
-theorem theorem41Section3Inputs_of_computable
+/-- Convert computable combinatorial inputs into the predicate-form bundle. -/
+theorem snakeInterlacingInputs_of_computable
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hinputs : Theorem41Section3ComputableInputs M P G) :
-    Theorem41Section3Inputs M P G where
-  lemma33 := hinputs.lemma33
-  lemma34 := hinputs.lemma34
-  recurrence := theorem35_of_theorem35Computable hinputs.recurrence
+    (hinputs : SnakeInterlacingComputableInputs M P G) :
+    SnakeInterlacingInputs M P G where
+  auxiliaryGInterlacing := hinputs.auxiliaryGInterlacing
+  affineNarayana := hinputs.affineNarayana
+  recurrence := snakeRecurrence_of_snakeRecurrenceComputable hinputs.recurrence
 
-/-- Convert shifted Section 3 inputs into the paper-shaped bundle. -/
-theorem theorem41Section3Inputs_of_shifted
+/-- Convert shifted combinatorial inputs into the paper-shaped bundle. -/
+theorem snakeInterlacingInputs_of_shifted
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hinputs : Theorem41Section3ShiftedInputs M P G) :
-    Theorem41Section3Inputs M P G where
-  lemma33 := hinputs.lemma33
-  lemma34 := lemma34ModifiedNarayanaInterlacing_of_shifted hinputs.lemma34
+    (hinputs : SnakeInterlacingShiftedInputs M P G) :
+    SnakeInterlacingInputs M P G where
+  auxiliaryGInterlacing := hinputs.auxiliaryGInterlacing
+  affineNarayana := affineModifiedNarayanaInterlacing_of_shifted hinputs.affineNarayana
   recurrence := hinputs.recurrence
 
-/-- Convert computable shifted Section 3 inputs into the paper-shaped
+/-- Convert computable shifted combinatorial inputs into the paper-shaped
 computable bundle. -/
-theorem theorem41Section3ComputableInputs_of_shifted
+theorem snakeInterlacingComputableInputs_of_shifted
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hinputs : Theorem41Section3ComputableShiftedInputs M P G) :
-    Theorem41Section3ComputableInputs M P G where
-  lemma33 := hinputs.lemma33
-  lemma34 := lemma34ModifiedNarayanaInterlacing_of_shifted hinputs.lemma34
+    (hinputs : SnakeInterlacingComputableShiftedInputs M P G) :
+    SnakeInterlacingComputableInputs M P G where
+  auxiliaryGInterlacing := hinputs.auxiliaryGInterlacing
+  affineNarayana := affineModifiedNarayanaInterlacing_of_shifted hinputs.affineNarayana
   recurrence := hinputs.recurrence
 
-/-- Convert computable shifted Section 3 inputs into the predicate-recurrence
+/-- Convert computable shifted combinatorial inputs into the predicate-recurrence
 shifted bundle. -/
-theorem theorem41Section3ShiftedInputs_of_computable
+theorem snakeInterlacingShiftedInputs_of_computable
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hinputs : Theorem41Section3ComputableShiftedInputs M P G) :
-    Theorem41Section3ShiftedInputs M P G where
-  lemma33 := hinputs.lemma33
-  lemma34 := hinputs.lemma34
-  recurrence := theorem35_of_theorem35Computable hinputs.recurrence
+    (hinputs : SnakeInterlacingComputableShiftedInputs M P G) :
+    SnakeInterlacingShiftedInputs M P G where
+  auxiliaryGInterlacing := hinputs.auxiliaryGInterlacing
+  affineNarayana := hinputs.affineNarayana
+  recurrence := snakeRecurrence_of_snakeRecurrenceComputable hinputs.recurrence
 
-/-- Feed the bundled Section 3 ingredients into the abstract Theorem 4.1
+/-- Feed the bundled combinatorial ingredients into the abstract snake-interlacing
 induction route. -/
-theorem theorem41_of_section3Inputs
+theorem snakeInterlacing_of_combinatorialInputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hroute : Theorem41InductionRouteStatement M P G)
-    (hinputs : Theorem41Section3Inputs M P G) :
-    Theorem41NonNestingRookStatement M :=
-  hroute hinputs.lemma33 hinputs.lemma34 hinputs.recurrence
+    (hroute : SnakeInterlacingInductionRouteStatement M P G)
+    (hinputs : SnakeInterlacingInputs M P G) :
+    NonNestingRookInterlacingStatement M :=
+  hroute hinputs.auxiliaryGInterlacing hinputs.affineNarayana hinputs.recurrence
 
-/-- Feed computable Section 3 ingredients into the abstract Theorem 4.1
+/-- Feed computable combinatorial ingredients into the abstract snake-interlacing
 induction route. -/
-theorem theorem41_of_section3ComputableInputs
+theorem snakeInterlacing_of_combinatorialComputableInputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hroute : Theorem41InductionRouteStatement M P G)
-    (hinputs : Theorem41Section3ComputableInputs M P G) :
-    Theorem41NonNestingRookStatement M :=
-  theorem41_of_section3Inputs hroute
-    (theorem41Section3Inputs_of_computable hinputs)
+    (hroute : SnakeInterlacingInductionRouteStatement M P G)
+    (hinputs : SnakeInterlacingComputableInputs M P G) :
+    NonNestingRookInterlacingStatement M :=
+  snakeInterlacing_of_combinatorialInputs hroute
+    (snakeInterlacingInputs_of_computable hinputs)
 
-/-- Feed shifted Section 3 ingredients into the abstract Theorem 4.1 induction
+/-- Feed shifted combinatorial ingredients into the abstract snake-interlacing induction
 route. -/
-theorem theorem41_of_section3ShiftedInputs
+theorem snakeInterlacing_of_combinatorialShiftedInputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hroute : Theorem41InductionRouteStatement M P G)
-    (hinputs : Theorem41Section3ShiftedInputs M P G) :
-    Theorem41NonNestingRookStatement M :=
-  theorem41_of_section3Inputs hroute
-    (theorem41Section3Inputs_of_shifted hinputs)
+    (hroute : SnakeInterlacingInductionRouteStatement M P G)
+    (hinputs : SnakeInterlacingShiftedInputs M P G) :
+    NonNestingRookInterlacingStatement M :=
+  snakeInterlacing_of_combinatorialInputs hroute
+    (snakeInterlacingInputs_of_shifted hinputs)
 
-/-- Feed computable shifted Section 3 ingredients into the abstract Theorem
+/-- Feed computable shifted combinatorial ingredients into the abstract Theorem
 4.1 induction route. -/
-theorem theorem41_of_section3ComputableShiftedInputs
+theorem snakeInterlacing_of_combinatorialComputableShiftedInputs
     {M : SnakeWord → ℝ[X]} {P G : ℕ → ℝ[X]}
-    (hroute : Theorem41InductionRouteStatement M P G)
-    (hinputs : Theorem41Section3ComputableShiftedInputs M P G) :
-    Theorem41NonNestingRookStatement M :=
-  theorem41_of_section3ComputableInputs hroute
-    (theorem41Section3ComputableInputs_of_shifted hinputs)
+    (hroute : SnakeInterlacingInductionRouteStatement M P G)
+    (hinputs : SnakeInterlacingComputableShiftedInputs M P G) :
+    NonNestingRookInterlacingStatement M :=
+  snakeInterlacing_of_combinatorialComputableInputs hroute
+    (snakeInterlacingComputableInputs_of_shifted hinputs)
 
 end GeneralizedSnakePosets
 end RealRooted

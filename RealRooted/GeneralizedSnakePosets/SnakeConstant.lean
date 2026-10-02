@@ -9,7 +9,7 @@ truncated staircase `μ_{n+1,n+1}` (all `R`) or its half-turn rotation (all
 `L`).  A half-turn reverses both coordinate orders and so preserves
 non-nesting placements.  Hence the snake polynomial of a constant word is the
 modified Narayana polynomial `P_{n+1}`, which is the constant-word input of
-Braun–Jal Theorem 4.1.
+snake interlacing theorem.
 -/
 
 open Polynomial
@@ -137,7 +137,7 @@ theorem generalizedSnakeBoard_replicate_L (n : ℕ) :
   · rintro ⟨a, b, ⟨ha, hb⟩, rfl, rfl⟩
     exact ⟨Nat.sub_le _ _, Nat.sub_le _ _, Nat.sub_le _ _, by lia⟩
 
-/-- **Constant-word input of Braun–Jal Theorem 4.1:** the snake polynomial of a
+/-- **Constant-word input of the snake interlacing theorem:** the snake polynomial of a
 constant word of length `n` is the modified Narayana polynomial `P_{n+1}`. -/
 theorem generalizedSnakeRookModel_snakePolynomial_of_isConstant {w : SnakeWord}
     (hw : w.IsConstant) :

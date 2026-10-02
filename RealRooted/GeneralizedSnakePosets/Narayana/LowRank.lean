@@ -4,7 +4,7 @@ import RealRooted.GeneralizedSnakePosets.Narayana.RankSix
 # Low-rank modified-Narayana interlacing certificates
 
 This module contains the explicit ranks-three-through-five root certificates
-and assembles the checked rank-at-most-six Braun--Jal Lemma 3.3 interface.
+and assembles the checked rank-at-most-six auxiliary-interlacing interface.
 -/
 
 open Polynomial Filter
@@ -14,9 +14,9 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
-/-- The `n = 3` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
+/-- The `n = 3` case of the auxiliary interlacing lemma, in the stricter differ-by-one
 interlacing form. -/
-theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
+theorem auxiliaryGInterlaces_modified_three_interlaces :
     Interlaces (FiniteSkewBoard.auxiliaryG 3) (modifiedNarayanaPolynomial 3) := by
   let a : ℝ := (-(5 : ℝ) - Real.sqrt (21 : ℝ)) / 2
   let b : ℝ := -(1 : ℝ)
@@ -113,25 +113,25 @@ theorem lemma33AuxiliaryGInterlaces_modified_three_interlaces :
   exact interlaces_of_quadratic_cubic_root_lists hP_ne hP_splits hG_ne hG_splits
     hPdeg hGdeg hP_roots hG_roots hab hbc huv hau hub hbv hvc
 
-/-- The `n = 3` case of Braun--Jal Lemma 3.3, for the concrete modified
+/-- The `n = 3` case of the auxiliary interlacing lemma, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
-theorem lemma33AuxiliaryGInterlaces_modified_three :
+theorem auxiliaryGInterlaces_modified_three :
     StrictInterl (FiniteSkewBoard.auxiliaryG 3) (modifiedNarayanaPolynomial 3) :=
-  lemma33AuxiliaryGInterlaces_modified_three_interlaces.toStrictInterl
+  auxiliaryGInterlaces_modified_three_interlaces.toStrictInterl
 
-/-- The checked initial cases `n = 1, 2, 3` of Braun--Jal Lemma 3.3, for the
+/-- The checked initial cases `n = 1, 2, 3` of the auxiliary interlacing lemma, for the
 concrete modified Narayana family and the finite-board auxiliary `G`. -/
-theorem lemma33AuxiliaryGInterlaces_modified_of_le_three
+theorem auxiliaryGInterlaces_modified_of_le_three
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₃ : n ≤ 3) :
     StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
   interval_cases n
-  · exact lemma33AuxiliaryGInterlaces_modified_base
-  · exact lemma33AuxiliaryGInterlaces_modified_two
-  · exact lemma33AuxiliaryGInterlaces_modified_three
+  · exact auxiliaryGInterlaces_modified_base
+  · exact auxiliaryGInterlaces_modified_two
+  · exact auxiliaryGInterlaces_modified_three
 
-/-- The `n = 4` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
+/-- The `n = 4` case of the auxiliary interlacing lemma, in the stricter differ-by-one
 interlacing form. -/
-theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
+theorem auxiliaryGInterlaces_modified_four_interlaces :
     Interlaces (FiniteSkewBoard.auxiliaryG 4) (modifiedNarayanaPolynomial 4) := by
   let s : ℝ := Real.sqrt (7 : ℝ)
   let α : ℝ := Real.sqrt ((28 : ℝ) + 10 * s)
@@ -388,26 +388,26 @@ theorem lemma33AuxiliaryGInterlaces_modified_four_interlaces :
   exact Interlaces.of_cubic_quartic_root_lists hP_ne hP_splits hG_ne hG_splits
     hPdeg hGdeg hP_roots hG_roots hab hbc hcd huv hvw hau hub hbv hvc hcw hwd
 
-/-- The `n = 4` case of Braun--Jal Lemma 3.3, for the concrete modified
+/-- The `n = 4` case of the auxiliary interlacing lemma, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
-theorem lemma33AuxiliaryGInterlaces_modified_four :
+theorem auxiliaryGInterlaces_modified_four :
     StrictInterl (FiniteSkewBoard.auxiliaryG 4) (modifiedNarayanaPolynomial 4) :=
-  lemma33AuxiliaryGInterlaces_modified_four_interlaces.toStrictInterl
+  auxiliaryGInterlaces_modified_four_interlaces.toStrictInterl
 
-/-- The checked initial cases `n = 1, 2, 3, 4` of Braun--Jal Lemma 3.3, for the
+/-- The checked initial cases `n = 1, 2, 3, 4` of the auxiliary interlacing lemma, for the
 concrete modified Narayana family and the finite-board auxiliary `G`. -/
-theorem lemma33AuxiliaryGInterlaces_modified_of_le_four
+theorem auxiliaryGInterlaces_modified_of_le_four
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₄ : n ≤ 4) :
     StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
   interval_cases n
-  · exact lemma33AuxiliaryGInterlaces_modified_base
-  · exact lemma33AuxiliaryGInterlaces_modified_two
-  · exact lemma33AuxiliaryGInterlaces_modified_three
-  · exact lemma33AuxiliaryGInterlaces_modified_four
+  · exact auxiliaryGInterlaces_modified_base
+  · exact auxiliaryGInterlaces_modified_two
+  · exact auxiliaryGInterlaces_modified_three
+  · exact auxiliaryGInterlaces_modified_four
 
-/-- The `n = 5` case of Braun--Jal Lemma 3.3, in the stricter differ-by-one
+/-- The `n = 5` case of the auxiliary interlacing lemma, in the stricter differ-by-one
 interlacing form. -/
-theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
+theorem auxiliaryGInterlaces_modified_five_interlaces :
     Interlaces (FiniteSkewBoard.auxiliaryG 5) (modifiedNarayanaPolynomial 5) := by
   let s : ℝ := Real.sqrt (3 : ℝ)
   let t : ℝ := Real.sqrt (15 : ℝ)
@@ -787,28 +787,28 @@ theorem lemma33AuxiliaryGInterlaces_modified_five_interlaces :
     hPdeg hGdeg hP_roots hG_roots hab hbc hcd hde huv hvw hwz hau hub hbv hvc
     hcw hwd hdz hze
 
-/-- The `n = 5` case of Braun--Jal Lemma 3.3, for the concrete modified
+/-- The `n = 5` case of the auxiliary interlacing lemma, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
-theorem lemma33AuxiliaryGInterlaces_modified_five :
+theorem auxiliaryGInterlaces_modified_five :
     StrictInterl (FiniteSkewBoard.auxiliaryG 5) (modifiedNarayanaPolynomial 5) :=
-  lemma33AuxiliaryGInterlaces_modified_five_interlaces.toStrictInterl
+  auxiliaryGInterlaces_modified_five_interlaces.toStrictInterl
 
-/-- The checked initial cases `n = 1, 2, 3, 4, 5` of Braun--Jal Lemma 3.3, for
+/-- The checked initial cases `n = 1, 2, 3, 4, 5` of the auxiliary interlacing lemma, for
 the concrete modified Narayana family and the finite-board auxiliary `G`. -/
-theorem lemma33AuxiliaryGInterlaces_modified_of_le_five
+theorem auxiliaryGInterlaces_modified_of_le_five
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₅ : n ≤ 5) :
     StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
   interval_cases n
-  · exact lemma33AuxiliaryGInterlaces_modified_base
-  · exact lemma33AuxiliaryGInterlaces_modified_two
-  · exact lemma33AuxiliaryGInterlaces_modified_three
-  · exact lemma33AuxiliaryGInterlaces_modified_four
-  · exact lemma33AuxiliaryGInterlaces_modified_five
+  · exact auxiliaryGInterlaces_modified_base
+  · exact auxiliaryGInterlaces_modified_two
+  · exact auxiliaryGInterlaces_modified_three
+  · exact auxiliaryGInterlaces_modified_four
+  · exact auxiliaryGInterlaces_modified_five
 
 /-- Conditional checked initial cases `n = 1, 2, 3, 4, 5, 6` of Braun--Jal
-Lemma 3.3.  The only remaining input is the `P_6`/`G_6` cross-root
+the auxiliary interlacing lemma.  The only remaining input is the `P_6`/`G_6` cross-root
 inequality package. -/
-theorem lemma33AuxiliaryGInterlaces_modified_of_le_six_of_crosses
+theorem auxiliaryGInterlaces_modified_of_le_six_of_crosses
     (hcross :
       ∀ {a b c d e r : ℝ},
         (modifiedNarayanaPolynomial 6).roots =
@@ -818,20 +818,20 @@ theorem lemma33AuxiliaryGInterlaces_modified_of_le_six_of_crosses
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
     StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
   interval_cases n
-  · exact lemma33AuxiliaryGInterlaces_modified_base
-  · exact lemma33AuxiliaryGInterlaces_modified_two
-  · exact lemma33AuxiliaryGInterlaces_modified_three
-  · exact lemma33AuxiliaryGInterlaces_modified_four
-  · exact lemma33AuxiliaryGInterlaces_modified_five
-  · exact lemma33AuxiliaryGInterlaces_modified_six_of_crosses hcross
+  · exact auxiliaryGInterlaces_modified_base
+  · exact auxiliaryGInterlaces_modified_two
+  · exact auxiliaryGInterlaces_modified_three
+  · exact auxiliaryGInterlaces_modified_four
+  · exact auxiliaryGInterlaces_modified_five
+  · exact auxiliaryGInterlaces_modified_six_of_crosses hcross
 
 /-- Conditional checked initial cases `n = 1, 2, 3, 4, 5, 6` of Braun--Jal
-Lemma 3.3 from the single `P_6`/`G_6` sign certificate. -/
-theorem lemma33AuxiliaryGInterlaces_modified_of_le_six_of_eval_signs
+the auxiliary interlacing lemma from the single `P_6`/`G_6` sign certificate. -/
+theorem auxiliaryGInterlaces_modified_of_le_six_of_eval_signs
     (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate)
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
     StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) :=
-  lemma33AuxiliaryGInterlaces_modified_of_le_six_of_crosses
+  auxiliaryGInterlaces_modified_of_le_six_of_crosses
     (fun {a b c d e r} hP_roots hab hbc hcd hde her =>
       ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_eval_signs
         (by simpa [modifiedNarayanaPolynomialSix] using hP_roots)
@@ -839,21 +839,21 @@ theorem lemma33AuxiliaryGInterlaces_modified_of_le_six_of_eval_signs
     hn₁ hn₆
 
 /-- The checked initial cases `n = 1, 2, 3, 4, 5, 6` of Braun--Jal
-Lemma 3.3, for the concrete modified Narayana family and the finite-board
+the auxiliary interlacing lemma, for the concrete modified Narayana family and the finite-board
 auxiliary `G`. -/
-theorem lemma33AuxiliaryGInterlaces_modified_of_le_six
+theorem auxiliaryGInterlaces_modified_of_le_six
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
     StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) :=
-  lemma33AuxiliaryGInterlaces_modified_of_le_six_of_eval_signs
+  auxiliaryGInterlaces_modified_of_le_six_of_eval_signs
     modifiedNarayanaPolynomial_six_auxiliaryG_signCertificate hn₁ hn₆
 
-/-- The checked initial cases `n = 1, ..., 6` of Braun--Jal Lemma 3.3,
+/-- The checked initial cases `n = 1, ..., 6` of the auxiliary interlacing lemma,
 packaged in the generic bounded interlacing interface. -/
-theorem lemma33AuxiliaryGInterlaces_modified_upTo_six :
-    Lemma33AuxiliaryGInterlacesUpToStatement
+theorem auxiliaryGInterlaces_modified_upTo_six :
+    AuxiliaryGInterlacesUpToStatement
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG 6 := by
   intro n hn₁ hn₆
-  exact lemma33AuxiliaryGInterlaces_modified_of_le_six hn₁ hn₆
+  exact auxiliaryGInterlaces_modified_of_le_six hn₁ hn₆
 
 end GeneralizedSnakePosets
 end RealRooted
