@@ -71,7 +71,7 @@ label = "Garloff–Wagner: Hadamard products preserve interlacing"
 [[theorems]]
 name = "RealRooted.gwSchurProductInterl"
 module = "RealRooted.GarloffWagner.Theorem12"
-label = "Garloff–Wagner, Theorem 12: the Schur product preserves interlacing"
+label = "Garloff–Wagner: the Schur product preserves interlacing"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -89,7 +89,7 @@ nonnegative coefficients):
   polynomials is PF.
 - **Interlacing:** if $f \ll g$ and $p \ll q$, then $f \ast p \ll g \ast q$, where $\ast$
   is the Hadamard product.
-- **Schur product (Theorem 12):** the factorial Schur product, with
+- **Schur product:** the factorial Schur product, with
   coefficients $k!\, a_k b_k$, preserves interlacing in its first argument.
 
 ## References

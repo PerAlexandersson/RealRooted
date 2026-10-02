@@ -60,8 +60,8 @@ module = "RealRooted.Compatibility.InterleaverBridge"
 label = "Pairwise common interleavers give pairwise compatibility"
 
 [[theorems]]
-name = "RealRooted.chudnovskySeymour_compatiblePairHasCommonInterleaver"
-module = "RealRooted.ChudnovskySeymour.Core"
+name = "RealRooted.Challenges.CommonInterleaver.compatiblePair_hasCommonInterleaver"
+module = "RealRooted.Challenges.CommonInterleaver"
 label = "Chudnovsky–Seymour: a compatible pair has a common interleaver"
 
 [[theorems]]
@@ -119,3 +119,20 @@ Combinatorics*, CRC Press (2015), Section 7.8.
 This module is a catalog facade.  The proofs live in
 `RealRooted.CommonInterleaver` and `RealRooted.Compatibility`.
 -/
+
+open Polynomial
+
+namespace RealRooted
+namespace Challenges
+namespace CommonInterleaver
+
+/-- Two compatible real polynomials with positive leading coefficients have a
+common interleaver. -/
+theorem compatiblePair_hasCommonInterleaver {f g : ℝ[X]} (hf : HasPosLeadingCoeff f)
+    (hg : HasPosLeadingCoeff g) (hfg : Compatible f g) :
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
+  RealRooted.chudnovskySeymour_compatiblePairHasCommonInterleaver hf hg hfg
+
+end CommonInterleaver
+end Challenges
+end RealRooted

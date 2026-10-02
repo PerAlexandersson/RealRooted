@@ -24,7 +24,7 @@ label = "Hypergeometric polynomials R_d"
 [[theorems]]
 name = "RealRooted.ParkingFunctions.ToricContribution.toricContributionRow_isInterlacingSeq"
 module = "RealRooted.ParkingFunctions.ToricContribution.ContributionReversal"
-label = "Xiao's Conjecture 4.2"
+label = "Xiao's conjecture: toric contribution rows are interlacing sequences"
 
 [[theorems]]
 name = """RealRooted.ParkingFunctions.ToricContribution.\
@@ -44,10 +44,10 @@ label = "Positive weighted sums are real-rooted"
 
 Xiao studies the toric $g$-contribution polynomials $g_{n,j}(x)$, whose
 coefficients are built from binomial coefficients and Catalan numbers.
-Xiao's Conjecture 4.2 states that, for each $n = 2m + \varepsilon$ with $\varepsilon \in \{0, 1\}$,
+Xiao conjectured that, for each $n = 2m + \varepsilon$ with $\varepsilon \in \{0, 1\}$,
 the row $(g_{n,0}, g_{n,1}, \dotsc, g_{n,\lfloor n/2\rfloor})$ is an interlacing sequence.
 
-**Theorem (Xiao's Conjecture 4.2).** For all $m$ and $\varepsilon \leq 1$, the toric
+**Theorem (Xiao's conjecture).** For all $m$ and $\varepsilon \leq 1$, the toric
 contribution row is an interlacing sequence.
 
 The proof finds a common left interleaver for the normalized family: the

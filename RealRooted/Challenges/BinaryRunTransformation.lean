@@ -101,8 +101,7 @@ $\gamma_m = 1/(\alpha)_m$. Then $P_n^{(\alpha+1)} \ll P_n^{(\alpha)}$ for every 
 $\alpha > 0$. The proof uses the shift identity
 $\alpha\, G_n^{(\alpha)} = (\Theta + \alpha)\, G_n^{(\alpha+1)}$, which follows from
 $\alpha\, (\alpha+1)_m = (\alpha+m)(\alpha)_m$. A PF polynomial $g$ of degree at least 2 satisfies
-$g \ll (\Theta + \alpha)\, g$, and the transform preserves interlacing. The rows with $n \leq 3$ are
-linear or constant and are checked directly.
+$g \ll (\Theta + \alpha)\, g$, and the transform preserves interlacing.
 
 ## Proof idea
 

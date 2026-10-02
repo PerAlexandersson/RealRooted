@@ -53,10 +53,10 @@ $x^n \mapsto N_{n,m}(x)$ preserves Pólya-frequency polynomials.
 
 The coefficient normalization is from Jianxi Mao and Lijie Wang, [“The
 Narayana transformation,”](https://arxiv.org/abs/2607.01572) arXiv:2607.01572
-(2026), Eq. (1.2).  The root-location input is D. Dominici, S. J. Johnston,
+(2026).  The root-location input is D. Dominici, S. J. Johnston,
 and K. Jordaan, [“Real zeros of 2F1 hypergeometric
 polynomials,”](https://arxiv.org/abs/1301.4771) *Journal of Computational and
-Applied Mathematics* 247 (2013), 152–161, which is Lemma 2.5 in Mao–Wang.
+Applied Mathematics* 247 (2013), 152–161.
 See also the
 [Narayana real-rootedness examples on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedCatalan.htm#ex:narayanaSturm).
 <!-- /realrooted-catalog-content -->
