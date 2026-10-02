@@ -301,7 +301,7 @@ lemma not_compatible_scaled_cubic_linear_of_opposite_of_left_root_lt_lower
 closed interval spanned by the cubic roots. -/
 theorem compatibleCubicLinearRootOrder {f g : ℝ[X]} {a b c u : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hcompat : Compatible f g) (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 1)
+    (hcompat : Compatible f g) (_hfdeg : f.natDegree = 3) (_hgdeg : g.natDegree = 1)
     (hab : a ≤ b) (hbc : b ≤ c) (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u}) :
     a ≤ u ∧ u ≤ c := by
   have hffac :
