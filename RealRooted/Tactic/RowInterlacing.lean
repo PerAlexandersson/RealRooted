@@ -1,6 +1,7 @@
 import RealRooted.DerivativeRecurrence.RootWindow
 import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.Tactic.Recurrence
+import RealRooted.Tactic.InterlacesExplicit
 
 /-!
 # `rr_row_interlaces`
@@ -9,13 +10,14 @@ import RealRooted.Tactic.Recurrence
 
 * product sequences `P (n + 1) = L n * P n` (via `rr_product_interlaces`), and
 * three-term recurrences `P (n + 2) = a n * P (n + 1) + b n * P n`, and
+* two-step products `P (n + 2) = q * P n` (`RealRooted.twoStepProduct_interlaces`),
 * first-order derivative recurrences `P (n + 1) = A n * (P n)' + B n * P n`, and
 * second-order recurrences `P (n + 1) = A * (P n)'' + B * (P n)' + C n * P n` whose rows
   satisfy an eigen-ODE `A * (P n)'' + β * (P n)' = ev n • P n`
   (`RealRooted.Tactic.eigenODE?`), collapsed to a first-order recurrence first,
 
-whose rows grow by one degree, starting from a constant row (or, for derivative
-recurrences, from any real-rooted row).
+whose rows grow by one degree.  Explicit base rows of higher degree are handled by
+`rr_interlaces_explicit`.
 
 For three-term recurrences it applies `RealRooted.threeTerm_interlaces_of_eval_nonpos`
 (`b n ≤ 0` everywhere) or `RealRooted.threeTerm_interlaces_of_nonnegCoeffs`
@@ -86,7 +88,10 @@ private def interlaceSideGoal (P : Ident) (shape : RecShape) (D₀ : Nat) (hrec 
         evalTactic (← `(tactic| intro _))
         evalTactic (← `(tactic|
           apply RealRooted.interlaces_of_natDegree_eq_zero_of_natDegree_eq_one))
-        rowSideGoals P]
+        rowSideGoals P,
+       -- explicit base rows of higher degree: a Euclidean certificate
+       do evalTactic (← `(tactic| (simp only [$P:ident]; rr_interlaces_explicit))),
+       do evalTactic (← `(tactic| (intro _; simp only [$P:ident]; rr_interlaces_explicit)))]
     else if has ``Polynomial.roots then
       [do evalTactic (← `(tactic| (intro t ht; simp [$P:ident] at ht))),
        -- an explicit low-degree row: evaluate at the root
@@ -157,6 +162,25 @@ elab "rr_row_interlaces" : tactic => withMainContext do
     evalTactic (← `(tactic| have $h₁:ident := $(← eigenODEFirstOrder P o)))
     shape := .deriv₁
     hrec := h₁
+  -- two-step products `P (n + 2) = q * P n`
+  if shape == .lagRight then
+    if ← rowSucceeds (do
+        evalTactic (← `(tactic|
+          refine RealRooted.twoStepProduct_interlaces (P := $P) (fun _ => rfl) ?_ ?_ ?_ ?_ _))
+        for g in ← getGoals do
+          setGoals [g]
+          let ty ← instantiateMVars (← g.getType)
+          if ty.isAppOf ``RealRooted.Interlaces then
+            evalTactic (← `(tactic| (simp only [$P:ident]; rr_interlaces_explicit)))
+          else if ty.isAppOf ``Polynomial.Splits then
+            evalTactic (← `(tactic| rr_splits_explicit))
+          else if ty.ne?.isSome then
+            evalTactic (← `(tactic| rr_ne_zero_explicit))
+          else
+            rowSideGoals P
+        unless (← getGoals).isEmpty do throwError "goals remain") then
+      return
+    throwError "rr_row_interlaces: could not verify the two-step product conditions for {P}"
   unless shape == .lag || shape == .lagLeft || shape == .deriv₁ do
     throwError "rr_row_interlaces: only product, three-term, first-order derivative and \
       eigen-ODE second-order recurrences are supported"

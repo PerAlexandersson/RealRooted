@@ -128,6 +128,7 @@ import RealRooted.Tactic.Examples.Product.Interlacing
 import RealRooted.Tactic.Examples.RowData
 import RealRooted.Tactic.Examples.RowInterlacing
 import RealRooted.Tactic.Examples.RecurrenceODE
+import RealRooted.Tactic.Examples.InterlacesExplicit
 
 /-!
 # RealRooted tactic examples

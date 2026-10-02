@@ -18,7 +18,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **181 IDs**; **1 formalized**, **145 shells**, **13 fragments**, and **22 documented-only**.
+Current totals: **183 IDs**; **1 formalized**, **145 shells**, **13 fragments**, and **24 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -39,6 +39,7 @@ Current totals: **181 IDs**; **1 formalized**, **145 shells**, **13 fragments**,
 | A019538 | `documented` | Root window `[-1, 0]`: `A = X (X + 1)` is nonpositive only there ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A021009 | `fragment` | Family B: generic `t R(t)` once `R` is nonnegative at roots. | `rr_sign_at_roots_with_factor` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
 | A021010 | `shell` | `/`: `v_n(t)=-t^2`. | `rr_mw_derivative_neg_X_sq_auto` | `degree_lower`, `degree_two`, `degree_upper`, `source_pos_lc`, `splits`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
+| A026374 | `documented` | A two-step product ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A026729 | `shell` | `/`: `P_n=tP_{n-1}+tP_{n-2}`. | `rr_lw_current_X_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A028326 | `documented` | def : ℕ → ℝ[X]<br>\| n + 1 => (1 + X) * n<br>+2 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A035607 | `shell` | OEIS shapes `///`: | `rr_lw_positive_t_auto` | `degree_lower`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
@@ -68,6 +69,7 @@ Current totals: **181 IDs**; **1 formalized**, **145 shells**, **13 fragments**,
 | A062190 | `shell` | has a negative scalar denominator after the active row shift.<br>negative scalar denominator after the active shift. | `rr_mw_active_den_at`, `rr_mw_active_den_at_term`, `rr_mw_den_norm`, `rr_mw_derivative_C_mul_X_one_sub_X_sequence_auto` | `base`, `degree_succ`, `degree_two`, `den_nonzero`, `pos_lc`, `recurrence`, `roots_nonpos` | concrete row definition and proofs of the listed certificates |
 | A062196 | `shell` | quadratic scalar denominator with `t(1-t)P'`.<br>().<br>+5 additional test intents | `rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split` | `base`, `coeff`, `degree_succ`, `degree_two`, `den`, `deriv_factor`, `nonneg_coeffs`, `pos_lc`, `raw_coeff`, `raw_recurrence` | concrete row definition and proofs of the listed certificates |
 | A063007 | `shell` | raw scalar-denominator Favard numerator with nonzero shift. | `rr_favard_affine_param_den_raw_auto`, `rr_favard_base_one` | `alpha`, `base_one`, `base_zero`, `beta`, `den`, `raw_const`, `raw_lag`, `raw_recurrence`, `raw_slope`, `slope` | concrete row definition and proofs of the listed certificates |
+| A064861 | `documented` | A two-step product with higher-degree base rows ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A075499 | `documented` | A real-rooted quadratic base row: no base interlacing is needed ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A078020 | `shell` | -style sequence shell: repeated lag `-(2t^2+t+1)`. | `rr_lw_negative_quadratic_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A078812 | `shell` | OEIS shapes `//`:<br>`P_{n+2}=(t+2)P_{n+1}-P_n`. | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |

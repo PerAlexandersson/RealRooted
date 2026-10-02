@@ -163,8 +163,7 @@ macro "rr_poly_identity" : tactic => `(tactic| (
     Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_neg,
     Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow, Polynomial.eval_ofNat,
     Polynomial.eval_one, Polynomial.eval_zero, Polynomial.eval_natCast]
-  push_cast
-  ring))
+  first | done | ring1 | (push_cast; ring1)))
 
 /-- The term `fun n => …` proving `∀ n, A * (P n)'' + β * (P n)' = C (ev n) * P n`. -/
 def eigenODEProof (P : Ident) (o : EigenODE) : TacticM Term := do
