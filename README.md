@@ -536,9 +536,10 @@ real-rooted
 Both are statements about the actual orientation sums.  Over all orientations,
 the sink polynomial of every finite claw-free graph is real-rooted
 (`Graph.allOrientationSinkPolynomial_splits_of_clawFree`), through the counting
-identity `Graph.allOrientationSinkPolynomial_indicatorIdentity`.  For the minima
-polynomial only the weighted-matching model is formalized; its equality with
-the local-order enumeration remains open.
+identity `Graph.allOrientationSinkPolynomial_indicatorIdentity`.  The minima
+polynomial, which counts local edge orders by mutual minima, is real-rooted for
+every finite graph (`Graph.minimaPolynomial_splits`), through the
+weighted-matching identity `Graph.minimaPolynomial_comp_X_add_one`.
 
 Garloff--Wagner Hadamard proper-position is now proved directly in
 `RealRooted.GarloffWagner` and exposed through

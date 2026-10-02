@@ -14,10 +14,8 @@ weighted-matching closed form
 
 This file defines the right-hand side and proves its algebraic and
 real-rootedness properties.  The equality with the actual enumeration of
-local edge orders, and the resulting equality with the acyclic sink
-polynomial for forests, are deliberately left as a human-checkable
-combinatorial boundary.  In particular, no local-order enumeration is hidden
-in the definitions below.
+local edge orders is proved in `RealRooted.Graph.MinimaLocalOrder`; no
+local-order enumeration is hidden in the definitions below.
 
 Besides the closed form and its translation identity, we record the exact
 support-level deletion recurrence inherited from the line-graph independence
