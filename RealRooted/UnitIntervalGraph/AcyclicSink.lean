@@ -1719,10 +1719,9 @@ theorem acyclicSinkClosedForm_splits
   simpa [acyclicSinkClosedForm, sub_eq_add_neg] using
     (show (C (normalization a q) : ℝ[X]).Splits from by simp).mul hshift
 
-/-- Once the combinatorial weighted-independence identity is established,
-the actual ascent-refined acyclic sink polynomial is real-rooted. The explicit
-identity hypothesis records the remaining combinatorial formalization
-boundary; it is not a real-rootedness assumption. -/
+/-- Real-rootedness from the weighted-independence identity, taken as a
+hypothesis.  The identity itself is `acyclicSinkPolynomial_eq_closedForm`, so
+`acyclicSinkPolynomial_splits` is the unconditional form. -/
 theorem acyclicSinkPolynomial_splits_of_eq_closedForm
     (a : Data n) {q : ℝ} (hq : 0 ≤ q)
     (hidentity :

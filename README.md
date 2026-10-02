@@ -526,6 +526,19 @@ by checked theorem interfaces in `ChudnovskySeymour.lean` and
 independence polynomials.  The matching-polynomial corollaries are packaged
 through the line-graph reduction in `HeilmannLieb`.
 
+Two acyclic-orientation results build on the weighted claw-free theorem.  The
+ascent-refined acyclic sink polynomial of a natural unit interval graph is
+real-rooted for every real `q ≥ 0`
+(`UnitIntervalGraph.acyclicSinkPolynomial_splits`), and the ordinary acyclic
+sink polynomial of a claw-free graph with a reverse perfect elimination order is
+real-rooted
+(`Graph.ReversePerfectEliminationOrder.ordinaryAcyclicSinkPolynomial_splits_of_clawFree`).
+Both are statements about the actual orientation sums.  Two related models are
+not yet tied to their enumerations: the all-orientation sink polynomial is
+identified with its weighted-independence model only through
+`allOrientationSinkPolynomialIndicatorIdentity`, and for the minima polynomial
+only the weighted-matching model is formalized.
+
 Garloff--Wagner Hadamard proper-position is now proved directly in
 `RealRooted.GarloffWagner` and exposed through
 `garloffWagnerHadamardNonnegInterl`. It no longer remains as an external

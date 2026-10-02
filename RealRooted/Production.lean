@@ -1392,6 +1392,8 @@ import RealRooted.Tactic.Recurrence.Degree
 import RealRooted.Tactic.Recurrence.Shape
 import RealRooted.Tactic.Recurrence.Eval
 import RealRooted.Tactic.Recurrence.ODE
+import RealRooted.Challenges.ChordalClawFreeAcyclicSinks
+import RealRooted.Challenges.UnitIntervalAcyclicSinks
 
 /-!
 # RealRooted production umbrella
