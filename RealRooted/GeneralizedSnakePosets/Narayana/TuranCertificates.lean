@@ -3,8 +3,9 @@ import RealRooted.GeneralizedSnakePosets.Narayana.Turan
 /-!
 # Finite Turan certificates for modified Narayana polynomials
 
-This module contains the explicit checked finite-range Narayana Turan
-certificates used while the all-`m` analytic proof is being formalized.
+This module contains explicit finite-range Narayana Turan determinants and
+their nonnegativity on nonpositive inputs.  The all-`m` inequality is
+`modifiedNarayanaTuran_nonneg_of_nonpos`.
 -/
 
 open Polynomial
@@ -513,12 +514,6 @@ theorem modifiedNarayanaTuran_nonneg_of_le_three
     exact mul_nonneg (by linarith)
       (modifiedNarayanaTuran_three_factor_nonneg_of_nonpos hr)
 
-/-- Bounded Turan package through `m = 3`. -/
-theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_three :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 3 := by
-  intro m r hm₁ hm₃ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_three hm₁ hm₃ hr
-
 /-- The first four Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_four
     {m : ℕ} {r : ℝ} (hm₁ : 1 ≤ m) (hm₄ : m ≤ 4) (hr : r ≤ 0) :
@@ -533,12 +528,6 @@ theorem modifiedNarayanaTuran_nonneg_of_le_four
       (modifiedNarayanaTuran_three_factor_nonneg_of_nonpos hr)
   · rw [modifiedNarayanaTuran_four]
     exact mul_nonneg (by linarith) (modifiedNarayanaTuran_four_factor_nonneg r)
-
-/-- Bounded Turan package through `m = 4`. -/
-theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_four :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 4 := by
-  intro m r hm₁ hm₄ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_four hm₁ hm₄ hr
 
 /-- The first five Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_five
@@ -557,12 +546,6 @@ theorem modifiedNarayanaTuran_nonneg_of_le_five
   · rw [modifiedNarayanaTuran_five]
     exact mul_nonneg (by linarith)
       (modifiedNarayanaTuran_five_factor_nonneg_of_nonpos hr)
-
-/-- Bounded Turan package through `m = 5`. -/
-theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_five :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 5 := by
-  intro m r hm₁ hm₅ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_five hm₁ hm₅ hr
 
 /-- The first six Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_six
@@ -584,12 +567,6 @@ theorem modifiedNarayanaTuran_nonneg_of_le_six
   · rw [modifiedNarayanaTuran_six]
     exact mul_nonneg (by linarith)
       (modifiedNarayanaTuran_six_factor_nonneg_of_nonpos hr)
-
-/-- Bounded Turan package through `m = 6`. -/
-theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_six :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 6 := by
-  intro m r hm₁ hm₆ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_six hm₁ hm₆ hr
 
 /-- The first seven Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_seven
@@ -614,12 +591,6 @@ theorem modifiedNarayanaTuran_nonneg_of_le_seven
   · rw [modifiedNarayanaTuran_seven]
     exact mul_nonneg (by linarith)
       (modifiedNarayanaTuran_seven_factor_nonneg_of_nonpos hr)
-
-/-- Bounded Turan package through `m = 7`. -/
-theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_seven :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 7 := by
-  intro m r hm₁ hm₇ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_seven hm₁ hm₇ hr
 
 /-- The first eight Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_eight
@@ -647,12 +618,6 @@ theorem modifiedNarayanaTuran_nonneg_of_le_eight
   · rw [modifiedNarayanaTuran_eight]
     exact mul_nonneg (by linarith)
       (modifiedNarayanaTuran_eight_factor_nonneg_of_nonpos hr)
-
-/-- Bounded Turan package through `m = 8`. -/
-theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_eight :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 8 := by
-  intro m r hm₁ hm₈ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_eight hm₁ hm₈ hr
 
 /-- The first nine Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_nine
@@ -683,12 +648,6 @@ theorem modifiedNarayanaTuran_nonneg_of_le_nine
   · rw [modifiedNarayanaTuran_nine]
     exact mul_nonneg (by linarith)
       (modifiedNarayanaTuran_nine_factor_nonneg_of_nonpos hr)
-
-/-- Bounded Turan package through `m = 9`. -/
-theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_nine :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 9 := by
-  intro m r hm₁ hm₉ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_nine hm₁ hm₉ hr
 
 /-- The first ten Narayana Turan inequalities on nonpositive inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_le_ten
@@ -722,12 +681,6 @@ theorem modifiedNarayanaTuran_nonneg_of_le_ten
   · rw [modifiedNarayanaTuran_ten]
     exact mul_nonneg (by linarith)
       (modifiedNarayanaTuran_ten_factor_nonneg_of_nonpos hr)
-
-/-- Bounded Turan package through `m = 10`. -/
-theorem modifiedNarayanaTuranNonnegOnNonpos_upTo_ten :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement 10 := by
-  intro m r hm₁ hm₁₀ hr
-  exact modifiedNarayanaTuran_nonneg_of_le_ten hm₁ hm₁₀ hr
 
 end GeneralizedSnakePosets
 end RealRooted

@@ -37,3 +37,4 @@ realrooted-interlacing-seminar-handout.html
 *.log
 *.out
 *.synctex.gz
+__pycache__/

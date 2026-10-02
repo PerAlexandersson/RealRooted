@@ -65,10 +65,11 @@ theorem modifiedNarayanaPolynomial_posLeadingCoeff (n : ℕ) :
   simpa [modifiedNarayanaPolynomial] using
     (narayanaQuot_posLeadingCoeff (n + 1) (by lia))
 
-/-- The existing Narayana sequence and `modifiedNarayanaPolynomial` satisfy the
-Braun--Jal modified-family interface. -/
+/-- `modifiedNarayanaPolynomial` is the Braun--Jal modified Narayana family:
+`P_0 = 1` and `N_{n+1} = X * P_n`, i.e. `P_n(t) = t^{-1} N_{n+1}(t)`. -/
 theorem modifiedNarayanaFamily_narayana :
-    ModifiedNarayanaFamilyStatement narayana modifiedNarayanaPolynomial := by
+    modifiedNarayanaPolynomial 0 = 1 ∧
+      ∀ n : ℕ, narayana (n + 1) = X * modifiedNarayanaPolynomial n := by
   constructor
   · simp [modifiedNarayanaPolynomial]
   · intro n

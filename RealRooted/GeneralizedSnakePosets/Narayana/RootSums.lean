@@ -4,9 +4,9 @@ import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 /-!
 # Modified-Narayana root-sum orientation
 
-This module derives the Vieta/root-sum comparison used in the shifted difference interlacing claim,
-packages the corresponding induction routes, and records the obstruction to
-the older uniformly strict root-bound interface.
+This module derives the Vieta/root-sum comparison used in the shifted difference interlacing claim
+and records the obstruction to a uniformly strict negative root bound at the
+endpoint `ν = -1`.
 -/
 
 open Polynomial Filter
@@ -15,39 +15,6 @@ noncomputable section
 
 namespace RealRooted
 namespace GeneralizedSnakePosets
-
-/-- Concrete modified-Narayana/auxiliary-`G` route for the snake interlacing theorem.
-
-This discharges the standard modified-Narayana facts and the elementary
-auxiliary-`G` facts from the generic combinatorial route.  The remaining hypotheses
-are the all-`n` auxiliary recurrence, the shifted difference-interlacing side conditions, adjacent
-interlacing of the auxiliary `G` column, and the word-family side conditions.
--/
-theorem snakeInterlacingInductionRoute_modified_of_combinatorial_of_constant_matches_succ_length
-    {M : SnakeWord → ℝ[X]}
-    (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hside :
-      ShiftedDifferenceInterlacingSideConditions
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hG : ∀ {m : ℕ}, 2 ≤ m →
-      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1)) (FiniteSkewBoard.auxiliaryG m))
-    (hM_nonneg : ∀ w, HasNonnegCoeffs (M w))
-    (hdeg :
-      ∀ {w : SnakeWord}, 1 ≤ w.length →
-        (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const :
-      ∀ {w : SnakeWord}, w.IsConstant →
-        M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    SnakeInterlacingInductionRouteStatement
-      M modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
-  snakeInterlacingInductionRoute_of_combinatorial_of_constant_matches_succ_length
-    (M := M) (P := modifiedNarayanaPolynomial) (G := FiniteSkewBoard.auxiliaryG)
-    hrec2 hside modifiedNarayanaPolynomial_interlaces_succ hG
-    modifiedNarayanaPolynomial_one FiniteSkewBoard.auxiliaryG_one
-    modifiedNarayanaPolynomial_hasNonnegCoeffs
-    FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
 
 /-- Arithmetic comparison between the Vieta expressions predicted by the
 leading and next coefficients of the modified-Narayana `U` window and the
@@ -474,18 +441,6 @@ theorem shiftedDifferenceInterlacing_modified_left_boundary_not_strictRootBound 
       shiftedDifferenceInterlacing_modified_left_boundary_isRoot_zero
   have hzero_le : (0 : ℝ) ≤ c := hle 0 hzero_mem
   linarith
-
-/-- Consequently, the current bundled shifted difference-interlacing side-condition interface is
-not satisfiable by the concrete modified-Narayana / auxiliary-`G` data.  The
-endpoint `ν = -1` needs a refined conversion route instead of a uniform strict
-negative bound on the roots of `U`. -/
-theorem not_shiftedDifferenceInterlacingSideConditions_modified_auxiliaryG :
-    ¬ ShiftedDifferenceInterlacingSideConditions
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG := by
-  intro hside
-  exact shiftedDifferenceInterlacing_modified_left_boundary_not_strictRootBound
-    (hside.u_bound (m := 2) (lam := 0) (nu := -1)
-      (by norm_num) (by norm_num) (by norm_num))
 
 end GeneralizedSnakePosets
 end RealRooted

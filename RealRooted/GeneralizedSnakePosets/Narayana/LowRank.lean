@@ -825,35 +825,18 @@ theorem auxiliaryGInterlaces_modified_of_le_six_of_crosses
   · exact auxiliaryGInterlaces_modified_five
   · exact auxiliaryGInterlaces_modified_six_of_crosses hcross
 
-/-- Conditional checked initial cases `n = 1, 2, 3, 4, 5, 6` of Braun--Jal
-the auxiliary interlacing lemma from the single `P_6`/`G_6` sign certificate. -/
-theorem auxiliaryGInterlaces_modified_of_le_six_of_eval_signs
-    (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate)
-    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
-    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) :=
-  auxiliaryGInterlaces_modified_of_le_six_of_crosses
-    (fun {a b c d e r} hP_roots hab hbc hcd hde her =>
-      ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_eval_signs
-        (by simpa [modifiedNarayanaPolynomialSix] using hP_roots)
-        hab hbc hcd hde her hsign)
-    hn₁ hn₆
-
 /-- The checked initial cases `n = 1, 2, 3, 4, 5, 6` of Braun--Jal
 the auxiliary interlacing lemma, for the concrete modified Narayana family and the finite-board
 auxiliary `G`. -/
 theorem auxiliaryGInterlaces_modified_of_le_six
     {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
     StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) :=
-  auxiliaryGInterlaces_modified_of_le_six_of_eval_signs
-    modifiedNarayanaPolynomial_six_auxiliaryG_signCertificate hn₁ hn₆
-
-/-- The checked initial cases `n = 1, ..., 6` of the auxiliary interlacing lemma,
-packaged in the generic bounded interlacing interface. -/
-theorem auxiliaryGInterlaces_modified_upTo_six :
-    AuxiliaryGInterlacesUpToStatement
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG 6 := by
-  intro n hn₁ hn₆
-  exact auxiliaryGInterlaces_modified_of_le_six hn₁ hn₆
+  auxiliaryGInterlaces_modified_of_le_six_of_crosses
+    (fun {a b c d e r} hP_roots hab hbc hcd hde her =>
+      ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_sorted_roots
+        (by simpa [modifiedNarayanaPolynomialSix] using hP_roots)
+        hab hbc hcd hde her)
+    hn₁ hn₆
 
 end GeneralizedSnakePosets
 end RealRooted
