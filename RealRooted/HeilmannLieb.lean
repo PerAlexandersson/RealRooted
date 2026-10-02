@@ -18,25 +18,13 @@ namespace Graph
 
 universe u
 
-/-- Conditional Heilmann--Lieb matching-generating corollary.
-
-Given the graph-form Chudnovsky--Seymour statement, the matching-polynomial
-route is immediate from the definition as the independence polynomial of the
-line graph and from `lineGraph_clawFree`. -/
-theorem matchingGeneratingPolynomial_splits_of_clawFreeIndepPolySplits
-    (hcs : ClawFreeIndepPolySplitsStatement.{u})
-    {V : Type u} [Fintype V] [DecidableEq V]
-    (G : _root_.SimpleGraph V) :
-    (matchingGeneratingPolynomial G).Splits := by
-  classical
-  exact hcs (G := G.lineGraph) (lineGraph_clawFree G)
-
-/-- Heilmann--Lieb theorem for the matching-generating polynomial. -/
+/-- Heilmann--Lieb theorem for the matching-generating polynomial: it is the
+independence polynomial of the claw-free line graph. -/
 theorem matchingGeneratingPolynomial_splits
     {V : Type u} [Fintype V] [DecidableEq V] (G : _root_.SimpleGraph V) :
-    (matchingGeneratingPolynomial G).Splits :=
-  matchingGeneratingPolynomial_splits_of_clawFreeIndepPolySplits
-    clawFree_indepPoly_splits G
+    (matchingGeneratingPolynomial G).Splits := by
+  classical
+  exact clawFree_indepPoly_splits (G := G.lineGraph) (lineGraph_clawFree G)
 
 /-- Heilmann--Lieb theorem for the intrinsic edge-matching polynomial. -/
 theorem matchingPolynomialByEdges_splits

@@ -17,15 +17,17 @@ theorem, refutation, or production caller. They contain no admission.
 | Declaration | Status |
 | --- | --- |
 | `HurwitzOddEvenToReverseFullyInterlacingPairStatement` | Proposed reverse-row replacement for the refuted legacy Hurwitz-to-Lace orientation |
+| `HurwitzOddEvenToHermiteBiehlerStableStatement` | Converse of the conformal substitution `hermiteBiehlerStableToHurwitzOddEven`; input to `strictInterl_of_isHurwitzStable_oddEvenPolynomial` |
+| `HermiteBiehlerConverseOrientedStatement` | Oriented converse Hermite--Biehler theorem; the checked `hermiteBiehlerConverse` is disjunctive |
 | `iterateThetaPlusOneSelfInterlStatement` | Unused open interlacing target for iterates of `theta + 1` |
 
-The Hoster--Stump challenge module also retains the abstract, unproved targets
-`RefinedBaseRowStatement`, `RefinedRecurrenceStatement`,
-`RefinedDeletionRelaxationStatement`, `Theorem33DiagramStatement`,
-`Lemma31GammaExpansionStatement`, and `MainTheoremStatement`.  Their former
-assembly route was removed because it required four separately refuted weak
-preservation propositions.  None of these targets contains an admission or has
-a production caller.
+The following historical row-orientation interfaces in
+`RealRooted.VeroneseSection` have no checked proof and are expected to be false
+(numerically, `lacePair (X + 1).coeff (X + 2).coeff` has no negative minor).
+They remain only because other modules still take them as hypotheses:
+`FullyInterlacingPairToInterlStatement` (`RealRooted.Hadamard.Consequences`) and
+`LegacyFullyInterlacingPairToHurwitzOddEvenStableStatement`
+(`RealRooted.HurwitzMatrix`).
 
 ## Checked replacements
 
@@ -52,12 +54,15 @@ a production caller.
 ## Refuted interfaces retained as counterexamples
 
 The following propositions remain only beside checked proofs of their
-negations. No production theorem accepts them as a backend.
+negations. The two Veronese-section `Legacy` propositions are still mentioned
+by vacuous conditional theorems in `RealRooted.Hadamard.Consequences`.
 
 | Proposition | Checked negation |
 | --- | --- |
 | `theorem21CompatibleToRootCountBranchesNonconstantStatement` | `not_theorem21CompatibleToRootCountBranchesNonconstantStatement` |
 | `LegacyHurwitzMatrixTotallyNonnegativeToStableStatement` | `not_hurwitzMatrixTotallyNonnegativeToStableStatement` |
+| `LegacyNonnegStrictInterlToFullyInterlacingPairStatement` | `not_legacyNonnegStrictInterlToFullyInterlacingPairStatement` |
+| `LegacyHurwitzOddEvenToFullyInterlacingPairStatement` | `not_hurwitzOddEvenToFullyInterlacingPairStatement` |
 
 The former homogeneous finite-symbol route was removed entirely because its
 checked counterexample and the affine-symbol replacement make its conditional
