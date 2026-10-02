@@ -89,47 +89,6 @@ theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_three_cubicNum
       hn hf hfdeg hpdeg hsplits hnum)
     hout
 
-theorem schurSzegoComp_splits_of_pf_factor_degree_le_three_diagonalBase
-    (hbase : pfCubicDiscrDiagonalNonnegStatement)
-    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f)
-    (hfdeg : f.natDegree ≤ 3)
-    (hpdeg : p.natDegree ≤ n)
-    (hsplits : p.Splits)
-    (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits :=
-  Or.resolve_left
-    (finiteSchurSzegoComposition_of_pf_factor_le_three_of_pfCubicDiscrDiagonalNonneg
-      hbase hn hf hfdeg hpdeg hsplits)
-    hout
-
-theorem schurSzegoComp_zero_or_splits_of_diagonalBase_leftDegree
-    (hbase : pfCubicDiscrDiagonalNonnegStatement)
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f)
-    (hfdeg : f.natDegree ≤ 3)
-    (hfn : f.natDegree ≤ n)
-    (hpdeg : p.natDegree ≤ n)
-    (hsplits : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_of_pfCubicDiscrDiagonalNonneg
-    hbase hf hfdeg hfn hpdeg hsplits
-
-theorem schurSzegoComp_splits_of_pf_factor_degree_le_three_diagonalBase_leftDegree
-    (hbase : pfCubicDiscrDiagonalNonnegStatement)
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f)
-    (hfdeg : f.natDegree ≤ 3)
-    (hfn : f.natDegree ≤ n)
-    (hpdeg : p.natDegree ≤ n)
-    (hsplits : p.Splits)
-    (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits :=
-  Or.resolve_left
-    (schurSzegoComp_zero_or_splits_of_diagonalBase_leftDegree
-      hbase hf hfdeg hfn hpdeg hsplits)
-    hout
-
 theorem schurSzegoComp_splits_of_pf_factor_degree_le_three_num_leftDegree
     {n : ℕ} {f p : ℝ[X]}
     (hf : IsPFPolynomial f)
@@ -232,23 +191,6 @@ theorem hadamardProduct_sequence_interl {F G P Q : Nat → ℝ[X]}
   fun i =>
     hadamardProduct_interl_of_nonneg_strictInterl
       (hF i) (hG i) (hP i) (hQ i) (hFG i) (hPQ i)
-
-syntax (name := rr_schur_szego_nonzero_statement_named)
-  "rr_schur_szego_nonzero_statement" : tactic
-
-syntax (name := rr_schur_szego_statement_named)
-  "rr_schur_szego_statement" : tactic
-
-syntax (name := rr_schur_szego_pf_cubic_diagonal_base_named)
-  "rr_schur_szego_pf_cubic_diagonal_base" " using "
-    "schur_szego" ":=" term :
-  tactic
-
-syntax (name := rr_hadamard_pf_statement_named)
-  "rr_hadamard_pf_statement" : tactic
-
-syntax (name := rr_hadamard_nonneg_realrooted_statement_named)
-  "rr_hadamard_nonneg_realrooted_statement" : tactic
 
 syntax (name := rr_schur_szego_named)
   "rr_schur_szego" " using "
@@ -357,50 +299,6 @@ syntax (name := rr_schur_szego_pf_factor_degree_le_three_num_splits_named)
     "input_degree" ":=" term ","
     "input_splits" ":=" term ","
     "cubic_numerator" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-syntax (name := rr_schur_szego_pf_factor_degree_le_three_diagonal_base_named)
-  "rr_schur_szego_pf_factor_degree_le_three_diagonal_base" " using "
-    "diagonal_base" ":=" term ","
-    "level_ge_three" ":=" term ","
-    "pf_factor" ":=" term ","
-    "pf_degree_le_three" ":=" term ","
-    "input_degree" ":=" term ","
-    "input_splits" ":=" term :
-  tactic
-
-syntax (name := rr_schur_szego_pf_factor_degree_le_three_diagonal_base_splits_named)
-  "rr_schur_szego_pf_factor_degree_le_three_diagonal_base_splits" " using "
-    "diagonal_base" ":=" term ","
-    "level_ge_three" ":=" term ","
-    "pf_factor" ":=" term ","
-    "pf_degree_le_three" ":=" term ","
-    "input_degree" ":=" term ","
-    "input_splits" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-syntax (name := rr_schur_szego_pf_factor_degree_le_three_diagonal_base_left_degree_named)
-  "rr_schur_szego_pf_factor_degree_le_three_diagonal_base_left_degree" " using "
-    "diagonal_base" ":=" term ","
-    "pf_factor" ":=" term ","
-    "pf_degree_le_three" ":=" term ","
-    "pf_degree" ":=" term ","
-    "input_degree" ":=" term ","
-    "input_splits" ":=" term :
-  tactic
-
-syntax
-  (name := rr_schur_szego_pf_factor_degree_le_three_diagonal_base_left_degree_splits_named)
-  "rr_schur_szego_pf_factor_degree_le_three_diagonal_base_left_degree_splits"
-    " using "
-    "diagonal_base" ":=" term ","
-    "pf_factor" ":=" term ","
-    "pf_degree_le_three" ":=" term ","
-    "pf_degree" ":=" term ","
-    "input_degree" ":=" term ","
-    "input_splits" ":=" term ","
     "nonzero" ":=" term :
   tactic
 
@@ -525,20 +423,6 @@ syntax (name := rr_hadamard_sequence_interl_named)
   tactic
 
 macro_rules
-  | `(tactic| rr_schur_szego_nonzero_statement) =>
-      `(tactic| exact RealRooted.finiteSchurSzegoCompositionNonzero)
-  | `(tactic| rr_schur_szego_statement) =>
-      `(tactic| exact RealRooted.finiteSchurSzegoComposition)
-  | `(tactic|
-      rr_schur_szego_pf_cubic_diagonal_base using
-        schur_szego := $hSZ:term) =>
-      `(tactic|
-        exact RealRooted.pfCubicDiscrDiagonalNonnegStatement_of_schurSzego
-          $hSZ)
-  | `(tactic| rr_hadamard_pf_statement) =>
-      `(tactic| exact RealRooted.schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegStrictInterl)
-  | `(tactic| rr_hadamard_nonneg_realrooted_statement) =>
-      `(tactic| exact RealRooted.garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl)
   | `(tactic|
       rr_schur_szego using
         pf_factor := $hf:term,
@@ -668,57 +552,6 @@ macro_rules
           RealRooted.Tactic.schurSzegoComp_splits_of_pf_factor_natDegree_le_three_cubicNum
             $hn $hf $hfdeg $hpdeg $hsplits $hnum $hout)
   | `(tactic|
-      rr_schur_szego_pf_factor_degree_le_three_diagonal_base using
-        diagonal_base := $hbase:term,
-        level_ge_three := $hn:term,
-        pf_factor := $hf:term,
-        pf_degree_le_three := $hfdeg:term,
-        input_degree := $hpdeg:term,
-        input_splits := $hsplits:term) =>
-      `(tactic|
-        exact
-          finiteSchurSzegoComposition_of_pf_factor_le_three_of_pfCubicDiscrDiagonalNonneg
-            $hbase $hn $hf $hfdeg $hpdeg $hsplits)
-  | `(tactic|
-      rr_schur_szego_pf_factor_degree_le_three_diagonal_base_splits using
-        diagonal_base := $hbase:term,
-        level_ge_three := $hn:term,
-        pf_factor := $hf:term,
-        pf_degree_le_three := $hfdeg:term,
-        input_degree := $hpdeg:term,
-        input_splits := $hsplits:term,
-        nonzero := $hout:term) =>
-      `(tactic|
-        exact
-          RealRooted.Tactic.schurSzegoComp_splits_of_pf_factor_degree_le_three_diagonalBase
-            $hbase $hn $hf $hfdeg $hpdeg $hsplits $hout)
-  | `(tactic|
-      rr_schur_szego_pf_factor_degree_le_three_diagonal_base_left_degree using
-        diagonal_base := $hbase:term,
-        pf_factor := $hf:term,
-        pf_degree_le_three := $hfdeg:term,
-        pf_degree := $hfn:term,
-        input_degree := $hpdeg:term,
-        input_splits := $hsplits:term) =>
-      `(tactic|
-        exact
-          schurSzegoComp_zero_or_splits_of_diagonalBase_leftDegree
-            $hbase $hf $hfdeg $hfn $hpdeg $hsplits)
-  | `(tactic|
-      rr_schur_szego_pf_factor_degree_le_three_diagonal_base_left_degree_splits
-        using
-        diagonal_base := $hbase:term,
-        pf_factor := $hf:term,
-        pf_degree_le_three := $hfdeg:term,
-        pf_degree := $hfn:term,
-        input_degree := $hpdeg:term,
-        input_splits := $hsplits:term,
-        nonzero := $hout:term) =>
-      `(tactic|
-        exact
-          schurSzegoComp_splits_of_pf_factor_degree_le_three_diagonalBase_leftDegree
-            $hbase $hf $hfdeg $hfn $hpdeg $hsplits $hout)
-  | `(tactic|
       rr_schur_szego_pf_factor_degree_le_three_num_left_degree using
         pf_factor := $hf:term,
         pf_degree_le_three := $hfdeg:term,
@@ -809,10 +642,8 @@ macro_rules
       `(tactic|
         first
           | exact RealRooted.hadamardProduct_preserves_interl_right
-              RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
           | exact RealRooted.hadamardProduct_preserves_interl_left
-              RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
           | exact RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
@@ -914,10 +745,8 @@ macro_rules
       `(tactic|
         first
           | exact RealRooted.hadamardProduct_preserves_interl_right
-              RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
           | exact RealRooted.hadamardProduct_preserves_interl_left
-              RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
           | exact RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
