@@ -1,4 +1,4 @@
-import RealRooted.Graph.MinimaLocalOrder
+import RealRooted.Graph.MinimaForest
 
 /-!
 # The minima polynomial of local edge orders
@@ -38,6 +38,11 @@ name = "RealRooted.Graph.minimaPolynomial_splits"
 module = "RealRooted.Graph.MinimaLocalOrder"
 label = "Minima polynomials are real-rooted"
 headline = true
+
+[[theorems]]
+name = "RealRooted.Graph.minimaPolynomial_eq_ordinaryAcyclicSinkPolynomial_lineGraph"
+module = "RealRooted.Graph.MinimaForest"
+label = "Forests: the minima polynomial is the acyclic sink polynomial of the line graph"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -70,6 +75,11 @@ independence polynomial of the claw-free line graph $L(G)$; see the
 [Chudnovsky–Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
 [Leake–Ryder](/RealRooted/theorems/leake-ryder/) pages.
 
+**Forests.** If $F$ is a forest, every orientation of $L(F)$ that is acyclic on
+the vertex cliques is acyclic, and every acyclic orientation of $L(F)$ arises
+from exactly one local order. Hence $M_F(t)$ is the acyclic sink polynomial of
+the line graph $L(F)$.
+
 For sinks of acyclic orientations, see the pages on
 [chordal claw-free graphs](/RealRooted/families/chordal-claw-free-acyclic-sinks/) and
 [all orientations of claw-free graphs](/RealRooted/families/claw-free-orientation-sinks/).
@@ -80,5 +90,6 @@ The counting identity was proved with Aristotle (Harmonic).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in
-`RealRooted.Graph.MinimaPolynomial` and `RealRooted.Graph.MinimaLocalOrder`.
+`RealRooted.Graph.MinimaPolynomial`, `RealRooted.Graph.MinimaLocalOrder` and
+`RealRooted.Graph.MinimaForest`.
 -/
