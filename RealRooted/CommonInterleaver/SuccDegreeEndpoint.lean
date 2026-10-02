@@ -79,7 +79,7 @@ theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
     (hfg : PosComboRealRooted f g) (hsucc : g.natDegree = f.natDegree + 1) :
     f.Splits :=
   splits_of_add_C_mul_family_of_succDegree
-    (fun {μ} hμ => hfg.isRealRooted_add_right hμ) hf_pos hg_pos hsucc
+    (fun {_} hμ => hfg.isRealRooted_add_right hμ) hf_pos hg_pos hsucc
 
 /-- The succ-degree left endpoint from the proved forward ASW theorem, with no
 backend argument required from the caller. -/

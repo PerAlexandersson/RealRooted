@@ -25,7 +25,7 @@ theorem pairHasCommonInterleaver_of_posCombo_succDegree
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   have hf_split : f.Splits :=
     splits_of_add_C_mul_family_of_succDegree
-      (fun {μ} hμ => hfg.isRealRooted_add_right hμ) hf_pos hg_pos hsucc
+      (fun {_} hμ => hfg.isRealRooted_add_right hμ) hf_pos hg_pos hsucc
   have hg_rr : g ≠ 0 ∧ g.Splits :=
     hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hsucc
   have hcomp : Compatible f g :=
