@@ -269,21 +269,6 @@ theorem areApolar_comm {R : Type*} [CommRing R]
     AreApolar n f g ↔ AreApolar n g f :=
   ⟨AreApolar.symm, AreApolar.symm⟩
 
-/-- Statement-level interface for Grace's apolarity theorem.
-
-The predicate `IsGraceDomain` is intentionally a parameter: later work can
-instantiate it with the chosen formal notion of circular domain, a half-plane
-specialization, or whichever root-location class is sufficient for the
-Hadamard/Schur--Szego route. -/
-def GraceApolarityStatement (IsGraceDomain : Set ℂ → Prop) : Prop :=
-  ∀ ⦃n : Nat⦄ ⦃s : Set ℂ⦄ ⦃f g : ℂ[X]⦄,
-    IsGraceDomain s →
-    f.natDegree = n →
-    g.natDegree = n →
-    AreApolar n f g →
-    f.RootsIn s →
-    g.HasRootIn s
-
 theorem apolarPairing_monomial_left {R : Type*} [CommRing R]
     (n i : Nat) (a : R) (g : R[X]) :
     apolarPairing n (monomial i a) g =
@@ -439,17 +424,6 @@ theorem areApolar_monomial_monomial_iff_complex
       · simp [hb]
   · rw [ite_eq_right hsum]
     simp [hsum]
-
-/-- Symmetric companion of a Grace-type apolarity statement: since apolarity is
-symmetric, having all roots of `g` in `s` (rather than `f`) forces `f` to have a
-root in `s`. -/
-theorem GraceApolarityStatement.hasRootIn_left
-    {IsGraceDomain : Set ℂ → Prop} (h : GraceApolarityStatement IsGraceDomain)
-    ⦃n : Nat⦄ ⦃s : Set ℂ⦄ ⦃f g : ℂ[X]⦄
-    (hs : IsGraceDomain s) (hf : f.natDegree = n) (hg : g.natDegree = n)
-    (hap : AreApolar n f g) (hroots : g.RootsIn s) :
-    f.HasRootIn s :=
-  h hs hg hf hap.symm hroots
 
 /-!
 ## Binomial evaluation and the apolarity-root dictionary

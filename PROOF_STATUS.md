@@ -48,6 +48,7 @@ They remain only because other modules still take them as hypotheses:
 | Bounded-degree polar-theta interlacing preservation | `polarThetaPreservesInterlStatement`, witnessed by `polarTheta_preserves_interl` |
 | Theta interlacing preservation on the PF cone | `thetaPreservesInterlStatement`, witnessed by `thetaPreservesInterl` |
 | Derivative preservation statement interface | `derivativePreservesInterlStatement`, witnessed by `derivativePreservesInterl` |
+| Nonnegative interlacing pair gives a Hurwitz-stable odd/even polynomial | `isHurwitzStable_oddEvenPolynomial_of_strictInterl` |
 | Peak-value multivariate stability | `peakValuePolynomial_mvRealStable` |
 | Weighted consecutive peak-value interleaving | `peakValueWeightedDiagonal_consecutive_strictInterl` |
 

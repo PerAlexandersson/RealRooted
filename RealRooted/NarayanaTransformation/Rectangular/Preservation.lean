@@ -118,7 +118,7 @@ theorem mvRealStable_xyLift_rectangularAdditiveConvolution
   have hFma := isMultiaffine_reciprocalRectangularPolarization
     m n (g.map Complex.ofRealHom)
   have hGma := isMultiaffine_rectangularPolarization m n (f.map Complex.ofRealHom)
-  rcases liebSokal_multiaffine hFstable hGstable hFma hGma with hzero | hstable
+  rcases hFstable.liebSokal_multiaffine hGstable hFma hGma with hzero | hstable
   · have hconvne : rectangularAdditiveConvolution m n f g ≠ 0 := by
       intro hzeroConv
       have htop := congrArg (fun p : ℝ[X] => p.coeff n) hzeroConv

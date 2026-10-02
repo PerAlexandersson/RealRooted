@@ -220,7 +220,7 @@ theorem gustafssonSolusEntry_eq_thresholdEntry {n : ℕ}
 
 /-- Monotone thresholds and the no-switch condition discharge every concrete
 Gustafsson--Solus `2 x 2` affine-minor check. -/
-theorem GustafssonSolus2x2FromNoSwitchStatement :
+theorem gustafssonSolusHas2x2_of_noSwitch :
     ∀ {m n : ℕ} (phi : Fin m → Fin n) (dropPivot : Fin m → Bool),
       GustafssonSolusWeaklyIncreasing phi →
       GustafssonSolusNoSwitchAfterDrop phi dropPivot →
@@ -264,32 +264,15 @@ theorem GustafssonSolus2x2FromNoSwitchStatement :
         ⟨j₂.1, by simp⟩)
   simpa [i₁', i₂', α₁, α₂, gustafssonSolusEntry_eq_thresholdEntry] using hentry
 
-/-- Named Lean-facing target for Gustafsson--Solus Lemma 3.4 in the
-zero-aware output convention used by this library. -/
-def GustafssonSolusLemma34Statement : Prop :=
-  ∀ {m n : ℕ} (phi : Fin m → Fin n) (dropPivot : Fin m → Bool),
-    GustafssonSolusWeaklyIncreasing phi →
-    GustafssonSolusNoSwitchAfterDrop phi dropPivot →
-    ∀ fs : List ℝ[X], fs.length = n → IsInterlacingSeqNonneg fs →
-      IsInterlacingSeq0Nonneg (gustafssonSolusAction phi dropPivot fs)
-
-/-- Checked reduction of Gustafsson--Solus Lemma 3.4 to the finite `2 × 2`
-affine-minor condition. -/
-def GustafssonSolusLemma34Of2x2Statement : Prop :=
-  ∀ {m n : ℕ} (phi : Fin m → Fin n) (dropPivot : Fin m → Bool),
-    GustafssonSolusWeaklyIncreasing phi →
-    GustafssonSolusHas2x2 phi dropPivot →
-    ∀ fs : List ℝ[X], fs.length = n → IsInterlacingSeqNonneg fs →
-      IsInterlacingSeq0Nonneg (gustafssonSolusAction phi dropPivot fs)
-
-theorem gustafssonSolusLemma34_of_2x2 : GustafssonSolusLemma34Of2x2Statement := by
-  intro m n phi dropPivot hphi h2x2 fs hfs_len hfs
-  exact gustafssonSolus_preserves_interlacingSeq0Nonneg_of_2x2 hphi h2x2 fs hfs_len hfs
-
 /-- Gustafsson--Solus Lemma 3.4 for the concrete row-threshold matrix. -/
-theorem gustafssonSolusLemma34 : GustafssonSolusLemma34Statement := by
+theorem gustafssonSolusLemma34 :
+    ∀ {m n : ℕ} (phi : Fin m → Fin n) (dropPivot : Fin m → Bool),
+      GustafssonSolusWeaklyIncreasing phi →
+      GustafssonSolusNoSwitchAfterDrop phi dropPivot →
+      ∀ fs : List ℝ[X], fs.length = n → IsInterlacingSeqNonneg fs →
+        IsInterlacingSeq0Nonneg (gustafssonSolusAction phi dropPivot fs) := by
   intro m n phi dropPivot hphi hdrop fs hfs_len hfs
   exact gustafssonSolus_preserves_interlacingSeq0Nonneg_of_2x2 hphi
-    (GustafssonSolus2x2FromNoSwitchStatement phi dropPivot hphi hdrop) fs hfs_len hfs
+    (gustafssonSolusHas2x2_of_noSwitch phi dropPivot hphi hdrop) fs hfs_len hfs
 
 end RealRooted
