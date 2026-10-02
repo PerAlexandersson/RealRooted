@@ -137,48 +137,14 @@ theorem hasCommonLeftInterleaverSeq_of_pairwise_shiftedSlotIntersections
   have hj : j < (rootSeqDesc f).length := Nat.lt_of_succ_lt_succ hjf
   simpa [leftSlotSetAt, hj] using hmem_slot
 
-/-- Atomic shifted-slot membership input for a left `StrictInterl` relation.
-
-This is the direct left-oriented analogue of
-`CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl`:
-if `StrictInterl h f`, then each descending root of the inner polynomial `h` lies in
-the shifted slot of the outer polynomial `f`. -/
-def StrictInterlLeftShiftedSlotStatement : Prop :=
-  ∀ {h f : ℝ[X]} (hhf : StrictInterl h f) (j : Fin h.natDegree),
-    (rootSeqDesc h).get ⟨j.1, by
-      simp [rootSeqDesc_length hhf.1.2, j.2]⟩ ∈
-      rootSlotInterval (rootSeqDesc f)
-        ⟨j.1 + 1, by
-          have hdeg := hhf.natDegree_le
-          have hjf : j.1 < f.natDegree := lt_of_lt_of_le j.2 hdeg
-          simpa [rootSeqDesc_length hhf.2.1.2] using Nat.succ_lt_succ hjf⟩
-
-/-- Atomic left `StrictInterl` shifted-slot membership. -/
-theorem strictInterlLeftShiftedSlot : StrictInterlLeftShiftedSlotStatement := by
-  intro h f hhf j
-  exact CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_strictInterl hhf j
-
-/-- Geometric shifted-slot consequence of a common left interleaver.
-
-This is the remaining local geometric input in the left-oriented finite-family
-upgrade: if `h` is a common left interleaver of `f` and `g`, then the shifted
-root slots of `f` and `g` meet. -/
-def CommonLeftInterleaverShiftedSlotStatement : Prop :=
-  ∀ {h f g : ℝ[X]},
-    StrictInterl h f →
-    StrictInterl h g →
-    ∀ j : ℕ,
-      ∀ (hjf : j + 1 < (rootSeqDesc f).length + 1)
-        (hjg : j + 1 < (rootSeqDesc g).length + 1),
-        (rootSlotInterval (rootSeqDesc f) ⟨j + 1, hjf⟩ ∩
-          rootSlotInterval (rootSeqDesc g) ⟨j + 1, hjg⟩).Nonempty
-
-/-- The common-left-interleaver shifted-slot statement follows from the atomic
-left `StrictInterl` shifted-slot membership input. -/
-theorem commonLeftInterleaverShiftedSlot_of_strictInterlLeft
-    (hleft : StrictInterlLeftShiftedSlotStatement) :
-    CommonLeftInterleaverShiftedSlotStatement := by
-  intro h f g hhf hhg j hjf hjg
+/-- If `h` is a common left interleaver of `f` and `g`, then the shifted root
+slots of `f` and `g` meet. -/
+theorem rootSlotInterval_succ_inter_nonempty_of_commonLeftInterleaver
+    {h f g : ℝ[X]} (hhf : StrictInterl h f) (hhg : StrictInterl h g) (j : ℕ)
+    (hjf : j + 1 < (rootSeqDesc f).length + 1)
+    (hjg : j + 1 < (rootSeqDesc g).length + 1) :
+    (rootSlotInterval (rootSeqDesc f) ⟨j + 1, hjf⟩ ∩
+      rootSlotInterval (rootSeqDesc g) ⟨j + 1, hjg⟩).Nonempty := by
   let jf : Fin ((rootSeqDesc f).length + 1) := ⟨j + 1, hjf⟩
   let jg : Fin ((rootSeqDesc g).length + 1) := ⟨j + 1, hjg⟩
   change (rootSlotInterval (rootSeqDesc f) jf ∩
@@ -192,9 +158,11 @@ theorem commonLeftInterleaverShiftedSlot_of_strictInterlLeft
     let x : ℝ := (rootSeqDesc h).get ⟨j, by
       simpa [rootSeqDesc_length hhf.1.2] using hjh⟩
     have hmem_f : x ∈ rootSlotInterval (rootSeqDesc f) jf := by
-      simpa [x, jf, jh] using hleft hhf jh
+      simpa [x, jf, jh] using
+        CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_strictInterl hhf jh
     have hmem_g : x ∈ rootSlotInterval (rootSeqDesc g) jg := by
-      simpa [x, jg, jh] using hleft hhg jh
+      simpa [x, jg, jh] using
+        CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_strictInterl hhg jh
     exact ⟨x, ⟨hmem_f, hmem_g⟩⟩
   · have hjf_nat : j < f.natDegree := by
       have hjf' : j < (rootSeqDesc f).length := Nat.lt_of_succ_lt_succ hjf
@@ -223,16 +191,10 @@ theorem commonLeftInterleaverShiftedSlot_of_strictInterlLeft
           (rs := rootSeqDesc g) (List.reverse_ne_nil_iff.mp hrevg_ne)
     simp_all
 
-/-- Common-left-interleaver shifted-slot intersections. -/
-theorem commonLeftInterleaverShiftedSlot :
-    CommonLeftInterleaverShiftedSlotStatement :=
-  commonLeftInterleaverShiftedSlot_of_strictInterlLeft strictInterlLeftShiftedSlot
-
 /-- A pairwise common-left-interleaver hypothesis gives the pairwise shifted
-root-slot intersections, assuming the geometric shifted-slot input. -/
+root-slot intersections. -/
 theorem pairwise_shiftedSlotIntersections_of_pairwiseHasCommonLeftInterleaver
     {fs : List ℝ[X]}
-    (hslot : CommonLeftInterleaverShiftedSlotStatement)
     (hpair : PairwiseHasCommonLeftInterleaver fs) :
     ∀ (i k : Fin fs.length), i < k →
       ∀ j : ℕ,
@@ -242,25 +204,15 @@ theorem pairwise_shiftedSlotIntersections_of_pairwiseHasCommonLeftInterleaver
             rootSlotInterval (rootSeqDesc (fs.get k)) ⟨j + 1, hjk⟩).Nonempty := by
   intro i k hik j hji hjk
   obtain ⟨h, hhi, hhk⟩ := hpair i k hik
-  exact hslot hhi hhk j hji hjk
-
-/-- Finite-family shifted-slot sequence from pairwise common left interleavers,
-modulo the local geometric shifted-slot input. -/
-theorem hasCommonLeftInterleaverSeq_of_pairwiseHasCommonLeftInterleaver_of_shiftedSlot
-    {fs : List ℝ[X]}
-    (hslot : CommonLeftInterleaverShiftedSlotStatement)
-    (hpair : PairwiseHasCommonLeftInterleaver fs) :
-    HasCommonLeftInterleaverSeq fs :=
-  hasCommonLeftInterleaverSeq_of_pairwise_shiftedSlotIntersections
-    (pairwise_shiftedSlotIntersections_of_pairwiseHasCommonLeftInterleaver hslot hpair)
+  exact rootSlotInterval_succ_inter_nonempty_of_commonLeftInterleaver hhi hhk j hji hjk
 
 /-- Finite-family shifted-slot sequence from pairwise common left interleavers. -/
 theorem hasCommonLeftInterleaverSeq_of_pairwiseHasCommonLeftInterleaver
     {fs : List ℝ[X]}
     (hpair : PairwiseHasCommonLeftInterleaver fs) :
     HasCommonLeftInterleaverSeq fs :=
-  hasCommonLeftInterleaverSeq_of_pairwiseHasCommonLeftInterleaver_of_shiftedSlot
-    commonLeftInterleaverShiftedSlot hpair
+  hasCommonLeftInterleaverSeq_of_pairwise_shiftedSlotIntersections
+    (pairwise_shiftedSlotIntersections_of_pairwiseHasCommonLeftInterleaver hpair)
 
 /-- Chudnovsky--Seymour `3.6.2 → 3.6.3`, in the formulation needed for the
 product-sum theorem: pairwise common interleavers imply a global common

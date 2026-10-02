@@ -1,4 +1,5 @@
 import RealRooted.CommonInterleaver.PairBridge.Reduction.Basic
+import RealRooted.SameDegreeCountFromAnalytic
 
 /-!
 # Pair bridge reduction: common interleavers
@@ -12,17 +13,15 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Repaired no-common degree-split reduction of the common-interleaver bridge
-in the nonnegative regime: both same-degree and succ-degree branches are stated
-directly with the common-right-interleaver conclusion needed downstream. -/
-theorem posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+/-- **Chudnovsky--Seymour for two polynomials, no-common close-degree case.**
+If every positive combination of `f` and `g` is real-rooted, `f` and `g` have
+positive leading coefficients and no common roots, and
+`f.natDegree ≤ g.natDegree ≤ f.natDegree + 1`, then they have a common
+interleaver. -/
+theorem pairHasCommonInterleaver_of_posCombo_noCommon_of_natDegree_close
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
@@ -30,8 +29,8 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCo
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by lia
   rcases hdeg with hsame_deg | hsucc_deg
-  · exact hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno
-  · exact hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
+  · exact pairHasCommonInterleaver_of_posCombo_sameDegree hf_pos hg_pos hfg hsame_deg hno
+  · exact pairHasCommonInterleaver_of_posCombo_succDegree hf_pos hg_pos hfg hsucc_deg
 
 private theorem posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonnegCoeffs_ordered
     (hterminal :
@@ -199,11 +198,11 @@ theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two
         hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
     hf_pos hg_pos hfnn hgnn hfg hfdeg hgdeg
 
-/-- Internal ordered degree-split bridge for the endpoint layer. -/
+/-- Ordered common-interleaver theorem for nonnegative positive-combination
+pairs: shared roots are factored out recursively, and the no-common case is
+`pairHasCommonInterleaver_of_posCombo_noCommon_of_natDegree_close`. -/
 protected theorem
     CommonInterleaver.PairBridge.pairDegreeSplit_ordered
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -214,10 +213,9 @@ protected theorem
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonnegCoeffs_ordered
-    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno =>
-      posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-        hsame hsucc (f := f) (g := g)
-        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno)
+    (fun {_ _} hf_pos hg_pos _ _ hfg hdeg_lo hdeg_hi hno =>
+      pairHasCommonInterleaver_of_posCombo_noCommon_of_natDegree_close
+        hf_pos hg_pos hfg hdeg_lo hdeg_hi hno)
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
 end RealRooted

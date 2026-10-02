@@ -168,21 +168,6 @@ theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver
         hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
           (f := f) (g := g) (fs := fs) hrr hpos hpair
 
-/-- Global finite-family right upgrade: pairwise common interleavers imply a
-single common interleaver under the usual split and positive-leading
-hypotheses. -/
-def CommonInterleaverFamilyUpgradeStatement : Prop :=
-  ∀ {fs : List ℝ[X]},
-    (∀ f ∈ fs, f.Splits) →
-    (∀ f ∈ fs, HasPosLeadingCoeff f) →
-    PairwiseHasCommonInterleaver fs →
-    HasCommonInterleaver fs
-
-/-- The proved global finite-family right upgrade, packaged as a statement alias. -/
-theorem commonInterleaverFamilyUpgrade :
-    CommonInterleaverFamilyUpgradeStatement :=
-  hasCommonInterleaver_of_pairwiseHasCommonInterleaver
-
 /-- Chudnovsky--Seymour `2 ⇒ 3`, left-oriented version: pairwise common left
 interleavers can be upgraded to a single common left interleaver. -/
 private theorem hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver_ge_two
@@ -252,21 +237,6 @@ theorem hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
       exact
         hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver_ge_two
           (f := f) (g := g) (fs := fs) hrr hpos hpair
-
-/-- Global finite-family left upgrade: pairwise common left interleavers imply a
-single common left interleaver under the usual split and positive-leading
-hypotheses. -/
-def CommonLeftInterleaverFamilyUpgradeStatement : Prop :=
-  ∀ {fs : List ℝ[X]},
-    (∀ f ∈ fs, f.Splits) →
-    (∀ f ∈ fs, HasPosLeadingCoeff f) →
-    PairwiseHasCommonLeftInterleaver fs →
-    HasCommonLeftInterleaver fs
-
-/-- The proved global finite-family left upgrade, packaged as a statement alias. -/
-theorem commonLeftInterleaverFamilyUpgrade :
-    CommonLeftInterleaverFamilyUpgradeStatement :=
-  hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
 
 /-- A common interleaver immediately implies real-rootedness of the full sum,
 by Wagner's finite-sum theorem on the right. -/

@@ -1,4 +1,3 @@
-import RealRooted.ClosedSegmentCountEqFromAnalytic
 import RealRooted.CommonInterleaverTwo
 import RealRooted.InterlacingSequenceBasic
 import RealRooted.SameDegreeCountFromAnalytic
@@ -9,37 +8,42 @@ namespace RealRooted
 
 open Polynomial
 
-/-- Chudnovsky--Seymour for two polynomials: compatible polynomials with positive
-leading coefficients have a common (right) interleaver.  The proof splits into
-the same-degree and successor-degree cases. -/
-theorem chudnovskySeymour_compatiblePairHasCommonInterleaver :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonneg
-
-/-- Chudnovsky--Seymour for two polynomials, common-left form: compatible
-polynomials with positive leading coefficients have a common left interleaver. -/
-theorem chudnovskySeymour_compatiblePairHasCommonLeftInterleaver :
-    CompatiblePairHasCommonLeftInterleaverPosStatement :=
-  compatiblePairHasCommonLeftInterleaverPos_of_pairBridge
-    chudnovskySeymour_compatiblePairHasCommonInterleaver
-
-/-- Two compatible polynomials with positive leading coefficients have a common
-interleaver. -/
+/-- Implicit-binder form of `chudnovskySeymour_compatiblePairHasCommonInterleaver`,
+kept for existing callers. -/
 theorem compatiblePairHasCommonInterleaver_chudnovskySeymour
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (h : Compatible f g) :
     ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl g k :=
   chudnovskySeymour_compatiblePairHasCommonInterleaver hf hg h
 
-/-- Two compatible polynomials with positive leading coefficients have a common
-left interleaver. -/
-theorem compatiblePairHasCommonLeftInterleaver_chudnovskySeymour
-    {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+/-- **Chudnovsky--Seymour for two polynomials**, common-left form: compatible
+polynomials with positive leading coefficients have a common left interleaver.
+A common right interleaver is converted using degree closeness. -/
+theorem chudnovskySeymour_compatiblePairHasCommonLeftInterleaver
+    ⦃f g : ℝ[X]⦄ (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (h : Compatible f g) :
-    ∃ k : ℝ[X], StrictInterl k f ∧ StrictInterl k g :=
-  chudnovskySeymour_compatiblePairHasCommonLeftInterleaver hf hg h
+    ∃ k : ℝ[X], StrictInterl k f ∧ StrictInterl k g := by
+  have hclose : f.natDegree ≤ g.natDegree + 1 ∧ g.natDegree ≤ f.natDegree + 1 :=
+    h.natDegree_close hf hg
+  by_cases hdeg : f.natDegree ≤ g.natDegree
+  · obtain ⟨k, hfk, hgk⟩ := chudnovskySeymour_compatiblePairHasCommonInterleaver hf hg h
+    exact pairHasCommonLeftInterleaver_of_commonInterleaver hfk hgk hdeg hclose.2
+  · obtain ⟨k, hgk, hfk⟩ :=
+      chudnovskySeymour_compatiblePairHasCommonInterleaver hg hf h.comm
+    exact (pairHasCommonLeftInterleaver_of_commonInterleaver
+      hgk hfk (le_of_not_ge hdeg) hclose.1).imp fun _ hk => hk.symm
+
+/-- **Chudnovsky--Seymour**, four-way form: for a finite family of real-rooted
+polynomials with positive leading coefficients, pairwise compatibility,
+pairwise common interleavers, a common interleaver, and family compatibility
+are equivalent. -/
+theorem chudnovskySeymour_fourWay
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
+    ChudnovskySeymourFourWayPackage fs :=
+  chudnovskySeymour_fourWay_of_pairBridgePos hrr hpos
+    chudnovskySeymour_compatiblePairHasCommonInterleaver
 
 /-- **Chudnovsky--Seymour.** A finite family of real-rooted polynomials with
 positive leading coefficients is pairwise compatible if and only if it has a
@@ -49,8 +53,7 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver
     (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
-  pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos hrr hpos
-    (fun _ _ hf hg h => compatiblePairHasCommonInterleaver_chudnovskySeymour hf hg h)
+  pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay (chudnovskySeymour_fourWay hrr hpos)
 
 /-- **Chudnovsky--Seymour**, common-left form: a finite family of real-rooted
 polynomials with positive leading coefficients is pairwise compatible if and
@@ -60,9 +63,13 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver
     (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
-  pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
-    chudnovskySeymour_compatiblePairHasCommonLeftInterleaver
-    (fun f hf => (hrr f hf).2) hpos
+  ⟨fun hpair =>
+    hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
+      (fun f hf => (hrr f hf).2) hpos fun i j hij =>
+        chudnovskySeymour_compatiblePairHasCommonLeftInterleaver
+          (hpos (fs.get i) (fs.get_mem i)) (hpos (fs.get j) (fs.get_mem j))
+          (hpair i j hij),
+    fun hcommon => pairwiseCompatible_of_commonLeftInterleaver hcommon hpos⟩
 
 /-- **Chudnovsky--Seymour.** A finite family of real-rooted polynomials with
 positive leading coefficients is pairwise compatible if and only if every
@@ -72,8 +79,7 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
     (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_pairBridgePos hrr hpos
-    chudnovskySeymour_compatiblePairHasCommonInterleaver
+  pairwiseCompatible_iff_familyCompatible_of_fourWay (chudnovskySeymour_fourWay hrr hpos)
 
 /-- An interlacing sequence with nonnegative coefficients is compatible under
 all nonnegative weighted sums. -/
@@ -102,19 +108,6 @@ theorem IsInterlacingSeqNonneg.weightedSum_isPFPolynomial
       (hfs.1 ap.2 (hmem ap hap)).2
   exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hnonneg <|
     (hfs.familyCompatible ws hmem hweights).imp_right And.right
-
-/-- The four equivalent Chudnovsky--Seymour conditions for a family with
-nonnegative coefficients: pairwise compatibility, pairwise and common
-interleavers, and family compatibility. -/
-theorem chudnovskySeymour_fourWay_nonnegCoeffs
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f) :
-    ChudnovskySeymourFourWayPackage fs :=
-  chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs hrr hpos hnn
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonneg
 
 /-- `chudnovskySeymour_pairwiseCompatible_iff_familyCompatible` with an unused
 nonnegativity hypothesis, kept for existing callers. -/
