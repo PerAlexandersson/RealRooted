@@ -466,22 +466,17 @@ theorem HasNonnegCoeffs.reciprocalShift {D : ℕ} {p : ℝ[X]}
   change HasNonnegCoeffs (p.reflect D)
   exact hp.reflect D
 
-/-- Standard reciprocal-polynomial input: shifted reciprocals preserve the PF
-cone when the shift bounds the degree. -/
-def reciprocalShiftPreservesPFStatement : Prop :=
-  ∀ {D : ℕ} {p : ℝ[X]},
-    IsPFPolynomial p →
-    p.natDegree ≤ D →
-    IsPFPolynomial (reciprocalShift D p)
-
 theorem reciprocalShift_eq_X_pow_mul_reverse {D : ℕ} {p : ℝ[X]}
     (hdeg : p.natDegree ≤ D) :
     reciprocalShift D p = X ^ (D - p.natDegree) * p.reverse := by
   simpa [reciprocalShift] using
     DegreeDropReversal.reflect_eq_X_pow_mul_reverse p hdeg
 
-theorem reciprocalShift_preserves_pf : reciprocalShiftPreservesPFStatement := by
-  intro D p hp hdeg
+/-- Shifted reciprocals preserve the PF cone when the shift bounds the
+degree. -/
+theorem reciprocalShift_preserves_pf {D : ℕ} {p : ℝ[X]}
+    (hp : IsPFPolynomial p) (hdeg : p.natDegree ≤ D) :
+    IsPFPolynomial (reciprocalShift D p) := by
   rw [reciprocalShift_eq_X_pow_mul_reverse hdeg]
   exact (isPFPolynomial_X_pow (D - p.natDegree)).mul hp.reverse
 

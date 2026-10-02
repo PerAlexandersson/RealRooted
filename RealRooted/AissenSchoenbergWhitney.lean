@@ -21,8 +21,8 @@ namespace RealRooted
 # Aissen--Schoenberg--Whitney interfaces
 
 This file records the Toeplitz total-nonnegativity formulation of
-Pólya-frequency sequences and statement-level interfaces for the classical
-Aissen--Schoenberg--Whitney theorem.
+Pólya-frequency sequences and proves both directions of the classical
+Aissen--Schoenberg--Whitney theorem for polynomials.
 
 Reference: M. Aissen, I. J. Schoenberg, and A. M. Whitney, *On the generating
 functions of totally positive sequences. I*, J. Analyse Math. 2 (1952),
@@ -310,21 +310,6 @@ theorem splits_of_forall_complex_root_aswSectorThreshold {p : ℝ[X]}
   simp
 
 /-- Karlin's finite-order sector estimate, in the threshold notation used by
-the ASW endgame, with the classical sign-variation input supplied explicitly.
--/
-theorem aswSectorThreshold_le_abs_arg_of_isPolyaFreqSeq_coeff_of_classicalInput
-    (hclassical : AswKarlinKernelSignVariationClassicalInputStatement)
-    {p : ℝ[X]} {z : ℂ} (hdegree : 0 < p.natDegree)
-    (hconst : 0 < p.coeff 0) (hpf : IsPolyaFreqSeq p.coeff)
-    (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots) (order : ℕ) :
-    aswSectorThreshold p.natDegree order ≤ |z.arg| := by
-  by_cases horder : order = 0
-  · simp [aswSectorThreshold, horder]
-  · exact aswKarlinSectorThreshold_le_abs_arg_of_classicalInput hclassical
-      (p := p) (z := z) hz hdegree hconst hpf
-      (horder := Nat.pos_of_ne_zero horder)
-
-/-- Karlin's finite-order sector estimate, in the threshold notation used by
 the ASW endgame. -/
 theorem aswSectorThreshold_le_abs_arg_of_isPolyaFreqSeq_coeff {p : ℝ[X]} {z : ℂ}
     (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
@@ -336,45 +321,6 @@ theorem aswSectorThreshold_le_abs_arg_of_isPolyaFreqSeq_coeff {p : ℝ[X]} {z : 
   · exact aswKarlinSectorThreshold_le_abs_arg
       (p := p) (z := z) hz hdegree hconst hpf
       (horder := Nat.pos_of_ne_zero horder)
-
-/-! ### Reduction to positive constant coefficient -/
-
-/-- The remaining splitting theorem restricted to PF polynomials with positive
-constant coefficient. Zero constant coefficients can be removed one at a time
-using `IsPolyaFreqSeq.divX_coeff`. -/
-def aissenSchoenbergWhitneyForwardSplitsPositiveConstantStatement : Prop :=
-  ∀ {p : ℝ[X]}, 0 < p.coeff 0 → IsPolyaFreqSeq p.coeff → p.Splits
-
-/-- Forward ASW splitting reduces to the positive-constant-coefficient case.
-If the constant coefficient is zero, divide by `X`; the coefficient tail is
-still PF and has strictly smaller degree. -/
-theorem aissenSchoenbergWhitneyForwardSplits_of_positiveConstant
-    (hpositive : aissenSchoenbergWhitneyForwardSplitsPositiveConstantStatement) :
-    ∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits := by
-  intro p
-  induction hdeg : p.natDegree using Nat.strong_induction_on generalizing p with
-  | h d ih =>
-      intro hpf
-      by_cases hp0 : p = 0
-      · exact hp0 ▸ Polynomial.Splits.zero
-      have hc0 := hpf.nonneg 0
-      rcases hc0.eq_or_lt with hc0zero | hc0pos
-      · have hc0zero' : p.coeff 0 = 0 := hc0zero.symm
-        have hdpos : 0 < d := by
-          by_contra hd
-          have hd0 : d = 0 := Nat.eq_zero_of_not_pos hd
-          have hpC : p = C (p.coeff 0) :=
-            Polynomial.eq_C_of_natDegree_eq_zero (hdeg.trans hd0)
-          rw [hpC, hc0zero', Polynomial.C_0] at hp0
-          exact hp0 rfl
-        have hdivdeg : p.divX.natDegree < d := by
-          rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one, hdeg]
-          lia
-        have hdivsplits : p.divX.Splits :=
-          ih p.divX.natDegree hdivdeg rfl (hpf.divX_coeff hc0zero')
-        exact DegreeDropReversal.splits_of_divX_splits_of_coeff_zero
-          hc0zero' hdivsplits
-      · exact hpositive hc0pos hpf
 
 /-- Degree-at-least-four, positive-constant-coefficient leaf of the forward
 Aissen--Schoenberg--Whitney splitting theorem. -/
@@ -399,40 +345,54 @@ theorem aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastThree
   · exact aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastFour
       (by lia) hconst hpf
 
-/-- Degree-at-least-three case of the forward Aissen--Schoenberg--Whitney theorem. -/
-theorem aissenSchoenbergWhitneyForward_degreeAtLeastThree {p : ℝ[X]}
-    (_hdeg : 3 ≤ p.natDegree) (hpf : IsPolyaFreqSeq p.coeff) :
-    p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 := by
-  refine ⟨aissenSchoenbergWhitneyForwardSplits_of_positiveConstant ?_ hpf,
-    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
-  intro q hconst hqpf
-  by_cases hqdeg : q.natDegree ≤ 2
-  · exact splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hqpf hqdeg
+/-- Positive-constant-coefficient case of the forward Aissen--Schoenberg--Whitney
+splitting theorem. -/
+theorem aissenSchoenbergWhitneyForwardSplits_positiveConstant {p : ℝ[X]}
+    (hconst : 0 < p.coeff 0) (hpf : IsPolyaFreqSeq p.coeff) :
+    p.Splits := by
+  by_cases hdeg : p.natDegree ≤ 2
+  · exact splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hpf hdeg
   · exact aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastThree
-      (by lia) hconst hqpf
+      (by lia) hconst hpf
 
-/-- Degree-at-least-two case of the forward Aissen--Schoenberg--Whitney theorem. -/
-theorem aissenSchoenbergWhitneyForward_degreeAtLeastTwo {p : ℝ[X]}
-    (hdeg : 2 ≤ p.natDegree) (hpf : IsPolyaFreqSeq p.coeff) :
-    p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 := by
-  by_cases hdeg2 : p.natDegree ≤ 2
-  · exact aissenSchoenbergWhitneyForward_of_natDegree_le_two hpf hdeg2
-  · exact aissenSchoenbergWhitneyForward_degreeAtLeastThree (by lia) hpf
+/-! ### Reduction to positive constant coefficient -/
+
+/-- Splitting-only form of forward ASW.  Zero constant coefficients are removed
+one at a time: if the constant coefficient is zero, divide by `X`; the
+coefficient tail is still PF and has strictly smaller degree. -/
+theorem aissenSchoenbergWhitneyForwardSplits {p : ℝ[X]}
+    (hpf : IsPolyaFreqSeq p.coeff) :
+    p.Splits := by
+  revert hpf
+  induction hdeg : p.natDegree using Nat.strong_induction_on generalizing p with
+  | h d ih =>
+      intro hpf
+      by_cases hp0 : p = 0
+      · exact hp0 ▸ Polynomial.Splits.zero
+      have hc0 := hpf.nonneg 0
+      rcases hc0.eq_or_lt with hc0zero | hc0pos
+      · have hc0zero' : p.coeff 0 = 0 := hc0zero.symm
+        have hdpos : 0 < d := by
+          by_contra hd
+          have hd0 : d = 0 := Nat.eq_zero_of_not_pos hd
+          have hpC : p = C (p.coeff 0) :=
+            Polynomial.eq_C_of_natDegree_eq_zero (hdeg.trans hd0)
+          rw [hpC, hc0zero', Polynomial.C_0] at hp0
+          exact hp0 rfl
+        have hdivdeg : p.divX.natDegree < d := by
+          rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one, hdeg]
+          lia
+        have hdivsplits : p.divX.Splits :=
+          ih p.divX.natDegree hdivdeg rfl (hpf.divX_coeff hc0zero')
+        exact DegreeDropReversal.splits_of_divX_splits_of_coeff_zero
+          hc0zero' hdivsplits
+      · exact aissenSchoenbergWhitneyForwardSplits_positiveConstant hc0pos hpf
 
 /-- Forward Aissen--Schoenberg--Whitney theorem. -/
 theorem aissenSchoenbergWhitneyForward {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq p.coeff) :
-    p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 := by
-  by_cases hdeg : p.natDegree ≤ 2
-  · exact aissenSchoenbergWhitneyForward_of_natDegree_le_two hpf hdeg
-  · exact aissenSchoenbergWhitneyForward_degreeAtLeastTwo (by lia) hpf
-
-/-- Splitting-only form of forward ASW.  The root-location conjunct follows
-from coefficient nonnegativity, so this is the remaining hard target. -/
-theorem aissenSchoenbergWhitneyForwardSplits {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq p.coeff) :
-    p.Splits :=
-  (aissenSchoenbergWhitneyForward hpf).1
+    p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 :=
+  ⟨aissenSchoenbergWhitneyForwardSplits hpf, roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
 
 /-- Zero-aware forward ASW interface.  This is often the most convenient
 closure form: a PF coefficient sequence gives either the zero polynomial or a
@@ -451,145 +411,12 @@ theorem aissenSchoenbergWhitneyForwardNoNonneg {p : ℝ[X]}
   ⟨⟨hp0, aissenSchoenbergWhitneyForwardSplits hpf⟩,
     roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
 
-
-
-/-- Legacy compatibility alias for ASW forward splits statement. -/
-abbrev aissenSchoenbergWhitneyForwardSplitsStatement : Prop :=
-  ∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits
-
-/-- Legacy compatibility alias for ASW forward or zero statement. -/
+/-- Zero-aware forward ASW, proved as `aissenSchoenbergWhitneyForwardOrZero`.
+The proposition is kept only because `RealRooted.Hadamard.Consequences` and
+`RealRooted.CommonInterleaver.SuccDegreeEndpoint` still mention it. -/
 abbrev aissenSchoenbergWhitneyForwardOrZeroStatement : Prop :=
   ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
     (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
-
-/-- The current forward ASW statement implies the no-extra-nonnegativity
-formulation, since PF coefficients are already nonnegative. -/
-theorem aissenSchoenbergWhitneyForwardNoNonneg_of_forward :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  fun hASW {_} hp0 hpf => ⟨⟨hp0, (hASW hpf).1⟩, (hASW hpf).2⟩
-
-/-- The current forward ASW statement implies the splitting-only target. -/
-theorem aissenSchoenbergWhitneyForwardSplits_of_forward :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
-  fun hASW {_} hpf => (hASW hpf).1
-
-/-- The splitting-only target implies the current forward ASW statement, since
-PF coefficients already exclude positive real roots. -/
-theorem aissenSchoenbergWhitneyForward_of_splits :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  fun hASW {_} hpf => ⟨hASW hpf, roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
-
-/-- Forward ASW is equivalent to proving only the splitting conjunct. -/
-theorem aissenSchoenbergWhitneyForward_iff_splits :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
-  ⟨aissenSchoenbergWhitneyForwardSplits_of_forward,
-    aissenSchoenbergWhitneyForward_of_splits⟩
-
-/-- The no-extra-nonnegativity formulation implies the current forward ASW
-statement. -/
-theorem aissenSchoenbergWhitneyForward_of_noNonneg :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) := fun hASW {p} hpf => by
-  by_cases hp0 : p = 0
-  · simp [hp0]
-  · exact ⟨(hASW hp0 hpf).1.2, (hASW hp0 hpf).2⟩
-
-/-- The two forward ASW interfaces are equivalent. -/
-theorem aissenSchoenbergWhitneyForward_iff_noNonneg :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-        (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  ⟨aissenSchoenbergWhitneyForwardNoNonneg_of_forward,
-    aissenSchoenbergWhitneyForward_of_noNonneg⟩
-
-/-- The no-extra-nonnegativity ASW interface implies the splitting-only target. -/
-theorem aissenSchoenbergWhitneyForwardSplits_of_noNonneg :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
-  aissenSchoenbergWhitneyForwardSplits_of_forward ∘
-    aissenSchoenbergWhitneyForward_of_noNonneg
-
-/-- The splitting-only target implies the no-extra-nonnegativity ASW interface. -/
-theorem aissenSchoenbergWhitneyForwardNoNonneg_of_splits :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) →
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardNoNonneg_of_forward ∘
-    aissenSchoenbergWhitneyForward_of_splits
-
-/-- The no-extra-nonnegativity ASW target is equivalent to proving only the
-splitting conjunct. -/
-theorem aissenSchoenbergWhitneyForwardNoNonneg_iff_splits :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
-  ⟨aissenSchoenbergWhitneyForwardSplits_of_noNonneg,
-    aissenSchoenbergWhitneyForwardNoNonneg_of_splits⟩
-
-/-- The strict nonzero forward ASW interface implies the zero-aware one. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_of_forward :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  fun hASW {_} _ hpf => ⟨Or.inr (hASW hpf).1, (hASW hpf).2⟩
-
-/-- The zero-aware forward ASW interface implies the strict nonzero one by
-discarding the zero case. -/
-theorem aissenSchoenbergWhitneyForward_of_orZero :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) := fun hASW {p} hpf => by
-  have h := hASW (hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf) hpf
-  exact ⟨h.1.elim (fun hzero => by simp [hzero]) id, h.2⟩
-
-/-- The strict and zero-aware forward ASW interfaces are equivalent. -/
-theorem aissenSchoenbergWhitneyForward_iff_orZero :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-        (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  ⟨aissenSchoenbergWhitneyForwardOrZero_of_forward,
-    aissenSchoenbergWhitneyForward_of_orZero⟩
-
-/-- The zero-aware forward ASW interface implies the splitting-only target. -/
-theorem aissenSchoenbergWhitneyForwardSplits_of_orZero :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
-  aissenSchoenbergWhitneyForwardSplits_of_forward ∘
-    aissenSchoenbergWhitneyForward_of_orZero
-
-/-- The splitting-only target implies the zero-aware forward ASW interface. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_of_splits :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) →
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardOrZero_of_forward ∘
-    aissenSchoenbergWhitneyForward_of_splits
-
-/-- The zero-aware ASW target is equivalent to proving only the splitting
-conjunct. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_iff_splits :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
-  ⟨aissenSchoenbergWhitneyForwardSplits_of_orZero,
-    aissenSchoenbergWhitneyForwardOrZero_of_splits⟩
 
 /-- Without a nonzero hypothesis, the forward ASW interface would force the
 zero polynomial to be real-rooted, contrary to the strict local definition of
@@ -898,285 +725,5 @@ theorem IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits {p q : ℝ[X]}
         (roots_nonpos_of_nonneg_coeffs (hfamily hμ) hnn) using 1
       funext n
       simp [Polynomial.coeff_add, Polynomial.coeff_C_mul])
-
-/-! ### Degree-bounded forward ASW splitting interface -/
-
-/-- Degree-bounded splitting-only forward ASW target: every polynomial of
-`natDegree` at most `N` with a Pólya-frequency coefficient sequence splits over
-`ℝ`. This is the natural quantity for a degree induction feeding
-`aissenSchoenbergWhitneyForwardSplitsStatement`. -/
-def aissenSchoenbergWhitneyForwardSplitsUpTo (N : ℕ) : Prop :=
-  ∀ ⦃p : ℝ[X]⦄,
-    p.natDegree ≤ N →
-    IsPolyaFreqSeq p.coeff →
-    p.Splits
-
-/-- The full splitting-only forward ASW target holds iff it holds at every
-degree bound. -/
-theorem aissenSchoenbergWhitneyForwardSplits_iff_forall_upTo :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) ↔
-      ∀ N : ℕ, aissenSchoenbergWhitneyForwardSplitsUpTo N :=
-  ⟨fun hASW _ {_} _ hpf => hASW hpf,
-    fun h {p} hpf => h p.natDegree (le_refl _) hpf⟩
-
-/-- Degree-≤2 instance of the degree-bounded splitting-only forward ASW target,
-from `splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two`. -/
-theorem aissenSchoenbergWhitneyForwardSplitsUpTo_two :
-    aissenSchoenbergWhitneyForwardSplitsUpTo 2 :=
-  fun {_} hdeg hpf => splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hpf hdeg
-
-/-- Monotonicity of the degree-bounded splitting-only forward ASW target in
-the degree bound. -/
-theorem aissenSchoenbergWhitneyForwardSplitsUpTo_mono {M N : ℕ} (hMN : M ≤ N)
-    (h : aissenSchoenbergWhitneyForwardSplitsUpTo N) :
-    aissenSchoenbergWhitneyForwardSplitsUpTo M :=
-  fun {_} hdeg hpf => h (le_trans hdeg hMN) hpf
-
-/-- Exact-degree splitting-only forward ASW target.  This is the per-degree
-slice used as the successor step in the degree induction below. -/
-def aissenSchoenbergWhitneyForwardSplitsExactly (N : ℕ) : Prop :=
-  ∀ ⦃p : ℝ[X]⦄,
-    p.natDegree = N →
-    IsPolyaFreqSeq p.coeff →
-    p.Splits
-
-/-- Base cases for the exact-degree forward ASW induction: forward ASW
-splitting holds in every fixed degree `d ≤ 2`. -/
-theorem aissenSchoenbergWhitneyForwardSplitsExact_of_le_two {d : ℕ} (hd : d ≤ 2) :
-    aissenSchoenbergWhitneyForwardSplitsExactly d :=
-  fun {_} hdeg hpf =>
-    splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hpf (hdeg.le.trans hd)
-
-/-- Strong-induction driver for the exact-degree forward ASW splitting target. -/
-theorem aissenSchoenbergWhitneyForwardSplitsExact_of_strongStep
-    (step : ∀ d, 2 < d →
-      (∀ d', d' < d → aissenSchoenbergWhitneyForwardSplitsExactly d') →
-      aissenSchoenbergWhitneyForwardSplitsExactly d) :
-    ∀ d, aissenSchoenbergWhitneyForwardSplitsExactly d := fun d => by
-  induction d using Nat.strong_induction_on with
-  | _ d ih =>
-    rcases lt_or_ge 2 d with hd | hd
-    · exact step d hd ih
-    · exact aissenSchoenbergWhitneyForwardSplitsExact_of_le_two hd
-
-/-- Global splitting-only forward ASW target from a single strong-induction
-step on exact degrees. -/
-theorem aissenSchoenbergWhitneyForwardSplits_of_strongStep
-    (step : ∀ d, 2 < d →
-      (∀ d', d' < d → aissenSchoenbergWhitneyForwardSplitsExactly d') →
-      aissenSchoenbergWhitneyForwardSplitsExactly d) :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
-  fun {p} hpf =>
-    (aissenSchoenbergWhitneyForwardSplitsExact_of_strongStep step) p.natDegree rfl hpf
-
-/-- Successor step for the degree induction: the degree-bounded target up to
-`N` together with the exact-degree target at `N + 1` gives the target up to
-`N + 1`. -/
-theorem aissenSchoenbergWhitneyForwardSplitsUpTo_succ_of_exactly {N : ℕ}
-    (hN : aissenSchoenbergWhitneyForwardSplitsUpTo N)
-    (hE : aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    aissenSchoenbergWhitneyForwardSplitsUpTo (N + 1) := fun {p} hdeg hpf => by
-  rcases eq_or_lt_of_le hdeg with h | h
-  · exact hE h hpf
-  · exact hN (Nat.lt_succ_iff.mp h) hpf
-
-/-- Degree-induction principle for the splitting-only forward ASW target.  It
-reduces the unbounded statement to the degree-≤2 base case plus exact-degree
-successor steps. -/
-theorem aissenSchoenbergWhitneyForwardSplits_of_base_of_exactly
-    (hbase : aissenSchoenbergWhitneyForwardSplitsUpTo 2)
-    (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
-        aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) := by
-  rw [aissenSchoenbergWhitneyForwardSplits_iff_forall_upTo]
-  intro N
-  induction N with
-  | zero => exact aissenSchoenbergWhitneyForwardSplitsUpTo_mono (Nat.zero_le 2) hbase
-  | succ n ih =>
-    rcases Nat.lt_or_ge n 2 with h | h
-    · exact aissenSchoenbergWhitneyForwardSplitsUpTo_mono (by lia) hbase
-    · exact aissenSchoenbergWhitneyForwardSplitsUpTo_succ_of_exactly ih (hstep n h ih)
-
-/-- Degree-induction wrapper with the degree-≤2 ASW base case already filled. -/
-theorem aissenSchoenbergWhitneyForwardSplits_of_exactly
-    (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
-        aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
-  aissenSchoenbergWhitneyForwardSplits_of_base_of_exactly
-    aissenSchoenbergWhitneyForwardSplitsUpTo_two hstep
-
-/-- Degree-induction wrapper for the full forward ASW target, with the
-degree-≤2 base case already filled. -/
-theorem aissenSchoenbergWhitneyForward_of_exactly
-    (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
-        aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForward_of_splits
-    (aissenSchoenbergWhitneyForwardSplits_of_exactly hstep)
-
-/-- Degree-induction wrapper for the no-extra-nonnegativity ASW target, with
-the degree-≤2 base case already filled. -/
-theorem aissenSchoenbergWhitneyForwardNoNonneg_of_exactly
-    (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
-        aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardNoNonneg_of_forward
-    (aissenSchoenbergWhitneyForward_of_exactly hstep)
-
-/-- Degree-induction wrapper for the zero-aware forward ASW target, with the
-degree-≤2 base case already filled. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_of_exactly
-    (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
-        aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardOrZero_of_forward
-    (aissenSchoenbergWhitneyForward_of_exactly hstep)
-
-/-- Full forward ASW theorem from a strong exact-degree splitting step. -/
-theorem aissenSchoenbergWhitneyForward_of_strongStep
-    (step : ∀ d, 2 < d →
-      (∀ d', d' < d → aissenSchoenbergWhitneyForwardSplitsExactly d') →
-      aissenSchoenbergWhitneyForwardSplitsExactly d) :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForward_of_splits
-    (aissenSchoenbergWhitneyForwardSplits_of_strongStep step)
-
-/-- Zero-aware forward ASW theorem from a strong exact-degree splitting step. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_of_strongStep
-    (step : ∀ d, 2 < d →
-      (∀ d', d' < d → aissenSchoenbergWhitneyForwardSplitsExactly d') →
-      aissenSchoenbergWhitneyForwardSplitsExactly d) :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardOrZero_of_forward
-    (aissenSchoenbergWhitneyForward_of_strongStep step)
-
-/-- No-extra-nonnegativity ASW theorem from a strong exact-degree splitting
-step. -/
-theorem aissenSchoenbergWhitneyForwardNoNonneg_of_strongStep
-    (step : ∀ d, 2 < d →
-      (∀ d', d' < d → aissenSchoenbergWhitneyForwardSplitsExactly d') →
-      aissenSchoenbergWhitneyForwardSplitsExactly d) :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardNoNonneg_of_forward
-    (aissenSchoenbergWhitneyForward_of_strongStep step)
-
-/-- Endpoint-packaging bridge for #42: the two convenient forward ASW closure
-forms are equivalent. -/
-theorem aissenSchoenbergWhitneyForwardNoNonneg_iff_orZero :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-        (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardNoNonneg_iff_splits.trans
-    aissenSchoenbergWhitneyForwardOrZero_iff_splits.symm
-
-/-- Projection from the no-extra-nonnegativity forward ASW endpoint to the
-zero-aware endpoint. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_of_noNonneg :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardNoNonneg_iff_orZero.mp
-
-/-- Projection from the zero-aware forward ASW endpoint to the
-no-extra-nonnegativity endpoint. -/
-theorem aissenSchoenbergWhitneyForwardNoNonneg_of_orZero :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardNoNonneg_iff_orZero.mpr
-
-/-- Reversed-orientation endpoint equivalence for the zero-aware and
-no-extra-nonnegativity forward ASW interfaces. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_iff_noNonneg :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-        (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardNoNonneg_iff_orZero.symm
-
-/-- Reversed-orientation endpoint equivalence from the zero-aware ASW endpoint
-to the base forward ASW endpoint. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_iff_forward :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-        p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardOrZero_iff_noNonneg.trans
-    aissenSchoenbergWhitneyForward_iff_noNonneg.symm
-
-/-- Reversed-orientation endpoint equivalence from the no-extra-nonnegativity
-ASW endpoint to the base forward ASW endpoint. -/
-theorem aissenSchoenbergWhitneyForwardNoNonneg_iff_forward :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
-        p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForward_iff_noNonneg.symm
-
-/-!
-### Direct #42 root-count endpoint wrappers
-
-The following thin wrappers apply the forward ASW statement variants to a fixed
-polynomial and repackage the splitting conclusion in the
-`roots.card = natDegree` root-count shape consumed by the succ-degree
-left-endpoint / direct route.
--/
-
-/-- Applied splitting projection of the base forward ASW statement. -/
-alias aissenSchoenbergWhitneyForward_splits_apply :=
-  aissenSchoenbergWhitneyForwardSplits
-
-/-- Applied root-location projection of the base forward ASW statement. -/
-alias aissenSchoenbergWhitneyForward_rootsNonpos_apply :=
-  roots_nonpos_of_IsPolyaFreqSeq_coeff
-
-/-- Applied root-count projection of the base forward ASW statement. -/
-theorem aissenSchoenbergWhitneyForward_cardRoots_apply {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq p.coeff) :
-    p.roots.card = p.natDegree :=
-  card_roots_of_splits (aissenSchoenbergWhitneyForward_splits_apply hpf)
-
-/-- Applied `≠ 0 ∧ Splits` projection of the base forward ASW statement. -/
-theorem aissenSchoenbergWhitneyForward_ne_zero_and_splits_apply {p : ℝ[X]}
-    (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq p.coeff) :
-    p ≠ 0 ∧ p.Splits :=
-  ⟨hp0, aissenSchoenbergWhitneyForward_splits_apply hpf⟩
-
-/-- Applied `≠ 0 ∧ roots.card = natDegree` projection of the base ASW statement. -/
-theorem aissenSchoenbergWhitneyForward_ne_zero_and_cardRoots_apply {p : ℝ[X]}
-    (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq p.coeff) :
-    p ≠ 0 ∧ p.roots.card = p.natDegree :=
-  ne_zero_and_card_roots_of_ne_zero_and_splits hp0
-    (aissenSchoenbergWhitneyForward_splits_apply hpf)
-
-/-- Applied nonzero root-count projection of the no-extra-nonnegativity ASW form. -/
-theorem aissenSchoenbergWhitneyForwardNoNonneg_ne_zero_and_cardRoots_apply {p : ℝ[X]}
-    (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq p.coeff) :
-    (p ≠ 0 ∧ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
-  ⟨aissenSchoenbergWhitneyForward_ne_zero_and_cardRoots_apply hp0 hpf,
-    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
-
-/-- Applied zero-aware root-count projection of the forward ASW statement. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_cardRoots_apply {p : ℝ[X]}
-    (hnn : HasNonnegCoeffs p) (hpf : IsPolyaFreqSeq p.coeff) :
-    (p = 0 ∨ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
-  ⟨(aissenSchoenbergWhitneyForwardOrZero hnn hpf).1.imp id card_roots_of_splits,
-    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
-
-/-- Zero-aware ASW root-count package with nonnegative coefficients from PF. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_cardRoots_of_isPolyaFreqSeq {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq p.coeff) :
-    (p = 0 ∨ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
-  aissenSchoenbergWhitneyForwardOrZero_cardRoots_apply
-    (hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf) hpf
 
 end RealRooted

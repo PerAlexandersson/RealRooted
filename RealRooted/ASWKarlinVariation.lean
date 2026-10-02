@@ -26,43 +26,6 @@ def AswKarlinKernelSignVariationLowerBound
     (degree order : ℕ) (u : ℕ → ℝ) : Prop :=
   Matrix.KernelSignVariationLowerBound (aswKarlinMatrix u degree order 1) order
 
-/-- Specialized classical input needed for the one-block Karlin
-coefficient-window matrix.
-
-The hypotheses are exactly the checked data produced from a positive-endpoint
-PF polynomial: total nonnegativity of the finite window matrix, full row rank
-as surjectivity of `mulVec`, and finite support through `degree`. -/
-def AswKarlinKernelSignVariationClassicalInputStatement : Prop :=
-  ∀ {u : ℕ → ℝ} {degree order : ℕ},
-    0 < degree →
-    0 < order →
-    0 < u 0 →
-    0 < u degree →
-    (∀ k, degree < k → u k = 0) →
-    (aswKarlinMatrix u degree order 1).IsTotallyNonnegRect →
-    Function.Surjective (aswKarlinMatrix u degree order 1).mulVec →
-    AswKarlinKernelSignVariationLowerBound degree order u
-
-/-- Checked reduction from the specialized classical input to the PF one-block
-Karlin coefficient-window kernel lower bound. -/
-theorem IsPolyaFreqSeq.aswKarlinKernelSignVariationLowerBound_of_classicalInput
-    {u : ℕ → ℝ} (hpf : IsPolyaFreqSeq u)
-    (hclassical : AswKarlinKernelSignVariationClassicalInputStatement)
-    (degree order : ℕ) (hdegree : 0 < degree) (horder : 0 < order)
-    (hconst : 0 < u 0) (hlead : 0 < u degree)
-    (hsupport : ∀ k, degree < k → u k = 0) :
-    AswKarlinKernelSignVariationLowerBound degree order u := by
-  have htn :
-      (aswKarlinMatrix u degree order 1).IsTotallyNonnegRect :=
-    hpf.aswKarlinMatrix_isTotallyNonnegRect degree order 1
-  have hsurj :
-      Function.Surjective (aswKarlinMatrix u degree order 1).mulVec :=
-    aswKarlinMatrix_mulVec_surjective (u := u) degree order 1
-      hdegree horder hconst
-  intro v hker hvec_ne
-  exact hclassical hdegree horder hconst hlead hsupport htn hsurj
-    hker hvec_ne
-
 /-- The final sector inequality follows once the two sign-variation bounds are
 available: a lower bound from the full-row-rank TN kernel theorem and an upper
 bound for the sampled sine vector inside the forbidden sector. -/
