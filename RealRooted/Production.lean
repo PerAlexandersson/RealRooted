@@ -228,7 +228,6 @@ import RealRooted.ClassicalHurwitzMatrix.Stability.Terminal
 import RealRooted.ClassicalHurwitzMatrix.Stability.Vieta
 import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
 import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
-import RealRooted.ClosedSegmentCountEqFromAnalytic
 import RealRooted.CoefficientDominance
 import RealRooted.CoefficientDominance.LogConcavity
 import RealRooted.CoefficientDominance.RootGap
@@ -303,7 +302,6 @@ import RealRooted.CommonInterleaver.RootSlots
 import RealRooted.CommonInterleaver.RootSlots.Basic
 import RealRooted.CommonInterleaver.SameDegreeRootCount
 import RealRooted.CommonInterleaver.Sequence
-import RealRooted.CommonInterleaver.Statements
 import RealRooted.CommonInterleaver.SuccDegreeEndpoint
 import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 import RealRooted.CommonInterleaverExamples

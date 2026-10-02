@@ -6,7 +6,7 @@ They turn the no-common boundary right-pair orientation statement into the
 positive affine-family bridge used by the common-interleaver reductions.
 -/
 import RealRooted.AffineFamily
-import RealRooted.CommonInterleaver.Statements
+import RealRooted.AllCombo
 import RealRooted.PosCombo
 
 open Polynomial

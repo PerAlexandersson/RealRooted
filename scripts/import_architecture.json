@@ -1156,13 +1156,13 @@
       "max_modules": 153
    },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree": {
-      "max_modules": 157
+      "max_modules": 163
    },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCount": {
       "max_modules": 154
    },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment": {
-      "max_modules": 155
+      "max_modules": 161
    },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCrossing": {
       "max_modules": 155
@@ -1171,28 +1171,28 @@
       "max_modules": 89
    },
     "RealRooted.CommonInterleaver.PairBridge.Reduction.Basic": {
-      "max_modules": 160
+      "max_modules": 166
    },
     "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver": {
-      "max_modules": 161
+      "max_modules": 168
    },
     "RealRooted.CommonInterleaver.PairBridge.Reduction.AllCombo": {
-      "max_modules": 161
+      "max_modules": 167
    },
     "RealRooted.CommonInterleaver.PairBridge.Reduction": {
-      "max_modules": 163
+      "max_modules": 170
    },
     "RealRooted.CommonInterleaver.PairBridge.Compatibility": {
-      "max_modules": 163
+      "max_modules": 170
    },
     "RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift": {
-      "max_modules": 164
+      "max_modules": 171
    },
     "RealRooted.CommonInterleaverSeq": {
       "max_modules": 97
     },
     "RealRooted.CommonInterleaver.PairBridge": {
-      "max_modules": 165
+      "max_modules": 172
    },
     "RealRooted.DerivativeRecurrence": {
       "max_modules": 56

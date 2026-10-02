@@ -209,8 +209,8 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_one
   pairHasCommonInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
-/-- Succ-degree branch of the honest no-common target is already unconditional
-in the constant-vs-linear endpoint case. -/
+/-- A constant and a linear polynomial with positive leading coefficients are
+strictly interlaced in the succ-degree orientation. -/
 theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
@@ -687,8 +687,8 @@ theorem succDegreeSlotData_of_posCombo_natDegree_le_one
       (fun k hk1 hk2 => hc2 k hk1 (by rw [hlenf] at hk2; exact hk2))
       j hjf hjg
 
-/-- Low-degree base case for the repaired succ-degree common-right-interleaver
-endpoint in the positive-combination / no-common-root setting. -/
+/-- Low-degree case of the succ-degree common-interleaver theorem in the
+positive-combination / no-common-root setting. -/
 theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_natDegree_le_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -743,8 +743,8 @@ theorem posComboSameDegreePairHasCommonInterleaver_of_natDegree_le_two
         (fun k hk1 hk2 => hc2 k hk1 (by rw [hlenf] at hk2; exact hk2))
         j (by rw [hlenf]; exact hj) (by rw [hleng, hdeg]; exact hj)
 
-/-- Low-degree base case for the repaired same-degree common-right-interleaver
-endpoint in the positive-combination / no-common-root setting. -/
+/-- Low-degree case of the same-degree common-interleaver theorem in the
+positive-combination / no-common-root setting. -/
 theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_two
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)

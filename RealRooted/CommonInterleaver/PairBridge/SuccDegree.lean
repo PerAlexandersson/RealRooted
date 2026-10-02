@@ -3,9 +3,9 @@ import RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCount
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCrossing
 
 /-!
-# Pair bridge succ-degree reductions
+# Succ-degree root counts
 
-Facade for root-count reductions, closed-segment consequences, and the final
-list/root-crossing bridge. Slot-data constructors and common-interleaver
-wrappers live in `SuccDegree.SlotData`.
+Facade for the succ-degree root-count, closed-segment, and root-crossing
+modules.  The succ-degree common-interleaver theorem lives in
+`SuccDegree.SlotData`.
 -/

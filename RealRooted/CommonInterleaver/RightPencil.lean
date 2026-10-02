@@ -72,39 +72,6 @@ theorem succDegree_closedSegment_derivative_splits
   closedSegment_derivative_splits_of_ne hseg hβ0 hβ1
     (succDegree_closedSegment_derivative_ne_zero hg_pos hdeg hfdeg hβ0)
 
-/-- Closed-segment form of the exact gap-two obstruction.  This is the
-continuity/count target left after the sign argument has shown that the fixed
-threshold is never a root along the closed segment from `f` to `g`. -/
-def CompatibleSuccDegreeClosedSegmentNoGapTwoStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-        ¬ (C (1 - β) * f + C β * g).IsRoot x) →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2
-
-/-- Closed-segment endpoint count-equality formulation.  This is the precise
-count-stability theorem suggested by the root-continuity route: if a fixed
-threshold is never crossed along the closed segment from the lower-degree
-endpoint to the higher-degree endpoint, then the endpoint upper root counts at
-that threshold agree. -/
-def CompatibleSuccDegreeClosedSegmentCountEqStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-        ¬ (C (1 - β) * f + C β * g).IsRoot x) →
-      (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card
-
 /-- Succ-degree right-pencil parity bridge for upper root counts. -/
 theorem succDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
     {f g : ℝ[X]}
@@ -650,44 +617,6 @@ lemma splits_of_comp_X_add_C_splits
     have hback := isRealRooted_comp_X_add_C hq0 hp (-r)
     simpa [Polynomial.comp_assoc, add_assoc, add_left_comm, add_comm, sub_eq_add_neg]
       using hback.2
-
-/-- Closed-segment endpoint count equality excludes both exact upper
-root-count gaps of two. -/
-theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_countEq
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
-  have hcard := hcount hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
-  have hcard_int :
-      ((f.roots.filter (x < ·)).card : ℤ) =
-        (g.roots.filter (x < ·)).card := by
-    exact_mod_cast hcard
-  constructor <;> intro hgap <;> linarith
-
-/-- The closed-segment no-gap-two theorem implies the compatible exact
-gap-two obstruction, since an assumed exact gap two supplies the required
-closed-segment nonvanishing by the endpoint sign lemma. -/
-theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegment
-    (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNoGapTwoStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
-  constructor
-  · intro hcount
-    have hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-        ¬ (C (1 - β) * f + C β * g).IsRoot x := by
-      intro β hβ0 hβ1
-      exact
-        compatibleSuccDegree_closedSegment_not_isRoot_of_roots_gt_count_sub_eq_two
-          hcomp hf_pos hg_pos hdeg hf_split hβ0 hβ1 hxf hxg hcount
-    exact (hclosed hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg).1 hcount
-  · intro hcount
-    have hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-        ¬ (C (1 - β) * f + C β * g).IsRoot x := by
-      intro β hβ0 hβ1
-      exact
-        compatibleSuccDegree_closedSegment_not_isRoot_of_rev_roots_gt_count_sub_eq_two
-          hcomp hf_pos hg_pos hdeg hf_split hβ0 hβ1 hxf hxg hcount
-    exact (hclosed hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg).2 hcount
 
 /-- If the threshold is never a root of a nonnegative right-pencil member, then
 the forward upper root-count difference has even parity. -/

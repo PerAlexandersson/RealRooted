@@ -1,13 +1,13 @@
 /-
-# Succ-degree endpoint and degree-drop reductions
+# Succ-degree slots and the left endpoint
 
-Succ-degree slot-data and left-endpoint reductions extracted from
-`RealRooted.CommonInterleaverTwo`.
+Root-slot intersections for succ-degree crossings, left-endpoint
+real-rootedness, and degree-drop root-count lemmas.
 -/
 import RealRooted.AffineFamily
 import RealRooted.CommonInterleaver.AffineBoundary
 import RealRooted.CommonInterleaver.IntervalLemmas
-import RealRooted.CommonInterleaver.Statements
+import RealRooted.AllCombo
 import RealRooted.CommonInterleaverSeq
 import RealRooted.DegreeDropDivXPrec
 import RealRooted.DegreeDropReversal
@@ -21,55 +21,6 @@ open Polynomial
 noncomputable section
 
 namespace RealRooted
-
-/-- **Honest missing root-slot boundary for milestone B2 (#42).**
-
-This is the succ-degree analogue of the same-degree slot-intersection input
-used for #41.  For a nonnegative positive-combination pair with no common
-roots and `g.natDegree = f.natDegree + 1`, it packages the two remaining
-pieces of the remaining converse-Obreschkoff content:
-
-* real-rootedness of the lower-degree member `f`, and
-* the descending root-slot intervals of `f` and `g` meet in each of the
-  `f.natDegree + 1` common slots.
-
-The right endpoint `g` is now supplied by
-`PosComboRealRooted.isRealRooted_right_of_succDegree`.
-The `Fin` bounds are threaded as explicit hypotheses so no in-type proof
-obligations remain. -/
-def PosComboNoCommonSuccDegreeSlotDataNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    (f ≠ 0 ∧ f.Splits) ∧
-      ∀ j, j < f.natDegree + 1 →
-        ∀ (hjf : j < (rootSeqDesc f).length + 1)
-          (hjg : j < (rootSeqDesc g).length + 1),
-          (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
-            rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty
-
-/-- **Checked reduction of #42 to the root-slot boundary.**
-
-The corrected succ-degree common-right-interleaver endpoint follows from the
-precise root-slot condition `PosComboNoCommonSuccDegreeSlotDataNonnegStatement`
-via the constructive slot theorem.  This mirrors the same-degree slot boundary
-route for #41. -/
-theorem succDegreePairHasCommonInterleaver_nonneg_of_slotData
-    (hstmt : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  obtain ⟨hf_rr, hslot⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  have hg_rr : g ≠ 0 ∧ g.Splits :=
-    hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hsucc
-  exact
-    pairHasCommonInterleaver_of_succDegree_slotIntersections
-      hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hsucc <|
-        fun j hj => hslot j hj _ _
 
 /-- **Combinatorial core of the succ-degree slot bound.**
 
@@ -117,32 +68,18 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
     simpa [rootSlotInterval, hjn, hjg'] using
       icc_inter_icc_nonempty_of_crossing (hstep hrf (by lia)) (hstep hrg (by lia)) hc₂ hc₁
 
-/-- **Sub-statement A of milestone B2: left-endpoint real-rootedness.**
-
-For a nonnegative positive-combination pair `(f, g)` with positive leading
-coefficients and `g.natDegree = f.natDegree + 1`, the lower-degree member `f`
-splits over `ℝ`. This is the degree-drop root-continuity endpoint (`f` is the
-`μ → 0⁺` limit of the real-rooted family `f + C μ * g`, whose `f.natDegree`
-finite roots converge to the roots of `f` while one root escapes to `-∞`),
-isolated here as a reusable statement. -/
-def PosComboSuccDegreeLeftSplitsNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits
-
-/-- The succ-degree left endpoint follows directly from the escaping-root
-continuity argument for the family `f + C μ * g`; no ASW input is needed. -/
-theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity :
-    PosComboSuccDegreeLeftSplitsNonnegStatement := by
-  intro f g hf_pos hg_pos _ _ hfg hsucc
-  exact
-    splits_of_add_C_mul_family_of_succDegree
-      (fun {μ} hμ => hfg.isRealRooted_add_right hμ) hf_pos hg_pos hsucc
+/-- Left-endpoint real-rootedness for a successor-degree pair: if every
+positive combination of `f` and `g` is real-rooted and
+`g.natDegree = f.natDegree + 1`, then `f` splits.  The proof is the
+escaping-root continuity argument for the family `f + C μ * g`; the
+nonnegativity hypotheses are unused and kept for existing callers. -/
+theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
+    ⦃f g : ℝ[X]⦄ (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g) (hsucc : g.natDegree = f.natDegree + 1) :
+    f.Splits :=
+  splits_of_add_C_mul_family_of_succDegree
+    (fun {μ} hμ => hfg.isRealRooted_add_right hμ) hf_pos hg_pos hsucc
 
 /-- The succ-degree left endpoint from the proved forward ASW theorem, with no
 backend argument required from the caller. -/

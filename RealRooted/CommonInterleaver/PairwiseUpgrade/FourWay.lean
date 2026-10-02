@@ -37,7 +37,7 @@ private theorem chudnovskySeymour_fourWay_of_pairwiseCompatible_iff_pairwiseComm
       fun hfull => h23.1 (h12.1 (pairwiseCompatible_of_familyCompatible hfull))⟩
   exact ⟨h12, h23, h34⟩
 
-/-- Internal four-way assembly bridge shared with the low-degree package. -/
+/-- Internal four-way assembly shared with the low-degree package. -/
 protected theorem PairwiseUpgrade.fourWay_of_pairwiseCommonForward
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
@@ -47,47 +47,20 @@ protected theorem PairwiseUpgrade.fourWay_of_pairwiseCommonForward
   chudnovskySeymour_fourWay_of_pairwiseCompatible_iff_pairwiseCommon hrr hpos
     ⟨hforward, fun hpair => pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos⟩
 
-/-- Chudnovsky--Seymour four-way package with the natural two-polynomial bridge
-assumption (requiring positive leading coefficients on the pair). -/
+/-- The four-way package for a family follows from the two-polynomial
+common-interleaver theorem `htwo` by the finite Helly upgrade. -/
 theorem chudnovskySeymour_fourWay_of_pairBridgePos
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonInterleaverStatement) :
-    ChudnovskySeymourFourWayPackage fs :=
-  PairwiseUpgrade.fourWay_of_pairwiseCommonForward hrr hpos <|
-    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos htwo hpos
-
-/-- Internal four-way package constructor shared with the equivalence layer. -/
-protected theorem PairwiseUpgrade.fourWay_of_nonnegPairBridge
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hbridge :
+    (htwo :
       ∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
-        HasNonnegCoeffs f →
-        HasNonnegCoeffs g →
         Compatible f g →
         ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h) :
     ChudnovskySeymourFourWayPackage fs :=
   PairwiseUpgrade.fourWay_of_pairwiseCommonForward hrr hpos <|
-    PairwiseUpgrade.pairwiseHasCommonInterleaver_of_nonnegPairBridge hbridge hpos hnn
-
-/-- Four-way Chudnovsky--Seymour package in the nonnegative-coefficient regime
-from the repaired degree split: both same-degree and succ-degree no-common
-branches are stated directly as common-interleaver bridges. -/
-theorem chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    ChudnovskySeymourFourWayPackage fs :=
-  PairwiseUpgrade.fourWay_of_nonnegPairBridge hrr hpos hnn
-    (PairwiseUpgrade.nonnegPairBridge_of_pairDegreeSplit hsame hsucc)
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos htwo hpos
 
 end RealRooted

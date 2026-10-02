@@ -441,104 +441,6 @@ example {FS : Nat → List ℝ[X]}
     member_pos_lc := hpos,
     nonempty := hne
 
-example :
-    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement := by
-  rr_sameDegree_rootCountAbove_nonRoot_analytic
-
-example :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
-  rr_sameDegree_pair_common_interleaver_analytic
-
-example :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  rr_succDegree_pair_common_interleaver_local_lower
-
-example
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
-  rr_posComboSuccDegree_rootCountAbove_nonRoot_of_compatible using
-    root_count := hcount
-
-example
-    (hgap : CompatibleSuccDegreeRootCountAboveNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
-  rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_noGapTwo using
-    no_gap_two := hgap
-
-example
-    (hgap : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
-  rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_closedSegment using
-    no_gap_two := hgap
-
-example
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
-  rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_countEq using
-    count_eq := hcount
-
-example
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
-  rr_posComboSuccDegree_rootCountAbove_nonRoot_of_countEq using
-    count_eq := hcount
-
-example
-    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  rr_succDegree_pair_common_interleaver_rootCrossing using
-    root_crossing := hcross
-
-example
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  rr_succDegree_pair_common_interleaver_rootCountAbove using
-    root_count_above := hcount
-
-example
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  rr_succDegree_pair_common_interleaver_rootCountAboveNonRoot using
-    root_count_above := hcount
-
-example
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  rr_succDegree_pair_common_interleaver_closedSegmentCountEq using
-    count_eq := hcount
-
-example
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement := by
-  rr_compatible_pair_common_interleaver_degree_split_nonnegShift using
-    same_degree := hsame,
-    succ_degree := hsucc
-
-example
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement := by
-  rr_compatible_pair_common_interleaver_rootCrossing using
-    same_degree := hsame,
-    succ_degree := hsucc
-
-example
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement := by
-  rr_compatible_pair_common_interleaver_rootCountAboveNonRoot using
-    same_degree := hsame,
-    succ_degree := hsucc
-
-example :
-    CompatiblePairHasCommonInterleaverStatement := by
-  rr_chudnovskySeymour_compatible_pair_common_interleaver_statement
-
-example :
-    CompatiblePairHasCommonLeftInterleaverPosStatement := by
-  rr_chudnovskySeymour_compatible_pair_common_left_interleaver_statement
-
 example {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hcomp : Compatible f g) :
@@ -556,20 +458,6 @@ example {f g : ℝ[X]}
     left_pos_lc := hf,
     right_pos_lc := hg,
     compatible := hcomp
-
-example {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    ChudnovskySeymourFourWayPackage fs := by
-  rr_chudnovskySeymour_fourWay_pairDegreeSplit_nonnegCoeffs using
-    member_realrooted := hrr,
-    member_pos_lc := hpos,
-    member_nonneg_coeffs := hnn,
-    same_degree := hsame,
-    succ_degree := hsucc
 
 example {fs : List ℝ[X]}
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)

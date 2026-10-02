@@ -10,15 +10,6 @@ pairwise-to-family compatibility upgrades.
 namespace RealRooted
 namespace Tactic
 
-syntax (name := rr_chudnovskySeymour_fourWay_pairDegreeSplit_nonnegCoeffs_named)
-  "rr_chudnovskySeymour_fourWay_pairDegreeSplit_nonnegCoeffs" " using "
-    "member_realrooted" ":=" term ","
-    "member_pos_lc" ":=" term ","
-    "member_nonneg_coeffs" ":=" term ","
-    "same_degree" ":=" term ","
-    "succ_degree" ":=" term :
-  tactic
-
 syntax (name := rr_chudnovskySeymour_fourWay_degree_le_one_named)
   "rr_chudnovskySeymour_fourWay_degree_le_one" " using "
     "member_pos_lc" ":=" term ","

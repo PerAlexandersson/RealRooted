@@ -474,16 +474,13 @@ theorem cubicSecondRootBound_of_interior
     · exact habove hf hg hfs hgs hfd hgd hpc a b c p q r
         hab hbc hpq hqr hfr hgr har hcon
 
-/-- Checked reduction of the cubic same-degree root-count target to the
-partial-separation leaf.
+/-- Cubic same-degree root counts from the second-root bound.
 
-Given the `CubicSecondRootBoundStatement` leaf, two split cubics with positive
-leading coefficients forming a positive-combination real-rooted pair have
-threshold root-count functions differing by at most one at every threshold.
-This strengthens `sameDegree_cubic_rootCount_le_two` from `≤ 2` to `≤ 1`,
-modulo the single analytic leaf `hbound`, and matches the degree-three case of
-the milestone-B1 root-count target
-`PosComboNoCommonSameDegreeRootCountNonnegStatement`. -/
+Given the second-root bound `hbound`, two split cubics with positive leading
+coefficients forming a positive-combination real-rooted pair have threshold
+root-count functions differing by at most one at every threshold.  This
+strengthens `sameDegree_cubic_rootCount_le_two` from `≤ 2` to `≤ 1`; the bound
+itself is `cubicSecondRootBound_from_analytic`. -/
 theorem sameDegree_cubic_rootCount_le_one_of_secondRootBound
     (hbound : CubicSecondRootBoundStatement)
     {f g : ℝ[X]}

@@ -2,9 +2,11 @@ import RealRooted.CommonInterleaver.PairBridge.Reduction.AllCombo
 import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver
 
 /-!
-# Pair bridge assembly: compatibility endpoints
+# Common interleavers for nonnegative positive-combination pairs
 
-Final pairwise and compatibility-to-common-interleaver wrappers.
+Degree closeness and the ordered no-common case give a common interleaver for
+every pair of nonnegative polynomials whose positive combinations are
+real-rooted.
 -/
 
 open Polynomial
@@ -58,13 +60,10 @@ theorem posComboPairHasCommonInterleaver_of_orderedBridge_and_nonnegCoeffs
       ⟨h, hg_strictInterl, hf_strictInterl⟩
     exact ⟨h, hf_strictInterl, hg_strictInterl⟩
 
-/-- Repaired degree-split package for the full positive-combo pair bridge in
-the nonnegative-coefficient regime. This is the version to use after the
-same-degree orientation alternative is replaced by a common-interleaver target.
--/
-theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+/-- Two polynomials with positive leading coefficients and nonnegative
+coefficients whose positive combinations are real-rooted have a common
+interleaver. -/
+theorem posComboPairHasCommonInterleaver_of_nonnegCoeffs
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -73,53 +72,7 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
   posComboPairHasCommonInterleaver_of_orderedBridge_and_nonnegCoeffs
     (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
       CommonInterleaver.PairBridge.pairDegreeSplit_ordered
-        (f := f) (g := g) hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
-    hf_pos hg_pos hfnn hgnn hfg
-
-private theorem compatiblePairHasCommonInterleaver_of_nonnegPosComboPairBridge
-    (hbridge :
-      ∀ ⦃f g : ℝ[X]⦄,
-        HasPosLeadingCoeff f →
-        HasPosLeadingCoeff g →
-        HasNonnegCoeffs f →
-        HasNonnegCoeffs g →
-        PosComboRealRooted f g →
-        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : Compatible f g) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  hbridge hf_pos hg_pos hfnn hgnn
-    (hfg.toPosComboRealRooted hf_pos hg_pos)
-
-private theorem nonnegPosComboPairBridge_of_pairDegreeSplit
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    ∀ ⦃f g : ℝ[X]⦄,
-      HasPosLeadingCoeff f →
-      HasPosLeadingCoeff g →
-      HasNonnegCoeffs f →
-      HasNonnegCoeffs g →
-      PosComboRealRooted f g →
-      ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  fun {_ _} hf_pos hg_pos hfnn hgnn hfg =>
-    posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-      hsame hsucc hf_pos hg_pos hfnn hgnn hfg
-
-/-- Compatibility bridge under nonnegative coefficients, reduced to the
-repaired degree-split package with common-interleaver conclusions in both
-branches. -/
-theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : Compatible f g) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  compatiblePairHasCommonInterleaver_of_nonnegPosComboPairBridge
-    (nonnegPosComboPairBridge_of_pairDegreeSplit hsame hsucc)
+        (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
     hf_pos hg_pos hfnn hgnn hfg
 
 end RealRooted
