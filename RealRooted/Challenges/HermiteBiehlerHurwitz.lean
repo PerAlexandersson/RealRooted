@@ -139,8 +139,9 @@ has a totally nonnegative corrected classical Hurwitz matrix. -/
 theorem classicalHurwitzLinearPair_isTotallyNonneg :
     (Matrix.hurwitz
       (RealRooted.oddEvenPolynomial
-        (Polynomial.X + Polynomial.C (2 : ℝ))
-        (Polynomial.X + Polynomial.C (1 : ℝ))).coeff).IsTotallyNonneg := by
+        (Polynomial.X + 2) (Polynomial.X + 1)).coeff).IsTotallyNonneg := by
+  rw [show (Polynomial.X + 2 : ℝ[X]) = Polynomial.X + Polynomial.C 2 by rw [map_ofNat],
+    show (Polynomial.X + 1 : ℝ[X]) = Polynomial.X + Polynomial.C 1 by rw [map_one]]
   apply Matrix.hurwitz_isTotallyNonneg_of_hurwitzStable
   apply RealRooted.nonnegStrictInterlToHurwitzOddEven_of_hermiteBiehlerPos
     @RealRooted.hermiteBiehlerForwardPos

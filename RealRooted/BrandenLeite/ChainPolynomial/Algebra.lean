@@ -15,11 +15,12 @@ noncomputable section
 
 namespace RealRooted.BrandenLeite
 
-/-- Brändén--Saud Leite chain polynomials, Definition 3.2. -/
+/-- The Brändén--Saud Leite chain polynomials of a lower-triangular matrix `A`:
+`P 0 = 1` and `P (n + 1) = X * ∑ k ≤ n, A (n + 1) k • P k`. -/
 def chainPolynomial {R : Type*} [Semiring R] (A : LowerTriangularMatrix R) : ℕ → R[X]
   | 0 => 1
   | n + 1 =>
-      X * ∑ k : Fin (n + 1), C (A (n + 1) k) * chainPolynomial A k
+      X * ∑ k : Fin (n + 1), A (n + 1) k • chainPolynomial A k
 termination_by n => n
 decreasing_by exact k.isLt
 
@@ -33,6 +34,7 @@ decreasing_by exact k.isLt
     chainPolynomial A (n + 1) =
       X * ∑ k : Fin (n + 1), C (A (n + 1) k) * chainPolynomial A k := by
   rw [chainPolynomial]
+  simp only [Polynomial.smul_eq_C_mul]
 
 /-- The `n`th chain polynomial depends only on the lower-triangular entries in
 rows at most `n`. -/
