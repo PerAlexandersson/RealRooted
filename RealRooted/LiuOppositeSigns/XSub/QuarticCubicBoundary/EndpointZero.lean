@@ -422,10 +422,11 @@ lemma xSubQuarticCubicSplits_of_order_a_b_u_c_v_w_zero
     (mul_neg_of_pos_of_neg hP_w_pos hP_zero_neg)
 
 /-- The left-only endpoint-zero quartic/cubic boundary package. -/
-theorem xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCases :
-    xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCasesStatement := by
-  intro a b c d u v w μ hab hbc hcd huv hvw hau hbv hcw huc hvd hd0 hw0 hμ
-    hd_eq hw_ne
+theorem xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCases {a b c d u v w μ : ℝ} (hab : a ≤ b)
+    (hbc : b ≤ c) (hcd : c ≤ d) (huv : u ≤ v) (hvw : v ≤ w) (hau : a ≤ u) (hbv : b ≤ v)
+    (hcw : c ≤ w) (huc : u ≤ c) (hvd : v ≤ d) (hd0 : d ≤ 0) (hw0 : w ≤ 0) (hμ : 0 < μ)
+    (hd_eq : d = 0) (hw_ne : w ≠ 0) :
+    (xSubQuarticCubicPolynomial a b c d u v w μ).Splits := by
   subst d
   by_cases hab_eq : a = b
   · exact xSubQuarticCubicRepeatedLeftBoundaryCases
@@ -500,40 +501,28 @@ theorem xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCases :
 /-- The endpoint-zero quartic/cubic boundary follows from the two disjoint
 single-endpoint packages; the double-zero corner is already factored to the
 cubic/quadratic leaf. -/
-theorem xSubQuarticCubicEndpointZeroBoundaryCases_of_single_endpoint_packages
-    (hleft :
-      xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCasesStatement)
-    (hright :
-      xSubQuarticCubicRightOnlyEndpointZeroBoundaryCasesStatement) :
-    xSubQuarticCubicEndpointZeroBoundaryCasesStatement := by
-  intro a b c d u v w μ hab hbc hcd huv hvw hau hbv hcw huc hvd hd0 hw0 hμ h
+theorem xSubQuarticCubicEndpointZeroBoundaryCases {a b c d u v w μ : ℝ} (hab : a ≤ b)
+    (hbc : b ≤ c) (hcd : c ≤ d) (huv : u ≤ v) (hvw : v ≤ w) (hau : a ≤ u) (hbv : b ≤ v)
+    (hcw : c ≤ w) (huc : u ≤ c) (hvd : v ≤ d) (hd0 : d ≤ 0) (hw0 : w ≤ 0) (hμ : 0 < μ)
+    (h : d = 0 ∨ w = 0) :
+    (xSubQuarticCubicPolynomial a b c d u v w μ).Splits := by
   rcases h with hd_eq | hw_eq
   · by_cases hw_zero : w = 0
     · subst d
       subst w
       exact xSubQuarticCubicSplits_of_endpoint_roots_zero
         hab hbc huv hau hbv huc hcd hvd hμ
-    · exact hleft hab hbc hcd huv hvw hau hbv hcw huc hvd hd0 hw0 hμ
+    · exact xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCases hab hbc hcd huv hvw hau hbv hcw huc
+        hvd hd0 hw0 hμ
         hd_eq hw_zero
   · by_cases hd_zero : d = 0
     · subst d
       subst w
       exact xSubQuarticCubicSplits_of_endpoint_roots_zero
         hab hbc huv hau hbv huc hcd hvd hμ
-    · exact hright hab hbc hcd huv hvw hau hbv hcw huc hvd hd0 hw0 hμ
+    · exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases hab hbc hcd huv hvw hau hbv hcw huc
+        hvd hd0 hw0 hμ
         hw_eq hd_zero
-
-/-- The endpoint-zero quartic/cubic boundary follows from the left-only
-endpoint-zero package and the quartic-minus-quadratic right endpoint factor. -/
-theorem
-    xSubQuarticCubicEndpointZeroBoundaryCases_of_left_endpoint_quarticSubQuadratic
-    (hleft :
-      xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCasesStatement)
-    (hquad : quarticSubQuadraticSplitsStatement) :
-    xSubQuarticCubicEndpointZeroBoundaryCasesStatement :=
-  xSubQuarticCubicEndpointZeroBoundaryCases_of_single_endpoint_packages hleft
-    (xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases_of_quarticSubQuadratic
-      hquad)
 
 end LiuOppositeSigns
 end RealRooted

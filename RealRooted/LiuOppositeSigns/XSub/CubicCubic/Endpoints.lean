@@ -9,10 +9,12 @@ open Polynomial Filter
 namespace RealRooted
 namespace LiuOppositeSigns
 
-/-- The normalized monic cubic/cubic x-subtraction leaf. -/
-theorem xSubCubicCubicSplits :
-    xSubCubicCubicSplitsStatement := by
-  intro a b c u v w μ hab hbc huv hvw hub hvc hav hbw hc0 hw0 hμ
+/-- The normalized monic cubic/cubic x-subtraction pencil splits. -/
+theorem xSubCubicCubicSplits {a b c u v w μ : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (huv : u ≤ v)
+    (hvw : v ≤ w) (hub : u ≤ b) (hvc : v ≤ c) (hav : a ≤ v) (hbw : b ≤ w) (hc0 : c ≤ 0)
+    (hw0 : w ≤ 0) (hμ : 0 < μ) :
+    (X * ((X - C a) * (X - C b) * (X - C c)) -
+      C μ * ((X - C u) * (X - C v) * (X - C w))).Splits := by
   by_cases hw_eq : w = 0
   · subst w
     by_cases hc_eq : c = 0
@@ -25,10 +27,8 @@ theorem xSubCubicCubicSplits :
     exact xSubCubicCubicSplits_of_negative_endpoints
       hab hbc huv hvw hub hvc hav hbw hc0 hw_lt hμ
 
-/-- The normalized monic cubic/cubic x-subtraction leaf implies the
-degree-three/degree-three positive-split x-subtraction endpoint. -/
-lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_three_three_of_monic
-    (hmono : xSubCubicCubicSplitsStatement)
+/-- Degree-three/degree-three positive-split x-subtraction endpoint. -/
+lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_three_three
     {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
     (hpdeg : p.natDegree = 3) (hqdeg : q.natDegree = 3)
@@ -67,7 +67,7 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_three_three_of_monic
       C ν * ((X - C u) * (X - C v) * (X - C w))
   have hinner_splits : inner.Splits := by
     dsimp [inner]
-    exact hmono hab hbc huv hvw hub hvc hav hbw hc0 hw0 hν_pos
+    exact xSubCubicCubicSplits hab hbc huv hvw hub hvc hav hbw hc0 hw0 hν_pos
   have hpoly : X * p - C μ * q = C A * inner := by
     rw [hpfac, hqfac]
     dsimp [inner, ν, A, B]
@@ -78,22 +78,10 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_three_three_of_monic
   rw [hpoly]
   exact hinner_splits.C_mul A
 
-/-- The normalized monic cubic/cubic x-subtraction leaf implies the
-degree-three/degree-three positive-split x-subtraction endpoint. -/
-lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_three_three
-    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpdeg : p.natDegree = 3) (hqdeg : q.natDegree = 3)
-    {μ : ℝ} (hμ : 0 < μ) :
-    (X * p - C μ * q).Splits :=
-  splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_three_three_of_monic
-    xSubCubicCubicSplits hpair hpnn hqnn hpdeg hqdeg hμ
-
 /-- Degree-three right endpoint reduction for the same-degree sign-normalized
-x-subtraction leaf, modulo the normalized monic cubic/cubic arithmetic leaf. -/
+x-subtraction leaf. -/
 theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_three_of_monic
-    (hmono : xSubCubicCubicSplitsStatement)
+    positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_three
     {f g : ℝ[X]} {r : ℝ}
     (hpair : PositiveSplitRootCountPair f g)
     (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
@@ -106,28 +94,13 @@ theorem
   have hfdeg : f.natDegree = 3 := by lia
   have hFdeg : (f.comp (X + C r)).natDegree = 3 := by simpa [Polynomial.natDegree_comp] using hfdeg
   have hGdeg : (g.comp (X + C r)).natDegree = 3 := by simpa [Polynomial.natDegree_comp] using hgdeg
-  exact splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_three_three_of_monic
-    hmono (hpair.comp_X_add_C r) hfnn hgnn hFdeg hGdeg hμ
-
-/-- Degree-three right endpoint reduction for the same-degree sign-normalized
-x-subtraction leaf. -/
-theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_three
-    {f g : ℝ[X]} {r : ℝ}
-    (hpair : PositiveSplitRootCountPair f g)
-    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
-    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
-    (hdeg : f.natDegree = g.natDegree)
-    (hgdeg : g.natDegree = 3) :
-    ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits :=
-  positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_three_of_monic
-    xSubCubicCubicSplits hpair hfnn hgnn hdeg hgdeg
+  exact splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_three_three
+    (hpair.comp_X_add_C r) hfnn hgnn hFdeg hGdeg hμ
 
 /-- Endpoint cases through right degree three for the same-degree sign-normalized
-x-subtraction leaf, modulo the normalized monic cubic/cubic arithmetic leaf. -/
+x-subtraction leaf. -/
 theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
-    (hmono : xSubCubicCubicSplitsStatement)
+    positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three
     {f g : ℝ[X]} {r : ℝ}
     (hpair : PositiveSplitRootCountPair f g)
     (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
@@ -141,22 +114,8 @@ theorem
       hpair hfnn hgnn hdeg hle_two
   · have hthree : g.natDegree = 3 := by lia
     exact
-      positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_three_of_monic
-        hmono hpair hfnn hgnn hdeg hthree
-
-/-- Endpoint cases through right degree three for the same-degree sign-normalized
-x-subtraction leaf. -/
-theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three
-    {f g : ℝ[X]} {r : ℝ}
-    (hpair : PositiveSplitRootCountPair f g)
-    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
-    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
-    (hdeg : f.natDegree = g.natDegree)
-    (hgdeg : g.natDegree ≤ 3) :
-    ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits :=
-  positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_three_of_monic
-    xSubCubicCubicSplits hpair hfnn hgnn hdeg hgdeg
+      positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_three
+        hpair hfnn hgnn hdeg hthree
 
 end LiuOppositeSigns
 end RealRooted

@@ -18,17 +18,6 @@ noncomputable def xSubQuarticCubicPolynomial (a b c d u v w μ : ℝ) : ℝ[X] :
   X * ((X - C a) * (X - C b) * (X - C c) * (X - C d)) -
     C μ * ((X - C u) * (X - C v) * (X - C w))
 
-/-- Normalized monic arithmetic leaf for the degree-four/degree-three
-left-successor positive-split x-subtraction endpoint.  This is the remaining
-terminal needed for the two-degree Liu factor-return branch through endpoint
-degree three. -/
-def xSubQuarticCubicSplitsStatement : Prop :=
-  ∀ {a b c d u v w μ : ℝ},
-    a ≤ b → b ≤ c → c ≤ d → u ≤ v → v ≤ w →
-      a ≤ u → b ≤ v → c ≤ w → u ≤ c → v ≤ d →
-        d ≤ 0 → w ≤ 0 → 0 < μ →
-          (xSubQuarticCubicPolynomial a b c d u v w μ).Splits
-
 /-- The normalized quartic/cubic x-subtraction polynomial is a genuine
 quintic. -/
 lemma natDegree_xSubQuarticCubic (a b c d u v w μ : ℝ) :
@@ -1261,7 +1250,6 @@ lemma xSubQuarticCubicSplits_of_strict_roots
           hab hbu huc hcv hvw hwd hd0 hμ
       · exact xSubQuarticCubicSplits_of_order_a_b_u_c_v_d_w
           hab hbu huc hcv hvd hdw hw0 hμ
-
 
 end LiuOppositeSigns
 end RealRooted

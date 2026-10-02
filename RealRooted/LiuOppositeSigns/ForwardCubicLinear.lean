@@ -14,109 +14,6 @@ open Polynomial Filter
 namespace RealRooted
 namespace LiuOppositeSigns
 
-/-- The remaining cubic/linear endpoint-degree-three obstruction in root-order
-form.  For a compatible opposite-sign cubic/linear pair, the linear root must
-lie weakly between the lower and largest cubic roots. -/
-def CompatibleCubicLinearRootOrderStatement : Prop :=
-  ∀ {f g : ℝ[X]} {a b c u : ℝ},
-    f.Splits → g.Splits → OppositeLeadingSigns f g →
-      Compatible f g →
-        f.natDegree = 3 → g.natDegree = 1 →
-          a ≤ b → b ≤ c →
-            f.roots = {a, b, c} → g.roots = {u} →
-              a ≤ u ∧ u ≤ c
-
-/-- Conditional degree `(3, 1)` no-common forward endpoint case.  Once the
-cubic/linear root-order obstruction is known, deleting the cubic largest root
-leaves a quadratic/linear root-count comparison. -/
-theorem
-    theorem21RootCountBranches_of_compatible_natDegree_three_one_of_cubicLinearRootOrder
-    (horder : CompatibleCubicLinearRootOrderStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
-    (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 1) :
-    theorem21RootCountBranches f g := by
-  obtain ⟨r, s, hr, hs⟩ :=
-    exists_largestRoots hf hg hsgn
-      (by rw [hfdeg]; norm_num) (by rw [hgdeg]; norm_num)
-  obtain ⟨a, b, c, hab, hbc, hfroots, hffac⟩ :=
-    exists_roots_triple_of_splits_natDegree_three hf hfdeg
-  obtain ⟨u, hgroots, _hgfac⟩ :=
-    exists_linear_factor_of_splits_natDegree_one hg hgdeg
-  obtain ⟨hau, huc⟩ :=
-    horder hf hg hsgn hcompat hfdeg hgdeg hab hbc hfroots hgroots
-  have hr_eq_c : r = c :=
-    IsLargestRoot.eq_right_of_roots_triple hsgn.left_ne_zero hr hab hbc
-      hfroots
-  have hs_eq_u : s = u := by
-    have hs_mem : s ∈ g.roots := hs.mem_roots hsgn.right_ne_zero
-    rw [hgroots] at hs_mem
-    simpa using hs_mem
-  have hs_le_r : s ≤ r := by
-    rw [hr_eq_c, hs_eq_u]
-    exact huc
-  have hdelete_roots : (deleteRootFactor f r).roots = {a, b} := by
-    rw [hr_eq_c]
-    exact roots_deleteRootFactor_eq_pair_of_roots_triple_right
-      hsgn.left_ne_zero hfroots hffac
-  exact theorem21RootCountBranches_of_left
-    ⟨hr, hs, hs_le_r,
-      RootCountCompatible.of_roots_pair_singleton
-        hau hdelete_roots hgroots⟩
-
-/-- Conditional degree `(1, 3)` no-common forward endpoint case, obtained by
-applying the cubic/linear root-order obstruction after swapping the pair. -/
-theorem
-    theorem21RootCountBranches_of_compatible_natDegree_one_three_of_cubicLinearRootOrder
-    (horder : CompatibleCubicLinearRootOrderStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
-    (hno : NoCommonRoots f g)
-    (hfdeg : f.natDegree = 1) (hgdeg : g.natDegree = 3) :
-    theorem21RootCountBranches f g := by
-  obtain ⟨r, s, hr, hs⟩ :=
-    exists_largestRoots hf hg hsgn
-      (by rw [hfdeg]; norm_num) (by rw [hgdeg]; norm_num)
-  obtain ⟨u, hfroots, _hffac⟩ :=
-    exists_linear_factor_of_splits_natDegree_one hf hfdeg
-  obtain ⟨a, b, c, hab, hbc, hgroots, hgfac⟩ :=
-    exists_roots_triple_of_splits_natDegree_three hg hgdeg
-  obtain ⟨hau, huc⟩ :=
-    horder (f := g) (g := f) (a := a) (b := b) (c := c)
-      (u := u) hg hf hsgn.symm hcompat.comm hgdeg hfdeg hab hbc
-      hgroots hfroots
-  have hr_eq_u : r = u := by
-    have hr_mem : r ∈ f.roots := hr.mem_roots hsgn.left_ne_zero
-    rw [hfroots] at hr_mem
-    simpa using hr_mem
-  have hs_eq_c : s = c :=
-    IsLargestRoot.eq_right_of_roots_triple hsgn.right_ne_zero hs hab hbc
-      hgroots
-  have hu_root : f.IsRoot u :=
-    (Polynomial.mem_roots hsgn.left_ne_zero).mp (by
-      rw [hfroots]
-      simp)
-  have hc_root : g.IsRoot c :=
-    (Polynomial.mem_roots hsgn.right_ne_zero).mp (by
-      rw [hgroots]
-      simp only [Multiset.insert_eq_cons]
-      simp)
-  have huc_ne : u ≠ c := by
-    intro huc_eq
-    exact (hno u hu_root) (by simpa [huc_eq] using hc_root)
-  have hu_lt_c : u < c := lt_of_le_of_ne huc huc_ne
-  have hr_lt_s : r < s := by
-    rw [hr_eq_u, hs_eq_c]
-    exact hu_lt_c
-  have hdelete_roots : (deleteRootFactor g s).roots = {a, b} := by
-    rw [hs_eq_c]
-    exact roots_deleteRootFactor_eq_pair_of_roots_triple_right
-      hsgn.right_ne_zero hgroots hgfac
-  exact theorem21RootCountBranches_of_right
-    ⟨hr, hs, hr_lt_s,
-      RootCountCompatible.of_roots_singleton_pair
-        hau hfroots hdelete_roots⟩
-
 /-- Choosing the tangent slope at a right-outside point gives a monic
 cubic-minus-linear pencil with negative discriminant. -/
 lemma cubicDiscr_cubicSubLinear_slope_right_neg
@@ -402,9 +299,11 @@ lemma not_compatible_scaled_cubic_linear_of_opposite_of_left_root_lt_lower
 
 /-- Compatible opposite-sign cubic/linear pairs have the linear root in the
 closed interval spanned by the cubic roots. -/
-theorem compatibleCubicLinearRootOrder :
-    CompatibleCubicLinearRootOrderStatement := by
-  intro f g a b c u hf hg hsgn hcompat hfdeg hgdeg hab hbc hfroots hgroots
+theorem compatibleCubicLinearRootOrder {f g : ℝ[X]} {a b c u : ℝ}
+    (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
+    (hcompat : Compatible f g) (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 1)
+    (hab : a ≤ b) (hbc : b ≤ c) (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u}) :
+    a ≤ u ∧ u ≤ c := by
   have hffac :
       f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) :=
     eq_C_leadingCoeff_mul_prod_three hf a b c hfroots
@@ -433,23 +332,90 @@ theorem compatibleCubicLinearRootOrder :
         hsgn hab hbc hcu hcompat_fac
 
 /-- Checked degree `(3, 1)` no-common forward endpoint case. -/
-theorem theorem21RootCountBranches_of_compatible_natDegree_three_one
+theorem
+    theorem21RootCountBranches_of_compatible_natDegree_three_one
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
     (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 1) :
-    theorem21RootCountBranches f g :=
-  theorem21RootCountBranches_of_compatible_natDegree_three_one_of_cubicLinearRootOrder
-    compatibleCubicLinearRootOrder hf hg hsgn hcompat hfdeg hgdeg
+    theorem21RootCountBranches f g := by
+  obtain ⟨r, s, hr, hs⟩ :=
+    exists_largestRoots hf hg hsgn
+      (by rw [hfdeg]; norm_num) (by rw [hgdeg]; norm_num)
+  obtain ⟨a, b, c, hab, hbc, hfroots, hffac⟩ :=
+    exists_roots_triple_of_splits_natDegree_three hf hfdeg
+  obtain ⟨u, hgroots, _hgfac⟩ :=
+    exists_linear_factor_of_splits_natDegree_one hg hgdeg
+  obtain ⟨hau, huc⟩ :=
+    compatibleCubicLinearRootOrder hf hg hsgn hcompat hfdeg hgdeg hab hbc hfroots hgroots
+  have hr_eq_c : r = c :=
+    IsLargestRoot.eq_right_of_roots_triple hsgn.left_ne_zero hr hab hbc
+      hfroots
+  have hs_eq_u : s = u := by
+    have hs_mem : s ∈ g.roots := hs.mem_roots hsgn.right_ne_zero
+    rw [hgroots] at hs_mem
+    simpa using hs_mem
+  have hs_le_r : s ≤ r := by
+    rw [hr_eq_c, hs_eq_u]
+    exact huc
+  have hdelete_roots : (deleteRootFactor f r).roots = {a, b} := by
+    rw [hr_eq_c]
+    exact roots_deleteRootFactor_eq_pair_of_roots_triple_right
+      hsgn.left_ne_zero hfroots hffac
+  exact theorem21RootCountBranches_of_left
+    ⟨hr, hs, hs_le_r,
+      RootCountCompatible.of_roots_pair_singleton
+        hau hdelete_roots hgroots⟩
 
 /-- Checked degree `(1, 3)` no-common forward endpoint case. -/
-theorem theorem21RootCountBranches_of_compatible_natDegree_one_three
+theorem
+    theorem21RootCountBranches_of_compatible_natDegree_one_three
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g)
     (hno : NoCommonRoots f g)
     (hfdeg : f.natDegree = 1) (hgdeg : g.natDegree = 3) :
-    theorem21RootCountBranches f g :=
-  theorem21RootCountBranches_of_compatible_natDegree_one_three_of_cubicLinearRootOrder
-    compatibleCubicLinearRootOrder hf hg hsgn hcompat hno hfdeg hgdeg
+    theorem21RootCountBranches f g := by
+  obtain ⟨r, s, hr, hs⟩ :=
+    exists_largestRoots hf hg hsgn
+      (by rw [hfdeg]; norm_num) (by rw [hgdeg]; norm_num)
+  obtain ⟨u, hfroots, _hffac⟩ :=
+    exists_linear_factor_of_splits_natDegree_one hf hfdeg
+  obtain ⟨a, b, c, hab, hbc, hgroots, hgfac⟩ :=
+    exists_roots_triple_of_splits_natDegree_three hg hgdeg
+  obtain ⟨hau, huc⟩ :=
+    compatibleCubicLinearRootOrder (f := g) (g := f) (a := a) (b := b) (c := c)
+      (u := u) hg hf hsgn.symm hcompat.comm hgdeg hfdeg hab hbc
+      hgroots hfroots
+  have hr_eq_u : r = u := by
+    have hr_mem : r ∈ f.roots := hr.mem_roots hsgn.left_ne_zero
+    rw [hfroots] at hr_mem
+    simpa using hr_mem
+  have hs_eq_c : s = c :=
+    IsLargestRoot.eq_right_of_roots_triple hsgn.right_ne_zero hs hab hbc
+      hgroots
+  have hu_root : f.IsRoot u :=
+    (Polynomial.mem_roots hsgn.left_ne_zero).mp (by
+      rw [hfroots]
+      simp)
+  have hc_root : g.IsRoot c :=
+    (Polynomial.mem_roots hsgn.right_ne_zero).mp (by
+      rw [hgroots]
+      simp only [Multiset.insert_eq_cons]
+      simp)
+  have huc_ne : u ≠ c := by
+    intro huc_eq
+    exact (hno u hu_root) (by simpa [huc_eq] using hc_root)
+  have hu_lt_c : u < c := lt_of_le_of_ne huc huc_ne
+  have hr_lt_s : r < s := by
+    rw [hr_eq_u, hs_eq_c]
+    exact hu_lt_c
+  have hdelete_roots : (deleteRootFactor g s).roots = {a, b} := by
+    rw [hs_eq_c]
+    exact roots_deleteRootFactor_eq_pair_of_roots_triple_right
+      hsgn.right_ne_zero hgroots hgfac
+  exact theorem21RootCountBranches_of_right
+    ⟨hr, hs, hr_lt_s,
+      RootCountCompatible.of_roots_singleton_pair
+        hau hfroots hdelete_roots⟩
 
 end LiuOppositeSigns
 end RealRooted

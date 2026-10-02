@@ -1,4 +1,4 @@
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Statements
+import RealRooted.LiuOppositeSigns.XSub.QuarticCubicCommonRoot
 
 /-!
 # Repeated-right quartic/cubic boundary
@@ -423,9 +423,11 @@ lemma xSubQuarticCubicSplits_of_strict_left_repeated_right_boundary
         hab hbu huc_lt hcv hvd_lt hd0 hμ
 
 /-- The strict-left repeated-right quartic/cubic boundary package. -/
-theorem xSubQuarticCubicStrictLeftRepeatedRightBoundaryCases :
-    xSubQuarticCubicStrictLeftRepeatedRightBoundaryCasesStatement := by
-  intro a b c d u v w μ hab hbc hcd huv hvw hau hbv hcw huc hvd hd0 hw0 hμ h
+theorem xSubQuarticCubicStrictLeftRepeatedRightBoundaryCases {a b c d u v w μ : ℝ} (hab : a < b)
+    (hbc : b < c) (hcd : c < d) (huv : u ≤ v) (hvw : v ≤ w) (hau : a ≤ u) (hbv : b ≤ v)
+    (hcw : c ≤ w) (huc : u ≤ c) (hvd : v ≤ d) (hd0 : d ≤ 0) (hw0 : w < 0) (hμ : 0 < μ)
+    (h : u = v ∨ v = w) :
+    (xSubQuarticCubicPolynomial a b c d u v w μ).Splits := by
   exact xSubQuarticCubicSplits_of_strict_left_repeated_right_boundary
     hab hbc hcd huv hvw hau hbv hcw huc hvd hd0 hw0 hμ h
 

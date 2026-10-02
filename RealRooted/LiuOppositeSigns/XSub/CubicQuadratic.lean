@@ -14,17 +14,6 @@ open Polynomial Filter
 namespace RealRooted
 namespace LiuOppositeSigns
 
-/-- Normalized monic arithmetic leaf for the degree-three/degree-two
-x-subtraction endpoint.  The inequalities are exactly the finite root-order
-data supplied by `PositiveSplitRootCountPair`, while `c ≤ 0` and `v ≤ 0`
-record coefficientwise nonnegativity after translation. -/
-def xSubCubicQuadraticSplitsStatement : Prop :=
-  ∀ {a b c u v μ : ℝ},
-    a ≤ b → b ≤ c → u ≤ v → a ≤ u → b ≤ v → u ≤ c →
-      c ≤ 0 → v ≤ 0 → 0 < μ →
-        (X * ((X - C a) * (X - C b) * (X - C c)) -
-            C μ * ((X - C u) * (X - C v))).Splits
-
 /-- The normalized cubic/quadratic x-subtraction polynomial is a genuine
 quartic. -/
 lemma natDegree_xSubCubicQuadratic (a b c u v μ : ℝ) :
@@ -1125,9 +1114,10 @@ lemma xSubCubicQuadraticSplits_of_upper_quadratic_root_right
     exact xSubCubicQuadraticSplits_of_lower_quadratic_root_at_left_endpoint
       hbc hcv hv0 hμ
 
-/-- The normalized monic cubic/quadratic x-subtraction leaf. -/
-theorem xSubCubicQuadraticSplits : xSubCubicQuadraticSplitsStatement := by
-  intro a b c u v μ hab hbc huv hau hbv huc hc0 hv0 hμ
+/-- The normalized monic cubic/quadratic x-subtraction pencil splits. -/
+theorem xSubCubicQuadraticSplits {a b c u v μ : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (huv : u ≤ v)
+    (hau : a ≤ u) (hbv : b ≤ v) (huc : u ≤ c) (hc0 : c ≤ 0) (hv0 : v ≤ 0) (hμ : 0 < μ) :
+    (X * ((X - C a) * (X - C b) * (X - C c)) - C μ * ((X - C u) * (X - C v))).Splits := by
   by_cases hub : u ≤ b
   · by_cases hvc : v ≤ c
     · exact xSubCubicQuadraticSplits_of_interlacing_roots

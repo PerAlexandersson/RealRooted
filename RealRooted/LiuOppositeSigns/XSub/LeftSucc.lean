@@ -61,15 +61,6 @@ theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_
     (hpair.left_pos.comp_X_add_C r) (hpair.right_pos.comp_X_add_C r)
     hFdeg hGdeg hμ
 
-/-- Cubic-discriminant certificate for the degree-two/degree-one x-subtraction
-leaf.  The normalized hypotheses say that the quadratic roots `a ≤ b` and
-linear root `c` are nonpositive after translation, and that the linear root is
-not below the lower quadratic root. -/
-def xSubQuadraticLinearCubicDiscrimNonnegStatement : Prop :=
-  ∀ {a b c μ : ℝ},
-    a ≤ b → a ≤ c → b ≤ 0 → c ≤ 0 → 0 < μ →
-      0 ≤ cubicDiscr (X * ((X - C a) * (X - C b)) - C μ * (X - C c))
-
 /-- Explicit discriminant certificate for the normalized case
 `a ≤ c ≤ b ≤ 0`. -/
 lemma xSubQuadraticLinearCubicDiscrimNonneg_between
@@ -137,11 +128,11 @@ lemma xSubQuadraticLinearCubicDiscrimNonneg_right
   rw [hdisc]
   positivity
 
-/-- The cubic-discriminant certificate needed in the degree-two/degree-one
-x-subtraction leaf. -/
-theorem xSubQuadraticLinearCubicDiscrimNonneg :
-    xSubQuadraticLinearCubicDiscrimNonnegStatement := by
-  intro a b c μ hab hac hb0 hc0 hμ
+/-- The cubic discriminant of the normalized degree-two/degree-one
+x-subtraction pencil is nonnegative. -/
+theorem xSubQuadraticLinearCubicDiscrimNonneg {a b c μ : ℝ} (hab : a ≤ b) (hac : a ≤ c)
+    (hb0 : b ≤ 0) (hc0 : c ≤ 0) (hμ : 0 < μ) :
+    0 ≤ cubicDiscr (X * ((X - C a) * (X - C b)) - C μ * (X - C c)) := by
   by_cases hcb : c ≤ b
   · let u : ℝ := c - a
     let v : ℝ := b - c
@@ -185,10 +176,8 @@ theorem xSubQuadraticLinearCubicDiscrimNonneg :
     rw [hnorm]
     exact xSubQuadraticLinearCubicDiscrimNonneg_right hu hv hw hμ
 
-/-- If the normalized cubic-discriminant certificate is available, then the
-degree-two/degree-one x-subtraction pencil splits. -/
-lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_one_of_cubicDiscrim
-    (harith : xSubQuadraticLinearCubicDiscrimNonnegStatement)
+/-- Degree-two/degree-one positive-split x-subtraction endpoint. -/
+lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_one
     {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
     (hpdeg : p.natDegree = 2) (hqdeg : q.natDegree = 1)
@@ -230,7 +219,7 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_one_of_cubicDiscrim
     compute_degree
   have hinner_disc : 0 ≤ cubicDiscr inner := by
     dsimp [inner]
-    exact harith hab hac hb0 hc0 hν_pos
+    exact xSubQuadraticLinearCubicDiscrimNonneg hab hac hb0 hc0 hν_pos
   have hinner_splits : inner.Splits :=
     splits_of_natDegree_le_three_cubicDiscr_nonneg hinner_deg hinner_disc
   have hpfacA : p = C A * ((X - C a) * (X - C b)) := by simpa [A] using hpfac
@@ -245,11 +234,10 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_one_of_cubicDiscrim
   rw [hpoly]
   exact hinner_splits.C_mul A
 
-/-- Degree-one right endpoint reduction for the sign-normalized
-x-subtraction leaf, modulo the explicit cubic-discriminant certificate. -/
+/-- Degree-one right endpoint case for the sign-normalized x-subtraction
+leaf. -/
 theorem
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one_of_cubicDiscrim
-    (harith : xSubQuadraticLinearCubicDiscrimNonnegStatement)
+    positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
     {f g : ℝ[X]} {r : ℝ}
     (hpair : PositiveSplitRootCountPair f g)
     (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
@@ -264,21 +252,8 @@ theorem
     simpa [Polynomial.natDegree_comp] using hfdeg
   have hgdeg_shift : (g.comp (X + C r)).natDegree = 1 := by
     simpa [Polynomial.natDegree_comp] using hgdeg
-  exact splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_one_of_cubicDiscrim
-    harith (hpair.comp_X_add_C r) hfnn hgnn hfdeg_shift hgdeg_shift hμ
+  exact splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_one
+    (hpair.comp_X_add_C r) hfnn hgnn hfdeg_shift hgdeg_shift hμ
 
-/-- Degree-one right endpoint case for the sign-normalized x-subtraction
-leaf. -/
-theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
-    {f g : ℝ[X]} {r : ℝ}
-    (hpair : PositiveSplitRootCountPair f g)
-    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
-    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
-    (hdeg : f.natDegree = g.natDegree + 1)
-    (hgdeg : g.natDegree = 1) :
-    ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits :=
-  positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one_of_cubicDiscrim
-    xSubQuadraticLinearCubicDiscrimNonneg hpair hfnn hgnn hdeg hgdeg
 end LiuOppositeSigns
 end RealRooted
