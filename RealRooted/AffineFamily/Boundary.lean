@@ -532,11 +532,6 @@ theorem exists_rightmost_factor_interlaces_of_strictInterl_sameDegree
         (f := f) (g := g) (q := q) (uR := uR)
         hstrictInterl_keep hdeg huR_max hq⟩
 
-@[deprecated exists_rightmost_factor_interlaces_of_strictInterl_sameDegree
-  (since := "2026-09-18")]
-alias exists_rightmost_factor_interlaces_of_prec_sameDegree :=
-  exists_rightmost_factor_interlaces_of_strictInterl_sameDegree
-
 private lemma exists_strict_root_upper_bound_of_nonneg_of_not_isRoot_zero
     {p : ℝ[X]}
     (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p)
@@ -688,10 +683,5 @@ theorem strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
     StrictInterl g (X * f) :=
   strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common
     h hg_ne hg_splits hgnn hno
-
-@[deprecated strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
-  (since := "2026-09-18")]
-alias prec_right_pair_of_prec_or_revPrec_of_no_common_nonneg :=
-  strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
 
 end RealRooted

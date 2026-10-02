@@ -150,6 +150,6 @@ macro_rules
       rr_narayana_polynomial_prec_succ using
         parameter := $m:term,
         degree := $n:term) =>
-      `(tactic| exact RealRooted.prec_narayanaPolynomial_succ $m $n)
+      `(tactic| exact RealRooted.strictInterl_narayanaPolynomial_succ $m $n)
 end Tactic
 end RealRooted

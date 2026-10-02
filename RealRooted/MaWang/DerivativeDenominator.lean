@@ -672,9 +672,4 @@ theorem isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_c
       eval_C_mul_X_mul_one_sub_X_nonpos_of_nonneg_of_nonpos (hc n) hr)
     hrec hdeg_lo hdeg_hi
 
-@[deprecated strictInterl_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
-  (since := "2026-09-26")]
-alias prec_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs :=
-  strictInterl_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
-
 end RealRooted

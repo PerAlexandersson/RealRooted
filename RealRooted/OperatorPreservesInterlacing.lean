@@ -90,9 +90,6 @@ theorem interl_or_reverse_map_of_pencil
   interl_or_reverse_of_allComboRealRooted
     (allComboRealRooted_map_of_pencil hall hT)
 
-@[deprecated interl_or_reverse_map_of_pencil (since := "2026-09-18")]
-alias prec0_or_revPrec0_map_of_pencil := interl_or_reverse_map_of_pencil
-
 /-- Real-rootedness-preserving linear operators preserve interlacing up to the
 order ambiguity built into the current oriented `StrictInterl` predicate. Zero images
 are absorbed by `Interl`. -/

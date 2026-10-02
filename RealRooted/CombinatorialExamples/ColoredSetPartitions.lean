@@ -289,10 +289,4 @@ theorem isRealRooted_typeBSetPartitions (n : Nat) :
     ((typeBSetPartitions n) ≠ 0 ∧ (typeBSetPartitions n).Splits) :=
   isRealRooted_coloredSetPartitions 1 2 n
 
-@[deprecated strictInterl_coloredSetPartitions_one_two (since := "2026-09-26")]
-alias prec_coloredSetPartitions_one_two := strictInterl_coloredSetPartitions_one_two
-
-@[deprecated strictInterl_coloredSetPartitions_succ (since := "2026-09-26")]
-alias prec_coloredSetPartitions_succ := strictInterl_coloredSetPartitions_succ
-
 end RealRooted

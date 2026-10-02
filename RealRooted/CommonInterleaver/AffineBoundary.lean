@@ -54,11 +54,6 @@ theorem strictInterl_boundary_right_pair_of_strictInterl_nonneg
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hstrictInterl.2.1.1
   exact StrictInterl.add_of_right_of_posLeadingCoeff htfX hgfX htf_pos hg_pos
 
-@[deprecated strictInterl_boundary_right_pair_of_strictInterl_nonneg
-  (since := "2026-09-18")]
-alias prec_boundary_right_pair_of_prec_nonneg :=
-  strictInterl_boundary_right_pair_of_strictInterl_nonneg
-
 /-- Once the fixed right-hand pair `(g, X * f)` is oriented, the polynomial
 `X * f` itself is already a common right interleaver for `f` and `g`. -/
 theorem pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg

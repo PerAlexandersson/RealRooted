@@ -797,7 +797,4 @@ theorem card_roots_signedReciprocal_filter_gt
   rw [lt_inv_comm₀ hs hnegpos]
   constructor <;> intro h <;> linarith
 
-@[deprecated RootwiseLE.of_strictInterl_sameDegree (since := "2026-09-26")]
-alias RootwiseLE.of_prec_sameDegree := RootwiseLE.of_strictInterl_sameDegree
-
 end RealRooted

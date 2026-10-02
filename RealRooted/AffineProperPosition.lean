@@ -187,27 +187,6 @@ lemma interl_affine_add_one_self {s t : ℝ} (hs : 0 < s) :
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
   exact interl_affine_linear_affine_linear_of_cross hs hs le_rfl
 
-@[deprecated interl_C_C (since := "2026-09-18")]
-alias prec0_C_C := interl_C_C
-
-@[deprecated strictInterl_affine_linear_affine_linear_of_cross
-  (since := "2026-09-18")]
-alias prec_affine_linear_affine_linear_of_cross :=
-  strictInterl_affine_linear_affine_linear_of_cross
-
-@[deprecated interl_affine_linear_affine_linear_of_cross
-  (since := "2026-09-18")]
-alias prec0_affine_linear_affine_linear_of_cross :=
-  interl_affine_linear_affine_linear_of_cross
-
-@[deprecated interl_congr (since := "2026-09-18")]
-alias prec0_congr := interl_congr
-
-@[deprecated interl_const_entries_affine_of_det_nonneg
-  (since := "2026-09-18")]
-alias prec0_const_entries_affine_of_det_nonneg :=
-  interl_const_entries_affine_of_det_nonneg
-
 /-- A positive affine form precedes the `X`-multiple of another one under the
 cross inequality. -/
 theorem interl_affine_to_X_mul_affine

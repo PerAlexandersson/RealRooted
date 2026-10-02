@@ -727,12 +727,4 @@ theorem fPolynomialDecompositionCompatibility : fPolynomialDecompositionCompatib
     (fPolynomial_natDegree_le d h) (isRdDecomposition_fPolynomial_of_isIdDecomposition hd hid)
   lia
 
-/-! Deprecated aliases for the pre-canonical strict-interlacing names. -/
-
-@[deprecated strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs
-  (since := "2026-09-26")]
-alias prec_iff_prec_mul_X_both_of_hasNonnegCoeffs :=
-  strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs
-
-
 end RealRooted

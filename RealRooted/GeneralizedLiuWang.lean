@@ -283,7 +283,4 @@ theorem generalizedLiuWangCriterion :
   exact strictInterl_generalizedLiuWang_of_no_common
     hgf hg_pos hl_inter hl_pos hl_nonpos hF_pos hdeg_lo hdeg_hi hno hb_nonpos
 
-@[deprecated strictInterl_generalizedLiuWang_of_no_common (since := "2026-09-26")]
-alias prec_generalizedLiuWang_of_no_common := strictInterl_generalizedLiuWang_of_no_common
-
 end RealRooted

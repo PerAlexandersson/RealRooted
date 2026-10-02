@@ -693,18 +693,4 @@ lemma StrictInterlSameDegree.of_splits_and_posDef {n : ℕ}
     StrictInterlSameDegree.of_wronskian_pos hp_pos hq_pos hp_deg hq_deg hp_splits hq_splits
       fun t ↦ bezoutMatrix.wronskian_pos_of_posDef hq_deg.le hp_deg.le hB t
 
-/-! ## Deprecated strict same-degree interlacing names -/
-
-@[deprecated StrictInterlSameDegree.of_fin_interlacing (since := "2026-09-18")]
-alias StrictPrecSameDegree.of_fin_interlacing := StrictInterlSameDegree.of_fin_interlacing
-
-@[deprecated StrictInterlSameDegree.of_wronskian_pos (since := "2026-09-18")]
-alias StrictPrecSameDegree.of_wronskian_pos := StrictInterlSameDegree.of_wronskian_pos
-
-@[deprecated StrictInterlSameDegree.of_splits_and_posDef (since := "2026-09-18")]
-alias StrictPrecSameDegree.of_splits_and_posDef := StrictInterlSameDegree.of_splits_and_posDef
-
-@[deprecated strictInterl_of_wronskian_pos_succ (since := "2026-09-18")]
-alias prec_of_wronskian_pos_succ := strictInterl_of_wronskian_pos_succ
-
 end RealRooted

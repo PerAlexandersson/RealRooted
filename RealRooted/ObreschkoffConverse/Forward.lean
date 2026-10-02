@@ -543,8 +543,5 @@ theorem allComboRealRooted_of_strictInterl {f g : ℝ[X]}
   · exact allComboRealRooted_of_strictInterl_sameDegree hfg hsame.symm
   · exact allComboRealRooted_of_strictInterl_succDegree hfg hsucc.symm
 
-@[deprecated allComboRealRooted_of_strictInterl (since := "2026-09-18")]
-alias allComboRealRooted_of_prec := allComboRealRooted_of_strictInterl
-
 end
 end RealRooted

@@ -292,12 +292,6 @@ theorem of_interl_self {p : ℝ[X]}
   · exact IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg hpnn hpp'.1.2
 
-@[deprecated IsPFPolynomial.interl_self (since := "2026-09-18")]
-alias prec0_self := interl_self
-
-@[deprecated IsPFPolynomial.of_interl_self (since := "2026-09-18")]
-alias of_prec0_self := of_interl_self
-
 end IsPFPolynomial
 
 theorem isPFPolynomial_one : IsPFPolynomial (1 : ℝ[X]) :=
@@ -456,25 +450,6 @@ theorem interl_nonneg_combo_right_of_common_left_of_pf {p q r : ℝ[X]}
     Interl p (C a * q + C b * r) :=
   interl_nonneg_combo_right_of_common_left_of_nonneg hpq hpr
     hq.hasNonnegCoeffs hr.hasNonnegCoeffs ha hb
-
-@[deprecated interl_X_mul_both_of_pf (since := "2026-09-18")]
-alias prec0_X_mul_both_of_pf := interl_X_mul_both_of_pf
-
-@[deprecated interl_add_right_of_common_left_of_nonneg (since := "2026-09-18")]
-alias prec0_add_right_of_common_left_of_nonneg :=
-  interl_add_right_of_common_left_of_nonneg
-
-@[deprecated interl_add_left_of_common_right_of_nonneg (since := "2026-09-18")]
-alias prec0_add_left_of_common_right_of_nonneg :=
-  interl_add_left_of_common_right_of_nonneg
-
-@[deprecated interl_nonneg_combo_right_of_common_left_of_nonneg (since := "2026-09-18")]
-alias prec0_nonneg_combo_right_of_common_left_of_nonneg :=
-  interl_nonneg_combo_right_of_common_left_of_nonneg
-
-@[deprecated interl_nonneg_combo_right_of_common_left_of_pf (since := "2026-09-18")]
-alias prec0_nonneg_combo_right_of_common_left_of_pf :=
-  interl_nonneg_combo_right_of_common_left_of_pf
 
 /-- Shifted reciprocal `t^D p(1/t)`, represented by Mathlib's coefficient
 reflection operator. -/

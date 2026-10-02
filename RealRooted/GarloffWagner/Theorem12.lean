@@ -148,11 +148,6 @@ theorem gwSchurProduct_pf_right_linearFactor_of_derivative_interl
     · exact IsPFPolynomial.of_realRooted_nonneg htarget_nn hstrict.2.1.2
 
 /- Deprecated compatibility alias for `Interl.C_mul_left_of_nonneg`. -/
-@[deprecated Interl.C_mul_left_of_nonneg (since := "2026-09-17")]
-theorem prec0_C_mul_left_of_nonneg {f g : ℝ[X]}
-    (h : Interl f g) {a : ℝ} (ha : 0 ≤ a) :
-    Interl (C a * f) g :=
-  h.C_mul_left_of_nonneg ha
 
 theorem HasNonnegCoeffs.weightedSum :
     ∀ l : List (ℝ × ℝ[X]),
@@ -707,25 +702,10 @@ theorem gwHadamardProductInterl_left {f p q : ℝ[X]}
 
 namespace IsGWKreinSummand
 
-@[deprecated strictInterl (since := "2026-09-18")]
-alias prec := strictInterl
-
-@[deprecated interl (since := "2026-09-18")]
-alias prec0 := interl
-
 end IsGWKreinSummand
 
 namespace IsPFPolynomial
 
-@[deprecated derivative_interl_self (since := "2026-09-18")]
-alias derivative_prec0_self := derivative_interl_self
-
 end IsPFPolynomial
-
-@[deprecated interl_weightedSum_right_of_nonneg (since := "2026-09-18")]
-alias prec0_weightedSum_right_of_nonneg := interl_weightedSum_right_of_nonneg
-
-@[deprecated gwSchurProductInterl (since := "2026-09-18")]
-alias gwSchurProductPrec0 := gwSchurProductInterl
 
 end RealRooted

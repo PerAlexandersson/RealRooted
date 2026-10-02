@@ -380,8 +380,4 @@ theorem isSturmSeq_narayanaPrefix_of_nonnegCoeffs
           simpa [narayanaPrefix, IsSturmSeq] using
             And.intro (interlaces_narayana_succ_of_nonnegCoeffs (n + 2) (by lia) hnonneg) ih
 
-@[deprecated strictInterl_narayanaQuot_succ_of_nonnegCoeffs (since := "2026-09-26")]
-alias prec_narayanaQuot_succ_of_nonnegCoeffs :=
-  strictInterl_narayanaQuot_succ_of_nonnegCoeffs
-
 end RealRooted

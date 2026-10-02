@@ -21,10 +21,6 @@ def SourceInterl (f g : ℝ[X]) : Prop :=
     (f = 0 ∨ g = 0 ∨
       (f.natDegree ≤ 1 ∧ g.natDegree ≤ 1) ∨ StrictInterl f g)
 
-/-- Deprecated compatibility name for `SourceInterl`. -/
-@[deprecated SourceInterl (since := "2026-09-18")]
-abbrev SourcePrec := SourceInterl
-
 lemma SourceInterl.of_strictInterl {f g : ℝ[X]} (h : StrictInterl f g) : SourceInterl f g :=
   ⟨Or.inr h.1, Or.inr h.2.1, Or.inr (Or.inr (Or.inr h))⟩
 
@@ -325,14 +321,6 @@ theorem weakQuadratic_not_sourceInterlacingSeq :
     ¬IsInterlacingSeq [weakQuadratic] := by
   intro h
   exact weakQuadratic_not_sourceRealRooted (h.realRooted weakQuadratic (by simp))
-
-/-! ## Deprecated source-interlacing names -/
-
-@[deprecated SourceInterl.of_strictInterl (since := "2026-09-18")]
-alias SourcePrec.of_prec := SourceInterl.of_strictInterl
-
-@[deprecated SourceInterl.of_lowDegree (since := "2026-09-18")]
-alias SourcePrec.of_lowDegree := SourceInterl.of_lowDegree
 
 end HosterStump
 end RealRooted

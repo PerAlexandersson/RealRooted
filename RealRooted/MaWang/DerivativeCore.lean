@@ -69,7 +69,4 @@ namespace RealRooted
 export MaWangInternal
   (strictInterl_ma_wang_succ strictInterl_ma_wang_same strictInterl_ma_wang)
 
-@[deprecated strictInterl_ma_wang_succ (since := "2026-09-26")]
-alias prec_ma_wang_succ := strictInterl_ma_wang_succ
-
 end RealRooted

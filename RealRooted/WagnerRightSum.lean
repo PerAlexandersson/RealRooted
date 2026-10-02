@@ -1556,9 +1556,5 @@ theorem StrictInterl.add_of_right_mixed_of_natDegree_of_common_factor_of_no_comm
 
 /-! ## Deprecated Wagner sum names -/
 
-@[deprecated StrictInterl.add_of_right_of_posLeadingCoeff (since := "2026-09-18")]
-alias prec_add_of_prec_right_of_posLeadingCoeff :=
-  StrictInterl.add_of_right_of_posLeadingCoeff
-
 end
 end RealRooted

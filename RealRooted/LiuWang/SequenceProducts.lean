@@ -377,14 +377,4 @@ theorem isRealRooted_of_lw_current_one_add_X_positive_t_lag_sequence
     strictInterl_lw_current_one_add_X_positive_t_lag_sequence
       hbase hpos hnonneg hc hrec hdeg_succ hno
 
-@[deprecated strictInterl_lw_positive_X_mul_lag_sequence (since := "2026-09-26")]
-alias prec_lw_positive_X_mul_lag_sequence := strictInterl_lw_positive_X_mul_lag_sequence
-
-@[deprecated strictInterl_lw_tR_lag_sequence (since := "2026-09-26")]
-alias prec_lw_tR_lag_sequence := strictInterl_lw_tR_lag_sequence
-
-@[deprecated strictInterl_lw_current_one_add_X_positive_t_lag_sequence (since := "2026-09-26")]
-alias prec_lw_current_one_add_X_positive_t_lag_sequence :=
-  strictInterl_lw_current_one_add_X_positive_t_lag_sequence
-
 end RealRooted

@@ -530,8 +530,5 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
           hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inr hsame) hno
   lia
 
-@[deprecated strictInterl_of_allComboRealRooted (since := "2026-09-18")]
-alias prec_of_allComboRealRooted := strictInterl_of_allComboRealRooted
-
 end
 end RealRooted

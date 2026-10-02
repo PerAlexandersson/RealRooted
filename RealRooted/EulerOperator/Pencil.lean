@@ -41,9 +41,6 @@ theorem strictInterl_thetac_X_mul {f : ℝ[X]} (hf : IsPFPolynomial f)
     (nonnegCoeffs_C_mul hc.le hnn).pos_leadingCoeff hCf_ne
   exact StrictInterl.add_of_right_of_posLeadingCoeff hleft hright hpos_left hpos_right
 
-@[deprecated strictInterl_thetac_X_mul (since := "2026-09-26")]
-alias prec_thetac_X_mul := strictInterl_thetac_X_mul
-
 /-- A polynomial-PF `f` precedes every positive Euler pencil of `f` when its
 degree is at least two. -/
 theorem strictInterl_self_thetac {f : ℝ[X]} (hf : IsPFPolynomial f)
@@ -54,9 +51,6 @@ theorem strictInterl_self_thetac {f : ℝ[X]} (hf : IsPFPolynomial f)
     HasNonnegCoeffs.add hnn.derivative.X_mul (nonnegCoeffs_C_mul hc.le hnn)
   exact strictInterl_of_strictInterl_X_mul_of_nonneg
     (strictInterl_thetac_X_mul hf hdeg hc) hnn hnn_thc
-
-@[deprecated strictInterl_self_thetac (since := "2026-09-26")]
-alias prec_self_thetac := strictInterl_self_thetac
 
 /-- Positive Euler pencils are ordered by the scalar shift. -/
 theorem strictInterl_thetaa_thetab {f : ℝ[X]} (hf : IsPFPolynomial f)
@@ -84,9 +78,6 @@ theorem strictInterl_thetaa_thetab {f : ℝ[X]} (hf : IsPFPolynomial f)
     StrictInterl.add_of_right_of_posLeadingCoeff hcf hgg hpos_cf hpos_g
   grind
 
-@[deprecated strictInterl_thetaa_thetab (since := "2026-09-26")]
-alias prec_thetaa_thetab := strictInterl_thetaa_thetab
-
 /-- A nonconstant polynomial PF member lies to the left of its Euler
 derivative. This includes the degree-one boundary case. -/
 theorem strictInterl_self_theta_of_natDegree_ne_zero {p : ℝ[X]}
@@ -108,8 +99,5 @@ degree is at least two. -/
 theorem strictInterl_self_theta {p : ℝ[X]} (hp : IsPFPolynomial p)
     (hdeg : 2 ≤ p.natDegree) : StrictInterl p (theta p) :=
   strictInterl_self_theta_of_natDegree_ne_zero hp (by lia)
-
-@[deprecated strictInterl_self_theta (since := "2026-09-26")]
-alias prec_self_theta := strictInterl_self_theta
 
 end RealRooted

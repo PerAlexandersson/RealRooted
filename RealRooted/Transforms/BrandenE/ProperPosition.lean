@@ -310,16 +310,4 @@ theorem brandenBasisImageRow_isInterlacingSeqNonneg (n : ℕ) :
     erw [List.get_ofFn, List.get_ofFn]
     exact brandenBasisImage_strictInterl n i j hij.le hj
 
-@[deprecated brandenEulerStep_strictInterl (since := "2026-09-18")]
-alias brandenEulerStep_prec := brandenEulerStep_strictInterl
-
-@[deprecated brandenBasisImage_endpoint_strictInterl (since := "2026-09-18")]
-alias brandenBasisImage_endpoint_prec := brandenBasisImage_endpoint_strictInterl
-
-@[deprecated brandenBasisImage_adjacent_strictInterl (since := "2026-09-18")]
-alias brandenBasisImage_adjacent_prec := brandenBasisImage_adjacent_strictInterl
-
-@[deprecated brandenBasisImage_first_strictInterl (since := "2026-09-18")]
-alias brandenBasisImage_first_prec := brandenBasisImage_first_strictInterl
-
 end RealRooted

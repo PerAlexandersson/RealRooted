@@ -110,7 +110,4 @@ theorem not_strictInterl_deg1_example :
       (-1 / 2) neg_half_mem_roots_two_mul_X_add_one
   linarith
 
-@[deprecated not_strictInterl_deg1_example (since := "2026-09-26")]
-alias not_prec_deg1_example := not_strictInterl_deg1_example
-
 end RealRooted

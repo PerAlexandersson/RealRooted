@@ -279,13 +279,4 @@ theorem exists_mem_largestRoot_le_sum
   rcases List.mem_map.mp hap with ⟨p, hp, rfl⟩
   exact ⟨p, hp, rp, rsum, hrp, by simpa using hrsum, hle⟩
 
-@[deprecated StrictInterl.eval_neg_of_left_top_gap (since := "2026-09-16")]
-theorem Prec.eval_neg_of_left_top_gap {h p : ℝ[X]} {x : ℝ}
-    (hhp : StrictInterl h p) (hdeg : h.natDegree + 1 = p.natDegree)
-    (hp_pos : HasPosLeadingCoeff p)
-    (hh_lt : ∀ r ∈ h.roots, r < x)
-    (hp_above : ∃ r, p.IsRoot r ∧ x < r) :
-    p.eval x < 0 :=
-  StrictInterl.eval_neg_of_left_top_gap hhp hdeg hp_pos hh_lt hp_above
-
 end RealRooted

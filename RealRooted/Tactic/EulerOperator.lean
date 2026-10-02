@@ -401,7 +401,7 @@ macro_rules
         left_pf := $hp:term,
         right_pf := $hq:term,
         prec0 := $hpq:term) =>
-      `(tactic| exact RealRooted.thetaPlusOnePreservesPrec0 $hp $hq $hpq)
+      `(tactic| exact RealRooted.thetaPlusOnePreservesInterl $hp $hq $hpq)
   | `(tactic|
       rr_thetaPlusOne_sequence_prec0 using
         left_pf := $hp:term,

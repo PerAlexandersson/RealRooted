@@ -207,15 +207,6 @@ lemma interl_C_mul_affine_linear_X_mul_affine_linear
     hasNonnegCoeffs_affine_linear hu.le hv
   exact (StrictInterl.C_mul_left (strictInterl_self_X_mul_of_nonneg hf.1 hf.2 hfnn) ha0).toInterl
 
-@[deprecated interl_const_entry_affine_plus_const_to_affine_plus_X
-    (since := "2026-09-26")]
-alias prec0_const_entry_affine_plus_const_to_affine_plus_X :=
-  interl_const_entry_affine_plus_const_to_affine_plus_X
-
-@[deprecated interl_C_mul_affine_linear_X_mul_affine_linear (since := "2026-09-26")]
-alias prec0_C_mul_affine_linear_X_mul_affine_linear :=
-  interl_C_mul_affine_linear_X_mul_affine_linear
-
 /-! ## Matrix action formula -/
 
 theorem zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_succ
@@ -825,9 +816,6 @@ lemma interl_C_mul_both {c : ℝ} (hc : c ≠ 0) {f g : ℝ[X]}
     simp_all
   · exact Or.inr (Or.inr
       (StrictInterl.C_mul_right (StrictInterl.C_mul_left hstrictInterl hc) hc))
-
-@[deprecated interl_C_mul_both (since := "2026-09-26")]
-alias prec0_C_mul_both := interl_C_mul_both
 
 lemma isInterlacingSeq0Nonneg_map_C_mul
     {c : ℝ} (hc_nonneg : 0 ≤ c) (hc : c ≠ 0) {fs : List ℝ[X]}

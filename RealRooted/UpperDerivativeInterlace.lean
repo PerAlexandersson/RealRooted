@@ -81,9 +81,4 @@ theorem interlaces_of_allComboRealRooted_succDegree
     strictInterl_of_allComboRealRooted hf_ne hf_splits hg_ne hg_splits hall (Or.inl hsucc.symm)
   exact (StrictInterl.forward_of_orientation_of_succDegree hsucc hor).toInterlaces hsucc.symm
 
-@[deprecated strictInterl_deriv_eval_mul_deriv_nonneg
-  (since := "2026-09-18")]
-alias prec_deriv_eval_mul_deriv_nonneg :=
-  strictInterl_deriv_eval_mul_deriv_nonneg
-
 end RealRooted

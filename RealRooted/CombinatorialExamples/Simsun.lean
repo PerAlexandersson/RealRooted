@@ -351,7 +351,4 @@ theorem isGeneralizedSturmSeq_simsunPrefix :
           simpa [simsunPrefix, IsGeneralizedSturmSeq] using
             And.intro (strictInterl_simsun_succ (n + 1)) ih
 
-@[deprecated strictInterl_simsun_succ (since := "2026-09-26")]
-alias prec_simsun_succ := strictInterl_simsun_succ
-
 end RealRooted

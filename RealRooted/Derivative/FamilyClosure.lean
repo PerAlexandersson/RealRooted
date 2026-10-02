@@ -215,7 +215,4 @@ The checked witness is `derivativePreservesInterl` in
 def derivativePreservesInterlStatement : Prop :=
   ∀ {p q : ℝ[X]}, Interl p q → Interl p.derivative q.derivative
 
-@[deprecated derivativePreservesInterlStatement (since := "2026-09-18")]
-abbrev derivativePreservesPrec0Statement := derivativePreservesInterlStatement
-
 end RealRooted

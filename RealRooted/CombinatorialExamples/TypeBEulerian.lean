@@ -255,7 +255,4 @@ theorem isSturmSeq_typeBEulerianPrefix :
           simpa [typeBEulerianPrefix, IsSturmSeq] using
             And.intro (interlaces_typeBEulerian_succ (k + 1)) ih
 
-@[deprecated strictInterl_typeBEulerian_succ (since := "2026-09-26")]
-alias prec_typeBEulerian_succ := strictInterl_typeBEulerian_succ
-
 end RealRooted

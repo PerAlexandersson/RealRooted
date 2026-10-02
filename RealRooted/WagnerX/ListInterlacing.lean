@@ -425,11 +425,6 @@ lemma interlaces_of_strictInterl_sameDegree_rightmost_factor
       listInterlaces_of_listAlternates_append_right hlen_qs halt_right
     exact ⟨hf, hq, hq_deg, ss, qs, hss_sorted, hqs_sorted, hss_eq, hqs_eq, hshape_qs_rs⟩
 
-@[deprecated interlaces_of_strictInterl_sameDegree_rightmost_factor
-  (since := "2026-09-18")]
-alias interlaces_of_prec_sameDegree_rightmost_factor :=
-  interlaces_of_strictInterl_sameDegree_rightmost_factor
-
 lemma listInterlaces_append_zero_both :
     ∀ (ss rs : List ℝ),
     ss.length + 1 = rs.length →

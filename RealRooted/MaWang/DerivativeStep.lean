@@ -177,32 +177,4 @@ theorem strictInterl_mw_derivative_neg_C_mul_X_sq {f u : ℝ[X]} {c : ℝ}
   strictInterl_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
     (fun _ _ => eval_neg_C_mul_X_sq_nonpos_of_nonneg hc)
 
-@[deprecated strictInterl_mw_derivative_of_nonpos_of_pos_natDegree
-  (since := "2026-09-18")]
-alias prec_mw_derivative_of_nonpos_of_pos_natDegree :=
-  strictInterl_mw_derivative_of_nonpos_of_pos_natDegree
-
-@[deprecated strictInterl_mw_derivative_of_nonpos (since := "2026-09-26")]
-alias prec_mw_derivative_of_nonpos := strictInterl_mw_derivative_of_nonpos
-
-@[deprecated strictInterl_mw_derivative_of_nonpos_of_recurrence
-  (since := "2026-09-26")]
-alias prec_mw_derivative_of_nonpos_of_recurrence :=
-  strictInterl_mw_derivative_of_nonpos_of_recurrence
-
-@[deprecated strictInterl_mw_derivative_C_mul_X_mul_of_nonneg_on_roots
-  (since := "2026-09-26")]
-alias prec_mw_derivative_C_mul_X_mul_of_nonneg_on_roots :=
-  strictInterl_mw_derivative_C_mul_X_mul_of_nonneg_on_roots
-
-@[deprecated strictInterl_mw_derivative_X_mul_one_add_X_of_roots_in_Icc
-  (since := "2026-09-26")]
-alias prec_mw_derivative_X_mul_one_add_X_of_roots_in_Icc :=
-  strictInterl_mw_derivative_X_mul_one_add_X_of_roots_in_Icc
-
-@[deprecated strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
-  (since := "2026-09-26")]
-alias prec_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one :=
-  strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
-
 end RealRooted

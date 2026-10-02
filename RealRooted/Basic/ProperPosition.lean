@@ -34,10 +34,6 @@ def StrictInterl (f g : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 �
     ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
       (ss.length = rs.length ∧ ListAlternates ss rs))
 
-/-- Deprecated compatibility name for `StrictInterl`. -/
-@[deprecated StrictInterl (since := "2026-09-16")]
-abbrev Prec := StrictInterl
-
 private lemma listInterlaces_right_tail_ge :
     ∀ {ss rs : List ℝ} {r : ℝ}, ListInterlaces ss (r :: rs) → ∀ x ∈ rs, r ≤ x
   | [], [], _, _ => by simp
@@ -360,10 +356,6 @@ strict nonzero sense. -/
 def Interl (f g : ℝ[X]) : Prop :=
   f = 0 ∨ g = 0 ∨ StrictInterl f g
 
-/-- Deprecated compatibility name for the zero-aware relation `Interl`. -/
-@[deprecated Interl (since := "2026-09-16")]
-abbrev Prec0 := Interl
-
 /-- Backward-compatible alias: differ-by-1 interlacing. -/
 def Interlaces (g f : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
   g.natDegree + 1 = f.natDegree ∧
@@ -678,109 +670,4 @@ lemma Interl.C_mul_self_of_nonneg {f : ℝ[X]} (hf : f ≠ 0 → f.Splits) {a : 
     (ha : 0 ≤ a) : Interl (C a * f) f :=
   (Interl.refl hf).C_mul_left_of_nonneg ha
 
-/-! ## Deprecated proper-position names -/
-
-@[deprecated StrictInterl.natDegree_bounds (since := "2026-09-18")]
-lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : StrictInterl f g) :
-    f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 :=
-  StrictInterl.natDegree_bounds hfg
-
-@[deprecated StrictInterl.forward_of_orientation_of_succDegree (since := "2026-09-18")]
-lemma prec_forward_of_orientation_of_succDegree
-    {f g : ℝ[X]}
-    (hsucc : g.natDegree = f.natDegree + 1)
-    (hprec_or : StrictInterl f g ∨ StrictInterl g f) :
-    StrictInterl f g :=
-  StrictInterl.forward_of_orientation_of_succDegree hsucc hprec_or
-
-@[deprecated StrictInterl.of_reverse_of_roots_sum_le (since := "2026-09-18")]
-theorem prec_of_reverse_prec_of_roots_sum_le {f g : ℝ[X]}
-    (hgf : StrictInterl g f) (hdeg : f.natDegree = g.natDegree)
-    (hsum : f.roots.sum ≤ g.roots.sum) :
-    StrictInterl f g :=
-  StrictInterl.of_reverse_of_roots_sum_le hgf hdeg hsum
-
-@[deprecated StrictInterl.roots_le_of_right (since := "2026-09-17")]
-theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
-    (h : StrictInterl f g)
-    (hg_le : ∀ r ∈ g.roots, r ≤ c) :
-    ∀ r ∈ f.roots, r ≤ c :=
-  StrictInterl.roots_le_of_right h hg_le
-
-@[deprecated StrictInterl.roots_sum_le_of_sameDegree (since := "2026-09-17")]
-theorem roots_sum_le_of_prec_sameDegree {f g : ℝ[X]}
-    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
-    f.roots.sum ≤ g.roots.sum :=
-  StrictInterl.roots_sum_le_of_sameDegree h hdeg
-
-@[deprecated StrictInterl.nextCoeff_le_of_sameDegree_monic (since := "2026-09-17")]
-theorem nextCoeff_le_of_prec_sameDegree_monic {f g : ℝ[X]}
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
-    g.nextCoeff ≤ f.nextCoeff :=
-  StrictInterl.nextCoeff_le_of_sameDegree_monic h hf_monic hg_monic hdeg
-
-@[deprecated StrictInterl.natDegree_le (since := "2026-09-16")]
-theorem Prec.natDegree_le {f g : ℝ[X]} (h : StrictInterl f g) :
-    f.natDegree ≤ g.natDegree :=
-  StrictInterl.natDegree_le h
-
-@[deprecated StrictInterl.natDegree_le_succ (since := "2026-09-16")]
-theorem Prec.natDegree_le_succ {f g : ℝ[X]} (h : StrictInterl f g) :
-    g.natDegree ≤ f.natDegree + 1 :=
-  StrictInterl.natDegree_le_succ h
-
-@[deprecated StrictInterl.natDegree_eq_or_eq_succ (since := "2026-09-16")]
-theorem Prec.natDegree_eq_or_eq_succ {f g : ℝ[X]} (h : StrictInterl f g) :
-    g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 :=
-  StrictInterl.natDegree_eq_or_eq_succ h
-
-@[deprecated Interlaces.toStrictInterl (since := "2026-09-16")]
-lemma Interlaces.toPrec {g f : ℝ[X]} (h : Interlaces g f) : StrictInterl g f :=
-  Interlaces.toStrictInterl h
-
-@[deprecated StrictInterl.toInterlaces (since := "2026-09-16")]
-lemma Prec.toInterlaces {g f : ℝ[X]} (h : StrictInterl g f)
-    (hdeg : g.natDegree + 1 = f.natDegree) : Interlaces g f :=
-  StrictInterl.toInterlaces h hdeg
-
-@[deprecated StrictInterl.exists_listAlternates_of_natDegree_eq (since := "2026-09-16")]
-lemma Prec.exists_listAlternates_of_natDegree_eq {f g : ℝ[X]}
-    (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
-    ∃ ss rs : List ℝ,
-      ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
-        (↑ss : Multiset ℝ) = f.roots ∧
-        (↑rs : Multiset ℝ) = g.roots ∧ ListAlternates ss rs :=
-  StrictInterl.exists_listAlternates_of_natDegree_eq h hdeg
-
-@[deprecated StrictInterl.C_mul_left (since := "2026-09-16")]
-lemma Prec.C_mul_left {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
-    StrictInterl (C a * f) g :=
-  StrictInterl.C_mul_left h ha
-
-@[deprecated StrictInterl.C_mul_right (since := "2026-09-16")]
-lemma Prec.C_mul_right {f g : ℝ[X]} (h : StrictInterl f g) {a : ℝ} (ha : a ≠ 0) :
-    StrictInterl f (C a * g) :=
-  StrictInterl.C_mul_right h ha
-
-@[deprecated StrictInterl.toInterl (since := "2026-09-16")]
-lemma Prec.toPrec0 {f g : ℝ[X]} (h : StrictInterl f g) : Interl f g :=
-  StrictInterl.toInterl h
-
-@[deprecated Interl.toStrictInterl_of_ne (since := "2026-09-16")]
-lemma Prec0.toPrec_of_ne {f g : ℝ[X]} (h : Interl f g)
-    (hf : f ≠ 0) (hg : g ≠ 0) : StrictInterl f g :=
-  Interl.toStrictInterl_of_ne h hf hg
-
-@[deprecated interl_zero_left (since := "2026-09-16")]
-lemma prec0_zero_left (f : ℝ[X]) : Interl 0 f :=
-  interl_zero_left f
-
-@[deprecated interl_zero_right (since := "2026-09-16")]
-lemma prec0_zero_right (f : ℝ[X]) : Interl f 0 :=
-  interl_zero_right f
-
-@[deprecated interl_zero_zero (since := "2026-09-16")]
-lemma prec0_zero_zero : Interl (0 : ℝ[X]) 0 :=
-  interl_zero_zero
 end RealRooted

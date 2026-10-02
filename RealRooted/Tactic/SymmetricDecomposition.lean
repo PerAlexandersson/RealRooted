@@ -404,7 +404,7 @@ macro_rules
         left_nonneg := $hu:term,
         right_nonneg := $hv:term) =>
       `(tactic|
-        exact RealRooted.posComboRealRooted_fPolynomial_of_prec
+        exact RealRooted.posComboRealRooted_fPolynomial_of_strictInterl
           $hprec $hud $hvd $hu $hv)
   | `(tactic|
       rr_fPolynomial_sequence_prec using

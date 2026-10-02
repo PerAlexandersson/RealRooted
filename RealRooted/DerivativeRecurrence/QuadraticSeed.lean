@@ -140,14 +140,4 @@ theorem strictInterl_of_quadratic_derivative_linear_quadratic_seed
         hbase_nonneg hbase_top hbase_above hbase_splits hrecQ
         ha hb hc hsd hbt (by norm_num) n
 
-@[deprecated strictInterl_one_add_X_quadratic_of_two_le (since := "2026-09-18")]
-alias prec_one_add_X_quadratic_of_two_le :=
-  strictInterl_one_add_X_quadratic_of_two_le
-
-@[deprecated strictInterl_of_quadratic_derivative_linear_quadratic_seed
-  (since := "2026-09-18")]
-alias prec_of_quadratic_derivative_linear_quadratic_seed :=
-  strictInterl_of_quadratic_derivative_linear_quadratic_seed
-
-
 end RealRooted

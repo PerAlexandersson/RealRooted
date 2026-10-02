@@ -751,10 +751,6 @@ theorem strictInterl_of_strict_signs_of_endSigns_odd
   exact strictInterl_of_strict_signs_of_strict_outer_roots
     hf_ne hf_splits hF_ne hrs_sorted hrs_eq hdeg hn hsign hleft hright
 
-@[deprecated strictInterl_of_strict_signs_of_endSigns_even (since := "2026-09-18")]
-alias prec_of_strict_signs_of_endSigns_even :=
-  strictInterl_of_strict_signs_of_endSigns_even
-
 end RealRooted.MaWangInternal
 
 namespace RealRooted
@@ -774,7 +770,6 @@ export MaWangInternal
     exists_isRoot_le_of_eval_nonneg_of_tendsto_atBot_atBot
     strictInterl_of_strict_signs_of_endSigns_even
     strictInterl_of_strict_signs_of_endSigns_odd
-    prec_of_strict_signs_of_endSigns_even
     strictInterl_of_strict_signs_of_endSigns_odd)
 
 end RealRooted

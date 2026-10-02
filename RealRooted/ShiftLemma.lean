@@ -200,7 +200,4 @@ theorem strictInterl_shift' {F H : ℝ[X]}
   strictInterl_shift hF_ne hF_splits hH_ne hH_splits hF_nonpos hH_nonpos hF_pos hH_pos
     hstrictInterl heval
 
-@[deprecated strictInterl_shift (since := "2026-09-18")]
-alias prec_shift := strictInterl_shift
-
 end RealRooted

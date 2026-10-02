@@ -298,26 +298,5 @@ theorem isGeneralizedSturmSeq_motzkinPrefix :
           simpa [motzkinPrefix, IsGeneralizedSturmSeq] using
             And.intro (strictInterl_motzkin_succ (n + 1)) ih
 
-@[deprecated strictInterl_self_mul_X_sub_C_of_roots_le (since := "2026-09-26")]
-alias prec_self_mul_X_sub_C_of_roots_le := strictInterl_self_mul_X_sub_C_of_roots_le
-
-@[deprecated strictInterl_motzkin_zero_one (since := "2026-09-26")]
-alias prec_motzkin_zero_one := strictInterl_motzkin_zero_one
-
-@[deprecated strictInterl_motzkin_shifted_succ (since := "2026-09-26")]
-alias prec_motzkin_shifted_succ := strictInterl_motzkin_shifted_succ
-
-@[deprecated strictInterl_motzkin_succ_of_shifted_even (since := "2026-09-26")]
-alias prec_motzkin_succ_of_shifted_even := strictInterl_motzkin_succ_of_shifted_even
-
-@[deprecated strictInterl_motzkin_succ_of_shifted_odd (since := "2026-09-26")]
-alias prec_motzkin_succ_of_shifted_odd := strictInterl_motzkin_succ_of_shifted_odd
-
-@[deprecated strictInterl_motzkin_succ_and_roots_le (since := "2026-09-26")]
-alias prec_motzkin_succ_and_roots_le := strictInterl_motzkin_succ_and_roots_le
-
-@[deprecated strictInterl_motzkin_succ (since := "2026-09-26")]
-alias prec_motzkin_succ := strictInterl_motzkin_succ
-
 end
 end RealRooted

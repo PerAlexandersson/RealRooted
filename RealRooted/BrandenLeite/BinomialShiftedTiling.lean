@@ -299,9 +299,6 @@ theorem binomialShiftedRodRow_four_add_four (n : ℕ) :
   rw [hsum] at h
   simpa [show n + 4 ≠ 0 by lia] using h
 
-@[deprecated binomialShiftedRodRows_pf_and_interl (since := "2026-09-18")]
-alias binomialShiftedRodRows_pf_and_prec0 := binomialShiftedRodRows_pf_and_interl
-
 end
 
 end RealRooted.BrandenLeite

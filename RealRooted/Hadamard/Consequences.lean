@@ -264,14 +264,4 @@ theorem maloToeplitzHadamard_isTotallyNonneg {p q : ℝ[X]}
   rw [hcoeff]
   exact polyaFrequencyHadamardCoeff hp hq
 
-@[deprecated garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl
-  (since := "2026-09-18")]
-alias garloffWagnerHadamardPFPrec_of_nonnegPrec :=
-  garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl
-
-@[deprecated hadamardProduct_preserves_pf_of_nonnegStrictInterl
-  (since := "2026-09-18")]
-alias hadamardProduct_preserves_pf_of_nonnegPrec :=
-  hadamardProduct_preserves_pf_of_nonnegStrictInterl
-
 end RealRooted

@@ -110,10 +110,6 @@ def derivativePreservesStrictInterlSameDegreeStatement : Prop :=
   ∀ {f g : ℝ[X]}, StrictInterl f g → f.natDegree = g.natDegree →
     Interl f.derivative g.derivative
 
-@[deprecated derivativePreservesStrictInterlSameDegreeStatement (since := "2026-09-18")]
-abbrev derivativePreservesPrecSameDegreeStatement :=
-  derivativePreservesStrictInterlSameDegreeStatement
-
 /-- Scaling both sides by nonzero constants preserves zero-aware proper
 position. -/
 private lemma interl_C_mul_left_right {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0)
@@ -142,19 +138,11 @@ lemma StrictInterl.of_degree_zero_degree_zero
   · simp [hroots_g]
   · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
 
-@[deprecated StrictInterl.of_degree_zero_degree_zero (since := "2026-09-18")]
-alias prec_degree_zero_degree_zero := StrictInterl.of_degree_zero_degree_zero
-
 /-- Degree-at-least-two same-degree branch of the standard fact that
 differentiation preserves oriented weak interlacing. -/
 def derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeStatement : Prop :=
   ∀ {f g : ℝ[X]}, StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
     Interl f.derivative g.derivative
-
-@[deprecated derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeStatement
-  (since := "2026-09-18")]
-abbrev derivativePreservesPrecSameDegreeOfTwoLeNatDegreeStatement :=
-  derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeStatement
 
 /-- Positive-leading-coefficient form of the degree-at-least-two same-degree
 derivative-preservation branch. -/
@@ -163,11 +151,6 @@ def derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreePosLeadingStatement
     StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
     Interl f.derivative g.derivative
 
-@[deprecated derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreePosLeadingStatement
-  (since := "2026-09-18")]
-abbrev derivativePreservesPrecSameDegreeOfTwoLeNatDegreePosLeadingStatement :=
-  derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreePosLeadingStatement
-
 /-- Monic form of the degree-at-least-two same-degree derivative-preservation
 branch. -/
 def derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStatement : Prop :=
@@ -175,22 +158,12 @@ def derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStatement : Pr
     StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
     Interl f.derivative g.derivative
 
-@[deprecated derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStatement
-  (since := "2026-09-18")]
-abbrev derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement :=
-  derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStatement
-
 /-- Nonzero monic form of the degree-at-least-two same-degree
 derivative-preservation branch. -/
 def derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStrictInterlStatement : Prop :=
   ∀ {f g : ℝ[X]}, f.Monic → g.Monic →
     StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
     StrictInterl f.derivative g.derivative
-
-@[deprecated derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStrictInterlStatement
-  (since := "2026-09-18")]
-abbrev derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicPrecStatement :=
-  derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStrictInterlStatement
 
 /-- Monic degree-at-least-two same-degree branch of the standard fact that
 differentiation preserves oriented weak interlacing. -/
@@ -389,9 +362,6 @@ witness for `derivativePreservesInterlStatement`. -/
 theorem derivativePreservesInterl : derivativePreservesInterlStatement :=
   derivativePreservesInterl_of_sameDegree derivativePreservesStrictInterlSameDegree
 
-@[deprecated derivativePreservesInterl (since := "2026-09-18")]
-alias derivativePreservesPrec0 := derivativePreservesInterl
-
 /-!
 ### Direct #42 / shared #41 derivative-preservation API
 
@@ -409,9 +379,6 @@ theorem derivative_interl_of_interl {f g : ℝ[X]} (h : Interl f g) :
 theorem derivative_interl_of_strictInterl {f g : ℝ[X]} (h : StrictInterl f g) :
     Interl f.derivative g.derivative :=
   derivativePreservesInterl h.toInterl
-
-@[deprecated derivative_interl_of_strictInterl (since := "2026-09-18")]
-alias derivative_prec0_of_prec := derivative_interl_of_strictInterl
 
 /-- Same-degree derivative preservation, applied form of
 `derivativePreservesStrictInterlSameDegree`. -/
@@ -446,7 +413,5 @@ theorem derivative_strictInterl_of_strictInterl_succDegree
     (derivative_interl_of_strictInterl_succDegree h hdeg).toStrictInterl_of_ne
       hfder_ne hgder_ne
 
-@[deprecated derivative_strictInterl_of_strictInterl_succDegree (since := "2026-09-18")]
-alias derivative_prec_of_prec_succDegree := derivative_strictInterl_of_strictInterl_succDegree
 end
 end RealRooted

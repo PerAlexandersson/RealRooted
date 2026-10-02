@@ -347,29 +347,4 @@ theorem oneDescentQ_one_isRealRooted
     isRealRooted_mul (isRealRooted_X_pow (m - 1)).1 (isRealRooted_X_pow (m - 1)).2
       hlin_rr.1 hlin_rr.2
 
-@[deprecated strictInterl_X_add_C_to_X_mul_X_add_C (since := "2026-09-26")]
-alias prec_X_add_C_to_X_mul_X_add_C := strictInterl_X_add_C_to_X_mul_X_add_C
-
-@[deprecated strictInterl_one_X_add_C (since := "2026-09-26")]
-alias prec_one_X_add_C := strictInterl_one_X_add_C
-
-@[deprecated oneDescent_strictInterl_gamma_one_top (since := "2026-09-26")]
-alias oneDescent_prec_gamma_one_top := oneDescent_strictInterl_gamma_one_top
-
-@[deprecated oneDescent_strictInterl_gamma_one_adjacent (since := "2026-09-26")]
-alias oneDescent_prec_gamma_one_adjacent := oneDescent_strictInterl_gamma_one_adjacent
-
-@[deprecated oneDescent_strictInterl_gamma_one_terminal (since := "2026-09-26")]
-alias oneDescent_prec_gamma_one_terminal := oneDescent_strictInterl_gamma_one_terminal
-
-@[deprecated oneDescent_strictInterl_gamma_one_adjacent_chain
-  (since := "2026-09-26")]
-alias oneDescent_prec_gamma_one_adjacent_chain :=
-  oneDescent_strictInterl_gamma_one_adjacent_chain
-
-@[deprecated oneDescent_strictInterl_gamma_one_terminal_chain
-  (since := "2026-09-26")]
-alias oneDescent_prec_gamma_one_terminal_chain :=
-  oneDescent_strictInterl_gamma_one_terminal_chain
-
 end RealRooted

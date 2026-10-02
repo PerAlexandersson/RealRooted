@@ -114,7 +114,6 @@ lemma strictInterl_step_of_quadratic_derivative_shift
     hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
   simp_all
 
-
 theorem strictInterl_of_quadratic_derivative_shift
     (P : ℕ → ℝ[X]) (s : ℝ)
     (h0 : P 0 = 1)
@@ -176,14 +175,5 @@ theorem strictInterl_of_quadratic_derivative_shift
   | n + 2 =>
       strictInterl_step_of_quadratic_derivative_shift P s h0 hrec hs (n + 2) (by lia)
         (strictInterl_of_quadratic_derivative_shift P s h0 hrec hs (n + 1)).2.1.2
-
-@[deprecated strictInterl_step_of_quadratic_derivative_shift (since := "2026-09-18")]
-alias prec_step_of_quadratic_derivative_shift :=
-  strictInterl_step_of_quadratic_derivative_shift
-
-@[deprecated strictInterl_of_quadratic_derivative_shift (since := "2026-09-18")]
-alias prec_of_quadratic_derivative_shift :=
-  strictInterl_of_quadratic_derivative_shift
-
 
 end RealRooted

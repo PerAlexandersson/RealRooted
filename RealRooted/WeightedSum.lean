@@ -356,21 +356,4 @@ theorem StrictInterl.sum_right
   · simp_all
   · cases l <;> simp_all
 
-/-! ## Deprecated weighted-sum interlacing names -/
-
-@[deprecated WeightedCompatibleLeft.toStrictInterl (since := "2026-09-18")]
-alias WeightedCompatibleLeft.prec := WeightedCompatibleLeft.toStrictInterl
-
-@[deprecated WeightedCompatibleLeft.toStrictInterl (since := "2026-09-18")]
-alias prec_weightedSum_left := WeightedCompatibleLeft.toStrictInterl
-
-@[deprecated WeightedCompatibleLeft.toStrictInterl_sum (since := "2026-09-18")]
-alias prec_sum_left := WeightedCompatibleLeft.toStrictInterl_sum
-
-@[deprecated StrictInterl.weightedSum_right_of_nonneg (since := "2026-09-18")]
-alias prec_weightedSum_right := StrictInterl.weightedSum_right_of_nonneg
-
-@[deprecated StrictInterl.sum_right (since := "2026-09-18")]
-alias prec_sum_right := StrictInterl.sum_right
-
 end RealRooted

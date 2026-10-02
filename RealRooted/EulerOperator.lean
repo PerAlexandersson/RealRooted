@@ -332,26 +332,4 @@ theorem iterateThetaPlusOne_preserves_interl
         (iterateThetaPlusOne_preserves_pf hθpf l hq)
         (ih hp hq hpq)
 
-/-! Deprecated aliases for the pre-canonical theta interlacing APIs. -/
-
-@[deprecated thetaPreservesInterlStatement (since := "2026-09-24")]
-abbrev thetaPreservesPrec0Statement : Prop := thetaPreservesInterlStatement
-
-@[deprecated thetaPreservesInterl (since := "2026-09-24")]
-alias thetaPreservesPrec0 := thetaPreservesInterl
-
-@[deprecated thetaPlusOnePreservesInterl (since := "2026-09-24")]
-alias thetaPlusOnePreservesPrec0 := thetaPlusOnePreservesInterl
-
-@[deprecated iterateThetaPlusOneSelfInterlStatement (since := "2026-09-24")]
-abbrev iterateThetaPlusOneSelfPrec0Statement : Prop :=
-  iterateThetaPlusOneSelfInterlStatement
-
-@[deprecated polarThetaPreservesInterlStatement (since := "2026-09-24")]
-abbrev polarThetaPreservesPrec0Statement : Prop :=
-  polarThetaPreservesInterlStatement
-
-@[deprecated iterateThetaPlusOne_preserves_interl (since := "2026-09-24")]
-alias iterateThetaPlusOne_preserves_prec0 := iterateThetaPlusOne_preserves_interl
-
 end RealRooted

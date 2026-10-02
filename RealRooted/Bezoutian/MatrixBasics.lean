@@ -470,14 +470,4 @@ lemma bezoutEntry.bilinear_mul_sub (p q : ℝ[X]) {n : ℕ} (t₁ t₂ : ℝ)
     Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hq)]
   exact h_eq
 
-/-! ## Deprecated strict same-degree interlacing names -/
-
-@[deprecated StrictInterlSameDegree.X_add_C_iff (since := "2026-09-18")]
-alias StrictPrecSameDegree.X_add_C_iff := StrictInterlSameDegree.X_add_C_iff
-
-@[deprecated StrictInterlSameDegree.X_add_C_bezoutMatrix_posDef_iff_one
-  (since := "2026-09-18")]
-alias StrictPrecSameDegree.X_add_C_bezoutMatrix_posDef_iff_one :=
-  StrictInterlSameDegree.X_add_C_bezoutMatrix_posDef_iff_one
-
 end RealRooted
