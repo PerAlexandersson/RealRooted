@@ -427,7 +427,6 @@ import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
 import RealRooted.GeneralizedSnakePosets.Narayana.Turan
 import RealRooted.GeneralizedSnakePosets.Narayana.TuranCertificates
-import RealRooted.GeneralizedSnakePosets.CombinatorialPackages
 import RealRooted.GeneralizedSnakePosets.SnakeBoard
 import RealRooted.GeneralizedSnakePosets.SnakeCover
 import RealRooted.GeneralizedSnakePosets.SnakeReachability
@@ -1497,7 +1496,6 @@ import RealRooted.GeneralizedSnakePosets.ChainPolynomial
 import RealRooted.GeneralizedSnakePosets.SnakeBand
 import RealRooted.GeneralizedSnakePosets.SnakeConstant
 import RealRooted.GeneralizedSnakePosets.SnakeRecurrence
-import RealRooted.GeneralizedSnakePosets.SnakeInterlacing
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 import RealRooted.Challenges.LiuOppositeSigns
 import RealRooted.Challenges.PerronFrobenius

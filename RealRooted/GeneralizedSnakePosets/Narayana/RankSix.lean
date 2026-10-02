@@ -422,14 +422,6 @@ theorem auxiliaryG_six_root4_qPlus :
   dsimp [auxiliaryG_six_root4, s, α] at *
   linarith
 
-/-- The sign pattern of `P_6` at the named `G_6` roots. -/
-def ModifiedNarayanaSixAuxiliaryGSignCertificate : Prop :=
-  modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root0 < 0 ∧
-    0 < modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root1 ∧
-      modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root2 < 0 ∧
-        0 < modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root3 ∧
-          modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root4 < 0
-
 /-- `P_6` is negative at the first named `G_6` root. -/
 theorem modifiedNarayanaPolynomial_six_eval_root0_neg :
     modifiedNarayanaPolynomialSix.eval auxiliaryG_six_root0 < 0 := by
@@ -595,37 +587,28 @@ theorem modifiedNarayanaPolynomial_six_eval_root4_neg :
     rwa [modifiedNarayanaPolynomial_six_eval_of_qPlus_root hs_sq hroot4]
   linarith
 
-/-- The concrete sign pattern of `P_6` at the five named `G_6` roots. -/
-theorem modifiedNarayanaPolynomial_six_auxiliaryG_signCertificate :
-    ModifiedNarayanaSixAuxiliaryGSignCertificate :=
-  ⟨modifiedNarayanaPolynomial_six_eval_root0_neg,
-    modifiedNarayanaPolynomial_six_eval_root1_pos,
-    modifiedNarayanaPolynomial_six_eval_root2_neg,
-    modifiedNarayanaPolynomial_six_eval_root3_pos,
-    modifiedNarayanaPolynomial_six_eval_root4_neg⟩
-
-/-- The roots of `P_6` are isolated across the five named `G_6` roots. -/
-def ModifiedNarayanaSixAuxiliaryGRootIntervalCertificate : Prop :=
-  ∃ x0 x1 x2 x3 x4 x5 : ℝ,
-    modifiedNarayanaPolynomialSix.IsRoot x0 ∧
-      x0 < auxiliaryG_six_root0 ∧
-        modifiedNarayanaPolynomialSix.IsRoot x1 ∧
-          auxiliaryG_six_root0 < x1 ∧ x1 < auxiliaryG_six_root1 ∧
-            modifiedNarayanaPolynomialSix.IsRoot x2 ∧
-              auxiliaryG_six_root1 < x2 ∧ x2 < auxiliaryG_six_root2 ∧
-                modifiedNarayanaPolynomialSix.IsRoot x3 ∧
-                  auxiliaryG_six_root2 < x3 ∧ x3 < auxiliaryG_six_root3 ∧
-                    modifiedNarayanaPolynomialSix.IsRoot x4 ∧
-                      auxiliaryG_six_root3 < x4 ∧ x4 < auxiliaryG_six_root4 ∧
-                        modifiedNarayanaPolynomialSix.IsRoot x5 ∧
-                          auxiliaryG_six_root4 < x5
-
-/-- Sign alternation of `P_6` across the named `G_6` roots gives one `P_6`
-root in each complementary interval. -/
-theorem modifiedNarayanaPolynomial_six_rootIntervals_of_eval_signs
-    (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
-    ModifiedNarayanaSixAuxiliaryGRootIntervalCertificate := by
-  rcases hsign with ⟨h0, h1, h2, h3, h4⟩
+/-- The roots of `P_6` are isolated across the five named `G_6` roots: the
+sign alternation of `P_6` at those roots gives one `P_6` root in each
+complementary interval. -/
+theorem modifiedNarayanaPolynomial_six_rootIntervals :
+    ∃ x0 x1 x2 x3 x4 x5 : ℝ,
+      modifiedNarayanaPolynomialSix.IsRoot x0 ∧
+        x0 < auxiliaryG_six_root0 ∧
+          modifiedNarayanaPolynomialSix.IsRoot x1 ∧
+            auxiliaryG_six_root0 < x1 ∧ x1 < auxiliaryG_six_root1 ∧
+              modifiedNarayanaPolynomialSix.IsRoot x2 ∧
+                auxiliaryG_six_root1 < x2 ∧ x2 < auxiliaryG_six_root2 ∧
+                  modifiedNarayanaPolynomialSix.IsRoot x3 ∧
+                    auxiliaryG_six_root2 < x3 ∧ x3 < auxiliaryG_six_root3 ∧
+                      modifiedNarayanaPolynomialSix.IsRoot x4 ∧
+                        auxiliaryG_six_root3 < x4 ∧ x4 < auxiliaryG_six_root4 ∧
+                          modifiedNarayanaPolynomialSix.IsRoot x5 ∧
+                            auxiliaryG_six_root4 < x5 := by
+  have h0 := modifiedNarayanaPolynomial_six_eval_root0_neg
+  have h1 := modifiedNarayanaPolynomial_six_eval_root1_pos
+  have h2 := modifiedNarayanaPolynomial_six_eval_root2_neg
+  have h3 := modifiedNarayanaPolynomial_six_eval_root3_pos
+  have h4 := modifiedNarayanaPolynomial_six_eval_root4_neg
   rcases auxiliaryG_six_root_order_named with ⟨h01, h12, h23, h34⟩
   have hP_pos : HasPosLeadingCoeff modifiedNarayanaPolynomialSix := by
     simpa [modifiedNarayanaPolynomialSix] using modifiedNarayanaPolynomial_posLeadingCoeff 6
@@ -730,16 +713,15 @@ def ModifiedNarayanaSixAuxiliaryGCrossInequalities
 
 /-- Six interval-isolated `P_6` roots determine the cross-root inequalities
 against any sorted `P_6` root list. -/
-theorem ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_rootIntervals
+theorem ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_sorted_roots
     {a b c d e r : ℝ}
     (hP_roots :
       modifiedNarayanaPolynomialSix.roots =
         (↑[a, b, c, d, e, r] : Multiset ℝ))
     (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
-    (her : e ≤ r)
-    (hintervals : ModifiedNarayanaSixAuxiliaryGRootIntervalCertificate) :
+    (her : e ≤ r) :
     ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r := by
-  rcases hintervals with
+  rcases modifiedNarayanaPolynomial_six_rootIntervals with
     ⟨x0, x1, x2, x3, x4, x5, hx0_root, hx0_lt, hx1_root,
       hx01, hx1_lt, hx2_root, hx12, hx2_lt, hx3_root, hx23,
       hx3_lt, hx4_root, hx34, hx4_lt, hx5_root, hx45⟩
@@ -819,21 +801,6 @@ theorem ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_rootIntervals
     le_of_lt hx2_lt, le_of_lt hx23, le_of_lt hx3_lt, le_of_lt hx34,
     le_of_lt hx4_lt, le_of_lt hx45⟩
 
-/-- The `P_6`/`G_6` sign certificate gives the cross-root inequalities against
-any sorted `P_6` root list. -/
-theorem ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_eval_signs
-    {a b c d e r : ℝ}
-    (hP_roots :
-      modifiedNarayanaPolynomialSix.roots =
-        (↑[a, b, c, d, e, r] : Multiset ℝ))
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
-    (her : e ≤ r)
-    (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
-    ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r :=
-  ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_rootIntervals
-    hP_roots hab hbc hcd hde her
-    (modifiedNarayanaPolynomial_six_rootIntervals_of_eval_signs hsign)
-
 /-- Conditional `n = 6` auxiliary-interlacing certificate, reducing the remaining work to
 the `P_6` root list and cross inequalities. -/
 theorem auxiliaryGInterlaces_modified_six_interlaces_of_roots
@@ -900,22 +867,14 @@ theorem auxiliaryGInterlaces_modified_six_of_crosses
     StrictInterl (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
   (auxiliaryGInterlaces_modified_six_interlaces_of_crosses hcross).toStrictInterl
 
-/-- The `n = 6` auxiliary-interlacing follows from the
-`P_6`/`G_6` sign certificate. -/
-theorem auxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
-    (hsign : ModifiedNarayanaSixAuxiliaryGSignCertificate) :
+/-- The checked `n = 6` auxiliary-interlacing case. -/
+theorem auxiliaryGInterlaces_modified_six_interlaces :
     Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by
   apply auxiliaryGInterlaces_modified_six_interlaces_of_crosses
   intro a b c d e r hP_roots hab hbc hcd hde her
-  exact ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_eval_signs
+  exact ModifiedNarayanaSixAuxiliaryGCrossInequalities.of_sorted_roots
     (by simpa [modifiedNarayanaPolynomialSix] using hP_roots)
-    hab hbc hcd hde her hsign
-
-/-- The checked `n = 6` auxiliary-interlacing case. -/
-theorem auxiliaryGInterlaces_modified_six_interlaces :
-    Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
-  auxiliaryGInterlaces_modified_six_interlaces_of_eval_signs
-    modifiedNarayanaPolynomial_six_auxiliaryG_signCertificate
+    hab hbc hcd hde her
 
 /-- The checked `n = 6` auxiliary-interlacing case. -/
 theorem auxiliaryGInterlaces_modified_six :
