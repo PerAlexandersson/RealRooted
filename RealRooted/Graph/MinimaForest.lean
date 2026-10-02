@@ -221,9 +221,9 @@ lemma not_transGen_rel_self (hF : F.IsAcyclic) (L : LocalOrder F) (x : F.edgeSet
     rw [SimpleGraph.isBridge_iff] at hbr
     exact hbr (hy v (by simp)).symm
 
-omit [DecidableEq V] in
+omit [Fintype V] [DecidableEq V] in
 /-- For a forest, the line-graph orientation of a local order is acyclic. -/
-lemma lineOrientation_isAcyclic (hF : F.IsAcyclic) (L : LocalOrder F) :
+lemma lineOrientation_isAcyclic [Finite V] (hF : F.IsAcyclic) (L : LocalOrder F) :
     L.lineOrientation.IsAcyclic := by
   obtain ⟨r, hr⟩ := exists_rank_of_not_transGen (Rel L) (not_transGen_rel_self hF L)
   exact ⟨r, fun u v h ↦ hr ((lineOrientation_directed L u v).1 h)⟩
@@ -268,8 +268,9 @@ lemma isSink_iff_mem_mutualMinima (L : LocalOrder F) (e : F.edgeSet) :
       rw [Fin.lt_def, hb] at hlt
       lia
 
-lemma sinkCount_lineOrientation [Fintype F.edgeSet] [DecidableEq F.edgeSet]
+lemma sinkCount_lineOrientation [Fintype F.edgeSet]
     (L : LocalOrder F) : L.lineOrientation.sinkCount = L.mutualMinima.card := by
+  classical
   unfold Orientation.sinkCount
   congr 1
   ext e
@@ -392,7 +393,7 @@ lemma lineOrientation_ofAcyclicOrientation :
   by_cases hadj : F.lineGraph.Adj e f
   · obtain ⟨v, a, b, rfl, rfl, hab⟩ := lineGraph_adj_iff.1 hadj
     rw [Bool.eq_iff_iff]
-    show (ofAcyclicOrientation O).lineOrientation.Directed _ _ ↔ O.1.Directed _ _
+    change (ofAcyclicOrientation O).lineOrientation.Directed _ _ ↔ O.1.Directed _ _
     rw [lineOrientation_directed, rel_edgeAt, ofAcyclicOrientation_lt_iff, rankAt_lt_iff,
       directed_edgeAt_iff O hab]
   · rw [Orientation.dir_eq_false_of_not_adj _ hadj, Orientation.dir_eq_false_of_not_adj _ hadj]
