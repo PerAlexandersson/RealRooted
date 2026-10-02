@@ -110,8 +110,6 @@ theorem card_equiv_val_zero_on {α : Type*} [Fintype α] [DecidableEq α] (d : �
 
 section Counting
 
-open Classical
-
 variable {G : _root_.SimpleGraph V}
 
 /-- A set of edges consists of mutual minima iff at every vertex `v`, every
@@ -140,7 +138,7 @@ theorem LocalOrder.subset_mutualMinima_iff (L : LocalOrder G) (S : Finset G.edge
 
 /-- The local orders in which all edges of `S` are mutual minima factor as a product
 over vertices. -/
-theorem card_subset_mutualMinima (S : Finset G.edgeSet) :
+theorem card_subset_mutualMinima [DecidableRel G.Adj] (S : Finset G.edgeSet) :
     (univ.filter (fun L : LocalOrder G => S ⊆ L.mutualMinima)).card =
       ∏ v : V, (univ.filter (fun σ : G.neighborSet v ≃ Fin (minimaDegree G v) =>
         ∀ x ∈ univ.filter (fun x : G.neighborSet v =>
@@ -152,7 +150,7 @@ theorem card_subset_mutualMinima (S : Finset G.edgeSet) :
     (f := (L : (v : V) → (G.neighborSet v ≃ Fin (minimaDegree G v))))).symm)
   simp [LocalOrder.subset_mutualMinima_iff]
 
-theorem card_neighbor_filter_eq (S : Finset G.edgeSet) (v : V) :
+theorem card_neighbor_filter_eq [DecidableRel G.Adj] (S : Finset G.edgeSet) (v : V) :
     (univ.filter (fun x : G.neighborSet v =>
         (⟨s(v, x.1), G.mem_edgeSet.2 x.2⟩ : G.edgeSet) ∈ S)).card =
       (S.filter (fun e => v ∈ e.1)).card := by
@@ -207,10 +205,12 @@ theorem prod_minimaEdgeWeight_eq (S : Finset G.edgeSet) :
     tauto
 
 /-- The number of local orders in which every edge of `S` is a mutual minimum. -/
-theorem card_subset_mutualMinima_eq (S : Finset G.edgeSet) :
+theorem card_subset_mutualMinima_eq (S : Finset G.edgeSet)
+    [Decidable (IsMatchingEdgeFinset G S)] :
     ((univ.filter (fun L : LocalOrder G => S ⊆ L.mutualMinima)).card : ℝ) =
       if IsMatchingEdgeFinset G S then
         minimaNormalization G * ∏ e ∈ S, minimaEdgeWeight G e else 0 := by
+  classical
   rw [card_subset_mutualMinima, Nat.cast_prod]
   have hv : ∀ v : V,
       ((univ.filter (fun σ : G.neighborSet v ≃ Fin (minimaDegree G v) =>
@@ -225,8 +225,8 @@ theorem card_subset_mutualMinima_eq (S : Finset G.edgeSet) :
   rw [Finset.prod_congr rfl (fun v _ => hv v)]
   split_ifs with hM
   · rw [isMatchingEdgeFinset_iff_card_le_one] at hM
-    rw [Finset.prod_congr rfl (fun v _ => ite_eq_left_iff.2 fun h => absurd (hM v) h), Finset.prod_mul_distrib,
-      prod_minimaEdgeWeight_eq, minimaNormalization]
+    rw [Finset.prod_congr rfl (fun v _ => ite_eq_left_iff.2 fun h => absurd (hM v) h),
+      Finset.prod_mul_distrib, prod_minimaEdgeWeight_eq, minimaNormalization]
   · rw [isMatchingEdgeFinset_iff_card_le_one] at hM
     simp only [not_forall, not_le] at hM
     obtain ⟨v, hv⟩ := hM
