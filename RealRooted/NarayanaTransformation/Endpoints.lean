@@ -70,7 +70,7 @@ theorem strictInterl_narayanaZeroGammaPolynomial_succ (n : ℕ) :
 
 /-- The generalized Narayana polynomials are PF polynomials. -/
 theorem narayanaPolynomialRootLocation :
-    narayanaPolynomialRootLocationStatement :=
+    ∀ m n : ℕ, IsPFPolynomial (narayanaPolynomial m n) :=
   fun m n =>
     IsPFPolynomial.of_realRooted_nonneg
       (hasNonnegCoeffs_narayanaPolynomial m n)
@@ -79,7 +79,8 @@ theorem narayanaPolynomialRootLocation :
 /-- The Narayana transform preserves PF polynomials, reduced to the
 Gribinski--Marcus rectangular additive convolution theorem. -/
 theorem narayanaTransformPreservesPF :
-    narayanaTransformPreservesPFStatement := by
+    ∀ (m : ℕ) {p : ℝ[X]},
+      IsPFPolynomial p → IsPFPolynomial (narayanaTransform m p) := by
   intro m p hp
   refine IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
     hp.hasNonnegCoeffs.narayanaTransform ?_
@@ -137,7 +138,9 @@ theorem narayanaTransformPreservesPF :
 
 /-- Paper-facing nonpositive-root form of the Narayana transform theorem. -/
 theorem narayanaTransformPreservesNonposRoots :
-    narayanaTransformPreservesNonposRootsStatement := by
+    ∀ (m : ℕ) {p : ℝ[X]},
+      HasNonnegCoeffs p → p.Splits →
+        HasOnlyNonposRoots (narayanaTransform m p) := by
   intro m p hpnn hpsplits
   exact (narayanaTransformPreservesPF m
     (IsPFPolynomial.of_realRooted_nonneg hpnn hpsplits)).hasOnlyNonposRoots

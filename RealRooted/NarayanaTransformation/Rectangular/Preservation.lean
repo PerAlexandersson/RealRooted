@@ -10,42 +10,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Gribinski--Marcus preservation theorem in the form used by Mao--Wang,
-paper Lemma 2.6. -/
-abbrev rectangularAdditiveConvolutionPreservesNonnegRootsStatement : Prop :=
-  ∀ {m n : ℕ} {f g : ℝ[X]},
-    f.natDegree = n →
-    g.natDegree = n →
-    0 < f.leadingCoeff →
-    0 < g.leadingCoeff →
-    HasOnlyNonnegRoots f →
-    HasOnlyNonnegRoots g →
-      HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g)
-
-/-- Positive-degree leaf of the Gribinski--Marcus preservation theorem. The
-degree-zero base case is checked separately. -/
-abbrev rectangularAdditiveConvolutionPreservesNonnegRootsPositiveDegreeStatement : Prop :=
-  ∀ {m n : ℕ} {f g : ℝ[X]},
-    f.natDegree = n + 1 →
-    g.natDegree = n + 1 →
-    0 < f.leadingCoeff →
-    0 < g.leadingCoeff →
-    HasOnlyNonnegRoots f →
-    HasOnlyNonnegRoots g →
-      HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1) f g)
-
-/-- Degree-at-least-three leaf of the Gribinski--Marcus preservation theorem.
-The degree-zero, degree-one, and degree-two base cases are checked separately. -/
-abbrev rectangularAdditiveConvolutionPreservesNonnegRootsDegreeAtLeastThreeStatement : Prop :=
-  ∀ {m n : ℕ} {f g : ℝ[X]},
-    f.natDegree = n + 1 + 1 + 1 →
-    g.natDegree = n + 1 + 1 + 1 →
-    0 < f.leadingCoeff →
-    0 < g.leadingCoeff →
-    HasOnlyNonnegRoots f →
-    HasOnlyNonnegRoots g →
-      HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1 + 1 + 1) f g)
-
 /-- The top rectangular-convolution weight is one. -/
 theorem rectangularConvolutionGamma_zero_zero (m n : ℕ) :
     rectangularConvolutionGamma m n 0 0 = 1 := by
@@ -148,7 +112,14 @@ theorem mvRealStable_xyLift_rectangularAdditiveConvolution
 /-- Degree-at-least-three case of the Gribinski--Marcus preservation theorem for
 rectangular additive convolution. -/
 theorem rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastThree :
-    rectangularAdditiveConvolutionPreservesNonnegRootsDegreeAtLeastThreeStatement := by
+    ∀ {m n : ℕ} {f g : ℝ[X]},
+      f.natDegree = n + 1 + 1 + 1 →
+      g.natDegree = n + 1 + 1 + 1 →
+      0 < f.leadingCoeff →
+      0 < g.leadingCoeff →
+      HasOnlyNonnegRoots f →
+      HasOnlyNonnegRoots g →
+        HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1 + 1 + 1) f g) := by
   intro m n f g hfdeg hgdeg hflead hglead hfroots hgroots
   apply rectangularAdditiveConvolutionPreservesNonnegRoots_of_mvRealStable_xyLift
     hfdeg hgdeg hflead hglead
@@ -172,7 +143,14 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastTwo
 /-- Positive-degree case of the Gribinski--Marcus preservation theorem for
 rectangular additive convolution. -/
 theorem rectangularAdditiveConvolutionPreservesNonnegRoots_positiveDegree :
-    rectangularAdditiveConvolutionPreservesNonnegRootsPositiveDegreeStatement := by
+    ∀ {m n : ℕ} {f g : ℝ[X]},
+      f.natDegree = n + 1 →
+      g.natDegree = n + 1 →
+      0 < f.leadingCoeff →
+      0 < g.leadingCoeff →
+      HasOnlyNonnegRoots f →
+      HasOnlyNonnegRoots g →
+        HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1) f g) := by
   intro m n f g hfdeg hgdeg hflead hglead hfroots hgroots
   rcases n with _ | n
   · exact rectangularAdditiveConvolutionPreservesNonnegRoots_one
@@ -182,7 +160,14 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_positiveDegree :
 
 /-- Gribinski--Marcus preservation theorem for rectangular additive convolution. -/
 theorem rectangularAdditiveConvolutionPreservesNonnegRoots :
-    rectangularAdditiveConvolutionPreservesNonnegRootsStatement := by
+    ∀ {m n : ℕ} {f g : ℝ[X]},
+      f.natDegree = n →
+      g.natDegree = n →
+      0 < f.leadingCoeff →
+      0 < g.leadingCoeff →
+      HasOnlyNonnegRoots f →
+      HasOnlyNonnegRoots g →
+        HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g) := by
   intro m n f g hfdeg hgdeg hflead hglead hfroots hgroots
   rcases n with _ | n
   · exact rectangularAdditiveConvolutionPreservesNonnegRoots_zero

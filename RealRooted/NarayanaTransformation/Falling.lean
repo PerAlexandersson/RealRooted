@@ -10,13 +10,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Brenti's falling-factorial inverse transform, paper Lemma 3.9 / Brenti
-Theorem 2.4.2. -/
-abbrev brentiFallingFactorialStatement : Prop :=
-  ∀ {p : ℝ[X]},
-    HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p) →
-      HasOnlyNonposRoots p
-
 /-- Degree-zero case of Brenti's falling-factorial inverse transform. -/
 theorem brentiFallingFactorial_of_natDegree_eq_zero {p : ℝ[X]}
     (hpdeg : p.natDegree = 0)
@@ -112,23 +105,12 @@ theorem brentiFallingFactorial_of_natDegree_eq_two {p : ℝ[X]}
     exact hpneg.of_neg
   · exact brentiFallingFactorial_of_natDegree_eq_two_pos_leading hpdeg hpos h
 
-/-- Positive-degree leaf for Brenti's falling-factorial inverse transform. -/
-abbrev brentiFallingFactorialPositiveDegreeStatement : Prop :=
-  ∀ {p : ℝ[X]},
-    0 < p.natDegree →
-    HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p) →
-      HasOnlyNonposRoots p
-
-/-- Degree-at-least-three leaf for Brenti's falling-factorial inverse transform. -/
-abbrev brentiFallingFactorialDegreeAtLeastThreeStatement : Prop :=
-  ∀ {p : ℝ[X]},
-    3 ≤ p.natDegree →
-    HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p) →
-      HasOnlyNonposRoots p
-
 /-- Degree-at-least-three case of Brenti's falling-factorial inverse transform. -/
 theorem brentiFallingFactorial_degreeAtLeastThree :
-    brentiFallingFactorialDegreeAtLeastThreeStatement := by
+    ∀ {p : ℝ[X]},
+      3 ≤ p.natDegree →
+      HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p) →
+        HasOnlyNonposRoots p := by
   intro p hpdeg h
   let q := basisTransform fallingFactorialPolynomial p
   have hinv : basisTransform touchard q = p :=
@@ -182,14 +164,20 @@ theorem brentiFallingFactorial_degreeAtLeastTwo {p : ℝ[X]} (hpdeg : 2 ≤ p.na
 
 /-- Positive-degree case of Brenti's falling-factorial inverse transform. -/
 theorem brentiFallingFactorial_positiveDegree :
-    brentiFallingFactorialPositiveDegreeStatement := by
+    ∀ {p : ℝ[X]},
+      0 < p.natDegree →
+      HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p) →
+        HasOnlyNonposRoots p := by
   intro p hpdeg h
   by_cases hdeg1 : p.natDegree = 1
   · exact brentiFallingFactorial_of_natDegree_eq_one hdeg1 h
   · exact brentiFallingFactorial_degreeAtLeastTwo (by lia) h
 
 /-- Brenti's falling-factorial inverse transform. -/
-theorem brentiFallingFactorial : brentiFallingFactorialStatement := by
+theorem brentiFallingFactorial :
+    ∀ {p : ℝ[X]},
+      HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p) →
+        HasOnlyNonposRoots p := by
   intro p h
   rcases Nat.eq_zero_or_pos p.natDegree with hpdeg | hpdeg
   · exact brentiFallingFactorial_of_natDegree_eq_zero hpdeg h
