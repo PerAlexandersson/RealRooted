@@ -1,6 +1,6 @@
 import RealRooted.DerivativeRecurrence.RootWindow
 import RealRooted.ThreeTermRecurrence.Interlacing
-import RealRooted.Tactic.RowData
+import RealRooted.Tactic.Recurrence
 
 /-!
 # `rr_row_interlaces`
@@ -9,7 +9,10 @@ import RealRooted.Tactic.RowData
 
 * product sequences `P (n + 1) = L n * P n` (via `rr_product_interlaces`), and
 * three-term recurrences `P (n + 2) = a n * P (n + 1) + b n * P n`, and
-* first-order derivative recurrences `P (n + 1) = A n * (P n)' + B n * P n`,
+* first-order derivative recurrences `P (n + 1) = A n * (P n)' + B n * P n`, and
+* second-order recurrences `P (n + 1) = A * (P n)'' + B * (P n)' + C n * P n` whose rows
+  satisfy an eigen-ODE `A * (P n)'' + β * (P n)' = ev n • P n`
+  (`RealRooted.Tactic.eigenODE?`), collapsed to a first-order recurrence first,
 
 whose rows grow by one degree, starting from a constant row (or, for derivative
 recurrences, from any real-rooted row).
@@ -60,7 +63,8 @@ private def multiplierGoal : TacticM Unit := do
       first | done | positivity | nlinarith | rr_row_field))))
 
 /-- Close one side goal of the interlacing theorems. -/
-private def interlaceSideGoal (P : Ident) (shape : RecShape) (D₀ : Nat) : TacticM Unit := do
+private def interlaceSideGoal (P : Ident) (shape : RecShape) (D₀ : Nat) (hrec : Term) :
+    TacticM Unit := do
   let Dq := Syntax.mkNumLit (toString D₀)
   let nnThm := if shape == .deriv₁ then mkIdent ``RealRooted.derivRec_hasNonnegCoeffs
     else mkIdent ``RealRooted.threeTerm_hasNonnegCoeffs
@@ -99,7 +103,7 @@ private def interlaceSideGoal (P : Ident) (shape : RecShape) (D₀ : Nat) : Tact
        do evalTactic (← `(tactic| apply RealRooted.eval_nonpos_of_nonpos_seq)); rowSideGoals P]
     else if has ``RealRooted.HasNonnegCoeffs then
       [do
-        evalTactic (← `(tactic| apply $nnThm:ident (fun _ => rfl)))
+        evalTactic (← `(tactic| apply $nnThm:ident $hrec))
         for g in ← getGoals do
           setGoals [g]
           if (← instantiateMVars (← g.getType)).isForall then
@@ -111,7 +115,7 @@ private def interlaceSideGoal (P : Ident) (shape : RecShape) (D₀ : Nat) : Tact
       (if shape == .deriv₁ then
         [do
           evalTactic (← `(tactic| apply RealRooted.derivRec_hasNonnegCoeffs_of_mult
-            (D₀ := $Dq) (d := 1) (fun _ => rfl)))
+            (D₀ := $Dq) (d := 1) $hrec))
           let gs ← getGoals
           for g in gs do
             setGoals [g]
@@ -138,14 +142,24 @@ private def interlaceSideGoal (P : Ident) (shape : RecShape) (D₀ : Nat) : Tact
   throwError "rr_row_interlaces: could not discharge the side goal{indentExpr ty}"
 
 elab "rr_row_interlaces" : tactic => withMainContext do
-  let (P, shape) ← rowSetup "rr_row_interlaces"
-  if shape == .product then
+  let (P, shape₀) ← rowSetup "rr_row_interlaces"
+  if shape₀ == .product then
     evalTactic (← `(tactic| rr_product_interlaces))
     return
+  -- a second-order step with an eigen-ODE collapses to a first-order one
+  let mut shape := shape₀
+  let mut hrec ← recTerm shape₀
+  if shape₀ == .deriv₂ then
+    let some o ← eigenODE? P.getId
+      | throwError "rr_row_interlaces: no eigen-ODE `A * p'' + β * p' = ev n • p` collapses \
+          the second-order recurrence of {P} to a first-order one"
+    let h₁ := mkIdent `hrec₁
+    evalTactic (← `(tactic| have $h₁:ident := $(← eigenODEFirstOrder P o)))
+    shape := .deriv₁
+    hrec := h₁
   unless shape == .lag || shape == .lagLeft || shape == .deriv₁ do
-    throwError "rr_row_interlaces: only product, three-term and first-order derivative \
-      recurrences are supported"
-  let hrec ← recTerm shape
+    throwError "rr_row_interlaces: only product, three-term, first-order derivative and \
+      eigen-ODE second-order recurrences are supported"
   let some D₀ ← findRowDegree P 0
     | throwError "rr_row_interlaces: could not compute the degree of the base row"
   let Dq := Syntax.mkNumLit (toString D₀)
@@ -165,7 +179,7 @@ elab "rr_row_interlaces" : tactic => withMainContext do
           apply $(mkIdent thm):ident (P := $P) (D₀ := $Dq) $hrec))
         for g in ← getGoals do
           setGoals [g]
-          interlaceSideGoal P shape D₀
+          interlaceSideGoal P shape D₀ hrec
         unless (← getGoals).isEmpty do throwError "goals remain") then
       return
   -- root windows `[L, U]` and `(-∞, U]`
@@ -198,7 +212,7 @@ elab "rr_row_interlaces" : tactic => withMainContext do
                   (U := ($U : ℝ)) $hrec))
           for g in ← getGoals do
             setGoals [g]
-            interlaceSideGoal P shape D₀
+            interlaceSideGoal P shape D₀ hrec
           unless (← getGoals).isEmpty do throwError "goals remain") then
         return
   throwError "rr_row_interlaces: could not verify the sign or degree conditions for {P}"

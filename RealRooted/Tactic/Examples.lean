@@ -127,6 +127,7 @@ import RealRooted.Tactic.Examples.OEISTestbedLS4
 import RealRooted.Tactic.Examples.Product.Interlacing
 import RealRooted.Tactic.Examples.RowData
 import RealRooted.Tactic.Examples.RowInterlacing
+import RealRooted.Tactic.Examples.RecurrenceODE
 
 /-!
 # RealRooted tactic examples

@@ -1,4 +1,4 @@
-import RealRooted.Tactic.RowData
+import RealRooted.Tactic.Recurrence
 
 /-!
 # `rr_row_*` examples

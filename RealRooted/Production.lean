@@ -1381,12 +1381,17 @@ import RealRooted.Mathlib.Analysis.Complex.ArgumentPrinciple
 import RealRooted.ProductSequence.Interlacing
 import RealRooted.Tactic.Product.Interlacing
 import RealRooted.DerivativeRecurrence.Degree
-import RealRooted.Tactic.RowData
+import RealRooted.Tactic.Recurrence
 import RealRooted.Tactic.RowInterlacing
 import RealRooted.ThreeTermRecurrence.Degree
 import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.DerivativeRecurrence.Interlacing
 import RealRooted.DerivativeRecurrence.RootWindow
+import RealRooted.DerivativeRecurrence.SecondOrderODE
+import RealRooted.Tactic.Recurrence.Degree
+import RealRooted.Tactic.Recurrence.Shape
+import RealRooted.Tactic.Recurrence.Eval
+import RealRooted.Tactic.Recurrence.ODE
 
 /-!
 # RealRooted production umbrella

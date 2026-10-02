@@ -1,9 +1,10 @@
 import RealRooted.DerivativeRecurrence.Degree
 import RealRooted.ThreeTermRecurrence.Degree
-import RealRooted.Tactic.Product.Interlacing
+import RealRooted.DerivativeRecurrence.SecondOrderODE
+import RealRooted.Tactic.Recurrence.Shape
 
 /-!
-# Row-data tactics
+# Degree tactics for recurrences
 
 For a sequence defined by one of the recurrences
 
@@ -53,74 +54,6 @@ nor of the half-growth form.
 open Lean Elab Tactic Meta Polynomial
 
 namespace RealRooted.Tactic
-
-/-- Recurrence shapes supported by the row-data tactics. -/
-inductive RecShape where
-  | product | deriv₁ | deriv₂ | lag
-  /-- `P (n + 2) = a n * P (n + 1)` -/
-  | lagLeft
-  /-- `P (n + 2) = b n * P n` -/
-  | lagRight
-  deriving BEq
-
-/-- Read the shape of the successor equation `P (n + 1) = …` of `P`. -/
-def recShape? (P : Name) : MetaM (Option RecShape) := do
-  let some eqns ← getEqnsFor? P | return none
-  for eqn in eqns do
-    let ty ← inferType (← mkConstWithFreshMVarLevels eqn)
-    let r ← forallTelescopeReducing ty fun _ body => do
-      let some (_, lhs, rhs) := body.eq? | return none
-      -- the offset `k` of the left side `P (n + k)`
-      let rec offsetOf (e : Expr) (fuel : Nat) : MetaM Nat := do
-        match fuel with
-        | 0 => return 0
-        | fuel + 1 =>
-          if e.isAppOfArity ``HAdd.hAdd 6 then
-            return (← offsetOf e.appFn!.appArg! fuel) + ((← evalNat e.appArg!).getD 0)
-          else if e.isAppOfArity ``Nat.succ 1 then
-            return (← offsetOf e.appArg! fuel) + 1
-          else return 0
-      let offset ← offsetOf lhs.appArg! 8
-      let isRow (e : Expr) : Bool := e.getAppFn.isConstOf P
-      let isDeriv (e : Expr) : Bool :=
-        e.isAppOfArity ``DFunLike.coe 6 &&
-          e.appFn!.appArg!.getAppFn.isConstOf ``Polynomial.derivative
-      let factorOf? (e : Expr) : Option Expr :=
-        if e.isAppOfArity ``HMul.hMul 6 then some e.appArg! else none
-      let summands : Expr → List Expr := fun e =>
-        let rec go (e : Expr) (fuel : Nat) : List Expr :=
-          match fuel with
-          | 0 => [e]
-          | fuel + 1 =>
-            if e.isAppOfArity ``HAdd.hAdd 6 then go e.appFn!.appArg! fuel ++ [e.appArg!]
-            else [e]
-        go e 8
-      match summands rhs |>.map factorOf? with
-      | [some f] =>
-          if offset == 1 && isRow f then return some RecShape.product
-          if offset == 2 && isRow f then
-            -- `P (n + 1)` or `P n` on the right
-            return if f.appArg!.isAppOfArity ``HAdd.hAdd 6 then some RecShape.lagLeft
-              else some RecShape.lagRight
-          return none
-      | [some f, some g] =>
-          if offset == 1 && isDeriv f && isRow f.appArg! && isRow g then
-            return some RecShape.deriv₁
-          return if offset == 2 && isRow f && isRow g then some RecShape.lag else none
-      | [some f, some g, some h] =>
-          return if offset == 1 && isDeriv f && isDeriv f.appArg! && isDeriv g && isRow h then
-            some RecShape.deriv₂ else none
-      | _ => return none
-    if r.isSome then return r
-  return none
-
-/-- Run `tac` with a fresh heartbeat budget; on failure (including a heartbeat
-timeout) restore the state and return `false`. -/
-def rowSucceeds (tac : TacticM Unit) : TacticM Bool := do
-  let s ← saveState
-  tryCatchRuntimeEx
-    (do withCurrHeartbeats (Term.withoutErrToSorry tac); return true)
-    (fun _ => do s.restore; return false)
 
 private def numLit (n : Nat) : TSyntax `num := Syntax.mkNumLit (toString n)
 
@@ -227,14 +160,20 @@ private def sideAlternatives (P : Ident) (ty : Expr) : TacticM (List (TSyntax `t
   let mentionsP := (ty.find? fun e => e.isConstOf P.getId).isSome
   if ty.isForall && !mentionsP then
     if (ty.find? fun e => e.isConstOf ``Polynomial.natDegree).isSome then
-      return [← `(tactic| (intro k; beta_reduce; compute_degree!; done))]
+      return [← `(tactic| (intro k; beta_reduce; compute_degree!; done)),
+        ← `(tactic| (
+          intro k
+          beta_reduce
+          simp only [RealRooted.div_ofNat_eq_C_mul]
+          compute_degree!
+          done))]
     let mut alts := []
     for fin in ← coeffFinishers do
       alts := alts ++ [← `(tactic| (
         intro k
-        simp only [Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_neg,
-          Polynomial.coeff_C_mul, Polynomial.coeff_mul_C, Polynomial.coeff_X_pow,
-          Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one,
+        simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.coeff_add, Polynomial.coeff_sub,
+          Polynomial.coeff_neg, Polynomial.coeff_C_mul, Polynomial.coeff_mul_C,
+          Polynomial.coeff_X_pow, Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one,
           Polynomial.coeff_ofNat_mul, Polynomial.coeff_mul_ofNat, Polynomial.coeff_ofNat_zero,
           Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
         push_cast
@@ -343,13 +282,6 @@ private def rowThms (shape : RecShape) (kind : String) : List (Name × Option St
 private def shifted (P : Ident) (k : Nat) : TacticM Term :=
   if k == 0 then return P else `(fun m => $P (m + $(numLit k)))
 
-/-- The recurrence argument: `rfl`, adapted for the one-term two-step shapes. -/
-def recTerm (shape : RecShape) : TacticM Term :=
-  match shape with
-  | .lagLeft => `(RealRooted.threeTerm_rec_of_left (fun _ => rfl))
-  | .lagRight => `(RealRooted.threeTerm_rec_of_right (fun _ => rfl))
-  | _ => `(fun _ => rfl)
-
 /-- Apply `thm` to the shifted sequence with growth `d`, base degree `D₀` and, for
 the ratio theorems, growth ratio `ρ`. -/
 private def applyRowThm (Q : Term) (shape : RecShape) (thm : Name × Option String)
@@ -393,7 +325,13 @@ private def degreeFits (Q : Term) (apply : TacticM Unit) (nDeg : Nat) : TacticM 
     let gs ← getGoals
     for g in gs.take nDeg do
       setGoals [g]
-      evalTactic (← `(tactic| (intro k; beta_reduce; compute_degree!; done)))
+      evalTactic (← `(tactic| first
+        | (intro k; beta_reduce; compute_degree!; done)
+        | (intro k
+           beta_reduce
+           simp only [RealRooted.div_ofNat_eq_C_mul]
+           compute_degree!
+           done)))
   s.restore
   return ok
 
@@ -461,30 +399,6 @@ private def rowDriver (P : Ident) (shape : RecShape) (kind : String) (t : Expr)
               rows, but the top coefficients could not be shown positive"
           break
   throwError report
-
-/-- The sequence in the goal and the shape of its recurrence. -/
-def rowSetup (who : String) : TacticM (Ident × RecShape) := do
-  let tgt ← instantiateMVars (← getMainTarget)
-  let some P ← findPolySeqConst? tgt
-    | throwError "{who}: no sequence `P : ℕ → ℝ[X]` found in the goal"
-  let some shape ← recShape? P
-    | throwError "{who}: the recurrence of {P} is not `L n * P n`, \
-        `A n * (P n)' + B n * P n`, or `A n * (P n)'' + B n * (P n)' + C n * P n`"
-  return (mkIdent P, shape)
-
-/-- The row index `t` of a goal whose first `P`-application is `P t`. -/
-private partial def rowIndex? (P : Name) (e : Expr) : Option Expr :=
-  match e with
-  | .app f a =>
-      if f.isConstOf P then some a
-      else (rowIndex? P f).orElse fun _ => rowIndex? P a
-  | .mdata _ b => rowIndex? P b
-  | _ => none
-
-private def mainRowIndex (P : Ident) : TacticM Expr := do
-  let tgt ← instantiateMVars (← getMainTarget)
-  let some t := rowIndex? P.getId tgt | throwError "rr_row: no row `{P} t` in the goal"
-  return t
 
 elab "rr_row_ne_zero" : tactic => withMainContext do
   let (P, shape) ← rowSetup "rr_row_ne_zero"
