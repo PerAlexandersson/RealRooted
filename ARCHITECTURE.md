@@ -665,13 +665,12 @@ families in proof dependency order; and `Endpoints` derives the degree-three
 interface. The facade preserves the previous public import path.
 
 `LiuOppositeSigns.XSub.QuarticCubicBoundary` now exposes the analogous boundary
-dependency graph. `Statements` owns the six proposition-valued package
-interfaces; `RepeatedRight` proves the independent strict-left repeated-right
-branch; `QuarticSubQuadratic` owns the endpoint factor and right-only zero
-package; `RepeatedLeft` builds on that factor; `EndpointZero` combines the two
-completed boundary branches; and `Assembly` derives the normalized terminal.
-The 9-line facade preserves the former import path. The implementation units
-have 88, 434, 1,022, 707, 550, and 200 lines, respectively.
+dependency graph. `RepeatedRight` proves the independent strict-left
+repeated-right branch; `QuarticSubQuadratic` owns the endpoint factor and
+right-only zero case; `RepeatedLeft` builds on that factor; `EndpointZero`
+combines the two endpoint-zero cases; and `Assembly` proves the normalized
+quartic/cubic splitting theorem. The 9-line facade preserves the former import
+path.
 
 The Cayley-transform extraction is entirely Mathlib-shaped:
 
