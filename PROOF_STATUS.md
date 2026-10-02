@@ -44,7 +44,8 @@ a production caller.
 | Schur--Szegő Jensen compatibility contraction | `schurSzegoPreservesJensenPencilCompatibility` |
 | Liu theorem with common roots | `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant` |
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFInterl_of_nonnegStrictInterl` |
-| Bounded-degree polar-theta interlacing preservation | `polarTheta_preserves_interl` |
+| Bounded-degree polar-theta interlacing preservation | `polarThetaPreservesInterlStatement`, witnessed by `polarTheta_preserves_interl` |
+| Theta interlacing preservation on the PF cone | `thetaPreservesInterlStatement`, witnessed by `thetaPreservesInterl` |
 | Derivative preservation statement interface | `derivativePreservesInterlStatement`, witnessed by `derivativePreservesInterl` |
 | Peak-value multivariate stability | `peakValuePolynomial_mvRealStable` |
 | Weighted consecutive peak-value interleaving | `peakValueWeightedDiagonal_consecutive_strictInterl` |

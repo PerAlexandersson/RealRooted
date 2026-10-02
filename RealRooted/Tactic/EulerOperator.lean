@@ -58,20 +58,6 @@ theorem strictInterl_positive_euler_lag_sequence
       exact
         strictInterl_of_strictInterl_X_mul_of_nonneg hsum (hnonneg (n + 1)) (hnonneg (n + 2))
 
-/-- Default proved PF preservation for the `l`-fold iterate of `theta + 1`. -/
-theorem isPFPolynomial_iterateThetaPlusOne
-    (l : ℕ) {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    IsPFPolynomial (iterateThetaPlusOne l p) :=
-  iterateThetaPlusOne_preserves_pf thetaPlusOne_preserves_pf l hp
-
-/-- Default proved `Interl` preservation for the `l`-fold iterate of `theta + 1`. -/
-theorem interl_iterateThetaPlusOne
-    (l : ℕ) {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
-    Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q) :=
-  iterateThetaPlusOne_preserves_interl
-    thetaPlusOne_preserves_pf thetaPlusOnePreservesInterl l hp hq hpq
-
 namespace Tactic
 
 theorem theta_sequence_nonneg
@@ -116,7 +102,7 @@ theorem iterateThetaPlusOne_sequence_pf
     {l : Nat → Nat} {P : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
     ∀ i : Nat, IsPFPolynomial (iterateThetaPlusOne (l i) (P i)) := fun i =>
-  RealRooted.isPFPolynomial_iterateThetaPlusOne (l i) (hP i)
+  RealRooted.iterateThetaPlusOne_preserves_pf (l i) (hP i)
 
 theorem thetaPlusOne_sequence_interl
     {P Q : Nat → ℝ[X]}
@@ -134,7 +120,7 @@ theorem iterateThetaPlusOne_sequence_interl
     ∀ i : Nat,
       Interl (iterateThetaPlusOne (l i) (P i)) (iterateThetaPlusOne (l i) (Q i)) :=
     fun i =>
-  RealRooted.interl_iterateThetaPlusOne (l i) (hP i) (hQ i) (hPQ i)
+  RealRooted.iterateThetaPlusOne_preserves_interl (l i) (hP i) (hQ i) (hPQ i)
 
 syntax (name := rr_theta_nonneg_named)
   "rr_theta_nonneg" " using " "nonneg" ":=" term :
@@ -294,7 +280,7 @@ macro_rules
       rr_iterateThetaPlusOne_pf using
         index := $l:term,
         pf := $hp:term) =>
-      `(tactic| exact RealRooted.isPFPolynomial_iterateThetaPlusOne $l $hp)
+      `(tactic| exact RealRooted.iterateThetaPlusOne_preserves_pf $l $hp)
   | `(tactic|
       rr_iterateThetaPlusOne_sequence_pf using
         index := $l:term,
@@ -318,7 +304,7 @@ macro_rules
         left_pf := $hp:term,
         right_pf := $hq:term,
         interl := $hpq:term) =>
-      `(tactic| exact RealRooted.interl_iterateThetaPlusOne $l $hp $hq $hpq)
+      `(tactic| exact RealRooted.iterateThetaPlusOne_preserves_interl $l $hp $hq $hpq)
   | `(tactic|
       rr_iterateThetaPlusOne_sequence_interl using
         index := $l:term,
@@ -414,7 +400,7 @@ macro_rules
         left_pf := $hp:term,
         right_pf := $hq:term,
         prec0 := $hpq:term) =>
-      `(tactic| exact RealRooted.interl_iterateThetaPlusOne $l $hp $hq $hpq)
+      `(tactic| exact RealRooted.iterateThetaPlusOne_preserves_interl $l $hp $hq $hpq)
   | `(tactic|
       rr_iterateThetaPlusOne_sequence_prec0 using
         index := $l:term,

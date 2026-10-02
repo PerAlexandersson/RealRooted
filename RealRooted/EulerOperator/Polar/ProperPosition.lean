@@ -17,8 +17,10 @@ namespace RealRooted
 
 /-- The polar-theta operator preserves weak interlacing on the bounded
 degree PF cone. -/
-theorem polarTheta_preserves_interl : polarThetaPreservesInterlStatement := by
-  intro N p q hp hq hpd hqd hpq
+theorem polarTheta_preserves_interl {N : ℕ} {p q : ℝ[X]}
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
+    (hpd : p.natDegree ≤ N) (hqd : q.natDegree ≤ N) (hpq : Interl p q) :
+    Interl (polarTheta N p) (polarTheta N q) := by
   rcases hpq with hpzero | hqzero | hpq
   · left
     rw [hpzero]
