@@ -103,7 +103,7 @@ $$P_{n+1}(x) = x \sum_{k \leq n} A(n+1,k)\, P_k(x).$$
 When $A$ counts weighted chains in a poset, $P_n$ enumerates the chains by
 length.
 
-**Theorem (Brändén–Saud Leite, Theorem 3.7).** If $A$ is lower unitriangular
+**Theorem (Brändén–Saud Leite).** If $A$ is lower unitriangular
 and totally nonnegative, then every $P_n$ has nonnegative coefficients and
 only real zeros in $[-1, 0]$, and $P_n$ interlaces $P_{n+1}$.
 

@@ -38,14 +38,9 @@ module = "RealRooted.BorceaBranden.FiniteSymbolClassification"
 label = "Classification of stability preservers on a degree box"
 
 [[theorems]]
-name = "RealRooted.BorceaBranden.finiteSymbolTheorem"
-module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
-label = "Finite-symbol theorem for real-rootedness preservers"
-
-[[theorems]]
 name = "RealRooted.BorceaBranden.finiteSymbol_preservesRealRootedUpTo"
 module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
-label = "A stable symbol gives a real-rootedness preserver"
+label = "Finite-symbol theorem: a stable symbol gives a real-rootedness preserver"
 -->
 
 <!-- realrooted-catalog-content -->

@@ -18,16 +18,18 @@ module = "RealRooted.SymmetricDecomposition.Definitions"
 label = "Symmetric I_d-decomposition"
 
 [[theorems]]
-name = "RealRooted.Challenges.BrandenSolus.theorem26"
-label = "Brändén–Solus, Theorem 2.6"
+name = "RealRooted.Challenges.BrandenSolus.interlacing_equivalences"
+label = "Interlacing equivalences for the I_d-decomposition"
 -->
 
 <!-- realrooted-catalog-content -->
 # Brändén–Solus symmetric decomposition
 
-The $I_d$-decomposition writes a polynomial as $a + Xb$ with reciprocal
-symmetry conditions on $a$ and $b$. Under the hypotheses of Brändén–Solus
-Theorem 2.6, these two pieces interlace.
+The $I_d$-decomposition writes a polynomial $p$ of degree at most $d$ as
+$p = a + Xb$ with reciprocal symmetry conditions on $a$ and $b$. If $a$ and $b$
+are nonzero with nonnegative coefficients, then $b \ll a$, $a \ll p$ and
+$b \ll p$ are equivalent. They are also equivalent to $I_d(p) \ll p$, and to
+$R_d(f) \ll f$ for the associated polynomial $f$ (`fPolynomial d p`).
 
 ## References
 
@@ -52,8 +54,8 @@ namespace RealRooted
 namespace Challenges
 namespace BrandenSolus
 
-/-- Branden--Solus symmetric-decomposition theorem. -/
-theorem theorem26 :
+/-- Interlacing equivalences for the symmetric `I_d`-decomposition `p = a + X b`. -/
+theorem interlacing_equivalences :
     ∀ {d : ℕ} {p a b : ℝ[X]},
       p.natDegree ≤ d →
       IsIdDecomposition d p a b →
