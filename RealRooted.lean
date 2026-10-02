@@ -1526,3 +1526,5 @@ import RealRooted.Tactic.Recurrence.Eval
 import RealRooted.Tactic.Recurrence.ODE
 import RealRooted.Challenges.ChordalClawFreeAcyclicSinks
 import RealRooted.Challenges.UnitIntervalAcyclicSinks
+import RealRooted.Challenges.ClawFreeOrientationSinks
+import RealRooted.Graph.AllOrientationSinkIdentity

@@ -13,11 +13,11 @@ identity
 ```
 
 The left-hand side is the sum over the Boolean orientation model from
-`Graph.AcyclicOrientation`.  The graph-theoretic indicator/counting identity
-is deliberately an external human-checkable boundary in this module: its
-faithful formalization requires a separate finite-product cardinality proof.
-The right-hand side is nevertheless defined exactly, and its splitting (and
-therefore the splitting of its affine pullback) is proved here.
+`Graph.AcyclicOrientation`.  This module defines both sides and proves that the
+right-hand side splits for claw-free graphs.  The counting identity itself is
+`allOrientationSinkPolynomial_indicatorIdentity` in
+`Graph.AllOrientationSinkIdentity`, which also states the unconditional
+real-rootedness theorem `allOrientationSinkPolynomial_splits_of_clawFree`.
 
 The natural scope is the full family of claw-free graphs.  Line graphs require
 no separate treatment here: they are merely one claw-free subfamily.
@@ -64,8 +64,8 @@ noncomputable instance orientationFintype (G : _root_.SimpleGraph V) :
 
 This definition includes isolated vertices as sinks, since `Orientation.IsSink`
 is vacuous at an isolated vertex.  The indicator identity relating this sum to
-`allOrientationSinkPolynomialShiftedModel` is the external boundary documented
-above.
+`allOrientationSinkPolynomialShiftedModel` is proved in
+`Graph.AllOrientationSinkIdentity`.
 -/
 def allOrientationSinkPolynomial (G : _root_.SimpleGraph V) : ℝ[X] := by
   classical
@@ -80,8 +80,7 @@ The intended human-checkable identity is
     = allOrientationSinkPolynomialShiftedModel G.
 ```
 
-No claim of this identity is made in this module until the orientation
-indicator expansion and its finite cardinality argument are formalized.
+The identity is proved in `Graph.AllOrientationSinkIdentity`.
 -/
 def allOrientationSinkPolynomialShiftedModel
     (G : _root_.SimpleGraph V) : ℝ[X] := by
@@ -92,10 +91,10 @@ def allOrientationSinkPolynomialShiftedModel
 /-- The exact indicator/counting identity needed to identify the actual
 all-orientation sum with the shifted weighted-independence model.
 
-This proposition is intentionally not proved here.  Its proof is the finite
-orientation-product argument described in the module header: expand the sink
-indicators, observe that a prescribed sink set is independent, and count the
-forced versus free edge directions.
+It is proved as `allOrientationSinkPolynomial_indicatorIdentity` in
+`Graph.AllOrientationSinkIdentity`: expand the sink indicators, observe that a
+prescribed sink set is independent, and count the forced versus free edge
+directions.
 -/
 def allOrientationSinkPolynomialIndicatorIdentity
     (G : _root_.SimpleGraph V) : Prop :=
@@ -158,9 +157,9 @@ theorem allOrientationSinkPolynomialModel_splits_of_clawFree
   rw [allOrientationSinkPolynomialModel]
   exact (allOrientationSinkPolynomialShiftedModel_splits_of_clawFree G hG).comp_X_sub_C 1
 
-/-- The actual orientation sum is split once the indicator identity is
-supplied.  This is the formal boundary separating the graph-polynomial proof
-from the finite orientation-counting proof. -/
+/-- The actual orientation sum splits, given the indicator identity.  The
+unconditional form is `allOrientationSinkPolynomial_splits_of_clawFree` in
+`Graph.AllOrientationSinkIdentity`. -/
 theorem allOrientationSinkPolynomial_splits_of_clawFree_of_indicatorIdentity
     (G : _root_.SimpleGraph V) (hG : ClawFree G)
     (hidentity : allOrientationSinkPolynomialIndicatorIdentity G) :

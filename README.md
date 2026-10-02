@@ -533,11 +533,12 @@ real-rooted for every real `q ≥ 0`
 sink polynomial of a claw-free graph with a reverse perfect elimination order is
 real-rooted
 (`Graph.ReversePerfectEliminationOrder.ordinaryAcyclicSinkPolynomial_splits_of_clawFree`).
-Both are statements about the actual orientation sums.  Two related models are
-not yet tied to their enumerations: the all-orientation sink polynomial is
-identified with its weighted-independence model only through
-`allOrientationSinkPolynomialIndicatorIdentity`, and for the minima polynomial
-only the weighted-matching model is formalized.
+Both are statements about the actual orientation sums.  Over all orientations,
+the sink polynomial of every finite claw-free graph is real-rooted
+(`Graph.allOrientationSinkPolynomial_splits_of_clawFree`), through the counting
+identity `Graph.allOrientationSinkPolynomial_indicatorIdentity`.  For the minima
+polynomial only the weighted-matching model is formalized; its equality with
+the local-order enumeration remains open.
 
 Garloff--Wagner Hadamard proper-position is now proved directly in
 `RealRooted.GarloffWagner` and exposed through
