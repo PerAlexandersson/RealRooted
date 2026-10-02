@@ -37,14 +37,17 @@ shifted sequence `m ↦ P (m + k)`; this also covers statements such as
 For three-term recurrences the top coefficients satisfy a scalar recurrence
 `t (n + 2) = α n t (n + 1) + β n t n`; the tactics try the nonnegative regime
 (`RealRooted.threeTermPos_*`) and then a growth ratio `ρ ∈ {1, 2, 4, 1/2, 3}`
-(`RealRooted.threeTermRatio_*`).
+(`RealRooted.threeTermRatio_*`).  If no integer growth works and `a n` is a
+constant, they try half growth, `natDegree (P n) = D₀ + d ⌊(n + e) / 2⌋`
+(`RealRooted.threeTermHalf_*`), which covers Fibonacci-type rows of degree `n / 2`.
 
 The tactics are backed by `RealRooted.derivRec_natDegree`,
 `RealRooted.derivRec₂_natDegree`, the three-term theorems, and their `ne_zero` /
 `leadingCoeff_pos` companions, and by `RealRooted.productSequence_natDegree` for
 products.
 Not covered: recurrences whose leading terms cancel identically (the degree
-then depends on lower coefficients) and rows whose degree is not affine in `n`.
+then depends on lower coefficients) and rows whose degree is neither affine in `n`
+nor of the half-growth form.
 -/
 
 open Lean Elab Tactic Meta Polynomial
@@ -254,6 +257,14 @@ private def sideAlternatives (P : Ident) (ty : Expr) : TacticM (List (TSyntax `t
           norm_num [$P:ident, Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow,
             Polynomial.coeff_C]
           done)),
+      -- rows computed by the recurrence: expand the products first
+      ← `(tactic| (
+          beta_reduce
+          simp only [Nat.zero_add, $P:ident]
+          ring_nf
+          simp [Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow,
+            Polynomial.coeff_C]
+          done)),
       ← `(tactic| (
           beta_reduce
           simp only [Nat.zero_add, $P:ident]
@@ -305,6 +316,8 @@ private def smallRowGoal (P : Ident) : TacticM Unit := do
     | (simp only [$P:ident]; intro h
        have h' := congrArg (fun p : ℝ[X] => p.coeff 0) h
        norm_num [Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow] at h'; done)
+    -- a hypothesis such as `h : n ≠ 0` may exclude the row
+    | (simp_all; done)
     | fail "rr_row: could not close the goal for an initial row"))
 
 /-- The theorems to try for a recurrence shape and a goal kind, each with an
@@ -353,16 +366,30 @@ private def applyRowThm (Q : Term) (shape : RecShape) (thm : Name × Option Stri
       evalTactic (← `(tactic| apply $t:ident (P := $Q) (d := $(numLit d))
         (D₀ := $(numLit D₀)) (ρ := ($(⟨ρ⟩) : ℝ)) $hrec))
 
+/-- The half-growth theorems (`P n` of degree `D₀ + d ⌊(n + e) / 2⌋`). -/
+private def halfThm (kind : String) : Name :=
+  match kind with
+  | "natDegree" => ``RealRooted.threeTermHalf_natDegree
+  | "ne_zero" => ``RealRooted.threeTermHalf_ne_zero
+  | _ => ``RealRooted.threeTermHalf_leadingCoeff_pos
+
+/-- Apply a half-growth theorem to the shifted sequence. -/
+private def applyHalfThm (Q : Term) (shape : RecShape) (kind : String) (d D₀ e : Nat) :
+    TacticM Unit := do
+  let hrec ← recTerm shape
+  evalTactic (← `(tactic| apply $(mkIdent (halfThm kind)):ident (P := $Q) (d := $(numLit d))
+    (D₀ := $(numLit D₀)) (e := $(numLit e)) $hrec))
+
 /-- Do the degree bounds (the first `nDeg` side goals) hold for growth `d`?
 The probe runs on a fresh goal `Q 0 ≠ 0`, since the degree bounds are the same for
 every conclusion and unifying other conclusions with the goal can be expensive. -/
-private def degreeFits (Q : Term) (shape : RecShape) (nDeg d D₀ : Nat) : TacticM Bool := do
+private def degreeFits (Q : Term) (apply : TacticM Unit) (nDeg : Nat) : TacticM Bool := do
   let s ← saveState
   let ok ← rowSucceeds do
     let ty ← elabTerm (← `($Q 0 ≠ 0)) none
     let g ← mkFreshExprMVar ty
     setGoals [g.mvarId!]
-    applyRowThm Q shape ((rowThms shape "ne_zero").head!) d D₀
+    apply
     let gs ← getGoals
     for g in gs.take nDeg do
       setGoals [g]
@@ -387,33 +414,52 @@ private def splitInitialRows (P : Ident) (t : Expr) (k : Nat) : TacticM Bool := 
     setGoals [main]
   return true
 
-/-- Shared driver.  `finish Q t d D₀` states the main goal for the shifted
-sequence `Q` and applies the matching theorem. -/
+/-- Shared driver.  `finish Q t deg apply` states the main goal for the shifted
+sequence `Q`, with `Q t` of degree `deg`, and runs `apply`. -/
 private def rowDriver (P : Ident) (shape : RecShape) (kind : String) (t : Expr)
-    (finish : Term → Term → Name × Option String → Nat → Nat → TacticM Unit) :
-    TacticM Unit := do
+    (finish : Term → Term → Term → TacticM Unit → TacticM Unit) : TacticM Unit := do
   let nDeg := if shape == .deriv₂ then 3 else 2
   let mut report := s!"rr_row_{kind}: no growth `d ≤ 6` fits the recurrence of {P}"
+  let isLag := shape == .lag || shape == .lagLeft || shape == .lagRight
+  -- one attempt: split off `k` rows, state the goal, apply, discharge the side goals
+  let attempt (k : Nat) (Q : Term) (deg : Term → TacticM Term) (apply : TacticM Unit) :
+      TacticM Bool :=
+    rowSucceeds do
+      -- after splitting, the main goal is about `P (t + k)`, with `t` renamed in place
+      let tStx ← if k == 0 then Term.exprToSyntax t else
+        match t with
+        | .fvar fv => pure (mkIdent (← fv.getUserName))
+        | _ => throwError "not a variable"
+      unless ← splitInitialRows P t k do throwError "not a variable"
+      withMainContext (finish Q tStx (← deg tStx) apply)
+      rowSideGoals P
+      unless (← getGoals).isEmpty do throwError "goals remain"
   for k in [0:3] do
     let some D₀ ← findRowDegree P k | continue
     let Q ← shifted P k
+    let mut fitted := false
     for d in [0:7] do
-      if ← degreeFits Q shape nDeg d D₀ then
+      if ← degreeFits Q (applyRowThm Q shape ((rowThms shape "ne_zero").head!) d D₀) nDeg then
         for thm in rowThms shape kind do
-          if ← rowSucceeds (do
-              -- after splitting, the main goal is about `P (t + k)`, with `t` renamed in place
-              let tStx ← if k == 0 then Term.exprToSyntax t else
-                match t with
-                | .fvar fv => pure (mkIdent (← fv.getUserName))
-                | _ => throwError "not a variable"
-              unless ← splitInitialRows P t k do throwError "not a variable"
-              withMainContext (finish Q tStx thm d D₀)
-              rowSideGoals P
-              unless (← getGoals).isEmpty do throwError "goals remain") then
+          if ← attempt k Q (fun t => `($(numLit D₀) + $(numLit d) * $t))
+              (applyRowThm Q shape thm d D₀) then
             return
         report := s!"rr_row_{kind}: growth {d} fits {P} after dropping {k} initial rows, \
           but the top-coefficient multiplier could not be shown nonzero (or positive)"
+        fitted := true
         break
+    -- half growth: `a n` constant, the degree grows by `d` every second step
+    if isLag then
+      for d in [1:4] do
+        if ← degreeFits Q (applyHalfThm Q shape "ne_zero" d D₀ 0) nDeg then
+          for e in [0, 1] do
+            if ← attempt k Q (fun t => `($(numLit D₀) + $(numLit d) * (($t + $(numLit e)) / 2)))
+                (applyHalfThm Q shape kind d D₀ e) then
+              return
+          unless fitted do
+            report := s!"rr_row_{kind}: half growth {d} fits {P} after dropping {k} initial \
+              rows, but the top coefficients could not be shown positive"
+          break
   throwError report
 
 /-- The sequence in the goal and the shape of its recurrence. -/
@@ -448,26 +494,25 @@ elab "rr_row_ne_zero" : tactic => withMainContext do
         (fun _ => rfl) _).1))
     productSideGoals P
     return
-  rowDriver P shape "ne_zero" (← mainRowIndex P) fun Q t thm d D₀ => do
+  rowDriver P shape "ne_zero" (← mainRowIndex P) fun Q t _ apply => do
     evalTactic (← `(tactic| change $Q $t ≠ 0))
-    applyRowThm Q shape thm d D₀
+    apply
 
 elab "rr_row_leadingCoeff_pos" : tactic => withMainContext do
   let (P, shape) ← rowSetup "rr_row_leadingCoeff_pos"
   if shape == .product then
     throwError "rr_row_leadingCoeff_pos: product sequences are not supported yet"
-  rowDriver P shape "leadingCoeff_pos" (← mainRowIndex P) fun Q t thm d D₀ => do
+  rowDriver P shape "leadingCoeff_pos" (← mainRowIndex P) fun Q t _ apply => do
     evalTactic (← `(tactic| change 0 < ($Q $t).leadingCoeff))
-    applyRowThm Q shape thm d D₀
+    apply
 
 elab "rr_row_natDegree" : tactic => withMainContext do
   let (P, shape) ← rowSetup "rr_row_natDegree"
   if shape == .product then
     evalTactic (← `(tactic| rr_product_natDegree))
     return
-  rowDriver P shape "natDegree" (← mainRowIndex P) fun Q t thm d D₀ => do
-    evalTactic (← `(tactic|
-      refine (?_ : ($Q $t).natDegree = $(numLit D₀) + $(numLit d) * $t).trans (by lia)))
-    applyRowThm Q shape thm d D₀
+  rowDriver P shape "natDegree" (← mainRowIndex P) fun Q t deg apply => do
+    evalTactic (← `(tactic| refine (?_ : ($Q $t).natDegree = $deg).trans (by lia)))
+    apply
 
 end RealRooted.Tactic

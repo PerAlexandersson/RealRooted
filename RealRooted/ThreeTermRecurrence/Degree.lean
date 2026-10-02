@@ -186,4 +186,112 @@ theorem threeTermRatio_ne_zero (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n 
 
 end Ratio
 
+section Half
+
+/-! ### Half growth
+
+If `a n` is a constant and `natDegree (b n) ≤ d`, the degree grows by `d` every
+second step: `P n` has degree `D₀ + d ⌊(n + e) / 2⌋`, where `e ∈ {0, 1}` records
+whether `P 1` already has the larger degree (Fibonacci-type polynomials).  In the
+steps where `P (n + 1)` stays below the new degree, only `b n * P n` reaches it,
+so the top coefficients stay positive when `a n ≥ 0` and `b n` has a positive
+top coefficient. -/
+
+/-- One half-growth step: the degree bound and the coefficient in the bounding
+degree. -/
+theorem threeTermHalf_step (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (ha : ∀ n, (a n).natDegree ≤ 0) (hb : ∀ n, (b n).natDegree ≤ d) (e n : ℕ)
+    (h0 : (P n).natDegree ≤ D₀ + d * ((n + e) / 2))
+    (h1 : (P (n + 1)).natDegree ≤ D₀ + d * ((n + 1 + e) / 2)) :
+    (P (n + 2)).natDegree ≤ D₀ + d * ((n + 2 + e) / 2) ∧
+      (P (n + 2)).coeff (D₀ + d * ((n + 2 + e) / 2)) =
+        (a n).coeff 0 * (P (n + 1)).coeff (D₀ + d * ((n + 2 + e) / 2)) +
+          (b n).coeff d * (P n).coeff (D₀ + d * ((n + e) / 2)) := by
+  have hk : (n + 2 + e) / 2 = (n + e) / 2 + 1 := by lia
+  have hmono : D₀ + d * ((n + 1 + e) / 2) ≤ D₀ + d * ((n + 2 + e) / 2) :=
+    Nat.add_le_add_left (Nat.mul_le_mul_left d (by lia)) D₀
+  have e0 : D₀ + d * ((n + 2 + e) / 2) = d + (D₀ + d * ((n + e) / 2)) := by rw [hk]; ring
+  have hcoeffA : ∀ k, (a n * P (n + 1)).coeff k = (a n).coeff 0 * (P (n + 1)).coeff k := by
+    intro k
+    conv_lhs => rw [eq_C_of_natDegree_le_zero (ha n)]
+    exact coeff_C_mul _
+  rw [hrec n]
+  refine ⟨natDegree_add_le_of_degree_le ?_ ?_, ?_⟩
+  · refine (natDegree_mul_le_of_le (ha n) h1).trans ?_
+    rw [zero_add]
+    exact hmono
+  · rw [e0]; exact natDegree_mul_le_of_le (hb n) h0
+  · rw [coeff_add, hcoeffA, e0, coeff_mul_add_of_natDegree_le (hb n) h0]
+
+/-- The half-growth induction: degree bounds and positive top coefficients for two
+consecutive rows. -/
+theorem threeTermHalf_top (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (ha : ∀ n, (a n).natDegree ≤ 0) (hb : ∀ n, (b n).natDegree ≤ d) {e : ℕ} (he : e ≤ 1)
+    (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d * e)
+    (hc0 : 0 < (P 0).coeff D₀) (hc1 : 0 < (P 1).coeff (D₀ + d * e))
+    (hα : ∀ n, 0 ≤ (a n).coeff 0) (hβ : ∀ n, 0 < (b n).coeff d) :
+    ∀ n, (P n).natDegree ≤ D₀ + d * ((n + e) / 2) ∧
+      (P (n + 1)).natDegree ≤ D₀ + d * ((n + 1 + e) / 2) ∧
+      0 < (P n).coeff (D₀ + d * ((n + e) / 2)) ∧
+      0 < (P (n + 1)).coeff (D₀ + d * ((n + 1 + e) / 2))
+  | 0 => by
+      have he0 : (0 + e) / 2 = 0 := by lia
+      have he1 : (0 + 1 + e) / 2 = e := by lia
+      rw [he0, he1, mul_zero, add_zero]
+      exact ⟨h0, h1, hc0, hc1⟩
+  | n + 1 => by
+      obtain ⟨hn0, hn1, hp0, hp1⟩ :=
+        threeTermHalf_top hrec ha hb he h0 h1 hc0 hc1 hα hβ n
+      have hs := threeTermHalf_step hrec ha hb e n hn0 hn1
+      have hidx : n + 1 + 1 = n + 2 := rfl
+      have hidx' : n + 1 + 1 + e = n + 2 + e := by lia
+      rw [hidx, hidx']
+      refine ⟨hn1, hs.1, hp1, ?_⟩
+      rw [hs.2]
+      -- the first summand is `α n` times the top coefficient or times `0`
+      have hfirst : 0 ≤ (P (n + 1)).coeff (D₀ + d * ((n + 2 + e) / 2)) := by
+        have hmono : D₀ + d * ((n + 1 + e) / 2) ≤ D₀ + d * ((n + 2 + e) / 2) :=
+          Nat.add_le_add_left (Nat.mul_le_mul_left d (by lia)) D₀
+        rcases hmono.eq_or_lt with h | h
+        · rw [← h]; exact hp1.le
+        · rw [coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hn1 h)]
+      nlinarith [mul_nonneg (hα n) hfirst, mul_pos (hβ n) hp0]
+
+private theorem half_pos (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (ha : ∀ n, (a n).natDegree ≤ 0) (hb : ∀ n, (b n).natDegree ≤ d) {e : ℕ} (he : e ≤ 1)
+    (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d * e)
+    (hc0 : 0 < (P 0).coeff D₀) (hc1 : 0 < (P 1).coeff (D₀ + d * e))
+    (hα : ∀ n, 0 ≤ (a n).coeff 0) (hβ : ∀ n, 0 < (b n).coeff d) (n : ℕ) :
+    (P n).natDegree = D₀ + d * ((n + e) / 2) ∧ 0 < (P n).leadingCoeff := by
+  obtain ⟨hle, -, hpos, -⟩ := threeTermHalf_top hrec ha hb he h0 h1 hc0 hc1 hα hβ n
+  have hdeg := natDegree_eq_of_le_of_coeff_ne_zero hle hpos.ne'
+  exact ⟨hdeg, by rwa [leadingCoeff, hdeg]⟩
+
+theorem threeTermHalf_natDegree (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (ha : ∀ n, (a n).natDegree ≤ 0) (hb : ∀ n, (b n).natDegree ≤ d) {e : ℕ} (he : e ≤ 1)
+    (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d * e)
+    (hc0 : 0 < (P 0).coeff D₀) (hc1 : 0 < (P 1).coeff (D₀ + d * e))
+    (hα : ∀ n, 0 ≤ (a n).coeff 0) (hβ : ∀ n, 0 < (b n).coeff d) (n : ℕ) :
+    (P n).natDegree = D₀ + d * ((n + e) / 2) :=
+  (half_pos hrec ha hb he h0 h1 hc0 hc1 hα hβ n).1
+
+theorem threeTermHalf_leadingCoeff_pos (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (ha : ∀ n, (a n).natDegree ≤ 0) (hb : ∀ n, (b n).natDegree ≤ d) {e : ℕ} (he : e ≤ 1)
+    (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d * e)
+    (hc0 : 0 < (P 0).coeff D₀) (hc1 : 0 < (P 1).coeff (D₀ + d * e))
+    (hα : ∀ n, 0 ≤ (a n).coeff 0) (hβ : ∀ n, 0 < (b n).coeff d) (n : ℕ) :
+    0 < (P n).leadingCoeff :=
+  (half_pos hrec ha hb he h0 h1 hc0 hc1 hα hβ n).2
+
+theorem threeTermHalf_ne_zero (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (ha : ∀ n, (a n).natDegree ≤ 0) (hb : ∀ n, (b n).natDegree ≤ d) {e : ℕ} (he : e ≤ 1)
+    (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d * e)
+    (hc0 : 0 < (P 0).coeff D₀) (hc1 : 0 < (P 1).coeff (D₀ + d * e))
+    (hα : ∀ n, 0 ≤ (a n).coeff 0) (hβ : ∀ n, 0 < (b n).coeff d) (n : ℕ) :
+    P n ≠ 0 :=
+  leadingCoeff_ne_zero.mp
+    (threeTermHalf_leadingCoeff_pos hrec ha hb he h0 h1 hc0 hc1 hα hβ n).ne'
+
+end Half
+
 end RealRooted
