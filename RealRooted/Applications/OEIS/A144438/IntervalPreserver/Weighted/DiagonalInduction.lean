@@ -455,4 +455,25 @@ theorem weightedDecoDiagonalInvariant_all {w a : ℝ}
       exact WeightedDecoDiagonalInvariant.succ hw0 hw1 ha0 ha1 (by lia)
         (ih (by lia))
 
+/-- Every positive-rank weighted diagonal polynomial has simple negative
+zeros throughout the full parameter square. -/
+theorem weightedDecoDiagonal_hasSimpleRoots_and_roots_neg
+    {w a : ℝ} (hw0 : 0 ≤ w) (hw1 : w ≤ 1)
+    (ha0 : 0 ≤ a) (ha1 : a ≤ 1) {n : ℕ} (hn : 1 ≤ n) :
+    HasSimpleRoots (weightedDecoDiagonal w n a) ∧
+      ∀ r, (weightedDecoDiagonal w n a).IsRoot r → r < 0 := by
+  have hinv := weightedDecoDiagonalInvariant_all hw0 hw1 ha0 ha1 n hn
+  exact ⟨hinv.simple, hinv.roots_neg⟩
+
+/-- Consecutive positive-rank weighted diagonal polynomials strictly
+interlace. -/
+theorem weightedDecoDiagonal_strictInterl_succ
+    {w a : ℝ} (hw0 : 0 ≤ w) (hw1 : w ≤ 1)
+    (ha0 : 0 ≤ a) (ha1 : a ≤ 1) {n : ℕ} (hn : 1 ≤ n) :
+    StrictInterl (weightedDecoDiagonal w n a)
+      (weightedDecoDiagonal w (n + 1) a) := by
+  have hinv := weightedDecoDiagonalInvariant_all hw0 hw1 ha0 ha1 n hn
+  exact (weightedDecoDiagonal_root_step hn ha0 hinv.splits
+    hinv.companion_residue_pos hinv.roots_neg).1
+
 end RealRooted.Applications.OEIS
