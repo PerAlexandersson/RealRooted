@@ -1399,6 +1399,45 @@ import RealRooted.Tactic.InterlacesExplicit
 import RealRooted.Challenges.MinimaPolynomial
 import RealRooted.Graph.MinimaLocalOrder
 import RealRooted.Graph.MinimaForest
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Basic
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.BlockEnergy
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.CompanionDegree
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Degree
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.DiagonalRootStep
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Endpoints
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Energy
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueAlgebra
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueDerivative
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueSums
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ScalarBounds
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.StrictStep
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.SuccessorResidues
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ContactCalculus
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Degree
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalInduction
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalRootStep
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DirectResidueAlgebra
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Energy
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactAlgebra
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactBoundary
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactCompact
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactMinimal
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactTheorem
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactTopology
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterContinuity
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterFamily
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterInduction
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Preserver
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ResidueAlgebra
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ResidueSums
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.RootIncidenceCompact
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ScalarBounds
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.SuccessorBlock
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.SuccessorResidues
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.WeightedResidueSum
+import RealRooted.Challenges.DecoEulerian
 
 /-!
 # RealRooted production umbrella

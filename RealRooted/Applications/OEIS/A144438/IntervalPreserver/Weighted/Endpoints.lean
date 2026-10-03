@@ -75,14 +75,14 @@ def weightedDecoDiagonalAtOne (w : ℝ) (n : ℕ) (a : ℝ) : ℝ :=
 def weightedDecoDiagonalLagAtOne (w : ℝ) (n : ℕ) (a : ℝ) : ℝ :=
   (weightedDecoDiagonalLag w n a).eval 1
 
-def weightedDecoGamma (w : ℝ) (n : ℕ) (a : ℝ) : ℝ :=
+def weightedDecoEndpointRatio (w : ℝ) (n : ℕ) (a : ℝ) : ℝ :=
   weightedDecoDiagonalAtOne w n a / weightedDecoDiagonalAtOne w (n - 1) a
 
 def weightedDecoKappa (w : ℝ) (n : ℕ) (a : ℝ) : ℝ :=
   weightedDecoDiagonalLagAtOne w n a / weightedDecoDiagonalAtOne w n a
 
 def weightedDecoEta (w : ℝ) (n : ℕ) (a : ℝ) : ℝ :=
-  (n : ℝ) * a / weightedDecoGamma w n a
+  (n : ℝ) * a / weightedDecoEndpointRatio w n a
 
 @[simp]
 theorem weightedDecoDiagonalAtOne_zero (w a : ℝ) :
@@ -101,9 +101,9 @@ theorem weightedDecoDiagonalLagAtOne_one (w a : ℝ) :
   simp [weightedDecoDiagonalLagAtOne]
 
 @[simp]
-theorem weightedDecoGamma_one (w a : ℝ) :
-    weightedDecoGamma w 1 a = 2 + a := by
-  simp [weightedDecoGamma]
+theorem weightedDecoEndpointRatio_one (w a : ℝ) :
+    weightedDecoEndpointRatio w 1 a = 2 + a := by
+  simp [weightedDecoEndpointRatio]
 
 @[simp]
 theorem weightedDecoKappa_one (w a : ℝ) :
@@ -131,15 +131,15 @@ theorem weightedDecoDiagonalAtOne_succ_succ (w : ℝ) (n : ℕ) (a : ℝ) :
     weightedDecoDiagonalAtOne, weightedDecoDiagonalLagAtOne]
   ring
 
-theorem weightedDecoGamma_succ_succ (w : ℝ) (n : ℕ) {a : ℝ}
+theorem weightedDecoEndpointRatio_succ_succ (w : ℝ) (n : ℕ) {a : ℝ}
     (hw : 0 ≤ w) (ha : 0 ≤ a) :
-    weightedDecoGamma w (n + 2) a =
+    weightedDecoEndpointRatio w (n + 2) a =
       (n : ℝ) + 3 + a - ((n : ℝ) + 1) * a /
-        weightedDecoGamma w (n + 1) a +
+        weightedDecoEndpointRatio w (n + 1) a +
           w * weightedDecoKappa w (n + 1) a := by
   have hp0 := weightedDecoDiagonal_eval_one_pos hw (n := n) ha
   have hp1 := weightedDecoDiagonal_eval_one_pos hw (n := n + 1) ha
-  rw [weightedDecoGamma, weightedDecoGamma, weightedDecoKappa]
+  rw [weightedDecoEndpointRatio, weightedDecoEndpointRatio, weightedDecoKappa]
   rw [show n + 2 - 1 = n + 1 by lia, show n + 1 - 1 = n by lia]
   rw [weightedDecoDiagonalAtOne_succ_succ]
   have hp0' : weightedDecoDiagonalAtOne w n a ≠ 0 := ne_of_gt hp0
@@ -149,10 +149,11 @@ theorem weightedDecoGamma_succ_succ (w : ℝ) (n : ℕ) {a : ℝ}
 theorem weightedDecoKappa_succ (w : ℝ) (n : ℕ) {a : ℝ}
     (hw : 0 ≤ w) (ha : 0 ≤ a) :
     weightedDecoKappa w (n + 1) a =
-      (1 + a * weightedDecoKappa w n a) / weightedDecoGamma w (n + 1) a := by
+      (1 + a * weightedDecoKappa w n a) /
+        weightedDecoEndpointRatio w (n + 1) a := by
   have hp := weightedDecoDiagonal_eval_one_pos hw (n := n) ha
   have hpSucc := weightedDecoDiagonal_eval_one_pos hw (n := n + 1) ha
-  rw [weightedDecoKappa, weightedDecoGamma, weightedDecoKappa,
+  rw [weightedDecoKappa, weightedDecoEndpointRatio, weightedDecoKappa,
     weightedDecoDiagonalLagAtOne_succ]
   simp only [Nat.add_sub_cancel]
   have hp' : weightedDecoDiagonalAtOne w n a ≠ 0 := ne_of_gt hp
@@ -162,8 +163,8 @@ theorem weightedDecoKappa_succ (w : ℝ) (n : ℕ) {a : ℝ}
 theorem weightedDeco_endpoint_bounds {w a : ℝ}
     (hw0 : 0 ≤ w) (ha0 : 0 ≤ a) (ha1 : a ≤ 1) :
     ∀ n : ℕ, 1 ≤ n →
-      (n : ℝ) * a + 1 < weightedDecoGamma w n a ∧
-        2 + a ≤ weightedDecoGamma w n a ∧
+      (n : ℝ) * a + 1 < weightedDecoEndpointRatio w n a ∧
+        2 + a ≤ weightedDecoEndpointRatio w n a ∧
           0 ≤ weightedDecoKappa w n a ∧ weightedDecoKappa w n a ≤ 1 / 2 := by
   intro n hn
   obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
@@ -172,10 +173,10 @@ theorem weightedDeco_endpoint_bounds {w a : ℝ}
   | zero =>
       norm_num only [Nat.cast_add, Nat.cast_one, Nat.cast_zero, add_zero,
         one_mul, Nat.reduceAdd]
-      change a + 1 < weightedDecoGamma w 1 a ∧
-        2 + a ≤ weightedDecoGamma w 1 a ∧
+      change a + 1 < weightedDecoEndpointRatio w 1 a ∧
+        2 + a ≤ weightedDecoEndpointRatio w 1 a ∧
           0 ≤ weightedDecoKappa w 1 a ∧ weightedDecoKappa w 1 a ≤ 1 / 2
-      rw [weightedDecoGamma_one, weightedDecoKappa_one]
+      rw [weightedDecoEndpointRatio_one, weightedDecoKappa_one]
       constructor
       · linarith
       constructor
@@ -187,32 +188,32 @@ theorem weightedDeco_endpoint_bounds {w a : ℝ}
         linarith
   | succ m ih =>
       have ih' :
-          (m + 1 : ℝ) * a + 1 < weightedDecoGamma w (m + 1) a ∧
-            2 + a ≤ weightedDecoGamma w (m + 1) a ∧
+          (m + 1 : ℝ) * a + 1 < weightedDecoEndpointRatio w (m + 1) a ∧
+            2 + a ≤ weightedDecoEndpointRatio w (m + 1) a ∧
               0 ≤ weightedDecoKappa w (m + 1) a ∧
                 weightedDecoKappa w (m + 1) a ≤ 1 / 2 := by
         simpa only [Nat.cast_add, Nat.cast_one, Nat.add_comm, add_comm] using ih
-      have hgammaRec := weightedDecoGamma_succ_succ w m hw0 ha0
+      have hgammaRec := weightedDecoEndpointRatio_succ_succ w m hw0 ha0
       have hkappaRec := weightedDecoKappa_succ w (m + 1) hw0 ha0
-      have hgammaPos : 0 < weightedDecoGamma w (m + 1) a := by
+      have hgammaPos : 0 < weightedDecoEndpointRatio w (m + 1) a := by
         have : 0 ≤ (m + 1 : ℝ) * a := by positivity
         linarith [ih'.1]
       have heta :
-          (m + 1 : ℝ) * a / weightedDecoGamma w (m + 1) a < 1 := by
+          (m + 1 : ℝ) * a / weightedDecoEndpointRatio w (m + 1) a < 1 := by
         rw [div_lt_one hgammaPos]
         linarith [ih'.1]
       have hwKappa : 0 ≤ w * weightedDecoKappa w (m + 1) a :=
         mul_nonneg hw0 ih'.2.2.1
       have hgammaStrong :
-          (m + 2 : ℝ) + a < weightedDecoGamma w (m + 2) a := by
+          (m + 2 : ℝ) + a < weightedDecoEndpointRatio w (m + 2) a := by
         rw [hgammaRec]
         linarith
       have hgammaLinear :
-          (m + 2 : ℝ) * a + 1 < weightedDecoGamma w (m + 2) a := by
+          (m + 2 : ℝ) * a + 1 < weightedDecoEndpointRatio w (m + 2) a := by
         have : (m + 2 : ℝ) * a + 1 ≤ (m + 2 : ℝ) + a := by
           nlinarith
         linarith
-      have hgammaFloor : 2 + a ≤ weightedDecoGamma w (m + 2) a := by
+      have hgammaFloor : 2 + a ≤ weightedDecoEndpointRatio w (m + 2) a := by
         linarith
       have hkappaNonneg : 0 ≤ weightedDecoKappa w (m + 2) a := by
         rw [hkappaRec]
@@ -233,7 +234,7 @@ theorem weightedDecoEta_lt_one {w a : ℝ} (hw0 : 0 ≤ w)
     weightedDecoEta w n a < 1 := by
   have hgamma := (weightedDeco_endpoint_bounds hw0 ha0 ha1 n hn).1
   have hna : 0 ≤ (n : ℝ) * a := mul_nonneg (by positivity) ha0
-  have hgammaPos : 0 < weightedDecoGamma w n a := by linarith
+  have hgammaPos : 0 < weightedDecoEndpointRatio w n a := by linarith
   rw [weightedDecoEta, div_lt_one hgammaPos]
   linarith
 

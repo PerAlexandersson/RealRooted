@@ -50,7 +50,6 @@ theorem weightedDecoDiagonalInvariant_one {w a : ℝ}
     simp
     linarith
 
-set_option maxHeartbeats 800000 in
 -- The proof elaborates several nested finite subtype sums and rational identities.
 /-- The residue-energy part of one weighted diagonal step. -/
 theorem weightedDecoDiagonal_successor_residue_and_energy
@@ -374,37 +373,37 @@ theorem weightedDecoDiagonal_successor_residue_and_energy
       have hpow : (1 + a) ^ n ≠ 0 := pow_ne_zero _ hbase
       field_simp [hbase, hpow]
     have honeRatio :
-        p.eval 1 / q.eval 1 = 1 / weightedDecoGamma w (n + 1) a := by
+        p.eval 1 / q.eval 1 = 1 / weightedDecoEndpointRatio w (n + 1) a := by
       have hp1 : 0 < p.eval 1 := weightedDecoDiagonal_eval_one_pos hw0 ha0
       have hq1pos : 0 < q.eval 1 := weightedDecoDiagonal_eval_one_pos hw0 ha0
-      rw [weightedDecoGamma, show n + 1 - 1 = n by lia]
+      rw [weightedDecoEndpointRatio, show n + 1 - 1 = n by lia]
       dsimp only [weightedDecoDiagonalAtOne, p, q]
       field_simp [hp1.ne', hq1pos.ne']
     have hmass :
         ∑ ρ ∈ q.roots.toFinset,
             (p.eval ρ / q.derivative.eval ρ) / ((-ρ) * (1 - ρ)) =
-          1 / (1 + a) - 1 / weightedDecoGamma w (n + 1) a := by
+          1 / (1 + a) - 1 / weightedDecoEndpointRatio w (n + 1) a := by
       rw [hmassRaw, hzeroRatio, honeRatio]
     have hgammaFloor :=
       (weightedDeco_endpoint_bounds hw0 ha0 ha1 (n + 1) (by lia)).2.1
-    have hgammaPos : 0 < weightedDecoGamma w (n + 1) a := by
+    have hgammaPos : 0 < weightedDecoEndpointRatio w (n + 1) a := by
       linarith
     have hbasePos : 0 < 1 + a := by linarith
     have hmassPos :
-        0 < 1 / (1 + a) - 1 / weightedDecoGamma w (n + 1) a := by
+        0 < 1 / (1 + a) - 1 / weightedDecoEndpointRatio w (n + 1) a := by
       rw [sub_pos, div_lt_div_iff₀ hgammaPos hbasePos]
       linarith
     have hmassLt :
-        1 / (1 + a) - 1 / weightedDecoGamma w (n + 1) a <
+        1 / (1 + a) - 1 / weightedDecoEndpointRatio w (n + 1) a <
           1 / (1 + a) := by
-      have : 0 < 1 / weightedDecoGamma w (n + 1) a := by positivity
+      have : 0 < 1 / weightedDecoEndpointRatio w (n + 1) a := by positivity
       linarith
     have hproduct :
-        Φ * (1 / (1 + a) - 1 / weightedDecoGamma w (n + 1) a) < 1 := by
+        Φ * (1 / (1 + a) - 1 / weightedDecoEndpointRatio w (n + 1) a) < 1 := by
       calc
-        Φ * (1 / (1 + a) - 1 / weightedDecoGamma w (n + 1) a) <
+        Φ * (1 / (1 + a) - 1 / weightedDecoEndpointRatio w (n + 1) a) <
             (1 + a) *
-              (1 / (1 + a) - 1 / weightedDecoGamma w (n + 1) a) :=
+              (1 / (1 + a) - 1 / weightedDecoEndpointRatio w (n + 1) a) :=
           mul_lt_mul_of_pos_right hΦlt hmassPos
         _ < (1 + a) * (1 / (1 + a)) :=
           mul_lt_mul_of_pos_left hmassLt hbasePos
@@ -425,7 +424,7 @@ theorem weightedDecoDiagonal_successor_residue_and_energy
       _ ≤ Φ * ∑ ρ ∈ q.roots.toFinset,
           (p.eval ρ / q.derivative.eval ρ) / ((-ρ) * (1 - ρ)) :=
         hsumBound
-      _ = Φ * (1 / (1 + a) - 1 / weightedDecoGamma w (n + 1) a) := by
+      _ = Φ * (1 / (1 + a) - 1 / weightedDecoEndpointRatio w (n + 1) a) := by
         rw [hmass]
       _ ≤ 1 := hproduct.le
 

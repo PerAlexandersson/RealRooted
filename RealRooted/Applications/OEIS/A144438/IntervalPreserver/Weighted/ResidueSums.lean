@@ -21,7 +21,7 @@ theorem weightedDecoDiagonalCompanion_eval_one_div {w : ℝ} (hw : 0 ≤ w)
   rw [weightedDecoDiagonalCompanion_succ_eq]
   simp only [eval_add, eval_sub, eval_mul, eval_one, eval_X, eval_C,
     sub_self, zero_mul, zero_add]
-  rw [weightedDecoEta, weightedDecoGamma, weightedDecoKappa]
+  rw [weightedDecoEta, weightedDecoEndpointRatio, weightedDecoKappa]
   simp only [Nat.add_sub_cancel, Nat.cast_add, Nat.cast_one,
     weightedDecoDiagonalAtOne, weightedDecoDiagonalLagAtOne]
   field_simp [hp.ne', hpSucc.ne']
