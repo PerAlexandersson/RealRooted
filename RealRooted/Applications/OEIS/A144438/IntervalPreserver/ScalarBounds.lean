@@ -136,4 +136,42 @@ theorem a144438_residue_energy_scalar_lt {a κ E s : ℝ}
       dsimp [L]
       exact a144438_scalar_endpoint_lt ha0 ha1 hκ0 hκ1
 
+/-- The scalar Schur complement in the positive companion matrix is uniformly
+larger than `7/4`. -/
+theorem a144438_schur_complement_gt {a κ η E n : ℝ}
+    (ha0 : 0 ≤ a) (ha1 : a ≤ 1) (hκ0 : 0 ≤ κ)
+    (hη : η < 1) (hE0 : 0 ≤ E) (hE1 : E ≤ 1) (hn : 0 ≤ n) :
+    7 / 4 <
+      3 + n * (1 - a) - η + (1 + a) * κ - a ^ 2 * E / 4 := by
+  have haSquare : a ^ 2 ≤ 1 := by
+    nlinarith [mul_nonneg ha0 (sub_nonneg.mpr ha1)]
+  have haE : a ^ 2 * E ≤ 1 := by
+    exact (mul_le_mul haSquare hE1 hE0 (by positivity)).trans (by norm_num)
+  have hnTerm : 0 ≤ n * (1 - a) := mul_nonneg hn (sub_nonneg.mpr ha1)
+  have hκTerm : 0 ≤ (1 + a) * κ := mul_nonneg (by linarith) hκ0
+  nlinarith
+
+/-- The last contraction estimate: an inverse-matrix bound below `1+a`
+forces the next energy strictly below one. -/
+theorem a144438_energy_contraction {a γ B Eplus : ℝ}
+    (ha0 : 0 ≤ a) (hγ : 1 + a < γ)
+    (_hB0 : 0 ≤ B) (hB : B < 1 + a)
+    (hstep : Eplus ≤ B * (1 / (1 + a) - 1 / γ)) :
+    Eplus < 1 := by
+  have haPos : 0 < 1 + a := by linarith
+  have hγPos : 0 < γ := lt_trans haPos hγ
+  have hfactorPos : 0 < 1 / (1 + a) - 1 / γ := by
+    rw [one_div, one_div, sub_pos]
+    exact (inv_lt_inv₀ hγPos haPos).2 hγ
+  have hstrict :
+      B * (1 / (1 + a) - 1 / γ) <
+        (1 + a) * (1 / (1 + a) - 1 / γ) :=
+    mul_lt_mul_of_pos_right hB hfactorPos
+  have hproduct :
+      (1 + a) * (1 / (1 + a) - 1 / γ) = 1 - (1 + a) / γ := by
+    field_simp [haPos.ne', hγPos.ne']
+  rw [hproduct] at hstrict
+  have : 0 < (1 + a) / γ := div_pos haPos hγPos
+  linarith
+
 end RealRooted.Applications.OEIS
