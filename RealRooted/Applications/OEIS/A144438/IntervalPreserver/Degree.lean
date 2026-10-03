@@ -15,6 +15,16 @@ noncomputable section
 
 namespace Polynomial
 
+/-- A supportwise degree bound on the basis elements bounds the entire basis
+transform. -/
+theorem basisTransform_natDegree_le_of_support
+    {R : Type*} [CommRing R] {B : ℕ → R[X]} {p : R[X]} {N : ℕ}
+    (hB : ∀ n ∈ p.support, (B n).natDegree ≤ N) :
+    (basisTransform B p).natDegree ≤ N := by
+  rw [basisTransform, Polynomial.sum_def]
+  exact natDegree_sum_le_of_forall_le _ _ fun n hn ↦
+    (natDegree_C_mul_le (p.coeff n) (B n)).trans (hB n hn)
+
 /-- A basis transform does not raise degree when its `n`th basis element has
 degree at most `n`. -/
 theorem basisTransform_natDegree_le_of_natDegree_le
@@ -115,5 +125,38 @@ coefficient. -/
 theorem a144438Diagonal_hasPosLeadingCoeff (n : ℕ) (a : ℝ) :
     HasPosLeadingCoeff (a144438Diagonal n a) :=
   hasPosLeadingCoeff_of_monic (a144438Diagonal_monic n a)
+
+/-- The lag basis element at index `n` has degree `n-1`. -/
+theorem a144438LagBasis_natDegree (n : ℕ) :
+    (a144438LagBasis n).natDegree = n - 1 := by
+  cases n with
+  | zero => simp [a144438LagBasis]
+  | succ n => simp [a144438LagBasis, decoEulerian_natDegree]
+
+/-- At positive rank the diagonal lag has degree strictly below the diagonal
+transform. -/
+theorem a144438DiagonalLag_natDegree_lt {n : ℕ} (hn : 1 ≤ n) (a : ℝ) :
+    (a144438DiagonalLag n a).natDegree < n := by
+  have hinputDegree : ((X + C a) ^ n).natDegree = n := by
+    rw [(monic_X_add_C a).natDegree_pow, natDegree_X_add_C]
+    simp
+  unfold a144438DiagonalLag a144438LagTransform
+  refine lt_of_le_of_lt
+    (Polynomial.basisTransform_natDegree_le_of_support ?_) (Nat.sub_lt hn zero_lt_one)
+  intro m hm
+  rw [a144438LagBasis_natDegree]
+  have hmle : m ≤ n := by
+    rw [← hinputDegree]
+    exact le_natDegree_of_ne_zero (Polynomial.mem_support_iff.mp hm)
+  exact Nat.sub_le_sub_right hmle 1
+
+/-- Degree form of `a144438DiagonalLag_natDegree_lt`, ready for the residue
+expansion API. -/
+theorem a144438DiagonalLag_degree_lt {n : ℕ} (hn : 1 ≤ n) (a : ℝ) :
+    (a144438DiagonalLag n a).degree < n := by
+  calc
+    (a144438DiagonalLag n a).degree ≤
+        ((a144438DiagonalLag n a).natDegree : WithBot ℕ) := degree_le_natDegree
+    _ < n := by exact_mod_cast a144438DiagonalLag_natDegree_lt hn a
 
 end RealRooted.Applications.OEIS

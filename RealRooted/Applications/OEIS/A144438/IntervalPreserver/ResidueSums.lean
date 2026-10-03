@@ -1,4 +1,4 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Degree
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.CompanionDegree
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Energy
 
 /-!
@@ -38,8 +38,7 @@ theorem a144438DiagonalCompanion_eval_one_div {n : ℕ} (hn : 1 ≤ n)
 theorem a144438DiagonalLag_residue_sum_eq_kappa
     {n : ℕ} (hn : 1 ≤ n) {a : ℝ} (ha : 0 ≤ a)
     (hsplits : (a144438Diagonal n a).Splits)
-    (hnodup : (a144438Diagonal n a).roots.Nodup)
-    (hdeg : (a144438DiagonalLag n a).degree < n) :
+    (hnodup : (a144438Diagonal n a).roots.Nodup) :
     ∑ r ∈ (a144438Diagonal n a).roots.toFinset,
         ((a144438DiagonalLag n a).eval r /
           (a144438Diagonal n a).derivative.eval r) / (1 - r) =
@@ -48,7 +47,7 @@ theorem a144438DiagonalLag_residue_sum_eq_kappa
   have hsum := a144438_sum_companion_residue_div hsplits hnodup
     (by rw [a144438Diagonal_natDegree]; exact hn) (by
       rw [a144438Diagonal_natDegree]
-      exact hdeg) hpOne.ne'
+      exact a144438DiagonalLag_degree_lt hn a) hpOne.ne'
   rw [← hsum]
   rfl
 
@@ -56,8 +55,7 @@ theorem a144438DiagonalLag_residue_sum_eq_kappa
 theorem a144438DiagonalCompanion_residue_sum_eq
     {n : ℕ} (hn : 1 ≤ n) {a : ℝ} (ha : 0 ≤ a)
     (hsplits : (a144438Diagonal n a).Splits)
-    (hnodup : (a144438Diagonal n a).roots.Nodup)
-    (hdeg : (a144438DiagonalCompanion n a).degree < n) :
+    (hnodup : (a144438Diagonal n a).roots.Nodup) :
     ∑ r ∈ (a144438Diagonal n a).roots.toFinset,
         ((a144438DiagonalCompanion n a).eval r /
           (a144438Diagonal n a).derivative.eval r) / (1 - r) =
@@ -66,7 +64,7 @@ theorem a144438DiagonalCompanion_residue_sum_eq
   have hsum := a144438_sum_companion_residue_div hsplits hnodup
     (by rw [a144438Diagonal_natDegree]; exact hn) (by
       rw [a144438Diagonal_natDegree]
-      exact hdeg) hpOne.ne'
+      exact a144438DiagonalCompanion_degree_lt hn a) hpOne.ne'
   rw [← hsum]
   exact a144438DiagonalCompanion_eval_one_div hn ha
 
