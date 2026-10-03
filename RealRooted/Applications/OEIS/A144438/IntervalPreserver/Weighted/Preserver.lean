@@ -14,12 +14,13 @@ noncomputable section
 
 namespace RealRooted.Applications.OEIS
 
-theorem weightedDecoTransform_hasSimpleRoots_and_roots_neg
+theorem weightedDecoTransform_splits_hasSimpleRoots_and_roots_neg
     {w : ℝ} (hw0 : 0 ≤ w) (hw1 : w ≤ 1) {f : ℝ[X]}
     (hfDegree : 1 ≤ f.natDegree) (hfSplits : f.Splits)
     (hfRoots : ∀ r, f.IsRoot r → r ∈ Icc (-1 : ℝ) 0) :
-    HasSimpleRoots (weightedDecoTransform w f) ∧
-      ∀ r, (weightedDecoTransform w f).IsRoot r → r < 0 := by
+    (weightedDecoTransform w f).Splits ∧
+      HasSimpleRoots (weightedDecoTransform w f) ∧
+        ∀ r, (weightedDecoTransform w f).IsRoot r → r < 0 := by
   let rootsList := f.roots.sort (· ≤ ·)
   let a : Fin rootsList.length → ℝ := fun i => -rootsList.get i
   have hf0 : f ≠ 0 := by
@@ -57,6 +58,7 @@ theorem weightedDecoTransform_hasSimpleRoots_and_roots_neg
     rw [hlength]
     exact hfDegree
   have hinv := weightedDecoParameterInvariant_all hw0 hw1 rootsList.length hlengthPos
+  have himageSplits := hinv.splits a haCube
   have himageSimple := hinv.simple a haCube
   have himageNeg := hinv.roots_neg a haCube
   have hlc : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hf0
@@ -70,7 +72,9 @@ theorem weightedDecoTransform_hasSimpleRoots_and_roots_neg
           (weightedDecoParameterInput Finset.univ a) :=
         weightedDecoTransform_C_mul w f.leadingCoeff _
       _ = C f.leadingCoeff * weightedDecoParameterImage w Finset.univ a := rfl
-  constructor
+  refine ⟨?_, ?_, ?_⟩
+  · rw [htransform]
+    exact himageSplits.C_mul f.leadingCoeff
   · rw [htransform]
     exact himageSimple.C_mul hlc
   · intro r hr
@@ -79,5 +83,15 @@ theorem weightedDecoTransform_hasSimpleRoots_and_roots_neg
       simpa only [Polynomial.IsRoot.def, eval_mul, eval_C, mul_eq_zero,
         hlc, false_or] using hr
     exact himageNeg r hrImage
+
+theorem weightedDecoTransform_hasSimpleRoots_and_roots_neg
+    {w : ℝ} (hw0 : 0 ≤ w) (hw1 : w ≤ 1) {f : ℝ[X]}
+    (hfDegree : 1 ≤ f.natDegree) (hfSplits : f.Splits)
+    (hfRoots : ∀ r, f.IsRoot r → r ∈ Icc (-1 : ℝ) 0) :
+    HasSimpleRoots (weightedDecoTransform w f) ∧
+      ∀ r, (weightedDecoTransform w f).IsRoot r → r < 0 := by
+  have h := weightedDecoTransform_splits_hasSimpleRoots_and_roots_neg
+    hw0 hw1 hfDegree hfSplits hfRoots
+  exact ⟨h.2.1, h.2.2⟩
 
 end RealRooted.Applications.OEIS
