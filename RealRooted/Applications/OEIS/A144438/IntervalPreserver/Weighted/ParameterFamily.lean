@@ -91,6 +91,32 @@ def weightedDecoParameterCompanionAt {I : Type*} [DecidableEq I]
     (w : ℝ) (s : Finset I) (a : I → ℝ) (j : I) (b : ℝ) : ℝ[X] :=
   weightedDecoCompanionTransform w (weightedDecoParameterInputAt s a j b)
 
+theorem weightedDecoParameterInput_update {I : Type*} [DecidableEq I]
+    {s : Finset I} {a : I → ℝ} {j : I} (hj : j ∈ s) (b : ℝ) :
+    weightedDecoParameterInput s (Function.update a j b) =
+      weightedDecoParameterInputAt s a j b := by
+  rw [weightedDecoParameterInput_eq_mul_erase hj]
+  unfold weightedDecoParameterInputAt weightedDecoParameterInput
+  rw [Function.update_self]
+  congr 1
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [Function.update_of_ne (Finset.ne_of_mem_erase hi)]
+
+theorem weightedDecoParameterImage_update {I : Type*} [DecidableEq I]
+    {s : Finset I} {a : I → ℝ} {j : I} (hj : j ∈ s) (b : ℝ) :
+    weightedDecoParameterImage w s (Function.update a j b) =
+      weightedDecoParameterImageAt w s a j b := by
+  unfold weightedDecoParameterImage weightedDecoParameterImageAt
+  rw [weightedDecoParameterInput_update hj]
+
+theorem weightedDecoParameterCompanion_update {I : Type*} [DecidableEq I]
+    {s : Finset I} {a : I → ℝ} {j : I} (hj : j ∈ s) (b : ℝ) :
+    weightedDecoParameterCompanion w s (Function.update a j b) =
+      weightedDecoParameterCompanionAt w s a j b := by
+  unfold weightedDecoParameterCompanion weightedDecoParameterCompanionAt
+  rw [weightedDecoParameterInput_update hj]
+
 theorem weightedDecoParameterInputAt_self {I : Type*} [DecidableEq I]
     {s : Finset I} {a : I → ℝ} {j : I} (hj : j ∈ s) :
     weightedDecoParameterInputAt s a j (a j) =
