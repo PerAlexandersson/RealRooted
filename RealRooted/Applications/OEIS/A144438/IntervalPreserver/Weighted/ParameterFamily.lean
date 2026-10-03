@@ -70,6 +70,27 @@ theorem weightedDecoParameterImage_monic {I : Type*}
     (weightedDecoParameterImage w s a).Monic :=
   weightedDecoTransform_monic w (weightedDecoParameterInput_monic s a)
 
+@[simp]
+theorem weightedDecoParameterInput_const_univ (n : ℕ) (a : ℝ) :
+    weightedDecoParameterInput (Finset.univ : Finset (Fin n)) (fun _ => a) =
+      (X + C a) ^ n := by
+  simp only [weightedDecoParameterInput, Finset.prod_const, Finset.card_univ,
+    Fintype.card_fin]
+
+@[simp]
+theorem weightedDecoParameterImage_const_univ (w : ℝ) (n : ℕ) (a : ℝ) :
+    weightedDecoParameterImage w (Finset.univ : Finset (Fin n)) (fun _ => a) =
+      weightedDecoDiagonal w n a := by
+  simp only [weightedDecoParameterImage, weightedDecoDiagonal,
+    weightedDecoParameterInput_const_univ]
+
+@[simp]
+theorem weightedDecoParameterCompanion_const_univ (w : ℝ) (n : ℕ) (a : ℝ) :
+    weightedDecoParameterCompanion w (Finset.univ : Finset (Fin n)) (fun _ => a) =
+      weightedDecoDiagonalCompanion w n a := by
+  simp only [weightedDecoParameterCompanion, weightedDecoDiagonalCompanion,
+    weightedDecoParameterInput_const_univ]
+
 theorem weightedDecoParameterInput_eq_mul_erase {I : Type*} [DecidableEq I]
     {s : Finset I} {a : I → ℝ} {j : I} (hj : j ∈ s) :
     weightedDecoParameterInput s a =
