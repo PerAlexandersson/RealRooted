@@ -1,4 +1,4 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterContinuity
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.RootIncidenceCompact
 
 /-!
 # Compact parameter boxes for the weighted first-contact argument
@@ -17,17 +17,16 @@ namespace RealRooted.Applications.OEIS
 def weightedDecoExpandingBox {n : ℕ} (t : ℝ) (a : Fin n → ℝ) : Prop :=
   ∀ i, (1 - t) / 2 ≤ a i ∧ a i ≤ (1 + t) / 2
 
-def weightedDecoBadContactSet (w : ℝ) (n : ℕ) (R : ℝ) :
+def weightedDecoBadContactSet (w : ℝ) (n : ℕ) :
     Set (ℝ × ((Fin n → ℝ) × ℝ)) :=
   {z | z.1 ∈ Icc 0 1 ∧
     weightedDecoExpandingBox z.1 z.2.1 ∧
-    z.2.2 ∈ Icc (-R) 0 ∧
     (weightedDecoParameterImage w Finset.univ z.2.1).IsRoot z.2.2 ∧
     (weightedDecoParameterCompanion w Finset.univ z.2.1).eval z.2.2 *
       (weightedDecoParameterImage w Finset.univ z.2.1).derivative.eval z.2.2 ≤ 0}
 
-theorem isClosed_weightedDecoBadContactSet (w : ℝ) (n : ℕ) (R : ℝ) :
-    IsClosed (weightedDecoBadContactSet w n R) := by
+theorem isClosed_weightedDecoBadContactSet (w : ℝ) (n : ℕ) :
+    IsClosed (weightedDecoBadContactSet w n) := by
   let Z := ℝ × ((Fin n → ℝ) × ℝ)
   have ht : IsClosed {z : Z | z.1 ∈ Icc 0 1} :=
     isClosed_Icc.preimage continuous_fst
@@ -47,8 +46,6 @@ theorem isClosed_weightedDecoBadContactSet (w : ℝ) (n : ℕ) (R : ℝ) :
     apply isClosed_le
     · exact (continuous_apply i).comp (continuous_fst.comp continuous_snd)
     · fun_prop
-  have hrange : IsClosed {z : Z | z.2.2 ∈ Icc (-R) 0} :=
-    isClosed_Icc.preimage (continuous_snd.comp continuous_snd)
   have hpcont : Continuous fun z : Z =>
       (weightedDecoParameterImage w Finset.univ z.2.1).eval z.2.2 :=
     (continuous_weightedDecoParameterImage_eval_prod w Finset.univ).comp
@@ -76,7 +73,7 @@ theorem isClosed_weightedDecoBadContactSet (w : ℝ) (n : ℕ) (R : ℝ) :
           z.2.2 ≤ 0} :=
     isClosed_le (hhcont.mul hpdercont) continuous_const
   change IsClosed {z : Z | z.1 ∈ Icc 0 1 ∧
-    weightedDecoExpandingBox z.1 z.2.1 ∧ z.2.2 ∈ Icc (-R) 0 ∧
+    weightedDecoExpandingBox z.1 z.2.1 ∧
     (weightedDecoParameterImage w Finset.univ z.2.1).IsRoot z.2.2 ∧
     (weightedDecoParameterCompanion w Finset.univ z.2.1).eval z.2.2 *
       (weightedDecoParameterImage w Finset.univ z.2.1).derivative.eval
@@ -89,20 +86,20 @@ theorem isClosed_weightedDecoBadContactSet (w : ℝ) (n : ℕ) (R : ℝ) :
       simp only [weightedDecoExpandingBox, Set.mem_inter_iff, Set.mem_ofPred_eq,
         forall_and]]
     exact hlower.inter hupper
-  exact ht.inter (hbox.inter (hrange.inter (hroot.inter hsign)))
+  exact ht.inter (hbox.inter (hroot.inter hsign))
 
 theorem isCompact_weightedDecoBadContactSet
-    (w : ℝ) (n : ℕ) (R : ℝ) :
-    IsCompact (weightedDecoBadContactSet w n R) := by
+    (w : ℝ) (n : ℕ) (hn : n ≠ 0) :
+    IsCompact (weightedDecoBadContactSet w n) := by
   let A : Set (ℝ × ((Fin n → ℝ) × ℝ)) :=
-    Icc 0 1 ×ˢ ((Set.pi Set.univ fun _ : Fin n => Icc (0 : ℝ) 1) ×ˢ Icc (-R) 0)
-  have hpi : IsCompact (Set.pi Set.univ fun _ : Fin n => Icc (0 : ℝ) 1) :=
-    isCompact_univ_pi fun _ => isCompact_Icc
+    Icc 0 1 ×ˢ {z : (Fin n → ℝ) × ℝ |
+      z.1 ∈ Set.pi Set.univ (fun _ : Fin n => Icc (0 : ℝ) 1) ∧
+        (weightedDecoParameterImage w Finset.univ z.1).IsRoot z.2}
   have hA : IsCompact A :=
-    isCompact_Icc.prod (hpi.prod isCompact_Icc)
-  apply hA.of_isClosed_subset (isClosed_weightedDecoBadContactSet w n R)
-  rintro z ⟨ht, hbox, hr, -, -⟩
-  refine ⟨ht, ?_, hr⟩
+    isCompact_Icc.prod (isCompact_weightedDecoParameterRootIncidence w n hn)
+  apply hA.of_isClosed_subset (isClosed_weightedDecoBadContactSet w n)
+  rintro z ⟨ht, hbox, hroot, -⟩
+  refine ⟨ht, ?_, hroot⟩
   intro i hiuniv
   have hi := hbox i
   constructor <;> linarith [ht.1, ht.2]
@@ -110,12 +107,12 @@ theorem isCompact_weightedDecoBadContactSet
 /-- If the bad-contact set is nonempty, its expansion-time coordinate attains
 a minimum. -/
 theorem exists_minimal_weightedDecoBadContact
-    (w : ℝ) (n : ℕ) (R : ℝ)
-    (hne : (weightedDecoBadContactSet w n R).Nonempty) :
-    ∃ z ∈ weightedDecoBadContactSet w n R,
-      ∀ y ∈ weightedDecoBadContactSet w n R, z.1 ≤ y.1 := by
+    (w : ℝ) (n : ℕ) (hn : n ≠ 0)
+    (hne : (weightedDecoBadContactSet w n).Nonempty) :
+    ∃ z ∈ weightedDecoBadContactSet w n,
+      ∀ y ∈ weightedDecoBadContactSet w n, z.1 ≤ y.1 := by
   obtain ⟨z, hz, hzmin⟩ :=
-    (isCompact_weightedDecoBadContactSet w n R).exists_isMinOn hne
+    (isCompact_weightedDecoBadContactSet w n hn).exists_isMinOn hne
       continuous_fst.continuousOn
   exact ⟨z, hz, hzmin⟩
 
