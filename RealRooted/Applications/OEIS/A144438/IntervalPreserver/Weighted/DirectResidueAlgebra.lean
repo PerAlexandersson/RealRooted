@@ -13,6 +13,21 @@ noncomputable section
 
 namespace RealRooted.Applications.OEIS
 
+theorem weightedDeco_direct_mass_eq {ι : Type*} [Fintype ι]
+    (r ω V : ι → ℝ) (a ρ : ℝ)
+    (hρ : ∀ i, ρ - r i ≠ 0)
+    (hV : ∀ i, V i = (-r i) * ω i)
+    (hroot : 1 + ρ + a + ρ * ∑ i, ω i / (ρ - r i) = 0) :
+    ∑ i, V i / (ρ - r i) = (∑ i, ω i) + 1 + ρ + a := by
+  have hterm : ∀ i,
+      V i / (ρ - r i) = ω i - ρ * (ω i / (ρ - r i)) := by
+    intro i
+    rw [hV i]
+    field_simp [hρ i]
+    ring
+  simp_rw [hterm, Finset.sum_sub_distrib, ← Finset.mul_sum]
+  linarith
+
 theorem weightedDeco_direct_successor_block_eq {ι : Type*} [Fintype ι]
     (r ω t V : ι → ℝ) (a w n ρ : ℝ)
     (hρ : ∀ i, ρ - r i ≠ 0)
