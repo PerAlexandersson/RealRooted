@@ -138,6 +138,34 @@ theorem weightedDecoParameterCompanion_update {I : Type*} [DecidableEq I]
   unfold weightedDecoParameterCompanion weightedDecoParameterCompanionAt
   rw [weightedDecoParameterInput_update hj]
 
+theorem weightedDecoParameterInput_erase_fin
+    {n : ℕ} (a : Fin (n + 1) → ℝ) (j : Fin (n + 1)) :
+    weightedDecoParameterInput (Finset.univ.erase j) a =
+      weightedDecoParameterInput Finset.univ (fun i : Fin n => a (j.succAbove i)) := by
+  unfold weightedDecoParameterInput
+  rw [show (Finset.univ.erase j : Finset (Fin (n + 1))) =
+      Finset.univ.map (Fin.succAboveEmb j) by
+    rw [Fin.univ_succAbove n j]
+    simp]
+  rw [Finset.prod_map]
+  rfl
+
+theorem weightedDecoParameterImage_erase_fin
+    {n : ℕ} (w : ℝ) (a : Fin (n + 1) → ℝ) (j : Fin (n + 1)) :
+    weightedDecoParameterImage w (Finset.univ.erase j) a =
+      weightedDecoParameterImage w Finset.univ
+        (fun i : Fin n => a (j.succAbove i)) := by
+  unfold weightedDecoParameterImage
+  rw [weightedDecoParameterInput_erase_fin]
+
+theorem weightedDecoParameterCompanion_erase_fin
+    {n : ℕ} (w : ℝ) (a : Fin (n + 1) → ℝ) (j : Fin (n + 1)) :
+    weightedDecoParameterCompanion w (Finset.univ.erase j) a =
+      weightedDecoParameterCompanion w Finset.univ
+        (fun i : Fin n => a (j.succAbove i)) := by
+  unfold weightedDecoParameterCompanion
+  rw [weightedDecoParameterInput_erase_fin]
+
 theorem weightedDecoParameterInputAt_self {I : Type*} [DecidableEq I]
     {s : Finset I} {a : I → ℝ} {j : I} (hj : j ∈ s) :
     weightedDecoParameterInputAt s a j (a j) =
