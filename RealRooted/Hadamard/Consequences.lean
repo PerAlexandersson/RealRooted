@@ -20,7 +20,7 @@ theorem garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl {f g p q : ℝ
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  garloffWagnerHadamardNonnegInterl hf.hasNonnegCoeffs hg.hasNonnegCoeffs
+  gwHadamardProductNonnegInterl hf.hasNonnegCoeffs hg.hasNonnegCoeffs
     hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
 
 /-- Garloff--Wagner, Theorem 4(b), for PF polynomials and zero-aware
@@ -38,11 +38,8 @@ theorem garloffWagnerHadamardPFInterl_of_nonnegStrictInterl {f g p q : ℝ[X]}
   · simpa using interl_zero_right (hadamardProduct f p)
   exact garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl hf hg hp hq hfg' hpq'
 
-/-- PF polynomials are closed under coefficientwise Hadamard products. -/
-theorem hadamardProduct_preserves_pf_of_nonnegStrictInterl {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
-    IsPFPolynomial (hadamardProduct p q) :=
-  hp.hadamardProduct hq
+@[deprecated (since := "2026-10-05")]
+alias hadamardProduct_preserves_pf_of_nonnegStrictInterl := IsPFPolynomial.hadamardProduct
 
 /-- Nonnegative-coefficient Schur--Pólya/Garloff--Wagner real-rootedness for
 coefficientwise Hadamard products (Garloff--Wagner, Theorem 4(a)).

@@ -844,15 +844,6 @@ theorem splits_veroneseSectionPolynomial_of_pf {p : ℝ[X]}
     (aissenSchoenbergWhitneyForward
       (IsPolyaFreqSeq_veroneseSectionPolynomial_coeff (p := p) hp hr hk)).1
 
-/-- Zero-aware real-rootedness of Veronese sections from the forward ASW
-theorem and a PF certificate for the original polynomial. -/
-theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_pf {p : ℝ[X]}
-    (hp : IsPolyaFreqSeq p.coeff) {r k : ℕ}
-    (hr : 0 < r) (hk : k < r) :
-    veroneseSectionPolynomial r k p = 0 ∨
-      (veroneseSectionPolynomial r k p).Splits :=
-  splits_veroneseSectionPolynomial_of_pf hp hr hk
-
 /-- PF preservation for Veronese sections of real-rooted
 nonnegative-coefficient polynomials, using the reverse ASW theorem. -/
 theorem IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg
@@ -874,16 +865,5 @@ theorem splits_veroneseSectionPolynomial_of_splits_nonneg {p : ℝ[X]}
   Or.inr
     (aissenSchoenbergWhitneyForward
       (IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg hpnn hprr hr hk)).1
-
-/-- Zero-aware real-rootedness of Veronese sections of real-rooted
-nonnegative-coefficient polynomials, from both directions of ASW. -/
-theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
-    {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hprr_splits : p.Splits) {r k : ℕ}
-    (hr : 0 < r) (hk : k < r) :
-    veroneseSectionPolynomial r k p = 0 ∨
-      (veroneseSectionPolynomial r k p).Splits :=
-  splits_veroneseSectionPolynomial_of_splits_nonneg
-    hpnn hprr_splits hr hk
 
 end RealRooted

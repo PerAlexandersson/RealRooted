@@ -185,7 +185,7 @@ theorem polynomialValueProductPolyaFrequency
     {f g : ℝ[X]} (hf : IsPolyaFreqSeq (polynomialValueSeq f))
     (hg : IsPolyaFreqSeq (polynomialValueSeq g)) :
     IsPolyaFreqSeq (polynomialValueSeq (f * g)) :=
-  hf.pointwise_mul_of_polynomialValue hg
+  RealRooted.isPolyaFreqSeq_polynomialValueSeq_mul_of_polyaFreqSeq hf hg
 
 end Hadamard
 end Challenges

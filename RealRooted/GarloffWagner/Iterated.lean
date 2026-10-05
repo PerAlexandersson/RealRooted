@@ -446,12 +446,6 @@ theorem gwJL_factor_strictInterl_of_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hstrictInterl
 
-/-- Garloff--Wagner, Theorem 11(a), real-rooted part: `J^k L` preserves
-real-rootedness. -/
-theorem gwTheorem11RealRooted {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits) (k : ℕ) :
-    (gwJL k f).Splits :=
-  gwJL_splits_of_splits hf0 hfs k
-
 /-- Garloff--Wagner, Theorem 11(b), zero-aware PF-cone form: `J^k L` preserves
 PF polynomials. -/
 theorem gwTheorem11PF {f : ℝ[X]} (hf : IsPFPolynomial f) (k : ℕ) :
@@ -459,7 +453,7 @@ theorem gwTheorem11PF {f : ℝ[X]} (hf : IsPFPolynomial f) (k : ℕ) :
   by_cases hf0 : f = 0
   · simpa [hf0] using IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg
-      (hf.hasNonnegCoeffs.gwJL k) (gwTheorem11RealRooted hf0 (hf.ne_zero_and_splits hf0).2 k)
+      (hf.hasNonnegCoeffs.gwJL k) (gwJL_splits_of_splits hf0 (hf.ne_zero_and_splits hf0).2 k)
 
 theorem gwJL_splits_pos_roots_nonpos_of_splits_pos_roots_nonpos {f : ℝ[X]}
     (hf0 : f ≠ 0) (hfs : f.Splits) (hfpos : HasPosLeadingCoeff f)
@@ -544,7 +538,7 @@ theorem gwJL_hasSimpleRootsExcept_zero_of_splits_roots_nonpos_hasSimpleRootsExce
             have hF0 : gwJL (k + 1) q ≠ 0 :=
               (gwJL_ne_zero_iff (k + 1) q).2 hq0
             have hFs : (gwJL (k + 1) q).Splits :=
-              gwTheorem11RealRooted hq0 hq_splits (k + 1)
+              gwJL_splits_of_splits hq0 hq_splits (k + 1)
             rw [hq, hstep]
             exact hasSimpleRootsExcept_TDeriv (ihq (k + 1)) hu0 hF0 hFs
   exact hP f.natDegree rfl hf0 hfs hfroots hfsimple

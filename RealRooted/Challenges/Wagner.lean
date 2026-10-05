@@ -83,7 +83,7 @@ theorem commonLeft_add_checked :
       (hfg_ne : (f + g) ≠ 0) → (hfg_splits : (f + g).Splits) →
       (hcop : IsCoprime f g) →
       StrictInterl h (f + g) :=
-  RealRooted.Wagner.commonLeft_add_checked
+  RealRooted.StrictInterl.add_of_left
 
 /-- Wagner (3): `f` interlaces `g` if and only if `g` interlaces `X * f`.
 

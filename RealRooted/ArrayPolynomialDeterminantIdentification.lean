@@ -339,7 +339,7 @@ lemma arrayNormalizedDeterminant_succ_eq (N : ℕ) :
 theorem arrayNormalizedDeterminant_isPFPolynomial (n : ℕ) :
     IsPFPolynomial (arrayNormalizedDeterminant n) := by
   cases n with
-  | zero => simpa [arrayNormalizedDeterminant] using isPFPolynomial_one
+  | zero => simpa [arrayNormalizedDeterminant] using IsPFPolynomial.one
   | succ N =>
       rw [arrayNormalizedDeterminant_succ_eq]
       exact arrayDetPolynomialFin_isPFPolynomial N

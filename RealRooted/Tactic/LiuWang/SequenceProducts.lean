@@ -505,7 +505,7 @@ macro_rules
   | `(tactic| rr_lw_tR_lag_sequence using recurrence := $hrec:term) =>
       `(tactic|
         rr_refine_then
-          (RealRooted.strictInterl_lw_tR_lag_sequence
+          (RealRooted.strictInterl_lw_positive_X_mul_lag_sequence
             ?_ ?_ ?_ ?_ $hrec ?_ ?_)
           with rr_lookup)
   | `(tactic|
