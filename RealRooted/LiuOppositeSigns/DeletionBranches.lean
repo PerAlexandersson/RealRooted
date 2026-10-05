@@ -5,8 +5,8 @@ import RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces
 # Liu deletion-branch transport
 
 This module keeps Liu's left and right deletion branches together with
-the branch-retaining common-interleaver package.  The later factor-return
-statement and assembly layers remain in `RealRooted.LiuOppositeSigns.Theorem`.
+the branch-retaining common-interleaver package.  The factor-return proof of
+the reverse direction is in `RealRooted.LiuOppositeSigns.FactorReturnAssembly`.
 -/
 
 open Polynomial Filter
@@ -257,125 +257,6 @@ theorem theorem21DeletionPairCommonInterleaverBranches_iff_rootCountBranches
   ⟨theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches,
     theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
       hf_splits hg_splits hsgn⟩
-
-/-- Forward half of Liu Theorem 2.1, restated with branch-retaining
-deletion-pair common-interleaver witnesses. -/
-def theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement :
-    Prop :=
-  ∀ {f g : ℝ[X]},
-    f.Splits → g.Splits → OppositeLeadingSigns f g →
-      Compatible f g → theorem21DeletionPairCommonInterleaverBranches f g
-
-/-- Nonconstant forward half of Liu Theorem 2.1, restated with
-branch-retaining deletion-pair common-interleaver witnesses. -/
-def theorem21CompatibleToDeletionPairCommonInterleaverBranchesNonconstantStatement :
-    Prop :=
-  ∀ {f g : ℝ[X]},
-    f.Splits → g.Splits → OppositeLeadingSigns f g →
-      f.natDegree ≠ 0 → g.natDegree ≠ 0 →
-        Compatible f g → theorem21DeletionPairCommonInterleaverBranches f g
-
-/-- Reverse half of Liu Theorem 2.1, restated with branch-retaining
-deletion-pair common-interleaver witnesses. -/
-def theorem21DeletionPairCommonInterleaverBranchesToCompatibleStatement :
-    Prop :=
-  ∀ {f g : ℝ[X]},
-    f.Splits → g.Splits → OppositeLeadingSigns f g →
-      theorem21DeletionPairCommonInterleaverBranches f g → Compatible f g
-
-/-- Nonconstant reverse half of Liu Theorem 2.1, restated with
-branch-retaining deletion-pair common-interleaver witnesses. -/
-def theorem21DeletionPairCommonInterleaverBranchesToCompatibleNonconstantStatement :
-    Prop :=
-  ∀ {f g : ℝ[X]},
-    f.Splits → g.Splits → OppositeLeadingSigns f g →
-      f.natDegree ≠ 0 → g.natDegree ≠ 0 →
-        theorem21DeletionPairCommonInterleaverBranches f g → Compatible f g
-
-/-- The isolated forward root-count direction supplies the branch-retaining
-common-interleaver forward direction. -/
-theorem theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesStatement) :
-    theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement := by
-  intro f g hf hg hsgn hcompat
-  exact theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
-    hf hg hsgn (hforward hf hg hsgn hcompat)
-
-/-- The branch-retaining common-interleaver forward direction forgets back to
-the root-count forward direction. -/
-theorem theorem21CompatibleToRootCountBranches_of_commonForward
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement) :
-    theorem21CompatibleToRootCountBranchesStatement := by
-  intro f g hf hg hsgn hcompat
-  exact theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
-    (hforward hf hg hsgn hcompat)
-
-/-- The isolated reverse root-count direction supplies the branch-retaining
-common-interleaver reverse direction. -/
-theorem theorem21DeletionPairCommonInterleaverBranchesToCompatible_of_reverse
-    (hreverse : theorem21RootCountBranchesToCompatibleStatement) :
-    theorem21DeletionPairCommonInterleaverBranchesToCompatibleStatement := by
-  intro f g hf hg hsgn hbranches
-  exact hreverse hf hg hsgn
-    (theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
-      hbranches)
-
-/-- Liu Theorem 2.1 restated with branch-retaining deletion-pair
-common-interleaver witnesses. -/
-def theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :
-    Prop :=
-  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
-    (Compatible f g ↔ theorem21DeletionPairCommonInterleaverBranches f g)
-
-/-- Nonconstant Liu Theorem 2.1 restated with branch-retaining deletion-pair
-common-interleaver witnesses. -/
-def theorem21CompatibleDeletionPairCommonInterleaverBranchesNonconstantStatement :
-    Prop :=
-  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
-    f.natDegree ≠ 0 → g.natDegree ≠ 0 →
-      (Compatible f g ↔ theorem21DeletionPairCommonInterleaverBranches f g)
-
-/-- Reassemble the branch-retaining common-interleaver theorem package from
-its isolated forward and reverse directions. -/
-theorem theorem21CompatibleDeletionPairCommonInterleaverBranches_of_forward_and_reverse
-    (hforward :
-      theorem21CompatibleToDeletionPairCommonInterleaverBranchesStatement)
-    (hreverse :
-      theorem21DeletionPairCommonInterleaverBranchesToCompatibleStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement := by
-  unfold theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement
-  intro f g hf hg hsgn
-  exact ⟨hforward hf hg hsgn, hreverse hf hg hsgn⟩
-
-/-- Liu's root-count theorem package gives the branch-retaining deletion-pair
-common-interleaver iff package. -/
-theorem theorem21DeletionPairCommonInterleaverIff_of_theorem21CompatibleRootCount
-    (h : theorem21CompatibleRootCountStatement) :
-    theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement :=
-  theorem21CompatibleDeletionPairCommonInterleaverBranches_of_forward_and_reverse
-    (theorem21CompatibleToDeletionPairCommonInterleaverBranches_of_forward
-      (theorem21CompatibleToRootCountBranches_of_theorem21CompatibleRootCount
-        h))
-    (theorem21DeletionPairCommonInterleaverBranchesToCompatible_of_reverse
-      (theorem21RootCountBranchesToCompatible_of_theorem21CompatibleRootCount
-        h))
-
-/-- The branch-retaining deletion-pair common-interleaver iff implies Liu's
-root-count theorem package. -/
-theorem theorem21CompatibleRootCount_of_deletionPairCommonInterleaverIff
-    (h :
-      theorem21CompatibleDeletionPairCommonInterleaverBranchesStatement) :
-    theorem21CompatibleRootCountStatement := by
-  intro f g hf hg hsgn
-  constructor
-  · intro hcompat
-    exact theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
-      ((h f g hf hg hsgn).1 hcompat)
-  · intro hbranches
-    exact (h f g hf hg hsgn).2
-      (theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
-        hf hg hsgn hbranches)
 
 end LiuOppositeSigns
 end RealRooted

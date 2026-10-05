@@ -1278,9 +1278,6 @@
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount": {
       "max_modules": 172
    },
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Statements": {
-      "max_modules": 152
-    },
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedRight": {
       "max_modules": 153
     },
@@ -2124,7 +2121,6 @@
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.TailSigns",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount",
-    "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Statements",
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedRight",
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.QuarticSubQuadratic",
     "RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedLeft",
