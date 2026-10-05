@@ -27,10 +27,10 @@ def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
   RealRooted.StrictInterlSameDegree p q
 
 def IdTransform (d : ℕ) (p : ℝ[X]) : ℝ[X] :=
-  RealRooted.IdTransform d p
+  RealRooted.idTransform d p
 
 def RdTransform (d : ℕ) (p : ℝ[X]) : ℝ[X] :=
-  RealRooted.RdTransform d p
+  RealRooted.rdTransform d p
 
 def fPolynomial (d : ℕ) (h : ℝ[X]) : ℝ[X] :=
   RealRooted.fPolynomial d h
@@ -57,7 +57,7 @@ theorem brandenSolusTheorem26 :
       (Prec b p ↔ Prec (IdTransform d p) p) ∧
       (Prec (IdTransform d p) p ↔
         Prec (RdTransform d (fPolynomial d p)) (fPolynomial d p)) :=
-  RealRooted.brandenSolusTheorem26
+  RealRooted.BrandenSolus.strictInterl_iff_of_isIdDecomposition
 
 theorem aissenSchoenbergWhitney_reverse {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p)

@@ -39,7 +39,7 @@ facade. -/
 example {eps : Nat → ℝ} {P : Nat → ℝ[X]}
     (heps : ∀ n : Nat, 0 < eps n)
     (hP : ∀ n : Nat, (P n).Splits) :
-    ∀ n : Nat, (TDeriv (eps n) (P n)).Splits := by
+    ∀ n : Nat, (tDeriv (eps n) (P n)).Splits := by
   rr_TDeriv_sequence_splits using
     eps_pos := heps,
     splits := hP

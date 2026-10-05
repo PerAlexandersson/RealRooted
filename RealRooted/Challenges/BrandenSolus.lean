@@ -60,10 +60,10 @@ theorem interlacing_equivalences {d : ℕ} {p a b : ℝ[X]} (hd : p.natDegree �
     (ha0 : a ≠ 0) (hb0 : b ≠ 0) :
     (StrictInterl b a ↔ StrictInterl a p) ∧
       (StrictInterl a p ↔ StrictInterl b p) ∧
-      (StrictInterl b p ↔ StrictInterl (IdTransform d p) p) ∧
-      (StrictInterl (IdTransform d p) p ↔
-        StrictInterl (RdTransform d (fPolynomial d p)) (fPolynomial d p)) :=
-  RealRooted.brandenSolusTheorem26 hd hid ha hb ha0 hb0
+      (StrictInterl b p ↔ StrictInterl (idTransform d p) p) ∧
+      (StrictInterl (idTransform d p) p ↔
+        StrictInterl (rdTransform d (fPolynomial d p)) (fPolynomial d p)) :=
+  RealRooted.BrandenSolus.strictInterl_iff_of_isIdDecomposition hd hid ha hb ha0 hb0
 
 end BrandenSolus
 end Challenges

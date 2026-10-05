@@ -44,33 +44,33 @@ namespace RealRooted
 preserves its orientation. In the equal-degree case, the all-combination
 criterion determines the pair only up to reversal; the common translation of
 the two root sums selects the original orientation. -/
-theorem StrictInterl.TDeriv_common {f g : ℝ[X]} (hfg : StrictInterl f g)
-    (eps : ℝ) : StrictInterl (TDeriv eps f) (TDeriv eps g) := by
+theorem StrictInterl.tDeriv_common {f g : ℝ[X]} (hfg : StrictInterl f g)
+    (eps : ℝ) : StrictInterl (tDeriv eps f) (tDeriv eps g) := by
   have hall : AllComboRealRooted f g := allComboRealRooted_of_strictInterl hfg
-  have hallT : AllComboRealRooted (TDeriv eps f) (TDeriv eps g) := by
+  have hallT : AllComboRealRooted (tDeriv eps f) (tDeriv eps g) := by
     simpa [iterateTDeriv_succ] using
       allComboRealRooted_iterateTDeriv_all hall eps 1
   rcases hfg.natDegree_eq_or_eq_succ with hsame | hsucc
   · have horient :
-        StrictInterl (TDeriv eps f) (TDeriv eps g) ∨
-          StrictInterl (TDeriv eps g) (TDeriv eps f) :=
+        StrictInterl (tDeriv eps f) (tDeriv eps g) ∨
+          StrictInterl (tDeriv eps g) (tDeriv eps f) :=
       strictInterl_of_allComboRealRooted
-        (TDeriv_ne_zero hfg.1.1) (splits_tderiv_all hfg.1.2)
-        (TDeriv_ne_zero hfg.2.1.1) (splits_tderiv_all hfg.2.1.2)
+        (tDeriv_ne_zero hfg.1.1) (splits_tDeriv_all hfg.1.2)
+        (tDeriv_ne_zero hfg.2.1.1) (splits_tDeriv_all hfg.2.1.2)
         hallT (Or.inr (by simpa using hsame.symm))
     rcases horient with hforward | hreverse
     · exact hforward
     · apply hreverse.of_reverse_of_roots_sum_le
       · simpa using hsame.symm
-      · rw [roots_sum_TDeriv eps hfg.1.1 hfg.1.2,
-          roots_sum_TDeriv eps hfg.2.1.1 hfg.2.1.2]
+      · rw [roots_sum_tDeriv eps hfg.1.1 hfg.1.2,
+          roots_sum_tDeriv eps hfg.2.1.1 hfg.2.1.2]
         simpa [hsame] using
           add_le_add_right (hfg.roots_sum_le_of_sameDegree hsame.symm)
             (eps * (f.natDegree : ℝ))
   · apply StrictInterl.forward_of_orientation_of_succDegree (by simpa using hsucc)
     exact strictInterl_of_allComboRealRooted
-      (TDeriv_ne_zero hfg.1.1) (splits_tderiv_all hfg.1.2)
-      (TDeriv_ne_zero hfg.2.1.1) (splits_tderiv_all hfg.2.1.2)
+      (tDeriv_ne_zero hfg.1.1) (splits_tDeriv_all hfg.1.2)
+      (tDeriv_ne_zero hfg.2.1.1) (splits_tDeriv_all hfg.2.1.2)
       hallT (Or.inl (by simpa using hsucc.symm))
 
 /-- Common iterated derivative shifts preserve oriented interlacing. -/
@@ -80,7 +80,7 @@ theorem StrictInterl.iterateTDeriv_common {f g : ℝ[X]}
   | 0 => by simpa
   | k + 1 => by
       rw [iterateTDeriv_succ, iterateTDeriv_succ]
-      exact (hfg.iterateTDeriv_common eps k).TDeriv_common eps
+      exact (hfg.iterateTDeriv_common eps k).tDeriv_common eps
 
 /-- If every positive nonnegative-coefficient derivative regularization of a
 pair is in proper position, then so is the original pair. This is the closure

@@ -103,7 +103,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
+          RealRooted.MaWang.strictInterl_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
             (V := $V) (W := $W) (b := $b) (c := $cV) (e := $e) (a := $cW)
             (d := $d)
             $hbase $hpos $hnonneg $hdeg_two
@@ -207,7 +207,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
+          (RealRooted.MaWang.isRealRooted_of_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
             (V := $V) (W := $W) (b := $b) (c := $cV) (e := $e) (a := $cW)
             (d := $d)
             $hbase $hpos $hnonneg $hdeg_two
@@ -316,7 +316,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
+          RealRooted.MaWang.strictInterl_derivative_lag_sequence_den_coeff_of_root_window
             (V := $V) (W := $W) (b := $b) (c := $cV) (e := $e) (a := $cW)
             (d := $d)
             $hbase $hpos $hdeg_two
@@ -432,7 +432,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
+          (RealRooted.MaWang.isRealRooted_of_derivative_lag_sequence_den_coeff_of_root_window
             (V := $V) (W := $W) (b := $b) (c := $cV) (e := $e) (a := $cW)
             (d := $d)
             $hbase $hpos $hdeg_two
@@ -466,7 +466,7 @@ macro_rules
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+          RealRooted.MaWang.strictInterl_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hdeg_two $hc $hV $hden $hcoeff
             $hraw $hdeg_lo $hdeg_hi)
   | `(tactic|
@@ -484,7 +484,7 @@ macro_rules
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+          RealRooted.MaWang.strictInterl_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hdeg_two rr_mw_active_nonneg
             $hV $hden $hcoeff $hraw $hdeg_lo $hdeg_hi)
   | `(tactic|
@@ -523,7 +523,7 @@ macro_rules
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+          RealRooted.MaWang.strictInterl_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hdeg_two
             rr_mw_active_nonneg
             (rr_mw_root_sign_seq)
@@ -616,7 +616,7 @@ macro_rules
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+          RealRooted.MaWang.strictInterl_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (V := $V) (b := $b) (c := $c) (d := $d)
             $hbase $hpos $hnonneg $hdeg_two
             rr_mw_active_nonneg
@@ -695,7 +695,7 @@ macro_rules
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+          (RealRooted.MaWang.isRealRooted_of_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hdeg_two $hc $hV $hden $hcoeff
             $hraw $hdeg_lo $hdeg_hi))
   | `(tactic|
@@ -713,7 +713,7 @@ macro_rules
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+          (RealRooted.MaWang.isRealRooted_of_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hdeg_two rr_mw_active_nonneg
             $hV $hden $hcoeff $hraw $hdeg_lo $hdeg_hi))
   | `(tactic|
@@ -752,7 +752,7 @@ macro_rules
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+          (RealRooted.MaWang.isRealRooted_of_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hdeg_two
             rr_mw_active_nonneg
             (rr_mw_root_sign_seq)
@@ -845,7 +845,7 @@ macro_rules
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+          (RealRooted.MaWang.isRealRooted_of_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (V := $V) (b := $b) (c := $c) (d := $d)
             $hbase $hpos $hnonneg $hdeg_two
             rr_mw_active_nonneg

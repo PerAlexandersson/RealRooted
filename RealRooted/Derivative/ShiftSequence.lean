@@ -3,7 +3,7 @@ import RealRooted.IteratedDerivativeShift
 /-!
 # Finite sequences of derivative shifts
 
-This file extends the fixed-parameter iteration of `TDeriv` to a finite list of
+This file extends the fixed-parameter iteration of `tDeriv` to a finite list of
 possibly different positive parameters.  The varying-parameter form is needed
 when each derivative shift must satisfy a new local smallness bound.
 
@@ -22,14 +22,14 @@ noncomputable section
 /-- Apply the derivative shifts in `epss` from left to right. -/
 def applyTDerivList : List ℝ → ℝ[X] → ℝ[X]
   | [], p => p
-  | eps :: epss, p => applyTDerivList epss (TDeriv eps p)
+  | eps :: epss, p => applyTDerivList epss (tDeriv eps p)
 
 @[simp]
 theorem applyTDerivList_nil (p : ℝ[X]) : applyTDerivList [] p = p := rfl
 
 @[simp]
 theorem applyTDerivList_cons (eps : ℝ) (epss : List ℝ) (p : ℝ[X]) :
-    applyTDerivList (eps :: epss) p = applyTDerivList epss (TDeriv eps p) := rfl
+    applyTDerivList (eps :: epss) p = applyTDerivList epss (tDeriv eps p) := rfl
 
 /-- A finite sequence of derivative shifts preserves nonvanishing. -/
 theorem applyTDerivList_ne_zero {epss : List ℝ} {p : ℝ[X]} (hp : p ≠ 0) :
@@ -37,7 +37,7 @@ theorem applyTDerivList_ne_zero {epss : List ℝ} {p : ℝ[X]} (hp : p ≠ 0) :
   induction epss generalizing p with
   | nil => simpa
   | cons eps epss ih =>
-      simpa using ih (TDeriv_ne_zero hp)
+      simpa using ih (tDeriv_ne_zero hp)
 
 /-- Positive derivative shifts preserve splitting throughout a finite sequence. -/
 theorem Splits.applyTDerivList {epss : List ℝ} {p : ℝ[X]}
@@ -49,7 +49,7 @@ theorem Splits.applyTDerivList {epss : List ℝ} {p : ℝ[X]}
       have heps : 0 < eps := hpos eps (by simp)
       have htail : ∀ eta ∈ epss, 0 < eta :=
         fun eta heta ↦ hpos eta (List.mem_cons_of_mem eps heta)
-      exact ih (splits_tderiv heps hp) htail
+      exact ih (splits_tDeriv heps hp) htail
 
 /-- A finite sequence of derivative shifts preserves natural degree. -/
 @[simp]
@@ -58,7 +58,7 @@ theorem natDegree_applyTDerivList (epss : List ℝ) (p : ℝ[X]) :
   induction epss generalizing p with
   | nil => simp
   | cons eps epss ih =>
-      rw [applyTDerivList_cons, ih, natDegree_TDeriv]
+      rw [applyTDerivList_cons, ih, natDegree_tDeriv]
 
 /-- A finite sequence of derivative shifts preserves the leading coefficient. -/
 @[simp]
@@ -67,7 +67,7 @@ theorem leadingCoeff_applyTDerivList (epss : List ℝ) (p : ℝ[X]) :
   induction epss generalizing p with
   | nil => simp
   | cons eps epss ih =>
-      rw [applyTDerivList_cons, ih, leadingCoeff_TDeriv]
+      rw [applyTDerivList_cons, ih, leadingCoeff_tDeriv]
 
 /-- A multiple final root gains one unit of multiplicity at every backward step. -/
 theorem rootMultiplicity_applyTDerivList_eq_add_length_of_ge_two
@@ -82,15 +82,15 @@ theorem rootMultiplicity_applyTDerivList_eq_add_length_of_ge_two
       have heps : 0 < eps := hpos eps (by simp)
       have htail : ∀ eta ∈ epss, 0 < eta :=
         fun eta heta ↦ hpos eta (List.mem_cons_of_mem eps heta)
-      have hTsplit : (TDeriv eps p).Splits := splits_tderiv heps hp
+      have hTsplit : (tDeriv eps p).Splits := splits_tDeriv heps hp
       have htail_eq := ih htail hTsplit hm
       have hm' :
-          2 ≤ (applyTDerivList epss (TDeriv eps p)).rootMultiplicity a := by
+          2 ≤ (applyTDerivList epss (tDeriv eps p)).rootMultiplicity a := by
         simpa only [applyTDerivList_cons] using hm
-      have hTmult : 2 ≤ (TDeriv eps p).rootMultiplicity a := by
+      have hTmult : 2 ≤ (tDeriv eps p).rootMultiplicity a := by
         rw [htail_eq]
         exact le_trans hm' (Nat.le_add_right _ _)
-      have hstep := rootMultiplicity_eq_succ_of_TDeriv_ge_two heps hp hTmult
+      have hstep := rootMultiplicity_eq_succ_of_tDeriv_ge_two heps hp hTmult
       simp only [applyTDerivList_cons, List.length_cons]
       lia
 
