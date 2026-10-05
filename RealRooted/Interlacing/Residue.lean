@@ -18,24 +18,6 @@ namespace RealRooted
 
 /-! ## Derivative and evaluation signs -/
 
-theorem eval_derivative_eq_sum_real {p : ℝ[X]} (hp : p.Splits) (x : ℝ) :
-    p.derivative.eval x
-      = p.leadingCoeff *
-          (p.roots.map (fun r : ℝ =>
-            ((p.roots.erase r).map (fun s : ℝ => x - s)).prod)).sum :=
-  hp.eval_derivative x
-
-theorem deriv_sum_collapse (M : Multiset ℝ) (s : ℝ) (hs : s ∈ M) (hcount : M.count s = 1) :
-    (M.map (fun r : ℝ => ((M.erase r).map (fun t : ℝ => s - t)).prod)).sum
-      = ((M.erase s).map (fun t : ℝ => s - t)).prod :=
-  derivative_sum_collapse M s hs hcount
-
-theorem eval_derivative_at_root {p : ℝ[X]} (hp : p.Splits) (s : ℝ)
-    (hs : s ∈ p.roots) (hcount : p.roots.count s = 1) :
-    p.derivative.eval s
-      = p.leadingCoeff * ((p.roots.erase s).map (fun r : ℝ => s - r)).prod :=
-  hp.eval_derivative_at_root_of_roots_count_one s hs hcount
-
 theorem prod_sub_sign_pos (M : Multiset ℝ) (s : ℝ) (hs : s ∉ M) :
     0 < (M.map (fun r => s - r)).prod * (-1 : ℝ) ^ (M.countP (fun r => s < r)) := by
   induction M using Multiset.induction with

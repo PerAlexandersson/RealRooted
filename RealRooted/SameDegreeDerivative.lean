@@ -138,13 +138,6 @@ theorem roots_derivative_mem_Ioi_of_roots_mem_Ioi {p : ℝ[X]} {u : ℝ}
     ∀ r ∈ p.derivative.roots, r ∈ Set.Ioi u :=
   lt_roots_derivative_of_lt_roots hp hdeg h
 
-/-- Derivative root left-ray preservation. -/
-theorem roots_derivative_mem_Iio_of_roots_mem_Iio {p : ℝ[X]} {v : ℝ}
-    (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
-    (h : ∀ r ∈ p.roots, r ∈ Set.Iio v) :
-    ∀ r ∈ p.derivative.roots, r ∈ Set.Iio v :=
-  roots_derivative_lt_of_roots_lt hp hdeg h
-
 /-- Derivative root closed lower-ray preservation. -/
 theorem roots_derivative_mem_Ici_of_roots_mem_Ici {p : ℝ[X]} {u : ℝ}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)

@@ -26,12 +26,6 @@ theorem splits_of_isPFPolynomial {p : ℝ[X]} (hp : IsPFPolynomial p) :
     p.Splits :=
   RealRooted.Tactic.pf_splits hp
 
-/-- Project one row from a PF sequence certificate. -/
-theorem at_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
-    (hP : ∀ n : Nat, IsPFPolynomial (P n)) (n : Nat) :
-    IsPFPolynomial (P n) :=
-  hP n
-
 /-- Project row-wise coefficient nonnegativity from a PF sequence certificate. -/
 theorem hasNonnegCoeffs_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n)) :

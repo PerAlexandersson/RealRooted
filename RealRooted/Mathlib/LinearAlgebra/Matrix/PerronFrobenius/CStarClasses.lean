@@ -28,9 +28,6 @@ theorem sq_eq_zero {R : Type*} [MonoidWithZero R] [NoZeroDivisors R] {x : R} :
   rw [pow_two, mul_eq_zero]
   exact or_self_iff
 
-/-- An element of a nonempty set. -/
-lemma Set.mem_of_nonempty {α : Type*} (s : Set α) (h : s.Nonempty) : ∃ x, x ∈ s := h
-
 /--
 An equality between real numbers implies an equality between their complex embeddings.
 -/

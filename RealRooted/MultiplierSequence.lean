@@ -790,33 +790,6 @@ def finitePolyaSchurNonnegBackwardStatement : Prop :=
       IsPFPolynomial (jensenPolynomial n gamma) →
         IsFiniteMultiplierSequence n gamma
 
-/-- Low-degree base case of the backward finite Pólya--Schur direction.
-
-For `n ≤ 1`, the Jensen-polynomial hypothesis is unnecessary: diagonal
-operators preserve real-rootedness up to degree one for purely degree reasons. -/
-theorem finitePolyaSchurNonnegBackward_of_natDegree_le_one
-    {n : ℕ} (hn : n ≤ 1) {gamma : ℕ → ℝ}
-    (_hgamma : ∀ k, 0 ≤ gamma k)
-    (_hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
-    IsFiniteMultiplierSequence n gamma :=
-  isFiniteMultiplierSequence_of_natDegree_le_one hn gamma
-
-/-- Degree-zero case of the backward finite Pólya--Schur direction. -/
-theorem finitePolyaSchurNonnegBackward_natDegree_zero
-    {gamma : ℕ → ℝ}
-    (_hgamma : ∀ k, 0 ≤ gamma k)
-    (_hjensen : IsPFPolynomial (jensenPolynomial 0 gamma)) :
-    IsFiniteMultiplierSequence 0 gamma :=
-  isFiniteMultiplierSequence_natDegree_zero gamma
-
-/-- Degree-one case of the backward finite Pólya--Schur direction. -/
-theorem finitePolyaSchurNonnegBackward_natDegree_one
-    {gamma : ℕ → ℝ}
-    (_hgamma : ∀ k, 0 ≤ gamma k)
-    (_hjensen : IsPFPolynomial (jensenPolynomial 1 gamma)) :
-    IsFiniteMultiplierSequence 1 gamma :=
-  isFiniteMultiplierSequence_natDegree_one gamma
-
 /-- Degree at most two case of the backward finite Pólya--Schur direction. -/
 theorem finitePolyaSchurNonnegBackward_of_natDegree_le_two
     {n : ℕ} (hn : n ≤ 2) {gamma : ℕ → ℝ}
