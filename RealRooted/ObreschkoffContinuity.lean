@@ -472,7 +472,8 @@ theorem exists_beta_and_root_near_closedSegment_right
   obtain ⟨β, hβ0, hβ1, b, hb_root, hb_dist⟩ :=
     exists_beta_and_root_near_closedSegment
       (hfg := hfg.comm) (ha := ha) hg_monic hf_monic hdeg.symm hε
-  grind
+  refine ⟨1 - β, by linarith, by linarith, b, ?_, hb_dist⟩
+  simpa [sub_sub_cancel, add_comm] using hb_root
 
 /-- Right-endpoint symmetric version of
 `exists_beta_and_complex_aroot_near_closedSegment`.
@@ -496,7 +497,8 @@ theorem exists_beta_and_complex_aroot_near_closedSegment_right
   obtain ⟨β, hβ0, hβ1, w, hw_root, hw_dist⟩ :=
     exists_beta_and_complex_aroot_near_closedSegment
       (hfg := hfg.comm) (hz := hz) hg_monic hf_monic hdeg.symm hε
-  grind
+  refine ⟨1 - β, by linarith, by linarith, w, ?_, hw_dist⟩
+  simpa [sub_sub_cancel, add_comm] using hw_root
 
 /-- Right-endpoint normalization of the closed-segment coefficient bound.
 
