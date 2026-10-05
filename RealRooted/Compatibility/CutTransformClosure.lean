@@ -23,8 +23,8 @@ theorem familyCompatible_ofFn_append_of_pairwise
     (hQ_rr : ∀ i, Q i ≠ 0 ∧ (Q i).Splits)
     (hP_pos : ∀ i, HasPosLeadingCoeff (P i))
     (hQ_pos : ∀ i, HasPosLeadingCoeff (Q i))
-    (hP_nonneg : ∀ i, HasNonnegCoeffs (P i))
-    (hQ_nonneg : ∀ i, HasNonnegCoeffs (Q i))
+    (_hP_nonneg : ∀ i, HasNonnegCoeffs (P i))
+    (_hQ_nonneg : ∀ i, HasNonnegCoeffs (Q i))
     (hPP : ∀ i j, Compatible (P i) (P j))
     (hPQ : ∀ i j, Compatible (P i) (Q j))
     (hQQ : ∀ i j, Compatible (Q i) (Q j)) :
@@ -48,15 +48,6 @@ theorem familyCompatible_ofFn_append_of_pairwise
     · simp only [List.mem_ofFn] at hp
       rcases hp with ⟨i, rfl⟩
       exact hQ_pos i
-  have hnonneg : ∀ p ∈ fs, HasNonnegCoeffs p := by
-    intro p hp
-    rcases List.mem_append.mp hp with hp | hp
-    · simp only [List.mem_ofFn] at hp
-      rcases hp with ⟨i, rfl⟩
-      exact hP_nonneg i
-    · simp only [List.mem_ofFn] at hp
-      rcases hp with ⟨i, rfl⟩
-      exact hQ_nonneg i
   have hpair : PairwiseCompatible fs := by
     apply pairwiseCompatible_of_forall_mem
     intro p hp q hq
@@ -79,8 +70,7 @@ theorem familyCompatible_ofFn_append_of_pairwise
       rcases hq with ⟨j, rfl⟩
       exact hQQ i j
   exact
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
-      hrr hpos hnonneg).1 hpair
+    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible hrr hpos).1 hpair
 
 namespace OrderedCutCompatible
 

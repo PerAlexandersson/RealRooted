@@ -20,7 +20,7 @@ macro_rules
         right_pos_lc := $hg:term,
         compatible := $hcomp:term) =>
       `(tactic|
-        exact RealRooted.compatiblePairHasCommonInterleaver_chudnovskySeymour
+        exact RealRooted.chudnovskySeymour_compatiblePairHasCommonInterleaver
           $hf $hg $hcomp)
   | `(tactic|
       rr_chudnovskySeymour_compatible_pair_common_left_interleaver using

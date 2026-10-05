@@ -46,20 +46,6 @@ theorem exists_signInterleaving {F : ℝ[X]} :
       · exact ⟨hu₁, hu₂, hus_int⟩
       · simp_all
 
-/-- Public wrapper around `exists_signInterleaving`. This is the interval part of
-Liu--Wang / Ma--Wang arguments: once we know the endpoint-sign condition on a
-sorted root list, we can package the resulting real roots as an interleaving list. -/
-theorem exists_roots_interlacing_of_consecutive_signs {F : ℝ[X]} {rs : List ℝ}
-    (hrs_sorted : rs.Pairwise (· ≤ ·))
-    (hsign :
-      ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
-        rs = pre ++ r₁ :: r₂ :: rest →
-        F.eval r₁ * F.eval r₂ ≤ 0) :
-    ∃ us : List ℝ, us.length = rs.length - 1 ∧
-      ListInterlaces us rs ∧
-      (∀ u ∈ us, F.IsRoot u) :=
-  exists_signInterleaving (F := F) rs hrs_sorted hsign
-
 /-- Greedy ordered-matching lemma for the differ-by-1 case. The hypotheses say:
 after consuming the first `pre.length` left-hand points, the remaining right-hand
 points all lie to the right of the current left-hand point, and one of the
@@ -379,8 +365,7 @@ end RealRooted.MaWangInternal
 namespace RealRooted
 
 export MaWangInternal
-  (exists_roots_interlacing_of_consecutive_signs
-    listInterlaces_of_count_bounds
+  (listInterlaces_of_count_bounds
     listAlternates_of_count_bounds
     strictInterl_of_count_bounds_succ
     strictInterl_of_count_bounds_same

@@ -240,17 +240,8 @@ theorem indepPolyOn_splits_of_cliqueDeletion_pairwiseCompatible
     · exact indepPolyOn_hasPosLeadingCoeff G (S \ K)
     · exact (indepPolyOn_hasPosLeadingCoeff G
         (deleteClosedNeighborSupport G S v)).X_mul
-  have hnn : ∀ f ∈ fs, HasNonnegCoeffs f := by
-    intro f hf
-    change f ∈ cliqueDeletionFamily G S K at hf
-    simp only [cliqueDeletionFamily, List.mem_cons, List.mem_map] at hf
-    rcases hf with rfl | ⟨v, _hvK, rfl⟩
-    · exact indepPolyOn_hasNonnegCoeffs G (S \ K)
-    · exact (indepPolyOn_hasNonnegCoeffs G
-        (deleteClosedNeighborSupport G S v)).X_mul
   have hfam : FamilyCompatible fs :=
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
-      (fs := fs) hrr hpos hnn).1 hpair
+    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible (fs := fs) hrr hpos).1 hpair
   have hweighted := hfam (fs.map fun p ↦ ((1 : ℝ), p)) (by
     simp) (by
     simp)
@@ -298,9 +289,8 @@ theorem compatible_weightedIndepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCom
         (weightedIndepPolyOn_hasPosLeadingCoeff G hsub).X_mul,
         (weightedIndepPolyOn_hasNonnegCoeffs G hsub).X_mul⟩
   have hfam : FamilyCompatible fs :=
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs (fs := fs)
-      (fun f hf => (hgood f hf).1) (fun f hf => (hgood f hf).2.1)
-      (fun f hf => (hgood f hf).2.2)).1 hpair
+    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible (fs := fs)
+      (fun f hf => (hgood f hf).1) (fun f hf => (hgood f hf).2.1)).1 hpair
   intro α β hα hβ
   let ws : List (ℝ × ℝ[X]) :=
     (β, X * weightedIndepPolyOn G (S \ K) wt) ::
@@ -370,9 +360,8 @@ theorem compatible_weightedIndepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompat
     · exact hXgood _ (fun w hw =>
         hwt_sdiff K w (deleteClosedNeighborSupport_subset G (S \ K) v hw)) (hLdel v hv)
   have hfam : FamilyCompatible fs :=
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs (fs := fs)
-      (fun f hf => (hgood f hf).1) (fun f hf => (hgood f hf).2.1)
-      (fun f hf => (hgood f hf).2.2)).1 hpair
+    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible (fs := fs)
+      (fun f hf => (hgood f hf).1) (fun f hf => (hgood f hf).2.1)).1 hpair
   have hK_support : (S \ L) \ (K \ L) = S \ (K ∪ L) := by simp [sdiff_sdiff, union_comm]
   have hL_support : (S \ K) \ (L \ K) = S \ (K ∪ L) := by simp [sdiff_sdiff]
   have hK' : G.IsClique ((K \ L : Finset V) : Set V) :=

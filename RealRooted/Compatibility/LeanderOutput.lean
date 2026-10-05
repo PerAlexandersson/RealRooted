@@ -227,11 +227,6 @@ theorem compatible_leanderTransform {n : ℕ} (f : Fin n → ℝ[X])
     simp only [fs, List.mem_ofFn] at hp
     rcases hp with ⟨h, rfl⟩
     exact leanderOutputRegion_hasPosLeadingCoeff f i j ha hb hab hpos h
-  have hregions_nn : ∀ p ∈ fs, HasNonnegCoeffs p := by
-    intro p hp
-    simp only [fs, List.mem_ofFn] at hp
-    rcases hp with ⟨h, rfl⟩
-    exact leanderOutputRegion_hasNonnegCoeffs f i j ha hb hnn h
   have hregions_pair : PairwiseCompatible fs := by
     apply pairwiseCompatible_of_forall_mem
     intro p hp q hq
@@ -247,8 +242,8 @@ theorem compatible_leanderTransform {n : ℕ} (f : Fin n → ℝ[X])
     · exact (leanderOutputRegion_compatible_of_lt f i j ha hb hrr hpos hnn
         hff hXf hkh).comm
   have hfamily : FamilyCompatible fs :=
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
-      hregions_rr hregions_pos hregions_nn).1 hregions_pair
+    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible hregions_rr hregions_pos).1
+      hregions_pair
   let ws : List (ℝ × ℝ[X]) := List.ofFn fun h =>
     (leanderOutputWeight i j a b h, region h)
   have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by

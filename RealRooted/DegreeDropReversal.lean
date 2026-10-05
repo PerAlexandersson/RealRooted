@@ -272,19 +272,12 @@ theorem splits_X_pow_mul_reverse {p : K[X]} (h : p.Splits) (N : ℕ) :
     (X ^ (N - p.natDegree) * p.reverse).Splits :=
   (Polynomial.Splits.X_pow (N - p.natDegree)).mul (splits_reverse h)
 
-/-- Interface-shaped version of `splits_X_pow_mul_reverse`; the degree bound is
-not needed for the proof but is often available at call sites. -/
-theorem splits_X_pow_mul_reverse_of_splits {p : K[X]} (h : p.Splits) {N : ℕ}
-    (_hN : p.natDegree ≤ N) :
-    (X ^ (N - p.natDegree) * p.reverse).Splits :=
-  splits_X_pow_mul_reverse h N
-
 /-- Reflection at any degree at least `p.natDegree` preserves splitting. -/
 theorem splits_reflect_of_splits {p : K[X]} (h : p.Splits) {N : ℕ}
     (hN : p.natDegree ≤ N) :
     (reflect N p).Splits := by
   simpa [reflect_eq_X_pow_mul_reverse p hN] using
-    splits_X_pow_mul_reverse_of_splits h hN
+    splits_X_pow_mul_reverse h N
 
 /-- For polynomials of degree at most `N`, reflection preserves and reflects
 splitting. -/

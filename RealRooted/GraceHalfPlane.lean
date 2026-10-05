@@ -286,12 +286,12 @@ theorem polarDeriv_natDegree_lowerHalf {n : Nat} {b : ℝ} {ζ : ℂ}
       simp_all [mul_div_cancel₀, ne_of_gt (zero_lt_one.trans_le hn)]
       linarith
 
-private theorem grace_aux_lowerHalf {b : ℝ} :
-    ∀ (n : Nat) (f g : ℂ[X]),
-      (binomialLift n f).natDegree ≤ n → (binomialLift n g).natDegree = n →
-      AreApolar n f g → (binomialLift n f).RootsIn (lowerHalf b) →
-      (binomialLift n g).HasRootIn (lowerHalf b) := by
-  intro n
+theorem grace_apolarity_lowerHalf {n : Nat} {b : ℝ} {f g : ℂ[X]}
+    (hf : (binomialLift n f).natDegree ≤ n) (hg : (binomialLift n g).natDegree = n)
+    (hap : AreApolar n f g)
+    (hroots : (binomialLift n f).RootsIn (lowerHalf b)) :
+    (binomialLift n g).HasRootIn (lowerHalf b) := by
+  revert f g
   refine Nat.strong_induction_on n ?_
   intro n ih f g hf hg hap hroots
   by_cases hn : n = 0
@@ -342,20 +342,13 @@ private theorem grace_aux_lowerHalf {b : ℝ} :
       obtain ⟨w, hw⟩ :
           ∃ w : ℂ, (binomialLift (n - 1) g').IsRoot w ∧ w ∈ lowerHalf b := by
         apply ih (n - 1) (Nat.sub_lt (Nat.pos_of_ne_zero hn) (by simp [*]))
-          f' g' hf' (by
+          (f := f') (g := g') hf' (by
             replace hg' := congr_arg Polynomial.natDegree hg'
             rw [Polynomial.natDegree_mul'] at hg' <;> norm_num at *
             · lia
             · intro H
               simp_all) hap' hf'_roots
       exact ⟨w, by replace hg' := congr_arg (Polynomial.eval w) hg'; simp_all⟩
-
-theorem grace_apolarity_lowerHalf {n : Nat} {b : ℝ} {f g : ℂ[X]}
-    (hf : (binomialLift n f).natDegree ≤ n) (hg : (binomialLift n g).natDegree = n)
-    (hap : AreApolar n f g)
-    (hroots : (binomialLift n f).RootsIn (lowerHalf b)) :
-    (binomialLift n g).HasRootIn (lowerHalf b) :=
-  grace_aux_lowerHalf n f g hf hg hap hroots
 
 def upperHalf (b : ℝ) : Set ℂ := {z : ℂ | b ≤ z.im}
 
