@@ -103,9 +103,9 @@ theorem a144696Polynomial_isIdDecomposition (n : ℕ) (hn : 1 ≤ n) :
       (generalizedEulerian_natDegree 1 n)
   · exact natDegree_loweringEulerStep_le_pred hn
       (generalizedEulerian_natDegree 1 n).le
-  · rw [IdTransform, Polynomial.reflect_C_mul,
+  · rw [idTransform, Polynomial.reflect_C_mul,
       generalizedEulerian_one_reflect]
-  · simpa [IdTransform] using
+  · simpa [idTransform] using
       (reflect_loweringEulerStep_of_reflect hn
         (generalizedEulerian_one_reflect n))
 
@@ -135,14 +135,14 @@ private theorem a144696Polynomial_reciprocal_strictInterl_of_two_le
   have hpdeg : (C 2 * a144696Polynomial n).natDegree ≤ n := by
     rw [natDegree_C_mul (by norm_num), natDegree_a144696Polynomial]
   have hendpoint :
-      StrictInterl (IdTransform n (C 2 * a144696Polynomial n))
+      StrictInterl (idTransform n (C 2 * a144696Polynomial n))
         (C 2 * a144696Polynomial n) :=
-    (brandenSolusTheorem26_forward_of_strictInterl_b_a hpdeg
+    (BrandenSolus.forward_of_strictInterl_b_a hpdeg
       (a144696Polynomial_isIdDecomposition n (by lia)) hAnn hbnn hbA).2.2
   have hscaled :
       StrictInterl (C 2 * reciprocalShift n (a144696Polynomial n))
         (C 2 * a144696Polynomial n) := by
-    simpa [IdTransform, reciprocalShift, Polynomial.reflect_C_mul] using hendpoint
+    simpa [idTransform, reciprocalShift, Polynomial.reflect_C_mul] using hendpoint
   have hleft := StrictInterl.C_mul_left hscaled
     (a := (2 : ℝ)⁻¹) (by norm_num)
   have hboth := StrictInterl.C_mul_right hleft

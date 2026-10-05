@@ -69,7 +69,7 @@ theorem gammaRealRootedIffPolynomialRealRootedNonpos_sequence
     {d : Nat → Nat} {P Γ : Nat → ℝ[X]}
     (hγdeg : ∀ i : Nat, (Γ i).natDegree ≤ d i / 2)
     (hpdeg : ∀ i : Nat, (P i).natDegree ≤ d i)
-    (hsym : ∀ i : Nat, IdTransform (d i) (P i) = P i)
+    (hsym : ∀ i : Nat, idTransform (d i) (P i) = P i)
     (hexp : ∀ i : Nat, IsGammaExpansion (d i) (P i) (Γ i)) :
     ∀ i : Nat,
       (((Γ i ≠ 0 ∧ (Γ i).Splits) ∧ HasRootsNonpos (Γ i)) ↔
