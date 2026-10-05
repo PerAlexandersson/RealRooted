@@ -76,27 +76,11 @@ theorem affineModifiedNarayanaShiftedInterlacing_modified_zero_one
     simp
   rwa [hleft, hright]
 
-/-- Concrete modified-Narayana wrapper: the shifted affine-Narayana target implies
-the paper-shaped affine-Narayana target. -/
-theorem affineModifiedNarayanaInterlacing_modified_of_shifted
-    (h :
-      AffineModifiedNarayanaShiftedInterlacingStatement
-        modifiedNarayanaPolynomial) :
-    AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial :=
-  affineModifiedNarayanaInterlacing_of_shifted h
-
-/-- Concrete modified-Narayana wrapper: the paper-shaped affine-Narayana target
-implies shifted nonnegative-parameter target. -/
-theorem affineModifiedNarayanaShiftedInterlacing_modified_of_affineNarayana
-    (h : AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial) :
-    AffineModifiedNarayanaShiftedInterlacingStatement
-      modifiedNarayanaPolynomial :=
-  affineModifiedNarayanaShiftedInterlacing_of_affineNarayana h
-
-/-- The coefficient-side modified Narayana family also satisfies the
-Braun--Jal modified-family interface. -/
+/-- The coefficient-side modified Narayana family also satisfies
+`P_0 = 1` and `N_{n+1} = X * P_n`. -/
 theorem modifiedNarayanaFamily_coeff :
-    ModifiedNarayanaFamilyStatement narayana modifiedNarayanaCoeffPolynomial := by
+    modifiedNarayanaCoeffPolynomial 0 = 1 ∧
+      ∀ n : ℕ, narayana (n + 1) = X * modifiedNarayanaCoeffPolynomial n := by
   constructor
   · simp
   · intro n
