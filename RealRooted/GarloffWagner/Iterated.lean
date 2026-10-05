@@ -473,15 +473,6 @@ theorem gwJL_splits_pos_roots_nonpos_of_splits_pos_roots_nonpos {f : ℝ[X]}
   have hsplit : (gwJL k f).Splits := gwJL_splits_of_splits hf0 hfs k
   exact ⟨hsplit, hfpos.gwJL k, roots_nonpos_of_nonneg_coeffs hsplit (hfnn.gwJL k)⟩
 
-/-- The standard nonpositive-root part of Garloff--Wagner, Theorem 11(b),
-without the later simple-root/common-factor strengthening. -/
-theorem gwTheorem11Nonpos {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits)
-    (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0) (k : ℕ) :
-    (gwJL k f).Splits ∧
-      HasPosLeadingCoeff (gwJL k f) ∧
-      ∀ r ∈ (gwJL k f).roots, r ≤ 0 :=
-  gwJL_splits_pos_roots_nonpos_of_splits_pos_roots_nonpos hf0 hfs hfpos hfroots k
-
 /-- Simple-except-origin part of Garloff--Wagner, Theorem 11(b). -/
 theorem gwJL_hasSimpleRootsExcept_zero_of_splits_roots_nonpos_hasSimpleRootsExcept
     {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits)
@@ -573,18 +564,6 @@ theorem gwJL_splits_pos_roots_nonpos_simpleExcept_of_splits_pos_roots_nonpos_sim
     gwJL_hasSimpleRootsExcept_zero_of_splits_roots_nonpos_hasSimpleRootsExcept
       hf0 hfs hfroots hfsimple k⟩
 
-/-- Garloff--Wagner, Theorem 11(b), with the simple-except-origin strengthening
-included. -/
-theorem gwTheorem11NonposSimpleExcept {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits)
-    (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
-    (hfsimple : HasSimpleRootsExcept f 0) (k : ℕ) :
-    (gwJL k f).Splits ∧
-      HasPosLeadingCoeff (gwJL k f) ∧
-      (∀ r ∈ (gwJL k f).roots, r ≤ 0) ∧
-      HasSimpleRootsExcept (gwJL k f) 0 :=
-  gwJL_splits_pos_roots_nonpos_simpleExcept_of_splits_pos_roots_nonpos_simpleExcept
-    hf0 hfs hfpos hfroots hfsimple k
-
 /-- Garloff--Wagner formula (3) for a standard polynomial with nonpositive
 roots and simple roots except possibly at the origin. -/
 theorem gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
@@ -607,17 +586,6 @@ theorem gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
   have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hstrictInterl
-
-/-- Garloff--Wagner formula (3), packaged under the Theorem 11(b) hypotheses
-that will be available in the Theorem 11(c) induction. -/
-theorem gwJL_factor_strictInterl_of_nonpos
-    {k : ℕ} {u : ℝ} {f : ℝ[X]}
-    (hu : u ≤ 0) (hf0 : f ≠ 0) (hfs : f.Splits)
-    (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
-    (hfsimple : HasSimpleRootsExcept f 0) :
-    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) :=
-  gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
-    hu hf0 hfs hfpos hfroots hfsimple
 
 /-- Reduction for the Lemma 7/Krein step in Garloff--Wagner, Theorem 11(c):
 once `g` is expressed as a weighted sum whose `J^k L` images are compatible

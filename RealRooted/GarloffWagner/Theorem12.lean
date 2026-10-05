@@ -663,14 +663,6 @@ theorem gwHadamardProductInterl {f g p : ℝ[X]}
   simpa [gwSchurProduct_gwL_left] using
     gwSchurProductInterl hfL hgL hp hfgL
 
-/-- Symmetric fixed-factor form of `gwHadamardProductInterl`. -/
-theorem gwHadamardProductInterl_left {f p q : ℝ[X]}
-    (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpq : Interl p q) :
-    Interl (hadamardProduct f p) (hadamardProduct f q) := by
-  simpa [hadamardProduct_comm f p, hadamardProduct_comm f q] using
-    gwHadamardProductInterl hp hq hf hpq
-
 namespace IsGWKreinSummand
 
 end IsGWKreinSummand
