@@ -494,21 +494,32 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
         (p := reflect n p) hinner
       grind
 
-/-- Nonzero finite Schur--Szegő composition theorem.  This is the substantive
-classical leaf: `f` is a nonzero PF polynomial, `p` is a nonzero real-rooted
-polynomial, both have degree at most `n`, and the fixed-degree Schur--Szegő
-composition is either zero or real-rooted. -/
-theorem finiteSchurSzegoCompositionNonzero :
-    finiteSchurSzegoCompositionNonzeroStatement :=
-  fun {n} {f} {p} hf hf0 hfdeg hp0 hp hsplit =>
-    Or.inr (splits_schurSzegoComp_of_isPF n f p hf hf0 hfdeg hp0 hp hsplit)
+/-- Nonzero finite Schur--Szegő composition theorem: `f` is a nonzero PF
+polynomial, `p` is a nonzero real-rooted polynomial, both have degree at most
+`n`, and the fixed-degree Schur--Szegő composition is either zero or
+real-rooted. -/
+theorem finiteSchurSzegoCompositionNonzero {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ n)
+    (hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  Or.inr (splits_schurSzegoComp_of_isPF n f p hf hf0 hfdeg hp0 hpdeg hsplit)
 
-/-- Finite Schur--Szegő composition theorem. The degenerate cases (`f = 0` or
-`p = 0`, where the composition vanishes) are discharged by
-`finiteSchurSzegoComposition_of_nonzero`; the remaining classical content is
-`finiteSchurSzegoCompositionNonzero`. -/
-theorem finiteSchurSzegoComposition : finiteSchurSzegoCompositionStatement :=
-  finiteSchurSzegoComposition_of_nonzero finiteSchurSzegoCompositionNonzero
+/-- **Finite Schur--Szegő composition theorem.**
+
+If `f` is a PF polynomial (only real, nonpositive zeros) of degree at most `n`
+and `p` has only real zeros, then their fixed-degree Schur--Szegő composition
+`schurSzegoComp n f p` again has only real zeros, unless it vanishes
+identically.  The degenerate cases `f = 0` and `p = 0` make the composition
+vanish; the remaining content is `finiteSchurSzegoCompositionNonzero`. -/
+theorem finiteSchurSzegoComposition {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  by_cases hf0 : f = 0
+  · simp [hf0, schurSzegoComp_zero_left]
+  by_cases hp0 : p = 0
+  · simp [hp0, schurSzegoComp_zero_right]
+  exact finiteSchurSzegoCompositionNonzero hf hf0 hfdeg hp0 hpdeg hsplit
 
 /-- Directly applicable form of the finite Schur--Szegő composition theorem:
 for a PF polynomial `f` and a real-rooted polynomial `p`, both of degree at most
@@ -541,13 +552,17 @@ theorem IsPFPolynomial.schurSzegoComp
       hf hfdeg hpdeg (hp.eq_zero_or_splits.resolve_left hp0)
 
 /-- The backward direction of the finite Pólya--Schur theorem, obtained from the
-finite Schur--Szegő composition theorem. -/
-theorem finitePolyaSchurNonnegBackward : finitePolyaSchurNonnegBackwardStatement :=
-  finitePolyaSchurNonnegBackward_of_schurSzegoNonzero finiteSchurSzegoCompositionNonzero
+finite Schur--Szegő composition theorem: the diagonal operator attached to
+`gamma` acting on a polynomial `p` of degree at most `n` is exactly the
+Schur--Szegő composition of the PF Jensen polynomial of `gamma` with `p`. -/
+theorem finitePolyaSchurNonnegBackward : finitePolyaSchurNonnegBackwardStatement := by
+  intro n gamma _hgamma hjensen p hp hsplit
+  have hfdeg : (jensenPolynomial n gamma).natDegree ≤ n :=
+    natDegree_jensenPolynomial_le n gamma
+  simpa [← schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le hp] using
+    finiteSchurSzegoComposition hjensen hfdeg hp hsplit
 
-/-- Classical finite Pólya--Schur theorem (nonnegative-coefficient convention).
-The only remaining analytic obligation is isolated in
-`finiteSchurSzegoComposition`. -/
+/-- Classical finite Pólya--Schur theorem (nonnegative-coefficient convention). -/
 theorem finitePolyaSchur_nonneg : finitePolyaSchurNonnegStatement :=
-  finitePolyaSchur_nonneg_of_schurSzegoNonzero finiteSchurSzegoCompositionNonzero
+  finitePolyaSchur_nonneg_of_backward finitePolyaSchurNonnegBackward
 end RealRooted

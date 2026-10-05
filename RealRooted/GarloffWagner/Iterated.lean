@@ -446,44 +446,20 @@ theorem gwJL_factor_strictInterl_of_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
   rw [gwJL_X_sub_C_mul_eq_TDeriv]
   simpa [hD] using hstrictInterl
 
-/-- Theorem 11(a), real-rooted part: `J^k L` preserves real-rootedness. -/
-def gwTheorem11RealRootedStatement : Prop :=
-  ∀ {f : ℝ[X]}, f ≠ 0 → f.Splits → ∀ k, (gwJL k f).Splits
+/-- Garloff--Wagner, Theorem 11(a), real-rooted part: `J^k L` preserves
+real-rootedness. -/
+theorem gwTheorem11RealRooted {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits) (k : ℕ) :
+    (gwJL k f).Splits :=
+  gwJL_splits_of_splits hf0 hfs k
 
-theorem gwTheorem11RealRooted :
-    gwTheorem11RealRootedStatement := by
-  intro f hf0 hfs
-  exact gwJL_splits_of_splits hf0 hfs
-
-/-- Theorem 11(b), zero-aware PF-cone form: `J^k L` preserves PF polynomials. -/
-def gwTheorem11PFStatement : Prop :=
-  ∀ {f : ℝ[X]}, IsPFPolynomial f → ∀ k, IsPFPolynomial (gwJL k f)
-
-theorem gwTheorem11PF_of_realRooted
-    (h : gwTheorem11RealRootedStatement) :
-    gwTheorem11PFStatement := by
-  intro f hf k
+/-- Garloff--Wagner, Theorem 11(b), zero-aware PF-cone form: `J^k L` preserves
+PF polynomials. -/
+theorem gwTheorem11PF {f : ℝ[X]} (hf : IsPFPolynomial f) (k : ℕ) :
+    IsPFPolynomial (gwJL k f) := by
   by_cases hf0 : f = 0
   · simpa [hf0] using IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg
-      (hf.hasNonnegCoeffs.gwJL k) (h hf0 (hf.ne_zero_and_splits hf0).2 k)
-
-theorem gwTheorem11PF :
-    gwTheorem11PFStatement :=
-  gwTheorem11PF_of_realRooted gwTheorem11RealRooted
-
-/-- The standard nonpositive-root part of Garloff--Wagner, Theorem 11(b),
-without the later simple-root/common-factor strengthening. -/
-def gwTheorem11NonposStatement : Prop :=
-  ∀ {f : ℝ[X]},
-    f ≠ 0 →
-    f.Splits →
-    HasPosLeadingCoeff f →
-    (∀ r ∈ f.roots, r ≤ 0) →
-    ∀ k,
-      (gwJL k f).Splits ∧
-        HasPosLeadingCoeff (gwJL k f) ∧
-        ∀ r ∈ (gwJL k f).roots, r ≤ 0
+      (hf.hasNonnegCoeffs.gwJL k) (gwTheorem11RealRooted hf0 (hf.ne_zero_and_splits hf0).2 k)
 
 theorem gwJL_splits_pos_roots_nonpos_of_splits_pos_roots_nonpos {f : ℝ[X]}
     (hf0 : f ≠ 0) (hfs : f.Splits) (hfpos : HasPosLeadingCoeff f)
@@ -494,14 +470,17 @@ theorem gwJL_splits_pos_roots_nonpos_of_splits_pos_roots_nonpos {f : ℝ[X]}
   have hfnn : HasNonnegCoeffs f :=
     ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hfs).2
       ⟨hfpos, hfroots⟩).1
-  have hsplit : (gwJL k f).Splits := gwTheorem11RealRooted hf0 hfs k
+  have hsplit : (gwJL k f).Splits := gwJL_splits_of_splits hf0 hfs k
   exact ⟨hsplit, hfpos.gwJL k, roots_nonpos_of_nonneg_coeffs hsplit (hfnn.gwJL k)⟩
 
-theorem gwTheorem11Nonpos :
-    gwTheorem11NonposStatement := by
-  intro f hf0 hfs hfpos hfroots k
-  exact gwJL_splits_pos_roots_nonpos_of_splits_pos_roots_nonpos
-    hf0 hfs hfpos hfroots k
+/-- The standard nonpositive-root part of Garloff--Wagner, Theorem 11(b),
+without the later simple-root/common-factor strengthening. -/
+theorem gwTheorem11Nonpos {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits)
+    (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0) (k : ℕ) :
+    (gwJL k f).Splits ∧
+      HasPosLeadingCoeff (gwJL k f) ∧
+      ∀ r ∈ (gwJL k f).roots, r ≤ 0 :=
+  gwJL_splits_pos_roots_nonpos_of_splits_pos_roots_nonpos hf0 hfs hfpos hfroots k
 
 /-- Simple-except-origin part of Garloff--Wagner, Theorem 11(b). -/
 theorem gwJL_hasSimpleRootsExcept_zero_of_splits_roots_nonpos_hasSimpleRootsExcept
@@ -579,20 +558,6 @@ theorem gwJL_hasSimpleRootsExcept_zero_of_splits_roots_nonpos_hasSimpleRootsExce
             exact hasSimpleRootsExcept_TDeriv (ihq (k + 1)) hu0 hF0 hFs
   exact hP f.natDegree rfl hf0 hfs hfroots hfsimple
 
-/-- Theorem 11(b) with the simple-except-origin strengthening included. -/
-def gwTheorem11NonposSimpleExceptStatement : Prop :=
-  ∀ {f : ℝ[X]},
-    f ≠ 0 →
-    f.Splits →
-    HasPosLeadingCoeff f →
-    (∀ r ∈ f.roots, r ≤ 0) →
-    HasSimpleRootsExcept f 0 →
-    ∀ k,
-      (gwJL k f).Splits ∧
-        HasPosLeadingCoeff (gwJL k f) ∧
-        (∀ r ∈ (gwJL k f).roots, r ≤ 0) ∧
-        HasSimpleRootsExcept (gwJL k f) 0
-
 theorem gwJL_splits_pos_roots_nonpos_simpleExcept_of_splits_pos_roots_nonpos_simpleExcept
     {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits)
     (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
@@ -608,12 +573,17 @@ theorem gwJL_splits_pos_roots_nonpos_simpleExcept_of_splits_pos_roots_nonpos_sim
     gwJL_hasSimpleRootsExcept_zero_of_splits_roots_nonpos_hasSimpleRootsExcept
       hf0 hfs hfroots hfsimple k⟩
 
-theorem gwTheorem11NonposSimpleExcept :
-    gwTheorem11NonposSimpleExceptStatement := by
-  intro f hf0 hfs hfpos hfroots hfsimple k
-  exact
-    gwJL_splits_pos_roots_nonpos_simpleExcept_of_splits_pos_roots_nonpos_simpleExcept
-      hf0 hfs hfpos hfroots hfsimple k
+/-- Garloff--Wagner, Theorem 11(b), with the simple-except-origin strengthening
+included. -/
+theorem gwTheorem11NonposSimpleExcept {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits)
+    (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
+    (hfsimple : HasSimpleRootsExcept f 0) (k : ℕ) :
+    (gwJL k f).Splits ∧
+      HasPosLeadingCoeff (gwJL k f) ∧
+      (∀ r ∈ (gwJL k f).roots, r ≤ 0) ∧
+      HasSimpleRootsExcept (gwJL k f) 0 :=
+  gwJL_splits_pos_roots_nonpos_simpleExcept_of_splits_pos_roots_nonpos_simpleExcept
+    hf0 hfs hfpos hfroots hfsimple k
 
 /-- Garloff--Wagner formula (3) for a standard polynomial with nonpositive
 roots and simple roots except possibly at the origin. -/
@@ -649,11 +619,6 @@ theorem gwJL_factor_strictInterl_of_nonpos
   gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
     hu hf0 hfs hfpos hfroots hfsimple
 
-/-- Theorem 11(c), in the local orientation:
-Garloff--Wagner's `g $ f` is represented by `StrictInterl f g`. -/
-def gwTheorem11StrictInterlStatement : Prop :=
-  ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, StrictInterl (gwJL k f) (gwJL k g)
-
 /-- Reduction for the Lemma 7/Krein step in Garloff--Wagner, Theorem 11(c):
 once `g` is expressed as a weighted sum whose `J^k L` images are compatible
 with the common left bound `J^k L f`, Wagner's finite weighted-sum theorem
@@ -667,21 +632,6 @@ theorem gwJL_strictInterl_of_weightedCompatibleExpansion
     StrictInterl (gwJL k f) (gwJL k g) := by
   rw [hg, gwJL_weightedSum]
   exact hcomp.toStrictInterl
-
-/-- Interface isolating the remaining Krein-expansion and Wagner-compatibility
-work for Garloff--Wagner, Theorem 11(c). -/
-def gwTheorem11StrictInterlWeightedExpansionStatement : Prop :=
-  ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
-    g = weightedSum l ∧
-      WeightedCompatibleLeft (gwJL k f)
-        (l.map fun ap => (ap.1, gwJL k ap.2))
-
-theorem gwTheorem11StrictInterl_of_weightedCompatibleExpansion
-    (h : gwTheorem11StrictInterlWeightedExpansionStatement) :
-    gwTheorem11StrictInterlStatement := by
-  intro f g hfg k
-  rcases h hfg k with ⟨l, hg, hcomp⟩
-  exact gwJL_strictInterl_of_weightedCompatibleExpansion hg hcomp
 
 /-- Variable-swapped common-right weighted reduction for the Lemma 7/Krein
 step.  If `g` is expanded in summands bounded on the right by `f`, Wagner's
@@ -715,25 +665,6 @@ theorem gwJL_weightedExpansion_strictInterl_right
         rcases hex with ⟨ap, hap, hapos⟩
         exact ⟨(ap.1, gwJL k ap.2), List.mem_map.mpr ⟨ap, hap, rfl⟩, hapos⟩)
 
-/-- Interface for the variable-swapped common-right Krein-expansion direction.
-This is not the final Theorem 11(c) orientation by itself; see
-`gwTheorem11StrictInterlRightWeightedExpansionStatement` for the forward
-package. -/
-def gwTheorem11RightWeightedExpansionStatement : Prop :=
-  ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
-    g = weightedSum l ∧
-      (∀ ap ∈ l, 0 ≤ ap.1) ∧
-      (∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k f)) ∧
-      (∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2)) ∧
-      ∃ ap ∈ l, 0 < ap.1
-
-theorem gwTheorem11ReverseStrictInterl_of_rightWeightedExpansion
-    (h : gwTheorem11RightWeightedExpansionStatement) :
-    ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, StrictInterl (gwJL k g) (gwJL k f) := by
-  intro f g hfg k
-  rcases h hfg k with ⟨l, hg, hnonneg, hstrictInterl, hpos, hex⟩
-  exact gwJL_weightedExpansion_strictInterl_right hg hnonneg hstrictInterl hpos hex
-
 /-- Common-right weighted reduction in the forward Theorem 11(c) orientation.
 If the left input `f` is a nonnegative weighted sum whose `J^k L` images all
 precede the common right bound `J^k L g`, then the image of `f` also precedes
@@ -765,23 +696,5 @@ theorem gwJL_strictInterl_of_rightWeightedExpansion
       (by
         rcases hex with ⟨ap, hap, hapos⟩
         exact ⟨(ap.1, gwJL k ap.2), List.mem_map.mpr ⟨ap, hap, rfl⟩, hapos⟩)
-
-/-- Forward Theorem 11(c) interface for the common-right Krein expansion:
-given `StrictInterl f g`, write the left input `f` as a nonnegative weighted sum of
-summands whose `J^k L` images precede `J^k L g`. -/
-def gwTheorem11StrictInterlRightWeightedExpansionStatement : Prop :=
-  ∀ {f g : ℝ[X]}, StrictInterl f g → ∀ k, ∃ l : List (ℝ × ℝ[X]),
-    f = weightedSum l ∧
-      (∀ ap ∈ l, 0 ≤ ap.1) ∧
-      (∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k g)) ∧
-      (∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2)) ∧
-      ∃ ap ∈ l, 0 < ap.1
-
-theorem gwTheorem11StrictInterl_of_rightWeightedExpansion
-    (h : gwTheorem11StrictInterlRightWeightedExpansionStatement) :
-    gwTheorem11StrictInterlStatement := by
-  intro f g hfg k
-  rcases h hfg k with ⟨l, hf, hnonneg, hstrictInterl, hpos, hex⟩
-  exact gwJL_strictInterl_of_rightWeightedExpansion hf hnonneg hstrictInterl hpos hex
 
 end RealRooted

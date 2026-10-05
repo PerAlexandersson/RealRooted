@@ -3,13 +3,11 @@ import RealRooted.HurwitzMatrix
 /-!
 # Totally nonnegative windows do not give the Hurwitz Schur product
 
-This file records a small structural obstruction for the Hurwitz
-Schur-product problem (issue #34).
-The full Hurwitz Schur-product target is special to Hurwitz matrices: the
-corresponding statement for arbitrary totally nonnegative `3` by `3` windows is
-false.  Thus a proof of the two-matrix Schur-product target must use the Hurwitz
-staircase or Toeplitz relations between neighbouring entries, not only total
-nonnegativity of the selected windows.
+This file records a small structural obstruction for entrywise products of
+totally nonnegative matrices: the Hadamard product of two totally nonnegative
+`3` by `3` matrices can have negative determinant.  For infinite Hurwitz
+matrices the Schur-product statement also fails; see
+`RealRooted.not_hurwitz_schurProduct_det_fin_three_nonneg`.
 -/
 
 namespace RealRooted.TotallyNonnegativeHadamardObstruction
@@ -95,8 +93,8 @@ theorem exists_totallyNonneg_hadamard_det_neg :
   ⟨aMat, bMat, aMat_isTotallyNonneg, bMat_isTotallyNonneg,
     by norm_num [hadamard_det_eq]⟩
 
-/-- The corner-zeroed Hadamard determinant shape used in the issue #34
-full-band target. -/
+/-- The `3 × 3` Hadamard determinant with the top-right corner contribution
+deleted. -/
 def hadamardCornerZeroedDet (a b : Matrix (Fin 3) (Fin 3) ℝ) : ℝ :=
   (a 0 0 * b 0 0) *
       ((a 1 1 * b 1 1) * (a 2 2 * b 2 2) - (a 1 2 * b 1 2) * (a 2 1 * b 2 1)) -
@@ -108,8 +106,8 @@ theorem hadamardCornerZeroedDet_eq : hadamardCornerZeroedDet aMat bMat = -2 := b
   simp [hadamardCornerZeroedDet, aMat, bMat]
   norm_num
 
-/-- Even the corner-zeroed target cannot be proved from the selected window
-minors alone. -/
+/-- Even the corner-zeroed Hadamard determinant can be negative for totally
+nonnegative windows. -/
 theorem exists_totallyNonneg_hadamardCornerZeroed_neg :
     ∃ a b : Matrix (Fin 3) (Fin 3) ℝ,
       a.IsTotallyNonneg ∧ b.IsTotallyNonneg ∧ hadamardCornerZeroedDet a b < 0 :=
