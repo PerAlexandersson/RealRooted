@@ -59,14 +59,14 @@ theorem preservesInterlacing
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D : ℕ} {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
-    (hfdeg : f.natDegree ≤ D) (hgdeg : g.natDegree ≤ D)
+    (hgdeg : g.natDegree ≤ D)
     (hTnn : ∀ ⦃p : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs (T p))
     (hTrr : ∀ ⦃p : ℝ[X]⦄, IsPFPolynomial p → p ≠ 0 →
       p.natDegree ≤ D → T p ≠ 0 ∧ (T p).Splits)
     (hmono : ∀ m : ℕ, m + 1 ≤ D →
       StrictInterl (T (X ^ m)) (T (X ^ (m + 1)))) :
     StrictInterl (T f) (T g) :=
-  strictInterl_map_of_pfShift hfg hf hg hfdeg hgdeg hTnn hTrr
+  strictInterl_map_of_pfShift hfg hf hg hgdeg hTnn hTrr
     (preservesPFShiftInterlacingOnDegree_of_monomials
       hTnn hTrr hmono)
 

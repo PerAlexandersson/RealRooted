@@ -53,7 +53,6 @@ theorem strictInterl_binaryRunTransform
     {n : ℕ} {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
-    (hfdeg : f.natDegree ≤ (n + 1) / 2)
     (hgdeg : g.natDegree ≤ (n + 1) / 2) :
     StrictInterl (binaryRunTransform n f) (binaryRunTransform n g) := by
   let T := binaryRunTransformLinearMap n
@@ -78,6 +77,6 @@ theorem strictInterl_binaryRunTransform
   have hshift : PreservesPFShiftInterlacingOnDegree T D :=
     preservesPFShiftInterlacingOnDegree_of_monomials hTnn hTrr hmono
   simpa [T, D] using strictInterl_map_of_pfShift
-    hfg hf hg hfdeg hgdeg hTnn hTrr hshift
+    hfg hf hg hgdeg hTnn hTrr hshift
 
 end RealRooted
