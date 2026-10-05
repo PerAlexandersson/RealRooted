@@ -1465,7 +1465,7 @@
       "max_modules": 5
     },
     "RealRooted.RootVieta.Newton": {
-      "max_modules": 4
+      "max_modules": 5
     },
     "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous": {
       "max_modules": 1

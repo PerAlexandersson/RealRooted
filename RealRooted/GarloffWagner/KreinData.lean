@@ -557,16 +557,4 @@ theorem exists_nonneg_C_mul_sub_natDegree_lt_of_le {f g : ℝ[X]}
         simpa using natDegree_sub_le_of_le hdeg (natDegree_C_mul_le c g)
       exact natDegree_lt_of_le_of_coeff_eq_zero hgdeg hle hc_top
 
-/-- A nonzero divisor cannot divide a polynomial of strictly smaller degree,
-unless the smaller polynomial is zero. -/
-theorem eq_zero_of_dvd_of_natDegree_lt {g h : ℝ[X]}
-    (hg0 : g ≠ 0) (hdvd : g ∣ h) (hlt : h.natDegree < g.natDegree) :
-    h = 0 := by
-  rcases hdvd with ⟨r, rfl⟩
-  by_cases hr0 : r = 0
-  · simp [hr0]
-  · exfalso
-    rw [natDegree_mul hg0 hr0] at hlt
-    lia
-
 end RealRooted

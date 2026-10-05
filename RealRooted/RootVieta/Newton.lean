@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 import RealRooted.DegreeDropReversal
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
 import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
 import Mathlib.Algebra.BigOperators.Field
@@ -458,14 +459,6 @@ private lemma lagrange_im_coeff_eval_sq {s : Finset ℂ} {z r : ℂ}
         hrz, false_or]
       simp only [hrstar, ite_false]
 
-private lemma splits_of_all_roots_real_aux {p : ℝ[X]}
-    (hall : ∀ z : ℂ, (p.map Complex.ofRealHom).eval z = 0 → z.im = 0) :
-    p.Splits := by
-  refine Splits.of_splits_map Complex.ofRealHom (IsAlgClosed.splits _) ?_
-  intro z hz
-  refine ⟨z.re, ?_⟩
-  simpa [hall z (isRoot_of_mem_roots hz)] using Complex.re_add_im z
-
 /-- **Hermite--Sylvester criterion.** A monic real polynomial splits over the
 reals if and only if its Hermite matrix is positive semidefinite. -/
 theorem splits_iff_hermiteMatrix_posSemidef {p : ℝ[X]} (hp : p.Monic) :
@@ -473,7 +466,7 @@ theorem splits_iff_hermiteMatrix_posSemidef {p : ℝ[X]} (hp : p.Monic) :
   constructor
   · exact hermiteMatrix_posSemidef_of_splits
   · intro hpos
-    apply splits_of_all_roots_real_aux
+    apply splits_of_all_roots_real
     intro z hz
     by_contra hzreal
     have hzmem : z ∈ complexRoots p := by

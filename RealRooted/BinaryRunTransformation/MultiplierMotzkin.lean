@@ -61,9 +61,6 @@ theorem natDegree_reverseHermiteBasis_le (n : ℕ) :
       have h2 := natDegree_C_mul_le ((n : ℝ) + 1) (reverseHermiteBasis (R := ℝ) n)
       lia
 
-private theorem reflect_one_X : (X : ℝ[X]).reflect 1 = 1 := by
-  simp
-
 private theorem reflect_succ_of_natDegree_le {p : ℝ[X]} {n : ℕ} (hp : p.natDegree ≤ n) :
     p.reflect (n + 1) = X * p.reflect n := by
   have h := reflect_mul (1 : ℝ[X]) p (F := 1) (G := n) (by simp) hp
