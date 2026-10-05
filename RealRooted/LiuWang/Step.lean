@@ -285,37 +285,6 @@ theorem strictInterl_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
     (roots_nonpos_of_interlaces_of_nonneg_coeffs hgf hf_nonneg)
     hc hq_nonneg hF_pos hdeg_lo hdeg_hi hno
 
-/-- Family E `t R(t)` Liu--Wang step with an explicit half-line root
-certificate.  This is a named alias for the existing `X * q` product-lag
-wrapper, using `q` as the factor `R`. -/
-theorem strictInterl_lw_tR_lag_of_roots_nonpos {f g a R : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
-    (hR_nonneg : ∀ r, f.IsRoot r → 0 ≤ R.eval r)
-    (hF_pos : HasPosLeadingCoeff (a * f + (X * R) * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + (X * R) * g).natDegree)
-    (hdeg_hi : (a * f + (X * R) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (a * f + (X * R) * g) :=
-  strictInterl_lw_positive_X_mul_lag_of_roots_nonpos
-    hgf hg_pos hf_roots hR_nonneg hF_pos hdeg_lo hdeg_hi hno
-
-/-- Family E `t R(t)` Liu--Wang step, deriving the half-line root bound from
-nonnegative coefficients of the current row. -/
-theorem strictInterl_lw_tR_lag_of_nonneg_coeffs {f g a R : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_nonneg : HasNonnegCoeffs f)
-    (hR_nonneg : ∀ r, f.IsRoot r → 0 ≤ R.eval r)
-    (hF_pos : HasPosLeadingCoeff (a * f + (X * R) * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + (X * R) * g).natDegree)
-    (hdeg_hi : (a * f + (X * R) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (a * f + (X * R) * g) :=
-  strictInterl_lw_positive_X_mul_lag_of_nonneg_coeffs
-    hgf hg_pos hf_nonneg hR_nonneg hF_pos hdeg_lo hdeg_hi hno
-
 /-- Family E `t(1-t)` Liu--Wang step with an explicit half-line root
 certificate. -/
 theorem strictInterl_lw_X_mul_one_sub_X_lag_of_roots_nonpos {f g a : ℝ[X]}

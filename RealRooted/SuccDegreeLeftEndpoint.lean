@@ -370,16 +370,6 @@ theorem splits_of_closedSegment_family_of_succDegree
   rw [hEq] at hscaled
   exact hscaled
 
-/-- Right-family form of the succ-degree endpoint theorem. -/
-theorem splits_right_of_add_C_mul_family_of_succDegree
-    {f g : ℝ[X]}
-    (hfamily : ∀ {μ : ℝ}, 0 < μ → ((g + C μ * f) ≠ 0 ∧ (g + C μ * f).Splits))
-    (hf_pos : 0 < f.leadingCoeff)
-    (hg_pos : 0 < g.leadingCoeff)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    g.Splits :=
-  splits_of_add_C_mul_family_of_succDegree hfamily hg_pos hf_pos hsucc
-
 /-- Succ-degree positive-combination families split at the lower-degree
 endpoint. -/
 theorem PosComboRealRooted.left_splits_of_succDegree {f g : ℝ[X]}

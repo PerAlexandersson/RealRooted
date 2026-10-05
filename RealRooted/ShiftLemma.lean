@@ -187,17 +187,4 @@ theorem strictInterl_shift
         hss_eq, hrs_eq, Or.inr ⟨hsamedeg, halt⟩⟩
       hdeg hf_pos hh_pos hf_nonpos hh_nonpos heval
 
-/-- Shift lemma with variables named for applications. -/
-theorem strictInterl_shift' {F H : ℝ[X]}
-    (hF_ne : F ≠ 0) (hF_splits : F.Splits) (hH_ne : H ≠ 0) (hH_splits : H.Splits)
-    (hF_nonpos : ∀ r ∈ F.roots, r ≤ 0)
-    (hH_nonpos : ∀ r ∈ H.roots, r ≤ 0)
-    (hF_pos : HasPosLeadingCoeff F)
-    (hH_pos : HasPosLeadingCoeff H)
-    (hstrictInterl : StrictInterl H F)
-    (heval : H.eval 0 ≤ F.eval 0) :
-    StrictInterl F (F + (X - C 1) * H) :=
-  strictInterl_shift hF_ne hF_splits hH_ne hH_splits hF_nonpos hH_nonpos hF_pos hH_pos
-    hstrictInterl heval
-
 end RealRooted
