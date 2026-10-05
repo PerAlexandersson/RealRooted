@@ -416,7 +416,7 @@ theorem hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :
     HasLogConcaveCoeffs p := by
   rcases hrr with rfl | hsplits
-  · exact hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff (by simpa using IsPolyaFreqSeq_zero)
+  · exact hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff (by simpa using isPolyaFreqSeq_zero)
   · exact hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff <|
       aissenSchoenbergWhitney_reverse hpnn hsplits
       (roots_nonpos_of_nonneg_coeffs hsplits hpnn)

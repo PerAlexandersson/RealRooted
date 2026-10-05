@@ -154,7 +154,7 @@ theorem isPolyaFreqSeq_polynomialValueSeq_mul_iff (p q : ℝ[X]) :
   rw [IsPolyaFreqSeq, toeplitz_polynomialValueSeq_mul]
 
 /-- The zero sequence is Pólya-frequency. -/
-theorem IsPolyaFreqSeq_zero :
+theorem isPolyaFreqSeq_zero :
     IsPolyaFreqSeq (fun _ : ℕ => (0 : ℝ)) := by
   simp [IsPolyaFreqSeq]
 
