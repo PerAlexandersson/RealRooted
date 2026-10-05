@@ -1,4 +1,5 @@
 import RealRooted.Bezoutian
+import RealRooted.Bezoutian.Successor
 
 /-!
 # Bézout matrices and interlacing
@@ -23,6 +24,11 @@ label = "Strict interlacing of equal-degree polynomials"
 [[theorems]]
 name = "RealRooted.Challenges.Bezoutian.strictInterlSameDegree_iff_posDef"
 label = "Strict interlacing is positive definiteness of the Bézout matrix"
+headline = true
+
+[[theorems]]
+name = "RealRooted.Challenges.Bezoutian.posDef_iff_interlaces_succ"
+label = "Successor-degree interlacing is positive definiteness of the Bézout matrix"
 headline = true
 
 [[theorems]]
@@ -57,18 +63,24 @@ Positive definiteness alone already forces both polynomials to split over
 $\mathbb R$, and it makes the Wronskian $q'p - qp'$ positive on all of
 $\mathbb R$.
 
-The successor-degree form of Bézout's theorem, where $\deg f = \deg g + 1$ and
-$g$ strictly interlaces $f$ if and only if $B(f,g)$ is positive definite, is
-not yet formalized here (tracked in GitHub issue #1130).
+**Theorem** (successor degree). Let $f$ have degree $d+1$ and $g$ degree $d$,
+both with positive leading coefficients. Then $g$ interlaces $f$ and the two
+polynomials have no common zero, that is
+$$
+\alpha_1 < \beta_1 < \alpha_2 < \dots < \beta_d < \alpha_{d+1}
+$$
+for the zeros $\alpha_i$ of $f$ and $\beta_i$ of $g$, if and only if the
+$(d+1) \times (d+1)$ Bézout matrix $B_{d+1}(f,g)$ is positive definite.
 
 ## Proof idea
 
-Evaluating the Bézoutian at a root of $p$ and at a root of $q$ gives Wronskian
-values, so congruence with a Vandermonde matrix turns $B_n(q,p)$ into a
-diagonal matrix whose entries have the signs of $q'p - qp'$ at the roots. Those
-signs are positive exactly when the zeros interlace. Conversely, a positive
-definite Bézoutian has no common real root with either polynomial and rules
-out non-real roots, because the Hermitian form vanishes on the conjugate pair.
+Both theorems use the same mechanism. Evaluating the Bézoutian at the roots of
+one polynomial gives Wronskian values, so congruence with a Vandermonde matrix
+turns the Bézout matrix into a diagonal matrix whose entries have the signs of
+the Wronskian at those roots. These signs are positive exactly when the zeros
+interlace. Conversely, a positive definite Bézout matrix makes the Wronskian
+positive, which excludes common real roots, and it rules out non-real roots,
+because its Hermitian form would vanish on a conjugate pair.
 
 ## References
 
@@ -82,9 +94,10 @@ See the
 [contextual statement on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#bezoutMatrix).
 <!-- /realrooted-catalog-content -->
 
-This module exposes the checked same-degree Bézout criterion. The matrix
-algebra, root evaluation, complex-root, and low-degree layers live in
-`RealRooted.Bezoutian`.
+This module exposes the checked same-degree and successor-degree Bézout
+criteria. The matrix algebra, root evaluation, complex-root, and low-degree
+layers live in `RealRooted.Bezoutian`; the successor-degree proof lives in
+`RealRooted.Bezoutian.Successor`.
 -/
 
 open Polynomial
@@ -101,6 +114,17 @@ theorem strictInterlSameDegree_iff_posDef {p q : ℝ[X]} {n : ℕ}
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n) :
     StrictInterlSameDegree p q ↔ (bezoutMatrix n q p).PosDef :=
   strictInterlSameDegree_iff_bezoutMatrix_posDef hp_pos hq_pos hp_deg hq_deg
+
+/-- **Bézout's criterion** in successor degree (Fisk, Cor. 9.145): for `f` of
+degree `d + 1` and `g` of degree `d` with positive leading coefficients, the
+Bézout matrix `B_{d+1}(f, g)` is positive definite if and only if `g`
+interlaces `f` with no common root. -/
+theorem posDef_iff_interlaces_succ {f g : ℝ[X]} {d : ℕ}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hf_deg : f.natDegree = d + 1) (hg_deg : g.natDegree = d) :
+    (bezoutMatrix (d + 1) f g).PosDef ↔
+      Interlaces g f ∧ ∀ x, f.IsRoot x → ¬ g.IsRoot x :=
+  bezoutMatrix_posDef_iff_interlaces_succ hf_pos hg_pos hf_deg hg_deg
 
 /-- A positive definite Bézout matrix forces both polynomials to split over
 `ℝ`. -/
