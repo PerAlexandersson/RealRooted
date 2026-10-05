@@ -112,7 +112,7 @@ theorem hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff
 /-- PF coefficient sequences have no positive real roots.  Thus the remaining
 content of the forward Aissen--Schoenberg--Whitney theorem is the splitting
 conjunct. -/
-theorem roots_nonpos_of_IsPolyaFreqSeq_coeff
+theorem roots_nonpos_of_isPolyaFreqSeq_coeff
     {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq p.coeff) :
     ∀ r ∈ p.roots, r ≤ 0 :=
@@ -253,14 +253,14 @@ theorem splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two {p : ℝ[X]}
 theorem aissenSchoenbergWhitneyForward_of_natDegree_le_one {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq p.coeff) (hdeg : p.natDegree ≤ 1) :
     p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 :=
-  ⟨Polynomial.Splits.of_natDegree_le_one hdeg, roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
+  ⟨Polynomial.Splits.of_natDegree_le_one hdeg, roots_nonpos_of_isPolyaFreqSeq_coeff hpf⟩
 
 /-- Degree-`≤ 2` case of the forward Aissen--Schoenberg--Whitney theorem. -/
 theorem aissenSchoenbergWhitneyForward_of_natDegree_le_two {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq p.coeff) (hdeg : p.natDegree ≤ 2) :
     p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 :=
   ⟨splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hpf hdeg,
-    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
+    roots_nonpos_of_isPolyaFreqSeq_coeff hpf⟩
 
 /-! ### Karlin sector endgame -/
 
@@ -384,16 +384,16 @@ theorem aissenSchoenbergWhitneyForwardSplits {p : ℝ[X]}
 theorem aissenSchoenbergWhitneyForward {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq p.coeff) :
     p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 :=
-  ⟨aissenSchoenbergWhitneyForwardSplits hpf, roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
+  ⟨aissenSchoenbergWhitneyForwardSplits hpf, roots_nonpos_of_isPolyaFreqSeq_coeff hpf⟩
 
 /-- Zero-aware forward ASW interface.  This is often the most convenient
 closure form: a PF coefficient sequence gives either the zero polynomial or a
 strictly real-rooted polynomial with nonpositive roots. -/
 theorem aissenSchoenbergWhitneyForwardOrZero {p : ℝ[X]}
-    (_hpnn : HasNonnegCoeffs p) (hpf : IsPolyaFreqSeq p.coeff) :
+    (hpf : IsPolyaFreqSeq p.coeff) :
     (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
   ⟨Or.inr (aissenSchoenbergWhitneyForwardSplits hpf),
-    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
+    roots_nonpos_of_isPolyaFreqSeq_coeff hpf⟩
 
 /-- Equivalent forward ASW statement with the redundant nonnegative-coefficient
 hypothesis removed. -/
@@ -401,7 +401,7 @@ theorem aissenSchoenbergWhitneyForwardNoNonneg {p : ℝ[X]}
     (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq p.coeff) :
     (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
   ⟨⟨hp0, aissenSchoenbergWhitneyForwardSplits hpf⟩,
-    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
+    roots_nonpos_of_isPolyaFreqSeq_coeff hpf⟩
 
 /-- Without a nonzero hypothesis, the forward ASW interface would force the
 zero polynomial to be real-rooted, contrary to the strict local definition of
@@ -413,7 +413,7 @@ theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   fun h => (h (p := 0) (by simp [HasNonnegCoeffs])
     (by
-      convert IsPolyaFreqSeq_zero
+      convert isPolyaFreqSeq_zero
       exact coeff_zero _)).1.1 rfl
 
 lemma toeplitz_one_coeff : toeplitz (fun n ↦ (1 : ℝ[X]).coeff n) = 1 := by
@@ -684,7 +684,7 @@ theorem aissenSchoenbergWhitney_reverse {p : ℝ[X]}
     (hroots : ∀ r ∈ p.roots, r ≤ 0) :
     IsPolyaFreqSeq p.coeff := by
   rcases eq_or_ne p 0 with rfl | hp0
-  · convert IsPolyaFreqSeq_zero
+  · convert isPolyaFreqSeq_zero
     exact coeff_zero _
   · have hp_eq : p = C p.leadingCoeff * (p.roots.map fun r ↦ X - C r).prod :=
       (C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hsplits)).symm
