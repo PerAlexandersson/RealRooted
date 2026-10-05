@@ -224,7 +224,7 @@ end Split
 
 /-- **The snake recurrence for the concrete snake board.** -/
 theorem generalizedSnakeRecurrence :
-    GeneralizedSnakeRecurrenceStatement generalizedSnakeRookModel.snakePolynomial
+    GeneralizedSnakeRecurrence generalizedSnakeRookModel.snakePolynomial
       modifiedNarayanaPolynomial auxiliaryG := by
   intro w k _ hk
   have hk1 := hk.succ_lt_length
