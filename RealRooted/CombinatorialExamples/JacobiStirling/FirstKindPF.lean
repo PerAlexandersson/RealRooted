@@ -82,7 +82,7 @@ private theorem firstKindFactorProduct_isPFPolynomial {z : ℝ}
     IsPFPolynomial (∏ i ∈ Finset.range n,
       (X + C (firstKindWeight z i))) := by
   induction n with
-  | zero => simpa using isPFPolynomial_one
+  | zero => simpa using IsPFPolynomial.one
   | succ n ih =>
       rw [Finset.prod_range_succ]
       exact ih.mul (isPFPolynomial_X_add_C (firstKindWeight_nonneg hz n))
@@ -91,7 +91,7 @@ private theorem firstKindFactorProduct_isPFPolynomial {z : ℝ}
 theorem firstKindRow_isPFPolynomial {z : ℝ} (hz : -1 ≤ z) (n : ℕ) :
     IsPFPolynomial (firstKindRow z n) := by
   cases n with
-  | zero => simpa using isPFPolynomial_one
+  | zero => simpa using IsPFPolynomial.one
   | succ n =>
       rw [firstKindRow_succ_factorization]
       exact (firstKindFactorProduct_isPFPolynomial hz n).X_mul

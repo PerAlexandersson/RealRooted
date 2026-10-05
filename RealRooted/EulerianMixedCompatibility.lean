@@ -281,10 +281,10 @@ private theorem regularized_strictInterl_no_common
       heps hg_pos.ne_zero hgf.1.2 (by lia)
   intro r hrfε hrgε
   have hfder_ne : fε.derivative.eval r ≠ 0 :=
-    derivative_eval_ne_zero_of_simple_root hrfε <| by
+    eval_derivative_ne_zero_of_rootMultiplicity_eq_one hrfε <| by
       simpa [count_roots] using hfε_simple r hrfε
   have hgder_ne : gε.derivative.eval r ≠ 0 :=
-    derivative_eval_ne_zero_of_simple_root hrgε <| by
+    eval_derivative_ne_zero_of_rootMultiplicity_eq_one hrgε <| by
       simpa [count_roots] using hgε_simple r hrgε
   let a : ℝ := gε.derivative.eval r
   let b : ℝ := -fε.derivative.eval r
@@ -326,7 +326,7 @@ private theorem regularized_strictInterl_no_common
     have hsimple := hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
       heps hbase_ne hbase_splits hbase_deg
     simpa [q, fε, gε, k, iterateTDeriv_linear_combo] using hsimple
-  have hder_nonzero := derivative_eval_ne_zero_of_simple_root hqroot <| by
+  have hder_nonzero := eval_derivative_ne_zero_of_rootMultiplicity_eq_one hqroot <| by
     simpa [count_roots] using hq_simple r hqroot
   exact hder_nonzero (Polynomial.IsRoot.def.mp hqderroot)
 
@@ -628,7 +628,7 @@ private theorem mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
             (by simpa [residue] using hratio)
         nlinarith
     have hder_ne : h.derivative.eval r ≠ 0 := by
-      exact derivative_eval_ne_zero_of_simple_root hroot <|
+      exact eval_derivative_ne_zero_of_rootMultiplicity_eq_one hroot <|
         by simpa [count_roots] using Multiset.count_eq_one_of_mem hh_nodup hrmem
     have hgres : g.eval r = residue * h.derivative.eval r := by
       dsimp [residue]

@@ -43,7 +43,7 @@ private theorem schurSzegoRightLinearMap_preservesRealRootedOrZeroUpTo
         (schurSzegoRightLinearMap d p q).Splits := by
   intro q hqdeg hq
   rw [schurSzegoRightLinearMap_apply, schurSzegoComp_comm]
-  exact schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
+  exact finiteSchurSzegoComposition
     hp hpdeg hqdeg hq.2
 
 /-- Fixed Schur--Szegő composition preserves a strictly interlacing pair, up to

@@ -20,7 +20,7 @@ theorem schurSzegoComp_splits_of_nonzero {n : ℕ} {f p : ℝ[X]}
     (hout : schurSzegoComp n f p ≠ 0) :
     (schurSzegoComp n f p).Splits :=
   Or.resolve_left
-    (schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial hf hfdeg hpdeg hsplits) hout
+    (finiteSchurSzegoComposition hf hfdeg hpdeg hsplits) hout
 
 theorem schurSzegoComp_splits_of_level_le_two {n : ℕ} {f p : ℝ[X]}
     (hn : n ≤ 2)
@@ -113,7 +113,7 @@ theorem schurSzegoComp_sequence_zero_or_splits {N : Nat → ℕ}
     ∀ i : Nat,
       schurSzegoComp (N i) (F i) (P i) = 0 ∨
         (schurSzegoComp (N i) (F i) (P i)).Splits := fun i =>
-  schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
+  finiteSchurSzegoComposition
     (hF i) (hFdeg i) (hPdeg i) (hPsplits i)
 
 theorem schurSzegoComp_sequence_splits {N : Nat → ℕ} {F P : Nat → ℝ[X]}
@@ -131,7 +131,7 @@ theorem hadamardProduct_sequence_pf {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i)) :
     ∀ i : Nat, IsPFPolynomial (hadamardProduct (P i) (Q i)) := fun i =>
-  hadamardProduct_preserves_pf_of_nonnegStrictInterl (hP i) (hQ i)
+  IsPFPolynomial.hadamardProduct (hP i) (hQ i)
 
 /-- A nonzero scalar multiple of each rowwise Hadamard product of PF
 polynomials is nonzero and real-rooted. -/
@@ -177,7 +177,7 @@ theorem hadamardProduct_interl_of_nonneg_strictInterl {f g p q : ℝ[X]}
     (hfg : StrictInterl f g)
     (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  garloffWagnerHadamardNonnegInterl hf hg hp hq hfg hpq
+  gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
 
 theorem hadamardProduct_sequence_interl {F G P Q : Nat → ℝ[X]}
     (hF : ∀ i : Nat, HasNonnegCoeffs (F i))
@@ -430,7 +430,7 @@ macro_rules
         input_degree := $hpdeg:term,
         input_splits := $hsplits:term) =>
       `(tactic|
-        exact RealRooted.schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
+        exact RealRooted.finiteSchurSzegoComposition
           $hf $hfdeg $hpdeg $hsplits)
   | `(tactic|
       rr_schur_szego_splits using
@@ -611,7 +611,7 @@ macro_rules
         left_pf := $hp:term,
         right_pf := $hq:term) =>
       `(tactic|
-        exact RealRooted.hadamardProduct_preserves_pf_of_nonnegStrictInterl $hp $hq)
+        exact RealRooted.IsPFPolynomial.hadamardProduct $hp $hq)
   | `(tactic|
       rr_hadamard_nonneg_realrooted using
         left_nonneg := $hpnn:term,

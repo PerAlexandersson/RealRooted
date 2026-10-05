@@ -219,9 +219,8 @@ theorem eval_divByMonic_at_other_root {f : ℝ[X]} {t s : ℝ}
     simp only [eval_sub, eval_X, eval_C]
     exact sub_ne_zero.mpr hst
 
-theorem derivative_eval_ne_zero_of_simple_root {f : ℝ[X]} {r : ℝ}
-    (hr : f.IsRoot r) (hsimple : f.rootMultiplicity r = 1) : f.derivative.eval r ≠ 0 :=
-  eval_derivative_ne_zero_of_rootMultiplicity_eq_one hr hsimple
+@[deprecated (since := "2026-10-05")]
+alias derivative_eval_ne_zero_of_simple_root := eval_derivative_ne_zero_of_rootMultiplicity_eq_one
 
 noncomputable def lagInterp (f g : ℝ[X]) : ℝ[X] :=
   ∑ s ∈ f.roots.toFinset, C (g.eval s / f.derivative.eval s) * (f /ₘ (X - C s))
@@ -232,7 +231,8 @@ theorem eval_lagInterp_at_root {f g : ℝ[X]} (hnd : f.roots.Nodup)
   have hsk_root : f.IsRoot sk := isRoot_of_mem_roots hsk
   have h_mult : f.rootMultiplicity sk = 1 := by
     simpa [count_roots] using Multiset.count_eq_one_of_mem hnd hsk
-  have : f.derivative.eval sk ≠ 0 := derivative_eval_ne_zero_of_simple_root hsk_root h_mult
+  have : f.derivative.eval sk ≠ 0 :=
+    eval_derivative_ne_zero_of_rootMultiplicity_eq_one hsk_root h_mult
   have : sk ∈ f.roots.toFinset := Multiset.mem_toFinset.mpr hsk
   rw [lagInterp, eval_finsetSum, Finset.sum_eq_single sk]
   · rw [eval_mul, eval_C, eval_divByMonic_at_root hsk_root]

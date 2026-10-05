@@ -294,8 +294,8 @@ theorem of_interl_self {p : ℝ[X]}
 
 end IsPFPolynomial
 
-theorem isPFPolynomial_one : IsPFPolynomial (1 : ℝ[X]) :=
-  IsPFPolynomial.one
+@[deprecated (since := "2026-10-05")]
+alias isPFPolynomial_one := IsPFPolynomial.one
 
 theorem isPFPolynomial_X : IsPFPolynomial (X : ℝ[X]) := by
   simpa [mul_one] using IsPFPolynomial.one.X_mul
@@ -383,7 +383,7 @@ theorem isPFPolynomial_reverse_prod_X_sub_C
   apply IsPFPolynomial.reverse
   induction s using Multiset.induction_on with
   | empty =>
-      simpa using isPFPolynomial_one
+      simpa using IsPFPolynomial.one
   | cons r s ih =>
       rw [Multiset.map_cons, Multiset.prod_cons]
       have hr : IsPFPolynomial (X - C r : ℝ[X]) := by
