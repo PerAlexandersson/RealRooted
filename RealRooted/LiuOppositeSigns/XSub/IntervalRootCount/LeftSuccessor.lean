@@ -140,7 +140,7 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_left_successor_nonneg_of_noCom
           · simpa using
               positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
                 (f := p) (g := q) (r := 0)
-                hpair hp_nonneg_zero hq_nonneg_zero hdeg hqzero μ hμ
+                hpair hdeg hqzero μ hμ
           · have hqone : q.natDegree = 1 := by lia
             simpa using
               positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one

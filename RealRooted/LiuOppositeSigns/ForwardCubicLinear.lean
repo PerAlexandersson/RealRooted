@@ -301,7 +301,7 @@ lemma not_compatible_scaled_cubic_linear_of_opposite_of_left_root_lt_lower
 closed interval spanned by the cubic roots. -/
 theorem compatibleCubicLinearRootOrder {f g : ℝ[X]} {a b c u : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hcompat : Compatible f g) (_hfdeg : f.natDegree = 3) (_hgdeg : g.natDegree = 1)
+    (hcompat : Compatible f g)
     (hab : a ≤ b) (hbc : b ≤ c) (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u}) :
     a ≤ u ∧ u ≤ c := by
   have hffac :
@@ -346,7 +346,7 @@ theorem
   obtain ⟨u, hgroots, _hgfac⟩ :=
     exists_linear_factor_of_splits_natDegree_one hg hgdeg
   obtain ⟨hau, huc⟩ :=
-    compatibleCubicLinearRootOrder hf hg hsgn hcompat hfdeg hgdeg hab hbc hfroots hgroots
+    compatibleCubicLinearRootOrder hf hg hsgn hcompat hab hbc hfroots hgroots
   have hr_eq_c : r = c :=
     IsLargestRoot.eq_right_of_roots_triple hsgn.left_ne_zero hr hab hbc
       hfroots
@@ -383,7 +383,7 @@ theorem
     exists_roots_triple_of_splits_natDegree_three hg hgdeg
   obtain ⟨hau, huc⟩ :=
     compatibleCubicLinearRootOrder (f := g) (g := f) (a := a) (b := b) (c := c)
-      (u := u) hg hf hsgn.symm hcompat.comm hgdeg hfdeg hab hbc
+      (u := u) hg hf hsgn.symm hcompat.comm hab hbc
       hgroots hfroots
   have hr_eq_u : r = u := by
     have hr_mem : r ∈ f.roots := hr.mem_roots hsgn.left_ne_zero

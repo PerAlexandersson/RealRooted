@@ -625,54 +625,6 @@ theorem rootCountAbove_right_le_left_of_crossOwned_consecutive_roots
       hf_ne hg_ne hfx hgx)
     hsimple_f hsimple_g hdisj hcross
 
-theorem of_left_sub_right_upper_of_right_le_left
-    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
-    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
-    (hupper : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card ≤ 2)
-    (hle : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
-      (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card) :
-    LeftRootCountBranch f g r s := by
-  refine
-    LeftRootCountBranch.of_rootCountAbove_left_sub_right_bounds_below_largest_of_nonRoot
-      hf_ne hg_ne hr hs hlargest ?_
-  intro x hx hfx hgx
-  constructor
-  · have hxle :
-        ((g.roots.filter (x < ·)).card : ℤ) ≤
-          (f.roots.filter (x < ·)).card := by
-      exact_mod_cast hle x hx hfx hgx
-    linarith
-  · exact hupper x hfx hgx
-
-private theorem of_left_sub_right_le_one_of_right_le_left
-    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
-    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
-    (hupper : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card ≤ 1)
-    (hle : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
-      (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card) :
-    LeftRootCountBranch f g r s :=
-  of_left_sub_right_upper_of_right_le_left hf_ne hg_ne hr hs hlargest
-    (fun x hfx hgx => by
-      have hle_one := hupper x hfx hgx
-      linarith)
-    hle
-
-theorem of_rootCountCompatible_of_rootCountAbove_right_le_left
-    {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
-    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
-    (hcount : RootCountCompatible f g)
-    (hle : ∀ x : ℝ, x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
-      (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card) :
-    LeftRootCountBranch f g r s :=
-  of_left_sub_right_le_one_of_right_le_left hf_ne hg_ne hr hs hlargest
-    (fun _ hfx hgx => hcount.rootCountAbove_left_sub_le_one_of_nonRoot
-      hf_ne hg_ne hfx hgx)
-    hle
-
 theorem delete_splits {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_splits : f.Splits) :
     (deleteRootFactor f r).Splits :=
@@ -741,27 +693,6 @@ theorem rootCountAtOrAbove_delete_add_one {f g : ℝ[X]} {r s x : ℝ}
       rootCountAtOrAbove (deleteRootFactor f r) x + 1 :=
   h.f_largest.rootCountAtOrAbove_deleteRootFactor_add_one hf_ne hx
 
-theorem rootCountAtOrAbove_abs_sub_le_two {f g : ℝ[X]} {r s : ℝ}
-    (h : LeftRootCountBranch f g r s) (hf_ne : f ≠ 0) :
-    ∀ x : ℝ,
-      |((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ))| ≤ 2 := by
-  intro x
-  by_cases hx : x ≤ r
-  · have hdelete := h.rootCountAtOrAbove_delete_add_one hf_ne hx
-    have hdelete_int :
-        ((rootCountAtOrAbove (deleteRootFactor f r) x : ℤ) + 1 =
-          (rootCountAtOrAbove f x : ℤ)) := by
-      exact_mod_cast hdelete.symm
-    exact int_abs_sub_le_two_of_add_one_left hdelete_int (h.count x)
-  · have hx_lt : r < x := lt_of_not_ge hx
-    have hf_zero := h.f_largest.rootCountAtOrAbove_eq_zero_of_lt hx_lt
-    have hdelete_zero :=
-      h.f_largest.rootCountAtOrAbove_deleteRootFactor_eq_zero_of_lt hf_ne hx_lt
-    have hgap := h.count x
-    rw [hdelete_zero] at hgap
-    rw [hf_zero]
-    exact le_trans hgap (by norm_num)
-
 theorem rootCountAtOrAbove_right_sub_left_le_one {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_ne : f ≠ 0) :
     ∀ x : ℝ,
@@ -781,16 +712,6 @@ theorem rootCountAtOrAbove_right_sub_left_le_one {f g : ℝ[X]} {r s : ℝ}
     have hdelete_zero :=
       h.f_largest.rootCountAtOrAbove_deleteRootFactor_eq_zero_of_lt hf_ne hx_lt
     simpa [hf_zero, hdelete_zero] using h.count.right_sub_le_one x
-
-theorem rootCountAtOrAbove_bounds {f g : ℝ[X]} {r s : ℝ}
-    (h : LeftRootCountBranch f g r s) (hf_ne : f ≠ 0) :
-    ∀ x : ℝ,
-      ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 2 ∧
-        ((rootCountAtOrAbove g x : ℤ) - (rootCountAtOrAbove f x : ℤ)) ≤ 1 := by
-  intro x
-  have h_abs := h.rootCountAtOrAbove_abs_sub_le_two hf_ne x
-  rw [abs_le] at h_abs
-  exact ⟨h_abs.2, h.rootCountAtOrAbove_right_sub_left_le_one hf_ne x⟩
 
 theorem root_delete_le {f g : ℝ[X]} {r s t : ℝ}
     (h : LeftRootCountBranch f g r s) (hf_ne : f ≠ 0)
@@ -1047,28 +968,11 @@ theorem rootCountAtOrAbove_delete_add_one {f g : ℝ[X]} {r s x : ℝ}
       rootCountAtOrAbove (deleteRootFactor g s) x + 1 :=
   h.toLeftBranch_symm.rootCountAtOrAbove_delete_add_one hg_ne hx
 
-theorem rootCountAtOrAbove_abs_sub_le_two {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
-    ∀ x : ℝ,
-      |((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ))| ≤ 2 := by
-  intro x
-  simpa [abs_sub_comm] using
-    h.toLeftBranch_symm.rootCountAtOrAbove_abs_sub_le_two hg_ne x
-
 theorem rootCountAtOrAbove_left_sub_right_le_one {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
     ∀ x : ℝ,
       ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 1 :=
   h.toLeftBranch_symm.rootCountAtOrAbove_right_sub_left_le_one hg_ne
-
-theorem rootCountAtOrAbove_bounds {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
-    ∀ x : ℝ,
-      ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 1 ∧
-        ((rootCountAtOrAbove g x : ℤ) - (rootCountAtOrAbove f x : ℤ)) ≤ 2 := by
-  intro x
-  have hbounds := h.toLeftBranch_symm.rootCountAtOrAbove_bounds hg_ne x
-  exact ⟨hbounds.2, hbounds.1⟩
 
 theorem root_delete_le {f g : ℝ[X]} {r s t : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
@@ -1211,82 +1115,6 @@ theorem theorem21RootCountBranches_of_crossOwned_consecutive_roots
         hg_ne hf_ne hs hr hrs.le hsimple_g hsimple_f
         (fun c hgc hfc => hdisj c hfc hgc) hcross.symm)
 
-/-- Branch-level bridge from parity-guarded cross-owned consecutive roots and
-one-sided strict-upper root-count bounds to Liu's largest-root deletion branch.
-This route requires stronger one-sided `≤ 1` hypotheses than the general
-cross-owned count-window theorem
-`theorem21RootCountBranches_of_crossOwned_consecutive_roots`. -/
-theorem theorem21RootCountBranches_of_left_sub_le_one_of_crossOwned_consecutive_roots
-    {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
-    {r s : ℝ} (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
-    (hupper_fg : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card ≤ 1)
-    (hupper_gf : ∀ x : ℝ, ¬ g.IsRoot x → ¬ f.IsRoot x →
-      ((g.roots.filter (x < ·)).card : ℤ) -
-        (f.roots.filter (x < ·)).card ≤ 1)
-    (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
-    (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
-    (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
-    (hcross : CrossOwnedNotOddGaps f g) :
-    theorem21RootCountBranches f g := by
-  refine theorem21RootCountBranches_of_leftBranch_orientations (r := r) (s := s) ?_ ?_
-  · intro hsr
-    exact
-      LeftRootCountBranch.of_left_sub_right_le_one_of_right_le_left
-        hf_ne hg_ne hr hs hsr hupper_fg
-        (LeftRootCountBranch.right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
-          hf_ne hg_ne hr hs hsr hupper_fg hsimple_f hsimple_g hdisj hcross)
-  · intro hrs
-    exact
-      LeftRootCountBranch.of_left_sub_right_le_one_of_right_le_left
-        hg_ne hf_ne hs hr hrs.le hupper_gf
-        (LeftRootCountBranch.right_le_left_of_crossOwned_consecutive_roots_of_left_sub_le_one
-          hg_ne hf_ne hs hr hrs.le hupper_gf hsimple_g hsimple_f
-          (fun c hgc hfc => hdisj c hfc hgc) hcross.symm)
-
-/-- Branch-level bridge from parity-guarded cross-owned consecutive roots to
-Liu's largest-root deletion branch predicate.  Compatible root counts supply the
-two one-sided strict-upper bounds needed by the one-sided descent theorem. -/
-theorem theorem21RootCountBranches_of_rootCountCompatible_of_crossOwned_consecutive_roots
-    {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
-    {r s : ℝ} (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
-    (hcount : RootCountCompatible f g)
-    (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
-    (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
-    (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
-    (hcross : CrossOwnedNotOddGaps f g) :
-    theorem21RootCountBranches f g :=
-  theorem21RootCountBranches_of_left_sub_le_one_of_crossOwned_consecutive_roots
-    hf_ne hg_ne hr hs
-    (fun _ hfx hgx => hcount.rootCountAbove_left_sub_le_one_of_nonRoot
-      hf_ne hg_ne hfx hgx)
-    (fun _ hgx hfx => hcount.symm.rootCountAbove_left_sub_le_one_of_nonRoot
-      hg_ne hf_ne hgx hfx)
-    hsimple_f hsimple_g hdisj hcross
-
-theorem rootCountAtOrAbove_abs_sub_le_two_of_theorem21RootCountBranches
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (h : theorem21RootCountBranches f g) :
-    ∀ x : ℝ,
-      |((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ))| ≤ 2 := by
-  rcases h with ⟨r, s, hleft | hright⟩
-  · exact hleft.rootCountAtOrAbove_abs_sub_le_two hsgn.left_ne_zero
-  · exact hright.rootCountAtOrAbove_abs_sub_le_two hsgn.right_ne_zero
-
-theorem rootCountAtOrAbove_branch_bounds_of_theorem21RootCountBranches
-    {f g : ℝ[X]} (hsgn : OppositeLeadingSigns f g)
-    (h : theorem21RootCountBranches f g) :
-    (∀ x : ℝ,
-      ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 2 ∧
-        ((rootCountAtOrAbove g x : ℤ) - (rootCountAtOrAbove f x : ℤ)) ≤ 1) ∨
-      (∀ x : ℝ,
-        ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 1 ∧
-          ((rootCountAtOrAbove g x : ℤ) - (rootCountAtOrAbove f x : ℤ)) ≤ 2) := by
-  rcases h with ⟨r, s, hleft | hright⟩
-  · exact Or.inl (hleft.rootCountAtOrAbove_bounds hsgn.left_ne_zero)
-  · exact Or.inr (hright.rootCountAtOrAbove_bounds hsgn.right_ne_zero)
-
 /-- Liu branch data after normalizing the compared deletion pair so that both
 leading coefficients are positive. -/
 def theorem21PositiveDeletionCountBranches (f g : ℝ[X]) : Prop :=
@@ -1313,15 +1141,6 @@ theorem natDegree_abs_sub_le_two_of_theorem21RootCountBranches {f g : ℝ[X]}
   rcases h with ⟨r, s, hleft | hright⟩
   · exact hleft.natDegree_abs_sub_le_two hsgn.left_ne_zero hf_splits hg_splits
   · exact hright.natDegree_abs_sub_le_two hsgn.right_ne_zero hf_splits hg_splits
-
-/-- Swapped-branch form of the Liu Theorem 2.1 degree-gap consequence. -/
-theorem natDegree_abs_sub_le_two_of_theorem21RootCountBranches_symm {f g : ℝ[X]}
-    (hf_splits : f.Splits) (hg_splits : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (h : theorem21RootCountBranches g f) :
-    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 := by
-  simpa [abs_sub_comm] using
-    natDegree_abs_sub_le_two_of_theorem21RootCountBranches
-      hg_splits hf_splits hsgn.symm h
 
 end LiuOppositeSigns
 end RealRooted

@@ -21,7 +21,7 @@ namespace LiuOppositeSigns
 /-- Root-order obstruction for compatible opposite-sign cubic/quadratic pairs. -/
 theorem compatibleCubicPairRootOrder {f g : ℝ[X]} {a b c u v : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hcompat : Compatible f g) (_hfdeg : f.natDegree = 3) (_hgdeg : g.natDegree = 2)
+    (hcompat : Compatible f g)
     (hab : a ≤ b) (hbc : b ≤ c) (huv : u ≤ v)
     (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u, v}) :
     u ≤ b ∧ a ≤ v ∧ v ≤ c := by
@@ -32,7 +32,7 @@ theorem compatibleCubicPairRootOrder {f g : ℝ[X]} {a b c u v : ℝ}
   have hub :
       u ≤ b :=
     lower_quadratic_root_le_middle_cubic_root_of_compatible_natDegree_three_two
-      hf hg hsgn hcompat hab hbc huv hvc hfroots hgroots
+      hf hg hsgn hcompat hab huv hvc hfroots hgroots
   have hav :
       a ≤ v :=
     lower_cubic_root_le_upper_quadratic_root_of_compatible_natDegree_three_two
@@ -56,7 +56,7 @@ theorem
   obtain ⟨u, v, huv, hgroots, _hgfac⟩ :=
     exists_roots_pair_of_splits_natDegree_two hg hgdeg
   obtain ⟨hub, hav, hvc⟩ :=
-    compatibleCubicPairRootOrder hf hg hsgn hcompat hfdeg hgdeg hab hbc huv hfroots hgroots
+    compatibleCubicPairRootOrder hf hg hsgn hcompat hab hbc huv hfroots hgroots
   have hr_eq_c : r = c :=
     IsLargestRoot.eq_right_of_roots_triple hsgn.left_ne_zero hr hab hbc
       hfroots
@@ -95,7 +95,7 @@ theorem
   obtain ⟨had, hcb, hbe⟩ :=
     compatibleCubicPairRootOrder (f := g) (g := f) (a := c) (b := d) (c := e)
       (u := a) (v := b)
-      hg hf hsgn.symm hcompat.comm hgdeg hfdeg hcd hde hab hgroots
+      hg hf hsgn.symm hcompat.comm hcd hde hab hgroots
       hfroots
   have hr_eq_b : r = b :=
     IsLargestRoot.eq_right_of_roots_pair hsgn.left_ne_zero hr hab hfroots
