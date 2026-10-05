@@ -25,7 +25,7 @@ theorem Compatible.succDegree_card_roots_gt_eq_of_closedSegment
     {f g : ℝ[X]} (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree + 1) (hf_split : f.Splits)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    {x : ℝ} (hxf : ¬ f.IsRoot x)
     (hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
       ¬ (C (1 - β) * f + C β * g).IsRoot x) :
     (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card := by
@@ -77,7 +77,7 @@ theorem Compatible.succDegree_rootCountAbove_sub_ne_two
         ((f.roots.filter (x < ·)).card : ℤ) = (g.roots.filter (x < ·)).card := by
       exact_mod_cast
         hcomp.succDegree_card_roots_gt_eq_of_closedSegment
-          hf_pos hg_pos hdeg hf_split hxf hxg hseg
+          hf_pos hg_pos hdeg hf_split hxf hseg
     linarith
   · intro hgap
     have hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
@@ -90,7 +90,7 @@ theorem Compatible.succDegree_rootCountAbove_sub_ne_two
         ((f.roots.filter (x < ·)).card : ℤ) = (g.roots.filter (x < ·)).card := by
       exact_mod_cast
         hcomp.succDegree_card_roots_gt_eq_of_closedSegment
-          hf_pos hg_pos hdeg hf_split hxf hxg hseg
+          hf_pos hg_pos hdeg hf_split hxf hseg
     linarith
 
 /-- For a compatible successor-degree pair with positive leading coefficients
