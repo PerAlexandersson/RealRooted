@@ -365,40 +365,10 @@ lemma gammaTransform_even_shift (m k : ℕ) (γ : ℝ[X]) (hγ : γ.natDegree �
         _ = (X + 1) ^ (2 + 2 * k) * gammaTransform (2 * m) γ := by grind
         _ = (X + 1) ^ (2 * (k + 1)) * gammaTransform (2 * m) γ := by lia
 
-lemma gammaTransform_pad_to_minimal {d : ℕ} {γ : ℝ[X]}
-    (hγdeg : γ.natDegree ≤ d / 2) :
-    gammaTransform d γ =
-      (X + 1) ^ (d - 2 * γ.natDegree) * gammaTransform (2 * γ.natDegree) γ := by
-  let m : ℕ := γ.natDegree
-  let n : ℕ := d / 2
-  have hm : m ≤ n := by lia
-  have hshift :
-      gammaTransform (2 * n) γ =
-        (X + 1) ^ (2 * (n - m)) * gammaTransform (2 * m) γ := by
-    have hshift' :=
-      gammaTransform_even_shift (m := m) (k := n - m) (γ := γ) (by lia)
-    simp_all
-  rcases Nat.mod_two_eq_zero_or_one d with hd_even | hd_odd
-  · grind
-  · have hd : d = 2 * n + 1 := by lia
-    have hpow : d - 2 * m = 1 + 2 * (n - m) := by lia
-    calc
-      gammaTransform d γ = gammaTransform (2 * n + 1) γ := by lia
-      _ = (X + 1) * gammaTransform (2 * n) γ := gammaTransform_odd n γ
-      _ = (X + 1) * ((X + 1) ^ (2 * (n - m)) * gammaTransform (2 * m) γ) := by lia
-      _ = (X + 1) ^ (1 + 2 * (n - m)) * gammaTransform (2 * m) γ := by grind
-      _ = (X + 1) ^ (d - 2 * m) * gammaTransform (2 * m) γ := by lia
-      _ = (X + 1) ^ (d - 2 * γ.natDegree) * gammaTransform (2 * γ.natDegree) γ := by lia
-
 lemma gammaTransform_minimal_dvd {d : ℕ} {γ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2) :
-    gammaTransform (2 * γ.natDegree) γ ∣ gammaTransform d γ := by
-  refine ⟨(X + 1) ^ (d - 2 * γ.natDegree), ?_⟩
-  calc
-    gammaTransform d γ =
-        (X + 1) ^ (d - 2 * γ.natDegree) * gammaTransform (2 * γ.natDegree) γ :=
-      gammaTransform_pad_to_minimal (d := d) (γ := γ) hγdeg
-    _ = gammaTransform (2 * γ.natDegree) γ * (X + 1) ^ (d - 2 * γ.natDegree) := by ring
+    gammaTransform (2 * γ.natDegree) γ ∣ gammaTransform d γ :=
+  Dvd.intro_left _ (gammaTransform_eq_X_add_one_pow_mul_minimal hγdeg).symm
 
 theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
