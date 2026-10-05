@@ -9,7 +9,7 @@ namespace RealRooted.MaWangInternal
 /-- Derivative specialization of the Liu--Wang mixed theorem in the degree `+1`
 case. The hypothesis is the strict root-sign condition naturally obtained from
 `F(r) = v(r) f'(r)`. -/
-theorem strictInterl_ma_wang_succ {f u v : ℝ[X]} (hf : f.Splits)
+theorem strictInterl_of_step_succ {f u v : ℝ[X]} (hf : f.Splits)
     (hdegf : 1 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
@@ -27,7 +27,7 @@ theorem strictInterl_ma_wang_succ {f u v : ℝ[X]} (hf : f.Splits)
 /-- Derivative specialization of the Liu--Wang mixed theorem in the same-degree
 case. The hypothesis is the strict root-sign condition naturally obtained from
 `F(r) = v(r) f'(r)`. -/
-theorem strictInterl_ma_wang_same {f u v : ℝ[X]} (hf : f.Splits)
+theorem strictInterl_of_step_same {f u v : ℝ[X]} (hf : f.Splits)
     (hdegf : 1 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
@@ -44,7 +44,7 @@ theorem strictInterl_ma_wang_same {f u v : ℝ[X]} (hf : f.Splits)
 
 /-- Derivative specialization of the Liu--Wang mixed theorem allowing either the
 same-degree or degree `+1` outcome. -/
-theorem strictInterl_ma_wang {f u v : ℝ[X]} (hf : f.Splits)
+theorem strictInterl_of_step {f u v : ℝ[X]} (hf : f.Splits)
     (hdegf : 1 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
     (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
@@ -58,15 +58,11 @@ theorem strictInterl_ma_wang {f u v : ℝ[X]} (hf : f.Splits)
     lia
   cases hcases with
   | inl hsame =>
-      exact strictInterl_ma_wang_same hf hdegf hsame hF_pos hf_pos hroot_sign
+      exact strictInterl_of_step_same hf hdegf hsame hF_pos hf_pos hroot_sign
   | inr hsucc =>
-      exact strictInterl_ma_wang_succ hf hdegf hsucc hF_pos hf_pos hroot_sign
+      exact strictInterl_of_step_succ hf hdegf hsucc hF_pos hf_pos hroot_sign
+
+@[deprecated (since := "2026-10-05")]
+alias strictInterl_ma_wang_succ := strictInterl_of_step_succ
 
 end RealRooted.MaWangInternal
-
-namespace RealRooted
-
-export MaWangInternal
-  (strictInterl_ma_wang_succ strictInterl_ma_wang_same strictInterl_ma_wang)
-
-end RealRooted
