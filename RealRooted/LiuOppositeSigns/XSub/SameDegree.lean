@@ -86,9 +86,6 @@ lemma splits_X_mul_sub_C_mul_of_left_natDegree_zero_right_natDegree_le_one
 x-subtraction leaf. -/
 theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
     {f g : ℝ[X]} {r : ℝ}
-    (_hpair : PositiveSplitRootCountPair f g)
-    (_hfnn : HasNonnegCoeffs (f.comp (X + C r)))
-    (_hgnn : HasNonnegCoeffs (g.comp (X + C r)))
     (hdeg : f.natDegree = g.natDegree)
     (hgdeg : g.natDegree = 0) :
     ∀ μ : ℝ, 0 < μ →
@@ -108,7 +105,6 @@ x-subtraction leaf. -/
 theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_one
     {f g : ℝ[X]} {r : ℝ}
     (hpair : PositiveSplitRootCountPair f g)
-    (_hfnn : HasNonnegCoeffs (f.comp (X + C r)))
     (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
     (hdeg : f.natDegree = g.natDegree)
     (hgdeg : g.natDegree = 1) :
@@ -126,7 +122,6 @@ x-subtraction leaf. -/
 theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_one
     {f g : ℝ[X]} {r : ℝ}
     (hpair : PositiveSplitRootCountPair f g)
-    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
     (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
     (hdeg : f.natDegree = g.natDegree)
     (hgdeg : g.natDegree ≤ 1) :
@@ -134,18 +129,15 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_o
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   by_cases hzero : g.natDegree = 0
   · exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
-      hpair hfnn hgnn hdeg hzero
+      hdeg hzero
   · have hone : g.natDegree = 1 := by lia
     exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_one
-      hpair hfnn hgnn hdeg hone
+      hpair hgnn hdeg hone
 
 /-- Degree-one right endpoint base case for the right-successor
 sign-normalized x-subtraction leaf. -/
 theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
     {f g : ℝ[X]} {r : ℝ}
-    (_hpair : PositiveSplitRootCountPair f g)
-    (_hfnn : HasNonnegCoeffs (f.comp (X + C r)))
-    (_hgnn : HasNonnegCoeffs (g.comp (X + C r)))
     (hdeg : g.natDegree = f.natDegree + 1)
     (hgdeg : g.natDegree = 1) :
     ∀ μ : ℝ, 0 < μ →

@@ -23,14 +23,6 @@ theorem NoCommonRoots.symm {f g : ℝ[X]} (h : NoCommonRoots f g) :
   intro r hgr hfr
   exact (h r hfr) hgr
 
-/-- A nonzero right-family member has no root at a left endpoint root when the
-endpoint polynomials have no common root. -/
-theorem NoCommonRoots.rightFamily_not_isRoot_of_left_root
-    {f g : ℝ[X]} (h : NoCommonRoots f g) {μ x : ℝ}
-    (hμ : μ ≠ 0) (hf : f.IsRoot x) :
-    ¬ (f + C μ * g).IsRoot x := by
-  simpa [IsRoot, hf.eq_zero, hμ] using h x hf
-
 /-- A right-family member has no root at a right endpoint root when the
 endpoint polynomials have no common root. -/
 theorem NoCommonRoots.rightFamily_not_isRoot_of_right_root
@@ -45,23 +37,6 @@ theorem NoCommonRoots.rightFamily_not_isRoot_of_right_root
     simpa [eval_add, eval_mul, eval_C, hg_eval] using hf_eval_ne
   exact
     (Polynomial.not_isRoot_iff_eval_ne_zero (f + C μ * g) x).mpr hq_eval_ne
-
-/-- If the endpoints of `[a, b]` are roots of `f`, the polynomials have no
-common roots, and `g` has no roots in `(a, b)`, then `g` has no roots on the
-closed interval `[a, b]`. -/
-theorem NoCommonRoots.right_not_isRoot_Icc_of_left_roots
-    {f g : ℝ[X]} (h : NoCommonRoots f g) {a b : ℝ}
-    (hfa : f.IsRoot a) (hfb : f.IsRoot b)
-    (hg_no : ∀ z : ℝ, a < z → z < b → ¬ g.IsRoot z) :
-    ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z := by
-  intro z hz hgz
-  by_cases hza : z = a
-  · exact (h a hfa) (by simpa [hza] using hgz)
-  have haz : a < z := lt_of_le_of_ne hz.1 (Ne.symm hza)
-  by_cases hzb : z = b
-  · exact (h b hfb) (by simpa [hzb] using hgz)
-  have hzb_lt : z < b := lt_of_le_of_ne hz.2 hzb
-  exact hg_no z haz hzb_lt hgz
 
 /-- If two roots of `p` bracket an odd number of roots of a nonzero splitting
 polynomial `q`, and `p` and `q` have no common roots, then the x-subtraction

@@ -700,7 +700,7 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_t
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   by_cases hle_one : g.natDegree ≤ 1
   · exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_one
-      hpair hfnn hgnn hdeg hle_one
+      hpair hgnn hdeg hle_one
   · have htwo : g.natDegree = 2 := by lia
     exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_two
       hpair hfnn hgnn hdeg htwo

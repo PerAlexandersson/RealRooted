@@ -565,8 +565,6 @@ import RealRooted.LiuOppositeSigns.Theorem21Statements
 import RealRooted.LiuOppositeSigns.Theorem21Statements.CommonRootDeletion
 import RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces
 import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing
-import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing.BranchConsequences
-import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing.CrossOwnedGaps
 import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing.Witnesses
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic
 import RealRooted.LiuOppositeSigns.XSub.CubicCubic.Basic

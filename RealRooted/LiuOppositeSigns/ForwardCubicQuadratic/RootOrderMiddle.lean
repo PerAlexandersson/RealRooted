@@ -20,7 +20,7 @@ root. -/
 lemma not_middle_gap_of_compatible_natDegree_three_two
     {f g : ℝ[X]} {a b c u v : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
+    (hcompat : Compatible f g) (hab : a ≤ b)
     (hbu : b < u) (huv : u ≤ v) (hvc : v ≤ c)
     (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u, v}) :
     False := by
@@ -41,21 +41,21 @@ lemma not_middle_gap_of_compatible_natDegree_three_two
   exact
     not_compatible_scaled_cubic_quadratic_of_opposite_of_middle_gap
       (A := f.leadingCoeff) (B := g.leadingCoeff)
-      hsgn hab hbc hbu huv hvc hcompat_fac
+      hsgn hab hbu huv hvc hcompat_fac
 
 /-- Middle-bound form for a compatible opposite-sign cubic/quadratic pair
 once the upper quadratic root is known to be at most the upper cubic root. -/
 lemma lower_quadratic_root_le_middle_cubic_root_of_compatible_natDegree_three_two
     {f g : ℝ[X]} {a b c u v : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hcompat : Compatible f g) (hab : a ≤ b) (hbc : b ≤ c)
+    (hcompat : Compatible f g) (hab : a ≤ b)
     (huv : u ≤ v) (hvc : v ≤ c)
     (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {u, v}) :
     u ≤ b := by
   by_contra hnot
   exact
     (not_middle_gap_of_compatible_natDegree_three_two
-      hf hg hsgn hcompat hab hbc (lt_of_not_ge hnot) huv hvc
+      hf hg hsgn hcompat hab (lt_of_not_ge hnot) huv hvc
       hfroots hgroots).elim
 
 end LiuOppositeSigns

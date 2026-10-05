@@ -47,8 +47,6 @@ leaf. -/
 theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
     {f g : ℝ[X]} {r : ℝ}
     (hpair : PositiveSplitRootCountPair f g)
-    (_hfnn : HasNonnegCoeffs (f.comp (X + C r)))
-    (_hgnn : HasNonnegCoeffs (g.comp (X + C r)))
     (hdeg : f.natDegree = g.natDegree + 1)
     (hgdeg : g.natDegree = 0) :
     ∀ μ : ℝ, 0 < μ →

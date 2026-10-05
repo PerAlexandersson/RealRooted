@@ -917,8 +917,7 @@ lemma quarticSubQuadraticSplits_of_double_left_pair
 /-- The normalized quartic-minus-quadratic endpoint factor splits under the
 closed interlacing inequalities. -/
 theorem quarticSubQuadraticSplits {a b c d u v μ : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d)
-    (huv : u ≤ v) (hau : a ≤ u) (hbv : b ≤ v) (huc : u ≤ c) (hvd : v ≤ d) (_hd0 : d ≤ 0)
-    (_hv0 : v ≤ 0) (hμ : 0 < μ) :
+    (huv : u ≤ v) (hau : a ≤ u) (hbv : b ≤ v) (huc : u ≤ c) (hvd : v ≤ d) (hμ : 0 < μ) :
     (quarticSubQuadraticPolynomial a b c d u v μ).Splits := by
   by_cases hab_eq : a = b
   · subst b
@@ -985,16 +984,14 @@ lemma xSubQuarticCubicSplits_of_endpoint_roots_zero {a b c u v μ : ℝ}
 
 /-- The right-only endpoint-zero quartic/cubic boundary. -/
 theorem xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases {a b c d u v w μ : ℝ} (hab : a ≤ b)
-    (hbc : b ≤ c) (hcd : c ≤ d) (huv : u ≤ v) (_hvw : v ≤ w) (hau : a ≤ u) (hbv : b ≤ v)
-    (_hcw : c ≤ w) (huc : u ≤ c) (hvd : v ≤ d) (hd0 : d ≤ 0) (_hw0 : w ≤ 0) (hμ : 0 < μ)
-    (hw_eq : w = 0) (_hd_ne : d ≠ 0) :
+    (hbc : b ≤ c) (hcd : c ≤ d) (huv : u ≤ v) (hau : a ≤ u) (hbv : b ≤ v) (huc : u ≤ c)
+    (hvd : v ≤ d) (hμ : 0 < μ) (hw_eq : w = 0) :
     (xSubQuarticCubicPolynomial a b c d u v w μ).Splits := by
   subst w
   let Q : ℝ[X] := quarticSubQuadraticPolynomial a b c d u v μ
-  have hv0 : v ≤ 0 := hvd.trans hd0
   have hQ : Q.Splits := by
     dsimp [Q]
-    exact quarticSubQuadraticSplits hab hbc hcd huv hau hbv huc hvd hd0 hv0 hμ
+    exact quarticSubQuadraticSplits hab hbc hcd huv hau hbv huc hvd hμ
   have hfactor :
       xSubQuarticCubicPolynomial a b c d u v 0 μ = X * Q := by
     simp [Q, quarticSubQuadraticPolynomial, xSubQuarticCubicPolynomial]

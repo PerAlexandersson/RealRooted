@@ -20,15 +20,9 @@ lemma xSubQuarticCubicSplits_of_lower_left_repeated
     (hμ : 0 < μ) :
     (xSubQuarticCubicPolynomial a a c d u v w μ).Splits := by
   by_cases hw_eq : w = 0
-  · by_cases hd_eq : d = 0
-    · subst d
-      subst w
-      exact xSubQuarticCubicSplits_of_endpoint_roots_zero
-        le_rfl (le_of_lt hac) huv hau (hau.trans huv) huc
-        (le_of_lt hcd) hvd hμ
-    · exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases
-        le_rfl (le_of_lt hac) (le_of_lt hcd) huv hvw hau
-        (hau.trans huv) hcw huc hvd hd0 hw0 hμ hw_eq hd_eq
+  · exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases
+      le_rfl (le_of_lt hac) (le_of_lt hcd) huv hau
+      (hau.trans huv) huc hvd hμ hw_eq
   have hcommon_dispatch :
       (u = a ∨ u = a ∨ u = c ∨ v = a ∨ v = c ∨ v = d ∨
           w = c ∨ w = d) →
@@ -284,12 +278,8 @@ lemma xSubQuarticCubicSplits_of_middle_left_repeated
   by_cases hwd_eq : w = d
   · exact hcommon_dispatch (by simp [hwd_eq])
   by_cases hw_eq : w = 0
-  · have hd_ne : d ≠ 0 := by
-      intro hd_eq
-      exact hwd_eq (by rw [hw_eq, hd_eq])
-    exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases
-      (le_of_lt hab) le_rfl (le_of_lt hbd) huv hvw hau hbv hbw hub hvd
-      hd0 hw0 hμ hw_eq hd_ne
+  · exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases
+      (le_of_lt hab) le_rfl (le_of_lt hbd) huv hau hbv hub hvd hμ hw_eq
   have hau_lt : a < u := lt_of_le_of_ne hau (by intro h; exact hua_eq h.symm)
   have hub_lt : u < b := lt_of_le_of_ne hub hub_eq
   have hbv_lt : b < v := lt_of_le_of_ne hbv (by intro h; exact hvb_eq h.symm)
@@ -431,12 +421,8 @@ lemma xSubQuarticCubicSplits_of_upper_left_repeated
   by_cases hwd_eq : w = d
   · exact hcommon_dispatch (by simp [hwd_eq])
   by_cases hw_eq : w = 0
-  · have hd_ne : d ≠ 0 := by
-      intro hd_eq
-      exact hwd_eq (by rw [hw_eq, hd_eq])
-    exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases
-      (le_of_lt hab) (le_of_lt hbd) le_rfl huv hvw hau hbv hdw
-      hud hvd hd0 hw0 hμ hw_eq hd_ne
+  · exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases
+      (le_of_lt hab) (le_of_lt hbd) le_rfl huv hau hbv hud hvd hμ hw_eq
   have hau_lt : a < u := lt_of_le_of_ne hau (by intro h; exact hua_eq h.symm)
   have hud_lt : u < d := lt_of_le_of_ne hud hud_eq
   have hbv_lt : b < v := lt_of_le_of_ne hbv (by intro h; exact hvb_eq h.symm)
@@ -582,12 +568,8 @@ lemma xSubQuarticCubicSplits_of_double_left_pair
   by_cases hwc_eq : w = c
   · exact hcommon_dispatch (by simp [hwc_eq])
   by_cases hw_eq : w = 0
-  · have hc_ne : c ≠ 0 := by
-      intro hc_eq
-      exact hwc_eq (by rw [hw_eq, hc_eq])
-    exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases
-      le_rfl (le_of_lt hac) le_rfl huv hvw hau (hau.trans huv) hcw
-      huc hvc hc0 hw0 hμ hw_eq hc_ne
+  · exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases
+      le_rfl (le_of_lt hac) le_rfl huv hau (hau.trans huv) huc hvc hμ hw_eq
   have hau_lt : a < u := lt_of_le_of_ne hau (by intro h; exact hua_eq h.symm)
   have hvc_lt : v < c := lt_of_le_of_ne hvc hvc_eq
   have huc_lt : u < c := lt_of_le_of_lt huv hvc_lt

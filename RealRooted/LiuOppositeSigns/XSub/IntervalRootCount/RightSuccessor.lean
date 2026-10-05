@@ -261,12 +261,10 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_right_successor_nonneg_of_noCo
         rw [← card_roots_of_splits hpair.left_splits, hroots_zero]
         simp
       have hqdeg_one : q.natDegree = 1 := by lia
-      have hp_nonneg_zero : HasNonnegCoeffs (p.comp (X + C (0 : ℝ))) := by simpa using hp_nonneg
-      have hq_nonneg_zero : HasNonnegCoeffs (q.comp (X + C (0 : ℝ))) := by simpa using hq_nonneg
       simpa using
         positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
           (f := p) (g := q) (r := 0)
-          hpair hp_nonneg_zero hq_nonneg_zero hdeg hqdeg_one μ hμ
+          hdeg hqdeg_one μ hμ
   | cons a xs =>
       cases hxs : xs with
       | nil =>
