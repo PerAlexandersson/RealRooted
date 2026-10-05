@@ -1049,7 +1049,7 @@ macro_rules
         pos_combo := $hfg:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
-        exact RealRooted.PosComboRealRooted.left_splits_of_closedSegment_of_succDegree
+        exact RealRooted.PosComboRealRooted.left_splits_of_succDegree
           $hfg $hfpos $hgpos $hsucc)
   | `(tactic|
       rr_pos_combo_right_closed_segment_succ_degree_splits using
@@ -1058,7 +1058,7 @@ macro_rules
         pos_combo := $hfg:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
-        exact RealRooted.PosComboRealRooted.right_splits_of_closedSegment_of_succDegree
+        exact RealRooted.PosComboRealRooted.right_splits_of_succDegree
           $hfg $hfpos $hgpos $hsucc)
   | `(tactic|
       rr_pos_combo_left_closed_segment_succ_degree_realrooted using
@@ -1087,7 +1087,7 @@ macro_rules
         pos_combo := $hfg:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
-        exact RealRooted.PosComboRealRooted.left_splits_of_closedSegment_of_succDegree
+        exact RealRooted.PosComboRealRooted.left_splits_of_succDegree
           $hfg $hfpos $hgpos $hsucc)
   | `(tactic|
       rr_pos_combo_right_nonneg_closed_segment_succ_degree_splits using
@@ -1098,7 +1098,7 @@ macro_rules
         pos_combo := $hfg:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
-        exact RealRooted.PosComboRealRooted.right_splits_of_closedSegment_of_succDegree
+        exact RealRooted.PosComboRealRooted.right_splits_of_succDegree
           $hfg $hfpos $hgpos $hsucc)
   | `(tactic|
       rr_pos_combo_left_nonneg_closed_segment_succ_degree_realrooted using

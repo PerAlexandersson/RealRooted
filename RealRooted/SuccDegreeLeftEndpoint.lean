@@ -414,7 +414,7 @@ theorem left_ne_zero_and_splits_closedSegment_of_succDegree {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hsucc : g.natDegree = f.natDegree + 1) :
     f ≠ 0 ∧ f.Splits :=
-  ⟨hf_pos.ne_zero, hfg.left_splits_of_closedSegment_of_succDegree hf_pos hg_pos hsucc⟩
+  ⟨hf_pos.ne_zero, hfg.left_splits_of_succDegree hf_pos hg_pos hsucc⟩
 
 /-- Direct #42 closed-segment endpoint support (higher-degree endpoint),
 packaged as the `≠ 0 ∧ Splits` pair used by the compatibility/interleaver
@@ -430,7 +430,7 @@ theorem right_ne_zero_and_splits_closedSegment_of_succDegree {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hsucc : f.natDegree = g.natDegree + 1) :
     g ≠ 0 ∧ g.Splits :=
-  ⟨hg_pos.ne_zero, hfg.right_splits_of_closedSegment_of_succDegree hf_pos hg_pos hsucc⟩
+  ⟨hg_pos.ne_zero, hfg.right_splits_of_succDegree hf_pos hg_pos hsucc⟩
 
 /-!
 ### Inclusive closed-segment endpoint wrappers
@@ -489,7 +489,7 @@ theorem left_card_roots_of_succDegree {f g : ℝ[X]}
     (hsucc : g.natDegree = f.natDegree + 1) :
     f.roots.card = f.natDegree :=
   card_roots_of_splits
-    (hfg.left_splits_of_closedSegment_of_succDegree hf_pos hg_pos hsucc)
+    (hfg.left_splits_of_succDegree hf_pos hg_pos hsucc)
 
 /-- Root-count package for the higher-degree endpoint. -/
 theorem right_card_roots_of_succDegree {f g : ℝ[X]}
@@ -498,7 +498,7 @@ theorem right_card_roots_of_succDegree {f g : ℝ[X]}
     (hsucc : f.natDegree = g.natDegree + 1) :
     g.roots.card = g.natDegree :=
   card_roots_of_splits
-    (hfg.right_splits_of_closedSegment_of_succDegree hf_pos hg_pos hsucc)
+    (hfg.right_splits_of_succDegree hf_pos hg_pos hsucc)
 
 /-- Root-count package for the lower-degree endpoint, packaged as the
 `≠ 0 ∧ roots.card = natDegree` pair. -/
