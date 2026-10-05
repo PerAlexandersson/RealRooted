@@ -182,39 +182,4 @@ theorem chudnovskySeymour_compatiblePairHasCommonInterleaver
     (h.isRealRooted_left hf).2 (h.isRealRooted_right hg).2 hf hg
     (h.toPosComboRealRooted hf hg)
 
-/-- `chudnovskySeymour_compatiblePairHasCommonInterleaver`, with two unused
-same-degree and successor-degree hypotheses; kept for its `LiuOppositeSigns`
-callers. -/
-theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (_hsame :
-      ∀ ⦃f g : ℝ[X]⦄,
-        HasPosLeadingCoeff f →
-        HasPosLeadingCoeff g →
-        HasNonnegCoeffs f →
-        HasNonnegCoeffs g →
-        PosComboRealRooted f g →
-        g.natDegree = f.natDegree →
-        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h)
-    (_hsucc :
-      ∀ ⦃f g : ℝ[X]⦄,
-        HasPosLeadingCoeff f →
-        HasPosLeadingCoeff g →
-        HasNonnegCoeffs f →
-        HasNonnegCoeffs g →
-        PosComboRealRooted f g →
-        g.natDegree = f.natDegree + 1 →
-        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  chudnovskySeymour_compatiblePairHasCommonInterleaver
-
-/-- `chudnovskySeymour_compatiblePairHasCommonInterleaver`, with two unused
-root-count hypotheses; kept for its `LiuOppositeSigns` callers. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
-    (_hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (_hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  chudnovskySeymour_compatiblePairHasCommonInterleaver
-
 end RealRooted

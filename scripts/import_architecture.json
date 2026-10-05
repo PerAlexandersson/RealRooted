@@ -1158,9 +1158,6 @@
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree": {
       "max_modules": 163
    },
-    "RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCount": {
-      "max_modules": 154
-   },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment": {
       "max_modules": 161
    },

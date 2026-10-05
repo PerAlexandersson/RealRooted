@@ -68,19 +68,6 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
     simpa [rootSlotInterval, hjn, hjg'] using
       icc_inter_icc_nonempty_of_crossing (hstep hrf (by lia)) (hstep hrg (by lia)) hc₂ hc₁
 
-/-- Left-endpoint real-rootedness for a successor-degree pair: if every
-positive combination of `f` and `g` is real-rooted and
-`g.natDegree = f.natDegree + 1`, then `f` splits.  The proof is the
-escaping-root continuity argument for the family `f + C μ * g`; the
-nonnegativity hypotheses are unused and kept for existing callers. -/
-theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
-    ⦃f g : ℝ[X]⦄ (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g) (hsucc : g.natDegree = f.natDegree + 1) :
-    f.Splits :=
-  splits_of_add_C_mul_family_of_succDegree
-    (fun {_} hμ => hfg.isRealRooted_add_right hμ) hf_pos hg_pos hsucc
-
 /-- The succ-degree left endpoint from the proved forward ASW theorem, with no
 backend argument required from the caller. -/
 theorem PosComboRealRooted.left_splits_of_asw

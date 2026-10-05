@@ -1,7 +1,7 @@
 /-
 # Root-count combinatorics for common interleavers
 
-Succ-degree root-count statements and generic threshold/list/derivative
+Generic threshold/list/derivative
 combinatorics extracted from `RealRooted.CommonInterleaverTwo`.
 -/
 import RealRooted.Compatibility.Basic
@@ -17,39 +17,6 @@ open Polynomial
 noncomputable section
 
 namespace RealRooted
-
-/-- Common-non-root version of the succ-degree upper root-count formulation.
-This holds for every such pair (see
-`compatibleSuccDegree_rootCountAbove_diff_le_one_of_nonRoot`); the proposition
-is kept only for its `LiuOppositeSigns` callers. -/
-def PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
-
-/-- Compatible-pair version of the succ-degree common-non-root upper
-root-count bound.  It is proved by
-`compatibleSuccDegree_rootCountAbove_diff_le_one_of_nonRoot`; the proposition
-is kept only for its `LiuOppositeSigns` callers. -/
-def CompatibleSuccDegreeRootCountAboveNonRootStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
 
 /-- An integer bounded above by two but not equal to two is bounded above by one. -/
 theorem int_le_one_of_le_two_ne_two {z : ℤ} (hzle : z ≤ 2) (hzne : z ≠ 2) :

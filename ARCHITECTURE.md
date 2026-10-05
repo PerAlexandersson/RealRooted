@@ -1327,8 +1327,7 @@ closure façade rather than a mixed 1,791-line implementation.
 
 `CommonInterleaver.PairBridge` is likewise a compatibility façade. Its former
 2,959-line mixed source is layered as `PairBridge.Forward` (208 lines of
-forward/same-degree transport), `PairBridge.SuccDegree.RootCount` (378 lines
-of root-count reductions), `PairBridge.SuccDegree.ClosedSegment` (213 lines
+forward/same-degree transport), `PairBridge.SuccDegree.ClosedSegment` (213 lines
 of closed-segment consequences), `PairBridge.SuccDegree.RootCrossing` (105
 lines of list/root-crossing transport), the 11-line `PairBridge.SuccDegree`
 facade, `PairBridge.SuccDegree.SlotData` (350 lines of slot-data and
