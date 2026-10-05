@@ -261,7 +261,7 @@ theorem IsPFPolynomial.derivative_interl_self {p : ℝ[X]}
   have hps := hp.ne_zero_and_splits hp0
   by_cases hdeg0 : p.natDegree = 0
   · have hder0 : p.derivative = 0 :=
-      derivative_eq_zero_of_natDegree_eq_zero hdeg0
+      Polynomial.derivative_eq_zero.mpr hdeg0
     rw [hder0]
     exact interl_zero_left p
   by_cases hdeg1 : p.natDegree = 1

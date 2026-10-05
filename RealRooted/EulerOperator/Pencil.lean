@@ -29,7 +29,7 @@ theorem strictInterl_thetac_X_mul {f : ℝ[X]} (hf : IsPFPolynomial f)
   have hself : StrictInterl f (X * f) := strictInterl_self_X_mul_of_nonneg hfs.1 hfs.2 hnn
   have hright : StrictInterl (C c * f) (X * f) := StrictInterl.C_mul_left hself hc.ne'
   have hfd_ne : f.derivative ≠ 0 :=
-    derivative_ne_zero_of_natDegree_ne_zero (by lia)
+    Polynomial.derivative_ne_zero.mpr (by lia)
   have hXfd_ne : X * f.derivative ≠ 0 := mul_ne_zero Polynomial.X_ne_zero hfd_ne
   have hpos_left : HasPosLeadingCoeff (X * f.derivative) :=
     (hnn.derivative.X_mul).pos_leadingCoeff hXfd_ne
