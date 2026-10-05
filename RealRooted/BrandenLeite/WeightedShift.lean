@@ -57,7 +57,7 @@ theorem weightedLowerShift_pow_apply_eq_zero_of_lt_add
     (weightedLowerShift b N ^ q) i j = 0 :=
   Matrix.pow_apply_eq_zero_of_lt_add_of_strictLower
     (weightedLowerShift b N)
-    (fun i j hle => weightedLowerShift_apply_eq_zero_of_le b N hle) hij
+    (fun _ _ hle => weightedLowerShift_apply_eq_zero_of_le b N hle) hij
 
 /-- The weight of the unique descending path of length `q` ending at level
 `i`; the support condition below ensures that none of the subtractions
@@ -124,7 +124,7 @@ theorem weightedLowerShift_pow_card_eq_zero
     weightedLowerShift b N ^ (N + 1) = 0 :=
   Matrix.pow_card_eq_zero_of_strictLower
     (weightedLowerShift b N)
-    (fun i j hle => weightedLowerShift_apply_eq_zero_of_le b N hle)
+    (fun _ _ hle => weightedLowerShift_apply_eq_zero_of_le b N hle)
 
 /-- Nonnegative weights make the finite weighted shift totally nonnegative. -/
 theorem weightedLowerShift_isTotallyNonneg

@@ -126,9 +126,9 @@ theorem markedShiftKernel_apply_eq_zero_of_lt_add
     markedShiftKernel as N r i j = 0 :=
   Matrix.mul_pow_apply_eq_zero_of_lt_add_of_lower_strictLower
     (optionalRiseMatrix as N) (lowerShift N)
-    (fun i j hij => optionalRiseMatrix_apply_eq_zero_of_lt as N
+    (fun _ _ hij => optionalRiseMatrix_apply_eq_zero_of_lt as N
       (Fin.mk_lt_mk.mp hij))
-    (fun i j hij => weightedLowerShift_apply_eq_zero_of_le
+    (fun _ _ hij => weightedLowerShift_apply_eq_zero_of_le
       (fun _ => (1 : ℝ)) N hij) h
 
 /-- Positive mark order makes the limiting marked kernel strictly lower. -/
@@ -153,9 +153,9 @@ theorem markedShiftApproximation_apply_eq_zero_of_lt
     markedShiftApproximation as N r ε i j = 0 :=
   Matrix.mul_apply_eq_zero_of_lt_of_upper_zero
     (optionalRiseMatrix as N) (regularizedLowerShift ε N ^ r)
-    (fun i j hij => optionalRiseMatrix_apply_eq_zero_of_lt as N
+    (fun _ _ hij => optionalRiseMatrix_apply_eq_zero_of_lt as N
       (Fin.mk_lt_mk.mp hij))
-    (fun i j hij =>
+    (fun _ _ hij =>
       regularizedLowerShift_pow_apply_eq_zero_of_lt ε N r hij) h
 
 /-- The marked approximation has the constant diagonal `ε^r`. -/
