@@ -336,14 +336,6 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_eight
   · exact narayanaAuxiliaryGRecurrence_modified_seven
   · exact narayanaAuxiliaryGRecurrence_modified_eight
 
-/-- The checked initial cases `n = 1, ..., 8` of the auxiliary recurrence,
-packaged in the generic bounded recurrence interface. -/
-theorem narayanaAuxiliaryGRecurrence_modified_upTo_eight :
-    NarayanaAuxiliaryGRecurrenceUpToStatement
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG 8 := by
-  intro n hn₁ hn₈
-  exact narayanaAuxiliaryGRecurrence_modified_of_le_eight hn₁ hn₈
-
 /-- Unconditional consecutive interlacing for the modified Narayana
 family. -/
 theorem modifiedNarayanaPolynomial_strictInterl_succ (n : ℕ) :
