@@ -18,6 +18,7 @@ SuperEulerian/.lake/
 SuperEulerian/.lake
 
 # Generated/local artifacts.
+__pycache__/
 realrooted-interlacing-seminar-handout.html
 .DS_Store
 *~
