@@ -18,20 +18,12 @@ noncomputable section
 
 namespace RealRooted
 
-section
-
-private abbrev posComboPredicate (f g : ℝ[X]) : Prop :=
-  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ →
-    ((C lam * f + C μ * g) ≠ 0 ∧ (C lam * f + C μ * g).Splits)
-
 /-- Every strictly positive linear combination of `f` and `g` is nonzero and
 real-rooted. This lightweight predicate lives at the continuity boundary so
 consumers need not import the full converse-development file. -/
-def PosComboRealRooted (f g : ℝ[X]) : Prop := posComboPredicate f g
-
-/-- Compatibility name for the local positive-combination hypothesis used by
-the continuity lemmas. -/
-abbrev PosComboHyp (f g : ℝ[X]) : Prop := posComboPredicate f g
+def PosComboRealRooted (f g : ℝ[X]) : Prop :=
+  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ →
+    ((C lam * f + C μ * g) ≠ 0 ∧ (C lam * f + C μ * g).Splits)
 
 namespace PosComboRealRooted
 
@@ -40,26 +32,19 @@ lemma comm {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
   intro lam μ hlam hμ
   simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using hfg hμ hlam
 
-end PosComboRealRooted
-
-namespace PosComboHyp
-
-lemma comm {f g : ℝ[X]} (hfg : PosComboHyp f g) : PosComboHyp g f :=
-  PosComboRealRooted.comm hfg
-
-lemma isRealRooted_add_left {f g : ℝ[X]} (hfg : PosComboHyp f g)
-    {lam : ℝ} (hlam : 0 < lam) : ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by
-  simpa [one_mul] using hfg (lam := lam) (μ := 1) hlam zero_lt_one
-
-lemma isRealRooted_add_right {f g : ℝ[X]} (hfg : PosComboHyp f g)
+lemma isRealRooted_add_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
     {μ : ℝ} (hμ : 0 < μ) : ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
-  simpa [one_mul, add_comm] using hfg (lam := 1) (μ := μ) zero_lt_one hμ
+  simpa [one_mul, add_comm] using h zero_lt_one hμ
+
+lemma isRealRooted_add_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
+    {lam : ℝ} (hlam : 0 < lam) : ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by
+  simpa [one_mul] using h hlam zero_lt_one
 
 /-- Root-continuity bridge for the left affine family under positive-combination
 real-rootedness. This packages the local continuity step in the form needed by
 Obreschkoff-style arguments. -/
 theorem exists_root_near_left_family
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a t ε : ℝ}
     (ha : f.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -75,7 +60,7 @@ theorem exists_root_near_left_family
 /-- Complex-root continuity bridge for the left affine family under
 positive-combination real-rootedness. -/
 theorem exists_complex_aroot_near_left_family
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {z : ℂ} {t ε : ℝ}
     (hz : f.aeval z = 0)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -91,7 +76,7 @@ theorem exists_complex_aroot_near_left_family
 /-- Root continuity in the left affine family with an automatically chosen positive parameter.
 Given `ε > 0`, this returns `t > 0` and a root of `C t * f + g` near the chosen root of `f`. -/
 theorem exists_t_and_root_near_left_family
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a ε : ℝ}
     (ha : f.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -110,7 +95,7 @@ theorem exists_t_and_root_near_left_family
 real-rootedness. This is the `μ`-small perturbation form used when one studies
 `f + C μ * g` near `f`. -/
 theorem exists_root_near_right_family
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a μ ε : ℝ}
     (ha : f.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -141,7 +126,7 @@ theorem exists_root_near_right_family
 positive-combination real-rootedness. This is the `μ`-small perturbation form
 for `f + C μ * g` near complex roots of `f`. -/
 theorem exists_complex_aroot_near_right_family
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {z : ℂ} {μ ε : ℝ}
     (hz : f.aeval z = 0)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -172,7 +157,7 @@ theorem exists_complex_aroot_near_right_family
 positive parameter. Given `ε > 0`, this returns `μ > 0` and a root of
 `f + C μ * g` near the chosen root of `f`. -/
 theorem exists_mu_and_root_near_right_family
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a ε : ℝ}
     (ha : f.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -207,8 +192,8 @@ theorem exists_mu_pos_with_normalized_right_family_bound
 
 /-- In the equal-degree monic setting, positive-combination real-rootedness
 forces every complex root of `f` to be real. -/
-theorem im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+theorem im_eq_zero_of_aeval_zero_of_monic_sameDegree
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {z : ℂ}
     (hz : f.aeval z = 0)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -259,8 +244,8 @@ theorem im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
 
 /-- Equal-degree monic positive-combination real-rootedness implies `f` is
 real-rooted. -/
-theorem isRealRooted_left_of_posComboRealRooted_monic_sameDegree
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+theorem isRealRooted_left_of_monic_sameDegree
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree = f.natDegree) : (f ≠ 0 ∧ f.Splits) := by
   have hf_ne : f ≠ 0 := hf_monic.ne_zero
@@ -273,7 +258,7 @@ theorem isRealRooted_left_of_posComboRealRooted_monic_sameDegree
     have hz_aeval : f.aeval z = 0 := by simp_all
     have hz_im :
         z.im = 0 :=
-      im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
+      im_eq_zero_of_aeval_zero_of_monic_sameDegree
         (hfg := hfg) (z := z) hz_aeval hf_monic hg_monic hdeg
     refine ⟨z.re, Complex.ext_iff.2 ?_⟩
     simp [hz_im]
@@ -283,19 +268,19 @@ theorem isRealRooted_left_of_posComboRealRooted_monic_sameDegree
   lia
 
 /-- Symmetric right-side version of
-`isRealRooted_left_of_posComboRealRooted_monic_sameDegree`. -/
-theorem isRealRooted_right_of_posComboRealRooted_monic_sameDegree
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+`isRealRooted_left_of_monic_sameDegree`. -/
+theorem isRealRooted_right_of_monic_sameDegree
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree = f.natDegree) : (g ≠ 0 ∧ g.Splits) := by
   simpa [eq_comm] using
-    isRealRooted_left_of_posComboRealRooted_monic_sameDegree
+    isRealRooted_left_of_monic_sameDegree
       (hfg := hfg.comm) hg_monic hf_monic hdeg.symm
 
 /-- Equal-degree positive-combination real-rootedness implies `f` is
 real-rooted (without monicity assumptions). -/
-theorem isRealRooted_left_of_posComboRealRooted_sameDegree
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+theorem isRealRooted_left_of_sameDegree
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree) : (f ≠ 0 ∧ f.Splits) := by
   let f₀ : ℝ[X] := C f.leadingCoeff⁻¹ * f
@@ -314,15 +299,16 @@ theorem isRealRooted_left_of_posComboRealRooted_sameDegree
     unfold f₀ g₀
     rw [natDegree_C_mul (inv_ne_zero hf_lc_ne),
       natDegree_C_mul (inv_ne_zero hg_lc_ne), hdeg]
-  have hfg₀ : PosComboHyp f₀ g₀ := by
+  have hfg₀ : PosComboRealRooted f₀ g₀ := by
     intro lam μ hlam hμ
     have hlam' : 0 < lam * f.leadingCoeff⁻¹ :=
       mul_pos hlam (inv_pos.mpr hf_pos)
     have hμ' : 0 < μ * g.leadingCoeff⁻¹ :=
       mul_pos hμ (inv_pos.mpr hg_pos)
+    have hcombo := hfg hlam' hμ'
     grind
   have hf₀_rr : (f₀ ≠ 0 ∧ f₀.Splits) :=
-    isRealRooted_left_of_posComboRealRooted_monic_sameDegree
+    isRealRooted_left_of_monic_sameDegree
       (hfg := hfg₀) hf₀_monic hg₀_monic hdeg₀
   have hf_scale : C f.leadingCoeff * f₀ = f := by
     unfold f₀
@@ -335,19 +321,19 @@ theorem isRealRooted_left_of_posComboRealRooted_sameDegree
   lia
 
 /-- Symmetric right-side version of
-`isRealRooted_left_of_posComboRealRooted_sameDegree`. -/
-theorem isRealRooted_right_of_posComboRealRooted_sameDegree
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+`isRealRooted_left_of_sameDegree`. -/
+theorem isRealRooted_right_of_sameDegree
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree) : (g ≠ 0 ∧ g.Splits) := by
   simpa [eq_comm] using
-    isRealRooted_left_of_posComboRealRooted_sameDegree
+    isRealRooted_left_of_sameDegree
       (hfg := hfg.comm) hg_pos hf_pos hdeg.symm
 
 /-- Closed-segment positive-combination real-rootedness: for `0 < β < 1`, the
 strict-interior convex combination `C (1 - β) * f + C β * g` is nonzero and
 splits. -/
-lemma isRealRooted_closedSegment {f g : ℝ[X]} (hfg : PosComboHyp f g)
+lemma isRealRooted_closedSegment {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
     ((C (1 - β) * f + C β * g) ≠ 0 ∧ (C (1 - β) * f + C β * g).Splits) :=
   hfg (by linarith) hβ0
@@ -356,7 +342,7 @@ lemma isRealRooted_closedSegment {f g : ℝ[X]} (hfg : PosComboHyp f g)
 real-rootedness.  A strict-interior closed-segment member is a nonzero scalar
 multiple of the right-family perturbation `f + C (β / (1 - β)) * g`. -/
 theorem exists_root_near_closedSegment
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a β ε : ℝ}
     (ha : f.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -383,7 +369,7 @@ theorem exists_root_near_closedSegment
 /-- Complex-root-continuity bridge for the closed segment under
 positive-combination real-rootedness. -/
 theorem exists_complex_aroot_near_closedSegment
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {z : ℂ} {β ε : ℝ}
     (hz : f.aeval z = 0)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -427,7 +413,7 @@ theorem exists_beta_pos_with_normalized_closedSegment_bound
 interior parameter.  Given `ε > 0`, this returns `0 < β < 1` and a root of
 `C (1 - β) * f + C β * g` near the chosen root of `f`. -/
 theorem exists_beta_and_root_near_closedSegment
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a ε : ℝ}
     (ha : f.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -447,7 +433,7 @@ theorem exists_beta_and_root_near_closedSegment
 /-- Complex-root continuity along the closed segment with an automatically
 chosen interior parameter. -/
 theorem exists_beta_and_complex_aroot_near_closedSegment
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {z : ℂ} {ε : ℝ}
     (hz : f.aeval z = 0)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -470,10 +456,10 @@ theorem exists_beta_and_complex_aroot_near_closedSegment
 This is direct #42 support (closed-segment/root-continuity): given a root `a`
 of `g` and `ε > 0`, it produces an interior parameter `0 < β < 1` and a root of
 the closed-segment member `C (1 - β) * f + C β * g` near `a`.  It is obtained
-from the `f`-side wrapper via `PosComboHyp.comm` and the reflection
+from the `f`-side wrapper via `PosComboRealRooted.comm` and the reflection
 `β ↦ 1 - β`. -/
 theorem exists_beta_and_root_near_closedSegment_right
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a ε : ℝ}
     (ha : g.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -494,10 +480,10 @@ theorem exists_beta_and_root_near_closedSegment_right
 This is direct #42 support (closed-segment/root-continuity): given a complex
 root `z` of `g` and `ε > 0`, it produces an interior parameter `0 < β < 1` and a
 complex root of the closed-segment member `C (1 - β) * f + C β * g` near `z`.
-It is obtained from the `f`-side wrapper via `PosComboHyp.comm` and the
+It is obtained from the `f`-side wrapper via `PosComboRealRooted.comm` and the
 reflection `β ↦ 1 - β`. -/
 theorem exists_beta_and_complex_aroot_near_closedSegment_right
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {z : ℂ} {ε : ℝ}
     (hz : g.aeval z = 0)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -535,7 +521,7 @@ parameter `0 < β < 1` and a root of the closed-segment member
 `C (1 - β) * f + C β * g` near `a`. The distance bound is stated uniformly in
 `f.natDegree` because the two endpoint degrees agree under `hdeg`. -/
 theorem exists_beta_and_root_near_closedSegment_or
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a ε : ℝ}
     (ha : f.IsRoot a ∨ g.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -559,7 +545,7 @@ interior parameter `0 < β < 1` and a complex root of the closed-segment member
 `C (1 - β) * f + C β * g` near `z`, with the distance bound stated uniformly in
 `f.natDegree` because the endpoint degrees agree under `hdeg`. -/
 theorem exists_beta_and_complex_aroot_near_closedSegment_or
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {z : ℂ} {ε : ℝ}
     (hz : f.aeval z = 0 ∨ g.aeval z = 0)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -587,7 +573,7 @@ theorem mul_aeval_eq_zero_iff_or {f g : ℝ[X]} {z : ℂ} :
 
 /-- Product-root form of closed-segment real-root continuity. -/
 theorem exists_beta_and_root_near_closedSegment_of_mul_isRoot
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a ε : ℝ}
     (ha : (f * g).IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -602,7 +588,7 @@ theorem exists_beta_and_root_near_closedSegment_of_mul_isRoot
 
 /-- Product-root form of closed-segment complex-root continuity. -/
 theorem exists_beta_and_complex_aroot_near_closedSegment_of_mul_aeval
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {z : ℂ} {ε : ℝ}
     (hz : (f * g).aeval z = 0)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -617,7 +603,7 @@ theorem exists_beta_and_complex_aroot_near_closedSegment_of_mul_aeval
 
 /-- Multiset-`roots` form of closed-segment real-root continuity. -/
 theorem exists_beta_and_mem_roots_closedSegment_or
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a ε : ℝ}
     (ha : f.IsRoot a ∨ g.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -636,7 +622,7 @@ theorem exists_beta_and_mem_roots_closedSegment_or
 
 /-- Product-root, multiset-`roots` form of closed-segment real-root continuity. -/
 theorem exists_beta_and_mem_roots_closedSegment_of_mul_isRoot
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a ε : ℝ}
     (ha : (f * g).IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -652,7 +638,7 @@ theorem exists_beta_and_mem_roots_closedSegment_of_mul_isRoot
 /-- Left-endpoint continuity that also returns the right-ordered coefficient
 smallness witness. -/
 theorem exists_beta_and_root_near_closedSegment_left_of_bound_right
-    {f g : ℝ[X]} (hfg : PosComboHyp f g)
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {a ε : ℝ}
     (ha : f.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
@@ -677,7 +663,7 @@ This is direct #42 support (closed-segment/root-count): downstream root-count
 and `mem_roots` arguments frequently need exactly the nonvanishing alternative
 of the bundled `≠ 0 ∧ Splits` fact, without having to destructure the
 conjunction at each call site. -/
-theorem ne_zero_closedSegment {f g : ℝ[X]} (hfg : PosComboHyp f g)
+theorem ne_zero_closedSegment {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
     (C (1 - β) * f + C β * g) ≠ 0 :=
   (isRealRooted_closedSegment hfg hβ0 hβ1).1
@@ -688,7 +674,7 @@ lemma.
 This is direct #42 support (closed-segment/root-count): the endpoint-sign and
 root-count route uses the `Splits` alternative of the bundled
 `≠ 0 ∧ Splits` fact on its own. -/
-theorem splits_closedSegment {f g : ℝ[X]} (hfg : PosComboHyp f g)
+theorem splits_closedSegment {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
     (C (1 - β) * f + C β * g).Splits :=
   (isRealRooted_closedSegment hfg hβ0 hβ1).2
@@ -702,13 +688,13 @@ step needs before a continuity transfer -- a valid interior parameter
 `0 < β < 1`, nonvanishing of the segment member `C (1 - β) * f + C β * g`, and
 the normalized coefficient bound. -/
 theorem exists_beta_closedSegment_ne_and_bound
-    {f g : ℝ[X]} (hfg : PosComboHyp f g) {ε : ℝ} (hε : 0 < ε) :
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {ε : ℝ} (hε : 0 < ε) :
     ∃ β : ℝ, 0 < β ∧ β < 1 ∧
       (C (1 - β) * f + C β * g) ≠ 0 ∧
       β * (coeffSumRange f + coeffSumRange g) < ε := by
   obtain ⟨β, hβ0, hβ1, hbound⟩ :=
     exists_beta_pos_with_normalized_closedSegment_bound f g hε
-  grind
+  exact ⟨β, hβ0, hβ1, ne_zero_closedSegment hfg hβ0 hβ1, hbound⟩
 
 /-- Right-endpoint, multiset-`roots` form of closed-segment real-root
 continuity.
@@ -719,7 +705,7 @@ of `(C (1 - β) * f + C β * g).roots` near `a`, with the distance bound stated 
 `g.natDegree`. It is the `g`-first, `roots`-multiset companion of
 `exists_beta_and_mem_roots_closedSegment_or`. -/
 theorem exists_beta_and_mem_roots_closedSegment_right
-    {f g : ℝ[X]} (hfg : PosComboHyp f g) {a ε : ℝ}
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {a ε : ℝ}
     (ha : g.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree = f.natDegree)
@@ -735,7 +721,7 @@ theorem exists_beta_and_mem_roots_closedSegment_right
 
 /-- Left-endpoint multiset-`roots` form of closed-segment root continuity. -/
 theorem exists_beta_and_mem_roots_closedSegment
-    {f g : ℝ[X]} (hfg : PosComboHyp f g) {a ε : ℝ}
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {a ε : ℝ}
     (ha : f.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree = f.natDegree)
@@ -751,7 +737,7 @@ theorem exists_beta_and_mem_roots_closedSegment
 
 /-- Bundled left-or-right real-root continuity along the closed segment. -/
 theorem exists_beta_and_mem_roots_ne_splits_closedSegment_or
-    {f g : ℝ[X]} (hfg : PosComboHyp f g) {a ε : ℝ}
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {a ε : ℝ}
     (ha : f.IsRoot a ∨ g.IsRoot a)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree = f.natDegree)
@@ -770,7 +756,7 @@ theorem exists_beta_and_mem_roots_ne_splits_closedSegment_or
 
 /-- Bundled left-or-right complex-root continuity along the closed segment. -/
 theorem exists_beta_and_aroots_ne_splits_closedSegment_or
-    {f g : ℝ[X]} (hfg : PosComboHyp f g) {z : ℂ} {ε : ℝ}
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {z : ℂ} {ε : ℝ}
     (hz : f.aeval z = 0 ∨ g.aeval z = 0)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree = f.natDegree)
@@ -783,8 +769,8 @@ theorem exists_beta_and_aroots_ne_splits_closedSegment_or
           ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
   obtain ⟨β, hβ0, hβ1, w, hw_root, hw_dist⟩ :=
     exists_beta_and_complex_aroot_near_closedSegment_or hfg hz hf_monic hg_monic hdeg hε
-  grind
+  exact ⟨β, hβ0, hβ1, ne_zero_closedSegment hfg hβ0 hβ1,
+    splits_closedSegment hfg hβ0 hβ1, w, hw_root, hw_dist⟩
 
-end PosComboHyp
-end
+end PosComboRealRooted
 end RealRooted
