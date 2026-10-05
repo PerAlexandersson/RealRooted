@@ -221,8 +221,7 @@ sequence using the proved forward ASW theorem. -/
 theorem of_polyaFreqSeq {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
     IsPFPolynomial p :=
-  let hpnn := hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf
-  ⟨hpnn, aissenSchoenbergWhitneyForwardOrZero hpnn hpf⟩
+  ⟨hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf, aissenSchoenbergWhitneyForwardOrZero hpf⟩
 
 /-- PF endpoint closure for positive affine coefficient limits, using the
 proved forward ASW theorem. -/
@@ -248,7 +247,7 @@ theorem to_sequence
     (hp : IsPFPolynomial p) :
     IsPolyaFreqSeq (fun n => p.coeff n) := by
   by_cases hp0 : p = 0
-  · simpa [hp0] using IsPolyaFreqSeq_zero
+  · simpa [hp0] using isPolyaFreqSeq_zero
   · have hprr := hp.ne_zero_and_splits hp0
     exact aissenSchoenbergWhitney_reverse hp.hasNonnegCoeffs hprr.2 hp.roots_nonpos
 

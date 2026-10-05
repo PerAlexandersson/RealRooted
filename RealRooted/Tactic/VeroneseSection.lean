@@ -24,7 +24,7 @@ theorem isPolyaFreqSeq_veroneseSectionPolynomial_coeff_sequence
     (hr : ∀ n : Nat, 0 < r n)
     (hk : ∀ n : Nat, k n < r n) :
     ∀ n : Nat, IsPolyaFreqSeq (veroneseSectionPolynomial (r n) (k n) (P n)).coeff :=
-  fun n => IsPolyaFreqSeq_veroneseSectionPolynomial_coeff (hpf n) (hr n) (hk n)
+  fun n => isPolyaFreqSeq_veroneseSectionPolynomial_coeff (hpf n) (hr n) (hk n)
 
 theorem veroneseSectionPolynomial_sequence_zero_or_splits_of_pf
     {r k : Nat → Nat} {P : Nat → ℝ[X]}
@@ -118,7 +118,7 @@ macro_rules
         r_pos := $hr:term,
         k_lt_r := $hk:term) =>
       `(tactic|
-        exact RealRooted.IsPolyaFreqSeq_veroneseSectionPolynomial_coeff
+        exact RealRooted.isPolyaFreqSeq_veroneseSectionPolynomial_coeff
           $hp $hr $hk)
   | `(tactic|
       rr_veronese_section_splits_pf using

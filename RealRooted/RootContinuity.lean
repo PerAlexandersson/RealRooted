@@ -53,10 +53,6 @@ theorem add_right_roots_gt_card_eq_add_left_inv
 
 /-! ## Root-continuity and interval count tools -/
 
-/-- A real-rooted polynomial over `ℝ` splits over `ℝ`. -/
-lemma IsRealRooted.splits {p : ℝ[X]} (hp_splits : p.Splits) : p.Splits :=
-  hp_splits
-
 /-- Finite coefficient sup bound over the `natDegree` range. -/
 def coeffSumRange (p : ℝ[X]) : ℝ :=
   Finset.sum (Finset.range (p.natDegree + 1)) fun j => ‖p.coeff j‖
@@ -108,7 +104,7 @@ theorem exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
   obtain ⟨w, hw_mem, hw_dist⟩ :=
     Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
       (f := f) (g := g) (L := ℂ) hε hz hf_monic hg_monic hdeg hcoeff
-      ((IsRealRooted.splits hg_rr_splits).map (algebraMap ℝ ℂ))
+      (hg_rr_splits.map (algebraMap ℝ ℂ))
   grind
 
 /-- Uniform coefficient control for normalized left-family perturbations:
@@ -288,7 +284,7 @@ lemma im_eq_zero_of_mem_aroots_of_isRealRooted
     z.im = 0 := by
   have hz_root : (p.map (algebraMap ℝ ℂ)).IsRoot z := by simp_all
   have hz_range : z ∈ (algebraMap ℝ ℂ).range :=
-    (IsRealRooted.splits hp_splits).mem_range_of_isRoot hp_ne hz_root
+    hp_splits.mem_range_of_isRoot hp_ne hz_root
   rcases hz_range with ⟨r, rfl⟩
   simp
 

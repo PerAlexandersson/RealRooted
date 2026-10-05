@@ -827,7 +827,7 @@ protected theorem IsPolyaFreqSeq.veroneseSectionSeq {a : ℕ → ℝ}
       lia
   simpa [hminor] using ha hrows' hcols'
 
-theorem IsPolyaFreqSeq_veroneseSectionPolynomial_coeff {p : ℝ[X]}
+theorem isPolyaFreqSeq_veroneseSectionPolynomial_coeff {p : ℝ[X]}
     (hp : IsPolyaFreqSeq p.coeff) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     IsPolyaFreqSeq (veroneseSectionPolynomial r k p).coeff := by
@@ -842,16 +842,16 @@ theorem splits_veroneseSectionPolynomial_of_pf {p : ℝ[X]}
       (veroneseSectionPolynomial r k p).Splits :=
   Or.inr
     (aissenSchoenbergWhitneyForward
-      (IsPolyaFreqSeq_veroneseSectionPolynomial_coeff (p := p) hp hr hk)).1
+      (isPolyaFreqSeq_veroneseSectionPolynomial_coeff (p := p) hp hr hk)).1
 
 /-- PF preservation for Veronese sections of real-rooted
 nonnegative-coefficient polynomials, using the reverse ASW theorem. -/
-theorem IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg
+theorem isPolyaFreqSeq_veroneseSectionPolynomial_of_splits_of_hasNonnegCoeffs
     {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hprr : p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     IsPolyaFreqSeq (veroneseSectionPolynomial r k p).coeff :=
-  IsPolyaFreqSeq_veroneseSectionPolynomial_coeff (p := p)
+  isPolyaFreqSeq_veroneseSectionPolynomial_coeff (p := p)
     (aissenSchoenbergWhitney_reverse hpnn hprr (roots_nonpos_of_nonneg_coeffs hprr hpnn))
     hr hk
 
@@ -864,6 +864,6 @@ theorem splits_veroneseSectionPolynomial_of_splits_nonneg {p : ℝ[X]}
       (veroneseSectionPolynomial r k p).Splits :=
   Or.inr
     (aissenSchoenbergWhitneyForward
-      (IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg hpnn hprr hr hk)).1
+      (isPolyaFreqSeq_veroneseSectionPolynomial_of_splits_of_hasNonnegCoeffs hpnn hprr hr hk)).1
 
 end RealRooted
