@@ -63,16 +63,12 @@ theorem schurSzegoComp_splits_of_factors_natDegree_le_two
 
 theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_three_cubicDiscr
     {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f)
     (hfdeg : f.natDegree ≤ 3)
-    (hpdeg : p.natDegree ≤ n)
-    (hsplits : p.Splits)
     (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p))
     (hout : schurSzegoComp n f p ≠ 0) :
     (schurSzegoComp n f p).Splits :=
   Or.resolve_left
-    (finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
-      hf hfdeg hpdeg hsplits hdisc)
+    (finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg hfdeg hdisc)
     hout
 
 theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_three_cubicNum
@@ -264,19 +260,13 @@ syntax (name := rr_schur_szego_factors_degree_le_two_splits_named)
 
 syntax (name := rr_schur_szego_pf_factor_degree_le_three_cubic_named)
   "rr_schur_szego_pf_factor_degree_le_three_cubic" " using "
-    "pf_factor" ":=" term ","
     "pf_degree_le_three" ":=" term ","
-    "input_degree" ":=" term ","
-    "input_splits" ":=" term ","
     "cubic_discriminant" ":=" term :
   tactic
 
 syntax (name := rr_schur_szego_pf_factor_degree_le_three_cubic_splits_named)
   "rr_schur_szego_pf_factor_degree_le_three_cubic_splits" " using "
-    "pf_factor" ":=" term ","
     "pf_degree_le_three" ":=" term ","
-    "input_degree" ":=" term ","
-    "input_splits" ":=" term ","
     "cubic_discriminant" ":=" term ","
     "nonzero" ":=" term :
   tactic
@@ -505,27 +495,21 @@ macro_rules
           $hf $hfdeg $hpdeg $hsplits $hout)
   | `(tactic|
       rr_schur_szego_pf_factor_degree_le_three_cubic using
-        pf_factor := $hf:term,
         pf_degree_le_three := $hfdeg:term,
-        input_degree := $hpdeg:term,
-        input_splits := $hsplits:term,
         cubic_discriminant := $hdisc:term) =>
       `(tactic|
         exact
-          RealRooted.finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
-            $hf $hfdeg $hpdeg $hsplits $hdisc)
+          RealRooted.finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
+            $hfdeg $hdisc)
   | `(tactic|
       rr_schur_szego_pf_factor_degree_le_three_cubic_splits using
-        pf_factor := $hf:term,
         pf_degree_le_three := $hfdeg:term,
-        input_degree := $hpdeg:term,
-        input_splits := $hsplits:term,
         cubic_discriminant := $hdisc:term,
         nonzero := $hout:term) =>
       `(tactic|
         exact
           RealRooted.Tactic.schurSzegoComp_splits_of_pf_factor_natDegree_le_three_cubicDiscr
-            $hf $hfdeg $hpdeg $hsplits $hdisc $hout)
+            $hfdeg $hdisc $hout)
   | `(tactic|
       rr_schur_szego_pf_factor_degree_le_three_num using
         level_ge_three := $hn:term,

@@ -359,14 +359,5 @@ theorem PositiveSplitRootCountPair.natDegree_deleteRootFactor_right_eq_left_add_
   exact natDegree_deleteRootFactor_right_eq_left_add_one_of_natDegree_eq
     hdeg hp_pos
 
-/-- Deleting a common root from both endpoints of a positive-split pair
-preserves the same-degree relation. -/
-theorem PositiveSplitRootCountPair.natDegree_deleteRootFactor_eq
-    {p q : ℝ[X]} (_h : PositiveSplitRootCountPair p q) {r : ℝ}
-    (hdeg : p.natDegree = q.natDegree) :
-    (deleteRootFactor p r).natDegree =
-      (deleteRootFactor q r).natDegree :=
-  natDegree_deleteRootFactor_eq_of_natDegree_eq hdeg
-
 end LiuOppositeSigns
 end RealRooted

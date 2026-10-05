@@ -80,23 +80,6 @@ theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
     simpa [rootSlotInterval, hj0, hjlast, hlen] using
       icc_inter_icc_nonempty_of_crossing hrf_step hrg_step hcross_fg hcross_gf
 
-/-- Non-root-threshold version of the same-degree upper root-count bound.  It
-holds for every such pair (see
-`sameDegree_rootCountAbove_bounds_of_posCombo_noCommon`); the proposition is
-kept only for its `LiuOppositeSigns` callers. -/
-def PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
-
 /-- Same-degree sign/parity bridge in the right-pencil language.  At a common
 non-root threshold, the combined lower root-count parity is equivalent to the
 absence of a positive parameter for which `f + C μ * g` vanishes at the
@@ -581,78 +564,6 @@ theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_two
     (fun x =>
       rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
         hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg x)
-
-/-- Degree-`≤ 3` same-degree root-count route, assuming the two cubic interior
-partial-separation leaves. -/
-theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hfdeg : f.natDegree ≤ 3) (x : ℝ) :
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  by_cases hle : f.natDegree ≤ 2
-  · exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
-  · have hfdeg3 : f.natDegree = 3 := by lia
-    have hgdeg3 : g.natDegree = 3 := by rw [hdeg, hfdeg3]
-    exact sameDegree_cubic_rootCount_le_one_of_interior hbelow habove
-      hfdeg3 hgdeg3
-      (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-      (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-      hf_pos hg_pos hfg x
-
-/-- Degree-`≤ 3` same-degree upper-threshold route, assuming the two cubic
-interior partial-separation leaves. -/
-theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hfdeg : f.natDegree ≤ 3) (x : ℝ) :
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
-  sameDegreeRootCountAbove_of_rootCount
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    hdeg
-    (fun y =>
-      rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
-        hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg y)
-    x
-
-/-- Degree-`≤ 3` same-degree root-crossing route, assuming the two cubic
-interior partial-separation leaves. -/
-theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hfdeg : f.natDegree ≤ 3) :
-    (∀ j, 1 ≤ j → j < f.natDegree →
-        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
-    (∀ j, 1 ≤ j → j < f.natDegree →
-        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
-  rootCrossing_of_rootCountAbove_diff_le_one
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    hdeg
-    (fun x =>
-      rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
-        hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg x)
 
 /-- A same-degree pair of split polynomials whose descending roots cross in
 both interior inequalities has a common interleaver: every matching root-slot

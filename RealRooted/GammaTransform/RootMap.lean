@@ -195,11 +195,6 @@ lemma isRoot_gamma_of_isRoot_gammaTransform {d : ℕ} {γ : ℝ[X]}
   have h1x_ne : 1 + x ≠ 0 := by grind
   simp_all
 
-lemma rootPullback_nonpos_of_gammaTransform {x : ℝ}
-    (hx : x ≠ -1) (hx0 : x ≤ 0) :
-    (x / (1 + x) ^ 2) ≤ 0 :=
-  gammaUntransform_nonpos hx0 hx
-
 lemma gammaTransform_X_sub_C_mul_two {d : ℕ} {γ : ℝ[X]}
     (hγ : γ.natDegree ≤ d / 2) (r : ℝ) :
     gammaTransform (d + 2) ((X - C r) * γ) =

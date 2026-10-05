@@ -102,10 +102,6 @@ example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
     right_coeff_pos := hb
 
 example {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
-    RealRooted.PosComboHyp f g := by
-  rr_pos_combo_to_hyp using pos_combo := hfg
-
-example {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
     PosComboRealRooted g f := by
   rr_pos_combo_comm using pos_combo := hfg
 
@@ -673,70 +669,6 @@ example {f g : ℝ[X]}
   rr_pos_combo_right_closed_segment_succ_degree_realrooted using
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
-    pos_combo := hfg,
-    succ_degree := hsucc
-
-example {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    f.Splits := by
-  rr_pos_combo_left_nonneg_closed_segment_succ_degree_splits using
-    left_pos_lc := hf_pos,
-    right_pos_lc := hg_pos,
-    left_nonneg_coeffs := hfnn,
-    right_nonneg_coeffs := hgnn,
-    pos_combo := hfg,
-    succ_degree := hsucc
-
-example {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    g.Splits := by
-  rr_pos_combo_right_nonneg_closed_segment_succ_degree_splits using
-    left_pos_lc := hf_pos,
-    right_pos_lc := hg_pos,
-    left_nonneg_coeffs := hfnn,
-    right_nonneg_coeffs := hgnn,
-    pos_combo := hfg,
-    succ_degree := hsucc
-
-example {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    (f ≠ 0 ∧ f.Splits) := by
-  rr_pos_combo_left_nonneg_closed_segment_succ_degree_realrooted using
-    left_pos_lc := hf_pos,
-    right_pos_lc := hg_pos,
-    left_nonneg_coeffs := hfnn,
-    right_nonneg_coeffs := hgnn,
-    pos_combo := hfg,
-    succ_degree := hsucc
-
-example {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    (g ≠ 0 ∧ g.Splits) := by
-  rr_pos_combo_right_nonneg_closed_segment_succ_degree_realrooted using
-    left_pos_lc := hf_pos,
-    right_pos_lc := hg_pos,
-    left_nonneg_coeffs := hfnn,
-    right_nonneg_coeffs := hgnn,
     pos_combo := hfg,
     succ_degree := hsucc
 

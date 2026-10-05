@@ -16,12 +16,13 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
-/-- The recurrence hypothesis is accepted combinatorial input from the auxiliary recurrence
-of the paper.  Formalizing the generalized-snake-poset model that proves this
-identity is outside the present scope; from this point onward we derive the
-analytic root information in Lean. -/
+/-- Root sum of the auxiliary polynomial `G_n` from the auxiliary recurrence.
+
+The recurrence is a hypothesis because this module sits below its proof
+`FiniteSkewBoard.narayanaAuxiliaryGRecurrence_modified`
+(`TruncatedStaircase.ColumnRecurrence`). -/
 theorem auxiliaryG_roots_sum_of_narayanaRecurrence
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     {n : ℕ} (hn : 2 ≤ n) :
     (FiniteSkewBoard.auxiliaryG n).roots.sum =
@@ -50,20 +51,18 @@ theorem auxiliaryG_roots_sum_of_narayanaRecurrence
 
 /-- The shifted difference interlacing claim for the concrete modified Narayana family.
 
-The remaining hypotheses are intentionally explicit combinatorial inputs.
-The auxiliary recurrence is the non-nesting-rook recurrence defining auxiliary
-family, while coefficientwise nonnegativity of `G n - G (n - 1)` comes from
-the same board interpretation. We use these facts without formalizing the full
-rook model; all analytic real-rootedness and interlacing steps are proved in
-Lean. -/
+The hypotheses are the combinatorial inputs: the auxiliary recurrence and
+coefficientwise nonnegativity of `G n - G (n - 1)`.  Both are proved in
+`TruncatedStaircase.ColumnRecurrence`, which this module does not import;
+all analytic real-rootedness and interlacing steps are proved here. -/
 theorem shiftedDifferenceInterlacing_modified
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
       HasNonnegCoeffs
         (FiniteSkewBoard.auxiliaryG n -
           FiniteSkewBoard.auxiliaryG (n - 1))) :
-    ShiftedDifferenceInterlacingStatement
+    ShiftedDifferenceInterlacing
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
   shiftedDifferenceInterlacing_modified_of_combinatorial hrec2
     affineModifiedNarayanaInterlacing_modified hH_nonneg
@@ -71,10 +70,10 @@ theorem shiftedDifferenceInterlacing_modified
 /-- The auxiliary interlacing lemma follows from the shifted difference interlacing claim at `lam =
 nu = 0`, apart from
 the already proved `n = 1` base case.  The recurrence and difference
-nonnegativity hypotheses remain the accepted combinatorial inputs documented
-above; this deduction from them is entirely analytic. -/
+nonnegativity hypotheses are the combinatorial inputs documented above; this
+deduction from them is entirely analytic. -/
 theorem auxiliaryGInterlaces_modified
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
       HasNonnegCoeffs
@@ -95,7 +94,7 @@ directly by the auxiliary recurrence and the affine Narayana interlacing lemma; 
 pencil remains a
 separate analytic step. -/
 theorem auxiliaryG_posComboRealRooted_of_narayanaRecurrence
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     {m : ℕ} (hm : 2 ≤ m) :
     PosComboRealRooted (FiniteSkewBoard.auxiliaryG (m - 1))
@@ -124,65 +123,30 @@ theorem auxiliaryG_posComboRealRooted_of_narayanaRecurrence
   exact ⟨mul_ne_zero (by simpa using hmu_ne) hV_pos.ne_zero,
     hV_split.C_mul mu⟩
 
-private theorem strictInterl_narayanaPolynomial_two (n : ℕ) :
-    StrictInterl (narayanaPolynomial 2 n) (narayanaPolynomial 2 (n + 1)) := by
-  cases n with
-  | zero =>
-      rw [narayanaPolynomial_one]
-      simpa using
-        (interlaces_one_linear (Polynomial.natDegree_X_add_C (1 : ℝ))).toStrictInterl
-  | succ n =>
-      simpa [Nat.succ_eq_add_one, Nat.add_assoc] using
-        strictInterl_narayanaPolynomial_succ 2 n
-
-/-- Consecutive auxiliary polynomials are in an interlacing relation under an additional
-identification with parameter-two generalized Narayana polynomials.
-
-This identity is not an input used in Braun--Jal's proof of the snake interlacing theorem; their
-proof instead uses the `[P, G; Q, H]` matrix and the difference interlacing claim.  This theorem is
-therefore an optional stronger route and `hG_model` requires an independent
-justification. -/
-theorem auxiliaryG_strictInterl_succ_of_narayanaTwoModel
-    (hG_model : ∀ n : ℕ, 1 ≤ n →
-      FiniteSkewBoard.auxiliaryG n =
-        C (n : ℝ) * narayanaPolynomial 2 (n - 1)) :
-    ∀ {m : ℕ}, 2 ≤ m →
-      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1))
-        (FiniteSkewBoard.auxiliaryG m) := by
-  intro m hm
-  rw [hG_model (m - 1) (by lia), hG_model m (by lia)]
-  have hstrictInterl := strictInterl_narayanaPolynomial_two (m - 2)
-  have hm1_ne : ((m - 1 : ℕ) : ℝ) ≠ 0 := by exact_mod_cast (show m - 1 ≠ 0 by lia)
-  have hscaled :=
-    (hstrictInterl.C_mul_left hm1_ne).C_mul_right
-      (show (m : ℝ) ≠ 0 by positivity)
-  have hleft : m - 1 - 1 = m - 2 := by lia
-  have hright : m - 2 + 1 = m - 1 := by lia
-  simpa [hleft, hright] using hscaled
-
 /-- Snake-interlacing through the source `[P, G; Q, H]` matrix.
 
-The hypotheses are the intended combinatorial trust boundary.  The auxiliary recurrence,
-nonnegativity of the board difference `H`, the snake recurrence, the degree identity,
-and the constant-word staircase identity come from the non-nesting-rook model;
-formalizing that complete model is outside the present scope.  No hypothesis
-assumes real-rootedness, interlacing, or splitting. -/
+The hypotheses are the combinatorial inputs: the auxiliary recurrence,
+nonnegativity of the board difference `H`, the snake recurrence, the degree
+identity, and the constant-word staircase identity.  No hypothesis assumes
+real-rootedness, interlacing, or splitting.  All of them are proved for the
+concrete non-nesting-rook model in `snakeInterlacing_generalizedSnakeRookModel`
+(`SnakeRecurrence`). -/
 theorem nonNestingRookInterlacing_modified_of_sourceInputs
     {M : SnakeWord → ℝ[X]}
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
       HasNonnegCoeffs
         (FiniteSkewBoard.auxiliaryG n -
           FiniteSkewBoard.auxiliaryG (n - 1)))
-    (hrec : GeneralizedSnakeRecurrenceStatement M
+    (hrec : GeneralizedSnakeRecurrence M
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
     (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
       (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
       M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    NonNestingRookInterlacingStatement M :=
+    NonNestingRookInterlacing M :=
   snakeInterlacing_of_differenceInterlacing_of_constant_matches_succ_length
     (M := M) (P := modifiedNarayanaPolynomial)
     (G := FiniteSkewBoard.auxiliaryG)

@@ -275,18 +275,4 @@ theorem succDegreeRootCount_of_divX_coeff_zero {f g : ℝ[X]}
   · rw [hgf]
     exact (hcount x).2
 
-/-- Succ-degree upper-threshold count bounds lift across a common zero
-constant term. -/
-theorem succDegreeRootCountAbove_of_divX_coeff_zero {f g : ℝ[X]}
-    (hf : f ≠ 0) (hg : g ≠ 0) (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0)
-    (hcount : ∀ x : ℝ,
-      ((f.divX.roots.filter (x < ·)).card : ℤ) -
-          (g.divX.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.divX.roots.filter (x < ·)).card : ℤ) -
-          (f.divX.roots.filter (x < ·)).card ≤ 1) :
-    ∀ x : ℝ,
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
-  rootCountAbove_diff_le_one_of_divX_coeff_zero hf hg hf0 hg0 hcount
-
 end RealRooted

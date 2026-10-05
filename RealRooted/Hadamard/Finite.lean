@@ -31,7 +31,8 @@ theorem finiteSchurSzegoComposition_of_natDegree_le_two
     simpa [gamma] using hf.jensenPolynomial_normalized_coeff_of_natDegree_le hfdeg
   rw [schurSzegoComp_comm]
   simpa [gamma, schurSzegoComp_eq_diagonalOperator] using
-    finitePolyaSchurNonnegBackward_of_natDegree_le_two hn hgamma hjensen hpdeg hsplit
+    isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two hn hgamma hjensen hpdeg
+      hsplit
 
 /-- Nonzero-core version of the checked degree-`≤ 2` Schur--Szegő composition
 case. -/

@@ -267,10 +267,13 @@ theorem affineModifiedNarayana_right_eval_mul_prev_nonpos
 
 /-- The affine Narayana interlacing lemma in shifted nonnegative-parameter form for the
 modified Narayana family. -/
-theorem affineModifiedNarayanaShiftedInterlacing_modified :
-    AffineModifiedNarayanaShiftedInterlacingStatement
-      modifiedNarayanaPolynomial := by
-  intro m lam mu hm hlam hmu
+theorem affineModifiedNarayanaShiftedInterlacing_modified {m : ℕ} {lam mu : ℝ}
+    (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    StrictInterl
+      ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m)
+      ((C lam * X + C mu) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1)) := by
   have hm1 : 1 ≤ m := by linarith
   have hleft_interlaces :
       Interlaces (modifiedNarayanaPolynomial (m - 1))
@@ -305,9 +308,27 @@ theorem affineModifiedNarayanaShiftedInterlacing_modified :
 /-- The affine Narayana interlacing lemma in the paper's `ν ≥ -1` form for the modified
 Narayana family. -/
 theorem affineModifiedNarayanaInterlacing_modified :
-    AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial :=
-  affineModifiedNarayanaInterlacing_of_shifted
-    affineModifiedNarayanaShiftedInterlacing_modified
+    AffineModifiedNarayanaInterlacing modifiedNarayanaPolynomial := by
+  intro m lam nu hm hlam hnu
+  have hbase := affineModifiedNarayanaShiftedInterlacing_modified
+    (m := m) (lam := lam) (mu := nu + 1) hm hlam (by linarith)
+  have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by simp
+  have hleft :
+      ((C lam * X + C (nu + 1)) * modifiedNarayanaPolynomial (m - 1) +
+          narayanaDifference modifiedNarayanaPolynomial m) =
+        ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+          modifiedNarayanaPolynomial m) := by
+    rw [narayanaDifference, hC]
+    ring_nf
+  have hright :
+      ((C lam * X + C (nu + 1)) * modifiedNarayanaPolynomial m +
+          narayanaDifference modifiedNarayanaPolynomial (m + 1)) =
+        ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+          modifiedNarayanaPolynomial (m + 1)) := by
+    rw [narayanaDifference, hC]
+    simp only [Nat.add_sub_cancel]
+    ring_nf
+  rwa [hleft, hright] at hbase
 
 end GeneralizedSnakePosets
 end RealRooted

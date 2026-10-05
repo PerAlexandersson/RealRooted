@@ -51,8 +51,10 @@ theorem strictInterl_polarTheta_self {N : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial
     rw [hq, ← polarTheta_eq_reciprocalShift_theta_reciprocalShift N p hpdeg]
   simpa [hinvol, hpolar] using htransport
 
-/-- Shared affine-family proof of the derivative--polar comparison. -/
-private theorem strictInterl_derivative_polarTheta_of_le
+/-- Boundary form of `strictInterl_derivative_polarTheta`, with nonvanishing supplied
+explicitly when the polar operator may drop the leading degree.  This is the shared
+affine-family proof of the derivative--polar comparison. -/
+theorem strictInterl_derivative_polarTheta_boundary
     {M : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p)
     (hpdeg : 2 ≤ p.natDegree) (hpM : p.natDegree ≤ M)
     (hpolar0 : polarTheta M p ≠ 0)
@@ -200,17 +202,8 @@ theorem strictInterl_derivative_polarTheta {M : ℕ} {p : ℝ[X]}
       simp
     rw [hstep.2] at hlead
     exact htop hlead
-  exact strictInterl_derivative_polarTheta_of_le hp hpdeg (le_of_lt hpM)
+  exact strictInterl_derivative_polarTheta_boundary hp hpdeg (le_of_lt hpM)
     hpolar0 hpolar_p
-
-/-- Boundary form of `strictInterl_derivative_polarTheta`, with nonvanishing supplied
-explicitly when the polar operator may drop the leading degree. -/
-theorem strictInterl_derivative_polarTheta_boundary {M : ℕ} {p : ℝ[X]}
-    (hp : IsPFPolynomial p) (hpdeg : 2 ≤ p.natDegree)
-    (hpM : p.natDegree ≤ M) (hpolar0 : polarTheta M p ≠ 0)
-    (hpolar_p : StrictInterl (polarTheta M p) p) :
-    StrictInterl p.derivative (polarTheta M p) :=
-  strictInterl_derivative_polarTheta_of_le hp hpdeg hpM hpolar0 hpolar_p
 
 /-- The same boundary comparison with zero-aware interlacing. -/
 theorem interl_derivative_polarTheta_boundary {M : ℕ} {p : ℝ[X]}

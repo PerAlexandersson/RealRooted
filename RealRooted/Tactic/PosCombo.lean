@@ -183,10 +183,6 @@ syntax (name := rr_pos_combo_sequence_positive_realrooted_named)
     "right_coeff_pos" ":=" term :
   tactic
 
-syntax (name := rr_pos_combo_to_hyp_named)
-  "rr_pos_combo_to_hyp" " using " "pos_combo" ":=" term :
-  tactic
-
 syntax (name := rr_pos_combo_comm_named)
   "rr_pos_combo_comm" " using " "pos_combo" ":=" term :
   tactic
@@ -572,46 +568,6 @@ syntax (name := rr_pos_combo_right_closed_segment_succ_degree_realrooted_named)
     "succ_degree" ":=" term :
   tactic
 
-syntax (name := rr_pos_combo_left_nonneg_closed_segment_succ_degree_splits_named)
-  "rr_pos_combo_left_nonneg_closed_segment_succ_degree_splits" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
-    "pos_combo" ":=" term ","
-    "succ_degree" ":=" term :
-  tactic
-
-syntax (name := rr_pos_combo_right_nonneg_closed_segment_succ_degree_splits_named)
-  "rr_pos_combo_right_nonneg_closed_segment_succ_degree_splits" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
-    "pos_combo" ":=" term ","
-    "succ_degree" ":=" term :
-  tactic
-
-syntax (name := rr_pos_combo_left_nonneg_closed_segment_succ_degree_realrooted_named)
-  "rr_pos_combo_left_nonneg_closed_segment_succ_degree_realrooted" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
-    "pos_combo" ":=" term ","
-    "succ_degree" ":=" term :
-  tactic
-
-syntax (name := rr_pos_combo_right_nonneg_closed_segment_succ_degree_realrooted_named)
-  "rr_pos_combo_right_nonneg_closed_segment_succ_degree_realrooted" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
-    "pos_combo" ":=" term ","
-    "succ_degree" ":=" term :
-  tactic
-
 macro_rules
   | `(tactic|
       rr_pos_combo_nonneg_right_strict_interl using
@@ -677,8 +633,6 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.posCombo_sequence_positive_realrooted
           $hfg $hfpos $hgpos $ha $hb)
-  | `(tactic| rr_pos_combo_to_hyp using pos_combo := $hfg:term) =>
-      `(tactic| exact RealRooted.PosComboRealRooted.toPosComboHyp $hfg)
   | `(tactic| rr_pos_combo_comm using pos_combo := $hfg:term) =>
       `(tactic| exact RealRooted.PosComboRealRooted.comm $hfg)
   | `(tactic| rr_pos_combo_sequence_comm using pos_combo := $hfg:term) =>
@@ -1055,8 +1009,8 @@ macro_rules
         pos_combo := $hfg:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
-        exact RealRooted.left_splits_closedSegment_of_succDegree
-          $hfpos $hgpos $hfg $hsucc)
+        exact RealRooted.PosComboRealRooted.left_splits_of_succDegree
+          $hfg $hfpos $hgpos $hsucc)
   | `(tactic|
       rr_pos_combo_right_closed_segment_succ_degree_splits using
         left_pos_lc := $hfpos:term,
@@ -1064,8 +1018,8 @@ macro_rules
         pos_combo := $hfg:term,
         succ_degree := $hsucc:term) =>
       `(tactic|
-        exact RealRooted.right_splits_closedSegment_of_succDegree
-          $hfpos $hgpos $hfg $hsucc)
+        exact RealRooted.PosComboRealRooted.right_splits_of_succDegree
+          $hfg $hfpos $hgpos $hsucc)
   | `(tactic|
       rr_pos_combo_left_closed_segment_succ_degree_realrooted using
         left_pos_lc := $hfpos:term,
@@ -1084,52 +1038,6 @@ macro_rules
       `(tactic|
         exact RealRooted.right_ne_zero_and_splits_closedSegment_of_succDegree
           $hfpos $hgpos $hfg $hsucc)
-  | `(tactic|
-      rr_pos_combo_left_nonneg_closed_segment_succ_degree_splits using
-        left_pos_lc := $hfpos:term,
-        right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
-        pos_combo := $hfg:term,
-        succ_degree := $hsucc:term) =>
-      `(tactic|
-        exact RealRooted.left_splits_nonneg_closedSegment_of_succDegree
-          $hfpos $hgpos $hfnn $hgnn $hfg $hsucc)
-  | `(tactic|
-      rr_pos_combo_right_nonneg_closed_segment_succ_degree_splits using
-        left_pos_lc := $hfpos:term,
-        right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
-        pos_combo := $hfg:term,
-        succ_degree := $hsucc:term) =>
-      `(tactic|
-        exact RealRooted.right_splits_nonneg_closedSegment_of_succDegree
-          $hfpos $hgpos $hfnn $hgnn $hfg $hsucc)
-  | `(tactic|
-      rr_pos_combo_left_nonneg_closed_segment_succ_degree_realrooted using
-        left_pos_lc := $hfpos:term,
-        right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
-        pos_combo := $hfg:term,
-        succ_degree := $hsucc:term) =>
-      `(tactic|
-        exact
-          RealRooted.left_ne_zero_and_splits_nonneg_closedSegment_of_succDegree
-            $hfpos $hgpos $hfnn $hgnn $hfg $hsucc)
-  | `(tactic|
-      rr_pos_combo_right_nonneg_closed_segment_succ_degree_realrooted using
-        left_pos_lc := $hfpos:term,
-        right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
-        pos_combo := $hfg:term,
-        succ_degree := $hsucc:term) =>
-      `(tactic|
-        exact
-          RealRooted.right_ne_zero_and_splits_nonneg_closedSegment_of_succDegree
-            $hfpos $hgpos $hfnn $hgnn $hfg $hsucc)
 
 end Tactic
 end RealRooted

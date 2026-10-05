@@ -23,8 +23,8 @@ theorem C_mul_add_C_mul_left_of_pairwise_three
     {a b c : ℝ[X]} {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t)
     (ha : a ≠ 0 ∧ a.Splits) (hb : b ≠ 0 ∧ b.Splits) (hc : c ≠ 0 ∧ c.Splits)
     (hapos : HasPosLeadingCoeff a) (hbpos : HasPosLeadingCoeff b)
-    (hcpos : HasPosLeadingCoeff c) (hann : HasNonnegCoeffs a)
-    (hbnn : HasNonnegCoeffs b) (hcnn : HasNonnegCoeffs c)
+    (hcpos : HasPosLeadingCoeff c) (_hann : HasNonnegCoeffs a)
+    (_hbnn : HasNonnegCoeffs b) (_hcnn : HasNonnegCoeffs c)
     (hab : Compatible a b) (hac : Compatible a c) (hbc : Compatible b c) :
     Compatible (C s * a + C t * b) c := by
   let fs : List ℝ[X] := [a, b, c]
@@ -39,13 +39,6 @@ theorem C_mul_add_C_mul_left_of_pairwise_three
     · exact hapos
     · exact hbpos
     · exact hcpos
-  have hnn : ∀ f ∈ fs, HasNonnegCoeffs f := by
-    intro f hf
-    simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hf
-    rcases hf with rfl | rfl | rfl
-    · exact hann
-    · exact hbnn
-    · exact hcnn
   have hpair : PairwiseCompatible fs := by
     apply pairwiseCompatible_of_forall_mem
     intro f hf g hg
@@ -61,8 +54,7 @@ theorem C_mul_add_C_mul_left_of_pairwise_three
     · exact hbc.comm
     · exact Compatible.self_of_splits hc.2
   have hfam : FamilyCompatible fs :=
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
-      (fs := fs) hrr hpos hnn).1 hpair
+    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible (fs := fs) hrr hpos).1 hpair
   intro α β hα hβ
   let ws : List (ℝ × ℝ[X]) := [(α * s, a), (α * t, b), (β, c)]
   have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by

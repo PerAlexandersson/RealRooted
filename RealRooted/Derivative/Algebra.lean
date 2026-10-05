@@ -18,27 +18,22 @@ using API that is stable across the Mathlib versions this file is built against.
 -/
 
 /-- Exact `natDegree` of a derivative over `ℝ` (a characteristic-zero field). -/
+@[deprecated Polynomial.natDegree_derivative (since := "2026-10-05")]
 lemma natDegree_derivative_eq (p : ℝ[X]) :
     p.derivative.natDegree = p.natDegree - 1 :=
   p.natDegree_derivative
 
 /-- A polynomial of `natDegree` zero has vanishing derivative. -/
+@[deprecated Polynomial.derivative_eq_zero (since := "2026-10-05")]
 lemma derivative_eq_zero_of_natDegree_eq_zero {p : ℝ[X]} (h : p.natDegree = 0) :
-    p.derivative = 0 := by
-  rw [eq_C_of_natDegree_eq_zero h, derivative_C]
+    p.derivative = 0 :=
+  Polynomial.derivative_eq_zero.mpr h
 
 /-- A polynomial of positive `natDegree` has a nonzero derivative. -/
+@[deprecated Polynomial.derivative_ne_zero (since := "2026-10-05")]
 lemma derivative_ne_zero_of_natDegree_ne_zero {p : ℝ[X]} (h : p.natDegree ≠ 0) :
-    p.derivative ≠ 0 := fun hc => by
-  have hp0 : p ≠ 0 := fun hpc => h (by simp [hpc])
-  have hidx : p.natDegree - 1 + 1 = p.natDegree := by lia
-  have hcoeff : p.derivative.coeff (p.natDegree - 1) ≠ 0 := by
-    rw [Polynomial.coeff_derivative, hidx]
-    refine mul_ne_zero ?_ (by positivity)
-    change p.leadingCoeff ≠ 0
-    exact Polynomial.leadingCoeff_ne_zero.mpr hp0
-  rw [hc] at hcoeff
-  simp at hcoeff
+    p.derivative ≠ 0 :=
+  Polynomial.derivative_ne_zero.mpr h
 
 /-- A polynomial of `natDegree` zero splits in the zero-aware convention. -/
 lemma splits_of_natDegree_eq_zero {p : ℝ[X]} (h : p.natDegree = 0) :
