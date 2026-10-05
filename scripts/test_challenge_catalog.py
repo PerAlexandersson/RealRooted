@@ -136,6 +136,25 @@ end RealRooted.Challenges.Sample
             resolved["RealRooted.Challenges.Sample.index?_eq"].actual_kind, "theorem"
         )
 
+    def test_subscript_names_are_distinct_declarations(self) -> None:
+        text = catalog_block(
+            definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.embedComplₗ"',
+            theorems='[[theorems]]\nname = "RealRooted.Challenges.Sample.forall₂_le"',
+        ) + '''namespace RealRooted.Challenges.Sample
+def embedCompl : Nat := 1
+def embedComplₗ : Nat := 2
+theorem forall₂_le : True := trivial
+end RealRooted.Challenges.Sample
+'''
+        self.write("RealRooted/Challenges/Sample.lean", text)
+        resolved = validate_sources(self.root, load_catalog(self.root))
+        self.assertEqual(
+            resolved["RealRooted.Challenges.Sample.embedComplₗ"].actual_kind, "definition"
+        )
+        self.assertEqual(
+            resolved["RealRooted.Challenges.Sample.forall₂_le"].actual_kind, "theorem"
+        )
+
     def test_namespace_modifiers_multiline_and_type_mismatch(self) -> None:
         pages, resolved = self.pages_and_sources()
         self.assertEqual(resolved["RealRooted.Challenges.Sample.family"].actual_kind, "definition")

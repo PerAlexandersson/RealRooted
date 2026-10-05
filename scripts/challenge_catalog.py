@@ -25,11 +25,23 @@ from urllib.parse import urlsplit
 
 
 BASE_PATH = "/RealRooted/"
+# Lean identifier characters (Lean's `isLetterLike` and `isSubScriptAlnum`), so
+# names such as `embedComplₗ` or `forall₂_le` are not truncated to an ASCII prefix.
+_LEAN_LETTER = (
+    "A-Za-z_"
+    "\u03b1-\u03ba\u03bc-\u03c9"  # Greek lowercase except λ
+    "\u0391-\u039f\u03a1\u03a4-\u03a9"  # Greek uppercase except Π, Σ
+    "\u03ca-\u03fb\u1f00-\u1ffe\u2100-\u214f\U0001d49c-\U0001d59f"
+)
+_LEAN_SUBSCRIPT = "\u2080-\u2089\u2090-\u209c\u1d62-\u1d6a\u2c7c"
+ID_START = f"[{_LEAN_LETTER}]"
+ID_REST = f"[{_LEAN_LETTER}0-9'!?{_LEAN_SUBSCRIPT}]"
+ID_REST_DOT = f"[{_LEAN_LETTER}0-9'!?.{_LEAN_SUBSCRIPT}]"
 SECTIONS = ("concepts", "families", "theorems")
 ALLOWED_AXIOMS = frozenset({"propext", "Classical.choice", "Quot.sound"})
-NAME_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_'.?!]*(?:\.[A-Za-z_][A-Za-z0-9_'.?!]*)+")
+NAME_RE = re.compile(f"{ID_START}{ID_REST_DOT}*(?:\\.{ID_START}{ID_REST_DOT}*)+")
 SLUG_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
-MODULE_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_'.]*(?:\.[A-Za-z_][A-Za-z0-9_'.]*)*")
+MODULE_RE = re.compile(f"{ID_START}{ID_REST_DOT}*(?:\\.{ID_START}{ID_REST_DOT}*)*")
 METADATA_RE = re.compile(r"<!--\s*realrooted-catalog\s*\n(.*?)-->", re.DOTALL)
 CONTENT_RE = re.compile(
     r"<!--\s*realrooted-catalog-content\s*-->\s*\n?(.*?)"
@@ -40,10 +52,10 @@ DECLARATION_RE = re.compile(
     r"^\s*(?P<attributes>(?:@\[[^\n]*\]\s*)*)"
     r"(?P<modifiers>(?:(?:private|protected|noncomputable|unsafe|partial)\s+)*)"
     r"(?P<kind>theorem|lemma|def|abbrev|structure|inductive|class|opaque|instance)\s+"
-    r"(?P<name>[A-Za-z_][A-Za-z0-9_'.?!]*)(?![A-Za-z0-9_'.?!])"
+    f"(?P<name>{ID_START}{ID_REST_DOT}*)(?!{ID_REST_DOT})"
 )
-NAMESPACE_RE = re.compile(r"^\s*namespace\s+([A-Za-z_][A-Za-z0-9_'.]*)\s*$")
-END_NAMESPACE_RE = re.compile(r"^\s*end\s+([A-Za-z_][A-Za-z0-9_'.]*)\s*$")
+NAMESPACE_RE = re.compile(f"^\\s*namespace\\s+({ID_START}{ID_REST_DOT}*)\\s*$")
+END_NAMESPACE_RE = re.compile(f"^\\s*end\\s+({ID_START}{ID_REST_DOT}*)\\s*$")
 IMPORT_RE = re.compile(
     r"^\s*(?:(?:public|private)\s+)?import\s+([A-Za-z_][A-Za-z0-9_'.]*)\s*$"
 )
