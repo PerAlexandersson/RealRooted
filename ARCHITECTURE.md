@@ -632,18 +632,15 @@ and its elementary endpoint consequences. The
 root-count transport first, then the finite-gap invariant, then the left/right
 Theorem 2.1 branch predicate. `Theorem21Statements.CommonRootDeletion` owns the
 independent shared-factor reduction, and `Theorem21Statements.Interfaces`
-combines the two branches into the theorem-shaped targets and implication
-wrappers. The historical `Theorem21Statements` path remains a compatibility
+keeps only the refuted published forward direction beside its checked
+negation. The historical `Theorem21Statements` path remains a compatibility
 facade, and consumers needing only the predicate import `NoCommonRoots`
 directly.
 
-`LiuOppositeSigns.FactorReturnAssembly` is a compatibility facade over the
-factor-return theorem route. `LeftDegreeCases` owns the translated and
-x-subtraction realizations of the three left deletion branches;
-`RightDegreeCases` obtains the symmetric right branches and their endpoint
-specializations; `PredicateDegreeCases` combines both orientations under
-lower-endpoint predicates; and `DegreeCaseAssembly` packages the final six-case
-factor-return principle.
+`LiuOppositeSigns.FactorReturnAssembly` proves the reverse direction of
+Theorem 2.1. `FactorReturnLeft` and `FactorReturnTwoDegree` reduce the three
+degree cases of a left deletion branch to the positive-split x-subtraction
+pencils of `XSub.IntervalRootCount`; the right branch follows by symmetry.
 
 `LiuOppositeSigns.XSub.ProperPosition` is a narrow bridge from the ordinary
 positive-leading `StrictInterl` interface to Liu's positive root-count package. It
@@ -668,13 +665,12 @@ families in proof dependency order; and `Endpoints` derives the degree-three
 interface. The facade preserves the previous public import path.
 
 `LiuOppositeSigns.XSub.QuarticCubicBoundary` now exposes the analogous boundary
-dependency graph. `Statements` owns the six proposition-valued package
-interfaces; `RepeatedRight` proves the independent strict-left repeated-right
-branch; `QuarticSubQuadratic` owns the endpoint factor and right-only zero
-package; `RepeatedLeft` builds on that factor; `EndpointZero` combines the two
-completed boundary branches; and `Assembly` derives the normalized terminal.
-The 9-line facade preserves the former import path. The implementation units
-have 88, 434, 1,022, 707, 550, and 200 lines, respectively.
+dependency graph. `RepeatedRight` proves the independent strict-left
+repeated-right branch; `QuarticSubQuadratic` owns the endpoint factor and
+right-only zero case; `RepeatedLeft` builds on that factor; `EndpointZero`
+combines the two endpoint-zero cases; and `Assembly` proves the normalized
+quartic/cubic splitting theorem. The 9-line facade preserves the former import
+path.
 
 The Cayley-transform extraction is entirely Mathlib-shaped:
 

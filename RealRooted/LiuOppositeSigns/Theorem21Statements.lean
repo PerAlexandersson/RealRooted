@@ -1,8 +1,8 @@
 import RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces
 
 /-!
-# Liu opposite-sign compatibility theorem targets
+# Liu Theorem 2.1 branch layer
 
 Compatibility import for the no-common-root crossing analysis, common-root
-deletion, and theorem-interface assembly.
+deletion, and the refuted published forward statement.
 -/

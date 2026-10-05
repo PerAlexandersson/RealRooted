@@ -4,96 +4,15 @@ import RealRooted.QuadraticRoot
 /-!
 # Liu same-degree and right-successor x-subtraction base cases
 
-This module contains the generic positive-split translated x-subtraction
-interface for the same-degree and right-successor branches, together with the
-constant and linear endpoint cases.
+This module contains the constant and linear endpoint cases of the
+positive-split translated x-subtraction pencils for the same-degree and
+right-successor branches.
 -/
 
 open Polynomial Filter
 
 namespace RealRooted
 namespace LiuOppositeSigns
-
-/-- Positive-split x-subtraction target for an arbitrary endpoint degree
-relation.  This is the common statement shape behind the same-, right-successor,
-and left-successor translated half-pencil leaves. -/
-def positiveSplitTranslatedXSubRightFamilyRelationStatement
-    (R : ℕ → ℕ → Prop) : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄ (r : ℝ),
-    PositiveSplitRootCountPair f g →
-    HasNonnegCoeffs (f.comp (X + C r)) →
-    HasNonnegCoeffs (g.comp (X + C r)) →
-    R f.natDegree g.natDegree →
-    ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits
-
-/-- Predicate-restricted positive-split x-subtraction target for an arbitrary
-endpoint degree relation.  The predicate records endpoint restrictions on
-`g.natDegree`. -/
-def positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement
-    (R : ℕ → ℕ → Prop) (P : ℕ → Prop) : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄ (r : ℝ),
-    PositiveSplitRootCountPair f g →
-    HasNonnegCoeffs (f.comp (X + C r)) →
-    HasNonnegCoeffs (g.comp (X + C r)) →
-    R f.natDegree g.natDegree →
-    P g.natDegree →
-    ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits
-
-/-- Predicate-restricted relation x-subtraction targets transport along
-endpoint predicate implications. -/
-theorem positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement_of_imp
-    {R : ℕ → ℕ → Prop} {P Q : ℕ → Prop} (hPQ : ∀ n, P n → Q n)
-    (hQ :
-      positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement R Q) :
-    positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement R P := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg μ hμ
-  exact hQ r hpair hfnn hgnn hdeg (hPQ _ hgdeg) μ hμ
-
-/-- The unrestricted relation x-subtraction target is the `P := True` case of
-the predicate-restricted target. -/
-theorem positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
-    {R : ℕ → ℕ → Prop}
-    (hsub : positiveSplitTranslatedXSubRightFamilyRelationStatement R) :
-    positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement R
-      (fun _ => True) := by
-  intro f g r hpair hfnn hgnn hdeg _ μ hμ
-  exact hsub r hpair hfnn hgnn hdeg μ hμ
-
-/-- A `P := True` relation x-subtraction target gives the unrestricted
-relation target. -/
-theorem positiveSplitTranslatedXSubRightFamilyRelation_of_predicate_true
-    {R : ℕ → ℕ → Prop}
-    (hsub :
-      positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement R
-        (fun _ => True)) :
-    positiveSplitTranslatedXSubRightFamilyRelationStatement R := by
-  intro f g r hpair hfnn hgnn hdeg μ hμ
-  exact hsub r hpair hfnn hgnn hdeg trivial μ hμ
-
-/-- Same-degree positive-split subtraction-family target. -/
-def positiveSplitSameDegreeTranslatedXSubRightFamilyStatement : Prop :=
-  positiveSplitTranslatedXSubRightFamilyRelationStatement
-    (fun m n => m = n)
-
-/-- Predicate-restricted same-degree positive-split subtraction-family target. -/
-def positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-    (P : ℕ → Prop) : Prop :=
-  positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement
-    (fun m n => m = n) P
-
-/-- Right-successor positive-split subtraction-family target. -/
-def positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement : Prop :=
-  positiveSplitTranslatedXSubRightFamilyRelationStatement
-    (fun m n => n = m + 1)
-
-/-- Predicate-restricted right-successor positive-split subtraction-family
-target. -/
-def positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-    (P : ℕ → Prop) : Prop :=
-  positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement
-    (fun m n => n = m + 1) P
 
 /-- Degree guardrail for the translated x-subtraction endpoint: in the
 left-successor case, `g.comp (X + C r)` and `X * f.comp (X + C r)` differ by
@@ -238,37 +157,6 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
     simpa [Polynomial.natDegree_comp] using hgdeg.le
   exact splits_X_mul_sub_C_mul_of_left_natDegree_zero_right_natDegree_le_one
     hFdeg hGdeg μ
-
-/-- Pack the degree-zero right endpoint terminal as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_zero :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 0) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
-    hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-one right endpoint terminal as a predicate-restricted
-same-degree sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_one :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 1) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_one
-    hpair hfnn hgnn hdeg hgdeg
-
-/-- Pack the degree-one right endpoint terminal as a predicate-restricted
-right-successor sign-normalized x-subtraction target. -/
-theorem
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_one :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n = 1) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
-    hpair hfnn hgnn hdeg hgdeg
-
 
 end LiuOppositeSigns
 end RealRooted

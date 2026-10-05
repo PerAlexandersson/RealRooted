@@ -538,17 +538,11 @@ import RealRooted.LinearPowerFamily
 import RealRooted.LiuOppositeSigns
 import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
 import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
-import RealRooted.LiuOppositeSigns.Corollary22
 import RealRooted.LiuOppositeSigns.DeletionBranches
 import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
 import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
 import RealRooted.LiuOppositeSigns.FactorReturnAssembly
-import RealRooted.LiuOppositeSigns.FactorReturnAssembly.DegreeCaseAssembly
-import RealRooted.LiuOppositeSigns.FactorReturnAssembly.LeftDegreeCases
-import RealRooted.LiuOppositeSigns.FactorReturnAssembly.PredicateDegreeCases
-import RealRooted.LiuOppositeSigns.FactorReturnAssembly.RightDegreeCases
 import RealRooted.LiuOppositeSigns.FactorReturnLeft
-import RealRooted.LiuOppositeSigns.FactorReturnStatements
 import RealRooted.LiuOppositeSigns.FactorReturnTwoDegree
 import RealRooted.LiuOppositeSigns.ForwardCubicLinear
 import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.Average
@@ -571,7 +565,6 @@ import RealRooted.LiuOppositeSigns.RootCount
 import RealRooted.LiuOppositeSigns.RootCountClosure
 import RealRooted.LiuOppositeSigns.RootCountRelStability
 import RealRooted.LiuOppositeSigns.RootDeletion
-import RealRooted.LiuOppositeSigns.Theorem21Assembly
 import RealRooted.LiuOppositeSigns.Theorem21Statements
 import RealRooted.LiuOppositeSigns.Theorem21Statements.CommonRootDeletion
 import RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces
@@ -611,7 +604,6 @@ import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.EndpointZero
 import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.QuarticSubQuadratic
 import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedLeft
 import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedRight
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Statements
 import RealRooted.LiuOppositeSigns.XSub.QuarticCubicCommonRoot
 import RealRooted.LiuOppositeSigns.XSub.SameDegree
 import RealRooted.LiuOppositeSigns.XSub.SplittingTools

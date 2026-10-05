@@ -44,15 +44,6 @@ lemma lower_quadratic_root_le_singleton_root_of_positiveSplitRootCountPair_one_t
   rw [hf_count, hg_count] at hcount
   norm_num at hcount
 
-/-- Discriminant certificate for the degree-one/degree-two x-subtraction
-leaf.  The normalized hypotheses say that the quadratic roots `a ≤ b` and
-linear root `c` are nonpositive after translation, and that the linear root is
-not below the lower quadratic root. -/
-def xSubLinearQuadraticDiscrimNonnegStatement : Prop :=
-  ∀ {a b c μ : ℝ},
-    a ≤ b → a ≤ c → b ≤ 0 → c ≤ 0 → 0 < μ →
-      0 ≤ discrim (1 - μ) (-c + μ * (a + b)) (-μ * (a * b))
-
 /-- Explicit discriminant certificate for the normalized case
 `a ≤ c ≤ b ≤ 0`. -/
 lemma xSubLinearQuadraticDiscrimNonneg_between
@@ -85,11 +76,11 @@ lemma xSubLinearQuadraticDiscrimNonneg_right
   rw [hdisc]
   positivity
 
-/-- The discriminant certificate needed in the degree-one/degree-two
-x-subtraction leaf. -/
-theorem xSubLinearQuadraticDiscrimNonneg :
-    xSubLinearQuadraticDiscrimNonnegStatement := by
-  intro a b c μ hab hac hb0 hc0 hμ
+/-- The discriminant of the normalized degree-one/degree-two x-subtraction
+pencil is nonnegative. -/
+theorem xSubLinearQuadraticDiscrimNonneg {a b c μ : ℝ} (hab : a ≤ b) (hac : a ≤ c) (hb0 : b ≤ 0)
+    (hc0 : c ≤ 0) (hμ : 0 < μ) :
+    0 ≤ discrim (1 - μ) (-c + μ * (a + b)) (-μ * (a * b)) := by
   by_cases hcb : c ≤ b
   · let u : ℝ := c - a
     let v : ℝ := b - c
@@ -135,19 +126,10 @@ theorem xSubLinearQuadraticDiscrimNonneg :
     rw [hdisc]
     exact xSubLinearQuadraticDiscrimNonneg_right hu hv hw hμ
 
-/-- Normalized monic arithmetic leaf for the degree-one/degree-two
-x-subtraction endpoint. -/
-def xSubLinearQuadraticSplitsStatement : Prop :=
-  ∀ {a b c μ : ℝ},
-    a ≤ b → a ≤ c → b ≤ 0 → c ≤ 0 → 0 < μ →
-      (X * (X - C c) - C μ * ((X - C a) * (X - C b))).Splits
-
-/-- The normalized discriminant certificate implies the monic
-linear/quadratic x-subtraction leaf. -/
-theorem xSubLinearQuadraticSplits_of_discrim
-    (harith : xSubLinearQuadraticDiscrimNonnegStatement) :
-    xSubLinearQuadraticSplitsStatement := by
-  intro a b c μ hab hac hb0 hc0 hμ
+/-- The normalized monic degree-one/degree-two x-subtraction pencil splits. -/
+theorem xSubLinearQuadraticSplits {a b c μ : ℝ} (hab : a ≤ b) (hac : a ≤ c)
+    (hb0 : b ≤ 0) (hc0 : c ≤ 0) (hμ : 0 < μ) :
+    (X * (X - C c) - C μ * ((X - C a) * (X - C b))).Splits := by
   have hpoly :
       X * (X - C c) - C μ * ((X - C a) * (X - C b)) =
         C (1 - μ) * X ^ 2 + C (-c + μ * (a + b)) * X +
@@ -155,17 +137,11 @@ theorem xSubLinearQuadraticSplits_of_discrim
     simp only [C_add, C_mul, C_neg, C_sub, C_1]
     ring_nf
   have hdisc : 0 ≤ discrim (1 - μ) (-c + μ * (a + b)) (-μ * (a * b)) :=
-    harith hab hac hb0 hc0 hμ
+    xSubLinearQuadraticDiscrimNonneg hab hac hb0 hc0 hμ
   simpa [hpoly] using quadraticPoly_splits_of_discrim_nonneg_or_linear hdisc
 
-/-- The normalized monic degree-one/degree-two x-subtraction leaf. -/
-theorem xSubLinearQuadraticSplits : xSubLinearQuadraticSplitsStatement :=
-  xSubLinearQuadraticSplits_of_discrim xSubLinearQuadraticDiscrimNonneg
-
-/-- The normalized monic linear/quadratic x-subtraction leaf implies the
-degree-one/degree-two positive-split x-subtraction endpoint. -/
-lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_one_two_of_monic
-    (hmono : xSubLinearQuadraticSplitsStatement)
+/-- Degree-one/degree-two positive-split x-subtraction endpoint. -/
+lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_one_two
     {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
     (hpdeg : p.natDegree = 1) (hqdeg : q.natDegree = 2)
@@ -204,7 +180,7 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_one_two_of_monic
   let inner : ℝ[X] := X * (X - C c) - C ν * ((X - C a) * (X - C b))
   have hinner_splits : inner.Splits := by
     dsimp [inner]
-    exact hmono hab hac hb0 hc0 hν_pos
+    exact xSubLinearQuadraticSplits hab hac hb0 hc0 hν_pos
   have hpfacA : p = C A * (X - C c) := by simpa [A] using hpfac
   have hqfacB : q = C B * ((X - C a) * (X - C b)) := by simpa [B] using hqfac
   have hpoly : X * p - C μ * q = C A * inner := by
@@ -216,16 +192,6 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_one_two_of_monic
     field_simp [hA_pos.ne']
   rw [hpoly]
   exact hinner_splits.C_mul A
-
-/-- Degree-one/degree-two positive-split x-subtraction endpoint. -/
-lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_one_two
-    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpdeg : p.natDegree = 1) (hqdeg : q.natDegree = 2)
-    {μ : ℝ} (hμ : 0 < μ) :
-    (X * p - C μ * q).Splits :=
-  splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_one_two_of_monic
-    xSubLinearQuadraticSplits hpair hpnn hqnn hpdeg hqdeg hμ
 
 /-- Degree-two right endpoint case for the right-successor sign-normalized
 x-subtraction leaf. -/
@@ -262,16 +228,6 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
   · have htwo : g.natDegree = 2 := by lia
     exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_two
       hpair hfnn hgnn hdeg htwo
-
-/-- Pack the endpoint cases through degree two as a predicate-restricted
-right-successor positive-split x-sub family. -/
-theorem
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate_of_right_natDegree_le_two :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement
-      (fun n => n ≤ 2) := by
-  intro f g r hpair hfnn hgnn hdeg hgdeg
-  exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_le_two
-    hpair hfnn hgnn hdeg hgdeg
 
 end LiuOppositeSigns
 end RealRooted
