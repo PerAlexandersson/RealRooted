@@ -183,43 +183,6 @@ lemma tendsto_eval_xSubQuarticCubic_atTop_atTop (a b c d u v w μ : ℝ) :
     exact natDegree_pos_iff_degree_pos.mp hnat
   exact P.tendsto_atTop_of_leadingCoeff_nonneg hP_deg_pos hP_pos.le
 
-/-- A quartic/cubic normalized x-subtraction polynomial splits once four
-sign-changing intervals are ordered before `0`. -/
-lemma xSubQuarticCubicSplits_of_four_sign_change_intervals_and_zero_tail
-    {a b c d u v w μ x₁ x₂ y₁ y₂ z₁ z₂ t₁ t₂ : ℝ}
-    (huv : u ≤ v) (hvw : v ≤ w) (hw0 : w ≤ 0) (hμ : 0 < μ)
-    (hx : x₁ < x₂) (hy : y₁ < y₂) (hz : z₁ < z₂) (ht : t₁ < t₂)
-    (hxy : x₂ ≤ y₁) (hyz : y₂ ≤ z₁) (hzt : z₂ ≤ t₁) (ht0 : t₂ ≤ 0)
-    (hsx :
-      (xSubQuarticCubicPolynomial a b c d u v w μ).eval x₁ *
-        (xSubQuarticCubicPolynomial a b c d u v w μ).eval x₂ < 0)
-    (hsy :
-      (xSubQuarticCubicPolynomial a b c d u v w μ).eval y₁ *
-        (xSubQuarticCubicPolynomial a b c d u v w μ).eval y₂ < 0)
-    (hsz :
-      (xSubQuarticCubicPolynomial a b c d u v w μ).eval z₁ *
-        (xSubQuarticCubicPolynomial a b c d u v w μ).eval z₂ < 0)
-    (hst :
-      (xSubQuarticCubicPolynomial a b c d u v w μ).eval t₁ *
-        (xSubQuarticCubicPolynomial a b c d u v w μ).eval t₂ < 0) :
-    (xSubQuarticCubicPolynomial a b c d u v w μ).Splits := by
-  let P : ℝ[X] := xSubQuarticCubicPolynomial a b c d u v w μ
-  have hP_ne : P ≠ 0 := by
-    dsimp [P]
-    exact xSubQuarticCubic_ne_zero a b c d u v w μ
-  have hdeg_le : P.natDegree ≤ 5 := by
-    dsimp [P]
-    rw [natDegree_xSubQuarticCubic]
-  have hzero : P.eval 0 ≤ 0 := by
-    dsimp [P]
-    exact eval_xSubQuarticCubic_at_zero_nonpos huv hvw hw0 hμ
-  have htop : Tendsto (fun x => P.eval x) atTop atTop := by
-    dsimp [P]
-    exact tendsto_eval_xSubQuarticCubic_atTop_atTop a b c d u v w μ
-  have hsplits := splits_of_four_sign_change_intervals_and_right_tail_of_le
-    hP_ne hdeg_le hx hy hz ht hxy hyz hzt ht0 hsx hsy hsz hst hzero htop
-  simpa [P] using hsplits
-
 /-- A quartic/cubic normalized x-subtraction polynomial splits once three
 sign-changing intervals sit between a left-tail value and the zero tail. -/
 lemma xSubQuarticCubicSplits_of_three_sign_change_intervals_and_zero_tail

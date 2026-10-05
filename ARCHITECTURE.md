@@ -626,11 +626,10 @@ the count foundation directly, while `RootMatchingSort` and the cubic analytic
 consumer import `RootDeletion` without acquiring the branch layer.
 
 `LiuOppositeSigns.NoCommonRoots` isolates the reusable no-common-root predicate
-and its elementary endpoint consequences. The
-`Theorem21Statements.NoCommonCrossing` facade layers the main argument into
-`Witnesses`, `CrossOwnedGaps`, and `BranchConsequences`: affine-pencil and
-root-count transport first, then the finite-gap invariant, then the left/right
-Theorem 2.1 branch predicate. `Theorem21Statements.CommonRootDeletion` owns the
+and its elementary endpoint consequences. `Theorem21Statements.NoCommonCrossing`
+imports the right-pencil crossing criteria of `NoCommonCrossing.Witnesses` and
+turns the cross-owned-gap invariant into the left/right Theorem 2.1 branch
+predicate. `Theorem21Statements.CommonRootDeletion` owns the
 independent shared-factor reduction, and `Theorem21Statements.Interfaces`
 keeps only the refuted published forward direction beside its checked
 negation. The historical `Theorem21Statements` path remains a compatibility
