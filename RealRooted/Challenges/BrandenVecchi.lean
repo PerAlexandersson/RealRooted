@@ -1,4 +1,3 @@
-import RealRooted.BrandenVecchi.ChowFullProjective
 import RealRooted.BrandenVecchi.ChowInfinitePF
 import RealRooted.BrandenVecchi.ChowSignedWords
 import RealRooted.BrandenVecchi.ChowTotallyNonneg
@@ -35,6 +34,11 @@ name = "RealRooted.BrandenVecchi.finiteSupersymmetricChow"
 module = "RealRooted.BrandenVecchi.ChowSupersymmetric"
 label = "Chow polynomials of a supersymmetric symbol"
 
+[[definitions]]
+name = "RealRooted.BrandenVecchi.scaledZeroPrefix"
+module = "RealRooted.BrandenVecchi.ChowZeroPrefix"
+label = "A sequence shifted by a zero prefix and scaled"
+
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowPolynomial_nonnegCoeffs_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
@@ -44,6 +48,16 @@ label = "Chow polynomials have nonnegative coefficients"
 name = "RealRooted.BrandenVecchi.chowPolynomial_eq_zero_or_splits_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
 label = "Chow polynomials are real-rooted"
+
+[[theorems]]
+name = "RealRooted.BrandenVecchi.chowDerangement_nonnegCoeffs_of_isTotallyNonneg"
+module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
+label = "Chow derangement polynomials have nonnegative coefficients"
+
+[[theorems]]
+name = "RealRooted.BrandenVecchi.chowDerangement_eq_zero_or_splits_of_isTotallyNonneg"
+module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
+label = "Chow derangement polynomials are real-rooted"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowPolynomial_interl_succ_of_isTotallyNonneg"
@@ -56,9 +70,14 @@ module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
 label = "c_n interlaces d_n"
 
 [[theorems]]
-name = "RealRooted.BrandenVecchi.aswEdreiFullProjectiveChow_theorem"
-module = "RealRooted.BrandenVecchi.ChowFullProjective"
+name = "RealRooted.BrandenVecchi.aswEdreiChow_isPFPolynomial"
+module = "RealRooted.BrandenVecchi.ChowInfinitePF"
 label = "Pólya frequency symbols give PF Chow polynomials"
+
+[[theorems]]
+name = "RealRooted.BrandenVecchi.aswEdreiChow_interl_succ"
+module = "RealRooted.BrandenVecchi.ChowInfinitePF"
+label = "Consecutive Chow polynomials of a Pólya frequency symbol interlace"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.finiteSupersymmetricChow_eq_finiteSignedWordEnumerator"
@@ -74,6 +93,11 @@ label = "Specialization to Smirnov word polynomials"
 name = "RealRooted.BrandenVecchi.chowPolynomial_three_zero_prefix_six_not_splits"
 module = "RealRooted.BrandenVecchi.ChowZeroPrefix"
 label = "A zero prefix of length three breaks real-rootedness"
+
+[[theorems]]
+name = "RealRooted.BrandenVecchi.three_zero_prefix_constant_isPolyaFreqSeq"
+module = "RealRooted.BrandenVecchi.ChowZeroPrefix"
+label = "The zero-prefix symbol is still a Pólya frequency sequence"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -95,15 +119,16 @@ interlaces $d_n$.
 
 Further results:
 
-- **Pólya frequency symbols:** for the Toeplitz matrix of an Aissen–Schoenberg–Whitney–Edrei symbol
+- **Pólya frequency symbols:** for the Toeplitz matrix of an
+  Aissen–Schoenberg–Whitney–Edrei symbol
   $e^{\gamma z} \prod_i (1 + \alpha_i z) \big/ \prod_i (1 - \beta_i z)$, the Chow
-  polynomials are PF polynomials and interlace consecutively. This also holds in the full projective
-  form, with an outer scalar, a zero prefix and a shift.
+  polynomials are PF polynomials and interlace consecutively.
 - **Signed words:** for finite supersymmetric symbols, the Chow polynomial
   equals a signed-word enumerator by descents and collisions.
   It specializes to the Smirnov word polynomials.
-- **Sharpness:** a zero prefix of length three can destroy real-rootedness,
-  even though the symbol remains a Pólya frequency sequence.
+- **Sharpness:** a zero prefix can destroy real-rootedness. Inserting three
+  leading zeros into the all-ones sequence gives a Pólya frequency sequence
+  whose Chow polynomial $c_6$ is not real-rooted.
 
 ## References
 

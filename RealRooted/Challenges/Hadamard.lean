@@ -29,9 +29,9 @@ module = "RealRooted.PFPolynomial"
 label = "PF polynomial"
 
 [[definitions]]
-name = "RealRooted.toeplitz"
+name = "RealRooted.polynomialValueSeq"
 module = "RealRooted.AissenSchoenbergWhitneyBase"
-label = "Toeplitz matrix of a sequence"
+label = "Values of a polynomial at 0, 1, 2, …"
 
 [[definitions]]
 name = "RealRooted.gwSchurProduct"
@@ -39,34 +39,30 @@ module = "RealRooted.GarloffWagner.Algebra"
 label = "Factorial Schur product"
 
 [[theorems]]
-name = "RealRooted.Challenges.Hadamard.finiteSchurSzegoComposition"
+name = "RealRooted.Challenges.Hadamard.schurSzegoComp_eq_zero_or_splits"
 label = "Schur–Szegő composition preserves real-rootedness"
 
 [[theorems]]
-name = "RealRooted.Challenges.Hadamard.finitePolyaSchur_nonneg"
+name = """RealRooted.Challenges.Hadamard.\
+isFiniteMultiplierSequence_iff_isPFPolynomial_jensenPolynomial"""
 label = "Finite Pólya–Schur theorem"
 
 [[theorems]]
-name = "RealRooted.Challenges.Hadamard.garloffWagnerHadamardNonnegInterl"
-label = "Hadamard products preserve interlacing"
+name = "RealRooted.Challenges.Hadamard.interl_hadamardProduct_of_strictInterl"
+label = "Garloff–Wagner: Hadamard products preserve interlacing"
 
 [[theorems]]
-name = "RealRooted.Challenges.Hadamard.maloToeplitzHadamard"
-label = "Maló: Hadamard products of totally nonnegative Toeplitz matrices"
+name = "RealRooted.Challenges.Hadamard.isPolyaFreqSeq_mul_coeff"
+label = "Maló: termwise products of finite PF sequences are PF"
 
 [[theorems]]
-name = "RealRooted.Challenges.Hadamard.polynomialValueProductPolyaFrequency"
+name = "RealRooted.Challenges.Hadamard.isPolyaFreqSeq_polynomialValueSeq_mul"
 label = "Products of polynomial value sequences are PF"
 
 [[theorems]]
 name = "RealRooted.gwHadamardProductPF"
 module = "RealRooted.GarloffWagner.Theorem12"
 label = "Garloff–Wagner: Hadamard products of PF polynomials are PF"
-
-[[theorems]]
-name = "RealRooted.gwHadamardProductInterl_of_strictInterl"
-module = "RealRooted.GarloffWagner.Hadamard"
-label = "Garloff–Wagner: Hadamard products preserve interlacing"
 
 [[theorems]]
 name = "RealRooted.gwSchurProductInterl"
@@ -79,8 +75,14 @@ label = "Garloff–Wagner: the Schur product preserves interlacing"
 
 Schur–Szegő composition and coefficientwise products preserve several
 real-rootedness and interlacing classes. This page also covers the finite
-Pólya–Schur theorem and Maló’s theorem on totally nonnegative Toeplitz
-matrices.
+Pólya–Schur theorem and Maló’s theorem: the termwise product of two finite
+Pólya frequency sequences is again a Pólya frequency sequence. Equivalently,
+the entrywise product of their totally nonnegative Toeplitz matrices is
+totally nonnegative.
+
+If the value sequences $f(0), f(1), f(2), \dotsc$ and $g(0), g(1), g(2), \dotsc$
+of two real polynomials are Pólya frequency sequences, then so is the value
+sequence of $fg$.
 
 The results of Garloff and Wagner for PF polynomials (real-rooted with
 nonnegative coefficients):
@@ -142,47 +144,42 @@ namespace Challenges
 namespace Hadamard
 
 /-- Fixed-degree Schur--Szego composition theorem. -/
-theorem finiteSchurSzegoComposition :
-    ∀ {n : ℕ} {f p : ℝ[X]},
-      IsPFPolynomial f →
-      f.natDegree ≤ n →
-      p.natDegree ≤ n →
-      p.Splits →
-        schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  RealRooted.finiteSchurSzegoComposition
+theorem schurSzegoComp_eq_zero_or_splits {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ n) (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  RealRooted.finiteSchurSzegoComposition hf hfdeg hpdeg hsplits
 
 /-- Finite Polya--Schur theorem in the nonnegative-coefficient convention. -/
-theorem finitePolyaSchur_nonneg :
-    ∀ {n : ℕ} {gamma : ℕ → ℝ},
-      (∀ k, 0 ≤ gamma k) →
-        (IsFiniteMultiplierSequence n gamma ↔
-          IsPFPolynomial (jensenPolynomial n gamma)) :=
-  RealRooted.finitePolyaSchur_nonneg
+theorem isFiniteMultiplierSequence_iff_isPFPolynomial_jensenPolynomial {n : ℕ}
+    {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFiniteMultiplierSequence n gamma ↔ IsPFPolynomial (jensenPolynomial n gamma) :=
+  RealRooted.finitePolyaSchur_nonneg hgamma
 
 /-- Garloff--Wagner interlacing theorem for coefficientwise products. -/
-theorem garloffWagnerHadamardNonnegInterl :
-    ∀ {f g p q : ℝ[X]},
-      HasNonnegCoeffs f → HasNonnegCoeffs g →
-      HasNonnegCoeffs p → HasNonnegCoeffs q →
-      StrictInterl f g → StrictInterl p q →
-      Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  RealRooted.gwHadamardProductNonnegInterl
+theorem interl_hadamardProduct_of_strictInterl {f g p q : ℝ[X]}
+    (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
+    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
+    (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
+    Interl (hadamardProduct f p) (hadamardProduct g q) :=
+  RealRooted.gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
 
-/-- Maló's theorem for finite-support Pólya-frequency sequences: the
-entrywise product of their lower-triangular Toeplitz matrices is totally
-nonnegative.  Polynomial coefficients encode the finite-support condition. -/
-theorem maloToeplitzHadamard {p q : ℝ[X]}
-    (hp : (toeplitz p.coeff).IsTotallyNonneg)
-    (hq : (toeplitz q.coeff).IsTotallyNonneg) :
-    (Matrix.of fun i j =>
-      toeplitz p.coeff i j * toeplitz q.coeff i j).IsTotallyNonneg :=
-  RealRooted.maloToeplitzHadamard_isTotallyNonneg hp hq
+/-- Maló's theorem for finite-support Pólya-frequency sequences: their termwise
+product is again a Pólya-frequency sequence.  Equivalently, the entrywise
+product of their lower-triangular Toeplitz matrices is totally nonnegative.
+Polynomial coefficients encode the finite-support condition. -/
+theorem isPolyaFreqSeq_mul_coeff {p q : ℝ[X]}
+    (hp : IsPolyaFreqSeq p.coeff) (hq : IsPolyaFreqSeq q.coeff) :
+    IsPolyaFreqSeq (fun n => p.coeff n * q.coeff n) := by
+  have h := RealRooted.maloToeplitzHadamard_isTotallyNonneg hp hq
+  rw [← RealRooted.toeplitz_pointwise_mul] at h
+  exact h
 
 /-- Polynomial-value PF sequences are closed under polynomial multiplication.
 This includes zero inputs; for nonzero inputs the proof derives the canonical
 Euler-numerator certificates through causal differences. -/
-theorem polynomialValueProductPolyaFrequency
-    {f g : ℝ[X]} (hf : IsPolyaFreqSeq (polynomialValueSeq f))
+theorem isPolyaFreqSeq_polynomialValueSeq_mul {f g : ℝ[X]}
+    (hf : IsPolyaFreqSeq (polynomialValueSeq f))
     (hg : IsPolyaFreqSeq (polynomialValueSeq g)) :
     IsPolyaFreqSeq (polynomialValueSeq (f * g)) :=
   RealRooted.isPolyaFreqSeq_polynomialValueSeq_mul_of_polyaFreqSeq hf hg

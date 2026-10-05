@@ -36,14 +36,29 @@ module = "RealRooted.MultiplierSequence.Infinite"
 label = "Multiplier sequence"
 
 [[definitions]]
+name = "RealRooted.IsFinitePFMultiplierSequence"
+module = "RealRooted.MultiplierSequence"
+label = "Finite PF multiplier sequence"
+
+[[definitions]]
 name = "RealRooted.IsPFMultiplierSequence"
 module = "RealRooted.MultiplierSequence.Infinite"
 label = "PF multiplier sequence"
 
 [[definitions]]
+name = "RealRooted.complexExpGeneratingFunction"
+module = "RealRooted.MultiplierSequence.PolyaSchur.Analytic"
+label = "Exponential generating function"
+
+[[definitions]]
 name = "RealRooted.IsLaguerrePolyaTypeI"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI"
 label = "Laguerre–Pólya class of type I"
+
+[[definitions]]
+name = "RealRooted.IsLaguerrePolyaTypeISigned"
+module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned"
+label = "Type I up to the signs ±f(±z)"
 
 [[theorems]]
 name = "RealRooted.isMultiplierSequence_iff_jensenPolynomial_isPF"

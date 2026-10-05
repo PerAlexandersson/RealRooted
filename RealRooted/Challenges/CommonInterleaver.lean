@@ -30,6 +30,11 @@ module = "RealRooted.Compatibility.Pair"
 label = "Compatible pair"
 
 [[definitions]]
+name = "RealRooted.PairwiseCompatible"
+module = "RealRooted.Compatibility.Basic"
+label = "Pairwise compatible family"
+
+[[definitions]]
 name = "RealRooted.FamilyCompatible"
 module = "RealRooted.Compatibility.Basic"
 label = "Compatible family"

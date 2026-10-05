@@ -86,7 +86,7 @@ curated list. Some representative checked theorems:
 - **Preservers.** Interlacing preservers (`operatorPreservesInterlacingPairsUpToOrder`),
   matrix preservers (`matrix_preserves_interlacing_seq`), the finite
   Borcea–Brändén classification (`Challenges.BorceaBranden`), Garloff–Wagner
-  Hadamard products (`garloffWagnerHadamardNonnegInterl`), and the
+  Hadamard products (`Challenges.Hadamard.interl_hadamardProduct_of_strictInterl`), and the
   Mao–Wang Narayana transformation (`narayanaTransformPreservesPF`).
 - **Pólya frequency.** The reverse Aissen–Schoenberg–Whitney theorem
   (`aissenSchoenbergWhitney_reverse`), Veronese sections
@@ -107,7 +107,8 @@ curated list. Some representative checked theorems:
   (`peakValuePolynomial_mvRealStable`), the A16634x gamma pencil
   (`gammaU_strictInterl_gammaV`), the Jacobi deformation and OEIS A132885
   (`JacobiDeformation.polynomial_strict_package`), and the weighted deco
-  Eulerian transform (`Challenges.DecoEulerian.intervalPreserver`).
+  Eulerian transform
+  (`Challenges.DecoEulerian.weightedDecoTransform_splits_hasSimpleRoots_roots_neg`).
 
 Open problems and proof tasks are tracked in
 [GitHub issues](https://github.com/PerAlexandersson/RealRooted/issues), not in

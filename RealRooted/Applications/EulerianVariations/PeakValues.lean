@@ -8,22 +8,18 @@ This module is the paper-facing entry point for the theorem labeled
 from permutations, words, and paths*, [arXiv:2609.07325](https://arxiv.org/abs/2609.07325).
 
 The core definitions and proofs remain in
-`RealRooted.CombinatorialExamples.PeakValues`. The second theorem below uses
-`n` for the smaller rank, so its ranks `n` and `n + 1` correspond to the
-paper's ranks `N - 1` and `N`, where `N = n + 1 > 1`. A weight on `Fin (n + 1)`
-records the paper's positive weights `λ₁, ..., λₙ₊₁`; the smaller specialization
-uses their restriction along `Fin.castSucc`.
+`RealRooted.CombinatorialExamples.PeakValues`; the first assertion of
+`thm:peakValueStability`, real stability of the multivariate peak-value
+enumerator in every rank, is `RealRooted.peakValuePolynomial_mvRealStable`.
+The theorem below uses `n` for the smaller rank, so its ranks `n` and `n + 1`
+correspond to the paper's ranks `N - 1` and `N`, where `N = n + 1 > 1`. A
+weight on `Fin (n + 1)` records the paper's positive weights `λ₁, ..., λₙ₊₁`;
+the smaller specialization uses their restriction along `Fin.castSucc`.
 -/
 
 namespace RealRooted.Applications.EulerianVariations
 
 noncomputable section
-
-/-- The multivariate peak-value enumerator is real stable in every positive
-rank, as in the first assertion of `peakValueStability`. -/
-theorem peakValuePolynomial_stable (n : ℕ) (_hn : 1 ≤ n) :
-    MvRealStable (peakValuePolynomial n) :=
-  RealRooted.peakValuePolynomial_mvRealStable n
 
 /-- Positive weighted diagonal specializations in ranks `n` and `n + 1` are
 in an interlacing relation. This is the second assertion of `peakValueStability`, with
