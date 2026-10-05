@@ -31,7 +31,10 @@ import challenge_catalog
 
 
 ALLOWED_AXIOMS = frozenset({"propext", "Classical.choice", "Quot.sound"})
-NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)+$")
+NAME_RE = re.compile(
+    f"^{challenge_catalog.ID_START}{challenge_catalog.ID_REST}*"
+    f"(?:\\.{challenge_catalog.ID_START}{challenge_catalog.ID_REST}*)+$"
+)
 
 
 @dataclass(frozen=True)
