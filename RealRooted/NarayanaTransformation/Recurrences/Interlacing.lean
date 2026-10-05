@@ -150,7 +150,7 @@ theorem strictInterl_narayanaPolynomial_succ (m n : ℕ) :
   have hW_nonpos (k : ℕ) (r : ℝ) (_ : (P (k + 1)).IsRoot r) :
       (0 : ℝ[X]).eval r ≤ 0 := by
     simp
-  have hbuild := strictInterl_lw_derivative_lag_sequence
+  have hbuild := LiuWang.strictInterl_derivative_lag_sequence
     (P := P)
     (U := fun k ↦ C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ *
       (C (((k + 1 : ℕ) : ℝ) + 2 * m + 2) +
