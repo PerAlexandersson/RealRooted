@@ -438,7 +438,7 @@ lemma exists_cubicSubQuadratic_not_splits_of_middle_double_roots
 /-- In the distinct-root middle-gap branch, some positive subtraction
 coefficient makes the monic cubic-minus-quadratic pencil fail to split. -/
 lemma exists_cubicSubQuadratic_not_splits_of_middle_gap_distinct
-    {a b c u v : ℝ} (hab : a ≤ b) (_hbc : b ≤ c) (hbu : b < u)
+    {a b c u v : ℝ} (hab : a ≤ b) (hbu : b < u)
     (huv : u < v) (hvc : v ≤ c) :
     ∃ μ : ℝ, 0 < μ ∧
       ¬ (((X - C a) * (X - C b) * (X - C c)) -
@@ -488,14 +488,14 @@ lemma exists_cubicSubQuadratic_not_splits_of_middle_gap_distinct
 /-- In the middle-gap branch, some positive subtraction coefficient makes the
 monic cubic-minus-quadratic pencil fail to split. -/
 lemma exists_cubicSubQuadratic_not_splits_of_middle_gap
-    {a b c u v : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hbu : b < u)
+    {a b c u v : ℝ} (hab : a ≤ b) (hbu : b < u)
     (huv : u ≤ v) (hvc : v ≤ c) :
     ∃ μ : ℝ, 0 < μ ∧
       ¬ (((X - C a) * (X - C b) * (X - C c)) -
         C μ * ((X - C u) * (X - C v))).Splits := by
   by_cases huv_lt : u < v
   · exact exists_cubicSubQuadratic_not_splits_of_middle_gap_distinct
-      hab hbc hbu huv_lt hvc
+      hab hbu huv_lt hvc
   · have hvu : v ≤ u := le_of_not_gt huv_lt
     have huv_eq : u = v := le_antisymm huv hvu
     subst v
@@ -510,14 +510,14 @@ lemma exists_cubicSubQuadratic_not_splits_of_middle_gap
 
 /-- The cubic/quadratic endpoint is not compatible in the middle-gap branch. -/
 lemma not_compatible_scaled_cubic_quadratic_of_opposite_of_middle_gap
-    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b) (hbc : b ≤ c)
+    {a b c u v A B : ℝ} (hAB : A * B < 0) (hab : a ≤ b)
     (hbu : b < u) (huv : u ≤ v) (hvc : v ≤ c) :
     ¬ Compatible
       (C A * ((X - C a) * (X - C b) * (X - C c)))
       (C B * ((X - C u) * (X - C v))) := by
   obtain ⟨μ, hμ, hnot_splits⟩ :=
     exists_cubicSubQuadratic_not_splits_of_middle_gap
-      hab hbc hbu huv hvc
+      hab hbu huv hvc
   exact
     not_compatible_scaled_pair_of_opposite_of_sub_not_splits
       (P := (X - C a) * (X - C b) * (X - C c))
