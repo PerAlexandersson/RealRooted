@@ -31,7 +31,7 @@ theorem derivative_ne_zero_splits_hasSimpleRoots_of_rootMultiplicity_le_two
     apply hdeg
     simp [hf0]
   have hfder0 : f.derivative ≠ 0 :=
-    derivative_ne_zero_of_natDegree_ne_zero hdeg
+    Polynomial.derivative_ne_zero.mpr hdeg
   have hfder_splits : f.derivative.Splits := by
     rcases derivative_eq_zero_or_ne_zero_and_splits hf with hzero | hsplit
     · exact (hfder0 hzero).elim
@@ -78,7 +78,7 @@ theorem roots_derivative_lt_of_roots_le_of_rootMultiplicity_eq_one
     apply hdeg
     simp [hf0]
   have hfder0 : f.derivative ≠ 0 :=
-    derivative_ne_zero_of_natDegree_ne_zero hdeg
+    Polynomial.derivative_ne_zero.mpr hdeg
   by_cases hdeg1 : f.natDegree = 1
   · have hfder_splits : f.derivative.Splits := by
       rcases derivative_eq_zero_or_ne_zero_and_splits hf with hzero | hsplit

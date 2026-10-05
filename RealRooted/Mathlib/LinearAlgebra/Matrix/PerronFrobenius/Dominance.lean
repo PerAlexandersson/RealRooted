@@ -758,20 +758,6 @@ lemma IsIrreducible.exists_pos_entry_in_row {A : Matrix n n ℝ} (hA_irred : A.I
 
 Further lemmas building on norm-sum layer (`aligned_term_of_triangle_eq`, etc.). -/
 
-lemma phase_eq_of_positive_real_multiple {z w : ℂ} {c : ℝ}
-    (h_c_pos : 0 < c) (h_eq : z = (c : ℂ) * w) (h_w_ne_zero : w ≠ 0) :
-    z / ↑‖z‖ = w / ↑‖w‖ := by
-  have hc0 : (c : ℂ) ≠ 0 := ofReal_ne_zero.mpr h_c_pos.ne'
-  have hw_pos : 0 < ‖w‖ := norm_pos_iff.mpr h_w_ne_zero
-  have hnorm : ‖z‖ = c * ‖w‖ := by
-    rw [h_eq, norm_mul, norm_ofReal, abs_of_nonneg h_c_pos.le]
-  have hzℂ : (↑‖z‖ : ℂ) = (c : ℂ) * ↑‖w‖ := by
-    rw [← ofReal_mul, hnorm]
-  calc
-    z / ↑‖z‖ = ((c : ℂ) * w) / ((c : ℂ) * ↑‖w‖) := by
-      rw [hzℂ, h_eq]
-    _ = w / ↑‖w‖ := by rw [mul_div_mul_left w (↑‖w‖) hc0]
-
 lemma aligned_term_of_triangle_eq {ι : Type*} {s : Finset ι} {v : ι → ℂ}
     (h_sum : ‖∑ i ∈ s, v i‖ = ∑ i ∈ s, ‖v i‖)
     {j : ι} (h_j : j ∈ s) (h_vj_ne_zero : v j ≠ 0) :

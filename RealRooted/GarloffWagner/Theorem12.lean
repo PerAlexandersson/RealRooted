@@ -261,7 +261,7 @@ theorem IsPFPolynomial.derivative_interl_self {p : ℝ[X]}
   have hps := hp.ne_zero_and_splits hp0
   by_cases hdeg0 : p.natDegree = 0
   · have hder0 : p.derivative = 0 :=
-      derivative_eq_zero_of_natDegree_eq_zero hdeg0
+      Polynomial.derivative_eq_zero.mpr hdeg0
     rw [hder0]
     exact interl_zero_left p
   by_cases hdeg1 : p.natDegree = 1
@@ -662,14 +662,6 @@ theorem gwHadamardProductInterl {f g p : ℝ[X]}
   have hfgL : Interl (gwL f) (gwL g) := gwL_interl hfg
   simpa [gwSchurProduct_gwL_left] using
     gwSchurProductInterl hfL hgL hp hfgL
-
-/-- Symmetric fixed-factor form of `gwHadamardProductInterl`. -/
-theorem gwHadamardProductInterl_left {f p q : ℝ[X]}
-    (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpq : Interl p q) :
-    Interl (hadamardProduct f p) (hadamardProduct f q) := by
-  simpa [hadamardProduct_comm f p, hadamardProduct_comm f q] using
-    gwHadamardProductInterl hp hq hf hpq
 
 namespace IsGWKreinSummand
 

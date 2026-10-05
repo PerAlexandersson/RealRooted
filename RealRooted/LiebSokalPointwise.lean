@@ -390,8 +390,8 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or
     (hP : MvUpperHalfPlaneStable P)
     (hPma : MvPolynomial.IsMultiaffine P) (i : sigma) :
     MvPolynomial.pderiv i P = 0 ∨
-      MvUpperHalfPlaneStable (MvPolynomial.pderiv i P) := by
-  exact hP.pderiv_zero_or_of_degreeOf_le_one i (hPma i)
+      MvUpperHalfPlaneStable (MvPolynomial.pderiv i P) :=
+  hP.pderiv_zero_or_of_degreeOf_le_one i (hPma i)
 
 /-- A partial derivative of a real stable polynomial is either zero or real
 stable when the polynomial is affine in that coordinate. -/
@@ -513,8 +513,8 @@ theorem MvUpperHalfPlaneStable.specializeZero_zero_or
     (hP : MvUpperHalfPlaneStable P)
     (hPma : MvPolynomial.IsMultiaffine P) (i : sigma) :
     MvPolynomial.specializeZero i P = 0 ∨
-      MvUpperHalfPlaneStable (MvPolynomial.specializeZero i P) := by
-  exact hP.specializeZero_zero_or_of_degreeOf_le_one i (hPma i)
+      MvUpperHalfPlaneStable (MvPolynomial.specializeZero i P) :=
+  hP.specializeZero_zero_or_of_degreeOf_le_one i (hPma i)
 
 /-- Suppose the affine function `a * z + b` has no zero in the open upper half
 plane and `f + w * (a * z + b)` is nonzero for every upper-half-plane `w`.
@@ -602,8 +602,8 @@ theorem MvUpperHalfPlaneStable.affineRoot_im_nonpos
     (i : sigma) (z : sigma → ℂ) (hz : ∀ j, 0 < (z j).im)
     (ha : MvPolynomial.eval z (MvPolynomial.pderiv i P) ≠ 0) :
     (-MvPolynomial.eval (Function.update z i 0) P /
-        MvPolynomial.eval z (MvPolynomial.pderiv i P)).im ≤ 0 := by
-  exact hP.affineRoot_im_nonpos_of_degreeOf_le_one i (hPma i) z hz ha
+        MvPolynomial.eval z (MvPolynomial.pderiv i P)).im ≤ 0 :=
+  hP.affineRoot_im_nonpos_of_degreeOf_le_one i (hPma i) z hz ha
 
 /-- One-variable Lieb--Sokal step under an explicit stable-pencil hypothesis. -/
 theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_pencil_of_degreeOf_le_one
@@ -642,8 +642,8 @@ theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_pencil
     (hFG : ∀ z : sigma → ℂ, (∀ j, 0 < (z j).im) →
       ∀ w : ℂ, 0 < w.im →
         MvPolynomial.eval z F + w * MvPolynomial.eval z G ≠ 0) :
-    MvUpperHalfPlaneStable (F - MvPolynomial.pderiv i G) := by
-  exact hF.sub_pderiv_of_stable_pencil_of_degreeOf_le_one hG i (hGma i) hFG
+    MvUpperHalfPlaneStable (F - MvPolynomial.pderiv i G) :=
+  hF.sub_pderiv_of_stable_pencil_of_degreeOf_le_one hG i (hGma i) hFG
 
 /-! ## The one-minus-partial-derivative operator -/
 
@@ -789,8 +789,8 @@ theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_mvPencil
     (hF : MvUpperHalfPlaneStable F) (hG : MvUpperHalfPlaneStable G)
     (hGma : MvPolynomial.IsMultiaffine G) (i : sigma)
     (hFG : MvUpperHalfPlaneStable (mvPencil F G)) :
-    MvUpperHalfPlaneStable (F - MvPolynomial.pderiv i G) := by
-  exact hF.sub_pderiv_of_stable_mvPencil_of_degreeOf_le_one hG i (hGma i) hFG
+    MvUpperHalfPlaneStable (F - MvPolynomial.pderiv i G) :=
+  hF.sub_pderiv_of_stable_mvPencil_of_degreeOf_le_one hG i (hGma i) hFG
 
 /-- Eliminating one variable by replacing it with negative partial
 differentiation in another variable preserves stability, up to zero. -/
@@ -852,8 +852,8 @@ theorem MvUpperHalfPlaneStable.contractVariables_zero_or
     (hP : MvUpperHalfPlaneStable P)
     (hPma : MvPolynomial.IsMultiaffine P) (i j : sigma) :
     contractVariables i j P = 0 ∨
-      MvUpperHalfPlaneStable (contractVariables i j P) := by
-  exact hP.contractVariables_zero_or_of_degreeOf_le_one i j (hPma i) (hPma j)
+      MvUpperHalfPlaneStable (contractVariables i j P) :=
+  hP.contractVariables_zero_or_of_degreeOf_le_one i j (hPma i) (hPma j)
 
 /-- A finite sequence of mapped contractions preserves stability, up to zero,
 provided only the listed contracted coordinates are affine. -/
@@ -889,8 +889,8 @@ is stable. -/
 theorem MvUpperHalfPlaneStable.pairedProduct
     {sigma : Type*} {F G : MvPolynomial sigma ℂ}
     (hF : MvUpperHalfPlaneStable F) (hG : MvUpperHalfPlaneStable G) :
-    MvUpperHalfPlaneStable (RealRooted.pairedProduct F G) := by
-  exact hF.rename.mul hG.rename
+    MvUpperHalfPlaneStable (RealRooted.pairedProduct F G) :=
+  hF.rename.mul hG.rename
 
 /-- A finite sequence of paired contractions preserves stability, up to
 zero. -/

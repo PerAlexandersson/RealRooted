@@ -71,22 +71,19 @@ theorem natDegree_pos_X_sub_C_lag_combo_sequence
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * (X - C r)) * P n) :
     ∀ n : Nat, (P n).natDegree = d + n / 2 ∧ HasPosLeadingCoeff (P n) := by
   let Q : Nat → ℝ[X] := fun n => (P n).comp (X + C r)
-  have hQzero : (Q 0).natDegree = d ∧ HasPosLeadingCoeff (Q 0) := by
-    constructor
-    · simpa [Q, natDegree_comp, natDegree_X_add_C] using hzero.1
-    · simpa [Q] using hzero.2.comp_X_add_C r
-  have hQone : (Q 1).natDegree = d ∧ HasPosLeadingCoeff (Q 1) := by
-    constructor
-    · simpa [Q, natDegree_comp, natDegree_X_add_C] using hone.1
-    · simpa [Q] using hone.2.comp_X_add_C r
+  have hQzero : (Q 0).natDegree = d ∧ HasPosLeadingCoeff (Q 0) :=
+    ⟨by simpa [Q, natDegree_comp, natDegree_X_add_C] using hzero.1,
+      by simpa [Q] using hzero.2.comp_X_add_C r⟩
+  have hQone : (Q 1).natDegree = d ∧ HasPosLeadingCoeff (Q 1) :=
+    ⟨by simpa [Q, natDegree_comp, natDegree_X_add_C] using hone.1,
+      by simpa [Q] using hone.2.comp_X_add_C r⟩
   have hQrec : ∀ n : Nat,
       Q (n + 2) = C (a n) * Q (n + 1) + (C (c n) * X) * Q n := by
     simpa [Q] using comp_pos_X_sub_C_lag_recurrence hrec
   have hQ := natDegree_pos_X_lag_combo_sequence hQzero hQone ha hc hQrec
   intro n
-  constructor
-  · simpa [Q, natDegree_comp, natDegree_X_add_C] using (hQ n).1
-  · exact hasPosLeadingCoeff_of_comp_X_add_C (hQ n).2
+  exact ⟨by simpa [Q, natDegree_comp, natDegree_X_add_C] using (hQ n).1,
+    hasPosLeadingCoeff_of_comp_X_add_C (hQ n).2⟩
 
 /-- Shifted-base degree profile for a fixed translated affine lag. -/
 theorem natDegree_pos_X_sub_C_lag_combo_sequence_shifted
@@ -100,23 +97,20 @@ theorem natDegree_pos_X_sub_C_lag_combo_sequence_shifted
     ∀ n : Nat, (P n).natDegree = d + (n + 1) / 2 ∧
       HasPosLeadingCoeff (P n) := by
   let Q : Nat → ℝ[X] := fun n => (P n).comp (X + C r)
-  have hQzero : (Q 0).natDegree = d ∧ HasPosLeadingCoeff (Q 0) := by
-    constructor
-    · simpa [Q, natDegree_comp, natDegree_X_add_C] using hzero.1
-    · simpa [Q] using hzero.2.comp_X_add_C r
-  have hQone : (Q 1).natDegree = d + 1 ∧ HasPosLeadingCoeff (Q 1) := by
-    constructor
-    · simpa [Q, natDegree_comp, natDegree_X_add_C] using hone.1
-    · simpa [Q] using hone.2.comp_X_add_C r
+  have hQzero : (Q 0).natDegree = d ∧ HasPosLeadingCoeff (Q 0) :=
+    ⟨by simpa [Q, natDegree_comp, natDegree_X_add_C] using hzero.1,
+      by simpa [Q] using hzero.2.comp_X_add_C r⟩
+  have hQone : (Q 1).natDegree = d + 1 ∧ HasPosLeadingCoeff (Q 1) :=
+    ⟨by simpa [Q, natDegree_comp, natDegree_X_add_C] using hone.1,
+      by simpa [Q] using hone.2.comp_X_add_C r⟩
   have hQrec : ∀ n : Nat,
       Q (n + 2) = C (a n) * Q (n + 1) + (C (c n) * X) * Q n := by
     simpa [Q] using comp_pos_X_sub_C_lag_recurrence hrec
   have hQ :=
     natDegree_pos_X_lag_combo_sequence_shifted hQzero hQone ha hc hQrec
   intro n
-  constructor
-  · simpa [Q, natDegree_comp, natDegree_X_add_C] using (hQ n).1
-  · exact hasPosLeadingCoeff_of_comp_X_add_C (hQ n).2
+  exact ⟨by simpa [Q, natDegree_comp, natDegree_X_add_C] using (hQ n).1,
+    hasPosLeadingCoeff_of_comp_X_add_C (hQ n).2⟩
 
 /-- Real-rootedness corollary for a plateau-safe translated affine lag. -/
 theorem isRealRooted_of_strictInterl_pos_X_sub_C_lag_combo_sequence

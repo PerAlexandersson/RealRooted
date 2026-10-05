@@ -319,15 +319,7 @@ lemma count_eq_one_of_idxOf_eq_length_sub_one [DecidableEq α] {l : List α} {x 
 
 @[simp] lemma not_gt {n m : ℕ} : (¬ n > m) ↔ n ≤ m := Nat.not_lt
 
-omit [DecidableEq α] in
-@[simp] lemma head_not_mem_tail_of_first
-    {l : List α} (h : l.Nodup) (hne : l ≠ []) :
-    l.head hne ∉ l.tail := by
-  cases l with
-  | nil        => cases hne rfl
-  | cons hd tl =>
-    simp only [List.nodup_cons] at h
-    exact h.1
+attribute [simp] head_not_mem_tail_of_nodup
 
 omit [DecidableEq α] in
 /-- If `x` is in the tail of a list, then `x` is not the head of the list.
@@ -625,12 +617,6 @@ lemma get_not_mem_take {l : List α} (h_nodup : l.Nodup)
               exact get_mem tl ⟨i', Nat.lt_of_succ_lt_succ h_bounds⟩
             exact h_nodup.1 h_mem
           · exact h_ind
-
-omit [DecidableEq α] in
-@[simp] lemma getLast_not_mem_dropLast
-   {l : List α} (h_ne : l ≠ []) (h_nodup : l.Nodup) :
-    l.getLast h_ne ∉ l.dropLast := by
-  simpa using List.not_mem_dropLast_getLast (l := l) h_ne h_nodup
 
 omit [DecidableEq α] in
 /-- An element `x` is not a member of the prefix of `l` up to the first

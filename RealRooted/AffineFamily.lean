@@ -703,43 +703,6 @@ theorem strictInterl_of_affine_segment_endpoint_pf_nonneg
     (fun {z} hz => hpencil_pf hs ht hz)
 
 /--
-TNN-named version of `strictInterl_of_affine_segment_endpoint_pf_nonneg`.
-
-The LGV certificate layer naturally produces Toeplitz total nonnegativity of
-the coefficient sequence.  Since `IsPolyaFreqSeq` is the same
-predicate here, this wrapper avoids a small definitional conversion at the
-final handoff.
--/
-theorem strictInterl_of_affine_segment_endpoint_tnn_nonneg
-    {P0 P1 H0 H1 : ℝ[X]} {β : ℝ}
-    (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
-    (hPβ0 : C (1 - β) * P0 + C β * P1 ≠ 0)
-    (hHβ0 : C (1 - β) * H0 + C β * H1 ≠ 0)
-    (hPβnn : HasNonnegCoeffs (C (1 - β) * P0 + C β * P1))
-    (hHβnn : HasNonnegCoeffs (C (1 - β) * H0 + C β * H1))
-    (hpencil_ne :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        ((((C s * X + C t) * P0) + H0) +
-          C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
-    (hpencil_tnn :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        IsPolyaFreqSeq
-          (fun n =>
-            ((((C s * X + C t) * P0) + H0) +
-              C z * (((C s * X + C t) * P1) + H1)).coeff n))
-    (hleft :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * P0) + H0) ≠ 0 ∧ (((C s * X + C t) * P0) + H0).Splits))
-    (hright :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
-    StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
-  strictInterl_of_affine_segment_endpoint_pf_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn
-    hpencil_ne
-    (fun {_s _t _z} hs ht hz => hpencil_tnn hs ht hz)
-    hleft hright
-
-/--
 Same-degree ASW/PF endpoint wrapper.  This is the version to use when endpoint
 real-rootedness should be recovered from positive compatibility plus equal
 degree and positive leading coefficients.
@@ -780,42 +743,6 @@ theorem strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg
     (g := (((C s * X + C t) * P1) + H1))
     (fun {z} hz => hpencil_ne hs ht hz)
     (fun {z} hz => hpencil_pf hs ht hz)
-
-/--
-Same-degree TNN-named endpoint wrapper.
--/
-theorem strictInterl_of_affine_segment_endpoint_tnn_sameDegree_nonneg
-    {P0 P1 H0 H1 : ℝ[X]} {β : ℝ}
-    (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
-    (hPβ0 : C (1 - β) * P0 + C β * P1 ≠ 0)
-    (hHβ0 : C (1 - β) * H0 + C β * H1 ≠ 0)
-    (hPβnn : HasNonnegCoeffs (C (1 - β) * P0 + C β * P1))
-    (hHβnn : HasNonnegCoeffs (C (1 - β) * H0 + C β * H1))
-    (hpencil_ne :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        ((((C s * X + C t) * P0) + H0) +
-          C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
-    (hpencil_tnn :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        IsPolyaFreqSeq
-          (fun n =>
-            ((((C s * X + C t) * P0) + H0) +
-              C z * (((C s * X + C t) * P1) + H1)).coeff n))
-    (hleft_pos :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        HasPosLeadingCoeff (((C s * X + C t) * P0) + H0))
-    (hright_pos :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        HasPosLeadingCoeff (((C s * X + C t) * P1) + H1))
-    (hdeg :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        (((C s * X + C t) * P1) + H1).natDegree =
-          (((C s * X + C t) * P0) + H0).natDegree) :
-    StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
-  strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
-    hHβnn hpencil_ne
-    (fun {_s _t _z} hs ht hz => hpencil_tnn hs ht hz)
-    hleft_pos hright_pos hdeg
 
 /-- Branden's affine-family converse immediately upgrades to the full
 Obreschkoff all-combinations conclusion in the nonnegative-coefficient regime:
