@@ -19,11 +19,6 @@ noncomputable section
 
 namespace RealRooted
 
-theorem splits_of_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0)
-    (h : 0 ≤ discrim a b c) :
-    (C a * X ^ 2 + C b * X + C c).Splits :=
-  quadraticPoly_splits_of_discrim_nonneg ha h
-
 theorem eval_hermiteBiehler_neg_conj (f g : ℝ[X]) (z : ℂ) :
     (hermiteBiehlerPolynomial f (-g)).eval (starRingEnd ℂ z)
       = starRingEnd ℂ ((hermiteBiehlerPolynomial f g).eval z) := by
@@ -173,9 +168,9 @@ theorem splits_of_stable_monic_two {f g : ℝ[X]}
     simpa [h₂] using eq_X_sq_add_X_add_C_of_natDegree_le_two (p := g) (by lia)
   constructor
   · rw [hfexp]
-    exact splits_of_discrim_nonneg one_ne_zero hdiscf
+    exact quadraticPoly_splits_of_discrim_nonneg one_ne_zero hdiscf
   · rw [hgexp]
-    exact splits_of_discrim_nonneg one_ne_zero hdiscg
+    exact quadraticPoly_splits_of_discrim_nonneg one_ne_zero hdiscg
 
 lemma triangle_of_sq {A B t S : ℝ} (hA₀ : 0 ≤ A) (hB₀ : 0 ≤ B) (ht₀ : 0 ≤ t)
     (ht₂ : t ^ 2 = A ^ 2 + B ^ 2 - 2 * S) (hS₁ : S ≤ A * B) (hS₂ : -S ≤ A * B) :
@@ -431,9 +426,9 @@ theorem splits_of_stable_two {f g : ℝ[X]}
     eq_X_sq_add_X_add_C_of_natDegree_le_two (by lia)
   constructor
   · rw [hfexp]
-    exact splits_of_discrim_nonneg (ne_of_gt ha) hdiscf
+    exact quadraticPoly_splits_of_discrim_nonneg (ne_of_gt ha) hdiscf
   · rw [hgexp]
-    exact splits_of_discrim_nonneg (ne_of_gt hb) hdiscg
+    exact quadraticPoly_splits_of_discrim_nonneg (ne_of_gt hb) hdiscg
 
 lemma interlace_core_abstract {a b b₁ b₂ c₁ c₂ p q K : ℝ}
     (ha : 0 < a) (hb : 0 < b) (hK0 : 0 ≤ K)

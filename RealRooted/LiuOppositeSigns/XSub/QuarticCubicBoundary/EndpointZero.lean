@@ -467,11 +467,11 @@ theorem xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCases {a b c d u v w 渭 : 鈩
   by_cases hwc_eq : w = c
   路 exact hcommon_dispatch (by simp [hwc_eq])
   by_cases huv_eq : u = v
-  路 exact xSubQuarticCubicStrictLeftRepeatedRightBoundaryCases
+  路 exact xSubQuarticCubicSplits_of_strict_left_repeated_right_boundary
       hab_lt hbc_lt hc0_lt huv hvw hau hbv hcw huc hvd le_rfl hw0_lt h渭
       (Or.inl huv_eq)
   by_cases hvw_eq : v = w
-  路 exact xSubQuarticCubicStrictLeftRepeatedRightBoundaryCases
+  路 exact xSubQuarticCubicSplits_of_strict_left_repeated_right_boundary
       hab_lt hbc_lt hc0_lt huv hvw hau hbv hcw huc hvd le_rfl hw0_lt h渭
       (Or.inr hvw_eq)
   have huv_lt : u < v := lt_of_le_of_ne huv huv_eq
