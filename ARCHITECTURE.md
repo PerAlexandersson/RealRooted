@@ -1607,6 +1607,13 @@ replaced its standard simplex API with a bundled type. The shim imports only
 Mathlib. Its nine budgeted consumers gain exactly one local module; their
 closure budgets increase by one, with no new upward dependency edges.
 
+The A144438 interval-preserver development adds 38 application modules under
+`Applications.OEIS.A144438.IntervalPreserver` (the `w = 1` reference layer and
+its `Weighted` generalization) and the `Challenges.DecoEulerian` entry point.
+Net of the wrapper modules removed in the same period, the root and production
+closures each grow by 37 modules, so their budgets rise to 1574 and 1441. The
+tactic regression closure is unchanged.
+
 Run the architecture check with:
 
 ```bash
