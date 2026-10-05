@@ -36,7 +36,8 @@ private theorem natDegree_theta_le (p : ℝ[X]) : (theta p).natDegree ≤ p.natD
     have := natDegree_derivative_lt hp
     lia
 
-private theorem binaryRunTransform_C_mul (n : ℕ) (a : ℝ) (p : ℝ[X]) :
+/-- The binary run transformation commutes with constant multiples. -/
+theorem binaryRunTransform_C_mul (n : ℕ) (a : ℝ) (p : ℝ[X]) :
     binaryRunTransform n (C a * p) = C a * binaryRunTransform n p := by
   rw [← smul_eq_C_mul, binaryRunTransform_smul]
 

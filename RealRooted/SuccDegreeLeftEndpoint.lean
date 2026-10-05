@@ -390,32 +390,6 @@ theorem PosComboRealRooted.right_splits_of_succDegree {f g : ℝ[X]}
   PosComboRealRooted.left_splits_of_succDegree
     (PosComboRealRooted.comm hfg) hg_pos hf_pos hsucc
 
-/-- Closed-segment form of the succ-degree endpoint for positive-combination
-families.  If `PosComboRealRooted f g`, both leading coefficients are positive,
-and `g.natDegree = f.natDegree + 1`, then the lower-degree member `f` splits.
-
-This is direct #42 support: it packages
-`splits_of_closedSegment_family_of_succDegree` against the
-`PosComboRealRooted` interface used by the closed-segment route. -/
-theorem PosComboRealRooted.left_splits_of_closedSegment_of_succDegree
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    f.Splits :=
-  splits_of_closedSegment_family_of_succDegree
-    (fun {β} hβ0 hβ1 => hfg (show (0 : ℝ) < 1 - β by linarith) hβ0)
-    hf_pos hg_pos hsucc
-
-/-- Closed-segment form of the succ-degree endpoint theorem at the
-higher-degree endpoint, obtained by swapping the pair. -/
-theorem PosComboRealRooted.right_splits_of_closedSegment_of_succDegree
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    g.Splits :=
-  PosComboRealRooted.left_splits_of_closedSegment_of_succDegree
-    (PosComboRealRooted.comm hfg) hg_pos hf_pos hsucc
-
 /-!
 ### Direct #42 closed-segment endpoint API
 

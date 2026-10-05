@@ -249,12 +249,6 @@ private theorem binaryRunTransform_C_mul_X_pow (n m : ℕ) (a : ℝ) :
     binaryRunTransform n (C a * X ^ m) = C a * binaryRunPolynomial n m := by
   rw [← smul_eq_C_mul, binaryRunTransform_smul, binaryRunTransform_X_pow]
 
-private theorem derivative_X_pow_succ (j : ℕ) :
-    derivative (X ^ (j + 1) : ℝ[X]) = C ((j : ℝ) + 1) * X ^ j := by
-  rw [derivative_X_pow, Nat.add_sub_cancel]
-  push_cast
-  rfl
-
 /-- The balanced kernel of the polar derivative:
 `K_n((N - Θ)p) = J_n((N - Θ)p) - J_n(Θp) + K_n(p')` with `N = n + 1`. -/
 theorem balancedRunTransform_polarTheta_eq {n : ℕ} {p : ℝ[X]}

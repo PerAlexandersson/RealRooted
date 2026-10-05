@@ -1,4 +1,5 @@
 import RealRooted.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.ThreeTermRecurrence.Interlacing
 
 /-!
@@ -116,14 +117,6 @@ theorem derivRec_hasNonnegCoeffs (hrec : ∀ n, P (n + 1) = A n * (P n).derivati
       have ih := derivRec_hasNonnegCoeffs hrec hA hB h0 n
       rw [hrec n]
       exact ((hA n).mul ih.derivative).add ((hB n).mul ih)
-
-private theorem coeff_X_mul_derivative (p : ℝ[X]) (j : ℕ) :
-    (X * p.derivative).coeff j = (j : ℝ) * p.coeff j := by
-  rcases j with _ | j
-  · simp
-  · rw [coeff_X_mul, coeff_derivative]
-    push_cast
-    ring
 
 /-- Rows of a derivative recurrence with nonnegative coefficients, from
 nonnegative multipliers: since

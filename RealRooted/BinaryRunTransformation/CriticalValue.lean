@@ -127,14 +127,6 @@ theorem eval_signedParityLift {n : ℕ} {p : ℝ[X]}
   simp only [Algebra.smul_def, map_mul, map_pow, map_neg, map_one]
   field_simp
 
-theorem coeff_X_mul_derivative (p : ℝ[X]) (k : ℕ) :
-    (X * p.derivative).coeff k = (k : ℝ) * p.coeff k := by
-  rcases k with _ | k
-  · simp
-  · rw [coeff_X_mul, coeff_derivative]
-    push_cast
-    ring
-
 /-- Euler identity for the signed parity lift. At a nonzero root of `p`, it
 turns the derivative of the lift into the lift of `X p'`. -/
 theorem X_mul_derivative_signedParityLift (n : ℕ) (p : ℝ[X]) :

@@ -475,19 +475,6 @@ differentiating `deg f` times, this would force a positive constant-vs-degree-`�
 positive family, which is impossible.  This is the affine analogue of the
 degree-closeness reduction already used in `ObreschkoffConverse`. -/
 
-private lemma iterate_derivative_add :
-    ∀ (n : ℕ) (p q : ℝ[X]),
-      (derivative^[n]) (p + q) = (derivative^[n]) p + (derivative^[n]) q
-  | 0, p, q => by simp
-  | n + 1, p, q => by
-      simp
-
-private lemma iterate_derivative_C_mul (a : ℝ) :
-    ∀ (n : ℕ) (p : ℝ[X]),
-      (derivative^[n]) (C a * p) = C a * (derivative^[n]) p
-  | 0, p => by simp
-  | n + 1, p => by
-      simp
 protected lemma AffineFamily.isRealRooted_iterate_derivative_of_lt_natDegree
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) :
     ∀ {n : ℕ}, n < p.natDegree → (((derivative^[n]) p) ≠ 0 ∧ ((derivative^[n]) p).Splits)

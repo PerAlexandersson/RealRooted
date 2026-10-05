@@ -217,7 +217,7 @@ theorem perronRoot_rootMultiplicity_eq_one_of_primitive
 /-! ### The main theorem -/
 
 /-- Values of a strictly monotone map out of `Fin q` dominate the index. -/
-private lemma le_val_of_strictMono {q : ℕ} {f : Fin q → Fin n} (hf : StrictMono f)
+lemma _root_.Fin.le_val_of_strictMono {q : ℕ} {f : Fin q → Fin n} (hf : StrictMono f)
     (k : Fin q) : (k : ℕ) ≤ (f k : ℕ) := by
   have H : ∀ m : ℕ, ∀ k : Fin q, (k : ℕ) = m → m ≤ (f k : ℕ) := by
     intro m
@@ -406,7 +406,7 @@ theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
       apply Finset.prod_le_prod₀ (fun k _ => norm_nonneg _)
       intro k _
       apply hanti
-      have h1 := le_val_of_strictMono (strictMono_powersetEnum s) k
+      have h1 := Fin.le_val_of_strictMono (strictMono_powersetEnum s) k
       exact Fin.le_def.mpr (by simpa using h1)
     -- if the top product were not the Perron root, its modulus would be both
     -- strictly below and at least the Perron root

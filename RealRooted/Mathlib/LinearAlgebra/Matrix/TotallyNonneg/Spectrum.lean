@@ -71,23 +71,6 @@ private lemma rankPrefix_eq_image {r : ℕ} (hr : r ≤ n) :
   · rintro ⟨k, rfl⟩
     exact k.isLt
 
-private lemma index_le_value_of_strictMono {q : ℕ}
-    {f : Fin q → Fin n} (hf : StrictMono f) (k : Fin q) :
-    (k : ℕ) ≤ (f k : ℕ) := by
-  have h : ∀ m : ℕ, ∀ k : Fin q, (k : ℕ) = m → m ≤ (f k : ℕ) := by
-    intro m
-    induction m with
-    | zero => exact fun _ _ => Nat.zero_le _
-    | succ m ih =>
-        intro k hk
-        have hm : m < q := by
-          have := k.isLt
-          lia
-        have hprev := ih ⟨m, hm⟩ rfl
-        have hlt : f ⟨m, hm⟩ < f k := hf (by simp [Fin.lt_def, hk])
-        exact Nat.succ_le_of_lt (hprev.trans_lt hlt)
-  exact h (k : ℕ) k rfl
-
 /-- A matrix has a nonzero ordered minor of every order at most its rank. -/
 theorem exists_ordered_minor_ne_zero_of_le_rank
     {R : Type*} [Field R] {m q : ℕ}
@@ -244,7 +227,7 @@ theorem exists_charpoly_eq_prod_nonneg_of_rank_eq_of_compounds_primitive
       intro k _
       apply hanti
       exact Fin.le_def.mpr
-        (index_le_value_of_strictMono (strictMono_powersetEnum s) k)
+        (Fin.le_val_of_strictMono (strictMono_powersetEnum s) k)
     by_contra hne
     have hlt : ‖∏ i ∈ rankPrefix n q, μC i‖ <
         CollatzWielandt.perronRoot B := by
