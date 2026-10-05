@@ -191,21 +191,6 @@ theorem prefixRowStage_isTotallyNonneg {N s : ℕ} (hs : s ≤ N)
 def lowerOnesFin (N : ℕ) : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
   .of fun i j => if j ≤ i then 1 else 0
 
-lemma finIdentity_isTotallyNonneg (N : ℕ) :
-    (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ).IsTotallyNonneg := by
-  have h := Matrix.IsTotallyNonneg.submatrix
-    (Matrix.IsTotallyNonneg.one : (1 : Matrix ℕ ℕ ℝ).IsTotallyNonneg)
-    (f := fun i : Fin (N + 1) => i.val) (g := fun i : Fin (N + 1) => i.val)
-    Fin.val_strictMono Fin.val_strictMono
-  convert h using 1
-  ext i j
-  simp only [submatrix_apply, one_apply]
-  by_cases hij : i = j
-  · subst j
-    simp
-  · have hval : i.val ≠ j.val := fun hv => hij (Fin.ext hv)
-    simp [hij, hval]
-
 lemma prefixRowStage_identity (N : ℕ) :
     prefixRowStage (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) N = lowerOnesFin N := by
   ext i j
@@ -236,7 +221,7 @@ lemma prefixRowStage_identity (N : ℕ) :
 theorem lowerOnesFin_isTotallyNonneg (N : ℕ) :
     (lowerOnesFin N).IsTotallyNonneg := by
   rw [← prefixRowStage_identity N]
-  exact prefixRowStage_isTotallyNonneg (le_refl N) (finIdentity_isTotallyNonneg N)
+  exact prefixRowStage_isTotallyNonneg (le_refl N) Matrix.IsTotallyNonneg.one
 
 /-- The finite lower-triangular matrix with entry `i - j + 1` below the diagonal. -/
 def lowerLinearFin (N : ℕ) : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=

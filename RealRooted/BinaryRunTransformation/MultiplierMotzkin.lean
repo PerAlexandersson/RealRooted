@@ -61,9 +61,6 @@ theorem natDegree_reverseHermiteBasis_le (n : ℕ) :
       have h2 := natDegree_C_mul_le ((n : ℝ) + 1) (reverseHermiteBasis (R := ℝ) n)
       lia
 
-private theorem reflect_one_X : (X : ℝ[X]).reflect 1 = 1 := by
-  simp
-
 private theorem reflect_succ_of_natDegree_le {p : ℝ[X]} {n : ℕ} (hp : p.natDegree ≤ n) :
     p.reflect (n + 1) = X * p.reflect n := by
   have h := reflect_mul (1 : ℝ[X]) p (F := 1) (G := n) (by simp) hp
@@ -278,10 +275,6 @@ theorem motzkinWeightedInput_polar (γ : ℕ → ℝ) (n : ℕ) :
 def motzkinWeightedRow (γ : ℕ → ℝ) (n : ℕ) : ℝ[X] :=
   binaryRunTransform n (motzkinWeightedInput γ n)
 
-private theorem binaryRunTransform_C_mul' (n : ℕ) (a : ℝ) (p : ℝ[X]) :
-    binaryRunTransform n (C a * p) = C a * binaryRunTransform n p := by
-  rw [← smul_eq_C_mul, binaryRunTransform_smul]
-
 /-- For large `n`, consecutive weighted rows interlace. -/
 theorem motzkinWeightedRow_strictInterl_succ_of_three_le {γ : ℕ → ℝ}
     (hγ : IsPFMultiplierSequence γ) (hpos : ∀ m, 0 < γ m) {n : ℕ} (hn : 3 ≤ n) :
@@ -291,7 +284,7 @@ theorem motzkinWeightedRow_strictInterl_succ_of_three_le {γ : ℕ → ℝ}
     (motzkinWeightedInput_isPFPolynomial hγ (n + 1))
     (by rw [coeff_zero_motzkinWeightedInput]; exact (hpos 0).ne')
     (by rw [hdeg]; lia) (by rw [hdeg]; lia)
-  rw [motzkinWeightedInput_polar, binaryRunTransform_C_mul'] at h
+  rw [motzkinWeightedInput_polar, binaryRunTransform_C_mul] at h
   have hn1 : ((n : ℝ) + 1) ≠ 0 := by positivity
   have h' := h.C_mul_left (a := ((n : ℝ) + 1)⁻¹) (inv_ne_zero hn1)
   rwa [← mul_assoc, ← C_mul, inv_mul_cancel₀ hn1, C_1, one_mul] at h'
@@ -314,8 +307,8 @@ private theorem motzkinWeightedRow_of_le_three (γ : ℕ → ℝ) {n : ℕ} (hn0
     motzkinWeightedRow γ n =
       C (γ 0) + C (2 * γ 1 * completeMatchingCount n 1) * X := by
   rw [motzkinWeightedRow, motzkinWeightedInput_of_le_three γ hn, binaryRunTransform_add,
-    ← mul_one (C (γ 0)), binaryRunTransform_C_mul', binaryRunTransform_one,
-    binaryRunTransform_C_mul', ← pow_one X, binaryRunTransform_X_pow,
+    ← mul_one (C (γ 0)), binaryRunTransform_C_mul, binaryRunTransform_one,
+    binaryRunTransform_C_mul, ← pow_one X, binaryRunTransform_X_pow,
     binaryRunPolynomial_one n hn0, mul_one, pow_one]
 
 /-- **Sturm chain for multiplier-weighted Motzkin rows.**  If `γ` is a PF
@@ -336,7 +329,7 @@ theorem motzkinWeightedRow_strictInterl_succ {γ : ℕ → ℝ}
       rw [motzkinWeightedRow, motzkinWeightedInput_of_le_three γ (by norm_num),
         completeMatchingCount_eq_zero (by norm_num)]
       simp only [mul_zero, C_0, zero_mul, add_zero]
-      rw [← mul_one (C (γ 0)), binaryRunTransform_C_mul', binaryRunTransform_one, mul_one]
+      rw [← mul_one (C (γ 0)), binaryRunTransform_C_mul, binaryRunTransform_one, mul_one]
     interval_cases n
     · rw [hR0, motzkinWeightedRow_of_le_three γ (by norm_num) (by norm_num), hc1]
       simpa using StrictInterl.refl (C_ne_zero.mpr h0.ne') (Splits.C (γ 0))
@@ -483,7 +476,7 @@ theorem motzkinWeightedRow_inv_ascPochhammer_succ_strictInterl {α : ℝ} (hα :
     have hT := strictInterl_binaryRunTransform (n := n) hself hg.hasNonnegCoeffs hCnn
       (by rw [hdeg]; lia)
       ((natDegree_C_mul_le _ _).trans (by rw [natDegree_motzkinWeightedInput hγpos]; lia))
-    rw [binaryRunTransform_C_mul'] at hT
+    rw [binaryRunTransform_C_mul] at hT
     have h' := hT.C_mul_right (inv_ne_zero hα.ne')
     rwa [← mul_assoc, ← C_mul, inv_mul_cancel₀ hα.ne', C_1, one_mul] at h'
 

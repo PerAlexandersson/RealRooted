@@ -112,7 +112,7 @@
       "max_modules": 45
     },
     "RealRooted.Applications.OEIS.InversePeaksTypeB": {
-      "max_modules": 139
+      "max_modules": 140
     },
     "RealRooted.Applications.OEIS.LowerReentrantCorner": {
       "max_modules": 44
@@ -292,7 +292,7 @@
       "max_modules": 11
     },
     "RealRooted.Laguerre": {
-      "max_modules": 60
+      "max_modules": 61
     },
     "RealRooted.Laguerre.Orthogonality": {
       "max_modules": 8
@@ -301,7 +301,7 @@
       "max_modules": 9
     },
     "RealRooted.Laguerre.Roots": {
-      "max_modules": 54
+      "max_modules": 55
     },
     "RealRooted.Hermite": {
       "max_modules": 53
@@ -1192,7 +1192,7 @@
       "max_modules": 172
    },
     "RealRooted.DerivativeRecurrence": {
-      "max_modules": 56
+      "max_modules": 57
     },
     "RealRooted.DerivativeRecurrence.GeneralizedLaguerre": {
       "max_modules": 11
@@ -1204,7 +1204,7 @@
       "max_modules": 12
     },
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing": {
-      "max_modules": 43
+      "max_modules": 44
     },
     "RealRooted.DerivativeRecurrence.QuadraticLagStrict": {
       "max_modules": 43
@@ -1465,7 +1465,7 @@
       "max_modules": 5
     },
     "RealRooted.RootVieta.Newton": {
-      "max_modules": 4
+      "max_modules": 5
     },
     "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous": {
       "max_modules": 1

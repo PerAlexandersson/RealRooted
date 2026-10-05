@@ -62,7 +62,7 @@ theorem exists_kreinRootDeletedExpansion_right {f g : ℝ[X]}
   have hresdeg : (f - C c * g - weightedSum l).natDegree < g.natDegree :=
     natDegree_sub_lt_of_both_lt hgdeg hcdeg hwsdeg
   have hzero : f - C c * g - weightedSum l = 0 :=
-    eq_zero_of_dvd_of_natDegree_lt hfg.2.1.1 hdiv hresdeg
+    eq_zero_of_dvd_of_natDegree_lt hdiv hresdeg
   refine ⟨c, l, ?_, ?_, ?_⟩
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨u, hu, rfl⟩
@@ -283,7 +283,7 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree {f g : ℝ[X]
   have hresdeg : (f - C c * g - weightedSum tail).natDegree < g.natDegree :=
     natDegree_sub_lt_of_both_lt hgdeg hcdeg htail_deg
   have hzero : f - C c * g - weightedSum tail = 0 :=
-    eq_zero_of_dvd_of_natDegree_lt hfg.2.1.1 hdiv hresdeg
+    eq_zero_of_dvd_of_natDegree_lt hdiv hresdeg
   have hf : f = weightedSum l := by
     have hsub : f - C c * g = weightedSum tail := sub_eq_zero.mp hzero
     change f = weightedSum ((c, g) :: tail)
