@@ -1001,27 +1001,6 @@ theorem pencil_parameter_unique_left_of_isRoot_of_no_common
     (fun r hg hf => hno r hf hg) (by simpa [add_comm] using h1)
     (by simpa [add_comm] using h2)
 
-/-- A fixed threshold can be a root of a no-common right pencil for at most one
-positive parameter. -/
-theorem root_parameter_unique_add_right_of_no_common
-    {f g : ℝ[X]} {mu nu x : ℝ}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (_hmu : 0 < mu) (_hnu : 0 < nu)
-    (hroot_mu : (f + C mu * g).IsRoot x)
-    (hroot_nu : (f + C nu * g).IsRoot x) :
-    mu = nu :=
-  pencil_parameter_unique_of_isRoot_of_no_common hno hroot_mu hroot_nu
-
-/-- Left-family form of `root_parameter_unique_add_right_of_no_common`. -/
-theorem root_parameter_unique_add_left_of_no_common
-    {f g : ℝ[X]} {lam eta x : ℝ}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (_hlam : 0 < lam) (_heta : 0 < eta)
-    (hroot_lam : (C lam * f + g).IsRoot x)
-    (hroot_eta : (C eta * f + g).IsRoot x) :
-    lam = eta :=
-  pencil_parameter_unique_left_of_isRoot_of_no_common hno hroot_lam hroot_eta
-
 /-- At a root of an interior right positive combination, the derivative does
 not vanish. -/
 theorem PosComboRealRooted.derivative_eval_ne_zero_add_right
@@ -1067,11 +1046,11 @@ theorem PosComboRealRooted.parameter_unique_and_derivative_ne_zero_add_right
     (hfg : PosComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {mu nu x : ℝ}
-    (hmu : 0 < mu) (hnu : 0 < nu)
+    (hmu : 0 < mu) (_hnu : 0 < nu)
     (hroot_mu : (f + C mu * g).IsRoot x)
     (hroot_nu : (f + C nu * g).IsRoot x) :
     mu = nu ∧ (f + C mu * g).derivative.eval x ≠ 0 :=
-  ⟨root_parameter_unique_add_right_of_no_common hno hmu hnu hroot_mu hroot_nu,
+  ⟨pencil_parameter_unique_of_isRoot_of_no_common hno hroot_mu hroot_nu,
     hfg.derivative_eval_ne_zero_add_right hno hmu hroot_mu⟩
 
 /-- A root of an interior no-common right positive pencil carries endpoint
@@ -1114,11 +1093,11 @@ theorem PosComboRealRooted.parameter_unique_and_derivative_ne_zero_add_left
     (hfg : PosComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {lam eta x : ℝ}
-    (hlam : 0 < lam) (heta : 0 < eta)
+    (hlam : 0 < lam) (_heta : 0 < eta)
     (hroot_lam : (C lam * f + g).IsRoot x)
     (hroot_eta : (C eta * f + g).IsRoot x) :
     lam = eta ∧ (C lam * f + g).derivative.eval x ≠ 0 :=
-  ⟨root_parameter_unique_add_left_of_no_common hno hlam heta hroot_lam hroot_eta,
+  ⟨pencil_parameter_unique_left_of_isRoot_of_no_common hno hroot_lam hroot_eta,
     hfg.derivative_eval_ne_zero_add_left hno hlam hroot_lam⟩
 
 /-- Left-family form of

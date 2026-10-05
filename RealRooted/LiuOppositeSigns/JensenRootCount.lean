@@ -78,7 +78,7 @@ theorem RootCountCompatible.of_compatible {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q) :
     RootCountCompatible p q := by
   obtain ⟨k, hpk, hqk⟩ :=
-    compatiblePairHasCommonInterleaver_chudnovskySeymour hp_pos hq_pos hcompat
+    chudnovskySeymour_compatiblePairHasCommonInterleaver hp_pos hq_pos hcompat
   exact RootCountCompatible.of_commonInterleaver hpk hqk
 
 /-- Conversely, a nonzero PF pair satisfying Liu's root-count condition is
