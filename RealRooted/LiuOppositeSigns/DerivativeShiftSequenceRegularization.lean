@@ -27,7 +27,7 @@ noncomputable section
 /-- Choose a prescribed number of bounded positive common derivative shifts.
 
 At every stage, the next shift is smaller than both `κ` and the local radius
-from `NoCommonRoots.exists_delta_TDeriv`.  Consequently compatibility and the
+from `NoCommonRoots.exists_delta_tDeriv`.  Consequently compatibility and the
 absence of common roots survive the entire sequence.
 -/
 theorem NoCommonRoots.exists_applyTDerivList
@@ -44,7 +44,7 @@ theorem NoCommonRoots.exists_applyTDerivList
       exact ⟨[], rfl, by simp, by simpa using hcomp, by simpa using hno⟩
   | succ n ih =>
       obtain ⟨δ, hδ, hpreserve⟩ :=
-        hno.exists_delta_TDeriv hf_ne hg_ne hf hg
+        hno.exists_delta_tDeriv hf_ne hg_ne hf hg
       let eps := min δ κ / 2
       have hmin : 0 < min δ κ := lt_min hδ hκ
       have heps : 0 < eps := by
@@ -58,13 +58,13 @@ theorem NoCommonRoots.exists_applyTDerivList
         have hle : min δ κ ≤ κ := min_le_right δ κ
         dsimp [eps]
         linarith
-      have hcomp_shift : Compatible (TDeriv eps f) (TDeriv eps g) := by
+      have hcomp_shift : Compatible (tDeriv eps f) (tDeriv eps g) := by
         simpa using hcomp.iterateTDeriv heps 1
-      have hno_shift : NoCommonRoots (TDeriv eps f) (TDeriv eps g) :=
+      have hno_shift : NoCommonRoots (tDeriv eps f) (tDeriv eps g) :=
         hpreserve heps heps_delta
       obtain ⟨epss, hlength, hbounds, hcomp_final, hno_final⟩ :=
-        ih hcomp_shift hno_shift (TDeriv_ne_zero hf_ne) (TDeriv_ne_zero hg_ne)
-          (splits_tderiv heps hf) (splits_tderiv heps hg)
+        ih hcomp_shift hno_shift (tDeriv_ne_zero hf_ne) (tDeriv_ne_zero hg_ne)
+          (splits_tDeriv heps hf) (splits_tDeriv heps hg)
       refine ⟨eps :: epss, by simp [hlength], ?_, ?_, ?_⟩
       · intro eta heta
         rcases List.mem_cons.mp heta with rfl | heta
@@ -99,11 +99,11 @@ theorem NoCommonRoots.exists_applyTDerivList_roots_rel
   | succ n ih =>
       have hhalf : 0 < ρ / 2 := by linarith
       obtain ⟨δno, hδno, hpreserve⟩ :=
-        hno.exists_delta_TDeriv hf_ne hg_ne hf hg
+        hno.exists_delta_tDeriv hf_ne hg_ne hf hg
       obtain ⟨δf, hδf, hfclose⟩ :=
-        exists_delta_roots_rel_TDeriv hf hhalf
+        exists_delta_roots_rel_tDeriv hf hhalf
       obtain ⟨δg, hδg, hgclose⟩ :=
-        exists_delta_roots_rel_TDeriv hg hhalf
+        exists_delta_roots_rel_tDeriv hg hhalf
       let δ := min δno (min δf (min δg κ))
       have hδ : 0 < δ := lt_min hδno (lt_min hδf (lt_min hδg hκ))
       have hδ_no : δ ≤ δno := min_le_left _ _
@@ -129,16 +129,16 @@ theorem NoCommonRoots.exists_applyTDerivList_roots_rel
       have heps_kappa : eps < κ := by
         dsimp [eps]
         linarith
-      have hcomp_shift : Compatible (TDeriv eps f) (TDeriv eps g) := by
+      have hcomp_shift : Compatible (tDeriv eps f) (tDeriv eps g) := by
         simpa using hcomp.iterateTDeriv heps 1
-      have hno_shift : NoCommonRoots (TDeriv eps f) (TDeriv eps g) :=
+      have hno_shift : NoCommonRoots (tDeriv eps f) (tDeriv eps g) :=
         hpreserve heps heps_no
       have hf_step := hfclose heps heps_f
       have hg_step := hgclose heps heps_g
       obtain ⟨epss, hlength, hbounds, hcomp_final, hno_final,
           hf_tail, hg_tail⟩ :=
-        ih hcomp_shift hno_shift (TDeriv_ne_zero hf_ne) (TDeriv_ne_zero hg_ne)
-          (splits_tderiv heps hf) (splits_tderiv heps hg) hhalf
+        ih hcomp_shift hno_shift (tDeriv_ne_zero hf_ne) (tDeriv_ne_zero hg_ne)
+          (splits_tDeriv heps hf) (splits_tDeriv heps hg) hhalf
       have hf_final := Multiset.Rel.comp
         (fun a b c hab hbc => by
           calc

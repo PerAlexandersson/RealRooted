@@ -435,7 +435,7 @@ theorem strictInterl_balancedRunPolynomial_succ
           StrictInterl (balancedRunPolynomial n m)
             (u * balancedRunPolynomial n m +
               v * (balancedRunPolynomial n m).derivative) :=
-        strictInterl_mw_derivative_of_nonpos_of_pos_natDegree
+        MaWang.strictInterl_derivative_of_nonpos_of_pos_natDegree
           hmsplits (by rw [hmdeg]; exact hmpos_nat)
           (by rw [← hrec, hmdeg, hsuccdeg]; lia)
           (by rw [← hrec, hmdeg, hsuccdeg])

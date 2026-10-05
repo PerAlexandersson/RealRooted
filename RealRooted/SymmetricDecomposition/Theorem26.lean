@@ -143,15 +143,15 @@ private theorem strictInterl_b_component_of_strictInterl_sum_of_leadingCoeff_eq
       _ = a := by simp_all
   lia
 
-theorem brandenSolusTheorem26_forward_of_strictInterl_b_a {d : ℕ} {p a b : ℝ[X]}
+theorem BrandenSolus.forward_of_strictInterl_b_a {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
     (ha_nonneg : HasNonnegCoeffs a)
     (hb_nonneg : HasNonnegCoeffs b)
     (hba : StrictInterl b a) :
-    StrictInterl a p ∧ StrictInterl b p ∧ StrictInterl (IdTransform d p) p := by
+    StrictInterl a p ∧ StrictInterl b p ∧ StrictInterl (idTransform d p) p := by
   have hp_eq : p = a + X * b := hid.1
-  have hId_eq : IdTransform d p = a + b :=
+  have hId_eq : idTransform d p = a + b :=
     idTransform_eq_add_of_isIdDecomposition hd hid
   have hb_rr : (b ≠ 0 ∧ b.Splits) := hba.1
   have ha_rr : (a ≠ 0 ∧ a.Splits) := hba.2.1
@@ -195,19 +195,19 @@ theorem brandenSolusTheorem26_forward_of_strictInterl_b_a {d : ℕ} {p a b : ℝ
       (hba.nonneg_combo_right hb_pos ha_pos
         (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp) (by simp)
         (Or.inl (by simp)))
-  have hIdp : StrictInterl (IdTransform d p) p := by
+  have hIdp : StrictInterl (idTransform d p) p := by
     have hinterl : Interl (∑ t ∈ (Finset.univ : Finset Bool), cond t b a) p := by
       refine Interl.finsetSum_right_of_nonneg (s := (Finset.univ : Finset Bool))
         (f := fun t => cond t b a) (h := p) ?_ ?_
       · intro t ht
         cases t <;> simp [hap.toInterl, hbp.toInterl]
       · lia
-    have hId0 : IdTransform d p ≠ 0 := by simpa [hId_eq] using hIda.1.1
+    have hId0 : idTransform d p ≠ 0 := by simpa [hId_eq] using hIda.1.1
     exact strictInterl_of_interl_of_ne_zero hId0 hp0 (by
       simpa [hId_eq, add_comm, add_left_comm, add_assoc] using hinterl)
   lia
 
-theorem brandenSolusTheorem26_third_equiv_of_natDegree_le
+theorem BrandenSolus.third_equiv_of_natDegree_le
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -219,7 +219,7 @@ theorem brandenSolusTheorem26_third_equiv_of_natDegree_le
     (StrictInterl b a ↔ StrictInterl b p) := by
   constructor
   · intro hba
-    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.1
+    exact (BrandenSolus.forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.1
   · intro hbp
     have hlc : p.leadingCoeff = b.leadingCoeff := by
       rw [hid.1]
@@ -310,16 +310,16 @@ private theorem natDegree_X_mul_component_eq_or_succ_of_strictInterl_left_top
   rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted hall_aXb hap.1.1 hXb0 with
     hdeg | hdeg | hdeg <;> lia
 
-private lemma not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
+private lemma not_isRoot_zero_of_idTransform_fixed_top_of_hasNonnegCoeffs
     {d : ℕ} {p : ℝ[X]}
-    (hfix : IdTransform d p = p)
+    (hfix : idTransform d p = p)
     (hdeg : p.natDegree = d)
     (hp_nonneg : HasNonnegCoeffs p)
     (hp0 : p ≠ 0) :
     ¬ p.IsRoot 0 := by
   intro hp_root0
   have hcoeff : p.coeff 0 = p.coeff d := by
-    simpa [IdTransform, Polynomial.coeff_reflect, Polynomial.revAt_zero] using
+    simpa [idTransform, Polynomial.coeff_reflect, Polynomial.revAt_zero] using
       (congrArg (fun q => q.coeff 0) hfix).symm
   have htop : 0 < p.coeff d := by
     rw [← hdeg, Polynomial.coeff_natDegree]
@@ -379,7 +379,7 @@ private theorem strictInterl_b_component_of_strictInterl_left_top_of_sameDegree
     strictInterl_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb
       (Or.inr hsame)
   have ha_not_root0 : ¬ a.IsRoot 0 :=
-    not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
+    not_isRoot_zero_of_idTransform_fixed_top_of_hasNonnegCoeffs
       hid.2.2.2.1 ha_top ha_nonneg ha0
   obtain ⟨c, hac_le, hc_lt0⟩ :=
     exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
@@ -426,7 +426,7 @@ private theorem strictInterl_b_component_of_strictInterl_left_top
         strictInterl_of_allComboRealRooted
           hXb_rr.1 hXb_rr.2 hap.1.1 hap.1.2 hall_Xba (Or.inl hdeg)
     have ha_not_root0 : ¬ a.IsRoot 0 :=
-      not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
+      not_isRoot_zero_of_idTransform_fixed_top_of_hasNonnegCoeffs
         hid.2.2.2.1 ha_top ha_nonneg ha0
     obtain ⟨c, hac_le, hc_lt0⟩ :=
       exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
@@ -473,7 +473,7 @@ private theorem strictInterl_b_component_of_strictInterl_right_top
     natDegree_right_of_strictInterl_to_sum hp_eq ha_nonneg hb_nonneg hb0 hbp
   have hsame : a.natDegree = (X * b).natDegree := by simp_all
   have ha_not_root0 : ¬ a.IsRoot 0 :=
-    not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
+    not_isRoot_zero_of_idTransform_fixed_top_of_hasNonnegCoeffs
       hid.2.2.2.1 ha_top ha_nonneg ha0
   obtain ⟨c, hac_le, hc_lt0⟩ :=
     exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
@@ -489,7 +489,7 @@ private theorem strictInterl_b_component_of_strictInterl_right_top
       hac_le hXb_root0 hc_lt0
   exact strictInterl_of_strictInterl_X_mul_of_nonneg hstrictInterl_aXb hb_nonneg ha_nonneg
 
-theorem brandenSolusTheorem26_first_equiv_of_top_degree
+theorem BrandenSolus.first_equiv_of_top_degree
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -501,13 +501,13 @@ theorem brandenSolusTheorem26_first_equiv_of_top_degree
     (StrictInterl b a ↔ StrictInterl a p) := by
   constructor
   · intro hba
-    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
+    exact (BrandenSolus.forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
   · intro hap
     exact
       strictInterl_b_component_of_strictInterl_left_top
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hap
 
-theorem brandenSolusTheorem26_forward_of_strictInterl_a_p_top_degree
+theorem BrandenSolus.forward_of_strictInterl_a_p_top_degree
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -516,14 +516,14 @@ theorem brandenSolusTheorem26_forward_of_strictInterl_a_p_top_degree
     (ha0 : a ≠ 0)
     (hb0 : b ≠ 0)
     (ha_top : a.natDegree = d) :
-    StrictInterl a p → StrictInterl b p ∧ StrictInterl (IdTransform d p) p := by
+    StrictInterl a p → StrictInterl b p ∧ StrictInterl (idTransform d p) p := by
   intro hap
   have hba : StrictInterl b a :=
-    (brandenSolusTheorem26_first_equiv_of_top_degree
+    (BrandenSolus.first_equiv_of_top_degree
       hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top).2 hap
-  exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2
+  exact (BrandenSolus.forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2
 
-theorem brandenSolusTheorem26_second_equiv_of_top_degree
+theorem BrandenSolus.second_equiv_of_top_degree
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -536,15 +536,15 @@ theorem brandenSolusTheorem26_second_equiv_of_top_degree
   constructor
   · intro hap
     exact
-      (brandenSolusTheorem26_forward_of_strictInterl_a_p_top_degree
+      (BrandenSolus.forward_of_strictInterl_a_p_top_degree
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hap).1
   · intro hbp
     have hba : StrictInterl b a :=
       strictInterl_b_component_of_strictInterl_right_top
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hbp
-    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
+    exact (BrandenSolus.forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
 
-theorem brandenSolusTheorem26_third_forward_of_top_degree
+theorem BrandenSolus.third_forward_of_top_degree
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -553,12 +553,12 @@ theorem brandenSolusTheorem26_third_forward_of_top_degree
     (ha0 : a ≠ 0)
     (hb0 : b ≠ 0)
     (ha_top : a.natDegree = d) :
-    StrictInterl b p → StrictInterl (IdTransform d p) p := by
+    StrictInterl b p → StrictInterl (idTransform d p) p := by
   intro hbp
   have hba : StrictInterl b a :=
     strictInterl_b_component_of_strictInterl_right_top
       hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hbp
-  exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.2
+  exact (BrandenSolus.forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.2
 
 private theorem strictInterl_b_component_of_strictInterl_Id_top_of_right_top
     {d : ℕ} {p a b : ℝ[X]}
@@ -570,9 +570,9 @@ private theorem strictInterl_b_component_of_strictInterl_Id_top_of_right_top
     (hb0 : b ≠ 0)
     (ha_top : a.natDegree = d)
     (hb_top : b.natDegree = d - 1)
-    (hIdp : StrictInterl (IdTransform d p) p) :
+    (hIdp : StrictInterl (idTransform d p) p) :
     StrictInterl b p := by
-  let h : ℝ[X] := IdTransform d p
+  let h : ℝ[X] := idTransform d p
   let t : ℝ[X] := (X - C (1 : ℝ)) * b
   have hp_eq : p = a + X * b := hid.1
   have hId_eq : h = a + b := by simpa [h] using idTransform_eq_add_of_isIdDecomposition hd hid
@@ -658,7 +658,7 @@ private theorem strictInterl_b_component_of_strictInterl_Id_top_of_right_top
     refine StrictInterl.sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_ <;> simp_all
   simp_all
 
-theorem brandenSolusTheorem26_third_converse_of_top_degree_of_right_top
+theorem BrandenSolus.third_converse_of_top_degree_of_right_top
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -668,13 +668,13 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree_of_right_top
     (hb0 : b ≠ 0)
     (ha_top : a.natDegree = d)
     (hb_top : b.natDegree = d - 1) :
-    StrictInterl (IdTransform d p) p → StrictInterl b p := by
+    StrictInterl (idTransform d p) p → StrictInterl b p := by
   intro hIdp
   exact
     strictInterl_b_component_of_strictInterl_Id_top_of_right_top
       hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hb_top hIdp
 
-theorem brandenSolusTheorem26_third_equiv_of_top_degree_of_right_top
+theorem BrandenSolus.third_equiv_of_top_degree_of_right_top
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -684,16 +684,16 @@ theorem brandenSolusTheorem26_third_equiv_of_top_degree_of_right_top
     (hb0 : b ≠ 0)
     (ha_top : a.natDegree = d)
     (hb_top : b.natDegree = d - 1) :
-    (StrictInterl b p ↔ StrictInterl (IdTransform d p) p) := by
+    (StrictInterl b p ↔ StrictInterl (idTransform d p) p) := by
   constructor
   · exact
-      brandenSolusTheorem26_third_forward_of_top_degree
+      BrandenSolus.third_forward_of_top_degree
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top
   · exact
-      brandenSolusTheorem26_third_converse_of_top_degree_of_right_top
+      BrandenSolus.third_converse_of_top_degree_of_right_top
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hb_top
 
-theorem brandenSolusTheorem26_third_converse_of_top_degree
+theorem BrandenSolus.third_converse_of_top_degree
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -702,9 +702,9 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
     (ha0 : a ≠ 0)
     (hb0 : b ≠ 0)
     (ha_top : a.natDegree = d) :
-    StrictInterl (IdTransform d p) p → StrictInterl b p := by
+    StrictInterl (idTransform d p) p → StrictInterl b p := by
   intro hIdp
-  let h : ℝ[X] := IdTransform d p
+  let h : ℝ[X] := idTransform d p
   let t : ℝ[X] := (X - C (1 : ℝ)) * b
   have hp_eq : p = a + X * b := hid.1
   have hId_eq : h = a + b := by simpa [h] using idTransform_eq_add_of_isIdDecomposition hd hid
@@ -747,7 +747,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
       rw [hh_deg, natDegree_mul (X_sub_C_ne_zero (1 : ℝ)) hb0, natDegree_X_sub_C] at hsame
       lia
     exact
-      brandenSolusTheorem26_third_converse_of_top_degree_of_right_top
+      BrandenSolus.third_converse_of_top_degree_of_right_top
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hb_top hIdp
   · dsimp [t] at htoo_big
     rw [hh_deg, natDegree_mul (X_sub_C_ne_zero (1 : ℝ)) hb0, natDegree_X_sub_C] at htoo_big
@@ -768,7 +768,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
     · have hbound : h.natDegree ≤ t.natDegree := hht.natDegree_le
       lia
 
-theorem brandenSolusTheorem26_third_equiv_of_top_degree
+theorem BrandenSolus.third_equiv_of_top_degree
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -777,16 +777,16 @@ theorem brandenSolusTheorem26_third_equiv_of_top_degree
     (ha0 : a ≠ 0)
     (hb0 : b ≠ 0)
     (ha_top : a.natDegree = d) :
-    (StrictInterl b p ↔ StrictInterl (IdTransform d p) p) := by
+    (StrictInterl b p ↔ StrictInterl (idTransform d p) p) := by
   constructor
   · exact
-      brandenSolusTheorem26_third_forward_of_top_degree
+      BrandenSolus.third_forward_of_top_degree
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top
   · exact
-      brandenSolusTheorem26_third_converse_of_top_degree
+      BrandenSolus.third_converse_of_top_degree
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top
 
-theorem brandenSolusTheorem26_first_equiv_of_natDegree_le
+theorem BrandenSolus.first_equiv_of_natDegree_le
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -797,12 +797,12 @@ theorem brandenSolusTheorem26_first_equiv_of_natDegree_le
     (StrictInterl b a ↔ StrictInterl a p) := by
   constructor
   · intro hba
-    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
+    exact (BrandenSolus.forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
   · intro hap
     exact strictInterl_b_component_of_strictInterl_left_of_natDegree_le
       hid.1 ha_nonneg hb_nonneg ha_le hb0 hap
 
-theorem brandenSolusTheorem26_second_equiv_of_natDegree_le
+theorem BrandenSolus.second_equiv_of_natDegree_le
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -815,23 +815,23 @@ theorem brandenSolusTheorem26_second_equiv_of_natDegree_le
   constructor
   · intro hap
     have hba : StrictInterl b a :=
-      (brandenSolusTheorem26_first_equiv_of_natDegree_le
+      (BrandenSolus.first_equiv_of_natDegree_le
         hd hid ha_nonneg hb_nonneg ha_le hb0).2 hap
-    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.1
+    exact (BrandenSolus.forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.1
   · intro hbp
     have hba : StrictInterl b a :=
-      (brandenSolusTheorem26_third_equiv_of_natDegree_le
+      (BrandenSolus.third_equiv_of_natDegree_le
         hd hid ha_nonneg hb_nonneg ha_le ha0 hb0).2 hbp
-    exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
+    exact (BrandenSolus.forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).1
 
 theorem hasNonnegCoeffs_pair_of_isIdDecomposition {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
     (ha_nonneg : HasNonnegCoeffs a)
     (hb_nonneg : HasNonnegCoeffs b) :
-    HasNonnegCoeffs p ∧ HasNonnegCoeffs (IdTransform d p) := by
+    HasNonnegCoeffs p ∧ HasNonnegCoeffs (idTransform d p) := by
   have hp_nonneg : HasNonnegCoeffs p := by simpa [hid.1] using ha_nonneg.add hb_nonneg.X_mul
-  have hId_nonneg : HasNonnegCoeffs (IdTransform d p) := by
+  have hId_nonneg : HasNonnegCoeffs (idTransform d p) := by
     rw [idTransform_eq_add_of_isIdDecomposition hd hid]
     exact ha_nonneg.add hb_nonneg
   lia
@@ -842,11 +842,11 @@ theorem hasNonnegCoeffs_fPolynomial_pair_of_isIdDecomposition {d : ℕ} {p a b :
     (ha_nonneg : HasNonnegCoeffs a)
     (hb_nonneg : HasNonnegCoeffs b) :
     HasNonnegCoeffs (fPolynomial d p) ∧
-      HasNonnegCoeffs (RdTransform d (fPolynomial d p)) := by
+      HasNonnegCoeffs (rdTransform d (fPolynomial d p)) := by
   rcases hasNonnegCoeffs_pair_of_isIdDecomposition hd hid ha_nonneg hb_nonneg with
     ⟨hp_nonneg, hId_nonneg⟩
   refine ⟨hasNonnegCoeffs_fPolynomial hp_nonneg, ?_⟩
-  rw [RdTransform_fPolynomial]
+  rw [rdTransform_fPolynomial]
   exact hasNonnegCoeffs_fPolynomial hId_nonneg
 
 theorem hasNonnegCoeffs_pair_of_isRdDecomposition {d : ℕ} {p a b : ℝ[X]}
@@ -854,9 +854,9 @@ theorem hasNonnegCoeffs_pair_of_isRdDecomposition {d : ℕ} {p a b : ℝ[X]}
     (hrd : IsRdDecomposition d p a b)
     (ha_nonneg : HasNonnegCoeffs a)
     (hb_nonneg : HasNonnegCoeffs b) :
-    HasNonnegCoeffs p ∧ HasNonnegCoeffs (RdTransform d p) := by
+    HasNonnegCoeffs p ∧ HasNonnegCoeffs (rdTransform d p) := by
   have hp_nonneg : HasNonnegCoeffs p := by simpa [hrd.1] using ha_nonneg.add hb_nonneg.X_mul
-  have hR_nonneg : HasNonnegCoeffs (RdTransform d p) := by
+  have hR_nonneg : HasNonnegCoeffs (rdTransform d p) := by
     rw [rdTransform_eq_add_X_add_one_mul_of_isRdDecomposition hd hrd]
     exact ha_nonneg.add (hasNonnegCoeffs_X_add_one.mul hb_nonneg)
   lia
@@ -935,22 +935,22 @@ theorem strictInterlFPolynomialTransport {d : ℕ} {u v : ℝ[X]}
           strictInterl_iff_strictInterl_mul_X_add_one_pow_both
     _ ↔ StrictInterl u v := strictInterlFPolynomialTransportMinimal (d := m) rfl hu_nonneg hv_nonneg
 
-theorem brandenSolusTheorem26_last_equiv
+theorem BrandenSolus.last_equiv
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
     (ha_nonneg : HasNonnegCoeffs a)
     (hb_nonneg : HasNonnegCoeffs b) :
-    (StrictInterl (IdTransform d p) p ↔
-      StrictInterl (RdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
+    (StrictInterl (idTransform d p) p ↔
+      StrictInterl (rdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
   rcases hasNonnegCoeffs_pair_of_isIdDecomposition hd hid ha_nonneg hb_nonneg with
     ⟨hp_nonneg, hId_nonneg⟩
-  rw [RdTransform_fPolynomial]
+  rw [rdTransform_fPolynomial]
   exact (strictInterlFPolynomialTransport
-    (u := IdTransform d p) (v := p)
-    (IdTransform_natDegree_le hd) hd hId_nonneg hp_nonneg).symm
+    (u := idTransform d p) (v := p)
+    (idTransform_natDegree_le hd) hd hId_nonneg hp_nonneg).symm
 
-private theorem brandenSolusTheorem26_descend_of_lt_top
+private theorem BrandenSolus.descend_of_lt_top
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hd2 : 2 ≤ d)
@@ -971,14 +971,14 @@ private theorem brandenSolusTheorem26_descend_of_lt_top
         b' ≠ 0 →
         (StrictInterl b' a' ↔ StrictInterl a' q) ∧
         (StrictInterl a' q ↔ StrictInterl b' q) ∧
-        (StrictInterl b' q ↔ StrictInterl (IdTransform (d - 2) q) q) ∧
-        (StrictInterl (IdTransform (d - 2) q) q ↔
-          StrictInterl (RdTransform (d - 2) (fPolynomial (d - 2) q)) (fPolynomial (d - 2) q))) :
+        (StrictInterl b' q ↔ StrictInterl (idTransform (d - 2) q) q) ∧
+        (StrictInterl (idTransform (d - 2) q) q ↔
+          StrictInterl (rdTransform (d - 2) (fPolynomial (d - 2) q)) (fPolynomial (d - 2) q))) :
     (StrictInterl b a ↔ StrictInterl a p) ∧
     (StrictInterl a p ↔ StrictInterl b p) ∧
-    (StrictInterl b p ↔ StrictInterl (IdTransform d p) p) ∧
-    (StrictInterl (IdTransform d p) p ↔
-      StrictInterl (RdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
+    (StrictInterl b p ↔ StrictInterl (idTransform d p) p) ∧
+    (StrictInterl (idTransform d p) p ↔
+      StrictInterl (rdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
   rcases isIdDecomposition_descend_of_lt_top hd2 hid ha_lt hb_lt with
     ⟨a', b', haX, hbX, hpX, hid'⟩
   let q : ℝ[X] := a' + X * b'
@@ -995,13 +995,13 @@ private theorem brandenSolusTheorem26_descend_of_lt_top
   have hpair_nonneg :=
     hasNonnegCoeffs_pair_of_isIdDecomposition hqdeg hidq ha'_nonneg hb'_nonneg
   have hq_nonneg : HasNonnegCoeffs q := hpair_nonneg.1
-  have hIdq_nonneg : HasNonnegCoeffs (IdTransform (d - 2) q) := hpair_nonneg.2
+  have hIdq_nonneg : HasNonnegCoeffs (idTransform (d - 2) q) := hpair_nonneg.2
   have hpX' : p = X * q := by lia
-  have hIdX : IdTransform d p = X * IdTransform (d - 2) q := by
+  have hIdX : idTransform d p = X * idTransform (d - 2) q := by
     calc
-      IdTransform d p = IdTransform d (X * q) := by lia
-      _ = X * IdTransform (d - 2) q :=
-        IdTransform_X_mul_of_natDegree_le_two_pred hd2 hqdeg
+      idTransform d p = idTransform d (X * q) := by lia
+      _ = X * idTransform (d - 2) q :=
+        idTransform_X_mul_of_natDegree_le_two_pred hd2 hqdeg
   have hsmall := hprev hqdeg hidq ha'_nonneg hb'_nonneg ha'0 hb'0
   rcases hsmall with ⟨hfirst_small, hsecond_small, hthird_small, -⟩
   have hba_transport : StrictInterl b a ↔ StrictInterl b' a' := by
@@ -1020,19 +1020,19 @@ private theorem brandenSolusTheorem26_descend_of_lt_top
       _ ↔ StrictInterl b' q :=
         (strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs hb'_nonneg hq_nonneg).symm
   have hIdp_transport :
-      StrictInterl (IdTransform d p) p ↔ StrictInterl (IdTransform (d - 2) q) q := by
+      StrictInterl (idTransform d p) p ↔ StrictInterl (idTransform (d - 2) q) q := by
     calc
-      StrictInterl (IdTransform d p) p ↔
-          StrictInterl (X * IdTransform (d - 2) q) (X * q) := by lia
-      _ ↔ StrictInterl (IdTransform (d - 2) q) q :=
+      StrictInterl (idTransform d p) p ↔
+          StrictInterl (X * idTransform (d - 2) q) (X * q) := by lia
+      _ ↔ StrictInterl (idTransform (d - 2) q) q :=
         (strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs hIdq_nonneg hq_nonneg).symm
-  refine ⟨?_, ?_, ?_, brandenSolusTheorem26_last_equiv hd hid ha_nonneg hb_nonneg⟩ <;> lia
+  refine ⟨?_, ?_, ?_, BrandenSolus.last_equiv hd hid ha_nonneg hb_nonneg⟩ <;> lia
 
 /-- The naive fully strict translation of Brändén--Solus Theorem 2.6, without
 the hypotheses `a ≠ 0` and `b ≠ 0`, is false: our `StrictInterl` predicate is
 reflexive on real-rooted polynomials and excludes the zero polynomial, so the
 degree-zero decomposition `1 = 1 + X * 0` breaks the first equivalence. -/
-theorem not_brandenSolusTheorem26Naive :
+theorem BrandenSolus.not_naive :
     ¬ ∀ {d : ℕ} {p a b : ℝ[X]},
     p.natDegree ≤ d →
     IsIdDecomposition d p a b →
@@ -1040,14 +1040,14 @@ theorem not_brandenSolusTheorem26Naive :
     HasNonnegCoeffs b →
     (StrictInterl b a ↔ StrictInterl a p) ∧
     (StrictInterl a p ↔ StrictInterl b p) ∧
-    (StrictInterl b p ↔ StrictInterl (IdTransform d p) p) ∧
-    (StrictInterl (IdTransform d p) p ↔
-      StrictInterl (RdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
+    (StrictInterl b p ↔ StrictInterl (idTransform d p) p) ∧
+    (StrictInterl (idTransform d p) p ↔
+      StrictInterl (rdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
   intro h
   have hcase := h (d := 0) (p := (1 : ℝ[X])) (a := (1 : ℝ[X])) (b := 0)
     (by simp)
     (by
-      refine ⟨by simp, ?_, ?_, ?_, ?_⟩ <;> simp [IdTransform])
+      refine ⟨by simp, ?_, ?_, ?_, ?_⟩ <;> simp [idTransform])
     hasNonnegCoeffs_one
     hasNonnegCoeffs_zero
   rcases hcase with ⟨hba_iff_hap, -, -, -⟩
@@ -1060,8 +1060,8 @@ theorem not_brandenSolusTheorem26Naive :
 /-- In the ordered-degree branch `a.natDegree ≤ b.natDegree`, the forward half
 of the remaining bridge is already available: once `b` interlaces `p`, the
 existing component theorem recovers `b ≺ a`, and the forward Brändén--Solus
-implication then yields `IdTransform d p ≺ p`. -/
-theorem brandenSolusTheorem26_ordered_bridge_forward_of_natDegree_le
+implication then yields `idTransform d p ≺ p`. -/
+theorem BrandenSolus.ordered_bridge_forward_of_natDegree_le
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -1070,20 +1070,20 @@ theorem brandenSolusTheorem26_ordered_bridge_forward_of_natDegree_le
     (ha_le : a.natDegree ≤ b.natDegree)
     (ha0 : a ≠ 0)
     (hb0 : b ≠ 0) :
-    StrictInterl b p → StrictInterl (IdTransform d p) p := by
+    StrictInterl b p → StrictInterl (idTransform d p) p := by
   intro hbp
   have hba : StrictInterl b a :=
-    (brandenSolusTheorem26_third_equiv_of_natDegree_le
+    (BrandenSolus.third_equiv_of_natDegree_le
       hd hid ha_nonneg hb_nonneg ha_le ha0 hb0).2 hbp
-  exact (brandenSolusTheorem26_forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.2
+  exact (BrandenSolus.forward_of_strictInterl_b_a hd hid ha_nonneg hb_nonneg hba).2.2
 
 /-- Ordered-degree converse bridge: if `a.natDegree ≤ b.natDegree` and
-`IdTransform d p ≺ p`, then already `b ≺ p`.
+`idTransform d p ≺ p`, then already `b ≺ p`.
 
-The proof rewrites `p` as `IdTransform d p + (X - 1) * b`, extracts
-`b ≺ IdTransform d p` from the shifted pair via the same-degree Obreschkoff
+The proof rewrites `p` as `idTransform d p + (X - 1) * b`, extracts
+`b ≺ idTransform d p` from the shifted pair via the same-degree Obreschkoff
 converse, and then sums back to `b ≺ p`. -/
-theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
+theorem BrandenSolus.ordered_bridge_converse_of_natDegree_le
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -1092,9 +1092,9 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
     (ha0 : a ≠ 0)
     (hb0 : b ≠ 0)
     (ha_le : a.natDegree ≤ b.natDegree) :
-    StrictInterl (IdTransform d p) p → StrictInterl b p := by
+    StrictInterl (idTransform d p) p → StrictInterl b p := by
   intro hIdp
-  let h : ℝ[X] := IdTransform d p
+  let h : ℝ[X] := idTransform d p
   let t : ℝ[X] := (X - C (1 : ℝ)) * b
   have hp_eq : p = a + X * b := hid.1
   have hId_eq : h = a + b := by simpa [h] using idTransform_eq_add_of_isIdDecomposition hd hid
@@ -1168,7 +1168,7 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
 
 /-- Top-degree boundary case of Brändén--Solus Theorem 2.6: the left
 `I_d`-component occupies the full ambient degree. -/
-theorem brandenSolusTheorem26TopDegreeBoundary :
+theorem BrandenSolus.topDegreeBoundary :
     ∀ {d : ℕ} {p a b : ℝ[X]},
       p.natDegree ≤ d →
       IsIdDecomposition d p a b →
@@ -1179,30 +1179,30 @@ theorem brandenSolusTheorem26TopDegreeBoundary :
       a.natDegree = d →
       (StrictInterl b a ↔ StrictInterl a p) ∧
       (StrictInterl a p ↔ StrictInterl b p) ∧
-      (StrictInterl b p ↔ StrictInterl (IdTransform d p) p) ∧
-      (StrictInterl (IdTransform d p) p ↔
-        StrictInterl (RdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
+      (StrictInterl b p ↔ StrictInterl (idTransform d p) p) ∧
+      (StrictInterl (idTransform d p) p ↔
+        StrictInterl (rdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
   intro d p a b hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top
   refine ⟨?_, ?_, ?_, ?_⟩
   · exact
-      brandenSolusTheorem26_first_equiv_of_top_degree
+      BrandenSolus.first_equiv_of_top_degree
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top
   · exact
-      brandenSolusTheorem26_second_equiv_of_top_degree
+      BrandenSolus.second_equiv_of_top_degree
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top
   · exact
-      brandenSolusTheorem26_third_equiv_of_top_degree
+      BrandenSolus.third_equiv_of_top_degree
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top
-  · exact brandenSolusTheorem26_last_equiv hd hid ha_nonneg hb_nonneg
+  · exact BrandenSolus.last_equiv hd hid ha_nonneg hb_nonneg
 
 /-- Brändén--Solus Theorem 2.6 in the nondegenerate `StrictInterl` language.
 The extra assumptions `a ≠ 0` and `b ≠ 0` remove the zero-polynomial edge cases
 where the paper's strict interlacing language and `StrictInterl` diverge; see
-`not_brandenSolusTheorem26Naive`.  The degree-ordered branch uses the ordered
+`BrandenSolus.not_naive`.  The degree-ordered branch uses the ordered
 bridge lemmas, the top-degree branch uses
-`brandenSolusTheorem26TopDegreeBoundary`, and the remaining branch descends by
+`BrandenSolus.topDegreeBoundary`, and the remaining branch descends by
 a common factor of `X`. -/
-theorem brandenSolusTheorem26 :
+theorem BrandenSolus.strictInterl_iff_of_isIdDecomposition :
     ∀ {d : ℕ} {p a b : ℝ[X]},
       p.natDegree ≤ d →
       IsIdDecomposition d p a b →
@@ -1212,9 +1212,9 @@ theorem brandenSolusTheorem26 :
       b ≠ 0 →
       (StrictInterl b a ↔ StrictInterl a p) ∧
       (StrictInterl a p ↔ StrictInterl b p) ∧
-      (StrictInterl b p ↔ StrictInterl (IdTransform d p) p) ∧
-      (StrictInterl (IdTransform d p) p ↔
-        StrictInterl (RdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
+      (StrictInterl b p ↔ StrictInterl (idTransform d p) p) ∧
+      (StrictInterl (idTransform d p) p ↔
+        StrictInterl (rdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
   let P : ℕ → Prop := fun d =>
     ∀ (p a b : ℝ[X]),
       p.natDegree ≤ d →
@@ -1225,9 +1225,9 @@ theorem brandenSolusTheorem26 :
       b ≠ 0 →
       (StrictInterl b a ↔ StrictInterl a p) ∧
       (StrictInterl a p ↔ StrictInterl b p) ∧
-      (StrictInterl b p ↔ StrictInterl (IdTransform d p) p) ∧
-      (StrictInterl (IdTransform d p) p ↔
-        StrictInterl (RdTransform d (fPolynomial d p)) (fPolynomial d p))
+      (StrictInterl b p ↔ StrictInterl (idTransform d p) p) ∧
+      (StrictInterl (idTransform d p) p ↔
+        StrictInterl (rdTransform d (fPolynomial d p)) (fPolynomial d p))
   have hmain : ∀ d, P d := by
     intro d
     refine Nat.strong_induction_on d ?_
@@ -1235,17 +1235,17 @@ theorem brandenSolusTheorem26 :
     have ha_deg : a.natDegree ≤ d := hid.2.1
     have hb_deg : b.natDegree ≤ d - 1 := hid.2.2.1
     by_cases ha_le : a.natDegree ≤ b.natDegree
-    · refine ⟨?_, ?_, ?_, brandenSolusTheorem26_last_equiv hd hid ha_nonneg hb_nonneg⟩
-      · exact brandenSolusTheorem26_first_equiv_of_natDegree_le
+    · refine ⟨?_, ?_, ?_, BrandenSolus.last_equiv hd hid ha_nonneg hb_nonneg⟩
+      · exact BrandenSolus.first_equiv_of_natDegree_le
           hd hid ha_nonneg hb_nonneg ha_le hb0
-      · exact brandenSolusTheorem26_second_equiv_of_natDegree_le
+      · exact BrandenSolus.second_equiv_of_natDegree_le
           hd hid ha_nonneg hb_nonneg ha_le ha0 hb0
-      · exact ⟨brandenSolusTheorem26_ordered_bridge_forward_of_natDegree_le
+      · exact ⟨BrandenSolus.ordered_bridge_forward_of_natDegree_le
             hd hid ha_nonneg hb_nonneg ha_le ha0 hb0,
-          brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
+          BrandenSolus.ordered_bridge_converse_of_natDegree_le
             hd hid ha_nonneg hb_nonneg ha0 hb0 ha_le⟩
     · by_cases ha_top : a.natDegree = d
-      · exact brandenSolusTheorem26TopDegreeBoundary hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top
+      · exact BrandenSolus.topDegreeBoundary hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top
       · have ha_lt : a.natDegree < d := lt_of_le_of_ne ha_deg ha_top
         have hb_lt : b.natDegree < d - 1 := by lia
         have hd2 : 2 ≤ d := by lia
@@ -1259,13 +1259,16 @@ theorem brandenSolusTheorem26 :
               b' ≠ 0 →
               (StrictInterl b' a' ↔ StrictInterl a' q) ∧
               (StrictInterl a' q ↔ StrictInterl b' q) ∧
-              (StrictInterl b' q ↔ StrictInterl (IdTransform (d - 2) q) q) ∧
-              (StrictInterl (IdTransform (d - 2) q) q ↔
-                StrictInterl (RdTransform (d - 2) (fPolynomial (d - 2) q))
+              (StrictInterl b' q ↔ StrictInterl (idTransform (d - 2) q) q) ∧
+              (StrictInterl (idTransform (d - 2) q) q ↔
+                StrictInterl (rdTransform (d - 2) (fPolynomial (d - 2) q))
                   (fPolynomial (d - 2) q)) := by
           grind
-        exact brandenSolusTheorem26_descend_of_lt_top
+        exact BrandenSolus.descend_of_lt_top
           hd hd2 hid ha_nonneg hb_nonneg ha0 hb0 ha_lt hb_lt hprev
   simpa [P] using hmain
+
+@[deprecated (since := "2026-10-05")]
+alias brandenSolusTheorem26 := BrandenSolus.strictInterl_iff_of_isIdDecomposition
 
 end RealRooted

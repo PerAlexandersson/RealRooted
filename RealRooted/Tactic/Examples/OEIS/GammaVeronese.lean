@@ -32,7 +32,7 @@ example {d : Nat → Nat} {Γ : Nat → ℝ[X]}
 example {d : Nat → Nat} {P Γ : Nat → ℝ[X]}
     (hγdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
     (hpdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
-    (hsym : ∀ n : Nat, IdTransform (d n) (P n) = P n)
+    (hsym : ∀ n : Nat, idTransform (d n) (P n) = P n)
     (hexp : ∀ n : Nat, IsGammaExpansion (d n) (P n) (Γ n)) :
     ∀ n : Nat,
       (((Γ n ≠ 0 ∧ (Γ n).Splits) ∧ HasRootsNonpos (Γ n)) ↔
