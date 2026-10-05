@@ -7,37 +7,11 @@ noncomputable section
 namespace RealRooted
 
 /-!
-# Garloff--Wagner Hadamard endpoint
+# Garloff--Wagner Hadamard interlacing theorem
 
 The double-deleted Krein reduction and the final two-pair Hadamard
 interlacing theorem.
 -/
-
-/-- The remaining local core of Garloff--Wagner, Theorem 4(b), after the
-fixed-factor cases are discharged: both factors are one-root-deleted Krein
-summands. -/
-def gwSchurProductDoubleDeletedKreinStatement : Prop :=
-  ∀ {g q f p : ℝ[X]} {u v : ℝ},
-    IsPFPolynomial g →
-    IsPFPolynomial q →
-    g ≠ 0 →
-    q ≠ 0 →
-    g = (X - C u) * f →
-    q = (X - C v) * p →
-    Interl (gwSchurProduct f p) (gwSchurProduct g q)
-
-/-- Ordinary-Hadamard version of the double-deleted core in the proof of
-Garloff--Wagner, Theorem 4(b).  This is the statement matching the paragraph
-which expands `((X - j)g) ⊙ ((X - u)q)` through `L`, `J`, and `D`. -/
-def gwHadamardProductDoubleDeletedKreinStatement : Prop :=
-  ∀ {g q f p : ℝ[X]} {u v : ℝ},
-    IsPFPolynomial g →
-    IsPFPolynomial q →
-    g ≠ 0 →
-    q ≠ 0 →
-    g = (X - C u) * f →
-    q = (X - C v) * p →
-    Interl (hadamardProduct f p) (hadamardProduct g q)
 
 /-- First Schur term in Garloff--Wagner's double-deleted paragraph: the base
 Hadamard product precedes the `X`-shifted term. -/
@@ -80,10 +54,14 @@ theorem gwSchurProduct_secondDoubleDeletedTerm_interl
   simpa [hfactor, gwL_X_sub_C_mul] using hSchur
 
 /-- Garloff--Wagner's double-deleted compatibility paragraph in Theorem 4(b),
-in the ordinary-Hadamard form needed for the two-pair theorem. -/
-theorem gwHadamardProductDoubleDeletedKrein :
-    gwHadamardProductDoubleDeletedKreinStatement := by
-  intro g q f p u v hg hq hg0 hq0 hgfactor hqfactor
+in the ordinary-Hadamard form needed for the two-pair theorem: if `f` and `p`
+are one-root-deleted factors of the PF polynomials `g` and `q`, then
+`f ⊙ p ≪ g ⊙ q`.  This is the paragraph which expands
+`((X - u)f) ⊙ ((X - v)p)` through `L`, `J`, and `D`. -/
+theorem gwHadamardProductDoubleDeletedKrein {g q f p : ℝ[X]} {u v : ℝ}
+    (hg : IsPFPolynomial g) (hq : IsPFPolynomial q) (hg0 : g ≠ 0) (hq0 : q ≠ 0)
+    (hgfactor : g = (X - C u) * f) (hqfactor : q = (X - C v) * p) :
+    Interl (hadamardProduct f p) (hadamardProduct g q) := by
   have hfsummand : IsGWKreinSummand g f := Or.inr ⟨u, hgfactor⟩
   have hpsummand : IsGWKreinSummand q p := Or.inr ⟨v, hqfactor⟩
   have hf : IsPFPolynomial f := hfsummand.isPFPolynomial hg
@@ -134,24 +112,6 @@ theorem gwSchurProduct_interl {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
   gwSchurProductInterl (h.isPFPolynomial hg) hg hp
     (h.interl hg0 (hg.ne_zero_and_splits hg0).2)
 
-/-- Two arbitrary Krein summands reduce to the genuinely double-deleted case. -/
-theorem gwSchurProduct_interl_of_doubleDeleted
-    (hDouble : gwSchurProductDoubleDeletedKreinStatement)
-    {g q f p : ℝ[X]} (hf : IsGWKreinSummand g f)
-    (hp : IsGWKreinSummand q p)
-    (hg : IsPFPolynomial g) (hq : IsPFPolynomial q)
-    (hg0 : g ≠ 0) (hq0 : q ≠ 0) :
-    Interl (gwSchurProduct f p) (gwSchurProduct g q) := by
-  rcases hf with hfg_self | ⟨u, hfg_factor⟩
-  · rw [hfg_self]
-    simpa [gwSchurProduct_comm p g, gwSchurProduct_comm q g] using
-      hp.gwSchurProduct_interl hq hg hq0
-  rcases hp with hpq_self | ⟨v, hpq_factor⟩
-  · rw [hpq_self]
-    exact (show IsGWKreinSummand g f from Or.inr ⟨u, hfg_factor⟩).gwSchurProduct_interl
-      hg hq hg0
-  · exact hDouble hg hq hg0 hq0 hfg_factor hpq_factor
-
 /-- Fixed-factor ordinary Hadamard products of a Krein summand precede the
 parent product. -/
 theorem gwHadamardProduct_interl {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
@@ -160,10 +120,10 @@ theorem gwHadamardProduct_interl {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
   gwHadamardProductInterl (h.isPFPolynomial hg) hg hp
     (h.interl hg0 (hg.ne_zero_and_splits hg0).2)
 
-/-- Two arbitrary Krein summands reduce to the genuinely double-deleted
-ordinary-Hadamard case. -/
+/-- Ordinary Hadamard products of two arbitrary Krein summands precede the
+parent product; the genuinely double-deleted case is
+`gwHadamardProductDoubleDeletedKrein`. -/
 theorem gwHadamardProduct_interl_of_doubleDeleted
-    (hDouble : gwHadamardProductDoubleDeletedKreinStatement)
     {g q f p : ℝ[X]} (hf : IsGWKreinSummand g f)
     (hp : IsGWKreinSummand q p)
     (hg : IsPFPolynomial g) (hq : IsPFPolynomial q)
@@ -177,7 +137,7 @@ theorem gwHadamardProduct_interl_of_doubleDeleted
   · rw [hpq_self]
     exact (show IsGWKreinSummand g f from Or.inr ⟨u, hfg_factor⟩).gwHadamardProduct_interl
       hg hq hg0
-  · exact hDouble hg hq hg0 hq0 hfg_factor hpq_factor
+  · exact gwHadamardProductDoubleDeletedKrein hg hq hg0 hq0 hfg_factor hpq_factor
 
 end IsGWKreinSummand
 
@@ -224,7 +184,7 @@ theorem hadamardProduct_interl_of_kreinSummandExpansion_left
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
     exact (hsummand ap0 hap0).gwHadamardProduct_interl_of_doubleDeleted
-      gwHadamardProductDoubleDeletedKrein hp hg hq hg0 hq0
+      hp hg hq hg0 hq0
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
     exact

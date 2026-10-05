@@ -10,10 +10,10 @@ noncomputable section
 namespace RealRooted
 
 /-!
-# Garloff--Wagner Hadamard interfaces
+# Garloff--Wagner Hadamard theorems
 
 Nonnegative coefficient closure, odd/even algebra, and the checked direct
-interlacing wrappers around the Garloff--Wagner route.
+interlacing theorems of Garloff--Wagner.
 -/
 
 /-- Nonnegative coefficients are preserved by coefficientwise Hadamard
@@ -40,52 +40,12 @@ theorem hadamardProduct_oddEvenPolynomial (p q p' q' : ℝ[X]) :
   · subst hk
     simp
 
-/-- Nonnegative-coefficient Schur--Polya/Garloff--Wagner real-rootedness
-interface for coefficientwise Hadamard products.
-
-Garloff--Wagner, Theorem 4(a), proves this in the standard-polynomial setting
-with only nonpositive zeros. The hypotheses below are the corresponding
-nonnegative-coefficient wrapper: real-rooted nonzero polynomials with
-nonnegative coefficients automatically have only nonpositive roots. The conclusion is
-zero-aware because the Hadamard product can vanish when supports are disjoint.
--/
-def garloffWagnerHadamardNonnegRealRootedStatement : Prop :=
-  ∀ {p q : ℝ[X]},
-    HasNonnegCoeffs p →
-    HasNonnegCoeffs q →
-    (p ≠ 0 ∧ p.Splits) →
-    (q ≠ 0 ∧ q.Splits) →
-    (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
-      HasNonnegCoeffs (hadamardProduct p q) ∧
-      ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0
-
-theorem IsPFPolynomial.hadamardProduct
-    (hGW : garloffWagnerHadamardNonnegRealRootedStatement)
-    {p q : ℝ[X]}
+/-- PF polynomials are closed under coefficientwise Hadamard products
+(Schur--Pólya--Wagner; Garloff--Wagner, Theorem 4(a)). -/
+theorem IsPFPolynomial.hadamardProduct {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
-    IsPFPolynomial (hadamardProduct p q) := by
-  by_cases hp0 : p = 0
-  · subst p
-    simpa using IsPFPolynomial.zero
-  by_cases hq0 : q = 0
-  · subst q
-    simpa using IsPFPolynomial.zero
-  rcases hGW hp.hasNonnegCoeffs hq.hasNonnegCoeffs
-      (hp.ne_zero_and_splits hp0)
-      (hq.ne_zero_and_splits hq0) with ⟨hrr, hnn, hroots⟩
-  exact ⟨hnn, hrr, hroots⟩
-
-/-- Polynomial PF form of the Schur--Polya--Wagner Hadamard theorem. -/
-def schurPolyaWagnerHadamardPFStatement : Prop :=
-  ∀ {p q : ℝ[X]},
-    IsPFPolynomial p →
-    IsPFPolynomial q →
-    IsPFPolynomial (hadamardProduct p q)
-
-theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonneg
-    (hGW : garloffWagnerHadamardNonnegRealRootedStatement) :
-    schurPolyaWagnerHadamardPFStatement :=
-  fun hp hq => hp.hadamardProduct hGW hq
+    IsPFPolynomial (hadamardProduct p q) :=
+  gwHadamardProductPF hp hq
 
 /- Nonnegative-coefficient Garloff--Wagner interlacing interface for
 coefficientwise Hadamard products.
@@ -93,8 +53,8 @@ coefficientwise Hadamard products.
 This is the `StrictInterl`/`Interl` wrapper around Garloff--Wagner, Theorem 4(b):
 if two nonnegative-coefficient real-rooted pairs are in the same
 interlacing relation, then the pair of Hadamard products is again in
-interlacing.  The conclusion is zero-aware for the same support reason as
-`garloffWagnerHadamardNonnegRealRootedStatement`.
+interlacing.  The conclusion is zero-aware because the Hadamard product can
+vanish when supports are disjoint.
 
 Orientation audit: in this repository `StrictInterl f g` is the convention `f ≪ g`.
 In the differ-by-one case, `g` has the rightmost root; in the same-degree case,
@@ -104,8 +64,7 @@ roots are `-b` and `-a`.  Consequently the Garloff--Wagner hypotheses written
 as `g $ f` and `q $ p` are represented here as `StrictInterl f g` and `StrictInterl p q`, and
 the conclusion is `Interl (f ⊙ p) (g ⊙ q)`.
 
-This statement is proved directly in `RealRooted.GarloffWagner`; the wrapper
-keeps the historical `Hadamard` API used by downstream theorem bundles.
+The proof is `gwHadamardProductNonnegInterl` in `RealRooted.GarloffWagner`.
 -/
 /-- Hadamard product preserves interlacing in the nonnegative setting
 (Garloff--Wagner, Theorem 4(b)). -/

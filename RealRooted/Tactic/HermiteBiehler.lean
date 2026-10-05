@@ -68,15 +68,6 @@ theorem hermiteBiehlerOddEven_isHurwitzStable_sequence {P Q : Nat → ℝ[X]}
     ∀ n : Nat, IsHurwitzStable (oddEvenPolynomial (P n) (Q n)) :=
   fun n => hermiteBiehlerOddEven_isHurwitzStable (hP n) (hQ n) (hstable n)
 
-syntax (name := rr_hermite_biehler_forward_pos_statement_named)
-  "rr_hermite_biehler_forward_pos_statement" : tactic
-
-syntax (name := rr_hermite_biehler_converse_statement_named)
-  "rr_hermite_biehler_converse_statement" : tactic
-
-syntax (name := rr_hermite_biehler_odd_even_hurwitz_statement_named)
-  "rr_hermite_biehler_odd_even_hurwitz_statement" : tactic
-
 syntax (name := rr_hermite_biehler_forward_pos_named)
   "rr_hermite_biehler_forward_pos" " using "
     "real_pos_lc" ":=" term ","
@@ -164,19 +155,6 @@ syntax (name := rr_hermite_biehler_odd_even_hurwitz_stable_sequence_named)
   tactic
 
 macro_rules
-  | `(tactic| rr_hermite_biehler_forward_pos_statement) =>
-      `(tactic|
-        exact fun {f g} hf hg hstrictInterl =>
-          RealRooted.hermiteBiehlerForwardPos (f := f) (g := g) hf hg hstrictInterl)
-  | `(tactic| rr_hermite_biehler_converse_statement) =>
-      `(tactic|
-        exact fun {f g} hf hg hstable =>
-          RealRooted.hermiteBiehlerConverse (f := f) (g := g) hf hg hstable)
-  | `(tactic| rr_hermite_biehler_odd_even_hurwitz_statement) =>
-      `(tactic|
-        exact fun {p q} hp hq hstable =>
-          RealRooted.hermiteBiehlerStableToHurwitzOddEven
-            (p := p) (q := q) hp hq hstable)
   | `(tactic|
       rr_hermite_biehler_forward_pos using
         real_pos_lc := $hf:term,

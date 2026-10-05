@@ -8,7 +8,7 @@ import Mathlib.Basic.Complex.Basic
 # Foundational Hermite--Biehler definitions
 
 This module contains real-polynomial complexification, univariate half-plane
-stability, the Hermite--Biehler polynomial, and the splitness/stability bridge.
+stability, the Hermite--Biehler polynomial, and the splitness/stability lemmas.
 It is independent of the forward and converse interlacing arguments.
 -/
 

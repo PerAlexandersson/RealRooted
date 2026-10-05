@@ -432,21 +432,26 @@ theorem kreinSummandExpansion_of_weightedSum {f g : ℝ[X]} {l : List (ℝ × �
         ∃ ap ∈ l, 0 < ap.1 :=
   ⟨l, hf, hnonneg, hsummand, hex⟩
 
-/-- Lemma 7-facing interface for Theorem 11(c).  After normalizing the right
-polynomial to be standard, the left polynomial should expand as a nonnegative
-weighted sum of the right polynomial and its one-root-deleted factors. -/
-def gwTheorem11StrictInterlKreinSummandExpansionStatement : Prop :=
-  ∀ {f g : ℝ[X]}, StrictInterl f g → HasPosLeadingCoeff f → HasPosLeadingCoeff g →
+/-- Lemma 7 form of Garloff--Wagner, Theorem 11(c).  For standard `g`, the left
+polynomial expands as a nonnegative weighted sum of `g` and its
+one-root-deleted factors. -/
+theorem gwTheorem11StrictInterlKreinSummandExpansion {f g : ℝ[X]}
+    (hfg : StrictInterl f g) (hfpos : HasPosLeadingCoeff f) (hgpos : HasPosLeadingCoeff g) :
     ∃ l : List (ℝ × ℝ[X]),
       f = weightedSum l ∧
         (∀ ap ∈ l, 0 ≤ ap.1) ∧
         (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
-        ∃ ap ∈ l, 0 < ap.1
+        ∃ ap ∈ l, 0 < ap.1 := by
+  by_cases hgdeg0 : g.natDegree = 0
+  · exact exists_kreinSummandExpansion_nonneg_right_of_natDegree_eq_zero hfg hfpos
+      hgpos hgdeg0
+  · exact exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree hfg hfpos
+      hgpos (Nat.pos_of_ne_zero hgdeg0)
 
-theorem gwTheorem11StrictInterl_of_kreinSummandExpansion
-    (h : gwTheorem11StrictInterlKreinSummandExpansionStatement) :
-    gwTheorem11StrictInterlStatement := by
-  intro f g hfg k
+/-- Garloff--Wagner, Theorem 11(c), in the local orientation: Garloff--Wagner's
+`g $ f` is represented by `StrictInterl f g`, and `J^k L` preserves it. -/
+theorem gwTheorem11StrictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) (k : ℕ) :
+    StrictInterl (gwJL k f) (gwJL k g) := by
   let sf : ℝ := f.leadingCoeff⁻¹
   let sg : ℝ := g.leadingCoeff⁻¹
   have hf0 : f ≠ 0 := hfg.1.1
@@ -459,7 +464,8 @@ theorem gwTheorem11StrictInterl_of_kreinSummandExpansion
     hasPosLeadingCoeff_C_inv_leadingCoeff_mul hf0
   have hsg_pos : HasPosLeadingCoeff (C sg * g) :=
     hasPosLeadingCoeff_C_inv_leadingCoeff_mul hg0
-  rcases h (f := C sf * f) (g := C sg * g) hfg_scaled hsf_pos hsg_pos with
+  rcases gwTheorem11StrictInterlKreinSummandExpansion (f := C sf * f) (g := C sg * g)
+      hfg_scaled hsf_pos hsg_pos with
     ⟨l, hf, hnonneg, hsummand, hex⟩
   have hscaled :
       StrictInterl (gwJL k (C sf * f)) (gwJL k (C sg * g)) :=
@@ -477,21 +483,5 @@ theorem gwTheorem11StrictInterl_of_kreinSummandExpansion
   have hscale : C sg⁻¹ * (C sg * gwJL k g) = gwJL k g := by
     rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hsg, C_1, one_mul]
   simpa [hscale] using hright
-
-/-- Garloff--Wagner, Theorem 11(c), reduced to the checked Krein expansion
-package. -/
-theorem gwTheorem11StrictInterlKreinSummandExpansion :
-    gwTheorem11StrictInterlKreinSummandExpansionStatement := by
-  intro f g hfg hfpos hgpos
-  by_cases hgdeg0 : g.natDegree = 0
-  · exact exists_kreinSummandExpansion_nonneg_right_of_natDegree_eq_zero hfg hfpos
-      hgpos hgdeg0
-  · exact exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree hfg hfpos
-      hgpos (Nat.pos_of_ne_zero hgdeg0)
-
-/-- Garloff--Wagner, Theorem 11(c), in the local `StrictInterl` orientation. -/
-theorem gwTheorem11StrictInterl :
-    gwTheorem11StrictInterlStatement :=
-  gwTheorem11StrictInterl_of_kreinSummandExpansion gwTheorem11StrictInterlKreinSummandExpansion
 
 end RealRooted
