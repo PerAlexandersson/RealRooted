@@ -100,7 +100,7 @@ protected theorem IsLowerTriangular.identity [Semiring R] :
   simp [identity, ne_of_lt hij]
 
 theorem IsLowerTriangular.mul [Semiring R] {A B : LowerTriangularMatrix R}
-    (hA : IsLowerTriangular A) (_hB : IsLowerTriangular B) :
+    (hA : IsLowerTriangular A) :
     IsLowerTriangular (mul A B) := by
   intro i j hij
   rw [mul_apply]
@@ -121,7 +121,7 @@ theorem IsLowerUnitriangular.mul [Semiring R] {A B : LowerTriangularMatrix R}
     (hA : IsLowerUnitriangular A) (hB : IsLowerUnitriangular B) :
     IsLowerUnitriangular (mul A B) := by
   constructor
-  · exact IsLowerTriangular.mul hA.1 hB.1
+  · exact IsLowerTriangular.mul hA.1
   · intro n
     simp [mul_apply, hA.diagonal n, hB.diagonal n]
 
@@ -146,13 +146,13 @@ theorem IsLowerUnitriangular.listProduct [Semiring R]
         exact hAs B (by simp [hB])
 
 theorem IsLowerTriangular.pow [Semiring R] {A : LowerTriangularMatrix R}
-    (hA : IsLowerTriangular A) (r : ℕ) :
+    (r : ℕ) :
     IsLowerTriangular (pow A r) := by
   induction r with
   | zero =>
       exact IsLowerTriangular.identity
   | succ r ih =>
-      exact IsLowerTriangular.mul ih hA
+      exact IsLowerTriangular.mul (B := A) ih
 
 theorem mul_identity_of_isLowerTriangular [Semiring R]
     {A : LowerTriangularMatrix R} (hA : IsLowerTriangular A) :
@@ -203,15 +203,12 @@ theorem IsLowerTriangular.listProduct [Semiring R]
     {As : List (LowerTriangularMatrix R)}
     (hAs : ∀ A ∈ As, IsLowerTriangular A) :
     IsLowerTriangular (listProduct As) := by
-  induction As with
+  cases As with
   | nil =>
       exact IsLowerTriangular.identity
-  | cons A As ih =>
-      have hA : IsLowerTriangular A := hAs A (by simp)
-      have htail : ∀ B ∈ As, IsLowerTriangular B :=
-        fun B hB => hAs B (by simp [hB])
-      intro i j hij
-      exact IsLowerTriangular.mul hA (ih htail) hij
+  | cons A As =>
+      rw [listProduct_cons]
+      exact IsLowerTriangular.mul (hAs A (by simp))
 
 theorem listProduct_singleton_of_isLowerTriangular [Semiring R]
     {A : LowerTriangularMatrix R} (hA : IsLowerTriangular A) :
