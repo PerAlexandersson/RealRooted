@@ -328,10 +328,6 @@ lemma lt_not_le {α : Type*} [PartialOrder α] (x y : α) : x < y → ¬ (x ≥ 
 section ConditionallyCompleteLinearOrder
 
 variable {α : Type*} [ConditionallyCompleteLinearOrder α]
-/-- If y is an upper bound of a set s, and x is in s, then x ≤ y -/
-lemma le_of_mem_upperBounds {s : Set α} {x : α} {y : α} (hy : y ∈ upperBounds s) (hx : x ∈ s) :
-    x ≤ y := by
-  exact hy hx
 
 lemma bddAbove_iff_exists_upperBound {s : Set α} : BddAbove s ↔ ∃ b, ∀ x ∈ s, x ≤ b := by exact
   bddAbove_def

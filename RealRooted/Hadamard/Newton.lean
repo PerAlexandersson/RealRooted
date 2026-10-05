@@ -287,34 +287,6 @@ theorem normalized_coeff_nonneg_of_isPF (n : ℕ) {f : ℝ[X]}
     div_nonneg (hf.hasNonnegCoeffs k)
       (by exact_mod_cast Nat.zero_le (Nat.choose n k))
 
-/-- Constant normalized coefficient nonnegativity for a PF polynomial at
-binomial level three. -/
-theorem normalized_coeff_zero_nonneg_of_isPF_three {f : ℝ[X]}
-    (hf : IsPFPolynomial f) :
-    0 ≤ f.coeff 0 / (Nat.choose 3 0 : ℝ) :=
-  normalized_coeff_nonneg_of_isPF 3 hf 0
-
-/-- Linear normalized coefficient nonnegativity for a PF polynomial at
-binomial level three. -/
-theorem normalized_coeff_one_nonneg_of_isPF_three {f : ℝ[X]}
-    (hf : IsPFPolynomial f) :
-    0 ≤ f.coeff 1 / (Nat.choose 3 1 : ℝ) :=
-  normalized_coeff_nonneg_of_isPF 3 hf 1
-
-/-- Quadratic normalized coefficient nonnegativity for a PF polynomial at
-binomial level three. -/
-theorem normalized_coeff_two_nonneg_of_isPF_three {f : ℝ[X]}
-    (hf : IsPFPolynomial f) :
-    0 ≤ f.coeff 2 / (Nat.choose 3 2 : ℝ) :=
-  normalized_coeff_nonneg_of_isPF 3 hf 2
-
-/-- Cubic normalized coefficient nonnegativity for a PF polynomial at binomial
-level three. -/
-theorem normalized_coeff_three_nonneg_of_isPF_three {f : ℝ[X]}
-    (hf : IsPFPolynomial f) :
-    0 ≤ f.coeff 3 / (Nat.choose 3 3 : ℝ) :=
-  normalized_coeff_nonneg_of_isPF 3 hf 3
-
 /-- Normalized coefficient log-concavity of a degree-`≤ 3` PF polynomial.
 
 Writing `γ k = f.coeff k / (3.choose k)`, the adjacent cubic log-concavity

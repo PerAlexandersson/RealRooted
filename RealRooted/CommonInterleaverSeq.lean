@@ -722,30 +722,6 @@ theorem pairHasCommonLeftInterleaver_symm {f g : ℝ[X]}
   obtain ⟨w, hf, hg⟩ := h
   exact ⟨w, hg, hf⟩
 
-/-- Extract the pair existential from `HasCommonInterleaver [f, g]`. -/
-theorem pairHasCommonInterleaver_of_hasCommonInterleaver_pair {f g : ℝ[X]}
-    (h : HasCommonInterleaver [f, g]) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  hasCommonInterleaver_pair.1 h
-
-/-- Package the pair existential as `HasCommonInterleaver [f, g]`. -/
-theorem hasCommonInterleaver_pair_of_pairHasCommonInterleaver {f g : ℝ[X]}
-    (h : ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h) :
-    HasCommonInterleaver [f, g] :=
-  hasCommonInterleaver_pair.2 h
-
-/-- Extract the left pair existential from `HasCommonLeftInterleaver [f, g]`. -/
-theorem pairHasCommonLeftInterleaver_of_hasCommonLeftInterleaver_pair
-    {f g : ℝ[X]} (h : HasCommonLeftInterleaver [f, g]) :
-    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
-  hasCommonLeftInterleaver_pair.1 h
-
-/-- Package the left pair existential as `HasCommonLeftInterleaver [f, g]`. -/
-theorem hasCommonLeftInterleaver_pair_of_pairHasCommonLeftInterleaver
-    {f g : ℝ[X]} (h : ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g) :
-    HasCommonLeftInterleaver [f, g] :=
-  hasCommonLeftInterleaver_pair.2 h
-
 /-- Extract the pair existential from `PairwiseHasCommonInterleaver [f, g]`. -/
 theorem pairHasCommonInterleaver_of_pairwiseHasCommonInterleaver_pair
     {f g : ℝ[X]} (h : PairwiseHasCommonInterleaver [f, g]) :

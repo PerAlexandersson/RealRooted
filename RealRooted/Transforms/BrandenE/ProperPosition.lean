@@ -278,13 +278,6 @@ theorem brandenBasisImage_zero_strictInterl
     StrictInterl (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
   brandenBasisImage_strictInterl n 0 k (by lia) hk
 
-/-- The first basis image is in an interlacing relation before every in-range image
-in ambient degree at least three. -/
-theorem brandenBasisImage_first_strictInterl
-    (n k : ℕ) (_hn : 3 ≤ n) (hk : k ≤ n) :
-    StrictInterl (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
-  brandenBasisImage_zero_strictInterl n k hk
-
 /-- The ordered ambient-degree row of Brändén basis images. -/
 def brandenBasisImageRow (n : ℕ) : List ℝ[X] :=
   List.ofFn fun k : Fin (n + 1) ↦ brandenBasisImage n k
