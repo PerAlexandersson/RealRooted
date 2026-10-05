@@ -1000,21 +1000,16 @@ theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : �
   · rw [ add_comm, Polynomial.coeff_eq_zero_of_natDegree_lt ];
     exact Nat.lt_succ_of_le ( natDegree_binomialLift_le _ _ )
 
-/-- **Grace's apolarity theorem** (closed-disk case), phrased for the binomial
-lifts.  If `0 ≤ r`, the degree-`n` binomial lifts of `f` and `g` are apolar, and
-all zeros of `binomialLift n f` lie in the closed disk `closedBall c r`, then
-`binomialLift n g` has a zero in that disk.
-
-Note: the hypothesis `0 ≤ r` was added to the original issue statement; without
-it the claim is false for `n = 0` and an empty ball (see the section note). -/
-theorem grace_apolarity_closedBall {n : Nat} {c : ℂ} {r : ℝ} (hr : 0 ≤ r)
-    {f g : ℂ[X]}
-    (hf : (binomialLift n f).natDegree = n) (hg : (binomialLift n g).natDegree = n)
-    (hap : AreApolar n f g)
-    (hroots : (binomialLift n f).RootsIn (Metric.closedBall c r)) :
-    (binomialLift n g).HasRootIn (Metric.closedBall c r) := by
-  -- Apply strong induction on the degree `n`.
-  revert f g
+/-
+Degree-induction core of Grace's theorem.
+-/
+private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
+    ∀ (n : Nat) (f g : ℂ[X]),
+      (binomialLift n f).natDegree = n → (binomialLift n g).natDegree = n →
+      AreApolar n f g → (binomialLift n f).RootsIn (Metric.closedBall c r) →
+      (binomialLift n g).HasRootIn (Metric.closedBall c r) := by
+  -- Apply induction on $n$.
+  intro n
   refine Nat.strong_induction_on n ?_
   intro n ih f g hf hg hap hroots
   by_cases hn : n = 0
@@ -1088,13 +1083,28 @@ theorem grace_apolarity_closedBall {n : Nat} {c : ℂ} {r : ℝ} (hr : 0 ≤ r)
       obtain ⟨w, hw⟩ :
           ∃ w : ℂ, (binomialLift (n - 1) g').IsRoot w ∧ w ∈ Metric.closedBall c r := by
         apply ih (n - 1) (Nat.sub_lt (Nat.pos_of_ne_zero hn) (by linarith))
-          (f := f') (g := g') hf' (by
+          f' g' hf' (by
             replace hg' := congr_arg Polynomial.natDegree hg';
             rw [ Polynomial.natDegree_mul' ] at hg' <;> norm_num at *
             · lia
             · intro H
               simp_all) hap' hf'_roots;
       exact ⟨ w, by replace hg' := congr_arg ( Polynomial.eval w ) hg'; aesop ⟩
+
+/-- **Grace's apolarity theorem** (closed-disk case), phrased for the binomial
+lifts.  If `0 ≤ r`, the degree-`n` binomial lifts of `f` and `g` are apolar, and
+all zeros of `binomialLift n f` lie in the closed disk `closedBall c r`, then
+`binomialLift n g` has a zero in that disk.
+
+Note: the hypothesis `0 ≤ r` was added to the original issue statement; without
+it the claim is false for `n = 0` and an empty ball (see the section note). -/
+theorem grace_apolarity_closedBall {n : Nat} {c : ℂ} {r : ℝ} (hr : 0 ≤ r)
+    {f g : ℂ[X]}
+    (hf : (binomialLift n f).natDegree = n) (hg : (binomialLift n g).natDegree = n)
+    (hap : AreApolar n f g)
+    (hroots : (binomialLift n f).RootsIn (Metric.closedBall c r)) :
+    (binomialLift n g).HasRootIn (Metric.closedBall c r) :=
+  grace_aux hr n f g hf hg hap hroots
 
 /-- Root-transfer corollary in the form most convenient for Schur-Szego
 composition: from Grace's theorem, if `binomialLift n f` has all its zeros in a
