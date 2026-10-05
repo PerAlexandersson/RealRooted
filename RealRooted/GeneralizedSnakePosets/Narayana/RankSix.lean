@@ -842,18 +842,6 @@ theorem auxiliaryGInterlaces_modified_six_interlaces_of_crosses
   exact auxiliaryGInterlaces_modified_six_interlaces_of_root_crosses
     hP_roots hab hbc hcd hde her (hcross hP_roots hab hbc hcd hde her)
 
-/-- The `n = 6` auxiliary-interlacing form follows from proving
-the cross inequalities for any sorted `P_6` root list. -/
-theorem auxiliaryGInterlaces_modified_six_of_crosses
-    (hcross :
-      ∀ {a b c d e r : ℝ},
-        (modifiedNarayanaPolynomial 6).roots =
-          (↑[a, b, c, d, e, r] : Multiset ℝ) →
-        a ≤ b → b ≤ c → c ≤ d → d ≤ e → e ≤ r →
-        ModifiedNarayanaSixAuxiliaryGCrossInequalities a b c d e r) :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) :=
-  (auxiliaryGInterlaces_modified_six_interlaces_of_crosses hcross).toStrictInterl
-
 /-- The checked `n = 6` auxiliary-interlacing case. -/
 theorem auxiliaryGInterlaces_modified_six_interlaces :
     Interlaces (FiniteSkewBoard.auxiliaryG 6) (modifiedNarayanaPolynomial 6) := by

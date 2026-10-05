@@ -209,36 +209,6 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_one
   pairHasCommonInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
-/-- A constant and a linear polynomial with positive leading coefficients are
-strictly interlaced in the succ-degree orientation. -/
-theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_deg0 : f.natDegree = 0)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    StrictInterl f g := by
-  have hf0 : f ≠ 0 := hf_pos.ne_zero
-  have hg0 : g ≠ 0 := hg_pos.ne_zero
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
-  have hg_deg1 : g.natDegree = 1 := by lia
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
-  exact StrictInterl.of_degree_zero_right_of_degree_one
-    hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_deg0 hg_deg1
-
-/-- The common-left succ-degree pair bridge is already unconditional in the
-constant-vs-linear endpoint case. -/
-theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_degree_zero
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_deg0 : f.natDegree = 0)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
-  pairHasCommonLeftInterleaver_of_strictInterl <|
-    posComboNoCommonSuccDegreeOrientation_of_degree_zero
-      hf_pos hg_pos hf_deg0 hsucc
-
 /-- Degree-zero base case for the succ-degree root-count formulation.
 
 If `f` has degree zero and `g` has degree one, then the lower-threshold count
@@ -280,14 +250,12 @@ theorem succDegreeRootCountAbove_of_natDegree_eq_zero
     (fun y => succDegreeRootCount_of_natDegree_eq_zero hf hg hdeg hfdeg y)) x
 
 /-- Degree-zero base case for the upper-threshold succ-degree analytic
-root-count target in the positive-combination/no-common setting. -/
+root-count target in the positive-combination setting. -/
 theorem succDegreeRootCountAbove_of_posCombo_natDegree_eq_zero
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (_hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hf_split : f.Splits) (hfdeg : f.natDegree = 0) (x : ℝ) :
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
@@ -373,7 +341,7 @@ private lemma count_above_singleton_pair_le
   split_ifs <;> (first | linarith | simp_all)
 
 /-- Degree-one base case for the upper-threshold succ-degree root-count
-formulation in the positive-combination / no-common-root setting.
+formulation in the positive-combination setting.
 
 With `f` of degree one and `g` of degree two, the smaller root of `g` lies to
 the left of the root of `f`, so the numbers of roots above any threshold `x`
@@ -381,10 +349,8 @@ differ by at most one in each direction. -/
 theorem succDegreeRootCountAbove_of_posCombo_natDegree_eq_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (_hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hf_split : f.Splits) (hfdeg : f.natDegree = 1) (x : ℝ) :
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
@@ -394,15 +360,13 @@ theorem succDegreeRootCountAbove_of_posCombo_natDegree_eq_one
   exact count_above_singleton_pair_le hγα
 
 /-- Degree-one base case for the succ-degree root-crossing target in the
-positive-combination / no-common-root setting, obtained from the
+positive-combination setting, obtained from the
 upper-threshold root count via `succDegreeRootCrossing_of_rootCountAbove`. -/
 theorem succDegreeRootCrossing_of_posCombo_natDegree_eq_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hf_split : f.Splits) (hfdeg : f.natDegree = 1) :
     (∀ j, 1 ≤ j → j ≤ f.natDegree →
         (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
@@ -412,8 +376,8 @@ theorem succDegreeRootCrossing_of_posCombo_natDegree_eq_one
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
   exact succDegreeRootCrossing_of_rootCountAbove hf_split hg_split hdeg
     (fun x =>
-      succDegreeRootCountAbove_of_posCombo_natDegree_eq_one hf_pos hg_pos hfnn hgnn
-        hfg hdeg hno hf_split hfdeg x)
+      succDegreeRootCountAbove_of_posCombo_natDegree_eq_one hf_pos hg_pos
+        hfg hdeg hf_split hfdeg x)
 
 /-- A natural number bounded by one is zero or one. -/
 private lemma nat_eq_zero_or_eq_one_of_le_one {n : ℕ} (hn : n ≤ 1) :
@@ -428,7 +392,7 @@ root-count formulation. -/
 theorem compatibleSuccDegreeRootCountAbove_of_natDegree_eq_zero
     {f g : ℝ[X]}
     (hcomp : Compatible f g)
-    (_hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree + 1)
     (hf_split : f.Splits) (hfdeg : f.natDegree = 0) (x : ℝ) :
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
@@ -464,7 +428,7 @@ theorem compatibleSuccDegreeRootCountAbove_of_natDegree_le_one
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
   rcases nat_eq_zero_or_eq_one_of_le_one hfdeg with hf0 | hf1
   · exact compatibleSuccDegreeRootCountAbove_of_natDegree_eq_zero
-      hcomp hf_pos hg_pos hdeg hf_split hf0 x
+      hcomp hg_pos hdeg hf_split hf0 x
   · exact compatibleSuccDegreeRootCountAbove_of_natDegree_eq_one
       hcomp hf_pos hg_pos hdeg hf_split hf1 x
 
@@ -505,7 +469,7 @@ theorem compatibleSuccDegreeRootCountAbove_le_two_of_natDegree_le_two
           hcomp.derivative hf'_pos hg'_pos hdeg' hf'_split hf'_deg y
     exact
       compatibleSuccDegreeRootCountAbove_le_two_of_derivative_bound
-        hcomp hf_pos hg_pos hdeg hf_split hfdeg_two hder_bound x
+        hcomp hg_pos hdeg hf_split hfdeg_two hder_bound x
   · have hfdeg_le_one : f.natDegree ≤ 1 :=
       Nat.lt_succ_iff.mp (Nat.lt_of_not_ge hfdeg_two)
     obtain ⟨hfg_le, hgf_le⟩ :=
@@ -626,14 +590,12 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_natDegree_le_one
   linarith
 
 /-- Low-degree base case for the succ-degree root-crossing target in the
-positive-combination / no-common-root setting. -/
+positive-combination setting. -/
 theorem succDegreeRootCrossing_of_posCombo_natDegree_le_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 1) :
     (∀ j, 1 ≤ j → j ≤ f.natDegree →
         (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
@@ -645,21 +607,19 @@ theorem succDegreeRootCrossing_of_posCombo_natDegree_le_one
     exact succDegreeRootCrossing_of_rootCountAbove hf_split hg_split hdeg
       (fun x =>
         succDegreeRootCountAbove_of_posCombo_natDegree_eq_zero
-          hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 x)
+          hf_pos hg_pos hfg hdeg hf_split hf0 x)
   · exact succDegreeRootCrossing_of_posCombo_natDegree_eq_one
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf1
+      hf_pos hg_pos hfg hdeg hf_split hf1
 
 /-- Low-degree base case for the succ-degree root-slot data in the
-positive-combination / no-common-root setting.  Root continuity supplies the
+positive-combination setting.  Root continuity supplies the
 left endpoint, and the low-degree root-crossing wrapper supplies the slot
 intersections. -/
 theorem succDegreeSlotData_of_posCombo_natDegree_le_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 1) :
     (f ≠ 0 ∧ f.Splits) ∧
       ∀ j, j < f.natDegree + 1 →
@@ -673,7 +633,7 @@ theorem succDegreeSlotData_of_posCombo_natDegree_le_one
   refine ⟨⟨hf_pos.ne_zero, hf_split⟩, ?_⟩
   obtain ⟨hc1, hc2⟩ :=
     succDegreeRootCrossing_of_posCombo_natDegree_le_one
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hfdeg
+      hf_pos hg_pos hfg hdeg hf_split hfdeg
   have hlenf : (rootSeqDesc f).length = f.natDegree := rootSeqDesc_length hf_split
   have hleng : (rootSeqDesc g).length = g.natDegree := rootSeqDesc_length hg_split
   intro j _ hjf hjg
@@ -686,19 +646,18 @@ theorem succDegreeSlotData_of_posCombo_natDegree_le_one
       j hjf hjg
 
 /-- Low-degree case of the succ-degree common-interleaver theorem in the
-positive-combination / no-common-root setting. -/
+positive-combination setting; no nonnegativity or no-common-root hypothesis is
+needed. -/
 theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_natDegree_le_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 1) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   obtain ⟨hf_rr, hslot⟩ :=
     succDegreeSlotData_of_posCombo_natDegree_le_one
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg
+      hf_pos hg_pos hfg hdeg hfdeg
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
   exact
@@ -778,7 +737,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
     have hfdeg : f.natDegree ≤ 1 := by lia
     exact
       posComboNoCommonSuccDegreePairHasCommonInterleaver_of_natDegree_le_one
-        hf_pos hg_pos hfnn hgnn hfg hsucc hno hfdeg
+        hf_pos hg_pos hfg hsucc hfdeg
   · have hsame : g.natDegree = f.natDegree := by lia
     have hfdeg : f.natDegree ≤ 2 := by lia
     exact

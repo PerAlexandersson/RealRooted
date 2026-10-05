@@ -1324,18 +1324,13 @@ theorem API. This leaves `CommonInterleaverSeq` as a 937-line public pairwise
 closure façade rather than a mixed 1,791-line implementation.
 
 `CommonInterleaver.PairBridge` is likewise a compatibility façade. Its former
-2,959-line mixed source is layered as `PairBridge.Forward` (208 lines of
-forward/same-degree transport), `PairBridge.SuccDegree.ClosedSegment` (213 lines
-of closed-segment consequences), `PairBridge.SuccDegree.RootCrossing` (105
-lines of list/root-crossing transport), the 11-line `PairBridge.SuccDegree`
+2,959-line mixed source is layered as `PairBridge.SuccDegree.ClosedSegment`
+(213 lines of closed-segment consequences), the `PairBridge.SuccDegree`
 facade, `PairBridge.SuccDegree.SlotData` (350 lines of slot-data and
 common-interleaver wrappers),
 `PairBridge.Reduction.CommonRoot` (165 lines of quotient nonnegativity and a
-shared-root induction principle), `PairBridge.Reduction.Basic` (184 lines of
-shared degree-split reductions), `PairBridge.Reduction.CommonInterleaver` (283
-lines of common-interleaver recursion), `PairBridge.Reduction.AllCombo` (316
-lines of all-combinations and orientation upgrades), the 10-line
-`PairBridge.Reduction` facade, `PairBridge.Compatibility` (442 lines of
+shared-root induction principle), `PairBridge.Reduction.CommonInterleaver` (283
+lines of common-interleaver recursion), the `PairBridge.Reduction` facade, `PairBridge.Compatibility` (442 lines of
 nonnegative endpoint assembly), and
 `PairBridge.Compatibility.NonnegativeShift` (425 lines of translation-based
 positive-leading wrappers). The latter exports
@@ -1495,13 +1490,11 @@ wrappers come from `Tactic.PFBidiagonal`. It does not carry a second
 mathematical implementation of those declarations.
 
 The Braun--Jal modified-Narayana application is layered by proof role:
-`Narayana.Recurrence` owns full-staircase identification, finite recurrence
-checks, and the auxiliary coefficient/degree algebra; `Narayana.RootSums` owns
+`Narayana.Recurrence` owns full-staircase identification and the auxiliary coefficient/degree algebra; `Narayana.RootSums` owns
 the Vieta comparison, root-sum orientation, and the refuted strict-bound
 interface; and `Narayana.PFFacts` owns the PF and base interlacing facts.
 `Narayana.RankSix` contains the explicit rank-six roots, signs, interval
-isolation, and cross inequalities, while `Narayana.LowRank` contains the
-ranks-three-through-five certificates and bounded rank-six assembly.
+isolation, and cross inequalities.
 `Narayana.ShiftedDifferenceInterlacingAnalytic` owns the pencil leading coefficients, splitness,
 nonpositive roots, and endpoint-safe Claim 7 package. The historical
 `GeneralizedSnakePosetsNarayana` path is a 10-line compatibility import.
