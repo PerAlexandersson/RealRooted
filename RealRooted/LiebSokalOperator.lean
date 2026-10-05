@@ -407,8 +407,8 @@ theorem isMultiaffine_contractVariables
     {R sigma : Type*} [CommRing R]
     {P : MvPolynomial sigma R} (hP : MvPolynomial.IsMultiaffine P)
     (i j : sigma) :
-    MvPolynomial.IsMultiaffine (contractVariables i j P) := by
-  exact (hP.specializeZero_preserves i).sub ((hP.pderiv i).pderiv j)
+    MvPolynomial.IsMultiaffine (contractVariables i j P) :=
+  (hP.specializeZero_preserves i).sub ((hP.pderiv i).pderiv j)
 
 theorem pderiv_inl_pairedProduct
     {R sigma : Type*} [CommRing R] (i : sigma)

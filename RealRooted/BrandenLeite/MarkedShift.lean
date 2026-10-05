@@ -58,8 +58,8 @@ theorem regularizedLowerShift_apply_self
 /-- A nonnegative regularizing diagonal preserves total nonnegativity. -/
 theorem regularizedLowerShift_isTotallyNonneg
     {ε : ℝ} (hε : 0 ≤ ε) (N : ℕ) :
-    (regularizedLowerShift ε N).IsTotallyNonneg := by
-  exact Matrix.isTotallyNonneg_lowerBidiagonalFin
+    (regularizedLowerShift ε N).IsTotallyNonneg :=
+  Matrix.isTotallyNonneg_lowerBidiagonalFin
     (N + 1) (fun _ => ε) (fun _ => 1) (by simp [hε]) (by simp)
 
 /-- Powers of the regularized shift remain lower triangular. -/
@@ -123,8 +123,8 @@ theorem markedShiftApproximation_zero
 theorem markedShiftKernel_apply_eq_zero_of_lt_add
     (as : List (ℕ → ℝ)) (N r : ℕ) {i j : Fin (N + 1)}
     (h : i.val < j.val + r) :
-    markedShiftKernel as N r i j = 0 := by
-  exact Matrix.mul_pow_apply_eq_zero_of_lt_add_of_lower_strictLower
+    markedShiftKernel as N r i j = 0 :=
+  Matrix.mul_pow_apply_eq_zero_of_lt_add_of_lower_strictLower
     (optionalRiseMatrix as N) (lowerShift N)
     (fun i j hij => optionalRiseMatrix_apply_eq_zero_of_lt as N
       (Fin.mk_lt_mk.mp hij))
@@ -135,23 +135,23 @@ theorem markedShiftKernel_apply_eq_zero_of_lt_add
 theorem markedShiftKernel_apply_eq_zero_of_le
     (as : List (ℕ → ℝ)) (N : ℕ) {r : ℕ} (hr : 0 < r)
     {i j : Fin (N + 1)} (h : i.val ≤ j.val) :
-    markedShiftKernel as N r i j = 0 := by
-  exact markedShiftKernel_apply_eq_zero_of_lt_add as N r (by lia)
+    markedShiftKernel as N r i j = 0 :=
+  markedShiftKernel_apply_eq_zero_of_lt_add as N r (by lia)
 
 /-- Nonnegative optional-rise weights make the marked approximation TN. -/
 theorem markedShiftApproximation_isTotallyNonneg
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
     {ε : ℝ} (hε : 0 ≤ ε) (N r : ℕ) :
-    (markedShiftApproximation as N r ε).IsTotallyNonneg := by
-  exact (optionalRiseMatrix_isTotallyNonneg has N).mul
+    (markedShiftApproximation as N r ε).IsTotallyNonneg :=
+  (optionalRiseMatrix_isTotallyNonneg has N).mul
     (regularizedLowerShift_pow_isTotallyNonneg hε N r)
 
 /-- Every marked approximation is lower triangular. -/
 theorem markedShiftApproximation_apply_eq_zero_of_lt
     (as : List (ℕ → ℝ)) (N r : ℕ) (ε : ℝ)
     {i j : Fin (N + 1)} (h : i < j) :
-    markedShiftApproximation as N r ε i j = 0 := by
-  exact Matrix.mul_apply_eq_zero_of_lt_of_upper_zero
+    markedShiftApproximation as N r ε i j = 0 :=
+  Matrix.mul_apply_eq_zero_of_lt_of_upper_zero
     (optionalRiseMatrix as N) (regularizedLowerShift ε N ^ r)
     (fun i j hij => optionalRiseMatrix_apply_eq_zero_of_lt as N
       (Fin.mk_lt_mk.mp hij))

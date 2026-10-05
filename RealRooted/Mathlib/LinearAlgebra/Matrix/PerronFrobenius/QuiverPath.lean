@@ -43,7 +43,7 @@ reasoning about paths in a `Quiver` (directed graph). The key concepts and resul
 ## 4. Vertices of a Path
   - **Definitions:** `«end»`, `activeVertices`, `vertices`, `activeFinset`.
   - **Lemmas:**
-    - `vertices_length`, `vertices_head?`, `vertices_nonempty`, `vertices_comp`,
+    - `vertices_length`, `vertices_head?`, `vertices_ne_nil`, `vertices_comp`,
       `start_mem_vertices`.
     - Extraction lemmas for head/last and vertex membership.
 
@@ -240,9 +240,6 @@ lemma mem_activeFinset_iff [DecidableEq V] {a b : V} (p : Path a b) {x : V} :
     x ∈ activeFinset p ↔ x ∈ p.vertices.dropLast := by
   simp only [activeFinset, List.mem_toFinset]
 
-lemma vertices_nonempty {a : V} {b : V} (p : Path a b) : p.vertices ≠ [] := by
-  rw [← List.length_pos_iff_ne_nil, vertices_length]; lia
-
 variable {α : Type*} [DecidableEq α]
 
 /-- A path from a single arrow. -/
@@ -260,20 +257,20 @@ lemma isPrefix_dropLast_of_comp_eq {V : Type*} [Quiver V] {a b c : V} {p : Path 
 /-- The head of the vertices list is the start vertex. -/
 @[simp]
 lemma vertices_head_eq_start {a b : V} (p : Path a b) :
-    p.vertices.head (vertices_nonempty p) = a := by
+    p.vertices.head (vertices_ne_nil p) = a := by
   induction p with
   | nil => simp only [vertices_nil, List.head_cons]
   | cons p' _ ih =>
     simp only [vertices_cons, List.concat_eq_append]
-    have : p'.vertices ≠ [] := vertices_nonempty p'
+    have : p'.vertices ≠ [] := vertices_ne_nil p'
     simp only [List.head_append_of_ne_nil this]
     exact ih
 
 /-- The last element of the vertices list is the end vertex. -/
 @[simp]
 lemma vertices_getLast_eq_end {a b : V} (p : Path a b) :
-  p.vertices.getLast (vertices_nonempty p) = b := by
-  exact vertices_getLast p (vertices_nonempty p)
+  p.vertices.getLast (vertices_ne_nil p) = b :=
+  vertices_getLast p (vertices_ne_nil p)
 
 variable {V : Type*} [Quiver V]
 
@@ -808,7 +805,7 @@ theorem isStrictlySimple_of_shortest
         simpa [hc_nil, comp_nil] using h_p1_split
       have h_mem : v ∈ q.vertices.dropLast := by
         simpa [this] using hv_in_p1_dropLast
-      have h_last : v = q.vertices.getLast (vertices_nonempty q) := by simp
+      have h_last : v = q.vertices.getLast (vertices_ne_nil q) := by simp
       let i := q.vertices.idxOf v
       have hi_verts : i < q.vertices.length := by
         rw [List.idxOf_lt_length_iff]
@@ -818,9 +815,9 @@ theorem isStrictlySimple_of_shortest
           have h_lt : List.idxOf v q.vertices.dropLast < q.vertices.dropLast.length :=
             List.idxOf_lt_length_of_mem h_mem
           have h_prefix : (q.vertices.dropLast).IsPrefix q.vertices := by
-            have h_split := List.dropLast_append_getLast (vertices_nonempty q)
+            have h_split := List.dropLast_append_getLast (vertices_ne_nil q)
             have : (q.vertices.dropLast).IsPrefix (q.vertices.dropLast ++
-                  [q.vertices.getLast (vertices_nonempty q)]) :=
+                  [q.vertices.getLast (vertices_ne_nil q)]) :=
               List.prefix_append _ _
             exact dropLast_prefix q.vertices
           have h_eq : List.idxOf v q.vertices = List.idxOf v q.vertices.dropLast :=
@@ -964,8 +961,8 @@ lemma isAcyclic_of_no_cycles :
 /-- There exists a positive loop shorter than p if q is such a loop. -/
 lemma exists_positive_loop_shorter_than_p {a : V} {p : Path a a} (q : Path a a)
     (h_q_pos : q.length > 0) (h_q_shorter : q.length < p.length) :
-    ∃ n, ∃ (r : Path a a), r.length = n ∧ r.length > 0 ∧ r.length < p.length := by
-  exact ⟨q.length, q, rfl, h_q_pos, h_q_shorter⟩
+    ∃ n, ∃ (r : Path a a), r.length = n ∧ r.length > 0 ∧ r.length < p.length :=
+  ⟨q.length, q, rfl, h_q_pos, h_q_shorter⟩
 
 section ClassicalCycleSelection
 

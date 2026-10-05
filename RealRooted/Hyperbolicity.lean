@@ -641,8 +641,8 @@ theorem MvPolynomial.IsHomogeneous.mvRealStable_iff_forall_hyperbolicAt_pos
     {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ}
     (hhom : P.IsHomogeneous d) :
     MvRealStable P ↔
-      ∀ e : σ → ℝ, (∀ i, 0 < e i) → P.HyperbolicAt e := by
-  exact ⟨fun hst e he => hst.hyperbolicAt_of_pos hhom he,
+      ∀ e : σ → ℝ, (∀ i, 0 < e i) → P.HyperbolicAt e :=
+  ⟨fun hst e he => hst.hyperbolicAt_of_pos hhom he,
     mvRealStable_of_forall_hyperbolicAt_pos hhom⟩
 
 private theorem restriction_ordinaryHomogenization_eq_of_none_ne_zero
