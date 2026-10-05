@@ -57,32 +57,4 @@ theorem rootCrossing_of_listInterlaces {ss rs : List ℝ}
       succCross_getD_mono hrs_pw (by lia) (by lia)
     exact le_trans hstep hmono
 
-/-- The fixed-orientation succ-degree statement implies the descending-root
-crossing endpoint. -/
-theorem posComboNoCommonSuccDegreeRootCrossing_of_orientation
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno _
-  have hstrictInterl : StrictInterl f g := hsucc hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  obtain ⟨hf, hg, ss, rs, hss_pw, hrs_pw, hss_eq, hrs_eq, hshape⟩ := hstrictInterl
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  have hint : ListInterlaces ss rs := by
-    rcases hshape with ⟨_, h⟩ | ⟨hlen2, _⟩
-    · exact h
-    · exfalso
-      rw [hss_len, hrs_len, hdeg] at hlen2
-      lia
-  have hlen : ss.length + 1 = rs.length := by rw [hss_len, hrs_len, hdeg]
-  have hdf : rootSeqDesc f = ss.reverse :=
-    rootSeqDesc_eq_reverse_of_pairwise hss_pw hss_eq
-  have hdg : rootSeqDesc g = rs.reverse :=
-    rootSeqDesc_eq_reverse_of_pairwise hrs_pw hrs_eq
-  obtain ⟨hc1, hc2⟩ := rootCrossing_of_listInterlaces hrs_pw hlen hint
-  rw [hdf, hdg]
-  exact ⟨fun j hj1 hj2 => hc1 j hj1 (by rw [hss_len]; exact hj2),
-    fun j hj1 hj2 => hc2 j hj1 (by rw [hss_len]; exact hj2)⟩
-
 end RealRooted

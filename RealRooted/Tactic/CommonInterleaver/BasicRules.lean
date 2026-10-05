@@ -252,10 +252,6 @@ macro_rules
         exact
           RealRooted.hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
             $hrr $hpos $hpair)
-  | `(tactic| rr_common_interleaver_family_upgrade) =>
-      `(tactic| exact RealRooted.commonInterleaverFamilyUpgrade)
-  | `(tactic| rr_common_left_interleaver_family_upgrade) =>
-      `(tactic| exact RealRooted.commonLeftInterleaverFamilyUpgrade)
   | `(tactic|
       rr_common_interleaver_sum_realrooted using
         common_right := $hcommon:term,

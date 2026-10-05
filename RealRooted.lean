@@ -228,7 +228,6 @@ import RealRooted.Challenges.OperatorPreservers
 import RealRooted.Challenges.VeroneseSections
 import RealRooted.Challenges.Wagner
 import RealRooted.ChudnovskySeymour.Core
-import RealRooted.ClosedSegmentCountEqFromAnalytic
 import RealRooted.CoefficientDominance
 import RealRooted.CoefficientDominance.LogConcavity
 import RealRooted.CoefficientDominance.RootGap
@@ -303,7 +302,6 @@ import RealRooted.CommonInterleaver.RootSlots
 import RealRooted.CommonInterleaver.RootSlots.Basic
 import RealRooted.CommonInterleaver.Sequence
 import RealRooted.CommonInterleaver.SameDegreeRootCount
-import RealRooted.CommonInterleaver.Statements
 import RealRooted.CommonInterleaver.SuccDegreeEndpoint
 import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 import RealRooted.CommonInterleaver.FamilySum

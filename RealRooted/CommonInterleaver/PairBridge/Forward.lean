@@ -6,7 +6,7 @@ import RealRooted.CommonInterleaver.RightPencil
 import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 import RealRooted.CommonInterleaver.IntervalLemmas
 import RealRooted.CommonInterleaver.SameDegreeRootCount
-import RealRooted.CommonInterleaver.Statements
+import RealRooted.AllCombo
 import RealRooted.PosCombo
 import RealRooted.CommonInterleaverSeq
 import RealRooted.AffineFamily
