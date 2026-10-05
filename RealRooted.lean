@@ -285,7 +285,6 @@ import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver
 import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCount
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCrossing
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
 import RealRooted.CommonInterleaver.PairwiseUpgrade

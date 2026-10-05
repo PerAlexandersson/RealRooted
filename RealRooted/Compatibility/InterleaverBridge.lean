@@ -67,15 +67,4 @@ theorem pairwiseCompatible_of_pairwiseHasCommonInterleaver
       (hpos (fs.get i) (fs.get_mem i))
       (hpos (fs.get j) (fs.get_mem j))
 
-/-- Compatibility plus positive leading coefficients implies a common right
-interleaver.  This is proved by
-`chudnovskySeymour_compatiblePairHasCommonInterleaver`; the proposition is kept
-only for its `LiuOppositeSigns` callers. -/
-def CompatiblePairHasCommonInterleaverStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    Compatible f g →
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h
-
 end RealRooted

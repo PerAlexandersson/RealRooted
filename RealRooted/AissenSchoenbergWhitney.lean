@@ -411,13 +411,6 @@ theorem aissenSchoenbergWhitneyForwardNoNonneg {p : ℝ[X]}
   ⟨⟨hp0, aissenSchoenbergWhitneyForwardSplits hpf⟩,
     roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
 
-/-- Zero-aware forward ASW, proved as `aissenSchoenbergWhitneyForwardOrZero`.
-The proposition is kept only because `RealRooted.Hadamard.Consequences` and
-`RealRooted.CommonInterleaver.SuccDegreeEndpoint` still mention it. -/
-abbrev aissenSchoenbergWhitneyForwardOrZeroStatement : Prop :=
-  ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
-    (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
-
 /-- Without a nonzero hypothesis, the forward ASW interface would force the
 zero polynomial to be real-rooted, contrary to the strict local definition of
 `p ≠ 0 ∧ p.Splits`. -/

@@ -90,7 +90,7 @@ theorem not_hurwitzMatrixCriterion :
     ¬ ∀ ⦃p : ℝ[X]⦄,
       p ≠ 0 → (RealRooted.hurwitz p.coeff).IsTotallyNonneg →
         IsHurwitzStable p :=
-  RealRooted.not_hurwitzMatrixTotallyNonnegativeToStableStatement
+  RealRooted.not_forall_isHurwitzStable_of_hurwitz_isTotallyNonneg
 
 /-- For the stored polynomial `X³ + 1`, the order-three leading principal
 minor of the classical Hurwitz matrix is `-1`. This is the smallest regression

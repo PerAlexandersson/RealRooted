@@ -97,17 +97,6 @@ theorem hurwitz_isPolyaFreqSeq_even {c : ℕ → ℝ}
   simpa [IsPolyaFreqSeq, ← hurwitz_submatrix_odd_eq_toeplitz] using
     hc.submatrix (strictMono_nat_of_lt_succ fun _ => by lia) strictMono_id
 
-/- The row-oriented converse Hurwitz-matrix criterion is retained only beside
-its checked counterexample `not_hurwitzMatrixTotallyNonnegativeToStableStatement`.
-It is not a valid theorem for the current coefficient convention. -/
-
-/-- Legacy row-oriented converse Hurwitz-matrix criterion.  The nonzero
-hypothesis rules out the zero-polynomial typo, but the statement remains false
-for the current row convention; see
-`not_hurwitzMatrixTotallyNonnegativeToStableStatement`. -/
-abbrev LegacyHurwitzMatrixTotallyNonnegativeToStableStatement : Prop :=
-  ∀ ⦃p : ℝ[X]⦄, p ≠ 0 → (hurwitz p.coeff).IsTotallyNonneg → IsHurwitzStable p
-
 /-- Entrywise product identity for Hurwitz matrices.  The Hurwitz matrix of a
 coefficientwise product of sequences agrees, entrywise, with the product of
 the two Hurwitz matrices. -/
@@ -522,9 +511,11 @@ theorem not_isHurwitzStable_hurwitzMatrixCriterionCounterexample :
   simp [hurwitzMatrixCriterionCounterexampleRoot_cube]
 
 /-- Total nonnegativity of the current row-oriented Hurwitz matrix does not
-imply Hurwitz stability, even for a nonzero polynomial. -/
-theorem not_hurwitzMatrixTotallyNonnegativeToStableStatement :
-    ¬ LegacyHurwitzMatrixTotallyNonnegativeToStableStatement := by
+imply Hurwitz stability, even for a nonzero polynomial: the converse
+Hurwitz-matrix criterion is false for the row convention used by `hurwitz`. -/
+theorem not_forall_isHurwitzStable_of_hurwitz_isTotallyNonneg :
+    ¬ ∀ ⦃p : ℝ[X]⦄,
+      p ≠ 0 → (hurwitz p.coeff).IsTotallyNonneg → IsHurwitzStable p := by
   intro h
   exact not_isHurwitzStable_hurwitzMatrixCriterionCounterexample
     (h (by

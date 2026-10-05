@@ -667,9 +667,7 @@ theorem succDegreeSlotData_of_posCombo_natDegree_le_one
           (hjg : j < (rootSeqDesc g).length + 1),
           (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
             rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty := by
-  have hf_split : f.Splits :=
-    PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
-      hf_pos hg_pos hfnn hgnn hfg hdeg
+  have hf_split : f.Splits := hfg.left_splits_of_succDegree hf_pos hg_pos hdeg
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
   refine ⟨⟨hf_pos.ne_zero, hf_split⟩, ?_⟩
