@@ -393,13 +393,13 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDeg
 /-- Gamma-polynomial real-rootedness criterion: for a symmetric polynomial
 `p` of ambient degree `d`, the gamma-polynomial is real-rooted with
 nonpositive roots if and only if `p` is real-rooted with nonpositive roots.
-The symmetry hypothesis is expressed using `IdTransform d p = p` so this file
+The symmetry hypothesis is expressed using `idTransform d p = p` so this file
 can be built directly on top of `SymmetricDecomposition`. -/
 theorem gammaRealRootedIffPolynomialRealRootedNonpos :
     ∀ {d : ℕ} {p γ : ℝ[X]},
       γ.natDegree ≤ d / 2 →
       p.natDegree ≤ d →
-      IdTransform d p = p →
+      idTransform d p = p →
       IsGammaExpansion d p γ →
       (((γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ) ↔
         ((p ≠ 0 ∧ p.Splits) ∧ HasRootsNonpos p)) := by

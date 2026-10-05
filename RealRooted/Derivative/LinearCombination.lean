@@ -18,22 +18,22 @@ style outer steps. -/
 theorem splits_add_C_mul_derivative {p : ℝ[X]} (hp : p.Splits) {eps : ℝ}
     (heps : 0 < eps) :
     (p + C eps * p.derivative).Splits := by
-  have hT : (TDeriv eps (p.comp (-X))).Splits :=
-    splits_tderiv heps hp.comp_neg_X
-  have hcomp : ((TDeriv eps (p.comp (-X))).comp (-X)).Splits :=
+  have hT : (tDeriv eps (p.comp (-X))).Splits :=
+    splits_tDeriv heps hp.comp_neg_X
+  have hcomp : ((tDeriv eps (p.comp (-X))).comp (-X)).Splits :=
     hT.comp_neg_X
   convert hcomp using 1
-  simp [TDeriv, Polynomial.derivative_comp, comp_assoc]
+  simp [tDeriv, Polynomial.derivative_comp, comp_assoc]
 
 /-- Negative plus-derivative preservation, directly from the existing
-`TDeriv` theorem. -/
+`tDeriv` theorem. -/
 theorem splits_add_C_mul_derivative_of_neg {p : ℝ[X]} (hp : p.Splits) {eps : ℝ}
     (heps : eps < 0) :
     (p + C eps * p.derivative).Splits := by
-  have hT : (TDeriv (-eps) p).Splits :=
-    splits_tderiv (neg_pos.mpr heps) hp
+  have hT : (tDeriv (-eps) p).Splits :=
+    splits_tDeriv (neg_pos.mpr heps) hp
   convert hT using 1
-  simp [TDeriv]
+  simp [tDeriv]
 
 /-- Plus-derivative preservation for every real coefficient. -/
 theorem splits_add_C_mul_derivative_all {p : ℝ[X]} (hp : p.Splits) (eps : ℝ) :

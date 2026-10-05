@@ -68,7 +68,7 @@ macro_rules
         $hf:term, $hdegf:term, $hdeg_lo:term, $hdeg_hi:term, $hF_pos:term,
         $hf_pos:term, $hroot_sign:term) =>
       `(tactic|
-        exact RealRooted.strictInterl_ma_wang
+        exact RealRooted.MaWangInternal.strictInterl_of_step
           $hf (le_trans (by norm_num : (1 : ℕ) ≤ 2) $hdegf)
           $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hroot_sign)
   | `(tactic|
@@ -88,7 +88,7 @@ macro_rules
         $hf:term, $hdegf:term, $hdeg:term, $hF_pos:term, $hf_pos:term,
         $hroot_sign:term) =>
       `(tactic|
-        exact RealRooted.strictInterl_ma_wang_same
+        exact RealRooted.MaWangInternal.strictInterl_of_step_same
           $hf (le_trans (by norm_num : (1 : ℕ) ≤ 2) $hdegf)
           $hdeg $hF_pos $hf_pos $hroot_sign)
   | `(tactic|
@@ -106,7 +106,7 @@ macro_rules
         $hf:term, $hdegf:term, $hdeg:term, $hF_pos:term, $hf_pos:term,
         $hroot_sign:term) =>
       `(tactic|
-        exact RealRooted.strictInterl_ma_wang_succ
+        exact RealRooted.MaWangInternal.strictInterl_of_step_succ
           $hf (le_trans (by norm_num : (1 : ℕ) ≤ 2) $hdegf)
           $hdeg $hF_pos $hf_pos $hroot_sign)
   | `(tactic|
@@ -173,12 +173,12 @@ macro_rules
         source_pos_lc := $hf_pos:term,
         coeff_nonpos := $hv_nonpos:term) =>
       `(tactic|
-        exact RealRooted.strictInterl_mw_derivative_of_nonpos_of_recurrence
+        exact RealRooted.MaWang.strictInterl_derivative_of_nonpos_of_recurrence
           $hf $hdegf $hrec $hF_pos $hdeg_lo $hdeg_hi $hf_pos $hv_nonpos)
   | `(tactic| rr_mw_derivative_nonpos_step using recurrence := $hrec:term) =>
       `(tactic|
         rr_refine_then
-          (RealRooted.strictInterl_mw_derivative_of_nonpos_of_recurrence
+          (RealRooted.MaWang.strictInterl_derivative_of_nonpos_of_recurrence
             ?_ ?_ $hrec ?_ ?_ ?_ ?_ ?_)
           with rr_lookup)
   | `(tactic|
@@ -186,7 +186,7 @@ macro_rules
         $hf:term, $hdegf:term, $hdeg_lo:term, $hdeg_hi:term, $hF_pos:term,
         $hf_pos:term, $hv_nonpos:term) =>
       `(tactic|
-        exact RealRooted.strictInterl_mw_derivative_of_nonpos
+        exact RealRooted.MaWang.strictInterl_derivative_of_nonpos
           $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hv_nonpos)
   | `(tactic|
       rr_mw_derivative_nonpos using
@@ -247,7 +247,7 @@ macro_rules
         roots_nonpos := $hroot_nonpos:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_of_nonpos
+          RealRooted.MaWang.strictInterl_derivative_of_nonpos
             $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos
             (by
               intro r hroot
@@ -264,7 +264,7 @@ macro_rules
         source_pos_lc := $hf_pos:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_of_nonpos
+          RealRooted.MaWang.strictInterl_derivative_of_nonpos
             ($hrr).2 $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos
             (rr_sign_at_roots_term $hrr, $hnn))
   | `(tactic|
@@ -279,7 +279,7 @@ macro_rules
         source_pos_lc := $hf_pos:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_of_nonpos
+          RealRooted.MaWang.strictInterl_derivative_of_nonpos
             ($hrr).2 $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos
             (rr_sign_at_roots_factor_term $hrr, $hnn, $hfactor))
   | `(tactic|
@@ -293,7 +293,7 @@ macro_rules
         root_upper := $hroot_upper:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_of_nonpos
+          RealRooted.MaWang.strictInterl_derivative_of_nonpos
             $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos
             (by
               intro r hroot
@@ -311,7 +311,7 @@ macro_rules
         root_upper := $hroot_upper:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_of_nonpos
+          RealRooted.MaWang.strictInterl_derivative_of_nonpos
             $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos
             (by
               intro r hroot
@@ -329,7 +329,7 @@ macro_rules
         roots_nonpos := $hf_roots:term,
         factor_nonneg := $hq_nonneg:term) =>
       `(tactic|
-        exact RealRooted.strictInterl_mw_derivative_X_mul_of_nonneg_on_roots
+        exact RealRooted.MaWang.strictInterl_derivative_X_mul_of_nonneg_on_roots
           $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hf_roots $hq_nonneg)
   | `(tactic|
       rr_mw_derivative_C_mul_X_mul using
@@ -343,7 +343,7 @@ macro_rules
         roots_nonpos := $hf_roots:term,
         factor_nonneg := $hq_nonneg:term) =>
       `(tactic|
-        exact RealRooted.strictInterl_mw_derivative_C_mul_X_mul_of_nonneg_on_roots
+        exact RealRooted.MaWang.strictInterl_derivative_C_mul_X_mul_of_nonneg_on_roots
           $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hc $hf_roots $hq_nonneg)
   | `(tactic|
       rr_mw_derivative_X_one_add_window using
@@ -356,7 +356,7 @@ macro_rules
         root_lower := $hroot_lo:term,
         root_upper := $hroot_hi:term) =>
       `(tactic|
-        exact RealRooted.strictInterl_mw_derivative_X_mul_one_add_X_of_roots_in_Icc
+        exact RealRooted.MaWang.strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc
           $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hroot_lo $hroot_hi)
   | `(tactic|
       rr_mw_derivative_neg_X_one_add_outer using
@@ -370,7 +370,7 @@ macro_rules
         root_upper := $hroot_hi:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
+          RealRooted.MaWang.strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
             $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hc $hroot_hi)
   | `(tactic|
       rr_mw_derivative_neg_X_one_add_outer_auto using
@@ -383,7 +383,7 @@ macro_rules
         root_upper := $hroot_hi:term) =>
       `(tactic|
         rr_refine_then
-          (RealRooted.strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
+          (RealRooted.MaWang.strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
             $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos ?_ $hroot_hi)
           with rr_mw_active_nonneg_at 0)
   | `(tactic|
@@ -398,7 +398,7 @@ macro_rules
         root_upper := $hroot_hi:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
+          MaWang.strictInterl_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
             $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hroot_lo $hroot_hi)
   | `(tactic|
       rr_mw_derivative_one_add_two_window_sequence using
@@ -412,7 +412,7 @@ macro_rules
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
         exact
-          RealRooted.strictInterl_mw_derivative_one_add_X_mul_one_add_two_mul_X_sequence
+          RealRooted.MaWang.strictInterl_derivative_one_add_X_mul_one_add_two_mul_X_sequence
             $hbase $hpos $hdeg_two $hroot_lo $hroot_hi $hrec $hdeg_lo $hdeg_hi)
   | `(tactic|
       rr_mw_derivative_one_add_two_window_sequence using
@@ -446,7 +446,7 @@ macro_rules
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_mw_derivative_one_add_X_mul_one_add_two_mul_X_sequence
+          (RealRooted.MaWang.isRealRooted_of_derivative_one_add_X_mul_one_add_two_mul_X_sequence
             $hbase $hpos $hdeg_two $hroot_lo $hroot_hi $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_one_add_two_window_sequence_realrooted using

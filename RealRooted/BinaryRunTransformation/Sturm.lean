@@ -415,7 +415,7 @@ theorem strictInterl_binaryRunPolynomial_succ (n m : ℕ)
           StrictInterl (binaryRunPolynomial n m)
             (u * binaryRunPolynomial n m +
               v * (binaryRunPolynomial n m).derivative) :=
-        strictInterl_mw_derivative_of_nonpos_of_pos_natDegree
+        MaWang.strictInterl_derivative_of_nonpos_of_pos_natDegree
           hmsplits (by rw [hmdeg]; exact hm0)
           (by rw [← hrec, hmdeg, hsuccdeg]; lia)
           (by rw [← hrec, hmdeg, hsuccdeg])

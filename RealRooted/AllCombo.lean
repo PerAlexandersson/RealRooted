@@ -146,26 +146,26 @@ lemma allComboRealRooted_iterate_derivative
       exact allComboRealRooted_derivative
         (allComboRealRooted_iterate_derivative hall n)
 
-lemma TDeriv_eq_zero_iff (eps : ℝ) {p : ℝ[X]} :
-    TDeriv eps p = 0 ↔ p = 0 := by
+lemma tDeriv_eq_zero_iff (eps : ℝ) {p : ℝ[X]} :
+    tDeriv eps p = 0 ↔ p = 0 := by
   constructor
   · intro hT
     by_cases hp0 : p = 0
     · simp_all
     · by_cases hdeg0 : p.natDegree = 0
-      · have hconst : TDeriv eps p = p := by
-          rw [eq_C_of_natDegree_eq_zero hdeg0, TDeriv, derivative_C]
+      · have hconst : tDeriv eps p = p := by
+          rw [eq_C_of_natDegree_eq_zero hdeg0, tDeriv, derivative_C]
           simp
         simp_all
-      · cases TDeriv_ne_zero hp0 hT
+      · cases tDeriv_ne_zero hp0 hT
   · simp_all
 
-lemma TDeriv_injective (eps : ℝ) : Function.Injective (TDeriv eps) := by
+lemma tDeriv_injective (eps : ℝ) : Function.Injective (tDeriv eps) := by
   intro p q hpq
-  have hsub : TDeriv eps (p - q) = 0 := by
-    rw [sub_eq_add_neg, show -q = C (-1) * q by simp, TDeriv_add, TDeriv_C_mul, hpq]
+  have hsub : tDeriv eps (p - q) = 0 := by
+    rw [sub_eq_add_neg, show -q = C (-1) * q by simp, tDeriv_add, tDeriv_C_mul, hpq]
     simp
-  exact sub_eq_zero.mp ((TDeriv_eq_zero_iff eps).1 hsub)
+  exact sub_eq_zero.mp ((tDeriv_eq_zero_iff eps).1 hsub)
 
 lemma iterateTDeriv_injective (eps : ℝ) :
     ∀ n : ℕ, Function.Injective (iterateTDeriv eps n)
@@ -175,7 +175,7 @@ lemma iterateTDeriv_injective (eps : ℝ) :
   | n + 1 => by
       intro p q hpq
       rw [iterateTDeriv_succ, iterateTDeriv_succ] at hpq
-      exact iterateTDeriv_injective eps n ((TDeriv_injective eps) hpq)
+      exact iterateTDeriv_injective eps n ((tDeriv_injective eps) hpq)
 
 lemma allComboRealRooted_iterateTDeriv
     {f g : ℝ[X]} (hall : AllComboRealRooted f g)
@@ -193,18 +193,18 @@ lemma allComboRealRooted_iterateTDeriv_all
   rw [← iterateTDeriv_linear_combo]
   exact splits_iterateTDeriv_all (hall a b) k
 
-lemma hasSimpleRoots_tderiv
+lemma hasSimpleRoots_tDeriv
     {eps : ℝ} {p : ℝ[X]}
     (heps : 0 < eps)
     (hp : p.Splits)
     (hsimple : HasSimpleRoots p) :
-    HasSimpleRoots (TDeriv eps p) := by
+    HasSimpleRoots (tDeriv eps p) := by
   intro a ha
   have hdeg : 1 ≤ p.natDegree := by
     by_cases h0 : p.natDegree = 0
     · have hp_eq : p = C (p.coeff 0) := by simpa using eq_C_of_natDegree_eq_zero h0
-      have hT_eq : TDeriv eps p = p := by
-        rw [hp_eq, TDeriv, derivative_C]
+      have hT_eq : tDeriv eps p = p := by
+        rw [hp_eq, tDeriv, derivative_C]
         ring
       have hp_root : p.IsRoot a := by lia
       have hcoeff0 : p.coeff 0 = 0 := by
@@ -214,12 +214,12 @@ lemma hasSimpleRoots_tderiv
     · lia
   have hp_not_root : ¬ p.IsRoot a :=
     fun hp_root ↦
-      not_isRoot_TDeriv_of_simple_root
+      not_isRoot_tDeriv_of_simple_root
         (ne_of_gt heps) hsimple.ne_zero hp_root (hsimple a hp_root) ha
-  have hmult_pos : 1 ≤ (TDeriv eps p).rootMultiplicity a :=
-    (rootMultiplicity_pos <| TDeriv_ne_zero hsimple.ne_zero).mpr ha
-  have hmult_le : (TDeriv eps p).rootMultiplicity a ≤ 1 :=
-    rootMultiplicity_TDeriv_le_one_of_not_isRoot heps hp hp_not_root
+  have hmult_pos : 1 ≤ (tDeriv eps p).rootMultiplicity a :=
+    (rootMultiplicity_pos <| tDeriv_ne_zero hsimple.ne_zero).mpr ha
+  have hmult_le : (tDeriv eps p).rootMultiplicity a ≤ 1 :=
+    rootMultiplicity_tDeriv_le_one_of_not_isRoot heps hp hp_not_root
   lia
 
 lemma hasSimpleRoots_iterateTDeriv
@@ -232,11 +232,11 @@ lemma hasSimpleRoots_iterateTDeriv
   | zero => exact hsimple
   | succ n ih =>
     rw [iterateTDeriv_succ]
-    exact hasSimpleRoots_tderiv heps (splits_iterateTDeriv heps hp) (ih hp hsimple)
+    exact hasSimpleRoots_tDeriv heps (splits_iterateTDeriv heps hp) (ih hp hsimple)
 
 lemma iterateTDeriv_add_index (eps : ℝ) (m n : ℕ) (p : ℝ[X]) :
     iterateTDeriv eps (m + n) p = iterateTDeriv eps m (iterateTDeriv eps n p) := by
-  simpa [iterateTDeriv] using Function.iterate_add_apply (TDeriv eps) m n p
+  simpa [iterateTDeriv] using Function.iterate_add_apply (tDeriv eps) m n p
 
 lemma hasSimpleRoots_iterateTDeriv_of_natDegree_le
     {eps : ℝ} {p : ℝ[X]} {n : ℕ}

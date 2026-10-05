@@ -6,43 +6,43 @@ namespace RealRooted
 namespace Tactic
 
 example {eps : ℝ} {p : ℝ[X]} (hp : HasPosLeadingCoeff p) :
-    HasPosLeadingCoeff (TDeriv eps p) := by
+    HasPosLeadingCoeff (tDeriv eps p) := by
   rr_TDeriv_pos_lc using pos_lc := hp
 
 example {eps : Nat → ℝ} {P : Nat → ℝ[X]}
     (hP : ∀ i : Nat, HasPosLeadingCoeff (P i)) :
-    ∀ i : Nat, HasPosLeadingCoeff (TDeriv (eps i) (P i)) := by
+    ∀ i : Nat, HasPosLeadingCoeff (tDeriv (eps i) (P i)) := by
   rr_TDeriv_sequence_pos_lc using pos_lc := hP
 
 example {eps : ℝ} {p : ℝ[X]} (hp0 : p ≠ 0) :
-    TDeriv eps p ≠ 0 := by
+    tDeriv eps p ≠ 0 := by
   rr_TDeriv_ne_zero using nonzero := hp0
 
 example {eps : Nat → ℝ} {P : Nat → ℝ[X]}
     (hP0 : ∀ i : Nat, P i ≠ 0) :
-    ∀ i : Nat, TDeriv (eps i) (P i) ≠ 0 := by
+    ∀ i : Nat, tDeriv (eps i) (P i) ≠ 0 := by
   rr_TDeriv_sequence_ne_zero using nonzero := hP0
 
 example {eps : ℝ} {p : ℝ[X]} (heps : 0 < eps) (hp : p.Splits) :
-    (TDeriv eps p).Splits := by
+    (tDeriv eps p).Splits := by
   rr_TDeriv_splits using eps_pos := heps, splits := hp
 
 example {eps : Nat → ℝ} {P : Nat → ℝ[X]}
     (heps : ∀ i : Nat, 0 < eps i)
     (hP : ∀ i : Nat, (P i).Splits) :
-    ∀ i : Nat, (TDeriv (eps i) (P i)).Splits := by
+    ∀ i : Nat, (tDeriv (eps i) (P i)).Splits := by
   rr_TDeriv_sequence_splits using eps_pos := heps, splits := hP
 
 example {eps : ℝ} {p : ℝ[X]} (heps : 0 < eps) (hp0 : p ≠ 0)
     (hp : p.Splits) :
-    StrictInterl p (TDeriv eps p) := by
+    StrictInterl p (tDeriv eps p) := by
   rr_TDeriv_strict_interl using eps_pos := heps, nonzero := hp0, splits := hp
 
 example {eps : Nat → ℝ} {P : Nat → ℝ[X]}
     (heps : ∀ i : Nat, 0 < eps i)
     (hP0 : ∀ i : Nat, P i ≠ 0)
     (hP : ∀ i : Nat, (P i).Splits) :
-    ∀ i : Nat, StrictInterl (P i) (TDeriv (eps i) (P i)) := by
+    ∀ i : Nat, StrictInterl (P i) (tDeriv (eps i) (P i)) := by
   rr_TDeriv_sequence_strict_interl using
     eps_pos := heps,
     nonzero := hP0,
@@ -120,23 +120,23 @@ example {eps : Nat → ℝ} {P : Nat → ℝ[X]} {K : Nat → ℕ}
   rr_iterateTDeriv_sequence_monic using monic := hP, index := K
 
 example (eps : ℝ) (p q : ℝ[X]) :
-    TDeriv eps (p + q) = TDeriv eps p + TDeriv eps q := by
+    tDeriv eps (p + q) = tDeriv eps p + tDeriv eps q := by
   rr_TDeriv_add
 
 example {eps : Nat → ℝ} {P Q : Nat → ℝ[X]} :
     ∀ i : Nat,
-      TDeriv (eps i) (P i + Q i) =
-        TDeriv (eps i) (P i) + TDeriv (eps i) (Q i) := by
+      tDeriv (eps i) (P i + Q i) =
+        tDeriv (eps i) (P i) + tDeriv (eps i) (Q i) := by
   rr_TDeriv_sequence_add
 
 example (eps c : ℝ) (p : ℝ[X]) :
-    TDeriv eps (C c * p) = C c * TDeriv eps p := by
+    tDeriv eps (C c * p) = C c * tDeriv eps p := by
   rr_TDeriv_C_mul
 
 example {eps c : Nat → ℝ} {P : Nat → ℝ[X]} :
     ∀ i : Nat,
-      TDeriv (eps i) (C (c i) * P i) =
-        C (c i) * TDeriv (eps i) (P i) := by
+      tDeriv (eps i) (C (c i) * P i) =
+        C (c i) * tDeriv (eps i) (P i) := by
   rr_TDeriv_sequence_C_mul
 
 example (eps : ℝ) (n : ℕ) (p q : ℝ[X]) :
@@ -161,23 +161,23 @@ example {eps c : Nat → ℝ} {P : Nat → ℝ[X]} {K : Nat → ℕ} :
   rr_iterateTDeriv_sequence_C_mul
 
 example (eps : ℝ) (p : ℝ[X]) :
-    (TDeriv eps p).derivative = TDeriv eps p.derivative := by
+    (tDeriv eps p).derivative = tDeriv eps p.derivative := by
   rr_derivative_TDeriv
 
 example {eps : Nat → ℝ} {P : Nat → ℝ[X]} :
     ∀ i : Nat,
-      (TDeriv (eps i) (P i)).derivative =
-        TDeriv (eps i) (P i).derivative := by
+      (tDeriv (eps i) (P i)).derivative =
+        tDeriv (eps i) (P i).derivative := by
   rr_derivative_TDeriv_sequence
 
 example (eps : ℝ) (k : ℕ) (p : ℝ[X]) :
-    (derivative^[k]) (TDeriv eps p) = TDeriv eps ((derivative^[k]) p) := by
+    (derivative^[k]) (tDeriv eps p) = tDeriv eps ((derivative^[k]) p) := by
   rr_iterate_derivative_TDeriv
 
 example {eps : Nat → ℝ} {K : Nat → ℕ} {P : Nat → ℝ[X]} :
     ∀ i : Nat,
-      (derivative^[K i]) (TDeriv (eps i) (P i)) =
-        TDeriv (eps i) ((derivative^[K i]) (P i)) := by
+      (derivative^[K i]) (tDeriv (eps i) (P i)) =
+        tDeriv (eps i) ((derivative^[K i]) (P i)) := by
   rr_iterate_derivative_TDeriv_sequence
 
 example (eps : ℝ) (n k : ℕ) (p : ℝ[X]) :

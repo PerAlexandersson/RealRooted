@@ -29,7 +29,7 @@ theorem isRealRooted_of_i2_derivative_lag_directHalfLine_sequence
     (hno_common :
       ∀ n : Nat, ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_derivative_lag_sequence
+  LiuWang.isRealRooted_of_derivative_lag_sequence
     hbase hpos hdegree_two hrec hderivative_nonpos hlag_nonpos hdeg_succ hno_common
 
 /-- Wagner gap-lag Family I route with an exterior `X` factor. -/
