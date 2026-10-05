@@ -234,21 +234,6 @@ theorem sameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right
       ((sameDegree_even_card_roots_gt_add_iff_not_exists_pos_isRoot_add_right
         hf hg hf_pos hg_pos hxf hxg).mp heven) hcross
 
-/-- Positive-combination same-degree form of
-`sameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right`. -/
-theorem posComboSameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
-    (Odd ((f.roots.filter (x < ·)).card + (g.roots.filter (x < ·)).card) ↔
-      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
-  sameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    hf_pos hg_pos hxf hxg
-
 /-- Oddness of the upper root-count difference is equivalent to a positive
 right-pencil crossing at the threshold. -/
 theorem sameDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
@@ -261,21 +246,6 @@ theorem sameDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
   rw [odd_int_nat_sub_iff_odd_add]
   exact sameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right
     hf hg hf_pos hg_pos hxf hxg
-
-/-- Positive-combination form of
-`sameDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right`. -/
-theorem posComboSameDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
-    (Odd (((f.roots.filter (x < ·)).card : ℤ) -
-        (g.roots.filter (x < ·)).card) ↔
-      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  rw [odd_int_nat_sub_iff_odd_add]
-  exact posComboSameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right
-    hf_pos hg_pos hfg hdeg hxf hxg
 
 /-- Root-count bridge for the same-degree root-crossing target.
 

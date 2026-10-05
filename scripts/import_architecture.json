@@ -1152,29 +1152,17 @@
     "RealRooted.CommonInterleaver.Sequence": {
       "max_modules": 94
     },
-    "RealRooted.CommonInterleaver.PairBridge.Forward": {
-      "max_modules": 153
-   },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree": {
       "max_modules": 163
    },
     "RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment": {
       "max_modules": 161
    },
-    "RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCrossing": {
-      "max_modules": 155
-   },
     "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot": {
       "max_modules": 89
    },
-    "RealRooted.CommonInterleaver.PairBridge.Reduction.Basic": {
-      "max_modules": 166
-   },
     "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver": {
       "max_modules": 168
-   },
-    "RealRooted.CommonInterleaver.PairBridge.Reduction.AllCombo": {
-      "max_modules": 167
    },
     "RealRooted.CommonInterleaver.PairBridge.Reduction": {
       "max_modules": 170

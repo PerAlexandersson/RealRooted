@@ -277,15 +277,11 @@ import RealRooted.CommonInterleaver.IntervalLemmas
 import RealRooted.CommonInterleaver.PairBridge
 import RealRooted.CommonInterleaver.PairBridge.Compatibility
 import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift
-import RealRooted.CommonInterleaver.PairBridge.Forward
 import RealRooted.CommonInterleaver.PairBridge.Reduction
-import RealRooted.CommonInterleaver.PairBridge.Reduction.AllCombo
-import RealRooted.CommonInterleaver.PairBridge.Reduction.Basic
 import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver
 import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree.RootCrossing
 import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
 import RealRooted.CommonInterleaver.PairwiseUpgrade
 import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility

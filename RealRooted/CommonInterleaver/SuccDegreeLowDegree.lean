@@ -209,36 +209,6 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_one
   pairHasCommonInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
-/-- A constant and a linear polynomial with positive leading coefficients are
-strictly interlaced in the succ-degree orientation. -/
-theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_deg0 : f.natDegree = 0)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    StrictInterl f g := by
-  have hf0 : f ≠ 0 := hf_pos.ne_zero
-  have hg0 : g ≠ 0 := hg_pos.ne_zero
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
-  have hg_deg1 : g.natDegree = 1 := by lia
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
-  exact StrictInterl.of_degree_zero_right_of_degree_one
-    hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_deg0 hg_deg1
-
-/-- The common-left succ-degree pair bridge is already unconditional in the
-constant-vs-linear endpoint case. -/
-theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_degree_zero
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_deg0 : f.natDegree = 0)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
-  pairHasCommonLeftInterleaver_of_strictInterl <|
-    posComboNoCommonSuccDegreeOrientation_of_degree_zero
-      hf_pos hg_pos hf_deg0 hsucc
-
 /-- Degree-zero base case for the succ-degree root-count formulation.
 
 If `f` has degree zero and `g` has degree one, then the lower-threshold count
