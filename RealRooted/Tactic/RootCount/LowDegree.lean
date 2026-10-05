@@ -173,8 +173,7 @@ theorem posCombo_sameDegree_rootCount_degree_le_three
   rcases Nat.le_or_eq_of_le_succ hfdeg with hle | hfdeg3
   · exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
       hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
-  · exact sameDegree_cubic_rootCount_le_one_of_secondRootBound
-      cubicSecondRootBound_from_analytic hfdeg3 (hdeg.trans hfdeg3)
+  · exact sameDegree_cubic_rootCount_le_one hfdeg3 (hdeg.trans hfdeg3)
       (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
       (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
       hf_pos hg_pos hfg x
@@ -334,71 +333,6 @@ theorem compatible_succDegree_rootCountAbove_le_two_sequence
           ((F i).roots.filter (x i < ·)).card ≤ (2 : ℤ) := fun i =>
   compatibleSuccDegreeRootCountAbove_le_two_of_natDegree_le_two
     (hcomp i) (hFpos i) (hGpos i) (hdeg i) (hFsplit i) (hFdeg i) (x i)
-
-theorem posCombo_sameDegree_rootCount_cubicInterior_sequence
-    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
-    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
-    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
-    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
-    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
-    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
-    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
-    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
-    ∀ i : Nat,
-      (((F i).roots.filter (· ≤ x i)).card : ℤ) -
-          ((G i).roots.filter (· ≤ x i)).card ≤ 1 ∧
-        (((G i).roots.filter (· ≤ x i)).card : ℤ) -
-          ((F i).roots.filter (· ≤ x i)).card ≤ (1 : ℤ) := fun i =>
-  rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
-    hbelow habove (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i)
-    (hdeg i) (hno i) (hFdeg i) (x i)
-
-theorem posCombo_sameDegree_rootCountAbove_cubicInterior_sequence
-    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
-    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
-    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
-    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
-    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
-    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
-    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
-    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
-    ∀ i : Nat,
-      (((F i).roots.filter (x i < ·)).card : ℤ) -
-          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
-        (((G i).roots.filter (x i < ·)).card : ℤ) -
-          ((F i).roots.filter (x i < ·)).card ≤ (1 : ℤ) := fun i =>
-  rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
-    hbelow habove (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i)
-    (hdeg i) (hno i) (hFdeg i) (x i)
-
-theorem posCombo_sameDegree_rootCrossing_cubicInterior_sequence
-    {F G : Nat → ℝ[X]}
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
-    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
-    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
-    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
-    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
-    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
-    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
-    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
-    ∀ i : Nat,
-      (∀ j, 1 ≤ j → j < (F i).natDegree →
-          (rootSeqDesc (G i)).getD j 0 ≤
-            (rootSeqDesc (F i)).getD (j - 1) 0) ∧
-        (∀ j, 1 ≤ j → j < (F i).natDegree →
-          (rootSeqDesc (F i)).getD j 0 ≤
-            (rootSeqDesc (G i)).getD (j - 1) 0) := fun i =>
-  sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
-    hbelow habove (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i)
-    (hdeg i) (hno i) (hFdeg i)
 
 end Tactic
 end RealRooted
