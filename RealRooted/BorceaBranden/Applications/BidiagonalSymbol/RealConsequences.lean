@@ -87,20 +87,3 @@ theorem bidiagonalOperator_strictInterl_of_affineSymbol_stable
     hSymbol hpdeg hqdeg hpq hp hq hpout hqout hpoutdeg
 
 end RealRooted.BorceaBranden
-
-namespace RealRooted
-
-/-- Compatibility wrapper for the affine-symbol PF-preserver theorem. The
-finite-symbol application theorem is owned by `BorceaBranden`. -/
-theorem bidiagonalPFPreserver_of_affineSymbol
-    {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hSymbol : MvUpperHalfPlaneStable
-      (complexifyMv
-        (RealRooted.BorceaBranden.finiteAlgebraicSymbol d
-          (BorceaBranden.bidiagonalLinearMap alpha beta))))
-    (halpha : ∀ k, k ≤ d → 0 ≤ alpha k)
-    (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :
-    BidiagonalPFPreserver alpha beta d :=
-  BorceaBranden.bidiagonalPFPreserver_of_affineSymbol hSymbol halpha hbeta
-
-end RealRooted

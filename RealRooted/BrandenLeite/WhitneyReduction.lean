@@ -315,12 +315,6 @@ theorem firstColumnRatio_zero_succ
     firstColumn_zero_succ hunit hR hnum
   simp [firstColumnRatio, hnext]
 
-theorem coeff_rowPolynomial
-    {R : LowerTriangularMatrix ℝ} (hR : LowerTriangularMatrix.IsLowerTriangular R)
-    (n k : ℕ) :
-    (LowerTriangularMatrix.rowPolynomial R n).coeff k = R n k :=
-  LowerTriangularMatrix.coeff_rowPolynomial hR n k
-
 theorem rowPolynomial_monic
     {R : LowerTriangularMatrix ℝ}
     (hR : LowerTriangularMatrix.IsLowerUnitriangular R) (n : ℕ) :
@@ -342,11 +336,14 @@ theorem rowPolynomial_whitney_recurrence
           LowerTriangularMatrix.rowPolynomial R n := by
   ext k
   rcases k with _ | k
-  · simp [coeff_rowPolynomial hunit.lower, firstColumnRatio_mul hunit hR]
+  · simp [LowerTriangularMatrix.coeff_rowPolynomial hunit.lower,
+      firstColumnRatio_mul hunit hR]
   · by_cases hkn : k ≤ n
     · rw [coeff_add, coeff_X_mul, coeff_C_mul,
-        coeff_rowPolynomial (whitneyReduce_isLowerUnitriangular hunit).lower,
-        coeff_rowPolynomial hunit.lower, coeff_rowPolynomial hunit.lower]
+        LowerTriangularMatrix.coeff_rowPolynomial
+          (whitneyReduce_isLowerUnitriangular hunit).lower,
+        LowerTriangularMatrix.coeff_rowPolynomial hunit.lower,
+        LowerTriangularMatrix.coeff_rowPolynomial hunit.lower]
       simp only [whitneyReduce]
       ring
     · have hnk : n < k := Nat.lt_of_not_ge hkn
