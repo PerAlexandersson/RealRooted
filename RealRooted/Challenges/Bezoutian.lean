@@ -59,7 +59,7 @@ $\mathbb R$.
 
 The successor-degree form of Bézout's theorem, where $\deg f = \deg g + 1$ and
 $g$ strictly interlaces $f$ if and only if $B(f,g)$ is positive definite, is
-not yet formalized here.
+not yet formalized here (tracked in GitHub issue #1130).
 
 ## Proof idea
 
