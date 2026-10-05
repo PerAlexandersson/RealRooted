@@ -148,35 +148,23 @@ example {n : ℕ} {f p : ℝ[X]}
 
 example {n : ℕ} {f p : ℝ[X]}
     (hn : 3 ≤ n)
-    (hf : IsPFPolynomial f)
     (hfdeg : f.natDegree ≤ 3)
-    (hpdeg : p.natDegree ≤ n)
-    (hsplits : p.Splits)
     (hnum : 0 ≤ schurSzegoCompCubicDiscrNumerator n f p) :
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
   rr_schur_szego_pf_factor_degree_le_three_num using
     level_ge_three := hn,
-    pf_factor := hf,
     pf_degree_le_three := hfdeg,
-    input_degree := hpdeg,
-    input_splits := hsplits,
     cubic_numerator := hnum
 
 example {n : ℕ} {f p : ℝ[X]}
     (hn : 3 ≤ n)
-    (hf : IsPFPolynomial f)
     (hfdeg : f.natDegree ≤ 3)
-    (hpdeg : p.natDegree ≤ n)
-    (hsplits : p.Splits)
     (hnum : 0 ≤ schurSzegoCompCubicDiscrNumerator n f p)
     (hout : schurSzegoComp n f p ≠ 0) :
     (schurSzegoComp n f p).Splits := by
   rr_schur_szego_pf_factor_degree_le_three_num_splits using
     level_ge_three := hn,
-    pf_factor := hf,
     pf_degree_le_three := hfdeg,
-    input_degree := hpdeg,
-    input_splits := hsplits,
     cubic_numerator := hnum,
     nonzero := hout
 

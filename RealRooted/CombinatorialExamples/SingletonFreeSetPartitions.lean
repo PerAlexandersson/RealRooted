@@ -231,7 +231,7 @@ lemma strictInterl_singletonFreeSetPartitions_three_four :
     grind
   simpa [singletonFreeSetPartitions_three, hfour] using hmul
 
-lemma strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core {n : Nat} (_hn : 3 ≤ n)
+lemma strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core {n : Nat}
     (hcore :
       StrictInterl (singletonFreeSetPartitionsCore n) (singletonFreeSetPartitions (n + 1))) :
     StrictInterl (singletonFreeSetPartitions (n + 1)) (singletonFreeSetPartitions (n + 2)) := by
@@ -265,7 +265,7 @@ theorem strictInterl_singletonFreeSetPartitions_succ :
         strictInterl_singletonFreeSetPartitionsCore_of_strictInterl (n := n + 3) (by lia) hprev
       exact
         strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core
-          (n := n + 3) (by lia) hcore
+          (n := n + 3) hcore
 
 theorem isRealRooted_singletonFreeSetPartitions :
     ∀ n : Nat, 2 ≤ n → (singletonFreeSetPartitions n).Splits

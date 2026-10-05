@@ -151,27 +151,4 @@ theorem a144438_schur_complement_gt {a κ η E n : ℝ}
   have hκTerm : 0 ≤ (1 + a) * κ := mul_nonneg (by linarith) hκ0
   nlinarith
 
-/-- The last contraction estimate: an inverse-matrix bound below `1+a`
-forces the next energy strictly below one. -/
-theorem a144438_energy_contraction {a γ B Eplus : ℝ}
-    (ha0 : 0 ≤ a) (hγ : 1 + a < γ)
-    (_hB0 : 0 ≤ B) (hB : B < 1 + a)
-    (hstep : Eplus ≤ B * (1 / (1 + a) - 1 / γ)) :
-    Eplus < 1 := by
-  have haPos : 0 < 1 + a := by linarith
-  have hγPos : 0 < γ := lt_trans haPos hγ
-  have hfactorPos : 0 < 1 / (1 + a) - 1 / γ := by
-    rw [one_div, one_div, sub_pos]
-    exact (inv_lt_inv₀ hγPos haPos).2 hγ
-  have hstrict :
-      B * (1 / (1 + a) - 1 / γ) <
-        (1 + a) * (1 / (1 + a) - 1 / γ) :=
-    mul_lt_mul_of_pos_right hB hfactorPos
-  have hproduct :
-      (1 + a) * (1 / (1 + a) - 1 / γ) = 1 - (1 + a) / γ := by
-    field_simp [haPos.ne', hγPos.ne']
-  rw [hproduct] at hstrict
-  have : 0 < (1 + a) / γ := div_pos haPos hγPos
-  linarith
-
 end RealRooted.Applications.OEIS

@@ -638,17 +638,6 @@ theorem jensenPolynomial_three_logConcave_of_eq_zero_or_splits
     (by simp)
     (by simp)
 
-/-- Adjacent log-concavity inequalities for a splitting Jensen cubic of exact
-degree three.  This is the coefficient form of the two cubic Newton
-inequalities after the binomial factors in `jensenPolynomial 3 gamma` cancel. -/
-theorem jensenPolynomial_three_logConcave_of_splits_natDegree_three
-    {gamma : ℕ → ℝ}
-    (_hdeg : (jensenPolynomial 3 gamma).natDegree = 3)
-    (hs : (jensenPolynomial 3 gamma).Splits) :
-    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
-      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
-  jensenPolynomial_three_logConcave_of_eq_zero_or_splits (Or.inr hs)
-
 private theorem diagonalOperator_discrim_nonneg_of_natDegree_two
     {gamma : ℕ → ℝ} {p : ℝ[X]}
     (hgamma0 : 0 ≤ gamma 0) (hgamma2 : 0 ≤ gamma 2)

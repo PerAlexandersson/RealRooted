@@ -75,16 +75,6 @@ theorem isFinitePFMultiplierSequence_iff_jensenPolynomial_of_self_natDegree_le_t
       isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two
         hgamma hjensen hjdeg⟩
 
-/-- Nonzero-core version of the arbitrary-level degree-`≤ 2` Schur--Szego
-base case. -/
-theorem finiteSchurSzegoCompositionNonzero_of_factors_natDegree_le_two
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 2)
-    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ 2) (hsplit : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_factors_natDegree_le_two
-    hf hfdeg hpdeg hsplit
-
 /-- Cubic-discriminant splitting route for the fixed-degree Schur--Szegő
 composition with a degree-`≤ 3` factor.
 
@@ -99,15 +89,6 @@ theorem finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
   Or.inr (splits_of_natDegree_le_three_cubicDiscr_nonneg
     (le_trans (natDegree_schurSzegoComp_le_left n f p) hfdeg) hdisc)
-
-/-- Nonzero-core version of the degree-`≤ 3` cubic-discriminant splitting route
-for the fixed-degree Schur--Szegő composition. -/
-theorem finiteSchurSzegoCompositionNonzero_of_natDegree_le_three_cubicDiscr_nonneg
-    {n : ℕ} {f p : ℝ[X]} (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
-    (_hp0 : p ≠ 0) (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p)) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
-    hfdeg hdisc
 
 /-- The level-three normalized diagonal-operator form is exactly the
 Schur--Szego composition cubic discriminant. -/
@@ -130,12 +111,10 @@ private theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_natDegree_lt_three
   · exact cubicDiscr_nonneg_of_splits_natDegree_le_three
       ((natDegree_schurSzegoComp_le_left n f p).trans hfdeg) hs
 
-/-- Degree-`≤ 3` PF-factor Schur--Szegő composition reduced to the
+/-- Schur--Szegő composition with a degree-`≤ 3` factor reduced to the
 denominator-cleared cubic-discriminant numerator at levels `n ≥ 3`. -/
 theorem finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscrNumerator_nonneg
-    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (_hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
-    (_hpdeg : p.natDegree ≤ n) (_hsplit : p.Splits)
+    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3)
     (hnum : 0 ≤ schurSzegoCompCubicDiscrNumerator n f p) :
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
   finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg hfdeg
@@ -179,15 +158,5 @@ theorem finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_num_nonn
   finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg hfdeg
     (cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_leftNatDegree_num_nonneg
       hf hfdeg hfn hpdeg hsplit hnum)
-
-/-- Nonzero-core version of the degree-`≤ 3` PF-factor Schur--Szegő reduction
-to the cubic discriminant inequality. -/
-theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
-    {n : ℕ} {f p : ℝ[X]}
-    (_hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
-    (_hp0 : p ≠ 0) (_hpdeg : p.natDegree ≤ n) (_hsplit : p.Splits)
-    (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p)) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg hfdeg hdisc
 
 end RealRooted

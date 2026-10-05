@@ -34,15 +34,6 @@ theorem finiteSchurSzegoComposition_of_natDegree_le_two
     isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two hn hgamma hjensen hpdeg
       hsplit
 
-/-- Nonzero-core version of the checked degree-`≤ 2` Schur--Szegő composition
-case. -/
-theorem finiteSchurSzegoCompositionNonzero_of_natDegree_le_two
-    {n : ℕ} (hn : n ≤ 2) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ n)
-    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_natDegree_le_two hn hf hfdeg hpdeg hsplit
-
 /-- Pure arithmetic core of the Schur--Szego discriminant inequality for two
 degree-`≤ 2` factors at level `N ≥ 2`.  Here `a`, `b`, `c` are the coefficients
 of the PF factor and `d`, `e`, `g` those of the splitting factor. -/

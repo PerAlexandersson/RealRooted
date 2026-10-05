@@ -170,8 +170,13 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots :
         HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g) := by
   intro m n f g hfdeg hgdeg hflead hglead hfroots hgroots
   rcases n with _ | n
-  · exact rectangularAdditiveConvolutionPreservesNonnegRoots_zero
-      hfdeg hgdeg hflead hglead hfroots hgroots
+  · rw [rectangularAdditiveConvolution_zero_right]
+    right
+    refine ⟨by simp, ?_⟩
+    intro r hr
+    have hroots : (C (f.coeff 0 * g.coeff 0) : ℝ[X]).roots = 0 := Polynomial.roots_C _
+    have hroot0 : r ∈ (0 : Multiset ℝ) := hroots ▸ hr
+    cases hroot0
   · exact rectangularAdditiveConvolutionPreservesNonnegRoots_positiveDegree
       hfdeg hgdeg hflead hglead hfroots hgroots
 

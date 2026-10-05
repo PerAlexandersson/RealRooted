@@ -171,7 +171,7 @@ theorem weightedDecoDiagonal_successor_residue_and_energy
   have hΦlt : Φ < 1 + a := by
     dsimp only [Φ, S]
     exact weightedDeco_residue_energy_scalar_lt ha0 ha1 hw0 hw1 hκ0 hκ1
-      hH0 hH1 hs₀Lower
+      hH1 hs₀Lower
   have hblockNorm :
       w * (a ^ 2 * (∑ i, t i ^ 2 / J i) +
         (1 - a * (∑ i, t i * c i / J i)) ^ 2 / S) = Φ := by
