@@ -187,13 +187,6 @@ theorem prefixRowStage_isTotallyNonneg {N s : ℕ} (hs : s ≤ N)
       exact Matrix.IsTotallyNonneg.addPreviousRow (ih (Nat.le_of_succ_le hs))
         ⟨s, Nat.lt_of_succ_le hs⟩
 
-/-- Total nonnegativity can be checked on compatible finite truncations. -/
-theorem isTotallyNonneg_of_fin_truncations (M : Matrix ℕ ℕ ℝ)
-    (Mfin : (N : ℕ) → Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
-    (hentry : ∀ (N : ℕ) (i j : Fin (N + 1)), Mfin N i j = M i.val j.val)
-    (hfin : ∀ N, (Mfin N).IsTotallyNonneg) : M.IsTotallyNonneg :=
-  Matrix.IsTotallyNonneg.of_fin_truncations M Mfin hentry hfin
-
 /-- The finite lower-triangular matrix whose nonzero entries are all one. -/
 def lowerOnesFin (N : ℕ) : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
   .of fun i j => if j ≤ i then 1 else 0
@@ -278,14 +271,14 @@ lemma lowerLinearFin_apply (N : ℕ) (i j : Fin (N + 1)) :
 theorem constantOne_isPolyaFreqSeq :
     IsPolyaFreqSeq (fun _ : ℕ => (1 : ℝ)) := by
   rw [IsPolyaFreqSeq]
-  exact isTotallyNonneg_of_fin_truncations _ lowerOnesFin
+  exact Matrix.IsTotallyNonneg.of_fin_truncations _ lowerOnesFin
     (by intro N i j; simp [lowerOnesFin, toeplitz]) lowerOnesFin_isTotallyNonneg
 
 /-- The sequence `1, 2, 3, ...` is Pólya-frequency. -/
 theorem natSucc_isPolyaFreqSeq :
     IsPolyaFreqSeq (fun n : ℕ => ((n + 1 : ℕ) : ℝ)) := by
   rw [IsPolyaFreqSeq]
-  refine isTotallyNonneg_of_fin_truncations _ lowerLinearFin ?_
+  refine Matrix.IsTotallyNonneg.of_fin_truncations _ lowerLinearFin ?_
     lowerLinearFin_isTotallyNonneg
   intro N i j
   rw [lowerLinearFin_apply, toeplitz_apply]
@@ -368,7 +361,7 @@ lemma lowerOneThenTwoFin_apply (N : ℕ) (i j : Fin (N + 1)) :
 theorem oneThenTwo_isPolyaFreqSeq :
     IsPolyaFreqSeq (fun n : ℕ => if n = 0 then (1 : ℝ) else 2) := by
   rw [IsPolyaFreqSeq]
-  refine isTotallyNonneg_of_fin_truncations _ lowerOneThenTwoFin ?_
+  refine Matrix.IsTotallyNonneg.of_fin_truncations _ lowerOneThenTwoFin ?_
     lowerOneThenTwoFin_isTotallyNonneg
   intro N i j
   rw [lowerOneThenTwoFin_apply, toeplitz_apply]

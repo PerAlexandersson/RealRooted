@@ -521,22 +521,12 @@ theorem finiteSchurSzegoComposition {n : ℕ} {f p : ℝ[X]}
   · simp [hp0, schurSzegoComp_zero_right]
   exact finiteSchurSzegoCompositionNonzero hf hf0 hfdeg hp0 hpdeg hsplit
 
-/-- Directly applicable form of the finite Schur--Szegő composition theorem:
-for a PF polynomial `f` and a real-rooted polynomial `p`, both of degree at most
-`n`, the fixed-degree Schur--Szegő composition is either zero or real-rooted. -/
-theorem schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f)
-    (hfdeg : f.natDegree ≤ n)
-    (hpdeg : p.natDegree ≤ n)
-    (hp : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition hf hfdeg hpdeg hp
+@[deprecated (since := "2026-10-05")]
+alias schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial := finiteSchurSzegoComposition
 
 /-- Fixed-degree Schur--Szegő composition of two PF polynomials is again PF.
 
-This is the zero-aware wrapper around
-`schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial`; coefficient
+This is the zero-aware wrapper around `finiteSchurSzegoComposition`; coefficient
 nonnegativity is preserved directly by the composition. -/
 theorem IsPFPolynomial.schurSzegoComp
     {n : ℕ} {f p : ℝ[X]} (hf : IsPFPolynomial f)
@@ -548,7 +538,7 @@ theorem IsPFPolynomial.schurSzegoComp
   by_cases hp0 : p = 0
   · subst p
     simp
-  · exact schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
+  · exact finiteSchurSzegoComposition
       hf hfdeg hpdeg (hp.eq_zero_or_splits.resolve_left hp0)
 
 /-- The backward direction of the finite Pólya--Schur theorem, obtained from the

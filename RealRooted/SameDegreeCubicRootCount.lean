@@ -287,8 +287,7 @@ theorem not_posComboRealRooted_cubic_separated
     (hgle : ∀ r ∈ g.roots, r ≤ z1) (hfge : ∀ r ∈ f.roots, z2 ≤ r) :
     False := by
   have hderpc : PosComboRealRooted f.derivative g.derivative :=
-    posComboRealRooted_derivative hf hg (by simp_all)
-      (by simp_all) hfg
+    hfg.derivative hf hg (by simp_all) (by simp_all)
   have hf'deg : f.derivative.natDegree = 2 := by simp_all
   have hg'deg : g.derivative.natDegree = 2 := by simp_all
   have hf'splits : f.derivative.Splits := by

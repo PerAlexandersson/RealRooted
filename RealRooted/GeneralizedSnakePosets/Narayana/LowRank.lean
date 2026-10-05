@@ -110,7 +110,7 @@ theorem auxiliaryGInterlaces_modified_three_interlaces :
   have hvc : v ≤ c := by
     dsimp [v, c]
     nlinarith [sq_nonneg (3 * Real.sqrt (21 : ℝ) - (7 + Real.sqrt (28 : ℝ)))]
-  exact interlaces_of_quadratic_cubic_root_lists hP_ne hP_splits hG_ne hG_splits
+  exact Interlaces.of_quadratic_cubic_root_lists hP_ne hP_splits hG_ne hG_splits
     hPdeg hGdeg hP_roots hG_roots hab hbc huv hau hub hbv hvc
 
 /-- The `n = 3` case of the auxiliary interlacing lemma, for the concrete modified

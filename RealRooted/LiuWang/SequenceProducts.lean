@@ -91,25 +91,6 @@ theorem isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence {P : Nat → ℝ[X]
     strictInterl_lw_positive_C_mul_X_mul_lag_sequence
       hbase hpos hnonneg hc hQ_nonneg hrec hdeg_succ hno
 
-/-- Family E sequence wrapper for strict-degree `t R_n(t)` lag recurrences.
-
-This is the high-yield `P_{n+2}=A_n P_{n+1}+t R_n(t) P_n` surface.  The
-half-line root bound is derived from nonnegative coefficients; the
-sequence-specific input is the focused certificate `0 <= R_n(r)` at roots of
-the current row. -/
-theorem strictInterl_lw_tR_lag_sequence {P : Nat → ℝ[X]}
-    {A R : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hR_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (R n).eval r)
-    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (X * R n) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  strictInterl_lw_positive_X_mul_lag_sequence
-    hbase hpos hnonneg hR_nonneg hrec hdeg_succ hno
-
 /-- Real-rootedness corollary for strict-degree `t R_n(t)` lag recurrences. -/
 theorem isRealRooted_of_lw_tR_lag_sequence {P : Nat → ℝ[X]}
     {A R : Nat → ℝ[X]}
@@ -122,7 +103,8 @@ theorem isRealRooted_of_lw_tR_lag_sequence {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_strictInterl_chain_from_step <|
-    strictInterl_lw_tR_lag_sequence hbase hpos hnonneg hR_nonneg hrec hdeg_succ hno
+    strictInterl_lw_positive_X_mul_lag_sequence
+      hbase hpos hnonneg hR_nonneg hrec hdeg_succ hno
 
 /-- Scalar Family E sequence wrapper for strict-degree
 `c_n t R_n(t)` lag recurrences. -/

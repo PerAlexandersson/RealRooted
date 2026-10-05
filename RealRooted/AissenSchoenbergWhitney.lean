@@ -101,21 +101,13 @@ protected theorem IsPolyaFreqSeq.divX_coeff {p : ℝ[X]}
     exact Polynomial.coeff_divX]
   exact hpf.tail_of_zero h0
 
-/-- Compatibility spelling for nonnegativity of PF sequences. -/
-theorem nonneg_of_IsPolyaFreqSeq
-    {a : ℕ → ℝ}
-    (hpf : IsPolyaFreqSeq a)
-    (k : ℕ) :
-    0 ≤ a k :=
-  IsPolyaFreqSeq.nonneg hpf k
-
 /-- Toeplitz total nonnegativity of the coefficient sequence already implies
 nonnegative coefficients. -/
 theorem hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff
     {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq p.coeff) :
     HasNonnegCoeffs p :=
-  fun k => nonneg_of_IsPolyaFreqSeq hpf k
+  fun k => hpf.nonneg k
 
 /-- PF coefficient sequences have no positive real roots.  Thus the remaining
 content of the forward Aissen--Schoenberg--Whitney theorem is the splitting

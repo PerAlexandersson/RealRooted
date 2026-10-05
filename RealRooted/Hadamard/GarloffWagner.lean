@@ -66,13 +66,8 @@ the conclusion is `Interl (f ⊙ p) (g ⊙ q)`.
 
 The proof is `gwHadamardProductNonnegInterl` in `RealRooted.GarloffWagner`.
 -/
-/-- Hadamard product preserves interlacing in the nonnegative setting
-(Garloff--Wagner, Theorem 4(b)). -/
-theorem garloffWagnerHadamardNonnegInterl {f g p q : ℝ[X]}
-    (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
-    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
-    (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
-    Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
+
+@[deprecated (since := "2026-10-05")]
+alias garloffWagnerHadamardNonnegInterl := gwHadamardProductNonnegInterl
 
 end RealRooted

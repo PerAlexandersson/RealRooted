@@ -37,17 +37,6 @@ theorem commonLeft_add {f g h : ℝ[X]}
   simpa using StrictInterl.sum_left_of_common_left_signed [f, g] h
     (by simp [hhf, hhg]) (by simp [hf.2.2, hg.2.2]) (by simp)
 
-/-- The checked two-summand common-left form with explicit algebraic
-hypotheses. -/
-theorem commonLeft_add_checked :
-    ∀ {f g h : ℝ[X]},
-      (hhf : StrictInterl h f) → (hhg : StrictInterl h g) →
-      (hf_pos : HasPosLeadingCoeff f) → (hg_pos : HasPosLeadingCoeff g) →
-      (hfg_ne : (f + g) ≠ 0) → (hfg_splits : (f + g).Splits) →
-      (hcop : IsCoprime f g) →
-      StrictInterl h (f + g) :=
-  RealRooted.StrictInterl.add_of_left
-
 /-- `f` interlaces `g` if and only if `g` interlaces `X * f`, provided their
 degrees differ by one. -/
 theorem mulX_iff {f g : ℝ[X]}

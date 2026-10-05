@@ -220,15 +220,6 @@ theorem derivative_of_natDegree_eq
 
 end PosComboRealRooted
 
-/-- Non-namespace wrapper for
-`RealRooted.PosComboRealRooted.derivative`. -/
-theorem posComboRealRooted_derivative
-    {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) (hpos : 1 ≤ f.natDegree)
-    (hfg : PosComboRealRooted f g) :
-    PosComboRealRooted f.derivative g.derivative :=
-  hfg.derivative hf hg hdeg hpos
-
 /-- Explicit-binder applied form of `PosComboRealRooted.derivative` with the two
 polynomials as explicit arguments and degree equality in the call-site order
 `f.natDegree = g.natDegree`.  Handy at call sites that want to pass everything

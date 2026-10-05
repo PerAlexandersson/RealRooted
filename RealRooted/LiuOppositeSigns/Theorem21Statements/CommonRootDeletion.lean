@@ -14,13 +14,6 @@ open Polynomial Filter
 namespace RealRooted
 namespace LiuOppositeSigns
 
-/-- Multiplying both entries by the same splitting factor preserves
-compatibility. -/
-theorem compatible_mul_common_factor {d f g : ℝ[X]}
-    (hd : d.Splits) (h : Compatible f g) :
-    Compatible (d * f) (d * g) :=
-  h.mul_common_factor hd
-
 /-- If two compatible polynomials have a common root, deleting that shared
 linear factor preserves compatibility. -/
 theorem compatible_deleteRootFactor_of_common_root {f g : ℝ[X]} {r : ℝ}
@@ -69,10 +62,9 @@ theorem compatible {f g : ℝ[X]}
     Compatible f g := by
   rcases h with ⟨r, hfr, hgr, hcompat⟩
   have hmul :=
-    compatible_mul_common_factor
+    hcompat.mul_common_factor
       (d := X - C r)
       (Polynomial.Splits.X_sub_C r)
-      hcompat
   have hf_def : (X - C r) * deleteRootFactor f r = f :=
     factor_deleteRootFactor_of_isRoot hfr
   have hg_def : (X - C r) * deleteRootFactor g r = g :=

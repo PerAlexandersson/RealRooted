@@ -143,9 +143,9 @@ theorem isPFPolynomial_polynomial (n : ℕ) : IsPFPolynomial (polynomial n) := b
   rcases Nat.lt_or_ge n 2 with hn | hn
   · obtain rfl | rfl : n = 0 ∨ n = 1 := by lia
     · rw [polynomial_zero]
-      exact isPFPolynomial_one
+      exact IsPFPolynomial.one
     · rw [polynomial_one]
-      exact isPFPolynomial_one
+      exact IsPFPolynomial.one
   · exact IsPFPolynomial.of_realRooted_nonneg (hasNonnegCoeffs_polynomial n)
       (splits_simple_roots_neg hn).1
 

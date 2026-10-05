@@ -19,7 +19,7 @@ example {alpha beta : ℕ → ℝ} {d : ℕ}
     (halpha : ∀ k, k ≤ d → 0 ≤ alpha k)
     (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :
     BidiagonalPFPreserver alpha beta d :=
-  bidiagonalPFPreserver_of_affineSymbol hSymbol halpha hbeta
+  BorceaBranden.bidiagonalPFPreserver_of_affineSymbol hSymbol halpha hbeta
 
 example {alpha beta : ℕ → ℝ} {d : ℕ}
     (hcert : BidiagonalJensenPencilCertificate alpha beta d) :

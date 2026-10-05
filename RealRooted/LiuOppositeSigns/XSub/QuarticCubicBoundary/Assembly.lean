@@ -40,7 +40,7 @@ theorem xSubQuarticCubicRepeatedRightBoundaryCases {a b c d u v w μ : ℝ} (hab
   have hbc_lt : b < c := lt_of_le_of_ne hbc hbc_eq
   have hcd_lt : c < d := lt_of_le_of_ne hcd hcd_eq
   have hw0_lt : w < 0 := lt_of_le_of_ne hw0 hw_eq
-  exact xSubQuarticCubicStrictLeftRepeatedRightBoundaryCases
+  exact xSubQuarticCubicSplits_of_strict_left_repeated_right_boundary
     hab_lt hbc_lt hcd_lt huv hvw hau hbv hcw huc hvd hd0 hw0_lt hμ h
 
 /-- The combined quartic/cubic side-boundary package follows from the three

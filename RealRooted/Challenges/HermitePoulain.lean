@@ -67,8 +67,7 @@ export RealRooted.HermitePoulain
     applyAsDifferentialOperator_mul
     applyAsDifferentialOperator_C_eq_zero_or_splits
     applyAsDifferentialOperator_X_add_C_eq_zero_or_splits
-    differential_operator_preserves_real_rooted
-    differentialOperator_preserves_realRooted)
+    differential_operator_preserves_real_rooted)
 
 end HermitePoulain
 end Challenges
