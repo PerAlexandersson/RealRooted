@@ -1496,13 +1496,11 @@ wrappers come from `Tactic.PFBidiagonal`. It does not carry a second
 mathematical implementation of those declarations.
 
 The Braun--Jal modified-Narayana application is layered by proof role:
-`Narayana.Recurrence` owns full-staircase identification, finite recurrence
-checks, and the auxiliary coefficient/degree algebra; `Narayana.RootSums` owns
+`Narayana.Recurrence` owns full-staircase identification and the auxiliary coefficient/degree algebra; `Narayana.RootSums` owns
 the Vieta comparison, root-sum orientation, and the refuted strict-bound
 interface; and `Narayana.PFFacts` owns the PF and base interlacing facts.
 `Narayana.RankSix` contains the explicit rank-six roots, signs, interval
-isolation, and cross inequalities, while `Narayana.LowRank` contains the
-ranks-three-through-five certificates and bounded rank-six assembly.
+isolation, and cross inequalities.
 `Narayana.ShiftedDifferenceInterlacingAnalytic` owns the pencil leading coefficients, splitness,
 nonpositive roots, and endpoint-safe Claim 7 package. The historical
 `GeneralizedSnakePosetsNarayana` path is a 10-line compatibility import.

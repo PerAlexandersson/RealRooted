@@ -416,14 +416,12 @@ import RealRooted.GeneralizedSnakePosets.MatrixInduction
 import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
 import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAnalytic
 import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
-import RealRooted.GeneralizedSnakePosets.Narayana.LowRank
 import RealRooted.GeneralizedSnakePosets.Narayana.Modified
 import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
 import RealRooted.GeneralizedSnakePosets.Narayana.RankSix
 import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
 import RealRooted.GeneralizedSnakePosets.Narayana.Turan
-import RealRooted.GeneralizedSnakePosets.Narayana.TuranCertificates
 import RealRooted.GeneralizedSnakePosets.SnakeBoard
 import RealRooted.GeneralizedSnakePosets.SnakeCover
 import RealRooted.GeneralizedSnakePosets.SnakeReachability

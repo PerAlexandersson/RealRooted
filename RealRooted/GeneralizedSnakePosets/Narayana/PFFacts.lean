@@ -3,8 +3,8 @@ import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 /-!
 # Modified-Narayana PF and base interlacing facts
 
-This module contains the low-rank base cases, the shifted/unshifted affine-Narayana
-wrappers, and the PF-polynomial consequences used by explicit certificates.
+This module contains the shifted/unshifted affine-Narayana wrappers and the
+PF-polynomial consequences used by explicit certificates.
 -/
 
 open Polynomial Filter
@@ -13,31 +13,6 @@ noncomputable section
 
 namespace RealRooted
 namespace GeneralizedSnakePosets
-
-/-- The concrete `G_2` auxiliary polynomial is twice `P_1`. -/
-theorem auxiliaryG_two_eq_C_mul_modifiedNarayanaPolynomial_one :
-    FiniteSkewBoard.auxiliaryG 2 =
-      C (2 : ℝ) * modifiedNarayanaPolynomial 1 := by
-  rw [FiniteSkewBoard.auxiliaryG_two, modifiedNarayanaPolynomial_one]
-  have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := Polynomial.C_eq_natCast (R := ℝ) 2
-  rw [hC2]
-  ring_nf
-
-/-- The `n = 2` case of the auxiliary interlacing lemma, for the concrete modified
-Narayana family and the finite-board auxiliary `G`. -/
-theorem auxiliaryGInterlaces_modified_two :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 2) (modifiedNarayanaPolynomial 2) := by
-  rw [auxiliaryG_two_eq_C_mul_modifiedNarayanaPolynomial_one]
-  exact (modifiedNarayanaPolynomial_strictInterl_succ 1).C_mul_left (by norm_num)
-
-/-- The checked initial cases `n = 1, 2` of the auxiliary interlacing lemma, for the
-concrete modified Narayana family and the finite-board auxiliary `G`. -/
-theorem auxiliaryGInterlaces_modified_of_le_two
-    {n : ℕ} (hn₁ : 1 ≤ n) (hn₂ : n ≤ 2) :
-    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
-  interval_cases n
-  · exact auxiliaryGInterlaces_modified_base
-  · exact auxiliaryGInterlaces_modified_two
 
 /-- The `λ = ν = 0` specialization of the affine Narayana interlacing lemma for the concrete
 modified Narayana family.  This exposes the affine-Narayana target shape while using

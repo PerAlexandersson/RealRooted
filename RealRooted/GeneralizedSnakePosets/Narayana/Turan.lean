@@ -4,9 +4,7 @@ import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
 # Certificate-free Turan API for modified Narayana polynomials
 
 This module proves the modified Narayana Turan inequality on nonpositive
-inputs and uses it for the affine Narayana interlacing lemma.  Explicit
-finite-range determinants live in
-`RealRooted.GeneralizedSnakePosets.Narayana.TuranCertificates`.
+inputs and uses it for the affine Narayana interlacing lemma.
 -/
 
 open Polynomial
