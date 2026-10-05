@@ -790,23 +790,6 @@ def finitePolyaSchurNonnegBackwardStatement : Prop :=
       IsPFPolynomial (jensenPolynomial n gamma) →
         IsFiniteMultiplierSequence n gamma
 
-/-- Degree at most two case of the backward finite Pólya--Schur direction. -/
-theorem finitePolyaSchurNonnegBackward_of_natDegree_le_two
-    {n : ℕ} (hn : n ≤ 2) {gamma : ℕ → ℝ}
-    (hgamma : ∀ k, 0 ≤ gamma k)
-    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
-    IsFiniteMultiplierSequence n gamma :=
-  isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
-    hn hgamma hjensen
-
-/-- Degree-two case of the backward finite Pólya--Schur direction. -/
-theorem finitePolyaSchurNonnegBackward_natDegree_two
-    {gamma : ℕ → ℝ}
-    (hgamma : ∀ k, 0 ≤ gamma k)
-    (hjensen : IsPFPolynomial (jensenPolynomial 2 gamma)) :
-    IsFiniteMultiplierSequence 2 gamma :=
-  finitePolyaSchurNonnegBackward_of_natDegree_le_two le_rfl hgamma hjensen
-
 /-- Degree at most two case of the full finite Pólya--Schur classification.
 
 The forward implication is elementary; the reverse implication is the checked
@@ -817,7 +800,7 @@ theorem finitePolyaSchur_nonneg_of_natDegree_le_two
     IsFiniteMultiplierSequence n gamma ↔
       IsPFPolynomial (jensenPolynomial n gamma) :=
   ⟨isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma,
-    finitePolyaSchurNonnegBackward_of_natDegree_le_two hn hgamma⟩
+    isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two hn hgamma⟩
 
 /-- Degree-two case of the full finite Pólya--Schur classification. -/
 theorem finitePolyaSchur_nonneg_natDegree_two
