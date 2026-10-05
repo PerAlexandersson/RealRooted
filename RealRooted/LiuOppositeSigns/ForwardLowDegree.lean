@@ -74,18 +74,6 @@ theorem theorem21RootCountBranches_of_right_largest_natDegree_le_one_two
     (RightRootCountBranch.of_largestRoots_left_le_one_right_le_two
       hf hg hr hs hr_lt_s hf_le hg_le)
 
-/-- Low-degree endpoint forward direction for the nonconstant degree-one case.
-The compatibility hypothesis is retained to match the Liu Theorem 2.1 forward
-shape, although the root-count branch condition follows from degree alone. -/
-theorem theorem21RootCountBranches_of_compatible_natDegree_le_one_nonconstant
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
-    (hf_le : f.natDegree ≤ 1) (hg_le : g.natDegree ≤ 1)
-    (_hcompat : Compatible f g) :
-    theorem21RootCountBranches f g :=
-  theorem21RootCountBranches_of_natDegree_le_one_nonconstant
-    hf hg hsgn hf_deg hg_deg hf_le hg_le
 /-- If the linear root lies strictly above the upper quadratic root, then some
 positive subtraction coefficient makes the monic quadratic-minus-linear pencil
 fail to split. -/
@@ -590,8 +578,8 @@ theorem
     have hgdeg_pos : 0 < g.natDegree := Nat.pos_of_ne_zero hgdeg_ne
     interval_cases g.natDegree <;> simp_all
   rcases hf_cases with hfdeg | hfdeg <;> rcases hg_cases with hgdeg | hgdeg
-  · exact theorem21RootCountBranches_of_compatible_natDegree_le_one_nonconstant
-      hf hg hsgn hfdeg_ne hgdeg_ne (by rw [hfdeg]) (by rw [hgdeg]) hcompat
+  · exact theorem21RootCountBranches_of_natDegree_le_one_nonconstant
+      hf hg hsgn hfdeg_ne hgdeg_ne (by rw [hfdeg]) (by rw [hgdeg])
   · exact theorem21RootCountBranches_of_compatible_natDegree_one_two_of_no_common
       hf hg hsgn hcompat hfdeg hgdeg hno
   · exact theorem21RootCountBranches_of_compatible_natDegree_two_one

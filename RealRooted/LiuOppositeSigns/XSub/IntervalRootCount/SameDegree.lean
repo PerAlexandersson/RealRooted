@@ -199,7 +199,7 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_same_degree_nonneg
           have hdeg_delete :
               (deleteRootFactor p r).natDegree =
                 (deleteRootFactor q r).natDegree :=
-            hpair.natDegree_deleteRootFactor_eq hdeg
+            natDegree_deleteRootFactor_eq_of_natDegree_eq hdeg
           have hq_delete_lt :
               (deleteRootFactor q r).natDegree < n := by
             rw [natDegree_deleteRootFactor, hqdeg]

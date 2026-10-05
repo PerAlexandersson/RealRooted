@@ -27,10 +27,11 @@ theorem schurSzegoJensenEndpoints_pf
   ⟨hA.schurSzegoComp hp hAdeg hpdeg,
     ((isPFPolynomial_of_X_mul hXB).schurSzegoComp hp hBdeg hpdeg).X_mul⟩
 
-/-- Jensen-pencil implication for coefficient-bidiagonal PF preservers, from
-the Schur--Szegő compatibility contraction
+/-- A Jensen-pencil certificate gives a coefficient-bidiagonal PF preserver,
+from the Schur--Szegő compatibility contraction
 `schurSzegoPreservesJensenPencilCompatibility`. -/
-theorem jensenPencilBidiagonalPreserver {alpha beta : ℕ → ℝ} {d : ℕ}
+theorem BidiagonalJensenPencilCertificate.toPFPreserver
+    {alpha beta : ℕ → ℝ} {d : ℕ}
     (hcert : BidiagonalJensenPencilCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d := by
   intro p hp hdeg
@@ -50,21 +51,6 @@ theorem jensenPencilBidiagonalPreserver {alpha beta : ℕ → ℝ} {d : ℕ}
   rcases hcompat 1 1 (by norm_num) (by norm_num) with hzero | hsplits
   · simpa using Or.inl hzero
   · exact Or.inr (by simpa using hsplits.2)
-
-/-- Apply the named Jensen-pencil backend theorem. -/
-theorem bidiagonalPFPreserver_of_jensenPencil
-    {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hcert : BidiagonalJensenPencilCertificate alpha beta d) :
-    BidiagonalPFPreserver alpha beta d :=
-  jensenPencilBidiagonalPreserver hcert
-
-/-- A Jensen-pencil certificate gives a coefficient-bidiagonal PF preserver
-once the global backend is available. -/
-theorem BidiagonalJensenPencilCertificate.toPFPreserver
-    {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hcert : BidiagonalJensenPencilCertificate alpha beta d) :
-    BidiagonalPFPreserver alpha beta d :=
-  bidiagonalPFPreserver_of_jensenPencil hcert
 
 /-- Rowwise Jensen-pencil certificates give rowwise coefficient-bidiagonal
 PF preservers. -/
