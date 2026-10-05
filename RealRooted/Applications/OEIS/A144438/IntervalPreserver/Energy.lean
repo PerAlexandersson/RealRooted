@@ -70,8 +70,7 @@ theorem a144438ResidueEnergy_base (a : ℝ) :
   ring
 
 /-- On `a ∈ [0,1]`, the base energy is at most one sixth. -/
-theorem a144438ResidueEnergy_base_le_one_sixth {a : ℝ}
-    (ha0 : 0 ≤ a) (_ha1 : a ≤ 1) :
+theorem a144438ResidueEnergy_base_le_one_sixth {a : ℝ} (ha0 : 0 ≤ a) :
     a144438ResidueEnergy (a144438Diagonal 1 a)
       (a144438DiagonalCompanion 1 a) (a144438DiagonalLag 1 a) ≤ 1 / 6 := by
   rw [a144438ResidueEnergy_base]
@@ -80,10 +79,9 @@ theorem a144438ResidueEnergy_base_le_one_sixth {a : ℝ}
   nlinarith
 
 /-- In particular, the base residue energy is at most one. -/
-theorem a144438ResidueEnergy_base_le_one {a : ℝ}
-    (ha0 : 0 ≤ a) (ha1 : a ≤ 1) :
+theorem a144438ResidueEnergy_base_le_one {a : ℝ} (ha0 : 0 ≤ a) :
     a144438ResidueEnergy (a144438Diagonal 1 a)
       (a144438DiagonalCompanion 1 a) (a144438DiagonalLag 1 a) ≤ 1 := by
-  linarith [a144438ResidueEnergy_base_le_one_sixth ha0 ha1]
+  linarith [a144438ResidueEnergy_base_le_one_sixth ha0]
 
 end RealRooted.Applications.OEIS

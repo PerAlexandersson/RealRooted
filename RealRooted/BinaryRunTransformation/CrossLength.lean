@@ -125,11 +125,9 @@ theorem strictInterl_binaryRunTransform_succ
   set P := binaryRunTransform n (polarTheta (n + 1) g) with hP
   set E := balancedRunTransform n (derivative g) with hE
   have hFA : StrictInterl F A :=
-    strictInterl_binaryRunTransform hFin hFinnn hgnn
-      ((natDegree_C_mul_sub_C_mul_theta_le _ _ g).trans hbox) hbox
+    strictInterl_binaryRunTransform hFin hFinnn hgnn hbox
   have hEK : StrictInterl E (balancedRunTransform n (polarTheta (n + 1) g)) :=
-    strictInterl_balancedRunTransform hn2 hdP hgnn.derivative hPnn
-      ((natDegree_derivative_le g).trans (by lia)) hpolar_deg
+    strictInterl_balancedRunTransform hn2 hdP hgnn.derivative hPnn hpolar_deg
   -- Linear algebra of the kernels.
   have hlin : ∀ (a b : ℝ) (p q : ℝ[X]), binaryRunTransform n (C a * p - C b * q) =
       C a * binaryRunTransform n p - C b * binaryRunTransform n q := by

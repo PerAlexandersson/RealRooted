@@ -129,12 +129,11 @@ lemma abs_nextCoeff_le_of_splits
 
 /-- Single-member escaping-root inequality.  Given a *single* real-rooted
 member `f + C μ * g` (`μ > 0`) of the succ-degree family, the next coefficient
-of `f + μ g` is bounded by `μ` times a constant independent of `μ`.  This is the
-per-`μ` heart of `key_family_ineq`, stated so it only depends on the one member
-being real-rooted rather than the whole family. -/
+of `f + μ g` is bounded by `μ` times a constant independent of `μ`.  It only
+depends on the one member being real-rooted rather than the whole family. -/
 lemma key_family_ineq_of_splits {f g : ℝ[X]} {μ : ℝ}
     (hsplit : (f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits)
-    (_hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
+    (hg_pos : 0 < g.leadingCoeff)
     (hsucc : g.natDegree = f.natDegree + 1)
     {z : ℂ} (hz : z.im ≠ 0) (hzf : (Polynomial.aeval z) f = 0)
     (hμ : 0 < μ) :
@@ -202,21 +201,6 @@ lemma false_of_forall_Ioo_mul_le {a M ε : ℝ} (ha : 0 < a) (hε : 0 < ε)
     have hμM : μ * M ≤ c * M := mul_le_mul_of_nonneg_right hμc hM.le
     linarith
 
-/-- The per-`μ` escaping-root inequality.  Under the succ-degree family
-hypotheses, for a complex root `z` of `f` with `z.im ≠ 0`, the next coefficient
-of `f + μ g` is bounded by `μ` times a constant independent of `μ`. -/
-lemma key_family_ineq {f g : ℝ[X]}
-    (hfamily : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
-    (_hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
-    (hsucc : g.natDegree = f.natDegree + 1)
-    {z : ℂ} (hz : z.im ≠ 0) (hzf : (Polynomial.aeval z) f = 0)
-    {μ : ℝ} (hμ : 0 < μ) :
-    |f.leadingCoeff + μ * g.coeff f.natDegree|
-      ≤ μ * (g.leadingCoeff * (f.natDegree + 1) *
-        (‖z‖ + ‖(Polynomial.aeval z) g‖ /
-          (g.leadingCoeff * |z.im| ^ f.natDegree))) :=
-  key_family_ineq_of_splits (hfamily hμ) _hf_pos hg_pos hsucc hz hzf hμ
-
 /-- Eventual (small-`μ`) form of the succ-degree left endpoint.  It suffices
 that the members `f + C μ * g` are real-rooted for all small positive `μ`; the
 escaping-root argument only probes the family near `μ = 0⁺`. -/
@@ -247,7 +231,7 @@ theorem splits_of_eventually_add_C_mul_family_of_succDegree
           μ * (g.leadingCoeff * (f.natDegree + 1) *
             (‖z‖ + ‖(Polynomial.aeval (R := ℝ) z) g‖ /
               (g.leadingCoeff * |z.im| ^ f.natDegree))) := by
-      convert key_family_ineq_of_splits (hfamily hμ_pos hμ_lt) hf_pos hg_pos hsucc
+      convert key_family_ineq_of_splits (hfamily hμ_pos hμ_lt) hg_pos hsucc
         hz_im hzf hμ_pos using 1
     cases abs_cases (g.coeff f.natDegree) <;> nlinarith [abs_le.mp h_bound]
   exact false_of_forall_Ioo_mul_le hf_pos hε h_bound

@@ -269,7 +269,7 @@ theorem strictInterl_map_of_preservesPFKreinInterlacingOnDegree
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D : ℕ} {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
-    (_hfdeg : f.natDegree ≤ D) (hgdeg : g.natDegree ≤ D)
+    (hgdeg : g.natDegree ≤ D)
     (hTnn : ∀ ⦃p : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs (T p))
     (hTkrein : PreservesPFKreinInterlacingOnDegree T D) :
     StrictInterl (T f) (T g) := by
@@ -393,14 +393,14 @@ theorem strictInterl_map_of_pfLinearFactor
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D : ℕ} {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
-    (hfdeg : f.natDegree ≤ D) (hgdeg : g.natDegree ≤ D)
+    (hgdeg : g.natDegree ≤ D)
     (hTnn : ∀ ⦃p : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs (T p))
     (hTrr : ∀ ⦃p : ℝ[X]⦄, IsPFPolynomial p → p ≠ 0 →
       p.natDegree ≤ D → T p ≠ 0 ∧ (T p).Splits)
     (hTfactor : PreservesPFLinearFactorInterlacingOnDegree T D) :
     StrictInterl (T f) (T g) :=
   strictInterl_map_of_preservesPFKreinInterlacingOnDegree
-    hfg hf hg hfdeg hgdeg hTnn
+    hfg hf hg hgdeg hTnn
     (preservesPFKreinInterlacingOnDegree_of_linearFactor hTrr hTfactor)
 
 /-- Shift-chain form of the oriented interlacing upgrade. -/
@@ -408,13 +408,13 @@ theorem strictInterl_map_of_pfShift
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D : ℕ} {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
-    (hfdeg : f.natDegree ≤ D) (hgdeg : g.natDegree ≤ D)
+    (hgdeg : g.natDegree ≤ D)
     (hTnn : ∀ ⦃p : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs (T p))
     (hTrr : ∀ ⦃p : ℝ[X]⦄, IsPFPolynomial p → p ≠ 0 →
       p.natDegree ≤ D → T p ≠ 0 ∧ (T p).Splits)
     (hTshift : PreservesPFShiftInterlacingOnDegree T D) :
     StrictInterl (T f) (T g) :=
-  strictInterl_map_of_pfLinearFactor hfg hf hg hfdeg hgdeg hTnn hTrr
+  strictInterl_map_of_pfLinearFactor hfg hf hg hgdeg hTnn hTrr
     (preservesPFLinearFactorInterlacingOnDegree_of_shift hTnn hTshift)
 
 end RealRooted

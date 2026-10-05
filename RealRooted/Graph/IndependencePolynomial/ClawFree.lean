@@ -223,18 +223,6 @@ theorem compatible_weighted_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
     dsimp [C]
     exact (weightedIndepPolyOn_hasPosLeadingCoeff G fun w hw =>
       hwt w (deleteClosedNeighborSupport_subset G S v hw)).X_mul
-  have hAnn : HasNonnegCoeffs A := by
-    dsimp [A]
-    exact weightedIndepPolyOn_hasNonnegCoeffs G fun w hw =>
-      hwt w (Finset.mem_of_mem_erase (Finset.mem_of_mem_erase hw))
-  have hBnn : HasNonnegCoeffs B := by
-    dsimp [B]
-    exact (weightedIndepPolyOn_hasNonnegCoeffs G fun w hw =>
-      hwt w (deleteClosedNeighborSupport_subset G S u hw)).X_mul
-  have hCnn : HasNonnegCoeffs C := by
-    dsimp [C]
-    exact (weightedIndepPolyOn_hasNonnegCoeffs G fun w hw =>
-      hwt w (deleteClosedNeighborSupport_subset G S v hw)).X_mul
   have hBC : Compatible B C := by
     simpa [B, C] using
       compatible_weighted_deleteClosedNeighborSupport_pair_of_commonClosedNeighbor
@@ -242,7 +230,7 @@ theorem compatible_weighted_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
   have hABC : Compatible (A + Polynomial.C (wt u) * B) C :=
     Compatible.add_C_mul_left_of_pairwise_three
       (r := wt u) (hwt u (Finset.mem_of_mem_erase huS))
-      hA hB hC hApos hBpos hCpos hAnn hBnn hCnn
+      hA hB hC hApos hBpos hCpos
       (by simpa [A, B] using hBaseDelU)
       (by simpa [A, C] using hBaseDelV)
       hBC
