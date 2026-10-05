@@ -36,17 +36,6 @@ lemma xSubQuarticCubicSplits_of_common_root
   exact (Polynomial.Splits.X_sub_C r).mul hsmall
 
 /-- Boundary case of the quartic/cubic terminal where the lower right root is
-the lower left root. -/
-lemma xSubQuarticCubicSplits_of_lower_common_root
-    {a b c d v w μ : ℝ} (hbc : b ≤ c) (hcd : c ≤ d) (hvw : v ≤ w)
-    (hbv : b ≤ v) (hcw : c ≤ w) (hvd : v ≤ d)
-    (hd0 : d ≤ 0) (hw0 : w ≤ 0) (hμ : 0 < μ) :
-    (xSubQuarticCubicPolynomial a b c d a v w μ).Splits :=
-  xSubQuarticCubicSplits_of_common_root
-    (r := a) (a := b) (b := c) (c := d) (u := v) (v := w)
-    hbc hcd hvw hbv hcw hvd hd0 hw0 hμ
-
-/-- Boundary case of the quartic/cubic terminal where the lower right root is
 the second left root. -/
 lemma xSubQuarticCubicSplits_of_right_first_eq_second_left_root
     {a b c d v w μ : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d)
@@ -162,7 +151,7 @@ lemma xSubQuarticCubicSplits_of_common_root_cases
     (xSubQuarticCubicPolynomial a b c d u v w μ).Splits := by
   rcases hcommon with h | h | h | h | h | h | h | h
   · subst u
-    exact xSubQuarticCubicSplits_of_lower_common_root
+    exact xSubQuarticCubicSplits_of_common_root
       hbc hcd hvw hbv hcw hvd hd0 hw0 hμ
   · subst u
     exact xSubQuarticCubicSplits_of_right_first_eq_second_left_root

@@ -212,7 +212,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
           exact htop ((gammaTransform_even_isRoot_neg_one_iff n δ).mp hx_root_neg_one)
         let y : ℝ := x / (1 + x) ^ 2
         have hy_nonpos : y ≤ 0 :=
-          rootPullback_nonpos_of_gammaTransform hx_ne_neg_one hx_nonpos
+          gammaUntransform_nonpos hx_nonpos hx_ne_neg_one
         have hy_root : δ.IsRoot y := by
           dsimp [y]
           exact isRoot_gamma_of_isRoot_gammaTransform

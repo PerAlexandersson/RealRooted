@@ -785,15 +785,6 @@ lemma xSubQuadraticCubicSplits_of_common_root
   rw [hfactor]
   exact (Polynomial.Splits.X_sub_C r).mul hquad
 
-/-- Boundary case where the lower cubic root is the lower quadratic root. -/
-lemma xSubQuadraticCubicSplits_of_lower_common_root
-    {a b d e μ : ℝ} (hde : d ≤ e) (hdb : d ≤ b)
-    (hb0 : b ≤ 0) (he0 : e ≤ 0) (hμ : 0 < μ) :
-    (X * ((X - C a) * (X - C b)) -
-      C μ * ((X - C a) * (X - C d) * (X - C e))).Splits :=
-  xSubQuadraticCubicSplits_of_common_root
-    (r := a) (s := b) (u := d) (v := e) hde hdb he0 hb0 hμ
-
 /-- Boundary case where the middle cubic root is the lower quadratic root. -/
 lemma xSubQuadraticCubicSplits_of_middle_common_root
     {a b c e μ : ℝ} (hca : c ≤ a) (hab : a ≤ b) (hae : a ≤ e)
@@ -1243,7 +1234,7 @@ theorem xSubQuadraticCubicSplits {a b c d e μ : ℝ} (hab : a ≤ b) (hcd : c �
   have he_lt : e < 0 := lt_of_le_of_ne he0 he_zero
   by_cases hca_eq : c = a
   · subst c
-    exact xSubQuadraticCubicSplits_of_lower_common_root hde hdb hb0 he0 hμ
+    exact xSubQuadraticCubicSplits_of_common_root hde hdb he0 hb0 hμ
   by_cases had_eq : a = d
   · subst d
     exact xSubQuadraticCubicSplits_of_middle_common_root hca hab hae hb0 he0 hμ
