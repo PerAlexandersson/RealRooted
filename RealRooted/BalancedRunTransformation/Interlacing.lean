@@ -20,7 +20,6 @@ theorem strictInterl_balancedRunTransform
     {n : ℕ} (hn : 2 ≤ n) {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
-    (hfdeg : f.natDegree ≤ (n + 1) / 2)
     (hgdeg : g.natDegree ≤ (n + 1) / 2) :
     StrictInterl (balancedRunTransform n f) (balancedRunTransform n g) := by
   let T := balancedRunTransformLinearMap n
@@ -53,6 +52,6 @@ theorem strictInterl_balancedRunTransform
     preservesPFShiftInterlacingOnDegree_of_monomials
       hTnn hTrr hmono
   simpa [T, D] using strictInterl_map_of_pfShift
-    hfg hf hg hfdeg hgdeg hTnn hTrr hshift
+    hfg hf hg hgdeg hTnn hTrr hshift
 
 end RealRooted

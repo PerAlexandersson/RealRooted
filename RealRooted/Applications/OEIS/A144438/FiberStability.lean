@@ -241,7 +241,7 @@ private theorem rename_activeFactorProduct_of_mem
     (activeFactor (R := R) s) hjactive, map_mul,
     rename_activeFactorProduct_erase]
   rw [activeFactor, ite_eq_right hj, MvPolynomial.rename_X,
-    j.2.finalSwap_leftLabel]
+    Equiv.swap_apply_left (leftLabel h j.1) (rightLabel h j.1)]
 
 /-- The partial normal form obeys the same one-swap recurrence as the
 decoration subset sum. -/

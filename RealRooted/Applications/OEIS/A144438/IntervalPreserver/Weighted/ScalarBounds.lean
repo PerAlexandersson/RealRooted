@@ -56,7 +56,7 @@ private theorem weightedDeco_scalar_energy_mono {a w κ H s : ℝ}
 /-- The complete weighted scalar estimate for the scaled energy `H = wE`. -/
 theorem weightedDeco_residue_energy_scalar_lt {a w κ H s : ℝ}
     (ha0 : 0 ≤ a) (ha1 : a ≤ 1) (hw0 : 0 ≤ w) (hw1 : w ≤ 1)
-    (hκ0 : 0 ≤ κ) (hκ1 : κ ≤ 1 / 2) (_hH0 : 0 ≤ H) (hH1 : H ≤ 1)
+    (hκ0 : 0 ≤ κ) (hκ1 : κ ≤ 1 / 2) (hH1 : H ≤ 1)
     (hs : 1 + w + w * (1 + a) * κ < s) :
     a ^ 2 * H + w * (1 + a * κ - a ^ 2 * H / 2) ^ 2 /
         (s - w * a ^ 2 * H / 4) < 1 + a := by

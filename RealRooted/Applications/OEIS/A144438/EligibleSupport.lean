@@ -26,18 +26,6 @@ theorem Eligible.leftLabel_ne_rightLabel {h : Nat}
   simp [leftLabel, rightLabel]
   lia
 
-@[simp] theorem Eligible.finalSwap_leftLabel {h : Nat}
-    {c : DecoNormalizedCode h} {j : Fin h} (_hj : c.Eligible j) :
-    Equiv.swap (leftLabel h j) (rightLabel h j) (leftLabel h j) =
-      rightLabel h j :=
-  Equiv.swap_apply_left _ _
-
-@[simp] theorem Eligible.finalSwap_rightLabel {h : Nat}
-    {c : DecoNormalizedCode h} {j : Fin h} (_hj : c.Eligible j) :
-    Equiv.swap (leftLabel h j) (rightLabel h j) (rightLabel h j) =
-      leftLabel h j :=
-  Equiv.swap_apply_right _ _
-
 /-- The final-label swap at one eligible start fixes the left label of every
 other eligible start. -/
 theorem finalSwap_leftLabel_of_ne {h : Nat} {c : DecoNormalizedCode h}
