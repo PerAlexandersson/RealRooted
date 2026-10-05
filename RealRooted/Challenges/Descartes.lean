@@ -47,20 +47,6 @@ R. Descartes, *La Géométrie*, 1637. See also the
 [descartes-context]: https://www.symmetricfunctions.com/realRooted.htm#descartesRuleOfSigns
 <!-- /realrooted-catalog-content -->
 
-This module exposes the reusable theorem implementation in
+This module is a catalog facade.  The proofs live in
 `RealRooted.RootCounting.Descartes`.
 -/
-
-namespace RealRooted
-namespace Challenges
-namespace Descartes
-
-export Polynomial
-  (positiveRootCount
-    negativeRootCount
-    descartes_rule_of_signs
-    descartes_rule_of_signs_negative)
-
-end Descartes
-end Challenges
-end RealRooted

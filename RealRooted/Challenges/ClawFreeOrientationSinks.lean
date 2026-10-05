@@ -19,7 +19,7 @@ module = "RealRooted.Graph.AllOrientationSink"
 label = "The weighted independence model"
 
 [[theorems]]
-name = "RealRooted.Graph.allOrientationSinkPolynomial_indicatorIdentity"
+name = "RealRooted.Graph.allOrientationSinkPolynomial_comp_X_add_one"
 module = "RealRooted.Graph.AllOrientationSinkIdentity"
 label = "The shifted sink polynomial as a weighted independence polynomial"
 

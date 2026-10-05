@@ -23,7 +23,7 @@ module = "RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic"
 label = "Weighted deco Eulerian transform"
 
 [[theorems]]
-name = "RealRooted.Challenges.DecoEulerian.intervalPreserver"
+name = "RealRooted.Challenges.DecoEulerian.weightedDecoTransform_splits_hasSimpleRoots_roots_neg"
 label = "The weighted deco transform preserves interval-rooted polynomials"
 headline = true
 -->
@@ -84,15 +84,15 @@ namespace DecoEulerian
 
 /-- The weighted deco Eulerian transform sends every nonconstant polynomial
 with all zeros in `[-1, 0]` to a polynomial with simple negative zeros. -/
-theorem intervalPreserver
+theorem weightedDecoTransform_splits_hasSimpleRoots_roots_neg
     {w : ℝ} (hw0 : 0 ≤ w) (hw1 : w ≤ 1) {f : ℝ[X]}
-    (hfDegree : 1 ≤ f.natDegree) (hfSplits : f.Splits)
+    (hfDegree : f.natDegree ≠ 0) (hfSplits : f.Splits)
     (hfRoots : ∀ r, f.IsRoot r → r ∈ Icc (-1 : ℝ) 0) :
     (Applications.OEIS.weightedDecoTransform w f).Splits ∧
       HasSimpleRoots (Applications.OEIS.weightedDecoTransform w f) ∧
         ∀ r, (Applications.OEIS.weightedDecoTransform w f).IsRoot r → r < 0 :=
   Applications.OEIS.weightedDecoTransform_splits_hasSimpleRoots_and_roots_neg
-    hw0 hw1 hfDegree hfSplits hfRoots
+    hw0 hw1 (Nat.one_le_iff_ne_zero.mpr hfDegree) hfSplits hfRoots
 
 end DecoEulerian
 end Challenges

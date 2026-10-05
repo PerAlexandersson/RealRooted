@@ -55,20 +55,15 @@ namespace Challenges
 namespace BrandenSolus
 
 /-- Interlacing equivalences for the symmetric `I_d`-decomposition `p = a + X b`. -/
-theorem interlacing_equivalences :
-    ∀ {d : ℕ} {p a b : ℝ[X]},
-      p.natDegree ≤ d →
-      IsIdDecomposition d p a b →
-      HasNonnegCoeffs a →
-      HasNonnegCoeffs b →
-      a ≠ 0 →
-      b ≠ 0 →
-      (StrictInterl b a ↔ StrictInterl a p) ∧
+theorem interlacing_equivalences {d : ℕ} {p a b : ℝ[X]} (hd : p.natDegree ≤ d)
+    (hid : IsIdDecomposition d p a b) (ha : HasNonnegCoeffs a) (hb : HasNonnegCoeffs b)
+    (ha0 : a ≠ 0) (hb0 : b ≠ 0) :
+    (StrictInterl b a ↔ StrictInterl a p) ∧
       (StrictInterl a p ↔ StrictInterl b p) ∧
       (StrictInterl b p ↔ StrictInterl (IdTransform d p) p) ∧
       (StrictInterl (IdTransform d p) p ↔
         StrictInterl (RdTransform d (fPolynomial d p)) (fPolynomial d p)) :=
-  RealRooted.brandenSolusTheorem26
+  RealRooted.brandenSolusTheorem26 hd hid ha hb ha0 hb0
 
 end BrandenSolus
 end Challenges

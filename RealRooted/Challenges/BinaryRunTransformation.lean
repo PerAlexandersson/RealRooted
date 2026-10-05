@@ -19,8 +19,14 @@ name = "RealRooted.binaryRunTransform"
 module = "RealRooted.BinaryRunTransformation.Coefficients"
 label = "Binary-run transformation"
 
+[[definitions]]
+name = "RealRooted.motzkinWeightedRow"
+module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
+label = "Multiplier-weighted Motzkin rows"
+
 [[theorems]]
-name = "RealRooted.Challenges.BinaryRunTransformation.preservesPF"
+name = "RealRooted.IsPFPolynomial.binaryRunTransform"
+module = "RealRooted.BinaryRunTransformation.Continuation"
 label = "The transformation preserves PF polynomials"
 
 [[theorems]]
@@ -120,9 +126,10 @@ J. Mao and L. Wang, [“The Narayana transformation,”](https://arxiv.org/abs/2
 arXiv:2607.01572 (2026).
 <!-- /realrooted-catalog-content -->
 
-This module exposes the checked preservation theorem and its strictly negative
-root corollary. The stability, contraction, anchor, and continuation arguments
-remain in `RealRooted.BinaryRunTransformation`.
+This module exposes the strictly negative root corollary of the checked
+preservation theorem `RealRooted.IsPFPolynomial.binaryRunTransform`. The
+stability, contraction, anchor, and continuation arguments remain in
+`RealRooted.BinaryRunTransformation`.
 -/
 
 open Polynomial
@@ -130,13 +137,6 @@ open Polynomial
 namespace RealRooted
 namespace Challenges
 namespace BinaryRunTransformation
-
-/-- The normalized binary-run transformation preserves PF polynomials in its
-finite degree box. -/
-theorem preservesPF {n : ℕ} {p : ℝ[X]}
-    (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ n) :
-    IsPFPolynomial (binaryRunTransform n p) :=
-  hp.binaryRunTransform hpdeg
 
 private theorem constantCoeff {n : ℕ} {p : ℝ[X]}
     (hpdeg : p.natDegree ≤ n) :
@@ -165,7 +165,7 @@ theorem preservesStrictlyNegativeRoots {n : ℕ} {p : ℝ[X]}
     (hconst : 0 < p.coeff 0) :
     (binaryRunTransform n p).Splits ∧
       ∀ r ∈ (binaryRunTransform n p).roots, r < 0 := by
-  have hq := preservesPF hp hpdeg
+  have hq := hp.binaryRunTransform hpdeg
   have hq0 : binaryRunTransform n p ≠ 0 := by
     intro hzero
     have hcoeff : (binaryRunTransform n p).coeff 0 = 0 := by simp [hzero]

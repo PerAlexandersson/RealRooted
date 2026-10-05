@@ -43,6 +43,11 @@ module = "RealRooted.BrandenLeite.Theorem37"
 label = "Consecutive chain polynomials interlace"
 
 [[theorems]]
+name = "RealRooted.BrandenLeite.chainPolynomial_eq_zero_or_splits_of_isTotallyNonneg"
+module = "RealRooted.BrandenLeite.Theorem37"
+label = "Chain polynomials are real-rooted"
+
+[[theorems]]
 name = "RealRooted.BrandenLeite.roots_chainPolynomial_mem_Icc_of_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.Theorem37"
 label = "Zeros of chain polynomials lie in [-1, 0]"

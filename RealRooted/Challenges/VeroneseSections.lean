@@ -14,7 +14,7 @@ module = "RealRooted.VeroneseSection"
 label = "Veronese section"
 
 [[theorems]]
-name = "RealRooted.Challenges.VeroneseSections.preserve_realRooted_nonneg"
+name = "RealRooted.Challenges.VeroneseSections.veroneseSectionPolynomial_eq_zero_or_splits"
 label = "Veronese sections preserve real-rootedness"
 -->
 
@@ -22,8 +22,9 @@ label = "Veronese sections preserve real-rootedness"
 # Veronese sections
 
 The $k$th $r$-Veronese section of a polynomial keeps the coefficients whose
-indices are congruent to $k$ modulo $r$. Every Veronese section of a nonzero
-real-rooted polynomial with nonnegative coefficients is zero or real-rooted.
+indices are congruent to $k$ modulo $r$. Let $0 \leq k < r$. If a polynomial
+with nonnegative coefficients splits over $\mathbb R$, then its $k$th
+$r$-Veronese section is zero or splits over $\mathbb R$.
 This follows from the Pólya frequency characterization and total
 nonnegativity.
 
@@ -51,13 +52,15 @@ namespace VeroneseSections
 
 /-- Veronese sections preserve real-rootedness for polynomials with
 nonnegative coefficients, allowing the selected section to vanish. -/
-theorem preserve_realRooted_nonneg :
-    ∀ {r k : ℕ}, 0 < r → k < r → {p : ℝ[X]} →
-      HasNonnegCoeffs p → p ≠ 0 → p.Splits →
-        veroneseSectionPolynomial r k p = 0 ∨
-          (veroneseSectionPolynomial r k p).Splits :=
-  fun {_r} {_k} hr hk {_p} hp hp0 hsplits =>
-    RealRooted.isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
+theorem veroneseSectionPolynomial_eq_zero_or_splits {r k : ℕ} (hk : k < r) {p : ℝ[X]}
+    (hp : HasNonnegCoeffs p) (hsplits : p.Splits) :
+    veroneseSectionPolynomial r k p = 0 ∨ (veroneseSectionPolynomial r k p).Splits := by
+  have hr : 0 < r := by lia
+  rcases eq_or_ne p 0 with rfl | hp0
+  · left
+    ext n
+    simp [RealRooted.coeff_veroneseSectionPolynomial hr]
+  · exact RealRooted.isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
       hr hk hp hp0 hsplits
 
 end VeroneseSections

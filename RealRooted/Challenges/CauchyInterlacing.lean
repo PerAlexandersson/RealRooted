@@ -22,9 +22,11 @@ label = "Characteristic polynomials of a principal submatrix interlace"
 <!-- realrooted-catalog-content -->
 # Cauchy interlacing
 
-The eigenvalues of a Hermitian principal submatrix interlace those of the
-original matrix. The corresponding characteristic polynomials also
-interlace.
+List the eigenvalues of a Hermitian $(n+1) \times (n+1)$ matrix as
+$\lambda_0 \geq \dotsb \geq \lambda_n$, and those of a principal submatrix of size
+$n$ as $\mu_0 \geq \dotsb \geq \mu_{n-1}$. Then the eigenvalues interlace:
+$\lambda_{k+1} \leq \mu_k \leq \lambda_k$ for every $k$. For real symmetric
+matrices, the corresponding characteristic polynomials also interlace.
 
 ## References
 

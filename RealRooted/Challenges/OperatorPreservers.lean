@@ -17,21 +17,19 @@ name = "RealRooted.PreservesRealRootedOrZero"
 module = "RealRooted.OperatorPreservesInterlacing"
 label = "Real-rootedness preserver"
 
-[[definitions]]
-name = "RealRooted.PreservesInterlacingPairsUpToOrder0"
-module = "RealRooted.OperatorPreservesInterlacing"
-label = "Interlacing preserver, up to orientation"
-
 [[theorems]]
-name = "RealRooted.Challenges.OperatorPreservers.realRootedPreserver_preservesInterlacing"
+name = """RealRooted.Challenges.OperatorPreservers.\
+preservesInterlacing_of_preservesRealRootedOrZero"""
 label = "Real-rootedness preservers preserve interlacing"
 -->
 
 <!-- realrooted-catalog-content -->
 # Operators preserving interlacing
 
-A real-linear operator that preserves real-rootedness up to zero also
-preserves interlacing, up to reversing the orientation.
+Let $T$ be a real-linear operator that sends every nonzero real-rooted
+polynomial to zero or to a real-rooted polynomial. If $f$ and $g$ interlace,
+then $T f$ and $T g$ interlace in one of the two orientations, where the
+images may vanish.
 
 ## References
 
@@ -58,11 +56,10 @@ namespace OperatorPreservers
 
 /-- Real-rootedness-preserving linear operators preserve interlacing pairs up
 to order and zero images. -/
-theorem realRootedPreserver_preservesInterlacing :
-    ∀ T : ℝ[X] →ₗ[ℝ] ℝ[X],
-      PreservesRealRootedOrZero T →
-      PreservesInterlacingPairsUpToOrder0 T :=
-  RealRooted.operatorPreservesInterlacingPairsUpToOrder
+theorem preservesInterlacing_of_preservesRealRootedOrZero (T : ℝ[X] →ₗ[ℝ] ℝ[X])
+    (hT : PreservesRealRootedOrZero T) ⦃f g : ℝ[X]⦄ (hfg : StrictInterl f g) :
+    Interl (T f) (T g) ∨ Interl (T g) (T f) :=
+  RealRooted.operatorPreservesInterlacingPairsUpToOrder T hT hfg
 
 end OperatorPreservers
 end Challenges

@@ -15,6 +15,26 @@ slug = "hermite-biehler-hurwitz"
 authors = ["Holtz"]
 years = [2003]
 
+[[definitions]]
+name = "RealRooted.hermiteBiehlerPolynomial"
+module = "RealRooted.HermiteBiehler.Basic"
+label = "The Hermite–Biehler combination f + ig"
+
+[[definitions]]
+name = "RealRooted.IsUpperHalfPlaneStable"
+module = "RealRooted.HermiteBiehler.Basic"
+label = "No zeros in the open upper half-plane"
+
+[[definitions]]
+name = "RealRooted.IsHurwitzStable"
+module = "RealRooted.HermiteBiehler.Basic"
+label = "Weak Hurwitz stability with nonnegative coefficients"
+
+[[definitions]]
+name = "Matrix.hurwitz"
+module = "RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz"
+label = "The classical Hurwitz matrix"
+
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_forward"
 label = "Hermite–Biehler: interlacing gives stability"
@@ -34,6 +54,17 @@ label = "Hurwitz criterion via total nonnegativity"
 The Hermite–Biehler theorem characterizes half-plane stability through
 interlacing of the even and odd parts. The Hurwitz criterion characterizes
 weak Hurwitz stability by total nonnegativity of the classical Hurwitz matrix.
+
+**Theorem (Hermite–Biehler).** Let $f$ and $g$ be real polynomials with
+positive leading coefficients. If $g \ll f$ (see
+[interlacing](/RealRooted/concepts/interlacing/)), then $f + ig$ has no zeros
+in the open upper half-plane. Conversely, if $f + ig$ has no zeros there, then
+$g \ll f$ or $f \ll g$.
+
+**Theorem (Hurwitz).** A nonzero real polynomial $p = \sum_k a_k x^k$ has
+nonnegative coefficients and no zeros with positive real part if and only if its
+classical Hurwitz matrix $(a_{2j-i})_{i,j \geq 0}$, with $a_k = 0$ for $k < 0$,
+is totally nonnegative.
 
 ## References
 
@@ -66,23 +97,23 @@ namespace RealRooted
 namespace Challenges
 namespace HermiteBiehlerHurwitz
 
-/-- Sign-normalized forward Hermite--Biehler target. -/
-theorem hermiteBiehler_forward :
-    ∀ {f g : ℝ[X]},
-      HasPosLeadingCoeff f →
-      HasPosLeadingCoeff g →
-      StrictInterl g f →
-      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) :=
-  RealRooted.hermiteBiehlerForwardPos
+/-- Forward Hermite--Biehler theorem, sign-normalized: if `f` and `g` have
+positive leading coefficients and `g` interlaces `f`, then `f + i g` has no
+zeros in the open upper half-plane. -/
+theorem hermiteBiehler_forward {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (h : StrictInterl g f) :
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) :=
+  RealRooted.hermiteBiehlerForwardPos hf hg h
 
-/-- Converse Hermite--Biehler target. -/
-theorem hermiteBiehler_converse :
-    ∀ ⦃f g : ℝ[X]⦄,
-      HasPosLeadingCoeff f →
-      HasPosLeadingCoeff g →
-      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
-      StrictInterl g f ∨ StrictInterl f g :=
-  @RealRooted.hermiteBiehlerConverse
+/-- Converse Hermite--Biehler theorem: if `f` and `g` have positive leading
+coefficients and `f + i g` has no zeros in the open upper half-plane, then `f`
+and `g` interlace in one of the two orientations. -/
+theorem hermiteBiehler_converse {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (h : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
+    StrictInterl g f ∨ StrictInterl f g :=
+  RealRooted.hermiteBiehlerConverse hf hg h
 
 /-- The converse criterion is false for the row orientation used by
 `RealRooted.hurwitz`. -/

@@ -15,11 +15,6 @@ name = "RealRooted.AllComboRealRooted"
 module = "RealRooted.AllCombo"
 label = "Every real combination is real-rooted"
 
-[[definitions]]
-name = "RealRooted.HasPosLeadingCoeff"
-module = "RealRooted.Basic.Coefficients"
-label = "Positive leading coefficient"
-
 [[theorems]]
 name = "RealRooted.Challenges.Obreschkoff.allCombinationsRealRooted_of_interlaces"
 label = "Interlacing gives a real-rooted pencil"
@@ -27,19 +22,16 @@ label = "Interlacing gives a real-rooted pencil"
 [[theorems]]
 name = "RealRooted.Challenges.Obreschkoff.interlaces_or_reverse_of_allCombinationsRealRooted"
 label = "A real-rooted pencil gives interlacing"
-
-[[theorems]]
-name = """RealRooted.Challenges.Obreschkoff.\
-interlaces_or_reverse_of_allCombinationsRealRooted_posLeading"""
-label = "The converse for positive leading coefficients"
 -->
 
 <!-- realrooted-catalog-content -->
 # Obreschkoff’s theorem
 
-Two interlacing polynomials generate a real-rooted pencil. Conversely, a
-real-rooted pencil with the stated degree hypotheses forces one of the two
-interlacing orientations.
+Two interlacing polynomials generate a real-rooted pencil: every real linear
+combination $\alpha f + \beta g$ splits over $\mathbb R$. Conversely, let $f$
+and $g$ be nonzero real-rooted polynomials with $\deg g = \deg f + 1$ or
+$\deg g = \deg f$. If every real linear combination of $f$ and $g$ splits,
+then $f$ and $g$ interlace in one of the two orientations.
 
 ## References
 
@@ -71,30 +63,18 @@ namespace Obreschkoff
 
 /-- If `f` interlaces `g`, then every real linear combination is real-rooted
 or zero. -/
-theorem allCombinationsRealRooted_of_interlaces :
-    ∀ {f g : ℝ[X]}, StrictInterl f g → AllComboRealRooted f g :=
-  RealRooted.allComboRealRooted_of_strictInterl
+theorem allCombinationsRealRooted_of_interlaces {f g : ℝ[X]} (hfg : StrictInterl f g) :
+    AllComboRealRooted f g :=
+  RealRooted.allComboRealRooted_of_strictInterl hfg
 
 /-- Converse Obreschkoff theorem in the degree-aware orientation used by
 `StrictInterl`. -/
-theorem interlaces_or_reverse_of_allCombinationsRealRooted :
-    ∀ {f g : ℝ[X]},
-      (f ≠ 0 ∧ f.Splits) →
-      (g ≠ 0 ∧ g.Splits) →
-      AllComboRealRooted f g →
-      f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree →
-      StrictInterl f g ∨ StrictInterl g f :=
-  fun hf hg => RealRooted.strictInterl_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2
-
-/-- Converse direction for polynomials with positive leading coefficients. -/
-theorem interlaces_or_reverse_of_allCombinationsRealRooted_posLeading {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hf_splits : f.Splits)
-    (hg_pos : HasPosLeadingCoeff g) (hg_splits : g.Splits)
+theorem interlaces_or_reverse_of_allCombinationsRealRooted {f g : ℝ[X]}
+    (hf : f ≠ 0) (hf_splits : f.Splits) (hg : g ≠ 0) (hg_splits : g.Splits)
     (hall : AllComboRealRooted f g)
     (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree) :
     StrictInterl f g ∨ StrictInterl g f :=
-  interlaces_or_reverse_of_allCombinationsRealRooted
-    ⟨hf_pos.ne_zero, hf_splits⟩ ⟨hg_pos.ne_zero, hg_splits⟩ hall hdeg
+  RealRooted.strictInterl_of_allComboRealRooted hf hf_splits hg hg_splits hall hdeg
 
 end Obreschkoff
 end Challenges

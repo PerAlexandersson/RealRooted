@@ -8,11 +8,6 @@ version = 1
 section = "theorems"
 slug = "monomial-chain-operator"
 
-[[definitions]]
-name = "RealRooted.PreservesPFShiftInterlacingOnDegree"
-module = "RealRooted.OperatorInterlacingUpgrade"
-label = "Monomial-chain condition"
-
 [[theorems]]
 name = "RealRooted.Challenges.MonomialChainOperator.preservesInterlacing"
 label = "The monomial chain gives interlacing preservation"

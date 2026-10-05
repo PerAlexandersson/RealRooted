@@ -21,6 +21,16 @@ module = "RealRooted.RootCounting.Sturm"
 label = "Sign variations of the Sturm sequence"
 
 [[definitions]]
+name = "RealRooted.sturmSquarefreePart"
+module = "RealRooted.RootCounting.Sturm"
+label = "Squarefree part"
+
+[[definitions]]
+name = "RealRooted.distinctSturmVariations"
+module = "RealRooted.RootCounting.Sturm"
+label = "Sign variations of the squarefree Sturm sequence"
+
+[[definitions]]
 name = "RealRooted.distinctRootCountIoo"
 module = "RealRooted.RootCounting.Sturm"
 label = "Number of distinct roots in an interval"
@@ -56,18 +66,6 @@ overview on [symmetricfunctions.com][sturm-overview].
 [sturm-overview]: https://www.symmetricfunctions.com/realRootedInterlacing.htm#sturmRootCounting
 <!-- /realrooted-catalog-content -->
 
-This module exposes the reusable implementation in
+This module is a catalog facade.  The proofs live in
 `RealRooted.RootCounting.Sturm`.
 -/
-
-namespace RealRooted
-namespace Challenges
-namespace Sturm
-
-export RealRooted
-  (distinctRootCountIoo_eq_distinctSturmVariations_sub
-    splits_iff_distinctSturmVariations_sub_eq_natDegree)
-
-end Sturm
-end Challenges
-end RealRooted

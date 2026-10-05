@@ -23,6 +23,11 @@ name = "RealRooted.Graph.acyclicSinkPolynomial"
 module = "RealRooted.Graph.AcyclicOrientation"
 label = "Ascent-refined acyclic sink polynomial"
 
+[[definitions]]
+name = "RealRooted.UnitIntervalGraph.acyclicSinkClosedForm"
+module = "RealRooted.UnitIntervalGraph.AcyclicSink"
+label = "Shifted weighted independence polynomial"
+
 [[theorems]]
 name = "RealRooted.UnitIntervalGraph.acyclicSinkPolynomial_eq_closedForm"
 module = "RealRooted.UnitIntervalGraph.AcyclicSink"

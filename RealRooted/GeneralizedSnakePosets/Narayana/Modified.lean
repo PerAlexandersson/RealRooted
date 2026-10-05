@@ -20,8 +20,9 @@ namespace GeneralizedSnakePosets
 
 /-! ## Concrete modified Narayana family -/
 
-/-- The modified Narayana family `P_n = t^{-1} N_{n+1}` from Braun--Jal
-the combinatorial inputs, reusing the existing Narayana quotient sequence. -/
+/-- The modified Narayana polynomial `P_n = t^{-1} N_{n+1}` of Braun--Jal,
+where `N_{n+1}` is the Narayana polynomial.  It is defined as the Narayana
+quotient `narayanaQuot (n + 1)`, so `P_0 = 1` and `P_1 = 1 + X`. -/
 def modifiedNarayanaPolynomial (n : ℕ) : ℝ[X] :=
   narayanaQuot (n + 1)
 
