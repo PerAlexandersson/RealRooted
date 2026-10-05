@@ -1,5 +1,6 @@
 import RealRooted.DerivativeRecurrence.QuadraticDegree
 import RealRooted.MaWang
+import RealRooted.SignEvaluation
 
 /-!
 # Interlacing for quadratic-coefficient derivative recurrences
@@ -68,14 +69,9 @@ lemma hasPosLeadingCoeff_of_quadratic_derivative_linear
     natDegree_of_quadratic_derivative_linear P a b c s t h0 hrec hs hbt]
   exact (quadratic_derivative_linear_top_and_above P a b c s t h0 hrec hs hbt n).1
 
-lemma quadratic_derivative_linear_v_nonpos_of_nonpos
-    {a b r : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hr : r ≤ 0) :
-    (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  have hv : (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r = a * r - b * r ^ 2 := by
-    simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow]
-    ring
-  rw [hv]
-  nlinarith [mul_nonneg ha (neg_nonneg.mpr hr), mul_nonneg hb (sq_nonneg r)]
+@[deprecated (since := "2026-10-05")]
+alias quadratic_derivative_linear_v_nonpos_of_nonpos :=
+  eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos
 
 lemma strictInterl_step_of_quadratic_derivative_linear
     (P : ℕ → ℝ[X]) (a b c s t : ℝ)
@@ -120,7 +116,8 @@ lemma strictInterl_step_of_quadratic_derivative_linear
   have hb_nonpos : ∀ r, (P m).IsRoot r →
       (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
     intro r hr
-    exact quadratic_derivative_linear_v_nonpos_of_nonpos ha hb (hroots_nonpos r hr)
+    exact eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos ha hb
+      (hroots_nonpos r hr)
   have := strictInterl_of_interlaces_evalCoeff_nonpos
     (f := P m) (g := (P m).derivative)
     (a := C c + C (s + t * (m : ℝ)) * X) (b := C a * X + C (-b) * X ^ 2)
@@ -179,7 +176,7 @@ theorem strictInterl_of_quadratic_derivative_linear
         have := roots_nonpos_of_hasNonnegCoeffs
           (hasNonnegCoeffs_of_quadratic_derivative_linear P a b c s t h0 hrec
             ha hb hc hs hbt 1) r ((mem_roots hne).mpr hr)
-        exact quadratic_derivative_linear_v_nonpos_of_nonpos ha hb this
+        exact eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos ha hb this
       have := strictInterl_of_interlaces_evalCoeff_nonpos
         (f := P 1) (g := (P 1).derivative)
         (a := C c + C (s + t * ((1 : ℕ) : ℝ)) * X) (b := C a * X + C (-b) * X ^ 2)
@@ -304,7 +301,8 @@ lemma strictInterl_step_of_quadratic_derivative_bilinear
   have hb_nonpos : ∀ r, (P n).IsRoot r →
       (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
     intro r hr
-    exact quadratic_derivative_linear_v_nonpos_of_nonpos ha hb (hroots_nonpos r hr)
+    exact eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos ha hb
+      (hroots_nonpos r hr)
   have := strictInterl_of_interlaces_evalCoeff_nonpos
     (f := P n) (g := (P n).derivative)
     (a := C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X)
@@ -374,7 +372,7 @@ theorem strictInterl_of_quadratic_derivative_bilinear
         have hr_nonpos := roots_nonpos_of_hasNonnegCoeffs
           (hasNonnegCoeffs_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
             ha hb hc hu hs hbt 1) r ((mem_roots hne).mpr hr)
-        exact quadratic_derivative_linear_v_nonpos_of_nonpos ha hb hr_nonpos
+        exact eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos ha hb hr_nonpos
       have := strictInterl_of_interlaces_evalCoeff_nonpos
         (f := P 1) (g := (P 1).derivative)
         (a := C (c + u * ((1 : ℕ) : ℝ)) + C (s + t * ((1 : ℕ) : ℝ)) * X)
@@ -497,7 +495,8 @@ lemma strictInterl_step_of_quadratic_derivative_linear_offset
   have hb_nonpos : ∀ r, (P m).IsRoot r →
       (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
     intro r hr
-    exact quadratic_derivative_linear_v_nonpos_of_nonpos ha hb (hroots_nonpos r hr)
+    exact eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos ha hb
+      (hroots_nonpos r hr)
   have := strictInterl_of_interlaces_evalCoeff_nonpos
     (f := P m) (g := (P m).derivative)
     (a := C c + C (s + t * (m : ℝ)) * X) (b := C a * X + C (-b) * X ^ 2)

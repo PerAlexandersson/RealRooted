@@ -26,7 +26,9 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma prod_le_prod_of_forall₂_of_nonneg :
+/-- Termwise `≤` between two lists of nonnegative reals gives `≤` between their
+products. -/
+lemma prod_le_prod_of_forall₂_of_nonneg :
     ∀ {xs ys : List ℝ},
       List.Forall₂ (fun x y : ℝ => x ≤ y) xs ys →
       (∀ x ∈ xs, 0 ≤ x) → (∀ y ∈ ys, 0 ≤ y) →
@@ -39,7 +41,8 @@ private lemma prod_le_prod_of_forall₂_of_nonneg :
         (prod_le_prod_of_forall₂_of_nonneg hxy.2 (by simp_all) (by simp_all))
         (List.prod_nonneg (by simp_all)) (hy y (by simp))
 
-private lemma forall₂_map_zero_sub_rev :
+/-- Negation reverses a termwise `≤` comparison of real lists. -/
+lemma forall₂_map_zero_sub_rev :
     ∀ {xs ys : List ℝ},
       List.Forall₂ (fun x y : ℝ => x ≤ y) xs ys →
       List.Forall₂ (fun x y : ℝ => x ≤ y)

@@ -17,19 +17,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma prod_le_prod_of_forall₂_of_nonneg :
-    ∀ {xs ys : List ℝ},
-      List.Forall₂ (fun x y : ℝ => x ≤ y) xs ys →
-      (∀ x ∈ xs, 0 ≤ x) → (∀ y ∈ ys, 0 ≤ y) →
-      xs.prod ≤ ys.prod
-  | [], [], _, _, _ => by simp
-  | x :: xs, y :: ys, hxy, hx, hy => by
-      simp only [List.forall₂_cons] at hxy
-      simp only [List.prod_cons]
-      exact mul_le_mul hxy.1
-        (prod_le_prod_of_forall₂_of_nonneg hxy.2 (by simp_all) (by simp_all))
-        (List.prod_nonneg (by simp_all)) (hy y (by simp))
-
 private lemma list_eq_of_forall₂_le_of_pos_of_prod_eq :
     ∀ {xs ys : List ℝ},
       List.Forall₂ (fun x y : ℝ => x ≤ y) xs ys →
@@ -57,16 +44,6 @@ private lemma list_eq_of_forall₂_le_of_pos_of_prod_eq :
       have htail : xs.prod = ys.prod :=
         mul_left_cancel₀ (ne_of_gt (hx x (by simp))) hprod
       rw [list_eq_of_forall₂_le_of_pos_of_prod_eq hxy.2 (by simp_all) (by simp_all) htail]
-
-private lemma forall₂_map_zero_sub_rev :
-    ∀ {xs ys : List ℝ},
-      List.Forall₂ (fun x y : ℝ => x ≤ y) xs ys →
-      List.Forall₂ (fun x y : ℝ => x ≤ y)
-        (ys.map (0 - ·)) (xs.map (0 - ·))
-  | [], [], _ => by simp
-  | x :: xs, y :: ys, h => by
-      simp only [List.forall₂_cons] at h
-      exact List.Forall₂.cons (by simp_all) (forall₂_map_zero_sub_rev h.2)
 
 /-- Equality in the same-degree endpoint-product orientation makes two
 nonnegative interlacing polynomials equal after cross-normalization by
