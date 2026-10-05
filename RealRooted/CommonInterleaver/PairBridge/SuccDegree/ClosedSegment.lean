@@ -150,7 +150,7 @@ theorem compatibleSuccDegree_rootCountAbove_diff_le_one_of_nonRoot
             hf'_pos hg'_pos hdeg' hf'_split y hyf hyg
         obtain ⟨hfg_le2, hgf_le2⟩ :=
           compatibleSuccDegreeRootCountAbove_le_two_of_derivative_bound
-            hcomp hf_pos hg_pos hdeg hf_split hfdeg hder_bound x
+            hcomp hg_pos hdeg hf_split hfdeg hder_bound x
         obtain ⟨hfg_ne2, hgf_ne2⟩ :=
           hcomp.succDegree_rootCountAbove_sub_ne_two hf_pos hg_pos hdeg hf_split hxf hxg
         exact ⟨int_le_one_of_le_two_ne_two hfg_le2 hfg_ne2,

@@ -208,7 +208,7 @@ theorem affineModifiedNarayanaShifted_right_eval_mul_prev_nonpos
   affineModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turan hr
     (modifiedNarayanaTuran_nonneg_of_nonpos hm
       (affineModifiedNarayanaShifted_left_isRoot_nonpos hm hlam hmu
-        (affineModifiedNarayanaShifted_left_ne_zero hm hlam hmu) r hr))
+        (affineModifiedNarayanaShifted_left_ne_zero (mu := mu) hm hlam) r hr))
 
 /-- At a root of the paper-shaped affine-Narayana left-hand polynomial, the
 right-hand sign test is exactly the negative Narayana Turan determinant. -/
@@ -277,27 +277,27 @@ theorem affineModifiedNarayanaShiftedInterlacing_modified {m : 鈩晑 {lam mu : 鈩
       Interlaces (modifiedNarayanaPolynomial (m - 1))
         ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
           narayanaDifference modifiedNarayanaPolynomial m) :=
-    affineModifiedNarayanaShifted_prev_interlaces_left hm hlam hmu
+    affineModifiedNarayanaShifted_prev_interlaces_left (mu := mu) hm hlam
   have hright_interlaces :
       Interlaces (modifiedNarayanaPolynomial m)
         ((C lam * X + C mu) * modifiedNarayanaPolynomial m +
           narayanaDifference modifiedNarayanaPolynomial (m + 1)) :=
     affineModifiedNarayanaShifted_prev_interlaces_left
-      (m := m + 1) (by lia) hlam hmu
+      (m := m + 1) (mu := mu) (by lia) hlam
   refine
     strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
       hleft_interlaces
       (modifiedNarayanaPolynomial_posLeadingCoeff (m - 1))
       hright_interlaces.1.1 hright_interlaces.1.2
-      (affineModifiedNarayanaShifted_right_posLeadingCoeff hlam hmu)
+      (affineModifiedNarayanaShifted_right_posLeadingCoeff (mu := mu) hlam)
       ?_ ?_
       (affineModifiedNarayanaShifted_left_no_common_prev hm1)
       ?_
-  路 rw [affineModifiedNarayanaShifted_left_natDegree hm1 hlam hmu,
-      affineModifiedNarayanaShifted_right_natDegree hlam hmu]
+  路 rw [affineModifiedNarayanaShifted_left_natDegree (mu := mu) hm1 hlam,
+      affineModifiedNarayanaShifted_right_natDegree (mu := mu) hlam]
     lia
-  路 rw [affineModifiedNarayanaShifted_left_natDegree hm1 hlam hmu,
-      affineModifiedNarayanaShifted_right_natDegree hlam hmu]
+  路 rw [affineModifiedNarayanaShifted_left_natDegree (mu := mu) hm1 hlam,
+      affineModifiedNarayanaShifted_right_natDegree (mu := mu) hlam]
   路 intro r hr
     exact
       affineModifiedNarayanaShifted_right_eval_mul_prev_nonpos

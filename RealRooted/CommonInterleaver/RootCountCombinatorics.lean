@@ -635,7 +635,7 @@ theorem rootCountAbove_derivative_rev_sub_ge_two_of_sub_ge_three
 at least three for a succ-degree compatible pair. -/
 theorem compatibleSuccDegreeRootCountAbove_le_two_of_derivative_bound
     {f g : ℝ[X]} (hcomp : Compatible f g)
-    (_hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree + 1)
     (hf_split : f.Splits) (hfdeg : 2 ≤ f.natDegree)
     (hder_bound : ∀ x : ℝ,

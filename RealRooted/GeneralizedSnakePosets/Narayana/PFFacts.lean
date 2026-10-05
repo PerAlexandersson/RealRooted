@@ -18,7 +18,7 @@ namespace GeneralizedSnakePosets
 modified Narayana family.  This exposes the affine-Narayana target shape while using
 the checked consecutive interlacing theorem. -/
 theorem affineModifiedNarayanaInterlacing_modified_zero_zero
-    {m : ℕ} (_hm : 2 ≤ m) :
+    {m : ℕ} :
     StrictInterl ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m)
       ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial m +
@@ -28,12 +28,12 @@ theorem affineModifiedNarayanaInterlacing_modified_zero_zero
 /-- The shifted `λ = 0, μ = 1` specialization of the affine Narayana interlacing lemma for the
 concrete modified Narayana family. -/
 theorem affineModifiedNarayanaShiftedInterlacing_modified_zero_one
-    {m : ℕ} (hm : 2 ≤ m) :
+    {m : ℕ} :
     StrictInterl ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
         narayanaDifference modifiedNarayanaPolynomial m)
       ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial m +
         narayanaDifference modifiedNarayanaPolynomial (m + 1)) := by
-  have hbase := affineModifiedNarayanaInterlacing_modified_zero_zero hm
+  have hbase := affineModifiedNarayanaInterlacing_modified_zero_zero (m := m)
   have hleft :
       ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
           narayanaDifference modifiedNarayanaPolynomial m) =
