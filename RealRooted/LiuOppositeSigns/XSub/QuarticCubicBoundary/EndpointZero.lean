@@ -515,14 +515,8 @@ theorem xSubQuarticCubicEndpointZeroBoundaryCases {a b c d u v w μ : ℝ} (hab 
     · exact xSubQuarticCubicLeftOnlyEndpointZeroBoundaryCases hab hbc hcd huv hvw hau hbv hcw huc
         hvd hd0 hw0 hμ
         hd_eq hw_zero
-  · by_cases hd_zero : d = 0
-    · subst d
-      subst w
-      exact xSubQuarticCubicSplits_of_endpoint_roots_zero
-        hab hbc huv hau hbv huc hcd hvd hμ
-    · exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases hab hbc hcd huv hvw hau hbv hcw huc
-        hvd hd0 hw0 hμ
-        hw_eq hd_zero
+  · exact xSubQuarticCubicRightOnlyEndpointZeroBoundaryCases hab hbc hcd huv hau hbv huc
+      hvd hμ hw_eq
 
 end LiuOppositeSigns
 end RealRooted

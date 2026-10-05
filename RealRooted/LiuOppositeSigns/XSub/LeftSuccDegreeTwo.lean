@@ -97,7 +97,7 @@ theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   by_cases hzero : g.natDegree = 0
   · exact positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
-      hpair hfnn hgnn hdeg hzero
+      hpair hdeg hzero
   · have hone : g.natDegree = 1 := by lia
     exact positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
       hpair hfnn hgnn hdeg hone

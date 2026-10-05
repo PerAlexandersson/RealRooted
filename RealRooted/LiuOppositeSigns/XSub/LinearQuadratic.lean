@@ -47,7 +47,7 @@ lemma lower_quadratic_root_le_singleton_root_of_positiveSplitRootCountPair_one_t
 /-- Explicit discriminant certificate for the normalized case
 `a ≤ c ≤ b ≤ 0`. -/
 lemma xSubLinearQuadraticDiscrimNonneg_between
-    {u v w μ : ℝ} (hu : 0 ≤ u) (_hv : 0 ≤ v) (hw : 0 ≤ w)
+    {u v w μ : ℝ} (hu : 0 ≤ u) (hw : 0 ≤ w)
     (hμ : 0 < μ) :
     0 ≤ discrim (1 - μ) (v + w - μ * (u + v + 2 * w))
       (-μ * ((u + v + w) * w)) := by
@@ -88,9 +88,6 @@ theorem xSubLinearQuadraticDiscrimNonneg {a b c μ : ℝ} (hab : a ≤ b) (hac :
     have hu : 0 ≤ u := by
       dsimp [u]
       linarith
-    have hv : 0 ≤ v := by
-      dsimp [v]
-      linarith
     have hw : 0 ≤ w := by
       dsimp [w]
       linarith
@@ -102,7 +99,7 @@ theorem xSubLinearQuadraticDiscrimNonneg {a b c μ : ℝ} (hab : a ≤ b) (hac :
       unfold discrim
       ring_nf
     rw [hdisc]
-    exact xSubLinearQuadraticDiscrimNonneg_between hu hv hw hμ
+    exact xSubLinearQuadraticDiscrimNonneg_between hu hw hμ
   · have hbc : b ≤ c := le_of_not_ge hcb
     let u : ℝ := b - a
     let v : ℝ := c - b
@@ -224,7 +221,7 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree
       (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   by_cases hone : g.natDegree = 1
   · exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
-      hpair hfnn hgnn hdeg hone
+      hdeg hone
   · have htwo : g.natDegree = 2 := by lia
     exact positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_two
       hpair hfnn hgnn hdeg htwo
