@@ -354,7 +354,7 @@ theorem modifiedNarayanaPolynomial_interlaces_succ (n : ℕ) :
 auxiliary polynomial `G_n`. -/
 theorem auxiliaryG_coeff_sub_one_of_narayanaRecurrence
     (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
+      NarayanaAuxiliaryGRecurrence
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (n : ℕ) (hn : 1 ≤ n) :
     (FiniteSkewBoard.auxiliaryG n).coeff (n - 1) = (n : ℝ) := by
@@ -386,7 +386,7 @@ theorem auxiliaryG_coeff_sub_one_of_narayanaRecurrence
 leading candidate coefficient of `G_n`. -/
 theorem auxiliaryG_coeff_sub_two_of_narayanaRecurrence
     (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
+      NarayanaAuxiliaryGRecurrence
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (n : ℕ) (hn : 2 ≤ n) :
     (FiniteSkewBoard.auxiliaryG n).coeff (n - 2) =
@@ -413,7 +413,7 @@ theorem auxiliaryG_coeff_sub_two_of_narayanaRecurrence
 candidate coefficient of `G_n` to vanish. -/
 theorem auxiliaryG_coeff_self_of_narayanaRecurrence
     (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
+      NarayanaAuxiliaryGRecurrence
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (n : ℕ) :
     (FiniteSkewBoard.auxiliaryG n).coeff n = 0 := by
@@ -450,7 +450,7 @@ theorem auxiliaryG_coeff_self_of_narayanaRecurrence
 the auxiliary polynomial `G_n`. -/
 theorem auxiliaryG_natDegree_of_narayanaRecurrence
     (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
+      NarayanaAuxiliaryGRecurrence
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (n : ℕ) (hn : 1 ≤ n) :
     (FiniteSkewBoard.auxiliaryG n).natDegree = n - 1 := by
@@ -497,7 +497,7 @@ theorem auxiliaryG_natDegree_of_narayanaRecurrence
 /-- Auxiliary-recurrence determines the degree of the auxiliary Braun--Jal pencil. -/
 theorem auxiliaryGPencil_natDegree_of_narayanaRecurrence
     (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
+      NarayanaAuxiliaryGRecurrence
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
     ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +

@@ -102,10 +102,6 @@ example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
     right_coeff_pos := hb
 
 example {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
-    RealRooted.PosComboHyp f g := by
-  rr_pos_combo_to_hyp using pos_combo := hfg
-
-example {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
     PosComboRealRooted g f := by
   rr_pos_combo_comm using pos_combo := hfg
 

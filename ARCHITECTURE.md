@@ -910,10 +910,9 @@ Wagner-specific `X - C r` root-factor API, and `InterlacingConeBounds` uses the
 canonical scaling lemma instead of maintaining a second proof.
 
 `ObreschkoffContinuity` is the 11-module owner of the shared strict-positive
-combination predicate body. It exposes the opaque public
-`PosComboRealRooted` predicate and the reducible continuity-facing
-`PosComboHyp` compatibility name without duplicating their mathematical
-definition or symmetry proof. Definition-only consumers no longer import the
+combination predicate. It defines the public `PosComboRealRooted` predicate,
+its symmetry, and the `PosComboRealRooted.*` root-continuity lemmas.
+Definition-only consumers no longer import the
 1,568-line `PosCombo` theorem stack: `AffineFamily.PositiveFamily` has an
 18-module closure instead of 75, and `AllCombo` has a 35-module closure.
 `ObreschkoffConverse.Regularization` now imports `PosCombo` explicitly for the

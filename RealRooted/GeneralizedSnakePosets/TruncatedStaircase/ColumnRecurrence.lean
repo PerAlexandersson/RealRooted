@@ -78,7 +78,7 @@ theorem truncatedStaircaseRookPolynomial_succ_cols (n : ℕ) :
 /-- **The auxiliary recurrence** for every `n`:
 `X G_{n-1} = P_n - (1 + X) P_{n-1}`. -/
 theorem narayanaAuxiliaryGRecurrence_modified :
-    NarayanaAuxiliaryGRecurrenceStatement modifiedNarayanaPolynomial auxiliaryG := by
+    NarayanaAuxiliaryGRecurrence modifiedNarayanaPolynomial auxiliaryG := by
   intro n hn
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by lia⟩
   rw [Nat.add_sub_cancel,

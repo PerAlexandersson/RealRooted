@@ -36,7 +36,7 @@ identify the two root sums with the Vieta expressions compared by
 `shiftedDifferenceInterlacing_modified_rootSum_ratio_le`. -/
 theorem shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence_of_three_le
     (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
+      NarayanaAuxiliaryGRecurrence
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     {m : ℕ} {lam nu : ℝ} (hm : 3 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
     (hU_split :
@@ -273,7 +273,7 @@ theorem shiftedDifferenceInterlacing_modified_roots_sum_le_two
 expected window degrees, and splitting. -/
 theorem shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence
     (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
+      NarayanaAuxiliaryGRecurrence
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
     (hU_split :
@@ -361,9 +361,9 @@ theorem modifiedNarayanaPencil_natDegree {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m)
 
 theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial
     (hrec2 :
-      NarayanaAuxiliaryGRecurrenceStatement
+      NarayanaAuxiliaryGRecurrence
         modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (h34 : AffineModifiedNarayanaInterlacingStatement
+    (h34 : AffineModifiedNarayanaInterlacing
       modifiedNarayanaPolynomial)
     (hV_split :
       ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →

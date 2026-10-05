@@ -183,10 +183,6 @@ syntax (name := rr_pos_combo_sequence_positive_realrooted_named)
     "right_coeff_pos" ":=" term :
   tactic
 
-syntax (name := rr_pos_combo_to_hyp_named)
-  "rr_pos_combo_to_hyp" " using " "pos_combo" ":=" term :
-  tactic
-
 syntax (name := rr_pos_combo_comm_named)
   "rr_pos_combo_comm" " using " "pos_combo" ":=" term :
   tactic
@@ -677,8 +673,6 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.posCombo_sequence_positive_realrooted
           $hfg $hfpos $hgpos $ha $hb)
-  | `(tactic| rr_pos_combo_to_hyp using pos_combo := $hfg:term) =>
-      `(tactic| exact RealRooted.PosComboRealRooted.toPosComboHyp $hfg)
   | `(tactic| rr_pos_combo_comm using pos_combo := $hfg:term) =>
       `(tactic| exact RealRooted.PosComboRealRooted.comm $hfg)
   | `(tactic| rr_pos_combo_sequence_comm using pos_combo := $hfg:term) =>
