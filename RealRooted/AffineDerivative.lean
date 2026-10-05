@@ -736,7 +736,6 @@ private lemma multiset_prod_X_sub_C_ne_zero (s : Multiset ℝ) :
       rw [Multiset.map_cons, Multiset.prod_cons]
       exact mul_ne_zero (X_sub_C_ne_zero a) ih
 
-/-- The roots of `∏ (X - C r)` for `r ∈ s` are exactly `s`. -/
 /-- A polynomial of degree `d` with at least `d - 1` real roots
     actually has `d` real roots: the quotient by the known root product
     has degree 1, which must have a root over ℝ. -/
