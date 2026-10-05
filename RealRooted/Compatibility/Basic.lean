@@ -318,7 +318,7 @@ lemma of_posComboRealRooted_sameDegree {f g : ℝ[X]}
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg)
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg)
 
-/-- In the succ-degree #42 setting, strict positive-combination
+/-- In the succ-degree setting, strict positive-combination
 real-rootedness upgrades to full nonnegative compatibility once the left
 endpoint is known to split.  The right endpoint real-rootedness is supplied by
 the existing succ-degree endpoint theorem. -/

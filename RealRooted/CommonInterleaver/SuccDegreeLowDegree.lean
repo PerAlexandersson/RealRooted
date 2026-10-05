@@ -209,44 +209,8 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_one
   pairHasCommonInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
-/-- The old same-degree orientation alternative, when available, still feeds
-the repaired same-degree common-interleaver target. -/
-theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  have hf_rr : (f ≠ 0 ∧ f.Splits) :=
-      hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
-  have hg_rr : (g ≠ 0 ∧ g.Splits) :=
-      hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg
-  have hslot :
-      ∀ j (hj : j < f.natDegree + 1),
-        (rootSlotInterval (rootSeqDesc f)
-            ⟨j, by simpa [rootSeqDesc_length hf_rr.2] using hj⟩ ∩
-          rootSlotInterval (rootSeqDesc g)
-            ⟨j, by
-              have : j < g.natDegree + 1 := by lia
-              simpa [rootSeqDesc_length hg_rr.2] using this⟩).Nonempty := by
-    rcases hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno with hstrictInterl | hstrictInterl
-    · intro j hj
-      exact
-        rootSlotInterval_inter_nonempty_of_commonInterleaver hstrictInterl
-          (StrictInterl.refl hstrictInterl.2.1.1 hstrictInterl.2.1.2) j
-          (by lia)
-          (by lia)
-    · intro j hj
-      exact
-        rootSlotInterval_inter_nonempty_of_commonInterleaver
-          (StrictInterl.refl hstrictInterl.2.1.1 hstrictInterl.2.1.2) hstrictInterl
-          j
-          (by lia)
-          (by lia)
-  exact
-    pairHasCommonInterleaver_of_sameDegree_slotIntersections
-      hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hdeg hslot
-
-/-- Succ-degree branch of the honest no-common target is already unconditional
-in the constant-vs-linear endpoint case. -/
+/-- A constant and a linear polynomial with positive leading coefficients are
+strictly interlaced in the succ-degree orientation. -/
 theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
@@ -274,26 +238,6 @@ theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_degree_zero
   pairHasCommonLeftInterleaver_of_strictInterl <|
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
-
-/-- The affine-family bridge proves the full corrected succ-degree
-common-right-interleaver branch.  The affine-family right-pair theorem gives
-`g ≪ X * f`, so `X * f` is a common right interleaver. -/
-theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  have hf0 : f ≠ 0 := hf_pos.ne_zero
-  have hg0 : g ≠ 0 := hg_pos.ne_zero
-  have haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits) :=
-    fun {s t} hs ht =>
-      haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
-  have hright : StrictInterl g (X * f) :=
-    strictInterl_right_pair_of_affine_family_nonneg
-      hf0 hg0 hfnn hgnn haff
-  exact pairHasCommonInterleaver_of_strictInterl_right_pair_nonneg hright hfnn
 
 /-- Degree-zero base case for the succ-degree root-count formulation.
 
@@ -743,8 +687,8 @@ theorem succDegreeSlotData_of_posCombo_natDegree_le_one
       (fun k hk1 hk2 => hc2 k hk1 (by rw [hlenf] at hk2; exact hk2))
       j hjf hjg
 
-/-- Low-degree base case for the repaired succ-degree common-right-interleaver
-endpoint in the positive-combination / no-common-root setting. -/
+/-- Low-degree case of the succ-degree common-interleaver theorem in the
+positive-combination / no-common-root setting. -/
 theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_natDegree_le_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -799,8 +743,8 @@ theorem posComboSameDegreePairHasCommonInterleaver_of_natDegree_le_two
         (fun k hk1 hk2 => hc2 k hk1 (by rw [hlenf] at hk2; exact hk2))
         j (by rw [hlenf]; exact hj) (by rw [hleng, hdeg]; exact hj)
 
-/-- Low-degree base case for the repaired same-degree common-right-interleaver
-endpoint in the positive-combination / no-common-root setting. -/
+/-- Low-degree case of the same-degree common-interleaver theorem in the
+positive-combination / no-common-root setting. -/
 theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_two
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -843,45 +787,4 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
       posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_two
         hf_pos hg_pos hfnn hgnn hfg hsame hno hfdeg
 
-/-- Degree-`≤ 3` no-common endpoint from cubic same-degree and succ-degree
-endpoints. -/
-theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hgdeg : g.natDegree ≤ 3) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
-  rcases Nat.lt_or_ge f.natDegree g.natDegree with hlt | hge
-  · have hsucc_deg : g.natDegree = f.natDegree + 1 := by lia
-    exact hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
-  · have hsame : g.natDegree = f.natDegree := by lia
-    have hfdeg : f.natDegree ≤ 3 := by lia
-    exact
-      sameDegreePairHasCommonInterleaver_nonneg_of_natDegree_le_three_of_cubicInterior
-        hbelow habove hf_pos hg_pos hfnn hgnn hfg hsame hno hfdeg
-
-/-- Degree-`≤ 3` no-common endpoint naming both the cubic same-degree and
-succ-degree branches. -/
-theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_and_succDegree
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hgdeg : g.natDegree ≤ 3) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_of_cubicInterior
-    hbelow habove hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg
 end RealRooted

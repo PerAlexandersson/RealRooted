@@ -424,12 +424,21 @@ private lemma xAddOne_xAddTwo_not_strictInterl :
       | cons s₂ ss'' =>
           simp at hss_len
 
-/-- The honest succ-degree orientation target is false as well: the pair
-`X + 1, (X + 2)(X + 3)` satisfies the positive-combo/no-common hypotheses and
-even has a concrete common interleaver `X + 5/2`, but both quadratic roots lie
-strictly to the left of `-1`, so `StrictInterl (X + 1) ((X + 2)(X + 3))` fails. -/
-lemma not_posComboNoCommonSuccDegreeOrientationNonnegStatement :
-    ¬ PosComboNoCommonSuccDegreeOrientationNonnegStatement :=
+/-- Fixed orientation fails for successor-degree pairs: the pair
+`X + 1, (X + 2)(X + 3)` satisfies the positive-combination/no-common hypotheses
+and even has a concrete common interleaver `X + 5/2`, but both quadratic roots
+lie strictly to the left of `-1`, so `StrictInterl (X + 1) ((X + 2)(X + 3))`
+fails. -/
+lemma not_forall_posCombo_succDegree_noCommon_strictInterl :
+    ¬ ∀ ⦃f g : ℝ[X]⦄,
+      HasPosLeadingCoeff f →
+      HasPosLeadingCoeff g →
+      HasNonnegCoeffs f →
+      HasNonnegCoeffs g →
+      PosComboRealRooted f g →
+      g.natDegree = f.natDegree + 1 →
+      (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+      StrictInterl f g :=
   fun hsucc =>
     xAddOne_xSq_add_fiveX_add_six_not_strictInterl
       (hsucc
@@ -441,12 +450,20 @@ lemma not_posComboNoCommonSuccDegreeOrientationNonnegStatement :
         (by simp [xSq_add_fiveX_add_six_natDegree])
         xAddOne_xSq_add_fiveX_add_six_noCommon)
 
-/-- The nonnegative-coefficient negative right-pencil target is false.  The
-same pair `X + 1, (X + 2)(X + 3)` is compatible and has nonnegative
-coefficients, but the negative pencil member at `μ = -1` is a quadratic with
+/-- The negative half of the right pencil of a compatible successor-degree pair
+need not be real-rooted.  The pair `X + 1, (X + 2)(X + 3)` is compatible and has
+nonnegative coefficients, but the pencil member at `μ = -1` is a quadratic with
 negative discriminant. -/
-lemma not_compatibleSuccDegreeNegativeRightFamilyNonnegStatement :
-    ¬ CompatibleSuccDegreeNegativeRightFamilyNonnegStatement := by
+lemma not_forall_compatible_succDegree_negativeRightFamily_splits :
+    ¬ ∀ ⦃f g : ℝ[X]⦄,
+      Compatible f g →
+      HasPosLeadingCoeff f →
+      HasPosLeadingCoeff g →
+      HasNonnegCoeffs f →
+      HasNonnegCoeffs g →
+      g.natDegree = f.natDegree + 1 →
+      f.Splits →
+      ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits := by
   intro hneg
   have hcomp : Compatible (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) :=
     Compatible.of_posComboRealRooted
@@ -491,37 +508,25 @@ lemma not_compatibleSuccDegreeNegativeRightFamilyNonnegStatement :
   rw [hp_eq] at hdisc
   norm_num [coeff_X, pow_two] at hdisc
 
-/-- The coefficient-free negative right-pencil shortcut is false, already for
-the nonnegative-coefficient counterexample above. -/
-lemma not_compatibleSuccDegreeNegativeRightFamilyStatement :
-    ¬ CompatibleSuccDegreeNegativeRightFamilyStatement :=
-  fun hneg =>
-    not_compatibleSuccDegreeNegativeRightFamilyNonnegStatement
-      (fun {f g} hcomp hf_pos hg_pos _ _ hdeg hf_split μ hμ =>
-        hneg (f := f) (g := g) hcomp hf_pos hg_pos hdeg hf_split μ hμ)
-
-/-- The signed right-pencil shortcut is false, because it contains the negative
-right-pencil half-line. -/
-lemma not_compatibleSuccDegreeSignedRightFamilyStatement :
-    ¬ CompatibleSuccDegreeSignedRightFamilyStatement :=
-  fun hsigned =>
-    not_compatibleSuccDegreeNegativeRightFamilyStatement
-      (fun {f g} hcomp hf_pos hg_pos hdeg hf_split μ _ =>
-        hsigned (f := f) (g := g) hcomp hf_pos hg_pos hdeg hf_split μ)
-
-/-- The coefficient-free all-combinations shortcut is false, because it would
-imply the negative right-pencil shortcut. -/
-lemma not_compatibleSuccDegreeAllComboStatement :
-    ¬ CompatibleSuccDegreeAllComboStatement :=
+/-- Compatible successor-degree pairs need not have all real combinations
+real-rooted: this would contain the negative right pencil. -/
+lemma not_forall_compatible_succDegree_allComboRealRooted :
+    ¬ ∀ ⦃f g : ℝ[X]⦄,
+      Compatible f g →
+      HasPosLeadingCoeff f →
+      HasPosLeadingCoeff g →
+      g.natDegree = f.natDegree + 1 →
+      f.Splits →
+      AllComboRealRooted f g :=
   fun hall =>
-    not_compatibleSuccDegreeNegativeRightFamilyStatement
-      (compatibleSuccDegreeNegativeRightFamily_of_allCombo hall)
+    not_forall_compatible_succDegree_negativeRightFamily_splits
+      (fun {f g} hcomp hf_pos hg_pos _ _ hdeg hf_split μ _ => by
+        simpa using hall (f := f) (g := g) hcomp hf_pos hg_pos hdeg hf_split 1 μ)
 
-/-! ### The general no-common orientation statement is false
+/-! ### No-common positive combinations need not be oriented
 
-The named `PosComboNoCommonOrientationStatement` (with the weaker conclusion
-`StrictInterl f g ∨ StrictInterl g f`, and no nonnegative-coefficient hypothesis) is also
-false.  Witnesses: `f = (X - 1)(X + 1) = X^2 - 1` and
+Even the weaker conclusion `StrictInterl f g ∨ StrictInterl g f`, without a
+nonnegative-coefficient hypothesis, fails.  Witnesses: `f = (X - 1)(X + 1) = X^2 - 1` and
 `g = (X - 2)(X + 2) = X^2 - 4`.  Every positive combination
 `lambda * f + mu * g = (lambda + mu) * X^2 - (lambda + 4 * mu)` is
 real-rooted; the pair has no common roots; but `g`'s roots strictly nest
@@ -652,11 +657,29 @@ private lemma orientCex_not_strictInterl :
     · simp only [ListAlternates, ListInterlaces] at halt
       simp_all
 
-/-! ### The residual succ-degree orientation target is false
+/-- Positive-combination real-rootedness without common roots does not force
+either interlacing orientation, even in equal degree. -/
+lemma not_forall_posCombo_noCommon_strictInterl_or :
+    ¬ ∀ ⦃f g : ℝ[X]⦄,
+      PosComboRealRooted f g →
+      HasPosLeadingCoeff f →
+      HasPosLeadingCoeff g →
+      f.natDegree ≤ g.natDegree →
+      g.natDegree ≤ f.natDegree + 1 →
+      (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+      StrictInterl f g ∨ StrictInterl g f :=
+  fun horient =>
+    orientCex_not_strictInterl
+      (horient orientCex_posComboRealRooted
+        orientCexF_hasPosLeadingCoeff orientCexG_hasPosLeadingCoeff
+        (by simp [orientCexF_natDegree, orientCexG_natDegree])
+        (by simp [orientCexF_natDegree, orientCexG_natDegree])
+        orientCex_noCommon)
 
-The residual branch of the succ-degree no-common orientation problem
-(`PosComboNoCommonSuccDegreeRootCountResidualStrictInterlStatement`) additionally
-assumes `f.coeff 0 = 0` and `g.coeff 0 ≠ 0`.  It is false: take `f = X` and
+/-! ### Successor-degree orientation fails even with `f.coeff 0 = 0`
+
+Adding the hypotheses `f.coeff 0 = 0` and `g.coeff 0 ≠ 0` to the
+successor-degree orientation problem does not help: take `f = X` and
 `g = (X + 1)(X + 2)`.  A common left interleaver `X + 3/2` witnesses the
 positive-combination condition, but `0`, the only root of `X`, lies strictly to
 the right of both roots of `g`, so `StrictInterl X g` fails. -/
@@ -747,6 +770,30 @@ private lemma X_not_strictInterl_xAddOne_xAddTwo :
   have hf_le := hstrictInterl.roots_le_of_right hg_le
   have h0 : (0 : ℝ) ∈ (X : ℝ[X]).roots := by simp
   grind
+
+/-- Fixed orientation fails for successor-degree pairs even when the
+lower-degree polynomial vanishes at `0` and the higher-degree one does not. -/
+lemma not_forall_posCombo_succDegree_noCommon_coeff_zero_strictInterl :
+    ¬ ∀ ⦃f g : ℝ[X]⦄,
+      HasPosLeadingCoeff f →
+      HasPosLeadingCoeff g →
+      HasNonnegCoeffs f →
+      HasNonnegCoeffs g →
+      PosComboRealRooted f g →
+      g.natDegree = f.natDegree + 1 →
+      (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+      f.Splits →
+      f.coeff 0 = 0 →
+      g.coeff 0 ≠ 0 →
+      StrictInterl f g :=
+  fun hresid =>
+    X_not_strictInterl_xAddOne_xAddTwo
+      (hresid X_hasPosLeadingCoeff xAddOne_xAddTwo_hasPosLeadingCoeff
+        X_hasNonnegCoeffs xAddOne_xAddTwo_hasNonnegCoeffs
+        X_xAddOne_xAddTwo_posComboRealRooted
+        (by simp [xAddOne_xAddTwo_natDegree])
+        X_xAddOne_xAddTwo_noCommon X_isRealRooted.2 X_coeff_zero
+        xAddOne_xAddTwo_coeff_zero_ne)
 
 end CommonInterleaverExamples
 
