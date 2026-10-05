@@ -40,8 +40,8 @@ theorem not_theorem21CompatibleToRootCountBranchesNonconstantStatement :
       (Polynomial.Splits.X.mul Polynomial.Splits.X).neg
   have hcompat : Compatible (X : ℝ[X]) (-(X ^ 2)) := by
     simpa [pow_two] using
-      compatible_mul_common_factor
-        (d := (X : ℝ[X])) Polynomial.Splits.X hbase
+      hbase.mul_common_factor
+        (d := (X : ℝ[X])) Polynomial.Splits.X
   have hsgn : OppositeLeadingSigns (X : ℝ[X]) (-(X ^ 2)) := by norm_num [OppositeLeadingSigns]
   have hfdeg : (X : ℝ[X]).natDegree ≠ 0 := by simp
   have hgdeg : (-(X ^ 2) : ℝ[X]).natDegree ≠ 0 := by
