@@ -628,7 +628,7 @@ Obreschkoff converse, specialized to the positive cone: if
 along a short `iterateTDeriv` run, shorten the multiplicity of `p` until it
 becomes exactly `2`, and then contradict the exact-double-root obstruction
 above. -/
-private lemma hasSimpleRoots_add_right_of_posComboRealRooted
+theorem PosComboRealRooted.hasSimpleRoots_add_right
     {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
@@ -736,17 +736,6 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
                     rw [iterateTDeriv_add, iterateTDeriv_C_mul]
           lia)
         (by grind) hpk_mult hneg_eval_ne hneg_pos
-
-/-- Every interior positive combination of a no-common positive-combination
-family has simple roots. -/
-theorem PosComboRealRooted.hasSimpleRoots_add_right
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {μ : ℝ}
-    (hμ : 0 < μ) :
-    HasSimpleRoots (f + C μ * g) :=
-  hasSimpleRoots_add_right_of_posComboRealRooted hfg hno hμ
 
 /-- Left-family form of `PosComboRealRooted.hasSimpleRoots_add_right`. -/
 theorem PosComboRealRooted.hasSimpleRoots_add_left
