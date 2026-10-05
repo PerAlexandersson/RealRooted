@@ -556,7 +556,8 @@ negative `2 × 2` Lace minor.  The negations below record that refuted
 orientation. -/
 
 /-- Unproved target: Hurwitz stability of `q(x^2) + x p(x^2)` makes the
-reversed two-row Lace matrix of `q` and `p` totally nonnegative. -/
+reversed two-row Lace matrix of `q` and `p` totally nonnegative.  Tracked in a
+GitHub issue (number pending). -/
 def HurwitzOddEvenToReverseFullyInterlacingPairStatement : Prop :=
   ∀ ⦃p q : ℝ[X]⦄,
     IsHurwitzStable (oddEvenPolynomial p q) →
@@ -628,7 +629,8 @@ theorem not_forall_isHurwitzStable_hurwitz_isTotallyNonneg :
 /-- Unproved target: converse of the conformal substitution
 `hermiteBiehlerStableToHurwitzOddEven`.  Right-half-plane stability of the
 odd/even polynomial `q(x^2) + x p(x^2)` forces upper-half-plane stability of
-the Hermite--Biehler combination `q + i p`. -/
+the Hermite--Biehler combination `q + i p`.  Tracked, together with
+`HermiteBiehlerConverseOrientedStatement`, in a GitHub issue (number pending). -/
 def HurwitzOddEvenToHermiteBiehlerStableStatement : Prop :=
   ∀ ⦃p q : ℝ[X]⦄,
     HasNonnegCoeffs p →
@@ -661,7 +663,10 @@ theorem isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp (P : ℂ[X]) :
 /-- Unproved target: oriented converse of `hermiteBiehlerForwardPos`.  For
 polynomials `f`, `g` with positive leading coefficients, upper-half-plane
 stability of `f + i g` forces `StrictInterl g f`.  The checked converse
-`hermiteBiehlerConverse` only gives `StrictInterl g f ∨ StrictInterl f g`. -/
+`hermiteBiehlerConverse` only gives `StrictInterl g f ∨ StrictInterl f g`, and
+`hermiteBiehlerConverseOriented_of_natDegree_lt` settles the strict-degree case.
+Tracked, together with `HurwitzOddEvenToHermiteBiehlerStableStatement`, in a
+GitHub issue (number pending). -/
 def HermiteBiehlerConverseOrientedStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
     HasPosLeadingCoeff f →

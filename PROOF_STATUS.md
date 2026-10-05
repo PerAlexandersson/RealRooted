@@ -16,11 +16,11 @@ theorem, refutation, or production caller. They contain no admission.
 
 | Declaration | Status |
 | --- | --- |
-| `HurwitzOddEvenToReverseFullyInterlacingPairStatement` | Proposed reverse-row replacement for the refuted legacy Hurwitz-to-Lace orientation |
-| `HurwitzOddEvenToHermiteBiehlerStableStatement` | Converse of the conformal substitution `hermiteBiehlerStableToHurwitzOddEven`; input to `strictInterl_of_isHurwitzStable_oddEvenPolynomial` |
-| `HermiteBiehlerConverseOrientedStatement` | Oriented converse Hermite--Biehler theorem; the checked `hermiteBiehlerConverse` is disjunctive |
+| `HurwitzOddEvenToReverseFullyInterlacingPairStatement` | Proposed reverse-row replacement for the refuted legacy Hurwitz-to-Lace orientation; issue pending |
+| `HurwitzOddEvenToHermiteBiehlerStableStatement` | Converse of the conformal substitution `hermiteBiehlerStableToHurwitzOddEven`; input to `strictInterl_of_isHurwitzStable_oddEvenPolynomial`; issue pending (shared with the next row) |
+| `HermiteBiehlerConverseOrientedStatement` | Oriented converse Hermite--Biehler theorem; the checked `hermiteBiehlerConverse` is disjunctive and `hermiteBiehlerConverseOriented_of_natDegree_lt` settles the strict-degree case; issue pending (shared with the previous row) |
 | `hadamardPreservesHurwitzStableStatement` | Garloff--Wagner Theorem 1, Hadamard products preserve Hurwitz stability; issue #1095 |
-| `iterateThetaPlusOneSelfInterlStatement` | Unused open interlacing target for iterates of `theta + 1` |
+| `iterateThetaPlusOneSelfInterlStatement` | Unused open interlacing target for iterates of `theta + 1`; issue pending |
 
 ## Checked replacements
 
@@ -40,20 +40,26 @@ theorem, refutation, or production caller. They contain no admission.
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFInterl_of_nonnegStrictInterl` |
 | Bounded-degree polar-theta interlacing preservation | `polarThetaPreservesInterlStatement`, witnessed by `polarTheta_preserves_interl` |
 | Theta interlacing preservation on the PF cone | `thetaPreservesInterlStatement`, witnessed by `thetaPreservesInterl` |
-| Derivative preservation statement interface | `derivativePreservesInterlStatement`, witnessed by `derivativePreservesInterl` |
+| Derivative preservation of weak interlacing | `derivativePreservesInterl` |
 | Nonnegative interlacing pair gives a Hurwitz-stable odd/even polynomial | `isHurwitzStable_oddEvenPolynomial_of_strictInterl` |
 | Peak-value multivariate stability | `peakValuePolynomial_mvRealStable` |
 | Weighted consecutive peak-value interleaving | `peakValueWeightedDiagonal_consecutive_strictInterl` |
 
-## Refuted interfaces retained as counterexamples
+## Refuted statements
 
-The following propositions remain only beside checked proofs of their
-negations.
+Refuted statements are recorded as checked theorems with an explicit negated
+`∀` statement; no named refuted proposition remains in the library.
 
-| Proposition | Checked negation |
+| Refuted statement | Checked negation |
 | --- | --- |
-| `theorem21CompatibleToRootCountBranchesNonconstantStatement` | `not_theorem21CompatibleToRootCountBranchesNonconstantStatement` |
-| `LegacyHurwitzMatrixTotallyNonnegativeToStableStatement` | `not_hurwitzMatrixTotallyNonnegativeToStableStatement` |
+| Nonconstant forward half of the published Liu Theorem 2.1, without the common-root branch | `LiuOppositeSigns.not_forall_theorem21RootCountBranches_of_compatible_nonconstant` |
+| Row-oriented converse Hurwitz-matrix criterion | `not_forall_isHurwitzStable_of_hurwitz_isTotallyNonneg` |
+
+One exception is kept for a downstream consumer:
+`RowThresholdMatricesPreserveInterlacingSeqNonneg` is false as stated. Its
+checked negation, `NonNestingRooks.not_rowThresholdMatricesPreserveInterlacingSeqNonneg`,
+lives in the downstream `NonNestingRooks` project, which still uses the
+proposition as its interface. It is not a proof target.
 
 The former homogeneous finite-symbol route was removed entirely because its
 checked counterexample and the affine-symbol replacement make its conditional

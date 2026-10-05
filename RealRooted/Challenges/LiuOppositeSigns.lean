@@ -140,7 +140,7 @@ theorem published_forward_direction_fails :
     ¬ ∀ {f g : ℝ[X]}, f.Splits → g.Splits → OppositeLeadingSigns f g →
       f.natDegree ≠ 0 → g.natDegree ≠ 0 → Compatible f g →
         ∃ r s, LeftRootCountBranch f g r s ∨ RightRootCountBranch f g r s :=
-  not_theorem21CompatibleToRootCountBranchesNonconstantStatement
+  not_forall_theorem21RootCountBranches_of_compatible_nonconstant
 
 /-- Compatible real-rooted polynomials with opposite leading signs have degrees
 differing by at most two. -/
