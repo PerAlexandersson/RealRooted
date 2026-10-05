@@ -3,7 +3,7 @@ import RealRooted.Tactic.IteratedDerivativeShiftProduct
 /-!
 # Iterated derivative-shift product examples
 
-Regression examples for product recurrences involving arbitrary `TDeriv`
+Regression examples for product recurrences involving arbitrary `tDeriv`
 iteration depths.
 -/
 
@@ -36,7 +36,7 @@ example {P F : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hrec : ∀ n : Nat,
-      P (n + 1) = F n * TDeriv (-1) (TDeriv (-1) (P n))) :
+      P (n + 1) = F n * tDeriv (-1) (tDeriv (-1) (P n))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_iterated_derivative_shift_product_sequence using
     base := hbase,
