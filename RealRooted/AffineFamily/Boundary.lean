@@ -671,17 +671,4 @@ private lemma
   strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common h hg_ne hg_splits hgnn
     (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
 
-/-- Public orientation selector for the right-hand pair `(g, X * f)` in the
-nonnegative-coefficient regime: if an Obreschkoff alternative is known and the
-pair has no common root, then the distinguished root `0` of `X * f` forces the
-orientation `g ≺ X * f`. -/
-theorem strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
-    {f g : ℝ[X]}
-    (h : StrictInterl g (X * f) ∨ StrictInterl (X * f) g)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
-    (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
-    StrictInterl g (X * f) :=
-  strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common
-    h hg_ne hg_splits hgnn hno
-
 end RealRooted

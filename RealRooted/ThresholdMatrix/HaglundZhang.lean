@@ -980,16 +980,6 @@ theorem A046802_realRooted (n : ℕ) :
     A046802 n ≠ 0 ∧ (A046802 n).Splits :=
   Backend.hzBinomialEulerianPolynomial_realRooted n
 
-theorem A046802_splits (n : ℕ) :
-    (A046802 n).Splits :=
-  (A046802_realRooted n).2
-
-/-- Real-rootedness for the recurrence-defined A046802 family represented by
-the Haglund--Zhang binomial Eulerian polynomial. -/
-theorem oeisA046802_realRooted (n : ℕ) :
-    A046802 n ≠ 0 ∧ (A046802 n).Splits :=
-  A046802_realRooted n
-
 /-- Tactic-facing theorem for the `rr_s_inversion_binomial_eulerian_sequence`
 route. -/
 theorem rr_s_inversion_binomial_eulerian_sequence (n : ℕ) :

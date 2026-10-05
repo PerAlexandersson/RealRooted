@@ -595,20 +595,6 @@ theorem gustafsson_solus_interlacing_recursion_fin_polynomials_interlaces
       GustafssonSolus.gustafsson_solus_interlacing_recursion_fin_choices
         phi delete hphi hlocal fs hfs_len hfs
 
-/-- Gustafsson--Solus Lemma 3.4 in paper-shaped finite-indexed polynomial-list
-form.  The output list has entries `g_i` or `g_i - f_{phi i}` according to
-`delete`. -/
-theorem gustafsson_solus_interlacing_recursion_fin_polynomials
-    {q m : ℕ} (phi : Fin (m + 1) → ℕ) (delete : Fin (m + 1) → Bool)
-    (hphi : ∀ i : Fin m, phi i.castSucc ≤ phi i.succ)
-    (hlocal : ∀ i : Fin m, phi i.castSucc = phi i.succ →
-      delete i.castSucc = true → delete i.succ = true)
-    (fs : List ℝ[X]) (hfs_len : fs.length = q)
-    (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeq0Nonneg (gsPaperPolynomials q m phi delete fs) :=
-  gustafsson_solus_interlacing_recursion_fin_polynomials_interlaces
-    phi delete hphi hlocal fs hfs_len hfs
-
 /-- Real-rootedness projection of the paper-shaped Gustafsson--Solus
 polynomial-list recursion. -/
 theorem gustafsson_solus_interlacing_recursion_fin_polynomials_realRooted

@@ -181,8 +181,8 @@ lemma convex_stdSimplex : Convex ℝ (RealRooted.standardSimplex ℝ n) :=
 /-- The spectrum of a matrix `A` is equal to the spectrum of its corresponding linear map
 `Matrix.toLin' A`. -/
 lemma spectrum_eq_spectrum_toLin' (A : Matrix n n ℝ) :
-    spectrum ℝ A = spectrum ℝ (Matrix.toLin' A) := by
-  exact Eq.symm (AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (Pi.basisFun ℝ n)) A)
+    spectrum ℝ A = spectrum ℝ (Matrix.toLin' A) :=
+  Eq.symm (AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (Pi.basisFun ℝ n)) A)
 
 /-- The determinant of `μ • 1 - A` is the evaluation of the characteristic polynomial of `A` at
 `μ`. -/
@@ -367,8 +367,8 @@ lemma ker_ne_bot_of_det_eq_zero (A : Matrix n n ℝ) :
 
 -- Basic kernel-injectivity relationship
 lemma ker_eq_bot_iff_injective_toLin' (A : Matrix n n ℝ) :
-    LinearMap.ker (Matrix.toLin' A) = ⊥ ↔ Function.Injective (Matrix.toLin' A) := by
-  exact LinearMap.ker_eq_bot
+    LinearMap.ker (Matrix.toLin' A) = ⊥ ↔ Function.Injective (Matrix.toLin' A) :=
+  LinearMap.ker_eq_bot
 
 -- For finite dimensions, injective endomorphisms are bijective
 lemma injective_iff_bijective_toLin' (A : Matrix n n ℝ) :
@@ -569,8 +569,8 @@ lemma spectralRadius_le_nnnorm {𝕜 A : Type*} [NontriviallyNormedField 𝕜]
 -- Specialized version for continuous linear maps
 lemma spectralRadius_le_nnnorm_continuousLinearMap {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] [CompleteSpace E] [NormOneClass (E →L[ℝ] E)] (T : E →L[ℝ] E) :
-    spectralRadius ℝ T ≤ ↑‖T‖₊ := by
-  exact spectralRadius_le_nnnorm T
+    spectralRadius ℝ T ≤ ↑‖T‖₊ :=
+  spectralRadius_le_nnnorm T
 
 omit [DecidableEq n] in
 /-- The spectral radii of a matrix and its transpose are equal. -/
@@ -725,8 +725,8 @@ lemma isRoot_of_hasEigenvalue {A : Matrix n n ℝ} {μ : ℝ}
 `Matrix.toLin' A`. -/
 theorem spectrum.Matrix_toLin'_eq_spectrum {R n : Type*} [CommRing R] [Fintype n] [DecidableEq n]
     (A : Matrix n n R) :
-    spectrum R (Matrix.toLin' A) = spectrum R A := by
-  exact AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (Pi.basisFun R n)) A
+    spectrum R (Matrix.toLin' A) = spectrum R A :=
+  AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (Pi.basisFun R n)) A
 end Matrix
 
 /-- If a linear map `f` has an eigenvector `v` for an eigenvalue `μ`, then `μ` is in the spectrum

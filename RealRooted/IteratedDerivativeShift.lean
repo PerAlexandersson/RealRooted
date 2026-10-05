@@ -714,7 +714,7 @@ lemma hasPosLeadingCoeff_derivative_common_factor_quotient
     (hm : 1 ≤ m) (hq_pos : HasPosLeadingCoeff q) :
     HasPosLeadingCoeff (C (m : ℝ) * q + (X - C a) * q.derivative) := by
   by_cases hqdeg : q.natDegree = 0
-  · have hder_zero : q.derivative = 0 := derivative_eq_zero_of_natDegree_eq_zero hqdeg
+  · have hder_zero : q.derivative = 0 := Polynomial.derivative_eq_zero.mpr hqdeg
     have hm_pos : 0 < (m : ℝ) := by positivity
     simpa [hder_zero] using hasPosLeadingCoeff_C_mul hm_pos hq_pos
   · have hm_pos : 0 < (m : ℝ) := by positivity

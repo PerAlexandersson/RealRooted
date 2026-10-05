@@ -366,7 +366,7 @@ theorem eulerInsertionStep_derivative_strictInterl_zeroStep
   have htheta_deg : (theta p).natDegree = D := by
     unfold theta
     rw [natDegree_mul X_ne_zero
-      (derivative_ne_zero_of_natDegree_ne_zero (by lia)), natDegree_X,
+      ((Polynomial.derivative_ne_zero (p := p)).mpr (by lia)), natDegree_X,
       p.natDegree_derivative, hpdeg]
     lia
   have hbase : StrictInterl p (theta p) := by
