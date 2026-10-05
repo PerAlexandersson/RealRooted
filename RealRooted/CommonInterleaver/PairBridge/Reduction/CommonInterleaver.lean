@@ -1,4 +1,5 @@
-import RealRooted.CommonInterleaver.PairBridge.Reduction.Basic
+import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot
+import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
 import RealRooted.SameDegreeCountFromAnalytic
 
 /-!
@@ -157,46 +158,6 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
           (PosComboRealRooted.comm hfg) hdeg' hclose_left hfdeg with
       ⟨h, hg_strictInterl, hf_strictInterl⟩
     exact ⟨h, hf_strictInterl, hg_strictInterl⟩
-
-/-- Ordered nonnegative-coefficient degree-`≤ 2` pair endpoint.  Shared roots
-are factored out recursively, and the terminal no-common-root case is the
-checked low-degree root-crossing endpoint. -/
-theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboPairHasCommonInterleaver_of_natDegree_le_reduction
-    (N := 2)
-    (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
-      posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
-        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
-    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
-
-/-- Nonnegative-coefficient degree-`≤ 2` pair endpoint, with no degree order
-assumption. -/
-theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hfdeg : f.natDegree ≤ 2)
-    (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
-    (N := 2)
-    (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
-      posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
-        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
-    hf_pos hg_pos hfnn hgnn hfg hfdeg hgdeg
 
 /-- Ordered common-interleaver theorem for nonnegative positive-combination
 pairs: shared roots are factored out recursively, and the no-common case is

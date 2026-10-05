@@ -913,25 +913,6 @@ end PosComboRealRooted
 
 namespace PosComboRealRooted
 
-lemma family_pair_data_right {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hdeg : f.natDegree ≤ g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {μ₁ μ₂ : ℝ} (hμ₁ : 0 < μ₁) (hμ₂ : 0 < μ₂) (hμ : μ₁ ≠ μ₂) :
-    PosComboRealRooted (f + C μ₁ * g) (f + C μ₂ * g) ∧
-    HasPosLeadingCoeff (f + C μ₁ * g) ∧
-    HasPosLeadingCoeff (f + C μ₂ * g) ∧
-    (f + C μ₁ * g).natDegree = g.natDegree ∧
-    (f + C μ₂ * g).natDegree = g.natDegree ∧
-    IsCoprime (f + C μ₁ * g) (f + C μ₂ * g) := by
-  refine ⟨family_pair_right hfg hμ₁ hμ₂, ?_, ?_, ?_, ?_, ?_⟩
-  · exact family_hasPosLeadingCoeff_right hdeg hf_pos hg_pos hμ₁
-  · exact family_hasPosLeadingCoeff_right hdeg hf_pos hg_pos hμ₂
-  · exact family_natDegree_right hdeg hf_pos hg_pos hμ₁
-  · exact family_natDegree_right hdeg hf_pos hg_pos hμ₂
-  · exact family_isCoprime_right hfg hno hμ₁ hμ
-
 lemma family_pair_data_left {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree ≤ f.natDegree)
@@ -950,23 +931,6 @@ lemma family_pair_data_left {f g : ℝ[X]}
   · exact family_natDegree_left hdeg hf_pos hg_pos hlam₁
   · exact family_natDegree_left hdeg hf_pos hg_pos hlam₂
   · exact family_isCoprime_left hfg hno hlam₁ hlam
-
-/-- Specialized `1/2` right-family package for `(f + g, f + 2g)`. This is the
-canonical positive-combination reroute used in the same-degree bridge search. -/
-lemma family_pair_data_right_one_two {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hdeg : f.natDegree ≤ g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    PosComboRealRooted (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g) ∧
-    HasPosLeadingCoeff (f + C (1 : ℝ) * g) ∧
-    HasPosLeadingCoeff (f + C (2 : ℝ) * g) ∧
-    (f + C (1 : ℝ) * g).natDegree = g.natDegree ∧
-    (f + C (2 : ℝ) * g).natDegree = g.natDegree ∧
-    IsCoprime (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g) :=
-  family_pair_data_right
-    (f := f) (g := g) hfg hdeg hf_pos hg_pos hno zero_lt_one (by simp)
-    (by simp)
 
 /-- Symmetric `1/2` left-family package for `(f + g, 2f + g)`. -/
 lemma family_pair_data_left_one_two {f g : ℝ[X]}
@@ -1027,19 +991,6 @@ lemma family_pair_data_segment {f g : ℝ[X]}
     segment_natDegree hdeg hf_pos hg_pos hβ₁0 hβ₁1,
     segment_natDegree hdeg hf_pos hg_pos hβ₂0 hβ₂1,
     family_isCoprime_segment hfg hno hβ₁0 hβ₁1 hβ⟩
-
-/-- A common root of the specialized right family `(f + g, f + 2g)` is already
-a common root of `(f, g)`, so the original no-common hypothesis excludes it. -/
-theorem no_common_root_right_family_one_two_of_no_common
-    {f g : ℝ[X]}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ r, (f + C (1 : ℝ) * g).IsRoot r → ¬ (f + C (2 : ℝ) * g).IsRoot r := by
-  intro r hp hq
-  have hp_eval : (f + C (1 : ℝ) * g).eval r = 0 := by simp_all
-  have hq_eval : (f + C (2 : ℝ) * g).eval r = 0 := by simp_all
-  rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hp_eval hq_eval
-  have hg_eval : g.eval r = 0 := by grind
-  simp_all
 
 /-- A common root of the specialized left family `(f + g, 2f + g)` is already
 a common root of `(f, g)`, so the original no-common hypothesis excludes it. -/
