@@ -358,15 +358,6 @@ theorem sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
       sameDegree_rootCountAbove_pointwise_of_not_exists_pos_isRoot
         hf_pos hg_pos hfg hdeg hxf hxg hcross
 
-/-- `sameDegree_rootCountAbove_bounds_of_posCombo_noCommon` in the shape of
-`PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement`, kept for its
-`LiuOppositeSigns` callers. -/
-theorem posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic :
-    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement :=
-  fun _ _ hf_pos hg_pos _hfnn _hgnn hfg hdeg hno =>
-    sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
-      hf_pos hg_pos hfg hdeg hno
-
 /-- **Same-degree case of Chudnovsky--Seymour for two polynomials.** If every
 positive combination of `f` and `g` is real-rooted, `f` and `g` have equal
 degree, positive leading coefficients and no common roots, then they have a

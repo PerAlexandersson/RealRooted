@@ -14,12 +14,10 @@ open Polynomial
 namespace RealRooted
 namespace LiuOppositeSigns
 
-/-- A positive-leading, coefficientwise nonnegative same-degree pair without
-common roots whose positive combinations are real-rooted is a positive-split
-root-count pair. -/
+/-- A positive-leading same-degree pair without common roots whose positive
+combinations are real-rooted is a positive-split root-count pair. -/
 theorem positiveSplitSameDegreeRootCountAboveNonRoot {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     PositiveSplitRootCountPair f g := by
@@ -29,8 +27,8 @@ theorem positiveSplitSameDegreeRootCountAboveNonRoot {f g : ℝ[X]}
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
   exact PositiveSplitRootCountPair.of_rootCountAbove_bounds_of_nonRoot
     hf_pos hg_pos hf_split hg_split
-    (posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+    (sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
+      hf_pos hg_pos hfg hdeg hno)
 
 /-- One oriented strict-upper non-root count bound for a positive-leading
 same-degree compatible pair with no common roots. -/

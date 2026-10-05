@@ -80,23 +80,6 @@ theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
     simpa [rootSlotInterval, hj0, hjlast, hlen] using
       icc_inter_icc_nonempty_of_crossing hrf_step hrg_step hcross_fg hcross_gf
 
-/-- Non-root-threshold version of the same-degree upper root-count bound.  It
-holds for every such pair (see
-`sameDegree_rootCountAbove_bounds_of_posCombo_noCommon`); the proposition is
-kept only for its `LiuOppositeSigns` callers. -/
-def PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
-
 /-- Same-degree sign/parity bridge in the right-pencil language.  At a common
 non-root threshold, the combined lower root-count parity is equivalent to the
 absence of a positive parameter for which `f + C μ * g` vanishes at the
