@@ -349,35 +349,3 @@ syntax (name := rr_mw_derivative_neg_X_sq_auto_named)
 
 end Tactic
 end RealRooted
-/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
-    Canonical syntax is preferred; these declarations retain old scripts
-    and dispatch through the deprecated theorem aliases above. -/
-namespace RealRooted
-namespace Tactic
-syntax (name := rr_prec_evalCoeff_nonpos_named_legacy)
-  "rr_prec_evalCoeff_nonpos" " using "
-    "interlaces" ":=" term ","
-    "source_pos_lc" ":=" term ","
-    "target_pos_lc" ":=" term ","
-    "degree_lower" ":=" term ","
-    "degree_upper" ":=" term ","
-    "coeff_nonpos" ":=" term :
-  tactic
-
-syntax (name := rr_prec_evalCoeff_nonpos_degree_named_legacy)
-  "rr_prec_evalCoeff_nonpos" " using "
-    "interlaces" ":=" term ","
-    "source_pos_lc" ":=" term ","
-    "target_pos_lc" ":=" term ","
-    "degree" ":=" term ","
-    "coeff_nonpos" ":=" term :
-  tactic
-
-syntax (name := rr_prec_evalCoeff_nonpos_inferred_legacy)
-  "rr_prec_evalCoeff_nonpos" : tactic
-
-syntax (name := rr_prec_evalCoeff_nonpos_degree_inferred_legacy)
-  "rr_prec_evalCoeff_nonpos" " using " "degree" ":=" term : tactic
-
-end Tactic
-end RealRooted
