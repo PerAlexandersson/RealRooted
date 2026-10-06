@@ -87,7 +87,7 @@ private theorem factorial_compression_boundary {a : ℝ} {p : ℝ[X]}
     SimpleNegativeRoots (compression 2 0 (nextPolynomial a p)) ∧
     StrictRootInterl (compression 1 0 p)
       (compression 2 0 (nextPolynomial a p)) := by
-  have hp0 := coeff_zero_pos_of_negativeRoots hpsplit hppos hproots
+  have hp0 := coeff_zero_pos_of_roots_neg hpsplit hppos hproots
   have hp1 : 0 < p.coeff 1 := by
     simpa only [← hpdegree, coeff_natDegree] using hppos
   rw [(boundary_compressions a p).1, (boundary_compressions a p).2]
@@ -121,23 +121,23 @@ private theorem compression_nextPolynomial_strictRootGeometry {N ell : ℕ} {a :
   have hWbound : (kernel N ell a).natDegree ≤ N := by
     rw [kernel_natDegree N ell a hN hell ha]
     lia
-  have hkernel := kernel_strictRootGeometry N ell a hN hell ha hm
-  have hU : SimpleNegativeRoots U := schurSzegoComp_simpleNegativeRoots_of_negativeRoots
+  have hkernel := kernel_strict_root_geometry N ell a hN hell ha hm
+  have hU : SimpleNegativeRoots U := schurSzegoComp_simpleNegativeRoots_of_roots_neg
     hpdegree hpsplit hppos hproots hUbound (h_simple_negative _ hm) (h_pos_leading _)
-  have hW : SimpleNegativeRoots W := schurSzegoComp_simpleNegativeRoots_of_negativeRoots
+  have hW : SimpleNegativeRoots W := schurSzegoComp_simpleNegativeRoots_of_roots_neg
     hpdegree hpsplit hppos hproots hWbound
     hkernel.1 (kernel_pos_leading N ell a hN hell ha)
-  have hUW : StrictRootInterl U W := schurSzegoComp_strictRootInterl_of_negativeRoots
+  have hUW : StrictRootInterl U W := schurSzegoComp_strictRootInterl_of_roots_neg
     hN hpdegree hpsplit hppos hproots hUbound hWbound
     hkernel.2 (h_simple_negative _ hm).2.2.2 hkernel.1.2.2.2
   have hUd : U.natDegree = (N + ell) / 2 := by
-    rw [schurSzegoComp_natDegree_of_negativeRoots hpdegree hpsplit hppos hproots hUbound
+    rw [schurSzegoComp_natDegree_of_roots_neg hpdegree hpsplit hppos hproots hUbound
       (h_ne_zero _), h_natDegree]
   have hWd : W.natDegree = (N + ell + 1) / 2 := by
-    rw [schurSzegoComp_natDegree_of_negativeRoots hpdegree hpsplit hppos hproots hWbound
+    rw [schurSzegoComp_natDegree_of_roots_neg hpdegree hpsplit hppos hproots hWbound
       (kernel_ne_zero N ell a hN hell ha), kernel_natDegree N ell a hN hell ha]
   have hVd : V.natDegree = (N + ell - 1) / 2 := by
-    rw [schurSzegoComp_natDegree_of_negativeRoots hpdegree hpsplit hppos hproots
+    rw [schurSzegoComp_natDegree_of_roots_neg hpdegree hpsplit hppos hproots
       (by rw [h_natDegree]; lia) (h_ne_zero _), h_natDegree]
   have hVnonneg : HasNonnegCoeffs V := by
     intro k
@@ -145,16 +145,16 @@ private theorem compression_nextPolynomial_strictRootGeometry {N ell : ℕ} {a :
     rw [coeff_schurSzegoComp]
     split_ifs with hk
     · exact div_nonneg (mul_nonneg
-        ((isPFPolynomial_of_negativeRoots hpsplit hppos hproots).hasNonnegCoeffs k)
+        ((isPFPolynomial_of_roots_neg hpsplit hppos hproots).hasNonnegCoeffs k)
         (h_nonneg _ k)) (by positivity)
     · exact le_rfl
   have hWnonneg : HasNonnegCoeffs W :=
-    (isPFPolynomial_of_negativeRoots hW.2.1 hUW.2.1 hW.2.2.2).hasNonnegCoeffs
+    (isPFPolynomial_of_roots_neg hW.2.1 hUW.2.1 hW.2.2.2).hasNonnegCoeffs
   have hGnonneg : HasNonnegCoeffs (W + X * V) :=
     hWnonneg.add (hasNonnegCoeffs_X.mul hVnonneg)
   have hGzero : 0 < (W + X * V).coeff 0 := by
     simpa [W] using schurSzegoComp_coeff_zero_pos
-      (coeff_zero_pos_of_negativeRoots hpsplit hppos hproots)
+      (coeff_zero_pos_of_roots_neg hpsplit hppos hproots)
       (kernel_coeff_pos N ell a 0 hN hell ha (by lia))
   have hGd : (W + X * V).natDegree = (N + ell + 1) / 2 := by
     apply Nat.le_antisymm
@@ -192,7 +192,7 @@ private theorem compression_nextPolynomial_strictRootGeometry {N ell : ℕ} {a :
     have hratio : 0 < V.eval r / U.derivative.eval r := by
       rw [heval, mul_div_cancel_right₀ _ hder]
       exact mul_pos_of_neg_of_neg (neg_neg_of_pos (by positivity)) hrneg
-    simpa using ratio_sum_neg hrneg hratio (hUW.leftRootRatio_neg hr)
+    simpa using ratio_sum_neg hrneg hratio (hUW.left_root_ratio_neg hr)
   have hscale1 : 0 < (Nat.factorial N : ℝ) / (Nat.factorial (N + ell) : ℝ) := by
     positivity
   have hscale2 : 0 < (Nat.factorial N : ℝ) / (Nat.factorial (N + ell - 1) : ℝ) := by
@@ -231,6 +231,6 @@ theorem compression_nextPolynomial_geometry_of_roots_neg {N ell : ℕ} {a : ℝ}
   exact ⟨hdeg₁, hdeg₂, hinter.1, hinter.2.1,
     hroot₁.2.1, hroot₁.hasSimpleRoots, hroot₁.2.2.2,
     hroot₂.2.1, hroot₂.hasSimpleRoots, hroot₂.2.2.2,
-    hinter.toStrictInterl, hinter.noCommonRoot⟩
+    hinter.toStrictInterl, hinter.no_common_root⟩
 
 end RealRooted.FactorialCompression
