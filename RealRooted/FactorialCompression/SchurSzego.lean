@@ -39,7 +39,6 @@ theorem schurSzegoComp_eq_zero_or_splits_of_negativeRoots {N : ℕ} {p f : ℝ[X
     (hproots : ∀ r ∈ p.roots, r < 0)
     (hfdegree : f.natDegree ≤ N) (hfsplit : f.Splits) :
     schurSzegoComp N p f = 0 ∨ (schurSzegoComp N p f).Splits := by
-  rw [schurSzegoComp_eq_schurSzego]
   exact schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
     (isPFPolynomial_of_negativeRoots hpsplit hppos hproots)
     hpdegree hfdegree hfsplit
@@ -228,8 +227,7 @@ theorem schurSzegoComp_natDegree_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
     (hfdegree : f.natDegree ≤ N) (hfzero : f ≠ 0) :
     (schurSzegoComp N p f).natDegree = f.natDegree := by
   apply natDegree_eq_of_le_of_coeff_ne_zero
-  · rw [schurSzegoComp_eq_schurSzego]
-    exact natDegree_schurSzegoComp_le_right N p f
+  · exact natDegree_schurSzegoComp_le_right N p f
   · rw [coeff_schurSzegoComp, if_pos hfdegree, coeff_natDegree]
     exact div_ne_zero
       (mul_ne_zero
@@ -256,8 +254,7 @@ theorem schurSzegoComp_posLeadingCoeff_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
 theorem schurSzegoComp_linear_combination (N : ℕ) (p f g : ℝ[X]) (α β : ℝ) :
     schurSzegoComp N p (C α * f + C β * g) =
       C α * schurSzegoComp N p f + C β * schurSzegoComp N p g := by
-  simp only [schurSzegoComp_eq_schurSzego, schurSzegoComp_add_right,
-    schurSzegoComp_C_mul_right]
+  simp only [schurSzegoComp_add_right, schurSzegoComp_C_mul_right]
 
 /-- The manuscript's exact scalar Wronskian orientation identity. -/
 theorem schurSzegoComp_wronskian_zero {N : ℕ} (hN : 1 ≤ N)
