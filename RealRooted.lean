@@ -1525,3 +1525,9 @@ import RealRooted.Wronskian.Converse
 import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
 import RealRooted.LiuWang.General
 import RealRooted.MaWang.Weak.DerivativeSign
+import RealRooted.CombinatorialExamples.PathPowerIndependence
+import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+import RealRooted.Mathlib.Algebra.Polynomial.Taylor
+import RealRooted.Mathlib.RingTheory.Polynomial.Resultant.Basic
+import RealRooted.RootContinuity.Path
+import RealRooted.SimpleRootLogDerivative
