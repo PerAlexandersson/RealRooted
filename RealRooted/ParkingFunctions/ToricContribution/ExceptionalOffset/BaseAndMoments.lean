@@ -1,4 +1,5 @@
-import RealRooted.Jacobi.BetaZeroOrthogonality
+import RealRooted.Jacobi.Orthogonality.Integral
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
@@ -195,45 +196,49 @@ theorem exceptionalBasePolynomial_eq_C_mul_shiftedJacobi (m ε : ℕ) :
     ring_nf at hscaled ⊢
     exact hscaled
 
-theorem exceptionalBasePolynomial_betaZeroInner_eq_zero
-    (m ε : ℕ) (q : ℝ[X]) (hq : q.natDegree < m) :
-    jacobiBetaZeroInner ((ε : ℝ) - 1 / 2)
-      (exceptionalBasePolynomial m ε) q = 0 := by
-  have hα : -1 < (ε : ℝ) - 1 / 2 := by
-    have hε : 0 ≤ (ε : ℝ) := by positivity
-    linarith
-  rw [exceptionalBasePolynomial_eq_C_mul_shiftedJacobi,
-    jacobiBetaZeroInner_C_mul_left,
-    shiftedJacobi_betaZeroInner_eq_zero hα q hq, mul_zero]
+private theorem neg_one_lt_exceptionalAlpha (ε : ℕ) : -1 < (ε : ℝ) - 1 / 2 := by
+  have hε : 0 ≤ (ε : ℝ) := by positivity
+  linarith
 
-private theorem jacobiBetaZeroFunctional_exceptionalBase_mul_X_pow
+theorem exceptionalBasePolynomial_shiftedJacobiInner_eq_zero
+    (m ε : ℕ) (q : ℝ[X]) (hq : q.natDegree < m) :
+    shiftedJacobiInner ((ε : ℝ) - 1 / 2) 0
+      (exceptionalBasePolynomial m ε) q = 0 := by
+  rw [exceptionalBasePolynomial_eq_C_mul_shiftedJacobi,
+    shiftedJacobiInner_C_mul_left,
+    shiftedJacobiInner_eq_zero (neg_one_lt_exceptionalAlpha ε) (by norm_num) q hq,
+    mul_zero]
+
+private theorem shiftedJacobiFunctional_exceptionalBase_mul_X_pow
     (m ε j : ℕ) :
-    jacobiBetaZeroFunctional ((ε : ℝ) - 1 / 2)
+    shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
         (exceptionalBasePolynomial m ε * X ^ j) =
       ∑ k ∈ Finset.range (m + 1),
         exceptionalBaseCoeff m ε k /
           ((ε : ℝ) + 1 / 2 + k + j) := by
   rw [exceptionalBasePolynomial, Finset.sum_mul,
-    jacobiBetaZeroFunctional_sum]
+    shiftedJacobiFunctional_sum]
   apply Finset.sum_congr rfl
   intro k hk
-  simp [X_pow_eq_monomial, monomial_mul_monomial,
-    jacobiBetaZeroMoment]
+  simp only [X_pow_eq_monomial, monomial_mul_monomial, shiftedJacobiFunctional_monomial,
+    shiftedJacobiMoment_beta_zero (neg_one_lt_exceptionalAlpha ε), mul_one]
+  push_cast
   ring
 
-private theorem jacobiBetaZeroFunctional_exceptionalEulerInverse_mul_X_pow
+private theorem shiftedJacobiFunctional_exceptionalEulerInverse_mul_X_pow
     (m ε j : ℕ) (γ : ℝ) :
-    jacobiBetaZeroFunctional ((ε : ℝ) - 1 / 2)
+    shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
         (exceptionalEulerInverse m ε γ * X ^ j) =
       ∑ k ∈ Finset.range (m + 1),
         (exceptionalBaseCoeff m ε k * (γ / (γ + k))) /
           ((ε : ℝ) + 1 / 2 + k + j) := by
   rw [exceptionalEulerInverse, Finset.sum_mul,
-    jacobiBetaZeroFunctional_sum]
+    shiftedJacobiFunctional_sum]
   apply Finset.sum_congr rfl
   intro k hk
-  simp [X_pow_eq_monomial, monomial_mul_monomial,
-    jacobiBetaZeroMoment]
+  simp only [X_pow_eq_monomial, monomial_mul_monomial, shiftedJacobiFunctional_monomial,
+    shiftedJacobiMoment_beta_zero (neg_one_lt_exceptionalAlpha ε), mul_one]
+  push_cast
   ring
 
 /-- Moments of the exterior power weight on `(1, ∞)`. -/
@@ -377,10 +382,10 @@ private theorem exceptionalBase_partialFraction_eq_zero
     ∑ k ∈ Finset.range (m + 1),
         exceptionalBaseCoeff m ε k /
           ((ε : ℝ) + 1 / 2 + k + j) = 0 := by
-  have horth := exceptionalBasePolynomial_betaZeroInner_eq_zero
-    m ε (X ^ j) (by simp [hj])
-  rw [jacobiBetaZeroInner,
-    jacobiBetaZeroFunctional_exceptionalBase_mul_X_pow] at horth
+  have horth : shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
+      (exceptionalBasePolynomial m ε * X ^ j) = 0 :=
+    exceptionalBasePolynomial_shiftedJacobiInner_eq_zero m ε (X ^ j) (by simp [hj])
+  rw [shiftedJacobiFunctional_exceptionalBase_mul_X_pow] at horth
   exact horth
 
 /-- Common denominator for the exceptional endpoint sum, regarded as a
@@ -1129,10 +1134,10 @@ private theorem exceptionalEulerInverse_partialFraction_sum
       linarith
     dsimp only [c] at hγ ⊢
     linarith
-  have horth := exceptionalBasePolynomial_betaZeroInner_eq_zero
-    m ε (X ^ j) (by simp [hj])
-  rw [jacobiBetaZeroInner,
-    jacobiBetaZeroFunctional_exceptionalBase_mul_X_pow] at horth
+  have horth : shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
+      (exceptionalBasePolynomial m ε * X ^ j) = 0 :=
+    exceptionalBasePolynomial_shiftedJacobiInner_eq_zero m ε (X ^ j) (by simp [hj])
+  rw [shiftedJacobiFunctional_exceptionalBase_mul_X_pow] at horth
   have hkey : ∀ k ∈ Finset.range (m + 1),
       (exceptionalBaseCoeff m ε k * (γ / (γ + k))) /
           (c + k + j) =
@@ -1149,15 +1154,15 @@ private theorem exceptionalEulerInverse_partialFraction_sum
     ← Finset.mul_sum, horth, mul_zero, sub_zero, Finset.sum_div]
 
 /-- The signed moment identity for a monomial of degree below `m`. -/
-theorem jacobiBetaZeroFunctional_exceptionalEulerInverse_mul_X_pow_eq
+theorem shiftedJacobiFunctional_exceptionalEulerInverse_mul_X_pow_eq
     (m ε j : ℕ) {γ : ℝ}
     (hγ : (ε : ℝ) + 1 / 2 + m - 1 < γ) (hj : j < m) :
-    jacobiBetaZeroFunctional ((ε : ℝ) - 1 / 2)
+    shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
         (exceptionalEulerInverse m ε γ * X ^ j) =
       -(exceptionalEulerInverse m ε γ).eval 1 *
         exceptionalExteriorFunctional ((ε : ℝ) + 1 / 2) γ
           (X ^ j) := by
-  rw [jacobiBetaZeroFunctional_exceptionalEulerInverse_mul_X_pow,
+  rw [shiftedJacobiFunctional_exceptionalEulerInverse_mul_X_pow,
     exceptionalEulerInverse_partialFraction_sum m ε j hγ hj,
     exceptionalEulerInverse_eval_one_eq_sum,
     exceptionalExteriorFunctional_X_pow]
@@ -1172,25 +1177,25 @@ theorem jacobiBetaZeroFunctional_exceptionalEulerInverse_mul_X_pow_eq
   ring
 
 /-- The signed moment identity for every polynomial of degree below `m`. -/
-theorem jacobiBetaZeroFunctional_exceptionalEulerInverse_mul_eq
+theorem shiftedJacobiFunctional_exceptionalEulerInverse_mul_eq
     (m ε : ℕ) {γ : ℝ} (p : ℝ[X])
     (hγ : (ε : ℝ) + 1 / 2 + m - 1 < γ)
     (hp : p.natDegree < m) :
-    jacobiBetaZeroFunctional ((ε : ℝ) - 1 / 2)
+    shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
         (exceptionalEulerInverse m ε γ * p) =
       -(exceptionalEulerInverse m ε γ).eval 1 *
         exceptionalExteriorFunctional ((ε : ℝ) + 1 / 2) γ p := by
   rw [p.as_sum_range_C_mul_X_pow' hp, Finset.mul_sum,
-    jacobiBetaZeroFunctional_sum, exceptionalExteriorFunctional_sum,
+    shiftedJacobiFunctional_sum, exceptionalExteriorFunctional_sum,
     Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro j hj
   rw [show exceptionalEulerInverse m ε γ *
         (C (p.coeff j) * X ^ j) =
       C (p.coeff j) * (exceptionalEulerInverse m ε γ * X ^ j) by ring,
-    jacobiBetaZeroFunctional_C_mul,
+    shiftedJacobiFunctional_C_mul,
     exceptionalExteriorFunctional_C_mul,
-    jacobiBetaZeroFunctional_exceptionalEulerInverse_mul_X_pow_eq
+    shiftedJacobiFunctional_exceptionalEulerInverse_mul_X_pow_eq
       m ε j hγ (Finset.mem_range.mp hj)]
   ring
 
@@ -1218,13 +1223,14 @@ theorem exceptionalEulerInverse_signedMomentIdentity
     (∫ x : ℝ in 0..1,
         (exceptionalEulerInverse m ε γ * p).eval x *
           x ^ ((ε : ℝ) - 1 / 2)) =
-        jacobiBetaZeroFunctional ((ε : ℝ) - 1 / 2)
-          (exceptionalEulerInverse m ε γ * p) :=
-      (jacobiBetaZeroFunctional_eq_integral hα _).symm
+        shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
+          (exceptionalEulerInverse m ε γ * p) := by
+      rw [shiftedJacobiFunctional_eq_integral hα (by norm_num)]
+      simp [shiftedJacobiIntegrand, shiftedJacobiWeight]
     _ = -(exceptionalEulerInverse m ε γ).eval 1 *
           exceptionalExteriorFunctional
             ((ε : ℝ) + 1 / 2) γ p :=
-      jacobiBetaZeroFunctional_exceptionalEulerInverse_mul_eq
+      shiftedJacobiFunctional_exceptionalEulerInverse_mul_eq
         m ε p hγ hp
     _ = -(exceptionalEulerInverse m ε γ).eval 1 *
           ∫ x in Ioi (1 : ℝ),

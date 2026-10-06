@@ -1026,9 +1026,6 @@
     "RealRooted.NarayanaTransformation.Coefficients": {
       "max_modules": 167
    },
-    "RealRooted.NarayanaTransformation.Rectangular.LowDegree": {
-      "max_modules": 168
-   },
     "RealRooted.NarayanaTransformation.Rectangular.Narayana": {
       "max_modules": 169
    },
@@ -1061,9 +1058,6 @@
     },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
       "max_modules": 100
-   },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
-      "max_modules": 101
    },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
       "max_modules": 209
@@ -2013,7 +2007,6 @@
     "RealRooted.NarayanaTransformation.Falling",
     "RealRooted.NarayanaTransformation.Rising",
     "RealRooted.NarayanaTransformation.Coefficients",
-    "RealRooted.NarayanaTransformation.Rectangular.LowDegree",
     "RealRooted.NarayanaTransformation.Rectangular.Narayana",
     "RealRooted.NarayanaTransformation.Rectangular.Preservation",
     "RealRooted.NarayanaTransformation.Rectangular",
@@ -2039,7 +2032,6 @@
     "RealRooted.Hadamard",
     "RealRooted.FiniteFreeMultiplicative",
     "RealRooted.FiniteFreeRootCount",
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree",
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative",
     "RealRooted.CommonInterleaver.FamilySum",
     "RealRooted.DerivativeRecurrence",
