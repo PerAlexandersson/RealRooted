@@ -139,8 +139,9 @@ clawfree graph,” *J. Combin. Theory Ser. B* 97 (2007), 350–357.
 P. Brändén, [“Unimodality, log-concavity, real-rootedness and
 beyond,”](https://arxiv.org/abs/1410.6601) in *Handbook of Enumerative
 Combinatorics*, CRC Press (2015), Section 7.8.
-M. Leander, “Compatible polynomials and edges of polytopes,” arXiv preprint
-(2016), Theorem 2.3.
+M. Leander, [“Compatible polynomials and edgewise
+subdivisions,”](https://arxiv.org/abs/1605.05287) arXiv:1605.05287 (2016),
+Theorem 2.3.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

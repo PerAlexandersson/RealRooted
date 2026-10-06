@@ -13,7 +13,7 @@ version = 1
 section = "theorems"
 slug = "operator-preservers"
 authors = ["Brändén"]
-years = [2011]
+years = [2004]
 
 [[definitions]]
 name = "RealRooted.PreservesRealRootedOrZero"
@@ -76,17 +76,18 @@ either polynomial to be zero, except in the last statement.
 
 ## References
 
-P. Brändén, “Iterated sequences and the geometry of zeros,” *Journal für die
-reine und angewandte Mathematik* 658 (2011), 115–131.  See also the
+P. Brändén, [“On operators on polynomials preserving real-rootedness and the
+Neggers–Stanley conjecture,”](https://arxiv.org/abs/math/0303147) *Journal of
+Algebraic Combinatorics* 20 (2004), 119–130 (Theorem 8 in the arXiv version).
+See also the
 [operator-preserver overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#operatorPreservesInterlacing).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
 https://www.symmetricfunctions.com/realRootedInterlacing.htm#operatorPreservesInterlacing
 
-Catalog reference: P. Branden, "Iterated sequences and the geometry of zeros",
-J. Reine Angew. Math. 658 (2011), Theorem 9 in the operator-preserver notes
-cited by the catalog.
+Catalog reference: P. Brändén, J. Algebraic Combin. 20 (2004), 119–130,
+arXiv:math/0303147; the site cites it as Theorem 9.
 
 This module exposes the checked Obreschkoff-level theorem: a linear operator
 that preserves real-rootedness up to zero preserves interlacing pairs up to the

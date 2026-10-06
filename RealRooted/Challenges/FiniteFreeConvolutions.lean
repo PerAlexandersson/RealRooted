@@ -135,8 +135,9 @@ composition theorem on the Hadamard page applies.
 
 A. W. Marcus, D. A. Spielman, and N. Srivastava, “Finite free convolutions of
 polynomials,” *Probability Theory and Related Fields* 182 (2022), 807–848;
-A. W. Marcus and A. Gribinski, “A rectangular additive convolution for
-polynomials,” *Combinatorial Theory* 2 (2022).
+A. Gribinski and A. W. Marcus, [“A rectangular additive convolution for
+polynomials,”](https://doi.org/10.5070/C62156888) *Combinatorial Theory* 2(1)
+(2022), #16.
 For the application to the Narayana transformation, see
 [symmetricfunctions.com][mao-wang].
 

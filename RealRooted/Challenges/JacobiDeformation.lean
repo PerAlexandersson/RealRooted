@@ -106,7 +106,8 @@ eigenvalues of the Jacobi operator.
    all its entries are strictly positive.
 3. The **Micchelli–Willoughby theorem** makes the initial spectral products of
    that matrix entrywise nonnegative: if $A$ is a real symmetric matrix with
-   nonnegative entries and simple eigenvalues $\mu_1 < \dots < \mu_N$, then
+   nonnegative entries and, in the simple-spectrum case formalized here,
+   eigenvalues $\mu_1 < \dots < \mu_N$, then
    $(A - \mu_1) \cdots (A - \mu_k)$ is entrywise nonnegative for every $k < N$.
    This gives strict signs of the kernel at pairs of quasi-Jacobi roots.
 4. At $\delta = 0$ only the top weight survives, and $J_{m,0}$ is an explicit
@@ -118,6 +119,9 @@ eigenvalues of the Jacobi operator.
    $[0, 1)$ to every $\delta \ge 0$.
 
 ## References
+
+The theorem and its proof are original to this library (P. Alexandersson,
+2026); there is no preprint yet.
 
 C. A. Micchelli and R. A. Willoughby, “On functions which preserve the class
 of Stieltjes matrices,” *Linear Algebra and its Applications* 23 (1979),
