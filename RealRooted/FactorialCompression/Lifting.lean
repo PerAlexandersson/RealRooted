@@ -1,6 +1,9 @@
 import RealRooted.FactorialCompression.RootGeometry
 import RealRooted.GammaTransform.ProperPosition
 
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+
 /-!
 # Adjacent-degree gamma lifting
 
