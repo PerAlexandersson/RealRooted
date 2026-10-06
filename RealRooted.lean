@@ -1555,3 +1555,4 @@ import RealRooted.Challenges.TotallyNonnegativeMatrices
 import RealRooted.Challenges.GammaTransform
 import RealRooted.Challenges.HeilmannLieb
 import RealRooted.Challenges.GraceApolarity
+import RealRooted.Challenges.RealStability
