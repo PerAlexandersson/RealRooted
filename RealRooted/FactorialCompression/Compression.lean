@@ -42,7 +42,7 @@ private theorem choose_mul_mu (N ell k : ℕ) (hk : k ≤ N) :
     nlinarith [hfac]
   · simp [mu, coeff_h, hguard]
 
-/-- First exact operator identity of final manuscript Lemma 3.2. -/
+/-- Factorial compression as a Schur--Szegő composition. -/
 theorem compression_common_kernel (N ell : ℕ) (p : ℝ[X]) :
     compression N ell p =
       C ((N.factorial : ℝ) / ((N + ell).factorial : ℝ)) *
@@ -115,7 +115,7 @@ private theorem coeff_kernel_normalized (N ell : ℕ) (a : ℝ) (k : ℕ) (hN : 
         (1 / 4 : ℝ) * ((N : ℝ) + (ell : ℝ) + 1) * hs0 -
         beta N ell a * hshift + (h (N + ell + 1)).coeff (k + 1) * hbr
 
-/-- Exact all-index kernel coefficient formula of final manuscript Lemma 3.2. -/
+/-- Exact all-index coefficient formula for the degree-changing kernel. -/
 theorem coeff_kernel (N ell : ℕ) (a : ℝ) (k : ℕ) (hN : 1 ≤ N) :
     (kernel N ell a).coeff k =
       if 2 * k ≤ N + ell + 1 then
@@ -226,7 +226,7 @@ private theorem coeff_kernel_multiplier (N ell : ℕ) (a : ℝ) (k : ℕ)
     field_simp <;> ring
   · simp [coeff_kernel N ell a k hN, mu, hi, hguard]
 
-/-- Second exact operator identity of final manuscript Lemma 3.2.
+/-- Exact identity for the compressed adjacent differential step.
 The identity is proved for arbitrary real a and every degree-bounded input;
 the main root theorem retains a>0 and ell≤N. -/
 theorem compression_nextPolynomial (N ell : ℕ) (a : ℝ) (p : ℝ[X])
@@ -262,7 +262,7 @@ theorem compression_nextPolynomial (N ell : ℕ) (a : ℝ) (p : ℝ[X])
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp (lt_of_not_ge hk))
     simp [hk, hpk]
 
-/-- The exact derivative identity of final manuscript Lemma 3.1. -/
+/-- Derivative identity for the common kernel family. -/
 theorem h_previous_derivative (r : ℕ) (hr : 1 ≤ r) :
     h (r - 1) = h r - C (2 / (r : ℝ)) * (X * (h r).derivative) := by
   cases r with
