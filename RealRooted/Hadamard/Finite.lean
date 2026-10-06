@@ -9,30 +9,10 @@ namespace RealRooted
 /-!
 # Low-degree finite Schur--Szego composition
 
-The degree-two Schur--Szegő composition base cases and the discriminant
-inequality.  The general theorem is `finiteSchurSzegoComposition` in
-`RealRooted.Hadamard.Grace`.
+The quadratic discriminant inequality for a Schur--Szegő composition of two
+factors of degree at most two, at an arbitrary level.  The general theorem is
+`finiteSchurSzegoComposition` in `RealRooted.Hadamard.Grace`.
 -/
-
-/-- Low-degree fixed-degree Schur--Szegő composition, through degree two.
-
-This is the specialization of the finite Pólya--Schur route using the checked
-degree-`≤ 2` backward theorem from `RealRooted.MultiplierSequence`; it does
-not use the general Schur--Szegő theorem. -/
-theorem finiteSchurSzegoComposition_of_natDegree_le_two
-    {n : ℕ} (hn : n ≤ 2) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ n)
-    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
-  let gamma : ℕ → ℝ := fun k => f.coeff k / (Nat.choose n k : ℝ)
-  have hgamma : ∀ k, 0 ≤ gamma k := fun k =>
-    div_nonneg (hf.hasNonnegCoeffs k) (by positivity)
-  have hjensen : IsPFPolynomial (jensenPolynomial n gamma) := by
-    simpa [gamma] using hf.jensenPolynomial_normalized_coeff_of_natDegree_le hfdeg
-  rw [schurSzegoComp_comm]
-  simpa [gamma, schurSzegoComp_eq_diagonalOperator] using
-    isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two hn hgamma hjensen hpdeg
-      hsplit
 
 /-- Pure arithmetic core of the Schur--Szego discriminant inequality for two
 degree-`≤ 2` factors at level `N ≥ 2`.  Here `a`, `b`, `c` are the coefficients
@@ -107,9 +87,8 @@ The composition has degree at most two, so it is settled by the quadratic
 discriminant inequality
 `four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp`; the
 low-level cases `n ≤ 1` (where the composition already has degree at most one)
-are handled separately.  Unlike
-`finiteSchurSzegoComposition_of_natDegree_le_two`, here the level `n` is
-unrestricted and the degree bound is placed on the two factors. -/
+are handled separately.  Unlike `finiteSchurSzegoComposition`, the level `n`
+is unrestricted and the degree bound is placed on the two factors. -/
 theorem finiteSchurSzegoComposition_of_factors_natDegree_le_two
     {n : ℕ} {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 2)
