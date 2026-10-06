@@ -52,7 +52,7 @@ CONTENT_RE = re.compile(
 DECLARATION_RE = re.compile(
     r"^\s*(?P<attributes>(?:@\[[^\n]*\]\s*)*)"
     r"(?P<modifiers>(?:(?:private|protected|noncomputable|unsafe|partial)\s+)*)"
-    r"(?P<kind>theorem|lemma|def|abbrev|structure|inductive|class|opaque|instance)\s+"
+    r"(?P<kind>theorem|lemma|def|irreducible_def|abbrev|structure|inductive|class|opaque|instance)\s+"
     f"(?P<name>{ID_START}{ID_REST_DOT}*)(?!{ID_REST_DOT})"
 )
 NAMESPACE_RE = re.compile(f"^\\s*namespace\\s+({ID_START}{ID_REST_DOT}*)\\s*$")

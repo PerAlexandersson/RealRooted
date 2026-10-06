@@ -156,6 +156,21 @@ end RealRooted.Challenges.Sample
             resolved["RealRooted.Challenges.Sample.forall₂_le"].actual_kind, "theorem"
         )
 
+    def test_irreducible_def_is_a_definition(self) -> None:
+        text = catalog_block(
+            definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.sealed"',
+            theorems='[[theorems]]\nname = "RealRooted.Challenges.Sample.sealed_eq"',
+        ) + '''namespace RealRooted.Challenges.Sample
+irreducible_def sealed (n : Nat) : Nat := n + 1
+theorem sealed_eq (n : Nat) : sealed n = n + 1 := sealed_def n
+end RealRooted.Challenges.Sample
+'''
+        self.write("RealRooted/Challenges/Sample.lean", text)
+        resolved = validate_sources(self.root, load_catalog(self.root))
+        self.assertEqual(
+            resolved["RealRooted.Challenges.Sample.sealed"].actual_kind, "definition"
+        )
+
     def test_namespace_modifiers_multiline_and_type_mismatch(self) -> None:
         pages, resolved = self.pages_and_sources()
         self.assertEqual(resolved["RealRooted.Challenges.Sample.family"].actual_kind, "definition")
