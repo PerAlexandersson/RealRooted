@@ -15,7 +15,10 @@ examples, without rewriting those examples immediately.
 - `stirlingPermutations`: Eulerian-style derivative recurrence.
 - `typeBEulerian`: signed Eulerian-style derivative recurrence.
 - `simsun`: derivative recurrence with root-sign side goals.
-- `narayanaQuot`/`narayana`: Liu-Wang/Jacobi-like three-term recurrence.
+- `narayanaQuot`/`narayana`: done.  `strictInterl_narayanaQuot_succ` and
+  `interlaces_narayanaQuot_succ` hold for every `n ≠ 0`, with no side
+  hypotheses, by a weak Liu-Wang induction along the three-term recurrence;
+  `rr_narayana_polynomial_*` covers the generalized `narayanaPolynomial m d`.
 - `motzkin`: recurrence with parity-sensitive interlacing side conditions.
 
 ## OEIS Family A/B targets
@@ -78,7 +81,9 @@ These should drive `rr_liu_wang`.
 - Family E, three-term Sturm examples:
   `A053123`, `A080246`, `A100862`, `A154227`, `A154228`, `A249248`,
   `A049403`, `A057094`, `A061896`, `A079510`.
-- Family G, Narayana/Jacobi/quadratic-lag examples:
+- Family G, Narayana/Jacobi/quadratic-lag examples (the downstream row
+  identity `A001263 n = narayanaQuot (n + 1)` reduces `A001263` to
+  `strictInterl_narayanaQuot_succ`):
   `A001263`, `A008459`, `A060693`, `A091156`, `A108108`, `A126216`,
   `A126217`, `A131198`, `A174867`, `A243676`.
 

@@ -64,14 +64,12 @@ facade. -/
 example {F G H : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
     (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
-    (hH : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (H n))
     (hHF : ∀ n : Nat, StrictInterl (H n) (F n))
     (hHG : ∀ n : Nat, StrictInterl (H n) (G n)) :
     ∀ n : Nat, StrictInterl (H n) (F n + G n) := by
   rr_wagner_common_left_add_sequence using
     left := hF,
     right := hG,
-    common := hH,
     common_interlaces_left := hHF,
     common_interlaces_right := hHG
 

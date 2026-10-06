@@ -5,7 +5,8 @@ import RealRooted.Tactic.PFPolynomial
 # Narayana polynomial tactic frontends
 
 Thin wrappers around the generalized Narayana polynomial PF and consecutive
-proper-position theorems.
+proper-position theorems.  Each tactic also has a field-free form that infers
+the parameter and degree from the goal.
 -/
 
 namespace RealRooted
@@ -82,6 +83,33 @@ syntax (name := rr_narayana_polynomial_sequence_nonpos_roots_named)
     "degree" ":=" term :
   tactic
 
+syntax (name := rr_narayana_polynomial_pf_inferred)
+  "rr_narayana_polynomial_pf" : tactic
+
+syntax (name := rr_narayana_polynomial_nonneg_coeffs_inferred)
+  "rr_narayana_polynomial_nonneg_coeffs" : tactic
+
+syntax (name := rr_narayana_polynomial_splits_inferred)
+  "rr_narayana_polynomial_splits" : tactic
+
+syntax (name := rr_narayana_polynomial_nonpos_roots_inferred)
+  "rr_narayana_polynomial_nonpos_roots" : tactic
+
+syntax (name := rr_narayana_polynomial_strict_interl_succ_inferred)
+  "rr_narayana_polynomial_strict_interl_succ" : tactic
+
+syntax (name := rr_narayana_polynomial_sequence_pf_inferred)
+  "rr_narayana_polynomial_sequence_pf" : tactic
+
+syntax (name := rr_narayana_polynomial_sequence_nonneg_coeffs_inferred)
+  "rr_narayana_polynomial_sequence_nonneg_coeffs" : tactic
+
+syntax (name := rr_narayana_polynomial_sequence_splits_inferred)
+  "rr_narayana_polynomial_sequence_splits" : tactic
+
+syntax (name := rr_narayana_polynomial_sequence_nonpos_roots_inferred)
+  "rr_narayana_polynomial_sequence_nonpos_roots" : tactic
+
 macro_rules
   | `(tactic|
       rr_narayana_polynomial_pf using
@@ -131,25 +159,27 @@ macro_rules
         parameter := $m:term,
         degree := $d:term) =>
       `(tactic| exact RealRooted.Tactic.narayanaPolynomial_sequence_nonpos_roots $m $d)
+  | `(tactic| rr_narayana_polynomial_pf) =>
+      `(tactic| exact RealRooted.narayanaPolynomialRootLocation _ _)
+  | `(tactic| rr_narayana_polynomial_nonneg_coeffs) =>
+      `(tactic| exact RealRooted.hasNonnegCoeffs_narayanaPolynomial _ _)
+  | `(tactic| rr_narayana_polynomial_splits) =>
+      `(tactic| exact RealRooted.splits_narayanaPolynomial _ _)
+  | `(tactic| rr_narayana_polynomial_nonpos_roots) =>
+      `(tactic|
+        exact
+          RealRooted.IsPFPolynomial.hasOnlyNonposRoots
+            (RealRooted.narayanaPolynomialRootLocation _ _))
+  | `(tactic| rr_narayana_polynomial_strict_interl_succ) =>
+      `(tactic| exact RealRooted.strictInterl_narayanaPolynomial_succ _ _)
+  | `(tactic| rr_narayana_polynomial_sequence_pf) =>
+      `(tactic| exact RealRooted.Tactic.narayanaPolynomial_sequence_pf _ _)
+  | `(tactic| rr_narayana_polynomial_sequence_nonneg_coeffs) =>
+      `(tactic| exact RealRooted.Tactic.narayanaPolynomial_sequence_nonneg_coeffs _ _)
+  | `(tactic| rr_narayana_polynomial_sequence_splits) =>
+      `(tactic| exact RealRooted.Tactic.narayanaPolynomial_sequence_splits _ _)
+  | `(tactic| rr_narayana_polynomial_sequence_nonpos_roots) =>
+      `(tactic| exact RealRooted.Tactic.narayanaPolynomial_sequence_nonpos_roots _ _)
 
-end Tactic
-end RealRooted
-/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
-    Canonical syntax is preferred; these declarations retain old scripts
-    and dispatch through the deprecated theorem aliases above. -/
-namespace RealRooted
-namespace Tactic
-syntax (name := rr_narayana_polynomial_prec_succ_named_legacy)
-  "rr_narayana_polynomial_prec_succ" " using "
-    "parameter" ":=" term ","
-    "degree" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_narayana_polynomial_prec_succ using
-        parameter := $m:term,
-        degree := $n:term) =>
-      `(tactic| exact RealRooted.strictInterl_narayanaPolynomial_succ $m $n)
 end Tactic
 end RealRooted
