@@ -1,3 +1,4 @@
+import RealRooted.FactorialCompression.Definitions
 import RealRooted.FactorialCompression.RootGeometry
 
 import Mathlib.Tactic.FieldSimp
@@ -20,11 +21,6 @@ open scoped BigOperators
 noncomputable section
 
 namespace RealRooted.FactorialCompression
-
-def h (r : ℕ) : ℝ[X] :=
-  ∑ j ∈ Finset.range (r / 2 + 1),
-    C ((Nat.factorial r : ℝ) /
-      ((Nat.factorial j : ℝ) * (Nat.factorial (r - 2 * j) : ℝ))) * X ^ j
 
 theorem coeff_h (r k : ℕ) :
     (h r).coeff k = if 2 * k ≤ r then
