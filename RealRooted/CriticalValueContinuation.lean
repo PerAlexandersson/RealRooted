@@ -7,6 +7,7 @@ import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Calculus.ImplicitContDiff
+import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 
 /-!
 # Continuation of simple polynomial roots
@@ -266,14 +267,6 @@ theorem HasSimpleRoots.exists_pos_criticalValueMargin
   apply Multiset.mem_toFinset.mpr
   exact (Polynomial.mem_roots hderivative).mpr hx
 
-private theorem toSpanSingleton_isInvertible {c : ℝ} (hc : c ≠ 0) :
-    (ContinuousLinearMap.toSpanSingleton ℝ c).IsInvertible := by
-  let e : ℝ ≃L[ℝ] ℝ :=
-    ContinuousLinearEquiv.smulLeft (Units.mk0 c hc)
-  refine ⟨e, ?_⟩
-  ext
-  simp [e, ContinuousLinearMap.toSpanSingleton_apply, mul_comm]
-
 /-- A regular real root of a jointly `C¹` polynomial family admits a local
 `C¹` parameter branch. -/
 theorem exists_contDiffAt_polynomial_root
@@ -298,7 +291,7 @@ theorem exists_contDiffAt_polynomial_root
     · exact (p t).hasFDerivAt r
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact toSpanSingleton_isInvertible hregular
+    exact ContinuousLinearMap.isInvertible_toSpanSingleton hregular
   let ρ : ℝ → ℝ := hF.implicitFunction (by simp) hAinv
   have hρbase : ρ t = r :=
     hF.implicitFunction_apply_self (by simp) hAinv

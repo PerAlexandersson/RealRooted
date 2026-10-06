@@ -11,6 +11,7 @@ import RealRooted.RootCounting.CrossingExhaustion
 import RealRooted.RootCounting.Descartes
 import RealRooted.SameDegreeMultiplicityLowerCount
 import RealRooted.Wronskian.WeakForward
+import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 
 /-!
 # Quadratic interlacing closure
@@ -453,22 +454,6 @@ theorem contDiff_quadraticInterlacingPencil_eval_prod
     ((contDiff_fst.pow 2).mul
       ((Polynomial.contDiff_aeval F ∞).comp contDiff_snd))
 
-private theorem quadratic_toSpanSingleton_isInvertible {c : ℝ} (hc : c ≠ 0) :
-    (ContinuousLinearMap.toSpanSingleton ℝ c).IsInvertible := by
-  let e : ℝ ≃L[ℝ] ℝ :=
-    ContinuousLinearEquiv.smulLeft (Units.mk0 c hc)
-  refine ⟨e, ?_⟩
-  ext
-  simp [e, ContinuousLinearMap.toSpanSingleton_apply, mul_comm]
-
-private theorem quadratic_inverse_toSpanSingleton_apply
-    {c y : ℝ} (hc : c ≠ 0) :
-    (ContinuousLinearMap.toSpanSingleton ℝ c).inverse y = y / c := by
-  have hinv := quadratic_toSpanSingleton_isInvertible hc
-  have h := hinv.self_apply_inverse y
-  simp only [ContinuousLinearMap.toSpanSingleton_apply, smul_eq_mul] at h
-  exact (eq_div_iff hc).2 h
-
 /-- A simple root of the quadratic pencil admits a local differentiable root
 branch. Its velocity is the implicit quotient of the parameter tangent by the
 spatial derivative. -/
@@ -517,7 +502,7 @@ theorem exists_hasDerivAt_quadraticInterlacingPencil_root
     · exact hparam.hasFDerivAt
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact quadratic_toSpanSingleton_isInvertible hregular
+    exact ContinuousLinearMap.isInvertible_toSpanSingleton hregular
   let ρ : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
   have hρbase : ρ a = r :=
     hcont.implicitFunction_apply_self (by simp) hAinv
@@ -535,7 +520,7 @@ theorem exists_hasDerivAt_quadraticInterlacingPencil_root
         (quadraticInterlacingPencil F G H a).derivative.eval r := by
     rw [neg_apply, ContinuousLinearMap.comp_apply, hB,
       ContinuousLinearMap.toSpanSingleton_apply, one_smul, hA]
-    rw [quadratic_inverse_toSpanSingleton_apply hregular]
+    rw [ContinuousLinearMap.inverse_toSpanSingleton_apply hregular]
     ring
   refine ⟨ρ, ?_, hρbase, ?_⟩
   · rwa [hquotient] at hρderiv
