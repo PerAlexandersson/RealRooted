@@ -304,7 +304,7 @@ theorem schurSzegoComp_simpleNegativeRoots_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     simpa [hrzero, ← coeff_zero_eq_eval_zero] using hroot
   linarith
 
-private private theorem strictRootInterl_wronskian_pos {f g : ℝ[X]}
+private theorem strictRootInterl_wronskian_pos {f g : ℝ[X]}
     (hfg : StrictRootInterl f g) (hgdegree : 0 < g.natDegree) (t : ℝ) :
     0 < (Polynomial.wronskian f g).eval t := by
   rcases hfg.toStrictInterl.natDegree_eq_or_eq_succ with hsame | hsucc
