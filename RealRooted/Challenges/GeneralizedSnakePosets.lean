@@ -109,7 +109,10 @@ headline = true
 A generalized snake poset $P(w)$ is a width-two poset built from a word $w$ in
 the letters $L$ and $R$. Braun and Jal show that the $h^*$-polynomial of its
 order polytope is the non-nesting rook polynomial $M_w$ of a skew board whose
-cells are the incomparable cross-chain pairs of $P(w)$.
+cells are the incomparable cross-chain pairs of $P(w)$. This identification is
+cited from Braun–Jal and checked numerically for all words of length at most
+11; it is not formalized. Lean formalizes the rook model: the board, its
+non-nesting rook polynomial $M_w$, and the recurrence below.
 
 **Theorem (Braun–Jal).** If $w$ is nonempty, then $M_w$ is real-rooted, and
 deleting the last letter of $w$ gives a polynomial interlacing $M_w$.
