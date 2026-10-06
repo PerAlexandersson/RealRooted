@@ -1536,3 +1536,4 @@ import RealRooted.MultivariateStability.Inversion
 import RealRooted.Challenges.JacobiDeformation
 import RealRooted.Challenges.JacobiPolynomials
 import RealRooted.Challenges.FiniteFreeConvolutions
+import RealRooted.Challenges.InterlacingClosure
