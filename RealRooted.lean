@@ -1520,3 +1520,13 @@ import RealRooted.Challenges.RealStability
 import RealRooted.Applications.PeakPolynomials.HitPolynomials
 import RealRooted.Applications.PeakPolynomials.PeakInduction
 import RealRooted.Challenges.PeakPolynomials
+import RealRooted.FactorialCompression
+import RealRooted.FactorialCompression.CommonKernel
+import RealRooted.FactorialCompression.Compression
+import RealRooted.FactorialCompression.Definitions
+import RealRooted.FactorialCompression.DegreeChanging
+import RealRooted.FactorialCompression.KernelGeometry
+import RealRooted.FactorialCompression.Lifting
+import RealRooted.FactorialCompression.RootGeometry
+import RealRooted.FactorialCompression.SchurSzego
+import RealRooted.Challenges.FactorialCompression

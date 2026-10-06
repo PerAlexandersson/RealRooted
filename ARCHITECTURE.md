@@ -42,6 +42,13 @@ unless a documented compatibility module is temporarily bridging a migration.
    polynomial step (`HitPolynomials`), on top of `ShiftLemma`, `PosCombo`, and
    `WagnerX`; `Challenges.PeakPolynomials` is its catalog facade.
 
+`FactorialCompression` follows these layers explicitly: `Definitions`
+owns the operator definitions, `CommonKernel` the common coefficient kernel,
+`SchurSzego` the reusable Schur--Szegő preservation lemmas, `Compression`
+the exact operator identities, `KernelGeometry` the degree-changing kernel
+geometry, and `DegreeChanging` / `Lifting` the two exported theorem
+endpoints.  `Challenges.FactorialCompression` is the catalog facade.
+
 The current tree predates these boundaries. In particular, a few theorem and
 example modules still import tactic or challenge modules. Those are migration
 targets rather than exceptions to preserve indefinitely.
