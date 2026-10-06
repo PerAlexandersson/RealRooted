@@ -38,10 +38,9 @@ theorem wagner_commonLeft_add_sequence {F G H : Nat → ℝ[X]}
 
 theorem wagner_mulX_iff_sequence {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
-    (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
-    (hdeg : ∀ n : Nat, (F n).natDegree + 1 = (G n).natDegree) :
+    (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n)) :
     ∀ n : Nat, StrictInterl (F n) (G n) ↔ StrictInterl (G n) (X * F n) := fun n =>
-  Wagner.mulX_iff (hF n) (hG n) (hdeg n)
+  Wagner.mulX_iff (hF n) (hG n)
 
 syntax (name := rr_wagner_common_right_add_named)
   "rr_wagner_common_right_add" " using "
@@ -64,8 +63,7 @@ syntax (name := rr_wagner_common_left_add_named)
 syntax (name := rr_wagner_mulX_iff_named)
   "rr_wagner_mulX_iff" " using "
     "shorter" ":=" term ","
-    "longer" ":=" term ","
-    "degree" ":=" term :
+    "longer" ":=" term :
   tactic
 
 syntax (name := rr_wagner_common_right_add_sequence_named)
@@ -89,8 +87,7 @@ syntax (name := rr_wagner_common_left_add_sequence_named)
 syntax (name := rr_wagner_mulX_iff_sequence_named)
   "rr_wagner_mulX_iff_sequence" " using "
     "shorter" ":=" term ","
-    "longer" ":=" term ","
-    "degree" ":=" term :
+    "longer" ":=" term :
   tactic
 
 syntax (name := rr_wagner_common_right_add_pos_lc_named)
@@ -149,10 +146,9 @@ macro_rules
   | `(tactic|
       rr_wagner_mulX_iff using
         shorter := $hf:term,
-        longer := $hg:term,
-        degree := $hdeg:term) =>
+        longer := $hg:term) =>
       `(tactic|
-        exact RealRooted.Wagner.mulX_iff $hf $hg $hdeg)
+        exact RealRooted.Wagner.mulX_iff $hf $hg)
   | `(tactic|
       rr_wagner_common_right_add_sequence using
         left := $hf:term,
@@ -176,10 +172,9 @@ macro_rules
   | `(tactic|
       rr_wagner_mulX_iff_sequence using
         shorter := $hf:term,
-        longer := $hg:term,
-        degree := $hdeg:term) =>
+        longer := $hg:term) =>
       `(tactic|
-        exact RealRooted.Tactic.wagner_mulX_iff_sequence $hf $hg $hdeg)
+        exact RealRooted.Tactic.wagner_mulX_iff_sequence $hf $hg)
   | `(tactic|
       rr_wagner_common_right_add_pos_lc using
         left_interlaces_common := $hfh:term,
