@@ -1374,6 +1374,10 @@ import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.Bezoutian
 import RealRooted.Bezoutian.Successor
 import RealRooted.Challenges.SmallInterlacingMatrices
+import RealRooted.Hermite.PoulainInterlacing
+import RealRooted.Hadamard.FiniteReflection
+import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
+import RealRooted.MultiplierSequence.PolyaSchur.Schur
 
 /-!
 # RealRooted production umbrella
