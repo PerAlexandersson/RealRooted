@@ -1425,6 +1425,7 @@ import RealRooted.CombinatorialExamples.BigDescents321.Backward
 import RealRooted.CombinatorialExamples.BigDescents321.Criterion
 import RealRooted.CombinatorialExamples.BigDescents321.SignConversion
 import RealRooted.CombinatorialExamples.BigDescents321
+import RealRooted.Challenges.BigDescents321
 
 /-!
 # RealRooted production umbrella
