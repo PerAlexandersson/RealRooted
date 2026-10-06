@@ -38,7 +38,7 @@ Splitting and nonzeroness exclude vacuous statements about missing real roots. -
 def SimpleNegativeRoots (p : ℝ[X]) : Prop :=
   p ≠ 0 ∧ p.Splits ∧ p.roots.Nodup ∧ ∀ r ∈ p.roots, r < 0
 
-/-- The strict oriented polynomial root orders in the manuscript.
+/-- A strengthened oriented root-order package for the factorial-compression proof.
 The leading signs, splitting and strictly ordered full root lists are explicit. -/
 def StrictRootInterl (f g : ℝ[X]) : Prop :=
   0 < f.leadingCoeff ∧ 0 < g.leadingCoeff ∧ f.Splits ∧ g.Splits ∧
@@ -147,7 +147,7 @@ theorem StrictRootInterl.toStrictInterl {f g : ℝ[X]}
   · exact Or.inl ⟨hlen, strictInterlacesRoots_to_upstream hint⟩
   · exact Or.inr ⟨hlen, strictAlternatesRoots_to_upstream hint⟩
 
-theorem StrictRootInterl.noCommonRoot {f g : ℝ[X]}
+theorem StrictRootInterl.no_common_root {f g : ℝ[X]}
     (h : StrictRootInterl f g) : ∀ x, f.IsRoot x → ¬ g.IsRoot x := by
   obtain ⟨hfpos, hgpos, hfsplits, hgsplits, rs, ss, hrs, hss, hre, hse, hshape⟩ := h
   have hfne : f ≠ 0 := RealRooted.HasPosLeadingCoeff.ne_zero hfpos
@@ -167,7 +167,7 @@ theorem StrictRootInterl.noCommonRoot {f g : ℝ[X]}
     exact (Polynomial.mem_roots hgne).mpr hgx
   exact hdisj x hxr x hxs rfl
 
-theorem strictRootInterl_of_strictInterl_of_noCommonRoot {f g : ℝ[X]}
+theorem strictRootInterl_of_strictInterl_of_no_common_root {f g : ℝ[X]}
     (h : RealRooted.StrictInterl f g) (hfpos : 0 < f.leadingCoeff)
     (hgpos : 0 < g.leadingCoeff) (hno : ∀ x, ¬ (f.IsRoot x ∧ g.IsRoot x)) :
     StrictRootInterl f g := by
@@ -190,20 +190,20 @@ theorem strictRootInterl_of_strictInterl_of_noCommonRoot {f g : ℝ[X]}
   · exact Or.inl ⟨hlen, strictInterlacesRoots_of_upstream hint hdisj⟩
   · exact Or.inr ⟨hlen, strictAlternatesRoots_of_upstream hint hdisj⟩
 
-theorem StrictRootInterl.noCommonRootPair {f g : ℝ[X]}
+theorem StrictRootInterl.no_common_root_pair {f g : ℝ[X]}
     (h : StrictRootInterl f g) : ∀ r, ¬ (f.IsRoot r ∧ g.IsRoot r) :=
-  fun r hr => h.noCommonRoot r hr.1 hr.2
+  fun r hr => h.no_common_root r hr.1 hr.2
 
 theorem StrictRootInterl.hasSimpleRoots {f g : ℝ[X]}
     (h : StrictRootInterl f g) :
     RealRooted.HasSimpleRoots f ∧ RealRooted.HasSimpleRoots g :=
-  h.toStrictInterl.hasSimpleRoots_of_no_common_root h.noCommonRootPair
+  h.toStrictInterl.hasSimpleRoots_of_no_common_root h.no_common_root_pair
 
 theorem SimpleNegativeRoots.hasSimpleRoots {p : ℝ[X]} (h : SimpleNegativeRoots p) :
     RealRooted.HasSimpleRoots p :=
   RealRooted.HasSimpleRoots.of_roots_nodup h.1 h.2.2.1
 
-/-- Manuscript Lemma 2.1, with its full strict oriented conclusion. -/
+/-- Root-sign criterion with a strict oriented conclusion. -/
 theorem root_sign_criterion {f g : ℝ[X]}
     (hf : SimpleNegativeRoots f) (hflc : 0 < f.leadingCoeff)
     (hd : 0 < f.natDegree) (hg : RealRooted.HasNonnegCoeffs g)
@@ -232,7 +232,7 @@ theorem root_sign_criterion {f g : ℝ[X]}
   have hsimple := (hweak.hasSimpleRoots_of_no_common_root
     (fun r hr => hno r hr.1 hr.2)).2
   refine ⟨⟨hweak.2.1.1, hweak.2.1.2, hsimple.roots_nodup, ?_⟩,
-    strictRootInterl_of_strictInterl_of_noCommonRoot hweak hflc hglc
+    strictRootInterl_of_strictInterl_of_no_common_root hweak hflc hglc
       (fun r hr => hno r hr.1 hr.2)⟩
   intro r hr
   have hrle : r ≤ 0 := RealRooted.roots_nonpos_of_hasNonnegCoeffs hg r hr
@@ -245,19 +245,19 @@ theorem root_sign_criterion {f g : ℝ[X]}
   linarith
 
 /-- Equation (2.1), at a root of the left polynomial. -/
-theorem StrictRootInterl.leftRootRatio_neg {f g : ℝ[X]}
+theorem StrictRootInterl.left_root_ratio_neg {f g : ℝ[X]}
     (h : StrictRootInterl f g) {r : ℝ} (hr : f.IsRoot r) :
     g.eval r / f.derivative.eval r < 0 := by
   have hp := h.toStrictInterl.eval_mul_derivative_neg_of_left_root_of_no_common
-    h.1 h.2.1 h.noCommonRoot hr
+    h.1 h.2.1 h.no_common_root hr
   exact (div_neg_iff).mpr (mul_neg_iff.mp hp)
 
 /-- Equation (2.1), at a root of the right polynomial. -/
-theorem StrictRootInterl.rightRootRatio_pos {f g : ℝ[X]}
+theorem StrictRootInterl.right_root_ratio_pos {f g : ℝ[X]}
     (h : StrictRootInterl f g) {s : ℝ} (hs : g.IsRoot s) :
     0 < f.eval s / g.derivative.eval s := by
   have hp := h.toStrictInterl.eval_mul_derivative_pos_of_right_root_of_no_common
-    h.1 h.2.1 h.noCommonRoot hs
+    h.1 h.2.1 h.no_common_root hs
   exact (div_pos_iff).mpr (mul_pos_iff.mp hp)
 
 theorem SimpleNegativeRoots.C_mul {p : ℝ[X]} (hp : SimpleNegativeRoots p)
