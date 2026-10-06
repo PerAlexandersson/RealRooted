@@ -8,26 +8,22 @@ namespace Tactic
 example {f g h : ℝ[X]}
     (hf : RealRooted.Wagner.HasNonposRootsPosLeading f)
     (hg : RealRooted.Wagner.HasNonposRootsPosLeading g)
-    (_hh : RealRooted.Wagner.HasNonposRootsPosLeading h)
     (hfh : StrictInterl f h) (hgh : StrictInterl g h) :
     StrictInterl (f + g) h := by
   rr_wagner_common_right_add using
     left := hf,
     right := hg,
-    common := _hh,
     left_interlaces_common := hfh,
     right_interlaces_common := hgh
 
 example {f g h : ℝ[X]}
     (hf : RealRooted.Wagner.HasNonposRootsPosLeading f)
     (hg : RealRooted.Wagner.HasNonposRootsPosLeading g)
-    (_hh : RealRooted.Wagner.HasNonposRootsPosLeading h)
     (hhf : StrictInterl h f) (hhg : StrictInterl h g) :
     StrictInterl h (f + g) := by
   rr_wagner_common_left_add using
     left := hf,
     right := hg,
-    common := _hh,
     common_interlaces_left := hhf,
     common_interlaces_right := hhg
 
@@ -42,28 +38,24 @@ example {f g : ℝ[X]}
 example {F G H : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
     (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
-    (hH : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (H n))
     (hFH : ∀ n : Nat, StrictInterl (F n) (H n))
     (hGH : ∀ n : Nat, StrictInterl (G n) (H n)) :
     ∀ n : Nat, StrictInterl (F n + G n) (H n) := by
   rr_wagner_common_right_add_sequence using
     left := hF,
     right := hG,
-    common := hH,
     left_interlaces_common := hFH,
     right_interlaces_common := hGH
 
 example {F G H : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
     (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
-    (hH : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (H n))
     (hHF : ∀ n : Nat, StrictInterl (H n) (F n))
     (hHG : ∀ n : Nat, StrictInterl (H n) (G n)) :
     ∀ n : Nat, StrictInterl (H n) (F n + G n) := by
   rr_wagner_common_left_add_sequence using
     left := hF,
     right := hG,
-    common := hH,
     common_interlaces_left := hHF,
     common_interlaces_right := hHG
 
