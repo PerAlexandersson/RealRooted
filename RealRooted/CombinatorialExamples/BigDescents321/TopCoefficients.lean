@@ -62,7 +62,7 @@ theorem kernelMoment_four_eq_mm (J : ℕ) : kernelMoment (4 : ℕ) J = mm4 J := 
 /-! ### The top coordinates of `Q_n` -/
 
 /-- `q_(J+2r, J) = -(2J + 3)(m(r, J) - m(r-1, J)/2) + corr(r, J)` with explicit moments. -/
-private theorem transformedCoord_top {n J r : ℕ} (h : n = J + 2 * r) :
+theorem transformedCoord_top {n J r : ℕ} (h : n = J + 2 * r) :
     transformedCoord n J = -(2 * (J : ℚ) + 3) * (kernelMoment (r : ℕ) J -
       kernelMoment ((r : ℤ) - 1) J / 2) + corrCoordZ r J := by
   rw [transformedCoord_eq (r := (r : ℤ)) (by lia), kernelCoord_eq]

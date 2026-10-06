@@ -277,8 +277,14 @@ theorem kernelMoment_zero_eq (t : ℕ) : kernelMoment (t + 2 : ℕ) 0 = momentZe
 
 /-! ### The signs of the bottom coordinates -/
 
-/-- `q_(2r,0) = -3 (m(r,0) - m(r-1,0)/2)` is positive for `r ≥ 13`. -/
-theorem kernelCoord_zero_pos (s : ℕ) : 0 < kernelCoord (s + 13 : ℕ) 0 := by
+/-- The closed form of `q_(2r,0) = -3 (m(r,0) - m(r-1,0)/2)` for `r = s + 13`, in the Fibonacci
+numbers `a = F_(2s+18)`, `b = F_(2s+19)`. -/
+theorem kernelCoord_zero_closed (s : ℕ) :
+    kernelCoord (s + 13 : ℕ) 0 =
+      ((Nat.fib (2 * s + 18) : ℚ) * (120 * (s : ℚ) ^ 3 + 2484 * s ^ 2 + 15234 * s + 21123) +
+        (Nat.fib (2 * s + 19) : ℚ) * (240 * (s : ℚ) ^ 3 + 5832 * s ^ 2 + 48612 * s + 140094)) /
+      (4 ^ (s + 13) *
+        ((2 * s + 19) * (2 * s + 21) * (2 * s + 23) * (2 * s + 25) * (2 * s + 27))) := by
   rw [kernelCoord_eq, corrCoordZ_of_three_le (by lia),
     show ((s + 13 : ℕ) : ℤ) - 1 = ((s + 10 + 2 : ℕ) : ℤ) by push_cast; ring,
     show s + 13 = s + 11 + 2 by ring, kernelMoment_zero_eq, kernelMoment_zero_eq]
@@ -289,18 +295,6 @@ theorem kernelCoord_zero_pos (s : ℕ) : 0 < kernelCoord (s + 13 : ℕ) 0 := by
   rw [f 7 (2 * (s + 11) + 4) (by ring), f 6 (2 * (s + 11) + 3) (by ring),
     f 5 (2 * (s + 11) + 2) (by ring), f 5 (2 * (s + 10) + 4) (by ring),
     f 4 (2 * (s + 10) + 3) (by ring), f 3 (2 * (s + 10) + 2) (by ring)]
-  have ha : (0 : ℚ) ≤ Nat.fib (2 * s + 18) := Nat.cast_nonneg _
-  have hb : (0 : ℚ) < Nat.fib (2 * s + 19) := by exact_mod_cast Nat.fib_pos.mpr (by lia)
-  generalize (Nat.fib (2 * s + 18) : ℚ) = a at ha ⊢
-  generalize (Nat.fib (2 * s + 19) : ℚ) = b at hb ⊢
-  have hE : 0 < (a * (120 * (s : ℚ) ^ 3 + 2484 * s ^ 2 + 15234 * s + 21123) +
-      b * (240 * (s : ℚ) ^ 3 + 5832 * s ^ 2 + 48612 * s + 140094)) /
-      (4 ^ (s + 13) *
-        ((2 * s + 19) * (2 * s + 21) * (2 * s + 23) * (2 * s + 25) * (2 * s + 27))) := by
-    have : 0 < b * (240 * (s : ℚ) ^ 3 + 5832 * s ^ 2 + 48612 * s + 140094) := by positivity
-    have : 0 ≤ a * (120 * (s : ℚ) ^ 3 + 2484 * s ^ 2 + 15234 * s + 21123) := by positivity
-    positivity
-  refine hE.trans_eq ?_
   simp only [Nat.reduceAdd, show Nat.fib 3 = 2 by decide, show Nat.fib 4 = 3 by decide,
     show Nat.fib 5 = 5 by decide, show Nat.fib 6 = 8 by decide, show Nat.fib 7 = 13 by decide,
     show Nat.fib 8 = 21 by decide]
@@ -309,6 +303,14 @@ theorem kernelCoord_zero_pos (s : ℕ) : 0 < kernelCoord (s + 13 : ℕ) 0 := by
   push_cast at h1 h2 ⊢
   field_simp
   ring
+
+/-- `q_(2r,0) = -3 (m(r,0) - m(r-1,0)/2)` is positive for `r ≥ 13`. -/
+theorem kernelCoord_zero_pos (s : ℕ) : 0 < kernelCoord (s + 13 : ℕ) 0 := by
+  rw [kernelCoord_zero_closed]
+  have hb : (0 : ℚ) < Nat.fib (2 * s + 19) := by exact_mod_cast Nat.fib_pos.mpr (by lia)
+  have : 0 < (Nat.fib (2 * s + 19) : ℚ) *
+      (240 * (s : ℚ) ^ 3 + 5832 * s ^ 2 + 48612 * s + 140094) := by positivity
+  positivity
 
 theorem coeff_halfQ_pow_four_of_five_le {t : ℕ} (h : 5 ≤ t) :
     PowerSeries.coeff t (halfQ ^ 4) = 0 := by
