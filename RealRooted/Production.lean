@@ -1401,6 +1401,7 @@ import RealRooted.SimpleRootLogDerivative
 import RealRooted.BorceaBranden.Applications.PolarizationIff
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.Challenges.JacobiDeformation
+import RealRooted.Challenges.JacobiPolynomials
 
 /-!
 # RealRooted production umbrella
