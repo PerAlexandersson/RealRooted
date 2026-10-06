@@ -97,7 +97,7 @@ theorem strictInterl_derivative_polarTheta_boundary
       rcases hq with rfl | rfl | rfl
       · exact StrictInterl.C_mul_left (StrictInterl.refl hp0 hpsplits) (by positivity)
       · exact StrictInterl.C_mul_left
-          ((derivative_interlaces hpsplits hpdeg).toStrictInterl) ht.ne'
+          ((derivative_interlaces_of_natDegree_ne_zero hpsplits (by lia)).toStrictInterl) ht.ne'
       · exact StrictInterl.C_mul_left hpolar_p (by linarith)
     have hpos : ∀ q ∈ fs, HasPosLeadingCoeff q := by
       intro q hq
@@ -125,7 +125,7 @@ theorem strictInterl_derivative_polarTheta_boundary
       rcases hq with rfl | rfl
       · exact StrictInterl.C_mul_left (StrictInterl.refl hp0 hpsplits) (by positivity)
       · exact StrictInterl.C_mul_left
-          ((derivative_interlaces hpsplits hpdeg).toStrictInterl) ht.ne'
+          ((derivative_interlaces_of_natDegree_ne_zero hpsplits (by lia)).toStrictInterl) ht.ne'
     have hpos : ∀ q ∈ fs, HasPosLeadingCoeff q := by
       intro q hq
       simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq

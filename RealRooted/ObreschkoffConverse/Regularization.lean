@@ -731,7 +731,8 @@ private theorem strictInterl_or_reverse_of_eq_zero_or_simple_combo_sameDegree
       · have hx' : 0 ≤ x := le_of_not_ge hx
         have hprod := hW_prod hx'
         nlinarith
-    have hder : Interlaces f.derivative f := derivative_interlaces hf_splits hdeg_ge2
+    have hder : Interlaces f.derivative f :=
+      derivative_interlaces_of_natDegree_ne_zero hf_splits (by lia)
     have hroot_sign :
         ∀ r, f.IsRoot r → g.eval r * f.derivative.eval r < 0 := by
       intro r hr
@@ -748,7 +749,8 @@ private theorem strictInterl_or_reverse_of_eq_zero_or_simple_combo_sameDegree
       · have hx' : 0 ≤ x := le_of_not_ge hx
         have hprod := hW_prod hx'
         nlinarith
-    have hder : Interlaces g.derivative g := derivative_interlaces hg_splits hgdeg_ge2
+    have hder : Interlaces g.derivative g :=
+      derivative_interlaces_of_natDegree_ne_zero hg_splits (by lia)
     have hroot_sign :
         ∀ r, g.IsRoot r → f.eval r * g.derivative.eval r < 0 := by
       intro r hr

@@ -72,7 +72,8 @@ theorem orderNumeratorStep_isPF_tight
   have hpolar : StrictInterl (polarTheta m p) p :=
     strictInterl_polarTheta_self hp hpdeg.le hreflect
   have hderiv : StrictInterl p.derivative p :=
-    (derivative_interlaces (hp.ne_zero_and_splits hp0).2 (by lia)).toStrictInterl
+    (derivative_interlaces_of_natDegree_ne_zero (hp.ne_zero_and_splits hp0).2
+      (by lia)).toStrictInterl
   have hpolarPos : HasPosLeadingCoeff (polarTheta m p) :=
     (polarTheta_preserves_pf hp hpdeg.le).hasNonnegCoeffs.pos_leadingCoeff hpolar.1.1
   have hderivPos : HasPosLeadingCoeff p.derivative :=

@@ -24,7 +24,7 @@ theorem strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg {f : ℝ[X]}
     (hfnn : HasNonnegCoeffs f) :
     StrictInterl (X * f.derivative) (X * f) :=
   StrictInterl.mul_X_both_of_nonneg
-    (derivative_interlaces hf hdeg).toStrictInterl hfnn.derivative hfnn
+    (derivative_interlaces_of_natDegree_ne_zero hf (by lia)).toStrictInterl hfnn.derivative hfnn
 
 /-- Wagner derivative-gap-lag step.
 
@@ -45,7 +45,8 @@ theorem strictInterl_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
   have hf_pos : HasPosLeadingCoeff f := by rr_pos_lc using nonzero := left_ne_zero_of_strictInterl h
   have hg_der_pos : HasPosLeadingCoeff g.derivative := hg_pos.derivative (by lia)
   have hder : StrictInterl g.derivative g :=
-    (derivative_interlaces (right_splits_of_strictInterl h) hdeg).toStrictInterl
+    (derivative_interlaces_of_natDegree_ne_zero (right_splits_of_strictInterl h)
+      (by lia)).toStrictInterl
   have hnonneg : ∀ ap ∈ [(c, g.derivative), (a, f)], 0 ≤ ap.1 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap

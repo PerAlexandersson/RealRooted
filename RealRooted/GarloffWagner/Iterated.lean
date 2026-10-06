@@ -177,7 +177,7 @@ theorem derivative_strictInterl_tDeriv_of_splits {eps : ℝ} {p : ℝ[X]}
   by_cases hdeg1 : p.natDegree = 1
   · exact derivative_strictInterl_tDeriv_of_natDegree_one hdeg1
   have hdeg2 : 2 ≤ p.natDegree := by lia
-  have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
+  have hder : Interlaces p.derivative p := derivative_interlaces_of_natDegree_ne_zero hp (by lia)
   have hder_rr : p.derivative ≠ 0 ∧ p.derivative.Splits := hder.2.1
   have hT_rr : tDeriv eps p ≠ 0 ∧ (tDeriv eps p).Splits :=
     ⟨tDeriv_ne_zero hp0, splits_tDeriv_all hp⟩

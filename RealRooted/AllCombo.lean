@@ -130,7 +130,7 @@ lemma splits_derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits := by
   · simp_all [derivative_eq_zero.2]
   by_cases hdeg1 : p.natDegree = 1
   · exact .of_natDegree_eq_zero (by simp [hdeg1])
-  · exact (derivative_interlaces hp (by lia)).2.1.2
+  · exact (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).2.1.2
 
 lemma allComboRealRooted_derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :

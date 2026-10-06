@@ -105,16 +105,8 @@ theorem exists_mem_Ioo_isRoot_derivative {p : ℝ[X]} {a b : ℝ} (hab : a < b)
 /-- **Derivative interlacing**: the derivative of a nonconstant real-rooted
 polynomial interlaces it. -/
 theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : f.natDegree ≠ 0) :
-    Interlaces f.derivative f := by
-  by_cases hdeg1 : f.natDegree = 1
-  · have hf0 : f ≠ 0 := by
-      rintro rfl
-      simp at hdeg
-    have hf'_deg : f.derivative.natDegree = 0 := by simp [f.natDegree_derivative, hdeg1]
-    exact
-      (StrictInterl.of_degree_zero_right_of_degree_one (derivative_ne_zero.mpr hdeg)
-        (splits_of_natDegree_eq_zero hf'_deg) hf0 hf hf'_deg hdeg1).toInterlaces (by lia)
-  · exact RealRooted.derivative_interlaces hf (by lia)
+    Interlaces f.derivative f :=
+  derivative_interlaces_of_natDegree_ne_zero hf hdeg
 
 /-- The derivative of a real-rooted polynomial is real-rooted. -/
 theorem splits_derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits := by

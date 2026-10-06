@@ -88,8 +88,9 @@ lemma strictInterl_step_of_quadratic_derivative_linear
       (hasNonnegCoeffs_of_quadratic_derivative_linear P a b c s t h0 hrec
         ha hb hc hs hbt m) r ((mem_roots hne).mpr hr)
   have hInter : Interlaces (P m).derivative (P m) :=
-    derivative_interlaces hsp (by
-      rwa [natDegree_of_quadratic_derivative_linear P a b c s t h0 hrec hs hbt])
+    derivative_interlaces_of_natDegree_ne_zero hsp (by
+      rw [natDegree_of_quadratic_derivative_linear P a b c s t h0 hrec hs hbt]
+      lia)
   have hg_pos : HasPosLeadingCoeff (P m).derivative :=
     (hasPosLeadingCoeff_of_quadratic_derivative_linear P a b c s t h0 hrec hs hbt m).derivative (by
       rw [natDegree_of_quadratic_derivative_linear P a b c s t h0 hrec hs hbt]
@@ -264,9 +265,9 @@ lemma strictInterl_step_of_quadratic_derivative_bilinear
       (hasNonnegCoeffs_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
         ha hb hc hu hs hbt n) r ((mem_roots hne).mpr hr)
   have hInter : Interlaces (P n).derivative (P n) :=
-    derivative_interlaces hsp (by
+    derivative_interlaces_of_natDegree_ne_zero hsp (by
       rw [natDegree_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt]
-      exact hn)
+      lia)
   have hg_pos : HasPosLeadingCoeff (P n).derivative :=
     (hasPosLeadingCoeff_of_quadratic_derivative_bilinear
       P a b c u s t h0 hrec hs hbt n).derivative (by
@@ -457,7 +458,7 @@ lemma strictInterl_step_of_quadratic_derivative_linear_offset
         hbase_nonneg hbase_top hbase_above hrec ha hb hc hsd hbt m)
       r ((mem_roots hne).mpr hr)
   have hInter : Interlaces (P m).derivative (P m) :=
-    derivative_interlaces hsp (by
+    derivative_interlaces_of_natDegree_ne_zero hsp (by
       rw [natDegree_of_quadratic_derivative_linear_offset P a b c s t d
         hbase_top hbase_above hrec hsd hbt]
       lia)

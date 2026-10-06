@@ -223,7 +223,7 @@ theorem shiftedBinaryRunDeformation_pf_criticalValueMargin_eventually_right
         Polynomial.coeff_zero_eq_eval_zero] using hx
   have hcriticalNeg : ∀ x, (Q t).derivative.IsRoot x → x < 0 := by
     apply roots_neg_of_interlaces_of_right_roots_neg
-      (derivative_interlaces hQsplit <| by
+      (derivative_interlaces_of_natDegree_ne_zero hQsplit <| by
         rw [hQdegree]
         lia)
     exact hQrootsNeg

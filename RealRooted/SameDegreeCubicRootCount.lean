@@ -299,8 +299,8 @@ theorem not_posComboRealRooted_cubic_separated
   have hg'pos : HasPosLeadingCoeff g.derivative :=
     hg.derivative (by simp_all)
   have hg'le : ∀ r ∈ g.derivative.roots, r ≤ z1 :=
-    (derivative_interlaces hgs (by simp_all)).toStrictInterl.roots_le_of_right
-      hgle
+    (derivative_interlaces_of_natDegree_ne_zero hgs
+      (by simp_all)).toStrictInterl.roots_le_of_right hgle
   have hf'ge : ∀ r ∈ f.derivative.roots, z2 ≤ r :=
     le_roots_derivative_of_le_roots hfs (by simp_all) hfge
   exact not_posComboRealRooted_quadratic_separated

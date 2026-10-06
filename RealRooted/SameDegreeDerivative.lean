@@ -17,13 +17,14 @@ namespace RealRooted
 by `c`, then all roots of its derivative are bounded below by `c`.
 
 This is the lower-bound counterpart to the common upper-bound use of
-`StrictInterl.roots_le_of_right` together with `derivative_interlaces`. -/
+`StrictInterl.roots_le_of_right` together with
+`derivative_interlaces_of_natDegree_ne_zero`. -/
 theorem le_roots_derivative_of_le_roots {p : ℝ[X]} {c : ℝ}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
     (h : ∀ r ∈ p.roots, c ≤ r) :
     ∀ r ∈ p.derivative.roots, c ≤ r := by
   obtain ⟨_, _, _, rs, ss, _, _, hrs_eq, hss_eq, hint⟩ :=
-    derivative_interlaces hp hdeg
+    derivative_interlaces_of_natDegree_ne_zero hp (by lia)
   intro s hs
   have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by simp_all)
   have hrs_ne : rs ≠ [] := by
@@ -53,7 +54,7 @@ theorem roots_derivative_le_of_roots_le {p : ℝ[X]} {c : ℝ}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
     (h : ∀ r ∈ p.roots, r ≤ c) :
     ∀ r ∈ p.derivative.roots, r ≤ c :=
-  (derivative_interlaces hp hdeg).toStrictInterl.roots_le_of_right h
+  (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).toStrictInterl.roots_le_of_right h
 
 /-- **Derivative root interval preservation.** If every root of a split
 polynomial of degree at least two lies in the closed interval `[u, v]`, then
@@ -76,7 +77,7 @@ theorem lt_roots_derivative_of_lt_roots {p : ℝ[X]} {u : ℝ}
     (h : ∀ r ∈ p.roots, u < r) :
     ∀ r ∈ p.derivative.roots, u < r := by
   obtain ⟨_, _, _, rs, ss, _, _, hrs_eq, hss_eq, hint⟩ :=
-    derivative_interlaces hp hdeg
+    derivative_interlaces_of_natDegree_ne_zero hp (by lia)
   intro s hs
   have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by simp_all)
   have hrs_ne : rs ≠ [] := by
@@ -104,7 +105,7 @@ theorem roots_derivative_lt_of_roots_lt {p : ℝ[X]} {v : ℝ}
     (h : ∀ r ∈ p.roots, r < v) :
     ∀ r ∈ p.derivative.roots, r < v := by
   obtain ⟨_, _, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ :=
-    derivative_interlaces hp hdeg
+    derivative_interlaces_of_natDegree_ne_zero hp (by lia)
   intro s hs
   have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by simp_all)
   have hrs_ne : rs ≠ [] := by
@@ -256,7 +257,7 @@ theorem PosComboRealRooted.derivative_bundle
 theorem splits_derivative_of_two_le_natDegree {p : ℝ[X]}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
     p.derivative.Splits :=
-  (derivative_interlaces hp hdeg).2.1.2
+  (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).2.1.2
 
 /-- Degree lower bound transported across one differentiation. -/
 theorem le_natDegree_derivative_of_succ_le_natDegree {p : ℝ[X]} {n : ℕ}

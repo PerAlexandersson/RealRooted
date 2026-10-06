@@ -735,7 +735,7 @@ macro_rules
             | apply Polynomial.Splits.X_pow
             | apply Polynomial.Splits.C_mul_X_pow
             | (refine RealRooted.left_splits_of_interlaces
-                  (RealRooted.derivative_interlaces ?_ ?_) <;>
+                  (RealRooted.derivative_interlaces_of_natDegree_ne_zero ?_ ?_) <;>
                 [assumption; rr_close_side])
             | rr_named_splits
             | (apply Polynomial.Splits.mul <;> rr_splits)
@@ -1113,8 +1113,10 @@ macro_rules
         with_reducible_and_instances
           first
             | exact $h
-            | (refine RealRooted.derivative_interlaces $h ?_ <;> rr_close_side)
-            | (refine (RealRooted.derivative_interlaces $h ?_).toStrictInterl <;> rr_close_side)
+            | (refine RealRooted.derivative_interlaces_of_natDegree_ne_zero $h ?_ <;> rr_close_side)
+            | (refine
+                  (RealRooted.derivative_interlaces_of_natDegree_ne_zero $h ?_).toStrictInterl <;>
+                rr_close_side)
             | rr_exact_realrooted_sequence_or_projection
                 (RealRooted.left_isRealRooted_of_strictInterl_sequence $h)
             | rr_exact_realrooted_sequence_or_projection
@@ -1180,8 +1182,9 @@ macro_rules
           | exact RealRooted.natDegree_succ_of_interlaces rr_lookup_term
           | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
           | exact rr_lookup_interlaces_term
-          | (refine RealRooted.derivative_interlaces ?_ ?_ <;> [rr_splits; rr_close_side])
-          | (refine (RealRooted.derivative_interlaces ?_ ?_).toStrictInterl <;>
+          | (refine RealRooted.derivative_interlaces_of_natDegree_ne_zero ?_ ?_ <;>
+              [rr_splits; rr_close_side])
+          | (refine (RealRooted.derivative_interlaces_of_natDegree_ne_zero ?_ ?_).toStrictInterl <;>
               [rr_splits; rr_close_side])
           | exact RealRooted.Interlaces.toStrictInterl rr_lookup_term
           | exact RealRooted.StrictInterl.toInterl rr_lookup_term

@@ -1187,7 +1187,8 @@ the derivative block `(1 - X) * f'` lies on the right of `f` in the oriented
 theorem strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
     (hf : f.Splits) (hdeg : 2 ≤ f.natDegree) (hnn : HasNonnegCoeffs f) :
     StrictInterl f ((1 - X) * f.derivative) := by
-  have hder : StrictInterl f.derivative f := (derivative_interlaces hf hdeg).toStrictInterl
+  have hder : StrictInterl f.derivative f :=
+    (derivative_interlaces_of_natDegree_ne_zero hf (by lia)).toStrictInterl
   have hnn' : HasNonnegCoeffs f.derivative := hnn.derivative
   have hf'_pos : HasPosLeadingCoeff f.derivative := hnn'.pos_leadingCoeff hder.1.1
   have hf_pos : HasPosLeadingCoeff f := hnn.pos_leadingCoeff <| by

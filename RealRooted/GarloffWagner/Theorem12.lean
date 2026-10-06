@@ -273,7 +273,7 @@ theorem IsPFPolynomial.derivative_interl_self {p : ℝ[X]}
         (Polynomial.Splits.of_natDegree_eq_zero hder_deg0) hp0 hps.2 hder_deg0
         hdeg1).toInterl
   · have hdeg2 : 2 ≤ p.natDegree := by lia
-    exact (derivative_interlaces hps.2 hdeg2).toStrictInterl.toInterl
+    exact (derivative_interlaces_of_natDegree_ne_zero hps.2 (by lia)).toStrictInterl.toInterl
 
 /-- The first one-variable relation in Garloff--Wagner's double-deleted
 paragraph: for `u <= 0`, `(1 - uD)Lp` precedes `Lp`. -/

@@ -79,8 +79,9 @@ lemma strictInterl_step_of_quadratic_derivative_shift
     roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_of_quadratic_derivative_shift P s h0 hrec hs m)
       r ((mem_roots hne).mpr hr)
   have hInter : Interlaces (P m).derivative (P m) :=
-    derivative_interlaces hsp (by
-      rwa [natDegree_of_quadratic_derivative_shift P s h0 hrec hs])
+    derivative_interlaces_of_natDegree_ne_zero hsp (by
+      rw [natDegree_of_quadratic_derivative_shift P s h0 hrec hs]
+      lia)
   have hg_pos : HasPosLeadingCoeff (P m).derivative :=
     (hasPosLeadingCoeff_of_quadratic_derivative_shift P s h0 hrec hs m).derivative (by
       rw [natDegree_of_quadratic_derivative_shift P s h0 hrec hs]
