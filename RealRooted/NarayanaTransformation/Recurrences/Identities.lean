@@ -88,21 +88,6 @@ lemma factorial_cast_pred {n : ℕ} (hn : n ≠ 0) :
   push_cast
   rfl
 
-private lemma deriv_lag_poly_identity (n m k : ℝ) :
-    (n + 2 * m + 2) * (n + 2) * (n + 2 + m) =
-      (n + 2 * m + 2 + 2 * k) * (n + 2 - k) * (n + 2 + m - k) +
-        (3 * n + 2 * m + 6 - 2 * k) * k * (m + k) := by
-  ring
-
-private lemma pure_poly_identity (n m k : ℝ) :
-    (n + 2 * m + 2) * (n + 2) * (n + 1) * (n + 2 + m) * (n + 1 + m) =
-      (2 * n + 2 * m + 3) * ((n + 1) * (n + 1 + m) * (n + 2 - k) * (n + 2 + m - k) +
-        (n + 1) * (n + 1 + m) * k * (m + k)) -
-        (n + 1) * ((n + 2 - k) * (n + 1 - k) * (n + 2 + m - k) * (n + 1 + m - k) -
-          2 * (n + 2 - k) * (n + 2 + m - k) * k * (m + k) +
-          k * (k - 1) * (m + k) * (m + k - 1)) := by
-  ring
-
 lemma narayanaTransformCoeff_deriv_lag_rec (m n k : ℕ) (hkpos : k ≠ 0) (hk : k ≤ n + 1) :
     ((n : ℝ) + 2 * m + 2) * narayanaTransformCoeff m (n + 2) k =
       ((n : ℝ) + 2 * m + 2 + 2 * k) * narayanaTransformCoeff m (n + 1) k +
@@ -144,14 +129,7 @@ lemma narayanaTransformCoeff_deriv_lag_rec (m n k : ℕ) (hkpos : k ≠ 0) (hk :
     push_cast
     ring
   rw [hF_eq₁, hF_eq₂, hF_eq₃]
-  have h_poly := deriv_lag_poly_identity (n : ℝ) (m : ℝ) (k : ℝ)
-  rw [show ((n : ℝ) + 2 * m + 2) * (((n : ℝ) + 2) * (n + 2 + m) * F) =
-    ((n : ℝ) + 2 * m + 2) * (n + 2) * (n + 2 + m) * F by ring]
-  rw [show ((n : ℝ) + 2 * m + 2 + 2 * k) * (((n : ℝ) + 2 - k) * (n + 2 + m - k) * F) +
-    ((3 * n : ℝ) + 2 * m + 6 - 2 * k) * ((k : ℝ) * (m + k) * F) =
-    (((n : ℝ) + 2 * m + 2 + 2 * k) * (n + 2 - k) * (n + 2 + m - k) +
-      ((3 * n : ℝ) + 2 * m + 6 - 2 * k) * k * (m + k)) * F by ring]
-  rw [h_poly]
+  ring
 
 theorem coeff_narayanaPolynomial_deriv_lag_rec (m n k : ℕ) (hkpos : k ≠ 0) :
     ((n : ℝ) + 2 * m + 2) * (narayanaPolynomial m (n + 2)).coeff k =
@@ -324,20 +302,7 @@ lemma narayanaTransformCoeff_pure_rec (m n k : ℕ) (hk : 2 ≤ k) (hkn : k ≤ 
     rw [h₃, h₄, h₁, h₂]
     ring
   rw [hG₁, hG₂, hG₃, hG₄, hG₅, hG₆]
-  have h_poly := pure_poly_identity (n : ℝ) (m : ℝ) (k : ℝ)
-  rw [show ((n : ℝ) + 2 * m + 2) * (((n : ℝ) + 2) * (n + 1) * (n + 2 + m) * (n + 1 + m) * G) =
-    ((n : ℝ) + 2 * m + 2) * (n + 2) * (n + 1) * (n + 2 + m) * (n + 1 + m) * G by ring]
-  rw [show ((2 * n : ℝ) + 2 * m + 3) * (((n : ℝ) + 1) * (n + 1 + m) * (n + 2 - k) *
-    (n + 2 + m - k) * G + ((n : ℝ) + 1) * (n + 1 + m) * (k : ℝ) * (m + k) * G) -
-    ((n : ℝ) + 1) * (((n : ℝ) + 2 - k) * (n + 1 - k) * (n + 2 + m - k) * (n + 1 + m - k) * G -
-      2 * (((n : ℝ) + 2 - k) * (n + 2 + m - k) * (k : ℝ) * (m + k) * G) +
-      (k : ℝ) * (k - 1) * (m + k) * (m + k - 1) * G) =
-    (((2 * n : ℝ) + 2 * m + 3) * ((n + 1) * (n + 1 + m) * (n + 2 - k) * (n + 2 + m - k) +
-      (n + 1) * (n + 1 + m) * k * (m + k)) -
-      ((n : ℝ) + 1) * ((n + 2 - k) * (n + 1 - k) * (n + 2 + m - k) * (n + 1 + m - k) -
-        2 * (n + 2 - k) * (n + 2 + m - k) * k * (m + k) +
-        k * (k - 1) * (m + k) * (m + k - 1))) * G by ring]
-  rw [h_poly]
+  ring
 
 lemma coeff_narayanaPolynomial_pure_rec_boundary (m n : ℕ) (hn : n ≠ 0) :
     ((n : ℝ) + 2 * m + 2) * (narayanaPolynomial m (n + 2)).coeff (n + 1) =
