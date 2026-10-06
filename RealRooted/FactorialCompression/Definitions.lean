@@ -1,4 +1,5 @@
-import RealRooted.FactorialCompression.CommonKernel
+import RealRooted.Basic.Coefficients
+import Mathlib.Data.Nat.Factorial.Basic
 
 /-!
 # Factorial-compression definitions
@@ -12,6 +13,11 @@ open scoped BigOperators
 
 noncomputable section
 namespace RealRooted.FactorialCompression
+
+def h (r : ℕ) : ℝ[X] :=
+  ∑ j ∈ Finset.range (r / 2 + 1),
+    C ((Nat.factorial r : ℝ) /
+      ((Nat.factorial j : ℝ) * (Nat.factorial (r - 2 * j) : ℝ))) * X ^ j
 
 def mu (N ell k : ℕ) : ℝ :=
   if 2 * k ≤ N + ell then
