@@ -1553,3 +1553,4 @@ import RealRooted.Challenges.DecoEulerian
 import RealRooted.Hermite.PoulainInterlacing
 import RealRooted.Hadamard.FiniteReflection
 import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
+import RealRooted.MultiplierSequence.PolyaSchur.Schur

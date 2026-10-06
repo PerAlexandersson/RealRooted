@@ -2,6 +2,7 @@ import RealRooted.GarloffWagner.Hadamard
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.Hadamard
 import RealRooted.Hadamard.FiniteReflection
+import RealRooted.MultiplierSequence.PolyaSchur.Schur
 import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 
 /-!
@@ -74,6 +75,10 @@ label = "Garloff–Wagner: Hadamard products of PF polynomials are PF"
 name = "RealRooted.gwSchurProductInterl"
 module = "RealRooted.GarloffWagner.Theorem12"
 label = "Garloff–Wagner: the Schur product preserves interlacing"
+
+[[theorems]]
+name = "RealRooted.Challenges.Hadamard.gwSchurProduct_eq_zero_or_splits"
+label = "Schur: the factorial product preserves real-rootedness"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -108,6 +113,10 @@ nonnegative coefficients):
   is the Hadamard product.
 - **Schur product:** the factorial Schur product, with
   coefficients $k!\, a_k b_k$, preserves interlacing in its first argument.
+
+**Theorem (Schur).** If $f = \sum_k a_k x^k$ is real-rooted and
+$g = \sum_k b_k x^k$ is real-rooted with all zeros of one sign, then the
+factorial Schur product $\sum_k k!\, a_k b_k x^k$ is zero or real-rooted.
 
 ## References
 
@@ -182,6 +191,14 @@ theorem isFiniteMultiplierSequence_iff_jensenPolynomial_roots_nonneg {n : ℕ}
       (jensenPolynomial n gamma = 0 ∨ (jensenPolynomial n gamma).Splits) ∧
         ∀ r ∈ (jensenPolynomial n gamma).roots, 0 ≤ r :=
   RealRooted.isFiniteMultiplierSequence_iff_jensenPolynomial_roots_nonneg hgamma
+
+/-- Schur's factorial product theorem: if `f` is real-rooted and `g` is
+real-rooted with all zeros of one sign, then `∑ k! aₖ bₖ xᵏ` is zero or
+real-rooted. -/
+theorem gwSchurProduct_eq_zero_or_splits {f g : ℝ[X]} (hf : f.Splits)
+    (hg : g.Splits) (hsign : (∀ r ∈ g.roots, r ≤ 0) ∨ ∀ r ∈ g.roots, 0 ≤ r) :
+    gwSchurProduct f g = 0 ∨ (gwSchurProduct f g).Splits :=
+  RealRooted.gwSchurProduct_eq_zero_or_splits hf hg hsign
 
 /-- Garloff--Wagner interlacing theorem for coefficientwise products. -/
 theorem interl_hadamardProduct_of_strictInterl {f g p q : ℝ[X]}
