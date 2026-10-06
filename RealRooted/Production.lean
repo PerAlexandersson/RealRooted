@@ -1421,6 +1421,7 @@ import RealRooted.Challenges.DerivativeInterlacing
 import RealRooted.Challenges.TotallyNonnegativeMatrices
 import RealRooted.Challenges.GammaTransform
 import RealRooted.Challenges.HeilmannLieb
+import RealRooted.Challenges.GraceApolarity
 
 /-!
 # RealRooted production umbrella
