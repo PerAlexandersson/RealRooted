@@ -341,14 +341,6 @@ def rowAttempt (tac : TacticM α) : TacticM (Except MessageData α) := do
 def rowSucceeds (tac : TacticM Unit) : TacticM Bool := do
   return (← rowAttempt tac) matches .ok _
 
-/-- The recurrence argument for an unshifted recurrence: `rfl`, adapted for the one-term
-two-step shapes. -/
-def recTerm (shape : RecShape) : TacticM Term :=
-  match shape with
-  | .lagLeft => `(RealRooted.threeTerm_rec_of_left (fun _ => rfl))
-  | .lagRight => `(RealRooted.threeTerm_rec_of_right (fun _ => rfl))
-  | _ => `(fun _ => rfl)
-
 /-- A numeral. -/
 def rowNumLit (n : Nat) : TSyntax `num := Syntax.mkNumLit (toString n)
 

@@ -545,8 +545,7 @@ elab "rr_row_splits" : tactic => withMainContext do
     evalTactic (← `(tactic| refine (?_ : RealRooted.Interlaces ($P $e) ($P ($e + 1))).2.1.2))
     discard <| rowInterlacesCore {}
   let viaRight := do
-    let some cert ← splitRows t 1 (smallRow P) | throwError "rr_row_splits: not a variable"
-    discard <| pure cert
+    let some _ ← splitRows t 1 (smallRow P) | throwError "rr_row_splits: not a variable"
     withMainContext do
     let (t', c') ← rowIndexParts r.P
     let e' ← indexTerm t' (c' - 1)
