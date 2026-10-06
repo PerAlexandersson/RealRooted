@@ -1553,3 +1553,4 @@ import RealRooted.CombinatorialExamples.BigDescents321.Functionals
 import RealRooted.CombinatorialExamples.BigDescents321.TopCoefficients
 import RealRooted.CombinatorialExamples.BigDescents321.ScalarBases
 import RealRooted.CombinatorialExamples.BigDescents321.ScalarBounds
+import RealRooted.CombinatorialExamples.BigDescents321.SigmaSign

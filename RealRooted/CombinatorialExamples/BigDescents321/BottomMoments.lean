@@ -191,7 +191,7 @@ def momentZeroCF (t : ℕ) : ℚ :=
     (4 ^ (t + 2) * ((2 * t - 1) * (2 * t + 1) * (2 * t + 3) * (2 * t + 5)))
 
 /-- `F_(m + c + 1) = F_c F_m + F_(c+1) F_(m+1)`. -/
-private theorem fib_add_succ (m c : ℕ) :
+theorem fib_add_succ (m c : ℕ) :
     (Nat.fib (m + (c + 1)) : ℚ) = Nat.fib c * Nat.fib m + Nat.fib (c + 1) * Nat.fib (m + 1) := by
   have := Nat.fib_add c m
   rw [show c + m + 1 = m + (c + 1) by ring] at this
@@ -220,7 +220,7 @@ theorem kernelMoment_four_zero : kernelMoment (4 : ℕ) 0 = -13 / 10080 := by
   norm_num at h
   linarith
 
-private theorem two_mul_sub_one_ne_zero (s : ℕ) : (2 * (s : ℚ) - 1) ≠ 0 := by
+theorem two_mul_sub_one_ne_zero (s : ℕ) : (2 * (s : ℚ) - 1) ≠ 0 := by
   intro h
   have : (2 * s : ℚ) = 1 := by linarith
   norm_cast at this
