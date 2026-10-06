@@ -4,8 +4,8 @@ import Mathlib.Data.Nat.Factorial.Basic
 /-!
 # Factorial-compression definitions
 
-The finite coefficient compression, its adjacent differential step, and the
-degree-changing kernel used by the main theorem.
+The common kernel family, finite coefficient compression, adjacent differential
+step, and degree-changing kernel used by the main theorem.
 -/
 
 open Polynomial
