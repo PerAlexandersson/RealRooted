@@ -1538,3 +1538,4 @@ import RealRooted.Mathlib.Algebra.Polynomial.Antiderivative
 import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
 import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
 import RealRooted.CombinatorialExamples.BigDescents321.GeneratingFunction
+import RealRooted.CombinatorialExamples.BigDescents321.Reference
