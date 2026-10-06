@@ -1176,7 +1176,6 @@ import RealRooted.WangYeh.TriangularMatrix
 import RealRooted.WeightedSum
 import RealRooted.Wronskian
 import RealRooted.Wronskian.Algebra
-import RealRooted.Wronskian.Converse
 import RealRooted.Wronskian.Forward
 import RealRooted.Wronskian.PolarLaguerre
 import RealRooted.Wronskian.Successor

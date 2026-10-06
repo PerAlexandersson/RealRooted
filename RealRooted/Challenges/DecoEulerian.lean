@@ -49,9 +49,13 @@ splits over $\mathbb R$ and all its zeros belong to $[-1,0]$, then
 $\mathcal T_w(f)$ splits over $\mathbb R$, has no repeated zero, and all its
 zeros are strictly negative.
 
-At $w=0$, the family is the shifted ordinary Eulerian family
-$P_n^{(0)}(x)=A_{n+1}(x)$. At $w=1$, it is the deco Eulerian family whose
-coefficient triangle is [OEIS A144438](https://oeis.org/A144438).
+At $w=0$, the recurrence is the ordinary Eulerian recurrence
+`generalizedEulerian 1` (`weightedDecoEulerian_zero_weight`), whose members are
+classically the Eulerian polynomials $A_{n+1}(x)$. At $w=1$, it is the
+recurrence-defined family `decoEulerian` (`weightedDecoEulerian_one_weight`),
+whose initial values and recurrence match the coefficient triangle
+[OEIS A144438](https://oeis.org/A144438). The descent and deco-polyomino
+interpretations are cited, not formalized.
 
 ## Proof idea
 

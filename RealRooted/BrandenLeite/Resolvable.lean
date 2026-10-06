@@ -5,8 +5,11 @@ import RealRooted.LowerTriangularMatrix
 
 This file formalizes Brändén--Saud Leite, Definition 2.2, for infinite
 lower-triangular matrices.  The construction of this data from total
-nonnegativity is deliberately separate: it is the Whitney-reduction theorem
-tracked by issue #398.
+nonnegativity is in `RealRooted.BrandenLeite.WhitneyReduction`
+(`isResolvable_of_isTotallyNonneg`), and
+`RealRooted.BrandenLeite.ResolvableTotallyNonneg` proves the converse, so a
+lower-unitriangular matrix is resolvable exactly when it is totally
+nonnegative (`isResolvable_iff_isTotallyNonneg`).
 -/
 
 open Polynomial BigOperators

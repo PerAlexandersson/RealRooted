@@ -26,8 +26,10 @@ noncomputable section
 
 namespace RealRooted.Applications.EulerianVariations
 
-/-- The cyclic-descent polynomial for northeast paths from `(0, 0)` to
-`(n, n)`, in the coefficient form of the paper. -/
+/-- The cyclic-path descent polynomial, defined by the paper's coefficient
+formula `2 * choose n k * choose (n - 1) (k - 1)` for `1 ≤ k ≤ n`.  Its
+interpretation as counting cyclic descents of northeast paths from `(0, 0)` to
+`(n, n)` is cited, not formalized. -/
 def cyclicPathDescentPolynomial (n : ℕ) : ℝ[X] :=
   ∑ k ∈ Finset.Icc 1 n,
     monomial k (2 * (Nat.choose n k : ℝ) * Nat.choose (n - 1) (k - 1))

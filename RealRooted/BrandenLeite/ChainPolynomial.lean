@@ -7,9 +7,13 @@ import RealRooted.SymmetricDecomposition.Theorem26
 /-!
 # Chain polynomials of a resolvable matrix
 
-Definitions and the conditional Brändén--Saud Leite induction.  The public
-theorems in this file assume explicit `Resolution` data; constructing that data
-from total nonnegativity remains the separate Whitney-reduction problem #398.
+Definitions and the Brändén--Saud Leite induction, stated for explicit
+`Resolution` data: each chain polynomial is zero or real-rooted, has nonnegative
+coefficients and roots in `[-1, 0]`, and consecutive chain polynomials
+interlace.  `RealRooted.BrandenLeite.WhitneyReduction` constructs this data from
+total nonnegativity (`resolutionOfTotallyNonneg`), and
+`RealRooted.BrandenLeite.Theorem37` restates the results for every
+lower-unitriangular totally nonnegative matrix.
 -/
 
 open Polynomial BigOperators

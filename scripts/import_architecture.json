@@ -1272,9 +1272,6 @@
     "RealRooted.Wronskian.Forward": {
       "max_modules": 21
     },
-    "RealRooted.Wronskian.Converse": {
-      "max_modules": 15
-    },
     "RealRooted.Wronskian.Successor": {
       "max_modules": 24
     },
@@ -2224,7 +2221,6 @@
     "RealRooted.WagnerX.ProperPosition",
     "RealRooted.Wronskian",
     "RealRooted.Wronskian.Algebra",
-    "RealRooted.Wronskian.Converse",
     "RealRooted.Wronskian.Forward",
     "RealRooted.Wronskian.Successor",
     "RealRooted.Wronskian.Successor.Gap",
