@@ -253,4 +253,85 @@ theorem strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r 
     have hfg' : StrictInterl f' g' := hshift.mpr hgxf'
     exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
+/-- Same-degree affine shift: if `f ≪ g` have the same degree, positive leading
+coefficients, and all roots at most `r`, then `g ≪ (X - r) f`. -/
+lemma StrictInterl.mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]}
+    (h : StrictInterl f g) (r : ℝ)
+    (hdeg : f.natDegree = g.natDegree)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_le : ∀ s ∈ f.roots, s ≤ r)
+    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
+    StrictInterl g ((X - C r) * f) := by
+  set f' := f.comp (X + C r)
+  set g' := g.comp (X + C r)
+  have hf' : (f' ≠ 0 ∧
+    f'.Splits) := by simpa [f'] using isRealRooted_comp_X_add_C h.1.1 h.1.2 r
+  have hg' : (g' ≠ 0 ∧
+    g'.Splits) := by simpa [g'] using isRealRooted_comp_X_add_C h.2.1.1 h.2.1.2 r
+  have hf'_pos : HasPosLeadingCoeff f' := by simpa [f'] using hf_pos.comp_X_add_C r
+  have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
+  have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
+    intro s hs
+    simp only [f', roots_comp_X_add_C r] at hs
+    rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
+    simp_all
+  have hg'_nonpos : ∀ s ∈ g'.roots, s ≤ 0 := by
+    intro s hs
+    simp only [g', roots_comp_X_add_C r] at hs
+    rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
+    simp_all
+  have hdeg' : f'.natDegree = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
+  have hfg' : StrictInterl f' g' := by
+    simpa [f', g'] using (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).2 h
+  have hgxf' : StrictInterl g' (X * f') :=
+    strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos
+      hfg' hdeg' hf'_nonpos hg'_nonpos
+  have htranslated : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
+    simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
+      comp_assoc, add_assoc, add_left_comm, add_comm] using hgxf'
+  exact
+    (StrictInterl.comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).1 htranslated
+
+/-- Converse of `StrictInterl.mul_X_sub_C_of_sameDegree_of_roots_le`. -/
+lemma StrictInterl.of_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} {r : ℝ}
+    (h : StrictInterl g ((X - C r) * f))
+    (hdeg : f.natDegree = g.natDegree)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_le : ∀ s ∈ f.roots, s ≤ r)
+    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
+    StrictInterl f g := by
+  set f' := f.comp (X + C r)
+  set g' := g.comp (X + C r)
+  have hXf : (((X - C r) * f) ≠ 0 ∧ ((X - C r) * f).Splits) := h.2.1
+  have hf0 : f ≠ 0 := right_ne_zero_of_mul hXf.1
+  have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_dvd hXf.1 hXf.2 hf0 (dvd_mul_left f _)
+  have hf' : (f' ≠ 0 ∧
+    f'.Splits) := by simpa [f'] using isRealRooted_comp_X_add_C hf.1 hf.2 r
+  have hg' : (g' ≠ 0 ∧
+    g'.Splits) := by simpa [g'] using isRealRooted_comp_X_add_C h.1.1 h.1.2 r
+  have hf'_pos : HasPosLeadingCoeff f' := by simpa [f'] using hf_pos.comp_X_add_C r
+  have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
+  have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
+    intro s hs
+    simp only [f', roots_comp_X_add_C r] at hs
+    rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
+    simp_all
+  have hg'_nonpos : ∀ s ∈ g'.roots, s ≤ 0 := by
+    intro s hs
+    simp only [g', roots_comp_X_add_C r] at hs
+    rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
+    simp_all
+  have hdeg' : f'.natDegree = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
+  have hgf' : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
+    simpa [g'] using
+      (StrictInterl.comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).2 h
+  have hgxf' : StrictInterl g' (X * f') := by
+    simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
+      comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
+  have hfg' : StrictInterl f' g' :=
+    strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos
+  exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
+
 end RealRooted

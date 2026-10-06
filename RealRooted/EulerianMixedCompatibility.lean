@@ -421,7 +421,6 @@ private theorem mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
     (hgf : StrictInterl g f)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hg_splits : g.Splits)
     (hdeg : g.natDegree + 1 = f.natDegree)
     (hfdeg : f.natDegree ≤ n + 1)
     (hno : ∀ r, f.IsRoot r → ¬g.IsRoot r)
@@ -472,20 +471,8 @@ private theorem mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
         change f.leadingCoeff + lam * g.coeff f.natDegree = f.leadingCoeff
         rw [coeff_eq_zero_of_natDegree_lt (by lia), mul_zero, add_zero]]
       exact hf_pos.ne'
-  have hscaled_no : ∀ r, (C lam * g).IsRoot r → ¬f.IsRoot r := by
-    intro r hgr hfr
-    have hgr' : g.IsRoot r := by
-      simp only [Polynomial.IsRoot.def, eval_mul, eval_C] at hgr ⊢
-      exact (mul_eq_zero.mp hgr).resolve_left hlam.ne'
-    exact hno r hfr hgr'
-  have hcop : IsCoprime (C lam * g) f :=
-    isCoprime_of_no_common_real_root_of_isRealRooted
-      (hasPosLeadingCoeff_C_mul hlam hg_pos).ne_zero
-      (hg_splits.C_mul lam) hscaled_no
   have hgh : StrictInterl g h := by
     have hStrictInterl := hgf.convex_left hg_pos hf_pos hlam zero_lt_one
-      (by simpa [h, add_comm] using hh_ne)
-      (by simpa [h, add_comm] using hh_splits) (by simpa using hcop)
     simpa [h, add_comm] using hStrictInterl
   have hno_hg : ∀ r, h.IsRoot r → ¬g.IsRoot r := by
     intro r hhr hgr
@@ -664,7 +651,6 @@ private theorem mixedEulerStep_strictInterl_of_no_common
     (hgf : StrictInterl g f)
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hg_splits : g.Splits)
     (hdeg : g.natDegree + 1 = f.natDegree)
     (hfdeg : f.natDegree ≤ n + 1)
     (hno : ∀ r, f.IsRoot r → ¬g.IsRoot r) :
@@ -673,12 +659,12 @@ private theorem mixedEulerStep_strictInterl_of_no_common
         C lam * eulerInsertionStep 1 n g) := by
   by_cases hfzero_pos : 0 < f.coeff 0
   · exact mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
-      hlam hgf hf hg hf_pos hg_pos hg_splits hdeg hfdeg hno (Or.inl hfzero_pos)
+      hlam hgf hf hg hf_pos hg_pos hdeg hfdeg hno (Or.inl hfzero_pos)
   have hfzero_nonneg : 0 ≤ f.coeff 0 := hf 0
   have hfzero : f.coeff 0 = 0 := by linarith
   by_cases hfdeg2 : 2 ≤ f.natDegree
   · exact mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
-      hlam hgf hf hg hf_pos hg_pos hg_splits hdeg hfdeg hno (Or.inr hfdeg2)
+      hlam hgf hf hg hf_pos hg_pos hdeg hfdeg hno (Or.inr hfdeg2)
   have hfdeg1 : f.natDegree = 1 := by lia
   have hgdeg0 : g.natDegree = 0 := by lia
   have hfform : f = C f.leadingCoeff * X := by
@@ -796,9 +782,6 @@ theorem mixedEulerStep_splits
     simpa [fM, gM] using hdeg
   have hfdegM (M : ℕ) : (fM M).natDegree ≤ n + 1 := by
     simpa [fM] using hfdeg
-  have hgM_splits (M : ℕ) : (gM M).Splits := by
-    dsimp [gM]
-    exact splits_iterateTDeriv_all hgf.1.2 f.natDegree
   have hPM_data (M : ℕ) :
       HasNonnegCoeffs (PM M) ∧
         (PM M).natDegree = (fM M).natDegree + 1 ∧
@@ -814,7 +797,7 @@ theorem mixedEulerStep_splits
       regularized_strictInterl_no_common hgf hf_pos hg_pos hdeg (hdelta_pos M)
     have hmixed := mixedEulerStep_strictInterl_of_no_common hlam hStrictInterlM
       (hfM_nonneg M) (hgM_nonneg M) (hfM_pos M) (hgM_pos M)
-      (hgM_splits M) (hdegM M) (hfdegM M) hnoM
+      (hdegM M) (hfdegM M) hnoM
     exact hmixed.2.1.2
   have hPM_deg (M : ℕ) : (PM M).natDegree = P.natDegree := by
     rw [(hPM_data M).2.1, hP_deg]
