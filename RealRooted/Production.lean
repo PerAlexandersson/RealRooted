@@ -1384,6 +1384,8 @@ import RealRooted.Challenges.GammaTransform
 import RealRooted.Challenges.HeilmannLieb
 import RealRooted.Challenges.GraceApolarity
 import RealRooted.Challenges.RealStability
+import RealRooted.LiuWang.General
+import RealRooted.MaWang.Weak.DerivativeSign
 
 /-!
 # RealRooted production umbrella
