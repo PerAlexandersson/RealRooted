@@ -578,3 +578,52 @@ theorem isSymmetric_polarization (n : ℕ) (p : ℂ[X]) :
   exact isSymmetric_reducedPolarization n (binomialUnlift n p)
 
 end RealRooted
+
+namespace RealRooted
+
+/-- Polarization inverts diagonal projection on symmetric multiaffine
+polynomials: such a polynomial is the polarization of its diagonal. -/
+theorem polarization_diagonalProjection {n : ℕ} {P : MvPolynomial (Fin n) ℂ}
+    (hsym : P.IsSymmetric) (hma : MvPolynomial.IsMultiaffine P) :
+    polarization n (diagonalProjection n P) = P := by
+  have hP := hsym.eq_sum_C_mul_esymm hma
+  have hterm : ∀ k ∈ Finset.range (n + 1), ∀ c : ℂ,
+      polarizationLinearMap n
+          (diagonalProjection n (MvPolynomial.C c * MvPolynomial.esymm (Fin n) ℂ k)) =
+        MvPolynomial.C c * MvPolynomial.esymm (Fin n) ℂ k := by
+    intro k hk c
+    have hkn : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+    have hchoose : (n.choose k : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.choose_pos hkn).ne'
+    rw [← MvPolynomial.smul_eq_C_mul, map_smul, diagonalProjection_esymm,
+      ← Polynomial.smul_eq_C_mul, map_smul, map_smul]
+    change c • (n.choose k : ℂ) • polarization n (X ^ k) = _
+    rw [polarization_X_pow hkn, MvPolynomial.smul_eq_C_mul _ (n.choose k : ℂ), ← mul_assoc,
+      ← map_mul, mul_inv_cancel₀ hchoose, map_one, one_mul]
+  calc polarization n (diagonalProjection n P)
+      = polarizationLinearMap n (diagonalProjection n (∑ k ∈ Finset.range (n + 1),
+          MvPolynomial.C (P.coeff (∑ i : Fin n,
+            if (i : ℕ) < k then Finsupp.single i 1 else 0)) *
+          MvPolynomial.esymm (Fin n) ℂ k)) := by rw [← hP]; rfl
+    _ = P := by
+      rw [map_sum, map_sum]
+      exact (Finset.sum_congr rfl fun k hk => hterm k hk _).trans hP.symm
+
+/-- **Grace–Walsh–Szegő**, symmetric multiaffine form: a symmetric
+multiaffine polynomial is stable exactly when its diagonal
+`P(z, …, z)` has no zeros in the open upper half-plane. -/
+theorem mvUpperHalfPlaneStable_iff_eval_diagonalProjection_ne_zero {n : ℕ}
+    {P : MvPolynomial (Fin n) ℂ} (hsym : P.IsSymmetric)
+    (hma : MvPolynomial.IsMultiaffine P) :
+    MvUpperHalfPlaneStable P ↔
+      ∀ w : ℂ, 0 < w.im → (diagonalProjection n P).eval w ≠ 0 := by
+  constructor
+  · intro hP w hw
+    rw [eval_diagonalProjection]
+    exact hP _ fun _ => hw
+  · intro h
+    rw [← polarization_diagonalProjection hsym hma]
+    exact mvUpperHalfPlaneStable_polarization
+      (natDegree_diagonalProjection_le
+        ⟨P, (MvPolynomial.mem_degreeOfLE_iff_degreeOf P).2 hma⟩) h
+
+end RealRooted

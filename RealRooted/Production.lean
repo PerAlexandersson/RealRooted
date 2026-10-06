@@ -1398,6 +1398,8 @@ import RealRooted.Mathlib.Algebra.Polynomial.Taylor
 import RealRooted.Mathlib.RingTheory.Polynomial.Resultant.Basic
 import RealRooted.RootContinuity.Path
 import RealRooted.SimpleRootLogDerivative
+import RealRooted.BorceaBranden.Applications.PolarizationIff
+import RealRooted.MultivariateStability.Inversion
 
 /-!
 # RealRooted production umbrella

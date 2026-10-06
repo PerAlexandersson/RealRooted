@@ -1,5 +1,6 @@
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.PFPolynomial
+import RealRooted.PolyaFrequencyConvolution.Basic
 
 /-!
 # Aissen--Schoenberg--Whitney challenge entry point
@@ -21,6 +22,11 @@ name = "RealRooted.IsPolyaFreqSeq"
 module = "RealRooted.AissenSchoenbergWhitneyBase"
 label = "Pólya frequency sequence"
 
+[[definitions]]
+name = "RealRooted.natCauchyConvolution"
+module = "RealRooted.PolyaFrequencyConvolution.Basic"
+label = "Cauchy convolution of sequences"
+
 [[theorems]]
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.isPolyaFreqSeq_coeff_iff_isPFPolynomial"
 label = "PF coefficients if and only if a PF polynomial"
@@ -34,6 +40,14 @@ label = "PF coefficients give real nonpositive zeros"
 name = """RealRooted.Challenges.AissenSchoenbergWhitney.\
 isPolyaFreqSeq_coeff_of_splits_of_roots_nonpos"""
 label = "Real nonpositive zeros give PF coefficients"
+
+[[theorems]]
+name = "RealRooted.Challenges.AissenSchoenbergWhitney.IsPolyaFreqSeq.natCauchyConvolution"
+label = "PF sequences are closed under convolution"
+
+[[theorems]]
+name = "RealRooted.Challenges.AissenSchoenbergWhitney.isPolyaFreqSeq_coeff_mul"
+label = "Products of power series with PF coefficients have PF coefficients"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -46,6 +60,18 @@ of a real polynomial $p$ is a Pólya frequency sequence if and only if $p$ is a
 PF polynomial: $p$ has nonnegative coefficients and is either zero or splits
 over $\mathbb R$ with only nonpositive zeros. The two directions are also
 listed separately.
+
+**Theorem.** If $(a_k)$ and $(b_k)$ are Pólya frequency sequences, then so is
+their Cauchy convolution $c_n = \sum_{k=0}^n a_k b_{n-k}$. The sequences may be
+infinite. Equivalently, if the formal power series $F$ and $G$ have Pólya
+frequency coefficient sequences, then so does $FG$.
+
+## Proof idea
+
+The Toeplitz matrix of the convolution is the product of the two Toeplitz
+matrices. Each finite truncation of this product is the product of the
+truncations, because the matrices are lower triangular, and a product of
+totally nonnegative matrices is totally nonnegative.
 
 ## References
 
@@ -62,8 +88,9 @@ Original publication: M. Aissen, I. J. Schoenberg, and A. M. Whitney,
 "On the generating functions of totally positive sequences. I",
 J. Analyse Math. 2 (1952), 93--103.
 
-This module exposes the proved Aissen--Schoenberg--Whitney equivalence and its
-forward and reverse directions.  The Toeplitz/PF infrastructure remains in
+This module exposes the proved Aissen--Schoenberg--Whitney equivalence, its
+forward and reverse directions, and closure of Pólya frequency sequences under
+convolution.  The Toeplitz/PF infrastructure remains in
 `RealRooted.AissenSchoenbergWhitney`.
 -/
 
@@ -91,6 +118,21 @@ theorem isPolyaFreqSeq_coeff_of_splits_of_roots_nonpos {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hsplits : p.Splits) (hroots : ∀ r ∈ p.roots, r ≤ 0) :
     IsPolyaFreqSeq p.coeff :=
   RealRooted.aissenSchoenbergWhitney_reverse hp hsplits hroots
+
+/-- Pólya frequency sequences, finite or infinite, are closed under Cauchy
+convolution. -/
+theorem IsPolyaFreqSeq.natCauchyConvolution {a b : ℕ → ℝ} (ha : IsPolyaFreqSeq a)
+    (hb : IsPolyaFreqSeq b) :
+    IsPolyaFreqSeq (natCauchyConvolution a b) :=
+  ha.natCauchyConvolution hb
+
+/-- If two formal power series have Pólya frequency coefficient sequences, then
+so does their product. -/
+theorem isPolyaFreqSeq_coeff_mul {F G : PowerSeries ℝ}
+    (hF : IsPolyaFreqSeq fun k => PowerSeries.coeff k F)
+    (hG : IsPolyaFreqSeq fun k => PowerSeries.coeff k G) :
+    IsPolyaFreqSeq fun k => PowerSeries.coeff k (F * G) := by
+  simpa only [coeff_mul_eq_natCauchyConvolution] using hF.natCauchyConvolution hG
 
 end AissenSchoenbergWhitney
 end Challenges
