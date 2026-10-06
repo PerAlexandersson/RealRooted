@@ -17,12 +17,12 @@ namespace RealRooted
 
 /-- The Jensen polynomial of the factorial-weighted coefficients is a
 Garloff--Wagner Schur product with a binomial polynomial. -/
-theorem jensenPolynomial_factorial_mul_coeff_eq_gwSchurProduct
+theorem jensenPolynomial_factorial_mul_coeff_eq_factorialHadamardProduct
     (p : ℝ[X]) (n : ℕ) :
     jensenPolynomial n (fun k => (k.factorial : ℝ) * p.coeff k) =
-      gwSchurProduct p ((X + 1 : ℝ[X]) ^ n) := by
+      factorialHadamardProduct p ((X + 1 : ℝ[X]) ^ n) := by
   ext k
-  rw [coeff_jensenPolynomial, coeff_gwSchurProduct,
+  rw [coeff_jensenPolynomial, coeff_factorialHadamardProduct,
     Polynomial.coeff_X_add_one_pow]
   split_ifs with hk
   · ring
@@ -35,8 +35,8 @@ theorem IsPFPolynomial.isPF_jensenPolynomial_factorial_mul_coeff
     {p : ℝ[X]} (hp : IsPFPolynomial p) (n : ℕ) :
     IsPFPolynomial
       (jensenPolynomial n (fun k => (k.factorial : ℝ) * p.coeff k)) := by
-  rw [jensenPolynomial_factorial_mul_coeff_eq_gwSchurProduct]
-  exact gwSchurProductPF hp (isPFPolynomial_X_add_one.pow n)
+  rw [jensenPolynomial_factorial_mul_coeff_eq_factorialHadamardProduct]
+  exact hp.factorialHadamardProduct (isPFPolynomial_X_add_one.pow n)
 
 /-- The factorial-weighted coefficient sequence of a PF polynomial is a PF
 multiplier sequence. -/

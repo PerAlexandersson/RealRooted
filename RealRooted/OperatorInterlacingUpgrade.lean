@@ -37,12 +37,12 @@ theorem LinearMap.map_weightedSum (T : ℝ[X] →ₗ[ℝ] ℝ[X]) :
 
 /-- A linear map preserves PF Krein interlacing when every nonzero PF
 polynomial remains after each possible one-root deletion in the oriented
-order.  The self-summand is included in `IsGWKreinSummand`. -/
+order.  The self-summand is included in `IsKreinSummand`. -/
 def PreservesPFKreinInterlacingOnDegree
     (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (D : ℕ) : Prop :=
   ∀ ⦃g q : ℝ[X]⦄,
     IsPFPolynomial g → g ≠ 0 → g.natDegree ≤ D →
-      IsGWKreinSummand g q →
+      IsKreinSummand g q →
       StrictInterl (T q) (T g)
 
 /-- A linear map preserves PF linear-factor interlacing when multiplication of
@@ -280,7 +280,7 @@ theorem strictInterl_map_of_preservesPFKreinInterlacingOnDegree
   have hexp : ∃ l : List (ℝ × ℝ[X]),
       f = weightedSum l ∧
         (∀ ap ∈ l, 0 ≤ ap.1) ∧
-        (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
+        (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
         ∃ ap ∈ l, 0 < ap.1 := by
     by_cases hgdeg : g.natDegree = 0
     · exact exists_kreinSummandExpansion_nonneg_right_of_natDegree_eq_zero

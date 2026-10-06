@@ -20,7 +20,7 @@ theorem garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl {f g p q : ℝ
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  gwHadamardProductNonnegInterl hf.hasNonnegCoeffs hg.hasNonnegCoeffs
+  StrictInterl.interl_hadamardProduct hf.hasNonnegCoeffs hg.hasNonnegCoeffs
     hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
 
 /-- Garloff--Wagner, Theorem 4(b), for PF polynomials and zero-aware

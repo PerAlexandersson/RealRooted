@@ -142,7 +142,7 @@ theorem hadamardProduct_interl_of_nonneg_strictInterl {f g p q : ℝ[X]}
     (hfg : StrictInterl f g)
     (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
+  StrictInterl.interl_hadamardProduct hf hg hp hq hfg hpq
 
 theorem hadamardProduct_sequence_interl {F G P Q : Nat → ℝ[X]}
     (hF : ∀ i : Nat, HasNonnegCoeffs (F i))
@@ -167,25 +167,6 @@ syntax (name := rr_schur_szego_named)
 
 syntax (name := rr_schur_szego_splits_named)
   "rr_schur_szego_splits" " using "
-    "pf_factor" ":=" term ","
-    "pf_degree" ":=" term ","
-    "input_degree" ":=" term ","
-    "input_splits" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-syntax (name := rr_schur_szego_level_le_two_named)
-  "rr_schur_szego_level_le_two" " using "
-    "level_le_two" ":=" term ","
-    "pf_factor" ":=" term ","
-    "pf_degree" ":=" term ","
-    "input_degree" ":=" term ","
-    "input_splits" ":=" term :
-  tactic
-
-syntax (name := rr_schur_szego_level_le_two_splits_named)
-  "rr_schur_szego_level_le_two_splits" " using "
-    "level_le_two" ":=" term ","
     "pf_factor" ":=" term ","
     "pf_degree" ":=" term ","
     "input_degree" ":=" term ","
@@ -251,27 +232,6 @@ syntax (name := rr_schur_szego_pf_factor_degree_le_three_num_splits_named)
   "rr_schur_szego_pf_factor_degree_le_three_num_splits" " using "
     "level_ge_three" ":=" term ","
     "pf_degree_le_three" ":=" term ","
-    "cubic_numerator" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-syntax (name := rr_schur_szego_pf_factor_degree_le_three_num_left_degree_named)
-  "rr_schur_szego_pf_factor_degree_le_three_num_left_degree" " using "
-    "pf_factor" ":=" term ","
-    "pf_degree_le_three" ":=" term ","
-    "pf_degree" ":=" term ","
-    "input_degree" ":=" term ","
-    "input_splits" ":=" term ","
-    "cubic_numerator" ":=" term :
-  tactic
-
-syntax (name := rr_schur_szego_pf_factor_degree_le_three_num_left_degree_splits_named)
-  "rr_schur_szego_pf_factor_degree_le_three_num_left_degree_splits" " using "
-    "pf_factor" ":=" term ","
-    "pf_degree_le_three" ":=" term ","
-    "pf_degree" ":=" term ","
-    "input_degree" ":=" term ","
-    "input_splits" ":=" term ","
     "cubic_numerator" ":=" term ","
     "nonzero" ":=" term :
   tactic
@@ -396,28 +356,6 @@ macro_rules
         exact RealRooted.Tactic.schurSzegoComp_splits_of_nonzero
           $hf $hfdeg $hpdeg $hsplits $hout)
   | `(tactic|
-      rr_schur_szego_level_le_two using
-        level_le_two := $hn:term,
-        pf_factor := $hf:term,
-        pf_degree := $hfdeg:term,
-        input_degree := $hpdeg:term,
-        input_splits := $hsplits:term) =>
-      `(tactic|
-        (have _ := $hn
-         exact RealRooted.finiteSchurSzegoComposition $hf $hfdeg $hpdeg $hsplits))
-  | `(tactic|
-      rr_schur_szego_level_le_two_splits using
-        level_le_two := $hn:term,
-        pf_factor := $hf:term,
-        pf_degree := $hfdeg:term,
-        input_degree := $hpdeg:term,
-        input_splits := $hsplits:term,
-        nonzero := $hout:term) =>
-      `(tactic|
-        (have _ := $hn
-         exact RealRooted.Tactic.schurSzegoComp_splits_of_nonzero
-           $hf $hfdeg $hpdeg $hsplits $hout))
-  | `(tactic|
       rr_schur_szego_pf_factor_degree_le_two using
         pf_factor := $hf:term,
         pf_degree_le_two := $hfdeg:term,
@@ -493,32 +431,6 @@ macro_rules
         exact
           RealRooted.Tactic.schurSzegoComp_splits_of_pf_factor_natDegree_le_three_cubicNum
             $hn $hfdeg $hnum $hout)
-  | `(tactic|
-      rr_schur_szego_pf_factor_degree_le_three_num_left_degree using
-        pf_factor := $hf:term,
-        pf_degree_le_three := $hfdeg:term,
-        pf_degree := $hfn:term,
-        input_degree := $hpdeg:term,
-        input_splits := $hsplits:term,
-        cubic_numerator := $hnum:term) =>
-      `(tactic|
-        (have _ := $hfdeg
-         have _ := $hnum
-         exact RealRooted.finiteSchurSzegoComposition $hf $hfn $hpdeg $hsplits))
-  | `(tactic|
-      rr_schur_szego_pf_factor_degree_le_three_num_left_degree_splits using
-        pf_factor := $hf:term,
-        pf_degree_le_three := $hfdeg:term,
-        pf_degree := $hfn:term,
-        input_degree := $hpdeg:term,
-        input_splits := $hsplits:term,
-        cubic_numerator := $hnum:term,
-        nonzero := $hout:term) =>
-      `(tactic|
-        (have _ := $hfdeg
-         have _ := $hnum
-         exact RealRooted.Tactic.schurSzegoComp_splits_of_nonzero
-           $hf $hfn $hpdeg $hsplits $hout))
   | `(tactic|
       rr_schur_szego_nonzero using
         pf_factor := $hf:term,

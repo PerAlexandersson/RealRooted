@@ -158,23 +158,20 @@ example {n : Nat} {f p : ℝ[X]}
     input_degree := hpdeg,
     input_splits := hsplits
 
-/-- Schur--Szego cubic numerator route exposed through the OEIS facade. -/
+/-- Schur--Szego route for a cubic PF factor exposed through the OEIS facade. -/
 example {n : Nat} {f p : ℝ[X]}
     (hf : IsPFPolynomial f)
     (hfdeg : f.natDegree ≤ 3)
-    (hfn : f.natDegree ≤ n)
+    (hn : 3 ≤ n)
     (hpdeg : p.natDegree ≤ n)
     (hsplits : p.Splits)
-    (hnum : 3 ≤ n → 0 ≤ schurSzegoCompCubicDiscrNumerator n f p)
     (hout : schurSzegoComp n f p ≠ 0) :
     (schurSzegoComp n f p).Splits := by
-  rr_schur_szego_pf_factor_degree_le_three_num_left_degree_splits using
+  rr_schur_szego_splits using
     pf_factor := hf,
-    pf_degree_le_three := hfdeg,
-    pf_degree := hfn,
+    pf_degree := hfdeg.trans hn,
     input_degree := hpdeg,
     input_splits := hsplits,
-    cubic_numerator := hnum,
     nonzero := hout
 
 /-- Jensen nonnegative-coefficient row-family exit exposed through the OEIS

@@ -17,7 +17,7 @@ theorem exists_kreinRootDeletedExpansion_right {f g : ℝ[X]}
     (hfg : StrictInterl f g) (hgdeg : 0 < g.natDegree) :
     ∃ c : ℝ, ∃ l : List (ℝ × ℝ[X]),
       (∀ ap ∈ l, ∃ u : ℝ, g = (X - C u) * ap.2) ∧
-        (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
+        (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
         f = C c * g + weightedSum l := by
   classical
   rcases exists_C_mul_sub_natDegree_lt_of_le hfg.2.1.1 hgdeg
@@ -29,7 +29,7 @@ theorem exists_kreinRootDeletedExpansion_right {f g : ℝ[X]}
       (Multiset.mem_toFinset.mp (Finset.mem_toList.mp hu))
   have hdata : ∀ u ∈ roots, ∃ a : ℝ, ∃ q : ℝ[X],
       g = (X - C u) * q ∧
-        IsGWKreinSummand g q ∧
+        IsKreinSummand g q ∧
         (X - C u) ^ (g.rootMultiplicity u) ∣
           f - C c * g - C a * q :=
     fun u hu => exists_kreinCoefficientData_of_right_isRoot hfg hfg.2.1.2 c (hroot u hu)
@@ -211,7 +211,7 @@ theorem exists_kreinCoefficientData_nonneg_of_right_isRoot {f g : ℝ[X]}
     ∃ a : ℝ, ∃ q : ℝ[X],
       0 ≤ a ∧
         g = (X - C u) * q ∧
-        IsGWKreinSummand g q ∧
+        IsKreinSummand g q ∧
         (X - C u) ^ (g.rootMultiplicity u) ∣
           f - C c * g - C a * q := by
   rcases exists_kreinSummand_factor_of_isRoot hfg.2.1.1 hgs hu with
@@ -233,7 +233,7 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree {f g : ℝ[X]
     ∃ l : List (ℝ × ℝ[X]),
       f = weightedSum l ∧
         (∀ ap ∈ l, 0 ≤ ap.1) ∧
-        (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
+        (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
         ∃ ap ∈ l, 0 < ap.1 := by
   classical
   rcases exists_nonneg_C_mul_sub_natDegree_lt_of_le hfpos hgpos hgdeg
@@ -246,7 +246,7 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree {f g : ℝ[X]
   have hdata : ∀ u ∈ roots, ∃ a : ℝ, ∃ q : ℝ[X],
       0 ≤ a ∧
         g = (X - C u) * q ∧
-        IsGWKreinSummand g q ∧
+        IsKreinSummand g q ∧
         (X - C u) ^ (g.rootMultiplicity u) ∣
           f - C c * g - C a * q :=
     fun u hu => exists_kreinCoefficientData_nonneg_of_right_isRoot hfg hfpos hgpos
@@ -298,7 +298,7 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree {f g : ℝ[X]
     · change ap ∈ roots.map (fun u => (a' u, q' u)) at htail_mem
       rcases List.mem_map.mp htail_mem with ⟨u, hu, rfl⟩
       simp [a', hu, ha u hu]
-  have hsummand_all : ∀ ap ∈ l, IsGWKreinSummand g ap.2 := by
+  have hsummand_all : ∀ ap ∈ l, IsKreinSummand g ap.2 := by
     intro ap hap
     change ap ∈ (c, g) :: tail at hap
     rcases List.mem_cons.mp hap with hhead | htail_mem
@@ -327,7 +327,7 @@ theorem exists_kreinSummandExpansion_nonneg_right_of_natDegree_eq_zero {f g : �
     ∃ l : List (ℝ × ℝ[X]),
       f = weightedSum l ∧
         (∀ ap ∈ l, 0 ≤ ap.1) ∧
-        (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
+        (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
         ∃ ap ∈ l, 0 < ap.1 := by
   have hfdeg : f.natDegree = 0 := by
     have hfg_le := hfg.natDegree_le
@@ -369,17 +369,17 @@ lemma hasPosLeadingCoeff_C_inv_leadingCoeff_mul {p : ℝ[X]} (hp0 : p ≠ 0) :
 
 /-- A Lemma 7/Krein expansion in root-deleted summands supplies the weighted
 common-right hypotheses needed for the checked Theorem 11(c) package. -/
-theorem gwJL_strictInterl_of_kreinSummandExpansion
+theorem divFactorialShift_strictInterl_of_kreinSummandExpansion
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hg0 : g ≠ 0) (hgs : g.Splits) (hgpos : HasPosLeadingCoeff g)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hsummand : ∀ ap ∈ l, IsGWKreinSummand g ap.2)
+    (hsummand : ∀ ap ∈ l, IsKreinSummand g ap.2)
     (hex : ∃ ap ∈ l, 0 < ap.1) :
-    StrictInterl (gwJL k f) (gwJL k g) :=
-  gwJL_strictInterl_of_rightWeightedExpansion hf hnonneg
-    (fun ap hap => (hsummand ap hap).gwJL_strictInterl hg0 hgs)
-    (fun ap hap => ((hsummand ap hap).hasPosLeadingCoeff hgpos).gwJL k)
+    StrictInterl (divFactorialShift k f) (divFactorialShift k g) :=
+  divFactorialShift_strictInterl_of_rightWeightedExpansion hf hnonneg
+    (fun ap hap => (hsummand ap hap).divFactorialShift_strictInterl hg0 hgs)
+    (fun ap hap => ((hsummand ap hap).hasPosLeadingCoeff hgpos).divFactorialShift k)
     hex
 
 /-- The trivial one-term Krein expansion of the right polynomial itself. -/
@@ -387,7 +387,7 @@ theorem kreinSummandExpansion_self (g : ℝ[X]) :
     ∃ l : List (ℝ × ℝ[X]),
       g = weightedSum l ∧
         (∀ ap ∈ l, 0 ≤ ap.1) ∧
-        (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
+        (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
         ∃ ap ∈ l, 0 < ap.1 := by
   refine ⟨[(1, g)], ?_, ?_, ?_, ?_⟩
   · simp [weightedSum_cons]
@@ -401,11 +401,11 @@ theorem kreinSummandExpansion_self (g : ℝ[X]) :
 
 /-- Any individual Krein summand gives a one-term nonnegative expansion. -/
 theorem kreinSummandExpansion_of_summand {g q : ℝ[X]}
-    (h : IsGWKreinSummand g q) :
+    (h : IsKreinSummand g q) :
     ∃ l : List (ℝ × ℝ[X]),
       q = weightedSum l ∧
         (∀ ap ∈ l, 0 ≤ ap.1) ∧
-        (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
+        (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
         ∃ ap ∈ l, 0 < ap.1 := by
   refine ⟨[(1, q)], ?_, ?_, ?_, ?_⟩
   · simp [weightedSum_cons]
@@ -423,24 +423,24 @@ and deleted-root factors have been constructed. -/
 theorem kreinSummandExpansion_of_weightedSum {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hsummand : ∀ ap ∈ l, IsGWKreinSummand g ap.2)
+    (hsummand : ∀ ap ∈ l, IsKreinSummand g ap.2)
     (hex : ∃ ap ∈ l, 0 < ap.1) :
     ∃ l : List (ℝ × ℝ[X]),
       f = weightedSum l ∧
         (∀ ap ∈ l, 0 ≤ ap.1) ∧
-        (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
+        (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
         ∃ ap ∈ l, 0 < ap.1 :=
   ⟨l, hf, hnonneg, hsummand, hex⟩
 
 /-- Lemma 7 form of Garloff--Wagner, Theorem 11(c).  For standard `g`, the left
 polynomial expands as a nonnegative weighted sum of `g` and its
 one-root-deleted factors. -/
-theorem gwTheorem11StrictInterlKreinSummandExpansion {f g : ℝ[X]}
+theorem StrictInterl.exists_kreinSummandExpansion {f g : ℝ[X]}
     (hfg : StrictInterl f g) (hfpos : HasPosLeadingCoeff f) (hgpos : HasPosLeadingCoeff g) :
     ∃ l : List (ℝ × ℝ[X]),
       f = weightedSum l ∧
         (∀ ap ∈ l, 0 ≤ ap.1) ∧
-        (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
+        (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
         ∃ ap ∈ l, 0 < ap.1 := by
   by_cases hgdeg0 : g.natDegree = 0
   · exact exists_kreinSummandExpansion_nonneg_right_of_natDegree_eq_zero hfg hfpos
@@ -448,10 +448,14 @@ theorem gwTheorem11StrictInterlKreinSummandExpansion {f g : ℝ[X]}
   · exact exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree hfg hfpos
       hgpos (Nat.pos_of_ne_zero hgdeg0)
 
+@[deprecated (since := "2026-10-06")]
+alias gwTheorem11StrictInterlKreinSummandExpansion :=
+  StrictInterl.exists_kreinSummandExpansion
+
 /-- Garloff--Wagner, Theorem 11(c), in the local orientation: Garloff--Wagner's
 `g $ f` is represented by `StrictInterl f g`, and `J^k L` preserves it. -/
-theorem gwTheorem11StrictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) (k : ℕ) :
-    StrictInterl (gwJL k f) (gwJL k g) := by
+theorem StrictInterl.divFactorialShift {f g : ℝ[X]} (hfg : StrictInterl f g) (k : ℕ) :
+    StrictInterl (divFactorialShift k f) (divFactorialShift k g) := by
   let sf : ℝ := f.leadingCoeff⁻¹
   let sg : ℝ := g.leadingCoeff⁻¹
   have hf0 : f ≠ 0 := hfg.1.1
@@ -464,23 +468,30 @@ theorem gwTheorem11StrictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) (k : ℕ
     hasPosLeadingCoeff_C_inv_leadingCoeff_mul hf0
   have hsg_pos : HasPosLeadingCoeff (C sg * g) :=
     hasPosLeadingCoeff_C_inv_leadingCoeff_mul hg0
-  rcases gwTheorem11StrictInterlKreinSummandExpansion (f := C sf * f) (g := C sg * g)
+  rcases StrictInterl.exists_kreinSummandExpansion (f := C sf * f) (g := C sg * g)
       hfg_scaled hsf_pos hsg_pos with
     ⟨l, hf, hnonneg, hsummand, hex⟩
+  -- Inside this declaration, the bare name `divFactorialShift` refers to the
+  -- theorem itself, so the operator is written with its full name.
   have hscaled :
-      StrictInterl (gwJL k (C sf * f)) (gwJL k (C sg * g)) :=
-    gwJL_strictInterl_of_kreinSummandExpansion hf hfg_scaled.2.1.1 hfg_scaled.2.1.2
+      StrictInterl (RealRooted.divFactorialShift k (C sf * f))
+        (RealRooted.divFactorialShift k (C sg * g)) :=
+    divFactorialShift_strictInterl_of_kreinSummandExpansion hf hfg_scaled.2.1.1 hfg_scaled.2.1.2
       hsg_pos hnonneg hsummand hex
-  have hscaled' : StrictInterl (C sf * gwJL k f) (C sg * gwJL k g) := by
-    simpa [gwJL_C_mul] using hscaled
+  have hscaled' : StrictInterl (C sf * RealRooted.divFactorialShift k f)
+      (C sg * RealRooted.divFactorialShift k g) := by
+    simpa [divFactorialShift_C_mul] using hscaled
   have hleft :
-      StrictInterl (gwJL k f) (C sg * gwJL k g) := by
+      StrictInterl (RealRooted.divFactorialShift k f)
+        (C sg * RealRooted.divFactorialShift k g) := by
     have htmp := StrictInterl.C_mul_left hscaled' (inv_ne_zero hsf)
-    have hscale : C sf⁻¹ * (C sf * gwJL k f) = gwJL k f := by
+    have hscale : C sf⁻¹ * (C sf * RealRooted.divFactorialShift k f) =
+        RealRooted.divFactorialShift k f := by
       rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hsf, C_1, one_mul]
     simpa [hscale] using htmp
   have hright := StrictInterl.C_mul_right hleft (inv_ne_zero hsg)
-  have hscale : C sg⁻¹ * (C sg * gwJL k g) = gwJL k g := by
+  have hscale : C sg⁻¹ * (C sg * RealRooted.divFactorialShift k g) =
+      RealRooted.divFactorialShift k g := by
     rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hsg, C_1, one_mul]
   simpa [hscale] using hright
 

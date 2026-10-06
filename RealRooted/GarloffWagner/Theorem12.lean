@@ -29,116 +29,116 @@ theorem interl_of_natDegree_eq_zero {p q : ℝ[X]}
       (Polynomial.Splits.of_natDegree_eq_zero hpdeg) hq0
       (Polynomial.Splits.of_natDegree_eq_zero hqdeg) hpdeg hqdeg).toInterl
 
-namespace IsGWKreinSummand
+namespace IsKreinSummand
 
 /-- Krein summands of a PF polynomial are in an interlacing relation with the parent. -/
-theorem strictInterl {g q : ℝ[X]} (h : IsGWKreinSummand g q)
+theorem strictInterl {g q : ℝ[X]} (h : IsKreinSummand g q)
     (hg0 : g ≠ 0) (hgs : g.Splits) :
     StrictInterl q g := by
   rcases h with hself | ⟨u, hfactor⟩
   · rw [hself]
     exact StrictInterl.refl hg0 hgs
   · obtain ⟨hq0, hqs⟩ :=
-      (show IsGWKreinSummand g q from Or.inr ⟨u, hfactor⟩).ne_zero_and_splits
+      (show IsKreinSummand g q from Or.inr ⟨u, hfactor⟩).ne_zero_and_splits
         hg0 hgs
     rw [hfactor]
     exact strictInterl_self_X_sub_C_mul hq0 hqs u
 
-/-- Zero-aware form of `IsGWKreinSummand.strictInterl`. -/
-theorem interl {g q : ℝ[X]} (h : IsGWKreinSummand g q)
+/-- Zero-aware form of `IsKreinSummand.strictInterl`. -/
+theorem interl {g q : ℝ[X]} (h : IsKreinSummand g q)
     (hg0 : g ≠ 0) (hgs : g.Splits) :
     Interl q g :=
   (h.strictInterl hg0 hgs).toInterl
 
 /-- Krein summands of a PF polynomial are PF. -/
-theorem isPFPolynomial {g q : ℝ[X]} (h : IsGWKreinSummand g q)
+theorem isPFPolynomial {g q : ℝ[X]} (h : IsKreinSummand g q)
     (hg : IsPFPolynomial g) :
     IsPFPolynomial q := by
   rcases h with hself | ⟨u, hfactor⟩
   · simpa [hself] using hg
   · exact hg.of_X_sub_C_mul_factor hfactor
 
-end IsGWKreinSummand
+end IsKreinSummand
 
 /-- Constant right input base case for Theorem 12(b). -/
-theorem gwSchurProduct_interl_of_right_natDegree_eq_zero
+private theorem factorialHadamardProduct_interl_of_right_natDegree_eq_zero
     (f g p : ℝ[X]) (hpdeg : p.natDegree = 0) :
-    Interl (gwSchurProduct f p) (gwSchurProduct g p) := by
-  have hfdeg : (gwSchurProduct f p).natDegree = 0 :=
+    Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p) := by
+  have hfdeg : (factorialHadamardProduct f p).natDegree = 0 :=
     le_antisymm
-      ((natDegree_gwSchurProduct_le_right f p).trans (le_of_eq hpdeg))
+      ((natDegree_factorialHadamardProduct_le_right f p).trans (le_of_eq hpdeg))
       (Nat.zero_le _)
-  have hgdeg : (gwSchurProduct g p).natDegree = 0 :=
+  have hgdeg : (factorialHadamardProduct g p).natDegree = 0 :=
     le_antisymm
-      ((natDegree_gwSchurProduct_le_right g p).trans (le_of_eq hpdeg))
+      ((natDegree_factorialHadamardProduct_le_right g p).trans (le_of_eq hpdeg))
       (Nat.zero_le _)
   exact interl_of_natDegree_eq_zero hfdeg hgdeg
 
 /-- Constant right input base case for Theorem 12(a). -/
-theorem gwSchurProduct_pf_of_right_natDegree_eq_zero {f p : ℝ[X]}
+private theorem factorialHadamardProduct_pf_of_right_natDegree_eq_zero {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hpdeg : p.natDegree = 0) :
-    IsPFPolynomial (gwSchurProduct f p) := by
-  have hdeg : (gwSchurProduct f p).natDegree = 0 :=
+    IsPFPolynomial (factorialHadamardProduct f p) := by
+  have hdeg : (factorialHadamardProduct f p).natDegree = 0 :=
     le_antisymm
-      ((natDegree_gwSchurProduct_le_right f p).trans (le_of_eq hpdeg))
+      ((natDegree_factorialHadamardProduct_le_right f p).trans (le_of_eq hpdeg))
       (Nat.zero_le _)
   exact IsPFPolynomial.of_realRooted_nonneg
-    (hf.hasNonnegCoeffs.gwSchurProduct hp.hasNonnegCoeffs)
+    (hf.hasNonnegCoeffs.factorialHadamardProduct hp.hasNonnegCoeffs)
     (Polynomial.Splits.of_natDegree_eq_zero hdeg)
 
 /-- Theorem 12(a) induction step in relational form: if the Schur product of
 `D f` with `p` precedes the Schur product of `f` with `p`, then multiplying
 the right input by a nonpositive linear factor keeps the previous product as a
 left interleaver. -/
-theorem gwSchurProduct_interl_right_linearFactor_of_derivative_interl
+private theorem factorialHadamardProduct_interl_right_linearFactor_of_derivative_interl
     {f p : ℝ[X]} {u : ℝ}
     (hu : u ≤ 0)
     (hder :
-      Interl (gwSchurProduct (gwD f) p) (gwSchurProduct f p))
-    (hF : IsPFPolynomial (gwSchurProduct f p))
-    (hD : IsPFPolynomial (gwSchurProduct (gwD f) p)) :
-    Interl (gwSchurProduct f p) (gwSchurProduct f ((X - C u) * p)) := by
+      Interl (factorialHadamardProduct (derivative f) p) (factorialHadamardProduct f p))
+    (hF : IsPFPolynomial (factorialHadamardProduct f p))
+    (hD : IsPFPolynomial (factorialHadamardProduct (derivative f) p)) :
+    Interl (factorialHadamardProduct f p) (factorialHadamardProduct f ((X - C u) * p)) := by
   have hX :
-      Interl (gwSchurProduct f p)
-        (X * gwSchurProduct (gwD f) p) :=
+      Interl (factorialHadamardProduct f p)
+        (X * factorialHadamardProduct (derivative f) p) :=
     interl_mul_X_of_interl hder hD.hasNonnegCoeffs hF.hasNonnegCoeffs
-  have hself : Interl (gwSchurProduct f p) (gwSchurProduct f p) :=
+  have hself : Interl (factorialHadamardProduct f p) (factorialHadamardProduct f p) :=
     hF.interl_self
   have hcombo :
-      Interl (gwSchurProduct f p)
-        (C (1 : ℝ) * (X * gwSchurProduct (gwD f) p) +
-          C (-u) * gwSchurProduct f p) :=
+      Interl (factorialHadamardProduct f p)
+        (C (1 : ℝ) * (X * factorialHadamardProduct (derivative f) p) +
+          C (-u) * factorialHadamardProduct f p) :=
     interl_nonneg_combo_right_of_common_left_of_nonneg hX hself
       (hD.X_mul.hasNonnegCoeffs) hF.hasNonnegCoeffs zero_le_one (by linarith)
-  rw [gwSchurProduct_X_sub_C_mul_right]
+  rw [factorialHadamardProduct_X_sub_C_mul_right]
   simpa [sub_eq_add_neg] using hcombo
 
 /-- PF-preservation form of
 
-`gwSchurProduct_interl_right_linearFactor_of_derivative_interl`. -/
-theorem gwSchurProduct_pf_right_linearFactor_of_derivative_interl
+`factorialHadamardProduct_interl_right_linearFactor_of_derivative_interl`. -/
+private theorem factorialHadamardProduct_pf_right_linearFactor_of_derivative_interl
     {f p : ℝ[X]} {u : ℝ}
     (hu : u ≤ 0)
     (hder :
-      Interl (gwSchurProduct (gwD f) p) (gwSchurProduct f p))
-    (hF : IsPFPolynomial (gwSchurProduct f p))
-    (hD : IsPFPolynomial (gwSchurProduct (gwD f) p)) :
-    IsPFPolynomial (gwSchurProduct f ((X - C u) * p)) := by
-  let F : ℝ[X] := gwSchurProduct f p
-  let D : ℝ[X] := gwSchurProduct (gwD f) p
+      Interl (factorialHadamardProduct (derivative f) p) (factorialHadamardProduct f p))
+    (hF : IsPFPolynomial (factorialHadamardProduct f p))
+    (hD : IsPFPolynomial (factorialHadamardProduct (derivative f) p)) :
+    IsPFPolynomial (factorialHadamardProduct f ((X - C u) * p)) := by
+  let F : ℝ[X] := factorialHadamardProduct f p
+  let D : ℝ[X] := factorialHadamardProduct (derivative f) p
   have hinterl :
-      Interl F (gwSchurProduct f ((X - C u) * p)) :=
-    gwSchurProduct_interl_right_linearFactor_of_derivative_interl
+      Interl F (factorialHadamardProduct f ((X - C u) * p)) :=
+    factorialHadamardProduct_interl_right_linearFactor_of_derivative_interl
       hu hder hF hD
-  have htarget_nn : HasNonnegCoeffs (gwSchurProduct f ((X - C u) * p)) := by
-    rw [gwSchurProduct_X_sub_C_mul_right, sub_eq_add_neg]
+  have htarget_nn : HasNonnegCoeffs (factorialHadamardProduct f ((X - C u) * p)) := by
+    rw [factorialHadamardProduct_X_sub_C_mul_right, sub_eq_add_neg]
     have hneg :
-        HasNonnegCoeffs (-(C u * gwSchurProduct f p)) := by
+        HasNonnegCoeffs (-(C u * factorialHadamardProduct f p)) := by
       simpa [neg_mul, C_neg] using
         nonnegCoeffs_C_mul (by linarith : 0 ≤ -u) hF.hasNonnegCoeffs
     exact hD.hasNonnegCoeffs.X_mul.add hneg
   by_cases hF0 : F = 0
-  · rw [gwSchurProduct_X_sub_C_mul_right]
+  · rw [factorialHadamardProduct_X_sub_C_mul_right]
     change IsPFPolynomial (X * D - C u * F)
     rw [hF0, mul_zero, sub_zero]
     exact hD.X_mul
@@ -199,28 +199,28 @@ theorem interl_weightedSum_right_of_nonneg :
         interl_add_left_of_common_right_of_nonneg hhead_strictInterl htail_strictInterl_sum
           hhead_nn htail_sum_nn
 
-theorem gwSchurProduct_weightedSum_left :
+theorem factorialHadamardProduct_weightedSum_left :
     ∀ (l : List (ℝ × ℝ[X])) (p : ℝ[X]),
-      gwSchurProduct (weightedSum l) p =
-        weightedSum (l.map fun ap => (ap.1, gwSchurProduct ap.2 p))
+      factorialHadamardProduct (weightedSum l) p =
+        weightedSum (l.map fun ap => (ap.1, factorialHadamardProduct ap.2 p))
   | [], _ => by
       simp
   | (a, q) :: l, p => by
-      rw [weightedSum_cons, gwSchurProduct_add_left, gwSchurProduct_C_mul_left,
-        gwSchurProduct_weightedSum_left l p]
+      rw [weightedSum_cons, factorialHadamardProduct_add_left, factorialHadamardProduct_C_mul_left,
+        factorialHadamardProduct_weightedSum_left l p]
       rfl
 
 /-- Apply the Schur product to a nonnegative weighted expansion whose summands
 all precede the same right Schur product. -/
-theorem gwSchurProduct_interl_of_weightedSum_right {f g p : ℝ[X]}
+private theorem factorialHadamardProduct_interl_of_weightedSum_right {f g p : ℝ[X]}
     {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
     (hinterl :
-      ∀ ap ∈ l, Interl (gwSchurProduct ap.2 p) (gwSchurProduct g p))
-    (hnn : ∀ ap ∈ l, HasNonnegCoeffs (gwSchurProduct ap.2 p)) :
-    Interl (gwSchurProduct f p) (gwSchurProduct g p) := by
-  rw [hf, gwSchurProduct_weightedSum_left]
+      ∀ ap ∈ l, Interl (factorialHadamardProduct ap.2 p) (factorialHadamardProduct g p))
+    (hnn : ∀ ap ∈ l, HasNonnegCoeffs (factorialHadamardProduct ap.2 p)) :
+    Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p) := by
+  rw [hf, factorialHadamardProduct_weightedSum_left]
   apply interl_weightedSum_right_of_nonneg
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
@@ -234,19 +234,19 @@ theorem gwSchurProduct_interl_of_weightedSum_right {f g p : ℝ[X]}
 
 /-- Theorem 12(b) reducer after Lemma 7 has expanded the left input into
 Krein summands of the right input. -/
-theorem gwSchurProduct_interl_of_kreinSummandExpansion {f g p : ℝ[X]}
+private theorem factorialHadamardProduct_interl_of_kreinSummandExpansion {f g p : ℝ[X]}
     {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hsummand : ∀ ap ∈ l, IsGWKreinSummand g ap.2)
+    (hsummand : ∀ ap ∈ l, IsKreinSummand g ap.2)
     (hinterl :
-      ∀ q : ℝ[X], IsGWKreinSummand g q →
-        Interl (gwSchurProduct q p) (gwSchurProduct g p))
+      ∀ q : ℝ[X], IsKreinSummand g q →
+        Interl (factorialHadamardProduct q p) (factorialHadamardProduct g p))
     (hnn :
-      ∀ q : ℝ[X], IsGWKreinSummand g q →
-        HasNonnegCoeffs (gwSchurProduct q p)) :
-    Interl (gwSchurProduct f p) (gwSchurProduct g p) :=
-  gwSchurProduct_interl_of_weightedSum_right hf hnonneg
+      ∀ q : ℝ[X], IsKreinSummand g q →
+        HasNonnegCoeffs (factorialHadamardProduct q p)) :
+    Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p) :=
+  factorialHadamardProduct_interl_of_weightedSum_right hf hnonneg
     (fun ap hap => hinterl ap.2 (hsummand ap hap))
     (fun ap hap => hnn ap.2 (hsummand ap hap))
 
@@ -277,39 +277,43 @@ theorem IsPFPolynomial.derivative_interl_self {p : ℝ[X]}
 
 /-- The first one-variable relation in Garloff--Wagner's double-deleted
 paragraph: for `u <= 0`, `(1 - uD)Lp` precedes `Lp`. -/
-theorem gwL_sub_C_mul_gwD_gwL_interl_self {p : ℝ[X]} {u : ℝ}
+theorem divFactorial_sub_C_mul_derivative_interl_self {p : ℝ[X]} {u : ℝ}
     (hp : IsPFPolynomial p) (hu : u ≤ 0) :
-    Interl (gwL p - C u * gwD (gwL p)) (gwL p) := by
-  have hpL : IsPFPolynomial (gwL p) := by simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
+    Interl (divFactorial p - C u * derivative (divFactorial p)) (divFactorial p) := by
+  have hpL : IsPFPolynomial (divFactorial p) := by
+    simpa [divFactorialShift_zero_apply] using hp.divFactorialShift 0
   have hder :
-      Interl (gwD (gwL p)) (gwL p) := by
-    simpa [gwD] using hpL.derivative_interl_self
+      Interl (derivative (divFactorial p)) (divFactorial p) :=
+    hpL.derivative_interl_self
   have hscaled :
-      Interl (C (-u) * gwD (gwL p)) (gwL p) :=
+      Interl (C (-u) * derivative (divFactorial p)) (divFactorial p) :=
     Interl.C_mul_left_of_nonneg hder (by linarith)
-  have hDnn : HasNonnegCoeffs (gwD (gwL p)) := by simpa [gwD] using hpL.derivative.hasNonnegCoeffs
+  have hDnn : HasNonnegCoeffs (derivative (divFactorial p)) :=
+    hpL.derivative.hasNonnegCoeffs
   have hscaled_nn :
-      HasNonnegCoeffs (C (-u) * gwD (gwL p)) :=
+      HasNonnegCoeffs (C (-u) * derivative (divFactorial p)) :=
     nonnegCoeffs_C_mul (by linarith : 0 ≤ -u) hDnn
   have hsum :
-      Interl (gwL p + C (-u) * gwD (gwL p)) (gwL p) :=
+      Interl (divFactorial p + C (-u) * derivative (divFactorial p)) (divFactorial p) :=
     interl_add_left_of_common_right_of_nonneg hpL.interl_self hscaled
       hpL.hasNonnegCoeffs hscaled_nn
   simpa [sub_eq_add_neg, C_neg, neg_mul] using hsum
 
-/-- PF-cone form of `gwL_sub_C_mul_gwD_gwL_interl_self`. -/
-theorem gwL_sub_C_mul_gwD_gwL_pf {p : ℝ[X]} {u : ℝ}
+/-- PF-cone form of `divFactorial_sub_C_mul_derivative_interl_self`. -/
+theorem divFactorial_sub_C_mul_derivative_pf {p : ℝ[X]} {u : ℝ}
     (hp : IsPFPolynomial p) (hu : u ≤ 0) :
-    IsPFPolynomial (gwL p - C u * gwD (gwL p)) := by
-  let T : ℝ[X] := gwL p - C u * gwD (gwL p)
-  have hpL : IsPFPolynomial (gwL p) := by simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
-  have hinterl : Interl T (gwL p) :=
-    gwL_sub_C_mul_gwD_gwL_interl_self hp hu
-  have hDnn : HasNonnegCoeffs (gwD (gwL p)) := by simpa [gwD] using hpL.derivative.hasNonnegCoeffs
+    IsPFPolynomial (divFactorial p - C u * derivative (divFactorial p)) := by
+  let T : ℝ[X] := divFactorial p - C u * derivative (divFactorial p)
+  have hpL : IsPFPolynomial (divFactorial p) := by
+    simpa [divFactorialShift_zero_apply] using hp.divFactorialShift 0
+  have hinterl : Interl T (divFactorial p) :=
+    divFactorial_sub_C_mul_derivative_interl_self hp hu
+  have hDnn : HasNonnegCoeffs (derivative (divFactorial p)) :=
+    hpL.derivative.hasNonnegCoeffs
   have hTnn : HasNonnegCoeffs T := by
-    change HasNonnegCoeffs (gwL p - C u * gwD (gwL p))
+    change HasNonnegCoeffs (divFactorial p - C u * derivative (divFactorial p))
     have hscaled_nn :
-        HasNonnegCoeffs (C (-u) * gwD (gwL p)) :=
+        HasNonnegCoeffs (C (-u) * derivative (divFactorial p)) :=
       nonnegCoeffs_C_mul (by linarith : 0 ≤ -u) hDnn
     simpa [sub_eq_add_neg, C_neg, neg_mul] using
       hpL.hasNonnegCoeffs.add hscaled_nn
@@ -317,36 +321,36 @@ theorem gwL_sub_C_mul_gwD_gwL_pf {p : ℝ[X]} {u : ℝ}
   · simpa [T, hT0] using IsPFPolynomial.zero
   rcases hinterl with hleft0 | hright0 | hstrict
   · exact False.elim (hT0 hleft0)
-  · have hp0 : p = 0 := (gwL_eq_zero_iff p).1 hright0
-    have hTzero : T = 0 := by simp [T, hp0, gwL_zero, gwD_zero]
+  · have hp0 : p = 0 := (divFactorial_eq_zero_iff p).1 hright0
+    have hTzero : T = 0 := by simp [T, hp0, divFactorial_zero, derivative_zero]
     exact False.elim (hT0 hTzero)
   · exact IsPFPolynomial.of_realRooted_nonneg hTnn hstrict.1.2
 
 /-- Symmetric form of the Theorem 12(a) linear-factor step, used for
 one-root-deleted Krein summands in Theorem 12(b). -/
-theorem gwSchurProduct_interl_left_linearFactor_of_derivative_interl
+private theorem factorialHadamardProduct_interl_left_linearFactor_of_derivative_interl
     {q p : ℝ[X]} {u : ℝ}
     (hu : u ≤ 0)
     (hder :
-      Interl (gwSchurProduct (gwD p) q) (gwSchurProduct p q))
-    (hF : IsPFPolynomial (gwSchurProduct p q))
-    (hD : IsPFPolynomial (gwSchurProduct (gwD p) q)) :
-    Interl (gwSchurProduct q p) (gwSchurProduct ((X - C u) * q) p) := by
-  rw [gwSchurProduct_comm q p, gwSchurProduct_comm ((X - C u) * q) p]
-  exact gwSchurProduct_interl_right_linearFactor_of_derivative_interl
+      Interl (factorialHadamardProduct (derivative p) q) (factorialHadamardProduct p q))
+    (hF : IsPFPolynomial (factorialHadamardProduct p q))
+    (hD : IsPFPolynomial (factorialHadamardProduct (derivative p) q)) :
+    Interl (factorialHadamardProduct q p) (factorialHadamardProduct ((X - C u) * q) p) := by
+  rw [factorialHadamardProduct_comm q p, factorialHadamardProduct_comm ((X - C u) * q) p]
+  exact factorialHadamardProduct_interl_right_linearFactor_of_derivative_interl
     hu hder hF hD
 
 /-- If `q` is obtained from a PF polynomial `g` by deleting one linear root
 factor, then the Schur product with `q` precedes the Schur product with `g`,
 assuming the derivative-product recursive relation for the other factor. -/
-theorem gwSchurProduct_interl_of_kreinDeletedFactor
+private theorem factorialHadamardProduct_interl_of_kreinDeletedFactor
     {g q p : ℝ[X]} {u : ℝ}
     (hg : IsPFPolynomial g) (hfactor : g = (X - C u) * q)
     (hder :
-      Interl (gwSchurProduct (gwD p) q) (gwSchurProduct p q))
-    (hF : IsPFPolynomial (gwSchurProduct p q))
-    (hD : IsPFPolynomial (gwSchurProduct (gwD p) q)) :
-    Interl (gwSchurProduct q p) (gwSchurProduct g p) := by
+      Interl (factorialHadamardProduct (derivative p) q) (factorialHadamardProduct p q))
+    (hF : IsPFPolynomial (factorialHadamardProduct p q))
+    (hD : IsPFPolynomial (factorialHadamardProduct (derivative p) q)) :
+    Interl (factorialHadamardProduct q p) (factorialHadamardProduct g p) := by
   by_cases hq0 : q = 0
   · have hg0 : g = 0 := by rw [hfactor, hq0, mul_zero]
     simp [hq0, hg0, interl_zero_left]
@@ -359,57 +363,57 @@ theorem gwSchurProduct_interl_of_kreinDeletedFactor
   have hu : u ≤ 0 :=
     hg.roots_nonpos u ((mem_roots hg0).mpr hu_root)
   simpa [hfactor] using
-    gwSchurProduct_interl_left_linearFactor_of_derivative_interl
+    factorialHadamardProduct_interl_left_linearFactor_of_derivative_interl
       (q := q) (p := p) (u := u) hu hder hF hD
 
-namespace IsGWKreinSummand
+namespace IsKreinSummand
 
 /-- Per-summand Theorem 12(b) step for a Krein summand of the right input. -/
-theorem gwSchurProduct_interl_of_derivative
-    {g q p : ℝ[X]} (h : IsGWKreinSummand g q)
+theorem interl_factorialHadamardProduct_of_derivative
+    {g q p : ℝ[X]} (h : IsKreinSummand g q)
     (hg : IsPFPolynomial g)
-    (hgp : IsPFPolynomial (gwSchurProduct g p))
+    (hgp : IsPFPolynomial (factorialHadamardProduct g p))
     (hder :
-      Interl (gwSchurProduct (gwD p) q) (gwSchurProduct p q))
-    (hF : IsPFPolynomial (gwSchurProduct p q))
-    (hD : IsPFPolynomial (gwSchurProduct (gwD p) q)) :
-    Interl (gwSchurProduct q p) (gwSchurProduct g p) := by
+      Interl (factorialHadamardProduct (derivative p) q) (factorialHadamardProduct p q))
+    (hF : IsPFPolynomial (factorialHadamardProduct p q))
+    (hD : IsPFPolynomial (factorialHadamardProduct (derivative p) q)) :
+    Interl (factorialHadamardProduct q p) (factorialHadamardProduct g p) := by
   rcases h with hself | ⟨u, hfactor⟩
   · simpa [hself] using hgp.interl_self
-  · exact gwSchurProduct_interl_of_kreinDeletedFactor hg hfactor hder hF hD
+  · exact factorialHadamardProduct_interl_of_kreinDeletedFactor hg hfactor hder hF hD
 
-end IsGWKreinSummand
+end IsKreinSummand
 
 /-- Theorem 12(b) reducer in the exact form produced by the Lemma 7 expansion:
 it remains only to discharge the recursive derivative/PF obligations for each
 Krein summand. -/
-theorem gwSchurProduct_interl_of_kreinSummandExpansion_of_derivative
+private theorem factorialHadamardProduct_interl_of_kreinSummandExpansion_of_derivative
     {f g p : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hsummand : ∀ ap ∈ l, IsGWKreinSummand g ap.2)
+    (hsummand : ∀ ap ∈ l, IsKreinSummand g ap.2)
     (hg : IsPFPolynomial g)
-    (hgp : IsPFPolynomial (gwSchurProduct g p))
+    (hgp : IsPFPolynomial (factorialHadamardProduct g p))
     (hder :
       ∀ (q : ℝ[X]) (u : ℝ), g = (X - C u) * q →
-        Interl (gwSchurProduct (gwD p) q) (gwSchurProduct p q))
+        Interl (factorialHadamardProduct (derivative p) q) (factorialHadamardProduct p q))
     (hF :
       ∀ (q : ℝ[X]) (u : ℝ), g = (X - C u) * q →
-        IsPFPolynomial (gwSchurProduct p q))
+        IsPFPolynomial (factorialHadamardProduct p q))
     (hD :
       ∀ (q : ℝ[X]) (u : ℝ), g = (X - C u) * q →
-        IsPFPolynomial (gwSchurProduct (gwD p) q)) :
-    Interl (gwSchurProduct f p) (gwSchurProduct g p) :=
-  gwSchurProduct_interl_of_kreinSummandExpansion hf hnonneg hsummand
+        IsPFPolynomial (factorialHadamardProduct (derivative p) q)) :
+    Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p) :=
+  factorialHadamardProduct_interl_of_kreinSummandExpansion hf hnonneg hsummand
     (fun q hq => by
       rcases hq with hself | ⟨u, hfactor⟩
       · simpa [hself] using hgp.interl_self
-      · exact gwSchurProduct_interl_of_kreinDeletedFactor hg hfactor
+      · exact factorialHadamardProduct_interl_of_kreinDeletedFactor hg hfactor
           (hder q u hfactor) (hF q u hfactor) (hD q u hfactor))
     (fun q hq => by
       rcases hq with hself | ⟨u, hfactor⟩
       · simpa [hself] using hgp.hasNonnegCoeffs
-      · simpa [gwSchurProduct_comm q p] using
+      · simpa [factorialHadamardProduct_comm q p] using
           (hF q u hfactor).hasNonnegCoeffs)
 
 /-- Garloff--Wagner, Theorem 12, for the factorial Schur product.
@@ -419,21 +423,21 @@ arguments.  At each measure we first prove PF preservation, then use that
 same-measure result as the common-right PF input for the fixed-factor
 interlacing statement.  All derivative and one-root-deleted calls have
 strictly smaller total degree. -/
-theorem gwSchurProductPFAndStrictInterl :
+private theorem isPFPolynomial_and_interl_factorialHadamardProduct :
     (∀ {f p : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial p →
-      IsPFPolynomial (gwSchurProduct f p)) ∧
+      IsPFPolynomial (factorialHadamardProduct f p)) ∧
     (∀ {f g p : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
-      StrictInterl f g → Interl (gwSchurProduct f p) (gwSchurProduct g p)) := by
+      StrictInterl f g → Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p)) := by
   classical
   let P : ℕ → Prop := fun n =>
     (∀ {f p : ℝ[X]},
       IsPFPolynomial f → IsPFPolynomial p →
         f.natDegree + p.natDegree = n →
-          IsPFPolynomial (gwSchurProduct f p)) ∧
+          IsPFPolynomial (factorialHadamardProduct f p)) ∧
     (∀ {f g p : ℝ[X]},
       IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
         Interl f g → g.natDegree + p.natDegree = n →
-          Interl (gwSchurProduct f p) (gwSchurProduct g p))
+          Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p))
   have hP : ∀ n, P n := by
     intro n
     induction n using Nat.strong_induction_on with
@@ -442,94 +446,89 @@ theorem gwSchurProductPFAndStrictInterl :
             ∀ {f p : ℝ[X]},
               IsPFPolynomial f → IsPFPolynomial p →
                 f.natDegree + p.natDegree < n →
-                  IsPFPolynomial (gwSchurProduct f p) := by
+                  IsPFPolynomial (factorialHadamardProduct f p) := by
           intro f p hf hp hlt
           exact (ih (f.natDegree + p.natDegree) hlt).1 hf hp rfl
         have hB_lt :
             ∀ {f g p : ℝ[X]},
               IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
                 Interl f g → g.natDegree + p.natDegree < n →
-                  Interl (gwSchurProduct f p) (gwSchurProduct g p) := by
+                  Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p) := by
           intro f g p hf hg hp hfg hlt
           exact (ih (g.natDegree + p.natDegree) hlt).2 hf hg hp hfg rfl
         have hA :
             ∀ {f p : ℝ[X]},
               IsPFPolynomial f → IsPFPolynomial p →
                 f.natDegree + p.natDegree = n →
-                  IsPFPolynomial (gwSchurProduct f p) := by
+                  IsPFPolynomial (factorialHadamardProduct f p) := by
           intro f p hf hp hmeasure
           by_cases hf0 : f = 0
-          · rw [hf0, gwSchurProduct_zero_left]
+          · rw [hf0, factorialHadamardProduct_zero_left]
             exact IsPFPolynomial.zero
           by_cases hp0 : p = 0
-          · rw [hp0, gwSchurProduct_zero_right]
+          · rw [hp0, factorialHadamardProduct_zero_right]
             exact IsPFPolynomial.zero
           by_cases hpdeg0 : p.natDegree = 0
-          · exact gwSchurProduct_pf_of_right_natDegree_eq_zero hf hp hpdeg0
+          · exact factorialHadamardProduct_pf_of_right_natDegree_eq_zero hf hp hpdeg0
           rcases hp.exists_X_sub_C_factor_of_pos_natDegree
               (Nat.pos_of_ne_zero hpdeg0) with
             ⟨u, q, hu, hfactor, hq, hqdeg⟩
-          have hF : IsPFPolynomial (gwSchurProduct f q) := by
+          have hF : IsPFPolynomial (factorialHadamardProduct f q) := by
             apply hA_lt hf hq
             rw [← hmeasure]
             lia
-          have hD : IsPFPolynomial (gwSchurProduct (gwD f) q) := by
-            have hfD : IsPFPolynomial (gwD f) := by
-              change IsPFPolynomial f.derivative
-              exact hf.derivative
+          have hD : IsPFPolynomial (factorialHadamardProduct (derivative f) q) := by
+            have hfD : IsPFPolynomial (derivative f) := hf.derivative
             apply hA_lt hfD hq
-            have hDdeg : (gwD f).natDegree ≤ f.natDegree := by simp [gwD]
+            have hDdeg : (derivative f).natDegree ≤ f.natDegree := by simp
             rw [← hmeasure]
             lia
           have hder :
-              Interl (gwSchurProduct (gwD f) q) (gwSchurProduct f q) := by
-            have hfD : IsPFPolynomial (gwD f) := by
-              change IsPFPolynomial f.derivative
-              exact hf.derivative
-            have hinterlD : Interl (gwD f) f := by
-              change Interl f.derivative f
-              exact hf.derivative_interl_self
+              Interl (factorialHadamardProduct (derivative f) q)
+                (factorialHadamardProduct f q) := by
+            have hfD : IsPFPolynomial (derivative f) := hf.derivative
+            have hinterlD : Interl (derivative f) f := hf.derivative_interl_self
             apply hB_lt hfD hf hq hinterlD
             rw [← hmeasure]
             lia
           rw [hfactor]
-          exact gwSchurProduct_pf_right_linearFactor_of_derivative_interl
+          exact factorialHadamardProduct_pf_right_linearFactor_of_derivative_interl
             hu hder hF hD
         have hB :
             ∀ {f g p : ℝ[X]},
               IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
                 Interl f g → g.natDegree + p.natDegree = n →
-                  Interl (gwSchurProduct f p) (gwSchurProduct g p) := by
+                  Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p) := by
           intro f g p hf hg hp hfg hmeasure
           rcases hfg with hf0 | hg0 | hstrict
-          · rw [hf0, gwSchurProduct_zero_left]
-            exact interl_zero_left (gwSchurProduct g p)
-          · rw [hg0, gwSchurProduct_zero_left]
-            exact interl_zero_right (gwSchurProduct f p)
+          · rw [hf0, factorialHadamardProduct_zero_left]
+            exact interl_zero_left (factorialHadamardProduct g p)
+          · rw [hg0, factorialHadamardProduct_zero_left]
+            exact interl_zero_right (factorialHadamardProduct f p)
           by_cases hpdeg0 : p.natDegree = 0
-          · exact gwSchurProduct_interl_of_right_natDegree_eq_zero f g p hpdeg0
+          · exact factorialHadamardProduct_interl_of_right_natDegree_eq_zero f g p hpdeg0
           by_cases hgdeg0 : g.natDegree = 0
           · have hfdeg0 : f.natDegree = 0 := by
               have hstrict_le := hstrict.natDegree_le
               lia
-            have hleftdeg : (gwSchurProduct f p).natDegree = 0 :=
+            have hleftdeg : (factorialHadamardProduct f p).natDegree = 0 :=
               le_antisymm
-                ((natDegree_gwSchurProduct_le_left f p).trans
+                ((natDegree_factorialHadamardProduct_le_left f p).trans
                   (le_of_eq hfdeg0))
                 (Nat.zero_le _)
-            have hrightdeg : (gwSchurProduct g p).natDegree = 0 :=
+            have hrightdeg : (factorialHadamardProduct g p).natDegree = 0 :=
               le_antisymm
-                ((natDegree_gwSchurProduct_le_left g p).trans
+                ((natDegree_factorialHadamardProduct_le_left g p).trans
                   (le_of_eq hgdeg0))
                 (Nat.zero_le _)
             exact interl_of_natDegree_eq_zero hleftdeg hrightdeg
-          have hgp : IsPFPolynomial (gwSchurProduct g p) :=
+          have hgp : IsPFPolynomial (factorialHadamardProduct g p) :=
             hA hg hp hmeasure
           have hfpos : HasPosLeadingCoeff f :=
             hf.hasNonnegCoeffs.pos_leadingCoeff hstrict.1.1
           have hgpos : HasPosLeadingCoeff g :=
             hg.hasNonnegCoeffs.pos_leadingCoeff hstrict.2.1.1
-          rcases gwTheorem11StrictInterlKreinSummandExpansion hstrict hfpos hgpos with
+          rcases hstrict.exists_kreinSummandExpansion hfpos hgpos with
             ⟨l, hfexp, hnonneg, hsummand, _hex⟩
           have hdeleted :
               ∀ (q : ℝ[X]) (u : ℝ), g = (X - C u) * q →
@@ -545,17 +544,13 @@ theorem gwSchurProductPFAndStrictInterl :
                 natDegree_X_sub_C]
               lia
             exact ⟨hq, hqdeg⟩
-          exact gwSchurProduct_interl_of_kreinSummandExpansion_of_derivative
+          exact factorialHadamardProduct_interl_of_kreinSummandExpansion_of_derivative
             hfexp hnonneg hsummand hg hgp
             (fun q u hfactor => by
               have hq := (hdeleted q u hfactor).1
               have hqdeg := (hdeleted q u hfactor).2
-              have hpD : IsPFPolynomial (gwD p) := by
-                change IsPFPolynomial p.derivative
-                exact hp.derivative
-              have hinterlD : Interl (gwD p) p := by
-                change Interl p.derivative p
-                exact hp.derivative_interl_self
+              have hpD : IsPFPolynomial (derivative p) := hp.derivative
+              have hinterlD : Interl (derivative p) p := hp.derivative_interl_self
               apply hB_lt hpD hp hq hinterlD
               rw [← hmeasure]
               lia)
@@ -568,11 +563,9 @@ theorem gwSchurProductPFAndStrictInterl :
             (fun q u hfactor => by
               have hq := (hdeleted q u hfactor).1
               have hqdeg := (hdeleted q u hfactor).2
-              have hpD : IsPFPolynomial (gwD p) := by
-                change IsPFPolynomial p.derivative
-                exact hp.derivative
+              have hpD : IsPFPolynomial (derivative p) := hp.derivative
               apply hA_lt hpD hq
-              have hDdeg : (gwD p).natDegree ≤ p.natDegree := by simp [gwD]
+              have hDdeg : (derivative p).natDegree ≤ p.natDegree := by simp
               rw [← hmeasure]
               lia)
         exact ⟨hA, hB⟩
@@ -584,91 +577,90 @@ theorem gwSchurProductPFAndStrictInterl :
 
 /-- Garloff--Wagner, Theorem 12(a): the factorial Schur product preserves the
 zero-aware PF cone. -/
-theorem gwSchurProductPF {f p : ℝ[X]} (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) :
-    IsPFPolynomial (gwSchurProduct f p) :=
-  gwSchurProductPFAndStrictInterl.1 hf hp
-
-/-- Ordinary Hadamard products preserve PF polynomials, obtained by applying
-the Schur-product theorem to the `L`-normalized left input. -/
-theorem gwHadamardProductPF {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
-    IsPFPolynomial (hadamardProduct p q) := by
-  have hpL : IsPFPolynomial (gwL p) := by simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
-  simpa [gwSchurProduct_gwL_left] using gwSchurProductPF hpL hq
+theorem IsPFPolynomial.factorialHadamardProduct {f p : ℝ[X]} (hf : IsPFPolynomial f)
+    (hp : IsPFPolynomial p) :
+    IsPFPolynomial (factorialHadamardProduct f p) :=
+  isPFPolynomial_and_interl_factorialHadamardProduct.1 hf hp
 
 /-- The `L` operator preserves the PF cone. -/
-theorem gwL_pf {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    IsPFPolynomial (gwL p) := by
-  simpa [gwJL_zero_apply] using gwTheorem11PF hp 0
+theorem IsPFPolynomial.divFactorial {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPFPolynomial (divFactorial p) := by
+  simpa [divFactorialShift_zero_apply] using hp.divFactorialShift 0
+
+@[deprecated (since := "2026-10-06")]
+alias gwL_pf := IsPFPolynomial.divFactorial
+
+/-- PF polynomials are closed under coefficientwise Hadamard products
+(Schur--Pólya--Wagner; Garloff--Wagner, Theorem 4(a)), obtained by applying the
+factorial Hadamard product theorem to the `L`-normalized left input. -/
+theorem IsPFPolynomial.hadamardProduct {p q : ℝ[X]}
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
+    IsPFPolynomial (hadamardProduct p q) := by
+  simpa [factorialHadamardProduct_divFactorial_left] using
+    hp.divFactorial.factorialHadamardProduct hq
+
+@[deprecated (since := "2026-10-06")]
+alias gwHadamardProductPF := IsPFPolynomial.hadamardProduct
 
 /-- The `L` operator preserves strict interlacing. -/
-theorem gwL_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g) :
-    StrictInterl (gwL f) (gwL g) := by
-  simpa [gwJL_zero_apply] using gwTheorem11StrictInterl hfg 0
+theorem StrictInterl.divFactorial {f g : ℝ[X]} (hfg : StrictInterl f g) :
+    StrictInterl (divFactorial f) (divFactorial g) := by
+  simpa [divFactorialShift_zero_apply] using hfg.divFactorialShift 0
 
 /-- The `L` operator preserves zero-aware interlacing. -/
-theorem gwL_interl {f g : ℝ[X]} (hfg : Interl f g) :
-    Interl (gwL f) (gwL g) := by
+theorem Interl.divFactorial {f g : ℝ[X]} (hfg : Interl f g) :
+    Interl (divFactorial f) (divFactorial g) := by
   rcases hfg with hf0 | hg0 | hstrict
-  · rw [hf0, gwL_zero]
-    exact interl_zero_left (gwL g)
-  · rw [hg0, gwL_zero]
-    exact interl_zero_right (gwL f)
-  · exact (gwL_strictInterl hstrict).toInterl
+  · rw [hf0, divFactorial_zero]
+    exact interl_zero_left _
+  · rw [hg0, divFactorial_zero]
+    exact interl_zero_right _
+  · exact hstrict.divFactorial.toInterl
 
-/-- Garloff--Wagner, Theorem 12(b), one fixed Schur-product factor, in the local
-orientation. -/
-theorem gwSchurProductStrictInterl {f g p : ℝ[X]}
+/-- Garloff--Wagner, Theorem 12(b), one fixed factorial Hadamard factor, in the
+local orientation. -/
+theorem StrictInterl.interl_factorialHadamardProduct_right {f g p : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
     (hfg : StrictInterl f g) :
-    Interl (gwSchurProduct f p) (gwSchurProduct g p) :=
-  gwSchurProductPFAndStrictInterl.2 hf hg hp hfg
+    Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p) :=
+  isPFPolynomial_and_interl_factorialHadamardProduct.2 hf hg hp hfg
 
-/-- Garloff--Wagner, Theorem 12(b), zero-aware form: the factorial Schur product
-with a fixed PF factor preserves interlacing. -/
-theorem gwSchurProductInterl {f g p : ℝ[X]}
+/-- Garloff--Wagner, Theorem 12(b), zero-aware form: the factorial Hadamard
+product with a fixed PF factor preserves interlacing. -/
+theorem Interl.factorialHadamardProduct_right {f g p : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
     (hfg : Interl f g) :
-    Interl (gwSchurProduct f p) (gwSchurProduct g p) := by
+    Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p) := by
   rcases hfg with hf0 | hg0 | hstrict
-  · simpa [hf0] using interl_zero_left (gwSchurProduct g p)
-  · simpa [hg0] using interl_zero_right (gwSchurProduct f p)
-  · exact gwSchurProductStrictInterl hf hg hp hstrict
+  · simpa [hf0] using interl_zero_left (factorialHadamardProduct g p)
+  · simpa [hg0] using interl_zero_right (factorialHadamardProduct f p)
+  · exact StrictInterl.interl_factorialHadamardProduct_right hf hg hp hstrict
 
-/-- The Schur product with a fixed PF factor sends `f' ≪ f` to the
-corresponding Schur-product relation. -/
-theorem gwSchurProduct_derivative_interl_self {f p : ℝ[X]}
+@[deprecated (since := "2026-10-06")]
+alias gwSchurProductInterl := Interl.factorialHadamardProduct_right
+
+/-- The factorial Hadamard product with a fixed PF factor sends `f' ≪ f` to the
+corresponding product relation. -/
+theorem factorialHadamardProduct_derivative_interl_self {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) :
-    Interl (gwSchurProduct (gwD f) p) (gwSchurProduct f p) := by
-  simpa [gwD] using
-    gwSchurProductInterl hf.derivative hf hp hf.derivative_interl_self
+    Interl (factorialHadamardProduct (derivative f) p) (factorialHadamardProduct f p) :=
+  Interl.factorialHadamardProduct_right hf.derivative hf hp hf.derivative_interl_self
 
-/-- Symmetric fixed-factor form of `gwSchurProductInterl`. -/
-theorem gwSchurProductInterl_left {f p q : ℝ[X]}
+/-- Symmetric fixed-factor form of `Interl.factorialHadamardProduct_right`. -/
+theorem Interl.factorialHadamardProduct_left {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
-    Interl (gwSchurProduct f p) (gwSchurProduct f q) := by
-  simpa [gwSchurProduct_comm f p, gwSchurProduct_comm f q] using
-    gwSchurProductInterl hp hq hf hpq
+    Interl (factorialHadamardProduct f p) (factorialHadamardProduct f q) := by
+  simpa [factorialHadamardProduct_comm f p, factorialHadamardProduct_comm f q] using
+    Interl.factorialHadamardProduct_right hp hq hf hpq
 
 /-- Ordinary Hadamard products preserve zero-aware interlacing in a fixed
-right factor, via `L` and the checked Schur-product theorem. -/
-theorem gwHadamardProductInterl {f g p : ℝ[X]}
+right factor, via `L` and the checked factorial Hadamard product theorem. -/
+theorem Interl.hadamardProduct_right {f g p : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
     (hfg : Interl f g) :
     Interl (hadamardProduct f p) (hadamardProduct g p) := by
-  have hfL : IsPFPolynomial (gwL f) := gwL_pf hf
-  have hgL : IsPFPolynomial (gwL g) := gwL_pf hg
-  have hfgL : Interl (gwL f) (gwL g) := gwL_interl hfg
-  simpa [gwSchurProduct_gwL_left] using
-    gwSchurProductInterl hfL hgL hp hfgL
-
-namespace IsGWKreinSummand
-
-end IsGWKreinSummand
-
-namespace IsPFPolynomial
-
-end IsPFPolynomial
+  simpa [factorialHadamardProduct_divFactorial_left] using
+    Interl.factorialHadamardProduct_right hf.divFactorial hg.divFactorial hp hfg.divFactorial
 
 end RealRooted

@@ -123,7 +123,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_interl :
             hf.hasNonnegCoeffs.pos_leadingCoeff hstrict.1.1
           have hgpos : HasPosLeadingCoeff g :=
             hg.hasNonnegCoeffs.pos_leadingCoeff hstrict.2.1.1
-          rcases gwTheorem11StrictInterlKreinSummandExpansion hstrict hfpos hgpos with
+          rcases hstrict.exists_kreinSummandExpansion hfpos hgpos with
             ⟨l, hfexp, hnonneg, hsummand, _⟩
           apply reverseHermiteTransform_interl_of_weightedSum_right
             hfexp hnonneg

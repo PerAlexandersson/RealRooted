@@ -36,9 +36,9 @@ module = "RealRooted.AissenSchoenbergWhitneyBase"
 label = "Values of a polynomial at 0, 1, 2, …"
 
 [[definitions]]
-name = "RealRooted.gwSchurProduct"
+name = "RealRooted.factorialHadamardProduct"
 module = "RealRooted.GarloffWagner.Algebra"
-label = "Factorial Schur product"
+label = "Factorial Hadamard product"
 
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.schurSzegoComp_eq_zero_or_splits"
@@ -67,17 +67,17 @@ name = "RealRooted.Challenges.Hadamard.isPolyaFreqSeq_polynomialValueSeq_mul"
 label = "Products of polynomial value sequences are PF"
 
 [[theorems]]
-name = "RealRooted.gwHadamardProductPF"
+name = "RealRooted.IsPFPolynomial.hadamardProduct"
 module = "RealRooted.GarloffWagner.Theorem12"
 label = "Garloff–Wagner: Hadamard products of PF polynomials are PF"
 
 [[theorems]]
-name = "RealRooted.gwSchurProductInterl"
+name = "RealRooted.Interl.factorialHadamardProduct_right"
 module = "RealRooted.GarloffWagner.Theorem12"
-label = "Garloff–Wagner: the Schur product preserves interlacing"
+label = "Garloff–Wagner: the factorial Hadamard product preserves interlacing"
 
 [[theorems]]
-name = "RealRooted.Challenges.Hadamard.gwSchurProduct_eq_zero_or_splits"
+name = "RealRooted.Challenges.Hadamard.factorialHadamardProduct_eq_zero_or_splits"
 label = "Schur: the factorial product preserves real-rootedness"
 -->
 
@@ -111,12 +111,13 @@ nonnegative coefficients):
   polynomials is PF.
 - **Interlacing:** if $f \ll g$ and $p \ll q$, then $f \ast p \ll g \ast q$, where $\ast$
   is the Hadamard product.
-- **Schur product:** the factorial Schur product, with
-  coefficients $k!\, a_k b_k$, preserves interlacing in its first argument.
+- **Factorial Hadamard product:** the factorial Hadamard product (Schur's
+  factorial product), with coefficients $k!\, a_k b_k$, preserves interlacing in
+  its first argument.
 
 **Theorem (Schur).** If $f = \sum_k a_k x^k$ is real-rooted and
 $g = \sum_k b_k x^k$ is real-rooted with all zeros of one sign, then the
-factorial Schur product $\sum_k k!\, a_k b_k x^k$ is zero or real-rooted.
+factorial Hadamard product $\sum_k k!\, a_k b_k x^k$ is zero or real-rooted.
 
 ## References
 
@@ -195,10 +196,10 @@ theorem isFiniteMultiplierSequence_iff_jensenPolynomial_roots_nonneg {n : ℕ}
 /-- Schur's factorial product theorem: if `f` is real-rooted and `g` is
 real-rooted with all zeros of one sign, then `∑ k! aₖ bₖ xᵏ` is zero or
 real-rooted. -/
-theorem gwSchurProduct_eq_zero_or_splits {f g : ℝ[X]} (hf : f.Splits)
+theorem factorialHadamardProduct_eq_zero_or_splits {f g : ℝ[X]} (hf : f.Splits)
     (hg : g.Splits) (hsign : (∀ r ∈ g.roots, r ≤ 0) ∨ ∀ r ∈ g.roots, 0 ≤ r) :
-    gwSchurProduct f g = 0 ∨ (gwSchurProduct f g).Splits :=
-  RealRooted.gwSchurProduct_eq_zero_or_splits hf hg hsign
+    factorialHadamardProduct f g = 0 ∨ (factorialHadamardProduct f g).Splits :=
+  RealRooted.factorialHadamardProduct_eq_zero_or_splits hf hg hsign
 
 /-- Garloff--Wagner interlacing theorem for coefficientwise products. -/
 theorem interl_hadamardProduct_of_strictInterl {f g p q : ℝ[X]}
@@ -206,7 +207,7 @@ theorem interl_hadamardProduct_of_strictInterl {f g p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
     (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  RealRooted.gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
+  RealRooted.StrictInterl.interl_hadamardProduct hf hg hp hq hfg hpq
 
 /-- Maló's theorem for finite-support Pólya-frequency sequences: their termwise
 product is again a Pólya-frequency sequence.  Equivalently, the entrywise
