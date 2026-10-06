@@ -48,7 +48,7 @@ def StrictRootInterl (f g : ℝ[X]) : Prop :=
       ((rs.length + 1 = ss.length ∧ StrictInterlacesRoots rs ss) ∨
         (rs.length = ss.length ∧ StrictAlternatesRoots rs ss))
 
-theorem strictInterlacesRoots_to_upstream :
+private theorem strictInterlacesRoots_to_upstream :
     ∀ {rs ss : List ℝ}, StrictInterlacesRoots rs ss →
       RealRooted.ListInterlaces rs ss
   | [], [], _ => True.intro
@@ -60,7 +60,7 @@ theorem strictInterlacesRoots_to_upstream :
       ⟨le_of_lt h.1, le_of_lt h.2.1,
         strictInterlacesRoots_to_upstream h.2.2⟩
 
-theorem strictAlternatesRoots_to_upstream :
+private theorem strictAlternatesRoots_to_upstream :
     ∀ {rs ss : List ℝ}, StrictAlternatesRoots rs ss →
       RealRooted.ListAlternates rs ss
   | [], [], _ => True.intro
