@@ -20,7 +20,7 @@ noncomputable section
 namespace RealRooted.FactorialCompression
 
 /-- Root order (1.2), with the constant/linear base convention. -/
-def StrictInterlacesRoots : List ℝ → List ℝ → Prop
+private def StrictInterlacesRoots : List ℝ → List ℝ → Prop
   | [], [] => True
   | [], [_] => True
   | r :: rs, s₁ :: s₂ :: ss =>
@@ -28,7 +28,7 @@ def StrictInterlacesRoots : List ℝ → List ℝ → Prop
   | _, _ => False
 
 /-- Root order (1.3). -/
-def StrictAlternatesRoots : List ℝ → List ℝ → Prop
+private def StrictAlternatesRoots : List ℝ → List ℝ → Prop
   | [], [] => True
   | r :: rs, s :: ss => r < s ∧ StrictInterlacesRoots rs (s :: ss)
   | _, _ => False
