@@ -312,8 +312,6 @@ import RealRooted.Compatibility.LeanderOutput
 import RealRooted.Compatibility.LeanderXOutput
 import RealRooted.Compatibility.Pair
 import RealRooted.Compatibility.Three
-import RealRooted.ComplexCesaro
-import RealRooted.ComplexPowers
 import RealRooted.ConvexCombination
 import RealRooted.CubicDiscriminant
 import RealRooted.CubicNewton
@@ -929,7 +927,6 @@ import RealRooted.RectangularConvolution
 import RealRooted.RectangularConvolutionIdentity
 import RealRooted.RectangularPolarization
 import RealRooted.RectangularPolarizationComplement
-import RealRooted.RecurrenceDiscriminant
 import RealRooted.ReflectedRootCountLocalConstancy
 import RealRooted.RootAmplitude
 import RealRooted.RootAmplitude.Convex
@@ -1138,8 +1135,6 @@ import RealRooted.Transforms.ReverseHermite
 import RealRooted.Transforms.ReverseHermite.Basic
 import RealRooted.Transforms.ReverseHermite.Derivative
 import RealRooted.Transforms.ReverseHermite.Preservation
-import RealRooted.TridiagonalDet
-import RealRooted.TridiagonalDet.Recurrence
 import RealRooted.UpperDerivativeInterlace
 import RealRooted.VeroneseMatrix
 import RealRooted.VeroneseSection

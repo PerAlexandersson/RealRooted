@@ -120,9 +120,6 @@
     "RealRooted.Mathlib.Analysis.Normed.Ring.Power": {
       "max_modules": 1
     },
-    "RealRooted.TridiagonalDet.Recurrence": {
-      "max_modules": 3
-    },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize": {
       "max_modules": 141
     },
@@ -1867,7 +1864,6 @@
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale",
     "RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real",
     "RealRooted.Applications.OEIS.A272471.Recurrence",
-    "RealRooted.TridiagonalDet.Recurrence",
     "RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder",
     "RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator",
     "RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment",
