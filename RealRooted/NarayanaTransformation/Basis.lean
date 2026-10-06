@@ -144,17 +144,12 @@ private theorem basisTransform_touchard_preservesPF_aux :
         rw [hfactor', basisTransform_touchard_mul_X_add_C]
         exact touchardFactorStep_preservesPF (neg_nonneg.mpr hu) ihq
 
-private theorem basisTransform_touchard_preservesPF {p : ℝ[X]}
-    (hp : IsPFPolynomial p) :
+/-- The Touchard basis transform preserves PF polynomials. -/
+theorem touchardTransformPreservesPF {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (basisTransform touchard p) := by
   by_cases hp0 : p = 0
   · simpa [hp0] using IsPFPolynomial.zero
   exact basisTransform_touchard_preservesPF_aux p.natDegree p rfl hp0 hp
-
-/-- The Touchard basis transform preserves PF polynomials. -/
-theorem touchardTransformPreservesPF {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    IsPFPolynomial (basisTransform touchard p) :=
-  basisTransform_touchard_preservesPF hp
 
 /-- The falling-factorial basis transform is the identity on degree-one
 polynomials. -/

@@ -17,28 +17,12 @@ namespace RealRooted
 
 namespace BorceaBranden
 
-/-- Compatibility name for `complexificationLinearMap`. -/
-noncomputable abbrev complexifyLinearMap
-    (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : ℂ[X] →ₗ[ℂ] ℂ[X] :=
-  complexificationLinearMap T
-
-@[simp] lemma complexifyLinearMap_monomial
-    (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (n : ℕ) (z : ℂ) :
-    complexifyLinearMap T (Polynomial.monomial n z) =
-      C z * complexify (T (X ^ n)) :=
-  complexificationLinearMap_monomial T n z
-
-@[simp] lemma complexifyLinearMap_X_pow
+@[simp] lemma complexificationLinearMap_X_pow
     (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (n : ℕ) :
-    complexifyLinearMap T ((X : ℂ[X]) ^ n) =
+    complexificationLinearMap T ((X : ℂ[X]) ^ n) =
       complexify (T ((X : ℝ[X]) ^ n)) := by
-  rw [Polynomial.X_pow_eq_monomial, complexifyLinearMap_monomial]
+  rw [Polynomial.X_pow_eq_monomial, complexificationLinearMap_monomial]
   simp
-
-lemma complexifyLinearMap_complexify
-    (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (p : ℝ[X]) :
-    complexifyLinearMap T (complexify p) = complexify (T p) :=
-  complexificationLinearMap_complexify T p
 
 /-- The complex degree-box bidiagonal operator is the complexification of the
 real bidiagonal operator on a degree-bounded real input. -/

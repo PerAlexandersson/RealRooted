@@ -31,14 +31,6 @@ noncomputable section
   map_mul (MvPolynomial.eval₂Hom Polynomial.C
     (fun i => Polynomial.C (wt i) * Polynomial.X)) P Q
 
-/-- A nonzero polynomial with nonnegative coefficients is positive at a
-strictly positive point. -/
-theorem mv_eval_pos_of_hasNonnegCoeffs {σ : Type*}
-    {P : MvPolynomial σ ℝ} (hP : MvPolynomial.HasNonnegCoeffs P)
-    (hP0 : P ≠ 0) (wt : σ → ℝ) (hwt : ∀ i, 0 < wt i) :
-    0 < MvPolynomial.eval wt P :=
-  hP.eval_pos hP0 hwt
-
 /-- A positive common-phase restriction of a nonzero polynomial with
 nonnegative coefficients is nonzero. -/
 theorem commonPhaseRestriction_ne_zero {σ : Type*}
@@ -49,7 +41,7 @@ theorem commonPhaseRestriction_ne_zero {σ : Type*}
   have heval := congrArg (fun p : ℝ[X] => p.eval 1) hzero
   rw [commonPhaseRestriction_eval] at heval
   simp only [mul_one, Polynomial.eval_zero] at heval
-  have hpos := mv_eval_pos_of_hasNonnegCoeffs hP hP0 wt hwt
+  have hpos := hP.eval_pos hP0 hwt
   linarith
 
 @[simp] theorem eval_complexify_commonPhaseRestriction

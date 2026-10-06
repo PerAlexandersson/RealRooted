@@ -63,11 +63,24 @@ private theorem card_filter_lt_triple (a b c x : ℝ) :
   simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
   split_ifs <;> simp_all [Multiset.card_cons]
 
-/-- The cubic second-root inequalities follow from the analytic
-Chudnovsky--Seymour root-count theorem. -/
-theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
+/-- **Cubic second-root bound.** Let `f` and `g` be split cubics with positive
+leading coefficients forming a positive-combination real-rooted pair, with
+roots `a ≤ b ≤ c` and `p ≤ q ≤ r`.  Then the smallest root of `f` lies at or
+below the middle root of `g`, and the middle root of `f` lies at or below the
+largest root of `g`.
+
+The no-common-root case follows from the analytic Chudnovsky--Seymour
+root-count theorem; a common root is cancelled, reducing to the quadratic
+separation obstruction. -/
+theorem cubicSecondRootBound_from_analytic {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hf : f.Splits) (hg : g.Splits)
+    (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 3)
+    (hpc : PosComboRealRooted f g) {a b c p q r : ℝ}
+    (hab : a ≤ b) (hbc : b ≤ c) (hpq : p ≤ q) (hqr : q ≤ r)
+    (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {p, q, r}) :
+    a ≤ q ∧ b ≤ r := by
   classical
-  intro f g hf_pos hg_pos hf hg hfdeg hgdeg hpc a b c p q r hab hbc hpq hqr hfroots hgroots
   have hdeg : g.natDegree = f.natDegree := by simp [hfdeg, hgdeg]
   by_cases hno : ∀ z, f.IsRoot z → ¬ g.IsRoot z
   · constructor
@@ -255,5 +268,37 @@ theorem cubicSecondRootBound_from_analytic : CubicSecondRootBoundStatement := by
       exact not_posComboRealRooted_quadratic_separated
         hfq_pos hgq_pos hfq_deg hgq_deg hfq_split hgq_split r b hrb
         hgq_le hfq_ge hpcq
+
+/-- Cubic same-degree root counts.
+
+Two split cubics with positive leading coefficients forming a
+positive-combination real-rooted pair have threshold root-count functions
+differing by at most one at every threshold.  This strengthens
+`sameDegree_cubic_rootCount_le_two` from `≤ 2` to `≤ 1`, using
+`cubicSecondRootBound_from_analytic`. -/
+theorem sameDegree_cubic_rootCount_le_one
+    {f g : ℝ[X]}
+    (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 3)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hpc : PosComboRealRooted f g) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) -
+          (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+          (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  intro x
+  obtain ⟨a, b, c, hab, hbc, hfroots, _⟩ :=
+    exists_roots_triple_of_splits_natDegree_three hf hfdeg
+  obtain ⟨p, q, r, hpq, hqr, hgroots, _⟩ :=
+    exists_roots_triple_of_splits_natDegree_three hg hgdeg
+  obtain ⟨haq, hbr⟩ :=
+    cubicSecondRootBound_from_analytic hf_pos hg_pos hf hg hfdeg hgdeg hpc
+      hab hbc hpq hqr hfroots hgroots
+  obtain ⟨hpb, hqc⟩ :=
+    cubicSecondRootBound_from_analytic hg_pos hf_pos hg hf hgdeg hfdeg hpc.comm
+      hpq hqr hab hbc hgroots hfroots
+  rw [hfroots, hgroots, card_filter_le_triple, card_filter_le_triple]
+  grind
 
 end RealRooted

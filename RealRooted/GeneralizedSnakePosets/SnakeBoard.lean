@@ -184,10 +184,14 @@ theorem mem_snakeIncomparableBoard_suffix_L_cells_iff
 The incomparable cross pairs above use the column order of the second chain.
 Braun–Jal's non-nesting rook placements live on the board with that column
 order reversed: with `n = w.length`, the cell `(r, c)` of the snake board is the
-incomparable pair `(row r, col (n - c))`.  In this orientation the non-nesting
-rook polynomial is the `h^*`-polynomial of the order polytope of `P(w)`; with
-the unreflected columns it is not.  (Checked against an independent `h^*`
-computation for all 4094 words of length at most 11.) -/
+incomparable pair `(row r, col (n - c))`.
+
+Braun–Jal identify the non-nesting rook polynomial of this board with the
+`h^*`-polynomial of the order polytope of `P(w)`.  That identification is
+cited, not formalized: Lean formalizes only the rook model and its recurrence.
+It was checked numerically against an independent `h^*` computation for all
+4094 words of length at most 11; in that check the reflected orientation
+matches and the unreflected one does not. -/
 
 /-- The concrete Braun–Jal board attached to a generalized snake word: the
 incomparable cross pairs with the column order reversed. -/

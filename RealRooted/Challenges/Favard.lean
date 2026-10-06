@@ -16,11 +16,11 @@ module = "RealRooted.Favard.Recurrence"
 label = "Favard three-term recurrence"
 
 [[theorems]]
-name = "RealRooted.Challenges.Favard.interlacing"
+name = "RealRooted.Challenges.Favard.SatisfiesFavardRecurrence.strictInterl_succ"
 label = "Consecutive polynomials interlace"
 
 [[theorems]]
-name = "RealRooted.Challenges.Favard.realRooted"
+name = "RealRooted.Challenges.Favard.SatisfiesFavardRecurrence.ne_zero_and_splits"
 label = "Favard polynomials are real-rooted"
 -->
 
@@ -56,21 +56,17 @@ namespace Challenges
 namespace Favard
 
 /-- Favard recurrence coefficients force consecutive interlacing. -/
-theorem interlacing :
-    ∀ {P : Nat → ℝ[X]} {α β : Nat → ℝ},
-      SatisfiesFavardRecurrence P α β →
-      (∀ n : Nat, 0 < β (n + 1)) →
-      ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  RealRooted.favardInterlacing
+theorem SatisfiesFavardRecurrence.strictInterl_succ {P : ℕ → ℝ[X]} {α β : ℕ → ℝ}
+    (hrec : SatisfiesFavardRecurrence P α β) (hβ : ∀ n, 0 < β (n + 1)) (n : ℕ) :
+    StrictInterl (P n) (P (n + 1)) :=
+  RealRooted.favardInterlacing hrec hβ n
 
 /-- Favard recurrence coefficients force real-rootedness of every polynomial
 in the sequence. -/
-theorem realRooted :
-    ∀ {P : Nat → ℝ[X]} {α β : Nat → ℝ},
-      SatisfiesFavardRecurrence P α β →
-      (∀ n : Nat, 0 < β (n + 1)) →
-      ∀ n : Nat, (P n) ≠ 0 ∧ (P n).Splits :=
-  RealRooted.isRealRooted_of_favard
+theorem SatisfiesFavardRecurrence.ne_zero_and_splits {P : ℕ → ℝ[X]} {α β : ℕ → ℝ}
+    (hrec : SatisfiesFavardRecurrence P α β) (hβ : ∀ n, 0 < β (n + 1)) (n : ℕ) :
+    P n ≠ 0 ∧ (P n).Splits :=
+  RealRooted.isRealRooted_of_favard hrec hβ n
 
 end Favard
 end Challenges

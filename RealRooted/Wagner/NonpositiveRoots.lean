@@ -33,30 +33,16 @@ theorem commonLeft_add {f g h : ℝ[X]}
     (hf : HasNonposRootsPosLeading f)
     (hg : HasNonposRootsPosLeading g)
     (hhf : StrictInterl h f) (hhg : StrictInterl h g) :
-    StrictInterl h (f + g) := by
-  simpa using StrictInterl.sum_left_of_common_left_signed [f, g] h
-    (by simp [hhf, hhg]) (by simp [hf.2.2, hg.2.2]) (by simp)
+    StrictInterl h (f + g) :=
+  hhf.add_of_left hhg hf.2.2 hg.2.2
 
-/-- The checked two-summand common-left form with explicit algebraic
-hypotheses. -/
-theorem commonLeft_add_checked :
-    ∀ {f g h : ℝ[X]},
-      (hhf : StrictInterl h f) → (hhg : StrictInterl h g) →
-      (hf_pos : HasPosLeadingCoeff f) → (hg_pos : HasPosLeadingCoeff g) →
-      (hfg_ne : (f + g) ≠ 0) → (hfg_splits : (f + g).Splits) →
-      (hcop : IsCoprime f g) →
-      StrictInterl h (f + g) :=
-  RealRooted.StrictInterl.add_of_left
-
-/-- `f` interlaces `g` if and only if `g` interlaces `X * f`, provided their
-degrees differ by one. -/
+/-- `f` interlaces `g` if and only if `g` interlaces `X * f`.  This covers both
+`g.natDegree = f.natDegree + 1` and `g.natDegree = f.natDegree`. -/
 theorem mulX_iff {f g : ℝ[X]}
     (hf : HasNonposRootsPosLeading f)
-    (hg : HasNonposRootsPosLeading g)
-    (hdeg : f.natDegree + 1 = g.natDegree) :
+    (hg : HasNonposRootsPosLeading g) :
     StrictInterl f g ↔ StrictInterl g (X * f) :=
-  RealRooted.strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
-    hf.1 hg.1 hf.2.2 hg.2.2 hf.2.1 hg.2.1 hdeg
+  strictInterl_iff_mul_X_of_roots_nonpos hf.2.1 hg.2.1
 
 end Wagner
 end RealRooted

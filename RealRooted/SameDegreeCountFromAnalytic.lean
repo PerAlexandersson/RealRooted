@@ -6,10 +6,11 @@ import RealRooted.RootCountLocalConstancy
 /-!
 # Same-Degree Count Equality from Analytic Inputs
 
-This file starts the issue #41 reuse of the issue #42 count route.  The main
-point is that in the same-degree case there is no escaping root at the endpoint:
-the right pencil has constant degree, so the local-lower-count/local-constancy
-machinery from #42 can be used directly.
+In the same-degree case there is no escaping root at the endpoint: the right
+pencil has constant degree, so the local-lower-count/local-constancy machinery
+used for the successor-degree case applies directly.  The upper root counts of
+a no-common positive-combination pair differ by at most one, which gives the
+same-degree case of the two-polynomial common-interleaver theorem.
 -/
 
 open Polynomial
@@ -21,7 +22,7 @@ the strict-upper root count by at most one, and only upward from the source
 side.
 
 This is the crossing analogue of the non-root local-constancy bridge from
-`RootCountLocalConstancy`: the analytic input is still the #42 multiplicity
+`RootCountLocalConstancy`: the analytic input is still the multiplicity
 lower-count theorem, but the finite count conclusion allows the single root at
 `x` to move across the threshold. -/
 theorem exists_eps_card_roots_gt_bounds_near_simple_root
@@ -117,7 +118,7 @@ theorem rightFamily_card_roots_gt_eq_of_no_isRoot_interval_sameDegree
         grind)
       hμ hρ
 
-/-- Local lower counts from the #42 multiplicity-continuity theorem give
+/-- Local lower counts from the multiplicity-continuity theorem give
 strict-upper root-count equality on the unit interval. -/
 theorem rightFamily_card_roots_gt_eq_zero_one_of_constant_degree
     {f g : ℝ[X]} {x : ℝ}
@@ -135,7 +136,7 @@ theorem rightFamily_card_roots_gt_eq_zero_one_of_constant_degree
 the nonnegative right pencil, then `f` and `g` have the same number of roots
 strictly above `x`.
 
-This is the same-degree endpoint analogue of the #42 closed-segment count
+This is the same-degree analogue of the successor-degree closed-segment count
 assembly, but it uses only constant-degree local constancy; no escaping-root
 argument is involved. -/
 theorem sameDegree_card_roots_gt_eq_of_no_rightFamily_isRoot
@@ -357,25 +358,19 @@ theorem sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
       sameDegree_rootCountAbove_pointwise_of_not_exists_pos_isRoot
         hf_pos hg_pos hfg hdeg hxf hxg hcross
 
-/-- The #41 common-non-root upper root-count target follows from the #42
-analytic count spine. -/
-theorem posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic :
-    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement :=
-  fun _ _ hf_pos hg_pos _hfnn _hgnn hfg hdeg hno =>
-    sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
-      hf_pos hg_pos hfg hdeg hno
-
-/-- The repaired #41 same-degree pair-interleaver endpoint follows from the
-#42 analytic count spine. -/
-theorem posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
-  sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
-    posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
-
-/-- Positive combinations of a same-degree nonnegative pair without common
-roots have a common interleaver. -/
-theorem PosComboNoCommonSameDegreePairHasCommonInterleaverNonneg :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
-  posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic
+/-- **Same-degree case of Chudnovsky--Seymour for two polynomials.** If every
+positive combination of `f` and `g` is real-rooted, `f` and `g` have equal
+degree, positive leading coefficients and no common roots, then they have a
+common interleaver. -/
+theorem pairHasCommonInterleaver_of_posCombo_sameDegree
+    {f g : ℝ[X]} (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
+  pairHasCommonInterleaver_of_sameDegree_rootCountAbove_nonRoot
+    hf_pos.ne_zero hg_pos.ne_zero
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2 hdeg
+    (sameDegree_rootCountAbove_bounds_of_posCombo_noCommon hf_pos hg_pos hfg hdeg hno)
 
 end RealRooted

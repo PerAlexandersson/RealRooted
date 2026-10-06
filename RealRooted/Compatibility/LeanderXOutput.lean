@@ -89,7 +89,6 @@ private theorem leanderXOutputRegion_compatible_of_lt {n : ℕ}
     (ha : 0 ≤ a) (hb : 0 ≤ b)
     (hrr : ∀ h, f h ≠ 0 ∧ (f h).Splits)
     (hpos : ∀ h, HasPosLeadingCoeff (f h))
-    (hnn : ∀ h, HasNonnegCoeffs (f h))
     (hff : ∀ ⦃h k⦄, h < k → Compatible (f h) (f k))
     (hXf : ∀ ⦃h k⦄, h < k → Compatible (X * f h) (f k))
     {h k : Fin n} (hhk : h < k) :
@@ -110,7 +109,6 @@ private theorem leanderXOutputRegion_compatible_of_lt {n : ℕ}
                 (isRealRooted_X_mul_of_isRealRooted (hrr h)))
               (isRealRooted_X_mul_of_isRealRooted (hrr k))
               (hpos h).X_mul (hpos h).X_mul.X_mul (hpos k).X_mul
-              (hnn h).X_mul (hnn h).X_mul.X_mul (hnn k).X_mul
               (Compatible.self_X_mul_of_splits
                 (isRealRooted_X_mul_of_isRealRooted (hrr h)).2)
               ((hff hhk).X_mul) ((hXf hhk).X_mul)
@@ -130,7 +128,6 @@ private theorem leanderXOutputRegion_compatible_of_lt {n : ℕ}
               (hrr k) (isRealRooted_X_mul_of_isRealRooted (hrr k))
               (isRealRooted_X_mul_of_isRealRooted (hrr h))
               (hpos k) (hpos k).X_mul (hpos h).X_mul
-              (hnn k) (hnn k).X_mul (hnn h).X_mul
               (Compatible.self_X_mul_of_splits (hrr k).2)
               (hXf hhk).comm ((hff hhk).X_mul).comm
         simpa [leanderXOutputRegion, hleft, ik, hmiddle, kmiddle] using
@@ -186,7 +183,6 @@ is compatible with a later output of the diagonal-omitting transform. -/
 theorem compatible_X_mul_leanderTransform {n : ℕ} (f : Fin n → ℝ[X])
     (hrr : ∀ h, f h ≠ 0 ∧ (f h).Splits)
     (hpos : ∀ h, HasPosLeadingCoeff (f h))
-    (hnn : ∀ h, HasNonnegCoeffs (f h))
     (hff : ∀ ⦃h k⦄, h < k → Compatible (f h) (f k))
     (hXf : ∀ ⦃h k⦄, h < k → Compatible (X * f h) (f k))
     {i j : Fin n} (hij : i ≤ j) :
@@ -211,11 +207,6 @@ theorem compatible_X_mul_leanderTransform {n : ℕ} (f : Fin n → ℝ[X])
     simp only [fs, List.mem_ofFn] at hp
     rcases hp with ⟨h, rfl⟩
     exact leanderXOutputRegion_hasPosLeadingCoeff f i j ha hb hab hpos h
-  have hregions_nn : ∀ p ∈ fs, HasNonnegCoeffs p := by
-    intro p hp
-    simp only [fs, List.mem_ofFn] at hp
-    rcases hp with ⟨h, rfl⟩
-    exact leanderXOutputRegion_hasNonnegCoeffs f i j ha hb hnn h
   have hregions_pair : PairwiseCompatible fs := by
     apply pairwiseCompatible_of_forall_mem
     intro p hp q hq
@@ -223,16 +214,16 @@ theorem compatible_X_mul_leanderTransform {n : ℕ} (f : Fin n → ℝ[X])
     rcases hp with ⟨h, rfl⟩
     rcases hq with ⟨k, rfl⟩
     rcases lt_trichotomy h k with hhk | heq | hkh
-    · exact leanderXOutputRegion_compatible_of_lt f i j ha hb hrr hpos hnn
+    · exact leanderXOutputRegion_compatible_of_lt f i j ha hb hrr hpos
         hff hXf hhk
     · subst k
       exact Compatible.self_of_splits
         (leanderXOutputRegion_ne_zero_and_splits f i j hab hrr h).2
-    · exact (leanderXOutputRegion_compatible_of_lt f i j ha hb hrr hpos hnn
+    · exact (leanderXOutputRegion_compatible_of_lt f i j ha hb hrr hpos
         hff hXf hkh).comm
   have hfamily : FamilyCompatible fs :=
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
-      hregions_rr hregions_pos hregions_nn).1 hregions_pair
+    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible hregions_rr hregions_pos).1
+      hregions_pair
   let ws : List (ℝ × ℝ[X]) := List.ofFn fun h =>
     (leanderXOutputWeight i j a b h, region h)
   have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by

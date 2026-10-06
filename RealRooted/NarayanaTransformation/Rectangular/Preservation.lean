@@ -109,55 +109,6 @@ theorem mvRealStable_xyLift_rectangularAdditiveConvolution
     rw [complexifyMv_xyLift]
     exact hdiag.right_of_mul
 
-/-- Degree-at-least-three case of the Gribinski--Marcus preservation theorem for
-rectangular additive convolution. -/
-theorem rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastThree :
-    ∀ {m n : ℕ} {f g : ℝ[X]},
-      f.natDegree = n + 1 + 1 + 1 →
-      g.natDegree = n + 1 + 1 + 1 →
-      0 < f.leadingCoeff →
-      0 < g.leadingCoeff →
-      HasOnlyNonnegRoots f →
-      HasOnlyNonnegRoots g →
-        HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1 + 1 + 1) f g) := by
-  intro m n f g hfdeg hgdeg hflead hglead hfroots hgroots
-  apply rectangularAdditiveConvolutionPreservesNonnegRoots_of_mvRealStable_xyLift
-    hfdeg hgdeg hflead hglead
-  exact mvRealStable_xyLift_rectangularAdditiveConvolution
-    hfdeg hgdeg hflead hglead hfroots hgroots
-
-/-- Degree-at-least-two case of the Gribinski--Marcus preservation theorem for
-rectangular additive convolution. -/
-theorem rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastTwo
-    {m n : ℕ} {f g : ℝ[X]}
-    (hfdeg : f.natDegree = n + 1 + 1) (hgdeg : g.natDegree = n + 1 + 1)
-    (hflead : 0 < f.leadingCoeff) (hglead : 0 < g.leadingCoeff)
-    (hfroots : HasOnlyNonnegRoots f) (hgroots : HasOnlyNonnegRoots g) :
-    HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1 + 1) f g) := by
-  rcases n with _ | n
-  · exact rectangularAdditiveConvolutionPreservesNonnegRoots_two
-      hfdeg hgdeg hflead hglead hfroots hgroots
-  · exact rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastThree
-      hfdeg hgdeg hflead hglead hfroots hgroots
-
-/-- Positive-degree case of the Gribinski--Marcus preservation theorem for
-rectangular additive convolution. -/
-theorem rectangularAdditiveConvolutionPreservesNonnegRoots_positiveDegree :
-    ∀ {m n : ℕ} {f g : ℝ[X]},
-      f.natDegree = n + 1 →
-      g.natDegree = n + 1 →
-      0 < f.leadingCoeff →
-      0 < g.leadingCoeff →
-      HasOnlyNonnegRoots f →
-      HasOnlyNonnegRoots g →
-        HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1) f g) := by
-  intro m n f g hfdeg hgdeg hflead hglead hfroots hgroots
-  rcases n with _ | n
-  · exact rectangularAdditiveConvolutionPreservesNonnegRoots_one
-      hfdeg hgdeg hflead hglead hfroots hgroots
-  · exact rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastTwo
-      hfdeg hgdeg hflead hglead hfroots hgroots
-
 /-- Gribinski--Marcus preservation theorem for rectangular additive convolution. -/
 theorem rectangularAdditiveConvolutionPreservesNonnegRoots :
     ∀ {m n : ℕ} {f g : ℝ[X]},
@@ -167,13 +118,12 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots :
       0 < g.leadingCoeff →
       HasOnlyNonnegRoots f →
       HasOnlyNonnegRoots g →
-        HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g) := by
-  intro m n f g hfdeg hgdeg hflead hglead hfroots hgroots
-  rcases n with _ | n
-  · exact rectangularAdditiveConvolutionPreservesNonnegRoots_zero
-      hfdeg hgdeg hflead hglead hfroots hgroots
-  · exact rectangularAdditiveConvolutionPreservesNonnegRoots_positiveDegree
-      hfdeg hgdeg hflead hglead hfroots hgroots
+        HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g) :=
+  fun hfdeg hgdeg hflead hglead hfroots hgroots =>
+    rectangularAdditiveConvolutionPreservesNonnegRoots_of_mvRealStable_xyLift
+      hfdeg hgdeg hflead hglead
+      (mvRealStable_xyLift_rectangularAdditiveConvolution
+        hfdeg hgdeg hflead hglead hfroots hgroots)
 
 @[simp] theorem narayanaPolynomial_zero_right (m : ℕ) :
     narayanaPolynomial m 0 = 1 := by

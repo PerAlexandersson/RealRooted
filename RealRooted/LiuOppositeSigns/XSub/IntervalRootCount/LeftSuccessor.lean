@@ -140,7 +140,7 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_left_successor_nonneg_of_noCom
           · simpa using
               positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
                 (f := p) (g := q) (r := 0)
-                hpair hp_nonneg_zero hq_nonneg_zero hdeg hqzero μ hμ
+                hpair hdeg hqzero μ hμ
           · have hqone : q.natDegree = 1 := by lia
             simpa using
               positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
@@ -239,9 +239,12 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_left_successor_nonneg
 
 /-- Unrestricted positive-split left-successor translated x-subtraction
 family. -/
-theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily :
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyStatement := by
-  intro f g r hpair hfnn hgnn hdeg μ hμ
+theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily {f g : ℝ[X]} (r : ℝ)
+    (hpair : PositiveSplitRootCountPair f g)
+    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
+    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
+    (hdeg : f.natDegree = g.natDegree + 1) (μ : ℝ) (hμ : 0 < μ) :
+    (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   let p := f.comp (X + C r)
   let q := g.comp (X + C r)
   have hpair_shift : PositiveSplitRootCountPair p q := by simpa [p, q] using hpair.comp_X_add_C r
@@ -250,16 +253,6 @@ theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily :
   simpa [p, q] using
     hpair_shift.xSub_splits_of_left_successor_nonneg
       hfnn hgnn hdeg_shift hμ
-
-/-- The proved left-successor x-subtraction family gives every predicate
-restriction. -/
-theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate
-    {P : ℕ → Prop} :
-    positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement P :=
-  positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicateStatement_of_imp
-    (fun _ _ => trivial)
-    (positiveSplitLeftSuccDegreeTranslatedXSubRightFamilyPredicate_true_of_xSub
-      positiveSplitLeftSuccDegreeTranslatedXSubRightFamily)
 
 end LiuOppositeSigns
 end RealRooted

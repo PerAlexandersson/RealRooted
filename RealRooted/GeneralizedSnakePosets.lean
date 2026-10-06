@@ -1,5 +1,4 @@
 import RealRooted.GeneralizedSnakePosets.SnakeStaircase
-import RealRooted.GeneralizedSnakePosets.CombinatorialPackages
 import RealRooted.GeneralizedSnakePosets.MatrixInduction
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
 
@@ -10,11 +9,9 @@ This file contains the concrete finite-board interfaces for Braun--Jal,
 *Order polytopes of generalized snake posets are h^*-real-rooted*,
 arXiv:2607.00922v1.
 
-The paper-facing theorem statements and the combinatorial packages live in
-`RealRooted.GeneralizedSnakePosets.Statements` and
-`RealRooted.GeneralizedSnakePosets.CombinatorialPackages`.  This module imports the
-package layer as an umbrella, so downstream files that import
-`RealRooted.GeneralizedSnakePosets` keep the same public API.
+The parametric predicates used by the snake-interlacing induction live in
+`RealRooted.GeneralizedSnakePosets.Statements`; the induction itself is in
+`RealRooted.GeneralizedSnakePosets.MatrixInduction`.
 -/
 
 open Polynomial
@@ -152,22 +149,6 @@ theorem skewFerrersRookPolynomial_ne_zero (lam mu : List ℕ) :
 theorem ferrersRookPolynomial_ne_zero (lam : List ℕ) :
     ferrersRookPolynomial lam ≠ 0 :=
   rookPolynomial_ne_zero _
-
-/-- The first-column deletion identity, stated for a straight Ferrers rook-polynomial
-family indexed by integer partitions.  The partition hypothesis is needed:
-without positive row lengths, the one-row list `[0]` gives the false identity
-`1 = 1 + X`. -/
-def FerrersFirstColumnDeletionStatement (M : List ℕ → ℝ[X]) : Prop :=
-  ∀ lam : List ℕ, IsIntegerPartition lam →
-    M lam =
-      M (partitionSubOne lam) +
-        X * ((List.range lam.length).map fun i =>
-          M (partitionPrefix (partitionSubOne lam) i)).sum
-
-/-- The first-column deletion identity as the target statement for the concrete finite
-Ferrers-board rook-polynomial model. -/
-def ferrersFirstColumnDeletionStatement : Prop :=
-  FerrersFirstColumnDeletionStatement ferrersRookPolynomial
 
 /-- Valid Ferrers placements with no rook in the first column. -/
 def nonNestingPlacementsWithoutFirstColumn (lam : List ℕ) :
@@ -942,11 +923,16 @@ theorem sum_firstColumnCells_nonNestingPlacementsWithCell_eq_mul_sum
           List.sum_map_mul_left (List.range lam.length)
             (fun i => ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i)) X
 
-/-- The first-column deletion identity for the concrete finite Ferrers-board
-non-nesting rook-polynomial model. -/
-theorem ferrersFirstColumnDeletionStatement_holds :
-    ferrersFirstColumnDeletionStatement := by
-  intro lam hpart
+/-- The first-column deletion identity for the finite Ferrers-board
+non-nesting rook polynomials.  The partition hypothesis is needed: without
+positive row lengths, the one-row list `[0]` gives the false identity
+`1 = 1 + X`. -/
+theorem ferrersRookPolynomial_firstColumnDeletion (lam : List ℕ)
+    (hpart : IsIntegerPartition lam) :
+    ferrersRookPolynomial lam =
+      ferrersRookPolynomial (partitionSubOne lam) +
+        X * ((List.range lam.length).map fun i =>
+          ferrersRookPolynomial (partitionPrefix (partitionSubOne lam) i)).sum := by
   calc
     ferrersRookPolynomial lam
         = ((ferrers lam).nonNestingPlacements).sum
@@ -971,13 +957,11 @@ theorem ferrersFirstColumnDeletionStatement_holds :
 
 end FiniteSkewBoard
 
-/-- The finite-board definition of `G_n` satisfies the truncated-staircase
-interface. -/
-theorem FiniteSkewBoard.auxiliaryG_matchesTruncatedStaircases :
-    AuxiliaryGMatchesTruncatedStaircasesStatement
-      FiniteSkewBoard.truncatedStaircaseRookPolynomial
-      FiniteSkewBoard.auxiliaryG := by
-  intro n
+/-- The auxiliary polynomial `G_n` is the sum of the non-nesting rook
+polynomials of the truncated staircases `mu_{n,i}` for `i = 0, ..., n - 1`. -/
+theorem FiniteSkewBoard.auxiliaryG_matchesTruncatedStaircases (n : ℕ) :
+    FiniteSkewBoard.auxiliaryG n =
+      ((List.range n).map fun i => FiniteSkewBoard.truncatedStaircaseRookPolynomial n i).sum :=
   rfl
 
 

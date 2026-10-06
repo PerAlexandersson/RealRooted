@@ -1,765 +1,222 @@
 # RealRooted
 
-Proof assumptions and refuted legacy interfaces are summarized in
-[`PROOF_STATUS.md`](PROOF_STATUS.md).
+`RealRooted` is a Lean 4 library about real-rooted univariate polynomials and
+the tools used to prove real-rootedness: interlacing, compatibility and common
+interleavers, Pólya-frequency sequences, stability, and linear preservers. It
+also contains many combinatorial applications.
 
-`RealRooted` is an experimental Lean 4 library for real-rooted univariate
-polynomials, interlacing, compatibility, Polya-frequency sequences, and related
-combinatorial applications.
+**[Browse the theorem catalog](https://peralexandersson.github.io/RealRooted/)**
+for readable statements of the completed results, with their Lean names,
+references, and source links.
 
-**[Browse the theorem and definition catalog](https://peralexandersson.github.io/RealRooted/).**
-It presents a curated overview of completed results, with readable statements,
-Lean declarations, references, and links to the corresponding source.
+It is a research formalization workspace rather than a polished Mathlib
+contribution. Every named theorem is checked by Lean. We aim to upstream stable,
+reusable pieces to Mathlib over time.
 
-The repository is a research formalization workspace rather than a polished
-mathlib contribution.  The useful part is that the named theorem declarations
-below are checked by Lean, and the surrounding files give searchable proof
-infrastructure for real-rootedness and interlacing arguments.  The long-term
-goal is to extract stable, reusable components for eventual upstreaming.
-
-## Table of Contents
-
-- [Build](#build)
-- [Repository Layout](#repository-layout)
-- [Main Concepts](#main-concepts)
-- [Checked Highlights](#checked-highlights)
-- [Current Roadmap](#current-roadmap)
-- [Development Notes](#development-notes)
-- [License](#license)
-- [Bibliography and Links](#bibliography-and-links)
+- [`PROOF_STATUS.md`](PROOF_STATUS.md) lists proof assumptions, open statement
+  targets, and refuted legacy interfaces.
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) describes the module layers, import
+  budgets, and module-splitting rules.
 
 ## Build
 
-The project uses Lean 4.34.0 and Mathlib v4.34.0 through Lake.
+The project uses Lean 4.34.0 and Mathlib v4.34.0.
 
 ```bash
 lake exe cache get
-lake build
+lake build                              # default target, as in CI
+lake build RealRooted.Production        # library without tactic regressions
+lake build RealRooted.Tactic.Examples   # tactic regression suite
+lake build RealRooted.Hadamard          # any single module
 ```
 
-The default build checks the historical broad umbrella together with the
-production-only and tactic-regression entry points. They can also be checked
-individually:
+The default build covers the broad `RealRooted` umbrella, `Production`, and the
+tactic regressions. For an independent kernel re-check and axiom audit of the
+comparator theorem surface, run `./verify.sh` on x86_64 Linux or
+`./verify_docker.sh` elsewhere. Pinned tool versions are in
+`comparator/versions.env`. These scripts complement `lake build`; they do not
+replace it.
+
+## Layout
+
+- `RealRooted.lean` is the broad compatibility umbrella. `RealRooted/Production.lean`
+  imports every non-regression module, and `RealRooted/Tactic/Examples.lean`
+  is the mandatory tactic regression umbrella.
+- `RealRooted/Mathlib/` holds upstream-shaped lemmas. `RealRooted.Mathlib.X`
+  is meant for Mathlib's `Mathlib.X`.
+- `RealRooted/Challenges/` holds short entry points, one per completed result.
+  They feed the public catalog (see [Documentation](#documentation)).
+- `RealRooted/Tactic/` holds the real-rootedness and interlacing tactics.
+  `Tactic/OEIS_COVERAGE.md` is the generated ledger of OEIS certificate
+  coverage.
+- Theory lives in topic directories such as `CommonInterleaver/`,
+  `Hadamard/`, `BorceaBranden/`, `MultiplierSequence/`, `LGV/`, and
+  `Wronskian/`. Concrete families live in `CombinatorialExamples/` and
+  `Applications/`.
+
+## Main concepts
+
+- `Interlaces f g`, `StrictInterl f g`, `Interl f g`: interlacing in the
+  strict, oriented, and zero-aware forms.
+- `p = 0 ∨ p.Splits`: the zero-aware real-rootedness convention for closure
+  statements.
+- `IsGeneralizedSturmSeq`, `IsInterlacingSeq`, `IsInterlacingSeq0`:
+  list-level Sturm and interlacing sequences.
+- `Compatible`, `PairwiseCompatible`, `FamilyCompatible`: compatibility in the
+  sense of Chudnovsky and Seymour.
+- `HasCommonInterleaver`, `HasCommonLeftInterleaver`: common interleavers of
+  finite families.
+- `AllComboRealRooted f g`: every real linear combination is zero or
+  real-rooted.
+- `IsPolyaFreqSeq a`: the Toeplitz matrix of `a` is totally nonnegative.
+
+## Selected results
+
+The [catalog](https://peralexandersson.github.io/RealRooted/) is the full,
+curated list. Some representative checked theorems:
+
+- **Interlacing basics.** Rolle (`derivative_interlaces`), Wagner's lemmas
+  (`Challenges.Wagner`), Obreschkoff's theorem
+  (`allComboRealRooted_of_strictInterl`, `strictInterl_of_allComboRealRooted`),
+  and Favard sequences (`favardInterlacing`).
+- **Matrices.** Cauchy interlacing (`cauchy_interlacing`), principal
+  interlacing for totally nonnegative matrices
+  (`Matrix.IsTotallyNonneg.leading_charpoly_interlaces`), and the Bezoutian
+  criterion (`strictInterlSameDegree_iff_bezoutMatrix_posDef`).
+- **Preservers.** Interlacing preservers (`operatorPreservesInterlacingPairsUpToOrder`),
+  matrix preservers (`matrix_preserves_interlacing_seq`), the finite
+  Borcea–Brändén classification (`Challenges.BorceaBranden`), Garloff–Wagner
+  Hadamard products (`Challenges.Hadamard.interl_hadamardProduct_of_strictInterl`), and the
+  Mao–Wang Narayana transformation (`narayanaTransformPreservesPF`).
+- **Pólya frequency.** The reverse Aissen–Schoenberg–Whitney theorem
+  (`aissenSchoenbergWhitney_reverse`), Veronese sections
+  (`isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix`),
+  and the Type-I Pólya–Schur classification
+  (`isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction`).
+- **Compatibility.** Liu's opposite-leading-sign theorem
+  (`compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant`) and the
+  Chudnovsky–Seymour common-interleaver theory (`Challenges.ChudnovskySeymour`).
+- **Graphs.** Claw-free independence polynomials
+  (`Graph.clawFree_indepPoly_splits`), acyclic sink polynomials
+  (`UnitIntervalGraph.acyclicSinkPolynomial_splits`,
+  `Graph.allOrientationSinkPolynomial_splits_of_clawFree`), and minima
+  polynomials (`Graph.minimaPolynomial_splits`).
+- **Combinatorial families.** Eulerian and type-B Eulerian polynomials
+  (`Challenges.Eulerian`), generalized snake posets
+  (`snakeInterlacing_generalizedSnakeRookModel`), peak-value enumerators
+  (`peakValuePolynomial_mvRealStable`), the A16634x gamma pencil
+  (`gammaU_strictInterl_gammaV`), the Jacobi deformation and OEIS A132885
+  (`JacobiDeformation.polynomial_strict_package`), and the weighted deco
+  Eulerian transform
+  (`Challenges.DecoEulerian.weightedDecoTransform_splits_hasSimpleRoots_roots_neg`).
+
+Open problems and proof tasks are tracked in
+[GitHub issues](https://github.com/PerAlexandersson/RealRooted/issues), not in
+this file.
+
+## Contributing
+
+### Proof status
+
+- `sorry`, `admit`, and source `axiom` commands are not accepted as proofs.
+  Track an unproved result in a GitHub issue.
+- A temporary `...Statement : Prop` interface is allowed only when it is
+  genuinely useful. List it in `PROOF_STATUS.md`, document that it is an
+  unproved target, and keep it out of production theorem dependencies.
+- Keep a known-false candidate interface only when it helps diagnosis, and
+  then only next to its checked negation. Any reduction through such an
+  interface must take it as an explicit hypothesis and document that the route
+  is uninhabited.
+
+### Code rules
+
+- Follow the Lean community style guide and Mathlib naming conventions. Keep
+  declarations explicit, prefer small reusable lemmas, and keep top-level
+  declarations flush-left.
+- Code on the default branch must build without warnings. The lakefile sets
+  `warningAsError`.
+- `set_option` is forbidden. Fix warnings, lint errors, and resource limits in
+  the proofs and definitions instead of suppressing them.
+- `try`, `all_goals`, and `any_goals` are forbidden in proofs. They remain
+  allowed inside `macro`, `macro_rules`, `elab`, and `elab_rules` tactic
+  implementations. Use structured case analysis or sequential composition.
+- `simp +decide` and `simp_all +decide` are forbidden.
+- Use `lia`, not `omega`. A goal that `lia` cannot close may use `omega` only
+  when its declaration is listed in `ALLOWED_OMEGA` in
+  `scripts/check_proof_status.py`.
+- Keep `lakefile.toml` and `lake-manifest.json` free of absolute paths. The
+  relative `.lake/packages` and `.lake/build` paths must keep working
+  out of the box.
+
+### Checks
 
 ```bash
-lake build RealRooted.Production
-lake build RealRooted.Tactic.Examples
-```
-
-In the Lean 4.34 port, the local list operation is named
-`List.interleaveRight`: it starts with the right list and truncates when that
-list is empty. Batteries now provides a different `List.interleave`, which
-starts with the left list and retains leftovers. The `List.Interleaves`
-relation keeps its existing meaning; operation-specific helper lemmas use
-the `interleaveRight` spelling. List sign variations now use Mathlib's
-identical definition instead of a duplicate local declaration.
-The core `Matrix.IsTotallyNonneg` API likewise comes from Mathlib now; the
-local shim retains rectangular minors and the additional matrix lemmas.
-Its scalar-multiplication theorem infers the scalar from the positivity
-certificate, so callers use `hM.smul hc` rather than `hM.smul c hc`.
-
-Useful focused checks for recent theorem areas are:
-
-```bash
-lake build RealRooted.CommonInterleaverTwo
-lake build RealRooted.ChudnovskySeymour.Core
-lake build RealRooted.Hadamard
-lake build RealRooted.VeroneseMatrix
-lake build RealRooted.VeroneseSection
-lake build RealRooted.Bezoutian
-```
-
-For an independent kernel re-check and axiom audit of the small comparator
-surface, use `./verify.sh` on x86_64 Linux. The script downloads and caches
-the pinned comparator, exporter, sandbox, and independent Rust kernel listed
-in `comparator/versions.env`. On another host platform, or for a clean Ubuntu
-environment, use `./verify_docker.sh`; non-x86_64 hosts require Docker's amd64
-emulation. These scripts complement `lake build`; they do not replace it.
-
-## Repository Layout
-
-- [`ARCHITECTURE.md`](ARCHITECTURE.md) records the intended dependency layers,
-  import budgets, module-splitting rules, and consumer-to-library extraction
-  workflow.
-- `RealRooted.lean` is the broad compatibility umbrella for the full public
-  development.
-- `RealRooted/Production.lean` imports every non-regression module and excludes
-  `RealRooted.Tactic.Examples` and its leaves.
-- `RealRooted/Tactic/Examples.lean` is the mandatory regression umbrella and
-  retains every historical example import path.
-- `RealRooted/Basic.lean`, `Derivative.lean`, `Wagner*.lean`, and
-  `InterlacingSequence*.lean` contain the core interlacing API.
-- `RealRooted/Wronskian/` separates polynomial Wronskian algebra, forward and
-  converse Bezoutian bridges, and successor-degree sign/interlacing results;
-  `Wronskian.lean` is its focused public entry point.
-- `RealRooted/CommonInterleaver*.lean` and `ChudnovskySeymour.lean` contain the
-  compatibility and common-interleaver work.
-- `RealRooted/AissenSchoenbergWhitney.lean`, `PFPolynomial.lean`,
-  `VeroneseSection.lean`, and `VeroneseMatrix.lean` contain the PF, Toeplitz,
-  and Veronese-section material.
-- `RealRooted/LGV/` connects finite ranked-path networks to strict Toeplitz
-  minors and Pólya-frequency sequences without duplicating LeanLGV's checked
-  path-cancellation engine. Its repeated-chip endpoint certifies finite
-  `G * (K * G) ^ q` kernel rows directly from nonnegative lower-bidiagonal
-  factorizations. `RealRooted/BrandenLeite/` packages the corresponding finite
-  kernel rows, two-kernel composition rows, and stationary or
-  position-dependent tiling specializations.
-- `VeroneseSectionPair.lean` gives strict proper position for two nonzero
-  ordered residues; its `HermiteBiehler` child gives the induced
-  upper-half-plane and Hurwitz stability certificates.
-- `RealRooted/Hadamard/Product.lean` contains the elementary coefficientwise
-  product API; `GarloffWagner/Algebra.lean` owns the factorial-normalized
-  Schur-product and differential-operator algebra, and
-  `GarloffWagner/Iterated.lean` owns the `J^k ∘ L` Theorem 11 transport.
-  `GarloffWagner/KreinData.lean` owns the root-multiplicity and divisibility
-  data for the later Krein expansion.
-  `GarloffWagner/KreinExpansion.lean` owns the positive root-deleted
-  expansions and their Theorem 11 proper-position consequences.
-  `GarloffWagner/Theorem12.lean` owns the factorial Schur-product induction
-  and its fixed-factor Hadamard consequences, while
-  `GarloffWagner/Hadamard.lean` owns the double-deleted reduction and final
-  two-pair endpoint. `GarloffWagner.lean` remains their theorem-route
-  compatibility import.
-  `Hadamard/Basic.lean` owns the coefficient-support and Schur--Szego
-  composition algebra, including the Jensen and degree-three identities;
-  `Hadamard/Finite.lean`, `Newton.lean`, and `Cubic.lean` respectively own
-  the finite-composition interfaces, normalized Newton inequalities, and
-  degree-three reductions. `Hadamard/Grace.lean` owns the apolar/Grace proof,
-  followed by `GarloffWagner.lean`, `Hurwitz.lean`, and `Consequences.lean`
-  for the endpoint interfaces. `Hadamard.lean` is their compatibility import.
-- `MultiplierSequence/PolyaSchur/Factorial.lean` identifies factorial-weighted
-  coefficient Jensen polynomials with Garloff--Wagner Schur products, while
-  `Limit.lean` proves pointwise closure of PF multiplier sequences.
-  `MultiplierSequence/Sign.lean` proves the zero-safe parity sign constraint
-  and the four classical PF sign normalizations for arbitrary multiplier
-  sequences.
-  `LaguerrePolya/TypeIReverse.lean` combines these facts with locally uniform
-  derivative convergence to prove the reverse Type-I Pólya--Schur bridge from
-  Taylor data, and the exponential-generating-function classification under
-  its necessary positive-radius hypothesis.
-- `BorceaBranden/Applications/BidiagonalSymbol.lean` computes genuine affine
-  finite symbols for coefficient-bidiagonal operators; its
-  `RealConsequences` child supplies their real preservation consequences, and
-  `EulerFiniteSymbol.lean` packages the stable Euler-family specialization with
-  diagonal constant `c ≥ 1`.
-- `RealRooted/GammaPencil/` develops the A16634x gamma operator from its
-  coefficient recurrence and exact finite symbol through degree-box
-  preservation and the all-rank oriented gamma-pencil theorem.
-- `RealRooted/SymmetricDecomposition/` separates the Brändén--Solus
-  definitions, `f`-polynomial transport, symmetric-decomposition, and Theorem
-  2.6 layers; `SymmetricDecomposition.lean` remains their compatibility
-  import. `Bezoutian.lean` contains the classical Bezoutian interface.
-- `RealRooted/RowThreshold.lean` contains the row-threshold preserver.
-  `ThresholdMatrix/Basic.lean` owns the generic threshold-matrix API,
-  while its `HaglundZhang` and `GustafssonSolus` children own the two
-  independent application backends. `ThresholdMatrix.lean` remains their
-  compatibility import. Shared constant and positive-slope affine
-  proper-position lemmas live in `AffineProperPosition.lean` rather than in a
-  Veronese-specific module.
-- `RealRooted/NarayanaTransformation/` layers the Mao--Wang Narayana
-  transformation by root geometry, basis transforms, factorial preservation,
-  coefficient identities, rectangular convolution, recurrences, and endpoints;
-  `NarayanaTransformation.lean` remains its compatibility import.
-  `LowerTriangularMatrix.lean` and `MaoWangMatrixProduct.lean` provide the
-  lower-triangular row-generating-function API and matrix-product endpoint
-  wrappers.
-- `RealRooted/ParkingFunctions/ToricContribution/` layers the public A390883
-  backend from shifted-Jacobi and interval-insertion infrastructure through
-  the finite and exceptional offsets, coefficient reversal, fixed-row
-  pairwise interlacing, and the common-interlacer weighted-sum endpoint.
-- `RealRooted/EulerOperator/Darboux/` provides the coefficient-ring algebra of
-  the unit-interval Darboux operator and a separate ordered interlacing layer;
-  the toric insertion operator is a compatibility alias for this API.
-- `RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/DifferentialOperator.lean`
-  owns the generic shifted-Jacobi differential operator, while
-  `RealRooted/Jacobi/DifferentialOperator.lean` supplies its shifted-Euler and
-  Jacobi ODE identities. The family-neutral simple-root and derivative-
-  elimination lemmas live in
-  `RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/SecondOrder.lean`.
-- `RealRooted/Jacobi/Orthogonality.lean` proves full two-parameter shifted-
-  Jacobi orthogonality from Gamma moments and a coefficient-ring moment-
-  recurrence API. Its `Orthogonality/Integral.lean` child identifies that
-  pairing with the beta-weighted integral, keeping analytic imports out of the
-  finite Jacobi family and root theory. `Jacobi/Favard.lean` owns the monic
-  three-term recurrence certificate, and the orthogonality layer identifies
-  its concrete moment pairing with the normalized Favard pairing. The
-  beta-zero and beta-one modules retain their historical rational APIs as
-  compatibility specializations.
-- `RealRooted/JacobiDeformation/` proves the root theory of the Jacobi
-  deformation `J_{m,δ}^{c,d}(X, U, V)` by a finite algebraic argument: a
-  diagonal Jacobi kernel expansion, entrywise positivity of a quasi-Jacobi
-  collocation matrix, the Micchelli--Willoughby spectral-product theorem in
-  `RealRooted/SpectralProduct.lean`, and critical-point signs.
-  `JacobiDeformation.lean` is its facade. `RealRooted/Applications/OEIS/A132885.lean`
-  specializes it to the central-trinomial rows of OEIS A132885, using
-  `Nat.centralTrinomial` from
-  `RealRooted/Mathlib/Combinatorics/Enumerative/CentralTrinomial.lean`.
-- `RealRooted/RootVieta/Newton.lean` exposes Newton recurrences for multisets,
-  ordinary polynomial roots, and reversed polynomial roots. Its Mathlib-shaped shims evaluate
-  multivariate power sums and orient Vieta formulas for direct reuse; no
-  degree-specific power identities are stored in the library.
-- `RealRooted/LiuOppositeSigns/RootCount.lean` contains Liu's threshold-count
-  foundation, `RootDeletion.lean` contains the general cofactor and
-  largest-root deletion API, and `PositiveSplitRootCount.lean` packages the
-  normalized positive-leading pair. `LiuOppositeSigns.lean` retains the
-  cross-owned-gap and left/right branch interface, with
-  `LiuOppositeSignsTheorem.lean` providing the theorem endpoint. Its
-  `XSub/ProperPosition.lean` child exposes the ordinary `StrictInterl` bridge
-  and the nonnegative `X * p - μ * q` splitness corollary. Its
-  `XSub/IntervalRootCount/` package separates root filters, adjacent gaps,
-  exterior tails, count-to-splitting endpoints, and the three degree cases;
-  `XSub/IntervalRootCount.lean` remains the compatible import. Its
-  `XSub/CubicCubic/` package similarly separates cubic-minus-quadratic
-  infrastructure, normalized setup, root-order case families, repeated-root
-  boundaries, and the degree-three endpoints; `XSub/CubicCubic.lean` remains
-  the compatible import.
-- `RealRooted/Favard/Affine/` separates direct positive-slope recurrences,
-  scalar-denominator normalizations, and row-sign normalizations; its parent
-  `Favard/Affine.lean` is the focused theorem import, while `Tactic/Favard.lean`
-  is the compatible frontend façade over its focused syntax and macro-rule
-  modules. `Favard/Recurrence.lean` owns the ring-generic monic recurrence and
-  polynomial-basis API. `Favard/Orthogonality.lean` constructs its normalized
-  functional and product pairing, proving basis orthogonality, the norm
-  recurrence, nondegeneracy, positive definiteness, and uniqueness up to
-  scaling.
-- `RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/` defines the canonical
-  monic sign-reversed generalized Laguerre family and its algebraic identities.
-  `RealRooted/Mathlib/Algebra/Polynomial/Moment.lean` provides the reusable
-  moment-functional and pairing algebra for its orthogonality theory and other
-  classical polynomial families.
-  `RealRooted/Laguerre/Favard.lean` owns the three-term recurrence certificate;
-  the family separately packages roots/interlacing and algebraic or integral
-  orthogonality, including the bridge from the concrete moment pairing to the
-  normalized Favard pairing. `RealRooted/Laguerre.lean` is the family facade.
-- `RealRooted/Mathlib/RingTheory/Polynomial/Hermite.lean` extends Mathlib's
-  canonical probabilists' Hermite family with the lowering identity and monic
-  three-term recurrence. `RealRooted/Hermite/Favard.lean` maps that family to
-  arbitrary coefficient rings and supplies the real Favard certificate;
-  `Hermite/Roots.lean` packages real-rootedness, consecutive interlacing,
-  simple roots, and Sturm sequences. `Hermite/Orthogonality.lean` owns the
-  normalized algebraic pairing with squared norms `n!`, while its `Integral`
-  child alone imports analysis and identifies that pairing with the Gaussian
-  weight `exp (-(x² / 2))`. `RealRooted/Hermite.lean` is the family facade.
-- `RealRooted/Mathlib/RingTheory/Polynomial/ShiftedLegendre.lean` identifies
-  Mathlib's integer shifted Legendre family with the zero-parameter shifted
-  Jacobi family after mapping to the reals. `Legendre/Basic.lean` exposes that
-  canonical map and its reflection through the origin, while
-  `Legendre/Roots.lean` packages degree, root-location, simple-root, and
-  consecutive-interlacing theory in both orientations. The reflected family
-  is the reusable positive-leading normalization behind the A080721 auxiliary
-  Legendre polynomials; the actual OEIS family remains a distinct local
-  quasi-Legendre combination. `RealRooted/Legendre.lean` is the family facade.
-- `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces
-  for the Braun-Jal generalized snake poset target.
-- `RealRooted/Challenges/` contains compact entry points for famous theorem
-  statements. Opted-in module comments are the maintained source for the
-  [public challenge catalog](https://peralexandersson.github.io/RealRooted/),
-  including its human-readable descriptions and primary references.
-- `RealRooted/CombinatorialExamples/` contains examples such as Eulerian,
-  type B Eulerian, simsun, Touchard, Narayana, Motzkin, and related families.
-- `RealRooted/Tactic/OEIS_COVERAGE.md` is the generated coverage ledger for
-  OEIS-labeled tactic shells, certificate fragments, and concrete theorems.
-- `RealRooted/Tactic/OEIS/` contains focused OEIS certificate-family frontends.
-  `DerivativeLag.lean`, `PositiveLag.lean`, and `NegativeLag.lean` own the
-  lag families, while `ProductExit.lean`, `ProductFactor.lean`,
-  `ProductLift.lean`, and `ProductParity.lean` own product certificates.
-  `Tactic/OEIS.lean` remains the compatible umbrella import.
-- `RealRooted/Mathlib/` contains local compatibility lemmas intended to look
-  like future Mathlib additions.
-
-## Main Concepts
-
-- `Interlaces f g`, `StrictInterl f g`, and `Interl f g`: the main strict,
-  oriented, and zero-aware interlacing relations.
-- `p = 0 ∨ p.Splits`: the zero-aware real-rootedness convention used in closure
-  statements where the zero polynomial is a natural exceptional case.
-- `IsGeneralizedSturmSeq ps`, `IsInterlacingSeq fs`, and `IsInterlacingSeq0 fs`:
-  list-level Sturm and interlacing predicates.
-- `Compatible f g`, `PairwiseCompatible fs`, and `FamilyCompatible fs`:
-  Chudnovsky-Seymour style compatibility predicates.
-- `HasCommonInterleaver fs` and `HasCommonLeftInterleaver fs`: common
-  interleaver data for finite families.
-- `AllComboRealRooted f g`: every real linear combination of `f` and `g` is
-  zero or real-rooted.
-- `IsPolyaFreqSeq a`: total nonnegativity of the Toeplitz matrix of a sequence.
-- `veroneseSectionPolynomial r k p`: the fixed-residue Veronese section of a
-  polynomial.
-- `FullyInterlacingPair a b`: the two-row Lace total-nonnegativity interface
-  used by the Veronese development. Its proposed identification with Hurwitz
-  stability is false for the current row orientation.
-
-## Checked Highlights
-
-Every declaration named in this section is a checked Lean declaration. Any
-open proposition scaffold is explicitly labeled and tracked in
-[`PROOF_STATUS.md`](PROOF_STATUS.md); the project does not use `sorry` stubs.
-
-### Theorem-Level Highlights
-
-The formalization now contains theorem interfaces for several standard
-real-rootedness and interlacing results.  In ordinary mathematical language,
-the checked or challenge-facing highlights are:
-
-- Cauchy interlacing: the eigenvalues of a principal codimension-one submatrix
-  of a real symmetric or Hermitian matrix interlace the eigenvalues of the
-  original matrix, with a reusable characteristic-polynomial bridge in
-  `RealRooted.CauchyInterlacing.Polynomial`. See `cauchy_interlacing` and
-  `RealRooted.Challenges.CauchyInterlacing`; references include Fisk (2005)
-  and Godsil (2017).
-- Oscillatory interlacing: Whitney reduction and tridiagonal matrix theory live
-  in `RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core`,
-  while `RealRooted.OscillatoryInterlacing` combines that core with Cauchy
-  interlacing to prove strict interlacing of consecutive principal-section
-  characteristic polynomials.
-- Totally nonnegative principal interlacing: every finite real totally
-  nonnegative matrix has weak leading- and trailing-principal characteristic-
-  polynomial interlacing, including singular matrices. See
-  `Matrix.IsTotallyNonneg.leading_charpoly_interlaces` and
-  `Matrix.IsTotallyNonneg.trailing_charpoly_interlaces` in
-  `RealRooted.TotallyNonnegInterlacing`.
-- Wagner's lemma: for real-rooted polynomials with nonpositive roots and
-  positive leading coefficients, common interlacers are closed under addition,
-  and multiplication by `X` shifts the interlacing relation in the expected
-  way. The reusable forms live in `RealRooted.Wagner.NonpositiveRoots`, with
-  challenge-facing aliases in `RealRooted.Challenges.Wagner`; reference:
-  Wagner (1992).
-- Obreschkoff's theorem: two polynomials have a real-rooted real pencil
-  `alpha * f + beta * g` if and only if they interlace, up to orientation and
-  degree conventions.  See `allComboRealRooted_of_strictInterl`,
-  `strictInterl_of_allComboRealRooted`, and `RealRooted.Challenges.Obreschkoff`;
-  references include Obreschkoff (1963), Dedieu (1992), and Branden (2004).
-- Interlacing preservers: a linear operator that preserves real-rootedness
-  sends interlacing pairs to interlacing pairs, up to the zero and orientation
-  conventions used by `Interl`.  See
-  `operatorPreservesInterlacingPairsUpToOrder` and
-  `RealRooted.Challenges.OperatorPreservers`; reference: Branden (2004).
-- Matrix preservers: a polynomial matrix with nonnegative coefficients
-  preserves interlacing sequences when its two-by-two affine tests interlace.
-  See `matrix_preserves_interlacing_seq` and
-  `RealRooted.Challenges.MatrixInterlacing`; Fisk (2006) develops matrices
-  preserving interlacing, and Branden (2015) gives the exact criterion used
-  here.
-- Favard interlacing: a three-term Favard recurrence with positive recurrence
-  coefficients gives a Sturm sequence, hence every polynomial in the sequence
-  is real-rooted.  See `favardInterlacing` and
-  `RealRooted.Challenges.Favard`; reference: Favard (1935).
-- Polya-frequency and Veronese results: the ASW reverse direction and the
-  Toeplitz/PF infrastructure imply that Veronese sections of a real-rooted
-  polynomial with nonnegative coefficients are real-rooted or zero.  See
-  `aissenSchoenbergWhitney_reverse`,
-  `isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix`,
-  and `RealRooted.Challenges.VeroneseSections`; references include
-  Aissen--Schoenberg--Whitney (1952) and Athanasiadis--Wagner (2024).
-- Eulerian examples: ordinary Eulerian and type `B` Eulerian polynomials are
-  real-rooted, and the formalization proves stronger consecutive interlacing
-  or Sturm-sequence statements.  See `RealRooted.Challenges.Eulerian`;
-  references include Frobenius (1910).
-- Toric contributions for A390883: each fixed row is an oriented all-pairs
-  interlacing sequence, the normalized reverse-offset family has a common
-  left interleaver, and every strictly positive weighted normalized sum is
-  real-rooted. See `toricContributionRow_isInterlacingSeq`,
-  `normalizedRPolynomialFamily_hasCommonLeftInterleaver`, and
-  `normalizedRPolynomialFamily_weighted_sum_splits`; reference: Xiao (2026).
-- Graph polynomials: finite claw-free graphs have real-rooted independence
-  polynomials, and matching-polynomial corollaries are packaged through the
-  line-graph reduction.  See `Graph.clawFree_indepPoly_splits` and
-  `RealRooted.Challenges.ChudnovskySeymour`; references include
-  Chudnovsky--Seymour (2007) and Heilmann--Lieb (1972).
-- Mao--Wang Narayana transformation: the formalization proves the Narayana
-  transform preserves PF polynomials and packages the lower-triangular
-  matrix-product criterion for admissible affine, Touchard/Stirling,
-  rising-factorial, and Narayana matrix factors.  See
-  `narayanaTransformPreservesPF`,
-  `LowerTriangularMatrix.maoWang_matrixProduct_rowGeneratingFunctions_pf`,
-  and
-  `LowerTriangularMatrix.maoWang_matrixProduct_rowGeneratingFunctions_nonposRoots`;
-  reference: Mao--Wang (2026).
-- Jacobi deformation and A132885: for `0 < δ < 1` and positive parameters,
-  the Jacobi deformation `J_{m,δ}^{c,d}(X, U, V)` has `m` simple strictly
-  negative roots and is strictly interlaced by the derivative of `J_{m,0}`;
-  for every `δ ≥ 0` it splits with strictly negative roots. Consequently every
-  nonconstant row `∑_k C(n - k, k) T(n - 2k) X ^ k` of OEIS A132885, with
-  central trinomial coefficients `T`, has exactly `n / 2` simple negative
-  roots. See `JacobiDeformation.polynomial_strict_package`,
-  `JacobiDeformation.polynomial_all_rank_nonneg_parameter`, and
-  `Applications.OEIS.A132885.splits_simple_roots_neg`; the spectral step uses
-  Micchelli--Willoughby (1979).
-
-The challenge surface also records theorem-shaped targets as they mature.
-Kurtz's coefficient inequality criterion is implemented in
-`RealRooted.Kurtz` and re-exported by its challenge entry point. The finite
-Hermite--Poulain differential-operator preserver is implemented in
-`RealRooted.Hermite.Poulain` over the shared
-`RealRooted.Derivative.LinearCombination` theorem layer. The full finite complex
-Borcea--Branden classification, including its stable rank-at-most-one branch,
-is implemented in `RealRooted.BorceaBranden.FiniteSymbolClassification`; its
-low-dependency real-univariate interface lives in
-`RealRooted.BorceaBranden.UnivariateFiniteSymbol`. The challenge entry point
-re-exports both APIs.
-
-### Interlacing And Preservers
-
-- `derivative_interlaces`: Rolle-style derivative interlacing for real-rooted
-  polynomials.
-- `StrictInterl.add_of_right_of_posLeadingCoeff`, `StrictInterl.add_of_left`,
-  and `interl_mul_X_of_interl`: checked Wagner-lemma forms for common
-  interlacers and multiplication by `X`.
-- `strictInterl_ma_wang` and `generalizedLiuWangCriterion`: Ma-Wang and
-  Liu-Wang style criteria for interlacing recurrences and weighted sums.
-- `favardInterlacing` and `isRealRooted_of_favard`: a Favard recurrence
-  interface for orthogonal-polynomial style Sturm sequences.
-- `SatisfiesFavardRecurrence.pairing_iIsOrtho`,
-  `SatisfiesFavardRecurrence.pairing_nondegenerate`, and
-  `SatisfiesFavardRecurrence.pairing_posDef`: the normalized algebraic Favard
-  functional and pairing, with orthogonality, nondegeneracy, and positivity.
-- `generalizedLaguerre_splits`, `generalizedLaguerre_hasSimpleRoots`, and
-  `generalizedLaguerre_integral_orthogonal`: the root, Sturm, and classical
-  orthogonality package for the canonical generalized Laguerre family.
-- `matrix_preserves_interlacing_seq` and
-  `matrix_preserves_interlacing_seq0_of_2x2`: matrix preservers from finite
-  two-by-two interlacing checks.
-- `operatorPreservesInterlacingPairsUpToOrder`: a general operator-preserver
-  interface for interlacing pairs.
-- `cauchy_interlacing`: Cauchy's eigenvalue interlacing theorem for Hermitian
-  matrices and one-index principal submatrices.
-- `gwHadamardProductNonnegInterl`: the Garloff--Wagner interlacing theorem
-  for coefficientwise Hadamard products of nonnegative real-rooted pairs.
-
-### Compatibility And Common Interleavers
-
-- `hasCommonInterleaver_of_pairwiseHasCommonInterleaver`: pairwise common
-  interleavers imply a global common interleaver.
-- `isRealRooted_sum_of_commonInterleaver` and
-  `isRealRooted_sum_of_commonLeftInterleaver`: nonnegative sums are real-rooted
-  when a family has common interleaver data.
-- `familyCompatible_of_commonInterleaver` and
-  `pairwiseCompatible_of_familyCompatible`: the easy directions relating
-  common interleavers and compatibility.
-- Declarations with prefix `chudnovskySeymour_fourWay_of_`: several checked
-  Chudnovsky-Seymour four-way packages under formalized bridge hypotheses.
-- `pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one`: the complete
-  low-degree compatibility equivalence.
-
-### Symmetric Decomposition And Bezoutians
-
-- `idDecompositionExistsUnique` and `rdDecompositionExistsUnique`: existence
-  and uniqueness of the Branden-Solus symmetric decompositions.
-- `brandenSolusTheorem26`: the formalized Branden-Solus Theorem 2.6 package in
-  the canonical interlacing language.
-- `isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs`: real-rootedness
-  preservation for the `h -> f` transform in the nonnegative setting.
-- `strictInterlSameDegree_iff_bezoutMatrix_posDef`: strict same-degree
-  Bezoutian characterization.
-
-### Polya Frequency, ASW, And Veronese Sections
-
-- `aissenSchoenbergWhitney_reverse`: the reverse Aissen-Schoenberg-Whitney
-  direction, from real-rooted nonpositive roots and nonnegative coefficients to
-  a Polya-frequency coefficient sequence.
-- `isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction`:
-  the Type-I Pólya--Schur classification for exponential generating series
-  with positive radius of convergence.
-- `IsMultiplierSequence.exists_pf_sign_normalization`: every multiplier
-  sequence is PF after identity, global negation, alternation, or negated
-  alternation, including arbitrary internal zero gaps.
-- `isMultiplierSequence_iff_isLaguerrePolyaTypeISigned_complexExpGeneratingFunction`:
-  the full signed Type-I classification under the necessary positive-radius
-  hypothesis; `isLaguerrePolyaTypeISigned_neg_exp` is a concrete signed
-  specialization.
-- `aissenSchoenbergWhitneyForward`: the target theorem for the opposite ASW
-  direction.
-- `Quiver.Path.sum_weight_exactLength_eq_edgeSumMatrix_pow`: exact-length
-  weighted path sums are entries of powers of the edge-sum matrix.
-- `StrictToeplitzMinorIndex.pathNetwork_matrix_eq_toeplitzSubmatrix` and
-  `isPolyaFreqSeq_of_minorOrderedCertificates`: the source-row/sink-column
-  orientation bridge and minor-local ordered-LGV endpoint for proving a
-  sequence Pólya-frequency.
-- `BrandenLeite.coeff_kernelRow` and
-  `BrandenLeite.natDegree_kernelRow_le_row`: the exact coefficients and sharp
-  row support of the finite kernel polynomial
-  `G * (K * G) ^ q` for lower `G` and strictly lower `K`.
-- `LGV.RepeatedChip.kernelSequence_isPolyaFreqSeq` and
-  `LGV.RepeatedChip.kernelRow_isPFPolynomial`: ordered-LGV certificates for
-  nonnegative repeated chip words; `natDegree_kernelRow_le_div` records the
-  sharper bound when every marked pass drops at least `r` levels.
-- `BrandenLeite.twoKernelRows_pf_and_interl` and
-  `BrandenLeite.rationalRodRows_pf_and_interl`: checked PF/interlacing
-  endpoints for composition rows and factored stationary rod-tiling kernels.
-- `IsPolyaFreqSeq.veroneseSectionSeq` and
-  `IsPolyaFreqSeq_veroneseSectionPolynomial_coeff`: Veronese subsequences and
-  Veronese section coefficients preserve Toeplitz total nonnegativity.
-- `isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix`:
-  the completed cyclic-matrix proof that Veronese sections of a real-rooted
-  nonnegative-coefficient polynomial are zero or real-rooted.
-- `not_isUpperHalfPlaneStable_hermiteBiehlerPolynomial_X_neg_one`: a checked
-  counterexample documenting why the Hermite-Biehler forward route is exposed
-  only in sign-normalized form.
-- `gammaU_strictInterl_gammaV` and `gammaU_add_C_mul_gammaV_splits`: the
-  directed interlacing and all-real-parameter splitness endpoints for the
-  A16634x gamma pencil in every rank at least two.
-
-### Combinatorial Examples
-
-The example files prove real-rootedness and, in many cases, Sturm or interlacing
-sequence statements for standard combinatorial families.  Representative
-declarations include:
-
-- `isRealRooted_eulerianTilde`
-- `isRealRooted_typeBEulerian`
-- `isRealRooted_simsun`
-- `isRealRooted_touchard`
-- `isRealRooted_coloredSetPartitions`
-- `isRealRooted_narayana_of_nonnegCoeffs`
-- `isRealRooted_motzkin`
-- `peakValuePolynomial_mvRealStable`: the peak-value enumerator of
-  permutations is multivariate real stable in every rank.
-- `peakValueWeightedDiagonal_consecutive_strictInterl`: positive weighted
-  diagonal specializations of consecutive peak-value enumerators strictly
-  interlace (the weighted A008303 application).
-
-## Current Roadmap
-
-The Chudnovsky-Seymour and Heilmann-Lieb graph-facing line is now represented
-by checked theorem interfaces in `ChudnovskySeymour.lean` and
-`HeilmannLieb.lean`.  The graph endpoint is
-`Graph.clawFree_indepPoly_splits`: finite claw-free graphs have real-rooted
-independence polynomials.  The matching-polynomial corollaries are packaged
-through the line-graph reduction in `HeilmannLieb`.
-
-Two acyclic-orientation results build on the weighted claw-free theorem.  The
-ascent-refined acyclic sink polynomial of a natural unit interval graph is
-real-rooted for every real `q ≥ 0`
-(`UnitIntervalGraph.acyclicSinkPolynomial_splits`), and the ordinary acyclic
-sink polynomial of a claw-free graph with a reverse perfect elimination order is
-real-rooted
-(`Graph.ReversePerfectEliminationOrder.ordinaryAcyclicSinkPolynomial_splits_of_clawFree`).
-Both are statements about the actual orientation sums.  Over all orientations,
-the sink polynomial of every finite claw-free graph is real-rooted
-(`Graph.allOrientationSinkPolynomial_splits_of_clawFree`), through the counting
-identity `Graph.allOrientationSinkPolynomial_indicatorIdentity`.  The minima
-polynomial, which counts local edge orders by mutual minima, is real-rooted for
-every finite graph (`Graph.minimaPolynomial_splits`), through the
-weighted-matching identity `Graph.minimaPolynomial_comp_X_add_one`.
-
-Garloff--Wagner Hadamard proper-position is now proved directly in
-`RealRooted.GarloffWagner` and exposed through
-`garloffWagnerHadamardNonnegInterl`. It no longer remains as an external
-standard fact for the `SuperEulerian` project.
-
-The Braun--Jal generalized-snake development proves, for the concrete snake
-board, that every snake polynomial is real-rooted and that deleting the last
-letter gives an interlacing polynomial
-(`snakeInterlacing_generalizedSnakeRookModel`).  The route goes through the
-snake recurrence, the shifted difference-interlacing claim and a matrix
-induction.  The identification of these rook polynomials with the
-`h^*`-polynomials of the order polytopes (the Stanley / Alexandersson--Jal
-correspondence) is not formalized.
-
-Documentation and onboarding use concise challenge entry-point files in
-`RealRooted/Challenges/`.  This directory is a positive ledger of completed
-results: every theorem challenge must have an unconditional checked witness.
-Incomplete theorem targets and strategy surfaces belong in open GitHub issues,
-not in challenge modules.  An explicit metadata block opts a completed module
-into the generated public catalog; only selected definitions and checked
-theorem declarations are published. Conjectures, examples, and statement
-scaffolds are not catalog entries. The same bounded module comment owns the
-explanatory prose and primary references, while detailed proof infrastructure
-remains in the main theorem modules. A symmetricfunctions.com link may provide
-useful context but is not required.
-The current challenge surface includes ASW, Chudnovsky-Seymour, Leake-Ryder
-same-phase stability, Hadamard, Wagner, Cauchy interlacing, Obreschkoff,
-operator and matrix interlacing preservers, Hermite-Biehler, the checked
-row-oriented Hurwitz counterexamples, Veronese sections, Favard, Kurtz,
-Hermite-Poulain, Borcea-Branden, and Eulerian polynomials.
-
-The finite complex Borcea--Branden classification is checked using the
-multivariate stability and polarization infrastructure in this repository,
-with applications importing its reusable theorem modules rather than the
-challenge facade.
-The A16634x gamma-pencil roadmap is complete through its exact parity symbol,
-finite degree-box preserver, and all-rank oriented proper-position theorem.
-Further stability work may revisit the correctly oriented classical Hurwitz
-matrix and its stability criterion; both directions proposed for the current
-row-oriented matrix are formally refuted.
-
-The Brändén--Saud Leite program is complete through the canonical Whitney
-resolution of lower-unitriangular totally nonnegative matrices, the
-chain-polynomial splitting and consecutive-interlacing theorem, zero-constant
-composition rows, the two-kernel PF/interlacing theorem, stationary and
-position-dependent tiling recurrences, and the independent repeated-chip LGV
-certificate.
-
-GitHub issues track individual proof tasks rather than being duplicated here.
-Current open themes include the Braun--Jal generalized-snake-poset theorem,
-the Hoster--Stump Chow-polynomial strategy, classical root-counting
-foundations, infinite PF and transcendental stability classifications, and
-selected stable-polynomial and combinatorial applications. Liu's
-opposite-leading-sign theorem is checked as
-`compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant`, with the
-necessary explicit common-root branch; its formerly proposed weaker interface
-has a checked counterexample.  Recent checked issue surfaces include the
-Braun--Jal route described above, the Gustafsson--Solus interlacing recursion,
-the Haglund--Zhang `s`-inversion/A046802 backend, characteristic-polynomial
-packaging for Cauchy interlacing, and the finite Borcea--Branden symbol
-classification. The A390883 toric-contribution conjecture is also closed by
-the stronger fixed-row interlacing and common-interlacer results listed above.
-
-## Development Notes
-
-The project does not accept `sorry`, `admit`, or source `axiom` commands as
-proofs.  Track an unproved conjecture in a GitHub issue.  If a temporary
-`...Statement : Prop` interface is genuinely useful, list it in
-`PROOF_STATUS.md`, document that it is an unproved target, and keep it out of
-production theorem dependencies.  Known false candidate interfaces are
-retained only when useful for diagnosis, together with checked negations.  Any
-reduction through such an interface must expose it as an explicit hypothesis
-and document that the route is uninhabited.
-
-New Lean code should follow the Lean community style guidelines and Mathlib
-naming conventions where practical. In particular, keep declarations explicit,
-prefer small reusable lemmas, and keep top-level declarations flush-left. The CI
-import guards check the broad, production, and regression umbrellas separately
-and reject production closures containing tactic examples. Run
-`python3 scripts/check_root_imports.py --fix` to append a new module only to its
-owning umbrellas; existing qualified imports and comments are preserved.
-
-Proof-surface CI is checked separately with:
-
-```bash
+python3 scripts/check_root_imports.py --fix        # register a new module in its umbrellas
+python3 scripts/check_import_architecture.py       # import graph, layers, budgets
 python3 scripts/check_proof_status.py --self-test
-python3 scripts/check_proof_status.py
+python3 scripts/check_proof_status.py              # sorry/axiom/tactic rules, open statements
 ```
 
-The guard rejects `sorry`, `admit`, and source `axiom` commands, the tactic
-rules below, and reports low-use theorem-shaped propositions that still need an
-explicit status in `PROOF_STATUS.md`.
+The import guards check the broad, production, and regression umbrellas
+separately, and reject production closures that contain tactic examples. The
+proof-status guard also reports low-use theorem-shaped propositions that still
+need an explicit entry in `PROOF_STATUS.md`.
 
-All code accepted into the default branch must build without warnings. The
-lakefile sets `warningAsError`, so `lake build` fails on any warning. Draft
-branches may use the CI-first verification workflow below.
+### CI and pull requests
 
-To maintain clean and reliable build verification, the use of `set_option` is
-forbidden in the codebase. All warnings, lint errors, or resource limits should
-be addressed by refining the underlying proofs and definitions rather than
-suppressing them.
+- A small, independently owned change may use a **CI-first draft PR**: run the
+  applicable source checks, push the branch, and open a draft PR so GitHub
+  compiles it. A local full build is not required for that draft. State which
+  checks have and have not run. A draft commit is not a verified theorem
+  milestone.
+- Parallel workers use isolated branches or worktrees with disjoint file
+  ownership. Builds against a shared local Lake cache must be serialized.
+  GitHub runners can validate PRs independently. One integrator reviews the
+  statements, assumptions, source changes, and verification results.
+- Before merging, the exact candidate revision must pass all source guards,
+  the ordinary default build (including `Production` and the tactic
+  regressions), and the applicable transitive-axiom checks. The Comparator
+  audit covers only its listed theorem surface.
+- After a rebase or integration change, rerun the relevant checks. Cancelled,
+  skipped, stale, or missing checks never count as success. Fix failed draft
+  checks before marking a PR ready.
+- Do not push unverified changes directly to the default branch, and do not
+  enable automatic merging to bypass review.
 
-To ensure proofs are deterministic and maintainable, the use of `try`,
-`all_goals`, and `any_goals` tactics is forbidden in proofs (they remain
-permitted inside `macro`, `macro_rules`, `elab`, and `elab_rules` tactic
-implementations). Proofs should use structured casing or sequential
-composition instead. Similarly, `simp +decide` and `simp_all +decide` are
-forbidden. Use `lia` instead of `omega`; a goal that `lia` cannot close may use
-`omega` only when its declaration is listed in `ALLOWED_OMEGA` in
-`scripts/check_proof_status.py`.
+### Documentation
 
-Please keep repository configuration files (like `lakefile.toml` and
-  `lake-manifest.json`) free of hardcoded absolute paths such as
-  `/lake-cache/projects/...`. Reusable relative repository paths
-  (e.g. `.lake/packages` and `.lake/build`) ensure that the builds work
-  out-of-the-box in local developer environments.
+Routine CI does not generate full API documentation. Public documentation is
+curated in the `RealRooted/Challenges/` entry points and rendered by
+`scripts/build_challenge_pages.py`. Pull requests get a review artifact.
 
-### CI and PR Policy
+- Every challenge module needs an unconditional checked witness. Incomplete
+  targets belong in GitHub issues, not in challenge modules.
+- An explicit metadata block opts a module into the catalog. Only selected
+  definitions and checked theorems are published, never conjectures, examples,
+  or statement scaffolds.
+- The bounded module comment holds the explanatory prose and the primary
+  references.
+- After the ordinary build, `scripts/audit_challenge_catalog.py` verifies the
+  selected declaration kinds and transitive axioms. Only that validated `main`
+  revision deploys to GitHub Pages. Documentation never replaces proof
+  validation, and the required `build` check does not depend on publication.
 
-Small, independently owned changes may use a **CI-first draft PR**: run the
-applicable source checks, commit to a feature branch, and push a draft PR for
-GitHub-hosted compilation. A local full build is not a prerequisite for that
-draft checkpoint. State clearly which checks have and have not run; a draft
-commit is not a verified theorem milestone.
+### Repository cleanliness
 
-Parallel workers must use isolated branches/worktrees and disjoint file
-ownership. Keep builds against a shared local Lake cache serialized; isolated
-GitHub-hosted runners can validate PRs independently. One integrator reviews
-the theorem statements, assumptions, source changes, and verification results.
-
-Before merging, require successful proof validation of the exact candidate
-revision: all source guards, the ordinary default build (including Production
-and tactic regressions), and applicable transitive-axiom checks. The separate
-Comparator audit covers only its explicitly listed theorem surface. After a
-rebase or integration change, rerun the relevant checks; never treat cancelled,
-skipped, stale, or missing checks as success. Fix failed draft checks before
-marking the work ready. Do not push unverified changes directly to the default
-branch or enable automatic merging merely to bypass review.
-
-Routine CI does not generate full-library API documentation. High-level public
-documentation is curated through the compact entry points in
-`RealRooted/Challenges/` and rendered by
-`scripts/build_challenge_pages.py`. Pull requests receive a review artifact.
-After the ordinary build, `scripts/audit_challenge_catalog.py` verifies the
-selected declaration kinds and transitive axioms; only that exact validated
-`main` revision can deploy to GitHub Pages. Detailed proof infrastructure
-remains searchable in its owning theorem modules. Documentation is not a
-substitute for proof validation, and the required `build` check does not depend
-on publication.
-
-### Repository Cleanliness
-
-To maintain a polished repository:
-* Do not commit transient development artifacts such as build logs (`*.log`),
-  Git patch files (`*.patch`), backup files (e.g., `*~`), or temporary
-  scratch files.
-* Keep issue-specific design or reference notes local. Note that `.gitignore`
-  ignores new Markdown (`*.md`) files by default and explicitly allows the
-  maintained top-level guides, architecture/status ledgers, tactic plan and
-  generated tactic coverage, and the public `SuperEulerian/` subtree.
-* Ensure any new types of temporary files or scratch directories are kept
-  local or explicitly added to `.gitignore`.
+- Do not commit build logs (`*.log`), patch files (`*.patch`), backups (`*~`),
+  or scratch files. Keep new kinds of temporary files local, or add them to
+  `.gitignore`.
+- Keep issue-specific notes local. `.gitignore` ignores new Markdown files by
+  default. It allows only the maintained top-level guides, the
+  architecture and status ledgers, the generated tactic coverage, and the public
+  `SuperEulerian/` subtree.
 
 ## License
 
-RealRooted is distributed under the Apache License, Version 2.0. See
-[`LICENSE`](LICENSE).
+Apache License, Version 2.0. See [`LICENSE`](LICENSE).
 
-## Bibliography and Links
-
-- M. Aissen, I. J. Schoenberg, and A. M. Whitney, *On the generating functions
-  of totally positive sequences. I*, J. Analyse Math. 2 (1952), 93--103.
-- C. A. Athanasiadis and C. H. Wagner, *Veronese sections and interlacing
-  matrices of polynomials and formal power series*, arXiv:2404.12989.
-- J. Borcea and P. Branden, *The Lee-Yang and Polya-Schur programs. I. Linear
-  operators preserving stability*, Invent. Math. 177 (2009), 541--569.
-- P. Branden, *On operators on polynomials preserving real-rootedness and the
-  Neggers-Stanley conjecture*, J. Algebraic Combin. 20 (2004), 119--130.
-- P. Branden, *Iterated sequences and the geometry of zeros*, J. Reine Angew.
-  Math. 658 (2011), 115--131.
-- P. Branden, *Unimodality, log-concavity, real-rootedness and beyond*, in
-  *Handbook of Enumerative Combinatorics*, CRC Press, 2015, 437--483.
-- B. Braun and A. Jal, *Order polytopes of generalized snake posets are
-  h^*-real-rooted*, arXiv:2607.00922.
-- P. Branden and L. Solus, *Symmetric decompositions and real-rootedness*,
-  Int. Math. Res. Not. (2019), doi:10.1093/imrn/rnz059.
-- M. Chudnovsky and P. Seymour, *The roots of the independence polynomial of a
-  clawfree graph*, J. Combin. Theory Ser. B 97 (2007), 350--357.
-- J.-P. Dedieu, *Obreschkoff's theorem revisited: what convex sets are
-  contained in the set of hyperbolic polynomials?*, J. Pure Appl. Algebra 81
-  (1992), 269--278.
-- J. Favard, *Sur les polynomes de Tchebicheff*, C. R. Acad. Sci. Paris 200
-  (1935), 2052--2053.
-- S. Fisk, *A very short proof of Cauchy's interlace theorem for eigenvalues
-  of Hermitian matrices*, Amer. Math. Monthly 112 (2005), 118.
-- F. G. Frobenius, *Uber die Bernoullischen Zahlen und die Eulerschen
-  Polynome*, Sitzungsberichte der Koniglich Preussischen Akademie der
-  Wissenschaften (1910), 809--847.
-- J. Garloff and D. G. Wagner, *Hadamard Products of Stable Polynomials Are
-  Stable*, J. Math. Anal. Appl. 202 (1996), 797--809.
-- C. D. Godsil, *Algebraic Combinatorics*, Routledge, 2017.
-- O. J. Heilmann and E. H. Lieb, *Theory of monomer-dimer systems*, Comm. Math.
-  Phys. 25 (1972), 190--232.
-- J. I. Hutchinson, *On a remarkable class of entire functions*, Trans. Amer.
-  Math. Soc. 25 (1923), 325--332.
-- O. Holtz, *Hermite-Biehler, Routh-Hurwitz, and total positivity*, Linear
-  Algebra Appl. 372 (2003), 105--110.
-- D. C. Kurtz, *A sufficient condition for all the roots of a polynomial to be
-  real*, Amer. Math. Monthly 99 (1992), 259--263.
-- C. A. Micchelli and R. A. Willoughby, *On functions which preserve the class
-  of Stieltjes matrices*, Linear Algebra Appl. 23 (1979), 141--156.
-- N. Obreschkoff, *Verteilung und Berechnung der Nullstellen reeller
-  Polynome*, VEB Deutscher Verlag der Wissenschaften, Berlin, 1963.
-- D. G. Wagner, *Total positivity of Hadamard products*, J. Math. Anal. Appl.
-  163 (1992), 459--483.
-- Q. Xiao, *The real-rootedness of the toric g-contribution polynomials*,
-  arXiv:2609.01086.
-- Symmetric Functions Catalog:
-  <https://www.symmetricfunctions.com/realRooted.htm>,
-  <https://www.symmetricfunctions.com/realRootedInterlacing.htm>,
-  <https://www.symmetricfunctions.com/polyaFrequency.htm>, and
-  <https://www.symmetricfunctions.com/realRootedWords.htm>.
+Related surveys: the Symmetric Functions Catalog pages on
+[real-rooted polynomials](https://www.symmetricfunctions.com/realRooted.htm),
+[interlacing](https://www.symmetricfunctions.com/realRootedInterlacing.htm),
+[Pólya frequency](https://www.symmetricfunctions.com/polyaFrequency.htm), and
+[real-rooted words](https://www.symmetricfunctions.com/realRootedWords.htm).

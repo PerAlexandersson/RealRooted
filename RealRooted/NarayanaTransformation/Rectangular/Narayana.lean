@@ -1,4 +1,4 @@
-import RealRooted.NarayanaTransformation.Rectangular.LowDegree
+import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Narayana rectangular convolution coefficient transport.
@@ -178,17 +178,6 @@ theorem sum_factorial_recip_eq (m k : ℕ) :
         (sum_choose_mul_choose_shift m k) using 1
     norm_num [Finset.sum_div]
 
-/-- Short name for the transported Narayana rectangular-convolution coefficient
-sum used in the Mao--Wang Section 2 bridge. -/
-theorem rectangularConvolutionCoeff_narayana_eq_sum
-    (m n k : ℕ) (hk : k ≤ n) :
-    rectangularConvolutionCoeff m n (narayanaPolynomial m n)
-        (narayanaPolynomial m n) k =
-      ∑ i ∈ Finset.range (k + 1),
-        narayanaTransformCoeff m n i *
-          narayanaTransformCoeff m (n - i) (k - i) :=
-  rectangularConvolutionCoeff_narayanaPolynomial_eq_sum_transport m n k hk
-
 /-- Each summand of the Chu--Vandermonde sum factors as a constant independent
 of `i` times a reciprocal-factorial term. -/
 theorem narayana_product_term_eq (m n k i : ℕ) (hk : k ≤ n) (hi : i ≤ k) :
@@ -234,7 +223,7 @@ theorem coeff_rectangularConvolution_narayana (m n k : ℕ) (hk : k ≤ n) :
         ((Nat.factorial m : ℝ) * (Nat.factorial (2 * m + 2 * k) : ℝ) /
           ((Nat.factorial (2 * m + k) : ℝ) *
             (Nat.factorial (m + k) : ℝ))) := by
-  convert rectangularConvolutionCoeff_narayana_eq_sum m n k hk using 1
+  convert rectangularConvolutionCoeff_narayanaPolynomial_eq_sum_transport m n k hk using 1
   rw [Finset.sum_congr rfl
     fun i hi => narayana_product_term_eq m n k i hk
       (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi))]

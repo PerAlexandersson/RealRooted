@@ -29,9 +29,10 @@ label = "Kurtz's criterion"
 <!-- realrooted-catalog-content -->
 # Kurtz’s coefficient criterion
 
-If a polynomial has positive coefficients and
-$a_k^2 > 4a_{k-1}a_{k+1}$ at every interior index, then all its roots are real and
-distinct.
+If a polynomial $\sum_{k=0}^n a_k x^k$ of degree $n \geq 2$ has positive
+coefficients and $a_k^2 > 4a_{k-1}a_{k+1}$ for $0 < k < n$, then all its roots
+are real. Kurtz also shows that the roots are distinct; the Lean statement
+records real-rootedness only.
 
 ## References
 
@@ -58,30 +59,7 @@ namespace Kurtz
 export RealRooted.Kurtz
   (PositiveCoeffsUpToDegree
     KurtzStrictInequalities
-    ne_zero_of_kurtz
-    hasPosLeadingCoeff_of_kurtz
-    hasNonnegCoeffs_of_kurtz
-    sum_range_succ_alternating
-    antitone_of_succ_lt
-    monotone_of_succ_gt
-    antitone_capped_of_antitone
-    antitone_rev_of_monotone
-    alternating_sum_reflect
-    lt_sqrt_mul_and_lt_of_lt
-    monotone_of_lt_succ
-    strictMono_of_lt_succ
-    add_mul_sq_sqrt_div_lt_mul
-    add_mul_self_lt_mul_self_of_add_mul_sq_lt
-    div_lt_div_of_mul_lt_sq
-    mul_neg_of_neg_mul_pos_of_mul_pos
-    eval_neg_eq_sum_range
-    sign_eval_neg_of_ratio_bounds
-    ratio_lt_of_log_concave
-    ratio_monotone_of_log_concave
-    sqrt_ratio_between
-    coefficient_criterion_card_roots
-    coefficient_criterion
-    coefficientCriterion)
+    coefficient_criterion)
 
 end Kurtz
 end Challenges

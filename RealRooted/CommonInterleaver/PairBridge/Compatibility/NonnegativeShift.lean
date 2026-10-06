@@ -1,10 +1,10 @@
 import RealRooted.CommonInterleaver.PairBridge.Compatibility
 
 /-!
-# Pair bridge assembly: nonnegative shifts
+# Chudnovsky--Seymour for two polynomials
 
-Translation to nonnegative coefficients and the resulting positive-leading
-common-interleaver endpoint wrappers.
+Translating a split pair far enough makes its coefficients nonnegative, which
+reduces the two-polynomial common-interleaver theorem to the nonnegative case.
 -/
 
 open Polynomial
@@ -157,126 +157,29 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_two
     (hfg.isRealRooted_right hg_pos).2
     (hfg.toPosComboRealRooted hf_pos hg_pos) hfdeg hgdeg
 
-/-- Translation reduces the full positive-leading compatibility bridge to the
-repaired nonnegative-coefficient degree-split package.  This is the shifted
-version whose same-degree input already has the common-right-interleaver
-conclusion, rather than the stronger orientation alternative. -/
-theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
-    {f g : ℝ[X]}
-    (_hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits)
-    (_hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
+/-- Two split polynomials with positive leading coefficients whose positive
+combinations are real-rooted have a common interleaver.  Translating both far
+enough makes their coefficients nonnegative, where
+`posComboPairHasCommonInterleaver_of_nonnegCoeffs` applies; the common
+interleaver is translated back. -/
+theorem posComboPairHasCommonInterleaver_of_splits
+    {f g : ℝ[X]} (hf_splits : f.Splits) (hg_splits : g.Splits)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_via_nonnegShift
-    _hf_rr_ne hf_rr_splits _hg_rr_ne hg_rr_splits hf_pos hg_pos hfg
-    (fun {F G} hF_pos hG_pos hFnn hGnn hFG =>
-      posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-        hsame hsucc (f := F) (g := G) hF_pos hG_pos hFnn hGnn hFG)
+    hf_pos.ne_zero hf_splits hg_pos.ne_zero hg_splits hf_pos hg_pos hfg
+    (fun {_ _} hF_pos hG_pos hFnn hGnn hFG =>
+      posComboPairHasCommonInterleaver_of_nonnegCoeffs hF_pos hG_pos hFnn hGnn hFG)
 
-private theorem compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
-    (hbridge :
-      ∀ ⦃f g : ℝ[X]⦄,
-        f ≠ 0 →
-        f.Splits →
-        g ≠ 0 →
-        g.Splits →
-        HasPosLeadingCoeff f →
-        HasPosLeadingCoeff g →
-        PosComboRealRooted f g →
-        ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h) :
-    CompatiblePairHasCommonInterleaverStatement := by
-  intro f g hf_pos hg_pos hfg
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := hfg.isRealRooted_left hf_pos
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := hfg.isRealRooted_right hg_pos
-  exact hbridge hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
-    (hfg.toPosComboRealRooted hf_pos hg_pos)
-
-/-- Shifted compatibility bridge using the repaired same-degree
-common-interleaver branch directly. -/
-theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
-    (fun {_ _} hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg =>
-      posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-        hsame hsucc hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg)
-
-/-- Shifted compatibility bridge from the concrete slot-data endpoints for the
-same-degree and succ-degree nonnegative branches. -/
-theorem compatiblePairHasCommonInterleaver_of_slotData_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame)
-    (succDegreePairHasCommonInterleaver_nonneg_of_slotData hsucc)
-
-/-- Shifted compatibility bridge from the root-crossing formulations of the
-nonnegative same-degree and succ-degree branches.  The succ-degree branch also
-needs the left-splitting input that is part of its slot-data decomposition. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame)
-    (succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
-      hsplit hsucc)
-
-/-- Shifted compatibility bridge from root-crossing formulations alone.  The
-succ-degree left endpoint is supplied by the root-continuity theorem. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCrossing
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
-    hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
-
-/-- Shifted compatibility bridge from lower-threshold root-count
-formulations.  The succ-degree left endpoint is supplied by the
-root-continuity theorem before shifting. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCount
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hsucc)
-
-/-- Shifted compatibility bridge from upper-threshold root-count formulations
-in both the same-degree and succ-degree branches. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBoth
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hsame)
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hsucc)
-
-/-- Shifted compatibility bridge from common-non-root lower-threshold root-count
-formulations in both branches. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCountNonRoot
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hsucc)
-
-/-- Shifted compatibility bridge from common-non-root upper-threshold root-count
-formulations in both branches. -/
-theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_rootCrossing
-    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hsame)
-    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot hsucc)
+/-- **Chudnovsky--Seymour for two polynomials.** Compatible polynomials with
+positive leading coefficients have a common interleaver. -/
+theorem chudnovskySeymour_compatiblePairHasCommonInterleaver
+    ⦃f g : ℝ[X]⦄ (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (h : Compatible f g) :
+    ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl g k :=
+  posComboPairHasCommonInterleaver_of_splits
+    (h.isRealRooted_left hf).2 (h.isRealRooted_right hg).2 hf hg
+    (h.toPosComboRealRooted hf hg)
 
 end RealRooted

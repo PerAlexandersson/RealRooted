@@ -5,14 +5,14 @@ import RealRooted.Tactic.Product
 # Iterated derivative-shift product tactic
 
 Sequence adapters for recurrences that multiply an independently real-rooted
-factor by an iterate of `TDeriv` applied to the previous row.
+factor by an iterate of `tDeriv` applied to the previous row.
 -/
 
 open Polynomial
 
 namespace RealRooted
 
-/-- Iterating `TDeriv` preserves nonvanishing and real-rootedness for every
+/-- Iterating `tDeriv` preserves nonvanishing and real-rootedness for every
 real shift. -/
 theorem isRealRooted_iterateTDeriv {eps : ℝ} {k : Nat} {p : ℝ[X]}
     (hp : p ≠ 0 ∧ p.Splits) :
@@ -22,10 +22,10 @@ theorem isRealRooted_iterateTDeriv {eps : ℝ} {k : Nat} {p : ℝ[X]}
   · induction k with
     | zero => simpa using hp.2
     | succ k ih =>
-        simpa [iterateTDeriv_succ] using splits_tderiv_all ih
+        simpa [iterateTDeriv_succ] using splits_tDeriv_all ih
 
 /-- Product recurrence whose previous row is first transformed by an arbitrary
-iterate of `TDeriv`. -/
+iterate of `tDeriv`. -/
 theorem isRealRooted_of_iteratedTDeriv_product_sequence
     {P F : Nat → ℝ[X]} {eps : Nat → ℝ} {k : Nat → Nat}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)

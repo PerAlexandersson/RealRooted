@@ -36,7 +36,8 @@ private theorem natDegree_theta_le (p : ℝ[X]) : (theta p).natDegree ≤ p.natD
     have := natDegree_derivative_lt hp
     lia
 
-private theorem binaryRunTransform_C_mul (n : ℕ) (a : ℝ) (p : ℝ[X]) :
+/-- The binary run transformation commutes with constant multiples. -/
+theorem binaryRunTransform_C_mul (n : ℕ) (a : ℝ) (p : ℝ[X]) :
     binaryRunTransform n (C a * p) = C a * binaryRunTransform n p := by
   rw [← smul_eq_C_mul, binaryRunTransform_smul]
 
@@ -124,11 +125,9 @@ theorem strictInterl_binaryRunTransform_succ
   set P := binaryRunTransform n (polarTheta (n + 1) g) with hP
   set E := balancedRunTransform n (derivative g) with hE
   have hFA : StrictInterl F A :=
-    strictInterl_binaryRunTransform hFin hFinnn hgnn
-      ((natDegree_C_mul_sub_C_mul_theta_le _ _ g).trans hbox) hbox
+    strictInterl_binaryRunTransform hFin hFinnn hgnn hbox
   have hEK : StrictInterl E (balancedRunTransform n (polarTheta (n + 1) g)) :=
-    strictInterl_balancedRunTransform hn2 hdP hgnn.derivative hPnn
-      ((natDegree_derivative_le g).trans (by lia)) hpolar_deg
+    strictInterl_balancedRunTransform hn2 hdP hgnn.derivative hPnn hpolar_deg
   -- Linear algebra of the kernels.
   have hlin : ∀ (a b : ℝ) (p q : ℝ[X]), binaryRunTransform n (C a * p - C b * q) =
       C a * binaryRunTransform n p - C b * binaryRunTransform n q := by

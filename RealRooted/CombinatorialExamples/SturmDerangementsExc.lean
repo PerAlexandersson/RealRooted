@@ -573,31 +573,4 @@ theorem isSturmSeq_sturmDerangementsExcPrefix :
           simpa [sturmDerangementsExcPrefix, IsSturmSeq] using
             And.intro (interlaces_sturmDerangementsExc_succ (n := n + 2) (by lia)) ih
 
-/-- Backward-compatible alias while the project transitions away from the old name. -/
-abbrev warmupP := sturmDerangementsExc
-
-@[simp] lemma warmupP_zero : warmupP 0 = 0 := sturmDerangementsExc_zero
-
-@[simp] lemma warmupP_one : warmupP 1 = 0 := sturmDerangementsExc_one
-
-@[simp] lemma warmupP_two : warmupP 2 = X := sturmDerangementsExc_two
-
-lemma warmupP_recurrence (n : Nat) : warmupP (n + 3) =
-    X * (((n + 2 : ℝ[X])) * warmupP (n + 1) +
-      ((n + 2 : ℝ[X])) * warmupP (n + 2) +
-      (1 - X) * (warmupP (n + 2)).derivative) :=
-  sturmDerangementsExc_recurrence n
-
-lemma X_dvd_warmupP (n : Nat) : X ∣ warmupP n :=
-  X_dvd_sturmDerangementsExc n
-
-lemma warmupP_isRoot_zero (n : Nat) : (warmupP n).IsRoot 0 :=
-  sturmDerangementsExc_isRoot_zero n
-
-lemma warmupP_three : warmupP 3 = X ^ 2 + X := sturmDerangementsExc_three
-
-lemma warmupP_four : warmupP 4 = X ^ 3 + 7 * X ^ 2 + X := sturmDerangementsExc_four
-
-lemma warmupP_five : warmupP 5 = X ^ 4 + 21 * X ^ 3 + 21 * X ^ 2 + X := sturmDerangementsExc_five
-
 end RealRooted

@@ -15,9 +15,9 @@ identity
 The left-hand side is the sum over the Boolean orientation model from
 `Graph.AcyclicOrientation`.  This module defines both sides and proves that the
 right-hand side splits for claw-free graphs.  The counting identity itself is
-`allOrientationSinkPolynomial_indicatorIdentity` in
-`Graph.AllOrientationSinkIdentity`, which also states the unconditional
-real-rootedness theorem `allOrientationSinkPolynomial_splits_of_clawFree`.
+`allOrientationSinkPolynomial_comp_X_add_one` in
+`Graph.AllOrientationSinkIdentity`, which also proves the real-rootedness
+theorem `allOrientationSinkPolynomial_splits_of_clawFree`.
 
 The natural scope is the full family of claw-free graphs.  Line graphs require
 no separate treatment here: they are merely one claw-free subfamily.
@@ -71,35 +71,25 @@ def allOrientationSinkPolynomial (G : _root_.SimpleGraph V) : ℝ[X] := by
   classical
   exact ∑ O : Orientation G, (X : ℝ[X]) ^ O.sinkCount
 
-/-- The shifted weighted-independence model for the all-orientation sink sum.
+/-- The shifted weighted-independence model for the all-orientation sink sum:
+`2 ^ |E(G)|` times the independence polynomial of `G` with vertex weights
+`2 ^ (-degree v)`.
 
-The intended human-checkable identity is
+It satisfies
 
 ```text
   (allOrientationSinkPolynomial G).comp (X + C 1)
-    = allOrientationSinkPolynomialShiftedModel G.
+    = allOrientationSinkPolynomialShiftedModel G,
 ```
 
-The identity is proved in `Graph.AllOrientationSinkIdentity`.
+which is `allOrientationSinkPolynomial_comp_X_add_one` in
+`Graph.AllOrientationSinkIdentity`.
 -/
 def allOrientationSinkPolynomialShiftedModel
     (G : _root_.SimpleGraph V) : ℝ[X] := by
   classical
   exact C ((2 : ℝ) ^ allOrientationEdgeCount G) *
     weightedIndepPoly G (fun v => ((2 : ℝ)⁻¹) ^ allOrientationDegree G v)
-
-/-- The exact indicator/counting identity needed to identify the actual
-all-orientation sum with the shifted weighted-independence model.
-
-It is proved as `allOrientationSinkPolynomial_indicatorIdentity` in
-`Graph.AllOrientationSinkIdentity`: expand the sink indicators, observe that a
-prescribed sink set is independent, and count the forced versus free edge
-directions.
--/
-def allOrientationSinkPolynomialIndicatorIdentity
-    (G : _root_.SimpleGraph V) : Prop :=
-  (allOrientationSinkPolynomial G).comp (X + C 1) =
-    allOrientationSinkPolynomialShiftedModel G
 
 /-- The affine pullback of the shifted weighted-independence model. -/
 def allOrientationSinkPolynomialModel
@@ -156,20 +146,6 @@ theorem allOrientationSinkPolynomialModel_splits_of_clawFree
     (allOrientationSinkPolynomialModel G).Splits := by
   rw [allOrientationSinkPolynomialModel]
   exact (allOrientationSinkPolynomialShiftedModel_splits_of_clawFree G hG).comp_X_sub_C 1
-
-/-- The actual orientation sum splits, given the indicator identity.  The
-unconditional form is `allOrientationSinkPolynomial_splits_of_clawFree` in
-`Graph.AllOrientationSinkIdentity`. -/
-theorem allOrientationSinkPolynomial_splits_of_clawFree_of_indicatorIdentity
-    (G : _root_.SimpleGraph V) (hG : ClawFree G)
-    (hidentity : allOrientationSinkPolynomialIndicatorIdentity G) :
-    (allOrientationSinkPolynomial G).Splits := by
-  unfold allOrientationSinkPolynomialIndicatorIdentity at hidentity
-  apply (splits_iff_comp_splits_of_natDegree_eq_one
-    (f := allOrientationSinkPolynomial G) (g := X + C 1)
-      (by simp)).mpr
-  rw [hidentity]
-  exact allOrientationSinkPolynomialShiftedModel_splits_of_clawFree G hG
 
 end Graph
 end RealRooted

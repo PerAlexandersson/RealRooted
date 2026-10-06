@@ -1,22 +1,18 @@
 import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
-import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
-import RealRooted.LiuOppositeSigns.Corollary22
+import RealRooted.CommonInterleaverTwo
 import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderAssembly
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderLower
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderUpper
 import RealRooted.LiuOppositeSigns.RootCountClosure
-import RealRooted.LiuOppositeSigns.Theorem21Assembly
+import RealRooted.LiuOppositeSigns.FactorReturnAssembly
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
 import RealRooted.ObreschkoffConverse
 
 /-!
 # Liu opposite-sign compatibility theorem
 
-This module contains the low-degree and analytic proof machinery for the
-Liu opposite-sign compatibility theorem.  The theorem statement and
-projection interface live in
-`RealRooted.LiuOppositeSigns.Theorem21Statements`.
+This module proves the no-common-root forward direction of Liu's
+opposite-sign compatibility theorem by derivative-shift regularization,
+combines it with the factor-return reverse direction and common-root deletion
+into the corrected Theorem 2.1, and proves Corollary 2.2.
 -/
 
 open Polynomial Filter
@@ -29,9 +25,12 @@ namespace LiuOppositeSigns
 The derivative-shift regularization repairs the source's invalid inference
 from no common roots to simple roots. The simple-root argument is applied to
 arbitrarily close regularizations, and root matching closes the result. -/
-theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant :
-    theorem21CompatibleToRootCountBranchesNoCommonNonconstantStatement := by
-  intro f g hf hg hsgn hno hf_deg hg_deg hcompat
+theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hno : NoCommonRoots f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hcompat : Compatible f g) :
+    theorem21RootCountBranches f g := by
   apply theorem21RootCountBranches_of_forall_pos_exists_roots_rel
     hsgn.left_ne_zero hsgn.right_ne_zero hf hg hno hf_deg hg_deg
   intro ρ hρ
@@ -76,14 +75,14 @@ theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant :
   · simpa [g'] using hgrel
 
 /-- The nonconstant no-common-root form of Liu Theorem 2.1. -/
-theorem theorem21CompatibleRootCountNoCommonNonconstant :
-    theorem21CompatibleRootCountNoCommonNonconstantStatement := by
-  intro f g hf hg hsgn hno hf_deg hg_deg
-  exact
-    ⟨theorem21CompatibleToRootCountBranchesNoCommonNonconstant
-        hf hg hsgn hno hf_deg hg_deg,
-      theorem21RootCountBranchesToCompatibleNonconstant_of_xSub
-        hf hg hsgn hf_deg hg_deg⟩
+theorem theorem21CompatibleRootCountNoCommonNonconstant
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hno : NoCommonRoots f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
+    Compatible f g ↔ theorem21RootCountBranches f g :=
+  ⟨theorem21CompatibleToRootCountBranchesNoCommonNonconstant
+      hf hg hsgn hno hf_deg hg_deg,
+    compatible_of_theorem21RootCountBranches hf hg hsgn⟩
 
 /-- Compatible no-common nonconstant opposite-sign pairs have degree gap at
 most two. -/
@@ -122,8 +121,7 @@ theorem compatible_iff_theorem21RootCountBranchesReduced_nonconstant
           hcompat hno)
   · intro hbranches
     rcases hbranches with hbranches | hcommon
-    · exact theorem21RootCountBranchesToCompatibleNonconstant_of_xSub
-        hf hg hsgn hf_deg hg_deg hbranches.2
+    · exact compatible_of_theorem21RootCountBranches hf hg hsgn hbranches.2
     · exact hcommon.compatible
 
 /-- Public-facing correct nonconstant Liu equivalence. Compared with the
@@ -141,34 +139,8 @@ theorem compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant
         hf hg hsgn hf_deg hg_deg).mp hcompat)
   · intro hbranches
     rcases hbranches with hbranches | hcommon
-    · exact theorem21RootCountBranchesToCompatibleNonconstant_of_xSub
-        hf hg hsgn hf_deg hg_deg hbranches
+    · exact compatible_of_theorem21RootCountBranches hf hg hsgn hbranches
     · exact hcommon.compatible
-
-/-- The isolated forward direction of Liu Theorem 2.1 gives the oriented
-branch-wise pointwise root-count bounds. -/
-theorem rootCountAtOrAbove_branch_bounds_of_compatible_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
-    (∀ x : ℝ,
-      ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 2 ∧
-        ((rootCountAtOrAbove g x : ℤ) - (rootCountAtOrAbove f x : ℤ)) ≤ 1) ∨
-      (∀ x : ℝ,
-        ((rootCountAtOrAbove f x : ℤ) - (rootCountAtOrAbove g x : ℤ)) ≤ 1 ∧
-          ((rootCountAtOrAbove g x : ℤ) - (rootCountAtOrAbove f x : ℤ)) ≤ 2) :=
-  rootCountAtOrAbove_branch_bounds_of_theorem21RootCountBranches hsgn
-    (hforward hf hg hsgn hcompat)
-
-/-- The isolated forward direction of Liu Theorem 2.1 gives the normalized
-positive-deletion count branches. -/
-theorem theorem21PositiveDeletionCountBranches_of_compatible_of_forward
-    (hforward : theorem21CompatibleToRootCountBranchesStatement)
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
-    theorem21PositiveDeletionCountBranches f g :=
-  theorem21PositiveDeletionCountBranches_of_theorem21RootCountBranches hf hg hsgn
-    (hforward hf hg hsgn hcompat)
 
 /-- Guardrail for the factor-return route: multiplying the higher-degree
 member of a simple quadratic/linear interlacing pair by `X` need not preserve
@@ -289,13 +261,13 @@ lemma natDegree_abs_sub_le_two_of_compatible_of_right_natDegree_eq_zero
 
 /-- Liu's Corollary 2.2: compatible real-rooted polynomials with opposite
 leading signs have degrees differing by at most two. -/
-theorem corollary22DegreeDiff_proof : corollary22DegreeDiffStatement := by
-  unfold corollary22DegreeDiffStatement
+theorem corollary22DegreeDiff {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
+    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 := by
   suffices h :
       ∀ n : ℕ, ∀ f g : ℝ[X], f.natDegree + g.natDegree = n →
         f.Splits → g.Splits → OppositeLeadingSigns f g → Compatible f g →
           |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 by
-    intro f g hf hg hsgn hcompat
     exact h _ f g rfl hf hg hsgn hcompat
   intro n
   induction n using Nat.strong_induction_on with
@@ -341,7 +313,6 @@ theorem corollary22DegreeDiff_proof : corollary22DegreeDiffStatement := by
     rw [Nat.cast_sub hf_pos, Nat.cast_sub hg_pos] at hrec
     norm_num at hrec
     simpa only [sub_sub_sub_cancel_right] using hrec
-
 
 end LiuOppositeSigns
 end RealRooted

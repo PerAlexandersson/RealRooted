@@ -265,11 +265,11 @@ theorem sturmVariations_add_card_roots_filter_le_eq
   (sturmInvariant_isLocallyConstant hp).apply_eq_of_isPreconnected
     isPreconnected_univ (Set.mem_univ a) (Set.mem_univ b)
 
-/-- Sturm's theorem for a polynomial with simple real roots.  Endpoint roots
-are excluded, and roots in the open interval are counted exactly. -/
+/-- Sturm's theorem for a polynomial with simple real roots.  The right
+endpoint is not a root, and roots in the open interval are counted exactly. -/
 theorem card_roots_filter_Ioo_eq_sturmVariations_sub
     {p : ℝ[X]} (hp : HasSimpleRoots p) {a b : ℝ} (hab : a < b)
-    (_ha : ¬ p.IsRoot a) (hb : ¬ p.IsRoot b) :
+    (hb : ¬ p.IsRoot b) :
     (p.roots.filter fun r ↦ a < r ∧ r < b).card =
       sturmVariations p a - sturmVariations p b := by
   have hinv := sturmVariations_add_card_roots_filter_le_eq hp a b
@@ -347,15 +347,13 @@ def distinctSturmVariations (p : ℝ[X]) (x : ℝ) : ℕ :=
 /-- Sturm's theorem for an arbitrary nonzero real polynomial, counting
 distinct roots in an open interval. -/
 theorem distinctRootCountIoo_eq_distinctSturmVariations_sub
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ} (hab : a < b)
-    (ha : ¬ p.IsRoot a) (hb : ¬ p.IsRoot b) :
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ} (hab : a < b) (hb : ¬ p.IsRoot b) :
     distinctRootCountIoo p a b =
       distinctSturmVariations p a - distinctSturmVariations p b := by
   let q := sturmSquarefreePart p
   have hq := hasSimpleRoots_sturmSquarefreePart p
-  have hqa : ¬ q.IsRoot a := fun h ↦ ha ((isRoot_sturmSquarefreePart_iff hp a).1 h)
   have hqb : ¬ q.IsRoot b := fun h ↦ hb ((isRoot_sturmSquarefreePart_iff hp b).1 h)
-  have hcount := card_roots_filter_Ioo_eq_sturmVariations_sub hq hab hqa hqb
+  have hcount := card_roots_filter_Ioo_eq_sturmVariations_sub hq hab hqb
   have hnodup := hq.roots_nodup
   calc
     distinctRootCountIoo p a b =
@@ -385,11 +383,10 @@ theorem splits_iff_distinctSturmVariations_sub_eq_natDegree
     p.Splits ↔
       distinctSturmVariations p a - distinctSturmVariations p b =
         (sturmSquarefreePart p).natDegree := by
-  have ha : ¬ p.IsRoot a := fun h ↦ (lt_irrefl a) (hbound a h).1
   have hb : ¬ p.IsRoot b := fun h ↦ (lt_irrefl b) (hbound b h).2
   rw [← splits_sturmSquarefreePart_iff hp,
     Polynomial.splits_iff_card_roots,
-    ← distinctRootCountIoo_eq_distinctSturmVariations_sub hp hab ha hb]
+    ← distinctRootCountIoo_eq_distinctSturmVariations_sub hp hab hb]
   have hroots : distinctRootCountIoo p a b =
       (sturmSquarefreePart p).roots.card := by
     rw [← Multiset.toFinset_card_of_nodup

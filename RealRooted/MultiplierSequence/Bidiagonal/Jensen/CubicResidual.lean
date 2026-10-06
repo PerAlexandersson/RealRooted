@@ -250,7 +250,7 @@ theorem BidiagonalCubicResidualCertificate.toPFPreserver
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (hcert : BidiagonalCubicResidualCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d :=
-  bidiagonalPFPreserver_of_jensenPencil hcert.toJensenPencilCertificate
+  hcert.toJensenPencilCertificate.toPFPreserver
 
 /-- Rowwise cubic-residual certificates give rowwise coefficient-bidiagonal
 PF preservers. -/

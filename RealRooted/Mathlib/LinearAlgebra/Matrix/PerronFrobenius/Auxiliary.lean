@@ -29,8 +29,8 @@ common nonzero factor in a field fraction).
 
 -- Standard simplex is nonempty when ι is nonempty
 theorem stdSimplex_nonempty {ι : Type*} [Fintype ι] [Nonempty ι] :
-    (RealRooted.standardSimplex ℝ ι).Nonempty := by
-  exact ⟨(Fintype.card ι : ℝ)⁻¹ • 1,
+    (RealRooted.standardSimplex ℝ ι).Nonempty :=
+  ⟨(Fintype.card ι : ℝ)⁻¹ • 1,
     by simp [RealRooted.standardSimplex, Finset.sum_const, nsmul_eq_mul]⟩
 
 /-!
@@ -64,8 +64,8 @@ theorem continuousOn_finset_inf' {α β : Type*} [TopologicalSpace α] [LinearOr
 -- Infimum monotonicity for subsets
 theorem finset_inf'_mono_subset {α β : Type*} [LinearOrder β] {s t : Finset α} (h : s ⊆ t)
     {f : α → β} {hs : s.Nonempty} {ht : t.Nonempty} :
-    t.inf' ht f ≤ s.inf' hs f := by
-  exact inf'_mono f h hs
+    t.inf' ht f ≤ s.inf' hs f :=
+  inf'_mono f h hs
 
 /-!
 ## Matrix & Vector Operations
@@ -328,10 +328,6 @@ lemma lt_not_le {α : Type*} [PartialOrder α] (x y : α) : x < y → ¬ (x ≥ 
 section ConditionallyCompleteLinearOrder
 
 variable {α : Type*} [ConditionallyCompleteLinearOrder α]
-/-- If y is an upper bound of a set s, and x is in s, then x ≤ y -/
-lemma le_of_mem_upperBounds {s : Set α} {x : α} {y : α} (hy : y ∈ upperBounds s) (hx : x ∈ s) :
-    x ≤ y := by
-  exact hy hx
 
 lemma bddAbove_iff_exists_upperBound {s : Set α} : BddAbove s ↔ ∃ b, ∀ x ∈ s, x ≤ b := by exact
   bddAbove_def
@@ -376,14 +372,14 @@ lemma sum_pos_of_nonneg_of_ne_zero {α : Type*} {s : Finset α} {f : α → ℝ}
 
 -- Missing lemma: bound each component by the supremum
 lemma le_sup'_of_mem {α β : Type*} [SemilatticeSup α] {s : Finset β} (hs : s.Nonempty)
-    (f : β → α) {b : β} (hb : b ∈ s) : f b ≤ s.sup' hs f := by
-  exact le_sup' f hb
+    (f : β → α) {b : β} (hb : b ∈ s) : f b ≤ s.sup' hs f :=
+  le_sup' f hb
 
 -- Missing lemma: supremum is at least any component
 lemma sup'_le_sup'_of_le {α β : Type*} [SemilatticeSup α] {s t : Finset β}
     (hs : s.Nonempty) (ht : t.Nonempty) (f : β → α) (h : s ⊆ t) :
-    s.sup' hs f ≤ t.sup' ht f := by
-  exact sup'_mono f h hs
+    s.sup' hs f ≤ t.sup' ht f :=
+  sup'_mono f h hs
 
 -- A non-zero function must be non-zero at some point.
 lemma Function.exists_ne_zero_of_ne_zero {α β} [Zero β] {f : α → β} (h : f ≠ (fun _ => 0)) :
@@ -559,48 +555,11 @@ lemma dotProduct_smul_right {n : Type*} [Fintype n]
     v ⬝ᵥ (c • w) = c * (v ⬝ᵥ w) := by
   simp [dotProduct, smul_eq_mul, Finset.mul_sum, mul_left_comm]
 
-/--
-If `u` is a non-negative vector and `v ≤ w` component-wise, then `u ⬝ᵥ v ≤ u ⬝ᵥ w`.
-This is because the dot product is a sum of products, and multiplying by non-negative
-numbers preserves the inequality.
--/
-lemma dotProduct_le_dotProduct_of_nonneg {n : Type*} [Fintype n] {u v w : n → ℝ}
-    (hu_nonneg : ∀ i, 0 ≤ u i) (h_le : v ≤ w) :
-    u ⬝ᵥ v ≤ u ⬝ᵥ w := by
-  simp_rw [dotProduct, Pi.le_def] at h_le ⊢
-  apply Finset.sum_le_sum
-  intro i _
-  exact mul_le_mul_of_nonneg_left (h_le i) (hu_nonneg i)
-
-/--
-The dot product is "associative" with matrix-vector multiplication, in the sense
-that `v ⬝ᵥ (A *ᵥ w) = (Aᵀ *ᵥ v) ⬝ᵥ w`. This is a consequence of the definition of
-the matrix transpose and dot product.
--/
-lemma dotProduct_mulVec_assoc {n : Type*} [Fintype n]
-    (A : Matrix n n ℝ) (v w : n → ℝ) :
-    v ⬝ᵥ (A *ᵥ w) = (Aᵀ *ᵥ v) ⬝ᵥ w := by
-  simp only [dotProduct, mulVec, transpose_apply, Finset.mul_sum, Finset.sum_mul]
-  rw [Finset.sum_comm]
-  simp [mul_comm, mul_left_comm]
-
 -- Matrix-vector multiplication component
 theorem matrix_mulVec_component {n : Type*} [Fintype n]
     (A : Matrix n n ℝ) (v : n → ℝ) (j : n) :
     (A *ᵥ v) j = ∑ i, A j i * v i := by
   simp [Matrix.mulVec]; rfl
-
-/--
-The dot product `v ⬝ᵥ (A *ᵥ w)` can be rewritten by moving the matrix `A`
-to the other argument, where it becomes its transpose `Aᵀ`.
--/
-lemma transpose_mulVec {n : Type*} [Fintype n] (A : Matrix n n ℝ) (v w : n → ℝ) :
-    v ⬝ᵥ (A *ᵥ w) = (Aᵀ *ᵥ v) ⬝ᵥ w := by
-  classical
-  simp only [dotProduct, mulVec_apply,
-        Finset.mul_sum, Finset.sum_mul];
-  rw [Finset.sum_comm]
-  simp [mul_comm, mul_left_comm]
 
 /--
 Commutativity property for dot product with matrix-vector multiplication.

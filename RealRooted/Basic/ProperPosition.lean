@@ -356,7 +356,11 @@ strict nonzero sense. -/
 def Interl (f g : ℝ[X]) : Prop :=
   f = 0 ∨ g = 0 ∨ StrictInterl f g
 
-/-- Backward-compatible alias: differ-by-1 interlacing. -/
+/-- `Interlaces g f`: differ-by-one interlacing.  Both polynomials are nonzero and
+real-rooted, `g.natDegree + 1 = f.natDegree`, and the sorted roots of `g` lie
+weakly between consecutive sorted roots of `f` (`ListInterlaces`).  This is the
+`StrictInterl g f` case with a one-degree increase; see
+`Interlaces.toStrictInterl` and `StrictInterl.toInterlaces`. -/
 def Interlaces (g f : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
   g.natDegree + 1 = f.natDegree ∧
   ∃ (rs ss : List ℝ),

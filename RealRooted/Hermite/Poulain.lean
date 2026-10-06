@@ -229,13 +229,5 @@ theorem differential_operator_preserves_real_rooted {f g : ℝ[X]}
       · exact ihx hy
   exact this f hf.2 hg.2
 
-/-- Hermite--Poulain in the nonzero-and-splitting formulation. -/
-theorem differentialOperator_preserves_realRooted {f g : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits)
-    (hg : g ≠ 0 ∧ g.Splits) :
-    applyAsDifferentialOperator f g = 0 ∨
-      (applyAsDifferentialOperator f g).Splits :=
-  differential_operator_preserves_real_rooted hf hg
-
 end HermitePoulain
 end RealRooted

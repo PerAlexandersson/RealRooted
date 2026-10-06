@@ -20,8 +20,9 @@ noncomputable section
 
 namespace RealRooted
 
-/-- The shifted Eulerian polynomial sequence in the standard indexing
-with `P_0 = X`. -/
+/-- The shifted Eulerian polynomials, defined by the recurrence `P_0 = X` and
+`P_{n+1} = X ((n + 2) P_n + (1 - X) P_n')`.  The classical identification with
+`X` times the descent polynomial of the symmetric group is not formalized. -/
 def eulerianTilde : Nat → ℝ[X]
   | 0 => X
   | n + 1 =>

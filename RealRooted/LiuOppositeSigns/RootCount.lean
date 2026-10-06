@@ -204,50 +204,6 @@ theorem RootCountCompatible.of_natDegree_le_one
   rw [abs_le]
   lia
 
-/-- A two-root polynomial and a one-root polynomial have Liu-compatible root
-counts when the lower root of the two-root side lies weakly below the singleton
-root. -/
-theorem RootCountCompatible.of_roots_pair_singleton
-    {p q : ℝ[X]} {a b c : ℝ} (hac : a ≤ c)
-    (hproots : p.roots = {a, b}) (hqroots : q.roots = {c}) :
-    RootCountCompatible p q := by
-  intro x
-  rw [rootCountAtOrAbove, rootCountAtOrAbove, hproots, hqroots]
-  simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
-    Multiset.filter_singleton]
-  by_cases hxa : x ≤ a
-  · have hxc : x ≤ c := hxa.trans hac
-    by_cases hxb : x ≤ b <;> norm_num [hxa, hxb, hxc]
-  · by_cases hxb : x ≤ b <;> by_cases hxc : x ≤ c <;> norm_num [hxa, hxb, hxc]
-
-/-- A one-root polynomial and a two-root polynomial have Liu-compatible root
-counts when the lower root of the two-root side lies weakly below the singleton
-root. -/
-theorem RootCountCompatible.of_roots_singleton_pair
-    {p q : ℝ[X]} {a c d : ℝ} (hca : c ≤ a)
-    (hproots : p.roots = {a}) (hqroots : q.roots = {c, d}) :
-    RootCountCompatible p q := by
-  intro x
-  rw [rootCountAtOrAbove, rootCountAtOrAbove, hproots, hqroots]
-  simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
-    Multiset.filter_singleton]
-  by_cases hxc : x ≤ c
-  · have hxa : x ≤ a := hxc.trans hca
-    by_cases hxd : x ≤ d <;> norm_num [hxa, hxc, hxd]
-  · by_cases hxa : x ≤ a <;> by_cases hxd : x ≤ d <;> norm_num [hxa, hxc, hxd]
-
-/-- Two two-root polynomials have Liu-compatible root counts when the two
-closed root intervals overlap. -/
-theorem RootCountCompatible.of_roots_pair_pair
-    {p q : ℝ[X]} {a b c d : ℝ} (had : a ≤ d) (hcb : c ≤ b)
-    (hproots : p.roots = {a, b}) (hqroots : q.roots = {c, d}) :
-    RootCountCompatible p q := fun x => by
-  rw [rootCountAtOrAbove, rootCountAtOrAbove, hproots, hqroots]
-  simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
-  by_cases hxa : x ≤ a <;> by_cases hxb : x ≤ b <;> by_cases hxc : x ≤ c <;>
-    by_cases hxd : x ≤ d <;> norm_num [hxa, hxb, hxc, hxd] <;> linarith
-
-/-- The leading coefficients have opposite signs. -/
 def OppositeLeadingSigns (p q : ℝ[X]) : Prop :=
   p.leadingCoeff * q.leadingCoeff < 0
 

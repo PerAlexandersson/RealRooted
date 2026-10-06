@@ -44,33 +44,33 @@ namespace RealRooted
 preserves its orientation. In the equal-degree case, the all-combination
 criterion determines the pair only up to reversal; the common translation of
 the two root sums selects the original orientation. -/
-theorem StrictInterl.TDeriv_common {f g : ℝ[X]} (hfg : StrictInterl f g)
-    (eps : ℝ) : StrictInterl (TDeriv eps f) (TDeriv eps g) := by
+theorem StrictInterl.tDeriv_common {f g : ℝ[X]} (hfg : StrictInterl f g)
+    (eps : ℝ) : StrictInterl (tDeriv eps f) (tDeriv eps g) := by
   have hall : AllComboRealRooted f g := allComboRealRooted_of_strictInterl hfg
-  have hallT : AllComboRealRooted (TDeriv eps f) (TDeriv eps g) := by
+  have hallT : AllComboRealRooted (tDeriv eps f) (tDeriv eps g) := by
     simpa [iterateTDeriv_succ] using
       allComboRealRooted_iterateTDeriv_all hall eps 1
   rcases hfg.natDegree_eq_or_eq_succ with hsame | hsucc
   · have horient :
-        StrictInterl (TDeriv eps f) (TDeriv eps g) ∨
-          StrictInterl (TDeriv eps g) (TDeriv eps f) :=
+        StrictInterl (tDeriv eps f) (tDeriv eps g) ∨
+          StrictInterl (tDeriv eps g) (tDeriv eps f) :=
       strictInterl_of_allComboRealRooted
-        (TDeriv_ne_zero hfg.1.1) (splits_tderiv_all hfg.1.2)
-        (TDeriv_ne_zero hfg.2.1.1) (splits_tderiv_all hfg.2.1.2)
+        (tDeriv_ne_zero hfg.1.1) (splits_tDeriv_all hfg.1.2)
+        (tDeriv_ne_zero hfg.2.1.1) (splits_tDeriv_all hfg.2.1.2)
         hallT (Or.inr (by simpa using hsame.symm))
     rcases horient with hforward | hreverse
     · exact hforward
     · apply hreverse.of_reverse_of_roots_sum_le
       · simpa using hsame.symm
-      · rw [roots_sum_TDeriv eps hfg.1.1 hfg.1.2,
-          roots_sum_TDeriv eps hfg.2.1.1 hfg.2.1.2]
+      · rw [roots_sum_tDeriv eps hfg.1.1 hfg.1.2,
+          roots_sum_tDeriv eps hfg.2.1.1 hfg.2.1.2]
         simpa [hsame] using
           add_le_add_right (hfg.roots_sum_le_of_sameDegree hsame.symm)
             (eps * (f.natDegree : ℝ))
   · apply StrictInterl.forward_of_orientation_of_succDegree (by simpa using hsucc)
     exact strictInterl_of_allComboRealRooted
-      (TDeriv_ne_zero hfg.1.1) (splits_tderiv_all hfg.1.2)
-      (TDeriv_ne_zero hfg.2.1.1) (splits_tderiv_all hfg.2.1.2)
+      (tDeriv_ne_zero hfg.1.1) (splits_tDeriv_all hfg.1.2)
+      (tDeriv_ne_zero hfg.2.1.1) (splits_tDeriv_all hfg.2.1.2)
       hallT (Or.inl (by simpa using hsucc.symm))
 
 /-- Common iterated derivative shifts preserve oriented interlacing. -/
@@ -80,7 +80,7 @@ theorem StrictInterl.iterateTDeriv_common {f g : ℝ[X]}
   | 0 => by simpa
   | k + 1 => by
       rw [iterateTDeriv_succ, iterateTDeriv_succ]
-      exact (hfg.iterateTDeriv_common eps k).TDeriv_common eps
+      exact (hfg.iterateTDeriv_common eps k).tDeriv_common eps
 
 /-- If every positive nonnegative-coefficient derivative regularization of a
 pair is in proper position, then so is the original pair. This is the closure
@@ -715,6 +715,52 @@ theorem quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
         hD (hdegree_local μ hμ) (hsplits μ hμ) (hsimple μ hμ) hρ
     exact ⟨ε, hε, fun ν _ hν => hlocal ν hν⟩
 
+/-- The two chamber bounds around one isolated crossing: the left-chamber
+count is at most the crossing count plus one, and the crossing count is at most
+the right-chamber count. -/
+private theorem quadraticInterlacingPencil_card_roots_gt_crossing_bounds
+    {F G H : ℝ[X]} {μL a μR r : ℝ} {D : ℕ}
+    (hμLa : μL < a) (haμR : a < μR) (hD : D ≠ 0)
+    (hdegree : ∀ μ ∈ Set.Icc μL μR,
+      (quadraticInterlacingPencil F G H μ).natDegree = D)
+    (hdegree_local : ∀ μ ∈ Set.Icc μL μR, ∀ᶠ b in 𝓝 μ,
+      (quadraticInterlacingPencil F G H b).natDegree = D)
+    (hsplits : ∀ μ ∈ Set.Icc μL μR,
+      (quadraticInterlacingPencil F G H μ).Splits)
+    (hsimple : ∀ μ ∈ Set.Icc μL μR,
+      HasSimpleRoots (quadraticInterlacingPencil F G H μ))
+    (hroot : (quadraticInterlacingPencil F G H a).IsRoot r)
+    (hnoLeft : ∀ μ ∈ Set.Ico μL a,
+      ¬(quadraticParameterEvaluation F G H r).IsRoot μ)
+    (hnoRight : ∀ μ ∈ Set.Ioc a μR,
+      ¬(quadraticParameterEvaluation F G H r).IsRoot μ) :
+    ((quadraticInterlacingPencil F G H μL).roots.filter (r < ·)).card ≤
+        ((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card + 1 ∧
+      ((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card ≤
+        ((quadraticInterlacingPencil F G H μR).roots.filter (r < ·)).card := by
+  have haIcc : a ∈ Set.Icc μL μR := ⟨hμLa.le, haμR.le⟩
+  have hlocal := exists_eventually_quadraticInterlacingPencil_root_count_bounds
+    hD (hdegree_local a haIcc) (hsplits a haIcc) (hsimple a haIcc) hroot
+  obtain ⟨bL, hbLa, hbLbound, hμLbL⟩ := (hlocal.and (eventually_gt_nhds hμLa)).exists_lt
+  obtain ⟨bR, habR, hbRbound, hbRμR⟩ := (hlocal.and (eventually_lt_nhds haμR)).exists_gt
+  have hleft := quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
+    hμLbL.le hD
+    (fun μ hμ => hdegree μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
+    (fun μ hμ => hdegree_local μ
+      ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
+    (fun μ hμ => hsplits μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
+    (fun μ hμ => hsimple μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
+    (fun μ hμ => hnoLeft μ ⟨hμ.1, hμ.2.trans_lt hbLa⟩)
+  have hright := quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
+    hbRμR.le hD
+    (fun μ hμ => hdegree μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
+    (fun μ hμ => hdegree_local μ
+      ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
+    (fun μ hμ => hsplits μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
+    (fun μ hμ => hsimple μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
+    (fun μ hμ => hnoRight μ ⟨habR.trans_le hμ.1, hμ.2⟩)
+  exact ⟨by lia, by lia⟩
+
 /-- Across one crossing, the strict-upper root count in the chamber on the
 left is at most the count in the chamber on the right plus one. -/
 theorem quadraticInterlacingPencil_card_roots_gt_left_le_right_add_one
@@ -735,41 +781,8 @@ theorem quadraticInterlacingPencil_card_roots_gt_left_le_right_add_one
       ¬(quadraticParameterEvaluation F G H r).IsRoot μ) :
     ((quadraticInterlacingPencil F G H μL).roots.filter (r < ·)).card ≤
       ((quadraticInterlacingPencil F G H μR).roots.filter (r < ·)).card + 1 := by
-  have haIcc : a ∈ Set.Icc μL μR := ⟨hμLa.le, haμR.le⟩
-  have hlocal := exists_eventually_quadraticInterlacingPencil_root_count_bounds
-    hD (hdegree_local a haIcc) (hsplits a haIcc) (hsimple a haIcc) hroot
-  have hleftEvent : ∀ᶠ b in 𝓝 a,
-      (((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card ≤
-          ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ∧
-        ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ≤
-          ((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card + 1) ∧
-        μL < b :=
-    hlocal.and (eventually_gt_nhds hμLa)
-  obtain ⟨bL, hbLa, hbLbound, hμLbL⟩ := hleftEvent.exists_lt
-  have hrightEvent : ∀ᶠ b in 𝓝 a,
-      (((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card ≤
-          ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ∧
-        ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ≤
-          ((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card + 1) ∧
-        b < μR :=
-    hlocal.and (eventually_lt_nhds haμR)
-  obtain ⟨bR, habR, hbRbound, hbRμR⟩ := hrightEvent.exists_gt
-  have hleft := quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
-    hμLbL.le hD
-    (fun μ hμ => hdegree μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
-    (fun μ hμ => hdegree_local μ
-      ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
-    (fun μ hμ => hsplits μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
-    (fun μ hμ => hsimple μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
-    (fun μ hμ => hnoLeft μ ⟨hμ.1, hμ.2.trans_lt hbLa⟩)
-  have hright := quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
-    hbRμR.le hD
-    (fun μ hμ => hdegree μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
-    (fun μ hμ => hdegree_local μ
-      ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
-    (fun μ hμ => hsplits μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
-    (fun μ hμ => hsimple μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
-    (fun μ hμ => hnoRight μ ⟨habR.trans_le hμ.1, hμ.2⟩)
+  have h := quadraticInterlacingPencil_card_roots_gt_crossing_bounds hμLa haμR hD hdegree
+    hdegree_local hsplits hsimple hroot hnoLeft hnoRight
   lia
 
 /-- If a single isolated crossing realizes an exact downward jump of one,
@@ -796,41 +809,8 @@ theorem quadraticInterlacingPencil_card_roots_gt_at_crossing_eq_right
         ((quadraticInterlacingPencil F G H μR).roots.filter (r < ·)).card + 1) :
     ((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card =
       ((quadraticInterlacingPencil F G H μR).roots.filter (r < ·)).card := by
-  have haIcc : a ∈ Set.Icc μL μR := ⟨hμLa.le, haμR.le⟩
-  have hlocal := exists_eventually_quadraticInterlacingPencil_root_count_bounds
-    hD (hdegree_local a haIcc) (hsplits a haIcc) (hsimple a haIcc) hroot
-  have hleftEvent : ∀ᶠ b in 𝓝 a,
-      (((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card ≤
-          ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ∧
-        ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ≤
-          ((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card + 1) ∧
-        μL < b :=
-    hlocal.and (eventually_gt_nhds hμLa)
-  obtain ⟨bL, hbLa, hbLbound, hμLbL⟩ := hleftEvent.exists_lt
-  have hrightEvent : ∀ᶠ b in 𝓝 a,
-      (((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card ≤
-          ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ∧
-        ((quadraticInterlacingPencil F G H b).roots.filter (r < ·)).card ≤
-          ((quadraticInterlacingPencil F G H a).roots.filter (r < ·)).card + 1) ∧
-        b < μR :=
-    hlocal.and (eventually_lt_nhds haμR)
-  obtain ⟨bR, habR, hbRbound, hbRμR⟩ := hrightEvent.exists_gt
-  have hleft := quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
-    hμLbL.le hD
-    (fun μ hμ => hdegree μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
-    (fun μ hμ => hdegree_local μ
-      ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
-    (fun μ hμ => hsplits μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
-    (fun μ hμ => hsimple μ ⟨hμ.1, hμ.2.trans (hbLa.le.trans haμR.le)⟩)
-    (fun μ hμ => hnoLeft μ ⟨hμ.1, hμ.2.trans_lt hbLa⟩)
-  have hright := quadraticInterlacingPencil_card_roots_gt_eq_of_no_crossing
-    hbRμR.le hD
-    (fun μ hμ => hdegree μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
-    (fun μ hμ => hdegree_local μ
-      ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
-    (fun μ hμ => hsplits μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
-    (fun μ hμ => hsimple μ ⟨(hμLa.le.trans habR.le).trans hμ.1, hμ.2⟩)
-    (fun μ hμ => hnoRight μ ⟨habR.trans_le hμ.1, hμ.2⟩)
+  have h := quadraticInterlacingPencil_card_roots_gt_crossing_bounds hμLa haμR hD hdegree
+    hdegree_local hsplits hsimple hroot hnoLeft hnoRight
   lia
 
 /-- An exact downward chamber jump forces a nonnegative tangent residue at the

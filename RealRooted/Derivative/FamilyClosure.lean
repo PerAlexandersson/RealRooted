@@ -22,7 +22,7 @@ theorem eq_zero_or_splits_derivative {p : ℝ[X]}
   by_cases hp0 : p = 0
   · simp [hp0]
   by_cases hdeg0 : p.natDegree = 0
-  · exact Or.inl (derivative_eq_zero_of_natDegree_eq_zero hdeg0)
+  · exact Or.inl (Polynomial.derivative_eq_zero.mpr hdeg0)
   by_cases hdeg1 : p.natDegree = 1
   · exact Or.inr (splits_of_natDegree_eq_zero (by rw [p.natDegree_derivative, hdeg1]))
   · have hdeg2 : 2 ≤ p.natDegree := by lia
@@ -35,7 +35,7 @@ theorem derivative_eq_zero_or_ne_zero_and_splits {p : ℝ[X]}
     p.derivative = 0 ∨ (p.derivative ≠ 0 ∧ p.derivative.Splits) := by
   by_cases hdeg0 : p.natDegree = 0
   · left
-    exact derivative_eq_zero_of_natDegree_eq_zero hdeg0
+    exact Polynomial.derivative_eq_zero.mpr hdeg0
   by_cases hdeg1 : p.natDegree = 1
   · right
     have hder_ne : p.derivative ≠ 0 := Polynomial.derivative_ne_zero.mpr hdeg0
@@ -198,7 +198,7 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
     (hroots : ∀ r ∈ p.roots, r ≤ 0) :
     ∀ r ∈ p.derivative.roots, r ≤ 0 := by
   by_cases hdeg0 : p.natDegree = 0
-  · simp [derivative_eq_zero_of_natDegree_eq_zero hdeg0]
+  · simp [Polynomial.derivative_eq_zero.mpr hdeg0]
   by_cases hdeg1 : p.natDegree = 1
   · have hderdeg : p.derivative.natDegree = 0 := by rw [p.natDegree_derivative, hdeg1]
     have hderC : p.derivative = C (p.derivative.coeff 0) :=
@@ -207,12 +207,5 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
     simp
   · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact (derivative_interlaces hp_splits hdeg2).toStrictInterl.roots_le_of_right hroots
-
-/-- Statement interface for the Rolle--Obreschkoff fact that differentiation
-preserves weak interlacing in the oriented, zero-aware `Interl` convention.
-The checked witness is `derivativePreservesInterl` in
-`RealRooted.ObreschkoffConverse.Derivative`. -/
-def derivativePreservesInterlStatement : Prop :=
-  ∀ {p q : ℝ[X]}, Interl p q → Interl p.derivative q.derivative
 
 end RealRooted

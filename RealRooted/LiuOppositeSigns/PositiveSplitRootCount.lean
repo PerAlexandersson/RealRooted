@@ -291,26 +291,6 @@ theorem card_right_roots_filter_lt_le_two_of_roots_ge_of_right_successor
       hroots_ge
   lia
 
-theorem sameDegreeRootCountAboveNonRoot {p q : ℝ[X]}
-    (h : PositiveSplitRootCountPair p q)
-    (_hdeg : q.natDegree = p.natDegree) :
-    ∀ x : ℝ, ¬ p.IsRoot x → ¬ q.IsRoot x →
-      ((p.roots.filter (x < ·)).card : ℤ) -
-          (q.roots.filter (x < ·)).card ≤ 1 ∧
-        ((q.roots.filter (x < ·)).card : ℤ) -
-          (p.roots.filter (x < ·)).card ≤ 1 :=
-  fun _ hpx hqx => h.rootCountAbove_bounds_of_nonRoot hpx hqx
-
-theorem succDegreeRootCountAboveNonRoot {p q : ℝ[X]}
-    (h : PositiveSplitRootCountPair p q)
-    (_hdeg : q.natDegree = p.natDegree + 1) :
-    ∀ x : ℝ, ¬ p.IsRoot x → ¬ q.IsRoot x →
-      ((p.roots.filter (x < ·)).card : ℤ) -
-          (q.roots.filter (x < ·)).card ≤ 1 ∧
-        ((q.roots.filter (x < ·)).card : ℤ) -
-          (p.roots.filter (x < ·)).card ≤ 1 :=
-  fun _ hpx hqx => h.rootCountAbove_bounds_of_nonRoot hpx hqx
-
 end PositiveSplitRootCountPair
 
 /-- Deleting a common root from both endpoints preserves the positive-split
@@ -358,15 +338,6 @@ theorem PositiveSplitRootCountPair.natDegree_deleteRootFactor_right_eq_left_add_
     natDegree_pos_of_isRoot h.left_pos.ne_zero hp
   exact natDegree_deleteRootFactor_right_eq_left_add_one_of_natDegree_eq
     hdeg hp_pos
-
-/-- Deleting a common root from both endpoints of a positive-split pair
-preserves the same-degree relation. -/
-theorem PositiveSplitRootCountPair.natDegree_deleteRootFactor_eq
-    {p q : ℝ[X]} (_h : PositiveSplitRootCountPair p q) {r : ℝ}
-    (hdeg : p.natDegree = q.natDegree) :
-    (deleteRootFactor p r).natDegree =
-      (deleteRootFactor q r).natDegree :=
-  natDegree_deleteRootFactor_eq_of_natDegree_eq hdeg
 
 end LiuOppositeSigns
 end RealRooted

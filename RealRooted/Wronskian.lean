@@ -1,5 +1,4 @@
 import RealRooted.Wronskian.Algebra
-import RealRooted.Wronskian.Converse
 import RealRooted.Wronskian.Forward
 import RealRooted.Wronskian.Successor
 

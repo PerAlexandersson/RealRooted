@@ -486,7 +486,7 @@ theorem binaryRunAnchor_hasSimpleRoots {n : ℕ} {p : ℝ[X]}
   have hc : 0 < c := mul_pos hε hp0
   have hplusComp : (schurSzegoComp n (f + C ε) p).Splits := by
     rw [schurSzegoComp_comm]
-    exact (schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial hp hpdeg
+    exact (finiteSchurSzegoComposition hp hpdeg
       (by simpa [f] using hfdeg) (by simpa [f] using hfplus)).resolve_left (by
         intro hz
         have hz0 : p.coeff 0 * (1 + ε) = 0 := by
@@ -498,7 +498,7 @@ theorem binaryRunAnchor_hasSimpleRoots {n : ℕ} {p : ℝ[X]}
         · linarith)
   have hminusComp : (schurSzegoComp n (f + C (-ε)) p).Splits := by
     rw [schurSzegoComp_comm]
-    exact (schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial hp hpdeg
+    exact (finiteSchurSzegoComposition hp hpdeg
       (by
         rw [Polynomial.natDegree_add_C]
         exact hfdeg)

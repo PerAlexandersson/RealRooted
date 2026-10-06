@@ -166,7 +166,8 @@ theorem coefficientStage_zero_eq_principalSection (N : ℕ) :
   ext i j
   rw [coefficientStage]
   simp only [Nat.not_lt_zero, ite_false, resolution.row_zero]
-  exact coeff_rowPolynomial resolution.lowerUnitriangular.lower i.val j.val
+  exact LowerTriangularMatrix.coeff_rowPolynomial resolution.lowerUnitriangular.lower
+    i.val j.val
 
 /-- Every resolvable lower unitriangular matrix is totally nonnegative. -/
 theorem isTotallyNonneg (resolution : Resolution R) :

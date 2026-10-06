@@ -16,9 +16,9 @@ namespace RealRooted
 namespace GeneralizedSnakePosets
 
 theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial_concrete_u_degree
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (h34 : AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial)
+    (h34 : AffineModifiedNarayanaInterlacing modifiedNarayanaPolynomial)
     (hV_split : ∀ {m : ℕ} {lam nu : ℝ},
       2 ≤ m → 0 ≤ lam → -1 ≤ nu →
         ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
@@ -39,9 +39,9 @@ theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial_con
     hm hlam hnu
 
 theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial_concrete_degrees
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (h34 : AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial)
+    (h34 : AffineModifiedNarayanaInterlacing modifiedNarayanaPolynomial)
     (hV_split : ∀ {m : ℕ} {lam nu : ℝ},
       2 ≤ m → 0 ≤ lam → -1 ≤ nu →
         ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
@@ -99,7 +99,7 @@ theorem modifiedNarayanaPencil_leadingCoeff {m : ℕ} {lam nu : ℝ}
   ring
 
 theorem auxiliaryGPencil_leadingCoeff_of_narayanaRecurrence
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
     ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
@@ -138,7 +138,7 @@ theorem auxiliaryGPencil_leadingCoeff_of_narayanaRecurrence
 /-- The section 3 recurrence gives the auxiliary Braun--Jal pencil a positive
 leading coefficient throughout the parameter range used in section 4. -/
 theorem auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
     HasPosLeadingCoeff
@@ -151,10 +151,9 @@ theorem auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
 /-- The two summands in the middle polynomial of shifted difference interlacing claim have
 the same degree and positive leading coefficient. -/
 theorem shiftedDifferenceInterlacing_modified_middle_hasPosLeadingCoeff
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam)
-    (hnu : -1 ≤ nu) :
+    {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
     HasPosLeadingCoeff
       (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
           modifiedNarayanaPolynomial m) +
@@ -164,11 +163,11 @@ theorem shiftedDifferenceInterlacing_modified_middle_hasPosLeadingCoeff
     auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
       (nu := nu) hrec2 hm hlam
   apply hasPosLeadingCoeff_add_of_same_natDegree
-  · rw [affineModifiedNarayana_left_natDegree (by lia) hlam hnu,
+  · rw [affineModifiedNarayana_left_natDegree (nu := nu) (by lia) hlam,
       Polynomial.natDegree_X_mul hV_pos.ne_zero,
       auxiliaryGPencil_natDegree_of_narayanaRecurrence hrec2 hm hlam]
     lia
-  · exact affineModifiedNarayana_left_posLeadingCoeff (by lia) hlam hnu
+  · exact affineModifiedNarayana_left_posLeadingCoeff (by lia) hlam
   · exact hV_pos.X_mul
 
 /-- The auxiliary recurrence and the affine Narayana interlacing lemma imply that the auxiliary
@@ -180,9 +179,9 @@ the later Turan module, where
 `affineModifiedNarayanaInterlacing_modified` proves the full parameterized
 statement. -/
 theorem auxiliaryGPencil_splits_of_combinatorial
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (h34 : AffineModifiedNarayanaInterlacingStatement
+    (h34 : AffineModifiedNarayanaInterlacing
       modifiedNarayanaPolynomial)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam)
     (hnu : -1 ≤ nu) :
@@ -205,7 +204,7 @@ theorem auxiliaryGPencil_splits_of_combinatorial
         hrec2 hm lam nu
   have hW_pos : HasPosLeadingCoeff W := by
     simpa [W] using
-      affineModifiedNarayana_right_posLeadingCoeff (m := m) hlam hnu
+      affineModifiedNarayana_right_posLeadingCoeff (m := m) (nu := nu) hlam
   have hWU_lc : W.leadingCoeff = U.leadingCoeff := by
     calc
       W.leadingCoeff = lam + 1 := by
@@ -230,7 +229,7 @@ theorem auxiliaryGPencil_splits_of_combinatorial
       affineModifiedNarayana_left_roots_nonpos (m := m) (by lia) hlam hnu
   have hmid_pos : HasPosLeadingCoeff (U + X * V) := by
     simpa [U, V] using
-      shiftedDifferenceInterlacing_modified_middle_hasPosLeadingCoeff hrec2 hm hlam hnu
+      shiftedDifferenceInterlacing_modified_middle_hasPosLeadingCoeff (nu := nu) hrec2 hm hlam
   have hmid_eq : W - X * U = U + X * V := by
     rw [hW_eq]
     ring
@@ -312,15 +311,15 @@ coefficientwise hypothesis `hH_nonneg` is different: as explained at
 combinatorial input from the non-nesting-rook interpretation, whose full model
 is intentionally outside the scope of this formalization. -/
 theorem shiftedDifferenceInterlacing_modified_of_combinatorial
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
+    (hrec2 : NarayanaAuxiliaryGRecurrence
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (h34 : AffineModifiedNarayanaInterlacingStatement
+    (h34 : AffineModifiedNarayanaInterlacing
       modifiedNarayanaPolynomial)
     (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
       HasNonnegCoeffs
         (FiniteSkewBoard.auxiliaryG n -
           FiniteSkewBoard.auxiliaryG (n - 1))) :
-    ShiftedDifferenceInterlacingStatement
+    ShiftedDifferenceInterlacing
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG := by
   have hV_split :
       ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
@@ -341,7 +340,7 @@ theorem shiftedDifferenceInterlacing_modified_of_combinatorial
     deg_vu := ?_
     u_v_roots_sum := ?_ }
   · intro m lam nu hm hlam hnu
-    exact affineModifiedNarayana_right_posLeadingCoeff hlam hnu
+    exact affineModifiedNarayana_right_posLeadingCoeff hlam
   · intro m lam nu hm hlam hnu
     calc
       ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
@@ -368,7 +367,7 @@ theorem shiftedDifferenceInterlacing_modified_of_combinatorial
     exact affineModifiedNarayana_left_roots_nonpos (by lia) hlam hnu
   · intro m lam nu hm hlam hnu
     exact shiftedDifferenceInterlacing_modified_middle_hasPosLeadingCoeff
-      hrec2 hm hlam hnu
+      hrec2 hm hlam
   · intro m lam nu hm hlam hnu
     exact auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
       (nu := nu) hrec2 hm hlam

@@ -270,15 +270,18 @@ end Counting
 end AllOrientationSinkIdentity
 
 open AllOrientationSinkIdentity in
-/-- The all-orientation sink indicator identity:
-`∑_O (X + 1) ^ sinkCount O = 2 ^ |E| * ∑_{S independent} ∏_{v ∈ S} (2⁻¹ ^ deg v) X ^ |S|`. -/
-theorem allOrientationSinkPolynomial_indicatorIdentity {V : Type u} [Fintype V]
+/-- The all-orientation sink indicator identity: substituting `X + 1` into the
+sink polynomial gives the shifted weighted-independence model,
+`∑_O (X + 1) ^ sinkCount O = 2 ^ |E| * ∑_{S independent} ∏_{v ∈ S} (2⁻¹ ^ deg v) X`.
+-/
+theorem allOrientationSinkPolynomial_comp_X_add_one {V : Type u} [Fintype V]
     [DecidableEq V] (G : _root_.SimpleGraph V) :
-    allOrientationSinkPolynomialIndicatorIdentity G := by
+    (allOrientationSinkPolynomial G).comp (X + C 1) =
+      allOrientationSinkPolynomialShiftedModel G := by
   classical
-  rw [allOrientationSinkPolynomialIndicatorIdentity, allOrientationSinkPolynomial,
-    allOrientationSinkPolynomialShiftedModel, weightedIndepPoly, weightedIndepPolyOn,
-    indepSetsOn, powerset_univ, sum_filter, mul_sum, Polynomial.sum_comp]
+  rw [allOrientationSinkPolynomial, allOrientationSinkPolynomialShiftedModel,
+    weightedIndepPoly, weightedIndepPolyOn, indepSetsOn, powerset_univ, sum_filter, mul_sum,
+    Polynomial.sum_comp]
   simp only [pow_comp, X_comp, Orientation.sinkCount, add_one_pow_card_eq_sum]
   rw [sum_comm]
   apply sum_congr rfl
@@ -293,13 +296,16 @@ theorem allOrientationSinkPolynomial_indicatorIdentity {V : Type u} [Fintype V]
   split_ifs
   · rw [C_mul, map_prod, mul_assoc]
   · simp
+
 /-- The all-orientation sink polynomial of a finite claw-free graph is real-rooted. -/
 theorem allOrientationSinkPolynomial_splits_of_clawFree {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) (hG : ClawFree G) :
     (allOrientationSinkPolynomial G).Splits := by
   classical
-  exact allOrientationSinkPolynomial_splits_of_clawFree_of_indicatorIdentity G hG
-    (allOrientationSinkPolynomial_indicatorIdentity G)
+  apply (splits_iff_comp_splits_of_natDegree_eq_one
+    (f := allOrientationSinkPolynomial G) (g := X + C 1) (by simp)).mpr
+  rw [allOrientationSinkPolynomial_comp_X_add_one G]
+  exact allOrientationSinkPolynomialShiftedModel_splits_of_clawFree G hG
 
 end Graph
 end RealRooted

@@ -76,14 +76,6 @@ lemma roots_overlap_of_positiveSplitRootCountPair_two_two
     rw [hf_count, hg_count] at hcount
     norm_num at hcount
 
-/-- Normalized monic arithmetic leaf for the degree-two/degree-two
-x-subtraction endpoint. -/
-def xSubQuadraticQuadraticSplitsStatement : Prop :=
-  ∀ {a b c d μ : ℝ},
-    a ≤ b → c ≤ d → a ≤ d → c ≤ b → b ≤ 0 → d ≤ 0 → 0 < μ →
-      (X * ((X - C a) * (X - C b)) -
-        C μ * ((X - C c) * (X - C d))).Splits
-
 /-- A monic quadratic minus a positive multiple of a linear factor splits
 whenever the linear root lies weakly below the upper quadratic root. -/
 lemma quadraticSubLinear_splits_of_right_root_le_upper
@@ -576,10 +568,10 @@ lemma xSubQuadraticQuadraticSplits_of_order_c_a_d_b
     hP_ne hdeg_le h12 h2R hr₁_root hr₂_root hrR_root
   simpa [P] using hsplits
 
-/-- The normalized monic quadratic/quadratic x-subtraction leaf. -/
-theorem xSubQuadraticQuadraticSplits :
-    xSubQuadraticQuadraticSplitsStatement := by
-  intro a b c d μ hab hcd had hcb hb0 hd0 hμ
+/-- The normalized monic quadratic/quadratic x-subtraction pencil splits. -/
+theorem xSubQuadraticQuadraticSplits {a b c d μ : ℝ} (hab : a ≤ b) (hcd : c ≤ d) (had : a ≤ d)
+    (hcb : c ≤ b) (hb0 : b ≤ 0) (hd0 : d ≤ 0) (hμ : 0 < μ) :
+    (X * ((X - C a) * (X - C b)) - C μ * ((X - C c) * (X - C d))).Splits := by
   by_cases hd_zero : d = 0
   · subst d
     simpa using xSubQuadraticQuadraticSplits_of_right_root_zero
@@ -622,10 +614,8 @@ theorem xSubQuadraticQuadraticSplits :
       exact xSubQuadraticQuadraticSplits_of_order_c_a_d_b
         hca had_lt hdb hb0 hμ
 
-/-- The normalized monic quadratic/quadratic x-subtraction leaf implies the
-degree-two/degree-two positive-split x-subtraction endpoint. -/
-lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_two_of_monic
-    (hmono : xSubQuadraticQuadraticSplitsStatement)
+/-- Degree-two/degree-two positive-split x-subtraction endpoint. -/
+lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_two
     {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
     (hpdeg : p.natDegree = 2) (hqdeg : q.natDegree = 2)
@@ -666,7 +656,7 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_two_of_monic
     X * ((X - C a) * (X - C b)) - C ν * ((X - C c) * (X - C d))
   have hinner_splits : inner.Splits := by
     dsimp [inner]
-    exact hmono hab hcd had hcb hb0 hd0 hν_pos
+    exact xSubQuadraticQuadraticSplits hab hcd had hcb hb0 hd0 hν_pos
   have hpfacA : p = C A * ((X - C a) * (X - C b)) := by simpa [A] using hpfac
   have hqfacB : q = C B * ((X - C c) * (X - C d)) := by simpa [B] using hqfac
   have hpoly : X * p - C μ * q = C A * inner := by
@@ -679,20 +669,9 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_two_of_monic
   rw [hpoly]
   exact hinner_splits.C_mul A
 
-/-- Degree-two/degree-two positive-split x-subtraction endpoint. -/
-lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_two
-    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpdeg : p.natDegree = 2) (hqdeg : q.natDegree = 2)
-    {μ : ℝ} (hμ : 0 < μ) :
-    (X * p - C μ * q).Splits :=
-  splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_two_of_monic
-    xSubQuadraticQuadraticSplits hpair hpnn hqnn hpdeg hqdeg hμ
-
-/-- Degree-two right endpoint reduction for the same-degree sign-normalized
-x-subtraction leaf, modulo the normalized monic quadratic/quadratic leaf. -/
-theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_two_of_monic
-    (hmono : xSubQuadraticQuadraticSplitsStatement)
+/-- Degree-two right endpoint case for the same-degree sign-normalized
+x-subtraction leaf. -/
+theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_two
     {f g : ℝ[X]} {r : ℝ}
     (hpair : PositiveSplitRootCountPair f g)
     (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
@@ -705,42 +684,8 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_two_
   have hfdeg : f.natDegree = 2 := by lia
   have hFdeg : (f.comp (X + C r)).natDegree = 2 := by simpa [Polynomial.natDegree_comp] using hfdeg
   have hGdeg : (g.comp (X + C r)).natDegree = 2 := by simpa [Polynomial.natDegree_comp] using hgdeg
-  exact splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_two_of_monic
-    hmono (hpair.comp_X_add_C r) hfnn hgnn hFdeg hGdeg hμ
-
-/-- Degree-two right endpoint case for the same-degree sign-normalized
-x-subtraction leaf. -/
-theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_two
-    {f g : ℝ[X]} {r : ℝ}
-    (hpair : PositiveSplitRootCountPair f g)
-    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
-    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
-    (hdeg : f.natDegree = g.natDegree)
-    (hgdeg : g.natDegree = 2) :
-    ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits :=
-  positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_two_of_monic
-    xSubQuadraticQuadraticSplits hpair hfnn hgnn hdeg hgdeg
-
-/-- Endpoint cases through right degree two for the same-degree
-sign-normalized x-subtraction leaf, modulo the normalized monic
-quadratic/quadratic leaf. -/
-theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_two_of_monic
-    (hmono : xSubQuadraticQuadraticSplitsStatement)
-    {f g : ℝ[X]} {r : ℝ}
-    (hpair : PositiveSplitRootCountPair f g)
-    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
-    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
-    (hdeg : f.natDegree = g.natDegree)
-    (hgdeg : g.natDegree ≤ 2) :
-    ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
-  by_cases hle_one : g.natDegree ≤ 1
-  · exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_one
-      hpair hfnn hgnn hdeg hle_one
-  · have htwo : g.natDegree = 2 := by lia
-    exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_two_of_monic
-      hmono hpair hfnn hgnn hdeg htwo
+  exact splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_two
+    (hpair.comp_X_add_C r) hfnn hgnn hFdeg hGdeg hμ
 
 /-- Endpoint cases through right degree two for the same-degree
 sign-normalized x-subtraction leaf. -/
@@ -752,9 +697,13 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_t
     (hdeg : f.natDegree = g.natDegree)
     (hgdeg : g.natDegree ≤ 2) :
     ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits :=
-  positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_two_of_monic
-    xSubQuadraticQuadraticSplits hpair hfnn hgnn hdeg hgdeg
+      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
+  by_cases hle_one : g.natDegree ≤ 1
+  · exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_le_one
+      hpair hgnn hdeg hle_one
+  · have htwo : g.natDegree = 2 := by lia
+    exact positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_two
+      hpair hfnn hgnn hdeg htwo
 
 end LiuOppositeSigns
 end RealRooted

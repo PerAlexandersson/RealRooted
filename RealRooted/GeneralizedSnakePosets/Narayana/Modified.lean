@@ -20,8 +20,9 @@ namespace GeneralizedSnakePosets
 
 /-! ## Concrete modified Narayana family -/
 
-/-- The modified Narayana family `P_n = t^{-1} N_{n+1}` from Braun--Jal
-the combinatorial inputs, reusing the existing Narayana quotient sequence. -/
+/-- The modified Narayana polynomial `P_n = t^{-1} N_{n+1}` of Braun--Jal,
+where `N_{n+1}` is the Narayana polynomial.  It is defined as the Narayana
+quotient `narayanaQuot (n + 1)`, so `P_0 = 1` and `P_1 = 1 + X`. -/
 def modifiedNarayanaPolynomial (n : ℕ) : ℝ[X] :=
   narayanaQuot (n + 1)
 
@@ -65,31 +66,25 @@ theorem modifiedNarayanaPolynomial_posLeadingCoeff (n : ℕ) :
   simpa [modifiedNarayanaPolynomial] using
     (narayanaQuot_posLeadingCoeff (n + 1) (by lia))
 
-/-- The existing Narayana sequence and `modifiedNarayanaPolynomial` satisfy the
-Braun--Jal modified-family interface. -/
+/-- `modifiedNarayanaPolynomial` is the Braun--Jal modified Narayana family:
+`P_0 = 1` and `N_{n+1} = X * P_n`, i.e. `P_n(t) = t^{-1} N_{n+1}(t)`. -/
 theorem modifiedNarayanaFamily_narayana :
-    ModifiedNarayanaFamilyStatement narayana modifiedNarayanaPolynomial := by
+    modifiedNarayanaPolynomial 0 = 1 ∧
+      ∀ n : ℕ, narayana (n + 1) = X * modifiedNarayanaPolynomial n := by
   constructor
   · simp [modifiedNarayanaPolynomial]
   · intro n
     simp [modifiedNarayanaPolynomial, narayana]
 
-/-- Conditional consecutive interlacing for the concrete modified Narayana
-family, inherited from the existing Narayana formalization. -/
-theorem modifiedNarayanaPolynomial_strictInterl_succ_of_nonnegCoeffs
-    (n : ℕ) (hnonneg : ∀ m : ℕ, HasNonnegCoeffs (narayanaQuot m)) :
-    StrictInterl (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) := by
-  simpa [modifiedNarayanaPolynomial] using
-    (strictInterl_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg)
+/-- Consecutive modified Narayana polynomials strictly interlace. -/
+theorem modifiedNarayanaPolynomial_strictInterl_succ (n : ℕ) :
+    StrictInterl (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) :=
+  strictInterl_narayanaQuot_succ (n + 1) (by lia)
 
-/-- Conditional consecutive interlacing for the concrete modified Narayana
-family, inherited from the existing Narayana formalization. -/
-theorem modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs
-    (n : ℕ) (hnonneg : ∀ m : ℕ, HasNonnegCoeffs (narayanaQuot m)) :
-    Interlaces (modifiedNarayanaPolynomial n)
-      (modifiedNarayanaPolynomial (n + 1)) := by
-  simpa [modifiedNarayanaPolynomial] using
-    (interlaces_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg)
+/-- Consecutive modified Narayana polynomials interlace. -/
+theorem modifiedNarayanaPolynomial_interlaces_succ (n : ℕ) :
+    Interlaces (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) :=
+  interlaces_narayanaQuot_succ (n + 1) (by lia)
 
 /-- Base interlacing between the first two modified Narayana polynomials. -/
 theorem modifiedNarayanaPolynomial_zero_interlaces_one :
@@ -111,14 +106,6 @@ theorem auxiliaryGInterlaces_modified_base :
     StrictInterl (FiniteSkewBoard.auxiliaryG 1) (modifiedNarayanaPolynomial 1) := by
   simpa [FiniteSkewBoard.auxiliaryG_one] using
     modifiedNarayanaPolynomial_zero_strictInterl_one
-
-/-- Base case `n = 1` of the auxiliary recurrence, for the concrete modified
-Narayana family and the finite-board auxiliary `G`. -/
-theorem narayanaAuxiliaryGRecurrence_modified_base :
-    X * FiniteSkewBoard.auxiliaryG 0 =
-      modifiedNarayanaPolynomial 1 - (1 + X) * modifiedNarayanaPolynomial 0 := by
-  rw [FiniteSkewBoard.auxiliaryG_zero]
-  simp
 
 /-! ## Coefficient-side modified Narayana family -/
 
@@ -341,96 +328,6 @@ theorem modifiedNarayanaCoeffPolynomial_one_interlaces_two :
     rw [modifiedNarayanaCoeffPolynomial_natDegree,
       modifiedNarayanaCoeffPolynomial_natDegree])
 
-/-- Base case `n = 1` of the auxiliary recurrence, for the coefficient-side
-modified Narayana family and the finite-board auxiliary `G`. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_base :
-    X * FiniteSkewBoard.auxiliaryG 0 =
-      modifiedNarayanaCoeffPolynomial 1 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 0 := by
-  rw [FiniteSkewBoard.auxiliaryG_zero]
-  simp
-
-/-- The `n = 2` case of the auxiliary recurrence, for the coefficient-side
-modified Narayana family and the finite-board auxiliary `G`. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_two :
-    X * FiniteSkewBoard.auxiliaryG 1 =
-      modifiedNarayanaCoeffPolynomial 2 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 1 := by
-  rw [FiniteSkewBoard.auxiliaryG_one, modifiedNarayanaCoeffPolynomial_one,
-    modifiedNarayanaCoeffPolynomial_two]
-  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 :=
-    Polynomial.C_eq_natCast (R := ℝ) 3
-  rw [hC3]
-  ring_nf
-
-/-- The `n = 3` case of the auxiliary recurrence, for the coefficient-side
-modified Narayana family and the finite-board auxiliary `G`. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_three :
-    X * FiniteSkewBoard.auxiliaryG 2 =
-      modifiedNarayanaCoeffPolynomial 3 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 2 := by
-  rw [FiniteSkewBoard.auxiliaryG_two, modifiedNarayanaCoeffPolynomial_two,
-    modifiedNarayanaCoeffPolynomial_three]
-  have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := Polynomial.C_eq_natCast (R := ℝ) 2
-  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
-  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
-  rw [hC2, hC3, hC6]
-  ring_nf
-
-/-- The `n = 4` the auxiliary recurrence reduces to the concrete `G_3`
-finite-board computation. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three
-    (hG3 : FiniteSkewBoard.auxiliaryG 3 =
-      3 + C (8 : ℝ) * X + C (3 : ℝ) * X ^ 2) :
-    X * FiniteSkewBoard.auxiliaryG 3 =
-      modifiedNarayanaCoeffPolynomial 4 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 3 := by
-  rw [hG3, modifiedNarayanaCoeffPolynomial_three,
-    modifiedNarayanaCoeffPolynomial_four]
-  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
-  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
-  have hC8 : (C (8 : ℝ) : ℝ[X]) = 8 := Polynomial.C_eq_natCast (R := ℝ) 8
-  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 := Polynomial.C_eq_natCast (R := ℝ) 10
-  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 := Polynomial.C_eq_natCast (R := ℝ) 20
-  rw [hC3, hC6, hC8, hC10, hC20]
-  ring_nf
-
-/-- The `n = 4` case of the auxiliary recurrence, for the coefficient-side
-modified Narayana family and the finite-board auxiliary `G`. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_four :
-    X * FiniteSkewBoard.auxiliaryG 3 =
-      modifiedNarayanaCoeffPolynomial 4 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 3 :=
-  narayanaCoeffAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three
-    FiniteSkewBoard.auxiliaryG_three
-
-/-- The `n = 5` the auxiliary recurrence reduces to the concrete `G_4`
-finite-board computation. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_five_of_auxiliaryG_four
-    (hG4 : FiniteSkewBoard.auxiliaryG 4 =
-      4 + C (20 : ℝ) * X + C (20 : ℝ) * X ^ 2 + C (4 : ℝ) * X ^ 3) :
-    X * FiniteSkewBoard.auxiliaryG 4 =
-      modifiedNarayanaCoeffPolynomial 5 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 4 := by
-  rw [hG4, modifiedNarayanaCoeffPolynomial_four,
-    modifiedNarayanaCoeffPolynomial_five]
-  have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := Polynomial.C_eq_natCast (R := ℝ) 4
-  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 := Polynomial.C_eq_natCast (R := ℝ) 10
-  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 := Polynomial.C_eq_natCast (R := ℝ) 15
-  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 := Polynomial.C_eq_natCast (R := ℝ) 20
-  have hC50 : (C (50 : ℝ) : ℝ[X]) = 50 := Polynomial.C_eq_natCast (R := ℝ) 50
-  rw [hC4, hC10, hC15, hC20, hC50]
-  ring_nf
-
-/-- The `n = 5` case of the auxiliary recurrence, for the coefficient-side
-modified Narayana family and the finite-board auxiliary `G`. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_five :
-    X * FiniteSkewBoard.auxiliaryG 4 =
-      modifiedNarayanaCoeffPolynomial 5 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 4 :=
-  narayanaCoeffAuxiliaryGRecurrence_modified_five_of_auxiliaryG_four
-    FiniteSkewBoard.auxiliaryG_four
-
 /-- The `n = 6` the auxiliary recurrence reduces to the concrete `G_5`
 finite-board computation. -/
 theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
@@ -506,206 +403,13 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_bottom_row_expansion_s
     (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansion_statements
       hbottom53 hbottom54)
 
-/-- The `n = 6` case of the auxiliary recurrence, for the coefficient-side
-modified Narayana family and the finite-board auxiliary `G`. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_six :
-    X * FiniteSkewBoard.auxiliaryG 5 =
-      modifiedNarayanaCoeffPolynomial 6 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 5 :=
-  narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
-    FiniteSkewBoard.auxiliaryG_five
-
-/-- The `n = 7` the auxiliary recurrence reduces to the concrete `G_6`
-finite-board computation. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six
-    (hG6 : FiniteSkewBoard.auxiliaryG 6 =
-      6 + C (70 : ℝ) * X + C (210 : ℝ) * X ^ 2 +
-        C (210 : ℝ) * X ^ 3 + C (70 : ℝ) * X ^ 4 +
-          C (6 : ℝ) * X ^ 5) :
-    X * FiniteSkewBoard.auxiliaryG 6 =
-      modifiedNarayanaCoeffPolynomial 7 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 6 := by
-  rw [hG6, modifiedNarayanaCoeffPolynomial_six,
-    modifiedNarayanaCoeffPolynomial_seven]
-  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
-  have hC21 : (C (21 : ℝ) : ℝ[X]) = 21 :=
-    Polynomial.C_eq_natCast (R := ℝ) 21
-  have hC28 : (C (28 : ℝ) : ℝ[X]) = 28 :=
-    Polynomial.C_eq_natCast (R := ℝ) 28
-  have hC70 : (C (70 : ℝ) : ℝ[X]) = 70 :=
-    Polynomial.C_eq_natCast (R := ℝ) 70
-  have hC105 : (C (105 : ℝ) : ℝ[X]) = 105 :=
-    Polynomial.C_eq_natCast (R := ℝ) 105
-  have hC175 : (C (175 : ℝ) : ℝ[X]) = 175 :=
-    Polynomial.C_eq_natCast (R := ℝ) 175
-  have hC196 : (C (196 : ℝ) : ℝ[X]) = 196 :=
-    Polynomial.C_eq_natCast (R := ℝ) 196
-  have hC210 : (C (210 : ℝ) : ℝ[X]) = 210 :=
-    Polynomial.C_eq_natCast (R := ℝ) 210
-  have hC490 : (C (490 : ℝ) : ℝ[X]) = 490 :=
-    Polynomial.C_eq_natCast (R := ℝ) 490
-  rw [hC6, hC21, hC28, hC70, hC105, hC175, hC196, hC210, hC490]
-  ring_nf
-
-/-- The `n = 7` case of the auxiliary recurrence, for the coefficient-side
-modified Narayana family and the finite-board auxiliary `G`. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_seven :
-    X * FiniteSkewBoard.auxiliaryG 6 =
-      modifiedNarayanaCoeffPolynomial 7 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 6 :=
-  narayanaCoeffAuxiliaryGRecurrence_modified_seven_of_auxiliaryG_six
-    FiniteSkewBoard.auxiliaryG_six
-
-/-- The `n = 8` the auxiliary recurrence reduces to the concrete `G_7`
-finite-board computation. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_eight_of_auxiliaryG_seven
-    (hG7 : FiniteSkewBoard.auxiliaryG 7 =
-      7 + C (112 : ℝ) * X + C (490 : ℝ) * X ^ 2 +
-        C (784 : ℝ) * X ^ 3 + C (490 : ℝ) * X ^ 4 +
-          C (112 : ℝ) * X ^ 5 + C (7 : ℝ) * X ^ 6) :
-    X * FiniteSkewBoard.auxiliaryG 7 =
-      modifiedNarayanaCoeffPolynomial 8 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 7 := by
-  rw [hG7, modifiedNarayanaCoeffPolynomial_seven,
-    modifiedNarayanaCoeffPolynomial_eight]
-  have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
-  have hC28 : (C (28 : ℝ) : ℝ[X]) = 28 :=
-    Polynomial.C_eq_natCast (R := ℝ) 28
-  have hC36 : (C (36 : ℝ) : ℝ[X]) = 36 :=
-    Polynomial.C_eq_natCast (R := ℝ) 36
-  have hC112 : (C (112 : ℝ) : ℝ[X]) = 112 :=
-    Polynomial.C_eq_natCast (R := ℝ) 112
-  have hC196 : (C (196 : ℝ) : ℝ[X]) = 196 :=
-    Polynomial.C_eq_natCast (R := ℝ) 196
-  have hC336 : (C (336 : ℝ) : ℝ[X]) = 336 :=
-    Polynomial.C_eq_natCast (R := ℝ) 336
-  have hC490 : (C (490 : ℝ) : ℝ[X]) = 490 :=
-    Polynomial.C_eq_natCast (R := ℝ) 490
-  have hC784 : (C (784 : ℝ) : ℝ[X]) = 784 :=
-    Polynomial.C_eq_natCast (R := ℝ) 784
-  have hC1176 : (C (1176 : ℝ) : ℝ[X]) = 1176 :=
-    Polynomial.C_eq_natCast (R := ℝ) 1176
-  have hC1764 : (C (1764 : ℝ) : ℝ[X]) = 1764 :=
-    Polynomial.C_eq_natCast (R := ℝ) 1764
-  rw [hC7, hC28, hC36, hC112, hC196, hC336, hC490, hC784, hC1176,
-    hC1764]
-  ring_nf
-
-/-- The `n = 8` case of the auxiliary recurrence, for the coefficient-side
-modified Narayana family and the finite-board auxiliary `G`. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_eight :
-    X * FiniteSkewBoard.auxiliaryG 7 =
-      modifiedNarayanaCoeffPolynomial 8 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 7 :=
-  narayanaCoeffAuxiliaryGRecurrence_modified_eight_of_auxiliaryG_seven
-    FiniteSkewBoard.auxiliaryG_seven
-
-/-- The checked initial cases through `n = 6` of the auxiliary recurrence, for
-the coefficient-side modified Narayana family and finite-board auxiliary `G`. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_of_le_six
-    {n : ℕ} (hn₁ : 1 ≤ n) (hn₆ : n ≤ 6) :
-    X * FiniteSkewBoard.auxiliaryG (n - 1) =
-      modifiedNarayanaCoeffPolynomial n -
-        (1 + X) * modifiedNarayanaCoeffPolynomial (n - 1) := by
-  interval_cases n
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_base
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_two
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_three
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_four
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_five
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_six
-
-/-- The checked initial cases through `n = 7` of the auxiliary recurrence, for
-the coefficient-side modified Narayana family and finite-board auxiliary `G`. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_of_le_seven
-    {n : ℕ} (hn₁ : 1 ≤ n) (hn₇ : n ≤ 7) :
-    X * FiniteSkewBoard.auxiliaryG (n - 1) =
-      modifiedNarayanaCoeffPolynomial n -
-        (1 + X) * modifiedNarayanaCoeffPolynomial (n - 1) := by
-  interval_cases n
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_base
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_two
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_three
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_four
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_five
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_six
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_seven
-
-/-- The checked initial cases through `n = 8` of the auxiliary recurrence, for
-the coefficient-side modified Narayana family and finite-board auxiliary `G`. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_of_le_eight
-    {n : ℕ} (hn₁ : 1 ≤ n) (hn₈ : n ≤ 8) :
-    X * FiniteSkewBoard.auxiliaryG (n - 1) =
-      modifiedNarayanaCoeffPolynomial n -
-        (1 + X) * modifiedNarayanaCoeffPolynomial (n - 1) := by
-  interval_cases n
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_base
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_two
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_three
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_four
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_five
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_six
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_seven
-  · exact narayanaCoeffAuxiliaryGRecurrence_modified_eight
-
-/-- The `m = 1` generalized Narayana polynomials satisfy the same normalized
-recurrence as the quotient-style modified Narayana sequence. -/
-theorem narayanaPolynomial_one_succ_succ (n : ℕ) :
-    narayanaPolynomial 1 (n + 2) =
-      narayanaCoeffA (n + 1) * narayanaPolynomial 1 (n + 1) +
-        narayanaCoeffB (n + 1) * narayanaPolynomial 1 n := by
-  have hrec := narayanaPolynomial_pure_rec 1 n
-  have hden : (C ((n : ℝ) + 4) : ℝ[X]) ≠ 0 :=
-    Polynomial.C_ne_zero.mpr (by positivity)
-  have hA : C ((n : ℝ) + 4) * narayanaCoeffA (n + 1) =
-      C ((2 * n : ℝ) + 5) * (1 + X) := by
-    unfold narayanaCoeffA
-    have hden_cast : (((n + 1 : ℕ) : ℝ) + 3) = (n : ℝ) + 4 := by
-      push_cast
-      ring
-    have hscalar : ((n : ℝ) + 4) *
-        ((2 * ((n + 1 : ℕ) : ℝ) + 3) /
-          (((n + 1 : ℕ) : ℝ) + 3)) = (2 * n : ℝ) + 5 := by
-      rw [hden_cast]
-      field_simp [show ((n : ℝ) + 4) ≠ 0 by positivity]
-      push_cast
-      ring
-    rw [← mul_assoc, ← map_mul, hscalar]
-  have hB : C ((n : ℝ) + 4) * narayanaCoeffB (n + 1) =
-      -C ((n : ℝ) + 1) * (1 - X) ^ 2 := by
-    unfold narayanaCoeffB
-    have hden_cast : (((n + 1 : ℕ) : ℝ) + 3) = (n : ℝ) + 4 := by
-      push_cast
-      ring
-    have hscalar : ((n : ℝ) + 4) *
-        (-((n + 1 : ℕ) : ℝ) /
-          (((n + 1 : ℕ) : ℝ) + 3)) = -((n : ℝ) + 1) := by
-      rw [hden_cast]
-      field_simp [show ((n : ℝ) + 4) ≠ 0 by positivity]
-      push_cast
-      ring
-    rw [← mul_assoc, ← map_mul, hscalar, map_neg]
-  apply mul_left_cancel₀ hden
-  rw [mul_add]
-  rw [← mul_assoc, hA, ← mul_assoc, hB]
-  convert hrec using 1 <;> ring_nf
+@[deprecated (since := "2026-10-05")]
+alias narayanaPolynomial_one_succ_succ := RealRooted.narayanaPolynomial_one_succ_succ
 
 /-- The quotient-style and coefficient-side modified Narayana models agree. -/
 theorem modifiedNarayanaPolynomial_eq_coeffPolynomial (n : ℕ) :
-    modifiedNarayanaPolynomial n = modifiedNarayanaCoeffPolynomial n := by
-  induction n using Nat.twoStepInduction with
-  | zero => simp
-  | one => simp
-  | more n ih ih_succ =>
-      change narayanaQuot (n + 3) = narayanaPolynomial 1 (n + 2)
-      have ih' : narayanaQuot (n + 1) = narayanaPolynomial 1 n := by
-        simpa [modifiedNarayanaPolynomial, modifiedNarayanaCoeffPolynomial] using ih
-      have ih_succ' :
-          narayanaQuot (n + 2) = narayanaPolynomial 1 (n + 1) := by
-        simpa [modifiedNarayanaPolynomial, modifiedNarayanaCoeffPolynomial,
-          Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using ih_succ
-      rw [narayanaQuot_succ_succ (n + 1), narayanaPolynomial_one_succ_succ n,
-        ih', ih_succ']
+    modifiedNarayanaPolynomial n = modifiedNarayanaCoeffPolynomial n :=
+  narayanaQuot_succ_eq_narayanaPolynomial_one n
 
 /-- Reversed-index coefficient formula for the quotient-style modified
 Narayana polynomial. -/

@@ -1,4 +1,4 @@
-import RealRooted.ObreschkoffConverse
+import RealRooted.OperatorPreservesInterlacing
 
 /-!
 # Obreschkoff challenge entry point
@@ -15,11 +15,6 @@ name = "RealRooted.AllComboRealRooted"
 module = "RealRooted.AllCombo"
 label = "Every real combination is real-rooted"
 
-[[definitions]]
-name = "RealRooted.HasPosLeadingCoeff"
-module = "RealRooted.Basic.Coefficients"
-label = "Positive leading coefficient"
-
 [[theorems]]
 name = "RealRooted.Challenges.Obreschkoff.allCombinationsRealRooted_of_interlaces"
 label = "Interlacing gives a real-rooted pencil"
@@ -29,17 +24,23 @@ name = "RealRooted.Challenges.Obreschkoff.interlaces_or_reverse_of_allCombinatio
 label = "A real-rooted pencil gives interlacing"
 
 [[theorems]]
-name = """RealRooted.Challenges.Obreschkoff.\
-interlaces_or_reverse_of_allCombinationsRealRooted_posLeading"""
-label = "The converse for positive leading coefficients"
+name = "RealRooted.Challenges.Obreschkoff.allCombinationsRealRooted_iff_interlaces_or_reverse"
+label = "Obreschkoff’s theorem as an equivalence"
 -->
 
 <!-- realrooted-catalog-content -->
 # Obreschkoff’s theorem
 
-Two interlacing polynomials generate a real-rooted pencil. Conversely, a
-real-rooted pencil with the stated degree hypotheses forces one of the two
-interlacing orientations.
+Two interlacing polynomials generate a real-rooted pencil: every real linear
+combination $\alpha f + \beta g$ splits over $\mathbb R$. Conversely, if
+every real linear combination of $f$ and $g$ splits, then $f$ and $g$
+interlace in one of the two orientations, where either polynomial may be zero.
+No degree hypothesis is needed: the degrees of such $f$ and $g$ automatically
+differ by at most one.
+
+Hence, for real polynomials $f$ and $g$ that are zero or real-rooted, every
+real linear combination of $f$ and $g$ splits if and only if $f$ and $g$
+interlace in one of the two orientations.
 
 ## References
 
@@ -58,9 +59,9 @@ Nullstellen reeller Polynome* (1963), and J.-P. Dedieu, "Obreschkoff's theorem
 revisited: what convex sets are contained in the set of hyperbolic polynomials?",
 J. Pure Appl. Algebra 81 (1992), 269--278.
 
-This module exposes the checked forward and converse Obreschkoff directions.
-The continuity and common-root analysis remains in
-`RealRooted.ObreschkoffConverse`.
+This module exposes the checked forward and converse Obreschkoff directions
+and their combination as an equivalence. The continuity and common-root
+analysis remains in `RealRooted.ObreschkoffConverse`.
 -/
 
 open Polynomial
@@ -71,30 +72,37 @@ namespace Obreschkoff
 
 /-- If `f` interlaces `g`, then every real linear combination is real-rooted
 or zero. -/
-theorem allCombinationsRealRooted_of_interlaces :
-    ∀ {f g : ℝ[X]}, StrictInterl f g → AllComboRealRooted f g :=
-  RealRooted.allComboRealRooted_of_strictInterl
+theorem allCombinationsRealRooted_of_interlaces {f g : ℝ[X]} (hfg : StrictInterl f g) :
+    AllComboRealRooted f g :=
+  RealRooted.allComboRealRooted_of_strictInterl hfg
 
-/-- Converse Obreschkoff theorem in the degree-aware orientation used by
-`StrictInterl`. -/
-theorem interlaces_or_reverse_of_allCombinationsRealRooted :
-    ∀ {f g : ℝ[X]},
-      (f ≠ 0 ∧ f.Splits) →
-      (g ≠ 0 ∧ g.Splits) →
-      AllComboRealRooted f g →
-      f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree →
-      StrictInterl f g ∨ StrictInterl g f :=
-  fun hf hg => RealRooted.strictInterl_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2
+/-- Converse Obreschkoff theorem: if every real linear combination of `f` and
+`g` is real-rooted, then `f` and `g` interlace in one of the two orientations,
+where either polynomial may be zero. -/
+theorem interlaces_or_reverse_of_allCombinationsRealRooted {f g : ℝ[X]}
+    (hall : AllComboRealRooted f g) :
+    Interl f g ∨ Interl g f :=
+  RealRooted.interl_or_reverse_of_allComboRealRooted hall
 
-/-- Converse direction for polynomials with positive leading coefficients. -/
-theorem interlaces_or_reverse_of_allCombinationsRealRooted_posLeading {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hf_splits : f.Splits)
-    (hg_pos : HasPosLeadingCoeff g) (hg_splits : g.Splits)
-    (hall : AllComboRealRooted f g)
-    (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree) :
-    StrictInterl f g ∨ StrictInterl g f :=
-  interlaces_or_reverse_of_allCombinationsRealRooted
-    ⟨hf_pos.ne_zero, hf_splits⟩ ⟨hg_pos.ne_zero, hg_splits⟩ hall hdeg
+private theorem allComboRealRooted_of_interl {f g : ℝ[X]} (hf : f.Splits)
+    (hg : g.Splits) (hfg : Interl f g) : AllComboRealRooted f g := by
+  rcases hfg with rfl | rfl | hfg
+  · intro α β
+    simpa using hg.C_mul β
+  · intro α β
+    simpa using hf.C_mul α
+  · exact RealRooted.allComboRealRooted_of_strictInterl hfg
+
+/-- Obreschkoff's theorem: two polynomials, each zero or real-rooted, generate
+a real-rooted pencil if and only if they interlace in one of the two
+orientations. -/
+theorem allCombinationsRealRooted_iff_interlaces_or_reverse {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits) :
+    AllComboRealRooted f g ↔ Interl f g ∨ Interl g f := by
+  refine ⟨interlaces_or_reverse_of_allCombinationsRealRooted, ?_⟩
+  rintro (hfg | hgf)
+  · exact allComboRealRooted_of_interl hf hg hfg
+  · exact allComboRealRooted_comm (allComboRealRooted_of_interl hg hf hgf)
 
 end Obreschkoff
 end Challenges

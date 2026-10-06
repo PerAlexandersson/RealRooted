@@ -1,12 +1,17 @@
 import RealRooted.GeneralizedSnakePosets.Narayana.Turan
 import RealRooted.GeneralizedSnakePosets.MatrixInduction
 import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAnalytic
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 
 /-!
 # The shifted difference interlacing claim for modified Narayana polynomials
 
 This module combines the analytic affine-Narayana proof from the Turan development
-with the endpoint-safe shifted difference-interlacing conversion.
+with the endpoint-safe shifted difference-interlacing conversion, and discharges
+the combinatorial inputs with the column recurrence
+(`TruncatedStaircase.ColumnRecurrence`): the auxiliary recurrence
+`FiniteSkewBoard.narayanaAuxiliaryGRecurrence_modified` and nonnegativity of
+`G_n - G_{n-1}` (`FiniteSkewBoard.auxiliaryG_sub_hasNonnegCoeffs`).
 -/
 
 open Polynomial
@@ -16,89 +21,62 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
-/-- The recurrence hypothesis is accepted combinatorial input from the auxiliary recurrence
-of the paper.  Formalizing the generalized-snake-poset model that proves this
-identity is outside the present scope; from this point onward we derive the
-analytic root information in Lean. -/
-theorem auxiliaryG_roots_sum_of_narayanaRecurrence
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    {n : ℕ} (hn : 2 ≤ n) :
+open FiniteSkewBoard (narayanaAuxiliaryGRecurrence_modified auxiliaryG_sub_hasNonnegCoeffs)
+
+/-- Root sum of the auxiliary polynomial `G_n`. -/
+theorem auxiliaryG_roots_sum {n : ℕ} (hn : 2 ≤ n) :
     (FiniteSkewBoard.auxiliaryG n).roots.sum =
       -(((n : ℝ) + 1) * ((n : ℝ) - 1) / 3) := by
   have hsplit : (FiniteSkewBoard.auxiliaryG n).Splits := by
-    simpa using auxiliaryGPencil_splits_of_combinatorial hrec2
-      affineModifiedNarayanaInterlacing_modified (m := n) (lam := 0) (nu := 0)
-      hn (by norm_num) (by norm_num)
-  have hdeg := auxiliaryG_natDegree_of_narayanaRecurrence hrec2 n (by lia)
+    simpa using auxiliaryGPencil_splits_of_combinatorial
+      narayanaAuxiliaryGRecurrence_modified affineModifiedNarayanaInterlacing_modified
+      (m := n) (lam := 0) (nu := 0) hn (by norm_num) (by norm_num)
+  have hdeg :=
+    auxiliaryG_natDegree_of_narayanaRecurrence narayanaAuxiliaryGRecurrence_modified n (by lia)
   have hdegpos : 0 < (FiniteSkewBoard.auxiliaryG n).natDegree := by
     rw [hdeg]
     lia
   have hlead : (FiniteSkewBoard.auxiliaryG n).leadingCoeff = (n : ℝ) := by
     rw [← Polynomial.coeff_natDegree, hdeg]
-    exact auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 n (by lia)
+    exact auxiliaryG_coeff_sub_one_of_narayanaRecurrence
+      narayanaAuxiliaryGRecurrence_modified n (by lia)
   have hnext :
       (FiniteSkewBoard.auxiliaryG n).nextCoeff =
         ((n : ℝ) + 1) * (n : ℝ) * ((n : ℝ) - 1) / 3 := by
     rw [Polynomial.nextCoeff_of_natDegree_pos hdegpos, hdeg]
     simpa [Nat.sub_sub] using
-      auxiliaryG_coeff_sub_two_of_narayanaRecurrence hrec2 n hn
+      auxiliaryG_coeff_sub_two_of_narayanaRecurrence narayanaAuxiliaryGRecurrence_modified n hn
   have hvieta := hsplit.nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
   rw [hnext, hlead] at hvieta
   apply mul_left_cancel₀ (show (n : ℝ) ≠ 0 by positivity)
   linarith
 
-/-- The shifted difference interlacing claim for the concrete modified Narayana family.
-
-The remaining hypotheses are intentionally explicit combinatorial inputs.
-The auxiliary recurrence is the non-nesting-rook recurrence defining auxiliary
-family, while coefficientwise nonnegativity of `G n - G (n - 1)` comes from
-the same board interpretation. We use these facts without formalizing the full
-rook model; all analytic real-rootedness and interlacing steps are proved in
-Lean. -/
-theorem shiftedDifferenceInterlacing_modified
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
-      HasNonnegCoeffs
-        (FiniteSkewBoard.auxiliaryG n -
-          FiniteSkewBoard.auxiliaryG (n - 1))) :
-    ShiftedDifferenceInterlacingStatement
+/-- The shifted difference interlacing claim for the concrete modified Narayana
+family: for `m ≥ 2`, `λ ≥ 0` and `ν ≥ -1`,
+`(λX + ν) G_{m-1} + G_m` strictly interlaces `(λX + ν) P_{m-1} + P_m`. -/
+theorem shiftedDifferenceInterlacing_modified :
+    ShiftedDifferenceInterlacing
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
-  shiftedDifferenceInterlacing_modified_of_combinatorial hrec2
-    affineModifiedNarayanaInterlacing_modified hH_nonneg
+  shiftedDifferenceInterlacing_modified_of_combinatorial
+    narayanaAuxiliaryGRecurrence_modified affineModifiedNarayanaInterlacing_modified
+    fun _ hn => auxiliaryG_sub_hasNonnegCoeffs hn
 
-/-- The auxiliary interlacing lemma follows from the shifted difference interlacing claim at `lam =
-nu = 0`, apart from
-the already proved `n = 1` base case.  The recurrence and difference
-nonnegativity hypotheses remain the accepted combinatorial inputs documented
-above; this deduction from them is entirely analytic. -/
-theorem auxiliaryGInterlaces_modified
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
-      HasNonnegCoeffs
-        (FiniteSkewBoard.auxiliaryG n -
-          FiniteSkewBoard.auxiliaryG (n - 1))) :
-    AuxiliaryGInterlacesStatement
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG := by
-  intro n hn
-  rcases eq_or_lt_of_le hn with h | hn
-  · subst n
-    exact auxiliaryGInterlaces_modified_base
-  · simpa using
-      shiftedDifferenceInterlacing_modified hrec2 hH_nonneg
-        (m := n) (lam := 0) (nu := 0) (by lia) (by norm_num) (by norm_num)
+/-- **The auxiliary interlacing lemma.** For `n ≥ 1`, the auxiliary polynomial
+`G_n` strictly interlaces the modified Narayana polynomial `P_n`.  The case
+`n = 1` is the base case; for `n ≥ 2` it is the shifted difference interlacing
+claim at `λ = ν = 0`. -/
+theorem auxiliaryG_strictInterl_modifiedNarayana {n : ℕ} (hn : n ≠ 0) :
+    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
+  rcases eq_or_ne n 1 with rfl | hn1
+  · exact auxiliaryGInterlaces_modified_base
+  · simpa using shiftedDifferenceInterlacing_modified
+      (m := n) (lam := 0) (nu := 0) (by lia) le_rfl (by norm_num)
 
 /-- Consecutive auxiliary `G` polynomials have real-rooted positive linear
 combinations. This is the part of adjacent `G` interlacing supplied
 directly by the auxiliary recurrence and the affine Narayana interlacing lemma; orienting the
-pencil remains a
-separate analytic step. -/
-theorem auxiliaryG_posComboRealRooted_of_narayanaRecurrence
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    {m : ℕ} (hm : 2 ≤ m) :
+pencil remains a separate analytic step. -/
+theorem auxiliaryG_posComboRealRooted {m : ℕ} (hm : 2 ≤ m) :
     PosComboRealRooted (FiniteSkewBoard.auxiliaryG (m - 1))
       (FiniteSkewBoard.auxiliaryG m) := by
   intro lam mu hlam hmu
@@ -108,12 +86,13 @@ theorem auxiliaryG_posComboRealRooted_of_narayanaRecurrence
     C (lam / mu) * FiniteSkewBoard.auxiliaryG (m - 1) +
       FiniteSkewBoard.auxiliaryG m
   have hV_split : V.Splits := by
-    simpa [V] using auxiliaryGPencil_splits_of_combinatorial (lam := 0) hrec2
-      affineModifiedNarayanaInterlacing_modified hm (by positivity)
+    simpa [V] using auxiliaryGPencil_splits_of_combinatorial (lam := 0)
+      narayanaAuxiliaryGRecurrence_modified affineModifiedNarayanaInterlacing_modified hm
+      (by positivity)
       (show -1 ≤ lam / mu by linarith)
   have hV_pos : HasPosLeadingCoeff V := by
     simpa [V] using auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
-      (lam := 0) (nu := lam / mu) hrec2 hm (by positivity)
+      (lam := 0) (nu := lam / mu) narayanaAuxiliaryGRecurrence_modified hm (by positivity)
   have hscale :
       C mu * V =
         C lam * FiniteSkewBoard.auxiliaryG (m - 1) +
@@ -125,173 +104,39 @@ theorem auxiliaryG_posComboRealRooted_of_narayanaRecurrence
   exact ⟨mul_ne_zero (by simpa using hmu_ne) hV_pos.ne_zero,
     hV_split.C_mul mu⟩
 
-/-- The Braun--Jal induction route for the concrete modified Narayana data.
-
-The recurrence `hrec2` and difference nonnegativity `hH_nonneg` are the
-explicit combinatorial inputs described at `shiftedDifferenceInterlacing_modified`. The
-remaining hypotheses are genuine properties of the chosen snake-polynomial
-model and the auxiliary family; none assumes the induction-route conclusion. -/
-theorem snakeInterlacingInductionRoute_modified_of_modelInputs
-    {M : SnakeWord → ℝ[X]}
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
-      HasNonnegCoeffs
-        (FiniteSkewBoard.auxiliaryG n -
-          FiniteSkewBoard.auxiliaryG (n - 1)))
-    (hG : ∀ {m : ℕ}, 2 ≤ m →
-      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1))
-        (FiniteSkewBoard.auxiliaryG m))
-    (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
-    (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
-      (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
-      M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    SnakeInterlacingInductionRouteStatement M modifiedNarayanaPolynomial
-      FiniteSkewBoard.auxiliaryG :=
-  snakeInterlacingInductionRoute_of_shiftedDifference_of_constant_matches_succ_length
-    (fun _h33 _h34 => shiftedDifferenceInterlacing_modified hrec2 hH_nonneg)
-    modifiedNarayanaPolynomial_interlaces_succ hG
-    modifiedNarayanaPolynomial_one FiniteSkewBoard.auxiliaryG_one
-    modifiedNarayanaPolynomial_hasNonnegCoeffs
-    FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs hM_nonneg hdeg hM_const
-
-private theorem strictInterl_narayanaPolynomial_two (n : ℕ) :
-    StrictInterl (narayanaPolynomial 2 n) (narayanaPolynomial 2 (n + 1)) := by
-  cases n with
-  | zero =>
-      rw [narayanaPolynomial_one]
-      simpa using
-        (interlaces_one_linear (Polynomial.natDegree_X_add_C (1 : ℝ))).toStrictInterl
-  | succ n =>
-      simpa [Nat.succ_eq_add_one, Nat.add_assoc] using
-        strictInterl_narayanaPolynomial_succ 2 n
-
-/-- Consecutive auxiliary polynomials are in an interlacing relation under an additional
-identification with parameter-two generalized Narayana polynomials.
-
-This identity is not an input used in Braun--Jal's proof of the snake interlacing theorem; their
-proof instead uses the `[P, G; Q, H]` matrix and the difference interlacing claim.  This theorem is
-therefore an optional stronger route and `hG_model` requires an independent
-justification. -/
-theorem auxiliaryG_strictInterl_succ_of_narayanaTwoModel
-    (hG_model : ∀ n : ℕ, 1 ≤ n →
-      FiniteSkewBoard.auxiliaryG n =
-        C (n : ℝ) * narayanaPolynomial 2 (n - 1)) :
-    ∀ {m : ℕ}, 2 ≤ m →
-      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1))
-        (FiniteSkewBoard.auxiliaryG m) := by
-  intro m hm
-  rw [hG_model (m - 1) (by lia), hG_model m (by lia)]
-  have hstrictInterl := strictInterl_narayanaPolynomial_two (m - 2)
-  have hm1_ne : ((m - 1 : ℕ) : ℝ) ≠ 0 := by exact_mod_cast (show m - 1 ≠ 0 by lia)
-  have hscaled :=
-    (hstrictInterl.C_mul_left hm1_ne).C_mul_right
-      (show (m : ℝ) ≠ 0 by positivity)
-  have hleft : m - 1 - 1 = m - 2 := by lia
-  have hright : m - 2 + 1 = m - 1 := by lia
-  simpa [hleft, hright] using hscaled
-
-/-- Concrete the snake-interlacing checkpoint with its proof boundary made explicit.
-The recurrence, coefficient nonnegativity, word recurrence, degree, and
-constant-word hypotheses are combinatorial model inputs, so accepting them is
-consistent with the scope documented above.  In contrast, `hG` is an analytic
-premise still to be proved (or removed by a sharper matrix argument); this
-theorem isolates that sole remaining analytic boundary rather than claiming
-the final result unconditionally. -/
-theorem nonNestingRookInterlacing_modified_of_modelInputs_of_adjacentG
-    {M : SnakeWord → ℝ[X]}
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
-      HasNonnegCoeffs
-        (FiniteSkewBoard.auxiliaryG n -
-          FiniteSkewBoard.auxiliaryG (n - 1)))
-    (hG : ∀ {m : ℕ}, 2 ≤ m →
-      StrictInterl (FiniteSkewBoard.auxiliaryG (m - 1))
-        (FiniteSkewBoard.auxiliaryG m))
-    (hrec : GeneralizedSnakeRecurrenceStatement M
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
-    (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
-      (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
-      M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    NonNestingRookInterlacingStatement M := by
-  exact
-    (snakeInterlacingInductionRoute_modified_of_modelInputs hrec2 hH_nonneg hG
-      hM_nonneg hdeg hM_const)
-      (auxiliaryGInterlaces_modified hrec2 hH_nonneg)
-      affineModifiedNarayanaInterlacing_modified hrec
-
 /-- Snake-interlacing through the source `[P, G; Q, H]` matrix.
 
-The hypotheses are the intended combinatorial trust boundary.  The auxiliary recurrence,
-nonnegativity of the board difference `H`, the snake recurrence, the degree identity,
-and the constant-word staircase identity come from the non-nesting-rook model;
-formalizing that complete model is outside the present scope.  No hypothesis
-assumes real-rootedness, interlacing, or splitting. -/
+The hypotheses are the remaining combinatorial inputs on `M`: the snake
+recurrence, nonnegative coefficients, the degree identity, and the
+constant-word staircase identity.  No hypothesis assumes real-rootedness,
+interlacing, or splitting.  All of them are proved for the concrete
+non-nesting-rook model in `snakeInterlacing_generalizedSnakeRookModel`
+(`SnakeRecurrence`). -/
 theorem nonNestingRookInterlacing_modified_of_sourceInputs
     {M : SnakeWord → ℝ[X]}
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
-      HasNonnegCoeffs
-        (FiniteSkewBoard.auxiliaryG n -
-          FiniteSkewBoard.auxiliaryG (n - 1)))
-    (hrec : GeneralizedSnakeRecurrenceStatement M
+    (hrec : GeneralizedSnakeRecurrence M
       modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
     (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
     (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
       (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
     (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
       M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    NonNestingRookInterlacingStatement M :=
+    NonNestingRookInterlacing M :=
   snakeInterlacing_of_differenceInterlacing_of_constant_matches_succ_length
     (M := M) (P := modifiedNarayanaPolynomial)
     (G := FiniteSkewBoard.auxiliaryG)
     hrec
     ((snakeDifferenceInterlacing_iff_shiftedDifferenceInterlacing _ _).mpr
-      (shiftedDifferenceInterlacing_modified hrec2 hH_nonneg))
+      shiftedDifferenceInterlacing_modified)
     modifiedNarayanaPolynomial_ne_zero
     modifiedNarayanaPolynomial_interlaces_succ
     modifiedNarayanaPolynomial_one FiniteSkewBoard.auxiliaryG_one
     modifiedNarayanaPolynomial_hasNonnegCoeffs
     FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs
     (fun {_m} hm => narayanaDifference_modified_hasNonnegCoeffs (by lia))
-    (fun {_m} hm => by
-      simpa [auxiliaryDifference] using hH_nonneg _ (by lia))
+    (fun {m} hm => by
+      simpa [auxiliaryDifference] using auxiliaryG_sub_hasNonnegCoeffs (n := m) (by lia))
     hM_nonneg hdeg hM_const
-
-/-- An alternative snake-interlacing endpoint using the additional generalized
-Narayana identity `hG_model`.
-
-Braun--Jal do not use or state this identity in their proof.  The source-faithful
-route goes through the `[P, G; Q, H]` matrix and the difference interlacing claim, so this result
-must
-not be presented as depending only on the paper's combinatorial boundary facts.
-It remains useful when `hG_model` is independently established. -/
-theorem nonNestingRookInterlacing_modified_of_modelInputs
-    {M : SnakeWord → ℝ[X]}
-    (hrec2 : NarayanaAuxiliaryGRecurrenceStatement
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
-      HasNonnegCoeffs
-        (FiniteSkewBoard.auxiliaryG n -
-          FiniteSkewBoard.auxiliaryG (n - 1)))
-    (hG_model : ∀ n : ℕ, 1 ≤ n →
-      FiniteSkewBoard.auxiliaryG n =
-        C (n : ℝ) * narayanaPolynomial 2 (n - 1))
-    (hrec : GeneralizedSnakeRecurrenceStatement M
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
-    (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
-    (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
-      (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
-    (hM_const : ∀ {w : SnakeWord}, w.IsConstant →
-      M w = modifiedNarayanaPolynomial (w.length + 1)) :
-    NonNestingRookInterlacingStatement M :=
-  nonNestingRookInterlacing_modified_of_modelInputs_of_adjacentG hrec2 hH_nonneg
-    (auxiliaryG_strictInterl_succ_of_narayanaTwoModel hG_model) hrec hM_nonneg hdeg hM_const
 
 end GeneralizedSnakePosets
 end RealRooted

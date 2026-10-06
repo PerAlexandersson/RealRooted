@@ -3,9 +3,8 @@ import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
 /-!
 # Certificate-free Turan API for modified Narayana polynomials
 
-This module contains the reusable Turan determinant statements and the
-hypothesis-taking bridge lemmas for the affine Narayana interlacing lemma.  Explicit finite
-certificates live in `RealRooted.GeneralizedSnakePosets.Narayana.TuranCertificates`.
+This module proves the modified Narayana Turan inequality on nonpositive
+inputs and uses it for the affine Narayana interlacing lemma.
 -/
 
 open Polynomial
@@ -111,26 +110,6 @@ theorem modifiedNarayanaTuran_eq_scale_mul_jacobi11NormalizedTuran
   rw [← e0, ← e1, ← e2]
   ring
 
-/-- Statement form for the remaining Narayana Turan inequality needed by the
-shifted affine-Narayana route. -/
-def ModifiedNarayanaTuranNonnegOnNonposStatement : Prop :=
-  ∀ {m : ℕ} {r : ℝ}, 1 ≤ m → r ≤ 0 → 0 ≤ modifiedNarayanaTuran m r
-
-/-- The normalized Jacobi Turan inequality on `[-1, 1]` gives the modified
-Narayana Turan inequality on nonpositive inputs through the Braun--Jal change
-of variables. -/
-theorem modifiedNarayanaTuranNonnegOnNonpos_of_jacobi11NormalizedTuran
-    (hjacobi : ∀ {m : ℕ} {x : ℝ}, 1 ≤ m → x ∈ Set.Icc (-1 : ℝ) 1 →
-      0 ≤ ((jacobi11NormalizedPolynomial m).eval x) ^ 2 -
-        (jacobi11NormalizedPolynomial (m + 1)).eval x *
-          (jacobi11NormalizedPolynomial (m - 1)).eval x) :
-    ModifiedNarayanaTuranNonnegOnNonposStatement := by
-  intro m r hm hr
-  have hr_ne : r ≠ 1 := by linarith
-  rw [modifiedNarayanaTuran_eq_scale_mul_jacobi11NormalizedTuran hm hr_ne]
-  exact mul_nonneg (jacobi11TuranScale_nonneg m r)
-    (hjacobi hm (jacobi11ChangeOfVariables_mem_Icc_of_nonpos hr))
-
 /-- Modified Narayana Turan determinants are nonnegative on nonpositive
 inputs. -/
 theorem modifiedNarayanaTuran_nonneg_of_nonpos
@@ -151,12 +130,6 @@ theorem modifiedNarayanaTuran_nonneg_of_nonpos
             (sq_nonneg _))
           (mul_nonneg (by linarith) (sq_nonneg _))
       · positivity
-
-/-- The all-`m` Narayana Turan package needed by the shifted affine-Narayana route. -/
-theorem modifiedNarayanaTuranNonnegOnNonpos :
-    ModifiedNarayanaTuranNonnegOnNonposStatement := by
-  intro m r hm hr
-  exact modifiedNarayanaTuran_nonneg_of_nonpos hm hr
 
 /-- The normalized `R_n^(1,1)` Jacobi Turan inequality on `[-1, 1]`. -/
 theorem jacobi11NormalizedTuran_nonneg_of_mem_Icc
@@ -180,19 +153,6 @@ theorem jacobi11NormalizedTuran_nonneg_of_mem_Icc
       have hsq : 0 < (r - 1) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hr_ne)
       simpa [pow_mul] using pow_pos hsq m
     exact nonneg_of_mul_nonneg_right hmod hscale_pos
-
-/-- Bounded statement form for the Narayana Turan inequality.  This records
-finite checkpoints while the all-`m` nonpositive-input proof is being built. -/
-def ModifiedNarayanaTuranNonnegOnNonposUpToStatement (N : ℕ) : Prop :=
-  ∀ {m : ℕ} {r : ℝ}, 1 ≤ m → m ≤ N → r ≤ 0 →
-    0 ≤ modifiedNarayanaTuran m r
-
-/-- The all-`m` Turan inequality implies every bounded Turan package. -/
-theorem modifiedNarayanaTuranNonnegOnNonposUpTo_of_statement
-    (hT : ModifiedNarayanaTuranNonnegOnNonposStatement) (N : ℕ) :
-    ModifiedNarayanaTuranNonnegOnNonposUpToStatement N := by
-  intro m r hm _hmN hr
-  exact hT hm hr
 
 /-- At a root of the shifted affine-Narayana left-hand polynomial, the right-hand
 polynomial sign test is exactly the negative Narayana Turan determinant. -/
@@ -238,33 +198,17 @@ theorem affineModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turan
 
 /-- The global nonpositive-input Turan inequality gives the shifted affine-Narayana
 right-hand sign test at roots of the left-hand polynomial. -/
-theorem affineModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonneg
+theorem affineModifiedNarayanaShifted_right_eval_mul_prev_nonpos
     {m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
-    (hT : ModifiedNarayanaTuranNonnegOnNonposStatement)
     (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
         narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
     (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
         narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
       (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
   affineModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turan hr
-    (hT hm (affineModifiedNarayanaShifted_left_isRoot_nonpos hm hlam hmu
-      (affineModifiedNarayanaShifted_left_ne_zero hm hlam hmu) r hr))
-
-/-- A bounded nonpositive-input Turan package gives the shifted affine-Narayana
-right-hand sign test in that range. -/
-theorem
-    affineModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    {N m : ℕ} {lam mu r : ℝ} (hm : 1 ≤ m) (hmN : m ≤ N)
-    (hlam : 0 ≤ lam) (hmu : 0 ≤ mu)
-    (hT : ModifiedNarayanaTuranNonnegOnNonposUpToStatement N)
-    (hr : (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
-        narayanaDifference modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
-        narayanaDifference modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  affineModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turan hr
-    (hT hm hmN (affineModifiedNarayanaShifted_left_isRoot_nonpos hm hlam hmu
-      (affineModifiedNarayanaShifted_left_ne_zero hm hlam hmu) r hr))
+    (modifiedNarayanaTuran_nonneg_of_nonpos hm
+      (affineModifiedNarayanaShifted_left_isRoot_nonpos hm hlam hmu
+        (affineModifiedNarayanaShifted_left_ne_zero (mu := mu) hm hlam) r hr))
 
 /-- At a root of the paper-shaped affine-Narayana left-hand polynomial, the
 right-hand sign test is exactly the negative Narayana Turan determinant. -/
@@ -308,74 +252,81 @@ theorem affineModifiedNarayana_right_eval_mul_prev_nonpos_of_turan
 
 /-- The global nonpositive-input Turan inequality gives the paper-shaped
 the affine-Narayana right-hand sign test at roots of the left-hand polynomial. -/
-theorem affineModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonneg
+theorem affineModifiedNarayana_right_eval_mul_prev_nonpos
     {m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
-    (hT : ModifiedNarayanaTuranNonnegOnNonposStatement)
     (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m).IsRoot r)) :
     (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
         modifiedNarayanaPolynomial (m + 1)).eval r) *
       (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
   affineModifiedNarayana_right_eval_mul_prev_nonpos_of_turan hr
-    (hT hm (affineModifiedNarayana_left_isRoot_nonpos hm hlam hnu hr))
-
-/-- A bounded nonpositive-input Turan package gives the paper-shaped affine-Narayana
-right-hand sign test in that range. -/
-theorem affineModifiedNarayana_right_eval_mul_prev_nonpos_of_turanNonnegUpTo
-    {N m : ℕ} {lam nu r : ℝ} (hm : 1 ≤ m) (hmN : m ≤ N)
-    (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
-    (hT : ModifiedNarayanaTuranNonnegOnNonposUpToStatement N)
-    (hr : (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
-        modifiedNarayanaPolynomial m).IsRoot r)) :
-    (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)).eval r) *
-      (modifiedNarayanaPolynomial (m - 1)).eval r ≤ 0 :=
-  affineModifiedNarayana_right_eval_mul_prev_nonpos_of_turan hr
-    (hT hm hmN (affineModifiedNarayana_left_isRoot_nonpos hm hlam hnu hr))
+    (modifiedNarayanaTuran_nonneg_of_nonpos hm
+      (affineModifiedNarayana_left_isRoot_nonpos hm hlam hnu hr))
 
 /-- The affine Narayana interlacing lemma in shifted nonnegative-parameter form for the
 modified Narayana family. -/
-theorem affineModifiedNarayanaShiftedInterlacing_modified :
-    AffineModifiedNarayanaShiftedInterlacingStatement
-      modifiedNarayanaPolynomial := by
-  intro m lam mu hm hlam hmu
+theorem affineModifiedNarayanaShiftedInterlacing_modified {m : ℕ} {lam mu : ℝ}
+    (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    StrictInterl
+      ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+        narayanaDifference modifiedNarayanaPolynomial m)
+      ((C lam * X + C mu) * modifiedNarayanaPolynomial m +
+        narayanaDifference modifiedNarayanaPolynomial (m + 1)) := by
   have hm1 : 1 ≤ m := by linarith
   have hleft_interlaces :
       Interlaces (modifiedNarayanaPolynomial (m - 1))
         ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
           narayanaDifference modifiedNarayanaPolynomial m) :=
-    affineModifiedNarayanaShifted_prev_interlaces_left hm hlam hmu
+    affineModifiedNarayanaShifted_prev_interlaces_left (mu := mu) hm hlam
   have hright_interlaces :
       Interlaces (modifiedNarayanaPolynomial m)
         ((C lam * X + C mu) * modifiedNarayanaPolynomial m +
           narayanaDifference modifiedNarayanaPolynomial (m + 1)) :=
     affineModifiedNarayanaShifted_prev_interlaces_left
-      (m := m + 1) (by lia) hlam hmu
+      (m := m + 1) (mu := mu) (by lia) hlam
   refine
     strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
       hleft_interlaces
       (modifiedNarayanaPolynomial_posLeadingCoeff (m - 1))
       hright_interlaces.1.1 hright_interlaces.1.2
-      (affineModifiedNarayanaShifted_right_posLeadingCoeff hlam hmu)
+      (affineModifiedNarayanaShifted_right_posLeadingCoeff (mu := mu) hlam)
       ?_ ?_
       (affineModifiedNarayanaShifted_left_no_common_prev hm1)
       ?_
-  · rw [affineModifiedNarayanaShifted_left_natDegree hm1 hlam hmu,
-      affineModifiedNarayanaShifted_right_natDegree hlam hmu]
+  · rw [affineModifiedNarayanaShifted_left_natDegree (mu := mu) hm1 hlam,
+      affineModifiedNarayanaShifted_right_natDegree (mu := mu) hlam]
     lia
-  · rw [affineModifiedNarayanaShifted_left_natDegree hm1 hlam hmu,
-      affineModifiedNarayanaShifted_right_natDegree hlam hmu]
+  · rw [affineModifiedNarayanaShifted_left_natDegree (mu := mu) hm1 hlam,
+      affineModifiedNarayanaShifted_right_natDegree (mu := mu) hlam]
   · intro r hr
     exact
-      affineModifiedNarayanaShifted_right_eval_mul_prev_nonpos_of_turanNonneg
-        hm1 hlam hmu modifiedNarayanaTuranNonnegOnNonpos hr
+      affineModifiedNarayanaShifted_right_eval_mul_prev_nonpos
+        hm1 hlam hmu hr
 
 /-- The affine Narayana interlacing lemma in the paper's `ν ≥ -1` form for the modified
 Narayana family. -/
 theorem affineModifiedNarayanaInterlacing_modified :
-    AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial :=
-  affineModifiedNarayanaInterlacing_of_shifted
-    affineModifiedNarayanaShiftedInterlacing_modified
+    AffineModifiedNarayanaInterlacing modifiedNarayanaPolynomial := by
+  intro m lam nu hm hlam hnu
+  have hbase := affineModifiedNarayanaShiftedInterlacing_modified
+    (m := m) (lam := lam) (mu := nu + 1) hm hlam (by linarith)
+  have hC : (C (nu + 1) : ℝ[X]) = C nu + 1 := by simp
+  have hleft :
+      ((C lam * X + C (nu + 1)) * modifiedNarayanaPolynomial (m - 1) +
+          narayanaDifference modifiedNarayanaPolynomial m) =
+        ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
+          modifiedNarayanaPolynomial m) := by
+    rw [narayanaDifference, hC]
+    ring_nf
+  have hright :
+      ((C lam * X + C (nu + 1)) * modifiedNarayanaPolynomial m +
+          narayanaDifference modifiedNarayanaPolynomial (m + 1)) =
+        ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+          modifiedNarayanaPolynomial (m + 1)) := by
+    rw [narayanaDifference, hC]
+    simp only [Nat.add_sub_cancel]
+    ring_nf
+  rwa [hleft, hright] at hbase
 
 end GeneralizedSnakePosets
 end RealRooted

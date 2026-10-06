@@ -3,8 +3,8 @@ import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 /-!
 # Modified-Narayana PF and base interlacing facts
 
-This module contains the low-rank base cases, the shifted/unshifted affine-Narayana
-wrappers, and the PF-polynomial consequences used by explicit certificates.
+This module contains the shifted/unshifted affine-Narayana wrappers and the
+PF-polynomial consequences used by explicit certificates.
 -/
 
 open Polynomial Filter
@@ -14,36 +14,14 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
-/-- The concrete `G_2` auxiliary polynomial is twice `P_1`. -/
-theorem auxiliaryG_two_eq_C_mul_modifiedNarayanaPolynomial_one :
-    FiniteSkewBoard.auxiliaryG 2 =
-      C (2 : ℝ) * modifiedNarayanaPolynomial 1 := by
-  rw [FiniteSkewBoard.auxiliaryG_two, modifiedNarayanaPolynomial_one]
-  have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := Polynomial.C_eq_natCast (R := ℝ) 2
-  rw [hC2]
-  ring_nf
-
-/-- The `n = 2` case of the auxiliary interlacing lemma, for the concrete modified
-Narayana family and the finite-board auxiliary `G`. -/
-theorem auxiliaryGInterlaces_modified_two :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 2) (modifiedNarayanaPolynomial 2) := by
-  rw [auxiliaryG_two_eq_C_mul_modifiedNarayanaPolynomial_one]
-  exact (modifiedNarayanaPolynomial_strictInterl_succ 1).C_mul_left (by norm_num)
-
-/-- The checked initial cases `n = 1, 2` of the auxiliary interlacing lemma, for the
-concrete modified Narayana family and the finite-board auxiliary `G`. -/
-theorem auxiliaryGInterlaces_modified_of_le_two
-    {n : ℕ} (hn₁ : 1 ≤ n) (hn₂ : n ≤ 2) :
-    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
-  interval_cases n
-  · exact auxiliaryGInterlaces_modified_base
-  · exact auxiliaryGInterlaces_modified_two
+@[deprecated (since := "2026-10-05")]
+alias interlaces_of_quadratic_cubic_root_lists := Interlaces.of_quadratic_cubic_root_lists
 
 /-- The `λ = ν = 0` specialization of the affine Narayana interlacing lemma for the concrete
 modified Narayana family.  This exposes the affine-Narayana target shape while using
 the checked consecutive interlacing theorem. -/
 theorem affineModifiedNarayanaInterlacing_modified_zero_zero
-    {m : ℕ} (_hm : 2 ≤ m) :
+    {m : ℕ} :
     StrictInterl ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m)
       ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial m +
@@ -53,12 +31,12 @@ theorem affineModifiedNarayanaInterlacing_modified_zero_zero
 /-- The shifted `λ = 0, μ = 1` specialization of the affine Narayana interlacing lemma for the
 concrete modified Narayana family. -/
 theorem affineModifiedNarayanaShiftedInterlacing_modified_zero_one
-    {m : ℕ} (hm : 2 ≤ m) :
+    {m : ℕ} :
     StrictInterl ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
         narayanaDifference modifiedNarayanaPolynomial m)
       ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial m +
         narayanaDifference modifiedNarayanaPolynomial (m + 1)) := by
-  have hbase := affineModifiedNarayanaInterlacing_modified_zero_zero hm
+  have hbase := affineModifiedNarayanaInterlacing_modified_zero_zero (m := m)
   have hleft :
       ((C (0 : ℝ) * X + C (1 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
           narayanaDifference modifiedNarayanaPolynomial m) =
@@ -76,27 +54,11 @@ theorem affineModifiedNarayanaShiftedInterlacing_modified_zero_one
     simp
   rwa [hleft, hright]
 
-/-- Concrete modified-Narayana wrapper: the shifted affine-Narayana target implies
-the paper-shaped affine-Narayana target. -/
-theorem affineModifiedNarayanaInterlacing_modified_of_shifted
-    (h :
-      AffineModifiedNarayanaShiftedInterlacingStatement
-        modifiedNarayanaPolynomial) :
-    AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial :=
-  affineModifiedNarayanaInterlacing_of_shifted h
-
-/-- Concrete modified-Narayana wrapper: the paper-shaped affine-Narayana target
-implies shifted nonnegative-parameter target. -/
-theorem affineModifiedNarayanaShiftedInterlacing_modified_of_affineNarayana
-    (h : AffineModifiedNarayanaInterlacingStatement modifiedNarayanaPolynomial) :
-    AffineModifiedNarayanaShiftedInterlacingStatement
-      modifiedNarayanaPolynomial :=
-  affineModifiedNarayanaShiftedInterlacing_of_affineNarayana h
-
-/-- The coefficient-side modified Narayana family also satisfies the
-Braun--Jal modified-family interface. -/
+/-- The coefficient-side modified Narayana family also satisfies
+`P_0 = 1` and `N_{n+1} = X * P_n`. -/
 theorem modifiedNarayanaFamily_coeff :
-    ModifiedNarayanaFamilyStatement narayana modifiedNarayanaCoeffPolynomial := by
+    modifiedNarayanaCoeffPolynomial 0 = 1 ∧
+      ∀ n : ℕ, narayana (n + 1) = X * modifiedNarayanaCoeffPolynomial n := by
   constructor
   · simp
   · intro n

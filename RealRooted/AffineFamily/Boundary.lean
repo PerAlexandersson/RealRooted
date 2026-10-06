@@ -475,19 +475,6 @@ differentiating `deg f` times, this would force a positive constant-vs-degree-`�
 positive family, which is impossible.  This is the affine analogue of the
 degree-closeness reduction already used in `ObreschkoffConverse`. -/
 
-private lemma iterate_derivative_add :
-    ∀ (n : ℕ) (p q : ℝ[X]),
-      (derivative^[n]) (p + q) = (derivative^[n]) p + (derivative^[n]) q
-  | 0, p, q => by simp
-  | n + 1, p, q => by
-      simp
-
-private lemma iterate_derivative_C_mul (a : ℝ) :
-    ∀ (n : ℕ) (p : ℝ[X]),
-      (derivative^[n]) (C a * p) = C a * (derivative^[n]) p
-  | 0, p => by simp
-  | n + 1, p => by
-      simp
 protected lemma AffineFamily.isRealRooted_iterate_derivative_of_lt_natDegree
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) :
     ∀ {n : ℕ}, n < p.natDegree → (((derivative^[n]) p) ≠ 0 ∧ ((derivative^[n]) p).Splits)
@@ -670,18 +657,5 @@ private lemma
     StrictInterl g (X * f) :=
   strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common h hg_ne hg_splits hgnn
     (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
-
-/-- Public orientation selector for the right-hand pair `(g, X * f)` in the
-nonnegative-coefficient regime: if an Obreschkoff alternative is known and the
-pair has no common root, then the distinguished root `0` of `X * f` forces the
-orientation `g ≺ X * f`. -/
-theorem strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_nonneg
-    {f g : ℝ[X]}
-    (h : StrictInterl g (X * f) ∨ StrictInterl (X * f) g)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
-    (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
-    StrictInterl g (X * f) :=
-  strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common
-    h hg_ne hg_splits hgnn hno
 
 end RealRooted

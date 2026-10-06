@@ -106,12 +106,10 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_same_degree_nonneg_of_noCommon
         rw [← card_roots_of_splits hpair.left_splits, hroots_zero]
         simp
       have hqdeg_zero : q.natDegree = 0 := by lia
-      have hp_nonneg_zero : HasNonnegCoeffs (p.comp (X + C (0 : ℝ))) := by simpa using hp_nonneg
-      have hq_nonneg_zero : HasNonnegCoeffs (q.comp (X + C (0 : ℝ))) := by simpa using hq_nonneg
       simpa using
         positiveSplitSameDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
           (f := p) (g := q) (r := 0)
-          hpair hp_nonneg_zero hq_nonneg_zero hdeg hqdeg_zero μ hμ
+          hdeg hqdeg_zero μ hμ
   | cons a xs =>
       cases hxs : xs with
       | nil =>
@@ -199,7 +197,7 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_same_degree_nonneg
           have hdeg_delete :
               (deleteRootFactor p r).natDegree =
                 (deleteRootFactor q r).natDegree :=
-            hpair.natDegree_deleteRootFactor_eq hdeg
+            natDegree_deleteRootFactor_eq_of_natDegree_eq hdeg
           have hq_delete_lt :
               (deleteRootFactor q r).natDegree < n := by
             rw [natDegree_deleteRootFactor, hqdeg]
@@ -221,9 +219,12 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_same_degree_nonneg
   exact hmain q.natDegree rfl hpair hp_nonneg hq_nonneg hdeg μ hμ
 
 /-- Same-degree translated x-subtraction family. -/
-theorem positiveSplitSameDegreeTranslatedXSubRightFamily :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyStatement := by
-  intro f g r hpair hfnn hgnn hdeg μ hμ
+theorem positiveSplitSameDegreeTranslatedXSubRightFamily {f g : ℝ[X]} (r : ℝ)
+    (hpair : PositiveSplitRootCountPair f g)
+    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
+    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
+    (hdeg : f.natDegree = g.natDegree) (μ : ℝ) (hμ : 0 < μ) :
+    (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   let p := f.comp (X + C r)
   let q := g.comp (X + C r)
   have hpair_shift : PositiveSplitRootCountPair p q := by simpa [p, q] using hpair.comp_X_add_C r
@@ -231,16 +232,6 @@ theorem positiveSplitSameDegreeTranslatedXSubRightFamily :
     simpa [p, q, Polynomial.natDegree_comp] using hdeg
   simpa [p, q] using
     hpair_shift.xSub_splits_of_same_degree_nonneg hfnn hgnn hdeg_shift hμ
-
-/-- Same-degree translated x-subtraction family packaged with an arbitrary
-right-degree predicate. -/
-theorem positiveSplitSameDegreeTranslatedXSubRightFamilyPredicate
-    (P : ℕ → Prop) :
-    positiveSplitSameDegreeTranslatedXSubRightFamilyPredicateStatement P :=
-    positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement_of_imp
-    (fun _ _ => trivial)
-    (positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
-      positiveSplitSameDegreeTranslatedXSubRightFamily)
 
 end LiuOppositeSigns
 end RealRooted

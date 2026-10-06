@@ -132,7 +132,7 @@ theorem compatible_iff_rootCount_of_noCommonRoots {f g : ℝ[X]} (hf : f.Splits)
     (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
     Compatible f g ↔
       ∃ r s, LeftRootCountBranch f g r s ∨ RightRootCountBranch f g r s :=
-  theorem21CompatibleRootCountNoCommonNonconstant f g hf hg hsgn hno hf_deg hg_deg
+  theorem21CompatibleRootCountNoCommonNonconstant hf hg hsgn hno hf_deg hg_deg
 
 /-- Without the common-root branch, the forward direction fails (for `X` and
 `-X ^ 2`). -/
@@ -140,14 +140,14 @@ theorem published_forward_direction_fails :
     ¬ ∀ {f g : ℝ[X]}, f.Splits → g.Splits → OppositeLeadingSigns f g →
       f.natDegree ≠ 0 → g.natDegree ≠ 0 → Compatible f g →
         ∃ r s, LeftRootCountBranch f g r s ∨ RightRootCountBranch f g r s :=
-  not_theorem21CompatibleToRootCountBranchesNonconstantStatement
+  not_forall_theorem21RootCountBranches_of_compatible_nonconstant
 
 /-- Compatible real-rooted polynomials with opposite leading signs have degrees
 differing by at most two. -/
 theorem natDegree_diff_le_two {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
     |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
-  corollary22DegreeDiff_proof f g hf hg hsgn hcompat
+  corollary22DegreeDiff hf hg hsgn hcompat
 
 end LiuOppositeSigns
 end Challenges

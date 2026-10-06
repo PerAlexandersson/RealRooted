@@ -138,13 +138,6 @@ theorem roots_derivative_mem_Ioi_of_roots_mem_Ioi {p : ℝ[X]} {u : ℝ}
     ∀ r ∈ p.derivative.roots, r ∈ Set.Ioi u :=
   lt_roots_derivative_of_lt_roots hp hdeg h
 
-/-- Derivative root left-ray preservation. -/
-theorem roots_derivative_mem_Iio_of_roots_mem_Iio {p : ℝ[X]} {v : ℝ}
-    (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
-    (h : ∀ r ∈ p.roots, r ∈ Set.Iio v) :
-    ∀ r ∈ p.derivative.roots, r ∈ Set.Iio v :=
-  roots_derivative_lt_of_roots_lt hp hdeg h
-
 /-- Derivative root closed lower-ray preservation. -/
 theorem roots_derivative_mem_Ici_of_roots_mem_Ici {p : ℝ[X]} {u : ℝ}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree)
@@ -226,15 +219,6 @@ theorem derivative_of_natDegree_eq
   hfg.derivative hf hg hdeg.symm hpos
 
 end PosComboRealRooted
-
-/-- Non-namespace wrapper for
-`RealRooted.PosComboRealRooted.derivative`. -/
-theorem posComboRealRooted_derivative
-    {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) (hpos : 1 ≤ f.natDegree)
-    (hfg : PosComboRealRooted f g) :
-    PosComboRealRooted f.derivative g.derivative :=
-  hfg.derivative hf hg hdeg hpos
 
 /-- Explicit-binder applied form of `PosComboRealRooted.derivative` with the two
 polynomials as explicit arguments and degree equality in the call-site order

@@ -46,7 +46,43 @@ This guide applies to the `RealRooted` Lean project.
 - Mark declaration `Foo.bar` as `protected` if it is more auxiliary than
   another declaration named `Baz.bar`.
 
-## Proof Status and Statement Scaffolds
+## Names, Hypotheses and Deprecation
+
+- Name a theorem after its conclusion, in snake_case built from the conclusion's
+  constants, with hypotheses after `_of_`.  Put closure and preservation lemmas
+  in the predicate's namespace for dot notation (`IsPFPolynomial.thetaPlusOne`,
+  `Interl.derivative`) rather than `fooPreservesPF` or `foo_preserves_pf`.
+- Spell predicates as they are defined (`hasNonnegCoeffs`,
+  `hasPosLeadingCoeff`, `isPolyaFreqSeq`, `strictInterl`); in names,
+  `isRealRooted` means `p ≠ 0 ∧ p.Splits`.  Prop-valued definitions are
+  UpperCamelCase and data-valued definitions lowerCamelCase (`tDeriv`,
+  `idTransform`); a composite definition keeps its own camel case inside other
+  names (`iterateTDeriv`).
+- Keep paper, author, and theorem-number tags (`_mw_`, `_lw_`, `gw`,
+  `theorem21`, `Theorem26`) and workflow words (`Internal`, `Backend`, `Legacy`,
+  `Hyp`, `Bridge`, `Statement`, `_aux`, `_core`) out of public names.  Use a
+  namespace named after the paper or object (`RealRooted.MaWang`,
+  `RealRooted.BrandenSolus`), cite the source in the docstring, and make
+  genuine helpers `private`.
+- Do not open a Mathlib namespace inside `RealRooted` or add another root
+  namespace; upstream-shaped lemmas go in their Mathlib namespaces under
+  `RealRooted/Mathlib/`.
+- Keep public leaf names to roughly 60 characters; introduce a predicate or a
+  namespace instead of a longer name.
+- Do not keep an explicit hypothesis the proof does not use, and do not silence
+  the unused-variable linter by renaming it `_h`: drop it and update the
+  callers.  If downstream code uses the old signature, add the new statement
+  under a new name and deprecate the old one.
+- When a general theorem lands, delete its finite-case versions
+  (`foo_of_le_three`) and routes that only fed them, unless a caller, the
+  catalog, or a result stated on symmetricfunctions.com needs them.
+- A rename updates every in-repository caller in the same change, including
+  macro quotations and `export` lists, which do not trigger deprecation
+  warnings.  Add `@[deprecated (since := "YYYY-MM-DD")] alias` only for names
+  used by downstream projects, and remove those aliases once the downstream
+  pins have moved past them.
+
+## Proof Status, Scaffolds and Assumption Boundaries
 
 - A declaration `def FooStatement : Prop := ...` defines a proposition; it does
   not prove that proposition.
@@ -62,6 +98,20 @@ This guide applies to the `RealRooted` Lean project.
   scaffold or replace the scaffold with a direct theorem API when practical.
   Downstream interfaces should use the checked witness rather than continue to
   require the proved statement as a caller-supplied hypothesis.
+- A theorem containing `sorry`, or obtained from an added axiom with the same
+  content, is still unproved.  Do not present such a declaration as resolving a
+  proof issue.
+- Do not remove an explicit backend hypothesis from tactics or downstream
+  theorems until a checked, assumption-free witness has replaced it.
+- When an external mathematical fact is intentionally left as an explicit
+  hypothesis, add a nearby comment explaining why that boundary is acceptable.
+  Typical acceptable boundaries are a documented combinatorial model identity
+  whose full model is out of scope, or a clearly cited classical theorem whose
+  formalization is tracked separately.  The comment should also make clear that
+  the desired real-rootedness conclusion is derived from formalized recurrences
+  or stability lemmas rather than assumed directly.
+- In issues, pull requests, and handoffs, distinguish explicitly between a
+  statement scaffold, an admitted theorem, and a fully checked proof.
 
 ## Polynomial Derivatives
 
@@ -78,9 +128,8 @@ Follow the `Polynomial.natDegree_derivative` extraction pattern.
   `RealRooted.natDegree_derivative_eq`; migrate touched code toward the
   `Polynomial` namespace API.
 - Keep coefficient/leading-coefficient derivative positivity centralized in
-  `RealRooted/Derivative.lean`:
-  `HasNonnegCoeffs.derivative`, `nonnegCoeffs_derivative`, and
-  `hasPosLeadingCoeff_derivative`.
+  `RealRooted/Derivative/Algebra.lean`: `HasNonnegCoeffs.derivative` and
+  `HasPosLeadingCoeff.derivative`.
 
 ## List Interleaving
 
@@ -92,7 +141,10 @@ Follow the `Polynomial.natDegree_derivative` extraction pattern.
 ## Automation
 
 - For proof-golfing and cleanup passes, follow `LEAN_GOLF.md` as the local
-  rulebook.
+  rulebook.  The batch helpers live in `scripts/golf/`: `dupscan.py` and
+  `dupbody.py` find duplicate statements and proof bodies, `grind_candidates.py`
+  lists small tactic proofs, and `golf_driver.sh` trials a replacement tactic
+  file by file and keeps only what still elaborates.
 - Do not use `omega`; use `lia` for linear arithmetic.
 - Use `grind`, `simp_all`, and `positivity` for routine local plumbing when they
   keep the proof shorter and stable.
@@ -109,25 +161,6 @@ theorem-shape suggestions, or proof repairs:
   scratch environment first.
 - All suggested results are advisory; every proof modification must be fully
   validated using Lake, locally or in the README's CI-first draft-PR workflow.
-
-## Proof Status and Assumption Boundaries
-
-- A declaration of the form `def fooStatement : Prop` states a proof target; it
-  does not prove that target.
-- A theorem containing `sorry`, or obtained from an added axiom with the same
-  content, is still unproved.  Do not present such a declaration as resolving a
-  proof issue.
-- Do not remove an explicit backend hypothesis from tactics or downstream
-  theorems until a checked, assumption-free witness has replaced it.
-- When an external mathematical fact is intentionally left as an explicit
-  hypothesis, add a nearby comment explaining why that boundary is acceptable.
-  Typical acceptable boundaries are a documented combinatorial model identity
-  whose full model is out of scope, or a clearly cited classical theorem whose
-  formalization is tracked separately.  The comment should also make clear that
-  the desired real-rootedness conclusion is derived from formalized recurrences
-  or stability lemmas rather than assumed directly.
-- In issues, pull requests, and handoffs, distinguish explicitly between a
-  statement scaffold, an admitted theorem, and a fully checked proof.
 
 ## Workflow
 

@@ -162,35 +162,5 @@ syntax (name := rr_pairwiseCompatible_iff_familyCompatible_degree_le_two_named)
     "member_degree_le_two" ":=" term :
   tactic
 
-syntax (name := rr_sameDegree_pair_common_interleaver_cubicInterior_named)
-  "rr_sameDegree_pair_common_interleaver_cubicInterior" " using "
-    "below_certificate" ":=" term ","
-    "above_certificate" ":=" term ","
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
-    "pos_combo" ":=" term ","
-    "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
-    "left_degree_le_three" ":=" term :
-  tactic
-
-syntax (name := rr_noCommon_pair_common_interleaver_degree_le_three_named)
-  "rr_noCommon_pair_common_interleaver_degree_le_three" " using "
-    "below_certificate" ":=" term ","
-    "above_certificate" ":=" term ","
-    "succ_degree_endpoint" ":=" term ","
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
-    "pos_combo" ":=" term ","
-    "left_degree_le_right" ":=" term ","
-    "right_degree_le_succ_left" ":=" term ","
-    "no_common_roots" ":=" term ","
-    "right_degree_le_three" ":=" term :
-  tactic
-
 end Tactic
 end RealRooted

@@ -76,7 +76,7 @@ theorem hasCommonLeftInterleaver_of_natDegree_le_one
     HasCommonLeftInterleaver fs := by
   let hrr := family_ne_zero_and_splits_of_natDegree_le_one hpos hdeg
   exact
-    commonLeftInterleaverFamilyUpgrade
+    hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
       (fun f hf => (hrr f hf).2) hpos
       (pairwiseHasCommonLeftInterleaver_of_natDegree_le_one hpos hdeg)
 
@@ -115,9 +115,7 @@ theorem pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_one
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
     PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs :=
-  pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_fourWay <|
-    chudnovskySeymour_fourWay_of_natDegree_le_one
-      (fs := fs) hpos hdeg
+  (chudnovskySeymour_fourWay_of_natDegree_le_one (fs := fs) hpos hdeg).1
 
 /-- Degree-`≤ 2` specialization of Chudnovsky--Seymour `1 ↔ 2`: pairwise
 compatibility is equivalent to pairwise common-interleaver data. -/
@@ -137,9 +135,7 @@ theorem pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_natDegree_le_on
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
     PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs :=
-  pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_fourWay <|
-    chudnovskySeymour_fourWay_of_natDegree_le_one
-      (fs := fs) hpos hdeg
+  (chudnovskySeymour_fourWay_of_natDegree_le_one (fs := fs) hpos hdeg).2.1
 
 /-- Degree-`≤ 2` specialization of Chudnovsky--Seymour `2 ↔ 3` under
 memberwise real-rootedness. -/
@@ -149,9 +145,7 @@ theorem pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_natDegree_le_tw
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
     PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs :=
-  pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_fourWay <|
-    chudnovskySeymour_fourWay_of_natDegree_le_two
-      (fs := fs) hrr hpos hdeg
+  (chudnovskySeymour_fourWay_of_natDegree_le_two (fs := fs) hrr hpos hdeg).2.1
 
 /-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `3 ↔ 4`: for
 positive-leading linear/constant families, a global common interleaver is
@@ -161,9 +155,7 @@ theorem hasCommonInterleaver_iff_familyCompatible_of_natDegree_le_one
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
     HasCommonInterleaver fs ↔ FamilyCompatible fs :=
-  hasCommonInterleaver_iff_familyCompatible_of_fourWay <|
-    chudnovskySeymour_fourWay_of_natDegree_le_one
-      (fs := fs) hpos hdeg
+  (chudnovskySeymour_fourWay_of_natDegree_le_one (fs := fs) hpos hdeg).2.2
 
 /-- Degree-`≤ 2` specialization of Chudnovsky--Seymour `3 ↔ 4` under
 memberwise real-rootedness. -/
@@ -173,9 +165,7 @@ theorem hasCommonInterleaver_iff_familyCompatible_of_natDegree_le_two
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
     HasCommonInterleaver fs ↔ FamilyCompatible fs :=
-  hasCommonInterleaver_iff_familyCompatible_of_fourWay <|
-    chudnovskySeymour_fourWay_of_natDegree_le_two
-      (fs := fs) hrr hpos hdeg
+  (chudnovskySeymour_fourWay_of_natDegree_le_two (fs := fs) hrr hpos hdeg).2.2
 
 /-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `1 ↔ 3`: for
 positive-leading linear/constant families, pairwise compatibility is already

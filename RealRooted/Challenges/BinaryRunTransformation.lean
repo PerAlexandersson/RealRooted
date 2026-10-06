@@ -19,8 +19,14 @@ name = "RealRooted.binaryRunTransform"
 module = "RealRooted.BinaryRunTransformation.Coefficients"
 label = "Binary-run transformation"
 
+[[definitions]]
+name = "RealRooted.motzkinWeightedRow"
+module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
+label = "Multiplier-weighted Motzkin rows"
+
 [[theorems]]
-name = "RealRooted.Challenges.BinaryRunTransformation.preservesPF"
+name = "RealRooted.IsPFPolynomial.binaryRunTransform"
+module = "RealRooted.BinaryRunTransformation.Continuation"
 label = "The transformation preserves PF polynomials"
 
 [[theorems]]
@@ -55,7 +61,7 @@ label = "Monotonicity in α"
 [[theorems]]
 name = "RealRooted.motzkinAscentRow_strictInterl_succ"
 module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
-label = "Motzkin-ascent polynomials (A114580) form a Sturm chain"
+label = "The rows with weights 1/(m+1)! form a Sturm chain"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -76,9 +82,11 @@ images
 $$T_n(X^m) = \frac{\binom{n}{m}}{m+1}\, \mathtt{binaryRunPolynomial}\ n\ m.$$
 
 Equivalently, it is `binaryRunTransform n` after the standard finite
-Narayana/Schur–Szegő diagonal multiplier. Thus this preservation theorem,
-together with preservation by that multiplier, gives the corresponding
-[Narayana transformation theorem](/RealRooted/families/narayana/).
+Narayana/Schur–Szegő diagonal multiplier. Combined with preservation by that
+multiplier, this preservation theorem yields the corresponding
+[Narayana transformation theorem](/RealRooted/families/narayana/); that
+deduction is cited, and Lean does not connect `binaryRunTransform` to
+`narayanaTransform`.
 
 ## Interlacing
 
@@ -94,7 +102,8 @@ $G_n^{\gamma}(t) = \sum_m \frac{n!\,\gamma_m}{m!\,(n-2m)!}\, t^m$, a weighted ma
 the complete graph. These satisfy $(N-2\Theta)\, G_N^{\gamma} = N G_n^{\gamma}$, so the rows
 $R_n^{\gamma} = J_n(G_n^{\gamma})$ form a Sturm chain: $R_n^{\gamma} \ll R_{n+1}^{\gamma}$ for all
 $n$. This holds in particular for $\gamma_m = 1/(\alpha)_m$ with $\alpha > 0$. The case
-$\alpha = 2$, where $\gamma_m = 1/(m+1)!$, gives the Motzkin-ascent polynomials (OEIS A114580).
+$\alpha = 2$, where $\gamma_m = 1/(m+1)!$, gives rows that are classically the Motzkin-ascent
+polynomials (OEIS A114580); that identification is cited, not formalized.
 
 The rows also move monotonically in $\alpha$. Write $P_n^{(\alpha)}$ for the row with
 $\gamma_m = 1/(\alpha)_m$. Then $P_n^{(\alpha+1)} \ll P_n^{(\alpha)}$ for every $n$ and every
@@ -120,9 +129,10 @@ J. Mao and L. Wang, [“The Narayana transformation,”](https://arxiv.org/abs/2
 arXiv:2607.01572 (2026).
 <!-- /realrooted-catalog-content -->
 
-This module exposes the checked preservation theorem and its strictly negative
-root corollary. The stability, contraction, anchor, and continuation arguments
-remain in `RealRooted.BinaryRunTransformation`.
+This module exposes the strictly negative root corollary of the checked
+preservation theorem `RealRooted.IsPFPolynomial.binaryRunTransform`. The
+stability, contraction, anchor, and continuation arguments remain in
+`RealRooted.BinaryRunTransformation`.
 -/
 
 open Polynomial
@@ -130,13 +140,6 @@ open Polynomial
 namespace RealRooted
 namespace Challenges
 namespace BinaryRunTransformation
-
-/-- The normalized binary-run transformation preserves PF polynomials in its
-finite degree box. -/
-theorem preservesPF {n : ℕ} {p : ℝ[X]}
-    (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ n) :
-    IsPFPolynomial (binaryRunTransform n p) :=
-  hp.binaryRunTransform hpdeg
 
 private theorem constantCoeff {n : ℕ} {p : ℝ[X]}
     (hpdeg : p.natDegree ≤ n) :
@@ -165,7 +168,7 @@ theorem preservesStrictlyNegativeRoots {n : ℕ} {p : ℝ[X]}
     (hconst : 0 < p.coeff 0) :
     (binaryRunTransform n p).Splits ∧
       ∀ r ∈ (binaryRunTransform n p).roots, r < 0 := by
-  have hq := preservesPF hp hpdeg
+  have hq := hp.binaryRunTransform hpdeg
   have hq0 : binaryRunTransform n p ≠ 0 := by
     intro hzero
     have hcoeff : (binaryRunTransform n p).coeff 0 = 0 := by simp [hzero]

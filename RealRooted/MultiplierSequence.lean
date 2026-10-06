@@ -638,17 +638,6 @@ theorem jensenPolynomial_three_logConcave_of_eq_zero_or_splits
     (by simp)
     (by simp)
 
-/-- Adjacent log-concavity inequalities for a splitting Jensen cubic of exact
-degree three.  This is the coefficient form of the two cubic Newton
-inequalities after the binomial factors in `jensenPolynomial 3 gamma` cancel. -/
-theorem jensenPolynomial_three_logConcave_of_splits_natDegree_three
-    {gamma : ℕ → ℝ}
-    (_hdeg : (jensenPolynomial 3 gamma).natDegree = 3)
-    (hs : (jensenPolynomial 3 gamma).Splits) :
-    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
-      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
-  jensenPolynomial_three_logConcave_of_eq_zero_or_splits (Or.inr hs)
-
 private theorem diagonalOperator_discrim_nonneg_of_natDegree_two
     {gamma : ℕ → ℝ} {p : ℝ[X]}
     (hgamma0 : 0 ≤ gamma 0) (hgamma2 : 0 ≤ gamma 2)
@@ -790,50 +779,6 @@ def finitePolyaSchurNonnegBackwardStatement : Prop :=
       IsPFPolynomial (jensenPolynomial n gamma) →
         IsFiniteMultiplierSequence n gamma
 
-/-- Low-degree base case of the backward finite Pólya--Schur direction.
-
-For `n ≤ 1`, the Jensen-polynomial hypothesis is unnecessary: diagonal
-operators preserve real-rootedness up to degree one for purely degree reasons. -/
-theorem finitePolyaSchurNonnegBackward_of_natDegree_le_one
-    {n : ℕ} (hn : n ≤ 1) {gamma : ℕ → ℝ}
-    (_hgamma : ∀ k, 0 ≤ gamma k)
-    (_hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
-    IsFiniteMultiplierSequence n gamma :=
-  isFiniteMultiplierSequence_of_natDegree_le_one hn gamma
-
-/-- Degree-zero case of the backward finite Pólya--Schur direction. -/
-theorem finitePolyaSchurNonnegBackward_natDegree_zero
-    {gamma : ℕ → ℝ}
-    (_hgamma : ∀ k, 0 ≤ gamma k)
-    (_hjensen : IsPFPolynomial (jensenPolynomial 0 gamma)) :
-    IsFiniteMultiplierSequence 0 gamma :=
-  isFiniteMultiplierSequence_natDegree_zero gamma
-
-/-- Degree-one case of the backward finite Pólya--Schur direction. -/
-theorem finitePolyaSchurNonnegBackward_natDegree_one
-    {gamma : ℕ → ℝ}
-    (_hgamma : ∀ k, 0 ≤ gamma k)
-    (_hjensen : IsPFPolynomial (jensenPolynomial 1 gamma)) :
-    IsFiniteMultiplierSequence 1 gamma :=
-  isFiniteMultiplierSequence_natDegree_one gamma
-
-/-- Degree at most two case of the backward finite Pólya--Schur direction. -/
-theorem finitePolyaSchurNonnegBackward_of_natDegree_le_two
-    {n : ℕ} (hn : n ≤ 2) {gamma : ℕ → ℝ}
-    (hgamma : ∀ k, 0 ≤ gamma k)
-    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
-    IsFiniteMultiplierSequence n gamma :=
-  isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
-    hn hgamma hjensen
-
-/-- Degree-two case of the backward finite Pólya--Schur direction. -/
-theorem finitePolyaSchurNonnegBackward_natDegree_two
-    {gamma : ℕ → ℝ}
-    (hgamma : ∀ k, 0 ≤ gamma k)
-    (hjensen : IsPFPolynomial (jensenPolynomial 2 gamma)) :
-    IsFiniteMultiplierSequence 2 gamma :=
-  finitePolyaSchurNonnegBackward_of_natDegree_le_two le_rfl hgamma hjensen
-
 /-- Degree at most two case of the full finite Pólya--Schur classification.
 
 The forward implication is elementary; the reverse implication is the checked
@@ -844,7 +789,7 @@ theorem finitePolyaSchur_nonneg_of_natDegree_le_two
     IsFiniteMultiplierSequence n gamma ↔
       IsPFPolynomial (jensenPolynomial n gamma) :=
   ⟨isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma,
-    finitePolyaSchurNonnegBackward_of_natDegree_le_two hn hgamma⟩
+    isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two hn hgamma⟩
 
 /-- Degree-two case of the full finite Pólya--Schur classification. -/
 theorem finitePolyaSchur_nonneg_natDegree_two

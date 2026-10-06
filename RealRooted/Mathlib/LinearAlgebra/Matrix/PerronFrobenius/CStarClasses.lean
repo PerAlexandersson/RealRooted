@@ -28,9 +28,6 @@ theorem sq_eq_zero {R : Type*} [MonoidWithZero R] [NoZeroDivisors R] {x : R} :
   rw [pow_two, mul_eq_zero]
   exact or_self_iff
 
-/-- An element of a nonempty set. -/
-lemma Set.mem_of_nonempty {α : Type*} (s : Set α) (h : s.Nonempty) : ∃ x, x ∈ s := h
-
 /--
 An equality between real numbers implies an equality between their complex embeddings.
 -/
@@ -41,8 +38,8 @@ lemma ofReal_eq_ofReal {r s : ℝ} : r = s → (r : ℂ) = (s : ℂ) := by
 variable {ι : Type*} {z : ℂ}
 
 /-- The square of the absolute value of a complex number is its norm squared. -/
-lemma normSq_eq_abs_sq (z : ℂ) : Complex.normSq z = (norm z) ^ 2 := by
-  exact Complex.normSq_eq_norm_sq z
+lemma normSq_eq_abs_sq (z : ℂ) : Complex.normSq z = (norm z) ^ 2 :=
+  Complex.normSq_eq_norm_sq z
 
 /-- The square of the norm of a complex number is the sum of the squares of its real and imaginary
 parts. -/
@@ -52,11 +49,12 @@ lemma norm_sq_eq_re_sq_add_im_sq (z : ℂ) : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 :
 
 /-- The norm of the conjugate of a complex number is the same as the norm of the original number. -/
 @[simp]
-lemma RCLike.norm_conj {K} [RCLike K] (z : K) : ‖star z‖ = ‖z‖ := by exact norm_star z
+lemma RCLike.norm_conj {K} [RCLike K] (z : K) : ‖star z‖ = ‖z‖ := norm_star z
 
 /-- The real part of a sum is the sum of the real parts. -/
 lemma RCLike.re_sum {F : Type*} [RCLike F] {v : ι → F} {s : Finset ι} :
-    RCLike.re (∑ i ∈ s, v i) = ∑ i ∈ s, RCLike.re (v i) := by exact map_sum RCLike.re v s
+    RCLike.re (∑ i ∈ s, v i) = ∑ i ∈ s, RCLike.re (v i) :=
+  map_sum RCLike.re v s
 
 /--
 An equality between a real number `r` and its coercion to the complex numbers `↑r`
@@ -407,25 +405,7 @@ If `z = λw` for a positive real scalar `λ`, then `z` and `w` are aligned.
 -/
 lemma aligned_of_eigenvalue {z w : ℂ} {lam : ℝ}
     (h_rel : z = (lam : ℂ) * w) (h_lam_pos : 0 < lam) (h_w_ne_zero : w ≠ 0) :
-    z / ↑‖z‖ = w / ↑‖w‖ := by
-  exact Complex.aligned_of_mul_of_real_pos h_lam_pos h_rel h_w_ne_zero
-
-/--
-If `u = ∑ i in s, v i`, `‖u‖ = ∑ i in s, ‖v i‖`, and `u ≠ 0`, then each `v i`
-is aligned with `u`.
--/
-lemma aligned_of_triangle_eq' {u : ℂ} {v : ι → ℂ} {s : Finset ι}
-  (h_eq : u = ∑ i ∈ s, v i) (h_sum : ‖u‖ = ∑ i ∈ s, ‖v i‖) (h_ne : u ≠ 0) :
-  ∀ i ∈ s, v i ≠ 0 → v i / ↑‖v i‖ = u / ↑‖u‖ := by
-  intro i hi hvi_ne_zero
-  have hu_norm_ne_zero : ‖u‖ ≠ 0 := norm_ne_zero_iff.mpr h_ne
-  have hvi_norm_ne_zero : ‖v i‖ ≠ 0 := norm_ne_zero_iff.mpr hvi_ne_zero
-  have h_aligned := align_each_with_sum h_eq h_sum h_ne i hi
-  rw [smul_eq_mul, smul_eq_mul] at h_aligned
-  rw [mul_comm] at h_aligned
-  field_simp [h_aligned, hu_norm_ne_zero, hvi_norm_ne_zero]
-  assumption
-
-
+    z / ↑‖z‖ = w / ↑‖w‖ :=
+  Complex.aligned_of_mul_of_real_pos h_lam_pos h_rel h_w_ne_zero
 
 end Complex

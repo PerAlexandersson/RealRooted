@@ -216,19 +216,6 @@ theorem jacobi11NormalizedPolynomial_transport_eval
             (r / (r - 1)) ^ k) := by ring
     _ = jacobi11TransportCoeff n k * r ^ k := by rw [jacobi11Transport_denominator_cancel hk hden]
 
-/-- The quotient Narayana sequence has nonnegative coefficients, via the
-coefficient-side model. -/
-theorem narayanaQuot_hasNonnegCoeffs (n : ℕ) :
-    HasNonnegCoeffs (narayanaQuot n) := by
-  cases n with
-  | zero => simp [HasNonnegCoeffs]
-  | succ n =>
-      have heq : narayanaQuot (n + 1) = narayanaPolynomial 1 n := by
-        simpa [modifiedNarayanaPolynomial, modifiedNarayanaCoeffPolynomial]
-          using modifiedNarayanaPolynomial_eq_coeffPolynomial n
-      rw [heq]
-      exact hasNonnegCoeffs_narayanaPolynomial 1 n
-
 /-- Modified Narayana polynomials have nonnegative coefficients. -/
 theorem modifiedNarayanaPolynomial_hasNonnegCoeffs (n : ℕ) :
     HasNonnegCoeffs (modifiedNarayanaPolynomial n) := by
@@ -442,7 +429,7 @@ theorem affineModifiedNarayanaShifted_left_hasNonnegCoeffs
 /-- The left-hand polynomial in Braun--Jal's shifted affine Narayana interlacing lemma has positive
 leading coefficient. -/
 theorem affineModifiedNarayanaShifted_left_posLeadingCoeff
-    {m : ℕ} {lam mu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (_hmu : 0 ≤ mu) :
+    {m : ℕ} {lam mu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) :
     HasPosLeadingCoeff
       ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
         narayanaDifference modifiedNarayanaPolynomial m) := by
@@ -478,7 +465,7 @@ theorem affineModifiedNarayanaShifted_left_posLeadingCoeff
 /-- The left-hand polynomial in Braun--Jal's shifted affine Narayana interlacing lemma has degree
 `m`. -/
 theorem affineModifiedNarayanaShifted_left_natDegree
-    {m : ℕ} {lam mu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (_hmu : 0 ≤ mu) :
+    {m : ℕ} {lam mu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) :
     (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
         narayanaDifference modifiedNarayanaPolynomial m).natDegree = m) := by
   rcases lt_or_eq_of_le hlam with hlam_pos | hlam_zero
@@ -515,15 +502,15 @@ theorem affineModifiedNarayanaShifted_left_natDegree
 /-- The left-hand polynomial in Braun--Jal's shifted affine Narayana interlacing lemma is nonzero.
 -/
 theorem affineModifiedNarayanaShifted_left_ne_zero
-    {m : ℕ} {lam mu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    {m : ℕ} {lam mu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) :
     (C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
       narayanaDifference modifiedNarayanaPolynomial m ≠ 0 :=
-  (affineModifiedNarayanaShifted_left_posLeadingCoeff hm hlam hmu).ne_zero
+  (affineModifiedNarayanaShifted_left_posLeadingCoeff (mu := mu) hm hlam).ne_zero
 
 /-- In Braun--Jal's shifted affine Narayana interlacing lemma, the previous modified Narayana
 polynomial interlaces the left-hand polynomial. -/
 theorem affineModifiedNarayanaShifted_prev_interlaces_left
-    {m : ℕ} {lam mu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    {m : ℕ} {lam mu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
     Interlaces (modifiedNarayanaPolynomial (m - 1))
       ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
         narayanaDifference modifiedNarayanaPolynomial m) := by
@@ -543,7 +530,7 @@ theorem affineModifiedNarayanaShifted_prev_interlaces_left
         narayanaDifference modifiedNarayanaPolynomial (k + 2)).natDegree =
           k + 2) := by
     simpa using affineModifiedNarayanaShifted_left_natDegree
-      (m := k + 2) (by lia) hlam hmu
+      (m := k + 2) (mu := mu) (by lia) hlam
   have hstrictInterl :
       StrictInterl (modifiedNarayanaPolynomial (k + 1))
         (a * modifiedNarayanaPolynomial (k + 1) +
@@ -554,7 +541,7 @@ theorem affineModifiedNarayanaShifted_prev_interlaces_left
             b * modifiedNarayanaPolynomial k) := by
       rw [hleft_eq]
       exact affineModifiedNarayanaShifted_left_posLeadingCoeff
-        (m := k + 2) (by lia) hlam hmu
+        (m := k + 2) (mu := mu) (by lia) hlam
     have hdeg_lo :
         (modifiedNarayanaPolynomial (k + 1)).natDegree ≤
           (a * modifiedNarayanaPolynomial (k + 1) +
@@ -572,8 +559,7 @@ theorem affineModifiedNarayanaShifted_prev_interlaces_left
       simpa [b] using narayanaCoeffB_eval_nonpos (k + 1) r
     exact
       strictInterl_of_interlaces_evalCoeff_nonpos
-        (modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs k
-          narayanaQuot_hasNonnegCoeffs)
+        (modifiedNarayanaPolynomial_interlaces_succ k)
         (modifiedNarayanaPolynomial_posLeadingCoeff k)
         hF_pos hdeg_lo hdeg_hi hb_nonpos
   rw [hleft_eq] at hstrictInterl
@@ -612,7 +598,7 @@ theorem affineModifiedNarayanaShifted_right_hasNonnegCoeffs
 /-- The right-hand polynomial in Braun--Jal's shifted affine Narayana interlacing lemma has positive
 leading coefficient. -/
 theorem affineModifiedNarayanaShifted_right_posLeadingCoeff
-    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) (_hmu : 0 ≤ mu) :
+    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) :
     HasPosLeadingCoeff
       ((C lam * X + C mu) * modifiedNarayanaPolynomial m +
         narayanaDifference modifiedNarayanaPolynomial (m + 1)) := by
@@ -646,7 +632,7 @@ theorem affineModifiedNarayanaShifted_right_posLeadingCoeff
 /-- The right-hand polynomial in Braun--Jal's shifted affine Narayana interlacing lemma has degree
 `m + 1`. -/
 theorem affineModifiedNarayanaShifted_right_natDegree
-    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) (_hmu : 0 ≤ mu) :
+    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) :
     (((C lam * X + C mu) * modifiedNarayanaPolynomial m +
         narayanaDifference modifiedNarayanaPolynomial (m + 1)).natDegree =
           m + 1) := by
@@ -682,10 +668,10 @@ theorem affineModifiedNarayanaShifted_right_natDegree
 /-- The right-hand polynomial in Braun--Jal's shifted affine Narayana interlacing lemma is nonzero.
 -/
 theorem affineModifiedNarayanaShifted_right_ne_zero
-    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) (hmu : 0 ≤ mu) :
+    {m : ℕ} {lam mu : ℝ} (hlam : 0 ≤ lam) :
     (C lam * X + C mu) * modifiedNarayanaPolynomial m +
       narayanaDifference modifiedNarayanaPolynomial (m + 1) ≠ 0 :=
-  (affineModifiedNarayanaShifted_right_posLeadingCoeff hlam hmu).ne_zero
+  (affineModifiedNarayanaShifted_right_posLeadingCoeff (mu := mu) hlam).ne_zero
 
 /-- The left-hand polynomial in the shifted affine-Narayana route has no positive
 roots. -/
@@ -779,70 +765,66 @@ theorem affineModifiedNarayana_right_hasNonnegCoeffs
   simpa [affineModifiedNarayanaShifted_right_eq_paper] using hbase
 
 /-- The paper-shaped left-hand polynomial in the affine Narayana interlacing lemma has positive
-leading coefficient when `ν ≥ -1`. -/
+leading coefficient. -/
 theorem affineModifiedNarayana_left_posLeadingCoeff
-    {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) :
     HasPosLeadingCoeff
       ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m) := by
-  have hmu : 0 ≤ nu + 1 := by linarith
   have hbase :=
     affineModifiedNarayanaShifted_left_posLeadingCoeff
-      (m := m) (lam := lam) (mu := nu + 1) hm hlam hmu
+      (m := m) (lam := lam) (mu := nu + 1) hm hlam
   simpa [affineModifiedNarayanaShifted_left_eq_paper] using hbase
 
 /-- The paper-shaped left-hand polynomial in the affine Narayana interlacing lemma has degree
-`m` when `ν ≥ -1`. -/
+`m`. -/
 theorem affineModifiedNarayana_left_natDegree
-    {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) :
     (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m).natDegree = m) := by
-  have hmu : 0 ≤ nu + 1 := by linarith
   have hbase :=
     affineModifiedNarayanaShifted_left_natDegree
-      (m := m) (lam := lam) (mu := nu + 1) hm hlam hmu
+      (m := m) (lam := lam) (mu := nu + 1) hm hlam
   simpa [affineModifiedNarayanaShifted_left_eq_paper] using hbase
 
-/-- The paper-shaped left-hand polynomial in the affine Narayana interlacing lemma is nonzero
-when `ν ≥ -1`. -/
+/-- The paper-shaped left-hand polynomial in the affine Narayana interlacing lemma is nonzero.
+-/
 theorem affineModifiedNarayana_left_ne_zero
-    {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    {m : ℕ} {lam nu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) :
     (C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
       modifiedNarayanaPolynomial m ≠ 0 :=
-  (affineModifiedNarayana_left_posLeadingCoeff hm hlam hnu).ne_zero
+  (affineModifiedNarayana_left_posLeadingCoeff (nu := nu) hm hlam).ne_zero
 
 /-- The paper-shaped right-hand polynomial in the affine Narayana interlacing lemma has
-positive leading coefficient when `ν ≥ -1`. -/
+positive leading coefficient. -/
 theorem affineModifiedNarayana_right_posLeadingCoeff
-    {m : ℕ} {lam nu : ℝ} (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    {m : ℕ} {lam nu : ℝ} (hlam : 0 ≤ lam) :
     HasPosLeadingCoeff
       ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
         modifiedNarayanaPolynomial (m + 1)) := by
-  have hmu : 0 ≤ nu + 1 := by linarith
   have hbase :=
     affineModifiedNarayanaShifted_right_posLeadingCoeff
-      (m := m) (lam := lam) (mu := nu + 1) hlam hmu
+      (m := m) (lam := lam) (mu := nu + 1) hlam
   simpa [affineModifiedNarayanaShifted_right_eq_paper] using hbase
 
 /-- The paper-shaped right-hand polynomial in the affine Narayana interlacing lemma has degree
-`m + 1` when `ν ≥ -1`. -/
+`m + 1`. -/
 theorem affineModifiedNarayana_right_natDegree
-    {m : ℕ} {lam nu : ℝ} (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    {m : ℕ} {lam nu : ℝ} (hlam : 0 ≤ lam) :
     (((C lam * X + C nu) * modifiedNarayanaPolynomial m +
         modifiedNarayanaPolynomial (m + 1)).natDegree = m + 1) := by
-  have hmu : 0 ≤ nu + 1 := by linarith
   have hbase :=
     affineModifiedNarayanaShifted_right_natDegree
-      (m := m) (lam := lam) (mu := nu + 1) hlam hmu
+      (m := m) (lam := lam) (mu := nu + 1) hlam
   simpa [affineModifiedNarayanaShifted_right_eq_paper] using hbase
 
-/-- The paper-shaped right-hand polynomial in the affine Narayana interlacing lemma is nonzero
-when `ν ≥ -1`. -/
+/-- The paper-shaped right-hand polynomial in the affine Narayana interlacing lemma is nonzero.
+-/
 theorem affineModifiedNarayana_right_ne_zero
-    {m : ℕ} {lam nu : ℝ} (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
+    {m : ℕ} {lam nu : ℝ} (hlam : 0 ≤ lam) :
     (C lam * X + C nu) * modifiedNarayanaPolynomial m +
       modifiedNarayanaPolynomial (m + 1) ≠ 0 :=
-  (affineModifiedNarayana_right_posLeadingCoeff hlam hnu).ne_zero
+  (affineModifiedNarayana_right_posLeadingCoeff (nu := nu) hlam).ne_zero
 
 /-- The paper-shaped left-hand polynomial in the affine Narayana interlacing lemma has no
 positive roots. -/
@@ -871,7 +853,7 @@ theorem affineModifiedNarayana_left_isRoot_nonpos
     r ≤ 0 :=
   affineModifiedNarayana_left_roots_nonpos hm hlam hnu r
     ((Polynomial.mem_roots
-      (affineModifiedNarayana_left_ne_zero hm hlam hnu)).mpr hr)
+      (affineModifiedNarayana_left_ne_zero (nu := nu) hm hlam)).mpr hr)
 
 /-- IsRoot-facing form of `affineModifiedNarayana_right_roots_nonpos`. -/
 theorem affineModifiedNarayana_right_isRoot_nonpos
@@ -882,7 +864,7 @@ theorem affineModifiedNarayana_right_isRoot_nonpos
     r ≤ 0 :=
   affineModifiedNarayana_right_roots_nonpos hlam hnu r
     ((Polynomial.mem_roots
-      (affineModifiedNarayana_right_ne_zero hlam hnu)).mpr hr)
+      (affineModifiedNarayana_right_ne_zero (nu := nu) hlam)).mpr hr)
 
 end GeneralizedSnakePosets
 end RealRooted

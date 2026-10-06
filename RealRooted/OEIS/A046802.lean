@@ -25,12 +25,6 @@ theorem A046802_generated_interlaces (n : ℕ) :
     IsInterlacingSeq0Nonneg (A046802Refined n) :=
   A046802_interlaces n
 
-/-- Generated-file real-rootedness certificate for each nonzero refined
-polynomial in the A046802 backend vector. -/
-theorem A046802_generated_refined_realRooted (n : ℕ) :
-    ∀ f ∈ A046802Refined n, f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
-  A046802_refined_realRooted n
-
 /-- Generated-file alias for the tactic-facing `rr_s_inversion` route. -/
 theorem A046802_generated_rr_s_inversion_binomial_eulerian_sequence (n : ℕ) :
     A046802 n ≠ 0 ∧ (A046802 n).Splits :=

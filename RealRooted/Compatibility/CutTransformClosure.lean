@@ -15,7 +15,7 @@ noncomputable section
 
 namespace RealRooted
 
-/-- A family obtained by appending two finite positive, nonnegative,
+/-- A family obtained by appending two finite real-rooted, positive,
 pairwise-compatible blocks is fully compatible. -/
 theorem familyCompatible_ofFn_append_of_pairwise
     {m n : ℕ} {P : Fin m → ℝ[X]} {Q : Fin n → ℝ[X]}
@@ -23,8 +23,6 @@ theorem familyCompatible_ofFn_append_of_pairwise
     (hQ_rr : ∀ i, Q i ≠ 0 ∧ (Q i).Splits)
     (hP_pos : ∀ i, HasPosLeadingCoeff (P i))
     (hQ_pos : ∀ i, HasPosLeadingCoeff (Q i))
-    (hP_nonneg : ∀ i, HasNonnegCoeffs (P i))
-    (hQ_nonneg : ∀ i, HasNonnegCoeffs (Q i))
     (hPP : ∀ i j, Compatible (P i) (P j))
     (hPQ : ∀ i j, Compatible (P i) (Q j))
     (hQQ : ∀ i j, Compatible (Q i) (Q j)) :
@@ -48,15 +46,6 @@ theorem familyCompatible_ofFn_append_of_pairwise
     · simp only [List.mem_ofFn] at hp
       rcases hp with ⟨i, rfl⟩
       exact hQ_pos i
-  have hnonneg : ∀ p ∈ fs, HasNonnegCoeffs p := by
-    intro p hp
-    rcases List.mem_append.mp hp with hp | hp
-    · simp only [List.mem_ofFn] at hp
-      rcases hp with ⟨i, rfl⟩
-      exact hP_nonneg i
-    · simp only [List.mem_ofFn] at hp
-      rcases hp with ⟨i, rfl⟩
-      exact hQ_nonneg i
   have hpair : PairwiseCompatible fs := by
     apply pairwiseCompatible_of_forall_mem
     intro p hp q hq
@@ -79,8 +68,7 @@ theorem familyCompatible_ofFn_append_of_pairwise
       rcases hq with ⟨j, rfl⟩
       exact hQQ i j
   exact
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
-      hrr hpos hnonneg).1 hpair
+    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible hrr hpos).1 hpair
 
 namespace OrderedCutCompatible
 
@@ -103,8 +91,7 @@ theorem familyCompatible_pq {m : ℕ} {P Q : Fin m → ℝ[X]}
     (h : OrderedCutCompatible P Q) :
     FamilyCompatible (List.ofFn P ++ List.ofFn Q) :=
   familyCompatible_ofFn_append_of_pairwise h.p_splits h.q_splits
-    h.p_pos h.q_pos h.p_nonneg h.q_nonneg
-    (compatible_p_all h) h.pq (compatible_q_all h)
+    h.p_pos h.q_pos (compatible_p_all h) h.pq (compatible_q_all h)
 
 /-- The fixed marked-P/unmarked-Q atom family `XP ++ Q` is fully compatible. -/
 theorem familyCompatible_xp_q {m : ℕ} {P Q : Fin m → ℝ[X]}
@@ -114,7 +101,6 @@ theorem familyCompatible_xp_q {m : ℕ} {P Q : Fin m → ℝ[X]}
   familyCompatible_ofFn_append_of_pairwise
     (fun i => isRealRooted_X_mul_of_isRealRooted (h.p_splits i)) h.q_splits
     (fun i => (h.p_pos i).X_mul) h.q_pos
-    (fun i => (h.p_nonneg i).X_mul) h.q_nonneg
     (fun i j => (compatible_p_all h i j).X_mul) h.xpq
     (compatible_q_all h)
 

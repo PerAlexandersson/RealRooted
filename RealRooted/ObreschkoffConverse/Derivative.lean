@@ -104,12 +104,6 @@ theorem derivative_roots_sum_le_of_strictInterl_sameDegree_monic {f g : ℝ[X]}
   have hdeg_pos : 0 < (f.natDegree : ℝ) := by positivity
   nlinarith
 
-/-- Same-degree branch of the standard fact that differentiation preserves
-oriented weak interlacing. -/
-def derivativePreservesStrictInterlSameDegreeStatement : Prop :=
-  ∀ {f g : ℝ[X]}, StrictInterl f g → f.natDegree = g.natDegree →
-    Interl f.derivative g.derivative
-
 /-- Scaling both sides by nonzero constants preserves zero-aware proper
 position. -/
 private lemma interl_C_mul_left_right {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0)
@@ -138,38 +132,12 @@ lemma StrictInterl.of_degree_zero_degree_zero
   · simp [hroots_g]
   · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
 
-/-- Degree-at-least-two same-degree branch of the standard fact that
-differentiation preserves oriented weak interlacing. -/
-def derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeStatement : Prop :=
-  ∀ {f g : ℝ[X]}, StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    Interl f.derivative g.derivative
-
-/-- Positive-leading-coefficient form of the degree-at-least-two same-degree
-derivative-preservation branch. -/
-def derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreePosLeadingStatement : Prop :=
-  ∀ {f g : ℝ[X]}, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-    StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    Interl f.derivative g.derivative
-
-/-- Monic form of the degree-at-least-two same-degree derivative-preservation
-branch. -/
-def derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStatement : Prop :=
-  ∀ {f g : ℝ[X]}, f.Monic → g.Monic →
-    StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    Interl f.derivative g.derivative
-
-/-- Nonzero monic form of the degree-at-least-two same-degree
-derivative-preservation branch. -/
-def derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStrictInterlStatement : Prop :=
-  ∀ {f g : ℝ[X]}, f.Monic → g.Monic →
-    StrictInterl f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    StrictInterl f.derivative g.derivative
-
 /-- Monic degree-at-least-two same-degree branch of the standard fact that
 differentiation preserves oriented weak interlacing. -/
-theorem derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonic :
-    derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStatement := by
-  intro f g hf_monic hg_monic hfg hdeg htwo
+theorem derivative_interl_of_strictInterl_sameDegree_monic {f g : ℝ[X]}
+    (hf_monic : f.Monic) (hg_monic : g.Monic) (hfg : StrictInterl f g)
+    (hdeg : f.natDegree = g.natDegree) (htwo : 2 ≤ f.natDegree) :
+    Interl f.derivative g.derivative := by
   have hfder_ne : f.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
   have hgder_ne : g.derivative ≠ 0 :=
@@ -185,32 +153,14 @@ theorem derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonic :
         hf_monic hg_monic hfg hdeg htwo hrev.2.1.2 hrev.1.2
     exact (hrev.of_reverse_of_roots_sum_le hdeg_der hsum_der).toInterl
 
-/-- The nonzero monic branch follows from the zero-aware monic branch,
-since the degree hypotheses make both derivatives nonzero. -/
-theorem derivativePreservesStrictInterlSameDegree_monicStrictInterl_of_monic
-    (hmonic : derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStatement) :
-    derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStrictInterlStatement := by
-  intro f g hf_monic hg_monic hfg hdeg htwo
-  have hfder_ne : f.derivative ≠ 0 :=
-    Polynomial.derivative_ne_zero.mpr (by lia)
-  have hgder_ne : g.derivative ≠ 0 :=
-    Polynomial.derivative_ne_zero.mpr (by lia)
-  rcases hmonic hf_monic hg_monic hfg hdeg htwo with hfzero | hgzero | hstrictInterl <;> simp_all
-
-/-- The zero-aware monic branch follows from the nonzero monic branch. -/
-theorem derivativePreservesStrictInterlSameDegree_of_monicStrictInterl
-    (hmonic :
-      derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStrictInterlStatement) :
-    derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStatement :=
-  fun {_ _} hf_monic hg_monic hfg hdeg htwo =>
-    (hmonic hf_monic hg_monic hfg hdeg htwo).toInterl
-
-/-- The positive-leading-coefficient branch follows from the monic branch by
-normalizing both polynomials by their leading coefficients. -/
-theorem derivativePreservesStrictInterlSameDegree_of_monic
-    (hmonic : derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonicStatement) :
-    derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreePosLeadingStatement := by
-  intro f g hf_pos hg_pos hfg hdeg htwo
+/-- Positive-leading-coefficient degree-at-least-two same-degree branch,
+obtained from the monic branch by normalizing both polynomials by their leading
+coefficients. -/
+theorem derivative_interl_of_strictInterl_sameDegree_posLeading {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
+    (htwo : 2 ≤ f.natDegree) :
+    Interl f.derivative g.derivative := by
   have hf_lc_ne : f.leadingCoeff ≠ 0 := ne_of_gt hf_pos
   have hg_lc_ne : g.leadingCoeff ≠ 0 := ne_of_gt hg_pos
   let f₀ : ℝ[X] := C f.leadingCoeff⁻¹ * f
@@ -232,7 +182,7 @@ theorem derivativePreservesStrictInterlSameDegree_of_monic
   have htwo₀ : 2 ≤ f₀.natDegree := by
     simpa [f₀, natDegree_C_mul (inv_ne_zero hf_lc_ne)] using htwo
   have hscaled : Interl f₀.derivative g₀.derivative :=
-    hmonic hf₀_monic hg₀_monic hfg₀ hdeg₀ htwo₀
+    derivative_interl_of_strictInterl_sameDegree_monic hf₀_monic hg₀_monic hfg₀ hdeg₀ htwo₀
   have hscaled' :
       Interl (C f.leadingCoeff⁻¹ * f.derivative)
         (C g.leadingCoeff⁻¹ * g.derivative) := by
@@ -253,13 +203,12 @@ theorem derivativePreservesStrictInterlSameDegree_of_monic
     simp [hg_lc_ne]
   simp_all
 
-/-- The degree-at-least-two same-degree branch follows from its
+/-- Degree-at-least-two same-degree branch, obtained from the
 positive-leading-coefficient form by scaling both polynomials by signs. -/
-theorem derivativePreservesStrictInterlSameDegree_of_posLeading
-    (hpos :
-      derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreePosLeadingStatement) :
-    derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeStatement := by
-  intro f g hfg hdeg htwo
+theorem derivative_interl_of_strictInterl_sameDegree_two_le {f g : ℝ[X]}
+    (hfg : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
+    (htwo : 2 ≤ f.natDegree) :
+    Interl f.derivative g.derivative := by
   have hf_lc_ne : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hfg.1.1
   have hg_lc_ne : g.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hfg.2.1.1
   let sf : ℝ := if 0 < f.leadingCoeff then 1 else -1
@@ -290,7 +239,7 @@ theorem derivativePreservesStrictInterlSameDegree_of_posLeading
     simpa [f₀, g₀, natDegree_C_mul hsf_ne, natDegree_C_mul hsg_ne] using hdeg
   have htwo₀ : 2 ≤ f₀.natDegree := by simpa [f₀, natDegree_C_mul hsf_ne] using htwo
   have hscaled : Interl f₀.derivative g₀.derivative :=
-    hpos hf₀_pos hg₀_pos hfg₀ hdeg₀ htwo₀
+    derivative_interl_of_strictInterl_sameDegree_posLeading hf₀_pos hg₀_pos hfg₀ hdeg₀ htwo₀
   have hscaled' : Interl (C sf * f.derivative) (C sg * g.derivative) := by
     simpa [f₀, g₀, derivative_C_mul] using hscaled
   have hback :
@@ -299,15 +248,14 @@ theorem derivativePreservesStrictInterlSameDegree_of_posLeading
     interl_C_mul_left_right (inv_ne_zero hsf_ne) (inv_ne_zero hsg_ne) hscaled'
   grind
 
-/-- The same-degree derivative-preservation statement follows from its
-degree-at-least-two branch.  Degrees zero and one are elementary because the
-derivatives are zero or nonzero constants. -/
-theorem derivativePreservesStrictInterlSameDegree_of_two_le_natDegree
-    (hlarge : derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeStatement) :
-    derivativePreservesStrictInterlSameDegreeStatement := by
-  intro f g hfg hdeg
+/-- Same-degree branch of differentiation preserving weak interlacing.
+Degrees zero and one are elementary because the derivatives are zero or nonzero
+constants. -/
+theorem derivative_interl_of_strictInterl_sameDegree {f g : ℝ[X]}
+    (hfg : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
+    Interl f.derivative g.derivative := by
   by_cases hlarge_deg : 2 ≤ f.natDegree
-  · exact hlarge hfg hdeg hlarge_deg
+  · exact derivative_interl_of_strictInterl_sameDegree_two_le hfg hdeg hlarge_deg
   · by_cases hfdeg0 : f.natDegree = 0
     · have hfder : f.derivative = 0 :=
         Polynomial.derivative_eq_zero.mpr hfdeg0
@@ -332,61 +280,27 @@ theorem derivativePreservesStrictInterlSameDegree_of_two_le_natDegree
         (StrictInterl.of_degree_zero_degree_zero hfder_rr.1 hfder_rr.2 hgder_rr.1 hgder_rr.2
           hfder_deg0 hgder_deg0).toInterl
 
-/-- The full zero-aware derivative-preservation statement follows from the
-same-degree branch.  The differ-by-one branch is
-`derivative_interl_of_strictInterl_succDegree`, proved above from the forward and
-converse Obreschkoff theorems. -/
-theorem derivativePreservesInterl_of_sameDegree
-    (hsame : derivativePreservesStrictInterlSameDegreeStatement) :
-    derivativePreservesInterlStatement := by
-  intro f g hfg
+/-- Differentiation preserves zero-aware weak interlacing (Rolle--Obreschkoff).
+The same-degree branch is `derivative_interl_of_strictInterl_sameDegree`; the
+differ-by-one branch is `derivative_interl_of_strictInterl_succDegree`, proved
+above from the forward and converse Obreschkoff theorems. -/
+theorem derivativePreservesInterl {p q : ℝ[X]} (hfg : Interl p q) :
+    Interl p.derivative q.derivative := by
   rcases hfg with hfzero | hgzero | hfg'
   · rw [hfzero, derivative_zero]
     exact interl_zero_left _
   · rw [hgzero, derivative_zero]
     exact interl_zero_right _
   · rcases hfg'.natDegree_eq_or_eq_succ with hsameDegree | hsuccDegree
-    · exact hsame hfg' hsameDegree.symm
+    · exact derivative_interl_of_strictInterl_sameDegree hfg' hsameDegree.symm
     · exact derivative_interl_of_strictInterl_succDegree hfg' hsuccDegree.symm
 
-/-- Same-degree branch of differentiation preserving weak interlacing. -/
-theorem derivativePreservesStrictInterlSameDegree :
-    derivativePreservesStrictInterlSameDegreeStatement :=
-  derivativePreservesStrictInterlSameDegree_of_two_le_natDegree <|
-    derivativePreservesStrictInterlSameDegree_of_posLeading <|
-      derivativePreservesStrictInterlSameDegree_of_monic
-        derivativePreservesStrictInterlSameDegreeOfTwoLeNatDegreeMonic
-
-/-- Differentiation preserves zero-aware weak interlacing.  This is the
-witness for `derivativePreservesInterlStatement`. -/
-theorem derivativePreservesInterl : derivativePreservesInterlStatement :=
-  derivativePreservesInterl_of_sameDegree derivativePreservesStrictInterlSameDegree
-
-/-!
-### Direct #42 / shared #41 derivative-preservation API
-
-These wrappers repackage `derivativePreservesStrictInterlSameDegree` and
-`derivativePreservesInterl` in applied forms used by the closed-segment and
-common-interleaver routes.
--/
-
-/-- Zero-aware derivative preservation, applied form of `derivativePreservesInterl`. -/
-theorem derivative_interl_of_interl {f g : ℝ[X]} (h : Interl f g) :
-    Interl f.derivative g.derivative :=
-  derivativePreservesInterl h
+/-! ### Strict derivative preservation -/
 
 /-- A `StrictInterl` input yields zero-aware derivative preservation. -/
 theorem derivative_interl_of_strictInterl {f g : ℝ[X]} (h : StrictInterl f g) :
     Interl f.derivative g.derivative :=
   derivativePreservesInterl h.toInterl
-
-/-- Same-degree derivative preservation, applied form of
-`derivativePreservesStrictInterlSameDegree`. -/
-theorem derivative_interl_of_strictInterl_sameDegree
-    {f g : ℝ[X]} (h : StrictInterl f g)
-    (hdeg : f.natDegree = g.natDegree) :
-    Interl f.derivative g.derivative :=
-  derivativePreservesStrictInterlSameDegree h hdeg
 
 /-- Strict `StrictInterl` output in the same-degree case. -/
 theorem derivative_strictInterl_of_strictInterl_sameDegree
@@ -398,7 +312,7 @@ theorem derivative_strictInterl_of_strictInterl_sameDegree
   have hgder_ne : g.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
   exact
-    (derivativePreservesStrictInterlSameDegree h hdeg).toStrictInterl_of_ne hfder_ne hgder_ne
+    (derivative_interl_of_strictInterl_sameDegree h hdeg).toStrictInterl_of_ne hfder_ne hgder_ne
 
 /-- Strict `StrictInterl` output in the succ-degree case. -/
 theorem derivative_strictInterl_of_strictInterl_succDegree

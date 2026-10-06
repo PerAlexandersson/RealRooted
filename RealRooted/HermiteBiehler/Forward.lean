@@ -350,27 +350,15 @@ theorem isUpperHalfPlaneStable_of_cofactor {f g : ℝ[X]} {r : ℝ}
   intro h
   exact hz.ne' (by simpa using congrArg Complex.im h)
 
-/-- Sign-normalized forward Hermite--Biehler bridge.
-
-This is the minimal sign-stable form used in downstream plumbing:
-positive leading coefficients on both inputs prevent the false counterexample.
--/
-abbrev hermiteBiehlerForwardPosStatement : Prop :=
-  ∀ {f g : ℝ[X]},
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    StrictInterl g f →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
-
-theorem hermiteBiehlerForwardPos_general {f g : ℝ[X]}
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (hpq : StrictInterl g f) :
+theorem hermiteBiehlerForwardPos {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : StrictInterl g f) :
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) := by
   generalize hn : f.natDegree = n
   induction n using Nat.strong_induction_on generalizing f g with
   | _ n ih =>
     subst hn
     by_cases h_deg_le : f.natDegree ≤ 1
-    · exact hermiteBiehlerForwardPos_of_natDegree_le_one hf hg hpq h_deg_le
+    · exact hermiteBiehlerForwardPos_of_natDegree_le_one hf hg h h_deg_le
     · push Not at h_deg_le
       have h_deg₁ : 1 ≤ f.natDegree := by lia
       by_cases hcom : ∃ r, r ∈ f.roots ∧ r ∈ g.roots
@@ -382,7 +370,7 @@ theorem hermiteBiehlerForwardPos_general {f g : ℝ[X]}
           rw [natDegree_divByMonic_X_sub_C]
           lia
         have hpq₁ : StrictInterl (g /ₘ (X - C r)) (f /ₘ (X - C r)) :=
-          hpq.cofactor_of_common_root hrfroot hrgroot
+          h.cofactor_of_common_root hrfroot hrgroot
         have hf₁ : HasPosLeadingCoeff (f /ₘ (X - C r)) :=
           hf.divByMonic_X_sub_C hrfroot
         have hg₁ : HasPosLeadingCoeff (g /ₘ (X - C r)) :=
@@ -391,19 +379,17 @@ theorem hermiteBiehlerForwardPos_general {f g : ℝ[X]}
       · push Not at hcom
         have hfnd : f.roots.Nodup := by
           by_contra hnd
-          obtain ⟨r, hrf, hrg⟩ := exists_common_root_of_not_nodup hpq hnd
+          obtain ⟨r, hrf, hrg⟩ := exists_common_root_of_not_nodup h hnd
           simp_all
         have hgnd : g.roots.Nodup := by
           by_contra hnd
-          obtain ⟨r, hrf, hrg⟩ := exists_common_root_of_not_nodup_g hpq hnd
+          obtain ⟨r, hrf, hrg⟩ := exists_common_root_of_not_nodup_g h hnd
           simp_all
-        exact hermiteBiehlerForwardPos_of_distinct hf hg hpq hfnd hgnd
+        exact hermiteBiehlerForwardPos_of_distinct hf hg h hfnd hgnd
           (fun s hsf hsg ↦ hcom s hsf hsg) h_deg₁
 
-theorem hermiteBiehlerForwardPos {f g : ℝ[X]}
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : StrictInterl g f) :
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) :=
-  hermiteBiehlerForwardPos_general hf hg h
+@[deprecated (since := "2026-10-05")]
+alias hermiteBiehlerForwardPos_general := hermiteBiehlerForwardPos
 
 lemma hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hp₀ : p ≠ 0) :

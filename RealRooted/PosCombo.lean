@@ -33,84 +33,6 @@ private lemma exists_common_root_upper_bound (h : ℝ[X]) (l : List (ℝ × ℝ[
       · intro ap' hap' r hr
         grind
 
-lemma StrictInterl.mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]}
-    (h : StrictInterl f g) (r : ℝ)
-    (hdeg : f.natDegree = g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_le : ∀ s ∈ f.roots, s ≤ r)
-    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    StrictInterl g ((X - C r) * f) := by
-  set f' := f.comp (X + C r)
-  set g' := g.comp (X + C r)
-  have hf' : (f' ≠ 0 ∧
-    f'.Splits) := by simpa [f'] using isRealRooted_comp_X_add_C h.1.1 h.1.2 r
-  have hg' : (g' ≠ 0 ∧
-    g'.Splits) := by simpa [g'] using isRealRooted_comp_X_add_C h.2.1.1 h.2.1.2 r
-  have hf'_pos : HasPosLeadingCoeff f' := by simpa [f'] using hf_pos.comp_X_add_C r
-  have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
-  have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
-    intro s hs
-    simp only [f', roots_comp_X_add_C r] at hs
-    rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
-    simp_all
-  have hg'_nonpos : ∀ s ∈ g'.roots, s ≤ 0 := by
-    intro s hs
-    simp only [g', roots_comp_X_add_C r] at hs
-    rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
-    simp_all
-  have hdeg' : f'.natDegree = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
-  have hfg' : StrictInterl f' g' := by
-    simpa [f', g'] using (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).2 h
-  have hgxf' : StrictInterl g' (X * f') :=
-    strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos
-      hfg' hdeg' hf'_nonpos hg'_nonpos
-  have htranslated : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
-    simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
-      comp_assoc, add_assoc, add_left_comm, add_comm] using hgxf'
-  exact
-    (StrictInterl.comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).1 htranslated
-
-lemma StrictInterl.of_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} {r : ℝ}
-    (h : StrictInterl g ((X - C r) * f))
-    (hdeg : f.natDegree = g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_le : ∀ s ∈ f.roots, s ≤ r)
-    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    StrictInterl f g := by
-  set f' := f.comp (X + C r)
-  set g' := g.comp (X + C r)
-  have hXf : (((X - C r) * f) ≠ 0 ∧ ((X - C r) * f).Splits) := h.2.1
-  have hf0 : f ≠ 0 := right_ne_zero_of_mul hXf.1
-  have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_dvd hXf.1 hXf.2 hf0 (dvd_mul_left f _)
-  have hf' : (f' ≠ 0 ∧
-    f'.Splits) := by simpa [f'] using isRealRooted_comp_X_add_C hf.1 hf.2 r
-  have hg' : (g' ≠ 0 ∧
-    g'.Splits) := by simpa [g'] using isRealRooted_comp_X_add_C h.1.1 h.1.2 r
-  have hf'_pos : HasPosLeadingCoeff f' := by simpa [f'] using hf_pos.comp_X_add_C r
-  have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
-  have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
-    intro s hs
-    simp only [f', roots_comp_X_add_C r] at hs
-    rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
-    simp_all
-  have hg'_nonpos : ∀ s ∈ g'.roots, s ≤ 0 := by
-    intro s hs
-    simp only [g', roots_comp_X_add_C r] at hs
-    rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
-    simp_all
-  have hdeg' : f'.natDegree = g'.natDegree := by simpa [f', g', natDegree_comp] using hdeg
-  have hgf' : StrictInterl g' (((X - C r) * f).comp (X + C r)) := by
-    simpa [g'] using
-      (StrictInterl.comp_X_add_C_iff (f := g) (g := (X - C r) * f) r).2 h
-  have hgxf' : StrictInterl g' (X * f') := by
-    simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
-      comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
-  have hfg' : StrictInterl f' g' :=
-    strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos
-  exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
-
 /-- Borcea--Brändén left-cone lemma, weighted form:
 if every polynomial in the family is interlaced on the left by the same `h`,
 all family members have positive leading coefficient, and the weights are
@@ -413,12 +335,6 @@ theorem StrictInterl.isRealRooted_pos_combo {f g : ℝ[X]}
 
 namespace PosComboRealRooted
 
-/-- View `PosComboRealRooted` as the lightweight continuity hypothesis used in
-`ObreschkoffContinuity`. -/
-lemma toPosComboHyp {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
-    RealRooted.PosComboHyp f g :=
-  hfg
-
 /-- Reflecting both members at a common degree bound preserves
 positive-combination real-rootedness. -/
 lemma reflect_of_natDegree_le {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {N : ℕ}
@@ -475,10 +391,6 @@ lemma divX_of_coeff_zero {f g : ℝ[X]} (h : PosComboRealRooted f g)
         (X * (C lam * f.divX + C μ * g.divX)).Splits) := by simp_all
   exact isRealRooted_of_X_mul hX.1 hX.2
 
-lemma isRealRooted_add_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
-    {μ : ℝ} (hμ : 0 < μ) : ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
-  simpa [one_mul, add_comm] using h zero_lt_one hμ
-
 /-- Nonnegative right-family parameters split once the left endpoint is known to
 split.  The zero endpoint is supplied by `hf`; positive parameters are supplied
 by `PosComboRealRooted`. -/
@@ -488,10 +400,6 @@ lemma splits_add_right_of_nonneg {f g : ℝ[X]} (h : PosComboRealRooted f g)
   rcases lt_or_eq_of_le hμ with hμ_pos | hμ_zero
   · exact (h.isRealRooted_add_right hμ_pos).2
   · simpa [← hμ_zero] using hf
-
-lemma isRealRooted_add_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
-    {lam : ℝ} (hlam : 0 < lam) : ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by
-  simpa [one_mul] using h hlam zero_lt_one
 
 lemma of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
@@ -589,113 +497,6 @@ lemma of_commonInterleaver {f g h : ℝ[X]}
     · simp [hf_pos, hg_pos]
     · exact ⟨(lam, f), by simp [hlam]⟩
   simpa [weightedSum, weightedSum_cons] using hstrictInterl.1
-
-/-- Equal-degree positive-combination real-rootedness forces the left summand
-to be real-rooted. -/
-lemma isRealRooted_left_of_sameDegree {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) : (f ≠ 0 ∧ f.Splits) :=
-  RealRooted.PosComboHyp.isRealRooted_left_of_posComboRealRooted_sameDegree
-    (hfg := hfg.toPosComboHyp) hf_pos hg_pos hdeg
-
-/-- Equal-degree positive-combination real-rootedness forces the right summand
-to be real-rooted. -/
-lemma isRealRooted_right_of_sameDegree {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) : (g ≠ 0 ∧ g.Splits) :=
-  RealRooted.PosComboHyp.isRealRooted_right_of_posComboRealRooted_sameDegree
-    (hfg := hfg.toPosComboHyp) hf_pos hg_pos hdeg
-
-/-- Root-continuity bridge for the left affine family, stated directly for
-`PosComboRealRooted`. -/
-theorem exists_root_near_left_family
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    {a t ε : ℝ}
-    (ha : f.IsRoot a)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (ht : 0 < t)
-    (hcoeff_bound : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε) :
-    ∃ b : ℝ, (C t * f + g).IsRoot b ∧
-      ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 :=
-  RealRooted.PosComboHyp.exists_root_near_left_family
-    (hfg := hfg.toPosComboHyp) ha hf_monic hg_monic hdeg ht hcoeff_bound
-
-/-- Complex-root continuity bridge for the left affine family, stated directly
-for `PosComboRealRooted`. -/
-theorem exists_complex_aroot_near_left_family
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    {z : ℂ} {t ε : ℝ}
-    (hz : f.aeval z = 0)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (ht : 0 < t)
-    (hcoeff_bound : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε) :
-    ∃ w : ℂ, w ∈ (C t * f + g).aroots ℂ ∧
-      ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 :=
-  RealRooted.PosComboHyp.exists_complex_aroot_near_left_family
-    (hfg := hfg.toPosComboHyp) hz hf_monic hg_monic hdeg ht hcoeff_bound
-
-/-- Left-family root continuity with an automatically chosen positive
-parameter, stated directly for `PosComboRealRooted`. -/
-theorem exists_t_and_root_near_left_family
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    {a ε : ℝ}
-    (ha : f.IsRoot a)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (hε : 0 < ε) :
-    ∃ t : ℝ, 0 < t ∧ ∃ b : ℝ, (C t * f + g).IsRoot b ∧
-      ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 :=
-  RealRooted.PosComboHyp.exists_t_and_root_near_left_family
-    (hfg := hfg.toPosComboHyp) ha hf_monic hg_monic hdeg hε
-
-/-- Root-continuity bridge for the right affine family, stated directly for
-`PosComboRealRooted`.  This is the small-`μ` perturbation form used when
-studying `f + C μ * g` near `f`. -/
-theorem exists_root_near_right_family
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    {a μ ε : ℝ}
-    (ha : f.IsRoot a)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (hμ : 0 < μ)
-    (hcoeff_bound : (μ / (μ + 1)) * (coeffSumRange f + coeffSumRange g) < ε) :
-    ∃ b : ℝ, (f + C μ * g).IsRoot b ∧
-      ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 :=
-  RealRooted.PosComboHyp.exists_root_near_right_family
-    (hfg := hfg.toPosComboHyp) ha hf_monic hg_monic hdeg hμ hcoeff_bound
-
-/-- Complex-root continuity bridge for the right affine family, stated directly
-for `PosComboRealRooted`. -/
-theorem exists_complex_aroot_near_right_family
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    {z : ℂ} {μ ε : ℝ}
-    (hz : f.aeval z = 0)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (hμ : 0 < μ)
-    (hcoeff_bound : (μ / (μ + 1)) * (coeffSumRange f + coeffSumRange g) < ε) :
-    ∃ w : ℂ, w ∈ (f + C μ * g).aroots ℂ ∧
-      ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 :=
-  RealRooted.PosComboHyp.exists_complex_aroot_near_right_family
-    (hfg := hfg.toPosComboHyp) hz hf_monic hg_monic hdeg hμ hcoeff_bound
-
-/-- Right-family root continuity with an automatically chosen positive
-parameter, stated directly for `PosComboRealRooted`. -/
-theorem exists_mu_and_root_near_right_family
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    {a ε : ℝ}
-    (ha : f.IsRoot a)
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree)
-    (hε : 0 < ε) :
-    ∃ μ : ℝ, 0 < μ ∧ ∃ b : ℝ, (f + C μ * g).IsRoot b ∧
-      ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 :=
-  RealRooted.PosComboHyp.exists_mu_and_root_near_right_family
-    (hfg := hfg.toPosComboHyp) ha hf_monic hg_monic hdeg hε
 
 /-- Positive-combination real-rootedness gives real-rootedness on the closed
 line segment once the two endpoints are known to be real-rooted. -/
@@ -1034,25 +835,6 @@ end PosComboRealRooted
 
 namespace PosComboRealRooted
 
-lemma family_pair_data_right {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hdeg : f.natDegree ≤ g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {μ₁ μ₂ : ℝ} (hμ₁ : 0 < μ₁) (hμ₂ : 0 < μ₂) (hμ : μ₁ ≠ μ₂) :
-    PosComboRealRooted (f + C μ₁ * g) (f + C μ₂ * g) ∧
-    HasPosLeadingCoeff (f + C μ₁ * g) ∧
-    HasPosLeadingCoeff (f + C μ₂ * g) ∧
-    (f + C μ₁ * g).natDegree = g.natDegree ∧
-    (f + C μ₂ * g).natDegree = g.natDegree ∧
-    IsCoprime (f + C μ₁ * g) (f + C μ₂ * g) := by
-  refine ⟨family_pair_right hfg hμ₁ hμ₂, ?_, ?_, ?_, ?_, ?_⟩
-  · exact family_hasPosLeadingCoeff_right hdeg hf_pos hg_pos hμ₁
-  · exact family_hasPosLeadingCoeff_right hdeg hf_pos hg_pos hμ₂
-  · exact family_natDegree_right hdeg hf_pos hg_pos hμ₁
-  · exact family_natDegree_right hdeg hf_pos hg_pos hμ₂
-  · exact family_isCoprime_right hfg hno hμ₁ hμ
-
 lemma family_pair_data_left {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree ≤ f.natDegree)
@@ -1071,23 +853,6 @@ lemma family_pair_data_left {f g : ℝ[X]}
   · exact family_natDegree_left hdeg hf_pos hg_pos hlam₁
   · exact family_natDegree_left hdeg hf_pos hg_pos hlam₂
   · exact family_isCoprime_left hfg hno hlam₁ hlam
-
-/-- Specialized `1/2` right-family package for `(f + g, f + 2g)`. This is the
-canonical positive-combination reroute used in the same-degree bridge search. -/
-lemma family_pair_data_right_one_two {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hdeg : f.natDegree ≤ g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    PosComboRealRooted (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g) ∧
-    HasPosLeadingCoeff (f + C (1 : ℝ) * g) ∧
-    HasPosLeadingCoeff (f + C (2 : ℝ) * g) ∧
-    (f + C (1 : ℝ) * g).natDegree = g.natDegree ∧
-    (f + C (2 : ℝ) * g).natDegree = g.natDegree ∧
-    IsCoprime (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g) :=
-  family_pair_data_right
-    (f := f) (g := g) hfg hdeg hf_pos hg_pos hno zero_lt_one (by simp)
-    (by simp)
 
 /-- Symmetric `1/2` left-family package for `(f + g, 2f + g)`. -/
 lemma family_pair_data_left_one_two {f g : ℝ[X]}
@@ -1148,19 +913,6 @@ lemma family_pair_data_segment {f g : ℝ[X]}
     segment_natDegree hdeg hf_pos hg_pos hβ₁0 hβ₁1,
     segment_natDegree hdeg hf_pos hg_pos hβ₂0 hβ₂1,
     family_isCoprime_segment hfg hno hβ₁0 hβ₁1 hβ⟩
-
-/-- A common root of the specialized right family `(f + g, f + 2g)` is already
-a common root of `(f, g)`, so the original no-common hypothesis excludes it. -/
-theorem no_common_root_right_family_one_two_of_no_common
-    {f g : ℝ[X]}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ r, (f + C (1 : ℝ) * g).IsRoot r → ¬ (f + C (2 : ℝ) * g).IsRoot r := by
-  intro r hp hq
-  have hp_eval : (f + C (1 : ℝ) * g).eval r = 0 := by simp_all
-  have hq_eval : (f + C (2 : ℝ) * g).eval r = 0 := by simp_all
-  rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hp_eval hq_eval
-  have hg_eval : g.eval r = 0 := by grind
-  simp_all
 
 /-- A common root of the specialized left family `(f + g, 2f + g)` is already
 a common root of `(f, g)`, so the original no-common hypothesis excludes it. -/
@@ -1362,74 +1114,53 @@ theorem StrictInterl.convex_right {f g : ℝ[X]}
     StrictInterl (C a * f + C b * g) g :=
   hfg.nonneg_combo_right hf_pos hg_pos ha.le hb.le (Or.inl ha)
 
-/-- If `f ⊳ g` with positive leading coefficients and non-negative `a, b`,
-    not both zero, then `f` interlaces `a·f + b·g` from the right provided
-    the Wagner 2 hypotheses hold in the genuinely two-term case. -/
+/-- If `f ⊳ g` with positive leading coefficients and nonnegative `a, b`,
+not both zero, then `f` interlaces `a·f + b·g`: `StrictInterl f (a·f + b·g)`.
+This is the common-left cone theorem applied to `f ≪ f` and `f ≪ g`. -/
 theorem StrictInterl.nonneg_combo_left {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
-    (hab : 0 < a ∨ 0 < b)
-    (hfg_rr_ne : (C a * f + C b * g) ≠ 0) (hfg_rr_splits : (C a * f + C b * g).Splits)
-    (hcop : IsCoprime (C a * f) (C b * g)) :
+    (hab : 0 < a ∨ 0 < b) :
     StrictInterl f (C a * f + C b * g) := by
-  have hfg_rr : (C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits :=
-    ⟨hfg_rr_ne, hfg_rr_splits⟩
-  rcases hab with ha_pos | hb_pos
-  · by_cases hb0 : b = 0
-    · simpa [hb0, weightedSum, weightedSum_cons] using
-        (StrictInterl.C_mul_right (StrictInterl.refl hfg.1.1 hfg.1.2) ha_pos.ne')
-    · have hb_pos : 0 < b := by grind
-      have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
-      have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
-      exact StrictInterl.add_of_left
-        (StrictInterl.C_mul_right (StrictInterl.refl hfg.1.1 hfg.1.2) ha_pos.ne')
-        (StrictInterl.C_mul_right hfg hb_pos.ne')
-        hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
-  · by_cases ha0 : a = 0
-    · simpa [ha0, weightedSum, weightedSum_cons] using
-        (StrictInterl.C_mul_right hfg hb_pos.ne')
-    · have ha_pos : 0 < a := by grind
-      have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
-      have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
-      exact StrictInterl.add_of_left
-        (StrictInterl.C_mul_right (StrictInterl.refl hfg.1.1 hfg.1.2) ha_pos.ne')
-        (StrictInterl.C_mul_right hfg hb_pos.ne')
-        hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
+  have hweighted : StrictInterl f (weightedSum [(a, f), (b, g)]) := by
+    apply StrictInterl.weightedSum_left_of_common_left_signed [(a, f), (b, g)] f
+    · simp_all
+    · intro ap hap
+      rcases List.mem_cons.mp hap with h | h
+      · subst h
+        exact StrictInterl.refl hfg.1.1 hfg.1.2
+      · rcases List.mem_cons.mp h with h | h
+        · subst h
+          exact hfg
+        · simp at h
+    · simp_all
+    · simp_all
+  simp_all
 
 /-- If `f ⊳ g` with positive leading coefficients and positive `a, b`,
-    then `f` interlaces `a·f + b·g` from the right: `StrictInterl f (a·f + b·g)`.
-    (Wagner 2 applied to `C a * f` and `C b * g`, both interlaced by `f`.) -/
+then `f` interlaces `a·f + b·g` from the right: `StrictInterl f (a·f + b·g)`. -/
 theorem StrictInterl.convex_left {f g : ℝ[X]}
     (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (hfg_rr_ne : (C a * f + C b * g) ≠ 0) (hfg_rr_splits : (C a * f + C b * g).Splits)
-    (hcop : IsCoprime (C a * f) (C b * g)) :
-    StrictInterl f (C a * f + C b * g) := by
-  have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha hf_pos
-  have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb hg_pos
-  exact StrictInterl.add_of_left
-    (StrictInterl.C_mul_right (StrictInterl.refl hfg.1.1 hfg.1.2) ha.ne')
-    (StrictInterl.C_mul_right hfg hb.ne')
-    hCa_pos hCb_pos hfg_rr_ne hfg_rr_splits hcop
+    {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
+    StrictInterl f (C a * f + C b * g) :=
+  hfg.nonneg_combo_left hf_pos hg_pos ha.le hb.le (Or.inl ha)
 
 /-- A common-factor version of `StrictInterl.convex_left`. If `f` and `g` share a
-real-rooted factor `d`, it is enough to verify the Wagner-2 hypotheses after
-factoring out `d`. -/
+real-rooted factor `d`, it is enough to know the interlacing and leading
+coefficients after factoring out `d`. -/
 theorem StrictInterl.convex_left_of_common_factor {d f g : ℝ[X]}
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     {f' g' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g')
     (hfg : StrictInterl f' g')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
-    {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (hfg'_rr_ne : (C a * f' + C b * g') ≠ 0) (hfg'_rr_splits : (C a * f' + C b * g').Splits)
-    (hcop : IsCoprime (C a * f') (C b * g')) :
+    {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     StrictInterl f (C a * f + C b * g) := by
   subst hf_def hg_def
   have hbase : StrictInterl f' (C a * f' + C b * g') :=
-    hfg.convex_left hf'_pos hg'_pos ha hb hfg'_rr_ne hfg'_rr_splits hcop
+    hfg.convex_left hf'_pos hg'_pos ha hb
   have hmul : StrictInterl (d * f') (d * (C a * f' + C b * g')) :=
     hbase.mul_common_factor hd_ne hd_splits
   grind

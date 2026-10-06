@@ -13,7 +13,7 @@ noncomputable section
 
 namespace RealRooted
 
-/-! ## Gustafsson--Solus Lemma 3.4 backend -/
+/-! ## Gustafsson--Solus Lemma 3.4 -/
 
 namespace GustafssonSolus
 
@@ -225,22 +225,16 @@ lemma gsChoice_delete_global_of_local {choices : List (ℕ × Bool)}
   simpa using hmain le_rfl
 
 /-- The finite entrywise Gustafsson--Solus `2 x 2` threshold check. -/
-def GSEntryHas2x2Statement : Prop :=
-  ∀ {t₁ t₂ j₁ j₂ : ℕ} {α₁ α₂ : ℝ[X]},
-    (α₁ = 0 ∨ α₁ = 1) →
-    (α₂ = 0 ∨ α₂ = 1) →
-    t₁ ≤ t₂ → j₁ ≤ j₂ →
-    (t₁ = t₂ → α₁ = 0 → α₂ = 0) →
+theorem gsEntry_has2x2 {t₁ t₂ j₁ j₂ : ℕ} {α₁ α₂ : ℝ[X]}
+    (hα₁ : α₁ = 0 ∨ α₁ = 1) (hα₂ : α₂ = 0 ∨ α₂ = 1)
+    (ht : t₁ ≤ t₂) (hj : j₁ ≤ j₂) (hcompat : t₁ = t₂ → α₁ = 0 → α₂ = 0) :
     Has2x2InterlacingProperty0
       (thresholdEntry t₁ α₁ j₁) (thresholdEntry t₁ α₁ j₂)
-      (thresholdEntry t₂ α₂ j₁) (thresholdEntry t₂ α₂ j₂)
-
-theorem gsEntry_has2x2 : GSEntryHas2x2Statement := by
-  intro t₁ t₂ j₁ j₂ α₁ α₂ hα₁ hα₂ ht hj hcompat
-  exact (gsEntry_shape hα₁ hα₂ ht hj hcompat).has2x2
+      (thresholdEntry t₂ α₂ j₁) (thresholdEntry t₂ α₂ j₂) :=
+  (gsEntry_shape hα₁ hα₂ ht hj hcompat).has2x2
 
 lemma GSData.entry_has2x2 {q : ℕ} {rows : List (ℕ × ℝ[X])}
-    (hrows : GSData rows) (hentry : GSEntryHas2x2Statement) :
+    (hrows : GSData rows) :
     ∀ (i₁ i₂ : Fin rows.length) (j₁ j₂ : Fin q),
       i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty0
@@ -249,43 +243,22 @@ lemma GSData.entry_has2x2 {q : ℕ} {rows : List (ℕ × ℝ[X])}
         (thresholdEntry (rows.get i₂).1 (rows.get i₂).2 j₁.1)
         (thresholdEntry (rows.get i₂).1 (rows.get i₂).2 j₂.1) := by
   intro i₁ i₂ j₁ j₂ hi hj
-  exact hentry
+  exact gsEntry_has2x2
     (hrows.alpha_mem (rows.get i₁) (List.get_mem rows i₁))
     (hrows.alpha_mem (rows.get i₂) (List.get_mem rows i₂))
     (hrows.thresh_mono i₁ i₂ hi)
     hj
     (hrows.compat i₁ i₂ hi)
 
-/-- Gustafsson--Solus threshold-recursion backend, reduced to the finite
-entrywise `2 x 2` threshold check. -/
-theorem gustafsson_solus_interlacing_recursion_backend
-    (hentry : GSEntryHas2x2Statement)
-    {q : ℕ} (rows : List (ℕ × ℝ[X])) (hrows : GSData rows)
-    (fs : List ℝ[X]) (hfs_len : fs.length = q)
-    (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeq0Nonneg (matPolyAction (thresholdMatrix q rows) fs) :=
-  thresholdMatrix_preserves_interlacing_seq0_of_entry rows
-    hrows.alpha_nonneg (hrows.entry_has2x2 hentry) fs hfs_len hfs
-
+/-- Gustafsson--Solus threshold recursion: threshold matrices preserve
+nonnegative interlacing sequences. -/
 theorem gustafsson_solus_interlacing_recursion
     {q : ℕ} (rows : List (ℕ × ℝ[X])) (hrows : GSData rows)
     (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg (matPolyAction (thresholdMatrix q rows) fs) :=
-  gustafsson_solus_interlacing_recursion_backend gsEntry_has2x2
-    rows hrows fs hfs_len hfs
-
-theorem gustafsson_solus_interlacing_recursion_backend_weak
-    (hentry : GSEntryHas2x2Statement)
-    {q : ℕ} (rows : List (ℕ × ℝ[X])) (hrows : GSData rows)
-    (fs : List ℝ[X]) (hfs_len : fs.length = q)
-    (hfs : IsInterlacingSeq0Nonneg fs)
-    (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
-    IsInterlacingSeq0Nonneg (matPolyAction (thresholdMatrix q rows) fs) ∧
-      ∀ f ∈ matPolyAction (thresholdMatrix q rows) fs,
-        f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
-  thresholdMatrix_preserves_interlacing_seq0_of_entry_weak rows
-    hrows.alpha_nonneg (hrows.entry_has2x2 hentry) fs hfs_len hfs hfs_real
+  thresholdMatrix_preserves_interlacing_seq0_of_entry rows
+    hrows.alpha_nonneg hrows.entry_has2x2 fs hfs_len hfs
 
 theorem gustafsson_solus_interlacing_recursion_weak
     {q : ℕ} (rows : List (ℕ × ℝ[X])) (hrows : GSData rows)
@@ -295,8 +268,8 @@ theorem gustafsson_solus_interlacing_recursion_weak
     IsInterlacingSeq0Nonneg (matPolyAction (thresholdMatrix q rows) fs) ∧
       ∀ f ∈ matPolyAction (thresholdMatrix q rows) fs,
         f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
-  gustafsson_solus_interlacing_recursion_backend_weak gsEntry_has2x2
-    rows hrows fs hfs_len hfs hfs_real
+  thresholdMatrix_preserves_interlacing_seq0_of_entry_weak rows
+    hrows.alpha_nonneg hrows.entry_has2x2 fs hfs_len hfs hfs_real
 
 theorem gustafsson_solus_interlacing_recursion_choices
     {q : ℕ} (choices : List (ℕ × Bool))
@@ -621,20 +594,6 @@ theorem gustafsson_solus_interlacing_recursion_fin_polynomials_interlaces
     simpa using
       GustafssonSolus.gustafsson_solus_interlacing_recursion_fin_choices
         phi delete hphi hlocal fs hfs_len hfs
-
-/-- Gustafsson--Solus Lemma 3.4 in paper-shaped finite-indexed polynomial-list
-form.  The output list has entries `g_i` or `g_i - f_{phi i}` according to
-`delete`. -/
-theorem gustafsson_solus_interlacing_recursion_fin_polynomials
-    {q m : ℕ} (phi : Fin (m + 1) → ℕ) (delete : Fin (m + 1) → Bool)
-    (hphi : ∀ i : Fin m, phi i.castSucc ≤ phi i.succ)
-    (hlocal : ∀ i : Fin m, phi i.castSucc = phi i.succ →
-      delete i.castSucc = true → delete i.succ = true)
-    (fs : List ℝ[X]) (hfs_len : fs.length = q)
-    (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeq0Nonneg (gsPaperPolynomials q m phi delete fs) :=
-  gustafsson_solus_interlacing_recursion_fin_polynomials_interlaces
-    phi delete hphi hlocal fs hfs_len hfs
 
 /-- Real-rootedness projection of the paper-shaped Gustafsson--Solus
 polynomial-list recursion. -/

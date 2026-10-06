@@ -89,7 +89,7 @@ theorem brandenEulerStep_strictInterl {r : ℝ} {p : ℝ[X]} {n : ℕ}
     (hroot_hi : ∀ x ∈ p.roots, x ≤ 0) :
     StrictInterl p (brandenEulerStep r p) := by
   have hstep := brandenEulerStep_degree_pos (r := r) hp_pos hdeg
-  apply strictInterl_mw_derivative_of_nonpos_of_pos_natDegree
+  apply MaWang.strictInterl_derivative_of_nonpos_of_pos_natDegree
       (u := X + C r) (v := X * (1 + X)) hp_splits
   · simpa [hdeg] using hn
   · change p.natDegree ≤ (brandenEulerStep r p).natDegree
@@ -277,13 +277,6 @@ theorem brandenBasisImage_zero_strictInterl
     (n k : ℕ) (hk : k ≤ n) :
     StrictInterl (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
   brandenBasisImage_strictInterl n 0 k (by lia) hk
-
-/-- The first basis image is in an interlacing relation before every in-range image
-in ambient degree at least three. -/
-theorem brandenBasisImage_first_strictInterl
-    (n k : ℕ) (_hn : 3 ≤ n) (hk : k ≤ n) :
-    StrictInterl (brandenBasisImage (R := ℝ) n 0) (brandenBasisImage n k) :=
-  brandenBasisImage_zero_strictInterl n k hk
 
 /-- The ordered ambient-degree row of Brändén basis images. -/
 def brandenBasisImageRow (n : ℕ) : List ℝ[X] :=

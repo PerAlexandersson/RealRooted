@@ -212,7 +212,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
           exact htop ((gammaTransform_even_isRoot_neg_one_iff n δ).mp hx_root_neg_one)
         let y : ℝ := x / (1 + x) ^ 2
         have hy_nonpos : y ≤ 0 :=
-          rootPullback_nonpos_of_gammaTransform hx_ne_neg_one hx_nonpos
+          gammaUntransform_nonpos hx_nonpos hx_ne_neg_one
         have hy_root : δ.IsRoot y := by
           dsimp [y]
           exact isRoot_gamma_of_isRoot_gammaTransform
@@ -365,40 +365,10 @@ lemma gammaTransform_even_shift (m k : ℕ) (γ : ℝ[X]) (hγ : γ.natDegree �
         _ = (X + 1) ^ (2 + 2 * k) * gammaTransform (2 * m) γ := by grind
         _ = (X + 1) ^ (2 * (k + 1)) * gammaTransform (2 * m) γ := by lia
 
-lemma gammaTransform_pad_to_minimal {d : ℕ} {γ : ℝ[X]}
-    (hγdeg : γ.natDegree ≤ d / 2) :
-    gammaTransform d γ =
-      (X + 1) ^ (d - 2 * γ.natDegree) * gammaTransform (2 * γ.natDegree) γ := by
-  let m : ℕ := γ.natDegree
-  let n : ℕ := d / 2
-  have hm : m ≤ n := by lia
-  have hshift :
-      gammaTransform (2 * n) γ =
-        (X + 1) ^ (2 * (n - m)) * gammaTransform (2 * m) γ := by
-    have hshift' :=
-      gammaTransform_even_shift (m := m) (k := n - m) (γ := γ) (by lia)
-    simp_all
-  rcases Nat.mod_two_eq_zero_or_one d with hd_even | hd_odd
-  · grind
-  · have hd : d = 2 * n + 1 := by lia
-    have hpow : d - 2 * m = 1 + 2 * (n - m) := by lia
-    calc
-      gammaTransform d γ = gammaTransform (2 * n + 1) γ := by lia
-      _ = (X + 1) * gammaTransform (2 * n) γ := gammaTransform_odd n γ
-      _ = (X + 1) * ((X + 1) ^ (2 * (n - m)) * gammaTransform (2 * m) γ) := by lia
-      _ = (X + 1) ^ (1 + 2 * (n - m)) * gammaTransform (2 * m) γ := by grind
-      _ = (X + 1) ^ (d - 2 * m) * gammaTransform (2 * m) γ := by lia
-      _ = (X + 1) ^ (d - 2 * γ.natDegree) * gammaTransform (2 * γ.natDegree) γ := by lia
-
 lemma gammaTransform_minimal_dvd {d : ℕ} {γ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2) :
-    gammaTransform (2 * γ.natDegree) γ ∣ gammaTransform d γ := by
-  refine ⟨(X + 1) ^ (d - 2 * γ.natDegree), ?_⟩
-  calc
-    gammaTransform d γ =
-        (X + 1) ^ (d - 2 * γ.natDegree) * gammaTransform (2 * γ.natDegree) γ :=
-      gammaTransform_pad_to_minimal (d := d) (γ := γ) hγdeg
-    _ = gammaTransform (2 * γ.natDegree) γ * (X + 1) ^ (d - 2 * γ.natDegree) := by ring
+    gammaTransform (2 * γ.natDegree) γ ∣ gammaTransform d γ :=
+  Dvd.intro_left _ (gammaTransform_eq_X_add_one_pow_mul_minimal hγdeg).symm
 
 theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
@@ -423,13 +393,13 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDeg
 /-- Gamma-polynomial real-rootedness criterion: for a symmetric polynomial
 `p` of ambient degree `d`, the gamma-polynomial is real-rooted with
 nonpositive roots if and only if `p` is real-rooted with nonpositive roots.
-The symmetry hypothesis is expressed using `IdTransform d p = p` so this file
+The symmetry hypothesis is expressed using `idTransform d p = p` so this file
 can be built directly on top of `SymmetricDecomposition`. -/
 theorem gammaRealRootedIffPolynomialRealRootedNonpos :
     ∀ {d : ℕ} {p γ : ℝ[X]},
       γ.natDegree ≤ d / 2 →
       p.natDegree ≤ d →
-      IdTransform d p = p →
+      idTransform d p = p →
       IsGammaExpansion d p γ →
       (((γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ) ↔
         ((p ≠ 0 ∧ p.Splits) ∧ HasRootsNonpos p)) := by

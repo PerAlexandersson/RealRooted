@@ -282,11 +282,6 @@ def IsInterlacingSeq0NonnegRealRooted (fs : List ℝ[X]) : Prop :=
 
 namespace IsInterlacingSeq0NonnegRealRooted
 
-lemma interlacingSeq0Nonneg {fs : List ℝ[X]}
-    (hfs : IsInterlacingSeq0NonnegRealRooted fs) :
-    IsInterlacingSeq0Nonneg fs :=
-  hfs.1
-
 lemma interlacingSeq0 {fs : List ℝ[X]}
     (hfs : IsInterlacingSeq0NonnegRealRooted fs) :
     IsInterlacingSeq0 fs :=

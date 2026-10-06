@@ -703,43 +703,6 @@ theorem strictInterl_of_affine_segment_endpoint_pf_nonneg
     (fun {z} hz => hpencil_pf hs ht hz)
 
 /--
-TNN-named version of `strictInterl_of_affine_segment_endpoint_pf_nonneg`.
-
-The LGV certificate layer naturally produces Toeplitz total nonnegativity of
-the coefficient sequence.  Since `IsPolyaFreqSeq` is the same
-predicate here, this wrapper avoids a small definitional conversion at the
-final handoff.
--/
-theorem strictInterl_of_affine_segment_endpoint_tnn_nonneg
-    {P0 P1 H0 H1 : ℝ[X]} {β : ℝ}
-    (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
-    (hPβ0 : C (1 - β) * P0 + C β * P1 ≠ 0)
-    (hHβ0 : C (1 - β) * H0 + C β * H1 ≠ 0)
-    (hPβnn : HasNonnegCoeffs (C (1 - β) * P0 + C β * P1))
-    (hHβnn : HasNonnegCoeffs (C (1 - β) * H0 + C β * H1))
-    (hpencil_ne :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        ((((C s * X + C t) * P0) + H0) +
-          C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
-    (hpencil_tnn :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        IsPolyaFreqSeq
-          (fun n =>
-            ((((C s * X + C t) * P0) + H0) +
-              C z * (((C s * X + C t) * P1) + H1)).coeff n))
-    (hleft :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * P0) + H0) ≠ 0 ∧ (((C s * X + C t) * P0) + H0).Splits))
-    (hright :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
-    StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
-  strictInterl_of_affine_segment_endpoint_pf_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn
-    hpencil_ne
-    (fun {_s _t _z} hs ht hz => hpencil_tnn hs ht hz)
-    hleft hright
-
-/--
 Same-degree ASW/PF endpoint wrapper.  This is the version to use when endpoint
 real-rootedness should be recovered from positive compatibility plus equal
 degree and positive leading coefficients.
@@ -781,42 +744,6 @@ theorem strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg
     (fun {z} hz => hpencil_ne hs ht hz)
     (fun {z} hz => hpencil_pf hs ht hz)
 
-/--
-Same-degree TNN-named endpoint wrapper.
--/
-theorem strictInterl_of_affine_segment_endpoint_tnn_sameDegree_nonneg
-    {P0 P1 H0 H1 : ℝ[X]} {β : ℝ}
-    (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
-    (hPβ0 : C (1 - β) * P0 + C β * P1 ≠ 0)
-    (hHβ0 : C (1 - β) * H0 + C β * H1 ≠ 0)
-    (hPβnn : HasNonnegCoeffs (C (1 - β) * P0 + C β * P1))
-    (hHβnn : HasNonnegCoeffs (C (1 - β) * H0 + C β * H1))
-    (hpencil_ne :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        ((((C s * X + C t) * P0) + H0) +
-          C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
-    (hpencil_tnn :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        IsPolyaFreqSeq
-          (fun n =>
-            ((((C s * X + C t) * P0) + H0) +
-              C z * (((C s * X + C t) * P1) + H1)).coeff n))
-    (hleft_pos :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        HasPosLeadingCoeff (((C s * X + C t) * P0) + H0))
-    (hright_pos :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        HasPosLeadingCoeff (((C s * X + C t) * P1) + H1))
-    (hdeg :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        (((C s * X + C t) * P1) + H1).natDegree =
-          (((C s * X + C t) * P0) + H0).natDegree) :
-    StrictInterl (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
-  strictInterl_of_affine_segment_endpoint_pf_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
-    hHβnn hpencil_ne
-    (fun {_s _t _z} hs ht hz => hpencil_tnn hs ht hz)
-    hleft_pos hright_pos hdeg
-
 /-- Branden's affine-family converse immediately upgrades to the full
 Obreschkoff all-combinations conclusion in the nonnegative-coefficient regime:
 once `strictInterl_of_affine_family_nonneg` gives `f ≪ g`, every real linear
@@ -832,28 +759,6 @@ theorem allComboRealRooted_of_affine_family_nonneg
     AllComboRealRooted f g :=
   allComboRealRooted_of_strictInterl
     (strictInterl_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
-
-/-- Public shifted-pair package extracted from a nonnegative affine family.
-This is the corrected same-degree seam after the failed boundary-right-pair
-target: the affine family automatically promotes the shifted pair
-`(g + X * f, f)` into the clean succ-degree positive-combination regime. -/
-theorem shifted_pair_data_of_affine_family_nonneg
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    PosComboRealRooted (g + X * f) f ∧
-    HasNonnegCoeffs (g + X * f) ∧
-    HasNonnegCoeffs f ∧
-    (g + X * f) ≠ 0 ∧
-    f ≠ 0 ∧
-    HasPosLeadingCoeff (g + X * f) ∧
-    HasPosLeadingCoeff f ∧
-    (g + X * f).natDegree = f.natDegree + 1 :=
-  affine_family_shifted_pair_data hf0 hg0 hfnn hgnn haff
 
 /-- A nonnegative affine family already orients the shifted pair:
 `f ≺ g + X * f`. This is the public corrected replacement for the earlier
@@ -893,21 +798,6 @@ theorem strictInterl_right_pair_of_affine_family_nonneg_sameDegree
   strictInterl_right_pair_of_strictInterl_shifted_pair_sameDegree
     (strictInterl_shifted_pair_of_affine_family_nonneg hf0 hfnn hgnn haff)
     hf0 hg0 hfnn hgnn hdeg
-
-/-- Public shifted-pair reduction in the same-degree nonnegative regime:
-once the corrected shifted pair satisfies `f ≺ g + X * f`, the original pair
-already satisfies `f ≺ g`. This packages the internal subtraction step used in
-the affine-family same-degree branch. -/
-theorem strictInterl_of_strictInterl_shifted_pair_sameDegree_nonneg
-    {f g : ℝ[X]}
-    (h : StrictInterl f (g + X * f))
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hdeg : g.natDegree = f.natDegree) :
-    StrictInterl f g :=
-  strictInterl_of_strictInterl_shifted_pair_sameDegree
-    h hf0 hg0 hfnn hgnn hdeg
 
 /-- Symmetric degree closeness for positive-combination real-rooted pairs with
 nonnegative coefficients. -/

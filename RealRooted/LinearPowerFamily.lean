@@ -277,24 +277,9 @@ theorem interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs {f : ℝ[X]}
   have hXpos : HasPosLeadingCoeff (X : ℝ[X]) := by
     unfold HasPosLeadingCoeff
     simp
-  have hcop : IsCoprime (C a * (1 : ℝ[X])) (C b * X) := by
-    refine ⟨C a⁻¹, 0, ?_⟩
-    rw [mul_one, ← C_mul, inv_mul_cancel₀ ha.ne']
-    simp
-  have hsum_ne : (C a * (1 : ℝ[X]) + C b * X) ≠ 0 := by
-    intro hzero
-    have hdeg : (C a * (1 : ℝ[X]) + C b * X).natDegree = 1 := by
-      compute_degree!
-      exact hb.ne'
-    rw [hzero] at hdeg
-    simp at hdeg
-  have hsum_splits : (C a * (1 : ℝ[X]) + C b * X).Splits := by
-    apply Polynomial.Splits.of_natDegree_le_one
-    compute_degree!
   have hstrictInterl : StrictInterl (f * 1) (C a * (f * 1) + C b * (f * X)) :=
     StrictInterl.convex_left_of_common_factor (d := f) (f' := 1) (g' := X)
       hne hsplits (by ring) (by ring) h1X hasPosLeadingCoeff_one hXpos ha hb
-      hsum_ne hsum_splits hcop
   rw [mul_one] at hstrictInterl
   have heq : C a * f + C b * (f * X) = (C a + C b * X) * f := by ring
   rw [heq] at hstrictInterl

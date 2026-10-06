@@ -54,8 +54,7 @@ macro_rules
       rr_asw_forward_or_zero using
         pf_coeff := $hpf:term) =>
       `(tactic|
-        exact RealRooted.aissenSchoenbergWhitneyForwardOrZero
-          (RealRooted.hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff $hpf) $hpf)
+        exact RealRooted.aissenSchoenbergWhitneyForwardOrZero $hpf)
   | `(tactic|
       rr_asw_forward_nonzero using
         nonzero := $hp0:term,

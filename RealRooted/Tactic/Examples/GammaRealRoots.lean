@@ -19,7 +19,7 @@ example (d n : ℕ) (a : ℝ) :
   rr_gamma_transform_monomial
 
 example (d : ℕ) (γ : ℝ[X]) :
-    IdTransform d (gammaTransform d γ) = gammaTransform d γ := by
+    idTransform d (gammaTransform d γ) = gammaTransform d γ := by
   rr_gamma_transform_fixed
 
 example (d i : ℕ) :
@@ -122,7 +122,7 @@ example {d : ℕ} {γ : ℝ[X]}
 example {d : ℕ} {p γ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2)
     (hpdeg : p.natDegree ≤ d)
-    (hsym : IdTransform d p = p)
+    (hsym : idTransform d p = p)
     (hexp : IsGammaExpansion d p γ) :
     (((γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ) ↔
       ((p ≠ 0 ∧ p.Splits) ∧ HasRootsNonpos p)) := by
@@ -199,7 +199,7 @@ example {Γ : Nat → ℝ[X]}
 example {d : Nat → Nat} {P Γ : Nat → ℝ[X]}
     (hγdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
     (hpdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
-    (hsym : ∀ n : Nat, IdTransform (d n) (P n) = P n)
+    (hsym : ∀ n : Nat, idTransform (d n) (P n) = P n)
     (hexp : ∀ n : Nat, IsGammaExpansion (d n) (P n) (Γ n)) :
     ∀ n : Nat,
       (((Γ n ≠ 0 ∧ (Γ n).Splits) ∧ HasRootsNonpos (Γ n)) ↔

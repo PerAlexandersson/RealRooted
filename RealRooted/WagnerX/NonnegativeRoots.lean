@@ -123,16 +123,15 @@ theorem strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos {f g : 
 
 /-! ## Wagner (3): f ≪ g ↔ g ≪ X·f -/
 
-theorem strictInterl_iff_strictInterl_mul_X {f g : ℝ[X]}
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+/-- The degree-increasing case of Wagner (3), with nonpositive roots. -/
+private theorem strictInterl_iff_mul_X_of_roots_nonpos_of_succ {f g : ℝ[X]}
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0)
     (hf₀ : f ≠ 0) (hf : f.Splits) (hg₀ : g ≠ 0) (hg : g.Splits)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     StrictInterl f g ↔ StrictInterl g (X * f) := by
   have hXf_roots : (X * f).roots = {0} + f.roots := by
     rw [roots_mul (mul_ne_zero X_ne_zero hf₀), roots_X]
   have hXf_deg : (X * f).natDegree = g.natDegree := by simp_all
-  have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf hfnn
-  have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hg hgnn
   constructor
   · -- Forward: StrictInterl f g → StrictInterl g (X * f)
     intro ⟨_, _, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
@@ -218,83 +217,70 @@ theorem strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos {f g : ℝ
     (h : StrictInterl g (X * f))
     (hdeg : f.natDegree = g.natDegree)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
-    StrictInterl f g := by
-  rcases h with
-    ⟨hg, hXf, ss_g, rs_Xf, hss_g, hrs_Xf, hss_g_eq, hrs_Xf_eq, hshape⟩
-  have hf : f ≠ 0 ∧ f.Splits := by simp_all
-  set rs_f := f.roots.sort (· ≤ ·)
-  have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  have hrs_f : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
-    fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
-  have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
-  have hXf_roots : (X * f).roots = {0} + f.roots := by
-    rw [roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X]
-  have hrs_Xf_is : rs_Xf = rs_f ++ [(0 : ℝ)] := by
-    have hmultiset_eq : (↑rs_Xf : Multiset ℝ) = ↑(rs_f ++ [(0 : ℝ)]) := by
-      rw [hrs_Xf_eq, hXf_roots, ← hrs_f_eq, ← Multiset.coe_add]
-      simp [add_comm]
-    exact List.Perm.eq_of_pairwise' hrs_Xf hrs_f0 (Multiset.coe_eq_coe.mp hmultiset_eq)
-  have hlen_fg : rs_f.length = ss_g.length := by
-    rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2,
-      ← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg.2, hdeg]
-  rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, _⟩
-  · rw [hrs_Xf_is] at hint hlen
-    have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by lia
-    have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by grind
-    have halt0 :
-        ListAlternates (rs_f ++ [(0 : ℝ)]) (ss_g ++ [(0 : ℝ)]) :=
-      listAlternates_append_zero ss_g (rs_f ++ [(0 : ℝ)]) hlen' hint hrs_f0_nonpos
-    have halt : ListAlternates rs_f ss_g :=
-      listAlternates_of_append_zero_both rs_f ss_g hlen_fg halt0
-    exact ⟨hf, hg, rs_f, ss_g, hrs_f, hss_g, hrs_f_eq, hss_g_eq,
-      Or.inr ⟨hlen_fg, halt⟩⟩
-  · simp_all
+    StrictInterl f g :=
+  strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos h hdeg hf_nonpos
 
+/-- Wagner (3): if all roots of `f` and `g` are nonpositive, then `f`
+interlaces `g` if and only if `g` interlaces `X * f`.
+
+No degree or leading-coefficient hypothesis is needed.  Either side forces
+`g.natDegree = f.natDegree` or `g.natDegree = f.natDegree + 1`, and both cases
+are covered. -/
+theorem strictInterl_iff_mul_X_of_roots_nonpos {f g : ℝ[X]}
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
+    StrictInterl f g ↔ StrictInterl g (X * f) := by
+  constructor
+  · intro h
+    rcases h.natDegree_eq_or_eq_succ with hdeg | hdeg
+    · exact strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos h hdeg.symm
+        hf_nonpos hg_nonpos
+    · exact (strictInterl_iff_mul_X_of_roots_nonpos_of_succ hf_nonpos hg_nonpos
+        h.1.1 h.1.2 h.2.1.1 h.2.1.2 hdeg.symm).mp h
+  · intro h
+    have hf₀ : f ≠ 0 := right_ne_zero_of_mul h.2.1.1
+    have hf : f ≠ 0 ∧ f.Splits :=
+      isRealRooted_of_dvd h.2.1.1 h.2.1.2 hf₀ (dvd_mul_left f X)
+    have hXf_deg : (X * f).natDegree = f.natDegree + 1 := by
+      rw [natDegree_mul X_ne_zero hf₀, natDegree_X]
+      lia
+    rcases h.natDegree_eq_or_eq_succ with hdeg | hdeg
+    · exact (strictInterl_iff_mul_X_of_roots_nonpos_of_succ hf_nonpos hg_nonpos
+        hf₀ hf.2 h.1.1 h.1.2 (by lia)).mpr h
+    · exact strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos h (by lia)
+        hf_nonpos
+
+/-- Wagner (3) in the degree-increasing case, for polynomials with nonnegative
+coefficients.  See `strictInterl_iff_mul_X_of_roots_nonpos` for the general
+form. -/
+theorem strictInterl_iff_strictInterl_mul_X {f g : ℝ[X]}
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hf₀ : f ≠ 0) (hf : f.Splits) (hg₀ : g ≠ 0) (hg : g.Splits)
+    (hdeg : f.natDegree + 1 = g.natDegree) :
+    StrictInterl f g ↔ StrictInterl g (X * f) :=
+  strictInterl_iff_mul_X_of_roots_nonpos_of_succ (roots_nonpos_of_nonneg_coeffs hf hfnn)
+    (roots_nonpos_of_nonneg_coeffs hg hgnn) hf₀ hf hg₀ hg hdeg
+
+/-- Wagner (3) in the degree-increasing case, for real-rooted polynomials with
+nonpositive roots and positive leading coefficients.  See
+`strictInterl_iff_mul_X_of_roots_nonpos` for the general form. -/
 theorem strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0)
     (hdeg : f.natDegree + 1 = g.natDegree) :
-    StrictInterl f g ↔ StrictInterl g (X * f) := by
-  have ⟨hfnn, hf₀⟩ := (hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hf).mpr
-    ⟨hf_pos, hf_nonpos⟩
-  have ⟨hgnn, hg₀⟩ := (hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hg).mpr
-    ⟨hg_pos, hg_nonpos⟩
-  exact strictInterl_iff_strictInterl_mul_X hfnn hgnn hf₀ hf hg₀ hg hdeg
+    StrictInterl f g ↔ StrictInterl g (X * f) :=
+  strictInterl_iff_mul_X_of_roots_nonpos_of_succ hf_nonpos hg_nonpos hf_pos.ne_zero hf
+    hg_pos.ne_zero hg hdeg
 
 /-- Nonnegative-coefficients form of Wagner (3): if `f ≪ g` and both
 polynomials have nonnegative coefficients, then `g ≪ X * f`. This packages
 the differ-by-1 and same-degree cases under one theorem. -/
 theorem strictInterl_mul_X_of_strictInterl_of_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    StrictInterl g (X * f) := by
-  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf.2 hfnn
-  have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hg.2 hgnn
-  rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
-  · have hdeg : f.natDegree + 1 = g.natDegree := by
-      have hss_len : ss.length = f.natDegree := by
-        rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-      have hrs_len : rs.length = g.natDegree := by
-        rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-      lia
-    exact
-      (strictInterl_iff_strictInterl_mul_X_of_roots_nonpos
-        hf.2 hg.2 (hfnn.pos_leadingCoeff hf.1) (hgnn.pos_leadingCoeff hg.1)
-        hf_nonpos hg_nonpos hdeg).mp
-        ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inl ⟨hlen, hint⟩⟩
-  · have hdeg : f.natDegree = g.natDegree := by
-      have hss_len : ss.length = f.natDegree := by
-        rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-      have hrs_len : rs.length = g.natDegree := by
-        rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-      lia
-    exact
-      strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos
-        ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inr ⟨hlen, halt⟩⟩
-        hdeg hf_nonpos hg_nonpos
+    StrictInterl g (X * f) :=
+  (strictInterl_iff_mul_X_of_roots_nonpos (roots_nonpos_of_nonneg_coeffs h.1.2 hfnn)
+    (roots_nonpos_of_nonneg_coeffs h.2.1.2 hgnn)).mp h
 
 /-- Nonzero scalar form of the Wagner `X`-shift bridge. -/
 theorem strictInterl_C_mul_X_of_strictInterl_of_nonneg {f g : ℝ[X]} {c : ℝ}

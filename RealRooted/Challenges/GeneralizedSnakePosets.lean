@@ -22,6 +22,16 @@ module = "RealRooted.GeneralizedSnakePosets.SnakeWord"
 label = "Letters L and R of a snake word"
 
 [[definitions]]
+name = "RealRooted.GeneralizedSnakePosets.SnakeWord.IsConstant"
+module = "RealRooted.GeneralizedSnakePosets.SnakeWord"
+label = "Constant snake words"
+
+[[definitions]]
+name = "RealRooted.GeneralizedSnakePosets.SnakeWord.IsLastChangeIndex"
+module = "RealRooted.GeneralizedSnakePosets.SnakeWord"
+label = "Last position differing from the final letter"
+
+[[definitions]]
 name = "RealRooted.GeneralizedSnakePosets.generalizedSnakeBoard"
 module = "RealRooted.GeneralizedSnakePosets.SnakeBoard"
 label = "Board of a generalized snake poset"
@@ -48,7 +58,7 @@ label = "Modified Narayana polynomials are Pólya-frequency"
 
 [[theorems]]
 name = "RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial_strictInterl_succ"
-module = "RealRooted.GeneralizedSnakePosets.Narayana.Recurrence"
+module = "RealRooted.GeneralizedSnakePosets.Narayana.Modified"
 label = "Consecutive modified Narayana polynomials interlace"
 
 [[theorems]]
@@ -68,19 +78,26 @@ module = "RealRooted.Challenges.GeneralizedSnakePosets"
 label = "The auxiliary polynomials Gₙ in terms of Pₙ"
 
 [[theorems]]
-name = """RealRooted.GeneralizedSnakePosets.\
-generalizedSnakeRookModel_snakePolynomial_of_isConstant"""
-module = "RealRooted.GeneralizedSnakePosets.SnakeConstant"
+name = "RealRooted.GeneralizedSnakePosets.auxiliaryG_strictInterl_modifiedNarayana"
+module = "RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing"
+label = "The auxiliary polynomial Gₙ interlaces Pₙ"
+
+[[theorems]]
+name = """RealRooted.Challenges.GeneralizedSnakePosets.\
+rookPolynomial_generalizedSnakeBoard_of_isConstant"""
+module = "RealRooted.Challenges.GeneralizedSnakePosets"
 label = "Constant words give modified Narayana polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.GeneralizedSnakePosets.snakePolynomial_recurrence"
+name = """RealRooted.Challenges.GeneralizedSnakePosets.\
+rookPolynomial_generalizedSnakeBoard_recurrence"""
 module = "RealRooted.Challenges.GeneralizedSnakePosets"
 label = "Recurrence for the snake polynomials"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.GeneralizedSnakePosets.snakePolynomial_realRooted_interlaces"
+name = """RealRooted.Challenges.GeneralizedSnakePosets.\
+rookPolynomial_generalizedSnakeBoard_splits_and_interlaces"""
 module = "RealRooted.Challenges.GeneralizedSnakePosets"
 label = "Snake polynomials are real-rooted and interlace"
 headline = true
@@ -92,10 +109,13 @@ headline = true
 A generalized snake poset $P(w)$ is a width-two poset built from a word $w$ in
 the letters $L$ and $R$. Braun and Jal show that the $h^*$-polynomial of its
 order polytope is the non-nesting rook polynomial $M_w$ of a skew board whose
-cells are the incomparable cross-chain pairs of $P(w)$.
+cells are the incomparable cross-chain pairs of $P(w)$. This identification is
+cited from Braun–Jal and checked numerically for all words of length at most
+11; it is not formalized. Lean formalizes the rook model: the board, its
+non-nesting rook polynomial $M_w$, and the recurrence below.
 
-**Theorem (Braun–Jal).** Each $M_w$ is real-rooted, and deleting the last
-letter of $w$ gives a polynomial interlacing $M_w$.
+**Theorem (Braun–Jal).** If $w$ is nonempty, then $M_w$ is real-rooted, and
+deleting the last letter of $w$ gives a polynomial interlacing $M_w$.
 
 The proof uses the **modified Narayana polynomials** $P_n = t^{-1} N_{n+1}$,
 which are the rook polynomials of the full truncated staircase boards, and
@@ -111,6 +131,7 @@ polynomials.
   $(\lambda x+\nu) P_{m-1} + P_m \ll (\lambda x+\nu) P_m + P_{m+1}$.
 - **Staircase input.** $x\, G_{n-1} = P_n - (1+x) P_{n-1}$, and $G_n - G_{n-1}$
   has nonnegative coefficients.
+- **Auxiliary interlacing.** For $n \geq 1$, $G_n \ll P_n$.
 
 Induction on the length of $w$ along the recurrence then gives the theorem.
 
@@ -132,42 +153,48 @@ namespace GeneralizedSnakePosets
 
 open RealRooted.GeneralizedSnakePosets
 
-/-- Every snake polynomial `M_w` with `w` nonempty is real-rooted, and deleting
-the last letter of `w` gives a polynomial interlacing it. -/
-theorem snakePolynomial_realRooted_interlaces {w : SnakeWord} (hw : 1 ≤ w.length) :
-    (generalizedSnakeRookModel.snakePolynomial w ≠ 0 ∧
-        (generalizedSnakeRookModel.snakePolynomial w).Splits) ∧
-      Interlaces (generalizedSnakeRookModel.snakePolynomial w.deleteFinal)
-        (generalizedSnakeRookModel.snakePolynomial w) :=
-  snakeInterlacing_generalizedSnakeRookModel hw
+/-- If `w` is nonempty, then the snake polynomial `M_w` is real-rooted, and
+deleting the last letter of `w` gives a polynomial interlacing it. -/
+theorem rookPolynomial_generalizedSnakeBoard_splits_and_interlaces {w : SnakeWord}
+    (hw : w ≠ []) :
+    ((generalizedSnakeBoard w).rookPolynomial ≠ 0 ∧
+        (generalizedSnakeBoard w).rookPolynomial.Splits) ∧
+      Interlaces (generalizedSnakeBoard w.dropLast).rookPolynomial
+        (generalizedSnakeBoard w).rookPolynomial := by
+  rw [List.dropLast_eq_take]
+  exact snakeInterlacing_generalizedSnakeRookModel (List.length_pos_iff.mpr hw)
 
 /-- If `k` is the last position where `w` differs from its final letter, then
 `M_w = M_{w[:k+1]} P_s + X M_{w[:k]} G_s` with `s = |w| - k - 1`. -/
-theorem snakePolynomial_recurrence {w : SnakeWord} {k : ℕ} (hw : ¬ w.IsConstant)
+theorem rookPolynomial_generalizedSnakeBoard_recurrence {w : SnakeWord} {k : ℕ}
     (hk : w.IsLastChangeIndex k) :
-    generalizedSnakeRookModel.snakePolynomial w =
-      generalizedSnakeRookModel.snakePolynomial (w.takePrefix (k + 1)) *
+    (generalizedSnakeBoard w).rookPolynomial =
+      (generalizedSnakeBoard (w.take (k + 1))).rookPolynomial *
           modifiedNarayanaPolynomial (w.length - (k + 1)) +
-        X * generalizedSnakeRookModel.snakePolynomial (w.takePrefix k) *
+        X * (generalizedSnakeBoard (w.take k)).rookPolynomial *
           FiniteSkewBoard.auxiliaryG (w.length - (k + 1)) :=
-  generalizedSnakeRecurrence hw hk
+  generalizedSnakeRecurrence hk.not_isConstant hk
+
+/-- A constant word `w` has snake polynomial `M_w = P_{|w|+1}`. -/
+theorem rookPolynomial_generalizedSnakeBoard_of_isConstant {w : SnakeWord}
+    (hw : w.IsConstant) :
+    (generalizedSnakeBoard w).rookPolynomial = modifiedNarayanaPolynomial (w.length + 1) :=
+  generalizedSnakeRookModel_snakePolynomial_of_isConstant hw
 
 /-- Affine combinations of consecutive modified Narayana polynomials interlace. -/
 theorem modifiedNarayana_affine_strictInterl {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m)
     (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
     StrictInterl
-      ((lam • X + nu • 1) * modifiedNarayanaPolynomial (m - 1) + modifiedNarayanaPolynomial m)
-      ((lam • X + nu • 1) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)) := by
-  have h := affineModifiedNarayanaInterlacing_modified hm hlam hnu
-  rwa [show C lam * X + C nu = lam • X + nu • (1 : ℝ[X]) by
-    simp [Polynomial.smul_eq_C_mul]] at h
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) + modifiedNarayanaPolynomial m)
+      ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
+        modifiedNarayanaPolynomial (m + 1)) :=
+  affineModifiedNarayanaInterlacing_modified hm hlam hnu
 
 /-- `X G_{n-1} = P_n - (1 + X) P_{n-1}`. -/
-theorem auxiliaryG_recurrence {n : ℕ} (hn : 1 ≤ n) :
+theorem auxiliaryG_recurrence {n : ℕ} (hn : n ≠ 0) :
     X * FiniteSkewBoard.auxiliaryG (n - 1) =
       modifiedNarayanaPolynomial n - (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
-  FiniteSkewBoard.narayanaAuxiliaryGRecurrence_modified hn
+  FiniteSkewBoard.narayanaAuxiliaryGRecurrence_modified (Nat.one_le_iff_ne_zero.mpr hn)
 
 end GeneralizedSnakePosets
 end Challenges

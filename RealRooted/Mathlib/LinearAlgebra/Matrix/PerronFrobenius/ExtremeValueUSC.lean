@@ -186,24 +186,7 @@ theorem exists_isMaxOn_of_upperSemicontinuousOn (hK : IsCompact K) (hK_nonempty 
   rw [h_fx_eq_s]
   exact le_csSup h_bdd_above (mem_image_of_mem f hy)
 
--- shorter aliases for latex formatting
-
-/- Short aliases for long names (backwards‑compatible) -/
--- upperSemicontinuousOn_iff_upperSemicontinuous
-lemma usco_on_iff_usco {s : Set α} :
-  UpperSemicontinuousOn f s ↔ UpperSemicontinuous (s.domRestrict f) :=
-  upperSemicontinuousOn_iff_upperSemicontinuous
-
--- bddAbove_image_of_upperSemicontinuousOn
-theorem bdd_above_image_usco_on (hK : IsCompact K)
-    (hf : UpperSemicontinuousOn f K) : BddAbove (f '' K) :=
-  bddAbove_image_of_upperSemicontinuousOn hK hf
-
--- tendsto_const_sub_inv_add_one_atTop
-lemma tendsto_sub_inv_atTop (c : ℝ) :
-  Tendsto (fun n : ℕ => c - 1 / (n + 1)) atTop (𝓝 c) :=
-  tendsto_const_sub_inv_add_one_atTop c
-
+/- Short alias for a long name (backwards‑compatible) -/
 -- exists_isMaxOn_of_upperSemicontinuousOn
 theorem exists_max_on_usco (hK : IsCompact K) (hK_nonempty : K.Nonempty)
     (hf : UpperSemicontinuousOn f K) : ∃ x₀ ∈ K, IsMaxOn f K x₀ :=

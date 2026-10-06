@@ -103,27 +103,27 @@ theorem gammaTransform_C_mul_X_pow {D i : ℕ} (a : ℝ)
     gammaTransform D (C a * X ^ i) = C a * gammaBasisTerm D i := by
   rw [C_mul_X_pow_eq_monomial, gammaTransform_monomial, ite_eq_left hi]
 
-@[simp] lemma IdTransform_X_add_one :
-    IdTransform 1 (X + 1 : ℝ[X]) = X + 1 := by
-  simp [IdTransform, add_comm]
+@[simp] lemma idTransform_X_add_one :
+    idTransform 1 (X + 1 : ℝ[X]) = X + 1 := by
+  simp [idTransform, add_comm]
 
-lemma IdTransform_raise {m k : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ m) :
-    IdTransform (m + k) p = X ^ k * IdTransform m p := by
+lemma idTransform_raise {m k : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ m) :
+    idTransform (m + k) p = X ^ k * idTransform m p := by
   induction k with
   | zero =>
       lia
   | succ k ih =>
       have hp' : p.natDegree ≤ m + k := le_trans hp (Nat.le_add_right _ _)
       calc
-        IdTransform (m + (k + 1)) p = X * IdTransform (m + k) p := by
+        idTransform (m + (k + 1)) p = X * idTransform (m + k) p := by
           simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
-            (IdTransform_succ (d := m + k) (p := p) hp')
-        _ = X * (X ^ k * IdTransform m p) := by lia
-        _ = (X * X ^ k) * IdTransform m p := by grind
-        _ = X ^ (k + 1) * IdTransform m p := by grind
+            (idTransform_succ (d := m + k) (p := p) hp')
+        _ = X * (X ^ k * idTransform m p) := by lia
+        _ = (X * X ^ k) * idTransform m p := by grind
+        _ = X ^ (k + 1) * idTransform m p := by grind
 
-lemma IdTransform_X_pow_mul {m k : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ m) :
-    IdTransform (k + m) (X ^ k * p) = IdTransform m p := by
+lemma idTransform_X_pow_mul {m k : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ m) :
+    idTransform (k + m) (X ^ k * p) = idTransform m p := by
   induction k with
   | zero =>
       lia
@@ -133,22 +133,22 @@ lemma IdTransform_X_pow_mul {m k : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ m) :
           (X ^ k * p).natDegree ≤ (X ^ k).natDegree + p.natDegree := Polynomial.natDegree_mul_le
           _ ≤ k + m := by simp_all
       calc
-        IdTransform (k.succ + m) (X ^ k.succ * p) = IdTransform (k + m) (X ^ k * p) := by
+        idTransform (k.succ + m) (X ^ k.succ * p) = idTransform (k + m) (X ^ k * p) := by
           simpa [pow_succ', Nat.add_assoc, Nat.add_left_comm, Nat.add_comm, mul_assoc] using
-            (IdTransform_X_mul_succ (d := k + m) (p := X ^ k * p) hkdeg)
-        _ = IdTransform m p := ih
+            (idTransform_X_mul_succ (d := k + m) (p := X ^ k * p) hkdeg)
+        _ = idTransform m p := ih
 
-lemma IdTransform_X_add_one_pow (n : ℕ) :
-    IdTransform n ((X + 1 : ℝ[X]) ^ n) = (X + 1) ^ n := by
+lemma idTransform_X_add_one_pow (n : ℕ) :
+    idTransform n ((X + 1 : ℝ[X]) ^ n) = (X + 1) ^ n := by
   ext k
   by_cases hk : k ≤ n
-  · rw [IdTransform, Polynomial.coeff_reflect, Polynomial.revAt_le hk]
+  · rw [idTransform, Polynomial.coeff_reflect, Polynomial.revAt_le hk]
     simp [Polynomial.coeff_X_add_one_pow, Nat.choose_symm hk]
   · have hkn : n < k := lt_of_not_ge hk
-    rw [IdTransform, Polynomial.coeff_reflect, Polynomial.revAt_eq_self_of_lt hkn]
+    rw [idTransform, Polynomial.coeff_reflect, Polynomial.revAt_eq_self_of_lt hkn]
 
-lemma IdTransform_gammaBasisTerm (d i : ℕ) (hi : 2 * i ≤ d) :
-    IdTransform d (gammaBasisTerm d i) = gammaBasisTerm d i := by
+lemma idTransform_gammaBasisTerm (d i : ℕ) (hi : 2 * i ≤ d) :
+    idTransform d (gammaBasisTerm d i) = gammaBasisTerm d i := by
   let n := d - 2 * i
   have hd_eq : d = i + (d - i) := by lia
   have hterm :
@@ -157,40 +157,40 @@ lemma IdTransform_gammaBasisTerm (d i : ℕ) (hi : 2 * i ≤ d) :
   have hqdeg0 : ((X + 1 : ℝ[X]) ^ n).natDegree ≤ n := natDegree_X_add_one_pow_le n
   have hqdeg : ((X + 1 : ℝ[X]) ^ n).natDegree ≤ d - i := by lia
   calc
-    IdTransform d (gammaBasisTerm d i)
-        = IdTransform (i + (d - i)) (gammaBasisTerm d i) := by lia
-    _ = IdTransform (i + (d - i)) (X ^ i * ((X + 1 : ℝ[X]) ^ n)) := by lia
-    _ = IdTransform (d - i) ((X + 1 : ℝ[X]) ^ n) :=
-          IdTransform_X_pow_mul (m := d - i) (k := i) hqdeg
-    _ = X ^ i * IdTransform n ((X + 1 : ℝ[X]) ^ n) := by
+    idTransform d (gammaBasisTerm d i)
+        = idTransform (i + (d - i)) (gammaBasisTerm d i) := by lia
+    _ = idTransform (i + (d - i)) (X ^ i * ((X + 1 : ℝ[X]) ^ n)) := by lia
+    _ = idTransform (d - i) ((X + 1 : ℝ[X]) ^ n) :=
+          idTransform_X_pow_mul (m := d - i) (k := i) hqdeg
+    _ = X ^ i * idTransform n ((X + 1 : ℝ[X]) ^ n) := by
           rw [show d - i = n + i by
             lia]
-          exact IdTransform_raise (m := n) (k := i) hqdeg0
-    _ = X ^ i * ((X + 1 : ℝ[X]) ^ n) := by rw [IdTransform_X_add_one_pow]
+          exact idTransform_raise (m := n) (k := i) hqdeg0
+    _ = X ^ i * ((X + 1 : ℝ[X]) ^ n) := by rw [idTransform_X_add_one_pow]
     _ = gammaBasisTerm d i := by lia
 
-lemma IdTransform_finsetSum {ι : Type} (d : ℕ) (s : Finset ι)
+lemma idTransform_finsetSum {ι : Type} (d : ℕ) (s : Finset ι)
     (f : ι → ℝ[X]) :
-    IdTransform d (∑ i ∈ s, f i) = ∑ i ∈ s, IdTransform d (f i) := by
+    idTransform d (∑ i ∈ s, f i) = ∑ i ∈ s, idTransform d (f i) := by
   classical
   induction s using Finset.induction_on with
   | empty =>
       simp
   | insert i s hi ih =>
-      simp [Finset.sum_insert, hi, IdTransform_add, ih]
+      simp [Finset.sum_insert, hi, idTransform_add, ih]
 
 lemma gammaTransform_fixed (d : ℕ) (γ : ℝ[X]) :
-    IdTransform d (gammaTransform d γ) = gammaTransform d γ := by
+    idTransform d (gammaTransform d γ) = gammaTransform d γ := by
   classical
   unfold gammaTransform
-  rw [IdTransform_finsetSum]
+  rw [idTransform_finsetSum]
   apply Finset.sum_congr rfl
   intro i hi
   have hi_le : i ≤ d / 2 := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
   have h2i : 2 * i ≤ d := by lia
-  rw [IdTransform, Polynomial.reflect_C_mul]
-  simpa [IdTransform] using
-    congrArg (fun p => C (γ.coeff i) * p) (IdTransform_gammaBasisTerm d i h2i)
+  rw [idTransform, Polynomial.reflect_C_mul]
+  simpa [idTransform] using
+    congrArg (fun p => C (γ.coeff i) * p) (idTransform_gammaBasisTerm d i h2i)
 
 lemma hasNonnegCoeffs_gammaBasisTerm (d i : ℕ) :
     HasNonnegCoeffs (gammaBasisTerm d i) := by
@@ -639,7 +639,7 @@ lemma natDegree_gammaTransform_le (d : ℕ) (γ : ℝ[X]) :
     (gammaTransform d γ).coeff d = γ.coeff 0 := by
   have hfix := gammaTransform_fixed d γ
   have hcoeff := congrArg (fun p : ℝ[X] => p.coeff d) hfix
-  simpa [IdTransform, Polynomial.coeff_reflect, Polynomial.revAt_zero] using hcoeff.symm
+  simpa [idTransform, Polynomial.coeff_reflect, Polynomial.revAt_zero] using hcoeff.symm
 
 
 

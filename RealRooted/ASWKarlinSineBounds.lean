@@ -585,11 +585,4 @@ lemma signVariations_aswKarlinSineVector_degree_one_lt
     hle.trans (by lia)
   exact Nat.lt_of_le_pred horder hle'
 
-/-- Threshold-shaped wrapper for the degree-one sine upper bound. -/
-lemma signVariations_aswKarlinSineVector_degree_one_lt_of_lt_threshold
-    {θ : ℝ} {order : ℕ} (horder : 0 < order) (_hθ0 : 0 ≤ θ)
-    (_hθ : θ < aswSectorThreshold 1 order) :
-    Fin.signVariations (aswKarlinSineVector θ 1 order 1) < order :=
-  signVariations_aswKarlinSineVector_degree_one_lt θ horder
-
 end RealRooted

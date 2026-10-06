@@ -129,12 +129,11 @@ lemma abs_nextCoeff_le_of_splits
 
 /-- Single-member escaping-root inequality.  Given a *single* real-rooted
 member `f + C μ * g` (`μ > 0`) of the succ-degree family, the next coefficient
-of `f + μ g` is bounded by `μ` times a constant independent of `μ`.  This is the
-per-`μ` heart of `key_family_ineq`, stated so it only depends on the one member
-being real-rooted rather than the whole family. -/
+of `f + μ g` is bounded by `μ` times a constant independent of `μ`.  It only
+depends on the one member being real-rooted rather than the whole family. -/
 lemma key_family_ineq_of_splits {f g : ℝ[X]} {μ : ℝ}
     (hsplit : (f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits)
-    (_hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
+    (hg_pos : 0 < g.leadingCoeff)
     (hsucc : g.natDegree = f.natDegree + 1)
     {z : ℂ} (hz : z.im ≠ 0) (hzf : (Polynomial.aeval z) f = 0)
     (hμ : 0 < μ) :
@@ -202,21 +201,6 @@ lemma false_of_forall_Ioo_mul_le {a M ε : ℝ} (ha : 0 < a) (hε : 0 < ε)
     have hμM : μ * M ≤ c * M := mul_le_mul_of_nonneg_right hμc hM.le
     linarith
 
-/-- The per-`μ` escaping-root inequality.  Under the succ-degree family
-hypotheses, for a complex root `z` of `f` with `z.im ≠ 0`, the next coefficient
-of `f + μ g` is bounded by `μ` times a constant independent of `μ`. -/
-lemma key_family_ineq {f g : ℝ[X]}
-    (hfamily : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
-    (_hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
-    (hsucc : g.natDegree = f.natDegree + 1)
-    {z : ℂ} (hz : z.im ≠ 0) (hzf : (Polynomial.aeval z) f = 0)
-    {μ : ℝ} (hμ : 0 < μ) :
-    |f.leadingCoeff + μ * g.coeff f.natDegree|
-      ≤ μ * (g.leadingCoeff * (f.natDegree + 1) *
-        (‖z‖ + ‖(Polynomial.aeval z) g‖ /
-          (g.leadingCoeff * |z.im| ^ f.natDegree))) :=
-  key_family_ineq_of_splits (hfamily hμ) _hf_pos hg_pos hsucc hz hzf hμ
-
 /-- Eventual (small-`μ`) form of the succ-degree left endpoint.  It suffices
 that the members `f + C μ * g` are real-rooted for all small positive `μ`; the
 escaping-root argument only probes the family near `μ = 0⁺`. -/
@@ -247,7 +231,7 @@ theorem splits_of_eventually_add_C_mul_family_of_succDegree
           μ * (g.leadingCoeff * (f.natDegree + 1) *
             (‖z‖ + ‖(Polynomial.aeval (R := ℝ) z) g‖ /
               (g.leadingCoeff * |z.im| ^ f.natDegree))) := by
-      convert key_family_ineq_of_splits (hfamily hμ_pos hμ_lt) hf_pos hg_pos hsucc
+      convert key_family_ineq_of_splits (hfamily hμ_pos hμ_lt) hg_pos hsucc
         hz_im hzf hμ_pos using 1
     cases abs_cases (g.coeff f.natDegree) <;> nlinarith [abs_le.mp h_bound]
   exact false_of_forall_Ioo_mul_le hf_pos hε h_bound
@@ -370,16 +354,6 @@ theorem splits_of_closedSegment_family_of_succDegree
   rw [hEq] at hscaled
   exact hscaled
 
-/-- Right-family form of the succ-degree endpoint theorem. -/
-theorem splits_right_of_add_C_mul_family_of_succDegree
-    {f g : ℝ[X]}
-    (hfamily : ∀ {μ : ℝ}, 0 < μ → ((g + C μ * f) ≠ 0 ∧ (g + C μ * f).Splits))
-    (hf_pos : 0 < f.leadingCoeff)
-    (hg_pos : 0 < g.leadingCoeff)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    g.Splits :=
-  splits_of_add_C_mul_family_of_succDegree hfamily hg_pos hf_pos hsucc
-
 /-- Succ-degree positive-combination families split at the lower-degree
 endpoint. -/
 theorem PosComboRealRooted.left_splits_of_succDegree {f g : ℝ[X]}
@@ -400,73 +374,16 @@ theorem PosComboRealRooted.right_splits_of_succDegree {f g : ℝ[X]}
   PosComboRealRooted.left_splits_of_succDegree
     (PosComboRealRooted.comm hfg) hg_pos hf_pos hsucc
 
-/-- Closed-segment form of the succ-degree endpoint for positive-combination
-families.  If `PosComboRealRooted f g`, both leading coefficients are positive,
-and `g.natDegree = f.natDegree + 1`, then the lower-degree member `f` splits.
-
-This is direct #42 support: it packages
-`splits_of_closedSegment_family_of_succDegree` against the
-`PosComboRealRooted` interface used by the closed-segment route. -/
-theorem PosComboRealRooted.left_splits_of_closedSegment_of_succDegree
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    f.Splits :=
-  splits_of_closedSegment_family_of_succDegree
-    (fun {β} hβ0 hβ1 => hfg (show (0 : ℝ) < 1 - β by linarith) hβ0)
-    hf_pos hg_pos hsucc
-
-/-- Closed-segment form of the succ-degree endpoint theorem at the
-higher-degree endpoint, obtained by swapping the pair. -/
-theorem PosComboRealRooted.right_splits_of_closedSegment_of_succDegree
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    g.Splits :=
-  PosComboRealRooted.left_splits_of_closedSegment_of_succDegree
-    (PosComboRealRooted.comm hfg) hg_pos hf_pos hsucc
-
 /-!
 ### Direct #42 closed-segment endpoint API
 
-The following small public wrappers package the closed-segment endpoint-splitting
-facts for direct downstream #42 use.  They differ from the
-`PosComboRealRooted.*_splits_of_closedSegment_of_succDegree` lemmas above only in
-hypothesis order: the arguments are arranged exactly as in the nonnegative
-succ-degree statements of `CommonInterleaverTwo` (positive leading `f`, positive
-leading `g`, then the `PosComboRealRooted f g` pairing hypothesis, then the
-degree equality `g.natDegree = f.natDegree + 1`), so that they line up with the
-direct #42 call sites without reordering.  No new mathematics is introduced. -/
-
-/-- Direct #42 closed-segment endpoint support (lower-degree endpoint).
-
-Hypotheses are arranged in the same order as the nonnegative succ-degree
-statements in `CommonInterleaverTwo`: positive leading `f`, positive leading
-`g`, the `PosComboRealRooted f g` pairing hypothesis, and the degree equality
-`g.natDegree = f.natDegree + 1`.  Under these hypotheses the lower-degree member
-`f` splits.  This is a thin reordering wrapper around
-`PosComboRealRooted.left_splits_of_closedSegment_of_succDegree`. -/
-theorem left_splits_closedSegment_of_succDegree {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    f.Splits :=
-  hfg.left_splits_of_closedSegment_of_succDegree hf_pos hg_pos hsucc
-
-/-- Direct #42 closed-segment endpoint support (higher-degree endpoint).
-
-Hypotheses are arranged in the same order as the nonnegative succ-degree
-statements in `CommonInterleaverTwo`: positive leading `f`, positive leading
-`g`, the `PosComboRealRooted f g` pairing hypothesis, and the degree equality
-`f.natDegree = g.natDegree + 1`.  Under these hypotheses the higher-degree side
-member `g` splits.  This is a thin reordering wrapper around
-`PosComboRealRooted.right_splits_of_closedSegment_of_succDegree`. -/
-theorem right_splits_closedSegment_of_succDegree {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    g.Splits :=
-  hfg.right_splits_of_closedSegment_of_succDegree hf_pos hg_pos hsucc
+The following public lemmas package the closed-segment endpoint-splitting facts
+as the `≠ 0 ∧ Splits` pair used by the compatibility/interleaver interface.  The
+arguments are arranged exactly as in the nonnegative succ-degree statements of
+`CommonInterleaverTwo` (positive leading `f`, positive leading `g`, then the
+`PosComboRealRooted f g` pairing hypothesis, then the degree equality), so that
+they line up with the direct #42 call sites without reordering.  No new
+mathematics is introduced. -/
 
 /-- Direct #42 closed-segment endpoint support (lower-degree endpoint), packaged
 as the `≠ 0 ∧ Splits` pair used by the compatibility/interleaver interface.
@@ -481,8 +398,7 @@ theorem left_ne_zero_and_splits_closedSegment_of_succDegree {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hsucc : g.natDegree = f.natDegree + 1) :
     f ≠ 0 ∧ f.Splits :=
-  ⟨hf_pos.ne_zero,
-    left_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc⟩
+  ⟨hf_pos.ne_zero, hfg.left_splits_of_succDegree hf_pos hg_pos hsucc⟩
 
 /-- Direct #42 closed-segment endpoint support (higher-degree endpoint),
 packaged as the `≠ 0 ∧ Splits` pair used by the compatibility/interleaver
@@ -498,80 +414,7 @@ theorem right_ne_zero_and_splits_closedSegment_of_succDegree {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hsucc : f.natDegree = g.natDegree + 1) :
     g ≠ 0 ∧ g.Splits :=
-  ⟨hg_pos.ne_zero,
-    right_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc⟩
-
-/-!
-### Additional direct #42 endpoint wrappers
-
-These are thin API wrappers around the closed-segment succ-degree endpoint
-lemmas above.  They only change binder style, namespace placement, or currying
-order so downstream `CommonInterleaverTwo` call sites can use the endpoint
-facts without local hypothesis shuffling.
--/
-
-/-- Dot-notation variant of the lower-degree endpoint packaged as
-`≠ 0 ∧ Splits`. -/
-theorem PosComboRealRooted.left_ne_zero_and_splits_closedSegment_of_succDegree
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    f ≠ 0 ∧ f.Splits :=
-  _root_.RealRooted.left_ne_zero_and_splits_closedSegment_of_succDegree
-    hf_pos hg_pos hfg hsucc
-
-/-- Dot-notation variant of the higher-degree endpoint packaged as
-`≠ 0 ∧ Splits`. -/
-theorem PosComboRealRooted.right_ne_zero_and_splits_closedSegment_of_succDegree
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    g ≠ 0 ∧ g.Splits :=
-  _root_.RealRooted.right_ne_zero_and_splits_closedSegment_of_succDegree
-    hf_pos hg_pos hfg hsucc
-
-/-!
-### Nonnegative-coefficient statement-shaped endpoint wrappers
-
-The nonnegativity hypotheses below are threaded only to match the downstream
-nonnegative succ-degree statement shapes.
--/
-
-/-- Nonneg-shaped lower-degree endpoint wrapper. -/
-theorem left_splits_nonneg_closedSegment_of_succDegree {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    f.Splits :=
-  left_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Nonneg-shaped higher-degree endpoint wrapper. -/
-theorem right_splits_nonneg_closedSegment_of_succDegree {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    g.Splits :=
-  right_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Nonneg-shaped lower-degree endpoint wrapper packaged as `≠ 0 ∧ Splits`. -/
-theorem left_ne_zero_and_splits_nonneg_closedSegment_of_succDegree {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : g.natDegree = f.natDegree + 1) :
-    f ≠ 0 ∧ f.Splits :=
-  left_ne_zero_and_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
-
-/-- Nonneg-shaped higher-degree endpoint wrapper packaged as `≠ 0 ∧ Splits`. -/
-theorem right_ne_zero_and_splits_nonneg_closedSegment_of_succDegree {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hsucc : f.natDegree = g.natDegree + 1) :
-    g ≠ 0 ∧ g.Splits :=
-  right_ne_zero_and_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
+  ⟨hg_pos.ne_zero, hfg.right_splits_of_succDegree hf_pos hg_pos hsucc⟩
 
 /-!
 ### Inclusive closed-segment endpoint wrappers
@@ -630,7 +473,7 @@ theorem left_card_roots_of_succDegree {f g : ℝ[X]}
     (hsucc : g.natDegree = f.natDegree + 1) :
     f.roots.card = f.natDegree :=
   card_roots_of_splits
-    (left_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc)
+    (hfg.left_splits_of_succDegree hf_pos hg_pos hsucc)
 
 /-- Root-count package for the higher-degree endpoint. -/
 theorem right_card_roots_of_succDegree {f g : ℝ[X]}
@@ -639,7 +482,7 @@ theorem right_card_roots_of_succDegree {f g : ℝ[X]}
     (hsucc : f.natDegree = g.natDegree + 1) :
     g.roots.card = g.natDegree :=
   card_roots_of_splits
-    (right_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc)
+    (hfg.right_splits_of_succDegree hf_pos hg_pos hsucc)
 
 /-- Root-count package for the lower-degree endpoint, packaged as the
 `≠ 0 ∧ roots.card = natDegree` pair. -/

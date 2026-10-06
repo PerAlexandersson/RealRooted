@@ -149,8 +149,6 @@ Wronskian results have a focused package entry point:
 
 - `Wronskian.Algebra` owns polynomial identities, Laguerre inequalities, and
   Euler-operator Wronskian formulas;
-- `Wronskian.Converse` owns conversion from the strict same-degree
-  Wronskian/Bezoutian conclusion to the general `StrictInterl` predicate;
 - `Wronskian.Forward` owns both global strict-interlacing-to-positivity and
   finite-root-certificate-to-global-positivity bridges;
 - `Wronskian.Successor.Gap` owns root-gap existence from a successor-degree
@@ -626,24 +624,20 @@ the count foundation directly, while `RootMatchingSort` and the cubic analytic
 consumer import `RootDeletion` without acquiring the branch layer.
 
 `LiuOppositeSigns.NoCommonRoots` isolates the reusable no-common-root predicate
-and its elementary endpoint consequences. The
-`Theorem21Statements.NoCommonCrossing` facade layers the main argument into
-`Witnesses`, `CrossOwnedGaps`, and `BranchConsequences`: affine-pencil and
-root-count transport first, then the finite-gap invariant, then the left/right
-Theorem 2.1 branch predicate. `Theorem21Statements.CommonRootDeletion` owns the
+and its elementary endpoint consequences. `Theorem21Statements.NoCommonCrossing`
+imports the right-pencil crossing criteria of `NoCommonCrossing.Witnesses` and
+turns the cross-owned-gap invariant into the left/right Theorem 2.1 branch
+predicate. `Theorem21Statements.CommonRootDeletion` owns the
 independent shared-factor reduction, and `Theorem21Statements.Interfaces`
-combines the two branches into the theorem-shaped targets and implication
-wrappers. The historical `Theorem21Statements` path remains a compatibility
+keeps only the refuted published forward direction beside its checked
+negation. The historical `Theorem21Statements` path remains a compatibility
 facade, and consumers needing only the predicate import `NoCommonRoots`
 directly.
 
-`LiuOppositeSigns.FactorReturnAssembly` is a compatibility facade over the
-factor-return theorem route. `LeftDegreeCases` owns the translated and
-x-subtraction realizations of the three left deletion branches;
-`RightDegreeCases` obtains the symmetric right branches and their endpoint
-specializations; `PredicateDegreeCases` combines both orientations under
-lower-endpoint predicates; and `DegreeCaseAssembly` packages the final six-case
-factor-return principle.
+`LiuOppositeSigns.FactorReturnAssembly` proves the reverse direction of
+Theorem 2.1. `FactorReturnLeft` and `FactorReturnTwoDegree` reduce the three
+degree cases of a left deletion branch to the positive-split x-subtraction
+pencils of `XSub.IntervalRootCount`; the right branch follows by symmetry.
 
 `LiuOppositeSigns.XSub.ProperPosition` is a narrow bridge from the ordinary
 positive-leading `StrictInterl` interface to Liu's positive root-count package. It
@@ -658,23 +652,6 @@ mutually independent degree and endpoint-sign endgames. This follows the
 proof's dependencies rather than its former source order.
 This keeps the user-facing proper-position interface out of the interval-root
 count implementation.
-
-`LiuOppositeSigns.XSub.CubicCubic` is likewise a compatibility facade over an
-acyclic cubic/cubic case-analysis package. `CubicSubQuadratic` provides the
-shared root-factor and cubic-minus-quadratic infrastructure; `Basic` records
-the normalized leaf and common-root cases; `LeftOutlier`, `MiddleCases`,
-`RightRepeated`, and `LeftRepeated` own the ordered-root and repeated-root
-families in proof dependency order; and `Endpoints` derives the degree-three
-interface. The facade preserves the previous public import path.
-
-`LiuOppositeSigns.XSub.QuarticCubicBoundary` now exposes the analogous boundary
-dependency graph. `Statements` owns the six proposition-valued package
-interfaces; `RepeatedRight` proves the independent strict-left repeated-right
-branch; `QuarticSubQuadratic` owns the endpoint factor and right-only zero
-package; `RepeatedLeft` builds on that factor; `EndpointZero` combines the two
-completed boundary branches; and `Assembly` derives the normalized terminal.
-The 9-line facade preserves the former import path. The implementation units
-have 88, 434, 1,022, 707, 550, and 200 lines, respectively.
 
 The Cayley-transform extraction is entirely Mathlib-shaped:
 
@@ -765,9 +742,9 @@ quadratic calculations; `RootEvaluation` owns evaluation on ordered roots;
 `ComplexRoots` excludes nonreal roots; `WronskianConverse` derives strict
 interlacing from Wronskian positivity; and `LowDegree` supplies the degree-zero
 through degree-two characterization. `RealRooted.Bezoutian` is now only the
-historical compatibility facade. This also lets `Wronskian.Converse` reuse
-`StrictInterlSameDegree.toStrictInterl` instead of maintaining a duplicate root-list
-argument, while consumers can stop at the first layer they need. The generic
+historical compatibility facade. Consumers convert the strict same-degree
+conclusion with `StrictInterlSameDegree.toStrictInterl` instead of maintaining a
+duplicate root-list argument, and can stop at the first layer they need. The generic
 real-to-complex splitting criterion formerly embedded in that proof lives in
 `Mathlib.Algebra.Polynomial.Splits.Complex`.
 
@@ -884,13 +861,13 @@ degree-bounded PF-preserver interface. It has no finite-symbol or tactic
 dependency. Its `SecondDerivative` child owns the independent normalization of
 a six-parameter differential form to that raw operator. Its `Jensen` child
 owns the finite pencil, quadratic-residual factorization, and base certificate
-API; `Jensen.LowDegree` owns the degree-one and degree-two preserver proofs.
+API.
 `Jensen.Contraction` turns the general Schur--Szegő compatibility theorem into
 the bidiagonal preserver API. `Jensen.CubicResidual` owns generic residual
 certificate construction, while its `Quadratic` child owns the quadratic and
 second-derivative specializations. Thus each differential-form, certificate,
-contraction, and low-degree proof unit can evolve independently of the
-tactic-only sequence wrappers.
+and contraction proof unit can evolve independently of the tactic-only
+sequence wrappers.
 `BorceaBranden.Applications.RealUnivariateSymbol` consumes complexification and
 the splitness/stability bridge from `HermiteBiehler.Basic`; it owns the
 coefficientwise complex-linear extension and degree-box symbol calculation.
@@ -914,10 +891,9 @@ Wagner-specific `X - C r` root-factor API, and `InterlacingConeBounds` uses the
 canonical scaling lemma instead of maintaining a second proof.
 
 `ObreschkoffContinuity` is the 11-module owner of the shared strict-positive
-combination predicate body. It exposes the opaque public
-`PosComboRealRooted` predicate and the reducible continuity-facing
-`PosComboHyp` compatibility name without duplicating their mathematical
-definition or symmetry proof. Definition-only consumers no longer import the
+combination predicate. It defines the public `PosComboRealRooted` predicate,
+its symmetry, and the `PosComboRealRooted.*` root-continuity lemmas.
+Definition-only consumers no longer import the
 1,568-line `PosCombo` theorem stack: `AffineFamily.PositiveFamily` has an
 18-module closure instead of 75, and `AllCombo` has a 35-module closure.
 `ObreschkoffConverse.Regularization` now imports `PosCombo` explicitly for the
@@ -1330,19 +1306,13 @@ theorem API. This leaves `CommonInterleaverSeq` as a 937-line public pairwise
 closure façade rather than a mixed 1,791-line implementation.
 
 `CommonInterleaver.PairBridge` is likewise a compatibility façade. Its former
-2,959-line mixed source is layered as `PairBridge.Forward` (208 lines of
-forward/same-degree transport), `PairBridge.SuccDegree.RootCount` (378 lines
-of root-count reductions), `PairBridge.SuccDegree.ClosedSegment` (213 lines
-of closed-segment consequences), `PairBridge.SuccDegree.RootCrossing` (105
-lines of list/root-crossing transport), the 11-line `PairBridge.SuccDegree`
+2,959-line mixed source is layered as `PairBridge.SuccDegree.ClosedSegment`
+(213 lines of closed-segment consequences), the `PairBridge.SuccDegree`
 facade, `PairBridge.SuccDegree.SlotData` (350 lines of slot-data and
 common-interleaver wrappers),
 `PairBridge.Reduction.CommonRoot` (165 lines of quotient nonnegativity and a
-shared-root induction principle), `PairBridge.Reduction.Basic` (184 lines of
-shared degree-split reductions), `PairBridge.Reduction.CommonInterleaver` (283
-lines of common-interleaver recursion), `PairBridge.Reduction.AllCombo` (316
-lines of all-combinations and orientation upgrades), the 10-line
-`PairBridge.Reduction` facade, `PairBridge.Compatibility` (442 lines of
+shared-root induction principle), `PairBridge.Reduction.CommonInterleaver` (283
+lines of common-interleaver recursion), the `PairBridge.Reduction` facade, `PairBridge.Compatibility` (442 lines of
 nonnegative endpoint assembly), and
 `PairBridge.Compatibility.NonnegativeShift` (425 lines of translation-based
 positive-leading wrappers). The latter exports
@@ -1428,10 +1398,10 @@ needed by the remaining shifted-pair and high-degree code. The parent is now a
 976-line coordinator over the shared-root reduction, shifted-pair machinery,
 high-degree recursion, and public wrappers. Since the public umbrella imports
 every source module during this compatibility migration, its guard is 625 rather
-than the exhausted 610. The same one-module closure increase exhausts three
-other legacy guards, so BidiagonalSymbol RealConsequences, Jensen LowDegree,
-and Jensen Contraction have conservative 150, 125, and 145-module bounds,
-respectively; these are import-budget adjustments, not new mathematical edges.
+than the exhausted 610. The same one-module closure increase exhausts two
+other legacy guards, so BidiagonalSymbol RealConsequences and Jensen
+Contraction have conservative 150 and 145-module bounds, respectively; these
+are import-budget adjustments, not new mathematical edges.
 
 `SymmetricDecomposition` is now a compatibility façade over five theorem
 layers. `Definitions` owns the `I_d`/`R_d` transforms, formula components, and
@@ -1502,13 +1472,12 @@ wrappers come from `Tactic.PFBidiagonal`. It does not carry a second
 mathematical implementation of those declarations.
 
 The Braun--Jal modified-Narayana application is layered by proof role:
-`Narayana.Recurrence` owns full-staircase identification, finite recurrence
-checks, and the auxiliary coefficient/degree algebra; `Narayana.RootSums` owns
+`Narayana.Recurrence` owns full-staircase identification and the auxiliary coefficient/degree algebra; `Narayana.RootSums` owns
 the Vieta comparison, root-sum orientation, and the refuted strict-bound
 interface; and `Narayana.PFFacts` owns the PF and base interlacing facts.
-`Narayana.RankSix` contains the explicit rank-six roots, signs, interval
-isolation, and cross inequalities, while `Narayana.LowRank` contains the
-ranks-three-through-five certificates and bounded rank-six assembly.
+The rank-six certificate module `Narayana.RankSix` was retired once the general
+auxiliary interlacing lemma `auxiliaryG_strictInterl_modifiedNarayana` became
+unconditional.
 `Narayana.ShiftedDifferenceInterlacingAnalytic` owns the pencil leading coefficients, splitness,
 nonpositive roots, and endpoint-safe Claim 7 package. The historical
 `GeneralizedSnakePosetsNarayana` path is a 10-line compatibility import.
@@ -1518,7 +1487,11 @@ implementation units have 675, 517, 161, 990, 859, and 386 local lines,
 respectively, instead of one 3,527-line mixed source. The high-level
 `Narayana.ShiftedDifferenceInterlacing` consumer imports the analytic branch directly: its closure
 grows from 201 to 202 modules while falling from 86,322 to 83,448 local lines,
-because it no longer loads the PF and finite-certificate branch. The broad
+because it no longer loads the PF and finite-certificate branch. It also imports
+`TruncatedStaircase.ColumnRecurrence` (one extra module), so that its
+shifted difference interlacing and auxiliary interlacing theorems discharge the
+auxiliary recurrence and the nonnegativity of `G_n - G_{n-1}` instead of
+assuming them. The broad
 challenge and compatibility imports deliberately continue to re-export both
 branches. The root umbrella budget rises by the exact six new source modules
 to 831.
@@ -1610,6 +1583,13 @@ preserves the set-of-vectors interface used by the matrix theory after Mathlib
 replaced its standard simplex API with a bundled type. The shim imports only
 Mathlib. Its nine budgeted consumers gain exactly one local module; their
 closure budgets increase by one, with no new upward dependency edges.
+
+The A144438 interval-preserver development adds 38 application modules under
+`Applications.OEIS.A144438.IntervalPreserver` (the `w = 1` reference layer and
+its `Weighted` generalization) and the `Challenges.DecoEulerian` entry point.
+Net of the wrapper modules removed in the same period, the root and production
+closures each grow by 37 modules, so their budgets rise to 1574 and 1441. The
+tactic regression closure is unchanged.
 
 Run the architecture check with:
 

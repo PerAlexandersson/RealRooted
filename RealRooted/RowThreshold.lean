@@ -43,10 +43,13 @@ def HasRowThresholdLinearStructure (G : List (List ℝ[X])) : Prop :=
     (∀ i, HasRowThreshold (G.get i) (p i)) ∧
     ∀ ⦃i j : Fin G.length⦄, i ≤ j → p i ≤ p j
 
-/-- Named target for the specialized Branden row-threshold corollary in the
-strict nonzero `IsInterlacingSeqNonneg` convention used by this library.  The
-fully zero-aware theorem should ultimately prove this under the extra
-nonvanishing hypotheses needed to remove zero output rows. -/
+/-- The specialized Branden row-threshold corollary in the strict nonzero
+`IsInterlacingSeqNonneg` convention used by this library.  This proposition is
+false as stated: a rook-matrix counterexample refutes it in the downstream
+`NonNestingRooks` project
+(`NonNestingRooks.not_rowThresholdMatricesPreserveInterlacingSeqNonneg`).  It is
+not a proof target and is kept only as the interface of that refutation.  The
+checked marker-one case is `thresholdOneMatrix_preserves_interlacing`. -/
 def RowThresholdMatricesPreserveInterlacingSeqNonneg : Prop :=
   ∀ {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X]),
     G.length = n →
@@ -82,8 +85,8 @@ condition preserves interlacing sequences. This is the part that follows
 directly from the existing `matrix_preserves_interlacing_seq` theorem.
 
 The rook matrix does not satisfy the strict 2x2 condition because of zero
-entries above the diagonal; it needs the zero-aware row-threshold corollary
-targeted by `RowThresholdMatricesPreserveInterlacingSeqNonneg`. -/
+entries above the diagonal; it needs a zero-aware row-threshold corollary with
+extra nonvanishing hypotheses. -/
 theorem rowThreshold_matrix_preserves_interlacing_seq_of_2x2
     (hn : 0 < n)
     (G : List (List ℝ[X]))

@@ -7,141 +7,12 @@ noncomputable section
 namespace RealRooted
 
 /-!
-# Finite Schur--Szego composition interfaces
+# Low-degree finite Schur--Szego composition
 
-Classical finite composition statements, their finite Polya--Schur reductions,
-and the degree-two discriminant base case.
+The quadratic discriminant inequality for a Schur--Szegő composition of two
+factors of degree at most two, at an arbitrary level.  The general theorem is
+`finiteSchurSzegoComposition` in `RealRooted.Hadamard.Grace`.
 -/
-
-/-- **Finite Schur--Szegő composition theorem** (classical input).
-
-If `f` is a PF polynomial (only real, nonpositive zeros) of degree at most `n`
-and `p` has only real zeros, then their fixed-degree Schur--Szegő composition
-`schurSzegoComp n f p` again has only real zeros, unless it vanishes
-identically.
-
-This is the classical composition/coincidence result of Schur and Szegő; it is
-the single remaining analytic input behind the backward direction of the finite
-Pólya--Schur theorem, isolated here as a named statement. -/
-def finiteSchurSzegoCompositionStatement : Prop :=
-  ∀ {n : ℕ} {f p : ℝ[X]},
-    IsPFPolynomial f →
-    f.natDegree ≤ n →
-    p.natDegree ≤ n →
-    p.Splits →
-      schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits
-
-/-- Nonzero core of the finite Schur--Szegő composition theorem.  The full
-statement is equivalent to this one because the zero cases make the composition
-identically zero. -/
-def finiteSchurSzegoCompositionNonzeroStatement : Prop :=
-  ∀ {n : ℕ} {f p : ℝ[X]},
-    IsPFPolynomial f →
-    f ≠ 0 →
-    f.natDegree ≤ n →
-    p ≠ 0 →
-    p.natDegree ≤ n →
-    p.Splits →
-      schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits
-
-theorem finiteSchurSzegoCompositionNonzero_of_full
-    (h : finiteSchurSzegoCompositionStatement) :
-    finiteSchurSzegoCompositionNonzeroStatement :=
-  fun hf _hf0 hfdeg _hp0 hpdeg hp => h hf hfdeg hpdeg hp
-
-theorem finiteSchurSzegoComposition_of_nonzero
-    (h : finiteSchurSzegoCompositionNonzeroStatement) :
-    finiteSchurSzegoCompositionStatement := by
-  intro n f p hf hfdeg hpdeg hp
-  by_cases hf0 : f = 0
-  · simp [hf0, schurSzegoComp_zero_left]
-  by_cases hp0 : p = 0
-  · simp [hp0, schurSzegoComp_zero_right]
-  exact h hf hf0 hfdeg hp0 hpdeg hp
-
-theorem finiteSchurSzegoCompositionStatement_iff_nonzero :
-    finiteSchurSzegoCompositionStatement ↔
-      finiteSchurSzegoCompositionNonzeroStatement :=
-  ⟨finiteSchurSzegoCompositionNonzero_of_full,
-    finiteSchurSzegoComposition_of_nonzero⟩
-
-/-- The backward direction of the finite Pólya--Schur theorem follows, by a
-fully checked reduction, from the finite Schur--Szegő composition theorem: the
-diagonal operator attached to `gamma` acting on a polynomial `p` of degree at
-most `n` is exactly the Schur--Szegő composition of the PF Jensen polynomial of
-`gamma` with `p`. -/
-theorem finitePolyaSchurNonnegBackward_of_schurSzego
-    (hSZ : finiteSchurSzegoCompositionStatement) :
-    finitePolyaSchurNonnegBackwardStatement := by
-  intro n gamma _hgamma hjensen p hp hsplit
-  have hfdeg : (jensenPolynomial n gamma).natDegree ≤ n :=
-    natDegree_jensenPolynomial_le n gamma
-  simpa [← schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le hp] using
-    hSZ hjensen hfdeg hp hsplit
-
-/-- The backward finite Pólya--Schur direction follows directly from the
-nonzero core of the finite Schur--Szegő theorem. -/
-theorem finitePolyaSchurNonnegBackward_of_schurSzegoNonzero
-    (hSZ : finiteSchurSzegoCompositionNonzeroStatement) :
-    finitePolyaSchurNonnegBackwardStatement :=
-  finitePolyaSchurNonnegBackward_of_schurSzego
-    (finiteSchurSzegoComposition_of_nonzero hSZ)
-
-/-- Full finite Pólya--Schur from the nonzero core of finite Schur--Szegő. -/
-theorem finitePolyaSchur_nonneg_of_schurSzegoNonzero
-    (hSZ : finiteSchurSzegoCompositionNonzeroStatement) :
-    finitePolyaSchurNonnegStatement :=
-  finitePolyaSchur_nonneg_of_backward
-    (finitePolyaSchurNonnegBackward_of_schurSzegoNonzero hSZ)
-
-/-- The finite Pólya--Schur theorem implies fixed-degree Schur--Szegő
-composition.
-
-The diagonal sequence used here is the binomially normalized coefficient
-sequence of the PF factor.  The theorem
-`jensenPolynomial_normalized_coeff_eq_of_natDegree_le` identifies its Jensen
-polynomial with that factor, and the fixed-degree Schur--Szegő composition is
-the corresponding diagonal operator on the other factor. -/
-theorem finiteSchurSzegoComposition_of_finitePolyaSchur
-    (hFPS : finitePolyaSchurNonnegStatement) :
-    finiteSchurSzegoCompositionStatement := by
-  intro n f p hf hfdeg hpdeg hsplit
-  let gamma : ℕ → ℝ := fun k => f.coeff k / (Nat.choose n k : ℝ)
-  have hgamma : ∀ k, 0 ≤ gamma k := fun k =>
-    div_nonneg (hf.hasNonnegCoeffs k) (by positivity)
-  have hjensen : IsPFPolynomial (jensenPolynomial n gamma) := by
-    simpa [gamma] using hf.jensenPolynomial_normalized_coeff_of_natDegree_le hfdeg
-  rw [schurSzegoComp_comm]
-  simpa [gamma, schurSzegoComp_eq_diagonalOperator] using
-    ((hFPS hgamma).2 hjensen) hpdeg hsplit
-
-/-- Low-degree fixed-degree Schur--Szegő composition, through degree two.
-
-This is the specialization of the finite Pólya--Schur route using the checked
-degree-`≤ 2` backward theorem from `RealRooted.MultiplierSequence`; it does
-not use the remaining classical Schur--Szegő input. -/
-theorem finiteSchurSzegoComposition_of_natDegree_le_two
-    {n : ℕ} (hn : n ≤ 2) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ n)
-    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
-  let gamma : ℕ → ℝ := fun k => f.coeff k / (Nat.choose n k : ℝ)
-  have hgamma : ∀ k, 0 ≤ gamma k := fun k =>
-    div_nonneg (hf.hasNonnegCoeffs k) (by positivity)
-  have hjensen : IsPFPolynomial (jensenPolynomial n gamma) := by
-    simpa [gamma] using hf.jensenPolynomial_normalized_coeff_of_natDegree_le hfdeg
-  rw [schurSzegoComp_comm]
-  simpa [gamma, schurSzegoComp_eq_diagonalOperator] using
-    finitePolyaSchurNonnegBackward_of_natDegree_le_two hn hgamma hjensen hpdeg hsplit
-
-/-- Nonzero-core version of the checked degree-`≤ 2` Schur--Szegő composition
-case. -/
-theorem finiteSchurSzegoCompositionNonzero_of_natDegree_le_two
-    {n : ℕ} (hn : n ≤ 2) {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ n)
-    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  finiteSchurSzegoComposition_of_natDegree_le_two hn hf hfdeg hpdeg hsplit
 
 /-- Pure arithmetic core of the Schur--Szego discriminant inequality for two
 degree-`≤ 2` factors at level `N ≥ 2`.  Here `a`, `b`, `c` are the coefficients
@@ -216,9 +87,8 @@ The composition has degree at most two, so it is settled by the quadratic
 discriminant inequality
 `four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp`; the
 low-level cases `n ≤ 1` (where the composition already has degree at most one)
-are handled separately.  Unlike
-`finiteSchurSzegoComposition_of_natDegree_le_two`, here the level `n` is
-unrestricted and the degree bound is placed on the two factors. -/
+are handled separately.  Unlike `finiteSchurSzegoComposition`, the level `n`
+is unrestricted and the degree bound is placed on the two factors. -/
 theorem finiteSchurSzegoComposition_of_factors_natDegree_le_two
     {n : ℕ} {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 2)

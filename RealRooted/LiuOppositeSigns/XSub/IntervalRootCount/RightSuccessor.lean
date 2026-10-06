@@ -261,12 +261,10 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_right_successor_nonneg_of_noCo
         rw [← card_roots_of_splits hpair.left_splits, hroots_zero]
         simp
       have hqdeg_one : q.natDegree = 1 := by lia
-      have hp_nonneg_zero : HasNonnegCoeffs (p.comp (X + C (0 : ℝ))) := by simpa using hp_nonneg
-      have hq_nonneg_zero : HasNonnegCoeffs (q.comp (X + C (0 : ℝ))) := by simpa using hq_nonneg
       simpa using
         positiveSplitRightSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
           (f := p) (g := q) (r := 0)
-          hpair hp_nonneg_zero hq_nonneg_zero hdeg hqdeg_one μ hμ
+          hdeg hqdeg_one μ hμ
   | cons a xs =>
       cases hxs : xs with
       | nil =>
@@ -377,9 +375,12 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_right_successor_nonneg
 
 /-- Unrestricted positive-split right-successor translated x-subtraction
 family. -/
-theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyStatement := by
-  intro f g r hpair hfnn hgnn hdeg μ hμ
+theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily {f g : ℝ[X]} (r : ℝ)
+    (hpair : PositiveSplitRootCountPair f g)
+    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
+    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
+    (hdeg : g.natDegree = f.natDegree + 1) (μ : ℝ) (hμ : 0 < μ) :
+    (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
   let p := f.comp (X + C r)
   let q := g.comp (X + C r)
   have hpair_shift : PositiveSplitRootCountPair p q := by simpa [p, q] using hpair.comp_X_add_C r
@@ -388,16 +389,6 @@ theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamily :
   simpa [p, q] using
     hpair_shift.xSub_splits_of_right_successor_nonneg
       hfnn hgnn hdeg_shift hμ
-
-/-- The proved right-successor x-subtraction family gives every predicate
-restriction. -/
-theorem positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicate
-    {P : ℕ → Prop} :
-    positiveSplitRightSuccDegreeTranslatedXSubRightFamilyPredicateStatement P :=
-  positiveSplitTranslatedXSubRightFamilyPredicateRelationStatement_of_imp
-    (fun _ _ => trivial)
-    (positiveSplitTranslatedXSubRightFamilyPredicateRelation_true_of_relation
-      positiveSplitRightSuccDegreeTranslatedXSubRightFamily)
 
 end LiuOppositeSigns
 end RealRooted

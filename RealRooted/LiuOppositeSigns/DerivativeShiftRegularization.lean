@@ -15,21 +15,21 @@ noncomputable section
 namespace RealRooted
 namespace LiuOppositeSigns
 
-/-- A common positive `TDeriv` shift of two nonzero splitting polynomials with
+/-- A common positive `tDeriv` shift of two nonzero splitting polynomials with
 no common roots still has no common roots when the shift is sufficiently
 small. -/
-theorem NoCommonRoots.exists_delta_TDeriv
+theorem NoCommonRoots.exists_delta_tDeriv
     {f g : ℝ[X]} (hno : NoCommonRoots f g)
     (hf_ne : f ≠ 0) (hg_ne : g ≠ 0) (hf : f.Splits) (hg : g.Splits) :
     ∃ δ > 0, ∀ ⦃eps : ℝ⦄, 0 < eps → eps < δ →
-      NoCommonRoots (TDeriv eps f) (TDeriv eps g) := by
+      NoCommonRoots (tDeriv eps f) (tDeriv eps g) := by
   obtain ⟨η, hη_pos, _, hsep⟩ :=
     Multiset.exists_pos_lt_and_two_mul_le_abs_sub_toFinset
       (f.roots + g.roots) zero_lt_one
   obtain ⟨δf, hδf_pos, hfrel⟩ :=
-    exists_delta_roots_rel_TDeriv hf hη_pos
+    exists_delta_roots_rel_tDeriv hf hη_pos
   obtain ⟨δg, hδg_pos, hgrel⟩ :=
-    exists_delta_roots_rel_TDeriv hg hη_pos
+    exists_delta_roots_rel_tDeriv hg hη_pos
   refine ⟨min δf δg, lt_min hδf_pos hδg_pos, ?_⟩
   intro eps heps_pos hepsδ x hfx hgx
   obtain ⟨a, ha_mem, hax⟩ := by
@@ -37,13 +37,13 @@ theorem NoCommonRoots.exists_delta_TDeriv
       Multiset.exists_mem_of_rel_of_mem
         ((Multiset.rel_flip).2
           (hfrel heps_pos (hepsδ.trans_le (min_le_left _ _))))
-        ((Polynomial.mem_roots (TDeriv_ne_zero hf_ne)).mpr hfx)
+        ((Polynomial.mem_roots (tDeriv_ne_zero hf_ne)).mpr hfx)
   obtain ⟨b, hb_mem, hbx⟩ := by
     simpa only [Function.flip_def] using
       Multiset.exists_mem_of_rel_of_mem
         ((Multiset.rel_flip).2
           (hgrel heps_pos (hepsδ.trans_le (min_le_right _ _))))
-        ((Polynomial.mem_roots (TDeriv_ne_zero hg_ne)).mpr hgx)
+        ((Polynomial.mem_roots (tDeriv_ne_zero hg_ne)).mpr hgx)
   have hab_ne : a ≠ b := by
     rintro rfl
     exact (hno a ((Polynomial.mem_roots hf_ne).mp ha_mem))

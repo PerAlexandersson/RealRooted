@@ -20,8 +20,7 @@ syntax (name := rr_endpoint_sum_then_X_pair_sequence_named)
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
     "sum_step" ":=" term ","
-    "x_step" ":=" term ","
-    "coprime" ":=" term :
+    "x_step" ":=" term :
   tactic
 
 syntax (name := rr_endpoint_sum_then_X_pair_sequence_realrooted_named)
@@ -30,8 +29,7 @@ syntax (name := rr_endpoint_sum_then_X_pair_sequence_realrooted_named)
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
     "sum_step" ":=" term ","
-    "x_step" ":=" term ","
-    "coprime" ":=" term :
+    "x_step" ":=" term :
   tactic
 
 syntax (name := rr_endpoint_X_then_sum_pair_sequence_named)
@@ -40,8 +38,7 @@ syntax (name := rr_endpoint_X_then_sum_pair_sequence_named)
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
     "x_step" ":=" term ","
-    "sum_step" ":=" term ","
-    "coprime" ":=" term :
+    "sum_step" ":=" term :
   tactic
 
 syntax (name := rr_endpoint_X_then_sum_pair_sequence_realrooted_named)
@@ -50,8 +47,7 @@ syntax (name := rr_endpoint_X_then_sum_pair_sequence_realrooted_named)
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term ","
     "x_step" ":=" term ","
-    "sum_step" ":=" term ","
-    "coprime" ":=" term :
+    "sum_step" ":=" term :
   tactic
 
 syntax (name := rr_endpoint_sum_then_X_pair_lift_sequence_named)
@@ -61,7 +57,6 @@ syntax (name := rr_endpoint_sum_then_X_pair_lift_sequence_named)
     "right_nonneg" ":=" term ","
     "sum_step" ":=" term ","
     "x_step" ":=" term ","
-    "coprime" ":=" term ","
     "even_factorization" ":=" term ","
     "odd_factorization" ":=" term :
   tactic
@@ -73,7 +68,6 @@ syntax (name := rr_endpoint_X_then_sum_pair_lift_sequence_named)
     "right_nonneg" ":=" term ","
     "x_step" ":=" term ","
     "sum_step" ":=" term ","
-    "coprime" ":=" term ","
     "even_factorization" ":=" term ","
     "odd_factorization" ":=" term :
   tactic
@@ -85,7 +79,6 @@ syntax (name := rr_endpoint_X_then_sum_pair_lift_swapped_sequence_named)
     "right_nonneg" ":=" term ","
     "x_step" ":=" term ","
     "sum_step" ":=" term ","
-    "coprime" ":=" term ","
     "even_factorization" ":=" term ","
     "odd_factorization" ":=" term :
   tactic

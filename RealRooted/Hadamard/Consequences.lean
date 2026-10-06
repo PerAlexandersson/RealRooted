@@ -9,179 +9,71 @@ namespace RealRooted
 /-!
 # Hadamard consequences
 
-Conditional odd/even reductions, PF and interlacing closure, reciprocal
-shift transport, and coefficientwise Polya-frequency consequences.
+PF and interlacing closure under Hadamard products, reciprocal shift
+transport, and coefficientwise Pólya-frequency consequences.
 -/
 
-/-- **Garloff--Wagner, Theorem 4(b), reduced to legacy odd/even inputs**
-(TODO T9).
+/-- Garloff--Wagner, Theorem 4(b), for PF polynomials: Hadamard products
+preserve strict interlacing of PF pairs, in zero-aware form. -/
+theorem garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl {f g p q : ℝ[X]}
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
+    (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
+    Interl (hadamardProduct f p) (hadamardProduct g q) :=
+  gwHadamardProductNonnegInterl hf.hasNonnegCoeffs hg.hasNonnegCoeffs
+    hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
 
-The two-pair interlacing form of the Garloff--Wagner Hadamard theorem follows,
-with a fully checked conditional reduction, from the following inputs (the
-latter three are pre-existing interfaces from `RealRooted.VeroneseSection`):
-
-* `hadamardPreservesHurwitzStableStatement` — Garloff--Wagner Theorem 1
-  (Hadamard products of Hurwitz-stable polynomials are Hurwitz stable when the
-  coefficientwise product is nonzero);
-* `NonnegStrictInterlToHurwitzOddEvenStatement` — the forward Hermite--Biehler bridge
-  from interlacing `StrictInterl f g` of nonnegative-coefficient polynomials to
-  Hurwitz stability of `oddEvenPolynomial f g = g(x²) + x·f(x²)`;
-* `LegacyHurwitzOddEvenToFullyInterlacingPairStatement` — the legacy row-oriented
-  Hurwitz-to-Lace bridge, now known false as a general theorem; and
-* `FullyInterlacingPairToInterlStatement` — the converse lace-to-interlacing
-  bridge back to zero-aware interlacing.
-
-The bridge between the two-pair and single-polynomial worlds is the proven
-algebraic identity `hadamardProduct_oddEvenPolynomial`:
-`oddEvenPolynomial f g ⊙ oddEvenPolynomial p q
-   = oddEvenPolynomial (f ⊙ p) (g ⊙ q)`,
-whose even part is `g ⊙ q` and whose odd part is `f ⊙ p`.
-
-Thus all of the interlacing bookkeeping of Theorem 4(b) is discharged here once
-these conditional inputs are supplied.
-Note that the odd/even polynomial of an interlacing pair is Hurwitz stable, not
-real-rooted (e.g. `f = 1`, `g = X + 1` gives `X² + X + 1`), which is why the
-reduction goes through `IsHurwitzStable` (Theorem 1) rather than the
-single-polynomial real-rootedness fact
-`garloffWagnerHadamardNonnegRealRootedStatement`. -/
-theorem garloffWagnerHadamardNonnegInterl_of_oddEven
-    (hThm1 : hadamardPreservesHurwitzStableStatement)
-    (hStrictInterlToHurwitz : NonnegStrictInterlToHurwitzOddEvenStatement)
-    (hHurwitzToFull : LegacyHurwitzOddEvenToFullyInterlacingPairStatement)
-    (hFullToInterl : FullyInterlacingPairToInterlStatement) :
-    ∀ {f g p q : ℝ[X]},
-      HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
-      StrictInterl f g → StrictInterl p q →
-        Interl (hadamardProduct f p) (hadamardProduct g q) := by
-  intro f g p q hf hg hp hq hfg hpq
-  by_cases hfp0 : hadamardProduct f p = 0
-  · simpa [hfp0] using interl_zero_left (hadamardProduct g q)
-  by_cases hgq0 : hadamardProduct g q = 0
-  · simpa [hgq0] using interl_zero_right (hadamardProduct f p)
-  have hOE1 : IsHurwitzStable (oddEvenPolynomial f g) := hStrictInterlToHurwitz hf hg hfg
-  have hOE2 : IsHurwitzStable (oddEvenPolynomial p q) := hStrictInterlToHurwitz hp hq hpq
-  have hOEprod0 :
-      hadamardProduct (oddEvenPolynomial f g) (oddEvenPolynomial p q) ≠ 0 := by
-    rw [hadamardProduct_oddEvenPolynomial]
-    exact oddEvenPolynomial_ne_zero_iff.mpr (Or.inl hfp0)
-  exact hFullToInterl (hHurwitzToFull (by
-    simpa [hadamardProduct_oddEvenPolynomial] using hThm1 hOE1 hOE2 hOEprod0))
-
-/-- PF-polynomial wrapper around the checked nonnegative
-Garloff--Wagner two-pair theorem. -/
-def garloffWagnerHadamardPFStrictInterlStatement : Prop :=
-  ∀ {f g p q : ℝ[X]},
-    IsPFPolynomial f →
-    IsPFPolynomial g →
-    IsPFPolynomial p →
-    IsPFPolynomial q →
-    StrictInterl f g →
-    StrictInterl p q →
-    Interl (hadamardProduct f p) (hadamardProduct g q)
-
-theorem garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl :
-    garloffWagnerHadamardPFStrictInterlStatement :=
-  fun hf hg hp hq hfg hpq =>
-    garloffWagnerHadamardNonnegInterl hf.hasNonnegCoeffs hg.hasNonnegCoeffs
-      hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
-
-/-- Zero-aware PF-polynomial wrapper around the checked Garloff--Wagner
-two-pair theorem. -/
-def garloffWagnerHadamardPFInterlStatement : Prop :=
-  ∀ {f g p q : ℝ[X]},
-    IsPFPolynomial f →
-    IsPFPolynomial g →
-    IsPFPolynomial p →
-    IsPFPolynomial q →
-    Interl f g →
-    Interl p q →
-    Interl (hadamardProduct f p) (hadamardProduct g q)
-
-theorem garloffWagnerHadamardPFInterl_of_strictInterl
-    (hGW : garloffWagnerHadamardPFStrictInterlStatement) :
-    garloffWagnerHadamardPFInterlStatement := by
-  intro f g p q hf hg hp hq hfg hpq
+/-- Garloff--Wagner, Theorem 4(b), for PF polynomials and zero-aware
+interlacing inputs. -/
+theorem garloffWagnerHadamardPFInterl_of_nonnegStrictInterl {f g p q : ℝ[X]}
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
+    (hfg : Interl f g) (hpq : Interl p q) :
+    Interl (hadamardProduct f p) (hadamardProduct g q) := by
   rcases hfg with rfl | rfl | hfg'
   · simpa using interl_zero_left (hadamardProduct g q)
   · simpa using interl_zero_right (hadamardProduct f p)
   rcases hpq with rfl | rfl | hpq'
   · simpa using interl_zero_left (hadamardProduct g q)
   · simpa using interl_zero_right (hadamardProduct f p)
-  exact hGW hf hg hp hq hfg' hpq'
+  exact garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl hf hg hp hq hfg' hpq'
 
-theorem garloffWagnerHadamardPFInterl_of_nonnegStrictInterl :
-    garloffWagnerHadamardPFInterlStatement :=
-  garloffWagnerHadamardPFInterl_of_strictInterl
-    garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl
+@[deprecated (since := "2026-10-05")]
+alias hadamardProduct_preserves_pf_of_nonnegStrictInterl := IsPFPolynomial.hadamardProduct
 
-/-- PF-polynomial closure under Hadamard product, stated directly from the
-zero-aware Garloff--Wagner PF wrapper. -/
-theorem hadamardProduct_preserves_pf_of_garloffWagner
-    (hGW : garloffWagnerHadamardPFInterlStatement)
-    {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
-    IsPFPolynomial (hadamardProduct p q) :=
-  IsPFPolynomial.of_interl_self
-    (hp.hasNonnegCoeffs.hadamardProduct hq.hasNonnegCoeffs)
-    (hGW hp hp hq hq hp.interl_self hq.interl_self)
+/-- Nonnegative-coefficient Schur--Pólya/Garloff--Wagner real-rootedness for
+coefficientwise Hadamard products (Garloff--Wagner, Theorem 4(a)).
 
-theorem hadamardProduct_preserves_pf_of_nonnegStrictInterl :
-    {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
-    IsPFPolynomial (hadamardProduct p q) :=
-  hadamardProduct_preserves_pf_of_garloffWagner
-    garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
-
-theorem hadamardProduct_preserves_pf_of_matrixHadamardBridges
-    (_hToFull : LegacyNonnegStrictInterlToFullyInterlacingPairStatement)
-    (_hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (_hFullToPrec0 : FullyInterlacingPairToInterlStatement) :
-    {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
-    IsPFPolynomial (hadamardProduct p q) :=
-  hadamardProduct_preserves_pf_of_nonnegStrictInterl
-
-theorem hadamardProduct_preserves_pf_of_hurwitzSchur
-    (_hToFull : LegacyNonnegStrictInterlToFullyInterlacingPairStatement)
-    (_hFullToPrec0 : FullyInterlacingPairToInterlStatement) :
-    {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
-    IsPFPolynomial (hadamardProduct p q) :=
-  hadamardProduct_preserves_pf_of_nonnegStrictInterl
-
-/-- The nonnegative two-pair Garloff--Wagner theorem gives PF closure under
-Hadamard products through the zero-aware PF wrapper. -/
-theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegStrictInterl :
-    schurPolyaWagnerHadamardPFStatement :=
-  hadamardProduct_preserves_pf_of_nonnegStrictInterl
-
-/-- The checked PF Hadamard theorem gives the one-polynomial
-real-rootedness statement directly. -/
-theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl :
-    garloffWagnerHadamardNonnegRealRootedStatement := by
-  intro p q hpnn hqnn hprr hqrr
+Real-rooted nonzero polynomials with nonnegative coefficients have only
+nonpositive roots.  The conclusion is zero-aware because the Hadamard product
+can vanish when supports are disjoint. -/
+theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl {p q : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
+    (hprr : p ≠ 0 ∧ p.Splits) (hqrr : q ≠ 0 ∧ q.Splits) :
+    (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧
+      ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0 := by
   have hp : IsPFPolynomial p := IsPFPolynomial.of_realRooted_nonneg hpnn hprr.2
   have hq : IsPFPolynomial q := IsPFPolynomial.of_realRooted_nonneg hqnn hqrr.2
-  have hpf : IsPFPolynomial (hadamardProduct p q) :=
-    hadamardProduct_preserves_pf_of_nonnegStrictInterl hp hq
+  have hpf : IsPFPolynomial (hadamardProduct p q) := hp.hadamardProduct hq
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
 
 /-- Fixed-right Hadamard multiplication preserves zero-aware interlacing
 inside the PF cone. -/
-theorem hadamardProduct_preserves_interl_right
-    (hGW : garloffWagnerHadamardPFInterlStatement)
-    {f g p : ℝ[X]}
+theorem hadamardProduct_preserves_interl_right {f g p : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
     (hfg : Interl f g) :
     Interl (hadamardProduct f p) (hadamardProduct g p) :=
-  hGW hf hg hp hp hfg hp.interl_self
+  garloffWagnerHadamardPFInterl_of_nonnegStrictInterl hf hg hp hp hfg hp.interl_self
 
 /-- Fixed-left Hadamard multiplication preserves zero-aware interlacing
 inside the PF cone. -/
-theorem hadamardProduct_preserves_interl_left
-    (hGW : garloffWagnerHadamardPFInterlStatement)
-    {f p q : ℝ[X]}
+theorem hadamardProduct_preserves_interl_left {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (hadamardProduct f p) (hadamardProduct f q) := by
   simpa [hadamardProduct_comm] using
-    hadamardProduct_preserves_interl_right hGW hp hq hf hpq
+    hadamardProduct_preserves_interl_right hp hq hf hpq
 
 theorem reciprocalShift_hadamardProduct (D : ℕ) (p q : ℝ[X]) :
     reciprocalShift D (hadamardProduct p q) =
@@ -190,59 +82,27 @@ theorem reciprocalShift_hadamardProduct (D : ℕ) (p q : ℝ[X]) :
   simp
 
 /-- Hadamard closure for the reciprocal-interlacing cone. -/
-def hadamardReciprocalConeClosureStatement : Prop :=
-  ∀ {D : ℕ} {p q : ℝ[X]},
-    IsPFPolynomial p →
-    IsPFPolynomial q →
-    StrictInterl p (reciprocalShift D p) →
-    StrictInterl q (reciprocalShift D q) →
-    Interl (hadamardProduct p q)
-      (reciprocalShift D (hadamardProduct p q))
-
-/-- Hadamard closure for the reciprocal-interlacing cone, obtained from the
-zero-aware PF two-pair Garloff--Wagner wrapper. -/
-theorem hadamardReciprocalConeClosure_of_garloffWagner_interl
-    (hGW : garloffWagnerHadamardPFInterlStatement) :
-    hadamardReciprocalConeClosureStatement := by
-  intro D p q hp hq hstrictInterl_p hstrictInterl_q
+theorem hadamardReciprocalConeClosure {D : ℕ} {p q : ℝ[X]}
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
+    (hstrictInterl_p : StrictInterl p (reciprocalShift D p))
+    (hstrictInterl_q : StrictInterl q (reciprocalShift D q)) :
+    Interl (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q)) := by
   have hp_shift : IsPFPolynomial (reciprocalShift D p) :=
     IsPFPolynomial.of_realRooted_nonneg hp.hasNonnegCoeffs.reciprocalShift hstrictInterl_p.2.1.2
   have hq_shift : IsPFPolynomial (reciprocalShift D q) :=
     IsPFPolynomial.of_realRooted_nonneg hq.hasNonnegCoeffs.reciprocalShift hstrictInterl_q.2.1.2
   simpa [reciprocalShift_hadamardProduct] using
-    hGW hp hp_shift hq hq_shift hstrictInterl_p.toInterl hstrictInterl_q.toInterl
-
-theorem hadamardReciprocalConeClosure_of_garloffWagner_strictInterl
-    (hGW : garloffWagnerHadamardPFStrictInterlStatement) :
-    hadamardReciprocalConeClosureStatement :=
-  hadamardReciprocalConeClosure_of_garloffWagner_interl
-    (garloffWagnerHadamardPFInterl_of_strictInterl hGW)
-
-/-- Polynomial-coefficient form of Polya-frequency closure under termwise
-products. This is finite-sequence closure packaged through coefficient
-polynomials. -/
-def polyaFrequencyHadamardCoeffStatement : Prop :=
-  ∀ {p q : ℝ[X]},
-    IsPolyaFreqSeq p.coeff →
-    IsPolyaFreqSeq q.coeff →
-    IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)
-
-theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner
-    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
-    (hSPW : schurPolyaWagnerHadamardPFStatement) :
-    polyaFrequencyHadamardCoeffStatement :=
-  fun hp hq =>
-    (hSPW (IsPFPolynomial.of_sequence hASW hp)
-      (IsPFPolynomial.of_sequence hASW hq)).to_sequence
+    garloffWagnerHadamardPFInterl_of_nonnegStrictInterl hp hp_shift hq hq_shift
+      hstrictInterl_p.toInterl hstrictInterl_q.toInterl
 
 /-- Finite Pólya-frequency sequences are closed under coefficientwise
 products.  Finite support is encoded by the coefficient sequences of the
 polynomials `p` and `q`. -/
-theorem polyaFrequencyHadamardCoeff :
-    polyaFrequencyHadamardCoeffStatement :=
-  polyaFrequencyHadamardCoeff_of_schurPolyaWagner
-    aissenSchoenbergWhitneyForwardOrZero
-    schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegStrictInterl
+theorem polyaFrequencyHadamardCoeff {p q : ℝ[X]}
+    (hp : IsPolyaFreqSeq p.coeff) (hq : IsPolyaFreqSeq q.coeff) :
+    IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n) :=
+  ((IsPFPolynomial.of_polyaFreqSeq hp).hadamardProduct
+    (IsPFPolynomial.of_polyaFreqSeq hq)).to_sequence
 
 /-- **Maló's theorem (finite-support Toeplitz form).**  The entrywise product
 of two totally nonnegative lower-triangular Toeplitz matrices is totally

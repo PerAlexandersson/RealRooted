@@ -15,11 +15,6 @@ open scoped BigOperators
 namespace RealRooted
 namespace Tactic
 
-/-- Hermite--Biehler statement exit exposed through the OEIS facade. -/
-example :
-    hermiteBiehlerForwardPosStatement := by
-  rr_hermite_biehler_forward_pos_statement
-
 /-- Hermite--Biehler odd/even Hurwitz row-family exit exposed through the OEIS
 facade. -/
 example {P Q : Nat → ℝ[X]}

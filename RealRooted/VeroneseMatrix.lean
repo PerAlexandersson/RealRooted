@@ -834,12 +834,6 @@ lemma isInterlacingSeq0Nonneg_map_C_mul
     rcases List.mem_map.1 hp with ⟨q, hq, rfl⟩
     exact nonnegCoeffs_C_mul hc_nonneg (hfs.2 q hq)
 
-lemma realRooted_mem_map_C_mul_of_realRooted
-    {c : ℝ} (hc : c ≠ 0) {fs : List ℝ[X]}
-    (hreal : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
-    ∀ f ∈ fs.map (fun q => C c * q), f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
-  simp_all
-
 /-- General real-rooted nonnegative-coefficient case: the descending Veronese
 sections are weakly interlacing, and every nonzero section is real-rooted. -/
 theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_realRooted_nonneg
