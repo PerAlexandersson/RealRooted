@@ -1390,6 +1390,11 @@ import RealRooted.Challenges.SturmSequenceFamilies
 import RealRooted.Applications.PeakPolynomials.HitPolynomials
 import RealRooted.Applications.PeakPolynomials.PeakInduction
 import RealRooted.Challenges.PeakPolynomials
+import RealRooted.Challenges.JacobiDeformation
+import RealRooted.Challenges.JacobiPolynomials
+import RealRooted.Challenges.FiniteFreeConvolutions
+import RealRooted.Challenges.InterlacingClosure
+import RealRooted.Challenges.BrandenETransform
 
 /-!
 # RealRooted production umbrella
