@@ -1,5 +1,6 @@
 import RealRooted.MaWang
 import RealRooted.Linear
+import RealRooted.NarayanaTransformation.Recurrences.Identities
 import RealRooted.CombinatorialExamples.Common
 import RealRooted.Tactic.WagnerX
 import Mathlib.Tactic
@@ -7,8 +8,10 @@ import Mathlib.Tactic
 /-!
 # Narayana Polynomials
 
-Conditional Liu--Wang/Sturm-sequence package for Narayana polynomials, proved
-through the quotient sequence obtained by removing the common `X` factor.
+Liu--Wang/Sturm-sequence package for Narayana polynomials, proved through the
+quotient sequence obtained by removing the common `X` factor.  Nonnegativity of
+the quotient coefficients comes from the coefficient model
+`narayanaQuot (n + 1) = narayanaPolynomial 1 n`.
 -/
 
 open Polynomial
@@ -255,8 +258,7 @@ lemma narayanaQuot_one_two_interlaces :
       (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
 
 private lemma strictInterl_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
-    (hInter : Interlaces (narayanaQuot n) (narayanaQuot (n + 1)))
-    (_hnonneg : HasNonnegCoeffs (narayanaQuot (n + 1))) :
+    (hInter : Interlaces (narayanaQuot n) (narayanaQuot (n + 1))) :
     StrictInterl (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) := by
   have hg_pos : HasPosLeadingCoeff (narayanaQuot n) :=
     narayanaQuot_posLeadingCoeff n hn
@@ -288,69 +290,121 @@ private lemma strictInterl_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
       (b := narayanaCoeffB n)
       hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos)
 
-/-- Conditional oriented interlacing for the quotient Narayana sequence. Once
-nonnegative coefficients are known, the three-term recurrence is an immediate
-weak Liu--Wang induction. -/
-theorem strictInterl_narayanaQuot_succ_of_nonnegCoeffs :
-    ∀ n : Nat, 1 ≤ n →
-      (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
-      StrictInterl (narayanaQuot n) (narayanaQuot (n + 1))
-  | 0, hn, _ => by
+/-- The `m = 1` generalized Narayana polynomials satisfy the normalized
+recurrence of the quotient Narayana sequence. -/
+theorem narayanaPolynomial_one_succ_succ (n : ℕ) :
+    narayanaPolynomial 1 (n + 2) =
+      narayanaCoeffA (n + 1) * narayanaPolynomial 1 (n + 1) +
+        narayanaCoeffB (n + 1) * narayanaPolynomial 1 n := by
+  have hrec := narayanaPolynomial_pure_rec 1 n
+  have hden : (C ((n : ℝ) + 4) : ℝ[X]) ≠ 0 :=
+    Polynomial.C_ne_zero.mpr (by positivity)
+  have hA : C ((n : ℝ) + 4) * narayanaCoeffA (n + 1) =
+      C ((2 * n : ℝ) + 5) * (1 + X) := by
+    unfold narayanaCoeffA
+    have hden_cast : (((n + 1 : ℕ) : ℝ) + 3) = (n : ℝ) + 4 := by
+      push_cast
+      ring
+    have hscalar : ((n : ℝ) + 4) *
+        ((2 * ((n + 1 : ℕ) : ℝ) + 3) /
+          (((n + 1 : ℕ) : ℝ) + 3)) = (2 * n : ℝ) + 5 := by
+      rw [hden_cast]
+      field_simp [show ((n : ℝ) + 4) ≠ 0 by positivity]
+      push_cast
+      ring
+    rw [← mul_assoc, ← map_mul, hscalar]
+  have hB : C ((n : ℝ) + 4) * narayanaCoeffB (n + 1) =
+      -C ((n : ℝ) + 1) * (1 - X) ^ 2 := by
+    unfold narayanaCoeffB
+    have hden_cast : (((n + 1 : ℕ) : ℝ) + 3) = (n : ℝ) + 4 := by
+      push_cast
+      ring
+    have hscalar : ((n : ℝ) + 4) *
+        (-((n + 1 : ℕ) : ℝ) /
+          (((n + 1 : ℕ) : ℝ) + 3)) = -((n : ℝ) + 1) := by
+      rw [hden_cast]
+      field_simp [show ((n : ℝ) + 4) ≠ 0 by positivity]
+      push_cast
+      ring
+    rw [← mul_assoc, ← map_mul, hscalar, map_neg]
+  apply mul_left_cancel₀ hden
+  rw [mul_add]
+  rw [← mul_assoc, hA, ← mul_assoc, hB]
+  convert hrec using 1 <;> ring_nf
+
+/-- The quotient Narayana sequence is the `m = 1` generalized Narayana
+sequence: `Q_{n+1} = sum_k (1 / (n + 1)) C(n+1, k) C(n+1, k+1) X^k`. -/
+theorem narayanaQuot_succ_eq_narayanaPolynomial_one (n : ℕ) :
+    narayanaQuot (n + 1) = narayanaPolynomial 1 n := by
+  induction n using Nat.twoStepInduction with
+  | zero => simp
+  | one => rw [narayanaQuot_two, narayanaPolynomial_one, C_1, add_comm]
+  | more n ih ih_succ =>
+      change narayanaQuot (n + 1 + 2) = narayanaPolynomial 1 (n + 2)
+      rw [narayanaQuot_succ_succ (n + 1), narayanaPolynomial_one_succ_succ n, ih_succ, ih]
+
+/-- The quotient Narayana sequence has nonnegative coefficients, via the
+coefficient model. -/
+theorem narayanaQuot_hasNonnegCoeffs (n : ℕ) :
+    HasNonnegCoeffs (narayanaQuot n) := by
+  cases n with
+  | zero => simp [HasNonnegCoeffs]
+  | succ n =>
+      rw [narayanaQuot_succ_eq_narayanaPolynomial_one]
+      exact hasNonnegCoeffs_narayanaPolynomial 1 n
+
+/-- Oriented interlacing for the quotient Narayana sequence, by a weak
+Liu--Wang induction along the three-term recurrence. -/
+theorem strictInterl_narayanaQuot_succ :
+    ∀ n : Nat, 1 ≤ n → StrictInterl (narayanaQuot n) (narayanaQuot (n + 1))
+  | 0, hn => by
       lia
-  | 1, _, _ => narayanaQuot_one_two_interlaces.toStrictInterl
-  | n + 2, _, hnonneg => by
+  | 1, _ => narayanaQuot_one_two_interlaces.toStrictInterl
+  | n + 2, _ => by
       have hprev : StrictInterl (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
-        strictInterl_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg
+        strictInterl_narayanaQuot_succ (n + 1) (by lia)
       have hInter : Interlaces (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
         hprev.toInterlaces <| by
           rw [natDegree_narayanaQuot (n + 2) (by lia),
             natDegree_narayanaQuot (n + 1) (by lia)]
           lia
-      exact strictInterl_narayanaQuot_step (n + 1) (by lia) hInter (hnonneg (n + 2))
+      exact strictInterl_narayanaQuot_step (n + 1) (by lia) hInter
 
-theorem interlaces_narayanaQuot_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
-    (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
+theorem interlaces_narayanaQuot_succ (n : Nat) (hn : 1 ≤ n) :
     Interlaces (narayanaQuot n) (narayanaQuot (n + 1)) :=
-  (strictInterl_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg).toInterlaces <| by
+  (strictInterl_narayanaQuot_succ n hn).toInterlaces <| by
     rw [natDegree_narayanaQuot (n + 1) (by lia), natDegree_narayanaQuot n hn]
     lia
 
-/-- Conditional real-rootedness of the quotient Narayana sequence. -/
-theorem isRealRooted_narayanaQuot_of_nonnegCoeffs :
-    ∀ n : Nat, 1 ≤ n →
-      (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
-      ((narayanaQuot n) ≠ 0 ∧ (narayanaQuot n).Splits)
-  | 0, hn, _ => by lia
-  | 1, _, _ => by simp
-  | n + 2, _, hnonneg =>
-      (strictInterl_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).2.1
+/-- Real-rootedness of the quotient Narayana sequence. -/
+theorem isRealRooted_narayanaQuot :
+    ∀ n : Nat, 1 ≤ n → ((narayanaQuot n) ≠ 0 ∧ (narayanaQuot n).Splits)
+  | 0, hn => by lia
+  | 1, _ => by simp
+  | n + 2, _ => (strictInterl_narayanaQuot_succ (n + 1) (by lia)).2.1
 
-/-- Conditional interlacing for the original Narayana sequence. This is just
-the quotient result with the common `X` factor reattached on both sides. -/
-theorem interlaces_narayana_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
-    (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
+/-- Interlacing for the original Narayana sequence. This is the quotient
+result with the common `X` factor reattached on both sides. -/
+theorem interlaces_narayana_succ (n : Nat) (hn : 1 ≤ n) :
     Interlaces (narayana n) (narayana (n + 1)) := by
   have hstrictInterlQ : StrictInterl (narayanaQuot n) (narayanaQuot (n + 1)) :=
-    strictInterl_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg
+    strictInterl_narayanaQuot_succ n hn
   have hmain : StrictInterl (X * narayanaQuot n) (X * narayanaQuot (n + 1)) := by
     rr_strict_interl_mul_X_both using
       proper := hstrictInterlQ,
-      left_nonneg := hnonneg n,
-      right_nonneg := hnonneg (n + 1)
+      left_nonneg := narayanaQuot_hasNonnegCoeffs n,
+      right_nonneg := narayanaQuot_hasNonnegCoeffs (n + 1)
   have hstrictInterl : StrictInterl (narayana n) (narayana (n + 1)) := by
     simpa [narayana] using hmain
   exact hstrictInterl.toInterlaces (by
     rw [natDegree_narayana (n + 1) (by lia), natDegree_narayana n hn])
 
-/-- Conditional real-rootedness of the original Narayana sequence. -/
-theorem isRealRooted_narayana_of_nonnegCoeffs :
-    ∀ n : Nat, 1 ≤ n →
-      (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
-      ((narayana n) ≠ 0 ∧ (narayana n).Splits)
-  | 0, hn, _ => by lia
-  | 1, _, _ => by simp
-  | n + 2, _, hnonneg =>
-      (interlaces_narayana_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).1
+/-- Real-rootedness of the original Narayana sequence. -/
+theorem isRealRooted_narayana :
+    ∀ n : Nat, 1 ≤ n → ((narayana n) ≠ 0 ∧ (narayana n).Splits)
+  | 0, hn => by lia
+  | 1, _ => by simp
+  | n + 2, _ => (interlaces_narayana_succ (n + 1) (by lia)).1
 
 /-- The descending prefix `[P_{n+1}, P_n, ..., P_1]` of the original Narayana
 sequence. -/
@@ -363,21 +417,17 @@ def narayanaPrefix : Nat → List ℝ[X]
 @[simp] lemma narayanaPrefix_succ (n : Nat) :
     narayanaPrefix (n + 1) = narayana (n + 2) :: narayanaPrefix n := rfl
 
-/-- Conditional Sturm-sequence package for the original Narayana polynomials. -/
-theorem isSturmSeq_narayanaPrefix_of_nonnegCoeffs
-    (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
-    ∀ n : Nat, IsSturmSeq (narayanaPrefix n) := by
-  intro n
+/-- Sturm-sequence package for the original Narayana polynomials. -/
+theorem isSturmSeq_narayanaPrefix (n : Nat) : IsSturmSeq (narayanaPrefix n) := by
   induction n with
   | zero =>
       simp [narayanaPrefix, IsSturmSeq]
   | succ n ih =>
       cases n with
       | zero =>
-          simpa [narayanaPrefix, IsSturmSeq] using
-            interlaces_narayana_succ_of_nonnegCoeffs 1 (by lia) hnonneg
+          simpa [narayanaPrefix, IsSturmSeq] using interlaces_narayana_succ 1 (by lia)
       | succ n =>
           simpa [narayanaPrefix, IsSturmSeq] using
-            And.intro (interlaces_narayana_succ_of_nonnegCoeffs (n + 2) (by lia) hnonneg) ih
+            And.intro (interlaces_narayana_succ (n + 2) (by lia)) ih
 
 end RealRooted

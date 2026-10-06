@@ -216,19 +216,6 @@ theorem jacobi11NormalizedPolynomial_transport_eval
             (r / (r - 1)) ^ k) := by ring
     _ = jacobi11TransportCoeff n k * r ^ k := by rw [jacobi11Transport_denominator_cancel hk hden]
 
-/-- The quotient Narayana sequence has nonnegative coefficients, via the
-coefficient-side model. -/
-theorem narayanaQuot_hasNonnegCoeffs (n : ℕ) :
-    HasNonnegCoeffs (narayanaQuot n) := by
-  cases n with
-  | zero => simp [HasNonnegCoeffs]
-  | succ n =>
-      have heq : narayanaQuot (n + 1) = narayanaPolynomial 1 n := by
-        simpa [modifiedNarayanaPolynomial, modifiedNarayanaCoeffPolynomial]
-          using modifiedNarayanaPolynomial_eq_coeffPolynomial n
-      rw [heq]
-      exact hasNonnegCoeffs_narayanaPolynomial 1 n
-
 /-- Modified Narayana polynomials have nonnegative coefficients. -/
 theorem modifiedNarayanaPolynomial_hasNonnegCoeffs (n : ℕ) :
     HasNonnegCoeffs (modifiedNarayanaPolynomial n) := by
@@ -572,8 +559,7 @@ theorem affineModifiedNarayanaShifted_prev_interlaces_left
       simpa [b] using narayanaCoeffB_eval_nonpos (k + 1) r
     exact
       strictInterl_of_interlaces_evalCoeff_nonpos
-        (modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs k
-          narayanaQuot_hasNonnegCoeffs)
+        (modifiedNarayanaPolynomial_interlaces_succ k)
         (modifiedNarayanaPolynomial_posLeadingCoeff k)
         hF_pos hdeg_lo hdeg_hi hb_nonpos
   rw [hleft_eq] at hstrictInterl

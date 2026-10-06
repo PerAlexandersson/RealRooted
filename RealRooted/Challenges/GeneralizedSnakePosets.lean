@@ -58,7 +58,7 @@ label = "Modified Narayana polynomials are Pólya-frequency"
 
 [[theorems]]
 name = "RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial_strictInterl_succ"
-module = "RealRooted.GeneralizedSnakePosets.Narayana.Recurrence"
+module = "RealRooted.GeneralizedSnakePosets.Narayana.Modified"
 label = "Consecutive modified Narayana polynomials interlace"
 
 [[theorems]]
