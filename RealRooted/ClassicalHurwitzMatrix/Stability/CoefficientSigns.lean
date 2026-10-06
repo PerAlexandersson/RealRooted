@@ -107,7 +107,7 @@ private theorem induction_on_realFactors {S : Set ℂ} {motive : ℝ[X] → Prop
     · rwa [hpQ, leadingCoeff_mul, hQ.leadingCoeff, one_mul] at hlc
     · intro w hw
       apply hS w
-      simp [hpQ, complexify, eval_mul] at hw ⊢
+      simp only [complexify, hpQ, Polynomial.map_mul, eval_mul, mul_eq_zero] at hw ⊢
       exact .inr hw
   have hdeg_pos : 0 < (complexify p).degree := by
     rw [complexify, degree_map_eq_of_injective Complex.ofRealHom.injective]
