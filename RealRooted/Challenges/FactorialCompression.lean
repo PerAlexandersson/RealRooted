@@ -23,13 +23,13 @@ label = "Degree-raising differential step"
 
 [[theorems]]
 name = "RealRooted.FactorialCompression.compression_nextPolynomial_geometry_of_roots_neg"
-module = "RealRooted.FactorialCompression.Theorems"
+module = "RealRooted.FactorialCompression.DegreeChanging"
 label = "Factorial compression gives strict negative-root interlacing"
 headline = true
 
 [[theorems]]
 name = "RealRooted.FactorialCompression.gammaTransform_succ_geometry_of_strictInterl"
-module = "RealRooted.FactorialCompression.Theorems"
+module = "RealRooted.FactorialCompression.Lifting"
 label = "Two-branch gamma lifting preserves strict interlacing"
 headline = true
 -->
