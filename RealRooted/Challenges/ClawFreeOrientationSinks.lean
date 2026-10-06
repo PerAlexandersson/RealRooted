@@ -7,6 +7,8 @@ import RealRooted.Graph.AllOrientationSinkIdentity
 version = 1
 section = "families"
 slug = "claw-free-orientation-sinks"
+authors = ["Alexandersson", "Leite"]
+years = [2026]
 
 [[definitions]]
 name = "RealRooted.Graph.allOrientationSinkPolynomial"
@@ -59,6 +61,8 @@ For acyclic orientations, see the pages on
 [chordal claw-free graphs](/RealRooted/families/chordal-claw-free-acyclic-sinks/).
 
 ## References
+
+P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).
 
 The counting identity was proved with Aristotle (Harmonic). For the claw-free
 background, see the
