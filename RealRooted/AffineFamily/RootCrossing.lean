@@ -649,7 +649,7 @@ theorem PosComboRealRooted.parameter_unique_and_derivative_ne_zero_add_right
     (hfg : PosComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {mu nu x : ℝ}
-    (hmu : 0 < mu) (_hnu : 0 < nu)
+    (hmu : 0 < mu)
     (hroot_mu : (f + C mu * g).IsRoot x)
     (hroot_nu : (f + C nu * g).IsRoot x) :
     mu = nu ∧ (f + C mu * g).derivative.eval x ≠ 0 :=
@@ -697,8 +697,7 @@ theorem PosComboRealRooted.root_crossing_data_unique_add_right
   refine ⟨hg, hf, hpar, hder, ?_⟩
   intro nu hnu hroot_nu
   exact
-    (hfg.parameter_unique_and_derivative_ne_zero_add_right hno hnu hmu
-      hroot_nu hroot).1
+    (hfg.parameter_unique_and_derivative_ne_zero_add_right hno hnu hroot_nu hroot).1
 
 /-- Endpoint-sign wrapper for the right pencil: when the two endpoint
 evaluations have opposite signs at `x`, there is a positive parameter placing
