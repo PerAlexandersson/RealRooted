@@ -1,5 +1,6 @@
 import RealRooted.ClassicalHurwitzMatrix
 import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
+import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
 import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
 import RealRooted.HurwitzMatrix
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
@@ -32,6 +33,11 @@ module = "RealRooted.HermiteBiehler.Basic"
 label = "Weak Hurwitz stability with nonnegative coefficients"
 
 [[definitions]]
+name = "RealRooted.oddEvenPolynomial"
+module = "RealRooted.HermiteBiehler.OddEven"
+label = "The odd/even polynomial q(x²) + x p(x²)"
+
+[[definitions]]
 name = "Matrix.hurwitz"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz"
 label = "The classical Hurwitz matrix"
@@ -43,6 +49,10 @@ label = "Hermite–Biehler: interlacing gives stability"
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_converse"
 label = "Hermite–Biehler: stability gives interlacing"
+
+[[theorems]]
+name = "RealRooted.Challenges.HermiteBiehlerHurwitz.isHurwitzStable_oddEvenPolynomial_iff"
+label = "Hermite–Biehler for odd and even parts"
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.classicalHurwitzCriterion"
@@ -68,7 +78,12 @@ weak Hurwitz stability by total nonnegativity of the classical Hurwitz matrix.
 positive leading coefficients. If $g \ll f$ (see
 [interlacing](/RealRooted/concepts/interlacing/)), then $f + ig$ has no zeros
 in the open upper half-plane. Conversely, if $f + ig$ has no zeros there, then
-$g \ll f$ or $f \ll g$.
+$g \ll f$.
+
+**Corollary (odd and even parts).** Let $p$ and $q$ be nonzero real
+polynomials. Then $q(x^2) + x\,p(x^2)$ has nonnegative coefficients and no
+zeros with positive real part if and only if $p$ and $q$ have nonnegative
+coefficients and $p \ll q$.
 
 **Theorem (Hurwitz).** A nonzero real polynomial $p = \sum_k a_k x^k$ has
 nonnegative coefficients and no zeros with positive real part if and only if its
@@ -127,13 +142,21 @@ theorem hermiteBiehler_forward {f g : ℝ[X]}
   RealRooted.hermiteBiehlerForwardPos hf hg h
 
 /-- Converse Hermite--Biehler theorem: if `f` and `g` have positive leading
-coefficients and `f + i g` has no zeros in the open upper half-plane, then `f`
-and `g` interlace in one of the two orientations. -/
+coefficients and `f + i g` has no zeros in the open upper half-plane, then `g`
+interlaces `f`. -/
 theorem hermiteBiehler_converse {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (h : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
-    StrictInterl g f ∨ StrictInterl f g :=
-  RealRooted.hermiteBiehlerConverse hf hg h
+    StrictInterl g f :=
+  RealRooted.strictInterl_of_upperHalfPlaneStable_hermiteBiehler hf hg h
+
+/-- Hermite--Biehler theorem for odd and even parts: for nonzero `p` and `q`,
+the polynomial `q(x²) + x p(x²)` is Hurwitz stable exactly when `p` and `q`
+have nonnegative coefficients and `p` interlaces `q`. -/
+theorem isHurwitzStable_oddEvenPolynomial_iff {p q : ℝ[X]} (hp : p ≠ 0) (hq : q ≠ 0) :
+    IsHurwitzStable (RealRooted.oddEvenPolynomial p q) ↔
+      HasNonnegCoeffs p ∧ HasNonnegCoeffs q ∧ StrictInterl p q :=
+  RealRooted.isHurwitzStable_oddEvenPolynomial_iff hp hq
 
 /-- The converse criterion is false for the row orientation used by
 `RealRooted.hurwitz`. -/

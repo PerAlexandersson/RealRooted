@@ -25,13 +25,10 @@ This file formalizes the Veronese-section results of Athanasiadis--Wagner.
   `not_isHurwitzStable_oddEven_fullyInterlacingPair` show that the current row
   orientation of the polynomial-to-Lace direction fails.
 * Odd/even Hermite--Biehler: the forward direction
-  `isHurwitzStable_oddEvenPolynomial_of_strictInterl` is proved.  The converse
-  `strictInterl_of_isHurwitzStable_oddEvenPolynomial` still takes the unproved
-  targets `HurwitzOddEvenToHermiteBiehlerStableStatement` and
-  `HermiteBiehlerConverseOrientedStatement` (issue #1112) as hypotheses.  In
-  the strict-degree case,
-  `strictInterl_of_isHurwitzStable_oddEvenPolynomial_of_natDegree_lt` needs
-  only the first of them.
+  `isHurwitzStable_oddEvenPolynomial_of_strictInterl` is proved here, with the
+  degenerate (`p = 0` or `q = 0`) cases of the converse conformal substitution.
+  The converse `strictInterl_of_isHurwitzStable_oddEvenPolynomial` is in
+  `RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse`.
 
 `RealRooted.VeroneseMatrix` gives a second, matrix-based proof of the
 real-rootedness consequence.
@@ -639,19 +636,7 @@ theorem not_forall_isHurwitzStable_hurwitz_isTotallyNonneg :
     (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair _ _).1
       (h (isHurwitzStable_oddEvenPolynomial_of_strictInterl hpnn hqnn hpq))
 
-/-! ## Converse Hermite--Biehler step for odd/even polynomials -/
-
-/-- Unproved target: converse of the conformal substitution
-`hermiteBiehlerStableToHurwitzOddEven`.  Right-half-plane stability of the
-odd/even polynomial `q(x^2) + x p(x^2)` forces upper-half-plane stability of
-the Hermite--Biehler combination `q + i p`.  Tracked, together with
-`HermiteBiehlerConverseOrientedStatement`, in GitHub issue #1112. -/
-def HurwitzOddEvenToHermiteBiehlerStableStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    HasNonnegCoeffs p →
-    HasNonnegCoeffs q →
-    IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q)) →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p)
+/-! ## Conformal rotation and degenerate odd/even cases -/
 
 /-- The conformal rotation `z ↦ i * z` maps the open right half-plane onto the
 open upper half-plane.
@@ -674,80 +659,6 @@ theorem isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp (P : ℂ[X]) :
       ring_nf
       simp [Complex.I_sq]
     simpa [key] using h (-Complex.I * w) (by simpa [Complex.mul_re] using hw)
-
-/-- Unproved target: oriented converse of `hermiteBiehlerForwardPos`.  For
-polynomials `f`, `g` with positive leading coefficients, upper-half-plane
-stability of `f + i g` forces `StrictInterl g f`.  The checked converse
-`hermiteBiehlerConverse` only gives `StrictInterl g f ∨ StrictInterl f g`, and
-`hermiteBiehlerConverseOriented_of_natDegree_lt` settles the strict-degree case.
-Tracked, together with `HurwitzOddEvenToHermiteBiehlerStableStatement`, in
-GitHub issue #1112. -/
-def HermiteBiehlerConverseOrientedStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
-    StrictInterl g f
-
-/-- Converse Hermite--Biehler step for odd/even polynomials, reduced to the
-converse conformal substitution and the oriented converse Hermite--Biehler
-theorem.  The nonnegativity half of `IsHurwitzStable` supplies the positive
-leading coefficients. -/
-theorem strictInterl_of_isHurwitzStable_oddEvenPolynomial
-    (hSub : HurwitzOddEvenToHermiteBiehlerStableStatement)
-    (hHB : HermiteBiehlerConverseOrientedStatement)
-    {p q : ℝ[X]} (hp : p ≠ 0) (hq : q ≠ 0)
-    (hstable : IsHurwitzStable (oddEvenPolynomial p q)) : StrictInterl p q := by
-  obtain ⟨hnn, hrhp⟩ := hstable
-  have hpnn : HasNonnegCoeffs p := hasNonnegCoeffs_left_of_oddEvenPolynomial hnn
-  have hqnn : HasNonnegCoeffs q := hasNonnegCoeffs_right_of_oddEvenPolynomial hnn
-  exact hHB (hqnn.pos_leadingCoeff hq) (hpnn.pos_leadingCoeff hp) (hSub hpnn hqnn hrhp)
-
-/-! ## Degree-based orientation of the converse Hermite--Biehler step
-
-Once the two factors have strictly ordered degrees, the orientation is forced
-by the elementary degree constraint carried by `StrictInterl`, so the checked
-disjunctive converse `hermiteBiehlerConverse` already suffices.  The orientation
-content of `HermiteBiehlerConverseOrientedStatement` is therefore confined to
-the equal-degree case. -/
-
-/-- Elementary orientation resolution by degree.  A disjunctive interlacing
-conclusion `StrictInterl g f ∨ StrictInterl f g` collapses to the oriented branch
-`StrictInterl g f`
-as soon as the degrees are strictly ordered `g.natDegree < f.natDegree`, since
-the reversed branch `StrictInterl f g` would force `f.natDegree ≤ g.natDegree`. -/
-theorem strictInterl_of_or_of_natDegree_lt {f g : ℝ[X]}
-    (h : StrictInterl g f ∨ StrictInterl f g)
-    (hgf : g.natDegree < f.natDegree) : StrictInterl g f :=
-  h.elim id fun h => absurd h.natDegree_le (by lia)
-
-/-- Oriented converse Hermite--Biehler theorem in the strict-degree case.
-For `f, g` with positive leading coefficients and `g.natDegree < f.natDegree`,
-upper-half-plane stability of `f + i g` forces `StrictInterl g f`. -/
-theorem hermiteBiehlerConverseOriented_of_natDegree_lt {f g : ℝ[X]}
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree < f.natDegree)
-    (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
-    StrictInterl g f :=
-  strictInterl_of_or_of_natDegree_lt (hermiteBiehlerConverse hf hg hstable) hdeg
-
-/-- Strict-degree case of `strictInterl_of_isHurwitzStable_oddEvenPolynomial`,
-needing only the converse conformal substitution.
-
-When `p.natDegree < q.natDegree` (equivalently, when `oddEvenPolynomial p q` has
-even degree, see `natDegree_lt_iff_even_natDegree_oddEvenPolynomial`), Hurwitz
-stability of `q(x²) + x p(x²)` forces `StrictInterl p q`: the orientation is
-forced by the degree gap. -/
-theorem strictInterl_of_isHurwitzStable_oddEvenPolynomial_of_natDegree_lt
-    (hSub : HurwitzOddEvenToHermiteBiehlerStableStatement)
-    {p q : ℝ[X]} (hp : p ≠ 0) (hq : q ≠ 0)
-    (hdeg : p.natDegree < q.natDegree)
-    (hstable : IsHurwitzStable (oddEvenPolynomial p q)) : StrictInterl p q := by
-  obtain ⟨hnn, hrhp⟩ := hstable
-  have hpnn := hasNonnegCoeffs_left_of_oddEvenPolynomial hnn
-  have hqnn := hasNonnegCoeffs_right_of_oddEvenPolynomial hnn
-  exact hermiteBiehlerConverseOriented_of_natDegree_lt (hqnn.pos_leadingCoeff hq)
-    (hpnn.pos_leadingCoeff hp) hdeg (hSub hpnn hqnn hrhp)
 
 /-- Existence of a right-half-plane square root.
 

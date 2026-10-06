@@ -17,8 +17,6 @@ theorem, refutation, or production caller. They contain no admission.
 | Declaration | Status |
 | --- | --- |
 | `HurwitzOddEvenToReverseFullyInterlacingPairStatement` | Proposed reverse-row replacement for the refuted legacy Hurwitz-to-Lace orientation; issue #1113 |
-| `HurwitzOddEvenToHermiteBiehlerStableStatement` | Converse of the conformal substitution `hermiteBiehlerStableToHurwitzOddEven`; input to `strictInterl_of_isHurwitzStable_oddEvenPolynomial`; issue #1112 (shared with the next row) |
-| `HermiteBiehlerConverseOrientedStatement` | Oriented converse Hermite--Biehler theorem; the checked `hermiteBiehlerConverse` is disjunctive and `hermiteBiehlerConverseOriented_of_natDegree_lt` settles the strict-degree case; issue #1112 (shared with the previous row) |
 | `hadamardPreservesHurwitzStableStatement` | Garloff--Wagner Theorem 1, Hadamard products preserve Hurwitz stability; issue #1095 |
 | `iterateThetaPlusOneSelfInterlStatement` | Unused open interlacing target for iterates of `theta + 1`; issue #1114 |
 
@@ -40,6 +38,9 @@ theorem, refutation, or production caller. They contain no admission.
 | Theta interlacing preservation on the PF cone | `thetaPreservesInterlStatement`, witnessed by `thetaPreservesInterl` |
 | Derivative preservation of weak interlacing | `derivativePreservesInterl` |
 | Nonnegative interlacing pair gives a Hurwitz-stable odd/even polynomial | `isHurwitzStable_oddEvenPolynomial_of_strictInterl` |
+| Hurwitz-stable odd/even polynomial gives an interlacing pair (issue #1112) | `strictInterl_of_isHurwitzStable_oddEvenPolynomial`, `isHurwitzStable_oddEvenPolynomial_iff` |
+| Converse conformal substitution: Hurwitz stability of `q(x²) + x p(x²)` gives stability of `q + i p` (issue #1112) | `IsHurwitzStable.isUpperHalfPlaneStable_hermiteBiehlerPolynomial` |
+| Oriented converse Hermite--Biehler theorem (issue #1112) | `strictInterl_of_upperHalfPlaneStable_hermiteBiehler` |
 | Peak-value multivariate stability | `peakValuePolynomial_mvRealStable` |
 | Weighted consecutive peak-value interleaving | `peakValueWeightedDiagonal_consecutive_strictInterl` |
 
