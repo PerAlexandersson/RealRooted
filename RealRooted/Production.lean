@@ -1403,6 +1403,8 @@ import RealRooted.Favard.PathEnvelope
 import RealRooted.Mathlib.RingTheory.Polynomial.Chebyshev.Bounds
 import RealRooted.Mathlib.Algebra.Polynomial.Antiderivative
 import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
+import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
+import RealRooted.CombinatorialExamples.BigDescents321.GeneratingFunction
 
 /-!
 # RealRooted production umbrella
