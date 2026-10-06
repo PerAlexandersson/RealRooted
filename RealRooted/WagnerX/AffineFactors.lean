@@ -41,45 +41,6 @@ theorem StrictInterl.mul_X_sub_C_both_of_roots_le {f g : ℝ[X]}
     (StrictInterl.comp_X_add_C_iff (f := (X - C r) * f) (g := (X - C r) * g) r).1
       htranslated
 
-/-- Cancelling a common affine factor preserves strict interlacing when all
-remaining roots lie to the factor's left. -/
-theorem StrictInterl.of_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} {r : ℝ}
-    (h : StrictInterl ((X - C r) * f) ((X - C r) * g))
-    (hf_le : ∀ s ∈ f.roots, s ≤ r)
-    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    StrictInterl f g := by
-  set f' := f.comp (X + C r)
-  set g' := g.comp (X + C r)
-  have htranslated :
-      StrictInterl (((X - C r) * f).comp (X + C r)) (((X - C r) * g).comp (X + C r)) := by
-    simpa using
-      (StrictInterl.comp_X_add_C_iff (f := (X - C r) * f) (g := (X - C r) * g) r).2 h
-  have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
-    intro s hs
-    simp only [f', roots_comp_X_add_C r] at hs
-    rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
-    simp_all
-  have hg'_nonpos : ∀ s ∈ g'.roots, s ≤ 0 := by
-    intro s hs
-    simp only [g', roots_comp_X_add_C r] at hs
-    rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
-    simp_all
-  have hfg' : StrictInterl f' g' := by
-    have hX' : StrictInterl (X * f') (X * g') := by
-      simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
-        comp_assoc, add_assoc, add_left_comm, add_comm] using htranslated
-    exact hX'.of_mul_X_both_of_roots_nonpos hf'_nonpos hg'_nonpos
-  exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
-
-/-- Multiplication by a common affine factor is an equivalence on strict
-interlacing when all original roots lie to the factor's left. -/
-theorem StrictInterl.mul_X_sub_C_both_iff_of_roots_le {f g : ℝ[X]} (r : ℝ)
-    (hf_le : ∀ s ∈ f.roots, s ≤ r)
-    (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    StrictInterl f g ↔ StrictInterl ((X - C r) * f) ((X - C r) * g) :=
-  ⟨fun h => h.mul_X_sub_C_both_of_roots_le r hf_le hg_le,
-    fun h => h.of_mul_X_sub_C_both_of_roots_le hf_le hg_le⟩
-
 /-- Multiplying both polynomials by the same affine factor preserves strict
 interlacing. -/
 theorem StrictInterl.mul_X_sub_C_both {f g : ℝ[X]} (h : StrictInterl f g) (r : ℝ) :

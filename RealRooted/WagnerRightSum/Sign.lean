@@ -44,39 +44,6 @@ Uses the factorization `f(t) = lc · ∏(t - sⱼ)`: the number of negative
 factors at the two evaluation points differs by 1 (odd total), giving
 opposite signs. Consequence: `(f+g)` changes sign → IVT gives a root. -/
 
-/-- A product of reals where each factor is ≥ 0 or ≤ 0 can be written as
-    `(-1)^k · (nonneg)` for some k. -/
-lemma exists_sign_of_prod (l : List ℝ) (h : ∀ x ∈ l, 0 ≤ x ∨ x ≤ 0) :
-    ∃ k : ℕ, 0 ≤ (-1 : ℝ) ^ k * l.prod := by
-  induction l with
-  | nil => exact ⟨0, by simp⟩
-  | cons a l ih =>
-    obtain ⟨k, hk⟩ := ih (List.forall_mem_of_forall_mem_cons h)
-    rcases h a (.head _) with ha | ha
-    · refine ⟨k, ?_⟩
-      rw [List.prod_cons]
-      have : (-1 : ℝ) ^ k * (a * l.prod) = a * ((-1 : ℝ) ^ k * l.prod) := by grind
-      rw [this]; exact mul_nonneg ha hk
-    · refine ⟨k + 1, ?_⟩
-      rw [List.prod_cons]
-      have : (-1 : ℝ) ^ (k + 1) * (a * l.prod) = (-a) * ((-1 : ℝ) ^ k * l.prod) := by grind
-      rw [this]; exact mul_nonneg (by grind) hk
-
-/-- Two products with the same "sign exponent" have a non-negative product. -/
-lemma prod_mul_prod_nonneg_of_same_sign {l₁ l₂ : List ℝ}
-    (k : ℕ) (hk₁ : 0 ≤ (-1 : ℝ) ^ k * l₁.prod)
-    (hk₂ : 0 ≤ (-1 : ℝ) ^ k * l₂.prod) :
-    0 ≤ l₁.prod * l₂.prod := by
-  have :
-      l₁.prod * l₂.prod =
-        ((-1 : ℝ) ^ k * l₁.prod) * ((-1 : ℝ) ^ k * l₂.prod) *
-          ((-1 : ℝ) ^ k * (-1 : ℝ) ^ k)⁻¹ := by
-    have h1 : ((-1 : ℝ) ^ k) ≠ 0 := pow_ne_zero _ (by simp)
-    grind
-  rw [this]
-  apply mul_nonneg (mul_nonneg hk₁ hk₂)
-  rw [← mul_pow]; simp
-
 /-- A product whose factors are ≥ 0 or ≤ 0 according to a predicate `p`
     satisfies `0 ≤ (-1)^(countP p) * prod`. -/
 private lemma sign_of_prod_countP (s : Multiset ℝ) (f : ℝ → ℝ) (p : ℝ → Prop)
@@ -254,32 +221,6 @@ private lemma listInterlaces_listAlternates_prod_mul_prod_nonneg_at_mem :
   | _, _ :: _, [], hlen, hint_f, halt_g, _, _ => by
       simp [ListAlternates] at halt_g
 
-/-- In a same-degree alternating layout, evaluating at the first two right-hand
-roots also gives opposite-or-zero signs. -/
-private lemma listAlternates_prod_mul_prod_nonpos_at_heads :
-    ∀ {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
-      ListAlternates ss (r₁ :: r₂ :: rest) →
-        (ss.map (r₁ - ·)).prod * (ss.map (r₂ - ·)).prod ≤ 0
-  | s :: rest_s, r₁, r₂, rest, halt => by
-      obtain ⟨hsr₁, hint⟩ := halt
-      have hs_nonneg : 0 ≤ (r₁ - s) * (r₂ - s) := by
-        have hsr₂ : s ≤ r₂ := le_trans hsr₁ (by
-          exact listInterlaces_rs_all_ge rest_s (r₂ :: rest) r₁ hint r₂ (by simp))
-        positivity
-      have htail_nonpos :
-          (rest_s.map (r₁ - ·)).prod * (rest_s.map (r₂ - ·)).prod ≤ 0 :=
-        listInterlaces_prod_mul_prod_nonpos_at_heads hint
-      have hfactor :
-          (List.map (fun x => r₁ - x) (s :: rest_s)).prod *
-              (List.map (fun x => r₂ - x) (s :: rest_s)).prod =
-            ((r₁ - s) * (r₂ - s)) *
-              ((rest_s.map (r₁ - ·)).prod * (rest_s.map (r₂ - ·)).prod) := by
-        simp [mul_assoc, mul_left_comm]
-      rw [hfactor]
-      exact mul_nonpos_of_nonneg_of_nonpos hs_nonneg htail_nonpos
-  | [], _, _, _, halt => by
-      simp [ListAlternates] at halt
-
 /-! The remaining product non-negativity (`hrest_nonneg` in the sign lemma)
 requires showing that after erasing one root from each of `f.roots` and `g.roots`,
 the products `∏(s - remaining_g_root) · ∏(t - remaining_f_root) ≥ 0`.
@@ -372,17 +313,6 @@ lemma eval_add_mul_eval_left_nonneg_of_strictInterl_right {f g h : ℝ[X]}
   have hsign := eval_mul_eval_nonneg_of_strictInterl_right hfh hgh hf_pos hg_pos hr
   linarith [sq_nonneg (f.eval r), hsign]
 
-/-- At each root of the common right-hand polynomial, `f + g` has the same sign
-as `g`. -/
-lemma eval_add_mul_eval_right_nonneg_of_strictInterl_right {f g h : ℝ[X]}
-    (hfh : StrictInterl f h) (hgh : StrictInterl g h)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    {r : ℝ} (hr : h.IsRoot r) :
-    0 ≤ (f + g).eval r * g.eval r := by
-  rw [Polynomial.eval_add]
-  have hsign := eval_mul_eval_nonneg_of_strictInterl_right hfh hgh hf_pos hg_pos hr
-  linarith [sq_nonneg (g.eval r), hsign]
-
 /-- If the sum `f + g` vanishes at a root of the common right-hand polynomial,
 then both summands already vanish there. This is the key boundary-collision
 reduction for the sign-based Wagner proof. -/
@@ -395,37 +325,6 @@ lemma isRoot_of_isRoot_right_of_isRoot_add {f g h : ℝ[X]}
   have hsum : f.eval r + g.eval r = 0 := by simp_all
   have hf0 : f.eval r = 0 := by nlinarith
   simp_all
-
-/-- A polynomial with roots arranged by a `ListInterlaces`/`ListAlternates`
-layout has opposite-or-zero signs at consecutive right-hand roots. -/
-private lemma eval_mul_eval_nonpos_of_roots_layout {f : ℝ[X]}
-    (hf_splits : f.Splits) (hf_pos : HasPosLeadingCoeff f)
-    {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
-    (hss_eq : (↑ss : Multiset ℝ) = f.roots)
-    (hcase : ListInterlaces ss (r₁ :: r₂ :: rest) ∨
-      ListAlternates ss (r₁ :: r₂ :: rest)) :
-    f.eval r₁ * f.eval r₂ ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hf_splits r₁,
-    eval_eq_leadingCoeff_mul_prod_sub hf_splits r₂, ← hss_eq]
-  have hprod :
-      (ss.map (r₁ - ·)).prod * (ss.map (r₂ - ·)).prod ≤ 0 := by
-    rcases hcase with hint | halt
-    · exact listInterlaces_prod_mul_prod_nonpos_at_heads hint
-    · exact listAlternates_prod_mul_prod_nonpos_at_heads halt
-  have hprod_r₁ :
-      ((↑ss : Multiset ℝ).map (r₁ - ·)).prod = (ss.map (r₁ - ·)).prod := rfl
-  have hprod_r₂ :
-      ((↑ss : Multiset ℝ).map (r₂ - ·)).prod = (ss.map (r₂ - ·)).prod := rfl
-  have hfactor :
-      f.leadingCoeff * (ss.map (r₁ - ·)).prod * (f.leadingCoeff * (ss.map (r₂ - ·)).prod) =
-        (f.leadingCoeff * f.leadingCoeff) *
-          ((ss.map (r₁ - ·)).prod * (ss.map (r₂ - ·)).prod) := by
-    ring
-  rw [hprod_r₁, hprod_r₂]
-  rw [hfactor]
-  have hlc_nonneg : 0 ≤ f.leadingCoeff * f.leadingCoeff :=
-    mul_nonneg (le_of_lt hf_pos) (le_of_lt hf_pos)
-  exact mul_nonpos_of_nonneg_of_nonpos hlc_nonneg hprod
 
 /-- Generic IVT bridge: opposite-or-zero endpoint signs give a real root in the
 closed interval. -/
