@@ -1419,6 +1419,7 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.WeightedResidueSum
 import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.DerivativeInterlacing
 import RealRooted.Challenges.TotallyNonnegativeMatrices
+import RealRooted.Challenges.GammaTransform
 
 /-!
 # RealRooted production umbrella
