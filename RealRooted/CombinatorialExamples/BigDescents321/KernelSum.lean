@@ -175,4 +175,137 @@ theorem kernelWeight_lower {r k J : ℕ} (hr : 2 ≤ r) (hk : k ≤ r) :
   field_simp
   ring
 
+/-! ### The recurrence in `r` -/
+
+private theorem coeff_derivative_kernelSqrt (m : ℕ) :
+    PowerSeries.coeff m (PowerSeries.derivative kernelSqrt) =
+      (m + 1 : ℚ[X]) * kernelPoly (m + 1) := by
+  rw [PowerSeries.coeff_derivative, kernelPoly]
+  ring
+
+private theorem kernel_ode (t : ℕ) :
+    2 * PowerSeries.coeff (t + 1) (kernelDisc * PowerSeries.derivative kernelSqrt) =
+      PowerSeries.coeff (t + 1) (PowerSeries.derivative kernelDisc * kernelSqrt) := by
+  have h := congrArg (PowerSeries.coeff (t + 1))
+    (PowerSeries.two_mul_mul_derivative_sqrt constantCoeff_kernelDisc)
+  rw [mul_assoc, show (2 : PowerSeries ℚ[X]) = PowerSeries.C 2 from (map_ofNat _ 2).symm,
+    PowerSeries.coeff_C_mul] at h
+  exact h
+
+/-- `2(t + 2) d_(t+2) = (2t + 1) v(2 - v) d_(t+1) - ((t - 1)/2) v d_t`. -/
+theorem kernelPoly_rec (t : ℕ) :
+    (2 * (t : ℚ[X]) + 4) * kernelPoly (t + 2) =
+      (2 * (t : ℚ[X]) + 1) * (X * (2 - X)) * kernelPoly (t + 1) -
+        C (((t : ℚ) - 1) / 2) * X * kernelPoly t := by
+  have h := kernel_ode t
+  have hD : PowerSeries.derivative kernelDisc =
+      -PowerSeries.C (X * (2 - X) : ℚ[X]) + 2 * PowerSeries.C (C (1 / 4) * X : ℚ[X]) *
+        PowerSeries.X := by
+    simp [kernelDisc, Derivation.leibniz_pow]
+    ring
+  rw [hD] at h
+  simp only [kernelDisc, sub_mul, add_mul, neg_mul, map_add, map_sub, map_neg, one_mul,
+    mul_assoc, PowerSeries.coeff_C_mul, PowerSeries.coeff_succ_X_mul,
+    show (2 : PowerSeries ℚ[X]) = PowerSeries.C 2 from (map_ofNat _ 2).symm,
+    PowerSeries.coeff_X_pow_mul', coeff_derivative_kernelSqrt] at h
+  simp only [show ∀ m, PowerSeries.coeff m kernelSqrt = kernelPoly m from fun _ ↦ rfl] at h
+  have hc : C (((t : ℚ) - 1) / 2) = C (1 / 4) * (2 * (t : ℚ[X]) - 2) := by
+    rw [show (2 * (t : ℚ[X]) - 2) = C (2 * (t : ℚ) - 2) by simp [map_ofNat], ← C_mul]
+    congr 1
+    ring
+  rw [hc]
+  rcases t with _ | t
+  · simp only [show ¬ (2 ≤ 0 + 1) by norm_num, ↓reduceIte, mul_zero, add_zero] at h
+    push_cast at h ⊢
+    linear_combination h
+  · simp only [show 2 ≤ t + 1 + 1 by lia, ↓reduceIte, show t + 1 + 1 - 2 = t by lia] at h
+    push_cast at h ⊢
+    linear_combination h
+
+theorem kernelMoment_natCast (r J : ℕ) :
+    kernelMoment r J = integral 0 1 (X ^ J * kernelPoly r) := by
+  simp only [kernelMoment, kernelPolyZ, show ¬ ((r : ℤ) < 0) by lia, ↓reduceIte, Int.toNat_natCast]
+
+/-- The moment recurrence
+`(2t + 4) m(t+2, J) = (2t + 1)(2 m(t+1, J+1) - m(t+1, J+2)) - ((t - 1)/2) m(t, J+1)`. -/
+theorem kernelMoment_rec (t J : ℕ) :
+    (2 * t + 4) * kernelMoment (t + 2 : ℕ) J =
+      (2 * t + 1) * (2 * kernelMoment (t + 1 : ℕ) (J + 1) - kernelMoment (t + 1 : ℕ) (J + 2)) -
+        ((t - 1) / 2) * kernelMoment t (J + 1) := by
+  have h := congrArg (fun p ↦ integral (0 : ℚ) 1 (X ^ J * p)) (kernelPoly_rec t)
+  have e1 : X ^ J * ((2 * (t : ℚ[X]) + 4) * kernelPoly (t + 2)) =
+      C (2 * (t : ℚ) + 4) * (X ^ J * kernelPoly (t + 2)) := by
+    rw [show (2 * (t : ℚ[X]) + 4) = C (2 * (t : ℚ) + 4) by simp [map_ofNat]]; ring
+  have e2 : X ^ J * ((2 * (t : ℚ[X]) + 1) * (X * (2 - X)) * kernelPoly (t + 1) -
+      C (((t : ℚ) - 1) / 2) * X * kernelPoly t) =
+      C (2 * (2 * (t : ℚ) + 1)) * (X ^ (J + 1) * kernelPoly (t + 1)) -
+        C (2 * (t : ℚ) + 1) * (X ^ (J + 2) * kernelPoly (t + 1)) -
+        C (((t : ℚ) - 1) / 2) * (X ^ (J + 1) * kernelPoly t) := by
+    rw [show (2 * (t : ℚ[X]) + 1) = C (2 * (t : ℚ) + 1) by simp [map_ofNat],
+      show C (2 * (2 * (t : ℚ) + 1)) = 2 * C (2 * (t : ℚ) + 1) by simp [map_ofNat]]
+    ring
+  rw [e1, e2] at h
+  simp only [LinearMap.map_sub, integral_C_mul] at h
+  simp only [kernelMoment_natCast]
+  linarith
+
+/-! ### The telescoping certificate -/
+
+section Certificate
+
+variable (r J k : ℚ)
+
+/-- `F(r, J, k)` with rational arguments. -/
+def certF : ℚ := k * (4 * J + 3 * k + 2 * r + 5) - r * (r - 1)
+
+/-- `W_(r+1,k+1)(J) / W_(r+1,k)(J)`. -/
+def certBq : ℚ := (r + k) * (2 * J + r + k + 3) * (J + k + 2) * (r + 1 - k) /
+  ((k + 1) * (2 * J + 2 * k + 4) * (2 * J + 2 * k + 5) * (J + k + r + 3))
+
+/-- `W_(r,k)(J+2) / W_(r+1,k)(J)`. -/
+def certR2 : ℚ := (2 * J + r + k + 3) * (2 * J + r + k + 4) * (2 * J + r + k + 5) * (J + k + 2) *
+  (J + k + 3) * (r + 1 - k) / ((r + k - 1) * (2 * J + 2 * k + 4) * (2 * J + 2 * k + 5) *
+  (2 * J + 2 * k + 6) * (2 * J + 2 * k + 7) * (J + k + r + 3))
+
+/-- `W_(r,k)(J+1) / W_(r+1,k)(J)`. -/
+def certR1 : ℚ := (2 * J + r + k + 3) * (J + k + 2) * (r + 1 - k) /
+  ((r + k - 1) * (2 * J + 2 * k + 4) * (2 * J + 2 * k + 5))
+
+/-- `W_(r-1,k)(J+1) / W_(r+1,k)(J)`. -/
+def certR0 : ℚ := (r + 1 - k) * (r - k) * (J + k + 2) * (J + k + r + 2) /
+  ((r + k - 1) * (r + k - 2) * (2 * J + 2 * k + 4) * (2 * J + 2 * k + 5))
+
+/-- The summand of the recurrence, divided by `W_(r+1,k)(J)`. -/
+def certRho : ℚ := 2 * (r + 1) * certF (r + 1) J k - 4 * (1 - 2 * r) * certR2 r J k *
+  certF r (J + 2) k + 8 * (1 - 2 * r) * certR1 r J k * certF r (J + 1) k +
+  8 * (r - 2) * certR0 r J k * certF (r - 1) (J + 1) k
+
+/-- The telescoping certificate `σ(k)`. -/
+def certSigma : ℚ := -2 * k * (2 * r - 1) * (16 * J ^ 2 * k ^ 2 - 16 * J ^ 2 * k +
+  24 * J * k ^ 3 + 16 * J * k ^ 2 * r + 40 * J * k ^ 2 - 8 * J * k * r ^ 2 - 8 * J * k * r -
+  64 * J * k + 9 * k ^ 4 + 12 * k ^ 3 * r + 38 * k ^ 3 - 2 * k ^ 2 * r ^ 2 + 26 * k ^ 2 * r +
+  15 * k ^ 2 - 4 * k * r ^ 3 - 14 * k * r ^ 2 - 18 * k * r - 62 * k + r ^ 4 - 2 * r ^ 3 -
+  r ^ 2 + 2 * r) / ((k + r - 2) * (k + r - 1) * (2 * J + 2 * k + 5))
+
+theorem certRho_eq {r J k : ℚ} (hr : 3 ≤ r) (hJ : 0 ≤ J) (hk : 0 ≤ k) :
+    certRho r J k = certBq r J k * certSigma r J (k + 1) - certSigma r J k := by
+  unfold certRho certF certBq certR2 certR1 certR0 certSigma
+  have h1 : r + k - 1 ≠ 0 := by intro h; linarith
+  have h2 : r + k - 2 ≠ 0 := by intro h; linarith
+  have h3 : k + r - 2 ≠ 0 := by intro h; linarith
+  have h4 : k + r - 1 ≠ 0 := by intro h; linarith
+  have h5 : k + 1 + r - 2 ≠ 0 := by intro h; linarith
+  have h6 : k + 1 + r - 1 ≠ 0 := by intro h; linarith
+  have h7 : 2 * J + 2 * k + 4 ≠ 0 := by intro h; linarith
+  have h8 : 2 * J + 2 * k + 5 ≠ 0 := by intro h; linarith
+  have h9 : 2 * J + 2 * k + 6 ≠ 0 := by intro h; linarith
+  have h10 : 2 * J + 2 * k + 7 ≠ 0 := by intro h; linarith
+  have h11 : 2 * J + 2 * (k + 1) + 5 ≠ 0 := by intro h; linarith
+  have h12 : J + k + r + 3 ≠ 0 := by intro h; linarith
+  have h13 : k + 1 ≠ 0 := by intro h; linarith
+  field_simp
+  ring
+
+end Certificate
+
 end RealRooted.BigDescents321
