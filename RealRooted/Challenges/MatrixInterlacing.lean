@@ -94,7 +94,7 @@ gives condition 1 and the case $j_1 = j_2$. The sequence with $1$ in position
 $j_1$, $s' x + t'$ in position $j_2$ and zeros elsewhere gives
 $a + (s' x + t') b \ll c + (s' x + t') d$. Hence
 $(s' x + t')\bigl((s x + t) b + d\bigr) + (s x + t) a + c$ is real-rooted for
-all $s', t' > 0$, and the affine-family criterion (Brändén, Theorem 7.8.4)
+all $s', t' > 0$, and the affine-family criterion (Brändén, Lemma 7.8.4)
 turns this into condition 2.
 
 ## References

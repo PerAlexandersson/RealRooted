@@ -166,7 +166,8 @@ one-component and multicomponent ferromagnets,” *Comm. Math. Phys.* 80 (1981),
 153–179; J. Borcea and P. Brändén, “The Lee–Yang and Pólya–Schur programs. II.
 Theory of stable polynomials and applications,” *Comm. Pure Appl. Math.* 62
 (2009), 1595–1631; A. Gribinski and A. W. Marcus, “A rectangular additive
-convolution for polynomials,” Theorem 2.4. See
+convolution for polynomials,” *Combinatorial Theory* 2(1) (2022), #16,
+Theorem 2.4. See
 [apolar polynomials](https://www.symmetricfunctions.com/stablePolynomials.htm#apolarPolynomial)
 and [polarization](https://www.symmetricfunctions.com/stablePolynomials.htm#polarizationDefinition)
 on symmetricfunctions.com.

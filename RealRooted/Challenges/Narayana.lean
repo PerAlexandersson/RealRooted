@@ -11,7 +11,7 @@ version = 1
 section = "families"
 slug = "narayana"
 authors = ["Mao", "Wang", "Dominici", "Johnston", "Jordaan", "Brenti"]
-years = [1995, 2013, 2026]
+years = [1989, 2013, 2026]
 
 [[definitions]]
 name = "RealRooted.narayanaPolynomial"
@@ -152,9 +152,9 @@ Narayana transformation,”](https://arxiv.org/abs/2607.01572) arXiv:2607.01572
 and K. Jordaan, [“Real zeros of 2F1 hypergeometric
 polynomials,”](https://arxiv.org/abs/1301.4771) *Journal of Computational and
 Applied Mathematics* 247 (2013), 152–161.  The falling-factorial theorem is
-F. Brenti, [“Combinatorics and total
-positivity,”](https://doi.org/10.1016/0097-3165(95)90000-4) *Journal of
-Combinatorial Theory, Series A* 71 (1995), 175–218, Theorem 2.4.2; Mao and Wang
+F. Brenti, [“Unimodal, log-concave and Pólya frequency sequences in
+combinatorics,”](https://doi.org/10.1090/memo/0413) *Memoirs of the American
+Mathematical Society* 81 (1989), no. 413, Theorem 2.4.2; Mao and Wang
 use it as Lemma 3.2, and the matrix-product theorem is their Theorem 1.3.
 See also the
 [Narayana real-rootedness examples on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedCatalan.htm#ex:narayanaSturm),
@@ -170,7 +170,7 @@ namespace RealRooted
 namespace Challenges
 namespace Narayana
 
-/-- **Brenti's falling-factorial theorem** (Brenti 1995, Theorem 2.4.2).  If the
+/-- **Brenti's falling-factorial theorem** (Brenti 1989, Theorem 2.4.2).  If the
 falling-factorial transform of `p` has only nonpositive roots, then so does `p`. -/
 theorem HasOnlyNonposRoots.of_basisTransform_fallingFactorial {p : ℝ[X]}
     (h : HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p)) :

@@ -170,8 +170,9 @@ $P$ at a point in the product of upper half-planes.
 
 P. Brändén, “Polynomials with the half-plane property and matroid theory,”
 *Adv. Math.* 216 (2007), 302–320; J. Borcea and P. Brändén, “Applications of
-stable polynomials to mixed determinants,” *Duke Math. J.* 143 (2008),
-Proposition 2.4; L. Gårding, “An inequality for hyperbolic polynomials,”
+stable polynomials to mixed determinants: Johnson's conjectures,
+unimodality, and symmetrized Fischer products,” *Duke Math. J.* 143 (2008),
+205–223, Proposition 2.4; L. Gårding, “An inequality for hyperbolic polynomials,”
 *J. Math. Mech.* 8 (1959), 957–965. See the
 [stable polynomials](https://www.symmetricfunctions.com/stablePolynomials.htm#stablePolynomialDefinition)
 and the

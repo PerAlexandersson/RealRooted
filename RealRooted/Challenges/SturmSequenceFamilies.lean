@@ -159,9 +159,9 @@ permutations defined by Gessel and Stanley,”](https://doi.org/10.1137/07070225
 C.-O. Chow and W. C. Shiu, [“Counting simsun permutations by
 descents,”](https://doi.org/10.1007/s00026-011-0113-6) *Annals of
 Combinatorics* 15 (2011), 625–635.
-D. Wang, [“On colored set partitions of type
-$B_n$,”](https://doi.org/10.2478/s11533-014-0419-9) *Open Mathematics* 12
-(2014).
+D. G. L. Wang, [“On colored set partitions of type
+$B_n$,”](https://doi.org/10.2478/s11533-014-0419-9) *Central European Journal
+of Mathematics* 12 (2014), 1372–1381.
 M. Bóna and I. Mező, [“Real zeros and partitions without singleton
 blocks,”](https://doi.org/10.1016/j.ejc.2015.07.021) *European Journal of
 Combinatorics* 51 (2016), 500–510.
