@@ -13,7 +13,6 @@ namespace Tactic
 
 example {f u : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hroots_le_neg_one : ∀ r, f.IsRoot r → r ≤ -1)
     (hdeg_lo : f.natDegree ≤ (u * f + (1 + X) * f.derivative).natDegree)
     (hdeg_hi : (u * f + (1 + X) * f.derivative).natDegree ≤ f.natDegree + 1)
@@ -22,7 +21,6 @@ example {f u : ℝ[X]}
     StrictInterl f (u * f + (1 + X) * f.derivative) := by
   rr_mw_derivative_sign_root_upper using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -31,7 +29,6 @@ example {f u : ℝ[X]}
 
 example {f u : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hc : 0 ≤ c)
     (hroots_le_neg_one : ∀ r, f.IsRoot r → r ≤ -1)
     (hdeg_lo :
@@ -46,7 +43,6 @@ example {f u : ℝ[X]} {c : ℝ}
     StrictInterl f (u * f + (-(C c) * X * (1 + X)) * f.derivative) := by
   rr_mw_derivative_neg_X_one_add_outer using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -56,7 +52,6 @@ example {f u : ℝ[X]} {c : ℝ}
 
 example {f u : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hroots_le_neg_one : ∀ r, f.IsRoot r → r ≤ -1)
     (hdeg_lo :
       f.natDegree ≤
@@ -71,7 +66,6 @@ example {f u : ℝ[X]}
     StrictInterl f (u * f + (-(C ((3 : ℝ) + 1)) * X * (1 + X)) * f.derivative) := by
   rr_mw_derivative_neg_X_one_add_outer_auto using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -80,7 +74,6 @@ example {f u : ℝ[X]}
 
 example {f u : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hc : 0 ≤ c)
     (hroots_le_neg_one : ∀ r, f.IsRoot r → r ≤ -1)
     (hdeg_lo : f.natDegree ≤ (u * f + (C c * (1 + X)) * f.derivative).natDegree)
@@ -91,7 +84,6 @@ example {f u : ℝ[X]} {c : ℝ}
     StrictInterl f (u * f + (C c * (1 + X)) * f.derivative) := by
   rr_mw_derivative_sign_root_upper using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -100,7 +92,6 @@ example {f u : ℝ[X]} {c : ℝ}
 
 example {f u : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hroots_le_one : ∀ r, f.IsRoot r → r ≤ 1)
     (hdeg_lo : f.natDegree ≤ (u * f + (X - 1) * f.derivative).natDegree)
     (hdeg_hi : (u * f + (X - 1) * f.derivative).natDegree ≤ f.natDegree + 1)
@@ -109,7 +100,6 @@ example {f u : ℝ[X]}
     StrictInterl f (u * f + (X - 1) * f.derivative) := by
   rr_mw_derivative_sign_root_upper using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -118,7 +108,6 @@ example {f u : ℝ[X]}
 
 example {f u : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hc : 0 ≤ c)
     (hroots_le_one : ∀ r, f.IsRoot r → r ≤ 1)
     (hdeg_lo : f.natDegree ≤ (u * f + (C c * (X - 1)) * f.derivative).natDegree)
@@ -129,7 +118,6 @@ example {f u : ℝ[X]} {c : ℝ}
     StrictInterl f (u * f + (C c * (X - 1)) * f.derivative) := by
   rr_mw_derivative_sign_root_upper using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -138,7 +126,6 @@ example {f u : ℝ[X]} {c : ℝ}
 
 example {f u : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hroots_nonpos : ∀ r, f.IsRoot r → r ≤ 0)
     (hdeg_lo : f.natDegree ≤ (u * f + (X * (1 - X) ^ 2) * f.derivative).natDegree)
     (hdeg_hi :
@@ -148,7 +135,6 @@ example {f u : ℝ[X]}
     StrictInterl f (u * f + (X * (1 - X) ^ 2) * f.derivative) := by
   rr_mw_derivative_sign_roots_nonpos using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -157,7 +143,6 @@ example {f u : ℝ[X]}
 
 example {f u : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hroot_lo : ∀ r, f.IsRoot r → -1 ≤ r)
     (hroot_hi : ∀ r, f.IsRoot r → r ≤ 0)
     (hdeg_lo :
@@ -171,7 +156,6 @@ example {f u : ℝ[X]}
     StrictInterl f (u * f + (X * (1 - X) * (1 + X)) * f.derivative) := by
   rr_mw_derivative_sign_window using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,

@@ -20,7 +20,6 @@ example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff
@@ -42,7 +41,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     root_nonpos := hroots_nonpos,
     recurrence := hrec,
@@ -89,7 +87,6 @@ example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff
@@ -111,7 +108,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     root_nonpos := hroots_nonpos,
     recurrence := hrec,
@@ -158,7 +154,6 @@ example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff
@@ -183,7 +178,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     root_nonpos := hroots_nonpos,
     recurrence := hrec,
@@ -196,7 +190,6 @@ example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff
@@ -221,7 +214,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     root_nonpos := hroots_nonpos,
     recurrence := hrec,
@@ -234,7 +226,6 @@ example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff
@@ -259,7 +250,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     root_nonpos := hroots_nonpos,
     recurrence := hrec,
@@ -272,7 +262,6 @@ example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff
@@ -297,7 +286,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     root_nonpos := hroots_nonpos,
     recurrence := hrec,
@@ -310,7 +298,6 @@ example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff
@@ -335,7 +322,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     root_nonpos := hroots_nonpos,
     recurrence := hrec,
@@ -348,7 +334,6 @@ example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff
@@ -373,7 +358,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     root_nonpos := hroots_nonpos,
     recurrence := hrec,
@@ -386,7 +370,6 @@ example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots_le_neg_one : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -1)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff
@@ -408,7 +391,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     root_upper := hroots_le_neg_one,
     recurrence := hrec,
@@ -421,7 +403,6 @@ example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ r)
     (hinner_neg : ∀ n : Nat,
       HasPosLeadingCoeff
@@ -443,7 +424,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     inner_neg_lc := hinner_neg,
     root_nonneg := hroots_nonneg,
     recurrence := hrec,
@@ -456,7 +436,6 @@ example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroots_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ r)
     (hinner_neg : ∀ n : Nat,
       HasPosLeadingCoeff
@@ -481,7 +460,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     inner_neg_lc := hinner_neg,
     root_nonneg := hroots_nonneg,
     recurrence := hrec,
