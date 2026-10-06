@@ -1,4 +1,4 @@
-import RealRooted.MaWang.Weak.SameDegree
+import RealRooted.MaWang.Weak.Regularization
 
 open Polynomial Filter
 

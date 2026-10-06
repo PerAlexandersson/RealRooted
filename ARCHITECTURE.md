@@ -1211,8 +1211,8 @@ selected large application proofs and case-analysis modules.
 `CountBounds` owns the list-counting endpoint, `StrictSigns.RootSigns` the
 factor-sign algebra, `StrictSigns.Assembly` the strict root construction,
 `Strong` the strict mixed-sign consequences, and `Weak.Regularization`,
-`Weak.SameDegree`, `Weak.Successor`, and `Weak.Endpoint` the weak-sign
-perturbation and degree cases. `Weak.DerivativeSign` owns the simple-root
+`Weak.Successor`, and `Weak.Endpoint` the weak-sign perturbation and degree
+cases. `Weak.DerivativeSign` owns the simple-root
 criterion that uses `f'` as the interlacer of `f`; `Weak.Endpoint` restates its
 theorem through `LiuWang.General`. Former file-private plumbing is shared only
 within `RealRooted.MaWangInternal`; all established public declarations retain
