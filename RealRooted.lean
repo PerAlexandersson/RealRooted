@@ -1520,3 +1520,6 @@ import RealRooted.MultivariateStability.Inversion
 import RealRooted.Challenges.MaWangLiuWang
 import RealRooted.Challenges.WangYeh
 import RealRooted.Challenges.SturmSequenceFamilies
+import RealRooted.Applications.PeakPolynomials.HitPolynomials
+import RealRooted.Applications.PeakPolynomials.PeakInduction
+import RealRooted.Challenges.PeakPolynomials
