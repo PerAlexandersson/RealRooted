@@ -1,6 +1,7 @@
 import RealRooted.DeterminantalStability
 import RealRooted.HomogeneousComponentStability
 import RealRooted.Hyperbolicity
+import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.RayleighConverse
 import RealRooted.MultivariateStability.SamePhase
 
@@ -40,6 +41,11 @@ module = "RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic"
 label = "Hyperbolic in a direction"
 
 [[definitions]]
+name = "RealRooted.invertVariable"
+module = "RealRooted.MultivariateStability.Inversion"
+label = "Inversion z^d P(−1/z) in one variable"
+
+[[definitions]]
 name = "RealRooted.detPencil"
 module = "RealRooted.DeterminantalStability"
 label = "Determinant of a linear matrix pencil"
@@ -74,6 +80,18 @@ label = "The top homogeneous component of a real stable polynomial is real stabl
 [[theorems]]
 name = "RealRooted.Challenges.RealStability.samePhaseStable"
 label = "Real stable polynomials are same-phase stable"
+
+[[theorems]]
+name = "RealRooted.Challenges.RealStability.isUpperHalfPlaneStable_reflect_comp_neg_X"
+label = "Inversion preserves stability of univariate polynomials"
+
+[[theorems]]
+name = "RealRooted.Challenges.RealStability.mvUpperHalfPlaneStable_invertVariable"
+label = "Inversion in one variable preserves stability"
+
+[[theorems]]
+name = "RealRooted.Challenges.RealStability.mvRealStable_invertVariable"
+label = "Inversion in one variable preserves real stability"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -116,6 +134,13 @@ part of degree $d$, are real stable.
 $w \in \mathbb{R}^n$ with all $w_i \geq 0$, the univariate polynomial
 $P(w_1 t, \dotsc, w_n t)$ is real-rooted.
 
+**Theorem** (inversion). Let $P$ be a stable polynomial in a variable $z_0$
+and a family of further variables $z' = (z_i)_{i \in \tau}$, of degree at most
+$d$ in $z_0$. Then $z_0^d P(-1/z_0, z')$ is stable. If $P$ is real stable,
+then so is this inversion. Without further variables: if $p$ has no zeros in
+the open upper half-plane and $\deg p \leq d$, then neither has
+$z^d p(-1/z)$.
+
 ## Proof idea
 
 For the Rayleigh criterion, the forward direction reduces each inequality to
@@ -136,6 +161,11 @@ component is the endpoint of a homotopy of stable polynomials, and root
 continuity keeps its line restrictions real-rooted. Same-phase stability is
 the case $x = 0$, together with a limit for weights that vanish.
 
+Inversion works because $z \mapsto -1/z$ maps the open upper half-plane to
+itself: $\operatorname{Im}(-1/z) = \operatorname{Im} z / |z|^2$. For
+$z_0 \neq 0$ the inverted polynomial evaluates to $z_0^d$ times a value of
+$P$ at a point in the product of upper half-planes.
+
 ## References
 
 P. Brändén, “Polynomials with the half-plane property and matroid theory,”
@@ -150,8 +180,9 @@ on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 This module exposes the multiaffine Rayleigh criterion, determinantal
-stability, hyperbolicity of homogeneous real stable polynomials, and the
-homogenization, top-component and same-phase consequences.
+stability, hyperbolicity of homogeneous real stable polynomials, the
+homogenization, top-component and same-phase consequences, and inversion in
+one variable.
 -/
 
 open Polynomial
@@ -213,6 +244,26 @@ theorem mvRealStable_homogeneousComponent_totalDegree {σ : Type*}
 theorem samePhaseStable {σ : Type*} {P : MvPolynomial σ ℝ} (hP : MvRealStable P) :
     SamePhaseStable P :=
   hP.samePhaseStable
+
+/-- Inversion `p(z) ↦ z^d p(-1/z)` preserves upper-half-plane stability when
+`p` has degree at most `d`. -/
+theorem isUpperHalfPlaneStable_reflect_comp_neg_X {p : ℂ[X]} {d : ℕ} (hd : p.natDegree ≤ d)
+    (hp : IsUpperHalfPlaneStable p) :
+    IsUpperHalfPlaneStable (reflect d (p.comp (-X))) :=
+  hp.reflect_comp_neg_X hd
+
+/-- Inversion `P ↦ z^d P(-1/z, …)` in the variable `none` preserves stability
+when `P` has degree at most `d` in that variable. -/
+theorem mvUpperHalfPlaneStable_invertVariable {τ : Type*} {P : MvPolynomial (Option τ) ℂ}
+    {d : ℕ} (hd : P.degreeOf none ≤ d) (hP : MvUpperHalfPlaneStable P) :
+    MvUpperHalfPlaneStable (invertVariable d P) :=
+  hP.invertVariable hd
+
+/-- Inversion in the variable `none` preserves real stability. -/
+theorem mvRealStable_invertVariable {τ : Type*} {P : MvPolynomial (Option τ) ℝ} {d : ℕ}
+    (hd : P.degreeOf none ≤ d) (hP : MvRealStable P) :
+    MvRealStable (invertVariable d P) :=
+  hP.invertVariable hd
 
 end RealStability
 end Challenges

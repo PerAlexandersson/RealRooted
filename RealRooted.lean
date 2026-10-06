@@ -1517,3 +1517,5 @@ import RealRooted.Challenges.GammaTransform
 import RealRooted.Challenges.HeilmannLieb
 import RealRooted.Challenges.GraceApolarity
 import RealRooted.Challenges.RealStability
+import RealRooted.BorceaBranden.Applications.PolarizationIff
+import RealRooted.MultivariateStability.Inversion
