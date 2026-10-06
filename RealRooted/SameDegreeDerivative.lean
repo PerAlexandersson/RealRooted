@@ -168,14 +168,6 @@ theorem roots_derivative_mem_Ioc_of_roots_mem_Ioc {p : ℝ[X]} {u v : ℝ}
   fun r hr => ⟨lt_roots_derivative_of_lt_roots hp hdeg (fun s hs => (h s hs).1) r hr,
     roots_derivative_le_of_roots_le hp hdeg (fun s hs => (h s hs).2) r hr⟩
 
-/-- **Same-degree bookkeeping.** Differentiation preserves a common natural
-degree: if `g` and `f` share a degree, so do their derivatives.  This is the
-degree-equality hypothesis needed to iterate the same-degree derivative route
-(e.g. `PosComboRealRooted.derivative`). -/
-theorem natDegree_derivative_eq_of_natDegree_eq {f g : ℝ[X]}
-    (hdeg : g.natDegree = f.natDegree) :
-    g.derivative.natDegree = f.derivative.natDegree := by simp_all
-
 namespace PosComboRealRooted
 
 /-- Differentiation preserves positive-combination real-rootedness for a
@@ -210,144 +202,12 @@ theorem derivative
     Polynomial.derivative_ne_zero.mpr (by lia)
   rcases derivative_eq_zero_or_ne_zero_and_splits hp_splits with hzero | hsplit <;> simp_all
 
-/-- Call-site-order variant taking degree equality as `f.natDegree = g.natDegree`. -/
-theorem derivative_of_natDegree_eq
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : f.natDegree = g.natDegree) (hpos : 1 ≤ f.natDegree) :
-    PosComboRealRooted f.derivative g.derivative :=
-  hfg.derivative hf hg hdeg.symm hpos
-
 end PosComboRealRooted
-
-/-- Explicit-binder applied form of `PosComboRealRooted.derivative` with the two
-polynomials as explicit arguments and degree equality in the call-site order
-`f.natDegree = g.natDegree`.  Handy at call sites that want to pass everything
-positionally without introducing implicit-argument holes. -/
-theorem posComboRealRooted_derivative_explicit
-    (f g : ℝ[X]) (hfg : PosComboRealRooted f g)
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : f.natDegree = g.natDegree) (hpos : 1 ≤ f.natDegree) :
-    PosComboRealRooted f.derivative g.derivative :=
-  hfg.derivative hf hg hdeg.symm hpos
-
-/-- **Iteration bundle for the same-degree derivative route.** From a
-same-degree positive-combination pair with positive leading coefficients and
-positive common degree, differentiation returns another such pair *together
-with* the hypotheses needed to differentiate again: positive leading
-coefficients of both derivatives and equality of their degrees.  This packages
-the repeated endpoint-repair step so callers avoid re-deriving the bookkeeping
-by hand. -/
-theorem PosComboRealRooted.derivative_bundle
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) (hpos : 1 ≤ f.natDegree) :
-    PosComboRealRooted f.derivative g.derivative ∧
-      HasPosLeadingCoeff f.derivative ∧ HasPosLeadingCoeff g.derivative ∧
-      g.derivative.natDegree = f.derivative.natDegree :=
-  ⟨hfg.derivative hf hg hdeg hpos,
-   hf.derivative (by lia),
-   hg.derivative (by grind),
-   natDegree_derivative_eq_of_natDegree_eq hdeg⟩
-
-/-! ## Two-step derivative iteration support -/
 
 /-- Splitting is preserved by one differentiation in degree at least two. -/
 theorem splits_derivative_of_two_le_natDegree {p : ℝ[X]}
     (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
     p.derivative.Splits :=
   (derivative_interlaces hp hdeg).2.1.2
-
-/-- Degree lower bound transported across one differentiation. -/
-theorem le_natDegree_derivative_of_succ_le_natDegree {p : ℝ[X]} {n : ℕ}
-    (hdeg : n + 1 ≤ p.natDegree) :
-    n ≤ p.derivative.natDegree := by
-  rw [p.natDegree_derivative]
-  lia
-
-/-- Two-step derivative bundle for the same-degree positive-combination route. -/
-theorem PosComboRealRooted.derivative_bundle_two
-    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) (hpos : 2 ≤ f.natDegree) :
-    PosComboRealRooted f.derivative.derivative g.derivative.derivative ∧
-      HasPosLeadingCoeff f.derivative.derivative ∧
-      HasPosLeadingCoeff g.derivative.derivative ∧
-      g.derivative.derivative.natDegree = f.derivative.derivative.natDegree := by
-  obtain ⟨hfg₁, hf₁, hg₁, hdeg₁⟩ := hfg.derivative_bundle hf hg hdeg (by lia)
-  have hpos₁ : 1 ≤ f.derivative.natDegree := by
-    rw [f.natDegree_derivative]
-    lia
-  exact hfg₁.derivative_bundle hf₁ hg₁ hdeg₁ hpos₁
-
-/-- Closed-interval preservation for a derivative pair. -/
-theorem roots_derivative_mem_Icc_of_roots_mem_Icc_pair {f g : ℝ[X]} {u v : ℝ}
-    (hf : f.Splits) (hg : g.Splits)
-    (hfdeg : 2 ≤ f.natDegree) (hgdeg : 2 ≤ g.natDegree)
-    (hfr : ∀ r ∈ f.roots, r ∈ Set.Icc u v)
-    (hgr : ∀ r ∈ g.roots, r ∈ Set.Icc u v) :
-    (∀ r ∈ f.derivative.roots, r ∈ Set.Icc u v) ∧
-      (∀ r ∈ g.derivative.roots, r ∈ Set.Icc u v) :=
-  ⟨roots_derivative_mem_Icc_of_roots_mem_Icc hf hfdeg hfr,
-    roots_derivative_mem_Icc_of_roots_mem_Icc hg hgdeg hgr⟩
-
-/-- Open-interval preservation for a derivative pair. -/
-theorem roots_derivative_mem_Ioo_of_roots_mem_Ioo_pair {f g : ℝ[X]} {u v : ℝ}
-    (hf : f.Splits) (hg : g.Splits)
-    (hfdeg : 2 ≤ f.natDegree) (hgdeg : 2 ≤ g.natDegree)
-    (hfr : ∀ r ∈ f.roots, r ∈ Set.Ioo u v)
-    (hgr : ∀ r ∈ g.roots, r ∈ Set.Ioo u v) :
-    (∀ r ∈ f.derivative.roots, r ∈ Set.Ioo u v) ∧
-      (∀ r ∈ g.derivative.roots, r ∈ Set.Ioo u v) :=
-  ⟨roots_derivative_mem_Ioo_of_roots_mem_Ioo hf hfdeg hfr,
-    roots_derivative_mem_Ioo_of_roots_mem_Ioo hg hgdeg hgr⟩
-
-/-- Closed lower-ray preservation for a derivative pair. -/
-theorem roots_derivative_mem_Ici_of_roots_mem_Ici_pair {f g : ℝ[X]} {u : ℝ}
-    (hf : f.Splits) (hg : g.Splits)
-    (hfdeg : 2 ≤ f.natDegree) (hgdeg : 2 ≤ g.natDegree)
-    (hfr : ∀ r ∈ f.roots, r ∈ Set.Ici u)
-    (hgr : ∀ r ∈ g.roots, r ∈ Set.Ici u) :
-    (∀ r ∈ f.derivative.roots, r ∈ Set.Ici u) ∧
-      (∀ r ∈ g.derivative.roots, r ∈ Set.Ici u) :=
-  ⟨roots_derivative_mem_Ici_of_roots_mem_Ici hf hfdeg hfr,
-    roots_derivative_mem_Ici_of_roots_mem_Ici hg hgdeg hgr⟩
-
-/-- Closed upper-ray preservation for a derivative pair. -/
-theorem roots_derivative_mem_Iic_of_roots_mem_Iic_pair {f g : ℝ[X]} {v : ℝ}
-    (hf : f.Splits) (hg : g.Splits)
-    (hfdeg : 2 ≤ f.natDegree) (hgdeg : 2 ≤ g.natDegree)
-    (hfr : ∀ r ∈ f.roots, r ∈ Set.Iic v)
-    (hgr : ∀ r ∈ g.roots, r ∈ Set.Iic v) :
-    (∀ r ∈ f.derivative.roots, r ∈ Set.Iic v) ∧
-      (∀ r ∈ g.derivative.roots, r ∈ Set.Iic v) :=
-  ⟨roots_derivative_mem_Iic_of_roots_mem_Iic hf hfdeg hfr,
-    roots_derivative_mem_Iic_of_roots_mem_Iic hg hgdeg hgr⟩
-
-/-- Closed-interval preservation across two differentiations. -/
-theorem roots_iterate_derivative_two_mem_Icc_of_roots_mem_Icc {p : ℝ[X]} {u v : ℝ}
-    (hp : p.Splits) (hdeg : 3 ≤ p.natDegree)
-    (h : ∀ r ∈ p.roots, r ∈ Set.Icc u v) :
-    ∀ r ∈ p.derivative.derivative.roots, r ∈ Set.Icc u v := by
-  have hder_splits : p.derivative.Splits :=
-    splits_derivative_of_two_le_natDegree hp (by lia)
-  have hder_deg : 2 ≤ p.derivative.natDegree := by
-    rw [p.natDegree_derivative]
-    lia
-  exact roots_derivative_mem_Icc_of_roots_mem_Icc hder_splits hder_deg
-    (roots_derivative_mem_Icc_of_roots_mem_Icc hp (by lia) h)
-
-/-- Open-interval preservation across two differentiations. -/
-theorem roots_iterate_derivative_two_mem_Ioo_of_roots_mem_Ioo {p : ℝ[X]} {u v : ℝ}
-    (hp : p.Splits) (hdeg : 3 ≤ p.natDegree)
-    (h : ∀ r ∈ p.roots, r ∈ Set.Ioo u v) :
-    ∀ r ∈ p.derivative.derivative.roots, r ∈ Set.Ioo u v := by
-  have hder_splits : p.derivative.Splits :=
-    splits_derivative_of_two_le_natDegree hp (by lia)
-  have hder_deg : 2 ≤ p.derivative.natDegree := by
-    rw [p.natDegree_derivative]
-    lia
-  exact roots_derivative_mem_Ioo_of_roots_mem_Ioo hder_splits hder_deg
-    (roots_derivative_mem_Ioo_of_roots_mem_Ioo hp (by lia) h)
 
 end RealRooted

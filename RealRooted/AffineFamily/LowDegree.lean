@@ -1,8 +1,8 @@
 /-
 # Affine-family degree and low-degree reduction
 
-Degree control, root-zero reductions, and the explicit low-degree branch of
-the affine-family converse.
+Degree control and the explicit low-degree branch of the affine-family
+converse.
 -/
 import RealRooted.ProductFamily
 import RealRooted.AffineDerivative
@@ -205,136 +205,6 @@ protected lemma AffineFamily.natDegree_cases_of_affine_family
       hpos_pair hg_ne_pair hXf_ne_pair hg_nonneg_pair hXf_nonneg_pair
   rw [natDegree_mul X_ne_zero hf0, natDegree_X] at hdeg_pair_hi
   lia
-
-private lemma right_pair_root_zero_reduction_data
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (hg_root0 : g.IsRoot 0) :
-    ∃ qg,
-      g = X * qg ∧
-      HasNonnegCoeffs qg ∧
-      qg ≠ 0 ∧
-      HasPosLeadingCoeff qg ∧
-      PosComboRealRooted qg f ∧
-      qg.natDegree ≤ f.natDegree ∧
-      f.natDegree ≤ qg.natDegree + 1 := by
-  have hpair₀ :
-      PosComboRealRooted g (X * f) ∧
-      HasNonnegCoeffs g ∧
-      HasNonnegCoeffs (X * f) ∧
-      g ≠ 0 ∧
-      X * f ≠ 0 ∧
-      HasPosLeadingCoeff g ∧
-      HasPosLeadingCoeff (X * f) :=
-    AffineFamily.affine_family_right_pair_data hfnn hgnn hf0 hg0 haff
-  rcases hpair₀ with
-    ⟨hpos_pair, hg_nonneg_pair, hXf_nonneg_pair, hg_ne_pair,
-      hXf_ne_pair, _, _⟩
-  obtain ⟨qg, hqg₀⟩ := dvd_iff_isRoot.mpr hg_root0
-  have hqg : g = X * qg := by grind
-  have hqg_ne : qg ≠ 0 := by simp_all
-  have hqg_nonneg : HasNonnegCoeffs qg := by
-    intro n
-    have hcoeff := hg_nonneg_pair (n + 1)
-    simp_all
-  have hqg_pos : HasPosLeadingCoeff qg := hqg_nonneg.pos_leadingCoeff hqg_ne
-  have hpos_q : PosComboRealRooted qg f := by
-    have hX_pair : PosComboRealRooted (X * qg) (X * f) := by lia
-    intro lam μ hlam hμ
-    have hEq :
-        C lam * (X * qg) + C μ * (X * f) = X * (C lam * qg + C μ * f) := by
-      ring
-    have hrr : ((X * (C lam * qg + C μ * f)) ≠ 0 ∧ (X * (C lam * qg + C μ * f)).Splits) := by
-      simpa [hEq] using hX_pair hlam hμ
-    have hcombo_ne : C lam * qg + C μ * f ≠ 0 := by grind
-    exact isRealRooted_of_dvd hrr.1 hrr.2 hcombo_ne ⟨X, by grind⟩
-  have hdeg_right : g.natDegree ≤ f.natDegree + 1 :=
-    AffineFamily.natDegree_right_le_succ_of_affine_family hf0 hg0 hfnn hgnn haff
-  have hdeg_q_lo : qg.natDegree ≤ f.natDegree := by simp_all
-  have hdeg_q_hi : f.natDegree ≤ qg.natDegree + 1 := by
-    have hdeg_pair_hi : (X * f).natDegree ≤ g.natDegree + 1 :=
-      AffineFamily.natDegree_right_le_succ_of_posComboRealRooted_nonneg
-        hpos_pair hg_ne_pair hXf_ne_pair hg_nonneg_pair hXf_nonneg_pair
-    simp_all
-  grind
-
-/-- If `r < 0` is a root of the succ-degree affine right-hand polynomial `g`,
-specializing the affine family to the line `t = -s r` factors out `X - C r`
-and leaves a same-degree positive-combination family for the quotient `qg`. -/
-private lemma neg_root_quotient_posCombo_data_of_affine_family_succDegree
-    {f g : ℝ[X]} {r : ℝ}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (hsucc : g.natDegree = f.natDegree + 1)
-    (hgr : g.IsRoot r) (hr_neg : r < 0) :
-    ∃ qg,
-      g = (X - C r) * qg ∧
-      qg ≠ 0 ∧ (qg ≠ 0 ∧ qg.Splits) ∧
-      HasPosLeadingCoeff qg ∧
-      qg.natDegree = f.natDegree ∧
-      PosComboRealRooted qg f := by
-  have hg_rr : (g ≠ 0 ∧ g.Splits) :=
-    AffineFamily.isRealRooted_right_of_affine_family_succDegree
-      hf0 hg0 hfnn hgnn haff hsucc.symm
-  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
-  obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hgr
-  have hqg_ne : qg ≠ 0 := by simp_all
-  have hqg_rr : (qg ≠ 0 ∧ qg.Splits) :=
-    isRealRooted_of_dvd hg_rr.1 hg_rr.2 hqg_ne (by simp_all)
-  have hqg_pos : HasPosLeadingCoeff qg :=
-    hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hqg] using hg_pos)
-  have hqg_deg : qg.natDegree = f.natDegree := by
-    rw [hqg, natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hsucc
-    lia
-  have hpos_q_left : PosComboRealRooted f qg := by
-    refine PosComboRealRooted.of_add_left ?_
-    intro s hs
-    have hbase :
-        ((((C s * X + C (-s * r)) * f) + g) ≠ 0 ∧ (((C s * X + C (-s * r)) * f) + g).Splits) :=
-      haff hs (by nlinarith)
-    have hlin : C s * (X - C r) = C s * X + C (-s * r) := by grind
-    have hEq :
-        (((C s * X + C (-s * r)) * f) + g) =
-          (X - C r) * (C s * f + qg) := by
-      grind
-    have hcombo_ne : C s * f + qg ≠ 0 := by grind
-    exact
-      isRealRooted_of_dvd hbase.1 hbase.2 hcombo_ne
-        ⟨X - C r, by
-          grind
-        ⟩
-  exact ⟨qg, hqg, hqg_ne, hqg_rr, hqg_pos, hqg_deg, hpos_q_left.comm⟩
-
-private lemma strictInterl_right_pair_sameDegree_of_sign_data
-    {f g : ℝ[X]}
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hgnn : HasNonnegCoeffs g)
-    (hXf_pos : HasPosLeadingCoeff (X * f))
-    (hdeg : (X * f).natDegree = g.natDegree)
-    (hdeg_pos : 1 ≤ g.natDegree)
-    (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r)
-    (hsign :
-      let rs := g.roots.sort (· ≤ ·)
-      ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
-        rs = pre ++ r₁ :: r₂ :: rest →
-        (X * f).eval r₁ * (X * f).eval r₂ < 0) :
-    StrictInterl g (X * f) := by
-  have hright :
-      let rs := g.roots.sort (· ≤ ·)
-      ∃ uR, (X * f).IsRoot uR ∧ ∀ r ∈ rs, r < uR := by
-    simpa using exists_strict_right_root_of_X_mul_of_no_common hg_ne hg_splits hgnn hno
-  exact
-    PosComboRealRooted.strictInterl_same_of_root_sign_data
-      (f := g) (g := X * f) hg_ne hg_splits hXf_pos hdeg hdeg_pos hsign hright
 
 private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
     {f g : ℝ[X]}
@@ -604,19 +474,5 @@ protected lemma AffineFamily.isRealRooted_X_mul_of_affine_family
   · lia
   · assumption
   · lia
-
-/-- Left-endpoint form of the affine-family converse: the two-parameter
-positive affine family already forces the lower member `f` to be real-rooted. -/
-theorem isRealRooted_left_of_affine_family_nonneg
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    (f ≠ 0 ∧ f.Splits) := by
-  have hXf := AffineFamily.isRealRooted_X_mul_of_affine_family hf0 hg0 hfnn hgnn haff
-  exact isRealRooted_of_X_mul hXf.1 hXf.2
 
 end RealRooted
