@@ -1517,3 +1517,9 @@ import RealRooted.Challenges.GammaTransform
 import RealRooted.Challenges.HeilmannLieb
 import RealRooted.Challenges.GraceApolarity
 import RealRooted.Challenges.RealStability
+import RealRooted.CombinatorialExamples.PathPowerIndependence
+import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+import RealRooted.Mathlib.Algebra.Polynomial.Taylor
+import RealRooted.Mathlib.RingTheory.Polynomial.Resultant.Basic
+import RealRooted.RootContinuity.Path
+import RealRooted.SimpleRootLogDerivative
