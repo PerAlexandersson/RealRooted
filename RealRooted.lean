@@ -1552,3 +1552,4 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.WeightedResidueSum
 import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.Bezoutian
 import RealRooted.Bezoutian.Successor
+import RealRooted.Challenges.SmallInterlacingMatrices
