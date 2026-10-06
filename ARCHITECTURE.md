@@ -37,6 +37,10 @@ unless a documented compatibility module is temporarily bridging a migration.
 6. **Applications and examples.** Named combinatorial families, challenges,
    benchmarks, and tactic regression tests. These may use the preceding layers
    but should not become dependencies of the reusable theorem library.
+   For example, `Applications.PeakPolynomials` holds the abstract peak-family
+   induction for Ferrers boards (`PeakInduction`) and the conditional hit
+   polynomial step (`HitPolynomials`), on top of `ShiftLemma`, `PosCombo`, and
+   `WagnerX`; `Challenges.PeakPolynomials` is its catalog facade.
 
 The current tree predates these boundaries. In particular, a few theorem and
 example modules still import tactic or challenge modules. Those are migration
