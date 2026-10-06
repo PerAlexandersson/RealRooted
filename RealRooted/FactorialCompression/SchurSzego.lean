@@ -33,7 +33,7 @@ theorem isPFPolynomial_of_roots_neg {p : ℝ[X]}
 
 /-- Only the real-rootedness component of Lemma 2.2, allowing zero output.
 Repeated roots of the multiplier polynomial p are allowed. -/
-theorem schurSzegoComp_eq_zero_or_splits_of_roots_neg {N : ℕ} {p f : ℝ[X]}
+private theorem schurSzegoComp_eq_zero_or_splits_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (hpdegree : p.natDegree ≤ N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
@@ -42,18 +42,6 @@ theorem schurSzegoComp_eq_zero_or_splits_of_roots_neg {N : ℕ} {p f : ℝ[X]}
   exact schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
     (isPFPolynomial_of_roots_neg hpsplit hppos hproots)
     hpdegree hfdegree hfsplit
-
-theorem schurSzegoComp_splits_of_roots_neg {N : ℕ} {p f : ℝ[X]}
-    (hpdegree : p.natDegree ≤ N)
-    (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
-    (hproots : ∀ r ∈ p.roots, r < 0)
-    (hfdegree : f.natDegree ≤ N) (hfsplit : f.Splits) :
-    (schurSzegoComp N p f).Splits := by
-  rcases schurSzegoComp_eq_zero_or_splits_of_roots_neg hpdegree hpsplit hppos hproots
-      hfdegree hfsplit with hz | hs
-  · rw [hz]
-    simp
-  · exact hs
 
 theorem coeff_zero_pos_of_roots_neg {p : ℝ[X]}
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
@@ -70,7 +58,7 @@ theorem schurSzegoComp_coeff_zero_pos {N : ℕ} {p f : ℝ[X]}
   rw [coeff_schurSzegoComp]
   simpa using mul_pos hpzero hfzero
 
-theorem coeff_pos_of_roots_neg {p : ℝ[X]}
+private theorem coeff_pos_of_roots_neg {p : ℝ[X]}
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0) {k : ℕ} (hk : k ≤ p.natDegree) :
     0 < p.coeff k := by
@@ -89,7 +77,7 @@ theorem coeff_pos_of_roots_neg {p : ℝ[X]}
       (lt_of_le_of_ne hk hkdegree) le_rfl hpzero.ne' hpdegree
   exact lt_of_le_of_ne (hppf.hasNonnegCoeffs k) (Ne.symm hkinternal)
 
-theorem schurSzegoComp_ne_zero_of_roots_neg {N : ℕ} {p f : ℝ[X]}
+private theorem schurSzegoComp_ne_zero_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (hpdegree : p.natDegree = N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
@@ -107,7 +95,7 @@ theorem schurSzegoComp_ne_zero_of_roots_neg {N : ℕ} {p f : ℝ[X]}
   rw [coeff_schurSzegoComp, if_pos hfdegree, coeff_zero] at hcoeff
   exact (div_ne_zero (mul_ne_zero hpc hfc) hchoose) hcoeff
 
-theorem schurSzegoComp_add_C (N : ℕ) (p f : ℝ[X]) (u : ℝ) :
+private theorem schurSzegoComp_add_C (N : ℕ) (p f : ℝ[X]) (u : ℝ) :
     schurSzegoComp N p (f + C u) =
       schurSzegoComp N p f + C (p.coeff 0 * u) := by
   ext k
@@ -119,7 +107,7 @@ theorem schurSzegoComp_add_C (N : ℕ) (p f : ℝ[X]) (u : ℝ) :
 /-- A general simple split polynomial of positive degree admits two-sided
 constant perturbations. This openness step is established
 using the upstream local root-branch theorem. -/
-theorem exists_pos_add_C_splits {f : ℝ[X]}
+private theorem exists_pos_add_C_splits {f : ℝ[X]}
     (hfdegree : f.natDegree ≠ 0) (hfsplit : f.Splits)
     (hfsimple : HasSimpleRoots f) :
     ∃ ε : ℝ, 0 < ε ∧ (f + C ε).Splits ∧ (f + C (-ε)).Splits := by
@@ -149,7 +137,7 @@ theorem exists_pos_add_C_splits {f : ℝ[X]}
 
 /-- The simple-real-root component of Lemma 2.2. The multiplier p may have
 repeated negative roots, and f may have roots anywhere on the real line. -/
-theorem schurSzegoComp_hasSimpleRoots_of_roots_neg {N : ℕ} {p f : ℝ[X]}
+private theorem schurSzegoComp_hasSimpleRoots_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (hpdegree : p.natDegree = N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
@@ -236,7 +224,7 @@ theorem schurSzegoComp_natDegree_of_roots_neg {N : ℕ} {p f : ℝ[X]}
         (leadingCoeff_ne_zero.mpr hfzero))
       (by exact_mod_cast (Nat.choose_pos hfdegree).ne')
 
-theorem schurSzegoComp_hasPosLeadingCoeff_of_roots_neg {N : ℕ} {p f : ℝ[X]}
+private theorem schurSzegoComp_hasPosLeadingCoeff_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (hpdegree : p.natDegree = N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
@@ -257,7 +245,7 @@ theorem schurSzegoComp_linear_combination (N : ℕ) (p f g : ℝ[X]) (α β : �
   simp only [schurSzegoComp_add_right, schurSzegoComp_C_mul_right]
 
 /-- Scalar Wronskian orientation identity for Schur--Szegő composition. -/
-theorem schurSzegoComp_wronskian_zero {N : ℕ} (hN : 1 ≤ N)
+private theorem schurSzegoComp_wronskian_zero {N : ℕ} (hN : 1 ≤ N)
     (p f g : ℝ[X]) :
     (Polynomial.wronskian (schurSzegoComp N p f) (schurSzegoComp N p g)).eval 0 =
       (p.coeff 0 * p.coeff 1 / (N : ℝ)) * (Polynomial.wronskian f g).eval 0 := by
