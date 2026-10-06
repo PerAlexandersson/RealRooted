@@ -1532,3 +1532,5 @@ import RealRooted.CombinatorialExamples.BigDescents321.Basic
 import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.Certificates
 import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly
 import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.Literals
+import RealRooted.Favard.PathEnvelope
+import RealRooted.Mathlib.RingTheory.Polynomial.Chebyshev.Bounds
