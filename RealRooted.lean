@@ -1550,3 +1550,4 @@ import RealRooted.CombinatorialExamples.BigDescents321.Neighbor
 import RealRooted.CombinatorialExamples.BigDescents321.BottomMoments
 import RealRooted.CombinatorialExamples.BigDescents321.Residual
 import RealRooted.CombinatorialExamples.BigDescents321.Functionals
+import RealRooted.CombinatorialExamples.BigDescents321.TopCoefficients
