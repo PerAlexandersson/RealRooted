@@ -1395,6 +1395,10 @@ import RealRooted.Challenges.JacobiPolynomials
 import RealRooted.Challenges.FiniteFreeConvolutions
 import RealRooted.Challenges.InterlacingClosure
 import RealRooted.Challenges.BrandenETransform
+import RealRooted.CombinatorialExamples.BigDescents321.Basic
+import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.Certificates
+import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly
+import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.Literals
 
 /-!
 # RealRooted production umbrella
