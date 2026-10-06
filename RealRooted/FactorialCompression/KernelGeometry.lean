@@ -2,12 +2,11 @@ import RealRooted.FactorialCompression.Compression
 import RealRooted.FactorialCompression.RootGeometry
 
 /-!
-# Exact kernel geometry for the final factorial-compression manuscript
+# Degree-changing kernel geometry
 
 The coefficients, degree, and strict root order are proved for all admissible
-levels `ell ≤ N` and all positive real parameters `a`. The root sign calculation
-uses the manuscript's derivative identity. The exceptional `N + ell = 1`
-case belongs to the main theorem's constant/linear argument.
+levels `ell ≤ N` and all positive real parameters `a`. The exceptional
+`N + ell = 1` case belongs to the main theorem's constant/linear argument.
 -/
 
 open Polynomial RealRooted
@@ -84,9 +83,9 @@ private theorem h_previous_root_ratio (r : ℕ) (hr : 2 ≤ r) (s : ℝ)
   rw [heval]
   field_simp
 
-/-- The full manuscript Lemma 3.3, including simplicity and strict negativity
+/-- The kernel geometry theorem, including simplicity and strict negativity
 of every kernel root. -/
-theorem kernel_strictRootGeometry (N ell : ℕ) (a : ℝ)
+theorem kernel_strict_root_geometry (N ell : ℕ) (a : ℝ)
     (hN : 1 ≤ N) (hell : ell ≤ N) (ha : 0 < a) (hm : 2 ≤ N + ell) :
     SimpleNegativeRoots (kernel N ell a) ∧
       StrictRootInterl (h (N + ell)) (kernel N ell a) := by
