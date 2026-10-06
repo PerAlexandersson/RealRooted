@@ -62,7 +62,7 @@ private theorem gammaTransform_succ_strictRootGeometry {d : ℕ} {γ δ : ℝ[X]
           exact mul_ne_zero (ne_of_gt hpair.2.1)
             (pow_ne_zero _ (by norm_num))
         exact hne hr.2
-    · exact hpair.noCommonRootPair (r / (1 + r) ^ 2)
+    · exact hpair.no_common_root_pair (r / (1 + r) ^ 2)
         ⟨isRoot_gamma_of_isRoot_gammaTransform hγbound hrcenter hr.1,
           isRoot_gamma_of_isRoot_gammaTransform hδbound hrcenter hr.2⟩
   have hTγnn : HasNonnegCoeffs (gammaTransform d γ) :=
@@ -93,7 +93,7 @@ private theorem gammaTransform_succ_strictRootGeometry {d : ℕ} {γ δ : ℝ[X]
   exact ⟨gammaTransform_natDegree_of_coeff_zero_ne (ne_of_gt hγ0), gammaTransform_natDegree_of_coeff_zero_ne (ne_of_gt hδ0),
     ⟨hweak.1.1, hweak.1.2, hsimp.1.roots_nodup, hTγnegative⟩,
     ⟨hweak.2.1.1, hweak.2.1.2, hsimp.2.roots_nodup, hTδnegative⟩,
-    strictRootInterl_of_strictInterl_of_noCommonRoot hweak
+    strictRootInterl_of_strictInterl_of_no_common_root hweak
       (hTγnn.pos_leadingCoeff hweak.1.1) (hTδnn.pos_leadingCoeff hweak.2.1.1) hno⟩
 
 
@@ -153,11 +153,11 @@ theorem gammaTransform_succ_geometry_of_strictInterl {n : ℕ} {A B : ℝ[X]} (h
   have hBstrong : SimpleNegativeRoots B :=
     ⟨hpair.2.1.1, hpair.2.1.2, hsimp.2.roots_nodup, hBneg⟩
   have hpairStrong : StrictRootInterl A B :=
-    strictRootInterl_of_strictInterl_of_noCommonRoot hpair hApos hBpos hno
+    strictRootInterl_of_strictInterl_of_no_common_root hpair hApos hBpos hno
   obtain ⟨hdeg₁, hdeg₂, hroot₁, hroot₂, hinter⟩ :=
     two_branch_lifting_strictRootGeometry hn hAdegree hBdegree hAstrong hBstrong
       hApos hBpos hpairStrong
   exact ⟨hdeg₁, hdeg₂, hroot₁.hasSimpleRoots, hroot₂.hasSimpleRoots,
-    hroot₁.2.2.2, hroot₂.2.2.2, hinter.toStrictInterl, hinter.noCommonRoot⟩
+    hroot₁.2.2.2, hroot₂.2.2.2, hinter.toStrictInterl, hinter.no_common_root⟩
 
 end RealRooted.FactorialCompression
