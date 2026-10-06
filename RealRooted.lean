@@ -1551,3 +1551,4 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Successor
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.WeightedResidueSum
 import RealRooted.Challenges.DecoEulerian
 import RealRooted.Hermite.PoulainInterlacing
+import RealRooted.Hadamard.FiniteReflection

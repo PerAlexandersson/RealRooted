@@ -1,6 +1,7 @@
 import RealRooted.GarloffWagner.Hadamard
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.Hadamard
+import RealRooted.Hadamard.FiniteReflection
 import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 
 /-!
@@ -48,6 +49,11 @@ isFiniteMultiplierSequence_iff_isPFPolynomial_jensenPolynomial"""
 label = "Finite Pólya–Schur theorem"
 
 [[theorems]]
+name = """RealRooted.Challenges.Hadamard.\
+isFiniteMultiplierSequence_iff_jensenPolynomial_roots_nonneg"""
+label = "Finite Pólya–Schur theorem, alternating signs"
+
+[[theorems]]
 name = "RealRooted.Challenges.Hadamard.interl_hadamardProduct_of_strictInterl"
 label = "Garloff–Wagner: Hadamard products preserve interlacing"
 
@@ -80,6 +86,15 @@ Pólya frequency sequences is again a Pólya frequency sequence. Equivalently,
 the entrywise product of their totally nonnegative Toeplitz matrices is
 totally nonnegative.
 
+**Finite Pólya–Schur theorem.** Fix $n \geq 0$ and let $T_\gamma(x^k) =
+\gamma_k x^k$. Then $T_\gamma$ maps every real-rooted polynomial of degree at
+most $n$ to zero or a real-rooted polynomial if and only if the Jensen
+polynomial $\sum_{k=0}^n \binom{n}{k} \gamma_k x^k$ is zero or has only real
+zeros, all in one of the half-lines $(-\infty, 0]$ and $[0, \infty)$. The
+formalization covers two sign patterns: if every $\gamma_k \geq 0$, the zeros
+lie in $(-\infty, 0]$; if every $(-1)^k \gamma_k \geq 0$, they lie in
+$[0, \infty)$.
+
 If the value sequences $f(0), f(1), f(2), \dotsc$ and $g(0), g(1), g(2), \dotsc$
 of two real polynomials are Pólya frequency sequences, then so is the value
 sequence of $fg$.
@@ -104,8 +119,9 @@ Gleichungen,” *Journal für die reine und angewandte Mathematik* 144 (1914),
 Mathematical Analysis and Applications* 163 (1992), 459–483; J. Garloff and
 D. G. Wagner, “Hadamard products of stable polynomials are stable,” *Journal
 of Mathematical Analysis and Applications* 202 (1996), 797–809.  See the
-[Hadamard-product overview](https://www.symmetricfunctions.com/realRooted.htm#hadamardProductTheorems)
-and [Schur–Szegő composition](https://www.symmetricfunctions.com/realRooted.htm#schurSzegoComposition)
+[Hadamard-product overview](https://www.symmetricfunctions.com/realRooted.htm#hadamardProductTheorems),
+[Schur–Szegő composition](https://www.symmetricfunctions.com/realRooted.htm#schurSzegoComposition),
+and the [finite multiplier criterion](https://www.symmetricfunctions.com/realRooted.htm#finiteMultiplierSequenceCriterion)
 on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
@@ -117,6 +133,8 @@ Human statements:
   https://www.symmetricfunctions.com/realRooted.htm#schurSzegoComposition
 * Polya-frequency sequences:
   https://www.symmetricfunctions.com/polyaFrequency.htm#aissenSchoenbergWhitney
+* Finite multiplier criterion:
+  https://www.symmetricfunctions.com/realRooted.htm#finiteMultiplierSequenceCriterion
 
 Original publications include:
 
@@ -155,6 +173,15 @@ theorem isFiniteMultiplierSequence_iff_isPFPolynomial_jensenPolynomial {n : ℕ}
     {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
     IsFiniteMultiplierSequence n gamma ↔ IsPFPolynomial (jensenPolynomial n gamma) :=
   RealRooted.finitePolyaSchur_nonneg hgamma
+
+/-- Finite Pólya--Schur theorem for sequences with `(-1)^k γ_k ≥ 0`: the
+Jensen polynomial is zero or real-rooted with all zeros in `[0, ∞)`. -/
+theorem isFiniteMultiplierSequence_iff_jensenPolynomial_roots_nonneg {n : ℕ}
+    {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ (-1) ^ k * gamma k) :
+    IsFiniteMultiplierSequence n gamma ↔
+      (jensenPolynomial n gamma = 0 ∨ (jensenPolynomial n gamma).Splits) ∧
+        ∀ r ∈ (jensenPolynomial n gamma).roots, 0 ≤ r :=
+  RealRooted.isFiniteMultiplierSequence_iff_jensenPolynomial_roots_nonneg hgamma
 
 /-- Garloff--Wagner interlacing theorem for coefficientwise products. -/
 theorem interl_hadamardProduct_of_strictInterl {f g p q : ℝ[X]}
