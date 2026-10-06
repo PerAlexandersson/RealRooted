@@ -1519,3 +1519,6 @@ import RealRooted.Challenges.GraceApolarity
 import RealRooted.Challenges.RealStability
 import RealRooted.DerivativeRecurrence.LagDegree
 import RealRooted.ThreeTermRecurrence.NoCommonRoot
+import RealRooted.Challenges.Wronskian
+import RealRooted.Mathlib.Analysis.Polynomial.Basic
+import RealRooted.Wronskian.Converse

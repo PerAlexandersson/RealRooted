@@ -1266,6 +1266,12 @@
     "RealRooted.Wronskian.Forward": {
       "max_modules": 21
     },
+    "RealRooted.Wronskian.Converse": {
+      "max_modules": 36
+    },
+    "RealRooted.Mathlib.Analysis.Polynomial.Basic": {
+      "max_modules": 1
+    },
     "RealRooted.Wronskian.Successor": {
       "max_modules": 24
     },
