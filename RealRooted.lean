@@ -1541,3 +1541,4 @@ import RealRooted.CombinatorialExamples.BigDescents321.GeneratingFunction
 import RealRooted.CombinatorialExamples.BigDescents321.Reference
 import RealRooted.CombinatorialExamples.BigDescents321.Kernel
 import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
+import RealRooted.CombinatorialExamples.BigDescents321.Coordinates
