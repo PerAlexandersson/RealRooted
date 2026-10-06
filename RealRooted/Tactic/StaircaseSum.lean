@@ -121,37 +121,3 @@ namespace Tactic
 
 end Tactic
 end RealRooted
-
-/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
-    Canonical syntax is preferred; these declarations retain old scripts
-    and dispatch through the deprecated theorem aliases above. -/
-namespace RealRooted
-namespace Tactic
-syntax (name := rr_staircaseSum_prec_named_legacy)
-  "rr_staircaseSum_prec" " using "
-    "interlacing_nonneg" ":=" term ","
-    "index_lt" ":=" term :
-  tactic
-
-syntax (name := rr_staircaseSum_sequence_prec_named_legacy)
-  "rr_staircaseSum_sequence_prec" " using "
-    "interlacing_nonneg" ":=" term ","
-    "index_lt" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_staircaseSum_prec using
-        interlacing_nonneg := $hfs:term,
-        index_lt := $hm:term) =>
-      `(tactic|
-        exact RealRooted.strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg
-          $hfs $hm)
-  | `(tactic|
-      rr_staircaseSum_sequence_prec using
-        interlacing_nonneg := $hfs:term,
-        index_lt := $hm:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.staircaseSum_sequence_strictInterl $hfs $hm)
-end Tactic
-end RealRooted
