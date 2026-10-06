@@ -78,17 +78,17 @@ end RightRootCountBranch
 
 /-- The root-count branch conclusion in Liu Theorem 2.1, separated from the
 larger compatibility/common-interleaver statement. -/
-def theorem21RootCountBranches (f g : ℝ[X]) : Prop :=
+def RootCountBranches (f g : ℝ[X]) : Prop :=
   ∃ r s, LeftRootCountBranch f g r s ∨ RightRootCountBranch f g r s
 
-theorem theorem21RootCountBranches_of_left {f g : ℝ[X]} {r s : ℝ}
+theorem RootCountBranches.of_left {f g : ℝ[X]} {r s : ℝ}
     (h : LeftRootCountBranch f g r s) :
-    theorem21RootCountBranches f g :=
+    RootCountBranches f g :=
   ⟨r, s, Or.inl h⟩
 
-theorem theorem21RootCountBranches_of_right {f g : ℝ[X]} {r s : ℝ}
+theorem RootCountBranches.of_right {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) :
-    theorem21RootCountBranches f g :=
+    RootCountBranches f g :=
   ⟨r, s, Or.inr h⟩
 
 private theorem int_abs_sub_le_two_of_add_one_left {a b c : ℤ}
@@ -630,28 +630,28 @@ end RightRootCountBranch
 orientations.  If `s ≤ r`, use the supplied left branch for `(f, g)`; if
 `r < s`, use the supplied left branch for `(g, f)` and swap it to a right
 branch. -/
-theorem theorem21RootCountBranches_of_leftBranch_orientations
+theorem RootCountBranches.of_leftBranch_orientations
     {f g : ℝ[X]} {r s : ℝ}
     (hfg : s ≤ r → LeftRootCountBranch f g r s)
     (hgf : r < s → LeftRootCountBranch g f s r) :
-    theorem21RootCountBranches f g := by
+    RootCountBranches f g := by
   rcases le_or_gt s r with hsr | hrs
-  · exact theorem21RootCountBranches_of_left (hfg hsr)
-  · exact theorem21RootCountBranches_of_right ((hgf hrs).toRightBranch_symm_of_lt hrs)
+  · exact RootCountBranches.of_left (hfg hsr)
+  · exact RootCountBranches.of_right ((hgf hrs).toRightBranch_symm_of_lt hrs)
 
 /-- Branch-level bridge from parity-guarded cross-owned consecutive roots to
 Liu's largest-root deletion branch predicate.  In the larger-largest-root
 orientation, the finite descent proves the `0..2` original strict-upper window
 needed after deleting that largest root. -/
-theorem theorem21RootCountBranches_of_crossOwned_consecutive_roots
+theorem RootCountBranches.of_crossOwned_consecutive_roots
     {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     {r s : ℝ} (hr : IsLargestRoot f r) (hs : IsLargestRoot g s)
     (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
     (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
     (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
     (hcross : CrossOwnedNotOddGaps f g) :
-    theorem21RootCountBranches f g :=
-  theorem21RootCountBranches_of_leftBranch_orientations (r := r) (s := s)
+    RootCountBranches f g :=
+  RootCountBranches.of_leftBranch_orientations (r := r) (s := s)
     (fun hsr =>
       LeftRootCountBranch.of_crossOwned_consecutive_roots
         hf_ne hg_ne hr hs hsr hsimple_f hsimple_g hdisj hcross)
@@ -660,9 +660,9 @@ theorem theorem21RootCountBranches_of_crossOwned_consecutive_roots
         hg_ne hf_ne hs hr hrs.le hsimple_g hsimple_f
         (fun c hgc hfc => hdisj c hfc hgc) hcross.symm)
 
-theorem natDegree_abs_sub_le_two_of_theorem21RootCountBranches {f g : ℝ[X]}
+theorem RootCountBranches.natDegree_abs_sub_le_two {f g : ℝ[X]}
     (hf_splits : f.Splits) (hg_splits : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (h : theorem21RootCountBranches f g) :
+    (hsgn : OppositeLeadingSigns f g) (h : RootCountBranches f g) :
     |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 := by
   rcases h with ⟨r, s, hleft | hright⟩
   · exact hleft.natDegree_abs_sub_le_two hsgn.left_ne_zero hf_splits hg_splits

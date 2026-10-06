@@ -54,10 +54,6 @@ def RootCountCompatible (p q : ℝ[X]) : Prop :=
     dsimp
     linarith
 
-theorem RootCountCompatible.refl (p : ℝ[X]) : RootCountCompatible p p := by
-  intro x
-  simp
-
 theorem RootCountCompatible.comp_X_add_C {p q : ℝ[X]}
     (h : RootCountCompatible p q) (r : ℝ) :
     RootCountCompatible (p.comp (X + C r)) (q.comp (X + C r)) := by
@@ -92,14 +88,6 @@ theorem RootCountCompatible.bounds {p q : ℝ[X]}
 @[simp] theorem rootCountAtOrAbove_neg (p : ℝ[X]) (x : ℝ) :
     rootCountAtOrAbove (-p) x = rootCountAtOrAbove p x := by
   simp [rootCountAtOrAbove, Polynomial.roots_neg]
-
-@[simp] theorem isRoot_neg_iff (p : ℝ[X]) (x : ℝ) :
-    (-p).IsRoot x ↔ p.IsRoot x := by
-  simp [Polynomial.IsRoot.def]
-
-@[simp] theorem rootCountAbove_neg (p : ℝ[X]) (x : ℝ) :
-    ((-p).roots.filter (x < ·)).card = (p.roots.filter (x < ·)).card := by
-  simp [Polynomial.roots_neg]
 
 theorem RootCountCompatible.neg_left {p q : ℝ[X]}
     (h : RootCountCompatible p q) :
@@ -243,25 +231,6 @@ theorem OppositeLeadingSigns.pos_neg_or_neg_pos {p q : ℝ[X]}
         mul_nonneg (le_of_lt hp_pos) hq_nonneg
       linarith
     exact Or.inl ⟨hp_pos, hasPosLeadingCoeff_neg hq_neg⟩
-
-/-- The same-degree leading-term cancellation parameter is positive for an
-opposite-leading-sign pair. -/
-theorem OppositeLeadingSigns.cancelParameter_pos {p q : ℝ[X]}
-    (h : OppositeLeadingSigns p q) :
-    0 < -p.leadingCoeff / q.leadingCoeff := by
-  rw [neg_div]
-  exact neg_pos.mpr
-    ((div_neg_iff.mpr (mul_neg_iff.mp h)) : p.leadingCoeff / q.leadingCoeff < 0)
-
-/-- Swapping an opposite-leading-sign pair inverts the leading-term
-cancellation parameter. -/
-theorem OppositeLeadingSigns.cancelParameter_symm_eq_inv {p q : ℝ[X]}
-    (h : OppositeLeadingSigns p q) :
-    -q.leadingCoeff / p.leadingCoeff =
-      (-p.leadingCoeff / q.leadingCoeff)⁻¹ := by
-  have hp_lc : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr h.left_ne_zero
-  have hq_lc : q.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr h.right_ne_zero
-  field_simp [hp_lc, hq_lc]
 
 /-- For two splitting polynomials with opposite leading signs, the signed
 difference of the numbers of roots strictly above a common non-root is odd
@@ -478,23 +447,6 @@ theorem RootCountCompatible.rootCountAbove_bounds_of_nonRoot
         (p.roots.filter (x < ·)).card ≤ 1 :=
   ⟨h.rootCountAbove_left_sub_le_one_of_nonRoot hp_ne hq_ne hpx hqx,
     h.symm.rootCountAbove_left_sub_le_one_of_nonRoot hq_ne hp_ne hqx hpx⟩
-
-/-- A root-count-compatible bound at the upper endpoint of `(a, b]` shifts to
-the lower endpoint after subtracting the explicit roots in the window. -/
-theorem RootCountCompatible.rootCountAbove_shift_Ioc_abs_le_one
-    {p q : ℝ[X]} (h : RootCountCompatible p q)
-    (hp_ne : p ≠ 0) (hq_ne : q ≠ 0) {a b : ℝ} (hab : a ≤ b)
-    (hpb : ¬ p.IsRoot b) (hqb : ¬ q.IsRoot b) :
-    |(((p.roots.filter (a < ·)).card : ℤ) -
-          (q.roots.filter (a < ·)).card) -
-        (((p.roots.filter (fun r => a < r ∧ r ≤ b)).card : ℤ) -
-          (q.roots.filter (fun r => a < r ∧ r ≤ b)).card)| ≤ 1 := by
-  have hbabs :=
-    h.rootCountAbove_abs_sub_le_one_of_nonRoot hp_ne hq_ne hpb hqb
-  have hjump := card_filter_gt_sub_eq_card_filter_Ioc_sub_add
-    (s := p.roots) (t := q.roots) hab
-  rw [hjump]
-  simpa using hbabs
 
 /-- If the left polynomial has no roots in `(a, b)` and the right polynomial
 has at least two roots in `(a, b)`, Liu-compatible root counts force the right

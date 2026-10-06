@@ -28,15 +28,11 @@ theorem LeftRootCountBranch.compatible {f g : ℝ[X]} {r s : ℝ}
             C μ * g.comp (X + C r)).Splits := by
     rcases hleft.natDegree_eq_or_eq_succ_or_eq_succ_succ
         hsgn.left_ne_zero hf hg with hdeg | hdeg | hdeg
-    · exact theorem21LeftFactorReturnSameDegreeTranslatedRightFamily
-        hf hg hsgn hleft hdeg
-    · exact theorem21LeftFactorReturnSuccDegreeTranslatedRightFamily
-        hf hg hsgn hleft hdeg
-    · exact theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily
-        hf hg hsgn hleft hdeg
+    · exact hleft.translated_rightFamily_splits_of_natDegree_eq hf hg hsgn hdeg
+    · exact hleft.translated_rightFamily_splits_of_natDegree_eq_succ hf hg hsgn hdeg
+    · exact hleft.translated_rightFamily_splits_of_natDegree_eq_add_two hf hg hsgn hdeg
   exact hleft.compatible_of_translated_restore
-    (theorem21LeftFactorReturnTranslatedCompatible_of_pointwiseRightFamily
-      hf hg hsgn hleft hright)
+    (hleft.compatible_translated_of_rightFamily_splits hf hg hsgn hright)
 
 /-- A right Liu root-count branch gives compatibility. -/
 theorem RightRootCountBranch.compatible {f g : ℝ[X]} {r s : ℝ}
@@ -47,9 +43,9 @@ theorem RightRootCountBranch.compatible {f g : ℝ[X]} {r s : ℝ}
 
 /-- Reverse direction of Liu Theorem 2.1: either root-count branch gives
 compatibility of an opposite-leading-sign pair of real-rooted polynomials. -/
-theorem compatible_of_theorem21RootCountBranches {f g : ℝ[X]}
+theorem RootCountBranches.compatible {f g : ℝ[X]}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
-    (hbranches : theorem21RootCountBranches f g) :
+    (hbranches : RootCountBranches f g) :
     Compatible f g := by
   rcases hbranches with ⟨r, s, hleft | hright⟩
   · exact hleft.compatible hf hg hsgn

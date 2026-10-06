@@ -1251,14 +1251,8 @@
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor": {
       "max_modules": 168
    },
-    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.TailSigns": {
-      "max_modules": 168
-   },
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount": {
       "max_modules": 172
-   },
-    "RealRooted.LiuOppositeSigns.XSub.ProperPosition": {
-      "max_modules": 173
    },
     "RealRooted.Wronskian": {
       "max_modules": 120
@@ -2060,9 +2054,7 @@
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor",
-    "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.TailSigns",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount",
-    "RealRooted.LiuOppositeSigns.XSub.ProperPosition",
     "RealRooted.Interlacing.Multiplicity",
     "RealRooted.Interlacing.Residue",
     "RealRooted.MaWang",

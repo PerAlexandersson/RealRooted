@@ -1,12 +1,12 @@
-import RealRooted.LiuOppositeSigns.Theorem21Statements.CommonRootDeletion
-import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing
+import RealRooted.LiuOppositeSigns.RootCountBranches.CommonRootDeletion
+import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
 
 /-!
 # The published forward direction of Liu Theorem 2.1 is false
 
 The published statement of Liu Theorem 2.1 omits the common-root branch.  Its
 forward direction fails already for `X` and `-(X ^ 2)`.  The corrected
-theorem is `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant`.
+theorem is `compatible_iff_rootCountBranchesWithCommon`.
 -/
 
 open Polynomial Filter
@@ -17,11 +17,11 @@ namespace LiuOppositeSigns
 /-- The nonconstant forward half of the published Liu Theorem 2.1, without the
 common-root branch, is false when the endpoints share their largest root. The
 minimal counterexample is `X` and `-(X ^ 2)`. -/
-theorem not_forall_theorem21RootCountBranches_of_compatible_nonconstant :
+theorem not_forall_rootCountBranches_of_compatible :
     ¬ ∀ {f g : ℝ[X]},
       f.Splits → g.Splits → OppositeLeadingSigns f g →
         f.natDegree ≠ 0 → g.natDegree ≠ 0 →
-          Compatible f g → theorem21RootCountBranches f g := by
+          Compatible f g → RootCountBranches f g := by
   intro hforward
   have hbase : Compatible (1 : ℝ[X]) (-X) :=
     Compatible.of_allComboRealRooted <|

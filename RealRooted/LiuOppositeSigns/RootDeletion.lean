@@ -163,11 +163,6 @@ theorem deleteRootFactor_ne_zero_and_splits {p : ℝ[X]} {r : ℝ}
     deleteRootFactor p r ≠ 0 ∧ (deleteRootFactor p r).Splits :=
   deleteRootFactor_ne_zero_and_splits_of_isRoot hp_ne hp_splits h.isRoot
 
-theorem leadingCoeff_deleteRootFactor {p : ℝ[X]} {r : ℝ} (hp_ne : p ≠ 0)
-    (h : IsLargestRoot p r) :
-    (deleteRootFactor p r).leadingCoeff = p.leadingCoeff :=
-  leadingCoeff_deleteRootFactor_of_isRoot hp_ne h.isRoot
-
 theorem root_deleteRootFactor_le {p : ℝ[X]} {r s : ℝ} (hp_ne : p ≠ 0)
     (h : IsLargestRoot p r) (hs : (deleteRootFactor p r).IsRoot s) :
     s ≤ r := by
