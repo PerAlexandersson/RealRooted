@@ -191,20 +191,19 @@ private def sideAlternatives (P? : Option Ident) (ty : Expr) :
               | (refine ne_of_lt ?_; nlinarith [sq_nonneg ((k : ℝ) + 1)])
               | (intro h; nlinarith [sq_nonneg ((k : ℝ) + 1), (Nat.cast_nonneg k : (0 : ℝ) ≤ k)])
               | (field_simp; intro h; linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)])))]
-    let mut alts := []
-    for fin in ← coeffFinishers do
-      alts := alts ++ [← `(tactic| (
-        intro k
-        simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.coeff_add, Polynomial.coeff_sub,
-          Polynomial.coeff_neg, Polynomial.coeff_C_mul, Polynomial.coeff_mul_C,
-          Polynomial.coeff_X_pow, Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one,
-          Polynomial.coeff_ofNat_mul, Polynomial.coeff_mul_ofNat, Polynomial.coeff_ofNat_zero,
-          Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
-        push_cast
-        norm_num
-        $fin:tactic
-        done))]
-    return alts
+    -- compute the coefficients once, then try the finishers on the normalized goal
+    let fin ← (← coeffFinishers).foldrM (init := ← `(tactic| fail))
+      fun fin rest => `(tactic| first | ($fin:tactic; done) | $rest:tactic)
+    return [← `(tactic| (
+      intro k
+      simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.coeff_add, Polynomial.coeff_sub,
+        Polynomial.coeff_neg, Polynomial.coeff_C_mul, Polynomial.coeff_mul_C,
+        Polynomial.coeff_X_pow, Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one,
+        Polynomial.coeff_ofNat_mul, Polynomial.coeff_mul_ofNat, Polynomial.coeff_ofNat_zero,
+        Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
+      push_cast
+      norm_num
+      $fin:tactic))]
   if let some P := P? then
     if mentionsP then
       return [

@@ -98,13 +98,24 @@ private def multiplierGoal : TacticM Unit := do
 natural number: bound the degree by `compute_degree!` and check each coefficient. -/
 private def explicitNonnegCoeffs : TacticM Unit := do
   let s ← saveState
+  -- the least degree bound `compute_degree!` proves; a larger one only adds zero coefficients
+  let bound ← `(tactic| exact (Polynomial.coeff_eq_zero_of_natDegree_lt
+    (lt_of_le_of_lt (by compute_degree!) hi)).symm.le)
+  let mut D? := none
   for D in [2, 3, 4, 5, 6, 8] do
+    let ok ← rowSucceeds do
+      evalTactic (← `(tactic| (intro i; rcases Nat.lt_or_ge $(rowNumLit D) i with hi | hi)))
+      evalTactic bound
+    s.restore
+    if ok then
+      D? := some D
+      break
+  if let some D := D? then
     let ok ← rowSucceeds do
       evalTactic (← `(tactic| (
         intro i
         rcases Nat.lt_or_ge $(rowNumLit D) i with hi | hi
-        · exact (Polynomial.coeff_eq_zero_of_natDegree_lt
-            (lt_of_le_of_lt (by compute_degree!) hi)).symm.le
+        · $bound:tactic
         · interval_cases i <;> (
             simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.coeff_add,
               Polynomial.coeff_sub, Polynomial.coeff_neg, Polynomial.coeff_C_mul,
@@ -152,8 +163,10 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
     | none => []
   let strategies : List (TacticM Unit) :=
     if ty.isForall && mentionsP && has ``Polynomial.natDegree then
-      [do evalTactic (← `(tactic| (intro n; rr_row_natDegree))),
-       do evalTactic (← `(tactic| (intro n; apply le_of_eq; rr_row_natDegree)))]
+      let eq := do evalTactic (← `(tactic| (intro n; rr_row_natDegree)))
+      let le := do evalTactic (← `(tactic| (intro n; apply le_of_eq; rr_row_natDegree)))
+      -- a failed search for an equality is slow, so try the bound first on `≤` goals
+      if ty.getForallBody.isAppOf ``LE.le then [le, eq] else [eq, le]
     else if ty.isForall && mentionsP && has ``Polynomial.leadingCoeff then
       [do evalTactic (← `(tactic| (intro n; rr_row_leadingCoeff_pos)))]
     else if has ``RealRooted.Interlaces then
