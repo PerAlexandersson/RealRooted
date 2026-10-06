@@ -19,10 +19,15 @@ as soon as `t` stays positive.  Two regimes cover the OEIS triangles:
 ## Main results
 
 * `threeTerm_step`: the degree bound and the top coefficient of one step.
-* `threeTerm_top_of_invariant`: the induction for any invariant `R (t n) (t (n + 1))`
-  preserved by the scalar recurrence and forcing `t n > 0`.
+* `twoStep_top_of_invariant`: the induction for any invariant `R (t n) (t (n + 1))`
+  preserved by the scalar recurrence, for any two-step recurrence whose one-step
+  degree computation has this shape (three-term rows here, derivative-lag rows in
+  `RealRooted.DerivativeRecurrence.LagDegree`).
+* `twoStep_natDegree_eq_and_leadingCoeff_pos`: the nonnegative regime of the above.
 * `threeTermPos_natDegree`, `threeTermPos_ne_zero`, `threeTermPos_leadingCoeff_pos`
   and the `threeTermRatio_*` versions.
+* `threeTerm_eval_zero_pos`, `threeTermRatio_eval_zero_pos`: positivity of the rows
+  at `0`, from the same two scalar regimes applied to `x n = (P n).eval 0`.
 -/
 
 open Polynomial
@@ -59,49 +64,84 @@ theorem threeTerm_step (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
   · rw [coeff_add, e1, coeff_mul_add_of_natDegree_le (ha n) h1, ← e1, e0,
       coeff_mul_add_of_natDegree_le (hb n) h0]
 
-/-- The induction behind the three-term degree theorems: an invariant `R` of
-consecutive top coefficients, preserved by the scalar recurrence and forcing
-positivity of the first entry. -/
-theorem threeTerm_top_of_invariant (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
-    (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
+/-- The induction behind the two-step degree theorems.  Suppose that whenever two
+consecutive rows satisfy the degree bounds, so does the next row, and its
+coefficient in the bounding degree is `α n * t (n + 1) + β n * t n`, where `t n`
+is the coefficient of `P n` in degree `D₀ + d * n`.  Then every invariant `R` of
+consecutive top coefficients that is preserved by this scalar recurrence holds
+for all `n`. -/
+theorem twoStep_top_of_invariant {α β : ℕ → ℝ}
+    (hstep : ∀ n, (P n).natDegree ≤ D₀ + d * n → (P (n + 1)).natDegree ≤ D₀ + d * (n + 1) →
+      (P (n + 2)).natDegree ≤ D₀ + d * (n + 2) ∧
+        (P (n + 2)).coeff (D₀ + d * (n + 2)) =
+          α n * (P (n + 1)).coeff (D₀ + d * (n + 1)) + β n * (P n).coeff (D₀ + d * n))
     (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d)
     (R : ℝ → ℝ → Prop) (hR01 : R ((P 0).coeff D₀) ((P 1).coeff (D₀ + d)))
-    (hRpos : ∀ x y, R x y → 0 < x)
-    (hRstep : ∀ n x y, R x y → R y ((a n).coeff d * y + (b n).coeff (2 * d) * x)) :
+    (hRstep : ∀ n x y, R x y → R y (α n * y + β n * x)) :
     ∀ n, (P n).natDegree ≤ D₀ + d * n ∧ (P (n + 1)).natDegree ≤ D₀ + d * (n + 1) ∧
       R ((P n).coeff (D₀ + d * n)) ((P (n + 1)).coeff (D₀ + d * (n + 1)))
   | 0 => ⟨by simpa using h0, by simpa using h1, by simpa using hR01⟩
   | n + 1 => by
-      obtain ⟨hn0, hn1, hR⟩ := threeTerm_top_of_invariant hrec ha hb h0 h1 R hR01 hRpos hRstep n
-      have hs := threeTerm_step hrec ha hb n hn0 hn1
+      obtain ⟨hn0, hn1, hR⟩ := twoStep_top_of_invariant hstep h0 h1 R hR01 hRstep n
+      have hs := hstep n hn0 hn1
       exact ⟨hn1, hs.1, by rw [hs.2]; exact hRstep n _ _ hR⟩
 
-private theorem top_pos_of_invariant (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
-    (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
+private theorem top_pos_of_invariant {α β : ℕ → ℝ}
+    (hstep : ∀ n, (P n).natDegree ≤ D₀ + d * n → (P (n + 1)).natDegree ≤ D₀ + d * (n + 1) →
+      (P (n + 2)).natDegree ≤ D₀ + d * (n + 2) ∧
+        (P (n + 2)).coeff (D₀ + d * (n + 2)) =
+          α n * (P (n + 1)).coeff (D₀ + d * (n + 1)) + β n * (P n).coeff (D₀ + d * n))
     (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d)
     (R : ℝ → ℝ → Prop) (hR01 : R ((P 0).coeff D₀) ((P 1).coeff (D₀ + d)))
     (hRpos : ∀ x y, R x y → 0 < x)
-    (hRstep : ∀ n x y, R x y → R y ((a n).coeff d * y + (b n).coeff (2 * d) * x)) (n : ℕ) :
+    (hRstep : ∀ n x y, R x y → R y (α n * y + β n * x)) (n : ℕ) :
     (P n).natDegree = D₀ + d * n ∧ 0 < (P n).leadingCoeff := by
-  obtain ⟨hle, -, hR⟩ := threeTerm_top_of_invariant hrec ha hb h0 h1 R hR01 hRpos hRstep n
+  obtain ⟨hle, -, hR⟩ := twoStep_top_of_invariant hstep h0 h1 R hR01 hRstep n
   have hpos := hRpos _ _ hR
   have hdeg := natDegree_eq_of_le_of_coeff_ne_zero hle hpos.ne'
   exact ⟨hdeg, by rwa [leadingCoeff, hdeg]⟩
 
+/-- The scalar companion of `twoStep_top_of_invariant`: an invariant of
+consecutive terms of `x (n + 2) = α n * x (n + 1) + β n * x n`. -/
+private theorem scalar_of_invariant {α β s : ℕ → ℝ}
+    (hs : ∀ n, s (n + 2) = α n * s (n + 1) + β n * s n)
+    (R : ℝ → ℝ → Prop) (hR01 : R (s 0) (s 1))
+    (hRstep : ∀ n x y, R x y → R y (α n * y + β n * x)) :
+    ∀ n, R (s n) (s (n + 1))
+  | 0 => hR01
+  | n + 1 => by
+      rw [show n + 1 + 1 = n + 2 from rfl, hs n]
+      exact hRstep n _ _ (scalar_of_invariant hs R hR01 hRstep n)
+
 section Positive
 
-/-- Nonnegative top multipliers: `α n, β n ≥ 0` and `α n + β n > 0`. -/
-private theorem pos_invariant
-    (hα : ∀ n, 0 ≤ (a n).coeff d) (hβ : ∀ n, 0 ≤ (b n).coeff (2 * d))
-    (hαβ : ∀ n, 0 < (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) (x y : ℝ)
+/-- Nonnegative multipliers: `α n, β n ≥ 0` and `α n + β n > 0`. -/
+private theorem pos_invariant {α β : ℕ → ℝ}
+    (hα : ∀ n, 0 ≤ α n) (hβ : ∀ n, 0 ≤ β n) (hαβ : ∀ n, 0 < α n + β n) (n : ℕ) (x y : ℝ)
     (h : 0 < x ∧ 0 < y) :
-    0 < y ∧ 0 < (a n).coeff d * y + (b n).coeff (2 * d) * x := by
+    0 < y ∧ 0 < α n * y + β n * x := by
   refine ⟨h.2, ?_⟩
   rcases (hα n).lt_or_eq with hα' | hα'
   · nlinarith [mul_nonneg (hβ n) h.1.le, mul_pos hα' h.2]
-  · have hβpos : 0 < (b n).coeff (2 * d) := by linarith [hαβ n]
+  · have hβpos : 0 < β n := by linarith [hαβ n]
     rw [← hα']
     nlinarith [mul_pos hβpos h.1]
+
+/-- Rows of a two-step recurrence whose top coefficients follow
+`t (n + 2) = α n * t (n + 1) + β n * t n` with `α n, β n ≥ 0` and
+`α n + β n > 0` have degree `D₀ + d * n` and positive leading coefficients.
+`hstep` is the one-step degree computation for the concrete recurrence shape. -/
+theorem twoStep_natDegree_eq_and_leadingCoeff_pos {α β : ℕ → ℝ}
+    (hstep : ∀ n, (P n).natDegree ≤ D₀ + d * n → (P (n + 1)).natDegree ≤ D₀ + d * (n + 1) →
+      (P (n + 2)).natDegree ≤ D₀ + d * (n + 2) ∧
+        (P (n + 2)).coeff (D₀ + d * (n + 2)) =
+          α n * (P (n + 1)).coeff (D₀ + d * (n + 1)) + β n * (P n).coeff (D₀ + d * n))
+    (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d)
+    (hc0 : 0 < (P 0).coeff D₀) (hc1 : 0 < (P 1).coeff (D₀ + d))
+    (hα : ∀ n, 0 ≤ α n) (hβ : ∀ n, 0 ≤ β n) (hαβ : ∀ n, 0 < α n + β n) (n : ℕ) :
+    (P n).natDegree = D₀ + d * n ∧ 0 < (P n).leadingCoeff :=
+  top_pos_of_invariant hstep h0 h1 (fun x y => 0 < x ∧ 0 < y) ⟨hc0, hc1⟩
+    (fun _ _ h => h.1) (pos_invariant hα hβ hαβ) n
 
 theorem threeTermPos_natDegree (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
@@ -110,8 +150,8 @@ theorem threeTermPos_natDegree (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n 
     (hα : ∀ n, 0 ≤ (a n).coeff d) (hβ : ∀ n, 0 ≤ (b n).coeff (2 * d))
     (hαβ : ∀ n, 0 < (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) :
     (P n).natDegree = D₀ + d * n :=
-  (top_pos_of_invariant hrec ha hb h0 h1 (fun x y => 0 < x ∧ 0 < y) ⟨hc0, hc1⟩
-    (fun _ _ h => h.1) (pos_invariant hα hβ hαβ) n).1
+  (twoStep_natDegree_eq_and_leadingCoeff_pos (threeTerm_step hrec ha hb) h0 h1 hc0 hc1
+    hα hβ hαβ n).1
 
 theorem threeTermPos_leadingCoeff_pos (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
@@ -120,8 +160,8 @@ theorem threeTermPos_leadingCoeff_pos (hrec : ∀ n, P (n + 2) = a n * P (n + 1)
     (hα : ∀ n, 0 ≤ (a n).coeff d) (hβ : ∀ n, 0 ≤ (b n).coeff (2 * d))
     (hαβ : ∀ n, 0 < (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) :
     0 < (P n).leadingCoeff :=
-  (top_pos_of_invariant hrec ha hb h0 h1 (fun x y => 0 < x ∧ 0 < y) ⟨hc0, hc1⟩
-    (fun _ _ h => h.1) (pos_invariant hα hβ hαβ) n).2
+  (twoStep_natDegree_eq_and_leadingCoeff_pos (threeTerm_step hrec ha hb) h0 h1 hc0 hc1
+    hα hβ hαβ n).2
 
 theorem threeTermPos_ne_zero (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
@@ -140,16 +180,15 @@ section Ratio
 variable {ρ : ℝ}
 
 /-- Nonpositive `β n` with growth ratio `ρ`: `ρ ^ 2 ≤ ρ α n + β n`. -/
-private theorem ratio_invariant (hρ : 0 < ρ) (hβ : ∀ n, (b n).coeff (2 * d) ≤ 0)
-    (hαβ : ∀ n, ρ ^ 2 ≤ ρ * (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) (x y : ℝ)
-    (h : 0 < x ∧ ρ * x ≤ y) :
-    0 < y ∧ ρ * y ≤ (a n).coeff d * y + (b n).coeff (2 * d) * x := by
+private theorem ratio_invariant {α β : ℕ → ℝ} (hρ : 0 < ρ) (hβ : ∀ n, β n ≤ 0)
+    (hαβ : ∀ n, ρ ^ 2 ≤ ρ * α n + β n) (n : ℕ) (x y : ℝ) (h : 0 < x ∧ ρ * x ≤ y) :
+    0 < y ∧ ρ * y ≤ α n * y + β n * x := by
   have hy : 0 < y := lt_of_lt_of_le (mul_pos hρ h.1) h.2
   refine ⟨hy, ?_⟩
   -- `ρ (α y + β x) ≥ (ρ α + β) y ≥ ρ² y`, using `β x ≥ β y / ρ`
-  have h1 : (b n).coeff (2 * d) * y ≤ ρ * ((b n).coeff (2 * d) * x) := by
+  have h1 : β n * y ≤ ρ * (β n * x) := by
     nlinarith [mul_le_mul_of_nonpos_left h.2 (hβ n)]
-  have h2 : ρ * (ρ * y) ≤ ρ * ((a n).coeff d * y + (b n).coeff (2 * d) * x) := by
+  have h2 : ρ * (ρ * y) ≤ ρ * (α n * y + β n * x) := by
     nlinarith [mul_le_mul_of_nonneg_right (hαβ n) hy.le]
   exact le_of_mul_le_mul_left h2 hρ
 
@@ -160,8 +199,8 @@ theorem threeTermRatio_natDegree (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b 
     (hβ : ∀ n, (b n).coeff (2 * d) ≤ 0)
     (hαβ : ∀ n, ρ ^ 2 ≤ ρ * (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) :
     (P n).natDegree = D₀ + d * n :=
-  (top_pos_of_invariant hrec ha hb h0 h1 (fun x y => 0 < x ∧ ρ * x ≤ y) ⟨hc0, hc1⟩
-    (fun _ _ h => h.1) (ratio_invariant hρ hβ hαβ) n).1
+  (top_pos_of_invariant (threeTerm_step hrec ha hb) h0 h1 (fun x y => 0 < x ∧ ρ * x ≤ y)
+    ⟨hc0, hc1⟩ (fun _ _ h => h.1) (ratio_invariant hρ hβ hαβ) n).1
 
 theorem threeTermRatio_leadingCoeff_pos
     (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
@@ -171,8 +210,8 @@ theorem threeTermRatio_leadingCoeff_pos
     (hβ : ∀ n, (b n).coeff (2 * d) ≤ 0)
     (hαβ : ∀ n, ρ ^ 2 ≤ ρ * (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) :
     0 < (P n).leadingCoeff :=
-  (top_pos_of_invariant hrec ha hb h0 h1 (fun x y => 0 < x ∧ ρ * x ≤ y) ⟨hc0, hc1⟩
-    (fun _ _ h => h.1) (ratio_invariant hρ hβ hαβ) n).2
+  (top_pos_of_invariant (threeTerm_step hrec ha hb) h0 h1 (fun x y => 0 < x ∧ ρ * x ≤ y)
+    ⟨hc0, hc1⟩ (fun _ _ h => h.1) (ratio_invariant hρ hβ hαβ) n).2
 
 theorem threeTermRatio_ne_zero (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
@@ -185,6 +224,68 @@ theorem threeTermRatio_ne_zero (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n 
     (threeTermRatio_leadingCoeff_pos hrec ha hb h0 h1 hc0 hρ hc1 hβ hαβ n).ne'
 
 end Ratio
+
+section EvalZero
+
+/-! ### Values at zero
+
+Evaluation at `0` is multiplicative, so `x n = (P n).eval 0` satisfies the scalar
+recurrence `x (n + 2) = (a n).eval 0 * x (n + 1) + (b n).eval 0 * x n`, with no
+degree hypotheses.  The two positivity regimes of the top coefficients apply
+verbatim. -/
+
+private theorem threeTerm_eval_zero_rec (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (n : ℕ) :
+    (P (n + 2)).eval 0 = (a n).eval 0 * (P (n + 1)).eval 0 + (b n).eval 0 * (P n).eval 0 := by
+  rw [hrec n, eval_add, eval_mul, eval_mul]
+
+/-- Rows of `P (n + 2) = a n * P (n + 1) + b n * P n` are positive at `0` when the
+first two rows are, `a n` and `b n` are nonnegative at `0`, and their values at `0`
+do not both vanish. -/
+theorem threeTerm_eval_zero_pos (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (h0 : 0 < (P 0).eval 0) (h1 : 0 < (P 1).eval 0)
+    (ha : ∀ n, 0 ≤ (a n).eval 0) (hb : ∀ n, 0 ≤ (b n).eval 0)
+    (hab : ∀ n, 0 < (a n).eval 0 + (b n).eval 0) (n : ℕ) :
+    0 < (P n).eval 0 :=
+  (scalar_of_invariant (s := fun n => (P n).eval 0) (threeTerm_eval_zero_rec hrec)
+    (fun x y => 0 < x ∧ 0 < y) ⟨h0, h1⟩ (pos_invariant ha hb hab) n).1
+
+/-- The growth-ratio version of `threeTerm_eval_zero_pos`, for `b n` nonpositive
+at `0`: if `ρ > 0`, `ρ (P 0)(0) ≤ (P 1)(0)` and `ρ ^ 2 ≤ ρ a n(0) + b n(0)`, then
+`(P (n + 1))(0) ≥ ρ (P n)(0) > 0` throughout. -/
+theorem threeTermRatio_eval_zero_pos {ρ : ℝ}
+    (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (h0 : 0 < (P 0).eval 0) (hρ : 0 < ρ) (h1 : ρ * (P 0).eval 0 ≤ (P 1).eval 0)
+    (hb : ∀ n, (b n).eval 0 ≤ 0) (hab : ∀ n, ρ ^ 2 ≤ ρ * (a n).eval 0 + (b n).eval 0)
+    (n : ℕ) : 0 < (P n).eval 0 :=
+  (scalar_of_invariant (s := fun n => (P n).eval 0) (threeTerm_eval_zero_rec hrec)
+    (fun x y => 0 < x ∧ ρ * x ≤ y) ⟨h0, h1⟩ (ratio_invariant hρ hb hab) n).1
+
+/-- OEIS A113413: `P (n + 2) = (1 + X) P (n + 1) + X P n` with `P 0 = 1`,
+`P 1 = 2 + X`. -/
+example (P : ℕ → ℝ[X]) (h0 : P 0 = 1) (h1 : P 1 = 2 + X)
+    (hrec : ∀ n, P (n + 2) = (1 + X) * P (n + 1) + X * P n) (n : ℕ) :
+    0 < (P n).eval 0 :=
+  threeTerm_eval_zero_pos (a := fun _ => 1 + X) (b := fun _ => X) hrec (by simp [h0])
+    (by simp [h1]) (fun _ => by simp) (fun _ => by simp) (fun _ => by simp) n
+
+/-- A Narayana-type scalar recurrence (the values at `0` of OEIS A001263): `b n` is
+negative at `0`, and `ρ = 1` works since `a n (0) + b n (0) = 1`. -/
+example (P : ℕ → ℝ[X]) (h0 : P 0 = 1) (h1 : P 1 = 1)
+    (hrec : ∀ n, P (n + 2) =
+      C (((2 : ℝ) * n + 5) / (n + 4)) * P (n + 1) - C (((n : ℝ) + 1) / (n + 4)) * P n)
+    (n : ℕ) : 0 < (P n).eval 0 := by
+  refine threeTermRatio_eval_zero_pos (ρ := 1)
+    (a := fun n => C (((2 : ℝ) * n + 5) / (n + 4)))
+    (b := fun n => -C (((n : ℝ) + 1) / (n + 4))) (fun n => by rw [hrec n]; ring)
+    (by simp [h0]) one_pos (by simp [h0, h1]) (fun _ => ?_) (fun n => ?_) n
+  · simp only [eval_neg, eval_C, Left.neg_nonpos_iff]
+    positivity
+  · simp only [eval_C, eval_neg]
+    rw [one_pow, one_mul, ← sub_eq_add_neg, ← sub_div, le_div_iff₀ (by positivity)]
+    linarith
+
+end EvalZero
 
 section Half
 
