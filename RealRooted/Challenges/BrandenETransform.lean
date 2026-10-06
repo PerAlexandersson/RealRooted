@@ -12,6 +12,11 @@ authors = ["Brändén"]
 years = [2006]
 
 [[definitions]]
+name = "RealRooted.orderedBellPolynomial"
+module = "RealRooted.Transforms.BrandenE.OrderedBell"
+label = "Ordered Bell polynomials F_n"
+
+[[definitions]]
 name = "RealRooted.brandenE"
 module = "RealRooted.Transforms.BrandenE.Basic"
 label = "The E transform x^n ↦ ordered Bell polynomial"
@@ -44,7 +49,8 @@ module = "RealRooted.Transforms.BrandenE.ProperPosition"
 label = "Ordered Bell polynomials are PF polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.BrandenETransform.brandenE_descPochhammer"
+name = "RealRooted.brandenE_descPochhammer"
+module = "RealRooted.Transforms.BrandenE.Inverse"
 label = "E sends x(x − 1)⋯(x − n + 1) to n! xⁿ"
 -->
 
@@ -94,19 +100,3 @@ The ordered Bell numbers are [OEIS A000670](https://oeis.org/A000670).
 This module is a catalog facade. The proofs live in
 `RealRooted.Transforms.BrandenE`.
 -/
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace BrandenETransform
-
-/-- The `E` transform sends the descending Pochhammer polynomial
-`X (X - 1) ⋯ (X - n + 1)` to `n! X ^ n`. -/
-theorem brandenE_descPochhammer {R : Type*} [CommRing R] (n : ℕ) :
-    brandenE (descPochhammer R n) = C (n.factorial : R) * X ^ n :=
-  RealRooted.brandenE_descPochhammer n
-
-end BrandenETransform
-end Challenges
-end RealRooted

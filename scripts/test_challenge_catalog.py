@@ -17,6 +17,7 @@ from challenge_catalog import (
     catalog_digest,
     load_catalog,
     render_site,
+    source_declarations,
     validate_audit_report,
     validate_sources,
 )
@@ -229,6 +230,57 @@ end RealRooted.Challenges.Sample
         self.write("RealRooted/Challenges/Sample.lean", scaffold)
         with self.assertRaisesRegex(CatalogError, "statement scaffold"):
             validate_sources(self.root, load_catalog(self.root))
+
+    def test_equation_style_declarations_are_isolated(self) -> None:
+        text = catalog_block(
+            definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.family"',
+            theorems='[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"',
+        ) + '''namespace RealRooted.Challenges.Sample
+/-- An equation-style definition. -/
+def family : Nat → Nat
+  | 0 => 1
+  | n + 1 => 2 * family n
+
+theorem proven :
+    ∀ n : Nat, 0 < family n
+  | 0 => by decide
+  | n + 1 => by
+      have h := proven n
+      cases h with
+      | refl => simp [family]
+      | step h => simp [family]; lia
+
+theorem after : |(0 : Int)| = 0 := by simp
+end RealRooted.Challenges.Sample
+'''
+        self.write("RealRooted/Challenges/Sample.lean", text)
+        resolved = validate_sources(self.root, load_catalog(self.root))
+        self.assertEqual(
+            resolved["RealRooted.Challenges.Sample.family"].source_code,
+            "def family : Nat → Nat\n  | 0 => 1\n  | n + 1 => 2 * family n",
+        )
+        self.assertEqual(
+            resolved["RealRooted.Challenges.Sample.proven"].source_code,
+            "theorem proven :\n    ∀ n : Nat, 0 < family n",
+        )
+
+    def test_one_line_deprecated_alias_does_not_mark_next_declaration(self) -> None:
+        text = catalog_block() + '''namespace RealRooted.Challenges.Sample
+theorem canonical : True := trivial
+@[deprecated (since := "2026-10-01")] alias oldCanonical := canonical
+theorem proven : True := trivial
+@[simp, deprecated canonical (since := "2026-10-01")] alias oldCanonical' := canonical
+
+theorem other : True := trivial
+end RealRooted.Challenges.Sample
+'''
+        self.write("RealRooted/Challenges/Sample.lean", text)
+        resolved = validate_sources(self.root, load_catalog(self.root))
+        self.assertFalse(resolved["RealRooted.Challenges.Sample.proven"].deprecated)
+        declarations = source_declarations(
+            self.root, self.root / "RealRooted/Challenges/Sample.lean"
+        )
+        self.assertFalse(declarations["RealRooted.Challenges.Sample.other"].deprecated)
 
     def test_owning_module_cannot_escape_repository(self) -> None:
         text = catalog_block(
