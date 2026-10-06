@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.DiagonalRootStep
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.WeightedResidueSum
+import RealRooted.Interlacing.NegativeRoots
+import RealRooted.MaWang.StrictStep
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ResidueAlgebra
 
 /-! # Root package for one weighted diagonal step -/
