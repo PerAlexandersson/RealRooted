@@ -338,6 +338,24 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
   let Dq := rowNumLit D₀
   let Q ← r.seq 0
   let mut failures : Array (MessageData × MessageData) := #[]
+  -- every strategy and window below needs the same degree and leading-coefficient
+  -- hypotheses; prove them once and pass them by name (or leave them to each attempt)
+  let hdegI := mkIdent `hdeg_row
+  let hposI := mkIdent `hpos_row
+  let shared ← `(tactic| (
+    have $hdegI:ident : ∀ n, ($Q n).natDegree = $Dq + n := by
+      intro n; beta_reduce; rr_row_natDegree
+    have $hposI:ident : ∀ n, 0 < ($Q n).leadingCoeff := by
+      intro n; beta_reduce; rr_row_leadingCoeff_pos))
+  let hoisted ← rowSucceeds (withMainContext (evalTactic shared))
+  if hoisted then pre := pre.push shared
+  let apply' (thm : Name) (extra : Array (TSyntax `Lean.Parser.Term.namedArgument)) :
+      TacticM (TSyntax `tactic) := do
+    let hd ← `(Lean.Parser.Term.namedArgument| (hdeg := $hdegI))
+    let hp ← `(Lean.Parser.Term.namedArgument| (hpos := $hposI))
+    let named := if hoisted then extra ++ #[hd, hp] else extra
+    `(tactic| apply $(mkIdent thm):ident (P := $Q) (D₀ := $Dq)
+      $(named.map (⟨·.raw⟩))* $hrec)
   let plain := if shape == .deriv₁ then
       if D₀ == 0 then
         [``RealRooted.derivRec_interlaces_of_eval_nonpos,
@@ -353,7 +371,7 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
     | some t => plain.filter (· == t)
     | none => plain
   for thm in plain do
-    let main ← `(tactic| apply $(mkIdent thm):ident (P := $Q) (D₀ := $Dq) $hrec)
+    let main ← apply' thm #[]
     match ← rowAttempt (applyThenSideFull P main) with
     | .ok tac => return (pre.push tac, { thm := some thm, degree := some D₀ })
     | .error e => failures := failures.push (m!"{thm}", e)
@@ -382,10 +400,9 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
         | none => windows
     for (lo, U) in windows do
       let main ← match lo with
-        | some L => `(tactic| apply $(mkIdent icc):ident (P := $Q) (D₀ := $Dq)
-            (L := ($L : ℝ)) (U := ($U : ℝ)) $hrec)
-        | none => `(tactic| apply $(mkIdent iic):ident (P := $Q) (D₀ := $Dq)
-            (U := ($U : ℝ)) $hrec)
+        | some L => apply' icc #[← `(Lean.Parser.Term.namedArgument| (L := ($L : ℝ))),
+            ← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]
+        | none => apply' iic #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]
       match ← rowAttempt (applyThenSideFull P main) with
       | .ok tac =>
           let h : RowHints := match lo with
