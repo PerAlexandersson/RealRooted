@@ -301,18 +301,17 @@ theorem generalizedSnakeRookModel_natDegree_eq (w : SnakeWord) :
 real-rooted, and deleting the final letter gives an interlacing polynomial.
 
 The source inputs of `nonNestingRookInterlacing_modified_of_sourceInputs` are:
-the auxiliary recurrence and nonnegativity of `G_n - G_{n-1}`
-(`TruncatedStaircase.ColumnRecurrence`); nonnegative coefficients of rook
-polynomials; the constant-word case (`SnakeConstant`); the degree identity
-`deg M_w = |w| + 1`; and the snake recurrence `generalizedSnakeRecurrence`. -/
+nonnegative coefficients of rook polynomials; the constant-word case
+(`SnakeConstant`); the degree identity `deg M_w = |w| + 1`; and the snake
+recurrence `generalizedSnakeRecurrence`.  The auxiliary recurrence and
+nonnegativity of `G_n - G_{n-1}` (`TruncatedStaircase.ColumnRecurrence`) enter
+through `shiftedDifferenceInterlacing_modified`. -/
 theorem snakeInterlacing_generalizedSnakeRookModel {w : SnakeWord} (hw : 1 ≤ w.length) :
     (generalizedSnakeRookModel.snakePolynomial w ≠ 0 ∧
         (generalizedSnakeRookModel.snakePolynomial w).Splits) ∧
       Interlaces (generalizedSnakeRookModel.snakePolynomial w.deleteFinal)
         (generalizedSnakeRookModel.snakePolynomial w) :=
   (nonNestingRookInterlacing_modified_of_sourceInputs
-    narayanaAuxiliaryGRecurrence_modified
-    (fun _ hn => auxiliaryG_sub_hasNonnegCoeffs hn)
     generalizedSnakeRecurrence
     (fun w => rookPolynomial_hasNonnegCoeffs (generalizedSnakeBoard w))
     (fun {w} hw => by

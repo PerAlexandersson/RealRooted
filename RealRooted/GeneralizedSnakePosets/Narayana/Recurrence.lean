@@ -65,20 +65,6 @@ theorem FiniteSkewBoard.truncatedStaircaseRookPolynomial_full_eq_modifiedNarayan
     FiniteSkewBoard.coeff_truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaCoeff
       n k
 
-/-- Unconditional consecutive interlacing for the modified Narayana
-family. -/
-theorem modifiedNarayanaPolynomial_strictInterl_succ (n : ℕ) :
-    StrictInterl (modifiedNarayanaPolynomial n) (modifiedNarayanaPolynomial (n + 1)) :=
-  modifiedNarayanaPolynomial_strictInterl_succ_of_nonnegCoeffs n
-    narayanaQuot_hasNonnegCoeffs
-
-/-- Unconditional consecutive interlacing for the modified Narayana family. -/
-theorem modifiedNarayanaPolynomial_interlaces_succ (n : ℕ) :
-    Interlaces (modifiedNarayanaPolynomial n)
-      (modifiedNarayanaPolynomial (n + 1)) :=
-  modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs n
-    narayanaQuot_hasNonnegCoeffs
-
 /-- Auxiliary-recurrence determines the leading candidate coefficient of the
 auxiliary polynomial `G_n`. -/
 theorem auxiliaryG_coeff_sub_one_of_narayanaRecurrence

@@ -405,7 +405,6 @@ import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAn
 import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
 import RealRooted.GeneralizedSnakePosets.Narayana.Modified
 import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
-import RealRooted.GeneralizedSnakePosets.Narayana.RankSix
 import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
 import RealRooted.GeneralizedSnakePosets.Narayana.Turan

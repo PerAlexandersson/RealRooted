@@ -58,7 +58,7 @@ label = "Modified Narayana polynomials are Pólya-frequency"
 
 [[theorems]]
 name = "RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial_strictInterl_succ"
-module = "RealRooted.GeneralizedSnakePosets.Narayana.Recurrence"
+module = "RealRooted.GeneralizedSnakePosets.Narayana.Modified"
 label = "Consecutive modified Narayana polynomials interlace"
 
 [[theorems]]
@@ -76,6 +76,11 @@ label = "Full truncated staircases have rook polynomial Pₙ"
 name = "RealRooted.Challenges.GeneralizedSnakePosets.auxiliaryG_recurrence"
 module = "RealRooted.Challenges.GeneralizedSnakePosets"
 label = "The auxiliary polynomials Gₙ in terms of Pₙ"
+
+[[theorems]]
+name = "RealRooted.GeneralizedSnakePosets.auxiliaryG_strictInterl_modifiedNarayana"
+module = "RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing"
+label = "The auxiliary polynomial Gₙ interlaces Pₙ"
 
 [[theorems]]
 name = """RealRooted.Challenges.GeneralizedSnakePosets.\
@@ -104,7 +109,10 @@ headline = true
 A generalized snake poset $P(w)$ is a width-two poset built from a word $w$ in
 the letters $L$ and $R$. Braun and Jal show that the $h^*$-polynomial of its
 order polytope is the non-nesting rook polynomial $M_w$ of a skew board whose
-cells are the incomparable cross-chain pairs of $P(w)$.
+cells are the incomparable cross-chain pairs of $P(w)$. This identification is
+cited from Braun–Jal and checked numerically for all words of length at most
+11; it is not formalized. Lean formalizes the rook model: the board, its
+non-nesting rook polynomial $M_w$, and the recurrence below.
 
 **Theorem (Braun–Jal).** If $w$ is nonempty, then $M_w$ is real-rooted, and
 deleting the last letter of $w$ gives a polynomial interlacing $M_w$.
@@ -123,6 +131,7 @@ polynomials.
   $(\lambda x+\nu) P_{m-1} + P_m \ll (\lambda x+\nu) P_m + P_{m+1}$.
 - **Staircase input.** $x\, G_{n-1} = P_n - (1+x) P_{n-1}$, and $G_n - G_{n-1}$
   has nonnegative coefficients.
+- **Auxiliary interlacing.** For $n \geq 1$, $G_n \ll P_n$.
 
 Induction on the length of $w$ along the recurrence then gives the theorem.
 
