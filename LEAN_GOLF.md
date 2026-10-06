@@ -107,3 +107,16 @@ with `<;>`, removed redundant constructors, and cleaned unused hypotheses.
   lake build
   ```
 - Keep `git diff --check` clean.  Avoid introducing new long lines or tabs.
+
+## Finding Slow Proofs
+
+- `scripts/ci_module_times.py --run <id>` ranks modules by compile time from the
+  build log of a CI run that rebuilt the project; `--group 1` sums by directory.
+  CI times include contention between parallel jobs, so use them to rank, not to
+  compare with local timings.
+- `scripts/profile_heartbeats.py <file>` elaborates a temporary copy with
+  `#count_heartbeats in` before each declaration and ranks the declarations.
+  Set `LEAN_CMD` if the project is not built with plain `lake env lean`.
+- For one slow tactic call, `set_option trace.profiler true in` on a scratch copy
+  of the declaration shows which strategy attempts fail and what they cost.
+  Expensive failed attempts in a search loop are the usual target.
