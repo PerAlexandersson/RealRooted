@@ -476,12 +476,21 @@ def verifyCert (goal : MVarId) (cert : Cert) : TacticM Unit := do
   if let .error e := res then
     logWarning m!"rr_row: the printed certificate did not replay: {e}"
 
-/-- Print a certificate and the hinted call as suggestions. -/
+/-- Print a certificate and the hinted call as suggestions, aligned at the column of `tk`
+and in lines of at most 100 characters when `tk` starts its line. -/
 def suggestCert (tk : Syntax) (cert : Cert) (hinted : TSyntax `tactic) : TacticM Unit := do
-  let seq ← cert.toSeq
-  let hinted : TSyntax `tactic := ⟨← cleanSyntax hinted⟩
-  withOptions (·.set `format.width (96 : Nat)) <| Meta.Tactic.TryThis.addSuggestions tk
-    #[{ suggestion := .tsyntax seq }, { suggestion := .tsyntax hinted }]
+  let fileMap ← getFileMap
+  let col := match tk.getPos? with
+    | some pos => (fileMap.toPosition pos).column
+    | none => 2
+  let render (t : TSyntax `tactic) : TacticM String := do
+    let text := (← PrettyPrinter.ppTactic ⟨← cleanSyntax t⟩).pretty (max (100 - col) 60)
+    return "\n".intercalate ((text.splitOn "\n").map fun l => "".pushn ' ' col ++ l)
+  let lines ← cert.mapM render
+  let text := ("\n".intercalate lines.toList).drop col
+  let hintedText := (← render hinted).drop col
+  Meta.Tactic.TryThis.addSuggestions tk
+    #[{ suggestion := .string text.toString }, { suggestion := .string hintedText.toString }]
 
 /-- Run `main`, then close every remaining goal with `rr_row_side`. -/
 def applyThenSide (P? : Option Ident) (main : TSyntax `tactic) : TacticM (TSyntax `tactic) := do
