@@ -61,17 +61,17 @@ example (n : Nat) (hn : 2 ≤ n) :
     sturmDerangementsExc (n + 1) ≠ 0 ∧ (sturmDerangementsExc (n + 1)).Splits := by
   rr_finish using strictInterl_sturmDerangementsExc_succ n hn
 
-example (n : Nat) (hn : 1 ≤ n) :
+example (n : Nat) (hn : n ≠ 0) :
     Interlaces (narayanaQuot n) (narayanaQuot (n + 1)) := by
   have hstrictInterl : StrictInterl (narayanaQuot n) (narayanaQuot (n + 1)) :=
     strictInterl_narayanaQuot_succ n hn
   have hdeg :
       (narayanaQuot n).natDegree + 1 = (narayanaQuot (n + 1)).natDegree := by
-    rw [natDegree_narayanaQuot (n + 1) (by lia), natDegree_narayanaQuot n hn]
+    rw [natDegree_narayanaQuot (n + 1) (by lia), natDegree_narayanaQuot n (by lia)]
     lia
   rr_finish using hstrictInterl, hdeg
 
-example (n : Nat) (hn : 1 ≤ n) :
+example (n : Nat) (hn : n ≠ 0) :
     narayana (n + 1) ≠ 0 ∧ (narayana (n + 1)).Splits := by
   rr_finish using interlaces_narayana_succ n hn
 

@@ -257,11 +257,11 @@ lemma narayanaQuot_one_two_interlaces :
     interlaces_one_linear (p := X + C (1 : ℝ))
       (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
 
-private lemma strictInterl_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
+private lemma strictInterl_narayanaQuot_step (n : ℕ) (hn : n ≠ 0)
     (hInter : Interlaces (narayanaQuot n) (narayanaQuot (n + 1))) :
     StrictInterl (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) := by
   have hg_pos : HasPosLeadingCoeff (narayanaQuot n) :=
-    narayanaQuot_posLeadingCoeff n hn
+    narayanaQuot_posLeadingCoeff n (by lia)
   have hF_pos : HasPosLeadingCoeff (narayanaQuot (n + 2)) :=
     narayanaQuot_posLeadingCoeff (n + 2) (by lia)
   have hdeg_lo :
@@ -355,10 +355,10 @@ theorem narayanaQuot_hasNonnegCoeffs (n : ℕ) :
 
 /-- Oriented interlacing for the quotient Narayana sequence, by a weak
 Liu--Wang induction along the three-term recurrence. -/
-theorem strictInterl_narayanaQuot_succ :
-    ∀ n : Nat, 1 ≤ n → StrictInterl (narayanaQuot n) (narayanaQuot (n + 1))
-  | 0, hn => by
-      lia
+theorem strictInterl_narayanaQuot_succ (n : ℕ) (hn : n ≠ 0) :
+    StrictInterl (narayanaQuot n) (narayanaQuot (n + 1)) :=
+  match n, hn with
+  | 0, hn => absurd rfl hn
   | 1, _ => narayanaQuot_one_two_interlaces.toStrictInterl
   | n + 2, _ => by
       have hprev : StrictInterl (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
@@ -370,22 +370,23 @@ theorem strictInterl_narayanaQuot_succ :
           lia
       exact strictInterl_narayanaQuot_step (n + 1) (by lia) hInter
 
-theorem interlaces_narayanaQuot_succ (n : Nat) (hn : 1 ≤ n) :
+theorem interlaces_narayanaQuot_succ (n : ℕ) (hn : n ≠ 0) :
     Interlaces (narayanaQuot n) (narayanaQuot (n + 1)) :=
   (strictInterl_narayanaQuot_succ n hn).toInterlaces <| by
-    rw [natDegree_narayanaQuot (n + 1) (by lia), natDegree_narayanaQuot n hn]
+    rw [natDegree_narayanaQuot (n + 1) (by lia), natDegree_narayanaQuot n (by lia)]
     lia
 
 /-- Real-rootedness of the quotient Narayana sequence. -/
-theorem isRealRooted_narayanaQuot :
-    ∀ n : Nat, 1 ≤ n → ((narayanaQuot n) ≠ 0 ∧ (narayanaQuot n).Splits)
-  | 0, hn => by lia
+theorem isRealRooted_narayanaQuot (n : ℕ) (hn : n ≠ 0) :
+    narayanaQuot n ≠ 0 ∧ (narayanaQuot n).Splits :=
+  match n, hn with
+  | 0, hn => absurd rfl hn
   | 1, _ => by simp
   | n + 2, _ => (strictInterl_narayanaQuot_succ (n + 1) (by lia)).2.1
 
 /-- Interlacing for the original Narayana sequence. This is the quotient
 result with the common `X` factor reattached on both sides. -/
-theorem interlaces_narayana_succ (n : Nat) (hn : 1 ≤ n) :
+theorem interlaces_narayana_succ (n : ℕ) (hn : n ≠ 0) :
     Interlaces (narayana n) (narayana (n + 1)) := by
   have hstrictInterlQ : StrictInterl (narayanaQuot n) (narayanaQuot (n + 1)) :=
     strictInterl_narayanaQuot_succ n hn
@@ -397,12 +398,13 @@ theorem interlaces_narayana_succ (n : Nat) (hn : 1 ≤ n) :
   have hstrictInterl : StrictInterl (narayana n) (narayana (n + 1)) := by
     simpa [narayana] using hmain
   exact hstrictInterl.toInterlaces (by
-    rw [natDegree_narayana (n + 1) (by lia), natDegree_narayana n hn])
+    rw [natDegree_narayana (n + 1) (by lia), natDegree_narayana n (by lia)])
 
 /-- Real-rootedness of the original Narayana sequence. -/
-theorem isRealRooted_narayana :
-    ∀ n : Nat, 1 ≤ n → ((narayana n) ≠ 0 ∧ (narayana n).Splits)
-  | 0, hn => by lia
+theorem isRealRooted_narayana (n : ℕ) (hn : n ≠ 0) :
+    narayana n ≠ 0 ∧ (narayana n).Splits :=
+  match n, hn with
+  | 0, hn => absurd rfl hn
   | 1, _ => by simp
   | n + 2, _ => (interlaces_narayana_succ (n + 1) (by lia)).1
 
