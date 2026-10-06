@@ -1902,46 +1902,42 @@ macro_rules
         left_nonneg := $hleft_nonneg:term,
         right_nonneg := $hright_nonneg:term,
         sum_step := $hsum_step:term,
-        x_step := $hx_step:term,
-        coprime := $hcop:term) =>
+        x_step := $hx_step:term) =>
       `(tactic|
         exact RealRooted.strictInterl_endpoint_sum_then_X_pair_sequence
-          $hbase $hleft_nonneg $hright_nonneg $hsum_step $hx_step $hcop)
+          $hbase $hleft_nonneg $hright_nonneg $hsum_step $hx_step)
   | `(tactic|
       rr_endpoint_sum_then_X_pair_sequence_realrooted using
         base := $hbase:term,
         left_nonneg := $hleft_nonneg:term,
         right_nonneg := $hright_nonneg:term,
         sum_step := $hsum_step:term,
-        x_step := $hx_step:term,
-        coprime := $hcop:term) =>
+        x_step := $hx_step:term) =>
       `(tactic|
         rr_exact_realrooted_pair_sequence_or_projection
           (RealRooted.isRealRooted_of_endpoint_sum_then_X_pair_sequence
-            $hbase $hleft_nonneg $hright_nonneg $hsum_step $hx_step $hcop))
+            $hbase $hleft_nonneg $hright_nonneg $hsum_step $hx_step))
   | `(tactic|
       rr_endpoint_X_then_sum_pair_sequence using
         base := $hbase:term,
         left_nonneg := $hleft_nonneg:term,
         right_nonneg := $hright_nonneg:term,
         x_step := $hx_step:term,
-        sum_step := $hsum_step:term,
-        coprime := $hcop:term) =>
+        sum_step := $hsum_step:term) =>
       `(tactic|
         exact RealRooted.strictInterl_endpoint_X_then_sum_pair_sequence
-          $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step $hcop)
+          $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step)
   | `(tactic|
       rr_endpoint_X_then_sum_pair_sequence_realrooted using
         base := $hbase:term,
         left_nonneg := $hleft_nonneg:term,
         right_nonneg := $hright_nonneg:term,
         x_step := $hx_step:term,
-        sum_step := $hsum_step:term,
-        coprime := $hcop:term) =>
+        sum_step := $hsum_step:term) =>
       `(tactic|
         rr_exact_realrooted_pair_sequence_or_projection
           (RealRooted.isRealRooted_of_endpoint_X_then_sum_pair_sequence
-            $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step $hcop))
+            $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step))
   | `(tactic|
       rr_endpoint_sum_then_X_pair_lift_sequence using
         base := $hbase:term,
@@ -1949,13 +1945,12 @@ macro_rules
         right_nonneg := $hright_nonneg:term,
         sum_step := $hsum_step:term,
         x_step := $hx_step:term,
-        coprime := $hcop:term,
         even_factorization := $heven:term,
         odd_factorization := $hodd:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_endpoint_sum_then_X_pair_lift_sequence
-            $hbase $hleft_nonneg $hright_nonneg $hsum_step $hx_step $hcop
+            $hbase $hleft_nonneg $hright_nonneg $hsum_step $hx_step
             $heven $hodd))
   | `(tactic|
       rr_endpoint_X_then_sum_pair_lift_sequence using
@@ -1964,13 +1959,12 @@ macro_rules
         right_nonneg := $hright_nonneg:term,
         x_step := $hx_step:term,
         sum_step := $hsum_step:term,
-        coprime := $hcop:term,
         even_factorization := $heven:term,
         odd_factorization := $hodd:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_endpoint_X_then_sum_pair_lift_sequence
-            $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step $hcop
+            $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step
             $heven $hodd))
   | `(tactic|
       rr_endpoint_X_then_sum_pair_lift_swapped_sequence using
@@ -1979,13 +1973,12 @@ macro_rules
         right_nonneg := $hright_nonneg:term,
         x_step := $hx_step:term,
         sum_step := $hsum_step:term,
-        coprime := $hcop:term,
         even_factorization := $heven:term,
         odd_factorization := $hodd:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_endpoint_X_then_sum_pair_lift_swapped_sequence
-            $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step $hcop
+            $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step
             $heven $hodd))
   | `(tactic|
       rr_product_affine_sequence using

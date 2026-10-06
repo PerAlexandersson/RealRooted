@@ -35,23 +35,6 @@ theorem strictInterl_inner_window_lag_sequence_of_nonneg_coeffs {P : Nat → ℝ
           hsource (hnonneg (n + 1)) r hr))
     hrec hdeg_succ hno
 
-/-- Real-rootedness corollary for the inner-window Liu--Wang induction. -/
-theorem isRealRooted_of_inner_window_lag_sequence_of_nonneg_coeffs
-    {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
-    (hB_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r → r ≤ 0 →
-      (B n).eval r ≤ 0)
-    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_strictInterl_chain_from_step <|
-    strictInterl_inner_window_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hroot_lower hB_nonpos hrec hdeg_succ hno
-
 /-- Sequence-level `X(1+X)` lag controlled on the inner root window
 `[-1,0]`. -/
 theorem strictInterl_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -286,23 +269,6 @@ theorem strictInterl_interval_lag_sequence {P : Nat → ℝ[X]} {A B : Nat → �
   strictInterl_nonpos_lag_sequence hbase hpos
     (fun n r hr => hB_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
     hrec hdeg_succ hno
-
-/-- Real-rootedness corollary for the explicit-interval Liu--Wang induction. -/
-theorem isRealRooted_of_interval_lag_sequence
-    {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
-    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
-    (hB_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r →
-      r ≤ -(1 / 2 : ℝ) → (B n).eval r ≤ 0)
-    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_strictInterl_chain_from_step <|
-    strictInterl_interval_lag_sequence
-      hbase hpos hroot_lower hroot_upper hB_nonpos hrec hdeg_succ hno
 
 /-- Sequence-level `(1+X)(1+2X)` lag on the explicit window
 `[-1,-1/2]`. -/
@@ -566,40 +532,6 @@ theorem isRealRooted_of_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeff
   isRealRooted_of_strictInterl_chain_from_step <|
     strictInterl_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
       hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
-
-/-- Sequence-level `X^2-1` lag controlled on the inner root window
-`[-1,0]`. -/
-theorem strictInterl_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
-    {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
-    (hrec : ∀ n : Nat,
-      P (n + 2) = A n * P (n + 1) + (X ^ 2 - 1) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  strictInterl_inner_window_lag_sequence_of_nonneg_coeffs
-    (B := fun _ => X ^ 2 - 1) hbase hpos hnonneg hroot_lower
-    (fun _ _ _ hlo hhi => eval_X_sq_sub_one_nonpos_of_mem_Icc hlo hhi)
-    (fun n => by simpa using hrec n) hdeg_succ hno
-
-/-- Real-rootedness corollary for the `X^2-1` inner-window lag. -/
-theorem isRealRooted_of_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
-    {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
-    (hrec : ∀ n : Nat,
-      P (n + 2) = A n * P (n + 1) + (X ^ 2 - 1) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_strictInterl_chain_from_step <|
-    strictInterl_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
-      hbase hpos hnonneg hroot_lower hrec hdeg_succ hno
 
 /-- Sequence-level `c_n(X^2-1)` lag controlled on the inner root window
 `[-1,0]`. -/

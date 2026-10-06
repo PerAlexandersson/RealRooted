@@ -38,8 +38,7 @@ terms `A₁` and `A₂`, then for `c > 0` the combination `A₁ + A₂ + c * X *
 real-rooted and precedes `X * S`.
 
 The other half of the sandwich, `A₁ + A₂ ≺ A₁ + A₂ + c * X * S`, is
-`partialSum_step_left` below; note that it needs a coprimality hypothesis, since
-`StrictInterl.nonneg_combo_left` does. -/
+`partialSum_step_left` below. -/
 theorem partialSum_step
     {S A₁ A₂ : ℝ[X]} (h₁ : StrictInterl S A₁) (h₂ : StrictInterl S A₂)
     (hSnn : HasNonnegCoeffs S) (h₁nn : HasNonnegCoeffs A₁) (h₂nn : HasNonnegCoeffs A₂)
@@ -73,14 +72,12 @@ theorem partialSum_step
   · exact hcone.isRealRooted_nonneg_combo hsum_pos hXS_pos zero_le_one hc.le
       (Or.inl zero_lt_one)
 
-/-- The left half of the sandwich.  Unlike `partialSum_step` this needs the two
-summands to be coprime, which is the hypothesis `StrictInterl.nonneg_combo_left`
-carries; in applications it has to be supplied from the specific sequence. -/
+/-- The left half of the sandwich: under the hypotheses of `partialSum_step`,
+`A₁ + A₂` precedes `A₁ + A₂ + c * X * S`. -/
 theorem partialSum_step_left
     {S A₁ A₂ : ℝ[X]} (h₁ : StrictInterl S A₁) (h₂ : StrictInterl S A₂)
     (hSnn : HasNonnegCoeffs S) (h₁nn : HasNonnegCoeffs A₁) (h₂nn : HasNonnegCoeffs A₂)
-    {c : ℝ} (hc : 0 < c)
-    (hcop : IsCoprime (C (1 : ℝ) * (A₁ + A₂)) (C c * (X * S))) :
+    {c : ℝ} (hc : 0 < c) :
     StrictInterl (A₁ + A₂) (C (1 : ℝ) * (A₁ + A₂) + C c * (X * S)) := by
   have hA₁ : StrictInterl A₁ (X * S) := strictInterl_to_strictInterl_mul_X_of_nonneg h₁ hSnn h₁nn
   have hA₂ : StrictInterl A₂ (X * S) := strictInterl_to_strictInterl_mul_X_of_nonneg h₂ hSnn h₂nn
@@ -98,9 +95,7 @@ theorem partialSum_step_left
     · exact h
   have hsum_pos : HasPosLeadingCoeff (A₁ + A₂) := (h₁nn.add h₂nn).pos_leadingCoeff hsum0
   have hXS_pos : HasPosLeadingCoeff (X * S) := hSnn.X_mul.pos_leadingCoeff hXS0
-  obtain ⟨hne, hsp⟩ := hcone.isRealRooted_nonneg_combo hsum_pos hXS_pos
-    zero_le_one hc.le (Or.inl zero_lt_one)
   exact hcone.nonneg_combo_left hsum_pos hXS_pos zero_le_one hc.le
-    (Or.inl zero_lt_one) hne hsp hcop
+    (Or.inl zero_lt_one)
 
 end RealRooted

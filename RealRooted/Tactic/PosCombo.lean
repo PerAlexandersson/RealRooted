@@ -454,10 +454,7 @@ syntax (name := rr_pos_combo_nonneg_left_strict_interl_named)
     "right_pos_lc" ":=" term ","
     "left_coeff_nonneg" ":=" term ","
     "right_coeff_nonneg" ":=" term ","
-    "some_coeff_pos" ":=" term ","
-    "combo_ne_zero" ":=" term ","
-    "combo_splits" ":=" term ","
-    "coprime" ":=" term :
+    "some_coeff_pos" ":=" term :
   tactic
 
 syntax (name := rr_pos_combo_convex_left_strict_interl_named)
@@ -466,10 +463,7 @@ syntax (name := rr_pos_combo_convex_left_strict_interl_named)
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "left_coeff_pos" ":=" term ","
-    "right_coeff_pos" ":=" term ","
-    "combo_ne_zero" ":=" term ","
-    "combo_splits" ":=" term ","
-    "coprime" ":=" term :
+    "right_coeff_pos" ":=" term :
   tactic
 
 syntax (name := rr_pos_combo_convex_left_common_factor_strict_interl_named)
@@ -482,10 +476,7 @@ syntax (name := rr_pos_combo_convex_left_common_factor_strict_interl_named)
     "reduced_left_pos_lc" ":=" term ","
     "reduced_right_pos_lc" ":=" term ","
     "left_coeff_pos" ":=" term ","
-    "right_coeff_pos" ":=" term ","
-    "reduced_combo_ne_zero" ":=" term ","
-    "reduced_combo_splits" ":=" term ","
-    "reduced_coprime" ":=" term :
+    "right_coeff_pos" ":=" term :
   tactic
 
 syntax (name := rr_pos_combo_right_natDegree_le_realrooted_named)
@@ -910,26 +901,20 @@ macro_rules
         right_pos_lc := $hgpos:term,
         left_coeff_nonneg := $ha:term,
         right_coeff_nonneg := $hb:term,
-        some_coeff_pos := $hab:term,
-        combo_ne_zero := $hne:term,
-        combo_splits := $hsplits:term,
-        coprime := $hcop:term) =>
+        some_coeff_pos := $hab:term) =>
       `(tactic|
         exact RealRooted.StrictInterl.nonneg_combo_left
-          $hfg $hfpos $hgpos $ha $hb $hab $hne $hsplits $hcop)
+          $hfg $hfpos $hgpos $ha $hb $hab)
   | `(tactic|
       rr_pos_combo_convex_left_strict_interl using
         strictInterl := $hfg:term,
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
         left_coeff_pos := $ha:term,
-        right_coeff_pos := $hb:term,
-        combo_ne_zero := $hne:term,
-        combo_splits := $hsplits:term,
-        coprime := $hcop:term) =>
+        right_coeff_pos := $hb:term) =>
       `(tactic|
         exact RealRooted.StrictInterl.convex_left
-          $hfg $hfpos $hgpos $ha $hb $hne $hsplits $hcop)
+          $hfg $hfpos $hgpos $ha $hb)
   | `(tactic|
       rr_pos_combo_convex_left_common_factor_strict_interl using
         factor_ne_zero := $hdne:term,
@@ -940,14 +925,11 @@ macro_rules
         reduced_left_pos_lc := $hfpos:term,
         reduced_right_pos_lc := $hgpos:term,
         left_coeff_pos := $ha:term,
-        right_coeff_pos := $hb:term,
-        reduced_combo_ne_zero := $hne:term,
-        reduced_combo_splits := $hsplits:term,
-        reduced_coprime := $hcop:term) =>
+        right_coeff_pos := $hb:term) =>
       `(tactic|
         exact RealRooted.StrictInterl.convex_left_of_common_factor
           $hdne $hdsplits $hfdef $hgdef $hfg $hfpos $hgpos
-          $ha $hb $hne $hsplits $hcop)
+          $ha $hb)
   | `(tactic|
       rr_pos_combo_right_natDegree_le_realrooted using
         pos_combo := $hfg:term,
@@ -1140,10 +1122,7 @@ syntax (name := rr_pos_combo_nonneg_left_prec_named_legacy)
     "right_pos_lc" ":=" term ","
     "left_coeff_nonneg" ":=" term ","
     "right_coeff_nonneg" ":=" term ","
-    "some_coeff_pos" ":=" term ","
-    "combo_ne_zero" ":=" term ","
-    "combo_splits" ":=" term ","
-    "coprime" ":=" term :
+    "some_coeff_pos" ":=" term :
   tactic
 
 syntax (name := rr_pos_combo_convex_left_prec_named_legacy)
@@ -1152,10 +1131,7 @@ syntax (name := rr_pos_combo_convex_left_prec_named_legacy)
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "left_coeff_pos" ":=" term ","
-    "right_coeff_pos" ":=" term ","
-    "combo_ne_zero" ":=" term ","
-    "combo_splits" ":=" term ","
-    "coprime" ":=" term :
+    "right_coeff_pos" ":=" term :
   tactic
 
 syntax (name := rr_pos_combo_convex_left_common_factor_prec_named_legacy)
@@ -1168,10 +1144,7 @@ syntax (name := rr_pos_combo_convex_left_common_factor_prec_named_legacy)
     "reduced_left_pos_lc" ":=" term ","
     "reduced_right_pos_lc" ":=" term ","
     "left_coeff_pos" ":=" term ","
-    "right_coeff_pos" ":=" term ","
-    "reduced_combo_ne_zero" ":=" term ","
-    "reduced_combo_splits" ":=" term ","
-    "reduced_coprime" ":=" term :
+    "right_coeff_pos" ":=" term :
   tactic
 
 macro_rules
@@ -1272,26 +1245,20 @@ macro_rules
         right_pos_lc := $hgpos:term,
         left_coeff_nonneg := $ha:term,
         right_coeff_nonneg := $hb:term,
-        some_coeff_pos := $hab:term,
-        combo_ne_zero := $hne:term,
-        combo_splits := $hsplits:term,
-        coprime := $hcop:term) =>
+        some_coeff_pos := $hab:term) =>
       `(tactic|
         exact RealRooted.StrictInterl.nonneg_combo_left
-          $hfg $hfpos $hgpos $ha $hb $hab $hne $hsplits $hcop)
+          $hfg $hfpos $hgpos $ha $hb $hab)
   | `(tactic|
       rr_pos_combo_convex_left_prec using
         prec := $hfg:term,
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
         left_coeff_pos := $ha:term,
-        right_coeff_pos := $hb:term,
-        combo_ne_zero := $hne:term,
-        combo_splits := $hsplits:term,
-        coprime := $hcop:term) =>
+        right_coeff_pos := $hb:term) =>
       `(tactic|
         exact RealRooted.StrictInterl.convex_left
-          $hfg $hfpos $hgpos $ha $hb $hne $hsplits $hcop)
+          $hfg $hfpos $hgpos $ha $hb)
   | `(tactic|
       rr_pos_combo_convex_left_common_factor_prec using
         factor_ne_zero := $hdne:term,
@@ -1302,13 +1269,10 @@ macro_rules
         reduced_left_pos_lc := $hfpos:term,
         reduced_right_pos_lc := $hgpos:term,
         left_coeff_pos := $ha:term,
-        right_coeff_pos := $hb:term,
-        reduced_combo_ne_zero := $hne:term,
-        reduced_combo_splits := $hsplits:term,
-        reduced_coprime := $hcop:term) =>
+        right_coeff_pos := $hb:term) =>
       `(tactic|
         exact RealRooted.StrictInterl.convex_left_of_common_factor
           $hdne $hdsplits $hfdef $hgdef $hfg $hfpos $hgpos
-          $ha $hb $hne $hsplits $hcop)
+          $ha $hb)
 end Tactic
 end RealRooted
