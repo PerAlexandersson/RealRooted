@@ -1,3 +1,5 @@
+import RealRooted.BalancedRunTransformation.Interlacing
+import RealRooted.BalancedRunTransformation.Preservation
 import RealRooted.BinaryRunTransformation.Continuation
 import RealRooted.BinaryRunTransformation.MultiplierMotzkin
 
@@ -23,6 +25,11 @@ label = "Binary-run transformation"
 name = "RealRooted.motzkinWeightedRow"
 module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
 label = "Multiplier-weighted Motzkin rows"
+
+[[definitions]]
+name = "RealRooted.balancedRunTransform"
+module = "RealRooted.BalancedRunTransformation"
+label = "Balanced run transformation"
 
 [[theorems]]
 name = "RealRooted.IsPFPolynomial.binaryRunTransform"
@@ -62,6 +69,16 @@ label = "Monotonicity in α"
 name = "RealRooted.motzkinAscentRow_strictInterl_succ"
 module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
 label = "The rows with weights 1/(m+1)! form a Sturm chain"
+
+[[theorems]]
+name = "RealRooted.IsPFPolynomial.balancedRunTransform"
+module = "RealRooted.BalancedRunTransformation.Preservation"
+label = "The balanced transformation preserves PF polynomials"
+
+[[theorems]]
+name = "RealRooted.strictInterl_balancedRunTransform"
+module = "RealRooted.BalancedRunTransformation.Interlacing"
+label = "The balanced transformation preserves interlacing"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -111,6 +128,16 @@ $\alpha > 0$. The proof uses the shift identity
 $\alpha\, G_n^{(\alpha)} = (\Theta + \alpha)\, G_n^{(\alpha+1)}$, which follows from
 $\alpha\, (\alpha+1)_m = (\alpha+m)(\alpha)_m$. A PF polynomial $g$ of degree at least 2 satisfies
 $g \ll (\Theta + \alpha)\, g$, and the transform preserves interlacing.
+
+## The balanced run transformation
+
+The companion map `balancedRunTransform n` sends $X^m$ to
+$$
+U_{n,m} = \frac{1}{\binom{n}{m}} \sum_k \binom{m}{k}\binom{n-m}{k} X^k .
+$$
+Let $n \ge 2$. If $p$ is a PF polynomial of degree at most $(n+1)/2$, then its
+image is a PF polynomial. If $f \ll g$, both have nonnegative coefficients,
+and $\deg g \le (n+1)/2$, then the images satisfy the same interlacing.
 
 ## Proof idea
 
