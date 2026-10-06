@@ -1,4 +1,5 @@
 import RealRooted.CommonInterleaverSeq
+import RealRooted.MaWang.DerivativeStep
 import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.ProperPositionAndParameters
 import RealRooted.SuccDegreeLeftEndpoint
 
@@ -273,22 +274,6 @@ private theorem shiftedJacobiMonicRoot_base_interlacing_jacobi
           exact shiftedJacobiMonicRoot_isRoot (n + 1) i.succ hα hβ)
     exact hJK_i.trans (hKQ_i.trans hright_strict)
 
-private theorem strictInterl_derivative_of_nonpos_of_pos_natDegree
-    {p u v : ℝ[X]} (hp : p.Splits) (hdegree : 1 ≤ p.natDegree)
-    (hdegreeLower : p.natDegree ≤ (u * p + v * p.derivative).natDegree)
-    (hdegreeUpper : (u * p + v * p.derivative).natDegree ≤ p.natDegree + 1)
-    (houtputPos : HasPosLeadingCoeff (u * p + v * p.derivative))
-    (hpPos : HasPosLeadingCoeff p)
-    (hvNonpos : ∀ r, p.IsRoot r → v.eval r ≤ 0) :
-    StrictInterl p (u * p + v * p.derivative) := by
-  have hderivative : Interlaces p.derivative p :=
-    interlaces_derivative_of_pos_natDegree hpPos.ne_zero hp hpPos hdegree
-  have hderivativePos : HasPosLeadingCoeff p.derivative :=
-    hpPos.derivative (by lia)
-  exact strictInterl_of_interlaces_evalCoeff_nonpos
-    (f := p) (g := p.derivative) (a := u) (b := v)
-    hderivative hderivativePos houtputPos hdegreeLower hdegreeUpper hvNonpos
-
 private theorem exceptionalBasePolynomial_strictInterl_exceptionalEulerInverse
     (m ε : ℕ) {γ : ℝ} (hm : 0 < m) (hγ : 0 < γ)
     (hγlower : (ε : ℝ) + 1 / 2 + m - 1 < γ)
@@ -385,7 +370,7 @@ private theorem exceptionalBasePolynomial_strictInterl_exceptionalEulerInverse
     hasPosLeadingCoeff_C_mul hγ hfPos
   have hstrictInterlComp : StrictInterl u (C γ * f) := by
     rw [hrec]
-    apply strictInterl_derivative_of_nonpos_of_pos_natDegree
+    apply MaWang.strictInterl_derivative_of_nonpos_of_pos_natDegree
     · exact huSplits
     · rw [huDegree]
       exact hm

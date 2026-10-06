@@ -1,4 +1,3 @@
-import RealRooted.NarayanaTransformation.Rectangular.LowDegree
 import RealRooted.NarayanaTransformation.Rectangular.Narayana
 import RealRooted.NarayanaTransformation.Rectangular.Preservation
 

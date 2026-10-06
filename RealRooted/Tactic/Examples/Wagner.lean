@@ -33,13 +33,11 @@ example {f g h : ℝ[X]}
 
 example {f g : ℝ[X]}
     (hf : RealRooted.Wagner.HasNonposRootsPosLeading f)
-    (hg : RealRooted.Wagner.HasNonposRootsPosLeading g)
-    (hdeg : f.natDegree + 1 = g.natDegree) :
+    (hg : RealRooted.Wagner.HasNonposRootsPosLeading g) :
     StrictInterl f g ↔ StrictInterl g (X * f) := by
   rr_wagner_mulX_iff using
     shorter := hf,
-    longer := hg,
-    degree := hdeg
+    longer := hg
 
 example {F G H : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
@@ -71,13 +69,11 @@ example {F G H : Nat → ℝ[X]}
 
 example {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
-    (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
-    (hdeg : ∀ n : Nat, (F n).natDegree + 1 = (G n).natDegree) :
+    (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n)) :
     ∀ n : Nat, StrictInterl (F n) (G n) ↔ StrictInterl (G n) (X * F n) := by
   rr_wagner_mulX_iff_sequence using
     shorter := hF,
-    longer := hG,
-    degree := hdeg
+    longer := hG
 
 example {f g h : ℝ[X]} (hfh : StrictInterl f h) (hgh : StrictInterl g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :

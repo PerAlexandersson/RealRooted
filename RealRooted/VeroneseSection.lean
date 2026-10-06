@@ -7,20 +7,35 @@ import Mathlib.Analysis.Complex.Polynomial.Basic
 /-!
 # Veronese sections
 
-This file starts the formalization of Athanasiadis--Wagner's Veronese-section
-results.  It contains the coefficient-level core: Veronese subsequences
-preserve Toeplitz total nonnegativity, by identifying each Toeplitz minor with
-a subminor of the original Toeplitz matrix.  It also records the two-row Lace
-submatrix statements, the refuted row orientation of the polynomial-to-Lace
-direction, and the converse Hermite--Biehler step for odd/even polynomials.
+This file formalizes the Veronese-section results of Athanasiadis--Wagner.
 
-The unconditional real-rootedness theorem for Veronese sections of
-real-rooted polynomials with nonnegative coefficients is proved separately in
-`RealRooted.VeroneseMatrix`, using a cyclic matrix and interlacing-preserver
-argument.  This file should therefore be read as the Athanasiadis--Wagner
-background, not as the final matrix proof of that real-rootedness consequence.
+* Coefficient level: `IsPolyaFreqSeq.veroneseSectionSeq` shows that Veronese
+  subsequences preserve the Pólya-frequency property, by identifying each
+  Toeplitz minor of a section with a Toeplitz minor of the original sequence.
+* Polynomial level: `isPolyaFreqSeq_veroneseSectionPolynomial_coeff` lifts this
+  to coefficient sequences.  With both directions of Aissen--Schoenberg--Whitney,
+  `splits_veroneseSectionPolynomial_of_splits_nonneg` proves that every Veronese
+  section of a real-rooted polynomial with nonnegative coefficients is zero or
+  real-rooted, with no further hypotheses.
+* Two-row Lace matrices: `FullyInterlacingPair` is preserved by single and
+  paired Veronese sections (`fullyInterlacingPair_veroneseSectionPair`,
+  `fullyInterlacingPair_veroneseSectionPairwise`).  For odd/even polynomials,
+  Hurwitz total nonnegativity is exactly `FullyInterlacingPair`.
+* Refuted orientation: `not_nonnegStrictInterl_fullyInterlacingPair` and
+  `not_isHurwitzStable_oddEven_fullyInterlacingPair` show that the current row
+  orientation of the polynomial-to-Lace direction fails.
+* Odd/even Hermite--Biehler: the forward direction
+  `isHurwitzStable_oddEvenPolynomial_of_strictInterl` is proved.  The converse
+  `strictInterl_of_isHurwitzStable_oddEvenPolynomial` still takes the unproved
+  targets `HurwitzOddEvenToHermiteBiehlerStableStatement` and
+  `HermiteBiehlerConverseOrientedStatement` (issue #1112) as hypotheses.  In
+  the strict-degree case,
+  `strictInterl_of_isHurwitzStable_oddEvenPolynomial_of_natDegree_lt` needs
+  only the first of them.
+
+`RealRooted.VeroneseMatrix` gives a second, matrix-based proof of the
+real-rootedness consequence.
 -/
-
 open Polynomial Matrix
 
 noncomputable section

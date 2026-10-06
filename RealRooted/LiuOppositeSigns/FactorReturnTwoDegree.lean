@@ -1,5 +1,4 @@
 import RealRooted.LiuOppositeSigns.DeletionBranches
-import RealRooted.LiuOppositeSigns.XSub.LeftSuccDegreeThree
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
 
 /-!

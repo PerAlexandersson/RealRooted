@@ -1,4 +1,5 @@
 import RealRooted.ClassicalHurwitzMatrix
+import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
 import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
 import RealRooted.HurwitzMatrix
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
@@ -46,6 +47,14 @@ label = "Hermite–Biehler: stability gives interlacing"
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.classicalHurwitzCriterion"
 label = "Hurwitz criterion via total nonnegativity"
+
+[[theorems]]
+name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hasNonnegCoeffs_of_isRightHalfPlaneStable"
+label = "Weak Hurwitz stability gives nonnegative coefficients"
+
+[[theorems]]
+name = "RealRooted.Challenges.HermiteBiehlerHurwitz.coeff_pos_of_isStrictlyHurwitzStable"
+label = "Strict Hurwitz stability gives positive coefficients"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -66,20 +75,31 @@ nonnegative coefficients and no zeros with positive real part if and only if its
 classical Hurwitz matrix $(a_{2j-i})_{i,j \geq 0}$, with $a_k = 0$ for $k < 0$,
 is totally nonnegative.
 
+**Proposition (coefficient signs).** Let $p$ be a real polynomial with
+positive leading coefficient. If $p$ has no zeros with positive real part, then
+all coefficients of $p$ are nonnegative. If all zeros of $p$ have negative real
+part, then all coefficients $a_0, \dotsc, a_{\deg p}$ are positive.
+
 ## References
 
 O. Holtz, “Hermite–Biehler, Routh–Hurwitz, and total positivity,” *Linear
 Algebra and its Applications* 372 (2003), 105–110.  See also the
 [Hermite–Biehler theorem](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermiteBiehlerTheorem)
-and [Hurwitz criterion](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hurwitzLaceCriterion)
-on symmetricfunctions.com.
+and the [coefficient signs of Hurwitz-stable polynomials](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hurwitzImpliesCoefficientPositivity)
+on symmetricfunctions.com. The related
+[Hurwitz–Lace criterion](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hurwitzLaceCriterion)
+there is stated for a different matrix, built from two polynomials, and is not
+formalized here.
 <!-- /realrooted-catalog-content -->
 
 Human statements:
 
 * Hermite--Biehler:
   https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermiteBiehlerTheorem
-* Hurwitz--Lace criterion:
+* Hurwitz stability implies coefficient positivity:
+  https://www.symmetricfunctions.com/realRootedInterlacing.htm#hurwitzImpliesCoefficientPositivity
+* Related, not formalized: the Hurwitz--Lace criterion, stated for a different
+  matrix:
   https://www.symmetricfunctions.com/realRootedInterlacing.htm#hurwitzLaceCriterion
 
 Classical references include C. Hermite, A. Hurwitz, M. G. Krein, M. A. Naimark,
@@ -156,6 +176,20 @@ theorem classicalHurwitzMatrixCriterionCounterexample_ne_legacy :
   norm_num [Matrix.hurwitz, RealRooted.hurwitz, RealRooted.toeplitz,
     RealRooted.hurwitzMatrixCriterionCounterexample,
     Polynomial.coeff_add, Polynomial.coeff_X_pow, Polynomial.coeff_one] at h00
+
+/-- A real polynomial with positive leading coefficient and no zeros in the
+open right half-plane has nonnegative coefficients. -/
+theorem hasNonnegCoeffs_of_isRightHalfPlaneStable {p : ℝ[X]}
+    (hp : HasPosLeadingCoeff p) (h : IsRightHalfPlaneStable (complexify p)) :
+    HasNonnegCoeffs p :=
+  RealRooted.hasNonnegCoeffs_of_isRightHalfPlaneStable hp h
+
+/-- A real polynomial with positive leading coefficient and all zeros in the
+open left half-plane has every coefficient up to its degree positive. -/
+theorem coeff_pos_of_isStrictlyHurwitzStable {p : ℝ[X]}
+    (h : RealRooted.IsStrictlyHurwitzStable p) (hp : HasPosLeadingCoeff p) {k : ℕ}
+    (hk : k ≤ p.natDegree) : 0 < p.coeff k :=
+  h.coeff_pos hp hk
 
 /-! ### Corrected-convention acceptance regressions -/
 

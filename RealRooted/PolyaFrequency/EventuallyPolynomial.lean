@@ -6,10 +6,16 @@ import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
 /-!
 # Eventually polynomial Pólya-frequency sequences
 
-This file records eventual positivity and ordered initial-column-minor
-nonnegativity for causal forward differences of Pólya-frequency sequences
-whose tails are given by evaluations of a nonzero polynomial.  It does not
-yet prove total nonnegativity of the causal forward difference.
+This file treats Pólya-frequency sequences whose tails are given by
+evaluations of a nonzero polynomial.  It proves that such a sequence is
+eventually positive and that the ordered initial-column minors of the Toeplitz
+matrix of its causal forward difference are nonnegative
+(`IsPolyaFreqSeq.causalFwdDiff_initialMinor_nonneg`).
+
+The children `EventuallyPolynomial.CausalClosure` and
+`EventuallyPolynomial.CausalClosure.ZeroPrefix` use these minors to prove
+total nonnegativity: the causal forward difference is again a Pólya-frequency
+sequence (`IsPolyaFreqSeq.causalFwdDiff_of_eventually_polynomial`).
 -/
 
 open Filter Polynomial Topology

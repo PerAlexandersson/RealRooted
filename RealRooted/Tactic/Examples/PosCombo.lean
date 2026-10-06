@@ -488,10 +488,7 @@ example {f g : ℝ[X]} {a b : ℝ}
     (hg_pos : HasPosLeadingCoeff g)
     (ha : 0 ≤ a)
     (hb : 0 ≤ b)
-    (hab : 0 < a ∨ 0 < b)
-    (hne : C a * f + C b * g ≠ 0)
-    (hsplits : (C a * f + C b * g).Splits)
-    (hcop : IsCoprime (C a * f) (C b * g)) :
+    (hab : 0 < a ∨ 0 < b) :
     StrictInterl f (C a * f + C b * g) := by
   rr_pos_combo_nonneg_left_strict_interl using
     strictInterl := hfg,
@@ -499,30 +496,21 @@ example {f g : ℝ[X]} {a b : ℝ}
     right_pos_lc := hg_pos,
     left_coeff_nonneg := ha,
     right_coeff_nonneg := hb,
-    some_coeff_pos := hab,
-    combo_ne_zero := hne,
-    combo_splits := hsplits,
-    coprime := hcop
+    some_coeff_pos := hab
 
 example {f g : ℝ[X]} {a b : ℝ}
     (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (ha : 0 < a)
-    (hb : 0 < b)
-    (hne : C a * f + C b * g ≠ 0)
-    (hsplits : (C a * f + C b * g).Splits)
-    (hcop : IsCoprime (C a * f) (C b * g)) :
+    (hb : 0 < b) :
     StrictInterl f (C a * f + C b * g) := by
   rr_pos_combo_convex_left_strict_interl using
     strictInterl := hfg,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
     left_coeff_pos := ha,
-    right_coeff_pos := hb,
-    combo_ne_zero := hne,
-    combo_splits := hsplits,
-    coprime := hcop
+    right_coeff_pos := hb
 
 example {d f g f' g' : ℝ[X]} {a b : ℝ}
     (hd_ne : d ≠ 0)
@@ -533,10 +521,7 @@ example {d f g f' g' : ℝ[X]} {a b : ℝ}
     (hf_pos : HasPosLeadingCoeff f')
     (hg_pos : HasPosLeadingCoeff g')
     (ha : 0 < a)
-    (hb : 0 < b)
-    (hne : C a * f' + C b * g' ≠ 0)
-    (hsplits : (C a * f' + C b * g').Splits)
-    (hcop : IsCoprime (C a * f') (C b * g')) :
+    (hb : 0 < b) :
     StrictInterl f (C a * f + C b * g) := by
   rr_pos_combo_convex_left_common_factor_strict_interl using
     factor_ne_zero := hd_ne,
@@ -547,10 +532,7 @@ example {d f g f' g' : ℝ[X]} {a b : ℝ}
     reduced_left_pos_lc := hf_pos,
     reduced_right_pos_lc := hg_pos,
     left_coeff_pos := ha,
-    right_coeff_pos := hb,
-    reduced_combo_ne_zero := hne,
-    reduced_combo_splits := hsplits,
-    reduced_coprime := hcop
+    right_coeff_pos := hb
 
 example {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)

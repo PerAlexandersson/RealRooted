@@ -40,8 +40,7 @@ theorem isRealRooted_of_even_product_odd_X_scalar_sequence
 `b+X(a+b)`. -/
 theorem strictInterl_endpoint_sum_then_X_step {a b : ℝ[X]}
     (hab : StrictInterl a b)
-    (ha_nonneg : HasNonnegCoeffs a) (hb_nonneg : HasNonnegCoeffs b)
-    (hcop : IsCoprime b (X * (a + b))) :
+    (ha_nonneg : HasNonnegCoeffs a) (hb_nonneg : HasNonnegCoeffs b) :
     StrictInterl (a + b) (b + X * (a + b)) := by
   have ha_pos : HasPosLeadingCoeff a :=
     ha_nonneg.pos_leadingCoeff (left_ne_zero_of_strictInterl hab)
@@ -61,21 +60,13 @@ theorem strictInterl_endpoint_sum_then_X_step {a b : ℝ[X]}
         (left_splits_of_strictInterl hsum_strictInterl))
       hsum_nonneg hsum_nonneg
   have hXsum_pos : HasPosLeadingCoeff (X * (a + b)) := hsum_pos.X_mul
-  have hcombo : PosComboRealRooted b (X * (a + b)) :=
-    PosComboRealRooted.of_commonLeftInterleaver
-      hsum_strictInterl hXsum_strictInterl hb_pos hXsum_pos
-  have hrr : b + X * (a + b) ≠ 0 ∧ (b + X * (a + b)).Splits :=
-    PosComboRealRooted.isRealRooted_add hcombo
-  exact
-    StrictInterl.add_of_left
-      hsum_strictInterl hXsum_strictInterl hb_pos hXsum_pos hrr.1 hrr.2 hcop
+  exact hsum_strictInterl.add_of_left hXsum_strictInterl hb_pos hXsum_pos
 
 /-- One endpoint-quotient transition with the parity reversed: first form
 `b+Xa`, then the next row is `a+(b+Xa)`. -/
 theorem strictInterl_endpoint_X_then_sum_step {a b : ℝ[X]}
     (hab : StrictInterl a b)
-    (ha_nonneg : HasNonnegCoeffs a) (hb_nonneg : HasNonnegCoeffs b)
-    (hcop : IsCoprime b (X * a)) :
+    (ha_nonneg : HasNonnegCoeffs a) (hb_nonneg : HasNonnegCoeffs b) :
     StrictInterl (a + (b + X * a)) (b + X * a) := by
   have ha_pos : HasPosLeadingCoeff a :=
     ha_nonneg.pos_leadingCoeff (left_ne_zero_of_strictInterl hab)
@@ -86,12 +77,8 @@ theorem strictInterl_endpoint_X_then_sum_step {a b : ℝ[X]}
       (StrictInterl.refl (left_ne_zero_of_strictInterl hab) (left_splits_of_strictInterl hab))
       ha_nonneg ha_nonneg
   have hXa_pos : HasPosLeadingCoeff (X * a) := ha_pos.X_mul
-  have hcombo : PosComboRealRooted b (X * a) :=
-    PosComboRealRooted.of_commonLeftInterleaver hab hXa_strictInterl hb_pos hXa_pos
-  have hrr : b + X * a ≠ 0 ∧ (b + X * a).Splits :=
-    PosComboRealRooted.isRealRooted_add hcombo
   have ha_sum_strictInterl : StrictInterl a (b + X * a) :=
-    StrictInterl.add_of_left hab hXa_strictInterl hb_pos hXa_pos hrr.1 hrr.2 hcop
+    hab.add_of_left hXa_strictInterl hb_pos hXa_pos
   have hsum_nonneg : HasNonnegCoeffs (b + X * a) :=
     hb_nonneg.add (hasNonnegCoeffs_X.mul ha_nonneg)
   have hsum_pos : HasPosLeadingCoeff (b + X * a) :=
@@ -121,18 +108,16 @@ theorem strictInterl_endpoint_sum_then_X_pair_sequence
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B n)
-    (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1))
-    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1))) :
+    (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1)) :
     ∀ n : Nat, StrictInterl (A n) (B n) := by
   have hpack : ∀ n : Nat, endpointPairPackage A B n :=
     sequence_of_base_and_step ⟨hbase, hA0_nonneg, hB0_nonneg⟩ fun n hP => by
       rcases hP with ⟨hstrictInterl, hA_nonneg, hB_nonneg⟩
-      have hcop' : IsCoprime (B n) (X * (A n + B n)) := by simpa [hstepA n] using hcop n
       have hstrictInterl_next :
           StrictInterl (A (n + 1)) (B (n + 1)) := by
         simpa [hstepA n, hstepB n] using
           strictInterl_endpoint_sum_then_X_step
-            hstrictInterl hA_nonneg hB_nonneg hcop'
+            hstrictInterl hA_nonneg hB_nonneg
       have hA_nonneg_next : HasNonnegCoeffs (A (n + 1)) := by
         rw [hstepA n]
         exact hA_nonneg.add hB_nonneg
@@ -150,12 +135,11 @@ theorem isRealRooted_of_endpoint_sum_then_X_pair_sequence
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B n)
-    (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1))
-    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1))) :
+    (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1)) :
     ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
   isRealRooted_pair_sequence_of_strictInterl_sequence <|
     strictInterl_endpoint_sum_then_X_pair_sequence
-      hbase hA0_nonneg hB0_nonneg hstepA hstepB hcop
+      hbase hA0_nonneg hB0_nonneg hstepA hstepB
 
 /-- Pair-sequence endpoint quotient shell with the parity reversed.
 
@@ -167,8 +151,7 @@ theorem strictInterl_endpoint_X_then_sum_pair_sequence
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
-    (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
-    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n)) :
+    (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1)) :
     ∀ n : Nat, StrictInterl (A n) (B n) := by
   have hpack : ∀ n : Nat, endpointPairPackage A B n :=
     sequence_of_base_and_step ⟨hbase, hA0_nonneg, hB0_nonneg⟩ fun n hP => by
@@ -177,7 +160,7 @@ theorem strictInterl_endpoint_X_then_sum_pair_sequence
           StrictInterl (A (n + 1)) (B (n + 1)) := by
         simpa [hstepB n, hstepA n] using
           strictInterl_endpoint_X_then_sum_step
-            hstrictInterl hA_nonneg hB_nonneg (hcop n)
+            hstrictInterl hA_nonneg hB_nonneg
       have hB_nonneg_next : HasNonnegCoeffs (B (n + 1)) := by
         rw [hstepB n]
         exact hB_nonneg.add (hasNonnegCoeffs_X.mul hA_nonneg)
@@ -195,12 +178,11 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_sequence
     (hA0_nonneg : HasNonnegCoeffs (A 0))
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
-    (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
-    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n)) :
+    (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1)) :
     ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
   isRealRooted_pair_sequence_of_strictInterl_sequence <|
     strictInterl_endpoint_X_then_sum_pair_sequence
-      hbase hA0_nonneg hB0_nonneg hstepB hstepA hcop
+      hbase hA0_nonneg hB0_nonneg hstepB hstepA
 
 /-- Endpoint quotient plus endpoint-power lift for a single row sequence.
 
@@ -213,14 +195,13 @@ theorem isRealRooted_of_endpoint_sum_then_X_pair_lift_sequence
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B n)
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1))
-    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1)))
     (hrowA : ∀ n : Nat, P (2 * n) = (X + C t) ^ (mA n) * A n)
     (hrowB : ∀ n : Nat, P (2 * n + 1) = (X + C t) ^ (mB n) * B n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   have hquot :
       ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
     isRealRooted_of_endpoint_sum_then_X_pair_sequence
-      hbase hA0_nonneg hB0_nonneg hstepA hstepB hcop
+      hbase hA0_nonneg hB0_nonneg hstepA hstepB
   have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits :=
     isRealRooted_of_X_add_C_pow_lift_sequence
       (P := fun n => P (2 * n)) (Q := A) (t := t) (m := mA)
@@ -240,14 +221,13 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_sequence
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
-    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n))
     (hrowA : ∀ n : Nat, P (2 * n) = (X + C t) ^ (mA n) * A n)
     (hrowB : ∀ n : Nat, P (2 * n + 1) = (X + C t) ^ (mB n) * B n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   have hquot :
       ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
     isRealRooted_of_endpoint_X_then_sum_pair_sequence
-      hbase hA0_nonneg hB0_nonneg hstepB hstepA hcop
+      hbase hA0_nonneg hB0_nonneg hstepB hstepA
   have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits :=
     isRealRooted_of_X_add_C_pow_lift_sequence
       (P := fun n => P (2 * n)) (Q := A) (t := t) (m := mA)
@@ -272,14 +252,13 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_swapped_sequence
     (hB0_nonneg : HasNonnegCoeffs (B 0))
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
-    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n))
     (hrowB : ∀ n : Nat, P (2 * n) = (X + C t) ^ (mB n) * B n)
     (hrowA : ∀ n : Nat, P (2 * n + 1) = (X + C t) ^ (mA n) * A n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   have hquot :
       ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
     isRealRooted_of_endpoint_X_then_sum_pair_sequence
-      hbase hA0_nonneg hB0_nonneg hstepB hstepA hcop
+      hbase hA0_nonneg hB0_nonneg hstepB hstepA
   have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits :=
     isRealRooted_of_X_add_C_pow_lift_sequence
       (P := fun n => P (2 * n)) (Q := B) (t := t) (m := mB)

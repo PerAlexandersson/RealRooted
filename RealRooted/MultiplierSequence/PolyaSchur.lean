@@ -9,10 +9,12 @@ the checked finite Pólya--Schur theorem. It characterizes nonnegative
 multiplier sequences and PF multiplier sequences by all of their Jensen
 polynomials.
 
-The classical entire-function and Laguerre--Pólya classification requires
-analytic infrastructure not present here and is intentionally left to a
-separate follow-up project, tracked by GitHub issue #563; no analytic statement
-scaffold is introduced.
+The analytic children under `PolyaSchur/` (`Analytic`, `Limit`, `Growth`,
+`LaguerrePolya`) prove the rescaled Jensen limits, closure under pointwise
+limits, the exponential-growth majorant and the forward bridge from a
+multiplier sequence to a Laguerre--Pólya limit function. Neither direction of
+the classical entire-function classification is proved, and no analytic
+statement scaffold is introduced.
 -/
 
 open Polynomial

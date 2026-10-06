@@ -15,9 +15,6 @@ namespace RealRooted.LiuWang
 private lemma oneNonneg : 0 ≤ (1 : ℝ) :=
   by norm_num
 
-private lemma oneNonnegSeq : ∀ _ : Nat, 0 ≤ (1 : ℝ) :=
-  fun _ => oneNonneg
-
 /-- Two-polynomial Liu--Wang wrapper with no tail summands.  This is the
 common recurrence shape `F = a*f + b*g`, where `g` interlaces `f` and `b` has
 the correct sign at the roots of `f`. -/
@@ -106,25 +103,6 @@ theorem strictInterl_positive_X_lag_of_roots_nonpos {f g a : ℝ[X]}
       (by simpa using hdeg_hi)
       hno)
 
-/-- Affine half-line lag `c t - a`, using an explicit nonpositive-root
-certificate for the current polynomial. -/
-theorem strictInterl_C_mul_X_sub_C_lag_of_roots_nonpos
-    {f g A : ℝ[X]} {c a : ℝ}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
-    (hc : 0 ≤ c)
-    (ha : 0 ≤ a)
-    (hF_pos : HasPosLeadingCoeff (A * f + (C c * X - C a) * g))
-    (hdeg_lo : f.natDegree ≤ (A * f + (C c * X - C a) * g).natDegree)
-    (hdeg_hi : (A * f + (C c * X - C a) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (A * f + (C c * X - C a) * g) :=
-  strictInterl_two_of_nonpos hgf hg_pos hF_pos hdeg_lo hdeg_hi hno
-    (fun r hr =>
-      eval_C_mul_X_sub_C_nonpos_of_nonneg_of_nonneg_of_nonpos
-        hc ha (hf_roots r hr))
-
 /-- Positive `t`-lag Liu--Wang step, using nonnegative coefficients to get
 the nonpositive-root certificate. -/
 theorem strictInterl_positive_t_lag_of_nonneg_coeffs {f g a : ℝ[X]} {c : ℝ}
@@ -159,63 +137,6 @@ theorem strictInterl_positive_t_lag_of_nonneg_coeffs_of_recurrence
     (by rw [← hrec, ← hdeg_succ]; lia)
     (by rw [← hrec, ← hdeg_succ])
     hno
-
-/-- Affine half-line lag `c t - a`, deriving the root half-line certificate
-from nonnegative coefficients of the current row. -/
-theorem strictInterl_C_mul_X_sub_C_lag_of_nonneg_coeffs
-    {f g A : ℝ[X]} {c a : ℝ}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_nonneg : HasNonnegCoeffs f)
-    (hc : 0 ≤ c)
-    (ha : 0 ≤ a)
-    (hF_pos : HasPosLeadingCoeff (A * f + (C c * X - C a) * g))
-    (hdeg_lo : f.natDegree ≤ (A * f + (C c * X - C a) * g).natDegree)
-    (hdeg_hi : (A * f + (C c * X - C a) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (A * f + (C c * X - C a) * g) :=
-  strictInterl_C_mul_X_sub_C_lag_of_roots_nonpos hgf hg_pos
-    (roots_nonpos_of_interlaces_of_nonneg_coeffs hgf hf_nonneg)
-    hc ha hF_pos hdeg_lo hdeg_hi hno
-
-/-- Positive affine lag `c(a+t)`, using an explicit upper root bound
-`r <= -a` for the current polynomial.  This is the shifted-root-location
-version of the positive `t` lag. -/
-theorem strictInterl_positive_affine_lag_of_roots_upper
-    {f g A : ℝ[X]} {c a : ℝ}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_roots : ∀ r, f.IsRoot r → r ≤ -a)
-    (hc : 0 ≤ c)
-    (hF_pos : HasPosLeadingCoeff (A * f + (C c * (C a + X)) * g))
-    (hdeg_lo : f.natDegree ≤ (A * f + (C c * (C a + X)) * g).natDegree)
-    (hdeg_hi : (A * f + (C c * (C a + X)) * g).natDegree ≤
-      f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (A * f + (C c * (C a + X)) * g) :=
-  strictInterl_two_of_nonpos hgf hg_pos hF_pos hdeg_lo hdeg_hi hno
-    (fun r hr =>
-      eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg hc (hf_roots r hr))
-
-/-- Unit positive affine lag `a+t`, using an explicit upper root bound
-`r <= -a` for the current polynomial. -/
-theorem strictInterl_C_add_X_lag_of_roots_upper
-    {f g A : ℝ[X]} {a : ℝ}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_roots : ∀ r, f.IsRoot r → r ≤ -a)
-    (hF_pos : HasPosLeadingCoeff (A * f + (C a + X) * g))
-    (hdeg_lo : f.natDegree ≤ (A * f + (C a + X) * g).natDegree)
-    (hdeg_hi : (A * f + (C a + X) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (A * f + (C a + X) * g) := by
-  simpa using
-    (strictInterl_positive_affine_lag_of_roots_upper
-      (c := 1) hgf hg_pos hf_roots oneNonneg
-      (by simpa using hF_pos)
-      (by simpa using hdeg_lo)
-      (by simpa using hdeg_hi)
-      hno)
 
 /-- Positive `t Q(t)` lag, using an explicit nonpositive-root certificate for
 the current polynomial and nonnegativity of `Q` at those roots. -/
@@ -284,116 +205,6 @@ theorem strictInterl_positive_C_mul_X_mul_lag_of_nonneg_coeffs
   strictInterl_positive_C_mul_X_mul_lag_of_roots_nonpos hgf hg_pos
     (roots_nonpos_of_interlaces_of_nonneg_coeffs hgf hf_nonneg)
     hc hq_nonneg hF_pos hdeg_lo hdeg_hi hno
-
-/-- Family E `t(1-t)` Liu--Wang step with an explicit half-line root
-certificate. -/
-theorem strictInterl_X_mul_one_sub_X_lag_of_roots_nonpos {f g a : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
-    (hF_pos : HasPosLeadingCoeff (a * f + (X * (1 - X)) * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + (X * (1 - X)) * g).natDegree)
-    (hdeg_hi : (a * f + (X * (1 - X)) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (a * f + (X * (1 - X)) * g) :=
-  strictInterl_two_of_nonpos hgf hg_pos hF_pos hdeg_lo hdeg_hi hno
-    (fun _r hr => eval_X_mul_one_sub_X_nonpos_of_nonpos (hf_roots _ hr))
-
-/-- Family E `t(1-t)` Liu--Wang step, deriving the half-line root bound from
-nonnegative coefficients of the current row. -/
-theorem strictInterl_X_mul_one_sub_X_lag_of_nonneg_coeffs {f g a : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_nonneg : HasNonnegCoeffs f)
-    (hF_pos : HasPosLeadingCoeff (a * f + (X * (1 - X)) * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + (X * (1 - X)) * g).natDegree)
-    (hdeg_hi : (a * f + (X * (1 - X)) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (a * f + (X * (1 - X)) * g) :=
-  strictInterl_X_mul_one_sub_X_lag_of_roots_nonpos hgf hg_pos
-    (roots_nonpos_of_interlaces_of_nonneg_coeffs hgf hf_nonneg)
-    hF_pos hdeg_lo hdeg_hi hno
-
-/-- Family E `t(a-bt)` Liu--Wang step with an explicit half-line root
-certificate. -/
-theorem strictInterl_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
-    {f g A : ℝ[X]} {a b : ℝ}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (ha : 0 ≤ a)
-    (hb : 0 ≤ b)
-    (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
-    (hF_pos : HasPosLeadingCoeff (A * f + (X * (C a - C b * X)) * g))
-    (hdeg_lo : f.natDegree ≤ (A * f + (X * (C a - C b * X)) * g).natDegree)
-    (hdeg_hi :
-      (A * f + (X * (C a - C b * X)) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (A * f + (X * (C a - C b * X)) * g) :=
-  strictInterl_two_of_nonpos hgf hg_pos hF_pos hdeg_lo hdeg_hi hno
-    (fun r hr =>
-      eval_X_mul_C_sub_C_mul_X_nonpos_of_nonneg_of_nonneg_of_nonpos
-        ha hb (hf_roots r hr))
-
-/-- Family E `t(a-bt)` Liu--Wang step, deriving the half-line root bound from
-nonnegative coefficients of the current row. -/
-theorem strictInterl_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
-    {f g A : ℝ[X]} {a b : ℝ}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_nonneg : HasNonnegCoeffs f)
-    (ha : 0 ≤ a)
-    (hb : 0 ≤ b)
-    (hF_pos : HasPosLeadingCoeff (A * f + (X * (C a - C b * X)) * g))
-    (hdeg_lo : f.natDegree ≤ (A * f + (X * (C a - C b * X)) * g).natDegree)
-    (hdeg_hi :
-      (A * f + (X * (C a - C b * X)) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (A * f + (X * (C a - C b * X)) * g) :=
-  strictInterl_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hgf hg_pos ha hb
-    (roots_nonpos_of_interlaces_of_nonneg_coeffs hgf hf_nonneg)
-    hF_pos hdeg_lo hdeg_hi hno
-
-/-- Family E `c t(a-bt)` Liu--Wang step with an explicit half-line root
-certificate. -/
-theorem strictInterl_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos
-    {f g A : ℝ[X]} {c a b : ℝ}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hc : 0 ≤ c)
-    (ha : 0 ≤ a)
-    (hb : 0 ≤ b)
-    (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
-    (hF_pos : HasPosLeadingCoeff (A * f + (C c * X * (C a - C b * X)) * g))
-    (hdeg_lo :
-      f.natDegree ≤ (A * f + (C c * X * (C a - C b * X)) * g).natDegree)
-    (hdeg_hi :
-      (A * f + (C c * X * (C a - C b * X)) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (A * f + (C c * X * (C a - C b * X)) * g) :=
-  strictInterl_two_of_nonpos hgf hg_pos hF_pos hdeg_lo hdeg_hi hno
-    (fun r hr =>
-      eval_C_mul_X_mul_C_sub_C_mul_X_nonpos hc ha hb (hf_roots r hr))
-
-/-- Family E `c t(a-bt)` Liu--Wang step, deriving the half-line root bound
-from nonnegative coefficients of the current row. -/
-theorem strictInterl_C_mul_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
-    {f g A : ℝ[X]} {c a b : ℝ}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_nonneg : HasNonnegCoeffs f)
-    (hc : 0 ≤ c)
-    (ha : 0 ≤ a)
-    (hb : 0 ≤ b)
-    (hF_pos : HasPosLeadingCoeff (A * f + (C c * X * (C a - C b * X)) * g))
-    (hdeg_lo :
-      f.natDegree ≤ (A * f + (C c * X * (C a - C b * X)) * g).natDegree)
-    (hdeg_hi :
-      (A * f + (C c * X * (C a - C b * X)) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    StrictInterl f (A * f + (C c * X * (C a - C b * X)) * g) :=
-  strictInterl_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hgf hg_pos hc ha hb
-    (roots_nonpos_of_interlaces_of_nonneg_coeffs hgf hf_nonneg)
-    hF_pos hdeg_lo hdeg_hi hno
 
 /-- Globally nonpositive negative-square lag Liu--Wang step. -/
 theorem strictInterl_negative_square_lag {f g a q : ℝ[X]} {c : ℝ}

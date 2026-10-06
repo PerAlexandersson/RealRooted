@@ -27,12 +27,10 @@ theorem, refutation, or production caller. They contain no admission.
 | Topic | Checked declaration |
 | --- | --- |
 | Real finite-symbol sufficiency | `BorceaBranden.finiteSymbolTheorem` |
-| Complex finite-symbol classification | `Challenges.BorceaBranden.finiteComplexSymbolClassification` |
-| Complex finite-symbol necessity | `Challenges.BorceaBranden.rankOne_or_algebraicSymbol_stable_of_preserves` |
+| Complex finite-symbol classification | `BorceaBranden.finiteComplexSymbolClassification` |
+| Complex finite-symbol necessity | `BorceaBranden.rankOne_or_algebraicSymbol_stable_of_preserves` |
 | Bidiagonal PF preservation | `bidiagonalPFPreserver_of_affineSymbol` |
 | General Jensen-pencil bidiagonal PF preservation | `BidiagonalJensenPencilCertificate.toPFPreserver` |
-| Jensen-pencil bidiagonal PF preservation in degree at most one | `jensenPencilBidiagonalPreserver_of_degree_le_one` |
-| Jensen-pencil degree-two boundary with `beta 2 = 0` | `jensenPencilBidiagonalPreserver_two_of_beta_two_eq_zero` |
 | Jensen certificate gives endpoint compatibility | `BidiagonalJensenPencilCertificate.compatible` |
 | Jensen output as two Schur--Szegő compositions | `bidiagonalOperator_eq_schurSzegoComp` |
 | Schur--Szegő Jensen compatibility contraction | `schurSzegoPreservesJensenPencilCompatibility` |
@@ -54,6 +52,10 @@ Refuted statements are recorded as checked theorems with an explicit negated
 | --- | --- |
 | Nonconstant forward half of the published Liu Theorem 2.1, without the common-root branch | `LiuOppositeSigns.not_forall_theorem21RootCountBranches_of_compatible_nonconstant` |
 | Row-oriented converse Hurwitz-matrix criterion | `not_forall_isHurwitzStable_of_hurwitz_isTotallyNonneg` |
+| Row-oriented forward Hurwitz-matrix criterion: Hurwitz stability gives a totally nonnegative Hurwitz matrix | `not_forall_isHurwitzStable_hurwitz_isTotallyNonneg` |
+| A Hurwitz-stable odd/even polynomial has fully interlacing coefficient sequences | `not_isHurwitzStable_oddEven_fullyInterlacingPair` |
+| A nonnegative strictly interlacing pair has fully interlacing coefficient sequences | `not_nonnegStrictInterl_fullyInterlacingPair` |
+| Entrywise products of totally nonnegative Hurwitz matrices are totally nonnegative | `not_hurwitz_schurProduct_isTotallyNonneg` |
 
 One exception is kept for a downstream consumer:
 `RowThresholdMatricesPreserveInterlacingSeqNonneg` is false as stated. Its

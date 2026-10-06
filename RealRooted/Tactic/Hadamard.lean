@@ -22,19 +22,6 @@ theorem schurSzegoComp_splits_of_nonzero {n : ℕ} {f p : ℝ[X]}
   Or.resolve_left
     (finiteSchurSzegoComposition hf hfdeg hpdeg hsplits) hout
 
-theorem schurSzegoComp_splits_of_level_le_two {n : ℕ} {f p : ℝ[X]}
-    (hn : n ≤ 2)
-    (hf : IsPFPolynomial f)
-    (hfdeg : f.natDegree ≤ n)
-    (hpdeg : p.natDegree ≤ n)
-    (hsplits : p.Splits)
-    (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits :=
-  Or.resolve_left
-    (finiteSchurSzegoComposition_of_natDegree_le_two
-      hn hf hfdeg hpdeg hsplits)
-    hout
-
 theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_two
     {n : ℕ} {f p : ℝ[X]}
     (hf : IsPFPolynomial f)
@@ -80,21 +67,6 @@ theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_three_cubicNum
   Or.resolve_left
     (finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscrNumerator_nonneg
       hn hfdeg hnum)
-    hout
-
-theorem schurSzegoComp_splits_of_pf_factor_degree_le_three_num_leftDegree
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f)
-    (hfdeg : f.natDegree ≤ 3)
-    (hfn : f.natDegree ≤ n)
-    (hpdeg : p.natDegree ≤ n)
-    (hsplits : p.Splits)
-    (hnum : 3 ≤ n → 0 ≤ schurSzegoCompCubicDiscrNumerator n f p)
-    (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits :=
-  Or.resolve_left
-    (finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_num_nonneg
-      hf hfdeg hfn hpdeg hsplits hnum)
     hout
 
 theorem schurSzegoComp_sequence_zero_or_splits {N : Nat → ℕ}
@@ -431,8 +403,8 @@ macro_rules
         input_degree := $hpdeg:term,
         input_splits := $hsplits:term) =>
       `(tactic|
-        exact RealRooted.finiteSchurSzegoComposition_of_natDegree_le_two
-          $hn $hf $hfdeg $hpdeg $hsplits)
+        (have _ := $hn
+         exact RealRooted.finiteSchurSzegoComposition $hf $hfdeg $hpdeg $hsplits))
   | `(tactic|
       rr_schur_szego_level_le_two_splits using
         level_le_two := $hn:term,
@@ -442,8 +414,9 @@ macro_rules
         input_splits := $hsplits:term,
         nonzero := $hout:term) =>
       `(tactic|
-        exact RealRooted.Tactic.schurSzegoComp_splits_of_level_le_two
-          $hn $hf $hfdeg $hpdeg $hsplits $hout)
+        (have _ := $hn
+         exact RealRooted.Tactic.schurSzegoComp_splits_of_nonzero
+           $hf $hfdeg $hpdeg $hsplits $hout))
   | `(tactic|
       rr_schur_szego_pf_factor_degree_le_two using
         pf_factor := $hf:term,
@@ -529,9 +502,9 @@ macro_rules
         input_splits := $hsplits:term,
         cubic_numerator := $hnum:term) =>
       `(tactic|
-        exact
-          finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_num_nonneg
-            $hf $hfdeg $hfn $hpdeg $hsplits $hnum)
+        (have _ := $hfdeg
+         have _ := $hnum
+         exact RealRooted.finiteSchurSzegoComposition $hf $hfn $hpdeg $hsplits))
   | `(tactic|
       rr_schur_szego_pf_factor_degree_le_three_num_left_degree_splits using
         pf_factor := $hf:term,
@@ -542,9 +515,10 @@ macro_rules
         cubic_numerator := $hnum:term,
         nonzero := $hout:term) =>
       `(tactic|
-        exact
-          RealRooted.Tactic.schurSzegoComp_splits_of_pf_factor_degree_le_three_num_leftDegree
-            $hf $hfdeg $hfn $hpdeg $hsplits $hnum $hout)
+        (have _ := $hfdeg
+         have _ := $hnum
+         exact RealRooted.Tactic.schurSzegoComp_splits_of_nonzero
+           $hf $hfn $hpdeg $hsplits $hout))
   | `(tactic|
       rr_schur_szego_nonzero using
         pf_factor := $hf:term,

@@ -1,4 +1,4 @@
-import RealRooted.NarayanaTransformation.Rectangular.LowDegree
+import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Narayana rectangular convolution coefficient transport.

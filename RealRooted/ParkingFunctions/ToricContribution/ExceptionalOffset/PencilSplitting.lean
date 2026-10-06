@@ -236,12 +236,12 @@ private theorem exceptionalPencilExteriorDensity_crossing_pos
         (neg_pos.mpr hpair)
 
 /-- Algebraic P6 identity for an arbitrary signed pencil member. -/
-theorem jacobiBetaZeroFunctional_exceptionalPencil_mul_eq
+theorem shiftedJacobiFunctional_exceptionalPencil_mul_eq
     (m ε : ℕ) {γ₁ γ₂ a b : ℝ} (p : ℝ[X])
     (hγ₁ : (ε : ℝ) + 1 / 2 + m - 1 < γ₁)
     (hγ₂ : (ε : ℝ) + 1 / 2 + m - 1 < γ₂)
     (hp : p.natDegree < m) :
-    jacobiBetaZeroFunctional ((ε : ℝ) - 1 / 2)
+    shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
         ((C a * exceptionalEulerInverse m ε γ₁ +
           C b * exceptionalEulerInverse m ε γ₂) * p) =
       -(a * (exceptionalEulerInverse m ε γ₁).eval 1) *
@@ -250,16 +250,16 @@ theorem jacobiBetaZeroFunctional_exceptionalPencil_mul_eq
         (b * (exceptionalEulerInverse m ε γ₂).eval 1) *
           exceptionalExteriorFunctional
             ((ε : ℝ) + 1 / 2) γ₂ p := by
-  rw [add_mul, jacobiBetaZeroFunctional_add]
+  rw [add_mul, shiftedJacobiFunctional_add]
   rw [show C a * exceptionalEulerInverse m ε γ₁ * p =
       C a * (exceptionalEulerInverse m ε γ₁ * p) by ring,
     show C b * exceptionalEulerInverse m ε γ₂ * p =
       C b * (exceptionalEulerInverse m ε γ₂ * p) by ring,
-    jacobiBetaZeroFunctional_C_mul,
-    jacobiBetaZeroFunctional_C_mul,
-    jacobiBetaZeroFunctional_exceptionalEulerInverse_mul_eq
+    shiftedJacobiFunctional_C_mul,
+    shiftedJacobiFunctional_C_mul,
+    shiftedJacobiFunctional_exceptionalEulerInverse_mul_eq
       m ε p hγ₁ hp,
-    jacobiBetaZeroFunctional_exceptionalEulerInverse_mul_eq
+    shiftedJacobiFunctional_exceptionalEulerInverse_mul_eq
       m ε p hγ₂ hp]
   ring
 
@@ -370,8 +370,12 @@ theorem exceptionalEulerInverse_pencil_signedMomentIdentity
     c γ₁ p hγ₁p
   have hint₂ := integrableOn_exceptionalExteriorIntegrand
     c γ₂ p hγ₂p
-  rw [← jacobiBetaZeroFunctional_eq_integral hα]
-  rw [jacobiBetaZeroFunctional_exceptionalPencil_mul_eq
+  have hfun : ∀ q : ℝ[X], (∫ x : ℝ in 0..1, q.eval x * x ^ ((ε : ℝ) - 1 / 2)) =
+      shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0 q := fun q => by
+    rw [shiftedJacobiFunctional_eq_integral hα (by norm_num)]
+    simp [shiftedJacobiIntegrand, shiftedJacobiWeight]
+  rw [hfun]
+  rw [shiftedJacobiFunctional_exceptionalPencil_mul_eq
     m ε p hγ₁ hγ₂ hp]
   rw [exceptionalExteriorFunctional_eq_integral c γ₁ p hγ₁p,
     exceptionalExteriorFunctional_eq_integral c γ₂ p hγ₂p]
@@ -487,11 +491,12 @@ private theorem interiorRootProduct_signedIntegral_pos
   let f : ℝ → ℝ := fun x =>
     q.eval 1 * ((q * (P * t)).eval x * x ^ α)
   have hfInt : IntervalIntegrable f volume 0 1 := by
-    have h := intervalIntegrable_jacobiBetaZeroIntegrand hα
+    have h := intervalIntegrable_shiftedJacobiIntegrand hα (by norm_num : (-1 : ℝ) < 0)
       (C (q.eval 1) * (q * (P * t)))
     convert h using 1
     ext x
-    simp only [f, eval_mul, eval_C]
+    simp only [f, shiftedJacobiIntegrand, shiftedJacobiWeight, eval_mul, eval_C,
+      Real.rpow_zero, mul_one]
     ring
   have hfNonneg : 0 ≤ᵐ[volume.restrict (Set.uIoc 0 1)] f := by
     rw [Set.uIoc_of_le zero_le_one, Filter.EventuallyLE,

@@ -68,22 +68,6 @@ theorem isRealRooted_of_nonpos_lag_sequence {P : Nat → ℝ[X]}
   isRealRooted_of_strictInterl_chain_from_step <|
     strictInterl_nonpos_lag_sequence hbase hpos hB_nonpos hrec hdeg_succ hno
 
-/-- Real-rootedness corollary for sequence-level nonpositive-lag Liu--Wang
-induction with an inductive lag-sign certificate. -/
-theorem isRealRooted_of_nonpos_lag_sequence_of_inductive_nonpos
-    {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hB_nonpos : ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits →
-      ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
-    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_strictInterl_chain_from_step <|
-    strictInterl_nonpos_lag_sequence_of_inductive_nonpos
-      hbase hpos hB_nonpos hrec hdeg_succ hno
-
 /-- Denominator-fused Liu--Wang induction for a scalar left factor.
 
 This wrapper consumes the raw OEIS-style recurrence

@@ -20,7 +20,7 @@ label = "The common-left version"
 
 [[theorems]]
 name = "RealRooted.Challenges.Wagner.mulX_iff"
-label = "Multiplication by x reverses interlacing"
+label = "Multiplication by x reverses interlacing, in either degree pattern"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -28,10 +28,10 @@ label = "Multiplication by x reverses interlacing"
 
 If $f$ and $g$ have positive leading coefficients and both interlace $h$,
 then $f + g$ interlaces $h$. Likewise, if $f$ and $g$ have positive leading
-coefficients and $h$ interlaces both, then $h$ interlaces $f + g$. For
-polynomials with nonpositive roots and positive leading coefficients whose
-degrees differ by one, multiplication by $X$ reverses the interlacing
-orientation.
+coefficients and $h$ interlaces both, then $h$ interlaces $f + g$. If every
+real root of $f$ and of $g$ is nonpositive, then $f$ interlaces $g$ if and only
+if $g$ interlaces $Xf$. No degree condition is needed: both $\deg g = \deg f + 1$
+and $\deg g = \deg f$ are covered.
 
 ## References
 
@@ -68,21 +68,19 @@ interlaces both, then `h` interlaces `f + g`. -/
 theorem commonLeft_add {f g h : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hhf : StrictInterl h f) (hhg : StrictInterl h g) :
-    StrictInterl h (f + g) := by
-  simpa using RealRooted.StrictInterl.sum_left_of_common_left_signed [f, g] h
-    (by simp [hhf, hhg]) (by simp [hf, hg]) (by simp)
+    StrictInterl h (f + g) :=
+  RealRooted.StrictInterl.add_of_left hhf hhg hf hg
 
-/-- Wagner (3): `f` interlaces `g` if and only if `g` interlaces `X * f`.
+/-- Wagner (3): if every real root of `f` and of `g` is nonpositive, then `f`
+interlaces `g` if and only if `g` interlaces `X * f`.
 
 This is the Lean orientation of the catalog statement
-`g \interl f` iff `f \interl t g`: here `f` is the shorter polynomial and
-`g` is the longer one. -/
+`g \interl f` iff `f \interl t g`.  No degree hypothesis is needed: either
+side forces `g.natDegree = f.natDegree + 1` or `g.natDegree = f.natDegree`. -/
 theorem mulX_iff {f g : ℝ[X]}
-    (hf : RealRooted.Wagner.HasNonposRootsPosLeading f)
-    (hg : RealRooted.Wagner.HasNonposRootsPosLeading g)
-    (hdeg : f.natDegree + 1 = g.natDegree) :
+    (hf : ∀ r ∈ f.roots, r ≤ 0) (hg : ∀ r ∈ g.roots, r ≤ 0) :
     StrictInterl f g ↔ StrictInterl g (X * f) :=
-  RealRooted.Wagner.mulX_iff hf hg hdeg
+  RealRooted.strictInterl_iff_mul_X_of_roots_nonpos hf hg
 
 end Wagner
 end Challenges

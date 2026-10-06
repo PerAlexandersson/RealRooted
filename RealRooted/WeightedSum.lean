@@ -11,11 +11,10 @@ the Wagner addition theorems.
 On the common-right side, the positive-leading-coefficient version of Wagner (1)
 is strong enough to handle arbitrary finite nonnegative weighted sums.
 
-On the common-left side, Wagner (2) still needs compatibility data for genuine
-two-term sums, namely real-rootedness of the resulting combination and
-coprimeness of the summands after any shared factor has been removed.  For
-finite weighted sums, this is packaged below as an inductive compatibility
-predicate.
+On the common-left side, `WeightedCompatibleLeft` packages finite weighted sums
+as an inductive predicate.  Its real-rootedness and coprimeness fields predate
+the hypothesis-free form of Wagner (2), `StrictInterl.add_of_left`, and are no
+longer used by `WeightedCompatibleLeft.toStrictInterl`.
 -/
 
 open Polynomial
@@ -257,12 +256,12 @@ lemma toStrictInterl {h : ℝ[X]} :
       simpa [weightedSum, weightedSum_cons] using StrictInterl.C_mul_right hstrictInterl ha.ne'
   | _, cons_zero ha _ _ hl => by
       simpa [weightedSum, weightedSum_cons, ha] using toStrictInterl hl
-  | _, @cons_pos _ a p l ha hstrictInterl hpos hl hrr_ne hrr_splits hcop => by
+  | _, @cons_pos _ a p l ha hstrictInterl hpos hl _ _ _ => by
       have hCa_pos : HasPosLeadingCoeff (C a * p) := hasPosLeadingCoeff_C_mul ha hpos
       exact StrictInterl.add_of_left
         (StrictInterl.C_mul_right hstrictInterl ha.ne')
         (toStrictInterl hl)
-        hCa_pos (hasPosLeadingCoeff hl) hrr_ne hrr_splits hcop
+        hCa_pos (hasPosLeadingCoeff hl)
 
 lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
     ∀ {l : List ℝ[X]},

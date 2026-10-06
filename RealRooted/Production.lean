@@ -1,12 +1,3 @@
-import RealRooted.ASWCubicCharacteristic
-import RealRooted.ASWCubicClosedForm
-import RealRooted.ASWCubicClosedFormAdapter
-import RealRooted.ASWCubicDegreeThree
-import RealRooted.ASWCubicDominance
-import RealRooted.ASWCubicEqualModulus
-import RealRooted.ASWCubicMinors
-import RealRooted.ASWCubicNonrealFactor
-import RealRooted.ASWCubicRecurrence
 import RealRooted.ASWKarlinKernel
 import RealRooted.ASWKarlinMatrix
 import RealRooted.ASWKarlinSineBounds
@@ -414,7 +405,6 @@ import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAn
 import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
 import RealRooted.GeneralizedSnakePosets.Narayana.Modified
 import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
-import RealRooted.GeneralizedSnakePosets.Narayana.RankSix
 import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
 import RealRooted.GeneralizedSnakePosets.Narayana.Turan
@@ -503,7 +493,6 @@ import RealRooted.Jacobi.DifferentialOperator
 import RealRooted.Jacobi.Favard
 import RealRooted.Jacobi.Orthogonality
 import RealRooted.Jacobi.Orthogonality.Integral
-import RealRooted.Jacobi.BetaZeroOrthogonality
 import RealRooted.Jacobi.Markoff
 import RealRooted.JacobiOrthogonality
 import RealRooted.Jacobi.ParameterInterlacing
@@ -527,25 +516,12 @@ import RealRooted.Linear
 import RealRooted.LinearPowerFamily
 import RealRooted.LiuOppositeSigns
 import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
-import RealRooted.LiuOppositeSigns.CommonInterleaverConsequences
 import RealRooted.LiuOppositeSigns.DeletionBranches
 import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
 import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
 import RealRooted.LiuOppositeSigns.FactorReturnAssembly
 import RealRooted.LiuOppositeSigns.FactorReturnLeft
 import RealRooted.LiuOppositeSigns.FactorReturnTwoDegree
-import RealRooted.LiuOppositeSigns.ForwardCubicLinear
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.Average
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.LowerSideDouble
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.LowerSideStrict
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.MiddleGap
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RightProtruding
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderAssembly
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderLower
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderMiddle
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderStatement
-import RealRooted.LiuOppositeSigns.ForwardCubicQuadratic.RootOrderUpper
-import RealRooted.LiuOppositeSigns.ForwardLowDegree
 import RealRooted.LiuOppositeSigns.JensenRootCount
 import RealRooted.LiuOppositeSigns.NoCommonRoots
 import RealRooted.LiuOppositeSigns.NonnegCoeffs
@@ -560,15 +536,6 @@ import RealRooted.LiuOppositeSigns.Theorem21Statements.CommonRootDeletion
 import RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces
 import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing
 import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing.Witnesses
-import RealRooted.LiuOppositeSigns.XSub.CubicCubic
-import RealRooted.LiuOppositeSigns.XSub.CubicCubic.Basic
-import RealRooted.LiuOppositeSigns.XSub.CubicCubic.CubicSubQuadratic
-import RealRooted.LiuOppositeSigns.XSub.CubicCubic.Endpoints
-import RealRooted.LiuOppositeSigns.XSub.CubicCubic.LeftOutlier
-import RealRooted.LiuOppositeSigns.XSub.CubicCubic.LeftRepeated
-import RealRooted.LiuOppositeSigns.XSub.CubicCubic.MiddleCases
-import RealRooted.LiuOppositeSigns.XSub.CubicCubic.RightRepeated
-import RealRooted.LiuOppositeSigns.XSub.CubicQuadratic
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
@@ -579,20 +546,10 @@ import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.TailSigns
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.UpperTail
 import RealRooted.LiuOppositeSigns.XSub.LeftSucc
-import RealRooted.LiuOppositeSigns.XSub.LeftSuccDegreeThree
-import RealRooted.LiuOppositeSigns.XSub.LeftSuccDegreeTwo
 import RealRooted.LiuOppositeSigns.XSub.LinearQuadratic
 import RealRooted.LiuOppositeSigns.XSub.ProperPosition
 import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
 import RealRooted.LiuOppositeSigns.XSub.QuadraticQuadratic
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubic
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.Assembly
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.EndpointZero
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.QuarticSubQuadratic
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedLeft
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubicBoundary.RepeatedRight
-import RealRooted.LiuOppositeSigns.XSub.QuarticCubicCommonRoot
 import RealRooted.LiuOppositeSigns.XSub.SameDegree
 import RealRooted.LiuOppositeSigns.XSub.SplittingTools
 import RealRooted.LiuOppositeSigns.Theorem
@@ -824,7 +781,6 @@ import RealRooted.MultiplierSequence.Bidiagonal.Jensen
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree
 import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
 import RealRooted.MultiplierSequence.Infinite
 import RealRooted.MultiplierSequence.Sign
@@ -864,7 +820,6 @@ import RealRooted.NarayanaTransformation.Endpoints
 import RealRooted.NarayanaTransformation.Falling
 import RealRooted.NarayanaTransformation.Gamma
 import RealRooted.NarayanaTransformation.Rectangular
-import RealRooted.NarayanaTransformation.Rectangular.LowDegree
 import RealRooted.NarayanaTransformation.Rectangular.Narayana
 import RealRooted.NarayanaTransformation.Rectangular.Preservation
 import RealRooted.NarayanaTransformation.Recurrences
@@ -1208,7 +1163,6 @@ import RealRooted.WangYeh.TriangularMatrix
 import RealRooted.WeightedSum
 import RealRooted.Wronskian
 import RealRooted.Wronskian.Algebra
-import RealRooted.Wronskian.Converse
 import RealRooted.Wronskian.Forward
 import RealRooted.Wronskian.PolarLaguerre
 import RealRooted.Wronskian.Successor
@@ -1419,6 +1373,17 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.WeightedResidueSum
 import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.Bezoutian
 import RealRooted.Bezoutian.Successor
+import RealRooted.Challenges.SmallInterlacingMatrices
+import RealRooted.Hermite.PoulainInterlacing
+import RealRooted.Hadamard.FiniteReflection
+import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
+import RealRooted.MultiplierSequence.PolyaSchur.Schur
+import RealRooted.Challenges.DerivativeInterlacing
+import RealRooted.Challenges.TotallyNonnegativeMatrices
+import RealRooted.Challenges.GammaTransform
+import RealRooted.Challenges.HeilmannLieb
+import RealRooted.Challenges.GraceApolarity
+import RealRooted.Challenges.RealStability
 
 /-!
 # RealRooted production umbrella
