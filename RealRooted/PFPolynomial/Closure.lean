@@ -122,9 +122,9 @@ theorem interl_of_pf_coeff_tendsto_of_natDegree_le
   right
   right
   have hp₀pos : HasPosLeadingCoeff p₀ :=
-    hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hp₀pf.hasNonnegCoeffs hp₀zero
+    HasNonnegCoeffs.pos_leadingCoeff hp₀pf.hasNonnegCoeffs hp₀zero
   have hq₀pos : HasPosLeadingCoeff q₀ :=
-    hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hq₀pf.hasNonnegCoeffs hq₀zero
+    HasNonnegCoeffs.pos_leadingCoeff hq₀pf.hasNonnegCoeffs hq₀zero
   let H : ℕ → ℂ[X] := fun k => hermiteBiehlerPolynomial (q k) (p k)
   let H₀ : ℂ[X] := hermiteBiehlerPolynomial q₀ p₀
   have hHdeg : ∀ k, (H k).natDegree ≤ N := by
@@ -186,9 +186,9 @@ theorem interl_of_pf_coeff_tendsto_of_natDegree_le
     · right
       dsimp only [H]
       exact hermiteBiehlerForwardPos
-        (hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero
+        (HasNonnegCoeffs.pos_leadingCoeff
           (hq k).hasNonnegCoeffs hpq.2.1.1)
-        (hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero
+        (HasNonnegCoeffs.pos_leadingCoeff
           (hp k).hasNonnegCoeffs hpq.1.1)
         hpq
   have hH₀zero : H₀ ≠ 0 := by

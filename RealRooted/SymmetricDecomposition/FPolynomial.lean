@@ -182,26 +182,8 @@ lemma eval_one_pos_of_hasNonnegCoeffs {h : ℝ[X]}
       (Finset.mem_range.mpr (Nat.lt_succ_self _))
   grind
 
-lemma eval_pos_of_hasNonnegCoeffs_of_pos {h : ℝ[X]}
-    (hh : HasNonnegCoeffs h) (h0 : h ≠ 0) {x : ℝ} (hx : 0 < x) :
-    0 < h.eval x := by
-  have heval :
-      h.eval x = ∑ i ∈ Finset.range (h.natDegree + 1), h.coeff i * x ^ i :=
-    Polynomial.eval_eq_sum_range (p := h) (x := x)
-  rw [heval]
-  have hpow_pos : 0 < x ^ h.natDegree := pow_pos hx _
-  have htop_coeff : 0 < h.leadingCoeff := hh.pos_leadingCoeff h0
-  have htop_term : 0 < h.leadingCoeff * x ^ h.natDegree :=
-    mul_pos htop_coeff hpow_pos
-  have hle :
-      h.leadingCoeff * x ^ h.natDegree ≤
-        ∑ i ∈ Finset.range (h.natDegree + 1), h.coeff i * x ^ i :=
-    Finset.single_le_sum
-      (s := Finset.range (h.natDegree + 1))
-      (f := fun i => h.coeff i * x ^ i)
-      (fun i hi => mul_nonneg (hh i) (pow_nonneg hx.le _))
-      (Finset.mem_range.mpr (Nat.lt_succ_self _))
-  grind
+@[deprecated eval_pos_of_hasNonnegCoeffs (since := "2026-10-06")]
+alias eval_pos_of_hasNonnegCoeffs_of_pos := eval_pos_of_hasNonnegCoeffs
 
 lemma fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero {d : ℕ} {h : ℝ[X]}
     (hd : h.natDegree ≤ d) (hh : HasNonnegCoeffs h) (h0 : h ≠ 0) :
@@ -779,7 +761,7 @@ lemma root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasN
         have hdiv_pos : 0 < x / (1 + x) := div_pos_of_neg_of_neg hx_neg h1x_neg
         simpa [untransformRoot] using hdiv_pos
       have hpx_pos : 0 < p.eval (untransformRoot x) :=
-        eval_pos_of_hasNonnegCoeffs_of_pos hpnn hp0 hux_pos
+        eval_pos_of_hasNonnegCoeffs hpnn hp0 hux_pos
       rw [eval_fPolynomial_eq_mul_eval_untransform (d := p.natDegree) (p := p)
         le_rfl hxm1] at hx_root
       have hpow_ne : (1 + x) ^ p.natDegree ≠ 0 :=

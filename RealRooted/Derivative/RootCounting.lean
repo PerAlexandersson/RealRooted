@@ -54,141 +54,71 @@ private lemma exists_pair_mem_lt_of_one_lt_card {m : Multiset ℝ}
   | inl hlt => exact ⟨r₁, r₂, hr₁, hr₂, hlt⟩
   | inr hgt => exact ⟨r₂, r₁, hr₂, hr₁, hgt⟩
 
-/-- Rolle-type interval root-count bound.  If `p.derivative` has no root in
-the half-open interval `(a, b]`, then `p` has at most one root there, counted
-with multiplicity. -/
-theorem card_roots_filter_Ioc_le_one_of_derivative_no_root
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
-    (hno : ∀ x, a < x → x ≤ b → ¬ p.derivative.IsRoot x) :
-    (p.roots.filter (fun r => a < r ∧ r ≤ b)).card ≤ 1 := by
-  have _ : p ≠ 0 := hp
+/-- Rolle-type root-count bound.  If `p.derivative` has no root on an order-connected set
+`P`, then `p` has at most one root in `P`, counted with multiplicity. -/
+theorem card_roots_filter_le_one_of_derivative_no_root
+    {p : ℝ[X]} {P : ℝ → Prop} [DecidablePred P]
+    (hP : ∀ x y z, P x → P z → x ≤ y → y ≤ z → P y)
+    (hno : ∀ x, P x → ¬ p.derivative.IsRoot x) :
+    (p.roots.filter P).card ≤ 1 := by
   by_contra h_contra
-  have h_nodup : (p.roots.filter (fun r => a < r ∧ r ≤ b)).Nodup := by
-    refine Multiset.nodup_iff_count_le_one.mpr ?_
-    intro x
-    by_cases hx : a < x ∧ x ≤ b
-    · have hcount :
-          (p.roots.filter (fun r => a < r ∧ r ≤ b)).count x =
-            p.rootMultiplicity x := by
+  have h_nodup : (p.roots.filter P).Nodup := by
+    refine Multiset.nodup_iff_count_le_one.mpr fun x ↦ ?_
+    by_cases hx : P x
+    · have hcount : (p.roots.filter P).count x = p.rootMultiplicity x := by
         simp [hx, count_roots]
       simpa [hcount] using Nat.le_of_not_lt fun h =>
-        hno x hx.1 hx.2 <| isRoot_derivative_of_rootMultiplicity_ge_two h
-    · have hcount :
-          (p.roots.filter (fun r => a < r ∧ r ≤ b)).count x = 0 := by
-        simp [hx]
-      rw [hcount]
-      exact Nat.zero_le _
+        hno x hx <| isRoot_derivative_of_rootMultiplicity_ge_two h
+    · simp [hx]
   obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :=
-    exists_pair_mem_lt_of_one_lt_card
-      (m := p.roots.filter (fun r => a < r ∧ r ≤ b))
+    exists_pair_mem_lt_of_one_lt_card (m := p.roots.filter P)
       (Nat.lt_of_not_ge h_contra) h_nodup
   obtain ⟨c, hc₁, hc₂, hc₃⟩ : ∃ c, r₁ < c ∧ c < r₂ ∧ p.derivative.IsRoot c := by
     apply exists_root_derivative_between hr₁r₂
     · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₁).1
     · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₂).1
-  exact hno c (by linarith [Multiset.mem_filter.mp hr₁])
-    (by linarith [Multiset.mem_filter.mp hr₂]) hc₃
+  exact hno c (hP r₁ c r₂ (Multiset.mem_filter.mp hr₁).2 (Multiset.mem_filter.mp hr₂).2
+    hc₁.le hc₂.le) hc₃
+
+/-- Rolle-type interval root-count bound.  If `p.derivative` has no root in
+the half-open interval `(a, b]`, then `p` has at most one root there, counted
+with multiplicity. -/
+theorem card_roots_filter_Ioc_le_one_of_derivative_no_root
+    {p : ℝ[X]} {a b : ℝ}
+    (hno : ∀ x, a < x → x ≤ b → ¬ p.derivative.IsRoot x) :
+    (p.roots.filter (fun r => a < r ∧ r ≤ b)).card ≤ 1 :=
+  card_roots_filter_le_one_of_derivative_no_root
+    (fun _ _ _ hx hz hxy hyz ↦ ⟨by linarith [hx.1], by linarith [hz.2]⟩)
+    fun x hx ↦ hno x hx.1 hx.2
 
 /-- Direct #42 Rolle-type strict-open interval root-count bound.  If
 `p.derivative` has no root in `(a, b)`, then `p` has at most one root there,
 counted with multiplicity. -/
 theorem card_roots_filter_Ioo_le_one_of_derivative_no_root
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    {p : ℝ[X]} {a b : ℝ}
     (hno : ∀ x, a < x → x < b → ¬ p.derivative.IsRoot x) :
-    (p.roots.filter (fun r => a < r ∧ r < b)).card ≤ 1 := by
-  have _ : p ≠ 0 := hp
-  by_contra h_contra
-  have h_nodup : (p.roots.filter (fun r => a < r ∧ r < b)).Nodup := by
-    refine Multiset.nodup_iff_count_le_one.mpr ?_
-    intro x
-    by_cases hx : a < x ∧ x < b
-    · have hcount :
-          (p.roots.filter (fun r => a < r ∧ r < b)).count x =
-            p.rootMultiplicity x := by
-        simp [hx, count_roots]
-      simpa [hcount] using Nat.le_of_not_lt fun h =>
-        hno x hx.1 hx.2 <| isRoot_derivative_of_rootMultiplicity_ge_two h
-    · have hcount :
-          (p.roots.filter (fun r => a < r ∧ r < b)).count x = 0 := by
-        simp [hx]
-      rw [hcount]
-      exact Nat.zero_le _
-  obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :=
-    exists_pair_mem_lt_of_one_lt_card
-      (m := p.roots.filter (fun r => a < r ∧ r < b))
-      (Nat.lt_of_not_ge h_contra) h_nodup
-  obtain ⟨c, hc₁, hc₂, hc₃⟩ : ∃ c, r₁ < c ∧ c < r₂ ∧ p.derivative.IsRoot c := by
-    apply exists_root_derivative_between hr₁r₂
-    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₁).1
-    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₂).1
-  exact hno c (by linarith [Multiset.mem_filter.mp hr₁])
-    (by linarith [Multiset.mem_filter.mp hr₂]) hc₃
+    (p.roots.filter (fun r => a < r ∧ r < b)).card ≤ 1 :=
+  card_roots_filter_le_one_of_derivative_no_root
+    (fun _ _ _ hx hz hxy hyz ↦ ⟨by linarith [hx.1], by linarith [hz.2]⟩)
+    fun x hx ↦ hno x hx.1 hx.2
 
 /-- Rolle-type root-count bound for the half-open interval `[a, b)`. -/
 theorem card_roots_filter_Ico_le_one_of_derivative_no_root
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    {p : ℝ[X]} {a b : ℝ}
     (hno : ∀ x, a ≤ x → x < b → ¬ p.derivative.IsRoot x) :
-    (p.roots.filter (fun r => a ≤ r ∧ r < b)).card ≤ 1 := by
-  have _ : p ≠ 0 := hp
-  by_contra h_contra
-  have h_nodup : (p.roots.filter (fun r => a ≤ r ∧ r < b)).Nodup := by
-    refine Multiset.nodup_iff_count_le_one.mpr ?_
-    intro x
-    by_cases hx : a ≤ x ∧ x < b
-    · have hcount :
-          (p.roots.filter (fun r => a ≤ r ∧ r < b)).count x =
-            p.rootMultiplicity x := by
-        simp [hx, count_roots]
-      simpa [hcount] using Nat.le_of_not_lt fun h =>
-        hno x hx.1 hx.2 <| isRoot_derivative_of_rootMultiplicity_ge_two h
-    · have hcount :
-          (p.roots.filter (fun r => a ≤ r ∧ r < b)).count x = 0 := by
-        simp [hx]
-      rw [hcount]
-      exact Nat.zero_le _
-  obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :=
-    exists_pair_mem_lt_of_one_lt_card
-      (m := p.roots.filter (fun r => a ≤ r ∧ r < b))
-      (Nat.lt_of_not_ge h_contra) h_nodup
-  obtain ⟨c, hc₁, hc₂, hc₃⟩ : ∃ c, r₁ < c ∧ c < r₂ ∧ p.derivative.IsRoot c := by
-    apply exists_root_derivative_between hr₁r₂
-    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₁).1
-    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₂).1
-  exact hno c (by linarith [Multiset.mem_filter.mp hr₁])
-    (by linarith [Multiset.mem_filter.mp hr₂]) hc₃
+    (p.roots.filter (fun r => a ≤ r ∧ r < b)).card ≤ 1 :=
+  card_roots_filter_le_one_of_derivative_no_root
+    (fun _ _ _ hx hz hxy hyz ↦ ⟨by linarith [hx.1], by linarith [hz.2]⟩)
+    fun x hx ↦ hno x hx.1 hx.2
 
 /-- Rolle-type root-count bound for the closed interval `[a, b]`. -/
 theorem card_roots_filter_Icc_le_one_of_derivative_no_root
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    {p : ℝ[X]} {a b : ℝ}
     (hno : ∀ x, a ≤ x → x ≤ b → ¬ p.derivative.IsRoot x) :
-    (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).card ≤ 1 := by
-  have _ : p ≠ 0 := hp
-  by_contra h_contra
-  have h_nodup : (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).Nodup := by
-    refine Multiset.nodup_iff_count_le_one.mpr ?_
-    intro x
-    by_cases hx : a ≤ x ∧ x ≤ b
-    · have hcount :
-          (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).count x =
-            p.rootMultiplicity x := by
-        simp [hx, count_roots]
-      simpa [hcount] using Nat.le_of_not_lt fun h =>
-        hno x hx.1 hx.2 <| isRoot_derivative_of_rootMultiplicity_ge_two h
-    · have hcount :
-          (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).count x = 0 := by
-        simp [hx]
-      rw [hcount]
-      exact Nat.zero_le _
-  obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :=
-    exists_pair_mem_lt_of_one_lt_card
-      (m := p.roots.filter (fun r => a ≤ r ∧ r ≤ b))
-      (Nat.lt_of_not_ge h_contra) h_nodup
-  obtain ⟨c, hc₁, hc₂, hc₃⟩ : ∃ c, r₁ < c ∧ c < r₂ ∧ p.derivative.IsRoot c := by
-    apply exists_root_derivative_between hr₁r₂
-    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₁).1
-    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₂).1
-  exact hno c (by linarith [Multiset.mem_filter.mp hr₁])
-    (by linarith [Multiset.mem_filter.mp hr₂]) hc₃
+    (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).card ≤ 1 :=
+  card_roots_filter_le_one_of_derivative_no_root
+    (fun _ _ _ hx hz hxy hyz ↦ ⟨by linarith [hx.1], by linarith [hz.2]⟩)
+    fun x hx ↦ hno x hx.1 hx.2
 
 private lemma exists_isRoot_derivative_of_one_lt_card_roots_filter
     {p : ℝ[X]} {q : ℝ → Prop} [DecidablePred q]
@@ -201,46 +131,46 @@ private lemma exists_isRoot_derivative_of_one_lt_card_roots_filter
 
 /-- Contrapositive Rolle wrapper for `(a, b)`. -/
 theorem exists_isRoot_derivative_mem_Ioo_of_one_lt_card_roots
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    {p : ℝ[X]} {a b : ℝ}
     (hcard : 1 < (p.roots.filter (fun r => a < r ∧ r < b)).card) :
     ∃ x, a < x ∧ x < b ∧ p.derivative.IsRoot x := by
   simpa [and_assoc] using
     exists_isRoot_derivative_of_one_lt_card_roots_filter
       (q := fun x => a < x ∧ x < b) hcard
-      (fun hno => card_roots_filter_Ioo_le_one_of_derivative_no_root hp
+      (fun hno => card_roots_filter_Ioo_le_one_of_derivative_no_root
         (fun x hax hxb => hno x ⟨hax, hxb⟩))
 
 /-- Contrapositive Rolle wrapper for `(a, b]`. -/
 theorem exists_isRoot_derivative_mem_Ioc_of_one_lt_card_roots
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    {p : ℝ[X]} {a b : ℝ}
     (hcard : 1 < (p.roots.filter (fun r => a < r ∧ r ≤ b)).card) :
     ∃ x, a < x ∧ x ≤ b ∧ p.derivative.IsRoot x := by
   simpa [and_assoc] using
     exists_isRoot_derivative_of_one_lt_card_roots_filter
       (q := fun x => a < x ∧ x ≤ b) hcard
-      (fun hno => card_roots_filter_Ioc_le_one_of_derivative_no_root hp
+      (fun hno => card_roots_filter_Ioc_le_one_of_derivative_no_root
         (fun x hax hxb => hno x ⟨hax, hxb⟩))
 
 /-- Contrapositive Rolle wrapper for `[a, b]`. -/
 theorem exists_isRoot_derivative_mem_Icc_of_one_lt_card_roots
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    {p : ℝ[X]} {a b : ℝ}
     (hcard : 1 < (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).card) :
     ∃ x, a ≤ x ∧ x ≤ b ∧ p.derivative.IsRoot x := by
   simpa [and_assoc] using
     exists_isRoot_derivative_of_one_lt_card_roots_filter
       (q := fun x => a ≤ x ∧ x ≤ b) hcard
-      (fun hno => card_roots_filter_Icc_le_one_of_derivative_no_root hp
+      (fun hno => card_roots_filter_Icc_le_one_of_derivative_no_root
         (fun x hax hxb => hno x ⟨hax, hxb⟩))
 
 /-- Contrapositive Rolle wrapper for `[a, b)`. -/
 theorem exists_isRoot_derivative_mem_Ico_of_one_lt_card_roots
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    {p : ℝ[X]} {a b : ℝ}
     (hcard : 1 < (p.roots.filter (fun r => a ≤ r ∧ r < b)).card) :
     ∃ x, a ≤ x ∧ x < b ∧ p.derivative.IsRoot x := by
   simpa [and_assoc] using
     exists_isRoot_derivative_of_one_lt_card_roots_filter
       (q := fun x => a ≤ x ∧ x < b) hcard
-      (fun hno => card_roots_filter_Ico_le_one_of_derivative_no_root hp
+      (fun hno => card_roots_filter_Ico_le_one_of_derivative_no_root
         (fun x hax hxb => hno x ⟨hax, hxb⟩))
 
 /-! ## Root-count transfer from `p` to its derivative
@@ -267,34 +197,34 @@ private lemma one_le_card_roots_filter_derivative_of_exists
 
 /-- Rolle transfer on the open interval `(a, b)`. -/
 theorem one_le_card_roots_filter_derivative_Ioo_of_one_lt_card_roots
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    {p : ℝ[X]} {a b : ℝ}
     (hcard : 1 < (p.roots.filter (fun r => a < r ∧ r < b)).card) :
     1 ≤ (p.derivative.roots.filter (fun r => a < r ∧ r < b)).card := by
   refine one_le_card_roots_filter_derivative_of_exists hcard ?_
-  simpa [and_assoc] using exists_isRoot_derivative_mem_Ioo_of_one_lt_card_roots hp hcard
+  simpa [and_assoc] using exists_isRoot_derivative_mem_Ioo_of_one_lt_card_roots hcard
 
 /-- Rolle transfer on the half-open interval `(a, b]`. -/
 theorem one_le_card_roots_filter_derivative_Ioc_of_one_lt_card_roots
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    {p : ℝ[X]} {a b : ℝ}
     (hcard : 1 < (p.roots.filter (fun r => a < r ∧ r ≤ b)).card) :
     1 ≤ (p.derivative.roots.filter (fun r => a < r ∧ r ≤ b)).card := by
   refine one_le_card_roots_filter_derivative_of_exists hcard ?_
-  simpa [and_assoc] using exists_isRoot_derivative_mem_Ioc_of_one_lt_card_roots hp hcard
+  simpa [and_assoc] using exists_isRoot_derivative_mem_Ioc_of_one_lt_card_roots hcard
 
 /-- Rolle transfer on the half-open interval `[a, b)`. -/
 theorem one_le_card_roots_filter_derivative_Ico_of_one_lt_card_roots
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    {p : ℝ[X]} {a b : ℝ}
     (hcard : 1 < (p.roots.filter (fun r => a ≤ r ∧ r < b)).card) :
     1 ≤ (p.derivative.roots.filter (fun r => a ≤ r ∧ r < b)).card := by
   refine one_le_card_roots_filter_derivative_of_exists hcard ?_
-  simpa [and_assoc] using exists_isRoot_derivative_mem_Ico_of_one_lt_card_roots hp hcard
+  simpa [and_assoc] using exists_isRoot_derivative_mem_Ico_of_one_lt_card_roots hcard
 
 /-- Rolle transfer on the closed interval `[a, b]`. -/
 theorem one_le_card_roots_filter_derivative_Icc_of_one_lt_card_roots
-    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    {p : ℝ[X]} {a b : ℝ}
     (hcard : 1 < (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).card) :
     1 ≤ (p.derivative.roots.filter (fun r => a ≤ r ∧ r ≤ b)).card := by
   refine one_le_card_roots_filter_derivative_of_exists hcard ?_
-  simpa [and_assoc] using exists_isRoot_derivative_mem_Icc_of_one_lt_card_roots hp hcard
+  simpa [and_assoc] using exists_isRoot_derivative_mem_Icc_of_one_lt_card_roots hcard
 
 end RealRooted

@@ -35,13 +35,8 @@ lemma derivative_ne_zero_of_natDegree_ne_zero {p : ℝ[X]} (h : p.natDegree ≠ 
     p.derivative ≠ 0 :=
   Polynomial.derivative_ne_zero.mpr h
 
-/-- A polynomial of `natDegree` zero splits in the zero-aware convention. -/
-lemma splits_of_natDegree_eq_zero {p : ℝ[X]} (h : p.natDegree = 0) :
-    p.Splits := by
-  apply splits_of_card_roots
-  have hle : p.roots.card ≤ p.natDegree := Polynomial.card_roots' p
-  rw [h] at hle ⊢
-  exact Nat.le_zero.mp hle
+@[deprecated Polynomial.Splits.of_natDegree_eq_zero (since := "2026-10-06")]
+alias splits_of_natDegree_eq_zero := Polynomial.Splits.of_natDegree_eq_zero
 
 /-! ## Exact degree of derivative -/
 

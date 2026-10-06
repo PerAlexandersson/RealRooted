@@ -46,10 +46,10 @@ theorem hermiteBiehlerStableToHurwitzOddEven_upperHalfSubstitution ⦃p q : ℝ[
     rcases mul_eq_zero.mp heq with h | h
     · exact absurd h h_z₀
     · exact h
-  have h_q_pos : HasPosLeadingCoeff q := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero h_q h_q_ne
+  have h_q_pos : HasPosLeadingCoeff q := HasNonnegCoeffs.pos_leadingCoeff h_q h_q_ne
   by_cases h_q_deg : 1 ≤ q.natDegree
   · have h_p_ne : p ≠ 0 := by rintro rfl; simp [complexify] at hpw
-    have h_p_pos : HasPosLeadingCoeff p := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero h_p h_p_ne
+    have h_p_pos : HasPosLeadingCoeff p := HasNonnegCoeffs.pos_leadingCoeff h_p h_p_ne
     have h_strictInterl : StrictInterl p q :=
       strictInterl_of_stable_general h_q_pos h_p_pos h_stable h_q_deg
     have h_ratio : ((complexify p).eval w / (complexify q).eval w).im ≤ 0 :=
@@ -70,7 +70,7 @@ theorem hermiteBiehlerStableToHurwitzOddEven_upperHalfSubstitution ⦃p q : ℝ[
   · push Not at h_q_deg
     have h_q_deg₀ : q.natDegree = 0 := by lia
     have h_p_ne : p ≠ 0 := by rintro rfl; simp [complexify] at hpw
-    have h_p_pos : HasPosLeadingCoeff p := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero h_p h_p_ne
+    have h_p_pos : HasPosLeadingCoeff p := HasNonnegCoeffs.pos_leadingCoeff h_p h_p_ne
     obtain ⟨hgle, hfle⟩ := natDegree_shape_of_stable h_q_pos h_p_pos h_stable
     have h_p_deg₀ : p.natDegree = 0 := by lia
     have h_qc : (complexify q).eval w = ((q.coeff 0 : ℝ) : ℂ) := by
