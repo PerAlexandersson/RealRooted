@@ -149,8 +149,6 @@ Wronskian results have a focused package entry point:
 
 - `Wronskian.Algebra` owns polynomial identities, Laguerre inequalities, and
   Euler-operator Wronskian formulas;
-- `Wronskian.Converse` owns conversion from the strict same-degree
-  Wronskian/Bezoutian conclusion to the general `StrictInterl` predicate;
 - `Wronskian.Forward` owns both global strict-interlacing-to-positivity and
   finite-root-certificate-to-global-positivity bridges;
 - `Wronskian.Successor.Gap` owns root-gap existence from a successor-degree
@@ -760,9 +758,9 @@ quadratic calculations; `RootEvaluation` owns evaluation on ordered roots;
 `ComplexRoots` excludes nonreal roots; `WronskianConverse` derives strict
 interlacing from Wronskian positivity; and `LowDegree` supplies the degree-zero
 through degree-two characterization. `RealRooted.Bezoutian` is now only the
-historical compatibility facade. This also lets `Wronskian.Converse` reuse
-`StrictInterlSameDegree.toStrictInterl` instead of maintaining a duplicate root-list
-argument, while consumers can stop at the first layer they need. The generic
+historical compatibility facade. Consumers convert the strict same-degree
+conclusion with `StrictInterlSameDegree.toStrictInterl` instead of maintaining a
+duplicate root-list argument, and can stop at the first layer they need. The generic
 real-to-complex splitting criterion formerly embedded in that proof lives in
 `Mathlib.Algebra.Polynomial.Splits.Complex`.
 
