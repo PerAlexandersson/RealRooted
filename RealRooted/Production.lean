@@ -1400,6 +1400,7 @@ import RealRooted.RootContinuity.Path
 import RealRooted.SimpleRootLogDerivative
 import RealRooted.BorceaBranden.Applications.PolarizationIff
 import RealRooted.MultivariateStability.Inversion
+import RealRooted.Challenges.MaWangLiuWang
 
 /-!
 # RealRooted production umbrella
