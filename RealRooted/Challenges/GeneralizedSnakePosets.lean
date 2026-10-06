@@ -78,6 +78,11 @@ module = "RealRooted.Challenges.GeneralizedSnakePosets"
 label = "The auxiliary polynomials Gₙ in terms of Pₙ"
 
 [[theorems]]
+name = "RealRooted.GeneralizedSnakePosets.auxiliaryG_strictInterl_modifiedNarayana"
+module = "RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing"
+label = "The auxiliary polynomial Gₙ interlaces Pₙ"
+
+[[theorems]]
 name = """RealRooted.Challenges.GeneralizedSnakePosets.\
 rookPolynomial_generalizedSnakeBoard_of_isConstant"""
 module = "RealRooted.Challenges.GeneralizedSnakePosets"
@@ -123,6 +128,7 @@ polynomials.
   $(\lambda x+\nu) P_{m-1} + P_m \ll (\lambda x+\nu) P_m + P_{m+1}$.
 - **Staircase input.** $x\, G_{n-1} = P_n - (1+x) P_{n-1}$, and $G_n - G_{n-1}$
   has nonnegative coefficients.
+- **Auxiliary interlacing.** For $n \geq 1$, $G_n \ll P_n$.
 
 Induction on the length of $w$ along the recurrence then gives the theorem.
 
