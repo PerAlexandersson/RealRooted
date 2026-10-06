@@ -4,8 +4,8 @@ import RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces
 /-!
 # Liu deletion-branch transport
 
-This module keeps Liu's left and right deletion branches together with
-the branch-retaining common-interleaver package.  The factor-return proof of
+This module restores compatibility of a pair from the translated deletion pair
+selected by Liu's left or right root-count branch.  The factor-return proof of
 the reverse direction is in `RealRooted.LiuOppositeSigns.FactorReturnAssembly`.
 -/
 
@@ -16,94 +16,6 @@ namespace LiuOppositeSigns
 
 namespace LeftRootCountBranch
 
-/-- A left Liu branch gives a common-right-interleaver witness for the actual
-deletion pair `(deleteRootFactor f r, g)`, after stripping the sign
-normalization used to make leading coefficients positive. -/
-theorem deletePairHasCommonInterleaver {f g : ℝ[X]} {r s : ℝ}
-    (h : LeftRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
-    (hf_splits : f.Splits) (hg_splits : g.Splits) :
-    ∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k := by
-  rcases h.positiveSplitDeletionCount hsgn hf_splits hg_splits with hpos | hpos
-  · exact hpos.pairHasCommonInterleaver_of_neg_right
-  · exact hpos.pairHasCommonInterleaver_of_neg_left
-
-/-- After translating by the restored largest root, the sign-normalized left
-deletion pair has nonnegative coefficients. -/
-theorem positiveDeletionPair_comp_X_add_C_hasNonnegCoeffs
-    {f g : ℝ[X]} {r s : ℝ}
-    (h : LeftRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
-    (hf_splits : f.Splits) (hg_splits : g.Splits) :
-    (HasNonnegCoeffs ((deleteRootFactor f r).comp (X + C r)) ∧
-        HasNonnegCoeffs ((-g).comp (X + C r))) ∨
-      (HasNonnegCoeffs ((-(deleteRootFactor f r)).comp (X + C r)) ∧
-        HasNonnegCoeffs (g.comp (X + C r))) := by
-  have hroots :=
-    h.deletionPair_roots_le_left_largest hsgn.left_ne_zero
-  rcases (h.delete_oppositeLeadingSigns hsgn).pos_neg_or_neg_pos with hpos | hpos
-  · left
-    refine ⟨?_, ?_⟩
-    · exact hasNonnegCoeffs_comp_X_add_C_of_roots_le
-        hpos.1 (h.delete_splits hf_splits) hroots.1
-    · refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hpos.2 hg_splits.neg ?_
-      intro t ht
-      exact hroots.2 t (by simpa [Polynomial.roots_neg] using ht)
-  · right
-    refine ⟨?_, ?_⟩
-    · refine hasNonnegCoeffs_comp_X_add_C_of_roots_le
-        hpos.1 (h.delete_splits hf_splits).neg ?_
-      intro t ht
-      exact hroots.1 t (by simpa [Polynomial.roots_neg] using ht)
-    · exact hasNonnegCoeffs_comp_X_add_C_of_roots_le hpos.2 hg_splits hroots.2
-
-/-- A supplied common-right-interleaver witness for the actual left deletion
-pair gives compatibility of the sign-normalized deletion pair. -/
-theorem positiveDeletionPair_compatible_of_commonInterleaver
-    {f g : ℝ[X]} {r s : ℝ}
-    (h : LeftRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
-    (hcommon : ∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) :
-    Compatible (deleteRootFactor f r) (-g) ∨
-      Compatible (-(deleteRootFactor f r)) g := by
-  rcases hcommon with ⟨k, hqk, hgk⟩
-  rcases (h.delete_oppositeLeadingSigns hsgn).pos_neg_or_neg_pos with hpos | hpos
-  · left
-    have hneg_gk : StrictInterl (-g) k := by
-      have hscale : StrictInterl (C (-1 : ℝ) * g) k :=
-        StrictInterl.C_mul_left hgk (by norm_num)
-      simpa using hscale
-    exact Compatible.of_commonInterleaver hqk hneg_gk hpos.1 hpos.2
-  · right
-    have hneg_qk : StrictInterl (-(deleteRootFactor f r)) k := by
-      have hscale : StrictInterl (C (-1 : ℝ) * deleteRootFactor f r) k :=
-        StrictInterl.C_mul_left hqk (by norm_num)
-      simpa using hscale
-    exact Compatible.of_commonInterleaver hneg_qk hgk hpos.1 hpos.2
-
-/-- To prove all-combinations real-rootedness for a left branch, it is enough
-to prove the translated target after restoring the deleted factor as `X`. -/
-theorem allComboRealRooted_of_translated_restore
-    {f g : ℝ[X]} {r s : ℝ} (h : LeftRootCountBranch f g r s)
-    (hall : AllComboRealRooted
-      (X * (deleteRootFactor f r).comp (X + C r)) (g.comp (X + C r))) :
-    AllComboRealRooted f g :=
-  allComboRealRooted_of_comp_X_add_C r <| by
-    simpa [h.left_comp_X_add_C_eq_X_mul_deleteRootFactor_comp] using hall
-
-/-- Sign-normalized translated all-combinations data are enough to restore the
-original left branch. -/
-theorem allComboRealRooted_of_positiveTranslatedRestore
-    {f g : ℝ[X]} {r s : ℝ} (h : LeftRootCountBranch f g r s)
-    (hall : AllComboRealRooted
-        (X * (deleteRootFactor f r).comp (X + C r)) ((-g).comp (X + C r)) ∨
-      AllComboRealRooted
-        (X * (-(deleteRootFactor f r)).comp (X + C r)) (g.comp (X + C r))) :
-    AllComboRealRooted f g := by
-  apply h.allComboRealRooted_of_translated_restore
-  rcases hall with hall | hall
-  · simpa using hall.neg_right
-  · simpa [mul_neg] using hall.neg_left
-
-/-- To prove compatibility for a left branch, it is enough to prove the
-translated target after restoring the deleted factor as `X`. -/
 theorem compatible_of_translated_restore
     {f g : ℝ[X]} {r s : ℝ} (h : LeftRootCountBranch f g r s)
     (hcompat : Compatible
@@ -116,94 +28,6 @@ end LeftRootCountBranch
 
 namespace RightRootCountBranch
 
-/-- A right Liu branch gives a common-right-interleaver witness for the actual
-deletion pair `(f, deleteRootFactor g s)`, after stripping the sign
-normalization used to make leading coefficients positive. -/
-theorem deletePairHasCommonInterleaver {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
-    (hf_splits : f.Splits) (hg_splits : g.Splits) :
-    ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k := by
-  rcases h.positiveSplitDeletionCount hsgn hf_splits hg_splits with hpos | hpos
-  · exact hpos.pairHasCommonInterleaver_of_neg_right
-  · exact hpos.pairHasCommonInterleaver_of_neg_left
-
-/-- After translating by the restored largest root, the sign-normalized right
-deletion pair has nonnegative coefficients. -/
-theorem positiveDeletionPair_comp_X_add_C_hasNonnegCoeffs
-    {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
-    (hf_splits : f.Splits) (hg_splits : g.Splits) :
-    (HasNonnegCoeffs (f.comp (X + C s)) ∧
-        HasNonnegCoeffs ((-(deleteRootFactor g s)).comp (X + C s))) ∨
-      (HasNonnegCoeffs ((-f).comp (X + C s)) ∧
-        HasNonnegCoeffs ((deleteRootFactor g s).comp (X + C s))) := by
-  have hroots :=
-    h.deletionPair_roots_le_right_largest hsgn.right_ne_zero
-  rcases (h.delete_oppositeLeadingSigns hsgn).pos_neg_or_neg_pos with hpos | hpos
-  · left
-    refine ⟨?_, ?_⟩
-    · exact hasNonnegCoeffs_comp_X_add_C_of_roots_le hpos.1 hf_splits hroots.1
-    · refine hasNonnegCoeffs_comp_X_add_C_of_roots_le
-        hpos.2 (h.delete_splits hg_splits).neg ?_
-      intro t ht
-      exact hroots.2 t (by simpa [Polynomial.roots_neg] using ht)
-  · right
-    refine ⟨?_, ?_⟩
-    · refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hpos.1 hf_splits.neg ?_
-      intro t ht
-      exact hroots.1 t (by simpa [Polynomial.roots_neg] using ht)
-    · exact hasNonnegCoeffs_comp_X_add_C_of_roots_le
-        hpos.2 (h.delete_splits hg_splits) hroots.2
-
-/-- A supplied common-right-interleaver witness for the actual right deletion
-pair gives compatibility of the sign-normalized deletion pair. -/
-theorem positiveDeletionPair_compatible_of_commonInterleaver
-    {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
-    (hcommon : ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k) :
-    Compatible f (-(deleteRootFactor g s)) ∨
-      Compatible (-f) (deleteRootFactor g s) := by
-  rcases hcommon with ⟨k, hfk, hqk⟩
-  rcases (h.delete_oppositeLeadingSigns hsgn).pos_neg_or_neg_pos with hpos | hpos
-  · left
-    have hneg_qk : StrictInterl (-(deleteRootFactor g s)) k := by
-      have hscale : StrictInterl (C (-1 : ℝ) * deleteRootFactor g s) k :=
-        StrictInterl.C_mul_left hqk (by norm_num)
-      simpa using hscale
-    exact Compatible.of_commonInterleaver hfk hneg_qk hpos.1 hpos.2
-  · right
-    have hneg_fk : StrictInterl (-f) k := by
-      have hscale : StrictInterl (C (-1 : ℝ) * f) k :=
-        StrictInterl.C_mul_left hfk (by norm_num)
-      simpa using hscale
-    exact Compatible.of_commonInterleaver hneg_fk hqk hpos.1 hpos.2
-
-/-- To prove all-combinations real-rootedness for a right branch, it is enough
-to prove the translated target after restoring the deleted factor as `X`. -/
-theorem allComboRealRooted_of_translated_restore
-    {f g : ℝ[X]} {r s : ℝ} (h : RightRootCountBranch f g r s)
-    (hall : AllComboRealRooted (f.comp (X + C s))
-      (X * (deleteRootFactor g s).comp (X + C s))) :
-    AllComboRealRooted f g :=
-  allComboRealRooted_of_comp_X_add_C s <| by
-    simpa [h.right_comp_X_add_C_eq_X_mul_deleteRootFactor_comp] using hall
-
-/-- Sign-normalized translated all-combinations data are enough to restore the
-original right branch. -/
-theorem allComboRealRooted_of_positiveTranslatedRestore
-    {f g : ℝ[X]} {r s : ℝ} (h : RightRootCountBranch f g r s)
-    (hall : AllComboRealRooted (f.comp (X + C s))
-        (X * (-(deleteRootFactor g s)).comp (X + C s)) ∨
-      AllComboRealRooted ((-f).comp (X + C s))
-        (X * (deleteRootFactor g s).comp (X + C s))) :
-    AllComboRealRooted f g := by
-  apply h.allComboRealRooted_of_translated_restore
-  rcases hall with hall | hall
-  · simpa [mul_neg] using hall.neg_right
-  · simpa using hall.neg_left
-
-/-- To prove compatibility for a right branch, it is enough to prove the
-translated target after restoring the deleted factor as `X`. -/
 theorem compatible_of_translated_restore
     {f g : ℝ[X]} {r s : ℝ} (h : RightRootCountBranch f g r s)
     (hcompat : Compatible (f.comp (X + C s))
@@ -213,50 +37,6 @@ theorem compatible_of_translated_restore
     simpa [h.right_comp_X_add_C_eq_X_mul_deleteRootFactor_comp] using hcompat
 
 end RightRootCountBranch
-
-/-- Liu branch data together with a common-right interleaver for the actual
-deletion pair selected by that branch.  This keeps the largest-root/order
-certificate that is lost in the fully sign-normalized compatibility package. -/
-def theorem21DeletionPairCommonInterleaverBranches (f g : ℝ[X]) : Prop :=
-  ∃ r s,
-    (LeftRootCountBranch f g r s ∧
-        ∃ k : ℝ[X], StrictInterl (deleteRootFactor f r) k ∧ StrictInterl g k) ∨
-      (RightRootCountBranch f g r s ∧
-        ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl (deleteRootFactor g s) k)
-
-/-- Liu root-count branches produce common-right-interleaver witnesses for the
-actual deletion pair in the selected branch. -/
-theorem theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
-    {f g : ℝ[X]} (hf_splits : f.Splits) (hg_splits : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (h : theorem21RootCountBranches f g) :
-    theorem21DeletionPairCommonInterleaverBranches f g := by
-  rcases h with ⟨r, s, hleft | hright⟩
-  · exact ⟨r, s, Or.inl
-      ⟨hleft, hleft.deletePairHasCommonInterleaver
-        hsgn hf_splits hg_splits⟩⟩
-  · exact ⟨r, s, Or.inr
-      ⟨hright, hright.deletePairHasCommonInterleaver
-        hsgn hf_splits hg_splits⟩⟩
-
-/-- The branch-retaining common-interleaver package forgets back to Liu's
-root-count branches. -/
-theorem theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches
-    {f g : ℝ[X]} (h : theorem21DeletionPairCommonInterleaverBranches f g) :
-    theorem21RootCountBranches f g := by
-  rcases h with ⟨r, s, hleft | hright⟩
-  · exact ⟨r, s, Or.inl hleft.1⟩
-  · exact ⟨r, s, Or.inr hright.1⟩
-
-/-- With splitting and opposite-leading-sign hypotheses, Liu's root-count
-branches are equivalent to the branch-retaining common-interleaver package. -/
-theorem theorem21DeletionPairCommonInterleaverBranches_iff_rootCountBranches
-    {f g : ℝ[X]} (hf_splits : f.Splits) (hg_splits : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) :
-    theorem21DeletionPairCommonInterleaverBranches f g ↔
-      theorem21RootCountBranches f g :=
-  ⟨theorem21RootCountBranches_of_deletionPairCommonInterleaverBranches,
-    theorem21DeletionPairCommonInterleaverBranches_of_theorem21RootCountBranches
-      hf_splits hg_splits hsgn⟩
 
 end LiuOppositeSigns
 end RealRooted
