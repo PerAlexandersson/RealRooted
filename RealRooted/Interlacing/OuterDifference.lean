@@ -60,42 +60,9 @@ theorem StrictInterl.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
     rw [← hss_eq, ← hrs_eq, hlist]
   rw [hf.2.eq_prod_roots, hg.2.eq_prod_roots, hlc, hroots]
 
-/-- At a root of the right polynomial in a positive-leading interlacing
-pair, the left value and right derivative have nonnegative product. -/
-theorem StrictInterl.eval_mul_derivative_nonneg_of_right_root
-    {f g : ℝ[X]} (hstrictInterl : StrictInterl f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    {r : ℝ} (hr : g.IsRoot r) :
-    0 ≤ f.eval r * g.derivative.eval r := by
-  have hr_mem : r ∈ g.roots := (mem_roots hstrictInterl.2.1.1).mpr hr
-  have hgdeg_pos : 0 < g.natDegree := by
-    have hroots_ne : g.roots ≠ 0 := by
-      intro hzero
-      rw [hzero] at hr_mem
-      simp at hr_mem
-    have hcard_pos : 0 < g.roots.card := Multiset.card_pos.mpr hroots_ne
-    rwa [card_roots_of_splits hstrictInterl.2.1.2] at hcard_pos
-  have hgder_pos : HasPosLeadingCoeff g.derivative :=
-    hg_pos.derivative (by lia)
-  have hder_strictInterl : StrictInterl g.derivative g := by
-    rcases eq_or_lt_of_le (show 1 ≤ g.natDegree by lia) with hdeg_one | hdeg_two
-    · have hbase : StrictInterl (1 : ℝ[X]) g :=
-        (interlaces_one_linear (by lia)).toStrictInterl
-      have hder_deg : g.derivative.natDegree = 0 := by
-        rw [g.natDegree_derivative]
-        lia
-      have hder_C : g.derivative = C (g.derivative.coeff 0) :=
-        eq_C_of_natDegree_eq_zero hder_deg
-      have hcoeff_pos : 0 < g.derivative.coeff 0 := by
-        unfold HasPosLeadingCoeff at hgder_pos
-        rw [leadingCoeff, hder_deg] at hgder_pos
-        exact hgder_pos
-      rw [hder_C]
-      simpa using StrictInterl.C_mul_left hbase (ne_of_gt hcoeff_pos)
-    · exact (derivative_interlaces_of_natDegree_ne_zero hstrictInterl.2.1.2 (by lia)).toStrictInterl
-  exact
-    eval_mul_eval_nonneg_of_strictInterl_right
-      hstrictInterl hder_strictInterl hf_pos hgder_pos hr
+@[deprecated StrictInterl.eval_mul_eval_derivative_nonneg (since := "2026-10-06")]
+alias StrictInterl.eval_mul_derivative_nonneg_of_right_root :=
+  StrictInterl.eval_mul_eval_derivative_nonneg
 
 /-- At a root of the right polynomial in a positive-leading coprime
 strictly interlacing pair, the left value and right derivative have strictly the
@@ -107,7 +74,7 @@ theorem StrictInterl.eval_mul_derivative_pos_of_right_root_of_isCoprime
     {r : ℝ} (hr : g.IsRoot r) :
     0 < f.eval r * g.derivative.eval r := by
   have hnonneg :=
-    hstrictInterl.eval_mul_derivative_nonneg_of_right_root hf_pos hg_pos hr
+    hstrictInterl.eval_mul_eval_derivative_nonneg hf_pos hg_pos hr
   have hsimple : HasSimpleRoots g :=
     (hstrictInterl.hasSimpleRoots_of_isCoprime hcop).2
   have hfroot : ¬f.IsRoot r := hcop.symm.not_isRoot_right hr
@@ -184,7 +151,7 @@ theorem StrictInterl.eval_mul_derivative_nonpos_of_left_root
   have hroot_pad : ((X - C b) * f).IsRoot r := by
     simp [Polynomial.IsRoot.def, Polynomial.IsRoot.def.mp hr]
   have hsign :=
-    hpad.eval_mul_derivative_nonneg_of_right_root
+    hpad.eval_mul_eval_derivative_nonneg
       hg_pos hpad_pos hroot_pad
   have hder_eval : ((X - C b) * f).derivative.eval r =
       (r - b) * f.derivative.eval r := by
@@ -237,7 +204,7 @@ theorem StrictInterl.eval_mul_eval_nonpos_of_sandwich
   · have hder_ne : g.derivative.eval r ≠ 0 :=
       eval_derivative_ne_zero_of_rootMultiplicity_eq_one hr hsimple
     have hleft : 0 ≤ f.eval r * g.derivative.eval r :=
-      hfg.eval_mul_derivative_nonneg_of_right_root hf_pos hg_pos hr
+      hfg.eval_mul_eval_derivative_nonneg hf_pos hg_pos hr
     have hright : h.eval r * g.derivative.eval r ≤ 0 :=
       hgh.eval_mul_derivative_nonpos_of_left_root hg_pos hh_pos hr
     rcases lt_or_gt_of_ne hder_ne with hneg | hpos
@@ -559,7 +526,7 @@ theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
           (h - f).eval r * g.derivative.eval r ≤ 0 := by
         intro r hgr
         have hleft : 0 ≤ f.eval r * g.derivative.eval r :=
-          hfg.eval_mul_derivative_nonneg_of_right_root hf_pos hg_pos hgr
+          hfg.eval_mul_eval_derivative_nonneg hf_pos hg_pos hgr
         have hright : h.eval r * g.derivative.eval r ≤ 0 :=
           hgh.eval_mul_derivative_nonpos_of_left_root hg_pos hh_pos hgr
         rw [eval_sub]
