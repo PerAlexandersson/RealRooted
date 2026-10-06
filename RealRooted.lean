@@ -1517,3 +1517,6 @@ import RealRooted.RootContinuity.Path
 import RealRooted.SimpleRootLogDerivative
 import RealRooted.BorceaBranden.Applications.PolarizationIff
 import RealRooted.MultivariateStability.Inversion
+import RealRooted.Challenges.MaWangLiuWang
+import RealRooted.Challenges.WangYeh
+import RealRooted.Challenges.SturmSequenceFamilies
