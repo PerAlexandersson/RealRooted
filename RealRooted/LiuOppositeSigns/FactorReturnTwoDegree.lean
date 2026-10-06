@@ -18,7 +18,7 @@ namespace LiuOppositeSigns
 /-- Two-degree left Liu branch: after translating the deleted largest root of
 `f` to the origin, every positive right combination of the restored pair
 splits. -/
-theorem theorem21LeftFactorReturnTwoDegreeTranslatedRightFamily
+theorem LeftRootCountBranch.translated_rightFamily_splits_of_natDegree_eq_add_two
     {f g : ℝ[X]} {r s : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hleft : LeftRootCountBranch f g r s)

@@ -25,13 +25,13 @@ namespace LiuOppositeSigns
 The derivative-shift regularization repairs the source's invalid inference
 from no common roots to simple roots. The simple-root argument is applied to
 arbitrarily close regularizations, and root matching closes the result. -/
-theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant
+theorem RootCountBranches.of_compatible_of_noCommonRoots
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g) (hno : NoCommonRoots f g)
     (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
     (hcompat : Compatible f g) :
-    theorem21RootCountBranches f g := by
-  apply theorem21RootCountBranches_of_forall_pos_exists_roots_rel
+    RootCountBranches f g := by
+  apply RootCountBranches.of_forall_pos_exists_roots_rel
     hsgn.left_ne_zero hsgn.right_ne_zero hf hg hno hf_deg hg_deg
   intro ρ hρ
   obtain ⟨epss, hlen, hbounds, hcompat', hno', hfrel, hgrel⟩ :=
@@ -65,8 +65,8 @@ theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant
       hpos hsgn.right_ne_zero hg
     rw [hlen]
     exact Nat.le_max_right _ _
-  have hbranches : theorem21RootCountBranches f' g' :=
-    theorem21RootCountBranches_of_compatible_noCommon_nonconstant_of_simple
+  have hbranches : RootCountBranches f' g' :=
+    RootCountBranches.of_compatible_of_noCommonRoots_of_hasSimpleRoots
       hf'_split hg'_split hsgn' hno' hf'_deg hg'_deg
       hf'_simple hg'_simple hcompat'
   refine
@@ -75,14 +75,14 @@ theorem theorem21CompatibleToRootCountBranchesNoCommonNonconstant
   · simpa [g'] using hgrel
 
 /-- The nonconstant no-common-root form of Liu Theorem 2.1. -/
-theorem theorem21CompatibleRootCountNoCommonNonconstant
+theorem compatible_iff_rootCountBranches_of_noCommonRoots
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g) (hno : NoCommonRoots f g)
     (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
-    Compatible f g ↔ theorem21RootCountBranches f g :=
-  ⟨theorem21CompatibleToRootCountBranchesNoCommonNonconstant
+    Compatible f g ↔ RootCountBranches f g :=
+  ⟨RootCountBranches.of_compatible_of_noCommonRoots
       hf hg hsgn hno hf_deg hg_deg,
-    compatible_of_theorem21RootCountBranches hf hg hsgn⟩
+    RootCountBranches.compatible hf hg hsgn⟩
 
 /-- Compatible no-common nonconstant opposite-sign pairs have degree gap at
 most two. -/
@@ -92,8 +92,8 @@ theorem natDegree_abs_sub_le_two_of_compatible_noCommon_nonconstant
     (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
     (hcompat : Compatible f g) :
     |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
-  natDegree_abs_sub_le_two_of_theorem21RootCountBranches hf hg hsgn
-    (theorem21CompatibleToRootCountBranchesNoCommonNonconstant
+  RootCountBranches.natDegree_abs_sub_le_two hf hg hsgn
+    (RootCountBranches.of_compatible_of_noCommonRoots
       hf hg hsgn hno hf_deg hg_deg hcompat)
 
 /-- Correct nonconstant Liu equivalence with common roots retained explicitly.
@@ -104,42 +104,42 @@ The common-root deletion alternative is therefore necessary.
 
 The reduced predicate is the strongest form because its ordinary root-count
 branch retains the accompanying `NoCommonRoots` witness. -/
-theorem compatible_iff_theorem21RootCountBranchesReduced_nonconstant
+theorem compatible_iff_rootCountBranchesReduced
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g)
     (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
-    Compatible f g ↔ theorem21RootCountBranchesReduced f g := by
+    Compatible f g ↔ RootCountBranchesReduced f g := by
   constructor
   · intro hcompat
     by_cases hno : NoCommonRoots f g
     · exact Or.inl
         ⟨hno,
-          theorem21CompatibleToRootCountBranchesNoCommonNonconstant
+          RootCountBranches.of_compatible_of_noCommonRoots
             hf hg hsgn hno hf_deg hg_deg hcompat⟩
     · exact Or.inr
         (CommonRootDeletionCompatibleBranch.of_compatible_of_not_noCommonRoots
           hcompat hno)
   · intro hbranches
     rcases hbranches with hbranches | hcommon
-    · exact compatible_of_theorem21RootCountBranches hf hg hsgn hbranches.2
+    · exact RootCountBranches.compatible hf hg hsgn hbranches.2
     · exact hcommon.compatible
 
 /-- Public-facing correct nonconstant Liu equivalence. Compared with the
 legacy branch-only predicate, this conclusion includes the necessary explicit
 common-root deletion alternative. -/
-theorem compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant
+theorem compatible_iff_rootCountBranchesWithCommon
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g)
     (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
-    Compatible f g ↔ theorem21RootCountBranchesWithCommon f g := by
+    Compatible f g ↔ RootCountBranchesWithCommon f g := by
   constructor
   · intro hcompat
-    exact theorem21RootCountBranchesReduced.withCommon
-      ((compatible_iff_theorem21RootCountBranchesReduced_nonconstant
+    exact RootCountBranchesReduced.withCommon
+      ((compatible_iff_rootCountBranchesReduced
         hf hg hsgn hf_deg hg_deg).mp hcompat)
   · intro hbranches
     rcases hbranches with hbranches | hcommon
-    · exact compatible_of_theorem21RootCountBranches hf hg hsgn hbranches
+    · exact RootCountBranches.compatible hf hg hsgn hbranches
     · exact hcommon.compatible
 
 /-- Guardrail for the factor-return route: multiplying the higher-degree
@@ -253,7 +253,8 @@ lemma natDegree_abs_sub_le_two_of_compatible_of_right_natDegree_eq_zero
 
 /-- Liu's Corollary 2.2: compatible real-rooted polynomials with opposite
 leading signs have degrees differing by at most two. -/
-theorem corollary22DegreeDiff {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+theorem natDegree_abs_sub_le_two_of_compatible {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
     |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 := by
   suffices h :

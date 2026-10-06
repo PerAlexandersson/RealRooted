@@ -531,11 +531,10 @@ import RealRooted.LiuOppositeSigns.RootCount
 import RealRooted.LiuOppositeSigns.RootCountClosure
 import RealRooted.LiuOppositeSigns.RootCountRelStability
 import RealRooted.LiuOppositeSigns.RootDeletion
-import RealRooted.LiuOppositeSigns.Theorem21Statements
-import RealRooted.LiuOppositeSigns.Theorem21Statements.CommonRootDeletion
-import RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces
-import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing
-import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing.Witnesses
+import RealRooted.LiuOppositeSigns.RootCountBranches.CommonRootDeletion
+import RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces
+import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
+import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing.Witnesses
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
@@ -550,7 +549,7 @@ import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
 import RealRooted.LiuOppositeSigns.XSub.QuadraticQuadratic
 import RealRooted.LiuOppositeSigns.XSub.SameDegree
 import RealRooted.LiuOppositeSigns.XSub.SplittingTools
-import RealRooted.LiuOppositeSigns.Theorem
+import RealRooted.LiuOppositeSigns.CompatibilityCriterion
 import RealRooted.LiuWang
 import RealRooted.LiuWang.OneAddXPositive
 import RealRooted.LiuWang.SequenceCore

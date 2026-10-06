@@ -632,20 +632,21 @@ the count foundation directly, while `RootMatchingSort` and the cubic analytic
 consumer import `RootDeletion` without acquiring the branch layer.
 
 `LiuOppositeSigns.NoCommonRoots` isolates the reusable no-common-root predicate
-and its elementary endpoint consequences. `Theorem21Statements.NoCommonCrossing`
+and its elementary endpoint consequences. `RootCountBranches.NoCommonCrossing`
 imports the right-pencil crossing criteria of `NoCommonCrossing.Witnesses` and
-turns the cross-owned-gap invariant into the left/right Theorem 2.1 branch
-predicate. `Theorem21Statements.CommonRootDeletion` owns the
-independent shared-factor reduction, and `Theorem21Statements.Interfaces`
+turns the cross-owned-gap invariant into Liu's left/right branch predicate
+`RootCountBranches`. `RootCountBranches.CommonRootDeletion` owns the
+independent shared-factor reduction, and `RootCountBranches.Interfaces`
 keeps only the refuted published forward direction beside its checked
-negation. The historical `Theorem21Statements` path remains a compatibility
-facade, and consumers needing only the predicate import `NoCommonRoots`
+negation. Consumers needing only the predicate import `NoCommonRoots`
 directly.
 
 `LiuOppositeSigns.FactorReturnAssembly` proves the reverse direction of
-Theorem 2.1. `FactorReturnLeft` and `FactorReturnTwoDegree` reduce the three
-degree cases of a left deletion branch to the positive-split x-subtraction
-pencils of `XSub.IntervalRootCount`; the right branch follows by symmetry.
+Liu's Theorem 2.1. `FactorReturnLeft` and `FactorReturnTwoDegree` reduce the
+three degree cases of a left deletion branch to the positive-split
+x-subtraction pencils of `XSub.IntervalRootCount`; the right branch follows by
+symmetry. `LiuOppositeSigns.CompatibilityCriterion` assembles the corrected
+equivalence and the degree-gap corollary.
 
 `LiuOppositeSigns.XSub.IntervalRootCount` is now a compatibility facade over
 the interval-count proof layers: `RootFilters`, `GapCounts`, `UpperTail`, and

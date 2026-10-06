@@ -85,27 +85,27 @@ end CommonRootDeletionCompatibleBranch
 /-- Corrected unreduced branch predicate: either Liu's no-common largest-root
 branch holds, or a common root can be peeled and the cofactors are compatible.
 -/
-def theorem21RootCountBranchesWithCommon (f g : ℝ[X]) : Prop :=
-  theorem21RootCountBranches f g ∨ CommonRootDeletionCompatibleBranch f g
+def RootCountBranchesWithCommon (f g : ℝ[X]) : Prop :=
+  RootCountBranches f g ∨ CommonRootDeletionCompatibleBranch f g
 
 /-- Reduced common-root branch predicate.  In the ordinary root-count branch we
 remember the no-common-root hypothesis, so no-common reverse statements can be
 used after splitting off the common-root case. -/
-def theorem21RootCountBranchesReduced (f g : ℝ[X]) : Prop :=
-  (NoCommonRoots f g ∧ theorem21RootCountBranches f g) ∨
+def RootCountBranchesReduced (f g : ℝ[X]) : Prop :=
+  (NoCommonRoots f g ∧ RootCountBranches f g) ∨
     CommonRootDeletionCompatibleBranch f g
 
-namespace theorem21RootCountBranchesReduced
+namespace RootCountBranchesReduced
 
 /-- Forget the extra no-common-root witness in the reduced branch predicate. -/
 theorem withCommon {f g : ℝ[X]}
-    (h : theorem21RootCountBranchesReduced f g) :
-    theorem21RootCountBranchesWithCommon f g := by
+    (h : RootCountBranchesReduced f g) :
+    RootCountBranchesWithCommon f g := by
   rcases h with hbranches | hcommon
   · exact Or.inl hbranches.2
   · exact Or.inr hcommon
 
-end theorem21RootCountBranchesReduced
+end RootCountBranchesReduced
 
 end LiuOppositeSigns
 end RealRooted

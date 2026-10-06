@@ -1,5 +1,5 @@
 import RealRooted.LiuOppositeSigns.PositiveSplitPair
-import RealRooted.LiuOppositeSigns.Theorem21Statements.Interfaces
+import RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces
 
 /-!
 # Liu deletion-branch transport

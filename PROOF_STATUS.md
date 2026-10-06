@@ -32,7 +32,7 @@ theorem, refutation, or production caller. They contain no admission.
 | Jensen certificate gives endpoint compatibility | `BidiagonalJensenPencilCertificate.compatible` |
 | Jensen output as two Schur--Szegő compositions | `bidiagonalOperator_eq_schurSzegoComp` |
 | Schur--Szegő Jensen compatibility contraction | `schurSzegoPreservesJensenPencilCompatibility` |
-| Liu theorem with common roots | `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant` |
+| Liu theorem with common roots | `compatible_iff_rootCountBranchesWithCommon` |
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFInterl_of_nonnegStrictInterl` |
 | Bounded-degree polar-theta interlacing preservation | `polarThetaPreservesInterlStatement`, witnessed by `polarTheta_preserves_interl` |
 | Theta interlacing preservation on the PF cone | `thetaPreservesInterlStatement`, witnessed by `thetaPreservesInterl` |
@@ -51,7 +51,7 @@ Refuted statements are recorded as checked theorems with an explicit negated
 
 | Refuted statement | Checked negation |
 | --- | --- |
-| Nonconstant forward half of the published Liu Theorem 2.1, without the common-root branch | `LiuOppositeSigns.not_forall_theorem21RootCountBranches_of_compatible_nonconstant` |
+| Nonconstant forward half of the published Liu Theorem 2.1, without the common-root branch | `LiuOppositeSigns.not_forall_rootCountBranches_of_compatible` |
 | Row-oriented converse Hurwitz-matrix criterion | `not_forall_isHurwitzStable_of_hurwitz_isTotallyNonneg` |
 | Row-oriented forward Hurwitz-matrix criterion: Hurwitz stability gives a totally nonnegative Hurwitz matrix | `not_forall_isHurwitzStable_hurwitz_isTotallyNonneg` |
 | A Hurwitz-stable odd/even polynomial has fully interlacing coefficient sequences | `not_isHurwitzStable_oddEven_fullyInterlacingPair` |
