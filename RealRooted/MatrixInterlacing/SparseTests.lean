@@ -1,4 +1,5 @@
 import RealRooted.AffineFamily
+import RealRooted.MatrixInterlacing.Action
 
 open Polynomial
 
@@ -62,6 +63,17 @@ lemma isInterlacingSeq0Nonneg_sparseLinearPairSeq
         simp [hkj, hji, hasNonnegCoeffs_affine_linear ha.le hb.le]
       · simp [hki, hkj, hasNonnegCoeffs_zero]
 
+/-- The sparse test sequence also lies in the zero-aware real-rooted family. -/
+lemma isInterlacingSeq0NonnegRealRooted_sparseLinearPairSeq
+    {n : ℕ} {i j : Fin n} (hij : i < j) {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
+    IsInterlacingSeq0NonnegRealRooted (sparseLinearPairSeq n i j a b) := by
+  refine ⟨isInterlacingSeq0Nonneg_sparseLinearPairSeq hij ha hb, fun f hf hf0 => ⟨hf0, ?_⟩⟩
+  obtain ⟨k, rfl⟩ := List.mem_ofFn.1 hf
+  split_ifs
+  · exact Splits.one
+  · exact (isRealRooted_affine_factor (t := b) ha).2
+  · exact Splits.zero
+
 /-- Single-support weak test family for the converse: `1` at `i` and `0`
 elsewhere. -/
 def oneSupportSeq (n : ℕ) (i : Fin n) : List ℝ[X] :=
@@ -104,6 +116,16 @@ lemma isInterlacingSeq0Nonneg_oneSupportSeq {n : ℕ} (i : Fin n) :
           simpa [k'] using get_oneSupportSeq i k']
     by_cases hki : k' = i <;> simp [hki, hasNonnegCoeffs_one, hasNonnegCoeffs_zero]
 
+/-- The single-support test sequence lies in the zero-aware real-rooted
+family. -/
+lemma isInterlacingSeq0NonnegRealRooted_oneSupportSeq {n : ℕ} (i : Fin n) :
+    IsInterlacingSeq0NonnegRealRooted (oneSupportSeq n i) := by
+  refine ⟨isInterlacingSeq0Nonneg_oneSupportSeq i, fun f hf hf0 => ⟨hf0, ?_⟩⟩
+  obtain ⟨k, rfl⟩ := List.mem_ofFn.1 hf
+  split_ifs
+  · exact Splits.one
+  · exact Splits.zero
+
 lemma zipWith_mul_replicate_zero_sum_eq_zero (row : List ℝ[X]) :
     ((row.zipWith (· * ·) (List.replicate row.length (0 : ℝ[X]))).sum) = 0 := by
   induction row <;> simp [List.replicate, *]
@@ -122,6 +144,12 @@ lemma zipWith_mul_oneSupportSeq_sum_eq_get
           have hne : ¬ ((0 : Fin (row.length + 1)) = i.succ) :=
             fun h => Fin.succ_ne_zero i h.symm
           simpa [oneSupportSeq, List.ofFn_succ, hne] using ih i
+
+lemma zipWith_mul_oneSupportSeq_sum_eq_get_of_length
+    (row : List ℝ[X]) (hrow_len : row.length = n) (i : Fin n) :
+    ((row.zipWith (· * ·) (oneSupportSeq n i)).sum) = row.get ⟨i, by lia⟩ := by
+  subst n
+  simpa using zipWith_mul_oneSupportSeq_sum_eq_get row i
 
 lemma zipWith_mul_sum_zipWith_add_right
     (row fs gs : List ℝ[X]) :
@@ -204,5 +232,9 @@ lemma zipWith_mul_sparseLinearPairSeq_sum_eq_of_length
   subst n
   simpa using zipWith_mul_sparseLinearPairSeq_sum_eq row i j hij a b
 
+/-- Row `i` of the matrix action is the row sum `∑ₖ G[i][k] fs[k]`. -/
+lemma get_matPolyAction (G : List (List ℝ[X])) (fs : List ℝ[X]) (i : Fin G.length) :
+    (matPolyAction G fs).get ⟨i, by simp⟩ = ((G.get i).zipWith (· * ·) fs).sum := by
+  simp [matPolyAction]
 
 end RealRooted
