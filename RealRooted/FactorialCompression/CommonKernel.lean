@@ -108,13 +108,13 @@ theorem h_natDegree (r : ℕ) : (h r).natDegree = r / 2 := by
   · apply le_natDegree_of_ne_zero
     exact ne_of_gt (h_coeff_pos r (r / 2) (by lia))
 
-@[simp] theorem h_one : h 1 = 1 := by
+@[simp] private theorem h_one : h 1 = 1 := by
   ext k
   cases k with
   | zero => simp
   | succ k => simp [coeff_h, coeff_one, show ¬ 2 * (k + 1) ≤ 1 by lia]
 
-theorem h_two_factor : h 2 = C (2 : ℝ) * (X - C (-1 / 2 : ℝ)) := by
+private theorem h_two_factor : h 2 = C (2 : ℝ) * (X - C (-1 / 2 : ℝ)) := by
   ext k
   cases k with
   | zero => norm_num [coeff_h]
@@ -124,7 +124,7 @@ theorem h_two_factor : h 2 = C (2 : ℝ) * (X - C (-1 / 2 : ℝ)) := by
       | succ k => simp [coeff_h, coeff_X, show ¬ 2 * (k + 1 + 1) ≤ 2 by lia,
           show k + 1 + 1 ≠ 1 by lia]
 
-theorem h_two_roots : (h 2).roots = {-1 / 2} := by
+private theorem h_two_roots : (h 2).roots = {-1 / 2} := by
   rw [h_two_factor, roots_C_mul _ (by norm_num), roots_X_sub_C]
 
 private theorem factorial_real_pred (r : ℕ) (hr : 1 ≤ r) :
@@ -175,7 +175,7 @@ private theorem h_recurrence_coeff_succ (r k : ℕ) (hr : 1 ≤ r) :
     simp [coeff_h, hguard, hmid, hprev]
 
 /-- Closed-coefficient derivation of factorial-compression equation (4.4). -/
-theorem h_recurrence (r : ℕ) (hr : 1 ≤ r) :
+private theorem h_recurrence (r : ℕ) (hr : 1 ≤ r) :
     h (r + 1) = h r + C (2 * (r : ℝ)) * X * h (r - 1) := by
   ext k
   cases k with
