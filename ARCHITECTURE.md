@@ -426,6 +426,8 @@ imports.
 The Liu--Wang stack now follows that boundary:
 
 - `LiuWang.Step` owns two-polynomial criteria and coefficient sign lemmas;
+- `LiuWang.General` owns the full two-term Liu--Wang criterion, for an interlacer
+  of either degree shape and with common roots allowed;
 - `LiuWang.SequenceCore`, `SequencePositive`, `SequenceIntervals`, and
   `SequenceProducts` separate sequence induction by the shape of the lag
   coefficient;
@@ -1210,7 +1212,9 @@ selected large application proofs and case-analysis modules.
 factor-sign algebra, `StrictSigns.Assembly` the strict root construction,
 `Strong` the strict mixed-sign consequences, and `Weak.Regularization`,
 `Weak.SameDegree`, `Weak.Successor`, and `Weak.Endpoint` the weak-sign
-perturbation and degree cases. Former file-private plumbing is shared only
+perturbation and degree cases. `Weak.DerivativeSign` owns the simple-root
+criterion that uses `f'` as the interlacer of `f`; `Weak.Endpoint` restates its
+theorem through `LiuWang.General`. Former file-private plumbing is shared only
 within `RealRooted.MaWangInternal`; all established public declarations retain
 their `RealRooted` names through explicit exports.
 

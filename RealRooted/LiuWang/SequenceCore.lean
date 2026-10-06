@@ -1,3 +1,4 @@
+import RealRooted.LiuWang.General
 import RealRooted.LiuWang.Step
 import RealRooted.ScalarNormalization
 import RealRooted.SequenceClosure
@@ -6,11 +7,48 @@ import RealRooted.SequenceClosure
 # Liu--Wang sequence core
 
 Sequence induction for globally nonpositive, square, and quadratic lag coefficients.
+
+The general form is `strictInterl_succ_of_recurrence_of_eval_nonpos`: it allows each step to
+keep or raise the degree by one, and it allows consecutive rows to share roots.  The older
+`*_lag_sequence` theorems require an exact degree increase and no common roots.
 -/
 
 open Polynomial
 
 namespace RealRooted.LiuWang
+
+/-- **Liu--Wang sequence criterion**, with the lag condition read off the induction state.
+Let `P (n + 2) = A n * P (n + 1) + B n * P n`, where every `P n` has positive leading
+coefficient and each step keeps or raises the degree by one.  If `P 0 ≪ P 1` and `B n` is
+nonpositive at the roots of `P (n + 1)` whenever `P (n + 1)` is real-rooted, then
+`P n ≪ P (n + 1)` for all `n`.  Consecutive rows may share roots. -/
+theorem strictInterl_succ_of_recurrence_of_eval_nonpos_of_splits {P A B : ℕ → ℝ[X]}
+    (hbase : StrictInterl (P 0) (P 1))
+    (hpos : ∀ n, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_lo : ∀ n, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1)
+    (hB : ∀ n, (P (n + 1)).Splits → ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0) :
+    ∀ n, StrictInterl (P n) (P (n + 1)) := by
+  refine strictInterl_sequence_of_base_and_step hbase fun n hprev ↦ ?_
+  have hstep := strictInterl_mul_add_mul_of_eval_nonpos hprev (hpos n)
+    (hrec n ▸ hpos (n + 2)) (hrec n ▸ hdeg_lo n) (hrec n ▸ hdeg_hi n) (hB n hprev.2.1.2)
+  rwa [← hrec n] at hstep
+
+/-- **Liu--Wang sequence criterion.**  Let `P (n + 2) = A n * P (n + 1) + B n * P n`, where
+every `P n` has positive leading coefficient and each step keeps or raises the degree by one.
+If `P 0 ≪ P 1` and `B n` is nonpositive at the roots of `P (n + 1)`, then `P n ≪ P (n + 1)`
+for all `n`.  Consecutive rows may share roots. -/
+theorem strictInterl_succ_of_recurrence_of_eval_nonpos {P A B : ℕ → ℝ[X]}
+    (hbase : StrictInterl (P 0) (P 1))
+    (hpos : ∀ n, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n, P (n + 2) = A n * P (n + 1) + B n * P n)
+    (hdeg_lo : ∀ n, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1)
+    (hB : ∀ n r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0) :
+    ∀ n, StrictInterl (P n) (P (n + 1)) :=
+  strictInterl_succ_of_recurrence_of_eval_nonpos_of_splits hbase hpos hrec hdeg_lo hdeg_hi
+    fun n _ ↦ hB n
 
 /-- Sequence-level Liu--Wang induction for a lag coefficient that is
 nonpositive at all roots of the current row. -/
