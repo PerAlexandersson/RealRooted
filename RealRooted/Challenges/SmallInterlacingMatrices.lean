@@ -89,10 +89,11 @@ In particular, exactly 18 nondegenerate matrices preserve interlacing.
 By the matrix criterion of Brändén (Theorem 7.8.5), a nonnegative polynomial
 matrix preserves interlacing sequences exactly when each ordered
 $2 \times 2$ submatrix, repeated indices allowed, satisfies an affine
-interlacing condition. For entries in $\{0, 1, x\}$ we check these nine
-conditions by hand and obtain a finite table. A matrix in the table preserves
+interlacing condition. For entries in $\{0, 1, x\}$ these nine conditions
+reduce to a finite table of admissible matrices. A matrix in the table preserves
 interlacing by the forward criterion. For a matrix outside it, an explicit
-sparse test pair is mapped to a pair that does not interlace. The counts then follow by deciding the finite table.
+sparse test pair is mapped to a pair that does not interlace. The counts then
+follow by deciding the finite table.
 
 ## References
 
