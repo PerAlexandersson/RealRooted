@@ -1698,9 +1698,6 @@
     "RealRooted.MaWang.Weak.Regularization": {
       "max_modules": 34
     },
-    "RealRooted.MaWang.Weak.SameDegree": {
-      "max_modules": 35
-    },
     "RealRooted.MaWang.Weak.Successor": {
       "max_modules": 36
     },
@@ -2075,7 +2072,6 @@
     "RealRooted.MaWang.StrictSigns",
     "RealRooted.MaWang.Strong",
     "RealRooted.MaWang.Weak.Regularization",
-    "RealRooted.MaWang.Weak.SameDegree",
     "RealRooted.MaWang.Weak.Successor",
     "RealRooted.MaWang.Weak.Endpoint",
     "RealRooted.MaWang.Weak",

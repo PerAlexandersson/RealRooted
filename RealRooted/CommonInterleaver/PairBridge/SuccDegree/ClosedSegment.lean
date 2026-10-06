@@ -134,7 +134,7 @@ theorem compatibleSuccDegree_rootCountAbove_diff_le_one_of_nonRoot
         have hdeg' : g.derivative.natDegree = f.derivative.natDegree + 1 :=
           succDegree_derivative_natDegree_eq hdeg (by lia)
         have hf'_split : f.derivative.Splits :=
-          (derivative_interlaces hf_split hfdeg).2.1.2
+          (derivative_interlaces_of_natDegree_ne_zero hf_split (by lia)).2.1.2
         have hfder_lt_self : f.derivative.natDegree < f.natDegree := by
           rw [f.natDegree_derivative]
           lia

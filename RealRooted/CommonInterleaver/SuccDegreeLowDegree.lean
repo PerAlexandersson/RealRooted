@@ -460,7 +460,7 @@ theorem compatibleSuccDegreeRootCountAbove_le_two_of_natDegree_le_two
       have hdeg' : g.derivative.natDegree = f.derivative.natDegree + 1 :=
         succDegree_derivative_natDegree_eq hdeg (by lia)
       have hf'_split : f.derivative.Splits :=
-        (derivative_interlaces hf_split hfdeg_two).2.1.2
+        (derivative_interlaces_of_natDegree_ne_zero hf_split (by lia)).2.1.2
       have hf'_deg : f.derivative.natDegree ≤ 1 := by
         rw [f.natDegree_derivative]
         lia

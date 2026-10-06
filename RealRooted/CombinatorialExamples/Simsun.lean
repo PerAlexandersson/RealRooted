@@ -263,7 +263,7 @@ lemma interlaces_derivative_simsun :
           (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
   | 3, _, _ => interlaces_derivative_simsun_three
   | n + 4, _, hrr =>
-      derivative_interlaces hrr (by rw [natDegree_simsun]; lia)
+      derivative_interlaces_of_natDegree_ne_zero hrr (by rw [natDegree_simsun]; lia)
 
 lemma eval_simsunCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     simsunCoeffB.eval r ≤ 0 := by

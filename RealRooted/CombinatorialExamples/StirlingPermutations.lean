@@ -222,7 +222,8 @@ theorem strictInterl_stirlingPermutations_succ :
       have hInter :
           Interlaces (stirlingPermutations (n + 2)).derivative
             (stirlingPermutations (n + 2)) :=
-        derivative_interlaces (strictInterl_stirlingPermutations_succ (n + 1)).2.1.2 (by
+        derivative_interlaces_of_natDegree_ne_zero
+          (strictInterl_stirlingPermutations_succ (n + 1)).2.1.2 (by
           simp [natDegree_stirlingPermutations])
       have hg_pos : HasPosLeadingCoeff (stirlingPermutations (n + 2)).derivative :=
         (stirlingPermutations_posLeadingCoeff (n + 2)).derivative (by

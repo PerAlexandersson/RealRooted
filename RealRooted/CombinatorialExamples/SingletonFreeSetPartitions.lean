@@ -178,7 +178,7 @@ lemma strictInterl_singletonFreeSetPartitionsCore_of_strictInterl {n : Nat} (hn 
   have hder :
       Interlaces (singletonFreeSetPartitions (n + 1)).derivative
         (singletonFreeSetPartitions (n + 1)) :=
-    derivative_interlaces hprev.2.1.2 <| by
+    derivative_interlaces_of_natDegree_ne_zero hprev.2.1.2 <| by
       rw [natDegree_singletonFreeSetPartitions (n + 1) (by lia)]
       lia
   have hlower_pos :

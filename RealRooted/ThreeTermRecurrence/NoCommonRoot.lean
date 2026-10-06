@@ -98,12 +98,12 @@ theorem derivLag_not_isRoot_of_isRoot_succ
         obtain ⟨hint, hno⟩ := ih
         have hsrc : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hint.2.1
         have hder : Interlaces (P (n + 1)).derivative (P (n + 1)) :=
-          derivative_interlaces hsrc.2 (hdeg_two n)
+          derivative_interlaces_of_natDegree_ne_zero hsrc.2 (Nat.ne_zero_of_lt (hdeg_two n))
         have hder_pos : HasPosLeadingCoeff (P (n + 1)).derivative :=
           (hpos (n + 1)).derivative (by linarith [hdeg_two n])
         have hdeg_next := hdeg_succ (n + 1)
         rw [hrec n] at hdeg_next
-        have hstep := LiuWang.strictInterl_derivative_lag_of_nonpos hsrc.2 (hdeg_two n)
+        have hstep := LiuWang.strictInterl_derivative_lag_of_nonpos hsrc.2
           (hint.toInterlaces (hdeg_succ n)) (hpos n) (hpos (n + 1))
           (by rw [← hrec n]; exact hpos (n + 2)) (by lia) (by lia) hno
           (hV_nonpos n hsrc) (fun r hr => (hW_neg n hsrc r hr).le)

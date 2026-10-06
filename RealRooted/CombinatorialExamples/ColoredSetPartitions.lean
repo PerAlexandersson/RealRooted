@@ -194,7 +194,8 @@ theorem strictInterl_coloredSetPartitions_succ (c m : Nat) :
       have hInter :
           Interlaces (coloredSetPartitions c m (n + 2)).derivative
             (coloredSetPartitions c m (n + 2)) :=
-        derivative_interlaces hprev.2.1.2 (by simp [natDegree_coloredSetPartitions])
+        derivative_interlaces_of_natDegree_ne_zero hprev.2.1.2
+          (by simp [natDegree_coloredSetPartitions])
       have hg_pos :
           HasPosLeadingCoeff (coloredSetPartitions c m (n + 2)).derivative :=
         (coloredSetPartitions_posLeadingCoeff c m (n + 2)).derivative

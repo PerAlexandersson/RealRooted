@@ -83,7 +83,6 @@ theorem strictInterl_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (ha : ∀ n : Nat, 0 ≤ a n)
     (hV_nonpos : ∀ n : Nat, ∀ r, r ≤ 0 → (V n).eval r ≤ 0)
@@ -101,7 +100,7 @@ theorem strictInterl_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   strictInterl_derivative_lag_sequence_of_nonneg_coeffs
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
-    hbase hpos hnonneg hdeg_two
+    hbase hpos hnonneg
     (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
     (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
       (hc n) (hV_nonpos n r hr))
@@ -116,7 +115,6 @@ theorem strictInterl_derivative_lag_sequence_den_coeff_of_root_window
     {lo hi : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (ha : ∀ n : Nat, 0 ≤ a n)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → lo n ≤ r)
@@ -140,7 +138,7 @@ theorem strictInterl_derivative_lag_sequence_den_coeff_of_root_window
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   LiuWang.strictInterl_derivative_lag_sequence_of_root_window
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
-    hbase hpos hdeg_two
+    hbase hpos
     (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
     hroot_lower hroot_upper
     (fun n r hr hlo hhi => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
@@ -156,7 +154,6 @@ theorem isRealRooted_of_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (ha : ∀ n : Nat, 0 ≤ a n)
     (hV_nonpos : ∀ n : Nat, ∀ r, r ≤ 0 → (V n).eval r ≤ 0)
@@ -174,7 +171,7 @@ theorem isRealRooted_of_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_derivative_lag_sequence_of_nonneg_coeffs
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
-    hbase hpos hnonneg hdeg_two
+    hbase hpos hnonneg
     (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
     (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
       (hc n) (hV_nonpos n r hr))
@@ -189,7 +186,6 @@ theorem isRealRooted_of_derivative_lag_sequence_den_coeff_of_root_window
     {lo hi : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (ha : ∀ n : Nat, 0 ≤ a n)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → lo n ≤ r)
@@ -213,7 +209,7 @@ theorem isRealRooted_of_derivative_lag_sequence_den_coeff_of_root_window
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   LiuWang.isRealRooted_of_derivative_lag_sequence_of_root_window
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
-    hbase hpos hdeg_two
+    hbase hpos
     (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
     hroot_lower hroot_upper
     (fun n r hr hlo hhi => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
@@ -234,7 +230,6 @@ theorem strictInterl_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hV_nonpos : ∀ n : Nat, ∀ r, r ≤ 0 → (V n).eval r ≤ 0)
     (hden : ∀ n : Nat, d n ≠ 0)
@@ -247,7 +242,7 @@ theorem strictInterl_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   strictInterl_derivative_nonpos_sequence_of_nonneg_coeffs
-    (U := U) (V := fun n => C (c n) * V n) hbase hpos hnonneg hdeg_two
+    (U := U) (V := fun n => C (c n) * V n) hbase hpos hnonneg
     (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
       (hc n) (hV_nonpos n r hr))
     (mw_derivative_den_coeff_recurrence hden hcoeff hraw)
@@ -260,7 +255,6 @@ theorem isRealRooted_of_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hV_nonpos : ∀ n : Nat, ∀ r, r ≤ 0 → (V n).eval r ≤ 0)
     (hden : ∀ n : Nat, d n ≠ 0)
@@ -273,7 +267,7 @@ theorem isRealRooted_of_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs
-    (U := U) (V := fun n => C (c n) * V n) hbase hpos hnonneg hdeg_two
+    (U := U) (V := fun n => C (c n) * V n) hbase hpos hnonneg
     (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
       (hc n) (hV_nonpos n r hr))
     (mw_derivative_den_coeff_recurrence hden hcoeff hraw)
@@ -287,7 +281,6 @@ theorem strictInterl_derivative_X_mul_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hQ_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
     (hrec : ∀ n : Nat,
       P (n + 2) =
@@ -296,7 +289,7 @@ theorem strictInterl_derivative_X_mul_sequence_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   strictInterl_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun n => X * Q n) hbase hpos hnonneg hdeg_two
+    (V := fun n => X * Q n) hbase hpos hnonneg
     (fun n r hr hroot_nonpos =>
       eval_X_mul_nonpos_of_nonpos_of_nonneg hroot_nonpos (hQ_nonneg n r hr))
     hrec hdeg_lo hdeg_hi
@@ -308,7 +301,6 @@ theorem isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hQ_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
     (hrec : ∀ n : Nat,
       P (n + 2) =
@@ -317,7 +309,7 @@ theorem isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun n => X * Q n) hbase hpos hnonneg hdeg_two
+    (V := fun n => X * Q n) hbase hpos hnonneg
     (fun n r hr hroot_nonpos =>
       eval_X_mul_nonpos_of_nonpos_of_nonneg hroot_nonpos (hQ_nonneg n r hr))
     hrec hdeg_lo hdeg_hi
@@ -328,7 +320,6 @@ theorem strictInterl_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hQ_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
     (hrec : ∀ n : Nat,
@@ -338,7 +329,7 @@ theorem strictInterl_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   strictInterl_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun n => C (c n) * X * Q n) hbase hpos hnonneg hdeg_two
+    (V := fun n => C (c n) * X * Q n) hbase hpos hnonneg
     (fun n r hr hroot_nonpos =>
       eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
         (hc n) hroot_nonpos (hQ_nonneg n r hr))
@@ -351,7 +342,6 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hQ_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
     (hrec : ∀ n : Nat,
@@ -361,7 +351,7 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun n => C (c n) * X * Q n) hbase hpos hnonneg hdeg_two
+    (V := fun n => C (c n) * X * Q n) hbase hpos hnonneg
     (fun n r hr hroot_nonpos =>
       eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
         (hc n) hroot_nonpos (hQ_nonneg n r hr))
@@ -379,7 +369,6 @@ theorem strictInterl_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hQ_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
     (hden : ∀ n : Nat, d n ≠ 0)
@@ -392,7 +381,7 @@ theorem strictInterl_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   strictInterl_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
-    (U := U) (Q := Q) (c := c) hbase hpos hnonneg hdeg_two hc hQ_nonneg
+    (U := U) (Q := Q) (c := c) hbase hpos hnonneg hc hQ_nonneg
     (fun n => by
       simpa only [mul_assoc] using
         mw_derivative_den_coeff_recurrence
@@ -406,7 +395,6 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coef
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hQ_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
     (hden : ∀ n : Nat, d n ≠ 0)
@@ -419,7 +407,7 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coef
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
-    (U := U) (Q := Q) (c := c) hbase hpos hnonneg hdeg_two hc hQ_nonneg
+    (U := U) (Q := Q) (c := c) hbase hpos hnonneg hc hQ_nonneg
     (fun n => by
       simpa only [mul_assoc] using
         mw_derivative_den_coeff_recurrence
@@ -433,14 +421,13 @@ theorem strictInterl_derivative_X_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + X * (P (n + 1)).derivative)
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   strictInterl_derivative_nonpos_sequence_of_nonneg_coeffs
-    (V := fun _ => X) hbase hpos hnonneg hdeg_two
+    (V := fun _ => X) hbase hpos hnonneg
     (fun _ _ hroot_nonpos => eval_X_nonpos_of_nonpos hroot_nonpos)
     hrec hdeg_lo hdeg_hi
 
@@ -450,14 +437,13 @@ theorem isRealRooted_of_derivative_X_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + X * (P (n + 1)).derivative)
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs
-    (V := fun _ => X) hbase hpos hnonneg hdeg_two
+    (V := fun _ => X) hbase hpos hnonneg
     (fun _ _ hroot_nonpos => eval_X_nonpos_of_nonpos hroot_nonpos)
     hrec hdeg_lo hdeg_hi
 
@@ -468,7 +454,6 @@ theorem strictInterl_derivative_C_mul_X_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + (C (c n) * X) * (P (n + 1)).derivative)
@@ -476,7 +461,7 @@ theorem strictInterl_derivative_C_mul_X_sequence_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   strictInterl_derivative_nonpos_sequence_of_nonneg_coeffs
-    (V := fun n => C (c n) * X) hbase hpos hnonneg hdeg_two
+    (V := fun n => C (c n) * X) hbase hpos hnonneg
     (fun n _ hroot_nonpos =>
       eval_C_mul_X_nonpos_of_nonneg_of_nonpos (hc n) hroot_nonpos)
     hrec hdeg_lo hdeg_hi
@@ -488,7 +473,6 @@ theorem isRealRooted_of_derivative_C_mul_X_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + (C (c n) * X) * (P (n + 1)).derivative)
@@ -496,7 +480,7 @@ theorem isRealRooted_of_derivative_C_mul_X_sequence_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs
-    (V := fun n => C (c n) * X) hbase hpos hnonneg hdeg_two
+    (V := fun n => C (c n) * X) hbase hpos hnonneg
     (fun n _ hroot_nonpos =>
       eval_C_mul_X_nonpos_of_nonneg_of_nonpos (hc n) hroot_nonpos)
     hrec hdeg_lo hdeg_hi
@@ -509,7 +493,6 @@ theorem strictInterl_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + (X * (1 + X)) * (P (n + 1)).derivative)
@@ -517,7 +500,7 @@ theorem strictInterl_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   strictInterl_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun _ => X * (1 + X)) hbase hpos hnonneg hdeg_two
+    (V := fun _ => X * (1 + X)) hbase hpos hnonneg
     (fun n r hr hroot_nonpos =>
       eval_X_mul_one_add_X_nonpos_of_mem_Icc (hroot_lower n r hr) hroot_nonpos)
     hrec hdeg_lo hdeg_hi
@@ -529,7 +512,6 @@ theorem isRealRooted_of_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + (X * (1 + X)) * (P (n + 1)).derivative)
@@ -537,7 +519,7 @@ theorem isRealRooted_of_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun _ => X * (1 + X)) hbase hpos hnonneg hdeg_two
+    (V := fun _ => X * (1 + X)) hbase hpos hnonneg
     (fun n r hr hroot_nonpos =>
       eval_X_mul_one_add_X_nonpos_of_mem_Icc (hroot_lower n r hr) hroot_nonpos)
     hrec hdeg_lo hdeg_hi
@@ -548,7 +530,6 @@ theorem strictInterl_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
     (hrec : ∀ n : Nat,
@@ -558,7 +539,7 @@ theorem strictInterl_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   strictInterl_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun n => C (c n) * X * (1 + X)) hbase hpos hnonneg hdeg_two
+    (V := fun n => C (c n) * X * (1 + X)) hbase hpos hnonneg
     (fun n r hr hroot_nonpos =>
       eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc
         (hc n) (hroot_lower n r hr) hroot_nonpos)
@@ -571,7 +552,6 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coef
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
     (hrec : ∀ n : Nat,
@@ -581,7 +561,7 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coef
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun n => C (c n) * X * (1 + X)) hbase hpos hnonneg hdeg_two
+    (V := fun n => C (c n) * X * (1 + X)) hbase hpos hnonneg
     (fun n r hr hroot_nonpos =>
       eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc
         (hc n) (hroot_lower n r hr) hroot_nonpos)
@@ -592,7 +572,6 @@ theorem strictInterl_derivative_neg_C_mul_X_mul_one_add_X_sequence
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -1)
     (hrec : ∀ n : Nat,
@@ -602,7 +581,7 @@ theorem strictInterl_derivative_neg_C_mul_X_mul_one_add_X_sequence
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  strictInterl_derivative_nonpos_sequence hbase hpos hdeg_two
+  strictInterl_derivative_nonpos_sequence hbase hpos
     (fun n r hr =>
       eval_neg_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_le_neg_one
         (hc n) (hroot_upper n r hr))
@@ -614,7 +593,6 @@ theorem isRealRooted_of_derivative_neg_C_mul_X_mul_one_add_X_sequence
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -1)
     (hrec : ∀ n : Nat,
@@ -624,7 +602,7 @@ theorem isRealRooted_of_derivative_neg_C_mul_X_mul_one_add_X_sequence
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_nonpos_sequence hbase hpos hdeg_two
+  isRealRooted_of_derivative_nonpos_sequence hbase hpos
     (fun n r hr =>
       eval_neg_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_le_neg_one
         (hc n) (hroot_upper n r hr))
@@ -637,7 +615,6 @@ theorem strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) =
@@ -646,7 +623,7 @@ theorem strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   strictInterl_derivative_nonpos_sequence_of_nonneg_coeffs
-    (V := fun n => C (c n) * X * (1 - X)) hbase hpos hnonneg hdeg_two
+    (V := fun n => C (c n) * X * (1 - X)) hbase hpos hnonneg
     (fun n _ hr =>
       eval_C_mul_X_mul_one_sub_X_nonpos_of_nonneg_of_nonpos (hc n) hr)
     hrec hdeg_lo hdeg_hi
@@ -658,7 +635,6 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coef
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) =
@@ -667,7 +643,7 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coef
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs
-    (V := fun n => C (c n) * X * (1 - X)) hbase hpos hnonneg hdeg_two
+    (V := fun n => C (c n) * X * (1 - X)) hbase hpos hnonneg
     (fun n _ hr =>
       eval_C_mul_X_mul_one_sub_X_nonpos_of_nonneg_of_nonpos (hc n) hr)
     hrec hdeg_lo hdeg_hi
@@ -676,12 +652,44 @@ end RealRooted.MaWang
 
 namespace RealRooted
 
-@[deprecated (since := "2026-10-05")]
-alias isRealRooted_of_mw_derivative_X_mul_sequence_of_nonneg_coeffs :=
-  MaWang.isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs
+/-- Deprecated degree-restricted form of
+`MaWang.isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs`. -/
+@[deprecated MaWang.isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs
+  (since := "2026-10-05")]
+theorem isRealRooted_of_mw_derivative_X_mul_sequence_of_nonneg_coeffs
+    {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
+    (hbase : StrictInterl (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (_ : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hQ_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        U n * P (n + 1) + (X * Q n) * (P (n + 1)).derivative)
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  MaWang.isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs hbase hpos hnonneg
+    hQ_nonneg hrec hdeg_lo hdeg_hi
 
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs :=
-  MaWang.strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
+/-- Deprecated degree-restricted form of
+`MaWang.strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs`. -/
+@[deprecated MaWang.strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
+  (since := "2026-10-05")]
+theorem strictInterl_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
+    {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : StrictInterl (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (_ : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        U n * P (n + 1) + (C (c n) * X * (1 - X)) * (P (n + 1)).derivative)
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
+  MaWang.strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs hbase hpos
+    hnonneg hc hrec hdeg_lo hdeg_hi
 
 end RealRooted

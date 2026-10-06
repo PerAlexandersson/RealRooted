@@ -371,8 +371,8 @@ theorem eulerInsertionStep_derivative_strictInterl_zeroStep
     lia
   have hbase : StrictInterl p (theta p) := by
     have hder : StrictInterl p.derivative p :=
-      (derivative_interlaces (hp.ne_zero_and_splits hp_ne).2
-        (by rw [hpdeg]; exact hD)).toStrictInterl
+      (derivative_interlaces_of_natDegree_ne_zero (hp.ne_zero_and_splits hp_ne).2
+        (by rw [hpdeg]; lia)).toStrictInterl
     simpa [theta] using
       strictInterl_mul_X_of_strictInterl_of_nonneg hder
         hp.hasNonnegCoeffs.derivative hp.hasNonnegCoeffs
@@ -422,10 +422,11 @@ theorem crossedEulerCompletion_commonLeftInterleaver
   have hp1_splits : (p + 1).Splits := hp1.eq_zero_or_splits.resolve_left hp1_ne
   have hderPF : IsPFPolynomial p.derivative := hp.derivative
   have hder_p : StrictInterl p.derivative p :=
-    (derivative_interlaces hp_splits (by rw [hpdeg]; exact hD)).toStrictInterl
+    (derivative_interlaces_of_natDegree_ne_zero hp_splits
+      (by rw [hpdeg]; lia)).toStrictInterl
   have hder_p1 : StrictInterl p.derivative (p + 1) := by
-    have h := (derivative_interlaces hp1_splits
-      (by rw [hp1deg]; exact hD)).toStrictInterl
+    have h := (derivative_interlaces_of_natDegree_ne_zero hp1_splits
+      (by rw [hp1deg]; lia)).toStrictInterl
     simpa using h
   have hderdeg : p.derivative.natDegree ≤ M - 2 := by
     rw [p.natDegree_derivative, hpdeg]

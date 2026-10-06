@@ -16,19 +16,19 @@ namespace Tactic
 theorem derivative_sequence_interlaces
     {P : Nat → ℝ[X]}
     (hsplits : ∀ i : Nat, (P i).Splits)
-    (hdeg : ∀ i : Nat, 2 ≤ (P i).natDegree) :
+    (hdeg : ∀ i : Nat, (P i).natDegree ≠ 0) :
     ∀ i : Nat, Interlaces (P i).derivative (P i) := fun i =>
-  RealRooted.derivative_interlaces (hsplits i) (hdeg i)
+  RealRooted.derivative_interlaces_of_natDegree_ne_zero (hsplits i) (hdeg i)
 
 theorem derivative_strictInterl {p : ℝ[X]}
-    (hsplits : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+    (hsplits : p.Splits) (hdeg : p.natDegree ≠ 0) :
     StrictInterl p.derivative p :=
-  (RealRooted.derivative_interlaces hsplits hdeg).toStrictInterl
+  (RealRooted.derivative_interlaces_of_natDegree_ne_zero hsplits hdeg).toStrictInterl
 
 theorem derivative_sequence_strictInterl
     {P : Nat → ℝ[X]}
     (hsplits : ∀ i : Nat, (P i).Splits)
-    (hdeg : ∀ i : Nat, 2 ≤ (P i).natDegree) :
+    (hdeg : ∀ i : Nat, (P i).natDegree ≠ 0) :
     ∀ i : Nat, StrictInterl (P i).derivative (P i) := fun i =>
   RealRooted.Tactic.derivative_strictInterl (hsplits i) (hdeg i)
 
@@ -54,13 +54,13 @@ theorem derivative_sequence_ne_zero
 syntax (name := rr_derivative_interlaces_named)
   "rr_derivative_interlaces" " using "
     "splits" ":=" term ","
-    "degree_two" ":=" term :
+    "degree_ne_zero" ":=" term :
   tactic
 
 syntax (name := rr_derivative_sequence_interlaces_named)
   "rr_derivative_sequence_interlaces" " using "
     "splits" ":=" term ","
-    "degree_two" ":=" term :
+    "degree_ne_zero" ":=" term :
   tactic
 
 syntax (name := rr_derivative_interlaces_auto)
@@ -71,13 +71,13 @@ syntax (name := rr_derivative_interlaces_auto)
 syntax (name := rr_derivative_strict_interl_named)
   "rr_derivative_strict_interl" " using "
     "splits" ":=" term ","
-    "degree_two" ":=" term :
+    "degree_ne_zero" ":=" term :
   tactic
 
 syntax (name := rr_derivative_sequence_strict_interl_named)
   "rr_derivative_sequence_strict_interl" " using "
     "splits" ":=" term ","
-    "degree_two" ":=" term :
+    "degree_ne_zero" ":=" term :
   tactic
 
 syntax (name := rr_derivative_strict_interl_auto)
@@ -130,26 +130,27 @@ macro_rules
   | `(tactic|
       rr_derivative_interlaces using
         splits := $hsplits:term,
-        degree_two := $hdeg:term) =>
-      `(tactic| exact RealRooted.derivative_interlaces $hsplits $hdeg)
+        degree_ne_zero := $hdeg:term) =>
+      `(tactic| exact RealRooted.derivative_interlaces_of_natDegree_ne_zero $hsplits $hdeg)
   | `(tactic|
       rr_derivative_sequence_interlaces using
         splits := $hsplits:term,
-        degree_two := $hdeg:term) =>
+        degree_ne_zero := $hdeg:term) =>
       `(tactic| exact RealRooted.Tactic.derivative_sequence_interlaces $hsplits $hdeg)
   | `(tactic|
       rr_derivative_interlaces using
         splits := $hsplits:term) =>
-      `(tactic| exact RealRooted.derivative_interlaces $hsplits (by rr_close_side))
+      `(tactic|
+        exact RealRooted.derivative_interlaces_of_natDegree_ne_zero $hsplits (by rr_close_side))
   | `(tactic|
       rr_derivative_strict_interl using
         splits := $hsplits:term,
-        degree_two := $hdeg:term) =>
+        degree_ne_zero := $hdeg:term) =>
       `(tactic| exact RealRooted.Tactic.derivative_strictInterl $hsplits $hdeg)
   | `(tactic|
       rr_derivative_sequence_strict_interl using
         splits := $hsplits:term,
-        degree_two := $hdeg:term) =>
+        degree_ne_zero := $hdeg:term) =>
       `(tactic| exact RealRooted.Tactic.derivative_sequence_strictInterl $hsplits $hdeg)
   | `(tactic|
       rr_derivative_strict_interl using
@@ -190,11 +191,6 @@ macro_rules
   | `(tactic| rr_derivative_ne_zero) =>
       `(tactic|
         exact Polynomial.derivative_ne_zero.mpr (by rr_close_side))
-
-end Tactic
-end RealRooted
-namespace RealRooted
-namespace Tactic
 
 end Tactic
 end RealRooted

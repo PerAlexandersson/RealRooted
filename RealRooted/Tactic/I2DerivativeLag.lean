@@ -17,7 +17,6 @@ theorem isRealRooted_of_i2_derivative_lag_directHalfLine_sequence
     {P U V W : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdegree_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n)
@@ -30,7 +29,7 @@ theorem isRealRooted_of_i2_derivative_lag_directHalfLine_sequence
       ∀ n : Nat, ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   LiuWang.isRealRooted_of_derivative_lag_sequence
-    hbase hpos hdegree_two hrec hderivative_nonpos hlag_nonpos hdeg_succ hno_common
+    hbase hpos hrec hderivative_nonpos hlag_nonpos hdeg_succ hno_common
 
 /-- Wagner gap-lag Family I route with an exterior `X` factor. -/
 theorem isRealRooted_of_i2_derivative_lag_wagnerGap_sequence

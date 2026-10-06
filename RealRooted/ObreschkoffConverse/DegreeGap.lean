@@ -42,7 +42,7 @@ lemma exists_root_ge_of_derivative_root
     {c : ℝ} (hc : p.derivative.IsRoot c) :
     ∃ r, p.IsRoot r ∧ c ≤ r := by
   obtain ⟨hp_rr, hp'_rr, _, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ :=
-    derivative_interlaces hp_splits hdeg
+    derivative_interlaces_of_natDegree_ne_zero hp_splits (by lia)
   have hrs_len : rs.length = p.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hp_rr.2]
   have hrs_ne : rs ≠ [] := by grind
@@ -96,7 +96,7 @@ lemma exists_rightmost_derivative_root_with_eval_nonpos
       (∀ s ∈ p.derivative.roots, s ≤ c) ∧
       p.eval c ≤ 0 := by
   have hp' : (p.derivative ≠ 0 ∧
-    p.derivative.Splits) := (derivative_interlaces hp_splits hdeg).2.1
+    p.derivative.Splits) := (derivative_interlaces_of_natDegree_ne_zero hp_splits (by lia)).2.1
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
     hp_pos.derivative (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
@@ -134,7 +134,7 @@ lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
   intro hq
   have hqdeg : 2 ≤ (C t + p).natDegree := by simp_all
   have hq'_rr : ((C t + p).derivative ≠ 0 ∧ (C t + p).derivative.Splits) :=
-    (derivative_interlaces hq.2 hqdeg).2.1
+    (derivative_interlaces_of_natDegree_ne_zero hq.2 (by lia)).2.1
   have hmono :
       StrictMonoOn (fun x => (C t + p).eval x) (Set.Ici c) := by
     have hder_eq : (C t + p).derivative = p.derivative := by simp

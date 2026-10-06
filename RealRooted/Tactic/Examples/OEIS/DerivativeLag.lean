@@ -18,7 +18,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) +
@@ -31,7 +30,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
-    degree_two := hdeg_two,
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno,
@@ -42,7 +40,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) +
@@ -55,7 +52,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
-    degree_two := hdeg_two,
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno,
@@ -67,7 +63,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {m : Nat}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) +
@@ -82,7 +77,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {m : Nat}
     base := hbase,
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
-    degree_two := hdeg_two,
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno,
@@ -131,7 +125,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hraw : ∀ n : Nat,
       C ((n : ℝ) + 3) * P (n + 2) =
         C ((n : ℝ) + 3) * (U n * P (n + 1)) +
@@ -145,7 +138,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
-    degree_two := hdeg_two,
     deriv_factor := fun _ => C (2 : ℝ) * X * (1 - X),
     lag_factor := fun _ => X * (C (2 : ℝ) - X),
     norm_deriv_coeff := fun _ => (1 : ℝ),
@@ -163,7 +155,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hraw : ∀ n : Nat,
       C ((n : ℝ) + 3) * P (n + 2) =
         C ((n : ℝ) + 3) * (U n * P (n + 1)) +
@@ -177,7 +168,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
-    degree_two := hdeg_two,
     deriv_factor := fun _ => C (2 : ℝ) * X * (1 - X),
     lag_factor := fun _ => X * (C (2 : ℝ) - X),
     norm_deriv_coeff := fun _ => (1 : ℝ),

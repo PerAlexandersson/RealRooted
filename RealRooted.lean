@@ -578,7 +578,6 @@ import RealRooted.MaWang.Strong
 import RealRooted.MaWang.Weak
 import RealRooted.MaWang.Weak.Endpoint
 import RealRooted.MaWang.Weak.Regularization
-import RealRooted.MaWang.Weak.SameDegree
 import RealRooted.MaWang.Weak.Successor
 import RealRooted.MagnitudeDominated
 import RealRooted.MaoWangMatrixProduct

@@ -18,7 +18,6 @@ example {P U V : Nat → ℝ[X]} {a : Nat → ℝ}
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (ha_ne : ∀ n : Nat, a n ≠ 0)
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff (U n * P (n + 1) + V n * (P (n + 1)).derivative))
     (hV_nonpos : ∀ n : Nat, ∀ r,
@@ -40,7 +39,6 @@ example {P U V : Nat → ℝ[X]} {a : Nat → ℝ}
     base_one := hbase_one,
     pos_lc := hpos,
     outer_nonzero := ha_ne,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     coeff_nonpos := hV_nonpos,
     recurrence := hrec,
