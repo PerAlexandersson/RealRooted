@@ -14,18 +14,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Degree-closeness specialization with nonnegative coefficients. -/
-theorem posComboNatDegreeClose_of_nonnegCoeffs
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g) :
-    f.natDegree ≤ g.natDegree + 1 ∧
-      g.natDegree ≤ f.natDegree + 1 :=
-  natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
-    hfg (hf_pos.ne_zero)
-    (hg_pos.ne_zero) hfnn hgnn
-
 /-- An ordered positive-combo pair bridge plus the nonnegative degree-closeness
 theorem gives the unordered pair bridge. -/
 theorem posComboPairHasCommonInterleaver_of_orderedBridge_and_nonnegCoeffs

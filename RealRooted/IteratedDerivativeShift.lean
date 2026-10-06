@@ -236,7 +236,7 @@ private lemma isRealRooted_tDeriv_pos {eps : ℝ} {p : ℝ[X]}
   -- Write T_ε(p) = C 1 * p + C (-eps) * p'
   have hrewrite : tDeriv eps p = C 1 * p + C (-eps) * p.derivative := by simp [tDeriv]; grind
   -- derivative interlaces p
-  have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
+  have hder : Interlaces p.derivative p := derivative_interlaces_of_natDegree_ne_zero hp (by lia)
   -- HasPosLeadingCoeff of p'
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
     hp_pos.derivative (by lia)
@@ -411,7 +411,7 @@ theorem derivative_strictInterl_tDeriv_of_nonpos {eps : ℝ} {p : ℝ[X]}
   · exact derivative_strictInterl_tDeriv_of_natDegree_one hdeg1
   have hdeg2 : 2 ≤ p.natDegree := by lia
   rcases lt_or_eq_of_le heps with heps_neg | heps_zero
-  · have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
+  · have hder : Interlaces p.derivative p := derivative_interlaces_of_natDegree_ne_zero hp (by lia)
     have hder_rr : p.derivative ≠ 0 ∧ p.derivative.Splits := hder.2.1
     have hcoef_pos : 0 < -eps := neg_pos.mpr heps_neg
     have hT_eq : tDeriv eps p = p + C (-eps) * p.derivative := by simp [tDeriv, sub_eq_add_neg]
@@ -422,7 +422,7 @@ theorem derivative_strictInterl_tDeriv_of_nonpos {eps : ℝ} {p : ℝ[X]}
     rw [hT_eq]
     exact hder.toStrictInterl.add_of_left hscaled_strictInterl hp_pos hscaled_pos
   · subst eps
-    simpa [tDeriv] using (derivative_interlaces hp hdeg2).toStrictInterl
+    simpa [tDeriv] using (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).toStrictInterl
 
 /-- Common-factor version of the left derivative-shift step.  If
 `p = d * q` and `p' = d * r`, then `p' ≪ T_ε p` follows from Wagner (2) for
@@ -453,7 +453,7 @@ theorem derivative_strictInterl_tDeriv_of_nonpos_of_common_factor {eps : ℝ} {p
     exact (hrq.add_of_left hscaled_strictInterl hq_pos hscaled_pos).mul_common_factor
       hd_ne hd_splits
   · subst eps
-    simpa [tDeriv] using (derivative_interlaces hp hdeg2).toStrictInterl
+    simpa [tDeriv] using (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).toStrictInterl
 
 /-- Derivative of an exact power of a linear factor times a quotient. -/
 lemma derivative_pow_X_sub_C_mul (a : ℝ) (m : ℕ) (q : ℝ[X]) :
@@ -580,7 +580,8 @@ theorem strictInterl_tDeriv {eps : ℝ} {p : ℝ[X]}
       have hstrictInterl_neg :
           StrictInterl (-p) (tDeriv eps (-p)) := by
         have hder : Interlaces (-p).derivative (-p) := by
-          simpa using derivative_interlaces (f := -p) (by simp_all) (by simp_all)
+          simpa using
+            derivative_interlaces_of_natDegree_ne_zero (f := -p) (by simp_all) (by simp_all; lia)
         have hp'_pos : HasPosLeadingCoeff (-p).derivative := by
           simpa using hneg_pos.derivative (by rw [natDegree_neg]; lia)
         have hrewrite_neg : tDeriv eps (-p) = C 1 * (-p) + C (-eps) * (-p).derivative := by
@@ -607,7 +608,8 @@ theorem strictInterl_tDeriv {eps : ℝ} {p : ℝ[X]}
       have hboth : StrictInterl p (tDeriv eps p) := by
         simpa [hrewrite] using StrictInterl.C_mul_right hleft (by simp : (-1 : ℝ) ≠ 0)
       lia
-    · have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
+    · have hder : Interlaces p.derivative p :=
+        derivative_interlaces_of_natDegree_ne_zero hp (by lia)
       have hp'_pos : HasPosLeadingCoeff p.derivative := hpos.derivative (by lia)
       have hrewrite : tDeriv eps p = C 1 * p + C (-eps) * p.derivative := by
         simp [tDeriv]

@@ -1,3 +1,4 @@
+import Mathlib.Algebra.Polynomial.BigOperators
 import Mathlib.Algebra.Polynomial.Coeff
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Tactic
@@ -6,8 +7,8 @@ import Mathlib.Tactic
 # Polynomial basis transforms
 
 The coefficientwise linear map sending `X ^ n` to a prescribed polynomial
-`B n`, together with its elementary algebra and the injectivity criterion for
-degree-triangular bases.
+`B n`, together with its elementary algebra, degree bounds and monicity for
+triangular bases, and the injectivity criterion for degree-triangular bases.
 -/
 
 open Finset
@@ -94,6 +95,70 @@ theorem basisTransform_X_mul_of_succ
       rw [show C a * B n = a • B n by rw [Polynomial.smul_eq_C_mul],
         L.map_smul]
       rw [Polynomial.smul_eq_C_mul]
+
+/-- A supportwise degree bound on the basis elements bounds the entire basis
+transform. -/
+theorem basisTransform_natDegree_le_of_support
+    {B : ℕ → R[X]} {p : R[X]} {N : ℕ}
+    (hB : ∀ n ∈ p.support, (B n).natDegree ≤ N) :
+    (basisTransform B p).natDegree ≤ N := by
+  rw [basisTransform, Polynomial.sum_def]
+  exact natDegree_sum_le_of_forall_le _ _ fun n hn ↦
+    (natDegree_C_mul_le (p.coeff n) (B n)).trans (hB n hn)
+
+/-- A basis transform does not raise degree when its `n`th basis element has
+degree at most `n`. -/
+theorem basisTransform_natDegree_le_of_natDegree_le
+    {B : ℕ → R[X]} (hB : ∀ n, (B n).natDegree ≤ n) (p : R[X]) :
+    (basisTransform B p).natDegree ≤ p.natDegree := by
+  rw [basisTransform, Polynomial.sum_def]
+  apply natDegree_sum_le_of_forall_le
+  intro n hn
+  calc
+    (C (p.coeff n) * B n).natDegree ≤ (B n).natDegree :=
+      natDegree_C_mul_le _ _
+    _ ≤ n := hB n
+    _ ≤ p.natDegree :=
+      le_natDegree_of_ne_zero (Polynomial.mem_support_iff.mp hn)
+
+/-- The top input coefficient stays equal to one under a degree-exact monic
+triangular basis transform. -/
+theorem coeff_basisTransform_natDegree_eq_one_of_monic
+    [Nontrivial R] {B : ℕ → R[X]}
+    (hBdeg : ∀ n, (B n).natDegree = n)
+    (hBmonic : ∀ n, (B n).Monic) {p : R[X]} (hp : p.Monic) :
+    (basisTransform B p).coeff p.natDegree = 1 := by
+  rw [coeff_basisTransform, Polynomial.sum_def]
+  have hnmem : p.natDegree ∈ p.support :=
+    natDegree_mem_support_of_nonzero hp.ne_zero
+  rw [Finset.sum_eq_single_of_mem p.natDegree hnmem]
+  · rw [hp.coeff_natDegree]
+    have hcoeff : (B p.natDegree).coeff p.natDegree = 1 := by
+      have htop := (hBmonic p.natDegree).coeff_natDegree
+      rw [hBdeg p.natDegree] at htop
+      exact htop
+    simp [hcoeff]
+  · intro n hn hne
+    have hnle : n ≤ p.natDegree :=
+      le_natDegree_of_ne_zero (Polynomial.mem_support_iff.mp hn)
+    have hnlt : n < p.natDegree := lt_of_le_of_ne hnle hne
+    have hzero : (B n).coeff p.natDegree = 0 := by
+      apply coeff_eq_zero_of_natDegree_lt
+      rw [hBdeg n]
+      exact hnlt
+    simp [hzero]
+
+/-- A degree-exact monic triangular basis sends monic polynomials to monic
+polynomials. -/
+theorem basisTransform_monic_of_monic
+    [Nontrivial R] {B : ℕ → R[X]}
+    (hBdeg : ∀ n, (B n).natDegree = n)
+    (hBmonic : ∀ n, (B n).Monic) {p : R[X]} (hp : p.Monic) :
+    (basisTransform B p).Monic := by
+  apply monic_of_natDegree_le_of_coeff_eq_one p.natDegree
+  · exact basisTransform_natDegree_le_of_natDegree_le
+      (fun n ↦ (hBdeg n).le) p
+  · exact coeff_basisTransform_natDegree_eq_one_of_monic hBdeg hBmonic hp
 
 end Semiring
 

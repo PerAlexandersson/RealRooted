@@ -1,4 +1,5 @@
 import RealRooted.Favard
+import RealRooted.Favard.Orthogonality
 
 /-!
 # Favard challenge entry point
@@ -15,6 +16,16 @@ name = "RealRooted.SatisfiesFavardRecurrence"
 module = "RealRooted.Favard.Recurrence"
 label = "Favard three-term recurrence"
 
+[[definitions]]
+name = "RealRooted.SatisfiesFavardRecurrence.functional"
+module = "RealRooted.Favard.Orthogonality"
+label = "The normalized moment functional"
+
+[[definitions]]
+name = "RealRooted.SatisfiesFavardRecurrence.pairing"
+module = "RealRooted.Favard.Orthogonality"
+label = "The pairing ⟨p, q⟩ = L(pq)"
+
 [[theorems]]
 name = "RealRooted.Challenges.Favard.SatisfiesFavardRecurrence.strictInterl_succ"
 label = "Consecutive polynomials interlace"
@@ -22,13 +33,43 @@ label = "Consecutive polynomials interlace"
 [[theorems]]
 name = "RealRooted.Challenges.Favard.SatisfiesFavardRecurrence.ne_zero_and_splits"
 label = "Favard polynomials are real-rooted"
+
+[[theorems]]
+name = "RealRooted.SatisfiesFavardRecurrence.pairing_iIsOrtho"
+module = "RealRooted.Favard.Orthogonality"
+label = "Favard’s theorem: the polynomials are orthogonal"
+headline = true
+
+[[theorems]]
+name = "RealRooted.SatisfiesFavardRecurrence.pairing_posDef"
+module = "RealRooted.Favard.Orthogonality"
+label = "Positive coefficients make the pairing positive definite"
+
+[[theorems]]
+name = "RealRooted.SatisfiesFavardRecurrence.linearMap_eq_smul_functional"
+module = "RealRooted.Favard.Orthogonality"
+label = "The orthogonalizing functional is unique up to scaling"
 -->
 
 <!-- realrooted-catalog-content -->
 # Favard recurrences
 
-A monic three-term recurrence with positive subdiagonal coefficients produces
-nonzero real-rooted polynomials. Consecutive polynomials interlace.
+Let $P_0 = 1$, $P_1 = x - \alpha_0$ and
+$$
+P_{n+2} = (x - \alpha_{n+1}) P_{n+1} - \beta_{n+1} P_n .
+$$
+If every $\beta_{n+1}$ is positive, the real polynomials $P_n$ are nonzero and
+real-rooted, and consecutive polynomials interlace.
+
+**Favard’s theorem.** Over an integral domain $R$, the monic polynomials $P_n$
+form a basis of $R[x]$. Let $L$ be the linear functional that extracts the
+coefficient of $P_0$ in this basis, and let $\langle p, q \rangle = L(pq)$.
+
+- The family is orthogonal: $\langle P_m, P_n \rangle = 0$ for $m \ne n$.
+- A linear functional $L'$ with $L'(P_n) = 0$ for all $n \ne 0$ equals
+  $L'(1) \cdot L$, so $L$ is unique up to scaling.
+- Over an ordered ring, if every $\beta_{n+1}$ is positive, the pairing is
+  positive definite: $\langle p, p \rangle > 0$ for all $p \ne 0$.
 
 ## References
 

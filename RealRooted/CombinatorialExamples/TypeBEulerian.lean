@@ -174,7 +174,7 @@ lemma interlaces_derivative_typeBEulerian :
         interlaces_one_linear (p := X + C (1 : ℝ))
           (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
   | n + 2, _, hrr =>
-      derivative_interlaces hrr (by simp [natDegree_typeBEulerian])
+      derivative_interlaces_of_natDegree_ne_zero hrr (by simp [natDegree_typeBEulerian])
 
 lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     typeBEulerianCoeffB.eval r ≤ 0 := by

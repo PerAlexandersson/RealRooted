@@ -27,7 +27,8 @@ theorem strictInterl_deriv_eval_mul_deriv_nonneg
     (hdf : StrictInterl d f) (hd_pos : HasPosLeadingCoeff d)
     {r : ℝ} (hr : f.IsRoot r) :
     0 ≤ d.eval r * f.derivative.eval r := by
-  have hfpf : StrictInterl f.derivative f := (derivative_interlaces hf_splits hf_deg).toStrictInterl
+  have hfpf : StrictInterl f.derivative f :=
+    (derivative_interlaces_of_natDegree_ne_zero hf_splits (by lia)).toStrictInterl
   simpa [mul_comm] using
     eval_mul_eval_nonneg_of_strictInterl_right hdf hfpf hd_pos hfp_pos hr
 

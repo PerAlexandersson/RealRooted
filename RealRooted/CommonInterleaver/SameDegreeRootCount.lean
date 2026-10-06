@@ -80,106 +80,6 @@ theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
     simpa [rootSlotInterval, hj0, hjlast, hlen] using
       icc_inter_icc_nonempty_of_crossing hrf_step hrg_step hcross_fg hcross_gf
 
-/-- Same-degree sign/parity bridge in the right-pencil language.  At a common
-non-root threshold, the combined lower root-count parity is equivalent to the
-absence of a positive parameter for which `f + C μ * g` vanishes at the
-threshold. -/
-theorem sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
-    (hdeg : g.natDegree = f.natDegree)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
-    (Even ((f.roots.filter (· ≤ x)).card + (g.roots.filter (· ≤ x)).card) ↔
-      ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  have hfx_eval : f.eval x ≠ 0 := by
-    intro hfx
-    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
-  have hgx_eval : g.eval x ≠ 0 := by
-    intro hgx
-    exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
-  rw [hf.even_card_roots_le_add_iff_eval_pos_iff hg hf_pos hg_pos hdeg hxf hxg]
-  exact (not_exists_pos_isRoot_add_right_iff_eval_pos_iff hfx_eval hgx_eval).symm
-
-/-- Positive-combination same-degree form of
-`sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right`. -/
-theorem posComboSameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
-    (Even ((f.roots.filter (· ≤ x)).card + (g.roots.filter (· ≤ x)).card) ↔
-      ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
-  sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    hf_pos hg_pos hdeg hxf hxg
-
-/-- Odd same-degree root-count parity is equivalent to existence of a positive
-right-pencil crossing at the threshold. -/
-theorem sameDegree_odd_card_roots_le_add_iff_exists_pos_isRoot_add_right
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
-    (hdeg : g.natDegree = f.natDegree)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
-    (Odd ((f.roots.filter (· ≤ x)).card + (g.roots.filter (· ≤ x)).card) ↔
-      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  rw [← Nat.not_even_iff_odd]
-  constructor
-  · intro hodd
-    by_contra hno
-    exact hodd
-      ((sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
-        hf hg hf_pos hg_pos hdeg hxf hxg).mpr hno)
-  · intro hcross heven
-    exact
-      ((sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
-        hf hg hf_pos hg_pos hdeg hxf hxg).mp heven) hcross
-
-/-- Positive-combination same-degree form of
-`sameDegree_odd_card_roots_le_add_iff_exists_pos_isRoot_add_right`. -/
-theorem posComboSameDegree_odd_card_roots_le_add_iff_exists_pos_isRoot_add_right
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
-    (Odd ((f.roots.filter (· ≤ x)).card + (g.roots.filter (· ≤ x)).card) ↔
-      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
-  sameDegree_odd_card_roots_le_add_iff_exists_pos_isRoot_add_right
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    hf_pos hg_pos hdeg hxf hxg
-
-/-- Oddness of the lower root-count difference is equivalent to a positive
-right-pencil crossing at the threshold. -/
-theorem sameDegree_odd_roots_le_count_sub_iff_exists_pos_isRoot_add_right
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
-    (hdeg : g.natDegree = f.natDegree)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
-    (Odd (((f.roots.filter (· ≤ x)).card : ℤ) -
-        (g.roots.filter (· ≤ x)).card) ↔
-      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  rw [odd_int_nat_sub_iff_odd_add]
-  exact sameDegree_odd_card_roots_le_add_iff_exists_pos_isRoot_add_right
-    hf hg hf_pos hg_pos hdeg hxf hxg
-
-/-- Positive-combination form of
-`sameDegree_odd_roots_le_count_sub_iff_exists_pos_isRoot_add_right`. -/
-theorem posComboSameDegree_odd_roots_le_count_sub_iff_exists_pos_isRoot_add_right
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
-    (Odd (((f.roots.filter (· ≤ x)).card : ℤ) -
-        (g.roots.filter (· ≤ x)).card) ↔
-      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  rw [odd_int_nat_sub_iff_odd_add]
-  exact posComboSameDegree_odd_card_roots_le_add_iff_exists_pos_isRoot_add_right
-    hf_pos hg_pos hfg hdeg hxf hxg
-
 /-- Same-degree sign/parity bridge for upper root counts in the right-pencil
 language.  At a common non-root threshold, the combined upper root-count
 parity is equivalent to absence of a positive parameter for which
@@ -198,21 +98,6 @@ theorem sameDegree_even_card_roots_gt_add_iff_not_exists_pos_isRoot_add_right
     exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
   rw [hf.even_card_roots_gt_add_iff_eval_pos_iff hg hf_pos hg_pos hxf hxg]
   exact (not_exists_pos_isRoot_add_right_iff_eval_pos_iff hfx_eval hgx_eval).symm
-
-/-- Positive-combination same-degree form of
-`sameDegree_even_card_roots_gt_add_iff_not_exists_pos_isRoot_add_right`. -/
-theorem posComboSameDegree_even_card_roots_gt_add_iff_not_exists_pos_isRoot_add_right
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
-    (Even ((f.roots.filter (x < ·)).card + (g.roots.filter (x < ·)).card) ↔
-      ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
-  sameDegree_even_card_roots_gt_add_iff_not_exists_pos_isRoot_add_right
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    hf_pos hg_pos hxf hxg
 
 /-- Odd upper root-count parity is equivalent to existence of a positive
 right-pencil crossing at the threshold. -/
@@ -246,25 +131,6 @@ theorem sameDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
   rw [odd_int_nat_sub_iff_odd_add]
   exact sameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right
     hf hg hf_pos hg_pos hxf hxg
-
-/-- Root-count bridge for the same-degree root-crossing target.
-
-If for every threshold `x` the numbers of roots `≤ x`, counted with
-multiplicity, of `f` and `g` differ by at most one, then the descending root
-sequences of `f` and `g` satisfy the two interior crossing inequalities. -/
-theorem rootCrossing_of_rootCount_diff_le_one
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hdeg : g.natDegree = f.natDegree)
-    (hcount : ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) :
-    (∀ j, 1 ≤ j → j < f.natDegree →
-        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
-    (∀ j, 1 ≤ j → j < f.natDegree →
-        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
-  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree := by rw [card_roots_of_splits hg, hdeg]
-  exact rootCrossing_of_count_diff_le_one hMcard hNcard hcount
 
 /-- Root-count bridge from the upper-threshold formulation to the same-degree
 root-crossing target. -/
@@ -300,21 +166,6 @@ theorem sameDegreeRootCount_of_rootCrossing
   simpa [rootSeqDesc] using
     (count_diff_le_one_of_rootCrossing (M := f.roots) (N := g.roots)
       hMcard hNcard hcross)
-
-/-- Convert the upper-threshold same-degree root-count formulation into the
-lower-threshold formulation. -/
-theorem sameDegreeRootCount_of_rootCountAbove
-    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hdeg : g.natDegree = f.natDegree)
-    (hcount : ∀ x : ℝ,
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree := by rw [card_roots_of_splits hg, hdeg]
-  exact count_le_diff_le_one_of_count_gt_diff_le_one hMcard hNcard hcount
 
 /-- Convert the lower-threshold same-degree root-count formulation into the
 upper-threshold formulation. -/

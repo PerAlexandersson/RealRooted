@@ -206,33 +206,6 @@ lemma eval_xSubQuadraticQuadratic (a b c d μ x : ℝ) :
   simp only [eval_sub, eval_mul, eval_X, eval_C]
 
 /-- The normalized quadratic/quadratic x-subtraction polynomial tends to
-`-∞` at `-∞`. -/
-lemma tendsto_eval_xSubQuadraticQuadratic_atBot_atBot (a b c d μ : ℝ) :
-    Tendsto
-      (fun x =>
-        (X * ((X - C a) * (X - C b)) -
-          C μ * ((X - C c) * (X - C d))).eval x)
-      atBot atBot := by
-  let P : ℝ[X] :=
-    X * ((X - C a) * (X - C b)) -
-      C μ * ((X - C c) * (X - C d))
-  have hP_pos : HasPosLeadingCoeff P := by
-    dsimp [P]
-    exact hasPosLeadingCoeff_xSubQuadraticQuadratic a b c d μ
-  have hP_deg : P.natDegree = 3 := by
-    dsimp [P]
-    exact natDegree_xSubQuadraticQuadratic a b c d μ
-  have hP_deg_pos : 0 < P.degree := by
-    have hnat : 0 < P.natDegree := by
-      rw [hP_deg]
-      norm_num
-    exact natDegree_pos_iff_degree_pos.mp hnat
-  have hP_odd : Odd P.natDegree := by
-    rw [hP_deg]
-    norm_num
-  exact tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hP_pos hP_deg_pos hP_odd
-
-/-- The normalized quadratic/quadratic x-subtraction polynomial tends to
 `+∞` at `+∞`. -/
 lemma tendsto_eval_xSubQuadraticQuadratic_atTop_atTop (a b c d μ : ℝ) :
     Tendsto

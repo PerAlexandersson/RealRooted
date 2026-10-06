@@ -31,16 +31,12 @@ example {d : Nat → Nat} {Γ : Nat → ℝ[X]}
 /-- Gamma row-family bridge exposed through the OEIS facade. -/
 example {d : Nat → Nat} {P Γ : Nat → ℝ[X]}
     (hγdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
-    (hpdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
-    (hsym : ∀ n : Nat, idTransform (d n) (P n) = P n)
     (hexp : ∀ n : Nat, IsGammaExpansion (d n) (P n) (Γ n)) :
     ∀ n : Nat,
       (((Γ n ≠ 0 ∧ (Γ n).Splits) ∧ HasRootsNonpos (Γ n)) ↔
         ((P n ≠ 0 ∧ (P n).Splits) ∧ HasRootsNonpos (P n))) := by
   rr_gamma_sequence_realrooted_iff using
     gamma_degree := hγdeg,
-    polynomial_degree := hpdeg,
-    symmetric := hsym,
     expansion := hexp
 
 /-- Veronese-section row-family PF exit exposed through the OEIS facade. -/

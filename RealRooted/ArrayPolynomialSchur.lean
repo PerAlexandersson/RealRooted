@@ -20,7 +20,7 @@ The argument recovering `p n` from `D n` multiplies the `k`-th coefficient by
 `(n)_k` three times.  Since `(n)_k = k ! * n.choose k`, each such step is
 exactly a Garloff--Wagner factorial-normalized Schur product against
 `(X + 1) ^ n`, so it preserves the Polya-frequency cone by
-`gwSchurProductPF`.  That is the content of `IsPFPolynomial.fallingSchur`
+`IsPFPolynomial.factorialHadamardProduct`.  That is the content of `IsPFPolynomial.fallingSchur`
 and its threefold iterate below.
 
 Nothing here assumes the deep input of that argument, namely that `D n` itself
@@ -34,12 +34,12 @@ file is unconditional about what it proves.
 Schur product against `(X + 1) ^ n`.  Its effect on coefficients is
 multiplication by `k ! * n.choose k`, which is the falling factorial `(n)_k`. -/
 def fallingSchur (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
-  gwSchurProduct p ((X + 1 : ℝ[X]) ^ n)
+  factorialHadamardProduct p ((X + 1 : ℝ[X]) ^ n)
 
 @[simp] theorem coeff_fallingSchur (n : ℕ) (p : ℝ[X]) (k : ℕ) :
     (fallingSchur n p).coeff k
       = (Nat.factorial k : ℝ) * (n.choose k : ℝ) * p.coeff k := by
-  rw [fallingSchur, coeff_gwSchurProduct, coeff_X_add_one_pow]
+  rw [fallingSchur, coeff_factorialHadamardProduct, coeff_X_add_one_pow]
   ring
 
 /-- The coefficient multiplier of `fallingSchur n` is the falling factorial. -/
@@ -52,7 +52,7 @@ theorem coeff_fallingSchur_eq_descFactorial (n : ℕ) (p : ℝ[X]) (k : ℕ) :
 
 theorem natDegree_fallingSchur_le (n : ℕ) (p : ℝ[X]) :
     (fallingSchur n p).natDegree ≤ p.natDegree :=
-  natDegree_gwSchurProduct_le_left _ _
+  natDegree_factorialHadamardProduct_le_left _ _
 
 /-- `(X + 1) ^ n` is a Polya-frequency polynomial. -/
 theorem isPFPolynomial_X_add_one_pow (n : ℕ) :
@@ -64,7 +64,7 @@ theorem isPFPolynomial_X_add_one_pow (n : ℕ) :
 This is Section 5 of the array-polynomial argument, for a single step. -/
 theorem isPFPolynomial_fallingSchur {p : ℝ[X]} (hp : IsPFPolynomial p) (n : ℕ) :
     IsPFPolynomial (fallingSchur n p) :=
-  gwSchurProductPF hp (isPFPolynomial_X_add_one_pow n)
+  hp.factorialHadamardProduct (isPFPolynomial_X_add_one_pow n)
 
 /-- Iterating the falling-factorial step preserves the Polya-frequency cone. -/
 theorem isPFPolynomial_fallingSchur_iterate {p : ℝ[X]} (hp : IsPFPolynomial p)

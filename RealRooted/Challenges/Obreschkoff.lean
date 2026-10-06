@@ -1,3 +1,4 @@
+import RealRooted.ObreschkoffConverse.DegreeGap
 import RealRooted.OperatorPreservesInterlacing
 
 /-!
@@ -26,6 +27,11 @@ label = "A real-rooted pencil gives interlacing"
 [[theorems]]
 name = "RealRooted.Challenges.Obreschkoff.allCombinationsRealRooted_iff_interlaces_or_reverse"
 label = "Obreschkoff’s theorem as an equivalence"
+
+[[theorems]]
+name = "RealRooted.natDegree_close_of_allComboRealRooted"
+module = "RealRooted.ObreschkoffConverse.DegreeGap"
+label = "A real-rooted pencil of nonzero polynomials has degrees differing by at most one"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -35,8 +41,8 @@ Two interlacing polynomials generate a real-rooted pencil: every real linear
 combination $\alpha f + \beta g$ splits over $\mathbb R$. Conversely, if
 every real linear combination of $f$ and $g$ splits, then $f$ and $g$
 interlace in one of the two orientations, where either polynomial may be zero.
-No degree hypothesis is needed: the degrees of such $f$ and $g$ automatically
-differ by at most one.
+No degree hypothesis is needed: if every real linear combination of nonzero
+polynomials $f$ and $g$ splits, then $|\deg f - \deg g| \le 1$.
 
 Hence, for real polynomials $f$ and $g$ that are zero or real-rooted, every
 real linear combination of $f$ and $g$ splits if and only if $f$ and $g$

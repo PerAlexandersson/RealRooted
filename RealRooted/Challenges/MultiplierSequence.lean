@@ -1,3 +1,5 @@
+import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
 import RealRooted.MultiplierSequence.InvPochhammer
 import RealRooted.MultiplierSequence.Laguerre
 import RealRooted.MultiplierSequence.PolyaSchur
@@ -60,6 +62,16 @@ name = "RealRooted.IsLaguerrePolyaTypeISigned"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned"
 label = "Type I up to the signs ±f(±z)"
 
+[[definitions]]
+name = "RealRooted.BidiagonalPFPreserver"
+module = "RealRooted.MultiplierSequence.Bidiagonal"
+label = "A bidiagonal operator preserving PF polynomials of degree at most d"
+
+[[definitions]]
+name = "RealRooted.BidiagonalJensenPencilCertificate"
+module = "RealRooted.MultiplierSequence.Bidiagonal.Jensen"
+label = "Jensen-pencil certificate"
+
 [[theorems]]
 name = "RealRooted.isMultiplierSequence_iff_jensenPolynomial_isPF"
 module = "RealRooted.MultiplierSequence.PolyaSchur"
@@ -113,6 +125,16 @@ label = "k + r is a PF multiplier sequence for r ≥ 0"
 name = "RealRooted.IsLaguerrePolyaTypeI.isPFMultiplierSequence_eval_natCast"
 module = "RealRooted.MultiplierSequence.Laguerre"
 label = "Type I functions sampled at 0, 1, 2, … are PF multiplier sequences"
+
+[[theorems]]
+name = "RealRooted.BorceaBranden.bidiagonalPFPreserver_of_affineSymbol"
+module = "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences"
+label = "Bidiagonal PF preservers from a stable symbol"
+
+[[theorems]]
+name = "RealRooted.BidiagonalJensenPencilCertificate.toPFPreserver"
+module = "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction"
+label = "Bidiagonal PF preservers from a Jensen-pencil certificate"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -153,6 +175,22 @@ The following hold:
   $1/(\alpha)_k$ form a PF multiplier sequence, and so in particular do $1/k!$.
   After clearing denominators, their Jensen polynomials are generalized
   Laguerre polynomials.
+
+**Bidiagonal PF preservers.** For sequences $\alpha, \beta$, the bidiagonal
+operator sends $\sum_k a_k x^k$ to
+$\sum_k (\alpha_k a_k + \beta_{k-1} a_{k-1}) x^k$, with the second term omitted
+for $k = 0$. Each of the following makes it map PF polynomials (nonnegative
+coefficients, only real nonpositive zeros) of degree at most $d$ to PF
+polynomials:
+
+- its degree-$d$ Borcea–Brändén algebraic symbol is stable, and
+  $\alpha_k, \beta_k \ge 0$ for all $k \le d$;
+- a Jensen-pencil certificate: with $J_\alpha = \sum_k \binom{d}{k} \alpha_k x^k$
+  and $J_\beta$ defined likewise, the polynomials $J_\alpha$, $x J_\beta$ and
+  $J_\alpha + \lambda x J_\beta$ are PF for every $\lambda \ge 0$.
+
+The second criterion goes through Schur–Szegő composition and
+Chudnovsky–Seymour compatibility rather than the symbol.
 
 ## References
 

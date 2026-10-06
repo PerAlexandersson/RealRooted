@@ -92,7 +92,7 @@ theorem StrictInterl.eval_mul_derivative_nonneg_of_right_root
         exact hgder_pos
       rw [hder_C]
       simpa using StrictInterl.C_mul_left hbase (ne_of_gt hcoeff_pos)
-    · exact (derivative_interlaces hstrictInterl.2.1.2 (by lia)).toStrictInterl
+    · exact (derivative_interlaces_of_natDegree_ne_zero hstrictInterl.2.1.2 (by lia)).toStrictInterl
   exact
     eval_mul_eval_nonneg_of_strictInterl_right
       hstrictInterl hder_strictInterl hf_pos hgder_pos hr
@@ -543,7 +543,7 @@ theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
             simp
           rw [hderC]
           exact interlaces_C_linear hc (by lia)
-        · exact derivative_interlaces hfg.2.1.2 (by lia)
+        · exact derivative_interlaces_of_natDegree_ne_zero hfg.2.1.2 (by lia)
       have hno : ∀ r, g.IsRoot r → ¬g.derivative.IsRoot r := by
         intro r hgr hgdr
         have hmult : 2 ≤ g.rootMultiplicity r := by

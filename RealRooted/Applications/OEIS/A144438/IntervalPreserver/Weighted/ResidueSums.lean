@@ -1,4 +1,3 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueSums
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Energy
 
 /-! # Endpoint residue sums for the weighted diagonal family -/

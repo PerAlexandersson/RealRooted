@@ -122,19 +122,17 @@ protected lemma List.Interleaves.ofFn_succ {n : ℕ}
     rw [List.getElem_ofFn, List.getElem_ofFn]
     exact h_lt₂ ⟨i.val, hi⟩ ⟨j.val, hj⟩ hij
 
-protected lemma interlaced_of_interleaves_reverse_left :
-    ∀ {ss rs : List ℝ} (h : ss.length + 1 = rs.length)
-      (_ : List.Interleaves (· > ·) ss.reverse rs.reverse),
-      (∀ (i : Fin ss.length) (j : Fin rs.length), i.val + 1 = j.val →
-        ss[i.val] < rs[j.val]) ∧
-      (∀ (i : Fin rs.length) (j : Fin ss.length), i.val < j.val + 1 →
-        rs[i.val] < ss[j.val]) := by
-  intro ss
-  induction ss with
+protected lemma interlaced_of_interleaves_reverse_left {ss rs : List ℝ}
+    (h : ss.length + 1 = rs.length)
+    (h_inter : List.Interleaves (· > ·) ss.reverse rs.reverse) :
+    (∀ (i : Fin ss.length) (j : Fin rs.length), i.val + 1 = j.val →
+      ss[i.val] < rs[j.val]) ∧
+    (∀ (i : Fin rs.length) (j : Fin ss.length), i.val < j.val + 1 →
+      rs[i.val] < ss[j.val]) := by
+  induction ss generalizing rs with
   | nil =>
     simp
   | cons s ss ih =>
-    intro rs h h_inter
     rcases rs with _ | ⟨r₁, _ | ⟨r₂, rs⟩⟩
     · simp
     · simp at h
@@ -174,17 +172,15 @@ protected lemma interlaced_of_interleaves_reverse_left :
         · exact h_tail.2 ⟨i_val, Nat.lt_of_succ_lt_succ hi⟩
             ⟨j_val, Nat.lt_of_succ_lt_succ hj⟩ (Nat.succ_lt_succ_iff.mp hij)
 
-protected lemma interlaced_of_interleaves_reverse :
-    ∀ {ss rs : List ℝ} (h : ss.length = rs.length)
-      (_ : List.Interleaves (· > ·) ss.reverse rs.reverse),
-      (∀ (k : Fin ss.length), ss[k.val] < rs[k.val]) ∧
-      (∀ (i j : Fin ss.length), i.val < j.val → rs[i.val] < ss[j.val]) := by
-  intro ss
-  induction ss with
+protected lemma interlaced_of_interleaves_reverse {ss rs : List ℝ}
+    (h : ss.length = rs.length)
+    (h_inter : List.Interleaves (· > ·) ss.reverse rs.reverse) :
+    (∀ (k : Fin ss.length), ss[k.val] < rs[k.val]) ∧
+    (∀ (i j : Fin ss.length), i.val < j.val → rs[i.val] < ss[j.val]) := by
+  cases ss with
   | nil =>
     simp
-  | cons s ss ih =>
-    intro rs h h_inter
+  | cons s ss =>
     rcases rs with _ | ⟨r, rs⟩
     · simp at h
     have h_len : ss.length = rs.length := by simp_all

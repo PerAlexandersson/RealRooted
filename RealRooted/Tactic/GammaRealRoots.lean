@@ -65,17 +65,14 @@ theorem gammaTransform_sequence_backward_minimal
   isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
     (hne i) (hsplits i) (hnp i)
 
-theorem gammaRealRootedIffPolynomialRealRootedNonpos_sequence
+theorem IsGammaExpansion.isRealRooted_and_hasRootsNonpos_iff_sequence
     {d : Nat → Nat} {P Γ : Nat → ℝ[X]}
     (hγdeg : ∀ i : Nat, (Γ i).natDegree ≤ d i / 2)
-    (hpdeg : ∀ i : Nat, (P i).natDegree ≤ d i)
-    (hsym : ∀ i : Nat, idTransform (d i) (P i) = P i)
     (hexp : ∀ i : Nat, IsGammaExpansion (d i) (P i) (Γ i)) :
     ∀ i : Nat,
       (((Γ i ≠ 0 ∧ (Γ i).Splits) ∧ HasRootsNonpos (Γ i)) ↔
         ((P i ≠ 0 ∧ (P i).Splits) ∧ HasRootsNonpos (P i))) := fun i =>
-  gammaRealRootedIffPolynomialRealRootedNonpos
-    (hγdeg i) (hpdeg i) (hsym i) (hexp i)
+  (hexp i).isRealRooted_and_hasRootsNonpos_iff (hγdeg i)
 
 namespace Tactic
 
@@ -172,8 +169,6 @@ syntax (name := rr_gamma_transform_backward_named)
 syntax (name := rr_gamma_realrooted_iff_named)
   "rr_gamma_realrooted_iff" " using "
     "gamma_degree" ":=" term ","
-    "polynomial_degree" ":=" term ","
-    "symmetric" ":=" term ","
     "expansion" ":=" term :
   tactic
 
@@ -219,8 +214,6 @@ syntax (name := rr_gamma_transform_sequence_backward_named)
 syntax (name := rr_gamma_sequence_realrooted_iff_named)
   "rr_gamma_sequence_realrooted_iff" " using "
     "gamma_degree" ":=" term ","
-    "polynomial_degree" ":=" term ","
-    "symmetric" ":=" term ","
     "expansion" ":=" term :
   tactic
 
@@ -305,12 +298,9 @@ macro_rules
   | `(tactic|
       rr_gamma_realrooted_iff using
         gamma_degree := $hγdeg:term,
-        polynomial_degree := $hpdeg:term,
-        symmetric := $hsym:term,
         expansion := $hexp:term) =>
       `(tactic|
-        exact RealRooted.gammaRealRootedIffPolynomialRealRootedNonpos
-          $hγdeg $hpdeg $hsym $hexp)
+        exact RealRooted.IsGammaExpansion.isRealRooted_and_hasRootsNonpos_iff $hγdeg $hexp)
   | `(tactic|
       rr_gamma_transform_sequence_realrooted_nonneg using
         gamma_degree := $hdeg:term,
@@ -359,12 +349,10 @@ macro_rules
   | `(tactic|
       rr_gamma_sequence_realrooted_iff using
         gamma_degree := $hγdeg:term,
-        polynomial_degree := $hpdeg:term,
-        symmetric := $hsym:term,
         expansion := $hexp:term) =>
       `(tactic|
-        exact RealRooted.gammaRealRootedIffPolynomialRealRootedNonpos_sequence
-          $hγdeg $hpdeg $hsym $hexp)
+        exact RealRooted.IsGammaExpansion.isRealRooted_and_hasRootsNonpos_iff_sequence
+          $hγdeg $hexp)
 
 end Tactic
 end RealRooted

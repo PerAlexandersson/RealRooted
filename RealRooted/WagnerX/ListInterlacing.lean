@@ -91,17 +91,6 @@ lemma listInterlaces_prod_mul_prod_nonpos_at_heads
               simp [mul_assoc, mul_left_comm]
     _ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hs_head_nonpos htail_nonneg'
 
-/-- Every element of the tail of `ss` is `≥ b` in a ListInterlaces ss (a :: b :: rest). -/
-lemma listInterlaces_tail_ge :
-    ∀ (ss : List ℝ) (a b : ℝ) (rest : List ℝ),
-    ListInterlaces ss (a :: b :: rest) →
-    ∀ s ∈ ss.tail, b ≤ s
-  | [], _, _, _, _ => by simp
-  | [_], _, _, _, _ => by simp
-  | _ :: ss', a, b, rest, hint => by
-    obtain ⟨_, _, htail⟩ := hint
-    exact fun s hs => listInterlaces_all_ge ss' rest b htail s hs
-
 /-- A list satisfying `ListInterlaces ss rs` is sorted (pairwise ≤). -/
 lemma pairwise_le_of_listInterlaces :
     ∀ (ss rs : List ℝ), ListInterlaces ss rs → ss.Pairwise (· ≤ ·)

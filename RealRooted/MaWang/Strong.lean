@@ -304,90 +304,6 @@ theorem strictInterl_of_interlaces_evalCoeff_neg
   · exact strictInterl_of_interlaces_evalCoeff_neg_same hgf hg_pos hF_pos hsame hno hb_neg
   · exact strictInterl_of_interlaces_evalCoeff_neg_succ hgf hg_pos hF_pos hsucc hno hb_neg
 
-lemma interlaces_of_interlaces_X_sub_C_mul {f g : ℝ[X]} {r : ℝ}
-    (h : Interlaces ((X - C r) * g) ((X - C r) * f)) :
-    Interlaces g f := by
-  have hstrictInterl : StrictInterl ((X - C r) * g) ((X - C r) * f) := h.toStrictInterl
-  have hstrictInterl' : StrictInterl g f := hstrictInterl.of_mul_X_sub_C_both
-  obtain ⟨hf_mul, hg_mul, hdeg_mul, _, _, _, _, _, _, _⟩ := h
-  have hf0 : f ≠ 0 := right_ne_zero_of_mul hf_mul.1
-  have hg0 : g ≠ 0 := right_ne_zero_of_mul hg_mul.1
-  have hdeg : g.natDegree + 1 = f.natDegree := by
-    rw [natDegree_mul (X_sub_C_ne_zero r) hg0, natDegree_X_sub_C,
-      natDegree_mul (X_sub_C_ne_zero r) hf0, natDegree_X_sub_C] at hdeg_mul
-    lia
-  exact hstrictInterl'.toInterlaces hdeg
-
-lemma isRoot_add_mul_of_common_root {f g a b : ℝ[X]} {r : ℝ}
-    (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
-    (a * f + b * g).IsRoot r := by
-  simp_all
-
-lemma add_mul_factor_X_sub_C {a b qf qg : ℝ[X]} {r : ℝ} :
-    a * ((X - C r) * qf) + b * ((X - C r) * qg) =
-      (X - C r) * (a * qf + b * qg) := by
-  ring
-
-/-- If a structured Liu--Wang quotient already satisfies the desired `StrictInterl`
-conclusion, multiplying everything by a common linear factor preserves it. This
-is the multiplication-back step for common-root reductions. -/
-lemma strictInterl_mul_X_sub_C_of_linearCombo_quotient
-    {qf qg a b : ℝ[X]} {r : ℝ}
-    (hstrictInterl : StrictInterl qf (a * qf + b * qg)) :
-    StrictInterl ((X - C r) * qf) (a * ((X - C r) * qf) + b * ((X - C r) * qg)) := by
-  have hmul :
-      StrictInterl ((X - C r) * qf) ((X - C r) * (a * qf + b * qg)) :=
-    hstrictInterl.mul_common_factor
-      (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
-  simpa [add_mul_factor_X_sub_C, add_comm, add_left_comm, add_assoc] using hmul
-
-lemma common_root_reduction_data
-    {f g a b : ℝ[X]} {r : ℝ}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hF_pos : HasPosLeadingCoeff (a * f + b * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + b * g).natDegree)
-    (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
-    (hb_nonpos : ∀ s, f.IsRoot s → b.eval s ≤ 0)
-    (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
-    ∃ qf qg,
-      f = (X - C r) * qf ∧
-      g = (X - C r) * qg ∧
-      Interlaces qg qf ∧
-      HasPosLeadingCoeff qg ∧
-      HasPosLeadingCoeff (a * qf + b * qg) ∧
-      qf.natDegree ≤ (a * qf + b * qg).natDegree ∧
-      (a * qf + b * qg).natDegree ≤ qf.natDegree + 1 ∧
-      (∀ s, qf.IsRoot s → b.eval s ≤ 0) := by
-  have hgf' : Interlaces g f := hgf
-  obtain ⟨hf, hg, _, _, _, _, _, _, _, _⟩ := hgf
-  obtain ⟨qf, hqf⟩ := dvd_iff_isRoot.mpr hrf
-  obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hrg
-  refine ⟨qf, qg, hqf, hqg, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · have hmul : Interlaces ((X - C r) * qg) ((X - C r) * qf) := by lia
-    exact interlaces_of_interlaces_X_sub_C_mul hmul
-  · apply hasPosLeadingCoeff_of_X_sub_C_mul (r := r)
-    lia
-  · apply hasPosLeadingCoeff_of_X_sub_C_mul (r := r)
-    grind
-  · have hf_ne : f ≠ 0 := hf.1
-    have hF_ne : a * f + b * g ≠ 0 := hF_pos.ne_zero
-    have hqf_ne : qf ≠ 0 := by simp_all
-    have hFq_ne : a * qf + b * qg ≠ 0 := by grind
-    rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
-      add_mul_factor_X_sub_C,
-      natDegree_mul (X_sub_C_ne_zero r) hFq_ne, natDegree_X_sub_C] at hdeg_lo
-    lia
-  · have hf_ne : f ≠ 0 := hf.1
-    have hF_ne : a * f + b * g ≠ 0 := hF_pos.ne_zero
-    have hqf_ne : qf ≠ 0 := by simp_all
-    have hFq_ne : a * qf + b * qg ≠ 0 := by grind
-    rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
-      add_mul_factor_X_sub_C,
-      natDegree_mul (X_sub_C_ne_zero r) hFq_ne, natDegree_X_sub_C] at hdeg_hi
-    lia
-  · simp_all
-
 lemma natDegree_lt_of_interlaces_degree_lower_bound {f g F : ℝ[X]}
     (hgf : Interlaces g f) (hdeg_lo : f.natDegree ≤ F.natDegree) :
     g.natDegree < F.natDegree := by
@@ -423,8 +339,6 @@ export MaWangInternal
     strictInterl_of_interlaces_endpoint_sign_of_no_crossing
     strictInterl_of_interlaces_evalCoeff_neg_succ
     strictInterl_of_interlaces_evalCoeff_neg_same
-    strictInterl_of_interlaces_evalCoeff_neg
-    strictInterl_of_interlaces_endpoint_sign_of_no_crossing
     strictInterl_of_interlaces_evalCoeff_neg
     natDegree_sub_C_mul_eq_of_interlaces_degree_lower_bound
     hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound)

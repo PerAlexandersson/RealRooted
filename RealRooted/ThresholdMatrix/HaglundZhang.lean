@@ -14,75 +14,74 @@ noncomputable section
 
 namespace RealRooted
 
-/-! ## Haglund--Zhang / A046802 -/
+/-! ## Haglund--Zhang threshold matrices -/
 
-namespace OEIS
-namespace Backend
+namespace HaglundZhang
 
 /-- Haglund--Zhang notation for threshold entries. -/
-abbrev hzEntry (t : ℕ) (α : ℝ[X]) (j : ℕ) : ℝ[X] :=
+abbrev entry (t : ℕ) (α : ℝ[X]) (j : ℕ) : ℝ[X] :=
   thresholdEntry t α j
 
 /-- Haglund--Zhang notation for threshold rows. -/
-abbrev hzRow (q t : ℕ) (α : ℝ[X]) : List ℝ[X] :=
+abbrev row (q t : ℕ) (α : ℝ[X]) : List ℝ[X] :=
   thresholdRow q t α
 
 /-- Haglund--Zhang notation for threshold matrices. -/
-abbrev hzMatrix (q : ℕ) (rows : List (ℕ × ℝ[X])) : List (List ℝ[X]) :=
+abbrev matrix (q : ℕ) (rows : List (ℕ × ℝ[X])) : List (List ℝ[X]) :=
   thresholdMatrix q rows
 
 /-- Threshold list for the binomial Eulerian specialization. -/
-abbrev hzBinomialThresholds (n : ℕ) : List ℕ :=
+abbrev binomialThresholds (n : ℕ) : List ℕ :=
   List.range n
 
-lemma hzBinomialThresholds_mono (n : ℕ) :
-    ∀ i j : Fin (hzBinomialThresholds n).length, i ≤ j →
-      (hzBinomialThresholds n).get i ≤ (hzBinomialThresholds n).get j := by
+lemma binomialThresholds_mono (n : ℕ) :
+    ∀ i j : Fin (binomialThresholds n).length, i ≤ j →
+      (binomialThresholds n).get i ≤ (binomialThresholds n).get j := by
   intro i j hij
-  simp only [hzBinomialThresholds, List.get_eq_getElem, List.getElem_range]
+  simp only [binomialThresholds, List.get_eq_getElem, List.getElem_range]
   exact hij
 
 /-- Row data for the binomial Eulerian specialization: all markers are `1 + X`. -/
-abbrev hzBinomialRows (ts : List ℕ) : List (ℕ × ℝ[X]) :=
+abbrev binomialRows (ts : List ℕ) : List (ℕ × ℝ[X]) :=
   ts.map (fun t => (t, (1 + X : ℝ[X])))
 
 /-- Matrix for the binomial Eulerian specialization. -/
-abbrev hzBinomialMatrix (q : ℕ) (ts : List ℕ) : List (List ℝ[X]) :=
-  hzMatrix q (hzBinomialRows ts)
+abbrev binomialMatrix (q : ℕ) (ts : List ℕ) : List (List ℝ[X]) :=
+  matrix q (binomialRows ts)
 
 /-- The one-row terminal data for `(1 + X) f₀ + f₁ + ...`. -/
-abbrev hzTerminalRows : List (ℕ × ℝ[X]) :=
+abbrev terminalRows : List (ℕ × ℝ[X]) :=
   [(0, (1 + X : ℝ[X]))]
 
 /-- The one-row terminal matrix for `(1 + X) f₀ + f₁ + ...`. -/
-abbrev hzTerminalMatrix (q : ℕ) : List (List ℝ[X]) :=
-  hzMatrix q hzTerminalRows
+abbrev terminalMatrix (q : ℕ) : List (List ℝ[X]) :=
+  matrix q terminalRows
 
 /-- Haglund--Zhang terminal polynomial `(1 + X) f₀ + f₁ + ...`.
 
 The length parameter is kept explicit so this is literally the action of the
 terminal threshold row of width `q`. -/
-def hzTerminalPolynomial (q : ℕ) (fs : List ℝ[X]) : ℝ[X] :=
-  ((hzRow q 0 (1 + X)).zipWith (· * ·) fs).sum
+def terminalPolynomial (q : ℕ) (fs : List ℝ[X]) : ℝ[X] :=
+  ((row q 0 (1 + X)).zipWith (· * ·) fs).sum
 
-@[simp] lemma length_hzBinomialRows (ts : List ℕ) :
-    (hzBinomialRows ts).length = ts.length := by
-  simp [hzBinomialRows]
+@[simp] lemma length_binomialRows (ts : List ℕ) :
+    (binomialRows ts).length = ts.length := by
+  simp [binomialRows]
 
-@[simp] lemma length_hzBinomialMatrix (q : ℕ) (ts : List ℕ) :
-    (hzBinomialMatrix q ts).length = ts.length := by
-  simp [hzBinomialMatrix]
+@[simp] lemma length_binomialMatrix (q : ℕ) (ts : List ℕ) :
+    (binomialMatrix q ts).length = ts.length := by
+  simp [binomialMatrix]
 
-@[simp] lemma length_hzTerminalRows :
-    hzTerminalRows.length = 1 := by
-  simp [hzTerminalRows]
+@[simp] lemma length_terminalRows :
+    terminalRows.length = 1 := by
+  simp [terminalRows]
 
-@[simp] lemma length_hzTerminalMatrix (q : ℕ) :
-    (hzTerminalMatrix q).length = 1 := by
-  simp [hzTerminalMatrix]
+@[simp] lemma length_terminalMatrix (q : ℕ) :
+    (terminalMatrix q).length = 1 := by
+  simp [terminalMatrix]
 
 /-- Validity data for a Haglund--Zhang threshold matrix. -/
-structure HZData (rows : List (ℕ × ℝ[X])) : Prop where
+structure RowData (rows : List (ℕ × ℝ[X])) : Prop where
   /-- Every diagonal marker is `1` or `1 + X`. -/
   alpha_mem : ∀ p ∈ rows, p.2 = 1 ∨ p.2 = 1 + X
   /-- Thresholds are nondecreasing down the rows. -/
@@ -91,19 +90,19 @@ structure HZData (rows : List (ℕ × ℝ[X])) : Prop where
   compat : ∀ i j : Fin rows.length, i ≤ j → (rows.get i).1 = (rows.get j).1 →
     (rows.get i).2 = 1 + X → (rows.get j).2 = 1 + X
 
-lemma HZData.alpha_nonneg {rows : List (ℕ × ℝ[X])} (h : HZData rows) :
+lemma RowData.alpha_nonneg {rows : List (ℕ × ℝ[X])} (h : RowData rows) :
     ∀ p ∈ rows, HasNonnegCoeffs p.2 := by
   intro p hp
   rcases h.alpha_mem p hp with hα | hα <;> rw [hα]
   · exact isNonnegLinearForm_hasNonnegCoeffs isNonnegLinearForm_one
   · exact isNonnegLinearForm_hasNonnegCoeffs isNonnegLinearForm_one_add_X
 
-lemma hzBinomialRows_data {ts : List ℕ}
+lemma binomialRows_rowData {ts : List ℕ}
     (hmono : ∀ i j : Fin ts.length, i ≤ j → ts.get i ≤ ts.get j) :
-    HZData (hzBinomialRows ts) := by
+    RowData (binomialRows ts) := by
   constructor
   · intro p hp
-    simp only [hzBinomialRows, List.mem_map] at hp
+    simp only [binomialRows, List.mem_map] at hp
     obtain ⟨t, _, rfl⟩ := hp
     exact Or.inr rfl
   · intro i j hij
@@ -111,33 +110,33 @@ lemma hzBinomialRows_data {ts : List ℕ}
     let j' : Fin ts.length := ⟨j.1, by simpa using j.2⟩
     have hij' : i' ≤ j' := hij
     have hkey := hmono i' j' hij'
-    simpa [hzBinomialRows, List.get_eq_getElem, i', j'] using hkey
+    simpa [binomialRows, List.get_eq_getElem, i', j'] using hkey
   · intro i j _ _ _
-    simp [hzBinomialRows, List.get_eq_getElem, List.getElem_map]
+    simp [binomialRows, List.get_eq_getElem, List.getElem_map]
 
-lemma hzTerminalRows_data :
-    HZData hzTerminalRows := by
+lemma terminalRows_rowData :
+    RowData terminalRows := by
   constructor
   · intro p hp
-    have hp' : p = (0, (1 + X : ℝ[X])) := by simpa [hzTerminalRows] using hp
+    have hp' : p = (0, (1 + X : ℝ[X])) := by simpa [terminalRows] using hp
     subst p
     exact Or.inr rfl
   · intro i j _
-    simp [hzTerminalRows]
+    simp [terminalRows]
   · intro i j _ _ _
-    simp [hzTerminalRows]
+    simp [terminalRows]
 
-@[simp] lemma matPolyAction_hzTerminalMatrix (q : ℕ) (fs : List ℝ[X]) :
-    matPolyAction (hzTerminalMatrix q) fs = [hzTerminalPolynomial q fs] := by
-  simp [hzTerminalPolynomial, hzTerminalMatrix, hzTerminalRows, hzMatrix,
+@[simp] lemma matPolyAction_terminalMatrix (q : ℕ) (fs : List ℝ[X]) :
+    matPolyAction (terminalMatrix q) fs = [terminalPolynomial q fs] := by
+  simp [terminalPolynomial, terminalMatrix, terminalRows, matrix,
     thresholdMatrix, matPolyAction]
 
-@[simp] lemma sum_matPolyAction_hzTerminalMatrix (q : ℕ) (fs : List ℝ[X]) :
-    (matPolyAction (hzTerminalMatrix q) fs).sum = hzTerminalPolynomial q fs := by
+@[simp] lemma sum_matPolyAction_terminalMatrix (q : ℕ) (fs : List ℝ[X]) :
+    (matPolyAction (terminalMatrix q) fs).sum = terminalPolynomial q fs := by
   simp
 
-lemma hzTerminalPolynomial_mem_matPolyAction (q : ℕ) (fs : List ℝ[X]) :
-    hzTerminalPolynomial q fs ∈ matPolyAction (hzTerminalMatrix q) fs := by
+lemma terminalPolynomial_mem_matPolyAction (q : ℕ) (fs : List ℝ[X]) :
+    terminalPolynomial q fs ∈ matPolyAction (terminalMatrix q) fs := by
   simp
 
 /-! ### Finite-entry shape helpers -/
@@ -539,8 +538,8 @@ private lemma hzEntry_shape
     (ht : t₁ ≤ t₂) (hj : j₁ ≤ j₂)
     (hcompat : t₁ = t₂ → α₁ = 1 + X → α₂ = 1 + X) :
     HZ2x2EntryShape
-      (hzEntry t₁ α₁ j₁) (hzEntry t₁ α₁ j₂)
-      (hzEntry t₂ α₂ j₁) (hzEntry t₂ α₂ j₂) := by
+      (entry t₁ α₁ j₁) (entry t₁ α₁ j₂)
+      (entry t₂ α₂ j₁) (entry t₂ α₂ j₂) := by
   rcases hα₁ with rfl | rfl <;> rcases hα₂ with rfl | rfl <;>
     simp at hcompat <;>
     unfold HZ2x2EntryShape Threshold2x2EntryTuple <;>
@@ -549,25 +548,25 @@ private lemma hzEntry_shape
     lia
 
 /-- The finite entrywise Haglund--Zhang `2 x 2` threshold check. -/
-theorem hzEntry_has2x2 {t₁ t₂ j₁ j₂ : ℕ} {α₁ α₂ : ℝ[X]}
+theorem has2x2InterlacingProperty0_entry {t₁ t₂ j₁ j₂ : ℕ} {α₁ α₂ : ℝ[X]}
     (hα₁ : α₁ = 1 ∨ α₁ = 1 + X) (hα₂ : α₂ = 1 ∨ α₂ = 1 + X)
     (ht : t₁ ≤ t₂) (hj : j₁ ≤ j₂) (hcompat : t₁ = t₂ → α₁ = 1 + X → α₂ = 1 + X) :
     Has2x2InterlacingProperty0
-      (hzEntry t₁ α₁ j₁) (hzEntry t₁ α₁ j₂)
-      (hzEntry t₂ α₂ j₁) (hzEntry t₂ α₂ j₂) :=
+      (entry t₁ α₁ j₁) (entry t₁ α₁ j₂)
+      (entry t₂ α₂ j₁) (entry t₂ α₂ j₂) :=
   (hzEntry_shape hα₁ hα₂ ht hj hcompat).has2x2
 
-lemma HZData.entry_has2x2 {q : ℕ} {rows : List (ℕ × ℝ[X])}
-    (hrows : HZData rows) :
+lemma RowData.entry_has2x2 {q : ℕ} {rows : List (ℕ × ℝ[X])}
+    (hrows : RowData rows) :
     ∀ (i₁ i₂ : Fin rows.length) (j₁ j₂ : Fin q),
       i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty0
-        (hzEntry (rows.get i₁).1 (rows.get i₁).2 j₁.1)
-        (hzEntry (rows.get i₁).1 (rows.get i₁).2 j₂.1)
-        (hzEntry (rows.get i₂).1 (rows.get i₂).2 j₁.1)
-        (hzEntry (rows.get i₂).1 (rows.get i₂).2 j₂.1) := by
+        (entry (rows.get i₁).1 (rows.get i₁).2 j₁.1)
+        (entry (rows.get i₁).1 (rows.get i₁).2 j₂.1)
+        (entry (rows.get i₂).1 (rows.get i₂).2 j₁.1)
+        (entry (rows.get i₂).1 (rows.get i₂).2 j₂.1) := by
   intro i₁ i₂ j₁ j₂ hi hj
-  exact hzEntry_has2x2
+  exact has2x2InterlacingProperty0_entry
     (hrows.alpha_mem (rows.get i₁) (List.get_mem rows i₁))
     (hrows.alpha_mem (rows.get i₂) (List.get_mem rows i₂))
     (hrows.thresh_mono i₁ i₂ hi)
@@ -576,128 +575,128 @@ lemma HZData.entry_has2x2 {q : ℕ} {rows : List (ℕ × ℝ[X])}
 
 /-- Haglund--Zhang threshold matrices preserve nonnegative interlacing
 sequences. -/
-theorem haglund_zhang_s_inversion_interlacing
-    {q : ℕ} (rows : List (ℕ × ℝ[X])) (hrows : HZData rows)
+theorem isInterlacingSeq0Nonneg_matPolyAction
+    {q : ℕ} (rows : List (ℕ × ℝ[X])) (hrows : RowData rows)
     (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeq0Nonneg (matPolyAction (hzMatrix q rows) fs) :=
+    IsInterlacingSeq0Nonneg (matPolyAction (matrix q rows) fs) :=
   thresholdMatrix_preserves_interlacing_seq0_of_entry rows
     hrows.alpha_nonneg hrows.entry_has2x2 fs hfs_len hfs
 
-theorem haglund_zhang_s_inversion_interlacing_weak
-    {q : ℕ} (rows : List (ℕ × ℝ[X])) (hrows : HZData rows)
+theorem isInterlacingSeq0Nonneg_matPolyAction_and_realRooted
+    {q : ℕ} (rows : List (ℕ × ℝ[X])) (hrows : RowData rows)
     (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
-    IsInterlacingSeq0Nonneg (matPolyAction (hzMatrix q rows) fs) ∧
-      ∀ f ∈ matPolyAction (hzMatrix q rows) fs,
+    IsInterlacingSeq0Nonneg (matPolyAction (matrix q rows) fs) ∧
+      ∀ f ∈ matPolyAction (matrix q rows) fs,
         f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
   thresholdMatrix_preserves_interlacing_seq0_of_entry_weak rows
     hrows.alpha_nonneg hrows.entry_has2x2 fs hfs_len hfs hfs_real
 
-theorem haglund_zhang_s_inversion_sum_realRooted
-    {q : ℕ} (rows : List (ℕ × ℝ[X])) (hrows : HZData rows)
+theorem isRealRooted_sum_matPolyAction
+    {q : ℕ} (rows : List (ℕ × ℝ[X])) (hrows : RowData rows)
     (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits))
-    (hsum_ne : (matPolyAction (hzMatrix q rows) fs).sum ≠ 0) :
-    (matPolyAction (hzMatrix q rows) fs).sum ≠ 0 ∧
-      ((matPolyAction (hzMatrix q rows) fs).sum).Splits := by
+    (hsum_ne : (matPolyAction (matrix q rows) fs).sum ≠ 0) :
+    (matPolyAction (matrix q rows) fs).sum ≠ 0 ∧
+      ((matPolyAction (matrix q rows) fs).sum).Splits := by
   have hout :=
-    haglund_zhang_s_inversion_interlacing_weak
+    isInterlacingSeq0Nonneg_matPolyAction_and_realRooted
       rows hrows fs hfs_len hfs hfs_real
   exact isRealRooted_sum_of_isInterlacingSeq0Nonneg hout.1 hout.2 hsum_ne
 
-theorem haglund_zhang_terminal_polynomial_realRooted
+theorem isRealRooted_terminalPolynomial
     {q : ℕ} (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits))
-    (hterminal_ne : hzTerminalPolynomial q fs ≠ 0) :
-    hzTerminalPolynomial q fs ≠ 0 ∧ (hzTerminalPolynomial q fs).Splits := by
+    (hterminal_ne : terminalPolynomial q fs ≠ 0) :
+    terminalPolynomial q fs ≠ 0 ∧ (terminalPolynomial q fs).Splits := by
   have hout :=
-    haglund_zhang_s_inversion_interlacing_weak
-      hzTerminalRows hzTerminalRows_data fs hfs_len hfs hfs_real
-  exact hout.2 (hzTerminalPolynomial q fs)
-    (hzTerminalPolynomial_mem_matPolyAction q fs) hterminal_ne
+    isInterlacingSeq0Nonneg_matPolyAction_and_realRooted
+      terminalRows terminalRows_rowData fs hfs_len hfs hfs_real
+  exact hout.2 (terminalPolynomial q fs)
+    (terminalPolynomial_mem_matPolyAction q fs) hterminal_ne
 
-theorem haglund_zhang_terminal_polynomial_realRooted_of_interlacing
+theorem isRealRooted_terminalPolynomial_of_interlacing
     {q : ℕ} (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeqNonneg fs)
-    (hterminal_ne : hzTerminalPolynomial q fs ≠ 0) :
-    hzTerminalPolynomial q fs ≠ 0 ∧ (hzTerminalPolynomial q fs).Splits := by
+    (hterminal_ne : terminalPolynomial q fs ≠ 0) :
+    terminalPolynomial q fs ≠ 0 ∧ (terminalPolynomial q fs).Splits := by
   have hfs_weak := weakData_of_isInterlacingSeqNonneg hfs
-  exact haglund_zhang_terminal_polynomial_realRooted
+  exact isRealRooted_terminalPolynomial
     fs hfs_len hfs_weak.1 hfs_weak.2 hterminal_ne
 
 /-- Binomial Eulerian specialization: all diagonal markers are `1 + X`. -/
-theorem haglund_zhang_binomial_eulerian
+theorem isInterlacingSeq0Nonneg_binomialMatrix
     {q : ℕ} (ts : List ℕ)
     (hmono : ∀ i j : Fin ts.length, i ≤ j → ts.get i ≤ ts.get j)
     (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg
-      (matPolyAction (hzBinomialMatrix q ts) fs) :=
-  haglund_zhang_s_inversion_interlacing _
-    (hzBinomialRows_data hmono) fs hfs_len hfs
+      (matPolyAction (binomialMatrix q ts) fs) :=
+  isInterlacingSeq0Nonneg_matPolyAction _
+    (binomialRows_rowData hmono) fs hfs_len hfs
 
-theorem haglund_zhang_binomial_eulerian_range
+theorem isInterlacingSeq0Nonneg_binomialMatrix_binomialThresholds
     {q n : ℕ} (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg
-      (matPolyAction (hzBinomialMatrix q (hzBinomialThresholds n)) fs) :=
-  haglund_zhang_binomial_eulerian
-    (hzBinomialThresholds n) (hzBinomialThresholds_mono n) fs hfs_len hfs
+      (matPolyAction (binomialMatrix q (binomialThresholds n)) fs) :=
+  isInterlacingSeq0Nonneg_binomialMatrix
+    (binomialThresholds n) (binomialThresholds_mono n) fs hfs_len hfs
 
-theorem haglund_zhang_binomial_eulerian_weak
+theorem isInterlacingSeq0Nonneg_binomialMatrix_and_realRooted
     {q : ℕ} (ts : List ℕ)
     (hmono : ∀ i j : Fin ts.length, i ≤ j → ts.get i ≤ ts.get j)
     (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
     IsInterlacingSeq0Nonneg
-      (matPolyAction (hzBinomialMatrix q ts) fs) ∧
-      ∀ f ∈ matPolyAction (hzBinomialMatrix q ts) fs,
+      (matPolyAction (binomialMatrix q ts) fs) ∧
+      ∀ f ∈ matPolyAction (binomialMatrix q ts) fs,
         f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
-  haglund_zhang_s_inversion_interlacing_weak
-    _ (hzBinomialRows_data hmono) fs hfs_len hfs hfs_real
+  isInterlacingSeq0Nonneg_matPolyAction_and_realRooted
+    _ (binomialRows_rowData hmono) fs hfs_len hfs hfs_real
 
-theorem haglund_zhang_binomial_eulerian_range_weak
+theorem isInterlacingSeq0Nonneg_binomialMatrix_binomialThresholds_and_realRooted
     {q n : ℕ} (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
     IsInterlacingSeq0Nonneg
-      (matPolyAction (hzBinomialMatrix q (hzBinomialThresholds n)) fs) ∧
-      ∀ f ∈ matPolyAction (hzBinomialMatrix q (hzBinomialThresholds n)) fs,
+      (matPolyAction (binomialMatrix q (binomialThresholds n)) fs) ∧
+      ∀ f ∈ matPolyAction (binomialMatrix q (binomialThresholds n)) fs,
         f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
-  haglund_zhang_binomial_eulerian_weak
-    (hzBinomialThresholds n) (hzBinomialThresholds_mono n)
+  isInterlacingSeq0Nonneg_binomialMatrix_and_realRooted
+    (binomialThresholds n) (binomialThresholds_mono n)
     fs hfs_len hfs hfs_real
 
-theorem haglund_zhang_binomial_eulerian_sum_realRooted
+theorem isRealRooted_sum_binomialMatrix
     {q : ℕ} (ts : List ℕ)
     (hmono : ∀ i j : Fin ts.length, i ≤ j → ts.get i ≤ ts.get j)
     (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits))
     (hsum_ne :
-      (matPolyAction (hzBinomialMatrix q ts) fs).sum ≠ 0) :
-    (matPolyAction (hzBinomialMatrix q ts) fs).sum ≠ 0 ∧
-      ((matPolyAction (hzBinomialMatrix q ts) fs).sum).Splits := by
+      (matPolyAction (binomialMatrix q ts) fs).sum ≠ 0) :
+    (matPolyAction (binomialMatrix q ts) fs).sum ≠ 0 ∧
+      ((matPolyAction (binomialMatrix q ts) fs).sum).Splits := by
   have hout :=
-    haglund_zhang_binomial_eulerian_weak
+    isInterlacingSeq0Nonneg_binomialMatrix_and_realRooted
       ts hmono fs hfs_len hfs hfs_real
   exact isRealRooted_sum_of_isInterlacingSeq0Nonneg hout.1 hout.2 hsum_ne
 
-theorem haglund_zhang_binomial_eulerian_range_sum_realRooted
+theorem isRealRooted_sum_binomialMatrix_binomialThresholds
     {q n : ℕ} (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits))
     (hsum_ne :
-      (matPolyAction (hzBinomialMatrix q (hzBinomialThresholds n)) fs).sum ≠ 0) :
-    (matPolyAction (hzBinomialMatrix q (hzBinomialThresholds n)) fs).sum ≠ 0 ∧
-      ((matPolyAction (hzBinomialMatrix q (hzBinomialThresholds n)) fs).sum).Splits :=
-  haglund_zhang_binomial_eulerian_sum_realRooted
-    (hzBinomialThresholds n) (hzBinomialThresholds_mono n)
+      (matPolyAction (binomialMatrix q (binomialThresholds n)) fs).sum ≠ 0) :
+    (matPolyAction (binomialMatrix q (binomialThresholds n)) fs).sum ≠ 0 ∧
+      ((matPolyAction (binomialMatrix q (binomialThresholds n)) fs).sum).Splits :=
+  isRealRooted_sum_binomialMatrix
+    (binomialThresholds n) (binomialThresholds_mono n)
     fs hfs_len hfs hfs_real hsum_ne
 
 private def realListAction (G : List (List ℝ)) (cs : List ℝ) : List ℝ :=
@@ -801,138 +800,157 @@ private lemma coeff_zero_thresholdEntry_one_add_X (t j : ℕ) :
     · simp [thresholdEntry, hzConstEntry, hlt, heq]
 
 private lemma coeff_zero_hzBinomialMatrix (q n : ℕ) :
-    (hzBinomialMatrix q (hzBinomialThresholds n)).map
+    (binomialMatrix q (binomialThresholds n)).map
       (fun row => row.map (fun p => p.coeff 0)) =
       hzConstMatrix q n := by
-  simp [hzBinomialMatrix, hzBinomialThresholds, hzBinomialRows, hzMatrix,
+  simp [binomialMatrix, binomialThresholds, binomialRows, matrix,
     thresholdMatrix, thresholdRow, coeff_zero_thresholdEntry_one_add_X,
     hzConstMatrix, hzConstRow]
 
 private lemma coeff_zero_hzTerminalRow (q : ℕ) :
-    (hzRow q 0 (1 + X)).map (fun p => p.coeff 0) =
+    (row q 0 (1 + X)).map (fun p => p.coeff 0) =
       hzConstRow q 0 := by
-  simp [hzRow, thresholdRow, hzConstRow, coeff_zero_thresholdEntry_one_add_X]
+  simp [row, thresholdRow, hzConstRow, coeff_zero_thresholdEntry_one_add_X]
 
 private lemma coeff_zero_hzTerminalPolynomial (q : ℕ) (fs : List ℝ[X]) :
-    (hzTerminalPolynomial q fs).coeff 0 =
+    (terminalPolynomial q fs).coeff 0 =
       ((hzConstRow q 0).zipWith (· * ·)
         (fs.map (fun p => p.coeff 0))).sum := by
-  rw [hzTerminalPolynomial, coeff_zero_zipWith, coeff_zero_hzTerminalRow]
+  rw [terminalPolynomial, coeff_zero_zipWith, coeff_zero_hzTerminalRow]
 
 /-- The refined binomial Eulerian vector in the Haglund--Zhang recursion.
 
 The vector has length `n + 1`.  The transition from `n` to `n + 1` has width
 `n + 1` and `n + 2` threshold rows. -/
-def hzBinomialRefined : ℕ → List ℝ[X]
+def binomialRefined : ℕ → List ℝ[X]
   | 0 => [1]
   | n + 1 =>
       matPolyAction
-        (hzBinomialMatrix (n + 1) (hzBinomialThresholds (n + 2)))
-        (hzBinomialRefined n)
+        (binomialMatrix (n + 1) (binomialThresholds (n + 2)))
+        (binomialRefined n)
 
-@[simp] theorem length_hzBinomialRefined (n : ℕ) :
-    (hzBinomialRefined n).length = n + 1 := by
+@[simp] theorem length_binomialRefined (n : ℕ) :
+    (binomialRefined n).length = n + 1 := by
   induction n with
   | zero =>
-      simp [hzBinomialRefined]
+      simp [binomialRefined]
   | succ n =>
-      simp [hzBinomialRefined]
+      simp [binomialRefined]
 
-@[simp] lemma mem_hzBinomialRefined_zero {f : ℝ[X]} :
-    f ∈ hzBinomialRefined 0 ↔ f = 1 := by
-  simp [hzBinomialRefined]
+@[simp] lemma mem_binomialRefined_zero {f : ℝ[X]} :
+    f ∈ binomialRefined 0 ↔ f = 1 := by
+  simp [binomialRefined]
 
-theorem coeff_zero_hzBinomialRefined (n : ℕ) :
-    (hzBinomialRefined n).map (fun p => p.coeff 0) =
+theorem coeff_zero_binomialRefined (n : ℕ) :
+    (binomialRefined n).map (fun p => p.coeff 0) =
       1 :: List.replicate n 0 := by
   induction n with
   | zero =>
-      simp [hzBinomialRefined]
+      simp [binomialRefined]
   | succ n ih =>
-      simp [hzBinomialRefined, coeff_zero_matPolyAction,
+      simp [binomialRefined, coeff_zero_matPolyAction,
         coeff_zero_hzBinomialMatrix, ih, realListAction_hzConstMatrix_delta]
 
-lemma hzBinomialRefined_zero_interlacing :
-    IsInterlacingSeq0Nonneg (hzBinomialRefined 0) := by
+lemma binomialRefined_zero_interlacing :
+    IsInterlacingSeq0Nonneg (binomialRefined 0) := by
   constructor
-  · simp [hzBinomialRefined, IsInterlacingSeq0]
+  · simp [binomialRefined, IsInterlacingSeq0]
   · intro f hf
-    have hf' : f = 1 := mem_hzBinomialRefined_zero.mp hf
+    have hf' : f = 1 := mem_binomialRefined_zero.mp hf
     subst f
     exact hasNonnegCoeffs_one
 
-lemma hzBinomialRefined_zero_splits :
-    ∀ f ∈ hzBinomialRefined 0, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
+lemma binomialRefined_zero_splits :
+    ∀ f ∈ binomialRefined 0, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
   intro f hf _
-  have hf' : f = 1 := mem_hzBinomialRefined_zero.mp hf
+  have hf' : f = 1 := mem_binomialRefined_zero.mp hf
   subst f
   exact ⟨one_ne_zero, Polynomial.Splits.one⟩
 
-theorem hzBinomialRefined_interlacing_weak (n : ℕ) :
-    IsInterlacingSeq0Nonneg (hzBinomialRefined n) ∧
-      ∀ f ∈ hzBinomialRefined n, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
+theorem binomialRefined_interlacing_and_realRooted (n : ℕ) :
+    IsInterlacingSeq0Nonneg (binomialRefined n) ∧
+      ∀ f ∈ binomialRefined n, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
   induction n with
   | zero =>
-      exact ⟨hzBinomialRefined_zero_interlacing, hzBinomialRefined_zero_splits⟩
+      exact ⟨binomialRefined_zero_interlacing, binomialRefined_zero_splits⟩
   | succ n ih =>
-      simpa [hzBinomialRefined] using
-        haglund_zhang_binomial_eulerian_range_weak
-          (q := n + 1) (n := n + 2) (fs := hzBinomialRefined n)
+      simpa [binomialRefined] using
+        isInterlacingSeq0Nonneg_binomialMatrix_binomialThresholds_and_realRooted
+          (q := n + 1) (n := n + 2) (fs := binomialRefined n)
           (by simp)
           ih.1 ih.2
 
 /-- Interlacing projection from the Haglund--Zhang refined-vector induction. -/
-theorem hzBinomialRefined_interlaces (n : ℕ) :
-    IsInterlacingSeq0Nonneg (hzBinomialRefined n) :=
-  (hzBinomialRefined_interlacing_weak n).1
+theorem binomialRefined_interlaces (n : ℕ) :
+    IsInterlacingSeq0Nonneg (binomialRefined n) :=
+  (binomialRefined_interlacing_and_realRooted n).1
 
 /-- Real-rootedness projection from the Haglund--Zhang refined-vector induction. -/
-theorem hzBinomialRefined_realRooted (n : ℕ) :
-    ∀ f ∈ hzBinomialRefined n, f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
-  (hzBinomialRefined_interlacing_weak n).2
+theorem binomialRefined_realRooted (n : ℕ) :
+    ∀ f ∈ binomialRefined n, f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
+  (binomialRefined_interlacing_and_realRooted n).2
 
 /-- The terminal binomial Eulerian polynomial obtained from the refined vector. -/
-def hzBinomialEulerianPolynomial (n : ℕ) : ℝ[X] :=
-  hzTerminalPolynomial (n + 1) (hzBinomialRefined n)
+def binomialEulerianPolynomial (n : ℕ) : ℝ[X] :=
+  terminalPolynomial (n + 1) (binomialRefined n)
 
-@[simp] theorem coeff_zero_hzBinomialEulerianPolynomial (n : ℕ) :
-    (hzBinomialEulerianPolynomial n).coeff 0 = 1 := by
-  rw [hzBinomialEulerianPolynomial, coeff_zero_hzTerminalPolynomial,
-    coeff_zero_hzBinomialRefined]
+@[simp] theorem coeff_zero_binomialEulerianPolynomial (n : ℕ) :
+    (binomialEulerianPolynomial n).coeff 0 = 1 := by
+  rw [binomialEulerianPolynomial, coeff_zero_hzTerminalPolynomial,
+    coeff_zero_binomialRefined]
   simp [realListAction_hzConstRow_delta]
 
-theorem hzBinomialEulerianPolynomial_ne_zero (n : ℕ) :
-    hzBinomialEulerianPolynomial n ≠ 0 := by
+theorem binomialEulerianPolynomial_ne_zero (n : ℕ) :
+    binomialEulerianPolynomial n ≠ 0 := by
   intro h
-  have hcoeff := coeff_zero_hzBinomialEulerianPolynomial n
+  have hcoeff := coeff_zero_binomialEulerianPolynomial n
   rw [h] at hcoeff
   norm_num at hcoeff
 
-theorem hzBinomialEulerianPolynomial_realRooted_of_ne
-    (n : ℕ) (hne : hzBinomialEulerianPolynomial n ≠ 0) :
-    hzBinomialEulerianPolynomial n ≠ 0 ∧
-      (hzBinomialEulerianPolynomial n).Splits := by
-  simpa [hzBinomialEulerianPolynomial] using
-    haglund_zhang_terminal_polynomial_realRooted
-      (q := n + 1) (fs := hzBinomialRefined n)
+theorem binomialEulerianPolynomial_realRooted_of_ne
+    (n : ℕ) (hne : binomialEulerianPolynomial n ≠ 0) :
+    binomialEulerianPolynomial n ≠ 0 ∧
+      (binomialEulerianPolynomial n).Splits := by
+  simpa [binomialEulerianPolynomial] using
+    isRealRooted_terminalPolynomial
+      (q := n + 1) (fs := binomialRefined n)
       (by simp)
-      (hzBinomialRefined_interlaces n) (hzBinomialRefined_realRooted n)
-      (by simpa [hzBinomialEulerianPolynomial] using hne)
+      (binomialRefined_interlaces n) (binomialRefined_realRooted n)
+      (by simpa [binomialEulerianPolynomial] using hne)
 
-theorem hzBinomialEulerianPolynomial_splits_of_ne
-    (n : ℕ) (hne : hzBinomialEulerianPolynomial n ≠ 0) :
-    (hzBinomialEulerianPolynomial n).Splits :=
-  (hzBinomialEulerianPolynomial_realRooted_of_ne n hne).2
+theorem binomialEulerianPolynomial_splits_of_ne
+    (n : ℕ) (hne : binomialEulerianPolynomial n ≠ 0) :
+    (binomialEulerianPolynomial n).Splits :=
+  (binomialEulerianPolynomial_realRooted_of_ne n hne).2
 
-theorem hzBinomialEulerianPolynomial_realRooted (n : ℕ) :
-    hzBinomialEulerianPolynomial n ≠ 0 ∧
-      (hzBinomialEulerianPolynomial n).Splits :=
-  hzBinomialEulerianPolynomial_realRooted_of_ne
-    n (hzBinomialEulerianPolynomial_ne_zero n)
+theorem binomialEulerianPolynomial_realRooted (n : ℕ) :
+    binomialEulerianPolynomial n ≠ 0 ∧
+      (binomialEulerianPolynomial n).Splits :=
+  binomialEulerianPolynomial_realRooted_of_ne
+    n (binomialEulerianPolynomial_ne_zero n)
 
-theorem hzBinomialEulerianPolynomial_splits (n : ℕ) :
-    (hzBinomialEulerianPolynomial n).Splits :=
-  (hzBinomialEulerianPolynomial_realRooted n).2
+theorem binomialEulerianPolynomial_splits (n : ℕ) :
+    (binomialEulerianPolynomial n).Splits :=
+  (binomialEulerianPolynomial_realRooted n).2
+
+end HaglundZhang
+
+namespace OEIS
+
+namespace Backend
+
+@[deprecated (since := "2026-10-06")] alias HZData := HaglundZhang.RowData
+@[deprecated (since := "2026-10-06")] alias hzRow := HaglundZhang.row
+@[deprecated (since := "2026-10-06")] alias hzMatrix := HaglundZhang.matrix
+@[deprecated (since := "2026-10-06")] alias hzBinomialMatrix := HaglundZhang.binomialMatrix
+@[deprecated (since := "2026-10-06")] alias hzTerminalPolynomial :=
+  HaglundZhang.terminalPolynomial
+@[deprecated (since := "2026-10-06")] alias haglund_zhang_s_inversion_interlacing_weak :=
+  HaglundZhang.isInterlacingSeq0Nonneg_matPolyAction_and_realRooted
+@[deprecated (since := "2026-10-06")] alias haglund_zhang_binomial_eulerian_weak :=
+  HaglundZhang.isInterlacingSeq0Nonneg_binomialMatrix_and_realRooted
+@[deprecated (since := "2026-10-06")] alias haglund_zhang_terminal_polynomial_realRooted :=
+  HaglundZhang.isRealRooted_terminalPolynomial
 
 end Backend
 
@@ -942,32 +960,32 @@ end Backend
 Haglund--Zhang binomial Eulerian polynomial.  Agreement with the external OEIS
 table is intentionally a separate theorem for the generated sequence file. -/
 abbrev A046802 (n : ℕ) : ℝ[X] :=
-  Backend.hzBinomialEulerianPolynomial n
+  HaglundZhang.binomialEulerianPolynomial n
 
 /-- The refined Haglund--Zhang vector used as the interlacing certificate for
 `A046802`. -/
 abbrev A046802Refined (n : ℕ) : List ℝ[X] :=
-  Backend.hzBinomialRefined n
+  HaglundZhang.binomialRefined n
 
-@[simp] theorem A046802_eq_hzBinomialEulerianPolynomial (n : ℕ) :
-    A046802 n = Backend.hzBinomialEulerianPolynomial n := rfl
+@[simp] theorem A046802_eq_binomialEulerianPolynomial (n : ℕ) :
+    A046802 n = HaglundZhang.binomialEulerianPolynomial n := rfl
 
-@[simp] theorem A046802Refined_eq_hzBinomialRefined (n : ℕ) :
-    A046802Refined n = Backend.hzBinomialRefined n := rfl
+@[simp] theorem A046802Refined_eq_binomialRefined (n : ℕ) :
+    A046802Refined n = HaglundZhang.binomialRefined n := rfl
 
 @[simp] theorem coeff_zero_A046802 (n : ℕ) :
     (A046802 n).coeff 0 = 1 :=
-  Backend.coeff_zero_hzBinomialEulerianPolynomial n
+  HaglundZhang.coeff_zero_binomialEulerianPolynomial n
 
 /-- Interlacing certificate for the Haglund--Zhang refinement behind A046802. -/
 theorem A046802_interlaces (n : ℕ) :
     IsInterlacingSeq0Nonneg (A046802Refined n) :=
-  Backend.hzBinomialRefined_interlaces n
+  HaglundZhang.binomialRefined_interlaces n
 
 /-- Real-rootedness certificate for each nonzero refined polynomial behind A046802. -/
 theorem A046802_refined_realRooted (n : ℕ) :
     ∀ f ∈ A046802Refined n, f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
-  Backend.hzBinomialRefined_realRooted n
+  HaglundZhang.binomialRefined_realRooted n
 
 theorem A046802_ne_zero (n : ℕ) :
     A046802 n ≠ 0 := by
@@ -978,7 +996,7 @@ theorem A046802_ne_zero (n : ℕ) :
 
 theorem A046802_realRooted (n : ℕ) :
     A046802 n ≠ 0 ∧ (A046802 n).Splits :=
-  Backend.hzBinomialEulerianPolynomial_realRooted n
+  HaglundZhang.binomialEulerianPolynomial_realRooted n
 
 /-- Tactic-facing theorem for the `rr_s_inversion_binomial_eulerian_sequence`
 route. -/

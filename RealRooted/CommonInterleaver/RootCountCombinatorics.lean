@@ -508,7 +508,7 @@ theorem rootCountAbove_derivative_diff_le_one_of_splits
       ((p.roots.filter (x < ·)).card : ℤ) -
           (p.derivative.roots.filter (x < ·)).card ≤ 1 := by
   have hstrictInterl : StrictInterl p.derivative p :=
-    (derivative_interlaces hp hdeg).toStrictInterl
+    (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).toStrictInterl
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia
@@ -537,7 +537,7 @@ theorem rootCount_derivative_diff_le_two_of_splits
       ((p.roots.filter (· ≤ x)).card : ℤ) -
           (p.derivative.roots.filter (· ≤ x)).card ≤ 2 := by
   have hstrictInterl : StrictInterl p.derivative p :=
-    (derivative_interlaces hp hdeg).toStrictInterl
+    (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).toStrictInterl
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia
@@ -595,7 +595,7 @@ theorem rootCountAbove_derivative_oriented_of_splits
       ((p.roots.filter (x < ·)).card : ℤ) ≤
         (p.derivative.roots.filter (x < ·)).card + 1 := by
   have hstrictInterl : StrictInterl p.derivative p :=
-    (derivative_interlaces hp hdeg).toStrictInterl
+    (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).toStrictInterl
   have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
     rw [p.natDegree_derivative]
     lia

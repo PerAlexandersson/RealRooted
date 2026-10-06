@@ -88,14 +88,10 @@ theorem sum_erase_lt {t : ℕ → ℝ} {N j : ℕ} (hpositive : ∀ k, k < N →
   classical
   have hjN : j < N := by lia
   have hmiddle : 0 < t j := hpositive j hjN
-  have hupper_nonneg : (0 : ℝ) ≤ t (j + 1) / t j :=
-    le_of_lt (div_pos (hpositive _ hnext) hmiddle)
-  have hlower_nonneg : (0 : ℝ) ≤ t (j - 1) / t j :=
-    le_of_lt (div_pos (hpositive _ (by lia)) hmiddle)
   have hhi := sum_hi_le hpositive hlog_concave hnext (by linarith)
   have hlo := sum_lo_le hpositive hlog_concave hjN hj (by linarith)
-  have hupper_tail := two_geom_lt_one hupper_nonneg hupper
-  have hlower_tail := two_geom_lt_one hlower_nonneg hlower
+  have hupper_tail := two_geom_lt_one hupper
+  have hlower_tail := two_geom_lt_one hlower
   have hsplit : ∑ k ∈ (range N).erase j, t k
       = ∑ k ∈ (range N).filter (fun k => k < j), t k
         + ∑ k ∈ (range N).filter (fun k => j < k), t k := by

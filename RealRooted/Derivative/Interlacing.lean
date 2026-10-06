@@ -322,51 +322,85 @@ private lemma exists_penultimate_listInterlaces_prod_nonneg :
 
 /-! ## Main theorem -/
 
-/-- **Derivative interlacing**: if `f` is real-rooted of degree ≥ 2,
-    then `f.derivative` interlaces `f`. -/
-theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDegree) :
+/-- A nonzero degree-zero real-rooted polynomial precedes a nonzero
+degree-one real-rooted polynomial. -/
+lemma StrictInterl.of_degree_zero_right_of_degree_one
+    {f g : ℝ[X]}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hf_deg0 : f.natDegree = 0) (hg_deg1 : g.natDegree = 1) :
+    StrictInterl f g := by
+  obtain ⟨r, hr_eq⟩ : ∃ r, g.roots = {r} := by
+    apply Multiset.card_eq_one.mp
+    simpa [hg_deg1] using card_roots_of_splits hg_splits
+  have hroots_f : f.roots = 0 := by
+    apply Multiset.card_eq_zero.mp
+    rw [card_roots_of_splits hf_splits, hf_deg0]
+  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, [], [r], by simp,
+    List.pairwise_singleton _ _, ?_, ?_, ?_⟩
+  · simp [hroots_f]
+  · simp [hr_eq]
+  · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
+
+/-- **Derivative interlacing**: the derivative of a nonconstant real-rooted
+polynomial `f` interlaces `f`. -/
+theorem derivative_interlaces_of_natDegree_ne_zero {f : ℝ[X]} (hf : f.Splits)
+    (hdeg : f.natDegree ≠ 0) :
     Interlaces f.derivative f := by
-  -- Sort the roots of f
-  set rs := f.roots.sort (· ≤ ·) with hrs_def
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_multiset : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  have hrs_length : rs.length = f.natDegree := by
-    rw [hrs_def, Multiset.length_sort, card_roots_of_splits hf]
-  have hrs_root : ∀ r ∈ rs, f.IsRoot r := by simp_all
-  -- Construct interleaving
-  set ss := mkInterleaving f rs hrs_root
-  have hss_length : ss.length = f.natDegree - 1 := by rw [mkInterleaving_length]; lia
-  -- Properties from the construction
-  have hsub_rs : (↑rs : Multiset ℝ) ≤ f.roots := le_of_eq hrs_multiset
-  have hspec := mkInterleaving_spec f rs hrs_root hrs_sorted hsub_rs
-  have hss_roots : ∀ s ∈ ss, f.derivative.IsRoot s := hspec.1
-  have hss_interlaces : ListInterlaces ss rs := hspec.2
-  -- Sub-multiset relation
-  have hsub : (↑ss : Multiset ℝ) ≤ f.derivative.roots :=
-    (mkInterleaving_sub_multiset f hdeg rs hrs_root hrs_sorted hsub_rs).1
-  -- Degree and cardinality → f' is real-rooted
-  have hf'_ne : f.derivative ≠ 0 :=
-    Polynomial.derivative_ne_zero.mpr (by lia)
-  have hf'_card : f.derivative.roots.card = f.derivative.natDegree := by
-    apply le_antisymm (card_roots' _)
-    calc f.derivative.natDegree
-      _ = f.natDegree - 1 := f.natDegree_derivative
-      _ = ss.length := hss_length.symm
-      _ = (↑ss : Multiset ℝ).card := (Multiset.coe_card ss).symm
-      _ ≤ f.derivative.roots.card := Multiset.card_le_card hsub
-  have hf'_rr : (f.derivative ≠ 0 ∧ f.derivative.Splits) :=
-    ⟨hf'_ne, splits_of_card_roots hf'_card⟩
-  -- Multiset equality (sub-multiset + same cardinality)
-  have hss_eq : (↑ss : Multiset ℝ) = f.derivative.roots :=
-    Multiset.eq_of_le_of_card_le hsub
-      (le_of_eq (by rw [hf'_card, f.natDegree_derivative, ← hss_length,
-        ← Multiset.coe_card]))
-  -- Sortedness from interleaving
-  have hss_sorted : ss.Pairwise (· ≤ ·) :=
-    sorted_of_listInterlaces ss rs hrs_sorted hss_interlaces
-  -- Assemble
-  exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩, hf'_rr, by rw [f.natDegree_derivative]; lia,
-    rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
+  obtain hdeg1 | hdeg : f.natDegree = 1 ∨ 2 ≤ f.natDegree := by lia
+  · have hf0 : f ≠ 0 := by
+      rintro rfl
+      simp at hdeg
+    have hf'_deg : f.derivative.natDegree = 0 := by simp [f.natDegree_derivative, hdeg1]
+    exact
+      (StrictInterl.of_degree_zero_right_of_degree_one (derivative_ne_zero.mpr hdeg)
+        (Splits.of_natDegree_eq_zero hf'_deg) hf0 hf hf'_deg hdeg1).toInterlaces (by lia)
+  · -- Sort the roots of f
+    set rs := f.roots.sort (· ≤ ·) with hrs_def
+    have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
+    have hrs_multiset : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
+    have hrs_length : rs.length = f.natDegree := by
+      rw [hrs_def, Multiset.length_sort, card_roots_of_splits hf]
+    have hrs_root : ∀ r ∈ rs, f.IsRoot r := by simp_all
+    -- Construct interleaving
+    set ss := mkInterleaving f rs hrs_root
+    have hss_length : ss.length = f.natDegree - 1 := by rw [mkInterleaving_length]; lia
+    -- Properties from the construction
+    have hsub_rs : (↑rs : Multiset ℝ) ≤ f.roots := le_of_eq hrs_multiset
+    have hspec := mkInterleaving_spec f rs hrs_root hrs_sorted hsub_rs
+    have hss_roots : ∀ s ∈ ss, f.derivative.IsRoot s := hspec.1
+    have hss_interlaces : ListInterlaces ss rs := hspec.2
+    -- Sub-multiset relation
+    have hsub : (↑ss : Multiset ℝ) ≤ f.derivative.roots :=
+      (mkInterleaving_sub_multiset f hdeg rs hrs_root hrs_sorted hsub_rs).1
+    -- Degree and cardinality → f' is real-rooted
+    have hf'_ne : f.derivative ≠ 0 :=
+      Polynomial.derivative_ne_zero.mpr (by lia)
+    have hf'_card : f.derivative.roots.card = f.derivative.natDegree := by
+      apply le_antisymm (card_roots' _)
+      calc f.derivative.natDegree
+        _ = f.natDegree - 1 := f.natDegree_derivative
+        _ = ss.length := hss_length.symm
+        _ = (↑ss : Multiset ℝ).card := (Multiset.coe_card ss).symm
+        _ ≤ f.derivative.roots.card := Multiset.card_le_card hsub
+    have hf'_rr : (f.derivative ≠ 0 ∧ f.derivative.Splits) :=
+      ⟨hf'_ne, splits_of_card_roots hf'_card⟩
+    -- Multiset equality (sub-multiset + same cardinality)
+    have hss_eq : (↑ss : Multiset ℝ) = f.derivative.roots :=
+      Multiset.eq_of_le_of_card_le hsub
+        (le_of_eq (by rw [hf'_card, f.natDegree_derivative, ← hss_length,
+          ← Multiset.coe_card]))
+    -- Sortedness from interleaving
+    have hss_sorted : ss.Pairwise (· ≤ ·) :=
+      sorted_of_listInterlaces ss rs hrs_sorted hss_interlaces
+    -- Assemble
+    exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩, hf'_rr, by rw [f.natDegree_derivative]; lia,
+      rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
+
+/-- Deprecated degree-two form of `derivative_interlaces_of_natDegree_ne_zero`. -/
+@[deprecated derivative_interlaces_of_natDegree_ne_zero (since := "2026-10-06")]
+theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDegree) :
+    Interlaces f.derivative f :=
+  derivative_interlaces_of_natDegree_ne_zero hf (by lia)
 
 /-- A positive-leading splitting polynomial of degree at least four is
 nonnegative at the penultimate derivative-root occurrence.
@@ -379,7 +413,7 @@ theorem exists_derivative_root_eval_nonneg_of_four_le_natDegree
     ∃ c ∈ p.derivative.roots, 0 ≤ p.eval c := by
   obtain
       ⟨_, hpd, _, rs, ss, _, hss_sorted, hrs_eq, hss_eq, hint⟩ :=
-    derivative_interlaces hp (by lia)
+    derivative_interlaces_of_natDegree_ne_zero hp (by lia)
   have hss_length : ss.length = p.derivative.natDegree := by
     calc
       ss.length = (↑ss : Multiset ℝ).card := by simp
@@ -402,25 +436,6 @@ theorem exists_derivative_root_eval_nonneg_of_four_le_natDegree
   rw [heval]
   exact mul_nonneg hp_pos.le hcprod
 
-/-- A nonzero degree-zero real-rooted polynomial precedes a nonzero
-degree-one real-rooted polynomial. -/
-lemma StrictInterl.of_degree_zero_right_of_degree_one
-    {f g : ℝ[X]}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hf_deg0 : f.natDegree = 0) (hg_deg1 : g.natDegree = 1) :
-    StrictInterl f g := by
-  obtain ⟨r, hr_eq⟩ : ∃ r, g.roots = {r} := by
-    apply Multiset.card_eq_one.mp
-    simpa [hg_deg1] using card_roots_of_splits hg_splits
-  have hroots_f : f.roots = 0 := by
-    apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hf_splits, hf_deg0]
-  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, [], [r], by simp,
-    List.pairwise_singleton _ _, ?_, ?_, ?_⟩
-  · simp [hroots_f]
-  · simp [hr_eq]
-  · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
-
 /-- The derivative of any nonconstant positive-leading real-rooted polynomial
 interlaces the original polynomial, including the degree-one boundary case. -/
 lemma interlaces_derivative_of_pos_natDegree
@@ -437,6 +452,6 @@ lemma interlaces_derivative_of_pos_natDegree
     exact
       (StrictInterl.of_degree_zero_right_of_degree_one hf'_rr.1 hf'_rr.2 hf_ne hf_splits
         hf'_deg0 hdeg1).toInterlaces (by lia)
-  · exact derivative_interlaces hf_splits (by lia)
+  · exact derivative_interlaces_of_natDegree_ne_zero hf_splits (by lia)
 
 end RealRooted

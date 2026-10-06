@@ -222,7 +222,7 @@ theorem HasSimpleRoots.derivative_of_splits
       norm_num
   · have htwo : 2 ≤ p.natDegree := by lia
     have hinterl : StrictInterl p.derivative p :=
-      (derivative_interlaces hsplits htwo).toStrictInterl
+      (derivative_interlaces_of_natDegree_ne_zero hsplits (by lia)).toStrictInterl
     exact (hinterl.hasSimpleRoots_of_no_common_root fun _ hx =>
       hsimple.eval_derivative_ne_zero hx.2 hx.1).1
 

@@ -75,7 +75,6 @@ example {r : ℝ} (hlo : -1 ≤ r) (hhi : r ≤ 0) :
 
 example {f u : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hlo : ∀ r, f.IsRoot r → -1 ≤ r)
     (hhi : ∀ r, f.IsRoot r → r ≤ 0)
     (hdeg_lo : f.natDegree ≤ (u * f + (X * (1 + X)) * f.derivative).natDegree)
@@ -86,7 +85,6 @@ example {f u : ℝ[X]}
     StrictInterl f (u * f + (X * (1 + X)) * f.derivative) := by
   rr_mw_derivative_X_one_add_window using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -104,7 +102,6 @@ example {p : ℝ[X]}
 -- `A008970`/`A059427`: full Ma--Wang shell for the actual derivative factor.
 example {f u : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hlo : ∀ r, f.IsRoot r → -1 ≤ r)
     (hhi : ∀ r, f.IsRoot r → r ≤ 0)
     (hdeg_lo : f.natDegree ≤ (u * f + (X - X ^ 3) * f.derivative).natDegree)
@@ -114,7 +111,6 @@ example {f u : ℝ[X]}
     StrictInterl f (u * f + (X - X ^ 3) * f.derivative) := by
   rr_mw_derivative_sign_window using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -130,7 +126,6 @@ example {p : ℝ[X]} (hroots : ∀ r, p.IsRoot r → r ≤ -1) :
 -- Family C2 direct-outer Ma--Wang shell for the `A108426`/`A181996` bucket.
 example {f u : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hroots : ∀ r, f.IsRoot r → r ≤ -1)
     (hdeg_lo :
       f.natDegree ≤ (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative).natDegree)
@@ -143,7 +138,6 @@ example {f u : ℝ[X]}
     StrictInterl f (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative) := by
   rr_mw_derivative_neg_X_one_add_outer_auto using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -153,7 +147,6 @@ example {f u : ℝ[X]}
 -- `A106800`/`A021010`: `v_n(t)=-t^2`.
 example {f u : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative).natDegree)
     (hdeg_hi :
       (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative).natDegree ≤
@@ -163,7 +156,6 @@ example {f u : ℝ[X]}
     StrictInterl f (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative) := by
   rr_mw_derivative_neg_X_sq_auto using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -172,7 +164,6 @@ example {f u : ℝ[X]}
 -- `A395972`: `v_n(t)=-2t^2`.
 example {f u : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative).natDegree)
     (hdeg_hi :
       (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative).natDegree ≤
@@ -182,7 +173,6 @@ example {f u : ℝ[X]}
     StrictInterl f (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative) := by
   rr_mw_derivative_neg_X_sq_auto using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,

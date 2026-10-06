@@ -199,33 +199,3 @@ macro_rules
 
 end Tactic
 end RealRooted
-/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
-    Canonical syntax is preferred; these declarations retain old scripts
-    and dispatch through the deprecated theorem aliases above. -/
-namespace RealRooted
-namespace Tactic
-syntax (name := rr_interlacingSeq_prec_named_legacy)
-  "rr_interlacingSeq_prec" " using "
-    "interlacing" ":=" term ","
-    "index_lt" ":=" term :
-  tactic
-
-syntax (name := rr_interlacingSeq0_prec0_named_legacy)
-  "rr_interlacingSeq0_prec0" " using "
-    "interlacing0" ":=" term ","
-    "index_lt" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_interlacingSeq_prec using
-        interlacing := $hfs:term,
-        index_lt := $hij:term) =>
-      `(tactic| exact RealRooted.IsInterlacingSeq.strictInterl $hfs $hij)
-  | `(tactic|
-      rr_interlacingSeq0_prec0 using
-        interlacing0 := $hfs:term,
-        index_lt := $hij:term) =>
-      `(tactic| exact RealRooted.IsInterlacingSeq0.interl $hfs $hij)
-end Tactic
-end RealRooted

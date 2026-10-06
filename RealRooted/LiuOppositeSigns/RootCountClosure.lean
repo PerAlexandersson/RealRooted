@@ -472,7 +472,7 @@ theorem RightRootCountBranch.of_forall_pos_exists_close
   exact hleft.toRightBranch_symm_of_lt hrlt
 
 /-- Liu's disjunctive root-count branch is closed under close splitting approximations. -/
-theorem theorem21RootCountBranches_of_forall_pos_exists_roots_rel
+theorem RootCountBranches.of_forall_pos_exists_roots_rel
     {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hf : f.Splits) (hg : g.Splits) (hno : NoCommonRoots f g)
     (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
@@ -488,8 +488,8 @@ theorem theorem21RootCountBranches_of_forall_pos_exists_roots_rel
         Multiset.Rel
           (fun y y' : ℝ => |y' - y| < ρ)
           g.roots g'.roots ∧
-        theorem21RootCountBranches f' g') :
-    theorem21RootCountBranches f g := by
+        RootCountBranches f' g') :
+    RootCountBranches f g := by
   have widenRootsRel {δ ρ : ℝ} (hδρ : δ ≤ ρ) {u v : Multiset ℝ}
       (h : Multiset.Rel
         (fun x x' : ℝ => |x' - x| < δ) u v) :
@@ -504,7 +504,7 @@ theorem theorem21RootCountBranches_of_forall_pos_exists_roots_rel
     subst s
     exact (hno r hr.isRoot) hs.isRoot
   rcases lt_or_gt_of_ne hrs_ne with hrs | hsr
-  · apply theorem21RootCountBranches_of_right
+  · apply RootCountBranches.of_right
     apply RightRootCountBranch.of_forall_pos_exists_close
       hf_ne hg_ne hf hg hr hs hrs
     intro ρ hρ
@@ -531,7 +531,7 @@ theorem theorem21RootCountBranches_of_forall_pos_exists_roots_rel
           widenRootsRel hδ_le_ρ hff',
           widenRootsRel hδ_le_ρ hgg',
           hright'⟩
-  · apply theorem21RootCountBranches_of_left
+  · apply RootCountBranches.of_left
     apply LeftRootCountBranch.of_forall_pos_exists_close
       hf_ne hg_ne hf hg hr hs
     intro ρ hρ

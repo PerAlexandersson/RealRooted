@@ -3,7 +3,8 @@ import RealRooted.Basic
 /-!
 # Interlacing and root multiplicities
 
-Duplicate roots in the upper row of an interlacing pair force a common root.
+Duplicate roots in the upper row of an interlacing pair force a common root,
+and the two multiplicities of each real root differ by at most one.
 -/
 
 open Polynomial
@@ -150,5 +151,21 @@ theorem exists_common_root_of_not_nodup_g {f g : ℝ[X]} (hpq : StrictInterl g f
   obtain ⟨s, h_s_ss, h_s_rs⟩ := h_res
   exact ⟨s, by rw [← hrseq]; exact Multiset.mem_coe.mpr h_s_rs,
     by rw [← hsseq]; exact Multiset.mem_coe.mpr h_s_ss⟩
+
+/-- In an interlacing pair, the multiplicities of every real root differ by at
+most one. -/
+theorem StrictInterl.rootMultiplicity_le_add_one {f g : ℝ[X]} (h : StrictInterl g f)
+    (r : ℝ) :
+    f.rootMultiplicity r ≤ g.rootMultiplicity r + 1 ∧
+      g.rootMultiplicity r ≤ f.rootMultiplicity r + 1 := by
+  have := h.rootMultiplicity_bounds r
+  lia
+
+/-- A multiple root of the right polynomial of an interlacing pair is a root
+of the left polynomial. -/
+theorem StrictInterl.isRoot_of_one_lt_rootMultiplicity {f g : ℝ[X]} (h : StrictInterl g f)
+    {r : ℝ} (hr : 1 < f.rootMultiplicity r) : g.IsRoot r := by
+  have := (h.rootMultiplicity_le_add_one r).1
+  exact (rootMultiplicity_pos h.1.1).mp (by lia)
 
 end RealRooted

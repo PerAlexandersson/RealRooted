@@ -250,9 +250,7 @@ theorem isRealRooted_sum_of_commonInterleaver
 
 /-- Left-oriented sum real-rootedness package used by the Brändén 7.8.3
 product family. This is the direct Chudnovsky--Seymour `3 ⇒ m` step for a
-family with a common left interleaver. It should not be routed through
-`WeightedCompatibleLeft`: that recursive Wagner structure imposes coprimeness
-conditions which a common left interleaver does not provide in general. -/
+family with a common left interleaver. -/
 theorem isRealRooted_sum_of_commonLeftInterleaver
     {fs : List ℝ[X]}
     (hcommon : HasCommonLeftInterleaver fs)

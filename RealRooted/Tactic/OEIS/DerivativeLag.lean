@@ -1,3 +1,4 @@
+
 import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.OEIS.Basic
 import RealRooted.Tactic.WagnerX
@@ -21,7 +22,6 @@ syntax (name := rr_i2_derivative_lag_sequence_direct_halfline)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term ","
@@ -33,7 +33,6 @@ syntax (name := rr_i2_derivative_lag_sequence_realrooted_direct_halfline)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term ","
@@ -45,7 +44,6 @@ syntax (name := rr_i2_derivative_lag_sequence_den_direct_halfline)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -67,7 +65,6 @@ syntax (name := rr_i2_derivative_lag_sequence_den_realrooted_direct_halfline)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -165,7 +162,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         recurrence := $hrec:term,
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term,
@@ -175,7 +171,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           recurrence := $hrec,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
@@ -184,7 +179,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         recurrence := $hrec:term,
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term,
@@ -194,7 +188,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           recurrence := $hrec,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
@@ -203,7 +196,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -220,7 +212,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -239,7 +230,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -258,7 +248,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -278,7 +267,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -296,7 +284,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -316,7 +303,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -336,7 +322,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -355,7 +340,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -372,7 +356,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -391,7 +374,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -410,7 +392,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -430,7 +411,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -448,7 +428,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -468,7 +447,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -488,7 +466,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,

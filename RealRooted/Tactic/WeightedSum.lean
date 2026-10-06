@@ -47,13 +47,9 @@ theorem weightedCompatibleLeft_sequence_cons_pos
     (ha : ∀ i : Nat, 0 < a i)
     (hstrictInterl : ∀ i : Nat, StrictInterl (H i) (P i))
     (hpos : ∀ i : Nat, HasPosLeadingCoeff (P i))
-    (hl : ∀ i : Nat, WeightedCompatibleLeft (H i) (L i))
-    (hne : ∀ i : Nat, C (a i) * P i + weightedSum (L i) ≠ 0)
-    (hsplits : ∀ i : Nat, (C (a i) * P i + weightedSum (L i)).Splits)
-    (hcop : ∀ i : Nat, IsCoprime (C (a i) * P i) (weightedSum (L i))) :
+    (hl : ∀ i : Nat, WeightedCompatibleLeft (H i) (L i)) :
     ∀ i : Nat, WeightedCompatibleLeft (H i) ((a i, P i) :: L i) := fun i =>
-  RealRooted.WeightedCompatibleLeft.cons_pos
-    (ha i) (hstrictInterl i) (hpos i) (hl i) (hne i) (hsplits i) (hcop i)
+  RealRooted.WeightedCompatibleLeft.cons_pos (ha i) (hstrictInterl i) (hpos i) (hl i)
 
 theorem weightedCompatibleLeft_sequence_strictInterl
     {H : Nat → ℝ[X]} {L : Nat → List (ℝ × ℝ[X])}
@@ -149,10 +145,7 @@ syntax (name := rr_weighted_compatible_left_cons_pos_named)
     "weight_pos" ":=" term ","
     "strictInterl" ":=" term ","
     "pos_lc" ":=" term ","
-    "tail" ":=" term ","
-    "sum_ne" ":=" term ","
-    "sum_splits" ":=" term ","
-    "coprime" ":=" term :
+    "tail" ":=" term :
   tactic
 
 syntax (name := rr_weighted_compatible_left_sequence_cons_pos_named)
@@ -160,10 +153,7 @@ syntax (name := rr_weighted_compatible_left_sequence_cons_pos_named)
     "weight_pos" ":=" term ","
     "strictInterl" ":=" term ","
     "pos_lc" ":=" term ","
-    "tail" ":=" term ","
-    "sum_ne" ":=" term ","
-    "sum_splits" ":=" term ","
-    "coprime" ":=" term :
+    "tail" ":=" term :
   tactic
 
 syntax (name := rr_weighted_compatible_left_strict_interl_named)
@@ -272,25 +262,17 @@ macro_rules
         weight_pos := $ha:term,
         strictInterl := $hstrictInterl:term,
         pos_lc := $hpos:term,
-        tail := $hl:term,
-        sum_ne := $hne:term,
-        sum_splits := $hsplits:term,
-        coprime := $hcop:term) =>
-      `(tactic|
-        exact RealRooted.WeightedCompatibleLeft.cons_pos
-          $ha $hstrictInterl $hpos $hl $hne $hsplits $hcop)
+        tail := $hl:term) =>
+      `(tactic| exact RealRooted.WeightedCompatibleLeft.cons_pos $ha $hstrictInterl $hpos $hl)
   | `(tactic|
       rr_weighted_compatible_left_sequence_cons_pos using
         weight_pos := $ha:term,
         strictInterl := $hstrictInterl:term,
         pos_lc := $hpos:term,
-        tail := $hl:term,
-        sum_ne := $hne:term,
-        sum_splits := $hsplits:term,
-        coprime := $hcop:term) =>
+        tail := $hl:term) =>
       `(tactic|
         exact RealRooted.Tactic.weightedCompatibleLeft_sequence_cons_pos
-          $ha $hstrictInterl $hpos $hl $hne $hsplits $hcop)
+          $ha $hstrictInterl $hpos $hl)
   | `(tactic| rr_weighted_compatible_left_strict_interl using compatible := $hl:term) =>
       `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl $hl)
   | `(tactic| rr_weighted_compatible_left_sequence_strict_interl using compatible := $hl:term) =>
@@ -334,221 +316,5 @@ macro_rules
         nonempty := $hne:term) =>
       `(tactic| exact RealRooted.Tactic.sum_sequence_right_strictInterl $hstrictInterl $hpos $hne)
 
-end Tactic
-end RealRooted
-namespace RealRooted
-namespace Tactic
-
-end Tactic
-end RealRooted
-
-/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
-    Canonical syntax is preferred; these declarations retain old scripts
-    and dispatch through the deprecated theorem aliases above. -/
-namespace RealRooted
-namespace Tactic
-syntax (name := rr_weighted_compatible_left_singleton_named_legacy)
-  "rr_weighted_compatible_left_singleton" " using "
-    "weight_pos" ":=" term ","
-    "prec" ":=" term ","
-    "pos_lc" ":=" term :
-  tactic
-
-syntax (name := rr_weighted_compatible_left_sequence_singleton_named_legacy)
-  "rr_weighted_compatible_left_sequence_singleton" " using "
-    "weight_pos" ":=" term ","
-    "prec" ":=" term ","
-    "pos_lc" ":=" term :
-  tactic
-
-syntax (name := rr_weighted_compatible_left_cons_zero_named_legacy)
-  "rr_weighted_compatible_left_cons_zero" " using "
-    "weight_zero" ":=" term ","
-    "prec" ":=" term ","
-    "pos_lc" ":=" term ","
-    "tail" ":=" term :
-  tactic
-
-syntax (name := rr_weighted_compatible_left_sequence_cons_zero_named_legacy)
-  "rr_weighted_compatible_left_sequence_cons_zero" " using "
-    "weight_zero" ":=" term ","
-    "prec" ":=" term ","
-    "pos_lc" ":=" term ","
-    "tail" ":=" term :
-  tactic
-
-syntax (name := rr_weighted_compatible_left_cons_pos_named_legacy)
-  "rr_weighted_compatible_left_cons_pos" " using "
-    "weight_pos" ":=" term ","
-    "prec" ":=" term ","
-    "pos_lc" ":=" term ","
-    "tail" ":=" term ","
-    "sum_ne" ":=" term ","
-    "sum_splits" ":=" term ","
-    "coprime" ":=" term :
-  tactic
-
-syntax (name := rr_weighted_compatible_left_sequence_cons_pos_named_legacy)
-  "rr_weighted_compatible_left_sequence_cons_pos" " using "
-    "weight_pos" ":=" term ","
-    "prec" ":=" term ","
-    "pos_lc" ":=" term ","
-    "tail" ":=" term ","
-    "sum_ne" ":=" term ","
-    "sum_splits" ":=" term ","
-    "coprime" ":=" term :
-  tactic
-
-syntax (name := rr_weighted_compatible_left_prec_named_legacy)
-  "rr_weighted_compatible_left_prec" " using " "compatible" ":=" term :
-  tactic
-
-syntax (name := rr_weighted_compatible_left_sequence_prec_named_legacy)
-  "rr_weighted_compatible_left_sequence_prec" " using " "compatible" ":=" term :
-  tactic
-
-syntax (name := rr_weighted_sum_left_prec_named_legacy)
-  "rr_weighted_sum_left_prec" " using " "compatible" ":=" term :
-  tactic
-
-syntax (name := rr_weighted_sum_sequence_left_prec_named_legacy)
-  "rr_weighted_sum_sequence_left_prec" " using " "compatible" ":=" term :
-  tactic
-
-syntax (name := rr_sum_left_prec_named_legacy)
-  "rr_sum_left_prec" " using " "compatible" ":=" term :
-  tactic
-
-syntax (name := rr_sum_sequence_left_prec_named_legacy)
-  "rr_sum_sequence_left_prec" " using " "compatible" ":=" term :
-  tactic
-
-syntax (name := rr_weighted_sum_right_prec_named_legacy)
-  "rr_weighted_sum_right_prec" " using "
-    "weights_nonneg" ":=" term ","
-    "all_prec" ":=" term ","
-    "terms_pos_lc" ":=" term ","
-    "some_weight_pos" ":=" term :
-  tactic
-
-syntax (name := rr_weighted_sum_sequence_right_prec_named_legacy)
-  "rr_weighted_sum_sequence_right_prec" " using "
-    "weights_nonneg" ":=" term ","
-    "all_prec" ":=" term ","
-    "terms_pos_lc" ":=" term ","
-    "some_weight_pos" ":=" term :
-  tactic
-
-syntax (name := rr_sum_right_prec_named_legacy)
-  "rr_sum_right_prec" " using "
-    "all_prec" ":=" term ","
-    "terms_pos_lc" ":=" term ","
-    "nonempty" ":=" term :
-  tactic
-
-syntax (name := rr_sum_sequence_right_prec_named_legacy)
-  "rr_sum_sequence_right_prec" " using "
-    "all_prec" ":=" term ","
-    "terms_pos_lc" ":=" term ","
-    "nonempty" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_weighted_compatible_left_singleton using
-        weight_pos := $ha:term,
-        prec := $hprec:term,
-        pos_lc := $hpos:term) =>
-      `(tactic| exact RealRooted.WeightedCompatibleLeft.singleton $ha $hprec $hpos)
-  | `(tactic|
-      rr_weighted_compatible_left_sequence_singleton using
-        weight_pos := $ha:term,
-        prec := $hprec:term,
-        pos_lc := $hpos:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.weightedCompatibleLeft_sequence_singleton
-          $ha $hprec $hpos)
-  | `(tactic|
-      rr_weighted_compatible_left_cons_zero using
-        weight_zero := $ha:term,
-        prec := $hprec:term,
-        pos_lc := $hpos:term,
-        tail := $hl:term) =>
-      `(tactic| exact RealRooted.WeightedCompatibleLeft.cons_zero $ha $hprec $hpos $hl)
-  | `(tactic|
-      rr_weighted_compatible_left_sequence_cons_zero using
-        weight_zero := $ha:term,
-        prec := $hprec:term,
-        pos_lc := $hpos:term,
-        tail := $hl:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.weightedCompatibleLeft_sequence_cons_zero
-          $ha $hprec $hpos $hl)
-  | `(tactic|
-      rr_weighted_compatible_left_cons_pos using
-        weight_pos := $ha:term,
-        prec := $hprec:term,
-        pos_lc := $hpos:term,
-        tail := $hl:term,
-        sum_ne := $hne:term,
-        sum_splits := $hsplits:term,
-        coprime := $hcop:term) =>
-      `(tactic|
-        exact RealRooted.WeightedCompatibleLeft.cons_pos
-          $ha $hprec $hpos $hl $hne $hsplits $hcop)
-  | `(tactic|
-      rr_weighted_compatible_left_sequence_cons_pos using
-        weight_pos := $ha:term,
-        prec := $hprec:term,
-        pos_lc := $hpos:term,
-        tail := $hl:term,
-        sum_ne := $hne:term,
-        sum_splits := $hsplits:term,
-        coprime := $hcop:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.weightedCompatibleLeft_sequence_cons_pos
-          $ha $hprec $hpos $hl $hne $hsplits $hcop)
-  | `(tactic| rr_weighted_compatible_left_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl $hl)
-  | `(tactic| rr_weighted_compatible_left_sequence_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.Tactic.weightedCompatibleLeft_sequence_strictInterl $hl)
-  | `(tactic| rr_weighted_sum_left_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl $hl)
-  | `(tactic| rr_weighted_sum_sequence_left_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.Tactic.weightedSum_sequence_left_strictInterl $hl)
-  | `(tactic| rr_sum_left_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl_sum $hl)
-  | `(tactic| rr_sum_sequence_left_prec using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.Tactic.sum_sequence_left_strictInterl $hl)
-  | `(tactic|
-      rr_weighted_sum_right_prec using
-        weights_nonneg := $hnonneg:term,
-        all_prec := $hprec:term,
-        terms_pos_lc := $hpos:term,
-        some_weight_pos := $hex:term) =>
-      `(tactic|
-        exact RealRooted.StrictInterl.weightedSum_right_of_nonneg
-          _ _ $hnonneg $hprec $hpos $hex)
-  | `(tactic|
-      rr_weighted_sum_sequence_right_prec using
-        weights_nonneg := $hnonneg:term,
-        all_prec := $hprec:term,
-        terms_pos_lc := $hpos:term,
-        some_weight_pos := $hex:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.weightedSum_sequence_right_strictInterl
-          $hnonneg $hprec $hpos $hex)
-  | `(tactic|
-      rr_sum_right_prec using
-        all_prec := $hprec:term,
-        terms_pos_lc := $hpos:term,
-        nonempty := $hne:term) =>
-      `(tactic| exact RealRooted.StrictInterl.sum_right _ _ $hprec $hpos $hne)
-  | `(tactic|
-      rr_sum_sequence_right_prec using
-        all_prec := $hprec:term,
-        terms_pos_lc := $hpos:term,
-        nonempty := $hne:term) =>
-      `(tactic| exact RealRooted.Tactic.sum_sequence_right_strictInterl $hprec $hpos $hne)
 end Tactic
 end RealRooted

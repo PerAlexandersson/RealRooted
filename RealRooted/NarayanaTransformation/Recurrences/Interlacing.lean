@@ -124,9 +124,6 @@ theorem strictInterl_narayanaPolynomial_succ (m n : ℕ) :
     hasPosLeadingCoeff_narayanaPolynomial m (k + 1)
   have hdeg_succ (k : ℕ) : (P k).natDegree + 1 = (P (k + 1)).natDegree := by
     simp only [hP, natDegree_narayanaPolynomial]
-  have hdeg_two (k : ℕ) : 2 ≤ (P (k + 1)).natDegree := by
-    rw [hP, natDegree_narayanaPolynomial]
-    lia
   have hno (k : ℕ) (r : ℝ) (hr : (P (k + 1)).IsRoot r) : ¬ (P k).IsRoot r :=
     narayanaPolynomial_no_common_root m (k + 1) r hr
   have hrec (k : ℕ) :
@@ -158,7 +155,7 @@ theorem strictInterl_narayanaPolynomial_succ (m n : ℕ) :
     (V := fun k => C (((k + 1 : ℕ) : ℝ) + 2 * m + 2)⁻¹ *
       (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2))
     (W := fun _ => 0)
-    hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
+    hbase hpos hrec hV_nonpos hW_nonpos hdeg_succ hno
   simpa [P] using hbuild n
 
 end RealRooted

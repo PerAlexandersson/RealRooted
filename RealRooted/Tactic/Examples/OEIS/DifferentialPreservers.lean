@@ -35,11 +35,11 @@ example {F G : Nat → ℝ[X]}
 facade. -/
 example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (P n).Splits)
-    (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree) :
+    (hdeg : ∀ n : Nat, (P n).natDegree ≠ 0) :
     ∀ n : Nat, StrictInterl (P n).derivative (P n) := by
   rr_derivative_sequence_strict_interl using
     splits := hP,
-    degree_two := hdeg
+    degree_ne_zero := hdeg
 
 /-- Derivative nonnegative-coefficient row-family exit exposed through the
 OEIS facade. -/

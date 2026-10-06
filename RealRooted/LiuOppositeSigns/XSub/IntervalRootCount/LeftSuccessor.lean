@@ -153,29 +153,6 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_left_successor_nonneg_of_noCom
           exact hpair.xSub_splits_of_roots_sort_of_left_successor_nonneg
             hp_nonneg hq_nonneg hno hrs_two hdeg hμ
 
-/-- No-common-root branch of the translated left-successor x-subtraction
-family.  This is the shifted endpoint interface used by the factor-return
-assembly; the proof delegates to the core `p, q` form. -/
-theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_noCommonRoots
-    {f g : ℝ[X]} {r : ℝ}
-    (hno : NoCommonRoots f g)
-    (hpair : PositiveSplitRootCountPair f g)
-    (hfnn : HasNonnegCoeffs (f.comp (X + C r)))
-    (hgnn : HasNonnegCoeffs (g.comp (X + C r)))
-    (hdeg : f.natDegree = g.natDegree + 1) :
-    ∀ μ : ℝ, 0 < μ →
-      (X * f.comp (X + C r) - C μ * g.comp (X + C r)).Splits := by
-  intro μ hμ
-  let p := f.comp (X + C r)
-  let q := g.comp (X + C r)
-  have hpair_shift : PositiveSplitRootCountPair p q := by simpa [p, q] using hpair.comp_X_add_C r
-  have hno_shift : NoCommonRoots p q := by simpa [p, q] using hno.comp_X_add_C r
-  have hdeg_shift : p.natDegree = q.natDegree + 1 := by
-    simpa [p, q, Polynomial.natDegree_comp] using hdeg
-  simpa [p, q] using
-    hpair_shift.xSub_splits_of_left_successor_nonneg_of_noCommonRoots
-      hfnn hgnn hno_shift hdeg_shift hμ
-
 /-- Left-successor x-subtraction family in unshifted positive-split form,
 allowing common roots.  The proof peels common roots by strong induction on the
 right endpoint degree and dispatches the reduced branch to the no-common-root

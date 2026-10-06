@@ -28,6 +28,7 @@ every row has a positive leading coefficient.
   first-order derivative recurrences `P (n + 1) = A n * (P n)' + B n * P n`.
 * `derivRec₂_natDegree`, `derivRec₂_ne_zero`, `derivRec₂_leadingCoeff_pos`:
   `P (n + 1) = A n * (P n)'' + B n * (P n)' + C n * P n`.
+* `derivRec_eval_zero_pos`, `derivRec₂_eval_zero_pos`: positivity of the rows at `0`.
 -/
 
 open Polynomial
@@ -259,5 +260,58 @@ theorem derivRec₂_leadingCoeff_pos
     (fun n hn => (derivRec₂_step hrec hA hB hC n hn).2) hlam n
 
 end SecondOrder
+
+section EvalZero
+
+/-! ### Values at zero
+
+Evaluation at `0` turns a derivative recurrence into a scalar one, with the
+derivative terms as nonnegative extra summands. -/
+
+variable {P A B C : ℕ → ℝ[X]}
+
+/-- Rows of `P (n + 1) = A n * (P n)' + B n * P n` are positive at `0` when `P 0` is,
+the derivative term is nonnegative at `0` and `B n` is positive at `0`.  The
+derivative condition holds when `A n` vanishes at `0` (then `hA` closes by `simp`),
+or when `A n` is nonnegative at `0` and the rows have nonnegative coefficients. -/
+theorem derivRec_eval_zero_pos
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hA : ∀ n, 0 ≤ (A n).eval 0 * (P n).derivative.eval 0)
+    (hB : ∀ n, 0 < (B n).eval 0) (h0 : 0 < (P 0).eval 0) (n : ℕ) :
+    0 < (P n).eval 0 := by
+  induction n with
+  | zero => exact h0
+  | succ n ih =>
+      rw [hrec n, eval_add, eval_mul, eval_mul]
+      exact add_pos_of_nonneg_of_pos (hA n) (mul_pos (hB n) ih)
+
+/-- The second-order version of `derivRec_eval_zero_pos`:
+rows of `P (n + 1) = A n * (P n)'' + B n * (P n)' + C n * P n` are positive at `0`
+when `P 0` is, both derivative terms are nonnegative at `0` and `C n` is positive
+at `0`. -/
+theorem derivRec₂_eval_zero_pos
+    (hrec : ∀ n, P (n + 1) =
+      A n * (P n).derivative.derivative + B n * (P n).derivative + C n * P n)
+    (hA : ∀ n, 0 ≤ (A n).eval 0 * (P n).derivative.derivative.eval 0)
+    (hB : ∀ n, 0 ≤ (B n).eval 0 * (P n).derivative.eval 0)
+    (hC : ∀ n, 0 < (C n).eval 0) (h0 : 0 < (P 0).eval 0) (n : ℕ) :
+    0 < (P n).eval 0 := by
+  induction n with
+  | zero => exact h0
+  | succ n ih =>
+      rw [hrec n, eval_add, eval_add, eval_mul, eval_mul, eval_mul]
+      exact add_pos_of_nonneg_of_pos (add_nonneg (hA n) (hB n)) (mul_pos (hC n) ih)
+
+/-- OEIS A134991-type rows `P (n + 1) = (X + X ^ 2) P' + (1 + (n + 3) X) P`: the
+derivative multiplier vanishes at `0`. -/
+example (P : ℕ → ℝ[X]) (h0 : P 0 = 1)
+    (hrec : ∀ n, P (n + 1) =
+      (X + X ^ 2) * (P n).derivative + (1 + Polynomial.C ((n : ℝ) + 3) * X) * P n) (n : ℕ) :
+    0 < (P n).eval 0 :=
+  derivRec_eval_zero_pos (A := fun _ => X + X ^ 2)
+    (B := fun n => 1 + Polynomial.C ((n : ℝ) + 3) * X) hrec (fun _ => by simp)
+    (fun _ => by simp) (by simp [h0]) n
+
+end EvalZero
 
 end RealRooted

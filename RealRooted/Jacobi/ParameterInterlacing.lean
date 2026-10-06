@@ -59,7 +59,7 @@ theorem shiftedJacobi_interlaces_shift_both (n : ℕ) {α β : ℝ}
           StrictInterl (C c * shiftedJacobi (n + 1) (α + 1) (β + 1))
             (shiftedJacobi (n + 1 + 1) α β) := by
         rw [← hderivative]
-        exact (derivative_interlaces
+        exact (derivative_interlaces_of_natDegree_ne_zero
           (shiftedJacobi_splits (n + 1 + 1) hα hβ) (by
             rw [natDegree_shiftedJacobi (n + 1 + 1) hα hβ]
             lia)).toStrictInterl
