@@ -214,7 +214,7 @@ private theorem h_geometry (r : ℕ) (hr : 1 ≤ r) :
       intro s hs
       have hsneg : s < 0 := ih.1.2.2.2 s ((mem_roots ih.1.1).mpr hs)
       have hratio : 0 < (h r).eval s / (h (r + 1)).derivative.eval s :=
-        ih.2.rightRootRatio_pos hs
+        ih.2.right_root_ratio_pos hs
       have heval : (h (r + 2)).eval s =
           2 * ((r + 1 : ℕ) : ℝ) * s * (h r).eval s := by
         rw [show r + 2 = (r + 1) + 1 by lia, h_recurrence (r + 1) (by lia)]
