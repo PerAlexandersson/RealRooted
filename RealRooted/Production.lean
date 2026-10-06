@@ -1384,6 +1384,9 @@ import RealRooted.Challenges.GammaTransform
 import RealRooted.Challenges.HeilmannLieb
 import RealRooted.Challenges.GraceApolarity
 import RealRooted.Challenges.RealStability
+import RealRooted.Challenges.Wronskian
+import RealRooted.Mathlib.Analysis.Polynomial.Basic
+import RealRooted.Wronskian.Converse
 
 /-!
 # RealRooted production umbrella

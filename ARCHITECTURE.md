@@ -151,6 +151,9 @@ Wronskian results have a focused package entry point:
   Euler-operator Wronskian formulas;
 - `Wronskian.Forward` owns both global strict-interlacing-to-positivity and
   finite-root-certificate-to-global-positivity bridges;
+- `Wronskian.WeakForward` extends the forward bridge to common roots, and
+  `Wronskian.Converse` owns the weak converse under the root-multiplicity
+  bound, the resulting criterion, and the counterexample without that bound;
 - `Wronskian.Successor.Gap` owns root-gap existence from a successor-degree
   Wronskian sign; `Wronskian.Successor.Interlacing` lifts those gaps to the
   root-local and global interlacing criteria; and
