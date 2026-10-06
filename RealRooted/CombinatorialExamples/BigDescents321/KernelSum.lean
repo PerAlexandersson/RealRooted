@@ -308,4 +308,159 @@ theorem certRho_eq {r J k : ℚ} (hr : 3 ≤ r) (hJ : 0 ≤ J) (hk : 0 ≤ k) :
 
 end Certificate
 
+/-! ### The sums satisfy the moment recurrence -/
+
+/-- `∑_(k ≤ r+1) W_(r+1,k)(J) ρ(k) = 0`, by telescoping. -/
+theorem sum_kernelWeight_mul_certRho {r J : ℕ} (hr : 3 ≤ r) :
+    ∑ k ∈ range (r + 2), kernelWeight (r + 1) k J * certRho r J k = 0 := by
+  have hr' : (3 : ℚ) ≤ r := by exact_mod_cast hr
+  have hsum : ∀ k ∈ range (r + 2), kernelWeight (r + 1) k J * certRho r J k =
+      kernelWeight (r + 1) k J * certBq r J k * certSigma r J ((k : ℚ) + 1) -
+        kernelWeight (r + 1) k J * certSigma r J k := fun k _ ↦ by
+    rw [certRho_eq hr' (by positivity) (by positivity)]; ring
+  rw [sum_congr rfl hsum, sum_sub_distrib, sum_range_succ, sum_range_succ' _ (r + 1)]
+  have htop : certBq r J ((r + 1 : ℕ) : ℚ) = 0 := by
+    simp [certBq]
+  have hzero : certSigma r J ((0 : ℕ) : ℚ) = 0 := by simp [certSigma]
+  rw [htop, hzero, mul_zero, zero_mul, mul_zero, add_zero, add_zero, sub_eq_zero]
+  refine sum_congr rfl fun k hk ↦ ?_
+  have hk' := mem_range.mp hk
+  rw [kernelWeight_succ_right (by lia) (by lia)]
+  push_cast
+  rfl
+
+/-- The weighted sum `2^(1-2r) ∑_(k ≤ r) W_(r,k)(J) F(r, J, k)`. -/
+def kernelSum (r J : ℕ) : ℚ :=
+  2 * (1 / 4) ^ r * ∑ k ∈ range (r + 1), kernelWeight r k J * kernelF r J k
+
+/-- The sums satisfy the recurrence of the moments. -/
+theorem kernelSum_rec {t : ℕ} (ht : 2 ≤ t) (J : ℕ) :
+    (2 * t + 4) * kernelSum (t + 2) J =
+      (2 * t + 1) * (2 * kernelSum (t + 1) (J + 1) - kernelSum (t + 1) (J + 2)) -
+        ((t - 1) / 2) * kernelSum t (J + 1) := by
+  have hT := sum_kernelWeight_mul_certRho (r := t + 1) (J := J) (by lia)
+  have h2 : ∑ k ∈ range (t + 1 + 1), kernelWeight (t + 1) k (J + 2) * kernelF (t + 1) (J + 2) k =
+      ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
+        (certR2 (t + 1 : ℕ) J k * certF (t + 1 : ℕ) ((J : ℚ) + 2) k) := by
+    rw [sum_range_succ _ (t + 1 + 1)]
+    have h0 : certR2 (t + 1 : ℕ) J ((t + 1 + 1 : ℕ) : ℚ) = 0 := by simp [certR2]
+    rw [h0, zero_mul, mul_zero, add_zero]
+    refine sum_congr rfl fun k hk ↦ ?_
+    rw [kernelWeight_two (by lia) (by have := mem_range.mp hk; lia)]
+    simp only [kernelF, certF, certR2]
+    push_cast
+    ring
+  have h1 : ∑ k ∈ range (t + 1 + 1), kernelWeight (t + 1) k (J + 1) * kernelF (t + 1) (J + 1) k =
+      ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
+        (certR1 (t + 1 : ℕ) J k * certF (t + 1 : ℕ) ((J : ℚ) + 1) k) := by
+    rw [sum_range_succ _ (t + 1 + 1)]
+    have h0 : certR1 (t + 1 : ℕ) J ((t + 1 + 1 : ℕ) : ℚ) = 0 := by simp [certR1]
+    rw [h0, zero_mul, mul_zero, add_zero]
+    refine sum_congr rfl fun k hk ↦ ?_
+    rw [kernelWeight_one (by lia) (by have := mem_range.mp hk; lia)]
+    simp only [kernelF, certF, certR1]
+    push_cast
+    ring
+  have h0' : ∑ k ∈ range (t + 1), kernelWeight t k (J + 1) * kernelF t (J + 1) k =
+      ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
+        (certR0 (t + 1 : ℕ) J k * certF ((t + 1 : ℕ) - 1) ((J : ℚ) + 1) k) := by
+    rw [sum_range_succ _ (t + 1 + 1), sum_range_succ _ (t + 1)]
+    have e1 : certR0 (t + 1 : ℕ) J ((t + 1 + 1 : ℕ) : ℚ) = 0 := by simp [certR0]
+    have e2 : certR0 (t + 1 : ℕ) J ((t + 1 : ℕ) : ℚ) = 0 := by simp [certR0]
+    rw [e1, e2, zero_mul, mul_zero, add_zero, zero_mul, mul_zero, add_zero]
+    refine sum_congr rfl fun k hk ↦ ?_
+    rw [show t + 1 + 1 = t + 2 by ring,
+      kernelWeight_lower (by lia) (by have := mem_range.mp hk; lia)]
+    simp only [kernelF, certF, certR0]
+    push_cast
+    ring
+  simp only [kernelSum]
+  rw [show t + 2 = t + 1 + 1 by ring, h2, h1, h0']
+  have hexp : ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J * certRho (t + 1 : ℕ) J k =
+      2 * ((t + 1 : ℕ) + 1 : ℚ) * ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
+        kernelF (t + 1 + 1) J k -
+      4 * (1 - 2 * ((t + 1 : ℕ) : ℚ)) * ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
+        (certR2 (t + 1 : ℕ) J k * certF (t + 1 : ℕ) ((J : ℚ) + 2) k) +
+      8 * (1 - 2 * ((t + 1 : ℕ) : ℚ)) * ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
+        (certR1 (t + 1 : ℕ) J k * certF (t + 1 : ℕ) ((J : ℚ) + 1) k) +
+      8 * (((t + 1 : ℕ) : ℚ) - 2) * ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
+        (certR0 (t + 1 : ℕ) J k * certF ((t + 1 : ℕ) - 1) ((J : ℚ) + 1) k) := by
+    simp only [mul_sum, ← sum_sub_distrib, ← sum_add_distrib]
+    refine sum_congr rfl fun k _ ↦ ?_
+    simp only [certRho, kernelF, certF]
+    push_cast
+    ring
+  rw [hexp] at hT
+  push_cast at hT ⊢
+  linear_combination (2 * (1 / 4 : ℚ) ^ (t + 1 + 1)) * hT
+
+/-! ### The base rows `r = 2, 3` and the identity -/
+
+theorem kernelMoment_one (J : ℕ) :
+    kernelMoment (1 : ℕ) J = 1 / (2 * (J + 3)) - 1 / (J + 2) := by
+  rw [kernelMoment_natCast, kernelPoly_one, mul_sub, map_sub, ← mul_assoc, mul_comm (X ^ J),
+    mul_assoc, ← pow_add, integral_C_mul, ← pow_succ, integral_X_pow, integral_X_pow]
+  simp only [invSucc, Algebra.algebraMap_self, RingHom.id_apply, one_pow,
+    zero_pow (Nat.succ_ne_zero _), sub_zero, mul_one]
+  push_cast
+  field_simp
+  ring
+
+theorem kernelMoment_two (J : ℕ) :
+    kernelMoment (2 : ℕ) J = (2 * kernelMoment (1 : ℕ) (J + 1) - kernelMoment (1 : ℕ) (J + 2) +
+      kernelMoment (0 : ℕ) (J + 1) / 2) / 4 := by
+  have h := kernelMoment_rec 0 J
+  norm_num at h
+  linarith
+
+theorem kernelMoment_three (J : ℕ) :
+    kernelMoment (3 : ℕ) J = kernelMoment (2 : ℕ) (J + 1) - kernelMoment (2 : ℕ) (J + 2) / 2 := by
+  have h := kernelMoment_rec 1 J
+  norm_num at h
+  linarith
+
+theorem kernelSum_two (J : ℕ) : kernelSum 2 J = -kernelMoment (2 : ℕ) J := by
+  rw [kernelMoment_two, kernelMoment_one, kernelMoment_one, Nat.cast_zero, kernelMoment_zero]
+  simp only [kernelSum, sum_range_succ, sum_range_zero, zero_add, kernelWeight, kernelF]
+  norm_num [Nat.factorial_succ]
+  have ha : ((2 * J).factorial : ℚ) ≠ 0 := by positivity
+  have hb : (J.factorial : ℚ) ≠ 0 := by positivity
+  generalize ((2 * J).factorial : ℚ) = a at *
+  generalize (J.factorial : ℚ) = b at *
+  field_simp
+  ring
+
+theorem kernelSum_three (J : ℕ) : kernelSum 3 J = -kernelMoment (3 : ℕ) J := by
+  simp only [kernelMoment_three, kernelMoment_two, kernelMoment_one, Nat.cast_zero,
+    kernelMoment_zero]
+  simp only [kernelSum, sum_range_succ, sum_range_zero, zero_add, kernelWeight, kernelF]
+  norm_num [Nat.factorial_succ]
+  have ha : ((2 * J).factorial : ℚ) ≠ 0 := by positivity
+  have hb : (J.factorial : ℚ) ≠ 0 := by positivity
+  generalize ((2 * J).factorial : ℚ) = a at *
+  generalize (J.factorial : ℚ) = b at *
+  field_simp
+  ring
+
+/-- The `W`-sum formula (4.3): for `r ≥ 2` the moment `m(r, J)` is minus the explicit sum. -/
+theorem kernelMoment_eq_neg_kernelSum {r : ℕ} (hr : 2 ≤ r) (J : ℕ) :
+    kernelMoment r J = -kernelSum r J := by
+  induction r using Nat.strong_induction_on generalizing J with
+  | _ r ih =>
+  obtain ⟨t, rfl⟩ : ∃ t, r = t + 2 := ⟨r - 2, by lia⟩
+  rcases Nat.lt_or_ge t 2 with ht | ht
+  · obtain rfl | rfl : t = 0 ∨ t = 1 := by lia
+    · have h := kernelSum_two J
+      norm_num at h ⊢
+      linarith
+    · have h := kernelSum_three J
+      norm_num at h ⊢
+      linarith
+  have hm := kernelMoment_rec t J
+  rw [ih (t + 1) (by lia) (by lia) (J + 1), ih (t + 1) (by lia) (by lia) (J + 2),
+    ih t (by lia) ht (J + 1)] at hm
+  have hpos : (2 * (t : ℚ) + 4) ≠ 0 := by positivity
+  apply mul_left_cancel₀ hpos
+  linear_combination hm + kernelSum_rec ht J
+
 end RealRooted.BigDescents321
