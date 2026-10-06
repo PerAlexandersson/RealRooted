@@ -71,7 +71,7 @@ private def xShiftTrunc (φ : ℕ → ℚ) (N i : ℕ) : ℚ :=
   (if i = 0 then 0 else φ (i - 1) * i / (2 * i + 1)) +
     (if i + 1 ≤ N then φ (i + 1) * (i + 3) / (2 * i + 5) else 0)
 
-private theorem gsum_single (N k : ℕ) (hk : k ≤ N) (a : ℚ) :
+theorem gsum_single (N k : ℕ) (hk : k ≤ N) (a : ℚ) :
     gsum (fun i ↦ if i = k then a else 0) N = C a * gegen k := by
   rw [gsum, Finset.sum_eq_single k]
   · simp
