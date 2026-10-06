@@ -57,6 +57,7 @@ Refuted statements are recorded as checked theorems with an explicit negated
 | A Hurwitz-stable odd/even polynomial has fully interlacing coefficient sequences | `not_isHurwitzStable_oddEven_fullyInterlacingPair` |
 | A nonnegative strictly interlacing pair has fully interlacing coefficient sequences | `not_nonnegStrictInterl_fullyInterlacingPair` |
 | Entrywise products of totally nonnegative Hurwitz matrices are totally nonnegative | `not_hurwitz_schurProduct_isTotallyNonneg` |
+| Weak Wronskian converse without the multiplicity condition: a nonnegative Wronskian forces interlacing | `exists_wronskian_eval_nonneg_not_strictInterl` |
 
 One exception is kept for a downstream consumer:
 `RowThresholdMatricesPreserveInterlacingSeqNonneg` is false as stated. Its
