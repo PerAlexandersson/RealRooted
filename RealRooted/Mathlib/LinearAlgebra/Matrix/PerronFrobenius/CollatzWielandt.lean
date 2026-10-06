@@ -13,7 +13,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Algebra.Order.AbsoluteValue.Basic
 import Mathlib.Data.Rat.Floor
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.ExtremeValueUSC
+import Mathlib.Topology.Semicontinuity.Basic
 
 /-!
 # Collatz–Wielandt function and the Perron root
@@ -209,7 +209,7 @@ theorem exists_maximizer (A : Matrix n n ℝ) :
   have h_nonempty : (RealRooted.standardSimplex ℝ n).Nonempty := stdSimplex_nonempty
   have h_usc : UpperSemicontinuousOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) :=
     upperSemicontinuousOn A
-  exact IsCompact.exists_max_on_usco h_compact h_nonempty h_usc
+  exact h_usc.exists_isMaxOn h_nonempty h_compact
 
 omit [Nonempty n] in
 lemma eq_iInf_of_nonempty (v : n → ℝ) (h : {i | 0 < v i}.toFinset.Nonempty) :
