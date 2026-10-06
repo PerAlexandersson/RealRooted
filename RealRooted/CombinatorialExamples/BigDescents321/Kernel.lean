@@ -108,12 +108,12 @@ theorem derivative_kernelK (t : ℕ) : derivative (kernelK t) = kernelL t := by
 /-- `a = 1 - y/2` in `ℚ⟦y⟧`. -/
 def halfQ : PowerSeries ℚ := 1 - PowerSeries.C (1 / 2) * PowerSeries.X
 
-private theorem map_eval_kernelHalf (x : ℚ) :
+theorem map_eval_kernelHalf (x : ℚ) :
     PowerSeries.map (evalRingHom x) kernelHalf = halfQ := by
   simp [kernelHalf, halfQ]
 
 /-- `D(1, y) = (1 - y/2)²`. -/
-private theorem map_eval_one_kernelDisc :
+theorem map_eval_one_kernelDisc :
     PowerSeries.map (evalRingHom 1) kernelDisc = halfQ ^ 2 := by
   simp only [kernelDisc, halfQ, map_add, map_sub, map_mul, map_one, PowerSeries.map_C,
     PowerSeries.map_X, map_pow, coe_evalRingHom, eval_X, eval_ofNat, eval_C]
@@ -126,11 +126,11 @@ private theorem map_eval_one_kernelDisc :
   norm_num
   linear_combination (-PowerSeries.X ^ 2) * h + PowerSeries.X * h2 - PowerSeries.X * h7
 
-private theorem map_eval_zero_kernelDisc :
+theorem map_eval_zero_kernelDisc :
     PowerSeries.map (evalRingHom 0) kernelDisc = 1 := by
   simp [kernelDisc]
 
-private theorem constantCoeff_halfQ : PowerSeries.constantCoeff halfQ = 1 := by
+theorem constantCoeff_halfQ : PowerSeries.constantCoeff halfQ = 1 := by
   simp [halfQ]
 
 /-- `K_t(1) = [y^t] (1 - y/2)⁴`. -/

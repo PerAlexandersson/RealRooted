@@ -1,4 +1,5 @@
 import RealRooted.CombinatorialExamples.BigDescents321.Neighbor
+import RealRooted.CombinatorialExamples.BigDescents321.BottomMoments
 
 /-!
 # The residual polynomial `R_n`
@@ -284,5 +285,10 @@ theorem residCoord_neg {n j : ℕ} (hbot : 0 < transformedCoord n (n % 2)) (h : 
   have : 0 < (2 * (j : ℚ) + 5) / ((j + 3) * weightW j) * altSum n j := by positivity
   rw [neg_div, neg_mul]
   linarith
+
+/-- The tail signs for `n ≥ 25`: `b_(n, j+1) < 0` for `j ≤ n - 12` of the parity of `n`. -/
+theorem residCoord_neg_of_le {n j : ℕ} (hn : 25 ≤ n) (h : j + 12 ≤ n) (hp : j % 2 = n % 2) :
+    residCoord n (j + 1) < 0 :=
+  residCoord_neg (transformedCoord_bottom_pos hn) h hp
 
 end RealRooted.BigDescents321

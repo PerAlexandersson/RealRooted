@@ -1415,6 +1415,7 @@ import RealRooted.CombinatorialExamples.BigDescents321.Certificate.Data
 import RealRooted.CombinatorialExamples.BigDescents321.Certificate.Reflect
 import RealRooted.CombinatorialExamples.BigDescents321.Neighbor
 import RealRooted.CombinatorialExamples.BigDescents321.Residual
+import RealRooted.CombinatorialExamples.BigDescents321.BottomMoments
 
 /-!
 # RealRooted production umbrella
