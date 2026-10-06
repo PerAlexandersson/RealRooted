@@ -23,8 +23,9 @@ positive entries, every `G_n^γ` is PF, and the polar identity
 ```
 
 together with the binary-run cross-length theorem gives the Sturm chain
-`R_n^γ ≪ R_{n+1}^γ`.  The Motzkin-ascent polynomials are the case
-`γ_m = 1 / (m+1)!`.
+`R_n^γ ≪ R_{n+1}^γ`.  The case `γ_m = 1 / (m+1)!` gives rows that are
+classically the Motzkin-ascent polynomials (OEIS A114580); that identification
+is cited, not formalized.
 -/
 
 open Polynomial
@@ -363,8 +364,8 @@ theorem motzkinWeightedRow_strictInterl_succ {γ : ℕ → ℝ}
   · exact motzkinWeightedRow_strictInterl_succ_of_three_le hγ hpos hn
 
 /-- **The continuous family.**  For real `α > 0` and `γ_m = 1 / (α)_m`,
-consecutive rows interlace.  The Motzkin-ascent polynomials are `α = 2`,
-where `γ_m = 1 / (m+1)!`. -/
+consecutive rows interlace.  The case `α = 2`, where `γ_m = 1 / (m+1)!`,
+gives the rows cited as the Motzkin-ascent polynomials. -/
 theorem motzkinWeightedRow_inv_ascPochhammer_strictInterl_succ {α : ℝ} (hα : 0 < α)
     (n : ℕ) :
     StrictInterl
