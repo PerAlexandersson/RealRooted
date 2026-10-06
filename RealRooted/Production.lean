@@ -1417,6 +1417,8 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Successor
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.SuccessorResidues
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.WeightedResidueSum
 import RealRooted.Challenges.DecoEulerian
+import RealRooted.Challenges.Bezoutian
+import RealRooted.Bezoutian.Successor
 
 /-!
 # RealRooted production umbrella
