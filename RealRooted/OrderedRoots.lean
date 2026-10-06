@@ -18,6 +18,14 @@ irrelevant when the polynomial has the expected degree and splits. -/
 noncomputable def orderedRoot (p : ℝ[X]) (n : ℕ) (i : Fin n) : ℝ :=
   (p.roots.sort (· ≤ ·)).getD i 0
 
+/-- The `i`th ordered root is a root, when `p` has `n` roots counted with multiplicity. -/
+theorem orderedRoot_mem_roots {p : ℝ[X]} {n : ℕ} (hcard : p.roots.card = n) (i : Fin n) :
+    orderedRoot p n i ∈ p.roots := by
+  have hi : i.val < (p.roots.sort (· ≤ ·)).length := by simp [hcard]
+  rw [orderedRoot, List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hi, Option.getD_some,
+    ← Multiset.mem_sort (· ≤ ·)]
+  exact List.getElem_mem hi
+
 /-- For two nonzero, split polynomials of degree `n`, interlacing is
 equivalent to the coordinate bounds on their canonically ordered roots. -/
 theorem strictInterl_iff_orderedRoot_bounds

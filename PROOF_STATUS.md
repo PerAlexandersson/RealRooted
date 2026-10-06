@@ -18,7 +18,6 @@ theorem, refutation, or production caller. They contain no admission.
 | --- | --- |
 | `HurwitzOddEvenToReverseFullyInterlacingPairStatement` | Proposed reverse-row replacement for the refuted legacy Hurwitz-to-Lace orientation; issue #1113 |
 | `hadamardPreservesHurwitzStableStatement` | Garloff--Wagner Theorem 1, Hadamard products preserve Hurwitz stability; issue #1095 |
-| `iterateThetaPlusOneSelfInterlStatement` | Unused open interlacing target for iterates of `theta + 1`; issue #1114 |
 
 ## Checked replacements
 
@@ -58,6 +57,7 @@ Refuted statements are recorded as checked theorems with an explicit negated
 | A nonnegative strictly interlacing pair has fully interlacing coefficient sequences | `not_nonnegStrictInterl_fullyInterlacingPair` |
 | Entrywise products of totally nonnegative Hurwitz matrices are totally nonnegative | `not_hurwitz_schurProduct_isTotallyNonneg` |
 | Weak Wronskian converse without the multiplicity condition: a nonnegative Wronskian forces interlacing | `exists_wronskian_eval_nonneg_not_strictInterl` |
+| A PF polynomial interlaces its iterates under `theta + 1` (issue #1114) | `exists_isPFPolynomial_not_interl_iterateThetaPlusOne` |
 
 One exception is kept for a downstream consumer:
 `RowThresholdMatricesPreserveInterlacingSeqNonneg` is false as stated. Its
