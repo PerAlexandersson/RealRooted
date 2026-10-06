@@ -494,7 +494,6 @@ import RealRooted.Jacobi.DifferentialOperator
 import RealRooted.Jacobi.Favard
 import RealRooted.Jacobi.Orthogonality
 import RealRooted.Jacobi.Orthogonality.Integral
-import RealRooted.Jacobi.BetaZeroOrthogonality
 import RealRooted.Jacobi.Markoff
 import RealRooted.JacobiOrthogonality
 import RealRooted.Jacobi.ParameterInterlacing

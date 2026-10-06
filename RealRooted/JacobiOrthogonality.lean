@@ -147,85 +147,11 @@ theorem jacobiBetaOneInner_eq_shiftedJacobiInner
     shiftedJacobiFunctional α 1 (p * q)
   exact jacobiBetaOneFunctional_eq_shiftedJacobiFunctional hα _
 
-/-- The differential part of the beta-one shifted Jacobi operator. -/
-abbrev jacobiBetaOneOperator (α : ℝ) (p : ℝ[X]) : ℝ[X] :=
-  jacobiDifferentialOperator (α + 1) (α + 3) p
-
-@[simp]
-theorem jacobiBetaOneOperator_add (α : ℝ) (p q : ℝ[X]) :
-    jacobiBetaOneOperator α (p + q) =
-      jacobiBetaOneOperator α p + jacobiBetaOneOperator α q := by
-  simpa only [jacobiBetaOneOperator] using
-    jacobiDifferentialOperator_add (α + 1) (α + 3) p q
-
-@[simp]
-theorem jacobiBetaOneOperator_C_mul (α c : ℝ) (p : ℝ[X]) :
-    jacobiBetaOneOperator α (C c * p) =
-      C c * jacobiBetaOneOperator α p := by
-  simpa only [jacobiBetaOneOperator] using
-    jacobiDifferentialOperator_C_mul (α + 1) (α + 3) c p
-
-theorem jacobiBetaOneOperator_monomial (α a : ℝ) (n : ℕ) :
-    jacobiBetaOneOperator α (monomial n a) =
-      monomial (n - 1) (a * n * (n + α)) +
-        monomial n (-a * n * (n + α + 2)) := by
-  rw [jacobiBetaOneOperator, jacobiDifferentialOperator_monomial,
-    sub_eq_add_neg, ← monomial_neg]
-  congr 2 <;> ring
-
-/-- The differential part of the beta-one shifted Jacobi operator is
-self-adjoint for its moment pairing. -/
-theorem jacobiBetaOneOperator_inner_symm {α : ℝ} (hα : -1 < α)
-    (p q : ℝ[X]) :
-    jacobiBetaOneInner α (jacobiBetaOneOperator α p) q =
-      jacobiBetaOneInner α p (jacobiBetaOneOperator α q) := by
-  calc
-    _ = shiftedJacobiInner α 1 (jacobiBetaOneOperator α p) q :=
-      jacobiBetaOneInner_eq_shiftedJacobiInner hα _ _
-    _ = shiftedJacobiInner α 1 p (jacobiBetaOneOperator α q) := by
-      change shiftedJacobiInner α 1
-        (jacobiDifferentialOperator (α + 1) (α + 3) p) q =
-          shiftedJacobiInner α 1 p
-            (jacobiDifferentialOperator (α + 1) (α + 3) q)
-      convert shiftedJacobiInner_operator_symm (β := 1) hα (by norm_num) p q
-        using 1 <;> ring_nf
-    _ = _ := (jacobiBetaOneInner_eq_shiftedJacobiInner hα _ _).symm
-
-/-- A shifted Jacobi polynomial with beta parameter one is an eigenvector of
-the beta-one differential operator. -/
-theorem jacobiBetaOneOperator_shiftedJacobi (n : ℕ) (α : ℝ) :
-    jacobiBetaOneOperator α (shiftedJacobi n α 1) =
-      C (-(n * (n + α + 2))) * shiftedJacobi n α 1 := by
-  change jacobiDifferentialOperator (α + 1) (α + 3)
-    (shiftedJacobi n α 1) = _
-  have h := jacobiDifferentialOperator_shiftedJacobi n α 1
-  have hC2 : C (2 : ℝ) = (2 : ℝ[X]) := Polynomial.C_ofNat 2
-  simp only [map_add, map_mul, map_neg, map_natCast] at h ⊢
-  simp only [hC2] at h ⊢
-  norm_num at h ⊢
-  convert h using 1 <;> ring_nf
-
-theorem jacobiBetaOneOperator_X_pow (α : ℝ) (n : ℕ) :
-    jacobiBetaOneOperator α (X ^ n) =
-      C (n * (n + α)) * X ^ (n - 1) +
-        C (-(n * (n + α + 2))) * X ^ n := by
-  rw [X_pow_eq_monomial, jacobiBetaOneOperator_monomial]
-  simp only [← C_mul_X_pow_eq_monomial, one_mul, map_one]
-  ring_nf
-
 @[simp]
 theorem jacobiBetaOneInner_monomial_right (α c : ℝ) (p : ℝ[X]) (n : ℕ) :
     jacobiBetaOneInner α p (monomial n c) =
       c * jacobiBetaOneInner α p (X ^ n) := by
   rw [← C_mul_X_pow_eq_monomial, jacobiBetaOneInner_C_mul_right]
-
-/-- Beta-one shifted Jacobi polynomials are orthogonal to every lower
-monomial. -/
-theorem shiftedJacobi_betaOneInner_X_pow_eq_zero {α : ℝ} (hα : -1 < α)
-    {n j : ℕ} (hj : j < n) :
-    jacobiBetaOneInner α (shiftedJacobi n α 1) (X ^ j) = 0 := by
-  rw [jacobiBetaOneInner_eq_shiftedJacobiInner hα]
-  exact shiftedJacobiInner_X_pow_eq_zero hα (by norm_num) hj
 
 /-- Beta-one shifted Jacobi polynomials are orthogonal to every polynomial of
 strictly smaller degree. -/
