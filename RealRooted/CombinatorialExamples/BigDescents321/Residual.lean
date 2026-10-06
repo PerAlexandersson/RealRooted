@@ -122,35 +122,13 @@ theorem transformedCoord_self (n : ℕ) : transformedCoord n n = 1 / ((2 * n + 1
   field_simp
   ring
 
-/-- `c R_n = (α_n c² + β_n) G_(n-2) - Q_n`. -/
-theorem X_mul_residual {k : ℕ} (hk : 2 ≤ k) :
-    X * residual (k + 2) =
-      (C (alphaN (k + 2)) * X ^ 2 + C (betaN (k + 2))) * gegen k - transformed (k + 2) := by
-  have hr : ∀ j, k - 1 < j → residCoord (k + 2) j = 0 := fun j hj ↦ by
-    simp only [residCoord, show ¬ (j + 3 ≤ k + 2) by lia, ↓reduceIte]
-  have hsingle : ∀ j, k < j → (fun i ↦ if i = k then (1 : ℚ) else 0) j = 0 := fun j hj ↦ by
-    simp only [show j ≠ k by lia, ↓reduceIte]
-  have hXG : X * gegen k = gsum (xShift fun i ↦ if i = k then (1 : ℚ) else 0) (k + 1) := by
-    rw [← X_mul_gsum hsingle, gsum_single k k le_rfl, map_one, one_mul]
-  have hXXG : X ^ 2 * gegen k = gsum (sqShift k) (k + 2) := by
-    rw [pow_two, mul_assoc, hXG, sqShift, X_mul_gsum]
-    intro j hj
-    rw [xShift_single]
-    simp only [show j ≠ k + 1 by lia, show j + 1 ≠ k by lia, ↓reduceIte, add_zero]
-  have hxr : ∀ j, k < j → xShift (residCoord (k + 2)) j = 0 := fun j hj ↦ by
-    simp only [xShift, hr (j + 1) (by lia), zero_mul, zero_div, add_zero,
-      hr (j - 1) (by lia), ite_self]
-  rw [residual, show k + 2 - 3 = k - 1 by lia, X_mul_gsum hr, show k - 1 + 1 = k by lia,
-    ← gsum_eq_of_le hxr (show k ≤ k + 2 by lia), transformed_eq_gsum, add_mul, mul_assoc, hXXG,
-    ← gsum_single (k + 2) k (by lia), ← gsum_smul, ← gsum_add]
-  rw [show gsum (xShift (residCoord (k + 2))) (k + 2) =
-      gsum (alphaN (k + 2) • sqShift k + fun i ↦ if i = k then betaN (k + 2) else 0) (k + 2) -
-        gsum (transformedCoord (k + 2)) (k + 2) from ?_]
-  rw [eq_sub_iff_add_eq, ← gsum_add]
-  refine gsum_congr fun i hi ↦ ?_
-  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+/-- The coordinate form of `c R_n = (α_n c² + β_n) G_(n-2) - Q_n`, in every degree `i`. -/
+theorem xShift_residCoord_add {k : ℕ} (hk : 2 ≤ k) (i : ℕ) :
+    xShift (residCoord (k + 2)) i + transformedCoord (k + 2) i =
+      alphaN (k + 2) * sqShift k i + if i = k then betaN (k + 2) else 0 := by
   have hk2 : 2 ≤ k + 2 := by lia
-  rcases (show i + 2 ≤ k ∨ i = k - 1 ∨ i = k ∨ i = k + 1 ∨ i = k + 2 by lia) with h | h | h | h | h
+  rcases (show i + 2 ≤ k ∨ i = k - 1 ∨ i = k ∨ i = k + 1 ∨ i = k + 2 ∨ k + 2 < i by lia) with
+    h | h | h | h | h | h
   · have e : xShift (residCoord (k + 2)) i = xShift (residRaw (k + 2)) i := by
       simp only [xShift, residCoord_of_le (show i + 1 + 3 ≤ k + 2 by lia),
         residCoord_of_le (show i - 1 + 3 ≤ k + 2 by lia)]
@@ -190,6 +168,40 @@ theorem X_mul_residual {k : ℕ} (hk : 2 ≤ k) :
     push_cast
     field_simp
     ring
+  · simp only [xShift, residCoord_of_lt (show k + 2 < i + 1 + 3 by lia),
+      residCoord_of_lt (show k + 2 < i - 1 + 3 by lia), transformedCoord_of_lt h,
+      sqShift_eq_zero (show i ≠ k + 2 by lia) (show i ≠ k by lia) (show i + 2 ≠ k by lia),
+      show i ≠ k by lia, show i ≠ 0 by lia, ↓reduceIte]
+    ring
+
+/-- `c R_n = (α_n c² + β_n) G_(n-2) - Q_n`. -/
+theorem X_mul_residual {k : ℕ} (hk : 2 ≤ k) :
+    X * residual (k + 2) =
+      (C (alphaN (k + 2)) * X ^ 2 + C (betaN (k + 2))) * gegen k - transformed (k + 2) := by
+  have hr : ∀ j, k - 1 < j → residCoord (k + 2) j = 0 := fun j hj ↦ by
+    simp only [residCoord, show ¬ (j + 3 ≤ k + 2) by lia, ↓reduceIte]
+  have hsingle : ∀ j, k < j → (fun i ↦ if i = k then (1 : ℚ) else 0) j = 0 := fun j hj ↦ by
+    simp only [show j ≠ k by lia, ↓reduceIte]
+  have hXG : X * gegen k = gsum (xShift fun i ↦ if i = k then (1 : ℚ) else 0) (k + 1) := by
+    rw [← X_mul_gsum hsingle, gsum_single k k le_rfl, map_one, one_mul]
+  have hXXG : X ^ 2 * gegen k = gsum (sqShift k) (k + 2) := by
+    rw [pow_two, mul_assoc, hXG, sqShift, X_mul_gsum]
+    intro j hj
+    rw [xShift_single]
+    simp only [show j ≠ k + 1 by lia, show j + 1 ≠ k by lia, ↓reduceIte, add_zero]
+  have hxr : ∀ j, k < j → xShift (residCoord (k + 2)) j = 0 := fun j hj ↦ by
+    simp only [xShift, hr (j + 1) (by lia), zero_mul, zero_div, add_zero,
+      hr (j - 1) (by lia), ite_self]
+  rw [residual, show k + 2 - 3 = k - 1 by lia, X_mul_gsum hr, show k - 1 + 1 = k by lia,
+    ← gsum_eq_of_le hxr (show k ≤ k + 2 by lia), transformed_eq_gsum, add_mul, mul_assoc, hXXG,
+    ← gsum_single (k + 2) k (by lia), ← gsum_smul, ← gsum_add]
+  rw [show gsum (xShift (residCoord (k + 2))) (k + 2) =
+      gsum (alphaN (k + 2) • sqShift k + fun i ↦ if i = k then betaN (k + 2) else 0) (k + 2) -
+        gsum (transformedCoord (k + 2)) (k + 2) from ?_]
+  rw [eq_sub_iff_add_eq, ← gsum_add]
+  refine gsum_congr fun i hi ↦ ?_
+  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+  exact xShift_residCoord_add hk i
 
 /-! ### The tail -/
 
