@@ -1,4 +1,4 @@
-import RealRooted.Hermite.Poulain
+import RealRooted.Hermite.PoulainInterlacing
 
 /-!
 # Hermite--Poulain challenge entry point
@@ -18,6 +18,11 @@ label = "The operator f(D)"
 name = "RealRooted.HermitePoulain.differential_operator_preserves_real_rooted"
 module = "RealRooted.Hermite.Poulain"
 label = "Hermite–Poulain theorem"
+
+[[theorems]]
+name = "RealRooted.HermitePoulain.interl_or_interl_applyAsDifferentialOperator"
+module = "RealRooted.Hermite.PoulainInterlacing"
+label = "Hermite–Poulain operators preserve interlacing"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -27,11 +32,16 @@ For a polynomial $f(x) = \sum_k a_k x^k$, write $f(D) = \sum_k a_k D^k$, where
 $D = d/dx$. If $f$ and $p$ are real-rooted, then $f(D)\,p$ is zero or
 real-rooted.
 
+Consequently, $f(D)$ preserves interlacing: if $f$ is nonzero and real-rooted
+and $g$ and $h$ interlace, then $f(D)\,g$ and $f(D)\,h$ interlace in one of
+the two orientations, where either image may be zero.
+
 ## References
 
 The theorem goes back to Hermite and Poulain; see the
 [Hermite–Poulain theorem on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermitePoulainTheorem)
-for further references.
+for further references, and the
+[interlacing consequence](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermitePoulainInterlacing).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
@@ -40,7 +50,8 @@ https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermitePoulainTheor
 Original references include C. Hermite, G. Polya--I. Schur, N. Obreschkoff,
 and B. Ya. Levin's account of entire functions.
 
-The proof is in `RealRooted.Hermite.Poulain`.
+The proof is in `RealRooted.Hermite.Poulain`; the interlacing consequence is in
+`RealRooted.Hermite.PoulainInterlacing`.
 -/
 
 namespace RealRooted
@@ -67,7 +78,11 @@ export RealRooted.HermitePoulain
     applyAsDifferentialOperator_mul
     applyAsDifferentialOperator_C_eq_zero_or_splits
     applyAsDifferentialOperator_X_add_C_eq_zero_or_splits
-    differential_operator_preserves_real_rooted)
+    differential_operator_preserves_real_rooted
+    differentialOperator
+    differentialOperator_apply
+    preservesRealRootedOrZero_differentialOperator
+    interl_or_interl_applyAsDifferentialOperator)
 
 end HermitePoulain
 end Challenges
