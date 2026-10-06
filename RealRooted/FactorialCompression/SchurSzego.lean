@@ -22,7 +22,7 @@ noncomputable section
 
 namespace RealRooted.FactorialCompression
 
-theorem isPFPolynomial_of_negativeRoots {p : ℝ[X]}
+theorem isPFPolynomial_of_roots_neg {p : ℝ[X]}
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0) :
     IsPFPolynomial p := by
@@ -33,36 +33,36 @@ theorem isPFPolynomial_of_negativeRoots {p : ℝ[X]}
 
 /-- Only the real-rootedness component of Lemma 2.2, allowing zero output.
 Repeated roots of the multiplier polynomial p are allowed. -/
-theorem schurSzegoComp_eq_zero_or_splits_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
+theorem schurSzegoComp_eq_zero_or_splits_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (hpdegree : p.natDegree ≤ N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
     (hfdegree : f.natDegree ≤ N) (hfsplit : f.Splits) :
     schurSzegoComp N p f = 0 ∨ (schurSzegoComp N p f).Splits := by
   exact schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
-    (isPFPolynomial_of_negativeRoots hpsplit hppos hproots)
+    (isPFPolynomial_of_roots_neg hpsplit hppos hproots)
     hpdegree hfdegree hfsplit
 
-theorem schurSzegoComp_splits_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
+theorem schurSzegoComp_splits_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (hpdegree : p.natDegree ≤ N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
     (hfdegree : f.natDegree ≤ N) (hfsplit : f.Splits) :
     (schurSzegoComp N p f).Splits := by
-  rcases schurSzegoComp_eq_zero_or_splits_of_negativeRoots hpdegree hpsplit hppos hproots
+  rcases schurSzegoComp_eq_zero_or_splits_of_roots_neg hpdegree hpsplit hppos hproots
       hfdegree hfsplit with hz | hs
   · rw [hz]
     simp
   · exact hs
 
-theorem coeff_zero_pos_of_negativeRoots {p : ℝ[X]}
+theorem coeff_zero_pos_of_roots_neg {p : ℝ[X]}
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0) :
     0 < p.coeff 0 := by
   rw [coeff_zero_eq_eval_zero]
   exact eval_pos_of_all_roots_lt hppos.ne_zero hpsplit hppos hproots
 
-/-- Nonzeroness for the negative-root kernels used later in the manuscript.
+/-- Nonzeroness for the negative-root kernels used below.
 This is not a claim of simple roots or strict interlacing. -/
 theorem schurSzegoComp_coeff_zero_pos {N : ℕ} {p f : ℝ[X]}
     (hpzero : 0 < p.coeff 0) (hfzero : 0 < f.coeff 0) :
@@ -70,12 +70,12 @@ theorem schurSzegoComp_coeff_zero_pos {N : ℕ} {p f : ℝ[X]}
   rw [coeff_schurSzegoComp]
   simpa using mul_pos hpzero hfzero
 
-theorem coeff_pos_of_negativeRoots {p : ℝ[X]}
+theorem coeff_pos_of_roots_neg {p : ℝ[X]}
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0) {k : ℕ} (hk : k ≤ p.natDegree) :
     0 < p.coeff k := by
-  have hppf := isPFPolynomial_of_negativeRoots hpsplit hppos hproots
-  have hpzero := coeff_zero_pos_of_negativeRoots hpsplit hppos hproots
+  have hppf := isPFPolynomial_of_roots_neg hpsplit hppos hproots
+  have hpzero := coeff_zero_pos_of_roots_neg hpsplit hppos hproots
   by_cases hkzero : k = 0
   · simpa [hkzero] using hpzero
   by_cases hkdegree : k = p.natDegree
@@ -89,14 +89,14 @@ theorem coeff_pos_of_negativeRoots {p : ℝ[X]}
       (lt_of_le_of_ne hk hkdegree) le_rfl hpzero.ne' hpdegree
   exact lt_of_le_of_ne (hppf.hasNonnegCoeffs k) (Ne.symm hkinternal)
 
-theorem schurSzegoComp_ne_zero_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
+theorem schurSzegoComp_ne_zero_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (hpdegree : p.natDegree = N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
     (hfdegree : f.natDegree ≤ N) (hfzero : f ≠ 0) :
     schurSzegoComp N p f ≠ 0 := by
   have hpc : p.coeff f.natDegree ≠ 0 :=
-    (coeff_pos_of_negativeRoots hpsplit hppos hproots
+    (coeff_pos_of_roots_neg hpsplit hppos hproots
       (by simpa [hpdegree] using hfdegree)).ne'
   have hfc : f.coeff f.natDegree ≠ 0 := by
     simpa [coeff_natDegree] using Polynomial.leadingCoeff_ne_zero.mpr hfzero
@@ -117,7 +117,7 @@ theorem schurSzegoComp_add_C (N : ℕ) (p f : ℝ[X]) (u : ℝ) :
   · simp [coeff_schurSzegoComp, coeff_add, coeff_C]
 
 /-- A general simple split polynomial of positive degree admits two-sided
-constant perturbations. This is the manuscript's openness step, established
+constant perturbations. This openness step is established
 using the upstream local root-branch theorem. -/
 theorem exists_pos_add_C_splits {f : ℝ[X]}
     (hfdegree : f.natDegree ≠ 0) (hfsplit : f.Splits)
@@ -149,7 +149,7 @@ theorem exists_pos_add_C_splits {f : ℝ[X]}
 
 /-- The simple-real-root component of Lemma 2.2. The multiplier p may have
 repeated negative roots, and f may have roots anywhere on the real line. -/
-theorem schurSzegoComp_hasSimpleRoots_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
+theorem schurSzegoComp_hasSimpleRoots_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (hpdegree : p.natDegree = N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
@@ -158,7 +158,7 @@ theorem schurSzegoComp_hasSimpleRoots_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
     HasSimpleRoots (schurSzegoComp N p f) := by
   let h := schurSzegoComp N p f
   have hhne : h ≠ 0 :=
-    schurSzegoComp_ne_zero_of_negativeRoots hpdegree hpsplit hppos hproots hfdegree hfsimple.ne_zero
+    schurSzegoComp_ne_zero_of_roots_neg hpdegree hpsplit hppos hproots hfdegree hfsimple.ne_zero
   by_cases hhdegree : h.natDegree ≤ 1
   · exact hasSimpleRoots_of_natDegree_le_one hhne hhdegree
   have hfdegree0 : f.natDegree ≠ 0 := by
@@ -173,7 +173,7 @@ theorem schurSzegoComp_hasSimpleRoots_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
     lia
   obtain ⟨ε, hε, hfplus, hfminus⟩ :=
     exists_pos_add_C_splits hfdegree0 hfsplit hfsimple
-  have hp0 := coeff_zero_pos_of_negativeRoots hpsplit hppos hproots
+  have hp0 := coeff_zero_pos_of_roots_neg hpsplit hppos hproots
   let c := p.coeff 0 * ε
   have hc : 0 < c := mul_pos hp0 hε
   have hplus : (h + C c).Splits := by
@@ -183,9 +183,9 @@ theorem schurSzegoComp_hasSimpleRoots_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
       have := congrArg Polynomial.natDegree hz
       rw [natDegree_add_C, natDegree_zero] at this
       exact hfdegree0 this
-    have hout := schurSzegoComp_eq_zero_or_splits_of_negativeRoots
+    have hout := schurSzegoComp_eq_zero_or_splits_of_roots_neg
       (by lia : p.natDegree ≤ N) hpsplit hppos hproots hdeg hfplus
-    have hnonzero := schurSzegoComp_ne_zero_of_negativeRoots hpdegree hpsplit hppos hproots hdeg hne
+    have hnonzero := schurSzegoComp_ne_zero_of_roots_neg hpdegree hpsplit hppos hproots hdeg hne
     have hs := hout.resolve_left hnonzero
     rw [schurSzegoComp_add_C] at hs
     exact hs
@@ -196,9 +196,9 @@ theorem schurSzegoComp_hasSimpleRoots_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
       have := congrArg Polynomial.natDegree hz
       rw [natDegree_add_C, natDegree_zero] at this
       exact hfdegree0 this
-    have hout := schurSzegoComp_eq_zero_or_splits_of_negativeRoots
+    have hout := schurSzegoComp_eq_zero_or_splits_of_roots_neg
       (by lia : p.natDegree ≤ N) hpsplit hppos hproots hdeg hfminus
-    have hnonzero := schurSzegoComp_ne_zero_of_negativeRoots hpdegree hpsplit hppos hproots hdeg hne
+    have hnonzero := schurSzegoComp_ne_zero_of_roots_neg hpdegree hpsplit hppos hproots hdeg hne
     have hs := hout.resolve_left hnonzero
     rw [schurSzegoComp_add_C] at hs
     simpa [c] using hs
@@ -220,7 +220,7 @@ theorem schurSzegoComp_hasSimpleRoots_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
   simp [hrh, hderRoot] at hplusStrict hminusStrict
   linarith
 
-theorem schurSzegoComp_natDegree_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
+theorem schurSzegoComp_natDegree_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (hpdegree : p.natDegree = N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
@@ -231,12 +231,12 @@ theorem schurSzegoComp_natDegree_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
   · rw [coeff_schurSzegoComp, if_pos hfdegree, coeff_natDegree]
     exact div_ne_zero
       (mul_ne_zero
-        (coeff_pos_of_negativeRoots hpsplit hppos hproots
+        (coeff_pos_of_roots_neg hpsplit hppos hproots
           (by simpa [hpdegree] using hfdegree)).ne'
         (leadingCoeff_ne_zero.mpr hfzero))
       (by exact_mod_cast (Nat.choose_pos hfdegree).ne')
 
-theorem schurSzegoComp_posLeadingCoeff_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
+theorem schurSzegoComp_hasPosLeadingCoeff_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (hpdegree : p.natDegree = N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
@@ -244,10 +244,10 @@ theorem schurSzegoComp_posLeadingCoeff_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
     HasPosLeadingCoeff (schurSzegoComp N p f) := by
   change 0 < (schurSzegoComp N p f).leadingCoeff
   rw [← coeff_natDegree,
-    schurSzegoComp_natDegree_of_negativeRoots hpdegree hpsplit hppos hproots hfdegree hfpos.ne_zero,
+    schurSzegoComp_natDegree_of_roots_neg hpdegree hpsplit hppos hproots hfdegree hfpos.ne_zero,
     coeff_schurSzegoComp, if_pos hfdegree, coeff_natDegree]
   exact div_pos (mul_pos
-    (coeff_pos_of_negativeRoots hpsplit hppos hproots
+    (coeff_pos_of_roots_neg hpsplit hppos hproots
       (by simpa [hpdegree] using hfdegree)) hfpos)
     (by exact_mod_cast Nat.choose_pos hfdegree)
 
@@ -256,7 +256,7 @@ theorem schurSzegoComp_linear_combination (N : ℕ) (p f g : ℝ[X]) (α β : �
       C α * schurSzegoComp N p f + C β * schurSzegoComp N p g := by
   simp only [schurSzegoComp_add_right, schurSzegoComp_C_mul_right]
 
-/-- The manuscript's exact scalar Wronskian orientation identity. -/
+/-- Scalar Wronskian orientation identity for Schur--Szegő composition. -/
 theorem schurSzegoComp_wronskian_zero {N : ℕ} (hN : 1 ≤ N)
     (p f g : ℝ[X]) :
     (Polynomial.wronskian (schurSzegoComp N p f) (schurSzegoComp N p g)).eval 0 =
@@ -270,28 +270,28 @@ theorem schurSzegoComp_wronskian_zero {N : ℕ} (hN : 1 ≤ N)
   simp only [← coeff_zero_eq_eval_zero, coeff_derivative, Nat.zero_add, Nat.cast_one, mul_one]
   ring
 
-theorem schurSzegoComp_simpleNegativeRoots_of_negativeRoots {N : ℕ} {p f : ℝ[X]}
+theorem schurSzegoComp_simpleNegativeRoots_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (hpdegree : p.natDegree = N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
     (hfdegree : f.natDegree ≤ N) (hf : SimpleNegativeRoots f)
     (hfpos : HasPosLeadingCoeff f) :
     SimpleNegativeRoots (schurSzegoComp N p f) := by
-  have hne := schurSzegoComp_ne_zero_of_negativeRoots hpdegree hpsplit hppos hproots hfdegree hf.1
-  have hsplit := (schurSzegoComp_eq_zero_or_splits_of_negativeRoots
+  have hne := schurSzegoComp_ne_zero_of_roots_neg hpdegree hpsplit hppos hproots hfdegree hf.1
+  have hsplit := (schurSzegoComp_eq_zero_or_splits_of_roots_neg
     hpdegree.le hpsplit hppos hproots hfdegree hf.2.1).resolve_left hne
-  have hsimple := schurSzegoComp_hasSimpleRoots_of_negativeRoots hpdegree hpsplit hppos hproots
+  have hsimple := schurSzegoComp_hasSimpleRoots_of_roots_neg hpdegree hpsplit hppos hproots
     hfdegree hf.2.1 hf.hasSimpleRoots
-  have hpf := isPFPolynomial_of_negativeRoots hf.2.1 hfpos hf.2.2.2
-  have hp0 := coeff_zero_pos_of_negativeRoots hpsplit hppos hproots
-  have hf0 := coeff_zero_pos_of_negativeRoots hf.2.1 hfpos hf.2.2.2
+  have hpf := isPFPolynomial_of_roots_neg hf.2.1 hfpos hf.2.2.2
+  have hp0 := coeff_zero_pos_of_roots_neg hpsplit hppos hproots
+  have hf0 := coeff_zero_pos_of_roots_neg hf.2.1 hfpos hf.2.2.2
   have hout0 := schurSzegoComp_coeff_zero_pos (N := N) hp0 hf0
   have houtnonneg : HasNonnegCoeffs (schurSzegoComp N p f) := by
     intro k
     rw [coeff_schurSzegoComp]
     split_ifs with hk
     · exact div_nonneg (mul_nonneg
-        ((isPFPolynomial_of_negativeRoots hpsplit hppos hproots).hasNonnegCoeffs k)
+        ((isPFPolynomial_of_roots_neg hpsplit hppos hproots).hasNonnegCoeffs k)
         (hpf.hasNonnegCoeffs k)) (by positivity)
     · exact le_rfl
   refine ⟨hne, hsplit, hsimple.roots_nodup, ?_⟩
@@ -309,20 +309,20 @@ private private theorem strictRootInterl_wronskian_pos {f g : ℝ[X]}
     0 < (Polynomial.wronskian f g).eval t := by
   rcases hfg.toStrictInterl.natDegree_eq_or_eq_succ with hsame | hsucc
   · have hstrict := StrictInterlSameDegree.of_strictInterl_of_no_common
-      hfg.toStrictInterl hsame.symm hfg.noCommonRoot
+      hfg.toStrictInterl hsame.symm hfg.no_common_root
     have hw := wronskian_pos_of_strictInterlSameDegree hfg.1 hfg.2.1 hgdegree hstrict t
     simp only [Polynomial.wronskian, eval_sub, eval_mul]
     nlinarith
   · have hsimple := hfg.hasSimpleRoots
     have hw := wronskian_pos_of_strictInterl_succ hfg.2.1 hfg.1 hsucc
       hfg.toStrictInterl hsimple.2.roots_nodup hsimple.1.roots_nodup
-      (fun r hgr hfr => hfg.noCommonRoot r hfr hgr) t
+      (fun r hgr hfr => hfg.no_common_root r hfr hgr) t
     simp only [Polynomial.wronskian, eval_sub, eval_mul]
     nlinarith
 
-/-- The complete strict oriented conclusion of manuscript Lemma 2.2.
+/-- Strict oriented preservation under Schur--Szegő composition.
 No simplicity hypothesis is imposed on the negative-root multiplier p. -/
-theorem schurSzegoComp_strictRootInterl_of_negativeRoots {N : ℕ} {p f g : ℝ[X]}
+theorem schurSzegoComp_strictRootInterl_of_roots_neg {N : ℕ} {p f g : ℝ[X]}
     (hN : 1 ≤ N) (hpdegree : p.natDegree = N)
     (hpsplit : p.Splits) (hppos : HasPosLeadingCoeff p)
     (hproots : ∀ r ∈ p.roots, r < 0)
@@ -332,21 +332,21 @@ theorem schurSzegoComp_strictRootInterl_of_negativeRoots {N : ℕ} {p f g : ℝ[
     StrictRootInterl (schurSzegoComp N p f) (schurSzegoComp N p g) := by
   let a := schurSzegoComp N p f
   let b := schurSzegoComp N p g
-  have hafull : SimpleNegativeRoots a := schurSzegoComp_simpleNegativeRoots_of_negativeRoots
+  have hafull : SimpleNegativeRoots a := schurSzegoComp_simpleNegativeRoots_of_roots_neg
     hpdegree hpsplit hppos hproots hfdegree
     ⟨hfg.toStrictInterl.1.1, hfg.toStrictInterl.1.2,
       hfg.hasSimpleRoots.1.roots_nodup, hfroots⟩ hfg.1
-  have hbfull : SimpleNegativeRoots b := schurSzegoComp_simpleNegativeRoots_of_negativeRoots
+  have hbfull : SimpleNegativeRoots b := schurSzegoComp_simpleNegativeRoots_of_roots_neg
     hpdegree hpsplit hppos hproots hgdegree
     ⟨hfg.toStrictInterl.2.1.1, hfg.toStrictInterl.2.1.2,
       hfg.hasSimpleRoots.2.roots_nodup, hgroots⟩ hfg.2.1
-  have hapos : HasPosLeadingCoeff a := schurSzegoComp_posLeadingCoeff_of_negativeRoots
+  have hapos : HasPosLeadingCoeff a := schurSzegoComp_hasPosLeadingCoeff_of_roots_neg
     hpdegree hpsplit hppos hproots hfdegree hfg.1
-  have hbpos : HasPosLeadingCoeff b := schurSzegoComp_posLeadingCoeff_of_negativeRoots
+  have hbpos : HasPosLeadingCoeff b := schurSzegoComp_hasPosLeadingCoeff_of_roots_neg
     hpdegree hpsplit hppos hproots hgdegree hfg.2.1
-  have hadegree : a.natDegree = f.natDegree := schurSzegoComp_natDegree_of_negativeRoots
+  have hadegree : a.natDegree = f.natDegree := schurSzegoComp_natDegree_of_roots_neg
     hpdegree hpsplit hppos hproots hfdegree hfg.toStrictInterl.1.1
-  have hbdegree : b.natDegree = g.natDegree := schurSzegoComp_natDegree_of_negativeRoots
+  have hbdegree : b.natDegree = g.natDegree := schurSzegoComp_natDegree_of_roots_neg
     hpdegree hpsplit hppos hproots hgdegree hfg.toStrictInterl.2.1.1
   have hall := allComboRealRooted_of_strictInterl hfg.toStrictInterl
   have hcomboDegree (α β : ℝ) : (C α * f + C β * g).natDegree ≤ N :=
@@ -355,7 +355,7 @@ theorem schurSzegoComp_strictRootInterl_of_negativeRoots {N : ℕ} {p f g : ℝ[
         ((natDegree_C_mul_le ..).trans hgdegree))
   have houtall : AllComboRealRooted a b := by
     intro α β
-    have hs := schurSzegoComp_eq_zero_or_splits_of_negativeRoots hpdegree.le hpsplit hppos hproots
+    have hs := schurSzegoComp_eq_zero_or_splits_of_roots_neg hpdegree.le hpsplit hppos hproots
       (hcomboDegree α β) (hall α β)
     rw [schurSzegoComp_linear_combination] at hs
     rcases hs with hz | hs
@@ -384,7 +384,7 @@ theorem schurSzegoComp_strictRootInterl_of_negativeRoots {N : ℕ} {p f g : ℝ[
       rcases hweakOr with hab | hba
       · exact hab
       · exact hba.of_reverse_of_roots_sum_le (by lia) (by simp [haroots, hbroots])
-    exact strictRootInterl_of_strictInterl_of_noCommonRoot hweak hapos hbpos (by
+    exact strictRootInterl_of_strictInterl_of_no_common_root hweak hapos hbpos (by
       intro r hr
       have := (mem_roots hafull.1).mpr hr.1
       simpa [haroots] using this)
@@ -414,10 +414,10 @@ theorem schurSzegoComp_strictRootInterl_of_negativeRoots {N : ℕ} {p f g : ℝ[
     have hinne : C α * f + C β * g ≠ 0 := by
       intro hz
       exact ObreschkoffConverseInternal.no_nontrivial_linear_relation_of_no_common_root
-        hfg.toStrictInterl.1.1 hfg.toStrictInterl.1.2 hfg.noCommonRoot
+        hfg.toStrictInterl.1.1 hfg.toStrictInterl.1.2 hfg.no_common_root
         (Nat.pos_of_ne_zero hfzero) hα hβ hz
     have hinsimple := ((hsourceSimple α β).resolve_left hinne).2
-    have houtSimple := schurSzegoComp_hasSimpleRoots_of_negativeRoots hpdegree hpsplit hppos hproots
+    have houtSimple := schurSzegoComp_hasSimpleRoots_of_roots_neg hpdegree hpsplit hppos hproots
       (hcomboDegree α β) (hall α β) hinsimple
     rw [schurSzegoComp_linear_combination] at houtSimple
     have houtRoot : (C α * a + C β * b).IsRoot r := by
@@ -428,8 +428,8 @@ theorem schurSzegoComp_strictRootInterl_of_negativeRoots {N : ℕ} {p f g : ℝ[
     apply hderne
     simp [α, β, a, b, derivative_add, derivative_C_mul]
     ring
-  have hp0 := coeff_zero_pos_of_negativeRoots hpsplit hppos hproots
-  have hp1 := coeff_pos_of_negativeRoots hpsplit hppos hproots
+  have hp0 := coeff_zero_pos_of_roots_neg hpsplit hppos hproots
+  have hp1 := coeff_pos_of_roots_neg hpsplit hppos hproots
     (by simpa [hpdegree] using hN)
   have hscale : 0 < p.coeff 0 * p.coeff 1 / (N : ℝ) :=
     div_pos (mul_pos hp0 hp1) (by exact_mod_cast (show 0 < N by lia))
@@ -443,6 +443,6 @@ theorem schurSzegoComp_strictRootInterl_of_negativeRoots {N : ℕ} {p f g : ℝ[
     · have hreverse := wronskian_eval_nonneg_of_strictInterl hapos hbpos hba 0
       simp only [Polynomial.wronskian, eval_sub, eval_mul] at hreverse hWout
       nlinarith
-  exact strictRootInterl_of_strictInterl_of_noCommonRoot hweak hapos hbpos houtno
+  exact strictRootInterl_of_strictInterl_of_no_common_root hweak hapos hbpos houtno
 
 end RealRooted.FactorialCompression
