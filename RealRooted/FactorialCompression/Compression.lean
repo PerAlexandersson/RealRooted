@@ -285,7 +285,7 @@ without any degree or root assumption. -/
 theorem schurSzegoComp_theta (N : ℕ) (p f : ℝ[X]) :
     schurSzegoComp N p (theta f) = theta (schurSzegoComp N p f) := by
   ext k
-  simp only [RealRooted.FactorialCompression.coeff_schurSzegoComp, coeff_theta]
+  simp only [coeff_schurSzegoComp, coeff_theta]
   split_ifs <;> ring
 
 /-- The exact filtered derivative identity used at roots of the common image. -/
