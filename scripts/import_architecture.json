@@ -1059,9 +1059,6 @@
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen": {
       "max_modules": 100
    },
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree": {
-      "max_modules": 101
-   },
     "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction": {
       "max_modules": 209
    },
@@ -2080,7 +2077,6 @@
     "RealRooted.Hadamard",
     "RealRooted.FiniteFreeMultiplicative",
     "RealRooted.FiniteFreeRootCount",
-    "RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree",
     "RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative",
     "RealRooted.CommonInterleaver.FamilySum",
     "RealRooted.DerivativeRecurrence",

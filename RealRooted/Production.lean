@@ -815,7 +815,6 @@ import RealRooted.MultiplierSequence.Bidiagonal.Jensen
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen.LowDegree
 import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
 import RealRooted.MultiplierSequence.Infinite
 import RealRooted.MultiplierSequence.Sign

@@ -879,13 +879,13 @@ degree-bounded PF-preserver interface. It has no finite-symbol or tactic
 dependency. Its `SecondDerivative` child owns the independent normalization of
 a six-parameter differential form to that raw operator. Its `Jensen` child
 owns the finite pencil, quadratic-residual factorization, and base certificate
-API; `Jensen.LowDegree` owns the degree-one and degree-two preserver proofs.
+API.
 `Jensen.Contraction` turns the general Schur--Szegő compatibility theorem into
 the bidiagonal preserver API. `Jensen.CubicResidual` owns generic residual
 certificate construction, while its `Quadratic` child owns the quadratic and
 second-derivative specializations. Thus each differential-form, certificate,
-contraction, and low-degree proof unit can evolve independently of the
-tactic-only sequence wrappers.
+and contraction proof unit can evolve independently of the tactic-only
+sequence wrappers.
 `BorceaBranden.Applications.RealUnivariateSymbol` consumes complexification and
 the splitness/stability bridge from `HermiteBiehler.Basic`; it owns the
 coefficientwise complex-linear extension and degree-box symbol calculation.
@@ -1416,10 +1416,10 @@ needed by the remaining shifted-pair and high-degree code. The parent is now a
 976-line coordinator over the shared-root reduction, shifted-pair machinery,
 high-degree recursion, and public wrappers. Since the public umbrella imports
 every source module during this compatibility migration, its guard is 625 rather
-than the exhausted 610. The same one-module closure increase exhausts three
-other legacy guards, so BidiagonalSymbol RealConsequences, Jensen LowDegree,
-and Jensen Contraction have conservative 150, 125, and 145-module bounds,
-respectively; these are import-budget adjustments, not new mathematical edges.
+than the exhausted 610. The same one-module closure increase exhausts two
+other legacy guards, so BidiagonalSymbol RealConsequences and Jensen
+Contraction have conservative 150 and 145-module bounds, respectively; these
+are import-budget adjustments, not new mathematical edges.
 
 `SymmetricDecomposition` is now a compatibility façade over five theorem
 layers. `Definitions` owns the `I_d`/`R_d` transforms, formula components, and
