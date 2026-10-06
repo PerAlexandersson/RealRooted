@@ -1378,6 +1378,12 @@ import RealRooted.Hermite.PoulainInterlacing
 import RealRooted.Hadamard.FiniteReflection
 import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
 import RealRooted.MultiplierSequence.PolyaSchur.Schur
+import RealRooted.Challenges.DerivativeInterlacing
+import RealRooted.Challenges.TotallyNonnegativeMatrices
+import RealRooted.Challenges.GammaTransform
+import RealRooted.Challenges.HeilmannLieb
+import RealRooted.Challenges.GraceApolarity
+import RealRooted.Challenges.RealStability
 
 /-!
 # RealRooted production umbrella
