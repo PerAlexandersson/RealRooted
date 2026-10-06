@@ -14,7 +14,7 @@ namespace RealRooted
 /-- A positive reversed Wronskian at the roots of `q` places a root of `p` in
 every consecutive root gap of `q`. -/
 lemma has_gap_root_of_wronskian_pos_succ_atRoots {n : ℕ}
-    {p q : ℝ[X]} (_hp_ne : p ≠ 0) (hq_pos : HasPosLeadingCoeff q)
+    {p q : ℝ[X]} (hq_pos : HasPosLeadingCoeff q)
     (hq_deg : q.natDegree = n + 1)
     (r : Fin (n + 1) → ℝ) (hr_mono : StrictMono r)
     (hr_roots : ∀ k, q.IsRoot (r k))
@@ -111,14 +111,14 @@ lemma has_gap_root_of_wronskian_pos_succ_atRoots {n : ℕ}
 /-- The global reversed-Wronskian condition implies the root-local gap
 condition. -/
 lemma has_gap_root_of_wronskian_pos_succ {n : ℕ}
-    {p q : ℝ[X]} (hp_ne : p ≠ 0) (hq_pos : HasPosLeadingCoeff q)
+    {p q : ℝ[X]} (hq_pos : HasPosLeadingCoeff q)
     (hq_deg : q.natDegree = n + 1)
     (hW : ∀ t : ℝ, 0 < q.derivative.eval t * p.eval t -
       q.eval t * p.derivative.eval t)
     (r : Fin (n + 1) → ℝ) (hr_mono : StrictMono r)
     (hr_roots : ∀ k, q.IsRoot (r k)) :
     ∀ k : Fin n, ∃ x, p.IsRoot x ∧ r k.castSucc < x ∧ x < r k.succ :=
-  has_gap_root_of_wronskian_pos_succ_atRoots hp_ne hq_pos hq_deg r hr_mono hr_roots
+  has_gap_root_of_wronskian_pos_succ_atRoots hq_pos hq_deg r hr_mono hr_roots
     fun k ↦ hW (r k)
 
 end RealRooted

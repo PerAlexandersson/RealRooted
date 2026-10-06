@@ -57,7 +57,7 @@ theorem interlaces_of_wronskian_neg_succ_atRoots {n : ℕ}
   obtain ⟨r, hr_mono, hr_roots⟩ :
       ∃ r : Fin (n + 1) → ℝ, StrictMono r ∧ ∀ k, g.IsRoot (r k) :=
     Polynomial.exists_strictMono_roots hg_splits hg_deg hg_nodup
-  have h_gap := has_gap_root_of_wronskian_pos_succ_atRoots hf_ne hg_pos hg_deg
+  have h_gap := has_gap_root_of_wronskian_pos_succ_atRoots (p := f) hg_pos hg_deg
     r hr_mono hr_roots (fun k => by simp_all)
   choose x hx_root hx_lo hx_hi using h_gap
   have hx_mono : StrictMono x := by
