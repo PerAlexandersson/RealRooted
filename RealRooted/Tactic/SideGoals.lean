@@ -29,6 +29,9 @@ This tactic should fail clearly when a mathematical certificate is missing.
 namespace RealRooted
 namespace Tactic
 
+/-- `rr_side` without `positivity`, `norm_num` and `nlinarith`, for use after an alternative
+list that has already tried them on the same goal. -/
+syntax (name := rr_side_rest) "rr_side_rest" : tactic
 syntax (name := rr_side_nonneg) "rr_side_nonneg" : tactic
 syntax (name := rr_side_pos) "rr_side_pos" : tactic
 syntax (name := rr_side_ne) "rr_side_ne" : tactic
@@ -404,6 +407,15 @@ macro_rules
           | ring
           | lia
           | nlinarith
+          | rr_eval_simp
+          | grind)
+  | `(tactic| rr_side_rest) =>
+      `(tactic|
+        first
+          | rr_coeff
+          | ring_nf
+          | ring
+          | lia
           | rr_eval_simp
           | grind)
   | `(rr_positivity_term) =>

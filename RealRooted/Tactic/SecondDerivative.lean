@@ -488,16 +488,12 @@ macro_rules
         first
           | intro n
             rw [$hrec n]
-            first
-              | rr_ls4_factorize
-                exact Or.inl trivial
-              | rr_ls4_factorize
+            -- one factorization; close a remaining `True ∨ _` goal if there is one
+            rr_ls4_factorize <;> first | exact Or.inl trivial | skip
           | rename_i n
             rw [$hrec n]
-            first
-              | rr_ls4_factorize
-                exact Or.inl trivial
-              | rr_ls4_factorize)
+            -- one factorization; close a remaining `True ∨ _` goal if there is one
+            rr_ls4_factorize <;> first | exact Or.inl trivial | skip)
   | `(tactic|
       rr_mw_plus_derivative_sequence_expanded using
         outer := $a:term,

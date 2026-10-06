@@ -24,7 +24,7 @@ macro_rules
       `(tactic|
         first
           | rr_side_nonneg
-          | rr_side)
+          | rr_side_rest)
   | `(rr_sign_side_term) =>
       `(by rr_sign_side)
 
@@ -174,12 +174,12 @@ macro_rules
                 | norm_num
                 | nlinarith
                 | ring_nf <;> nlinarith
-                | rr_side
+                | rr_side_rest
             | positivity
             | norm_num
             | nlinarith
             | ring_nf <;> nlinarith
-            | rr_side)
+            | rr_side_rest)
 
 end Tactic
 end RealRooted

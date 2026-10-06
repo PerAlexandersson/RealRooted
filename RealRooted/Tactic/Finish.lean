@@ -865,7 +865,9 @@ macro_rules
             | assumption
             | (apply RealRooted.mul_eq_zero_or_splits <;> rr_zero_or_splits)
             | (apply RealRooted.pow_eq_zero_or_splits <;> rr_zero_or_splits)
-            | exact Or.inr (by rr_splits)
+            -- `apply` rejects a non-disjunction before `rr_splits` runs; `exact Or.inr (by …)`
+            -- would elaborate the `by` block first
+            | (apply Or.inr; rr_splits; done)
             | simp_all [RealRooted.StrictInterl, RealRooted.Interlaces])
   | `(tactic| rr_realrooted using $h:term) =>
       `(tactic|
