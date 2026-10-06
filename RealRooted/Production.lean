@@ -1410,6 +1410,10 @@ import RealRooted.CombinatorialExamples.BigDescents321.Kernel
 import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
 import RealRooted.CombinatorialExamples.BigDescents321.Coordinates
 import RealRooted.CombinatorialExamples.BigDescents321.KernelSum
+import RealRooted.CombinatorialExamples.BigDescents321.Certificate
+import RealRooted.CombinatorialExamples.BigDescents321.Certificate.Data
+import RealRooted.CombinatorialExamples.BigDescents321.Certificate.Reflect
+import RealRooted.CombinatorialExamples.BigDescents321.Neighbor
 
 /-!
 # RealRooted production umbrella

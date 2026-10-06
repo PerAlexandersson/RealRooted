@@ -255,8 +255,9 @@ section Certificate
 
 variable (r J k : ℚ)
 
-/-- `F(r, J, k)` with rational arguments. -/
-def certF : ℚ := k * (4 * J + 3 * k + 2 * r + 5) - r * (r - 1)
+/-- `F(r, J, k)`, over any commutative ring. -/
+def certF {α : Type*} [CommRing α] (r J k : α) : α :=
+  k * (4 * J + 3 * k + 2 * r + 5) - r * (r - 1)
 
 /-- `W_(r+1,k+1)(J) / W_(r+1,k)(J)`. -/
 def certBq : ℚ := (r + k) * (2 * J + r + k + 3) * (J + k + 2) * (r + 1 - k) /
@@ -341,7 +342,7 @@ theorem kernelSum_rec {t : ℕ} (ht : 2 ≤ t) (J : ℕ) :
   have hT := sum_kernelWeight_mul_certRho (r := t + 1) (J := J) (by lia)
   have h2 : ∑ k ∈ range (t + 1 + 1), kernelWeight (t + 1) k (J + 2) * kernelF (t + 1) (J + 2) k =
       ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
-        (certR2 (t + 1 : ℕ) J k * certF (t + 1 : ℕ) ((J : ℚ) + 2) k) := by
+        (certR2 (t + 1 : ℕ) J k * certF ((t + 1 : ℕ) : ℚ) ((J : ℚ) + 2) k) := by
     rw [sum_range_succ _ (t + 1 + 1)]
     have h0 : certR2 (t + 1 : ℕ) J ((t + 1 + 1 : ℕ) : ℚ) = 0 := by simp [certR2]
     rw [h0, zero_mul, mul_zero, add_zero]
@@ -352,7 +353,7 @@ theorem kernelSum_rec {t : ℕ} (ht : 2 ≤ t) (J : ℕ) :
     ring
   have h1 : ∑ k ∈ range (t + 1 + 1), kernelWeight (t + 1) k (J + 1) * kernelF (t + 1) (J + 1) k =
       ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
-        (certR1 (t + 1 : ℕ) J k * certF (t + 1 : ℕ) ((J : ℚ) + 1) k) := by
+        (certR1 (t + 1 : ℕ) J k * certF ((t + 1 : ℕ) : ℚ) ((J : ℚ) + 1) k) := by
     rw [sum_range_succ _ (t + 1 + 1)]
     have h0 : certR1 (t + 1 : ℕ) J ((t + 1 + 1 : ℕ) : ℚ) = 0 := by simp [certR1]
     rw [h0, zero_mul, mul_zero, add_zero]
@@ -363,7 +364,7 @@ theorem kernelSum_rec {t : ℕ} (ht : 2 ≤ t) (J : ℕ) :
     ring
   have h0' : ∑ k ∈ range (t + 1), kernelWeight t k (J + 1) * kernelF t (J + 1) k =
       ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
-        (certR0 (t + 1 : ℕ) J k * certF ((t + 1 : ℕ) - 1) ((J : ℚ) + 1) k) := by
+        (certR0 (t + 1 : ℕ) J k * certF (((t + 1 : ℕ) : ℚ) - 1) ((J : ℚ) + 1) k) := by
     rw [sum_range_succ _ (t + 1 + 1), sum_range_succ _ (t + 1)]
     have e1 : certR0 (t + 1 : ℕ) J ((t + 1 + 1 : ℕ) : ℚ) = 0 := by simp [certR0]
     have e2 : certR0 (t + 1 : ℕ) J ((t + 1 : ℕ) : ℚ) = 0 := by simp [certR0]
@@ -380,11 +381,11 @@ theorem kernelSum_rec {t : ℕ} (ht : 2 ≤ t) (J : ℕ) :
       2 * ((t + 1 : ℕ) + 1 : ℚ) * ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
         kernelF (t + 1 + 1) J k -
       4 * (1 - 2 * ((t + 1 : ℕ) : ℚ)) * ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
-        (certR2 (t + 1 : ℕ) J k * certF (t + 1 : ℕ) ((J : ℚ) + 2) k) +
+        (certR2 (t + 1 : ℕ) J k * certF ((t + 1 : ℕ) : ℚ) ((J : ℚ) + 2) k) +
       8 * (1 - 2 * ((t + 1 : ℕ) : ℚ)) * ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
-        (certR1 (t + 1 : ℕ) J k * certF (t + 1 : ℕ) ((J : ℚ) + 1) k) +
+        (certR1 (t + 1 : ℕ) J k * certF ((t + 1 : ℕ) : ℚ) ((J : ℚ) + 1) k) +
       8 * (((t + 1 : ℕ) : ℚ) - 2) * ∑ k ∈ range (t + 1 + 2), kernelWeight (t + 1 + 1) k J *
-        (certR0 (t + 1 : ℕ) J k * certF ((t + 1 : ℕ) - 1) ((J : ℚ) + 1) k) := by
+        (certR0 (t + 1 : ℕ) J k * certF (((t + 1 : ℕ) : ℚ) - 1) ((J : ℚ) + 1) k) := by
     simp only [mul_sum, ← sum_sub_distrib, ← sum_add_distrib]
     refine sum_congr rfl fun k _ ↦ ?_
     simp only [certRho, kernelF, certF]
