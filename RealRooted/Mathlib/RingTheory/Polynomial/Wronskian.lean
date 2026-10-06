@@ -1,4 +1,6 @@
+import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.RingTheory.Polynomial.Wronskian
+import Mathlib.RingTheory.PrincipalIdealDomain
 import Mathlib.Tactic.Ring
 
 /-!
@@ -121,5 +123,20 @@ theorem wronskian_eval_right_root (p : R[X]) {q : R[X]} {r : R}
     (hr : q.IsRoot r) :
     (wronskian p q).eval r = p.eval r * q.derivative.eval r := by
   simp [wronskian, hr.eq_zero]
+
+/-- Over a field of characteristic zero, a vanishing Wronskian forces
+proportionality: if `W(a, b) = 0` and `a ≠ 0`, then `b` is a constant multiple
+of `a`. -/
+theorem exists_C_mul_eq_of_wronskian_eq_zero {K : Type*} [Field K] [CharZero K]
+    {a b : K[X]} (ha : a ≠ 0) (h : wronskian a b = 0) : ∃ c, b = C c * a := by
+  obtain ⟨a', b', g, hrel, rfl, rfl⟩ := UniqueFactorizationMonoid.exists_reduced_factors a ha b
+  have hg : g ≠ 0 := left_ne_zero_of_mul ha
+  have ha' : a' ≠ 0 := right_ne_zero_of_mul ha
+  rw [wronskian_mul_both, mul_eq_zero, pow_eq_zero_iff two_ne_zero] at h
+  obtain ⟨hda, hdb⟩ := (hrel.isCoprime.wronskian_eq_zero_iff).1 (h.resolve_left hg)
+  obtain ⟨α, rfl⟩ : ∃ α, a' = C α := ⟨_, eq_C_of_derivative_eq_zero hda⟩
+  obtain ⟨β, rfl⟩ : ∃ β, b' = C β := ⟨_, eq_C_of_derivative_eq_zero hdb⟩
+  refine ⟨β / α, ?_⟩
+  rw [mul_left_comm, ← C_mul, div_mul_cancel₀ _ (by simpa using ha')]
 
 end Polynomial

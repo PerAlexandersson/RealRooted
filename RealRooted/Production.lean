@@ -1389,6 +1389,7 @@ import RealRooted.ThreeTermRecurrence.NoCommonRoot
 import RealRooted.Challenges.Wronskian
 import RealRooted.Mathlib.Analysis.Polynomial.Basic
 import RealRooted.Wronskian.Converse
+import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
 
 /-!
 # RealRooted production umbrella

@@ -251,6 +251,9 @@ The Hurwitz-matrix conventions are intentionally separated:
 - its `Stability.Vieta` child extracts strict positivity of the
   next-to-leading coefficient of a nonconstant strictly stable polynomial
   with positive leading coefficient; and
+- its `Stability.OddEvenConverse` child proves the converse odd/even
+  Hermite--Biehler theorem by a limit of strictly stable translates, and with
+  it the reverse conformal substitution; and
 - `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
   the corrected matrix's one-by-one minors; and
 - `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,
