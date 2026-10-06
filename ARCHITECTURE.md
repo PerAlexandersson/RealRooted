@@ -1595,6 +1595,16 @@ Net of the wrapper modules removed in the same period, the root and production
 closures each grow by 37 modules, so their budgets rise to 1574 and 1441. The
 tactic regression closure is unchanged.
 
+Wave 5 retires the unweighted `w = 1` reference layer, which the `Weighted`
+layer supersedes. The four generic degree and monicity lemmas for basis
+transforms move to `Mathlib.Algebra.Polynomial.BasisTransform`, and the seven
+modules `Basic`, `Degree`, `CompanionDegree`, `Endpoints`, `DiagonalRootStep`,
+`ResidueSums` and `StrictStep` are deleted. The seven surviving unweighted
+modules (`BlockEnergy`, `Energy`, `ResidueAlgebra`, `ResidueDerivative`,
+`ScalarBounds`, `SuccessorResidues` and `WeightedResidueSum`) hold the residue
+algebra and scalar bounds that the `Weighted` layer reuses. The root and
+production closures each shrink by seven modules; the budgets are unchanged.
+
 Run the architecture check with:
 
 ```bash

@@ -42,7 +42,7 @@ theorem sum_pow_le {s : Finset ℕ} (hs : ∀ d ∈ s, 1 ≤ d) {r : ℝ}
   nlinarith [hsplit, hgeometric, hdenom]
 
 /-- The sum of two geometric tails is less than one below ratio `1 / 3`. -/
-theorem two_geom_lt_one {r : ℝ} (_hr_nonneg : 0 ≤ r) (hr_lt_third : r < 1 / 3) :
+theorem two_geom_lt_one {r : ℝ} (hr_lt_third : r < 1 / 3) :
     2 * (r / (1 - r)) < 1 := by
   have hdenom : (0 : ℝ) < 1 - r := by linarith
   rw [mul_div_assoc'] at *

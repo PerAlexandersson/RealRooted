@@ -76,32 +76,4 @@ theorem a144438_insertion_derivative_at_root
     _ = p.eval ρ * (1 + S₁ - ρ * S₂) := by rw [hrootFactor]; ring
     _ = p.eval ρ * (1 + (S₁ - ρ * S₂)) := by ring
 
-/-- At a simple new root, the residue of the old polynomial is the reciprocal
-of the positive secular norm. -/
-theorem a144438_insertion_old_residue
-    {p h : ℝ[X]} (hp : p.Splits) (hpnd : p.roots.Nodup)
-    (hpdeg : 1 ≤ p.natDegree) (hhdeg : h.degree < p.natDegree)
-    {a ρ : ℝ}
-    (hρ : ((1 + X + C a) * p + X * h).IsRoot ρ)
-    (hpρ : p.eval ρ ≠ 0)
-    (hderivative : ((1 + X + C a) * p + X * h).derivative.eval ρ ≠ 0) :
-    p.eval ρ / ((1 + X + C a) * p + X * h).derivative.eval ρ =
-      1 / (1 + ∑ r ∈ p.roots.toFinset,
-        (-r) * (h.eval r / p.derivative.eval r) / (ρ - r) ^ 2) := by
-  have hformula := a144438_insertion_derivative_at_root
-    hp hpnd hpdeg hhdeg hρ hpρ
-  let D : ℝ := 1 + ∑ r ∈ p.roots.toFinset,
-    (-r) * (h.eval r / p.derivative.eval r) / (ρ - r) ^ 2
-  have hformulaD :
-      ((1 + X + C a) * p + X * h).derivative.eval ρ = p.eval ρ * D := by
-    simpa only [D] using hformula
-  have hD : D ≠ 0 := by
-    intro hzero
-    rw [hformulaD, hzero, mul_zero] at hderivative
-    exact hderivative rfl
-  change p.eval ρ /
-      ((1 + X + C a) * p + X * h).derivative.eval ρ = 1 / D
-  rw [hformulaD]
-  field_simp [hpρ, hD]
-
 end RealRooted.Applications.OEIS

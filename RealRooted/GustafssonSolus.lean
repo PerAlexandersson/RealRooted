@@ -194,7 +194,7 @@ def GustafssonSolusHas2x2 {m n : ℕ}
 finite `2 × 2` affine checks are available, the row-threshold matrix sends a
 nonnegative interlacing input sequence to a zero-aware nonnegative interlacing
 output sequence. -/
-theorem gustafssonSolus_preserves_interlacingSeq0Nonneg_of_2x2 {m n : ℕ}
+theorem isInterlacingSeq0Nonneg_gustafssonSolusAction_of_has2x2 {m n : ℕ}
     {phi : Fin m → Fin n} {dropPivot : Fin m → Bool}
     (hphi : GustafssonSolusWeaklyIncreasing phi)
     (h2x2 : GustafssonSolusHas2x2 phi dropPivot)
@@ -214,8 +214,8 @@ marker `0` when the pivot is dropped and marker `1` otherwise. -/
 theorem gustafssonSolusEntry_eq_thresholdEntry {n : ℕ}
     (phi j : Fin n) (dropPivot : Bool) :
     gustafssonSolusEntry phi dropPivot j =
-      thresholdEntry phi.1 (GustafssonSolus.gsChoiceMarker dropPivot) j.1 := by
-  unfold gustafssonSolusEntry thresholdEntry GustafssonSolus.gsChoiceMarker
+      thresholdEntry phi.1 (GustafssonSolus.choiceMarker dropPivot) j.1 := by
+  unfold gustafssonSolusEntry thresholdEntry GustafssonSolus.choiceMarker
   split_ifs <;> grind
 
 /-- Monotone thresholds and the no-switch condition discharge every concrete
@@ -229,22 +229,23 @@ theorem gustafssonSolusHas2x2_of_noSwitch :
   let i₁' : Fin m := ⟨i₁.1, by simpa [gustafssonSolusMatrix] using i₁.2⟩
   let i₂' : Fin m := ⟨i₂.1, by simpa [gustafssonSolusMatrix] using i₂.2⟩
   have hi' : i₁' ≤ i₂' := by simpa [i₁', i₂'] using hi
-  let α₁ := GustafssonSolus.gsChoiceMarker (dropPivot i₁')
-  let α₂ := GustafssonSolus.gsChoiceMarker (dropPivot i₂')
+  let α₁ := GustafssonSolus.choiceMarker (dropPivot i₁')
+  let α₂ := GustafssonSolus.choiceMarker (dropPivot i₂')
   have hα₁ : α₁ = 0 ∨ α₁ = 1 := by
-    cases h : dropPivot i₁' <;> simp [α₁, GustafssonSolus.gsChoiceMarker, h]
+    cases h : dropPivot i₁' <;> simp [α₁, GustafssonSolus.choiceMarker, h]
   have hα₂ : α₂ = 0 ∨ α₂ = 1 := by
-    cases h : dropPivot i₂' <;> simp [α₂, GustafssonSolus.gsChoiceMarker, h]
+    cases h : dropPivot i₂' <;> simp [α₂, GustafssonSolus.choiceMarker, h]
   have ht : (phi i₁').1 ≤ (phi i₂').1 := hphi hi'
   have hcompat : (phi i₁').1 = (phi i₂').1 → α₁ = 0 → α₂ = 0 := by
     intro hphiVal hα₁zero
     have hphiEq : phi i₁' = phi i₂' := Fin.ext hphiVal
     have hdrop₁ : dropPivot i₁' = true := by
       cases h : dropPivot i₁' <;>
-        simp [α₁, GustafssonSolus.gsChoiceMarker, h] at hα₁zero ⊢
+        simp [α₁, GustafssonSolus.choiceMarker, h] at hα₁zero ⊢
     have hdrop₂ : dropPivot i₂' = true := hdrop hi' hphiEq hdrop₁
-    simp [α₂, GustafssonSolus.gsChoiceMarker, hdrop₂]
-  have hentry := GustafssonSolus.gsEntry_has2x2 hα₁ hα₂ ht hj hcompat
+    simp [α₂, GustafssonSolus.choiceMarker, hdrop₂]
+  have hentry :=
+    GustafssonSolus.has2x2InterlacingProperty0_thresholdEntry hα₁ hα₂ ht hj hcompat
   change Has2x2InterlacingProperty0
     (((List.ofFn fun i : Fin m => List.ofFn fun j : Fin n =>
       gustafssonSolusEntry (phi i) (dropPivot i) j).get
@@ -265,14 +266,14 @@ theorem gustafssonSolusHas2x2_of_noSwitch :
   simpa [i₁', i₂', α₁, α₂, gustafssonSolusEntry_eq_thresholdEntry] using hentry
 
 /-- Gustafsson--Solus Lemma 3.4 for the concrete row-threshold matrix. -/
-theorem gustafssonSolusLemma34 :
+theorem isInterlacingSeq0Nonneg_gustafssonSolusAction :
     ∀ {m n : ℕ} (phi : Fin m → Fin n) (dropPivot : Fin m → Bool),
       GustafssonSolusWeaklyIncreasing phi →
       GustafssonSolusNoSwitchAfterDrop phi dropPivot →
       ∀ fs : List ℝ[X], fs.length = n → IsInterlacingSeqNonneg fs →
         IsInterlacingSeq0Nonneg (gustafssonSolusAction phi dropPivot fs) := by
   intro m n phi dropPivot hphi hdrop fs hfs_len hfs
-  exact gustafssonSolus_preserves_interlacingSeq0Nonneg_of_2x2 hphi
+  exact isInterlacingSeq0Nonneg_gustafssonSolusAction_of_has2x2 hphi
     (gustafssonSolusHas2x2_of_noSwitch phi dropPivot hphi hdrop) fs hfs_len hfs
 
 end RealRooted

@@ -1,4 +1,3 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.StrictStep
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 

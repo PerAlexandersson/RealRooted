@@ -21,8 +21,6 @@ namespace RealRooted.ParkingFunctions
 
 noncomputable section
 
-open RealRooted.OEIS.Backend
-
 /-- Threshold rows for the reversed-last-letter word recursion. -/
 def wordDescentRows (m : ℕ) : List (ℕ × ℝ[X]) :=
   (List.range m).map fun j => (j, (1 : ℝ[X]))
@@ -38,7 +36,7 @@ theorem get_wordDescentRows_fst (m : ℕ) (i : Fin (wordDescentRows m).length) :
     ⟨i.1, by simpa [wordDescentRows] using i.2⟩).1 = i.1
   grind
 
-private theorem wordDescentRows_data (m : ℕ) : HZData (wordDescentRows m) := by
+private theorem wordDescentRows_data (m : ℕ) : HaglundZhang.RowData (wordDescentRows m) := by
   constructor
   · intro p hp
     simp only [wordDescentRows, List.mem_map] at hp
@@ -64,7 +62,8 @@ private theorem wordDescentRows_data (m : ℕ) : HZData (wordDescentRows m) := b
 of size `m`, with terminal letters in reverse order. -/
 def wordDescentRefined (m : ℕ) : ℕ → List ℝ[X]
   | 0 => List.replicate m 1
-  | r + 1 => matPolyAction (hzMatrix m (wordDescentRows m)) (wordDescentRefined m r)
+  | r + 1 =>
+      matPolyAction (HaglundZhang.matrix m (wordDescentRows m)) (wordDescentRefined m r)
 
 @[simp]
 theorem length_wordDescentRefined (m r : ℕ) :
@@ -137,10 +136,10 @@ theorem wordDescentRefined_succ_get (m r : ℕ) (i : Fin m) :
     (wordDescentRefined m (r + 1))[i.1]'(by simp) =
       staircaseSum (wordDescentRefined m r) i.1 := by
   change
-    (matPolyAction (hzMatrix m (wordDescentRows m))
+    (matPolyAction (HaglundZhang.matrix m (wordDescentRows m))
       (wordDescentRefined m r))[i.1]'_ = staircaseSum (wordDescentRefined m r) i.1
-  simp only [matPolyAction, hzMatrix, thresholdMatrix, wordDescentRows, List.map_map,
-    List.getElem_map, List.getElem_range, Function.comp_apply]
+  simp only [matPolyAction, HaglundZhang.matrix, thresholdMatrix, wordDescentRows,
+    List.map_map, List.getElem_map, List.getElem_range, Function.comp_apply]
   simpa only [length_wordDescentRefined] using
     zipWith_thresholdRow_one_sum (wordDescentRefined m r) i.1
 
@@ -173,7 +172,7 @@ theorem wordDescentRefined_interlacing (m r : ℕ) :
       exact ⟨wordDescentRefined_zero_interlacing m, wordDescentRefined_zero_realRooted m⟩
   | succ r ih =>
       simpa [wordDescentRefined] using
-        haglund_zhang_s_inversion_interlacing_weak
+        HaglundZhang.isInterlacingSeq0Nonneg_matPolyAction_and_realRooted
           (wordDescentRows m) (wordDescentRows_data m) (wordDescentRefined m r)
           (length_wordDescentRefined m r) ih.1 ih.2
 
