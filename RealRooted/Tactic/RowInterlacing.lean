@@ -64,6 +64,17 @@ syntax (name := rrRowInterlacesQ) "rr_row_interlaces?" (ppSpace rrRowHint)* : ta
 for a product, first-order derivative or three-term recurrence. -/
 syntax (name := rrRowNonnegCoeffs) "rr_row_nonneg_coeffs" : tactic
 
+/-- `rr_row_natDegree` under the `∀ n` binder of a goal `∀ n, (P n).natDegree = …`, as a
+term, for the shared hypotheses of `rr_row_interlaces` certificates. -/
+syntax (name := rrRowNatDegreeAll) "rr_row_natDegree_all" : term
+
+/-- `rr_row_leadingCoeff_pos` under the `∀ n` binder, as a term; see `rr_row_natDegree_all`. -/
+syntax (name := rrRowLeadingCoeffPosAll) "rr_row_leadingCoeff_pos_all" : term
+
+macro_rules
+  | `(rr_row_natDegree_all) => `(by intro n; beta_reduce; rr_row_natDegree)
+  | `(rr_row_leadingCoeff_pos_all) => `(by intro n; beta_reduce; rr_row_leadingCoeff_pos)
+
 /-- Close a polynomial sign goal such as `∀ n x, L ≤ x → x ≤ U → (A n).eval x ≤ 0`:
 evaluate, then `positivity`, `nlinarith` (with the hypotheses as products) or
 `rr_row_field` for rational coefficients. -/
@@ -342,13 +353,17 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
   -- hypotheses; prove them once and pass them by name (or leave them to each attempt)
   let hdegI := mkIdent `hdeg_row
   let hposI := mkIdent `hpos_row
-  let shared ← `(tactic| (
-    have $hdegI:ident : ∀ n, ($Q n).natDegree = $Dq + n := by
-      intro n; beta_reduce; rr_row_natDegree
-    have $hposI:ident : ∀ n, 0 < ($Q n).leadingCoeff := by
-      intro n; beta_reduce; rr_row_leadingCoeff_pos))
-  let hoisted ← rowSucceeds (withMainContext (evalTactic shared))
-  if hoisted then pre := pre.push shared
+  -- unhygienic binder names and no `by` blocks, so that the certificate prints and
+  -- parses back
+  let nI := mkIdent `n
+  let shared := #[← `(tactic|
+      have $hdegI:ident : ∀ $nI:ident, ($Q $nI).natDegree = $Dq + $nI :=
+        rr_row_natDegree_all),
+    ← `(tactic|
+      have $hposI:ident : ∀ $nI:ident, 0 < ($Q $nI).leadingCoeff :=
+        rr_row_leadingCoeff_pos_all)]
+  let hoisted ← rowSucceeds (withMainContext (shared.forM evalTactic))
+  if hoisted then pre := pre ++ shared
   let apply' (thm : Name) (extra : Array (TSyntax `Lean.Parser.Term.namedArgument)) :
       TacticM (TSyntax `tactic) := do
     let hd ← `(Lean.Parser.Term.namedArgument| (hdeg := $hdegI))
