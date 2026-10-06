@@ -24,152 +24,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Downward boundary closure: if `g - C μ * f` is real-rooted for all
-sufficiently small `μ > 0`, and `f.natDegree < g.natDegree` with both
-having positive leading coefficients, then `g` is real-rooted.
-
-The proof is the same complex-root continuity argument as
-`AffineFamily.isRealRooted_of_add_C_mul_right_family_of_natDegree_lt`, applied with
-`-f` as the perturbation (the sign doesn't affect coefficient convergence). -/
-private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
-    {f g : ℝ[X]}
-    (hfamily : ∀ {μ : ℝ}, 0 < μ → ((g - C μ * f) ≠ 0 ∧ (g - C μ * f).Splits))
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : f.natDegree < g.natDegree) : (g ≠ 0 ∧ g.Splits) := by
-  -- Reduce to the upward-closure lemma by replacing f with -f.
-  -- Note: g - C μ * f = g + C μ * (-f) and (-f).natDegree = f.natDegree.
-  -- We need HasPosLeadingCoeff (-f) which fails, so we bypass and work
-  -- with the monic normalization directly.
-  let f₀ : ℝ[X] := C f.leadingCoeff⁻¹ * f
-  let g₀ : ℝ[X] := C g.leadingCoeff⁻¹ * g
-  have hf_lc_ne : f.leadingCoeff ≠ 0 := ne_of_gt hf_pos
-  have hg_lc_ne : g.leadingCoeff ≠ 0 := ne_of_gt hg_pos
-  have hf₀_monic : f₀.Monic := by
-    unfold f₀
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    simp_all
-  have hg₀_monic : g₀.Monic := by
-    unfold g₀
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    simp_all
-  have hg₀_pos : HasPosLeadingCoeff g₀ := hasPosLeadingCoeff_of_monic hg₀_monic
-  have hdeg₀ : f₀.natDegree < g₀.natDegree := by
-    simp [f₀, g₀, natDegree_C_mul, hf_lc_ne, hg_lc_ne, hdeg]
-  -- Monic subtraction family: g₀ - C μ'' * f₀ is real-rooted for small μ'' > 0.
-  have hfamily₀ :
-      ∀ {μ : ℝ}, 0 < μ → ((g₀ - C μ * f₀) ≠ 0 ∧ (g₀ - C μ * f₀).Splits) := by
-    intro μ hμ
-    have hμ' : 0 < μ * g.leadingCoeff / f.leadingCoeff :=
-      div_pos (mul_pos hμ hg_pos) hf_pos
-    have hbase : ((g - C (μ * g.leadingCoeff / f.leadingCoeff) * f) ≠ 0 ∧
-      (g - C (μ * g.leadingCoeff / f.leadingCoeff) * f).Splits) :=
-      hfamily hμ'
-    have hscaled :
-        ((C g.leadingCoeff⁻¹ *
-            (g - C (μ * g.leadingCoeff / f.leadingCoeff) * f)) ≠ 0 ∧
-          (C g.leadingCoeff⁻¹ *
-              (g - C (μ * g.leadingCoeff / f.leadingCoeff) * f)).Splits) :=
-      isRealRooted_C_mul hbase.1 hbase.2 (inv_ne_zero hg_lc_ne)
-    have hEq :
-        C g.leadingCoeff⁻¹ *
-            (g - C (μ * g.leadingCoeff / f.leadingCoeff) * f) =
-          g₀ - C μ * f₀ := by
-      ext n
-      simp [g₀, f₀, mul_sub]
-      grind
-    lia
-  -- Now: g₀ - C μ * f₀ is real-rooted, monic, same degree as g₀, and
-  -- its coefficients converge to those of g₀ as μ → 0⁺.
-  -- Use the same complex-root continuity argument to show g₀ is real-rooted.
-  have hg₀_rr : (g₀ ≠ 0 ∧ g₀.Splits) := by
-    have hroots_real :
-        ∀ z ∈ (g₀.map (algebraMap ℝ ℂ)).roots, z ∈ (algebraMap ℝ ℂ).range := by
-      intro z hz_mem
-      have hmap_ne : g₀.map (algebraMap ℝ ℂ) ≠ 0 :=
-        (Polynomial.map_ne_zero_iff (RingHom.injective (algebraMap ℝ ℂ))).2
-          hg₀_monic.ne_zero
-      have hz_root : (g₀.map (algebraMap ℝ ℂ)).IsRoot z :=
-        (Polynomial.mem_roots hmap_ne).1 hz_mem
-      have hz_aeval : g₀.aeval z = 0 := by simp_all
-      by_contra hz_range
-      have hz_im_ne : z.im ≠ 0 := by
-        intro hz_im; apply hz_range; exact ⟨z.re, Complex.ext_iff.2 (by simp [hz_im])⟩
-      let δ : ℝ := |z.im| / 2
-      let R : ℝ := max ‖z‖ 1
-      have hδ_pos : 0 < δ := half_pos (abs_pos.mpr hz_im_ne)
-      have hR_pos : 0 < R := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
-      have hg₀_deg_pos : 0 < g₀.natDegree := lt_of_le_of_lt (Nat.zero_le _) hdeg₀
-      have hdeg_nat_ne : g₀.natDegree ≠ 0 := Nat.ne_of_gt hg₀_deg_pos
-      let u : ℝ := δ / (2 * R)
-      let ε : ℝ := (u ^ g₀.natDegree) / (g₀.natDegree + 1)
-      have hu_nonneg : 0 ≤ u := by positivity
-      have hu_pos : 0 < u := by positivity
-      have hε_pos : 0 < ε := by positivity
-      let μ : ℝ := ε / (coeffSumRange f₀ + 1)
-      have hcoeff_nonneg : 0 ≤ coeffSumRange f₀ :=
-        Finset.sum_nonneg fun _ _ => norm_nonneg _
-      have hμ_pos : 0 < μ := by positivity
-      have hμ_bound : μ * coeffSumRange f₀ < ε := by
-        unfold μ
-        have hden_pos : 0 < coeffSumRange f₀ + 1 := by linarith
-        have hfrac_lt_one : coeffSumRange f₀ / (coeffSumRange f₀ + 1) < 1 := by
-          rw [div_lt_iff₀ hden_pos]; simp
-        have hcalc :
-            (ε / (coeffSumRange f₀ + 1)) * coeffSumRange f₀ =
-              ε * (coeffSumRange f₀ / (coeffSumRange f₀ + 1)) := by
-          grind
-        simp_all
-      -- Coefficient closeness:
-      -- ‖(g₀ - C μ * f₀).coeff i - g₀.coeff i‖ = μ * |f₀.coeff i|
-      have hcoeff :
-          ∀ i : ℕ, ‖(g₀ - C μ * f₀).coeff i - g₀.coeff i‖ < ε := by
-        intro i
-        have : (g₀ - C μ * f₀).coeff i - g₀.coeff i = -(μ * f₀.coeff i) := by
-          simp [coeff_sub, coeff_C_mul]
-        rw [this, norm_neg]
-        calc
-          ‖μ * f₀.coeff i‖ = μ * ‖f₀.coeff i‖ := by
-            rw [norm_mul, Real.norm_of_nonneg hμ_pos.le]
-          _ ≤ μ * coeffSumRange f₀ :=
-              mul_le_mul_of_nonneg_left (coeff_norm_le_coeffSumRange f₀ i) hμ_pos.le
-          _ < ε := hμ_bound
-      have hμf_deg_lt : (C μ * f₀).natDegree < g₀.natDegree := by
-        simpa [natDegree_C_mul hμ_pos.ne'] using hdeg₀
-      have hdiff_deg : (g₀ - C μ * f₀).natDegree = g₀.natDegree := by
-        rw [sub_eq_add_neg, ← neg_mul]
-        exact natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
-          (by simp_all) hg₀_pos
-      have hdiff_monic : (g₀ - C μ * f₀).Monic := by
-        unfold Polynomial.Monic Polynomial.leadingCoeff
-        rw [hdiff_deg, coeff_sub, coeff_eq_zero_of_natDegree_lt hμf_deg_lt,
-          hg₀_monic.coeff_natDegree, sub_zero]
-      obtain ⟨w, hw_root, hw_dist⟩ :=
-        exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
-          (f := g₀) (g := g₀ - C μ * f₀) (z := z) (ε := ε)
-          hε_pos hz_aeval hg₀_monic hdiff_monic hdiff_deg hcoeff
-            (hfamily₀ hμ_pos).2
-      have hw_im_zero : w.im = 0 :=
-        RealRooted.im_eq_zero_of_mem_aroots_of_isRealRooted
-          (hfamily₀ hμ_pos).1 (hfamily₀ hμ_pos).2 hw_root
-      have hbound_eq :
-          ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * R = δ / 2 := by
-        have hmul : ((g₀.natDegree + 1 : ℝ) * ε) = u ^ g₀.natDegree := by grind
-        calc ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * R
-            = (u ^ g₀.natDegree) ^ ((g₀.natDegree : ℝ)⁻¹) * R := by lia
-          _ = u * R := by rw [Real.pow_rpow_inv_natCast hu_nonneg hdeg_nat_ne]
-          _ = δ / 2 := by grind
-      have hdist_lt : ‖z - w‖ < δ := by grind
-      have him_le : |z.im| ≤ ‖z - w‖ := by
-        simpa [Complex.sub_im, hw_im_zero] using (Complex.abs_im_le_norm (z - w))
-      grind
-    have hsplit : g₀.Splits :=
-      Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
-        (IsAlgClosed.splits _) hroots_real
-    exact ⟨hg₀_monic.ne_zero, hsplit⟩
-  simpa [show C g.leadingCoeff * g₀ = g from by ext n; grind] using
-    isRealRooted_C_mul hg₀_rr.1 hg₀_rr.2 hg_lc_ne
-
 /-- Local bounded right-family double-root obstruction.
 
 If `p` has an exact double root at `x`, `q(x) ≠ 0`, and every sufficiently
@@ -259,92 +113,6 @@ private lemma false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
     have hB_le : B ≤ |B| := le_abs_self B
     simp_all
   grind
-
-/-- Affine-family endpoint obstruction for an exact double root of `g`.
-
-At a negative root `r`, the affine family contains the one-parameter right
-families
-`g + β * ((X - C r + C c) * f)` for every fixed `c > r`.  Choosing `c` so that
-`c * g''(r) * f(r) > 0`, the bounded right-family double-root obstruction above
-rules out an exact double root of `g` at `r` whenever `f(r) ≠ 0`. -/
-private lemma false_of_affine_family_double_root
-    {f g : ℝ[X]} {r : ℝ}
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (hr_neg : r < 0)
-    (hg_mult : g.rootMultiplicity r = 2)
-    (hf_eval_ne : f.eval r ≠ 0) :
-    False := by
-  have hg0 : g ≠ 0 := by
-    intro hg0
-    simp [hg0] at hg_mult
-  let G : ℝ := g.derivative.derivative.eval r * f.eval r
-  have hG_ne : G ≠ 0 := by
-    dsimp [G]
-    exact mul_ne_zero
-      (eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two hg0 hg_mult)
-      hf_eval_ne
-  by_cases hG_pos : 0 < G
-  · let q : ℝ[X] := (X - C r + C (1 : ℝ)) * f
-    have hfamily :
-        ∀ {β : ℝ}, 0 < β → β ≤ 1 →
-          ((g + C β * q) ≠ 0 ∧ (g + C β * q).Splits) := by
-      intro β hβ
-      have hEq :
-          g + C β * q =
-            (((C β * X + C (β * (1 - r))) * f) + g) := by
-        grind
-      have hβt_pos : 0 < β * (1 - r) := by
-        have : 0 < 1 - r := by linarith
-        positivity
-      grind
-    have hq_eval_ne : q.eval r ≠ 0 := by
-      dsimp [q]
-      simp_all
-    have hprod_pos :
-        0 < g.derivative.derivative.eval r * q.eval r := by
-      dsimp [q, G] at hG_pos ⊢
-      simp_all
-    exact
-      false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
-        (p := g) (q := q) (x := r) (βmax := 1)
-        hfamily zero_lt_one hg_mult hq_eval_ne hprod_pos
-  · let c : ℝ := r / 2
-    let q : ℝ[X] := (X - C r + C c) * f
-    have hc_gt_r : r < c := by grind
-    have hc_neg : c < 0 := by grind
-    have hfamily :
-        ∀ {β : ℝ}, 0 < β → β ≤ 1 →
-          ((g + C β * q) ≠ 0 ∧ (g + C β * q).Splits) := by
-      intro β hβ
-      have hEq :
-          g + C β * q =
-            (((C β * X + C (β * (c - r))) * f) + g) := by
-        grind
-      have hβt_pos : 0 < β * (c - r) := by simp_all
-      grind
-    have hq_eval_ne : q.eval r ≠ 0 := by
-      dsimp [q, c]
-      rw [eval_mul]
-      have hlin : (X - C r + C (r / 2)).eval r = r / 2 := by simp
-      grind
-    have hG_neg :
-        G < 0 := by
-      grind
-    have hprod_pos :
-        0 < g.derivative.derivative.eval r * q.eval r := by
-      have hcG_pos : 0 < c * G := by
-        dsimp [c, G]
-        nlinarith [hr_neg, hG_neg]
-      dsimp [q, c]
-      rw [eval_mul]
-      have hlin : (X - C r + C (r / 2)).eval r = r / 2 := by simp
-      grind
-    exact
-      false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
-        (p := g) (q := q) (x := r) (βmax := 1)
-        hfamily zero_lt_one hg_mult hq_eval_ne hprod_pos
 
 /-- In the succ-degree affine branch with `g(0) ≠ 0`, the endpoint polynomial
 `g` itself has simple roots.
@@ -568,57 +336,6 @@ protected lemma AffineFamily.hasSimpleRoots_right_of_affine_family_succDegree_no
           (p := pη) (q := qNegη) (x := r) (βmax := 1)
           hfamilyNegη zero_lt_one hpη_mult hqNegη_eval_ne hprodNeg_pos
 
-/-- Exact double roots are impossible in interior positive combinations of a
-positive-combination real-rooted family. This is the local obstruction that the
-affine-family frontier can use without leaving the positive cone. -/
-private lemma rootMultiplicity_ne_two_add_right_of_posComboRealRooted
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {μ x : ℝ}
-    (hμ : 0 < μ) :
-    (f + C μ * g).rootMultiplicity x ≠ 2 := by
-  intro hmult
-  have hp_root : (f + C μ * g).IsRoot x :=
-    (rootMultiplicity_pos (show f + C μ * g ≠ 0 from
-      (PosComboRealRooted.isRealRooted_add_right hfg hμ).1)).mp (by lia)
-  have hg_eval_ne : g.eval x ≠ 0 := fun hg0 => by simp_all
-  by_cases hprod_pos :
-      0 < (f + C μ * g).derivative.derivative.eval x * g.eval x
-  · exact
-      false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
-        (p := f + C μ * g) (q := g) (x := x) (βmax := 1)
-        (by
-          intro β hβ hβ_le
-          have hμβ : 0 < μ + β := by linarith
-          have hrr := PosComboRealRooted.isRealRooted_add_right hfg hμβ
-          grind)
-        zero_lt_one hmult hg_eval_ne hprod_pos
-  · have hpp_ne :
-        (f + C μ * g).derivative.derivative.eval x ≠ 0 :=
-      eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
-        (show f + C μ * g ≠ 0 from (PosComboRealRooted.isRealRooted_add_right hfg hμ).1)
-        hmult
-    have hprod_ne :
-        (f + C μ * g).derivative.derivative.eval x * g.eval x ≠ 0 :=
-      mul_ne_zero hpp_ne hg_eval_ne
-    have hprod_neg :
-        (f + C μ * g).derivative.derivative.eval x * g.eval x < 0 := by
-      grind
-    have hneg_eval_ne : (-g).eval x ≠ 0 := by simp_all
-    have hneg_pos :
-        0 < (f + C μ * g).derivative.derivative.eval x * (-g).eval x := by
-      simp_all
-    exact
-      false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
-        (p := f + C μ * g) (q := -g) (x := x) (βmax := μ / 2)
-        (by
-          intro β hβ hβ_le
-          have hμβ : 0 < μ - β := by linarith
-          have hrr := PosComboRealRooted.isRealRooted_add_right hfg hμβ
-          grind)
-        (by grind) hmult hneg_eval_ne hneg_pos
-
 /-- Every interior positive combination of a no-common positive-combination
 family has simple roots.
 
@@ -737,20 +454,6 @@ theorem PosComboRealRooted.hasSimpleRoots_add_right
           lia)
         (by grind) hpk_mult hneg_eval_ne hneg_pos
 
-/-- Left-family form of `PosComboRealRooted.hasSimpleRoots_add_right`. -/
-theorem PosComboRealRooted.hasSimpleRoots_add_left
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {lam : ℝ}
-    (hlam : 0 < lam) :
-    HasSimpleRoots (C lam * f + g) := by
-  have hno' : ∀ r, g.IsRoot r → ¬ f.IsRoot r :=
-    fun r hg hf => hno r hf hg
-  simpa [add_comm] using
-    PosComboRealRooted.hasSimpleRoots_add_right
-      (f := g) (g := f) (PosComboRealRooted.comm hfg) hno' hlam
-
 /-- For a fixed point where `g` does not vanish, the right pencil
 `f + C mu * g` has a root at that point for exactly one parameter. -/
 theorem isRoot_add_right_iff_parameter_eq
@@ -767,13 +470,6 @@ theorem isRoot_add_right_iff_parameter_eq
     rw [hmu]
     field_simp [hgx]
     ring
-
-/-- Left-family form of `isRoot_add_right_iff_parameter_eq`. -/
-theorem isRoot_add_left_iff_parameter_eq
-    {f g : ℝ[X]} {lam x : ℝ} (hfx : f.eval x ≠ 0) :
-    (C lam * f + g).IsRoot x ↔ lam = -g.eval x / f.eval x := by
-  simpa [add_comm] using
-    isRoot_add_right_iff_parameter_eq (f := g) (g := f) (mu := lam) (x := x) hfx
 
 /-- A fixed point `x` is hit by the right pencil `f + C μ * g` for some
 positive parameter exactly when the endpoint evaluations have opposite signs. -/
@@ -805,13 +501,6 @@ theorem exists_pos_isRoot_add_right_iff_eval_mul_neg
       rw [hrewrite]
       exact div_pos (by linarith) hsquare
     · exact (isRoot_add_right_iff_parameter_eq (f := f) (g := g) (x := x) hgx).mpr rfl
-
-/-- Left-family form of `exists_pos_isRoot_add_right_iff_eval_mul_neg`. -/
-theorem exists_pos_isRoot_add_left_iff_eval_mul_neg
-    {f g : ℝ[X]} {x : ℝ} (hgx : g.eval x ≠ 0) :
-    (∃ lam : ℝ, 0 < lam ∧ (C lam * f + g).IsRoot x) ↔ f.eval x * g.eval x < 0 := by
-  simpa [add_comm, mul_comm] using
-    exists_pos_isRoot_add_right_iff_eval_mul_neg (f := g) (g := f) (x := x) hgx
 
 /-- If no positive right-pencil member vanishes at `x`, then the endpoint
 evaluations have the same sign. -/
@@ -857,25 +546,6 @@ theorem not_exists_pos_isRoot_add_right_iff_eval_pos_iff
   ⟨eval_pos_iff_of_not_exists_pos_isRoot_add_right hfx hgx,
     not_exists_pos_isRoot_add_right_of_eval_pos_iff hfx⟩
 
-/-- Under a no-common-root hypothesis, a root of `f` is not a zero of `g`. -/
-theorem eval_right_ne_zero_of_isRoot_of_no_common
-    {f g : ℝ[X]} {x : ℝ}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hfx : f.IsRoot x) :
-    g.eval x ≠ 0 := by
-  intro hgx
-  exact hno x hfx (by simpa [Polynomial.IsRoot.def] using hgx)
-
-/-- Symmetric endpoint-evaluation form of
-`eval_right_ne_zero_of_isRoot_of_no_common`. -/
-theorem eval_left_ne_zero_of_isRoot_of_no_common
-    {f g : ℝ[X]} {x : ℝ}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hgx : g.IsRoot x) :
-    f.eval x ≠ 0 := by
-  intro hfx
-  exact hno x (by simpa [Polynomial.IsRoot.def] using hfx) hgx
-
 /-- At a root of a no-common right pencil, the right endpoint does not vanish. -/
 theorem eval_right_ne_zero_of_isRoot_add_right_of_no_common
     {f g : ℝ[X]} {mu x : ℝ}
@@ -909,30 +579,6 @@ theorem eval_left_ne_zero_of_isRoot_add_right_of_no_common
   exact hno x (by simpa [Polynomial.IsRoot.def] using hfx)
     (by simpa [Polynomial.IsRoot.def] using hgx_eval)
 
-/-- At a root of a no-common left pencil, the left endpoint does not vanish. -/
-theorem eval_left_ne_zero_of_isRoot_add_left_of_no_common
-    {f g : ℝ[X]} {lam x : ℝ}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hroot : (C lam * f + g).IsRoot x) :
-    f.eval x ≠ 0 := by
-  simpa [add_comm] using
-    eval_right_ne_zero_of_isRoot_add_right_of_no_common
-      (f := g) (g := f) (mu := lam) (x := x)
-      (fun r hg hf => hno r hf hg) (by simpa [add_comm] using hroot)
-
-/-- At a root of an interior no-common left pencil, the right endpoint does not
-vanish. -/
-theorem eval_right_ne_zero_of_isRoot_add_left_of_no_common
-    {f g : ℝ[X]} {lam x : ℝ}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hlam : 0 < lam)
-    (hroot : (C lam * f + g).IsRoot x) :
-    g.eval x ≠ 0 := by
-  simpa [add_comm] using
-    eval_left_ne_zero_of_isRoot_add_right_of_no_common
-      (f := g) (g := f) (mu := lam) (x := x)
-      (fun r hg hf => hno r hf hg) hlam (by simpa [add_comm] using hroot)
-
 /-- Positive-parameter no-common form of
 `isRoot_add_right_iff_parameter_eq`, with the endpoint nonvanishing inferred
 from the root/no-common hypotheses on the forward implication and from
@@ -954,25 +600,6 @@ theorem isRoot_add_right_iff_parameter_eq_of_no_common
       exact hmu.ne' hmu0
     exact (isRoot_add_right_iff_parameter_eq hgx).mpr hmu_eq
 
-/-- Left-family form of
-`isRoot_add_right_iff_parameter_eq_of_no_common`. -/
-theorem isRoot_add_left_iff_parameter_eq_of_no_common
-    {f g : ℝ[X]} {lam x : ℝ}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hlam : 0 < lam) :
-    (C lam * f + g).IsRoot x ↔ lam = -g.eval x / f.eval x := by
-  constructor
-  · intro hroot
-    exact
-      (isRoot_add_left_iff_parameter_eq
-        (eval_left_ne_zero_of_isRoot_add_left_of_no_common hno hroot)).mp hroot
-  · intro hlam_eq
-    have hfx : f.eval x ≠ 0 := by
-      intro hfx
-      have hlam0 : lam = 0 := by simpa [hfx] using hlam_eq
-      exact hlam.ne' hlam0
-    exact (isRoot_add_left_iff_parameter_eq hfx).mpr hlam_eq
-
 /-- A fixed threshold can be a root of a no-common right pencil for at most one
 parameter. -/
 theorem pencil_parameter_unique_of_isRoot_of_no_common
@@ -989,18 +616,6 @@ theorem pencil_parameter_unique_of_isRoot_of_no_common
     (isRoot_add_right_iff_parameter_eq hgx).mp h2
   exact hmu1.trans hmu2.symm
 
-/-- Left-family form of `pencil_parameter_unique_of_isRoot_of_no_common`. -/
-theorem pencil_parameter_unique_left_of_isRoot_of_no_common
-    {f g : ℝ[X]} (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {lam eta x : ℝ}
-    (h1 : (C lam * f + g).IsRoot x)
-    (h2 : (C eta * f + g).IsRoot x) :
-    lam = eta :=
-  pencil_parameter_unique_of_isRoot_of_no_common
-    (f := g) (g := f) (mu1 := lam) (mu2 := eta) (x := x)
-    (fun r hg hf => hno r hf hg) (by simpa [add_comm] using h1)
-    (by simpa [add_comm] using h2)
-
 /-- At a root of an interior right positive combination, the derivative does
 not vanish. -/
 theorem PosComboRealRooted.derivative_eval_ne_zero_add_right
@@ -1012,18 +627,6 @@ theorem PosComboRealRooted.derivative_eval_ne_zero_add_right
     (hroot : (f + C mu * g).IsRoot x) :
     (f + C mu * g).derivative.eval x ≠ 0 :=
   (hfg.hasSimpleRoots_add_right hno hmu).eval_derivative_ne_zero hroot
-
-/-- Left-family form of
-`PosComboRealRooted.derivative_eval_ne_zero_add_right`. -/
-theorem PosComboRealRooted.derivative_eval_ne_zero_add_left
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {lam x : ℝ}
-    (hlam : 0 < lam)
-    (hroot : (C lam * f + g).IsRoot x) :
-    (C lam * f + g).derivative.eval x ≠ 0 :=
-  (hfg.hasSimpleRoots_add_left hno hlam).eval_derivative_ne_zero hroot
 
 /-- A root of an interior no-common right positive pencil carries both the
 unique parameter formula and simple-crossing derivative nonvanishing. -/
@@ -1046,7 +649,7 @@ theorem PosComboRealRooted.parameter_unique_and_derivative_ne_zero_add_right
     (hfg : PosComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {mu nu x : ℝ}
-    (hmu : 0 < mu) (_hnu : 0 < nu)
+    (hmu : 0 < mu)
     (hroot_mu : (f + C mu * g).IsRoot x)
     (hroot_nu : (f + C nu * g).IsRoot x) :
     mu = nu ∧ (f + C mu * g).derivative.eval x ≠ 0 :=
@@ -1072,52 +675,6 @@ theorem PosComboRealRooted.root_crossing_data_add_right
       eval_left_ne_zero_of_isRoot_add_right_of_no_common hno hmu hroot,
       hdata.1, hdata.2⟩
 
-/-- Left-family form of
-`PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_right`. -/
-theorem PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_left
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {lam x : ℝ}
-    (hlam : 0 < lam)
-    (hroot : (C lam * f + g).IsRoot x) :
-    lam = -g.eval x / f.eval x ∧
-      (C lam * f + g).derivative.eval x ≠ 0 :=
-  ⟨(isRoot_add_left_iff_parameter_eq_of_no_common hno hlam).mp hroot,
-    hfg.derivative_eval_ne_zero_add_left hno hlam hroot⟩
-
-/-- Left-family form of
-`PosComboRealRooted.parameter_unique_and_derivative_ne_zero_add_right`. -/
-theorem PosComboRealRooted.parameter_unique_and_derivative_ne_zero_add_left
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {lam eta x : ℝ}
-    (hlam : 0 < lam) (_heta : 0 < eta)
-    (hroot_lam : (C lam * f + g).IsRoot x)
-    (hroot_eta : (C eta * f + g).IsRoot x) :
-    lam = eta ∧ (C lam * f + g).derivative.eval x ≠ 0 :=
-  ⟨pencil_parameter_unique_left_of_isRoot_of_no_common hno hroot_lam hroot_eta,
-    hfg.derivative_eval_ne_zero_add_left hno hlam hroot_lam⟩
-
-/-- Left-family form of
-`PosComboRealRooted.root_crossing_data_add_right`. -/
-theorem PosComboRealRooted.root_crossing_data_add_left
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {lam x : ℝ}
-    (hlam : 0 < lam)
-    (hroot : (C lam * f + g).IsRoot x) :
-    f.eval x ≠ 0 ∧ g.eval x ≠ 0 ∧
-      lam = -g.eval x / f.eval x ∧
-      (C lam * f + g).derivative.eval x ≠ 0 := by
-  have hdata := hfg.root_parameter_eq_and_derivative_ne_zero_add_left hno hlam hroot
-  exact
-    ⟨eval_left_ne_zero_of_isRoot_add_left_of_no_common hno hroot,
-      eval_right_ne_zero_of_isRoot_add_left_of_no_common hno hlam hroot,
-      hdata.1, hdata.2⟩
-
 /-- Full crossing data at a right-pencil root, extending
 `PosComboRealRooted.root_crossing_data_add_right` with uniqueness of the
 positive parameter placing `x` on the pencil. This packages the
@@ -1140,29 +697,7 @@ theorem PosComboRealRooted.root_crossing_data_unique_add_right
   refine ⟨hg, hf, hpar, hder, ?_⟩
   intro nu hnu hroot_nu
   exact
-    (hfg.parameter_unique_and_derivative_ne_zero_add_right hno hnu hmu
-      hroot_nu hroot).1
-
-/-- Left-family form of
-`PosComboRealRooted.root_crossing_data_unique_add_right`. -/
-theorem PosComboRealRooted.root_crossing_data_unique_add_left
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {lam x : ℝ}
-    (hlam : 0 < lam)
-    (hroot : (C lam * f + g).IsRoot x) :
-    f.eval x ≠ 0 ∧ g.eval x ≠ 0 ∧
-      lam = -g.eval x / f.eval x ∧
-      (C lam * f + g).derivative.eval x ≠ 0 ∧
-      (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam) := by
-  obtain ⟨hf, hg, hpar, hder⟩ :=
-    hfg.root_crossing_data_add_left hno hlam hroot
-  refine ⟨hf, hg, hpar, hder, ?_⟩
-  intro eta heta hroot_eta
-  exact
-    (hfg.parameter_unique_and_derivative_ne_zero_add_left hno heta hlam
-      hroot_eta hroot).1
+    (hfg.parameter_unique_and_derivative_ne_zero_add_right hno hnu hroot_nu hroot).1
 
 /-- Endpoint-sign wrapper for the right pencil: when the two endpoint
 evaluations have opposite signs at `x`, there is a positive parameter placing
@@ -1187,54 +722,6 @@ theorem PosComboRealRooted.exists_unique_pos_parameter_crossing_add_right
     hfg.root_crossing_data_unique_add_right hno hmu hroot
   exact ⟨mu, hmu, hroot, hpar, hder, huniq⟩
 
-/-- Left-family form of
-`PosComboRealRooted.exists_unique_pos_parameter_crossing_add_right`. -/
-theorem PosComboRealRooted.exists_unique_pos_parameter_crossing_add_left
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {x : ℝ} (hgx : g.eval x ≠ 0)
-    (hsign : f.eval x * g.eval x < 0) :
-    ∃ lam : ℝ, 0 < lam ∧ (C lam * f + g).IsRoot x ∧
-      lam = -g.eval x / f.eval x ∧
-      (C lam * f + g).derivative.eval x ≠ 0 ∧
-      (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam) := by
-  obtain ⟨lam, hlam, hroot⟩ :=
-    (exists_pos_isRoot_add_left_iff_eval_mul_neg hgx).mpr hsign
-  obtain ⟨_, _, hpar, hder, huniq⟩ :=
-    hfg.root_crossing_data_unique_add_left hno hlam hroot
-  exact ⟨lam, hlam, hroot, hpar, hder, huniq⟩
-
-/-- Projection of `PosComboRealRooted.root_crossing_data_unique_add_right`
-keeping only the derivative nonvanishing and parameter uniqueness facts. -/
-theorem PosComboRealRooted.derivative_ne_zero_and_parameter_unique_add_right
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {mu x : ℝ}
-    (hmu : 0 < mu)
-    (hroot : (f + C mu * g).IsRoot x) :
-    (f + C mu * g).derivative.eval x ≠ 0 ∧
-      (∀ nu : ℝ, 0 < nu → (f + C nu * g).IsRoot x → nu = mu) := by
-  obtain ⟨_, _, _, hder, huniq⟩ :=
-    hfg.root_crossing_data_unique_add_right hno hmu hroot
-  exact ⟨hder, huniq⟩
-
-/-- Left-family form of
-`PosComboRealRooted.derivative_ne_zero_and_parameter_unique_add_right`. -/
-theorem PosComboRealRooted.derivative_ne_zero_and_parameter_unique_add_left
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {lam x : ℝ}
-    (hlam : 0 < lam)
-    (hroot : (C lam * f + g).IsRoot x) :
-    (C lam * f + g).derivative.eval x ≠ 0 ∧
-      (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam) := by
-  obtain ⟨_, _, _, hder, huniq⟩ :=
-    hfg.root_crossing_data_unique_add_left hno hlam hroot
-  exact ⟨hder, huniq⟩
-
 /-- Endpoint-sign entry point for the right pencil, deriving endpoint
 nonvanishing from the opposite-sign condition. -/
 theorem PosComboRealRooted.exists_unique_pos_parameter_crossing_add_right_of_sign
@@ -1248,36 +735,5 @@ theorem PosComboRealRooted.exists_unique_pos_parameter_crossing_add_right_of_sig
       (∀ nu : ℝ, 0 < nu → (f + C nu * g).IsRoot x → nu = mu) :=
   hfg.exists_unique_pos_parameter_crossing_add_right hno
     (left_ne_zero_of_mul (ne_of_lt hsign)) hsign
-
-/-- Left-family form of
-`PosComboRealRooted.exists_unique_pos_parameter_crossing_add_right_of_sign`. -/
-theorem PosComboRealRooted.exists_unique_pos_parameter_crossing_add_left_of_sign
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {x : ℝ} (hsign : f.eval x * g.eval x < 0) :
-    ∃ lam : ℝ, 0 < lam ∧ (C lam * f + g).IsRoot x ∧
-      lam = -g.eval x / f.eval x ∧
-      (C lam * f + g).derivative.eval x ≠ 0 ∧
-      (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam) :=
-  hfg.exists_unique_pos_parameter_crossing_add_left hno
-    (right_ne_zero_of_mul (ne_of_lt hsign)) hsign
-
-/-- Bundled right-and-left endpoint-sign crossing entry point. -/
-theorem PosComboRealRooted.exists_unique_pos_parameters_crossing_of_sign
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {x : ℝ} (hsign : f.eval x * g.eval x < 0) :
-    (∃ mu : ℝ, 0 < mu ∧ (f + C mu * g).IsRoot x ∧
-        mu = -f.eval x / g.eval x ∧
-        (f + C mu * g).derivative.eval x ≠ 0 ∧
-        (∀ nu : ℝ, 0 < nu → (f + C nu * g).IsRoot x → nu = mu)) ∧
-      (∃ lam : ℝ, 0 < lam ∧ (C lam * f + g).IsRoot x ∧
-        lam = -g.eval x / f.eval x ∧
-        (C lam * f + g).derivative.eval x ≠ 0 ∧
-        (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam)) :=
-  ⟨hfg.exists_unique_pos_parameter_crossing_add_right_of_sign hno hsign,
-    hfg.exists_unique_pos_parameter_crossing_add_left_of_sign hno hsign⟩
 
 end RealRooted
