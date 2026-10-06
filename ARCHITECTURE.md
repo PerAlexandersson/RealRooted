@@ -647,19 +647,12 @@ Theorem 2.1. `FactorReturnLeft` and `FactorReturnTwoDegree` reduce the three
 degree cases of a left deletion branch to the positive-split x-subtraction
 pencils of `XSub.IntervalRootCount`; the right branch follows by symmetry.
 
-`LiuOppositeSigns.XSub.ProperPosition` is a narrow bridge from the ordinary
-positive-leading `StrictInterl` interface to Liu's positive root-count package. It
-then applies the package's same-degree and successor-degree results to the
-general `X * p - μ * q` splitness corollary under nonnegative coefficients.
-
 `LiuOppositeSigns.XSub.IntervalRootCount` is now a compatibility facade over
 the interval-count proof layers: `RootFilters`, `GapCounts`, `UpperTail`, and
 `SplitEndpoints` establish the root-count infrastructure, while
-`RightSuccessor`, `SameDegree`, `LeftSuccessor`, and `TailSigns` own the
-mutually independent degree and endpoint-sign endgames. This follows the
-proof's dependencies rather than its former source order.
-This keeps the user-facing proper-position interface out of the interval-root
-count implementation.
+`RightSuccessor`, `SameDegree`, and `LeftSuccessor` own the mutually
+independent degree endgames. This follows the proof's dependencies rather than
+its former source order.
 
 The Cayley-transform extraction is entirely Mathlib-shaped:
 

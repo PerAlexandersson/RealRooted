@@ -543,9 +543,7 @@ import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.TailSigns
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.UpperTail
-import RealRooted.LiuOppositeSigns.XSub.ProperPosition
 import RealRooted.LiuOppositeSigns.XSub.LeftSucc
 import RealRooted.LiuOppositeSigns.XSub.LinearQuadratic
 import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
