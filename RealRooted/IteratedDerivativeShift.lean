@@ -920,6 +920,16 @@ lemma pos_of_norm_sub_lt_half_of_pos {a b : ℝ}
     simpa [Real.norm_eq_abs] using (abs_lt.mp hab)
   linarith
 
+/-- A real number within half of `‖b‖` of `b ≠ 0` has the sign of `b`. -/
+private lemma mul_pos_of_norm_sub_lt_half {a b : ℝ} (hb : b ≠ 0)
+    (h : ‖a - b‖ < ‖b‖ / 2) : 0 < a * b := by
+  rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_sub_lt_iff] at h
+  rcases lt_or_gt_of_ne hb with hb' | hb'
+  · rw [abs_of_neg hb'] at h
+    exact mul_pos_of_neg_of_neg (by linarith) hb'
+  · rw [abs_of_pos hb'] at h
+    exact mul_pos (by linarith) hb'
+
 /-- If `p.eval x ≠ 0`, then for sufficiently small `eps`, the value of
 `(iterateTDeriv eps n p).eval x` has the same sign as `p.eval x`. This is the
 local nonvanishing/sign-stability theorem used in the `ε → 0` closure route. -/
@@ -936,31 +946,7 @@ lemma exists_delta_eval_mul_pos_iterateTDeriv_at_zero
   have hclose' :
       ‖(iterateTDeriv eps n p).eval x - p.eval x‖ < ‖p.eval x‖ / 2 :=
     hclose heps
-  rcases lt_or_gt_of_ne hx with hx_neg | hx_pos
-  · have hneg_iter : (iterateTDeriv eps n p).eval x < 0 := by
-      have hneg_norm :
-          ‖-(iterateTDeriv eps n p).eval x - (-p.eval x)‖ =
-            ‖(iterateTDeriv eps n p).eval x - p.eval x‖ := by
-        rw [sub_eq_add_neg, neg_neg]
-        have hEq :
-            -(iterateTDeriv eps n p).eval x + p.eval x =
-              -((iterateTDeriv eps n p).eval x - p.eval x) := by
-          ring
-        rw [hEq, norm_neg]
-      have hclose_neg0 :
-          ‖-(iterateTDeriv eps n p).eval x - (-p.eval x)‖ < ‖p.eval x‖ / 2 := by
-        lia
-      have hclose_neg :
-          ‖-(iterateTDeriv eps n p).eval x - (-p.eval x)‖ < (-p.eval x) / 2 := by
-        simpa [Real.norm_eq_abs, abs_of_neg hx_neg] using hclose_neg0
-      have hpos_neg_iter : 0 < -(iterateTDeriv eps n p).eval x :=
-        pos_of_norm_sub_lt_half_of_pos (by simp_all) hclose_neg
-      linarith
-    exact mul_pos_of_neg_of_neg hneg_iter hx_neg
-  · have hpos_iter : 0 < (iterateTDeriv eps n p).eval x :=
-      pos_of_norm_sub_lt_half_of_pos hx_pos
-        (by simpa [Real.norm_eq_abs, abs_of_pos hx_pos] using hclose')
-    simp_all
+  exact mul_pos_of_norm_sub_lt_half hx hclose'
 
 /-- Two-variable sign stability near `(eps, x) = (0, x₀)`: if `p(x₀) ≠ 0`, then
 for all sufficiently small joint perturbations of the shift parameter and the
@@ -980,31 +966,7 @@ lemma exists_delta_eval_mul_pos_iterateTDeriv_joint_at_zero
   have hclose' :
       ‖(iterateTDeriv z.1 n p).eval z.2 - p.eval x‖ < ‖p.eval x‖ / 2 :=
     hclose hz
-  rcases lt_or_gt_of_ne hx with hx_neg | hx_pos
-  · have hneg_iter : (iterateTDeriv z.1 n p).eval z.2 < 0 := by
-      have hneg_norm :
-          ‖-(iterateTDeriv z.1 n p).eval z.2 - (-p.eval x)‖ =
-            ‖(iterateTDeriv z.1 n p).eval z.2 - p.eval x‖ := by
-        rw [sub_eq_add_neg, neg_neg]
-        have hEq :
-            -(iterateTDeriv z.1 n p).eval z.2 + p.eval x =
-              -((iterateTDeriv z.1 n p).eval z.2 - p.eval x) := by
-          ring
-        rw [hEq, norm_neg]
-      have hclose_neg0 :
-          ‖-(iterateTDeriv z.1 n p).eval z.2 - (-p.eval x)‖ < ‖p.eval x‖ / 2 := by
-        lia
-      have hclose_neg :
-          ‖-(iterateTDeriv z.1 n p).eval z.2 - (-p.eval x)‖ < (-p.eval x) / 2 := by
-        simpa [Real.norm_eq_abs, abs_of_neg hx_neg] using hclose_neg0
-      have hpos_neg_iter : 0 < -(iterateTDeriv z.1 n p).eval z.2 :=
-        pos_of_norm_sub_lt_half_of_pos (by simp_all) hclose_neg
-      linarith
-    exact mul_pos_of_neg_of_neg hneg_iter hx_neg
-  · have hpos_iter : 0 < (iterateTDeriv z.1 n p).eval z.2 :=
-      pos_of_norm_sub_lt_half_of_pos hx_pos
-        (by simpa [Real.norm_eq_abs, abs_of_pos hx_pos] using hclose')
-    simp_all
+  exact mul_pos_of_norm_sub_lt_half hx hclose'
 
 /-- If `x` is not a root of `p`, then `x` stays away from the roots of the
 `iterateTDeriv` regularizations for all sufficiently small `eps`. -/
