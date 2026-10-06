@@ -43,6 +43,9 @@ theorem ofList_cons (a : ℤ) (l : List ℤ) :
 theorem ofList_singleton (a : ℤ) : (ofList [a] : R[X]) = C (a : R) := by
   simp [ofList_cons]
 
+theorem two_eq_ofList : (2 : R[X]) = ofList [2] := by
+  rw [ofList_singleton, Int.cast_ofNat, map_ofNat]
+
 theorem ofList_zero_cons (l : List ℤ) : (ofList (0 :: l) : R[X]) = X * ofList l := by
   simp [ofList_cons]
 

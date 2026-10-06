@@ -3,9 +3,9 @@
 
 Writes two Lean modules under RealRooted/CombinatorialExamples/BigDescents321/SmallCases/:
 
-* `Literals.lean`: `motzkinRef k = ofList [...]` (1 <= k <= 22) and
-  `bigDescentPoly n = ofList [...]` (n <= 24) over the reals.  Each `A_n` is checked against
-  the convolution recurrence by kernel computation on integer lists (`decide +kernel`).
+* `Literals.lean`: `motzkinRef k = ofList [...]` (k <= 22) and
+  `bigDescentPoly n = ofList [...]` (n <= 24) over the reals.  Each is checked against its
+  convolution recurrence by kernel computation on integer lists (`decide +kernel`).
 * `Certificates.lean`: for each n, `Interlaces (M_(n-2)) (A_n)` by `rr_interlaces_explicit`
   and a Bezout identity `U * A_n + V * M_(n-2) = D` with integer data, again checked on
   integer lists.  Together they give simple roots and no common root.
@@ -142,27 +142,36 @@ def literals(rows):
     out = [HEADER, """import RealRooted.CombinatorialExamples.BigDescents321.Basic
 import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly
 import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.NormNum.Basic
-import Mathlib.Tactic.Ring
 
 /-!
 # Literal forms of the small big-descent polynomials
 
-The coefficient lists of `M_k = motzkinRef k` for `1 ≤ k ≤ 22` and of `A_n = bigDescentPoly n`
-for `n ≤ 24` over `ℝ`. Each `A_n` is derived from the convolution recurrence, with the
-polynomial products checked as integer-list computations by the kernel.
+The coefficient lists of `M_k = motzkinRef k` for `k ≤ 22` and of `A_n = bigDescentPoly n`
+for `n ≤ 24` over `ℝ`. Each is derived from its convolution recurrence, with the polynomial
+products checked as integer-list computations by the kernel.
 -/
 
 open Polynomial
 
 namespace RealRooted.BigDescents321.SmallCases
 """]
-    for k in range(1, N - 1):
+    out.append("""
+theorem motzkinRef_0 : (motzkinRef 0 : ℝ[X]) = ofList [1] := by
+  simp [ofList_singleton]
+
+theorem motzkinRef_1 : (motzkinRef 1 : ℝ[X]) = ofList [2] := by
+  simp [two_eq_ofList]
+""")
+    for k in range(2, N - 1):
+        items = ["Finset.sum_range_succ", "Finset.sum_range_zero"]
+        items += (["Nat.reduceAdd"] if k > 2 else []) + ["Nat.reduceSub", "zero_add",
+                                                         "two_eq_ofList"]
+        items += [f"motzkinRef_{i}" for i in range(k)]
         out.append("\n" + ofl(f"theorem motzkinRef_{k} : (motzkinRef {k} : ℝ[X]) = ",
-                              motzkin(k), " := by") + "\n" + simp_only(
-            ["motzkinRef_def", "Finset.sum_range_succ", "catalan_eq_centralBinom_div",
-             "Nat.centralBinom", "ofList_cons", "ofList_nil"]) +
-                   "\n  norm_num [Nat.choose, map_ofNat]\n" + ("  ring\n" if k >= 3 else ""))
+                              motzkin(k), " := by") + "\n  rw [motzkinRef_add_two]\n" +
+                   simp_only(items) +
+                   "\n  simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]"
+                   "\n  exact congrArg ofList (by decide +kernel)\n")
     out.append("""
 theorem bigDescentPoly_0 : (bigDescentPoly 0 : ℝ[X]) = ofList [1] := by
   simp [ofList_singleton]
