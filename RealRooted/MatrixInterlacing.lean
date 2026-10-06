@@ -165,7 +165,7 @@ def antiTranspose (M : Atomic2x2Matrix) : Atomic2x2Matrix :=
 theorem isPreserving_antiTranspose (M : Atomic2x2Matrix) :
     M.antiTranspose.isPreserving = M.isPreserving := by
   rcases M with ⟨a, b, c, d⟩
-  fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d <;> decide
+  cases a <;> cases b <;> cases c <;> cases d <;> decide
 
 /-- The explicit enumeration of all `3^4 = 81` atomic matrices. -/
 def all : Finset Atomic2x2Matrix := Finset.univ
@@ -238,7 +238,7 @@ theorem hasAffineProperty_of_isAffineAdmissible
     {M : Atomic2x2Matrix} (hM : M.isAffineAdmissible) :
     M.HasAffineProperty := by
   rcases M with ⟨a, b, c, d⟩
-  fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d <;>
+  cases a <;> cases b <;> cases c <;> cases d <;>
     simp [isAffineAdmissible] at hM <;>
     simp only [HasAffineProperty, AtomicMatrixEntry.eval] <;>
     intro s t hs ht <;>
@@ -291,14 +291,14 @@ private lemma affine_cross_of_interl
     roots_X_add_C, roots_X_add_C] at hsum
   have hdiv : V / U ≤ v / u := by simpa using hsum
   rw [div_le_div_iff₀ hU hu] at hdiv
-  nlinarith
+  linarith
 
 private lemma not_interl_affine_of_cross_lt
     {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
     (hcross : U * v < u * V) :
     ¬ Interl (C u * X + C v) (C U * X + C V) := by
   intro h
-  nlinarith [affine_cross_of_interl hu hU h]
+  linarith [affine_cross_of_interl hu hU h]
 
 private lemma not_interl_X_two_mul_X_add_one :
     ¬ Interl (X : ℝ[X]) (2 * X + 1) := by
@@ -455,7 +455,7 @@ theorem isAffineAdmissible_of_hasAffineProperty
     {M : Atomic2x2Matrix} (hM : M.HasAffineProperty) :
     M.isAffineAdmissible = true := by
   rcases M with ⟨a, b, c, d⟩
-  fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d <;>
+  cases a <;> cases b <;> cases c <;> cases d <;>
     simp only [isAffineAdmissible] <;>
     exfalso <;>
     (have h := hM 1 1 zero_lt_one zero_lt_one) <;>
@@ -521,7 +521,7 @@ theorem hasFullAffineProperty_iff_isPreserving (M : Atomic2x2Matrix) :
       HasAffineProperty ⟨d, d, d, d⟩ ↔
         isPreserving ⟨a, b, c, d⟩ = true
   simp_rw [hasAffineProperty_iff_isAffineAdmissible]
-  fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d <;> decide
+  cases a <;> cases b <;> cases c <;> cases d <;> decide
 
 /-- Membership form of the exact 40-code affine classification. -/
 theorem mem_preserving_iff_hasFullAffineProperty (M : Atomic2x2Matrix) :
@@ -820,7 +820,7 @@ theorem mem_preserving_of_preservesInterlacing
   rw [mem_preserving_iff_hasFullAffineProperty,
     hasFullAffineProperty_iff_isPreserving]
   rcases M with ⟨a, b, c, d⟩
-  fin_cases a <;> fin_cases b <;> fin_cases c <;> fin_cases d <;>
+  cases a <;> cases b <;> cases c <;> cases d <;>
     simp only [isPreserving, isAffineAdmissible, Bool.not_and, Bool.true_and, Bool.and_self,
       Bool.and_self_right, Bool.and_eq_true, Bool.or_eq_true, Bool.not_eq_eq_eq_not,
       Bool.not_true, beq_eq_false_iff_ne, ne_eq, reduceCtorEq, not_false_eq_true, or_self,
