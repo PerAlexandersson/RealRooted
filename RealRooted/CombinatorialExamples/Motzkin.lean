@@ -5,7 +5,9 @@ import Mathlib.Tactic
 /-!
 # Shifted Motzkin Polynomials
 
-Interlacing and root-bound facts for the shifted Motzkin recurrence.
+Interlacing and root-bound facts for the Motzkin polynomials
+`M_k = ∑_a C(k, 2a) Cat_a X^a`, which count Motzkin paths of length `k` by up steps, through
+their recurrence `(k + 2) M_k = (2k + 1) M_(k-1) + (k - 1) (4X - 1) M_(k-2)`.
 -/
 
 open Polynomial
@@ -19,16 +21,17 @@ section
 /-- The right-endpoint shift in the Motzkin recurrence. -/
 def motzkinShift : ℝ := 1 / 4
 
-/-- The scalar coefficient of `M_{n+1}` in the shifted Motzkin recurrence. -/
+/-- The scalar coefficient of `M_(n+2)` in the recurrence for `M_(n+3)`. -/
 def motzkinCoeffA (n : Nat) : ℝ :=
-  ((2 * n + 5 : Nat) : ℝ) / (n + 4)
+  ((2 * n + 7 : Nat) : ℝ) / (n + 5)
 
-/-- The scalar coefficient of `(X - 1/4) M_n` in the shifted Motzkin recurrence. -/
+/-- The scalar coefficient of `(X - 1/4) M_(n+1)` in the recurrence for `M_(n+3)`. -/
 def motzkinCoeffB (n : Nat) : ℝ :=
-  ((4 * (n + 1) : Nat) : ℝ) / (n + 4)
+  ((4 * (n + 2) : Nat) : ℝ) / (n + 5)
 
-/-- Shifted Motzkin polynomials: `motzkin n` is the Motzkin polynomial `M_{n+1}`
-from the note, so the recursion starts at `n = 0, 1`. -/
+/-- Shifted Motzkin polynomials: `motzkin n` is the Motzkin polynomial
+`M_(n+1) = ∑_a C(n + 1, 2a) Cat_a X^a`, so the recursion starts at `M_1 = 1` and
+`M_2 = 1 + X`: the rows are `1`, `1 + X`, `1 + 3X`, `1 + 6X + 2X²`, …. -/
 def motzkin : Nat → ℝ[X]
   | 0 => 1
   | 1 => 1 + X
@@ -44,6 +47,12 @@ lemma motzkin_succ_succ (n : Nat) :
     motzkin (n + 2) =
       C (motzkinCoeffA n) * motzkin (n + 1) +
         C (motzkinCoeffB n) * (X - C motzkinShift) * motzkin n := rfl
+
+/-- `motzkin 2 = M_3 = 1 + 3X`, which pins the indexing of the recurrence. -/
+lemma motzkin_two : motzkin 2 = 1 + 3 * X := by
+  rw [motzkin_succ_succ, motzkin_one, motzkin_zero, motzkinCoeffA, motzkinCoeffB, motzkinShift]
+  ext i
+  rcases i with _ | _ | i <;> simp [coeff_X, coeff_C, coeff_one] <;> norm_num
 
 lemma coeff_motzkin_succ_succ (n m : Nat) :
     coeff (motzkin (n + 2)) (m + 1) =
