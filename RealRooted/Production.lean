@@ -1406,6 +1406,8 @@ import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
 import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
 import RealRooted.CombinatorialExamples.BigDescents321.GeneratingFunction
 import RealRooted.CombinatorialExamples.BigDescents321.Reference
+import RealRooted.CombinatorialExamples.BigDescents321.Kernel
+import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
 
 /-!
 # RealRooted production umbrella

@@ -80,6 +80,10 @@ noncomputable def integral (a b : R) : R[X] →ₗ[R] R where
 theorem integral_apply (a b : R) (p : R[X]) :
     integral a b p = (antiderivative p).eval b - (antiderivative p).eval a := rfl
 
+theorem integral_C_mul (a b c : R) (p : R[X]) :
+    integral a b (C c * p) = c * integral a b p := by
+  rw [← smul_eq_C_mul, map_smul, smul_eq_mul]
+
 /-- The fundamental theorem of calculus. -/
 theorem integral_derivative (a b : R) (p : R[X]) :
     integral a b (derivative p) = p.eval b - p.eval a := by
