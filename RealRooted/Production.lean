@@ -1423,6 +1423,8 @@ import RealRooted.CombinatorialExamples.BigDescents321.ScalarBounds
 import RealRooted.CombinatorialExamples.BigDescents321.SigmaSign
 import RealRooted.CombinatorialExamples.BigDescents321.Backward
 import RealRooted.CombinatorialExamples.BigDescents321.Criterion
+import RealRooted.CombinatorialExamples.BigDescents321.SignConversion
+import RealRooted.CombinatorialExamples.BigDescents321
 
 /-!
 # RealRooted production umbrella
