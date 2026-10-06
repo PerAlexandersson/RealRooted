@@ -1384,6 +1384,9 @@ import RealRooted.Challenges.GammaTransform
 import RealRooted.Challenges.HeilmannLieb
 import RealRooted.Challenges.GraceApolarity
 import RealRooted.Challenges.RealStability
+import RealRooted.Applications.PeakPolynomials.HitPolynomials
+import RealRooted.Applications.PeakPolynomials.PeakInduction
+import RealRooted.Challenges.PeakPolynomials
 
 /-!
 # RealRooted production umbrella
