@@ -1,6 +1,7 @@
 import RealRooted.BrandenVecchi.ChowResolution
 import RealRooted.BrandenVecchi.ChowRowTransform
 import RealRooted.Interlacing.ConeBounds
+import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 
 /-!
 # Reflection interlacing for resolved Chow rows
@@ -34,19 +35,11 @@ private def weightedResolvedChowRow {A : LowerTriangularMatrix ℝ}
   (List.range (n + 1)).map fun j =>
     C (resolution.lambda n j) * resolvedChowDerangement resolution n j
 
-private theorem sum_map_range_eq_finset_sum (f : ℕ → ℝ[X]) :
-    ∀ n : ℕ, ((List.range n).map f).sum = ∑ j ∈ Finset.range n, f j
-  | 0 => by simp
-  | n + 1 => by
-      rw [List.range_succ, List.map_append, List.sum_append,
-        Finset.sum_range_succ, sum_map_range_eq_finset_sum f n]
-      simp
-
 private theorem sum_map_range'_eq_finset_sum_Ico
     (f : ℕ → ℝ[X]) (k q : ℕ) :
     ((List.range' k (q - k)).map f).sum = ∑ j ∈ Finset.Ico k q, f j := by
   rw [Finset.sum_Ico_eq_sum_range, List.range'_eq_map_range, List.map_map,
-    sum_map_range_eq_finset_sum]
+    List.sum_map_range]
   simp [Function.comp_apply]
 
 private theorem sum_drop_map_range_eq_finset_sum_Ico
@@ -62,7 +55,7 @@ private theorem weightedResolvedChowRow_sum
     (resolution : BrandenLeite.Resolution A) (n : ℕ) :
     (weightedResolvedChowRow resolution n).sum =
       resolvedChowWeightSum resolution n := by
-  rw [weightedResolvedChowRow, sum_map_range_eq_finset_sum]
+  rw [weightedResolvedChowRow, List.sum_map_range]
   rfl
 
 private theorem weightedResolvedChowRow_drop_sum
@@ -185,7 +178,7 @@ private theorem scaledResolvedChowRow_sum
     (a : ℕ → ℝ) :
     (scaledResolvedChowRow resolution n a).sum =
       resolvedChowCombination resolution n a := by
-  rw [scaledResolvedChowRow, sum_map_range_eq_finset_sum]
+  rw [scaledResolvedChowRow, List.sum_map_range]
   rfl
 
 private theorem resolvedChowRow_forall₂_scaled
