@@ -42,25 +42,25 @@ private theorem isPFPolynomial_of_splits_of_roots_nonpos {g : ℝ[X]} (hg : g.Sp
     exact hr.mul (ih fun x hx ↦ hroots x (by simp [hx]))
 
 /-- Negating the right factor negates the factorial Schur product. -/
-theorem gwSchurProduct_neg_right (f g : ℝ[X]) :
-    gwSchurProduct f (-g) = -gwSchurProduct f g := by
+theorem factorialHadamardProduct_neg_right (f g : ℝ[X]) :
+    factorialHadamardProduct f (-g) = -factorialHadamardProduct f g := by
   ext k
   simp
 
 /-- Reflecting the right factor in `x ↦ -x` reflects the factorial Schur
 product. -/
-theorem gwSchurProduct_comp_neg_X_right (f g : ℝ[X]) :
-    gwSchurProduct f (g.comp (-X)) = (gwSchurProduct f g).comp (-X) := by
+theorem factorialHadamardProduct_comp_neg_X_right (f g : ℝ[X]) :
+    factorialHadamardProduct f (g.comp (-X)) = (factorialHadamardProduct f g).comp (-X) := by
   have hcoeff (k : ℕ) : (g.comp (-X)).coeff k = (-1) ^ k * g.coeff k := by
     rw [show (-X : ℝ[X]) = C (-1) * X by simp, Polynomial.comp_C_mul_X_coeff, mul_comm]
-  simp only [gwSchurProduct, hcoeff, mul_left_comm (Nat.factorial _ : ℝ)]
+  simp only [factorialHadamardProduct, hcoeff, mul_left_comm (Nat.factorial _ : ℝ)]
   exact diagonalOperator_alternating _ f
 
 /-- Schur's theorem for a PF right factor: if `f` is real-rooted and `g` is a
 PF polynomial, then `∑ k! aₖ bₖ xᵏ` is zero or real-rooted. -/
-theorem gwSchurProduct_eq_zero_or_splits_of_isPFPolynomial {f g : ℝ[X]}
+theorem factorialHadamardProduct_eq_zero_or_splits_of_isPFPolynomial {f g : ℝ[X]}
     (hf : f.Splits) (hg : IsPFPolynomial g) :
-    gwSchurProduct f g = 0 ∨ (gwSchurProduct f g).Splits :=
+    factorialHadamardProduct f g = 0 ∨ (factorialHadamardProduct f g).Splits :=
   isMultiplierSequence_iff_preserves.mp
     (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp
       hg.isPFMultiplierSequence_factorial_mul_coeff).1 hf
@@ -68,19 +68,19 @@ theorem gwSchurProduct_eq_zero_or_splits_of_isPFPolynomial {f g : ℝ[X]}
 /-- Schur's factorial product theorem: if `f = ∑ aₖ xᵏ` is real-rooted and
 `g = ∑ bₖ xᵏ` is real-rooted with all zeros of one sign, then
 `∑ k! aₖ bₖ xᵏ` is zero or real-rooted. -/
-theorem gwSchurProduct_eq_zero_or_splits {f g : ℝ[X]} (hf : f.Splits)
+theorem factorialHadamardProduct_eq_zero_or_splits {f g : ℝ[X]} (hf : f.Splits)
     (hg : g.Splits) (hsign : (∀ r ∈ g.roots, r ≤ 0) ∨ ∀ r ∈ g.roots, 0 ≤ r) :
-    gwSchurProduct f g = 0 ∨ (gwSchurProduct f g).Splits := by
+    factorialHadamardProduct f g = 0 ∨ (factorialHadamardProduct f g).Splits := by
   have hnonpos : ∀ {g : ℝ[X]}, g.Splits → (∀ r ∈ g.roots, r ≤ 0) →
-      gwSchurProduct f g = 0 ∨ (gwSchurProduct f g).Splits := by
+      factorialHadamardProduct f g = 0 ∨ (factorialHadamardProduct f g).Splits := by
     intro g hg hroots
     rcases le_total 0 g.leadingCoeff with hlc | hlc
-    · exact gwSchurProduct_eq_zero_or_splits_of_isPFPolynomial hf
+    · exact factorialHadamardProduct_eq_zero_or_splits_of_isPFPolynomial hf
         (isPFPolynomial_of_splits_of_roots_nonpos hg hroots hlc)
-    · have hneg := gwSchurProduct_eq_zero_or_splits_of_isPFPolynomial hf
+    · have hneg := factorialHadamardProduct_eq_zero_or_splits_of_isPFPolynomial hf
         (isPFPolynomial_of_splits_of_roots_nonpos hg.neg (by simpa using hroots)
           (by simpa using hlc))
-      rw [gwSchurProduct_neg_right] at hneg
+      rw [factorialHadamardProduct_neg_right] at hneg
       rcases hneg with h | h
       · exact .inl (neg_eq_zero.mp h)
       · exact .inr (by simpa using h.neg)
@@ -88,6 +88,6 @@ theorem gwSchurProduct_eq_zero_or_splits {f g : ℝ[X]} (hf : f.Splits)
   · exact hnonpos hg hroots
   · have h := hnonpos hg.comp_neg_X (by
       simpa only [roots_comp_neg_X, Multiset.forall_mem_map_iff, neg_nonpos] using hroots)
-    rwa [gwSchurProduct_comp_neg_X_right, comp_neg_X_eq_zero_or_splits_iff] at h
+    rwa [factorialHadamardProduct_comp_neg_X_right, comp_neg_X_eq_zero_or_splits_iff] at h
 
 end RealRooted

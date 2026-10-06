@@ -26,7 +26,7 @@ excludes the zero polynomial, while coefficientwise products of two nonzero
 stable polynomials can vanish when their coefficient supports are disjoint.
 
 The interlacing form, Garloff--Wagner Theorem 4(b), is proved as
-`gwHadamardProductInterl_of_strictInterl`.  Total nonnegativity of infinite
+`StrictInterl.interl_hadamardProduct_of_isPFPolynomial`.  Total nonnegativity of infinite
 row-oriented Hurwitz matrices is not closed under entrywise products
 (`not_hurwitz_schurProduct_isTotallyNonneg`), so that route does not apply. -/
 def hadamardPreservesHurwitzStableStatement : Prop :=

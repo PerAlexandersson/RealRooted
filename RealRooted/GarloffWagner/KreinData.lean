@@ -278,12 +278,12 @@ theorem dvd_of_roots_fullRootMultiplicity_dvd
 /-- A summand of the cone in Garloff--Wagner Lemma 7, relative to the right
 polynomial `g`: either `g` itself or the quotient obtained by deleting one
 linear root factor from `g`. -/
-def IsGWKreinSummand (g q : ℝ[X]) : Prop :=
+def IsKreinSummand (g q : ℝ[X]) : Prop :=
   q = g ∨ ∃ u : ℝ, g = (X - C u) * q
 
-namespace IsGWKreinSummand
+namespace IsKreinSummand
 
-theorem ne_zero_and_splits {g q : ℝ[X]} (h : IsGWKreinSummand g q)
+theorem ne_zero_and_splits {g q : ℝ[X]} (h : IsKreinSummand g q)
     (hg0 : g ≠ 0) (hgs : g.Splits) :
     q ≠ 0 ∧ q.Splits := by
   rcases h with hself | ⟨u, hq⟩
@@ -295,7 +295,7 @@ theorem ne_zero_and_splits {g q : ℝ[X]} (h : IsGWKreinSummand g q)
     have hq_dvd : q ∣ g := ⟨X - C u, by rw [hq]; ring⟩
     exact isRealRooted_of_dvd hg0 hgs hq0 hq_dvd
 
-theorem hasPosLeadingCoeff {g q : ℝ[X]} (h : IsGWKreinSummand g q)
+theorem hasPosLeadingCoeff {g q : ℝ[X]} (h : IsKreinSummand g q)
     (hgpos : HasPosLeadingCoeff g) :
     HasPosLeadingCoeff q := by
   rcases h with hself | ⟨u, hq⟩
@@ -303,19 +303,19 @@ theorem hasPosLeadingCoeff {g q : ℝ[X]} (h : IsGWKreinSummand g q)
   · have hmul : HasPosLeadingCoeff ((X - C u) * q) := by simpa [hq] using hgpos
     exact hasPosLeadingCoeff_of_X_sub_C_mul hmul
 
-theorem gwJL_strictInterl {k : ℕ} {g q : ℝ[X]} (h : IsGWKreinSummand g q)
+theorem divFactorialShift_strictInterl {k : ℕ} {g q : ℝ[X]} (h : IsKreinSummand g q)
     (hg0 : g ≠ 0) (hgs : g.Splits) :
-    StrictInterl (gwJL k q) (gwJL k g) := by
+    StrictInterl (divFactorialShift k q) (divFactorialShift k g) := by
   rcases h with hself | ⟨u, hq⟩
   · rw [hself]
-    exact StrictInterl.refl ((gwJL_ne_zero_iff k g).2 hg0)
-      (gwJL_splits_of_splits hg0 hgs k)
+    exact StrictInterl.refl ((divFactorialShift_ne_zero_iff k g).2 hg0)
+      (divFactorialShift_splits_of_splits hg0 hgs k)
   · obtain ⟨hq0, hqs⟩ := ne_zero_and_splits (g := g) (q := q) (Or.inr ⟨u, hq⟩)
       hg0 hgs
     rw [hq]
-    exact gwJL_factor_strictInterl_of_splits (k := k) (u := u) (f := q) hq0 hqs
+    exact divFactorialShift_factor_strictInterl_of_splits (k := k) (u := u) (f := q) hq0 hqs
 
-end IsGWKreinSummand
+end IsKreinSummand
 
 /-- Factor a root of `g` into the one-root-deleted Krein summand and the
 full-multiplicity residual.  The residual is nonzero at the deleted root, which
@@ -329,7 +329,7 @@ theorem exists_kreinSummand_factor_of_isRoot {g : ℝ[X]} (hg0 : g ≠ 0)
         r.eval u ≠ 0 ∧
         q ≠ 0 ∧ q.Splits ∧
         r ≠ 0 ∧ r.Splits ∧
-        IsGWKreinSummand g q := by
+        IsKreinSummand g q := by
   obtain ⟨r, hgr, hr_nodvd⟩ :=
     exists_eq_pow_rootMultiplicity_mul_and_not_dvd g hg0 u
   let q : ℝ[X] := (X - C u) ^ (g.rootMultiplicity u - 1) * r
@@ -367,7 +367,7 @@ theorem exists_kreinCoefficientData_of_right_isRoot {f g : ℝ[X]}
     (hu : g.IsRoot u) :
     ∃ a : ℝ, ∃ q : ℝ[X],
       g = (X - C u) * q ∧
-        IsGWKreinSummand g q ∧
+        IsKreinSummand g q ∧
         (X - C u) ^ (g.rootMultiplicity u) ∣
           f - C c * g - C a * q := by
   rcases exists_kreinSummand_factor_of_isRoot hfg.2.1.1 hgs hu with
@@ -383,7 +383,7 @@ Garloff--Wagner Lemma 7 expansion, before the final degree and sign arguments. -
 theorem exists_kreinRootDeletedSub_dvd_right {f g : ℝ[X]}
     (hfg : StrictInterl f g) (c : ℝ) :
     ∃ l : List (ℝ × ℝ[X]),
-      (∀ ap ∈ l, IsGWKreinSummand g ap.2) ∧
+      (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
         g ∣ f - C c * g - weightedSum l := by
   classical
   let roots : List ℝ := g.roots.toFinset.toList
@@ -393,7 +393,7 @@ theorem exists_kreinRootDeletedSub_dvd_right {f g : ℝ[X]}
       (Multiset.mem_toFinset.mp (Finset.mem_toList.mp hu))
   have hdata : ∀ u ∈ roots, ∃ a : ℝ, ∃ q : ℝ[X],
       g = (X - C u) * q ∧
-        IsGWKreinSummand g q ∧
+        IsKreinSummand g q ∧
         (X - C u) ^ (g.rootMultiplicity u) ∣
           f - C c * g - C a * q :=
     fun u hu => exists_kreinCoefficientData_of_right_isRoot hfg hfg.2.1.2 c (hroot u hu)

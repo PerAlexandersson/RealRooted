@@ -13,159 +13,180 @@ noncomputable section
 
 namespace RealRooted
 
-def gwJL (k : ℕ) (p : ℝ[X]) : ℝ[X] :=
-  (gwJ^[k]) (gwL p)
+/-- The iterated transform `J^k ∘ L`: divide the coefficients of `p` by
+factorials and then integrate `k` times, so that the coefficient of
+`X ^ (n + k)` is `p.coeff n / (n + k)!`. -/
+def divFactorialShift (k : ℕ) (p : ℝ[X]) : ℝ[X] :=
+  (antiderivative^[k]) (divFactorial p)
 
-@[simp] theorem gwJL_zero_apply (p : ℝ[X]) :
-    gwJL 0 p = gwL p :=
+@[deprecated (since := "2026-10-06")]
+alias gwJL := divFactorialShift
+
+@[simp] theorem divFactorialShift_zero_apply (p : ℝ[X]) :
+    divFactorialShift 0 p = divFactorial p :=
   rfl
 
-theorem gwJL_succ (k : ℕ) (p : ℝ[X]) :
-    gwJL (k + 1) p = gwJ (gwJL k p) := by
-  rw [gwJL, gwJL, Function.iterate_succ_apply']
+@[deprecated (since := "2026-10-06")]
+alias gwJL_zero_apply := divFactorialShift_zero_apply
 
-@[simp] theorem gwJL_zero (k : ℕ) :
-    gwJL k (0 : ℝ[X]) = 0 := by
+theorem divFactorialShift_succ (k : ℕ) (p : ℝ[X]) :
+    divFactorialShift (k + 1) p = antiderivative (divFactorialShift k p) := by
+  rw [divFactorialShift, divFactorialShift, Function.iterate_succ_apply']
+
+@[deprecated (since := "2026-10-06")]
+alias gwJL_succ := divFactorialShift_succ
+
+@[simp] theorem divFactorialShift_zero (k : ℕ) :
+    divFactorialShift k (0 : ℝ[X]) = 0 := by
   induction k with
   | zero =>
-      simp [gwJL, gwL_zero]
+      simp [divFactorialShift, divFactorial_zero]
   | succ k ih =>
-      rw [gwJL_succ, ih, gwJ_zero]
+      rw [divFactorialShift_succ, ih, antiderivative_zero]
 
-theorem gwJL_add (k : ℕ) (p q : ℝ[X]) :
-    gwJL k (p + q) = gwJL k p + gwJL k q := by
+theorem divFactorialShift_add (k : ℕ) (p q : ℝ[X]) :
+    divFactorialShift k (p + q) = divFactorialShift k p + divFactorialShift k q := by
   induction k with
   | zero =>
-      simp [gwJL, gwL_add]
+      simp [divFactorialShift, divFactorial_add]
   | succ k ih =>
-      rw [gwJL_succ, gwJL_succ, gwJL_succ, ih, gwJ_add]
+      rw [divFactorialShift_succ, divFactorialShift_succ, divFactorialShift_succ, ih,
+        antiderivative_add]
 
-theorem gwJL_sub (k : ℕ) (p q : ℝ[X]) :
-    gwJL k (p - q) = gwJL k p - gwJL k q := by
+theorem divFactorialShift_sub (k : ℕ) (p q : ℝ[X]) :
+    divFactorialShift k (p - q) = divFactorialShift k p - divFactorialShift k q := by
   induction k with
   | zero =>
-      simp [gwJL, gwL_sub]
+      simp [divFactorialShift, divFactorial_sub]
   | succ k ih =>
-      rw [gwJL_succ, gwJL_succ, gwJL_succ, ih, gwJ_sub]
+      rw [divFactorialShift_succ, divFactorialShift_succ, divFactorialShift_succ, ih,
+        antiderivative_sub]
 
-theorem gwJL_C_mul (a : ℝ) (k : ℕ) (p : ℝ[X]) :
-    gwJL k (C a * p) = C a * gwJL k p := by
+theorem divFactorialShift_C_mul (a : ℝ) (k : ℕ) (p : ℝ[X]) :
+    divFactorialShift k (C a * p) = C a * divFactorialShift k p := by
   induction k with
   | zero =>
-      simp [gwJL, gwL_C_mul]
+      simp [divFactorialShift, divFactorial_C_mul]
   | succ k ih =>
-      rw [gwJL_succ, gwJL_succ, ih, gwJ_C_mul]
+      rw [divFactorialShift_succ, divFactorialShift_succ, ih, antiderivative_C_mul]
 
-theorem gwJL_list_sum (k : ℕ) :
-    ∀ l : List ℝ[X], gwJL k l.sum = (l.map (gwJL k)).sum
+theorem divFactorialShift_list_sum (k : ℕ) :
+    ∀ l : List ℝ[X], divFactorialShift k l.sum = (l.map (divFactorialShift k)).sum
   | [] => by simp
   | p :: l => by
-      simp [gwJL_add, gwJL_list_sum k l]
+      simp [divFactorialShift_add, divFactorialShift_list_sum k l]
 
-theorem gwJL_weightedSum (k : ℕ) :
+theorem divFactorialShift_weightedSum (k : ℕ) :
     ∀ l : List (ℝ × ℝ[X]),
-      gwJL k (weightedSum l) =
-        weightedSum (l.map fun ap => (ap.1, gwJL k ap.2))
+      divFactorialShift k (weightedSum l) =
+        weightedSum (l.map fun ap => (ap.1, divFactorialShift k ap.2))
   | [] => by simp
   | (a, p) :: l => by
-      simp [weightedSum_cons, gwJL_add, gwJL_C_mul, gwJL_weightedSum k l]
+      simp [weightedSum_cons, divFactorialShift_add, divFactorialShift_C_mul,
+        divFactorialShift_weightedSum k l]
 
-theorem gwJL_eq_zero_iff (k : ℕ) (p : ℝ[X]) :
-    gwJL k p = 0 ↔ p = 0 := by
+theorem divFactorialShift_eq_zero_iff (k : ℕ) (p : ℝ[X]) :
+    divFactorialShift k p = 0 ↔ p = 0 := by
   induction k with
   | zero =>
-      simp [gwJL, gwL_eq_zero_iff]
+      simp [divFactorialShift, divFactorial_eq_zero_iff]
   | succ k ih =>
-      rw [gwJL_succ, gwJ_eq_zero_iff, ih]
+      rw [divFactorialShift_succ, antiderivative_eq_zero_iff, ih]
 
-theorem gwJL_ne_zero_iff (k : ℕ) (p : ℝ[X]) :
-    gwJL k p ≠ 0 ↔ p ≠ 0 := by
-  rw [ne_eq, ne_eq, gwJL_eq_zero_iff]
+theorem divFactorialShift_ne_zero_iff (k : ℕ) (p : ℝ[X]) :
+    divFactorialShift k p ≠ 0 ↔ p ≠ 0 := by
+  rw [ne_eq, ne_eq, divFactorialShift_eq_zero_iff]
 
-theorem natDegree_gwJL (k : ℕ) {p : ℝ[X]} (hp : p ≠ 0) :
-    (gwJL k p).natDegree = p.natDegree + k := by
+theorem natDegree_divFactorialShift (k : ℕ) {p : ℝ[X]} (hp : p ≠ 0) :
+    (divFactorialShift k p).natDegree = p.natDegree + k := by
   induction k with
   | zero =>
-      simp [gwJL, natDegree_gwL hp]
+      simp [divFactorialShift, natDegree_divFactorial hp]
   | succ k ih =>
-      rw [gwJL_succ, natDegree_gwJ, ih]
+      rw [divFactorialShift_succ, natDegree_antiderivative, ih]
       · ring
-      · exact (gwJL_ne_zero_iff k p).2 hp
+      · exact (divFactorialShift_ne_zero_iff k p).2 hp
 
-theorem gwD_gwJL_succ (k : ℕ) (p : ℝ[X]) :
-    gwD (gwJL (k + 1) p) = gwJL k p := by
-  rw [gwJL_succ, gwD_gwJ]
+theorem derivative_divFactorialShift_succ (k : ℕ) (p : ℝ[X]) :
+    derivative (divFactorialShift (k + 1) p) = divFactorialShift k p := by
+  rw [divFactorialShift_succ, derivative_antiderivative]
 
-theorem HasPosLeadingCoeff.gwJL {p : ℝ[X]}
+theorem HasPosLeadingCoeff.divFactorialShift {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) (k : ℕ) :
-    HasPosLeadingCoeff (gwJL k p) := by
+    HasPosLeadingCoeff (divFactorialShift k p) := by
   induction k with
   | zero =>
-      simpa [gwJL] using hp.gwL
+      simpa [divFactorialShift] using hp.divFactorial
   | succ k ih =>
-      rw [gwJL_succ]
-      exact ih.gwJ
+      rw [divFactorialShift_succ]
+      exact ih.antiderivative
 
-theorem HasNonnegCoeffs.gwJL {p : ℝ[X]}
+theorem HasNonnegCoeffs.divFactorialShift {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) (k : ℕ) :
-    HasNonnegCoeffs (gwJL k p) := by
+    HasNonnegCoeffs (divFactorialShift k p) := by
   induction k with
   | zero =>
-      simpa [gwJL] using hp.gwL
+      simpa [divFactorialShift] using hp.divFactorial
   | succ k ih =>
-      rw [gwJL_succ]
-      exact ih.gwJ
+      rw [divFactorialShift_succ]
+      exact ih.antiderivative
 
 /-- The algebraic induction step in Garloff--Wagner, Theorem 11. -/
-theorem gwJL_X_sub_C_mul (k : ℕ) (u : ℝ) (f : ℝ[X]) :
-    gwJL k ((X - C u) * f) = gwJL (k + 1) f - C u * gwJL k f := by
+theorem divFactorialShift_X_sub_C_mul (k : ℕ) (u : ℝ) (f : ℝ[X]) :
+    divFactorialShift k ((X - C u) * f) =
+      divFactorialShift (k + 1) f - C u * divFactorialShift k f := by
   induction k with
   | zero =>
-      simp only [gwJL_zero_apply]
-      rw [sub_mul, gwL_sub, gwL_X_mul, gwL_C_mul, gwJL_succ, gwJL_zero_apply]
+      simp only [divFactorialShift_zero_apply]
+      rw [sub_mul, divFactorial_sub, divFactorial_X_mul, divFactorial_C_mul, divFactorialShift_succ,
+        divFactorialShift_zero_apply]
   | succ k ih =>
-      rw [gwJL_succ, ih, gwJ_sub, gwJ_C_mul, ← gwJL_succ, ← gwJL_succ]
+      rw [divFactorialShift_succ, ih, antiderivative_sub, antiderivative_C_mul,
+        ← divFactorialShift_succ, ← divFactorialShift_succ]
 
-/-- The `k = 0` form of `gwJL_X_sub_C_mul`, matching the first transport step
+/-- The `k = 0` form of `divFactorialShift_X_sub_C_mul`, matching the first transport step
 in Garloff--Wagner's proof of Theorem 4(b). -/
-theorem gwL_X_sub_C_mul (u : ℝ) (f : ℝ[X]) :
-    gwL ((X - C u) * f) = gwJ (gwL f) - C u * gwL f := by
-  simpa [gwJL_zero_apply, gwJL_succ] using gwJL_X_sub_C_mul 0 u f
+theorem divFactorial_X_sub_C_mul (u : ℝ) (f : ℝ[X]) :
+    divFactorial ((X - C u) * f) = antiderivative (divFactorial f) - C u * divFactorial f := by
+  simpa [divFactorialShift_zero_apply, divFactorialShift_succ] using
+    divFactorialShift_X_sub_C_mul 0 u f
 
 /-- Derivative of the preceding `L`-transport identity. -/
-theorem gwD_gwL_X_sub_C_mul (u : ℝ) (f : ℝ[X]) :
-    gwD (gwL ((X - C u) * f)) = gwL f - C u * gwD (gwL f) := by
-  rw [gwL_X_sub_C_mul, gwD_sub, gwD_C_mul, gwD_gwJ]
+theorem derivative_divFactorial_X_sub_C_mul (u : ℝ) (f : ℝ[X]) :
+    derivative (divFactorial ((X - C u) * f)) =
+      divFactorial f - C u * derivative (divFactorial f) := by
+  rw [divFactorial_X_sub_C_mul, derivative_sub, derivative_C_mul, derivative_antiderivative]
 
 /-- Algebraic expansion of the two-linear-factor ordinary Hadamard product
 used in Garloff--Wagner's double-deleted paragraph of Theorem 4(b). -/
 theorem hadamardProduct_X_sub_C_mul_X_sub_C_mul_eq
     (j u : ℝ) (g q : ℝ[X]) :
     hadamardProduct ((X - C j) * g) ((X - C u) * q) =
-      X * gwSchurProduct g (gwL q - C u * gwD (gwL q)) -
-        C j * gwSchurProduct g (gwJ (gwL q) - C u * gwL q) := by
-  rw [← gwSchurProduct_gwL_right ((X - C j) * g) ((X - C u) * q)]
-  rw [gwL_X_sub_C_mul, gwSchurProduct_X_sub_C_mul_left]
-  rw [gwD_sub, gwD_C_mul, gwD_gwJ]
-  rw [gwSchurProduct_comm (gwL q - C u * gwD (gwL q)) g]
+      X * factorialHadamardProduct g (divFactorial q - C u * derivative (divFactorial q)) -
+        C j *
+          factorialHadamardProduct g (antiderivative (divFactorial q) - C u * divFactorial q) := by
+  rw [← factorialHadamardProduct_divFactorial_right ((X - C j) * g) ((X - C u) * q)]
+  rw [divFactorial_X_sub_C_mul, factorialHadamardProduct_X_sub_C_mul_left]
+  rw [derivative_sub, derivative_C_mul, derivative_antiderivative]
+  rw [factorialHadamardProduct_comm (divFactorial q - C u * derivative (divFactorial q)) g]
 
 /-- The same induction step written as `(1 - uD) J^(k+1) L f`. -/
-theorem gwJL_X_sub_C_mul_eq_sub_gwD (k : ℕ) (u : ℝ) (f : ℝ[X]) :
-    gwJL k ((X - C u) * f) =
-      gwJL (k + 1) f - C u * gwD (gwJL (k + 1) f) := by
-  rw [gwJL_X_sub_C_mul, gwD_gwJL_succ]
+theorem divFactorialShift_X_sub_C_mul_eq_sub_derivative (k : ℕ) (u : ℝ) (f : ℝ[X]) :
+    divFactorialShift k ((X - C u) * f) =
+      divFactorialShift (k + 1) f - C u * derivative (divFactorialShift (k + 1) f) := by
+  rw [divFactorialShift_X_sub_C_mul, derivative_divFactorialShift_succ]
 
 /-- Garloff--Wagner's Theorem 11 induction step in `tDeriv` form. -/
-theorem gwJL_X_sub_C_mul_eq_tDeriv (k : ℕ) (u : ℝ) (f : ℝ[X]) :
-    gwJL k ((X - C u) * f) = tDeriv u (gwJL (k + 1) f) := by
-  rw [gwJL_X_sub_C_mul_eq_sub_gwD]
-  simp [tDeriv, gwD]
+theorem divFactorialShift_X_sub_C_mul_eq_tDeriv (k : ℕ) (u : ℝ) (f : ℝ[X]) :
+    divFactorialShift k ((X - C u) * f) = tDeriv u (divFactorialShift (k + 1) f) := by
+  rw [divFactorialShift_X_sub_C_mul_eq_sub_derivative]
+  simp [tDeriv]
 
 /-- Real-rootedness part of the Garloff--Wagner Theorem 11 induction step. -/
-theorem gwJL_X_sub_C_mul_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
-    (h : (gwJL (k + 1) f).Splits) :
-    (gwJL k ((X - C u) * f)).Splits := by
-  rw [gwJL_X_sub_C_mul_eq_tDeriv]
+theorem divFactorialShift_X_sub_C_mul_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
+    (h : (divFactorialShift (k + 1) f).Splits) :
+    (divFactorialShift k ((X - C u) * f)).Splits := by
+  rw [divFactorialShift_X_sub_C_mul_eq_tDeriv]
   exact splits_tDeriv_all h
 
 /-- All-real derivative-shift form of Garloff--Wagner formula (3):
@@ -210,73 +231,75 @@ theorem derivative_strictInterl_tDeriv_of_splits {eps : ℝ} {p : ℝ[X]}
 
 /-- Garloff--Wagner's formula (3): `J^k L f` precedes `J^k L ((X - u)f)` when
 `u ≤ 0`.  No simple-root or coprimeness hypothesis is needed. -/
-theorem gwJL_factor_strictInterl_of_nonpos {k : ℕ} {u : ℝ} {f : ℝ[X]}
-    (hu : u ≤ 0) (hf0 : f ≠ 0) (hFs : (gwJL (k + 1) f).Splits)
+theorem divFactorialShift_factor_strictInterl_of_nonpos {k : ℕ} {u : ℝ} {f : ℝ[X]}
+    (hu : u ≤ 0) (hf0 : f ≠ 0) (hFs : (divFactorialShift (k + 1) f).Splits)
     (hfpos : HasPosLeadingCoeff f) :
-    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
-  have hFpos : HasPosLeadingCoeff (gwJL (k + 1) f) := hfpos.gwJL (k + 1)
-  have hdeg : 1 ≤ (gwJL (k + 1) f).natDegree := by
-    rw [natDegree_gwJL (k + 1) hf0]
+    StrictInterl (divFactorialShift k f) (divFactorialShift k ((X - C u) * f)) := by
+  have hFpos : HasPosLeadingCoeff (divFactorialShift (k + 1) f) := hfpos.divFactorialShift (k + 1)
+  have hdeg : 1 ≤ (divFactorialShift (k + 1) f).natDegree := by
+    rw [natDegree_divFactorialShift (k + 1) hf0]
     lia
   have hstrictInterl :=
     derivative_strictInterl_tDeriv_of_nonpos
-      (eps := u) (p := gwJL (k + 1) f) hu hFs hFpos hdeg
-  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
-  rw [gwJL_X_sub_C_mul_eq_tDeriv]
+      (eps := u) (p := divFactorialShift (k + 1) f) hu hFs hFpos hdeg
+  have hD : (divFactorialShift (k + 1) f).derivative = divFactorialShift k f :=
+    derivative_divFactorialShift_succ k f
+  rw [divFactorialShift_X_sub_C_mul_eq_tDeriv]
   simpa [hD] using hstrictInterl
 
 /-- Common-factor branch of Garloff--Wagner's formula (3).  For
 `F = J^(k+1)L f`, if `F = d q` and `F' = d r`, then the formula (3) proper
 position step reduces to the quotient statement `r ≪ q`. -/
-theorem gwJL_factor_strictInterl_of_nonpos_of_common_factor
+theorem divFactorialShift_factor_strictInterl_of_common_factor
     {k : ℕ} {u : ℝ} {f d q r : ℝ[X]}
-    (hu : u ≤ 0) (hf0 : f ≠ 0) (hFs : (gwJL (k + 1) f).Splits)
-    (hF_def : gwJL (k + 1) f = d * q)
-    (hFder_def : (gwJL (k + 1) f).derivative = d * r)
+    (hu : u ≤ 0) (hf0 : f ≠ 0) (hFs : (divFactorialShift (k + 1) f).Splits)
+    (hF_def : divFactorialShift (k + 1) f = d * q)
+    (hFder_def : (divFactorialShift (k + 1) f).derivative = d * r)
     (hd_ne : d ≠ 0) (hd_splits : d.Splits)
     (hrq : StrictInterl r q) (hq_pos : HasPosLeadingCoeff q)
     (hr_pos : HasPosLeadingCoeff r) :
-    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
-  have hdeg : 1 ≤ (gwJL (k + 1) f).natDegree := by
-    rw [natDegree_gwJL (k + 1) hf0]
+    StrictInterl (divFactorialShift k f) (divFactorialShift k ((X - C u) * f)) := by
+  have hdeg : 1 ≤ (divFactorialShift (k + 1) f).natDegree := by
+    rw [natDegree_divFactorialShift (k + 1) hf0]
     lia
   have hstrictInterl :=
     derivative_strictInterl_tDeriv_of_nonpos_of_common_factor
-      (eps := u) (p := gwJL (k + 1) f) (d := d) (q := q) (r := r)
+      (eps := u) (p := divFactorialShift (k + 1) f) (d := d) (q := q) (r := r)
       hu hFs hdeg hd_ne hd_splits hF_def hFder_def
       hrq hq_pos hr_pos
-  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
-  rw [gwJL_X_sub_C_mul_eq_tDeriv]
+  have hD : (divFactorialShift (k + 1) f).derivative = divFactorialShift k f :=
+    derivative_divFactorialShift_succ k f
+  rw [divFactorialShift_X_sub_C_mul_eq_tDeriv]
   simpa [hD] using hstrictInterl
 
-theorem gwJ_C_mul_X_pow (a : ℝ) (k : ℕ) :
-    gwJ (C a * X ^ k) = C (a * (k + 1 : ℝ)⁻¹) * X ^ (k + 1) := by
+theorem antiderivative_C_mul_X_pow (a : ℝ) (k : ℕ) :
+    antiderivative (C a * X ^ k) = C (a * (k + 1 : ℝ)⁻¹) * X ^ (k + 1) := by
   ext n
   cases n with
   | zero =>
-      rw [coeff_gwJ_zero, coeff_C_mul_X_pow]
+      rw [coeff_antiderivative_zero, coeff_C_mul_X_pow]
       simp
   | succ n =>
-      rw [coeff_gwJ_succ, coeff_C_mul_X_pow, coeff_C_mul_X_pow]
+      rw [coeff_antiderivative_succ, coeff_C_mul_X_pow, coeff_C_mul_X_pow]
       by_cases hn : n = k
       · subst n
         simp
         ring
       · simp [hn]
 
-theorem gwJL_C_eq_C_mul_X_pow (a : ℝ) :
-    ∀ k : ℕ, ∃ b : ℝ, gwJL k (C a) = C b * X ^ k
+theorem divFactorialShift_C_eq_C_mul_X_pow (a : ℝ) :
+    ∀ k : ℕ, ∃ b : ℝ, divFactorialShift k (C a) = C b * X ^ k
   | 0 => by
       refine ⟨a, ?_⟩
-      simp [gwJL]
+      simp [divFactorialShift]
   | k + 1 => by
-      obtain ⟨b, hb⟩ := gwJL_C_eq_C_mul_X_pow a k
+      obtain ⟨b, hb⟩ := divFactorialShift_C_eq_C_mul_X_pow a k
       refine ⟨b * (k + 1 : ℝ)⁻¹, ?_⟩
-      rw [gwJL_succ, hb, gwJ_C_mul_X_pow]
+      rw [divFactorialShift_succ, hb, antiderivative_C_mul_X_pow]
 
-theorem gwJL_C_splits (a : ℝ) (k : ℕ) :
-    (gwJL k (C a)).Splits := by
-  obtain ⟨b, hb⟩ := gwJL_C_eq_C_mul_X_pow a k
+theorem divFactorialShift_C_splits (a : ℝ) (k : ℕ) :
+    (divFactorialShift k (C a)).Splits := by
+  obtain ⟨b, hb⟩ := divFactorialShift_C_eq_C_mul_X_pow a k
   rw [hb]
   exact (Polynomial.Splits.C (R := ℝ) b).mul (Polynomial.Splits.X_pow k)
 
@@ -287,11 +310,11 @@ lemma hasSimpleRootsExcept_zero_C_mul_X_pow {a : ℝ} (ha : a ≠ 0) (k : ℕ) :
   have hzero : a * r ^ k = 0 := by simpa [Polynomial.IsRoot.def] using hroot
   exact (mul_ne_zero ha (pow_ne_zero k hr0)) hzero
 
-theorem gwJL_splits_of_splits {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits) :
-    ∀ k, (gwJL k f).Splits := by
+theorem divFactorialShift_splits_of_splits {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits) :
+    ∀ k, (divFactorialShift k f).Splits := by
   classical
   let P : ℕ → Prop := fun n =>
-    ∀ {f : ℝ[X]}, f.natDegree = n → f ≠ 0 → f.Splits → ∀ k, (gwJL k f).Splits
+    ∀ {f : ℝ[X]}, f.natDegree = n → f ≠ 0 → f.Splits → ∀ k, (divFactorialShift k f).Splits
   have hP : ∀ n, P n := by
     intro n
     induction n using Nat.strong_induction_on with
@@ -302,7 +325,7 @@ theorem gwJL_splits_of_splits {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits) :
             apply eq_C_of_natDegree_eq_zero
             rw [hfdeg, hn0]
           rw [hfC]
-          exact gwJL_C_splits (f.coeff 0) k
+          exact divFactorialShift_C_splits (f.coeff 0) k
         · have hroots_pos : 0 < f.roots.card := by
             rw [card_roots_of_splits hfs, hfdeg]
             exact Nat.pos_of_ne_zero hn0
@@ -322,61 +345,67 @@ theorem gwJL_splits_of_splits {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits) :
                 natDegree_X_sub_C]
               lia
             lia
-          have ihq : (gwJL (k + 1) q).Splits :=
+          have ihq : (divFactorialShift (k + 1) q).Splits :=
             ih q.natDegree hqdeg_lt (f := q) rfl hq0 hq_splits (k + 1)
           rw [hq]
-          exact gwJL_X_sub_C_mul_splits (k := k) (u := u) (f := q) ihq
+          exact divFactorialShift_X_sub_C_mul_splits (k := k) (u := u) (f := q) ihq
   exact hP f.natDegree rfl hf0 hfs
 
 /-- All-real Garloff--Wagner formula (3), in the local `J^k L` notation. -/
-theorem gwJL_factor_strictInterl_of_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
+theorem divFactorialShift_factor_strictInterl_of_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
     (hf0 : f ≠ 0) (hfs : f.Splits) :
-    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
-  have hF0 : gwJL (k + 1) f ≠ 0 := (gwJL_ne_zero_iff (k + 1) f).2 hf0
-  have hFs : (gwJL (k + 1) f).Splits :=
-    gwJL_splits_of_splits hf0 hfs (k + 1)
-  have hdeg : 1 ≤ (gwJL (k + 1) f).natDegree := by
-    rw [natDegree_gwJL (k + 1) hf0]
+    StrictInterl (divFactorialShift k f) (divFactorialShift k ((X - C u) * f)) := by
+  have hF0 : divFactorialShift (k + 1) f ≠ 0 := (divFactorialShift_ne_zero_iff (k + 1) f).2 hf0
+  have hFs : (divFactorialShift (k + 1) f).Splits :=
+    divFactorialShift_splits_of_splits hf0 hfs (k + 1)
+  have hdeg : 1 ≤ (divFactorialShift (k + 1) f).natDegree := by
+    rw [natDegree_divFactorialShift (k + 1) hf0]
     lia
   have hstrictInterl :=
     derivative_strictInterl_tDeriv_of_splits
-      (eps := u) (p := gwJL (k + 1) f) hF0 hFs hdeg
-  have hD : (gwJL (k + 1) f).derivative = gwJL k f := by simpa [gwD] using gwD_gwJL_succ k f
-  rw [gwJL_X_sub_C_mul_eq_tDeriv]
+      (eps := u) (p := divFactorialShift (k + 1) f) hF0 hFs hdeg
+  have hD : (divFactorialShift (k + 1) f).derivative = divFactorialShift k f :=
+    derivative_divFactorialShift_succ k f
+  rw [divFactorialShift_X_sub_C_mul_eq_tDeriv]
   simpa [hD] using hstrictInterl
 
 /-- Garloff--Wagner, Theorem 11(b), zero-aware PF-cone form: `J^k L` preserves
 PF polynomials. -/
-theorem gwTheorem11PF {f : ℝ[X]} (hf : IsPFPolynomial f) (k : ℕ) :
-    IsPFPolynomial (gwJL k f) := by
+theorem IsPFPolynomial.divFactorialShift {f : ℝ[X]} (hf : IsPFPolynomial f) (k : ℕ) :
+    IsPFPolynomial (divFactorialShift k f) := by
   by_cases hf0 : f = 0
   · simpa [hf0] using IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg
-      (hf.hasNonnegCoeffs.gwJL k) (gwJL_splits_of_splits hf0 (hf.ne_zero_and_splits hf0).2 k)
+      (hf.hasNonnegCoeffs.divFactorialShift k)
+      (divFactorialShift_splits_of_splits hf0 (hf.ne_zero_and_splits hf0).2 k)
 
-theorem gwJL_splits_pos_roots_nonpos_of_splits_pos_roots_nonpos {f : ℝ[X]}
+@[deprecated (since := "2026-10-06")]
+alias gwTheorem11PF := IsPFPolynomial.divFactorialShift
+
+private theorem divFactorialShift_splits_pos_roots_nonpos {f : ℝ[X]}
     (hf0 : f ≠ 0) (hfs : f.Splits) (hfpos : HasPosLeadingCoeff f)
     (hfroots : ∀ r ∈ f.roots, r ≤ 0) (k : ℕ) :
-    (gwJL k f).Splits ∧
-      HasPosLeadingCoeff (gwJL k f) ∧
-      ∀ r ∈ (gwJL k f).roots, r ≤ 0 := by
+    (divFactorialShift k f).Splits ∧
+      HasPosLeadingCoeff (divFactorialShift k f) ∧
+      ∀ r ∈ (divFactorialShift k f).roots, r ≤ 0 := by
   have hfnn : HasNonnegCoeffs f :=
     ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hfs).2
       ⟨hfpos, hfroots⟩).1
-  have hsplit : (gwJL k f).Splits := gwJL_splits_of_splits hf0 hfs k
-  exact ⟨hsplit, hfpos.gwJL k, roots_nonpos_of_nonneg_coeffs hsplit (hfnn.gwJL k)⟩
+  have hsplit : (divFactorialShift k f).Splits := divFactorialShift_splits_of_splits hf0 hfs k
+  exact ⟨hsplit, hfpos.divFactorialShift k,
+    roots_nonpos_of_nonneg_coeffs hsplit (hfnn.divFactorialShift k)⟩
 
 /-- Simple-except-origin part of Garloff--Wagner, Theorem 11(b). -/
-theorem gwJL_hasSimpleRootsExcept_zero_of_splits_roots_nonpos_hasSimpleRootsExcept
+private theorem divFactorialShift_hasSimpleRootsExcept_zero
     {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits)
     (hfroots : ∀ r ∈ f.roots, r ≤ 0)
     (hfsimple : HasSimpleRootsExcept f 0) :
-    ∀ k, HasSimpleRootsExcept (gwJL k f) 0 := by
+    ∀ k, HasSimpleRootsExcept (divFactorialShift k f) 0 := by
   classical
   let P : ℕ → Prop := fun n =>
     ∀ {f : ℝ[X]}, f.natDegree = n → f ≠ 0 → f.Splits →
       (∀ r ∈ f.roots, r ≤ 0) → HasSimpleRootsExcept f 0 →
-      ∀ k, HasSimpleRootsExcept (gwJL k f) 0
+      ∀ k, HasSimpleRootsExcept (divFactorialShift k f) 0
   have hP : ∀ n, P n := by
     intro n
     induction n using Nat.strong_induction_on with
@@ -386,11 +415,11 @@ theorem gwJL_hasSimpleRootsExcept_zero_of_splits_roots_nonpos_hasSimpleRootsExce
         · have hfC : f = C (f.coeff 0) := by
             apply eq_C_of_natDegree_eq_zero
             rw [hfdeg, hn0]
-          obtain ⟨b, hb⟩ := gwJL_C_eq_C_mul_X_pow (f.coeff 0) k
-          have hgw0 : gwJL k f ≠ 0 := (gwJL_ne_zero_iff k f).2 hf0
+          obtain ⟨b, hb⟩ := divFactorialShift_C_eq_C_mul_X_pow (f.coeff 0) k
+          have hJ0 : divFactorialShift k f ≠ 0 := (divFactorialShift_ne_zero_iff k f).2 hf0
           have hb_ne : b ≠ 0 := by
             intro hb0
-            exact hgw0 (by rw [hfC, hb, hb0]; simp)
+            exact hJ0 (by rw [hfC, hb, hb0]; simp)
           rw [hfC, hb]
           exact hasSimpleRootsExcept_zero_C_mul_X_pow hb_ne k
         · have hroots_pos : 0 < f.roots.card := by
@@ -423,83 +452,83 @@ theorem gwJL_hasSimpleRootsExcept_zero_of_splits_roots_nonpos_hasSimpleRootsExce
                 natDegree_X_sub_C]
               lia
             lia
-          have ihq : ∀ k, HasSimpleRootsExcept (gwJL k q) 0 :=
+          have ihq : ∀ k, HasSimpleRootsExcept (divFactorialShift k q) 0 :=
             ih q.natDegree hqdeg_lt (f := q) rfl hq0 hq_splits hqroots hq_simple
           by_cases hu0 : u = 0
           · subst u
-            have hstep : gwJL k ((X - C 0) * q) = gwJL (k + 1) q := by
-              rw [gwJL_X_sub_C_mul_eq_tDeriv, tDeriv_zero_eps]
+            have hstep : divFactorialShift k ((X - C 0) * q) = divFactorialShift (k + 1) q := by
+              rw [divFactorialShift_X_sub_C_mul_eq_tDeriv, tDeriv_zero_eps]
             rw [hq, hstep]
             exact ihq (k + 1)
           · have hstep :
-                gwJL k ((X - C u) * q) = tDeriv u (gwJL (k + 1) q) :=
-              gwJL_X_sub_C_mul_eq_tDeriv k u q
-            have hF0 : gwJL (k + 1) q ≠ 0 :=
-              (gwJL_ne_zero_iff (k + 1) q).2 hq0
-            have hFs : (gwJL (k + 1) q).Splits :=
-              gwJL_splits_of_splits hq0 hq_splits (k + 1)
+                divFactorialShift k ((X - C u) * q) = tDeriv u (divFactorialShift (k + 1) q) :=
+              divFactorialShift_X_sub_C_mul_eq_tDeriv k u q
+            have hF0 : divFactorialShift (k + 1) q ≠ 0 :=
+              (divFactorialShift_ne_zero_iff (k + 1) q).2 hq0
+            have hFs : (divFactorialShift (k + 1) q).Splits :=
+              divFactorialShift_splits_of_splits hq0 hq_splits (k + 1)
             rw [hq, hstep]
             exact hasSimpleRootsExcept_tDeriv (ihq (k + 1)) hu0 hF0 hFs
   exact hP f.natDegree rfl hf0 hfs hfroots hfsimple
 
-theorem gwJL_splits_pos_roots_nonpos_simpleExcept_of_splits_pos_roots_nonpos_simpleExcept
+private theorem divFactorialShift_splits_pos_roots_nonpos_simpleExcept
     {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits)
     (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
     (hfsimple : HasSimpleRootsExcept f 0) (k : ℕ) :
-    (gwJL k f).Splits ∧
-      HasPosLeadingCoeff (gwJL k f) ∧
-      (∀ r ∈ (gwJL k f).roots, r ≤ 0) ∧
-      HasSimpleRootsExcept (gwJL k f) 0 := by
+    (divFactorialShift k f).Splits ∧
+      HasPosLeadingCoeff (divFactorialShift k f) ∧
+      (∀ r ∈ (divFactorialShift k f).roots, r ≤ 0) ∧
+      HasSimpleRootsExcept (divFactorialShift k f) 0 := by
   obtain ⟨hsplits, hpos, hroots⟩ :=
-    gwJL_splits_pos_roots_nonpos_of_splits_pos_roots_nonpos
+    divFactorialShift_splits_pos_roots_nonpos
       hf0 hfs hfpos hfroots k
   exact ⟨hsplits, hpos, hroots,
-    gwJL_hasSimpleRootsExcept_zero_of_splits_roots_nonpos_hasSimpleRootsExcept
+    divFactorialShift_hasSimpleRootsExcept_zero
       hf0 hfs hfroots hfsimple k⟩
 
 /-- Garloff--Wagner formula (3) for a standard polynomial with nonpositive
 roots and simple roots except possibly at the origin. -/
-theorem gwJL_factor_strictInterl_of_nonpos_of_hasSimpleRootsExcept_zero
+theorem divFactorialShift_factor_strictInterl_of_hasSimpleRootsExcept
     {k : ℕ} {u : ℝ} {f : ℝ[X]}
     (hu : u ≤ 0) (hf0 : f ≠ 0) (hfs : f.Splits)
     (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
     (hfsimple : HasSimpleRootsExcept f 0) :
-    StrictInterl (gwJL k f) (gwJL k ((X - C u) * f)) := by
+    StrictInterl (divFactorialShift k f) (divFactorialShift k ((X - C u) * f)) := by
   obtain ⟨hFs, -, -, -⟩ :=
-    gwJL_splits_pos_roots_nonpos_simpleExcept_of_splits_pos_roots_nonpos_simpleExcept
+    divFactorialShift_splits_pos_roots_nonpos_simpleExcept
       hf0 hfs hfpos hfroots hfsimple (k + 1)
-  exact gwJL_factor_strictInterl_of_nonpos hu hf0 hFs hfpos
+  exact divFactorialShift_factor_strictInterl_of_nonpos hu hf0 hFs hfpos
 
 /-- Reduction for the Lemma 7/Krein step in Garloff--Wagner, Theorem 11(c):
 once `g` is expressed as a weighted sum whose `J^k L` images are compatible
 with the common left bound `J^k L f`, Wagner's finite weighted-sum theorem
 gives the desired interlacing conclusion. -/
-theorem gwJL_strictInterl_of_weightedCompatibleExpansion
+theorem divFactorialShift_strictInterl_of_weightedCompatibleExpansion
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hg : g = weightedSum l)
     (hcomp :
-      WeightedCompatibleLeft (gwJL k f)
-        (l.map fun ap => (ap.1, gwJL k ap.2))) :
-    StrictInterl (gwJL k f) (gwJL k g) := by
-  rw [hg, gwJL_weightedSum]
+      WeightedCompatibleLeft (divFactorialShift k f)
+        (l.map fun ap => (ap.1, divFactorialShift k ap.2))) :
+    StrictInterl (divFactorialShift k f) (divFactorialShift k g) := by
+  rw [hg, divFactorialShift_weightedSum]
   exact hcomp.toStrictInterl
 
 /-- Variable-swapped common-right weighted reduction for the Lemma 7/Krein
 step.  If `g` is expanded in summands bounded on the right by `f`, Wagner's
 common-right finite-sum theorem gives the reverse conclusion
 `J^k L g ≪ J^k L f`. -/
-theorem gwJL_weightedExpansion_strictInterl_right
+theorem divFactorialShift_weightedExpansion_strictInterl_right
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hg : g = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hstrictInterl : ∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k f))
-    (hpos : ∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2))
+    (hstrictInterl : ∀ ap ∈ l, StrictInterl (divFactorialShift k ap.2) (divFactorialShift k f))
+    (hpos : ∀ ap ∈ l, HasPosLeadingCoeff (divFactorialShift k ap.2))
     (hex : ∃ ap ∈ l, 0 < ap.1) :
-    StrictInterl (gwJL k g) (gwJL k f) := by
-  rw [hg, gwJL_weightedSum]
+    StrictInterl (divFactorialShift k g) (divFactorialShift k f) := by
+  rw [hg, divFactorialShift_weightedSum]
   exact
     StrictInterl.weightedSum_right_of_nonneg
-      (l.map fun ap => (ap.1, gwJL k ap.2)) (gwJL k f)
+      (l.map fun ap => (ap.1, divFactorialShift k ap.2)) (divFactorialShift k f)
       (by
         intro ap hap
         rcases List.mem_map.mp hap with ⟨ap₀, hap₀, rfl⟩
@@ -514,24 +543,24 @@ theorem gwJL_weightedExpansion_strictInterl_right
         exact hpos ap₀ hap₀)
       (by
         rcases hex with ⟨ap, hap, hapos⟩
-        exact ⟨(ap.1, gwJL k ap.2), List.mem_map.mpr ⟨ap, hap, rfl⟩, hapos⟩)
+        exact ⟨(ap.1, divFactorialShift k ap.2), List.mem_map.mpr ⟨ap, hap, rfl⟩, hapos⟩)
 
 /-- Common-right weighted reduction in the forward Theorem 11(c) orientation.
 If the left input `f` is a nonnegative weighted sum whose `J^k L` images all
 precede the common right bound `J^k L g`, then the image of `f` also precedes
 the image of `g`. -/
-theorem gwJL_strictInterl_of_rightWeightedExpansion
+theorem divFactorialShift_strictInterl_of_rightWeightedExpansion
     {k : ℕ} {f g : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hf : f = weightedSum l)
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hstrictInterl : ∀ ap ∈ l, StrictInterl (gwJL k ap.2) (gwJL k g))
-    (hpos : ∀ ap ∈ l, HasPosLeadingCoeff (gwJL k ap.2))
+    (hstrictInterl : ∀ ap ∈ l, StrictInterl (divFactorialShift k ap.2) (divFactorialShift k g))
+    (hpos : ∀ ap ∈ l, HasPosLeadingCoeff (divFactorialShift k ap.2))
     (hex : ∃ ap ∈ l, 0 < ap.1) :
-    StrictInterl (gwJL k f) (gwJL k g) := by
-  rw [hf, gwJL_weightedSum]
+    StrictInterl (divFactorialShift k f) (divFactorialShift k g) := by
+  rw [hf, divFactorialShift_weightedSum]
   exact
     StrictInterl.weightedSum_right_of_nonneg
-      (l.map fun ap => (ap.1, gwJL k ap.2)) (gwJL k g)
+      (l.map fun ap => (ap.1, divFactorialShift k ap.2)) (divFactorialShift k g)
       (by
         intro ap hap
         rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
@@ -546,6 +575,6 @@ theorem gwJL_strictInterl_of_rightWeightedExpansion
         exact hpos ap0 hap0)
       (by
         rcases hex with ⟨ap, hap, hapos⟩
-        exact ⟨(ap.1, gwJL k ap.2), List.mem_map.mpr ⟨ap, hap, rfl⟩, hapos⟩)
+        exact ⟨(ap.1, divFactorialShift k ap.2), List.mem_map.mpr ⟨ap, hap, rfl⟩, hapos⟩)
 
 end RealRooted

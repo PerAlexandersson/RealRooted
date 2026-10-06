@@ -142,7 +142,7 @@ theorem hadamardProduct_interl_of_nonneg_strictInterl {f g p q : ℝ[X]}
     (hfg : StrictInterl f g)
     (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  gwHadamardProductNonnegInterl hf hg hp hq hfg hpq
+  StrictInterl.interl_hadamardProduct hf hg hp hq hfg hpq
 
 theorem hadamardProduct_sequence_interl {F G P Q : Nat → ℝ[X]}
     (hF : ∀ i : Nat, HasNonnegCoeffs (F i))
