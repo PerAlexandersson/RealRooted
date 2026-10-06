@@ -82,8 +82,7 @@ theorem
     PositiveSplitRootCountPair.two_le_card_xSub_roots_Ioo_of_even_right_roots
     {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
     (hp_nonneg : HasNonnegCoeffs p) (hno : NoCommonRoots p q)
-    {a b μ : ℝ} (_hab : a < b)
-    (ha : p.IsRoot a) (hb : p.IsRoot b) (hμ : 0 < μ)
+    {a b μ : ℝ} (ha : p.IsRoot a) (hb : p.IsRoot b) (hμ : 0 < μ)
     (hp_no : ∀ z : ℝ, a < z → z < b → ¬ p.IsRoot z)
     (hpos : 0 < (q.roots.filter (fun x => a < x ∧ x < b)).card)
     (heven : Even (q.roots.filter (fun x => a < x ∧ x < b)).card) :
@@ -134,7 +133,7 @@ theorem PositiveSplitRootCountPair.min_two_card_right_roots_le_card_xSub_roots_I
     have heven : Even (q.roots.filter (fun x => a < x ∧ x < b)).card := by simp [I, hI]
     have htwo :=
       hpair.two_le_card_xSub_roots_Ioo_of_even_right_roots
-        hp_nonneg hno hab ha hb hμ hp_no hpos heven
+        hp_nonneg hno ha hb hμ hp_no hpos heven
     simpa [I, hI] using htwo
 
 /-- Adjacent distinct left roots in the sorted root set give the local
