@@ -1,5 +1,6 @@
 import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
+import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 
 /-!
 # The column recurrence for truncated staircases
@@ -30,17 +31,10 @@ namespace RealRooted
 namespace GeneralizedSnakePosets
 namespace FiniteSkewBoard
 
-private theorem listRange_map_sum_eq {M : Type*} [AddCommMonoid M] (f : ℕ → M) (n : ℕ) :
-    ((List.range n).map f).sum = ∑ i ∈ Finset.range n, f i := by
-  induction n with
-  | zero => simp
-  | succ n ih => rw [List.range_succ, List.map_append, List.sum_append, ih,
-      Finset.sum_range_succ]; simp
-
 /-- `G_n = sum_{i < n} R(n, i)` as a `Finset` sum. -/
 theorem auxiliaryG_eq_sum_range (n : ℕ) :
     auxiliaryG n = ∑ i ∈ Finset.range n, truncatedStaircaseRookPolynomial n i := by
-  rw [auxiliaryG, listRange_map_sum_eq]
+  rw [auxiliaryG, List.sum_map_range]
 
 /-- The bottom-row expansion with a `Finset` sum. -/
 private theorem bottomRow (n i : ℕ) :
@@ -49,7 +43,7 @@ private theorem bottomRow (n i : ℕ) :
         X * ∑ c ∈ Finset.range (n - i), truncatedStaircaseRookPolynomial (n - c - 1) i := by
   have h := truncatedStaircaseBottomRowExpansion_all n i
   dsimp [truncatedStaircaseBottomRowExpansion] at h
-  rwa [listRange_map_sum_eq] at h
+  rwa [List.sum_map_range] at h
 
 /-- An empty bottom row does not change the rook polynomial. -/
 theorem truncatedStaircaseRookPolynomial_succ_self (n : ℕ) :
@@ -86,7 +80,7 @@ theorem narayanaAuxiliaryGRecurrence_modified :
     ← truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaPolynomial m,
     truncatedStaircaseRookPolynomial_succ_cols m (m + 1) le_rfl,
     truncatedStaircaseRookPolynomial_succ_self, Finset.sum_range_succ, auxiliaryG,
-    listRange_map_sum_eq]
+    List.sum_map_range]
   ring
 
 /-- **Braun–Jal: `G_n - G_{n-1}` has nonnegative coefficients** for `n ≥ 1`. -/
@@ -102,8 +96,8 @@ theorem auxiliaryG_sub_hasNonnegCoeffs {n : ℕ} (hn : 1 ≤ n) :
       truncatedStaircaseRookPolynomial (m + 1) m +
         X * ∑ i ∈ Finset.range m, ∑ j ∈ Finset.range i,
           truncatedStaircaseRookPolynomial m j := by
-    rw [Nat.add_sub_cancel, auxiliaryG, auxiliaryG, listRange_map_sum_eq,
-      listRange_map_sum_eq, Finset.sum_range_succ, Finset.sum_congr rfl hcol,
+    rw [Nat.add_sub_cancel, auxiliaryG, auxiliaryG, List.sum_map_range,
+      List.sum_map_range, Finset.sum_range_succ, Finset.sum_congr rfl hcol,
       Finset.sum_add_distrib, ← Finset.mul_sum]
     ring
   rw [heq]

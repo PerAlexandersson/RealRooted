@@ -70,18 +70,16 @@ theorem StrictInterl.add_of_left {f g h : ℝ[X]}
       hsum_le
 
 /-- Recursive compatibility data for iterating Wagner (2) along a nonempty
-list. Each new head term must precede the same left bound, have positive
-leading coefficient, and satisfy the Wagner-2 compatibility hypotheses with the
-sum of the already-compatible tail. -/
+list. Each new head term must be interlaced by the same left bound and have
+positive leading coefficient; by `StrictInterl.add_of_left`, no real-rootedness
+or coprimeness condition on the partial sums is needed. -/
 inductive SumCompatibleLeft (h : ℝ[X]) : List ℝ[X] → Prop
   | singleton {p : ℝ[X]}
       (hstrictInterl : StrictInterl h p) (hpos : HasPosLeadingCoeff p) :
       SumCompatibleLeft h [p]
   | cons {p : ℝ[X]} {l : List ℝ[X]}
       (hstrictInterl : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
-      (hl : SumCompatibleLeft h l)
-      (hrr_ne : (p + l.sum) ≠ 0) (hrr_splits : (p + l.sum).Splits)
-      (hcop : IsCoprime p l.sum) :
+      (hl : SumCompatibleLeft h l) :
       SumCompatibleLeft h (p :: l)
 
 namespace SumCompatibleLeft
@@ -90,7 +88,7 @@ lemma hasPosLeadingCoeff_sum {h : ℝ[X]} :
     ∀ {l : List ℝ[X]}, SumCompatibleLeft h l → HasPosLeadingCoeff l.sum
   | _, singleton _ hpos => by
       simp_all
-  | _, @cons _ p l _ hpos hl _ _ _ => by
+  | _, @cons _ p l _ hpos hl => by
       have htail_pos : HasPosLeadingCoeff l.sum := hasPosLeadingCoeff_sum hl
       rcases lt_trichotomy p.natDegree l.sum.natDegree with hlt | heq | hgt
       · simpa using hasPosLeadingCoeff_add_of_natDegree_lt_right hlt htail_pos
@@ -101,13 +99,11 @@ lemma toStrictInterl {h : ℝ[X]} :
     ∀ {l : List ℝ[X]}, SumCompatibleLeft h l → StrictInterl h l.sum
   | _, singleton hstrictInterl _ => by
       simp_all
-  | _, @cons _ p l hstrictInterl hpos hl _ _ _ =>
+  | _, @cons _ p l hstrictInterl hpos hl =>
       StrictInterl.add_of_left hstrictInterl (toStrictInterl hl)
         hpos (hasPosLeadingCoeff_sum hl)
 
 end SumCompatibleLeft
-
-/-! ## Deprecated Wagner sum names -/
 
 end
 end RealRooted

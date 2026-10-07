@@ -330,8 +330,8 @@ private theorem grace_aux_lowerHalf {b : ℝ} :
         grind
       obtain ⟨g', hg'⟩ :
           ∃ g' : ℂ[X], (X - C ζ) * binomialLift (n - 1) g' = binomialLift n g := by
-        obtain ⟨g', hg'⟩ : ∃ g' : ℂ[X], binomialLift n g = (X - C ζ) * g' := by
-          exact Polynomial.dvd_iff_isRoot.mpr hζ
+        obtain ⟨g', hg'⟩ : ∃ g' : ℂ[X], binomialLift n g = (X - C ζ) * g' :=
+          Polynomial.dvd_iff_isRoot.mpr hζ
         have : g'.natDegree = n - 1 := by rw [hg', Polynomial.natDegree_mul'] at hg <;> aesop
         obtain ⟨_, _⟩ := exists_binomialLift_eq g' (by linarith)
         grind

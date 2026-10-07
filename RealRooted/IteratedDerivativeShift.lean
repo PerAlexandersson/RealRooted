@@ -236,7 +236,7 @@ private lemma isRealRooted_tDeriv_pos {eps : ℝ} {p : ℝ[X]}
   -- Write T_ε(p) = C 1 * p + C (-eps) * p'
   have hrewrite : tDeriv eps p = C 1 * p + C (-eps) * p.derivative := by simp [tDeriv]; grind
   -- derivative interlaces p
-  have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
+  have hder : Interlaces p.derivative p := derivative_interlaces_of_natDegree_ne_zero hp (by lia)
   -- HasPosLeadingCoeff of p'
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
     hp_pos.derivative (by lia)
@@ -386,8 +386,8 @@ theorem derivative_strictInterl_tDeriv_of_natDegree_one {eps : ℝ} {p : ℝ[X]}
   have hbase : StrictInterl (1 : ℝ[X]) (tDeriv eps p) :=
     (interlaces_one_linear hTdeg).toStrictInterl
   have hder_deg : p.derivative.natDegree = 0 := by rw [p.natDegree_derivative, hdeg]
-  have hder_C : p.derivative = C (p.derivative.coeff 0) := by
-    exact eq_C_of_natDegree_eq_zero hder_deg
+  have hder_C : p.derivative = C (p.derivative.coeff 0) :=
+    eq_C_of_natDegree_eq_zero hder_deg
   have hder_ne : p.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by rw [hdeg]; norm_num)
   have hcoeff_ne : p.derivative.coeff 0 ≠ 0 := by
@@ -411,7 +411,7 @@ theorem derivative_strictInterl_tDeriv_of_nonpos {eps : ℝ} {p : ℝ[X]}
   · exact derivative_strictInterl_tDeriv_of_natDegree_one hdeg1
   have hdeg2 : 2 ≤ p.natDegree := by lia
   rcases lt_or_eq_of_le heps with heps_neg | heps_zero
-  · have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
+  · have hder : Interlaces p.derivative p := derivative_interlaces_of_natDegree_ne_zero hp (by lia)
     have hder_rr : p.derivative ≠ 0 ∧ p.derivative.Splits := hder.2.1
     have hcoef_pos : 0 < -eps := neg_pos.mpr heps_neg
     have hT_eq : tDeriv eps p = p + C (-eps) * p.derivative := by simp [tDeriv, sub_eq_add_neg]
@@ -422,7 +422,7 @@ theorem derivative_strictInterl_tDeriv_of_nonpos {eps : ℝ} {p : ℝ[X]}
     rw [hT_eq]
     exact hder.toStrictInterl.add_of_left hscaled_strictInterl hp_pos hscaled_pos
   · subst eps
-    simpa [tDeriv] using (derivative_interlaces hp hdeg2).toStrictInterl
+    simpa [tDeriv] using (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).toStrictInterl
 
 /-- Common-factor version of the left derivative-shift step.  If
 `p = d * q` and `p' = d * r`, then `p' ≪ T_ε p` follows from Wagner (2) for
@@ -453,7 +453,7 @@ theorem derivative_strictInterl_tDeriv_of_nonpos_of_common_factor {eps : ℝ} {p
     exact (hrq.add_of_left hscaled_strictInterl hq_pos hscaled_pos).mul_common_factor
       hd_ne hd_splits
   · subst eps
-    simpa [tDeriv] using (derivative_interlaces hp hdeg2).toStrictInterl
+    simpa [tDeriv] using (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).toStrictInterl
 
 /-- Derivative of an exact power of a linear factor times a quotient. -/
 lemma derivative_pow_X_sub_C_mul (a : ℝ) (m : ℕ) (q : ℝ[X]) :
@@ -580,7 +580,8 @@ theorem strictInterl_tDeriv {eps : ℝ} {p : ℝ[X]}
       have hstrictInterl_neg :
           StrictInterl (-p) (tDeriv eps (-p)) := by
         have hder : Interlaces (-p).derivative (-p) := by
-          simpa using derivative_interlaces (f := -p) (by simp_all) (by simp_all)
+          simpa using
+            derivative_interlaces_of_natDegree_ne_zero (f := -p) (by simp_all) (by simp_all; lia)
         have hp'_pos : HasPosLeadingCoeff (-p).derivative := by
           simpa using hneg_pos.derivative (by rw [natDegree_neg]; lia)
         have hrewrite_neg : tDeriv eps (-p) = C 1 * (-p) + C (-eps) * (-p).derivative := by
@@ -607,7 +608,8 @@ theorem strictInterl_tDeriv {eps : ℝ} {p : ℝ[X]}
       have hboth : StrictInterl p (tDeriv eps p) := by
         simpa [hrewrite] using StrictInterl.C_mul_right hleft (by simp : (-1 : ℝ) ≠ 0)
       lia
-    · have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
+    · have hder : Interlaces p.derivative p :=
+        derivative_interlaces_of_natDegree_ne_zero hp (by lia)
       have hp'_pos : HasPosLeadingCoeff p.derivative := hpos.derivative (by lia)
       have hrewrite : tDeriv eps p = C 1 * p + C (-eps) * p.derivative := by
         simp [tDeriv]
@@ -918,6 +920,16 @@ lemma pos_of_norm_sub_lt_half_of_pos {a b : ℝ}
     simpa [Real.norm_eq_abs] using (abs_lt.mp hab)
   linarith
 
+/-- A real number within half of `‖b‖` of `b ≠ 0` has the sign of `b`. -/
+private lemma mul_pos_of_norm_sub_lt_half {a b : ℝ} (hb : b ≠ 0)
+    (h : ‖a - b‖ < ‖b‖ / 2) : 0 < a * b := by
+  rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_sub_lt_iff] at h
+  rcases lt_or_gt_of_ne hb with hb' | hb'
+  · rw [abs_of_neg hb'] at h
+    exact mul_pos_of_neg_of_neg (by linarith) hb'
+  · rw [abs_of_pos hb'] at h
+    exact mul_pos (by linarith) hb'
+
 /-- If `p.eval x ≠ 0`, then for sufficiently small `eps`, the value of
 `(iterateTDeriv eps n p).eval x` has the same sign as `p.eval x`. This is the
 local nonvanishing/sign-stability theorem used in the `ε → 0` closure route. -/
@@ -934,31 +946,7 @@ lemma exists_delta_eval_mul_pos_iterateTDeriv_at_zero
   have hclose' :
       ‖(iterateTDeriv eps n p).eval x - p.eval x‖ < ‖p.eval x‖ / 2 :=
     hclose heps
-  rcases lt_or_gt_of_ne hx with hx_neg | hx_pos
-  · have hneg_iter : (iterateTDeriv eps n p).eval x < 0 := by
-      have hneg_norm :
-          ‖-(iterateTDeriv eps n p).eval x - (-p.eval x)‖ =
-            ‖(iterateTDeriv eps n p).eval x - p.eval x‖ := by
-        rw [sub_eq_add_neg, neg_neg]
-        have hEq :
-            -(iterateTDeriv eps n p).eval x + p.eval x =
-              -((iterateTDeriv eps n p).eval x - p.eval x) := by
-          ring
-        rw [hEq, norm_neg]
-      have hclose_neg0 :
-          ‖-(iterateTDeriv eps n p).eval x - (-p.eval x)‖ < ‖p.eval x‖ / 2 := by
-        lia
-      have hclose_neg :
-          ‖-(iterateTDeriv eps n p).eval x - (-p.eval x)‖ < (-p.eval x) / 2 := by
-        simpa [Real.norm_eq_abs, abs_of_neg hx_neg] using hclose_neg0
-      have hpos_neg_iter : 0 < -(iterateTDeriv eps n p).eval x :=
-        pos_of_norm_sub_lt_half_of_pos (by simp_all) hclose_neg
-      linarith
-    exact mul_pos_of_neg_of_neg hneg_iter hx_neg
-  · have hpos_iter : 0 < (iterateTDeriv eps n p).eval x :=
-      pos_of_norm_sub_lt_half_of_pos hx_pos
-        (by simpa [Real.norm_eq_abs, abs_of_pos hx_pos] using hclose')
-    simp_all
+  exact mul_pos_of_norm_sub_lt_half hx hclose'
 
 /-- Two-variable sign stability near `(eps, x) = (0, x₀)`: if `p(x₀) ≠ 0`, then
 for all sufficiently small joint perturbations of the shift parameter and the
@@ -978,31 +966,7 @@ lemma exists_delta_eval_mul_pos_iterateTDeriv_joint_at_zero
   have hclose' :
       ‖(iterateTDeriv z.1 n p).eval z.2 - p.eval x‖ < ‖p.eval x‖ / 2 :=
     hclose hz
-  rcases lt_or_gt_of_ne hx with hx_neg | hx_pos
-  · have hneg_iter : (iterateTDeriv z.1 n p).eval z.2 < 0 := by
-      have hneg_norm :
-          ‖-(iterateTDeriv z.1 n p).eval z.2 - (-p.eval x)‖ =
-            ‖(iterateTDeriv z.1 n p).eval z.2 - p.eval x‖ := by
-        rw [sub_eq_add_neg, neg_neg]
-        have hEq :
-            -(iterateTDeriv z.1 n p).eval z.2 + p.eval x =
-              -((iterateTDeriv z.1 n p).eval z.2 - p.eval x) := by
-          ring
-        rw [hEq, norm_neg]
-      have hclose_neg0 :
-          ‖-(iterateTDeriv z.1 n p).eval z.2 - (-p.eval x)‖ < ‖p.eval x‖ / 2 := by
-        lia
-      have hclose_neg :
-          ‖-(iterateTDeriv z.1 n p).eval z.2 - (-p.eval x)‖ < (-p.eval x) / 2 := by
-        simpa [Real.norm_eq_abs, abs_of_neg hx_neg] using hclose_neg0
-      have hpos_neg_iter : 0 < -(iterateTDeriv z.1 n p).eval z.2 :=
-        pos_of_norm_sub_lt_half_of_pos (by simp_all) hclose_neg
-      linarith
-    exact mul_pos_of_neg_of_neg hneg_iter hx_neg
-  · have hpos_iter : 0 < (iterateTDeriv z.1 n p).eval z.2 :=
-      pos_of_norm_sub_lt_half_of_pos hx_pos
-        (by simpa [Real.norm_eq_abs, abs_of_pos hx_pos] using hclose')
-    simp_all
+  exact mul_pos_of_norm_sub_lt_half hx hclose'
 
 /-- If `x` is not a root of `p`, then `x` stays away from the roots of the
 `iterateTDeriv` regularizations for all sufficiently small `eps`. -/

@@ -17,10 +17,7 @@ theorem, refutation, or production caller. They contain no admission.
 | Declaration | Status |
 | --- | --- |
 | `HurwitzOddEvenToReverseFullyInterlacingPairStatement` | Proposed reverse-row replacement for the refuted legacy Hurwitz-to-Lace orientation; issue #1113 |
-| `HurwitzOddEvenToHermiteBiehlerStableStatement` | Converse of the conformal substitution `hermiteBiehlerStableToHurwitzOddEven`; input to `strictInterl_of_isHurwitzStable_oddEvenPolynomial`; issue #1112 (shared with the next row) |
-| `HermiteBiehlerConverseOrientedStatement` | Oriented converse Hermite--Biehler theorem; the checked `hermiteBiehlerConverse` is disjunctive and `hermiteBiehlerConverseOriented_of_natDegree_lt` settles the strict-degree case; issue #1112 (shared with the previous row) |
 | `hadamardPreservesHurwitzStableStatement` | Garloff--Wagner Theorem 1, Hadamard products preserve Hurwitz stability; issue #1095 |
-| `iterateThetaPlusOneSelfInterlStatement` | Unused open interlacing target for iterates of `theta + 1`; issue #1114 |
 
 ## Checked replacements
 
@@ -34,12 +31,15 @@ theorem, refutation, or production caller. They contain no admission.
 | Jensen certificate gives endpoint compatibility | `BidiagonalJensenPencilCertificate.compatible` |
 | Jensen output as two Schur--Szegő compositions | `bidiagonalOperator_eq_schurSzegoComp` |
 | Schur--Szegő Jensen compatibility contraction | `schurSzegoPreservesJensenPencilCompatibility` |
-| Liu theorem with common roots | `compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant` |
+| Liu theorem with common roots | `compatible_iff_rootCountBranchesWithCommon` |
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFInterl_of_nonnegStrictInterl` |
 | Bounded-degree polar-theta interlacing preservation | `polarThetaPreservesInterlStatement`, witnessed by `polarTheta_preserves_interl` |
 | Theta interlacing preservation on the PF cone | `thetaPreservesInterlStatement`, witnessed by `thetaPreservesInterl` |
 | Derivative preservation of weak interlacing | `derivativePreservesInterl` |
 | Nonnegative interlacing pair gives a Hurwitz-stable odd/even polynomial | `isHurwitzStable_oddEvenPolynomial_of_strictInterl` |
+| Hurwitz-stable odd/even polynomial gives an interlacing pair (issue #1112) | `strictInterl_of_isHurwitzStable_oddEvenPolynomial`, `isHurwitzStable_oddEvenPolynomial_iff` |
+| Converse conformal substitution: Hurwitz stability of `q(x²) + x p(x²)` gives stability of `q + i p` (issue #1112) | `IsHurwitzStable.isUpperHalfPlaneStable_hermiteBiehlerPolynomial` |
+| Oriented converse Hermite--Biehler theorem (issue #1112) | `strictInterl_of_upperHalfPlaneStable_hermiteBiehler` |
 | Peak-value multivariate stability | `peakValuePolynomial_mvRealStable` |
 | Weighted consecutive peak-value interleaving | `peakValueWeightedDiagonal_consecutive_strictInterl` |
 
@@ -50,12 +50,14 @@ Refuted statements are recorded as checked theorems with an explicit negated
 
 | Refuted statement | Checked negation |
 | --- | --- |
-| Nonconstant forward half of the published Liu Theorem 2.1, without the common-root branch | `LiuOppositeSigns.not_forall_theorem21RootCountBranches_of_compatible_nonconstant` |
+| Nonconstant forward half of the published Liu Theorem 2.1, without the common-root branch | `LiuOppositeSigns.not_forall_rootCountBranches_of_compatible` |
 | Row-oriented converse Hurwitz-matrix criterion | `not_forall_isHurwitzStable_of_hurwitz_isTotallyNonneg` |
 | Row-oriented forward Hurwitz-matrix criterion: Hurwitz stability gives a totally nonnegative Hurwitz matrix | `not_forall_isHurwitzStable_hurwitz_isTotallyNonneg` |
 | A Hurwitz-stable odd/even polynomial has fully interlacing coefficient sequences | `not_isHurwitzStable_oddEven_fullyInterlacingPair` |
 | A nonnegative strictly interlacing pair has fully interlacing coefficient sequences | `not_nonnegStrictInterl_fullyInterlacingPair` |
 | Entrywise products of totally nonnegative Hurwitz matrices are totally nonnegative | `not_hurwitz_schurProduct_isTotallyNonneg` |
+| Weak Wronskian converse without the multiplicity condition: a nonnegative Wronskian forces interlacing | `exists_wronskian_eval_nonneg_not_strictInterl` |
+| A PF polynomial interlaces its iterates under `theta + 1` (issue #1114) | `exists_isPFPolynomial_not_interl_iterateThetaPlusOne` |
 
 One exception is kept for a downstream consumer:
 `RowThresholdMatricesPreserveInterlacingSeqNonneg` is false as stated. Its

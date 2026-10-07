@@ -27,7 +27,7 @@ leading coefficient interlaces it. -/
 theorem derivative_interlaces_of_pos {f : ℝ[X]} (hf : f.Splits) (hpos : 0 < f.leadingCoeff)
     (hdeg : 1 ≤ f.natDegree) : Interlaces f.derivative f := by
   rcases hdeg.lt_or_eq with hdeg | hdeg
-  · exact derivative_interlaces hf hdeg
+  · exact derivative_interlaces_of_natDegree_ne_zero hf (by lia)
   · refine interlaces_of_natDegree_eq_zero_of_natDegree_eq_one ?_ ?_ hdeg.symm
     · exact leadingCoeff_ne_zero.mp
         (HasPosLeadingCoeff.derivative hpos (by lia)).ne'

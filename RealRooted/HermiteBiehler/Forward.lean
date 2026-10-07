@@ -391,10 +391,8 @@ theorem hermiteBiehlerForwardPos {f g : ℝ[X]}
 @[deprecated (since := "2026-10-05")]
 alias hermiteBiehlerForwardPos_general := hermiteBiehlerForwardPos
 
-lemma hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hp₀ : p ≠ 0) :
-    HasPosLeadingCoeff p :=
-  lt_of_le_of_ne (hpnn p.natDegree) (Ne.symm (leadingCoeff_ne_zero.mpr hp₀))
+@[deprecated HasNonnegCoeffs.pos_leadingCoeff (since := "2026-10-06")]
+alias hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero := HasNonnegCoeffs.pos_leadingCoeff
 
 /-- Concrete obstruction to a sign-free forward Hermite--Biehler route:
 `X - i` has the upper-half-plane root `i`. -/

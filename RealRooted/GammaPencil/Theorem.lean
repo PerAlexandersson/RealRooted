@@ -90,7 +90,7 @@ theorem gammaU_strictInterl_gammaV (n : ℕ) (hn : 2 ≤ n) :
       hall hUne hVne with hsame | hsucc | hrevsucc
   · apply strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
       hUne hVne hUnn hVnn hall hsame
-    have hVpos := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hVnn hVne
+    have hVpos := HasNonnegCoeffs.pos_leadingCoeff hVnn hVne
     rw [← Polynomial.coeff_zero_eq_eval_zero,
       ← Polynomial.coeff_zero_eq_eval_zero, hUzero, hVzero]
     simpa only [zero_mul, one_mul, HasPosLeadingCoeff] using hVpos

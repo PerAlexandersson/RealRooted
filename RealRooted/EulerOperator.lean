@@ -1,6 +1,7 @@
 import RealRooted.Derivative
 import RealRooted.PFPolynomial
 import RealRooted.ObreschkoffConverse
+import RealRooted.OrderedRoots
 
 open Polynomial
 
@@ -162,12 +163,40 @@ theorem thetaPlusOnePreservesInterl {p q : ℝ[X]}
   simpa [thetaPlusOne_eq_derivative_X_mul] using
     derivativePreservesInterl (interl_X_mul_both_of_pf hp hq hpq)
 
-/-- Unproved target: a PF polynomial is in weak interlacing with each of its
-iterates under `theta + 1`. -/
-def iterateThetaPlusOneSelfInterlStatement : Prop :=
-  ∀ {p : ℝ[X]} (l : ℕ),
-    IsPFPolynomial p →
-    Interl p (iterateThetaPlusOne l p)
+/-- A PF polynomial need not interlace its iterates under `theta + 1`: for
+`p = (X + 2) (X + 3)`, `(theta + 1)^2 p = 9X² + 20X + 6` has both roots in `(-2, 0)`, to the
+right of both roots of `p` (issue #1114). -/
+theorem exists_isPFPolynomial_not_interl_iterateThetaPlusOne :
+    ∃ p : ℝ[X], IsPFPolynomial p ∧ ¬ Interl p (iterateThetaPlusOne 2 p) := by
+  set p : ℝ[X] := (X + 2) * (X + 3)
+  set q : ℝ[X] := 9 * X ^ 2 + 20 * X + 6
+  have hq : iterateThetaPlusOne 2 p = q := by
+    simp only [p, q, iterateThetaPlusOne, Function.iterate_succ, Function.iterate_zero,
+      Function.comp_apply, id, thetaPlusOne, theta]
+    simp only [derivative_mul, derivative_add, derivative_X, derivative_ofNat,
+      derivative_one, derivative_zero]
+    ring
+  have hp : p = (X + C 2) * (X + C 3) := by simp only [p, map_ofNat]
+  refine ⟨p, hp ▸ (isPFPolynomial_X_add_C (by norm_num)).mul
+    (isPFPolynomial_X_add_C (by norm_num)), ?_⟩
+  rw [hq]
+  have hpdeg : p.natDegree = 2 := by simp only [p]; compute_degree!
+  have hqdeg : q.natDegree = 2 := by simp only [q]; compute_degree!
+  rintro (hp0 | hq0 | h)
+  · simp [hp0] at hpdeg
+  · simp [hq0] at hqdeg
+  -- the least root of `q` would lie below the largest root of `p`
+  obtain ⟨-, hright⟩ := (strictInterl_iff_orderedRoot_bounds h.1.1 h.1.2 h.2.1.1 h.2.1.2
+    hpdeg hqdeg).mp h
+  have hpr := orderedRoot_mem_roots ((card_roots_of_splits h.1.2).trans hpdeg) ⟨1, by norm_num⟩
+  have hqr := orderedRoot_mem_roots ((card_roots_of_splits h.2.1.2).trans hqdeg) 0
+  have hle := hright 0 (by norm_num)
+  rw [mem_roots h.1.1, IsRoot.def] at hpr
+  rw [mem_roots h.2.1.1, IsRoot.def] at hqr
+  simp only [p, q, eval_mul, eval_add, eval_X, eval_ofNat, eval_pow] at hpr hqr
+  have ha : orderedRoot p 2 ⟨1, by norm_num⟩ ≤ -2 := by
+    rcases mul_eq_zero.mp hpr with h | h <;> linarith
+  nlinarith [hle.trans ha]
 
 theorem polarTheta_eq_reciprocalShift_derivative_reciprocalShift
     (N : ℕ) (p : ℝ[X]) (hdeg : p.natDegree ≤ N) :

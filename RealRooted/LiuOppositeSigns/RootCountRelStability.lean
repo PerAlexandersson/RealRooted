@@ -14,27 +14,6 @@ namespace RealRooted
 
 open LiuOppositeSigns Polynomial
 
-/-- A close root matching preserves the root count at a separated threshold. -/
-theorem rootCountAtOrAbove_eq_of_roots_rel_abs_sub_lt
-    {p q : ℝ[X]} {x δ : ℝ}
-    (hsep : ∀ r ∈ p.roots, δ ≤ |r - x|)
-    (hmatch : Multiset.Rel (fun r s ↦ |s - r| < δ) p.roots q.roots) :
-    rootCountAtOrAbove p x = rootCountAtOrAbove q x := by
-  unfold rootCountAtOrAbove
-  apply Multiset.Rel.card_filter_eq hmatch (fun r => x ≤ r) (fun s => x ≤ s)
-  intro r hr s hs hrs
-  have habs := abs_lt.mp hrs
-  constructor
-  · intro hxr
-    have hrx : δ ≤ r - x := by simpa [abs_of_nonneg (sub_nonneg.mpr hxr)] using hsep r hr
-    linarith [habs.1]
-  · intro hxs
-    by_contra hxr
-    have hrx : δ ≤ x - r := by
-      have hrx' : r ≤ x := le_of_lt (lt_of_not_ge hxr)
-      simpa [abs_of_nonpos (sub_nonpos.mpr hrx')] using hsep r hr
-    linarith [habs.2]
-
 /-- Largest roots of closely matched nonzero polynomials are close. -/
 theorem IsLargestRoot.abs_sub_lt_of_roots_rel
     {p q : ℝ[X]} {r s δ : ℝ} (hp_ne : p ≠ 0) (hq_ne : q ≠ 0)

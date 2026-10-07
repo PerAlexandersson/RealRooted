@@ -245,7 +245,7 @@ theorem IsStrictlyHurwitzStable.noCommonRoot_routhReducedOddPart
       odd.IsRoot r) := by
   rintro ⟨hred, hoddRoot⟩
   apply h.noCommonRoot_parts_of_hasNonnegCoeffs
-    (hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hoddnn (by
+    (HasNonnegCoeffs.pos_leadingCoeff hoddnn (by
       intro hoddZero
       subst odd
       simp at hodd0)).ne_zero hoddnn r
@@ -274,7 +274,7 @@ theorem IsStrictlyHurwitzStable.routhReducedPolynomial_of_evenShape
     h.strictInterl_routhReducedOddPart_of_evenShape hodd heven hdegree
   have hredPos : HasPosLeadingCoeff
       (routhReducedOddPart (routhCoefficient odd even) odd even) :=
-    hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hrednn hstrictInterl.1.1
+    HasNonnegCoeffs.pos_leadingCoeff hrednn hstrictInterl.1.1
   have hHB := hermiteBiehlerForwardPos hodd hredPos hstrictInterl
   have hright :=
     hermiteBiehlerStableToHurwitzOddEven hrednn hoddnn hHB
@@ -322,7 +322,7 @@ theorem IsStrictlyHurwitzStable.routhReducedPolynomial_of_oddShape
         hodd heven hdegree hdegreePos
     have hredPos : HasPosLeadingCoeff
         (routhReducedOddPart (routhCoefficient odd even) odd even) :=
-      hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hrednn hstrictInterl.1.1
+      HasNonnegCoeffs.pos_leadingCoeff hrednn hstrictInterl.1.1
     have hHB := hermiteBiehlerForwardPos hodd hredPos hstrictInterl
     have hright :=
       hermiteBiehlerStableToHurwitzOddEven hrednn hoddnn hHB

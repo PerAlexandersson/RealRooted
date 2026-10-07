@@ -1,4 +1,3 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Degree
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
 import RealRooted.Interlacing.ResidueCriterion
 

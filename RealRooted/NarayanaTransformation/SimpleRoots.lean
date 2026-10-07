@@ -35,7 +35,7 @@ theorem narayanaPolynomial_derivative_hasSimpleRoots
   · simp [narayanaPolynomial_one, HasSimpleRoots]
   · have hstrictInterl : StrictInterl (narayanaPolynomial m (n + 2)).derivative
         (narayanaPolynomial m (n + 2)) :=
-      (derivative_interlaces (splits_narayanaPolynomial m (n + 2))
+      (derivative_interlaces_of_natDegree_ne_zero (splits_narayanaPolynomial m (n + 2))
         (by rw [natDegree_narayanaPolynomial]; lia)).toStrictInterl
     exact (hstrictInterl.hasSimpleRoots_of_no_common_root (fun _ hr ↦
       (narayanaPolynomial_hasSimpleRoots m (n + 2)).eval_derivative_ne_zero hr.2 hr.1)).1

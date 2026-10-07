@@ -22,7 +22,6 @@ variable (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
 variable (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
 variable (ha_ne : ∀ n : Nat, a n ≠ 0)
 variable (ha_pos : ∀ n : Nat, 0 < a n)
-variable (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
 variable (hinner_pos : ∀ n : Nat,
   HasPosLeadingCoeff (U n * P (n + 1) + V n * (P (n + 1)).derivative))
 variable (hinner_neg : ∀ n : Nat,
@@ -49,7 +48,6 @@ example :
     base_one := hbase_one,
     pos_lc := hpos,
     outer_nonzero := ha_ne,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     coeff_nonpos := hV_nonpos,
     recurrence := hrec,
@@ -65,7 +63,6 @@ example :
     base_one := hbase_one,
     pos_lc := hpos,
     outer_pos := ha_pos,
-    degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
     coeff_nonpos := hV_nonpos,
     recurrence := hrec,
@@ -81,7 +78,6 @@ example :
     base_one := hbase_one,
     pos_lc := hpos,
     outer_nonzero := ha_ne,
-    degree_two := hdeg_two,
     inner_neg_lc := hinner_neg,
     coeff_nonneg := hV_nonneg,
     recurrence := hrec,

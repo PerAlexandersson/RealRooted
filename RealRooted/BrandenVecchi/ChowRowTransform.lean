@@ -1,5 +1,6 @@
 import RealRooted.BrandenVecchi.ChowInterlacing
 import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 
 /-!
 # The generic Chow staircase row transform
@@ -178,15 +179,6 @@ theorem IsReflectionInterlacingSeq.threeBlockSums
     (by simpa [List.append_assoc] using hmiddle)
   simpa [left, middle, right] using hright
 
-private theorem natDegree_list_sum_le {n : ℕ} {fs : List ℝ[X]}
-    (hdeg : ∀ p ∈ fs, p.natDegree ≤ n) : fs.sum.natDegree ≤ n := by
-  induction fs with
-  | nil => simp
-  | cons p fs ih =>
-      rw [List.sum_cons]
-      exact (natDegree_add_le p fs.sum).trans
-        (max_le (hdeg p (by simp)) (ih fun q hq => hdeg q (by simp [hq])))
-
 private theorem chowS_add_of_degree_le {n : ℕ} {p q : ℝ[X]}
     (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) :
     chowS n (p + q) = chowS n p + chowS n q := by
@@ -242,11 +234,11 @@ theorem chowRowTransform_natDegree_le
     p.natDegree ≤ n + 1 := by
   rcases List.mem_map.mp hp with ⟨k, hk, rfl⟩
   have hsumdeg : fs.sum.natDegree ≤ n :=
-    natDegree_list_sum_le fun q hq => h.natDegree_le hq
+    natDegree_list_sum_le_of_forall_le fun q hq => h.natDegree_le hq
   have hSdeg : (chowS n fs.sum).natDegree ≤ n :=
     natDegree_chowS_le n fs.sum hsumdeg
   have htaildeg : (fs.drop k).sum.natDegree ≤ n :=
-    natDegree_list_sum_le fun q hq => h.natDegree_le (List.mem_of_mem_drop hq)
+    natDegree_list_sum_le_of_forall_le fun q hq => h.natDegree_le (List.mem_of_mem_drop hq)
   have hmuldeg : (X * chowS n fs.sum).natDegree ≤ n + 1 :=
     calc
       (X * chowS n fs.sum).natDegree ≤ X.natDegree + (chowS n fs.sum).natDegree :=
@@ -520,7 +512,7 @@ private theorem drop_sum_reflect_eq_self_of_chowS_sum_eq_zero
     (hS : chowS n fs.sum = 0) (k : ℕ) :
     ((fs.drop k).sum).reflect n = (fs.drop k).sum := by
   have hdeg : (fs.drop k).sum.natDegree ≤ n :=
-    natDegree_list_sum_le fun p hp => h.natDegree_le (List.mem_of_mem_drop hp)
+    natDegree_list_sum_le_of_forall_le fun p hp => h.natDegree_le (List.mem_of_mem_drop hp)
   have hfactor := X_sub_one_mul_chowS n (fs.drop k).sum hdeg
   have hSk := chowS_drop_eq_zero_of_sum_eq_zero h hS k
   have hdiff : ((fs.drop k).sum).reflect n - (fs.drop k).sum = 0 := by
@@ -543,7 +535,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
     rcases List.mem_map.mp hp with ⟨k, hk, rfl⟩
     rw [hS]
     simp only [mul_zero, zero_add]
-    exact natDegree_list_sum_le fun q hq =>
+    exact natDegree_list_sum_le_of_forall_le fun q hq =>
       h.natDegree_le (List.mem_of_mem_drop hq)
   have houtsym : ∀ p ∈ out, p.reflect n = p := by
     intro p hp
@@ -678,7 +670,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
     rw [hnil] at hout_len
     simp at hout_len
   have hsumdeg : fs.sum.natDegree ≤ n :=
-    natDegree_list_sum_le fun p hp => h.natDegree_le hp
+    natDegree_list_sum_le_of_forall_le fun p hp => h.natDegree_le hp
   have htotal : IsReflectionInterlacingSeq n [fs.sum] := by
     have hc := IsReflectionInterlacingSeq.collapseBlock
       (left := []) (block := fs) (right := []) (by simpa using h)

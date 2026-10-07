@@ -5,7 +5,9 @@ Authors: Matteo Cipollina
 
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.  Original path:
+adaptations to the pinned Mathlib.
+Declarations that RealRooted does not use were removed (2026-10-07).
+Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Lemmas.lean
 -/
 import Mathlib.Data.Matrix.Mul
@@ -20,14 +22,8 @@ These results connect `Matrix.IsIrreducible` and `Matrix.IsPrimitive` to the qui
 
 ## Main statements
 
-- `Matrix.path_exists_in_support_of_irreducible` lifts irreducibility of a principal submatrix to a
-  path in the ambient quiver that stays inside the support.
 - `Matrix.positive_mul_vec_of_nonneg_vec` shows that a matrix with strictly positive entries sends
   a nonnegative nonzero vector to a strictly positive vector.
-- `Matrix.exists_connecting_edge_of_irreducible` produces an edge from the zero set of a
-  nonnegative vector to its positive support.
-- `Matrix.irreducible_mulVec_ne_zero` shows that an irreducible nonnegative matrix cannot kill a
-  nonnegative nonzero vector.
 - `Matrix.IsPrimitive.of_irreducible_pos_diagonal` upgrades irreducibility together with a
   positive diagonal to primitivity.
 - `Matrix.mulVec_pow_eq_smul_pow_of_mulVec_smul` packages induction for `(A ^ m) *ᵥ v` when
@@ -73,40 +69,6 @@ open Matrix Finset Quiver Quiver.Path
 variable {n : Type*}
 
 /-! ### Paths in induced subquivers -/
-
-/-- A path in the submatrix `A.submatrix Subtype.val Subtype.val` lifts to a path in the
-original quiver `toQuiver A`, and all vertices along that lifted path lie in `S`. -/
-lemma path_in_submatrix_to_original {A : Matrix n n ℝ}
-  (S : Set n)
-  {i j : S}
-  (p : @Quiver.Path S (letI := Matrix.toQuiver A; inducedQuiver S) i j) :
-  let : Quiver n := Matrix.toQuiver A
-  let : Quiver S := inducedQuiver S
-  ∃ p' : @Path n (Matrix.toQuiver A) i.val j.val,
-    ∀ k, k ∈ p'.activeVertices → k ∈ S := by
-  let : Quiver n := Matrix.toQuiver A
-  let : Quiver S := inducedQuiver S
-  let p' := (Subquiver.embedding S).mapPath p
-  exact ⟨p', Subquiver.mapPath_embedding_vertices_in_set S p⟩
-
-/-- If the principal submatrix supported on `S` is irreducible, then any two vertices of `S`
-can be joined by a path in `toQuiver A` whose active vertices all lie in `S`. -/
-lemma path_exists_in_support_of_irreducible {A : Matrix n n ℝ}
-    (S : Set n)
-    (hS : IsIrreducible (A.submatrix (Subtype.val : S → n) (Subtype.val : S → n)))
-    (i j : n) (hi : i ∈ S) (hj : j ∈ S) :
-  letI : Quiver n := Matrix.toQuiver A
-  letI : Quiver S := inducedQuiver S
-    ∃ p : Quiver.Path i j, ∀ k, k ∈ p.activeVertices → k ∈ S := by
-  let : Quiver n := Matrix.toQuiver A
-  let : Quiver S := inducedQuiver S
-  let i' : S := ⟨i, hi⟩
-  let j' : S := ⟨j, hj⟩
-  obtain ⟨p_sub, _hp_sub_pos⟩ := hS.connected i' j'
-  have p_sub' : @Quiver.Path S (letI := Matrix.toQuiver A; inducedQuiver S) i' j' :=
-    p_sub
-  obtain ⟨p, hp⟩ := path_in_submatrix_to_original S p_sub'
-  exact ⟨p, hp⟩
 
 /-! ### Positivity of matrix-vector products -/
 
@@ -233,18 +195,6 @@ lemma pos_of_nonneg_of_not_mem_zero_set {v : n → ℝ}
     simpa using hi
   exact lt_of_le_of_ne (hv_nonneg i) (Ne.symm hvi_ne_zero)
 
-/-- The positive support of a nonnegative nonzero vector is nonempty. -/
-lemma pos_support_nonempty_of_nonneg_ne_zero {v : n → ℝ}
-    (hv_nonneg : ∀ i, 0 ≤ v i) (hv_ne_zero : v ≠ 0) :
-    ({i | 0 < v i} : Set n).Nonempty := by
-  by_contra h_empty
-  apply hv_ne_zero
-  ext i
-  have hi_not_pos : ¬ 0 < v i := by
-    intro hi_pos
-    exact h_empty ⟨i, hi_pos⟩
-  exact le_antisymm (not_lt.mp hi_not_pos) (hv_nonneg i)
-
 /-- Every nontrivial proper subset of vertices in the quiver of an irreducible matrix has an
 outgoing positive edge. -/
 lemma Irreducible.exists_edge_out {A : Matrix n n ℝ}
@@ -260,30 +210,6 @@ lemma Irreducible.exists_edge_out {A : Matrix n n ℝ}
     Quiver.Path.exists_boundary_edge_from_set p S hi hj
   exact ⟨u, hu_in_S, v, hv_not_in_S, e.down⟩
 
-/-- Let `S = {i | 0 < v i}` and `T = {i | v i = 0}` for a nonnegative vector `v`. If `A` is
-irreducible and both sets are nonempty, then there is a positive edge from `T` to `S`. -/
-lemma exists_connecting_edge_of_irreducible {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible)
-    {v : n → ℝ} (hv_nonneg : ∀ i, 0 ≤ v i)
-    (S T : Set n) (hS_nonempty : S.Nonempty) (hT_nonempty : T.Nonempty)
-    (h_partition : ∀ i, i ∈ S ↔ v i > 0)
-    (h_complement : ∀ i, i ∈ T ↔ v i = 0) :
-    ∃ (i j : n), i ∈ T ∧ j ∈ S ∧ 0 < A i j := by
-  have hT_ne_univ : T ≠ Set.univ := by
-    intro hT_univ
-    obtain ⟨j, hj_S⟩ := hS_nonempty
-    have hj_T : j ∈ T := by
-      rw [hT_univ]
-      simp
-    exact (ne_of_gt ((h_partition j).mp hj_S)) ((h_complement j).mp hj_T)
-  obtain ⟨i, hi_T, j, hj_not_T, hA_ij_pos⟩ :=
-    Irreducible.exists_edge_out (A := A) hA_irred T hT_nonempty hT_ne_univ
-  have hj_S : j ∈ S := by
-    have hvj_ne_zero : v j ≠ 0 := by
-      intro h_zero
-      exact hj_not_T ((h_complement j).mpr h_zero)
-    exact (h_partition j).mpr <| lt_of_le_of_ne (hv_nonneg j) (Ne.symm hvj_ne_zero)
-  exact ⟨i, j, hi_T, hj_S, hA_ij_pos⟩
-
 /-- If the `i`th entry of `A *ᵥ v` is zero and `v j` is positive, then `A i j = 0`. -/
 lemma entry_eq_zero_of_mulVec_eq_zero [Fintype n]
     (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ} (hv_nonneg : ∀ i, 0 ≤ v i) {i j : n}
@@ -292,26 +218,6 @@ lemma entry_eq_zero_of_mulVec_eq_zero [Fintype n]
   have hmul := mul_eq_zero_of_mulVec_eq_zero_of_row_nonneg i j (fun l => hA_nonneg i l) hv_nonneg
     h_Av_i_zero
   exact (mul_eq_zero.mp hmul).resolve_right (ne_of_gt hv_j_pos)
-
-/-- A nonnegative matrix that annihilates a strictly positive vector is the zero matrix. -/
-lemma eq_zero_of_mulVec_eq_zero_of_pos [Fintype n]
-    (hA_nonneg : ∀ i j, 0 ≤ A i j) {v : n → ℝ} (hv_pos : ∀ i, 0 < v i)
-    (h_Av_zero : A *ᵥ v = 0) :
-    A = 0 := by
-  ext i j
-  exact entry_eq_zero_of_mulVec_eq_zero (A := A) hA_nonneg (fun k => (hv_pos k).le)
-    (by simpa using congrFun h_Av_zero i) (hv_pos j)
-
-/-- A zero matrix is not irreducible if the dimension is greater than `1`. -/
-lemma not_irreducible_of_zero_matrix {n : Type*} [Fintype n]
-    (h_card_gt_one : 1 < Fintype.card n) :
-    ¬ IsIrreducible (0 : Matrix n n ℝ) := by
-  intro h
-  obtain ⟨i, j, hij⟩ := Fintype.exists_pair_of_one_lt_card h_card_gt_one
-  obtain ⟨p, hp_pos⟩ := h.connected i j
-  cases p with
-  | nil => simp at hp_pos
-  | cons p' e => exact (lt_irrefl (0 : ℝ)) e.down
 
 /-- For an irreducible matrix on a one-element type, the diagonal entry is positive. -/
 lemma irreducible_one_element_implies_diagonal_pos [Fintype n]
@@ -348,48 +254,6 @@ lemma row_sum_pos_of_irreducible_nonneg [Fintype n] [Nonempty n]
     have : Nontrivial n := Fintype.one_lt_card_iff_nontrivial.1 h_card_gt_one
     obtain ⟨j, hj_pos⟩ := Matrix.IsIrreducible.exists_pos (A := A) hA_irred i
     exact lt_irrefl (0 : ℝ) <| (h_zero_row j).symm ▸ hj_pos
-
-/-- An irreducible matrix cannot send a nonnegative nonzero vector to `0`. -/
-theorem irreducible_mulVec_ne_zero [Fintype n]
-    (hA_irred : IsIrreducible A)
-    {v : n → ℝ} (hv_nonneg : ∀ i, 0 ≤ v i) (hv_ne_zero : v ≠ 0) :
-    A *ᵥ v ≠ 0 := by
-  by_contra h_Av_zero
-  let T : Set n := {i | v i = 0}
-  by_cases hT_is_empty : T = ∅
-  · have v_all_pos : ∀ i, v i > 0 := by
-      intro i
-      have hi_not_in_T : i ∉ T := by simp [hT_is_empty]
-      exact pos_of_nonneg_of_not_mem_zero_set hv_nonneg (by simpa [T] using hi_not_in_T)
-    have hA_eq_zero :=
-      eq_zero_of_mulVec_eq_zero_of_pos (A := A) (hA_nonneg := hA_irred.1) v_all_pos h_Av_zero
-    have h0_irred : IsIrreducible (0 : Matrix n n ℝ) := by
-      simpa [hA_eq_zero] using hA_irred
-    obtain ⟨i₀, hi₀⟩ := pos_support_nonempty_of_nonneg_ne_zero hv_nonneg hv_ne_zero
-    let : Nonempty n := ⟨i₀⟩
-    have h_card_pos : 0 < Fintype.card n := Fintype.card_pos
-    rcases Nat.eq_or_lt_of_le (Nat.one_le_of_lt h_card_pos) with h_card_one | h_card_gt_one
-    · simpa using
-        irreducible_one_element_implies_diagonal_pos (A := (0 : Matrix n n ℝ)) h0_irred
-          h_card_one.symm i₀
-    · exact not_irreducible_of_zero_matrix h_card_gt_one h0_irred
-  · have hT_nonempty : T.Nonempty := Set.nonempty_iff_ne_empty.mpr hT_is_empty
-    have hT_ne_univ : T ≠ Set.univ := by
-      intro hT_univ
-      obtain ⟨i, hi_pos⟩ := pos_support_nonempty_of_nonneg_ne_zero hv_nonneg hv_ne_zero
-      have hi_zero : v i = 0 := by
-        have : i ∈ T := by
-          simp [hT_univ]
-        simpa [T] using this
-      exact hi_pos.ne' hi_zero
-    obtain ⟨i, hi_T, j, hj_not_T, hA_ij_pos⟩ :=
-      Irreducible.exists_edge_out (A := A) hA_irred T hT_nonempty hT_ne_univ
-    have hA_ij_zero : A i j = 0 := by
-      have hv_j_pos : v j > 0 := by
-        exact pos_of_nonneg_of_not_mem_zero_set hv_nonneg (by simpa [T] using hj_not_T)
-      exact entry_eq_zero_of_mulVec_eq_zero (A := A) (hA_nonneg := hA_irred.1) hv_nonneg
-        (by simpa using congrFun h_Av_zero i) hv_j_pos
-    exact (ne_of_gt hA_ij_pos) hA_ij_zero
 
 /-- An irreducible matrix with a positive diagonal is primitive. -/
 theorem IsPrimitive.of_irreducible_pos_diagonal [Fintype n] [Nonempty n] [DecidableEq n]
@@ -479,24 +343,6 @@ end MulVecPowMap
 section ShiftAndMap
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
-
-/-- If `v` is an `r`-eigenvector for `A`, then it is an `(r + 1)`-eigenvector for `1 + A`. -/
-lemma toLin'_one_add_eigenvector {A : Matrix n n ℝ} {r : ℝ} {v : n → ℝ}
-    (h : toLin' A v = r • v) :
-    toLin' (1 + A) v = (r + 1) • v := by
-  simp [LinearMap.add_apply, toLin'_one, add_smul, one_smul, h, add_comm]
-
-/-- A real eigenvector equation, coerced to the complexified matrix. -/
-lemma mulVec_map_complex_of_real_eigenvector {A : Matrix n n ℝ} {r : ℝ} {v : n → ℝ}
-    (h : toLin' A v = r • v) :
-    (A.map (algebraMap ℝ ℂ)) *ᵥ (fun i => (v i : ℂ)) =
-      (r : ℂ) • fun i => (v i : ℂ) := by
-  ext i
-  have h_real : ∑ j, A i j * v j = r * v i := by
-    have := congr_fun (by simpa [toLin'_apply, Pi.smul_apply] using h) i
-    simpa [Matrix.mulVec, dotProduct] using this
-  simpa [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul, Complex.ofReal_mul] using
-    congrArg (fun x : ℝ => (x : ℂ)) h_real
 
 end ShiftAndMap
 

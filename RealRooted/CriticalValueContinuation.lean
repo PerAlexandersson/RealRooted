@@ -7,6 +7,7 @@ import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Calculus.ImplicitContDiff
+import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 
 /-!
 # Continuation of simple polynomial roots
@@ -170,8 +171,8 @@ theorem isClosed_isPFPolynomial_and_criticalValueMargin
     rcases hu with ⟨hupf, humargin⟩
     have huderiv0 : (p u).derivative ≠ 0 :=
       Polynomial.derivative_ne_zero.mpr (by simpa [hdegree u] using hD0)
-    have hqsplit : (q u).Splits := by
-      exact ((hupf.derivative.ne_zero_and_splits huderiv0).2).C_mul _
+    have hqsplit : (q u).Splits :=
+      ((hupf.derivative.ne_zero_and_splits huderiv0).2).C_mul _
     obtain ⟨y, hyroot, hxy⟩ := hnear (q u) (hqmonic u)
       ((hqdegree u).trans (hqdegree t).symm) huclose hqsplit
     have hycritical : (p u).derivative.IsRoot y := by
@@ -222,7 +223,7 @@ theorem HasSimpleRoots.derivative_of_splits
       norm_num
   · have htwo : 2 ≤ p.natDegree := by lia
     have hinterl : StrictInterl p.derivative p :=
-      (derivative_interlaces hsplits htwo).toStrictInterl
+      (derivative_interlaces_of_natDegree_ne_zero hsplits (by lia)).toStrictInterl
     exact (hinterl.hasSimpleRoots_of_no_common_root fun _ hx =>
       hsimple.eval_derivative_ne_zero hx.2 hx.1).1
 
@@ -266,14 +267,6 @@ theorem HasSimpleRoots.exists_pos_criticalValueMargin
   apply Multiset.mem_toFinset.mpr
   exact (Polynomial.mem_roots hderivative).mpr hx
 
-private theorem toSpanSingleton_isInvertible {c : ℝ} (hc : c ≠ 0) :
-    (ContinuousLinearMap.toSpanSingleton ℝ c).IsInvertible := by
-  let e : ℝ ≃L[ℝ] ℝ :=
-    ContinuousLinearEquiv.smulLeft (Units.mk0 c hc)
-  refine ⟨e, ?_⟩
-  ext
-  simp [e, ContinuousLinearMap.toSpanSingleton_apply, mul_comm]
-
 /-- A regular real root of a jointly `C¹` polynomial family admits a local
 `C¹` parameter branch. -/
 theorem exists_contDiffAt_polynomial_root
@@ -298,7 +291,7 @@ theorem exists_contDiffAt_polynomial_root
     · exact (p t).hasFDerivAt r
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact toSpanSingleton_isInvertible hregular
+    exact ContinuousLinearMap.isInvertible_toSpanSingleton hregular
   let ρ : ℝ → ℝ := hF.implicitFunction (by simp) hAinv
   have hρbase : ρ t = r :=
     hF.implicitFunction_apply_self (by simp) hAinv

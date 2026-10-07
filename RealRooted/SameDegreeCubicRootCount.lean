@@ -71,66 +71,6 @@ theorem exists_roots_quadruple_of_splits_natDegree_four {f : ℝ[X]}
   rw [Polynomial.Splits.eq_prod_roots hf, hcoe]
   simp [Multiset.map_cons, Multiset.prod_cons, mul_assoc]
 
-/-- For a positive-combination real-rooted split cubic pair, the corresponding
-monic root pencil has nonnegative cubic discriminant at every positive
-parameter.  This packages the easy direction of the discriminant route to the
-cubic interior partial-separation cases. -/
-theorem cubicDiscr_monicPencil_nonneg_of_posCombo
-    {f g : ℝ[X]}
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (hfs : f.Splits) (hgs : g.Splits)
-    (hfd : f.natDegree = 3) (hgd : g.natDegree = 3)
-    (hpc : PosComboRealRooted f g)
-    (a b c p q r : ℝ)
-    (hfr : f.roots = {a, b, c}) (hgr : g.roots = {p, q, r}) :
-    ∀ s : ℝ, 0 < s →
-      0 ≤ cubicDiscr ((X - C a) * (X - C b) * (X - C c)
-        + C s * ((X - C p) * (X - C q) * (X - C r))) := by
-  intro s hs
-  let lf := f.leadingCoeff
-  let lg := g.leadingCoeff
-  let F : ℝ[X] := (X - C a) * (X - C b) * (X - C c)
-  let G : ℝ[X] := (X - C p) * (X - C q) * (X - C r)
-  have hlf0 : 0 < lf := by
-    change 0 < f.leadingCoeff
-    exact hf
-  have hlg0 : 0 < lg := by
-    change 0 < g.leadingCoeff
-    exact hg
-  have ht0 : 0 < s * lf / lg := by positivity
-  have ht0' : 0 < s * f.leadingCoeff / g.leadingCoeff := by grind
-  obtain ⟨_, hsplit⟩ := hpc.isRealRooted_add_right ht0'
-  have hfeq : f = C lf * F := by simpa [lf, F] using eq_C_leadingCoeff_mul_prod_three hfs a b c hfr
-  have hgeq : g = C lg * G := by simpa [lg, G] using eq_C_leadingCoeff_mul_prod_three hgs p q r hgr
-  have hscalar : (s * lf / lg) * lg = lf * s := by field_simp [hlg0.ne']
-  have hscaled : C (s * lf / lg) * (C lg * G) = C lf * (C s * G) := by
-    calc
-      C (s * lf / lg) * (C lg * G)
-          = C ((s * lf / lg) * lg) * G := by rw [← mul_assoc, ← C_mul]
-      _ = C (lf * s) * G := by simp_all
-      _ = C lf * (C s * G) := by simp [G, C_mul, mul_assoc, mul_comm, mul_left_comm]
-  have hcombo :
-      f + C (s * f.leadingCoeff / g.leadingCoeff) * g
-        = C f.leadingCoeff *
-            ((X - C a) * (X - C b) * (X - C c)
-              + C s * ((X - C p) * (X - C q) * (X - C r))) := by
-    change f + C (s * lf / lg) * g = C lf * (F + C s * G)
-    rw [hfeq, hgeq]
-    calc
-      C lf * F + C (s * lf / lg) * (C lg * G)
-          = C lf * F + C lf * (C s * G) := by simp_all
-      _ = C lf * (F + C s * G) := by grind
-  have hdeg_le :
-      (f + C (s * f.leadingCoeff / g.leadingCoeff) * g).natDegree ≤ 3 := by
-    refine (natDegree_add_le _ _).trans ?_
-    exact max_le (by simp_all) ((natDegree_C_mul_le _ _).trans (by simp_all))
-  have hdisc_nonneg :
-      0 ≤ cubicDiscr (f + C (s * f.leadingCoeff / g.leadingCoeff) * g) :=
-    cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg_le hsplit
-  rw [hcombo, cubicDiscr_C_mul] at hdisc_nonneg
-  have h4 : 0 < f.leadingCoeff ^ 4 := by positivity
-  simp_all
-
 /-- Evaluation of the monic cubic root pencil `F + sG`. -/
 theorem eval_monicCubicPencil (a b c p q r s x : ℝ) :
     ((X - C a) * (X - C b) * (X - C c)
@@ -146,105 +86,6 @@ theorem monicCubicPencil_eq (a b c p q r s : ℝ) :
         + C (-((a + b + c) + s * (p + q + r))) * X ^ 2
         + C ((a * b + b * c + c * a) + s * (p * q + q * r + r * p)) * X
         + C (-(a * b * c + s * (p * q * r))) := by grind
-
-/-- Explicit coefficient formula for the cubic discriminant of the monic root
-pencil `F + sG`, reducing the negative-discriminant leaves to one-variable
-polynomial inequalities in `s`. -/
-theorem cubicDiscr_monicCubicPencil_eq (a b c p q r s : ℝ) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)
-        + C s * ((X - C p) * (X - C q) * (X - C r)))
-      = 18 * (1 + s) * (-((a + b + c) + s * (p + q + r)))
-            * ((a * b + b * c + c * a) + s * (p * q + q * r + r * p))
-            * (-(a * b * c + s * (p * q * r)))
-        - 4 * (-((a + b + c) + s * (p + q + r))) ^ 3
-            * (-(a * b * c + s * (p * q * r)))
-        + (-((a + b + c) + s * (p + q + r))) ^ 2
-            * ((a * b + b * c + c * a) + s * (p * q + q * r + r * p)) ^ 2
-        - 4 * (1 + s)
-            * ((a * b + b * c + c * a) + s * (p * q + q * r + r * p)) ^ 3
-        - 27 * (1 + s) ^ 2 * (-(a * b * c + s * (p * q * r))) ^ 2 := by
-  rw [monicCubicPencil_eq, cubicDiscr_of_coeffs]
-
-/-- The monic cubic root pencil has `natDegree` at most three. -/
-theorem natDegree_monicCubicPencil_le (a b c p q r s : ℝ) :
-    ((X - C a) * (X - C b) * (X - C c)
-      + C s * ((X - C p) * (X - C q) * (X - C r))).natDegree ≤ 3 := by
-  rw [monicCubicPencil_eq]
-  compute_degree
-
-/-- Discriminant/splitting bridge for the monic cubic root pencil. -/
-theorem cubicDiscr_monicCubicPencil_neg_iff_not_splits (a b c p q r s : ℝ) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)
-        + C s * ((X - C p) * (X - C q) * (X - C r))) < 0 ↔
-      ¬ ((X - C a) * (X - C b) * (X - C c)
-        + C s * ((X - C p) * (X - C q) * (X - C r))).Splits := by
-  rw [← not_le,
-    cubicDiscr_nonneg_iff_splits_of_natDegree_le_three
-      (natDegree_monicCubicPencil_le a b c p q r s)]
-
-/-- No-real-critical-point criterion for a negative cubic discriminant.
-
-If `a₃ X³ + a₂ X² + a₁ X + a₀` has positive leading coefficient and its
-derivative has negative discriminant, then the cubic discriminant is negative. -/
-theorem cubicDiscr_neg_of_deriv_disc_neg (a3 a2 a1 a0 : ℝ)
-    (h3 : 0 < a3) (hderiv : a2 ^ 2 < 3 * a3 * a1) :
-    cubicDiscr (C a3 * X ^ 3 + C a2 * X ^ 2 + C a1 * X + C a0) < 0 := by
-  rw [cubicDiscr_of_coeffs]
-  have hpos : 0 < 3 * a3 * a1 - a2 ^ 2 := by linarith
-  have ha3sq : 0 < a3 ^ 2 := by positivity
-  nlinarith [sq_nonneg (54 * a3 ^ 2 * a0 - 2 * a2 * (9 * a3 * a1 - 2 * a2 ^ 2)),
-    pow_pos hpos 3, ha3sq, mul_pos ha3sq (pow_pos hpos 3)]
-
-/-- Specialization of `cubicDiscr_neg_of_deriv_disc_neg` to the monic cubic
-root pencil `F + s G`. -/
-theorem cubicDiscr_monicCubicPencil_neg_of_deriv_disc_neg
-    (a b c p q r s : ℝ)
-    (hlead : 0 < 1 + s)
-    (hderiv : (-((a + b + c) + s * (p + q + r))) ^ 2 <
-      3 * (1 + s) * ((a * b + b * c + c * a) + s * (p * q + q * r + r * p))) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)
-        + C s * ((X - C p) * (X - C q) * (X - C r))) < 0 := by
-  rw [monicCubicPencil_eq]
-  exact cubicDiscr_neg_of_deriv_disc_neg _ _ _ _ hlead hderiv
-
-/- The following derivative-discriminant helpers are #41-only cubic support,
-not the direct #42 route. -/
-
-/-- An upward parabola with positive discriminant and negative linear
-coefficient is negative at some positive point. -/
-theorem exists_pos_of_quadratic_neg (A B Cc : ℝ)
-    (hA : 0 < A) (hB : B < 0) (hdisc : 4 * A * Cc < B ^ 2) :
-    ∃ s : ℝ, 0 < s ∧ A * s ^ 2 + B * s + Cc < 0 := by
-  have h2A : (0 : ℝ) < 2 * A := by positivity
-  refine ⟨-B / (2 * A), div_pos (by linarith) h2A, ?_⟩
-  have hval : A * (-B / (2 * A)) ^ 2 + B * (-B / (2 * A)) + Cc =
-      (4 * A * Cc - B ^ 2) / (4 * A) := by grind
-  rw [hval]
-  exact div_neg_of_neg_of_pos (by linarith) (by positivity)
-
-/-- Per-tuple sufficient condition for a positive parameter where the monic
-cubic pencil's derivative has negative discriminant. -/
-theorem exists_deriv_disc_neg_of_coeffs (a b c p q r : ℝ)
-    (hA : 0 < (p + q + r) ^ 2 - 3 * (p * q + q * r + r * p))
-    (hB : 2 * (a + b + c) * (p + q + r) - 3 * (a * b + b * c + c * a) -
-        3 * (p * q + q * r + r * p) < 0)
-    (hdisc : 4 * ((p + q + r) ^ 2 - 3 * (p * q + q * r + r * p)) *
-          ((a + b + c) ^ 2 - 3 * (a * b + b * c + c * a)) <
-        (2 * (a + b + c) * (p + q + r) - 3 * (a * b + b * c + c * a) -
-          3 * (p * q + q * r + r * p)) ^ 2) :
-    ∃ s : ℝ, 0 < s ∧
-      (-((a + b + c) + s * (p + q + r))) ^ 2 <
-        3 * (1 + s) * ((a * b + b * c + c * a) + s * (p * q + q * r + r * p)) := by
-  obtain ⟨s, hs, hlt⟩ := exists_pos_of_quadratic_neg _ _ _ hA hB hdisc
-  grind
-
-/-- #41-only: in the two-below cubic configuration the leading coefficient of
-the derivative-discriminant quadratic in the pencil parameter is strictly
-positive. -/
-theorem derivDiscA_pos_of_lt {p q r : ℝ} (hqr : q < r) :
-    0 < (p + q + r) ^ 2 - 3 * (p * q + q * r + r * p) := by
-  linarith [mul_pos (sub_pos.mpr hqr) (sub_pos.mpr hqr),
-    sq_nonneg (p - q), sq_nonneg (p - r)]
 
 /-- Root count of a three-element multiset below a threshold, as a sum of
 indicators. -/
@@ -299,8 +140,8 @@ theorem not_posComboRealRooted_cubic_separated
   have hg'pos : HasPosLeadingCoeff g.derivative :=
     hg.derivative (by simp_all)
   have hg'le : ∀ r ∈ g.derivative.roots, r ≤ z1 :=
-    (derivative_interlaces hgs (by simp_all)).toStrictInterl.roots_le_of_right
-      hgle
+    (derivative_interlaces_of_natDegree_ne_zero hgs
+      (by simp_all)).toStrictInterl.roots_le_of_right hgle
   have hf'ge : ∀ r ∈ f.derivative.roots, z2 ≤ r :=
     le_roots_derivative_of_le_roots hfs (by simp_all) hfge
   exact not_posComboRealRooted_quadratic_separated
@@ -349,23 +190,5 @@ theorem sameDegree_cubic_rootCount_le_two
       (fun s hs ↦ by grind)
   rw [hfroots, hgroots, card_filter_le_triple, card_filter_le_triple]
   grind
-
-/-- Finite indicator-level core for the cubic same-degree root-count bound of
-`1`.  For ordered triples `a ≤ b ≤ c` and `p ≤ q ≤ r` satisfying the four
-interleaving inequalities `p ≤ b`, `q ≤ c`, `a ≤ q`, `b ≤ r`, the two
-threshold indicator counts differ by at most one, in both directions.  This is
-the degree-three analogue of `count_pair_diff_le_one`. -/
-theorem card_filter_triple_diff_le_one
-    (a b c p q r x : ℝ)
-    (hab : a ≤ b) (hbc : b ≤ c) (hpq : p ≤ q) (hqr : q ≤ r)
-    (hpb : p ≤ b) (hqc : q ≤ c) (haq : a ≤ q) (hbr : b ≤ r) :
-    (((if a ≤ x then 1 else 0) + (if b ≤ x then 1 else 0) +
-          (if c ≤ x then 1 else 0) : ℤ) -
-        ((if p ≤ x then 1 else 0) + (if q ≤ x then 1 else 0) +
-          (if r ≤ x then 1 else 0)) ≤ 1) ∧
-    (((if p ≤ x then 1 else 0) + (if q ≤ x then 1 else 0) +
-          (if r ≤ x then 1 else 0) : ℤ) -
-        ((if a ≤ x then 1 else 0) + (if b ≤ x then 1 else 0) +
-          (if c ≤ x then 1 else 0)) ≤ 1) := by grind
 
 end RealRooted

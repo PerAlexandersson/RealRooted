@@ -163,6 +163,9 @@ Wronskian results have a focused package entry point:
   Euler-operator Wronskian formulas;
 - `Wronskian.Forward` owns both global strict-interlacing-to-positivity and
   finite-root-certificate-to-global-positivity bridges;
+- `Wronskian.WeakForward` extends the forward bridge to common roots, and
+  `Wronskian.Converse` owns the weak converse under the root-multiplicity
+  bound, the resulting criterion, and the counterexample without that bound;
 - `Wronskian.Successor.Gap` owns root-gap existence from a successor-degree
   Wronskian sign; `Wronskian.Successor.Interlacing` lifts those gaps to the
   root-local and global interlacing criteria; and
@@ -260,6 +263,9 @@ The Hurwitz-matrix conventions are intentionally separated:
 - its `Stability.Vieta` child extracts strict positivity of the
   next-to-leading coefficient of a nonconstant strictly stable polynomial
   with positive leading coefficient; and
+- its `Stability.OddEvenConverse` child proves the converse odd/even
+  Hermite--Biehler theorem by a limit of strictly stable translates, and with
+  it the reverse conformal substitution; and
 - `ClassicalHurwitzMatrix.TotallyNonnegative` extracts coefficient signs from
   the corrected matrix's one-by-one minors; and
 - `HurwitzMatrix` retains the historically named lower-triangular Lace matrix,
@@ -432,6 +438,8 @@ imports.
 The Liu--Wang stack now follows that boundary:
 
 - `LiuWang.Step` owns two-polynomial criteria and coefficient sign lemmas;
+- `LiuWang.General` owns the full two-term Liu--Wang criterion, for an interlacer
+  of either degree shape and with common roots allowed;
 - `LiuWang.SequenceCore`, `SequencePositive`, `SequenceIntervals`, and
   `SequenceProducts` separate sequence induction by the shape of the lag
   coefficient;
@@ -636,34 +644,28 @@ the count foundation directly, while `RootMatchingSort` and the cubic analytic
 consumer import `RootDeletion` without acquiring the branch layer.
 
 `LiuOppositeSigns.NoCommonRoots` isolates the reusable no-common-root predicate
-and its elementary endpoint consequences. `Theorem21Statements.NoCommonCrossing`
+and its elementary endpoint consequences. `RootCountBranches.NoCommonCrossing`
 imports the right-pencil crossing criteria of `NoCommonCrossing.Witnesses` and
-turns the cross-owned-gap invariant into the left/right Theorem 2.1 branch
-predicate. `Theorem21Statements.CommonRootDeletion` owns the
-independent shared-factor reduction, and `Theorem21Statements.Interfaces`
+turns the cross-owned-gap invariant into Liu's left/right branch predicate
+`RootCountBranches`. `RootCountBranches.CommonRootDeletion` owns the
+independent shared-factor reduction, and `RootCountBranches.Interfaces`
 keeps only the refuted published forward direction beside its checked
-negation. The historical `Theorem21Statements` path remains a compatibility
-facade, and consumers needing only the predicate import `NoCommonRoots`
+negation. Consumers needing only the predicate import `NoCommonRoots`
 directly.
 
 `LiuOppositeSigns.FactorReturnAssembly` proves the reverse direction of
-Theorem 2.1. `FactorReturnLeft` and `FactorReturnTwoDegree` reduce the three
-degree cases of a left deletion branch to the positive-split x-subtraction
-pencils of `XSub.IntervalRootCount`; the right branch follows by symmetry.
-
-`LiuOppositeSigns.XSub.ProperPosition` is a narrow bridge from the ordinary
-positive-leading `StrictInterl` interface to Liu's positive root-count package. It
-then applies the package's same-degree and successor-degree results to the
-general `X * p - μ * q` splitness corollary under nonnegative coefficients.
+Liu's Theorem 2.1. `FactorReturnLeft` and `FactorReturnTwoDegree` reduce the
+three degree cases of a left deletion branch to the positive-split
+x-subtraction pencils of `XSub.IntervalRootCount`; the right branch follows by
+symmetry. `LiuOppositeSigns.CompatibilityCriterion` assembles the corrected
+equivalence and the degree-gap corollary.
 
 `LiuOppositeSigns.XSub.IntervalRootCount` is now a compatibility facade over
 the interval-count proof layers: `RootFilters`, `GapCounts`, `UpperTail`, and
 `SplitEndpoints` establish the root-count infrastructure, while
-`RightSuccessor`, `SameDegree`, `LeftSuccessor`, and `TailSigns` own the
-mutually independent degree and endpoint-sign endgames. This follows the
-proof's dependencies rather than its former source order.
-This keeps the user-facing proper-position interface out of the interval-root
-count implementation.
+`RightSuccessor`, `SameDegree`, and `LeftSuccessor` own the mutually
+independent degree endgames. This follows the proof's dependencies rather than
+its former source order.
 
 The Cayley-transform extraction is entirely Mathlib-shaped:
 
@@ -1215,8 +1217,10 @@ selected large application proofs and case-analysis modules.
 `CountBounds` owns the list-counting endpoint, `StrictSigns.RootSigns` the
 factor-sign algebra, `StrictSigns.Assembly` the strict root construction,
 `Strong` the strict mixed-sign consequences, and `Weak.Regularization`,
-`Weak.SameDegree`, `Weak.Successor`, and `Weak.Endpoint` the weak-sign
-perturbation and degree cases. Former file-private plumbing is shared only
+`Weak.Successor`, and `Weak.Endpoint` the weak-sign perturbation and degree
+cases. `Weak.DerivativeSign` owns the simple-root
+criterion that uses `f'` as the interlacer of `f`; `Weak.Endpoint` restates its
+theorem through `LiuWang.General`. Former file-private plumbing is shared only
 within `RealRooted.MaWangInternal`; all established public declarations retain
 their `RealRooted` names through explicit exports.
 
@@ -1602,6 +1606,16 @@ its `Weighted` generalization) and the `Challenges.DecoEulerian` entry point.
 Net of the wrapper modules removed in the same period, the root and production
 closures each grow by 37 modules, so their budgets rise to 1574 and 1441. The
 tactic regression closure is unchanged.
+
+Wave 5 retires the unweighted `w = 1` reference layer, which the `Weighted`
+layer supersedes. The four generic degree and monicity lemmas for basis
+transforms move to `Mathlib.Algebra.Polynomial.BasisTransform`, and the seven
+modules `Basic`, `Degree`, `CompanionDegree`, `Endpoints`, `DiagonalRootStep`,
+`ResidueSums` and `StrictStep` are deleted. The seven surviving unweighted
+modules (`BlockEnergy`, `Energy`, `ResidueAlgebra`, `ResidueDerivative`,
+`ScalarBounds`, `SuccessorResidues` and `WeightedResidueSum`) hold the residue
+algebra and scalar bounds that the `Weighted` layer reuses. The root and
+production closures each shrink by seven modules; the budgets are unchanged.
 
 Run the architecture check with:
 

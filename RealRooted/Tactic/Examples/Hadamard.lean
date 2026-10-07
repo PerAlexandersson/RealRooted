@@ -46,30 +46,26 @@ example {n : ℕ} {f p : ℝ[X]}
     input_degree := hpdeg,
     input_splits := hsplits
 
-example {n : ℕ} {f p : ℝ[X]}
-    (hn : n ≤ 2)
+example {f p : ℝ[X]}
     (hf : IsPFPolynomial f)
-    (hfdeg : f.natDegree ≤ n)
-    (hpdeg : p.natDegree ≤ n)
+    (hfdeg : f.natDegree ≤ 2)
+    (hpdeg : p.natDegree ≤ 2)
     (hsplits : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
-  rr_schur_szego_level_le_two using
-    level_le_two := hn,
+    schurSzegoComp 2 f p = 0 ∨ (schurSzegoComp 2 f p).Splits := by
+  rr_schur_szego using
     pf_factor := hf,
     pf_degree := hfdeg,
     input_degree := hpdeg,
     input_splits := hsplits
 
-example {n : ℕ} {f p : ℝ[X]}
-    (hn : n ≤ 2)
+example {f p : ℝ[X]}
     (hf : IsPFPolynomial f)
-    (hfdeg : f.natDegree ≤ n)
-    (hpdeg : p.natDegree ≤ n)
+    (hfdeg : f.natDegree ≤ 2)
+    (hpdeg : p.natDegree ≤ 2)
     (hsplits : p.Splits)
-    (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits := by
-  rr_schur_szego_level_le_two_splits using
-    level_le_two := hn,
+    (hout : schurSzegoComp 2 f p ≠ 0) :
+    (schurSzegoComp 2 f p).Splits := by
+  rr_schur_szego_splits using
     pf_factor := hf,
     pf_degree := hfdeg,
     input_degree := hpdeg,
@@ -171,35 +167,29 @@ example {n : ℕ} {f p : ℝ[X]}
 example {n : ℕ} {f p : ℝ[X]}
     (hf : IsPFPolynomial f)
     (hfdeg : f.natDegree ≤ 3)
-    (hfn : f.natDegree ≤ n)
+    (hn : 3 ≤ n)
     (hpdeg : p.natDegree ≤ n)
-    (hsplits : p.Splits)
-    (hnum : 3 ≤ n → 0 ≤ schurSzegoCompCubicDiscrNumerator n f p) :
+    (hsplits : p.Splits) :
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
-  rr_schur_szego_pf_factor_degree_le_three_num_left_degree using
+  rr_schur_szego using
     pf_factor := hf,
-    pf_degree_le_three := hfdeg,
-    pf_degree := hfn,
+    pf_degree := hfdeg.trans hn,
     input_degree := hpdeg,
-    input_splits := hsplits,
-    cubic_numerator := hnum
+    input_splits := hsplits
 
 example {n : ℕ} {f p : ℝ[X]}
     (hf : IsPFPolynomial f)
     (hfdeg : f.natDegree ≤ 3)
-    (hfn : f.natDegree ≤ n)
+    (hn : 3 ≤ n)
     (hpdeg : p.natDegree ≤ n)
     (hsplits : p.Splits)
-    (hnum : 3 ≤ n → 0 ≤ schurSzegoCompCubicDiscrNumerator n f p)
     (hout : schurSzegoComp n f p ≠ 0) :
     (schurSzegoComp n f p).Splits := by
-  rr_schur_szego_pf_factor_degree_le_three_num_left_degree_splits using
+  rr_schur_szego_splits using
     pf_factor := hf,
-    pf_degree_le_three := hfdeg,
-    pf_degree := hfn,
+    pf_degree := hfdeg.trans hn,
     input_degree := hpdeg,
     input_splits := hsplits,
-    cubic_numerator := hnum,
     nonzero := hout
 
 example {N : Nat → ℕ} {F P : Nat → ℝ[X]}

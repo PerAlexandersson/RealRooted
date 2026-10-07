@@ -25,7 +25,6 @@ example : ∀ n : Nat, 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_all
 /-- A supplied recurrence fixes the hidden target before atomic lookup. -/
 example {f F u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hrec : F = u * f + v * f.derivative)
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg_lo : f.natDegree ≤ F.natDegree)
@@ -35,7 +34,6 @@ example {f F u v : ℝ[X]}
     StrictInterl f (u * f + v * f.derivative) := by
   rr_mw_derivative_nonpos_step using
     splits := hf,
-    degree_two := hdegf,
     target_pos_lc := hF_pos,
     recurrence := hrec,
     degree_lower := hdeg_lo,
@@ -46,7 +44,6 @@ example {f F u v : ℝ[X]}
 /-- Recurrence normalization completes before certificate lookup starts. -/
 example {f F u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hrec : F = u * f + v * f.derivative)
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg_lo : f.natDegree ≤ F.natDegree)
@@ -58,7 +55,6 @@ example {f F u v : ℝ[X]}
 
 example {f F u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hraw : F = v * f.derivative + u * f)
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg_lo : f.natDegree ≤ F.natDegree)
@@ -72,7 +68,6 @@ example {f F u v : ℝ[X]}
 /-- The inferred step instantiates indexed local certificate families. -/
 example {P U V : Nat → ℝ[X]} {n : Nat}
     (hsplits : ∀ k, (P (k + 1)).Splits)
-    (hdeg_two : ∀ k, 2 ≤ (P (k + 1)).natDegree)
     (hrec : ∀ k,
       P (k + 2) = U k * P (k + 1) + V k * (P (k + 1)).derivative)
     (hpos : ∀ k, HasPosLeadingCoeff (P k))
@@ -85,7 +80,6 @@ example {P U V : Nat → ℝ[X]} {n : Nat}
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
     (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
@@ -94,11 +88,10 @@ example {f u v : ℝ[X]}
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
     StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang using
-    hf, hdegf, hdeg_lo, hdeg_hi, hF_pos, hf_pos, hroot_sign
+    hf, hdeg_lo, hdeg_hi, hF_pos, hf_pos, hroot_sign
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
     (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
@@ -108,7 +101,6 @@ example {f u v : ℝ[X]}
     StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -117,7 +109,6 @@ example {f u v : ℝ[X]}
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
@@ -125,11 +116,10 @@ example {f u v : ℝ[X]}
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
     StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang_same using
-    hf, hdegf, hdeg, hF_pos, hf_pos, hroot_sign
+    hf, hdeg, hF_pos, hf_pos, hroot_sign
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
@@ -138,7 +128,6 @@ example {f u v : ℝ[X]}
     StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang_same using
     splits := hf,
-    degree_two := hdegf,
     degree := hdeg,
     target_pos_lc := hF_pos,
     source_pos_lc := hf_pos,
@@ -146,7 +135,6 @@ example {f u v : ℝ[X]}
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
@@ -154,11 +142,10 @@ example {f u v : ℝ[X]}
       ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
     StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang_succ using
-    hf, hdegf, hdeg, hF_pos, hf_pos, hroot_sign
+    hf, hdeg, hF_pos, hf_pos, hroot_sign
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
@@ -167,7 +154,6 @@ example {f u v : ℝ[X]}
     StrictInterl f (u * f + v * f.derivative) := by
   rr_ma_wang_succ using
     splits := hf,
-    degree_two := hdegf,
     degree := hdeg,
     target_pos_lc := hF_pos,
     source_pos_lc := hf_pos,
@@ -183,7 +169,6 @@ example {f u v g a b : ℝ[X]}
     (_hroot_sign_g :
       ∀ r, g.IsRoot r → b.eval r * (g.derivative.eval r) ^ 2 < 0)
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
     (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
@@ -195,7 +180,6 @@ example {f u v g a b : ℝ[X]}
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
@@ -206,7 +190,6 @@ example {f u v : ℝ[X]}
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
@@ -247,7 +230,6 @@ example {f g a b : ℝ[X]}
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
     (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
@@ -256,7 +238,6 @@ example {f u v : ℝ[X]}
     StrictInterl f (u * f + v * f.derivative) := by
   rr_mw_derivative_nonpos using
     splits := hf,
-    degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
@@ -265,7 +246,6 @@ example {f u v : ℝ[X]}
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
@@ -273,7 +253,6 @@ example {f u v : ℝ[X]}
     StrictInterl f (u * f + v * f.derivative) := by
   rr_mw_derivative_nonpos using
     splits := hf,
-    degree_two := hdegf,
     degree := hdeg,
     target_pos_lc := hF_pos,
     source_pos_lc := hf_pos,
@@ -284,7 +263,6 @@ target despite unrelated local families. -/
 example {P Q U V : Nat → ℝ[X]} {n : Nat}
     (_hQ_splits : ∀ k, (Q k).Splits)
     (hP_splits : ∀ k, (P k).Splits)
-    (hP_degree : ∀ k, 2 ≤ (P k).natDegree)
     (hdeg_lo : ∀ k,
       (P k).natDegree ≤ (U k * P k + V k * (P k).derivative).natDegree)
     (hdeg_hi : ∀ k,
@@ -299,7 +277,6 @@ example {P Q U V : Nat → ℝ[X]} {n : Nat}
 /-- A successor-degree equality supplies both derivative-step degree bounds. -/
 example {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)

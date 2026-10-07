@@ -11,6 +11,7 @@ import RealRooted.RootCounting.CrossingExhaustion
 import RealRooted.RootCounting.Descartes
 import RealRooted.SameDegreeMultiplicityLowerCount
 import RealRooted.Wronskian.WeakForward
+import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 
 /-!
 # Quadratic interlacing closure
@@ -104,8 +105,8 @@ theorem strictInterl_of_iterateTDeriv_neg
     simpa using hdelta.neg
   let fM : ℕ → ℝ[X] := fun M ↦ iterateTDeriv (-(delta M)) k f
   let gM : ℕ → ℝ[X] := fun M ↦ iterateTDeriv (-(delta M)) k g
-  have hinterl (M : ℕ) : Interl (fM M) (gM M) := by
-    exact (hreg (delta M) (hdelta_pos M)).toInterl
+  have hinterl (M : ℕ) : Interl (fM M) (gM M) :=
+    (hreg (delta M) (hdelta_pos M)).toInterl
   have hfM_pf (M : ℕ) : IsPFPolynomial (fM M) := by
     apply IsPFPolynomial.of_realRooted_nonneg
     · exact hf.iterateTDeriv_neg (hdelta_pos M).le k
@@ -453,22 +454,6 @@ theorem contDiff_quadraticInterlacingPencil_eval_prod
     ((contDiff_fst.pow 2).mul
       ((Polynomial.contDiff_aeval F ∞).comp contDiff_snd))
 
-private theorem quadratic_toSpanSingleton_isInvertible {c : ℝ} (hc : c ≠ 0) :
-    (ContinuousLinearMap.toSpanSingleton ℝ c).IsInvertible := by
-  let e : ℝ ≃L[ℝ] ℝ :=
-    ContinuousLinearEquiv.smulLeft (Units.mk0 c hc)
-  refine ⟨e, ?_⟩
-  ext
-  simp [e, ContinuousLinearMap.toSpanSingleton_apply, mul_comm]
-
-private theorem quadratic_inverse_toSpanSingleton_apply
-    {c y : ℝ} (hc : c ≠ 0) :
-    (ContinuousLinearMap.toSpanSingleton ℝ c).inverse y = y / c := by
-  have hinv := quadratic_toSpanSingleton_isInvertible hc
-  have h := hinv.self_apply_inverse y
-  simp only [ContinuousLinearMap.toSpanSingleton_apply, smul_eq_mul] at h
-  exact (eq_div_iff hc).2 h
-
 /-- A simple root of the quadratic pencil admits a local differentiable root
 branch. Its velocity is the implicit quotient of the parameter tangent by the
 spatial derivative. -/
@@ -486,8 +471,8 @@ theorem exists_hasDerivAt_quadraticInterlacingPencil_root
             (quadraticInterlacingPencil F G H b).IsRoot (ρ b) := by
   let p : ℝ → ℝ[X] := fun b => quadraticInterlacingPencil F G H b
   let Φ : ℝ × ℝ → ℝ := fun z => (p z.1).eval z.2
-  have hcont : ContDiffAt ℝ ∞ Φ (a, r) := by
-    exact (contDiff_quadraticInterlacingPencil_eval_prod F G H).contDiffAt
+  have hcont : ContDiffAt ℝ ∞ Φ (a, r) :=
+    (contDiff_quadraticInterlacingPencil_eval_prod F G H).contDiffAt
   let A : ℝ →L[ℝ] ℝ :=
     fderiv ℝ Φ (a, r) ∘L ContinuousLinearMap.inr ℝ ℝ ℝ
   let B : ℝ →L[ℝ] ℝ :=
@@ -517,7 +502,7 @@ theorem exists_hasDerivAt_quadraticInterlacingPencil_root
     · exact hparam.hasFDerivAt
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact quadratic_toSpanSingleton_isInvertible hregular
+    exact ContinuousLinearMap.isInvertible_toSpanSingleton hregular
   let ρ : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
   have hρbase : ρ a = r :=
     hcont.implicitFunction_apply_self (by simp) hAinv
@@ -535,7 +520,7 @@ theorem exists_hasDerivAt_quadraticInterlacingPencil_root
         (quadraticInterlacingPencil F G H a).derivative.eval r := by
     rw [neg_apply, ContinuousLinearMap.comp_apply, hB,
       ContinuousLinearMap.toSpanSingleton_apply, one_smul, hA]
-    rw [quadratic_inverse_toSpanSingleton_apply hregular]
+    rw [ContinuousLinearMap.inverse_toSpanSingleton_apply hregular]
     ring
   refine ⟨ρ, ?_, hρbase, ?_⟩
   · rwa [hquotient] at hρderiv
@@ -1184,8 +1169,8 @@ theorem positiveRootCount_quadraticParameterEvaluation_le_rootCountDrop
     · exact Or.inl h.symm
     · right
       lia
-  have hpdeg : p.natDegree = 2 := by
-    exact quadraticParameterEvaluation_natDegree hrF
+  have hpdeg : p.natDegree = 2 :=
+    quadraticParameterEvaluation_natDegree hrF
   have hFne : F.eval r ≠ 0 :=
     (Polynomial.not_isRoot_iff_eval_ne_zero F r).mp hrF
   have hpne : p ≠ 0 := by
@@ -2193,8 +2178,8 @@ theorem strictInterl_quadraticInterlacingTangent_pencil
   by_cases hHdeg : H.natDegree = 0
   · have hGdeg : G.natDegree = 0 := by
       exact Nat.eq_zero_of_le_zero (by simpa [hHdeg] using hGH.natDegree_le)
-    have hFdeg : F.natDegree = 0 := by
-      exact Nat.eq_zero_of_le_zero (by simpa [hGdeg] using hFG.natDegree_le)
+    have hFdeg : F.natDegree = 0 :=
+      Nat.eq_zero_of_le_zero (by simpa [hGdeg] using hFG.natDegree_le)
     have hFne : F ≠ 0 := hFG.1.1
     have hGne : G ≠ 0 := hFG.2.1.1
     have hHne : H ≠ 0 := hGH.2.1.1

@@ -11,38 +11,38 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-example {p : ℝ[X]} (hsplits : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+example {p : ℝ[X]} (hsplits : p.Splits) (hdeg : p.natDegree ≠ 0) :
     Interlaces p.derivative p := by
   rr_derivative_interlaces using
     splits := hsplits,
-    degree_two := hdeg
+    degree_ne_zero := hdeg
 
 example {P : Nat → ℝ[X]}
     (hsplits : ∀ i : Nat, (P i).Splits)
-    (hdeg : ∀ i : Nat, 2 ≤ (P i).natDegree) :
+    (hdeg : ∀ i : Nat, (P i).natDegree ≠ 0) :
     ∀ i : Nat, Interlaces (P i).derivative (P i) := by
   rr_derivative_sequence_interlaces using
     splits := hsplits,
-    degree_two := hdeg
+    degree_ne_zero := hdeg
 
 example {p : ℝ[X]} (hsplits : p.Splits) (hdeg : 2 ≤ p.natDegree) :
     Interlaces p.derivative p := by
   rr_derivative_interlaces using
     splits := hsplits
 
-example {p : ℝ[X]} (hsplits : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+example {p : ℝ[X]} (hsplits : p.Splits) (hdeg : p.natDegree ≠ 0) :
     StrictInterl p.derivative p := by
   rr_derivative_strict_interl using
     splits := hsplits,
-    degree_two := hdeg
+    degree_ne_zero := hdeg
 
 example {P : Nat → ℝ[X]}
     (hsplits : ∀ i : Nat, (P i).Splits)
-    (hdeg : ∀ i : Nat, 2 ≤ (P i).natDegree) :
+    (hdeg : ∀ i : Nat, (P i).natDegree ≠ 0) :
     ∀ i : Nat, StrictInterl (P i).derivative (P i) := by
   rr_derivative_sequence_strict_interl using
     splits := hsplits,
-    degree_two := hdeg
+    degree_ne_zero := hdeg
 
 example {p : ℝ[X]} (hsplits : p.Splits) (hdeg : 2 ≤ p.natDegree) :
     StrictInterl p.derivative p := by

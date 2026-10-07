@@ -19,7 +19,6 @@ namespace MaWang
 /-- Splits-only Ma--Wang wrapper for the usual sign orientation. -/
 theorem splits_derivative_of_nonpos {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
     (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
@@ -27,15 +26,14 @@ theorem splits_derivative_of_nonpos {f u v : ℝ[X]}
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
     (u * f + v * f.derivative).Splits :=
   right_splits_of_strictInterl
-    (strictInterl_derivative_of_nonpos
-      hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos)
+    (strictInterl_derivative_of_nonpos_of_splits
+      hf hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos)
 
 /-- Splits-only Ma--Wang wrapper for the sign-flipped inner transform.  This
 is useful when `u f + v f'` has negative leading coefficient and `v` is
 nonnegative at roots of `f`. -/
 theorem splits_derivative_of_nonneg_neg_inner {f u v : ℝ[X]}
     (hf : f.Splits)
-    (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
     (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
     (hF_neg_pos : HasPosLeadingCoeff (-(u * f + v * f.derivative)))
@@ -56,7 +54,7 @@ theorem splits_derivative_of_nonneg_neg_inner {f u v : ℝ[X]}
       ((-u) * f + (-v) * f.derivative).Splits := by
     refine
       splits_derivative_of_nonpos
-        hf hdegf ?_ ?_ ?_ hf_pos ?_
+        hf ?_ ?_ ?_ hf_pos ?_
     · exact hdeg_lo_neg
     · exact hdeg_hi_neg
     · exact hF_neg_pos'
@@ -96,7 +94,6 @@ theorem isRealRooted_of_derivative_then_const_add_derivative_sequence
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (ha : ∀ n : Nat, a n ≠ 0)
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff (U n * P (n + 1) + V n * (P (n + 1)).derivative))
     (hV_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
@@ -116,7 +113,7 @@ theorem isRealRooted_of_derivative_then_const_add_derivative_sequence
   let G : ℝ[X] := U n * P (n + 1) + V n * (P (n + 1)).derivative
   have hinner_splits : G.Splits :=
     splits_derivative_of_nonpos
-      hP_splits (hdeg_two n) (by simpa [G] using hinner_deg_lo n)
+      hP_splits (by simpa [G] using hinner_deg_lo n)
       (by simpa [G] using hinner_deg_hi n)
       (by simpa [G] using hinner_pos n)
       (hpos (n + 1)) (by simpa [G] using hV_nonpos n)
@@ -131,7 +128,6 @@ theorem isRealRooted_of_derivative_then_pos_const_add_derivative_sequence
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (ha : ∀ n : Nat, 0 < a n)
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hinner_pos : ∀ n : Nat,
       HasPosLeadingCoeff (U n * P (n + 1) + V n * (P (n + 1)).derivative))
     (hV_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
@@ -147,7 +143,7 @@ theorem isRealRooted_of_derivative_then_pos_const_add_derivative_sequence
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_derivative_then_const_add_derivative_sequence
-    a hbase_zero hbase_one hpos (fun n => ne_of_gt (ha n)) hdeg_two hinner_pos
+    a hbase_zero hbase_one hpos (fun n => ne_of_gt (ha n)) hinner_pos
     hV_nonpos hrec hinner_deg_lo hinner_deg_hi
 
 /-- Sequence-level LS4 shell for the sign-flipped inner Ma--Wang transform.
@@ -159,7 +155,6 @@ theorem isRealRooted_of_neg_derivative_then_const_add_derivative_sequence
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (ha : ∀ n : Nat, a n ≠ 0)
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hinner_neg_pos : ∀ n : Nat,
       HasPosLeadingCoeff (-(U n * P (n + 1) + V n * (P (n + 1)).derivative)))
     (hV_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (V n).eval r)
@@ -179,7 +174,7 @@ theorem isRealRooted_of_neg_derivative_then_const_add_derivative_sequence
   let G : ℝ[X] := U n * P (n + 1) + V n * (P (n + 1)).derivative
   have hinner_splits : G.Splits :=
     splits_derivative_of_nonneg_neg_inner
-      hP_splits (hdeg_two n) (by simpa [G] using hinner_deg_lo n)
+      hP_splits (by simpa [G] using hinner_deg_lo n)
       (by simpa [G] using hinner_deg_hi n)
       (by simpa [G] using hinner_neg_pos n)
       (hpos (n + 1)) (by simpa [G] using hV_nonneg n)
@@ -315,7 +310,6 @@ syntax (name := rr_mw_plus_derivative_sequence_named)
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
     "outer_nonzero" ":=" term ","
-    "degree_two" ":=" term ","
     "inner_pos_lc" ":=" term ","
     "coeff_nonpos" ":=" term ","
     "recurrence" ":=" term ","
@@ -330,7 +324,6 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_named)
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
     "outer_nonzero" ":=" term ","
-    "degree_two" ":=" term ","
     "inner_pos_lc" ":=" term ","
     "coeff_nonpos" ":=" term ","
     "recurrence" ":=" term ","
@@ -345,7 +338,6 @@ syntax (name := rr_mw_plus_derivative_sequence_pos_named)
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
     "outer_pos" ":=" term ","
-    "degree_two" ":=" term ","
     "inner_pos_lc" ":=" term ","
     "coeff_nonpos" ":=" term ","
     "recurrence" ":=" term ","
@@ -360,7 +352,6 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_pos_named)
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
     "outer_pos" ":=" term ","
-    "degree_two" ":=" term ","
     "inner_pos_lc" ":=" term ","
     "coeff_nonpos" ":=" term ","
     "recurrence" ":=" term ","
@@ -374,7 +365,6 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_auto)
     "base_zero" ":=" term ","
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "inner_pos_lc" ":=" term ","
     "root_nonpos" ":=" term ","
     "recurrence" ":=" term ","
@@ -388,7 +378,6 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_upper_auto)
     "base_zero" ":=" term ","
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "inner_pos_lc" ":=" term ","
     "root_upper" ":=" term ","
     "recurrence" ":=" term ","
@@ -403,7 +392,6 @@ syntax (name := rr_neg_mw_plus_derivative_sequence_named)
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
     "outer_nonzero" ":=" term ","
-    "degree_two" ":=" term ","
     "inner_neg_lc" ":=" term ","
     "coeff_nonneg" ":=" term ","
     "recurrence" ":=" term ","
@@ -418,7 +406,6 @@ syntax (name := rr_neg_mw_plus_derivative_sequence_expanded_named)
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
     "outer_nonzero" ":=" term ","
-    "degree_two" ":=" term ","
     "inner_neg_lc" ":=" term ","
     "coeff_nonneg" ":=" term ","
     "recurrence" ":=" term ","
@@ -432,7 +419,6 @@ syntax (name := rr_neg_mw_plus_derivative_sequence_expanded_auto)
     "base_zero" ":=" term ","
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "inner_neg_lc" ":=" term ","
     "root_nonneg" ":=" term ","
     "recurrence" ":=" term ","
@@ -502,16 +488,12 @@ macro_rules
         first
           | intro n
             rw [$hrec n]
-            first
-              | rr_ls4_factorize
-                exact Or.inl trivial
-              | rr_ls4_factorize
+            -- one factorization; close a remaining `True ∨ _` goal if there is one
+            rr_ls4_factorize <;> first | exact Or.inl trivial | skip
           | rename_i n
             rw [$hrec n]
-            first
-              | rr_ls4_factorize
-                exact Or.inl trivial
-              | rr_ls4_factorize)
+            -- one factorization; close a remaining `True ∨ _` goal if there is one
+            rr_ls4_factorize <;> first | exact Or.inl trivial | skip)
   | `(tactic|
       rr_mw_plus_derivative_sequence_expanded using
         outer := $a:term,
@@ -519,7 +501,6 @@ macro_rules
         base_one := $hbase_one:term,
         pos_lc := $hpos:term,
         outer_nonzero := $ha:term,
-        degree_two := $hdeg_two:term,
         inner_pos_lc := $hinner_pos:term,
         coeff_nonpos := $hV:term,
         recurrence := $hrec:term,
@@ -528,7 +509,7 @@ macro_rules
       `(tactic|
         refine
           RealRooted.MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence
-            $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_pos $hV ?_
+            $a $hbase_zero $hbase_one $hpos $ha $hinner_pos $hV ?_
             $hinner_deg_lo $hinner_deg_hi <;>
           (rr_ls4_recurrence_factorize $hrec))
   | `(tactic|
@@ -538,7 +519,6 @@ macro_rules
         base_one := $hbase_one:term,
         pos_lc := $hpos:term,
         outer_pos := $ha:term,
-        degree_two := $hdeg_two:term,
         inner_pos_lc := $hinner_pos:term,
         coeff_nonpos := $hV:term,
         recurrence := $hrec:term,
@@ -547,7 +527,7 @@ macro_rules
       `(tactic|
         refine
           RealRooted.MaWang.isRealRooted_of_derivative_then_pos_const_add_derivative_sequence
-            $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_pos $hV ?_
+            $a $hbase_zero $hbase_one $hpos $ha $hinner_pos $hV ?_
             $hinner_deg_lo $hinner_deg_hi <;>
           (rr_ls4_recurrence_factorize $hrec))
   | `(tactic|
@@ -557,7 +537,6 @@ macro_rules
         base_one := $hbase_one:term,
         pos_lc := $hpos:term,
         outer_nonzero := $ha:term,
-        degree_two := $hdeg_two:term,
         inner_neg_lc := $hinner_neg:term,
         coeff_nonneg := $hV:term,
         recurrence := $hrec:term,
@@ -566,7 +545,7 @@ macro_rules
       `(tactic|
         refine
           RealRooted.MaWang.isRealRooted_of_neg_derivative_then_const_add_derivative_sequence
-            $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_neg $hV ?_
+            $a $hbase_zero $hbase_one $hpos $ha $hinner_neg $hV ?_
             $hinner_deg_lo $hinner_deg_hi <;>
           (rr_ls4_recurrence_factorize $hrec))
   | `(tactic|
@@ -575,7 +554,6 @@ macro_rules
         base_zero := $hbase_zero:term,
         base_one := $hbase_one:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         inner_pos_lc := $hinner_pos:term,
         root_nonpos := $hroot:term,
         recurrence := $hrec:term,
@@ -588,7 +566,6 @@ macro_rules
           base_one := $hbase_one,
           pos_lc := $hpos,
           outer_nonzero := rr_side_ne_seq_term,
-          degree_two := $hdeg_two,
           inner_pos_lc := $hinner_pos,
           coeff_nonpos := rr_sign_at_roots_upper_seq $hroot,
           recurrence := $hrec,
@@ -600,7 +577,6 @@ macro_rules
         base_zero := $hbase_zero:term,
         base_one := $hbase_one:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         inner_pos_lc := $hinner_pos:term,
         root_upper := $hroot:term,
         recurrence := $hrec:term,
@@ -613,7 +589,6 @@ macro_rules
           base_one := $hbase_one,
           pos_lc := $hpos,
           outer_nonzero := rr_side_ne_seq_term,
-          degree_two := $hdeg_two,
           inner_pos_lc := $hinner_pos,
           coeff_nonpos := rr_sign_at_roots_upper_seq $hroot,
           recurrence := $hrec,
@@ -625,7 +600,6 @@ macro_rules
         base_zero := $hbase_zero:term,
         base_one := $hbase_one:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         inner_neg_lc := $hinner_neg:term,
         root_nonneg := $hroot:term,
         recurrence := $hrec:term,
@@ -638,7 +612,6 @@ macro_rules
           base_one := $hbase_one,
           pos_lc := $hpos,
           outer_nonzero := rr_side_ne_seq_term,
-          degree_two := $hdeg_two,
           inner_neg_lc := $hinner_neg,
           coeff_nonneg := rr_sign_at_roots_lower_seq $hroot,
           recurrence := $hrec,
@@ -689,7 +662,6 @@ macro_rules
         base_one := $hbase_one:term,
         pos_lc := $hpos:term,
         outer_nonzero := $ha:term,
-        degree_two := $hdeg_two:term,
         inner_pos_lc := $hinner_pos:term,
         coeff_nonpos := $hV:term,
         recurrence := $hrec:term,
@@ -698,7 +670,7 @@ macro_rules
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence
-            $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_pos $hV $hrec
+            $a $hbase_zero $hbase_one $hpos $ha $hinner_pos $hV $hrec
             $hinner_deg_lo $hinner_deg_hi))
   | `(tactic|
       rr_mw_plus_derivative_sequence using
@@ -707,7 +679,6 @@ macro_rules
         base_one := $hbase_one:term,
         pos_lc := $hpos:term,
         outer_pos := $ha:term,
-        degree_two := $hdeg_two:term,
         inner_pos_lc := $hinner_pos:term,
         coeff_nonpos := $hV:term,
         recurrence := $hrec:term,
@@ -716,7 +687,7 @@ macro_rules
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.MaWang.isRealRooted_of_derivative_then_pos_const_add_derivative_sequence
-            $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_pos $hV $hrec
+            $a $hbase_zero $hbase_one $hpos $ha $hinner_pos $hV $hrec
             $hinner_deg_lo $hinner_deg_hi))
   | `(tactic|
       rr_neg_mw_plus_derivative_sequence using
@@ -725,7 +696,6 @@ macro_rules
         base_one := $hbase_one:term,
         pos_lc := $hpos:term,
         outer_nonzero := $ha:term,
-        degree_two := $hdeg_two:term,
         inner_neg_lc := $hinner_neg:term,
         coeff_nonneg := $hV:term,
         recurrence := $hrec:term,
@@ -734,17 +704,51 @@ macro_rules
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.MaWang.isRealRooted_of_neg_derivative_then_const_add_derivative_sequence
-            $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_neg $hV $hrec
+            $a $hbase_zero $hbase_one $hpos $ha $hinner_neg $hV $hrec
             $hinner_deg_lo $hinner_deg_hi))
 
 end Tactic
 
-@[deprecated (since := "2026-10-05")]
-alias splits_mw_derivative_of_nonpos := MaWang.splits_derivative_of_nonpos
+/-- Deprecated degree-restricted form of `MaWang.splits_derivative_of_nonpos`. -/
+@[deprecated MaWang.splits_derivative_of_nonpos (since := "2026-10-05")]
+theorem splits_mw_derivative_of_nonpos {f u v : ℝ[X]}
+    (hf : f.Splits)
+    (_ : 2 ≤ f.natDegree)
+    (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
+    (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
+    (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
+    (hf_pos : HasPosLeadingCoeff f)
+    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
+    (u * f + v * f.derivative).Splits :=
+  MaWang.splits_derivative_of_nonpos hf hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos
 
-@[deprecated (since := "2026-10-05")]
-alias isRealRooted_of_mw_then_const_add_derivative_sequence :=
-  MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence
+/-- Deprecated degree-restricted form of
+`MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence`. -/
+@[deprecated MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence
+  (since := "2026-10-05")]
+theorem isRealRooted_of_mw_then_const_add_derivative_sequence
+    {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]} (a : Nat → ℝ)
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (_ : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hinner_pos : ∀ n : Nat,
+      HasPosLeadingCoeff (U n * P (n + 1) + V n * (P (n + 1)).derivative))
+    (hV_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        C (a n) * (U n * P (n + 1) + V n * (P (n + 1)).derivative) +
+          (U n * P (n + 1) + V n * (P (n + 1)).derivative).derivative)
+    (hinner_deg_lo : ∀ n : Nat,
+      (P (n + 1)).natDegree ≤
+        (U n * P (n + 1) + V n * (P (n + 1)).derivative).natDegree)
+    (hinner_deg_hi : ∀ n : Nat,
+      (U n * P (n + 1) + V n * (P (n + 1)).derivative).natDegree ≤
+        (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence a hbase_zero hbase_one
+    hpos ha hinner_pos hV_nonpos hrec hinner_deg_lo hinner_deg_hi
 
 @[deprecated (since := "2026-10-05")]
 alias isRealRooted_of_mw_then_const_add_derivative_plus_current_sequence :=

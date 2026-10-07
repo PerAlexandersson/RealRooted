@@ -129,7 +129,7 @@ theorem strictInterl_touchard_succ : ∀ n : Nat, StrictInterl (touchard n) (tou
         strictInterl_touchard_succ (n + 1)
       have hInter :
           Interlaces (touchard (n + 2)).derivative (touchard (n + 2)) :=
-        derivative_interlaces hprev.2.1.2 (by simp [natDegree_touchard])
+        derivative_interlaces_of_natDegree_ne_zero hprev.2.1.2 (by simp [natDegree_touchard])
       have hg_pos : HasPosLeadingCoeff (touchard (n + 2)).derivative :=
         (touchard_posLeadingCoeff (n + 2)).derivative (by simp [natDegree_touchard])
       have hNext_eq :

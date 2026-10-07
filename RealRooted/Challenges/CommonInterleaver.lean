@@ -3,6 +3,7 @@ import RealRooted.ChudnovskySeymour.Core
 import RealRooted.CommonInterleaver.FamilyUpgrade
 import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
 import RealRooted.Compatibility.InterleaverBridge
+import RealRooted.Compatibility.Leander
 
 /-!
 # Common interleaver challenge entry point
@@ -11,8 +12,8 @@ import RealRooted.Compatibility.InterleaverBridge
 version = 1
 section = "concepts"
 slug = "common-interleavers"
-authors = ["Chudnovsky", "Seymour"]
-years = [2007]
+authors = ["Chudnovsky", "Seymour", "Leander"]
+years = [2007, 2016]
 
 [[definitions]]
 name = "RealRooted.HasCommonInterleaver"
@@ -38,6 +39,11 @@ label = "Pairwise compatible family"
 name = "RealRooted.FamilyCompatible"
 module = "RealRooted.Compatibility.Basic"
 label = "Compatible family"
+
+[[definitions]]
+name = "RealRooted.leanderTransform"
+module = "RealRooted.Compatibility.LeanderTransform"
+label = "Leander’s diagonal-omitting transform"
 
 [[theorems]]
 name = "RealRooted.hasCommonInterleaver_of_pairwiseHasCommonInterleaver"
@@ -80,6 +86,11 @@ name = "RealRooted.chudnovskySeymour_pairwiseCompatible_iff_familyCompatible"
 module = "RealRooted.ChudnovskySeymour.Core"
 label = "Chudnovsky–Seymour: pairwise compatible ⇔ compatible family"
 headline = true
+
+[[theorems]]
+name = "RealRooted.leanderTransform_preserves_compatibility"
+module = "RealRooted.Compatibility.Leander"
+label = "Leander: the transform preserves ordered compatibility"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -112,6 +123,15 @@ This is the interlacing input for the real-rootedness of independence
 polynomials of claw-free graphs; see the
 [Chudnovsky–Seymour page](/RealRooted/theorems/chudnovsky-seymour/).
 
+**Theorem (Leander).** Let $f_0, \dotsc, f_{n-1}$ have positive leading
+coefficients, and suppose that $f_i$ and $f_j$ are compatible and $x f_i$ and
+$f_j$ are compatible whenever $i \le j$. Define
+$$
+L(f)_k = x \sum_{h < k} f_h + \sum_{h > k} f_h .
+$$
+Then the family $L(f)_0, \dotsc, L(f)_{n-1}$ satisfies the same two
+conditions.
+
 ## References
 
 M. Chudnovsky and P. Seymour, “The roots of the independence polynomial of a
@@ -119,6 +139,9 @@ clawfree graph,” *J. Combin. Theory Ser. B* 97 (2007), 350–357.
 P. Brändén, [“Unimodality, log-concavity, real-rootedness and
 beyond,”](https://arxiv.org/abs/1410.6601) in *Handbook of Enumerative
 Combinatorics*, CRC Press (2015), Section 7.8.
+M. Leander, [“Compatible polynomials and edgewise
+subdivisions,”](https://arxiv.org/abs/1605.05287) arXiv:1605.05287 (2016),
+Theorem 2.3.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

@@ -29,116 +29,6 @@ private lemma wronskian_eval {f g : ℝ[X]} {x : ℝ} :
       g.eval x * f.derivative.eval x - f.eval x * g.derivative.eval x := by
   simp [wronskianPoly, sub_eq_add_neg]
 
-private lemma eval_derivative_iterateTDeriv
-    (eps : ℝ) (n : ℕ) (p : ℝ[X]) (x : ℝ) :
-    (iterateTDeriv eps n p).derivative.eval x =
-      (iterateTDeriv eps n p.derivative).eval x := by
-  have hcomm :
-      (iterateTDeriv eps n p).derivative =
-        iterateTDeriv eps n p.derivative := by
-    simpa using iterate_derivative_iterateTDeriv eps n 1 p
-  lia
-
-private lemma wronskian_iterateTDeriv_eval
-    (eps : ℝ) (n : ℕ) (f g : ℝ[X]) (x : ℝ) :
-    (wronskianPoly (iterateTDeriv eps n f) (iterateTDeriv eps n g)).eval x =
-      (iterateTDeriv eps n g).eval x * (iterateTDeriv eps n f.derivative).eval x -
-        (iterateTDeriv eps n f).eval x * (iterateTDeriv eps n g.derivative).eval x := by
-  rw [wronskian_eval]
-  rw [eval_derivative_iterateTDeriv, eval_derivative_iterateTDeriv]
-
-private lemma continuous_wronskian_iterateTDeriv_eval_joint
-    (n : ℕ) (f g : ℝ[X]) :
-    Continuous fun z : ℝ × ℝ =>
-      (wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 := by
-  have hf : Continuous fun z : ℝ × ℝ => (iterateTDeriv z.1 n f).eval z.2 :=
-    continuous_eval_iterateTDeriv_joint n f
-  have hg : Continuous fun z : ℝ × ℝ => (iterateTDeriv z.1 n g).eval z.2 :=
-    continuous_eval_iterateTDeriv_joint n g
-  have hf' : Continuous fun z : ℝ × ℝ => (iterateTDeriv z.1 n f.derivative).eval z.2 :=
-    continuous_eval_iterateTDeriv_joint n f.derivative
-  have hg' : Continuous fun z : ℝ × ℝ => (iterateTDeriv z.1 n g.derivative).eval z.2 :=
-    continuous_eval_iterateTDeriv_joint n g.derivative
-  have hEq :
-      (fun z : ℝ × ℝ =>
-        (wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2) =
-      fun z : ℝ × ℝ =>
-        (iterateTDeriv z.1 n g).eval z.2 * (iterateTDeriv z.1 n f.derivative).eval z.2 -
-          (iterateTDeriv z.1 n f).eval z.2 * (iterateTDeriv z.1 n g.derivative).eval z.2 := by
-    funext z
-    exact wronskian_iterateTDeriv_eval z.1 n f g z.2
-  rw [hEq]
-  exact hg.mul hf' |>.sub (hf.mul hg')
-
-private lemma continuousAt_wronskian_iterateTDeriv_eval_joint_zero
-    (n : ℕ) (f g : ℝ[X]) (x : ℝ) :
-    ContinuousAt
-      (fun z : ℝ × ℝ =>
-        (wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2)
-      (0, x) := by
-  have hcont :
-      ContinuousAt
-        (fun z : ℝ × ℝ =>
-          (wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2)
-        (0, x) :=
-    (continuous_wronskian_iterateTDeriv_eval_joint n f g).continuousAt
-  lia
-
-private lemma exists_delta_wronskian_iterateTDeriv_eval_mul_pos_joint_at_zero
-    (n : ℕ) {f g : ℝ[X]} {x : ℝ}
-    (hx_eval : (wronskianPoly f g).eval x ≠ 0) :
-    ∃ δ > 0, ∀ {z : ℝ × ℝ}, ‖z - (0, x)‖ < δ →
-      0 <
-        (wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 *
-          (wronskianPoly f g).eval x := by
-  obtain ⟨δ, hδ, hclose⟩ :=
-    Metric.continuousAt_iff.mp
-      (continuousAt_wronskian_iterateTDeriv_eval_joint_zero n f g x)
-      (‖(wronskianPoly f g).eval x‖ / 2) (by simp_all)
-  refine ⟨δ, hδ, ?_⟩
-  intro z hz
-  have hclose' :
-      ‖(wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 -
-          (wronskianPoly f g).eval x‖ <
-        ‖(wronskianPoly f g).eval x‖ / 2 := by
-    simpa [dist_eq_norm, iterateTDeriv_zero_eps] using hclose hz
-  rcases lt_or_gt_of_ne hx_eval with hx_neg | hx_pos
-  · have hneg_iter :
-        (wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 < 0 := by
-      have hneg_norm :
-          ‖-(wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 -
-              (-(wronskianPoly f g).eval x)‖ =
-            ‖(wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 -
-                (wronskianPoly f g).eval x‖ := by
-        rw [sub_eq_add_neg, neg_neg]
-        have hEq :
-            -(wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 +
-                (wronskianPoly f g).eval x =
-              -((wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 -
-                (wronskianPoly f g).eval x) := by
-          ring
-        rw [hEq, norm_neg]
-      have hclose_neg0 :
-          ‖-(wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 -
-              (-(wronskianPoly f g).eval x)‖ <
-            ‖(wronskianPoly f g).eval x‖ / 2 := by
-        lia
-      have hclose_neg :
-          ‖-(wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 -
-              (-(wronskianPoly f g).eval x)‖ <
-            (-(wronskianPoly f g).eval x) / 2 := by
-        simpa [Real.norm_eq_abs, abs_of_neg hx_neg] using hclose_neg0
-      have hpos_neg_iter :
-          0 < -(wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 :=
-        pos_of_norm_sub_lt_half_of_pos (by simp_all) hclose_neg
-      linarith
-    exact mul_pos_of_neg_of_neg hneg_iter hx_neg
-  · have hpos_iter :
-        0 < (wronskianPoly (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 :=
-      pos_of_norm_sub_lt_half_of_pos hx_pos
-        (by simpa [Real.norm_eq_abs, abs_of_pos hx_pos] using hclose')
-    simp_all
-
 lemma ObreschkoffConverseInternal.eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
     {f g : ℝ[X]}
     (hgf : Interlaces g f)
@@ -165,61 +55,6 @@ lemma ObreschkoffConverseInternal.eval_mul_eval_neg_of_interlaces_consecutive_of
   have hg₂_ne : g.eval r₂ ≠ 0 := by simp_all
   grind
 
-/-- The right-family pair `(f + g, f + 2g)` stays in the same Obreschkoff plane.
-
-This is a convenient basis change for later converse work: every linear
-combination of these two polynomials is still a linear combination of `(f, g)`,
-so `AllComboRealRooted` is inherited for free. -/
-private lemma allComboRealRooted_right_family_one_two
-    {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
-    AllComboRealRooted (f + g) (f + C (2 : ℝ) * g) := by
-  intro α β
-  have hrewrite :
-      C α * (f + g) + C β * (f + C (2 : ℝ) * g) =
-        C (α + β) * f + C (α + 2 * β) * g := by
-    grind
-  simpa [hrewrite] using hall (α + β) (α + 2 * β)
-
-/-- Safe degree/leading-coefficient packaging for the right-family reroute.
-
-The heuristic "`(f + g, f + 2g)` regularizes to the top degree" is only
-reliably true after sign-normalizing so both original leading coefficients are
-positive; otherwise the same-degree case can still cancel at the top. This
-helper records the version that is actually stable in Lean. -/
-lemma right_family_degree_data_of_posLeadingCoeff
-    {f g : ℝ[X]}
-    (hdeg : f.natDegree ≤ g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
-    HasPosLeadingCoeff (f + g) ∧
-      HasPosLeadingCoeff (f + C (2 : ℝ) * g) ∧
-      (f + g).natDegree = g.natDegree ∧
-      (f + C (2 : ℝ) * g).natDegree = g.natDegree := by
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · simpa using
-      PosComboRealRooted.family_hasPosLeadingCoeff_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 1) zero_lt_one
-  · simpa using
-      PosComboRealRooted.family_hasPosLeadingCoeff_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 2) (by simp)
-  · simpa using
-      PosComboRealRooted.family_natDegree_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 1) zero_lt_one
-  · simpa using
-      PosComboRealRooted.family_natDegree_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 2) (by simp)
-
-/-- Under the positive-leading and degree-order hypotheses, the stronger
-`AllComboRealRooted` assumption implies the positive-combination hypothesis
-used by the same-degree converse infrastructure. -/
-private lemma posComboRealRooted_of_allComboRealRooted_of_natDegree_le
-    {f g : ℝ[X]}
-    (hall : AllComboRealRooted f g)
-    (hdeg : f.natDegree ≤ g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
-    PosComboRealRooted f g := by
-  intro lam μ hlam hμ
-  exact ⟨(hasPosLeadingCoeff_pos_combo_of_natDegree_le_right hdeg hf_pos hg_pos hlam hμ).ne_zero,
-    hall lam μ⟩
 /-- No-common-roots is preserved by an invertible linear change of basis in the
 `(f, g)`-plane. This is the algebraic bridge needed for the "pick a special
 combination and a complementary combination" strategy. -/
@@ -617,20 +452,6 @@ private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
     rw [hp_simple r hp_root] at hmult
     lia
 
-private lemma derivative_sign_at_consecutive_simple_roots
-    {f : ℝ[X]} (hf_ne : f ≠ 0) (hsimple : HasSimpleRoots f)
-    {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
-    (hlt : r₁ < r₂)
-    (hno_between : ∀ r ∈ f.roots, ¬ (r₁ < r ∧ r < r₂)) :
-    f.derivative.eval r₁ * f.derivative.eval r₂ < 0 := by
-  have hnonpos :=
-    derivative_sign_at_consecutive_roots hr₁ hr₂ hlt hno_between hf_ne
-  have hder₁_ne : f.derivative.eval r₁ ≠ 0 :=
-    eval_derivative_ne_zero_of_hasSimpleRoots hf_ne hsimple hr₁
-  have hder₂_ne : f.derivative.eval r₂ ≠ 0 :=
-    eval_derivative_ne_zero_of_hasSimpleRoots hf_ne hsimple hr₂
-  exact lt_of_le_of_ne hnonpos (mul_ne_zero hder₁_ne hder₂_ne)
-
 private lemma wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
@@ -731,7 +552,8 @@ private theorem strictInterl_or_reverse_of_eq_zero_or_simple_combo_sameDegree
       · have hx' : 0 ≤ x := le_of_not_ge hx
         have hprod := hW_prod hx'
         nlinarith
-    have hder : Interlaces f.derivative f := derivative_interlaces hf_splits hdeg_ge2
+    have hder : Interlaces f.derivative f :=
+      derivative_interlaces_of_natDegree_ne_zero hf_splits (by lia)
     have hroot_sign :
         ∀ r, f.IsRoot r → g.eval r * f.derivative.eval r < 0 := by
       intro r hr
@@ -748,7 +570,8 @@ private theorem strictInterl_or_reverse_of_eq_zero_or_simple_combo_sameDegree
       · have hx' : 0 ≤ x := le_of_not_ge hx
         have hprod := hW_prod hx'
         nlinarith
-    have hder : Interlaces g.derivative g := derivative_interlaces hg_splits hgdeg_ge2
+    have hder : Interlaces g.derivative g :=
+      derivative_interlaces_of_natDegree_ne_zero hg_splits (by lia)
     have hroot_sign :
         ∀ r, g.IsRoot r → f.eval r * g.derivative.eval r < 0 := by
       intro r hr
@@ -1071,7 +894,6 @@ theorem
         (iterateTDeriv eps (max f.natDegree g.natDegree) g).natDegree := by simp_all
   dsimp
   exact StrictInterl.forward_of_orientation_of_succDegree hdeg_iter_succ.symm hstrictInterl_iter
-
 
 end
 end RealRooted

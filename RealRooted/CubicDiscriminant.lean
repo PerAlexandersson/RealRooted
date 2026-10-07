@@ -115,6 +115,19 @@ theorem cubicDiscr_neg_of_critical_value
   have hy_sq_pos : 0 < y ^ 2 := sq_pos_of_ne_zero hy
   exact (cubicDiscr_neg_iff_critical_value hcrit hvalue).mpr (by linarith)
 
+/-- No-real-critical-point criterion for a negative cubic discriminant.
+
+If `a₃ X³ + a₂ X² + a₁ X + a₀` has positive leading coefficient and its
+derivative has negative discriminant, then the cubic discriminant is negative. -/
+theorem cubicDiscr_neg_of_deriv_disc_neg (a3 a2 a1 a0 : ℝ)
+    (h3 : 0 < a3) (hderiv : a2 ^ 2 < 3 * a3 * a1) :
+    cubicDiscr (C a3 * X ^ 3 + C a2 * X ^ 2 + C a1 * X + C a0) < 0 := by
+  rw [cubicDiscr_of_coeffs]
+  have hpos : 0 < 3 * a3 * a1 - a2 ^ 2 := by linarith
+  have ha3sq : 0 < a3 ^ 2 := by positivity
+  nlinarith [sq_nonneg (54 * a3 ^ 2 * a0 - 2 * a2 * (9 * a3 * a1 - 2 * a2 ^ 2)),
+    pow_pos hpos 3, ha3sq, mul_pos ha3sq (pow_pos hpos 3)]
+
 /-- The discriminant of the Hessian quadratic covariant of a cubic is
 `-3` times the cubic discriminant.
 

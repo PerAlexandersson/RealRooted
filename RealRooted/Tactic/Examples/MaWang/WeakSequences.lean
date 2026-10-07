@@ -17,7 +17,6 @@ sequence-supplied coefficient sign certificate. -/
 example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hV : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative)
@@ -27,7 +26,6 @@ example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
   rr_mw_derivative_nonpos_sequence using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     coeff_nonpos := hV,
     recurrence := hrec,
     degree_lower := hdeg_lo,
@@ -37,7 +35,6 @@ example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hV : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative)
@@ -48,7 +45,6 @@ example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
     rr_mw_derivative_nonpos_sequence using
       base := hbase,
       pos_lc := hpos,
-      degree_two := hdeg_two,
       coeff_nonpos := hV,
       recurrence := hrec,
       degree_lower := hdeg_lo,
@@ -60,7 +56,6 @@ rows. -/
 example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hV : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative)
@@ -70,7 +65,6 @@ example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
   rr_mw_derivative_nonpos_sequence_realrooted using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     coeff_nonpos := hV,
     recurrence := hrec,
     degree_lower := hdeg_lo,
@@ -80,7 +74,6 @@ example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) + (-(X ^ 2 : ℝ[X])) * (P (n + 1)).derivative)
@@ -90,7 +83,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
   rr_mw_derivative_global_nonpos_sequence_auto using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     deriv_factor := fun _ => -(X ^ 2 : ℝ[X]),
     recurrence := hrec,
     degree_lower := hdeg_lo,
@@ -100,7 +92,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hV : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative)
@@ -110,7 +101,6 @@ example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
   rr_mw_derivative_nonpos_sequence_realrooted using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     coeff_nonpos := hV,
     recurrence := hrec,
     degree_lower := hdeg_lo,
@@ -121,7 +111,6 @@ section InferredWeakSequence
 variable {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
 variable (hbase : StrictInterl (P 0) (P 1))
 variable (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-variable (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
 variable (hV : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
 variable (hrec : ∀ n : Nat,
   P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative)
@@ -156,7 +145,6 @@ example {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]}
     (_hW : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (W n).eval r ≤ 0)
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hV : ∀ k : Nat, ∀ r, (P (k + 1)).IsRoot r → (V k).eval r ≤ 0)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative)
@@ -169,7 +157,6 @@ example {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hV : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
     (hraw : ∀ n : Nat,
       P (n + 2) = V n * (P (n + 1)).derivative + U n * P (n + 1))

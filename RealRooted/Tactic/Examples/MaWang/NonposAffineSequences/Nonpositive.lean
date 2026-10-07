@@ -15,7 +15,6 @@ namespace Tactic
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + C (-(c n)) * (P (n + 1)).derivative)
@@ -25,7 +24,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
   rr_mw_derivative_neg_const_sequence using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     coeff_nonneg := hc,
     recurrence := hrec,
     degree_lower := hdeg_lo,
@@ -35,7 +33,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) + C (-((n : ℝ) + 1)) * (P (n + 1)).derivative)
@@ -45,7 +42,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
   rr_mw_derivative_neg_const_sequence_auto using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     recurrence := hrec,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
@@ -54,7 +50,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + C (-(c n)) * (P (n + 1)).derivative)
@@ -64,7 +59,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
   rr_mw_derivative_neg_const_sequence_realrooted using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     coeff_nonneg := hc,
     recurrence := hrec,
     degree_lower := hdeg_lo,
@@ -74,7 +68,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) + C (-((n : ℝ) + 1)) * (P (n + 1)).derivative)
@@ -84,7 +77,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
   rr_mw_derivative_neg_const_sequence_realrooted_auto using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     recurrence := hrec,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
@@ -93,7 +85,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) + C (-((n : ℝ) + 1)) * (P (n + 1)).derivative)
@@ -103,7 +94,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
   rr_mw_derivative_neg_const_sequence_realrooted_auto using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     recurrence := hrec,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
@@ -112,7 +102,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) =
@@ -123,7 +112,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
   rr_mw_derivative_neg_X_sq_sequence using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     coeff_nonneg := hc,
     recurrence := hrec,
     degree_lower := hdeg_lo,
@@ -133,7 +121,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) +
@@ -144,7 +131,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
   rr_mw_derivative_neg_X_sq_sequence_auto using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     recurrence := hrec,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
@@ -153,7 +139,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) =
@@ -164,7 +149,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
   rr_mw_derivative_neg_X_sq_sequence_realrooted using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     coeff_nonneg := hc,
     recurrence := hrec,
     degree_lower := hdeg_lo,
@@ -174,7 +158,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) +
@@ -185,7 +168,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
   rr_mw_derivative_neg_X_sq_sequence_realrooted_auto using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     recurrence := hrec,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
@@ -195,7 +177,6 @@ endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) +
@@ -205,7 +186,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
   rr_mw_derivative_neg_X_sq_sequence_realrooted_auto using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     recurrence := hrec,
     degree_succ := hdeg_succ
 
@@ -213,7 +193,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) =
@@ -223,7 +202,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
   rr_mw_derivative_neg_X_sq_sequence_realrooted using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     coeff_nonneg := hc,
     recurrence := hrec,
     degree_succ := hdeg_succ
@@ -232,7 +210,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hrec : ∀ n : Nat,
       P (n + 2) =
         U n * P (n + 1) +
@@ -243,7 +220,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
   rr_mw_derivative_neg_X_sq_sequence_realrooted_auto using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     recurrence := hrec,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
@@ -252,7 +228,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = U n * P (n + 1) + (-(C (c n))) * (P (n + 1)).derivative)
@@ -262,7 +237,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
   rr_mw_derivative_neg_const_sequence using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     coeff_nonneg := hc,
     recurrence := hrec,
     degree_lower := hdeg_lo,
@@ -272,7 +246,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) =
@@ -283,7 +256,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
   rr_mw_derivative_neg_X_sq_sequence using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     coeff_nonneg := hc,
     recurrence := hrec,
     degree_lower := hdeg_lo,
@@ -293,7 +265,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) =
@@ -304,7 +275,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
   rr_mw_derivative_neg_X_sq_sequence_realrooted using
     base := hbase,
     pos_lc := hpos,
-    degree_two := hdeg_two,
     coeff_nonneg := hc,
     recurrence := hrec,
     degree_lower := hdeg_lo,

@@ -146,6 +146,19 @@ private def closeWithTaggedMatches (found : Array (Name × Expr))
         ("rr_lookup failed: ambiguous tagged certificates" ++ requestedSuffix ++ ": " ++
           provenanceCandidatesString candidates)
 
+/-- Whether no candidate can match `target`: it has an unassigned metavariable that is not a
+proof, while no local hypothesis mentions a metavariable.  The search runs at a fresh
+metavariable depth, so such a metavariable cannot be assigned and every comparison fails;
+checking first saves scanning the context and the tagged certificates. -/
+private def lookupCannotMatch (target : Expr) : TacticM Bool := withMainContext do
+  let target ← instantiateMVars target
+  unless target.hasExprMVar do return false
+  for ldecl in ← getLCtx do
+    if (← instantiateMVars ldecl.type).hasExprMVar then return false
+  for m in (target.collectMVars {}).result do
+    unless ← isProp (← m.getType) do return true
+  return false
+
 syntax (name := rr_lookup) "rr_lookup" : tactic
 syntax (name := rr_lookup_attr) "rr_lookup" " [" ident "]" : tactic
 
@@ -153,6 +166,8 @@ elab_rules : tactic
   | `(tactic| rr_lookup) =>
       withMainContext do
         let target ← getMainTarget
+        if ← lookupCannotMatch target then
+          throwError "rr_lookup failed: the goal has undetermined metavariables"
         if let some proof ← findLocalProofByType? target then
           closeMainGoal `rr_lookup proof
           return
@@ -164,6 +179,8 @@ elab_rules : tactic
         let some attr := certificateAttrByName? attrName
           | throwError "rr_lookup failed: unknown certificate attribute [{attrName}]"
         let target ← getMainTarget
+        if ← lookupCannotMatch target then
+          throwError "rr_lookup failed: the goal has undetermined metavariables"
         if let some proof ← findLocalProofByType? target then
           closeMainGoal `rr_lookup proof
           return

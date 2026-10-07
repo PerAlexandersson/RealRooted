@@ -37,8 +37,8 @@ lemma scaledLowerShiftFin_mul_scaledLowerFin (N : ℕ)
     rw [Finset.sum_eq_single j₀]
     · by_cases hk : k.val ≤ r
       · have hkj₀ : k ≤ j₀ := hk
-        have hki : k ≤ (⟨r + 1, hir⟩ : Fin (N + 1)) := by
-          exact Fin.mk_le_mk.mpr (hk.trans (Nat.le_succ r))
+        have hki : k ≤ (⟨r + 1, hir⟩ : Fin (N + 1)) :=
+          Fin.mk_le_mk.mpr (hk.trans (Nat.le_succ r))
         have hik : (⟨r + 1, hir⟩ : Fin (N + 1)) ≠ k := by
           intro h
           have hv : r + 1 = k.val := by simpa using congrArg Fin.val h

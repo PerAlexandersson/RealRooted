@@ -12,6 +12,19 @@ Shared parser declarations and macro helpers for the focused Favard tactic front
 namespace RealRooted
 namespace Tactic
 
+open _root_.Lean _root_.Lean.Elab _root_.Lean.Elab.Tactic _root_.Lean.Meta in
+/-- `rr_target_head_in c₁ … cₖ` fails unless the goal, under its `∀` binders and without
+unfolding, is an application of one of the `cᵢ` (or is still a metavariable).  It lets a
+certificate be tried only on goals of its shape: a failing `exact` elaborates the
+certificate's `by` blocks before it compares types. -/
+elab "rr_target_head_in" cs:(ppSpace ident)+ : tactic => withMainContext do
+  let heads ← cs.mapM fun c => realizeGlobalConstNoOverloadWithInfo c
+  let body ← forallTelescope (← instantiateMVars (← getMainTarget)) fun _ b =>
+    instantiateMVars b
+  let f := body.getAppFn
+  unless f.isMVar || heads.any f.isConstOf do
+    throwError "rr_target_head_in: the goal is not an application of {cs}"
+
 syntax (name := rr_favard_step_seq) "rr_favard_step_seq " term : term
 
 syntax (name := rr_favard_step_dsimp_seq) "rr_favard_step_dsimp_seq " term : term
@@ -125,12 +138,12 @@ macro_rules
         $hinterlace_proj:term, $hrealrooted_proj:term, $hnonzero_proj:term) =>
       `(tactic|
         first
-          | exact $hinterlace
+          | (rr_target_head_in StrictInterl Interlaces Interl; exact $hinterlace)
           | rr_exact_realrooted_sequence_or_projection $hrealrooted
-          | exact $hnonzero
-          | exact $hinterlace_proj
+          | (rr_target_head_in Ne; exact $hnonzero)
+          | (rr_target_head_in StrictInterl Interlaces Interl; exact $hinterlace_proj)
           | rr_exact_realrooted_sequence_or_projection $hrealrooted_proj
-          | exact $hnonzero_proj)
+          | (rr_target_head_in Ne; exact $hnonzero_proj))
   | `(tactic|
       rr_favard_goal_variants
         $hinterlaces:term, $hstrictInterl:term, $hrealrooted:term, $hnonzero:term,
@@ -138,14 +151,14 @@ macro_rules
         $hnonzero_proj:term) =>
       `(tactic|
         first
-          | exact $hinterlaces
-          | exact $hstrictInterl
+          | (rr_target_head_in Interlaces; exact $hinterlaces)
+          | (rr_target_head_in StrictInterl; exact $hstrictInterl)
           | rr_exact_realrooted_sequence_or_projection $hrealrooted
-          | exact $hnonzero
-          | exact $hinterlaces_proj
-          | exact $hstrictInterl_proj
+          | (rr_target_head_in Ne; exact $hnonzero)
+          | (rr_target_head_in Interlaces; exact $hinterlaces_proj)
+          | (rr_target_head_in StrictInterl; exact $hstrictInterl_proj)
           | rr_exact_realrooted_sequence_or_projection $hrealrooted_proj
-          | exact $hnonzero_proj)
+          | (rr_target_head_in Ne; exact $hnonzero_proj))
   | `(tactic|
       rr_favard_goal_variants
         $hinterlace:term, $hrealrooted:term, $hnonzero:term) =>

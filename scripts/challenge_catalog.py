@@ -10,6 +10,7 @@ environment after a successful build.
 
 from __future__ import annotations
 
+import functools
 import hashlib
 import html
 import json
@@ -51,7 +52,7 @@ CONTENT_RE = re.compile(
 DECLARATION_RE = re.compile(
     r"^\s*(?P<attributes>(?:@\[[^\n]*\]\s*)*)"
     r"(?P<modifiers>(?:(?:private|protected|noncomputable|unsafe|partial)\s+)*)"
-    r"(?P<kind>theorem|lemma|def|abbrev|structure|inductive|class|opaque|instance)\s+"
+    r"(?P<kind>theorem|lemma|def|irreducible_def|abbrev|structure|inductive|class|opaque|instance)\s+"
     f"(?P<name>{ID_START}{ID_REST_DOT}*)(?!{ID_REST_DOT})"
 )
 NAMESPACE_RE = re.compile(f"^\\s*namespace\\s+({ID_START}{ID_REST_DOT}*)\\s*$")
@@ -115,8 +116,13 @@ class SourceDeclaration:
     source_code: str = ""
 
 
+@functools.lru_cache(maxsize=None)
 def strip_comments_and_strings(text: str) -> str:
-    """Replace comments and strings by whitespace without moving source lines."""
+    """Replace comments and strings by whitespace without moving source lines.
+
+    Validation strips the same imported modules many times, so results are
+    cached by source text.
+    """
     output: list[str] = []
     index = 0
     block_depth = 0
@@ -463,12 +469,24 @@ def _declaration_source_code(
         original_tail = "".join(original_lines[start:])
         clean_tail = "".join(clean_lines[start:])
         depth = 0
+        line_start = 0
         for index, character in enumerate(clean_tail[:-1]):
-            if character in "([{":
+            if character == "\n":
+                line_start = index + 1
+            elif character in "([{":
                 depth += 1
             elif character in ")]}":
                 depth -= 1
-            elif character == ":" and clean_tail[index + 1] == "=" and depth == 0:
+            elif depth == 0 and (
+                (character == ":" and clean_tail[index + 1] == "=")
+                # Equation-style proofs (`| 0 => ...`) start their first
+                # alternative on a fresh line instead of using `:=`.
+                or (
+                    character == "|"
+                    and clean_tail[index + 1].isspace()
+                    and not clean_tail[line_start:index].strip()
+                )
+            ):
                 return original_tail[:index].rstrip()
         relative = source_path.as_posix()
         raise CatalogError(f"{relative}:{source_line}: cannot isolate theorem statement")
@@ -492,6 +510,29 @@ def _declaration_source_code(
         relative = source_path.as_posix()
         raise CatalogError(f"{relative}:{source_line}: empty declaration source")
     return source_code
+
+
+def _attribute_tail(line: str, depth: int) -> tuple[int, str]:
+    """Track `@[...]` attribute brackets and return any text following them.
+
+    `depth` is the bracket depth carried over from earlier lines.  The result is
+    the new depth and the stripped remainder after the last closed attribute
+    list (empty while the attribute list is still open).
+    """
+    index = 0
+    while index < len(line):
+        character = line[index]
+        if depth:
+            depth += {"[": 1, "]": -1}.get(character, 0)
+            index += 1
+        elif character.isspace():
+            index += 1
+        elif line.startswith("@[", index):
+            depth = 1
+            index += 2
+        else:
+            return 0, line[index:].strip()
+    return depth, ""
 
 
 def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> dict[str, SourceDeclaration]:
@@ -520,12 +561,13 @@ def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> d
         declaration_match = DECLARATION_RE.match(line)
         stripped = line.strip()
         if not declaration_match:
-            if attribute_depth:
+            if attribute_depth or stripped.startswith("@["):
                 pending_deprecated = pending_deprecated or "deprecated" in stripped
-                attribute_depth += line.count("[") - line.count("]")
-            elif stripped.startswith("@["):
-                pending_deprecated = pending_deprecated or "deprecated" in stripped
-                attribute_depth = line.count("[") - line.count("]")
+                attribute_depth, tail = _attribute_tail(line, attribute_depth)
+                if tail:
+                    # The attributes already applied to a declaration on this
+                    # line, such as a one-line `@[deprecated] alias old := new`.
+                    pending_deprecated = False
             elif stripped:
                 pending_deprecated = False
             continue

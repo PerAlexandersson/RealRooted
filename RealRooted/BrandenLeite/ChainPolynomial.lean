@@ -3,6 +3,8 @@ import RealRooted.BrandenLeite.ChainPolynomial.Resolution
 import RealRooted.Interlacing.ConeBounds
 import RealRooted.RowThresholdOne
 import RealRooted.SymmetricDecomposition.Theorem26
+import RealRooted.Mathlib.Algebra.BigOperators.Group.List
+import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 
 /-!
 # Chain polynomials of a resolvable matrix
@@ -77,20 +79,11 @@ theorem roots_fPolynomial_mem_Icc {d : ℕ} {p : ℝ[X]}
     have hr0 : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hp_splits hpnn r hr
     exact ⟨(neg_one_lt_transformedRoot hr0).le, transformedRoot_nonpos hr0⟩
 
-private theorem sum_map_range_eq_finset_sum
-    (f : ℕ → ℝ[X]) : ∀ n : ℕ,
-    ((List.range n).map f).sum = ∑ j ∈ Finset.range n, f j
-  | 0 => by simp
-  | n + 1 => by
-      rw [List.range_succ, List.map_append, List.sum_append, Finset.sum_range_succ,
-        sum_map_range_eq_finset_sum f n]
-      simp
-
 private theorem sum_map_range'_eq_finset_sum_Ico
     (f : ℕ → ℝ[X]) (k q : ℕ) :
     ((List.range' k (q - k)).map f).sum = ∑ j ∈ Finset.Ico k q, f j := by
   rw [Finset.sum_Ico_eq_sum_range, List.range'_eq_map_range, List.map_map,
-    sum_map_range_eq_finset_sum]
+    List.sum_map_range]
   simp [Function.comp_apply]
 
 private theorem staircaseSum_range_map (f : ℕ → ℝ[X])
@@ -99,29 +92,19 @@ private theorem staircaseSum_range_map (f : ℕ → ℝ[X])
       X * ∑ j ∈ Finset.range k, f j + ∑ j ∈ Finset.Ico k q, f j := by
   unfold staircaseSum
   rw [← List.map_take, List.take_range, min_eq_left hk,
-    sum_map_range_eq_finset_sum]
+    List.sum_map_range]
   rw [← List.map_drop]
   rw [show List.range q = List.range' 0 q from List.range_eq_range']
   rw [List.drop_range']
   simpa using sum_map_range'_eq_finset_sum_Ico f k q
 
-private theorem natDegree_list_sum_le {d : ℕ} :
-    ∀ {fs : List ℝ[X]}, (∀ p ∈ fs, p.natDegree ≤ d) → fs.sum.natDegree ≤ d
-  | [], _ => by simp
-  | p :: fs, hdeg => by
-      simp only [List.sum_cons]
-      exact Polynomial.natDegree_add_le_of_degree_le
-        (hdeg p (by simp))
-        (natDegree_list_sum_le (fun q hq => hdeg q (by
-          exact List.mem_cons_of_mem p hq)))
-
 private theorem natDegree_staircaseSum_le {d : ℕ} {fs : List ℝ[X]}
     (hdeg : ∀ p ∈ fs, p.natDegree ≤ d) (k : ℕ) :
     (staircaseSum fs k).natDegree ≤ d + 1 := by
   have htake : (fs.take k).sum.natDegree ≤ d :=
-    natDegree_list_sum_le fun p hp => hdeg p (List.mem_of_mem_take hp)
+    natDegree_list_sum_le_of_forall_le fun p hp => hdeg p (List.mem_of_mem_take hp)
   have hdrop : (fs.drop k).sum.natDegree ≤ d :=
-    natDegree_list_sum_le fun p hp => hdeg p (List.mem_of_mem_drop hp)
+    natDegree_list_sum_le_of_forall_le fun p hp => hdeg p (List.mem_of_mem_drop hp)
   unfold staircaseSum
   apply Polynomial.natDegree_add_le_of_degree_le
   · exact (Polynomial.natDegree_mul_le_of_le Polynomial.natDegree_X_le htake).trans (by lia)

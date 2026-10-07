@@ -1,4 +1,4 @@
-import RealRooted.LiuOppositeSigns.Theorem21Statements.NoCommonCrossing
+import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
 import RealRooted.ReflectedRootCountLocalConstancy
 
 /-!
@@ -86,17 +86,17 @@ continuity rules out same-owner odd gaps, and the finite descent gives the Liu
 branch. The paper's assertion that no common zeros imply simple zeros is false
 without an additional perturbation argument, so simplicity remains explicit
 here rather than being inferred from `hno`. -/
-theorem LiuOppositeSigns.theorem21RootCountBranches_of_compatible_noCommon_nonconstant_of_simple
+theorem LiuOppositeSigns.RootCountBranches.of_compatible_of_noCommonRoots_of_hasSimpleRoots
     {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
     (hsgn : OppositeLeadingSigns f g) (hno : NoCommonRoots f g)
     (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
     (hsimple_f : HasSimpleRoots f) (hsimple_g : HasSimpleRoots g)
     (hcompat : Compatible f g) :
-    theorem21RootCountBranches f g := by
+    RootCountBranches f g := by
   have hfg : PosComboRealRooted f g :=
     posComboRealRooted_of_compatible_noCommon_nonconstant
       hcompat hno hg hg_deg
-  exact theorem21RootCountBranches_of_crossOwned hsgn hf hg
+  exact RootCountBranches.of_crossOwned hsgn hf hg
     hf_deg hg_deg hsimple_f hsimple_g hno
     (hsgn.crossOwnedNotOddGaps_of_boundedIntervalContinuity hfg hno hf hg)
 

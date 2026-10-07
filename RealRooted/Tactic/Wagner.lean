@@ -19,22 +19,18 @@ namespace Tactic
 theorem wagner_commonRight_add_sequence {F G H : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
     (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
-    (hH : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (H n))
     (hFH : ∀ n : Nat, StrictInterl (F n) (H n))
     (hGH : ∀ n : Nat, StrictInterl (G n) (H n)) :
-    ∀ n : Nat, StrictInterl (F n + G n) (H n) := fun n => by
-  have _ := hH n
-  exact Wagner.commonRight_add (hF n) (hG n) (hFH n) (hGH n)
+    ∀ n : Nat, StrictInterl (F n + G n) (H n) := fun n =>
+  Wagner.commonRight_add (hF n) (hG n) (hFH n) (hGH n)
 
 theorem wagner_commonLeft_add_sequence {F G H : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
     (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
-    (hH : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (H n))
     (hHF : ∀ n : Nat, StrictInterl (H n) (F n))
     (hHG : ∀ n : Nat, StrictInterl (H n) (G n)) :
-    ∀ n : Nat, StrictInterl (H n) (F n + G n) := fun n => by
-  have _ := hH n
-  exact Wagner.commonLeft_add (hF n) (hG n) (hHF n) (hHG n)
+    ∀ n : Nat, StrictInterl (H n) (F n + G n) := fun n =>
+  Wagner.commonLeft_add (hF n) (hG n) (hHF n) (hHG n)
 
 theorem wagner_mulX_iff_sequence {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
@@ -46,7 +42,6 @@ syntax (name := rr_wagner_common_right_add_named)
   "rr_wagner_common_right_add" " using "
     "left" ":=" term ","
     "right" ":=" term ","
-    "common" ":=" term ","
     "left_interlaces_common" ":=" term ","
     "right_interlaces_common" ":=" term :
   tactic
@@ -55,7 +50,6 @@ syntax (name := rr_wagner_common_left_add_named)
   "rr_wagner_common_left_add" " using "
     "left" ":=" term ","
     "right" ":=" term ","
-    "common" ":=" term ","
     "common_interlaces_left" ":=" term ","
     "common_interlaces_right" ":=" term :
   tactic
@@ -70,7 +64,6 @@ syntax (name := rr_wagner_common_right_add_sequence_named)
   "rr_wagner_common_right_add_sequence" " using "
     "left" ":=" term ","
     "right" ":=" term ","
-    "common" ":=" term ","
     "left_interlaces_common" ":=" term ","
     "right_interlaces_common" ":=" term :
   tactic
@@ -79,7 +72,6 @@ syntax (name := rr_wagner_common_left_add_sequence_named)
   "rr_wagner_common_left_add_sequence" " using "
     "left" ":=" term ","
     "right" ":=" term ","
-    "common" ":=" term ","
     "common_interlaces_left" ":=" term ","
     "common_interlaces_right" ":=" term :
   tactic
@@ -127,7 +119,6 @@ macro_rules
       rr_wagner_common_right_add using
         left := $hf:term,
         right := $hg:term,
-        common := $_hh:term,
         left_interlaces_common := $hfh:term,
         right_interlaces_common := $hgh:term) =>
       `(tactic|
@@ -137,7 +128,6 @@ macro_rules
       rr_wagner_common_left_add using
         left := $hf:term,
         right := $hg:term,
-        common := $_hh:term,
         common_interlaces_left := $hhf:term,
         common_interlaces_right := $hhg:term) =>
       `(tactic|
@@ -153,22 +143,20 @@ macro_rules
       rr_wagner_common_right_add_sequence using
         left := $hf:term,
         right := $hg:term,
-        common := $hh:term,
         left_interlaces_common := $hfh:term,
         right_interlaces_common := $hgh:term) =>
       `(tactic|
         exact RealRooted.Tactic.wagner_commonRight_add_sequence
-          $hf $hg $hh $hfh $hgh)
+          $hf $hg $hfh $hgh)
   | `(tactic|
       rr_wagner_common_left_add_sequence using
         left := $hf:term,
         right := $hg:term,
-        common := $hh:term,
         common_interlaces_left := $hhf:term,
         common_interlaces_right := $hhg:term) =>
       `(tactic|
         exact RealRooted.Tactic.wagner_commonLeft_add_sequence
-          $hf $hg $hh $hhf $hhg)
+          $hf $hg $hhf $hhg)
   | `(tactic|
       rr_wagner_mulX_iff_sequence using
         shorter := $hf:term,
@@ -220,61 +208,5 @@ macro_rules
           case hd_splits => assumption
           case h => rr_lookup [rr_base_strict_interl]))
 
-end Tactic
-end RealRooted
-/- Parser compatibility for the pre-#984 Prec/Prec0 tactic surface.
-    Canonical syntax is preferred; these declarations retain old scripts
-    and dispatch through the deprecated theorem aliases above. -/
-namespace RealRooted
-namespace Tactic
-syntax (name := rr_prec_cancel_common_linear_factor_named_legacy)
-  "rr_prec_cancel_common_linear_factor" " using "
-    "root" ":=" term ","
-    "multiplied_interlacing" ":=" term :
-  tactic
-
-syntax (name := rr_prec_cancel_common_linear_factor_inferred_legacy)
-  "rr_prec_cancel_common_linear_factor" " using "
-    "root" ":=" term :
-  tactic
-
-syntax (name := rr_prec_mul_common_factor_named_legacy)
-  "rr_prec_mul_common_factor" " using "
-    "factor_nonzero" ":=" term ","
-    "factor_splits" ":=" term ","
-    "base_interlacing" ":=" term :
-  tactic
-
-syntax (name := rr_prec_mul_common_factor_inferred_legacy)
-  "rr_prec_mul_common_factor" : tactic
-
-macro_rules
-  | `(tactic|
-      rr_prec_cancel_common_linear_factor using
-        root := $r:term,
-        multiplied_interlacing := $h:term) =>
-      `(tactic|
-        exact RealRooted.StrictInterl.of_mul_X_sub_C_both (r := $r) $h)
-  | `(tactic|
-      rr_prec_cancel_common_linear_factor using
-        root := $r:term) =>
-      `(tactic|
-        exact (by
-          apply RealRooted.StrictInterl.of_mul_X_sub_C_both (r := $r)
-          rr_lookup [rr_base_prec]))
-  | `(tactic|
-      rr_prec_mul_common_factor using
-        factor_nonzero := $hd_ne:term,
-        factor_splits := $hd_splits:term,
-        base_interlacing := $h:term) =>
-      `(tactic|
-        exact RealRooted.StrictInterl.mul_common_factor $h $hd_ne $hd_splits)
-  | `(tactic| rr_prec_mul_common_factor) =>
-      `(tactic|
-        exact (by
-          apply RealRooted.StrictInterl.mul_common_factor
-          case hd_ne => rr_lookup [rr_nonzero]
-          case hd_splits => assumption
-          case h => rr_lookup [rr_base_prec]))
 end Tactic
 end RealRooted

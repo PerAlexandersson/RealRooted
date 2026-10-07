@@ -78,8 +78,8 @@ theorem weightedDecoParameterCompanion_residue_pos_of_deletion
     have hai := haCube i (Set.mem_univ i)
     norm_num at hai ⊢
     exact hai
-  have hbadNonempty : (weightedDecoBadContactSet w n).Nonempty := by
-    exact ⟨(1, (a, r)), ⟨by norm_num, hboxOne, hr, hsign⟩⟩
+  have hbadNonempty : (weightedDecoBadContactSet w n).Nonempty :=
+    ⟨(1, (a, r)), ⟨by norm_num, hboxOne, hr, hsign⟩⟩
   obtain ⟨z, hz, hzmin⟩ :=
     exists_minimal_weightedDecoBadContact w n hn0 hbadNonempty
   have hdiag : ∀ s,
@@ -101,8 +101,8 @@ theorem weightedDecoParameterCompanion_residue_pos_of_deletion
   have haConst : z.2.1 = fun _ : Fin n => c := by
     funext i
     exact hcoords i i0
-  have hc : c ∈ Icc (0 : ℝ) 1 := by
-    exact hzCube i0 (Set.mem_univ i0)
+  have hc : c ∈ Icc (0 : ℝ) 1 :=
+    hzCube i0 (Set.mem_univ i0)
   have hsignZero : weightedDecoResidueSign w n z.2.1 z.2.2 = 0 :=
     weightedDeco_minimal_badContact_residueSign_eq_zero hn0
       ⟨ht, hbox, hzroot, hzsign⟩ hzmin htpos hsplits

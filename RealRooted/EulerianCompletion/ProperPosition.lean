@@ -28,7 +28,8 @@ theorem loweringEulerStep_strictInterl_self_of_reflect {M : ℕ} {p : ℝ[X]}
   have hpolar : StrictInterl (polarTheta M p) p :=
     strictInterl_polarTheta_self hp hpdeg.le hshift
   have hderiv : StrictInterl p.derivative p :=
-    (derivative_interlaces (hp.ne_zero_and_splits hp0).2 (by lia)).toStrictInterl
+    (derivative_interlaces_of_natDegree_ne_zero (hp.ne_zero_and_splits hp0).2
+      (by lia)).toStrictInterl
   have hpolarPos : HasPosLeadingCoeff (polarTheta M p) :=
     (polarTheta_preserves_pf hp hpdeg.le).hasNonnegCoeffs.pos_leadingCoeff
       hpolar.1.1

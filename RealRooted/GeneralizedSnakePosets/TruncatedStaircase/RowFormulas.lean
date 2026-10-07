@@ -254,12 +254,8 @@ private theorem truncatedStaircaseRookPolynomial_two_rows_tail_sum_direct (n : �
       rw [hhead, htail, ih, truncatedStaircaseRookPolynomial_two_rows]
       have hchoose :
           Nat.choose (n + 1 + 2) 3 =
-            Nat.choose (n + 2) 2 + Nat.choose (n + 2) 3 := by
-        calc
-          Nat.choose (n + 1 + 2) 3 =
-              Nat.choose (Nat.succ (n + 2)) 3 := by rfl
-          _ = Nat.choose (n + 2) 2 + Nat.choose (n + 2) 3 :=
-              by simpa using Nat.choose_succ_succ (n + 2) 2
+            Nat.choose (n + 2) 2 + Nat.choose (n + 2) 3 :=
+        Nat.choose_succ_succ (n + 2) 2
       have hchoose2 :
           Nat.choose (n + 2) 2 = (n + 1) + Nat.choose (n + 1) 2 := by
         simpa [Nat.choose_one_right] using Nat.choose_succ_succ (n + 1) 1
@@ -390,28 +386,16 @@ private theorem truncatedStaircaseRookPolynomial_three_rows_tail_sum_direct
           ]
       have hchoose3 :
           Nat.choose (n + 1 + 3) 3 =
-            Nat.choose (n + 3) 2 + Nat.choose (n + 3) 3 := by
-        calc
-          Nat.choose (n + 1 + 3) 3 =
-              Nat.choose (Nat.succ (n + 3)) 3 := by rfl
-          _ = Nat.choose (n + 3) 2 + Nat.choose (n + 3) 3 :=
-              by simpa using Nat.choose_succ_succ (n + 3) 2
+            Nat.choose (n + 3) 2 + Nat.choose (n + 3) 3 :=
+        Nat.choose_succ_succ (n + 3) 2
       have hchoose2 :
           Nat.choose (n + 1 + 3) 2 =
-            Nat.choose (n + 3) 1 + Nat.choose (n + 3) 2 := by
-        calc
-          Nat.choose (n + 1 + 3) 2 =
-              Nat.choose (Nat.succ (n + 3)) 2 := by rfl
-          _ = Nat.choose (n + 3) 1 + Nat.choose (n + 3) 2 :=
-              by simpa using Nat.choose_succ_succ (n + 3) 1
+            Nat.choose (n + 3) 1 + Nat.choose (n + 3) 2 :=
+        Nat.choose_succ_succ (n + 3) 1
       have hchoose4 :
           Nat.choose (n + 1 + 3) 4 =
-            Nat.choose (n + 3) 3 + Nat.choose (n + 3) 4 := by
-        calc
-          Nat.choose (n + 1 + 3) 4 =
-              Nat.choose (Nat.succ (n + 3)) 4 := by rfl
-          _ = Nat.choose (n + 3) 3 + Nat.choose (n + 3) 4 :=
-              by simpa using Nat.choose_succ_succ (n + 3) 3
+            Nat.choose (n + 3) 3 + Nat.choose (n + 3) 4 :=
+        Nat.choose_succ_succ (n + 3) 3
       have hchoose2_prev :
           ((Nat.choose (n + 2) 2 : ℕ) : ℝ) =
             ((n : ℝ) + 2) * ((n : ℝ) + 1) / 2 := by
@@ -529,36 +513,20 @@ private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum_direct
         truncatedStaircaseRookPolynomial_four_rows (n + 4) (by lia)]
       have hchoose2_succ :
           Nat.choose (n + 1 + 4) 2 =
-            Nat.choose (n + 4) 1 + Nat.choose (n + 4) 2 := by
-        calc
-          Nat.choose (n + 1 + 4) 2 =
-              Nat.choose (Nat.succ (n + 4)) 2 := by rfl
-          _ = Nat.choose (n + 4) 1 + Nat.choose (n + 4) 2 :=
-              by simpa using Nat.choose_succ_succ (n + 4) 1
+            Nat.choose (n + 4) 1 + Nat.choose (n + 4) 2 :=
+        Nat.choose_succ_succ (n + 4) 1
       have hchoose3_succ :
           Nat.choose (n + 1 + 4) 3 =
-            Nat.choose (n + 4) 2 + Nat.choose (n + 4) 3 := by
-        calc
-          Nat.choose (n + 1 + 4) 3 =
-              Nat.choose (Nat.succ (n + 4)) 3 := by rfl
-          _ = Nat.choose (n + 4) 2 + Nat.choose (n + 4) 3 :=
-              by simpa using Nat.choose_succ_succ (n + 4) 2
+            Nat.choose (n + 4) 2 + Nat.choose (n + 4) 3 :=
+        Nat.choose_succ_succ (n + 4) 2
       have hchoose4_succ :
           Nat.choose (n + 1 + 4) 4 =
-            Nat.choose (n + 4) 3 + Nat.choose (n + 4) 4 := by
-        calc
-          Nat.choose (n + 1 + 4) 4 =
-              Nat.choose (Nat.succ (n + 4)) 4 := by rfl
-          _ = Nat.choose (n + 4) 3 + Nat.choose (n + 4) 4 :=
-              by simpa using Nat.choose_succ_succ (n + 4) 3
+            Nat.choose (n + 4) 3 + Nat.choose (n + 4) 4 :=
+        Nat.choose_succ_succ (n + 4) 3
       have hchoose5_succ :
           Nat.choose (n + 1 + 4) 5 =
-            Nat.choose (n + 4) 4 + Nat.choose (n + 4) 5 := by
-        calc
-          Nat.choose (n + 1 + 4) 5 =
-              Nat.choose (Nat.succ (n + 4)) 5 := by rfl
-          _ = Nat.choose (n + 4) 4 + Nat.choose (n + 4) 5 :=
-              by simpa using Nat.choose_succ_succ (n + 4) 4
+            Nat.choose (n + 4) 4 + Nat.choose (n + 4) 5 :=
+        Nat.choose_succ_succ (n + 4) 4
       have hchoose2_head :
           ((Nat.choose (n + 4) 2 : ℕ) : ℝ) =
             ((n : ℝ) + 4) * ((n : ℝ) + 3) / 2 := by
@@ -652,44 +620,24 @@ private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum_direct
         truncatedStaircaseRookPolynomial_five_rows (n + 5) (by lia)]
       have hchoose2_succ :
           Nat.choose (n + 1 + 5) 2 =
-            Nat.choose (n + 5) 1 + Nat.choose (n + 5) 2 := by
-        calc
-          Nat.choose (n + 1 + 5) 2 =
-              Nat.choose (Nat.succ (n + 5)) 2 := by rfl
-          _ = Nat.choose (n + 5) 1 + Nat.choose (n + 5) 2 :=
-              by simpa using Nat.choose_succ_succ (n + 5) 1
+            Nat.choose (n + 5) 1 + Nat.choose (n + 5) 2 :=
+        Nat.choose_succ_succ (n + 5) 1
       have hchoose3_succ :
           Nat.choose (n + 1 + 5) 3 =
-            Nat.choose (n + 5) 2 + Nat.choose (n + 5) 3 := by
-        calc
-          Nat.choose (n + 1 + 5) 3 =
-              Nat.choose (Nat.succ (n + 5)) 3 := by rfl
-          _ = Nat.choose (n + 5) 2 + Nat.choose (n + 5) 3 :=
-              by simpa using Nat.choose_succ_succ (n + 5) 2
+            Nat.choose (n + 5) 2 + Nat.choose (n + 5) 3 :=
+        Nat.choose_succ_succ (n + 5) 2
       have hchoose4_succ :
           Nat.choose (n + 1 + 5) 4 =
-            Nat.choose (n + 5) 3 + Nat.choose (n + 5) 4 := by
-        calc
-          Nat.choose (n + 1 + 5) 4 =
-              Nat.choose (Nat.succ (n + 5)) 4 := by rfl
-          _ = Nat.choose (n + 5) 3 + Nat.choose (n + 5) 4 :=
-              by simpa using Nat.choose_succ_succ (n + 5) 3
+            Nat.choose (n + 5) 3 + Nat.choose (n + 5) 4 :=
+        Nat.choose_succ_succ (n + 5) 3
       have hchoose5_succ :
           Nat.choose (n + 1 + 5) 5 =
-            Nat.choose (n + 5) 4 + Nat.choose (n + 5) 5 := by
-        calc
-          Nat.choose (n + 1 + 5) 5 =
-              Nat.choose (Nat.succ (n + 5)) 5 := by rfl
-          _ = Nat.choose (n + 5) 4 + Nat.choose (n + 5) 5 :=
-              by simpa using Nat.choose_succ_succ (n + 5) 4
+            Nat.choose (n + 5) 4 + Nat.choose (n + 5) 5 :=
+        Nat.choose_succ_succ (n + 5) 4
       have hchoose6_succ :
           Nat.choose (n + 1 + 5) 6 =
-            Nat.choose (n + 5) 5 + Nat.choose (n + 5) 6 := by
-        calc
-          Nat.choose (n + 1 + 5) 6 =
-              Nat.choose (Nat.succ (n + 5)) 6 := by rfl
-          _ = Nat.choose (n + 5) 5 + Nat.choose (n + 5) 6 :=
-              by simpa using Nat.choose_succ_succ (n + 5) 5
+            Nat.choose (n + 5) 5 + Nat.choose (n + 5) 6 :=
+        Nat.choose_succ_succ (n + 5) 5
       have hchoose2_head :
           ((Nat.choose (n + 5) 2 : ℕ) : ℝ) =
             ((n : ℝ) + 5) * ((n : ℝ) + 4) / 2 := by

@@ -20,7 +20,6 @@ syntax (name := rr_lw_derivative_lag_sequence_named)
   "rr_lw_derivative_lag_sequence" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "recurrence" ":=" term ","
     "derivative_nonpos" ":=" term ","
     "lag_nonpos" ":=" term ","
@@ -32,7 +31,6 @@ syntax (name := rr_lw_derivative_lag_sequence_realrooted_named)
   "rr_lw_derivative_lag_sequence_realrooted" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "recurrence" ":=" term ","
     "derivative_nonpos" ":=" term ","
     "lag_nonpos" ":=" term ","
@@ -44,7 +42,6 @@ syntax (name := rr_lw_derivative_lag_sequence_interlaces_named)
   "rr_lw_derivative_lag_sequence_interlaces" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "recurrence" ":=" term ","
     "derivative_nonpos" ":=" term ","
     "lag_nonpos" ":=" term ","
@@ -57,7 +54,6 @@ syntax (name := rr_lw_derivative_lag_sequence_sign_auto_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
@@ -68,7 +64,6 @@ syntax (name := rr_lw_derivative_lag_sequence_realrooted_sign_auto_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
@@ -79,7 +74,6 @@ syntax (name := rr_lw_derivative_lag_sequence_interlaces_sign_auto_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
@@ -89,7 +83,6 @@ syntax (name := rr_lw_derivative_lag_sequence_window_sign_auto_named)
   "rr_lw_derivative_lag_sequence_window_sign_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "root_lower" ":=" term ","
     "root_upper" ":=" term ","
     "recurrence" ":=" term ","
@@ -101,7 +94,6 @@ syntax (name := rr_lw_derivative_lag_sequence_realrooted_window_sign_auto_named)
   "rr_lw_derivative_lag_sequence_realrooted_window_sign_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "root_lower" ":=" term ","
     "root_upper" ":=" term ","
     "recurrence" ":=" term ","
@@ -113,7 +105,6 @@ syntax (name := rr_lw_derivative_lag_sequence_interlaces_window_sign_auto_named)
   "rr_lw_derivative_lag_sequence_interlaces_window_sign_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "root_lower" ":=" term ","
     "root_upper" ":=" term ","
     "recurrence" ":=" term ","
@@ -126,7 +117,6 @@ syntax (name := rr_lw_derivative_lag_sequence_den_coeff_sign_auto_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -147,7 +137,6 @@ syntax (name := rr_lw_den_coeff_sign_scalar_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -165,7 +154,6 @@ syntax (name := rr_lw_derivative_lag_sequence_den_coeff_realrooted_sign_auto_nam
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -186,7 +174,6 @@ syntax (name := rr_lw_den_coeff_realrooted_sign_scalar_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -204,7 +191,6 @@ syntax (name := rr_lw_derivative_lag_sequence_den_coeff_interlaces_sign_auto_nam
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -225,7 +211,6 @@ syntax (name := rr_lw_den_coeff_interlaces_sign_scalar_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -242,7 +227,6 @@ syntax (name := rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto_named)
   "rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -264,7 +248,6 @@ syntax (name := rr_lw_den_coeff_window_scalar_named)
   "rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -283,7 +266,6 @@ syntax (name := rr_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_a
   "rr_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -305,7 +287,6 @@ syntax (name := rr_lw_den_coeff_realrooted_window_scalar_named)
   "rr_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -324,7 +305,6 @@ syntax (name := rr_lw_derivative_lag_sequence_den_coeff_interlaces_window_sign_a
   "rr_lw_derivative_lag_sequence_den_coeff_interlaces_window_sign_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -346,7 +326,6 @@ syntax (name := rr_lw_den_coeff_interlaces_window_scalar_named)
   "rr_lw_derivative_lag_sequence_den_coeff_interlaces_window_sign_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
-    "degree_two" ":=" term ","
     "deriv_factor" ":=" term ","
     "lag_factor" ":=" term ","
     "norm_deriv_coeff" ":=" term ","
@@ -390,7 +369,6 @@ macro_rules
       rr_lw_derivative_lag_sequence using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         recurrence := $hrec:term,
         derivative_nonpos := $hderivative_nonpos:term,
         lag_nonpos := $hlag_nonpos:term,
@@ -398,13 +376,12 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact RealRooted.LiuWang.strictInterl_derivative_lag_sequence
-          $hbase $hpos $hdeg_two $hrec $hderivative_nonpos $hlag_nonpos
+          $hbase $hpos $hrec $hderivative_nonpos $hlag_nonpos
           $hdeg_succ $hno)
   | `(tactic|
       rr_lw_derivative_lag_sequence_realrooted using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         recurrence := $hrec:term,
         derivative_nonpos := $hderivative_nonpos:term,
         lag_nonpos := $hlag_nonpos:term,
@@ -413,13 +390,12 @@ macro_rules
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.LiuWang.isRealRooted_of_derivative_lag_sequence
-            $hbase $hpos $hdeg_two $hrec $hderivative_nonpos $hlag_nonpos
+            $hbase $hpos $hrec $hderivative_nonpos $hlag_nonpos
             $hdeg_succ $hno))
   | `(tactic|
       rr_lw_derivative_lag_sequence_interlaces using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         recurrence := $hrec:term,
         derivative_nonpos := $hderivative_nonpos:term,
         lag_nonpos := $hlag_nonpos:term,
@@ -428,7 +404,7 @@ macro_rules
       `(tactic|
         exact RealRooted.interlaces_of_strictInterl_chain
           (RealRooted.LiuWang.strictInterl_derivative_lag_sequence
-            $hbase $hpos $hdeg_two $hrec $hderivative_nonpos $hlag_nonpos
+            $hbase $hpos $hrec $hderivative_nonpos $hlag_nonpos
             $hdeg_succ $hno)
           $hdeg_succ)
   | `(tactic|
@@ -436,14 +412,13 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         recurrence := $hrec:term,
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
         exact
           RealRooted.LiuWang.strictInterl_derivative_lag_sequence_of_root_signs
-            $hbase $hpos $hdeg_two $hrec
+            $hbase $hpos $hrec
             (by
               intro n hsource
               rr_sign_at_roots using hsource, ($hnonneg (n + 1)))
@@ -456,14 +431,13 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         recurrence := $hrec:term,
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.LiuWang.isRealRooted_of_derivative_lag_sequence_of_root_signs
-            $hbase $hpos $hdeg_two $hrec
+            $hbase $hpos $hrec
             (by
               intro n hsource
               rr_sign_at_roots using hsource, ($hnonneg (n + 1)))
@@ -476,14 +450,13 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         recurrence := $hrec:term,
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_finish using
           (RealRooted.LiuWang.strictInterl_derivative_lag_sequence_of_root_signs
-            $hbase $hpos $hdeg_two $hrec
+            $hbase $hpos $hrec
             (by
               intro n hsource
               rr_sign_at_roots using hsource, ($hnonneg (n + 1)))
@@ -496,7 +469,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         root_lower := $hroot_lower:term,
         root_upper := $hroot_upper:term,
         recurrence := $hrec:term,
@@ -505,7 +477,7 @@ macro_rules
       `(tactic|
         exact
           RealRooted.LiuWang.strictInterl_derivative_lag_sequence_of_root_window
-            $hbase $hpos $hdeg_two $hrec $hroot_lower $hroot_upper
+            $hbase $hpos $hrec $hroot_lower $hroot_upper
             (by
               intro n r hr hroot_window_lower hroot_window_upper
               rr_mw_root_window_linear_facts
@@ -519,7 +491,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_realrooted_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         root_lower := $hroot_lower:term,
         root_upper := $hroot_upper:term,
         recurrence := $hrec:term,
@@ -528,7 +499,7 @@ macro_rules
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.LiuWang.isRealRooted_of_derivative_lag_sequence_of_root_window
-            $hbase $hpos $hdeg_two $hrec $hroot_lower $hroot_upper
+            $hbase $hpos $hrec $hroot_lower $hroot_upper
             (by
               intro n r hr hroot_window_lower hroot_window_upper
               rr_mw_root_window_linear_facts
@@ -542,7 +513,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_interlaces_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         root_lower := $hroot_lower:term,
         root_upper := $hroot_upper:term,
         recurrence := $hrec:term,
@@ -551,7 +521,7 @@ macro_rules
       `(tactic|
         rr_finish using
           (RealRooted.LiuWang.strictInterl_derivative_lag_sequence_of_root_window
-            $hbase $hpos $hdeg_two $hrec $hroot_lower $hroot_upper
+            $hbase $hpos $hrec $hroot_lower $hroot_upper
             (by
               intro n r hr hroot_window_lower hroot_window_upper
               rr_mw_root_window_linear_facts
@@ -567,7 +537,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -583,7 +552,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -602,7 +570,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -620,7 +587,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -639,7 +605,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -658,7 +623,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -677,7 +641,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -693,7 +656,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -712,7 +674,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -730,7 +691,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -749,7 +709,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -768,7 +727,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -787,7 +745,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -803,7 +760,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -822,7 +778,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -840,7 +795,6 @@ macro_rules
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -859,7 +813,6 @@ macro_rules
         base := $hbase:term,
         pos_lc := $hpos:term,
         nonneg_coeffs := $hnonneg:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -880,7 +833,6 @@ macro_rules
               base := $hbase,
               pos_lc := $hpos,
               nonneg_coeffs := $hnonneg,
-              degree_two := $hdeg_two,
               deriv_factor := $V,
               lag_factor := $W,
               norm_deriv_coeff := $cV,
@@ -899,7 +851,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -916,7 +867,6 @@ macro_rules
         rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
           base := $hbase,
           pos_lc := $hpos,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -936,7 +886,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -955,7 +904,6 @@ macro_rules
         rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
           base := $hbase,
           pos_lc := $hpos,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -975,7 +923,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -995,7 +942,6 @@ macro_rules
         rr_mw_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
           base := $hbase,
           pos_lc := $hpos,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -1015,7 +961,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_den_coeff_interlaces_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -1032,7 +977,6 @@ macro_rules
         rr_lw_derivative_lag_sequence_den_coeff_interlaces_window_sign_auto using
           base := $hbase,
           pos_lc := $hpos,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -1052,7 +996,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_den_coeff_interlaces_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -1071,7 +1014,6 @@ macro_rules
         rr_lw_derivative_lag_sequence_den_coeff_interlaces_window_sign_auto using
           base := $hbase,
           pos_lc := $hpos,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -1091,7 +1033,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_den_coeff_interlaces_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -1113,7 +1054,6 @@ macro_rules
             rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
               base := $hbase,
               pos_lc := $hpos,
-              degree_two := $hdeg_two,
               deriv_factor := $V,
               lag_factor := $W,
               norm_deriv_coeff := $cV,
@@ -1134,7 +1074,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -1151,7 +1090,6 @@ macro_rules
         rr_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto using
           base := $hbase,
           pos_lc := $hpos,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -1171,7 +1109,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -1190,7 +1127,6 @@ macro_rules
         rr_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto using
           base := $hbase,
           pos_lc := $hpos,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,
@@ -1210,7 +1146,6 @@ macro_rules
       rr_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
-        degree_two := $hdeg_two:term,
         deriv_factor := $V:term,
         lag_factor := $W:term,
         norm_deriv_coeff := $cV:term,
@@ -1230,7 +1165,6 @@ macro_rules
         rr_mw_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto using
           base := $hbase,
           pos_lc := $hpos,
-          degree_two := $hdeg_two,
           deriv_factor := $V,
           lag_factor := $W,
           norm_deriv_coeff := $cV,

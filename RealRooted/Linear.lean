@@ -664,14 +664,13 @@ lemma exists_pos_forall_natDegree_add_C_mul_eq_at_zero_on_Icc_of_natDegree_le
   have hzero : (p + C (0 : ℝ) * q).natDegree = p.natDegree := by simp
   exact hηdeg.trans hzero.symm
 
-/-- If the left summand has strictly larger degree, then every member of a
-right-family perturbation set has the same degree as any chosen parameter
-member. -/
-lemma forall_mem_natDegree_add_C_mul_eq_left_of_natDegree_lt
-    {p q : ℝ[X]} {s : Set ℝ} {κ : ℝ} (hdeg : q.natDegree < p.natDegree) :
-    ∀ τ ∈ s,
+/-- If the left summand has strictly larger degree, then every member of the
+right-family perturbation has the same degree as any chosen parameter member. -/
+lemma forall_natDegree_add_C_mul_eq_left_of_natDegree_lt
+    {p q : ℝ[X]} {κ : ℝ} (hdeg : q.natDegree < p.natDegree) :
+    ∀ τ : ℝ,
       (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
-  intro τ _
+  intro τ
   rw [Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_lt hdeg,
     Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_lt hdeg]
 
@@ -700,7 +699,7 @@ lemma forall_mem_natDegree_add_C_mul_eq_of_natDegree_ne_of_ne_zero
   rcases lt_or_gt_of_ne hdeg with hlt | hgt
   · exact forall_mem_natDegree_add_C_mul_eq_right_of_natDegree_lt_of_ne_zero
       hlt hκ hτ
-  · exact forall_mem_natDegree_add_C_mul_eq_left_of_natDegree_lt hgt
+  · exact fun τ _ => forall_natDegree_add_C_mul_eq_left_of_natDegree_lt hgt τ
 
 /-- If the endpoint degrees are unequal, then the right-family perturbation has
 constant degree on any positive parameter interval. -/

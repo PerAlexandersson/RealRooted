@@ -40,13 +40,6 @@ theorem hadamardProduct_oddEvenPolynomial (p q p' q' : ℝ[X]) :
   · subst hk
     simp
 
-/-- PF polynomials are closed under coefficientwise Hadamard products
-(Schur--Pólya--Wagner; Garloff--Wagner, Theorem 4(a)). -/
-theorem IsPFPolynomial.hadamardProduct {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
-    IsPFPolynomial (hadamardProduct p q) :=
-  gwHadamardProductPF hp hq
-
 /- Nonnegative-coefficient Garloff--Wagner interlacing interface for
 coefficientwise Hadamard products.
 
@@ -64,10 +57,10 @@ roots are `-b` and `-a`.  Consequently the Garloff--Wagner hypotheses written
 as `g $ f` and `q $ p` are represented here as `StrictInterl f g` and `StrictInterl p q`, and
 the conclusion is `Interl (f ⊙ p) (g ⊙ q)`.
 
-The proof is `gwHadamardProductNonnegInterl` in `RealRooted.GarloffWagner`.
+The proof is `StrictInterl.interl_hadamardProduct` in `RealRooted.GarloffWagner`.
 -/
 
 @[deprecated (since := "2026-10-05")]
-alias garloffWagnerHadamardNonnegInterl := gwHadamardProductNonnegInterl
+alias garloffWagnerHadamardNonnegInterl := StrictInterl.interl_hadamardProduct
 
 end RealRooted

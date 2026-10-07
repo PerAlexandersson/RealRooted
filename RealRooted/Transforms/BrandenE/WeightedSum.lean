@@ -97,19 +97,12 @@ theorem brandenBasisWeightedSum_ne_zero_and_splits_of_pos
   rw [← hfs_sum]
   exact isRealRooted_sum_of_commonLeftInterleaver hcommon hpos hne
 
-theorem brandenBasisWeightedSum_splits_of_pos
+theorem brandenBasisWeightedSum_splits
     (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
     (hs : s.Nonempty) (hkn : ∀ k ∈ s, k ≤ n)
     (ha : ∀ k ∈ s, 0 < a k) :
     (brandenBasisWeightedSum n s a).Splits :=
   (brandenBasisWeightedSum_ne_zero_and_splits_of_pos n s a hs hkn ha).2
-
-theorem brandenBasisWeightedSum_splits
-    (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
-    (_hn : 3 ≤ n) (hs : s.Nonempty)
-    (hkn : ∀ k ∈ s, k ≤ n) (ha : ∀ k ∈ s, 0 < a k) :
-    (brandenBasisWeightedSum n s a).Splits :=
-  brandenBasisWeightedSum_splits_of_pos n s a hs hkn ha
 
 /-- A nonnegative combination with at least one positive weight is nonzero
 and split in every ambient degree. -/
@@ -144,21 +137,13 @@ theorem brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg_of_exists_pos
   · intro k hkt
     exact (Finset.mem_filter.mp hkt).2
 
-theorem brandenBasisWeightedSum_splits_of_nonneg_of_exists_pos
+theorem brandenBasisWeightedSum_splits_of_nonneg
     (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
     (hkn : ∀ k ∈ s, k ≤ n) (ha : ∀ k ∈ s, 0 ≤ a k)
     (hpos : ∃ k ∈ s, 0 < a k) :
     (brandenBasisWeightedSum n s a).Splits :=
   (brandenBasisWeightedSum_ne_zero_and_splits_of_nonneg_of_exists_pos
     n s a hkn ha hpos).2
-
-theorem brandenBasisWeightedSum_splits_of_nonneg
-    (n : ℕ) (s : Finset ℕ) (a : ℕ → ℝ)
-    (_hn : 3 ≤ n) (hkn : ∀ k ∈ s, k ≤ n)
-    (ha : ∀ k ∈ s, 0 ≤ a k)
-    (hpos : ∃ k ∈ s, 0 < a k) :
-    (brandenBasisWeightedSum n s a).Splits :=
-  brandenBasisWeightedSum_splits_of_nonneg_of_exists_pos n s a hkn ha hpos
 
 /-- The first basis image weakly precedes every nonnegative combination. -/
 theorem brandenBasisWeightedSum_interl_of_le
@@ -196,8 +181,7 @@ theorem brandenBasisWeightedSum_isPFPolynomial_of_le
   by_cases hpos : ∃ k ∈ s, 0 < a k
   · exact IsPFPolynomial.of_realRooted_nonneg
       (brandenBasisWeightedSum_nonneg n s a ha)
-      (brandenBasisWeightedSum_splits_of_nonneg_of_exists_pos
-        n s a hkn ha hpos)
+      (brandenBasisWeightedSum_splits_of_nonneg n s a hkn ha hpos)
   · have hzero : brandenBasisWeightedSum n s a = 0 := by
       rw [brandenBasisWeightedSum]
       apply Finset.sum_eq_zero

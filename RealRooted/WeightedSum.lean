@@ -12,9 +12,8 @@ On the common-right side, the positive-leading-coefficient version of Wagner (1)
 is strong enough to handle arbitrary finite nonnegative weighted sums.
 
 On the common-left side, `WeightedCompatibleLeft` packages finite weighted sums
-as an inductive predicate.  Its real-rootedness and coprimeness fields predate
-the hypothesis-free form of Wagner (2), `StrictInterl.add_of_left`, and are no
-longer used by `WeightedCompatibleLeft.toStrictInterl`.
+as an inductive predicate.  Since Wagner (2), `StrictInterl.add_of_left`, needs
+no real-rootedness or coprimeness of the summands, neither does the predicate.
 -/
 
 open Polynomial
@@ -187,8 +186,8 @@ lemma natDegree_weightedSum_eq_of_nonneg_of_sameDegree :
             Polynomial.natDegree_C_mul ha_pos.ne', hdeg_p]
 
 /-- Recursive compatibility data for building a common-left weighted sum using
-Wagner (2). Zero-weight terms may be skipped, while a positive-weight head term
-must be compatible with the weighted tail. -/
+Wagner (2). Every term is interlaced by `h` and has positive leading
+coefficient, every weight is nonnegative, and some weight is positive. -/
 inductive WeightedCompatibleLeft (h : ℝ[X]) : List (ℝ × ℝ[X]) → Prop
   | singleton {a : ℝ} {p : ℝ[X]}
       (ha : 0 < a) (hstrictInterl : StrictInterl h p) (hpos : HasPosLeadingCoeff p) :
@@ -199,10 +198,7 @@ inductive WeightedCompatibleLeft (h : ℝ[X]) : List (ℝ × ℝ[X]) → Prop
       WeightedCompatibleLeft h ((a, p) :: l)
   | cons_pos {a : ℝ} {p : ℝ[X]} {l : List (ℝ × ℝ[X])}
       (ha : 0 < a) (hstrictInterl : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
-      (hl : WeightedCompatibleLeft h l)
-      (hrr_ne : (C a * p + weightedSum l) ≠ 0)
-      (hrr_splits : (C a * p + weightedSum l).Splits)
-      (hcop : IsCoprime (C a * p) (weightedSum l)) :
+      (hl : WeightedCompatibleLeft h l) :
       WeightedCompatibleLeft h ((a, p) :: l)
 
 namespace WeightedCompatibleLeft
@@ -215,7 +211,7 @@ lemma nonneg {h : ℝ[X]} :
       rcases List.mem_cons.mp hap with rfl | hap
       · simp_all
       · exact nonneg hl ap hap
-  | _, cons_pos ha _ _ hl _ _ _ => fun ap hap => by
+  | _, cons_pos ha _ _ hl => fun ap hap => by
       rcases List.mem_cons.mp hap with rfl | hap
       · grind
       · exact nonneg hl ap hap
@@ -229,7 +225,7 @@ lemma pos {h : ℝ[X]} :
       rcases List.mem_cons.mp hap with rfl | hap
       · grind
       · exact pos hl ap hap
-  | _, cons_pos _ _ hpos hl _ _ _ => fun ap hap => by
+  | _, cons_pos _ _ hpos hl => fun ap hap => by
       rcases List.mem_cons.mp hap with rfl | hap
       · grind
       · exact pos hl ap hap
@@ -242,7 +238,7 @@ lemma exists_pos {h : ℝ[X]} :
   | _, cons_zero _ _ _ hl => by
       rcases exists_pos hl with ⟨ap, hap, hapos⟩
       grind
-  | _, @cons_pos _ a p l ha _ _ _ _ _ _ => by
+  | _, @cons_pos _ a p l ha _ _ _ => by
       simp_all
 
 lemma hasPosLeadingCoeff {h : ℝ[X]} {l : List (ℝ × ℝ[X])}
@@ -256,7 +252,7 @@ lemma toStrictInterl {h : ℝ[X]} :
       simpa [weightedSum, weightedSum_cons] using StrictInterl.C_mul_right hstrictInterl ha.ne'
   | _, cons_zero ha _ _ hl => by
       simpa [weightedSum, weightedSum_cons, ha] using toStrictInterl hl
-  | _, @cons_pos _ a p l ha hstrictInterl hpos hl _ _ _ => by
+  | _, @cons_pos _ a p l ha hstrictInterl hpos hl => by
       have hCa_pos : HasPosLeadingCoeff (C a * p) := hasPosLeadingCoeff_C_mul ha hpos
       exact StrictInterl.add_of_left
         (StrictInterl.C_mul_right hstrictInterl ha.ne')
@@ -275,16 +271,15 @@ lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
           simpa using SumCompatibleLeft.singleton hstrictInterl hpos
       | cons_zero ha _ _ _ =>
           simp_all
-      | cons_pos _ _ _ hl _ _ _ =>
+      | cons_pos _ _ _ hl =>
           cases hl
   | p :: q :: l, hl => by
       cases hl with
       | cons_zero ha _ _ _ =>
           simp_all
-      | cons_pos _ hstrictInterl hpos htail hrr_ne hrr_splits hcop =>
+      | cons_pos _ hstrictInterl hpos htail =>
           exact SumCompatibleLeft.cons hstrictInterl hpos
             (toSumCompatibleLeft_map_one htail)
-            (by simp_all) (by simp_all) (by simp_all)
 
 end WeightedCompatibleLeft
 

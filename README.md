@@ -94,8 +94,8 @@ curated list. Some representative checked theorems:
   and the Type-I Pólya–Schur classification
   (`isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction`).
 - **Compatibility.** Liu's opposite-leading-sign theorem
-  (`compatible_iff_theorem21RootCountBranchesWithCommon_nonconstant`) and the
-  Chudnovsky–Seymour common-interleaver theory (`Challenges.ChudnovskySeymour`).
+  (`compatible_iff_rootCountBranchesWithCommon`) and the Chudnovsky–Seymour
+  common-interleaver theory (`Challenges.ChudnovskySeymour`).
 - **Graphs.** Claw-free independence polynomials
   (`Graph.clawFree_indepPoly_splits`), acyclic sink polynomials
   (`UnitIntervalGraph.acyclicSinkPolynomial_splits`,

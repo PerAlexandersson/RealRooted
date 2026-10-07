@@ -162,26 +162,6 @@ theorem basisTransform_fallingFactorial_eq_self_of_natDegree_eq_one {p : ℝ[X]}
   rw [show (X : ℝ[X]) = X ^ 1 by simp, basisTransform_X_pow]
   simp [fallingFactorialPolynomial, Polynomial.C_mul']
 
-/-- Degree-two expansion of the falling-factorial basis transform. -/
-theorem basisTransform_fallingFactorial_eq_quadratic_of_natDegree_eq_two {p : ℝ[X]}
-    (hpdeg : p.natDegree = 2) :
-    basisTransform fallingFactorialPolynomial p =
-      C (p.coeff 2) * X ^ 2 + C (p.coeff 1 - p.coeff 2) * X + C (p.coeff 0) := by
-  have hpform : p = C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X + C (p.coeff 0) :=
-    Polynomial.eq_quadratic_of_degree_le_two (p := p)
-      (Polynomial.degree_le_of_natDegree_le (by rw [hpdeg]))
-  have hBX : basisTransform fallingFactorialPolynomial (X : ℝ[X]) = X := by
-    rw [show (X : ℝ[X]) = X ^ 1 by simp, basisTransform_X_pow]
-    simp [fallingFactorialPolynomial]
-  conv_lhs => rw [hpform]
-  simp only [basisTransform_add, Polynomial.C_mul', basisTransform_smul, hBX, basisTransform_C]
-  simp only [basisTransform_X_pow, fallingFactorialPolynomial, map_natCast, range_zero,
-    prod_empty]
-  norm_num [Finset.prod_range_succ]
-  repeat rw [Polynomial.smul_eq_C_mul]
-  rw [map_sub]
-  ring_nf
-
 /-- Generalized rising factorial `(x|μ)_k = x (x + μ) ... (x + (k-1) μ)`. -/
 def risingFactorialPolynomial (μ : ℝ) (k : ℕ) : ℝ[X] :=
   ∏ i ∈ Finset.range k, (X + C ((i : ℝ) * μ))
@@ -397,36 +377,5 @@ theorem risingFactorialStep_pf_shiftStrictInterl
   have hgpf : IsPFPolynomial (X * fμ + C r * f) :=
     IsPFPolynomial.of_realRooted_nonneg (hXfμnn.add hrf_nn) hfg.2.1.2
   exact ⟨hgpf, strictInterl_comp_X_add_C_of_two_interlacings hμ hfg hfμg (by lia)⟩
-
-/-- The generalized rising-factorial basis transform is the identity on
-degree-one polynomials. -/
-theorem basisTransform_risingFactorial_eq_self_of_natDegree_eq_one {μ : ℝ} {p : ℝ[X]}
-    (hpdeg : p.natDegree = 1) :
-    basisTransform (risingFactorialPolynomial μ) p = p := by
-  rw [Polynomial.eq_X_add_C_of_natDegree_le_one hpdeg.le]
-  rw [basisTransform_add]
-  rw [Polynomial.C_mul', basisTransform_smul]
-  rw [show (X : ℝ[X]) = X ^ 1 by simp, basisTransform_X_pow]
-  simp [risingFactorialPolynomial, Polynomial.C_mul']
-
-/-- Degree-two expansion of the generalized rising-factorial basis transform. -/
-theorem basisTransform_risingFactorial_eq_quadratic_of_natDegree_eq_two
-    {μ : ℝ} {p : ℝ[X]} (hpdeg : p.natDegree = 2) :
-    basisTransform (risingFactorialPolynomial μ) p =
-      C (p.coeff 2) * X ^ 2 + C (p.coeff 1 + μ * p.coeff 2) * X + C (p.coeff 0) := by
-  have hpform : p = C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X + C (p.coeff 0) :=
-    Polynomial.eq_quadratic_of_degree_le_two (p := p)
-      (Polynomial.degree_le_of_natDegree_le (by rw [hpdeg]))
-  have hBX : basisTransform (risingFactorialPolynomial μ) (X : ℝ[X]) = X := by
-    rw [show (X : ℝ[X]) = X ^ 1 by simp, basisTransform_X_pow]
-    simp [risingFactorialPolynomial]
-  conv_lhs => rw [hpform]
-  simp only [basisTransform_add, Polynomial.C_mul', basisTransform_smul, hBX, basisTransform_C]
-  simp only [basisTransform_X_pow, risingFactorialPolynomial, map_mul, map_natCast, range_zero,
-    prod_empty]
-  norm_num [Finset.prod_range_succ]
-  repeat rw [Polynomial.smul_eq_C_mul]
-  rw [map_add, map_mul]
-  ring_nf
 
 end RealRooted

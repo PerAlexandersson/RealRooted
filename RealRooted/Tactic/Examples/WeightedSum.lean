@@ -76,37 +76,25 @@ example {H P : Nat → ℝ[X]} {a : Nat → ℝ} {L : Nat → List (ℝ × ℝ[X
 
 example {h p : ℝ[X]} {a : ℝ} {l : List (ℝ × ℝ[X])}
     (ha : 0 < a) (hstrictInterl : StrictInterl h p) (hpos : HasPosLeadingCoeff p)
-    (hl : WeightedCompatibleLeft h l)
-    (hne : C a * p + weightedSum l ≠ 0)
-    (hsplits : (C a * p + weightedSum l).Splits)
-    (hcop : IsCoprime (C a * p) (weightedSum l)) :
+    (hl : WeightedCompatibleLeft h l) :
     WeightedCompatibleLeft h ((a, p) :: l) := by
   rr_weighted_compatible_left_cons_pos using
     weight_pos := ha,
     strictInterl := hstrictInterl,
     pos_lc := hpos,
-    tail := hl,
-    sum_ne := hne,
-    sum_splits := hsplits,
-    coprime := hcop
+    tail := hl
 
 example {H P : Nat → ℝ[X]} {a : Nat → ℝ} {L : Nat → List (ℝ × ℝ[X])}
     (ha : ∀ i : Nat, 0 < a i)
     (hstrictInterl : ∀ i : Nat, StrictInterl (H i) (P i))
     (hpos : ∀ i : Nat, HasPosLeadingCoeff (P i))
-    (hl : ∀ i : Nat, WeightedCompatibleLeft (H i) (L i))
-    (hne : ∀ i : Nat, C (a i) * P i + weightedSum (L i) ≠ 0)
-    (hsplits : ∀ i : Nat, (C (a i) * P i + weightedSum (L i)).Splits)
-    (hcop : ∀ i : Nat, IsCoprime (C (a i) * P i) (weightedSum (L i))) :
+    (hl : ∀ i : Nat, WeightedCompatibleLeft (H i) (L i)) :
     ∀ i : Nat, WeightedCompatibleLeft (H i) ((a i, P i) :: L i) := by
   rr_weighted_compatible_left_sequence_cons_pos using
     weight_pos := ha,
     strictInterl := hstrictInterl,
     pos_lc := hpos,
-    tail := hl,
-    sum_ne := hne,
-    sum_splits := hsplits,
-    coprime := hcop
+    tail := hl
 
 example {h : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hl : WeightedCompatibleLeft h l) :

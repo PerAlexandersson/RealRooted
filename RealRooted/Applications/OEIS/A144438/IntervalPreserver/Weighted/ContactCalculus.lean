@@ -357,8 +357,8 @@ theorem exists_hasDerivAt_weightedDecoParameterResidueAt_contact_factor
       p = weightedDecoParameterImageAt w s a j (a j) := by
         symm
         exact weightedDecoParameterImageAt_self w hj
-      _ = (1 + X + C (a j)) * P + X * H := by
-        exact weightedDecoParameterImageAt_insertion w s a j (a j)
+      _ = (1 + X + C (a j)) * P + X * H :=
+        weightedDecoParameterImageAt_insertion w s a j (a j)
   have hinsertion : (1 + r + a j) * P.eval r + r * H.eval r = 0 := by
     have heval := congrArg (fun q : ℝ[X] => q.eval r) hrec
     have hrzero : p.eval r = 0 := by

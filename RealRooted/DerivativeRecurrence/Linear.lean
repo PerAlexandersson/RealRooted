@@ -145,7 +145,7 @@ theorem interlaces_of_derivative_linear_pos_const
             rw [hder]
             exact interlaces_C_linear (mul_ne_zero (ne_of_gt hc_pos) (ne_of_gt hd_pos))
               (p := (C a + C c * X) * C d) (by grind)
-          · exact derivative_interlaces hsp (by grind)
+          · exact derivative_interlaces_of_natDegree_ne_zero hsp (by grind)
         have hg_pos : HasPosLeadingCoeff (P (n + 1)).derivative := by
           by_cases hdeg1 : n + 1 = 1
           · have hn0 : n = 0 := by lia

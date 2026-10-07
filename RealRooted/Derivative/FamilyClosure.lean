@@ -24,9 +24,9 @@ theorem eq_zero_or_splits_derivative {p : ℝ[X]}
   by_cases hdeg0 : p.natDegree = 0
   · exact Or.inl (Polynomial.derivative_eq_zero.mpr hdeg0)
   by_cases hdeg1 : p.natDegree = 1
-  · exact Or.inr (splits_of_natDegree_eq_zero (by rw [p.natDegree_derivative, hdeg1]))
+  · exact Or.inr (Splits.of_natDegree_eq_zero (by rw [p.natDegree_derivative, hdeg1]))
   · have hdeg2 : 2 ≤ p.natDegree := by lia
-    exact Or.inr (derivative_interlaces hp hdeg2).2.1.2
+    exact Or.inr (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).2.1.2
 
 /-- Strict real-rootedness is preserved by differentiation unless the
 derivative vanishes. -/
@@ -40,10 +40,10 @@ theorem derivative_eq_zero_or_ne_zero_and_splits {p : ℝ[X]}
   · right
     have hder_ne : p.derivative ≠ 0 := Polynomial.derivative_ne_zero.mpr hdeg0
     have hder_splits : p.derivative.Splits :=
-      splits_of_natDegree_eq_zero (by rw [p.natDegree_derivative, hdeg1])
+      Splits.of_natDegree_eq_zero (by rw [p.natDegree_derivative, hdeg1])
     exact ⟨hder_ne, hder_splits⟩
   · have hdeg2 : 2 ≤ p.natDegree := by lia
-    exact Or.inr (derivative_interlaces hp_splits hdeg2).2.1
+    exact Or.inr (derivative_interlaces_of_natDegree_ne_zero hp_splits (by lia)).2.1
 
 /-- A closed segment of real-rooted polynomials has a zero-aware real-rooted
 derivative segment. -/
@@ -206,6 +206,7 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
     rw [hderC]
     simp
   · have hdeg2 : 2 ≤ p.natDegree := by lia
-    exact (derivative_interlaces hp_splits hdeg2).toStrictInterl.roots_le_of_right hroots
+    exact (derivative_interlaces_of_natDegree_ne_zero hp_splits
+      (by lia)).toStrictInterl.roots_le_of_right hroots
 
 end RealRooted

@@ -187,14 +187,14 @@ private lemma exists_delta_le_card_filter_roots_near_zero
       rw [← Multiset.prod_add]
       rw [← Multiset.map_add, Multiset.filter_add_not]
     -- Facts about N:
-    have hN_monic : N.Monic := by
-      exact Polynomial.monic_multiset_prod_of_monic _ _ fun x hx => Polynomial.monic_X_sub_C _
+    have hN_monic : N.Monic :=
+      Polynomial.monic_multiset_prod_of_monic _ _ fun x hx => Polynomial.monic_X_sub_C _
     have hN_deg : N.natDegree = near.card :=
       Polynomial.natDegree_multiset_prod_X_sub_C_eq_card near
     have hN_coeff : N.coeff near.card = 1 := by rw [← hN_deg, hN_monic.coeff_natDegree]
     -- Facts about F:
-    have hF_monic : F.Monic := by
-      exact Polynomial.monic_multiset_prod_of_monic _ _ fun x hx => Polynomial.monic_X_sub_C _
+    have hF_monic : F.Monic :=
+      Polynomial.monic_multiset_prod_of_monic _ _ fun x hx => Polynomial.monic_X_sub_C _
     have hF_deg : F.natDegree = far.card :=
       Polynomial.natDegree_multiset_prod_X_sub_C_eq_card far
     have hFroots : F.roots = far := roots_multiset_prod_X_sub_C far

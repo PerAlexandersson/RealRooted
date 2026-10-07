@@ -20,7 +20,7 @@ namespace LiuOppositeSigns
 
 /-- For a left Liu branch, if every positive right combination of the
 translated restored pair splits, then that pair is compatible. -/
-theorem theorem21LeftFactorReturnTranslatedCompatible_of_pointwiseRightFamily
+theorem LeftRootCountBranch.compatible_translated_of_rightFamily_splits
     {f g : ℝ[X]} {r s : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hleft : LeftRootCountBranch f g r s)
@@ -49,7 +49,7 @@ theorem theorem21LeftFactorReturnTranslatedCompatible_of_pointwiseRightFamily
 `f` to the origin, every positive right combination of the restored pair
 splits.  The sign-normalized deletion pair has right endpoint one degree
 higher, so this is the right-successor x-subtraction pencil. -/
-theorem theorem21LeftFactorReturnSameDegreeTranslatedRightFamily
+theorem LeftRootCountBranch.translated_rightFamily_splits_of_natDegree_eq
     {f g : ℝ[X]} {r s : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hleft : LeftRootCountBranch f g r s)
@@ -102,7 +102,7 @@ theorem theorem21LeftFactorReturnSameDegreeTranslatedRightFamily
 root of `f` to the origin, every positive right combination of the restored
 pair splits.  The sign-normalized deletion pair has equal endpoint degrees, so
 this is the same-degree x-subtraction pencil. -/
-theorem theorem21LeftFactorReturnSuccDegreeTranslatedRightFamily
+theorem LeftRootCountBranch.translated_rightFamily_splits_of_natDegree_eq_succ
     {f g : ℝ[X]} {r s : ℝ}
     (hf : f.Splits) (hg : g.Splits) (hsgn : OppositeLeadingSigns f g)
     (hleft : LeftRootCountBranch f g r s)

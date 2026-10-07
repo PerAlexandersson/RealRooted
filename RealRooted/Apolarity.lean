@@ -1050,8 +1050,8 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
       -- `C (n : ℂ) * binomialLift (n - 1) f'` (`polarDeriv_binomialLift`).
       set f' := polarShift ζ f
       have hf' : (binomialLift (n - 1) f').natDegree = n - 1 := by
-        have hf' : (polarDeriv n ζ (binomialLift n f)).natDegree = n - 1 := by
-          exact polarDeriv_natDegree (Nat.pos_of_ne_zero hn) hf hroots hζ'
+        have hf' : (polarDeriv n ζ (binomialLift n f)).natDegree = n - 1 :=
+          polarDeriv_natDegree (Nat.pos_of_ne_zero hn) hf hroots hζ'
         rw [ polarDeriv_binomialLift ( Nat.pos_of_ne_zero hn ) ζ f ] at hf';
         rwa [ Polynomial.natDegree_C_mul ] at hf' ; aesop
       have hf'_roots : (binomialLift (n - 1) f').RootsIn (Metric.closedBall c r) := by
