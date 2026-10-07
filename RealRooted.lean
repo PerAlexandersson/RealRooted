@@ -395,6 +395,7 @@ import RealRooted.Challenges.HermiteBiehlerHurwitz
 import RealRooted.Challenges.HermitePolynomials
 import RealRooted.Challenges.HermitePolynomials
 import RealRooted.Challenges.HermitePoulain
+import RealRooted.Challenges.Hoggar
 import RealRooted.Challenges.HurwitzCornerZeroedCounterexample
 import RealRooted.Challenges.Interlacing
 import RealRooted.Challenges.InterlacingClosure
@@ -499,6 +500,7 @@ import RealRooted.CoefficientDominance.Symmetric.Sharp
 import RealRooted.CoefficientDominance.Symmetric.Tail
 import RealRooted.CoefficientDominance.Symmetric.Upper
 import RealRooted.CoefficientShape
+import RealRooted.CoefficientShape.Hoggar
 import RealRooted.CombinatorialExamples
 import RealRooted.CombinatorialExamples.BigDescents321
 import RealRooted.CombinatorialExamples.BigDescents321
