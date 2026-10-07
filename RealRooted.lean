@@ -287,6 +287,7 @@ import RealRooted.Challenges.HermiteBiehlerHurwitz
 import RealRooted.Challenges.HermitePolynomials
 import RealRooted.Challenges.HermitePoulain
 import RealRooted.Challenges.HurwitzCornerZeroedCounterexample
+import RealRooted.Challenges.Hutchinson
 import RealRooted.Challenges.Interlacing
 import RealRooted.Challenges.InterlacingClosure
 import RealRooted.Challenges.JacobiDeformation
@@ -659,6 +660,7 @@ import RealRooted.HomogeneousOreExamples
 import RealRooted.HomogeneousStability
 import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
+import RealRooted.Hutchinson
 import RealRooted.Hyperbolicity
 import RealRooted.Interlacing.Closure
 import RealRooted.Interlacing.ConeBounds
@@ -1033,6 +1035,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.Analytic
 import RealRooted.MultiplierSequence.PolyaSchur.Factorial
 import RealRooted.MultiplierSequence.PolyaSchur.Growth
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
