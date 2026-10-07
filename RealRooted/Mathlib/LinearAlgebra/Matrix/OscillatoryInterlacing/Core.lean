@@ -1375,24 +1375,24 @@ private theorem whitneyClearColumnLowerAux_lowerTriangular {N : ℕ}
       · rw [whitneyClearColumnLowerAux, dite_eq_right htActive]
         exact ih i j hij
 
-/-- One recursive Whitney cycle extends an upper-Hessenberg prefix by one
-column while preserving TN, nonsingularity, and the full and trailing
-principal characteristic polynomials. -/
-theorem exists_whitneyClearColumn {N : ℕ}
+/-- The explicit Whitney cycle `whitneyClearColumnAux * whitneyClearColumnLowerAux` with
+`N - (c + 1)` stages has the properties stated in `exists_whitneyClearColumn`. -/
+private theorem whitneyClearColumn_spec {N : ℕ}
     (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
     (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0) (c : Fin (N + 1))
     (hprefix : ∀ r k, k.val < c.val → k.val + 1 < r.val → A r k = 0) :
-    ∃ C : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ,
-      C.IsTotallyNonneg ∧ C.det ≠ 0 ∧ C.charpoly = A.charpoly ∧
+    let C := whitneyClearColumnAux A c (N - (c.val + 1)) *
+      whitneyClearColumnLowerAux A c (N - (c.val + 1))
+    C.IsTotallyNonneg ∧ C.det ≠ 0 ∧ C.charpoly = A.charpoly ∧
         (C.submatrix Fin.succ Fin.succ).charpoly =
           (A.submatrix Fin.succ Fin.succ).charpoly ∧
         ((∀ i j, i.val + 1 < j.val → A i j = 0) →
           ∀ i j, i.val + 1 < j.val → C i j = 0) ∧
         ∀ r k, k.val ≤ c.val → k.val + 1 < r.val → C r k = 0 := by
+  intro C
   let stages := N - (c.val + 1)
   let L := whitneyClearColumnLowerAux A c stages
   let B := whitneyClearColumnAux A c stages
-  let C := B * L
   obtain ⟨hB, hBdet, hBprefix, hBtail⟩ :=
     whitneyClearColumnAux_spec A hA hdet c hprefix stages le_rfl
   obtain ⟨hL, hfactor⟩ :=
@@ -1468,7 +1468,7 @@ theorem exists_whitneyClearColumn {N : ℕ}
     · rw [hBupper' i x hix, zero_mul]
     · have hxj : x < j := Fin.lt_def.2 (by lia)
       rw [hLtri x j hxj, mul_zero]
-  refine ⟨C, hC, hCdet, hCchar, htrailingChar, hCupper, ?_⟩
+  refine ⟨hC, hCdet, hCchar, htrailingChar, hCupper, ?_⟩
   intro r k hkc hkr
   rw [hCcol r k hkc]
   rcases hkc.eq_or_lt with hkcEq | hkcLt
@@ -1479,6 +1479,22 @@ theorem exists_whitneyClearColumn {N : ℕ}
     have hrBound := r.isLt
     lia
   · exact hBprefix r k hkcLt hkr
+
+/-- One recursive Whitney cycle extends an upper-Hessenberg prefix by one
+column while preserving TN, nonsingularity, and the full and trailing
+principal characteristic polynomials. -/
+theorem exists_whitneyClearColumn {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)
+    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0) (c : Fin (N + 1))
+    (hprefix : ∀ r k, k.val < c.val → k.val + 1 < r.val → A r k = 0) :
+    ∃ C : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ,
+      C.IsTotallyNonneg ∧ C.det ≠ 0 ∧ C.charpoly = A.charpoly ∧
+        (C.submatrix Fin.succ Fin.succ).charpoly =
+          (A.submatrix Fin.succ Fin.succ).charpoly ∧
+        ((∀ i j, i.val + 1 < j.val → A i j = 0) →
+          ∀ i j, i.val + 1 < j.val → C i j = 0) ∧
+        ∀ r k, k.val ≤ c.val → k.val + 1 < r.val → C r k = 0 :=
+  ⟨_, whitneyClearColumn_spec A hA hdet c hprefix⟩
 
 /-- Iterating the recursive Whitney column cycle produces an upper-Hessenberg
 matrix while preserving TN, nonsingularity, and the full and trailing
@@ -2361,92 +2377,10 @@ theorem exists_whitneyClearColumn_adjacent_pos {N : ℕ}
         (∀ r k, k.val ≤ c.val → k.val + 1 < r.val → C r k = 0) ∧
         (∀ i : Fin N, 0 < C i.castSucc i.succ) ∧
         ∀ i : Fin N, 0 < C i.succ i.castSucc := by
-  let stages := N - (c.val + 1)
-  let L := whitneyClearColumnLowerAux A c stages
-  let B := whitneyClearColumnAux A c stages
-  let C := B * L
-  obtain ⟨hB, hBdet, hBprefix, hBtail⟩ :=
-    whitneyClearColumnAux_spec A hA hdet c hprefix stages le_rfl
-  obtain ⟨hL, hfactor⟩ :=
-    whitneyClearColumnLowerAux_spec A hA hdet c hprefix stages le_rfl
-  obtain ⟨hLcols, hLrowZero⟩ :=
-    whitneyClearColumnLowerAux_prefix_block A c stages
-  have hLcols' : ∀ i j, j.val ≤ c.val →
-      L i j = (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) i j := hLcols
-  have hLrowZero' : ∀ j,
-      L (0 : Fin (N + 1)) j =
-        (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) 0 j := hLrowZero
-  have hLcolZero : ∀ i : Fin N, L i.succ 0 = 0 := by
-    intro i
-    rw [hLcols' i.succ 0 (Nat.zero_le c.val)]
-    simp
-  have hLrow : ∀ j : Fin N, L (0 : Fin (N + 1)) j.succ = 0 := by
-    intro j
-    rw [hLrowZero' j.succ]
-    exact Matrix.one_apply_ne (ne_of_lt (Fin.succ_pos j))
-  have hC : C.IsTotallyNonneg := (hB.toRect.mul hL.toRect).toSquare
-  have hCdet : C.det ≠ 0 := by
-    intro hzero
-    apply hdet
-    rw [hfactor, Matrix.det_mul]
-    simp only [C, Matrix.det_mul] at hzero
-    simpa only [mul_comm] using hzero
-  have hCchar : C.charpoly = A.charpoly := by
-    calc
-      C.charpoly = (B * L).charpoly := rfl
-      _ = (L * B).charpoly := Matrix.charpoly_mul_comm B L
-      _ = A.charpoly := congrArg Matrix.charpoly hfactor.symm
-  have hAtrailing : A.submatrix Fin.succ Fin.succ =
-      L.submatrix Fin.succ Fin.succ * B.submatrix Fin.succ Fin.succ := by
-    rw [hfactor,
-      trailing_submatrix_mul_of_left_firstColumn_zero L B hLcolZero]
-  have hCtrailing : C.submatrix Fin.succ Fin.succ =
-      B.submatrix Fin.succ Fin.succ * L.submatrix Fin.succ Fin.succ := by
-    change (B * L).submatrix Fin.succ Fin.succ = _
-    exact trailing_submatrix_mul_of_right_firstRow_zero B L hLrow
-  have htrailingChar : (C.submatrix Fin.succ Fin.succ).charpoly =
-      (A.submatrix Fin.succ Fin.succ).charpoly := by
-    rw [hAtrailing, hCtrailing, Matrix.charpoly_mul_comm]
-  have hCcol : ∀ i j, j.val ≤ c.val → C i j = B i j := by
-    intro i j hjc
-    change (B * L) i j = B i j
-    calc
-      (B * L) i j =
-          (B * (1 : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ)) i j := by
-        simp only [Matrix.mul_apply]
-        apply Finset.sum_congr rfl
-        intro x _
-        rw [hLcols' x j hjc]
-      _ = B i j := by rw [Matrix.mul_one]
-  have hLtri : ∀ i j, i < j → L i j = 0 :=
-    whitneyClearColumnLowerAux_lowerTriangular A c stages
-  have hCupper : (∀ i j, i.val + 1 < j.val → A i j = 0) →
-      ∀ i j, i.val + 1 < j.val → C i j = 0 := by
-    intro hupper i j hij
-    have hBupper := whitneyClearColumnAux_preserves_upperZeros A c hupper
-      stages
-    have hBupper' : ∀ i j, i.val + 1 < j.val → B i j = 0 := hBupper
-    change (B * L) i j = 0
-    simp only [Matrix.mul_apply]
-    apply Finset.sum_eq_zero
-    intro x _
-    by_cases hix : i.val + 1 < x.val
-    · rw [hBupper' i x hix, zero_mul]
-    · have hxj : x < j := Fin.lt_def.2 (by lia)
-      rw [hLtri x j hxj, mul_zero]
-  have hCadj := whitneyClearColumnCycle_adjacent_pos A hA hdet c hprefix
-    hsuper hsub stages le_rfl
-  refine ⟨C, hC, hCdet, hCchar, htrailingChar, hCupper, ?_, hCadj⟩
-  intro r k hkc hkr
-  rw [hCcol r k hkc]
-  rcases hkc.eq_or_lt with hkcEq | hkcLt
-  · have hk : k = c := Fin.ext hkcEq
-    subst k
-    apply hBtail r
-    dsimp [stages]
-    have hrBound := r.isLt
-    lia
-  · exact hBprefix r k hkcLt hkr
+  obtain ⟨hC, hCdet, hCchar, htrailingChar, hCupper, hCprefix⟩ :=
+    whitneyClearColumn_spec A hA hdet c hprefix
+  exact ⟨_, hC, hCdet, hCchar, htrailingChar, hCupper, hCprefix,
+    whitneyClearColumnCycle_adjacent_pos A hA hdet c hprefix hsuper hsub _ le_rfl⟩
 
 /-- Iterated Whitney cycling preserves the oscillatory adjacent-entry
 criterion while producing an upper-Hessenberg matrix. -/

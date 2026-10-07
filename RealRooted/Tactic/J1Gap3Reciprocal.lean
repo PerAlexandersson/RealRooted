@@ -3,32 +3,14 @@ import RealRooted.Tactic.ReciprocalShift
 /-!
 # J1 gap-3 reciprocal frontend
 
-Compatibility wrappers for the original J1-specific reciprocal-shift API.
+Compatibility tactic syntax for the original J1-specific reciprocal-shift route;
+the underlying theorems are `isRealRooted_of_reciprocalShift_sequence` and
+`isRealRooted_of_reciprocalShift_pf_sequence`.
 -/
 
 open Polynomial
 
 namespace RealRooted
-
-/-- Transfer real-rootedness through a degree-padded reciprocal reflection. -/
-theorem isRealRooted_of_j1_gap3_reciprocal_sequence
-    {P R : Nat → ℝ[X]} {D : Nat → Nat}
-    (hmodel : ∀ n : Nat, R n ≠ 0 ∧ (R n).Splits)
-    (hdegree : ∀ n : Nat, (R n).natDegree ≤ D n)
-    (hreciprocal : ∀ n : Nat, P n = reciprocalShift (D n) (R n)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_reciprocalShift_sequence hmodel hdegree hreciprocal
-
-/-- PF-polynomial model variant of the J1 gap-3 reciprocal route. -/
-theorem isRealRooted_of_j1_gap3_reciprocal_pf_sequence
-    {P R : Nat → ℝ[X]} {D : Nat → Nat}
-    (hmodel : ∀ n : Nat, IsPFPolynomial (R n))
-    (hmodel_ne : ∀ n : Nat, R n ≠ 0)
-    (hdegree : ∀ n : Nat, (R n).natDegree ≤ D n)
-    (hreciprocal : ∀ n : Nat, P n = reciprocalShift (D n) (R n)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_reciprocalShift_pf_sequence
-    hmodel hmodel_ne hdegree hreciprocal
 
 namespace Tactic
 

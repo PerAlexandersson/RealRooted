@@ -23,7 +23,6 @@ import RealRooted.Tactic.Examples.Hadamard
 import RealRooted.Tactic.Examples.HermiteBiehler
 import RealRooted.Tactic.Examples.HermitePoulain
 import RealRooted.Tactic.Examples.HomogenizeStable
-import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.InterlacesExplicit
 import RealRooted.Tactic.Examples.InterlacingSequence
 import RealRooted.Tactic.Examples.IteratedDerivativeShift

@@ -13,7 +13,8 @@ import Mathlib.Tactic.Linarith
 # Coefficients of descending degree-box sums
 
 This Mathlib-shaped shim packages coefficient extraction for polynomial sums
-whose exponents descend through a finite degree box.
+whose exponents descend through a finite degree box, and the coefficients of
+`(1 - X) * p`.
 -/
 
 public section
@@ -40,5 +41,14 @@ theorem coeff_sum_range_C_mul_X_pow_sub {R : Type*} [Semiring R] (a : ℕ → R)
     apply Finset.sum_eq_zero
     intro k hk
     rw [coeff_C_mul, coeff_X_pow, ite_eq_right (fun _ => by lia), mul_zero]
+
+@[simp]
+theorem coeff_one_sub_X_mul_zero {R : Type*} [Ring R] (p : R[X]) :
+    ((1 - X) * p).coeff 0 = p.coeff 0 := by
+  simp [sub_mul]
+
+theorem coeff_one_sub_X_mul_succ {R : Type*} [Ring R] (p : R[X]) (k : ℕ) :
+    ((1 - X) * p).coeff (k + 1) = p.coeff (k + 1) - p.coeff k := by
+  rw [sub_mul, one_mul, coeff_sub, coeff_X_mul]
 
 end Polynomial

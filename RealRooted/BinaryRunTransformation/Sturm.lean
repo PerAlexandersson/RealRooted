@@ -1,5 +1,6 @@
 import RealRooted.BinaryRunTransformation.Coefficients
 import RealRooted.MaWang.DerivativeStep
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.ObreschkoffConverse.Forward
 import RealRooted.RootBounds
@@ -143,22 +144,6 @@ private theorem binaryRunCoeff_recurrence (n m k : ℕ)
           ((m : ℝ) + 1) *
             ((Nat.choose (m - 1) (k - 2) : ℝ) +
               (Nat.choose (m - 1) (k - 1) : ℝ)) * hdown
-
-private theorem coeff_X_mul_one_sub_X_mul_derivative (p : ℝ[X]) (k : ℕ) :
-    (X * (1 - X) * p.derivative).coeff k =
-      (k : ℝ) * p.coeff k - ((k - 1 : ℕ) : ℝ) * p.coeff (k - 1) := by
-  have hpoly :
-      X * (1 - X) * p.derivative =
-        X * p.derivative - X * (X * p.derivative) := by ring
-  rw [hpoly, coeff_sub]
-  cases k with
-  | zero => simp
-  | succ k =>
-      cases k with
-      | zero => simp [coeff_X_mul, coeff_derivative]
-      | succ k =>
-          simp [coeff_X_mul, coeff_derivative]
-          ring
 
 /-- Denominator-cleared differential recurrence for consecutive binary-run
 basis images before the midpoint. -/

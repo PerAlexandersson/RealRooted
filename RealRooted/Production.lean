@@ -836,7 +836,9 @@ import RealRooted.Hadamard.Grace
 import RealRooted.Hadamard.Hurwitz
 import RealRooted.Hadamard.Newton
 import RealRooted.Hadamard.Product
+import RealRooted.Hadamard.SchurSzegoExamples
 import RealRooted.Hadamard.SchurSzegoMultiplicity
+import RealRooted.Hadamard.SchurSzegoSigns
 import RealRooted.HeilmannLieb
 import RealRooted.Hermite
 import RealRooted.Hermite.Basic
@@ -1601,7 +1603,6 @@ import RealRooted.Tactic.Hadamard
 import RealRooted.Tactic.HermiteBiehler
 import RealRooted.Tactic.HermitePoulain
 import RealRooted.Tactic.HomogenizeStable
-import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.InterlacesExplicit
 import RealRooted.Tactic.InterlacesExplicit
 import RealRooted.Tactic.InterlacingSequence
