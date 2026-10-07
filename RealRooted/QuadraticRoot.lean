@@ -261,4 +261,23 @@ theorem quadratic_disc_coeff_le_of_splits_natDegree_le_two
     rw [hc2]
     linarith [sq_nonneg (p.coeff 1)]
 
+/-- A degree-two real polynomial with nonnegative discriminant splits. -/
+theorem splits_of_natDegree_eq_two_of_discrim_nonneg {p : ℝ[X]} (h : p.natDegree = 2)
+    (hd : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0)) : p.Splits := by
+  have ha : p.coeff 2 ≠ 0 := by
+    have := Polynomial.leadingCoeff_ne_zero.mpr (Polynomial.ne_zero_of_natDegree_gt (n := 0)
+      (by rw [h]; norm_num))
+    rwa [Polynomial.leadingCoeff, h] at this
+  have hp : p = C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X + C (p.coeff 0) := by
+    ext n
+    simp only [coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C]
+    rcases n with _ | _ | _ | n
+    · simp
+    · simp
+    · simp
+    · simp only [Nat.reduceEqDiff, ↓reduceIte, mul_zero, add_zero]
+      exact Polynomial.coeff_eq_zero_of_natDegree_lt (by rw [h]; lia)
+  rw [hp]
+  exact quadraticPoly_splits_of_discrim_nonneg ha hd
+
 end RealRooted

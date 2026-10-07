@@ -1605,7 +1605,6 @@ import RealRooted.Tactic.Examples.Hadamard
 import RealRooted.Tactic.Examples.HermiteBiehler
 import RealRooted.Tactic.Examples.HermitePoulain
 import RealRooted.Tactic.Examples.HomogenizeStable
-import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.InterlacesExplicit
 import RealRooted.Tactic.Examples.InterlacesExplicit
 import RealRooted.Tactic.Examples.InterlacingSequence
@@ -1733,7 +1732,6 @@ import RealRooted.Tactic.Hadamard
 import RealRooted.Tactic.HermiteBiehler
 import RealRooted.Tactic.HermitePoulain
 import RealRooted.Tactic.HomogenizeStable
-import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.InterlacesExplicit
 import RealRooted.Tactic.InterlacesExplicit
 import RealRooted.Tactic.InterlacingSequence

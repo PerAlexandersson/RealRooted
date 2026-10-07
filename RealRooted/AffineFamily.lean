@@ -398,23 +398,6 @@ private lemma strictInterl_right_pair_of_affine_family_high_degree_core
       StrictInterl.forward_of_orientation_of_succDegree hsucc hstrictInterl_or
     exact strictInterl_to_strictInterl_mul_X_of_nonneg hstrictInterl_fg hfnn hgnn
 
-/-- Wrapper matching the original high-degree target. The only genuinely hard
-branches are delegated to `strictInterl_right_pair_of_affine_family_high_degree_core`,
-while the recursive shared-root succ-degree branch is handled in
-`strictInterl_right_pair_of_affine_family_high_degree`. -/
-private lemma strictInterl_right_pair_of_affine_family_high_degree_remaining
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (hno_common_fg : ¬ ∃ r, g.IsRoot r ∧ f.IsRoot r) :
-    StrictInterl g (X * f) :=
-  strictInterl_right_pair_of_affine_family_high_degree_core
-    hf0 hg0 hfnn hgnn haff hno_common_fg
-
 private lemma strictInterl_right_pair_of_affine_family_high_degree
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
@@ -528,7 +511,7 @@ private lemma strictInterl_right_pair_of_affine_family_high_degree
         · grind
       exact strictInterl_right_pair_of_common_root_factor hqf hqg hstrictInterl_q
   · exact
-      strictInterl_right_pair_of_affine_family_high_degree_remaining
+      strictInterl_right_pair_of_affine_family_high_degree_core
         hf0 hg0 hfnn hgnn haff hcommon_fg
 
 /-- Converse affine-family step used in Brändén 7.8.5:
