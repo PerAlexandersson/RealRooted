@@ -36,6 +36,11 @@ label = "De Moivre–Laplace: the binomial distribution is asymptotically normal
 name = "RealRooted.tendsto_standardizedCoeffDistribution_eulerianTilde"
 module = "RealRooted.CombinatorialExamples.EulerianNormal"
 label = "The Eulerian numbers are asymptotically normal"
+
+[[theorems]]
+name = "RealRooted.tendsto_standardizedCoeffDistribution_generalizedEulerian_two"
+module = "RealRooted.CombinatorialExamples.EulerianNormal"
+label = "The type B Eulerian numbers are asymptotically normal"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -62,7 +67,9 @@ For example, $(1 + x)^n$ has variance $n/4$, which recovers the de
 Moivre–Laplace theorem for the binomial distribution.
 The Eulerian polynomials, with coefficients $A(n+1, k)$, have mean
 $(n+2)/2$ and variance $(n+2)/12$, so the Eulerian numbers are asymptotically
-normal. Both moments follow from scalar recurrences at $x = 1$.
+normal. Both moments follow from scalar recurrences at $x = 1$. The type $B$
+Eulerian numbers have mean $n/2$ and variance $(n+1)/12$, so they are
+asymptotically normal as well.
 
 ## Proof idea
 
