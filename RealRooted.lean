@@ -1571,3 +1571,4 @@ import RealRooted.LaguerreSamuelson
 import RealRooted.Maclaurin
 import RealRooted.Challenges.NewtonMaclaurin
 import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
+import RealRooted.CauchyInterlacing.RankOne
