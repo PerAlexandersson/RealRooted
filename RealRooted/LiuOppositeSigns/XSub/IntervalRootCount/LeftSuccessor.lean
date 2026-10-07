@@ -161,58 +161,11 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_left_successor_nonneg
     {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
     (hp_nonneg : HasNonnegCoeffs p) (hq_nonneg : HasNonnegCoeffs q)
     (hdeg : p.natDegree = q.natDegree + 1) {μ : ℝ} (hμ : 0 < μ) :
-    (X * p - C μ * q).Splits := by
-  let P : ℕ → Prop := fun n =>
-    ∀ {p q : ℝ[X]},
-      q.natDegree = n →
-      PositiveSplitRootCountPair p q →
-      HasNonnegCoeffs p →
-      HasNonnegCoeffs q →
-      p.natDegree = q.natDegree + 1 →
-      ∀ μ : ℝ, 0 < μ → (X * p - C μ * q).Splits
-  have hmain : ∀ n, P n := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | h n ih =>
-        intro p q hqdeg hpair hp_nonneg hq_nonneg hdeg μ hμ
-        by_cases hno : NoCommonRoots p q
-        · exact hpair.xSub_splits_of_left_successor_nonneg_of_noCommonRoots
-            hp_nonneg hq_nonneg hno hdeg hμ
-        · rcases exists_common_root_of_not_noCommonRoots hno with
-            ⟨r, hp_root, hq_root⟩
-          have hpair_delete :
-              PositiveSplitRootCountPair (deleteRootFactor p r)
-                (deleteRootFactor q r) :=
-            hpair.deleteRootFactor_commonRoot hp_root hq_root
-          have hp_delete_nonneg :
-              HasNonnegCoeffs (deleteRootFactor p r) :=
-            hpair.left_deleteRootFactor_nonneg hp_nonneg hp_root
-          have hq_delete_nonneg :
-              HasNonnegCoeffs (deleteRootFactor q r) :=
-            hpair.right_deleteRootFactor_nonneg hq_nonneg hq_root
-          have hdeg_delete :
-              (deleteRootFactor p r).natDegree =
-                (deleteRootFactor q r).natDegree + 1 :=
-            hpair.natDegree_deleteRootFactor_left_eq_right_add_one
-              hq_root hdeg
-          have hq_delete_lt :
-              (deleteRootFactor q r).natDegree < n := by
-            rw [natDegree_deleteRootFactor, hqdeg]
-            have hq_pos : 0 < n := by
-              simpa [← hqdeg] using
-                natDegree_pos_of_isRoot hpair.right_pos.ne_zero hq_root
-            lia
-          have hcofactor :
-              (X * deleteRootFactor p r -
-                C μ * deleteRootFactor q r).Splits :=
-            ih (deleteRootFactor q r).natDegree hq_delete_lt
-              (rfl : (deleteRootFactor q r).natDegree =
-                (deleteRootFactor q r).natDegree)
-              hpair_delete hp_delete_nonneg hq_delete_nonneg hdeg_delete μ hμ
-          exact
-            (X_mul_sub_C_mul_splits_iff_deleteRootFactor_splits_of_commonRoot
-              hp_root hq_root).mpr hcofactor
-  exact hmain q.natDegree rfl hpair hp_nonneg hq_nonneg hdeg μ hμ
+    (X * p - C μ * q).Splits :=
+  hpair.xSub_splits_of_forall_noCommonRoots (a := 0) (b := 1)
+    (fun hpair hp hq hno hdeg _ hμ =>
+      hpair.xSub_splits_of_left_successor_nonneg_of_noCommonRoots hp hq hno hdeg hμ)
+    hp_nonneg hq_nonneg hdeg hμ
 
 /-- Unrestricted positive-split left-successor translated x-subtraction
 family. -/

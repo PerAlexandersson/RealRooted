@@ -194,6 +194,35 @@ private theorem weightedSum_leanderOutputRegion {n : ℕ}
         · simp [leanderOutputWeight, leanderOutputRegion, hhi, hEqI, hnle,
             hhj, hEqJ]
 
+/-- A nonnegative weighting of an increasing, pairwise compatible `Fin n`-family of real-rooted
+polynomials with positive leading coefficients is zero or real-rooted
+(Chudnovsky--Seymour). -/
+theorem weightedSum_ofFn_eq_zero_or_splits {n : ℕ} {r : Fin n → ℝ[X]} (w : Fin n → ℝ)
+    (hrr : ∀ h, r h ≠ 0 ∧ (r h).Splits) (hpos : ∀ h, HasPosLeadingCoeff (r h))
+    (hcomp : ∀ ⦃h k⦄, h < k → Compatible (r h) (r k)) (hw : ∀ h, 0 ≤ w h) :
+    weightedSum (List.ofFn fun h => (w h, r h)) = 0 ∨
+      (weightedSum (List.ofFn fun h => (w h, r h)) ≠ 0 ∧
+        (weightedSum (List.ofFn fun h => (w h, r h))).Splits) := by
+  have hmem : ∀ {p}, p ∈ List.ofFn r → ∃ h, r h = p := fun hp => List.mem_ofFn.mp hp
+  have hfamily : FamilyCompatible (List.ofFn r) := by
+    refine (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
+      (fun p hp => ?_) (fun p hp => ?_)).1 (pairwiseCompatible_of_forall_mem fun p hp q hq => ?_)
+    · obtain ⟨h, rfl⟩ := hmem hp
+      exact hrr h
+    · obtain ⟨h, rfl⟩ := hmem hp
+      exact hpos h
+    · obtain ⟨h, rfl⟩ := hmem hp
+      obtain ⟨k, rfl⟩ := hmem hq
+      rcases lt_trichotomy h k with hhk | rfl | hkh
+      · exact hcomp hhk
+      · exact Compatible.self_of_splits (hrr h).2
+      · exact (hcomp hkh).comm
+  refine hfamily _ (fun ap hap => ?_) (fun ap hap => ?_)
+  · obtain ⟨h, rfl⟩ := List.mem_ofFn.mp hap
+    simp
+  · obtain ⟨h, rfl⟩ := List.mem_ofFn.mp hap
+    exact hw h
+
 /-- Leander Theorem 2.3, condition (a'): ordered output coordinates of the
 diagonal-omitting transform are compatible. -/
 theorem compatible_leanderTransform {n : ℕ} (f : Fin n → ℝ[X])
@@ -211,48 +240,11 @@ theorem compatible_leanderTransform {n : ℕ} (f : Fin n → ℝ[X])
     by_cases ha0 : a = 0
     · exact Or.inr fun hb0 => habzero ⟨ha0, hb0⟩
     · exact Or.inl ha0
-  let region : Fin n → ℝ[X] := leanderOutputRegion f i j a b
-  let fs : List ℝ[X] := List.ofFn region
-  have hregions_rr : ∀ p ∈ fs, p ≠ 0 ∧ p.Splits := by
-    intro p hp
-    simp only [fs, List.mem_ofFn] at hp
-    rcases hp with ⟨h, rfl⟩
-    exact leanderOutputRegion_ne_zero_and_splits f i j hab hrr h
-  have hregions_pos : ∀ p ∈ fs, HasPosLeadingCoeff p := by
-    intro p hp
-    simp only [fs, List.mem_ofFn] at hp
-    rcases hp with ⟨h, rfl⟩
-    exact leanderOutputRegion_hasPosLeadingCoeff f i j ha hb hab hpos h
-  have hregions_pair : PairwiseCompatible fs := by
-    apply pairwiseCompatible_of_forall_mem
-    intro p hp q hq
-    simp only [fs, List.mem_ofFn] at hp hq
-    rcases hp with ⟨h, rfl⟩
-    rcases hq with ⟨k, rfl⟩
-    rcases lt_trichotomy h k with hhk | heq | hkh
-    · exact leanderOutputRegion_compatible_of_lt f i j ha hb hrr hpos
-        hff hXf hhk
-    · subst k
-      exact Compatible.self_of_splits
-        (leanderOutputRegion_ne_zero_and_splits f i j hab hrr h).2
-    · exact (leanderOutputRegion_compatible_of_lt f i j ha hb hrr hpos
-        hff hXf hkh).comm
-  have hfamily : FamilyCompatible fs :=
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible hregions_rr hregions_pos).1
-      hregions_pair
-  let ws : List (ℝ × ℝ[X]) := List.ofFn fun h =>
-    (leanderOutputWeight i j a b h, region h)
-  have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by
-    intro ap hap
-    simp only [ws, List.mem_ofFn] at hap
-    rcases hap with ⟨h, rfl⟩
-    simp [fs]
-  have hnonneg : ∀ ap ∈ ws, 0 ≤ ap.1 := by
-    intro ap hap
-    simp only [ws, List.mem_ofFn] at hap
-    rcases hap with ⟨h, rfl⟩
-    exact leanderOutputWeight_nonneg i j ha hb h
-  simpa [ws, region] using
-    (weightedSum_leanderOutputRegion f hij a b ▸ hfamily ws hmem hnonneg)
+  simpa using weightedSum_leanderOutputRegion f hij a b ▸
+    weightedSum_ofFn_eq_zero_or_splits (leanderOutputWeight i j a b)
+      (leanderOutputRegion_ne_zero_and_splits f i j hab hrr)
+      (leanderOutputRegion_hasPosLeadingCoeff f i j ha hb hab hpos)
+      (fun _ _ hhk => leanderOutputRegion_compatible_of_lt f i j ha hb hrr hpos hff hXf hhk)
+      (leanderOutputWeight_nonneg i j ha hb)
 
 end RealRooted
