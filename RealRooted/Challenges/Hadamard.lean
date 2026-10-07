@@ -4,6 +4,7 @@ import RealRooted.Hadamard
 import RealRooted.Hadamard.FiniteReflection
 import RealRooted.MultiplierSequence.PolyaSchur.Schur
 import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
+import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
 
 /-!
 # Hadamard challenge entry point
@@ -12,8 +13,8 @@ import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 version = 1
 section = "theorems"
 slug = "hadamard-products"
-authors = ["Maló", "Pólya", "Schur", "Wagner", "Garloff"]
-years = [1895, 1914, 1992, 1996]
+authors = ["Maló", "Pólya", "Schur", "Brenti", "Wagner", "Garloff"]
+years = [1895, 1914, 1989, 1992, 1996]
 
 [[definitions]]
 name = "RealRooted.schurSzegoComp"
@@ -67,6 +68,11 @@ name = "RealRooted.Challenges.Hadamard.isPolyaFreqSeq_polynomialValueSeq_mul"
 label = "Products of polynomial value sequences are PF"
 
 [[theorems]]
+name = "RealRooted.IsPFPolynomial.polynomialValueEulerNumerator_of_roots_mem_Icc"
+module = "RealRooted.PolynomialValueEulerNumerator.Product.Brenti"
+label = "Brenti: zeros in [−1, 0] give a PF Euler numerator"
+
+[[theorems]]
 name = "RealRooted.IsPFPolynomial.hadamardProduct"
 module = "RealRooted.GarloffWagner.Theorem12"
 label = "Garloff–Wagner: Hadamard products of PF polynomials are PF"
@@ -103,6 +109,11 @@ $[0, \infty)$.
 If the value sequences $f(0), f(1), f(2), \dotsc$ and $g(0), g(1), g(2), \dotsc$
 of two real polynomials are Pólya frequency sequences, then so is the value
 sequence of $fg$.
+
+**Theorem (Brenti).** If every zero of $p$ lies in $[-1, 0]$ and its leading coefficient
+is positive, then the numerator $W$ of $\sum_{n \ge 0} p(n)\, x^n = W(x)/(1-x)^{\deg p + 1}$
+is real-rooted with nonnegative coefficients. For $p = x + a$ the numerator is
+$a + (1-a)x$; Wagner's product theorem handles the general case.
 
 The results of Garloff and Wagner for PF polynomials (real-rooted with
 nonnegative coefficients):
