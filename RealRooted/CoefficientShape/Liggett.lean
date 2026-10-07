@@ -1,4 +1,4 @@
-import RealRooted.CoefficientShape
+import RealRooted.CoefficientShape.Hoggar
 import Mathlib.Data.Nat.Factorial.Basic
 
 /-!
@@ -24,6 +24,8 @@ namespace RealRooted
 
 namespace Liggett
 
+open Hoggar
+
 /-- Nonnegative sequence supported on `[0, d]`, without internal zeros, and ultra-log-concave
 of order `d`. -/
 private def IsULC (d : ℕ) (a : ℕ → ℝ) : Prop :=
@@ -38,7 +40,7 @@ private def IsULC (d : ℕ) (a : ℕ → ℝ) : Prop :=
 ## Proof outline
 
 The clauses "nonnegative", "support in `[0, m+n]`" and "no internal zeros" are proved
-directly (`conv_nonneg`, `conv_support`, `conv_noIntZeros`).  The ULC inequality
+directly (`conv_nonneg`, `conv_support`, and Hoggar's `conv_noInternalZeros`).  The ULC inequality
 (`conv_ulcIneq`) is proved by induction on `n`:
 
 * write `b * (n+1) = dR b n + X * dL b`, where `dR`, `dL` are the two "partial derivatives"
@@ -51,9 +53,6 @@ directly (`conv_nonneg`, `conv_support`, `conv_noIntZeros`).  The ULC inequality
 * a real-number inequality (`merge_core`) then shows that `p + X q` satisfies the ULC
   inequalities of order `m+n+1` (`merge`).
 -/
-
-/-- Convolution of two sequences (the sequence appearing in `liggett`). -/
-private def conv (a b : ℕ → ℝ) (k : ℕ) : ℝ := ∑ i ∈ range (k + 1), a i * b (k - i)
 
 /-- Shift of a sequence one step to the right (multiplication of the generating function by `X`). -/
 private def sh (v : ℕ → ℝ) (k : ℕ) : ℝ := if k = 0 then 0 else v (k - 1)
@@ -82,89 +81,29 @@ private theorem conv_support {m n : ℕ} {a b : ℕ → ℝ} (ha : ∀ k, m < k 
   · rw [ha i h, zero_mul]
   · rw [hb (k - i) (by lia), mul_zero]
 
-/-! ### (3) no internal zeros -/
-
-private theorem ne_zero_of_between {f : ℕ → ℝ} (hf : NoIntZeros f) {p q t : ℕ}
-    (hp : f p ≠ 0) (hq : f q ≠ 0) (h1 : p ≤ t) (h2 : t ≤ q) : f t ≠ 0 := by
-  rcases h1.lt_or_eq with h1 | rfl
-  · rcases h2.lt_or_eq with h2 | rfl
-    · exact hf _ _ _ h1 h2 hp hq
-    · exact hq
-  · exact hp
-
-private theorem conv_ne_zero_iff {a b : ℕ → ℝ} (ha : ∀ k, 0 ≤ a k) (hb : ∀ k, 0 ≤ b k) (k : ℕ) :
-    conv a b k ≠ 0 ↔ ∃ i ≤ k, a i ≠ 0 ∧ b (k - i) ≠ 0 := by
-  unfold conv
-  rw [Ne, sum_eq_zero_iff_of_nonneg (fun i _ => mul_nonneg (ha i) (hb _))]
-  push Not
-  simp only [mem_range, Nat.lt_succ_iff, ne_eq, mul_eq_zero, not_or]
-
-private theorem conv_noIntZeros {a b : ℕ → ℝ} (ha : ∀ k, 0 ≤ a k) (hb : ∀ k, 0 ≤ b k)
-    (hai : NoIntZeros a) (hbi : NoIntZeros b) : NoIntZeros (conv a b) := by
-  intro i j k hij hjk hi hk
-  obtain ⟨t1, ht1, ha1, hb1⟩ := (conv_ne_zero_iff ha hb i).1 hi
-  obtain ⟨t2, ht2, ha2, hb2⟩ := (conv_ne_zero_iff ha hb k).1 hk
-  rw [conv_ne_zero_iff ha hb]
-  rcases le_or_gt t1 t2 with h | h
-  · by_cases hc : t1 + (j - i) ≤ t2
-    · refine ⟨t1 + (j - i), by lia, ne_zero_of_between hai ha1 ha2 (by lia) hc, ?_⟩
-      have e : j - (t1 + (j - i)) = i - t1 := by lia
-      rw [e]; exact hb1
-    · exact ⟨t2, by lia, ha2, ne_zero_of_between hbi hb1 hb2 (by lia) (by lia)⟩
-  · exact ⟨t2, by lia, ha2, ne_zero_of_between hbi hb1 hb2 (by lia) (by lia)⟩
-
 /-! ### Spread inequality for log-concave sequences without internal zeros -/
 
-private theorem ratio_step {f : ℕ → ℝ} (hlc : ∀ k, f k * f (k + 2) ≤ f (k + 1) ^ 2) (p : ℕ) :
-    ∀ d, (∀ t, p ≤ t → t ≤ p + d + 1 → 0 < f t) →
-      f p * f (p + d + 1) ≤ f (p + 1) * f (p + d) := by
-  intro d
-  induction d with
-  | zero => intro _; simp [mul_comm]
-  | succ d ih =>
-    intro hpos
-    have ih' := ih (fun t h1 h2 => hpos t h1 (by lia))
-    have h1 := hlc (p + d)
-    have hq : 0 < f (p + d + 1) := hpos _ (by lia) (by lia)
-    have hp1 : 0 ≤ f (p + 1) := (hpos _ (by lia) (by lia)).le
-    have hr0 : 0 ≤ f (p + d + 2) := (hpos _ (by lia) (by lia)).le
-    have e1 : p + (d + 1) + 1 = p + d + 2 := by ring
-    have e2 : p + (d + 1) = p + d + 1 := by ring
-    rw [e1, e2]
-    refine le_of_mul_le_mul_left ?_ hq
-    nlinarith [mul_le_mul_of_nonneg_right ih' hr0, mul_le_mul_of_nonneg_left h1 hp1]
-
-private theorem spread_pos {f : ℕ → ℝ} (hlc : ∀ k, f k * f (k + 2) ≤ f (k + 1) ^ 2) :
-    ∀ d p s, (∀ t, p ≤ t → t ≤ s → 0 < f t) → ∀ q r, q = p + d → q ≤ r → r ≤ s →
-      p + s = q + r → f p * f s ≤ f q * f r := by
-  intro d
-  induction d with
-  | zero =>
-    intro p s _ q r hq _ _ h
-    have : r = s := by lia
-    subst this; subst hq; rfl
-  | succ d ih =>
-    intro p s hpos q r hq hqr hrs h
-    have hstep := ratio_step hlc p (s - p - 1) (fun t h1 h2 => hpos t h1 (by lia))
-    have e1 : p + (s - p - 1) + 1 = s := by lia
-    have e2 : p + (s - p - 1) = s - 1 := by lia
-    rw [e1, e2] at hstep
-    have := ih (p + 1) (s - 1) (fun t h1 h2 => hpos t (by lia) (by lia)) q r (by lia)
-      hqr (by lia) (by lia)
-    linarith
-
-private theorem spread {f : ℕ → ℝ} (hnn : ∀ k, 0 ≤ f k) (hlc : ∀ k, f k * f (k + 2) ≤ f (k + 1) ^ 2)
-    (hnz : NoIntZeros f) {p q r s : ℕ} (hpq : p ≤ q) (hpr : p ≤ r) (hqs : q ≤ s) (hrs : r ≤ s)
-    (h : p + s = q + r) : f p * f s ≤ f q * f r := by
-  by_cases h0 : f p = 0 ∨ f s = 0
-  · rcases h0 with h0 | h0 <;> rw [h0] <;> simp [mul_nonneg (hnn q) (hnn r)]
-  push Not at h0
-  have hpos : ∀ t, p ≤ t → t ≤ s → 0 < f t := fun t h1 h2 =>
-    lt_of_le_of_ne (hnn t) (Ne.symm (ne_zero_of_between hnz h0.1 h0.2 h1 h2))
-  rcases le_total q r with hqr | hqr
-  · exact spread_pos hlc (q - p) p s hpos q r (by lia) hqr hrs h
+/-- The spread inequality: for a nonnegative log-concave sequence without internal zeros,
+`f p * f s ≤ f q * f r` whenever `p ≤ q, r ≤ s` and `p + s = q + r`.  Each inward step is
+Hoggar's `mul_le_mul_of_logConcave`. -/
+private theorem spread {f : ℕ → ℝ} (hnn : ∀ k, 0 ≤ f k)
+    (hlc : ∀ k, f k * f (k + 2) ≤ f (k + 1) ^ 2) (hnz : NoIntZeros f) {p q r s : ℕ}
+    (hpq : p ≤ q) (hpr : p ≤ r) (hqs : q ≤ s) (hrs : r ≤ s) (h : p + s = q + r) :
+    f p * f s ≤ f q * f r := by
+  wlog hqr : q ≤ r generalizing q r
   · rw [mul_comm (f q)]
-    exact spread_pos hlc (r - p) p s hpos r q (by lia) hqr hqs (by lia)
+    exact this hpr hpq hrs hqs (by lia) (by lia)
+  obtain ⟨d, rfl⟩ : ∃ d, q = p + d := ⟨q - p, by lia⟩
+  induction d generalizing p s with
+  | zero =>
+    obtain rfl : r = s := by lia
+    rfl
+  | succ d ih =>
+    have hstep := mul_le_mul_of_logConcave hnn hlc hnz p (s - p - 1)
+    rw [show p + (s - p - 1) + 1 = s by lia, show p + (s - p - 1) = s - 1 by lia] at hstep
+    have := ih (p := p + 1) (s := s - 1) (by lia) (by lia) (by lia) (by lia) (by lia) (by lia)
+    rw [show p + 1 + d = p + (d + 1) by lia] at this
+    exact hstep.trans this
 
 /-! ### Convolution with a log-concave sequence preserves the likelihood-ratio order -/
 
@@ -209,42 +148,17 @@ private theorem conv_tp2 {a u v : ℕ → ℝ} (ha0 : ∀ k, 0 ≤ a k)
   rw [conv_eq_ker_sum a u l (l + 1) (by lia), conv_eq_ker_sum a v k (l + 1) (by lia),
     conv_eq_ker_sum a u k (l + 1) (by lia), conv_eq_ker_sum a v l (l + 1) (by lia)]
   set L := l + 1
-  set K : ℕ → ℕ → ℝ := fun i j => ker a k i * ker a l j - ker a l i * ker a k j with hK
-  have hdiff : (∑ i ∈ range L, ker a k i * u i) * (∑ j ∈ range L, ker a l j * v j) -
-      (∑ i ∈ range L, ker a l i * u i) * (∑ j ∈ range L, ker a k j * v j) =
-      ∑ i ∈ range L, ∑ j ∈ range L, K i j * (u i * v j) := by
-    rw [sum_mul_sum, sum_mul_sum, ← sum_sub_distrib]
-    refine sum_congr rfl fun i _ => ?_
-    rw [← sum_sub_distrib]
-    refine sum_congr rfl fun j _ => ?_
-    simp only [hK]; ring
-  have hsym : 2 * (∑ i ∈ range L, ∑ j ∈ range L, K i j * (u i * v j)) =
-      ∑ i ∈ range L, ∑ j ∈ range L, K i j * (u i * v j - u j * v i) := by
-    have hc : ∑ i ∈ range L, ∑ j ∈ range L, K i j * (u i * v j) =
-        ∑ i ∈ range L, ∑ j ∈ range L, K j i * (u j * v i) := sum_comm
-    rw [two_mul]
-    nth_rewrite 2 [hc]
-    rw [← sum_add_distrib]
-    refine sum_congr rfl fun i _ => ?_
-    rw [← sum_add_distrib]
-    refine sum_congr rfl fun j _ => ?_
-    simp only [hK]; ring
-  have key : ∀ i j, 0 ≤ K i j * (u i * v j - u j * v i) := by
+  have key : ∀ i j, 0 ≤ (ker a k i * ker a l j - ker a k j * ker a l i) *
+      (u i * v j - v i * u j) := by
     intro i j
     rcases lt_trichotomy i j with hij | rfl | hij
-    · apply mul_nonneg
-      · simp only [hK]; linarith [ker_tp2 ha0 hsp hkl hij]
-      · linarith [huv i j hij]
+    · exact mul_nonneg (by linarith [ker_tp2 ha0 hsp hkl hij]) (by linarith [huv i j hij])
     · simp
-    · apply mul_nonneg_of_nonpos_of_nonpos
-      · simp only [hK]; linarith [ker_tp2 ha0 hsp hkl hij]
-      · linarith [huv j i hij]
-  have hnn : 0 ≤ ∑ i ∈ range L, ∑ j ∈ range L, K i j * (u i * v j) := by
-    have : 0 ≤ ∑ i ∈ range L, ∑ j ∈ range L, K i j * (u i * v j - u j * v i) :=
-      sum_nonneg fun i _ => sum_nonneg fun j _ => key i j
-    linarith
+    · exact mul_nonneg_of_nonpos_of_nonpos (by linarith [ker_tp2 ha0 hsp hkl hij])
+        (by linarith [huv j i hij])
+  have hid := two_mul_det_eq (range L) (ker a k) (ker a l) u v
+  have hnn := sum_nonneg fun i (_ : i ∈ range L) => sum_nonneg fun j (_ : j ∈ range L) => key i j
   linarith
-
 
 /-! ### The merging step -/
 
@@ -546,7 +460,8 @@ private theorem conv_ulcIneq {m : ℕ} {a : ℕ → ℝ} (ha : IsULC m a) :
 private theorem liggett_isULC {m n : ℕ} {a b : ℕ → ℝ} (ha : IsULC m a) (hb : IsULC n b) :
     IsULC (m + n) (fun k => ∑ i ∈ range (k + 1), a i * b (k - i)) :=
   ⟨conv_nonneg ha.1 hb.1, conv_support ha.2.1 hb.2.1,
-    conv_noIntZeros ha.1 hb.1 ha.2.2.1 hb.2.2.1, conv_ulcIneq ha n b hb⟩
+    fun _ _ _ hij hjk hi hk => conv_noInternalZeros ha.1 hb.1 ha.2.2.1 hb.2.2.1 hij hjk hi hk,
+    conv_ulcIneq ha n b hb⟩
 
 end Liggett
 
@@ -581,10 +496,8 @@ theorem coeffUltraLogConcaveUpTo_mul {p q : ℝ[X]} (hp : ∀ k, 0 ≤ p.coeff k
   · simp [CoeffUltraLogConcaveUpTo]
   rcases eq_or_ne q 0 with rfl | hq0
   · simp [CoeffUltraLogConcaveUpTo]
-  have hcoeff : (p * q).coeff = fun k => ∑ i ∈ range (k + 1), p.coeff i * q.coeff (k - i) := by
-    ext k
-    rw [coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ
-      (fun i j => p.coeff i * q.coeff j)]
+  have hcoeff : (p * q).coeff = fun k => ∑ i ∈ range (k + 1), p.coeff i * q.coeff (k - i) :=
+    funext (Hoggar.coeff_mul_eq_conv p q)
   rw [hcoeff, natDegree_mul hp0 hq0]
   exact (coeffUltraLogConcaveUpTo_conv hp (fun k hk => coeff_eq_zero_of_natDegree_lt hk) hpulc
     hpniz hq (fun k hk => coeff_eq_zero_of_natDegree_lt hk) hqulc hqniz).1

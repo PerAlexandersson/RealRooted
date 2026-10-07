@@ -21,16 +21,17 @@ namespace RealRooted
 namespace Hoggar
 
 /-- The convolution of two sequences, matching `Polynomial.coeff_mul`. -/
-private def conv (a b : ℕ → ℝ) (n : ℕ) : ℝ := ∑ k ∈ range (n + 1), a k * b (n - k)
+def conv (a b : ℕ → ℝ) (n : ℕ) : ℝ := ∑ k ∈ range (n + 1), a k * b (n - k)
 
-private theorem coeff_mul_eq_conv (p q : ℝ[X]) (n : ℕ) :
+/-- The coefficients of a product are the convolution of the coefficient sequences. -/
+theorem coeff_mul_eq_conv (p q : ℝ[X]) (n : ℕ) :
     (p * q).coeff n = conv p.coeff q.coeff n := by
   rw [coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ (fun i j => p.coeff i * q.coeff j)]
   rfl
 
 /-- A nonnegative log-concave sequence without internal zeros is a Pólya frequency
 sequence of order two: `a i * a (j + 1) ≤ a (i + 1) * a j` whenever `i ≤ j`. -/
-private theorem mul_le_mul_of_logConcave {a : ℕ → ℝ} (ha : ∀ k, 0 ≤ a k)
+theorem mul_le_mul_of_logConcave {a : ℕ → ℝ} (ha : ∀ k, 0 ≤ a k)
     (hlc : ∀ k, a k * a (k + 2) ≤ a (k + 1) ^ 2)
     (hniz : ∀ i j k, i < j → j < k → a i ≠ 0 → a k ≠ 0 → a j ≠ 0) (i m : ℕ) :
     a i * a (i + m + 1) ≤ a (i + 1) * a (i + m) := by
@@ -51,7 +52,7 @@ private theorem mul_le_mul_of_logConcave {a : ℕ → ℝ} (ha : ∀ k, 0 ≤ a 
       nlinarith
 
 /-- The `2 × 2` Cauchy–Binet identity, symmetrized over the two summation indices. -/
-private theorem two_mul_det_eq (S : Finset ℕ) (f g u v : ℕ → ℝ) :
+theorem two_mul_det_eq (S : Finset ℕ) (f g u v : ℕ → ℝ) :
     2 * ((∑ k ∈ S, f k * u k) * (∑ l ∈ S, g l * v l) -
       (∑ k ∈ S, f k * v k) * (∑ l ∈ S, g l * u l)) =
     ∑ k ∈ S, ∑ l ∈ S, (f k * g l - f l * g k) * (u k * v l - v k * u l) := by
@@ -157,7 +158,9 @@ private theorem conv_logConcave {a b : ℕ → ℝ} (ha : ∀ k, 0 ≤ a k) (hb 
   rw [sq]
   exact h
 
-private theorem ne_zero_of_between {a : ℕ → ℝ}
+/-- In a sequence without internal zeros, every index between two nonzero entries carries a
+nonzero entry. -/
+theorem ne_zero_of_between {a : ℕ → ℝ}
     (hniz : ∀ i j k, i < j → j < k → a i ≠ 0 → a k ≠ 0 → a j ≠ 0)
     (x y z : ℕ) (hx : a x ≠ 0) (hz : a z ≠ 0) (hxy : x ≤ y) (hyz : y ≤ z) :
     a y ≠ 0 := by
@@ -194,7 +197,7 @@ private theorem exists_pair_of_le {a b : ℕ → ℝ}
 
 /-- The convolution of two nonnegative sequences without internal zeros has no
 internal zeros. -/
-private theorem conv_noInternalZeros {a b : ℕ → ℝ} (ha : ∀ k, 0 ≤ a k) (hb : ∀ k, 0 ≤ b k)
+theorem conv_noInternalZeros {a b : ℕ → ℝ} (ha : ∀ k, 0 ≤ a k) (hb : ∀ k, 0 ≤ b k)
     (hA : ∀ i j k, i < j → j < k → a i ≠ 0 → a k ≠ 0 → a j ≠ 0)
     (hB : ∀ i j k, i < j → j < k → b i ≠ 0 → b k ≠ 0 → b j ≠ 0)
     {i j k : ℕ} (hij : i < j) (hjk : j < k) (hi : conv a b i ≠ 0) (hk : conv a b k ≠ 0) :
