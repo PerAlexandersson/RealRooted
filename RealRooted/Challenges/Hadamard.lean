@@ -2,6 +2,7 @@ import RealRooted.GarloffWagner.Hadamard
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.Hadamard
 import RealRooted.Hadamard.FiniteReflection
+import RealRooted.Hadamard.SchurSzegoMultiplicity
 import RealRooted.MultiplierSequence.PolyaSchur.Schur
 import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
@@ -44,6 +45,11 @@ label = "Factorial Hadamard product"
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.schurSzegoComp_eq_zero_or_splits"
 label = "Schur–Szegő composition preserves real-rootedness"
+
+[[theorems]]
+name = "RealRooted.rootMultiplicity_schurSzegoComp"
+module = "RealRooted.Hadamard.SchurSzegoMultiplicity"
+label = "Kostov–Shapiro: exact multiplicity of the root −ab of a Schur–Szegő composition"
 
 [[theorems]]
 name = """RealRooted.Challenges.Hadamard.\
@@ -97,6 +103,12 @@ Pólya frequency sequences is again a Pólya frequency sequence. Equivalently,
 the entrywise product of their totally nonnegative Toeplitz matrices is
 totally nonnegative.
 
+**Theorem** (Kostov–Shapiro; Kostov). Let $f$ and $g$ have degree $n$, let
+$a \neq 0$ be a root of $f$ of multiplicity $m$ and $b \neq 0$ a root of $g$ of
+multiplicity $l$, with $m + l \geq n$. Then $-ab$ is a root of the Schur–Szegő
+composition $f *_n g$ of multiplicity exactly $m + l - n$; in particular it is not a
+root when $m + l = n$. The roots must be nonzero, as Kostov (2010) points out.
+
 **Finite Pólya–Schur theorem.** Fix $n \geq 0$ and let $T_\gamma(x^k) =
 \gamma_k x^k$. Then $T_\gamma$ maps every real-rooted polynomial of degree at
 most $n$ to zero or a real-rooted polynomial if and only if the Jensen
@@ -139,7 +151,10 @@ Gleichungen,” *Journal für die reine und angewandte Mathematik* 144 (1914),
 89–113; D. G. Wagner, “Total positivity of Hadamard products,” *Journal of
 Mathematical Analysis and Applications* 163 (1992), 459–483; J. Garloff and
 D. G. Wagner, “Hadamard products of stable polynomials are stable,” *Journal
-of Mathematical Analysis and Applications* 202 (1996), 797–809.  See the
+of Mathematical Analysis and Applications* 202 (1996), 797–809. V. Kostov and B.
+Shapiro, “On the Schur–Szegő composition of polynomials,” *C. R. Math. Acad. Sci.
+Paris* 343 (2006), 81–86; V. P. Kostov, “Interlacing properties and the Schur–Szegő
+composition,” *Functional Analysis and Other Mathematics* 3 (2010), 65–74.  See the
 [Hadamard-product overview](https://www.symmetricfunctions.com/realRooted.htm#hadamardProductTheorems),
 [Schur–Szegő composition](https://www.symmetricfunctions.com/realRooted.htm#schurSzegoComposition),
 and the [finite multiplier criterion](https://www.symmetricfunctions.com/realRooted.htm#finiteMultiplierSequenceCriterion)
