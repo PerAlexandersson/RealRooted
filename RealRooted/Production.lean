@@ -1434,6 +1434,7 @@ import RealRooted.LaguerreSamuelson
 import RealRooted.Maclaurin
 import RealRooted.Challenges.NewtonMaclaurin
 import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
 
 /-!
 # RealRooted production umbrella
