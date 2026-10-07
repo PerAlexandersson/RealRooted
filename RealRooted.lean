@@ -1101,6 +1101,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
 import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
 import RealRooted.Mathlib.Algebra.Polynomial.Moment
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
