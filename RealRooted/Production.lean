@@ -415,6 +415,7 @@ import RealRooted.Challenges.LaguerrePolynomials
 import RealRooted.Challenges.LeakeRyder
 import RealRooted.Challenges.LeeYang
 import RealRooted.Challenges.LeeYang
+import RealRooted.Challenges.Liggett
 import RealRooted.Challenges.LiuOppositeSigns
 import RealRooted.Challenges.LiuOppositeSigns
 import RealRooted.Challenges.MaWangLiuWang
@@ -506,6 +507,7 @@ import RealRooted.CoefficientDominance.Symmetric.Tail
 import RealRooted.CoefficientDominance.Symmetric.Upper
 import RealRooted.CoefficientShape
 import RealRooted.CoefficientShape.Hoggar
+import RealRooted.CoefficientShape.Liggett
 import RealRooted.CombinatorialExamples
 import RealRooted.CombinatorialExamples.BigDescents321
 import RealRooted.CombinatorialExamples.BigDescents321
