@@ -389,6 +389,7 @@ import RealRooted.Challenges.GeneralizedSnakePosets
 import RealRooted.Challenges.GraceApolarity
 import RealRooted.Challenges.GraceApolarity
 import RealRooted.Challenges.Hadamard
+import RealRooted.Challenges.HarperCLT
 import RealRooted.Challenges.HeilmannLieb
 import RealRooted.Challenges.HeilmannLieb
 import RealRooted.Challenges.HermiteBiehlerHurwitz
@@ -1240,6 +1241,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
 import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 import RealRooted.Mathlib.Order.Fin.Tuple
+import RealRooted.Mathlib.Probability.CoeffDistribution
 import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
 import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
