@@ -79,8 +79,8 @@ lemma eq_of_sum_eq_of_le {s : Finset ι} {f g : ι → ℝ}
   have h_sum_diff_eq_zero : ∑ j ∈ s, (g j - f j) = 0 := by
     rw [Finset.sum_sub_distrib, h_sum_eq, sub_self]
   have h_nonneg : ∀ j ∈ s, 0 ≤ g j - f j := fun j hj => sub_nonneg.mpr (h_le j hj)
-  have h_all_zero : ∀ j ∈ s, g j - f j = 0 := by
-    exact Finset.sum_eq_zero_iff_of_nonneg h_nonneg |>.mp h_sum_diff_eq_zero
+  have h_all_zero : ∀ j ∈ s, g j - f j = 0 :=
+    Finset.sum_eq_zero_iff_of_nonneg h_nonneg |>.mp h_sum_diff_eq_zero
   exact (sub_eq_zero.mp (h_all_zero i hi)).symm
 
 /-- A complex number whose norm equals its real part is a non-negative real number. -/
@@ -236,8 +236,8 @@ lemma sum_of_aligned_vectors_factors {u : ℂ} {v : ι → ℂ} {s : Finset ι}
     (h_sum : ‖u‖ = ∑ i ∈ s, ‖v i‖)
     (h_ne : u ≠ 0) :
     ∑ i ∈ s, v i = (∑ i ∈ s, (‖v i‖ / ‖u‖ : ℂ)) * u := by
-  have h_norm_ne : (‖u‖ : ℝ) ≠ 0 := by
-    exact norm_ne_zero_iff.mpr h_ne
+  have h_norm_ne : (‖u‖ : ℝ) ≠ 0 :=
+    norm_ne_zero_iff.mpr h_ne
   have h_sum_div :
       (∑ i ∈ s, (‖v i‖ / ‖u‖ : ℂ)) =
       ((∑ i ∈ s, ‖v i‖) / ‖u‖ : ℂ) := by
@@ -271,8 +271,8 @@ lemma sum_of_multiples_is_one_of_triangle_eq
     (h_sum : ‖u‖ = ∑ i ∈ s, ‖v i‖)
     (h_ne : u ≠ 0) :
     ∑ i ∈ s, (‖v i‖ / ‖u‖) = 1 := by
-  have h_norm_ne : (‖u‖ : ℝ) ≠ 0 := by
-    exact norm_ne_zero_iff.mpr h_ne
+  have h_norm_ne : (‖u‖ : ℝ) ≠ 0 :=
+    norm_ne_zero_iff.mpr h_ne
   calc
     ∑ i ∈ s, ‖v i‖ / ‖u‖
         = (∑ i ∈ s, ‖v i‖) / ‖u‖ := by

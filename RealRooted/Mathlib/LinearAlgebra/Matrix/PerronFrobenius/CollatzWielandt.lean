@@ -204,8 +204,8 @@ lemma nonnegNeZero_mem_const_one : (fun _ : n => (1 : ℝ)) ∈ nonnegNeZero := 
 theorem exists_maximizer (A : Matrix n n ℝ) :
     ∃ v ∈ RealRooted.standardSimplex ℝ n,
       IsMaxOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) v := by
-  have h_compact : IsCompact (RealRooted.standardSimplex ℝ n) := by
-    exact RealRooted.isCompact_standardSimplex n
+  have h_compact : IsCompact (RealRooted.standardSimplex ℝ n) :=
+    RealRooted.isCompact_standardSimplex n
   have h_nonempty : (RealRooted.standardSimplex ℝ n).Nonempty := stdSimplex_nonempty
   have h_usc : UpperSemicontinuousOn (collatzWielandtFn A) (RealRooted.standardSimplex ℝ n) :=
     upperSemicontinuousOn A
@@ -378,8 +378,8 @@ theorem eigenvalue_le_perron_root_of_positive_eigenvector
     r ≤ perronRoot A := by
   classical
   have hv_nonneg : ∀ i, 0 ≤ v i := fun i ↦ (hv_pos i).le
-  have hv_ne_zero : v ≠ 0 := by
-    exact Pi.ne_zero_of_pos hv_pos
+  have hv_ne_zero : v ≠ 0 :=
+    Pi.ne_zero_of_pos hv_pos
   have h_r : r = collatzWielandtFn A v :=
     (eq_eigenvalue_of_positive_eigenvector hv_pos h_eig).symm
   have h_le : collatzWielandtFn A v ≤ perronRoot A := by

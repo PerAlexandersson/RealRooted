@@ -56,8 +56,8 @@ theorem weightedDeco_residueSign_nonneg_in_minimal_box
   obtain ⟨t', c, ht'0, ht'lt, hcbox, hcCube, s, hsroot, hsneg⟩ :=
     exists_in_smaller_weightedDecoExpandingBox_of_eventually htpos ht.2 hbox hevent
   have ht'1 : t' ≤ 1 := (le_of_lt ht'lt).trans ht.2
-  have hy : (t', (c, s)) ∈ weightedDecoBadContactSet w n := by
-    exact ⟨⟨ht'0, ht'1⟩, hcbox, hsroot, hsneg.le⟩
+  have hy : (t', (c, s)) ∈ weightedDecoBadContactSet w n :=
+    ⟨⟨ht'0, ht'1⟩, hcbox, hsroot, hsneg.le⟩
   have hminimal := hzmin (t', (c, s)) hy
   linarith
 

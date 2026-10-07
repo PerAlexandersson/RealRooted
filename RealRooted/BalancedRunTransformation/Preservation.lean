@@ -361,8 +361,8 @@ theorem mvUpperHalfPlaneStableOrZero_balancedRunSignedParityLift
         ((balancedRunTransform n p).comp (X + 1)))).eval₂
           (MvPolynomial.C : ℂ →+* MvPolynomial (Fin 2) ℂ)
           (MvPolynomial.X 0)) := by
-  have hsmall : p.natDegree ≤ n - 1 := by
-    exact hdegree.trans (by grind)
+  have hsmall : p.natDegree ≤ n - 1 :=
+    hdegree.trans (by grind)
   have hsource :=
     (mvUpperHalfPlaneStable_binaryRunHomogenizedSource hp hp0 hsmall
       (t := 1) one_pos).orZero

@@ -385,8 +385,8 @@ theorem irreducible_mulVec_ne_zero [Fintype n]
     obtain ⟨i, hi_T, j, hj_not_T, hA_ij_pos⟩ :=
       Irreducible.exists_edge_out (A := A) hA_irred T hT_nonempty hT_ne_univ
     have hA_ij_zero : A i j = 0 := by
-      have hv_j_pos : v j > 0 := by
-        exact pos_of_nonneg_of_not_mem_zero_set hv_nonneg (by simpa [T] using hj_not_T)
+      have hv_j_pos : v j > 0 :=
+        pos_of_nonneg_of_not_mem_zero_set hv_nonneg (by simpa [T] using hj_not_T)
       exact entry_eq_zero_of_mulVec_eq_zero (A := A) (hA_nonneg := hA_irred.1) hv_nonneg
         (by simpa using congrFun h_Av_zero i) hv_j_pos
     exact (ne_of_gt hA_ij_pos) hA_ij_zero

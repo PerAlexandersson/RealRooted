@@ -386,8 +386,8 @@ theorem derivative_strictInterl_tDeriv_of_natDegree_one {eps : ℝ} {p : ℝ[X]}
   have hbase : StrictInterl (1 : ℝ[X]) (tDeriv eps p) :=
     (interlaces_one_linear hTdeg).toStrictInterl
   have hder_deg : p.derivative.natDegree = 0 := by rw [p.natDegree_derivative, hdeg]
-  have hder_C : p.derivative = C (p.derivative.coeff 0) := by
-    exact eq_C_of_natDegree_eq_zero hder_deg
+  have hder_C : p.derivative = C (p.derivative.coeff 0) :=
+    eq_C_of_natDegree_eq_zero hder_deg
   have hder_ne : p.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by rw [hdeg]; norm_num)
   have hcoeff_ne : p.derivative.coeff 0 ≠ 0 := by

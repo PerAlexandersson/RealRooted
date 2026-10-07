@@ -91,10 +91,10 @@ theorem a144438_block_quadratic_pos {ι : Type*} [Fintype ι]
     (hS : 0 < β - ∑ i, c i ^ 2 / J i) (hx : x ≠ 0) :
     0 < (∑ i, J i * y i ^ 2) + 2 * x * (∑ i, c i * y i) + β * x ^ 2 := by
   rw [a144438_block_quadratic_eq J c y β x (fun i ↦ (hJ i).ne')]
-  have hsum : 0 ≤ ∑ i, J i * (y i + x * c i / J i) ^ 2 := by
-    exact Finset.sum_nonneg fun i _ ↦ mul_nonneg (hJ i).le (sq_nonneg _)
-  have hbottom : 0 < (β - ∑ i, c i ^ 2 / J i) * x ^ 2 := by
-    exact mul_pos hS (sq_pos_of_ne_zero hx)
+  have hsum : 0 ≤ ∑ i, J i * (y i + x * c i / J i) ^ 2 :=
+    Finset.sum_nonneg fun i _ ↦ mul_nonneg (hJ i).le (sq_nonneg _)
+  have hbottom : 0 < (β - ∑ i, c i ^ 2 / J i) * x ^ 2 :=
+    mul_pos hS (sq_pos_of_ne_zero hx)
   linarith
 
 /-- Block Cauchy--Schwarz after completion of squares.  The first factor on

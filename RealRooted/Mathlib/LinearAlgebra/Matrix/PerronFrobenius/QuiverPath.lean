@@ -867,10 +867,10 @@ lemma length_le_card_minus_one_of_isSimple {n : Type*} [Fintype n] [Quiver n] {a
     (p : Path a b) (hp : p.IsStrictlySimple) :
     p.length ≤ Fintype.card n - 1 := by
   classical
-  have h_card_verts : p.vertexFinset.card = p.length + 1 := by
-    exact card_vertexFinset_of_isStrictlySimple hp
-  have h_card_le_univ : p.vertexFinset.card ≤ Fintype.card n := by
-    exact Finset.card_le_univ p.vertexFinset
+  have h_card_verts : p.vertexFinset.card = p.length + 1 :=
+    card_vertexFinset_of_isStrictlySimple hp
+  have h_card_le_univ : p.vertexFinset.card ≤ Fintype.card n :=
+    Finset.card_le_univ p.vertexFinset
   rw [h_card_verts] at h_card_le_univ
   exact Nat.le_sub_one_of_lt h_card_le_univ
 
