@@ -445,4 +445,26 @@ theorem tendsto_standardizedCoeffDistribution {P : ℕ → ℝ[X]} (hs : ∀ n, 
   filter_upwards [hvar.eventually_gt_atTop 0, hσ.eventually_ge_atTop |t|] with n h1 h2
   exact norm_charFun_standardizedCoeffDistribution_sub_le (hs n) (hnn n) h1 h2
 
+/-- The binomial distribution `(1 + X) ^ n` has variance `n / 4`. -/
+theorem coeffVariance_one_add_X_pow (n : ℕ) :
+    ((1 + X : ℝ[X]) ^ n).coeffVariance = n / 4 := by
+  induction n with
+  | zero => simp [coeffVariance, coeffMean]
+  | succ n ih =>
+    rw [pow_succ, coeffVariance_mul (by simp) (by norm_num), ih]
+    simp [coeffVariance, coeffMean]
+    norm_num
+    ring
+
+/-- **De Moivre–Laplace theorem**: the standardized binomial distribution, the coefficient
+distribution of `(1 + X) ^ n`, converges weakly to the standard normal distribution. -/
+theorem tendsto_standardizedCoeffDistribution_one_add_X_pow :
+    Tendsto (fun n : ℕ => ((1 + X : ℝ[X]) ^ n).standardizedCoeffDistribution) atTop
+      (𝓝 ⟨gaussianReal 0 1, inferInstance⟩) := by
+  refine tendsto_standardizedCoeffDistribution
+    (fun n => (Splits.of_natDegree_le_one (by compute_degree!)).pow n)
+    (fun n k => by rw [coeff_one_add_X_pow]; positivity) ?_
+  simp only [coeffVariance_one_add_X_pow]
+  exact tendsto_natCast_atTop_atTop.atTop_div_const (by norm_num)
+
 end Polynomial

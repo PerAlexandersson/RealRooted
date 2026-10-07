@@ -25,6 +25,11 @@ name = "Polynomial.tendsto_standardizedCoeffDistribution"
 module = "RealRooted.Mathlib.Probability.CoeffDistribution"
 label = "Harper: real-rooted coefficient distributions are asymptotically normal"
 headline = true
+
+[[theorems]]
+name = "Polynomial.tendsto_standardizedCoeffDistribution_one_add_X_pow"
+module = "RealRooted.Mathlib.Probability.CoeffDistribution"
+label = "De Moivre–Laplace: the binomial distribution is asymptotically normal"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -46,6 +51,9 @@ with $\mu = \sum_i q_i$ and $\sigma^2 = \sum_i q_i (1 - q_i)$.
 nonnegative coefficients and $\sigma^2(P_n) \to \infty$. Then the standardized
 coefficient distributions, the laws of $(K_n - \mu_n)/\sigma_n$, converge weakly
 to the standard normal distribution.
+
+For example, $(1 + x)^n$ has variance $n/4$, which recovers the de
+Moivre–Laplace theorem for the binomial distribution.
 
 ## Proof idea
 
