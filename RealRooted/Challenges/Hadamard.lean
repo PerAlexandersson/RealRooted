@@ -3,6 +3,7 @@ import RealRooted.GarloffWagner.Theorem12
 import RealRooted.Hadamard
 import RealRooted.Hadamard.FiniteReflection
 import RealRooted.Hadamard.SchurSzegoMultiplicity
+import RealRooted.Hadamard.SchurSzegoSigns
 import RealRooted.MultiplierSequence.PolyaSchur.Schur
 import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
@@ -50,6 +51,11 @@ label = "Schur–Szegő composition preserves real-rootedness"
 name = "RealRooted.rootMultiplicity_schurSzegoComp"
 module = "RealRooted.Hadamard.SchurSzegoMultiplicity"
 label = "Kostov–Shapiro: exact multiplicity of the root −ab of a Schur–Szegő composition"
+
+[[theorems]]
+name = "RealRooted.schurSzegoComp_roots_sign_counts_of_roots_neg"
+module = "RealRooted.Hadamard.SchurSzegoSigns"
+label = "Kostov–Shapiro: composition with a negative-rooted polynomial preserves root signs"
 
 [[theorems]]
 name = """RealRooted.Challenges.Hadamard.\
@@ -108,6 +114,8 @@ $a \neq 0$ be a root of $f$ of multiplicity $m$ and $b \neq 0$ a root of $g$ of
 multiplicity $l$, with $m + l \geq n$. Then $-ab$ is a root of the Schur–Szegő
 composition $f *_n g$ of multiplicity exactly $m + l - n$; in particular it is not a
 root when $m + l = n$. The roots must be nonzero, as Kostov (2010) points out.
+If moreover $f$ is real-rooted and $g$ has only negative roots, then $f *_n g$ is
+real-rooted with as many positive, zero and negative roots as $f$.
 
 **Finite Pólya–Schur theorem.** Fix $n \geq 0$ and let $T_\gamma(x^k) =
 \gamma_k x^k$. Then $T_\gamma$ maps every real-rooted polynomial of degree at

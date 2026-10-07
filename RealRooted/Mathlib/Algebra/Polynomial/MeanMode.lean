@@ -1,4 +1,5 @@
 import Mathlib.Algebra.Polynomial.Splits
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Basic.Real.Basic
 import Mathlib.Algebra.BigOperators.Fin
@@ -107,13 +108,6 @@ private lemma card_mul_bernPoly_sub (w : ι → ℝ) (s : Finset ι) :
   rw [derivative_add, derivative_C, derivative_C_mul_X, zero_add]
   simp only [bernPoly, map_sub, map_one]
   ring
-
-private lemma coeff_one_sub_X_mul_zero (q : ℝ[X]) : ((1 - X) * q).coeff 0 = q.coeff 0 := by
-  simp only [sub_mul, one_mul, coeff_sub, coeff_X_mul_zero, sub_zero]
-
-private lemma coeff_one_sub_X_mul_succ (q : ℝ[X]) (k : ℕ) :
-    ((1 - X) * q).coeff (k + 1) = q.coeff (k + 1) - q.coeff k := by
-  simp only [sub_mul, one_mul, coeff_sub, coeff_X_mul]
 
 /-- Coefficient form of `derivative_bernPoly_sub`. -/
 private lemma coeff_derivative_bernPoly_sub (w : ι → ℝ) (s : Finset ι) (k : ℕ) :
