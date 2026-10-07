@@ -75,6 +75,21 @@ def example_block(lines: list[str], index: int) -> str:
     return "\n".join(lines[start:stop])
 
 
+DECL_PREFIXES = ("theorem ", "lemma ", "private theorem ", "private lemma ")
+
+
+def declaration_block(lines: list[str], index: int) -> str:
+    """Return the proof of a theorem whose header mentions an OEIS ID.
+
+    The header up to the first `:=` is dropped so that its binders are not read as
+    certificate arguments.
+    """
+    stop = index + 1
+    while stop < len(lines) and lines[stop].startswith((" ", "\t")):
+        stop += 1
+    return "\n".join(lines[index:stop]).partition(":=")[2]
+
+
 def clean_shape(text: str) -> str:
     text = text.replace("|", "\\|")
     text = re.sub(r"\s+", " ", text).strip()
@@ -90,7 +105,10 @@ def collect() -> tuple[dict[str, Coverage], set[str]]:
             ids = OEIS_RE.findall(line)
             if not ids:
                 continue
-            block = example_block(lines, index)
+            if line.lstrip().startswith(DECL_PREFIXES):
+                block = declaration_block(lines, index)
+            else:
+                block = example_block(lines, index)
             shape = clean_shape(comment_text(lines, index))
             routes = set(ROUTE_RE.findall(block))
             arguments = set(ARG_RE.findall(block))
