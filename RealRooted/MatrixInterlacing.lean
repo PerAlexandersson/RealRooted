@@ -402,8 +402,7 @@ private lemma not_interl_atomicBadQuadratic_right {p : ℝ[X]} (hp : p ≠ 0) :
 
 private lemma ne_zero_of_natDegree_eq_succ {p : ℝ[X]} {n : ℕ}
     (hdeg : p.natDegree = n + 1) : p ≠ 0 := by
-  intro hp
-  simp [hp] at hdeg
+  grind
 
 private lemma not_interl_bad_linear_quadratic :
     ¬ Interl (X + 2 : ℝ[X]) ((X + 1) * X) := by

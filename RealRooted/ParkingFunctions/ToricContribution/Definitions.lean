@@ -1,6 +1,7 @@
 import Mathlib.RingTheory.Polynomial.Pochhammer
 import RealRooted.Derivative
 import RealRooted.EulerOperator.Darboux.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Algebra for the A390883 toric-contribution family
@@ -181,15 +182,6 @@ theorem jCoeff_self_eq_zero (m ε : ℕ) (hm : 0 < m) :
         push_cast
         ring
       simp only [jCoeff, hzero, zero_mul, zero_div]
-
-@[simp]
-theorem coeff_one_sub_X_mul_zero (p : ℝ[X]) :
-    ((1 - X) * p).coeff 0 = p.coeff 0 := by
-  simp [sub_mul]
-
-theorem coeff_one_sub_X_mul_succ (p : ℝ[X]) (k : ℕ) :
-    ((1 - X) * p).coeff (k + 1) = p.coeff (k + 1) - p.coeff k := by
-  rw [sub_mul, one_mul, coeff_sub, coeff_X_mul]
 
 /-- The offset-zero terminating hypergeometric polynomial has the endpoint
 factor predicted by the finite Euler transformation. -/

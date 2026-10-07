@@ -57,12 +57,6 @@ theorem weightedCompatibleLeft_sequence_strictInterl
     ∀ i : Nat, StrictInterl (H i) (weightedSum (L i)) := fun i =>
   RealRooted.WeightedCompatibleLeft.toStrictInterl (hl i)
 
-theorem weightedSum_sequence_left_strictInterl
-    {H : Nat → ℝ[X]} {L : Nat → List (ℝ × ℝ[X])}
-    (hl : ∀ i : Nat, WeightedCompatibleLeft (H i) (L i)) :
-    ∀ i : Nat, StrictInterl (H i) (weightedSum (L i)) := fun i =>
-  RealRooted.WeightedCompatibleLeft.toStrictInterl (hl i)
-
 theorem sum_sequence_left_strictInterl
     {H : Nat → ℝ[X]} {L : Nat → List ℝ[X]}
     (hl : ∀ i : Nat,
@@ -280,7 +274,7 @@ macro_rules
   | `(tactic| rr_weighted_sum_left_strict_interl using compatible := $hl:term) =>
       `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl $hl)
   | `(tactic| rr_weighted_sum_sequence_left_strict_interl using compatible := $hl:term) =>
-      `(tactic| exact RealRooted.Tactic.weightedSum_sequence_left_strictInterl $hl)
+      `(tactic| exact RealRooted.Tactic.weightedCompatibleLeft_sequence_strictInterl $hl)
   | `(tactic| rr_sum_left_strict_interl using compatible := $hl:term) =>
       `(tactic| exact RealRooted.WeightedCompatibleLeft.toStrictInterl_sum $hl)
   | `(tactic| rr_sum_sequence_left_strict_interl using compatible := $hl:term) =>
