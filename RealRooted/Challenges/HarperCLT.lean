@@ -1,6 +1,7 @@
 import RealRooted.Mathlib.Probability.CoeffDistribution
 import RealRooted.CombinatorialExamples.EulerianNormal
 import RealRooted.CombinatorialExamples.NarayanaNormal
+import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
 
 /-!
 # Harper's central limit theorem challenge entry point
@@ -57,6 +58,11 @@ label = "The type B Eulerian numbers are asymptotically normal"
 name = "RealRooted.tendsto_standardizedCoeffDistribution_narayana"
 module = "RealRooted.CombinatorialExamples.NarayanaNormal"
 label = "The Narayana numbers are asymptotically normal"
+
+[[theorems]]
+name = "RealRooted.tendsto_standardizedCoeffDistribution_stirlingPermutations"
+module = "RealRooted.CombinatorialExamples.StirlingPermutationsNormal"
+label = "The second-order Eulerian numbers are asymptotically normal"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -92,6 +98,11 @@ The Narayana polynomials satisfy
 $(n+3) Q_{n+2} = (2n+3)(1+x) Q_{n+1} - n(1-x)^2 Q_n$. The last term vanishes to
 second order at $x = 1$, so the same method gives mean $(n-1)/2$ and variance
 $(n^2-1)/(4(2n-1))$. Hence the Narayana numbers are asymptotically normal.
+
+The descent polynomials of Stirling permutations satisfy
+$P_{n+1} = (2n+1) x P_n + x(1-x) P_n'$. Their coefficients, the second-order
+Eulerian numbers, have mean $(2n+1)/3$ and variance $2(n^2-1)/(9(2n-1))$ for
+$n \ge 1$, so they are asymptotically normal too.
 
 Variances add under multiplication, so a product $\prod_{i<n} L_i$ of
 real-rooted factors with nonnegative coefficients is asymptotically normal as
