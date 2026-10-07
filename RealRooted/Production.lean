@@ -1436,6 +1436,8 @@ import RealRooted.LaguerreSamuelson
 import RealRooted.Maclaurin
 import RealRooted.Challenges.NewtonMaclaurin
 import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
+import RealRooted.Challenges.Hoggar
+import RealRooted.CoefficientShape.Hoggar
 
 /-!
 # RealRooted production umbrella
