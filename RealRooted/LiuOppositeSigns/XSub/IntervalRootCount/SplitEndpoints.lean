@@ -249,5 +249,34 @@ theorem
   exact hpair.xSub_splits_of_roots_sort_of_upper_tail_count
     hp_nonneg hno hrs hμ hdeg hlower_one (by simpa [last, P] using hupper_count)
 
+/-- Common roots can be peeled off an x-subtraction family: if `X * p - C μ * q` splits for
+every positive-split pair without common roots in the degree relation
+`p.natDegree + a = q.natDegree + b`, then it splits for every positive-split pair in that
+relation.  Deleting a common root lowers both degrees by one, so the relation is preserved,
+and the proof is a strong induction on the degree of `q`. -/
+theorem PositiveSplitRootCountPair.xSub_splits_of_forall_noCommonRoots {a b : ℕ}
+    (hbase : ∀ {p q : ℝ[X]}, PositiveSplitRootCountPair p q → HasNonnegCoeffs p →
+      HasNonnegCoeffs q → NoCommonRoots p q → p.natDegree + a = q.natDegree + b →
+      ∀ {μ : ℝ}, 0 < μ → (X * p - C μ * q).Splits)
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
+    (hp_nonneg : HasNonnegCoeffs p) (hq_nonneg : HasNonnegCoeffs q)
+    (hdeg : p.natDegree + a = q.natDegree + b) {μ : ℝ} (hμ : 0 < μ) :
+    (X * p - C μ * q).Splits := by
+  induction hn : q.natDegree using Nat.strong_induction_on generalizing p q with
+  | _ n ih =>
+  by_cases hno : NoCommonRoots p q
+  · exact hbase hpair hp_nonneg hq_nonneg hno hdeg hμ
+  obtain ⟨r, hp_root, hq_root⟩ := exists_common_root_of_not_noCommonRoots hno
+  have hp_pos := natDegree_pos_of_isRoot hpair.left_pos.ne_zero hp_root
+  have hq_pos := natDegree_pos_of_isRoot hpair.right_pos.ne_zero hq_root
+  refine (X_mul_sub_C_mul_splits_iff_deleteRootFactor_splits_of_commonRoot
+    hp_root hq_root).mpr (ih _ ?_ (hpair.deleteRootFactor_commonRoot hp_root hq_root)
+      (hpair.left_deleteRootFactor_nonneg hp_nonneg hp_root)
+      (hpair.right_deleteRootFactor_nonneg hq_nonneg hq_root) ?_ rfl)
+  · rw [natDegree_deleteRootFactor]
+    lia
+  · rw [natDegree_deleteRootFactor, natDegree_deleteRootFactor]
+    lia
+
 end LiuOppositeSigns
 end RealRooted
