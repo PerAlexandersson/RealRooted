@@ -561,7 +561,6 @@ import RealRooted.CombinatorialExamples.Common
 import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.CombinatorialExamples.EvenBinom
 import RealRooted.CombinatorialExamples.EvenBinom
-import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic
 import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
 import RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF
 import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
