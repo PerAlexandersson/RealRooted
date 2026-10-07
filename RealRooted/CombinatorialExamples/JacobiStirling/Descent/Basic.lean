@@ -27,8 +27,9 @@ The main results of this file are:
   leading coefficient, nonnegative coefficients, `f(0) = 1` and simple real roots, and
   `d < L`, then `D_L f` has the same properties in degree `d + 1` and strictly interlaces
   with `f`.
-* `isGood_descentPoly`: for `k ≥ 1` and `S ⊆ [k]`, `A_{k,S}` has degree `2k - |S| - 1`,
-  `A_{k,S}(0) = 1`, and only simple negative zeros (Ma–Wang, eq. (11)).
+* `isGood_descentPoly`, `coeff_zero_descentPoly`: for `S ⊆ [k]`, `A_{k,S}` has degree
+  `2k - |S| - 1` (for `k ≥ 1`), `A_{k,S}(0) = 1`, and only simple negative zeros
+  (Ma–Wang, eq. (11)).
 * `X_mul_descentPoly_Icc`: `x A_{k,[k]}` is the second-order Eulerian polynomial.
 -/
 
@@ -67,12 +68,12 @@ def descentPoly : ℕ → Finset ℕ → ℝ[X]
         (insertion (3 * k - (S ∩ Finset.Icc 1 k).card) (descentPoly k (S ∩ Finset.Icc 1 k)))
 
 /-- The invariant carried through the insertions: degree `d`, positive leading coefficient,
-nonnegative coefficients, constant term `1`, and simple real roots. -/
+nonnegative coefficients, positive constant term, and simple real roots. -/
 structure IsGood (f : ℝ[X]) (d : ℕ) : Prop where
   natDegree_eq : f.natDegree = d
   pos : HasPosLeadingCoeff f
   nonneg : HasNonnegCoeffs f
-  coeff_zero : f.coeff 0 = 1
+  coeff_zero_pos : 0 < f.coeff 0
   splits : f.Splits
   simple : HasSimpleRoots f
 
@@ -80,14 +81,15 @@ theorem IsGood.isRoot_neg {f : ℝ[X]} {d : ℕ} (hf : IsGood f d) {r : ℝ} (hr
     r < 0 := by
   refine lt_of_le_of_ne (isRoot_nonpos_of_hasNonnegCoeffs hf.nonneg hf.pos.ne_zero hr) ?_
   rintro rfl
-  have := hf.coeff_zero
+  have := hf.coeff_zero_pos
   rw [coeff_zero_eq_eval_zero, hr.eq_zero] at this
-  exact zero_ne_one this
+  exact lt_irrefl _ this
 
 /-- **Ma–Wang, Lemma 2.**  An insertion `D_L` with `L` larger than the degree raises the degree
 by one, keeps the invariant, and strictly interlaces with its input. -/
 theorem IsGood.insertion_and_strictInterl {f : ℝ[X]} {d L : ℕ} (hf : IsGood f d) (hL : d < L) :
-    IsGood (insertion L f) (d + 1) ∧ StrictInterl f (insertion L f) := by
+    IsGood (insertion L f) (d + 1) ∧ StrictInterl f (insertion L f) ∧
+      ∀ r, f.IsRoot r → ¬ (insertion L f).IsRoot r := by
   have hcoeff_gt : ∀ k, d < k → f.coeff k = 0 := fun k hk =>
     coeff_eq_zero_of_natDegree_lt (hf.natDegree_eq ▸ hk)
   have htop : (insertion L f).coeff (d + 1) = ((L : ℝ) - d) * f.leadingCoeff := by
@@ -125,11 +127,12 @@ theorem IsGood.insertion_and_strictInterl {f : ℝ[X]} {d L : ℕ} (hf : IsGood 
       rw [hrec, eval_add, eval_mul, eval_mul, hr.eq_zero, mul_zero, zero_add]
     rw [hFr.eq_zero] at hval
     exact mul_ne_zero (hv r hr).ne hder hval.symm
-  refine ⟨⟨hdeg, hpos, fun k => ?_, by rw [coeff_zero_insertion, hf.coeff_zero],
-    hinterl.2.1.2, (hinterl.hasSimpleRoots_of_no_common_root hno).2⟩, hinterl⟩
+  refine ⟨⟨hdeg, hpos, fun k => ?_, by rw [coeff_zero_insertion]; exact hf.coeff_zero_pos,
+    hinterl.2.1.2, (hinterl.hasSimpleRoots_of_no_common_root hno).2⟩, hinterl,
+    fun r hr hFr => hno r ⟨hr, hFr⟩⟩
   rcases k with _ | k
-  · rw [coeff_zero_insertion, hf.coeff_zero]
-    norm_num
+  · rw [coeff_zero_insertion]
+    exact hf.coeff_zero_pos.le
   rw [coeff_insertion_succ]
   rcases le_or_gt k d with hk | hk
   · have : (k : ℝ) < L := by exact_mod_cast hk.trans_lt hL
@@ -155,13 +158,13 @@ private theorem isGood_one : IsGood (1 : ℝ[X]) 0 :=
   ⟨by simp, by simp [HasPosLeadingCoeff], fun k => by rw [coeff_one]; split_ifs <;> norm_num,
     by simp, Splits.one, fun r hr => absurd hr (by simp)⟩
 
-/-- **Ma–Wang, eq. (11).**  For `k ≥ 1` and `S ⊆ [k]`, the descent polynomial `A_{k,S}` has
-degree `2k - |S| - 1`, constant term `1`, nonnegative coefficients, and only simple real
-(hence negative) roots. -/
-theorem isGood_descentPoly {k : ℕ} (hk : k ≠ 0) {S : Finset ℕ} (hS : S ⊆ Finset.Icc 1 k) :
+/-- **Ma–Wang, eq. (11).**  For `S ⊆ [k]`, the descent polynomial `A_{k,S}` has degree
+`2k - |S| - 1` (read as `0` when `k = 0`), positive constant term, nonnegative coefficients,
+and only simple real (hence negative) roots. -/
+theorem isGood_descentPoly {k : ℕ} {S : Finset ℕ} (hS : S ⊆ Finset.Icc 1 k) :
     IsGood (descentPoly k S) (2 * k - S.card - 1) := by
   induction k generalizing S with
-  | zero => exact absurd rfl hk
+  | zero => simpa [descentPoly] using isGood_one
   | succ k ih =>
     have hT : S ∩ Finset.Icc 1 k ⊆ Finset.Icc 1 k := Finset.inter_subset_right
     have hTcard : (S ∩ Finset.Icc 1 k).card ≤ k := by
@@ -202,7 +205,7 @@ theorem isGood_descentPoly {k : ℕ} (hk : k ≠ 0) {S : Finset ℕ} (hS : S ⊆
           simp [descentPoly, insertion_eq]
         rw [h0]
         exact (isGood_one.insertion_and_strictInterl (by norm_num)).1
-    have hgood := ih hkpos.ne' hT
+    have hgood := ih hT
     set T := S ∩ Finset.Icc 1 k
     have hL : 2 * k - T.card - 1 < 3 * k - T.card := by lia
     obtain ⟨h1, -⟩ := hgood.insertion_and_strictInterl hL
@@ -223,9 +226,19 @@ theorem isGood_descentPoly {k : ℕ} (hk : k ≠ 0) {S : Finset ℕ} (hS : S ⊆
       exact (h1.insertion_and_strictInterl (by lia)).1
 
 /-- The roots of `A_{k,S}` are negative. -/
-theorem isRoot_descentPoly_neg {k : ℕ} (hk : k ≠ 0) {S : Finset ℕ} (hS : S ⊆ Finset.Icc 1 k)
+theorem isRoot_descentPoly_neg {k : ℕ} {S : Finset ℕ} (hS : S ⊆ Finset.Icc 1 k)
     {r : ℝ} (hr : (descentPoly k S).IsRoot r) : r < 0 :=
-  (isGood_descentPoly hk hS).isRoot_neg hr
+  (isGood_descentPoly hS).isRoot_neg hr
+
+/-- `A_{k,S}(0) = 1`. -/
+@[simp]
+theorem coeff_zero_descentPoly (k : ℕ) (S : Finset ℕ) : (descentPoly k S).coeff 0 = 1 := by
+  induction k generalizing S with
+  | zero => simp [descentPoly]
+  | succ k ih =>
+    by_cases h : k + 1 ∈ S
+    · rw [descentPoly_succ_of_mem h, coeff_zero_insertion, ih]
+    · rw [descentPoly_succ_of_not_mem h, coeff_zero_insertion, coeff_zero_insertion, ih]
 
 /-- With every barred letter deleted, `x A_{k,[k]}` is the second-order Eulerian polynomial
 (the descent polynomial of Stirling permutations). -/
