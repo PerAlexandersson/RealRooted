@@ -1425,6 +1425,9 @@ import RealRooted.CombinatorialExamples.BigDescents321.Criterion
 import RealRooted.CombinatorialExamples.BigDescents321.SignConversion
 import RealRooted.CombinatorialExamples.BigDescents321
 import RealRooted.Challenges.BigDescents321
+import RealRooted.Mathlib.Algebra.BigOperators.Group.List
+import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
+import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 
 /-!
 # RealRooted production umbrella
