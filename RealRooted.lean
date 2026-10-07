@@ -437,6 +437,7 @@ import RealRooted.Challenges.PerronFrobenius
 import RealRooted.Challenges.PerronFrobenius
 import RealRooted.Challenges.RealStability
 import RealRooted.Challenges.RealStability
+import RealRooted.Challenges.SchurCohn
 import RealRooted.Challenges.SmallInterlacingMatrices
 import RealRooted.Challenges.SmallInterlacingMatrices
 import RealRooted.Challenges.Sturm
@@ -1106,6 +1107,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
 import RealRooted.Mathlib.Algebra.Polynomial.Moment
+import RealRooted.Mathlib.Algebra.Polynomial.PolarDerivative
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
@@ -1113,6 +1115,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Reverse
 import RealRooted.Mathlib.Algebra.Polynomial.Sturm
 import RealRooted.Mathlib.Algebra.Polynomial.Sturm
 import RealRooted.Mathlib.Algebra.Polynomial.Taylor
@@ -1125,6 +1128,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
