@@ -1430,11 +1430,16 @@ import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 import RealRooted.GarloffWagner.HurwitzStable
 import RealRooted.Challenges.GarloffWagnerHurwitz
+import RealRooted.Challenges.LeeYang
+import RealRooted.LeeYang
+import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.LaguerreSamuelson
 import RealRooted.Maclaurin
 import RealRooted.Challenges.NewtonMaclaurin
 import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
+import RealRooted.CauchyInterlacing.RankOne
 
 /-!
 # RealRooted production umbrella
