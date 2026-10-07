@@ -43,6 +43,11 @@ module = "RealRooted.Graph.MatchingVertexInterlacing"
 label = "Deleting a vertex interlaces the matching polynomial"
 
 [[theorems]]
+name = "RealRooted.abs_le_of_isRoot_matchingPolyOn"
+module = "RealRooted.Graph.MatchingVertexInterlacing"
+label = "Heilmann–Lieb root bound |x| ≤ 2√(Δ − 1)"
+
+[[theorems]]
 name = "RealRooted.Challenges.HeilmannLieb.clawFree_weightedIndepPoly_splits"
 label = "Engström: weighted independence polynomials of claw-free graphs are real-rooted"
 headline = true
@@ -87,6 +92,11 @@ $n = |V(G)|$.
 **Theorem** (Heilmann–Lieb, Godsil). For every vertex $v$, the polynomial
 $\mu_{G - v}$ interlaces $\mu_G$. In particular $\mu_G$ is real-rooted.
 
+**Theorem** (Heilmann–Lieb root bound). If every vertex of $G$ has degree at
+most $\Delta \geq 2$, every zero $x$ of $\mu_G$ satisfies
+$|x| \leq 2\sqrt{\Delta - 1}$. Heilmann and Lieb prove the strict inequality;
+the Lean statement records the weak form.
+
 **Theorem** (Engström). Let $G$ be a finite claw-free graph and let
 $w \colon V(G) \to \mathbb{R}$ be nonnegative vertex weights. Then the
 weighted independence polynomial
@@ -122,6 +132,9 @@ The vertex-deletion theorem follows from the recurrence
 $\mu_G = x\,\mu_{G-v} - \sum_{u \sim v} \mu_{G-v-u}$. By induction every
 $\mu_{G-v-u}$ interlaces $\mu_{G-v}$, so their sum does too, and the
 three-term step gives $\mu_{G-v} \ll \mu_G$.
+For the root bound, the same recurrence and induction show
+$\mu_G(x) \geq \sqrt{\Delta - 1}\, \mu_{G-v}(x) > 0$ for $x > 2\sqrt{\Delta - 1}$
+whenever $v$ has at most $\Delta - 1$ neighbours, and $\mu_G$ is even or odd.
 
 ## References
 

@@ -101,4 +101,124 @@ theorem splits_matchingPolyOn (S : Finset V) : (G.matchingPolyOn S).Splits := by
     exact Splits.one
   · exact (interlaces_matchingPolyOn_erase G S hv).1.2
 
+/-! ### The Heilmann–Lieb root bound -/
+
+/-- The signed matching polynomial has the parity of `|S|`. -/
+theorem eval_neg_matchingPolyOn (S : Finset V) (x : ℝ) :
+    (G.matchingPolyOn S).eval (-x) = (-1) ^ S.card * (G.matchingPolyOn S).eval x := by
+  rw [SimpleGraph.matchingPolyOn, eval_finsetSum, eval_finsetSum, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun M hM => ?_
+  have h2 := G.two_mul_card_le_of_mem_matchingsOn hM
+  set k := S.card - 2 * M.card
+  have hS : S.card = k + 2 * M.card := by lia
+  simp only [eval_mul, eval_pow, eval_neg, eval_one, eval_X]
+  rw [hS, neg_pow x k, pow_add, pow_mul]
+  norm_num
+  ring
+
+/-- One step of the Heilmann–Lieb ratio estimate: if every `μ_{S-v-u}` with `u ∼ v` is at
+most `μ_{S-v}(x) / t`, then `μ_S(x) ≥ μ_{S-v}(x) (x - d/t)` where `d` is the degree of `v`. -/
+private theorem eval_matchingPolyOn_ge {S : Finset V} {v : V} (hv : v ∈ S) {x t : ℝ}
+    (ht : 0 < t)
+    (hu : ∀ u ∈ (S.erase v).filter (G.Adj v),
+      t * (G.matchingPolyOn ((S.erase v).erase u)).eval x ≤
+        (G.matchingPolyOn (S.erase v)).eval x) :
+    (G.matchingPolyOn (S.erase v)).eval x *
+        (x - ((S.erase v).filter (G.Adj v)).card / t) ≤
+      (G.matchingPolyOn S).eval x := by
+  rw [G.matchingPolyOn_eq_X_mul_sub hv, eval_sub, eval_mul, eval_X, eval_finsetSum]
+  have hsum : ∑ u ∈ (S.erase v).filter (G.Adj v),
+      (G.matchingPolyOn ((S.erase v).erase u)).eval x ≤
+        ((S.erase v).filter (G.Adj v)).card * ((G.matchingPolyOn (S.erase v)).eval x / t) := by
+    rw [← nsmul_eq_mul, ← Finset.sum_const]
+    exact Finset.sum_le_sum fun u hu' => by
+      rw [le_div_iff₀ ht, mul_comm]
+      exact hu u hu'
+  have hring : (G.matchingPolyOn (S.erase v)).eval x *
+        (x - ((S.erase v).filter (G.Adj v)).card / t) =
+      x * (G.matchingPolyOn (S.erase v)).eval x -
+        ((S.erase v).filter (G.Adj v)).card * ((G.matchingPolyOn (S.erase v)).eval x / t) := by
+    ring
+  linarith
+
+/-- The Heilmann–Lieb ratio induction.  Suppose every vertex of `S` has at most `Δ` neighbours
+in `S`, `t > 0`, `t² = Δ - 1` and `x > 2t`.  Then `μ_S(x) > 0`, and `t μ_{S-v}(x) ≤ μ_S(x)`
+whenever `v` has at most `Δ - 1` neighbours in `S - v`. -/
+private theorem matchingPolyOn_ratio {Δ : ℕ} {t x : ℝ} (ht : 0 < t)
+    (htΔ : t ^ 2 = (Δ : ℝ) - 1) (hx : 2 * t < x) (S : Finset V)
+    (hS : ∀ w ∈ S, (S.filter (G.Adj w)).card ≤ Δ) :
+    0 < (G.matchingPolyOn S).eval x ∧
+      ∀ v ∈ S, ((S.erase v).filter (G.Adj v)).card ≤ Δ - 1 →
+        t * (G.matchingPolyOn (S.erase v)).eval x ≤ (G.matchingPolyOn S).eval x := by
+  have hΔ2 : (2 : ℝ) ≤ Δ := by
+    have : 1 < Δ := by exact_mod_cast (show (1 : ℝ) < Δ by nlinarith)
+    exact_mod_cast this
+  induction S using Finset.strongInduction with
+  | H S ih =>
+  -- the estimate for a single vertex
+  have key : ∀ v ∈ S, 0 < (G.matchingPolyOn (S.erase v)).eval x ∧
+      (G.matchingPolyOn (S.erase v)).eval x *
+          (x - ((S.erase v).filter (G.Adj v)).card / t) ≤ (G.matchingPolyOn S).eval x := by
+    intro v hv
+    have hT := ih (S.erase v) (Finset.erase_ssubset hv) fun w hw =>
+      (Finset.card_le_card (Finset.filter_subset_filter _ (Finset.erase_subset v S))).trans
+        (hS w (Finset.mem_of_mem_erase hw))
+    refine ⟨hT.1, eval_matchingPolyOn_ge G hv ht fun u hu => hT.2 u ?_ ?_⟩
+    · exact (Finset.mem_filter.mp hu).1
+    · obtain ⟨huT, hvu⟩ := Finset.mem_filter.mp hu
+      have huS := Finset.mem_of_mem_erase huT
+      have hsub : ((S.erase v).erase u).filter (G.Adj u) ⊆ (S.filter (G.Adj u)).erase v := by
+        intro w hw
+        simp only [Finset.mem_filter, Finset.mem_erase] at hw ⊢
+        exact ⟨hw.1.2.1, hw.1.2.2, hw.2⟩
+      have hvmem : v ∈ S.filter (G.Adj u) := Finset.mem_filter.mpr ⟨hv, hvu.symm⟩
+      have := (Finset.card_le_card hsub).trans_eq (Finset.card_erase_of_mem hvmem)
+      have := hS u huS
+      lia
+  have hpos : 0 < (G.matchingPolyOn S).eval x := by
+    rcases S.eq_empty_or_nonempty with h | ⟨v, hv⟩
+    · simp [h, G.matchingPolyOn_empty]
+    obtain ⟨hT, hge⟩ := key v hv
+    have hd : (((S.erase v).filter (G.Adj v)).card : ℝ) ≤ Δ := by
+      exact_mod_cast (Finset.card_le_card (Finset.filter_subset_filter _
+        (Finset.erase_subset v S))).trans (hS v hv)
+    have : 0 < x - ((S.erase v).filter (G.Adj v)).card / t := by
+      rw [sub_pos, div_lt_iff₀ ht]
+      nlinarith
+    exact (mul_pos hT this).trans_le hge
+  refine ⟨hpos, fun v hv hdeg => ?_⟩
+  obtain ⟨hT, hge⟩ := key v hv
+  have hd : (((S.erase v).filter (G.Adj v)).card : ℝ) ≤ Δ - 1 := by
+    have : ((S.erase v).filter (G.Adj v)).card + 1 ≤ Δ := by
+      have : 2 ≤ Δ := by exact_mod_cast hΔ2
+      lia
+    have : (((S.erase v).filter (G.Adj v)).card : ℝ) + 1 ≤ Δ := by exact_mod_cast this
+    linarith
+  have : t ≤ x - ((S.erase v).filter (G.Adj v)).card / t := by
+    rw [le_sub_iff_add_le, ← le_sub_iff_add_le', div_le_iff₀ ht]
+    nlinarith
+  calc t * (G.matchingPolyOn (S.erase v)).eval x
+      = (G.matchingPolyOn (S.erase v)).eval x * t := mul_comm _ _
+    _ ≤ _ := mul_le_mul_of_nonneg_left this hT.le
+    _ ≤ _ := hge
+
+/-- **Heilmann–Lieb root bound**: if every vertex of `S` has at most `Δ ≥ 2` neighbours in
+`S`, every root `r` of the matching polynomial of `G[S]` satisfies `|r| ≤ 2 √(Δ - 1)`. -/
+theorem abs_le_of_isRoot_matchingPolyOn {Δ : ℕ} (hΔ : 2 ≤ Δ) (S : Finset V)
+    (hS : ∀ w ∈ S, (S.filter (G.Adj w)).card ≤ Δ) {r : ℝ}
+    (hr : (G.matchingPolyOn S).IsRoot r) : |r| ≤ 2 * Real.sqrt (Δ - 1) := by
+  set t := Real.sqrt (Δ - 1)
+  have hΔ' : (1 : ℝ) < Δ := by exact_mod_cast hΔ
+  have ht : 0 < t := Real.sqrt_pos.mpr (by linarith)
+  have htΔ : t ^ 2 = (Δ : ℝ) - 1 := Real.sq_sqrt (by linarith)
+  have hpos : ∀ x, 2 * t < x → (G.matchingPolyOn S).eval x ≠ 0 := fun x hx =>
+    (matchingPolyOn_ratio G ht htΔ hx S hS).1.ne'
+  rw [abs_le]
+  constructor
+  · by_contra h
+    apply hpos (-r) (by linarith)
+    rw [eval_neg_matchingPolyOn, hr.eq_zero, mul_zero]
+  · by_contra h
+    exact hpos r (by linarith) hr.eq_zero
+
 end RealRooted
