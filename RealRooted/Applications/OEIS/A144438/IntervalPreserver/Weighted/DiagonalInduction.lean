@@ -34,8 +34,8 @@ theorem weightedDecoDiagonalInvariant_one {w a : ℝ}
     WeightedDecoDiagonalInvariant w a 1 := by
   have hp : weightedDecoDiagonal w 1 a = X + C (1 + a) :=
     weightedDecoDiagonal_one w a
-  have hne : weightedDecoDiagonal w 1 a ≠ 0 := by
-    exact (weightedDecoDiagonal_monic w 1 a).ne_zero
+  have hne : weightedDecoDiagonal w 1 a ≠ 0 :=
+    (weightedDecoDiagonal_monic w 1 a).ne_zero
   refine ⟨?_, hasSimpleRoots_of_natDegree_le_one hne ?_, ?_, ?_,
     weightedDecoScaledEnergy_base_le_one hw0 hw1 ha0⟩
   · rw [hp]
@@ -181,10 +181,10 @@ theorem weightedDecoDiagonal_successor_residue_and_energy
       (fun i ↦ (hVpos i).ne') hlag henergy hscaled
   have hrootPackage := weightedDecoDiagonal_root_step hn ha0 hinv.splits
     hinv.companion_residue_pos hinv.roots_neg
-  have hqrec : q = (1 + X + C a) * p + X * h := by
-    exact weightedDecoDiagonal_succ w n a
-  have hkplusRec : kplus = p + C a * k := by
-    exact weightedDecoDiagonalLag_succ w n a
+  have hqrec : q = (1 + X + C a) * p + X * h :=
+    weightedDecoDiagonal_succ w n a
+  have hkplusRec : kplus = p + C a * k :=
+    weightedDecoDiagonalLag_succ w n a
   have hhplusRec : hplus =
       (1 - X) * q.derivative + C ((n : ℝ) + 1) * q -
         C (((n : ℝ) + 1) * a) * p + C w * kplus := by
@@ -351,13 +351,13 @@ theorem weightedDecoDiagonal_successor_residue_and_energy
       dsimp only [q]
       rw [weightedDecoDiagonal_eval_zero]
       positivity
-    have hq1 : q.eval 1 ≠ 0 := by
-      exact (weightedDecoDiagonal_eval_one_pos hw0 ha0).ne'
+    have hq1 : q.eval 1 ≠ 0 :=
+      (weightedDecoDiagonal_eval_one_pos hw0 ha0).ne'
     have hpDegree : p.degree < q.natDegree := by
       dsimp only [q]
       rw [weightedDecoDiagonal_natDegree]
-      have hpne : p ≠ 0 := by
-        exact (weightedDecoDiagonal_monic w n a).ne_zero
+      have hpne : p ≠ 0 :=
+        (weightedDecoDiagonal_monic w n a).ne_zero
       rw [Polynomial.degree_eq_natDegree hpne]
       dsimp only [p]
       rw [weightedDecoDiagonal_natDegree]

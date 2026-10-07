@@ -171,8 +171,8 @@ theorem isClosed_isPFPolynomial_and_criticalValueMargin
     rcases hu with ⟨hupf, humargin⟩
     have huderiv0 : (p u).derivative ≠ 0 :=
       Polynomial.derivative_ne_zero.mpr (by simpa [hdegree u] using hD0)
-    have hqsplit : (q u).Splits := by
-      exact ((hupf.derivative.ne_zero_and_splits huderiv0).2).C_mul _
+    have hqsplit : (q u).Splits :=
+      ((hupf.derivative.ne_zero_and_splits huderiv0).2).C_mul _
     obtain ⟨y, hyroot, hxy⟩ := hnear (q u) (hqmonic u)
       ((hqdegree u).trans (hqdegree t).symm) huclose hqsplit
     have hycritical : (p u).derivative.IsRoot y := by

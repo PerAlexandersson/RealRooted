@@ -210,8 +210,8 @@ theorem MvPolynomial.HyperbolicAt.affineLineRestriction_isRoot_neg_of_joinedIn
         MvPolynomial.IsHomogeneous.coeff_realAffineLineRestriction
           hhom (γ t) e]
     exact inv_mul_cancel₀ he.1
-  have hsplits (t : unitInterval) : (q t).Splits := by
-    exact (he.2 (γ t)).C_mul c
+  have hsplits (t : unitInterval) : (q t).Splits :=
+    (he.2 (γ t)).C_mul c
   have hcoeff (k : ℕ) : Continuous fun t => (q t).coeff k := by
     have hγi (i : σ) : Continuous fun t => γ t i :=
       (continuous_apply i).comp γ.continuous
@@ -708,10 +708,10 @@ theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
   let H := MvPolynomial.ordinaryHomogenization P P.totalDegree
   let e : Option σ → ℝ := fun o => Option.elim o 0 b
   let Htop := MvPolynomial.homogeneousComponent P.totalDegree P
-  have hHtopNe : Htop ≠ 0 := by
-    exact MvPolynomial.homogeneousComponent_totalDegree_ne_zero hP
-  have hHtopNN : MvPolynomial.HasNonnegCoeffs Htop := by
-    exact hnn.homogeneousComponent P.totalDegree
+  have hHtopNe : Htop ≠ 0 :=
+    MvPolynomial.homogeneousComponent_totalDegree_ne_zero hP
+  have hHtopNN : MvPolynomial.HasNonnegCoeffs Htop :=
+    hnn.homogeneousComponent P.totalDegree
   have hEvalTopPos : 0 < MvPolynomial.eval b Htop :=
     hHtopNN.eval_pos hHtopNe hb
   have hEval : MvPolynomial.eval e H = MvPolynomial.eval b Htop := by
@@ -761,8 +761,8 @@ theorem MvPolynomial.HasNonnegCoeffs.ordinaryHomogenization_boundary_joinedIn_po
   let Q := MvPolynomial.ordinaryHomogenization P P.totalDegree
   let e : Option σ → ℝ := fun o => Option.elim o 0 b
   let Htop := MvPolynomial.homogeneousComponent P.totalDegree P
-  have hQnn : MvPolynomial.HasNonnegCoeffs Q := by
-    exact hnn.ordinaryHomogenization P.totalDegree
+  have hQnn : MvPolynomial.HasNonnegCoeffs Q :=
+    hnn.ordinaryHomogenization P.totalDegree
   have hQne : Q ≠ 0 := MvPolynomial.ordinaryHomogenization_ne_zero hP
   have hHtopNe : Htop ≠ 0 :=
     MvPolynomial.homogeneousComponent_totalDegree_ne_zero hP
@@ -803,8 +803,8 @@ theorem MvRealStable.ordinaryHomogenization
   intro u hu
   let b : σ → ℝ := fun i => u (some i)
   have hb : ∀ i, 0 < b i := fun i => hu (some i)
-  have he : H.HyperbolicAt (fun o => Option.elim o 0 b) := by
-    exact hst.ordinaryHomogenization_hyperbolicAt_boundary hnn hP b hb
+  have he : H.HyperbolicAt (fun o => Option.elim o 0 b) :=
+    hst.ordinaryHomogenization_hyperbolicAt_boundary hnn hP b hb
   apply MvPolynomial.HyperbolicAt.of_joinedIn he hhom
   exact MvPolynomial.HasNonnegCoeffs.ordinaryHomogenization_boundary_joinedIn_positive
     hnn hP b hb u hu

@@ -1156,8 +1156,8 @@ theorem spectral_dominance_of_primitive'
     (h_ne_perron : μ ≠ perronRoot A) :
     ‖μ‖ < perronRoot A := by
   have hA_irred : A.IsIrreducible := Matrix.IsPrimitive.isIrreducible (A := A) hA_prim
-  have h_le : ‖μ‖ ≤ perronRoot A := by
-    exact @eigenvalue_abs_le_perron_root n _ _ _ A hA_irred hA_nonneg μ h_is_eigenvalue
+  have h_le : ‖μ‖ ≤ perronRoot A :=
+    @eigenvalue_abs_le_perron_root n _ _ _ A hA_irred hA_nonneg μ h_is_eigenvalue
   exact lt_of_le_of_ne h_le fun h_eq =>
     h_ne_perron <|
       @spectral_dominance_of_primitive n _ _ _ A hA_prim hA_nonneg μ h_is_eigenvalue h_eq

@@ -808,8 +808,8 @@ theorem eq_of_jacobi_differential_equation
         have hkα : 0 < (k : ℝ) + α + 1 := by
           have hk0 : 0 ≤ (k : ℝ) := by positivity
           linarith
-        have hfactor : 0 < ((k : ℝ) + 1) * (k + α + 1) := by
-          exact mul_pos (by positivity) hkα
+        have hfactor : 0 < ((k : ℝ) + 1) * (k + α + 1) :=
+          mul_pos (by positivity) hkα
         nlinarith
       · have hpzero : p.coeff (k + 1) = 0 :=
           coeff_eq_zero_of_natDegree_lt (by lia)

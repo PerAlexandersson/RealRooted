@@ -295,10 +295,10 @@ lemma not_injective_of_det_eq_zero [Finite n]
   have h_unit : IsUnit f := by
     rw [LinearMap.isUnit_iff_ker_eq_bot]
     rwa [LinearMap.ker_eq_bot]
-  have h_det_unit : IsUnit (LinearMap.det f) := by
-    exact LinearMap.isUnit_det f h_unit
-  have h_det_ne_zero : LinearMap.det f ≠ 0 := by
-    exact IsUnit.ne_zero h_det_unit
+  have h_det_unit : IsUnit (LinearMap.det f) :=
+    LinearMap.isUnit_det f h_unit
+  have h_det_ne_zero : LinearMap.det f ≠ 0 :=
+    IsUnit.ne_zero h_det_unit
   exact h_det_ne_zero h
 
 /-- For a matrix `A`, the associated linear map `toLin' A` has a non-trivial kernel
@@ -393,8 +393,8 @@ lemma isUnit_of_det_ne_zero (A : Matrix n n ℝ)
   rw [← bijective_iff_isUnit_toLin', ← injective_iff_bijective_toLin',
     ← ker_eq_bot_iff_injective_toLin']
   by_contra h_ker_ne_bot
-  have h_det_zero : LinearMap.det (Matrix.toLin' A) = 0 := by
-    exact det_eq_zero_of_ker_ne_bot h_ker_ne_bot
+  have h_det_zero : LinearMap.det (Matrix.toLin' A) = 0 :=
+    det_eq_zero_of_ker_ne_bot h_ker_ne_bot
   exact h_det_ne_zero h_det_zero
 
 
@@ -418,8 +418,8 @@ lemma isUnit_of_det_ne_zero' {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix
     (LinearMap.det_toMatrix b f).symm ▸ h_det_f_is_unit
   have h_matrix_representation_is_unit : IsUnit (LinearMap.toMatrix b b f) :=
     (Matrix.isUnit_iff_isUnit_det _).mpr h_det_matrix_form_is_unit
-  have h_toMatrix_eq_A : LinearMap.toMatrix b b f = A := by
-    exact (LinearEquiv.eq_symm_apply (toMatrix b b)).mp rfl
+  have h_toMatrix_eq_A : LinearMap.toMatrix b b f = A :=
+    (LinearEquiv.eq_symm_apply (toMatrix b b)).mp rfl
   rw [h_toMatrix_eq_A] at h_matrix_representation_is_unit
   rw [← bijective_iff_isUnit_toLin']
   have h_isUnit_toLin : IsUnit (Matrix.toLin' A) := by
@@ -695,8 +695,8 @@ lemma exists_pos_of_sum_pos {ι : Type*} [Fintype ι] {f : ι → ℝ}
   have h_all_zero : ∀ i, f i = 0 := by
     intro i
     exact le_antisymm (h_not_exists i) (h_nonneg i)
-  have h_sum_zero : ∑ i, f i = 0 := by
-    exact Finset.sum_eq_zero (fun i _ => h_all_zero i)
+  have h_sum_zero : ∑ i, f i = 0 :=
+    Finset.sum_eq_zero (fun i _ => h_all_zero i)
   exact h_sum_pos.ne' h_sum_zero
 
 /-- For a non-negative `a`, `a * b` is positive iff both `a` and `b` are positive. -/

@@ -29,8 +29,8 @@ theorem weightedDeco_contact_factor_strictMono {r μ : ℝ} (hr : r < 0) :
     StrictMono (fun a : ℝ ↦ -(1 + r + a) / r - μ) := by
   intro a b hab
   have hrne : r ≠ 0 := hr.ne
-  have hslope : 0 < -(1 / r) := by
-    exact neg_pos.mpr (div_neg_of_pos_of_neg zero_lt_one hr)
+  have hslope : 0 < -(1 / r) :=
+    neg_pos.mpr (div_neg_of_pos_of_neg zero_lt_one hr)
   have hdiff :
       (-(1 + r + b) / r - μ) - (-(1 + r + a) / r - μ) =
         -(1 / r) * (b - a) := by
