@@ -534,12 +534,8 @@ private theorem shiftedJacobiMonic_two_neg_half_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [ite_eq_right hk]
-    have hk0 : k ≠ 0 := by lia
-    have hk1 : 1 ≠ k := by lia
-    have hk2 : k ≠ 2 := by lia
-    simp [coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
-      coeff_X, coeff_C, hk0, hk1, hk2]
+  · rw [ite_eq_right hk, mul_zero, eq_comm]
+    exact coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (b := 2) (by compute_degree!) (by lia))
 
 private theorem shiftedJacobiMonic_two_one_one :
     shiftedJacobiMonic 2 (1 : ℝ) 1 =
@@ -552,12 +548,8 @@ private theorem shiftedJacobiMonic_two_one_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [ite_eq_right hk]
-    have hk0 : k ≠ 0 := by lia
-    have hk1 : 1 ≠ k := by lia
-    have hk2 : k ≠ 2 := by lia
-    simp [coeff_sub, coeff_add, Polynomial.coeff_X_pow, coeff_X, coeff_C,
-      hk0, hk1, hk2]
+  · rw [ite_eq_right hk, mul_zero, eq_comm]
+    exact coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (b := 2) (by compute_degree!) (by lia))
 
 private theorem shiftedJacobiMonic_two_half_one :
     shiftedJacobiMonic 2 (1 / 2 : ℝ) 1 =
@@ -570,12 +562,8 @@ private theorem shiftedJacobiMonic_two_half_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [ite_eq_right hk]
-    have hk0 : k ≠ 0 := by lia
-    have hk1 : 1 ≠ k := by lia
-    have hk2 : k ≠ 2 := by lia
-    simp [coeff_sub, coeff_add, Polynomial.coeff_X_pow, coeff_X, coeff_C,
-      hk0, hk1, hk2]
+  · rw [ite_eq_right hk, mul_zero, eq_comm]
+    exact coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (b := 2) (by compute_degree!) (by lia))
 
 private theorem shiftedJacobiMonic_two_two_one :
     shiftedJacobiMonic 2 (2 : ℝ) 1 =
@@ -588,12 +576,8 @@ private theorem shiftedJacobiMonic_two_two_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [ite_eq_right hk]
-    have hk0 : k ≠ 0 := by lia
-    have hk1 : 1 ≠ k := by lia
-    have hk2 : k ≠ 2 := by lia
-    simp [coeff_sub, coeff_add, Polynomial.coeff_X_pow, coeff_X, coeff_C,
-      hk0, hk1, hk2]
+  · rw [ite_eq_right hk, mul_zero, eq_comm]
+    exact coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (b := 2) (by compute_degree!) (by lia))
 
 /-- In degree two, the fractional first-parameter comparison needed by the
 two parking-function parity classes is strictly interleaving. -/
@@ -649,13 +633,8 @@ private theorem shiftedJacobiMonic_three_neg_half_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [ite_eq_right hk]
-    have hk0 : k ≠ 0 := by lia
-    have hk1 : 1 ≠ k := by lia
-    have hk2 : k ≠ 2 := by lia
-    have hk3 : k ≠ 3 := by lia
-    simp [coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
-      coeff_X, coeff_C, hk0, hk1, hk2, hk3]
+  · rw [ite_eq_right hk, mul_zero, eq_comm]
+    exact coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (b := 3) (by compute_degree!) (by lia))
 
 private theorem shiftedJacobiMonic_three_one_one :
     shiftedJacobiMonic 3 (1 : ℝ) 1 =
@@ -669,13 +648,8 @@ private theorem shiftedJacobiMonic_three_one_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [ite_eq_right hk]
-    have hk0 : k ≠ 0 := by lia
-    have hk1 : 1 ≠ k := by lia
-    have hk2 : k ≠ 2 := by lia
-    have hk3 : k ≠ 3 := by lia
-    simp [coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
-      coeff_X, coeff_C, hk0, hk1, hk2, hk3]
+  · rw [ite_eq_right hk, mul_zero, eq_comm]
+    exact coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (b := 3) (by compute_degree!) (by lia))
 
 private theorem shiftedJacobiMonic_three_half_one :
     shiftedJacobiMonic 3 (1 / 2 : ℝ) 1 =
@@ -689,13 +663,8 @@ private theorem shiftedJacobiMonic_three_half_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [ite_eq_right hk]
-    have hk0 : k ≠ 0 := by lia
-    have hk1 : 1 ≠ k := by lia
-    have hk2 : k ≠ 2 := by lia
-    have hk3 : k ≠ 3 := by lia
-    simp [coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
-      coeff_X, coeff_C, hk0, hk1, hk2, hk3]
+  · rw [ite_eq_right hk, mul_zero, eq_comm]
+    exact coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (b := 3) (by compute_degree!) (by lia))
 
 private theorem shiftedJacobiMonic_three_two_one :
     shiftedJacobiMonic 3 (2 : ℝ) 1 =
@@ -709,13 +678,8 @@ private theorem shiftedJacobiMonic_three_two_one :
         smeval_mul, smeval_X, smeval_comp, smeval_sub, smeval_one,
         coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
         coeff_X, coeff_C]
-  · rw [ite_eq_right hk]
-    have hk0 : k ≠ 0 := by lia
-    have hk1 : 1 ≠ k := by lia
-    have hk2 : k ≠ 2 := by lia
-    have hk3 : k ≠ 3 := by lia
-    simp [coeff_sub, coeff_add, coeff_C_mul, Polynomial.coeff_X_pow,
-      coeff_X, coeff_C, hk0, hk1, hk2, hk3]
+  · rw [ite_eq_right hk, mul_zero, eq_comm]
+    exact coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt (b := 3) (by compute_degree!) (by lia))
 
 /-- In degree three, the fractional first-parameter comparison needed by the
 two parking-function parity classes is strictly interleaving. -/
