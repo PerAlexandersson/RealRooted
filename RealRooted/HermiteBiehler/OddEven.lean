@@ -88,6 +88,33 @@ theorem oddEvenPolynomial_inj {p q r s : ℝ[X]}
     have hcoeff := congrArg (fun u : ℝ[X] => u.coeff (2 * n)) h
     simpa using hcoeff
 
+/-- The even part `q` of `a = q(X²) + X p(X²)`: `(evenPart a).coeff i = a.coeff (2 * i)`. -/
+def evenPart (a : ℝ[X]) : ℝ[X] := contract 2 a
+
+/-- The odd part `p` of `a = q(X²) + X p(X²)`: `(oddPart a).coeff i = a.coeff (2 * i + 1)`. -/
+def oddPart (a : ℝ[X]) : ℝ[X] := contract 2 a.divX
+
+/-- Every real polynomial is `q(X²) + X p(X²)` for its even and odd parts. -/
+theorem oddEvenPolynomial_oddPart_evenPart (a : ℝ[X]) :
+    oddEvenPolynomial (oddPart a) (evenPart a) = a := by
+  ext n
+  simp only [oddEvenPolynomial, oddPart, evenPart, ← expand_eq_comp_X_pow, coeff_add]
+  obtain ⟨k, rfl | rfl⟩ := Nat.even_or_odd' n
+  · rw [coeff_expand_mul' two_pos, coeff_contract two_ne_zero, mul_comm k]
+    cases k with
+    | zero => simp
+    | succ k =>
+      have hk : ¬ 2 ∣ 2 * k + 1 := by lia
+      rw [show 2 * (k + 1) = (2 * k + 1) + 1 by lia, coeff_X_mul, coeff_expand two_pos]
+      simp [hk]
+  · have hk : ¬ 2 ∣ 2 * k + 1 := by lia
+    rw [coeff_X_mul, coeff_expand_mul' two_pos, coeff_contract two_ne_zero, coeff_divX,
+      coeff_expand two_pos, mul_comm k]
+    simp [hk]
+
+theorem exists_oddEvenPolynomial (a : ℝ[X]) : ∃ p q : ℝ[X], oddEvenPolynomial p q = a :=
+  ⟨oddPart a, evenPart a, oddEvenPolynomial_oddPart_evenPart a⟩
+
 theorem oddEvenPolynomial_eq_iff {p q r s : ℝ[X]} :
     oddEvenPolynomial p q = oddEvenPolynomial r s ↔ p = r ∧ q = s :=
   ⟨oddEvenPolynomial_inj, fun h => h.1 ▸ h.2 ▸ rfl⟩
