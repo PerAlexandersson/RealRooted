@@ -18,7 +18,9 @@ namespace GeneralizedSnakePosets
 
 /-- The incomparable cross-chain pairs of the generalized snake poset `P(w)`:
 `(r, c)` such that row element `r` and column element `c` are incomparable,
-following the Alexandersson–Jal width-two-poset/skew-shape correspondence.
+following the Alexandersson–Jal width-two-poset/skew-shape correspondence
+(P. Alexandersson and A. Jal, *Rook matroids and log-concavity of `P`-Eulerian
+polynomials*, arXiv:2410.00127, Theorem 2.3).
 The Braun–Jal board `generalizedSnakeBoard` reverses the column order of this
 set. -/
 def snakeIncomparableBoard (w : SnakeWord) : FiniteSkewBoard where
