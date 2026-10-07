@@ -12,7 +12,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = ROOT / "RealRooted" / "Tactic" / "Examples"
-CONCRETE = ROOT / "RealRooted" / "OEIS"
+CONCRETE_DIRS = (ROOT / "RealRooted" / "OEIS", ROOT / "RealRooted" / "Applications" / "OEIS")
+CONCRETE_NAME_RE = re.compile(r"^(A\d{6})(\.lean)?$")
 OUTPUT = ROOT / "RealRooted" / "Tactic" / "OEIS_COVERAGE.md"
 
 OEIS_RE = re.compile(r"A\d{6}")
@@ -120,13 +121,20 @@ def collect() -> tuple[dict[str, Coverage], set[str]]:
                 row.routes.update(routes)
                 row.arguments.update(arguments)
 
-    concrete_ids: set[str] = set()
-    if CONCRETE.exists():
-        for path in CONCRETE.rglob("*.lean"):
-            concrete_ids.update(OEIS_RE.findall(path.read_text(encoding="utf-8")))
-    for oeis_id in concrete_ids:
+    concrete: dict[str, str] = {}
+    for base in CONCRETE_DIRS:
+        if not base.exists():
+            continue
+        # A module `A123456.lean` or a directory `A123456/` names a formalized sequence;
+        # prefer the module when both exist.
+        for path in sorted(base.iterdir(), key=lambda p: (p.is_dir(), p.name)):
+            match = CONCRETE_NAME_RE.match(path.name)
+            if match and (path.is_dir() or path.suffix == ".lean"):
+                concrete.setdefault(match.group(1), path.relative_to(ROOT).as_posix())
+    concrete_ids = set(concrete)
+    for oeis_id, source in concrete.items():
         row = rows.setdefault(oeis_id, Coverage())
-        row.sources.add(f"RealRooted/OEIS/{oeis_id}.lean")
+        row.sources.add(source)
         if not row.shapes:
             row.shapes.append("concrete sequence-facing theorem")
     return rows, concrete_ids
@@ -186,7 +194,8 @@ def render() -> str:
         "The status values deliberately separate tactic capability from completed",
         "sequence formalization:",
         "",
-        "- `formalized`: a concrete sequence-facing theorem exists under `RealRooted/OEIS`;",
+        "- `formalized`: a concrete sequence-facing module exists under `RealRooted/OEIS` or",
+        "  `RealRooted/Applications/OEIS`;",
         "- `shell`: an executable abstract recurrence shell reaches `StrictInterl` or `Splits`;",
         "- `fragment`: only a sign or root-window subcertificate is exercised;",
         "- `documented`: the ID is mentioned, but no executable route was associated.",
