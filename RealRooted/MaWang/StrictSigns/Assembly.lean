@@ -639,6 +639,45 @@ lemma exists_isRoot_le_of_eval_nonneg_of_tendsto_atBot_atBot {p : ℝ[X]} {r : �
   · exact ⟨r, le_rfl, by simp_all⟩
   · exact exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot hpos ht
 
+/-- Common part of the end-sign criteria: given a root of `F` at or left of the first
+`f`-root, where `F` does not vanish, conclude `f ⊳ F`. -/
+private theorem strictInterl_of_strict_signs_of_left_root
+    {f F : ℝ[X]} {rs : List ℝ}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hrs_sorted : rs.Pairwise (· ≤ ·))
+    (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
+    (hdeg : F.natDegree = f.natDegree + 1)
+    (hn : 1 ≤ rs.length)
+    (hsign :
+      ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
+        rs = pre ++ r₁ :: r₂ :: rest →
+        F.eval r₁ * F.eval r₂ < 0)
+    (hleft : ∃ uL ≤ rs.head!, F.IsRoot uL) (hhead : F.eval rs.head! ≠ 0)
+    (hright_sign : F.eval (rs.getLast (by
+      grind)) < 0) :
+    StrictInterl f F := by
+  have hrs_ne : rs ≠ [] := by lia
+  have hF_deg_pos : 0 < F.degree := natDegree_pos_iff_degree_pos.mp (by lia)
+  have hleft' : ∃ uL, F.IsRoot uL ∧ ∀ r ∈ rs, uL < r := by
+    obtain ⟨uL, huL_le, huL_root⟩ := hleft
+    have huL_lt_head : uL < rs.head! :=
+      lt_of_le_of_ne huL_le fun hEq => hhead (hEq ▸ huL_root)
+    exact ⟨uL, huL_root, fun r hr => lt_of_lt_of_le huL_lt_head (hrs_sorted.head!_le hr)⟩
+  have hright :
+      ∃ uR, F.IsRoot uR ∧ ∀ r ∈ rs, r < uR := by
+    have ht : Tendsto (fun x => F.eval x) atTop atTop :=
+      F.tendsto_atTop_of_leadingCoeff_nonneg hF_deg_pos hF_pos.le
+    obtain ⟨uR, huR_ge, huR_root⟩ :=
+      exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop (le_of_lt hright_sign) ht
+    have hlast_lt_uR : rs.getLast hrs_ne < uR := by
+      refine lt_of_le_of_ne huR_ge ?_
+      intro hEq
+      simp_all
+    exact ⟨uR, huR_root, fun r hr => lt_of_le_of_lt (hrs_sorted.rel_getLast hr) hlast_lt_uR⟩
+  exact strictInterl_of_strict_signs_of_strict_outer_roots
+    hf_ne hf_splits hF_pos.ne_zero hrs_sorted hrs_eq hdeg hn hsign hleft' hright
+
 /-- Even-left endpoint version of
 `strictInterl_of_strict_signs_of_strict_outer_roots`: if `f` has even degree, `F` has
 positive leading coefficient and degree `deg(f)+1`, strictly alternates sign on
@@ -661,39 +700,11 @@ theorem strictInterl_of_strict_signs_of_endSigns_even
     (hright_sign : F.eval (rs.getLast (by
       grind)) < 0) :
     StrictInterl f F := by
-  have hF_ne : F ≠ 0 := hF_pos.ne_zero
-  have hrs_ne : rs ≠ [] := by lia
-  have hF_natdeg_pos : 0 < F.natDegree := by lia
-  have hF_deg_pos : 0 < F.degree := natDegree_pos_iff_degree_pos.mp hF_natdeg_pos
-  have hF_odd : Odd F.natDegree := by simp_all
-  have hleft :
-      ∃ uL, F.IsRoot uL ∧ ∀ r ∈ rs, uL < r := by
-    have ht : Tendsto (fun x => F.eval x) atBot atBot :=
-      tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hF_pos hF_deg_pos hF_odd
-    obtain ⟨uL, huL_le, huL_root⟩ :=
-      exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot hleft_sign ht
-    have huL_lt_head : uL < rs.head! := by
-      refine lt_of_le_of_ne huL_le ?_
-      intro hEq
-      simp_all
-    refine ⟨uL, huL_root, ?_⟩
-    intro r hr
-    exact lt_of_lt_of_le huL_lt_head (hrs_sorted.head!_le hr)
-  have hright :
-      ∃ uR, F.IsRoot uR ∧ ∀ r ∈ rs, r < uR := by
-    have ht : Tendsto (fun x => F.eval x) atTop atTop :=
-      F.tendsto_atTop_of_leadingCoeff_nonneg hF_deg_pos hF_pos.le
-    obtain ⟨uR, huR_ge, huR_root⟩ :=
-      exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop (le_of_lt hright_sign) ht
-    have hlast_lt_uR : rs.getLast hrs_ne < uR := by
-      refine lt_of_le_of_ne huR_ge ?_
-      intro hEq
-      simp_all
-    refine ⟨uR, huR_root, ?_⟩
-    intro r hr
-    exact lt_of_le_of_lt (hrs_sorted.rel_getLast hr) hlast_lt_uR
-  exact strictInterl_of_strict_signs_of_strict_outer_roots
-    hf_ne hf_splits hF_ne hrs_sorted hrs_eq hdeg hn hsign hleft hright
+  have hF_deg_pos : 0 < F.degree := natDegree_pos_iff_degree_pos.mp (by lia)
+  obtain ⟨uL, huL_le, huL_root⟩ := exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot hleft_sign
+    (tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hF_pos hF_deg_pos (by simp_all))
+  exact strictInterl_of_strict_signs_of_left_root hf_ne hf_splits hF_pos hrs_sorted hrs_eq hdeg
+    hn hsign ⟨uL, huL_le, huL_root⟩ hleft_sign.ne' hright_sign
 
 /-- Odd-left endpoint version of
 `strictInterl_of_strict_signs_of_strict_outer_roots`: if `f` has odd degree, `F` has
@@ -717,39 +728,11 @@ theorem strictInterl_of_strict_signs_of_endSigns_odd
     (hright_sign : F.eval (rs.getLast (by
       grind)) < 0) :
     StrictInterl f F := by
-  have hF_ne : F ≠ 0 := hF_pos.ne_zero
-  have hrs_ne : rs ≠ [] := by lia
-  have hF_natdeg_pos : 0 < F.natDegree := by lia
-  have hF_deg_pos : 0 < F.degree := natDegree_pos_iff_degree_pos.mp hF_natdeg_pos
-  have hF_even : Even F.natDegree := by simp_all
-  have hleft :
-      ∃ uL, F.IsRoot uL ∧ ∀ r ∈ rs, uL < r := by
-    have ht : Tendsto (fun x => F.eval x) atBot atTop :=
-      tendsto_eval_atBot_atTop_of_posLeadingCoeff_even hF_pos hF_deg_pos hF_even
-    obtain ⟨uL, huL_le, huL_root⟩ :=
-      exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop hleft_sign ht
-    have huL_lt_head : uL < rs.head! := by
-      refine lt_of_le_of_ne huL_le ?_
-      intro hEq
-      simp_all
-    refine ⟨uL, huL_root, ?_⟩
-    intro r hr
-    exact lt_of_lt_of_le huL_lt_head (hrs_sorted.head!_le hr)
-  have hright :
-      ∃ uR, F.IsRoot uR ∧ ∀ r ∈ rs, r < uR := by
-    have ht : Tendsto (fun x => F.eval x) atTop atTop :=
-      F.tendsto_atTop_of_leadingCoeff_nonneg hF_deg_pos hF_pos.le
-    obtain ⟨uR, huR_ge, huR_root⟩ :=
-      exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop (le_of_lt hright_sign) ht
-    have hlast_lt_uR : rs.getLast hrs_ne < uR := by
-      refine lt_of_le_of_ne huR_ge ?_
-      intro hEq
-      simp_all
-    refine ⟨uR, huR_root, ?_⟩
-    intro r hr
-    exact lt_of_le_of_lt (hrs_sorted.rel_getLast hr) hlast_lt_uR
-  exact strictInterl_of_strict_signs_of_strict_outer_roots
-    hf_ne hf_splits hF_ne hrs_sorted hrs_eq hdeg hn hsign hleft hright
+  have hF_deg_pos : 0 < F.degree := natDegree_pos_iff_degree_pos.mp (by lia)
+  obtain ⟨uL, huL_le, huL_root⟩ := exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop hleft_sign
+    (tendsto_eval_atBot_atTop_of_posLeadingCoeff_even hF_pos hF_deg_pos (by simp_all))
+  exact strictInterl_of_strict_signs_of_left_root hf_ne hf_splits hF_pos hrs_sorted hrs_eq hdeg
+    hn hsign ⟨uL, huL_le, huL_root⟩ hleft_sign.ne hright_sign
 
 end RealRooted.MaWangInternal
 

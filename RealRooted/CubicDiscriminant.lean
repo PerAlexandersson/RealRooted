@@ -288,18 +288,8 @@ lemma cubicDiscr_eq_of_factor {q : ℝ[X]} {r : ℝ} (hqdeg : q.natDegree = 2) :
   rw [h3, h2, h1, h0]
   ring
 
-/-- A real quadratic with nonnegative discriminant splits. -/
-lemma quadratic_splits_of_discrim_nonneg {q : ℝ[X]} (hqdeg : q.natDegree = 2)
-    (hdisc : 0 ≤ discrim (q.coeff 2) (q.coeff 1) (q.coeff 0)) : q.Splits := by
-  have hq_ne : q ≠ 0 := by intro h; rw [h, natDegree_zero] at hqdeg; exact absurd hqdeg (by decide)
-  have hc2 : q.coeff 2 ≠ 0 := by
-    have hlc : q.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hq_ne
-    rwa [leadingCoeff, hqdeg] at hlc
-  obtain ⟨x, hx⟩ := exists_quadratic_eq_zero hc2
-    ⟨Real.sqrt (discrim (q.coeff 2) (q.coeff 1) (q.coeff 0)),
-      (Real.mul_self_sqrt hdisc).symm⟩
-  have hroot : q.eval x = 0 := by rw [eval_of_natDegree_two x hqdeg]; linear_combination hx
-  exact Splits.of_natDegree_eq_two hqdeg hroot
+@[deprecated splits_of_natDegree_eq_two_of_discrim_nonneg (since := "2026-10-07")]
+alias quadratic_splits_of_discrim_nonneg := splits_of_natDegree_eq_two_of_discrim_nonneg
 
 /-- **Discriminant criterion for real cubics.**  A real polynomial of
 `natDegree` three with nonnegative coefficient discriminant splits over `ℝ`. -/
@@ -321,7 +311,7 @@ theorem splits_of_cubicDiscr_nonneg {p : ℝ[X]} (hdeg : p.natDegree = 3)
         (sq_nonneg _).lt_of_ne (Ne.symm (pow_ne_zero 2 hne))
       have hdisc' : 0 ≤ discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) :=
         (mul_nonneg_iff_of_pos_left hsq).mp (hkey ▸ hdisc)
-      exact quadratic_splits_of_discrim_nonneg hqdeg hdisc'
+      exact splits_of_natDegree_eq_two_of_discrim_nonneg hqdeg hdisc'
   rw [← hfact, splits_X_sub_C_mul_iff]
   exact hsplit
 
@@ -362,7 +352,7 @@ theorem splits_of_natDegree_le_three_cubicDiscr_nonneg
       (sq_nonneg _).lt_of_ne (Ne.symm (pow_ne_zero 2 hc2_ne))
     have hquad : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0) :=
       (mul_nonneg_iff_of_pos_left hsquare).mp (hkey ▸ hdisc)
-    exact quadratic_splits_of_discrim_nonneg h2 hquad
+    exact splits_of_natDegree_eq_two_of_discrim_nonneg h2 hquad
   have hle1 : p.natDegree ≤ 1 :=
     Nat.lt_succ_iff.mp (lt_of_le_of_ne hle2 h2)
   rcases Nat.eq_or_lt_of_le hle1 with h1 | hlt1

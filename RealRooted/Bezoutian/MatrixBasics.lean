@@ -17,50 +17,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Compatibility wrapper for the Mathlib-shaped coefficient Bezoutian. -/
-def bezoutSeqEntry {A : Type*} [CommRing A] (a b : ℕ → A) (i j : ℕ) : A :=
-  Finset.sum (Finset.range (min i j + 1)) fun k ↦
-    a (i + j + 1 - k) * b k - b (i + j + 1 - k) * a k
-
-lemma bezoutSeqEntry.comm {A : Type*} [CommRing A] (a b : ℕ → A) (i j : ℕ) :
-    bezoutSeqEntry a b i j = bezoutSeqEntry a b j i :=
-  Polynomial.bezoutSeqEntry.comm a b i j
-
-lemma bezoutSeqEntry.eq_zero_of_le_left {A : Type*} [CommRing A] (a b : ℕ → A)
-    {n : ℕ} {i j : ℕ}
-    (ha : ∀ k, n < k → a k = 0) (hb : ∀ k, n < k → b k = 0) (hi : n ≤ i) :
-    bezoutSeqEntry a b i j = 0 :=
-  Polynomial.bezoutSeqEntry.eq_zero_of_le_left a b ha hb hi
-
-lemma bezoutSeqEntry.eq_zero_of_le_right {A : Type*} [CommRing A] (a b : ℕ → A)
-    {n : ℕ} {i j : ℕ}
-    (ha : ∀ k, n < k → a k = 0) (hb : ∀ k, n < k → b k = 0) (hj : n ≤ j) :
-    bezoutSeqEntry a b i j = 0 :=
-  Polynomial.bezoutSeqEntry.eq_zero_of_le_right a b ha hb hj
-
-lemma bezoutSeqEntry.telescoping {A : Type*} [CommRing A] (a b : ℕ → A) (i j : ℕ) :
-    bezoutSeqEntry a b i (j + 1) - bezoutSeqEntry a b (i + 1) j =
-    a (i + 1) * b (j + 1) - a (j + 1) * b (i + 1) :=
-  Polynomial.bezoutSeqEntry.telescoping a b i j
-
-lemma bezoutSeqEntry.coeff_mul_sub_coeff_mul {A : Type*} [CommRing A] (a b : ℕ → A)
-    (i j : ℕ) :
-    a i * b j - a j * b i =
-      (if i ≠ 0 then bezoutSeqEntry a b (i - 1) j else 0) -
-        (if j ≠ 0 then bezoutSeqEntry a b i (j - 1) else 0) :=
-  Polynomial.bezoutSeqEntry.coeff_mul_sub_coeff_mul a b i j
-
-lemma bezoutSeqEntry.bilinear_mul_sub {A : Type*} [CommRing A] (a b : ℕ → A)
-    (n : ℕ) (t₁ t₂ : A)
-    (ha : ∀ k, n < k → a k = 0) (hb : ∀ k, n < k → b k = 0) :
-    (t₁ - t₂) * ∑ i : Fin n, ∑ j : Fin n,
-    bezoutSeqEntry a b i.val j.val * t₁ ^ i.val * t₂ ^ j.val =
-    (∑ i ∈ Finset.range (n + 1), a i * t₁ ^ i) *
-      (∑ j ∈ Finset.range (n + 1), b j * t₂ ^ j) -
-    (∑ i ∈ Finset.range (n + 1), a i * t₂ ^ i) *
-      (∑ j ∈ Finset.range (n + 1), b j * t₁ ^ j) :=
-  Polynomial.bezoutSeqEntry.bilinear_mul_sub a b n t₁ t₂ ha hb
-
 /-- The `(i,j)` coefficient of the Bezoutian
 `(p(X) q(Y) - p(Y) q(X)) / (X - Y)`.
 

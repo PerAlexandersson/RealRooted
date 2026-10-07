@@ -59,21 +59,6 @@ theorem tendsto_charpoly_coeff {n : ℕ}
     simp_rw [hzero]
     exact tendsto_const_nhds
 
-/-- Compatibility forwarding theorem for the polynomial root-separation bound. -/
-theorem le_norm_eval_of_forall_le_norm_sub {p : ℂ[X]} (hm : p.Monic) {μ : ℂ} {ε : ℝ}
-    (hε : 0 ≤ ε) (hfar : ∀ r ∈ p.roots, ε ≤ ‖μ - r‖) :
-    ε ^ p.natDegree ≤ ‖p.eval μ‖ :=
-  Polynomial.le_norm_eval_of_forall_le_norm_sub hm hε hfar
-
-/-- Compatibility forwarding theorem for closed conditions on polynomial roots. -/
-theorem roots_mem_of_tendsto_eval {S : Set ℂ} (hS : IsClosed S)
-    {p : ℕ → ℂ[X]} {p₀ : ℂ[X]} {N : ℕ}
-    (hm : ∀ k, (p k).Monic) (hdeg : ∀ k, (p k).natDegree = N)
-    (hroots : ∀ k, ∀ r ∈ (p k).roots, r ∈ S)
-    (heval : ∀ μ : ℂ, Tendsto (fun k => (p k).eval μ) atTop (𝓝 (p₀.eval μ))) :
-    ∀ μ ∈ p₀.roots, μ ∈ S :=
-  Polynomial.roots_mem_of_tendsto_eval hS hm hdeg hroots heval
-
 /-- **Closed spectral conditions pass to entrywise limits of real matrices.** -/
 theorem charpoly_roots_mem_of_tendsto {S : Set ℂ} (hS : IsClosed S)
     {A : ℕ → Matrix (Fin n) (Fin n) ℝ} {A₀ : Matrix (Fin n) (Fin n) ℝ}
