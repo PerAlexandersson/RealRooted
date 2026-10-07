@@ -1,5 +1,6 @@
 import RealRooted.Derivative.FamilyClosure
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
+import RealRooted.PolarDerivative
 import RealRooted.Derivative.Interlacing
 import RealRooted.Derivative.RootCounting
 import RealRooted.ObreschkoffConverse.Derivative
@@ -11,8 +12,8 @@ import RealRooted.ObreschkoffConverse.Derivative
 version = 1
 section = "theorems"
 slug = "derivative-interlacing"
-authors = ["Rolle", "Jensen", "Obreschkoff", "Fisk"]
-years = [1691, 1913, 1963, 2006]
+authors = ["Rolle", "Laguerre", "Jensen", "Obreschkoff", "Fisk"]
+years = [1691, 1882, 1913, 1963, 2006]
 
 [[theorems]]
 name = "RealRooted.Challenges.DerivativeInterlacing.derivative_interlaces"
@@ -40,6 +41,11 @@ label = "Differentiation preserves interlacing of nonconstant polynomials"
 name = "Polynomial.exists_mem_jensenDisk_of_isRoot_derivative"
 module = "RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks"
 label = "Jensen: non-real zeros of p' lie in Jensen disks"
+
+[[theorems]]
+name = "RealRooted.splits_polarDerivative_of_splits"
+module = "RealRooted.PolarDerivative"
+label = "Laguerre: polar derivatives of real-rooted polynomials are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -68,6 +74,11 @@ nonzero and $f' \ll g'$ holds in the strict sense `StrictInterl`.
 non-real zero of $p'$ lies in a *Jensen disk* of $p$: the closed disk whose
 diameter is the segment from a non-real zero $z$ of $p$ to $\bar z$.  In
 particular, if $p$ is real-rooted then so is $p'$.
+
+**Theorem** (Laguerre). If $f$ is real-rooted of degree $n$ and $a \in \mathbb{R}$,
+the polar derivative $n f + (a - x) f'$ is real-rooted. After shifting $a$ to
+$0$, it is the reversal of the derivative of the reversal of $f$, and reversal
+preserves real-rootedness.
 
 ## Proof idea
 

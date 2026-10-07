@@ -437,6 +437,7 @@ import RealRooted.Challenges.PerronFrobenius
 import RealRooted.Challenges.PerronFrobenius
 import RealRooted.Challenges.RealStability
 import RealRooted.Challenges.RealStability
+import RealRooted.Challenges.SchurCohn
 import RealRooted.Challenges.SmallInterlacingMatrices
 import RealRooted.Challenges.SmallInterlacingMatrices
 import RealRooted.Challenges.Sturm
@@ -1126,6 +1127,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
@@ -1420,6 +1422,7 @@ import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
 import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
 import RealRooted.PartialSumStep
 import RealRooted.PartialSymmetrization
+import RealRooted.PolarDerivative
 import RealRooted.Polarization
 import RealRooted.PolyaFrequency.EventuallyPolynomial
 import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure
