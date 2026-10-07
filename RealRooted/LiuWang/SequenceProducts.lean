@@ -310,6 +310,21 @@ theorem isRealRooted_of_current_one_add_X_positive_t_lag_sequence
     strictInterl_current_one_add_X_positive_t_lag_sequence
       hbase hpos hnonneg hc hrec hdeg_succ hno
 
+/-- Compatibility form of `isRealRooted_of_positive_X_mul_lag_sequence` with the former
+binder name `R` for the lag factor, used by downstream callers. -/
+@[deprecated isRealRooted_of_positive_X_mul_lag_sequence (since := "2026-10-07")]
+theorem isRealRooted_of_tR_lag_sequence {P : Nat → ℝ[X]}
+    {A R : Nat → ℝ[X]}
+    (hbase : StrictInterl (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hR_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (R n).eval r)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (X * R n) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_positive_X_mul_lag_sequence hbase hpos hnonneg hR_nonneg hrec hdeg_succ hno
+
 end RealRooted.LiuWang
 
 namespace RealRooted
