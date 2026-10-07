@@ -5,6 +5,7 @@ import RealRooted.MultiplierSequence.Laguerre
 import RealRooted.MultiplierSequence.PolyaSchur
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.Sign
 
 /-!
@@ -127,6 +128,11 @@ module = "RealRooted.MultiplierSequence.Laguerre"
 label = "Type I functions sampled at 0, 1, 2, … are PF multiplier sequences"
 
 [[theorems]]
+name = "RealRooted.IsLaguerrePolya.taylorDifferentialOperator_eq_zero_or_splits"
+module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator"
+label = "Laguerre–Pólya: φ(D) preserves real-rootedness"
+
+[[theorems]]
 name = "RealRooted.BorceaBranden.bidiagonalPFPreserver_of_affineSymbol"
 module = "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences"
 label = "Bidiagonal PF preservers from a stable symbol"
@@ -191,6 +197,12 @@ polynomials:
 
 The second criterion goes through Schur–Szegő composition and
 Chudnovsky–Seymour compatibility rather than the symbol.
+
+
+**Laguerre–Pólya operator theorem.** If $\varphi$ is a locally uniform limit of real-rooted
+real polynomials, then $\varphi(D) = \sum_k \frac{\varphi^{(k)}(0)}{k!} D^k$ maps
+real-rooted polynomials to real-rooted polynomials or zero. Hermite–Poulain gives this for
+each approximating polynomial, and the Taylor coefficients converge.
 
 ## References
 
