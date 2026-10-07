@@ -445,6 +445,8 @@ import RealRooted.Challenges.TotallyNonnegativeMatrices
 import RealRooted.Challenges.TotallyNonnegativeMatrices
 import RealRooted.Challenges.UnitIntervalAcyclicSinks
 import RealRooted.Challenges.UnitIntervalAcyclicSinks
+import RealRooted.Challenges.UnitIntervalAcyclicSinks
+import RealRooted.Challenges.VanDerWaerden
 import RealRooted.Challenges.VeroneseSections
 import RealRooted.Challenges.Wagner
 import RealRooted.Challenges.WangYeh
@@ -805,6 +807,9 @@ import RealRooted.Graph.MinimaForest
 import RealRooted.Graph.MinimaLocalOrder
 import RealRooted.Graph.MinimaLocalOrder
 import RealRooted.Graph.MinimaPolynomial
+import RealRooted.Gurvits
+import RealRooted.Gurvits.Capacity
+import RealRooted.Gurvits.Univariate
 import RealRooted.GustafssonSolus
 import RealRooted.Hadamard
 import RealRooted.Hadamard.Basic
