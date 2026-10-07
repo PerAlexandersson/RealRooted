@@ -1565,4 +1565,7 @@ import RealRooted.GarloffWagner.HurwitzStable
 import RealRooted.Challenges.GarloffWagnerHurwitz
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+import RealRooted.LaguerreSamuelson
+import RealRooted.Maclaurin
+import RealRooted.Challenges.NewtonMaclaurin
 import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
