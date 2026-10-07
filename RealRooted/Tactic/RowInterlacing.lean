@@ -64,6 +64,17 @@ syntax (name := rrRowInterlacesQ) "rr_row_interlaces?" (ppSpace rrRowHint)* : ta
 for a product, first-order derivative or three-term recurrence. -/
 syntax (name := rrRowNonnegCoeffs) "rr_row_nonneg_coeffs" : tactic
 
+/-- `rr_row_natDegree` under the `∀ n` binder of a goal `∀ n, (P n).natDegree = …`, as a
+term, for the shared hypotheses of `rr_row_interlaces` certificates. -/
+syntax (name := rrRowNatDegreeAll) "rr_row_natDegree_all" : term
+
+/-- `rr_row_leadingCoeff_pos` under the `∀ n` binder, as a term; see `rr_row_natDegree_all`. -/
+syntax (name := rrRowLeadingCoeffPosAll) "rr_row_leadingCoeff_pos_all" : term
+
+macro_rules
+  | `(rr_row_natDegree_all) => `(by intro n; beta_reduce; rr_row_natDegree)
+  | `(rr_row_leadingCoeff_pos_all) => `(by intro n; beta_reduce; rr_row_leadingCoeff_pos)
+
 /-- Close a polynomial sign goal such as `∀ n x, L ≤ x → x ≤ U → (A n).eval x ≤ 0`:
 evaluate, then `positivity`, `nlinarith` (with the hypotheses as products) or
 `rr_row_field` for rational coefficients. -/
@@ -338,6 +349,28 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
   let Dq := rowNumLit D₀
   let Q ← r.seq 0
   let mut failures : Array (MessageData × MessageData) := #[]
+  -- every strategy and window below needs the same degree and leading-coefficient
+  -- hypotheses; prove them once and pass them by name (or leave them to each attempt)
+  let hdegI := mkIdent `hdeg_row
+  let hposI := mkIdent `hpos_row
+  -- unhygienic binder names and no `by` blocks, so that the certificate prints and
+  -- parses back
+  let nI := mkIdent `n
+  let shared := #[← `(tactic|
+      have $hdegI:ident : ∀ $nI:ident, ($Q $nI).natDegree = $Dq + $nI :=
+        rr_row_natDegree_all),
+    ← `(tactic|
+      have $hposI:ident : ∀ $nI:ident, 0 < ($Q $nI).leadingCoeff :=
+        rr_row_leadingCoeff_pos_all)]
+  let hoisted ← rowSucceeds (withMainContext (shared.forM evalTactic))
+  if hoisted then pre := pre ++ shared
+  let apply' (thm : Name) (extra : Array (TSyntax `Lean.Parser.Term.namedArgument)) :
+      TacticM (TSyntax `tactic) := do
+    let hd ← `(Lean.Parser.Term.namedArgument| (hdeg := $hdegI))
+    let hp ← `(Lean.Parser.Term.namedArgument| (hpos := $hposI))
+    let named := if hoisted then extra ++ #[hd, hp] else extra
+    `(tactic| apply $(mkIdent thm):ident (P := $Q) (D₀ := $Dq)
+      $(named.map (⟨·.raw⟩))* $hrec)
   let plain := if shape == .deriv₁ then
       if D₀ == 0 then
         [``RealRooted.derivRec_interlaces_of_eval_nonpos,
@@ -353,7 +386,7 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
     | some t => plain.filter (· == t)
     | none => plain
   for thm in plain do
-    let main ← `(tactic| apply $(mkIdent thm):ident (P := $Q) (D₀ := $Dq) $hrec)
+    let main ← apply' thm #[]
     match ← rowAttempt (applyThenSideFull P main) with
     | .ok tac => return (pre.push tac, { thm := some thm, degree := some D₀ })
     | .error e => failures := failures.push (m!"{thm}", e)
@@ -382,10 +415,9 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
         | none => windows
     for (lo, U) in windows do
       let main ← match lo with
-        | some L => `(tactic| apply $(mkIdent icc):ident (P := $Q) (D₀ := $Dq)
-            (L := ($L : ℝ)) (U := ($U : ℝ)) $hrec)
-        | none => `(tactic| apply $(mkIdent iic):ident (P := $Q) (D₀ := $Dq)
-            (U := ($U : ℝ)) $hrec)
+        | some L => apply' icc #[← `(Lean.Parser.Term.namedArgument| (L := ($L : ℝ))),
+            ← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]
+        | none => apply' iic #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]
       match ← rowAttempt (applyThenSideFull P main) with
       | .ok tac =>
           let h : RowHints := match lo with
