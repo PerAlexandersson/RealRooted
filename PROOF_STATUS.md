@@ -11,17 +11,13 @@ None.
 
 ## Open statement targets
 
-These declarations record possible mathematical targets but currently have no
-theorem, refutation, or production caller. They contain no admission.
-
-| Declaration | Status |
-| --- | --- |
-| `hadamardPreservesHurwitzStableStatement` | Garloff--Wagner Theorem 1, Hadamard products preserve Hurwitz stability; issue #1095 |
+None.
 
 ## Checked replacements
 
 | Topic | Checked declaration |
 | --- | --- |
+| Garloff--Wagner Theorem 1: Hadamard products preserve Hurwitz stability (issue #1095) | `IsHurwitzStable.hadamardProduct` |
 | Hurwitz stability of `q(x²) + x p(x²)` gives a totally nonnegative reversed Lace matrix (issue #1113) | `fullyInterlacingPair_of_isHurwitzStable_oddEvenPolynomial` |
 | Real finite-symbol sufficiency | `BorceaBranden.finiteSymbolTheorem` |
 | Complex finite-symbol classification | `BorceaBranden.finiteComplexSymbolClassification` |

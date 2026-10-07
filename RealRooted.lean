@@ -1562,3 +1562,5 @@ import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
+import RealRooted.GarloffWagner.HurwitzStable
+import RealRooted.Challenges.GarloffWagnerHurwitz
