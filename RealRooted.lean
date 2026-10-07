@@ -339,6 +339,8 @@ import RealRooted.BrandenVecchi.SupersymmetricLimits
 import RealRooted.CauchyInterlacing
 import RealRooted.CauchyInterlacing.Polynomial
 import RealRooted.CauchyInterlacing.RankOne
+import RealRooted.CauchyInterlacing.RankOne
+import RealRooted.CauchyInterlacing.Submatrix
 import RealRooted.CauchyInterlacing.Submatrix
 import RealRooted.CauchyInterlacing.Submatrix
 import RealRooted.Challenges.AissenSchoenbergWhitney
@@ -404,6 +406,7 @@ import RealRooted.Challenges.LGV
 import RealRooted.Challenges.LaguerrePolynomials
 import RealRooted.Challenges.LaguerrePolynomials
 import RealRooted.Challenges.LeakeRyder
+import RealRooted.Challenges.LeeYang
 import RealRooted.Challenges.LeeYang
 import RealRooted.Challenges.LiuOppositeSigns
 import RealRooted.Challenges.LiuOppositeSigns
@@ -945,6 +948,7 @@ import RealRooted.Laguerre.Roots
 import RealRooted.LaguerreSamuelson
 import RealRooted.LaguerreSamuelson
 import RealRooted.LeeYang
+import RealRooted.LeeYang
 import RealRooted.Legendre
 import RealRooted.Legendre.Basic
 import RealRooted.Legendre.Roots
@@ -1306,6 +1310,7 @@ import RealRooted.MultivariateStability.HomogeneousPencilWronskian
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.LinearForm
+import RealRooted.MultivariateStability.NegativeCorrelation
 import RealRooted.MultivariateStability.PolyaFrequency
 import RealRooted.MultivariateStability.Rayleigh
 import RealRooted.MultivariateStability.RayleighConverse
