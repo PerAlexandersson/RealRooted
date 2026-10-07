@@ -4,6 +4,7 @@ import RealRooted.Hyperbolicity
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.RayleighConverse
 import RealRooted.MultivariateStability.SamePhase
+import RealRooted.MultivariateStability.NegativeCorrelation
 
 /-!
 # Real stability challenge entry point
@@ -54,6 +55,11 @@ label = "Determinant of a linear matrix pencil"
 name = "RealRooted.Challenges.RealStability.mvRealStable_iff_isRayleigh"
 label = "A multiaffine polynomial is real stable iff it is Rayleigh"
 headline = true
+
+[[theorems]]
+name = "RealRooted.sum_mul_sum_le_of_mvRealStable_subsetGenPoly"
+module = "RealRooted.MultivariateStability.NegativeCorrelation"
+label = "Strongly Rayleigh measures are negatively correlated"
 
 [[theorems]]
 name = "RealRooted.Challenges.RealStability.detPencil_eq_zero_or_stable"
@@ -111,6 +117,15 @@ P(x) \frac{\partial^2 P}{\partial z_i \partial z_j}(x) \geq 0
 $$
 for all $i$, $j$ and all $x \in \mathbb{R}^n$ (the Rayleigh property).
 No homogeneity is needed.
+
+**Corollary** (Borcea–Brändén–Liggett). Let $\mu$ be a weight function on the
+subsets of $\{1, \dotsc, n\}$ whose generating polynomial
+$\sum_S \mu(S) \prod_{i \in S} z_i$ is real stable. Then for $i \neq j$,
+$$
+\mu(\Omega)\, \mu(i, j \in S) \leq \mu(i \in S)\, \mu(j \in S).
+$$
+For a probability measure this is pairwise negative correlation; it is the
+Rayleigh inequality at the all-ones point.
 
 **Theorem** (Borcea–Brändén). Let $A$ be a Hermitian $m \times m$ matrix and
 let $B_1, \dotsc, B_n$ be positive semidefinite $m \times m$ matrices. Then
