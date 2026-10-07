@@ -425,6 +425,7 @@ import RealRooted.Challenges.MinimaPolynomial
 import RealRooted.Challenges.MonomialChainOperator
 import RealRooted.Challenges.MultiplierSequence
 import RealRooted.Challenges.MultiplierSequence
+import RealRooted.Challenges.MultisetEulerianNarayana
 import RealRooted.Challenges.Narayana
 import RealRooted.Challenges.NewtonMaclaurin
 import RealRooted.Challenges.NewtonMaclaurin
@@ -574,6 +575,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
 import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
 import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
 import RealRooted.CombinatorialExamples.Motzkin
+import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
 import RealRooted.CombinatorialExamples.Narayana
 import RealRooted.CombinatorialExamples.NarayanaNormal
 import RealRooted.CombinatorialExamples.OneDescentGamma
@@ -700,6 +702,7 @@ import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Darboux
 import RealRooted.EulerOperator.Darboux.Basic
 import RealRooted.EulerOperator.Darboux.Interlacing
+import RealRooted.EulerOperator.Darboux.NegativeRoots
 import RealRooted.EulerOperator.OrderNumerator.Basic
 import RealRooted.EulerOperator.OrderNumerator.Preservation
 import RealRooted.EulerOperator.Pencil
