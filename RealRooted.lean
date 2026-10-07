@@ -860,6 +860,7 @@ import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
 import RealRooted.Hutchinson
 import RealRooted.Hyperbolicity
+import RealRooted.HyperbolicityCone
 import RealRooted.Interlacing.Closure
 import RealRooted.Interlacing.ConeBounds
 import RealRooted.Interlacing.Euclid
