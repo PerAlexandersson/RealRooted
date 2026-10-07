@@ -342,6 +342,7 @@ import RealRooted.CauchyInterlacing.RankOne
 import RealRooted.CauchyInterlacing.RankOne
 import RealRooted.CauchyInterlacing.Submatrix
 import RealRooted.CauchyInterlacing.Submatrix
+import RealRooted.CauchyInterlacing.Submatrix
 import RealRooted.Challenges.AissenSchoenbergWhitney
 import RealRooted.Challenges.Bezoutian
 import RealRooted.Challenges.Bezoutian
@@ -368,8 +369,11 @@ import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.DerivativeInterlacing
 import RealRooted.Challenges.DerivativeInterlacing
+import RealRooted.Challenges.DerivativeInterlacing
 import RealRooted.Challenges.Descartes
 import RealRooted.Challenges.Descartes
+import RealRooted.Challenges.Descartes
+import RealRooted.Challenges.EnestromKakeya
 import RealRooted.Challenges.Eulerian
 import RealRooted.Challenges.EulerianVariations
 import RealRooted.Challenges.EulerianVariations
@@ -391,7 +395,9 @@ import RealRooted.Challenges.HermiteBiehlerHurwitz
 import RealRooted.Challenges.HermitePolynomials
 import RealRooted.Challenges.HermitePolynomials
 import RealRooted.Challenges.HermitePoulain
+import RealRooted.Challenges.Hoggar
 import RealRooted.Challenges.HurwitzCornerZeroedCounterexample
+import RealRooted.Challenges.Hutchinson
 import RealRooted.Challenges.Interlacing
 import RealRooted.Challenges.InterlacingClosure
 import RealRooted.Challenges.InterlacingClosure
@@ -444,6 +450,8 @@ import RealRooted.Challenges.TotallyNonnegativeMatrices
 import RealRooted.Challenges.TotallyNonnegativeMatrices
 import RealRooted.Challenges.UnitIntervalAcyclicSinks
 import RealRooted.Challenges.UnitIntervalAcyclicSinks
+import RealRooted.Challenges.UnitIntervalAcyclicSinks
+import RealRooted.Challenges.VanDerWaerden
 import RealRooted.Challenges.VeroneseSections
 import RealRooted.Challenges.Wagner
 import RealRooted.Challenges.WangYeh
@@ -467,6 +475,8 @@ import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
 import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
 import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
 import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
+import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
+import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
 import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
 import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
 import RealRooted.ClassicalHurwitzMatrix.Stability.Parity
@@ -491,6 +501,7 @@ import RealRooted.CoefficientDominance.Symmetric.Sharp
 import RealRooted.CoefficientDominance.Symmetric.Tail
 import RealRooted.CoefficientDominance.Symmetric.Upper
 import RealRooted.CoefficientShape
+import RealRooted.CoefficientShape.Hoggar
 import RealRooted.CombinatorialExamples
 import RealRooted.CombinatorialExamples.BigDescents321
 import RealRooted.CombinatorialExamples.BigDescents321
@@ -797,11 +808,15 @@ import RealRooted.Graph.IndependencePolynomial.Recurrence
 import RealRooted.Graph.LeakeRyder
 import RealRooted.Graph.MatchingPolynomial
 import RealRooted.Graph.MatchingPolynomial.Multivariate
+import RealRooted.Graph.MatchingVertexInterlacing
 import RealRooted.Graph.MinimaForest
 import RealRooted.Graph.MinimaForest
 import RealRooted.Graph.MinimaLocalOrder
 import RealRooted.Graph.MinimaLocalOrder
 import RealRooted.Graph.MinimaPolynomial
+import RealRooted.Gurvits
+import RealRooted.Gurvits.Capacity
+import RealRooted.Gurvits.Univariate
 import RealRooted.GustafssonSolus
 import RealRooted.Hadamard
 import RealRooted.Hadamard.Basic
@@ -843,6 +858,7 @@ import RealRooted.HomogeneousOreExamples
 import RealRooted.HomogeneousStability
 import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
+import RealRooted.Hutchinson
 import RealRooted.Hyperbolicity
 import RealRooted.HyperbolicityCone
 import RealRooted.Interlacing.Closure
@@ -1066,6 +1082,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
 import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
+import RealRooted.Mathlib.Algebra.Polynomial.BudanFourier
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
@@ -1088,6 +1105,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
 import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
 import RealRooted.Mathlib.Algebra.Polynomial.Moment
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
@@ -1106,6 +1124,9 @@ import RealRooted.Mathlib.Analysis.Complex.ArgumentPrinciple
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
+import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
@@ -1125,6 +1146,8 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
 import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
+import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
+import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree
 import RealRooted.Mathlib.Data.Fin.Basic
 import RealRooted.Mathlib.Data.Fintype.Card
 import RealRooted.Mathlib.Data.List.Basic
@@ -1147,6 +1170,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
 import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
 import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
 import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
+import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
@@ -1181,6 +1205,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
+import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneUpdate
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
@@ -1286,8 +1311,11 @@ import RealRooted.MultiplierSequence.PolyaSchur.Analytic
 import RealRooted.MultiplierSequence.PolyaSchur.Factorial
 import RealRooted.MultiplierSequence.PolyaSchur.Growth
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
@@ -1515,6 +1543,7 @@ import RealRooted.SimpleRoots
 import RealRooted.SmallPositiveParameterCount
 import RealRooted.SortedRoots
 import RealRooted.SortedRoots.Exhibited
+import RealRooted.SpanningTreeStability
 import RealRooted.SpectralProduct
 import RealRooted.SpectralProduct
 import RealRooted.StaircaseSum

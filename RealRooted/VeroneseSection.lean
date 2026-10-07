@@ -565,15 +565,9 @@ theorem fullyInterlacingPair_veronesePairSectionPolynomial_coeff
 The row order of `lacePair` is reversed relative to the polynomial-to-Lace
 direction: the strictly interlacing nonnegative pair `X + 2`, `X + 1` has a
 negative `2 × 2` Lace minor.  The negations below record that refuted
-orientation. -/
-
-/-- Unproved target: Hurwitz stability of `q(x^2) + x p(x^2)` makes the
-reversed two-row Lace matrix of `q` and `p` totally nonnegative.  Tracked in
-GitHub issue #1113. -/
-def HurwitzOddEvenToReverseFullyInterlacingPairStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    IsHurwitzStable (oddEvenPolynomial p q) →
-    FullyInterlacingPair q.coeff p.coeff
+orientation; the reversed orientation `FullyInterlacingPair q.coeff p.coeff` holds for
+Hurwitz-stable `q(x²) + x p(x²)`
+(`fullyInterlacingPair_of_isHurwitzStable_oddEvenPolynomial`). -/
 
 /-- The linear pair `X + 2`, `X + 1` violates the current Lace orientation:
 the minor on rows `2, 3` and columns `0, 1` has determinant `-1`. -/

@@ -5,6 +5,7 @@ import RealRooted.HyperbolicityCone
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.RayleighConverse
 import RealRooted.MultivariateStability.SamePhase
+import RealRooted.SpanningTreeStability
 import RealRooted.MultivariateStability.NegativeCorrelation
 
 /-!
@@ -82,6 +83,16 @@ name = "RealRooted.Challenges.RealStability.mvRealStable_realDetPencil"
 label = "Real determinantal pencils are real stable"
 
 [[theorems]]
+name = "RealRooted.mvRealStable_spanningTreePoly"
+module = "RealRooted.SpanningTreeStability"
+label = "Choe–Oxley–Sokal–Wagner: spanning-tree polynomials are real stable"
+
+[[theorems]]
+name = "SimpleGraph.det_weightedLapMatrix_submatrix"
+module = "RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree"
+label = "Kirchhoff's weighted matrix-tree theorem"
+
+[[theorems]]
 name = "RealRooted.Challenges.RealStability.mvRealStable_ordinaryHomogenization"
 label = "Homogenization preserves real stability"
 
@@ -138,6 +149,12 @@ let $B_1, \dotsc, B_n$ be positive semidefinite $m \times m$ matrices. Then
 $\det(A + z_1 B_1 + \dotsb + z_n B_n)$ is stable or identically zero. If all
 matrices are real and the determinant is not identically zero, then it is
 real stable.
+
+**Corollary** (Choe–Oxley–Sokal–Wagner). If a finite graph $G$ has a
+spanning tree, its spanning-tree polynomial
+$\sum_T \prod_{e \in T} z_e$ is real stable. By Kirchhoff's weighted
+matrix-tree theorem it equals the determinant of the reduced Laplacian
+$\sum_e z_e b_e b_e^{T}$, a pencil of positive semidefinite rank-one matrices.
 
 A polynomial $P \in \mathbb{R}[z_1, \dotsc, z_n]$ is **hyperbolic** in the
 direction $e \in \mathbb{R}^n$ if $P(e) \neq 0$ and $t \mapsto P(x + t e)$ is

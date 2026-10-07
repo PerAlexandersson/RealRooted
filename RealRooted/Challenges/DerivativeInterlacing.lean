@@ -1,4 +1,5 @@
 import RealRooted.Derivative.FamilyClosure
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
 import RealRooted.Derivative.Interlacing
 import RealRooted.Derivative.RootCounting
 import RealRooted.ObreschkoffConverse.Derivative
@@ -10,8 +11,8 @@ import RealRooted.ObreschkoffConverse.Derivative
 version = 1
 section = "theorems"
 slug = "derivative-interlacing"
-authors = ["Rolle", "Obreschkoff", "Fisk"]
-years = [1691, 1963, 2006]
+authors = ["Rolle", "Jensen", "Obreschkoff", "Fisk"]
+years = [1691, 1913, 1963, 2006]
 
 [[theorems]]
 name = "RealRooted.Challenges.DerivativeInterlacing.derivative_interlaces"
@@ -34,6 +35,11 @@ label = "The derivative of a real-rooted polynomial is real-rooted"
 [[theorems]]
 name = "RealRooted.Challenges.DerivativeInterlacing.strictInterl_derivative"
 label = "Differentiation preserves interlacing of nonconstant polynomials"
+
+[[theorems]]
+name = "Polynomial.exists_mem_jensenDisk_of_isRoot_derivative"
+module = "RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks"
+label = "Jensen: non-real zeros of p' lie in Jensen disks"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -58,6 +64,11 @@ $f' \ll g'$. Here we use the zero-aware relation `Interl`, which holds
 whenever one side vanishes; if $f$ is nonconstant, both derivatives are
 nonzero and $f' \ll g'$ holds in the strict sense `StrictInterl`.
 
+**Theorem** (Jensen). Let $p$ be a nonconstant real polynomial. Every
+non-real zero of $p'$ lies in a *Jensen disk* of $p$: the closed disk whose
+diameter is the segment from a non-real zero $z$ of $p$ to $\bar z$.  In
+particular, if $p$ is real-rooted then so is $p'$.
+
 ## Proof idea
 
 For the first theorem, we sort the zeros of $f$. A zero of multiplicity $m$
@@ -72,12 +83,18 @@ Differentiating the combinations shows that the same holds for $f'$ and
 $g'$, and the converse direction of Obreschkoff's theorem returns
 interlacing. A degree count fixes the orientation.
 
+For Jensen's theorem, if $p'(w) = 0 \neq p(w)$ then
+$\sum_k 1/(w - z_k) = 0$ over the zeros of $p$. Pairing each zero with its
+conjugate, a point $w$ outside every Jensen disk makes every term have
+imaginary part of sign opposite to $\operatorname{Im} w$, which is impossible.
+
 ## References
 
 S. Fisk, [*Polynomials, roots, and
 interlacing*](https://arxiv.org/abs/math/0612833), arXiv:math/0612833 (2006),
 Chapter 1; N. Obreschkoff, *Verteilung und Berechnung der Nullstellen reeller
-Polynome*, VEB Deutscher Verlag der Wissenschaften, Berlin, 1963. The
+Polynome*, VEB Deutscher Verlag der Wissenschaften, Berlin, 1963. J. L. W. V. Jensen,
+*Recherches sur la théorie des équations*, Acta Math. 36 (1913), 181–195. The
 statement $f' \ll f$ is the remark after
 [Wagner's lemma on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#wagnerLemma).
 <!-- /realrooted-catalog-content -->
