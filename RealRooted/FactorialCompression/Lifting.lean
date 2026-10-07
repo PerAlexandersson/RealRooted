@@ -18,7 +18,8 @@ noncomputable section
 
 namespace RealRooted.FactorialCompression
 
-private theorem gammaTransform_natDegree_of_coeff_zero_ne {d : ℕ} {γ : ℝ[X]} (hzero : γ.coeff 0 ≠ 0) :
+private theorem gammaTransform_natDegree_of_coeff_zero_ne {d : ℕ} {γ : ℝ[X]}
+    (hzero : γ.coeff 0 ≠ 0) :
     (gammaTransform d γ).natDegree = d := by
   apply Nat.le_antisymm (natDegree_gammaTransform_le d γ)
   exact le_natDegree_of_ne_zero (by simpa using hzero)
@@ -93,7 +94,8 @@ private theorem gammaTransform_succ_strictRootGeometry {d : ℕ} {γ δ : ℝ[X]
       have hpositive : 0 < (gammaTransform (d + 1) δ).eval 0 := by simpa using hδ0
       exact (ne_of_gt hpositive) (Polynomial.IsRoot.def.mp hroot)
     exact lt_of_le_of_ne hrle hrne
-  exact ⟨gammaTransform_natDegree_of_coeff_zero_ne (ne_of_gt hγ0), gammaTransform_natDegree_of_coeff_zero_ne (ne_of_gt hδ0),
+  exact ⟨gammaTransform_natDegree_of_coeff_zero_ne (ne_of_gt hγ0),
+    gammaTransform_natDegree_of_coeff_zero_ne (ne_of_gt hδ0),
     ⟨hweak.1.1, hweak.1.2, hsimp.1.roots_nodup, hTγnegative⟩,
     ⟨hweak.2.1.1, hweak.2.1.2, hsimp.2.roots_nodup, hTδnegative⟩,
     strictRootInterl_of_strictInterl_of_no_common_root hweak
@@ -123,10 +125,10 @@ private theorem two_branch_lifting_strictRootGeometry {n : ℕ} {A B : ℝ[X]} (
       ⟨hBpos, fun r hr => (hB.2.2.2 r hr).le⟩).1
   have hA0 : 0 < A.coeff 0 := by
     rw [coeff_zero_eq_eval_zero]
-    exact eval_pos_of_all_roots_lt hApos.ne_zero hA.2.1 hApos hA.2.2.2
+    exact eval_pos_of_all_roots_lt (HasPosLeadingCoeff.ne_zero hApos) hA.2.1 hApos hA.2.2.2
   have hB0 : 0 < B.coeff 0 := by
     rw [coeff_zero_eq_eval_zero]
-    exact eval_pos_of_all_roots_lt hBpos.ne_zero hB.2.1 hBpos hB.2.2.2
+    exact eval_pos_of_all_roots_lt (HasPosLeadingCoeff.ne_zero hBpos) hB.2.1 hBpos hB.2.2.2
   simpa only [heq] using gammaTransform_succ_strictRootGeometry hAdegree
     (by simpa only [heq] using hBdegree) hAnn hBnn hA0 hB0 hpair
 

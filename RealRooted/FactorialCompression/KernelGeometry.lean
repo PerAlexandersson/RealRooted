@@ -42,7 +42,7 @@ theorem kernel_nonneg (N ell : ℕ) (a : ℝ)
   intro k
   by_cases hk : 2 * k ≤ N + ell + 1
   · exact le_of_lt (kernel_coeff_pos N ell a k hN hell ha hk)
-  · rw [coeff_kernel N ell a k hN, if_neg hk]
+  · rw [coeff_kernel N ell a k hN, ite_eq_right hk]
 
 theorem kernel_ne_zero (N ell : ℕ) (a : ℝ)
     (hN : 1 ≤ N) (hell : ell ≤ N) (ha : 0 < a) : kernel N ell a ≠ 0 := by
@@ -62,7 +62,7 @@ theorem kernel_natDegree (N ell : ℕ) (a : ℝ)
   apply Nat.le_antisymm
   · apply natDegree_le_iff_coeff_eq_zero.mpr
     intro k hk
-    rw [coeff_kernel N ell a k hN, if_neg (by lia)]
+    rw [coeff_kernel N ell a k hN, ite_eq_right (by lia)]
   · apply le_natDegree_of_ne_zero
     exact ne_of_gt (kernel_coeff_pos N ell a ((N + ell + 1) / 2)
       hN hell ha (by lia))

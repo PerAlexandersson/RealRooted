@@ -1,4 +1,5 @@
 import RealRooted.FactorialCompression.Definitions
+import RealRooted.FactorialCompression.CommonKernel
 import RealRooted.FactorialCompression.SchurSzego
 import RealRooted.EulerOperator
 
@@ -147,12 +148,14 @@ theorem coeff_kernel (N ell : ℕ) (a : ℝ) (k : ℕ) (hN : 1 ≤ N) :
     rw [hsuc, ← hpredcast]
     have hkfac : (k.factorial : ℝ) ≠ 0 := by positivity
     have hden : ((N + ell + 1 - 2 * k).factorial : ℝ) ≠ 0 := by positivity
-    field_simp <;> push_cast <;> ring
+    field_simp
+    push_cast
+    ring
   · rw [ite_eq_right hguard]
     rw [coeff_h, ite_eq_right hguard] at hn
     exact (mul_eq_zero.mp (by simpa using hn)).resolve_left (mul_ne_zero hm hm1)
 
-private theorem coeff_kernel_of_le (N ell : ℕ) (a : ℝ) (k : ℕ)
+theorem coeff_kernel_of_le (N ell : ℕ) (a : ℝ) (k : ℕ)
     (hN : 1 ≤ N) (hguard : 2 * k ≤ N + ell + 1) :
     (kernel N ell a).coeff k =
       ((N + ell - 1).factorial : ℝ) /
@@ -175,7 +178,7 @@ private theorem choose_mul_mu_shift (N ell k : ℕ) (hN : 1 ≤ N) (hk : k ≤ N
     have hNfac : ((N - k).factorial : ℝ) ≠ 0 := by positivity
     have hmfac : ((N + ell - 1).factorial : ℝ) ≠ 0 := by positivity
     have hden : ((N + ell - 1 - 2 * k).factorial : ℝ) ≠ 0 := by positivity
-    field_simp <;> ring
+    field_simp
   · simp [mu, coeff_h, hguard, hsupport]
 
 private theorem compression_X_mul (N ell : ℕ) (p : ℝ[X]) (hN : 1 ≤ N) :
@@ -223,7 +226,7 @@ private theorem coeff_kernel_multiplier (N ell : ℕ) (a : ℝ) (k : ℕ)
     have hkfac : (k.factorial : ℝ) ≠ 0 := by positivity
     have hNfac : ((N - k).factorial : ℝ) ≠ 0 := by positivity
     have hden : ((N + ell + 1 - 2 * k).factorial : ℝ) ≠ 0 := by positivity
-    field_simp <;> ring
+    field_simp
   · simp [coeff_kernel N ell a k hN, mu, hi, hguard]
 
 /-- Exact identity for the compressed adjacent differential step.

@@ -39,7 +39,7 @@ private theorem schurSzegoComp_eq_zero_or_splits_of_roots_neg {N : ℕ} {p f : �
     (hproots : ∀ r ∈ p.roots, r < 0)
     (hfdegree : f.natDegree ≤ N) (hfsplit : f.Splits) :
     schurSzegoComp N p f = 0 ∨ (schurSzegoComp N p f).Splits := by
-  exact schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
+  exact finiteSchurSzegoComposition
     (isPFPolynomial_of_roots_neg hpsplit hppos hproots)
     hpdegree hfdegree hfsplit
 
@@ -92,7 +92,7 @@ private theorem schurSzegoComp_ne_zero_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     exact_mod_cast (Nat.choose_pos hfdegree).ne'
   intro hzero
   have hcoeff := congrArg (fun q : ℝ[X] => q.coeff f.natDegree) hzero
-  rw [coeff_schurSzegoComp, if_pos hfdegree, coeff_zero] at hcoeff
+  rw [coeff_schurSzegoComp, ite_eq_left hfdegree, coeff_zero] at hcoeff
   exact (div_ne_zero (mul_ne_zero hpc hfc) hchoose) hcoeff
 
 private theorem schurSzegoComp_add_C (N : ℕ) (p f : ℝ[X]) (u : ℝ) :
@@ -102,7 +102,7 @@ private theorem schurSzegoComp_add_C (N : ℕ) (p f : ℝ[X]) (u : ℝ) :
   rcases k with _ | k
   · simp [coeff_schurSzegoComp]
     ring
-  · simp [coeff_schurSzegoComp, coeff_add, coeff_C]
+  · simp [coeff_schurSzegoComp, coeff_add]
 
 /-- A general simple split polynomial of positive degree admits two-sided
 constant perturbations. This openness step is established
@@ -216,7 +216,7 @@ theorem schurSzegoComp_natDegree_of_roots_neg {N : ℕ} {p f : ℝ[X]}
     (schurSzegoComp N p f).natDegree = f.natDegree := by
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · exact natDegree_schurSzegoComp_le_right N p f
-  · rw [coeff_schurSzegoComp, if_pos hfdegree, coeff_natDegree]
+  · rw [coeff_schurSzegoComp, ite_eq_left hfdegree, coeff_natDegree]
     exact div_ne_zero
       (mul_ne_zero
         (coeff_pos_of_roots_neg hpsplit hppos hproots
@@ -233,7 +233,7 @@ private theorem schurSzegoComp_hasPosLeadingCoeff_of_roots_neg {N : ℕ} {p f : 
   change 0 < (schurSzegoComp N p f).leadingCoeff
   rw [← coeff_natDegree,
     schurSzegoComp_natDegree_of_roots_neg hpdegree hpsplit hppos hproots hfdegree hfpos.ne_zero,
-    coeff_schurSzegoComp, if_pos hfdegree, coeff_natDegree]
+    coeff_schurSzegoComp, ite_eq_left hfdegree, coeff_natDegree]
   exact div_pos (mul_pos
     (coeff_pos_of_roots_neg hpsplit hppos hproots
       (by simpa [hpdegree] using hfdegree)) hfpos)
@@ -255,7 +255,7 @@ private theorem schurSzegoComp_wronskian_zero {N : ℕ} (hN : 1 ≤ N)
       p.coeff 1 * q.coeff 1 / (N : ℝ) := by
     simp [← coeff_zero_eq_eval_zero, coeff_derivative, coeff_schurSzegoComp, hN]
   simp only [Polynomial.wronskian, eval_sub, eval_mul, hv0, hv1]
-  simp only [← coeff_zero_eq_eval_zero, coeff_derivative, Nat.zero_add, Nat.cast_one, mul_one]
+  simp only [← coeff_zero_eq_eval_zero, coeff_derivative, Nat.zero_add]
   ring
 
 theorem schurSzegoComp_simpleNegativeRoots_of_roots_neg {N : ℕ} {p f : ℝ[X]}
@@ -375,13 +375,12 @@ theorem schurSzegoComp_strictRootInterl_of_roots_neg {N : ℕ} {p f g : ℝ[X]}
     exact strictRootInterl_of_strictInterl_of_no_common_root hweak hapos hbpos (by
       intro r hr
       have := (mem_roots hafull.1).mpr hr.1
-      simpa [haroots] using this)
+      simp [haroots] at this)
   have hW (t : ℝ) := strictRootInterl_wronskian_pos hfg (Nat.pos_of_ne_zero hgzero) t
   have hsourceSimple :=
     ObreschkoffConverseInternal.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
       hall (by
-        intro t
-        intro hz
+        intro t hz
         have hw := hW t
         simp only [ObreschkoffConverseInternal.wronskianPoly, eval_sub, eval_mul] at hz
         simp only [Polynomial.wronskian, eval_sub, eval_mul] at hw
@@ -393,7 +392,7 @@ theorem schurSzegoComp_strictRootInterl_of_roots_neg {N : ℕ} {p f g : ℝ[X]}
         apply Multiset.card_eq_zero.mp
         rw [card_roots_of_splits hafull.2.1, hadegree, hfzero]
       have := (mem_roots hafull.1).mpr hr.1
-      simpa [haroots] using this
+      simp [haroots] at this
     let α := b.derivative.eval r
     let β := -a.derivative.eval r
     have hα : α ≠ 0 := hbfull.hasSimpleRoots.eval_derivative_ne_zero hr.2
@@ -414,7 +413,7 @@ theorem schurSzegoComp_strictRootInterl_of_roots_neg {N : ℕ} {p f g : ℝ[X]}
       simp [Polynomial.IsRoot.def, har, hbr]
     have hderne := houtSimple.eval_derivative_ne_zero houtRoot
     apply hderne
-    simp [α, β, a, b, derivative_add, derivative_C_mul]
+    simp [α, β, a, b, derivative_add]
     ring
   have hp0 := coeff_zero_pos_of_roots_neg hpsplit hppos hproots
   have hp1 := coeff_pos_of_roots_neg hpsplit hppos hproots

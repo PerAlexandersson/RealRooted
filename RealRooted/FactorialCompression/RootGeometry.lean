@@ -56,7 +56,7 @@ private theorem strictInterlacesRoots_to_upstream :
   | [], _ :: _ :: _, h => False.elim h
   | _ :: _, [], h => False.elim h
   | _ :: _, [_], h => False.elim h
-  | r :: rs, s₁ :: s₂ :: ss, h =>
+  | _ :: _, _ :: _ :: _, h =>
       ⟨le_of_lt h.1, le_of_lt h.2.1,
         strictInterlacesRoots_to_upstream h.2.2⟩
 

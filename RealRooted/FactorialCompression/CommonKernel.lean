@@ -28,7 +28,7 @@ theorem coeff_h (r k : ℕ) :
         ((Nat.factorial k : ℝ) * (Nat.factorial (r - 2 * k) : ℝ)) else 0 := by
   classical
   have hi : k ≤ r / 2 ↔ 2 * k ≤ r := by lia
-  simp [h, finsetSum_coeff, coeff_C_mul, coeff_X_pow, Nat.lt_succ_iff, hi]
+  simp [h, finsetSum_coeff, coeff_C_mul, coeff_X_pow, hi]
 
 /-- A coefficient lowering identity with the zero boundary included. -/
 theorem h_coeff_lower (r k : ℕ) :
@@ -42,7 +42,7 @@ theorem h_coeff_lower (r k : ℕ) :
       have heq := congrArg (fun n : ℕ => (n : ℝ)) he
       push_cast at heq
       linarith
-    rw [coeff_h, if_pos hk', coeff_h, if_pos hk, hi]
+    rw [coeff_h, ite_eq_left hk', coeff_h, ite_eq_left hk, hi]
     simp only [Nat.factorial_succ]
     push_cast
     rw [hc]
@@ -67,7 +67,7 @@ theorem h_coeff_shift (r k : ℕ) :
   have hi : 2 * (k + 1) ≤ r + 2 ↔ 2 * k ≤ r := by lia
   by_cases hk : 2 * k ≤ r
   · have hd : r + 2 - 2 * (k + 1) = r - 2 * k := by lia
-    rw [coeff_h, if_pos (hi.mpr hk), coeff_h, if_pos hk, hd]
+    rw [coeff_h, ite_eq_left (hi.mpr hk), coeff_h, ite_eq_left hk, hd]
     simp only [show r + 2 = (r + 1) + 1 by lia, Nat.factorial_succ]
     push_cast
     have hdne : (Nat.factorial (r - 2 * k) : ℝ) ≠ 0 := by positivity
@@ -79,12 +79,12 @@ theorem h_coeff_shift (r k : ℕ) :
 
 @[simp] theorem h_coeff_zero (r : ℕ) : (h r).coeff 0 = 1 := by
   rw [coeff_h]
-  simp only [mul_zero, Nat.zero_le, if_true, Nat.factorial_zero, Nat.cast_one,
+  simp only [mul_zero, Nat.zero_le, ite_true, Nat.factorial_zero, Nat.cast_one,
     one_mul, Nat.sub_zero]
   exact div_self (by positivity)
 
 theorem h_coeff_pos (r k : ℕ) (hk : 2 * k ≤ r) : 0 < (h r).coeff k := by
-  rw [coeff_h, if_pos hk]
+  rw [coeff_h, ite_eq_left hk]
   positivity
 
 theorem h_nonneg (r : ℕ) : HasNonnegCoeffs (h r) := by
@@ -104,7 +104,7 @@ theorem h_natDegree (r : ℕ) : (h r).natDegree = r / 2 := by
   apply Nat.le_antisymm
   · apply natDegree_le_iff_coeff_eq_zero.mpr
     intro k hk
-    rw [coeff_h, if_neg (by lia)]
+    rw [coeff_h, ite_eq_right (by lia)]
   · apply le_natDegree_of_ne_zero
     exact ne_of_gt (h_coeff_pos r (r / 2) (by lia))
 
@@ -121,8 +121,7 @@ private theorem h_two_factor : h 2 = C (2 : ℝ) * (X - C (-1 / 2 : ℝ)) := by
   | succ k =>
       cases k with
       | zero => norm_num [coeff_h]
-      | succ k => simp [coeff_h, coeff_X, show ¬ 2 * (k + 1 + 1) ≤ 2 by lia,
-          show k + 1 + 1 ≠ 1 by lia]
+      | succ k => simp [coeff_h, coeff_X, show ¬ 2 * (k + 1 + 1) ≤ 2 by lia]
 
 private theorem h_two_roots : (h 2).roots = {-1 / 2} := by
   rw [h_two_factor, roots_C_mul _ (by norm_num), roots_X_sub_C]
@@ -145,7 +144,7 @@ private theorem h_recurrence_coeff_succ (r k : ℕ) (hr : 1 ≤ r) :
       have he : r - 1 - 2 * k = (r - 2 * (k + 1)) + 1 := by lia
       have hrreal : (r : ℝ) = ((r - 2 * (k + 1) : ℕ) : ℝ) + 2 * (k : ℝ) + 2 := by
         exact_mod_cast (show r = (r - 2 * (k + 1)) + 2 * k + 2 by lia)
-      rw [coeff_h, if_pos hguard, coeff_h, if_pos hmid, coeff_h, if_pos hprev,
+      rw [coeff_h, ite_eq_left hguard, coeff_h, ite_eq_left hmid, coeff_h, ite_eq_left hprev,
         hd, he]
       simp only [Nat.factorial_succ]
       push_cast
@@ -161,7 +160,7 @@ private theorem h_recurrence_coeff_succ (r k : ℕ) (hr : 1 ≤ r) :
       have he : r - 1 - 2 * k = 0 := by lia
       have hrreal : (r : ℝ) = 2 * (k : ℝ) + 1 := by
         exact_mod_cast (show r = 2 * k + 1 by lia)
-      rw [coeff_h, if_pos hguard, coeff_h, if_neg hmid, coeff_h, if_pos hprev,
+      rw [coeff_h, ite_eq_left hguard, coeff_h, ite_eq_right hmid, coeff_h, ite_eq_left hprev,
         hd, he, Nat.factorial_zero]
       simp only [Nat.factorial_succ]
       push_cast
