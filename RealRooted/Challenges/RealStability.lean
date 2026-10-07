@@ -1,6 +1,7 @@
 import RealRooted.DeterminantalStability
 import RealRooted.HomogeneousComponentStability
 import RealRooted.Hyperbolicity
+import RealRooted.HyperbolicityCone
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.RayleighConverse
 import RealRooted.MultivariateStability.SamePhase
@@ -70,6 +71,11 @@ headline = true
 [[theorems]]
 name = "RealRooted.Challenges.RealStability.mvRealStable_iff_forall_hyperbolicAt"
 label = "A homogeneous polynomial is real stable iff it is hyperbolic in every positive direction"
+
+[[theorems]]
+name = "RealRooted.convex_hyperbolicityCone"
+module = "RealRooted.HyperbolicityCone"
+label = "Gårding: hyperbolicity cones are convex"
 headline = true
 
 [[theorems]]
@@ -156,6 +162,11 @@ real-rooted for every $x \in \mathbb{R}^n$.
 
 **Theorem.** A homogeneous $P \in \mathbb{R}[z_1, \dotsc, z_n]$ is real stable
 if and only if it is hyperbolic in every direction $e$ with all $e_i > 0$.
+
+**Theorem** (Gårding). If a homogeneous $P$ is hyperbolic in the direction
+$e$, its hyperbolicity cone, the connected component of $e$ in
+$\{x : P(x) \neq 0\}$, is convex, and $P$ is hyperbolic in every direction of
+the cone.
 
 **Theorem.** Let $P \neq 0$ be real stable with nonnegative coefficients and
 total degree $d$. Then its homogenization
