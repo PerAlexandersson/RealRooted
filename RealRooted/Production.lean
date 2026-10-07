@@ -1428,14 +1428,6 @@ import RealRooted.Challenges.BigDescents321
 import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
-
-/-!
-# RealRooted production umbrella
-
-This entry point imports every production module and excludes tactic regression
-examples. Use `RealRooted` for the historical broad compatibility surface and
-`RealRooted.Tactic.Examples` for the mandatory regression suite.
--/
 import RealRooted.FactorialCompression
 import RealRooted.FactorialCompression.CommonKernel
 import RealRooted.FactorialCompression.Compression
@@ -1446,3 +1438,11 @@ import RealRooted.FactorialCompression.Lifting
 import RealRooted.FactorialCompression.RootGeometry
 import RealRooted.FactorialCompression.SchurSzego
 import RealRooted.Challenges.FactorialCompression
+
+/-!
+# RealRooted production umbrella
+
+This entry point imports every production module and excludes tactic regression
+examples. Use `RealRooted` for the historical broad compatibility surface and
+`RealRooted.Tactic.Examples` for the mandatory regression suite.
+-/
