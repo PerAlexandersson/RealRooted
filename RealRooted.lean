@@ -368,6 +368,8 @@ import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.DerivativeInterlacing
 import RealRooted.Challenges.DerivativeInterlacing
+import RealRooted.Challenges.DerivativeInterlacing
+import RealRooted.Challenges.Descartes
 import RealRooted.Challenges.Descartes
 import RealRooted.Challenges.Descartes
 import RealRooted.Challenges.EnestromKakeya
@@ -1109,6 +1111,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
+import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 import RealRooted.Mathlib.Analysis.Normed.Ring.Power
 import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
@@ -1310,6 +1313,7 @@ import RealRooted.MultivariateStability.HomogeneousPencilWronskian
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.LinearForm
+import RealRooted.MultivariateStability.NegativeCorrelation
 import RealRooted.MultivariateStability.PolyaFrequency
 import RealRooted.MultivariateStability.Rayleigh
 import RealRooted.MultivariateStability.RayleighConverse
