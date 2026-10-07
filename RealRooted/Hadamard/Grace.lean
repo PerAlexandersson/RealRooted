@@ -545,14 +545,31 @@ theorem IsPFPolynomial.schurSzegoComp
 finite Schur--Szegő composition theorem: the diagonal operator attached to
 `gamma` acting on a polynomial `p` of degree at most `n` is exactly the
 Schur--Szegő composition of the PF Jensen polynomial of `gamma` with `p`. -/
-theorem finitePolyaSchurNonnegBackward : finitePolyaSchurNonnegBackwardStatement := by
-  intro n gamma _hgamma hjensen p hp hsplit
+theorem isFiniteMultiplierSequence_of_isPFPolynomial_jensenPolynomial {n : ℕ} {gamma : ℕ → ℝ}
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
+    IsFiniteMultiplierSequence n gamma := by
+  intro p hp hsplit
   have hfdeg : (jensenPolynomial n gamma).natDegree ≤ n :=
     natDegree_jensenPolynomial_le n gamma
   simpa [← schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le hp] using
     finiteSchurSzegoComposition hjensen hfdeg hp hsplit
 
-/-- Classical finite Pólya--Schur theorem (nonnegative-coefficient convention). -/
-theorem finitePolyaSchur_nonneg : finitePolyaSchurNonnegStatement :=
-  finitePolyaSchur_nonneg_of_backward finitePolyaSchurNonnegBackward
+/-- **Finite Pólya--Schur theorem** (nonnegative-coefficient convention): a nonnegative
+diagonal sequence preserves real-rootedness up to degree `n` if and only if its degree-`n`
+Jensen polynomial is PF. -/
+theorem finitePolyaSchur_nonneg {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFiniteMultiplierSequence n gamma ↔ IsPFPolynomial (jensenPolynomial n gamma) :=
+  ⟨isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma,
+    isFiniteMultiplierSequence_of_isPFPolynomial_jensenPolynomial⟩
+
+/-- PF-preservation form of finite Pólya--Schur: for a nonnegative diagonal
+sequence, preserving the PF cone up to degree `n` is equivalent to the degree
+`n` Jensen polynomial being PF. -/
+theorem isFinitePFMultiplierSequence_iff_jensenPolynomial {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFinitePFMultiplierSequence n gamma ↔ IsPFPolynomial (jensenPolynomial n gamma) :=
+  ⟨isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence, fun hjensen =>
+    isFinitePFMultiplierSequence_of_finiteMultiplierSequence hgamma
+      (isFiniteMultiplierSequence_of_isPFPolynomial_jensenPolynomial hjensen)⟩
+
 end RealRooted
