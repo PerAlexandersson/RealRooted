@@ -831,6 +831,7 @@ import RealRooted.Hadamard.Grace
 import RealRooted.Hadamard.Hurwitz
 import RealRooted.Hadamard.Newton
 import RealRooted.Hadamard.Product
+import RealRooted.Hadamard.SchurSzegoMultiplicity
 import RealRooted.HeilmannLieb
 import RealRooted.Hermite
 import RealRooted.Hermite.Basic
