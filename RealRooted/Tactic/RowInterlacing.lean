@@ -71,9 +71,15 @@ syntax (name := rrRowNatDegreeAll) "rr_row_natDegree_all" : term
 /-- `rr_row_leadingCoeff_pos` under the `∀ n` binder, as a term; see `rr_row_natDegree_all`. -/
 syntax (name := rrRowLeadingCoeffPosAll) "rr_row_leadingCoeff_pos_all" : term
 
+/-- `rr_row_natDegree_leadingCoeff_pos` under the `∀ n` binder, as a term; see
+`rr_row_natDegree_all`. -/
+syntax (name := rrRowNatDegreeLeadingCoeffPosAll) "rr_row_natDegree_leadingCoeff_pos_all" : term
+
 macro_rules
   | `(rr_row_natDegree_all) => `(by intro n; beta_reduce; rr_row_natDegree)
   | `(rr_row_leadingCoeff_pos_all) => `(by intro n; beta_reduce; rr_row_leadingCoeff_pos)
+  | `(rr_row_natDegree_leadingCoeff_pos_all) =>
+      `(by intro n; beta_reduce; rr_row_natDegree_leadingCoeff_pos)
 
 /-- Close a polynomial sign goal such as `∀ n x, L ≤ x → x ≤ U → (A n).eval x ≤ 0`:
 evaluate, then `positivity`, `nlinarith` (with the hypotheses as products) or
@@ -356,14 +362,13 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
   -- unhygienic binder names and no `by` blocks, so that the certificate prints and
   -- parses back
   let nI := mkIdent `n
-  let shared := #[← `(tactic|
-      have $hdegI:ident : ∀ $nI:ident, ($Q $nI).natDegree = $Dq + $nI :=
-        rr_row_natDegree_all),
-    ← `(tactic|
-      have $hposI:ident : ∀ $nI:ident, 0 < ($Q $nI).leadingCoeff :=
-        rr_row_leadingCoeff_pos_all)]
-  let hoisted ← rowSucceeds (withMainContext (shared.forM evalTactic))
-  if hoisted then pre := pre ++ shared
+  -- one search discharges the side goals shared by the two hypotheses
+  let shared ← `(tactic|
+      obtain ⟨$hdegI:ident, $hposI:ident⟩ :
+          (∀ $nI:ident, ($Q $nI).natDegree = $Dq + $nI) ∧ ∀ $nI:ident, 0 < ($Q $nI).leadingCoeff :=
+        forall_and.mp rr_row_natDegree_leadingCoeff_pos_all)
+  let hoisted ← rowSucceeds (withMainContext (evalTactic shared))
+  if hoisted then pre := pre.push shared
   let apply' (thm : Name) (extra : Array (TSyntax `Lean.Parser.Term.namedArgument)) :
       TacticM (TSyntax `tactic) := do
     let hd ← `(Lean.Parser.Term.namedArgument| (hdeg := $hdegI))

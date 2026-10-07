@@ -26,6 +26,8 @@ in any order, and the left side may be `P (n + k)` with explicit rows below `k`,
   up to `lia`;
 * `rr_row_ne_zero` closes `P t ≠ 0`;
 * `rr_row_leadingCoeff_pos` closes `0 < (P t).leadingCoeff`;
+* `rr_row_natDegree_leadingCoeff_pos` closes the conjunction
+  `(P t).natDegree = e ∧ 0 < (P t).leadingCoeff`, discharging the shared side goals once;
 * `rr_row_side` closes their side goals.
 
 The tactics read `P` off the goal and its recurrence off the equation lemmas, and find
@@ -304,17 +306,24 @@ private def rowThms (shape : RecShape) (kind : String) : List (Name × Option St
   match shape, kind with
   | .deriv₂, "natDegree" => [(``RealRooted.derivRec₂_natDegree, none)]
   | .deriv₂, "ne_zero" => [(``RealRooted.derivRec₂_ne_zero, none)]
+  | .deriv₂, "natDegree_leadingCoeff_pos" =>
+      [(``RealRooted.derivRec₂_natDegree_eq_and_leadingCoeff_pos, none)]
   | .deriv₂, _ => [(``RealRooted.derivRec₂_leadingCoeff_pos, none)]
   | .lag, k | .lagLeft, k | .lagRight, k =>
       let (pos, ratio) := match k with
         | "natDegree" =>
             (``RealRooted.threeTermPos_natDegree, ``RealRooted.threeTermRatio_natDegree)
         | "ne_zero" => (``RealRooted.threeTermPos_ne_zero, ``RealRooted.threeTermRatio_ne_zero)
+        | "natDegree_leadingCoeff_pos" =>
+            (``RealRooted.threeTermPos_natDegree_eq_and_leadingCoeff_pos,
+              ``RealRooted.threeTermRatio_natDegree_eq_and_leadingCoeff_pos)
         | _ => (``RealRooted.threeTermPos_leadingCoeff_pos,
             ``RealRooted.threeTermRatio_leadingCoeff_pos)
       (pos, none) :: ["1", "2", "4", "1 / 2", "3"].map fun r => (ratio, some r)
   | _, "natDegree" => [(``RealRooted.derivRec_natDegree, none)]
   | _, "ne_zero" => [(``RealRooted.derivRec_ne_zero, none)]
+  | _, "natDegree_leadingCoeff_pos" =>
+      [(``RealRooted.derivRec_natDegree_eq_and_leadingCoeff_pos, none)]
   | _, _ => [(``RealRooted.derivRec_leadingCoeff_pos, none)]
 
 /-- Parse a ratio such as `1 / 2`. -/
@@ -434,7 +443,8 @@ private def rowDriver (r : RowRec) (kind : String) (hints : RowHints)
               failures := failures.push (m!"{thm} with growth {d} after dropping {k} rows", e)
         break
     -- half growth: `a n` constant, the degree grows by `d` every second step
-    if r.shape.isLag && hints.ratio.isNone && hints.thm.isNone then
+    if r.shape.isLag && hints.ratio.isNone && hints.thm.isNone &&
+        kind != "natDegree_leadingCoeff_pos" then
       for d in hints.growth.map ([·]) |>.getD [1, 2, 3] do
         unless ← degreeFits Q (← halfThmApply r k "ne_zero" d D₀ 0) nDeg do continue
         fitted := true
@@ -523,7 +533,7 @@ private def productRow (r : RowRec) (kind : String) : TacticM Cert := do
         refine (RealRooted.productSequence_natDegree (P := $Q) ?_ ?_ ?_ $hrec $t).trans
           (congrArg (· + $t) ?_))
       return split ++ #[pre, ← applyThenSide (some P) main]
-  | _ => throwError "rr_row_leadingCoeff_pos: product sequences are not supported yet"
+  | _ => throwError "rr_row_{kind}: product sequences are not supported yet"
 
 /-- `rr_row_natDegree` closes `(P t).natDegree = e` for a sequence `P` defined by a
 recurrence, when `e` is `D₀ + d * t` (or `D₀ + d * ((t + e) / 2)`) up to `lia`.  The hints
@@ -544,6 +554,17 @@ syntax (name := rrRowLeadingCoeffPos) "rr_row_leadingCoeff_pos" (ppSpace rrRowHi
 syntax (name := rrRowLeadingCoeffPosQ) "rr_row_leadingCoeff_pos?" (ppSpace rrRowHint)* :
   tactic
 
+/-- `rr_row_natDegree_leadingCoeff_pos` closes `(P t).natDegree = e ∧ 0 < (P t).leadingCoeff`
+with one theorem application, so the side goals shared by `rr_row_natDegree` and
+`rr_row_leadingCoeff_pos` are discharged once; it takes the hints of `rr_row_natDegree`
+except `(half := e)`. -/
+syntax (name := rrRowNatDegreeLeadingCoeffPos) "rr_row_natDegree_leadingCoeff_pos"
+  (ppSpace rrRowHint)* : tactic
+/-- `rr_row_natDegree_leadingCoeff_pos?` runs `rr_row_natDegree_leadingCoeff_pos` and prints a
+certificate. -/
+syntax (name := rrRowNatDegreeLeadingCoeffPosQ) "rr_row_natDegree_leadingCoeff_pos?"
+  (ppSpace rrRowHint)* : tactic
+
 /-- The degree tactics, returning a certificate and the hinted call. -/
 private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × RowHints) := do
   let who := s!"rr_row_{kind}"
@@ -557,6 +578,9 @@ private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × 
     match kind with
     | "ne_zero" => `(tactic| change $Q $t ≠ 0)
     | "natDegree" => `(tactic| refine (?_ : ($Q $t).natDegree = $deg).trans (by lia))
+    | "natDegree_leadingCoeff_pos" => `(tactic|
+        refine (?_ : ($Q $t).natDegree = $deg ∧ 0 < ($Q $t).leadingCoeff).imp_left
+          fun h => h.trans (by lia))
     | _ => `(tactic| change 0 < ($Q $t).leadingCoeff)
 
 /-- Run a degree tactic; with `?`, print the certificate and the hinted call. -/
@@ -569,6 +593,7 @@ private def rowDegreeElab (kind : String) (tk : Option Syntax)
     let hinted ← match kind with
       | "natDegree" => `(tactic| rr_row_natDegree $hs'*)
       | "ne_zero" => `(tactic| rr_row_ne_zero $hs'*)
+      | "natDegree_leadingCoeff_pos" => `(tactic| rr_row_natDegree_leadingCoeff_pos $hs'*)
       | _ => `(tactic| rr_row_leadingCoeff_pos $hs'*)
     verifyCert goal cert
     suggestCert tk cert hinted
@@ -581,5 +606,9 @@ elab_rules : tactic
   | `(tactic| rr_row_leadingCoeff_pos $hs*) => rowDegreeElab "leadingCoeff_pos" none hs
   | `(tactic| rr_row_leadingCoeff_pos?%$tk $hs*) =>
       rowDegreeElab "leadingCoeff_pos" (some tk) hs
+  | `(tactic| rr_row_natDegree_leadingCoeff_pos $hs*) =>
+      rowDegreeElab "natDegree_leadingCoeff_pos" none hs
+  | `(tactic| rr_row_natDegree_leadingCoeff_pos?%$tk $hs*) =>
+      rowDegreeElab "natDegree_leadingCoeff_pos" (some tk) hs
 
 end RealRooted.Tactic

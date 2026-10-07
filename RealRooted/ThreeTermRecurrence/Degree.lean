@@ -143,6 +143,17 @@ theorem twoStep_natDegree_eq_and_leadingCoeff_pos {α β : ℕ → ℝ}
   top_pos_of_invariant hstep h0 h1 (fun x y => 0 < x ∧ 0 < y) ⟨hc0, hc1⟩
     (fun _ _ h => h.1) (pos_invariant hα hβ hαβ) n
 
+theorem threeTermPos_natDegree_eq_and_leadingCoeff_pos
+    (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
+    (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d)
+    (hc0 : 0 < (P 0).coeff D₀) (hc1 : 0 < (P 1).coeff (D₀ + d))
+    (hα : ∀ n, 0 ≤ (a n).coeff d) (hβ : ∀ n, 0 ≤ (b n).coeff (2 * d))
+    (hαβ : ∀ n, 0 < (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) :
+    (P n).natDegree = D₀ + d * n ∧ 0 < (P n).leadingCoeff :=
+  twoStep_natDegree_eq_and_leadingCoeff_pos (threeTerm_step hrec ha hb) h0 h1 hc0 hc1
+    hα hβ hαβ n
+
 theorem threeTermPos_natDegree (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
     (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d)
@@ -150,8 +161,7 @@ theorem threeTermPos_natDegree (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n 
     (hα : ∀ n, 0 ≤ (a n).coeff d) (hβ : ∀ n, 0 ≤ (b n).coeff (2 * d))
     (hαβ : ∀ n, 0 < (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) :
     (P n).natDegree = D₀ + d * n :=
-  (twoStep_natDegree_eq_and_leadingCoeff_pos (threeTerm_step hrec ha hb) h0 h1 hc0 hc1
-    hα hβ hαβ n).1
+  (threeTermPos_natDegree_eq_and_leadingCoeff_pos hrec ha hb h0 h1 hc0 hc1 hα hβ hαβ n).1
 
 theorem threeTermPos_leadingCoeff_pos (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
@@ -160,8 +170,7 @@ theorem threeTermPos_leadingCoeff_pos (hrec : ∀ n, P (n + 2) = a n * P (n + 1)
     (hα : ∀ n, 0 ≤ (a n).coeff d) (hβ : ∀ n, 0 ≤ (b n).coeff (2 * d))
     (hαβ : ∀ n, 0 < (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) :
     0 < (P n).leadingCoeff :=
-  (twoStep_natDegree_eq_and_leadingCoeff_pos (threeTerm_step hrec ha hb) h0 h1 hc0 hc1
-    hα hβ hαβ n).2
+  (threeTermPos_natDegree_eq_and_leadingCoeff_pos hrec ha hb h0 h1 hc0 hc1 hα hβ hαβ n).2
 
 theorem threeTermPos_ne_zero (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
@@ -192,15 +201,26 @@ private theorem ratio_invariant {α β : ℕ → ℝ} (hρ : 0 < ρ) (hβ : ∀ 
     nlinarith [mul_le_mul_of_nonneg_right (hαβ n) hy.le]
   exact le_of_mul_le_mul_left h2 hρ
 
-theorem threeTermRatio_natDegree (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+theorem threeTermRatio_natDegree_eq_and_leadingCoeff_pos
+    (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
+    (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d)
+    (hc0 : 0 < (P 0).coeff D₀) (hρ : 0 < ρ) (hc1 : ρ * (P 0).coeff D₀ ≤ (P 1).coeff (D₀ + d))
+    (hβ : ∀ n, (b n).coeff (2 * d) ≤ 0)
+    (hαβ : ∀ n, ρ ^ 2 ≤ ρ * (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) :
+    (P n).natDegree = D₀ + d * n ∧ 0 < (P n).leadingCoeff :=
+  top_pos_of_invariant (threeTerm_step hrec ha hb) h0 h1 (fun x y => 0 < x ∧ ρ * x ≤ y)
+    ⟨hc0, hc1⟩ (fun _ _ h => h.1) (ratio_invariant hρ hβ hαβ) n
+
+theorem threeTermRatio_natDegree
+    (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
     (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d)
     (hc0 : 0 < (P 0).coeff D₀) (hρ : 0 < ρ) (hc1 : ρ * (P 0).coeff D₀ ≤ (P 1).coeff (D₀ + d))
     (hβ : ∀ n, (b n).coeff (2 * d) ≤ 0)
     (hαβ : ∀ n, ρ ^ 2 ≤ ρ * (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) :
     (P n).natDegree = D₀ + d * n :=
-  (top_pos_of_invariant (threeTerm_step hrec ha hb) h0 h1 (fun x y => 0 < x ∧ ρ * x ≤ y)
-    ⟨hc0, hc1⟩ (fun _ _ h => h.1) (ratio_invariant hρ hβ hαβ) n).1
+  (threeTermRatio_natDegree_eq_and_leadingCoeff_pos hrec ha hb h0 h1 hc0 hρ hc1 hβ hαβ n).1
 
 theorem threeTermRatio_leadingCoeff_pos
     (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
@@ -210,8 +230,7 @@ theorem threeTermRatio_leadingCoeff_pos
     (hβ : ∀ n, (b n).coeff (2 * d) ≤ 0)
     (hαβ : ∀ n, ρ ^ 2 ≤ ρ * (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) :
     0 < (P n).leadingCoeff :=
-  (top_pos_of_invariant (threeTerm_step hrec ha hb) h0 h1 (fun x y => 0 < x ∧ ρ * x ≤ y)
-    ⟨hc0, hc1⟩ (fun _ _ h => h.1) (ratio_invariant hρ hβ hαβ) n).2
+  (threeTermRatio_natDegree_eq_and_leadingCoeff_pos hrec ha hb h0 h1 hc0 hρ hc1 hβ hαβ n).2
 
 theorem threeTermRatio_ne_zero (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)

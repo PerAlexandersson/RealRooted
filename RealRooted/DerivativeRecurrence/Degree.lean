@@ -179,6 +179,16 @@ theorem derivRec_leadingCoeff_pos
   leadingCoeff_pos_of_top_coeff_step hP0 h0 hl0 (fun n hn => (derivRec_step hrec hA hB n hn).1)
     (fun n hn => (derivRec_step hrec hA hB n hn).2) hlam n
 
+/-- `derivRec_natDegree` and `derivRec_leadingCoeff_pos` from one set of hypotheses. -/
+theorem derivRec_natDegree_eq_and_leadingCoeff_pos
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hA : ∀ n, (A n).natDegree ≤ d + 1) (hB : ∀ n, (B n).natDegree ≤ d)
+    (hP0 : P 0 ≠ 0) (h0 : (P 0).natDegree = D₀) (hl0 : 0 < (P 0).coeff D₀)
+    (hlam : ∀ n : ℕ, 0 < (A n).coeff (d + 1) * ((D₀ + d * n : ℕ) : ℝ) + (B n).coeff d)
+    (n : ℕ) : (P n).natDegree = D₀ + d * n ∧ 0 < (P n).leadingCoeff :=
+  ⟨derivRec_natDegree hrec hA hB hP0 h0 (fun n => (hlam n).ne') n,
+    derivRec_leadingCoeff_pos hrec hA hB hP0 h0 hl0 hlam n⟩
+
 end FirstOrder
 
 section SecondOrder
@@ -258,6 +268,20 @@ theorem derivRec₂_leadingCoeff_pos
   leadingCoeff_pos_of_top_coeff_step hP0 h0 hl0
     (fun n hn => (derivRec₂_step hrec hA hB hC n hn).1)
     (fun n hn => (derivRec₂_step hrec hA hB hC n hn).2) hlam n
+
+/-- `derivRec₂_natDegree` and `derivRec₂_leadingCoeff_pos` from one set of hypotheses. -/
+theorem derivRec₂_natDegree_eq_and_leadingCoeff_pos
+    (hrec : ∀ n, P (n + 1) =
+      A n * (P n).derivative.derivative + B n * (P n).derivative + C n * P n)
+    (hA : ∀ n, (A n).natDegree ≤ d + 2) (hB : ∀ n, (B n).natDegree ≤ d + 1)
+    (hC : ∀ n, (C n).natDegree ≤ d) (hP0 : P 0 ≠ 0) (h0 : (P 0).natDegree = D₀)
+    (hl0 : 0 < (P 0).coeff D₀)
+    (hlam : ∀ n : ℕ,
+      0 < (A n).coeff (d + 2) * ((D₀ + d * n : ℕ) : ℝ) * (((D₀ + d * n : ℕ) : ℝ) - 1) +
+        (B n).coeff (d + 1) * ((D₀ + d * n : ℕ) : ℝ) + (C n).coeff d)
+    (n : ℕ) : (P n).natDegree = D₀ + d * n ∧ 0 < (P n).leadingCoeff :=
+  ⟨derivRec₂_natDegree hrec hA hB hC hP0 h0 (fun n => (hlam n).ne') n,
+    derivRec₂_leadingCoeff_pos hrec hA hB hC hP0 h0 hl0 hlam n⟩
 
 end SecondOrder
 
