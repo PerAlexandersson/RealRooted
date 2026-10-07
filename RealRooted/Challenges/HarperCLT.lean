@@ -11,8 +11,8 @@ import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
 version = 1
 section = "theorems"
 slug = "harper-clt"
-authors = ["Harper", "Bender", "Goncharov"]
-years = [1944, 1967, 1973]
+authors = ["Harper", "Bender", "Goncharov", "David", "Barton", "Bóna"]
+years = [1944, 1962, 1967, 1973, 2009]
 
 [[definitions]]
 name = "Polynomial.standardizedCoeffDistribution"
@@ -96,7 +96,7 @@ Moivre–Laplace theorem for the binomial distribution.
 
 The Eulerian polynomials, with coefficients $A(n+1, k)$, have mean
 $(n+2)/2$ and variance $(n+2)/12$, so the Eulerian numbers are asymptotically
-normal. Both moments follow from scalar recurrences at $x = 1$. The type $B$
+normal (David–Barton; Bender). Both moments follow from scalar recurrences at $x = 1$. The type $B$
 Eulerian numbers have mean $n/2$ and variance $(n+1)/12$, so they are
 asymptotically normal as well.
 
@@ -108,7 +108,7 @@ $(n^2-1)/(4(2n-1))$. Hence the Narayana numbers are asymptotically normal.
 The descent polynomials of Stirling permutations satisfy
 $P_{n+1} = (2n+1) x P_n + x(1-x) P_n'$. Their coefficients, the second-order
 Eulerian numbers, have mean $(2n+1)/3$ and variance $2(n^2-1)/(9(2n-1))$ for
-$n \ge 1$, so they are asymptotically normal too.
+$n \ge 1$, so they are asymptotically normal too, as Bóna showed.
 
 The derangement excedance polynomials $d_n(x)$ have $d_n(1) = D_n$, the
 derangement numbers. Their mean is $n/2$, and their variance is
@@ -136,7 +136,11 @@ L. H. Harper, “Stirling behavior is asymptotically normal,” *Annals of
 Mathematical Statistics* 38 (1967), 410–414; E. A. Bender, “Central and local
 limit theorems applied to asymptotic enumeration,” *Journal of Combinatorial
 Theory, Series A* 15 (1973), 91–111; V. L. Goncharov, “Some facts from
-combinatorics,” *Izv. Akad. Nauk SSSR Ser. Mat.* 8 (1944), 3–48.
+combinatorics,” *Izv. Akad. Nauk SSSR Ser. Mat.* 8 (1944), 3–48; F. N. David
+and D. E. Barton, *Combinatorial Chance*, Griffin, London, 1962; M. Bóna, “Real
+zeros and normal distribution for statistics on Stirling permutations defined
+by Gessel and Stanley,” *SIAM Journal on Discrete Mathematics* 23 (2008/09),
+401–406.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

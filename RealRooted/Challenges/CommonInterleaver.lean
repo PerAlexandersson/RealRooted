@@ -1,7 +1,9 @@
-import RealRooted.CommonInterleaver.FamilySum
 import RealRooted.ChudnovskySeymour.Core
+import RealRooted.CommonInterleaver.FamilySum
 import RealRooted.CommonInterleaver.FamilyUpgrade
 import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
+import RealRooted.CommonInterleaver.RootSelection
+import RealRooted.CommonInterleaver.RootSelectionTree
 import RealRooted.Compatibility.InterleaverBridge
 import RealRooted.Compatibility.Leander
 
@@ -91,6 +93,16 @@ headline = true
 name = "RealRooted.leanderTransform_preserves_compatibility"
 module = "RealRooted.Compatibility.Leander"
 label = "Leander: the transform preserves ordered compatibility"
+
+[[theorems]]
+name = "RealRooted.exists_mem_largestRoot_le_sum"
+module = "RealRooted.CommonInterleaver.RootSelection"
+label = "Marcus–Spielman–Srivastava: some member's largest root is at most that of the sum"
+
+[[theorems]]
+name = "RealRooted.RootSelectionTree.Valid.exists_leaf_largestRoot_le"
+module = "RealRooted.CommonInterleaver.RootSelectionTree"
+label = "Interlacing families: some leaf's largest root is at most the root node's"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -131,6 +143,12 @@ L(f)_k = x \sum_{h < k} f_h + \sum_{h > k} f_h .
 $$
 Then the family $L(f)_0, \dotsc, L(f)_{n-1}$ satisfies the same two
 conditions.
+
+**Interlacing families** (Marcus–Spielman–Srivastava). If polynomials of the
+same degree with positive leading coefficients have a common interlacer, then
+one of them has largest root at most the largest root of their sum. Iterating
+this along a tree whose sibling polynomials have common interlacers, some leaf
+has largest root at most that of the polynomial at the root.
 
 ## References
 

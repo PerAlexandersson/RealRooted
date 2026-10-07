@@ -1,6 +1,8 @@
-import RealRooted.MatrixInterlacing.TotallyNonnegative
+import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
+import RealRooted.MatrixInterlacing.TotallyNonnegative
 import RealRooted.OscillatoryInterlacing
 import RealRooted.TotallyNonnegInterlacing
 
@@ -71,6 +73,21 @@ label = "Variation-diminishing property"
 [[theorems]]
 name = "RealRooted.Challenges.TotallyNonnegativeMatrices.isTotallyNonneg_of_initialColumnMinors"
 label = "Cryer's criterion for lower-triangular matrices"
+
+[[theorems]]
+name = "Matrix.exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive"
+module = "RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein"
+label = "Gantmacher–Krein: primitive compounds give a simple positive spectrum"
+
+[[theorems]]
+name = "Matrix.charpoly_splits_of_forall_compound_primitive"
+module = "RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein"
+label = "Primitive compounds make the characteristic polynomial real-rooted with positive roots"
+
+[[theorems]]
+name = "Matrix.det_gaussianMatrix_submatrix_pos"
+module = "RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian"
+label = "Karlin: Gaussian matrices are strictly totally positive"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -110,6 +127,12 @@ where $\operatorname{var}$ counts sign changes after deleting zero entries.
 **Theorem** (Cryer). A nonsingular lower-triangular real matrix is TNN as soon
 as every minor formed from arbitrary rows and an initial segment of the
 columns is nonnegative.
+
+**Theorem** (Gantmacher–Krein). If every compound matrix of a real square
+matrix $A$ is primitive, then the eigenvalues of $A$ are real, positive and
+simple. Karlin's Gaussian matrices $\bigl(e^{-a(i-j)^2}\bigr)$ with $a > 0$ are
+strictly totally positive: every minor with strictly increasing rows and
+columns is positive.
 
 ## Proof idea
 

@@ -2,6 +2,7 @@ import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Polar.ProperPosition
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.Transforms.ReverseHermite.Preservation
 
 open Polynomial
 
@@ -51,6 +52,16 @@ label = "N − θ preserves interlacing of PF polynomials of degree at most N"
 [[theorems]]
 name = "RealRooted.Challenges.OperatorPreservers.StrictInterl.reciprocalShift"
 label = "The reciprocal reverses interlacing of PF polynomials"
+
+[[theorems]]
+name = "RealRooted.reverseHermiteTransform_preserves_pf"
+module = "RealRooted.Transforms.ReverseHermite.Preservation"
+label = "The reverse-Hermite transform preserves PF polynomials"
+
+[[theorems]]
+name = "RealRooted.reverseHermiteTransform_preserves_interl"
+module = "RealRooted.Transforms.ReverseHermite.Preservation"
+label = "The reverse-Hermite transform preserves interlacing"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -73,6 +84,9 @@ either polynomial to be zero, except in the last statement.
 - The reciprocal $p \mapsto x^D p(1/x)$ reverses the orientation: if
   $p \ll q$ are nonzero and both have degree at most $D$, then
   $x^D q(1/x) \ll x^D p(1/x)$.
+
+The reverse-Hermite transform preserves the cone of Pólya-frequency
+polynomials and preserves interlacing of PF pairs.
 
 ## References
 

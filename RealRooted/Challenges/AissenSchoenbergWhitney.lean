@@ -1,3 +1,4 @@
+import RealRooted.ASWKarlinKernel
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.PFPolynomial
 import RealRooted.PolyaFrequencyConvolution.Basic
@@ -48,6 +49,11 @@ label = "PF sequences are closed under convolution"
 [[theorems]]
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.isPolyaFreqSeq_coeff_mul"
 label = "Products of power series with PF coefficients have PF coefficients"
+
+[[theorems]]
+name = "RealRooted.aswKarlinSectorThreshold_le_abs_arg"
+module = "RealRooted.ASWKarlinKernel"
+label = "Karlin: zeros of PF polynomials avoid a sector around the positive axis"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -65,6 +71,11 @@ listed separately.
 their Cauchy convolution $c_n = \sum_{k=0}^n a_k b_{n-k}$. The sequences may be
 infinite. Equivalently, if the formal power series $F$ and $G$ have Pólya
 frequency coefficient sequences, then so does $FG$.
+
+The proof uses Karlin's sector estimate (*Total Positivity*, Chapter 8,
+Theorem 3.1). If $p$ has degree $d \geq 1$, $p(0) > 0$ and a Pólya-frequency
+coefficient sequence, then every complex zero $z$ of $p$ satisfies
+$|\arg z| \geq k\pi / (k + d - 1)$ for every $k \geq 1$.
 
 ## Proof idea
 

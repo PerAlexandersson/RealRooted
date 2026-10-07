@@ -1,3 +1,4 @@
+import RealRooted.CubicDiscriminant
 import RealRooted.RootCounting.Sturm
 import RealRooted.RootVieta.Newton
 
@@ -56,6 +57,11 @@ name = "Polynomial.splits_iff_hermiteMatrix_posSemidef"
 module = "RealRooted.RootVieta.Newton"
 label = "Hermite–Sylvester: real-rooted iff the Hermite matrix is PSD"
 headline = true
+
+[[theorems]]
+name = "RealRooted.cubicDiscr_nonneg_iff_splits_of_natDegree_le_three"
+module = "RealRooted.CubicDiscriminant"
+label = "A real polynomial of degree at most three splits iff its discriminant is nonnegative"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -74,6 +80,10 @@ $n$, and let $s_k = \sum_z z^k$ be the Newton power sums of its complex roots,
 counted with multiplicity. The Hermite matrix is
 $H_f = (s_{i+j})_{0 \le i, j \le n-1}$. Then $f$ is real-rooted if and only if
 $H_f$ is positive semidefinite.
+
+For degree at most three the Hermite matrix test reduces to a single
+inequality: a real polynomial of degree at most three is real-rooted if and only
+if its cubic discriminant is nonnegative.
 
 ## References
 

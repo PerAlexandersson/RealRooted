@@ -1,4 +1,5 @@
 import RealRooted.Wronskian
+import RealRooted.Wronskian.PolarLaguerre
 
 /-!
 # Wronskian criterion for interlacing
@@ -49,6 +50,16 @@ label = "A positive Wronskian gives interlacing in successor degree"
 name = "RealRooted.laguerre_form_nonneg"
 module = "RealRooted.Wronskian.Algebra"
 label = "Laguerre's inequality"
+
+[[theorems]]
+name = "RealRooted.derivative_sq_le_natDegree_mul_laguerreForm"
+module = "RealRooted.Wronskian.PolarLaguerre"
+label = "Degree-weighted Laguerre inequality p'² ≤ deg p · (p'² − p p'')"
+
+[[theorems]]
+name = "RealRooted.polar_laguerreForm_nonneg"
+module = "RealRooted.Wronskian.PolarLaguerre"
+label = "Polar Laguerre inequality (M − 1) p'² ≥ M p p'' for M ≥ deg p"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -98,6 +109,10 @@ $x \in \mathbb R$.
 **Theorem** (Laguerre's inequality). If $p$ is zero or real-rooted, then
 $p'(x)^2 - p(x) p''(x) \geq 0$ for all $x \in \mathbb R$, that is,
 $W(p, p') \leq 0$.
+
+The Laguerre form $p'^2 - p\,p''$ of a real-rooted polynomial satisfies the
+degree-weighted inequality $p'(t)^2 \leq \deg(p)\,\bigl(p'(t)^2 - p(t)\,p''(t)\bigr)$.
+Equivalently, $(M-1)\,p'(t)^2 \geq M\,p(t)\,p''(t)$ for every $M \geq \deg p$.
 
 ## Proof idea
 

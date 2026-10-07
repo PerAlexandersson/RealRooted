@@ -1,5 +1,6 @@
 import RealRooted.ClassicalHurwitzMatrix
 import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
+import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
 import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
 import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
 import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
@@ -76,6 +77,11 @@ label = "Hurwitz stability gives a totally nonnegative Lace matrix"
 name = "RealRooted.StrictInterl.fullyInterlacingPair"
 module = "RealRooted.ClassicalHurwitzMatrix.Stability.Lace"
 label = "Hermite–Biehler in Lace form"
+
+[[theorems]]
+name = "Matrix.strictlyHurwitzStable_iff_hurwitzLeadingPrincipal_det_pos"
+module = "RealRooted.ClassicalHurwitzMatrix.Stability.Converse"
+label = "Routh–Hurwitz: strict stability iff all leading Hurwitz minors are positive"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -109,6 +115,12 @@ is totally nonnegative.
 positive leading coefficient. If $p$ has no zeros with positive real part, then
 all coefficients of $p$ are nonnegative. If all zeros of $p$ have negative real
 part, then all coefficients $a_0, \dotsc, a_{\deg p}$ are positive.
+
+**Theorem** (Routh–Hurwitz). A real polynomial with positive leading
+coefficient is strictly Hurwitz stable if and only if all leading principal
+minors of its Hurwitz matrix are positive. The library uses the
+constant-term-first convention for the Hurwitz matrix, and the proof propagates
+the minors along the Routh reduction.
 
 ## References
 
