@@ -676,6 +676,7 @@ import RealRooted.DerivativeRecurrence
 import RealRooted.DerivativeRecurrence.AffineLagStrict
 import RealRooted.DerivativeRecurrence.Degree
 import RealRooted.DerivativeRecurrence.Degree
+import RealRooted.DerivativeRecurrence.General
 import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
 import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
 import RealRooted.DerivativeRecurrence.Interlacing
@@ -1723,6 +1724,7 @@ import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.RootCount
 import RealRooted.Tactic.Examples.RowData
 import RealRooted.Tactic.Examples.RowData
+import RealRooted.Tactic.Examples.RowGeneral
 import RealRooted.Tactic.Examples.RowInterlacing
 import RealRooted.Tactic.Examples.RowInterlacing
 import RealRooted.Tactic.Examples.ScalarDen
@@ -1854,6 +1856,7 @@ import RealRooted.Tactic.WagnerX.TranslatedLag
 import RealRooted.Tactic.WeightedSum
 import RealRooted.ThreeTermRecurrence.Degree
 import RealRooted.ThreeTermRecurrence.Degree
+import RealRooted.ThreeTermRecurrence.HalfGrowth
 import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.ThreeTermRecurrence.NoCommonRoot

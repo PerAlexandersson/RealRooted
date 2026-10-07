@@ -676,6 +676,7 @@ import RealRooted.DerivativeRecurrence
 import RealRooted.DerivativeRecurrence.AffineLagStrict
 import RealRooted.DerivativeRecurrence.Degree
 import RealRooted.DerivativeRecurrence.Degree
+import RealRooted.DerivativeRecurrence.General
 import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
 import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
 import RealRooted.DerivativeRecurrence.Interlacing
@@ -1715,6 +1716,7 @@ import RealRooted.Tactic.WagnerX.TranslatedLag
 import RealRooted.Tactic.WeightedSum
 import RealRooted.ThreeTermRecurrence.Degree
 import RealRooted.ThreeTermRecurrence.Degree
+import RealRooted.ThreeTermRecurrence.HalfGrowth
 import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.ThreeTermRecurrence.NoCommonRoot

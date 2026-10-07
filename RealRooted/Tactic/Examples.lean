@@ -116,6 +116,7 @@ import RealRooted.Tactic.Examples.RecurrenceODE
 import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.RootCount
 import RealRooted.Tactic.Examples.RowData
+import RealRooted.Tactic.Examples.RowGeneral
 import RealRooted.Tactic.Examples.RowInterlacing
 import RealRooted.Tactic.Examples.ScalarDen
 import RealRooted.Tactic.Examples.SecondDerivative

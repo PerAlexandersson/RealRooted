@@ -1,6 +1,7 @@
 import RealRooted.DerivativeRecurrence.Degree
 import RealRooted.ThreeTermRecurrence.Degree
 import RealRooted.DerivativeRecurrence.SecondOrderODE
+import RealRooted.DerivativeRecurrence.General
 import RealRooted.Tactic.Recurrence.Shape
 
 /-!
@@ -565,8 +566,197 @@ certificate. -/
 syntax (name := rrRowNatDegreeLeadingCoeffPosQ) "rr_row_natDegree_leadingCoeff_pos?"
   (ppSpace rrRowHint)* : tactic
 
-/-- The degree tactics, returning a certificate and the hinted call. -/
-private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × RowHints) := do
+
+/-! ### General linear recurrences -/
+
+/-- Compute the top-coefficient multipliers of `RealRooted.LinRec` and the coefficients of
+explicit polynomials in the goal, then close it with the finishers. -/
+private def linRecCoeffTac : TacticM (TSyntax `tactic) := do
+  let fin ← (← coeffFinishers).foldrM (init := ← `(tactic| fail))
+    fun fin rest => `(tactic| first | ($fin:tactic; done) | $rest:tactic)
+  `(tactic| (
+    simp only [RealRooted.LinRec.lagMult, RealRooted.LinRec.topCoeff, List.filter_cons,
+      List.filter_nil, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+      Finset.prod_range_succ, Finset.prod_range_zero, Finset.sum_range_succ,
+      Finset.sum_range_zero, decide_eq_true_eq, Nat.reduceEqDiff, Nat.reduceMul, Nat.reduceSub,
+      Nat.reduceAdd, ite_true, ite_false, Nat.cast_ofNat, Nat.cast_zero, sub_zero, one_mul,
+      mul_one, zero_add, add_zero] <;>
+    (first
+      | simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.coeff_add, Polynomial.coeff_sub,
+          Polynomial.coeff_neg, Polynomial.coeff_C_mul, Polynomial.coeff_mul_C,
+          Polynomial.coeff_X_pow, Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one,
+          Polynomial.coeff_ofNat_mul, Polynomial.coeff_mul_ofNat, Polynomial.coeff_ofNat_zero,
+          Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
+      | skip) <;>
+    push_cast <;>
+    (first | norm_num | skip) <;>
+    $fin:tactic))
+
+/-- Reduce numeral arithmetic such as `2 + 1 * 0` in the goal. -/
+private def linRecNumerals : TacticM Unit := do
+  discard <| rowSucceeds (evalTactic (← `(tactic|
+    simp only [Nat.reduceMul, Nat.reduceSub, Nat.reduceAdd, mul_zero, add_zero, zero_add,
+      mul_one, one_mul])))
+
+/-- Close the side goals of `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos` (`c? =
+none`) or of `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq` (`c? = some ρ`, top
+coefficients `(P 0).coeff D₀ * ρ ^ n`), in this order: the lags, the degree bounds, the
+base rows, then the multipliers or the scalar recurrence and its nonvanishing. -/
+private def linRecSides (P : Ident) (m : Nat) (c? : Option Term) (gs : List MVarId) :
+    TacticM Unit := do
+  let run (g : MVarId) (tac : TacticM Unit) : TacticM Unit := do
+    setGoals [g]
+    tac
+    unless (← getGoals).isEmpty do throwError "rr_row: goals remain"
+  let [hlag, hA, hbase, h₁, h₂] := gs | throwError "rr_row: unexpected side goals"
+  run hlag (evalTactic (← `(tactic| simp)))
+  run hA do
+    evalTactic (← `(tactic|
+      simp only [List.mem_cons, List.not_mem_nil, or_false, forall_eq_or_imp, forall_eq,
+        Nat.reduceMul, Nat.reduceSub, Nat.reduceAdd, mul_zero, add_zero, zero_add, mul_one,
+        one_mul]))
+    let holes : Array Term ← (List.range m).toArray.mapM fun _ => `(?_)
+    if m > 1 then evalTactic (← `(tactic| refine ⟨$holes,*⟩))
+    for g in ← getGoals do
+      setGoals [g]
+      rowSideGoal none
+    setGoals []
+  let row : TacticM Unit := do
+    for g in ← getGoals do
+      setGoals [g]
+      linRecNumerals
+      unless (← getGoals).isEmpty do rowSideGoal (some P)
+    setGoals []
+  run hbase do
+    evalTactic (← `(tactic| (intro j hj; interval_cases j <;> refine ⟨?_, ?_⟩)))
+    row
+  let coeff ← linRecCoeffTac
+  match c? with
+  | none =>
+      run h₁ do
+        evalTactic (← `(tactic| (intro k j hj; interval_cases j)))
+        for g in ← getGoals do
+          setGoals [g]
+          evalTactic coeff
+        setGoals []
+      run h₂ (evalTactic (← `(tactic| (intro k; $coeff:tactic))))
+  | some _ =>
+      run h₁ do
+        evalTactic (← `(tactic| intro k))
+        evalTactic (← `(tactic| (
+          simp only [RealRooted.LinRec.lagMult, RealRooted.LinRec.topCoeff, List.filter_cons,
+            List.filter_nil, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+            Finset.prod_range_succ, Finset.prod_range_zero, Finset.sum_range_succ,
+            Finset.sum_range_zero, decide_eq_true_eq, Nat.reduceEqDiff, Nat.reduceMul,
+            Nat.reduceSub, Nat.reduceAdd, ite_true, ite_false, Nat.cast_ofNat, Nat.cast_zero,
+            sub_zero, one_mul, mul_one, zero_add, add_zero] <;>
+          (first
+            | simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.coeff_add,
+                Polynomial.coeff_sub, Polynomial.coeff_neg, Polynomial.coeff_C_mul,
+                Polynomial.coeff_mul_C, Polynomial.coeff_X_pow, Polynomial.coeff_X,
+                Polynomial.coeff_C, Polynomial.coeff_one, Polynomial.coeff_ofNat_mul,
+                Polynomial.coeff_mul_ofNat, Polynomial.coeff_ofNat_zero,
+                Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
+            | skip) <;>
+          push_cast <;>
+          first | ring | (field_simp; ring))))
+      run h₂ do
+        evalTactic (← `(tactic| (intro k; refine mul_ne_zero ?_ (pow_ne_zero _ (by norm_num)))))
+        row
+
+/-- General linear recurrences: `RealRooted.LinRec` for a recurrence of any order with
+derivatives, rows `P t` of degree `D₀ + d * t` read off the explicit rows, and top
+coefficients controlled by nonnegative multipliers or of the form `(P 0).coeff D₀ * ρ ^ t`. -/
+private def linRecRow (kind : String) : TacticM Cert := withMainContext do
+  let tgt ← instantiateMVars (← getMainTarget)
+  let some P ← findPolySeqConst? tgt
+    | throwError "rr_row_{kind}: no sequence `P : ℕ → ℝ[X]` found in the goal"
+  let some L ← linRec? P
+    | throwError "rr_row_{kind}: the recurrence of {P} is not a linear recurrence"
+  let Pi := mkIdent P
+  let k := L.offset
+  let mut degs : Array Nat := #[]
+  for j in [0:k + 1] do
+    let some D ← findRowDegree Pi j
+      | throwError "rr_row_{kind}: the degree of the row {P} {j} is not a numeral below 9"
+    degs := degs.push D
+  let D₀ := degs[0]!
+  unless degs[k]! ≥ D₀ && (degs[k]! - D₀) % k == 0 do
+    throwError "rr_row_{kind}: the degrees {degs} of the first rows of {P} do not grow linearly"
+  let d := (degs[k]! - D₀) / k
+  unless (List.range (k + 1)).all fun j => degs[j]! == D₀ + d * j do
+    throwError "rr_row_{kind}: the degrees {degs} of the first rows of {P} do not grow linearly"
+  let n := mkIdent `n
+  let mut ts : Array Term := #[]
+  for (j, i, c) in L.terms do
+    ts := ts.push (← `(($(rowNumLit j), $(rowNumLit i), $(← certTerm c))))
+  let terms ← `([$ts,*])
+  let hrec ← `(fun $n:ident => ($(mkIdent L.eqn) $n).trans (by
+    simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+      Function.iterate_zero, Function.iterate_one, Function.iterate_succ_apply', id_eq,
+      add_zero]
+    ring))
+  let t ← certTerm (← mainRowIndex Pi)
+  let kq := rowNumLit k
+  let dq := rowNumLit d
+  let Dq := rowNumLit D₀
+  let finish (c? : Option Term) : TacticM Unit := do
+    let h := mkIdent `h_row
+    let lcPos : TacticM Unit := do
+      match c? with
+      | none => evalTactic (← `(tactic| exact And.right $h))
+      | some _ =>
+          evalTactic (← `(tactic|
+            (rw [And.right $h]; refine mul_pos ?_ (pow_pos (by norm_num) _))))
+          rowSideGoal (some Pi)
+    match kind with
+    | "natDegree" => evalTactic (← `(tactic| exact (And.left $h).trans (by lia)))
+    | "ne_zero" =>
+        evalTactic (← `(tactic| refine Polynomial.leadingCoeff_ne_zero.mp (ne_of_gt ?_)))
+        lcPos
+    | "natDegree_leadingCoeff_pos" =>
+        evalTactic (← `(tactic| refine ⟨(And.left $h).trans (by lia), ?_⟩))
+        lcPos
+    | _ => lcPos
+  let mut failures : Array (MessageData × MessageData) := #[]
+  let attempts : List (Option Term) :=
+    none :: (← ["1", "2", "3", "4", "1 / 2", "1 / 3", "1 / 4"].mapM fun r => do
+      let some ρ := (Parser.runParserCategory (← getEnv) `term r).toOption
+        | throwError "rr_row: bad ratio {r}"
+      return some ⟨ρ⟩)
+  for c? in attempts do
+    let hI := mkIdent `h_row
+    let main ← match c? with
+      | none => `(tactic| have $hI:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos
+          (k := $kq) (d := $dq) (D₀ := $Dq) (P := $Pi) (terms := $terms) $hrec ?_ ?_ ?_ ?_ ?_ $t)
+      | some ρ => `(tactic| have $hI:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq
+          (k := $kq) (d := $dq) (D₀ := $Dq) (P := $Pi) (terms := $terms)
+          (c := fun m => (Polynomial.coeff ($Pi 0) $Dq) * ($ρ : ℝ) ^ m) $hrec ?_ ?_ ?_ ?_ ?_ $t)
+    match ← rowAttempt (do
+        evalTactic main
+        let gs ← getGoals
+        let some g := gs.head? | throwError "rr_row: no goals"
+        setGoals [g]
+        finish c?
+        unless (← getGoals).isEmpty do throwError "rr_row: goals remain"
+        linRecSides Pi L.terms.size c? gs.tail
+        setGoals []) with
+    | .ok () => return #[← match kind with
+        | "natDegree" => `(tactic| rr_row_natDegree)
+        | "ne_zero" => `(tactic| rr_row_ne_zero)
+        | "natDegree_leadingCoeff_pos" => `(tactic| rr_row_natDegree_leadingCoeff_pos)
+        | _ => `(tactic| rr_row_leadingCoeff_pos)]
+    | .error e =>
+        let what : MessageData := match c? with
+          | none => m!"RealRooted.LinRec with nonnegative multipliers"
+          | some ρ => m!"RealRooted.LinRec with top coefficients (P 0).coeff {D₀} * {ρ} ^ n"
+        failures := failures.push (what, e)
+  throwRowFailures m!"rr_row_{kind}: no strategy proves the goal for the linear recurrence \
+    of {P} (degrees {D₀} + {d} * n)" failures
+
+/-- The degree tactics for the recurrence shapes of `RecShape`. -/
+private def rowDegreeShapeCore (kind : String) (hints : RowHints) :
+    TacticM (Cert × RowHints) := do
   let who := s!"rr_row_{kind}"
   let r ← rowRecSetup who
   if r.shape == .product then
@@ -582,6 +772,19 @@ private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × 
         refine (?_ : ($Q $t).natDegree = $deg ∧ 0 < ($Q $t).leadingCoeff).imp_left
           fun h => h.trans (by lia))
     | _ => `(tactic| change 0 < ($Q $t).leadingCoeff)
+
+/-- The degree tactics, returning a certificate and the hinted call: the recurrence shapes
+of `RecShape` first, then, without hints, general linear recurrences (`linRecRow`). -/
+private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × RowHints) := do
+  match ← rowAttempt (rowDegreeShapeCore kind hints) with
+  | .ok r => return r
+  | .error e =>
+      let noHints := hints.thm.isNone && hints.degree.isNone && hints.growth.isNone &&
+        hints.drop.isNone && hints.ratio.isNone && hints.half.isNone
+      unless noHints do throwError e
+      match ← rowAttempt (linRecRow kind) with
+      | .ok cert => return (cert, {})
+      | .error e' => throwError "{e}\n\nAs a general linear recurrence: {e'}"
 
 /-- Run a degree tactic; with `?`, print the certificate and the hinted call. -/
 private def rowDegreeElab (kind : String) (tk : Option Syntax)
