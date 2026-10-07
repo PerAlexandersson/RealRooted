@@ -369,8 +369,11 @@ import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.DerivativeInterlacing
 import RealRooted.Challenges.DerivativeInterlacing
+import RealRooted.Challenges.DerivativeInterlacing
 import RealRooted.Challenges.Descartes
 import RealRooted.Challenges.Descartes
+import RealRooted.Challenges.Descartes
+import RealRooted.Challenges.EnestromKakeya
 import RealRooted.Challenges.Eulerian
 import RealRooted.Challenges.EulerianVariations
 import RealRooted.Challenges.EulerianVariations
@@ -1113,6 +1116,7 @@ import RealRooted.Mathlib.Analysis.Complex.ArgumentPrinciple
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
