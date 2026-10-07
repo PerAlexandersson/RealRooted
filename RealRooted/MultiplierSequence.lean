@@ -761,24 +761,6 @@ theorem finitePFMultiplierSequence_three_logConcave
   (isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence
     hmult).jensenPolynomial_three_logConcave
 
-/-- The finite Polya--Schur theorem in the nonnegative-coefficient convention:
-a nonnegative diagonal sequence preserves real-rootedness up to degree `n` if
-and only if its degree-`n` Jensen polynomial is PF.  Proved as
-`finitePolyaSchur_nonneg` in `RealRooted.Hadamard.Grace`. -/
-def finitePolyaSchurNonnegStatement : Prop :=
-  ∀ {n : ℕ} {gamma : ℕ → ℝ},
-    (∀ k, 0 ≤ gamma k) →
-      (IsFiniteMultiplierSequence n gamma ↔
-        IsPFPolynomial (jensenPolynomial n gamma))
-
-/-- The backward direction of the finite Polya--Schur theorem.  Proved as
-`finitePolyaSchurNonnegBackward` in `RealRooted.Hadamard.Grace`. -/
-def finitePolyaSchurNonnegBackwardStatement : Prop :=
-  ∀ {n : ℕ} {gamma : ℕ → ℝ},
-    (∀ k, 0 ≤ gamma k) →
-      IsPFPolynomial (jensenPolynomial n gamma) →
-        IsFiniteMultiplierSequence n gamma
-
 /-- Degree at most two case of the full finite Pólya--Schur classification.
 
 The forward implication is elementary; the reverse implication is the checked
@@ -797,17 +779,6 @@ theorem finitePolyaSchur_nonneg_natDegree_two
     IsFiniteMultiplierSequence 2 gamma ↔
       IsPFPolynomial (jensenPolynomial 2 gamma) :=
   finitePolyaSchur_nonneg_of_natDegree_le_two le_rfl hgamma
-
-theorem finitePolyaSchur_nonneg_of_backward
-    (hBack : finitePolyaSchurNonnegBackwardStatement) :
-    finitePolyaSchurNonnegStatement :=
-  fun hgamma => ⟨isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma,
-    hBack hgamma⟩
-
-/- The classical finite Pólya--Schur theorem `finitePolyaSchur_nonneg` is
-established in `RealRooted.Hadamard`, where the Schur--Szegő composition
-machinery (`finiteSchurSzegoComposition`) needed for the backward direction
-`finitePolyaSchurNonnegBackwardStatement` is available. -/
 
 /-- A nonnegative finite multiplier sequence preserves the PF cone on the same
 degree range. -/
@@ -884,28 +855,5 @@ theorem isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_two
       IsPFPolynomial (jensenPolynomial 2 gamma) :=
   isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_le_two
     le_rfl hgamma
-
-/-- PF preservation obtained from the finite Polya--Schur classification and a
-PF Jensen polynomial. -/
-theorem isFinitePFMultiplierSequence_of_jensenPolynomial
-    (hFPS : finitePolyaSchurNonnegStatement)
-    {n : ℕ} {gamma : ℕ → ℝ}
-    (hgamma : ∀ k, 0 ≤ gamma k)
-    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
-    IsFinitePFMultiplierSequence n gamma :=
-  isFinitePFMultiplierSequence_of_finiteMultiplierSequence hgamma
-    ((hFPS hgamma).2 hjensen)
-
-/-- PF-preservation form of finite Pólya--Schur: for a nonnegative diagonal
-sequence, preserving the PF cone up to degree `n` is equivalent to the degree
-`n` Jensen polynomial being PF. -/
-theorem isFinitePFMultiplierSequence_iff_jensenPolynomial
-    (hFPS : finitePolyaSchurNonnegStatement)
-    {n : ℕ} {gamma : ℕ → ℝ}
-    (hgamma : ∀ k, 0 ≤ gamma k) :
-    IsFinitePFMultiplierSequence n gamma ↔
-      IsPFPolynomial (jensenPolynomial n gamma) :=
-  ⟨isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence,
-    isFinitePFMultiplierSequence_of_jensenPolynomial hFPS hgamma⟩
 
 end RealRooted
