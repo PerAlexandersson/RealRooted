@@ -1433,6 +1433,7 @@ import RealRooted.Challenges.GarloffWagnerHurwitz
 import RealRooted.LaguerreSamuelson
 import RealRooted.Maclaurin
 import RealRooted.Challenges.NewtonMaclaurin
+import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
 
 /-!
 # RealRooted production umbrella
