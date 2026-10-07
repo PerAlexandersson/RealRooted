@@ -1438,6 +1438,9 @@ import RealRooted.FactorialCompression.Lifting
 import RealRooted.FactorialCompression.RootGeometry
 import RealRooted.FactorialCompression.SchurSzego
 import RealRooted.Challenges.FactorialCompression
+import RealRooted.GarloffWagner.HurwitzStable
+import RealRooted.Challenges.GarloffWagnerHurwitz
+import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
 
 /-!
 # RealRooted production umbrella

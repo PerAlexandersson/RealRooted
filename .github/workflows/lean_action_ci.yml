@@ -77,12 +77,32 @@ jobs:
             /usr/local/.ghcup /opt/hostedtoolcache/CodeQL || true
           sudo apt-get clean || true
           df -h /
+      # Build cache: every run restores the newest `.lake` saved by a `main` build with the same
+      # toolchain and manifest, and Lake rebuilds only what changed since.  Only pushes to `main`
+      # save, so pull requests do not fill the 10 GB cache quota with entries no other run can
+      # use (which evicted the `main` cache and forced full rebuilds).  The key format matches
+      # lean-action's own, so existing `main` caches stay usable.
+      - name: Restore build cache
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-
       - uses: leanprover/lean-action@v1
         with:
           # Keep the required check an explicit ordinary `lake build`, even
           # if future Lake metadata changes lean-action auto-detection.
           build: true
           build-args: ""
+          # caching is done by the explicit restore/save steps around this one
+          use-github-cache: false
+      - name: Save build cache
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
       - name: Audit curated declarations
         run: |
           python3 scripts/audit_challenge_catalog.py \

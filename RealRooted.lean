@@ -1571,3 +1571,6 @@ import RealRooted.Challenges.BigDescents321
 import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+import RealRooted.GarloffWagner.HurwitzStable
+import RealRooted.Challenges.GarloffWagnerHurwitz
+import RealRooted.PolynomialValueEulerNumerator.Product.Brenti

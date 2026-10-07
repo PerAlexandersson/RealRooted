@@ -10,31 +10,13 @@ namespace RealRooted
 /-!
 # Hadamard products and Hurwitz stability
 
-The open Garloff--Wagner Theorem 1 target, and checked low-order facts about
-the row-oriented Hurwitz matrix of a Hadamard product.
+Checked low-order facts about the row-oriented Hurwitz matrix of a Hadamard
+product.  Garloff--Wagner, Theorem 1 (Hadamard products preserve Hurwitz stability) is
+`IsHurwitzStable.hadamardProduct` in `RealRooted.GarloffWagner.HurwitzStable`; it goes
+through the odd/even parts, since total nonnegativity of infinite row-oriented Hurwitz
+matrices is not closed under entrywise products
+(`not_hurwitz_schurProduct_isTotallyNonneg`).
 -/
-
-/-- **Hadamard product preserves Hurwitz stability** (Garloff--Wagner,
-Theorem 1).  Unproved target, tracked in GitHub issue #1095.
-
-This is the main theorem of Garloff--Wagner, *Hadamard Products of Stable
-Polynomials Are Stable*, J. Math. Anal. Appl. 202 (1996), 797--809: the
-coefficientwise Hadamard product of two Hurwitz-stable real polynomials is again
-Hurwitz stable, provided the coefficientwise product is nonzero.  The nonzero
-side condition is needed because this project's `IsHurwitzStable` convention
-excludes the zero polynomial, while coefficientwise products of two nonzero
-stable polynomials can vanish when their coefficient supports are disjoint.
-
-The interlacing form, Garloff--Wagner Theorem 4(b), is proved as
-`StrictInterl.interl_hadamardProduct_of_isPFPolynomial`.  Total nonnegativity of infinite
-row-oriented Hurwitz matrices is not closed under entrywise products
-(`not_hurwitz_schurProduct_isTotallyNonneg`), so that route does not apply. -/
-def hadamardPreservesHurwitzStableStatement : Prop :=
-  ∀ {a b : ℝ[X]},
-    IsHurwitzStable a →
-    IsHurwitzStable b →
-    hadamardProduct a b ≠ 0 →
-    IsHurwitzStable (hadamardProduct a b)
 
 /-- Hurwitz-matrix form of the coefficientwise Hadamard product of two
 polynomials. -/
