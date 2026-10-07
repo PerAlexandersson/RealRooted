@@ -339,6 +339,8 @@ import RealRooted.BrandenVecchi.SupersymmetricLimits
 import RealRooted.CauchyInterlacing
 import RealRooted.CauchyInterlacing.Polynomial
 import RealRooted.CauchyInterlacing.RankOne
+import RealRooted.CauchyInterlacing.RankOne
+import RealRooted.CauchyInterlacing.Submatrix
 import RealRooted.CauchyInterlacing.Submatrix
 import RealRooted.CauchyInterlacing.Submatrix
 import RealRooted.Challenges.AissenSchoenbergWhitney
@@ -1289,6 +1291,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
@@ -1308,6 +1311,7 @@ import RealRooted.MultivariateStability.HomogeneousPencilWronskian
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.LinearForm
+import RealRooted.MultivariateStability.NegativeCorrelation
 import RealRooted.MultivariateStability.PolyaFrequency
 import RealRooted.MultivariateStability.Rayleigh
 import RealRooted.MultivariateStability.RayleighConverse
