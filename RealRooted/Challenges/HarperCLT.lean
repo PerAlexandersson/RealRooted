@@ -7,8 +7,8 @@ import RealRooted.Mathlib.Probability.CoeffDistribution
 version = 1
 section = "theorems"
 slug = "harper-clt"
-authors = ["Harper", "Bender"]
-years = [1967, 1973]
+authors = ["Harper", "Bender", "Goncharov"]
+years = [1944, 1967, 1973]
 
 [[definitions]]
 name = "Polynomial.standardizedCoeffDistribution"
@@ -30,6 +30,16 @@ headline = true
 name = "Polynomial.tendsto_standardizedCoeffDistribution_one_add_X_pow"
 module = "RealRooted.Mathlib.Probability.CoeffDistribution"
 label = "De Moivre–Laplace: the binomial distribution is asymptotically normal"
+
+[[theorems]]
+name = "Polynomial.tendsto_standardizedCoeffDistribution_prod_range"
+module = "RealRooted.Mathlib.Probability.CoeffDistribution"
+label = "Products of real-rooted factors with divergent total variance are asymptotically normal"
+
+[[theorems]]
+name = "Polynomial.tendsto_standardizedCoeffDistribution_prod_X_add_natCast"
+module = "RealRooted.Mathlib.Probability.CoeffDistribution"
+label = "Goncharov: Stirling numbers of the first kind are asymptotically normal"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -55,6 +65,13 @@ to the standard normal distribution.
 For example, $(1 + x)^n$ has variance $n/4$, which recovers the de
 Moivre–Laplace theorem for the binomial distribution.
 
+Variances add under multiplication, so a product $\prod_{i<n} L_i$ of
+real-rooted factors with nonnegative coefficients is asymptotically normal as
+soon as $\sum_i \sigma^2(L_i) \to \infty$. For $L_i = x + i$ the variance is
+$i/(i+1)^2 \ge 1/(2(i+1))$ for $i \ge 1$, and the harmonic series diverges. This
+gives Goncharov's theorem: the unsigned Stirling numbers of the first kind, which
+count permutations of $[n]$ by number of cycles, are asymptotically normal.
+
 ## Proof idea
 
 The characteristic function of the standardized distribution is a product of
@@ -68,7 +85,8 @@ turns pointwise convergence of characteristic functions into weak convergence.
 L. H. Harper, “Stirling behavior is asymptotically normal,” *Annals of
 Mathematical Statistics* 38 (1967), 410–414; E. A. Bender, “Central and local
 limit theorems applied to asymptotic enumeration,” *Journal of Combinatorial
-Theory, Series A* 15 (1973), 91–111.
+Theory, Series A* 15 (1973), 91–111; V. L. Goncharov, “Some facts from
+combinatorics,” *Izv. Akad. Nauk SSSR Ser. Mat.* 8 (1944), 3–48.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in
