@@ -1,6 +1,6 @@
+import RealRooted.DegreeDropReversal
+import RealRooted.Derivative.FamilyClosure
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Reverse
-import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 /-!
 # Laguerre's theorem on polar derivatives
@@ -15,19 +15,17 @@ Translate `a` to `0`: with `g = f.comp (X + C a)` we get
 `(D_a f).comp (X + C a) = n • g - X * g'`.  On coefficients `n • g - X * g'` multiplies the
 coefficient of `X ^ i` by `n - i`, so it equals `reflect (n - 1) (derivative (reflect n g))`.
 Reversal preserves splitting over a field, and over `ℝ` the derivative of a split polynomial
-splits by Rolle's theorem (`Polynomial.card_roots_le_derivative`).
+splits by Rolle's theorem (`eq_zero_or_splits_derivative`).
 
 ## Main results
 
-* `Polynomial.polarDerivative`: the polar derivative.
-* `Polynomial.Splits.derivative_of_real`: Rolle's theorem in splitting form.
-* `Polynomial.splits_polarDerivative_of_splits`, `Polynomial.Splits.polarDerivative`:
-  Laguerre's theorem.
+* `RealRooted.polarDerivative`: the polar derivative.
+* `RealRooted.splits_polarDerivative_of_splits`: Laguerre's theorem.
 -/
 
 open Polynomial
 
-namespace Polynomial
+namespace RealRooted
 
 variable {R : Type*} [CommRing R]
 
@@ -35,15 +33,6 @@ variable {R : Type*} [CommRing R]
 where `n = f.natDegree`. -/
 noncomputable def polarDerivative (a : R) (f : R[X]) : R[X] :=
   C (f.natDegree : R) * f + (C a - X) * derivative f
-
-/-- Rolle's theorem in splitting form: the derivative of a real polynomial that splits
-over `ℝ` splits. -/
-theorem Splits.derivative_of_real {f : ℝ[X]} (hf : f.Splits) : (derivative f).Splits := by
-  rw [splits_iff_card_roots] at hf ⊢
-  have h1 := card_roots_le_derivative f
-  have h2 := card_roots' (derivative f)
-  have h3 := natDegree_derivative_le f
-  lia
 
 /-- The polar derivative with respect to `0`, written as a reflected derivative of a
 reflection. -/
@@ -86,16 +75,12 @@ theorem splits_polarDerivative_of_splits {f : ℝ[X]} (hf : f.Splits) (a : ℝ) 
     simp [g, natDegree_comp]
   have hs : ((polarDerivative a f).comp (X + C a)).Splits := by
     rw [polarDerivative_comp_X_add_C, C_mul_sub_X_mul_derivative_eq_reflect hdeg.le, ← hdeg]
-    refine Splits.reflect ?_ ?_
-    · exact (hf.comp_X_add_C a).reverse.derivative_of_real
+    refine DegreeDropReversal.splits_reflect_of_splits ?_ ?_
+    · exact ((eq_zero_or_splits_derivative
+        (Or.inr (DegreeDropReversal.splits_reverse (hf.comp_X_add_C a)))).elim
+          (fun h => h ▸ Splits.zero) id)
     · exact (natDegree_derivative_le _).trans (Nat.sub_le_sub_right (reverse_natDegree_le g) 1)
   have h := hs.comp_X_sub_C a
   rwa [comp_assoc, add_comp, X_comp, C_comp, sub_add_cancel, comp_X] at h
 
-/-- **Laguerre's theorem** on polar derivatives (real-line form): if `f` splits over `ℝ`,
-then the polar derivative of `f` with respect to `a` is zero or splits. -/
-theorem Splits.polarDerivative {f : ℝ[X]} (hf : f.Splits) (a : ℝ) :
-    polarDerivative a f = 0 ∨ (polarDerivative a f).Splits :=
-  Or.inr (splits_polarDerivative_of_splits hf a)
-
-end Polynomial
+end RealRooted

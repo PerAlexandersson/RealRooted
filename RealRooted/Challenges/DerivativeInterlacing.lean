@@ -1,6 +1,6 @@
 import RealRooted.Derivative.FamilyClosure
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
-import RealRooted.Mathlib.Algebra.Polynomial.PolarDerivative
+import RealRooted.PolarDerivative
 import RealRooted.Derivative.Interlacing
 import RealRooted.Derivative.RootCounting
 import RealRooted.ObreschkoffConverse.Derivative
@@ -43,8 +43,8 @@ module = "RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks"
 label = "Jensen: non-real zeros of p' lie in Jensen disks"
 
 [[theorems]]
-name = "Polynomial.splits_polarDerivative_of_splits"
-module = "RealRooted.Mathlib.Algebra.Polynomial.PolarDerivative"
+name = "RealRooted.splits_polarDerivative_of_splits"
+module = "RealRooted.PolarDerivative"
 label = "Laguerre: polar derivatives of real-rooted polynomials are real-rooted"
 -->
 

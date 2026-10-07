@@ -1,4 +1,4 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Reverse
+import Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Algebra.Polynomial.FieldDivision
 
@@ -143,8 +143,17 @@ theorem count_roots_reverse [DecidableEq K] {p : K[X]} (hp : p.Splits)
 
 /-- Reversal preserves `Splits` over a field. -/
 theorem splits_reverse {p : K[X]} (h : p.Splits) :
-    p.reverse.Splits :=
-  h.reverse
+    p.reverse.Splits := by
+  induction h using Submonoid.closure_induction with
+  | mem x hx =>
+    rcases hx with ⟨a, rfl⟩ | ⟨a, rfl⟩
+    · simp
+    · exact splits_reverse_X_add_C a
+  | one =>
+    exact Polynomial.Splits.of_natDegree_le_one <|
+      (Polynomial.reverse_natDegree_le (1 : K[X])).trans <| by simp
+  | mul x y _ _ ihx ihy =>
+    simp_all
 
 /-- Reflecting a polynomial at a degree `N` at least its own `natDegree` factors
 a power of `X` out of its reversal. -/
@@ -266,8 +275,9 @@ theorem splits_X_pow_mul_reverse {p : K[X]} (h : p.Splits) (N : ℕ) :
 /-- Reflection at any degree at least `p.natDegree` preserves splitting. -/
 theorem splits_reflect_of_splits {p : K[X]} (h : p.Splits) {N : ℕ}
     (hN : p.natDegree ≤ N) :
-    (reflect N p).Splits :=
-  h.reflect hN
+    (reflect N p).Splits := by
+  simpa [reflect_eq_X_pow_mul_reverse p hN] using
+    splits_X_pow_mul_reverse h N
 
 /-- For polynomials of degree at most `N`, reflection preserves and reflects
 splitting. -/

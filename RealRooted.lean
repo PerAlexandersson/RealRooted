@@ -1107,7 +1107,6 @@ import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
 import RealRooted.Mathlib.Algebra.Polynomial.Moment
-import RealRooted.Mathlib.Algebra.Polynomial.PolarDerivative
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
@@ -1115,7 +1114,6 @@ import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Reverse
 import RealRooted.Mathlib.Algebra.Polynomial.Sturm
 import RealRooted.Mathlib.Algebra.Polynomial.Sturm
 import RealRooted.Mathlib.Algebra.Polynomial.Taylor
@@ -1423,6 +1421,7 @@ import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
 import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
 import RealRooted.PartialSumStep
 import RealRooted.PartialSymmetrization
+import RealRooted.PolarDerivative
 import RealRooted.Polarization
 import RealRooted.PolyaFrequency.EventuallyPolynomial
 import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure
