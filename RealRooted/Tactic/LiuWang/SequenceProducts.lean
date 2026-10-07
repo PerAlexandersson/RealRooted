@@ -530,7 +530,7 @@ macro_rules
       rr_lw_tR_lag_sequence_realrooted using recurrence := $hrec:term) =>
       `(tactic|
         rr_exact_realrooted_refine_then
-          (RealRooted.LiuWang.isRealRooted_of_tR_lag_sequence
+          (RealRooted.LiuWang.isRealRooted_of_positive_X_mul_lag_sequence
             ?_ ?_ ?_ ?_ $hrec ?_ ?_)
           with rr_lookup)
   | `(tactic|

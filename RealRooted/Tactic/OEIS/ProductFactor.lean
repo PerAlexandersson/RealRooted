@@ -699,7 +699,7 @@ macro_rules
         certificate := modelRealRooted) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_j1_gap3_reciprocal_sequence
+          (RealRooted.isRealRooted_of_reciprocalShift_sequence
             $hmodel $hdegree $hreciprocal))
   | `(tactic|
       rr_j1_gap3_reciprocal_sequence_realrooted using
@@ -710,7 +710,7 @@ macro_rules
         certificate := modelPF) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_j1_gap3_reciprocal_pf_sequence
+          (RealRooted.isRealRooted_of_reciprocalShift_pf_sequence
             $hmodel $hmodel_ne $hdegree $hreciprocal))
 end Tactic
 end RealRooted

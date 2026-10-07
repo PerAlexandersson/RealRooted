@@ -1,5 +1,6 @@
 import RealRooted.BasisTransform
 import RealRooted.MaWang.DerivativeStep
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.RootBounds
 import RealRooted.ScalarNormalization
@@ -240,24 +241,6 @@ private theorem balancedRunCoeff_recurrence
     _ = _ := by
       field_simp [hnchoose]
       linear_combination hnum
-
-private theorem coeff_X_mul_one_sub_X_mul_derivative
-    (p : ℝ[X]) (k : ℕ) :
-    (X * (1 - X) * p.derivative).coeff k =
-      (k : ℝ) * p.coeff k -
-        ((k - 1 : ℕ) : ℝ) * p.coeff (k - 1) := by
-  have hpoly :
-      X * (1 - X) * p.derivative =
-        X * p.derivative - X * (X * p.derivative) := by ring
-  rw [hpoly, coeff_sub]
-  cases k with
-  | zero => simp
-  | succ k =>
-      cases k with
-      | zero => simp [coeff_X_mul, coeff_derivative]
-      | succ k =>
-          simp [coeff_X_mul, coeff_derivative]
-          ring
 
 /-- Denominator-cleared differential recurrence for consecutive balanced run
 kernels strictly before the midpoint. -/

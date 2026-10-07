@@ -13,15 +13,9 @@ PF and interlacing closure under Hadamard products, reciprocal shift
 transport, and coefficientwise Pólya-frequency consequences.
 -/
 
-/-- Garloff--Wagner, Theorem 4(b), for PF polynomials: Hadamard products
-preserve strict interlacing of PF pairs, in zero-aware form. -/
-theorem garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl {f g p q : ℝ[X]}
-    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
-    Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  StrictInterl.interl_hadamardProduct hf.hasNonnegCoeffs hg.hasNonnegCoeffs
-    hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
+@[deprecated StrictInterl.interl_hadamardProduct_of_isPFPolynomial (since := "2026-10-07")]
+alias garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl :=
+  StrictInterl.interl_hadamardProduct_of_isPFPolynomial
 
 /-- Garloff--Wagner, Theorem 4(b), for PF polynomials and zero-aware
 interlacing inputs. -/
@@ -36,7 +30,7 @@ theorem garloffWagnerHadamardPFInterl_of_nonnegStrictInterl {f g p q : ℝ[X]}
   rcases hpq with rfl | rfl | hpq'
   · simpa using interl_zero_left (hadamardProduct g q)
   · simpa using interl_zero_right (hadamardProduct f p)
-  exact garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl hf hg hp hq hfg' hpq'
+  exact hfg'.interl_hadamardProduct_of_isPFPolynomial hf hg hp hq hpq'
 
 @[deprecated (since := "2026-10-05")]
 alias hadamardProduct_preserves_pf_of_nonnegStrictInterl := IsPFPolynomial.hadamardProduct

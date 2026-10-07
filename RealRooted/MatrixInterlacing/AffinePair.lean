@@ -510,99 +510,6 @@ theorem strictInterl_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
           simp [huv])
   simpa [mul_comm, mul_left_comm] using hrows
 
-/-- Zero-aware fixed-row form of the forward matrix theorem. This weak variant
-uses `Has2x2InterlacingProperty0` and returns `Interl`, so either output row sum
-may vanish. When both sums are nonzero, the proof filters zero auxiliary
-affine-row entries and reuses the strict product-family theorem. -/
-theorem interl_zipWith_sum_pair_of_2x2
-    {row₁ row₂ fs : List ℝ[X]}
-    (hrow₁_len : row₁.length = n)
-    (hrow₂_len : row₂.length = n)
-    (hrow₁_nonneg : ∀ p ∈ row₁, HasNonnegCoeffs p)
-    (hrow₂_nonneg : ∀ p ∈ row₂, HasNonnegCoeffs p)
-    (h2x2 : ∀ (j₁ j₂ : Fin n), j₁ ≤ j₂ →
-      Has2x2InterlacingProperty0
-        (row₁.get ⟨j₁, by lia⟩)
-        (row₁.get ⟨j₂, by lia⟩)
-        (row₂.get ⟨j₁, by lia⟩)
-        (row₂.get ⟨j₂, by lia⟩))
-    (hfs_len : fs.length = n)
-    (hfs : IsInterlacingSeqNonneg fs) :
-    Interl ((row₁.zipWith (· * ·) fs).sum) ((row₂.zipWith (· * ·) fs).sum) := by
-  let F : ℝ[X] := ((row₁.zipWith (· * ·) fs).sum)
-  let G : ℝ[X] := ((row₂.zipWith (· * ·) fs).sum)
-  by_cases hF_zero : F = 0
-  · exact Or.inl hF_zero
-  by_cases hG_zero : G = 0
-  · exact Or.inr (Or.inl hG_zero)
-  let auxRow := rowPairAffineSeq row₁ row₂
-  have hrows : row₁.length = row₂.length := by lia
-  have haux_len : ∀ {s t : ℝ}, (auxRow s t).length = n :=
-    fun {s t} => by
-      simpa [auxRow] using
-        length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len
-  have hrewrite :
-      ∀ {s t : ℝ},
-        ((C s * X + C t) * F) + G = ((auxRow s t).zipWith (· * ·) fs).sum :=
-    fun {s t} => by
-      simpa [F, G, auxRow] using
-        rowPairAffine_combo_eq_zipWith_sum
-          (row₁ := row₁) (row₂ := row₂) (fs := fs) (s := s) (t := t) hrows
-  rcases hfs with ⟨hfs_mem, hfs_int⟩
-  have hfs_nonneg : ∀ f ∈ fs, HasNonnegCoeffs f := by simp_all
-  have hfs_all : IsInterlacingSeqNonneg fs := ⟨hfs_mem, hfs_int⟩
-  have hF_nonneg : HasNonnegCoeffs F := by
-    simpa [F] using
-      hasNonnegCoeffs_zipWith_mul_sum
-        (hrow := hrow₁_nonneg) (hfs := hfs_nonneg)
-  have hG_nonneg : HasNonnegCoeffs G := by
-    simpa [G] using
-      hasNonnegCoeffs_zipWith_mul_sum
-        (hrow := hrow₂_nonneg) (hfs := hfs_nonneg)
-  have haux_rr :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((auxRow s t).zipWith (· * ·) fs).sum) ≠ 0 ∧
-          (((auxRow s t).zipWith (· * ·) fs).sum).Splits) := by
-    intro s t hs ht
-    have haux0 :
-        IsInterlacingSeq0Nonneg ((auxRow s t).reverse) :=
-      isInterlacingSeq0Nonneg_reverse_rowPairAffineSeq
-        (n := n) (row₁ := row₁) (row₂ := row₂)
-        hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg
-        (fun j₁ j₂ hj => h2x2 j₁ j₂ (le_of_lt hj)) hs ht
-    have haux_real :
-        ∀ p ∈ (auxRow s t).reverse, p ≠ 0 → (p ≠ 0 ∧ p.Splits) :=
-      fun p hp hp_ne =>
-        isRealRooted_mem_rowPairAffineSeq_of_ne
-          (n := n) (row₁ := row₁) (row₂ := row₂)
-          hrow₁_len hrow₂_len (fun j => h2x2 j j le_rfl) hs ht p hp hp_ne
-    have hleft_nonneg : HasNonnegCoeffs ((C s * X + C t) * F) :=
-      hasNonnegCoeffs_affine_mul hs.le ht.le hF_nonneg
-    have hcombo_ne : (((C s * X + C t) * F) + G) ≠ 0 :=
-      add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hleft_nonneg hG_nonneg hG_zero
-    have haux_sum_ne : ((auxRow s t).zipWith (· * ·) fs).sum ≠ 0 := by simp_all
-    have hsum_ne_rev :
-        (((auxRow s t).reverse.zipWith (· * ·) fs.reverse).sum) ≠ 0 := by
-      simpa [zipWith_mul_sum_reverse_reverse (row := auxRow s t) (fs := fs)
-        (haux_len.trans hfs_len.symm)] using haux_sum_ne
-    have hrr_rev :
-        (((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum) ≠ 0 ∧
-          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) :=
-      isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
-        (fs := (auxRow s t).reverse) (gs := fs)
-        (by simp [haux_len, hfs_len])
-        haux0 haux_real hfs_all hsum_ne_rev
-    simpa [zipWith_mul_sum_reverse_reverse (row := auxRow s t) (fs := fs)
-      (haux_len.trans hfs_len.symm)] using hrr_rev
-  have haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * F) + G) ≠ 0 ∧ (((C s * X + C t) * F) + G).Splits) := by
-    simp_all
-  have hFG : StrictInterl F G :=
-    strictInterl_of_affine_family_nonneg
-      (f := F) (g := G) hF_zero hG_zero hF_nonneg hG_nonneg haff
-  simpa [F, G] using hFG.toInterl
-
 /-- Zero-aware fixed-row form with zero-aware input.  Besides weak
 interlacing and nonnegative coefficients, the input sequence is assumed to have
 real-rooted nonzero entries. -/
@@ -692,5 +599,27 @@ theorem interl_zipWith_sum_pair_of_2x2_weak
     strictInterl_of_affine_family_nonneg
       (f := F) (g := G) hF_zero hG_zero hF_nonneg hG_nonneg haff
   simpa [F, G] using hFG.toInterl
+
+/-- Zero-aware fixed-row form of the forward matrix theorem. This weak variant
+uses `Has2x2InterlacingProperty0` and returns `Interl`, so either output row sum
+may vanish. When both sums are nonzero, the proof filters zero auxiliary
+affine-row entries and reuses the strict product-family theorem. -/
+theorem interl_zipWith_sum_pair_of_2x2
+    {row₁ row₂ fs : List ℝ[X]}
+    (hrow₁_len : row₁.length = n)
+    (hrow₂_len : row₂.length = n)
+    (hrow₁_nonneg : ∀ p ∈ row₁, HasNonnegCoeffs p)
+    (hrow₂_nonneg : ∀ p ∈ row₂, HasNonnegCoeffs p)
+    (h2x2 : ∀ (j₁ j₂ : Fin n), j₁ ≤ j₂ →
+      Has2x2InterlacingProperty0
+        (row₁.get ⟨j₁, by lia⟩)
+        (row₁.get ⟨j₂, by lia⟩)
+        (row₂.get ⟨j₁, by lia⟩)
+        (row₂.get ⟨j₂, by lia⟩))
+    (hfs_len : fs.length = n)
+    (hfs : IsInterlacingSeqNonneg fs) :
+    Interl ((row₁.zipWith (· * ·) fs).sum) ((row₂.zipWith (· * ·) fs).sum) :=
+  interl_zipWith_sum_pair_of_2x2_weak hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg h2x2
+    hfs_len hfs.toIsInterlacingSeq0Nonneg fun f hf _ => (hfs.1 f hf).1
 
 end RealRooted
