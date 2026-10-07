@@ -1,5 +1,6 @@
 import RealRooted.Maclaurin
 import RealRooted.LaguerreSamuelson
+import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
 
 /-!
 # Newton, Maclaurin and Laguerre–Samuelson inequalities challenge entry point
@@ -8,8 +9,8 @@ import RealRooted.LaguerreSamuelson
 version = 1
 section = "theorems"
 slug = "newton-maclaurin"
-authors = ["Newton", "Maclaurin", "Laguerre", "Samuelson"]
-years = [1707, 1729, 1880, 1968]
+authors = ["Newton", "Maclaurin", "Laguerre", "Darroch", "Samuelson"]
+years = [1707, 1729, 1880, 1964, 1968]
 
 [[theorems]]
 name = "NewtonAux.newton_esymm_ineq"
@@ -31,6 +32,11 @@ label = "Laguerre's root bound from the top coefficients"
 name = "RealRooted.Samuelson.abs_sub_mean_le"
 module = "RealRooted.LaguerreSamuelson"
 label = "Samuelson's inequality"
+
+[[theorems]]
+name = "Polynomial.abs_sub_lt_one_of_isMode"
+module = "RealRooted.Mathlib.Algebra.Polynomial.MeanMode"
+label = "Darroch: the mode is within one of the mean"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -57,6 +63,11 @@ $$
 \Bigl(r + \frac{a}{n}\Bigr)^2 \le \frac{n-1}{n}\Bigl(\frac{n-1}{n} a^2 - 2b\Bigr).
 $$
 
+**Darroch's theorem.** Let $p$ be a nonzero real-rooted polynomial with
+nonnegative coefficients, and let $\mu = p'(1)/p(1)$ be the mean of the
+distribution $k \mapsto p_k / p(1)$. Every mode $k$ (an index with $p_k$
+maximal) satisfies $|k - \mu| < 1$.
+
 ## References
 
 I. Newton, *Arithmetica Universalis* (1707); C. Maclaurin, “A second letter to Martin
@@ -64,9 +75,12 @@ Folkes,” *Philosophical Transactions* 36 (1729); E. Laguerre, “Sur une méth
 par approximation les racines d'une équation algébrique qui a toutes ses racines réelles,”
 *Nouvelles Annales de Mathématiques* (1880); P. A. Samuelson, “How deviant can you be?”,
 *Journal of the American Statistical Association* 63 (1968), 1522–1525; G. H. Hardy,
-J. E. Littlewood and G. Pólya, *Inequalities*, §2.22.
+J. E. Littlewood and G. Pólya, *Inequalities*, §2.22; J. N. Darroch, “On the distribution
+of the number of successes in independent trials,” *Annals of Mathematical Statistics* 35
+(1964), 1317–1321.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.NewtonAux`,
-`RealRooted.Maclaurin` and `RealRooted.LaguerreSamuelson`.
+`RealRooted.Maclaurin`, `RealRooted.LaguerreSamuelson` and
+`RealRooted.Mathlib.Algebra.Polynomial.MeanMode`.
 -/

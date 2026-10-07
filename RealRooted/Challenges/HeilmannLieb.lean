@@ -1,5 +1,6 @@
 import RealRooted.HeilmannLieb
 import RealRooted.RankTwoMatching.Transform
+import RealRooted.Graph.MatchingVertexInterlacing
 
 /-!
 # Heilmann–Lieb challenge entry point
@@ -8,8 +9,8 @@ import RealRooted.RankTwoMatching.Transform
 version = 1
 section = "theorems"
 slug = "heilmann-lieb"
-authors = ["Heilmann", "Lieb", "Engström"]
-years = [1972, 2007]
+authors = ["Heilmann", "Lieb", "Godsil", "Engström"]
+years = [1972, 1981, 2007]
 
 [[definitions]]
 name = "RealRooted.Graph.matchingPolynomialByEdges"
@@ -35,6 +36,16 @@ label = "Rank-two binomial transform"
 name = "RealRooted.Challenges.HeilmannLieb.matchingPolynomial_splits"
 label = "Heilmann–Lieb: the matching polynomial is real-rooted"
 headline = true
+
+[[theorems]]
+name = "RealRooted.interlaces_matchingPolyOn_erase"
+module = "RealRooted.Graph.MatchingVertexInterlacing"
+label = "Deleting a vertex interlaces the matching polynomial"
+
+[[theorems]]
+name = "RealRooted.abs_le_of_isRoot_matchingPolyOn"
+module = "RealRooted.Graph.MatchingVertexInterlacing"
+label = "Heilmann–Lieb root bound |x| ≤ 2√(Δ − 1)"
 
 [[theorems]]
 name = "RealRooted.Challenges.HeilmannLieb.clawFree_weightedIndepPoly_splits"
@@ -70,10 +81,21 @@ generally, if all edge weights are nonnegative, then the weighted
 matching-generating polynomial is real-rooted with nonnegative coefficients
 and nonpositive zeros, so its coefficients form a Pólya frequency sequence.
 
-We formalize the generating form $m_G(x)$ used on symmetricfunctions.com.
-The signed form $\sum_k (-1)^k m_k x^{n-2k}$ of Heilmann and Lieb, where $m_k$
-is the number of $k$-matchings and $n = |V(G)|$, is real-rooted for the same
-reason, but it is not stated here.
+We formalize the generating form $m_G(x)$ used on symmetricfunctions.com,
+and also the signed form
+$$
+\mu_G(x) = \sum_k (-1)^k m_k x^{n-2k}
+$$
+of Heilmann and Lieb, where $m_k$ is the number of $k$-matchings and
+$n = |V(G)|$.
+
+**Theorem** (Heilmann–Lieb, Godsil). For every vertex $v$, the polynomial
+$\mu_{G - v}$ interlaces $\mu_G$. In particular $\mu_G$ is real-rooted.
+
+**Theorem** (Heilmann–Lieb root bound). If every vertex of $G$ has degree at
+most $\Delta \geq 2$, every zero $x$ of $\mu_G$ satisfies
+$|x| \leq 2\sqrt{\Delta - 1}$. Heilmann and Lieb prove the strict inequality;
+the Lean statement records the weak form.
 
 **Theorem** (Engström). Let $G$ be a finite claw-free graph and let
 $w \colon V(G) \to \mathbb{R}$ be nonnegative vertex weights. Then the
@@ -106,10 +128,19 @@ coefficients of $p$ through rank-two edge weights $a_i b_j + a_j b_i \geq 0$
 on the complete graph $K_M$; the transform is then $p(1)$ times the weighted
 matching polynomial of $K_M$.
 
+The vertex-deletion theorem follows from the recurrence
+$\mu_G = x\,\mu_{G-v} - \sum_{u \sim v} \mu_{G-v-u}$. By induction every
+$\mu_{G-v-u}$ interlaces $\mu_{G-v}$, so their sum does too, and the
+three-term step gives $\mu_{G-v} \ll \mu_G$.
+For the root bound, the same recurrence and induction show
+$\mu_G(x) \geq \sqrt{\Delta - 1}\, \mu_{G-v}(x) > 0$ for $x > 2\sqrt{\Delta - 1}$
+whenever $v$ has at most $\Delta - 1$ neighbours, and $\mu_G$ is even or odd.
+
 ## References
 
 O. J. Heilmann and E. H. Lieb, “Theory of monomer-dimer systems,” *Comm.
-Math. Phys.* 25 (1972), 190–232, Theorem 4.2; A. Engström, “Inequalities on
+Math. Phys.* 25 (1972), 190–232, Theorem 4.2; C. D. Godsil, “Matchings and
+walks in graphs,” *J. Graph Theory* 5 (1981), 285–297; A. Engström, “Inequalities on
 well-distributed point sets on circles,” *J. Inequal. Pure Appl. Math.* 8
 (2007), Theorem 2.5; M. Chudnovsky and P. Seymour, “The roots of the
 independence polynomial of a clawfree graph,” *J. Combin. Theory Ser. B* 97

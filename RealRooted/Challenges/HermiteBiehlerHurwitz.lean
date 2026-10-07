@@ -1,5 +1,6 @@
 import RealRooted.ClassicalHurwitzMatrix
 import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
+import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
 import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
 import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
 import RealRooted.HurwitzMatrix
@@ -65,6 +66,16 @@ label = "Weak Hurwitz stability gives nonnegative coefficients"
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.coeff_pos_of_isStrictlyHurwitzStable"
 label = "Strict Hurwitz stability gives positive coefficients"
+
+[[theorems]]
+name = "RealRooted.fullyInterlacingPair_of_isHurwitzStable_oddEvenPolynomial"
+module = "RealRooted.ClassicalHurwitzMatrix.Stability.Lace"
+label = "Hurwitz stability gives a totally nonnegative Lace matrix"
+
+[[theorems]]
+name = "RealRooted.StrictInterl.fullyInterlacingPair"
+module = "RealRooted.ClassicalHurwitzMatrix.Stability.Lace"
+label = "Hermite–Biehler in Lace form"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -73,6 +84,10 @@ label = "Strict Hurwitz stability gives positive coefficients"
 The Hermite–Biehler theorem characterizes half-plane stability through
 interlacing of the even and odd parts. The Hurwitz criterion characterizes
 weak Hurwitz stability by total nonnegativity of the classical Hurwitz matrix.
+Reversing the polynomial turns the Hurwitz matrix into the two-row Lace matrix of the
+even and odd parts: if $q(x^2) + x\,p(x^2)$ is Hurwitz stable, then the matrix whose even
+rows are shifts of the coefficients of $q$ and whose odd rows are shifts of those of $p$ is
+totally nonnegative. In particular this holds when $p \ll q$ have nonnegative coefficients.
 
 **Theorem (Hermite–Biehler).** Let $f$ and $g$ be real polynomials with
 positive leading coefficients. If $g \ll f$ (see
