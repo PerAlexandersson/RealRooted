@@ -23,8 +23,9 @@ real-rootedness below is derived from the factorization, not assumed.
   (Lemma 2.8).
 * `coeff_step_symm`, `coeff_multisetEulerianNarayana_symm`: each step preserves palindromicity
   (Lemma 3.1), so `P_α` is palindromic.
-* `simpleNegRooted_multisetEulerianNarayana`: **Theorem 1.1**, all `N - 1` zeros of `P_α` are
-  simple and negative (the Lin–Ma–Ma–Zhou conjecture).
+* `simpleNegRooted_multisetEulerianNarayana`: all `N - 1` zeros of the factorization-defined
+  `P_α` are simple and negative.  Combined with Zhang–Zhao's Proposition 2.9 (not formalized
+  here), this is their Theorem 1.1, which settles the Lin–Ma–Ma–Zhou conjecture.
 -/
 
 open Polynomial
@@ -95,9 +96,10 @@ theorem strictInterl_partialPoly {a : ℕ → ℝ} {n : ℕ} (ha : ∀ d ≤ n, 
   (simpleNegRooted_step (simpleNegRooted_partialPoly (n := n) fun d hd => ha d hd.le)
     (ha n le_rfl)).2
 
-/-- **Zhang–Zhao, Theorem 1.1** (the Lin–Ma–Ma–Zhou conjecture).  For a composition `α` of
-`N ≥ 1`, the multiset Eulerian–Narayana polynomial `P_α` has degree `N - 1`, nonnegative
-coefficients, and only simple negative zeros. -/
+/-- **Zhang–Zhao, Theorem 1.1, for the factorization.**  For a composition `α` of `N ≥ 1`, the
+factorization-defined polynomial `P_α` has degree `N - 1`, nonnegative coefficients, and only
+simple negative zeros.  The identification of `P_α` with the leaf enumerator of weakly
+increasing trees (Zhang–Zhao, Proposition 2.9) is not formalized. -/
 theorem simpleNegRooted_multisetEulerianNarayana {α : List ℕ} (hα : α.sum ≠ 0) :
     SimpleNegRooted (multisetEulerianNarayana α) (α.sum - 1) :=
   simpleNegRooted_partialPoly fun d hd => by

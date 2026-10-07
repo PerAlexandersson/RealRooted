@@ -66,6 +66,10 @@ polynomial $P_\alpha$ has degree $N - 1$, nonnegative coefficients and only
 simple negative zeros. Consecutive partial products of the factorization strictly
 interlace, and $P_\alpha$ is palindromic.
 
+The conjecture itself also needs the identification of $P_\alpha$ with the leaf
+enumerator $P_M$ (Zhang–Zhao, Proposition 2.9). That identification is cited
+from the paper, not formalized.
+
 ## Proof idea
 
 Each factor is a Darboux operator
