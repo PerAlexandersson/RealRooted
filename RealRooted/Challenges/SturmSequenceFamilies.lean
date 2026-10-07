@@ -1,4 +1,6 @@
 import RealRooted.CombinatorialExamples.ColoredSetPartitions
+import RealRooted.CombinatorialExamples.Motzkin
+import RealRooted.CombinatorialExamples.PathPowerIndependence
 import RealRooted.CombinatorialExamples.Simsun
 import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
 import RealRooted.CombinatorialExamples.StirlingPermutations
@@ -85,6 +87,21 @@ label = "Consecutive colored set-partition polynomials interlace"
 [[theorems]]
 name = "RealRooted.Challenges.SturmSequenceFamilies.touchard_eq_coloredSetPartitions_zero_one"
 label = "Touchard polynomials are colored set-partition polynomials with c = 0, m = 1"
+
+[[theorems]]
+name = "RealRooted.isRealRooted_motzkin"
+module = "RealRooted.CombinatorialExamples.Motzkin"
+label = "Motzkin polynomials are real-rooted"
+
+[[theorems]]
+name = "RealRooted.strictInterl_motzkin_succ"
+module = "RealRooted.CombinatorialExamples.Motzkin"
+label = "Consecutive Motzkin polynomials interlace"
+
+[[theorems]]
+name = "RealRooted.splits_sum_choose_sub_mul"
+module = "RealRooted.CombinatorialExamples.PathPowerIndependence"
+label = "Independence polynomials of path powers ∑ C(m − rk, k) xᵏ are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -134,6 +151,13 @@ derangement polynomials count derangements of $\{1, \dotsc, n\}$ by
 excedances, the simsun polynomials count simsun permutations of
 $\{1, \dotsc, n\}$ by descents, and $D_n$ counts set partitions of
 $\{1, \dotsc, n\}$ without singleton blocks by blocks.
+
+Two further families: the Motzkin polynomials, defined by their three-term
+recurrence, are real-rooted and consecutive ones interlace. For all $r$ and $m$
+the polynomial $\sum_k \binom{m - rk}{k} x^k$ is real-rooted; for $r \le m$ it
+is the independence polynomial of the $r$-th power of a path, a claw-free
+graph, so real-rootedness also follows from the
+[Chudnovsky–Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
 
 ## Proof idea
 

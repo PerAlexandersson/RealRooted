@@ -4,6 +4,7 @@ import RealRooted.Jacobi.Markoff
 import RealRooted.Jacobi.Orthogonality.Integral
 import RealRooted.Jacobi.ParameterInterlacing
 import RealRooted.Legendre.Basic
+import RealRooted.Legendre.Roots
 
 /-!
 # Shifted Jacobi polynomial challenge entry point
@@ -86,6 +87,16 @@ label = "Markoff monotonicity in α, proved for β = 1"
 name = "RealRooted.shiftedLegendreReal_eq_shiftedJacobi"
 module = "RealRooted.Legendre.Basic"
 label = "Shifted Legendre polynomials are the case α = β = 0"
+
+[[theorems]]
+name = "RealRooted.shiftedLegendreReal_splits"
+module = "RealRooted.Legendre.Roots"
+label = "Shifted Legendre polynomials are real-rooted"
+
+[[theorems]]
+name = "RealRooted.shiftedLegendreReal_strictInterl_succ"
+module = "RealRooted.Legendre.Roots"
+label = "Consecutive shifted Legendre polynomials interlace"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -125,6 +136,10 @@ formalized.
 
 The shifted Legendre polynomials of Mathlib, mapped to $\mathbb{R}$, are the
 case $\alpha = \beta = 0$.
+
+For the shifted Legendre polynomials (the case $\alpha = \beta = 0$ on
+$[0, 1]$), real-rootedness and interlacing of consecutive polynomials are also
+proved directly.
 
 ## References
 

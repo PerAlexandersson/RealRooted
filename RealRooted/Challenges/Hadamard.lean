@@ -15,8 +15,9 @@ import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
 version = 1
 section = "theorems"
 slug = "hadamard-products"
-authors = ["Maló", "Pólya", "Schur", "Brenti", "Wagner", "Garloff"]
-years = [1895, 1914, 1989, 1992, 1996]
+authors = ["Maló", "Pólya", "Schur", "Brenti", "Wagner", "Garloff", "Kostov", "Shapiro", "Brändén",
+  "Ferroni", "Jochemko"]
+years = [1895, 1914, 1989, 1992, 1996, 2006, 2010, 2024]
 
 [[definitions]]
 name = "RealRooted.schurSzegoComp"
@@ -128,7 +129,10 @@ $[0, \infty)$.
 
 If the value sequences $f(0), f(1), f(2), \dotsc$ and $g(0), g(1), g(2), \dotsc$
 of two real polynomials are Pólya frequency sequences, then so is the value
-sequence of $fg$.
+sequence of $fg$ (Wagner). The Lean proof follows Brändén, Ferroni and
+Jochemko, who derive Wagner's theorem from the fact that a bilinear map on
+homogeneous bivariate polynomials, built from a harmonic substitution, preserves
+stability.
 
 **Theorem (Brenti).** If every zero of $p$ lies in $[-1, 0]$ and its leading coefficient
 is positive, then the numerator $W$ of $\sum_{n \ge 0} p(n)\, x^n = W(x)/(1-x)^{\deg p + 1}$
@@ -159,7 +163,9 @@ Gleichungen,” *Journal für die reine und angewandte Mathematik* 144 (1914),
 89–113; D. G. Wagner, “Total positivity of Hadamard products,” *Journal of
 Mathematical Analysis and Applications* 163 (1992), 459–483; J. Garloff and
 D. G. Wagner, “Hadamard products of stable polynomials are stable,” *Journal
-of Mathematical Analysis and Applications* 202 (1996), 797–809. V. Kostov and B.
+of Mathematical Analysis and Applications* 202 (1996), 797–809; P. Brändén,
+L. Ferroni and K. Jochemko, “Preservation of inequalities under Hadamard
+products,” arXiv:2408.12386 (2024). V. Kostov and B.
 Shapiro, “On the Schur–Szegő composition of polynomials,” *C. R. Math. Acad. Sci.
 Paris* 343 (2006), 81–86; V. P. Kostov, “Interlacing properties and the Schur–Szegő
 composition,” *Functional Analysis and Other Mathematics* 3 (2010), 65–74.  See the

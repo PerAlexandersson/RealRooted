@@ -8,7 +8,9 @@ import RealRooted.MultivariateStability
 # Homogeneous harmonic substitution
 
 This file clears the denominators in the harmonic substitution appearing in
-Brändén--Ferroni--Jochemko's stability proof for polynomial-value products.
+Brändén--Ferroni--Jochemko's stability proof for polynomial-value products
+(P. Brändén, L. Ferroni and K. Jochemko, *Preservation of inequalities under Hadamard
+products*, arXiv:2408.12386).
 -/
 
 namespace MvPolynomial

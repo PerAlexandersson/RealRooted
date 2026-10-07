@@ -6,7 +6,8 @@ import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
 
 This file packages the translated factor, denominator-cleared harmonic factor,
 and distinguished coefficient used in the stability proof for
-polynomial-value products.
+polynomial-value products of P. Brändén, L. Ferroni and K. Jochemko,
+*Preservation of inequalities under Hadamard products*, arXiv:2408.12386.
 -/
 
 namespace MvPolynomial

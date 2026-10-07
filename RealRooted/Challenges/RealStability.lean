@@ -1,12 +1,13 @@
+import RealRooted.AffineLineRestriction
 import RealRooted.DeterminantalStability
 import RealRooted.HomogeneousComponentStability
 import RealRooted.Hyperbolicity
 import RealRooted.HyperbolicityCone
 import RealRooted.MultivariateStability.Inversion
+import RealRooted.MultivariateStability.NegativeCorrelation
 import RealRooted.MultivariateStability.RayleighConverse
 import RealRooted.MultivariateStability.SamePhase
 import RealRooted.SpanningTreeStability
-import RealRooted.MultivariateStability.NegativeCorrelation
 
 /-!
 # Real stability challenge entry point
@@ -115,6 +116,16 @@ label = "Inversion in one variable preserves stability"
 [[theorems]]
 name = "RealRooted.Challenges.RealStability.mvRealStable_invertVariable"
 label = "Inversion in one variable preserves real stability"
+
+[[theorems]]
+name = "RealRooted.mvRealStable_of_forall_realAffineLineRestriction"
+module = "RealRooted.AffineLineRestriction"
+label = "Real stability from real-rootedness of all positive-direction line restrictions"
+
+[[theorems]]
+name = "RealRooted.MvRealStable.realAffineLineRestriction_splits_ne_zero"
+module = "RealRooted.AffineLineRestriction"
+label = "Line restrictions of a real stable polynomial in positive directions are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -183,6 +194,10 @@ $d$ in $z_0$. Then $z_0^d P(-1/z_0, z')$ is stable. If $P$ is real stable,
 then so is this inversion. Without further variables: if $p$ has no zeros in
 the open upper half-plane and $\deg p \leq d$, then neither has
 $z^d p(-1/z)$.
+
+Real stability can be tested on lines: $P$ is real stable if and only if, for
+all $a \in \mathbb{R}^n$ and $b \in \mathbb{R}_{>0}^n$, the univariate restriction
+$t \mapsto P(a + tb)$ is nonzero and real-rooted.
 
 ## Proof idea
 
