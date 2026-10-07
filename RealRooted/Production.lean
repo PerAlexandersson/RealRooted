@@ -1431,6 +1431,7 @@ import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 import RealRooted.GarloffWagner.HurwitzStable
 import RealRooted.Challenges.GarloffWagnerHurwitz
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneUpdate
+import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
 
 /-!
 # RealRooted production umbrella
