@@ -152,6 +152,55 @@ end TestLib
 """,
             )
 
+    def test_root_fix_sorts_contiguous_imports(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            (root / "lakefile.toml").write_text(
+                '[[lean_lib]]\nname = "TestLib"\n', encoding="utf-8"
+            )
+            lib = root / "TestLib"
+            lib.mkdir()
+            for name in ("Alpha", "Beta", "Gamma"):
+                (lib / f"{name}.lean").write_text("", encoding="utf-8")
+            umbrella = root / "TestLib.lean"
+            umbrella.write_text(
+                "import TestLib.Gamma\nimport TestLib.Alpha\n\n/-! doc -/\n",
+                encoding="utf-8",
+            )
+            unsorted = subprocess.run(
+                [sys.executable, str(ROOT_GUARD), "--repo-root", str(root)],
+                cwd=directory,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(unsorted.returncode, 1)
+            self.assertIn("missing imports", unsorted.stderr)
+            subprocess.run(
+                [sys.executable, str(ROOT_GUARD), "--repo-root", str(root), "--fix"],
+                cwd=directory,
+                check=True,
+                capture_output=True,
+            )
+            self.assertEqual(
+                umbrella.read_text(encoding="utf-8"),
+                "import TestLib.Alpha\nimport TestLib.Beta\nimport TestLib.Gamma\n"
+                "\n/-! doc -/\n",
+            )
+            umbrella.write_text(
+                "import TestLib.Beta\nimport TestLib.Alpha\nimport TestLib.Gamma\n",
+                encoding="utf-8",
+            )
+            only_unsorted = subprocess.run(
+                [sys.executable, str(ROOT_GUARD), "--repo-root", str(root)],
+                cwd=directory,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(only_unsorted.returncode, 1)
+            self.assertIn("not sorted", only_unsorted.stderr)
+
     def test_root_fix_rejects_unsupported_multiline_header(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = pathlib.Path(directory)

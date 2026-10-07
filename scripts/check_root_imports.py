@@ -14,8 +14,12 @@ in `scripts/import_architecture.json`, it checks the broad compatibility,
 production, and regression umbrellas independently.
 
 Exit codes:
-  0: all modules are imported, or `--fix` repaired the umbrella file
-  1: missing imports were found and not fixed, or the repo layout is invalid
+  0: all modules are imported in sorted order, or `--fix` repaired the umbrella file
+  1: missing or unsorted imports were found and not fixed, or the layout is invalid
+
+A contiguous import block must be sorted by module name, so that pull requests
+adding modules in different areas touch different lines.  `--fix` adds missing
+imports in sorted position and sorts the block.
 """
 
 from __future__ import annotations
@@ -213,23 +217,64 @@ def partition_targets(
     ]
 
 
-def append_missing_imports(
-    root_module_file: pathlib.Path, missing_modules: list[str]
-) -> None:
-    lines = read_text(root_module_file).splitlines()
-
-    directives = [
+def _import_directives(lines: list[str]) -> list[tuple[int, ImportDirective]]:
+    return [
         (index, directive)
         for index, line in enumerate(lines)
         if (directive := parse_import_line(line))
     ]
+
+
+def _contiguous_block(
+    directives: list[tuple[int, ImportDirective]],
+) -> tuple[int, int] | None:
+    """Return `(start, stop)` when the import lines form one contiguous block."""
+
+    if not directives:
+        return None
+    start, stop = directives[0][0], directives[-1][0] + 1
+    if stop - start != len(directives):
+        return None
+    return start, stop
+
+
+def imports_unsorted(root_module_file: pathlib.Path) -> bool:
+    """Whether a contiguous import block is out of module order.
+
+    Sorted umbrella imports let independent pull requests add modules in
+    different places, so that they rarely conflict.
+    """
+
+    directives = _import_directives(read_text(root_module_file).splitlines())
+    if _contiguous_block(directives) is None:
+        return False
+    modules = [directive.module for _, directive in directives]
+    return modules != sorted(modules)
+
+
+def append_missing_imports(
+    root_module_file: pathlib.Path, missing_modules: list[str]
+) -> None:
+    """Add missing imports, keeping a contiguous import block sorted by module."""
+
+    lines = read_text(root_module_file).splitlines()
+    directives = _import_directives(lines)
     existing_modules = {directive.module for _, directive in directives}
     missing = sorted(set(missing_modules) - existing_modules)
-    if not missing:
-        return
-
     new_directives = [ImportDirective(None, module) for module in missing]
-    if directives:
+    block = _contiguous_block(directives)
+    if block is not None:
+        start, stop = block
+        merged = sorted(
+            [directive for _, directive in directives] + new_directives,
+            key=lambda directive: directive.module,
+        )
+        updated_lines = lines[:start]
+        updated_lines.extend(directive.format() for directive in merged)
+        updated_lines.extend(lines[stop:])
+    elif not missing:
+        return
+    elif directives:
         updated_lines = lines[:]
         insertion = directives[-1][0] + 1
         updated_lines[insertion:insertion] = [
@@ -245,8 +290,8 @@ def append_missing_imports(
         updated_lines.extend(directive.format() for directive in new_directives)
         updated_lines.extend(lines[insertion:])
     updated = "\n".join(updated_lines) + "\n"
-
-    write_text(root_module_file, updated)
+    if updated != read_text(root_module_file):
+        write_text(root_module_file, updated)
 
 
 def _prologue_end(lines: list[str]) -> int | None:
@@ -305,15 +350,26 @@ def main() -> int:
     except RuntimeError as exc:
         return fail(str(exc))
 
-    failures = [(path, missing) for path, missing in checks if missing]
+    failures = [
+        (path, missing)
+        for path, missing in checks
+        if missing or imports_unsorted(path)
+    ]
     if failures and not args.fix:
         for owner_file, missing_modules in failures:
-            print(
-                f"error: {owner_file.relative_to(repo_root)} is missing imports for "
-                f"{len(missing_modules)} module(s): {', '.join(missing_modules)}. "
-                "Run with --fix to append the missing imports.",
-                file=sys.stderr,
-            )
+            if missing_modules:
+                print(
+                    f"error: {owner_file.relative_to(repo_root)} is missing imports for "
+                    f"{len(missing_modules)} module(s): {', '.join(missing_modules)}. "
+                    "Run with --fix to add the missing imports.",
+                    file=sys.stderr,
+                )
+            else:
+                print(
+                    f"error: the imports of {owner_file.relative_to(repo_root)} are "
+                    "not sorted by module. Run with --fix to sort them.",
+                    file=sys.stderr,
+                )
         return 1
 
     if failures:
@@ -321,7 +377,7 @@ def main() -> int:
             for owner_file, missing_modules in failures:
                 append_missing_imports(owner_file, missing_modules)
                 print(
-                    "fixed: appended missing imports in "
+                    "fixed: added missing imports and sorted the imports in "
                     f"{owner_file.relative_to(repo_root)}",
                     file=sys.stderr,
                 )
