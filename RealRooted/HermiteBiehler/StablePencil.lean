@@ -223,6 +223,32 @@ theorem isUpperHalfPlaneStablePencil_of_strictInterl
         using him
     nlinarith
 
+/-- Multivariate upper-half-plane stability of `f(z) + w g(z)` is equivalent to the
+two-parameter nonvanishing condition. -/
+theorem mvUpperHalfPlaneStable_bivariatePencil_iff {f g : ℝ[X]} :
+    MvUpperHalfPlaneStable (bivariatePencil f g) ↔ IsUpperHalfPlaneStablePencil f g :=
+  ⟨MvUpperHalfPlaneStable.isUpperHalfPlaneStablePencil, fun h z hz => by
+    simpa using h (z 0) (z 1) (hz 0) (hz 1)⟩
+
+/-- For positive leading coefficients and nonconstant `f`, the pencil `f + w g` is stable
+exactly when `g` and `f` strictly interlace. -/
+theorem isUpperHalfPlaneStablePencil_iff_strictInterl {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (hdeg : f.natDegree ≠ 0) :
+    IsUpperHalfPlaneStablePencil f g ↔ StrictInterl g f :=
+  ⟨fun h => strictInterl_of_stable_general hf hg h.hermiteBiehler (by lia),
+    isUpperHalfPlaneStablePencil_of_strictInterl hf hg⟩
+
+/-- **Stable-pencil characterization of interlacing.**  For nonzero `f`, `g` with nonnegative
+coefficients and nonconstant `f`, the bivariate polynomial `f(z) + w g(z)` is stable exactly
+when `g` and `f` strictly interlace. -/
+theorem mvUpperHalfPlaneStable_bivariatePencil_iff_strictInterl {f g : ℝ[X]}
+    (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) (hf0 : f ≠ 0) (hg0 : g ≠ 0)
+    (hdeg : f.natDegree ≠ 0) :
+    MvUpperHalfPlaneStable (bivariatePencil f g) ↔ StrictInterl g f :=
+  mvUpperHalfPlaneStable_bivariatePencil_iff.trans <|
+    isUpperHalfPlaneStablePencil_iff_strictInterl (hf.pos_leadingCoeff hf0)
+      (hg.pos_leadingCoeff hg0) hdeg
+
 end
 
 end RealRooted

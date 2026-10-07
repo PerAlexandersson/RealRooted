@@ -1,3 +1,4 @@
+import RealRooted.HermiteBiehler.StablePencil
 import RealRooted.ObreschkoffConverse.DegreeGap
 import RealRooted.OperatorPreservesInterlacing
 
@@ -32,6 +33,11 @@ label = "Obreschkoff’s theorem as an equivalence"
 name = "RealRooted.natDegree_close_of_allComboRealRooted"
 module = "RealRooted.ObreschkoffConverse.DegreeGap"
 label = "A real-rooted pencil of nonzero polynomials has degrees differing by at most one"
+
+[[theorems]]
+name = "RealRooted.mvUpperHalfPlaneStable_bivariatePencil_iff_strictInterl"
+module = "RealRooted.HermiteBiehler.StablePencil"
+label = "Interlacing as stability of the bivariate pencil f(z) + w g(z)"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -47,6 +53,12 @@ polynomials $f$ and $g$ splits, then $|\deg f - \deg g| \le 1$.
 Hence, for real polynomials $f$ and $g$ that are zero or real-rooted, every
 real linear combination of $f$ and $g$ splits if and only if $f$ and $g$
 interlace in one of the two orientations.
+
+The pencil also has a stable form. Let $f \ne 0$ and $g \ne 0$ have
+nonnegative coefficients, with $f$ nonconstant. Then the bivariate polynomial
+$f(z) + w\,g(z)$ has no zero with $z$ and $w$ both in the open upper half-plane
+if and only if $g$ and $f$ strictly interlace. One direction specializes at
+$w = i$ and uses the Hermite–Biehler theorem.
 
 ## References
 
