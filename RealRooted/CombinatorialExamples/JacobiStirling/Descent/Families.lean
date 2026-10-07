@@ -24,9 +24,6 @@ noncomputable section
 namespace RealRooted
 namespace JacobiStirlingDescent
 
-theorem IsGood.of_eq {f : ℝ[X]} {d e : ℕ} (hf : IsGood f d) (h : d = e) : IsGood f e :=
-  h ▸ hf
-
 theorem IsGood.insertion {f : ℝ[X]} {d L : ℕ} (hf : IsGood f d) (hL : d < L) :
     IsGood (insertion L f) (d + 1) :=
   (hf.insertion_and_strictInterl hL).1

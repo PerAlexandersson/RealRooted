@@ -1,6 +1,4 @@
-import RealRooted.EulerOperator.Darboux.Basic
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.SimpleRoots
+import RealRooted.EulerOperator.Darboux.NegativeRoots
 import RealRooted.CombinatorialExamples.StirlingPermutations
 
 /-!
@@ -68,81 +66,17 @@ def descentPoly : ℕ → Finset ℕ → ℝ[X]
         (insertion (3 * k - (S ∩ Finset.Icc 1 k).card) (descentPoly k (S ∩ Finset.Icc 1 k)))
 
 /-- The invariant carried through the insertions: degree `d`, positive leading coefficient,
-nonnegative coefficients, positive constant term, and simple real roots. -/
-structure IsGood (f : ℝ[X]) (d : ℕ) : Prop where
-  natDegree_eq : f.natDegree = d
-  pos : HasPosLeadingCoeff f
-  nonneg : HasNonnegCoeffs f
-  coeff_zero_pos : 0 < f.coeff 0
-  splits : f.Splits
-  simple : HasSimpleRoots f
-
-theorem IsGood.isRoot_neg {f : ℝ[X]} {d : ℕ} (hf : IsGood f d) {r : ℝ} (hr : f.IsRoot r) :
-    r < 0 := by
-  refine lt_of_le_of_ne (isRoot_nonpos_of_hasNonnegCoeffs hf.nonneg hf.pos.ne_zero hr) ?_
-  rintro rfl
-  have := hf.coeff_zero_pos
-  rw [coeff_zero_eq_eval_zero, hr.eq_zero] at this
-  exact lt_irrefl _ this
+nonnegative coefficients, positive constant term, and simple real roots
+(`RealRooted.SimpleNegRooted`). -/
+abbrev IsGood (f : ℝ[X]) (d : ℕ) : Prop := SimpleNegRooted f d
 
 /-- **Ma–Wang, Lemma 2.**  An insertion `D_L` with `L` larger than the degree raises the degree
-by one, keeps the invariant, and strictly interlaces with its input. -/
+by one, keeps the invariant, and strictly interlaces with its input.  This is the Darboux step
+`SimpleNegRooted.darbouxOperator` with `a = 1` and `b = L`. -/
 theorem IsGood.insertion_and_strictInterl {f : ℝ[X]} {d L : ℕ} (hf : IsGood f d) (hL : d < L) :
     IsGood (insertion L f) (d + 1) ∧ StrictInterl f (insertion L f) ∧
-      ∀ r, f.IsRoot r → ¬ (insertion L f).IsRoot r := by
-  have hcoeff_gt : ∀ k, d < k → f.coeff k = 0 := fun k hk =>
-    coeff_eq_zero_of_natDegree_lt (hf.natDegree_eq ▸ hk)
-  have htop : (insertion L f).coeff (d + 1) = ((L : ℝ) - d) * f.leadingCoeff := by
-    rw [coeff_insertion_succ, hcoeff_gt (d + 1) (by lia), leadingCoeff, hf.natDegree_eq]
-    ring
-  have htop_pos : 0 < (insertion L f).coeff (d + 1) := by
-    rw [htop]
-    have : (d : ℝ) < L := by exact_mod_cast hL
-    exact mul_pos (by linarith) hf.pos
-  have hdeg : (insertion L f).natDegree = d + 1 := by
-    refine natDegree_eq_of_le_of_coeff_ne_zero ?_ htop_pos.ne'
-    refine (natDegree_le_iff_coeff_eq_zero).mpr fun j hj => ?_
-    obtain ⟨k, rfl⟩ : ∃ k, j = k + 1 := ⟨j - 1, by lia⟩
-    rw [coeff_insertion_succ, hcoeff_gt (k + 1) (by lia), hcoeff_gt k (by lia)]
-    ring
-  have hpos : HasPosLeadingCoeff (insertion L f) := by
-    rw [HasPosLeadingCoeff, leadingCoeff, hdeg]
-    exact htop_pos
-  have hrec : insertion L f = (1 + C (L : ℝ) * X) * f + X * (1 - X) * f.derivative :=
-    insertion_eq L f
-  have hv : ∀ r, f.IsRoot r → (X * (1 - X) : ℝ[X]).eval r < 0 := by
-    intro r hr
-    have := hf.isRoot_neg hr
-    simp only [eval_mul, eval_X, eval_sub, eval_one]
-    nlinarith
-  have hinterl : StrictInterl f (insertion L f) := by
-    rw [hrec]
-    exact MaWang.strictInterl_derivative_of_nonpos_of_splits hf.splits
-      (by rw [← hrec, hdeg, hf.natDegree_eq]; lia) (by rw [← hrec, hdeg, hf.natDegree_eq])
-      (hrec ▸ hpos) hf.pos fun r hr => (hv r hr).le
-  have hno : ∀ r : ℝ, ¬ (f.IsRoot r ∧ (insertion L f).IsRoot r) := by
-    rintro r ⟨hr, hFr⟩
-    have hder := hf.simple.eval_derivative_ne_zero hr
-    have hval : (insertion L f).eval r = (X * (1 - X) : ℝ[X]).eval r * f.derivative.eval r := by
-      rw [hrec, eval_add, eval_mul, eval_mul, hr.eq_zero, mul_zero, zero_add]
-    rw [hFr.eq_zero] at hval
-    exact mul_ne_zero (hv r hr).ne hder hval.symm
-  refine ⟨⟨hdeg, hpos, fun k => ?_, by rw [coeff_zero_insertion]; exact hf.coeff_zero_pos,
-    hinterl.2.1.2, (hinterl.hasSimpleRoots_of_no_common_root hno).2⟩, hinterl,
-    fun r hr hFr => hno r ⟨hr, hFr⟩⟩
-  rcases k with _ | k
-  · rw [coeff_zero_insertion]
-    exact hf.coeff_zero_pos.le
-  rw [coeff_insertion_succ]
-  rcases le_or_gt k d with hk | hk
-  · have : (k : ℝ) < L := by exact_mod_cast hk.trans_lt hL
-    have h1 := hf.nonneg (k + 1)
-    have h2 := hf.nonneg k
-    have : (0 : ℝ) ≤ (L : ℝ) - k := by linarith
-    positivity
-  · rw [hcoeff_gt (k + 1) (by lia), hcoeff_gt k hk]
-    ring_nf
-    rfl
+      ∀ r, f.IsRoot r → ¬ (insertion L f).IsRoot r :=
+  hf.darbouxOperator one_pos (by exact_mod_cast hL)
 
 theorem descentPoly_succ_of_mem {k : ℕ} {S : Finset ℕ} (h : k + 1 ∈ S) :
     descentPoly (k + 1) S = insertion (3 * k - (S ∩ Finset.Icc 1 k).card)
@@ -154,17 +88,13 @@ theorem descentPoly_succ_of_not_mem {k : ℕ} {S : Finset ℕ} (h : k + 1 ∉ S)
       (insertion (3 * k - (S ∩ Finset.Icc 1 k).card) (descentPoly k (S ∩ Finset.Icc 1 k))) := by
   simp [descentPoly, h]
 
-private theorem isGood_one : IsGood (1 : ℝ[X]) 0 :=
-  ⟨by simp, by simp [HasPosLeadingCoeff], fun k => by rw [coeff_one]; split_ifs <;> norm_num,
-    by simp, Splits.one, fun r hr => absurd hr (by simp)⟩
-
 /-- **Ma–Wang, eq. (11).**  For `S ⊆ [k]`, the descent polynomial `A_{k,S}` has degree
 `2k - |S| - 1` (read as `0` when `k = 0`), positive constant term, nonnegative coefficients,
 and only simple real (hence negative) roots. -/
 theorem isGood_descentPoly {k : ℕ} {S : Finset ℕ} (hS : S ⊆ Finset.Icc 1 k) :
     IsGood (descentPoly k S) (2 * k - S.card - 1) := by
   induction k generalizing S with
-  | zero => simpa [descentPoly] using isGood_one
+  | zero => simpa [descentPoly] using SimpleNegRooted.one
   | succ k ih =>
     have hT : S ∩ Finset.Icc 1 k ⊆ Finset.Icc 1 k := Finset.inter_subset_right
     have hTcard : (S ∩ Finset.Icc 1 k).card ≤ k := by
@@ -197,14 +127,14 @@ theorem isGood_descentPoly {k : ℕ} {S : Finset ℕ} (hS : S ⊆ Finset.Icc 1 k
       · rw [descentPoly_succ_of_mem h1, hT0]
         have hS1 : S.card = 1 := by simpa [hT0, h1] using hcard
         rw [hS1]
-        simpa [descentPoly, insertion_eq] using isGood_one
+        simpa [descentPoly, insertion_eq] using SimpleNegRooted.one
       · rw [descentPoly_succ_of_not_mem h1, hT0]
         have hS0 : S.card = 0 := by simpa [hT0, h1] using hcard
         rw [hS0]
         have h0 : insertion (3 * 0 - (∅ : Finset ℕ).card) (descentPoly 0 ∅) = 1 := by
           simp [descentPoly, insertion_eq]
         rw [h0]
-        exact (isGood_one.insertion_and_strictInterl (by norm_num)).1
+        exact (IsGood.insertion_and_strictInterl SimpleNegRooted.one (by norm_num)).1
     have hgood := ih hT
     set T := S ∩ Finset.Icc 1 k
     have hL : 2 * k - T.card - 1 < 3 * k - T.card := by lia
