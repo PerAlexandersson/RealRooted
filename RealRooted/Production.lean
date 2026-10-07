@@ -1188,6 +1188,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
+import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneUpdate
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
