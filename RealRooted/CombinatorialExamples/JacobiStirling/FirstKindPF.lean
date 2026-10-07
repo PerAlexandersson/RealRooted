@@ -119,15 +119,15 @@ theorem firstKind_isPolyaFreqSeq {z : ℝ} (hz : -1 ≤ z) (n : ℕ) :
     IsPolyaFreqSeq (fun k => firstKind z n k) := by
   simpa only [coeff_firstKindRow] using firstKindRow_isPolyaFreqSeq hz n
 
-/-- The `z = 0` Legendre--Stirling first-kind rows are PF polynomials. -/
+/-- The Legendre--Stirling first-kind rows (`z = 1`) are PF polynomials. -/
 theorem legendreStirlingFirstRow_isPFPolynomial (n : ℕ) :
-    IsPFPolynomial (firstKindRow (0 : ℝ) n) :=
+    IsPFPolynomial (firstKindRow (1 : ℝ) n) :=
   firstKindRow_isPFPolynomial (by norm_num) n
 
-/-- The `z = 0` Legendre--Stirling first-kind coefficient rows are
+/-- The Legendre--Stirling first-kind coefficient rows (`z = 1`) are
 Pólya-frequency sequences. -/
 theorem legendreStirlingFirst_isPolyaFreqSeq (n : ℕ) :
-    IsPolyaFreqSeq (fun k => firstKind (0 : ℝ) n k) :=
+    IsPolyaFreqSeq (fun k => firstKind (1 : ℝ) n k) :=
   firstKind_isPolyaFreqSeq (by norm_num) n
 
 end Real

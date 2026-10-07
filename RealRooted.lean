@@ -407,6 +407,7 @@ import RealRooted.Challenges.JacobiDeformation
 import RealRooted.Challenges.JacobiPolynomials
 import RealRooted.Challenges.JacobiPolynomials
 import RealRooted.Challenges.JacobiStirlingDescent
+import RealRooted.Challenges.JacobiStirlingNumbers
 import RealRooted.Challenges.Kurtz
 import RealRooted.Challenges.LGV
 import RealRooted.Challenges.LGV
@@ -448,6 +449,7 @@ import RealRooted.Challenges.Sturm
 import RealRooted.Challenges.Sturm
 import RealRooted.Challenges.SturmSequenceFamilies
 import RealRooted.Challenges.SturmSequenceFamilies
+import RealRooted.Challenges.ThresholdMatrices
 import RealRooted.Challenges.ToricContribution
 import RealRooted.Challenges.ToricContribution
 import RealRooted.Challenges.TotallyNonnegativeHadamardObstruction

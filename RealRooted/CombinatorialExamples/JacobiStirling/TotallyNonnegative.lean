@@ -93,10 +93,10 @@ theorem firstKindMatrix_isTotallyNonneg {z : ℝ} (hz : -1 ≤ z) :
   exact Matrix.elementarySymmetricTriangle_isTotallyNonneg
     (firstKindTriangleWeight_nonneg hz)
 
-/-- The Legendre--Stirling first-kind triangle (`z = 0`) is totally
+/-- The Legendre--Stirling first-kind triangle (`z = 1`) is totally
 nonnegative. -/
 theorem legendreStirlingFirstMatrix_isTotallyNonneg :
-    (firstKindMatrix 0).IsTotallyNonneg :=
+    (firstKindMatrix 1).IsTotallyNonneg :=
   firstKindMatrix_isTotallyNonneg (by norm_num)
 
 end
