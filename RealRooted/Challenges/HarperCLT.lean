@@ -1,5 +1,6 @@
 import RealRooted.Mathlib.Probability.CoeffDistribution
 import RealRooted.CombinatorialExamples.EulerianNormal
+import RealRooted.CombinatorialExamples.NarayanaNormal
 
 /-!
 # Harper's central limit theorem challenge entry point
@@ -8,8 +9,8 @@ import RealRooted.CombinatorialExamples.EulerianNormal
 version = 1
 section = "theorems"
 slug = "harper-clt"
-authors = ["Harper", "Bender"]
-years = [1967, 1973]
+authors = ["Harper", "Bender", "Goncharov"]
+years = [1944, 1967, 1973]
 
 [[definitions]]
 name = "Polynomial.standardizedCoeffDistribution"
@@ -33,6 +34,16 @@ module = "RealRooted.Mathlib.Probability.CoeffDistribution"
 label = "De Moivre–Laplace: the binomial distribution is asymptotically normal"
 
 [[theorems]]
+name = "Polynomial.tendsto_standardizedCoeffDistribution_prod_range"
+module = "RealRooted.Mathlib.Probability.CoeffDistribution"
+label = "Products of real-rooted factors with divergent total variance are asymptotically normal"
+
+[[theorems]]
+name = "Polynomial.tendsto_standardizedCoeffDistribution_prod_X_add_natCast"
+module = "RealRooted.Mathlib.Probability.CoeffDistribution"
+label = "Goncharov: Stirling numbers of the first kind are asymptotically normal"
+
+[[theorems]]
 name = "RealRooted.tendsto_standardizedCoeffDistribution_eulerianTilde"
 module = "RealRooted.CombinatorialExamples.EulerianNormal"
 label = "The Eulerian numbers are asymptotically normal"
@@ -41,6 +52,11 @@ label = "The Eulerian numbers are asymptotically normal"
 name = "RealRooted.tendsto_standardizedCoeffDistribution_generalizedEulerian_two"
 module = "RealRooted.CombinatorialExamples.EulerianNormal"
 label = "The type B Eulerian numbers are asymptotically normal"
+
+[[theorems]]
+name = "RealRooted.tendsto_standardizedCoeffDistribution_narayana"
+module = "RealRooted.CombinatorialExamples.NarayanaNormal"
+label = "The Narayana numbers are asymptotically normal"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -65,11 +81,24 @@ to the standard normal distribution.
 
 For example, $(1 + x)^n$ has variance $n/4$, which recovers the de
 Moivre–Laplace theorem for the binomial distribution.
+
 The Eulerian polynomials, with coefficients $A(n+1, k)$, have mean
 $(n+2)/2$ and variance $(n+2)/12$, so the Eulerian numbers are asymptotically
 normal. Both moments follow from scalar recurrences at $x = 1$. The type $B$
 Eulerian numbers have mean $n/2$ and variance $(n+1)/12$, so they are
 asymptotically normal as well.
+
+The Narayana polynomials satisfy
+$(n+3) Q_{n+2} = (2n+3)(1+x) Q_{n+1} - n(1-x)^2 Q_n$. The last term vanishes to
+second order at $x = 1$, so the same method gives mean $(n-1)/2$ and variance
+$(n^2-1)/(4(2n-1))$. Hence the Narayana numbers are asymptotically normal.
+
+Variances add under multiplication, so a product $\prod_{i<n} L_i$ of
+real-rooted factors with nonnegative coefficients is asymptotically normal as
+soon as $\sum_i \sigma^2(L_i) \to \infty$. For $L_i = x + i$ the variance is
+$i/(i+1)^2 \ge 1/(2(i+1))$ for $i \ge 1$, and the harmonic series diverges. This
+gives Goncharov's theorem: the unsigned Stirling numbers of the first kind, which
+count permutations of $[n]$ by number of cycles, are asymptotically normal.
 
 ## Proof idea
 
@@ -84,7 +113,8 @@ turns pointwise convergence of characteristic functions into weak convergence.
 L. H. Harper, “Stirling behavior is asymptotically normal,” *Annals of
 Mathematical Statistics* 38 (1967), 410–414; E. A. Bender, “Central and local
 limit theorems applied to asymptotic enumeration,” *Journal of Combinatorial
-Theory, Series A* 15 (1973), 91–111.
+Theory, Series A* 15 (1973), 91–111; V. L. Goncharov, “Some facts from
+combinatorics,” *Izv. Akad. Nauk SSSR Ser. Mat.* 8 (1944), 3–48.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

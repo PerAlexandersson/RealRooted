@@ -569,6 +569,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
 import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
 import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.Narayana
+import RealRooted.CombinatorialExamples.NarayanaNormal
 import RealRooted.CombinatorialExamples.OneDescentGamma
 import RealRooted.CombinatorialExamples.PathPowerIndependence
 import RealRooted.CombinatorialExamples.PathPowerIndependence
