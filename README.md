@@ -151,7 +151,7 @@ this file.
 ### Checks
 
 ```bash
-python3 scripts/check_root_imports.py --fix        # register a new module in its umbrellas
+python3 scripts/check_root_imports.py --fix        # register a new module (imports stay sorted)
 python3 scripts/check_import_architecture.py       # import graph, layers, budgets
 python3 scripts/check_proof_status.py --self-test
 python3 scripts/check_proof_status.py              # sorry/axiom/tactic rules, open statements
