@@ -406,6 +406,7 @@ import RealRooted.Challenges.JacobiDeformation
 import RealRooted.Challenges.JacobiDeformation
 import RealRooted.Challenges.JacobiPolynomials
 import RealRooted.Challenges.JacobiPolynomials
+import RealRooted.Challenges.JacobiStirlingDescent
 import RealRooted.Challenges.Kurtz
 import RealRooted.Challenges.LGV
 import RealRooted.Challenges.LGV
@@ -558,10 +559,15 @@ import RealRooted.CombinatorialExamples.BigDescents321.TopCoefficients
 import RealRooted.CombinatorialExamples.BigDescentsOddBinom
 import RealRooted.CombinatorialExamples.ColoredSetPartitions
 import RealRooted.CombinatorialExamples.Common
+import RealRooted.CombinatorialExamples.DerangementsExcNormal
 import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.CombinatorialExamples.EulerianNormal
 import RealRooted.CombinatorialExamples.EvenBinom
 import RealRooted.CombinatorialExamples.EvenBinom
+import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic
+import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Comparison
+import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Families
+import RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted
 import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
 import RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF
 import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
@@ -569,6 +575,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
 import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
 import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.Narayana
+import RealRooted.CombinatorialExamples.NarayanaNormal
 import RealRooted.CombinatorialExamples.OneDescentGamma
 import RealRooted.CombinatorialExamples.PathPowerIndependence
 import RealRooted.CombinatorialExamples.PathPowerIndependence
@@ -582,6 +589,7 @@ import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
 import RealRooted.CombinatorialExamples.Simsun
 import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
 import RealRooted.CombinatorialExamples.StirlingPermutations
+import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
 import RealRooted.CombinatorialExamples.SturmDerangementsExc
 import RealRooted.CombinatorialExamples.Touchard
 import RealRooted.CombinatorialExamples.TypeBEulerian

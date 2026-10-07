@@ -2,6 +2,7 @@ import Mathlib.MeasureTheory.Measure.LevyConvergence
 import Mathlib.Probability.Distributions.Gaussian.Real
 import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import Mathlib.Analysis.PSeries
 
 /-!
 # Harper's central limit theorem for real-rooted polynomials
@@ -466,5 +467,78 @@ theorem tendsto_standardizedCoeffDistribution_one_add_X_pow :
     (fun n k => by rw [coeff_one_add_X_pow]; positivity) ?_
   simp only [coeffVariance_one_add_X_pow]
   exact tendsto_natCast_atTop_atTop.atTop_div_const (by norm_num)
+
+/-- The variance of a product is the sum of the variances of the factors. -/
+theorem coeffVariance_prod {ι : Type*} (s : Finset ι) (L : ι → ℝ[X])
+    (h : ∀ i ∈ s, (L i).eval 1 ≠ 0) :
+    (∏ i ∈ s, L i).coeffVariance = ∑ i ∈ s, (L i).coeffVariance := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp [coeffVariance, coeffMean]
+  | insert a s ha ih =>
+    have hs : ∀ i ∈ s, (L i).eval 1 ≠ 0 := fun i hi => h i (Finset.mem_insert_of_mem hi)
+    rw [Finset.prod_insert ha, Finset.sum_insert ha,
+      coeffVariance_mul (h a (Finset.mem_insert_self a s))
+        (by rw [eval_prod]; exact Finset.prod_ne_zero_iff.mpr hs), ih hs]
+
+private theorem coeff_prod_nonneg {ι : Type*} (s : Finset ι) {L : ι → ℝ[X]}
+    (hnn : ∀ i k, 0 ≤ (L i).coeff k) (k : ℕ) : 0 ≤ (∏ i ∈ s, L i).coeff k := by
+  classical
+  induction s using Finset.induction_on generalizing k with
+  | empty => simp [coeff_one]; split_ifs <;> norm_num
+  | insert a s ha ih =>
+    rw [Finset.prod_insert ha, coeff_mul]
+    exact Finset.sum_nonneg fun x _ => mul_nonneg (hnn a x.1) (ih x.2)
+
+/-- **CLT for products**: if `L i` are real-rooted with nonnegative coefficients and the sum of
+their coefficient variances diverges, the coefficient distributions of `∏_{i<n} L i` are
+asymptotically normal. -/
+theorem tendsto_standardizedCoeffDistribution_prod_range {L : ℕ → ℝ[X]}
+    (hs : ∀ i, (L i).Splits) (hnn : ∀ i k, 0 ≤ (L i).coeff k) (h1 : ∀ i, (L i).eval 1 ≠ 0)
+    (hvar : Tendsto (fun n => ∑ i ∈ Finset.range n, (L i).coeffVariance) atTop atTop) :
+    Tendsto (fun n => (∏ i ∈ Finset.range n, L i).standardizedCoeffDistribution) atTop
+      (𝓝 ⟨gaussianReal 0 1, inferInstance⟩) :=
+  tendsto_standardizedCoeffDistribution (fun _ => Splits.prod fun i _ => hs i)
+    (fun n k => coeff_prod_nonneg _ hnn k)
+    (by simpa only [coeffVariance_prod _ _ fun i _ => h1 i] using hvar)
+
+theorem coeffVariance_X_add_C_natCast (i : ℕ) :
+    (X + C (i : ℝ)).coeffVariance = (i : ℝ) / ((i : ℝ) + 1) ^ 2 := by
+  simp [coeffVariance, coeffMean]
+  field_simp
+  ring
+
+/-- **Goncharov's theorem**: the unsigned Stirling numbers of the first kind, the coefficients of
+`X (X + 1) ⋯ (X + n - 1)` (cycle counts of random permutations), are asymptotically normal. -/
+theorem tendsto_standardizedCoeffDistribution_prod_X_add_natCast :
+    Tendsto (fun n => (∏ i ∈ Finset.range n, (X + C (i : ℝ))).standardizedCoeffDistribution)
+      atTop (𝓝 ⟨gaussianReal 0 1, inferInstance⟩) := by
+  refine tendsto_standardizedCoeffDistribution_prod_range
+    (fun i => Splits.of_natDegree_le_one (by compute_degree!))
+    (fun i k => ?_) (fun i => by rw [eval_add, eval_X, eval_C]; positivity) ?_
+  · simp only [coeff_add, coeff_C, coeff_X]
+    split_ifs <;> positivity
+  simp only [coeffVariance_X_add_C_natCast]
+  have hbound : ∀ n, (∑ i ∈ Finset.range n, (1 / (i + 1) : ℝ)) / 2 - 1 / 2 ≤
+      ∑ i ∈ Finset.range n, ((i : ℝ) / (i + 1) ^ 2) := by
+    intro n
+    induction n with
+    | zero => norm_num
+    | succ n ih =>
+      rw [Finset.sum_range_succ, Finset.sum_range_succ]
+      rcases Nat.eq_zero_or_pos n with rfl | hn
+      · norm_num
+      have hn' : (1 : ℝ) ≤ n := by exact_mod_cast hn
+      have hterm : 1 / (2 * ((n : ℝ) + 1)) ≤ (n : ℝ) / (n + 1) ^ 2 := by
+        rw [div_le_div_iff₀ (by positivity) (by positivity)]
+        nlinarith
+      have : (∑ i ∈ Finset.range n, (1 / (i + 1) : ℝ) + 1 / (n + 1)) / 2 - 1 / 2 =
+          ((∑ i ∈ Finset.range n, (1 / (i + 1) : ℝ)) / 2 - 1 / 2) + 1 / (2 * (n + 1)) := by
+        field_simp
+        ring
+      linarith
+  exact tendsto_atTop_mono hbound <| by
+    simpa only [sub_eq_add_neg] using tendsto_atTop_add_const_right _ _
+      (Real.tendsto_sum_range_one_div_nat_succ_atTop.atTop_div_const (by norm_num : (0 : ℝ) < 2))
 
 end Polynomial

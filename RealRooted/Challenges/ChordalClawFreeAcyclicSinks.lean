@@ -63,6 +63,11 @@ version $S_G(t; q)$ depends on a vertex labelling; at $q = 1$ it equals $S_G(t)$
 For the refined polynomial of natural unit interval graphs, see
 [acyclic sinks of natural unit interval graphs](/RealRooted/families/unit-interval-acyclic-sinks/).
 
+Line graphs of forests are also chordal and claw-free. For them the library
+proves real-rootedness by a separate route: the acyclic sink polynomial of
+$L(F)$ is the [minima polynomial](/RealRooted/families/minima-polynomial/) of
+the forest $F$.
+
 ## References
 
 P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).
