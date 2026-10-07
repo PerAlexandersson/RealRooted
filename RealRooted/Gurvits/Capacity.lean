@@ -262,4 +262,94 @@ theorem coeffIter_eq_coeff_allOnes (n : ℕ) (p : MvPolynomial (Fin n) R) :
 
 end Extraction
 
+section Restriction
+
+open MvPolynomial
+
+section General
+
+variable {R : Type*} [CommSemiring R] {n : ℕ}
+
+
+
+
+
+/-- B1 (coefficient form): coefficients of `step p` are coefficients of `p`. -/
+theorem coeff_step (p : MvPolynomial (Fin (n + 1)) R) (m : Fin n →₀ ℕ) :
+    (step p).coeff m = p.coeff (Finsupp.cons 1 m) := by
+  rw [step_eq_coeff_one, finSuccEquiv_coeff_coeff]
+
+/-- B2: `step` lowers the total degree by at least one. -/
+theorem totalDegree_step_le {p : MvPolynomial (Fin (n + 1)) R} {k : ℕ}
+    (hp : p.totalDegree ≤ k + 1) : (step p).totalDegree ≤ k := by
+  by_cases h : step p = 0
+  · simp [h]
+  · rw [step_eq_coeff_one] at h ⊢
+    have := totalDegree_coeff_finSuccEquiv_add_le p 1 h
+    lia
+
+/-- B2 (conditional form). -/
+theorem totalDegree_step_add_one_le {p : MvPolynomial (Fin (n + 1)) R} (h : step p ≠ 0) :
+    (step p).totalDegree + 1 ≤ p.totalDegree := by
+  rw [step_eq_coeff_one] at h ⊢
+  exact totalDegree_coeff_finSuccEquiv_add_le p 1 h
+
+/-- B4 (product): splitting off the first coordinate of `Fin.cons t y`. -/
+theorem prod_fin_cons (t : R) (y : Fin n → R) :
+    ∏ i : Fin (n + 1), (Fin.cons t y : Fin (n + 1) → R) i = t * ∏ i, y i := by
+  rw [Fin.prod_univ_succ]
+  simp
+
+/-- B4 (zero variables): evaluation of a polynomial in no variables is its constant term. -/
+theorem eval_eq_coeff_zero_of_fin_zero (x : Fin 0 → R) (p : MvPolynomial (Fin 0) R) :
+    MvPolynomial.eval x p = p.coeff 0 := by
+  induction p using MvPolynomial.induction_on with
+  | C a => simp
+  | add p q hp hq => simp [hp, hq]
+  | mul_X p i hp => exact i.elim0
+
+end General
+
+section Real
+
+variable {n : ℕ}
+
+/-- B1: `step` preserves coefficientwise nonnegativity. -/
+theorem coeff_step_nonneg {p : MvPolynomial (Fin (n + 1)) ℝ} (hp : ∀ m, 0 ≤ p.coeff m)
+    (m : Fin n →₀ ℕ) : 0 ≤ (step p).coeff m := by
+  rw [coeff_step]
+  exact hp _
+
+
+/-- B3 (a): evaluating the restriction at `t` is evaluating `p` at `Fin.cons t y`. -/
+theorem eval_map_finSuccEquiv (p : MvPolynomial (Fin (n + 1)) ℝ) (y : Fin n → ℝ) (t : ℝ) :
+    (Polynomial.map (MvPolynomial.eval y) (finSuccEquiv ℝ n p)).eval t =
+      MvPolynomial.eval (Fin.cons t y) p :=
+  (eval_eq_eval_mv_eval' y t p).symm
+
+/-- B3 (b): the linear coefficient of the restriction is `step p` evaluated at `y`. -/
+theorem coeff_one_map_finSuccEquiv (p : MvPolynomial (Fin (n + 1)) ℝ) (y : Fin n → ℝ) :
+    (Polynomial.map (MvPolynomial.eval y) (finSuccEquiv ℝ n p)).coeff 1 =
+      MvPolynomial.eval y (step p) := by
+  rw [Polynomial.coeff_map, step_eq_coeff_one]
+
+/-- B3 (c): the restriction to a nonnegative point has nonnegative coefficients. -/
+theorem coeff_map_finSuccEquiv_nonneg {p : MvPolynomial (Fin (n + 1)) ℝ}
+    (hp : ∀ m, 0 ≤ p.coeff m) {y : Fin n → ℝ} (hy : ∀ i, 0 ≤ y i) (j : ℕ) :
+    0 ≤ (Polynomial.map (MvPolynomial.eval y) (finSuccEquiv ℝ n p)).coeff j := by
+  rw [Polynomial.coeff_map]
+  refine eval_nonneg_of_coeff_nonneg (fun m => ?_) hy
+  rw [finSuccEquiv_coeff_coeff]
+  exact hp _
+
+/-- B3 (d): the degree of the restriction is at most the total degree of `p`. -/
+theorem natDegree_map_finSuccEquiv_le (p : MvPolynomial (Fin (n + 1)) ℝ) (y : Fin n → ℝ) :
+    (Polynomial.map (MvPolynomial.eval y) (finSuccEquiv ℝ n p)).natDegree ≤ p.totalDegree :=
+  Polynomial.natDegree_map_le.trans
+    ((natDegree_finSuccEquiv p).trans_le (degreeOf_le_totalDegree p 0))
+
+end Real
+
+end Restriction
+
 end RealRooted.Gurvits

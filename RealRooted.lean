@@ -1563,3 +1563,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 import RealRooted.GarloffWagner.HurwitzStable
 import RealRooted.Challenges.GarloffWagnerHurwitz
+import RealRooted.Challenges.VanDerWaerden
+import RealRooted.Gurvits
+import RealRooted.Gurvits.Capacity
+import RealRooted.Gurvits.Univariate
