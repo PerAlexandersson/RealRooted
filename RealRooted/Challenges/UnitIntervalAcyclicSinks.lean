@@ -69,6 +69,13 @@ weighted independence polynomial of $G$ with nonnegative vertex weights. Natural
 unit interval graphs are claw-free, so that polynomial is real-rooted by the
 weighted form of the [Chudnovsky–Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
 
+Natural unit interval graphs are chordal, and the natural order is a reverse
+perfect elimination order. At $q = 1$ the theorem is therefore a special case
+of the result for
+[chordal claw-free graphs](/RealRooted/families/chordal-claw-free-acyclic-sinks/),
+which also covers line graphs of trees; see also the
+[minima polynomial](/RealRooted/families/minima-polynomial/) page.
+
 ## References
 
 P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).

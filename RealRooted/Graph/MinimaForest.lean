@@ -423,5 +423,17 @@ theorem minimaPolynomial_eq_ordinaryAcyclicSinkPolynomial_lineGraph
     let : Fintype F.edgeSet := Fintype.ofFinite _
     rw [LocalOrder.sinkCount_lineOrientation]
 
+/-- Line graphs of forests have real-rooted acyclic sink polynomials: by
+`minimaPolynomial_eq_ordinaryAcyclicSinkPolynomial_lineGraph` the polynomial is the minima
+polynomial of the forest. -/
+theorem ordinaryAcyclicSinkPolynomial_lineGraph_splits {W : Type u} [Finite W]
+    (F : _root_.SimpleGraph W) (hF : F.IsAcyclic) :
+    letI : Fintype F.edgeSet := Fintype.ofFinite _
+    (ordinaryAcyclicSinkPolynomial F.lineGraph).Splits := by
+  classical
+  let := Fintype.ofFinite W
+  rw [← minimaPolynomial_eq_ordinaryAcyclicSinkPolynomial_lineGraph F hF]
+  exact minimaPolynomial_splits F
+
 end Graph
 end RealRooted

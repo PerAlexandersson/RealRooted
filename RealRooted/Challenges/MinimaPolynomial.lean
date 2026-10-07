@@ -45,6 +45,11 @@ headline = true
 name = "RealRooted.Graph.minimaPolynomial_eq_ordinaryAcyclicSinkPolynomial_lineGraph"
 module = "RealRooted.Graph.MinimaForest"
 label = "Forests: the minima polynomial is the acyclic sink polynomial of the line graph"
+
+[[theorems]]
+name = "RealRooted.Graph.ordinaryAcyclicSinkPolynomial_lineGraph_splits"
+module = "RealRooted.Graph.MinimaForest"
+label = "Line graphs of forests have real-rooted acyclic sink polynomials"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -80,7 +85,8 @@ independence polynomial of the claw-free line graph $L(G)$; see the
 **Forests.** If $F$ is a forest, every orientation of $L(F)$ that is acyclic on
 the vertex cliques is acyclic, and every acyclic orientation of $L(F)$ arises
 from exactly one local order. Hence $M_F(t)$ is the acyclic sink polynomial of
-the line graph $L(F)$.
+the line graph $L(F)$, and the acyclic sink polynomial of the line graph of a
+forest is real-rooted.
 
 For sinks of acyclic orientations, see the pages on
 [chordal claw-free graphs](/RealRooted/families/chordal-claw-free-acyclic-sinks/) and
