@@ -17,12 +17,12 @@ theorem, refutation, or production caller. They contain no admission.
 | Declaration | Status |
 | --- | --- |
 | `HurwitzOddEvenToReverseFullyInterlacingPairStatement` | Proposed reverse-row replacement for the refuted legacy Hurwitz-to-Lace orientation; issue #1113 |
-| `hadamardPreservesHurwitzStableStatement` | Garloff--Wagner Theorem 1, Hadamard products preserve Hurwitz stability; issue #1095 |
 
 ## Checked replacements
 
 | Topic | Checked declaration |
 | --- | --- |
+| Garloff--Wagner Theorem 1: Hadamard products preserve Hurwitz stability (issue #1095) | `IsHurwitzStable.hadamardProduct` |
 | Real finite-symbol sufficiency | `BorceaBranden.finiteSymbolTheorem` |
 | Complex finite-symbol classification | `BorceaBranden.finiteComplexSymbolClassification` |
 | Complex finite-symbol necessity | `BorceaBranden.rankOne_or_algebraicSymbol_stable_of_preserves` |
