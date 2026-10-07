@@ -6,6 +6,7 @@ import RealRooted.MultiplierSequence.PolyaSchur
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
 import RealRooted.MultiplierSequence.Sign
 
 /-!
@@ -131,6 +132,11 @@ label = "Type I functions sampled at 0, 1, 2, … are PF multiplier sequences"
 name = "RealRooted.IsLaguerrePolya.taylorDifferentialOperator_eq_zero_or_splits"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator"
 label = "Laguerre–Pólya: φ(D) preserves real-rootedness"
+
+[[theorems]]
+name = "RealRooted.taylorDifferentialOperator_exp_neg_mul_sq_eq_zero_or_splits"
+module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow"
+label = "The heat operator exp(−aD²) preserves real-rootedness"
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.bidiagonalPFPreserver_of_affineSymbol"

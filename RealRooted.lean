@@ -1296,6 +1296,8 @@ import RealRooted.MultiplierSequence.PolyaSchur.Growth
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
