@@ -406,6 +406,7 @@ import RealRooted.Challenges.JacobiDeformation
 import RealRooted.Challenges.JacobiDeformation
 import RealRooted.Challenges.JacobiPolynomials
 import RealRooted.Challenges.JacobiPolynomials
+import RealRooted.Challenges.JacobiStirlingDescent
 import RealRooted.Challenges.Kurtz
 import RealRooted.Challenges.LGV
 import RealRooted.Challenges.LGV
@@ -563,6 +564,10 @@ import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.CombinatorialExamples.EulerianNormal
 import RealRooted.CombinatorialExamples.EvenBinom
 import RealRooted.CombinatorialExamples.EvenBinom
+import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic
+import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Comparison
+import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Families
+import RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted
 import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
 import RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF
 import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
