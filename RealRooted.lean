@@ -1124,6 +1124,7 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
 import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
+import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree
 import RealRooted.Mathlib.Data.Fin.Basic
 import RealRooted.Mathlib.Data.Fintype.Card
 import RealRooted.Mathlib.Data.List.Basic
@@ -1146,6 +1147,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
 import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
 import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
 import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
+import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
@@ -1514,6 +1516,7 @@ import RealRooted.SimpleRoots
 import RealRooted.SmallPositiveParameterCount
 import RealRooted.SortedRoots
 import RealRooted.SortedRoots.Exhibited
+import RealRooted.SpanningTreeStability
 import RealRooted.SpectralProduct
 import RealRooted.SpectralProduct
 import RealRooted.StaircaseSum
