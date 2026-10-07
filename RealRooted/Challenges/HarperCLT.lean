@@ -1,4 +1,5 @@
 import RealRooted.Mathlib.Probability.CoeffDistribution
+import RealRooted.CombinatorialExamples.DerangementsExcNormal
 import RealRooted.CombinatorialExamples.EulerianNormal
 import RealRooted.CombinatorialExamples.NarayanaNormal
 import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
@@ -63,6 +64,11 @@ label = "The Narayana numbers are asymptotically normal"
 name = "RealRooted.tendsto_standardizedCoeffDistribution_stirlingPermutations"
 module = "RealRooted.CombinatorialExamples.StirlingPermutationsNormal"
 label = "The second-order Eulerian numbers are asymptotically normal"
+
+[[theorems]]
+name = "RealRooted.tendsto_standardizedCoeffDistribution_sturmDerangementsExc"
+module = "RealRooted.CombinatorialExamples.DerangementsExcNormal"
+label = "Excedances of derangements are asymptotically normal"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -103,6 +109,11 @@ The descent polynomials of Stirling permutations satisfy
 $P_{n+1} = (2n+1) x P_n + x(1-x) P_n'$. Their coefficients, the second-order
 Eulerian numbers, have mean $(2n+1)/3$ and variance $2(n^2-1)/(9(2n-1))$ for
 $n \ge 1$, so they are asymptotically normal too.
+
+The derangement excedance polynomials $d_n(x)$ have $d_n(1) = D_n$, the
+derangement numbers. Their mean is $n/2$, and their variance is
+$\frac{n-1}{12}\bigl(1 - (-1)^n / D_n\bigr)$ for $n \ge 2$. So the number of
+excedances of a random derangement is asymptotically normal.
 
 Variances add under multiplication, so a product $\prod_{i<n} L_i$ of
 real-rooted factors with nonnegative coefficients is asymptotically normal as
