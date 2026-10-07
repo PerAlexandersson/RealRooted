@@ -90,6 +90,7 @@ import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.OEISTestbed
 import RealRooted.Tactic.Examples.OEISTestbed.Favard
 import RealRooted.Tactic.Examples.OEISTestbed.LiuWangMixed
+import RealRooted.Tactic.Examples.OEISTestbed.MaWangRows
 import RealRooted.Tactic.Examples.OEISTestbed.MaWangSequences
 import RealRooted.Tactic.Examples.OEISTestbed.MaWangSteps
 import RealRooted.Tactic.Examples.OEISTestbed.MixedDenominator

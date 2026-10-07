@@ -12,7 +12,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = ROOT / "RealRooted" / "Tactic" / "Examples"
-CONCRETE = ROOT / "RealRooted" / "OEIS"
+CONCRETE_DIRS = (ROOT / "RealRooted" / "OEIS", ROOT / "RealRooted" / "Applications" / "OEIS")
+CONCRETE_NAME_RE = re.compile(r"^(A\d{6})(\.lean)?$")
 OUTPUT = ROOT / "RealRooted" / "Tactic" / "OEIS_COVERAGE.md"
 
 OEIS_RE = re.compile(r"A\d{6}")
@@ -75,6 +76,21 @@ def example_block(lines: list[str], index: int) -> str:
     return "\n".join(lines[start:stop])
 
 
+DECL_PREFIXES = ("theorem ", "lemma ", "private theorem ", "private lemma ")
+
+
+def declaration_block(lines: list[str], index: int) -> str:
+    """Return the proof of a theorem whose header mentions an OEIS ID.
+
+    The header up to the first `:=` is dropped so that its binders are not read as
+    certificate arguments.
+    """
+    stop = index + 1
+    while stop < len(lines) and lines[stop].startswith((" ", "\t")):
+        stop += 1
+    return "\n".join(lines[index:stop]).partition(":=")[2]
+
+
 def clean_shape(text: str) -> str:
     text = text.replace("|", "\\|")
     text = re.sub(r"\s+", " ", text).strip()
@@ -90,7 +106,10 @@ def collect() -> tuple[dict[str, Coverage], set[str]]:
             ids = OEIS_RE.findall(line)
             if not ids:
                 continue
-            block = example_block(lines, index)
+            if line.lstrip().startswith(DECL_PREFIXES):
+                block = declaration_block(lines, index)
+            else:
+                block = example_block(lines, index)
             shape = clean_shape(comment_text(lines, index))
             routes = set(ROUTE_RE.findall(block))
             arguments = set(ARG_RE.findall(block))
@@ -102,13 +121,20 @@ def collect() -> tuple[dict[str, Coverage], set[str]]:
                 row.routes.update(routes)
                 row.arguments.update(arguments)
 
-    concrete_ids: set[str] = set()
-    if CONCRETE.exists():
-        for path in CONCRETE.rglob("*.lean"):
-            concrete_ids.update(OEIS_RE.findall(path.read_text(encoding="utf-8")))
-    for oeis_id in concrete_ids:
+    concrete: dict[str, str] = {}
+    for base in CONCRETE_DIRS:
+        if not base.exists():
+            continue
+        # A module `A123456.lean` or a directory `A123456/` names a formalized sequence;
+        # prefer the module when both exist.
+        for path in sorted(base.iterdir(), key=lambda p: (p.is_dir(), p.name)):
+            match = CONCRETE_NAME_RE.match(path.name)
+            if match and (path.is_dir() or path.suffix == ".lean"):
+                concrete.setdefault(match.group(1), path.relative_to(ROOT).as_posix())
+    concrete_ids = set(concrete)
+    for oeis_id, source in concrete.items():
         row = rows.setdefault(oeis_id, Coverage())
-        row.sources.add(f"RealRooted/OEIS/{oeis_id}.lean")
+        row.sources.add(source)
         if not row.shapes:
             row.shapes.append("concrete sequence-facing theorem")
     return rows, concrete_ids
@@ -168,7 +194,8 @@ def render() -> str:
         "The status values deliberately separate tactic capability from completed",
         "sequence formalization:",
         "",
-        "- `formalized`: a concrete sequence-facing theorem exists under `RealRooted/OEIS`;",
+        "- `formalized`: a concrete sequence-facing module exists under `RealRooted/OEIS` or",
+        "  `RealRooted/Applications/OEIS`;",
         "- `shell`: an executable abstract recurrence shell reaches `StrictInterl` or `Splits`;",
         "- `fragment`: only a sign or root-window subcertificate is exercised;",
         "- `documented`: the ID is mentioned, but no executable route was associated.",
