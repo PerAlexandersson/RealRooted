@@ -1563,3 +1563,6 @@ import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 import RealRooted.GarloffWagner.HurwitzStable
 import RealRooted.Challenges.GarloffWagnerHurwitz
+import RealRooted.LaguerreSamuelson
+import RealRooted.Maclaurin
+import RealRooted.Challenges.NewtonMaclaurin
