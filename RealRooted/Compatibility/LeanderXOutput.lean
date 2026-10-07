@@ -195,48 +195,11 @@ theorem compatible_X_mul_leanderTransform {n : ℕ} (f : Fin n → ℝ[X])
     by_cases ha0 : a = 0
     · exact Or.inr fun hb0 => habzero ⟨ha0, hb0⟩
     · exact Or.inl ha0
-  let region : Fin n → ℝ[X] := leanderXOutputRegion f i j a b
-  let fs : List ℝ[X] := List.ofFn region
-  have hregions_rr : ∀ p ∈ fs, p ≠ 0 ∧ p.Splits := by
-    intro p hp
-    simp only [fs, List.mem_ofFn] at hp
-    rcases hp with ⟨h, rfl⟩
-    exact leanderXOutputRegion_ne_zero_and_splits f i j hab hrr h
-  have hregions_pos : ∀ p ∈ fs, HasPosLeadingCoeff p := by
-    intro p hp
-    simp only [fs, List.mem_ofFn] at hp
-    rcases hp with ⟨h, rfl⟩
-    exact leanderXOutputRegion_hasPosLeadingCoeff f i j ha hb hab hpos h
-  have hregions_pair : PairwiseCompatible fs := by
-    apply pairwiseCompatible_of_forall_mem
-    intro p hp q hq
-    simp only [fs, List.mem_ofFn] at hp hq
-    rcases hp with ⟨h, rfl⟩
-    rcases hq with ⟨k, rfl⟩
-    rcases lt_trichotomy h k with hhk | heq | hkh
-    · exact leanderXOutputRegion_compatible_of_lt f i j ha hb hrr hpos
-        hff hXf hhk
-    · subst k
-      exact Compatible.self_of_splits
-        (leanderXOutputRegion_ne_zero_and_splits f i j hab hrr h).2
-    · exact (leanderXOutputRegion_compatible_of_lt f i j ha hb hrr hpos
-        hff hXf hkh).comm
-  have hfamily : FamilyCompatible fs :=
-    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible hregions_rr hregions_pos).1
-      hregions_pair
-  let ws : List (ℝ × ℝ[X]) := List.ofFn fun h =>
-    (leanderXOutputWeight i j a b h, region h)
-  have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by
-    intro ap hap
-    simp only [ws, List.mem_ofFn] at hap
-    rcases hap with ⟨h, rfl⟩
-    simp [fs]
-  have hnonneg : ∀ ap ∈ ws, 0 ≤ ap.1 := by
-    intro ap hap
-    simp only [ws, List.mem_ofFn] at hap
-    rcases hap with ⟨h, rfl⟩
-    exact leanderXOutputWeight_nonneg i j ha hb h
-  simpa [ws, region] using
-    (weightedSum_leanderXOutputRegion f hij a b ▸ hfamily ws hmem hnonneg)
+  simpa using weightedSum_leanderXOutputRegion f hij a b ▸
+    weightedSum_ofFn_eq_zero_or_splits (leanderXOutputWeight i j a b)
+      (leanderXOutputRegion_ne_zero_and_splits f i j hab hrr)
+      (leanderXOutputRegion_hasPosLeadingCoeff f i j ha hb hab hpos)
+      (fun _ _ hhk => leanderXOutputRegion_compatible_of_lt f i j ha hb hrr hpos hff hXf hhk)
+      (leanderXOutputWeight_nonneg i j ha hb)
 
 end RealRooted
