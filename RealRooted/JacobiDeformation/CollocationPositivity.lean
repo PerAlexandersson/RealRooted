@@ -326,15 +326,26 @@ theorem shiftedJacobiInner_mul_one_sub_X_comm (α β : ℝ) (p r : ℝ[X]) :
   congr 1
   ring
 
-/-- Distinct normalized cardinal polynomials give a positive-definite
-two-point compression of multiplication by `X`. -/
-theorem quasiJacobiTwoPointCompression_posDef
+/-- The Gram matrix of multiplication by `w` on two normalized cardinal polynomials. -/
+private def quasiJacobiTwoPointGram {q : ℕ} (α β : ℝ) (w : ℝ[X]) (x : Fin q → ℝ)
+    (i j : Fin q) : Matrix (Fin 2) (Fin 2) ℝ :=
+  let ei := normalizedJacobiCardinal α β x i
+  let ej := normalizedJacobiCardinal α β x j
+  !![shiftedJacobiInner α β ei (w * ei),
+      shiftedJacobiInner α β ei (w * ej);
+    shiftedJacobiInner α β ej (w * ei),
+      shiftedJacobiInner α β ej (w * ej)]
+
+/-- The two-point Gram matrix of a self-adjoint, positive multiplier is positive definite. -/
+private theorem quasiJacobiTwoPointGram_posDef
     {q : ℕ} (hq : 2 ≤ q) {α β τ : ℝ}
     (hα : -1 < α) (hβ : -1 < β)
     (x : Fin q → ℝ) (hx : Function.Injective x)
     (hroot : ∀ k, (quasiJacobiPolynomial q α β τ).IsRoot (x k))
-    {i j : Fin q} (hij : i ≠ j) :
-    (quasiJacobiTwoPointCompression α β x i j).PosDef := by
+    {i j : Fin q} (hij : i ≠ j) (w : ℝ[X])
+    (hcomm : ∀ p r, shiftedJacobiInner α β p (w * r) = shiftedJacobiInner α β r (w * p))
+    (hpos : ∀ {p : ℝ[X]}, p ≠ 0 → 0 < shiftedJacobiInner α β p (w * p)) :
+    (quasiJacobiTwoPointGram α β w x i j).PosDef := by
   let ei := normalizedJacobiCardinal α β x i
   let ej := normalizedJacobiCardinal α β x j
   have hwi := shiftedJacobi_quadratureWeight_pos_of_roots
@@ -351,8 +362,8 @@ theorem quasiJacobiTwoPointCompression_posDef
   · apply Matrix.IsHermitian.ext
     intro a b
     fin_cases a <;> fin_cases b <;>
-      simp [quasiJacobiTwoPointCompression,
-        shiftedJacobiInner_mul_X_comm]
+      simp [quasiJacobiTwoPointGram,
+        hcomm]
   · intro y hy
     let p := C (y 0) * ei + C (y 1) * ej
     have hp : p ≠ 0 := by
@@ -382,14 +393,14 @@ theorem quasiJacobiTwoPointCompression_posDef
       apply hy
       funext a
       fin_cases a <;> assumption
-    have hpositive := shiftedJacobiInner_mul_X_self_pos hα hβ hp
-    have hXC (a : ℝ) (r : ℝ[X]) : X * (C a * r) = C a * (X * r) := by
+    have hpositive := hpos hp
+    have hXC (a : ℝ) (r : ℝ[X]) : w * (C a * r) = C a * (w * r) := by
       ring
     have hform :
         dotProduct (star y)
-            (Matrix.mulVec (quasiJacobiTwoPointCompression α β x i j) y) =
-          shiftedJacobiInner α β p (X * p) := by
-      simp only [quasiJacobiTwoPointCompression, Matrix.cons_mulVec,
+            (Matrix.mulVec (quasiJacobiTwoPointGram α β w x i j) y) =
+          shiftedJacobiInner α β p (w * p) := by
+      simp only [quasiJacobiTwoPointGram, Matrix.cons_mulVec,
         Matrix.empty_mulVec, Matrix.cons_dotProduct, Matrix.dotProduct_of_isEmpty,
         add_zero, star_trivial]
       simp [Matrix.vecHead, Matrix.vecTail, p, ei, ej, mul_add, hXC,
@@ -399,6 +410,18 @@ theorem quasiJacobiTwoPointCompression_posDef
       ring
     rwa [hform]
 
+/-- Distinct normalized cardinal polynomials give a positive-definite
+two-point compression of multiplication by `X`. -/
+theorem quasiJacobiTwoPointCompression_posDef
+    {q : ℕ} (hq : 2 ≤ q) {α β τ : ℝ}
+    (hα : -1 < α) (hβ : -1 < β)
+    (x : Fin q → ℝ) (hx : Function.Injective x)
+    (hroot : ∀ k, (quasiJacobiPolynomial q α β τ).IsRoot (x k))
+    {i j : Fin q} (hij : i ≠ j) :
+    (quasiJacobiTwoPointCompression α β x i j).PosDef :=
+  quasiJacobiTwoPointGram_posDef hq hα hβ x hx hroot hij X (shiftedJacobiInner_mul_X_comm α β)
+    fun hp => shiftedJacobiInner_mul_X_self_pos hα hβ hp
+
 /-- The complementary two-point compression is also positive definite. -/
 theorem quasiJacobiTwoPointComplement_posDef
     {q : ℕ} (hq : 2 ≤ q) {α β τ : ℝ}
@@ -406,70 +429,10 @@ theorem quasiJacobiTwoPointComplement_posDef
     (x : Fin q → ℝ) (hx : Function.Injective x)
     (hroot : ∀ k, (quasiJacobiPolynomial q α β τ).IsRoot (x k))
     {i j : Fin q} (hij : i ≠ j) :
-    (quasiJacobiTwoPointComplement α β x i j).PosDef := by
-  let ei := normalizedJacobiCardinal α β x i
-  let ej := normalizedJacobiCardinal α β x j
-  have hwi := shiftedJacobi_quadratureWeight_pos_of_roots
-    hq hα hβ x hx hroot i
-  have hwj := shiftedJacobi_quadratureWeight_pos_of_roots
-    hq hα hβ x hx hroot j
-  have hsi : Real.sqrt (Lagrange.quadratureWeight
-      (Polynomial.momentFunctionalLinearMap (shiftedJacobiMoment α β)) x i) ≠ 0 :=
-    (Real.sqrt_pos.2 hwi).ne'
-  have hsj : Real.sqrt (Lagrange.quadratureWeight
-      (Polynomial.momentFunctionalLinearMap (shiftedJacobiMoment α β)) x j) ≠ 0 :=
-    (Real.sqrt_pos.2 hwj).ne'
-  refine Matrix.PosDef.of_dotProduct_mulVec_pos ?_ ?_
-  · apply Matrix.IsHermitian.ext
-    intro a b
-    fin_cases a <;> fin_cases b <;>
-      simp [quasiJacobiTwoPointComplement,
-        shiftedJacobiInner_mul_one_sub_X_comm]
-  · intro y hy
-    let p := C (y 0) * ei + C (y 1) * ej
-    have hp : p ≠ 0 := by
-      intro hpzero
-      have hi := congrArg (Polynomial.eval (x i)) hpzero
-      have hj := congrArg (Polynomial.eval (x j)) hpzero
-      have hei_i : ei.eval (x i) = (Real.sqrt (Lagrange.quadratureWeight
-          (Polynomial.momentFunctionalLinearMap (shiftedJacobiMoment α β)) x i))⁻¹ := by
-        simp [ei, normalizedJacobiCardinal,
-          Lagrange.eval_basis_self hx.injOn (mem_univ i)]
-      have hei_j : ei.eval (x j) = 0 := by
-        simp [ei, normalizedJacobiCardinal,
-          Lagrange.eval_basis_of_ne hij (mem_univ j)]
-      have hej_i : ej.eval (x i) = 0 := by
-        simp [ej, normalizedJacobiCardinal,
-          Lagrange.eval_basis_of_ne hij.symm (mem_univ i)]
-      have hej_j : ej.eval (x j) = (Real.sqrt (Lagrange.quadratureWeight
-          (Polynomial.momentFunctionalLinearMap (shiftedJacobiMoment α β)) x j))⁻¹ := by
-        simp [ej, normalizedJacobiCardinal,
-          Lagrange.eval_basis_self hx.injOn (mem_univ j)]
-      simp only [p, eval_add, eval_mul, eval_C, eval_zero,
-        hei_i, hei_j, hej_i, hej_j, mul_zero, add_zero, zero_add] at hi hj
-      have hyi : y 0 = 0 :=
-        (mul_eq_zero.mp hi).resolve_right (inv_ne_zero hsi)
-      have hyj : y 1 = 0 :=
-        (mul_eq_zero.mp hj).resolve_right (inv_ne_zero hsj)
-      apply hy
-      funext a
-      fin_cases a <;> assumption
-    have hpositive := shiftedJacobiInner_mul_one_sub_X_self_pos hα hβ hp
-    have hfactor (a : ℝ) (r : ℝ[X]) :
-        (1 - X) * (C a * r) = C a * ((1 - X) * r) := by
-      ring
-    have hform :
-        dotProduct (star y)
-            (Matrix.mulVec (quasiJacobiTwoPointComplement α β x i j) y) =
-          shiftedJacobiInner α β p ((1 - X) * p) := by
-      simp only [quasiJacobiTwoPointComplement, Matrix.cons_mulVec,
-        Matrix.empty_mulVec, Matrix.cons_dotProduct, Matrix.dotProduct_of_isEmpty,
-        add_zero, star_trivial]
-      simp [Matrix.vecHead, Matrix.vecTail, p, ei, ej, mul_add, hfactor,
-        shiftedJacobiInner_add_left, shiftedJacobiInner_add_right,
-        shiftedJacobiInner_C_mul_left, shiftedJacobiInner_C_mul_right]
-      ring
-    rwa [hform]
+    (quasiJacobiTwoPointComplement α β x i j).PosDef :=
+  quasiJacobiTwoPointGram_posDef hq hα hβ x hx hroot hij (1 - X)
+    (shiftedJacobiInner_mul_one_sub_X_comm α β)
+    fun hp => shiftedJacobiInner_mul_one_sub_X_self_pos hα hβ hp
 
 /-- The complement Gram compression is literally `I - C`. -/
 theorem quasiJacobiTwoPointComplement_eq_one_sub
