@@ -299,4 +299,19 @@ theorem natDegree_le_of_C_mul_eq_X_add_C_mul_derivative_add
 
 end AddTorsionFree
 
+section
+
+/-- The coefficients of `X (1 - X) p'`, the Eulerian-type derivative operator. -/
+lemma coeff_X_mul_one_sub_X_mul_derivative (p : R[X]) (k : ℕ) :
+    (X * (1 - X) * p.derivative).coeff k =
+      (k : R) * p.coeff k - ((k - 1 : ℕ) : R) * p.coeff (k - 1) := by
+  have hpoly : X * (1 - X) * p.derivative = X * p.derivative - X * (X * p.derivative) := by
+    ring
+  rw [hpoly, coeff_sub]
+  cases k with
+  | zero => simp
+  | succ k => simp [coeff_X_mul, coeff_X_mul_derivative, coeff_derivative, mul_comm]
+
+end
+
 end Polynomial

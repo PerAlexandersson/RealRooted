@@ -40,7 +40,7 @@ macro_rules
       rr_quadratic_splits_discriminant using
         degree := $hdeg:term,
         discriminant := $hdisc:term) =>
-      `(tactic| exact RealRooted.quadratic_splits_of_discrim_nonneg $hdeg $hdisc)
+      `(tactic| exact RealRooted.splits_of_natDegree_eq_two_of_discrim_nonneg $hdeg $hdisc)
   | `(tactic|
       rr_cubic_splits_discriminant using
         degree := $hdeg:term,
