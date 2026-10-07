@@ -617,6 +617,7 @@ import RealRooted.Graph.IndependencePolynomial.Recurrence
 import RealRooted.Graph.LeakeRyder
 import RealRooted.Graph.MatchingPolynomial
 import RealRooted.Graph.MatchingPolynomial.Multivariate
+import RealRooted.Graph.MatchingVertexInterlacing
 import RealRooted.Graph.MinimaForest
 import RealRooted.Graph.MinimaLocalOrder
 import RealRooted.Graph.MinimaPolynomial
@@ -886,6 +887,7 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
 import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
+import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
 import RealRooted.Mathlib.Data.Fin.Basic
 import RealRooted.Mathlib.Data.Fintype.Card
 import RealRooted.Mathlib.Data.List.Basic
