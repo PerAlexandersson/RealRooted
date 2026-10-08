@@ -183,8 +183,16 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
     if ty.isForall && mentionsP && has ``Polynomial.natDegree then
       let eq := do evalTactic (← `(tactic| (intro n; rr_row_natDegree)))
       let le := do evalTactic (← `(tactic| (intro n; apply le_of_eq; rr_row_natDegree)))
+      -- a bound `D₀ + d * n` for rows of degree `D₀ + d * n - 1`, which occur when the first
+      -- two rows have the same degree
+      let leSub := do
+        evalTactic (← `(tactic| (
+          intro n
+          refine le_trans (?_ : _ ≤ _ - 1) (Nat.sub_le _ _)
+          apply le_of_eq
+          rr_row_natDegree)))
       -- a failed search for an equality is slow, so try the bound first on `≤` goals
-      if ty.getForallBody.isAppOf ``LE.le then [le, eq] else [eq, le]
+      if ty.getForallBody.isAppOf ``LE.le then [le, leSub, eq] else [eq, le]
     else if ty.isForall && mentionsP && has ``Polynomial.leadingCoeff then
       [do evalTactic (← `(tactic| (intro n; rr_row_leadingCoeff_pos)))]
     else if has ``RealRooted.Interlaces then
@@ -293,12 +301,19 @@ private def smallRow (P : Ident) : TacticM (TSyntax `tactic) := do
   rowSideFull (some P)
   `(tactic| rr_row_side)
 
-/-- `rr_row_interlaces`, returning a certificate and the hinted call. -/
-private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) := do
+/-- The hint `(drop := k)` for dropping `k` rows; none for `k = 0`. -/
+private def dropHint (k : Nat) : Option Nat := if k == 0 then none else some k
+
+/-- `rr_row_interlaces` for the sequence `m ↦ P (m + k)` (after `k` further rows), returning
+a certificate and the hinted call. -/
+private def rowInterlacesCoreAt (hints : RowHints) (k : Nat) : TacticM (Cert × RowHints) := do
   let intro ← introIfForall
   withMainContext do
   let r ← rowRecSetup "rr_row_interlaces"
   let P := mkIdent r.P
+  if k > 0 && (r.shape == .product || r.shape == .deriv₂ || r.shape == .lagRight) then
+    throwError "rr_row_interlaces: dropping rows is not supported for the {r.shape.describe} \
+      recurrence of {P}"
   if r.shape == .product then
     if r.canonical && r.shift == 0 then
       evalTactic (← `(tactic| rr_product_interlaces))
@@ -309,7 +324,7 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
     return (intro ++ split.push (← applyThenSideFull P main), {})
   -- a second-order step with an eigen-ODE collapses to a first-order one
   let mut shape := r.shape
-  let mut hrec ← r.hrecTerm 0
+  let mut hrec ← r.hrecTerm k
   let mut pre : Cert := intro
   if r.shape == .deriv₂ then
     unless r.canonical && r.shift == 0 do
@@ -346,15 +361,16 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
     unless (← getGoals).isEmpty do
       throwError "rr_row_interlaces: could not verify the two-step product conditions for {P}"
     return (pre.push (← `(tactic| rr_row_interlaces)), {})
-  let (split, _) ← withMainContext <| alignRow r.P r.shift (smallRow P)
+  let (split, _) ← withMainContext <| alignRow r.P (r.shift + k) (smallRow P)
   pre := pre ++ split
   let D₀? ← match hints.degree with
     | some D => pure (some D)
-    | none => findRowDegree P r.shift
+    | none => findRowDegree P (r.shift + k)
   let some D₀ := D₀?
-    | throwError "rr_row_interlaces: could not compute the degree of the base row {P} {r.shift}"
+    | throwError "rr_row_interlaces: could not compute the degree of the base row \
+        {P} {r.shift + k}"
   let Dq := rowNumLit D₀
-  let Q ← r.seq 0
+  let Q ← r.seq k
   let mut failures : Array (MessageData × MessageData) := #[]
   -- every strategy and window below needs the same degree and leading-coefficient
   -- hypotheses; prove them once and pass them by name (or leave them to each attempt)
@@ -394,7 +410,7 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
   for thm in plain do
     let main ← apply' thm #[]
     match ← rowAttempt (applyThenSideFull P main) with
-    | .ok tac => return (pre.push tac, { thm := some thm, degree := some D₀ })
+    | .ok tac => return (pre.push tac, { thm := some thm, degree := some D₀, drop := (dropHint k) })
     | .error e => failures := failures.push (m!"{thm}", e)
   -- root windows `[L, U]` and `(-∞, U]`
   if shape == .deriv₁ || shape == .lag then
@@ -429,14 +445,28 @@ private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) :=
           let h : RowHints := match lo with
             | some L => { thm := some icc, degree := some D₀, window := some (L, U) }
             | none => { thm := some iic, degree := some D₀, upper := some U }
-          return (pre.push tac, h)
+          return (pre.push tac, { h with drop := (dropHint k) })
       | .error e =>
           let w : MessageData := match lo with
             | some L => m!"[{L}, {U}]"
             | none => m!"(-∞, {U}]"
           failures := failures.push (m!"{if lo.isSome then icc else iic} on {w}", e)
   throwRowFailures m!"rr_row_interlaces: no strategy proves the goal for the \
-    {shape.describe} recurrence of {P} (base degree {D₀})" failures
+    {shape.describe} recurrence of {P} (base degree {D₀}, dropping {k} rows)" failures
+
+/-- `rr_row_interlaces`: try dropping no row, then one row (the goal
+`Interlaces (P (t + 1)) (P (t + 2))` for sequences whose first two rows have the same degree),
+unless `(drop := k)` is given.  The first failure is reported. -/
+private def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) := do
+  let ks := match hints.drop with
+    | some k => [k]
+    | none => [0, 1]
+  let mut first? : Option MessageData := none
+  for k in ks do
+    match ← rowAttempt (rowInterlacesCoreAt hints k) with
+    | .ok res => return res
+    | .error e => if first?.isNone then first? := some e
+  throwError (first?.getD m!"rr_row_interlaces: no number of rows to drop")
 
 elab_rules : tactic
   | `(tactic| rr_row_interlaces $hs*) => withMainContext do
@@ -592,16 +622,27 @@ elab "rr_row_splits" : tactic => withMainContext do
     return
   let (t, c) ← rowIndexParts r.P
   let e ← indexTerm t c
-  let viaLeft := do
-    evalTactic (← `(tactic| refine (?_ : RealRooted.Interlaces ($P $e) ($P ($e + 1))).2.1.2))
-    discard <| rowInterlacesCore {}
-  let viaRight := do
-    let some _ ← splitRows t 1 (smallRow P) | throwError "rr_row_splits: not a variable"
+  -- `P t` is the right side of `Interlaces (P t) (P (t + 1))`; after splitting off `k` rows
+  -- (checked directly) the rows `P (t + k)` interlace from `k` on, which is needed when the
+  -- first rows have the same degree
+  let viaLeft (k : Nat) := do
+    if k == 0 then
+      evalTactic (← `(tactic| refine (?_ : RealRooted.Interlaces ($P $e) ($P ($e + 1))).2.1.2))
+    else
+      let some _ ← splitRows t k (smallRow P) | throwError "rr_row_splits: not a variable"
+      withMainContext do
+      let (t', c') ← rowIndexParts r.P
+      let e' ← indexTerm t' c'
+      evalTactic (← `(tactic|
+        refine (?_ : RealRooted.Interlaces ($P $e') ($P ($e' + 1))).2.1.2))
+    discard <| rowInterlacesCore { drop := some k }
+  let viaRight (k : Nat) := do
+    let some _ ← splitRows t (k + 1) (smallRow P) | throwError "rr_row_splits: not a variable"
     withMainContext do
     let (t', c') ← rowIndexParts r.P
     let e' ← indexTerm t' (c' - 1)
     evalTactic (← `(tactic| refine (?_ : RealRooted.Interlaces ($P $e') ($P ($e' + 1))).1.2))
-    discard <| rowInterlacesCore {}
+    discard <| rowInterlacesCore { drop := some k }
   -- half growth: rows two apart interlace (`RealRooted.threeTermHalf_ne_zero_and_splits`)
   let viaHalf := do
     unless r.shape == .lag do throwError "rr_row_splits: not a three-term recurrence"
@@ -633,9 +674,11 @@ elab "rr_row_splits" : tactic => withMainContext do
             (Nat.cast_nonneg k : (0 : ℝ) ≤ k)])))
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
   let mut failures := #[]
-  for (what, tac) in [("the interlacing of P t and P (t + 1)", viaLeft),
-      ("the interlacing of P (t - 1) and P t", viaRight),
-      ("the half-growth interlacing of P t and P (t + 2)", viaHalf)] do
+  for (what, tac) in [("the interlacing of P t and P (t + 1)", viaLeft 0),
+      ("the interlacing of P (t - 1) and P t", viaRight 0),
+      ("the half-growth interlacing of P t and P (t + 2)", viaHalf),
+      ("the interlacing of P (t + 1) and P (t + 2), after splitting off a row", viaLeft 1),
+      ("the interlacing of P (t - 1) and P t, after splitting off a row", viaRight 1)] do
     match ← rowAttempt tac with
     | .ok _ => return
     | .error e => failures := failures.push (m!"{what}", e)
