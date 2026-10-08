@@ -132,6 +132,11 @@ label = "Line restrictions of a real stable polynomial in positive directions ar
 name = "RealRooted.MvRealStable.isJumpSystem_supportInt"
 module = "RealRooted.MultivariateStability.JumpSystem"
 label = "Brändén: the support of a real stable polynomial is a jump system"
+
+[[theorems]]
+name = "RealRooted.MvRealStable.isBase_supportMatroid_iff"
+module = "RealRooted.MultivariateStability.JumpSystem"
+label = "Brändén: supports of a homogeneous multi-affine real stable polynomial are matroid bases"
 -->
 
 <!-- realrooted-catalog-content -->

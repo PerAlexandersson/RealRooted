@@ -2,6 +2,8 @@ import RealRooted.MultivariateStability
 import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
 import Mathlib.Analysis.Complex.AbsMax
+import Mathlib.RingTheory.MvPolynomial.Homogeneous
+import Mathlib.Combinatorics.Matroid.IndepAxioms
 
 /-!
 # Supports of real stable polynomials are jump systems
@@ -9,7 +11,10 @@ import Mathlib.Analysis.Complex.AbsMax
 P. Brändén, "Polynomials with the half-plane property and matroid theory", Adv. Math. 216
 (2007), Theorem 3.2: the support of a real stable polynomial is a jump system
 (`RealRooted.MvRealStable.isJumpSystem_supportInt`), in the sense of the Bouchet–Cunningham
-two-step axiom (`RealRooted.IsJumpSystem`).
+two-step axiom (`RealRooted.IsJumpSystem`).  For a homogeneous multi-affine real stable
+polynomial the supports are therefore the bases of a matroid
+(`RealRooted.MvRealStable.supportMatroid`), by the exchange lemma
+`RealRooted.IsJumpSystem.exchange`.
 
 The proof uses that stability is preserved under partial derivatives (Gauss–Lucas), under
 the inversion `z_j ↦ -1 / z_j` combined with multiplication by `z_j ^ D`, under truncation
@@ -1172,3 +1177,129 @@ theorem MvRealStable.isJumpSystem_supportInt {p : MvPolynomial (Fin n) ℝ}
             Finsupp.single_eq_of_ne hkj]
 
 end RealRooted
+
+/-! ## Matroid bases (homogeneous multi-affine case) -/
+
+namespace RealRooted
+
+open JumpSystem
+
+variable {n : ℕ}
+
+/-- In a jump system of `0/1` vectors with constant coordinate sum, removing a coordinate of `α`
+outside `β` can be compensated by adding a coordinate of `β` outside `α` (basis exchange). -/
+theorem IsJumpSystem.exchange {J : Set (Fin n → ℤ)} (hJ : IsJumpSystem J)
+    (h01 : ∀ α ∈ J, ∀ i, α i = 0 ∨ α i = 1) {r : ℤ} (hsum : ∀ α ∈ J, ∑ i, α i = r)
+    {α β : Fin n → ℤ} (hα : α ∈ J) (hβ : β ∈ J) {i : Fin n} (hαi : α i = 1) (hβi : β i = 0) :
+    ∃ j, α j = 0 ∧ β j = 1 ∧ α + Pi.single i (-1) + Pi.single j 1 ∈ J := by
+  have hstep : IsStep α β (Pi.single i (-1)) :=
+    isStep_single α β i (-1) (Or.inr rfl) (by rw [hαi, hβi]; norm_num)
+  rcases hJ α hα β hβ _ hstep with h | ⟨t, ⟨⟨j, hj⟩, hdist⟩, ht⟩
+  · exfalso
+    have h1 := hsum _ h
+    have h2 := hsum _ hα
+    simp only [Pi.add_apply, Finset.sum_add_distrib, Finset.sum_pi_single'] at h1
+    simp at h1
+    lia
+  · have hsα := hsum _ hα
+    have hst := hsum _ ht
+    simp only [Pi.add_apply, Finset.sum_add_distrib, Finset.sum_pi_single'] at hst
+    -- the second step adds a coordinate: a removal would change the sum by `-2`
+    have htj : t = Pi.single j 1 := by
+      rcases hj with rfl | rfl
+      · rfl
+      · simp at hst; lia
+    subst htj
+    rw [dist1_add_single] at hdist
+    have hji : j ≠ i := by
+      rintro rfl
+      simp [hαi, hβi] at hdist
+    simp only [Pi.add_apply, Pi.single_eq_of_ne hji, add_zero] at hdist
+    rcases h01 α hα j with h | h <;> rcases h01 β hβ j with h' | h' <;> rw [h, h'] at hdist
+    · norm_num at hdist
+    · exact ⟨j, h, h', ht⟩
+    · norm_num at hdist
+      linarith
+    · norm_num at hdist
+end RealRooted
+
+namespace RealRooted
+open MvPolynomial
+variable {n : ℕ}
+
+/-- The `0/1` indicator vector of a set of coordinates. -/
+noncomputable def JumpSystem.indicator (B : Set (Fin n)) : Fin n → ℤ :=
+  open Classical in fun i => if i ∈ B then 1 else 0
+
+private theorem indicator_exchange {X : Set (Fin n)} {a b : Fin n} (ha : a ∈ X) (hb : b ∉ X) :
+    JumpSystem.indicator (insert b (X \ {a})) =
+      JumpSystem.indicator X + Pi.single a (-1) + Pi.single b 1 := by
+  classical
+  have hab : b ≠ a := fun h => hb (h ▸ ha)
+  funext i
+  simp only [JumpSystem.indicator, Pi.add_apply, Set.mem_insert_iff, Set.mem_sdiff,
+    Set.mem_singleton_iff]
+  by_cases hib : i = b
+  · subst hib; simp [hab, hb]
+  · by_cases hia : i = a
+    · subst hia; simp [ha, hab.symm]
+    · simp [hib, hia]
+
+/-- For a homogeneous multi-affine real stable polynomial, the sets whose indicator vectors lie
+in the support have the basis exchange property. -/
+theorem MvRealStable.exchangeProperty_indicator {p : MvPolynomial (Fin n) ℝ}
+    (hp : MvRealStable p) {r : ℕ} (hhom : MvPolynomial.IsHomogeneous p r)
+    (haff : ∀ d ∈ p.support, ∀ i, d i ≤ 1) :
+    Matroid.ExchangeProperty
+      (fun B : Set (Fin n) => JumpSystem.indicator B ∈ JumpSystem.supportInt p) := by
+  classical
+  have h01 : ∀ α ∈ JumpSystem.supportInt p, ∀ i, α i = 0 ∨ α i = 1 := by
+    rintro α ⟨m, hm, hα⟩ i
+    rw [hα i]
+    have := haff m hm i
+    interval_cases h : m i <;> simp
+  have hsum : ∀ α ∈ JumpSystem.supportInt p, ∑ i, α i = (r : ℤ) := by
+    rintro α ⟨m, hm, hα⟩
+    have hw := hhom (mem_support_iff.mp hm)
+    rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (fun _ => by simp)] at hw
+    simp only [hα]
+    simp only [Pi.one_apply, smul_eq_mul, mul_one] at hw
+    exact_mod_cast hw
+  intro X Y hX hY a ⟨haX, haY⟩
+  obtain ⟨j, hjX, hjY, hmem⟩ := hp.isJumpSystem_supportInt.exchange h01 hsum hX hY
+    (i := a) (by simp [JumpSystem.indicator, haX]) (by simp [JumpSystem.indicator, haY])
+  have hjX' : j ∉ X := by simpa [JumpSystem.indicator] using hjX
+  have hjY' : j ∈ Y := by simpa [JumpSystem.indicator] using hjY
+  exact ⟨j, ⟨hjY', hjX'⟩, by beta_reduce; rwa [indicator_exchange haX hjX']⟩
+
+/-- A homogeneous multi-affine real stable polynomial has a support set: some indicator vector
+lies in its support. -/
+theorem MvRealStable.exists_indicator_mem_supportInt {p : MvPolynomial (Fin n) ℝ}
+    (hp : MvRealStable p) (haff : ∀ d ∈ p.support, ∀ i, d i ≤ 1) :
+    ∃ B : Set (Fin n), JumpSystem.indicator B ∈ JumpSystem.supportInt p := by
+  classical
+  obtain ⟨m, hm⟩ : p.support.Nonempty :=
+    Finset.nonempty_iff_ne_empty.mpr (support_eq_empty.not.mpr hp.ne_zero)
+  refine ⟨{i | m i = 1}, m, hm, fun i => ?_⟩
+  have := haff m hm i
+  simp only [JumpSystem.indicator, Set.mem_ofPred_eq]
+  rcases Nat.le_one_iff_eq_zero_or_eq_one.mp this with h | h <;> simp [h]
+
+/-- **Brändén.** The supports of a homogeneous multi-affine real stable polynomial are the bases
+of a matroid on its variables. -/
+noncomputable def MvRealStable.supportMatroid {p : MvPolynomial (Fin n) ℝ} (hp : MvRealStable p)
+    {r : ℕ} (hhom : MvPolynomial.IsHomogeneous p r) (haff : ∀ d ∈ p.support, ∀ i, d i ≤ 1) :
+    Matroid (Fin n) :=
+  Matroid.ofIsBaseOfFinite Set.finite_univ
+    (fun B => JumpSystem.indicator B ∈ JumpSystem.supportInt p)
+    (hp.exists_indicator_mem_supportInt haff) (hp.exchangeProperty_indicator hhom haff)
+    (fun _ _ => Set.subset_univ _)
+
+theorem MvRealStable.isBase_supportMatroid_iff {p : MvPolynomial (Fin n) ℝ}
+    (hp : MvRealStable p) {r : ℕ} (hhom : MvPolynomial.IsHomogeneous p r)
+    (haff : ∀ d ∈ p.support, ∀ i, d i ≤ 1) (B : Set (Fin n)) :
+    (hp.supportMatroid hhom haff).IsBase B ↔ JumpSystem.indicator B ∈ JumpSystem.supportInt p :=
+  Iff.rfl
+
+end RealRooted
+
