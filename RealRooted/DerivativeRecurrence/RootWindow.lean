@@ -286,6 +286,127 @@ theorem threeTerm_interlaces_of_roots_le {U : ℝ}
       threeTerm_roots_le_step (hrec n) hs1 (hpos (n + 1)) hs0 (hpos n) hw1 hw0 (haU n) (hbU n))
     hW0 hW1 h01 n
 
+/-- Interlaced root lists `r₁ ≤ s₁ ≤ r₂ ≤ ⋯ ≤ sₘ ≤ r_{m+1} ≤ U`: beyond `U`,
+`(x - U) ∏ (x - sᵢ) ≤ ∏ (x - rᵢ)`. -/
+private theorem prod_sub_le_of_listInterlaces {U x : ℝ} (hx : U < x) :
+    ∀ (ss rs : List ℝ), rs.length = ss.length + 1 → ListInterlaces ss rs → (∀ r ∈ rs, r ≤ U) →
+      (x - U) * (ss.map (x - ·)).prod ≤ (rs.map (x - ·)).prod
+  | [], [], hl, _, _ => by simp at hl
+  | [], [r], _, _, hU => by
+      simp only [List.map_nil, List.prod_nil, mul_one, List.map_cons, List.prod_cons]
+      linarith [hU r (by simp)]
+  | s :: ss, r₁ :: r₂ :: rs, hl, h, hU => by
+      obtain ⟨h1, h2, h3⟩ := h
+      have ih := prod_sub_le_of_listInterlaces hx ss (r₂ :: rs) (by simpa using hl) h3
+        (fun r hr => hU r (List.mem_cons_of_mem _ hr))
+      have hr₂ : r₂ ≤ U := hU r₂ (by simp)
+      have hnn : 0 ≤ ((r₂ :: rs).map (x - ·)).prod :=
+        List.prod_nonneg fun y hy => by
+          obtain ⟨t, ht, rfl⟩ := List.mem_map.mp hy
+          linarith [hU t (List.mem_cons_of_mem _ ht)]
+      simp only [List.map_cons, List.prod_cons] at ih hnn ⊢
+      have hs : 0 ≤ x - s := by linarith
+      calc (x - U) * ((x - s) * (ss.map (x - ·)).prod)
+          = (x - s) * ((x - U) * (ss.map (x - ·)).prod) := by ring
+        _ ≤ (x - s) * ((x - r₂) * (rs.map (x - ·)).prod) := mul_le_mul_of_nonneg_left ih hs
+        _ ≤ (x - r₁) * ((x - r₂) * (rs.map (x - ·)).prod) :=
+          mul_le_mul_of_nonneg_right (by linarith) hnn
+  | [], _ :: _ :: _, hl, _, _ => by simp at hl
+  | _ :: _, [], hl, _, _ => by simp at hl
+  | _ :: _, [_], hl, _, _ => by simp at hl
+
+/-- If `g` interlaces `f` and the roots of `f` are at most `U`, then beyond `U`,
+`lc f · (x - U) · g(x) ≤ lc g · f(x)`. -/
+theorem leadingCoeff_mul_sub_mul_eval_le_of_interlaces {f g : ℝ[X]} {U x : ℝ}
+    (h : Interlaces g f) (hfpos : 0 < f.leadingCoeff) (hgpos : 0 < g.leadingCoeff)
+    (hU : ∀ t ∈ f.roots, t ≤ U) (hx : U < x) :
+    f.leadingCoeff * (x - U) * g.eval x ≤ g.leadingCoeff * f.eval x := by
+  obtain ⟨⟨_, hfs⟩, ⟨_, hgs⟩, hdeg, rs, ss, _, _, hrs, hss, hint⟩ := h
+  have hlen : rs.length = ss.length + 1 := by
+    rw [← Multiset.coe_card, ← Multiset.coe_card, hrs, hss, card_roots_of_splits hfs,
+      card_roots_of_splits hgs, hdeg]
+  have key := prod_sub_le_of_listInterlaces hx ss rs hlen hint
+    (fun r hr => hU r (by rw [← hrs]; exact Multiset.mem_coe.mpr hr))
+  rw [eval_eq_leadingCoeff_mul_prod_sub hgs x, eval_eq_leadingCoeff_mul_prod_sub hfs x,
+    ← hrs, ← hss, Multiset.map_coe, Multiset.map_coe, Multiset.prod_coe, Multiset.prod_coe]
+  have hc : 0 ≤ f.leadingCoeff * g.leadingCoeff := (mul_pos hfpos hgpos).le
+  nlinarith [mul_le_mul_of_nonneg_left key hc]
+
+/-- Roots of `F = a f + b g` stay at most `U` when `g` interlaces `f`, both have roots at most
+`U`, `a ≥ 0` beyond `U` and `a ρ (x - U) + b > 0` there, where `ρ` bounds the ratio of the
+leading coefficients from below. -/
+theorem threeTerm_roots_le_step_of_ratio {f g F a b : ℝ[X]} {U ρ : ℝ} (hF : F = a * f + b * g)
+    (hgf : Interlaces g f) (hfpos : 0 < f.leadingCoeff) (hgpos : 0 < g.leadingCoeff)
+    (hfU : ∀ t ∈ f.roots, t ≤ U) (hgU : ∀ t ∈ g.roots, t ≤ U)
+    (hρ : ρ * g.leadingCoeff ≤ f.leadingCoeff) (ha : ∀ x, U < x → 0 ≤ a.eval x)
+    (hab : ∀ x, U < x → 0 < a.eval x * ρ * (x - U) + b.eval x) :
+    ∀ t ∈ F.roots, t ≤ U := by
+  intro t ht
+  refine le_of_not_gt fun hlt => ?_
+  have h0 : F.eval t = 0 := isRoot_of_mem_roots ht
+  rw [hF, eval_add, eval_mul, eval_mul] at h0
+  have hg : 0 < g.eval t := eval_pos_of_roots_le hgf.2.1.2 hgpos hgU hlt
+  have hkey := leadingCoeff_mul_sub_mul_eval_le_of_interlaces hgf hfpos hgpos hfU hlt
+  have hxU : 0 < t - U := by linarith
+  -- `f t ≥ ρ (t - U) g t`
+  have hf : ρ * (t - U) * g.eval t ≤ f.eval t := by
+    have h1 : ρ * g.leadingCoeff * ((t - U) * g.eval t) ≤
+        f.leadingCoeff * ((t - U) * g.eval t) :=
+      mul_le_mul_of_nonneg_right hρ (mul_pos hxU hg).le
+    have h2 : g.leadingCoeff * (ρ * (t - U) * g.eval t) ≤ g.leadingCoeff * f.eval t := by
+      nlinarith
+    exact le_of_mul_le_mul_left h2 hgpos
+  have := hab t hlt
+  nlinarith [mul_le_mul_of_nonneg_left hf (ha t hlt), mul_pos hg this]
+
+/-- `threeTerm_interlaces_of_window` with the interlacing of the two previous rows available
+to the window step. -/
+theorem threeTerm_interlaces_of_window_of_interlaces (W : ℝ → Prop)
+    (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hb : ∀ n x, W x → (b n).eval x ≤ 0)
+    (hW : ∀ n, Interlaces (P n) (P (n + 1)) → (∀ t ∈ (P n).roots, W t) →
+      (∀ t ∈ (P (n + 1)).roots, W t) → ∀ t ∈ (P (n + 2)).roots, W t)
+    (hW0 : ∀ t ∈ (P 0).roots, W t) (hW1 : ∀ t ∈ (P 1).roots, W t)
+    (h01 : Interlaces (P 0) (P 1)) :
+    ∀ n, Interlaces (P n) (P (n + 1)) := by
+  have key : ∀ n, (∀ t ∈ (P n).roots, W t) ∧ (∀ t ∈ (P (n + 1)).roots, W t) ∧
+      Interlaces (P n) (P (n + 1)) := by
+    intro n
+    induction n with
+    | zero => exact ⟨hW0, hW1, h01⟩
+    | succ n ih =>
+        obtain ⟨hw0, hw1, hi⟩ := ih
+        have hne : P (n + 1) ≠ 0 := leadingCoeff_ne_zero.mp (hpos (n + 1)).ne'
+        have hF : P (n + 2) = a n * P (n + 1) + b n * P n := hrec n
+        have hprec : StrictInterl (P (n + 1)) (a n * P (n + 1) + b n * P n) :=
+          strictInterl_of_interlaces_evalCoeff_nonpos hi (hpos n)
+            (by rw [← hF]; exact hpos (n + 2))
+            (by rw [← hF, hdeg, hdeg]; lia) (by rw [← hF, hdeg, hdeg]; lia)
+            (fun r hr => hb n r (hw1 r ((mem_roots hne).mpr hr)))
+        rw [← hF] at hprec
+        have hi' := hprec.toInterlaces (by rw [hdeg, hdeg]; lia)
+        exact ⟨hw1, hW n hi hw0 hw1, hi'⟩
+  exact fun n => (key n).2.2
+
+/-- Three-term interlacing with roots in `(-∞, U]`, where `b n` may be negative beyond `U`
+as long as `a n ρ n (x - U) + b n > 0` there, `ρ n` bounding the ratio of consecutive leading
+coefficients from below. -/
+theorem threeTerm_interlaces_of_roots_le_of_ratio {U : ℝ} {ρ : ℕ → ℝ}
+    (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hb : ∀ n x, x ≤ U → (b n).eval x ≤ 0)
+    (hρ : ∀ n, ρ n * (P n).leadingCoeff ≤ (P (n + 1)).leadingCoeff)
+    (ha : ∀ n x, U < x → 0 ≤ (a n).eval x)
+    (hab : ∀ n x, U < x → 0 < (a n).eval x * ρ n * (x - U) + (b n).eval x)
+    (hW0 : ∀ t ∈ (P 0).roots, t ≤ U) (hW1 : ∀ t ∈ (P 1).roots, t ≤ U)
+    (h01 : Interlaces (P 0) (P 1)) (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) :=
+  threeTerm_interlaces_of_window_of_interlaces (fun x => x ≤ U) hrec hdeg hpos hb
+    (fun n hi hw0 hw1 => threeTerm_roots_le_step_of_ratio (hrec n) hi (hpos (n + 1)) (hpos n)
+      hw1 hw0 (hρ n) (ha n) (hab n))
+    hW0 hW1 h01 n
+
 end ThreeTerm
 
 end RealRooted

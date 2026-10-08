@@ -276,6 +276,17 @@ theorem swappedProduct_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (swappedProdu
 theorem swappedProduct_eval_zero_pos (n : ℕ) : 0 < (swappedProduct n).eval 0 := by
   rr_row_eval_zero_pos
 
+/-- Roots in `(-∞, 0]` while the lag `X - X ^ 2` is positive beyond `1`: the leading
+coefficients control the window (`RealRooted.threeTerm_interlaces_of_roots_le_of_ratio`)
+(A098158). -/
+def A098158 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => 2 * X * A098158 (n + 1) + (X + -1 * X ^ 2) * A098158 n
+
+theorem A098158_interlaces (n : ℕ) : Interlaces (A098158 n) (A098158 (n + 1)) := by
+  rr_row_interlaces
+
 end
 
 end RealRooted.Tactic.RowInterlacingExamples
