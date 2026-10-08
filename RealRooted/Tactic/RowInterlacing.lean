@@ -474,14 +474,14 @@ private def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     | none => r.hrecTerm k
   let mut pre : Cert := intro
   if r.shape == .deriv₂ then
-    unless r.canonical && r.shift == 0 do
+    unless r.canonical do
       throwError "rr_row_interlaces: the second-order recurrence of {P} must have the form \
-        `P (n + 1) = A n * (P n)'' + B n * (P n)' + C n * P n`"
-    let some o ← eigenODE? r.P
+        `P (n + s + 1) = A n * (P (n + s))'' + B n * (P (n + s))' + C n * P (n + s)`"
+    let some o ← eigenODE? r.P (shift := r.shift)
       | throwError "rr_row_interlaces: no eigen-ODE `A * p'' + β * p' = ev n • p` collapses \
           the second-order recurrence of {P} to a first-order one"
     let h₁ := mkIdent `hrec₁
-    let tac ← `(tactic| have $h₁:ident := $(← eigenODEFirstOrder P o))
+    let tac ← `(tactic| have $h₁:ident := $(← eigenODEFirstOrder P o r.shift))
     evalTactic tac
     pre := pre.push tac
     shape := .deriv₁
