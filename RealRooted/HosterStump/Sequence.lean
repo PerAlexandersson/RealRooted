@@ -186,6 +186,16 @@ theorem Interl.window_three {f₁ f₂ f₃ f₄ : ℝ[X]}
   · exact interl_add_right_of_common_left_of_nonneg (Interl.refl hsplit)
       (interl_add_left_of_common_right_of_nonneg h24 h34 hn₂ hn₃) hn₂₃ hn₄
 
+/-- Two interlacing polynomials with nonnegative coefficients have a splitting sum. -/
+theorem splits_add_of_interl {f g : ℝ[X]} (h : Interl f g)
+    (nf : HasNonnegCoeffs f) (ng : HasNonnegCoeffs g)
+    (sf : f ≠ 0 → f.Splits) (sg : g ≠ 0 → g.Splits) : f + g ≠ 0 → (f + g).Splits := by
+  intro hfg
+  by_cases hf : f = 0
+  · simpa [hf] using sg (by simpa [hf] using hfg)
+  · have := interl_add_right_of_common_left_of_nonneg (Interl.refl sf) h nf ng
+    exact (this.toStrictInterl_of_ne hf hfg).2.1.2
+
 private theorem splits_add_X_mul_of_interl {P W : ℝ[X]} (hPW : Interl P W)
     (nnP : HasNonnegCoeffs P) (nnW : HasNonnegCoeffs W)
     (sP : P ≠ 0 → P.Splits) (sW : W ≠ 0 → W.Splits) :
