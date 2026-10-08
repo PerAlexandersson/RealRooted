@@ -4,6 +4,7 @@ import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.ThreeTermRecurrence.HalfGrowth
 import RealRooted.Tactic.Recurrence
 import RealRooted.Tactic.InterlacesExplicit
+import RealRooted.Tactic.RowClosedForm
 
 /-!
 # `rr_row_interlaces`
@@ -158,7 +159,7 @@ private def isInterlaceGoal (P? : Option Ident) (ty : Expr) : Bool :=
     | some P => (ty.find? fun e => e.isConstOf P.getId).isSome
     | none => false
   has ``RealRooted.Interlaces || has ``Polynomial.roots || has ``Polynomial.eval ||
-    has ``RealRooted.HasNonnegCoeffs ||
+    has ``RealRooted.HasNonnegCoeffs || (!ty.isForall && mentionsP && has ``Polynomial.Splits) ||
     (ty.isForall && mentionsP && (has ``Polynomial.natDegree || has ``Polynomial.leadingCoeff)) ||
     (ty.isForall && ty.bindingBody!.isForall && !mentionsP && has ``LE.le && has ``HMul.hMul &&
       has ``Polynomial.coeff)
@@ -215,6 +216,13 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
       withP fun P =>
         [do evalTactic (← `(tactic| (simp only [$P:ident]; rr_interlaces_explicit))),
          do evalTactic (← `(tactic| (intro _; simp only [$P:ident]; rr_interlaces_explicit)))]
+    else if has ``Polynomial.Splits && !ty.isForall && mentionsP then
+      -- an explicit row of any degree: the rational-root certificate of `rr_splits_explicit`
+      [rowSideGoal P?] ++ withP fun P =>
+        [do evalTactic (← `(tactic| (
+          beta_reduce
+          simp only [Nat.zero_add, $P:ident]
+          rr_splits_explicit)))]
     else if has ``Polynomial.roots then
       withP fun P =>
         [do evalTactic (← `(tactic| (intro t ht; simp [$P:ident] at ht))),
@@ -225,7 +233,12 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
             simp only [$P:ident, Polynomial.IsRoot.def, Polynomial.eval_add,
               Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
               Polynomial.eval_one, Polynomial.eval_ofNat, Polynomial.eval_neg] at h
-            first | (constructor <;> nlinarith) | nlinarith)))]
+            first | (constructor <;> nlinarith) | nlinarith))),
+         -- an explicit row of higher degree with rational roots: check each root
+         do evalTactic (← `(tactic| (
+            beta_reduce
+            simp only [Nat.zero_add, $P:ident]
+            rr_roots_explicit)))]
     else if has ``Min.min && has ``Polynomial.eval then
       -- `0 < B (x - U) + min A 0 * N` of the degree-bounded root windows
       [do evalTactic (← `(tactic| (
@@ -1178,6 +1191,7 @@ private def factorSplitsTac : TacticM (TSyntax `tactic) :=
 private inductive SubShape where
   | product
   | deriv
+  | derivProduct
   | lag
   deriving BEq
 
@@ -1208,13 +1222,16 @@ private def readReduced (L : LinRecData) : TacticM Reduced := do
   let lags := L.terms.map fun (j, _, _) => k - j
   let some g := lags[0]? | throwError "rr_row_subseq_splits: no summands"
   let p := lags.foldl Nat.gcd g
-  unless 2 ≤ p && p ≤ 6 do
-    throwError "rr_row_subseq_splits: the lags of {L.P} have gcd {p}, not in [2, 6]"
   let jmin := L.terms.foldl (fun a (j, _, _) => min a j) k
   let K := (k - jmin) / p
+  -- `P (n + k) = A n * (P (n + k - p)).derivative` needs no reduction
+  let derivProduct := K == 1 && L.terms.all fun (_, i, _) => i == 1
+  unless (2 ≤ p || derivProduct) && p ≤ 6 do
+    throwError "rr_row_subseq_splits: the lags of {L.P} have gcd {p}, not in [2, 6]"
   let shape ← match K with
     | 1 =>
         if L.terms.all fun (_, i, _) => i == 0 then pure SubShape.product
+        else if derivProduct then pure SubShape.derivProduct
         else if L.terms.all fun (_, i, _) => i ≤ 1 then pure SubShape.deriv
         else throwError "rr_row_subseq_splits: derivatives of order > 1 in the reduced recurrence"
     | 2 =>
@@ -1249,6 +1266,9 @@ private def Reduced.stmt (R : Reduced) (c : Nat) : TacticM Term := do
   | .product =>
       let q ← R.coeffAt 0 0 e
       `(∀ $m:ident, $lhs = ($q $m) * $(← R.row m 0 c))
+  | .derivProduct =>
+      let A ← R.coeffAt 0 1 e
+      `(∀ $m:ident, $lhs = ($A $m) * Polynomial.derivative $(← R.row m 0 c))
   | .deriv =>
       let A ← R.coeffAt 0 1 e
       let B ← R.coeffAt 0 0 e
@@ -1349,6 +1369,7 @@ private def Reduced.coeffArgs (R : Reduced) (c : Nat) :
   let e := c - R.jmin
   match R.shape with
   | .product => return #[← `(Lean.Parser.Term.namedArgument| (q := $(← R.coeffAt 0 0 e)))]
+  | .derivProduct => return #[← `(Lean.Parser.Term.namedArgument| (A := $(← R.coeffAt 0 1 e)))]
   | .deriv => return #[← `(Lean.Parser.Term.namedArgument| (A := $(← R.coeffAt 0 1 e))),
       ← `(Lean.Parser.Term.namedArgument| (B := $(← R.coeffAt 0 0 e)))]
   | .lag => return #[← `(Lean.Parser.Term.namedArgument| (a := $(← R.coeffAt 1 0 e))),
@@ -1462,7 +1483,7 @@ private def proveInterlaceClass (R : Reduced) (c D₀ : Nat) : TacticM Unit := d
   withMainContext do
   evalTactic (← `(tactic| exact fun $m:ident => (($hI $m).2.1.2)))
 
-/-- Prove `∀ m, (P (p * m + c)).Splits` for a product class. -/
+/-- Prove `∀ m, (P (p * m + c)).Splits` for a product class (of `P` or of its derivative). -/
 private def proveProductClass (R : Reduced) (c : Nat) : TacticM Unit := do
   let P := R.P
   let p := natLit R.p
@@ -1485,8 +1506,10 @@ private def proveProductClass (R : Reduced) (c : Nat) : TacticM Unit := do
   setGoals [main1]
   withMainContext do
   evalTactic (← `(tactic| intro $m:ident))
+  let thm := mkIdent <| if R.shape == .derivProduct then ``RealRooted.derivProduct_splits
+    else ``RealRooted.productSequence_splits
   evalTactic (← `(tactic|
-    refine RealRooted.productSequence_splits (P := $Q) $args:namedArgument* $hrecI ?_ $h0 $m))
+    refine $thm:ident (P := $Q) $args:namedArgument* $hrecI ?_ $h0 $m))
   evalTactic (← factorSplitsTac)
   unless (← getGoals).isEmpty do throwError "rr_row_subseq_splits: goals remain"
 
@@ -1510,7 +1533,8 @@ private def proveZeroClass (R : Reduced) (c : Nat) : TacticM Unit := do
   let hz := mkIdent `hz
   let eqThm : Name := match R.shape with
     | .product => ``RealRooted.eq_zero_of_product_rec
-    | .deriv => ``RealRooted.eq_zero_of_derivRec
+    -- derivative products are classified as live
+    | .deriv | .derivProduct => ``RealRooted.eq_zero_of_derivRec
     | .lag => ``RealRooted.eq_zero_of_threeTerm_rec
   base 0
   if R.shape == .lag then base 1
@@ -1569,7 +1593,7 @@ elab_rules : tactic
     let mut kinds : Array ClassKind := #[]
     for r in [0:R.p] do
       let c := R.jmin + r
-      if R.shape == .product then
+      if R.shape == .product || R.shape == .derivProduct then
         kinds := kinds.push (ClassKind.live 0)
       else
         match classKind rows R.p c with
@@ -1589,7 +1613,7 @@ elab_rules : tactic
         match kinds[r]! with
         | .zero => proveZeroClass R c
         | .live D₀ =>
-            if R.shape == .product then proveProductClass R c
+            if R.shape == .product || R.shape == .derivProduct then proveProductClass R c
             else proveInterlaceClass R c D₀
       unless (← getGoals).isEmpty do throwError "rr_row_subseq_splits: goals remain"
       setGoals [main]
@@ -1635,6 +1659,8 @@ elab "rr_row_splits" : tactic => withMainContext do
     return
   discard introIfForall
   withMainContext do
+  -- closed forms `residual * ∏ qᵢ ^ eᵢ n`, found by a numeric probe before any elaboration
+  if ← rowSucceeds rowClosedFormSplits then return
   -- shapes outside `RecShape` whose lags share a period: residue subsequences
   if (← rowAttempt (rowRecSetup "rr_row_splits")) matches .error _ then
     evalTactic (← `(tactic| rr_row_subseq_splits))
@@ -1671,11 +1697,14 @@ elab "rr_row_splits" : tactic => withMainContext do
   -- `P t` is the right side of `Interlaces (P t) (P (t + 1))`; after splitting off `k` rows
   -- (checked directly) the rows `P (t + k)` interlace from `k` on, which is needed when the
   -- first rows have the same degree
+  -- the rows below the shift (zero rows, say) are split off too: only their splitting is needed
+  let below := r.shift - c
   let viaLeft (k : Nat) := do
-    if k == 0 then
+    if k + below == 0 then
       evalTactic (← `(tactic| refine (?_ : RealRooted.Interlaces ($P $e) ($P ($e + 1))).2.1.2))
     else
-      let some _ ← splitRows t k (smallRow P) | throwError "rr_row_splits: not a variable"
+      let some _ ← splitRows t (k + below) (smallRow P)
+        | throwError "rr_row_splits: not a variable"
       withMainContext do
       let (t', c') ← rowIndexParts r.P
       let e' ← indexTerm t' c'
@@ -1683,7 +1712,8 @@ elab "rr_row_splits" : tactic => withMainContext do
         refine (?_ : RealRooted.Interlaces ($P $e') ($P ($e' + 1))).2.1.2))
     discard <| rowInterlacesCore { drop := some k }
   let viaRight (k : Nat) := do
-    let some _ ← splitRows t (k + 1) (smallRow P) | throwError "rr_row_splits: not a variable"
+    let some _ ← splitRows t (k + below + 1) (smallRow P)
+      | throwError "rr_row_splits: not a variable"
     withMainContext do
     let (t', c') ← rowIndexParts r.P
     let e' ← indexTerm t' (c' - 1)

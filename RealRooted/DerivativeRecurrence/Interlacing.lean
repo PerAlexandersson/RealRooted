@@ -215,4 +215,18 @@ theorem derivLag_hasNonnegCoeffs_of_mult {d : ℕ}
         ((hW n).mul ih.1)
   exact fun n => (key n).1
 
+/-- Rows of `P (n + 1) = A n * (P n).derivative` split when the multipliers and the first row
+do, since differentiation preserves splitting over `ℝ`. -/
+theorem derivProduct_splits {P A : ℕ → ℝ[X]}
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative) (hA : ∀ n, (A n).Splits)
+    (h0 : (P 0).Splits) (n : ℕ) : (P n).Splits := by
+  induction n with
+  | zero => exact h0
+  | succ n ih =>
+    rw [hrec]
+    refine (hA n).mul ?_
+    rcases eq_zero_or_splits_derivative (Or.inr ih) with h | h
+    · simp [h]
+    · exact h
+
 end RealRooted

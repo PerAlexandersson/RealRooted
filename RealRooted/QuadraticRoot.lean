@@ -280,4 +280,33 @@ theorem splits_of_natDegree_eq_two_of_discrim_nonneg {p : ℝ[X]} (h : p.natDegr
   rw [hp]
   exact quadraticPoly_splits_of_discrim_nonneg ha hd
 
+/-- A real polynomial of degree at most two splits when its discriminant is nonnegative;
+degenerate cases (`coeff 2 = 0`) are of degree at most one. -/
+theorem splits_of_natDegree_le_two_of_discrim_nonneg {p : ℝ[X]} (h : p.natDegree ≤ 2)
+    (hd : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0)) : p.Splits := by
+  rcases eq_or_ne (p.coeff 2) 0 with h2 | h2
+  · refine Polynomial.Splits.of_natDegree_le_one ?_
+    rw [natDegree_le_iff_coeff_eq_zero]
+    intro N hN
+    by_cases hN2 : N = 2
+    · subst hN2
+      exact h2
+    · exact coeff_eq_zero_of_natDegree_lt (by lia)
+  · exact splits_of_natDegree_eq_two_of_discrim_nonneg
+      (le_antisymm h (Polynomial.le_natDegree_of_ne_zero h2)) hd
+
+/-- The quadratic `C a + C b * X + C c * X ^ 2` splits when `0 ≤ b ^ 2 - 4 * c * a`. -/
+theorem splits_C_add_C_mul_X_add_C_mul_X_sq {a b c : ℝ} (h : 0 ≤ b ^ 2 - 4 * c * a) :
+    (C a + C b * X + C c * X ^ 2 : ℝ[X]).Splits := by
+  refine splits_of_natDegree_le_two_of_discrim_nonneg (by compute_degree) ?_
+  have h2 : (C a + C b * X + C c * X ^ 2 : ℝ[X]).coeff 2 = c := by
+    simp [coeff_X_pow]
+  have h1 : (C a + C b * X + C c * X ^ 2 : ℝ[X]).coeff 1 = b := by
+    simp [coeff_C, coeff_X_pow]
+  have h0 : (C a + C b * X + C c * X ^ 2 : ℝ[X]).coeff 0 = a := by
+    simp [coeff_C, coeff_X_pow, coeff_X]
+  rw [h2, h1, h0]
+  unfold discrim
+  linarith
+
 end RealRooted

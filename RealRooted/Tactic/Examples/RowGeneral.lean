@@ -7,8 +7,8 @@ Regression tests for the fallback of the degree tactics to general linear recurr
 (`RealRooted.LinRec`: any order, mixed derivatives, top coefficients of either sign) and
 for `rr_row_splits` / `rr_row_interlaces` on half growth
 (`RealRooted.threeTermHalf_ne_zero_and_splits`), dropped rows, degree-bounded root windows,
-two-step products, derivative-lag recurrences and residue subsequences, on OEIS rows drawn
-from `real-rooted-oeis-proofs`.
+two-step products, derivative-lag recurrences, residue subsequences, closed forms and
+derivative products, on OEIS rows drawn from `real-rooted-oeis-proofs`.
 -/
 
 open Polynomial
@@ -160,6 +160,34 @@ def A171608 : ℕ → ℝ[X]
   | n + 4 => (2 * X) * A171608 (n + 2) + (-1 * X ^ 2) * A171608 n
 
 theorem A171608_splits (n : ℕ) : (A171608 n).Splits := by rr_row_splits
+
+/-- Every row is a linear residual times powers of the factors of the recurrence coefficients;
+the numeric probe finds the factors and their exponents (A124860). -/
+def A124860 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 => (1 + X) * A124860 (n + 1) + (2 + 2 * X ^ 2 + 4 * X) * A124860 n
+
+theorem A124860_splits (n : ℕ) : (A124860 n).Splits := by rr_row_splits
+
+/-- Three zero rows before a first-order derivative recurrence: only the rows from `3` on
+interlace (A172108). -/
+def A172108 : ℕ → ℝ[X]
+  | 0 => 0
+  | 1 => 0
+  | 2 => 0
+  | 3 => 1 + 3 * X + 3 * X ^ 2 + X ^ 3
+  | n + 4 => (X + X ^ 2) * (A172108 (n + 3)).derivative + (1 + 2 * X) * A172108 (n + 3)
+
+theorem A172108_splits (n : ℕ) : (A172108 n).Splits := by rr_row_splits
+
+/-- A product with the derivative, `P (n + 1) = A * (P n)'` (A142071). -/
+def A142071 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => (X + X ^ 2) * (A142071 (n + 1)).derivative
+
+theorem A142071_splits (n : ℕ) : (A142071 n).Splits := by rr_row_splits
 
 end
 

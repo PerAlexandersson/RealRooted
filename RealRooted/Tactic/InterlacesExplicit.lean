@@ -80,8 +80,55 @@ def explicitSideGoal : TacticM Unit := do
     | (simp; done)
     | fail "rr_interlaces_explicit: could not close a side goal"))
 
+/-- For `p` of degree above two with only rational roots: `C a * ∏ (X - C r)` over its
+roots (with multiplicity) and a proof that the product splits. -/
+def rationalFactorization? (pq : QPoly) : TacticM (Option (Term × Term)) := do
+  let roots := pq.rationalRoots
+  unless pq.natDegree > 2 && roots.length == pq.natDegree do return none
+  let mut prod : Term ← `(Polynomial.X - Polynomial.C ($(← ratTerm roots.getLast!) : ℝ))
+  let mut pf : Term ← `(Polynomial.Splits.X_sub_C _)
+  for r in roots.dropLast.reverse do
+    prod ← `((Polynomial.X - Polynomial.C ($(← ratTerm r) : ℝ)) * $prod)
+    pf ← `(Polynomial.Splits.mul (Polynomial.Splits.X_sub_C _) $pf)
+  return some (← `(Polynomial.C ($(← ratTerm pq.lead) : ℝ) * $prod), pf)
+
+/-- Prove `∀ t ∈ p.roots, Q t` for an explicit `p` of degree above two with only rational
+roots: factor `p` over its roots and check `Q` at each root with `norm_num`. -/
+elab "rr_roots_explicit" : tactic => withMainContext do
+  let tgt ← instantiateMVars (← getMainTarget)
+  let some rootsE := tgt.find? (·.isAppOfArity ``Polynomial.roots 4)
+    | throwError "rr_roots_explicit: the goal is not `∀ t ∈ p.roots, Q t`"
+  let pE := rootsE.appArg!
+  if pE.hasLooseBVars then throwError "rr_roots_explicit: the polynomial depends on the root"
+  let some pq ← evalQPoly? pE | throwError "rr_roots_explicit: not an explicit polynomial"
+  let some (fac, _) ← rationalFactorization? pq
+    | throwError "rr_roots_explicit: the roots of the polynomial are not all rational"
+  let pT ← Term.exprToSyntax pE
+  let h := mkIdent `rr_hroot
+  evalTactic (← `(tactic| (
+    intro t ht
+    have $h:ident := Polynomial.isRoot_of_mem_roots ht
+    rw [show $pT = $fac by rr_poly_identity] at $h:ident
+    simp only [Polynomial.IsRoot.def, Polynomial.eval_mul, Polynomial.eval_C,
+      Polynomial.eval_sub, Polynomial.eval_X, mul_eq_zero, sub_eq_zero] at $h:ident)))
+  -- `a = 0 ∨ t = r₁ ∨ …`: the leading coefficient is nonzero, and `Q` holds at each root
+  let leaf : TacticM Unit := evalTactic (← `(tactic| first
+    | (norm_num at $h:ident; done)
+    | (subst $h:ident; norm_num; done)
+    | (rw [$h:ident]; norm_num; done)))
+  for _ in [0:pq.natDegree + 1] do
+    let g ← getMainGoal
+    let some d := (← g.getDecl).lctx.findFromUserName? h.getId | break
+    unless (← instantiateMVars d.type).isAppOf ``Or do break
+    evalTactic (← `(tactic| rcases $h:ident with $h:ident | $h:ident))
+    let [g₁, g₂] ← getGoals | throwError "rr_roots_explicit: unexpected goals"
+    setGoals [g₁]
+    leaf
+    setGoals [g₂]
+  leaf
+
 /-- Prove `p.Splits` for an explicit `p` of degree at most two (degree one, or a
-nonnegative discriminant), after rewriting `p` into normal form. -/
+nonnegative discriminant) or with only rational roots, after rewriting `p` into normal form. -/
 elab "rr_splits_explicit" : tactic => withMainContext do
   let tgt ← instantiateMVars (← getMainTarget)
   unless tgt.isAppOfArity ``Polynomial.Splits 3 || tgt.isAppOf ``Polynomial.Splits do
@@ -89,15 +136,7 @@ elab "rr_splits_explicit" : tactic => withMainContext do
   let pE := tgt.appArg!
   let some pq ← evalQPoly? pE | throwError "rr_splits_explicit: not an explicit polynomial"
   let pT ← Term.exprToSyntax pE
-  let roots := pq.rationalRoots
-  if pq.natDegree > 2 && roots.length == pq.natDegree then
-    -- `p = C a * ∏ (X - C r)` over its rational roots
-    let mut prod : Term ← `(Polynomial.X - Polynomial.C ($(← ratTerm roots.getLast!) : ℝ))
-    let mut pf : Term ← `(Polynomial.Splits.X_sub_C _)
-    for r in roots.dropLast.reverse do
-      prod ← `((Polynomial.X - Polynomial.C ($(← ratTerm r) : ℝ)) * $prod)
-      pf ← `(Polynomial.Splits.mul (Polynomial.Splits.X_sub_C _) $pf)
-    let fac ← `(Polynomial.C ($(← ratTerm pq.lead) : ℝ) * $prod)
+  if let some (fac, pf) ← rationalFactorization? pq then
     evalTactic (← `(tactic| (
       refine (congrArg Polynomial.Splits (show $pT = $fac by rr_poly_identity)).mpr ?_
       exact Polynomial.Splits.C_mul $pf _)))
