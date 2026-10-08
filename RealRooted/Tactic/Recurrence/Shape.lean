@@ -311,6 +311,47 @@ def rowRec? (P : Name) : MetaM (Except MessageData RowRec) := do
     | none => pure ()
   return .error err
 
+/-- A linear recurrence `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` of any order, read off
+the definition of `P` for the theorems of `RealRooted.LinRec`. -/
+structure LinRecData where
+  /-- the sequence -/
+  P : Name
+  /-- the offset `k` of the left side `P (n + k)` -/
+  offset : Nat
+  /-- the equation lemma of the recurrence -/
+  eqn : Name
+  /-- the summands `(jₜ, iₜ, fun n => Aₜ n)`, in the order of the definition -/
+  terms : Array (Nat × Nat × Expr)
+
+/-- Read the summands of `rhs` in `P (n + k) = rhs` as a general linear recurrence. -/
+private def readLinRec (P eqn : Name) (n rhs : Expr) (k : Nat) :
+    MetaM (Option LinRecData) := do
+  let (terms, _) ← (signedSummands rhs true).run true
+  let mut out : Array (Nat × Nat × Expr) := #[]
+  for (pos, t) in terms do
+    let some (c, r, _) ← factorRow? P n t | return none
+    let some (j, i) ← rowOf? P n r | return none
+    if j ≥ k then return none
+    let c ← c.getDM (mkNumeral (← inferType r) 1)
+    let c ← if pos then pure c else mkAppM ``Neg.neg #[c]
+    out := out.push (j, i, ← mkLambdaFVars #[n] c)
+  return some { P, offset := k, eqn, terms := out }
+
+/-- Read the recurrence of `P` off its equation lemmas as a general linear recurrence. -/
+def linRec? (P : Name) : MetaM (Option LinRecData) := do
+  let some eqns ← getEqnsFor? P | return none
+  for eqn in eqns do
+    let ty ← inferType (← mkConstWithFreshMVarLevels eqn)
+    let r ← forallTelescopeReducing ty fun xs body => do
+      if xs.size != 1 then return none
+      let some (_, lhs, rhs) := body.eq? | return none
+      unless lhs.isApp && lhs.getAppFn.isConstOf P do return none
+      let some k ← natOffsetOf? xs[0]! lhs.appArg! | return none
+      if k == 0 then return none
+      readLinRec P eqn xs[0]! rhs k
+    if let some r := r then return some r
+  return none
+
 /-- The shape of the recurrence of `P`, if it is read with offset `RecShape.base` and in
 the summand order of the theorems. -/
 def recShape? (P : Name) : MetaM (Option RecShape) := do

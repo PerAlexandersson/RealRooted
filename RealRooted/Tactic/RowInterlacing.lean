@@ -1,5 +1,6 @@
 import RealRooted.DerivativeRecurrence.RootWindow
 import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.ThreeTermRecurrence.HalfGrowth
 import RealRooted.Tactic.Recurrence
 import RealRooted.Tactic.InterlacesExplicit
 
@@ -601,9 +602,40 @@ elab "rr_row_splits" : tactic => withMainContext do
     let e' ← indexTerm t' (c' - 1)
     evalTactic (← `(tactic| refine (?_ : RealRooted.Interlaces ($P $e') ($P ($e' + 1))).1.2))
     discard <| rowInterlacesCore {}
+  -- half growth: rows two apart interlace (`RealRooted.threeTermHalf_ne_zero_and_splits`)
+  let viaHalf := do
+    unless r.shape == .lag do throwError "rr_row_splits: not a three-term recurrence"
+    let some D₀ ← findRowDegree P r.shift | throwError "rr_row_splits: no base degree"
+    let some D₁ ← findRowDegree P (r.shift + 1) | throwError "rr_row_splits: no degree"
+    unless D₁ == D₀ || D₁ == D₀ + 1 do throwError "rr_row_splits: not half growth"
+    let (_, t) ← alignRow r.P r.shift (smallRow P)
+    evalTactic (← `(tactic|
+      refine (RealRooted.threeTermHalf_ne_zero_and_splits (P := $(← r.seq 0))
+        (D₀ := $(rowNumLit D₀)) (e := $(rowNumLit (D₁ - D₀))) $(← r.hrecTerm 0)
+        ?_ ?_ ?_ ?_ ?_ ?_ ?_ $t).2))
+    let gs ← getGoals
+    let [ha, hα, hb, hdeg, hpos, h02, h13] := gs
+      | throwError "rr_row_splits: unexpected side goals"
+    for g in [ha, hα, hdeg, hpos, h02, h13] do
+      setGoals [g]
+      rowSideFull (some P)
+    setGoals [hb]
+    evalTactic (← `(tactic| (
+      intro k r
+      simp only [Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
+        Polynomial.eval_neg, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
+        Polynomial.eval_one, Polynomial.eval_ofNat]
+      push_cast
+      first
+        | positivity
+        | (ring_nf; positivity)
+        | nlinarith [sq_nonneg r, sq_nonneg (r - 1), sq_nonneg (r + 1),
+            (Nat.cast_nonneg k : (0 : ℝ) ≤ k)])))
+    unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
   let mut failures := #[]
   for (what, tac) in [("the interlacing of P t and P (t + 1)", viaLeft),
-      ("the interlacing of P (t - 1) and P t", viaRight)] do
+      ("the interlacing of P (t - 1) and P t", viaRight),
+      ("the half-growth interlacing of P t and P (t + 2)", viaHalf)] do
     match ← rowAttempt tac with
     | .ok _ => return
     | .error e => failures := failures.push (m!"{what}", e)
