@@ -1,5 +1,6 @@
 import RealRooted.Derivative
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import RealRooted.ThreeTermRecurrence.Interlacing
 
 /-!
@@ -170,7 +171,7 @@ variable {P U V W : ℕ → ℝ[X]} {D₀ : ℕ}
 /-- One step: `U * Q + V * Q'` has nonnegative coefficients when `Q` does and
 `coeff_k (U Q + V Q') = ∑_{i + j = k + 1} (V_i j + U_{i-1}) q_j` has nonnegative terms
 for every `j` up to a degree bound for `Q`. -/
-private theorem hasNonnegCoeffs_mul_add_mul_derivative {U V Q : ℝ[X]} {N : ℕ}
+theorem hasNonnegCoeffs_mul_add_mul_derivative {U V Q : ℝ[X]} {N : ℕ}
     (hdeg : Q.natDegree ≤ N) (hV0 : 0 ≤ V.coeff 0)
     (hmult : ∀ i (j : ℕ), j ≤ N → 0 ≤ V.coeff (i + 1) * j + U.coeff i)
     (hQ : HasNonnegCoeffs Q) : HasNonnegCoeffs (U * Q + V * Q.derivative) := by
@@ -228,5 +229,135 @@ theorem derivProduct_splits {P A : ℕ → ℝ[X]}
     rcases eq_zero_or_splits_derivative (Or.inr ih) with h | h
     · simp [h]
     · exact h
+
+/-!
+## Degrees when the top terms cancel
+
+For `F = A * f' + B * f` with `deg A ≤ m + 1`, `deg B ≤ m` and `d = deg f`, the coefficient of
+`X ^ (d + m)` in `F` is `t * lc f`, where `t = A_{m+1} d + B_m`. When `t = 0` the top terms cancel,
+and the coefficient of `X ^ (d + m - 1)` is `-A_{m+1} c + (A_m d + B_{m-1}) lc f`, where
+`c = f.coeff (d - 1)`. It is positive when `f` has nonnegative coefficients, `A_{m+1} ≤ 0` and
+`A_m d + B_{m-1} > 0`.
+
+Example: `A n = X - X ^ 3`, `B n = 1 + 2 X + n X ^ 2` (OEIS A008970) cancels at every step.
+`A n = 2 X - 2 X ^ 2`, `B n = 2 + n X` (A008303) cancels at every other step (half growth).
+The proof was found by Aristotle (Harmonic) and ported here.
+-/
+
+private theorem natDegree_eq_and_leadingCoeff_pos_of_coeff_pos {Q : ℝ[X]} {N : ℕ}
+    (h : Q.natDegree ≤ N) (hc : 0 < Q.coeff N) : Q.natDegree = N ∧ 0 < Q.leadingCoeff := by
+  have hN : Q.natDegree = N := natDegree_eq_of_le_of_coeff_ne_zero h hc.ne'
+  exact ⟨hN, by rw [leadingCoeff, hN]; exact hc⟩
+
+/-- One step of a first-order derivative recurrence whose top terms either grow
+(`A_{m+1} d + B_m > 0`, degree `d + m`) or cancel exactly (degree `d + m - 1`), for `f` with
+nonnegative coefficients. -/
+theorem derivRec_natDegree_eq_and_leadingCoeff_pos_step_of_cancel {f A B : ℝ[X]} {d d' m : ℕ}
+    (hm : 1 ≤ m) (hA : A.natDegree ≤ m + 1) (hB : B.natDegree ≤ m)
+    (hnn : HasNonnegCoeffs f) (hd : f.natDegree = d) (hl : 0 < f.leadingCoeff)
+    (hstep : (0 < A.coeff (m + 1) * d + B.coeff m ∧ d' = d + m) ∨
+      (A.coeff (m + 1) * d + B.coeff m = 0 ∧ d' = d + m - 1 ∧ A.coeff (m + 1) ≤ 0 ∧
+        0 < A.coeff m * d + B.coeff (m - 1))) :
+    (A * derivative f + B * f).natDegree = d' ∧ 0 < (A * derivative f + B * f).leadingCoeff := by
+  have hlc : f.coeff d = f.leadingCoeff := by rw [leadingCoeff, hd]
+  rcases Nat.eq_zero_or_pos d with hD0 | hDpos
+  · -- a constant row: the derivative vanishes
+    subst hD0
+    have hPC : f = C f.leadingCoeff := by
+      rw [← hlc]; exact eq_C_of_natDegree_eq_zero hd
+    rw [hPC, derivative_C, mul_zero, zero_add]
+    have hle : (B * C f.leadingCoeff).natDegree ≤ B.natDegree :=
+      natDegree_mul_le.trans (by simp)
+    rcases hstep with ⟨ht, hDn⟩ | ⟨ht, hDn, -, hsec⟩
+    · simp only [Nat.cast_zero, mul_zero, zero_add] at ht
+      rw [hDn, zero_add]
+      refine natDegree_eq_and_leadingCoeff_pos_of_coeff_pos (hle.trans hB) ?_
+      rw [coeff_mul_C]; exact mul_pos ht hl
+    · simp only [Nat.cast_zero, mul_zero, zero_add] at ht hsec
+      rw [hDn, zero_add]
+      obtain ⟨k, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, by lia⟩
+      simp only [Nat.add_sub_cancel] at hsec ⊢
+      refine natDegree_eq_and_leadingCoeff_pos_of_coeff_pos ?_ ?_
+      · rw [natDegree_le_iff_coeff_eq_zero]
+        intro j hj
+        rw [coeff_mul_C]
+        rcases (show j = k + 1 ∨ k + 1 < j by lia) with rfl | hj'
+        · rw [ht, zero_mul]
+        · rw [coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hB hj'), zero_mul]
+      · rw [coeff_mul_C]; exact mul_pos hsec hl
+  · obtain ⟨e, he⟩ : ∃ e, d = e + 1 := ⟨d - 1, by lia⟩
+    have hPd : f.natDegree ≤ e + 1 := (le_of_eq (hd.trans he))
+    have hP' : (derivative f).natDegree ≤ e :=
+      (natDegree_derivative_le _).trans (by lia)
+    have hleQ : (A * derivative f + B * f).natDegree ≤ m + 1 + e := by
+      refine natDegree_add_le_of_degree_le ?_ ?_
+      · exact natDegree_mul_le.trans (by lia)
+      · exact natDegree_mul_le.trans (by lia)
+    have htop : (A * derivative f + B * f).coeff (m + 1 + e) =
+        (A.coeff (m + 1) * d + B.coeff m) * f.leadingCoeff := by
+      rw [coeff_add, coeff_mul_add_eq_of_natDegree_le hA hP',
+        show m + 1 + e = m + (e + 1) by lia, coeff_mul_add_eq_of_natDegree_le hB hPd,
+        coeff_derivative, ← he, hlc, he]
+      push_cast; ring
+    rcases hstep with ⟨ht, hDn⟩ | ⟨ht, hDn, hAle, hsec⟩
+    · rw [hDn, show d + m = m + 1 + e by lia]
+      refine natDegree_eq_and_leadingCoeff_pos_of_coeff_pos hleQ ?_
+      rw [htop]; exact mul_pos ht hl
+    · obtain ⟨k, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, by lia⟩
+      simp only [Nat.add_sub_cancel] at hsec hDn ht htop hleQ ⊢
+      rw [hDn, he, show e + 1 + (k + 1) - 1 = k + 1 + e by lia]
+      refine natDegree_eq_and_leadingCoeff_pos_of_coeff_pos ?_ ?_
+      · rw [natDegree_le_iff_coeff_eq_zero]
+        intro j hj
+        rcases (show j = k + 1 + 1 + e ∨ k + 1 + 1 + e < j by lia) with rfl | hj'
+        · rw [htop, ht, zero_mul]
+        · exact coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hleQ hj')
+      · have hc := hnn e
+        rw [he] at hlc ht hsec
+        push_cast at ht hsec
+        rcases e with _ | e
+        · have hPC' : derivative f = C f.leadingCoeff := by
+            rw [eq_C_of_natDegree_le_zero hP', coeff_derivative, ← hlc]; simp
+          rw [coeff_add, hPC', coeff_mul_C, show k + 1 + 0 = k + 0 + 1 by lia,
+            coeff_mul_add_add_one_eq_of_natDegree_le hB hPd, hlc]
+          push_cast at ht hsec ⊢
+          nlinarith [mul_nonneg (neg_nonneg.mpr hAle) hc, mul_pos hsec hl]
+        · rw [coeff_add, show k + 1 + (e + 1) = k + 1 + e + 1 by lia,
+            coeff_mul_add_add_one_eq_of_natDegree_le hA hP',
+            show k + 1 + e + 1 = k + (e + 1) + 1 by lia,
+            coeff_mul_add_add_one_eq_of_natDegree_le hB hPd, coeff_derivative, coeff_derivative,
+            hlc]
+          push_cast at ht hsec ⊢
+          nlinarith [mul_nonneg (neg_nonneg.mpr hAle) hc, mul_pos hsec hl]
+
+/-- Degrees, positive leading coefficients and nonnegative coefficients of a first-order
+derivative recurrence whose top terms grow or cancel exactly at each step; the coefficients
+stay nonnegative by the condition of `derivRec_hasNonnegCoeffs_of_mult` up to the degree
+`D n` of the current row. -/
+theorem derivRec_natDegree_eq_and_leadingCoeff_pos_of_cancel {P A B : ℕ → ℝ[X]} {D : ℕ → ℕ}
+    {m : ℕ} (hm : 1 ≤ m)
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hA : ∀ n, (A n).natDegree ≤ m + 1) (hB : ∀ n, (B n).natDegree ≤ m)
+    (hA0 : ∀ n, 0 ≤ (A n).coeff 0)
+    (hmult : ∀ n i (j : ℕ), j ≤ D n → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i)
+    (h0 : (P 0).natDegree = D 0) (hpos0 : 0 < (P 0).leadingCoeff)
+    (hnn0 : HasNonnegCoeffs (P 0))
+    (hstep : ∀ n,
+      (0 < (A n).coeff (m + 1) * D n + (B n).coeff m ∧ D (n + 1) = D n + m) ∨
+      ((A n).coeff (m + 1) * D n + (B n).coeff m = 0 ∧ D (n + 1) = D n + m - 1 ∧
+        (A n).coeff (m + 1) ≤ 0 ∧ 0 < (A n).coeff m * D n + (B n).coeff (m - 1)))
+    (n : ℕ) :
+    (P n).natDegree = D n ∧ 0 < (P n).leadingCoeff ∧ HasNonnegCoeffs (P n) := by
+  induction n with
+  | zero => exact ⟨h0, hpos0, hnn0⟩
+  | succ n ih =>
+    obtain ⟨hd, hl, hnn⟩ := ih
+    have hnn' : HasNonnegCoeffs (P (n + 1)) := by
+      rw [hrec n, add_comm]
+      exact hasNonnegCoeffs_mul_add_mul_derivative hd.le (hA0 n) (hmult n) hnn
+    rw [hrec n] at hnn' ⊢
+    exact ⟨(derivRec_natDegree_eq_and_leadingCoeff_pos_step_of_cancel hm (hA n) (hB n) hnn hd hl
+      (hstep n)).1, (derivRec_natDegree_eq_and_leadingCoeff_pos_step_of_cancel hm (hA n) (hB n)
+      hnn hd hl (hstep n)).2, hnn'⟩
 
 end RealRooted
