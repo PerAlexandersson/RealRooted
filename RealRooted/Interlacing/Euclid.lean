@@ -103,3 +103,34 @@ theorem twoStepProduct_interlaces {P : ℕ → ℝ[X]} {q : ℝ[X]}
     exact h12.mul_both_of_splits (hqm m).1 (hqm m).2
 
 end RealRooted
+
+/-!
+## Splitting of two-step products
+
+If `P (n + 2) = q n * P n` and all the factors `q n` split, then every row `P n` splits
+as soon as `P 0` and `P 1` do.
+-/
+
+open Polynomial
+
+namespace RealRooted
+
+/-- Rows of a two-step product recurrence `P (n + 2) = q n * P n` split when `P 0`, `P 1`
+and every factor `q n` split. -/
+theorem twoStepProduct_splits {P q : ℕ → ℝ[X]} (hrec : ∀ n, P (n + 2) = q n * P n)
+    (hq : ∀ n, (q n).Splits) (h0 : (P 0).Splits) (h1 : (P 1).Splits) (n : ℕ) :
+    (P n).Splits := by
+  induction n using Nat.twoStepInduction with
+  | zero => exact h0
+  | one => exact h1
+  | more n ih _ => rw [hrec]; exact (hq n).mul ih
+
+example {P : ℕ → ℝ[X]} (hrec : ∀ n, P (n + 2) = (1 + X) * P n) (h0 : P 0 = 1)
+    (h1 : P 1 = 1 + X) (n : ℕ) : (P n).Splits := by
+  have hX : (1 + X : ℝ[X]).Splits := by
+    simpa [add_comm] using Splits.X_sub_C (-1 : ℝ)
+  refine twoStepProduct_splits (q := fun _ => 1 + X) hrec (fun _ => hX) ?_ ?_ n
+  · rw [h0]; exact Splits.one
+  · rw [h1]; exact hX
+
+end RealRooted
