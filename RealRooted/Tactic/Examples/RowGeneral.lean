@@ -6,8 +6,8 @@ import RealRooted.Tactic.RowInterlacing
 Regression tests for the fallback of the degree tactics to general linear recurrences
 (`RealRooted.LinRec`: any order, mixed derivatives, top coefficients of either sign) and
 for half-growth splitting in `rr_row_splits`
-(`RealRooted.threeTermHalf_ne_zero_and_splits`), on OEIS rows drawn from
-`real-rooted-oeis-proofs`.
+(`RealRooted.threeTermHalf_ne_zero_and_splits`) and interlacing after a dropped row, on
+OEIS rows drawn from `real-rooted-oeis-proofs`.
 -/
 
 open Polynomial
@@ -53,6 +53,24 @@ def A008306 : ℕ → ℝ[X]
   | n + 2 => C (3 + (n : ℝ)) * A008306 (n + 1) + (C (3 + (n : ℝ)) * X) * A008306 n
 
 theorem A008306_splits (n : ℕ) : (A008306 n).Splits := by rr_row_splits
+
+/-- The multiplier vanishes at `n = 0`: the first two rows are constant, and the rows
+interlace from row `1` on (A055356). -/
+def A055356 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (C 1 * X) * (A055356 n).derivative + (C 1 + C (n : ℝ) * X) * A055356 n
+
+theorem A055356_interlaces (n : ℕ) : Interlaces (A055356 (n + 1)) (A055356 (n + 2)) := by
+  rr_row_interlaces
+theorem A055356_splits (n : ℕ) : (A055356 n).Splits := by rr_row_splits
+
+/-- As above, with `A n = X - X ^ 2` changing sign (A163936). -/
+def A163936 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (C 1 * X + C (-1) * X ^ 2) * (A163936 n).derivative +
+      (C (1 + (n : ℝ)) + C (n : ℝ) * X) * A163936 n
+
+theorem A163936_splits (n : ℕ) : (A163936 n).Splits := by rr_row_splits
 
 /-- Two equal-degree rows dropped before linear growth: degree `n - 1` (A271697). -/
 def A271697 : ℕ → ℝ[X]
