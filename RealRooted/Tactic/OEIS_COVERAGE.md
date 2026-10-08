@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **202 IDs**; **5 formalized**, **194 shells**, **3 fragments**, and **0 documented-only**.
+Current totals: **203 IDs**; **5 formalized**, **195 shells**, **3 fragments**, and **0 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -208,6 +208,7 @@ Current totals: **202 IDs**; **5 formalized**, **194 shells**, **3 fragments**, 
 | A290596 | `shell` | third-step Lah branch with translated inner factor `(2+X)f+(6+6X)f'+9Xf''=(1/3+D)(3(X-1)f+9Xf')`. | `rr_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `inner_degree_lower`, `inner_degree_upper`, `inner_pos_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonpos` | concrete row definition and proofs of the listed certificates |
 | A290598 | `shell` | third-step Lah branch with positive translated inner factor `(4+X)f+(12+6X)f'+9Xf''=(1/3+D)(3(X+1)f+9Xf')`. | `rr_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `inner_degree_lower`, `inner_degree_upper`, `inner_pos_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonpos` | concrete row definition and proofs of the listed certificates |
 | A292219 | `shell` | fourth-step Lah branch `(6+X)f+(24+8X)f'+16Xf''=(1/4+D)(4(X+2)f+16Xf')`. | `rr_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `inner_degree_lower`, `inner_degree_upper`, `inner_pos_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonpos` | concrete row definition and proofs of the listed certificates |
+| A306364 | `shell` | Half growth whose lag coefficients are quadratic in `n` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A307419 | `shell` | A second-order recurrence with derivatives of both earlier rows ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A321966 | `fragment` | OEIS-stated conjecture target, `v_n(t)=2t`.<br>root-sign package once the current row has nonnegative coefficients. | `rr_sign`, `rr_sign_at_roots` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
 | A322944 | `fragment` | OEIS-stated conjecture target, `v_n(t)=3t`. | `rr_sign` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
