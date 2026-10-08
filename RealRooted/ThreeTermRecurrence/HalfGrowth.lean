@@ -116,4 +116,34 @@ theorem threeTermHalf_ne_zero_and_splits
     P n ≠ 0 ∧ (P n).Splits :=
   (threeTermHalf_interlaces_add_two hrec ha hα hb hdeg hpos h02 h13 n).2.1
 
+/-! ### Residue classes of recurrences -/
+
+/-- Every index is `p * m + r` with `r < p`. -/
+theorem exists_mul_add_lt (p t : ℕ) (hp : 0 < p) : ∃ m r, r < p ∧ t = p * m + r :=
+  ⟨t / p, t % p, Nat.mod_lt t hp, (Nat.div_add_mod t p).symm⟩
+
+/-- A product sequence starting at `0` stays `0`. -/
+theorem eq_zero_of_product_rec {Q q : ℕ → ℝ[X]} (hrec : ∀ n, Q (n + 1) = q n * Q n)
+    (h0 : Q 0 = 0) (n : ℕ) : Q n = 0 := by
+  induction n with
+  | zero => exact h0
+  | succ n ih => rw [hrec, ih, mul_zero]
+
+/-- A first-order derivative recurrence starting at `0` stays `0`. -/
+theorem eq_zero_of_derivRec {Q A B : ℕ → ℝ[X]}
+    (hrec : ∀ n, Q (n + 1) = A n * (Q n).derivative + B n * Q n)
+    (h0 : Q 0 = 0) (n : ℕ) : Q n = 0 := by
+  induction n with
+  | zero => exact h0
+  | succ n ih => rw [hrec, ih]; simp
+
+/-- A three-term recurrence with two zero rows stays `0`. -/
+theorem eq_zero_of_threeTerm_rec {Q a b : ℕ → ℝ[X]}
+    (hrec : ∀ n, Q (n + 2) = a n * Q (n + 1) + b n * Q n) (h0 : Q 0 = 0) (h1 : Q 1 = 0)
+    (n : ℕ) : Q n = 0 := by
+  induction n using Nat.twoStepInduction with
+  | zero => exact h0
+  | one => exact h1
+  | more n ih ih1 => rw [hrec, ih, ih1]; simp
+
 end RealRooted
