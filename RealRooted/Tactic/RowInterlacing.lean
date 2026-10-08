@@ -1149,6 +1149,17 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
     | .error e => failures := failures.push (m!"induction on the recurrence", e)
   throwRowFailures m!"rr_row_eval_zero_pos: no strategy proves the goal for {P}" failures
 
+/-- Close the splitting of an explicit row: the side-goal engine, or the Euclidean certificate
+of `rr_splits_explicit` after unfolding `P`. -/
+private def explicitRowSplits (P : Ident) : TacticM Unit := do
+  unless ← rowSucceeds (rowSideFull (some P)) do
+    evalTactic (← `(tactic| (beta_reduce; simp only [Nat.zero_add, $P:ident]; rr_splits_explicit)))
+
+/-- `smallRow` for splitting goals of explicit rows. -/
+private def smallRowSplits (P : Ident) : TacticM (TSyntax `tactic) := do
+  explicitRowSplits P
+  `(tactic| rr_row_side)
+
 /-- Close `∀ k, (q k).Splits` for explicit factors of degree at most two. -/
 private def factorSplitsTac : TacticM (TSyntax `tactic) :=
   `(tactic| (
@@ -1220,15 +1231,15 @@ elab "rr_row_splits" : tactic => withMainContext do
     evalTactic (← `(tactic| refine (?_ : RealRooted.Interlaces ($P $e') ($P ($e' + 1))).1.2))
     discard <| rowInterlacesCore { drop := some k }
   -- half growth: rows two apart interlace (`RealRooted.threeTermHalf_ne_zero_and_splits`)
-  let viaHalf := do
+  let viaHalf (k : Nat) := do
     unless r.shape == .lag do throwError "rr_row_splits: not a three-term recurrence"
-    let some D₀ ← findRowDegree P r.shift | throwError "rr_row_splits: no base degree"
-    let some D₁ ← findRowDegree P (r.shift + 1) | throwError "rr_row_splits: no degree"
+    let some D₀ ← findRowDegree P (r.shift + k) | throwError "rr_row_splits: no base degree"
+    let some D₁ ← findRowDegree P (r.shift + k + 1) | throwError "rr_row_splits: no degree"
     unless D₁ == D₀ || D₁ == D₀ + 1 do throwError "rr_row_splits: not half growth"
-    let (_, t) ← alignRow r.P r.shift (smallRow P)
+    let (_, t) ← alignRow r.P (r.shift + k) (smallRowSplits P)
     evalTactic (← `(tactic|
-      refine (RealRooted.threeTermHalf_ne_zero_and_splits (P := $(← r.seq 0))
-        (D₀ := $(rowNumLit D₀)) (e := $(rowNumLit (D₁ - D₀))) $(← r.hrecTerm 0)
+      refine (RealRooted.threeTermHalf_ne_zero_and_splits (P := $(← r.seq k))
+        (D₀ := $(rowNumLit D₀)) (e := $(rowNumLit (D₁ - D₀))) $(← r.hrecTerm k)
         ?_ ?_ ?_ ?_ ?_ ?_ ?_ $t).2))
     let gs ← getGoals
     let [ha, hα, hb, hdeg, hpos, h02, h13] := gs
@@ -1274,6 +1285,21 @@ elab "rr_row_splits" : tactic => withMainContext do
       · $coeffs:tactic))
     evalTactic (← `(tactic| first | $plain:tactic | $proportional:tactic))
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
+  -- `P (n + k) = q n * P (n + k - 1)` read as a product of `m ↦ P (m + k - 1)`
+  let viaLagLeft := do
+    unless r.shape == .lagLeft do throwError "rr_row_splits: not a shifted product"
+    let (_, t) ← alignRow r.P (r.shift + 1) (smallRowSplits P)
+    let q ← certTerm r.coeffs[0]!
+    let n := mkIdent `n
+    evalTactic (← `(tactic|
+      refine RealRooted.productSequence_splits (P := $(← r.seq 1)) (q := $q)
+        (fun $n:ident => ($(mkIdent r.eqn) $n).trans (by beta_reduce; ring)) ?_ ?_ $t))
+    let [hq, h0] ← getGoals | throwError "rr_row_splits: unexpected side goals"
+    setGoals [h0]
+    explicitRowSplits P
+    setGoals [hq]
+    evalTactic (← factorSplitsTac)
+    unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
   -- two-step products `P (n + 2) = q n * P n` (`RealRooted.twoStepProduct_splits`)
   let viaTwoStep := do
     unless r.shape == .lagRight do throwError "rr_row_splits: not a two-step product"
@@ -1287,17 +1313,19 @@ elab "rr_row_splits" : tactic => withMainContext do
     let [hq, h0, h1] := gs | throwError "rr_row_splits: unexpected side goals"
     for g in [h0, h1] do
       setGoals [g]
-      rowSideFull (some P)
+      explicitRowSplits P
     setGoals [hq]
     evalTactic (← factorSplitsTac)
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
   let mut failures := #[]
-  for (what, tac) in [("a two-step product", viaTwoStep),
+  for (what, tac) in [("a two-step product", viaTwoStep), ("a shifted product", viaLagLeft),
       ("the interlacing of P t and P (t + 1)", viaLeft 0),
       ("the interlacing of P (t - 1) and P t", viaRight 0),
-      ("the half-growth interlacing of P t and P (t + 2)", viaHalf),
+      ("the half-growth interlacing of P t and P (t + 2)", viaHalf 0),
       ("the interlacing of P (t + 1) and P (t + 2), after splitting off a row", viaLeft 1),
-      ("the interlacing of P (t - 1) and P t, after splitting off a row", viaRight 1)] do
+      ("the interlacing of P (t - 1) and P t, after splitting off a row", viaRight 1),
+      ("half growth after splitting off a row", viaHalf 1),
+      ("half growth after splitting off two rows", viaHalf 2)] do
     match ← rowAttempt tac with
     | .ok _ => return
     | .error e => failures := failures.push (m!"{what}", e)
