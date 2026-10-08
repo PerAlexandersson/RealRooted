@@ -14,8 +14,9 @@ in `scripts/import_architecture.json`, it checks the broad compatibility,
 production, and regression umbrellas independently.
 
 Exit codes:
-  0: all modules are imported in sorted order, or `--fix` repaired the umbrella file
-  1: missing or unsorted imports were found and not fixed, or the layout is invalid
+  0: all modules are imported once, in sorted order, or `--fix` repaired the umbrella file
+  1: missing, duplicated or unsorted imports were found and not fixed, or the layout is
+     invalid
 
 A contiguous import block must be sorted by module name, so that pull requests
 adding modules in different areas touch different lines.  `--fix` adds missing
@@ -252,6 +253,14 @@ def imports_unsorted(root_module_file: pathlib.Path) -> bool:
     return modules != sorted(modules)
 
 
+def duplicated_imports(root_module_file: pathlib.Path) -> list[str]:
+    """Modules imported more than once; union-resolved merge conflicts tend to leave these."""
+
+    modules = parse_imports(root_module_file)
+    seen: set[str] = set()
+    return sorted({module for module in modules if module in seen or seen.add(module)})
+
+
 def append_missing_imports(
     root_module_file: pathlib.Path, missing_modules: list[str]
 ) -> None:
@@ -265,8 +274,9 @@ def append_missing_imports(
     block = _contiguous_block(directives)
     if block is not None:
         start, stop = block
+        unique = {directive.module: directive for _, directive in directives}
         merged = sorted(
-            [directive for _, directive in directives] + new_directives,
+            list(unique.values()) + new_directives,
             key=lambda directive: directive.module,
         )
         updated_lines = lines[:start]
@@ -353,7 +363,7 @@ def main() -> int:
     failures = [
         (path, missing)
         for path, missing in checks
-        if missing or imports_unsorted(path)
+        if missing or imports_unsorted(path) or duplicated_imports(path)
     ]
     if failures and not args.fix:
         for owner_file, missing_modules in failures:
@@ -362,6 +372,13 @@ def main() -> int:
                     f"error: {owner_file.relative_to(repo_root)} is missing imports for "
                     f"{len(missing_modules)} module(s): {', '.join(missing_modules)}. "
                     "Run with --fix to add the missing imports.",
+                    file=sys.stderr,
+                )
+            elif duplicates := duplicated_imports(owner_file):
+                print(
+                    f"error: {owner_file.relative_to(repo_root)} imports "
+                    f"{len(duplicates)} module(s) more than once, e.g. {duplicates[0]}. "
+                    "Run with --fix to remove the duplicates.",
                     file=sys.stderr,
                 )
             else:
@@ -377,7 +394,7 @@ def main() -> int:
             for owner_file, missing_modules in failures:
                 append_missing_imports(owner_file, missing_modules)
                 print(
-                    "fixed: added missing imports and sorted the imports in "
+                    "fixed: added missing imports, removed duplicates and sorted the imports in "
                     f"{owner_file.relative_to(repo_root)}",
                     file=sys.stderr,
                 )

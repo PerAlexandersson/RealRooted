@@ -201,6 +201,41 @@ end TestLib
             self.assertEqual(only_unsorted.returncode, 1)
             self.assertIn("not sorted", only_unsorted.stderr)
 
+    def test_root_fix_removes_duplicate_imports(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            (root / "lakefile.toml").write_text(
+                '[[lean_lib]]\nname = "TestLib"\n', encoding="utf-8"
+            )
+            lib = root / "TestLib"
+            lib.mkdir()
+            for name in ("Alpha", "Beta"):
+                (lib / f"{name}.lean").write_text("", encoding="utf-8")
+            umbrella = root / "TestLib.lean"
+            umbrella.write_text(
+                "import TestLib.Alpha\nimport TestLib.Alpha\nimport TestLib.Beta\n",
+                encoding="utf-8",
+            )
+            duplicated = subprocess.run(
+                [sys.executable, str(ROOT_GUARD), "--repo-root", str(root)],
+                cwd=directory,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(duplicated.returncode, 1)
+            self.assertIn("more than once", duplicated.stderr)
+            subprocess.run(
+                [sys.executable, str(ROOT_GUARD), "--repo-root", str(root), "--fix"],
+                cwd=directory,
+                check=True,
+                capture_output=True,
+            )
+            self.assertEqual(
+                umbrella.read_text(encoding="utf-8"),
+                "import TestLib.Alpha\nimport TestLib.Beta\n",
+            )
+
     def test_root_fix_rejects_unsupported_multiline_header(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = pathlib.Path(directory)
