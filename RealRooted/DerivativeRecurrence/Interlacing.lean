@@ -150,3 +150,69 @@ theorem derivRec_hasNonnegCoeffs_of_mult {d : ℕ}
           rfl
 
 end RealRooted
+
+/-!
+## Nonnegative coefficients for derivative-lag recurrences
+
+Rows of `P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))' + W n * P n` have nonnegative
+coefficients when the first two rows and the multipliers `W n` do, and the multipliers
+`U n`, `V n` satisfy the coefficientwise condition of `derivRec_hasNonnegCoeffs_of_mult`
+for the row `P (n + 1)`.  Nonnegative coefficients give roots in `(-∞, 0]`, which is the
+root-sign input of the derivative-lag Liu–Wang step.
+-/
+
+open Polynomial
+
+namespace RealRooted
+
+variable {P U V W : ℕ → ℝ[X]} {D₀ : ℕ}
+
+/-- One step: `U * Q + V * Q'` has nonnegative coefficients when `Q` does and
+`coeff_k (U Q + V Q') = ∑_{i + j = k + 1} (V_i j + U_{i-1}) q_j` has nonnegative terms
+for every `j` up to a degree bound for `Q`. -/
+private theorem hasNonnegCoeffs_mul_add_mul_derivative {U V Q : ℝ[X]} {N : ℕ}
+    (hdeg : Q.natDegree ≤ N) (hV0 : 0 ≤ V.coeff 0)
+    (hmult : ∀ i (j : ℕ), j ≤ N → 0 ≤ V.coeff (i + 1) * j + U.coeff i)
+    (hQ : HasNonnegCoeffs Q) : HasNonnegCoeffs (U * Q + V * Q.derivative) := by
+  intro k
+  have hX : X * (U * Q + V * Q.derivative) = V * (X * Q.derivative) + (X * U) * Q := by
+    ring
+  have hk : (U * Q + V * Q.derivative).coeff k
+      = (X * (U * Q + V * Q.derivative)).coeff (k + 1) := by
+    rw [coeff_X_mul]
+  rw [hk, hX, coeff_add, coeff_mul, coeff_mul, ← Finset.sum_add_distrib]
+  refine Finset.sum_nonneg fun x _ => ?_
+  rw [coeff_X_mul_derivative]
+  rcases x with ⟨i, j⟩
+  rcases i with _ | i
+  · rw [coeff_X_mul_zero, zero_mul, add_zero]
+    exact mul_nonneg hV0 (mul_nonneg (Nat.cast_nonneg j) (hQ j))
+  · rw [coeff_X_mul]
+    by_cases hj : j ≤ N
+    · nlinarith [mul_nonneg (hmult i j hj) (hQ j)]
+    · rw [coeff_eq_zero_of_natDegree_lt (hdeg.trans_lt (by lia))]
+      ring_nf
+      rfl
+
+/-- Rows of a derivative-lag recurrence with nonnegative coefficients, from nonnegative
+multipliers.  The multiplier condition `hmult` only involves `j ≤ D₀ + d * (n + 1)`, the
+degree bound of the row `P (n + 1)` that `U n` and `V n` act on. -/
+theorem derivLag_hasNonnegCoeffs_of_mult {d : ℕ}
+    (hrec : ∀ n, P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n)
+    (hdeg : ∀ n, (P n).natDegree ≤ D₀ + d * n) (hV0 : ∀ n, 0 ≤ (V n).coeff 0)
+    (hmult : ∀ n i (j : ℕ), j ≤ D₀ + d * (n + 1) →
+      0 ≤ (V n).coeff (i + 1) * j + (U n).coeff i)
+    (hW : ∀ n, HasNonnegCoeffs (W n)) (h0 : HasNonnegCoeffs (P 0))
+    (h1 : HasNonnegCoeffs (P 1)) : ∀ n, HasNonnegCoeffs (P n) := by
+  have key : ∀ n, HasNonnegCoeffs (P n) ∧ HasNonnegCoeffs (P (n + 1)) := by
+    intro n
+    induction n with
+    | zero => exact ⟨h0, h1⟩
+    | succ n ih =>
+      refine ⟨ih.2, ?_⟩
+      rw [hrec n]
+      exact (hasNonnegCoeffs_mul_add_mul_derivative (hdeg (n + 1)) (hV0 n) (hmult n) ih.2).add
+        ((hW n).mul ih.1)
+  exact fun n => (key n).1
+
+end RealRooted
