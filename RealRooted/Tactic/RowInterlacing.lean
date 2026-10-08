@@ -1211,6 +1211,7 @@ elab "rr_row_splits" : tactic => withMainContext do
         | ring1
         | rr_linrec_field
         | positivity
+        | (ring_nf; positivity)
         | rr_row_field))
     let plain ← `(tactic| (
       intro k r

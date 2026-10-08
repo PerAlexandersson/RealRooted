@@ -276,6 +276,69 @@ theorem swappedProduct_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (swappedProdu
 theorem swappedProduct_eval_zero_pos (n : ℕ) : 0 < (swappedProduct n).eval 0 := by
   rr_row_eval_zero_pos
 
+/-! ### Products, half growth with a common lag root, derivative lags -/
+
+/-- A derivative-lag recurrence `P (n + 2) = U P (n + 1) + V P' (n + 1) + W P n` with
+`V ≤ 0`, `W < 0` on the negative axis (A144436). -/
+def A144436 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 => (C 1 * X + C (-1) * X ^ 2) * (A144436 (n + 1)).derivative +
+      (C 1 + C (2 + (n : ℝ)) * X) * A144436 (n + 1) + (C 4 * X) * A144436 n
+
+theorem A144436_splits (n : ℕ) : (A144436 n).Splits := by rr_row_splits
+
+/-- A derivative-lag recurrence with half growth (A008299). -/
+def A008299 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | n + 2 => (C 1 * X) * (A008299 (n + 1)).derivative + C 1 * A008299 (n + 1) +
+      (C (3 + (n : ℝ)) * X) * A008299 n
+
+theorem A008299_splits (n : ℕ) : (A008299 n).Splits := by rr_row_splits
+
+/-- Half growth whose lags `(n + 1) (X - 1)` share the root `1`
+(`RealRooted.eval_mul_eval_nonneg_of_natDegree_le_one`) (A136394). -/
+def A136394 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | n + 2 => C (2 + (n : ℝ)) * A136394 (n + 1) + (C (-1 + -1 * (n : ℝ)) + C (1 + (n : ℝ)) * X) *
+      A136394 n
+
+theorem A136394_splits (n : ℕ) : (A136394 n).Splits := by rr_row_splits
+
+/-- A product with a real-rooted quadratic factor (A272866). -/
+def A272866 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (1 + X ^ 2 + 3 * X) * A272866 n
+
+theorem A272866_splits (n : ℕ) : (A272866 n).Splits := by rr_row_splits
+
+/-- A product with a cubic first row (A122431). -/
+def A122431 : ℕ → ℝ[X]
+  | 0 => 1 + 3 * X + 3 * X ^ 2 + X ^ 3
+  | n + 1 => X * A122431 n
+
+theorem A122431_splits (n : ℕ) : (A122431 n).Splits := by rr_row_splits
+
+/-- Half growth whose lag coefficients are quadratic in `n` (A306364). -/
+def A306364 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 3
+  | n + 2 => C (5 + 2 * (n : ℝ)) * A306364 (n + 1) +
+      (C (6 + -1 * (3 + (n : ℝ)) ^ 2 + 2 * (n : ℝ)) +
+        C (-6 + (3 + (n : ℝ)) ^ 2 + -2 * (n : ℝ)) * X) * A306364 n
+
+theorem A306364_splits (n : ℕ) : (A306364 n).Splits := by rr_row_splits
+
+/-- A two-step product `P (n + 2) = (1 + 2 X) P n` (A188440). -/
+def A188440 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | n + 2 => (1 + 2 * X) * A188440 n
+
+theorem A188440_splits (n : ℕ) : (A188440 n).Splits := by rr_row_splits
+
 end
 
 end RealRooted.Tactic.RowInterlacingExamples
