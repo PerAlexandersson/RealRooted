@@ -1363,6 +1363,7 @@ import RealRooted.MultivariateStability.DirectionalDerivative
 import RealRooted.MultivariateStability.HomogeneousPencilWronskian
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.Inversion
+import RealRooted.MultivariateStability.JumpSystem
 import RealRooted.MultivariateStability.LinearForm
 import RealRooted.MultivariateStability.NegativeCorrelation
 import RealRooted.MultivariateStability.PolyaFrequency

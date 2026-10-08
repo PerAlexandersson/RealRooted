@@ -4,6 +4,7 @@ import RealRooted.HomogeneousComponentStability
 import RealRooted.Hyperbolicity
 import RealRooted.HyperbolicityCone
 import RealRooted.MultivariateStability.Inversion
+import RealRooted.MultivariateStability.JumpSystem
 import RealRooted.MultivariateStability.NegativeCorrelation
 import RealRooted.MultivariateStability.RayleighConverse
 import RealRooted.MultivariateStability.SamePhase
@@ -126,6 +127,16 @@ label = "Real stability from real-rootedness of all positive-direction line rest
 name = "RealRooted.MvRealStable.realAffineLineRestriction_splits_ne_zero"
 module = "RealRooted.AffineLineRestriction"
 label = "Line restrictions of a real stable polynomial in positive directions are real-rooted"
+
+[[theorems]]
+name = "RealRooted.MvRealStable.isJumpSystem_supportInt"
+module = "RealRooted.MultivariateStability.JumpSystem"
+label = "Brändén: the support of a real stable polynomial is a jump system"
+
+[[theorems]]
+name = "RealRooted.MvRealStable.isBase_supportMatroid_iff"
+module = "RealRooted.MultivariateStability.JumpSystem"
+label = "Brändén: supports of a homogeneous multi-affine real stable polynomial are matroid bases"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -223,6 +234,14 @@ Inversion works because $z \mapsto -1/z$ maps the open upper half-plane to
 itself: $\operatorname{Im}(-1/z) = \operatorname{Im} z / |z|^2$. For
 $z_0 \neq 0$ the inverted polynomial evaluates to $z_0^d$ times a value of
 $P$ at a point in the product of upper half-planes.
+
+**Theorem (Brändén).** The support of a real stable polynomial is a jump system: for
+support points $\alpha, \beta$ and a unit step $s = \pm e_i$ from $\alpha$ towards
+$\beta$, either $\alpha + s$ is in the support, or some further unit step $t$ towards
+$\beta$ has $\alpha + s + t$ in the support. Partial derivatives, inversion in one
+variable, truncation and lowest weighted-homogeneous parts preserve stability; they reduce
+the claim to a box between $\alpha$ and $\beta$, where a homogeneous part of degree at least
+three would vanish somewhere in the product of upper half-planes.
 
 ## References
 
