@@ -697,6 +697,7 @@ import RealRooted.HomogeneousOre
 import RealRooted.HomogeneousOreExamples
 import RealRooted.HomogeneousStability
 import RealRooted.HosterStump.Diagram
+import RealRooted.HosterStump.Permutation
 import RealRooted.HosterStump.Refined
 import RealRooted.HosterStump.Sequence
 import RealRooted.HosterStumpInterlacing
