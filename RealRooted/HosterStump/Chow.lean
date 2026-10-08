@@ -15,9 +15,9 @@ arbitrary `β : Finset ℕ → ℝ`, with the paper's `1`-based positions `{1, �
 `0`-based positions `range n`.
 
 A graded simplicial poset enters only through identity (1.3) (Stanley), expressing `β` through
-the `h`-vector and permutation statistics; it is the predicate `IsSimplicialFlagH n h β`, the
-documented combinatorial-model boundary of this development (not proved here for posets).
-Under it we prove
+the `h`-vector and permutation statistics; it is the predicate `IsSimplicialFlagH n h β`,
+proved for posets in `RealRooted.HosterStump.PosetChow` (`isSimplicialFlagH_flagH`).  Under it
+we prove
 
 * Lemma 3.1: the `γ`-polynomials of the Chow polynomials are `∑ₖ hₖ p^{T}_{n,k}`
   (`chowOfFlagH_eq_gammaTransform`, `augChowOfFlagH_eq_gammaTransform`,
@@ -151,15 +151,14 @@ poset `P` of rank `n` with `h`-vector `h`.  Position `i` of the paper is `i - 1`
 `desCount n k D` counts the permutations `w` of `n + 1` letters with `w 1 = k + 1` and
 descent set `D`.
 
-This predicate is the **documented combinatorial-model boundary** of this development: it is
-identity (1.3) of Hoster and Stump, *Chow polynomials of simplicial posets*
-(arXiv:2508.15538), a consequence of Stanley's work on flag `h`-vectors of simplicial posets.
-It is **not proved here** for posets, since graded simplicial posets and their flag
-`h`-vectors are not formalized.  Theorems taking `IsSimplicialFlagH n h β` as a hypothesis
-derive the real-rootedness and interlacing conclusions from the formalized interlacing
-diagrams (`isInterlacingDiagram_range`); the hypothesis only identifies `β` with a nonnegative
-combination of the permutation statistics `desCount`.  For the particular vector
-`flagHOfH n h` the identity holds by definition, see `isSimplicialFlagH_flagHOfH`. -/
+This is identity (1.3) of Hoster and Stump, *Chow polynomials of simplicial posets*
+(arXiv:2508.15538), after Stanley.  It is proved for every graded simplicial poset with a
+bottom element in `RealRooted.HosterStump.isSimplicialFlagH_flagH`
+(`RealRooted.HosterStump.PosetChow`), where `β` and `h` are the flag `h`-vector `flagH` and the
+`h`-vector `hVec`.  Theorems taking `IsSimplicialFlagH n h β` as a hypothesis derive the
+real-rootedness and interlacing conclusions from the formalized interlacing diagrams
+(`isInterlacingDiagram_range`); for the vector `flagHOfH n h` the identity holds by
+definition, see `isSimplicialFlagH_flagHOfH`. -/
 def IsSimplicialFlagH (n : ℕ) (h : ℕ → ℝ) (β : Finset ℕ → ℝ) : Prop :=
   ∀ S ⊆ Finset.range n,
     β S = ∑ k ∈ Finset.range (n + 1), h k * (desCount n k (reflectSet n S) : ℝ)
@@ -496,7 +495,7 @@ theorem isRealRooted_sum_refined_Icc {n : ℕ} {h : ℕ → ℝ} (hh : ∀ k, 0 
 
 /-- Hoster--Stump, Theorem 1.1 (Chow polynomial): for a flag `h`-vector `β` satisfying (1.3)
 with a nonnegative `h`-vector with `h 0 > 0`, the Chow polynomial `chowOfFlagH n β` is
-real-rooted.  The hypothesis `hβ` is the documented model boundary `IsSimplicialFlagH`. -/
+real-rooted.  For posets, `hβ` is `isSimplicialFlagH_flagH`. -/
 theorem isRealRooted_chowOfFlagH {n : ℕ} {h : ℕ → ℝ} {β : Finset ℕ → ℝ}
     (hh : ∀ k, 0 ≤ h k) (h0 : 0 < h 0) (hβ : IsSimplicialFlagH n h β) :
     chowOfFlagH n β ≠ 0 ∧ (chowOfFlagH n β).Splits := by
@@ -593,8 +592,8 @@ private theorem strictInterl_sum_refined_Icc_sum_refined_range_one {h : ℕ → 
 /-- Hoster--Stump, Theorem 1.2 (interlacing part): the roots of the Chow polynomial of the dual
 poset interlace the roots of the augmented Chow polynomial, that is,
 `chowOfFlagH n (dualFlagH n β) ≪ augChowOfFlagH n β` in the sense of `StrictInterl`
-(shared roots allowed).  The hypothesis `hβ` is the documented model boundary
-`IsSimplicialFlagH`.  Since `augChowOfFlagH n (dualFlagH n β) = augChowOfFlagH n β`
+(shared roots allowed).  For posets, `hβ` is `isSimplicialFlagH_flagH`.
+Since `augChowOfFlagH n (dualFlagH n β) = augChowOfFlagH n β`
 (`augChowOfFlagH_dualFlagH`), this is the paper's statement for `P̂^*`. -/
 theorem strictInterl_chowOfFlagH_dualFlagH_augChowOfFlagH {n : ℕ} (hn : 1 ≤ n) {h : ℕ → ℝ}
     {β : Finset ℕ → ℝ} (hh : ∀ k, 0 ≤ h k) (h0 : 0 < h 0) (hβ : IsSimplicialFlagH n h β) :

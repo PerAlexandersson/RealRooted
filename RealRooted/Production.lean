@@ -696,9 +696,16 @@ import RealRooted.HomogeneousComponentStability
 import RealRooted.HomogeneousOre
 import RealRooted.HomogeneousOreExamples
 import RealRooted.HomogeneousStability
+import RealRooted.HosterStump.BoolChains
 import RealRooted.HosterStump.Chow
+import RealRooted.HosterStump.DesMobius
+import RealRooted.HosterStump.DescentLe
 import RealRooted.HosterStump.Diagram
+import RealRooted.HosterStump.FlagF
+import RealRooted.HosterStump.HVector
 import RealRooted.HosterStump.Permutation
+import RealRooted.HosterStump.PosetBasic
+import RealRooted.HosterStump.PosetChow
 import RealRooted.HosterStump.Refined
 import RealRooted.HosterStump.Sequence
 import RealRooted.HosterStump.Step
