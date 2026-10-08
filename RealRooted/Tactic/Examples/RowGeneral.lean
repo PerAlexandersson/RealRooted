@@ -7,7 +7,8 @@ Regression tests for the fallback of the degree tactics to general linear recurr
 (`RealRooted.LinRec`: any order, mixed derivatives, top coefficients of either sign) and
 for `rr_row_splits` / `rr_row_interlaces` on half growth
 (`RealRooted.threeTermHalf_ne_zero_and_splits`), dropped rows, degree-bounded root windows,
-two-step products and derivative-lag recurrences, on OEIS rows drawn from `real-rooted-oeis-proofs`.
+two-step products, derivative-lag recurrences and residue subsequences, on OEIS rows drawn
+from `real-rooted-oeis-proofs`.
 -/
 
 open Polynomial
@@ -131,6 +132,34 @@ def A118884 : ℕ → ℝ[X]
   | n + 4 => 2 * A118884 (n + 3) + (-1 + X) * A118884 n
 
 theorem A118884_natDegree (n : ℕ) : (A118884 n).natDegree = n / 4 := by rr_row_natDegree
+
+/-- Only every other row is new: the even and odd rows are product sequences with the
+quadratic factor `1 + 3 X + X ^ 2` (A026386). -/
+def A026386 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 1 + 2 * X + X ^ 2
+  | n + 3 => (1 + X ^ 2 + 3 * X) * A026386 (n + 1)
+
+theorem A026386_splits (n : ℕ) : (A026386 n).Splits := by rr_row_splits
+
+/-- A derivative recurrence of lag two, split along the residues of `n` mod two (A321434). -/
+def A321434 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => (X + X ^ 2) * (A321434 n).derivative + X * A321434 n
+
+theorem A321434_splits (n : ℕ) : (A321434 n).Splits := by rr_row_splits
+
+/-- A three-term recurrence of lag two whose residue classes interlace (A171608). -/
+def A171608 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2
+  | 2 => 2 * X
+  | 3 => 3 * X
+  | n + 4 => (2 * X) * A171608 (n + 2) + (-1 * X ^ 2) * A171608 n
+
+theorem A171608_splits (n : ℕ) : (A171608 n).Splits := by rr_row_splits
 
 end
 
