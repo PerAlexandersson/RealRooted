@@ -90,6 +90,37 @@ def A188440 : ℕ → ℝ[X]
 
 theorem A188440_splits (n : ℕ) : (A188440 n).Splits := by rr_row_splits
 
+/-- Two equal-degree rows dropped before linear growth: degree `n - 1` (A271697). -/
+def A271697 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 0
+  | n + 2 => (C 1 * X + C (-1) * X ^ 2) * (A271697 (n + 1)).derivative +
+      (C (1 + (n : ℝ)) * X) * A271697 (n + 1) + (C (1 + (n : ℝ)) * X) * A271697 n
+
+theorem A271697_natDegree (n : ℕ) : (A271697 n).natDegree = n - 1 := by rr_row_natDegree
+
+/-- A negative multiplier with Fibonacci top coefficients, by a ratio invariant (A046741). -/
+def A046741 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 1 + 4 * X + 2 * X ^ 2
+  | n + 3 => (1 + 2 * X) * A046741 (n + 2) + X * A046741 (n + 1) + (-1 * X ^ 3) * A046741 n
+
+theorem A046741_natDegree (n : ℕ) : (A046741 n).natDegree = n := by rr_row_natDegree
+theorem A046741_leadingCoeff_pos (n : ℕ) : 0 < (A046741 n).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+/-- Top coefficients `n + 1`, with derivatives of both earlier rows (A065826). -/
+def A065826 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + 2 * X
+  | n + 2 => (C 1 * X + C (-1) * X ^ 2) * (A065826 (n + 1)).derivative +
+      (C (-3 + -1 * (n : ℝ)) * X ^ 2 + C (3 + (n : ℝ)) * X ^ 3) * (A065826 n).derivative +
+      (C 1 + C (4 + 2 * (n : ℝ)) * X) * A065826 (n + 1) +
+      (C (6 + -1 * (3 + (n : ℝ)) ^ 2 + 2 * (n : ℝ)) * X ^ 2) * A065826 n
+
+theorem A065826_natDegree (n : ℕ) : (A065826 n).natDegree = n := by rr_row_natDegree
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples
