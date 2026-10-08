@@ -6,8 +6,8 @@ import RealRooted.Tactic.RowInterlacing
 Regression tests for the fallback of the degree tactics to general linear recurrences
 (`RealRooted.LinRec`: any order, mixed derivatives, top coefficients of either sign) and
 for `rr_row_splits` / `rr_row_interlaces` on half growth
-(`RealRooted.threeTermHalf_ne_zero_and_splits`), dropped rows, degree-bounded root windows
-and two-step products, on OEIS rows drawn from `real-rooted-oeis-proofs`.
+(`RealRooted.threeTermHalf_ne_zero_and_splits`), dropped rows, degree-bounded root windows,
+two-step products and derivative-lag recurrences, on OEIS rows drawn from `real-rooted-oeis-proofs`.
 -/
 
 open Polynomial
@@ -139,6 +139,25 @@ def A118884 : ℕ → ℝ[X]
   | n + 4 => 2 * A118884 (n + 3) + (-1 + X) * A118884 n
 
 theorem A118884_natDegree (n : ℕ) : (A118884 n).natDegree = n / 4 := by rr_row_natDegree
+
+/-- A derivative-lag recurrence `P (n + 2) = U P (n + 1) + V P' (n + 1) + W P n` with
+`V ≤ 0`, `W < 0` on the negative axis (A144436). -/
+def A144436 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 => (C 1 * X + C (-1) * X ^ 2) * (A144436 (n + 1)).derivative +
+      (C 1 + C (2 + (n : ℝ)) * X) * A144436 (n + 1) + (C 4 * X) * A144436 n
+
+theorem A144436_splits (n : ℕ) : (A144436 n).Splits := by rr_row_splits
+
+/-- A derivative-lag recurrence with half growth (A008299). -/
+def A008299 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | n + 2 => (C 1 * X) * (A008299 (n + 1)).derivative + C 1 * A008299 (n + 1) +
+      (C (3 + (n : ℝ)) * X) * A008299 n
+
+theorem A008299_splits (n : ℕ) : (A008299 n).Splits := by rr_row_splits
 
 end
 
