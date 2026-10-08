@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **201 IDs**; **5 formalized**, **193 shells**, **3 fragments**, and **0 documented-only**.
+Current totals: **202 IDs**; **5 formalized**, **194 shells**, **3 fragments**, and **0 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -125,7 +125,7 @@ Current totals: **201 IDs**; **5 formalized**, **193 shells**, **3 fragments**, 
 | A119808 | `shell` | Half growth with `n`-dependent coefficients and degree `(n + 1) / 2` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A120434 | `shell` | Permutations by big descents: `v_n(t) = t(1 - t)` ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A122076 | `shell` | `/`: unit shifted-square lag, with centers `1` and `-1`.<br>`/`: expanded `B_n(t)=-1-2t-t^2`. | `rr_lw_negative_square_sequence_realrooted_unit`, `rr_sign` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
-| A122431 | `shell` | -style product exit, accepting the root-zero factor on the right. | `rr_product_root_zero_sequence` | `base`, `recurrence` | concrete row definition and proofs of the listed certificates |
+| A122431 | `shell` | -style product exit, accepting the root-zero factor on the right.<br>A product with a cubic first row ().<br>+3 additional test intents | `rr_product_root_zero_sequence`, `rr_row_splits` | `base`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A122542 | `shell` | OEIS shapes `///`: | `rr_lw_positive_t_auto` | `degree_lower`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A122848 | `shell` | OEIS shapes `/`: `P_n = (1+t)P_{n-1}+c_n t P_{n-2}`.<br>after reindexing, `P_{n+2}=tP_{n+1}+n t P_n`.<br>+1 additional test intents | `rr_lw_current_X_sequence`, `rr_lw_current_X_sequence_auto`, `rr_lw_positive_t` | `base`, `coeff_nonneg`, `degree_lower`, `degree_succ`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A124038 | `shell` | OEIS shape `/`: `P_{n+2}=tP_{n+1}-P_n`.<br>OEIS shapes `//`: real-rootedness consequence of<br>+1 additional test intents | `rr_favard_const`, `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
@@ -199,6 +199,7 @@ Current totals: **201 IDs**; **5 formalized**, **193 shells**, **3 fragments**, 
 | A271704 | `shell` | `/`: unsigned Lah LS4 shell plus the current row `(1+X)f+2Xf'+Xf''=f+(1+D)((X-1)f+Xf')`. | `rr_ls4_plus_current_sequence_expanded_auto` | `base_one`, `base_zero`, `outer`, `outer_pos_lc`, `outer_strictInterl`, `pos_lc`, `recurrence`, `tail` | concrete row definition and proofs of the listed certificates |
 | A271705 | `shell` | `/`: unsigned Lah LS4 shell plus the current row `(1+X)f+2Xf'+Xf''=f+(1+D)((X-1)f+Xf')`. | `rr_ls4_plus_current_sequence_expanded_auto` | `base_one`, `base_zero`, `outer`, `outer_pos_lc`, `outer_strictInterl`, `pos_lc`, `recurrence`, `tail` | concrete row definition and proofs of the listed certificates |
 | A272471 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
+| A272866 | `shell` | A product with a real-rooted quadratic factor ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A284861 | `shell` | same inner-window proof path, but with `3t(1+t)P'`. | `rr_mw_derivative_C_mul_X_one_add_X_sequence_realrooted_nonneg_auto` | `base`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `recurrence`, `root_lower` | concrete row definition and proofs of the listed certificates |
 | A285072 | `shell` | `P_m=(2-t)P_{m-1}-P_{m-2}`, another row-sign Favard case. | `rr_favard_const_row_sign_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
 | A286724 | `shell` | half-step Lah branch `(2+X)f+(4+4X)f'+4Xf''=(1/2+D)(2Xf+4Xf')`. | `rr_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `inner_degree_lower`, `inner_degree_upper`, `inner_pos_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonpos` | concrete row definition and proofs of the listed certificates |

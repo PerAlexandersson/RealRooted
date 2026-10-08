@@ -169,6 +169,20 @@ def A136394 : ℕ → ℝ[X]
 
 theorem A136394_splits (n : ℕ) : (A136394 n).Splits := by rr_row_splits
 
+/-- A product with a real-rooted quadratic factor (A272866). -/
+def A272866 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (1 + X ^ 2 + 3 * X) * A272866 n
+
+theorem A272866_splits (n : ℕ) : (A272866 n).Splits := by rr_row_splits
+
+/-- A product with a cubic first row (A122431). -/
+def A122431 : ℕ → ℝ[X]
+  | 0 => 1 + 3 * X + 3 * X ^ 2 + X ^ 3
+  | n + 1 => X * A122431 n
+
+theorem A122431_splits (n : ℕ) : (A122431 n).Splits := by rr_row_splits
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples

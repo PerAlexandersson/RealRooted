@@ -1111,6 +1111,18 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
     | .error e => failures := failures.push (m!"induction on the recurrence", e)
   throwRowFailures m!"rr_row_eval_zero_pos: no strategy proves the goal for {P}" failures
 
+/-- Close `∀ k, (q k).Splits` for explicit factors of degree at most two. -/
+private def factorSplitsTac : TacticM (TSyntax `tactic) :=
+  `(tactic| (
+    intro k
+    beta_reduce
+    first
+      | (refine Polynomial.Splits.of_natDegree_le_one ?_; compute_degree!; done)
+      | (refine RealRooted.splits_of_natDegree_eq_two_of_discrim_nonneg ?_ ?_
+         · compute_degree!
+         · simp [discrim, Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow,
+             Polynomial.coeff_C] <;> norm_num)))
+
 /-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
 `rr_row_interlaces`. -/
 elab "rr_row_splits" : tactic => withMainContext do
@@ -1122,11 +1134,30 @@ elab "rr_row_splits" : tactic => withMainContext do
   let r ← rowRecSetup "rr_row_splits"
   let P := mkIdent r.P
   if r.shape == .product then
-    let (_, t) ← alignRow r.P r.shift (smallRow P)
-    discard <| applyThenSideFull P (← `(tactic|
-      refine (RealRooted.productSequence_ne_zero_and_splits (P := $(← r.seq 0)) ?_ ?_ ?_
-        $(← r.hrecTerm 0) $t).2))
-    return
+    let viaLinear := do
+      let (_, t) ← alignRow r.P r.shift (smallRow P)
+      discard <| applyThenSideFull P (← `(tactic|
+        refine (RealRooted.productSequence_ne_zero_and_splits (P := $(← r.seq 0)) ?_ ?_ ?_
+          $(← r.hrecTerm 0) $t).2))
+    -- factors of degree two (or with coefficients whose leading term is hard to certify)
+    let viaFactors := do
+      let (_, t) ← alignRow r.P r.shift (smallRow P)
+      evalTactic (← `(tactic|
+        refine RealRooted.productSequence_splits (P := $(← r.seq 0))
+          (q := $(← certTerm r.coeffs[0]!)) $(← r.hrecTerm 0) ?_ ?_ $t))
+      let [hq, h0] ← getGoals | throwError "rr_row_splits: unexpected side goals"
+      setGoals [h0]
+      unless ← rowSucceeds (rowSideFull (some P)) do
+        evalTactic (← `(tactic| (simp only [$P:ident]; rr_splits_explicit)))
+      setGoals [hq]
+      evalTactic (← factorSplitsTac)
+      unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
+    let mut failures := #[]
+    for (what, tac) in [("linear factors", viaLinear), ("split factors", viaFactors)] do
+      match ← rowAttempt tac with
+      | .ok _ => return
+      | .error e => failures := failures.push (m!"{what}", e)
+    throwRowFailures m!"rr_row_splits: no strategy proves the goal for the product {P}" failures
   let (t, c) ← rowIndexParts r.P
   let e ← indexTerm t c
   -- `P t` is the right side of `Interlaces (P t) (P (t + 1))`; after splitting off `k` rows
@@ -1219,15 +1250,7 @@ elab "rr_row_splits" : tactic => withMainContext do
       setGoals [g]
       rowSideFull (some P)
     setGoals [hq]
-    evalTactic (← `(tactic| (
-      intro k
-      beta_reduce
-      first
-        | (refine Polynomial.Splits.of_natDegree_le_one ?_; compute_degree!)
-        | (refine RealRooted.splits_of_natDegree_eq_two_of_discrim_nonneg ?_ ?_
-           · compute_degree!
-           · simp [discrim, Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow,
-               Polynomial.coeff_C] <;> norm_num))))
+    evalTactic (← factorSplitsTac)
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
   let mut failures := #[]
   for (what, tac) in [("a two-step product", viaTwoStep),
