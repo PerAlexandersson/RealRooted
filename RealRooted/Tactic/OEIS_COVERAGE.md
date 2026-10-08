@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **212 IDs**; **5 formalized**, **204 shells**, **3 fragments**, and **0 documented-only**.
+Current totals: **213 IDs**; **5 formalized**, **205 shells**, **3 fragments**, and **0 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -138,6 +138,7 @@ Current totals: **212 IDs**; **5 formalized**, **204 shells**, **3 fragments**, 
 | A128099 | `shell` | positive-`X` lag with non-unit constant coefficient `2`. | `rr_strict_interl_pos_X_lag_coeff_sequence_realrooted_auto` | `base`, `current_coeff`, `lag_coeff`, `nonneg_coeffs`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A128966 | `shell` | A zero first row is split off; `h` excludes it ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_natDegree`, `rr_row_ne_zero` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A131689 | `shell` | Fubini polynomials: `v_n(t) = t(1 + t)` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A132812 | `shell` | found numerically and certified through its remainder ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A132885 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A133080 | `shell` | A two-step product with a double root `q = X ^ 2` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A136394 | `shell` | (`RealRooted.eval_mul_eval_nonneg_of_natDegree_le_one`) ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
