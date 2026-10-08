@@ -19,9 +19,11 @@ interval.  For `P (n + 1) = A n * (P n)' + B n * P n` this propagates:
 
 * `eval_pos_of_roots_le`, `neg_one_pow_mul_eval_pos_of_roots_ge`: signs beyond the roots.
 * `derivRec_roots_le_step`, `derivRec_roots_ge_step`: one step of the window.
-* `derivRec_interlaces_of_window`: the induction for any window predicate.
+* `derivRec_interlaces_of_windows`, `derivRec_interlaces_of_window`: the induction for
+  window predicates that may depend on the row, or not.
 * `derivRec_interlaces_of_roots_mem_Icc`, `derivRec_interlaces_of_roots_le`: the
-  windows `[L, U]` and `(-∞, U]`.
+  windows `[L, U]` and `(-∞, U]`; `derivRec_interlaces_of_roots_mem_Icc_mono`: the windows
+  `[L n, U]` with `L` nonincreasing.
 -/
 
 open Polynomial
@@ -125,19 +127,20 @@ section Sequence
 
 variable {P A B : ℕ → ℝ[X]} {D₀ : ℕ}
 
-/-- Interlacing from a root window `W`: `A n ≤ 0` on `W`, and the recurrence keeps
-the roots of every row in `W`. -/
-theorem derivRec_interlaces_of_window (W : ℝ → Prop)
+/-- Interlacing from root windows `W n` that may depend on the row: `A n ≤ 0` on `W n`, and
+the recurrence moves the roots of each row from `W n` into `W (n + 1)`. -/
+theorem derivRec_interlaces_of_windows (W : ℕ → ℝ → Prop)
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
-    (hA : ∀ n x, W x → (A n).eval x ≤ 0)
-    (hW : ∀ n, (P n).Splits → (∀ t ∈ (P n).roots, W t) → ∀ t ∈ (P (n + 1)).roots, W t)
-    (h0 : (P 0).Splits) (hW0 : ∀ t ∈ (P 0).roots, W t)
+    (hA : ∀ n x, W n x → (A n).eval x ≤ 0)
+    (hW : ∀ n, (P n).Splits → (∀ t ∈ (P n).roots, W n t) → ∀ t ∈ (P (n + 1)).roots,
+      W (n + 1) t)
+    (h0 : (P 0).Splits) (hW0 : ∀ t ∈ (P 0).roots, W 0 t)
     (h01 : D₀ = 0 → Interlaces (P 0) (P 1)) :
     ∀ n, Interlaces (P n) (P (n + 1)) := by
-  have hroot : ∀ n, (∀ t ∈ (P n).roots, W t) → ∀ r, (P n).IsRoot r → (A n).eval r ≤ 0 :=
+  have hroot : ∀ n, (∀ t ∈ (P n).roots, W n t) → ∀ r, (P n).IsRoot r → (A n).eval r ≤ 0 :=
     fun n hw r hr => hA n r (hw r ((mem_roots (leadingCoeff_ne_zero.mp (hpos n).ne')).mpr hr))
-  have key : ∀ n, (P n).Splits ∧ (∀ t ∈ (P n).roots, W t) ∧ Interlaces (P n) (P (n + 1)) := by
+  have key : ∀ n, (P n).Splits ∧ (∀ t ∈ (P n).roots, W n t) ∧ Interlaces (P n) (P (n + 1)) := by
     intro n
     induction n with
     | zero =>
@@ -151,6 +154,18 @@ theorem derivRec_interlaces_of_window (W : ℝ → Prop)
         exact ⟨hi.1.2, hw', derivRec_interlaces_step hrec hdeg hpos (n + 1)
           (hroot (n + 1) hw') hi.1.2 (by lia)⟩
   exact fun n => (key n).2.2
+
+/-- Interlacing from a root window `W`: `A n ≤ 0` on `W`, and the recurrence keeps
+the roots of every row in `W`. -/
+theorem derivRec_interlaces_of_window (W : ℝ → Prop)
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hA : ∀ n x, W x → (A n).eval x ≤ 0)
+    (hW : ∀ n, (P n).Splits → (∀ t ∈ (P n).roots, W t) → ∀ t ∈ (P (n + 1)).roots, W t)
+    (h0 : (P 0).Splits) (hW0 : ∀ t ∈ (P 0).roots, W t)
+    (h01 : D₀ = 0 → Interlaces (P 0) (P 1)) :
+    ∀ n, Interlaces (P n) (P (n + 1)) :=
+  derivRec_interlaces_of_windows (fun _ => W) hrec hdeg hpos hA hW h0 hW0 h01
 
 /-- Roots in `[L, U]`: `A n ≤ 0` on `[L, U]`; beyond the window `A n ≥ 0`,
 with `B n > 0` above and `B n < 0` below. -/
@@ -182,6 +197,28 @@ theorem derivRec_interlaces_of_roots_le {U : ℝ}
     Interlaces (P n) (P (n + 1)) :=
   derivRec_interlaces_of_window (fun x => x ≤ U) hrec hdeg hpos hA
     (fun n hs hw => derivRec_roots_le_step (hrec n) hs (hpos n) hw (hAU n) (hBU n))
+    h0 hW0 h01 n
+
+/-- Roots in `[L n, U]` with a nonincreasing lower bound `L`: `A n ≤ 0` on `[L n, U]`, and the
+plain sign conditions beyond `U` and below `L (n + 1)`. -/
+theorem derivRec_interlaces_of_roots_mem_Icc_mono {L : ℕ → ℝ} {U : ℝ}
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hL : ∀ n, L (n + 1) ≤ L n)
+    (hA : ∀ n x, L n ≤ x → x ≤ U → (A n).eval x ≤ 0)
+    (hAU : ∀ n x, U < x → 0 ≤ (A n).eval x) (hBU : ∀ n x, U < x → 0 < (B n).eval x)
+    (hAL : ∀ n x, x < L (n + 1) → 0 ≤ (A n).eval x)
+    (hBL : ∀ n x, x < L (n + 1) → (B n).eval x < 0)
+    (h0 : (P 0).Splits) (hW0 : ∀ t ∈ (P 0).roots, L 0 ≤ t ∧ t ≤ U)
+    (h01 : D₀ = 0 → Interlaces (P 0) (P 1)) (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) :=
+  derivRec_interlaces_of_windows (fun n x => L n ≤ x ∧ x ≤ U) hrec hdeg hpos
+    (fun n x hx => hA n x hx.1 hx.2)
+    (fun n hs hw t ht =>
+      ⟨derivRec_roots_ge_step (hrec n) hs (hpos n) (fun t ht => (hL n).trans (hw t ht).1)
+          (hAL n) (hBL n) t ht,
+        derivRec_roots_le_step (hrec n) hs (hpos n) (fun t ht => (hw t ht).2) (hAU n) (hBU n)
+          t ht⟩)
     h0 hW0 h01 n
 
 end Sequence
@@ -423,10 +460,12 @@ it suffices that `B (x - U) + min A 0 * deg f > 0`.
 
 * `derivative_eval_mul_sub_le_of_roots_le`, `derivative_eval_mul_sub_le_of_roots_ge`:
   the bounds `f' (x) (x - U) ≤ deg f * f x` and the mirrored one below `L`.
-* `derivRec_roots_le_step_of_degree`, `derivRec_roots_ge_step_of_degree`: one step.
+* `derivRec_roots_le_step_of_degree`, `derivRec_roots_ge_step_of_degree`: one step;
+  `derivRec_roots_le_step_of_or`: either condition, chosen pointwise.
 * `derivRec_interlaces_of_roots_le_of_degree`, `derivRec_interlaces_of_roots_ge_of_degree`,
   `derivRec_interlaces_of_roots_mem_Icc_of_degree`: the induction for the windows
-  `(-∞, U]`, `[L, ∞)` and `[L, U]`.
+  `(-∞, U]`, `[L, ∞)` and `[L, U]`; `derivRec_interlaces_of_roots_le_mono`: the windows
+  `(-∞, U n]` with `U` nondecreasing.
 -/
 
 open Polynomial
@@ -500,6 +539,30 @@ theorem derivRec_roots_le_step_of_degree (hF : F = A * f.derivative + B * f)
     nlinarith [mul_nonneg (neg_nonneg.mpr h) (sub_nonneg.mpr hb), mul_pos hf hab]
   · rw [min_eq_right h] at hab
     nlinarith [mul_nonneg (mul_nonneg h hf') hsub.le, mul_pos hf hab]
+
+/-- Roots stay at most `U` when, at each point beyond `U`, either `A ≥ 0` and `B > 0`, or
+`B (x - U) + min A 0 * deg f > 0`. -/
+theorem derivRec_roots_le_step_of_or (hF : F = A * f.derivative + B * f)
+    (hs : f.Splits) (hpos : 0 < f.leadingCoeff) (hU : ∀ t ∈ f.roots, t ≤ U)
+    (hAB : ∀ x, U < x → (0 ≤ A.eval x ∧ 0 < B.eval x) ∨
+      0 < B.eval x * (x - U) + min (A.eval x) 0 * f.natDegree) :
+    ∀ t ∈ F.roots, t ≤ U := by
+  intro t ht
+  refine le_of_not_gt fun hlt => ?_
+  have h0 : F.eval t = 0 := isRoot_of_mem_roots ht
+  rw [hF, eval_add, eval_mul, eval_mul] at h0
+  have hf := eval_pos_of_roots_le hs hpos hU hlt
+  have hf' := derivative_eval_nonneg_of_roots_le hs hpos hU hlt
+  rcases hAB t hlt with ⟨hA, hB⟩ | hab
+  · nlinarith [mul_nonneg hA hf', mul_pos hB hf]
+  · have hb := derivative_eval_mul_sub_le_of_roots_le hs hpos hU hlt
+    have hd : (0 : ℝ) ≤ f.natDegree := Nat.cast_nonneg _
+    have hsub : 0 < t - U := by linarith
+    rcases le_total (A.eval t) 0 with h | h
+    · rw [min_eq_left h] at hab
+      nlinarith [mul_nonneg (neg_nonneg.mpr h) (sub_nonneg.mpr hb), mul_pos hf hab]
+    · rw [min_eq_right h] at hab
+      nlinarith [mul_nonneg (mul_nonneg h hf') hsub.le, mul_pos hf hab]
 
 /-- Roots stay at least `L` when `B (x - L) + min A 0 * deg f > 0` below `L`. -/
 theorem derivRec_roots_ge_step_of_degree (hF : F = A * f.derivative + B * f)
@@ -578,6 +641,25 @@ theorem derivRec_interlaces_of_roots_mem_Icc_of_degree {L U : ℝ}
           (fun x hx => by simpa [hdeg n] using hABL n x hx) t ht,
         derivRec_roots_le_step_of_degree (hrec n) hs (hpos n) (fun t ht => (hw t ht).2)
           (fun x hx => by simpa [hdeg n] using hABU n x hx) t ht⟩)
+    h0 hW0 h01 n
+
+/-- Roots at most `U n` with a nondecreasing bound `U`: `A n ≤ 0` up to `U n`, and beyond
+`U (n + 1)` at each point either the plain conditions `A n ≥ 0`, `B n > 0` or the
+degree-bounded one. -/
+theorem derivRec_interlaces_of_roots_le_mono {U : ℕ → ℝ}
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hU : ∀ n, U n ≤ U (n + 1))
+    (hA : ∀ n x, x ≤ U n → (A n).eval x ≤ 0)
+    (hAB : ∀ n x, U (n + 1) < x → (0 ≤ (A n).eval x ∧ 0 < (B n).eval x) ∨
+      0 < (B n).eval x * (x - U (n + 1)) + min ((A n).eval x) 0 * (D₀ + n))
+    (h0 : (P 0).Splits) (hW0 : ∀ t ∈ (P 0).roots, t ≤ U 0)
+    (h01 : D₀ = 0 → Interlaces (P 0) (P 1)) (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) :=
+  derivRec_interlaces_of_windows (fun n x => x ≤ U n) hrec hdeg hpos hA
+    (fun n hs hw => derivRec_roots_le_step_of_or (hrec n) hs (hpos n)
+      (fun t ht => (hw t ht).trans (hU n))
+      fun x hx => by simpa [hdeg n] using hAB n x hx)
     h0 hW0 h01 n
 
 end Sequence
