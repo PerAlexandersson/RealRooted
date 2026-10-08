@@ -350,6 +350,7 @@ import RealRooted.Challenges.BigDescents321
 import RealRooted.Challenges.BigDescents321
 import RealRooted.Challenges.BinaryRunTransformation
 import RealRooted.Challenges.BorceaBranden
+import RealRooted.Challenges.BorosMoll
 import RealRooted.Challenges.BrandenETransform
 import RealRooted.Challenges.BrandenETransform
 import RealRooted.Challenges.BrandenLeite
@@ -565,6 +566,9 @@ import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.Literals
 import RealRooted.CombinatorialExamples.BigDescents321.TopCoefficients
 import RealRooted.CombinatorialExamples.BigDescents321.TopCoefficients
 import RealRooted.CombinatorialExamples.BigDescentsOddBinom
+import RealRooted.CombinatorialExamples.BorosMoll
+import RealRooted.CombinatorialExamples.BorosMoll.Basic
+import RealRooted.CombinatorialExamples.BorosMoll.Estimates
 import RealRooted.CombinatorialExamples.ColoredSetPartitions
 import RealRooted.CombinatorialExamples.Common
 import RealRooted.CombinatorialExamples.DerangementsExcNormal
