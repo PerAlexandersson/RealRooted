@@ -1422,6 +1422,7 @@ import RealRooted.Tactic.RootCount.LowDegree
 import RealRooted.Tactic.RootCount.LowDegreeRules
 import RealRooted.Tactic.RootCount.LowDegreeSyntax
 import RealRooted.Tactic.RootCount.SequenceCore
+import RealRooted.Tactic.RowClosedForm
 import RealRooted.Tactic.RowInterlacing
 import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.SecondDerivative
