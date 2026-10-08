@@ -37,8 +37,8 @@ private def evAt (e : Rat × Rat × Rat) (n : Nat) : Rat :=
   e.1 + e.2.1 * n + e.2.2 * n * n
 
 /-- Search for an eigen-ODE of a second-order recurrence, from its first `k + 1` rows. -/
-def eigenODE? (P : Name) (k : Nat := 7) : MetaM (Option EigenODE) := do
-  let some (base, A, B, C) ← derivRec₂Data? P | return none
+def eigenODE? (P : Name) (k : Nat := 7) (shift : Nat := 0) : MetaM (Option EigenODE) := do
+  let some (base, A, B, C) ← derivRec₂Data? P shift | return none
   let some (rows, cs) ← derivRec₂Rows? base A B C k | return none
   let some (a, b, _) := cs[0]? | return none
   unless cs.all (fun t => t.1 == a && t.2.1 == b) do return none
@@ -175,11 +175,14 @@ def eigenODEProof (P : Ident) (o : EigenODE) : TacticM Term := do
 
 /-- The collapsed first-order recurrence
 `∀ n, P (n + 1) = (B - β) * (P n)' + (C n + C (ev n)) * P n`, as a term. -/
-def eigenODEFirstOrder (P : Ident) (o : EigenODE) : TacticM Term := do
+def eigenODEFirstOrder (P : Ident) (o : EigenODE) (shift : Nat := 0) : TacticM Term := do
   let nId := mkIdent `n
-  `(RealRooted.derivRec₂_firstOrder (P := $P) (β := $(← qpolyTerm o.β))
+  let mId := mkIdent `m
+  let Q ← if shift == 0 then pure (P : Term)
+    else `(fun $mId:ident => $P ($mId + $(Syntax.mkNumLit (toString shift))))
+  `(RealRooted.derivRec₂_firstOrder (P := $Q) (β := $(← qpolyTerm o.β))
       (ev := fun $nId:ident : ℕ => $(← evTerm o.ev nId)) (W := fun _ => $(← qpolyTerm o.W))
-      (fun _ => rfl) (by simp only [$P:ident]; rr_poly_identity)
+      (fun _ => rfl) (by beta_reduce; simp only [Nat.zero_add, $P:ident]; rr_poly_identity)
       (by rr_poly_identity) (by rr_poly_identity) (by rr_poly_identity))
 
 /-- The ODE statement `∀ n, A * (P n)'' + β * (P n)' = C (ev n) * P n`. -/
