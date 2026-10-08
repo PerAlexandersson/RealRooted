@@ -510,6 +510,9 @@ import RealRooted.CoefficientDominance.Symmetric.Upper
 import RealRooted.CoefficientShape
 import RealRooted.CoefficientShape.Hoggar
 import RealRooted.CoefficientShape.Liggett
+import RealRooted.CoefficientShape.LiuMao
+import RealRooted.CoefficientShape.LiuMao.Elevation
+import RealRooted.CoefficientShape.LiuMao.PathKernel
 import RealRooted.CombinatorialExamples
 import RealRooted.CombinatorialExamples.BigDescents321
 import RealRooted.CombinatorialExamples.BigDescents321
