@@ -72,4 +72,27 @@ theorem natDegree_add_C_mul_eq_left_of_natDegree_le_of_coeff_add_ne_zero
       simpa [coeff_add, coeff_C_mul] using hzero
     exact hsum_zero
 
+/-- The coefficient of `p * q` one below the sum of degree bounds `a + 1`, `b + 1`: only the
+two top pairs contribute. -/
+theorem coeff_mul_add_add_one_eq_of_natDegree_le {R : Type*} [Semiring R] {p q : R[X]}
+    {a b : ℕ} (hp : p.natDegree ≤ a + 1) (hq : q.natDegree ≤ b + 1) :
+    (p * q).coeff (a + b + 1) = p.coeff (a + 1) * q.coeff b + p.coeff a * q.coeff (b + 1) := by
+  rw [coeff_mul, Finset.sum_eq_add (a + 1, b) (a, b + 1)]
+  · simp
+  · rintro ⟨i, j⟩ hx hne
+    rw [Finset.mem_antidiagonal] at hx
+    simp only at hx
+    by_cases hi : a + 1 < i
+    · simp [coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hi)]
+    · by_cases hj : b + 1 < j
+      · simp [coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hq hj)]
+      · exfalso
+        obtain ⟨h1, h2⟩ := hne
+        have : i = a + 1 ∨ i = a := by lia
+        rcases this with rfl | rfl
+        · exact h1 (by simp; lia)
+        · exact h2 (by simp; lia)
+  · intro h; exact absurd (by simp; lia) h
+  · intro h; exact absurd (by simp; lia) h
+
 end Polynomial
