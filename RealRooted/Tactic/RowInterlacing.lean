@@ -194,6 +194,9 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
           rr_row_natDegree)))
       -- a failed search for an equality is slow, so try the bound first on `≤` goals
       if ty.getForallBody.isAppOf ``LE.le then [le, leSub, eq] else [eq, le]
+    else if ty.isForall && mentionsP && has ``Polynomial.leadingCoeff &&
+        ty.getForallBody.isAppOf ``LE.le then
+      [do evalTactic (← `(tactic| (intro n; beta_reduce; rr_row_leadingCoeff_ratio)))]
     else if ty.isForall && mentionsP && has ``Polynomial.leadingCoeff then
       [do evalTactic (← `(tactic| (intro n; rr_row_leadingCoeff_pos)))]
     else if has ``RealRooted.Interlaces then
@@ -240,6 +243,16 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
         withP fun P => [do evalTactic (← `(tactic| (norm_num [$P:ident]; done)))]
       else []) ++
       [do evalTactic (← `(tactic| rr_row_eval_sign)),
+       -- signs beyond a window edge `U < x`
+       do evalTactic (← `(tactic| (
+          intro k x hx
+          simp only [Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
+            Polynomial.eval_neg, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
+            Polynomial.eval_one, Polynomial.eval_ofNat]
+          push_cast
+          nlinarith [sub_pos.mpr hx, mul_pos (sub_pos.mpr hx) (sub_pos.mpr hx), sq_nonneg x,
+            (Nat.cast_nonneg k : (0 : ℝ) ≤ k),
+            mul_nonneg (Nat.cast_nonneg k : (0 : ℝ) ≤ k) (sub_pos.mpr hx).le]))),
        do evalTactic (← `(tactic| apply RealRooted.eval_nonpos_seq)); side,
        do evalTactic (← `(tactic| apply RealRooted.eval_nonpos_of_nonpos_seq)); side]
     else if has ``RealRooted.HasNonnegCoeffs then
@@ -485,6 +498,31 @@ private def rowInterlacesCoreAt (hints : RowHints) (k : Nat) : TacticM (Cert × 
           return (pre.push tac,
             { thm := some degWin, degree := some D₀, upper := some U, drop := dropHint k })
       | .error e => failures := failures.push (m!"{degWin} on (-∞, {U}]", e)
+  -- three-term recurrences: roots in `(-∞, U]` with `b n` allowed to be positive beyond `U`,
+  -- controlled by the growth of the leading coefficients
+  -- (`RealRooted.threeTerm_interlaces_of_roots_le_of_ratio` with `ρ = 1`)
+  let ratioWin := ``RealRooted.threeTerm_interlaces_of_roots_le_of_ratio
+  if shape == .lag && hints.window.isNone &&
+      (hints.thm.isNone || hints.thm == some ratioWin) then
+    let us ← match hints.upper with
+      | some u => pure [u]
+      | none => ["0", "-1"].mapM fun r => do
+          let some t := (Parser.runParserCategory (← getEnv) `term r).toOption
+            | throwError "rr_row_interlaces: bad window {r}"
+          return (⟨t⟩ : Term)
+    let ρs ← ["1", "2"].mapM fun r => do
+      let some t := (Parser.runParserCategory (← getEnv) `term r).toOption
+        | throwError "rr_row_interlaces: bad ratio {r}"
+      return (⟨t⟩ : Term)
+    for U in us do
+      for ρ in ρs do
+        let main ← apply' ratioWin #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ))),
+          ← `(Lean.Parser.Term.namedArgument| (ρ := fun _ => ($ρ : ℝ)))]
+        match ← rowAttempt (applyThenSideFull P main) with
+        | .ok tac =>
+            return (pre.push tac,
+              { thm := some ratioWin, degree := some D₀, upper := some U, drop := dropHint k })
+        | .error e => failures := failures.push (m!"{ratioWin} on (-∞, {U}], ρ = {ρ}", e)
   throwRowFailures m!"rr_row_interlaces: no strategy proves the goal for the \
     {shape.describe} recurrence of {P} (base degree {D₀}, dropping {k} rows)" failures
 

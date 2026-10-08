@@ -311,6 +311,11 @@ private def rowThms (shape : RecShape) (kind : String) : List (Name × Option St
   | .deriv₂, "natDegree_leadingCoeff_pos" =>
       [(``RealRooted.derivRec₂_natDegree_eq_and_leadingCoeff_pos, none)]
   | .deriv₂, _ => [(``RealRooted.derivRec₂_leadingCoeff_pos, none)]
+  | .lag, "leadingCoeff_ratio" | .lagLeft, "leadingCoeff_ratio" |
+      .lagRight, "leadingCoeff_ratio" =>
+      ["1", "2", "1 / 2", "3", "4"].map fun r =>
+        (``RealRooted.threeTermRatio_mul_leadingCoeff_le, some r)
+  | _, "leadingCoeff_ratio" => []
   | .lag, k | .lagLeft, k | .lagRight, k =>
       let (pos, ratio) := match k with
         | "natDegree" =>
@@ -446,7 +451,7 @@ private def rowDriver (r : RowRec) (kind : String) (hints : RowHints)
         break
     -- half growth: `a n` constant, the degree grows by `d` every second step
     if r.shape.isLag && hints.ratio.isNone && hints.thm.isNone &&
-        kind != "natDegree_leadingCoeff_pos" then
+        kind != "natDegree_leadingCoeff_pos" && kind != "leadingCoeff_ratio" then
       for d in hints.growth.map ([·]) |>.getD [1, 2, 3] do
         unless ← degreeFits Q (← halfThmApply r k "ne_zero" d D₀ 0) nDeg do continue
         fitted := true
@@ -1615,7 +1620,14 @@ private def rowDegreeShapeCore (kind : String) (hints : RowHints) :
     | "natDegree_leadingCoeff_pos" => `(tactic|
         refine (?_ : ($Q $t).natDegree = $deg ∧ 0 < ($Q $t).leadingCoeff).imp_left
           fun h => h.trans (by lia))
+    | "leadingCoeff_ratio" => `(tactic|
+        change _ * ($Q $t).leadingCoeff ≤ ($Q ($t + 1)).leadingCoeff)
     | _ => `(tactic| change 0 < ($Q $t).leadingCoeff)
+
+/-- `rr_row_leadingCoeff_ratio` closes `ρ * (P t).leadingCoeff ≤ (P (t + 1)).leadingCoeff`
+(`ρ ∈ {1, 2, 1/2, 3, 4}`) for a three-term recurrence whose top coefficients satisfy the ratio
+invariant of `RealRooted.threeTermRatio_mul_leadingCoeff_le`. -/
+syntax (name := rrRowLeadingCoeffRatio) "rr_row_leadingCoeff_ratio" : tactic
 
 /-- The degree tactics, returning a certificate and the hinted call: the recurrence shapes
 of `RecShape` first, then, without hints, general linear recurrences (`linRecRow`). -/
@@ -1625,7 +1637,7 @@ private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × 
   | .error e =>
       let noHints := hints.thm.isNone && hints.degree.isNone && hints.growth.isNone &&
         hints.drop.isNone && hints.ratio.isNone && hints.half.isNone
-      unless noHints do throwError e
+      unless noHints && kind != "leadingCoeff_ratio" do throwError e
       match ← rowAttempt (linRecRow kind) with
       | .ok cert => return (cert, {})
       | .error e' => throwError "{e}\n\nAs a general linear recurrence: {e'}"
@@ -1653,6 +1665,7 @@ elab_rules : tactic
   | `(tactic| rr_row_leadingCoeff_pos $hs*) => rowDegreeElab "leadingCoeff_pos" none hs
   | `(tactic| rr_row_leadingCoeff_pos?%$tk $hs*) =>
       rowDegreeElab "leadingCoeff_pos" (some tk) hs
+  | `(tactic| rr_row_leadingCoeff_ratio) => rowDegreeElab "leadingCoeff_ratio" none #[]
   | `(tactic| rr_row_natDegree_leadingCoeff_pos $hs*) =>
       rowDegreeElab "natDegree_leadingCoeff_pos" none hs
   | `(tactic| rr_row_natDegree_leadingCoeff_pos?%$tk $hs*) =>

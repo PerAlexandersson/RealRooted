@@ -232,6 +232,23 @@ theorem threeTermRatio_leadingCoeff_pos
     0 < (P n).leadingCoeff :=
   (threeTermRatio_natDegree_eq_and_leadingCoeff_pos hrec ha hb h0 h1 hc0 hρ hc1 hβ hαβ n).2
 
+/-- Under the hypotheses of `threeTermRatio_natDegree`, consecutive leading coefficients grow
+at least by the factor `ρ`. -/
+theorem threeTermRatio_mul_leadingCoeff_le
+    (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
+    (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d)
+    (hc0 : 0 < (P 0).coeff D₀) (hρ : 0 < ρ) (hc1 : ρ * (P 0).coeff D₀ ≤ (P 1).coeff (D₀ + d))
+    (hβ : ∀ n, (b n).coeff (2 * d) ≤ 0)
+    (hαβ : ∀ n, ρ ^ 2 ≤ ρ * (a n).coeff d + (b n).coeff (2 * d)) (n : ℕ) :
+    ρ * (P n).leadingCoeff ≤ (P (n + 1)).leadingCoeff := by
+  obtain ⟨-, -, hR⟩ := twoStep_top_of_invariant (threeTerm_step hrec ha hb) h0 h1
+    (fun x y => 0 < x ∧ ρ * x ≤ y) ⟨hc0, hc1⟩ (ratio_invariant hρ hβ hαβ) n
+  have hd0 := threeTermRatio_natDegree hrec ha hb h0 h1 hc0 hρ hc1 hβ hαβ n
+  have hd1 := threeTermRatio_natDegree hrec ha hb h0 h1 hc0 hρ hc1 hβ hαβ (n + 1)
+  rw [leadingCoeff, leadingCoeff, hd0, hd1]
+  exact hR.2
+
 theorem threeTermRatio_ne_zero (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (ha : ∀ n, (a n).natDegree ≤ d) (hb : ∀ n, (b n).natDegree ≤ 2 * d)
     (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d)
