@@ -115,6 +115,14 @@ open Polynomial
 
 namespace RealRooted
 
+/-- Rows of a product sequence `P (n + 1) = q n * P n` split when every factor and the first row
+split (no degree condition on the factors). -/
+theorem productSequence_splits {P q : ℕ → ℝ[X]} (hrec : ∀ n, P (n + 1) = q n * P n)
+    (hq : ∀ n, (q n).Splits) (h0 : (P 0).Splits) (n : ℕ) : (P n).Splits := by
+  induction n with
+  | zero => exact h0
+  | succ n ih => rw [hrec]; exact (hq n).mul ih
+
 /-- Rows of a two-step product recurrence `P (n + 2) = q n * P n` split when `P 0`, `P 1`
 and every factor `q n` split. -/
 theorem twoStepProduct_splits {P q : ℕ → ℝ[X]} (hrec : ∀ n, P (n + 2) = q n * P n)
