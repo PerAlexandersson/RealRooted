@@ -343,6 +343,11 @@ private def smallRow (P : Ident) : TacticM (TSyntax `tactic) := do
 /-- The hint `(drop := k)` for dropping `k` rows; none for `k = 0`. -/
 private def dropHint (k : Nat) : Option Nat := if k == 0 then none else some k
 
+/-- Degree searches that failed in this run, keyed by the sequence, a hash of its definition,
+the first row and the base degree: the strategies of one `rr_row_splits` call ask for the
+same degree law several times, and a failed search is the most expensive step. -/
+initialize rowDegreeFailures : IO.Ref (Array (Name × UInt64 × Nat × Nat)) ← IO.mkRef #[]
+
 /-- `rr_row_interlaces` for the sequence `m ↦ P (m + k)` (after `k` further rows), returning
 a certificate and the hinted call.  `given` supplies the recurrence and a proof of it when it
 is not read off the definition. -/
@@ -431,8 +436,25 @@ private def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
       obtain ⟨$hdegI:ident, $hposI:ident⟩ :
           (∀ $nI:ident, ($Q $nI).natDegree = $Dq + $nI) ∧ ∀ $nI:ident, 0 < ($Q $nI).leadingCoeff :=
         forall_and.mp rr_row_natDegree_leadingCoeff_pos_all)
-  let hoisted ← rowSucceeds (withMainContext (evalTactic shared))
+  let defHash := ((← getConstInfo r.P).value?.map (·.hash)).getD 0
+  let key := (r.P, defHash, r.shift + k, D₀)
+  if (← rowDegreeFailures.get).contains key then
+    throwError "rr_row_interlaces: the degrees `{D₀} + n` or the positive leading coefficients \
+      of {P} could not be proved (an earlier search failed)"
+  let mut hoisted ← rowSucceeds (withMainContext (evalTactic shared))
+  -- the two hypotheses separately, before every theorem below asks for them again
+  let separate ← `(tactic|
+      obtain ⟨$hdegI:ident, $hposI:ident⟩ :
+          (∀ $nI:ident, ($Q $nI).natDegree = $Dq + $nI) ∧ ∀ $nI:ident, 0 < ($Q $nI).leadingCoeff :=
+        ⟨rr_row_natDegree_all, rr_row_leadingCoeff_pos_all⟩)
   if hoisted then pre := pre.push shared
+  else if ← rowSucceeds (withMainContext (evalTactic separate)) then
+    hoisted := true
+    pre := pre.push separate
+  else
+    rowDegreeFailures.modify (·.push key)
+    throwError "rr_row_interlaces: could not prove the degrees `{D₀} + n` and the positive \
+      leading coefficients of {P}; every interlacing theorem needs them"
   let apply' (thm : Name) (extra : Array (TSyntax `Lean.Parser.Term.namedArgument)) :
       TacticM (TSyntax `tactic) := do
     let hd ← `(Lean.Parser.Term.namedArgument| (hdeg := $hdegI))
