@@ -1368,8 +1368,14 @@ private def linRecSidesRatio (P : Ident) (rows : Array QPoly) (k m : Nat) (gs : 
       evalTactic (← `(tactic| have $hj:ident := hx $(rowNumLit j) (by norm_num)))
       hints := hints.push (← `($hj))
       hints := hints.push (← `(mul_nonneg (Nat.cast_nonneg n) (sub_nonneg.2 $hj)))
+      -- the same products in the context, for `rr_row_field` after clearing denominators
+      let hp := mkIdent (Name.mkSimple s!"hxxn{j}")
+      evalTactic (← `(tactic|
+        have $hp:ident := mul_nonneg (Nat.cast_nonneg n) (sub_nonneg.2 $hj)))
+    evalTactic (← `(tactic| have hxx0n := mul_nonneg (Nat.cast_nonneg n) hx0.le))
+    -- multipliers rational in `n`: clear the denominators first
     evalTactic (← `(tactic| ($coeff:tactic <;> (first | norm_num | skip) <;>
-      first | linarith | nlinarith [$hints,*])))
+      first | linarith | nlinarith [$hints,*] | rr_row_field)))
 
 /-- The side goal `hD : ∀ n j, j < k → D (n + j) ≤ D (n + k)` of a periodic degree law. -/
 private def linRecSideMono (hD : MVarId) : TacticM Unit :=
