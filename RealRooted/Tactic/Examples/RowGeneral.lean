@@ -5,9 +5,9 @@ import RealRooted.Tactic.RowInterlacing
 
 Regression tests for the fallback of the degree tactics to general linear recurrences
 (`RealRooted.LinRec`: any order, mixed derivatives, top coefficients of either sign) and
-for half-growth splitting in `rr_row_splits`
-(`RealRooted.threeTermHalf_ne_zero_and_splits`) and interlacing after a dropped row, on
-OEIS rows drawn from `real-rooted-oeis-proofs`.
+for `rr_row_splits` / `rr_row_interlaces` on half growth
+(`RealRooted.threeTermHalf_ne_zero_and_splits`), dropped rows, degree-bounded root windows
+and two-step products, on OEIS rows drawn from `real-rooted-oeis-proofs`.
 -/
 
 open Polynomial
@@ -71,6 +71,24 @@ def A163936 : ℕ → ℝ[X]
       (C (1 + (n : ℝ)) + C (n : ℝ) * X) * A163936 n
 
 theorem A163936_splits (n : ℕ) : (A163936 n).Splits := by rr_row_splits
+
+/-- `A n = -X (1 + X)` is negative beyond the root window `(-∞, -1]`; the degree bound
+`B (x + 1) + min A 0 * deg > 0` replaces `A ≥ 0` there (A090582). -/
+def A090582 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (C (-1) * X + C (-1) * X ^ 2) * (A090582 n).derivative +
+      (C (2 + (n : ℝ)) + C (1 + (n : ℝ)) * X) * A090582 n
+
+theorem A090582_interlaces (n : ℕ) : Interlaces (A090582 n) (A090582 (n + 1)) := by
+  rr_row_interlaces
+
+/-- A two-step product `P (n + 2) = (1 + 2 X) P n` (A188440). -/
+def A188440 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | n + 2 => (1 + 2 * X) * A188440 n
+
+theorem A188440_splits (n : ℕ) : (A188440 n).Splits := by rr_row_splits
 
 /-- Two equal-degree rows dropped before linear growth: degree `n - 1` (A271697). -/
 def A271697 : ℕ → ℝ[X]
