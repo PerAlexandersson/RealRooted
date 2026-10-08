@@ -131,17 +131,21 @@ partial def evalQPoly? (e : Expr) : MetaM (Option QPoly) := do
   | (``One.one, _) => return some (QPoly.const 1)
   | _ => return none
 
-/-- For `P (n + 1) = A * (P n)'' + B * (P n)' + C * P n`, the base row `P 0` and the
-coefficients `A`, `B`, `C` as functions of `n`. -/
-def derivRec₂Data? (P : Name) : MetaM (Option (Expr × Expr × Expr × Expr)) := do
+/-- For `P (n + s + 1) = A * (P (n + s))'' + B * (P (n + s))' + C * P (n + s)`, the base row
+`P s` and the coefficients `A`, `B`, `C` as functions of `n`. -/
+def derivRec₂Data? (P : Name) (shift : Nat := 0) :
+    MetaM (Option (Expr × Expr × Expr × Expr)) := do
   let some eqns ← getEqnsFor? P | return none
   let mut base : Option Expr := none
   let mut coeffs : Option (Expr × Expr × Expr) := none
   for eqn in eqns do
     let ty ← inferType (← mkConstWithFreshMVarLevels eqn)
     let r ← forallTelescopeReducing ty fun xs body => do
-      let some (_, _, rhs) := body.eq? | return none
-      if xs.isEmpty then return some (Sum.inl rhs)
+      let some (_, lhs, rhs) := body.eq? | return none
+      if xs.isEmpty then
+        -- the base row `P shift` (the other explicit rows are not needed)
+        let some i ← evalNat lhs.appArg! | return none
+        return if i == shift then some (Sum.inl rhs) else none
       if xs.size != 1 then return none
       -- `((A * D (D (P n))) + B * D (P n)) + C * P n`
       let leftOf (e : Expr) : Option Expr :=

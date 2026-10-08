@@ -29,6 +29,18 @@ theorem A105278_interlaces (n : ℕ) :
     RealRooted.Interlaces (A105278 n) (A105278 (n + 1)) := by
   rr_row_interlaces
 
+/-- The same recurrence after an extra first row: the eigen-ODE collapse applies to
+`m ↦ P (m + 1)`. -/
+def A105278Shifted : ℕ → ℝ[X]
+  | 0 => 5
+  | 1 => 1
+  | n + 2 => X * (A105278Shifted (n + 1)).derivative.derivative +
+      (2 + 2 * X) * (A105278Shifted (n + 1)).derivative + (2 + X) * A105278Shifted (n + 1)
+
+theorem A105278Shifted_interlaces (n : ℕ) :
+    RealRooted.Interlaces (A105278Shifted (n + 1)) (A105278Shifted (n + 2)) := by
+  rr_row_interlaces
+
 /-- An ODE with a rational coefficient, and a recurrence written with `1 / 2` (A331333). -/
 def A331333 : ℕ → ℝ[X]
   | 0 => 1
