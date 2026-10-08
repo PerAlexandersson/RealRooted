@@ -4,6 +4,7 @@ import RealRooted.Hadamard
 import RealRooted.Hadamard.FiniteReflection
 import RealRooted.Hadamard.SchurSzegoMultiplicity
 import RealRooted.Hadamard.SchurSzegoSigns
+import RealRooted.CoefficientShape.LiuMao
 import RealRooted.MultiplierSequence.PolyaSchur.Schur
 import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
@@ -16,8 +17,8 @@ version = 1
 section = "theorems"
 slug = "hadamard-products"
 authors = ["Maló", "Pólya", "Schur", "Brenti", "Wagner", "Garloff", "Kostov", "Shapiro", "Brändén",
-  "Ferroni", "Jochemko"]
-years = [1895, 1914, 1989, 1992, 1996, 2006, 2010, 2024]
+  "Ferroni", "Jochemko", "Liu", "Mao"]
+years = [1895, 1914, 1989, 1992, 1996, 2006, 2010, 2024, 2026]
 
 [[definitions]]
 name = "RealRooted.schurSzegoComp"
@@ -98,6 +99,11 @@ label = "Garloff–Wagner: the factorial Hadamard product preserves interlacing"
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.factorialHadamardProduct_eq_zero_or_splits"
 label = "Schur: the factorial product preserves real-rootedness"
+
+[[theorems]]
+name = "RealRooted.LiuMao.coeffLCNIZ_polynomialValueEulerNumerator_mul"
+module = "RealRooted.CoefficientShape.LiuMao"
+label = "Liu–Mao: log-concave Euler numerators without internal zeros are closed under products"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -154,6 +160,12 @@ nonnegative coefficients):
 $g = \sum_k b_k x^k$ is real-rooted with all zeros of one sign, then the
 factorial Hadamard product $\sum_k k!\, a_k b_k x^k$ is zero or real-rooted.
 
+**Theorem (Liu–Mao).** For a polynomial $p$ of degree $d$ let $W(p)$ be its Euler
+numerator, $\sum_{n \geq 0} p(n) x^n = W(p)(x) / (1-x)^{d+1}$. If the coefficients of
+$W(p)$ and $W(q)$ are nonnegative, log-concave and without internal zeros, then so are
+the coefficients of $W(pq)$. The no-internal-zeros hypothesis cannot be dropped:
+$W(p) = 1 + x^3$ and $W(q) = x$ give $W(pq) = 4x + 3x^3 + x^4$.
+
 ## References
 
 E. Maló, “Note sur les équations algébriques dont toutes les racines sont
@@ -165,7 +177,8 @@ Mathematical Analysis and Applications* 163 (1992), 459–483; J. Garloff and
 D. G. Wagner, “Hadamard products of stable polynomials are stable,” *Journal
 of Mathematical Analysis and Applications* 202 (1996), 797–809; P. Brändén,
 L. Ferroni and K. Jochemko, “Preservation of inequalities under Hadamard
-products,” arXiv:2408.12386 (2024). V. Kostov and B.
+products,” arXiv:2408.12386 (2024); Y. Liu and J. Mao, “Preservation of
+log-concavity under Hadamard products,” arXiv:2609.11589 (2026). V. Kostov and B.
 Shapiro, “On the Schur–Szegő composition of polynomials,” *C. R. Math. Acad. Sci.
 Paris* 343 (2006), 81–86; V. P. Kostov, “Interlacing properties and the Schur–Szegő
 composition,” *Functional Analysis and Other Mathematics* 3 (2010), 65–74.  See the
