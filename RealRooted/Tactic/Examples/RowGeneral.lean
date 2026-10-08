@@ -8,8 +8,8 @@ Regression tests for the fallback of the degree tactics to general linear recurr
 for `rr_row_splits` / `rr_row_interlaces` on half growth
 (`RealRooted.threeTermHalf_ne_zero_and_splits`), dropped rows, degree-bounded root windows,
 two-step products, derivative-lag recurrences, residue subsequences, closed forms,
-derivative products and order-three recurrences through three-term ones, on OEIS rows drawn
-from `real-rooted-oeis-proofs`.
+derivative products, order-three recurrences through three-term ones and degrees with
+cancelling top terms, on OEIS rows drawn from `real-rooted-oeis-proofs`.
 -/
 
 open Polynomial
@@ -209,6 +209,21 @@ def A132812 : ℕ → ℝ[X]
 theorem A132812_interlaces (n : ℕ) : Interlaces (A132812 n) (A132812 (n + 1)) := by
   rr_row_interlaces
 theorem A132812_splits (n : ℕ) : (A132812 n).Splits := by rr_row_splits
+
+/-- The top terms cancel at every step: `X ^ (d + 2)` has coefficient `(n - d) · lc = 0`, and
+the degree `n` comes from the next coefficient (A008970). -/
+def A008970 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (X - X ^ 3) * (A008970 n).derivative + (1 + 2 * X + C (n : ℝ) * X ^ 2) * A008970 n
+
+theorem A008970_natDegree (n : ℕ) : (A008970 n).natDegree = n := by rr_row_natDegree
+
+/-- The top terms cancel at every other step: half growth (A008303). -/
+def A008303 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (2 * X - 2 * X ^ 2) * (A008303 n).derivative + (2 + C (n : ℝ) * X) * A008303 n
+
+theorem A008303_natDegree (n : ℕ) : (A008303 n).natDegree = n / 2 := by rr_row_natDegree
 
 end
 

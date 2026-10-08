@@ -1548,6 +1548,7 @@ import RealRooted.Tactic.Product.Syntax.Families
 import RealRooted.Tactic.Product.Syntax.Lifts
 import RealRooted.Tactic.ReciprocalShift
 import RealRooted.Tactic.Recurrence
+import RealRooted.Tactic.Recurrence.Cancel
 import RealRooted.Tactic.Recurrence.Degree
 import RealRooted.Tactic.Recurrence.Eval
 import RealRooted.Tactic.Recurrence.ODE
