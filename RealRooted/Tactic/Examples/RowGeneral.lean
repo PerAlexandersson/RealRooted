@@ -121,6 +121,25 @@ def A065826 : ℕ → ℝ[X]
 
 theorem A065826_natDegree (n : ℕ) : (A065826 n).natDegree = n := by rr_row_natDegree
 
+/-- Periodic growth: the degree rises every third step (A102547). -/
+def A102547 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 1
+  | n + 3 => 1 * A102547 (n + 2) + X * A102547 n
+
+theorem A102547_natDegree (n : ℕ) : (A102547 n).natDegree = n / 3 := by rr_row_natDegree
+
+/-- Periodic growth with period four and a lag of changing sign (A118884). -/
+def A118884 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2
+  | 2 => 4
+  | 3 => 8
+  | n + 4 => 2 * A118884 (n + 3) + (-1 + X) * A118884 n
+
+theorem A118884_natDegree (n : ℕ) : (A118884 n).natDegree = n / 4 := by rr_row_natDegree
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples
