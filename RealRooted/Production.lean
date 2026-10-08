@@ -696,6 +696,9 @@ import RealRooted.HomogeneousComponentStability
 import RealRooted.HomogeneousOre
 import RealRooted.HomogeneousOreExamples
 import RealRooted.HomogeneousStability
+import RealRooted.HosterStump.Diagram
+import RealRooted.HosterStump.Refined
+import RealRooted.HosterStump.Sequence
 import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
 import RealRooted.Hutchinson
