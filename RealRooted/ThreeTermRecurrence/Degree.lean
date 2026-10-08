@@ -46,6 +46,28 @@ theorem threeTerm_rec_of_right (h : ∀ n, P (n + 2) = b n * P n) :
     ∀ n, P (n + 2) = (fun _ => (0 : ℝ[X])) n * P (n + 1) + b n * P n := by
   simpa using h
 
+/-- A three-term recurrence certified through its remainder: if the remainder
+`r n = C (δ n) * P (n + 2) - a n * P (n + 1) - b n * P n` vanishes at `0` and satisfies
+`r (n + 1) = c n * r n` (for instance when `P` satisfies a recurrence of order three that
+factors through the three-term one), then `P` satisfies the three-term recurrence. -/
+theorem threeTerm_rec_of_remainder {c : ℕ → ℝ[X]} {δ : ℕ → ℝ} (hδ : ∀ n, δ n ≠ 0)
+    (hstep : ∀ n, C (δ (n + 1)) * P (n + 3) - a (n + 1) * P (n + 2) - b (n + 1) * P (n + 1) =
+      c n * (C (δ n) * P (n + 2) - a n * P (n + 1) - b n * P n))
+    (h0 : C (δ 0) * P 2 - a 0 * P 1 - b 0 * P 0 = 0) :
+    ∀ n, P (n + 2) = (C (δ n)⁻¹ * a n) * P (n + 1) + (C (δ n)⁻¹ * b n) * P n := by
+  have hr : ∀ n, C (δ n) * P (n + 2) - a n * P (n + 1) - b n * P n = 0 := by
+    intro n
+    induction n with
+    | zero => exact h0
+    | succ n ih => exact (hstep n).trans (by rw [ih, mul_zero])
+  intro n
+  have hC : C (δ n)⁻¹ * C (δ n) = 1 := by rw [← C_mul, inv_mul_cancel₀ (hδ n), C_1]
+  have h : C (δ n) * P (n + 2) = a n * P (n + 1) + b n * P n := by
+    rw [← sub_eq_zero, ← sub_sub]
+    exact hr n
+  rw [← one_mul (P (n + 2)), ← hC, mul_assoc, h]
+  ring
+
 /-- One step of a three-term recurrence: the degree bound and the coefficient in
 the bounding degree. -/
 theorem threeTerm_step (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)

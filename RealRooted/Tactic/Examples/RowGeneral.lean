@@ -7,8 +7,9 @@ Regression tests for the fallback of the degree tactics to general linear recurr
 (`RealRooted.LinRec`: any order, mixed derivatives, top coefficients of either sign) and
 for `rr_row_splits` / `rr_row_interlaces` on half growth
 (`RealRooted.threeTermHalf_ne_zero_and_splits`), dropped rows, degree-bounded root windows,
-two-step products, derivative-lag recurrences, residue subsequences, closed forms and
-derivative products, on OEIS rows drawn from `real-rooted-oeis-proofs`.
+two-step products, derivative-lag recurrences, residue subsequences, closed forms,
+derivative products and order-three recurrences through three-term ones, on OEIS rows drawn
+from `real-rooted-oeis-proofs`.
 -/
 
 open Polynomial
@@ -188,6 +189,26 @@ def A142071 : ℕ → ℝ[X]
   | n + 2 => (X + X ^ 2) * (A142071 (n + 1)).derivative
 
 theorem A142071_splits (n : ℕ) : (A142071 n).Splits := by rr_row_splits
+
+/-- An order-three recurrence that factors through the three-term recurrence
+`(n + 2) (n + 4) P (n + 2) = (X + 1) (n + 3) (2 n + 5) P (n + 1) - (X - 1) ^ 2 (n + 2) (n + 3) P n`,
+found numerically and certified through its remainder (A132812). -/
+def A132812 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2 + 2 * X
+  | 2 => 3 + 9 * X + 3 * X ^ 2
+  | n + 3 =>
+      (C (3 * ((n : ℝ) + 4) / ((n : ℝ) + 5)) + C (3 * ((n : ℝ) + 4) / ((n : ℝ) + 5)) * X) *
+        A132812 (n + 2) +
+      (C (-(3 * (n : ℝ) + 9) / ((n : ℝ) + 5)) + C (-(2 * (n : ℝ) + 2) / ((n : ℝ) + 5)) * X +
+        C (-(3 * (n : ℝ) + 9) / ((n : ℝ) + 5)) * X ^ 2) * A132812 (n + 1) +
+      (C (((n : ℝ) + 2) / ((n : ℝ) + 5)) - C (((n : ℝ) + 2) / ((n : ℝ) + 5)) * X -
+        C (((n : ℝ) + 2) / ((n : ℝ) + 5)) * X ^ 2 + C (((n : ℝ) + 2) / ((n : ℝ) + 5)) * X ^ 3) *
+        A132812 n
+
+theorem A132812_interlaces (n : ℕ) : Interlaces (A132812 n) (A132812 (n + 1)) := by
+  rr_row_interlaces
+theorem A132812_splits (n : ℕ) : (A132812 n).Splits := by rr_row_splits
 
 end
 
