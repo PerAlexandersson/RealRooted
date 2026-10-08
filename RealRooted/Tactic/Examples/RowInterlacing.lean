@@ -350,6 +350,31 @@ def A188440 : ℕ → ℝ[X]
 
 theorem A188440_splits (n : ℕ) : (A188440 n).Splits := by rr_row_splits
 
+/-- A two-step product with a double root `q = X ^ 2` (A133080). -/
+def A133080 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 => X ^ 2 * A133080 n
+
+theorem A133080_splits (n : ℕ) : (A133080 n).Splits := by rr_row_splits
+
+/-- A product read off `P (n + 3) = X * P (n + 2)` (A167194). -/
+def A167194 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2 + X
+  | 2 => 1 + 2 * X + X ^ 2
+  | n + 3 => X * A167194 (n + 2)
+
+theorem A167194_splits (n : ℕ) : (A167194 n).Splits := by rr_row_splits
+
+/-- Half growth after the zero row `P 0 = 0` (A180047). -/
+def A180047 : ℕ → ℝ[X]
+  | 0 => 0
+  | 1 => X
+  | n + 2 => C (2 + (n : ℝ)) * A180047 (n + 1) + (C 1 * X) * A180047 n
+
+theorem A180047_splits (n : ℕ) : (A180047 n).Splits := by rr_row_splits
+
 end
 
 end RealRooted.Tactic.RowInterlacingExamples
