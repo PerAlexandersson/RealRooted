@@ -222,6 +222,18 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
               Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
               Polynomial.eval_one, Polynomial.eval_ofNat, Polynomial.eval_neg] at h
             first | (constructor <;> nlinarith) | nlinarith)))]
+    else if has ``Min.min && has ``Polynomial.eval then
+      -- `0 < B (x - U) + min A 0 * N` of the degree-bounded root windows
+      [do evalTactic (← `(tactic| (
+          intro k x hx
+          simp only [Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
+            Polynomial.eval_neg, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
+            Polynomial.eval_one, Polynomial.eval_ofNat, min_def]
+          push_cast
+          split_ifs with h <;>
+            nlinarith [sub_pos.mpr hx, (Nat.cast_nonneg k : (0 : ℝ) ≤ k),
+              mul_nonneg (Nat.cast_nonneg k : (0 : ℝ) ≤ k) (sub_pos.mpr hx).le,
+              mul_pos (sub_pos.mpr hx) (sub_pos.mpr hx), sq_nonneg x])))]
     else if has ``Polynomial.eval then
       (if mentionsP && !ty.isForall then
         withP fun P => [do evalTactic (← `(tactic| (norm_num [$P:ident]; done)))]
@@ -451,6 +463,27 @@ private def rowInterlacesCoreAt (hints : RowHints) (k : Nat) : TacticM (Cert × 
             | some L => m!"[{L}, {U}]"
             | none => m!"(-∞, {U}]"
           failures := failures.push (m!"{if lo.isSome then icc else iic} on {w}", e)
+  -- roots in `(-∞, U]` with `A n < 0` allowed beyond `U`, controlled by the degree
+  -- (`RealRooted.derivRec_interlaces_of_roots_le_of_degree`)
+  let degWin := ``RealRooted.derivRec_interlaces_of_roots_le_of_degree
+  if shape == .deriv₁ && hints.window.isNone &&
+      (hints.thm.isNone || hints.thm == some degWin) then
+    let us := match hints.upper with
+      | some u => [u]
+      | none => []
+    let us ← if us.isEmpty then
+        ["-1", "0", "-1 / 2", "-2"].mapM fun r => do
+          let some t := (Parser.runParserCategory (← getEnv) `term r).toOption
+            | throwError "rr_row_interlaces: bad window {r}"
+          return (⟨t⟩ : Term)
+      else pure us
+    for U in us do
+      let main ← apply' degWin #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]
+      match ← rowAttempt (applyThenSideFull P main) with
+      | .ok tac =>
+          return (pre.push tac,
+            { thm := some degWin, degree := some D₀, upper := some U, drop := dropHint k })
+      | .error e => failures := failures.push (m!"{degWin} on (-∞, {U}]", e)
   throwRowFailures m!"rr_row_interlaces: no strategy proves the goal for the \
     {shape.describe} recurrence of {P} (base degree {D₀}, dropping {k} rows)" failures
 
@@ -673,8 +706,34 @@ elab "rr_row_splits" : tactic => withMainContext do
         | nlinarith [sq_nonneg r, sq_nonneg (r - 1), sq_nonneg (r + 1),
             (Nat.cast_nonneg k : (0 : ℝ) ≤ k)])))
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
+  -- two-step products `P (n + 2) = q n * P n` (`RealRooted.twoStepProduct_splits`)
+  let viaTwoStep := do
+    unless r.shape == .lagRight do throwError "rr_row_splits: not a two-step product"
+    let (_, t) ← alignRow r.P r.shift (smallRow P)
+    let q ← certTerm r.coeffs[0]!
+    let n := mkIdent `n
+    evalTactic (← `(tactic|
+      refine RealRooted.twoStepProduct_splits (P := $(← r.seq 0)) (q := $q)
+        (fun $n:ident => ($(mkIdent r.eqn) $n).trans (by beta_reduce; ring)) ?_ ?_ ?_ $t))
+    let gs ← getGoals
+    let [hq, h0, h1] := gs | throwError "rr_row_splits: unexpected side goals"
+    for g in [h0, h1] do
+      setGoals [g]
+      rowSideFull (some P)
+    setGoals [hq]
+    evalTactic (← `(tactic| (
+      intro k
+      beta_reduce
+      first
+        | (refine Polynomial.Splits.of_natDegree_le_one ?_; compute_degree!)
+        | (refine RealRooted.splits_of_natDegree_eq_two_of_discrim_nonneg ?_ ?_
+           · compute_degree!
+           · simp [discrim, Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow,
+               Polynomial.coeff_C] <;> norm_num))))
+    unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
   let mut failures := #[]
-  for (what, tac) in [("the interlacing of P t and P (t + 1)", viaLeft 0),
+  for (what, tac) in [("a two-step product", viaTwoStep),
+      ("the interlacing of P t and P (t + 1)", viaLeft 0),
       ("the interlacing of P (t - 1) and P t", viaRight 0),
       ("the half-growth interlacing of P t and P (t + 2)", viaHalf),
       ("the interlacing of P (t + 1) and P (t + 2), after splitting off a row", viaLeft 1),
