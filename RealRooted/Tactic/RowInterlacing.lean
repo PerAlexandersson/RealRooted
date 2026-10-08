@@ -1199,7 +1199,20 @@ elab "rr_row_splits" : tactic => withMainContext do
       setGoals [g]
       rowSideFull (some P)
     setGoals [hb]
-    evalTactic (← `(tactic| (
+    let coeffs : TSyntax `tactic ← `(tactic| (
+      simp only [Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_neg,
+        Polynomial.coeff_C_mul, Polynomial.coeff_mul_C, Polynomial.coeff_X, Polynomial.coeff_C,
+        Polynomial.coeff_one, Polynomial.coeff_X_pow, Polynomial.coeff_ofNat_mul,
+        Polynomial.coeff_mul_ofNat, Polynomial.coeff_ofNat_zero, Polynomial.coeff_ofNat_succ,
+        Polynomial.coeff_zero] <;>
+      push_cast <;>
+      first
+        | (norm_num; done)
+        | ring1
+        | rr_linrec_field
+        | positivity
+        | rr_row_field))
+    let plain ← `(tactic| (
       intro k r
       simp only [Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
         Polynomial.eval_neg, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
@@ -1209,7 +1222,18 @@ elab "rr_row_splits" : tactic => withMainContext do
         | positivity
         | (ring_nf; positivity)
         | nlinarith [sq_nonneg r, sq_nonneg (r - 1), sq_nonneg (r + 1),
-            (Nat.cast_nonneg k : (0 : ℝ) ≤ k)])))
+            (Nat.cast_nonneg k : (0 : ℝ) ≤ k)]))
+    -- linear lags with proportional coefficients (a common root independent of the index)
+    let proportional ← `(tactic| (
+      intro k r
+      beta_reduce
+      refine RealRooted.eval_mul_eval_nonneg_of_natDegree_le_one ?_ ?_ ?_ ?_ ?_ r
+      · compute_degree!
+      · compute_degree!
+      · $coeffs:tactic
+      · $coeffs:tactic
+      · $coeffs:tactic))
+    evalTactic (← `(tactic| first | $plain:tactic | $proportional:tactic))
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
   -- two-step products `P (n + 2) = q n * P n` (`RealRooted.twoStepProduct_splits`)
   let viaTwoStep := do

@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **201 IDs**; **5 formalized**, **193 shells**, **3 fragments**, and **0 documented-only**.
+Current totals: **202 IDs**; **5 formalized**, **194 shells**, **3 fragments**, and **0 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -137,6 +137,7 @@ Current totals: **201 IDs**; **5 formalized**, **193 shells**, **3 fragments**, 
 | A128966 | `shell` | A zero first row is split off; `h` excludes it ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_natDegree`, `rr_row_ne_zero` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A131689 | `shell` | Fubini polynomials: `v_n(t) = t(1 + t)` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A132885 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
+| A136394 | `shell` | (`RealRooted.eval_mul_eval_nonneg_of_natDegree_le_one`) ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A136523 | `shell` | OEIS shapes `///`: | `rr_favard_affine_const`, `rr_favard_affine_const_unit` | `alpha`, `base_one`, `base_zero`, `slope`, `step` | concrete row definition and proofs of the listed certificates |
 | A136532 | `shell` | scalar-denominator row-sign Favard raw numerator. | `rr_favard_affine_param_row_sign_den_raw_auto`, `rr_favard_base_one_dsimp` | `alpha`, `base_one`, `base_zero`, `beta`, `den`, `raw_const`, `raw_lag`, `raw_recurrence`, `raw_slope`, `slope` | concrete row definition and proofs of the listed certificates |
 | A136668 | `shell` | `P_m=2mtP_{m-1}-(m+1)P_{m-2}`. | `rr_favard_affine_param_auto` | `alpha`, `base_one`, `base_zero`, `beta`, `slope`, `step` | concrete row definition and proofs of the listed certificates |

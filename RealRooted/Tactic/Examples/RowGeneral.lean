@@ -159,6 +159,16 @@ def A008299 : ℕ → ℝ[X]
 
 theorem A008299_splits (n : ℕ) : (A008299 n).Splits := by rr_row_splits
 
+/-- Half growth whose lags `(n + 1) (X - 1)` share the root `1`
+(`RealRooted.eval_mul_eval_nonneg_of_natDegree_le_one`) (A136394). -/
+def A136394 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | n + 2 => C (2 + (n : ℝ)) * A136394 (n + 1) + (C (-1 + -1 * (n : ℝ)) + C (1 + (n : ℝ)) * X) *
+      A136394 n
+
+theorem A136394_splits (n : ℕ) : (A136394 n).Splits := by rr_row_splits
+
 /-- A product with a real-rooted quadratic factor (A272866). -/
 def A272866 : ℕ → ℝ[X]
   | 0 => 1

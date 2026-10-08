@@ -72,6 +72,26 @@ private theorem half_sub_interlaces (hrec : ∀ n, P (n + 2) = a n * P (n + 1) +
   · have h1 : 2 * (0 + 1) + s = s + 2 := by lia
     simpa only [h1, Nat.mul_zero, Nat.zero_add] using hbase
 
+/-- Two polynomials of degree at most one with proportional coefficients, `q = (q₁ / p₁) p`,
+and `q₁ p₁ ≥ 0` never take values of opposite signs. -/
+theorem eval_mul_eval_nonneg_of_natDegree_le_one {p q : ℝ[X]} (hp : p.natDegree ≤ 1)
+    (hq : q.natDegree ≤ 1) (hp1 : p.coeff 1 ≠ 0)
+    (hdet : q.coeff 0 * p.coeff 1 = p.coeff 0 * q.coeff 1) (hpos : 0 ≤ q.coeff 1 * p.coeff 1)
+    (r : ℝ) : 0 ≤ q.eval r * p.eval r := by
+  rw [eval_eq_sum_range' (n := 2) (by lia), eval_eq_sum_range' (n := 2) (by lia)]
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, pow_zero, pow_one, mul_one,
+    zero_add]
+  set Q := q.coeff 0 + q.coeff 1 * r
+  set V := p.coeff 0 + p.coeff 1 * r
+  have key : Q * p.coeff 1 = q.coeff 1 * V := by
+    simp only [Q, V]
+    linear_combination hdet
+  have h3 : Q * V * p.coeff 1 ^ 2 = q.coeff 1 * p.coeff 1 * V ^ 2 := by
+    linear_combination (V * p.coeff 1) * key
+  have h2 : 0 < p.coeff 1 ^ 2 := by positivity
+  have h4 : 0 ≤ Q * V * p.coeff 1 ^ 2 := h3 ▸ mul_nonneg hpos (sq_nonneg V)
+  exact nonneg_of_mul_nonneg_left h4 h2
+
 /-- Rows two apart of a half-growth three-term recurrence with positive constant `a n`
 interlace when consecutive lags `b n`, `b (n + 1)` never take opposite signs. -/
 theorem threeTermHalf_interlaces_add_two
