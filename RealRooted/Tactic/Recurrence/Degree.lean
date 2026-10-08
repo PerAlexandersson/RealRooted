@@ -877,23 +877,40 @@ private def polyTerm (cs : Array Rat) (x : Term) : TacticM Term := do
   | some t => pure t
   | none => rationalTerm 0
 
+/-- The value of the closed form at the natural number `x` (a term of type `ℕ`), as a
+real-valued term, e.g. `(3 : ℝ) * (2 : ℝ) ^ x`. -/
+def TopForm.toTermAt (f : TopForm) (x : Term) : TacticM Term := do
+  let i := mkIdent `i
+  let xR : Term ← `((($x : ℕ) : ℝ))
+  let iR : Term ← `(($i : ℝ))
+  let rng := mkIdent ``Finset.range
+  match f with
+  | .const c => rationalTerm c
+  | .geom c ρ => `($(← rationalTerm c) * $(← rationalTerm ρ) ^ ($x : ℕ))
+  | .poly cs => polyTerm cs xR
+  | .polyGeom cs ρ => `(($(← polyTerm cs xR)) * $(← rationalTerm ρ) ^ ($x : ℕ))
+  | .hyper c num den =>
+    `($(← rationalTerm c) *
+      ∏ $i:ident ∈ $rng ($x : ℕ), ($(← polyTerm num iR)) / ($(← polyTerm den iR)))
+
 /-- The closed form as the real-valued function `fun (n : ℕ) => …`, e.g.
 `fun n => (3 : ℝ) * (2 : ℝ) ^ n`. -/
 def TopForm.toTerm (f : TopForm) : TacticM Term := do
   let n := mkIdent `n
-  let i := mkIdent `i
-  let nR : Term ← `(($n : ℝ))
-  let iR : Term ← `(($i : ℝ))
-  let rng := mkIdent ``Finset.range
-  match f with
-  | .const c => `(fun ($n : ℕ) => $(← rationalTerm c))
-  | .geom c ρ => `(fun ($n : ℕ) => $(← rationalTerm c) * $(← rationalTerm ρ) ^ $n)
-  | .poly cs => `(fun ($n : ℕ) => $(← polyTerm cs nR))
-  | .polyGeom cs ρ =>
-    `(fun ($n : ℕ) => ($(← polyTerm cs nR)) * $(← rationalTerm ρ) ^ $n)
-  | .hyper c num den =>
-    `(fun ($n : ℕ) => $(← rationalTerm c) *
-      ∏ $i:ident ∈ $rng $n, ($(← polyTerm num iR)) / ($(← polyTerm den iR)))
+  `(fun ($n : ℕ) => $(← f.toTermAt n))
+
+/-- The top coefficients of a periodic degree law as the real-valued function
+`fun n => if n % p = 0 then f₀ (n / p) else if n % p = 1 then f₁ (n / p) else …`, given the
+closed forms `f_r` along the residue classes (see `residueForms?`). -/
+def residueTerm (forms : Array TopForm) : TacticM Term := do
+  let n := mkIdent `n
+  let p := forms.size
+  let q : Term ← `($n / $(numeralTerm p))
+  let mut acc ← forms.back!.toTermAt q
+  for r in (List.range (p - 1)).reverse do
+    let fr ← forms[r]!.toTermAt q
+    acc ← `(if $n % $(numeralTerm p) = $(numeralTerm r) then $fr else $acc)
+  `(fun ($n : ℕ) => $acc)
 
 /-- For a periodic degree law, closed forms of the top coefficients along each residue class:
 `forms[r]` fits `q ↦ c (p * q + r)`.  This is the natural description when the multipliers
@@ -917,6 +934,9 @@ inductive Regime where
   | nonneg
   /-- the top coefficients have the closed form `f` -/
   | closed (f : TopForm)
+  /-- the top coefficients have the closed form `forms[r]` along the residue classes
+  `n = p * q + r` (periodic degree laws) -/
+  | closedRes (forms : Array TopForm)
   /-- the invariant `ρ * c n ≤ c (n + 1)` is preserved by the recurrence -/
   | ratio (ρ : Rat)
   /-- none of the above applies -/
@@ -945,18 +965,21 @@ def ratioCandidates : List Rat := [1, 2, 3, 4, 1 / 2]
 /-- Choose the regime from the numeric multipliers (see `lagMultsNum`) and the top
 coefficients: nonnegative multipliers first, then a closed form, then a ratio invariant that is
 valid for all sampled steps (and for the base coefficients). -/
-def chooseRegime (mults : Array (Array Rat)) (tops : Array Rat) : Regime :=
+def chooseRegime (mults : Array (Array Rat)) (tops : Array Rat) (p : Nat := 1) : Regime :=
   if mults.isEmpty then .none
   else if nonnegHolds mults tops then .nonneg
   else match guessTopForm tops with
     | some f => .closed f
     | none =>
-      let k := mults[0]!.size
-      match ratioCandidates.find? fun ρ =>
-          tops[0]! > 0 && (List.range (k - 1)).all (fun j => ρ * tops[j]! ≤ tops[j + 1]!) &&
-            mults.all (ratioStepHolds ρ) with
-      | some ρ => .ratio ρ
-      | none => .none
+      match residueForms? p tops with
+      | some fs => .closedRes fs
+      | none =>
+        let k := mults[0]!.size
+        match ratioCandidates.find? fun ρ =>
+            tops[0]! > 0 && (List.range (k - 1)).all (fun j => ρ * tops[j]! ≤ tops[j + 1]!) &&
+              mults.all (ratioStepHolds ρ) with
+        | some ρ => .ratio ρ
+        | none => .none
 
 /-! ### The probe -/
 
@@ -982,18 +1005,23 @@ structure LinRecProbe where
 increasing drop until one yields a regime other than `Regime.none`; if there is none, the first
 law found is returned with regime `none`. -/
 def linRecProbe? (L : LinRecData) (N : Nat := 10) : MetaM (Option LinRecProbe) := do
-  let some rows ← linRecRows? L N | return none
-  let degs := rows.map (·.degInt)
+  let some rows₀ ← linRecRows? L N | return none
+  let degs := rows₀.map (·.degInt)
   let mut best : Option LinRecProbe := none
   let mut minDrop := 0
   for _ in [0:3] do
     let some law := fitDegreeLaw degs minDrop | break
     minDrop := law.drop + 1
+    -- a periodic law needs more rows, so that each residue class has enough values to fit
+    let rows ←
+      if law.p > 1 && rows₀.size < 7 * law.p + law.drop + 3 then
+        pure ((← linRecRows? L (7 * law.p + law.drop + 3)).getD rows₀)
+      else pure rows₀
     let some mults ← lagMultsNum L law rows | continue
     let tops := topCoeffsNum law rows
     let probe : LinRecProbe :=
       { degs, law, mults, tops, form := guessTopForm tops,
-        residues := residueForms? law.p tops, regime := chooseRegime mults tops }
+        residues := residueForms? law.p tops, regime := chooseRegime mults tops law.p }
     if probe.regime != .none then return some probe
     if best.isNone then best := some probe
   return best
@@ -1005,20 +1033,31 @@ def linRecProbe? (L : LinRecData) (N : Nat := 10) : MetaM (Option LinRecProbe) :
 `rr_linrec` closes `(P t).natDegree = e`, `P t ≠ 0`, `0 < (P t).leadingCoeff` and the
 conjunction `(P t).natDegree = e ∧ 0 < (P t).leadingCoeff` for a sequence `P : ℕ → ℝ[X]`
 defined by a linear recurrence with derivatives (`LinRecData`), when the degrees grow linearly
-after a drop of `s ≤ 2` rows.
+or periodically (`D₀ + d * ⌊(n + e) / p⌋`, `p ≤ 4`) after a drop of `s ≤ 2` rows.
 
 The numeric probe (`linRecProbe?`) decides the drop `s`, the base degree `D₀`, the growth `d`
 and the regime; the tactic then applies one theorem of `RealRooted.LinRec` to the shifted
 sequence `m ↦ P (m + s)` and discharges its side goals:
 
-* `nonneg`: `natDegree_eq_and_leadingCoeff_pos` (multipliers `≥ 0`);
+* `nonneg`: `natDegree_eq_and_leadingCoeff_pos` (multipliers `≥ 0`; for a periodic degree law
+  `natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`);
 * `closed f`: `natDegree_eq_and_leadingCoeff_eq` with the top coefficients `c := f`
   (constant, geometric, polynomial, polynomial times geometric, hypergeometric);
-* `ratio ρ`: `natDegree_eq_and_leadingCoeff_pos_of_ratio` with `D n = D₀ + d * n`.
+* `closedRes forms`: the same for a periodic degree law, with `c` given by closed forms along
+  the residue classes mod `p` (`natDegree_eq_and_leadingCoeff_eq_of_degreeLaw`);
+* `ratio ρ`: `natDegree_eq_and_leadingCoeff_pos_of_ratio` with `D n = D₀ + d * n`
+  (linear growth only).
 
-The regimes are tried in this order, each with one theorem elaboration.  Periodic growth
-(`p > 1`) is not handled here.
+The regimes are tried in this order, each with one theorem elaboration.
+
+Periodic growth (`p > 1`, `D n = D₀ + d * ((n + e) / p)`) uses the `_of_degreeLaw` theorems
+with this `D`.  Their side goals mention `D (n + j)` for all `n`, so each of them is first
+split by the residue `r` of `n` modulo `p` (`n = p * q + r`, `interval_cases r`); then every
+division is `q + numeral` and the coefficient engine applies as for linear growth.  An explicit
+top coefficient `c` is the function with the closed forms of the residue classes
+(`Regime.closedRes`, `residueTerm`).
 -/
+
 
 
 /-- The kind of a goal about the rows of a sequence. -/
@@ -1041,7 +1080,15 @@ def linRecRegimes (pr : LinRecProbe) (kind : String) : List Regime := Id.run do
   let mut out : List Regime := []
   if nonnegHolds pr.mults pr.tops then out := out ++ [.nonneg]
   if let some f := pr.form then
-    if !pos || pr.tops.all (· > 0) then out := out ++ [.closed f]
+    -- a product over `range n` cannot be unfolded along a residue decomposition
+    if !pos || pr.tops.all (· > 0) then
+      match f with
+      | .hyper .. => if pr.law.p ≤ 1 then out := out ++ [.closed f]
+      | _ => out := out ++ [.closed f]
+  if pr.law.p > 1 then
+    if let some fs := pr.residues then
+      if !pos || pr.tops.all (· > 0) then out := out ++ [.closedRes fs]
+    return out
   let k := pr.mults[0]!.size
   if let some ρ := ratioCandidates.find? fun ρ =>
       pr.tops[0]! > 0 && (List.range (k - 1)).all (fun j => ρ * pr.tops[j]! ≤ pr.tops[j + 1]!) &&
@@ -1096,27 +1143,47 @@ elab "rr_linrec_field" : tactic => withMainContext do
 
 /-- Finishers for a top-coefficient multiplier goal, after the coefficients have been
 computed. -/
-private def linRecFinishers : TacticM (List (TSyntax `tactic)) := do
+private def linRecFinishers (kv : Term) : TacticM (List (TSyntax `tactic)) := do
   return [← `(tactic| done),
     ← `(tactic| (refine ne_of_gt ?_; positivity)),
     ← `(tactic| positivity),
-    ← `(tactic| (refine ne_of_gt ?_; nlinarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)])),
-    ← `(tactic| (refine ne_of_lt ?_; nlinarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)])),
-    ← `(tactic| nlinarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]),
-    ← `(tactic| (intro h; nlinarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)])),
+    ← `(tactic| (refine ne_of_gt ?_; nlinarith [(Nat.cast_nonneg $kv : (0 : ℝ) ≤ $kv)])),
+    ← `(tactic| (refine ne_of_lt ?_; nlinarith [(Nat.cast_nonneg $kv : (0 : ℝ) ≤ $kv)])),
+    ← `(tactic| nlinarith [(Nat.cast_nonneg $kv : (0 : ℝ) ≤ $kv)]),
+    ← `(tactic| (intro h; nlinarith [(Nat.cast_nonneg $kv : (0 : ℝ) ≤ $kv)])),
+    ← `(tactic| (ring_nf; positivity)),
     ← `(tactic| rr_row_field)]
 
-/-- Unfold `lagMult` and `topCoeff` and compute the coefficients of the explicit polynomials in
-the goal, followed by `push_cast`. -/
-private def linRecCoeffSimp : TacticM (TSyntax `tactic) :=
+/-- Normalize the natural-number arithmetic of a periodic degree law after a residue
+decomposition `n = p * q + r` (with `r` a numeral): every `(p * q + c) / p` becomes `q + c / p`,
+every `(p * q + c) % p` becomes `c % p`, and the differences of degrees become numerals. -/
+private def linRecNatNorm (p : Nat) : TacticM (TSyntax `tactic) :=
+  `(tactic| (first
+    | simp only [Nat.add_assoc, Nat.mul_add_div (show 0 < $(rowNumLit p) by norm_num),
+        Nat.mul_div_cancel_left _ (show 0 < $(rowNumLit p) by norm_num), Nat.mul_add_mod,
+        Nat.mul_mod_right, Nat.reduceAdd, Nat.reduceMul, Nat.reduceDiv, Nat.reduceMod,
+        Nat.reduceSub, Nat.add_zero, Nat.zero_add, Nat.sub_self, Nat.add_sub_add_left,
+        Nat.add_sub_cancel_left, ← Nat.mul_sub, Nat.reduceEqDiff, ↓reduceIte, ite_true, ite_false]
+    | skip))
+
+/-- Unfold `lagMult` and `topCoeff` (or `lagMultD` and `topCoeffD`, for a periodic degree law
+with period `p > 1`, normalizing the arithmetic by `linRecNatNorm`) and compute the
+coefficients of the explicit polynomials in the goal, followed by `push_cast`. -/
+private def linRecCoeffSimp (p : Nat := 1) : TacticM (TSyntax `tactic) := do
+  let norm ← if p ≤ 1 then `(tactic| skip) else linRecNatNorm p
   `(tactic| (
     (first | simp only [RealRooted.LinRec.lagMultD_linear] | skip) <;>
-    simp only [RealRooted.LinRec.lagMult, RealRooted.LinRec.topCoeff, List.filter_cons,
+    simp only [RealRooted.LinRec.lagMult, RealRooted.LinRec.topCoeff,
+      RealRooted.LinRec.lagMultD, RealRooted.LinRec.topCoeffD,
+      RealRooted.LinRec.cast_descFactorial_eq_prod, List.filter_cons,
       List.filter_nil, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
       Finset.prod_range_succ, Finset.prod_range_zero, Finset.sum_range_succ,
       Finset.sum_range_zero, decide_eq_true_eq, Nat.reduceEqDiff, Nat.reduceMul, Nat.reduceSub,
       Nat.reduceAdd, ite_true, ite_false, Nat.cast_ofNat, Nat.cast_zero, sub_zero, one_mul,
       mul_one, zero_add, add_zero] <;>
+    $norm <;>
+    -- the products of closed forms can be unfolded once the arguments are `q + numeral`
+    (first | simp only [Finset.prod_range_succ, Finset.prod_range_zero, one_mul] | skip) <;>
     (first
       | simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.coeff_add, Polynomial.coeff_sub,
           Polynomial.coeff_neg, Polynomial.coeff_C_mul, Polynomial.coeff_mul_C,
@@ -1126,11 +1193,25 @@ private def linRecCoeffSimp : TacticM (TSyntax `tactic) :=
       | skip) <;>
     push_cast))
 
+/-- The (unhygienic) names of the variables `n = p * k + r` of a residue decomposition. -/
+private def linRecN : Ident := mkIdent `rr_n
+private def linRecK : Ident := mkIdent `rr_k
+
+/-- The residue decomposition `n = p * k + r` of the variable `n` of the goal, followed by
+`interval_cases r`: one goal for each residue `r < p`. -/
+private def linRecResidue (p : Nat) : TacticM (TSyntax `tactic) :=
+  `(tactic| (
+    obtain ⟨$linRecK, rr_r, rr_hr, rr_h⟩ : ∃ q r, r < $(rowNumLit p) ∧
+        $linRecN = $(rowNumLit p) * q + r :=
+      ⟨$linRecN / $(rowNumLit p), $linRecN % $(rowNumLit p), by lia, by lia⟩
+    subst rr_h
+    interval_cases rr_r))
+
 /-- Reduce numeral arithmetic such as `2 + 1 * 0` in the goal. -/
 private def linRecNumerals : TacticM Unit := do
   discard <| rowSucceeds (evalTactic (← `(tactic|
-    simp only [Nat.reduceMul, Nat.reduceSub, Nat.reduceAdd, mul_zero, add_zero, zero_add,
-      mul_one, one_mul])))
+    simp only [Nat.reduceMul, Nat.reduceSub, Nat.reduceAdd, Nat.reduceDiv, Nat.reduceMod,
+      mul_zero, add_zero, zero_add, mul_one, one_mul])))
 
 /-- The summand coefficient `fun n => A n` shifted by `s`: `fun n => A (n + s)`. -/
 private def linRecShiftCoeff (c : Expr) (s : Nat) : TacticM Term := do
@@ -1185,19 +1266,33 @@ private def linRecRows (P : Ident) (rows : Array QPoly) : TacticM Unit := do
 
 /-- The side goal `hlag : ∀ t ∈ terms, t.1 < k` and the degree bounds
 `hA : ∀ t ∈ terms, ∀ n, (A n).natDegree ≤ d * (k - t.1) + i` (stated with the degree law `D`
-in the ratio regime, which `Nat.add_sub_add_left` and `Nat.mul_sub` reduce to the same). -/
-private def linRecSideLagDegree (m : Nat) (hlag hA : MVarId) : TacticM Unit := do
+in the ratio regime, which `Nat.add_sub_add_left` and `Nat.mul_sub` reduce to the same).
+For a periodic degree law (`p > 1`) the bound is `D (n + k) - D (n + j) + i`, which depends on
+`n` modulo `p`: each degree bound is split by the residue of `n` first. -/
+private def linRecSideLagDegree (p m : Nat) (hlag hA : MVarId) : TacticM Unit := do
   linRecRun "hlag" hlag (evalTactic (← `(tactic| simp)))
   linRecRun "hA" hA do
-    evalTactic (← `(tactic|
-      simp only [List.mem_cons, List.not_mem_nil, or_false, forall_eq_or_imp, forall_eq,
-        Nat.add_sub_add_left, ← Nat.mul_sub, Nat.reduceMul, Nat.reduceSub, Nat.reduceAdd,
-        mul_zero, add_zero, zero_add, mul_one, one_mul]))
+    if p ≤ 1 then
+      evalTactic (← `(tactic|
+        simp only [List.mem_cons, List.not_mem_nil, or_false, forall_eq_or_imp, forall_eq,
+          Nat.add_sub_add_left, ← Nat.mul_sub, Nat.reduceMul, Nat.reduceSub, Nat.reduceAdd,
+          mul_zero, add_zero, zero_add, mul_one, one_mul]))
+    else
+      evalTactic (← `(tactic|
+        simp only [List.mem_cons, List.not_mem_nil, or_false, forall_eq_or_imp, forall_eq]))
     let holes : Array Term ← (List.range m).toArray.mapM fun _ => `(?_)
     if m > 1 then evalTactic (← `(tactic| refine ⟨$holes,*⟩))
     for g in ← getGoals do
       setGoals [g]
-      rowSideGoal none
+      if p > 1 then
+        -- the bound `D (n + k) - D (n + j) + i` depends on `n` modulo `p`
+        evalTactic (← `(tactic| intro $linRecN:ident))
+        evalTactic (← `(tactic| ($(← linRecResidue p):tactic <;> $(← linRecNatNorm p):tactic)))
+        for g' in ← getGoals do
+          setGoals [g']
+          rowSideGoal none
+      else
+        rowSideGoal none
     setGoals []
 
 /-- The side goals of `natDegree_eq_and_leadingCoeff_pos`: lags, degree bounds, base rows,
@@ -1205,11 +1300,12 @@ nonnegative multipliers with positive sum. -/
 private def linRecSidesNonneg (P : Ident) (rows : Array QPoly) (m : Nat) (gs : List MVarId) :
     TacticM Unit := do
   let [hlag, hA, hbase, hmult, hpos] := gs | throwError "rr_linrec: unexpected side goals"
-  linRecSideLagDegree m hlag hA
+  linRecSideLagDegree 1 m hlag hA
   linRecRun "hbase" hbase do
     evalTactic (← `(tactic| (intro j hj; interval_cases j <;> refine ⟨?_, ?_⟩)))
     linRecRows P rows
-  let fin ← (← linRecFinishers).foldrM (init := ← `(tactic| fail))
+  let kv : Term ← `(k)
+  let fin ← (← linRecFinishers kv).foldrM (init := ← `(tactic| fail))
     fun fin rest => `(tactic| first | ($fin:tactic; done) | $rest:tactic)
   let coeff ← linRecCoeffSimp
   linRecRun "hmult" hmult do
@@ -1227,7 +1323,7 @@ degree bounds, base rows, the scalar recurrence and the nonvanishing of `c`. -/
 private def linRecSidesClosed (P : Ident) (rows : Array QPoly) (m : Nat) (gs : List MVarId) :
     TacticM Unit := do
   let [hlag, hA, hbase, hc, hc0] := gs | throwError "rr_linrec: unexpected side goals"
-  linRecSideLagDegree m hlag hA
+  linRecSideLagDegree 1 m hlag hA
   linRecRun "hbase" hbase do
     evalTactic (← `(tactic| (intro j hj; interval_cases j <;> refine ⟨?_, ?_⟩)))
     linRecRows P rows
@@ -1244,7 +1340,7 @@ private def linRecSidesRatio (P : Ident) (rows : Array QPoly) (k m : Nat) (gs : 
     | throwError "rr_linrec: unexpected side goals"
   linRecRun "hk" hk (evalTactic (← `(tactic| norm_num)))
   linRecRun "hrho" hρ (evalTactic (← `(tactic| norm_num)))
-  linRecSideLagDegree m hlag hA
+  linRecSideLagDegree 1 m hlag hA
   linRecRun "hD" hD (evalTactic (← `(tactic| (intro n j hj; beta_reduce; lia))))
   linRecRun "hbase" hbase do
     evalTactic (← `(tactic| (intro j hj; interval_cases j)))
@@ -1269,6 +1365,61 @@ private def linRecSidesRatio (P : Ident) (rows : Array QPoly) (k m : Nat) (gs : 
       hints := hints.push (← `(mul_nonneg (Nat.cast_nonneg n) (sub_nonneg.2 $hj)))
     evalTactic (← `(tactic| ($coeff:tactic <;> (first | norm_num | skip) <;>
       first | linarith | nlinarith [$hints,*])))
+
+/-- The side goal `hD : ∀ n j, j < k → D (n + j) ≤ D (n + k)` of a periodic degree law. -/
+private def linRecSideMono (hD : MVarId) : TacticM Unit :=
+  linRecRun "hD" hD do
+    evalTactic (← `(tactic|
+      first
+        | exact RealRooted.LinRec.degreeLaw_periodic_mono
+        | (intro n j hj; beta_reduce; lia)))
+
+/-- The side goals of `natDegree_eq_and_leadingCoeff_pos_of_degreeLaw` for a periodic degree
+law with period `p`: lags, monotonicity, degree bounds, base rows, nonnegative multipliers with
+positive sum (after a residue decomposition of `n`). -/
+private def linRecSidesNonnegP (P : Ident) (rows : Array QPoly) (p m : Nat) (gs : List MVarId) :
+    TacticM Unit := do
+  let [hlag, hD, hA, hbase, hmult, hpos] := gs | throwError "rr_linrec: unexpected side goals"
+  linRecSideLagDegree p m hlag hA
+  linRecSideMono hD
+  linRecRun "hbase" hbase do
+    evalTactic (← `(tactic| (intro j hj; interval_cases j <;> refine ⟨?_, ?_⟩)))
+    linRecRows P rows
+  let kv : Term := linRecK
+  let fin ← (← linRecFinishers kv).foldrM (init := ← `(tactic| fail))
+    fun fin rest => `(tactic| first | ($fin:tactic; done) | $rest:tactic)
+  let coeff ← linRecCoeffSimp p
+  let res ← linRecResidue p
+  linRecRun "hmult" hmult do
+    evalTactic (← `(tactic| (intro $linRecN:ident j hj; interval_cases j)))
+    for g in ← getGoals do
+      setGoals [g]
+      evalTactic (← `(tactic| ($res:tactic <;> $coeff:tactic <;> (first | norm_num | skip) <;>
+        $fin:tactic)))
+    setGoals []
+  linRecRun "hpos" hpos
+    (evalTactic (← `(tactic| (intro $linRecN:ident; $res:tactic <;> $coeff:tactic <;>
+      (first | norm_num | skip) <;> $fin:tactic))))
+
+/-- The side goals of `natDegree_eq_and_leadingCoeff_eq_of_degreeLaw` for a periodic degree
+law with period `p`: lags, monotonicity, degree bounds, base rows, the scalar recurrence and
+the nonvanishing of `c` (after a residue decomposition of `n`). -/
+private def linRecSidesClosedP (P : Ident) (rows : Array QPoly) (p m : Nat) (gs : List MVarId) :
+    TacticM Unit := do
+  let [hlag, hD, hA, hbase, hc, hc0] := gs | throwError "rr_linrec: unexpected side goals"
+  linRecSideLagDegree p m hlag hA
+  linRecSideMono hD
+  linRecRun "hbase" hbase do
+    evalTactic (← `(tactic| (intro j hj; interval_cases j <;> refine ⟨?_, ?_⟩)))
+    linRecRows P rows
+  let coeff ← linRecCoeffSimp p
+  let res ← linRecResidue p
+  linRecRun "hc" hc
+    (evalTactic (← `(tactic| (intro $linRecN:ident; $res:tactic <;> $coeff:tactic <;>
+      first | ring1 | rr_linrec_field))))
+  let posR ← `(tactic|
+    first | (split_ifs <;> first | positivity | rr_row_field) | positivity | rr_row_field)
+  linRecRun "hc0" hc0 (evalTactic (← `(tactic| (intro k; beta_reduce; $posR:tactic))))
 
 /-- Apply the theorem of the regime `reg` to the shifted sequence and close the goal. -/
 private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (kind : String) :
@@ -1302,14 +1453,31 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
   let dq := rowNumLit d
   let Dq := rowNumLit D₀
   let h := mkIdent `h_row
+  let periodic := law.p > 1
+  let Dper ← `(fun $n:ident => $Dq + $dq * (($n + $(rowNumLit law.e)) / $(rowNumLit law.p)))
   let apply : TSyntax `tactic ← match reg with
-    | .nonneg => `(tactic| have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos
-        (k := $kq) (d := $dq) (D₀ := $Dq) (P := $Q) (terms := $terms) $hrec ?_ ?_ ?_ ?_ ?_ $t)
+    | .nonneg =>
+      if periodic then
+        `(tactic| have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw
+          (k := $kq) (D := $Dper) (P := $Q) (terms := $terms) $hrec ?_ ?_ ?_ ?_ ?_ ?_ $t)
+      else
+        `(tactic| have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos
+          (k := $kq) (d := $dq) (D₀ := $Dq) (P := $Q) (terms := $terms) $hrec ?_ ?_ ?_ ?_ ?_ $t)
     | .closed f => do
         let c ← f.toTerm
-        `(tactic| have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq
-          (k := $kq) (d := $dq) (D₀ := $Dq) (P := $Q) (terms := $terms) (c := $c) $hrec
-          ?_ ?_ ?_ ?_ ?_ $t)
+        if periodic then
+          `(tactic| have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq_of_degreeLaw
+            (k := $kq) (D := $Dper) (P := $Q) (terms := $terms) (c := $c) $hrec
+            ?_ ?_ ?_ ?_ ?_ ?_ $t)
+        else
+          `(tactic| have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq
+            (k := $kq) (d := $dq) (D₀ := $Dq) (P := $Q) (terms := $terms) (c := $c) $hrec
+            ?_ ?_ ?_ ?_ ?_ $t)
+    | .closedRes forms => do
+        let c ← residueTerm forms
+        `(tactic| have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq_of_degreeLaw
+          (k := $kq) (D := $Dper) (P := $Q) (terms := $terms) (c := $c) $hrec
+          ?_ ?_ ?_ ?_ ?_ ?_ $t)
     | .ratio ρ => do
         let ρt ← rationalTerm ρ
         `(tactic| have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_ratio
@@ -1324,12 +1492,18 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
   let natDeg : TSyntax `tactic ←
     `(tactic| exact (And.left $h).trans (by first | lia | (split_ifs <;> lia)))
   let posTac ← `(tactic| first | positivity | rr_row_field)
+  let posTacR ← `(tactic|
+    first | (split_ifs <;> first | positivity | rr_row_field) | positivity | rr_row_field)
   let lcPos : TacticM Unit := do
     match reg with
     | .closed _ =>
         evalTactic (← `(tactic| refine lt_of_lt_of_eq ?_ (And.right $h).symm))
         evalTactic (← `(tactic| beta_reduce))
         evalTactic posTac
+    | .closedRes _ =>
+        evalTactic (← `(tactic| refine lt_of_lt_of_eq ?_ (And.right $h).symm))
+        evalTactic (← `(tactic| beta_reduce))
+        evalTactic posTacR
     | _ => evalTactic (← `(tactic| exact And.right $h))
   let lcNe : TacticM Unit := do
     match reg with
@@ -1338,6 +1512,11 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
           refine Polynomial.leadingCoeff_ne_zero.mp ((And.right $h).trans_ne ?_)))
         evalTactic (← `(tactic| beta_reduce))
         evalTactic posTac
+    | .closedRes _ =>
+        evalTactic (← `(tactic|
+          refine Polynomial.leadingCoeff_ne_zero.mp ((And.right $h).trans_ne ?_)))
+        evalTactic (← `(tactic| beta_reduce))
+        evalTactic posTacR
     | _ => evalTactic (← `(tactic|
         exact Polynomial.leadingCoeff_ne_zero.mp (ne_of_gt (And.right $h))))
   try
@@ -1352,8 +1531,13 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
   catch e => throwError "main goal: {e.toMessageData}"
   unless (← getGoals).isEmpty do throwError "rr_linrec: goals remain"
   match reg with
-  | .nonneg => linRecSidesNonneg P rows L.terms.size gs.tail
-  | .closed _ => linRecSidesClosed P rows L.terms.size gs.tail
+  | .nonneg =>
+    if periodic then linRecSidesNonnegP P rows law.p L.terms.size gs.tail
+    else linRecSidesNonneg P rows L.terms.size gs.tail
+  | .closed _ =>
+    if periodic then linRecSidesClosedP P rows law.p L.terms.size gs.tail
+    else linRecSidesClosed P rows L.terms.size gs.tail
+  | .closedRes _ => linRecSidesClosedP P rows law.p L.terms.size gs.tail
   | .ratio _ => linRecSidesRatio P rows k L.terms.size gs.tail
   | .none => pure ()
   setGoals rest
@@ -1383,8 +1567,6 @@ def linRecCore (kind : String) : TacticM Unit := withMainContext do
       has a larger degree than the theorems of `RealRooted.LinRec` allow, so leading terms \
       cancel: not covered"
   trace[rr.row] "rr_linrec: law {repr pr.law}, tops {pr.tops}, regime {repr pr.regime}"
-  if pr.law.p != 1 then
-    throwError "rr_linrec: periodic degrees (period {pr.law.p}) of {P} are not supported"
   let regimes := linRecRegimes pr kind
   if regimes.isEmpty then
     throwError "rr_linrec: no regime applies to {P}: degrees D₀ = {pr.law.D₀}, d = {pr.law.d}, \
@@ -1395,12 +1577,12 @@ def linRecCore (kind : String) : TacticM Unit := withMainContext do
     | .ok () => return
     | .error e => failures := failures.push (m!"{repr reg}", e)
   throwRowFailures m!"rr_linrec: no regime proves the goal for {P} (drop {pr.law.drop}, degrees \
-    {pr.law.D₀} + {pr.law.d} * n)" failures
+    {pr.law.D₀} + {pr.law.d} * ((n + {pr.law.e}) / {pr.law.p}))" failures
 
 /-- `rr_linrec` closes `(P t).natDegree = e`, `P t ≠ 0`, `0 < (P t).leadingCoeff` or the
 conjunction of the first and the last, for a sequence `P : ℕ → ℝ[X]` defined by a linear
-recurrence of any order with derivatives, whose degrees grow linearly after dropping at most two
-rows (see `linRecCore`). -/
+recurrence of any order with derivatives, whose degrees grow linearly or periodically
+(`D₀ + d * ⌊(n + e) / p⌋`, `p ≤ 4`) after dropping at most two rows (see `linRecCore`). -/
 elab (name := rrLinRec) "rr_linrec" : tactic => withMainContext do
   betaReduceGoal
   let some kind := linRecGoalKind? (← instantiateMVars (← getMainTarget))

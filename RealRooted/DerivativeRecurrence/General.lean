@@ -49,7 +49,8 @@ summands that act on the row `P (n + j)`. -/
 noncomputable def lagMult (k d D₀ : ℕ) (terms : List (ℕ × ℕ × (ℕ → ℝ[X]))) (n j : ℕ) : ℝ :=
   ((terms.filter fun t => t.1 = j).map (topCoeff k d D₀ n)).sum
 
-private theorem descFactorial_cast (N i : ℕ) :
+/-- The falling factorial `N (N - 1) ⋯ (N - i + 1)` as a real product. -/
+theorem cast_descFactorial_eq_prod (N i : ℕ) :
     (N.descFactorial i : ℝ) = ∏ l ∈ Finset.range i, ((N : ℝ) - l) := by
   induction i with
   | zero => simp
@@ -85,7 +86,7 @@ theorem rhs_step {k d D₀ : ℕ} {P : ℕ → ℝ[X]} (n : ℕ) :
       rw [hN] at h1 h2
       simp only [rhs, List.map_cons, List.sum_cons] at ih ⊢
       refine ⟨natDegree_add_le_of_degree_le h1 ih.1, ?_⟩
-      rw [coeff_add, h2, ih.2, topCoeff, descFactorial_cast]
+      rw [coeff_add, h2, ih.2, topCoeff, cast_descFactorial_eq_prod]
 
 /-- Regroup a sum over the summands by their lags `j < k`. -/
 private theorem sum_map_eq_sum_lag {k : ℕ} (f : ℕ × ℕ × (ℕ → ℝ[X]) → ℝ) (g : ℕ → ℝ) :
@@ -390,18 +391,6 @@ noncomputable def lagMultD (k : ℕ) (D : ℕ → ℕ) (terms : List (ℕ × ℕ
     (n j : ℕ) : ℝ :=
   ((terms.filter fun t => t.1 = j).map (topCoeffD k D n)).sum
 
-private theorem descFactorial_castD (N i : ℕ) :
-    (N.descFactorial i : ℝ) = ∏ l ∈ Finset.range i, ((N : ℝ) - l) := by
-  induction i with
-  | zero => simp
-  | succ i ih =>
-      rw [Nat.descFactorial_succ, Finset.prod_range_succ, ← ih, Nat.cast_mul]
-      rcases le_or_gt i N with h | h
-      · rw [Nat.cast_sub h]
-        ring
-      · rw [Nat.descFactorial_eq_zero_iff_lt.mpr h]
-        simp
-
 /-- One step for a degree law: if the rows `P (n + j)`, `j < k`, have degree at most
 `D (n + j)`, then the right side has degree at most `D (n + k)`, with top coefficient
 `∑ₜ topCoeffD t * (P (n + jₜ)).coeff (D (n + jₜ))`. -/
@@ -555,7 +544,7 @@ theorem lagMultD_linear (k d D₀ : ℕ) (terms : List (ℕ × ℕ × (ℕ → �
     intro t
     have hsub : D₀ + d * (n + k) - (D₀ + d * (n + t.1)) = d * (k - t.1) := by
       rw [Nat.add_sub_add_left, ← Nat.mul_sub, Nat.add_sub_add_left]
-    rw [topCoeffD, topCoeff, hsub, descFactorial_castD]
+    rw [topCoeffD, topCoeff, hsub, cast_descFactorial_eq_prod]
   unfold lagMultD lagMult
   exact congrArg List.sum (List.map_congr_left fun t _ => h t)
 
