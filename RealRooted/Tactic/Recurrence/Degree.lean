@@ -295,6 +295,12 @@ tactics print `apply … <;> rr_row_side` certificates.  With
 interlacing theorems. -/
 syntax (name := rrRowSide) "rr_row_side" : tactic
 
+/-- `rr_row_cancel` closes `(P t).natDegree = e`, `P t ≠ 0`, `0 < (P t).leadingCoeff` or
+`(P t).natDegree = e ∧ 0 < (P t).leadingCoeff` for a first-order derivative recurrence
+`P (n + 1) = A n * (P n)' + B n * P n` whose top terms may cancel; implemented in
+`RealRooted.Tactic.Recurrence.Cancel`, and tried last by the degree tactics. -/
+syntax (name := rrRowCancel) "rr_row_cancel" : tactic
+
 elab_rules : tactic
   | `(tactic| rr_row_side) => withMainContext do
     betaReduceGoal
@@ -1646,7 +1652,13 @@ private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × 
       unless noHints && kind != "leadingCoeff_ratio" do throwError e
       match ← rowAttempt (linRecRow kind) with
       | .ok cert => return (cert, {})
-      | .error e' => throwError "{e}\n\nAs a general linear recurrence: {e'}"
+      | .error e' =>
+        -- first-order derivative recurrences whose top terms cancel
+        let cancel ← `(tactic| rr_row_cancel)
+        match ← rowAttempt (evalTactic cancel) with
+        | .ok _ => return (#[cancel], {})
+        | .error e'' => throwError "{e}\n\nAs a general linear recurrence: {e'}\n\n\
+            With cancelling top terms: {e''}"
 
 /-- Run a degree tactic; with `?`, print the certificate and the hinted call. -/
 private def rowDegreeElab (kind : String) (tk : Option Syntax)
