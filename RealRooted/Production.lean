@@ -889,6 +889,7 @@ import RealRooted.Mathlib.Algebra.BigOperators.Finset.Unique
 import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 import RealRooted.Mathlib.Algebra.Group.ForwardDiff
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Asymptotics
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric
@@ -1524,6 +1525,7 @@ import RealRooted.Tactic.WeightedSum
 import RealRooted.ThreeTermRecurrence.Degree
 import RealRooted.ThreeTermRecurrence.HalfGrowth
 import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.ThreeTermRecurrence.Moments
 import RealRooted.ThreeTermRecurrence.NoCommonRoot
 import RealRooted.ThresholdMatrix
 import RealRooted.ThresholdMatrix.Basic
