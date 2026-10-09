@@ -23,6 +23,7 @@ import RealRooted.Analysis.PowerTail.Bernoulli
 import RealRooted.Analysis.PowerTail.Quadratic
 import RealRooted.Analysis.PowerTail.Telescoping
 import RealRooted.Apolarity
+import RealRooted.Applications.BinderVecchi.UniformMatroid
 import RealRooted.Applications.EulerianVariations
 import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 import RealRooted.Applications.EulerianVariations.PeakValues
@@ -331,6 +332,7 @@ import RealRooted.Challenges.ThresholdMatrices
 import RealRooted.Challenges.ToricContribution
 import RealRooted.Challenges.TotallyNonnegativeHadamardObstruction
 import RealRooted.Challenges.TotallyNonnegativeMatrices
+import RealRooted.Challenges.UniformMatroidHodgePoincare
 import RealRooted.Challenges.UnitIntervalAcyclicSinks
 import RealRooted.Challenges.VanDerWaerden
 import RealRooted.Challenges.VeroneseSections
@@ -1341,6 +1343,7 @@ import RealRooted.SymmetricDecomposition
 import RealRooted.SymmetricDecomposition.Decomposition
 import RealRooted.SymmetricDecomposition.Definitions
 import RealRooted.SymmetricDecomposition.DerangementTransform
+import RealRooted.SymmetricDecomposition.EulerianTransform
 import RealRooted.SymmetricDecomposition.FPolynomial
 import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
 import RealRooted.SymmetricDecomposition.Theorem26
