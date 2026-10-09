@@ -1,6 +1,7 @@
 import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 import RealRooted.Applications.EulerianVariations.PeakValues
 import RealRooted.Applications.EulerianVariations.TernaryRuns
+import RealRooted.CombinatorialExamples.SuperEulerian
 
 /-!
 # Eulerian variations challenge entry point
@@ -9,7 +10,7 @@ import RealRooted.Applications.EulerianVariations.TernaryRuns
 version = 1
 section = "theorems"
 slug = "eulerian-variations"
-authors = ["Alexandersson"]
+authors = ["Alexandersson", "Shankar"]
 years = [2026]
 
 [[definitions]]
@@ -26,6 +27,11 @@ label = "Ternary run polynomial"
 name = "RealRooted.peakValuePolynomial"
 module = "RealRooted.CombinatorialExamples.PeakValues"
 label = "Multivariate peak-value polynomial"
+
+[[definitions]]
+name = "RealRooted.SuperEulerian.superEulerian"
+module = "RealRooted.CombinatorialExamples.SuperEulerian"
+label = "Super-Eulerian polynomial"
 
 [[theorems]]
 name = """RealRooted.Applications.EulerianVariations.\
@@ -58,6 +64,21 @@ label = "Ternary run polynomials are PF"
 name = "RealRooted.Applications.EulerianVariations.ternaryRunPolynomial_strictInterl"
 module = "RealRooted.Applications.EulerianVariations.TernaryRuns"
 label = "Consecutive ternary run polynomials interlace"
+
+[[theorems]]
+name = "RealRooted.SuperEulerian.isRealRooted_superEulerian"
+module = "RealRooted.CombinatorialExamples.SuperEulerian"
+label = "Super-Eulerian polynomials are real-rooted"
+
+[[theorems]]
+name = "RealRooted.SuperEulerian.strictInterl_superEulerian_succ"
+module = "RealRooted.CombinatorialExamples.SuperEulerian"
+label = "Consecutive super-Eulerian polynomials strictly interlace"
+
+[[theorems]]
+name = "RealRooted.SuperEulerian.exists_gamma_superEulerian"
+module = "RealRooted.CombinatorialExamples.SuperEulerian"
+label = "Super-Eulerian gamma-polynomials are real-rooted and nonnegative"
 -->
 
 <!-- realrooted-catalog-content -->
