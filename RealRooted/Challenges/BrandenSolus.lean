@@ -1,4 +1,5 @@
 import RealRooted.SymmetricDecomposition
+import RealRooted.CombinatorialExamples.DerangementStatistic
 import RealRooted.SymmetricDecomposition.DerangementTransform
 
 open Polynomial
@@ -36,6 +37,16 @@ label = "Nonnegative magic-basis coordinates give a real-rooted derangement imag
 name = "RealRooted.DerangementTransform.transform_magicExpansion_strictInterl"
 module = "RealRooted.SymmetricDecomposition.DerangementTransform"
 label = "The derangement image lies between A_d and d_d"
+
+[[theorems]]
+name = "RealRooted.DerangementStatistic.derangementExcGenPoly_eq_polynomial"
+module = "RealRooted.CombinatorialExamples.DerangementStatistic"
+label = "Derangements counted by excedances give the derangement polynomials d_n"
+
+[[theorems]]
+name = "RealRooted.DerangementStatistic.derangementExcGenPoly_isRealRooted"
+module = "RealRooted.CombinatorialExamples.DerangementStatistic"
+label = "The excedance polynomial of derangements is real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -52,6 +63,11 @@ coordinates in the basis $x^k(1+x)^{d-k}$ to a real-rooted polynomial lying betw
 Eulerian polynomial $A_d$ and the derangement polynomial $d_d$ (Brändén–Solus, Corollary 3.7).
 Here it is derived from the Brändén–Vecchi Chow-resolution theorem for the Pascal matrix,
 whose resolving rows are exactly $x^k(1+x)^{d-k}$.
+
+The derangement polynomials are defined by a recurrence. Their combinatorial meaning is
+formalized: $d_n(x) = \sum_{\sigma} x^{\operatorname{exc}(\sigma)}$, summed over the
+derangements of $n$ letters, where $\operatorname{exc}$ counts excedances $i < \sigma(i)$.
+The proof establishes the excedance recurrence by removing the letter $0$ from a derangement.
 
 ## References
 
