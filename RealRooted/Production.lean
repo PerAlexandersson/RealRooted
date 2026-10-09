@@ -975,6 +975,9 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
 import RealRooted.Mathlib.Combinatorics.Enumerative.PatternCount
 import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
+import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumDescent
+import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumPattern
 import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
 import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
 import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree
