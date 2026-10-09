@@ -564,6 +564,9 @@ import RealRooted.EulerianMixedCompatibility
 import RealRooted.EulerianMixedCompatibility.Insertion
 import RealRooted.FactorialCompression.Basic
 import RealRooted.FactorialCompression.CommonKernel
+import RealRooted.FactorialCompression.Compression
+import RealRooted.FactorialCompression.DegreeChanging
+import RealRooted.FactorialCompression.Examples
 import RealRooted.FactorialCompression.Kernel
 import RealRooted.Favard
 import RealRooted.Favard.Affine
@@ -1315,6 +1318,8 @@ import RealRooted.SamePhaseStability
 import RealRooted.SamePhaseStability.Nonnegative
 import RealRooted.ScalarNormalization
 import RealRooted.SeparablePermutations.Basic
+import RealRooted.SeparablePermutations.Enumerator
+import RealRooted.SeparablePermutations.Gamma
 import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma
 import RealRooted.SignEvaluation
