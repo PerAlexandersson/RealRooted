@@ -568,6 +568,8 @@ structure RowHints where
   window : Option (Term × Term) := none
   /-- the root window `(-∞, U]` -/
   upper : Option Term := none
+  /-- the route of `rr_row_splits` -/
+  via : Option Name := none
 
 /-- Parse the hints. -/
 def parseRowHints (hs : Array (TSyntax ``rrRowHint)) : TacticM RowHints := do
@@ -588,17 +590,21 @@ def parseRowHints (hs : Array (TSyntax ``rrRowHint)) : TacticM RowHints := do
     | `ratio => h := { h with ratio := some v }
     | `half => h := { h with half := some (← nat?) }
     | `upper => h := { h with upper := some v }
+    | `via =>
+        unless v.raw.isIdent do throwErrorAt v "rr_row: expected a route name"
+        h := { h with via := some v.raw.getId }
     | `window =>
         match v with
         | `([$l, $u]) => h := { h with window := some (l, u) }
         | _ => throwErrorAt v "rr_row: expected a window `[L, U]`"
     | k => throwErrorAt key "rr_row: unknown hint {k}; the hints are thm, degree, growth, \
-        drop, ratio, half, window and upper"
+        drop, ratio, half, window, upper and via"
   return h
 
 /-- The hints as syntax, for printed certificates. -/
 def RowHints.toSyntax (h : RowHints) : TacticM (Array (TSyntax ``rrRowHint)) := do
   let mut out := #[]
+  if let some v := h.via then out := out.push (← `(rrRowHint| (via := $(mkIdent v))))
   if let some t := h.thm then out := out.push (← `(rrRowHint| (thm := $(mkIdent t))))
   if let some d := h.degree then out := out.push (← `(rrRowHint| (degree := $(rowNumLit d))))
   if let some d := h.growth then out := out.push (← `(rrRowHint| (growth := $(rowNumLit d))))

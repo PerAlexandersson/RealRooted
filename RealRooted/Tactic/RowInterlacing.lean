@@ -36,8 +36,8 @@ sign conditions on `b n` reduce to coefficient inequalities of degree-two polyno
 which the row-data side-goal engine discharges.
 
 Hints `(thm := name)`, `(degree := D₀)`, `(window := [L, U])` and `(upper := U)` restrict
-the search; `rr_row_interlaces?` prints the certificate
-`apply thm (P := …) (D₀ := …) … <;> rr_row_side` and the hinted call.
+the search; `rr_row_interlaces?` prints the hinted call, which replays only the successful
+attempt, and the certificate `apply thm (P := …) (D₀ := …) … <;> rr_row_side`.
 
 The same front end gives
 
@@ -48,7 +48,8 @@ The same front end gives
   `0` (positive coefficients at `0`; for derivative recurrences with `A n` not vanishing at
   `0` also nonnegative coefficients of the rows);
 * `rr_row_splits`: `(P t).Splits`, from `RealRooted.productSequence_ne_zero_and_splits` or
-  from `rr_row_interlaces`.
+  from `rr_row_interlaces`, among other routes; `(via := route)` selects one, and
+  `rr_row_splits?` prints the hinted call.
 -/
 
 open Lean Elab Tactic Meta Polynomial
@@ -60,8 +61,8 @@ a recurrence; see the module documentation.  The hints `(thm := name)`, `(degree
 `(window := [L, U])` and `(upper := U)` restrict the search. -/
 syntax (name := rrRowInterlaces) "rr_row_interlaces" (ppSpace rrRowHint)* : tactic
 
-/-- `rr_row_interlaces?` runs `rr_row_interlaces` and prints the certificate
-`apply thm (P := …) … <;> rr_row_side` and the hinted call. -/
+/-- `rr_row_interlaces?` runs `rr_row_interlaces` and prints the hinted call and the
+certificate `apply thm (P := …) … <;> rr_row_side`. -/
 syntax (name := rrRowInterlacesQ) "rr_row_interlaces?" (ppSpace rrRowHint)* : tactic
 
 /-- `rr_row_nonneg_coeffs` closes `HasNonnegCoeffs (P t)` (or `∀ n, HasNonnegCoeffs (P n)`)
@@ -1290,8 +1291,8 @@ private def degreeLaws (hints : RowHints) : List (Option Nat) :=
   | none => [none, some 0, some 1]
 
 /-- The derivative-lag Liu–Wang argument for the goal `(P t).Splits` (`splits := true`) or
-`Interlaces (P t) (P (t + 1))`. -/
-def derivLagCore (splits : Bool) (hints : RowHints) : TacticM Unit := withMainContext do
+`Interlaces (P t) (P (t + 1))`.  Returns the hints of the successful attempt. -/
+def derivLagCore (splits : Bool) (hints : RowHints) : TacticM RowHints := withMainContext do
   let tgt ← instantiateMVars (← getMainTarget)
   if let .forallE n _ _ _ := tgt then evalTactic (← `(tactic| intro $(mkIdent n):ident))
   withMainContext do
@@ -1309,7 +1310,7 @@ def derivLagCore (splits : Bool) (hints : RowHints) : TacticM Unit := withMainCo
     for law in degreeLaws hints do
       if law.isSome && !splits then continue
       match ← rowAttempt (derivLagAttempt d splits hints s law) with
-      | .ok _ => return
+      | .ok _ => return { hints with drop := some s, half := law }
       | .error e =>
           let what : MessageData := match law with
             | none => m!"growth one after dropping {s} rows"
@@ -1336,9 +1337,9 @@ syntax (name := rrRowDerivLagInterlaces) "rr_row_deriv_lag_interlaces" (ppSpace 
 
 elab_rules : tactic
   | `(tactic| rr_row_deriv_lag_splits $hs*) => withMainContext do
-    derivLagCore true (← parseRowHints hs)
+    discard <| derivLagCore true (← parseRowHints hs)
   | `(tactic| rr_row_deriv_lag_interlaces $hs*) => withMainContext do
-    derivLagCore false (← parseRowHints hs)
+    discard <| derivLagCore false (← parseRowHints hs)
 
 /-- Is the sequence of the main goal one of a derivative-lag recurrence that `rr_row_splits`
 and `rr_row_interlaces` do not read themselves? -/
@@ -1349,22 +1350,28 @@ private def isDerivLagGoal : TacticM Bool := do
   unless (← rowRec? P) matches .error _ do return false
   return (← derivLagRec? P) matches .ok _
 
+/-- `rr_row_interlaces`, returning a certificate (empty for the derivative-lag and order-three
+routes, which have no printable steps) and the hints of the hinted call. -/
+private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := do
+  if ← isDerivLagGoal then
+    return (#[], ← derivLagCore false hints)
+  -- order-three recurrences through a three-term recurrence
+  if (← rowAttempt (rowRecSetup "rr_row_interlaces")) matches .error _ then
+    if ← rowSucceeds (lowerOrderInterlaces hints) then return (#[], hints)
+  rowInterlacesCore hints
+
+/-- Run a row tactic `core` and print the hinted call `name hs'*` and the certificate. -/
+private def rowElabWithHints (tk : Syntax) (core : TacticM (Cert × RowHints))
+    (name : String) : TacticM Unit := do
+  let goal ← getMainGoal
+  let (cert, hints) ← core
+  suggestCert goal tk cert name (← hints.toSyntax)
+
 elab_rules : tactic
   | `(tactic| rr_row_interlaces $hs*) => withMainContext do
-    if ← isDerivLagGoal then
-      derivLagCore false (← parseRowHints hs)
-      return
-    let hints ← parseRowHints hs
-    -- order-three recurrences through a three-term recurrence
-    if (← rowAttempt (rowRecSetup "rr_row_interlaces")) matches .error _ then
-      if ← rowSucceeds (lowerOrderInterlaces hints) then return
-    discard <| rowInterlacesCore hints
+    discard <| rowInterlacesTop (← parseRowHints hs)
   | `(tactic| rr_row_interlaces?%$tk $hs*) => withMainContext do
-    let goal ← getMainGoal
-    let (cert, hints) ← rowInterlacesCore (← parseRowHints hs)
-    let hs' ← hints.toSyntax
-    verifyCert goal cert
-    suggestCert tk cert (← `(tactic| rr_row_interlaces $hs'*))
+    rowElabWithHints tk (rowInterlacesTop (← parseRowHints hs)) "rr_row_interlaces"
 
 elab_rules : tactic
   | `(tactic| rr_row_nonneg_coeffs) => withMainContext do
@@ -1985,15 +1992,39 @@ elab_rules : tactic
     setGoals []
 
 /-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
-`rr_row_interlaces`. -/
-elab "rr_row_splits" : tactic => withMainContext do
+`rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
+number of rows split off; the routes are `closedForm`, `lowerOrder`, `subseq`,
+`linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and `prevRow` (the
+interlacing of `P t` with `P (t + 1)` or `P (t - 1)`) and `halfGrowth`.  The hints of
+`rr_row_interlaces` are passed on to the interlacing routes. -/
+syntax (name := rrRowSplits) "rr_row_splits" (ppSpace rrRowHint)* : tactic
+
+/-- `rr_row_splits?` runs `rr_row_splits` and prints the hinted call, which replays only the
+successful route. -/
+syntax (name := rrRowSplitsQ) "rr_row_splits?" (ppSpace rrRowHint)* : tactic
+
+/-- The routes of `rr_row_splits`, in the order of the attempts. -/
+private def splitsRoutes : List Name :=
+  [`closedForm, `lowerOrder, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
+    `nextRow, `prevRow, `halfGrowth]
+
+/-- `rr_row_splits`, returning the hints of the successful route. -/
+private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainContext do
+  if let some v := hints.via then
+    unless splitsRoutes.contains v do
+      throwError "rr_row_splits: unknown route {v}; the routes are \
+        {", ".intercalate (splitsRoutes.map toString)}"
+  let use (route : Name) : Bool := hints.via.isNone || hints.via == some route
   if ← isDerivLagGoal then
-    derivLagCore true {}
-    return
+    return ← derivLagCore true hints
   discard introIfForall
   withMainContext do
   -- closed forms `residual * ∏ qᵢ ^ eᵢ n`, found by a numeric probe before any elaboration
-  if ← rowSucceeds rowClosedFormSplits then return
+  if hints.via == some `closedForm then
+    rowClosedFormSplits
+    return { via := some `closedForm }
+  if hints.via.isNone then
+    if ← rowSucceeds rowClosedFormSplits then return { via := some `closedForm }
   -- shapes outside `RecShape` whose lags share a period: residue subsequences
   if (← rowAttempt (rowRecSetup "rr_row_splits")) matches .error _ then
     -- order-three recurrences through a three-term recurrence
@@ -2006,9 +2037,17 @@ elab "rr_row_splits" : tactic => withMainContext do
       evalTactic (← `(tactic|
         refine (?_ : RealRooted.Interlaces ($P $e) ($P ($e + 1))).2.1.2))
       lowerOrderInterlaces {}
-    if ← rowSucceeds viaLower then return
+    if hints.via == some `lowerOrder then
+      viaLower
+      return { via := some `lowerOrder }
+    if hints.via.isNone then
+      if ← rowSucceeds viaLower then return { via := some `lowerOrder }
+    if let some v := hints.via then
+      unless v == `subseq do
+        throwError "rr_row_splits: the route {v} needs a recurrence that \
+          `rr_row_interlaces` reads"
     evalTactic (← `(tactic| rr_row_subseq_splits))
-    return
+    return { via := some `subseq }
   let r ← rowRecSetup "rr_row_splits"
   let P := mkIdent r.P
   if r.shape == .product then
@@ -2031,9 +2070,11 @@ elab "rr_row_splits" : tactic => withMainContext do
       evalTactic (← factorSplitsTac)
       unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
     let mut failures := #[]
-    for (what, tac) in [("linear factors", viaLinear), ("split factors", viaFactors)] do
+    for (route, what, tac) in [(`linearFactors, "linear factors", viaLinear),
+        (`splitFactors, "split factors", viaFactors)] do
+      unless use route do continue
       match ← rowAttempt tac with
-      | .ok _ => return
+      | .ok _ => return { via := some route }
       | .error e => failures := failures.push (m!"{what}", e)
     throwRowFailures m!"rr_row_splits: no strategy proves the goal for the product {P}" failures
   let (t, c) ← rowIndexParts r.P
@@ -2054,7 +2095,8 @@ elab "rr_row_splits" : tactic => withMainContext do
       let e' ← indexTerm t' c'
       evalTactic (← `(tactic|
         refine (?_ : RealRooted.Interlaces ($P $e') ($P ($e' + 1))).2.1.2))
-    discard <| rowInterlacesCore { drop := some k }
+    let (_, h) ← rowInterlacesCore { hints with via := none, drop := some k }
+    return { h with via := some `nextRow, drop := some k }
   let viaRight (k : Nat) := do
     let some _ ← splitRows t (k + below + 1) (smallRow P)
       | throwError "rr_row_splits: not a variable"
@@ -2062,7 +2104,8 @@ elab "rr_row_splits" : tactic => withMainContext do
     let (t', c') ← rowIndexParts r.P
     let e' ← indexTerm t' (c' - 1)
     evalTactic (← `(tactic| refine (?_ : RealRooted.Interlaces ($P $e') ($P ($e' + 1))).1.2))
-    discard <| rowInterlacesCore { drop := some k }
+    let (_, h) ← rowInterlacesCore { hints with via := none, drop := some k }
+    return { h with via := some `prevRow, drop := some k }
   -- half growth: rows two apart interlace (`RealRooted.threeTermHalf_ne_zero_and_splits`)
   let viaHalf (k : Nat) := do
     unless r.shape == .lag do throwError "rr_row_splits: not a three-term recurrence"
@@ -2152,18 +2195,39 @@ elab "rr_row_splits" : tactic => withMainContext do
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
   let mut failures := #[]
   let viaSubseq := evalTactic (← `(tactic| rr_row_subseq_splits))
-  for (what, tac) in [("a two-step product", viaTwoStep), ("a shifted product", viaLagLeft),
-      ("residue subsequences", viaSubseq),
-      ("the interlacing of P t and P (t + 1)", viaLeft 0),
-      ("the interlacing of P (t - 1) and P t", viaRight 0),
-      ("the half-growth interlacing of P t and P (t + 2)", viaHalf 0),
-      ("the interlacing of P (t + 1) and P (t + 2), after splitting off a row", viaLeft 1),
-      ("the interlacing of P (t - 1) and P t, after splitting off a row", viaRight 1),
-      ("half growth after splitting off a row", viaHalf 1),
-      ("half growth after splitting off two rows", viaHalf 2)] do
+  let route (r : Name) (tac : TacticM Unit) : TacticM RowHints := do
+    tac
+    return { via := some r }
+  let half (k : Nat) : TacticM RowHints := do
+    viaHalf k
+    return { via := some `halfGrowth, drop := some k }
+  for (r, k, what, tac) in [
+      (`twoStep, 0, "a two-step product", route `twoStep viaTwoStep),
+      (`shiftedProduct, 0, "a shifted product", route `shiftedProduct viaLagLeft),
+      (`subseq, 0, "residue subsequences", route `subseq viaSubseq),
+      (`nextRow, 0, "the interlacing of P t and P (t + 1)", viaLeft 0),
+      (`prevRow, 0, "the interlacing of P (t - 1) and P t", viaRight 0),
+      (`halfGrowth, 0, "the half-growth interlacing of P t and P (t + 2)", half 0),
+      (`nextRow, 1, "the interlacing of P (t + 1) and P (t + 2), after splitting off a row",
+        viaLeft 1),
+      (`prevRow, 1, "the interlacing of P (t - 1) and P t, after splitting off a row",
+        viaRight 1),
+      (`halfGrowth, 1, "half growth after splitting off a row", half 1),
+      (`halfGrowth, 2, "half growth after splitting off two rows", half 2)] do
+    unless use r do continue
+    -- `drop` counts the rows split off by the interlacing and half-growth routes
+    if hints.drop.isSome && hints.drop != some k &&
+        (r == `nextRow || r == `prevRow || r == `halfGrowth) then continue
     match ← rowAttempt tac with
-    | .ok _ => return
+    | .ok h => return h
     | .error e => failures := failures.push (m!"{what}", e)
   throwRowFailures m!"rr_row_splits: no strategy proves the goal for {P}" failures
+
+elab_rules : tactic
+  | `(tactic| rr_row_splits $hs*) => withMainContext do
+    discard <| rowSplitsCore (← parseRowHints hs)
+  | `(tactic| rr_row_splits?%$tk $hs*) => withMainContext do
+    let hints ← parseRowHints hs
+    rowElabWithHints tk (do return (#[], ← rowSplitsCore hints)) "rr_row_splits"
 
 end RealRooted.Tactic

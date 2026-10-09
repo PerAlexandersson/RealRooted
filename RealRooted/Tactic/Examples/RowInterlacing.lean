@@ -375,6 +375,40 @@ def A180047 : ℕ → ℝ[X]
 
 theorem A180047_splits (n : ℕ) : (A180047 n).Splits := by rr_row_splits
 
+/-! ### Hinted calls of `rr_row_splits` -/
+
+/--
+info: Try these:
+  [apply] rr_row_splits (via := nextRow) (thm := RealRooted.derivRec_interlaces_of_roots_mem_Icc)
+        (degree := 0) (drop := 0) (window := [-1, 0])
+-/
+#guard_msgs in
+example (n : ℕ) : (A019538 n).Splits := by
+  rr_row_splits?
+
+/--
+info: Try these:
+  [apply] rr_row_splits (drop := 1) (half := 1)
+-/
+#guard_msgs in
+example (n : ℕ) : (A008299 n).Splits := by
+  rr_row_splits?
+
+example (n : ℕ) : (A008299 n).Splits := by rr_row_splits (drop := 1) (half := 1)
+example (n : ℕ) : (A180047 n).Splits := by rr_row_splits (via := halfGrowth) (drop := 1)
+example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := prevRow)
+example (n : ℕ) : (A133080 n).Splits := by rr_row_splits (via := twoStep)
+example (n : ℕ) : (A167194 n).Splits := by rr_row_splits (via := shiftedProduct)
+example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := linearFactors)
+example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitFactors)
+
+/--
+error: rr_row_splits: unknown route foo; the routes are closedForm, lowerOrder, subseq,
+linearFactors, splitFactors, twoStep, shiftedProduct, nextRow, prevRow, halfGrowth
+-/
+#guard_msgs (whitespace := normalized) in
+example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := foo)
+
 end
 
 end RealRooted.Tactic.RowInterlacingExamples

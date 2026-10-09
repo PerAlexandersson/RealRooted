@@ -479,12 +479,10 @@ private def rowDriver (r : RowRec) (kind : String) (hints : RowHints)
   throwRowFailures m!"rr_row_{kind}: no strategy proves the goal for the \
     {r.shape.describe} recurrence of {P}" failures
 
-/-- Replay a certificate, as printed and parsed back, on a copy of `goal` with a fresh
-heartbeat budget; warn if it does not close the goal. -/
-def verifyCert (goal : MVarId) (cert : Cert) : TacticM Unit := do
+/-- Replay a printed tactic, parsed back, on a copy of `goal` with a fresh heartbeat budget;
+warn if it does not close the goal. -/
+def verifyText (goal : MVarId) (text : String) : TacticM Unit := do
   let s ← saveState
-  let seq ← cert.toSeq
-  let text := (← PrettyPrinter.ppTactic (← `(tactic| ($seq)))).pretty
   let res ← rowAttempt do
     let stx ← match Parser.runParserCategory (← getEnv) `tactic text with
       | .ok stx => pure stx
@@ -498,21 +496,56 @@ def verifyCert (goal : MVarId) (cert : Cert) : TacticM Unit := do
   if let .error e := res then
     logWarning m!"rr_row: the printed certificate did not replay: {e}"
 
-/-- Print a certificate and the hinted call as suggestions, aligned at the column of `tk`
-and in lines of at most 100 characters when `tk` starts its line. -/
-def suggestCert (tk : Syntax) (cert : Cert) (hinted : TSyntax `tactic) : TacticM Unit := do
+/-- The call `name hs*` in lines of at most 100 characters, the first starting at column
+`col` and the others indented by `indent`; a hint is never broken. -/
+def layoutHinted (name : String) (hs : Array (TSyntax ``rrRowHint)) (col indent : Nat) :
+    TacticM String := do
+  let mut out := name
+  let mut pos := col + name.length
+  for h in hs do
+    let `(rrRowHint| ($k:ident := $v)) := h | throwUnsupportedSyntax
+    let v := (← PrettyPrinter.ppTerm ⟨← cleanSyntax v⟩).pretty 1000
+    let t := s!"({k.getId.eraseMacroScopes} := {v})"
+    if pos + 1 + t.length ≤ 100 then
+      out := out ++ " " ++ t
+      pos := pos + 1 + t.length
+    else
+      out := out ++ "\n" ++ "".pushn ' ' indent ++ t
+      pos := indent + t.length
+  return out
+
+/-- Print the hinted call `name hs*` and the certificate as suggestions, in lines of at most
+100 characters, after replaying the certificate (or, if it is empty, the hinted call) on a
+copy of `goal`.  When `tk` starts its line, both are aligned at its column.  Otherwise
+(`:= by tac?`) the continuation lines of the hinted call are indented by four more spaces
+than the line, and the certificate starts a new block indented by two more spaces.  An
+empty certificate (a route that closes the goal without printable steps) prints only the
+hinted call. -/
+def suggestCert (goal : MVarId) (tk : Syntax) (cert : Cert) (name : String)
+    (hs : Array (TSyntax ``rrRowHint)) : TacticM Unit := do
   let fileMap ← getFileMap
-  let col := match tk.getPos? with
-    | some pos => (fileMap.toPosition pos).column
-    | none => 2
-  let render (t : TSyntax `tactic) : TacticM String := do
-    let text := (← PrettyPrinter.ppTactic ⟨← cleanSyntax t⟩).pretty (max (100 - col) 60)
-    return "\n".intercalate ((text.splitOn "\n").map fun l => "".pushn ' ' col ++ l)
-  let lines ← cert.mapM render
-  let text := ("\n".intercalate lines.toList).drop col
-  let hintedText := (← render hinted).drop col
-  Meta.Tactic.TryThis.addSuggestions tk
-    #[{ suggestion := .string text.toString }, { suggestion := .string hintedText.toString }]
+  let (col, lead) := match tk.getPos? with
+    | some pos =>
+        let p := fileMap.toPosition pos
+        let line := ((fileMap.source.splitOn "\n")[p.line - 1]?).getD ""
+        (p.column, (line.toList.takeWhile (· == ' ')).length)
+    | none => (2, 2)
+  let atStart := lead == col
+  let hintedText ← layoutHinted name hs col (if atStart then col + 4 else lead + 4)
+  let hintedSuggestion : Meta.Tactic.TryThis.Suggestion := { suggestion := .string hintedText }
+  if cert.isEmpty then
+    verifyText goal hintedText
+    Meta.Tactic.TryThis.addSuggestions tk #[hintedSuggestion]
+    return
+  verifyText goal (← PrettyPrinter.ppTactic (← `(tactic| ($(← cert.toSeq))))).pretty
+  -- the lines of a tactic sequence must start at the same column
+  let indent := if atStart then col else lead + 2
+  let lines ← cert.mapM fun t => do
+    let text := (← PrettyPrinter.ppTactic ⟨← cleanSyntax t⟩).pretty (max (100 - indent) 40)
+    return "\n".intercalate ((text.splitOn "\n").map fun l => "".pushn ' ' indent ++ l)
+  let text := "\n".intercalate lines.toList
+  let text := if atStart then (text.drop col).toString else "\n" ++ text
+  Meta.Tactic.TryThis.addSuggestions tk #[hintedSuggestion, { suggestion := .string text }]
 
 /-- Run `main`, then close every remaining goal with `rr_row_side`. -/
 def applyThenSide (P? : Option Ident) (main : TSyntax `tactic) : TacticM (TSyntax `tactic) := do
@@ -553,17 +586,18 @@ recurrence, when `e` is `D₀ + d * t` (or `D₀ + d * ((t + e) / 2)`) up to `li
 `(drop := k)`, `(degree := D₀)`, `(growth := d)`, `(ratio := ρ)`, `(half := e)` and
 `(thm := name)` restrict the search. -/
 syntax (name := rrRowNatDegree) "rr_row_natDegree" (ppSpace rrRowHint)* : tactic
-/-- `rr_row_natDegree?` runs `rr_row_natDegree` and prints an `apply … <;> rr_row_side`
-certificate and the hinted call. -/
+/-- `rr_row_natDegree?` runs `rr_row_natDegree` and prints the hinted call and an
+`apply … <;> rr_row_side` certificate. -/
 syntax (name := rrRowNatDegreeQ) "rr_row_natDegree?" (ppSpace rrRowHint)* : tactic
 /-- `rr_row_ne_zero` closes `P t ≠ 0`; it takes the hints of `rr_row_natDegree`. -/
 syntax (name := rrRowNeZero) "rr_row_ne_zero" (ppSpace rrRowHint)* : tactic
-/-- `rr_row_ne_zero?` runs `rr_row_ne_zero` and prints a certificate. -/
+/-- `rr_row_ne_zero?` runs `rr_row_ne_zero` and prints the hinted call and a certificate. -/
 syntax (name := rrRowNeZeroQ) "rr_row_ne_zero?" (ppSpace rrRowHint)* : tactic
 /-- `rr_row_leadingCoeff_pos` closes `0 < (P t).leadingCoeff`; it takes the hints of
 `rr_row_natDegree`. -/
 syntax (name := rrRowLeadingCoeffPos) "rr_row_leadingCoeff_pos" (ppSpace rrRowHint)* : tactic
-/-- `rr_row_leadingCoeff_pos?` runs `rr_row_leadingCoeff_pos` and prints a certificate. -/
+/-- `rr_row_leadingCoeff_pos?` runs `rr_row_leadingCoeff_pos` and prints the hinted call and
+a certificate. -/
 syntax (name := rrRowLeadingCoeffPosQ) "rr_row_leadingCoeff_pos?" (ppSpace rrRowHint)* :
   tactic
 
@@ -1660,20 +1694,13 @@ private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × 
         | .error e'' => throwError "{e}\n\nAs a general linear recurrence: {e'}\n\n\
             With cancelling top terms: {e''}"
 
-/-- Run a degree tactic; with `?`, print the certificate and the hinted call. -/
+/-- Run a degree tactic; with `?`, print the hinted call and the certificate. -/
 private def rowDegreeElab (kind : String) (tk : Option Syntax)
     (hs : Array (TSyntax ``rrRowHint)) : TacticM Unit := withMainContext do
   let goal ← getMainGoal
   let (cert, hints) ← rowDegreeCore kind (← parseRowHints hs)
   if let some tk := tk then
-    let hs' ← hints.toSyntax
-    let hinted ← match kind with
-      | "natDegree" => `(tactic| rr_row_natDegree $hs'*)
-      | "ne_zero" => `(tactic| rr_row_ne_zero $hs'*)
-      | "natDegree_leadingCoeff_pos" => `(tactic| rr_row_natDegree_leadingCoeff_pos $hs'*)
-      | _ => `(tactic| rr_row_leadingCoeff_pos $hs'*)
-    verifyCert goal cert
-    suggestCert tk cert hinted
+    suggestCert goal tk cert s!"rr_row_{kind}" (← hints.toSyntax)
 
 elab_rules : tactic
   | `(tactic| rr_row_natDegree $hs*) => rowDegreeElab "natDegree" none hs
