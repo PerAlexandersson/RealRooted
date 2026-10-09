@@ -1,3 +1,4 @@
+import RealRooted.CombinatorialExamples.DyckNarayana
 import RealRooted.MaoWangMatrixProduct
 import RealRooted.NarayanaTransformation.Endpoints
 import RealRooted.NarayanaTransformation.Falling
@@ -91,6 +92,16 @@ headline = true
 [[theorems]]
 name = "RealRooted.Challenges.Narayana.rowGeneratingFunctionsPF_mul_pow"
 label = "Mao–Wang: powers of an admissible factor keep Pólya-frequency rows"
+
+[[theorems]]
+name = "DyckWord.card_semilength_peakCount"
+module = "RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics"
+label = "Dyck paths of semilength n with k peaks are counted by Narayana numbers"
+
+[[theorems]]
+name = "DyckWord.peakGeneratingPolynomial_eq_narayanaPolynomial"
+module = "RealRooted.CombinatorialExamples.DyckNarayana"
+label = "The peak polynomial of Dyck paths is x N_{n,1}(x)"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -101,7 +112,9 @@ For $m, n \geq 0$, the generalized Narayana polynomial is
 $$N_{n,m}(x) = \sum_{k=0}^{n} \frac{\binom{n}{k}\binom{n+m}{k}}{\binom{m+k}{k}}\, x^k.$$
 
 For $m = 1$ the coefficients are Narayana numbers; for example
-$N_{2,1}(x) = 1 + 3x + x^2$. These polynomials are Pólya-frequency, and the Narayana transform
+$N_{2,1}(x) = 1 + 3x + x^2$. Combinatorially, the Dyck paths of semilength
+$n + 1$ counted by peaks have generating polynomial $x\, N_{n,1}(x)$; this is
+formalized. These polynomials are Pólya-frequency, and the Narayana transform
 $x^n \mapsto N_{n,m}(x)$ preserves Pólya-frequency polynomials. Here a
 polynomial is Pólya-frequency (`IsPFPolynomial`) if it has nonnegative
 coefficients and is either zero or real-rooted with nonpositive zeros.
