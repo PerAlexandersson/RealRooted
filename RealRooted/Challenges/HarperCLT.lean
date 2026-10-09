@@ -3,6 +3,7 @@ import RealRooted.CombinatorialExamples.DerangementsExcNormal
 import RealRooted.CombinatorialExamples.EulerianNormal
 import RealRooted.CombinatorialExamples.NarayanaNormal
 import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
+import RealRooted.ThreeTermRecurrence.Moments
 
 /-!
 # Harper's central limit theorem challenge entry point
@@ -69,6 +70,16 @@ label = "The second-order Eulerian numbers are asymptotically normal"
 name = "RealRooted.tendsto_standardizedCoeffDistribution_sturmDerangementsExc"
 module = "RealRooted.CombinatorialExamples.DerangementsExcNormal"
 label = "Excedances of derangements are asymptotically normal"
+
+[[theorems]]
+name = "RealRooted.ThreeTermRecurrence.tendsto_derivative_eval_div_nat_mul_eval"
+module = "RealRooted.ThreeTermRecurrence.Moments"
+label = "Three-term recurrences: the mean grows like n λ'/λ"
+
+[[theorems]]
+name = "RealRooted.ThreeTermRecurrence.tendsto_variance_eval_div_nat"
+module = "RealRooted.ThreeTermRecurrence.Moments"
+label = "Three-term recurrences: the variance grows linearly"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -85,6 +96,16 @@ If $p$ is real-rooted, its roots $-r_i$ are nonpositive and
 $p(x)/p(1) = \prod_i (1 - q_i + q_i x)$ with $q_i = 1/(1 + r_i)$. So the
 coefficient distribution is that of a sum of independent Bernoulli variables,
 with $\mu = \sum_i q_i$ and $\sigma^2 = \sum_i q_i (1 - q_i)$.
+
+For three-term recurrences $P_{n+2} = a(x) P_{n+1} + b(x) P_n$ with $a, b$ independent of
+$n$, let $\lambda > |\nu|$ be the roots of $t^2 = a(1) t + b(1)$, with $\nu \neq 0$, and let
+$\lambda(x)$ be the root branch through $\lambda$. If the $\lambda$-component of $P_n(1)$ is
+nonzero, then $\mu(P_n)/n \to \lambda'(1)/\lambda(1)$ and
+$\sigma^2(P_n)/n \to \lambda''/\lambda + \lambda'/\lambda - (\lambda'/\lambda)^2$ at
+$x = 1$ (Bender's formulas). The formalization derives closed forms for $P_n(1)$, $P_n'(1)$
+and $P_n''(1)$ from forced scalar recurrences and writes the limits algebraically in $a(1)$,
+$b(1)$ and their derivatives. With real-rootedness of the rows and $\sigma^2(P_n) \to \infty$,
+Harper's theorem then gives asymptotic normality.
 
 **Theorem** (Harper; Bender). Let $P_n$ be real-rooted polynomials with
 nonnegative coefficients and $\sigma^2(P_n) \to \infty$. Then the standardized
