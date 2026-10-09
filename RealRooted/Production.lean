@@ -150,6 +150,7 @@ import RealRooted.BinaryRunTransformation.KernelIdentities
 import RealRooted.BinaryRunTransformation.MultiplierMotzkin
 import RealRooted.BinaryRunTransformation.PointingPencil
 import RealRooted.BinaryRunTransformation.Sturm
+import RealRooted.BinaryRunTransformation.SymbolCounterexample
 import RealRooted.BivariateOpenMapping
 import RealRooted.BooleanSwapOrbit
 import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
