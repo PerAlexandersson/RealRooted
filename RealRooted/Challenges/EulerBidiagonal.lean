@@ -1,7 +1,9 @@
 import RealRooted.CombinatorialExamples.CentralFactorial
+import RealRooted.CombinatorialExamples.EulerTypeOeis
 import RealRooted.CombinatorialExamples.EulerTypeRows
 import RealRooted.EulerBidiagonal
 import RealRooted.EulerBidiagonal.General
+import RealRooted.EulerBidiagonal.PairTheorem
 import RealRooted.Interlacing.PencilPreserver
 import RealRooted.Interlacing.RootDeletionExpansion
 
@@ -83,6 +85,22 @@ label = "κ(θ + a)(θ + b) + X(u + vθ) preserves simple negative roots"
 name = "RealRooted.StrictInterl.root_deletion_expansion"
 module = "RealRooted.Interlacing.RootDeletionExpansion"
 label = "A strict interlacer is a positive combination of root deletions"
+
+[[theorems]]
+name = "RealRooted.EulerBidiagonal.strictInterl_generalStep_of_strictInterl"
+module = "RealRooted.EulerBidiagonal.PairTheorem"
+label = "κ(θ + a)(θ + b) + X(u + vθ) preserves strict interlacing of negative-rooted pairs"
+headline = true
+
+[[theorems]]
+name = "RealRooted.EulerBidiagonal.strictInterl_A156289"
+module = "RealRooted.CombinatorialExamples.EulerTypeOeis"
+label = "Consecutive rows of A156289 interlace"
+
+[[theorems]]
+name = "RealRooted.EulerBidiagonal.A166960_spec"
+module = "RealRooted.CombinatorialExamples.EulerTypeOeis"
+label = "Consecutive rows of A166960 interlace (likewise A166961, A166962, A166972)"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -118,9 +136,11 @@ negative real axis.
 $T = \kappa(\theta + a)(\theta + b) + x(u + v\theta)$ maps polynomials with simple negative zeros to
 such polynomials, provided $u + vk > 0$ on the degrees in use and $2u \geq (a + b + 1)v$ (or the
 sharper condition that the comparison defect is negative on $(-\infty, 0]$). The comparison
-polynomial is now $2\kappa x q' + (\kappa(a + b + 1) + vx)q$. The corresponding interlacing
-statement covers the rows A156289, A166960, A166961, A166962 and A166972; its formalization is in
-progress.
+polynomial is now $2\kappa x q' + (\kappa(a + b + 1) + vx)q$. It also preserves strict interlacing
+of
+such pairs (in the regime where the step raises the degree; a shifted-cone form covers the
+row recurrences where the multiplier depends on $n$), so the rows A156289, A166960, A166961,
+A166962 and A166972 strictly interlace.
 
 ## Proof idea
 

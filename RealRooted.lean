@@ -429,6 +429,7 @@ import RealRooted.CombinatorialExamples.Common
 import RealRooted.CombinatorialExamples.DerangementStatistic
 import RealRooted.CombinatorialExamples.DerangementsExcNormal
 import RealRooted.CombinatorialExamples.DyckNarayana
+import RealRooted.CombinatorialExamples.EulerTypeOeis
 import RealRooted.CombinatorialExamples.EulerTypeRows
 import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.CombinatorialExamples.EulerianNormal
@@ -568,7 +569,13 @@ import RealRooted.EndpointDerivative
 import RealRooted.EndpointDerivative.Basic
 import RealRooted.EndpointDerivative.Sequence
 import RealRooted.EulerBidiagonal
+import RealRooted.EulerBidiagonal.ComparisonData
+import RealRooted.EulerBidiagonal.DepRows
 import RealRooted.EulerBidiagonal.General
+import RealRooted.EulerBidiagonal.GeneralRows
+import RealRooted.EulerBidiagonal.Location
+import RealRooted.EulerBidiagonal.PairStep
+import RealRooted.EulerBidiagonal.PairTheorem
 import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Darboux
 import RealRooted.EulerOperator.Darboux.Basic
@@ -762,6 +769,7 @@ import RealRooted.Interlacing.PencilPreserver
 import RealRooted.Interlacing.Residue
 import RealRooted.Interlacing.ResidueCriterion
 import RealRooted.Interlacing.ResidueEulerStep
+import RealRooted.Interlacing.RootCountSigns
 import RealRooted.Interlacing.RootDeletionExpansion
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequence.NonnegativeShift
