@@ -1,5 +1,6 @@
 import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
+import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
 import RealRooted.ParkingFunctions.Descents.Basic
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
 
@@ -94,4 +95,9 @@ theorem wordDescentNumber_eq_list_descentCount {n : ℕ} {α : Type*}
 
 /- The weak left-peak statistic is not the canonical strict `leftPeakSet`:
    it omits position zero and allows equality at the preceding edge. -/
+/-- The parking-function predicate agrees with the canonical staged one. -/
+theorem isParkingFunction_iff_canonical {n : ℕ} (w : Fin n → Fin n) :
+    IsParkingFunction w ↔ _root_.ParkingFunction.IsParkingFunction w :=
+  ⟨fun h k => h k.val (by have := k.isLt; lia), fun h k hk => h ⟨k, by lia⟩⟩
+
 end RealRooted.ParkingFunctions
