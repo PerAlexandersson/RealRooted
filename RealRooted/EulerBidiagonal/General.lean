@@ -1,4 +1,5 @@
 import RealRooted.EulerBidiagonal
+import RealRooted.Interlacing.RootCountSigns
 import RealRooted.RootCounting.SignChanges
 
 /-!
@@ -981,67 +982,6 @@ theorem isNegativeSimple_generalStep_zero
     exact hsimple
   exact ⟨hsimpleT, hdeg⟩
 
-private lemma listInterlaces_head_le {ss rs' : List ℝ} {r : ℝ}
-    (hint : ListInterlaces ss (r :: rs')) (hs : (r :: rs').Pairwise (· ≤ ·)) :
-    ∀ x ∈ ss, r ≤ x := by
-  induction ss generalizing r rs' with
-  | nil => simp
-  | cons s ss ih =>
-      cases rs' with
-      | nil => simp [ListInterlaces] at hint
-      | cons r₂ rs'' =>
-          rcases hint with ⟨h1, _, htail⟩
-          intro x hx
-          rcases List.mem_cons.mp hx with rfl | hx
-          · exact h1
-          · have hr₂ := ih htail (List.Pairwise.of_cons hs) x hx
-            exact (List.rel_of_pairwise_cons hs (by simp)).trans hr₂
-
-private lemma countP_lt_getElem_of_listInterlaces {ss rs : List ℝ}
-    (hint : ListInterlaces ss rs) (hrs : rs.Pairwise (· < ·))
-    (hdisj : ∀ s ∈ ss, s ∉ rs) (hlen : ss.length + 1 = rs.length)
-    (i : ℕ) (hi : i < ss.length) :
-    rs.countP (fun r => decide (ss[i] < r)) = ss.length - i := by
-  induction ss generalizing rs i with
-  | nil => simp at hi
-  | cons s ss ih =>
-      rcases rs with _ | ⟨r₁, _ | ⟨r₂, rs₂⟩⟩
-      · simp at hlen
-      · simp at hlen
-      · obtain ⟨h1, h2, htail⟩ := hint
-        have hr₂ : s ≠ r₂ := fun h => hdisj s (by simp) (by simp [h])
-        have hr₁ : s ≠ r₁ := fun h => hdisj s (by simp) (by simp [h])
-        have hlt₂ : s < r₂ := lt_of_le_of_ne h2 hr₂
-        have hlen₂ : rs₂.length = ss.length := by
-          simp only [List.length_cons] at hlen
-          lia
-        cases i with
-        | zero =>
-            have hall : rs₂.countP (fun r => decide (s < r)) = rs₂.length := by
-              apply List.countP_eq_length.mpr
-              intro x hx
-              have := List.rel_of_pairwise_cons (List.Pairwise.of_cons hrs) hx
-              simpa using hlt₂.trans this
-            simp only [List.getElem_cons_zero, List.countP_cons, hall, hlen₂]
-            have : ¬ s < r₁ := not_lt.mpr h1
-            simp [this, hlt₂]
-        | succ i' =>
-            have hi' : i' < ss.length := by simpa using hi
-            have hih := ih htail (List.Pairwise.of_cons hrs)
-              (fun x hx => by
-                intro hmem
-                exact hdisj x (by simp [hx]) (by simp [hmem])) (by
-                simp only [List.length_cons] at hlen ⊢
-                lia) i' hi'
-            have hx₂ := listInterlaces_head_le htail
-              (List.Pairwise.imp (fun h => h.le) (List.Pairwise.of_cons hrs))
-              ss[i'] (List.getElem_mem hi')
-            have hr₁lt : r₁ < r₂ := List.rel_of_pairwise_cons hrs (by simp)
-            have hn : ¬ ss[i'] < r₁ := not_lt.mpr (hr₁lt.le.trans hx₂)
-            simp only [List.getElem_cons_succ, List.countP_cons, hih, List.length_cons]
-            simp [hn]
-
-
 /-- Unconditional general step: a negative-simple input of degree `m ≥ 1` is mapped to a
 negative-simple polynomial of degree `m + 1`; the sign-change certificate is built from the
 comparison roots of `generalComparison`. -/
@@ -1137,7 +1077,7 @@ theorem isNegativeSimple_generalStep_of_pos
   have hcount : ∀ (i : ℕ) (hi : i < m),
       q.roots.countP (fun r => A[i]'(by lia) < r) = m - i - 1 := by
     intro i hi
-    have hc := countP_lt_getElem_of_listInterlaces hint hrs0_lt hA_not (by
+    have hc := countP_lt_getElem_of_listInterlaces_strict hint hrs0_lt hA_not (by
       simp only [List.length_append, List.length_singleton, hA_len, hrs_len])
       i (by lia)
     rw [List.countP_append] at hc
