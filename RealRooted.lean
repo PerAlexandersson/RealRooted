@@ -1174,7 +1174,9 @@ import RealRooted.ObreschkoffConverse.Derivative
 import RealRooted.ObreschkoffConverse.Forward
 import RealRooted.ObreschkoffConverse.Regularization
 import RealRooted.OperatorInterlacingUpgrade
+import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
 import RealRooted.OperatorInterlacingUpgrade.RootOrder
+import RealRooted.OperatorInterlacingUpgrade.StablePencil
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.OrderedRoots
 import RealRooted.OscillatoryInterlacing
