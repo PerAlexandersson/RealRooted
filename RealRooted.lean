@@ -282,6 +282,7 @@ import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.DerivativeInterlacing
 import RealRooted.Challenges.Descartes
 import RealRooted.Challenges.EnestromKakeya
+import RealRooted.Challenges.EulerBidiagonal
 import RealRooted.Challenges.Eulerian
 import RealRooted.Challenges.EulerianVariations
 import RealRooted.Challenges.FactorialCompression
@@ -421,6 +422,7 @@ import RealRooted.CombinatorialExamples.BorosMoll
 import RealRooted.CombinatorialExamples.BorosMoll.Basic
 import RealRooted.CombinatorialExamples.BorosMoll.Estimates
 import RealRooted.CombinatorialExamples.BorosMoll.Infinite
+import RealRooted.CombinatorialExamples.CentralFactorial
 import RealRooted.CombinatorialExamples.ColoredSetPartitions
 import RealRooted.CombinatorialExamples.Common
 import RealRooted.CombinatorialExamples.DerangementStatistic
@@ -562,6 +564,7 @@ import RealRooted.ElementaryDifferential
 import RealRooted.EndpointDerivative
 import RealRooted.EndpointDerivative.Basic
 import RealRooted.EndpointDerivative.Sequence
+import RealRooted.EulerBidiagonal
 import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Darboux
 import RealRooted.EulerOperator.Darboux.Basic
@@ -750,6 +753,7 @@ import RealRooted.Interlacing.Euclid
 import RealRooted.Interlacing.Multiplicity
 import RealRooted.Interlacing.NegativeRoots
 import RealRooted.Interlacing.OuterDifference
+import RealRooted.Interlacing.PencilPreserver
 import RealRooted.Interlacing.Residue
 import RealRooted.Interlacing.ResidueCriterion
 import RealRooted.Interlacing.ResidueEulerStep
