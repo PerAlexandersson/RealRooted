@@ -972,6 +972,7 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.InverseStatistics
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
 import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+import RealRooted.Mathlib.Combinatorics.Enumerative.PatternCount
 import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
