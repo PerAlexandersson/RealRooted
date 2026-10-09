@@ -1162,6 +1162,7 @@ import RealRooted.MultivariateStability.AffineEulerCore
 import RealRooted.MultivariateStability.AllCombo
 import RealRooted.MultivariateStability.AllComboAffineLine
 import RealRooted.MultivariateStability.Barrier
+import RealRooted.MultivariateStability.BarrierCross
 import RealRooted.MultivariateStability.BarrierPick
 import RealRooted.MultivariateStability.BarrierStart
 import RealRooted.MultivariateStability.Diagonal
@@ -1173,6 +1174,7 @@ import RealRooted.MultivariateStability.LinearForm
 import RealRooted.MultivariateStability.Lorentzian
 import RealRooted.MultivariateStability.MixedCharacteristic
 import RealRooted.MultivariateStability.NegativeCorrelation
+import RealRooted.MultivariateStability.PickRatio
 import RealRooted.MultivariateStability.PolyaFrequency
 import RealRooted.MultivariateStability.Rayleigh
 import RealRooted.MultivariateStability.RayleighConverse
