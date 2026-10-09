@@ -423,6 +423,7 @@ import RealRooted.CombinatorialExamples.Common
 import RealRooted.CombinatorialExamples.DerangementsExcNormal
 import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.CombinatorialExamples.EulerianNormal
+import RealRooted.CombinatorialExamples.EulerianStatistic
 import RealRooted.CombinatorialExamples.EvenBinom
 import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic
 import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Comparison
