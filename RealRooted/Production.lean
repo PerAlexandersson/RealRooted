@@ -23,6 +23,7 @@ import RealRooted.Analysis.PowerTail.Bernoulli
 import RealRooted.Analysis.PowerTail.Quadratic
 import RealRooted.Analysis.PowerTail.Telescoping
 import RealRooted.Apolarity
+import RealRooted.Applications.BinderVecchi.UniformChow
 import RealRooted.Applications.BinderVecchi.UniformMatroid
 import RealRooted.Applications.EulerianVariations
 import RealRooted.Applications.EulerianVariations.CyclicPathDescents
