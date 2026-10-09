@@ -225,6 +225,13 @@ def A008303 : ℕ → ℝ[X]
 
 theorem A008303_natDegree (n : ℕ) : (A008303 n).natDegree = n / 2 := by rr_row_natDegree
 
+/-! ### Hinted calls of `rr_row_splits` -/
+
+example (n : ℕ) : (A026386 n).Splits := by rr_row_splits (via := closedForm)
+example (n : ℕ) : (A321434 n).Splits := by rr_row_splits (via := subseq)
+example (n : ℕ) : (A132812 n).Splits := by rr_row_splits (via := lowerOrder)
+example (n : ℕ) : (A034839 n).Splits := by rr_row_splits (via := halfGrowth) (drop := 0)
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples
