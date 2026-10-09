@@ -970,6 +970,7 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
 import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+import RealRooted.Mathlib.Combinatorics.Enumerative.PatternCount
 import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
