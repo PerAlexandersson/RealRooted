@@ -1,6 +1,7 @@
 import RealRooted.NarayanaTransformation.Interlacing
 import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
 import RealRooted.OperatorInterlacingUpgrade.RootOrder
+import RealRooted.OperatorInterlacingUpgrade.StablePencil
 
 /-!
 # Monomial-chain operator challenge entry point
@@ -33,6 +34,11 @@ label = "The Mao–Wang Narayana transform preserves interlacing"
 name = "RealRooted.exists_hasDerivAt_finRootPolynomial_shift"
 module = "RealRooted.OperatorInterlacingUpgrade.ImplicitRoot"
 label = "Implicit derivative of a simple output root in one input root"
+
+[[theorems]]
+name = "RealRooted.mvUpperHalfPlaneStable_bivariatePencil_map_of_monomialChain"
+module = "RealRooted.OperatorInterlacingUpgrade.StablePencil"
+label = "Monomial-chain operators preserve nonnegative stable pencils"
 -->
 
 <!-- realrooted-catalog-content -->
