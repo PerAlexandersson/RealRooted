@@ -552,6 +552,7 @@ import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
 import RealRooted.DerivativeRecurrence.SecondOrderODE
 import RealRooted.DeterminantalStability
 import RealRooted.DifferentialBlocks
+import RealRooted.EdreiThoma.Easy
 import RealRooted.ElementaryDifferential
 import RealRooted.EndpointDerivative
 import RealRooted.EndpointDerivative.Basic
