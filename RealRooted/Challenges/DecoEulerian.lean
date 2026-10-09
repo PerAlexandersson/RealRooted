@@ -1,3 +1,4 @@
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.EulerianCone
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Preserver
 
 open Polynomial Set
@@ -26,6 +27,16 @@ label = "Weighted deco Eulerian transform"
 name = "RealRooted.Challenges.DecoEulerian.weightedDecoTransform_splits_hasSimpleRoots_roots_neg"
 label = "The weighted deco transform preserves interval-rooted polynomials"
 headline = true
+
+[[theorems]]
+name = "RealRooted.EulerianTransform.transform_X_mul_eq_X_mul_weightedDecoTransform"
+module = "RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.EulerianCone"
+label = "At weight zero the deco transform is the Eulerian transformation, shifted"
+
+[[theorems]]
+name = "RealRooted.Applications.OEIS.weightedDecoTransform_zero_isPF_of_magicExpansion"
+module = "RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.EulerianCone"
+label = "At weight zero the deco transform is real-rooted on the whole magic cone"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -56,6 +67,11 @@ recurrence-defined family `decoEulerian` (`weightedDecoEulerian_one_weight`),
 whose initial values and recurrence match the coefficient triangle
 [OEIS A144438](https://oeis.org/A144438). The descent and deco-polyomino
 interpretations are cited, not formalized.
+
+At $w=0$ the transform is real-rooted on the larger cone of nonnegative combinations of
+$u^k(1+u)^{d-k}$: since $\mathcal A(uf)=x\,\mathcal T_0(f)$ for the Eulerian transformation
+$\mathcal A\colon 1\mapsto 1,\ u^n\mapsto xA_n(x)$, this follows from Athanasiadis's cone
+theorem. Whether the cone version holds for $0<w\leq 1$ is open.
 
 ## Proof idea
 
