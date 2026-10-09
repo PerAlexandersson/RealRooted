@@ -915,6 +915,99 @@ theorem separableDescentEnumerator_one (R : Type*) [CommSemiring R] :
   have : (1 : Perm (Fin 1)).descentCount = 0 := by decide
   rw [this, pow_zero]
 
+private theorem pairwiseDisjoint_directFirst (n : ℕ) :
+    ((Finset.Ico 1 n : Finset ℕ) : Set ℕ).PairwiseDisjoint (directFirst n) := by
+  intro m _ m' _ hne
+  refine Finset.disjoint_left.mpr fun σ h1 h2 => hne ?_
+  exact IsFirstSumCut.unique (mem_directFirst.mp h1).2 (mem_directFirst.mp h2).2
+
+private theorem pairwiseDisjoint_skewFirst (n : ℕ) :
+    ((Finset.Ico 1 n : Finset ℕ) : Set ℕ).PairwiseDisjoint (skewFirst n) := by
+  intro m _ m' _ hne
+  refine Finset.disjoint_left.mpr fun σ h1 h2 => hne ?_
+  exact IsFirstSkewCut.unique (mem_skewFirst.mp h1).2 (mem_skewFirst.mp h2).2
+
+private theorem separableSkewIndecomposables_eq_biUnion {n : ℕ} (hn : 2 ≤ n) :
+    separableSkewIndecomposables n = (Finset.Ico 1 n).biUnion (directFirst n) := by
+  ext σ
+  rw [Finset.mem_biUnion, mem_separableSkewIndecomposables]
+  constructor
+  · rintro ⟨hsep, hskew⟩
+    obtain ⟨m, hm, hmn, hcut | hcut⟩ := exists_hasSumCut_of_isSeparable hn hsep
+    · obtain ⟨m0, hm0⟩ := exists_isFirstSumCut ⟨m, hcut⟩
+      exact ⟨m0, Finset.mem_Ico.mpr ⟨hm0.1.1, hm0.1.2.1⟩,
+        mem_directFirst.mpr ⟨hsep, hm0⟩⟩
+    · exact (hskew m hmn hcut).elim
+  · rintro ⟨m, -, hσ⟩
+    obtain ⟨hsep, hm⟩ := mem_directFirst.mp hσ
+    exact ⟨hsep, fun c _ hc => not_hasSkewSumCut_of_hasDirectSumCut hm.1 hc⟩
+
+private theorem separableSumIndecomposables_eq_biUnion {n : ℕ} (hn : 2 ≤ n) :
+    separableSumIndecomposables n = (Finset.Ico 1 n).biUnion (skewFirst n) := by
+  ext σ
+  rw [Finset.mem_biUnion, mem_separableSumIndecomposables]
+  constructor
+  · rintro ⟨hsep, hsum⟩
+    obtain ⟨m, hm, hmn, hcut | hcut⟩ := exists_hasSumCut_of_isSeparable hn hsep
+    · exact (hsum m hmn hcut).elim
+    · obtain ⟨m0, hm0⟩ := exists_isFirstSkewCut ⟨m, hcut⟩
+      exact ⟨m0, Finset.mem_Ico.mpr ⟨hm0.1.1, hm0.1.2.1⟩, mem_skewFirst.mpr ⟨hsep, hm0⟩⟩
+  · rintro ⟨m, -, hσ⟩
+    obtain ⟨hsep, hm⟩ := mem_skewFirst.mp hσ
+    exact ⟨hsep, fun c _ hc => not_hasSkewSumCut_of_hasDirectSumCut hc hm.1⟩
+
+/-- **Companion recurrence for skew-indecomposables.**  For `n ≥ 2`, a separable permutation
+without a skew-sum cut has a direct-sum cut, so
+`Q_n = ∑_{k=1}^{n-1} P_k S_{n-k}`. -/
+theorem separableSkewIndecomposableEnumerator_recurrence (R : Type*) [CommSemiring R] {n : ℕ}
+    (hn : 2 ≤ n) :
+    separableSkewIndecomposableEnumerator R n =
+      ∑ k ∈ Finset.Ico 1 n,
+        separableSumIndecomposableEnumerator R k * separableDescentEnumerator R (n - k) := by
+  classical
+  unfold separableSkewIndecomposableEnumerator
+  rw [separableSkewIndecomposables_eq_biUnion hn, genPoly_biUnion _ _ _
+    (pairwiseDisjoint_directFirst n)]
+  refine Finset.sum_congr rfl fun m hm => ?_
+  have := Finset.mem_Ico.mp hm
+  exact genPoly_directFirst (by lia) this.2
+
+/-- **Companion recurrence for sum-indecomposables.**  For `n ≥ 2`, a separable permutation
+without a direct-sum cut has a skew-sum cut, so
+`P_n = X ∑_{k=1}^{n-1} Q_k S_{n-k}`. -/
+theorem separableSumIndecomposableEnumerator_recurrence (R : Type*) [CommSemiring R] {n : ℕ}
+    (hn : 2 ≤ n) :
+    separableSumIndecomposableEnumerator R n =
+      X * ∑ k ∈ Finset.Ico 1 n,
+        separableSkewIndecomposableEnumerator R k * separableDescentEnumerator R (n - k) := by
+  classical
+  unfold separableSumIndecomposableEnumerator
+  rw [separableSumIndecomposables_eq_biUnion hn, genPoly_biUnion _ _ _
+    (pairwiseDisjoint_skewFirst n), Finset.mul_sum]
+  refine Finset.sum_congr rfl fun m hm => ?_
+  have := Finset.mem_Ico.mp hm
+  exact genPoly_skewFirst (by lia) this.2
+
+/-- The enumerator of separable sum-indecomposable permutations of length one is `1`. -/
+theorem separableSumIndecomposableEnumerator_one (R : Type*) [CommSemiring R] :
+    separableSumIndecomposableEnumerator R 1 = 1 := by
+  have h : separableSumIndecomposables 1 = separablePermutations 1 := by
+    ext σ
+    rw [mem_separableSumIndecomposables, mem_separablePermutations]
+    exact ⟨fun h => h.1, fun h => ⟨h, fun m hm hc => by have := hc.1; lia⟩⟩
+  rw [separableSumIndecomposableEnumerator, h]
+  exact separableDescentEnumerator_one R
+
+/-- The enumerator of separable skew-indecomposable permutations of length one is `1`. -/
+theorem separableSkewIndecomposableEnumerator_one (R : Type*) [CommSemiring R] :
+    separableSkewIndecomposableEnumerator R 1 = 1 := by
+  have h : separableSkewIndecomposables 1 = separablePermutations 1 := by
+    ext σ
+    rw [mem_separableSkewIndecomposables, mem_separablePermutations]
+    exact ⟨fun h => h.1, fun h => ⟨h, fun m hm hc => by have := hc.1; lia⟩⟩
+  rw [separableSkewIndecomposableEnumerator, h]
+  exact separableDescentEnumerator_one R
+
 /-! ### Small kernel checks -/
 
 private def descentFibre (n k : ℕ) : Finset (Perm (Fin n)) :=
@@ -937,21 +1030,8 @@ example :
 /-- The recurrence at `n = 2` gives `1 + X`. -/
 example : separableDescentEnumerator ℕ 2 = 1 + X := by
   rw [separableDescentEnumerator_recurrence ℕ le_rfl]
-  have hP : separableSumIndecomposableEnumerator ℕ 1 = 1 := by
-    have h : separableSumIndecomposables 1 = separablePermutations 1 := by
-      ext σ
-      rw [mem_separableSumIndecomposables, mem_separablePermutations]
-      exact ⟨fun h => h.1, fun h => ⟨h, fun m hm hc => by have := hc.1; lia⟩⟩
-    rw [separableSumIndecomposableEnumerator, h]
-    exact separableDescentEnumerator_one ℕ
-  have hQ : separableSkewIndecomposableEnumerator ℕ 1 = 1 := by
-    have h : separableSkewIndecomposables 1 = separablePermutations 1 := by
-      ext σ
-      rw [mem_separableSkewIndecomposables, mem_separablePermutations]
-      exact ⟨fun h => h.1, fun h => ⟨h, fun m hm hc => by have := hc.1; lia⟩⟩
-    rw [separableSkewIndecomposableEnumerator, h]
-    exact separableDescentEnumerator_one ℕ
-  rw [show Finset.Ico 1 2 = {1} from rfl, Finset.sum_singleton, Finset.sum_singleton, hP, hQ,
+  rw [show Finset.Ico 1 2 = {1} from rfl, Finset.sum_singleton, Finset.sum_singleton,
+    separableSumIndecomposableEnumerator_one, separableSkewIndecomposableEnumerator_one,
     show 2 - 1 = 1 from rfl, separableDescentEnumerator_one]
   ring
 
