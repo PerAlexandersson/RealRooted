@@ -246,6 +246,7 @@ import RealRooted.BrandenVecchi.OrdinaryWordSeries
 import RealRooted.BrandenVecchi.ReflectionInterlacing
 import RealRooted.BrandenVecchi.SignedWordEnumerator
 import RealRooted.BrandenVecchi.SignedWordRuns.Basic
+import RealRooted.BrandenVecchi.SignedWordRuns.Canonical
 import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
 import RealRooted.BrandenVecchi.SignedWordRuns.Statistics
 import RealRooted.BrandenVecchi.SignedWords
@@ -439,6 +440,7 @@ import RealRooted.CombinatorialExamples.NarayanaNormal
 import RealRooted.CombinatorialExamples.OneDescentGamma
 import RealRooted.CombinatorialExamples.PathPowerIndependence
 import RealRooted.CombinatorialExamples.PeakValues
+import RealRooted.CombinatorialExamples.PeakValues.Canonical
 import RealRooted.CombinatorialExamples.PeakValues.Insertion
 import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
 import RealRooted.CombinatorialExamples.PeakValues.Sharpness
@@ -1191,6 +1193,7 @@ import RealRooted.PFPolynomial.Closure
 import RealRooted.PFPolynomial.CoefficientShape
 import RealRooted.PFPolynomial.LinearFactor
 import RealRooted.ParkingFunctions.Descents.Basic
+import RealRooted.ParkingFunctions.Descents.Canonical
 import RealRooted.ParkingFunctions.Descents.ChainSort
 import RealRooted.ParkingFunctions.Descents.CompositionBlocks
 import RealRooted.ParkingFunctions.Descents.ContentOrbit

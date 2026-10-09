@@ -1,4 +1,5 @@
 import RealRooted.HosterStump.Refined
+import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 import Mathlib.GroupTheory.Perm.Fin
 
 /-!
@@ -10,6 +11,9 @@ Here `desSet` records the `0`-based descent positions, `refinedPerm` is (3.1), a
 `refinedPerm_eq_refined` proves that it equals the recursion `refined` of
 `RealRooted.HosterStump.Refined`, by splitting off the first letter with
 `Equiv.Perm.decomposeFin'` (`desSet_decomposeFin'Symm`).
+
+`desSet` is the canonical `Equiv.Perm.descentSet` of the staging module
+`RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics` (`desSet_eq_descentSet`).
 -/
 
 open Polynomial
@@ -18,10 +22,8 @@ noncomputable section
 
 namespace RealRooted.HosterStump
 
-/-- Descent positions (`0`-based) of a permutation of `Fin (n + 1)`: the positions `i < n` with
-`w (i + 1) < w i`. -/
-def desSet {n : ℕ} (w : Equiv.Perm (Fin (n + 1))) : Finset ℕ :=
-  (Finset.univ.filter fun i : Fin n => w i.succ < w i.castSucc).image Fin.val
+/-- Descent positions (`0`-based) of a permutation, using the canonical statistic. -/
+def desSet {n : ℕ} (w : Equiv.Perm (Fin (n + 1))) : Finset ℕ := w.descentSet
 
 /-- A set of positions is isolated if it contains no two consecutive positions. -/
 def IsIsolated (D : Finset ℕ) : Prop := ∀ i ∈ D, i + 1 ∉ D
@@ -33,8 +35,33 @@ instance (D : Finset ℕ) : Decidable (IsIsolated D) := by
 /-- Membership in the descent set. -/
 lemma mem_desSet {n : ℕ} {w : Equiv.Perm (Fin (n + 1))} {m : ℕ} :
     m ∈ desSet w ↔ ∃ i : Fin n, (i : ℕ) = m ∧ w i.succ < w i.castSucc := by
-  simp only [desSet, Finset.mem_image, Finset.mem_filter, Finset.mem_univ, true_and]
-  grind
+  rw [desSet, Equiv.Perm.descentSet_eq_list, List.mem_descentSet]
+  constructor
+  · rintro ⟨h, hlt⟩
+    have hm : m < n := by
+      simp only [List.length_ofFn] at h
+      lia
+    let i : Fin n := ⟨m, hm⟩
+    refine ⟨i, rfl, ?_⟩
+    rw [List.getElem_ofFn, List.getElem_ofFn] at hlt
+    exact hlt
+  · rintro ⟨i, rfl, hlt⟩
+    have hi : (i : ℕ) + 1 < (List.ofFn w).length := by
+      simp only [List.length_ofFn]
+      lia
+    refine ⟨hi, ?_⟩
+    rw [List.getElem_ofFn, List.getElem_ofFn]
+    exact hlt
+
+/-- The local name `desSet` is definitionally the canonical descent set. -/
+theorem desSet_eq_descentSet {n : ℕ} (w : Equiv.Perm (Fin (n + 1))) :
+    desSet w = w.descentSet := rfl
+
+/-- The cardinality of `desSet` is the canonical permutation descent count. -/
+theorem desSet_card_eq_descentCount {n : ℕ} (w : Equiv.Perm (Fin (n + 1))) :
+    (desSet w).card = w.descentCount := by
+  rw [desSet]
+  rfl
 
 /-- Every descent position is below `n`. -/
 lemma desSet_subset_range {n : ℕ} (w : Equiv.Perm (Fin (n + 1))) :
