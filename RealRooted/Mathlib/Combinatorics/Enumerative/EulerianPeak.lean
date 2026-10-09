@@ -646,7 +646,7 @@ private lemma peakNumber_succ_of_le_one (n k : ℕ) (hn : n ≤ 1) :
   lia
 
 /-- The Eulerian insertion recurrence for the canonical descent statistic. -/
-theorem eulerian_succ_succ (n k : ℕ) :
+theorem eulerianNumber_succ_succ (n k : ℕ) :
     eulerianNumber (n + 1) (k + 1) = (k + 2) * eulerianNumber n (k + 1) +
       (n - k) * eulerianNumber n k := by
   rw [eulerian_succ_sum, eulerian_eq_countP, eulerian_eq_countP]
@@ -655,7 +655,7 @@ theorem eulerian_succ_succ (n k : ℕ) :
   split_ifs <;> lia
 
 /-- The zero-descent Eulerian number for the canonical descent statistic. -/
-theorem eulerian_succ_zero (n : ℕ) : eulerianNumber (n + 1) 0 = 1 := by
+theorem eulerianNumber_succ_zero (n : ℕ) : eulerianNumber (n + 1) 0 = 1 := by
   induction n with
   | zero => decide
   | succ n ih =>

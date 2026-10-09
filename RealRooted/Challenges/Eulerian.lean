@@ -1,4 +1,5 @@
 import RealRooted.CombinatorialExamples.Eulerian
+import RealRooted.CombinatorialExamples.EulerianStatistic
 import RealRooted.CombinatorialExamples.TypeBEulerian
 import RealRooted.GeneralizedEulerian.GeneratingFunction
 import RealRooted.MaWang.DerivativeStep
@@ -70,6 +71,16 @@ label = "The type B Eulerian polynomials are the case c = 2"
 name = "RealRooted.GeneralizedEulerian.coeff_generalizedEulerian_one_eq_sum"
 module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
 label = "Alternating-sum formula for the Eulerian coefficients"
+
+[[theorems]]
+name = "RealRooted.genPoly_univ_descentCount"
+module = "RealRooted.CombinatorialExamples.EulerianStatistic"
+label = "The descent generating polynomial of permutations is the Eulerian polynomial"
+
+[[theorems]]
+name = "RealRooted.isRealRooted_genPoly_univ_descentCount"
+module = "RealRooted.CombinatorialExamples.EulerianStatistic"
+label = "Permutations counted by descents give a real-rooted polynomial"
 -->
 
 <!-- realrooted-catalog-content -->
