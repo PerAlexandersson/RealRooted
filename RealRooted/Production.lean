@@ -1355,6 +1355,7 @@ import RealRooted.SamePhaseStability
 import RealRooted.SamePhaseStability.Nonnegative
 import RealRooted.ScalarNormalization
 import RealRooted.SeparablePermutations.Basic
+import RealRooted.SeparablePermutations.Cubic
 import RealRooted.SeparablePermutations.Enumerator
 import RealRooted.SeparablePermutations.Gamma
 import RealRooted.SeparablePermutations.Interlacing
