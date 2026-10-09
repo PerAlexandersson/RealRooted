@@ -490,6 +490,19 @@ private theorem coeff_prod_nonneg {ι : Type*} (s : Finset ι) {L : ι → ℝ[X
     rw [Finset.prod_insert ha, coeff_mul]
     exact Finset.sum_nonneg fun x _ => mul_nonneg (hnn a x.1) (ih x.2)
 
+/-- The coefficient mean of a finite product is the sum of the factor means. -/
+theorem coeffMean_prod {ι : Type*} (s : Finset ι) (L : ι → ℝ[X])
+    (h : ∀ i ∈ s, (L i).eval 1 ≠ 0) :
+    (∏ i ∈ s, L i).coeffMean = ∑ i ∈ s, (L i).coeffMean := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp [coeffMean]
+  | insert a s ha ih =>
+    have hs : ∀ i ∈ s, (L i).eval 1 ≠ 0 := fun i hi => h i (Finset.mem_insert_of_mem hi)
+    rw [Finset.prod_insert ha, Finset.sum_insert ha,
+      coeffMean_mul (h a (Finset.mem_insert_self a s))
+        (by rw [eval_prod]; exact Finset.prod_ne_zero_iff.mpr hs), ih hs]
+
 /-- **CLT for products**: if `L i` are real-rooted with nonnegative coefficients and the sum of
 their coefficient variances diverges, the coefficient distributions of `∏_{i<n} L i` are
 asymptotically normal. -/
@@ -507,6 +520,31 @@ theorem coeffVariance_X_add_C_natCast (i : ℕ) :
   simp [coeffVariance, coeffMean]
   field_simp
   ring
+
+/-- The mean of the factor `X + i` is `1 / (i + 1)`. -/
+theorem coeffMean_X_add_C_natCast (i : ℕ) :
+    (X + C (i : ℝ)).coeffMean = 1 / ((i : ℝ) + 1) := by
+  simp [coeffMean, add_comm]
+
+/-- The mean of a finite Stirling-type product is the sum of reciprocal shifts. -/
+theorem coeffMean_prod_X_add_natCast (s : Finset ℕ) :
+    (∏ i ∈ s, (X + C (i : ℝ))).coeffMean =
+      ∑ i ∈ s, 1 / ((i : ℝ) + 1) := by
+  rw [coeffMean_prod]
+  · exact Finset.sum_congr rfl fun i hi => coeffMean_X_add_C_natCast i
+  · intro i hi
+    rw [eval_add, eval_X, eval_C]
+    positivity
+
+/-- The variance of a finite Stirling-type product is the sum of factor variances. -/
+theorem coeffVariance_prod_X_add_natCast (s : Finset ℕ) :
+    (∏ i ∈ s, (X + C (i : ℝ))).coeffVariance =
+      ∑ i ∈ s, ((i : ℝ) / ((i : ℝ) + 1) ^ 2) := by
+  rw [coeffVariance_prod]
+  · exact Finset.sum_congr rfl fun i hi => coeffVariance_X_add_C_natCast i
+  · intro i hi
+    rw [eval_add, eval_X, eval_C]
+    positivity
 
 /-- **Goncharov's theorem**: the unsigned Stirling numbers of the first kind, the coefficients of
 `X (X + 1) ⋯ (X + n - 1)` (cycle counts of random permutations), are asymptotically normal. -/
