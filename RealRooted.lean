@@ -424,6 +424,7 @@ import RealRooted.CombinatorialExamples.ColoredSetPartitions
 import RealRooted.CombinatorialExamples.Common
 import RealRooted.CombinatorialExamples.DerangementStatistic
 import RealRooted.CombinatorialExamples.DerangementsExcNormal
+import RealRooted.CombinatorialExamples.DyckNarayana
 import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.CombinatorialExamples.EulerianNormal
 import RealRooted.CombinatorialExamples.EulerianStatistic
@@ -976,6 +977,7 @@ import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
 import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
 import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
+import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
 import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
 import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
 import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
