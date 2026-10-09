@@ -2,6 +2,7 @@ import RealRooted.BalancedRunTransformation.Interlacing
 import RealRooted.BalancedRunTransformation.Preservation
 import RealRooted.BinaryRunTransformation.Continuation
 import RealRooted.BinaryRunTransformation.MultiplierMotzkin
+import RealRooted.BinaryRunTransformation.SymbolCounterexample
 
 /-!
 # Binary-run transformation challenge entry point
@@ -79,6 +80,11 @@ label = "The balanced transformation preserves PF polynomials"
 name = "RealRooted.strictInterl_balancedRunTransform"
 module = "RealRooted.BalancedRunTransformation.Interlacing"
 label = "The balanced transformation preserves interlacing"
+
+[[theorems]]
+name = "RealRooted.binaryRunTransformThree_counterexample"
+module = "RealRooted.BinaryRunTransformation.SymbolCounterexample"
+label = "J_3 preserves interlacing but not bivariate real stability"
 -->
 
 <!-- realrooted-catalog-content -->
