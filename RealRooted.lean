@@ -1148,6 +1148,7 @@ import RealRooted.NarayanaTransformation.Composition
 import RealRooted.NarayanaTransformation.Endpoints
 import RealRooted.NarayanaTransformation.Falling
 import RealRooted.NarayanaTransformation.Gamma
+import RealRooted.NarayanaTransformation.Interlacing
 import RealRooted.NarayanaTransformation.Rectangular
 import RealRooted.NarayanaTransformation.Rectangular.Narayana
 import RealRooted.NarayanaTransformation.Rectangular.Preservation
