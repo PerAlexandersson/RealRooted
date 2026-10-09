@@ -1155,6 +1155,7 @@ import RealRooted.MultivariateStability.AffineEulerCore
 import RealRooted.MultivariateStability.AllCombo
 import RealRooted.MultivariateStability.AllComboAffineLine
 import RealRooted.MultivariateStability.Barrier
+import RealRooted.MultivariateStability.BarrierStart
 import RealRooted.MultivariateStability.Diagonal
 import RealRooted.MultivariateStability.DirectionalDerivative
 import RealRooted.MultivariateStability.HomogeneousPencilWronskian
