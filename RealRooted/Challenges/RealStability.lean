@@ -7,6 +7,7 @@ import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.JumpSystem
 import RealRooted.MultivariateStability.Lorentzian
 import RealRooted.MultivariateStability.MixedCharacteristic
+import RealRooted.MultivariateStability.MSSBound
 import RealRooted.MultivariateStability.NegativeCorrelation
 import RealRooted.MultivariateStability.RayleighConverse
 import RealRooted.MultivariateStability.SamePhase
@@ -149,6 +150,12 @@ label = "Brändén–Huh: nonnegative homogeneous real stable polynomials are Lo
 name = "RealRooted.MixedCharacteristic.isRealRooted_mixedCharacteristic"
 module = "RealRooted.MultivariateStability.MixedCharacteristic"
 label = "Marcus–Spielman–Srivastava: mixed characteristic polynomials are real-rooted"
+
+[[theorems]]
+name = "RealRooted.MixedCharacteristic.mixedCharacteristic_roots_le_optimized"
+module = "RealRooted.MultivariateStability.MSSBound"
+label = "Marcus–Spielman–Srivastava: the roots of μ[A] are at most (1 + √ε)²"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->
@@ -217,6 +224,16 @@ $d$ in $z_0$. Then $z_0^d P(-1/z_0, z')$ is stable. If $P$ is real stable,
 then so is this inversion. Without further variables: if $p$ has no zeros in
 the open upper half-plane and $\deg p \leq d$, then neither has
 $z^d p(-1/z)$.
+
+**Theorem** (Marcus–Spielman–Srivastava). Let $A_1, \dotsc, A_m$ be real positive
+semidefinite $n \times n$ matrices with $\sum_i A_i = I$ and $\operatorname{tr} A_i \leq
+\varepsilon$. Then every root of the mixed characteristic polynomial
+$$
+\mu[A](x) = \prod_{i} (1 - \partial_{z_i}) \det\Bigl(x I + \sum_i z_i A_i\Bigr)\Big|_{z = 0}
+$$
+is at most $(1 + \sqrt{\varepsilon})^2$. This is the root bound behind the solution of the
+Kadison–Singer problem. The formal proof follows the barrier argument, with the
+Helton–Vinnikov step replaced by an elementary Pick-function lemma.
 
 Real stability can be tested on lines: $P$ is real stable if and only if, for
 all $a \in \mathbb{R}^n$ and $b \in \mathbb{R}_{>0}^n$, the univariate restriction
