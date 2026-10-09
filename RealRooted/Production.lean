@@ -688,6 +688,7 @@ import RealRooted.Hadamard.FiniteReflection
 import RealRooted.Hadamard.GarloffWagner
 import RealRooted.Hadamard.Grace
 import RealRooted.Hadamard.Hurwitz
+import RealRooted.Hadamard.KostovMap
 import RealRooted.Hadamard.Newton
 import RealRooted.Hadamard.Product
 import RealRooted.Hadamard.SchurSzegoExamples
