@@ -962,6 +962,7 @@ import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
 import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
+import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
 import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
 import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
 import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree
