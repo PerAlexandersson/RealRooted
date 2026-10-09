@@ -1,5 +1,6 @@
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
+import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.TotallyNonneg
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity
 
 /-!
@@ -52,6 +53,16 @@ label = "Zhang–Zhao: the gamma operator preserves simple negative zeros"
 name = "RealRooted.MultisetEulerianNarayana.exists_hasDerivAt_gammaOperator_input_shift"
 module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity"
 label = "Zhang–Zhao: output zeros move strictly right with each input zero"
+
+[[theorems]]
+name = "RealRooted.MultisetEulerianNarayana.coefficientTransitionMatrix_eq_closedTransitionMatrix"
+module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana.TotallyNonneg"
+label = "Zhang–Zhao: the transition matrix has a closed binomial form"
+
+[[theorems]]
+name = "RealRooted.MultisetEulerianNarayana.closedTransitionMatrix_isTotallyNonneg"
+module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana.TotallyNonneg"
+label = "Zhang–Zhao: the closed transition matrices are totally nonnegative"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -77,6 +88,11 @@ Lagrange–Bürmann argument behind the factorization are not formalized.
 polynomial $P_\alpha$ has degree $N - 1$, nonnegative coefficients and only
 simple negative zeros. Consecutive partial products of the factorization strictly
 interlace, and $P_\alpha$ is palindromic.
+
+**Theorem** (Zhang–Zhao, Theorem 1.3). The matrices $K^{(p,r)}$ that send the
+coefficients of an input polynomial to those of its image under $r$ consecutive steps
+have an explicit binomial closed form. They are products of positive bidiagonal
+matrices, hence totally nonnegative.
 
 The conjecture itself also needs the identification of $P_\alpha$ with the leaf
 enumerator $P_M$ (Zhang–Zhao, Proposition 2.9). That identification is cited
