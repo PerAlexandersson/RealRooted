@@ -1095,6 +1095,7 @@ import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
 import RealRooted.Mathlib.RingTheory.PowerSeries.CatalanQuadratic
 import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
+import RealRooted.Mathlib.RingTheory.PowerSeries.LagrangeInversion
 import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
 import RealRooted.Mathlib.RingTheory.PowerSeries.PiTopology
 import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
@@ -1363,6 +1364,8 @@ import RealRooted.SeparablePermutations.Basic
 import RealRooted.SeparablePermutations.Cubic
 import RealRooted.SeparablePermutations.Enumerator
 import RealRooted.SeparablePermutations.Gamma
+import RealRooted.SeparablePermutations.GammaCubic
+import RealRooted.SeparablePermutations.Identification
 import RealRooted.SeparablePermutations.Interlacing
 import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma
