@@ -969,6 +969,7 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
 import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
 import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
 import RealRooted.Mathlib.Combinatorics.Enumerative.InverseStatistics
+import RealRooted.Mathlib.Combinatorics.Enumerative.InversionBridge
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
 import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunctionCount
