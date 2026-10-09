@@ -1,4 +1,5 @@
 import RealRooted.CombinatorialExamples.BorosMoll
+import RealRooted.CombinatorialExamples.BorosMoll.Infinite
 
 /-!
 # Boros–Moll challenge entry point
@@ -30,6 +31,27 @@ headline = true
 name = "RealRooted.BorosMoll.bmM_strictInterlaces_narayanaN"
 module = "RealRooted.CombinatorialExamples.BorosMoll"
 label = "Xie–Zhang: its zeros strictly interlace those of the Narayana polynomial"
+
+[[definitions]]
+name = "RealRooted.Branden.IsInfinitelyLogConcave"
+module = "RealRooted.BrandenLC.Infinite"
+label = "Infinitely log-concave: every iterate of the transform is nonnegative"
+
+[[theorems]]
+name = "RealRooted.Branden.IsPFPolynomial.logConcavityTransform"
+module = "RealRooted.BrandenLC"
+label = "Brändén: the log-concavity transform preserves Pólya-frequency polynomials"
+
+[[theorems]]
+name = "RealRooted.Branden.IsPFPolynomial.isInfinitelyLogConcave"
+module = "RealRooted.BrandenLC.Infinite"
+label = "Pólya-frequency polynomials are infinitely log-concave"
+
+[[theorems]]
+name = "RealRooted.BorosMoll.borosMollRow_isInfinitelyLogConcave"
+module = "RealRooted.CombinatorialExamples.BorosMoll.Infinite"
+label = "The Boros–Moll rows are infinitely log-concave"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->
@@ -48,9 +70,15 @@ Narayana polynomial.
 **Theorem** (Xie–Zhang). For $n \geq 1$, $M_n$ has $n$ simple negative zeros, and they
 strictly interlace the zeros of $N_n$, those of $M_n$ being the leftmost.
 
-With Brändén's theorem on iterated log-concavity transforms of real-rooted polynomials,
-this gives the infinite log-concavity of the Boros–Moll rows; that corollary is not
-formalized here.
+**Theorem** (Brändén). If $p$ has nonnegative coefficients and only real, nonpositive
+zeros, then so does its log-concavity transform. Hence every Pólya-frequency polynomial is
+*infinitely log-concave*: all iterates of the transform have nonnegative coefficients.
+
+Since $M_n$ is the transform of the row $d(n)$ and is Pólya-frequency, the Boros–Moll rows
+are infinitely log-concave, as conjectured by Boros and Moll. All three statements are
+formalized. The formal proof of Brändén's theorem is not Brändén's: Aristotle found a
+different argument with moment functionals that do not vanish on polynomials whose zeros
+lie in a half-plane, together with Laguerre-type approximations.
 
 ## Proof idea
 
@@ -63,7 +91,9 @@ certificates evaluated in the kernel. The formal proof was found with the Aristo
 
 ## References
 
-M. H. Y. Xie and P. B. Zhang, “Infinite log-concavity of the Boros–Moll sequences,”
+P. Brändén, “Iterated sequences and the geometry of zeros,” *Journal für die reine und
+angewandte Mathematik* 658 (2011), 115–131; M. H. Y. Xie and P. B. Zhang, “Infinite
+log-concavity of the Boros–Moll sequences,”
 arXiv:2609.20653 (2026); G. Boros and V. H. Moll, “An integral hidden in Gradshteyn and
 Ryzhik,” *J. Comput. Appl. Math.* 106 (1999), 361–368.
 <!-- /realrooted-catalog-content -->
