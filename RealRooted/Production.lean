@@ -420,6 +420,7 @@ import RealRooted.CombinatorialExamples.BorosMoll.Basic
 import RealRooted.CombinatorialExamples.BorosMoll.Estimates
 import RealRooted.CombinatorialExamples.ColoredSetPartitions
 import RealRooted.CombinatorialExamples.Common
+import RealRooted.CombinatorialExamples.DerangementStatistic
 import RealRooted.CombinatorialExamples.DerangementsExcNormal
 import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.CombinatorialExamples.EulerianNormal
