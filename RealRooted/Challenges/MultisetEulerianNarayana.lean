@@ -1,5 +1,6 @@
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
+import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity
 
 /-!
 # Multiset Eulerian–Narayana polynomials
@@ -43,9 +44,14 @@ module = "RealRooted.EulerOperator.Darboux.NegativeRoots"
 label = "Darboux steps preserve simple negative zeros and interlace"
 
 [[theorems]]
-name = "RealRooted.Applications.MultisetEulerianNarayana.simpleNegRooted_gammaOperator"
+name = "RealRooted.MultisetEulerianNarayana.simpleNegRooted_gammaOperator"
 module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator"
 label = "Zhang–Zhao: the gamma operator preserves simple negative zeros"
+
+[[theorems]]
+name = "RealRooted.MultisetEulerianNarayana.exists_hasDerivAt_gammaOperator_input_shift"
+module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity"
+label = "Zhang–Zhao: output zeros move strictly right with each input zero"
 -->
 
 <!-- realrooted-catalog-content -->
