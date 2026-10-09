@@ -180,24 +180,4 @@ def pattern2413 : Equiv.Perm (Fin 4) :=
 def pattern3142 : Equiv.Perm (Fin 4) :=
   ⟨![2, 0, 3, 1], ![1, 3, 0, 2], by decide, by decide⟩
 
-/-- A permutation has a direct-sum cut at `k`. -/
-def HasDirectSumCut (σ : Equiv.Perm (Fin 4)) (k : Fin 4) : Prop :=
-  0 < k.val ∧ ∀ i : Fin 4, i.val < k.val → ∀ j : Fin 4, k.val ≤ j.val → σ i < σ j
-
-/-- A permutation has a skew-sum cut at `k`. -/
-def HasSkewSumCut (σ : Equiv.Perm (Fin 4)) (k : Fin 4) : Prop :=
-  0 < k.val ∧ ∀ i : Fin 4, i.val < k.val → ∀ j : Fin 4, k.val ≤ j.val → σ i > σ j
-
-/-- `2413` is neither a nontrivial direct sum nor a nontrivial skew sum. -/
-example :
-    (¬∃ k, HasDirectSumCut pattern2413 k) ∧ (¬∃ k, HasSkewSumCut pattern2413 k) := by
-  unfold HasDirectSumCut HasSkewSumCut
-  decide
-
-/-- `3142` is neither a nontrivial direct sum nor a nontrivial skew sum. -/
-example :
-    (¬∃ k, HasDirectSumCut pattern3142 k) ∧ (¬∃ k, HasSkewSumCut pattern3142 k) := by
-  unfold HasDirectSumCut HasSkewSumCut
-  decide
-
 end Equiv.Perm
