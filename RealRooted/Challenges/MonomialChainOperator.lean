@@ -1,4 +1,4 @@
-import RealRooted.OperatorInterlacingUpgrade
+import RealRooted.OperatorInterlacingUpgrade.RootOrder
 
 /-!
 # Monomial-chain operator challenge entry point
@@ -11,6 +11,16 @@ slug = "monomial-chain-operator"
 [[theorems]]
 name = "RealRooted.Challenges.MonomialChainOperator.preservesInterlacing"
 label = "The monomial chain gives interlacing preservation"
+
+[[theorems]]
+name = "RealRooted.rootwiseLE_monomialChain_rootPolynomial_list_set"
+module = "RealRooted.OperatorInterlacingUpgrade.RootOrder"
+label = "Moving one input root right moves every output root right"
+
+[[theorems]]
+name = "RealRooted.rootwiseLE_monomialChain_component_bounds"
+module = "RealRooted.OperatorInterlacingUpgrade.RootOrder"
+label = "Output roots are bounded by the images of (x + a)^D and (x + b)^D"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -61,9 +71,7 @@ theorem preservesInterlacing
     (hmono : ∀ m : ℕ, m + 1 ≤ D →
       StrictInterl (T (X ^ m)) (T (X ^ (m + 1)))) :
     StrictInterl (T f) (T g) :=
-  strictInterl_map_of_pfShift hfg hf hg hgdeg hTnn hTrr
-    (preservesPFShiftInterlacingOnDegree_of_monomials
-      hTnn hTrr hmono)
+  strictInterl_map_of_monomialChain hfg hf hg hgdeg hTnn hTrr hmono
 
 end MonomialChainOperator
 end Challenges
