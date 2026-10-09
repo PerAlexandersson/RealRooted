@@ -593,6 +593,7 @@ import RealRooted.GammaTransform.Preservation
 import RealRooted.GammaTransform.ProperPosition
 import RealRooted.GammaTransform.RootLists
 import RealRooted.GammaTransform.RootMap
+import RealRooted.GammaTransform.StrictLifting
 import RealRooted.GarloffWagner
 import RealRooted.GarloffWagner.Algebra
 import RealRooted.GarloffWagner.Hadamard
@@ -1310,6 +1311,7 @@ import RealRooted.SamePhaseInterlacing
 import RealRooted.SamePhaseStability
 import RealRooted.SamePhaseStability.Nonnegative
 import RealRooted.ScalarNormalization
+import RealRooted.SeparablePermutations.Basic
 import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma
 import RealRooted.SignEvaluation
