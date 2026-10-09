@@ -1,3 +1,4 @@
+import RealRooted.CombinatorialExamples.Avoid132Descents
 import RealRooted.CombinatorialExamples.DyckNarayana
 import RealRooted.MaoWangMatrixProduct
 import RealRooted.NarayanaTransformation.Endpoints
@@ -102,6 +103,16 @@ label = "Dyck paths of semilength n with k peaks are counted by Narayana numbers
 name = "DyckWord.peakGeneratingPolynomial_eq_narayanaPolynomial"
 module = "RealRooted.CombinatorialExamples.DyckNarayana"
 label = "The peak polynomial of Dyck paths is x N_{n,1}(x)"
+
+[[theorems]]
+name = "RealRooted.Avoid132.descentGeneratingPolynomial_succ_eq_narayanaPolynomial"
+module = "RealRooted.CombinatorialExamples.Avoid132Descents"
+label = "132-avoiding permutations counted by descents give N_{n,1}(x)"
+
+[[theorems]]
+name = "RealRooted.Avoid132.strictInterl_descentGeneratingPolynomial_succ"
+module = "RealRooted.CombinatorialExamples.Avoid132Descents"
+label = "Descent polynomials of 132-avoiders are real-rooted and interlace"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -113,8 +124,9 @@ $$N_{n,m}(x) = \sum_{k=0}^{n} \frac{\binom{n}{k}\binom{n+m}{k}}{\binom{m+k}{k}}\
 
 For $m = 1$ the coefficients are Narayana numbers; for example
 $N_{2,1}(x) = 1 + 3x + x^2$. Combinatorially, the Dyck paths of semilength
-$n + 1$ counted by peaks have generating polynomial $x\, N_{n,1}(x)$; this is
-formalized. These polynomials are Pólya-frequency, and the Narayana transform
+$n + 1$ counted by peaks have generating polynomial $x\, N_{n,1}(x)$, and the 132-avoiding
+permutations of $n + 1$ letters counted by descents have generating polynomial $N_{n,1}(x)$; both
+are formalized. These polynomials are Pólya-frequency, and the Narayana transform
 $x^n \mapsto N_{n,m}(x)$ preserves Pólya-frequency polynomials. Here a
 polynomial is Pólya-frequency (`IsPFPolynomial`) if it has nonnegative
 coefficients and is either zero or real-rooted with nonpositive zeros.

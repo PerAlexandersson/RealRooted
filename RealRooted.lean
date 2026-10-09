@@ -392,6 +392,7 @@ import RealRooted.CoefficientShape.LiuMao
 import RealRooted.CoefficientShape.LiuMao.Elevation
 import RealRooted.CoefficientShape.LiuMao.PathKernel
 import RealRooted.CombinatorialExamples
+import RealRooted.CombinatorialExamples.Avoid132Descents
 import RealRooted.CombinatorialExamples.BigDescents321
 import RealRooted.CombinatorialExamples.BigDescents321.Backward
 import RealRooted.CombinatorialExamples.BigDescents321.Basic
