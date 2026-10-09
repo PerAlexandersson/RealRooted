@@ -17,6 +17,10 @@ The root-sign condition holds in particular when `A n ≤ 0` everywhere
 rows have nonnegative coefficients (`derivRec_interlaces_of_nonnegCoeffs`);
 `derivRec_hasNonnegCoeffs` gives the latter when `A n` and `B n` have
 nonnegative coefficients.
+
+The single step `derivRec_strictInterl_step` only needs the degree to grow by at most one,
+so `derivRec_strictInterl_of_degree_pattern` also covers rows whose degree stays constant on
+some steps.
 -/
 
 open Polynomial
@@ -34,24 +38,48 @@ theorem derivative_interlaces_of_pos {f : ℝ[X]} (hf : f.Splits) (hpos : 0 < f.
         (HasPosLeadingCoeff.derivative hpos (by lia)).ne'
     · exact Nat.le_zero.mp ((natDegree_derivative_le f).trans (by lia))
 
+/-- One step of a first-order derivative recurrence whose degree grows by at most one: a
+real-rooted polynomial of positive degree strictly interlaces its image when `A ≤ 0` at its
+roots.  The same-degree case covers families whose degree stays constant on some steps. -/
+theorem derivRec_strictInterl_step {f Q A B : ℝ[X]} (hrec : Q = A * f.derivative + B * f)
+    (hf : f.Splits) (hfdeg : f.natDegree ≠ 0) (hfpos : 0 < f.leadingCoeff)
+    (hQpos : 0 < Q.leadingCoeff) (hdeg_lo : f.natDegree ≤ Q.natDegree)
+    (hdeg_hi : Q.natDegree ≤ f.natDegree + 1) (hA : ∀ r, f.IsRoot r → A.eval r ≤ 0) :
+    StrictInterl f Q := by
+  have hF : A * f.derivative + B * f = B * f + A * f.derivative := add_comm _ _
+  subst hrec
+  rw [hF] at hQpos hdeg_lo hdeg_hi ⊢
+  exact strictInterl_of_interlaces_evalCoeff_nonpos
+    (derivative_interlaces_of_pos hf hfpos (by lia))
+    (HasPosLeadingCoeff.derivative hfpos hfdeg) hQpos hdeg_lo hdeg_hi hA
+
 variable {P A B : ℕ → ℝ[X]} {D₀ : ℕ}
 
 /-- One step: a real-rooted row of positive degree interlaces the next row. -/
 theorem derivRec_interlaces_step (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (n : ℕ) (hA : ∀ r, (P n).IsRoot r → (A n).eval r ≤ 0) (hs : (P n).Splits)
-    (hn : 1 ≤ D₀ + n) : Interlaces (P n) (P (n + 1)) := by
-  have hF : P (n + 1) = B n * P n + A n * (P n).derivative := by
-    rw [hrec n, add_comm]
-  have hInter : Interlaces (P n).derivative (P n) :=
-    derivative_interlaces_of_pos hs (hpos n) (by rw [hdeg]; lia)
-  have hprec : StrictInterl (P n) (B n * P n + A n * (P n).derivative) :=
-    strictInterl_of_interlaces_evalCoeff_nonpos hInter
-      (HasPosLeadingCoeff.derivative (hpos n) (by rw [hdeg]; lia))
-      (by rw [← hF]; exact hpos (n + 1))
-      (by rw [← hF, hdeg, hdeg]; lia) (by rw [← hF, hdeg, hdeg]; lia) hA
-  rw [← hF] at hprec
-  exact hprec.toInterlaces (by rw [hdeg, hdeg]; lia)
+    (hn : 1 ≤ D₀ + n) : Interlaces (P n) (P (n + 1)) :=
+  (derivRec_strictInterl_step (hrec n) hs (by rw [hdeg]; lia) (hpos n) (hpos (n + 1))
+    (by rw [hdeg, hdeg]; lia) (by rw [hdeg, hdeg]; lia) hA).toInterlaces
+    (by rw [hdeg, hdeg]; lia)
+
+/-- Rows of a first-order derivative recurrence whose degree grows by zero or one at each
+step strictly interlace, starting from one real-rooted row of positive degree. -/
+theorem derivRec_strictInterl_of_degree_pattern {D : ℕ → ℕ}
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D n) (hD : ∀ n, D n ≠ 0)
+    (hstep : ∀ n, D (n + 1) = D n ∨ D (n + 1) = D n + 1)
+    (hpos : ∀ n, 0 < (P n).leadingCoeff) (hA : ∀ n r, (P n).IsRoot r → (A n).eval r ≤ 0)
+    (h0 : (P 0).Splits) (n : ℕ) : StrictInterl (P n) (P (n + 1)) := by
+  have key (m : ℕ) (hs : (P m).Splits) : StrictInterl (P m) (P (m + 1)) := by
+    apply derivRec_strictInterl_step (hrec m) hs (by rw [hdeg]; exact hD m) (hpos m)
+      (hpos (m + 1)) <;> first
+      | exact hA m
+      | (rw [hdeg, hdeg]; rcases hstep m with h | h <;> lia)
+  induction n with
+  | zero => exact key 0 h0
+  | succ n ih => exact key (n + 1) ih.2.1.2
 
 theorem derivRec_interlaces (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
