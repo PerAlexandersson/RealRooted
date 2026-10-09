@@ -1,4 +1,5 @@
 import RealRooted.CombinatorialExamples.CentralFactorial
+import RealRooted.CombinatorialExamples.EulerTypeRows
 import RealRooted.EulerBidiagonal
 import RealRooted.Interlacing.PencilPreserver
 
@@ -55,6 +56,21 @@ label = "Consecutive central factorial rows interlace (A036969)"
 name = "RealRooted.strictInterl_legendreStirlingRows"
 module = "RealRooted.CombinatorialExamples.CentralFactorial"
 label = "Consecutive Legendre–Stirling rows interlace (A071951)"
+
+[[theorems]]
+name = "RealRooted.EulerTypeRows.strictInterl_scaledRows"
+module = "RealRooted.CombinatorialExamples.EulerTypeRows"
+label = "Rows of X + κ(θ + a)(θ + b), κ > 0, strictly interlace"
+
+[[theorems]]
+name = "RealRooted.EulerTypeRows.strictInterl_A080248Rows"
+module = "RealRooted.CombinatorialExamples.EulerTypeRows"
+label = "Consecutive rows of A080248 interlace"
+
+[[theorems]]
+name = "RealRooted.EulerTypeRows.strictInterl_A160562Rows"
+module = "RealRooted.CombinatorialExamples.EulerTypeRows"
+label = "Consecutive rows of A160562 interlace"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -68,7 +84,10 @@ $$
 The rows $P_0 = 1$, $P_{n+1} = T P_n$ are the triangles
 $a(n,k) = a(n-1,k-1) + (k+a)(k+b)\, a(n-1,k)$. For $a = b = 1$ they are the central
 factorial numbers (A036969). For $(a,b) = (1,2)$ they are the Legendre–Stirling numbers
-(A071951).
+(A071951). Replacing $(\theta + a)(\theta + b)$ by $\kappa(\theta + a)(\theta + b)$ with
+$\kappa > 0$ only rescales $x$. This gives A080248 ($\kappa = 1/2$, $(a,b) = (1,2)$) and A160562
+($\kappa = 4$, $a = b = 1/2$). It also gives A269945 after the factor $x$ common to all
+positive-index rows is removed.
 
 **Theorem.** Let $f \ll g$ be polynomials with positive leading coefficients and simple
 negative roots, with $\deg g = \deg f + 1$ and no common root. Then $Tf \ll Tg$, again

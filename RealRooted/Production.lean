@@ -428,6 +428,7 @@ import RealRooted.CombinatorialExamples.Common
 import RealRooted.CombinatorialExamples.DerangementStatistic
 import RealRooted.CombinatorialExamples.DerangementsExcNormal
 import RealRooted.CombinatorialExamples.DyckNarayana
+import RealRooted.CombinatorialExamples.EulerTypeRows
 import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.CombinatorialExamples.EulerianNormal
 import RealRooted.CombinatorialExamples.EulerianStatistic
