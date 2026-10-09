@@ -6,6 +6,7 @@ import RealRooted.HyperbolicityCone
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.JumpSystem
 import RealRooted.MultivariateStability.Lorentzian
+import RealRooted.MultivariateStability.MixedCharacteristic
 import RealRooted.MultivariateStability.NegativeCorrelation
 import RealRooted.MultivariateStability.RayleighConverse
 import RealRooted.MultivariateStability.SamePhase
@@ -143,6 +144,11 @@ label = "Brändén: supports of a homogeneous multi-affine real stable polynomia
 name = "RealRooted.MvRealStable.isLorentzian"
 module = "RealRooted.MultivariateStability.Lorentzian"
 label = "Brändén–Huh: nonnegative homogeneous real stable polynomials are Lorentzian"
+
+[[theorems]]
+name = "RealRooted.MixedCharacteristic.isRealRooted_mixedCharacteristic"
+module = "RealRooted.MultivariateStability.MixedCharacteristic"
+label = "Marcus–Spielman–Srivastava: mixed characteristic polynomials are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
