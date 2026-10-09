@@ -700,6 +700,7 @@ import RealRooted.HosterStump.Diagram
 import RealRooted.HosterStump.Permutation
 import RealRooted.HosterStump.Refined
 import RealRooted.HosterStump.Sequence
+import RealRooted.HosterStump.Step
 import RealRooted.HosterStumpInterlacing
 import RealRooted.HurwitzMatrix
 import RealRooted.Hutchinson
