@@ -436,6 +436,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
 import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
 import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
+import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
 import RealRooted.CombinatorialExamples.Narayana
 import RealRooted.CombinatorialExamples.NarayanaNormal
 import RealRooted.CombinatorialExamples.OneDescentGamma
