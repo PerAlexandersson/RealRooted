@@ -1,12 +1,13 @@
+import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 import RealRooted.SeparablePermutations.Gamma
-import RealRooted.HosterStump.Permutation
 
 /-!
 # The descent enumerator of the separable permutations
 
 A permutation is *separable* if it avoids the patterns `2413` and `3142`.  We define the
 descent enumerator `descentEnumerator n = ∑ x ^ des σ`, summed over the separable permutations
-of `n + 1` letters, reusing `RealRooted.HosterStump.desSet` for descents; the shift `n + 1`
+of `n + 1` letters, using the canonical descent set; the shift `n + 1`
 matches the indexing of that definition and keeps the empty permutation out of the picture.
 
 The algebraic family `descentPolynomial` of `RealRooted/SeparablePermutations/Gamma.lean` is
@@ -16,6 +17,10 @@ Proposition 2.1 and Corollaries 2.4, 2.6 of Fu--Lin--Zeng with Zhang's Propositi
 **not** proved here.  We verify it by `decide` for permutations of at most four letters, and
 state the consequences that follow from it as theorems with the identity as an explicit
 hypothesis.
+
+Pattern containment and descents are the canonical `Equiv.Perm.ContainsPattern` and
+`Equiv.Perm.descentSet` of the staging modules `RealRooted.Mathlib.Combinatorics.Enumerative`;
+the local names are kept for compatibility.
 -/
 
 open Polynomial
@@ -24,10 +29,9 @@ noncomputable section
 
 namespace RealRooted.SeparablePermutations
 
-/-- Pattern containment: `σ` contains `τ` if there are positions `f 0 < ⋯ < f (k - 1)` at
-which the values of `σ` are order-isomorphic to `τ`. -/
+/-- Pattern containment for permutations, retained under the historical local name. -/
 def ContainsPattern {n k : ℕ} (σ : Equiv.Perm (Fin n)) (τ : Equiv.Perm (Fin k)) : Prop :=
-  ∃ f : Fin k → Fin n, (∀ i j, i < j → f i < f j) ∧ ∀ i j, σ (f i) < σ (f j) ↔ τ i < τ j
+  Equiv.Perm.ContainsPattern σ τ
 
 instance {n k : ℕ} (σ : Equiv.Perm (Fin n)) (τ : Equiv.Perm (Fin k)) :
     Decidable (ContainsPattern σ τ) := by
@@ -42,7 +46,7 @@ def pattern3142 : Equiv.Perm (Fin 4) := ⟨![2, 0, 3, 1], ![1, 3, 0, 2], by deci
 
 /-- A permutation is separable if it avoids `2413` and `3142`. -/
 def IsSeparable {n : ℕ} (σ : Equiv.Perm (Fin n)) : Prop :=
-  ¬ ContainsPattern σ pattern2413 ∧ ¬ ContainsPattern σ pattern3142
+  σ.Avoids pattern2413 ∧ σ.Avoids pattern3142
 
 instance {n : ℕ} : DecidablePred (IsSeparable (n := n)) := fun σ => by
   unfold IsSeparable
@@ -51,13 +55,12 @@ instance {n : ℕ} : DecidablePred (IsSeparable (n := n)) := fun σ => by
 /-- The number of separable permutations of `n + 1` letters with exactly `k` descents. -/
 def descentCount (n k : ℕ) : ℕ :=
   (Finset.univ.filter fun σ : Equiv.Perm (Fin (n + 1)) =>
-    IsSeparable σ ∧ (HosterStump.desSet σ).card = k).card
+    IsSeparable σ ∧ σ.descentCount = k).card
 
-/-- The descent enumerator `∑ x ^ des σ` of the separable permutations of `n + 1` letters
-(descents are counted by `RealRooted.HosterStump.desSet`). -/
+/-- The descent enumerator of separable permutations of `n + 1` letters. -/
 def descentEnumerator (n : ℕ) : ℝ[X] :=
   ∑ σ ∈ Finset.univ.filter (fun σ : Equiv.Perm (Fin (n + 1)) => IsSeparable σ),
-    X ^ (HosterStump.desSet σ).card
+    X ^ σ.descentCount
 
 /-- The coefficients of the descent enumerator are the descent counts. -/
 theorem coeff_descentEnumerator (n k : ℕ) :
@@ -67,17 +70,24 @@ theorem coeff_descentEnumerator (n k : ℕ) :
     Finset.sum_filter]
   refine Finset.sum_congr rfl fun σ _ => ?_
   by_cases hσ : IsSeparable σ
-  · by_cases hk : (HosterStump.desSet σ).card = k
-    · simp [hσ, hk, coeff_X_pow]
-    · simp [hσ, hk, coeff_X_pow, Ne.symm hk]
+  · by_cases hk : σ.descentCount = k
+    · simp only [hσ, coeff_X_pow, hk.symm, ite_true, true_and, Nat.cast_one]
+    · simp only [hσ, coeff_X_pow, Ne.symm hk, hk, ite_true, ite_false, true_and]
+      norm_num
   · simp [hσ]
 
 /-- A permutation of `n + 1` letters has at most `n` descents. -/
 theorem descentCount_eq_zero {n k : ℕ} (hk : n < k) : descentCount n k = 0 := by
   rw [descentCount, Finset.card_eq_zero, Finset.filter_eq_empty_iff]
   rintro σ - ⟨-, hσ⟩
-  have := Finset.card_le_card (HosterStump.desSet_subset_range σ)
+  have hsubset : σ.descentSet ⊆ Finset.range n := by
+    rw [Equiv.Perm.descentSet_eq_list]
+    simpa only [List.length_ofFn, Nat.add_sub_cancel]
+      using List.descentSet_subset_range (List.ofFn σ)
+  have := Finset.card_le_card hsubset
   rw [Finset.card_range] at this
+  change σ.descentCount ≤ n at this
+  rw [hσ] at this
   lia
 
 /-- The descent enumerator as a sum over the descent counts. -/
@@ -122,16 +132,9 @@ theorem descentEnumerator_three : descentEnumerator 3 = descentPolynomial 4 := b
     Nat.cast_ofNat, map_one, map_ofNat C, pow_zero, pow_one]
   ring
 
-/-! ### Conditional transfer
+/-! ### Conditional transfer -/
 
-The following results take the combinatorial identity
-`descentEnumerator n = descentPolynomial (n + 1)` (Fu--Lin--Zeng together with Zhang's
-Proposition 3.3) as an explicit hypothesis.  The hypothesis is a documented identity between a
-permutation statistic and the algebraically defined family, not a restatement of the
-conclusion: the conclusions are derived from the proved properties of `descentPolynomial`. -/
-
-/-- If the descent enumerator of the separable permutations is `descentPolynomial`, then for
-every `k ≤ n` there is a separable permutation of `n + 1` letters with exactly `k` descents. -/
+/-- Positive descent counts follow from the corresponding descent-polynomial identity. -/
 theorem descentCount_pos_of_eq_descentPolynomial
     (h : ∀ n, descentEnumerator n = descentPolynomial (n + 1)) {n k : ℕ} (hk : k ≤ n) :
     0 < descentCount n k := by
@@ -139,8 +142,7 @@ theorem descentCount_pos_of_eq_descentPolynomial
   rw [← h, coeff_descentEnumerator] at this
   exact_mod_cast this
 
-/-- If the descent enumerator of the separable permutations is `descentPolynomial`, then it
-has degree `n` on `n + 1` letters. -/
+/-- The descent enumerator has degree `n` under the corresponding descent-polynomial identity. -/
 theorem natDegree_descentEnumerator_of_eq_descentPolynomial
     (h : ∀ n, descentEnumerator n = descentPolynomial (n + 1)) (n : ℕ) :
     (descentEnumerator n).natDegree = n := by
