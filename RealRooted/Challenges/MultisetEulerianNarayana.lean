@@ -1,4 +1,5 @@
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
+import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
 
 /-!
 # Multiset Eulerian–Narayana polynomials
@@ -40,6 +41,11 @@ label = "P_α is palindromic"
 name = "RealRooted.SimpleNegRooted.darbouxOperator"
 module = "RealRooted.EulerOperator.Darboux.NegativeRoots"
 label = "Darboux steps preserve simple negative zeros and interlace"
+
+[[theorems]]
+name = "RealRooted.Applications.MultisetEulerianNarayana.simpleNegRooted_gammaOperator"
+module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator"
+label = "Zhang–Zhao: the gamma operator preserves simple negative zeros"
 -->
 
 <!-- realrooted-catalog-content -->
