@@ -4,6 +4,7 @@ import RealRooted.Hadamard
 import RealRooted.Hadamard.FiniteReflection
 import RealRooted.Hadamard.KostovMap
 import RealRooted.Hadamard.SchurSzegoMultiplicity
+import RealRooted.Hadamard.SchurSzegoSimple
 import RealRooted.Hadamard.SchurSzegoSigns
 import RealRooted.CoefficientShape.LiuMao
 import RealRooted.MultiplierSequence.PolyaSchur.Schur
@@ -54,6 +55,11 @@ label = "Schur–Szegő composition preserves real-rootedness"
 name = "RealRooted.rootMultiplicity_schurSzegoComp"
 module = "RealRooted.Hadamard.SchurSzegoMultiplicity"
 label = "Kostov–Shapiro: exact multiplicity of the root −ab of a Schur–Szegő composition"
+
+[[theorems]]
+name = "RealRooted.exists_forced_factors_of_rootMultiplicity_schurSzegoComp"
+module = "RealRooted.Hadamard.SchurSzegoSimple"
+label = "Kostov–Shapiro: every nonzero multiple root of P *_n Q is a forced product −ab"
 
 [[theorems]]
 name = "RealRooted.schurSzegoComp_roots_sign_counts_of_roots_neg"
@@ -133,7 +139,9 @@ multiplicity $l$, with $m + l \geq n$. Then $-ab$ is a root of the Schur–Szeg�
 composition $f *_n g$ of multiplicity exactly $m + l - n$; in particular it is not a
 root when $m + l = n$. The roots must be nonzero, as Kostov (2010) points out.
 If moreover $f$ is real-rooted and $g$ has only negative roots, then $f *_n g$ is
-real-rooted with as many positive, zero and negative roots as $f$.
+real-rooted with as many positive, zero and negative roots as $f$. Conversely, every
+nonzero root of multiplicity at least two is such a forced product $-ab$, so all other
+nonzero roots are simple.
 
 Kostov's coefficient map makes the factorizations explicit. Write a monic $P$ of degree $n$
 with $P(-1) = 0$ as $(x+1)(x^{n-1} + c_1 x^{n-2} + \dots + c_{n-1})$. If $P = K_{a_1} *_n

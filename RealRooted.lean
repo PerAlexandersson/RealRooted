@@ -704,6 +704,7 @@ import RealRooted.Hadamard.Product
 import RealRooted.Hadamard.SchurSzegoExamples
 import RealRooted.Hadamard.SchurSzegoMultiplicity
 import RealRooted.Hadamard.SchurSzegoSigns
+import RealRooted.Hadamard.SchurSzegoSimple
 import RealRooted.Hadamard.SchurSzegoStrict
 import RealRooted.HeilmannLieb
 import RealRooted.Hermite
