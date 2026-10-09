@@ -1,4 +1,5 @@
 import RealRooted.SymmetricDecomposition
+import RealRooted.SymmetricDecomposition.DerangementTransform
 
 open Polynomial
 
@@ -20,6 +21,21 @@ label = "Symmetric I_d-decomposition"
 [[theorems]]
 name = "RealRooted.Challenges.BrandenSolus.interlacing_equivalences"
 label = "Interlacing equivalences for the I_d-decomposition"
+
+[[definitions]]
+name = "RealRooted.DerangementTransform.transform"
+module = "RealRooted.SymmetricDecomposition.DerangementTransform"
+label = "Derangement transform x^j ↦ d_j"
+
+[[theorems]]
+name = "RealRooted.DerangementTransform.transform_magicExpansion_isPF"
+module = "RealRooted.SymmetricDecomposition.DerangementTransform"
+label = "Nonnegative magic-basis coordinates give a real-rooted derangement image"
+
+[[theorems]]
+name = "RealRooted.DerangementTransform.transform_magicExpansion_strictInterl"
+module = "RealRooted.SymmetricDecomposition.DerangementTransform"
+label = "The derangement image lies between A_d and d_d"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -30,6 +46,12 @@ $p = a + Xb$ with reciprocal symmetry conditions on $a$ and $b$. If $a$ and $b$
 are nonzero with nonnegative coefficients, then $b \ll a$, $a \ll p$ and
 $b \ll p$ are equivalent. They are also equivalent to $I_d(p) \ll p$, and to
 $R_d(f) \ll f$ for the associated polynomial $f$ (`fPolynomial d p`).
+
+The derangement transform $D : x^j \mapsto d_j(x)$ sends every polynomial with nonnegative
+coordinates in the basis $x^k(1+x)^{d-k}$ to a real-rooted polynomial lying between the
+Eulerian polynomial $A_d$ and the derangement polynomial $d_d$ (Brändén–Solus, Corollary 3.7).
+Here it is derived from the Brändén–Vecchi Chow-resolution theorem for the Pascal matrix,
+whose resolving rows are exactly $x^k(1+x)^{d-k}$.
 
 ## References
 
