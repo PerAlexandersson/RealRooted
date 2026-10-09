@@ -5,6 +5,7 @@ import RealRooted.Hyperbolicity
 import RealRooted.HyperbolicityCone
 import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.JumpSystem
+import RealRooted.MultivariateStability.Lorentzian
 import RealRooted.MultivariateStability.NegativeCorrelation
 import RealRooted.MultivariateStability.RayleighConverse
 import RealRooted.MultivariateStability.SamePhase
@@ -137,6 +138,11 @@ label = "Brändén: the support of a real stable polynomial is a jump system"
 name = "RealRooted.MvRealStable.isBase_supportMatroid_iff"
 module = "RealRooted.MultivariateStability.JumpSystem"
 label = "Brändén: supports of a homogeneous multi-affine real stable polynomial are matroid bases"
+
+[[theorems]]
+name = "RealRooted.MvRealStable.isLorentzian"
+module = "RealRooted.MultivariateStability.Lorentzian"
+label = "Brändén–Huh: nonnegative homogeneous real stable polynomials are Lorentzian"
 -->
 
 <!-- realrooted-catalog-content -->
