@@ -448,6 +448,7 @@ import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
 import RealRooted.CombinatorialExamples.StirlingPermutations
 import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
 import RealRooted.CombinatorialExamples.SturmDerangementsExc
+import RealRooted.CombinatorialExamples.SuperEulerian
 import RealRooted.CombinatorialExamples.Touchard
 import RealRooted.CombinatorialExamples.TypeBEulerian
 import RealRooted.Combinatorics.ComparisonBottom
