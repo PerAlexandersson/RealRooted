@@ -567,6 +567,7 @@ import RealRooted.EndpointDerivative
 import RealRooted.EndpointDerivative.Basic
 import RealRooted.EndpointDerivative.Sequence
 import RealRooted.EulerBidiagonal
+import RealRooted.EulerBidiagonal.General
 import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Darboux
 import RealRooted.EulerOperator.Darboux.Basic
@@ -760,6 +761,7 @@ import RealRooted.Interlacing.PencilPreserver
 import RealRooted.Interlacing.Residue
 import RealRooted.Interlacing.ResidueCriterion
 import RealRooted.Interlacing.ResidueEulerStep
+import RealRooted.Interlacing.RootDeletionExpansion
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequence.NonnegativeShift
 import RealRooted.InterlacingSequenceBasic
