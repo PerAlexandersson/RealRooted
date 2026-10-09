@@ -1,3 +1,5 @@
+import RealRooted.NarayanaTransformation.Interlacing
+import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
 import RealRooted.OperatorInterlacingUpgrade.RootOrder
 
 /-!
@@ -21,6 +23,16 @@ label = "Moving one input root right moves every output root right"
 name = "RealRooted.rootwiseLE_monomialChain_component_bounds"
 module = "RealRooted.OperatorInterlacingUpgrade.RootOrder"
 label = "Output roots are bounded by the images of (x + a)^D and (x + b)^D"
+
+[[theorems]]
+name = "RealRooted.strictInterl_narayanaTransform"
+module = "RealRooted.NarayanaTransformation.Interlacing"
+label = "The Mao–Wang Narayana transform preserves interlacing"
+
+[[theorems]]
+name = "RealRooted.exists_hasDerivAt_finRootPolynomial_shift"
+module = "RealRooted.OperatorInterlacingUpgrade.ImplicitRoot"
+label = "Implicit derivative of a simple output root in one input root"
 -->
 
 <!-- realrooted-catalog-content -->

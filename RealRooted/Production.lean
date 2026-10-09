@@ -1151,6 +1151,7 @@ import RealRooted.NarayanaTransformation.Composition
 import RealRooted.NarayanaTransformation.Endpoints
 import RealRooted.NarayanaTransformation.Falling
 import RealRooted.NarayanaTransformation.Gamma
+import RealRooted.NarayanaTransformation.Interlacing
 import RealRooted.NarayanaTransformation.Rectangular
 import RealRooted.NarayanaTransformation.Rectangular.Narayana
 import RealRooted.NarayanaTransformation.Rectangular.Preservation
@@ -1170,6 +1171,7 @@ import RealRooted.ObreschkoffConverse.Derivative
 import RealRooted.ObreschkoffConverse.Forward
 import RealRooted.ObreschkoffConverse.Regularization
 import RealRooted.OperatorInterlacingUpgrade
+import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
 import RealRooted.OperatorInterlacingUpgrade.RootOrder
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.OrderedRoots
