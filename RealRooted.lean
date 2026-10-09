@@ -290,6 +290,7 @@ import RealRooted.Challenges.HermiteBiehlerHurwitz
 import RealRooted.Challenges.HermitePolynomials
 import RealRooted.Challenges.HermitePoulain
 import RealRooted.Challenges.Hoggar
+import RealRooted.Challenges.HosterStump
 import RealRooted.Challenges.HurwitzCornerZeroedCounterexample
 import RealRooted.Challenges.Hutchinson
 import RealRooted.Challenges.Interlacing
