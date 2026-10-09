@@ -980,6 +980,8 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumDescent
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumPattern
+import RealRooted.Mathlib.Combinatorics.Enumerative.Separable
+import RealRooted.Mathlib.Combinatorics.Enumerative.SeparableCubic
 import RealRooted.Mathlib.Combinatorics.Enumerative.SimionSchmidt
 import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
 import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
