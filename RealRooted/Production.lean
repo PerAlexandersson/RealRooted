@@ -1165,6 +1165,7 @@ import RealRooted.MultivariateStability.Barrier
 import RealRooted.MultivariateStability.BarrierCross
 import RealRooted.MultivariateStability.BarrierPick
 import RealRooted.MultivariateStability.BarrierStart
+import RealRooted.MultivariateStability.BarrierUpdate
 import RealRooted.MultivariateStability.Diagonal
 import RealRooted.MultivariateStability.DirectionalDerivative
 import RealRooted.MultivariateStability.HomogeneousPencilWronskian
