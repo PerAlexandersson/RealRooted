@@ -23,6 +23,7 @@ import RealRooted.Analysis.PowerTail.Bernoulli
 import RealRooted.Analysis.PowerTail.Quadratic
 import RealRooted.Analysis.PowerTail.Telescoping
 import RealRooted.Apolarity
+import RealRooted.Applications.BinderVecchi.UniformChow
 import RealRooted.Applications.BinderVecchi.UniformMatroid
 import RealRooted.Applications.EulerianVariations
 import RealRooted.Applications.EulerianVariations.CyclicPathDescents
@@ -63,6 +64,7 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalR
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DirectResidueAlgebra
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Energy
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.EulerianCone
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactAlgebra
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactBoundary
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactCompact

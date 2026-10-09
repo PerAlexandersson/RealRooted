@@ -1,3 +1,4 @@
+import RealRooted.Applications.BinderVecchi.UniformChow
 import RealRooted.Applications.BinderVecchi.UniformMatroid
 
 /-!
@@ -35,6 +36,16 @@ headline = true
 name = "RealRooted.BinderVecchi.isRealRooted_modifiedAugmentedHodgePoincare"
 module = "RealRooted.Applications.BinderVecchi.UniformMatroid"
 label = "Binder–Vecchi: the modified augmented family is real-rooted"
+
+[[theorems]]
+name = "RealRooted.UniformChow.isRealRooted_chowUniform"
+module = "RealRooted.Applications.BinderVecchi.UniformChow"
+label = "The Chow polynomial of U_{r,n} is real-rooted (the case i = 0)"
+
+[[theorems]]
+name = "RealRooted.UniformChow.isRealRooted_augChowUniform"
+module = "RealRooted.Applications.BinderVecchi.UniformChow"
+label = "The augmented Chow polynomial of U_{r,n} is real-rooted"
 
 [[theorems]]
 name = "RealRooted.EulerianTransform.transform_magicExpansion_isPF"
@@ -75,7 +86,10 @@ for $\mathcal D$ this is Brändén–Solus (via the Brändén–Vecchi Chow reso
 matrix), and for $\mathcal A$ it is Athanasiadis's theorem, proved here with the Brändén–Vecchi
 staircase row transform.
 
-The case $i = 0$ (the Chow and augmented Chow polynomials of $U_{r,n}$) is not covered here.
+For $i = 0$ the two families are the Chow and augmented Chow polynomials of $U_{r,n}$; their
+real-rootedness is proved from explicit formulas with the same Brändén–Vecchi staircase
+argument. The identification of those formulas with the Chow-ring Hilbert series is checked by
+computation but not formalized.
 The singular-cohomology interpretation of the polynomials is not formalized; the theorems are
 about the explicit formulas.
 
