@@ -961,10 +961,13 @@ import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
 import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
+import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
 import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
+import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
 import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
 import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree
