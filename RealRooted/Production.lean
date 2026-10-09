@@ -706,6 +706,7 @@ import RealRooted.HermiteBiehler.LogDerivative
 import RealRooted.HermiteBiehler.OddEven
 import RealRooted.HermiteBiehler.OrientedPencil
 import RealRooted.HermiteBiehler.StablePencil
+import RealRooted.HlavacekSolus.Shelling
 import RealRooted.HomogeneousComponentStability
 import RealRooted.HomogeneousOre
 import RealRooted.HomogeneousOreExamples

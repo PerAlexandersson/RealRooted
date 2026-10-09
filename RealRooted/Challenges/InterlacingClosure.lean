@@ -1,6 +1,7 @@
 import RealRooted.AffineDerivative
 import RealRooted.AffineFamily
 import RealRooted.FolkloreLemma
+import RealRooted.HlavacekSolus.Shelling
 import RealRooted.Interlacing.ConeBounds
 import RealRooted.ShiftLemma
 
@@ -11,8 +12,8 @@ import RealRooted.ShiftLemma
 version = 1
 section = "theorems"
 slug = "interlacing-closure"
-authors = ["Fisk", "Brändén", "Saud Leite"]
-years = [2006, 2015, 2024]
+authors = ["Fisk", "Brändén", "Saud Leite", "Hlavacek", "Solus"]
+years = [2006, 2015, 2021, 2024]
 
 [[theorems]]
 name = "RealRooted.Challenges.InterlacingClosure.strictInterl_of_forall_affine_mul_add_splits"
@@ -37,6 +38,11 @@ label = "Shift lemma: f is interlaced by f + (x − 1) h"
 name = "RealRooted.strictInterl_sub_X_mul_pair_of_posLeadingCoeff"
 module = "RealRooted.FolkloreLemma"
 label = "Subtracting x g: g ≪ f − x g ≪ f"
+
+[[theorems]]
+name = "RealRooted.HlavacekSolus.isRealRooted_hPolynomial_of_perm_isInterlacingSeqNonneg"
+module = "RealRooted.HlavacekSolus.Shelling"
+label = "Hlavacek–Solus: interlacing shelling pieces give a real-rooted h-polynomial"
 -->
 
 <!-- realrooted-catalog-content -->
