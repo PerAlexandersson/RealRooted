@@ -756,4 +756,26 @@ theorem HasNonnegCoeffs.schurSzegoComp {n : Nat} {f g : ℝ[X]}
     HasNonnegCoeffs (schurSzegoComp n f g) :=
   (schurSzegoComp_eq_diagonalOperator n f g).symm ▸
     hf.diagonalOperator fun k => div_nonneg (hg k) (by positivity)
+/-- A constant in the left argument of a Schur--Szegő composition only sees the constant
+coefficient of the right argument. -/
+theorem schurSzegoComp_C_left (n : ℕ) (u : ℝ) (Q : ℝ[X]) :
+    schurSzegoComp n (C u) Q = C (u * Q.coeff 0) := by
+  ext k
+  rw [coeff_schurSzegoComp]
+  rcases k with _ | k
+  · simp only [Nat.zero_le, ite_true, Nat.choose_zero_right, Nat.cast_one, div_one, coeff_C]
+  · simp only [coeff_C_succ, zero_mul, zero_div, ite_self]
+
+/-- Adding a constant to the left argument of a Schur--Szegő composition adds the constant times
+the constant coefficient of the right argument. -/
+theorem schurSzegoComp_add_C_left (n : ℕ) (f Q : ℝ[X]) (u : ℝ) :
+    schurSzegoComp n (f + C u) Q = schurSzegoComp n f Q + C (u * Q.coeff 0) := by
+  rw [schurSzegoComp_add_left, schurSzegoComp_C_left]
+
+/-- Schur--Szegő composition is compatible with linear combinations in the left argument. -/
+theorem schurSzegoComp_C_mul_add_left (n : ℕ) (a b : ℝ) (f g Q : ℝ[X]) :
+    schurSzegoComp n (C a * f + C b * g) Q =
+      C a * schurSzegoComp n f Q + C b * schurSzegoComp n g Q := by
+  rw [schurSzegoComp_add_left, schurSzegoComp_C_mul_left, schurSzegoComp_C_mul_left]
+
 end RealRooted
