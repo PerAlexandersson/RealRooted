@@ -962,6 +962,7 @@ import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
 import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
 import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
+import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
 import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
 import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
 import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
