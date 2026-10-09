@@ -16,7 +16,6 @@ open Polynomial
 noncomputable section
 
 namespace RealRooted
-namespace Applications
 namespace MultisetEulerianNarayana
 
 /-- The numerator of `Φ_{d,a} Γ = Γ + D_d Γ / a`. -/
@@ -398,5 +397,4 @@ theorem simpleNegRooted_gammaOperator
     · exact simpleNegRooted_gammaOperator_of_pos_natDegree hm ha hf (Or.inr rfl)
 
 end MultisetEulerianNarayana
-end Applications
 end RealRooted
