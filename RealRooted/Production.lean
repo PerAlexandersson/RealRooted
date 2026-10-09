@@ -1330,6 +1330,7 @@ import RealRooted.SuccDegreeRootCrossing
 import RealRooted.SymmetricDecomposition
 import RealRooted.SymmetricDecomposition.Decomposition
 import RealRooted.SymmetricDecomposition.Definitions
+import RealRooted.SymmetricDecomposition.DerangementTransform
 import RealRooted.SymmetricDecomposition.FPolynomial
 import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
 import RealRooted.SymmetricDecomposition.Theorem26
