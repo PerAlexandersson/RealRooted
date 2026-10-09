@@ -436,16 +436,6 @@ theorem exists_pos_pathMatchingPolynomial_add_C_splits {N : ℕ}
 def binaryRunAnchor (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
   schurSzegoComp n (pathMatchingPolynomial (n + 1)) p
 
-private theorem schurSzegoComp_add_C_left (n : ℕ)
-    (f p : ℝ[X]) (u : ℝ) :
-    schurSzegoComp n (f + C u) p =
-      schurSzegoComp n f p + C (u * p.coeff 0) := by
-  ext k
-  rcases k with _ | k
-  · simp [coeff_zero_schurSzegoComp]
-    ring
-  · simp [coeff_schurSzegoComp]
-
 theorem isPFPolynomial_binaryRunAnchor {n : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ n) :
     IsPFPolynomial (binaryRunAnchor n p) := by
