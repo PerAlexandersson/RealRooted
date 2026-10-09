@@ -1,7 +1,9 @@
 import RealRooted.CombinatorialExamples.CentralFactorial
 import RealRooted.CombinatorialExamples.EulerTypeRows
 import RealRooted.EulerBidiagonal
+import RealRooted.EulerBidiagonal.General
 import RealRooted.Interlacing.PencilPreserver
+import RealRooted.Interlacing.RootDeletionExpansion
 
 /-!
 # Euler bidiagonal step challenge entry point
@@ -71,6 +73,16 @@ label = "Consecutive rows of A080248 interlace"
 name = "RealRooted.EulerTypeRows.strictInterl_A160562Rows"
 module = "RealRooted.CombinatorialExamples.EulerTypeRows"
 label = "Consecutive rows of A160562 interlace"
+
+[[theorems]]
+name = "RealRooted.EulerBidiagonal.isNegativeSimple_generalStep_of_pos"
+module = "RealRooted.EulerBidiagonal.General"
+label = "κ(θ + a)(θ + b) + X(u + vθ) preserves simple negative roots"
+
+[[theorems]]
+name = "RealRooted.StrictInterl.root_deletion_expansion"
+module = "RealRooted.Interlacing.RootDeletionExpansion"
+label = "A strict interlacer is a positive combination of root deletions"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -101,6 +113,14 @@ project; see issue #1324. The usual first-order step theorems (Liu–Wang, Wang�
 apply, because the step is second order in $\theta$. Nor does $T$ preserve real-rootedness on
 all of $\mathbb{R}[x]$: its Borcea–Brändén symbol is not stable. The argument has to use the
 negative real axis.
+
+**Generalization.** For $\kappa, a, b > 0$ the step
+$T = \kappa(\theta + a)(\theta + b) + x(u + v\theta)$ maps polynomials with simple negative zeros to
+such polynomials, provided $u + vk > 0$ on the degrees in use and $2u \geq (a + b + 1)v$ (or the
+sharper condition that the comparison defect is negative on $(-\infty, 0]$). The comparison
+polynomial is now $2\kappa x q' + (\kappa(a + b + 1) + vx)q$. The corresponding interlacing
+statement covers the rows A156289, A166960, A166961, A166962 and A166972; its formalization is in
+progress.
 
 ## Proof idea
 
