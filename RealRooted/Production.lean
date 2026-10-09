@@ -278,6 +278,7 @@ import RealRooted.Challenges.Descartes
 import RealRooted.Challenges.EnestromKakeya
 import RealRooted.Challenges.Eulerian
 import RealRooted.Challenges.EulerianVariations
+import RealRooted.Challenges.FactorialCompression
 import RealRooted.Challenges.Favard
 import RealRooted.Challenges.FiniteFreeConvolutions
 import RealRooted.Challenges.GammaTransform
@@ -323,6 +324,7 @@ import RealRooted.Challenges.PeakPolynomials
 import RealRooted.Challenges.PerronFrobenius
 import RealRooted.Challenges.RealStability
 import RealRooted.Challenges.SchurCohn
+import RealRooted.Challenges.SeparablePermutations
 import RealRooted.Challenges.SmallInterlacingMatrices
 import RealRooted.Challenges.Sturm
 import RealRooted.Challenges.SturmSequenceFamilies
@@ -1320,6 +1322,7 @@ import RealRooted.ScalarNormalization
 import RealRooted.SeparablePermutations.Basic
 import RealRooted.SeparablePermutations.Enumerator
 import RealRooted.SeparablePermutations.Gamma
+import RealRooted.SeparablePermutations.Interlacing
 import RealRooted.SequenceClosure
 import RealRooted.ShiftLemma
 import RealRooted.SignEvaluation
