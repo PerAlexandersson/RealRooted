@@ -344,3 +344,38 @@ export MaWangInternal
     hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound)
 
 end RealRooted
+
+namespace RealRooted
+
+/-- Root-sign test for strict interlacing.  Let `f` be real-rooted of positive degree and positive
+leading coefficient, and let `g` have nonnegative coefficients, positive constant term and
+degree `deg f` or `deg f + 1`.  If `g(r) f'(r) < 0` at every root `r` of `f`, then `f` and `g`
+strictly interlace, they have no common root, and all roots of `g` are negative.  This is the
+sign criterion (Lemma 2.1) of Zhang, SSRN 7510941, built on the Liu--Wang type lemmas
+`strictInterl_of_interlaces_eval_mul_neg_same` and `..._succ`. -/
+theorem strictInterl_and_noCommonRoot_of_eval_mul_derivative_neg {f g : ℝ[X]}
+    (hf : f.Splits) (hfpos : HasPosLeadingCoeff f) (hfdeg : f.natDegree ≠ 0)
+    (hg : HasNonnegCoeffs g) (hg0 : 0 < g.coeff 0)
+    (hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1)
+    (hsign : ∀ r, f.IsRoot r → g.eval r * f.derivative.eval r < 0) :
+    StrictInterl f g ∧ (∀ r, f.IsRoot r → ¬ g.IsRoot r) ∧ ∀ r ∈ g.roots, r < 0 := by
+  have hgne : g ≠ 0 := fun h => by simp [h] at hg0
+  have hgpos : HasPosLeadingCoeff g := hg.pos_leadingCoeff hgne
+  have hfder := interlaces_derivative_of_pos_natDegree hfpos.ne_zero hf hfpos (by lia)
+  have hfderpos : HasPosLeadingCoeff f.derivative := hfpos.derivative hfdeg
+  have hweak : StrictInterl f g := by
+    rcases hdeg with hsame | hsucc
+    · exact strictInterl_of_interlaces_eval_mul_neg_same hfder hfderpos hgpos hsame hsign
+    · exact strictInterl_of_interlaces_eval_mul_neg_succ hfder hfderpos hgpos hsucc hsign
+  have hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r := by
+    intro r hr hgr
+    have hneg := hsign r hr
+    rw [IsRoot.def.mp hgr, zero_mul] at hneg
+    exact lt_irrefl 0 hneg
+  refine ⟨hweak, hno, fun r hr => ?_⟩
+  refine lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs hg r hr) fun hrzero => ?_
+  have hroot : g.IsRoot r := (mem_roots hgne).mp hr
+  rw [hrzero, IsRoot.def, ← coeff_zero_eq_eval_zero] at hroot
+  exact hg0.ne' hroot
+
+end RealRooted

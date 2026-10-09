@@ -562,6 +562,9 @@ import RealRooted.EulerianCompletion
 import RealRooted.EulerianCompletion.ProperPosition
 import RealRooted.EulerianMixedCompatibility
 import RealRooted.EulerianMixedCompatibility.Insertion
+import RealRooted.FactorialCompression.Basic
+import RealRooted.FactorialCompression.CommonKernel
+import RealRooted.FactorialCompression.Kernel
 import RealRooted.Favard
 import RealRooted.Favard.Affine
 import RealRooted.Favard.Affine.Basic
