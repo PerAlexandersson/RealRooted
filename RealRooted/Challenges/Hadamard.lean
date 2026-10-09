@@ -2,6 +2,7 @@ import RealRooted.GarloffWagner.Hadamard
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.Hadamard
 import RealRooted.Hadamard.FiniteReflection
+import RealRooted.Hadamard.KostovMap
 import RealRooted.Hadamard.SchurSzegoMultiplicity
 import RealRooted.Hadamard.SchurSzegoSigns
 import RealRooted.CoefficientShape.LiuMao
@@ -58,6 +59,16 @@ label = "Kostov–Shapiro: exact multiplicity of the root −ab of a Schur–Sze
 name = "RealRooted.schurSzegoComp_roots_sign_counts_of_roots_neg"
 module = "RealRooted.Hadamard.SchurSzegoSigns"
 label = "Kostov–Shapiro: composition with a negative-rooted polynomial preserves root signs"
+
+[[theorems]]
+name = "RealRooted.Kostov.interiorCoeff_composition"
+module = "RealRooted.Hadamard.KostovMap"
+label = "Kostov: Schur–Szegő factorizations have coefficients affine in σ(a)"
+
+[[theorems]]
+name = "RealRooted.Kostov.coeffMap_eq_sigma"
+module = "RealRooted.Hadamard.KostovMap"
+label = "Kostov's coefficient map recovers the symmetric functions of a factorization"
 
 [[theorems]]
 name = """RealRooted.Challenges.Hadamard.\
@@ -124,6 +135,13 @@ root when $m + l = n$. The roots must be nonzero, as Kostov (2010) points out.
 If moreover $f$ is real-rooted and $g$ has only negative roots, then $f *_n g$ is
 real-rooted with as many positive, zero and negative roots as $f$.
 
+Kostov's coefficient map makes the factorizations explicit. Write a monic $P$ of degree $n$
+with $P(-1) = 0$ as $(x+1)(x^{n-1} + c_1 x^{n-2} + \dots + c_{n-1})$. If $P = K_{a_1} *_n
+\dots *_n K_{a_{n-1}}$ with $K_a = (x+1)^{n-1}(x+a)$, then the interior coefficients of $P$
+are an affine function of $\sigma_j(a_1, \dots, a_{n-1})$. The linear part is a scaled
+Vandermonde matrix in the ratios $(n-k)/k$, so it is invertible, and $c$ determines
+$\sigma(a)$.
+
 **Finite Pólya–Schur theorem.** Fix $n \geq 0$ and let $T_\gamma(x^k) =
 \gamma_k x^k$. Then $T_\gamma$ maps every real-rooted polynomial of degree at
 most $n$ to zero or a real-rooted polynomial if and only if the Jensen
@@ -181,7 +199,9 @@ products,” arXiv:2408.12386 (2024); Y. Liu and J. Mao, “Preservation of
 log-concavity under Hadamard products,” arXiv:2609.11589 (2026). V. Kostov and B.
 Shapiro, “On the Schur–Szegő composition of polynomials,” *C. R. Math. Acad. Sci.
 Paris* 343 (2006), 81–86; V. P. Kostov, “Interlacing properties and the Schur–Szegő
-composition,” *Functional Analysis and Other Mathematics* 3 (2010), 65–74.  See the
+composition,” *Functional Analysis and Other Mathematics* 3 (2010), 65–74; V. P. Kostov,
+“Eigenvectors in the context of the Schur–Szegő composition of polynomials,” *Mathematica
+Balkanica* 22 (2008), 155–173.  See the
 [Hadamard-product overview](https://www.symmetricfunctions.com/realRooted.htm#hadamardProductTheorems),
 [Schur–Szegő composition](https://www.symmetricfunctions.com/realRooted.htm#schurSzegoComposition),
 and the [finite multiplier criterion](https://www.symmetricfunctions.com/realRooted.htm#finiteMultiplierSequenceCriterion)
