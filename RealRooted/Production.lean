@@ -1145,6 +1145,7 @@ import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.JumpSystem
 import RealRooted.MultivariateStability.LinearForm
 import RealRooted.MultivariateStability.Lorentzian
+import RealRooted.MultivariateStability.MixedCharacteristic
 import RealRooted.MultivariateStability.NegativeCorrelation
 import RealRooted.MultivariateStability.PolyaFrequency
 import RealRooted.MultivariateStability.Rayleigh
