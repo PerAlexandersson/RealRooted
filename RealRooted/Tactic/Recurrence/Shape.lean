@@ -361,7 +361,8 @@ def recShape? (P : Name) : MetaM (Option RecShape) := do
 
 /-- Run `tac` with a fresh heartbeat budget and without error recovery.  An error that
 `tac` only logs (for instance from a nested `by` block) counts as a failure.  On failure
-restore the state and return the error. -/
+restore the state, including the info trees, and return the error: the info trees of the
+failed attempts would otherwise stay alive until the end of the declaration. -/
 def rowAttempt (tac : TacticM α) : TacticM (Except MessageData α) := do
   let s ← saveState
   let log ← Core.getMessageLog
@@ -371,12 +372,15 @@ def rowAttempt (tac : TacticM α) : TacticM (Except MessageData α) := do
       let a ← withCurrHeartbeats (withoutRecover (Term.withoutErrToSorry tac))
       let new ← Core.getMessageLog
       if let some m := new.toList.find? (·.severity == .error) then
-        s.restore
+        s.restore (restoreInfo := true)
         Core.setMessageLog log
         return .error m.data
       Core.setMessageLog (log ++ new)
       return .ok a)
-    (fun e => do s.restore; Core.setMessageLog log; return .error e.toMessageData)
+    (fun e => do
+      s.restore (restoreInfo := true)
+      Core.setMessageLog log
+      return .error e.toMessageData)
 
 /-- Like `rowAttempt`, returning whether `tac` succeeded. -/
 def rowSucceeds (tac : TacticM Unit) : TacticM Bool := do
