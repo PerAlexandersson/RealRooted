@@ -9,8 +9,8 @@ For a sequence `P : ℕ → ℝ[X]` defined by a recurrence, `rr_row_interlaces`
 `Interlaces (P t) (P (t + 1))` and `rr_row_splits` closes `(P t).Splits`.  Summands may come
 in any order, and a recurrence `P (n + k) = …` with explicit rows below `k` is applied to the
 shifted sequence, the first rows being checked one by one.  Before elaborating a theorem,
-every route runs an exact probe on the computed rows (rational arithmetic, `QPoly`), so a
-route that cannot apply fails in milliseconds.
+every route runs an exact probe on the computed rows (rational arithmetic, `QPoly`), and a
+route that the probe rules out fails without elaborating anything.
 
 ## Routes of `rr_row_interlaces`, in order
 
