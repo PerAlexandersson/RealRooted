@@ -413,6 +413,23 @@ theorem A166961_interlaces (n : ℕ) : Interlaces (A166961 n) (A166961 (n + 1)) 
 example (n : ℕ) : Interlaces (A166961 n) (A166961 (n + 1)) := by
   rr_row_interlaces?
 
+/-! ### Moving root windows -/
+
+/-- The roots stay in `[L n, 0]`, where `L n = -(8n + 21) / (9n + 24)` is the other root of
+`A n` and decreases with `n` (A370258,
+`RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_div`). -/
+def A370258 : ℕ → ℝ[X]
+  | 0 => 1 + 10 * X + 15 * X ^ 2
+  | n + 1 =>
+      (C ((21 / 2 + 4 * (n : ℝ)) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) * X +
+          C ((12 + 9 / 2 * (n : ℝ)) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) * X ^ 2) *
+        (A370258 n).derivative +
+      (C 1 + C ((24 + 9 * (2 + (n : ℝ)) ^ 2 + 21 / 2 * n) /
+          (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) * X) * A370258 n
+
+theorem A370258_interlaces (n : ℕ) : Interlaces (A370258 n) (A370258 (n + 1)) := by
+  rr_row_interlaces
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 /--

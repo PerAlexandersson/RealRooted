@@ -643,6 +643,33 @@ theorem derivRec_interlaces_of_roots_mem_Icc_of_degree {L U : ℝ}
           (fun x hx => by simpa [hdeg n] using hABU n x hx) t ht⟩)
     h0 hW0 h01 n
 
+/-- `derivRec_interlaces_of_roots_mem_Icc_mono` with the lower bound `L n = p n / q n`,
+`q n > 0`, and every condition multiplied out, so that no hypothesis contains a quotient.
+The condition `A n ≥ 0` is asked below `L n`, which contains `(-∞, L (n + 1))`: this is the
+natural form when `L n` is a root of `A n`. -/
+theorem derivRec_interlaces_of_roots_mem_Icc_mono_div {p q : ℕ → ℝ} {U : ℝ}
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hq : ∀ n, 0 < q n) (hL : ∀ n, p (n + 1) * q n ≤ p n * q (n + 1))
+    (hA : ∀ n x, p n ≤ q n * x → x ≤ U → (A n).eval x ≤ 0)
+    (hAU : ∀ n x, U < x → 0 ≤ (A n).eval x) (hBU : ∀ n x, U < x → 0 < (B n).eval x)
+    (hAL : ∀ n x, q n * x < p n → 0 ≤ (A n).eval x)
+    (hBL : ∀ n x, q (n + 1) * x < p (n + 1) → (B n).eval x < 0)
+    (h0 : (P 0).Splits) (hW0 : ∀ t ∈ (P 0).roots, p 0 ≤ q 0 * t ∧ t ≤ U)
+    (h01 : D₀ = 0 → Interlaces (P 0) (P 1)) (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) := by
+  have hle (m : ℕ) (x : ℝ) : p m / q m ≤ x ↔ p m ≤ q m * x := by
+    rw [div_le_iff₀ (hq m), mul_comm]
+  have hlt (m : ℕ) (x : ℝ) : x < p m / q m ↔ q m * x < p m := by
+    rw [lt_div_iff₀ (hq m), mul_comm]
+  have hmono (m : ℕ) : p (m + 1) / q (m + 1) ≤ p m / q m := by
+    rw [div_le_div_iff₀ (hq _) (hq _)]; exact hL m
+  refine derivRec_interlaces_of_roots_mem_Icc_mono (L := fun m => p m / q m) hrec hdeg hpos
+    hmono (fun m x h1 h2 => hA m x ((hle m x).mp h1) h2) hAU hBU
+    (fun m x h => hAL m x ((hlt m x).mp (h.trans_le (hmono m))))
+    (fun m x h => hBL m x ((hlt _ x).mp h)) h0
+    (fun t ht => ⟨(hle 0 t).mpr (hW0 t ht).1, (hW0 t ht).2⟩) h01 n
+
 /-- Roots at most `U n` with a nondecreasing bound `U`: `A n ≤ 0` up to `U n`, and beyond
 `U (n + 1)` at each point either the plain conditions `A n ≥ 0`, `B n > 0` or the
 degree-bounded one. -/
