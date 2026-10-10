@@ -430,6 +430,31 @@ def A370258 : ℕ → ℝ[X]
 theorem A370258_interlaces (n : ℕ) : Interlaces (A370258 n) (A370258 (n + 1)) := by
   rr_row_interlaces
 
+/-! ### Rows `c m · q ^ m`
+
+Recurrences whose multipliers are powers of one linear `q`
+(`RealRooted.interlaces_of_forall_eq_C_mul_pow`). -/
+
+/-- `P (n + 2) = X P (n + 1) + X ^ 2 P n` (A127647). -/
+def A127647 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => X * A127647 (n + 1) + X ^ 2 * A127647 n
+
+theorem A127647_interlaces (n : ℕ) : Interlaces (A127647 n) (A127647 (n + 1)) := by
+  rr_row_interlaces
+
+/-- The order-three recurrence with characteristic polynomial `(t - (1 + X)) ^ 3` (A094305). -/
+def A094305 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 3 + 3 * X
+  | 2 => 6 + 12 * X + 6 * X ^ 2
+  | n + 3 => (3 + 3 * X) * A094305 (n + 2) + (-3 + -6 * X + -3 * X ^ 2) * A094305 (n + 1) +
+      (1 + X ^ 3 + 3 * X + 3 * X ^ 2) * A094305 n
+
+theorem A094305_interlaces (n : ℕ) : Interlaces (A094305 n) (A094305 (n + 1)) := by
+  rr_row_interlaces
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 /--

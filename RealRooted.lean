@@ -1674,6 +1674,7 @@ import RealRooted.Tactic.RootCount.SequenceCore
 import RealRooted.Tactic.Row.Core
 import RealRooted.Tactic.Row.DerivLag
 import RealRooted.Tactic.Row.LowerOrder
+import RealRooted.Tactic.Row.PowerForm
 import RealRooted.Tactic.Row.SideGoals
 import RealRooted.Tactic.Row.Subseq
 import RealRooted.Tactic.RowClosedForm
