@@ -120,6 +120,9 @@ elab "rr_row_field" : tactic => withMainContext do
         first | positivity | (apply ne_of_lt; nlinarith) | (apply ne_of_gt; nlinarith))
     | (refine mul_ne_zero ?_ ?_ <;>
         first | positivity | (apply ne_of_lt; nlinarith) | (apply ne_of_gt; nlinarith))
+    -- a difference whose expanded monomials all have nonnegative coefficients
+    | (apply sub_nonneg.mp; ring_nf; positivity)
+    | (apply sub_pos.mp; ring_nf; positivity)
     | fail))
 
 /-- Finishers for a top-coefficient multiplier goal, after the coefficients have

@@ -442,6 +442,25 @@ def A370258 : ℕ → ℝ[X]
 theorem A370258_interlaces (n : ℕ) : Interlaces (A370258 n) (A370258 (n + 1)) := by
   rr_row_interlaces
 
+/-- The roots stay at most `U n = -(n + 3) / (8n + 21)`, the smaller root of `A n`, which
+increases with `n`; the other root `1` of `A n` splits the conditions beyond `U (n + 1)`
+(A110608, `RealRooted.derivRec_interlaces_of_roots_le_mono_div`). -/
+def A110608 : ℕ → ℝ[X]
+  | 0 => 6 + 8 * X + X ^ 2
+  | n + 1 =>
+      (C ((3 / 2 + (n : ℝ) / 2) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) +
+          C ((9 + 7 / 2 * (n : ℝ)) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) * X +
+          C ((-21 / 2 - 4 * (n : ℝ)) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) * X ^ 2) *
+        (A110608 n).derivative +
+      (C ((18 + 8 * (n : ℝ) + 15 / 2 * (2 + (n : ℝ)) ^ 2) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) +
+          C ((12 + 6 * (2 + (n : ℝ)) ^ 2 + 11 / 2 * n) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) *
+            X) * A110608 n
+
+theorem A110608_interlaces (n : ℕ) : Interlaces (A110608 n) (A110608 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A110608_splits (n : ℕ) : (A110608 n).Splits := by rr_row_splits
+
 /-! ### Rows `c m · q ^ m`
 
 Recurrences whose multipliers are powers of one linear `q`
