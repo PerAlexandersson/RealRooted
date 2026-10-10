@@ -20,7 +20,7 @@ theorem desLeCount_eq_sum_desCount (n k : ℕ) (E : Finset ℕ) :
     desLeCount n k E = ∑ D ∈ E.powerset, desCount n k D := by
   classical
   unfold desLeCount desCount
-  rw [card_eq_sum_card_fiberwise (f := fun w : Equiv.Perm (Fin (n + 1)) => desSet w)
+  rw [card_eq_sum_card_fiberwise (f := fun w : Equiv.Perm (Fin (n + 1)) => w.descentSet)
     (t := E.powerset) (fun w hw => ?_)]
   · refine sum_congr rfl fun D hD => ?_
     congr 1

@@ -4,6 +4,7 @@ import Mathlib.Algebra.MvPolynomial.Degrees
 import Mathlib.RingTheory.MvPolynomial.Basic
 import Mathlib.Tactic
 import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 
 /-!
 # Peak-value polynomials of permutations
@@ -20,21 +21,14 @@ namespace RealRooted
 
 noncomputable section
 
-/-- A position is an interior peak when it has two adjacent positions and its
-value is larger than both adjacent values. -/
-def IsPeakPosition {n : ℕ} (π : Equiv.Perm (Fin n)) (j : Fin n) : Prop :=
-  ∃ i k : Fin n,
-    i.val + 1 = j.val ∧ j.val + 1 = k.val ∧
-      π i < π j ∧ π k < π j
-
-/-- The set of interior peak positions of a permutation. -/
-def peakPositions {n : ℕ} (π : Equiv.Perm (Fin n)) : Finset (Fin n) := by
-  classical
-  exact Finset.univ.filter (IsPeakPosition π)
+/-- The set of interior peak positions of a permutation, as elements of `Fin n`: the canonical
+`Equiv.Perm.peakSet`, whose members are characterized by `Equiv.Perm.mem_peakSet`. -/
+def peakPositions {n : ℕ} (π : Equiv.Perm (Fin n)) : Finset (Fin n) :=
+  Finset.univ.filter fun j => (j : ℕ) ∈ π.peakSet
 
 @[simp] theorem mem_peakPositions_iff {n : ℕ} {π : Equiv.Perm (Fin n)}
     {j : Fin n} :
-    j ∈ peakPositions π ↔ IsPeakPosition π j := by
+    j ∈ peakPositions π ↔ (j : ℕ) ∈ π.peakSet := by
   simp [peakPositions]
 
 /-- The set of values occurring at interior peaks of a permutation. -/
@@ -43,12 +37,12 @@ def peakValues {n : ℕ} (π : Equiv.Perm (Fin n)) : Finset (Fin n) :=
 
 theorem mem_peakValues_iff_exists {n : ℕ} {π : Equiv.Perm (Fin n)}
     {v : Fin n} :
-    v ∈ peakValues π ↔ ∃ j, IsPeakPosition π j ∧ π j = v := by
+    v ∈ peakValues π ↔ ∃ j : Fin n, (j : ℕ) ∈ π.peakSet ∧ π j = v := by
   simp [peakValues]
 
 @[simp] theorem mem_peakValues_iff {n : ℕ} {π : Equiv.Perm (Fin n)}
     {v : Fin n} :
-    v ∈ peakValues π ↔ IsPeakPosition π (π.symm v) := by
+    v ∈ peakValues π ↔ ((π.symm v : Fin n) : ℕ) ∈ π.peakSet := by
   classical
   constructor
   · rw [peakValues, Finset.mem_image]
@@ -63,7 +57,7 @@ theorem two_le_value_of_mem_peakValues
     {n : ℕ} {π : Equiv.Perm (Fin n)} {v : Fin n}
     (hv : v ∈ peakValues π) :
     2 ≤ v.val := by
-  rw [mem_peakValues_iff] at hv
+  rw [mem_peakValues_iff, Equiv.Perm.mem_peakSet] at hv
   rcases hv with ⟨i, k, hij, hjk, hi, hk⟩
   have hπi : π i < v := by
     simpa using hi
@@ -78,19 +72,19 @@ theorem two_le_value_of_mem_peakValues
 
 lemma peakPosition_ne_zero {m : ℕ}
     {π : Equiv.Perm (Fin (m + 1))} {j : Fin (m + 1)}
-    (hj : IsPeakPosition π j) :
+    (hj : (j : ℕ) ∈ π.peakSet) :
     j ≠ 0 := by
   rintro rfl
-  rcases hj with ⟨i, k, hij, hjk, hi, hk⟩
+  rcases Equiv.Perm.mem_peakSet.mp hj with ⟨i, k, hij, hjk, hi, hk⟩
   simp only [Fin.val_zero] at hij
   lia
 
 lemma peakPosition_ne_last {m : ℕ}
     {π : Equiv.Perm (Fin (m + 1))} {j : Fin (m + 1)}
-    (hj : IsPeakPosition π j) :
+    (hj : (j : ℕ) ∈ π.peakSet) :
     j ≠ Fin.last m := by
   intro h
-  rcases hj with ⟨i, k, hij, hjk, hi, hk⟩
+  rcases Equiv.Perm.mem_peakSet.mp hj with ⟨i, k, hij, hjk, hi, hk⟩
   have hjval : j.val = m := by
     simpa using congrArg Fin.val h
   have hklt : k.val < m + 1 := k.isLt
@@ -98,11 +92,11 @@ lemma peakPosition_ne_last {m : ℕ}
 
 lemma peakPositions_not_adjacent {n : ℕ}
     {π : Equiv.Perm (Fin n)} {j k : Fin n}
-    (hj : IsPeakPosition π j) (hk : IsPeakPosition π k)
+    (hj : (j : ℕ) ∈ π.peakSet) (hk : (k : ℕ) ∈ π.peakSet)
     (hjk : j.val + 1 = k.val) :
     False := by
-  rcases hj with ⟨jl, jr, hjl, hjr, hleft, hright⟩
-  rcases hk with ⟨kl, kr, hkl, hkr, hleft', hright'⟩
+  rcases Equiv.Perm.mem_peakSet.mp hj with ⟨jl, jr, hjl, hjr, hleft, hright⟩
+  rcases Equiv.Perm.mem_peakSet.mp hk with ⟨kl, kr, hkl, hkr, hleft', hright'⟩
   have hjr_eq : jr = k := Fin.ext (by lia)
   have hkl_eq : kl = j := Fin.ext (by lia)
   subst jr
@@ -170,8 +164,9 @@ theorem card_peakPositions_le {n : ℕ} (π : Equiv.Perm (Fin n)) :
   | succ m =>
       have hcard := Fintype.card_le_of_injective (peakPairSlot π)
         (peakPairSlot_injective π)
-      simpa [Fintype.card_prod, Fintype.card_coe,
-        Fintype.card_subtype_compl, Nat.mul_comm] using hcard
+      simpa [peakPositions, Fintype.card_subtype, Fintype.card_prod, Fintype.card_coe,
+        Fintype.card_subtype_compl, Nat.mul_comm, Finset.filter_ne',
+        Finset.card_erase_of_mem] using hcard
 
 /-- A permutation of `Fin n` has at most `⌊(n - 1) / 2⌋` interior peak
 values. -/

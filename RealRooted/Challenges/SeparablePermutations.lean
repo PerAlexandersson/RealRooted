@@ -27,9 +27,9 @@ module = "RealRooted.SeparablePermutations.Gamma"
 label = "Descent polynomials S_n = (1 + t)^{n-1} Γ_n(t/(1+t)^2)"
 
 [[definitions]]
-name = "RealRooted.SeparablePermutations.IsSeparable"
-module = "RealRooted.SeparablePermutations.Enumerator"
-label = "Separable permutations: avoiders of 2413 and 3142"
+name = "Equiv.Perm.IsSeparable"
+module = "RealRooted.Mathlib.Combinatorics.Enumerative.Separable"
+label = "Separable permutations: direct and skew sums, equivalently avoiders of 2413 and 3142"
 
 [[definitions]]
 name = "RealRooted.SeparablePermutations.descentEnumerator"
@@ -72,11 +72,6 @@ label = "Fu–Lin–Zeng / Zhang: the descent enumerator equals S_{n+1}"
 name = "RealRooted.SeparablePermutations.gammaPolynomial_cubic"
 module = "RealRooted.SeparablePermutations.GammaCubic"
 label = "Fu–Lin–Zeng's cubic for the gamma-polynomials (via Lagrange inversion)"
-
-[[theorems]]
-name = "RealRooted.SeparablePermutations.descentEnumerator_three"
-module = "RealRooted.SeparablePermutations.Enumerator"
-label = "Finite check: the enumerator equals S_4 for permutations of four letters"
 -->
 
 <!-- realrooted-catalog-content -->
