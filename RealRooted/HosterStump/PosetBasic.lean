@@ -83,6 +83,6 @@ decreasing_by exact Finset.card_erase_lt_of_mem (Finset.max'_mem U h)
 
 /-- Permutations of `n + 1` letters with `w 0 = k` whose descent set lies in `E`. -/
 def desLeCount (n k : ℕ) (E : Finset ℕ) : ℕ :=
-  (univ.filter fun w : Equiv.Perm (Fin (n + 1)) => (w 0 : ℕ) = k ∧ desSet w ⊆ E).card
+  (univ.filter fun w : Equiv.Perm (Fin (n + 1)) => (w 0 : ℕ) = k ∧ w.descentSet ⊆ E).card
 
 end RealRooted.HosterStump

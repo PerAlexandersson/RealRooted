@@ -618,16 +618,16 @@ theorem smirnovWords_eq_signedSmirnovWords (q p k : ℕ) :
   simp [isSmirnovWord_iff_listIsChain]
 
 /-- The tuple and list descent statistics agree on a Smirnov skeleton. -/
-theorem smirnovDescentNumber_eq_listDescentNumber {q p k : ℕ}
+theorem smirnovDescentNumber_eq_descentCount {q p k : ℕ}
     (word : Fin k → SignedLetter q p) :
     smirnovDescentNumber word =
-      listDescentNumber (List.ofFn word) := by
+      (List.ofFn word).descentCount := by
   cases k with
-  | zero => simp [listDescentNumber]
+  | zero => simp [List.descentCount, List.descentSet]
   | succ k =>
       change RealRooted.ParkingFunctions.descentNumber word = _
       simpa [signedDescentNumber] using
-        (listDescentNumber_ofFn word).symm
+        (descentCount_ofFn word).symm
 
 /-- One fixed skeleton length specializes exactly to the signed-run summand. -/
 theorem coeff_smirnovSubstitutionFixed_signedRunSeries
@@ -637,7 +637,7 @@ theorem coeff_smirnovSubstitutionFixed_signedRunSeries
         (smirnovSubstitutionFixed (A := R[X]) X
           (signedRunSeries weight) k) =
       ∑ skeleton ∈ signedSmirnovWords q p k,
-        X ^ listDescentNumber (List.ofFn skeleton) *
+        X ^ (List.ofFn skeleton).descentCount *
           PowerSeries.coeff n
             (signedTupleSkeletonRunSeries weight skeleton) := by
   classical
@@ -646,7 +646,7 @@ theorem coeff_smirnovSubstitutionFixed_signedRunSeries
   apply Finset.sum_congr rfl
   intro skeleton hskeleton
   rw [PowerSeries.coeff_C_mul]
-  simp [smirnovDescentNumber_eq_listDescentNumber,
+  simp [smirnovDescentNumber_eq_descentCount,
     signedTupleSkeletonRunSeries]
 
 /-- The locally finite substitution coefficient is exactly the coefficient

@@ -7,13 +7,10 @@ import Mathlib.GroupTheory.Perm.Fin
 
 Hoster and Stump, *Chow polynomials of simplicial posets* (arXiv:2508.15538), define
 `p^{S ⊆ T}_{n,k}` in (3.1) as a sum of `x ^ des w` over permutations `w` of `n + 1` letters.
-Here `desSet` records the `0`-based descent positions, `refinedPerm` is (3.1), and
+Descent positions are the `0`-based canonical `Equiv.Perm.descentSet`, `refinedPerm` is (3.1), and
 `refinedPerm_eq_refined` proves that it equals the recursion `refined` of
 `RealRooted.HosterStump.Refined`, by splitting off the first letter with
-`Equiv.Perm.decomposeFin'` (`desSet_decomposeFin'Symm`).
-
-`desSet` is the canonical `Equiv.Perm.descentSet` of the staging module
-`RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics` (`desSet_eq_descentSet`).
+`Equiv.Perm.decomposeFin'` (`descentSet_decomposeFin'Symm`).
 -/
 
 open Polynomial
@@ -22,9 +19,6 @@ noncomputable section
 
 namespace RealRooted.HosterStump
 
-/-- Descent positions (`0`-based) of a permutation, using the canonical statistic. -/
-def desSet {n : ℕ} (w : Equiv.Perm (Fin (n + 1))) : Finset ℕ := w.descentSet
-
 /-- A set of positions is isolated if it contains no two consecutive positions. -/
 def IsIsolated (D : Finset ℕ) : Prop := ∀ i ∈ D, i + 1 ∉ D
 
@@ -32,65 +26,27 @@ instance (D : Finset ℕ) : Decidable (IsIsolated D) := by
   unfold IsIsolated
   infer_instance
 
-/-- Membership in the descent set. -/
-lemma mem_desSet {n : ℕ} {w : Equiv.Perm (Fin (n + 1))} {m : ℕ} :
-    m ∈ desSet w ↔ ∃ i : Fin n, (i : ℕ) = m ∧ w i.succ < w i.castSucc := by
-  rw [desSet, Equiv.Perm.descentSet_eq_list, List.mem_descentSet]
-  constructor
-  · rintro ⟨h, hlt⟩
-    have hm : m < n := by
-      simp only [List.length_ofFn] at h
-      lia
-    let i : Fin n := ⟨m, hm⟩
-    refine ⟨i, rfl, ?_⟩
-    rw [List.getElem_ofFn, List.getElem_ofFn] at hlt
-    exact hlt
-  · rintro ⟨i, rfl, hlt⟩
-    have hi : (i : ℕ) + 1 < (List.ofFn w).length := by
-      simp only [List.length_ofFn]
-      lia
-    refine ⟨hi, ?_⟩
-    rw [List.getElem_ofFn, List.getElem_ofFn]
-    exact hlt
-
-/-- The local name `desSet` is definitionally the canonical descent set. -/
-theorem desSet_eq_descentSet {n : ℕ} (w : Equiv.Perm (Fin (n + 1))) :
-    desSet w = w.descentSet := rfl
-
-/-- The cardinality of `desSet` is the canonical permutation descent count. -/
-theorem desSet_card_eq_descentCount {n : ℕ} (w : Equiv.Perm (Fin (n + 1))) :
-    (desSet w).card = w.descentCount := by
-  rw [desSet]
-  rfl
-
-/-- Every descent position is below `n`. -/
-lemma desSet_subset_range {n : ℕ} (w : Equiv.Perm (Fin (n + 1))) :
-    desSet w ⊆ Finset.range n := by
-  intro m hm
-  obtain ⟨i, rfl, -⟩ := mem_desSet.mp hm
-  simp
-
 /-- Hoster--Stump (3.1): `p^{S ⊆ T}_{n,k} = ∑ x ^ des w` over the permutations `w` of `n + 1`
 letters with `w 1 = k + 1`, isolated descent set, and `S ⊆ Des w ⊆ T` (`0`-based positions). -/
 noncomputable def refinedPerm (n k : ℕ) (S T : Finset ℕ) : ℝ[X] :=
   ∑ w ∈ (Finset.univ : Finset (Equiv.Perm (Fin (n + 1)))).filter
-      (fun w => (w 0 : ℕ) = k ∧ IsIsolated (desSet w) ∧ S ⊆ desSet w ∧ desSet w ⊆ T),
-    X ^ (desSet w).card
+      (fun w => (w 0 : ℕ) = k ∧ IsIsolated w.descentSet ∧ S ⊆ w.descentSet ∧ w.descentSet ⊆ T),
+    X ^ w.descentSet.card
 
 /-- The number of permutations of `n + 1` letters with `w 1 = k + 1` and descent set `D`. -/
 def desCount (n k : ℕ) (D : Finset ℕ) : ℕ :=
-  (Finset.univ.filter fun w : Equiv.Perm (Fin (n + 1)) => (w 0 : ℕ) = k ∧ desSet w = D).card
+  (Finset.univ.filter fun w : Equiv.Perm (Fin (n + 1)) => (w 0 : ℕ) = k ∧ w.descentSet = D).card
 
 /-- How descents transform under `Equiv.Perm.decomposeFin'`: the word `w` starting with `i`
 followed by the order-isomorphic copy of `σ` on the remaining letters. -/
-theorem desSet_decomposeFin'Symm {n : ℕ} (i : Fin (n + 2)) (σ : Equiv.Perm (Fin (n + 1))) :
-    desSet (Equiv.Perm.decomposeFin'Symm i σ) =
-      (if (σ 0 : ℕ) < i then {0} else ∅) ∪ (desSet σ).image Nat.succ := by
+theorem descentSet_decomposeFin'Symm {n : ℕ} (i : Fin (n + 2)) (σ : Equiv.Perm (Fin (n + 1))) :
+    (Equiv.Perm.decomposeFin'Symm i σ).descentSet =
+      (if (σ 0 : ℕ) < i then {0} else ∅) ∪ σ.descentSet.image Nat.succ := by
   ext m
-  rw [Finset.mem_union, Finset.mem_image, mem_desSet]
+  rw [Finset.mem_union, Finset.mem_image, Equiv.Perm.mem_descentSet]
   cases m with
   | zero =>
-    have h0 : ¬∃ a ∈ desSet σ, a.succ = 0 := by simp
+    have h0 : ¬∃ a ∈ σ.descentSet, a.succ = 0 := by simp
     have h1 : (∃ j : Fin (n + 1), (j : ℕ) = 0 ∧
         Equiv.Perm.decomposeFin'Symm i σ j.succ < Equiv.Perm.decomposeFin'Symm i σ j.castSucc) ↔
         (σ 0 : ℕ) < i := by
@@ -129,9 +85,9 @@ theorem desSet_decomposeFin'Symm {n : ℕ} (i : Fin (n + 2)) (σ : Equiv.Perm (F
         lia
       have hjj : j = (⟨m, hm⟩ : Fin n).succ := Fin.ext (by simp [hj])
       subst hjj
-      exact ⟨m, mem_desSet.mpr ⟨⟨m, hm⟩, rfl, (key ⟨m, hm⟩).mp hlt⟩, rfl⟩
+      exact ⟨m, Equiv.Perm.mem_descentSet.mpr ⟨⟨m, hm⟩, rfl, (key ⟨m, hm⟩).mp hlt⟩, rfl⟩
     · rintro ⟨a, ha, haj⟩
-      obtain ⟨j, hj, hlt⟩ := mem_desSet.mp ha
+      obtain ⟨j, hj, hlt⟩ := Equiv.Perm.mem_descentSet.mp ha
       refine ⟨j.succ, ?_, (key j).mpr hlt⟩
       simp only [Fin.val_succ]
       lia
@@ -206,18 +162,18 @@ private lemma card_zero_union_image (D : Finset ℕ) :
 private lemma term_eq {n : ℕ} (i : Fin (n + 2)) (k : ℕ) (hik : (i : ℕ) = k) (S T : Finset ℕ)
     (σ : Equiv.Perm (Fin (n + 1))) :
     (if ((Equiv.Perm.decomposeFin'Symm i σ 0 : Fin (n + 2)) : ℕ) = k ∧
-        IsIsolated (desSet (Equiv.Perm.decomposeFin'Symm i σ)) ∧
-        S ⊆ desSet (Equiv.Perm.decomposeFin'Symm i σ) ∧
-        desSet (Equiv.Perm.decomposeFin'Symm i σ) ⊆ T then
-      (X : ℝ[X]) ^ (desSet (Equiv.Perm.decomposeFin'Symm i σ)).card else 0) =
+        IsIsolated ((Equiv.Perm.decomposeFin'Symm i σ).descentSet) ∧
+        S ⊆ (Equiv.Perm.decomposeFin'Symm i σ).descentSet ∧
+        (Equiv.Perm.decomposeFin'Symm i σ).descentSet ⊆ T then
+      (X : ℝ[X]) ^ ((Equiv.Perm.decomposeFin'Symm i σ).descentSet).card else 0) =
     (if 0 ∈ T then
-      X * (if (σ 0 : ℕ) < k ∧ IsIsolated (desSet σ) ∧ shiftDown S ⊆ desSet σ ∧
-          desSet σ ⊆ (shiftDown T).erase 0 then (X : ℝ[X]) ^ (desSet σ).card else 0)
+      X * (if (σ 0 : ℕ) < k ∧ IsIsolated σ.descentSet ∧ shiftDown S ⊆ σ.descentSet ∧
+          σ.descentSet ⊆ (shiftDown T).erase 0 then (X : ℝ[X]) ^ σ.descentSet.card else 0)
       else 0) +
     (if 0 ∈ S then 0 else
-      if k ≤ (σ 0 : ℕ) ∧ IsIsolated (desSet σ) ∧ shiftDown S ⊆ desSet σ ∧
-          desSet σ ⊆ shiftDown T then (X : ℝ[X]) ^ (desSet σ).card else 0) := by
-  rw [desSet_decomposeFin'Symm, Equiv.Perm.decomposeFin'Symm_zero, hik]
+      if k ≤ (σ 0 : ℕ) ∧ IsIsolated σ.descentSet ∧ shiftDown S ⊆ σ.descentSet ∧
+          σ.descentSet ⊆ shiftDown T then (X : ℝ[X]) ^ σ.descentSet.card else 0) := by
+  rw [descentSet_decomposeFin'Symm, Equiv.Perm.decomposeFin'Symm_zero, hik]
   by_cases hlt : (σ 0 : ℕ) < k
   · simp only [hlt, ↓reduceIte, true_and, isIsolated_zero_union_image,
       subset_zero_union_image_iff, zero_union_image_subset_iff, subset_erase_zero_iff,
@@ -242,15 +198,14 @@ theorem refinedPerm_eq_refined {n k : ℕ} (hk : k ≤ n) (S T : Finset ℕ) :
     subst hk0
     rw [refined_zero]
     unfold refinedPerm
-    have hd : ∀ w : Equiv.Perm (Fin 1), desSet w = ∅ := fun w => by simp [desSet]
     rw [Finset.sum_filter, Fintype.sum_subsingleton _ (1 : Equiv.Perm (Fin 1))]
     have hiso : IsIsolated ∅ := fun i hi => by simp at hi
-    simp [hd, Finset.subset_empty, hiso]
+    simp [Finset.subset_empty, hiso]
   | succ n ih =>
     have hk' : k < n + 2 := by lia
     have hA : ∀ S' T' : Finset ℕ, ∑ j ∈ Finset.range k, refined n j S' T' =
-        ∑ σ : Equiv.Perm (Fin (n + 1)), if (σ 0 : ℕ) < k ∧ IsIsolated (desSet σ) ∧
-          S' ⊆ desSet σ ∧ desSet σ ⊆ T' then (X : ℝ[X]) ^ (desSet σ).card else 0 := by
+        ∑ σ : Equiv.Perm (Fin (n + 1)), if (σ 0 : ℕ) < k ∧ IsIsolated σ.descentSet ∧
+          S' ⊆ σ.descentSet ∧ σ.descentSet ⊆ T' then (X : ℝ[X]) ^ σ.descentSet.card else 0 := by
       intro S' T'
       rw [Finset.sum_congr rfl fun j hj =>
         (ih (by have := Finset.mem_range.mp hj; lia) S' T').symm]
@@ -261,8 +216,8 @@ theorem refinedPerm_eq_refined {n k : ℕ} (hk : k ≤ n) (S T : Finset ℕ) :
       rw [sum_ite_and_eq]
       simp only [Finset.mem_range]
     have hB : ∀ S' T' : Finset ℕ, ∑ j ∈ Finset.Ico k (n + 1), refined n j S' T' =
-        ∑ σ : Equiv.Perm (Fin (n + 1)), if k ≤ (σ 0 : ℕ) ∧ IsIsolated (desSet σ) ∧
-          S' ⊆ desSet σ ∧ desSet σ ⊆ T' then (X : ℝ[X]) ^ (desSet σ).card else 0 := by
+        ∑ σ : Equiv.Perm (Fin (n + 1)), if k ≤ (σ 0 : ℕ) ∧ IsIsolated σ.descentSet ∧
+          S' ⊆ σ.descentSet ∧ σ.descentSet ⊆ T' then (X : ℝ[X]) ^ σ.descentSet.card else 0 := by
       intro S' T'
       rw [Finset.sum_congr rfl fun j hj =>
         (ih (by have := Finset.mem_Ico.mp hj; lia) S' T').symm]
@@ -275,21 +230,21 @@ theorem refinedPerm_eq_refined {n k : ℕ} (hk : k ≤ n) (S T : Finset ℕ) :
       simp only [Finset.mem_Ico, this, and_true]
     rw [refined_succ, hA, hB]
     have hRA : (if 0 ∈ T then X * ∑ σ : Equiv.Perm (Fin (n + 1)),
-        (if (σ 0 : ℕ) < k ∧ IsIsolated (desSet σ) ∧ shiftDown S ⊆ desSet σ ∧
-          desSet σ ⊆ (shiftDown T).erase 0 then (X : ℝ[X]) ^ (desSet σ).card else 0)
+        (if (σ 0 : ℕ) < k ∧ IsIsolated σ.descentSet ∧ shiftDown S ⊆ σ.descentSet ∧
+          σ.descentSet ⊆ (shiftDown T).erase 0 then (X : ℝ[X]) ^ σ.descentSet.card else 0)
         else 0) = ∑ σ : Equiv.Perm (Fin (n + 1)), (if 0 ∈ T then
-      X * (if (σ 0 : ℕ) < k ∧ IsIsolated (desSet σ) ∧ shiftDown S ⊆ desSet σ ∧
-          desSet σ ⊆ (shiftDown T).erase 0 then (X : ℝ[X]) ^ (desSet σ).card else 0)
+      X * (if (σ 0 : ℕ) < k ∧ IsIsolated σ.descentSet ∧ shiftDown S ⊆ σ.descentSet ∧
+          σ.descentSet ⊆ (shiftDown T).erase 0 then (X : ℝ[X]) ^ σ.descentSet.card else 0)
       else 0) := by
       by_cases h0T : 0 ∈ T
       · simp only [h0T, ↓reduceIte, Finset.mul_sum]
       · simp [h0T]
     have hRB : (if 0 ∈ S then 0 else ∑ σ : Equiv.Perm (Fin (n + 1)),
-        (if k ≤ (σ 0 : ℕ) ∧ IsIsolated (desSet σ) ∧ shiftDown S ⊆ desSet σ ∧
-          desSet σ ⊆ shiftDown T then (X : ℝ[X]) ^ (desSet σ).card else 0)) =
+        (if k ≤ (σ 0 : ℕ) ∧ IsIsolated σ.descentSet ∧ shiftDown S ⊆ σ.descentSet ∧
+          σ.descentSet ⊆ shiftDown T then (X : ℝ[X]) ^ σ.descentSet.card else 0)) =
         ∑ σ : Equiv.Perm (Fin (n + 1)), (if 0 ∈ S then 0 else
-      if k ≤ (σ 0 : ℕ) ∧ IsIsolated (desSet σ) ∧ shiftDown S ⊆ desSet σ ∧
-          desSet σ ⊆ shiftDown T then (X : ℝ[X]) ^ (desSet σ).card else 0) := by
+      if k ≤ (σ 0 : ℕ) ∧ IsIsolated σ.descentSet ∧ shiftDown S ⊆ σ.descentSet ∧
+          σ.descentSet ⊆ shiftDown T then (X : ℝ[X]) ^ σ.descentSet.card else 0) := by
       by_cases h0S : 0 ∈ S
       · simp [h0S]
       · simp only [h0S, ↓reduceIte]

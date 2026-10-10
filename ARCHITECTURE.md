@@ -1663,6 +1663,10 @@ The helpers shared by the row routes (exact coefficient reads and fits, term bui
 auxiliary definitions in proofs) move to `Tactic.Row.Support`; the four budgets rise by one,
 to 1764, 1624, 530 and 694.
 
+#1256 (duplicate statistics): `CombinatorialExamples.PeakValues` now uses the canonical
+`Equiv.Perm.peakSet`, so the tactic regression closure gains the staging modules
+`PermStatistics`, `Pattern`, `Peak` and `Descent`; its budget rises to 698.
+
 Run the architecture check with:
 
 ```bash

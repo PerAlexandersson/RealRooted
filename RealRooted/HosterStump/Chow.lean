@@ -227,14 +227,14 @@ private lemma refined_empty_eq_sum_isolatedSubsets {n k : ℕ} (hk : k ≤ n) (T
       ∑ D ∈ isolatedSubsets T, C (desCount n k D : ℝ) * X ^ D.card := by
   rw [← refinedPerm_eq_refined hk]
   unfold refinedPerm
-  rw [← Finset.sum_fiberwise_of_maps_to (g := desSet) (t := isolatedSubsets T)]
+  rw [← Finset.sum_fiberwise_of_maps_to (g := Equiv.Perm.descentSet) (t := isolatedSubsets T)]
   · refine Finset.sum_congr rfl fun D hD => ?_
     rw [mem_isolatedSubsets] at hD
     have hset : ((Finset.univ : Finset (Equiv.Perm (Fin (n + 1)))).filter
-        (fun w => (w 0 : ℕ) = k ∧ IsIsolated (desSet w) ∧ ∅ ⊆ desSet w ∧
-          desSet w ⊆ T)).filter (fun w => desSet w = D) =
+        (fun w => (w 0 : ℕ) = k ∧ IsIsolated w.descentSet ∧ ∅ ⊆ w.descentSet ∧
+          w.descentSet ⊆ T)).filter (fun w => w.descentSet = D) =
         (Finset.univ : Finset (Equiv.Perm (Fin (n + 1)))).filter
-          (fun w => (w 0 : ℕ) = k ∧ desSet w = D) := by
+          (fun w => (w 0 : ℕ) = k ∧ w.descentSet = D) := by
       ext w
       simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.empty_subset]
       grind
