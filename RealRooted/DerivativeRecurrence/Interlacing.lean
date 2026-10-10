@@ -147,6 +147,20 @@ theorem derivRec_hasNonnegCoeffs (hrec : ∀ n, P (n + 1) = A n * (P n).derivati
       rw [hrec n]
       exact ((hA n).mul ih.derivative).add ((hB n).mul ih)
 
+/-- Rows of a second-order derivative recurrence with nonnegative coefficients. -/
+theorem derivRec₂_hasNonnegCoeffs {E : ℕ → ℝ[X]}
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative.derivative + B n * (P n).derivative +
+      E n * P n)
+    (hA : ∀ n, HasNonnegCoeffs (A n)) (hB : ∀ n, HasNonnegCoeffs (B n))
+    (hE : ∀ n, HasNonnegCoeffs (E n)) (h0 : HasNonnegCoeffs (P 0)) :
+    ∀ n, HasNonnegCoeffs (P n)
+  | 0 => h0
+  | n + 1 => by
+      have ih := derivRec₂_hasNonnegCoeffs hrec hA hB hE h0 n
+      rw [hrec n]
+      exact (((hA n).mul ih.derivative.derivative).add ((hB n).mul ih.derivative)).add
+        ((hE n).mul ih)
+
 /-- Rows of a derivative recurrence with nonnegative coefficients, from
 nonnegative multipliers: since
 `coeff_k (A P' + B P) = ∑_{i + j = k + 1} (A_i j + B_{i-1}) p_j`, it suffices that

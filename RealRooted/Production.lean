@@ -576,6 +576,7 @@ import RealRooted.EulerBidiagonal.GeneralRows
 import RealRooted.EulerBidiagonal.Location
 import RealRooted.EulerBidiagonal.PairStep
 import RealRooted.EulerBidiagonal.PairTheorem
+import RealRooted.EulerBidiagonal.ZeroParameter
 import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Darboux
 import RealRooted.EulerOperator.Darboux.Basic
@@ -769,6 +770,7 @@ import RealRooted.Interlacing.PencilPreserver
 import RealRooted.Interlacing.Residue
 import RealRooted.Interlacing.ResidueCriterion
 import RealRooted.Interlacing.ResidueEulerStep
+import RealRooted.Interlacing.Reversal
 import RealRooted.Interlacing.RootCountSigns
 import RealRooted.Interlacing.RootDeletionExpansion
 import RealRooted.InterlacingSequence
@@ -1533,10 +1535,14 @@ import RealRooted.Tactic.RootCount.LowDegreeSyntax
 import RealRooted.Tactic.RootCount.SequenceCore
 import RealRooted.Tactic.Row.Core
 import RealRooted.Tactic.Row.DerivLag
+import RealRooted.Tactic.Row.LagFeedback
 import RealRooted.Tactic.Row.LowerOrder
+import RealRooted.Tactic.Row.ParityProduct
 import RealRooted.Tactic.Row.PowerForm
+import RealRooted.Tactic.Row.Reverse
 import RealRooted.Tactic.Row.SideGoals
 import RealRooted.Tactic.Row.Subseq
+import RealRooted.Tactic.Row.Support
 import RealRooted.Tactic.RowClosedForm
 import RealRooted.Tactic.RowInterlacing
 import RealRooted.Tactic.ScalarDen
@@ -1560,8 +1566,10 @@ import RealRooted.Tactic.WeightedSum
 import RealRooted.ThreeTermRecurrence.Degree
 import RealRooted.ThreeTermRecurrence.HalfGrowth
 import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.ThreeTermRecurrence.LagFeedback
 import RealRooted.ThreeTermRecurrence.Moments
 import RealRooted.ThreeTermRecurrence.NoCommonRoot
+import RealRooted.ThreeTermRecurrence.ParityProduct
 import RealRooted.ThresholdMatrix
 import RealRooted.ThresholdMatrix.Basic
 import RealRooted.ThresholdMatrix.GustafssonSolus

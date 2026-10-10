@@ -411,6 +411,16 @@ def A166961 : ℕ → ℝ[X]
 theorem A166961_interlaces (n : ℕ) : Interlaces (A166961 n) (A166961 (n + 1)) := by
   rr_row_interlaces
 
+/-- `θ ^ 2 + X`, the Euler step with `a = b = 0`: from `P 1` on the rows carry the factor `X`
+(A269945, `RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec_zero`). -/
+def A269945 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => X ^ 2 * (A269945 n).derivative.derivative + X * (A269945 n).derivative +
+      X * A269945 n
+
+theorem A269945_interlaces (n : ℕ) : Interlaces (A269945 n) (A269945 (n + 1)) := by
+  rr_row_interlaces
+
 #guard_msgs (drop info) in
 example (n : ℕ) : Interlaces (A166961 n) (A166961 (n + 1)) := by
   rr_row_interlaces?
@@ -468,6 +478,131 @@ def A376827 : ℕ → ℝ[X]
 theorem A376827_interlaces (n : ℕ) : Interlaces (A376827 n) (A376827 (n + 1)) := by
   rr_row_interlaces
 
+/-- The reversed rows of `X ^ 3 P'' - (2n + 1) X ^ 2 P' + (1 + (n + 1) ^ 2 X) P` satisfy
+`R (n + 1) = X ^ 2 R'' + 3 X R' + (1 + X) R`, an Euler step: the route through the reversed
+rows (A008957, central factorial numbers). -/
+def A008957 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => C 1 * X ^ 3 * (A008957 n).derivative.derivative +
+      C (-1 - 2 * (n : ℝ)) * X ^ 2 * (A008957 n).derivative +
+      (C 1 + C (((n : ℝ) + 1) ^ 2) * X) * A008957 n
+
+theorem A008957_interlaces (n : ℕ) : Interlaces (A008957 n) (A008957 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A008957_splits (n : ℕ) : (A008957 n).Splits := by
+  rr_row_splits
+
+/-- Reversed rows again (A191935). -/
+def A191935 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => C 1 * X ^ 3 * (A191935 n).derivative.derivative +
+      C (-2 - 2 * (n : ℝ)) * X ^ 2 * (A191935 n).derivative +
+      (C 1 + C (-2 + (2 + (n : ℝ)) ^ 2 - (n : ℝ)) * X) * A191935 n
+
+theorem A191935_interlaces (n : ℕ) : Interlaces (A191935 n) (A191935 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Order three with characteristic polynomial `(z + 1) (z ^ 2 - (X + 2) z + 1)`: the rows are
+`s m * t m` and `s (m + 1) * t m` for two solutions of `x (m + 2) = (X + 2) x (m + 1) - x m`
+(A158909). -/
+def A158909 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X + 1
+  | 2 => X ^ 2 + 3 * X + 2
+  | n + 3 => (X + 1) * A158909 (n + 2) + (X + 1) * A158909 (n + 1) - A158909 n
+
+theorem A158909_interlaces (n : ℕ) : Interlaces (A158909 n) (A158909 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A158909_splits (n : ℕ) : (A158909 n).Splits := by
+  rr_row_splits
+
+/-- A parity product with `μ = -X` and `β = 2 X + 1` (A092879). -/
+def A092879 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X + 1
+  | 2 => 2 * X ^ 2 + 3 * X + 1
+  | n + 3 => (X + 1) * A092879 (n + 2) + (X + X ^ 2) * A092879 (n + 1) - X ^ 3 * A092879 n
+
+theorem A092879_interlaces (n : ℕ) : Interlaces (A092879 n) (A092879 (n + 1)) := by
+  rr_row_interlaces
+
+/-- `P (n + 3) = P (n + 2) + 3 X P n`: windows of three rows stay interlacing (A317496). -/
+def A317496 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 1
+  | n + 3 => (1) * A317496 (n + 2) + 3 * X * A317496 n
+
+theorem A317496_splits (n : ℕ) : (A317496 n).Splits := by
+  rr_row_splits
+
+/-- A feedback coefficient depending on `n` (A118931). -/
+def A118931 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 1
+  | n + 3 => C 1 * A118931 (n + 2) + C (-14 + (4 + (n : ℝ)) ^ 2 - 5 * (n : ℝ)) * X * A118931 n
+
+theorem A118931_splits (n : ℕ) : (A118931 n).Splits := by
+  rr_row_splits
+
+/-- The feedback term `(X - 1) P n`: the same windows in the variable `X - 1` (A118884). -/
+def A118884 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2
+  | 2 => 4
+  | 3 => 8
+  | n + 4 => 2 * A118884 (n + 3) + (-1 + X) * A118884 n
+
+theorem A118884_splits (n : ℕ) : (A118884 n).Splits := by
+  rr_row_splits
+
+/-- The rows `P m = m (1 + X) X ^ (m - 1)` start the power form after the row `P 0 = 1`
+(A128540). -/
+def A128540 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 2 * X + 2 * X ^ 2
+  | n + 3 => X * A128540 (n + 2) + X ^ 2 * A128540 (n + 1)
+
+theorem A128540_interlaces (n : ℕ) : Interlaces (A128540 n) (A128540 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Chebyshev-like rows: `b n = -(1 + X)` is negative beyond the window `[-1, 0]`, and the
+ratio barrier `ρ = 1` keeps the rows positive there (A056242). -/
+def A056242 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + 2 * X
+  | n + 2 => (2 + 2 * X) * A056242 (n + 1) + (-1 - X) * A056242 n
+
+theorem A056242_interlaces (n : ℕ) : Interlaces (A056242 n) (A056242 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A056242_splits (n : ℕ) : (A056242 n).Splits := by
+  rr_row_splits
+
+/-- The ratio barrier `ρ = 2` beyond the window `[-4, 0]`, after the first row (A236471). -/
+def A236471 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 2 + 4 * X + X ^ 2
+  | n + 3 => (4 + X) * A236471 (n + 2) + (-4 - X) * A236471 (n + 1)
+
+theorem A236471_interlaces (n : ℕ) : Interlaces (A236471 n) (A236471 (n + 1)) := by
+  rr_row_interlaces
+
+/-- `B n = 0`: beyond the window `[-1, 0]` the multiplier `A = X + X ^ 2` is positive and the
+rows have positive degree (A142071). -/
+def A142071 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => (X + X ^ 2) * (A142071 (n + 1)).derivative
+
+theorem A142071_interlaces (n : ℕ) : Interlaces (A142071 n) (A142071 (n + 1)) := by
+  rr_row_interlaces
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 /--
@@ -498,7 +633,7 @@ example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitF
 /--
 error: rr_row_splits: unknown route foo; the routes are closedForm, lowerOrder, subseq,
 linearFactors, splitFactors, twoStep, shiftedProduct, nextRow, prevRow, halfGrowth,
-degreePattern
+degreePattern, reversed, parityProduct, lagFeedback
 -/
 #guard_msgs (whitespace := normalized) in
 example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := foo)

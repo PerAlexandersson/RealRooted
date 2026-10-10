@@ -30,6 +30,21 @@ syntax (name := rrRowInterlaces) "rr_row_interlaces" (ppSpace rrRowHint)* : tact
 certificate `apply thm (P := …) … <;> rr_row_side`. -/
 syntax (name := rrRowInterlacesQ) "rr_row_interlaces?" (ppSpace rrRowHint)* : tactic
 
+/-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
+`rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
+number of rows split off; the routes are `closedForm`, `lowerOrder`, `subseq`,
+`linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and `prevRow` (the
+interlacing of `P t` with `P (t + 1)` or `P (t - 1)`), `halfGrowth`, `degreePattern` (first-order
+derivative recurrences whose degree grows by zero or one), `reversed` (the reversed rows,
+`Row.Reverse`), `parityProduct` (order three, `Row.ParityProduct`) and `lagFeedback`
+(`P (n + p) = α P (n + p - 1) + c n X P n`, `Row.LagFeedback`).  The hints of
+`rr_row_interlaces` are passed on to the interlacing routes. -/
+syntax (name := rrRowSplits) "rr_row_splits" (ppSpace rrRowHint)* : tactic
+
+/-- `rr_row_splits?` runs `rr_row_splits` and prints the hinted call, which replays only the
+successful route. -/
+syntax (name := rrRowSplitsQ) "rr_row_splits?" (ppSpace rrRowHint)* : tactic
+
 /-- `rr_row_nonneg_coeffs` closes `HasNonnegCoeffs (P t)` (or `∀ n, HasNonnegCoeffs (P n)`)
 for a product, first-order derivative or three-term recurrence. -/
 syntax (name := rrRowNonnegCoeffs) "rr_row_nonneg_coeffs" : tactic
@@ -241,6 +256,15 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
     else if has ``Polynomial.eval then
       (if mentionsP && !ty.isForall then
         withP fun P => [do evalTactic (← `(tactic| (norm_num [$P:ident]; done)))]
+      else []) ++
+      -- explicit rows beyond a window edge, `∀ x, U < x → ρ (P 0).eval x ≤ (P 1).eval x`
+      (if mentionsP && ty.isForall then
+        withP fun P => [do evalTactic (← `(tactic| (
+          intro x hx
+          simp only [$P:ident, Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
+            Polynomial.eval_neg, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
+            Polynomial.eval_one, Polynomial.eval_ofNat]
+          nlinarith [sub_pos.mpr hx, mul_pos (sub_pos.mpr hx) (sub_pos.mpr hx), sq_nonneg x])))]
       else []) ++
       [do evalTactic (← `(tactic| rr_row_eval_sign)),
        -- signs beyond a window edge `U < x`

@@ -1,5 +1,6 @@
 import RealRooted.MaWang.Weak.Endpoint
 import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.ThreeTermRecurrence.Degree
 import RealRooted.WagnerX.AffineFactors
 
 /-!
@@ -75,16 +76,6 @@ theorem Interlaces.mul_both_of_splits {g f q : ℝ[X]} (h : Interlaces g f)
   refine (h.toStrictInterl.mul_both_of_splits hq hq0).toInterlaces ?_
   rw [natDegree_mul hq0 hg0, natDegree_mul hq0 hf0, ← h.2.2.1]
   ring
-
-/-- Rows of a two-step product `P (n + 2) = q * P n`. -/
-theorem twoStepProduct_rows {P : ℕ → ℝ[X]} {q : ℝ[X]} (hrec : ∀ n, P (n + 2) = q * P n) :
-    ∀ m, P (2 * m) = q ^ m * P 0 ∧ P (2 * m + 1) = q ^ m * P 1
-  | 0 => by simp
-  | m + 1 => by
-      obtain ⟨h0, h1⟩ := twoStepProduct_rows hrec m
-      refine ⟨?_, ?_⟩
-      · rw [show 2 * (m + 1) = 2 * m + 2 by ring, hrec, h0]; ring
-      · rw [show 2 * (m + 1) + 1 = (2 * m + 1) + 2 by ring, hrec, h1]; ring
 
 /-- Consecutive rows of a two-step product `P (n + 2) = q * P n` interlace, given
 `P 0 ≪ P 1` and `P 1 ≪ q * P 0`, for a nonzero real-rooted `q`. -/

@@ -1643,6 +1643,26 @@ The power-form route of `rr_row_interlaces` (rows `c m · F · q ^ (m + e)`) is 
 new module `Tactic.Row.PowerForm`; the root, production, tactic and tactic
 regression budgets rise by one, to 1756, 1616, 520 and 685.
 
+The Euler-step route handles a zero parameter through the new theorem module
+`EulerBidiagonal.ZeroParameter`; the same four budgets rise by one, to 1757,
+1617, 521 and 686.
+
+The reversed-rows route adds `Interlacing.Reversal` (the link of a recurrence with its
+reversed rows) and `Tactic.Row.Reverse`; the tactic umbrella now also reaches
+`DegreeDropReversal` and `Basic.AffineInterlacing`. The root, production, tactic and tactic
+regression budgets rise to 1759, 1619, 525 and 689.
+
+The parity-product route for order-three recurrences adds `ThreeTermRecurrence.ParityProduct`
+and `Tactic.Row.ParityProduct`; the same four budgets rise by two, to 1761, 1621, 527 and
+691.
+
+The lag-feedback route of `rr_row_splits` adds `ThreeTermRecurrence.LagFeedback` and
+`Tactic.Row.LagFeedback`; the same four budgets rise by two, to 1763, 1623, 529 and 693.
+
+The helpers shared by the row routes (exact coefficient reads and fits, term builders,
+auxiliary definitions in proofs) move to `Tactic.Row.Support`; the four budgets rise by one,
+to 1764, 1624, 530 and 694.
+
 Run the architecture check with:
 
 ```bash

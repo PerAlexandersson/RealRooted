@@ -1,54 +1,78 @@
 import RealRooted.Tactic.Row.DerivLag
 import RealRooted.Tactic.Row.Subseq
 import RealRooted.Tactic.Row.PowerForm
+import RealRooted.Tactic.Row.ParityProduct
+import RealRooted.Tactic.Row.LagFeedback
+import RealRooted.Tactic.Row.Reverse
 
 /-!
-# `rr_row_interlaces`
+# Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
 
-`rr_row_interlaces` closes `Interlaces (P t) (P (t + 1))` for
+For a sequence `P : ℕ → ℝ[X]` defined by a recurrence, `rr_row_interlaces` closes
+`Interlaces (P t) (P (t + 1))` and `rr_row_splits` closes `(P t).Splits`.  Summands may come
+in any order, and a recurrence `P (n + k) = …` with explicit rows below `k` is applied to the
+shifted sequence, the first rows being checked one by one.  Before elaborating a theorem,
+every route runs an exact probe on the computed rows (rational arithmetic, `QPoly`), and a
+route that the probe rules out fails without elaborating anything.
 
-* product sequences `P (n + 1) = L n * P n` (via `rr_product_interlaces`), and
-* three-term recurrences `P (n + 2) = a n * P (n + 1) + b n * P n`, and
-* two-step products `P (n + 2) = q * P n` (`RealRooted.twoStepProduct_interlaces`),
-* first-order derivative recurrences `P (n + 1) = A n * (P n)' + B n * P n`, and
-* second-order recurrences `P (n + 1) = A * (P n)'' + B * (P n)' + C n * P n` whose rows
-  satisfy an eigen-ODE `A * (P n)'' + β * (P n)' = ev n • P n`
-  (`RealRooted.Tactic.eigenODE?`), collapsed to a first-order recurrence first,
+## Routes of `rr_row_interlaces`, in order
 
-whose rows grow by one degree.  Explicit base rows of higher degree are handled by
-`rr_interlaces_explicit`.  As for the degree tactics, the summands may come in any
-order, and a recurrence `P (n + k) = …` with explicit rows below `k` is applied to the
-shifted sequence, the first rows being checked one by one.
+1. Derivative-lag recurrences `P (n + 2) = U P (n + 1) + V P (n + 1)' + W P n`: the Liu–Wang
+   step (`Row.DerivLag`).
+2. Order three, factoring through a three-term recurrence: the reduction certified by
+   `threeTerm_rec_of_remainder` (`Row.LowerOrder`); or rows `s m * t m`, `s (m + 1) * t m` of
+   two three-term sequences: `eq_parityProduct_of_rec3` (`Row.ParityProduct`).
+3. Multipliers `α j n · q ^ (k - j)` for one linear `q`, `k ≤ 3`: the power form,
+   `interlaces_of_forall_eq_C_mul_pow`, possibly after the first two rows (`Row.PowerForm`).
+4. The interlacing core (`Row.Core`):
+   * products `P (n + 1) = L n * P n`: `productSequence_interlaces`;
+   * two-step products `P (n + 2) = q * P n`: `twoStepProduct_interlaces`;
+   * second order with an eigen-ODE, collapsed to first order (`derivRec₂_firstOrder`), or a
+     general Euler step (`EulerBidiagonal.interlaces_of_generalStep_rec`);
+   * three-term and first-order derivative recurrences: the sign conditions
+     (`threeTerm_interlaces_of_eval_nonpos`, `…_of_nonnegCoeffs`, `derivRec_interlaces_*`),
+     then fixed root windows (`*_of_roots_mem_Icc`, `*_of_roots_le`, `…_of_degree`,
+     `…_of_ratio`, and the ratio barrier `threeTerm_interlaces_of_roots_mem_Icc_of_barrier`
+     for `b n < 0` beyond the window), then a moving lower window
+     (`derivRec_interlaces_of_roots_mem_Icc_mono_div`).
+5. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
+   whose rows have nonzero constant terms: an auxiliary recursive definition of the reversed
+   sequence, the link `eq_reflect_of_derivRec₂` / `eq_reflect_of_threeTerm`, and the transfer
+   `interlaces_of_eq_reflect` (`Row.Reverse`).
 
-For three-term recurrences it applies `RealRooted.threeTerm_interlaces_of_eval_nonpos`
-(`b n ≤ 0` everywhere) or `RealRooted.threeTerm_interlaces_of_nonnegCoeffs`
-(`b n ≤ 0` on `(-∞, 0]`, with rows of nonnegative coefficients); for derivative
-recurrences the `RealRooted.derivRec_interlaces_*` analogues, with `A n` in place of
-`b n`; then the root-window theorems (`*_of_roots_mem_Icc`, `*_of_roots_le`).  The degree
-and leading-coefficient side goals go to `rr_row_natDegree` and
-`rr_row_leadingCoeff_pos`, nonnegativity of coefficients to `rr_row_nonneg_coeffs`; the
-sign conditions on `b n` reduce to coefficient inequalities of degree-two polynomials,
-which the row-data side-goal engine discharges.
+The degree and leading-coefficient hypotheses go to `rr_row_natDegree` and
+`rr_row_leadingCoeff_pos`, nonnegativity of coefficients to `rr_row_nonneg_coeffs`, and the
+sign conditions to `rr_row_eval_sign` / `rr_row_field` (rational functions of `n`).
+Hints `(thm := name)`, `(degree := D₀)`, `(drop := k)`, `(window := [L, U])` and
+`(upper := U)` restrict the search; `rr_row_interlaces?` prints the hinted call, which replays
+only the successful attempt, and the certificate.
 
-Hints `(thm := name)`, `(degree := D₀)`, `(window := [L, U])` and `(upper := U)` restrict
-the search; `rr_row_interlaces?` prints the hinted call, which replays only the successful
-attempt, and the certificate `apply thm (P := …) (D₀ := …) … <;> rr_row_side`.
+## Routes of `rr_row_splits`, in order (`(via := route)` selects one)
 
-The same front end gives
+`closedForm` (rows `residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `lowerOrder`, `subseq` (residue
+classes, `Row.Subseq`), `linearFactors` and `splitFactors` (products), `twoStep`,
+`shiftedProduct`, `nextRow` and `prevRow` (the interlacing core with `P (t ± 1)`),
+`halfGrowth` (three-term rows of degree `D₀ + (n + e) / 2`), `degreePattern` (first-order
+derivative rows whose degree grows by zero or one,
+`derivRec_splits_of_degree_pattern_of_nonnegCoeffs`); derivative-lag recurrences go to
+`Row.DerivLag`.  `rr_row_splits?` prints the hinted call.
+
+## Other front ends
 
 * `rr_row_nonneg_coeffs`: `HasNonnegCoeffs (P t)`, by `RealRooted.threeTerm_hasNonnegCoeffs`,
   `RealRooted.derivRec_hasNonnegCoeffs` or `RealRooted.derivRec_hasNonnegCoeffs_of_mult`
   (products as two-step recurrences);
 * `rr_row_eval_zero_pos`: `0 < (P t).eval 0`, by induction on the recurrence evaluated at
   `0` (positive coefficients at `0`; for derivative recurrences with `A n` not vanishing at
-  `0` also nonnegative coefficients of the rows);
-* `rr_row_splits`: `(P t).Splits`, from `RealRooted.productSequence_ne_zero_and_splits` or
-  from `rr_row_interlaces`, among other routes; `(via := route)` selects one, and
-  `rr_row_splits?` prints the hinted call.
+  `0` also nonnegative coefficients of the rows).
 
-The implementation is split over `RealRooted.Tactic.Row.SideGoals` (syntax and side goals),
-`Row.Core` (the interlacing core and its probes), `Row.LowerOrder`, `Row.DerivLag` and
-`Row.Subseq`; this module holds the front ends.
+The degree tactics (`rr_row_natDegree`, `rr_row_ne_zero`, `rr_row_leadingCoeff_pos`) live in
+`RealRooted.Tactic.Recurrence.Degree`: degree laws of the recurrence shapes, general linear
+recurrences (`rr_linrec`), cancelling top terms (`rr_row_cancel`) and two-step products by
+parity.  The implementation of this module is split over `Row.SideGoals` (syntax and side
+goals), `Row.Support` (shared helpers), `Row.Core`, `Row.LowerOrder`, `Row.DerivLag`,
+`Row.Subseq`, `Row.PowerForm`, `Row.Reverse`, `Row.ParityProduct` and `Row.LagFeedback`; this
+module holds the front ends.
 -/
 
 open Lean Elab Tactic Meta Polynomial
@@ -73,11 +97,19 @@ private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := 
   -- order-three recurrences through a three-term recurrence
   if (← rowAttempt (rowRecSetup "rr_row_interlaces")) matches .error _ then
     if ← rowSucceeds (lowerOrderInterlaces hints) then return (#[], hints)
+    -- parity products of two three-term sequences (`Row.ParityProduct`)
+    if ← rowSucceeds (parityProductGoal false) then return (#[], hints)
   -- rows `c m · F · q ^ (m + e)` of a recurrence whose multipliers are powers of `q`, gated
   -- by an exact probe, before the more expensive core
   if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
     if ← rowSucceeds powerFormRoute then return (#[], hints)
-  rowInterlacesCore hints
+  match ← rowAttempt (rowInterlacesCore hints) with
+  | .ok res => return res
+  | .error e =>
+    -- the reversed rows (`Row.Reverse`), when no theorem applies to the rows themselves
+    if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
+      if ← rowSucceeds (reverseRowGoal false) then return (#[], hints)
+    throwError e
 
 /-- Run a row tactic `core` and print the hinted call `name hs'*` and the certificate. -/
 private def rowElabWithHints (tk : Syntax) (core : TacticM (Cert × RowHints))
@@ -118,6 +150,10 @@ elab_rules : tactic
         if ty.isForall && (ty.find? (·.isConstOf r.P)).isSome &&
             (ty.find? (·.isConstOf ``Polynomial.derivative)).isSome then
           recs := recs.push (mkIdent d.userName)
+    -- or nonnegative multipliers of the second-order recurrence itself
+    if r.shape == .deriv₂ then
+      mains := mains.push (← `(tactic|
+        refine RealRooted.derivRec₂_hasNonnegCoeffs (P := $Q) $hrec ?_ ?_ ?_ ?_ $t))
     let D₀? ← findRowDegree P r.shift
     for h in recs do
       mains := mains.push (← `(tactic|
@@ -222,23 +258,11 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
   throwRowFailures m!"rr_row_eval_zero_pos: no strategy proves the goal for {P}" failures
 
 
-/-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
-`rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
-number of rows split off; the routes are `closedForm`, `lowerOrder`, `subseq`,
-`linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and `prevRow` (the
-interlacing of `P t` with `P (t + 1)` or `P (t - 1)`), `halfGrowth` and `degreePattern` (first-order
-derivative recurrences whose degree grows by zero or one).  The hints of
-`rr_row_interlaces` are passed on to the interlacing routes. -/
-syntax (name := rrRowSplits) "rr_row_splits" (ppSpace rrRowHint)* : tactic
-
-/-- `rr_row_splits?` runs `rr_row_splits` and prints the hinted call, which replays only the
-successful route. -/
-syntax (name := rrRowSplitsQ) "rr_row_splits?" (ppSpace rrRowHint)* : tactic
 
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
   [`closedForm, `lowerOrder, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
-    `nextRow, `prevRow, `halfGrowth, `degreePattern]
+    `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct, `lagFeedback]
 
 /-- `rr_row_splits`, returning the hints of the successful route. -/
 private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainContext do
@@ -274,6 +298,17 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
       return { via := some `lowerOrder }
     if hints.via.isNone then
       if ← rowSucceeds viaLower then return { via := some `lowerOrder }
+    if hints.via == some `parityProduct then
+      parityProductGoal true
+      return { via := some `parityProduct }
+    if hints.via.isNone then
+      if ← rowSucceeds (parityProductGoal true) then return { via := some `parityProduct }
+    -- lag recurrences with a feedback term (`Row.LagFeedback`)
+    if hints.via == some `lagFeedback then
+      lagFeedbackSplits
+      return { via := some `lagFeedback }
+    if hints.via.isNone then
+      if ← rowSucceeds lagFeedbackSplits then return { via := some `lagFeedback }
     if let some v := hints.via then
       unless v == `subseq do
         throwError "rr_row_splits: the route {v} needs a recurrence that \
@@ -506,7 +541,8 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
       (`halfGrowth, 1, "half growth after splitting off a row", half 1),
       (`halfGrowth, 2, "half growth after splitting off two rows", half 2),
       (`degreePattern, 0, "degrees growing by zero or one, with nonnegative coefficients",
-        route `degreePattern viaDegreePattern)] do
+        route `degreePattern viaDegreePattern),
+      (`reversed, 0, "the reversed rows", route `reversed (reverseRowGoal true))] do
     unless use r do continue
     -- `drop` counts the rows split off by the interlacing and half-growth routes
     if hints.drop.isSome && hints.drop != some k &&
