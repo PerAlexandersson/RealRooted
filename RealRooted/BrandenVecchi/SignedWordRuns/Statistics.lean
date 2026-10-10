@@ -324,14 +324,9 @@ statistic. -/
 theorem descentCount_ofFn {q p n : ℕ}
     (word : Fin n → SignedLetter q p) :
     (List.ofFn word).descentCount = signedDescentNumber word := by
-  rw [← adjacentCount_eq_descentCount]
   cases n with
-  | zero => simp [adjacentCount_nil, signedDescentNumber]
-  | succ n =>
-      rw [adjacentCount_ofFn_succ]
-      simp [signedDescentNumber,
-        RealRooted.ParkingFunctions.descentNumber,
-        RealRooted.ParkingFunctions.descentSet]
+  | zero => simp [signedDescentNumber]
+  | succ n => rfl
 
 /-- The list collision statistic agrees with the existing signed-word
 statistic. -/

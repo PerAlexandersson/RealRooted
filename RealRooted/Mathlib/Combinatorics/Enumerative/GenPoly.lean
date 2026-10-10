@@ -65,6 +65,13 @@ theorem genPoly_map [CommSemiring R] (e : ι ↪ κ) (s : Finset ι) (stat : κ 
     (genPoly (s.map e) stat : R[X]) = genPoly s (stat ∘ e) := by
   simp [genPoly, Finset.sum_map, Function.comp_apply]
 
+/-- A ring homomorphism maps a generating polynomial to the generating polynomial of the same
+statistic. -/
+@[simp]
+theorem map_genPoly {S : Type*} [CommSemiring R] [CommSemiring S] (f : R →+* S) (s : Finset ι)
+    (stat : ι → ℕ) : (genPoly s stat : R[X]).map f = genPoly s stat := by
+  simp [genPoly, Polynomial.map_sum]
+
 /-- An equivalence transports a statistic through its inverse on a mapped set. -/
 theorem genPoly_equiv [CommSemiring R] (e : ι ≃ κ) (s : Finset κ) (stat : ι → ℕ) :
     (genPoly (s.map e.symm.toEmbedding) stat : R[X]) = genPoly s (stat ∘ e.symm) := by

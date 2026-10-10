@@ -167,17 +167,17 @@ theorem smirnovWordWeight_eq_zero_of_exists {m n : ℕ}
 /-- Compatibility name for the descent number of a possibly empty word. -/
 abbrev smirnovDescentNumber {m : ℕ} :
     {n : ℕ} → (Fin n → Fin m) → ℕ :=
-  RealRooted.ParkingFunctions.wordDescentNumber
+  fun word => (List.ofFn word).descentCount
 
 @[simp]
 theorem smirnovDescentNumber_zero {m : ℕ} (word : Fin 0 → Fin m) :
-    smirnovDescentNumber word = 0 :=
-  RealRooted.ParkingFunctions.wordDescentNumber_zero word
+    smirnovDescentNumber word = 0 := by
+  simp [List.descentCount]
 
 @[simp]
 theorem smirnovDescentNumber_one {m : ℕ} (word : Fin 1 → Fin m) :
-    smirnovDescentNumber word = 0 :=
-  RealRooted.ParkingFunctions.wordDescentNumber_one word
+    smirnovDescentNumber word = 0 := by
+  simp [List.descentCount]
 
 @[simp]
 theorem smirnovDescentNumber_snoc {m n : ℕ}
@@ -185,7 +185,7 @@ theorem smirnovDescentNumber_snoc {m n : ℕ}
     smirnovDescentNumber (Fin.snoc word i) =
       smirnovDescentNumber word +
         if i < word (Fin.last n) then 1 else 0 :=
-  RealRooted.ParkingFunctions.wordDescentNumber_snoc word i
+  List.descentCount_ofFn_snoc word i
 
 /-- Literal weighted descent enumerator of length-`n` Smirnov words. -/
 def weightedSmirnovPolynomial {m : ℕ} (weight : Fin m → R)

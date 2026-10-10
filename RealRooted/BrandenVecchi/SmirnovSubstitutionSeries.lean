@@ -621,13 +621,8 @@ theorem smirnovWords_eq_signedSmirnovWords (q p k : ℕ) :
 theorem smirnovDescentNumber_eq_descentCount {q p k : ℕ}
     (word : Fin k → SignedLetter q p) :
     smirnovDescentNumber word =
-      (List.ofFn word).descentCount := by
-  cases k with
-  | zero => simp [List.descentCount, List.descentSet]
-  | succ k =>
-      change RealRooted.ParkingFunctions.descentNumber word = _
-      simpa [signedDescentNumber] using
-        (descentCount_ofFn word).symm
+      (List.ofFn word).descentCount :=
+  rfl
 
 /-- One fixed skeleton length specializes exactly to the signed-run summand. -/
 theorem coeff_smirnovSubstitutionFixed_signedRunSeries

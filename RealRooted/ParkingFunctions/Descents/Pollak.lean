@@ -12,6 +12,9 @@ chain sorting belong to the downstream `DiaconisHicks` module.
 
 namespace RealRooted.ParkingFunctions
 
+open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
+  isParkingFunction_iff_prefix)
+
 noncomputable section
 
 /-- Cyclically shift every value of a word on `Fin (n + 1)`. -/
@@ -271,6 +274,7 @@ theorem parkingWordEmbed_apply {n : ℕ} (w : Fin n → Fin n) (i : Fin n) :
 /-- The embedded-word and ordinary parking conditions agree. -/
 theorem isParkingWord_parkingWordEmbed_iff {n : ℕ} (w : Fin n → Fin n) :
     IsParkingWord (parkingWordEmbed w) ↔ IsParkingFunction w := by
+  rw [isParkingFunction_iff_prefix]
   constructor <;> intro hw k hk
   · simpa [IsParkingWord, parkingWordEmbed] using! hw k hk
   · simpa [IsParkingWord, parkingWordEmbed] using! hw k hk
@@ -292,10 +296,10 @@ theorem descentSet_parkingWordEmbed {n : ℕ} (w : Fin (n + 1) → Fin (n + 1)) 
   simp [mem_descentSet_iff, parkingWordEmbed]
 
 /-- Embedding the alphabet of a nonempty parking word preserves its descent
-number. -/
-theorem descentNumber_parkingWordEmbed {n : ℕ} (w : Fin (n + 1) → Fin (n + 1)) :
-    descentNumber (parkingWordEmbed w) = descentNumber w := by
-  rw [descentNumber, descentNumber, descentSet_parkingWordEmbed]
+count. -/
+theorem descentCount_parkingWordEmbed {n : ℕ} (w : Fin (n + 1) → Fin (n + 1)) :
+    (List.ofFn (parkingWordEmbed w)).descentCount = (List.ofFn w).descentCount := by
+  rw [← card_descentSet, ← card_descentSet, descentSet_parkingWordEmbed]
 
 /-- The embedded parking functions form a literal subfamily of words over the
 alphabet with one additional letter. -/
@@ -349,15 +353,15 @@ theorem existsUnique_cyclicValueShift_mem_embeddedParkingFunctions {n : ℕ}
 
 /-- The parking descent polynomial is the descent-generating polynomial of its
 embedded finite word family. -/
-theorem parkingDescentPolynomial_succ_eq_descentGeneratingPolynomial_embedded
-    (n : ℕ) :
+theorem parkingDescentPolynomial_succ_eq_genPoly_embedded (n : ℕ) :
     parkingDescentPolynomial (n + 1) =
-      descentGeneratingPolynomial (R := ℝ) (embeddedParkingFunctions n) := by
-  unfold parkingDescentPolynomial descentGeneratingPolynomial embeddedParkingFunctions
+      (embeddedParkingFunctions n).genPoly fun w => (List.ofFn w).descentCount := by
+  unfold parkingDescentPolynomial Finset.genPoly embeddedParkingFunctions
   rw [Finset.sum_image]
   · apply Finset.sum_congr rfl
     intro w hw
-    rw [descentNumber_parkingWordEmbed]
+    beta_reduce
+    rw [descentCount_parkingWordEmbed]
   · intro w hw v hv hwv
     exact parkingWordEmbed_injective hwv
 

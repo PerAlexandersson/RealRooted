@@ -155,10 +155,10 @@ theorem signedDescentNumber_eq_smirnovDescentNumber_positiveWordEquiv
   cases n with
   | zero => rfl
   | succ n =>
-      change RealRooted.ParkingFunctions.descentNumber w =
-        RealRooted.ParkingFunctions.descentNumber
-          (positiveWordEquiv m (n + 1) w)
-      unfold RealRooted.ParkingFunctions.descentNumber
+      change (List.ofFn w).descentCount =
+        (List.ofFn (positiveWordEquiv m (n + 1) w)).descentCount
+      rw [← RealRooted.ParkingFunctions.card_descentSet,
+        ← RealRooted.ParkingFunctions.card_descentSet]
       apply congrArg Finset.card
       ext i
       simp [RealRooted.ParkingFunctions.mem_descentSet_iff,

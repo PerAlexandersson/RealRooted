@@ -28,19 +28,19 @@
       "max_modules": 137
     },
     "RealRooted.ParkingFunctions.Descents.Literal": {
-      "max_modules": 2
+      "max_modules": 5
     },
     "RealRooted.ParkingFunctions.Descents.LiteralRecurrence": {
       "max_modules": 139
     },
     "RealRooted.ParkingFunctions.Descents.DiaconisHicks": {
-      "max_modules": 7
+      "max_modules": 10
     },
     "RealRooted.ParkingFunctions.Descents.ChainSort": {
       "max_modules": 3
     },
     "RealRooted.ParkingFunctions.Descents.DescentChains": {
-      "max_modules": 6
+      "max_modules": 9
     },
     "RealRooted.Mathlib.Data.List.SplitBy": {
       "max_modules": 1

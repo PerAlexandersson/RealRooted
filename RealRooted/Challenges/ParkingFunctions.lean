@@ -11,8 +11,8 @@ section = "families"
 slug = "parking-functions"
 
 [[definitions]]
-name = "RealRooted.ParkingFunctions.IsParkingFunction"
-module = "RealRooted.ParkingFunctions.Descents.Basic"
+name = "ParkingFunction.IsParkingFunction"
+module = "RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction"
 label = "Parking functions"
 
 [[definitions]]

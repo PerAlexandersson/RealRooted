@@ -14,6 +14,9 @@ open Polynomial
 
 namespace RealRooted.ParkingFunctions
 
+open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
+  isParkingFunction_iff_prefix)
+
 noncomputable section
 
 /-- A parking-function word has no tie when consecutive entries are distinct.
@@ -84,15 +87,14 @@ theorem mem_tielessParkingFunctions_iff_embed {n : ℕ}
 theorem descentMonomial_parkingWordEmbed {R : Type*} [Semiring R]
     {n : ℕ} (w : Fin (n + 1) → Fin (n + 1)) :
     (X : R[X]) ^ BrandenVecchi.smirnovDescentNumber (parkingWordEmbed w) =
-      X ^ descentNumber w := by
-  change X ^ descentNumber (parkingWordEmbed w) = X ^ descentNumber w
-  rw [descentNumber_parkingWordEmbed]
+      X ^ (List.ofFn w).descentCount := by
+  change X ^ (List.ofFn (parkingWordEmbed w)).descentCount = X ^ (List.ofFn w).descentCount
+  rw [descentCount_parkingWordEmbed]
 
 /-- The integral descent enumerator of tieless parking functions. -/
 def tielessParkingDescentPolynomial : ℕ → ℤ[X]
   | 0 => 1
-  | n + 1 => descentGeneratingPolynomial (R := ℤ)
-      (tielessParkingFunctions (n + 1))
+  | n + 1 => (tielessParkingFunctions (n + 1)).genPoly fun w => (List.ofFn w).descentCount
 
 @[simp]
 theorem tielessParkingDescentPolynomial_zero :
@@ -115,7 +117,7 @@ theorem tielessParkingDescentPolynomial_one :
         intro i
         exact Fin.elim0 i⟩
   rw [tielessParkingDescentPolynomial, hfamily]
-  simp [descentGeneratingPolynomial, descentNumber, descentSet]
+  simp [Finset.genPoly, List.descentCount]
 
 end
 

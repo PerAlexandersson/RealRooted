@@ -1667,6 +1667,12 @@ to 1764, 1624, 530 and 694.
 `Equiv.Perm.peakSet`, so the tactic regression closure gains the staging modules
 `PermStatistics`, `Pattern`, `Peak` and `Descent`; its budget rises to 698.
 
+#1256 (parking functions): `ParkingFunctions.Descents.Basic` now uses the canonical
+`ParkingFunction.IsParkingFunction`, `List.descentCount` and `Finset.genPoly`, so it imports
+the staging modules `ParkingFunction`, `Descent` and `GenPoly`.  The budgets of
+`Descents.Literal`, `Descents.DiaconisHicks` and `Descents.DescentChains` rise by three, to 5,
+10 and 9.
+
 Run the architecture check with:
 
 ```bash
