@@ -121,6 +121,18 @@ def elabAuxCommand (stx : Syntax) : TacticM Unit := do
       setEnv st'.env
   | .error e => throwError "rr_row: the auxiliary definition failed: {e.toMessageData}"
 
+/-- A fresh name `decl.base`, `decl.base2`, … for an auxiliary definition under the current
+declaration (a proof may add declarations only under its own name). -/
+def freshAuxName (base : String) : TacticM Name := do
+  let some decl ← Term.getDeclName? | throwError "rr_row: no declaration to attach the \
+    auxiliary sequence to"
+  let mut nm := decl ++ Name.mkSimple base
+  let mut idx := 1
+  while (← getEnv).contains nm do
+    idx := idx + 1
+    nm := decl ++ Name.mkSimple s!"{base}{idx}"
+  return nm
+
 /-- Is `P` an auxiliary reversed sequence of this route? -/
 def isRevAux (P : Name) : Bool :=
   match P with
@@ -144,13 +156,7 @@ private def lrCoeffFun (L : LinRecData) (j i : Nat) : TacticM Term := do
 /-- Define the reversed sequence and prove the link `∀ n, P n = reflect (D₀ + n) (R n)`;
 returns the reversed sequence and the name of the link. -/
 def reversalLink (P : Name) (rv : Reversal) : TacticM (Ident × Ident) := do
-  let some decl ← Term.getDeclName? | throwError "rr_row: no declaration to attach the \
-    reversed sequence to"
-  let mut nm := decl ++ `revAux
-  let mut idx := 1
-  while (← getEnv).contains nm do
-    idx := idx + 1
-    nm := decl ++ Name.mkSimple s!"revAux{idx}"
+  let nm ← freshAuxName "revAux"
   let R := mkIdent nm
   let n := mkIdent `n
   let N ← `(($n : ℝ))
