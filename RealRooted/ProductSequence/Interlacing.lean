@@ -113,4 +113,72 @@ theorem productSequence_interlaces (hL : ∀ n, (L n).natDegree = 1)
 
 end Sequence
 
+/-- Rows `P m = c m · F · q ^ (m + e)` with a linear `q` and a real-rooted `F`: consecutive
+nonzero rows differ by the factor `(c (m + 1) / c m) · q`, so they interlace. -/
+theorem interlaces_of_forall_eq_C_mul_pow {P : ℕ → ℝ[X]} {F q : ℝ[X]} {e : ℕ}
+    (hform : ∀ m, ∃ c : ℝ, P m = C c * (F * q ^ (m + e))) (hne : ∀ m, P m ≠ 0)
+    (hF : F.Splits) (hq : q.natDegree = 1) (m : ℕ) : Interlaces (P m) (P (m + 1)) := by
+  obtain ⟨c, hc⟩ := hform m
+  obtain ⟨c', hc'⟩ := hform (m + 1)
+  have hc0 : c ≠ 0 := by rintro rfl; exact hne m (by simp [hc])
+  have hc'0 : c' ≠ 0 := by rintro rfl; exact hne (m + 1) (by simp [hc'])
+  have hstep : P (m + 1) = (C (c' / c) * q) * P m := by
+    rw [hc', hc, show m + 1 + e = m + e + 1 by lia, pow_succ]
+    have : C (c' / c) * C c = C c' := by rw [← C_mul, div_mul_cancel₀ _ hc0]
+    linear_combination (F * q ^ (m + e) * q) * this.symm
+  have hqs : q.Splits := Splits.of_natDegree_le_one (by rw [hq])
+  have hs : (P m).Splits := by
+    rw [hc]; exact (Splits.C c).mul (hF.mul (hqs.pow _))
+  have hL : (C (c' / c) * q).natDegree = 1 := by
+    rw [natDegree_C_mul (div_ne_zero hc'0 hc0), hq]
+  rw [hstep]
+  exact interlaces_self_mul_of_natDegree_eq_one (hne m) hs hL
+
+/-- A three-term recurrence whose multipliers are `α n · q` and `β n · q ^ 2` keeps the form
+`P m = c m · F · q ^ (m + e)` of its first two rows. -/
+theorem forall_eq_C_mul_pow_of_rec2 {P : ℕ → ℝ[X]} {F q : ℝ[X]} {e : ℕ} {α β : ℕ → ℝ}
+    (hrec : ∀ n, P (n + 2) = C (α n) * q * P (n + 1) + C (β n) * q ^ 2 * P n)
+    (h0 : ∃ c : ℝ, P 0 = C c * (F * q ^ (0 + e)))
+    (h1 : ∃ c : ℝ, P 1 = C c * (F * q ^ (1 + e))) :
+    ∀ m, ∃ c : ℝ, P m = C c * (F * q ^ (m + e)) := by
+  have key : ∀ m, (∃ c : ℝ, P m = C c * (F * q ^ (m + e))) ∧
+      ∃ c : ℝ, P (m + 1) = C c * (F * q ^ (m + 1 + e)) := by
+    intro m
+    induction m with
+    | zero => exact ⟨h0, h1⟩
+    | succ m ih =>
+        obtain ⟨⟨a, ha⟩, ⟨b, hb⟩⟩ := ih
+        refine ⟨⟨b, hb⟩, ⟨α m * b + β m * a, ?_⟩⟩
+        rw [hrec, ha, hb, show m + 1 + 1 + e = m + e + 2 by lia,
+          show m + 1 + e = m + e + 1 by lia]
+        simp only [map_add, map_mul]
+        ring
+  exact fun m => (key m).1
+
+/-- An order-three recurrence whose multipliers are `α n · q`, `β n · q ^ 2` and
+`γ n · q ^ 3` keeps the form `P m = c m · F · q ^ (m + e)` of its first three rows. -/
+theorem forall_eq_C_mul_pow_of_rec3 {P : ℕ → ℝ[X]} {F q : ℝ[X]} {e : ℕ} {α β γ : ℕ → ℝ}
+    (hrec : ∀ n, P (n + 3) =
+      C (α n) * q * P (n + 2) + C (β n) * q ^ 2 * P (n + 1) + C (γ n) * q ^ 3 * P n)
+    (h0 : ∃ c : ℝ, P 0 = C c * (F * q ^ (0 + e)))
+    (h1 : ∃ c : ℝ, P 1 = C c * (F * q ^ (1 + e)))
+    (h2 : ∃ c : ℝ, P 2 = C c * (F * q ^ (2 + e))) :
+    ∀ m, ∃ c : ℝ, P m = C c * (F * q ^ (m + e)) := by
+  have key : ∀ m, (∃ c : ℝ, P m = C c * (F * q ^ (m + e))) ∧
+      (∃ c : ℝ, P (m + 1) = C c * (F * q ^ (m + 1 + e))) ∧
+      ∃ c : ℝ, P (m + 2) = C c * (F * q ^ (m + 2 + e)) := by
+    intro m
+    induction m with
+    | zero => exact ⟨h0, h1, h2⟩
+    | succ m ih =>
+        obtain ⟨⟨a, ha⟩, ⟨b, hb⟩, ⟨d, hd⟩⟩ := ih
+        refine ⟨⟨b, hb⟩, ⟨d, by rw [show m + 1 + 1 = m + 2 by lia, hd]⟩,
+          ⟨α m * d + β m * b + γ m * a, ?_⟩⟩
+        rw [show m + 1 + 2 = m + 3 by lia, hrec, ha, hb, hd,
+          show m + 3 + e = m + e + 3 by lia, show m + 2 + e = m + e + 2 by lia,
+          show m + 1 + e = m + e + 1 by lia]
+        simp only [map_add, map_mul]
+        ring
+  exact fun m => (key m).1
+
 end RealRooted

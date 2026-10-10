@@ -1,5 +1,6 @@
 import RealRooted.Tactic.Row.DerivLag
 import RealRooted.Tactic.Row.Subseq
+import RealRooted.Tactic.Row.PowerForm
 
 /-!
 # `rr_row_interlaces`
@@ -54,6 +55,16 @@ open Lean Elab Tactic Meta Polynomial
 
 namespace RealRooted.Tactic
 
+/-- The power-form route (`RealRooted.Tactic.powerFormInterlaces`), gated by its exact probe. -/
+private def powerFormRoute : TacticM Unit := do
+  discard introIfForall
+  withMainContext do
+  let some P ← findPolySeqConst? (← instantiateMVars (← getMainTarget))
+    | throwError "rr_row_interlaces: no sequence"
+  let some L ← linRec? P | throwError "rr_row_interlaces: not a linear recurrence"
+  let some pf ← powerForm? L | throwError "rr_row_interlaces: no power form"
+  powerFormInterlaces L pf
+
 /-- `rr_row_interlaces`, returning a certificate (empty for the derivative-lag and order-three
 routes, which have no printable steps) and the hints of the hinted call. -/
 private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := do
@@ -62,7 +73,12 @@ private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := 
   -- order-three recurrences through a three-term recurrence
   if (← rowAttempt (rowRecSetup "rr_row_interlaces")) matches .error _ then
     if ← rowSucceeds (lowerOrderInterlaces hints) then return (#[], hints)
-  rowInterlacesCore hints
+  match ← rowAttempt (rowInterlacesCore hints) with
+  | .ok res => return res
+  | .error e =>
+      -- rows `c m · F · q ^ (m + e)` of a recurrence whose multipliers are powers of `q`
+      if ← rowSucceeds powerFormRoute then return (#[], hints)
+      throwError e
 
 /-- Run a row tactic `core` and print the hinted call `name hs'*` and the certificate. -/
 private def rowElabWithHints (tk : Syntax) (core : TacticM (Cert × RowHints))

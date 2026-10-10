@@ -1639,6 +1639,10 @@ frontend family into `Favard.Direct`, `Favard.Denominator` and
 `Favard.RowSign`, with the historical module as a facade. The root and tactic
 regression budgets rise to 1755 and 684.
 
+The power-form route of `rr_row_interlaces` (rows `c m · F · q ^ (m + e)`) is the
+new module `Tactic.Row.PowerForm`; the root, production, tactic and tactic
+regression budgets rise by one, to 1756, 1616, 520 and 685.
+
 Run the architecture check with:
 
 ```bash
