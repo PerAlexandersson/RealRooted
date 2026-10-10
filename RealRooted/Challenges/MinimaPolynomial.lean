@@ -64,20 +64,20 @@ $$M_G(t) = \sum_{L} t^{\operatorname{mm}(L)},$$
 summed over the $\prod_v \deg v!$ local orders $L$, where $\operatorname{mm}(L)$
 counts the mutual minima.
 
-The edges at a vertex form a clique of the line graph $L(G)$, so a local order is
-an orientation of $L(G)$ that is acyclic on each of these cliques, with no global
-acyclicity condition. The mutual minima are its sinks.
+The edges at a vertex form a clique of the line graph $L(G)$, so local orders are
+the orientations of $L(G)$ that are acyclic on each of these cliques, and the
+mutual minima are their sinks.
 
-**Identity.** A set $S$ of edges consists of mutual minima in some local order
-only if $S$ is a matching, and then in a $\prod_{uv \in S} 1/(\deg u \deg v)$
-fraction of all local orders. Hence
+**Identity.** The mutual minima of a local order form a matching. For a matching
+$S$, every edge $uv \in S$ comes first at $u$ and at $v$ in exactly a
+$\prod_{uv \in S} 1/(\deg u \deg v)$ fraction of the local orders. Hence
 $$M_G(t + 1) = \prod_v \deg v! \sum_{S} \prod_{uv \in S} \frac{1}{\deg u \deg v}\, t^{|S|},$$
 summed over the matchings $S$ of $G$.
 
 **Theorem.** For every finite graph $G$, $M_G(t)$ is real-rooted.
 
 The right-hand side of the identity is a matching polynomial with positive edge
-weights, which is real-rooted by the Heilmann–Lieb theorem: it is a weighted
+weights, so it is real-rooted by the Heilmann–Lieb theorem. It is also a weighted
 independence polynomial of the claw-free line graph $L(G)$; see the
 [Chudnovsky–Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
 [Leake–Ryder](/RealRooted/theorems/leake-ryder/) pages.
@@ -94,9 +94,7 @@ For sinks of acyclic orientations, see the pages on
 
 ## References
 
-P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).
-
-The counting identity was proved with Aristotle (Harmonic).
+P. Alexandersson and L. Saud Maia Leite, manuscript (2026).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in
