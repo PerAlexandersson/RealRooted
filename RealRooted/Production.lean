@@ -1542,6 +1542,7 @@ import RealRooted.Tactic.Row.PowerForm
 import RealRooted.Tactic.Row.Reverse
 import RealRooted.Tactic.Row.SideGoals
 import RealRooted.Tactic.Row.Subseq
+import RealRooted.Tactic.Row.Support
 import RealRooted.Tactic.RowClosedForm
 import RealRooted.Tactic.RowInterlacing
 import RealRooted.Tactic.ScalarDen

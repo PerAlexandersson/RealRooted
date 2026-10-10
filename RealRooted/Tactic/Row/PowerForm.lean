@@ -1,5 +1,5 @@
 import RealRooted.ProductSequence.Interlacing
-import RealRooted.Tactic.Row.SideGoals
+import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: rows `c m · F · q ^ (m + e)`
@@ -66,13 +66,7 @@ def powerFormAt? (L : LinRecData) (s : Nat) : MetaM (Option PowerForm) := do
   unless L.terms.all (·.1 < k) do return none
   let some rows ← linRecRows? L (14 + s) | return none
   -- the multiplier of `P (n + s + j)` at `n`
-  let coeffAt (j n : Nat) : MetaM (Option QPoly) := do
-    let mut acc : QPoly := ⟨#[]⟩
-    for (j', _, A) in L.terms do
-      if j' != j then continue
-      let some a ← evalCoeffAt? A (n + s) | return none
-      acc := acc + a
-    return some acc
+  let coeffAt (j n : Nat) := L.coeffAt? j 0 (n + s)
   -- the linear factor `q = X - r`, from a nonzero multiplier
   let mut r? : Option Rat := none
   for j in [0:k] do
@@ -121,7 +115,8 @@ def powerForm? (L : LinRecData) : MetaM (Option PowerForm) := do
     if let some pf ← powerFormAt? L s then return some pf
   return none
 
-/-- `∑ cs[i] * n ^ i` as a real term in the natural-number variable `n`. -/
+/-- `∑ cs[i] * n ^ i` as a real term in the natural-number variable `n`, in Horner form.  The
+side goals of the power form are tuned to this shape, so it is not `nPolyTerm`. -/
 private def nPolyRealTerm (cs : Array Rat) (n : Ident) : TacticM Term := do
   let mut acc : Term ← `((0 : ℝ))
   for i in (List.range cs.size).reverse do

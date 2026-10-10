@@ -1,5 +1,5 @@
 import RealRooted.ThreeTermRecurrence.LagFeedback
-import RealRooted.Tactic.Row.Reverse
+import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: lag recurrences with a feedback term
@@ -32,13 +32,7 @@ def lagFeedback? (P : Name) : MetaM (Option LagFeedbackData) := do
   let p := L.offset
   unless 2 ≤ p && L.terms.all (fun (j, i, _) => i == 0 && (j == 0 || j + 1 == p)) do
     return none
-  let coeffAt (j n : Nat) : MetaM (Option QPoly) := do
-    let mut acc : QPoly := ⟨#[]⟩
-    for (j', _, A) in L.terms do
-      if j' != j then continue
-      let some a ← evalCoeffAt? A n | return none
-      acc := acc + a
-    return some acc
+  let coeffAt (j n : Nat) := L.coeffAt? j 0 n
   let some a₀ ← coeffAt (p - 1) 0 | return none
   unless a₀.natDegree == 0 && 0 < a₀.coeff 0 do return none
   let α := a₀.coeff 0

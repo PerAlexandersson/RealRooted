@@ -1,5 +1,5 @@
 import RealRooted.ThreeTermRecurrence.ParityProduct
-import RealRooted.Tactic.Row.Reverse
+import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: parity products
@@ -30,27 +30,18 @@ structure ParityData where
   β : QPoly
   μ : QPoly
 
-/-- `p = q` as polynomials. -/
-private def qeq (p q : QPoly) : Bool := (p - q).isZero
-
 /-- The parity product structure of an order-three recurrence with constant coefficients. -/
 def parityProduct? (P : Name) : MetaM (Option ParityData) := do
   let some L ← linRec? P | return none
   unless L.offset == 3 && L.terms.all (fun (j, i, _) => i == 0 && j ≤ 2) do return none
   -- the multipliers, constant in `n`
-  let coeffAt (j n : Nat) : MetaM (Option QPoly) := do
-    let mut acc : QPoly := ⟨#[]⟩
-    for (j', _, A) in L.terms do
-      if j' != j then continue
-      let some a ← evalCoeffAt? A n | return none
-      acc := acc + a
-    return some acc
+  let coeffAt (j n : Nat) := L.coeffAt? j 0 n
   let mut abc : Array QPoly := #[]
   for j in [2, 1, 0] do
     let some q ← coeffAt j 0 | return none
     for n in [1:4] do
       let some q' ← coeffAt j n | return none
-      unless qeq q q' do return none
+      unless QPoly.eqv q q' do return none
     abc := abc.push q
   let (a, b, c) := (abc[0]!, abc[1]!, abc[2]!)
   let some rows ← linRecRows? L 15 | return none
@@ -74,10 +65,10 @@ def parityProduct? (P : Name) : MetaM (Option ParityData) := do
   let μ := a - β
   let γ := μ * μ
   let recOk (x : Array QPoly) : Bool := (List.range (x.size - 2)).all fun k =>
-    qeq x[k + 2]! (β * x[k + 1]! - γ * x[k]!)
+    QPoly.eqv x[k + 2]! (β * x[k + 1]! - γ * x[k]!)
   unless recOk s && recOk t do return none
-  unless qeq b (-(γ + μ * β)) && qeq c (γ * μ) do return none
-  unless qeq (s[1]! * t[1]! - s[2]! * t[0]!) (μ * (s[1]! * t[0]! - s[0]! * t[1]!)) do
+  unless QPoly.eqv b (-(γ + μ * β)) && QPoly.eqv c (γ * μ) do return none
+  unless QPoly.eqv (s[1]! * t[1]! - s[2]! * t[0]!) (μ * (s[1]! * t[0]! - s[0]! * t[1]!)) do
     return none
   return some { L, s₀ := s[0]!, s₁ := s[1]!, t₀ := t[0]!, t₁ := t[1]!, β, μ }
 
