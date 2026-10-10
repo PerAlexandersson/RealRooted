@@ -150,15 +150,15 @@ theorem derivRec_hasNonnegCoeffs (hrec : ∀ n, P (n + 1) = A n * (P n).derivati
 /-- Rows of a derivative recurrence with nonnegative coefficients, from
 nonnegative multipliers: since
 `coeff_k (A P' + B P) = ∑_{i + j = k + 1} (A_i j + B_{i-1}) p_j`, it suffices that
-`A₀ ≥ 0` and `A_{i+1} j + B_i ≥ 0` for every `j` up to the degree bound. -/
-theorem derivRec_hasNonnegCoeffs_of_mult {d : ℕ}
+`A₀ ≥ 0` and `A_{i+1} j + B_i ≥ 0` for every `j` up to the degree bound `D n`. -/
+theorem derivRec_hasNonnegCoeffs_of_mult_le {D : ℕ → ℕ}
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
-    (hdeg : ∀ n, (P n).natDegree ≤ D₀ + d * n) (hA0 : ∀ n, 0 ≤ (A n).coeff 0)
-    (hmult : ∀ n i (j : ℕ), j ≤ D₀ + d * n → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i)
+    (hdeg : ∀ n, (P n).natDegree ≤ D n) (hA0 : ∀ n, 0 ≤ (A n).coeff 0)
+    (hmult : ∀ n i (j : ℕ), j ≤ D n → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i)
     (h0 : HasNonnegCoeffs (P 0)) : ∀ n, HasNonnegCoeffs (P n)
   | 0 => h0
   | n + 1 => by
-      have ih := derivRec_hasNonnegCoeffs_of_mult hrec hdeg hA0 hmult h0 n
+      have ih := derivRec_hasNonnegCoeffs_of_mult_le hrec hdeg hA0 hmult h0 n
       intro k
       have hX : X * P (n + 1) = A n * (X * (P n).derivative) + (X * B n) * P n := by
         rw [hrec n]; ring
@@ -172,11 +172,74 @@ theorem derivRec_hasNonnegCoeffs_of_mult {d : ℕ}
       · rw [coeff_X_mul_zero, zero_mul, add_zero]
         exact mul_nonneg (hA0 n) (mul_nonneg (Nat.cast_nonneg j) (ih j))
       · rw [coeff_X_mul]
-        by_cases hj : j ≤ D₀ + d * n
+        by_cases hj : j ≤ D n
         · nlinarith [mul_nonneg (hmult n i j hj) (ih j)]
         · rw [coeff_eq_zero_of_natDegree_lt ((hdeg n).trans_lt (by lia))]
           ring_nf
           rfl
+
+/-- `derivRec_hasNonnegCoeffs_of_mult_le` for the degree bound `D₀ + d * n`. -/
+theorem derivRec_hasNonnegCoeffs_of_mult {d : ℕ}
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hdeg : ∀ n, (P n).natDegree ≤ D₀ + d * n) (hA0 : ∀ n, 0 ≤ (A n).coeff 0)
+    (hmult : ∀ n i (j : ℕ), j ≤ D₀ + d * n → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i)
+    (h0 : HasNonnegCoeffs (P 0)) : ∀ n, HasNonnegCoeffs (P n) :=
+  derivRec_hasNonnegCoeffs_of_mult_le (D := fun n => D₀ + d * n) hrec hdeg hA0 hmult h0
+
+/-- Rows of a first-order derivative recurrence whose degree grows by zero or one at each
+step strictly interlace when they have nonnegative coefficients and `A n ≤ 0` on `(-∞, 0]`:
+the roots of the rows are nonpositive.  This covers the half-growth rows `deg P n = D₀ +
+(n + e) / 2` whose top terms cancel at every other step. -/
+theorem derivRec_strictInterl_of_degree_pattern_of_nonnegCoeffs {D : ℕ → ℕ}
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D n) (hD : ∀ n, D n ≠ 0)
+    (hstep : ∀ n, D (n + 1) = D n ∨ D (n + 1) = D n + 1)
+    (hpos : ∀ n, 0 < (P n).leadingCoeff) (hnn : ∀ n, HasNonnegCoeffs (P n))
+    (hA : ∀ n x, x ≤ 0 → (A n).eval x ≤ 0) (h0 : (P 0).Splits) (n : ℕ) :
+    StrictInterl (P n) (P (n + 1)) :=
+  derivRec_strictInterl_of_degree_pattern hrec hdeg hD hstep hpos
+    (fun n r hr => hA n r (roots_nonpos_of_hasNonnegCoeffs (hnn n) r
+      ((mem_roots (leadingCoeff_ne_zero.mp (hpos n).ne')).mpr hr))) h0 n
+
+/-- Rows of a first-order derivative recurrence whose degree grows by zero or one at each
+step split, when they have nonnegative coefficients and `A n ≤ 0` on `(-∞, 0]`.  Rows of
+degree zero are constants; the first row of positive degree is linear unless it is `P 0`,
+and from there on `derivRec_strictInterl_of_degree_pattern_of_nonnegCoeffs` applies. -/
+theorem derivRec_splits_of_degree_pattern_of_nonnegCoeffs {D : ℕ → ℕ}
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D n)
+    (hstep : ∀ n, D (n + 1) = D n ∨ D (n + 1) = D n + 1)
+    (hpos : ∀ n, 0 < (P n).leadingCoeff) (hnn : ∀ n, HasNonnegCoeffs (P n))
+    (hA : ∀ n x, x ≤ 0 → (A n).eval x ≤ 0) (h0 : (P 0).Splits) (n : ℕ) :
+    (P n).Splits := by
+  classical
+  by_cases hzero : ∀ m ≤ n, D m = 0
+  · exact Splits.of_natDegree_le_one (by rw [hdeg, hzero n le_rfl]; lia)
+  push Not at hzero
+  have hex : ∃ m, D m ≠ 0 := let ⟨m, _, hm⟩ := hzero; ⟨m, hm⟩
+  set k := Nat.find hex with hk_def
+  have hk : D k ≠ 0 := Nat.find_spec hex
+  have hkn : k ≤ n := let ⟨m, hmn, hm⟩ := hzero; (Nat.find_min' hex hm).trans hmn
+  have hmono : Monotone D := monotone_nat_of_le_succ fun m => by rcases hstep m with h | h <;> lia
+  have hD : ∀ j, D (j + k) ≠ 0 := fun j => by have := hmono (show k ≤ j + k by lia); lia
+  have hPk : (P k).Splits := by
+    rcases Nat.eq_zero_or_pos k with h | h
+    · rw [h]; exact h0
+    · have hprev : D (k - 1) = 0 := by
+        by_contra hne
+        exact absurd (Nat.find_min' hex hne) (by lia)
+      have hk1 : D k = 1 := by
+        have := hstep (k - 1)
+        rw [Nat.sub_add_cancel h] at this
+        lia
+      exact Splits.of_natDegree_le_one (by rw [hdeg, hk1])
+  have key := derivRec_strictInterl_of_degree_pattern_of_nonnegCoeffs
+    (P := fun j => P (j + k)) (A := fun j => A (j + k)) (B := fun j => B (j + k))
+    (D := fun j => D (j + k)) (fun j => by simpa [Nat.add_right_comm] using hrec (j + k))
+    (fun j => hdeg _) hD (fun j => by simpa [Nat.add_right_comm] using hstep (j + k))
+    (fun j => hpos _) (fun j => hnn _) (fun j x hx => hA _ x hx) (by simpa using hPk) (n - k)
+  have hnk : n - k + k = n := Nat.sub_add_cancel hkn
+  simpa [hnk] using key.1.2
 
 end RealRooted
 

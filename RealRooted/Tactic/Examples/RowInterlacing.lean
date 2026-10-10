@@ -442,7 +442,8 @@ example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitF
 
 /--
 error: rr_row_splits: unknown route foo; the routes are closedForm, lowerOrder, subseq,
-linearFactors, splitFactors, twoStep, shiftedProduct, nextRow, prevRow, halfGrowth
+linearFactors, splitFactors, twoStep, shiftedProduct, nextRow, prevRow, halfGrowth,
+degreePattern
 -/
 #guard_msgs (whitespace := normalized) in
 example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := foo)
