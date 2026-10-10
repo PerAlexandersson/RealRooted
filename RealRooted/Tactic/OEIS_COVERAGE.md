@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **223 IDs**; **5 formalized**, **215 shells**, **3 fragments**, and **0 documented-only**.
+Current totals: **224 IDs**; **5 formalized**, **216 shells**, **3 fragments**, and **0 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -142,6 +142,7 @@ Current totals: **223 IDs**; **5 formalized**, **215 shells**, **3 fragments**, 
 | A127647 | `shell` | `P (n + 2) = X P (n + 1) + X ^ 2 P n` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A127672 | `shell` | OEIS shapes `//`: real-rootedness consequence of | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
 | A128099 | `shell` | positive-`X` lag with non-unit constant coefficient `2`. | `rr_strict_interl_pos_X_lag_coeff_sequence_realrooted_auto` | `base`, `current_coeff`, `lag_coeff`, `nonneg_coeffs`, `recurrence` | concrete row definition and proofs of the listed certificates |
+| A128540 | `shell` | ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A128966 | `shell` | A zero first row is split off; `h` excludes it ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_natDegree`, `rr_row_ne_zero` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A131689 | `shell` | Fubini polynomials: `v_n(t) = t(1 + t)` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A132812 | `shell` | found numerically and certified through its remainder ().<br>def : ℕ → ℝ[X]<br>+6 additional test intents | `rr_row_interlaces`, `rr_row_splits` | `drop`, `via` | concrete row definition and proofs of the listed certificates |

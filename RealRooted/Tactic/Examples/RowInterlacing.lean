@@ -478,6 +478,17 @@ def A376827 : ℕ → ℝ[X]
 theorem A376827_interlaces (n : ℕ) : Interlaces (A376827 n) (A376827 (n + 1)) := by
   rr_row_interlaces
 
+/-- The rows `P m = m (1 + X) X ^ (m - 1)` start the power form after the row `P 0 = 1`
+(A128540). -/
+def A128540 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 2 * X + 2 * X ^ 2
+  | n + 3 => X * A128540 (n + 2) + X ^ 2 * A128540 (n + 1)
+
+theorem A128540_interlaces (n : ℕ) : Interlaces (A128540 n) (A128540 (n + 1)) := by
+  rr_row_interlaces
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 /--

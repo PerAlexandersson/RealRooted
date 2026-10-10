@@ -11,7 +11,9 @@ multipliers are `A j n = α j n · q ^ (k - j)` for one linear `q` keeps the for
 (`RealRooted.interlaces_of_forall_eq_C_mul_pow`).
 
 `powerForm?` finds `q`, `F`, `e` and the multipliers `α j n` (polynomials in `n` of degree at
-most three) exactly from the computed rows; `powerFormInterlaces` proves the interlacing.
+most three) exactly from the computed rows; `powerFormInterlaces` proves the interlacing.  The
+form may start after a few rows (A128540: `P 0 = 1`, then `P m = m (1 + X) X ^ (m - 1)`); the
+theorems then apply to `m ↦ P (m + s)` and the first `s` rows are split off.
 -/
 
 open Lean Elab Tactic Meta Polynomial
@@ -23,6 +25,8 @@ namespace RealRooted.Tactic
 polynomial multiplier). -/
 structure PowerForm where
   k : Nat
+  /-- the number `s` of rows before the form starts -/
+  drop : Nat
   q : QPoly
   F : QPoly
   e : Nat
@@ -54,19 +58,19 @@ def fitRatFun? (vals : Array Rat) : Option (Array Rat × Array Rat) := Id.run do
       return some (num.coeffs, den.coeffs)
   return none
 
-/-- Search the power form on the computed rows. -/
-def powerForm? (L : LinRecData) : MetaM (Option PowerForm) := do
+/-- Search the power form on the computed rows, starting after `s` rows. -/
+def powerFormAt? (L : LinRecData) (s : Nat) : MetaM (Option PowerForm) := do
   let k := L.offset
   unless k == 2 || k == 3 do return none
   unless L.terms.all (·.2.1 == 0) do return none
   unless L.terms.all (·.1 < k) do return none
-  let some rows ← linRecRows? L 14 | return none
-  -- the multiplier of `P (n + j)` at `n`
+  let some rows ← linRecRows? L (14 + s) | return none
+  -- the multiplier of `P (n + s + j)` at `n`
   let coeffAt (j n : Nat) : MetaM (Option QPoly) := do
     let mut acc : QPoly := ⟨#[]⟩
     for (j', _, A) in L.terms do
       if j' != j then continue
-      let some a ← evalCoeffAt? A n | return none
+      let some a ← evalCoeffAt? A (n + s) | return none
       acc := acc + a
     return some acc
   -- the linear factor `q = X - r`, from a nonzero multiplier
@@ -97,19 +101,25 @@ def powerForm? (L : LinRecData) : MetaM (Option PowerForm) := do
     alphas := alphas.push fit
     unless vals.all (0 ≤ ·) && (j + 1 != k || vals.all (0 < ·)) do positive := false
   -- the form of the rows
-  let some r0 := rows[0]? | return none
+  let some r0 := rows[s]? | return none
   if r0.isZero then return none
   let e := cfMult q r0
   let some F := r0.divExact? (q.pow e) | return none
   let mut cs : Array Rat := #[]
   for m in [0:15] do
-    let some row := rows[m]? | return none
+    let some row := rows[m + s]? | return none
     if row.isZero then return none
     let some c := row.divExact? (F * q.pow (m + e)) | return none
     unless c.natDegree == 0 do return none
     cs := cs.push (c.coeff 0)
   positive := positive && cs.all (0 < ·)
-  return some { k, q, F, e, alphas, cs, positive }
+  return some { k, drop := s, q, F, e, alphas, cs, positive }
+
+/-- Search the power form on the computed rows, starting after at most two rows. -/
+def powerForm? (L : LinRecData) : MetaM (Option PowerForm) := do
+  for s in [0:3] do
+    if let some pf ← powerFormAt? L s then return some pf
+  return none
 
 /-- `∑ cs[i] * n ^ i` as a real term in the natural-number variable `n`. -/
 private def nPolyRealTerm (cs : Array Rat) (n : Ident) : TacticM Term := do
@@ -128,8 +138,9 @@ private def closeFresh (g : MVarId) (tac : TacticM Unit) : TacticM Unit := do
 gets its own heartbeat budget. -/
 def powerFormInterlaces (L : LinRecData) (pf : PowerForm) : TacticM Unit := withMainContext do
   let P := mkIdent L.P
-  let t ← mainRowIndex P
-  let tT ← Term.exprToSyntax t
+  -- the rows before the form starts
+  let (_, tT) ← alignRow L.P pf.drop (smallRow P)
+  let Q ← shiftedSeq P pf.drop
   let n := mkIdent `n
   let qT ← qpolyTerm pf.q
   let FT ← qpolyTerm pf.F
@@ -140,11 +151,11 @@ def powerFormInterlaces (L : LinRecData) (pf : PowerForm) : TacticM Unit := with
     else `(fun $n:ident : ℕ => $(← nPolyRealTerm num n) / $(← nPolyRealTerm den n))
   if pf.positive then
     evalTactic (← `(tactic|
-      refine RealRooted.interlaces_of_forall_eq_C_mul_pow_of_pos (P := $P) (F := $FT)
+      refine RealRooted.interlaces_of_forall_eq_C_mul_pow_of_pos (P := $Q) (F := $FT)
         (q := $qT) (e := $eT) ?_ ?_ ?_ ?_ $tT))
   else
     evalTactic (← `(tactic|
-      refine RealRooted.interlaces_of_forall_eq_C_mul_pow (P := $P) (F := $FT) (q := $qT)
+      refine RealRooted.interlaces_of_forall_eq_C_mul_pow (P := $Q) (F := $FT) (q := $qT)
         (e := $eT) ?_ ?_ ?_ ?_ $tT))
   let [hform, hne, hF, hq] ← getGoals | throwError "rr_row_interlaces: unexpected side goals"
   setGoals [hform]
@@ -170,8 +181,17 @@ def powerFormInterlaces (L : LinRecData) (pf : PowerForm) : TacticM Unit := with
   let signs := if pf.positive then (gs.drop 1).take pf.k else []
   let bases := (gs.drop (1 + signs.length)).take pf.k
   closeFresh hrec do
-    evalTactic (← `(tactic|
-      (intro $n:ident; exact ($(mkIdent L.eqn) $n).trans (by rr_cf_identity))))
+    if pf.drop == 0 then
+      evalTactic (← `(tactic|
+        (intro $n:ident; exact ($(mkIdent L.eqn) $n).trans (by rr_cf_identity))))
+    else
+      -- the rows `P (n + s + j)` of the equation and `P (n + j + s)` of the goal, as `P (n + i)`
+      let h := mkIdent `h
+      evalTactic (← `(tactic| (
+        intro $n:ident
+        have $h:ident := $(mkIdent L.eqn) ($n + $(rowNumLit pf.drop))
+        simp only [Nat.add_assoc, Nat.reduceAdd] at $h:ident ⊢
+        exact $h:ident |>.trans (by rr_cf_identity))))
   for g in signs do
     closeFresh g do
       evalTactic (← `(tactic| (intro $n:ident; first | positivity | rr_row_field)))
