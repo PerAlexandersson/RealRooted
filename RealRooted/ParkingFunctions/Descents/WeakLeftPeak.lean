@@ -11,6 +11,9 @@ open Polynomial
 
 namespace RealRooted.ParkingFunctions
 
+open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
+  isParkingFunction_iff_prefix)
+
 noncomputable section
 
 /-- The preceding position in the same nonempty finite index type. Its value

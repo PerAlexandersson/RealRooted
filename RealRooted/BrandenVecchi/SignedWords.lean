@@ -290,7 +290,7 @@ def signedCollisionNumber {q p : ℕ} :
 def signedDescentNumber {q p : ℕ} :
     {n : ℕ} → (Fin n → SignedLetter q p) → ℕ
   | 0, _ => 0
-  | _ + 1, w => RealRooted.ParkingFunctions.descentNumber w
+  | _ + 1, w => (List.ofFn w).descentCount
 
 @[simp]
 theorem signedCollisionNumber_zero {q p : ℕ}
@@ -309,7 +309,7 @@ theorem signedDescentNumber_zero {q p : ℕ}
 theorem signedDescentNumber_succ {q p n : ℕ}
     (w : Fin (n + 1) → SignedLetter q p) :
     signedDescentNumber w =
-      RealRooted.ParkingFunctions.descentNumber w := rfl
+      (List.ofFn w).descentCount := rfl
 
 @[simp]
 theorem signedCollisionNumber_one {q p : ℕ}
@@ -319,8 +319,7 @@ theorem signedCollisionNumber_one {q p : ℕ}
 @[simp]
 theorem signedDescentNumber_one {q p : ℕ}
     (w : Fin 1 → SignedLetter q p) : signedDescentNumber w = 0 := by
-  simp [RealRooted.ParkingFunctions.descentNumber,
-    RealRooted.ParkingFunctions.descentSet]
+  simp [List.descentCount]
 
 /-- Appending a letter increments the collision number exactly when it agrees
 with the old final letter. -/
@@ -348,8 +347,7 @@ theorem signedDescentNumber_snoc {q p n : ℕ}
     (w : Fin (n + 1) → SignedLetter q p) (x : SignedLetter q p) :
     signedDescentNumber (Fin.snoc w x) =
       signedDescentNumber w + if x < w (Fin.last n) then 1 else 0 := by
-  simpa only [signedDescentNumber_succ] using
-    RealRooted.ParkingFunctions.descentNumber_snoc w x
+  simpa only [signedDescentNumber_succ] using List.descentCount_ofFn_snoc w x
 
 theorem signedCollisionNumber_le {q p n : ℕ}
     (w : Fin n → SignedLetter q p) : signedCollisionNumber w ≤ n - 1 := by
@@ -364,7 +362,7 @@ theorem signedDescentNumber_le {q p n : ℕ}
   cases n with
   | zero => simp
   | succ n =>
-      simpa using RealRooted.ParkingFunctions.descentNumber_le w
+      simpa using List.descentCount_ofFn_le w
 
 /-- Every collision in an admissible signed word occurs at a negative letter. -/
 theorem IsSignedWord.isNegative_of_mem_collisionSet {q p n : ℕ}

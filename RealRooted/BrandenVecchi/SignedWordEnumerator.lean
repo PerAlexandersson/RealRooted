@@ -131,8 +131,7 @@ theorem signedWordEnumerator_one {q p : ℕ}
     exact isSignedWord_one w
   rw [signedWordEnumerator, hwords]
   simpa [signedWordWeight, signedDescentNumber, signedCollisionNumber,
-    collisionSet, RealRooted.ParkingFunctions.descentNumber,
-    RealRooted.ParkingFunctions.descentSet] using
+    collisionSet, List.descentCount] using
     Fintype.sum_equiv (Equiv.funUnique (Fin 1) (SignedLetter q p))
       (fun w => C (weight (w 0))) (fun a => C (weight a)) (fun _ => rfl)
 
@@ -169,7 +168,9 @@ theorem signedDescentNumber_map {q p q' p' n : ℕ}
   cases n with
   | zero => simp
   | succ n =>
-      unfold signedDescentNumber RealRooted.ParkingFunctions.descentNumber
+      rw [signedDescentNumber_succ, signedDescentNumber_succ,
+        ← RealRooted.ParkingFunctions.card_descentSet,
+        ← RealRooted.ParkingFunctions.card_descentSet]
       apply congrArg Finset.card
       ext i
       simp [RealRooted.ParkingFunctions.mem_descentSet_iff, mapSignedWord]

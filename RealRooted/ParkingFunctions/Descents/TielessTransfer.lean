@@ -231,7 +231,7 @@ theorem parkingSmirnovDescentSum_eq_tielessParkingDescentPolynomial
       simp [BrandenVecchi.smirnovDescentNumber]
   | succ n =>
       rw [tielessParkingDescentPolynomial]
-      unfold descentGeneratingPolynomial
+      unfold Finset.genPoly
       symm
       apply Finset.sum_bij (fun w _ => parkingWordEmbed w)
       · intro w hw

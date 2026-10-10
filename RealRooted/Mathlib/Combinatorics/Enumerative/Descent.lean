@@ -8,6 +8,8 @@ import Mathlib.Data.Finset.Image
 import Mathlib.Data.Finset.Range
 import Mathlib.Data.Finset.Union
 import Mathlib.Tactic.Linarith
+import Mathlib.Data.Fin.Tuple.Basic
+import Mathlib.Data.Fintype.Basic
 
 /-!
 # Descents, ascents, and the major index of a word
@@ -104,6 +106,12 @@ theorem descentSet_subset_range (l : List α) : l.descentSet ⊆ Finset.range (l
   rfl
 
 /-- The empty word has no ascents. -/
+@[simp] theorem descentCount_nil : descentCount ([] : List α) = 0 := by
+  simp [descentCount]
+
+@[simp] theorem descentCount_singleton (a : α) : descentCount [a] = 0 := by
+  simp [descentCount]
+
 @[simp] theorem ascentSet_nil : ascentSet ([] : List α) = ∅ := by
   simp [ascentSet, isAscent]
 
@@ -302,5 +310,77 @@ theorem descentSet_reverse (l : List α) :
 example : [3, 1, 4, 1, 5, 9, 2, 6].descentSet = {0, 2, 5} := by decide
 
 example : [3, 1, 4, 1, 5, 9, 2, 6].majorIndex = 10 := by decide
+
+/-! ### Words given as functions on `Fin n` -/
+
+/-- Membership in the descent set of `List.ofFn w`, in terms of `w`. -/
+theorem mem_descentSet_ofFn {n : ℕ} {w : Fin n → α} {i : ℕ} :
+    i ∈ (List.ofFn w).descentSet ↔
+      ∃ h : i + 1 < n, w ⟨i + 1, h⟩ < w ⟨i, Nat.lt_of_succ_lt h⟩ := by
+  simp [mem_descentSet, List.getElem_ofFn]
+
+/-- The descent set of `List.ofFn w` is the set of `Fin` positions `i` with
+`w i.succ < w i.castSucc`, read as natural numbers. -/
+theorem descentSet_ofFn {n : ℕ} (w : Fin (n + 1) → α) :
+    (List.ofFn w).descentSet =
+      (Finset.univ.filter fun i : Fin n => w i.succ < w i.castSucc).map Fin.valEmbedding := by
+  ext i
+  rw [mem_descentSet_ofFn]
+  simp only [Finset.mem_map, Finset.mem_filter, Finset.mem_univ, true_and,
+    Fin.valEmbedding_apply]
+  constructor
+  · rintro ⟨h, hi⟩
+    exact ⟨⟨i, Nat.lt_of_add_lt_add_right h⟩, hi, rfl⟩
+  · rintro ⟨j, hj, rfl⟩
+    exact ⟨Nat.add_lt_add_right j.isLt 1, hj⟩
+
+/-- Appending a letter adds the last position to the descent set exactly when the letter is
+smaller than the previous last letter. -/
+theorem descentSet_ofFn_snoc {n : ℕ} (w : Fin (n + 1) → α) (x : α) :
+    (List.ofFn (Fin.snoc w x : Fin (n + 2) → α)).descentSet =
+      (List.ofFn w).descentSet ∪ if x < w (Fin.last n) then {n} else ∅ := by
+  ext i
+  rw [Finset.mem_union, mem_descentSet_ofFn, mem_descentSet_ofFn]
+  rcases lt_trichotomy i n with hi | rfl | hi
+  · have h1 : i + 1 < n + 1 := Nat.add_lt_add_right hi 1
+    have h2 : i + 1 < n + 2 := by lia
+    have hn : i ≠ n := Nat.ne_of_lt hi
+    have e1 : (Fin.snoc w x : Fin (n + 2) → α) ⟨i + 1, h2⟩ = w ⟨i + 1, h1⟩ := by
+      simp [Fin.snoc, h1]
+    have e2 : (Fin.snoc w x : Fin (n + 2) → α) ⟨i, by lia⟩ = w ⟨i, by lia⟩ := by
+      simp [Fin.snoc, show i < n + 1 by lia]
+    split_ifs <;> simp [h1, h2, e1, e2, hn]
+  · have e2 : (Fin.snoc w x : Fin (i + 2) → α) ⟨i, by lia⟩ = w (Fin.last i) := by
+      simp [Fin.snoc, Fin.last]
+    have e1 : (Fin.snoc w x : Fin (i + 2) → α) ⟨i + 1, by lia⟩ = x := by
+      simp [Fin.snoc]
+    split_ifs with h <;> simp [e1, e2, h]
+  · have h1 : ¬ i + 1 < n + 2 := by lia
+    have h2 : ¬ i + 1 < n + 1 := by lia
+    have hn : i ≠ n := by lia
+    split_ifs <;> simp [h1, h2, hn]
+
+/-- Appending a letter adds one descent exactly when the letter is smaller than the previous
+last letter. -/
+theorem descentCount_ofFn_snoc {n : ℕ} (w : Fin (n + 1) → α) (x : α) :
+    (List.ofFn (Fin.snoc w x : Fin (n + 2) → α)).descentCount =
+      (List.ofFn w).descentCount + if x < w (Fin.last n) then 1 else 0 := by
+  unfold descentCount
+  rw [descentSet_ofFn_snoc]
+  split_ifs with h
+  · rw [Finset.card_union_of_disjoint, Finset.card_singleton]
+    rw [Finset.disjoint_singleton_right, mem_descentSet_ofFn]
+    rintro ⟨h', _⟩
+    exact Nat.lt_irrefl _ h'
+  · simp
+
+/-- A word has fewer descents than letters. -/
+theorem descentCount_le_length_sub_one (l : List α) : l.descentCount ≤ l.length - 1 := by
+  simpa [descentCount] using Finset.card_le_card l.descentSet_subset_range
+
+/-- A word of length `n + 1` has at most `n` descents. -/
+theorem descentCount_ofFn_le {n : ℕ} (w : Fin (n + 1) → α) :
+    (List.ofFn w).descentCount ≤ n := by
+  simpa using descentCount_le_length_sub_one (List.ofFn w)
 
 end List

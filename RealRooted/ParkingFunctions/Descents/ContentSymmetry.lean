@@ -176,7 +176,7 @@ theorem mem_fixedContentWords_iff {n m : ℕ}
 def fixedContentWordDescentPolynomial {n m : ℕ}
     (μ : Multiset (Fin m)) : ℤ[X] :=
   ∑ w ∈ fixedContentWords (n := n) μ,
-    X ^ wordDescentNumber w
+    X ^ (List.ofFn w).descentCount
 
 /-- The universal monomial word weight is the monomial of its content
 exponent. -/
@@ -209,13 +209,13 @@ theorem coeff_fixedContentWordDescentPolynomial {n m k : ℕ}
   by_cases hc : wordContent w = μ
   · have he : wordExponent w = μ.toFinsupp := by
       rw [wordExponent_eq_toFinsupp_wordContent, hc]
-    by_cases hk : k = wordDescentNumber w
+    by_cases hk : k = (List.ofFn w).descentCount
     · simp [hc, hk, he, MvPolynomial.coeff_monomial]
     · simp [hc, hk]
   · have he : wordExponent w ≠ μ.toFinsupp := by
       rw [wordExponent_eq_toFinsupp_wordContent]
       exact fun h => hc (Multiset.toFinsupp.injective h)
-    by_cases hk : k = wordDescentNumber w
+    by_cases hk : k = (List.ofFn w).descentCount
     · simp [hc, hk, he, MvPolynomial.coeff_monomial]
     · simp [hc, hk]
 

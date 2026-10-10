@@ -74,7 +74,7 @@ private theorem infix_adjacent_positions {n : ℕ} (k : Fin n) :
             apply Fin.ext
             simp [Nat.add_comm]
           · exact False.elim (by lia)
-      | succ i => exact False.elim (by simp at hi; lia)
+      | succ i => simp at hi
 
 private theorem isDescentStep_castSucc_succ {n : ℕ} (S : Finset (Fin n))
     {k : Fin n} (hk : k ∈ S) :
