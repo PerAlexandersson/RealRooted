@@ -96,6 +96,62 @@ private def rowDegreeShapeCore (kind : String) (hints : RowHints) :
 invariant of `RealRooted.threeTermRatio_mul_leadingCoeff_le`. -/
 syntax (name := rrRowLeadingCoeffRatio) "rr_row_leadingCoeff_ratio" : tactic
 
+/-- Degrees of a two-step product `P (n + 2) = q * P n` with `q` independent of `n`, by parity
+(`RealRooted.twoStepProduct_natDegree`); the base rows may vanish. -/
+private def twoStepDegree : TacticM (TSyntax `tactic) := withMainContext do
+  let r ← rowRecSetup "rr_row_natDegree"
+  unless r.shape == .lagRight && r.canonical && r.shift == 0 do
+    throwError "rr_row_natDegree: not a two-step product `P (n + 2) = q * P n`"
+  let some qf := r.coeffs[0]? | throwError "rr_row_natDegree: missing coefficient"
+  let qBody := match qf with
+    | .lam _ _ b _ => b
+    | e => e
+  if qBody.hasLooseBVars then throwError "rr_row_natDegree: the factor depends on `n`"
+  let some qq ← evalQPoly? qBody | throwError "rr_row_natDegree: the factor is not explicit"
+  if qq.isZero then throwError "rr_row_natDegree: the factor vanishes"
+  let P := mkIdent r.P
+  let t ← Term.exprToSyntax (← mainRowIndex P)
+  let qT ← certTerm qBody
+  let some L ← linRec? r.P | throwError "rr_row_natDegree: no linear recurrence"
+  let some rows ← linRecRows? L 1 | throwError "rr_row_natDegree: rows not computable"
+  -- facts about the base rows `P 0`, `P 1` and the factor `q`, used by `simp`
+  let mut facts : Array Ident := #[]
+  let mut haves : Array (TSyntax `tactic) := #[]
+  for k in [0:2] do
+    let row := rows[k]!
+    let hb := mkIdent (.mkSimple s!"hb{k}")
+    if row.isZero then
+      haves := haves.push (← `(tactic|
+        have $hb:ident : $P $(rowNumLit k) = 0 := by simp [$P:ident]))
+    else
+      let c := rowNumLit row.natDegree
+      let hd := mkIdent (.mkSimple s!"hd{k}")
+      haves := haves.push (← `(tactic|
+        have $hb:ident : $P $(rowNumLit k) ≠ 0 := fun hz => by
+          simpa [$P:ident, Polynomial.coeff_one, Polynomial.coeff_X, Polynomial.coeff_X_pow,
+            Polynomial.coeff_C] using congrArg (Polynomial.coeff · $c) hz))
+      haves := haves.push (← `(tactic|
+        have $hd:ident : ($P $(rowNumLit k)).natDegree = $c := by
+          simp only [$P:ident]; first | (simp; done) | compute_degree!))
+      facts := facts.push hd
+    facts := facts.push hb
+  let hq := mkIdent `hq_deg
+  haves := haves.push (← `(tactic|
+    have $hq:ident : ($qT : Polynomial ℝ).natDegree = $(rowNumLit qq.natDegree) := by
+      first | (simp; done) | compute_degree!))
+  facts := facts.push hq
+  let hpar := mkIdent `hpar
+  let simpArgs : Array (TSyntax ``Lean.Parser.Tactic.simpLemma) ←
+    (facts.push hpar).mapM fun f => `(Lean.Parser.Tactic.simpLemma| $f:ident)
+  let tac ← `(tactic| (
+    $haves*
+    rw [RealRooted.twoStepProduct_natDegree (P := $P) (q := $qT) (fun _ => rfl)
+      (fun h => by simpa using congrArg (Polynomial.coeff · $(rowNumLit qq.natDegree)) h)]
+    rcases Nat.mod_two_eq_zero_or_one $t with $hpar:ident | $hpar:ident <;>
+      simp [$simpArgs,*] <;> lia))
+  evalTactic tac
+  return tac
+
 /-- The degree tactics, returning a certificate and the hinted call: the recurrence shapes
 of `RecShape` first, then, without hints, general linear recurrences (`linRecRow`). -/
 private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × RowHints) := do
@@ -105,6 +161,8 @@ private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × 
       let noHints := hints.thm.isNone && hints.degree.isNone && hints.growth.isNone &&
         hints.drop.isNone && hints.ratio.isNone && hints.half.isNone
       unless noHints && kind != "leadingCoeff_ratio" do throwError e
+      if kind == "natDegree" then
+        if let .ok tac ← rowAttempt twoStepDegree then return (#[tac], {})
       match ← rowAttempt (linRecRow kind) with
       | .ok cert => return (cert, {})
       | .error e' =>

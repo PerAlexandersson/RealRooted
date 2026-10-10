@@ -453,4 +453,40 @@ theorem threeTermHalf_ne_zero (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n *
 
 end Half
 
+/-! ### Two-step products -/
+
+/-- Rows of a two-step product `P (n + 2) = q * P n`. -/
+theorem twoStepProduct_rows {P : ℕ → ℝ[X]} {q : ℝ[X]} (hrec : ∀ n, P (n + 2) = q * P n) :
+    ∀ m, P (2 * m) = q ^ m * P 0 ∧ P (2 * m + 1) = q ^ m * P 1
+  | 0 => by simp
+  | m + 1 => by
+      obtain ⟨h0, h1⟩ := twoStepProduct_rows hrec m
+      refine ⟨?_, ?_⟩
+      · rw [show 2 * (m + 1) = 2 * m + 2 by ring, hrec, h0]; ring
+      · rw [show 2 * (m + 1) + 1 = (2 * m + 1) + 2 by ring, hrec, h1]; ring
+
+/-- The degrees of a two-step product `P (n + 2) = q * P n`: the row `P n` is
+`q ^ (n / 2) * P (n % 2)`, so its degree is `n / 2 * deg q + deg P (n % 2)`, or `0` when the
+base row of its parity vanishes. -/
+theorem twoStepProduct_natDegree {P : ℕ → ℝ[X]} {q : ℝ[X]} (hrec : ∀ n, P (n + 2) = q * P n)
+    (hq : q ≠ 0) (n : ℕ) :
+    (P n).natDegree =
+      if P (n % 2) = 0 then 0 else n / 2 * q.natDegree + (P (n % 2)).natDegree := by
+  obtain ⟨m, rfl | rfl⟩ := Nat.even_or_odd' n
+  · obtain ⟨h0, -⟩ := twoStepProduct_rows hrec m
+    have hm : 2 * m / 2 = m := by lia
+    rw [h0, Nat.mul_mod_right, hm]
+    by_cases hP : P 0 = 0
+    · simp [hP]
+    · simp only [hP, ↓reduceIte]
+      rw [natDegree_mul (pow_ne_zero _ hq) hP, natDegree_pow]
+  · obtain ⟨-, h1⟩ := twoStepProduct_rows hrec m
+    have hm : (2 * m + 1) / 2 = m := by lia
+    have hr : (2 * m + 1) % 2 = 1 := by lia
+    rw [h1, hr, hm]
+    by_cases hP : P 1 = 0
+    · simp [hP]
+    · simp only [hP, ↓reduceIte]
+      rw [natDegree_mul (pow_ne_zero _ hq) hP, natDegree_pow]
+
 end RealRooted
