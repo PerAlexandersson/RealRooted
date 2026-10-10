@@ -275,9 +275,11 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     throwError "rr_row_interlaces: dropping rows is not supported for the {r.shape.describe} \
       recurrence of {P}"
   if r.shape == .product then
+    -- `rr_product_interlaces` closes base rows of degree at most two; otherwise the general
+    -- side-goal engine below (explicit Euclidean certificates) takes over
     if r.canonical && r.shift == 0 then
-      evalTactic (← `(tactic| rr_product_interlaces))
-      return (intro.push (← `(tactic| rr_product_interlaces)), {})
+      if ← rowSucceeds (evalTactic (← `(tactic| rr_product_interlaces))) then
+        return (intro.push (← `(tactic| rr_product_interlaces)), {})
     let (split, t) ← alignRow r.P r.shift (smallRow P)
     let main ← `(tactic| refine RealRooted.productSequence_interlaces (P := $(← r.seq 0))
       ?_ ?_ ?_ $(← r.hrecTerm 0) $t)
@@ -313,17 +315,27 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     hrec := h₁
   -- two-step products `P (n + 2) = q * P n`
   if shape == .lagRight then
-    unless r.canonical && r.shift == 0 do
+    -- `P (n + s + 2) = q * P (n + s)` with `q` independent of `n`; the rows below `s` are
+    -- checked one by one
+    let some qf := r.coeffs[0]? | throwError "rr_row_interlaces: missing coefficient"
+    let qBody := match qf with
+      | .lam _ _ b _ => b
+      | e => e
+    if qBody.hasLooseBVars then
       throwError "rr_row_interlaces: the two-step product of {P} must have the form \
-        `P (n + 2) = q * P n`"
+        `P (n + 2) = q * P n` with `q` independent of `n`"
+    let (split, t) ← alignRow r.P r.shift (smallRow P)
+    pre := pre ++ split
     let main ← `(tactic|
-      refine RealRooted.twoStepProduct_interlaces (P := $P) (fun _ => rfl) ?_ ?_ ?_ ?_ _)
+      refine RealRooted.twoStepProduct_interlaces (P := $(← r.seq 0)) (q := $(← certTerm qBody))
+        (fun n => by beta_reduce; rw [$(← r.hrecTerm 0) n]; beta_reduce; ring) ?_ ?_ ?_ ?_ $t)
     evalTactic main
     for g in ← getGoals do
       setGoals [g]
       let ty ← instantiateMVars (← g.getType)
       if ty.isAppOf ``RealRooted.Interlaces then
-        evalTactic (← `(tactic| (simp only [$P:ident]; rr_interlaces_explicit)))
+        evalTactic (← `(tactic|
+          (beta_reduce; simp only [Nat.zero_add, Nat.reduceAdd, $P:ident]; rr_interlaces_explicit)))
       else if ty.isAppOf ``Polynomial.Splits then
         evalTactic (← `(tactic| rr_splits_explicit))
       else if ty.ne?.isSome then

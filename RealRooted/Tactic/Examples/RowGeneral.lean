@@ -143,6 +143,8 @@ def A026386 : ℕ → ℝ[X]
   | n + 3 => (1 + X ^ 2 + 3 * X) * A026386 (n + 1)
 
 theorem A026386_splits (n : ℕ) : (A026386 n).Splits := by rr_row_splits
+theorem A026386_interlaces (n : ℕ) : Interlaces (A026386 n) (A026386 (n + 1)) := by
+  rr_row_interlaces
 
 /-- A derivative recurrence of lag two, split along the residues of `n` mod two (A321434). -/
 def A321434 : ℕ → ℝ[X]

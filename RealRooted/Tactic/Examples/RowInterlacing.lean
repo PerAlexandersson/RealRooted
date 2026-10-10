@@ -331,6 +331,8 @@ def A122431 : ℕ → ℝ[X]
   | n + 1 => X * A122431 n
 
 theorem A122431_splits (n : ℕ) : (A122431 n).Splits := by rr_row_splits
+theorem A122431_interlaces (n : ℕ) : Interlaces (A122431 n) (A122431 (n + 1)) := by
+  rr_row_interlaces
 
 /-- Half growth whose lag coefficients are quadratic in `n` (A306364). -/
 def A306364 : ℕ → ℝ[X]
