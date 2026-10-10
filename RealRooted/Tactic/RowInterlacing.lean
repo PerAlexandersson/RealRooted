@@ -3,6 +3,7 @@ import RealRooted.Tactic.Row.Subseq
 import RealRooted.Tactic.Row.PowerForm
 import RealRooted.Tactic.Row.ParityProduct
 import RealRooted.Tactic.Row.LagFeedback
+import RealRooted.Tactic.Row.Reverse
 
 /-!
 # Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
@@ -69,8 +70,9 @@ The degree tactics (`rr_row_natDegree`, `rr_row_ne_zero`, `rr_row_leadingCoeff_p
 `RealRooted.Tactic.Recurrence.Degree`: degree laws of the recurrence shapes, general linear
 recurrences (`rr_linrec`), cancelling top terms (`rr_row_cancel`) and two-step products by
 parity.  The implementation of this module is split over `Row.SideGoals` (syntax and side
-goals), `Row.Core`, `Row.LowerOrder`, `Row.DerivLag`, `Row.Subseq`, `Row.PowerForm`,
-`Row.Reverse` and `Row.ParityProduct`; this module holds the front ends.
+goals), `Row.Support` (shared helpers), `Row.Core`, `Row.LowerOrder`, `Row.DerivLag`,
+`Row.Subseq`, `Row.PowerForm`, `Row.Reverse`, `Row.ParityProduct` and `Row.LagFeedback`; this
+module holds the front ends.
 -/
 
 open Lean Elab Tactic Meta Polynomial

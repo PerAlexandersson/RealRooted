@@ -1,5 +1,5 @@
 import RealRooted.ProductSequence.Interlacing
-import RealRooted.Tactic.Row.SideGoals
+import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: rows `c m · F · q ^ (m + e)`
@@ -66,13 +66,7 @@ def powerFormAt? (L : LinRecData) (s : Nat) : MetaM (Option PowerForm) := do
   unless L.terms.all (·.1 < k) do return none
   let some rows ← linRecRows? L (14 + s) | return none
   -- the multiplier of `P (n + s + j)` at `n`
-  let coeffAt (j n : Nat) : MetaM (Option QPoly) := do
-    let mut acc : QPoly := ⟨#[]⟩
-    for (j', _, A) in L.terms do
-      if j' != j then continue
-      let some a ← evalCoeffAt? A (n + s) | return none
-      acc := acc + a
-    return some acc
+  let coeffAt (j n : Nat) := L.coeffAt? j 0 (n + s)
   -- the linear factor `q = X - r`, from a nonzero multiplier
   let mut r? : Option Rat := none
   for j in [0:k] do
@@ -121,13 +115,6 @@ def powerForm? (L : LinRecData) : MetaM (Option PowerForm) := do
     if let some pf ← powerFormAt? L s then return some pf
   return none
 
-/-- `∑ cs[i] * n ^ i` as a real term in the natural-number variable `n`. -/
-private def nPolyRealTerm (cs : Array Rat) (n : Ident) : TacticM Term := do
-  let mut acc : Term ← `((0 : ℝ))
-  for i in (List.range cs.size).reverse do
-    acc ← `($(← ratTerm cs[i]!) + ($n : ℝ) * $acc)
-  return acc
-
 /-- Run `tac` on the goal `g` with a fresh heartbeat budget; it must close `g`. -/
 private def closeFresh (g : MVarId) (tac : TacticM Unit) : TacticM Unit := do
   setGoals [g]
@@ -147,8 +134,9 @@ def powerFormInterlaces (L : LinRecData) (pf : PowerForm) : TacticM Unit := with
   let eT := rowNumLit pf.e
   let αT (j : Nat) : TacticM Term := do
     let (num, den) := pf.alphas[j]!
-    if den == #[1] then `(fun $n:ident : ℕ => $(← nPolyRealTerm num n))
-    else `(fun $n:ident : ℕ => $(← nPolyRealTerm num n) / $(← nPolyRealTerm den n))
+    let N ← `(($n : ℝ))
+    if den == #[1] then `(fun $n:ident : ℕ => $(← nPolyTerm num N))
+    else `(fun $n:ident : ℕ => $(← nPolyTerm num N) / $(← nPolyTerm den N))
   if pf.positive then
     evalTactic (← `(tactic|
       refine RealRooted.interlaces_of_forall_eq_C_mul_pow_of_pos (P := $Q) (F := $FT)

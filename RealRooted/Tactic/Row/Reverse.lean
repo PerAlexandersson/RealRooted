@@ -1,5 +1,5 @@
 import RealRooted.Interlacing.Reversal
-import RealRooted.Tactic.Row.LowerOrder
+import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: reversed rows
@@ -34,29 +34,6 @@ structure Reversal where
 def QPoly.reflect (N : Nat) (p : QPoly) : QPoly :=
   QPoly.norm ((Array.range (N + 1)).map fun i => p.coeff (N - i))
 
-/-- Fit `vals[n]` (`n ≤ 11`) by a polynomial in `n` of degree at most six. -/
-def fitNPoly6? (vals : Array Rat) : Option (Array Rat) :=
-  let p := cfLagrange (vals.extract 0 7)
-  if (List.range vals.size).all fun n => p.eval n == vals[n]! then some p.coeffs else none
-
-/-- Fit a sequence of polynomials in `X` coefficientwise by polynomials in `n`. -/
-private def fitXPoly? (ps : Array QPoly) : Option (Array (Array Rat)) := Id.run do
-  let width := ps.foldl (fun w q => max w (q.natDegree + 1)) 0
-  let mut out : Array (Array Rat) := #[]
-  for j in [0:width] do
-    let some f := fitNPoly6? (ps.map (·.coeff j)) | return none
-    out := out.push f
-  return some out
-
-/-- The multiplier of the summands `(j, i)` of `L` at `n`. -/
-private def lrCoeffAt (L : LinRecData) (j i n : Nat) : MetaM (Option QPoly) := do
-  let mut acc : QPoly := ⟨#[]⟩
-  for (j', i', A) in L.terms do
-    if j' != j || i' != i then continue
-    let some a ← evalCoeffAt? A n | return none
-    acc := acc + a
-  return some acc
-
 /-- The reversed recurrence of `P`, for a first- or second-order derivative recurrence
 `P (n + 1) = A₂ P'' + A₁ P' + A₀ P` or a three-term recurrence, whose computed rows have degree
 `D₀ + n`, nonzero constant terms and nonnegative coefficients, and are not palindromic. -/
@@ -85,7 +62,7 @@ def reversal? (P : Name) : MetaM (Option Reversal) := do
     let mut b₀ : Array QPoly := #[]
     for n in [0:12] do
       let (some a₂, some a₁, some a₀) :=
-        (← lrCoeffAt L 0 2 n, ← lrCoeffAt L 0 1 n, ← lrCoeffAt L 0 0 n) | return none
+        (← L.coeffAt? 0 2 n, ← L.coeffAt? 0 1 n, ← L.coeffAt? 0 0 n) | return none
       unless a₂.natDegree ≤ 3 && a₁.natDegree ≤ 2 && a₀.natDegree ≤ 1 do return none
       let (r₂, r₁, r₀) := (a₂.reflect 3, a₁.reflect 2, a₀.reflect 1)
       let N : Rat := (D₀ + n : Nat)
@@ -97,7 +74,7 @@ def reversal? (P : Name) : MetaM (Option Reversal) := do
     let mut a' : Array QPoly := #[]
     let mut b' : Array QPoly := #[]
     for n in [0:12] do
-      let (some a, some b) := (← lrCoeffAt L 1 0 n, ← lrCoeffAt L 0 0 n) | return none
+      let (some a, some b) := (← L.coeffAt? 1 0 n, ← L.coeffAt? 0 0 n) | return none
       unless a.natDegree ≤ 1 && b.natDegree ≤ 2 do return none
       a' := a'.push (a.reflect 1)
       b' := b'.push (b.reflect 2)
@@ -107,31 +84,6 @@ def reversal? (P : Name) : MetaM (Option Reversal) := do
     let some cs := fitXPoly? ps | return none
     terms := terms.push (j, i, cs)
   return some { L, D₀, base, terms }
-
-/-- Elaborate a command (an auxiliary definition) in the middle of a proof. -/
-def elabAuxCommand (stx : Syntax) : TacticM Unit := do
-  let cmdCtx : Command.Context :=
-    { fileName := ← getFileName, fileMap := ← getFileMap, snap? := none, cancelTk? := none }
-  let st : Command.State := Command.mkState (← getEnv) {} (← getOptions)
-  match ← (((Command.elabCommand stx).run cmdCtx).run st).toBaseIO with
-  | .ok ((), st') =>
-      if st'.messages.hasErrors then
-        throwError "rr_row: the auxiliary definition failed:\
-          {MessageData.joinSep (st'.messages.toList.map (·.data)) "\n"}"
-      setEnv st'.env
-  | .error e => throwError "rr_row: the auxiliary definition failed: {e.toMessageData}"
-
-/-- A fresh name `decl.base`, `decl.base2`, … for an auxiliary definition under the current
-declaration (a proof may add declarations only under its own name). -/
-def freshAuxName (base : String) : TacticM Name := do
-  let some decl ← Term.getDeclName? | throwError "rr_row: no declaration to attach the \
-    auxiliary sequence to"
-  let mut nm := decl ++ Name.mkSimple base
-  let mut idx := 1
-  while (← getEnv).contains nm do
-    idx := idx + 1
-    nm := decl ++ Name.mkSimple s!"{base}{idx}"
-  return nm
 
 /-- Is `P` an auxiliary reversed sequence of this route? -/
 def isRevAux (P : Name) : Bool :=

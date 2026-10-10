@@ -1659,6 +1659,10 @@ and `Tactic.Row.ParityProduct`; the same four budgets rise by two, to 1761, 1621
 The lag-feedback route of `rr_row_splits` adds `ThreeTermRecurrence.LagFeedback` and
 `Tactic.Row.LagFeedback`; the same four budgets rise by two, to 1763, 1623, 529 and 693.
 
+The helpers shared by the row routes (exact coefficient reads and fits, term builders,
+auxiliary definitions in proofs) move to `Tactic.Row.Support`; the four budgets rise by one,
+to 1764, 1624, 530 and 694.
+
 Run the architecture check with:
 
 ```bash

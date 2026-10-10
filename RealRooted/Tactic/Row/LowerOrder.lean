@@ -1,4 +1,5 @@
 import RealRooted.Tactic.Row.Core
+import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: order-three recurrences
@@ -44,17 +45,6 @@ private def nPolyAt (cs : Array Rat) (m : Nat) : Rat := Id.run do
 private def xPolyAt (cs : Array (Array Rat)) (m : Nat) : QPoly :=
   QPoly.norm (cs.map (nPolyAt · m))
 
-/-- Fit the values `ys` at `m = 0, 1, …` by a polynomial in `m` of degree at most three. -/
-private def fitNPoly? (ys : Array Rat) : Option (Array Rat) := Id.run do
-  let deg := 3
-  let rows := (Array.range ys.size).map fun (m : Nat) =>
-    ((Array.range (deg + 1)).map fun (i : Nat) => (((m : Nat) : Rat) ^ i)).push (-ys[m]!)
-  let basis := ratNullspace rows (deg + 2)
-  let some v := basis.find? (·[deg + 1]! != 0) | return none
-  let cs := (v.extract 0 (deg + 1)).map (· / v[deg + 1]!)
-  if (Array.range ys.size).all fun m => nPolyAt cs m == ys[m]! then return some cs
-  return none
-
 /-- The probe: a three-term recurrence of the rows of `P` and the cofactor of its remainder. -/
 private def lowerProbe? (L : LinRecData) : MetaM (Option LowerCert) := do
   unless L.offset == 3 && L.terms.all (fun (_, i, _) => i == 0) do return none
@@ -98,43 +88,9 @@ private def lowerProbe? (L : LinRecData) : MetaM (Option LowerCert) := do
   let width := cs.foldl (fun w q => max w (q.natDegree + 1)) 0
   let mut c : Array (Array Rat) := #[]
   for j in [0:width] do
-    let some f := fitNPoly? (cs.map (·.coeff j)) | return none
+    let some f := fitNPoly6? (cs.map (·.coeff j)) | return none
     c := c.push f
   return some { δ, a, b, c }
-
-/-- `(c₀ + c₁ * N + … : ℝ)`. -/
-def nPolyTerm (cs : Array Rat) (N : Term) : TacticM Term := do
-  let mut acc : Option Term := none
-  for i in [0:cs.size] do
-    if cs[i]! == 0 then continue
-    let c ← ratTerm cs[i]!
-    let t ← match i with
-      | 0 => pure c
-      | 1 => `($c * $N)
-      | _ => `($c * $N ^ $(rowNumLit i))
-    acc ← match acc with
-      | none => pure (some t)
-      | some s => pure (some (← `($s + $t)))
-  match acc with
-  | some t => `(($t : ℝ))
-  | none => `((0 : ℝ))
-
-/-- `C (…) + C (…) * X + …` with coefficients polynomial in `N`. -/
-def xPolyTerm (cs : Array (Array Rat)) (N : Term) : TacticM Term := do
-  let mut acc : Option Term := none
-  for j in [0:cs.size] do
-    if cs[j]!.all (· == 0) then continue
-    let c ← `(Polynomial.C $(← nPolyTerm cs[j]! N))
-    let t ← match j with
-      | 0 => pure c
-      | 1 => `($c * Polynomial.X)
-      | _ => `($c * Polynomial.X ^ $(rowNumLit j))
-    acc ← match acc with
-      | none => pure (some t)
-      | some s => pure (some (← `($s + $t)))
-  match acc with
-  | some t => `(($t : ℝ[X]))
-  | none => `((0 : ℝ[X]))
 
 /-- `rr_row_interlaces` for an order-three sequence that factors through a three-term
 recurrence (see the section documentation). -/
