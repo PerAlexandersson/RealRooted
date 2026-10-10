@@ -455,6 +455,17 @@ def A094305 : ℕ → ℝ[X]
 theorem A094305_interlaces (n : ℕ) : Interlaces (A094305 n) (A094305 (n + 1)) := by
   rr_row_interlaces
 
+/-- Multipliers `(2n + 3) / (n + 2) · (1 + X)` and `3 (n + 1) / (n + 2) · (1 + X) ^ 2`, rational in
+`n` and nonnegative, so that the rows never vanish (A376827). -/
+def A376827 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 => C ((2 * (n : ℝ) + 3) / (n + 2)) * (1 + X) * A376827 (n + 1) +
+      C (3 * ((n : ℝ) + 1) / (n + 2)) * (1 + X) ^ 2 * A376827 n
+
+theorem A376827_interlaces (n : ℕ) : Interlaces (A376827 n) (A376827 (n + 1)) := by
+  rr_row_interlaces
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 /--

@@ -73,12 +73,11 @@ private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := 
   -- order-three recurrences through a three-term recurrence
   if (← rowAttempt (rowRecSetup "rr_row_interlaces")) matches .error _ then
     if ← rowSucceeds (lowerOrderInterlaces hints) then return (#[], hints)
-  match ← rowAttempt (rowInterlacesCore hints) with
-  | .ok res => return res
-  | .error e =>
-      -- rows `c m · F · q ^ (m + e)` of a recurrence whose multipliers are powers of `q`
-      if ← rowSucceeds powerFormRoute then return (#[], hints)
-      throwError e
+  -- rows `c m · F · q ^ (m + e)` of a recurrence whose multipliers are powers of `q`, gated
+  -- by an exact probe, before the more expensive core
+  if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
+    if ← rowSucceeds powerFormRoute then return (#[], hints)
+  rowInterlacesCore hints
 
 /-- Run a row tactic `core` and print the hinted call `name hs'*` and the certificate. -/
 private def rowElabWithHints (tk : Syntax) (core : TacticM (Cert × RowHints))
