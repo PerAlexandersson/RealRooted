@@ -19,6 +19,15 @@
 
 This guide applies to the `RealRooted` Lean project.
 
+## Finding Existing Lemmas
+
+- Before proving a lemma, search for it.  `python3 scripts/lemma_index.py` writes
+  `docs/LEMMA_INDEX.tsv` (one line per public theorem: name, module, conclusion key, number
+  of using files, docstring, statement) in a few seconds; `grep` it by name, key or statement
+  text.  `docs/WORKHORSES.md` lists the most used theorems for each kind of conclusion.
+- For goals about the rows of a recurrence, try the row tactics first (`rr_row_interlaces`,
+  `rr_row_splits`, `rr_row_natDegree` and their `?` variants).
+
 ## Mathlib-Upstream Style
 
 - The long-term goal is to upstream reusable pieces to Mathlib.  When a lemma is
