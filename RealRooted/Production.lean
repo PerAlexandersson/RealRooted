@@ -248,7 +248,6 @@ import RealRooted.BrandenVecchi.OrdinaryWordSeries
 import RealRooted.BrandenVecchi.ReflectionInterlacing
 import RealRooted.BrandenVecchi.SignedWordEnumerator
 import RealRooted.BrandenVecchi.SignedWordRuns.Basic
-import RealRooted.BrandenVecchi.SignedWordRuns.Canonical
 import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
 import RealRooted.BrandenVecchi.SignedWordRuns.Statistics
 import RealRooted.BrandenVecchi.SignedWords

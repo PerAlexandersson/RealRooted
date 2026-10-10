@@ -11,26 +11,11 @@ noncomputable section
 
 namespace RealRooted.SeparablePermutations
 
-private theorem pattern2413_eq :
-    (pattern2413 : Equiv.Perm (Fin 4)) = Equiv.Perm.pattern2413 := by
-  decide
-
-private theorem pattern3142_eq :
-    (pattern3142 : Equiv.Perm (Fin 4)) = Equiv.Perm.pattern3142 := by
-  decide
-
 /-- The canonical enumerator agrees with the shifted separable enumerator. -/
 theorem descentEnumerator_eq_shiftedSeparableEnumerator (n : ℕ) :
     descentEnumerator n = Equiv.Perm.shiftedSeparableEnumerator ℝ (n + 1) := by
   rw [Equiv.Perm.shiftedSeparableEnumerator_of_pos ℝ (by lia)]
-  unfold descentEnumerator Equiv.Perm.separableDescentEnumerator
-  apply congrArg (fun s : Finset (Equiv.Perm (Fin (n + 1))) =>
-    ∑ σ ∈ s, X ^ σ.descentCount)
-  ext σ
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-  rw [Equiv.Perm.mem_separablePermutations]
-  unfold IsSeparable Equiv.Perm.IsSeparable
-  rw [pattern2413_eq, pattern3142_eq]
+  rfl
 
 /-- Two zero-based cubic families with the same first value are equal. -/
 theorem cubic_recursion_unique
@@ -127,8 +112,8 @@ theorem descentEnumerator_eq_descentPolynomial (n : ℕ) :
 theorem strictInterl_descentEnumerator {n : ℕ} (hn : 1 ≤ n) :
     RealRooted.StrictInterl (descentEnumerator n) (descentEnumerator (n + 1)) ∧
       ∀ r : ℝ, ¬ ((descentEnumerator n).IsRoot r ∧
-        (descentEnumerator (n + 1)).IsRoot r) :=
-  strictInterl_descentEnumerator_of_eq_descentPolynomial
-    descentEnumerator_eq_descentPolynomial hn
+        (descentEnumerator (n + 1)).IsRoot r) := by
+  rw [descentEnumerator_eq_descentPolynomial, descentEnumerator_eq_descentPolynomial]
+  exact strictInterl_descentPolynomial (n := n + 1) (by lia)
 
 end RealRooted.SeparablePermutations

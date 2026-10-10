@@ -67,11 +67,12 @@ lemma succAbove_adjacent_iff {n : ℕ} (slot : Fin (n + 1))
   rw [succAbove_val, succAbove_val]
   split_ifs <;> lia
 
-lemma isPeakPosition_succAbove_iff {n : ℕ}
+lemma succAbove_mem_peakSet_insertMaximum_iff {n : ℕ}
     (slot : Fin (n + 1)) (π : Equiv.Perm (Fin n)) (j : Fin n) :
-    IsPeakPosition (insertMaximum slot π) (slot.succAbove j) ↔
-      IsPeakPosition π j ∧
+    ((slot.succAbove j : Fin (n + 1)) : ℕ) ∈ (insertMaximum slot π).peakSet ↔
+      (j : ℕ) ∈ π.peakSet ∧
         slot.val ≠ j.val ∧ slot.val ≠ j.val + 1 := by
+  rw [Equiv.Perm.mem_peakSet, Equiv.Perm.mem_peakSet]
   constructor
   · rintro ⟨I, K, hIJ, hJK, hI, hK⟩
     have hI_ne : I ≠ slot := by
@@ -115,7 +116,7 @@ theorem last_mem_peakValues_insertMaximum_iff {n : ℕ}
     (slot : Fin (n + 1)) (π : Equiv.Perm (Fin n)) :
     Fin.last n ∈ peakValues (insertMaximum slot π) ↔
       slot ≠ 0 ∧ slot ≠ Fin.last n := by
-  rw [mem_peakValues_iff, insertMaximum_symm_apply_last]
+  rw [mem_peakValues_iff, insertMaximum_symm_apply_last, Equiv.Perm.mem_peakSet]
   constructor
   · rintro ⟨i, k, hij, hjk, hi, hk⟩
     constructor
@@ -170,7 +171,7 @@ theorem castSucc_mem_peakValues_insertMaximum_iff {n : ℕ}
       v ∈ peakValues π ∧
         slot ≠ (π.symm v).castSucc ∧ slot ≠ (π.symm v).succ := by
   rw [mem_peakValues_iff, insertMaximum_symm_apply_castSucc,
-    isPeakPosition_succAbove_iff, ← mem_peakValues_iff]
+    succAbove_mem_peakSet_insertMaximum_iff, ← mem_peakValues_iff]
   constructor
   · rintro ⟨hv, hbefore, hafter⟩
     refine ⟨hv, ?_, ?_⟩

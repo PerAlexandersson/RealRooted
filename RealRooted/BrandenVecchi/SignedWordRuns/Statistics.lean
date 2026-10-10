@@ -1,5 +1,6 @@
 import RealRooted.BrandenVecchi.SignedWordEnumerator
 import RealRooted.BrandenVecchi.SignedWordRuns.Basic
+import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 
 /-!
 # Statistics of signed-word run decompositions
@@ -120,10 +121,34 @@ theorem adjacentCount_ofFn_succ {α : Type*}
         Fin.succ_last, Fin.snoc_last, Fin.succ_castSucc,
         initialWord, last]
 
-/-- List-level descent number. -/
-def listDescentNumber {α : Type*} [LT α]
-    [DecidableRel (fun a b : α => a < b)] (word : List α) : ℕ :=
-  adjacentCount (fun left right => right < left) word
+/-- Counting adjacent strict decreases is the canonical descent count `List.descentCount`. -/
+private theorem adjacentCount_eq_descentCount {α : Type*} [LinearOrder α]
+    (word : List α) :
+    adjacentCount (fun left right : α => right < left) word = word.descentCount := by
+  induction word with
+  | nil => simp [adjacentCount, List.descentCount]
+  | cons a tail ih =>
+      cases tail with
+      | nil => simp [adjacentCount, List.descentCount]
+      | cons b rest =>
+          rw [adjacentCount_cons_cons, List.descentCount,
+            List.descentSet_cons_cons]
+          by_cases h : b < a
+          · have hdisj :
+                Disjoint ({0} : Finset ℕ)
+                  ((b :: rest).descentSet.map
+                    ⟨Nat.succ, Nat.succ_injective⟩) := by
+                rw [Finset.disjoint_left]
+                intro i hi hmap
+                obtain ⟨j, hj, hij⟩ := Finset.mem_map.mp hmap
+                subst i
+                simp at hi
+            simp only [ite_eq_left h, Finset.card_union_of_disjoint hdisj,
+              Finset.card_singleton, Finset.card_map]
+            simpa only [List.descentCount] using
+              congrArg (fun x => 1 + x) ih
+          · simp only [ite_eq_right h, Finset.empty_union, Finset.card_map]
+            simpa only [List.descentCount, Nat.zero_add] using ih
 
 /-- List-level collision number. -/
 def listCollisionNumber {α : Type*} [DecidableEq α]
@@ -246,16 +271,10 @@ theorem adjacentCount_expand {α : Type*}
 
 /-- The descent number of the expanded signed word is the descent number of
 its Smirnov skeleton. -/
-theorem listDescentNumber_expand {q p : ℕ}
+theorem descentCount_expand {q p : ℕ}
     (data : RunLengthData (SignedLetter q p)) :
-    listDescentNumber data.expand =
-      listDescentNumber data.representatives := by
-  change adjacentCount
-      (fun left right : SignedLetter q p => right < left) data.expand =
-    adjacentCount
-      (fun left right : SignedLetter q p => right < left)
-        data.representatives
-  rw [adjacentCount_expand]
+    data.expand.descentCount = data.representatives.descentCount := by
+  rw [← adjacentCount_eq_descentCount, ← adjacentCount_eq_descentCount, adjacentCount_expand]
   simp [adjacentExcess]
 
 /-- Collisions in an expanded canonical word are exactly its total excess
@@ -302,13 +321,14 @@ theorem listWordWeight_ofFn {R : Type*} [CommSemiring R]
 
 /-- The list descent statistic agrees with the existing signed-word
 statistic. -/
-theorem listDescentNumber_ofFn {q p n : ℕ}
+theorem descentCount_ofFn {q p n : ℕ}
     (word : Fin n → SignedLetter q p) :
-    listDescentNumber (List.ofFn word) = signedDescentNumber word := by
+    (List.ofFn word).descentCount = signedDescentNumber word := by
+  rw [← adjacentCount_eq_descentCount]
   cases n with
-  | zero => simp [listDescentNumber]
+  | zero => simp [adjacentCount_nil, signedDescentNumber]
   | succ n =>
-      rw [listDescentNumber, adjacentCount_ofFn_succ]
+      rw [adjacentCount_ofFn_succ]
       simp [signedDescentNumber,
         RealRooted.ParkingFunctions.descentNumber,
         RealRooted.ParkingFunctions.descentSet]
@@ -339,16 +359,14 @@ theorem sum_runLengths_compress_ofFn {q p n : ℕ}
 /-- Compression preserves the descent statistic. -/
 theorem descentNumber_representatives_compress_ofFn {q p n : ℕ}
     (word : Fin n → SignedLetter q p) :
-    listDescentNumber
-        (compressRunLengthData (List.ofFn word)).representatives =
+    (compressRunLengthData (List.ofFn word)).representatives.descentCount =
       signedDescentNumber word := by
   calc
-    _ = listDescentNumber
-        (compressRunLengthData (List.ofFn word)).expand :=
-      (compressRunLengthData (List.ofFn word)).listDescentNumber_expand.symm
-    _ = listDescentNumber (List.ofFn word) := by
+    _ = (compressRunLengthData (List.ofFn word)).expand.descentCount :=
+      (compressRunLengthData (List.ofFn word)).descentCount_expand.symm
+    _ = (List.ofFn word).descentCount := by
       rw [expand_compressRunLengthData]
-    _ = signedDescentNumber word := listDescentNumber_ofFn word
+    _ = signedDescentNumber word := descentCount_ofFn word
 
 /-- The collision number is the sum of `runLength - 1`. -/
 theorem excess_compress_ofFn {q p n : ℕ}
@@ -397,7 +415,7 @@ noncomputable def runSummand {R : Type*} [CommSemiring R] {q p : ℕ}
     (weight : SignedLetter q p → R)
     (data : RunLengthData (SignedLetter q p)) : R[X] :=
   C (data.runWeight weight) *
-    X ^ listDescentNumber data.representatives *
+    X ^ data.representatives.descentCount *
       (1 + X) ^ data.excess
 
 end RunLengthData

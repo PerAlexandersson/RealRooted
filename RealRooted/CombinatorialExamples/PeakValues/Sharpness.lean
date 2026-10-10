@@ -16,7 +16,7 @@ lemma castSucc_mem_peakValues_appendMaximum_iff {n : ℕ}
   · intro hv
     refine ⟨hv, (Fin.castSucc_lt_last _).ne', ?_⟩
     intro heq
-    rcases mem_peakValues_iff.mp hv with ⟨i, k, hij, hjk, hi, hk⟩
+    rcases Equiv.Perm.mem_peakSet.mp (mem_peakValues_iff.mp hv) with ⟨i, k, hij, hjk, hi, hk⟩
     have heqval := congrArg Fin.val heq
     have hklt := k.isLt
     simp only [Fin.val_last, Fin.val_succ] at heqval
@@ -43,7 +43,8 @@ lemma card_peakValues_appendMaximum {n : ℕ}
 lemma penultimate_not_peak_after_append {n : ℕ}
     (π : Equiv.Perm (Fin n)) (j : Fin (n + 1))
     (hj : j.val + 1 = n) :
-    ¬ IsPeakPosition (insertMaximum (Fin.last n) π) j := by
+    (j : ℕ) ∉ (insertMaximum (Fin.last n) π).peakSet := by
+  rw [Equiv.Perm.mem_peakSet]
   rintro ⟨i, k, hij, hjk, hi, hk⟩
   have hk_last : k = Fin.last n := Fin.ext (by simp; lia)
   subst k
@@ -64,7 +65,7 @@ lemma castSucc_mem_peakValues_growTwo_iff {n : ℕ}
   · intro hv
     refine ⟨hv, ?_, ?_⟩
     · intro heq
-      rcases mem_peakValues_iff.mp hv with
+      rcases Equiv.Perm.mem_peakSet.mp (mem_peakValues_iff.mp hv) with
         ⟨i, k, hij, hjk, hi, hk⟩
       have heqval := congrArg Fin.val heq
       have hklt := k.isLt
