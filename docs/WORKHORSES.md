@@ -13,7 +13,7 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 45 | `RealRooted.StrictInterl.refl` | `RealRooted.Basic.ProperPosition` | A nonzero real-rooted polynomial is in same-degree proper position with itself. |
+| 46 | `RealRooted.StrictInterl.refl` | `RealRooted.Basic.ProperPosition` | A nonzero real-rooted polynomial is in same-degree proper position with itself. |
 | 38 | `RealRooted.StrictInterl.C_mul_left` | `RealRooted.Basic.ProperPosition` | Multiplying the left polynomial in a proper-position relation by a nonzero real scalar preserves proper position. |
 | 32 | `RealRooted.StrictInterl.C_mul_right` | `RealRooted.Basic.ProperPosition` | Multiplying the right polynomial in a proper-position relation by a nonzero real scalar preserves proper position. |
 | 28 | `RealRooted.MaWangInternal.strictInterl_of_interlaces_evalCoeff_nonpos` | `RealRooted.MaWang.Weak.Endpoint` | Degree-bounded structured Liu--Wang theorem in the weak-sign regime, for a successor-degree interlacer `g`. |
@@ -26,16 +26,16 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 11 | `RealRooted.isInterlacingSeq_iff_pairwise` | `RealRooted.InterlacingSequenceBasic` | `IsInterlacingSeq` is exactly the pairwise `StrictInterl` relation on a list. |
 | 10 | `RealRooted.MaWangInternal.strictInterl_of_interlaces_eval_mul_neg_same` | `RealRooted.MaWang.Strong` | Liu--Wang same-degree form: if `g ⊳ f`, `F` has the same degree as `f`, positive leading coefficient, and at every root `r` of `f` the value `F(r)` has the opposite sign from `g(r)`, then `f ≺ F` in t |
 | 10 | `RealRooted.strictInterl_self_X_mul_of_nonneg` | `RealRooted.WagnerX.NonnegativeRoots` | A split polynomial with nonnegative coefficients precedes its product with `X`. |
+| 9 | `RealRooted.StrictInterl.add_of_left` | `RealRooted.Wagner.LeftSum` | Wagner (2): if `h` interlaces both `f` and `g`, and `f` and `g` have positive leading coefficients, then `h` interlaces `f + g`. |
 | 9 | `RealRooted.StrictInterl.of_degree_zero_right_of_degree_one` | `RealRooted.Derivative.Interlacing` | A nonzero degree-zero real-rooted polynomial precedes a nonzero degree-one real-rooted polynomial. |
 | 9 | `RealRooted.StrictInterl.of_mul_X_sub_C_both` | `RealRooted.WagnerX.AffineFactors` | Cancelling a common affine factor preserves strict interlacing. |
-| 8 | `RealRooted.StrictInterl.add_of_left` | `RealRooted.Wagner.LeftSum` | Wagner (2): if `h` interlaces both `f` and `g`, and `f` and `g` have positive leading coefficients, then `h` interlaces `f + g`. |
 | 8 | `RealRooted.StrictInterl.sum_left_of_common_left_signed` | `RealRooted.PosCombo` | Sign-normalized left-cone theorem: if all summands are interlaced on the left by the same nonzero real-rooted polynomial `h`, and the summands have positive leading coefficient, then their sum is inte |
 | 8 | `RealRooted.reciprocalShift_reverses_strictInterl` | `RealRooted.ReciprocalShift.ProperPosition` | At a common degree bound, reciprocal shift reverses a strictly interlacing pair of PF polynomials. |
+| 8 | `RealRooted.strictInterl_to_strictInterl_mul_X_of_nonneg` | `RealRooted.AffineFamily.Basic` |  |
 | 7 | `RealRooted.MaWang.strictInterl_derivative_of_nonpos_of_pos_natDegree` | `RealRooted.MaWang.DerivativeStep` | Compatibility form of `strictInterl_derivative_of_nonpos_of_splits` with the former `1 ≤ f.natDegree` hypothesis, which is no longer needed. |
 | 7 | `RealRooted.StrictInterl.comp_X_add_C_iff` | `RealRooted.Linear` | Translation by `r` is an equivalence on `StrictInterl`. |
 | 7 | `RealRooted.StrictInterl.of_reverse_of_roots_sum_le` | `RealRooted.Basic.ProperPosition` | In the same-degree case, a reverse `StrictInterl g f` can be flipped back to `StrictInterl f g` once the root sums have the forward order. |
 | 7 | `RealRooted.strictInterl_of_stable_general` | `RealRooted.HermiteBiehler.Converse` |  |
-| 7 | `RealRooted.strictInterl_to_strictInterl_mul_X_of_nonneg` | `RealRooted.AffineFamily.Basic` |  |
 | 6 | `RealRooted.StrictInterl.of_degree_zero_degree_zero` | `RealRooted.ObreschkoffConverse.Derivative` | Degree-zero polynomials satisfy `StrictInterl` in both orientations. |
 | 6 | `RealRooted.StrictInterl.weightedSum_right_of_nonneg` | `RealRooted.WeightedSum` | Finite weighted Wagner theorem on the right: if every polynomial in the list precedes the same right-hand bound `h`, has positive leading coefficient, and all weights are nonnegative with at least one |
 
@@ -43,11 +43,11 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 67 | `RealRooted.Interl.refl` | `RealRooted.Basic.ProperPosition` | A polynomial that splits whenever it is nonzero is zero-aware interlacing with itself. |
-| 64 | `RealRooted.StrictInterl.toInterlaces` | `RealRooted.Basic.ProperPosition` |  |
+| 68 | `RealRooted.Interl.refl` | `RealRooted.Basic.ProperPosition` | A polynomial that splits whenever it is nonzero is zero-aware interlacing with itself. |
+| 65 | `RealRooted.StrictInterl.toInterlaces` | `RealRooted.Basic.ProperPosition` |  |
+| 43 | `RealRooted.interlaces_one_linear` | `RealRooted.Linear` |  |
 | 42 | `RealRooted.StrictInterl.toInterl` | `RealRooted.Basic.ProperPosition` |  |
 | 42 | `RealRooted.derivative_interlaces_of_natDegree_ne_zero` | `RealRooted.Derivative.Interlacing` | **Derivative interlacing**: the derivative of a nonconstant real-rooted polynomial `f` interlaces `f`. |
-| 42 | `RealRooted.interlaces_one_linear` | `RealRooted.Linear` |  |
 | 25 | `RealRooted.interl_zero_right` | `RealRooted.Basic.ProperPosition` |  |
 | 24 | `RealRooted.interl_zero_left` | `RealRooted.Basic.ProperPosition` |  |
 | 17 | `RealRooted.interlaces_derivative_of_pos_natDegree` | `RealRooted.Derivative.Interlacing` | The derivative of any nonconstant positive-leading real-rooted polynomial interlaces the original polynomial, including the degree-one boundary case. |
@@ -213,16 +213,16 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 14 | `RealRooted.isRealRooted_of_deg_zero` | `RealRooted.Linear` |  |
 | 13 | `RealRooted.isRealRooted_X_mul` | `RealRooted.Linear` |  |
 | 12 | `RealRooted.isRealRooted_of_strictInterl_chain_from_step` | `RealRooted.SequenceClosure` | A consecutive `StrictInterl` chain gives rowwise nonzero real-rootedness, using the first step as the base certificate. |
-| 10 | `RealRooted.DegreeDropReversal.splits_reflect_of_splits` | `RealRooted.DegreeDropReversal` | Reflection at any degree at least `p.natDegree` preserves splitting. |
+| 11 | `RealRooted.DegreeDropReversal.splits_reflect_of_splits` | `RealRooted.DegreeDropReversal` | Reflection at any degree at least `p.natDegree` preserves splitting. |
 | 10 | `RealRooted.PosComboRealRooted.isRealRooted_add_right` | `RealRooted.ObreschkoffContinuity` |  |
 | 10 | `RealRooted.eq_zero_or_splits_derivative` | `RealRooted.Derivative.FamilyClosure` | Splitting is preserved by differentiation in the zero-aware convention. |
 | 10 | `RealRooted.isRealRooted_affine_factor` | `RealRooted.AffineFamily` |  |
 | 9 | `Polynomial.splits_of_all_roots_real` | `RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex` | A real polynomial splits if every root of its complexification is real. |
 | 9 | `RealRooted.PosComboRealRooted.isRealRooted_left_of_sameDegree` | `RealRooted.ObreschkoffContinuity` | Equal-degree positive-combination real-rootedness implies `f` is real-rooted (without monicity assumptions). |
+| 8 | `RealRooted.DegreeDropReversal.splits_reverse` | `RealRooted.DegreeDropReversal` | Reversal preserves `Splits` over a field. |
 | 8 | `RealRooted.IsUpperHalfPlaneStable.splits_complexify` | `RealRooted.HermiteBiehler.Basic` | Upper-half-plane stability of a real polynomial's complexification forces all its roots to be real. |
 | 8 | `RealRooted.PosComboRealRooted.isRealRooted_right_of_sameDegree` | `RealRooted.ObreschkoffContinuity` | Symmetric right-side version of `isRealRooted_left_of_sameDegree`. |
 | 8 | `RealRooted.isRealRooted_of_X_mul` | `RealRooted.Linear` |  |
-| 7 | `RealRooted.DegreeDropReversal.splits_reverse` | `RealRooted.DegreeDropReversal` | Reversal preserves `Splits` over a field. |
 | 7 | `RealRooted.isRealRooted_of_natDegree_le_one` | `RealRooted.Linear` | Any nonzero polynomial of degree at most one is real-rooted. |
 | 7 | `RealRooted.matrix_preserves_interlacing_seq0_of_2x2_weak` | `RealRooted.MatrixInterlacing.Preservation` | Weak zero-aware forward direction with zero-aware input. |
 
@@ -230,9 +230,9 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 166 | `RealRooted.LiuOppositeSigns.IsLargestRoot.mem_roots` | `RealRooted.LiuOppositeSigns.RootDeletion` |  |
-| 105 | `RealRooted.card_roots_of_splits` | `RealRooted.Basic.PolynomialFacts` |  |
-| 46 | `RealRooted.roots_nonpos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A real polynomial with nonnegative coefficients has no positive real roots. |
+| 167 | `RealRooted.LiuOppositeSigns.IsLargestRoot.mem_roots` | `RealRooted.LiuOppositeSigns.RootDeletion` |  |
+| 106 | `RealRooted.card_roots_of_splits` | `RealRooted.Basic.PolynomialFacts` |  |
+| 47 | `RealRooted.roots_nonpos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A real polynomial with nonnegative coefficients has no positive real roots. |
 | 44 | `RealRooted.IsPFPolynomial.roots_nonpos` | `RealRooted.PFPolynomial` |  |
 | 32 | `RealRooted.roots_nonpos_of_nonneg_coeffs` | `RealRooted.WagnerX.NonnegativeRoots` |  |
 | 15 | `RealRooted.StrictInterl.roots_le_of_right` | `RealRooted.Basic.ProperPosition` | Every root of the left-hand polynomial is bounded by any common upper bound for the roots of the right-hand polynomial in a `StrictInterl` witness. |
@@ -261,15 +261,15 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 88 | `RealRooted.HasNonnegCoeffs.pos_leadingCoeff` | `RealRooted.Basic.Coefficients` |  |
-| 53 | `RealRooted.nonnegCoeffs_C_mul` | `RealRooted.Basic.Coefficients` |  |
+| 54 | `RealRooted.nonnegCoeffs_C_mul` | `RealRooted.Basic.Coefficients` |  |
 | 33 | `RealRooted.hasPosLeadingCoeff_C_mul` | `RealRooted.Basic.Coefficients` |  |
 | 29 | `RealRooted.HasNonnegCoeffs.weightedSum` | `RealRooted.GarloffWagner.Theorem12` |  |
 | 28 | `RealRooted.hasNonnegCoeffs_one` | `RealRooted.Basic.Coefficients` |  |
 | 27 | `RealRooted.HasNonnegCoeffs.basisTransform` | `RealRooted.BasisTransform` | A basis transform preserves coefficientwise nonnegativity when every basis element has nonnegative coefficients. |
 | 20 | `RealRooted.hasPosLeadingCoeff_of_monic` | `RealRooted.Basic.Coefficients` |  |
-| 18 | `RealRooted.hasNonnegCoeffs_C` | `RealRooted.Basic.Coefficients` |  |
+| 19 | `RealRooted.hasNonnegCoeffs_C` | `RealRooted.Basic.Coefficients` |  |
+| 18 | `RealRooted.hasNonnegCoeffs_X` | `RealRooted.Basic.Coefficients` |  |
 | 18 | `RealRooted.hasNonnegCoeffs_zero` | `RealRooted.Basic.Coefficients` |  |
-| 17 | `RealRooted.hasNonnegCoeffs_X` | `RealRooted.Basic.Coefficients` |  |
 | 15 | `RealRooted.HasNonnegCoeffs.bidiagonalOperator` | `RealRooted.MultiplierSequence.Bidiagonal` | Nonnegative bidiagonal entries preserve coefficient nonnegativity. |
 | 14 | `RealRooted.HasNonnegCoeffs.diagonalOperator` | `RealRooted.MultiplierSequence` | Nonnegative diagonal coefficients preserve nonnegative coefficients. |
 | 12 | `RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_left` | `RealRooted.Linear` | If the left summand has strictly larger degree and positive leading coefficient, then the sum also has positive leading coefficient. |
@@ -427,6 +427,7 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 3 | `PowerSeries.two_mul_mul_derivative_sqrt` | `RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt` | The linear differential equation `2 f (sqrt f)' = f' sqrt f`. |
 | 3 | `RealRooted.Applications.OEIS.decoEulerian_recurrence` | `RealRooted.Applications.OEIS.A144438` | The defining second-order derivative recurrence. |
 | 3 | `RealRooted.Applications.OEIS.weightedDecoDiagonalCompanion_succ_eq` | `RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic` | The positive-rank weighted diagonal companion formula. |
+| 3 | `RealRooted.EulerBidiagonal.generalStep_eq_second_derivative` | `RealRooted.EulerBidiagonal.General` | Differential form of the general Euler step. |
 | 3 | `RealRooted.iterateTDeriv_C_mul` | `RealRooted.IteratedDerivativeShift` |  |
 | 3 | `RealRooted.iterateTDeriv_add` | `RealRooted.IteratedDerivativeShift` |  |
 | 3 | `RealRooted.weightedSum_map_mul_left` | `RealRooted.WeightedSum` | Multiplying every weight by a scalar multiplies the resulting weighted sum. |
@@ -436,7 +437,6 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 2 | `Polynomial.derivative_shiftedJacobi` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The derivative of a shifted Jacobi polynomial is a scalar multiple of the shifted Jacobi polynomial with both parameters incremented. |
 | 2 | `Polynomial.shiftedJacobi_differential_equation` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The shifted Jacobi differential equation `X(1-X)y'' + (α+1-(α+β+2)X)y' + n(n+α+β+1)y = 0`. |
 | 2 | `RealRooted.Applications.OEIS.weightedDecoEulerian_recurrence` | `RealRooted.Applications.OEIS.A144438.Weighted` | The defining weighted second-order derivative recurrence. |
-| 2 | `RealRooted.EulerBidiagonal.generalStep_eq_second_derivative` | `RealRooted.EulerBidiagonal.General` | Differential form of the general Euler step. |
 | 2 | `RealRooted.FactorialCompression.commonKernel_eq_sub_derivative` | `RealRooted.FactorialCompression.CommonKernel` | The derivative identity `h_r = h_{r+1} - 2 / (r + 1) * x h_{r+1}'` of the common kernel (Zhang, SSRN 7510941). |
 | 2 | `RealRooted.SeparablePermutations.auxPolynomial_succ` | `RealRooted.SeparablePermutations.Basic` |  |
 | 2 | `RealRooted.a144696Polynomial_succ` | `RealRooted.Applications.OEIS.A144696.Basic` | The defining differential recurrence for the A144696 rows. |
@@ -460,6 +460,7 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 5 | `RealRooted.narayanaPolynomial_ne_zero` | `RealRooted.NarayanaTransformation.Recurrences.Identities` |  |
 | 5 | `RealRooted.right_ne_zero_of_strictInterl` | `RealRooted.SequenceClosure` | Project right-argument nonvanishing from a `StrictInterl` certificate. |
 | 4 | `Pi.ne_zero_of_pos` | `RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas` | A strictly positive dependent function on a nonempty type is nonzero. |
+| 4 | `RealRooted.DegreeDropReversal.reverse_ne_zero_of_coeff_zero_ne` | `RealRooted.DegreeDropReversal` | A polynomial with nonzero constant coefficient has nonzero reversal. |
 | 4 | `RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial_ne_zero` | `RealRooted.GeneralizedSnakePosets.Narayana.Modified` | Modified Narayana polynomials are nonzero. |
 | 4 | `RealRooted.Graph.weightedIndepPolyOn_ne_zero` | `RealRooted.Graph.IndependencePolynomial.Basic` | Weighted support-restricted independence polynomials are nonzero. |
 | 4 | `RealRooted.ne_zero_of_isRealRooted_sequence` | `RealRooted.SequenceClosure` | Project row-wise nonvanishing from a sequence real-rootedness certificate. |
@@ -467,7 +468,6 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 3 | `Matrix.exists_ordered_minor_ne_zero_of_mulVec_injective` | `RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet` | Full column rank gives a nonzero maximal minor on strictly increasing rows. |
 | 3 | `RealRooted.CommonInterleaver.rootSeqDesc_ne_nil_of_natDegree_pos` | `RealRooted.CommonInterleaver.RootDesc` |  |
 | 3 | `RealRooted.CommonInterleaver.rootSeqDesc_reverse_ne_nil_of_natDegree_pos` | `RealRooted.CommonInterleaver.RootDesc` |  |
-| 3 | `RealRooted.DegreeDropReversal.reverse_ne_zero_of_coeff_zero_ne` | `RealRooted.DegreeDropReversal` | A polynomial with nonzero constant coefficient has nonzero reversal. |
 | 3 | `RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.rookPolynomial_ne_zero` | `RealRooted.GeneralizedSnakePosets.FiniteBoard` | Finite skew board rook polynomials are nonzero. |
 | 3 | `RealRooted.IsStrictlyHurwitzStable.C` | `RealRooted.ClassicalHurwitzMatrix.Stability` |  |
 | 3 | `RealRooted.LiuOppositeSigns.IsLargestRoot.deleteRootFactor_ne_zero` | `RealRooted.LiuOppositeSigns.RootDeletion` |  |
@@ -508,7 +508,7 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 261 | `RealRooted.LowerTriangularMatrix.mul_assoc` | `RealRooted.LowerTriangularMatrix` |  |
+| 263 | `RealRooted.LowerTriangularMatrix.mul_assoc` | `RealRooted.LowerTriangularMatrix` |  |
 | 117 | `RealRooted.LowerTriangularMatrix.pow_succ` | `RealRooted.LowerTriangularMatrix` |  |
 | 54 | `RealRooted.LowerTriangularMatrix.pow_zero` | `RealRooted.LowerTriangularMatrix` |  |
 | 35 | `RealRooted.LowerTriangularMatrix.mul_apply` | `RealRooted.LowerTriangularMatrix` |  |
@@ -555,6 +555,7 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 7 | `MvPolynomial.IsMultiaffine.X_mul_of_notMem_vars` | `RealRooted.Multiaffine` | Multiplication by a fresh variable preserves multiaffineness. |
 | 7 | `RealRooted.Applications.OEIS.decoLayerTotal_isHomogeneous` | `RealRooted.Applications.OEIS.A144438.LayerTotal` | The recurrence-defined total has the homogeneous degree expected at each rank. |
 | 7 | `RealRooted.OrderedCutCompatible.singleton` | `RealRooted.Compatibility.CutTransform` | For a singleton family, only the two cross relations are genuine input; the diagonal ordered relations follow from endpoint splitness. |
+| 7 | `RealRooted.listInterlaces_of_interleaves_of_length` | `RealRooted.Basic.RootLists` |  |
 | 6 | `Matrix.isTotallyNonneg_lowerBidiagonalFin` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal` | Leading finite truncations of variable lower-bidiagonal totally nonnegative matrices are totally nonnegative. |
 | 6 | `MvPolynomial.IsMultiaffine.affineEulerCore` | `RealRooted.Multiaffine.AffineEulerCore` | Affine Euler cores preserve multiaffineness. |
 | 6 | `MvPolynomial.vars_specializeZero_subset_erase` | `RealRooted.Multiaffine` | Zero-specializing a coordinate removes it without introducing any new variables. |
@@ -562,4 +563,3 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 6 | `RealRooted.Polynomial.Splits.isUpperHalfPlaneStable_complexify` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has stable complexification. |
 | 6 | `RealRooted.StrictInterlSameDegree.of_strictInterl_of_no_common` | `RealRooted.Bezoutian.StrictInterleaving` | Equal-degree interlacing is strict when the two polynomials have no common root. |
 | 6 | `RealRooted.allComboRealRooted_linear_recombination` | `RealRooted.AllCombo` | `AllComboRealRooted` is preserved by any linear change of coordinates in the `(f, g)`-plane. |
-| 6 | `RealRooted.hermiteBiehlerStableToHurwitzOddEven` | `RealRooted.HermiteBiehler.Hurwitz` | Forward Hermite--Biehler/Hurwitz odd/even theorem: if `q + i p` is upper-half-plane stable and `p`, `q` have nonnegative coefficients, then `q(x²) + x p(x²)` is right-half-plane stable. |
