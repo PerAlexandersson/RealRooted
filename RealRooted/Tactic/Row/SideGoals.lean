@@ -36,7 +36,8 @@ number of rows split off; the routes are `closedForm`, `lowerOrder`, `subseq`,
 `linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and `prevRow` (the
 interlacing of `P t` with `P (t + 1)` or `P (t - 1)`), `halfGrowth`, `degreePattern` (first-order
 derivative recurrences whose degree grows by zero or one), `reversed` (the reversed rows,
-`Row.Reverse`) and `parityProduct` (order three, `Row.ParityProduct`).  The hints of
+`Row.Reverse`), `parityProduct` (order three, `Row.ParityProduct`) and `lagFeedback`
+(`P (n + p) = α P (n + p - 1) + c n X P n`, `Row.LagFeedback`).  The hints of
 `rr_row_interlaces` are passed on to the interlacing routes. -/
 syntax (name := rrRowSplits) "rr_row_splits" (ppSpace rrRowHint)* : tactic
 
