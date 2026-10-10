@@ -85,6 +85,35 @@ theorem derivative_neg_one_pow_mul_eval_nonneg_of_roots_ge (hs : p.Splits)
       (HasPosLeadingCoeff.derivative hpos (by lia))
       (le_roots_derivative_of_le_roots hs hd h) hx).le
 
+theorem derivative_eval_pos_of_roots_le (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
+    (hd : p.natDegree ≠ 0) (h : ∀ t ∈ p.roots, t ≤ U) (hx : U < x) :
+    0 < p.derivative.eval x := by
+  rcases Nat.lt_or_ge p.natDegree 2 with hd2 | hd2
+  · rw [eq_C_of_natDegree_le_zero (p := p.derivative)
+      ((natDegree_derivative_le p).trans (by lia)), eval_C, coeff_derivative,
+      show p.coeff (0 + 1) = p.leadingCoeff by rw [leadingCoeff, show p.natDegree = 1 by lia]]
+    norm_num
+    exact hpos
+  · exact eval_pos_of_roots_le (splits_derivative_of_two_le_natDegree hs hd2)
+      (HasPosLeadingCoeff.derivative hpos (by lia)) (roots_derivative_le_of_roots_le hs hd2 h) hx
+
+theorem derivative_neg_one_pow_mul_eval_pos_of_roots_ge (hs : p.Splits)
+    (hpos : 0 < p.leadingCoeff) (hd : p.natDegree ≠ 0) (h : ∀ t ∈ p.roots, L ≤ t)
+    (hx : x < L) : 0 < (-1) ^ (p.natDegree + 1) * p.derivative.eval x := by
+  rcases Nat.lt_or_ge p.natDegree 2 with hd2 | hd2
+  · rw [eq_C_of_natDegree_le_zero (p := p.derivative)
+      ((natDegree_derivative_le p).trans (by lia)), eval_C, coeff_derivative,
+      show p.coeff (0 + 1) = p.leadingCoeff by rw [leadingCoeff, show p.natDegree = 1 by lia],
+      show p.natDegree = 1 by lia]
+    norm_num
+    exact hpos
+  · have hpow : (-1 : ℝ) ^ (p.natDegree + 1) = (-1) ^ p.derivative.natDegree := by
+      rw [natDegree_derivative, show p.natDegree + 1 = (p.natDegree - 1) + 2 by lia, pow_add]
+      norm_num
+    rw [hpow]
+    exact neg_one_pow_mul_eval_pos_of_roots_ge (splits_derivative_of_two_le_natDegree hs hd2)
+      (HasPosLeadingCoeff.derivative hpos (by lia)) (le_roots_derivative_of_le_roots hs hd2 h) hx
+
 end Signs
 
 section Step
@@ -120,6 +149,34 @@ theorem derivRec_roots_ge_step (hF : F = A * f.derivative + B * f) (hs : f.Split
       B.eval t * f.eval t) = 0 := by rw [h0, mul_zero]
   rw [pow_succ] at this h1
   nlinarith [mul_nonneg (hA t hlt) h1, mul_pos (neg_pos.mpr (hB t hlt)) h2]
+
+/-- Roots stay at most `U` when `A > 0` and `B ≥ 0` beyond `U`, for `f` of positive degree. -/
+theorem derivRec_roots_le_step_of_pos (hF : F = A * f.derivative + B * f) (hs : f.Splits)
+    (hpos : 0 < f.leadingCoeff) (hd : f.natDegree ≠ 0) (hU : ∀ t ∈ f.roots, t ≤ U)
+    (hA : ∀ x, U < x → 0 < A.eval x) (hB : ∀ x, U < x → 0 ≤ B.eval x) :
+    ∀ t ∈ F.roots, t ≤ U := by
+  intro t ht
+  refine le_of_not_gt fun hlt => ?_
+  have h0 : F.eval t = 0 := (isRoot_of_mem_roots ht)
+  rw [hF, eval_add, eval_mul, eval_mul] at h0
+  nlinarith [mul_pos (hA t hlt) (derivative_eval_pos_of_roots_le hs hpos hd hU hlt),
+    mul_nonneg (hB t hlt) (eval_pos_of_roots_le hs hpos hU hlt).le]
+
+/-- Roots stay at least `L` when `A > 0` and `B ≤ 0` below `L`, for `f` of positive degree. -/
+theorem derivRec_roots_ge_step_of_pos (hF : F = A * f.derivative + B * f) (hs : f.Splits)
+    (hpos : 0 < f.leadingCoeff) (hd : f.natDegree ≠ 0) (hL : ∀ t ∈ f.roots, L ≤ t)
+    (hA : ∀ x, x < L → 0 < A.eval x) (hB : ∀ x, x < L → B.eval x ≤ 0) :
+    ∀ t ∈ F.roots, L ≤ t := by
+  intro t ht
+  refine le_of_not_gt fun hlt => ?_
+  have h0 : F.eval t = 0 := (isRoot_of_mem_roots ht)
+  rw [hF, eval_add, eval_mul, eval_mul] at h0
+  have h1 := derivative_neg_one_pow_mul_eval_pos_of_roots_ge hs hpos hd hL hlt
+  have h2 := neg_one_pow_mul_eval_pos_of_roots_ge hs hpos hL hlt
+  have : (-1 : ℝ) ^ (f.natDegree + 1) * (A.eval t * f.derivative.eval t +
+      B.eval t * f.eval t) = 0 := by rw [h0, mul_zero]
+  rw [pow_succ] at this h1
+  nlinarith [mul_pos (hA t hlt) h1, mul_nonneg (neg_nonneg.mpr (hB t hlt)) h2.le]
 
 end Step
 
@@ -185,6 +242,26 @@ theorem derivRec_interlaces_of_roots_mem_Icc {L U : ℝ}
         derivRec_roots_le_step (hrec n) hs (hpos n) (fun t ht => (hw t ht).2) (hAU n) (hBU n)
           t ht⟩)
     h0 hW0 h01 n
+
+/-- Roots in `[L, U]` for rows of positive degree: `A n ≤ 0` on `[L, U]`, and beyond the
+window `A n > 0`, with `B n ≥ 0` above and `B n ≤ 0` below; `B n` may vanish there, as for
+`P (n + 1) = X (1 + X) P n'`. -/
+theorem derivRec_interlaces_of_roots_mem_Icc_of_pos {L U : ℝ}
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n) (hD : D₀ ≠ 0)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hA : ∀ n x, L ≤ x → x ≤ U → (A n).eval x ≤ 0)
+    (hAU : ∀ n x, U < x → 0 < (A n).eval x) (hBU : ∀ n x, U < x → 0 ≤ (B n).eval x)
+    (hAL : ∀ n x, x < L → 0 < (A n).eval x) (hBL : ∀ n x, x < L → (B n).eval x ≤ 0)
+    (h0 : (P 0).Splits) (hW0 : ∀ t ∈ (P 0).roots, L ≤ t ∧ t ≤ U) (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) :=
+  derivRec_interlaces_of_window (fun x => L ≤ x ∧ x ≤ U) hrec hdeg hpos
+    (fun n x hx => hA n x hx.1 hx.2)
+    (fun n hs hw t ht =>
+      ⟨derivRec_roots_ge_step_of_pos (hrec n) hs (hpos n) (by rw [hdeg]; lia)
+          (fun t ht => (hw t ht).1) (hAL n) (hBL n) t ht,
+        derivRec_roots_le_step_of_pos (hrec n) hs (hpos n) (by rw [hdeg]; lia)
+          (fun t ht => (hw t ht).2) (hAU n) (hBU n) t ht⟩)
+    h0 hW0 (fun h => absurd h hD) n
 
 /-- Roots at most `U`: `A n ≤ 0` up to `U`; beyond it `A n ≥ 0` and `B n > 0`. -/
 theorem derivRec_interlaces_of_roots_le {U : ℝ}
