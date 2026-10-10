@@ -528,6 +528,37 @@ def A092879 : ℕ → ℝ[X]
 theorem A092879_interlaces (n : ℕ) : Interlaces (A092879 n) (A092879 (n + 1)) := by
   rr_row_interlaces
 
+/-- `P (n + 3) = P (n + 2) + 3 X P n`: windows of three rows stay interlacing (A317496). -/
+def A317496 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 1
+  | n + 3 => (1) * A317496 (n + 2) + 3 * X * A317496 n
+
+theorem A317496_splits (n : ℕ) : (A317496 n).Splits := by
+  rr_row_splits
+
+/-- A feedback coefficient depending on `n` (A118931). -/
+def A118931 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 1
+  | n + 3 => C 1 * A118931 (n + 2) + C (-14 + (4 + (n : ℝ)) ^ 2 - 5 * (n : ℝ)) * X * A118931 n
+
+theorem A118931_splits (n : ℕ) : (A118931 n).Splits := by
+  rr_row_splits
+
+/-- The feedback term `(X - 1) P n`: the same windows in the variable `X - 1` (A118884). -/
+def A118884 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2
+  | 2 => 4
+  | 3 => 8
+  | n + 4 => 2 * A118884 (n + 3) + (-1 + X) * A118884 n
+
+theorem A118884_splits (n : ℕ) : (A118884 n).Splits := by
+  rr_row_splits
+
 /-- The rows `P m = m (1 + X) X ^ (m - 1)` start the power form after the row `P 0 = 1`
 (A128540). -/
 def A128540 : ℕ → ℝ[X]
@@ -602,7 +633,7 @@ example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitF
 /--
 error: rr_row_splits: unknown route foo; the routes are closedForm, lowerOrder, subseq,
 linearFactors, splitFactors, twoStep, shiftedProduct, nextRow, prevRow, halfGrowth,
-degreePattern, reversed, parityProduct
+degreePattern, reversed, parityProduct, lagFeedback
 -/
 #guard_msgs (whitespace := normalized) in
 example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := foo)

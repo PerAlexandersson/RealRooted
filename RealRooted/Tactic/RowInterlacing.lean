@@ -2,6 +2,7 @@ import RealRooted.Tactic.Row.DerivLag
 import RealRooted.Tactic.Row.Subseq
 import RealRooted.Tactic.Row.PowerForm
 import RealRooted.Tactic.Row.ParityProduct
+import RealRooted.Tactic.Row.LagFeedback
 
 /-!
 # Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
@@ -259,7 +260,7 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
   [`closedForm, `lowerOrder, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
-    `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct]
+    `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct, `lagFeedback]
 
 /-- `rr_row_splits`, returning the hints of the successful route. -/
 private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainContext do
@@ -300,6 +301,12 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
       return { via := some `parityProduct }
     if hints.via.isNone then
       if ← rowSucceeds (parityProductGoal true) then return { via := some `parityProduct }
+    -- lag recurrences with a feedback term (`Row.LagFeedback`)
+    if hints.via == some `lagFeedback then
+      lagFeedbackSplits
+      return { via := some `lagFeedback }
+    if hints.via.isNone then
+      if ← rowSucceeds lagFeedbackSplits then return { via := some `lagFeedback }
     if let some v := hints.via then
       unless v == `subseq do
         throwError "rr_row_splits: the route {v} needs a recurrence that \

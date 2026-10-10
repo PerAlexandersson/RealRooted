@@ -1656,6 +1656,9 @@ The parity-product route for order-three recurrences adds `ThreeTermRecurrence.P
 and `Tactic.Row.ParityProduct`; the same four budgets rise by two, to 1761, 1621, 527 and
 691.
 
+The lag-feedback route of `rr_row_splits` adds `ThreeTermRecurrence.LagFeedback` and
+`Tactic.Row.LagFeedback`; the same four budgets rise by two, to 1763, 1623, 529 and 693.
+
 Run the architecture check with:
 
 ```bash

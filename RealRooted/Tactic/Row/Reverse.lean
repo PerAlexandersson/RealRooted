@@ -35,7 +35,7 @@ def QPoly.reflect (N : Nat) (p : QPoly) : QPoly :=
   QPoly.norm ((Array.range (N + 1)).map fun i => p.coeff (N - i))
 
 /-- Fit `vals[n]` (`n ≤ 11`) by a polynomial in `n` of degree at most six. -/
-private def fitNPoly6? (vals : Array Rat) : Option (Array Rat) :=
+def fitNPoly6? (vals : Array Rat) : Option (Array Rat) :=
   let p := cfLagrange (vals.extract 0 7)
   if (List.range vals.size).all fun n => p.eval n == vals[n]! then some p.coeffs else none
 
