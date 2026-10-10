@@ -181,4 +181,65 @@ theorem forall_eq_C_mul_pow_of_rec3 {P : ℕ → ℝ[X]} {F q : ℝ[X]} {e : ℕ
         ring
   exact fun m => (key m).1
 
+/-- `interlaces_of_forall_eq_C_mul_pow` with positive constants `c m` and a nonzero `F`, which
+make every row nonzero. -/
+theorem interlaces_of_forall_eq_C_mul_pow_of_pos {P : ℕ → ℝ[X]} {F q : ℝ[X]} {e : ℕ}
+    (hform : ∀ m, ∃ c : ℝ, 0 < c ∧ P m = C c * (F * q ^ (m + e))) (hF0 : F ≠ 0)
+    (hF : F.Splits) (hq : q.natDegree = 1) (m : ℕ) : Interlaces (P m) (P (m + 1)) := by
+  have hq0 : q ≠ 0 := by rintro rfl; simp at hq
+  refine interlaces_of_forall_eq_C_mul_pow (e := e) (fun m => ?_) (fun m => ?_) hF hq m
+  · obtain ⟨c, -, hc⟩ := hform m; exact ⟨c, hc⟩
+  · obtain ⟨c, hc0, hc⟩ := hform m
+    rw [hc]
+    exact mul_ne_zero (C_ne_zero.mpr hc0.ne') (mul_ne_zero hF0 (pow_ne_zero _ hq0))
+
+/-- `forall_eq_C_mul_pow_of_rec2` with positive constants, when `α > 0` and `β ≥ 0`. -/
+theorem forall_eq_C_mul_pow_pos_of_rec2 {P : ℕ → ℝ[X]} {F q : ℝ[X]} {e : ℕ} {α β : ℕ → ℝ}
+    (hrec : ∀ n, P (n + 2) = C (α n) * q * P (n + 1) + C (β n) * q ^ 2 * P n)
+    (hα : ∀ n, 0 < α n) (hβ : ∀ n, 0 ≤ β n)
+    (h0 : ∃ c : ℝ, 0 < c ∧ P 0 = C c * (F * q ^ (0 + e)))
+    (h1 : ∃ c : ℝ, 0 < c ∧ P 1 = C c * (F * q ^ (1 + e))) :
+    ∀ m, ∃ c : ℝ, 0 < c ∧ P m = C c * (F * q ^ (m + e)) := by
+  have key : ∀ m, (∃ c : ℝ, 0 < c ∧ P m = C c * (F * q ^ (m + e))) ∧
+      ∃ c : ℝ, 0 < c ∧ P (m + 1) = C c * (F * q ^ (m + 1 + e)) := by
+    intro m
+    induction m with
+    | zero => exact ⟨h0, h1⟩
+    | succ m ih =>
+        obtain ⟨⟨a, ha0, ha⟩, ⟨b, hb0, hb⟩⟩ := ih
+        refine ⟨⟨b, hb0, hb⟩, ⟨α m * b + β m * a, ?_, ?_⟩⟩
+        · nlinarith [hα m, hβ m, mul_pos (hα m) hb0, mul_nonneg (hβ m) ha0.le]
+        · rw [hrec, ha, hb, show m + 1 + 1 + e = m + e + 2 by lia,
+            show m + 1 + e = m + e + 1 by lia]
+          simp only [map_add, map_mul]
+          ring
+  exact fun m => (key m).1
+
+/-- `forall_eq_C_mul_pow_of_rec3` with positive constants, when `α > 0`, `β, γ ≥ 0`. -/
+theorem forall_eq_C_mul_pow_pos_of_rec3 {P : ℕ → ℝ[X]} {F q : ℝ[X]} {e : ℕ} {α β γ : ℕ → ℝ}
+    (hrec : ∀ n, P (n + 3) =
+      C (α n) * q * P (n + 2) + C (β n) * q ^ 2 * P (n + 1) + C (γ n) * q ^ 3 * P n)
+    (hα : ∀ n, 0 < α n) (hβ : ∀ n, 0 ≤ β n) (hγ : ∀ n, 0 ≤ γ n)
+    (h0 : ∃ c : ℝ, 0 < c ∧ P 0 = C c * (F * q ^ (0 + e)))
+    (h1 : ∃ c : ℝ, 0 < c ∧ P 1 = C c * (F * q ^ (1 + e)))
+    (h2 : ∃ c : ℝ, 0 < c ∧ P 2 = C c * (F * q ^ (2 + e))) :
+    ∀ m, ∃ c : ℝ, 0 < c ∧ P m = C c * (F * q ^ (m + e)) := by
+  have key : ∀ m, (∃ c : ℝ, 0 < c ∧ P m = C c * (F * q ^ (m + e))) ∧
+      (∃ c : ℝ, 0 < c ∧ P (m + 1) = C c * (F * q ^ (m + 1 + e))) ∧
+      ∃ c : ℝ, 0 < c ∧ P (m + 2) = C c * (F * q ^ (m + 2 + e)) := by
+    intro m
+    induction m with
+    | zero => exact ⟨h0, h1, h2⟩
+    | succ m ih =>
+        obtain ⟨⟨a, ha0, ha⟩, ⟨b, hb0, hb⟩, ⟨d, hd0, hd⟩⟩ := ih
+        refine ⟨⟨b, hb0, hb⟩, ⟨d, hd0, by rw [show m + 1 + 1 = m + 2 by lia, hd]⟩,
+          ⟨α m * d + β m * b + γ m * a, ?_, ?_⟩⟩
+        · nlinarith [mul_pos (hα m) hd0, mul_nonneg (hβ m) hb0.le, mul_nonneg (hγ m) ha0.le]
+        · rw [show m + 1 + 2 = m + 3 by lia, hrec, ha, hb, hd,
+            show m + 3 + e = m + e + 3 by lia, show m + 2 + e = m + e + 2 by lia,
+            show m + 1 + e = m + e + 1 by lia]
+          simp only [map_add, map_mul]
+          ring
+  exact fun m => (key m).1
+
 end RealRooted

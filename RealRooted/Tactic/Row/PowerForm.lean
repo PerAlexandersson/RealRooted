@@ -18,15 +18,41 @@ open Lean Elab Tactic Meta Polynomial
 
 namespace RealRooted.Tactic
 
-/-- The data of a recurrence whose rows are `c m · F · q ^ (m + e)`: `alphas[j]` lists the
-coefficients (powers of `n`) of the multiplier `α j n` of `P (n + j)`. -/
+/-- The data of a recurrence whose rows are `c m · F · q ^ (m + e)`: the multiplier `α j n` of
+`P (n + j)` is `num / den`, both listed by coefficients of powers of `n` (`den = 1` for a
+polynomial multiplier). -/
 structure PowerForm where
   k : Nat
   q : QPoly
   F : QPoly
   e : Nat
-  alphas : Array (Array Rat)
+  alphas : Array (Array Rat × Array Rat)
   cs : Array Rat
+  /-- every multiplier is nonnegative, the one of `P (n + k - 1)` positive, and every `c m`
+  positive on the computed rows: the positive variant of the theorems applies -/
+  positive : Bool
+
+/-- Fit `vals[n]` (`n ≤ 8`) by a polynomial in `n` of degree at most three, or else by
+`(a₀ + a₁ n + a₂ n ^ 2) / (t + d n)` with `t > 0`, `d ≥ 0`. -/
+def fitRatFun? (vals : Array Rat) : Option (Array Rat × Array Rat) := Id.run do
+  let poly := cfLagrange (vals.extract 0 4)
+  if (List.range 9).all fun n => poly.eval n == vals[n]! then
+    return some (poly.coeffs, #[1])
+  -- a₀ + a₁ n + a₂ n² - v d n - v t = 0 on n = 0, …, 4
+  let rows := (Array.range 5).map fun (n : Nat) =>
+    let v := vals[n]!
+    let x : Rat := n
+    #[1, x, x * x, -v * x, -v]
+  for w in ratNullspace rows 5 do
+    let (t, d) := (w[4]!, w[3]!)
+    let sgn : Rat := if t < 0 then -1 else 1
+    let (t, d) := (sgn * t, sgn * d)
+    unless 0 < t && 0 ≤ d do continue
+    let num : QPoly := QPoly.norm #[sgn * w[0]!, sgn * w[1]!, sgn * w[2]!]
+    let den : QPoly := QPoly.norm #[t, d]
+    if (List.range 9).all fun n => num.eval n == vals[n]! * den.eval n then
+      return some (num.coeffs, den.coeffs)
+  return none
 
 /-- Search the power form on the computed rows. -/
 def powerForm? (L : LinRecData) : MetaM (Option PowerForm) := do
@@ -57,7 +83,8 @@ def powerForm? (L : LinRecData) : MetaM (Option PowerForm) := do
   let some r := r? | return none
   let q : QPoly := ⟨#[-r, 1]⟩
   -- the multipliers `α j n = A j n / q ^ (k - j)`, polynomials in `n`
-  let mut alphas : Array (Array Rat) := #[]
+  let mut alphas : Array (Array Rat × Array Rat) := #[]
+  let mut positive := true
   for j in [0:k] do
     let mut vals : Array Rat := #[]
     for n in [0:9] do
@@ -66,9 +93,9 @@ def powerForm? (L : LinRecData) : MetaM (Option PowerForm) := do
       let some c := a.divExact? (q.pow (k - j)) | return none
       unless c.natDegree == 0 do return none
       vals := vals.push (c.coeff 0)
-    let poly := cfLagrange (vals.extract 0 4)
-    unless (List.range 9).all fun n => poly.eval n == vals[n]! do return none
-    alphas := alphas.push poly.coeffs
+    let some fit := fitRatFun? vals | return none
+    alphas := alphas.push fit
+    unless vals.all (0 ≤ ·) && (j + 1 != k || vals.all (0 < ·)) do positive := false
   -- the form of the rows
   let some r0 := rows[0]? | return none
   if r0.isZero then return none
@@ -81,7 +108,8 @@ def powerForm? (L : LinRecData) : MetaM (Option PowerForm) := do
     let some c := row.divExact? (F * q.pow (m + e)) | return none
     unless c.natDegree == 0 do return none
     cs := cs.push (c.coeff 0)
-  return some { k, q, F, e, alphas, cs }
+  positive := positive && cs.all (0 < ·)
+  return some { k, q, F, e, alphas, cs, positive }
 
 /-- `∑ cs[i] * n ^ i` as a real term in the natural-number variable `n`. -/
 private def nPolyRealTerm (cs : Array Rat) (n : Ident) : TacticM Term := do
@@ -107,28 +135,59 @@ def powerFormInterlaces (L : LinRecData) (pf : PowerForm) : TacticM Unit := with
   let FT ← qpolyTerm pf.F
   let eT := rowNumLit pf.e
   let αT (j : Nat) : TacticM Term := do
-    `(fun $n:ident : ℕ => $(← nPolyRealTerm pf.alphas[j]! n))
-  evalTactic (← `(tactic|
-    refine RealRooted.interlaces_of_forall_eq_C_mul_pow (P := $P) (F := $FT) (q := $qT)
-      (e := $eT) ?_ ?_ ?_ ?_ $tT))
-  let [hform, hne, hF, hq] ← getGoals | throwError "rr_row_interlaces: unexpected side goals"
-  setGoals [hform]
-  if pf.k == 2 then
+    let (num, den) := pf.alphas[j]!
+    if den == #[1] then `(fun $n:ident : ℕ => $(← nPolyRealTerm num n))
+    else `(fun $n:ident : ℕ => $(← nPolyRealTerm num n) / $(← nPolyRealTerm den n))
+  if pf.positive then
     evalTactic (← `(tactic|
-      refine RealRooted.forall_eq_C_mul_pow_of_rec2 (α := $(← αT 1)) (β := $(← αT 0)) ?_ ?_ ?_))
+      refine RealRooted.interlaces_of_forall_eq_C_mul_pow_of_pos (P := $P) (F := $FT)
+        (q := $qT) (e := $eT) ?_ ?_ ?_ ?_ $tT))
   else
     evalTactic (← `(tactic|
-      refine RealRooted.forall_eq_C_mul_pow_of_rec3 (α := $(← αT 2)) (β := $(← αT 1))
-        (γ := $(← αT 0)) ?_ ?_ ?_ ?_))
-  let hrec :: bases ← getGoals | throwError "rr_row_interlaces: unexpected side goals"
+      refine RealRooted.interlaces_of_forall_eq_C_mul_pow (P := $P) (F := $FT) (q := $qT)
+        (e := $eT) ?_ ?_ ?_ ?_ $tT))
+  let [hform, hne, hF, hq] ← getGoals | throwError "rr_row_interlaces: unexpected side goals"
+  setGoals [hform]
+  let thm := if pf.positive then
+      (if pf.k == 2 then ``RealRooted.forall_eq_C_mul_pow_pos_of_rec2
+        else ``RealRooted.forall_eq_C_mul_pow_pos_of_rec3)
+    else
+      (if pf.k == 2 then ``RealRooted.forall_eq_C_mul_pow_of_rec2
+        else ``RealRooted.forall_eq_C_mul_pow_of_rec3)
+  -- `hrec`, the signs of the `k` multipliers (positive variant only) and the `k` base rows
+  let holes := (Array.range (1 + (if pf.positive then pf.k else 0) + pf.k)).map fun _ =>
+    (⟨mkNode ``Lean.Parser.Term.syntheticHole #[mkAtom "?", mkAtom "_"]⟩ : Term)
+  if pf.k == 2 then
+    evalTactic (← `(tactic|
+      refine $(mkIdent thm):ident (α := $(← αT 1)) (β := $(← αT 0)) $holes*))
+  else
+    evalTactic (← `(tactic|
+      refine $(mkIdent thm):ident (α := $(← αT 2)) (β := $(← αT 1)) (γ := $(← αT 0))
+        $holes*))
+  let gs ← getGoals
+  -- `hrec`, then (positive variant) the signs of the `k` multipliers, then the `k` base rows
+  let some hrec := gs.head? | throwError "rr_row_interlaces: unexpected side goals"
+  let signs := if pf.positive then (gs.drop 1).take pf.k else []
+  let bases := (gs.drop (1 + signs.length)).take pf.k
   closeFresh hrec do
     evalTactic (← `(tactic|
-      (intro $n:ident; exact ($(mkIdent L.eqn) $n).trans (by rr_poly_identity))))
+      (intro $n:ident; exact ($(mkIdent L.eqn) $n).trans (by rr_cf_identity))))
+  for g in signs do
+    closeFresh g do
+      evalTactic (← `(tactic| (intro $n:ident; first | positivity | rr_row_field)))
   for (g, i) in bases.zip (List.range bases.length) do
     closeFresh g do
-      evalTactic (← `(tactic|
-        exact ⟨$(← ratTerm pf.cs[i]!), by simp only [$P:ident]; rr_poly_identity⟩))
-  closeFresh hne do evalTactic (← `(tactic| (intro m; rr_row_ne_zero)))
+      if pf.positive then
+        evalTactic (← `(tactic|
+          exact ⟨$(← ratTerm pf.cs[i]!), by norm_num, by simp only [$P:ident]; rr_poly_identity⟩))
+      else
+        evalTactic (← `(tactic|
+          exact ⟨$(← ratTerm pf.cs[i]!), by simp only [$P:ident]; rr_poly_identity⟩))
+  closeFresh hne do
+    if pf.positive then
+      evalTactic (← `(tactic| first | exact one_ne_zero | rr_ne_zero_explicit))
+    else
+      evalTactic (← `(tactic| (intro m; rr_row_ne_zero)))
   closeFresh hF do
     evalTactic (← `(tactic| first
       | exact Polynomial.Splits.of_natDegree_le_one (by compute_degree!)
