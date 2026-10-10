@@ -1609,6 +1609,11 @@ modules (`BlockEnergy`, `Energy`, `ResidueAlgebra`, `ResidueDerivative`,
 algebra and scalar bounds that the `Weighted` layer reuses. The root and
 production closures each shrink by seven modules; the budgets are unchanged.
 
+The row tactics gain a general Euler step route for second-order recurrences
+without an eigen-ODE, so `Tactic.RowInterlacing` imports
+`EulerBidiagonal.DepRows` and its seven-module theorem closure. The tactic
+umbrella budget rises to 511 and the tactic regression budget to 671.
+
 Run the architecture check with:
 
 ```bash

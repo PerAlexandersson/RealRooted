@@ -1,5 +1,6 @@
 import RealRooted.DerivativeRecurrence.QuadraticLagStrict
 import RealRooted.DerivativeRecurrence.RootWindow
+import RealRooted.EulerBidiagonal.DepRows
 import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.ThreeTermRecurrence.HalfGrowth
 import RealRooted.Tactic.Recurrence
@@ -467,6 +468,107 @@ private def plainPlausible (r : RowRec) (k : Nat) (nonpos : Bool) : MetaM Bool :
       unless p.coeffs.all (0 ≤ ·) do return false
   return true
 
+/-- The parameters of a general Euler step `κ(θ + a)(θ + b) + X(u n + vθ)` with
+`u n = u₀ + s n` (`RealRooted.EulerBidiagonal.generalStep`). -/
+private structure EulerFit where
+  κ : Rat
+  a : Rat
+  b : Rat
+  v : Rat
+  u₀ : Rat
+  s : Rat
+
+/-- The square root of a nonnegative rational, if it is rational. -/
+private def ratSqrt? (q : Rat) : Option Rat :=
+  if q < 0 then none else
+    let n := q.num.natAbs
+    let d := q.den
+    if n.sqrt * n.sqrt == n && d.sqrt * d.sqrt == d then some ((n.sqrt : Rat) / d.sqrt)
+    else none
+
+/-- Fit the second-order recurrence `P (n + 1) = A₂ (P n)'' + A₁ (P n)' + A₀ n (P n)` with
+`P 0 = 1` to a general Euler step, exactly on `n ≤ 8`: `A₂ = κX²`, `A₁ = κ(a + b + 1)X + vX²`,
+`A₀ n = κab + u n X` with `u` affine and rational `a, b > 0`.  It also checks the sufficient
+conditions that the route discharges: `u₀ > 0`, `s ≥ 0`, `s + v ≥ 0` (so `u n + vk > 0` for
+`k ≤ n`) and `2u₀ ≥ (a + b + 1)v` (`comparisonDefect_neg_of_two_mul_u_ge`). -/
+private def eulerFit? (r : RowRec) : MetaM (Except MessageData EulerFit) := do
+  let (some A₂, some A₁, some A₀) := (r.coeffs[0]?, r.coeffs[1]?, r.coeffs[2]?)
+    | return .error m!"not a second-order recurrence"
+  let mut us : Array Rat := #[]
+  let mut fit? : Option (Rat × Rat × Rat × Rat) := none
+  for n in [0:9] do
+    let p₂? ← evalCoeffAt? A₂ n
+    let p₁? ← evalCoeffAt? A₁ n
+    let p₀? ← evalCoeffAt? A₀ n
+    let (some p₂, some p₁, some p₀) := (p₂?, p₁?, p₀?)
+      | return .error m!"the coefficients are not rational polynomials"
+    unless p₂.coeffs.size == 3 && p₂.coeff 0 == 0 && p₂.coeff 1 == 0 do
+      return .error m!"the coefficient of the second derivative is not `κ X ^ 2`"
+    unless p₁.coeffs.size ≤ 3 && p₁.coeff 0 == 0 && p₀.coeffs.size ≤ 2 do
+      return .error m!"the coefficients do not have the shape `κ(a + b + 1)X + vX²` and \
+        `κab + u X`"
+    let f := (p₂.coeff 2, p₁.coeff 1, p₁.coeff 2, p₀.coeff 0)
+    if let some f' := fit? then
+      unless f == f' do return .error m!"the coefficients other than `u` depend on `n`"
+    fit? := some f
+    us := us.push (p₀.coeff 1)
+  let some (κ, B, v, c) := fit? | return .error m!"no rows"
+  let u₀ := us[0]!
+  let s := us[1]! - u₀
+  unless (List.range 9).all (fun n => us[n]! == u₀ + s * n) do
+    return .error m!"the coefficient `u n` of `X P n` is not affine in `n`"
+  unless 0 < κ do return .error m!"`κ ≤ 0`"
+  let σ := B / κ - 1
+  let π := c / κ
+  unless 0 < σ && 0 < π do return .error m!"`a + b` or `a b` is not positive"
+  let some δ := ratSqrt? (σ * σ - 4 * π)
+    | return .error m!"`a` and `b` are not rational"
+  let (a, b) := ((σ - δ) / 2, (σ + δ) / 2)
+  unless 0 < u₀ && 0 ≤ s && 0 ≤ s + v && (a + b + 1) * v ≤ 2 * u₀ do
+    return .error m!"the multiplier conditions fail (u₀ = {u₀}, s = {s}, v = {v})"
+  let some L ← linRec? r.P | return .error m!"the first row cannot be computed"
+  let some rows ← linRecRows? L 0 | return .error m!"the first row cannot be computed"
+  unless rows[0]? == some (QPoly.const 1) do return .error m!"the first row is not `1`"
+  return .ok { κ, a, b, v, u₀, s }
+
+/-- The general Euler step route of `rr_row_interlaces` for a second-order recurrence with no
+eigen-ODE (`RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec`). -/
+private def eulerStepRoute (r : RowRec) (P : Ident) : TacticM (TSyntax `tactic) := do
+  unless r.canonical && r.shift == 0 do
+    throwError "the recurrence is not `P (n + 1) = …` with `P 0` explicit"
+  let e ← match ← eulerFit? r with
+    | .ok e => pure e
+    | .error m => throwError m
+  let n := mkIdent `n
+  let k := mkIdent `k
+  let hk := mkIdent `hk
+  let main ← `(tactic| (
+    apply RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec (κ := $(← ratTerm e.κ))
+      (a := $(← ratTerm e.a)) (b := $(← ratTerm e.b)) (v := $(← ratTerm e.v))
+      (s := $(← ratTerm e.s)) (u := fun $n:ident : ℕ => $(← ratTerm e.u₀) + $(← ratTerm e.s) * $n)
+    case h0 => first | rfl | simp [$P:ident]
+    case hrec =>
+      intro $n:ident
+      rw [$P:ident, RealRooted.EulerBidiagonal.generalStep_eq_second_derivative]
+      rr_poly_identity
+    case hκ => norm_num
+    case ha => norm_num
+    case hb => norm_num
+    case hshift => intro $n:ident; push_cast; ring
+    case hell =>
+      intro $n:ident $k:ident $hk:ident
+      have := (Nat.cast_le (α := ℝ)).mpr $hk:ident
+      have := Nat.cast_nonneg (α := ℝ) $k:ident
+      nlinarith
+    case hQ =>
+      intro $n:ident
+      apply RealRooted.EulerBidiagonal.comparisonDefect_neg_of_two_mul_u_ge _ _ _ _ _
+        (by norm_num) (by norm_num) (by norm_num)
+      have := Nat.cast_nonneg (α := ℝ) $n:ident
+      nlinarith))
+  evalTactic main
+  return main
+
 /-- `rr_row_interlaces` for the sequence `m ↦ P (m + k)` (after `k` further rows), returning
 a certificate and the hinted call.  `given` supplies the recurrence and a proof of it when it
 is not read off the definition. -/
@@ -501,9 +603,17 @@ private def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     unless r.canonical do
       throwError "rr_row_interlaces: the second-order recurrence of {P} must have the form \
         `P (n + s + 1) = A n * (P (n + s))'' + B n * (P (n + s))' + C n * P (n + s)`"
-    let some o ← eigenODE? r.P (shift := r.shift)
-      | throwError "rr_row_interlaces: no eigen-ODE `A * p'' + β * p' = ev n • p` collapses \
-          the second-order recurrence of {P} to a first-order one"
+    let euler := ``RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec
+    let o? ← if hints.thm == some euler then pure none else eigenODE? r.P (shift := r.shift)
+    let some o := o?
+      | if k > 0 || (hints.thm.isSome && hints.thm != some euler) then
+          throwError "rr_row_interlaces: no eigen-ODE `A * p'' + β * p' = ev n • p` collapses \
+            the second-order recurrence of {P} to a first-order one"
+        match ← rowAttempt (eulerStepRoute r P) with
+        | .ok tac => return (pre.push tac, { thm := some euler })
+        | .error e => throwError "rr_row_interlaces: no eigen-ODE `A * p'' + β * p' = ev n • p` \
+            collapses the second-order recurrence of {P} to a first-order one, and it is not \
+            a general Euler step: {e}"
     let h₁ := mkIdent `hrec₁
     let tac ← `(tactic| have $h₁:ident := $(← eigenODEFirstOrder P o r.shift))
     evalTactic tac
