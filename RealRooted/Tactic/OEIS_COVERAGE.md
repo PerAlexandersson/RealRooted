@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **226 IDs**; **5 formalized**, **218 shells**, **3 fragments**, and **0 documented-only**.
+Current totals: **228 IDs**; **5 formalized**, **220 shells**, **3 fragments**, and **0 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -37,6 +37,7 @@ Current totals: **226 IDs**; **5 formalized**, **218 shells**, **3 fragments**, 
 | A008517 | `shell` | real-rootedness endpoint for the `c_n X(1-X)P'` shell.<br>`v_n(t)=t(1-t)`. | `rr_mw_derivative_C_mul_X_one_sub_X_sequence_realrooted_nonneg_auto`, `rr_sign` | `base`, `degree_lower`, `degree_upper`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A008556 | `shell` | Half growth of a three-term recurrence whose multipliers are rational in `n` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A008955 | `shell` | def : ℕ → ℝ[X]<br>\| n + 1 => (1 + C ((n + 1 : ℝ) ^ 2) * X) * n<br>+2 additional test intents | `rr_product_interlaces`, `rr_product_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A008957 | `shell` | rows (, central factorial numbers).<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A008970 | `shell` | `/`: `v_n(t)=t-t^3=t(1-t)(1+t)` on `[-1,0]`.<br>`/`: full Ma--Wang shell for the actual derivative factor.<br>+4 additional test intents | `rr_mw_derivative_sign_window`, `rr_row_natDegree`, `rr_sign_at_roots_window` | `degree_lower`, `degree_upper`, `root_lower`, `root_upper`, `source_pos_lc`, `splits`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A010054 | `shell` | -style product exit: the active rows are constant in `n`. | `rr_product_identity_sequence` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A010892 | `shell` | -style sequence shell: repeated lag `-(t^2+t+1)`. | `rr_lw_negative_quadratic_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
@@ -196,6 +197,7 @@ Current totals: **226 IDs**; **5 formalized**, **218 shells**, **3 fragments**, 
 | A181996 | `shell` | Family C2 direct-outer Ma--Wang shell for the `/` bucket. | `rr_mw_derivative_neg_X_one_add_outer_auto` | `degree_lower`, `degree_upper`, `root_upper`, `source_pos_lc`, `splits`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A186695 | `shell` | `/`: inner-window shape `2t(1+t)P'`. | `rr_mw_derivative_C_mul_X_one_add_X_sequence_nonneg_auto` | `base`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `recurrence`, `root_lower` | concrete row definition and proofs of the listed certificates |
 | A188440 | `shell` | A two-step product `P (n + 2) = (1 + 2 X) P n` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A191935 | `shell` | Reversed rows again ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A194649 | `shell` | window shape `(1+t)(1+2t)P'`. | `rr_mw_derivative_one_add_two_window_sequence` | `base`, `degree_succ`, `pos_lc`, `recurrence`, `root_lower`, `root_upper` | concrete row definition and proofs of the listed certificates |
 | A199577 | `shell` | shifted active shell `P_m=(t-3-2m)P_{m-1}-(m+1)^2P_{m-2}`. | `rr_favard_param_auto` | `alpha`, `base_one`, `base_zero`, `beta`, `step` | concrete row definition and proofs of the listed certificates |
 | A201701 | `shell` | OEIS shape : `P_n = 2 P_{n-1} + t P_{n-2}`.<br>Full sequence shell for : `P_{n+2}=2P_{n+1}+tP_n`.<br>+1 additional test intents | `rr_strict_interl_pos_X_lag_combo`, `rr_strict_interl_pos_X_unit_lag_sequence_auto`, `rr_strict_interl_pos_X_unit_lag_sequence_realrooted_auto`, `rr_wagner_pos_term` | `base`, `current_coeff`, `current_coeff_pos`, `lag_coeff_pos`, `left_nonneg`, `nonneg_coeffs`, `proper`, `recurrence`, `right_nonneg` | concrete row definition and proofs of the listed certificates |

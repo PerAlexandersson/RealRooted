@@ -30,6 +30,20 @@ syntax (name := rrRowInterlaces) "rr_row_interlaces" (ppSpace rrRowHint)* : tact
 certificate `apply thm (P := …) … <;> rr_row_side`. -/
 syntax (name := rrRowInterlacesQ) "rr_row_interlaces?" (ppSpace rrRowHint)* : tactic
 
+/-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
+`rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
+number of rows split off; the routes are `closedForm`, `lowerOrder`, `subseq`,
+`linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and `prevRow` (the
+interlacing of `P t` with `P (t + 1)` or `P (t - 1)`), `halfGrowth`, `degreePattern` (first-order
+derivative recurrences whose degree grows by zero or one) and `reversed` (the reversed rows,
+`Row.Reverse`).  The hints of
+`rr_row_interlaces` are passed on to the interlacing routes. -/
+syntax (name := rrRowSplits) "rr_row_splits" (ppSpace rrRowHint)* : tactic
+
+/-- `rr_row_splits?` runs `rr_row_splits` and prints the hinted call, which replays only the
+successful route. -/
+syntax (name := rrRowSplitsQ) "rr_row_splits?" (ppSpace rrRowHint)* : tactic
+
 /-- `rr_row_nonneg_coeffs` closes `HasNonnegCoeffs (P t)` (or `∀ n, HasNonnegCoeffs (P n)`)
 for a product, first-order derivative or three-term recurrence. -/
 syntax (name := rrRowNonnegCoeffs) "rr_row_nonneg_coeffs" : tactic

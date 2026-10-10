@@ -1,3 +1,4 @@
+import Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Algebra.Polynomial.Splits
 
@@ -5,7 +6,9 @@ import Mathlib.Algebra.Polynomial.Splits
 # Roots of reversed polynomials
 
 Root transport for `Polynomial.reverse`, including the zero-root case omitted
-by the usual nonzero-constant-coefficient formulation.
+by the usual nonzero-constant-coefficient formulation, and the calculus of `reflect`:
+`reflect N` is an involution on polynomials of degree at most `N`, and the derivative of
+`reflect N r` is `reflect N (X (N r - X r'))`.
 -/
 
 open Finset
@@ -23,6 +26,91 @@ theorem reflect_succ (p : R[X]) {D : ℕ} (hdeg : p.natDegree ≤ D) :
   simpa [Nat.add_comm] using
     (Polynomial.reflect_mul (f := p) (g := (1 : R[X])) (F := D) (G := 1)
       hdeg (by simp))
+
+theorem revAt_eq_ite (N i : ℕ) : revAt N i = if i ≤ N then N - i else i := by
+  rw [← revAtFun_eq]
+  rfl
+
+theorem reflect_X (N : ℕ) : reflect N (X : R[X]) = X ^ revAt N 1 := by
+  simpa using reflect_monomial (R := R) N 1
+
+theorem reflect_ofNat_mul (N n : ℕ) [n.AtLeastTwo] (p : R[X]) :
+    reflect N ((OfNat.ofNat n : R[X]) * p) = (OfNat.ofNat n : R[X]) * reflect N p := by
+  rw [← C_ofNat, reflect_C_mul]
+
+/-- Multiplying by `X ^ k` and reflecting `k` further leaves the reflection unchanged. -/
+theorem reflect_X_pow_mul (q : R[X]) {N : ℕ} (k : ℕ) (hq : q.natDegree ≤ N) :
+    reflect (N + k) (X ^ k * q) = reflect N q := by
+  ext j
+  rw [coeff_reflect, coeff_reflect, coeff_X_pow_mul']
+  rcases Nat.lt_or_ge (N + k) j with h1 | h1
+  · rw [revAt_eq_self_of_lt h1, revAt_eq_self_of_lt (by lia),
+      coeff_eq_zero_of_natDegree_lt (by lia : q.natDegree < j)]
+    simp only [show k ≤ j by lia, ↓reduceIte]
+    exact coeff_eq_zero_of_natDegree_lt (by lia)
+  · rw [revAt_le h1]
+    rcases Nat.lt_or_ge N j with h2 | h2
+    · rw [revAt_eq_self_of_lt h2, coeff_eq_zero_of_natDegree_lt (by lia : q.natDegree < j)]
+      simp only [show ¬k ≤ N + k - j by lia, ↓reduceIte]
+    · rw [revAt_le h2, show N + k - j - k = N - j by lia]
+      simp only [show k ≤ N + k - j by lia, ↓reduceIte]
+
+section CommRing
+
+variable {A : Type*} [CommRing A]
+
+/-- The polynomial `X (N r - X r')`, whose reflection at `N` is the derivative of the
+reflection of `r` (`derivative_reflect`), has degree at most `N`. -/
+theorem natDegree_X_mul_C_mul_sub_X_mul_derivative_le {r : A[X]} {N : ℕ}
+    (hr : r.natDegree ≤ N) :
+    (X * (C (N : A) * r - X * derivative r)).natDegree ≤ N := by
+  rw [natDegree_le_iff_coeff_eq_zero]
+  intro k hk
+  obtain ⟨m, rfl⟩ : ∃ m, k = m + 1 := ⟨k - 1, by lia⟩
+  rw [coeff_X_mul, coeff_sub, coeff_C_mul]
+  rcases m with _ | m
+  · have hN : N = 0 := by lia
+    subst hN
+    simp
+  · rw [coeff_X_mul, coeff_derivative]
+    rcases Nat.lt_or_ge N (m + 1) with h | h
+    · rw [coeff_eq_zero_of_natDegree_lt (hr.trans_lt h)]
+      ring
+    · have hN : N = m + 1 := by lia
+      subst hN
+      push_cast
+      ring
+
+/-- The derivative of a reflection: `(X ^ N r (1 / X))' = X ^ N · (X (N r - X r'))(1 / X)`. -/
+theorem derivative_reflect (r : A[X]) {N : ℕ} (hr : r.natDegree ≤ N) :
+    derivative (reflect N r) = reflect N (X * (C (N : A) * r - X * derivative r)) := by
+  ext j
+  rw [coeff_derivative, coeff_reflect, coeff_reflect]
+  rcases Nat.lt_or_ge N j with hj | hj
+  · rw [revAt_eq_self_of_lt hj, revAt_eq_self_of_lt (by lia),
+      coeff_eq_zero_of_natDegree_lt (by lia),
+      coeff_eq_zero_of_natDegree_lt
+        ((natDegree_X_mul_C_mul_sub_X_mul_derivative_le hr).trans_lt hj), zero_mul]
+  · rw [revAt_le hj]
+    rcases Nat.lt_or_ge j N with hj' | hj'
+    · obtain ⟨s, hs⟩ : ∃ s, N - j = s + 1 := ⟨N - j - 1, by lia⟩
+      have hN : (N : A) = s + 1 + j := by
+        rw [show N = s + 1 + j by lia]
+        push_cast
+        ring
+      rw [revAt_le (by lia : j + 1 ≤ N), show N - (j + 1) = s by lia, hs, coeff_X_mul,
+        coeff_sub, coeff_C_mul, hN]
+      rcases s with _ | s
+      · simp
+        ring
+      · rw [coeff_X_mul, coeff_derivative]
+        push_cast
+        ring
+    · obtain rfl : j = N := by lia
+      rw [revAt_eq_self_of_lt (by lia), Nat.sub_self, coeff_X_mul_zero,
+        coeff_eq_zero_of_natDegree_lt (by lia), zero_mul]
+
+end CommRing
 
 variable {K : Type*} [Field K]
 
