@@ -375,6 +375,44 @@ def A180047 : ℕ → ℝ[X]
 
 theorem A180047_splits (n : ℕ) : (A180047 n).Splits := by rr_row_splits
 
+/-! ### General Euler steps
+
+Second-order recurrences `P (n + 1) = κX² (P n)'' + (κ(a + b + 1)X + vX²) (P n)' +
+(κab + (u₀ + s n) X) P n` with no eigen-ODE, through
+`RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec`. -/
+
+/-- Central factorial numbers: `κ = a = b = 1`, `v = 0` (A036969). -/
+def A036969 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => X ^ 2 * (A036969 n).derivative.derivative + (3 * X) * (A036969 n).derivative +
+      (1 + X) * A036969 n
+
+theorem A036969_interlaces (n : ℕ) : Interlaces (A036969 n) (A036969 (n + 1)) := by
+  rr_row_interlaces
+theorem A036969_splits (n : ℕ) : (A036969 n).Splits := by rr_row_splits
+
+/-- `κ = 4`, `a = b = 1 / 2` (A160562). -/
+def A160562 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (4 * X ^ 2) * (A160562 n).derivative.derivative + (8 * X) * (A160562 n).derivative +
+      (1 + X) * A160562 n
+
+theorem A160562_splits (n : ℕ) : (A160562 n).Splits := by rr_row_splits
+
+/-- `κ = 2`, `a = 1 / 2`, `b = 1`, `v = -2` and `u n = 1 + 2n` (A166961). -/
+def A166961 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (C 2 * X ^ 2) * (A166961 n).derivative.derivative +
+      (C 5 * X + C (-2) * X ^ 2) * (A166961 n).derivative +
+      (C 1 + C (1 + 2 * (n : ℝ)) * X) * A166961 n
+
+theorem A166961_interlaces (n : ℕ) : Interlaces (A166961 n) (A166961 (n + 1)) := by
+  rr_row_interlaces
+
+#guard_msgs (drop info) in
+example (n : ℕ) : Interlaces (A166961 n) (A166961 (n + 1)) := by
+  rr_row_interlaces?
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 /--

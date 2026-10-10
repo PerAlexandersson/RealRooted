@@ -22,7 +22,7 @@
       "max_modules": 1607
     },
     "RealRooted.Tactic.Examples": {
-      "max_modules": 663
+      "max_modules": 671
     },
     "RealRooted.ParkingFunctions.Descents.Words": {
       "max_modules": 137
@@ -1579,7 +1579,7 @@
       "max_modules": 104
     },
     "RealRooted.Tactic": {
-      "max_modules": 504
+      "max_modules": 511
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 182

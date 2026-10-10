@@ -108,4 +108,24 @@ theorem generalRowsDep_spec (κ a b : ℝ) (u : ℕ → ℝ) (v s : ℝ) (hκ : 
         rw [hrow] at hr
         exact hcone.2 r hr.1 hr.2
 
+/-- A sequence with `P 0 = 1` whose recurrence is the general Euler step is `generalRowsDep`. -/
+theorem eq_generalRowsDep_of_rec {P : ℕ → ℝ[X]} {κ a b v : ℝ} {u : ℕ → ℝ} (h0 : P 0 = 1)
+    (hrec : ∀ n, P (n + 1) = generalStep κ a b (u n) v (P n)) (n : ℕ) :
+    P n = generalRowsDep κ a b u v n := by
+  induction n with
+  | zero => simpa [generalRowsDep] using h0
+  | succ n ih => rw [hrec, ih, generalRowsDep]
+
+/-- Consecutive rows of `P 0 = 1`, `P (n + 1) = generalStep κ a b (u n) v (P n)` interlace,
+under the hypotheses of `generalRowsDep_spec`.  This is the form used by `rr_row_interlaces`. -/
+theorem interlaces_of_generalStep_rec {P : ℕ → ℝ[X]} {κ a b v s : ℝ} {u : ℕ → ℝ}
+    (h0 : P 0 = 1) (hrec : ∀ n, P (n + 1) = generalStep κ a b (u n) v (P n))
+    (hκ : 0 < κ) (ha : 0 < a) (hb : 0 < b) (hshift : ∀ n, u (n + 1) = u n + s)
+    (hell : ∀ n k : ℕ, k ≤ n → 0 < u n + v * k)
+    (hQ : ∀ n : ℕ, ∀ t ≤ 0, comparisonDefect κ a b (u n) v t < 0) (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) := by
+  have h := generalRowsDep_spec κ a b u v s hκ ha hb hshift hell hQ
+  rw [eq_generalRowsDep_of_rec h0 hrec n, eq_generalRowsDep_of_rec h0 hrec (n + 1)]
+  exact (h n).2.2.1.toInterlaces (by rw [(h n).2.1, (h (n + 1)).2.1])
+
 end RealRooted.EulerBidiagonal
