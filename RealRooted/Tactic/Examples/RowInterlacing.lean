@@ -411,6 +411,16 @@ def A166961 : ℕ → ℝ[X]
 theorem A166961_interlaces (n : ℕ) : Interlaces (A166961 n) (A166961 (n + 1)) := by
   rr_row_interlaces
 
+/-- `θ ^ 2 + X`, the Euler step with `a = b = 0`: from `P 1` on the rows carry the factor `X`
+(A269945, `RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec_zero`). -/
+def A269945 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => X ^ 2 * (A269945 n).derivative.derivative + X * (A269945 n).derivative +
+      X * A269945 n
+
+theorem A269945_interlaces (n : ℕ) : Interlaces (A269945 n) (A269945 (n + 1)) := by
+  rr_row_interlaces
+
 #guard_msgs (drop info) in
 example (n : ℕ) : Interlaces (A166961 n) (A166961 (n + 1)) := by
   rr_row_interlaces?
