@@ -54,6 +54,8 @@ private inductive WindowKind where
   | degree
   /-- roots only (three-term recurrences) -/
   | roots
+  /-- `A n > 0` beyond the window, with `B n ≥ 0` above and `B n ≤ 0` below -/
+  | posA
 
 /-- A cheap numeric veto for a root window `[lo, U]` (`(-∞, U]` without `lo`) of the shifted
 sequence `m ↦ P (m + s + k)`: the computed rows `0, …, 8` must have their roots in the window,
@@ -86,6 +88,7 @@ private def windowPlausible (r : RowRec) (k D₀ : Nat) (lo : Option Rat) (u : R
       let x := u + d
       match kind with
       | .plain => unless 0 ≤ a.eval x && 0 < b.eval x do return false
+      | .posA => unless 0 < a.eval x && 0 ≤ b.eval x do return false
       | _ =>
           let ax := a.eval x
           let mn := if ax < 0 then ax else 0
@@ -93,7 +96,10 @@ private def windowPlausible (r : RowRec) (k D₀ : Nat) (lo : Option Rat) (u : R
     if let some l := lo then
       for d in offs do
         let x := l - d
-        unless 0 ≤ a.eval x && b.eval x < 0 do return false
+        if kind matches .posA then
+          unless 0 < a.eval x && b.eval x ≤ 0 do return false
+        else
+          unless 0 ≤ a.eval x && b.eval x < 0 do return false
   return true
 
 /-- The numeric gate of the barrier windows
@@ -503,6 +509,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
       else
         (``RealRooted.threeTerm_interlaces_of_roots_mem_Icc,
           ``RealRooted.threeTerm_interlaces_of_roots_le)
+    let iccPos := ``RealRooted.derivRec_interlaces_of_roots_mem_Icc_of_pos
     let parse (r : String) : TacticM Term := do
       let some t := (Parser.runParserCategory (← getEnv) `term r).toOption
         | throwError "rr_row_interlaces: bad window {r}"
@@ -521,20 +528,30 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
       | some (l, u), _ => [(some l, u)]
       | none, some u => [(none, u)]
       | none, none => match hints.thm with
-        | some t => if t == icc then windows.filter (·.1.isSome)
+        | some t => if t == icc || t == iccPos then windows.filter (·.1.isSome)
             else if t == iic then windows.filter (·.1.isNone) else []
         | none => windows
     for ((lo, U), v) in windows.zip (vals ++ List.replicate windows.length (none, 0)) do
+      -- `B n` may vanish beyond a window `[L, U]` when `A n > 0` there and the rows have
+      -- positive degree (`RealRooted.derivRec_interlaces_of_roots_mem_Icc_of_pos`)
+      let mut icc := if hints.thm == some iccPos then iccPos else icc
       unless hinted do
         let kind := if shape == .deriv₁ && r.shape == .deriv₁ then WindowKind.plain
           else .roots
         unless ← windowPlausible r k D₀ v.1 v.2 kind do
-          failures := failures.push (m!"{if lo.isSome then icc else iic}", m!"vetoed: the \
-            computed rows or the sign conditions rule the window out")
-          continue
+          if kind matches .plain && lo.isSome && D₀ != 0 &&
+              (← windowPlausible r k D₀ v.1 v.2 .posA) then
+            icc := iccPos
+          else
+            failures := failures.push (m!"{if lo.isSome then icc else iic}", m!"vetoed: the \
+              computed rows or the sign conditions rule the window out")
+            continue
+      let extra ← if icc == iccPos then
+          pure #[← `(Lean.Parser.Term.namedArgument| (hD := Nat.succ_ne_zero _))]
+        else pure #[]
       let main ← match lo with
-        | some L => apply' icc #[← `(Lean.Parser.Term.namedArgument| (L := ($L : ℝ))),
-            ← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]
+        | some L => apply' icc (extra ++ #[← `(Lean.Parser.Term.namedArgument| (L := ($L : ℝ))),
+            ← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))])
         | none => apply' iic #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]
       match ← rowAttempt (applyThenSideFull P main) with
       | .ok tac =>

@@ -512,6 +512,16 @@ def A236471 : ℕ → ℝ[X]
 theorem A236471_interlaces (n : ℕ) : Interlaces (A236471 n) (A236471 (n + 1)) := by
   rr_row_interlaces
 
+/-- `B n = 0`: beyond the window `[-1, 0]` the multiplier `A = X + X ^ 2` is positive and the
+rows have positive degree (A142071). -/
+def A142071 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => (X + X ^ 2) * (A142071 (n + 1)).derivative
+
+theorem A142071_interlaces (n : ℕ) : Interlaces (A142071 n) (A142071 (n + 1)) := by
+  rr_row_interlaces
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 /--
