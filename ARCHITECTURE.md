@@ -1643,6 +1643,10 @@ The power-form route of `rr_row_interlaces` (rows `c m · F · q ^ (m + e)`) is 
 new module `Tactic.Row.PowerForm`; the root, production, tactic and tactic
 regression budgets rise by one, to 1756, 1616, 520 and 685.
 
+The Euler-step route handles a zero parameter through the new theorem module
+`EulerBidiagonal.ZeroParameter`; the same four budgets rise by one, to 1757,
+1617, 521 and 686.
+
 Run the architecture check with:
 
 ```bash

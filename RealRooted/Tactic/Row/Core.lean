@@ -1,4 +1,4 @@
-import RealRooted.EulerBidiagonal.DepRows
+import RealRooted.EulerBidiagonal.ZeroParameter
 import RealRooted.Tactic.Row.SideGoals
 
 /-!
@@ -126,6 +126,9 @@ private structure EulerFit where
   v : Rat
   u₀ : Rat
   s : Rat
+  /-- `a = 0`: the rows from `P 1` on carry the factor `X`
+  (`RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec_zero`) -/
+  zero : Bool := false
 
 /-- The square root of a nonnegative rational, if it is rational. -/
 private def ratSqrt? (q : Rat) : Option Rat :=
@@ -169,15 +172,21 @@ private def eulerFit? (r : RowRec) : MetaM (Except MessageData EulerFit) := do
   unless 0 < κ do return .error m!"`κ ≤ 0`"
   let σ := B / κ - 1
   let π := c / κ
+  let some L ← linRec? r.P | return .error m!"the first row cannot be computed"
+  let some rows ← linRecRows? L 0 | return .error m!"the first row cannot be computed"
+  unless rows[0]? == some (QPoly.const 1) do return .error m!"the first row is not `1`"
+  -- `a = 0`: the Euler step with parameters `1`, `b + 1`, `u (n + 1) + v` on `P (n + 1) / X`
+  if π == 0 && 0 ≤ σ then
+    let u₁ := u₀ + s + v
+    unless u₀ != 0 && 0 < u₁ && 0 ≤ s && 0 ≤ s + v && (σ + 3) * v ≤ 2 * u₁ do
+      return .error m!"the multiplier conditions fail (u₀ = {u₀}, s = {s}, v = {v})"
+    return .ok { κ, a := 0, b := σ, v, u₀, s, zero := true }
   unless 0 < σ && 0 < π do return .error m!"`a + b` or `a b` is not positive"
   let some δ := ratSqrt? (σ * σ - 4 * π)
     | return .error m!"`a` and `b` are not rational"
   let (a, b) := ((σ - δ) / 2, (σ + δ) / 2)
   unless 0 < u₀ && 0 ≤ s && 0 ≤ s + v && (a + b + 1) * v ≤ 2 * u₀ do
     return .error m!"the multiplier conditions fail (u₀ = {u₀}, s = {s}, v = {v})"
-  let some L ← linRec? r.P | return .error m!"the first row cannot be computed"
-  let some rows ← linRecRows? L 0 | return .error m!"the first row cannot be computed"
-  unless rows[0]? == some (QPoly.const 1) do return .error m!"the first row is not `1`"
   return .ok { κ, a, b, v, u₀, s }
 
 /-- The general Euler step route of `rr_row_interlaces` for a second-order recurrence with no
@@ -191,6 +200,35 @@ private def eulerStepRoute (r : RowRec) (P : Ident) : TacticM (TSyntax `tactic) 
   let n := mkIdent `n
   let k := mkIdent `k
   let hk := mkIdent `hk
+  if e.zero then
+    let main ← `(tactic| (
+      apply RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec_zero (κ := $(← ratTerm e.κ))
+        (b := $(← ratTerm e.b)) (v := $(← ratTerm e.v)) (s := $(← ratTerm e.s))
+        (u := fun $n:ident : ℕ => $(← ratTerm e.u₀) + $(← ratTerm e.s) * $n)
+      case h0 => first | rfl | simp [$P:ident]
+      case hrec =>
+        intro $n:ident
+        rw [$P:ident, RealRooted.EulerBidiagonal.generalStep_eq_second_derivative]
+        rr_poly_identity
+      case hκ => norm_num
+      case hb => norm_num
+      case hu0 => norm_num
+      case hshift => intro $n:ident; push_cast; ring
+      case hell =>
+        intro $n:ident $k:ident $hk:ident
+        have := (Nat.cast_le (α := ℝ)).mpr $hk:ident
+        have := Nat.cast_nonneg (α := ℝ) $k:ident
+        push_cast
+        nlinarith
+      case hQ =>
+        intro $n:ident
+        apply RealRooted.EulerBidiagonal.comparisonDefect_neg_of_two_mul_u_ge _ _ _ _ _
+          (by norm_num) (by norm_num) (by norm_num)
+        have := Nat.cast_nonneg (α := ℝ) $n:ident
+        push_cast
+        nlinarith))
+    evalTactic main
+    return main
   let main ← `(tactic| (
     apply RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec (κ := $(← ratTerm e.κ))
       (a := $(← ratTerm e.a)) (b := $(← ratTerm e.b)) (v := $(← ratTerm e.v))

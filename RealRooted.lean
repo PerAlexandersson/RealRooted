@@ -576,6 +576,7 @@ import RealRooted.EulerBidiagonal.GeneralRows
 import RealRooted.EulerBidiagonal.Location
 import RealRooted.EulerBidiagonal.PairStep
 import RealRooted.EulerBidiagonal.PairTheorem
+import RealRooted.EulerBidiagonal.ZeroParameter
 import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Darboux
 import RealRooted.EulerOperator.Darboux.Basic
