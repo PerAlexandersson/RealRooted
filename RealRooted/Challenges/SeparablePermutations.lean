@@ -118,8 +118,7 @@ the central root $-1$ is excluded by the evaluation formula for the gamma transf
 Z. Zhang, *A Factorial Compression Theorem for Strict Interlacing* (2026),
 [SSRN preprint](https://ssrn.com/abstract=7510941); S. Fu, Z. Lin and J. Zeng, “On two
 unimodal descent polynomials,” [arXiv:1507.05184](https://arxiv.org/abs/1507.05184).  The Lean
-development follows the draft formalization of PR #1132 by yyou59548-design; the split lemma,
-the Lagrange inversion and the gamma cubic were proved with Aristotle (Harmonic).
+development follows the draft formalization of PR #1132 by yyou59548-design.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.SeparablePermutations` and
