@@ -95,8 +95,6 @@ def eigenODE? (P : Name) (k : Nat := 7) (shift : Nat := 0) : MetaM (Option Eigen
     unless i1.isZero && i2.isZero && i3.isZero do return none
   return some { A := a, β, ev, W }
 
-private def numLit (n : Nat) : TSyntax `num := Syntax.mkNumLit (toString n)
-
 private def xT : Term := mkIdent ``Polynomial.X
 private def cT : Term := mkIdent ``Polynomial.C
 private def derivT : Term := mkIdent ``Polynomial.derivative
@@ -105,8 +103,8 @@ private def natT : Term := mkIdent ``Nat
 
 /-- A rational as a real term: `k`, `-k`, `k / m` or `-(k / m)`. -/
 def ratTerm (r : Rat) : TacticM Term := do
-  let num := numLit r.num.natAbs
-  let t ← if r.den == 1 then `(($num : $realT)) else `((($num : $realT) / $(numLit r.den)))
+  let num := rowNumLit r.num.natAbs
+  let t ← if r.den == 1 then `(($num : $realT)) else `((($num : $realT) / $(rowNumLit r.den)))
   if r.num < 0 then `(-$t) else pure t
 
 /-- A rational polynomial as a term of `ℝ[X]`, with integer coefficients as numerals. -/
@@ -115,14 +113,14 @@ def qpolyTerm (p : QPoly) : TacticM Term := do
   for i in [0:p.coeffs.size] do
     let c := p.coeff i
     if c == 0 then continue
-    let coeffT ← if c.den == 1 then `($(numLit c.num.natAbs))
-      else `($cT ($(numLit c.num.natAbs) / $(numLit c.den) : $realT))
+    let coeffT ← if c.den == 1 then `($(rowNumLit c.num.natAbs))
+      else `($cT ($(rowNumLit c.num.natAbs) / $(rowNumLit c.den) : $realT))
     let mono ← match i with
       | 0 => pure coeffT
       | 1 => if c.num.natAbs == 1 && c.den == 1 then pure xT
              else `($coeffT * $xT)
-      | _ => if c.num.natAbs == 1 && c.den == 1 then `($xT ^ $(numLit i))
-             else `($coeffT * $xT ^ $(numLit i))
+      | _ => if c.num.natAbs == 1 && c.den == 1 then `($xT ^ $(rowNumLit i))
+             else `($coeffT * $xT ^ $(rowNumLit i))
     acc := some <| ← match acc, decide (c < 0) with
       | none, false => pure mono
       | none, true => `(-$mono)

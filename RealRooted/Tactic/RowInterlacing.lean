@@ -374,29 +374,6 @@ private def rowsProbe (P : Name) (s D₀ : Nat) : MetaM (Option MessageData) := 
       return some m!"the computed rows {P} {s + m} and {P} {s + m + 1} do not interlace"
   return none
 
-/-- `p (x + c)`, by Horner's scheme. -/
-private def QPoly.shiftBy (p : QPoly) (c : Rat) : QPoly := Id.run do
-  let lin : QPoly := QPoly.X + QPoly.const c
-  let mut acc : QPoly := ⟨#[]⟩
-  for i in (List.range p.coeffs.size).reverse do
-    acc := acc * lin + QPoly.const (p.coeff i)
-  return acc
-
-/-- For a real-rooted `p`: are all roots at most `u`?  Exactly when `p (x + u)` has
-coefficients of one sign. -/
-private def QPoly.rootsLe (p : QPoly) (u : Rat) : Bool :=
-  let q := p.shiftBy u
-  let s : Rat := if q.lead < 0 then -1 else 1
-  q.coeffs.all (s * · ≥ 0)
-
-/-- For a real-rooted `p`: are all roots at least `l`?  Exactly when `p (l - y)` has
-coefficients of one sign. -/
-private def QPoly.rootsGe (p : QPoly) (l : Rat) : Bool :=
-  let q := p.shiftBy l
-  let cs := (Array.range q.coeffs.size).map fun i => if i % 2 = 0 then q.coeff i else -q.coeff i
-  let s : Rat := if cs.back?.getD 0 < 0 then -1 else 1
-  cs.all (s * · ≥ 0)
-
 /-- Which window theorem a numeric veto is checking. -/
 private inductive WindowKind where
   /-- plain sign conditions on `[L, U]` or `(-∞, U]` -/
@@ -432,19 +409,19 @@ private def windowPlausible (r : RowRec) (k D₀ : Nat) (lo : Option Rat) (u : R
     let inside : List Rat := match lo with
       | some l => [0, 1 / 4, 1 / 2, 3 / 4, 1].map fun t => l + (u - l) * t
       | none => offs.map (u - ·) ++ [u]
-    unless inside.all (a.evalAt · ≤ 0) do return false
+    unless inside.all (a.eval · ≤ 0) do return false
     for d in offs do
       let x := u + d
       match kind with
-      | .plain => unless 0 ≤ a.evalAt x && 0 < b.evalAt x do return false
+      | .plain => unless 0 ≤ a.eval x && 0 < b.eval x do return false
       | _ =>
-          let ax := a.evalAt x
+          let ax := a.eval x
           let mn := if ax < 0 then ax else 0
-          unless 0 < b.evalAt x * (x - u) + mn * ((D₀ + i : Nat) : Rat) do return false
+          unless 0 < b.eval x * (x - u) + mn * ((D₀ + i : Nat) : Rat) do return false
     if let some l := lo then
       for d in offs do
         let x := l - d
-        unless 0 ≤ a.evalAt x && b.evalAt x < 0 do return false
+        unless 0 ≤ a.eval x && b.eval x < 0 do return false
   return true
 
 /-- The numeric veto for the theorems without a window: the multiplier `A n` (first-order
@@ -458,7 +435,7 @@ private def plainPlausible (r : RowRec) (k : Nat) (nonpos : Bool) : MetaM Bool :
   let xs := if nonpos then xs.filter (· ≤ 0) else xs
   for i in [0:9] do
     let some m ← evalCoeffAt? f (i + k) | return true
-    unless xs.all (m.evalAt · ≤ 0) do return false
+    unless xs.all (m.eval · ≤ 0) do return false
   if nonpos then
     let some L ← linRec? r.P | return true
     let base := r.shift + k
@@ -1169,13 +1146,6 @@ private def normalizeRows (d : DerivLagRec) (M : Nat) : TacticM Unit := do
           | (simp [$P:ident]; ring)
       try rw [$e:ident])))
 
-/-- Extended Euclid: `(d, a, b)` with `a * f + b * g = d`. -/
-private partial def qpolyXgcd (f g : QPoly) : QPoly × QPoly × QPoly :=
-  if g.isZero then (f, QPoly.const 1, ⟨#[]⟩) else
-    let (q, r) := f.divMod g
-    let (d, a, b) := qpolyXgcd g r
-    (d, b, a - q * b)
-
 /-- A rational polynomial evaluated at the term `x`, as a real term (Horner form). -/
 private def qpolyReal (p : QPoly) (x : Term) : TacticM Term := do
   let mut acc : Term ← `((0 : ℝ))
@@ -1231,7 +1201,7 @@ private def baseGoals (d : DerivLagRec) (S : Nat) (hbase hbaseNo : MVarId) : Tac
   -- no common root
   setGoals [hbaseNo]
   withMainContext do
-  let (dd, a, b) := qpolyXgcd f g
+  let (dd, a, b) := QPoly.xgcd f g
   unless dd.natDegree == 0 && !dd.isZero do
     throwError "rr_row_deriv_lag: the base rows have a common root"
   let r := mkIdent `r

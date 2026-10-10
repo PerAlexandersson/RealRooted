@@ -447,7 +447,7 @@ private def cfPolyTerm (cs : Array Rat) (x : Term) : TacticM Term := do
   let mut acc : Option Term := none
   for i in [0:cs.size] do
     if cs[i]! == 0 then continue
-    let c ← rationalTerm cs[i]!
+    let c ← ratTerm cs[i]!
     let t : Term ←
       if i == 0 then pure c
       else if i == 1 then `($c * $x)
@@ -457,7 +457,7 @@ private def cfPolyTerm (cs : Array Rat) (x : Term) : TacticM Term := do
       | some a => do pure (some (← `($a + $t)))
   match acc with
   | some t => pure t
-  | none => rationalTerm 0
+  | none => ratTerm 0
 
 /-- The `j`-th component of a right-nested conjunction of `k` components. -/
 private def cfProj (ih : Term) (j k : Nat) : TacticM Term := do
@@ -523,8 +523,8 @@ def cfProve (plan : CFPlan) : TacticM Unit := do
   for j in [0:k] do
     if plan.isExplicit then baseComps := baseComps.push (← `(by $baseTac))
     else
-      let c0 ← rationalTerm (plan.base[j]!)[0]!
-      let c1 ← rationalTerm (plan.base[j]!)[1]!
+      let c0 ← ratTerm (plan.base[j]!)[0]!
+      let c1 ← ratTerm (plan.base[j]!)[1]!
       baseComps := baseComps.push (← `(⟨$c0, $c1, by $baseTac⟩))
   let baseTerm : Term ← if k == 1 then pure baseComps[0]! else `(⟨$baseComps,*⟩)
   -- the step
