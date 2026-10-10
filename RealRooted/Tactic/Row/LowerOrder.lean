@@ -103,7 +103,7 @@ private def lowerProbe? (L : LinRecData) : MetaM (Option LowerCert) := do
   return some { δ, a, b, c }
 
 /-- `(c₀ + c₁ * N + … : ℝ)`. -/
-private def nPolyTerm (cs : Array Rat) (N : Term) : TacticM Term := do
+def nPolyTerm (cs : Array Rat) (N : Term) : TacticM Term := do
   let mut acc : Option Term := none
   for i in [0:cs.size] do
     if cs[i]! == 0 then continue
@@ -120,7 +120,7 @@ private def nPolyTerm (cs : Array Rat) (N : Term) : TacticM Term := do
   | none => `((0 : ℝ))
 
 /-- `C (…) + C (…) * X + …` with coefficients polynomial in `N`. -/
-private def xPolyTerm (cs : Array (Array Rat)) (N : Term) : TacticM Term := do
+def xPolyTerm (cs : Array (Array Rat)) (N : Term) : TacticM Term := do
   let mut acc : Option Term := none
   for j in [0:cs.size] do
     if cs[j]!.all (· == 0) then continue

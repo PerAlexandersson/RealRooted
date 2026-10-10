@@ -1647,6 +1647,11 @@ The Euler-step route handles a zero parameter through the new theorem module
 `EulerBidiagonal.ZeroParameter`; the same four budgets rise by one, to 1757,
 1617, 521 and 686.
 
+The reversed-rows route adds `Interlacing.Reversal` (the link of a recurrence with its
+reversed rows) and `Tactic.Row.Reverse`; the tactic umbrella now also reaches
+`DegreeDropReversal` and `Basic.AffineInterlacing`. The root, production, tactic and tactic
+regression budgets rise to 1759, 1619, 525 and 689.
+
 Run the architecture check with:
 
 ```bash

@@ -478,6 +478,31 @@ def A376827 : ℕ → ℝ[X]
 theorem A376827_interlaces (n : ℕ) : Interlaces (A376827 n) (A376827 (n + 1)) := by
   rr_row_interlaces
 
+/-- The reversed rows of `X ^ 3 P'' - (2n + 1) X ^ 2 P' + (1 + (n + 1) ^ 2 X) P` satisfy
+`R (n + 1) = X ^ 2 R'' + 3 X R' + (1 + X) R`, an Euler step: the route through the reversed
+rows (A008957, central factorial numbers). -/
+def A008957 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => C 1 * X ^ 3 * (A008957 n).derivative.derivative +
+      C (-1 - 2 * (n : ℝ)) * X ^ 2 * (A008957 n).derivative +
+      (C 1 + C (((n : ℝ) + 1) ^ 2) * X) * A008957 n
+
+theorem A008957_interlaces (n : ℕ) : Interlaces (A008957 n) (A008957 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A008957_splits (n : ℕ) : (A008957 n).Splits := by
+  rr_row_splits
+
+/-- Reversed rows again (A191935). -/
+def A191935 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => C 1 * X ^ 3 * (A191935 n).derivative.derivative +
+      C (-2 - 2 * (n : ℝ)) * X ^ 2 * (A191935 n).derivative +
+      (C 1 + C (-2 + (2 + (n : ℝ)) ^ 2 - (n : ℝ)) * X) * A191935 n
+
+theorem A191935_interlaces (n : ℕ) : Interlaces (A191935 n) (A191935 (n + 1)) := by
+  rr_row_interlaces
+
 /-- The rows `P m = m (1 + X) X ^ (m - 1)` start the power form after the row `P 0 = 1`
 (A128540). -/
 def A128540 : ℕ → ℝ[X]
@@ -552,7 +577,7 @@ example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitF
 /--
 error: rr_row_splits: unknown route foo; the routes are closedForm, lowerOrder, subseq,
 linearFactors, splitFactors, twoStep, shiftedProduct, nextRow, prevRow, halfGrowth,
-degreePattern
+degreePattern, reversed
 -/
 #guard_msgs (whitespace := normalized) in
 example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := foo)

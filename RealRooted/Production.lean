@@ -770,6 +770,7 @@ import RealRooted.Interlacing.PencilPreserver
 import RealRooted.Interlacing.Residue
 import RealRooted.Interlacing.ResidueCriterion
 import RealRooted.Interlacing.ResidueEulerStep
+import RealRooted.Interlacing.Reversal
 import RealRooted.Interlacing.RootCountSigns
 import RealRooted.Interlacing.RootDeletionExpansion
 import RealRooted.InterlacingSequence
@@ -1536,6 +1537,7 @@ import RealRooted.Tactic.Row.Core
 import RealRooted.Tactic.Row.DerivLag
 import RealRooted.Tactic.Row.LowerOrder
 import RealRooted.Tactic.Row.PowerForm
+import RealRooted.Tactic.Row.Reverse
 import RealRooted.Tactic.Row.SideGoals
 import RealRooted.Tactic.Row.Subseq
 import RealRooted.Tactic.RowClosedForm

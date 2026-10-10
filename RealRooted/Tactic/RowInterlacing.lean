@@ -1,6 +1,7 @@
 import RealRooted.Tactic.Row.DerivLag
 import RealRooted.Tactic.Row.Subseq
 import RealRooted.Tactic.Row.PowerForm
+import RealRooted.Tactic.Row.Reverse
 
 /-!
 # Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
@@ -31,6 +32,10 @@ route that the probe rules out fails without elaborating anything.
      `…_of_ratio`, and the ratio barrier `threeTerm_interlaces_of_roots_mem_Icc_of_barrier`
      for `b n < 0` beyond the window), then a moving lower window
      (`derivRec_interlaces_of_roots_mem_Icc_mono_div`).
+5. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
+   whose rows have nonzero constant terms: an auxiliary recursive definition of the reversed
+   sequence, the link `eq_reflect_of_derivRec₂` / `eq_reflect_of_threeTerm`, and the transfer
+   `interlaces_of_eq_reflect` (`Row.Reverse`).
 
 The degree and leading-coefficient hypotheses go to `rr_row_natDegree` and
 `rr_row_leadingCoeff_pos`, nonnegativity of coefficients to `rr_row_nonneg_coeffs`, and the
@@ -62,8 +67,8 @@ The degree tactics (`rr_row_natDegree`, `rr_row_ne_zero`, `rr_row_leadingCoeff_p
 `RealRooted.Tactic.Recurrence.Degree`: degree laws of the recurrence shapes, general linear
 recurrences (`rr_linrec`), cancelling top terms (`rr_row_cancel`) and two-step products by
 parity.  The implementation of this module is split over `Row.SideGoals` (syntax and side
-goals), `Row.Core`, `Row.LowerOrder`, `Row.DerivLag`, `Row.Subseq` and `Row.PowerForm`; this
-module holds the front ends.
+goals), `Row.Core`, `Row.LowerOrder`, `Row.DerivLag`, `Row.Subseq`, `Row.PowerForm` and
+`Row.Reverse`; this module holds the front ends.
 -/
 
 open Lean Elab Tactic Meta Polynomial
@@ -92,7 +97,13 @@ private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := 
   -- by an exact probe, before the more expensive core
   if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
     if ← rowSucceeds powerFormRoute then return (#[], hints)
-  rowInterlacesCore hints
+  match ← rowAttempt (rowInterlacesCore hints) with
+  | .ok res => return res
+  | .error e =>
+    -- the reversed rows (`Row.Reverse`), when no theorem applies to the rows themselves
+    if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
+      if ← rowSucceeds (reverseRowGoal false) then return (#[], hints)
+    throwError e
 
 /-- Run a row tactic `core` and print the hinted call `name hs'*` and the certificate. -/
 private def rowElabWithHints (tk : Syntax) (core : TacticM (Cert × RowHints))
@@ -133,6 +144,10 @@ elab_rules : tactic
         if ty.isForall && (ty.find? (·.isConstOf r.P)).isSome &&
             (ty.find? (·.isConstOf ``Polynomial.derivative)).isSome then
           recs := recs.push (mkIdent d.userName)
+    -- or nonnegative multipliers of the second-order recurrence itself
+    if r.shape == .deriv₂ then
+      mains := mains.push (← `(tactic|
+        refine RealRooted.derivRec₂_hasNonnegCoeffs (P := $Q) $hrec ?_ ?_ ?_ ?_ $t))
     let D₀? ← findRowDegree P r.shift
     for h in recs do
       mains := mains.push (← `(tactic|
@@ -237,23 +252,11 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
   throwRowFailures m!"rr_row_eval_zero_pos: no strategy proves the goal for {P}" failures
 
 
-/-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
-`rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
-number of rows split off; the routes are `closedForm`, `lowerOrder`, `subseq`,
-`linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and `prevRow` (the
-interlacing of `P t` with `P (t + 1)` or `P (t - 1)`), `halfGrowth` and `degreePattern` (first-order
-derivative recurrences whose degree grows by zero or one).  The hints of
-`rr_row_interlaces` are passed on to the interlacing routes. -/
-syntax (name := rrRowSplits) "rr_row_splits" (ppSpace rrRowHint)* : tactic
-
-/-- `rr_row_splits?` runs `rr_row_splits` and prints the hinted call, which replays only the
-successful route. -/
-syntax (name := rrRowSplitsQ) "rr_row_splits?" (ppSpace rrRowHint)* : tactic
 
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
   [`closedForm, `lowerOrder, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
-    `nextRow, `prevRow, `halfGrowth, `degreePattern]
+    `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed]
 
 /-- `rr_row_splits`, returning the hints of the successful route. -/
 private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainContext do
@@ -521,7 +524,8 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
       (`halfGrowth, 1, "half growth after splitting off a row", half 1),
       (`halfGrowth, 2, "half growth after splitting off two rows", half 2),
       (`degreePattern, 0, "degrees growing by zero or one, with nonnegative coefficients",
-        route `degreePattern viaDegreePattern)] do
+        route `degreePattern viaDegreePattern),
+      (`reversed, 0, "the reversed rows", route `reversed (reverseRowGoal true))] do
     unless use r do continue
     -- `drop` counts the rows split off by the interlacing and half-growth routes
     if hints.drop.isSome && hints.drop != some k &&
