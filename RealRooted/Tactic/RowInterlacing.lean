@@ -19,7 +19,7 @@ route that the probe rules out fails without elaborating anything.
 2. Order three, factoring through a three-term recurrence: the reduction certified by
    `threeTerm_rec_of_remainder` (`Row.LowerOrder`).
 3. Multipliers `α j n · q ^ (k - j)` for one linear `q`, `k ≤ 3`: the power form,
-   `interlaces_of_forall_eq_C_mul_pow` (`Row.PowerForm`).
+   `interlaces_of_forall_eq_C_mul_pow`, possibly after the first two rows (`Row.PowerForm`).
 4. The interlacing core (`Row.Core`):
    * products `P (n + 1) = L n * P n`: `productSequence_interlaces`;
    * two-step products `P (n + 2) = q * P n`: `twoStepProduct_interlaces`;
@@ -28,7 +28,8 @@ route that the probe rules out fails without elaborating anything.
    * three-term and first-order derivative recurrences: the sign conditions
      (`threeTerm_interlaces_of_eval_nonpos`, `…_of_nonnegCoeffs`, `derivRec_interlaces_*`),
      then fixed root windows (`*_of_roots_mem_Icc`, `*_of_roots_le`, `…_of_degree`,
-     `…_of_ratio`), then a moving lower window
+     `…_of_ratio`, and the ratio barrier `threeTerm_interlaces_of_roots_mem_Icc_of_barrier`
+     for `b n < 0` beyond the window), then a moving lower window
      (`derivRec_interlaces_of_roots_mem_Icc_mono_div`).
 
 The degree and leading-coefficient hypotheses go to `rr_row_natDegree` and
