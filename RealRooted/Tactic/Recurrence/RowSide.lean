@@ -4,6 +4,7 @@ import RealRooted.DerivativeRecurrence.SecondOrderODE
 import RealRooted.DerivativeRecurrence.General
 import RealRooted.Tactic.Recurrence.ODE
 import RealRooted.Tactic.Recurrence.Shape
+import RealRooted.Tactic.Recurrence.LinRecProbe
 
 /-!
 # Row tactics: side goals, degree theorems and certificates
@@ -25,10 +26,19 @@ def rowDegreeTac (P : Ident) : TacticM (TSyntax `tactic) :=
     | (norm_num [$P:ident]; first | done | (compute_degree!; done) | fail)
     | fail)
 
-/-- The degree of the row `P k`, if it is at most `8`. -/
+/-- The degree of the row `P k`, if it is at most `8`.  When the rows can be computed exactly,
+only the computed degree is tried: no other degree can be proved, and each failed attempt
+costs an elaboration of the row. -/
 def findRowDegree (P : Ident) (k : Nat) : TacticM (Option Nat) := do
   let tac ← rowDegreeTac P
-  for D in [0:9] do
+  let computed? : Option Nat ← do
+    let some L ← linRec? P.getId | pure none
+    let some rows ← linRecRows? L k | pure none
+    pure (rows[k]?.map (·.natDegree))
+  let Ds := match computed? with
+    | some d => if d < 9 then [d] else []
+    | none => List.range 9
+  for D in Ds do
     let s ← saveState
     let ok ← rowSucceeds do
       evalTactic (← `(tactic|

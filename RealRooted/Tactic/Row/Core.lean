@@ -218,6 +218,48 @@ private def eulerStepRoute (r : RowRec) (P : Ident) : TacticM (TSyntax `tactic) 
   evalTactic main
   return main
 
+/-- A root window `[p m / q m, u]` of the shifted rows `m ↦ P (m + s + k)` whose lower bound
+moves with `m`: `p m = a + b m`, `q m = 1 + d m` with `d ≥ 0`, `p m / q m` a root of `A m`
+and `u` a root of every `A m`. -/
+private structure MovingWindow where
+  a : Rat
+  b : Rat
+  d : Rat
+  u : Rat
+
+/-- Search a moving lower root window on the computed rows `m ≤ 9`: a fixed root `u` of every
+`A m`; the largest root `L m < u` of `A m`; the rows in `[L m, u]` and `A m ≤ 0` in between;
+`L m = (a + b m) / (1 + d m)` fitted on `m = 0, 1, 2` and checked on the rest; `L`
+nonincreasing. -/
+private def movingWindow? (r : RowRec) (k : Nat) : MetaM (Option MovingWindow) := do
+  let some Af := r.coeffs[0]? | return none
+  let some L ← linRec? r.P | return none
+  let base := r.shift + k
+  let some rows ← linRecRows? L (base + 10) | return none
+  let mut As : Array QPoly := #[]
+  for m in [0:10] do
+    let some a ← evalCoeffAt? Af (m + k) | return none
+    As := As.push a
+  let roots := As.map fun a => a.rationalRoots.eraseDups
+  let some r0 := roots[0]? | return none
+  for u in r0.filter fun u => roots.all (·.contains u) do
+    let lows := roots.map fun rs => (rs.filter (· < u)).max?
+    unless lows.all (·.isSome) do continue
+    let ls := lows.map (·.getD 0)
+    let ok := (List.range 10).all fun m =>
+      let row := rows[base + m]!
+      !row.isZero && row.rootsGe ls[m]! && row.rootsLe u &&
+        As[m]!.eval ((ls[m]! + u) / 2) ≤ 0 && (m == 9 || ls[m + 1]! ≤ ls[m]!)
+    unless ok do continue
+    let (l0, l1, l2) := (ls[0]!, ls[1]!, ls[2]!)
+    if l2 == l1 then continue
+    let d := (2 * l1 - l0 - l2) / (2 * (l2 - l1))
+    let a := l0
+    let b := l1 * (1 + d) - l0
+    unless 0 ≤ d && (List.range 10).all (fun m => ls[m]! * (1 + d * m) == a + b * m) do continue
+    return some { a, b, d, u }
+  return none
+
 /-- `rr_row_interlaces` for the sequence `m ↦ P (m + k)` (after `k` further rows), returning
 a certificate and the hinted call.  `given` supplies the recurrence and a proof of it when it
 is not read off the definition. -/
@@ -479,6 +521,29 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
             return (pre.push tac,
               { thm := some ratioWin, degree := some D₀, upper := some U, drop := dropHint k })
         | .error e => failures := failures.push (m!"{ratioWin} on (-∞, {U}], ρ = {ρ}", e)
+  -- root windows whose lower bound is a root of `A n` moving with `n`
+  -- (`RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_div`)
+  let movIcc := ``RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_div
+  if shape == .deriv₁ && r.shape == .deriv₁ && given.isNone && hints.window.isNone &&
+      hints.upper.isNone && (hints.thm.isNone || hints.thm == some movIcc) then
+    match ← movingWindow? r k with
+    | none => failures := failures.push (m!"{movIcc}", m!"no moving root window fits the rows")
+    | some w =>
+        let mI := mkIdent `m
+        let pT ← `(fun $mI:ident : ℕ => $(← ratTerm w.a) + $(← ratTerm w.b) * ($mI : ℝ))
+        let qT ← `(fun $mI:ident : ℕ => 1 + $(← ratTerm w.d) * ($mI : ℝ))
+        let main ← apply' movIcc #[← `(Lean.Parser.Term.namedArgument| (p := $pT)),
+          ← `(Lean.Parser.Term.namedArgument| (q := $qT)),
+          ← `(Lean.Parser.Term.namedArgument| (U := ($(← ratTerm w.u) : ℝ)))]
+        let tac ← `(tactic| $main <;> first
+          | rr_row_side | rr_row_eval_sign | (intro n; push_cast; first | positivity | nlinarith))
+        match ← rowAttempt (do
+            evalTactic tac
+            unless (← getGoals).isEmpty do throwError "goals remain") with
+        | .ok _ =>
+            let h : RowHints := { thm := some movIcc, degree := some D₀, drop := dropHint k }
+            return (pre.push tac, h)
+        | .error e => failures := failures.push (m!"{movIcc}", e)
   throwRowFailures m!"rr_row_interlaces: no strategy proves the goal for the \
     {shape.describe} recurrence of {P} (base degree {D₀}, dropping {k} rows)" failures
 
