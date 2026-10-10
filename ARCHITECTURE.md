@@ -1620,6 +1620,13 @@ umbrella budget rises to 511 and the tactic regression budget to 671.
 is now below 510 lines. The root, production, tactic umbrella and tactic
 regression budgets rise by the five new modules, to 1746, 1612, 516 and 676.
 
+`Tactic.Recurrence.Degree` (1697 lines) is split the same way: the side-goal
+engine, degree-theorem driver and certificate printing go to
+`Recurrence.RowSide`, the numeric probe for general linear recurrences to
+`Recurrence.LinRecProbe`, and the `rr_linrec` tactic to `Recurrence.LinRec`;
+the degree front ends keep the module name. The same four budgets rise by
+three, to 1749, 1615, 519 and 679.
+
 Run the architecture check with:
 
 ```bash

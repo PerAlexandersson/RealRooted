@@ -1516,7 +1516,10 @@ import RealRooted.Tactic.Recurrence
 import RealRooted.Tactic.Recurrence.Cancel
 import RealRooted.Tactic.Recurrence.Degree
 import RealRooted.Tactic.Recurrence.Eval
+import RealRooted.Tactic.Recurrence.LinRec
+import RealRooted.Tactic.Recurrence.LinRecProbe
 import RealRooted.Tactic.Recurrence.ODE
+import RealRooted.Tactic.Recurrence.RowSide
 import RealRooted.Tactic.Recurrence.Shape
 import RealRooted.Tactic.RecurrenceEval
 import RealRooted.Tactic.RecurrenceIdentification
