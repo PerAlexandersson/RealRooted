@@ -1558,6 +1558,9 @@ import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.RecurrenceODE
 import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.RootCount
+import RealRooted.Tactic.Examples.RootCount.Core
+import RealRooted.Tactic.Examples.RootCount.Filters
+import RealRooted.Tactic.Examples.RootCount.LowDegree
 import RealRooted.Tactic.Examples.RowData
 import RealRooted.Tactic.Examples.RowGeneral
 import RealRooted.Tactic.Examples.RowInterlacing

@@ -1627,6 +1627,13 @@ engine, degree-theorem driver and certificate printing go to
 the degree front ends keep the module name. The same four budgets rise by
 three, to 1749, 1615, 519 and 679.
 
+The root-count regression file `Tactic.Examples.RootCount` (1850 lines) is
+split by frontend family into `RootCount.Core`, `RootCount.Filters` (the
+`rr_card_roots_filter_*` frontends) and `RootCount.LowDegree`; the core and
+filter regressions no longer import the low-degree theory. The historical
+module remains as a facade. The root and tactic regression budgets rise to
+1752 and 681.
+
 Run the architecture check with:
 
 ```bash
