@@ -548,6 +548,17 @@ def A118931 : ℕ → ℝ[X]
 theorem A118931_splits (n : ℕ) : (A118931 n).Splits := by
   rr_row_splits
 
+/-- The feedback term `(X - 1) P n`: the same windows in the variable `X - 1` (A118884). -/
+def A118884 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2
+  | 2 => 4
+  | 3 => 8
+  | n + 4 => 2 * A118884 (n + 3) + (-1 + X) * A118884 n
+
+theorem A118884_splits (n : ℕ) : (A118884 n).Splits := by
+  rr_row_splits
+
 /-- The rows `P m = m (1 + X) X ^ (m - 1)` start the power form after the row `P 0 = 1`
 (A128540). -/
 def A128540 : ℕ → ℝ[X]

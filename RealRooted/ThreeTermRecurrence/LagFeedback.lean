@@ -94,4 +94,20 @@ theorem splits_of_lagFeedback {P : ℕ → ℝ[X]} {p : ℕ} {α : ℝ} {c : ℕ
     rw [hPi]
     exact hasNonnegCoeffs_C ha.le
 
+/-- `splits_of_lagFeedback` with the feedback term `c n (X - r) P n`: the same argument in the
+variable `X - r`, since splitting is invariant under the shift `X ↦ X + r`. -/
+theorem splits_of_lagFeedback_sub {P : ℕ → ℝ[X]} {p : ℕ} {α r : ℝ} {c : ℕ → ℝ}
+    (hp : 2 ≤ p) (hα : 0 < α) (hc : ∀ n, 0 < c n)
+    (hrec : ∀ n, P (n + p) = C α * P (n + (p - 1)) + C (c n) * (X - C r) * P n)
+    (h0 : ∀ i, i < p → ∃ a : ℝ, 0 < a ∧ P i = C a) (n : ℕ) : (P n).Splits := by
+  have hQ := splits_of_lagFeedback (P := fun m => (P m).comp (X + C r)) hp hα hc
+    (fun m => by
+      simp only [hrec m, add_comp, mul_comp, C_comp, X_comp, sub_comp]
+      ring)
+    (fun i hi => by
+      obtain ⟨a, ha, hPi⟩ := h0 i hi
+      exact ⟨a, ha, by simp [hPi]⟩) n
+  have h := hQ.comp_X_add_C (-r)
+  simpa [comp_assoc] using h
+
 end RealRooted
