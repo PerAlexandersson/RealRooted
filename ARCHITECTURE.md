@@ -1614,6 +1614,12 @@ without an eigen-ODE, so `Tactic.RowInterlacing` imports
 `EulerBidiagonal.DepRows` and its seven-module theorem closure. The tactic
 umbrella budget rises to 511 and the tactic regression budget to 671.
 
+`Tactic.RowInterlacing` (2341 lines) is split along its five subsystems into
+`Tactic.Row.SideGoals`, `Row.Core`, `Row.LowerOrder`, `Row.DerivLag` and
+`Row.Subseq`, with the front ends left in `Tactic.RowInterlacing`. Every unit
+is now below 510 lines. The root, production, tactic umbrella and tactic
+regression budgets rise by the five new modules, to 1746, 1612, 516 and 676.
+
 Run the architecture check with:
 
 ```bash

@@ -1662,6 +1662,11 @@ import RealRooted.Tactic.RootCount.LowDegree
 import RealRooted.Tactic.RootCount.LowDegreeRules
 import RealRooted.Tactic.RootCount.LowDegreeSyntax
 import RealRooted.Tactic.RootCount.SequenceCore
+import RealRooted.Tactic.Row.Core
+import RealRooted.Tactic.Row.DerivLag
+import RealRooted.Tactic.Row.LowerOrder
+import RealRooted.Tactic.Row.SideGoals
+import RealRooted.Tactic.Row.Subseq
 import RealRooted.Tactic.RowClosedForm
 import RealRooted.Tactic.RowInterlacing
 import RealRooted.Tactic.ScalarDen
