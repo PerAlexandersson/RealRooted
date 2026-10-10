@@ -350,6 +350,29 @@ the first row and the base degree: the strategies of one `rr_row_splits` call as
 same degree law several times, and a failed search is the most expensive step. -/
 initialize rowDegreeFailures : IO.Ref (Array (Name × UInt64 × Nat × Nat)) ← IO.mkRef #[]
 
+/-- Keys as for `rowDegreeFailures` whose combined degree and leading-coefficient search
+failed while the two separate searches succeeded: later attempts go straight to the latter. -/
+initialize rowSharedDegreeFailures : IO.Ref (Array (Name × UInt64 × Nat × Nat)) ←
+  IO.mkRef #[]
+
+/-- The exact probe of the interlacing core on the rows `P (s + m)`: the computed rows
+`m = 0, …, 8` must have degree `D₀ + m` and a positive leading coefficient, and adjacent
+rows must interlace (`QPoly.interlaces`).  Every theorem of the core concludes this for all
+`m`, so a failure rules them all out before any elaboration.  Returns the reason, or `none`
+when the probe passes or the rows cannot be computed. -/
+private def rowsProbe (P : Name) (s D₀ : Nat) : MetaM (Option MessageData) := do
+  let some L ← linRec? P | return none
+  let some rows ← linRecRows? L (s + 8) | return none
+  for m in [0:9] do
+    let some p := rows[s + m]? | return none
+    if p.isZero || p.natDegree != D₀ + m || p.lead ≤ 0 then
+      return some m!"the computed row {P} {s + m} does not have degree {D₀ + m} and a \
+        positive leading coefficient"
+  for m in [0:8] do
+    unless rows[s + m]!.interlaces rows[s + m + 1]! do
+      return some m!"the computed rows {P} {s + m} and {P} {s + m + 1} do not interlace"
+  return none
+
 /-- `p (x + c)`, by Horner's scheme. -/
 private def QPoly.shiftBy (p : QPoly) (c : Rat) : QPoly := Id.run do
   let lin : QPoly := QPoly.X + QPoly.const c
@@ -537,7 +560,11 @@ private def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   if (← rowDegreeFailures.get).contains key then
     throwError "rr_row_interlaces: the degrees `{D₀} + n` or the positive leading coefficients \
       of {P} could not be proved (an earlier search failed)"
-  let mut hoisted ← rowSucceeds (withMainContext (evalTactic shared))
+  if let some why ← rowsProbe r.P (r.shift + k) D₀ then
+    throwError "rr_row_interlaces: no interlacing theorem applies to {P} (base degree {D₀}, \
+      dropping {k} rows): {why}"
+  let mut hoisted ← if (← rowSharedDegreeFailures.get).contains key then pure false
+    else rowSucceeds (withMainContext (evalTactic shared))
   -- the two hypotheses separately, before every theorem below asks for them again
   let separate ← `(tactic|
       obtain ⟨$hdegI:ident, $hposI:ident⟩ :
@@ -547,6 +574,7 @@ private def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   else if ← rowSucceeds (withMainContext (evalTactic separate)) then
     hoisted := true
     pre := pre.push separate
+    rowSharedDegreeFailures.modify (·.push key)
   else
     rowDegreeFailures.modify (·.push key)
     throwError "rr_row_interlaces: could not prove the degrees `{D₀} + n` and the positive \
