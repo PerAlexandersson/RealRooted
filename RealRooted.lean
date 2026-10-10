@@ -1454,6 +1454,9 @@ import RealRooted.Tactic.Examples.Derivative
 import RealRooted.Tactic.Examples.EndpointDerivative
 import RealRooted.Tactic.Examples.EulerOperator
 import RealRooted.Tactic.Examples.Favard
+import RealRooted.Tactic.Examples.Favard.Denominator
+import RealRooted.Tactic.Examples.Favard.Direct
+import RealRooted.Tactic.Examples.Favard.RowSign
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.Finish.Basic
 import RealRooted.Tactic.Examples.Finish.Interlacing
