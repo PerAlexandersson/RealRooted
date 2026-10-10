@@ -240,6 +240,30 @@ def A008556 : ℕ → ℝ[X]
 
 theorem A008556_splits (n : ℕ) : (A008556 n).Splits := by rr_row_splits
 
+/-! ### Two-step products with zero rows
+
+Degrees by parity (`RealRooted.twoStepProduct_natDegree`). -/
+
+/-- The odd rows vanish (A003982). -/
+def A003982 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 0
+  | n + 2 => X * A003982 n
+
+theorem A003982_natDegree (n : ℕ) :
+    (A003982 n).natDegree = if n % 2 = 1 then 0 else n / 2 := by
+  rr_row_natDegree
+
+/-- A constant factor: the rows alternate between `1` and `1 + X` (A266178). -/
+def A266178 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 => 1 * A266178 n
+
+theorem A266178_natDegree (n : ℕ) :
+    (A266178 n).natDegree = if n % 2 = 1 then 1 else 0 := by
+  rr_row_natDegree
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 example (n : ℕ) : (A026386 n).Splits := by rr_row_splits (via := closedForm)
