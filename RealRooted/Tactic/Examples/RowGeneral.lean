@@ -225,6 +225,19 @@ def A008303 : ℕ → ℝ[X]
 
 theorem A008303_natDegree (n : ℕ) : (A008303 n).natDegree = n / 2 := by rr_row_natDegree
 
+/-- The rows of degree `n / 2` split: from the first row of positive degree on, consecutive
+rows strictly interlace (`RealRooted.derivRec_splits_of_degree_pattern_of_nonnegCoeffs`). -/
+theorem A008303_splits (n : ℕ) : (A008303 n).Splits := by rr_row_splits
+
+/-- Half growth of a three-term recurrence whose multipliers are rational in `n` (A008556). -/
+def A008556 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2
+  | n + 2 => C ((1 / (-2 + -1 * (n : ℝ))) * (-6 + -4 * (n : ℝ))) * A008556 (n + 1) +
+      (C ((1 / (-2 + -1 * (n : ℝ))) * (-4 + -4 * (n : ℝ))) * X) * A008556 n
+
+theorem A008556_splits (n : ℕ) : (A008556 n).Splits := by rr_row_splits
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 example (n : ℕ) : (A026386 n).Splits := by rr_row_splits (via := closedForm)

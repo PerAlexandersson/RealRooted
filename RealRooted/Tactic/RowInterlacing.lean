@@ -211,7 +211,8 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
 `rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
 number of rows split off; the routes are `closedForm`, `lowerOrder`, `subseq`,
 `linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and `prevRow` (the
-interlacing of `P t` with `P (t + 1)` or `P (t - 1)`) and `halfGrowth`.  The hints of
+interlacing of `P t` with `P (t + 1)` or `P (t - 1)`), `halfGrowth` and `degreePattern` (first-order
+derivative recurrences whose degree grows by zero or one).  The hints of
 `rr_row_interlaces` are passed on to the interlacing routes. -/
 syntax (name := rrRowSplits) "rr_row_splits" (ppSpace rrRowHint)* : tactic
 
@@ -222,7 +223,7 @@ syntax (name := rrRowSplitsQ) "rr_row_splits?" (ppSpace rrRowHint)* : tactic
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
   [`closedForm, `lowerOrder, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
-    `nextRow, `prevRow, `halfGrowth]
+    `nextRow, `prevRow, `halfGrowth, `degreePattern]
 
 /-- `rr_row_splits`, returning the hints of the successful route. -/
 private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainContext do
@@ -392,6 +393,65 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
     setGoals [hq]
     evalTactic (← factorSplitsTac)
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
+  -- first-order derivative recurrences whose degree grows by zero or one at each step, with
+  -- the degree law `c + (n + e) / 2` and nonnegative coefficients
+  -- (`RealRooted.derivRec_splits_of_degree_pattern_of_nonnegCoeffs`)
+  let viaDegreePattern := do
+    unless r.shape == .deriv₁ do throwError "rr_row_splits: not a first-order derivative recurrence"
+    let some L ← linRec? r.P | throwError "rr_row_splits: no linear recurrence"
+    let some rows ← linRecRows? L (r.shift + 22) | throwError "rr_row_splits: rows not computable"
+    let c := (rows[r.shift]!).natDegree
+    let fits (e : Nat) := (List.range 20).all fun m =>
+      !(rows[r.shift + m]!).isZero && (rows[r.shift + m]!).natDegree == c + (m + e) / 2
+    let some e := [0, 1].find? fits
+      | throwError "rr_row_splits: the degrees do not follow `c + (n + e) / 2`"
+    unless (List.range 20).all fun m => (rows[r.shift + m]!).coeffs.all (0 ≤ ·) do
+      throwError "rr_row_splits: the rows do not have nonnegative coefficients"
+    -- the law of the unshifted rows `P n`, which the degree tactics prove for a variable `n`
+    let c' := (rows[0]!).natDegree
+    let some e' := [0, 1].find? fun e' => (List.range (r.shift + 20)).all fun n =>
+        !(rows[n]!).isZero && (rows[n]!).natDegree == c' + (n + e') / 2
+      | throwError "rr_row_splits: the degrees of the first rows do not follow the law"
+    let m := mkIdent `m
+    -- a law in the form the degree tactics read: `m / 2`, `(m + 1) / 2`, `c + …`
+    let law (c e : Nat) (x : Term) : TacticM Term := do
+      let half : Term ← if e == 0 then `($x / 2) else `(($x + $(rowNumLit e)) / 2)
+      if c == 0 then pure half else `($(rowNumLit c) + $half)
+    let hdegAll := mkIdent `hdeg_all
+    let hposAll := mkIdent `hpos_all
+    let nI := mkIdent `n
+    evalTactic (← `(tactic|
+      have $hdegAll:ident : ∀ $nI:ident : ℕ, ($P $nI).natDegree = $(← law c' e' nI) := by
+        intro $nI:ident; rr_row_natDegree))
+    evalTactic (← `(tactic|
+      have $hposAll:ident : ∀ $nI:ident : ℕ, 0 < ($P $nI).leadingCoeff := by
+        intro $nI:ident; rr_row_leadingCoeff_pos))
+    let (_, t) ← alignRow r.P r.shift (smallRowSplits P)
+    let Q ← r.seq 0
+    let hrec ← r.hrecTerm 0
+    let Dt ← `(fun $m:ident : ℕ => $(← law c e m))
+    evalTactic (← `(tactic|
+      refine RealRooted.derivRec_splits_of_degree_pattern_of_nonnegCoeffs (P := $Q) (D := $Dt)
+        $hrec ?_ ?_ ?_ ?_ ?_ ?_ $t))
+    let [hdeg, hstep, hpos, hnn, hA, h0] ← getGoals
+      | throwError "rr_row_splits: unexpected side goals"
+    setGoals [hdeg]; evalTactic (← `(tactic| (intro m; beta_reduce; rw [$hdegAll:ident] <;> lia)))
+    setGoals [hstep]; evalTactic (← `(tactic| (intro m; lia)))
+    setGoals [hpos]; evalTactic (← `(tactic| (intro m; exact $hposAll:ident _)))
+    setGoals [hnn]
+    evalTactic (← `(tactic|
+      refine RealRooted.derivRec_hasNonnegCoeffs_of_mult_le (D := $Dt) $hrec
+        (fun m => (show _ = _ by beta_reduce; rw [$hdegAll:ident] <;> lia).le) ?_ ?_ ?_))
+    let [hA0, hmult, hnn0] ← getGoals | throwError "rr_row_splits: unexpected side goals"
+    setGoals [hA0]
+    evalTactic (← `(tactic| (intro n; beta_reduce; simp; first | done | positivity | norm_num)))
+    setGoals [hmult]; halfMultiplierGoal c e
+    setGoals [hnn0]
+    evalTactic (← `(tactic| (beta_reduce; simp only [Nat.zero_add, $P:ident])))
+    explicitNonnegCoeffs
+    setGoals [hA]; evalTactic (← `(tactic| rr_row_eval_sign))
+    setGoals [h0]; explicitRowSplits P
+    unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
   -- two-step products `P (n + 2) = q n * P n` (`RealRooted.twoStepProduct_splits`)
   let viaTwoStep := do
     unless r.shape == .lagRight do throwError "rr_row_splits: not a two-step product"
@@ -429,7 +489,9 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
       (`prevRow, 1, "the interlacing of P (t - 1) and P t, after splitting off a row",
         viaRight 1),
       (`halfGrowth, 1, "half growth after splitting off a row", half 1),
-      (`halfGrowth, 2, "half growth after splitting off two rows", half 2)] do
+      (`halfGrowth, 2, "half growth after splitting off two rows", half 2),
+      (`degreePattern, 0, "degrees growing by zero or one, with nonnegative coefficients",
+        route `degreePattern viaDegreePattern)] do
     unless use r do continue
     -- `drop` counts the rows split off by the interlacing and half-growth routes
     if hints.drop.isSome && hints.drop != some k &&

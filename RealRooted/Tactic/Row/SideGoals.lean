@@ -81,9 +81,29 @@ private def multiplierGoal : TacticM Unit := do
       try norm_num
       first | done | positivity | nlinarith | rr_row_field))))
 
+/-- The multiplier goal of `RealRooted.derivRec_hasNonnegCoeffs_of_mult_le` for the half-growth
+bound `D₀ + (n + e) / 2`: the bound becomes `2 j ≤ 2 D₀ + n + e` over `ℝ`, then as
+`multiplierGoal`. -/
+def halfMultiplierGoal (D₀ e : Nat) : TacticM Unit := do
+  evalTactic (← `(tactic| (
+    intro n i j hj
+    have hj2 : 2 * j ≤ 2 * $(rowNumLit D₀) + n + $(rowNumLit e) := by lia
+    have hj' : ((2 * j : ℕ) : ℝ) ≤ ((2 * $(rowNumLit D₀) + n + $(rowNumLit e) : ℕ) : ℝ) :=
+      Nat.cast_le.mpr hj2
+    push_cast at hj'
+    rcases i with _ | _ | _ | i <;> (
+      simp only [Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_neg,
+        Polynomial.coeff_C_mul, Polynomial.coeff_mul_C, Polynomial.coeff_X_pow,
+        Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one,
+        Polynomial.coeff_ofNat_mul, Polynomial.coeff_mul_ofNat, Polynomial.coeff_ofNat_zero,
+        Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
+      push_cast
+      try norm_num
+      first | done | positivity | nlinarith | rr_row_field))))
+
 /-- Close `HasNonnegCoeffs p` for an explicit `p`, whose coefficients may depend on a
 natural number: bound the degree by `compute_degree!` and check each coefficient. -/
-private def explicitNonnegCoeffs : TacticM Unit := do
+def explicitNonnegCoeffs : TacticM Unit := do
   let s ← saveState
   -- the least degree bound `compute_degree!` proves; a larger one only adds zero coefficients
   let bound ← `(tactic| exact (Polynomial.coeff_eq_zero_of_natDegree_lt

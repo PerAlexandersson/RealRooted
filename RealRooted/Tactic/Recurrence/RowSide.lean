@@ -105,6 +105,11 @@ elab "rr_row_field" : tactic => withMainContext do
     | (apply ne_of_lt; nlinarith)
     | (apply ne_of_gt; nlinarith)
     | (intro h; nlinarith)
+    -- a quotient or product of factors of known sign
+    | (refine div_ne_zero ?_ ?_ <;>
+        first | positivity | (apply ne_of_lt; nlinarith) | (apply ne_of_gt; nlinarith))
+    | (refine mul_ne_zero ?_ ?_ <;>
+        first | positivity | (apply ne_of_lt; nlinarith) | (apply ne_of_gt; nlinarith))
     | fail))
 
 /-- Finishers for a top-coefficient multiplier goal, after the coefficients have
