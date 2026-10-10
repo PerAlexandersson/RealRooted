@@ -638,18 +638,6 @@ everything it reports is a *guess* that the proof phase must still justify.
 
 /-! ### Rational helpers -/
 
-/-- The `i`-th derivative. -/
-def QPoly.iterDeriv (p : QPoly) : Nat → QPoly
-  | 0 => p
-  | i + 1 => (p.iterDeriv i).derivative
-
-/-- Evaluate at a rational point (Horner). -/
-def QPoly.eval (p : QPoly) (x : Rat) : Rat :=
-  p.coeffs.foldr (fun c acc => c + x * acc) 0
-
-/-- The degree of a row, `-1` for the zero polynomial. -/
-def QPoly.degInt (p : QPoly) : Int := if p.isZero then -1 else (p.natDegree : Int)
-
 /-- A basis of the nullspace of the matrix with the given rows (Gauss–Jordan over `ℚ`). -/
 def ratNullspace (rows : Array (Array Rat)) (ncols : Nat) : Array (Array Rat) := Id.run do
   let mut m := rows
@@ -895,32 +883,22 @@ def guessTopForm (tops : Array Rat) : Option TopForm := Id.run do
 
 /-! ### Printing closed forms as terms -/
 
-/-- A numeral. -/
-private def numeralTerm (k : Nat) : Term := ⟨Syntax.mkNumLit (toString k)⟩
-
-/-- The real number `r` as a term, e.g. `(-3 / 2 : ℝ)` printed as `(-(3 / 2 : ℝ))`. -/
-def rationalTerm (r : Rat) : TacticM Term := do
-  let a := numeralTerm r.num.natAbs
-  let base : Term ←
-    if r.den == 1 then `(($a : ℝ)) else `((($a : ℝ) / $(numeralTerm r.den)))
-  if r.num < 0 then `((-$base)) else pure base
-
 /-- `∑ i, cs[i] * x ^ i` as a real-valued term, `x` being a real-valued term. -/
 private def polyTerm (cs : Array Rat) (x : Term) : TacticM Term := do
   let mut acc : Option Term := none
   for i in [0:cs.size] do
     if cs[i]! == 0 then continue
-    let c ← rationalTerm cs[i]!
+    let c ← ratTerm cs[i]!
     let t : Term ←
       if i == 0 then pure c
       else if i == 1 then `($c * $x)
-      else `($c * $x ^ $(numeralTerm i))
+      else `($c * $x ^ $(rowNumLit i))
     acc ← match acc with
       | none => pure (some t)
       | some a => do pure (some (← `($a + $t)))
   match acc with
   | some t => pure t
-  | none => rationalTerm 0
+  | none => ratTerm 0
 
 /-- The value of the closed form at the natural number `x` (a term of type `ℕ`), as a
 real-valued term, e.g. `(3 : ℝ) * (2 : ℝ) ^ x`. -/
@@ -930,12 +908,12 @@ def TopForm.toTermAt (f : TopForm) (x : Term) : TacticM Term := do
   let iR : Term ← `(($i : ℝ))
   let rng := mkIdent ``Finset.range
   match f with
-  | .const c => rationalTerm c
-  | .geom c ρ => `($(← rationalTerm c) * $(← rationalTerm ρ) ^ ($x : ℕ))
+  | .const c => ratTerm c
+  | .geom c ρ => `($(← ratTerm c) * $(← ratTerm ρ) ^ ($x : ℕ))
   | .poly cs => polyTerm cs xR
-  | .polyGeom cs ρ => `(($(← polyTerm cs xR)) * $(← rationalTerm ρ) ^ ($x : ℕ))
+  | .polyGeom cs ρ => `(($(← polyTerm cs xR)) * $(← ratTerm ρ) ^ ($x : ℕ))
   | .hyper c num den =>
-    `($(← rationalTerm c) *
+    `($(← ratTerm c) *
       ∏ $i:ident ∈ $rng ($x : ℕ), ($(← polyTerm num iR)) / ($(← polyTerm den iR)))
 
 /-- The closed form as the real-valued function `fun (n : ℕ) => …`, e.g.
@@ -950,11 +928,11 @@ closed forms `f_r` along the residue classes (see `residueForms?`). -/
 def residueTerm (forms : Array TopForm) : TacticM Term := do
   let n := mkIdent `n
   let p := forms.size
-  let q : Term ← `($n / $(numeralTerm p))
+  let q : Term ← `($n / $(rowNumLit p))
   let mut acc ← forms.back!.toTermAt q
   for r in (List.range (p - 1)).reverse do
     let fr ← forms[r]!.toTermAt q
-    acc ← `(if $n % $(numeralTerm p) = $(numeralTerm r) then $fr else $acc)
+    acc ← `(if $n % $(rowNumLit p) = $(rowNumLit r) then $fr else $acc)
   `(fun ($n : ℕ) => $acc)
 
 /-- For a periodic degree law, closed forms of the top coefficients along each residue class:
@@ -1530,7 +1508,7 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
           (k := $kq) (D := $Dper) (P := $Q) (terms := $terms) (c := $c) $hrec
           ?_ ?_ ?_ ?_ ?_ ?_ $t)
     | .ratio ρ => do
-        let ρt ← rationalTerm ρ
+        let ρt ← ratTerm ρ
         `(tactic| have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_ratio
           (k := $kq) (D := fun $n:ident => $Dq + $dq * $n) (P := $Q) (terms := $terms)
           (ρ := $ρt) ?_ ?_ $hrec ?_ ?_ ?_ ?_ ?_ ?_ ?_ $t)

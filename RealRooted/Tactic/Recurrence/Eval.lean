@@ -9,6 +9,11 @@ differences, products, natural powers, quotients by constants, numerals, `C`, `X
 casts of natural-number literals.  With `derivRec₂Data?` and `derivRec₂Rows?` a tactic
 can compute the rows `P 0, …, P k` of a second-order recurrence exactly and search for
 structure, such as an eigen-ODE, before proving anything.
+
+The exact algebra used by the numeric probes of the row tactics lives here as well:
+division with remainder, gcd and extended gcd, evaluation, rational roots, Taylor shifts and
+root bounds, and the Sturm-sequence checks `QPoly.cauchyIndex`, `QPoly.realRooted` and
+`QPoly.interlaces`.
 -/
 
 open Lean Meta
@@ -77,6 +82,128 @@ def divExact? (p q : QPoly) : Option QPoly := Id.run do
   return if r.isZero then some (norm quot) else none
 
 end QPoly
+
+/-! ### Exact algebra over `ℚ` -/
+
+/-- The `i`-th derivative. -/
+def QPoly.iterDeriv (p : QPoly) : Nat → QPoly
+  | 0 => p
+  | i + 1 => (p.iterDeriv i).derivative
+
+/-- Value at a rational point (Horner). -/
+def QPoly.eval (p : QPoly) (x : Rat) : Rat :=
+  p.coeffs.foldr (fun c acc => c + x * acc) 0
+
+/-- The degree of a row, `-1` for the zero polynomial. -/
+def QPoly.degInt (p : QPoly) : Int := if p.isZero then -1 else (p.natDegree : Int)
+
+/-- Quotient and remainder of `p` by a nonzero `q`. -/
+def QPoly.divMod (p q : QPoly) : QPoly × QPoly := Id.run do
+  if q.isZero then return (⟨#[]⟩, p)
+  let mut r := p
+  let mut quot : QPoly := ⟨#[]⟩
+  for _ in [0:p.coeffs.size + 1] do
+    if r.isZero || r.natDegree < q.natDegree then break
+    let k := r.natDegree - q.natDegree
+    let mono : QPoly := QPoly.smul (r.lead / q.lead) ⟨Array.replicate k 0 ++ #[1]⟩
+    quot := quot + mono
+    r := r - mono * q
+  return (quot, r)
+
+/-- Monic greatest common divisor. -/
+partial def QPoly.gcd (p q : QPoly) : QPoly :=
+  if q.isZero then (if p.isZero then p else QPoly.smul p.lead⁻¹ p)
+  else QPoly.gcd q (p.divMod q).2
+
+/-- The Cauchy index of `q / p` over `ℝ` for nonzero `p`, by Sturm's theorem: the number of
+sign changes at `-∞` minus the number at `+∞` of `p, q, -rem p q, …`. -/
+def QPoly.cauchyIndex (p q : QPoly) : Int := Id.run do
+  let mut chain : Array QPoly := #[p]
+  let mut a := p
+  let mut b := q
+  for _ in [0:p.coeffs.size + 2] do
+    if b.isZero then break
+    chain := chain.push b
+    let r := (a.divMod b).2
+    a := b
+    b := -r
+  let changes (sgn : QPoly → Rat) : Int := Id.run do
+    let signs := chain.toList.map sgn
+    let mut n : Int := 0
+    for (x, y) in signs.zip signs.tail do
+      if x * y < 0 then n := n + 1
+    return n
+  return changes (fun c => if c.natDegree % 2 == 0 then c.lead else -c.lead) - changes (·.lead)
+
+/-- Whether a nonzero `p` splits over `ℝ`: its squarefree part has as many distinct real roots
+as its degree (Sturm). -/
+def QPoly.realRooted (p : QPoly) : Bool :=
+  if p.isZero then false
+  else match p.divExact? (p.gcd p.derivative) with
+    | some sq => sq.cauchyIndex sq.derivative == (sq.natDegree : Int)
+    | none => false
+
+/-- The exact counterpart of `RealRooted.Interlaces g f`: both nonzero and real-rooted,
+`deg f = deg g + 1`, and the roots interlace weakly.  After dividing out `h = gcd f g`, which
+must be real-rooted, the coprime parts interlace exactly when the Cauchy index of
+`g₁ / f₁` is `± deg f₁`. -/
+def QPoly.interlaces (g f : QPoly) : Bool := Id.run do
+  if f.isZero || g.isZero || f.natDegree != g.natDegree + 1 then return false
+  let h := f.gcd g
+  let (some f₁, some g₁) := (f.divExact? h, g.divExact? h) | return false
+  unless h.natDegree == 0 || h.realRooted do return false
+  return (f₁.cauchyIndex g₁).natAbs == f₁.natDegree
+
+private def divisors (n : Nat) : List Nat :=
+  if n == 0 || n > 1000000 then [] else (List.range (n + 1)).filter fun d => d > 0 && n % d == 0
+
+/-- The rational roots of `p`, with multiplicity (complete when `p` splits over `ℚ`). -/
+partial def QPoly.rationalRoots (p : QPoly) : List Rat := Id.run do
+  if p.isZero || p.natDegree == 0 then return []
+  -- a root at zero
+  if p.coeff 0 == 0 then
+    let some p' := p.divExact? QPoly.X | return []
+    return 0 :: p'.rationalRoots
+  let l := p.coeffs.foldl (fun acc c => Nat.lcm acc c.den) 1
+  let a0 := ((p.coeff 0) * l).num.natAbs
+  let an := (p.lead * l).num.natAbs
+  for u in divisors a0 do
+    for v in divisors an do
+      for r in [((u : Int) : Rat) / v, -(((u : Int) : Rat) / v)] do
+        if p.eval r == 0 then
+          let lin : QPoly := ⟨#[-r, 1]⟩
+          if let some p' := p.divExact? lin then return r :: p'.rationalRoots
+  return []
+
+/-- `p (x + c)`, by Horner's scheme. -/
+def QPoly.shiftBy (p : QPoly) (c : Rat) : QPoly := Id.run do
+  let lin : QPoly := QPoly.X + QPoly.const c
+  let mut acc : QPoly := ⟨#[]⟩
+  for i in (List.range p.coeffs.size).reverse do
+    acc := acc * lin + QPoly.const (p.coeff i)
+  return acc
+
+/-- For a real-rooted `p`: are all roots at most `u`?  Exactly when `p (x + u)` has
+coefficients of one sign. -/
+def QPoly.rootsLe (p : QPoly) (u : Rat) : Bool :=
+  let q := p.shiftBy u
+  let s : Rat := if q.lead < 0 then -1 else 1
+  q.coeffs.all (s * · ≥ 0)
+
+/-- For a real-rooted `p`: are all roots at least `l`?  Exactly when `p (l - y)` has
+coefficients of one sign. -/
+def QPoly.rootsGe (p : QPoly) (l : Rat) : Bool :=
+  let q := p.shiftBy l
+  let cs := (Array.range q.coeffs.size).map fun i => if i % 2 = 0 then q.coeff i else -q.coeff i
+  let s : Rat := if cs.back?.getD 0 < 0 then -1 else 1
+  cs.all (s * · ≥ 0)
+
+/-- Extended Euclid: `(d, a, b)` with `a * f + b * g = d`. -/
+partial def QPoly.xgcd (f g : QPoly) : QPoly × QPoly × QPoly :=
+  if g.isZero then (f, QPoly.const 1, ⟨#[]⟩) else
+    let (q, r) := f.divMod g
+    let (d, a, b) := QPoly.xgcd g r
+    (d, b, a - q * b)
 
 /-- Evaluate a real-valued expression built from numerals, `+`, `-`, `*`, `/`, `⁻¹`,
 natural powers and casts of natural-number literals. -/
