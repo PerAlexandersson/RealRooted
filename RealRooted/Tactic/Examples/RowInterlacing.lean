@@ -489,6 +489,29 @@ def A128540 : ℕ → ℝ[X]
 theorem A128540_interlaces (n : ℕ) : Interlaces (A128540 n) (A128540 (n + 1)) := by
   rr_row_interlaces
 
+/-- Chebyshev-like rows: `b n = -(1 + X)` is negative beyond the window `[-1, 0]`, and the
+ratio barrier `ρ = 1` keeps the rows positive there (A056242). -/
+def A056242 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + 2 * X
+  | n + 2 => (2 + 2 * X) * A056242 (n + 1) + (-1 - X) * A056242 n
+
+theorem A056242_interlaces (n : ℕ) : Interlaces (A056242 n) (A056242 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A056242_splits (n : ℕ) : (A056242 n).Splits := by
+  rr_row_splits
+
+/-- The ratio barrier `ρ = 2` beyond the window `[-4, 0]`, after the first row (A236471). -/
+def A236471 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 2 + 4 * X + X ^ 2
+  | n + 3 => (4 + X) * A236471 (n + 2) + (-4 - X) * A236471 (n + 1)
+
+theorem A236471_interlaces (n : ℕ) : Interlaces (A236471 n) (A236471 (n + 1)) := by
+  rr_row_interlaces
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 /--

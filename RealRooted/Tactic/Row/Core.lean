@@ -96,6 +96,38 @@ private def windowPlausible (r : RowRec) (k D₀ : Nat) (lo : Option Rat) (u : R
         unless 0 ≤ a.eval x && b.eval x < 0 do return false
   return true
 
+/-- The numeric gate of the barrier windows
+(`RealRooted.threeTerm_interlaces_of_roots_mem_Icc_of_barrier`) of a three-term recurrence: a
+window `[L, U]` holding the roots of the computed rows, with `b n ≤ 0` inside and
+`a n < 0 ≤ b n` below `L`, and a constant `ρ ∈ {1, 2}` with `ρ ≤ a n`,
+`ρ ^ 2 ≤ a n ρ + b n` and `ρ P 0 ≤ P 1` above `U`, all at sample points. -/
+private def barrierFit? (r : RowRec) (k : Nat) : MetaM (Option (Rat × Rat × Rat)) := do
+  let some L ← linRec? r.P | return none
+  let base := r.shift + k
+  let some rows ← linRecRows? L (base + 9) | return none
+  let (some af, some bf) := (r.coeffs[0]?, r.coeffs[1]?) | return none
+  let mut abs : Array (QPoly × QPoly) := #[]
+  for i in [0:9] do
+    let (some a, some b) := (← evalCoeffAt? af (i + k), ← evalCoeffAt? bf (i + k))
+      | return none
+    abs := abs.push (a, b)
+  let (some p0, some p1) := (rows[base]?, rows[base + 1]?) | return none
+  let offs : List Rat := [1 / 8, 1 / 2, 1, 2, 5, 20]
+  for (l, u) in [((-1 : Rat), (0 : Rat)), (-1 / 2, 0), (-2, 0), (-4, 0)] do
+    let inWindow (m : Nat) : Bool := match rows[base + m]? with
+      | some p => p.isZero || (p.rootsLe u && p.rootsGe l)
+      | none => false
+    unless (List.range 9).all inWindow do continue
+    let inside := [0, 1 / 4, 1 / 2, 3 / 4, 1].map fun t => l + (u - l) * t
+    unless abs.all (fun (a, b) => inside.all (b.eval · ≤ 0) &&
+        offs.all fun d => a.eval (l - d) < 0 && 0 ≤ b.eval (l - d)) do continue
+    for ρ in [(1 : Rat), 2] do
+      if abs.all (fun (a, b) => offs.all fun d =>
+            ρ ≤ a.eval (u + d) && ρ * ρ ≤ a.eval (u + d) * ρ + b.eval (u + d)) &&
+          offs.all (fun d => ρ * p0.eval (u + d) ≤ p1.eval (u + d)) then
+        return some (l, u, ρ)
+  return none
+
 /-- The numeric veto for the theorems without a window: the multiplier `A n` (first-order
 derivative recurrences) or `b n` (three-term recurrences) must be `≤ 0` at sample points (all
 of them for `_eval_nonpos`, the nonpositive ones for `_nonnegCoeffs`), and for `_nonnegCoeffs`
@@ -571,6 +603,32 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
             return (pre.push tac,
               { thm := some ratioWin, degree := some D₀, upper := some U, drop := dropHint k })
         | .error e => failures := failures.push (m!"{ratioWin} on (-∞, {U}], ρ = {ρ}", e)
+  -- three-term recurrences: roots in `[L, U]` with `b n` negative beyond `U`, under a ratio
+  -- barrier `0 < ρ ≤ a n`, `ρ ^ 2 ≤ a n ρ + b n` there
+  -- (`RealRooted.threeTerm_interlaces_of_roots_mem_Icc_of_barrier`)
+  let barWin := ``RealRooted.threeTerm_interlaces_of_roots_mem_Icc_of_barrier
+  if shape == .lag && hints.upper.isNone &&
+      (hints.thm.isNone || hints.thm == some barWin) then
+    -- the window and `ρ` of the numeric gate, or the hinted window with `ρ = 1, 2`
+    let mut fits : List (Term × Term × Nat) := []
+    if let some (l, u) := hints.window then
+      fits := [(l, u, 1), (l, u, 2)]
+    else
+      match ← barrierFit? r k with
+      | some (l, u, ρ) => fits := [(← ratTerm l, ← ratTerm u, if ρ == 1 then 1 else 2)]
+      | none => failures := failures.push (m!"{barWin}", m!"no ratio barrier fits the rows")
+    for (lo, U, ρ) in fits do
+      -- `0 < ρ` as a term, so that the certificate has no `by` block
+      let hρ ← if ρ == 1 then `(fun _ _ => one_pos) else `(fun _ _ => two_pos)
+      let main ← apply' barWin #[← `(Lean.Parser.Term.namedArgument| (L := ($lo : ℝ))),
+        ← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ))),
+        ← `(Lean.Parser.Term.namedArgument| (ρ := fun _ => ($(rowNumLit ρ) : ℝ))),
+        ← `(Lean.Parser.Term.namedArgument| (hρ := $hρ))]
+      match ← rowAttempt (applyThenSideFull P main) with
+      | .ok tac =>
+          return (pre.push tac,
+            { thm := some barWin, degree := some D₀, window := some (lo, U), drop := dropHint k })
+      | .error e => failures := failures.push (m!"{barWin} on [{lo}, {U}], ρ = {ρ}", e)
   -- root windows whose lower bound is a root of `A n` moving with `n`
   -- (`RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_div`)
   let movIcc := ``RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_div

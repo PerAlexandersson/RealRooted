@@ -444,6 +444,64 @@ theorem threeTerm_interlaces_of_roots_le_of_ratio {U : ℝ} {ρ : ℕ → ℝ}
       hw1 hw0 (hρ n) (ha n) (hab n))
     hW0 hW1 h01 n
 
+/-- Values beyond the roots of a three-term recurrence under a ratio barrier: if
+`0 < ρ ≤ a n` and `ρ ^ 2 ≤ a n ρ + b n` at `x`, then `0 < P n` and `ρ P n ≤ P (n + 1)` at `x`
+propagate from `n = 0`, whatever the sign of `b n`. -/
+theorem threeTerm_eval_pos_of_barrier {x ρ : ℝ}
+    (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (hρ : 0 < ρ) (ha : ∀ n, ρ ≤ (a n).eval x)
+    (hab : ∀ n, ρ ^ 2 ≤ (a n).eval x * ρ + (b n).eval x)
+    (h0 : 0 < (P 0).eval x) (h1 : ρ * (P 0).eval x ≤ (P 1).eval x) (n : ℕ) :
+    0 < (P n).eval x ∧ ρ * (P n).eval x ≤ (P (n + 1)).eval x := by
+  induction n with
+  | zero => exact ⟨h0, h1⟩
+  | succ n ih =>
+      obtain ⟨hp, hr⟩ := ih
+      refine ⟨(mul_pos hρ hp).trans_le hr, ?_⟩
+      rw [show n + 1 + 1 = n + 2 from rfl, hrec, eval_add, eval_mul, eval_mul]
+      nlinarith [mul_le_mul_of_nonneg_left hr (sub_nonneg.mpr (ha n)),
+        mul_nonneg (sub_nonneg.mpr (hab n)) hp.le]
+
+/-- Roots of a three-term recurrence stay at most `U` under a ratio barrier beyond `U`
+(`threeTerm_eval_pos_of_barrier`). -/
+theorem threeTerm_roots_le_of_barrier {U : ℝ} {ρ : ℝ → ℝ}
+    (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (hρ : ∀ x, U < x → 0 < ρ x) (ha : ∀ n x, U < x → ρ x ≤ (a n).eval x)
+    (hab : ∀ n x, U < x → ρ x ^ 2 ≤ (a n).eval x * ρ x + (b n).eval x)
+    (h0 : ∀ x, U < x → 0 < (P 0).eval x) (h1 : ∀ x, U < x → ρ x * (P 0).eval x ≤ (P 1).eval x)
+    (n : ℕ) : ∀ t ∈ (P n).roots, t ≤ U := by
+  intro t ht
+  refine le_of_not_gt fun hlt => ?_
+  have h := (threeTerm_eval_pos_of_barrier hrec (hρ t hlt) (fun n => ha n t hlt)
+    (fun n => hab n t hlt) (h0 t hlt) (h1 t hlt) n).1
+  rw [(isRoot_of_mem_roots ht).eq_zero] at h
+  exact lt_irrefl 0 h
+
+/-- Three-term interlacing with roots in `[L, U]`, where `b n` may be negative beyond `U`: a
+ratio barrier `0 < ρ ≤ a n`, `ρ ^ 2 ≤ a n ρ + b n` beyond `U`, started by `ρ P 0 ≤ P 1`, keeps
+every row positive there.  This covers Chebyshev-like rows such as
+`P (n + 2) = 2 (1 + X) P (n + 1) - (1 + X) P n` (`ρ = 1`). -/
+theorem threeTerm_interlaces_of_roots_mem_Icc_of_barrier {L U : ℝ} {ρ : ℝ → ℝ}
+    (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hb : ∀ n x, L ≤ x → x ≤ U → (b n).eval x ≤ 0)
+    (hρ : ∀ x, U < x → 0 < ρ x) (haU : ∀ n x, U < x → ρ x ≤ (a n).eval x)
+    (habU : ∀ n x, U < x → ρ x ^ 2 ≤ (a n).eval x * ρ x + (b n).eval x)
+    (h1U : ∀ x, U < x → ρ x * (P 0).eval x ≤ (P 1).eval x)
+    (haL : ∀ n x, x < L → (a n).eval x < 0) (hbL : ∀ n x, x < L → 0 ≤ (b n).eval x)
+    (hW0 : ∀ t ∈ (P 0).roots, L ≤ t ∧ t ≤ U) (hW1 : ∀ t ∈ (P 1).roots, L ≤ t ∧ t ≤ U)
+    (h01 : Interlaces (P 0) (P 1)) (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) :=
+  have hU := threeTerm_roots_le_of_barrier hrec hρ haU habU
+    (fun _ hx => eval_pos_of_roots_le h01.2.1.2 (hpos 0) (fun t ht => (hW0 t ht).2) hx) h1U
+  threeTerm_interlaces_of_window (fun x => L ≤ x ∧ x ≤ U) hrec hdeg hpos
+    (fun n x hx => hb n x hx.1 hx.2)
+    (fun n hs0 hs1 hw0 hw1 t ht =>
+      ⟨threeTerm_roots_ge_step (hrec n) hs1 (hpos (n + 1)) hs0 (hpos n)
+          (by rw [hdeg, hdeg]; lia) (fun t ht => (hw1 t ht).1) (fun t ht => (hw0 t ht).1)
+          (haL n) (hbL n) t ht, hU (n + 2) t ht⟩)
+    hW0 hW1 h01 n
+
 end ThreeTerm
 
 end RealRooted
