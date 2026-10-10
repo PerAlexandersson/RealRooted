@@ -1634,6 +1634,11 @@ filter regressions no longer import the low-degree theory. The historical
 module remains as a facade. The root and tactic regression budgets rise to
 1752 and 681.
 
+The Favard regressions (`Tactic.Examples.Favard`, 1701 lines) are regrouped by
+frontend family into `Favard.Direct`, `Favard.Denominator` and
+`Favard.RowSign`, with the historical module as a facade. The root and tactic
+regression budgets rise to 1755 and 684.
+
 Run the architecture check with:
 
 ```bash
