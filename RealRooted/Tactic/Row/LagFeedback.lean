@@ -73,10 +73,14 @@ def lagFeedbackSplits : TacticM Unit := do
   evalTactic (← `(tactic|
     refine RealRooted.splits_of_lagFeedback (p := $(rowNumLit p))
       (α := $(← ratTerm d.α)) (c := $cT) (by norm_num) (by norm_num)
-      (fun $n:ident => by beta_reduce; positivity)
+      (fun $n:ident => by first | positivity | (beta_reduce <;> positivity))
       (fun $n:ident => by
-        rw [show $n + ($(rowNumLit p) - 1) = $n + $(rowNumLit (p - 1)) from rfl, $eqn:ident]
-        rr_cf_identity)
+        rw [show $n + ($(rowNumLit p) - 1) = $n + $(rowNumLit (p - 1)) from rfl,
+          $eqn:ident] <;> first
+          | ring1
+          | (simp only [map_add, map_sub, map_mul, map_pow, map_neg, map_one, map_natCast,
+              map_ofNat] <;> ring1)
+          | rr_cf_identity)
       ?_ $idx))
   let i := mkIdent `i
   evalTactic (← `(tactic| (intro $i:ident hi; interval_cases $i:ident)))
