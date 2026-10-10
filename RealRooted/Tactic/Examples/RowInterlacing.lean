@@ -503,6 +503,31 @@ def A191935 : ℕ → ℝ[X]
 theorem A191935_interlaces (n : ℕ) : Interlaces (A191935 n) (A191935 (n + 1)) := by
   rr_row_interlaces
 
+/-- Order three with characteristic polynomial `(z + 1) (z ^ 2 - (X + 2) z + 1)`: the rows are
+`s m * t m` and `s (m + 1) * t m` for two solutions of `x (m + 2) = (X + 2) x (m + 1) - x m`
+(A158909). -/
+def A158909 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X + 1
+  | 2 => X ^ 2 + 3 * X + 2
+  | n + 3 => (X + 1) * A158909 (n + 2) + (X + 1) * A158909 (n + 1) - A158909 n
+
+theorem A158909_interlaces (n : ℕ) : Interlaces (A158909 n) (A158909 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A158909_splits (n : ℕ) : (A158909 n).Splits := by
+  rr_row_splits
+
+/-- A parity product with `μ = -X` and `β = 2 X + 1` (A092879). -/
+def A092879 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X + 1
+  | 2 => 2 * X ^ 2 + 3 * X + 1
+  | n + 3 => (X + 1) * A092879 (n + 2) + (X + X ^ 2) * A092879 (n + 1) - X ^ 3 * A092879 n
+
+theorem A092879_interlaces (n : ℕ) : Interlaces (A092879 n) (A092879 (n + 1)) := by
+  rr_row_interlaces
+
 /-- The rows `P m = m (1 + X) X ^ (m - 1)` start the power form after the row `P 0 = 1`
 (A128540). -/
 def A128540 : ℕ → ℝ[X]
@@ -577,7 +602,7 @@ example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitF
 /--
 error: rr_row_splits: unknown route foo; the routes are closedForm, lowerOrder, subseq,
 linearFactors, splitFactors, twoStep, shiftedProduct, nextRow, prevRow, halfGrowth,
-degreePattern, reversed
+degreePattern, reversed, parityProduct
 -/
 #guard_msgs (whitespace := normalized) in
 example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := foo)

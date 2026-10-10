@@ -1,7 +1,7 @@
 import RealRooted.Tactic.Row.DerivLag
 import RealRooted.Tactic.Row.Subseq
 import RealRooted.Tactic.Row.PowerForm
-import RealRooted.Tactic.Row.Reverse
+import RealRooted.Tactic.Row.ParityProduct
 
 /-!
 # Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
@@ -18,7 +18,8 @@ route that the probe rules out fails without elaborating anything.
 1. Derivative-lag recurrences `P (n + 2) = U P (n + 1) + V P (n + 1)' + W P n`: the Liu–Wang
    step (`Row.DerivLag`).
 2. Order three, factoring through a three-term recurrence: the reduction certified by
-   `threeTerm_rec_of_remainder` (`Row.LowerOrder`).
+   `threeTerm_rec_of_remainder` (`Row.LowerOrder`); or rows `s m * t m`, `s (m + 1) * t m` of
+   two three-term sequences: `eq_parityProduct_of_rec3` (`Row.ParityProduct`).
 3. Multipliers `α j n · q ^ (k - j)` for one linear `q`, `k ≤ 3`: the power form,
    `interlaces_of_forall_eq_C_mul_pow`, possibly after the first two rows (`Row.PowerForm`).
 4. The interlacing core (`Row.Core`):
@@ -67,8 +68,8 @@ The degree tactics (`rr_row_natDegree`, `rr_row_ne_zero`, `rr_row_leadingCoeff_p
 `RealRooted.Tactic.Recurrence.Degree`: degree laws of the recurrence shapes, general linear
 recurrences (`rr_linrec`), cancelling top terms (`rr_row_cancel`) and two-step products by
 parity.  The implementation of this module is split over `Row.SideGoals` (syntax and side
-goals), `Row.Core`, `Row.LowerOrder`, `Row.DerivLag`, `Row.Subseq`, `Row.PowerForm` and
-`Row.Reverse`; this module holds the front ends.
+goals), `Row.Core`, `Row.LowerOrder`, `Row.DerivLag`, `Row.Subseq`, `Row.PowerForm`,
+`Row.Reverse` and `Row.ParityProduct`; this module holds the front ends.
 -/
 
 open Lean Elab Tactic Meta Polynomial
@@ -93,6 +94,8 @@ private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := 
   -- order-three recurrences through a three-term recurrence
   if (← rowAttempt (rowRecSetup "rr_row_interlaces")) matches .error _ then
     if ← rowSucceeds (lowerOrderInterlaces hints) then return (#[], hints)
+    -- parity products of two three-term sequences (`Row.ParityProduct`)
+    if ← rowSucceeds (parityProductGoal false) then return (#[], hints)
   -- rows `c m · F · q ^ (m + e)` of a recurrence whose multipliers are powers of `q`, gated
   -- by an exact probe, before the more expensive core
   if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
@@ -256,7 +259,7 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
   [`closedForm, `lowerOrder, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
-    `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed]
+    `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct]
 
 /-- `rr_row_splits`, returning the hints of the successful route. -/
 private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainContext do
@@ -292,6 +295,11 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
       return { via := some `lowerOrder }
     if hints.via.isNone then
       if ← rowSucceeds viaLower then return { via := some `lowerOrder }
+    if hints.via == some `parityProduct then
+      parityProductGoal true
+      return { via := some `parityProduct }
+    if hints.via.isNone then
+      if ← rowSucceeds (parityProductGoal true) then return { via := some `parityProduct }
     if let some v := hints.via then
       unless v == `subseq do
         throwError "rr_row_splits: the route {v} needs a recurrence that \

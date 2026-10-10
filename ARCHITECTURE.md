@@ -1652,6 +1652,10 @@ reversed rows) and `Tactic.Row.Reverse`; the tactic umbrella now also reaches
 `DegreeDropReversal` and `Basic.AffineInterlacing`. The root, production, tactic and tactic
 regression budgets rise to 1759, 1619, 525 and 689.
 
+The parity-product route for order-three recurrences adds `ThreeTermRecurrence.ParityProduct`
+and `Tactic.Row.ParityProduct`; the same four budgets rise by two, to 1761, 1621, 527 and
+691.
+
 Run the architecture check with:
 
 ```bash

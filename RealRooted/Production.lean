@@ -1536,6 +1536,7 @@ import RealRooted.Tactic.RootCount.SequenceCore
 import RealRooted.Tactic.Row.Core
 import RealRooted.Tactic.Row.DerivLag
 import RealRooted.Tactic.Row.LowerOrder
+import RealRooted.Tactic.Row.ParityProduct
 import RealRooted.Tactic.Row.PowerForm
 import RealRooted.Tactic.Row.Reverse
 import RealRooted.Tactic.Row.SideGoals
@@ -1565,6 +1566,7 @@ import RealRooted.ThreeTermRecurrence.HalfGrowth
 import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.ThreeTermRecurrence.Moments
 import RealRooted.ThreeTermRecurrence.NoCommonRoot
+import RealRooted.ThreeTermRecurrence.ParityProduct
 import RealRooted.ThresholdMatrix
 import RealRooted.ThresholdMatrix.Basic
 import RealRooted.ThresholdMatrix.GustafssonSolus

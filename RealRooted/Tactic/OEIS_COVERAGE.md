@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **228 IDs**; **5 formalized**, **220 shells**, **3 fragments**, and **0 documented-only**.
+Current totals: **230 IDs**; **5 formalized**, **222 shells**, **3 fragments**, and **0 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -99,6 +99,7 @@ Current totals: **228 IDs**; **5 formalized**, **220 shells**, **3 fragments**, 
 | A090582 | `shell` | `B (x + 1) + min A 0 * deg > 0` replaces `A ≥ 0` there ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A091042 | `shell` | `/`: unit shifted-square lag, with centers `1` and `-1`.<br>`/`: expanded `B_n(t)=-1+2t-t^2`. | `rr_lw_negative_square_sequence_realrooted_unit`, `rr_sign` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A091044 | `shell` | Half the odd entries of even Pascal rows: lag `-(1 - t)²` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A092879 | `shell` | A parity product with `μ = -X` and `β = 2 X + 1` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A094305 | `shell` | The order-three recurrence with characteristic polynomial `(t - (1 + X)) ^ 3` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A094485 | `shell` | after reindexing,<br>real-rootedness endpoint for<br>+2 additional test intents | `rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_auto`, `rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_auto`, `rr_lw_X_C_sub_C_mul_X_lag_sequence_auto`, `rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_auto` | `base`, `degree_succ`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A094816 | `shell` | shifted active range of `P_m=(t+m-1)P_{m-1}-(m-2)P_{m-2}`. | `rr_favard_param_auto` | `alpha`, `base_one`, `base_zero`, `beta`, `step` | concrete row definition and proofs of the listed certificates |
@@ -177,6 +178,7 @@ Current totals: **228 IDs**; **5 formalized**, **220 shells**, **3 fragments**, 
 | A156919 | `shell` | Dirichlet-eta table: `v_n(t) = 2t(1 - t)` ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A156920 | `shell` | half-line factor `t-2t^2=t(1-2t)`. | `rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto` | `base`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A157077 | `shell` | scalar denominator followed by positive-slope Favard. | `rr_favard_affine_param_den_auto`, `rr_favard_base_one_dsimp` | `alpha`, `base_one`, `base_zero`, `beta`, `den`, `raw_recurrence`, `slope` | concrete row definition and proofs of the listed certificates |
+| A158909 | `shell` | ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A159854 | `shell` | def : ℕ → ℝ[X]<br>\| n + 1 => (1 + X) * n<br>+2 additional test intents | `rr_product_interlaces`, `rr_product_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A160562 | `shell` | A second-order derivative recurrence ().<br>def : ℕ → ℝ[X]<br>+8 additional test intents | `rr_row_natDegree`, `rr_row_ne_zero`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A161198 | `shell` | -style positive-slope factor `1 + 2n + 2t`. | `rr_product_factor_auto` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
