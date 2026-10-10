@@ -76,9 +76,9 @@ zeros, then so does its log-concavity transform. Hence every Pólya-frequency po
 
 Since $M_n$ is the transform of the row $d(n)$ and is Pólya-frequency, the Boros–Moll rows
 are infinitely log-concave, as conjectured by Boros and Moll. All three statements are
-formalized. The formal proof of Brändén's theorem is not Brändén's: Aristotle found a
-different argument with moment functionals that do not vanish on polynomials whose zeros
-lie in a half-plane, together with Laguerre-type approximations.
+formalized. The formal proof of Brändén's theorem is not Brändén's: it uses moment
+functionals that do not vanish on polynomials whose zeros lie in a half-plane, together
+with Laguerre-type approximations.
 
 ## Proof idea
 
@@ -86,8 +86,7 @@ The interlacing reduces to the sign of $M_n$ at the zeros of $N_n$. For $n \geq 
 paper writes these values through moment and coefficient identities, bounds partial sums
 with a boundary recurrence, and controls the remaining weighted sums by Gaussian
 quadrature at the zeros of Jacobi polynomials. The cases $n \leq 35$ are checked by exact
-certificates evaluated in the kernel. The formal proof was found with the Aristotle prover
-(Harmonic) following the paper.
+certificates evaluated in the kernel. The formal proof follows the paper.
 
 ## References
 

@@ -62,10 +62,9 @@ For acyclic orientations, see the pages on
 
 ## References
 
-P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).
+P. Alexandersson and L. Saud Maia Leite, manuscript (2026).
 
-The counting identity was proved with Aristotle (Harmonic). For the claw-free
-background, see the
+For the claw-free background, see the
 [Chudnovsky–Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
 [Leake–Ryder](/RealRooted/theorems/leake-ryder/) pages.
 <!-- /realrooted-catalog-content -->
