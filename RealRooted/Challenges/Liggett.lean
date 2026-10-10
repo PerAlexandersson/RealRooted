@@ -59,8 +59,9 @@ $b_j \, j! \, (n+1-j)!$. Convolution with the log-concave sequence $a$ preserves
 this ordering, by a $2 \times 2$ Cauchy–Binet argument as in Hoggar's theorem.
 A real-number inequality then combines the two induction hypotheses.
 
-This elementary argument is not Liggett's original proof. Other known proofs use mixed volumes (Gurvits),
-the Johnson scheme (Kahn–Neiman) or Lorentzian polynomials (Brändén–Huh).
+This elementary argument is not Liggett's original proof. Other known proofs use
+mixed volumes (Gurvits), the Johnson scheme (Kahn–Neiman) or Lorentzian polynomials
+(Brändén–Huh).
 
 ## References
 
