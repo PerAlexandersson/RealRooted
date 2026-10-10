@@ -824,6 +824,37 @@ theorem derivRec_interlaces_of_roots_le_mono {U : ℕ → ℝ}
       fun x hx => by simpa [hdeg n] using hAB n x hx)
     h0 hW0 h01 n
 
+/-- `derivRec_interlaces_of_roots_le_mono` for a bound `U n = p n / q n` with `q n > 0`, split
+at a point `r`: up to `r` beyond `U (n + 1)` the plain conditions `A n ≥ 0`, `B n > 0`, and
+beyond `r` the degree-bounded condition with `A n ≤ 0`, multiplied by `q (n + 1)`.  Typically
+`U n` and `r` are the roots of a quadratic `A n` with negative leading coefficient (A110608). -/
+theorem derivRec_interlaces_of_roots_le_mono_div {p q : ℕ → ℝ} {r : ℝ}
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hq : ∀ n, 0 < q n) (hU : ∀ n, p n * q (n + 1) ≤ p (n + 1) * q n)
+    (hA : ∀ n x, q n * x ≤ p n → (A n).eval x ≤ 0)
+    (hAB : ∀ n x, p (n + 1) < q (n + 1) * x → x ≤ r → 0 ≤ (A n).eval x ∧ 0 < (B n).eval x)
+    (hD : ∀ n x, r < x → (A n).eval x ≤ 0 ∧
+      0 < (B n).eval x * (q (n + 1) * x - p (n + 1)) + q (n + 1) * (A n).eval x * (D₀ + n))
+    (h0 : (P 0).Splits) (hW0 : ∀ t ∈ (P 0).roots, q 0 * t ≤ p 0)
+    (h01 : D₀ = 0 → Interlaces (P 0) (P 1)) (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) := by
+  have hle (m : ℕ) (x : ℝ) : x ≤ p m / q m ↔ q m * x ≤ p m := by
+    rw [le_div_iff₀ (hq m), mul_comm]
+  refine derivRec_interlaces_of_roots_le_mono (U := fun m => p m / q m) hrec hdeg hpos
+    (fun m => (div_le_div_iff₀ (hq _) (hq _)).mpr (hU m)) (fun m x h => hA m x ((hle m x).mp h))
+    (fun m x hx => ?_) h0 (fun t ht => (hle 0 t).mpr (hW0 t ht)) h01 n
+  have hq₁ := hq (m + 1)
+  have hx' : p (m + 1) < q (m + 1) * x := by rwa [div_lt_iff₀ hq₁, mul_comm] at hx
+  rcases le_or_gt x r with h | h
+  · exact Or.inl (hAB m x hx' h)
+  · obtain ⟨hA', hB'⟩ := hD m x h
+    refine Or.inr ?_
+    rw [min_eq_left hA', show (B m).eval x * (x - p (m + 1) / q (m + 1)) +
+        (A m).eval x * (D₀ + m) = ((B m).eval x * (q (m + 1) * x - p (m + 1)) +
+          q (m + 1) * (A m).eval x * (D₀ + m)) / q (m + 1) by field_simp]
+    exact div_pos hB' hq₁
+
 end Sequence
 
 end RealRooted

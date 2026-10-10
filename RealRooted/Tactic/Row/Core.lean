@@ -336,6 +336,60 @@ private def movingWindow? (r : RowRec) (k : Nat) : MetaM (Option MovingWindow) :
     return some { a, b, d, u }
   return none
 
+/-- A root bound `U m = (a + b m) / (1 + d m)` of the shifted rows `m ↦ P (m + s + k)` moving
+up with `m`, and a split point `ρ`: `ρ` a root of every `A m`, `U m` the largest root of
+`A m` below `ρ`. -/
+private structure MovingUpper where
+  a : Rat
+  b : Rat
+  d : Rat
+  ρ : Rat
+
+/-- Search a moving upper root bound on the computed rows `m ≤ 9`
+(`RealRooted.derivRec_interlaces_of_roots_le_mono_div`): a common root `ρ` of the `A m`; the
+largest root `U m < ρ` of `A m`, fitted as `(a + b m) / (1 + d m)` with `d ≥ 0` on `m = 0, 1, 2`
+and checked on the rest; `U` nondecreasing; the rows at most `U m`; and at sample points
+`A m ≤ 0` below `U m`, `A m ≥ 0` and `B m > 0` between `U (m + 1)` and `ρ`, and beyond `ρ`
+`A m ≤ 0` with the degree-bounded condition. -/
+private def movingUpper? (r : RowRec) (k D₀ : Nat) : MetaM (Option MovingUpper) := do
+  let (some Af, some Bf) := (r.coeffs[0]?, r.coeffs[1]?) | return none
+  let some L ← linRec? r.P | return none
+  let base := r.shift + k
+  let some rows ← linRecRows? L (base + 10) | return none
+  let mut As : Array QPoly := #[]
+  let mut Bs : Array QPoly := #[]
+  for m in [0:11] do
+    let (some a, some b) := (← evalCoeffAt? Af (m + k), ← evalCoeffAt? Bf (m + k))
+      | return none
+    As := As.push a
+    Bs := Bs.push b
+  let roots := As.map fun a => a.rationalRoots.eraseDups
+  let some r0 := roots[0]? | return none
+  let offs : List Rat := [1 / 8, 1 / 2, 1, 2, 5, 20]
+  for ρ in r0.filter fun ρ => roots.all (·.contains ρ) do
+    let ups := roots.map fun rs => (rs.filter (· < ρ)).max?
+    unless ups.all (·.isSome) do continue
+    let us := ups.map (·.getD 0)
+    let ok := (List.range 10).all fun m =>
+      let row := rows[base + m]!
+      let (a, b, u, u₁) := (As[m]!, Bs[m]!, us[m]!, us[m + 1]!)
+      let N : Rat := (D₀ + m : Nat)
+      !row.isZero && row.rootsLe u && u ≤ u₁ &&
+        offs.all (fun t => a.eval (u - t) ≤ 0) &&
+        [1 / 8, 1 / 2, 7 / 8, 1].all (fun t => let x := u₁ + (ρ - u₁) * t
+          0 ≤ a.eval x && 0 < b.eval x) &&
+        offs.all fun t => let x := ρ + t
+          a.eval x ≤ 0 && 0 < b.eval x * (x - u₁) + a.eval x * N
+    unless ok do continue
+    let (u0, u1, u2) := (us[0]!, us[1]!, us[2]!)
+    if u2 == u1 then continue
+    let d := (2 * u1 - u0 - u2) / (2 * (u2 - u1))
+    let a := u0
+    let b := u1 * (1 + d) - u0
+    unless 0 ≤ d && (List.range 11).all (fun m => us[m]! * (1 + d * m) == a + b * m) do continue
+    return some { a, b, d, ρ }
+  return none
+
 /-- `rr_row_interlaces` for the sequence `m ↦ P (m + k)` (after `k` further rows), returning
 a certificate and the hinted call.  `given` supplies the recurrence and a proof of it when it
 is not read off the definition. -/
@@ -669,6 +723,69 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
             let h : RowHints := { thm := some movIcc, degree := some D₀, drop := dropHint k }
             return (pre.push tac, h)
         | .error e => failures := failures.push (m!"{movIcc}", e)
+  -- root bounds `U n = p n / q n` moving up with `n`, split at a common root `ρ` of the `A n`
+  -- (`RealRooted.derivRec_interlaces_of_roots_le_mono_div`)
+  let movUp := ``RealRooted.derivRec_interlaces_of_roots_le_mono_div
+  if shape == .deriv₁ && r.shape == .deriv₁ && given.isNone && hints.window.isNone &&
+      hints.upper.isNone && (hints.thm.isNone || hints.thm == some movUp) then
+    match ← movingUpper? r k D₀ with
+    | none => failures := failures.push (m!"{movUp}", m!"no moving upper root bound fits the rows")
+    | some w =>
+        let (mI, xI, yI) := (mkIdent `m, mkIdent `x, mkIdent `y)
+        let (aT, bT, dT, ρT) := (← ratTerm w.a, ← ratTerm w.b, ← ratTerm w.d, ← ratTerm w.ρ)
+        let pAt (t : Term) : TacticM Term := `(($aT + $bT * $t : ℝ))
+        let qAt (t : Term) : TacticM Term := `((1 + $dT * $t : ℝ))
+        let n0 ← `(($nI : ℝ))
+        let n1 ← `((($nI : ℝ) + 1))
+        let (p0, q0, q1) := (← pAt n0, ← qAt n0, ← qAt n1)
+        let evalSimp ← `(tactic| simp only [Polynomial.eval_add, Polynomial.eval_sub,
+          Polynomial.eval_mul, Polynomial.eval_neg, Polynomial.eval_C, Polynomial.eval_X,
+          Polynomial.eval_pow, Polynomial.eval_one, Polynomial.eval_ofNat])
+        let mR ← `(($mI : ℝ))
+        let main ← apply' movUp #[
+          ← `(Lean.Parser.Term.namedArgument| (p := fun $mI:ident : ℕ => $(← pAt mR))),
+          ← `(Lean.Parser.Term.namedArgument| (q := fun $mI:ident : ℕ => $(← qAt mR))),
+          ← `(Lean.Parser.Term.namedArgument| (r := ($ρT : ℝ)))]
+        let tac ← `(tactic| (
+          $main:tactic
+          case hq => intro $nI:ident; beta_reduce; positivity
+          case hU => intro $nI:ident; beta_reduce; push_cast; nlinarith
+          case hA =>
+            intro $nI:ident $xI:ident h
+            beta_reduce at h ⊢
+            have hq0 : 0 < $q0 := by positivity
+            have hpr : $p0 ≤ $q0 * $ρT := by nlinarith
+            have hxr : $xI ≤ $ρT := by nlinarith
+            $evalSimp:tactic
+            push_cast
+            rr_row_field
+          case hAB =>
+            intro $nI:ident $xI:ident h1 h2
+            beta_reduce at h1 ⊢
+            push_cast at h1
+            have hq0 : 0 < $q0 := by positivity
+            have hq1 : 0 < $q1 := by positivity
+            have h3 : 0 < $q1 * ($q0 * $xI - $p0) := by nlinarith [mul_pos hq0 (sub_pos.mpr h1)]
+            have h4 := (pos_of_mul_pos_right h3 hq1.le).le
+            have hc : $aT < $xI := by nlinarith
+            refine ⟨?_, ?_⟩ <;> ($evalSimp:tactic; push_cast; rr_row_field)
+          case hD =>
+            intro $nI:ident $xI:ident h
+            beta_reduce
+            obtain ⟨$yI:ident, hy, hxy⟩ : ∃ $yI:ident, 0 < $yI ∧ $xI = $ρT + $yI :=
+              ⟨$xI - $ρT, by linarith, by ring⟩
+            subst hxy
+            refine ⟨?_, ?_⟩ <;> ($evalSimp:tactic; push_cast; rr_row_field)
+          case h0 => rr_row_side
+          case hW0 => rr_row_side
+          case h01 => rr_row_side))
+        match ← rowAttempt (do
+            evalTactic tac
+            unless (← getGoals).isEmpty do throwError "goals remain") with
+        | .ok _ =>
+            let h : RowHints := { thm := some movUp, degree := some D₀, drop := dropHint k }
+            return (pre.push tac, h)
+        | .error e => failures := failures.push (m!"{movUp}", e)
   throwRowFailures m!"rr_row_interlaces: no strategy proves the goal for the \
     {shape.describe} recurrence of {P} (base degree {D₀}, dropping {k} rows)" failures
 

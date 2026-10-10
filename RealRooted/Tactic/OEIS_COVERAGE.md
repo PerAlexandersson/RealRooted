@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **232 IDs**; **5 formalized**, **224 shells**, **3 fragments**, and **0 documented-only**.
+Current totals: **233 IDs**; **5 formalized**, **225 shells**, **3 fragments**, and **0 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -122,6 +122,7 @@ Current totals: **232 IDs**; **5 formalized**, **224 shells**, **3 fragments**, 
 | A106828 | `shell` | OEIS shape : `P_n = n P_{n-1} + n t P_{n-2}`.<br>OEIS shape : `P_n = n P_{n-1} + n t P_{n-2}` on the | `rr_lw_positive_t_auto`, `rr_strict_interl_pos_X_lag_combo` | `current_coeff_pos`, `degree_lower`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `lag_coeff_pos`, `left_nonneg`, `no_common_roots`, `proper`, `right_nonneg`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A108426 | `shell` | Family C2 direct-outer Ma--Wang shell for the `/` bucket. | `rr_mw_derivative_neg_X_one_add_outer_auto` | `degree_lower`, `degree_upper`, `root_upper`, `source_pos_lc`, `splits`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A110162 | `shell` | OEIS shape `/`: `P_{n+2}=(t-2)P_{n+1}-P_n`. | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
+| A110608 | `shell` | (, `RealRooted.derivRec_interlaces_of_roots_le_mono_div`).<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A111006 | `shell` | A three-term recurrence with root window `[-1, 0]`: `b = X (X + 1)` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A111125 | `shell` | OEIS shapes `//`: | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
 | A111596 | `shell` | inverse-Lah stage recurrence `Xf-2Xf'+Xf''=(-1+D)(-(X+1)f+Xf')`. | `rr_neg_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `inner_degree_lower`, `inner_degree_upper`, `inner_neg_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonneg` | concrete row definition and proofs of the listed certificates |

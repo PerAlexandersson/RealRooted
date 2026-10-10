@@ -34,7 +34,8 @@ route that the probe rules out fails without elaborating anything.
      then fixed root windows (`*_of_roots_mem_Icc`, `*_of_roots_le`, `…_of_degree`,
      `…_of_ratio`, and the ratio barrier `threeTerm_interlaces_of_roots_mem_Icc_of_barrier`
      for `b n < 0` beyond the window), then a moving lower window
-     (`derivRec_interlaces_of_roots_mem_Icc_mono_div`).
+     (`derivRec_interlaces_of_roots_mem_Icc_mono_div`) and a moving upper bound split at a
+     common root of the `A n` (`derivRec_interlaces_of_roots_le_mono_div`).
 5. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
    whose rows have nonzero constant terms: an auxiliary recursive definition of the reversed
    sequence, the link `eq_reflect_of_derivRec₂` / `eq_reflect_of_threeTerm`, and the transfer
