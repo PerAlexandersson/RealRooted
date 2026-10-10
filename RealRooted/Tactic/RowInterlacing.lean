@@ -3,52 +3,66 @@ import RealRooted.Tactic.Row.Subseq
 import RealRooted.Tactic.Row.PowerForm
 
 /-!
-# `rr_row_interlaces`
+# Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
 
-`rr_row_interlaces` closes `Interlaces (P t) (P (t + 1))` for
+For a sequence `P : ℕ → ℝ[X]` defined by a recurrence, `rr_row_interlaces` closes
+`Interlaces (P t) (P (t + 1))` and `rr_row_splits` closes `(P t).Splits`.  Summands may come
+in any order, and a recurrence `P (n + k) = …` with explicit rows below `k` is applied to the
+shifted sequence, the first rows being checked one by one.  Before elaborating a theorem,
+every route runs an exact probe on the computed rows (rational arithmetic, `QPoly`), so a
+route that cannot apply fails in milliseconds.
 
-* product sequences `P (n + 1) = L n * P n` (via `rr_product_interlaces`), and
-* three-term recurrences `P (n + 2) = a n * P (n + 1) + b n * P n`, and
-* two-step products `P (n + 2) = q * P n` (`RealRooted.twoStepProduct_interlaces`),
-* first-order derivative recurrences `P (n + 1) = A n * (P n)' + B n * P n`, and
-* second-order recurrences `P (n + 1) = A * (P n)'' + B * (P n)' + C n * P n` whose rows
-  satisfy an eigen-ODE `A * (P n)'' + β * (P n)' = ev n • P n`
-  (`RealRooted.Tactic.eigenODE?`), collapsed to a first-order recurrence first,
+## Routes of `rr_row_interlaces`, in order
 
-whose rows grow by one degree.  Explicit base rows of higher degree are handled by
-`rr_interlaces_explicit`.  As for the degree tactics, the summands may come in any
-order, and a recurrence `P (n + k) = …` with explicit rows below `k` is applied to the
-shifted sequence, the first rows being checked one by one.
+1. Derivative-lag recurrences `P (n + 2) = U P (n + 1) + V P (n + 1)' + W P n`: the Liu–Wang
+   step (`Row.DerivLag`).
+2. Order three, factoring through a three-term recurrence: the reduction certified by
+   `threeTerm_rec_of_remainder` (`Row.LowerOrder`).
+3. Multipliers `α j n · q ^ (k - j)` for one linear `q`, `k ≤ 3`: the power form,
+   `interlaces_of_forall_eq_C_mul_pow` (`Row.PowerForm`).
+4. The interlacing core (`Row.Core`):
+   * products `P (n + 1) = L n * P n`: `productSequence_interlaces`;
+   * two-step products `P (n + 2) = q * P n`: `twoStepProduct_interlaces`;
+   * second order with an eigen-ODE, collapsed to first order (`derivRec₂_firstOrder`), or a
+     general Euler step (`EulerBidiagonal.interlaces_of_generalStep_rec`);
+   * three-term and first-order derivative recurrences: the sign conditions
+     (`threeTerm_interlaces_of_eval_nonpos`, `…_of_nonnegCoeffs`, `derivRec_interlaces_*`),
+     then fixed root windows (`*_of_roots_mem_Icc`, `*_of_roots_le`, `…_of_degree`,
+     `…_of_ratio`), then a moving lower window
+     (`derivRec_interlaces_of_roots_mem_Icc_mono_div`).
 
-For three-term recurrences it applies `RealRooted.threeTerm_interlaces_of_eval_nonpos`
-(`b n ≤ 0` everywhere) or `RealRooted.threeTerm_interlaces_of_nonnegCoeffs`
-(`b n ≤ 0` on `(-∞, 0]`, with rows of nonnegative coefficients); for derivative
-recurrences the `RealRooted.derivRec_interlaces_*` analogues, with `A n` in place of
-`b n`; then the root-window theorems (`*_of_roots_mem_Icc`, `*_of_roots_le`).  The degree
-and leading-coefficient side goals go to `rr_row_natDegree` and
-`rr_row_leadingCoeff_pos`, nonnegativity of coefficients to `rr_row_nonneg_coeffs`; the
-sign conditions on `b n` reduce to coefficient inequalities of degree-two polynomials,
-which the row-data side-goal engine discharges.
+The degree and leading-coefficient hypotheses go to `rr_row_natDegree` and
+`rr_row_leadingCoeff_pos`, nonnegativity of coefficients to `rr_row_nonneg_coeffs`, and the
+sign conditions to `rr_row_eval_sign` / `rr_row_field` (rational functions of `n`).
+Hints `(thm := name)`, `(degree := D₀)`, `(drop := k)`, `(window := [L, U])` and
+`(upper := U)` restrict the search; `rr_row_interlaces?` prints the hinted call, which replays
+only the successful attempt, and the certificate.
 
-Hints `(thm := name)`, `(degree := D₀)`, `(window := [L, U])` and `(upper := U)` restrict
-the search; `rr_row_interlaces?` prints the hinted call, which replays only the successful
-attempt, and the certificate `apply thm (P := …) (D₀ := …) … <;> rr_row_side`.
+## Routes of `rr_row_splits`, in order (`(via := route)` selects one)
 
-The same front end gives
+`closedForm` (rows `residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `lowerOrder`, `subseq` (residue
+classes, `Row.Subseq`), `linearFactors` and `splitFactors` (products), `twoStep`,
+`shiftedProduct`, `nextRow` and `prevRow` (the interlacing core with `P (t ± 1)`),
+`halfGrowth` (three-term rows of degree `D₀ + (n + e) / 2`), `degreePattern` (first-order
+derivative rows whose degree grows by zero or one,
+`derivRec_splits_of_degree_pattern_of_nonnegCoeffs`); derivative-lag recurrences go to
+`Row.DerivLag`.  `rr_row_splits?` prints the hinted call.
+
+## Other front ends
 
 * `rr_row_nonneg_coeffs`: `HasNonnegCoeffs (P t)`, by `RealRooted.threeTerm_hasNonnegCoeffs`,
   `RealRooted.derivRec_hasNonnegCoeffs` or `RealRooted.derivRec_hasNonnegCoeffs_of_mult`
   (products as two-step recurrences);
 * `rr_row_eval_zero_pos`: `0 < (P t).eval 0`, by induction on the recurrence evaluated at
   `0` (positive coefficients at `0`; for derivative recurrences with `A n` not vanishing at
-  `0` also nonnegative coefficients of the rows);
-* `rr_row_splits`: `(P t).Splits`, from `RealRooted.productSequence_ne_zero_and_splits` or
-  from `rr_row_interlaces`, among other routes; `(via := route)` selects one, and
-  `rr_row_splits?` prints the hinted call.
+  `0` also nonnegative coefficients of the rows).
 
-The implementation is split over `RealRooted.Tactic.Row.SideGoals` (syntax and side goals),
-`Row.Core` (the interlacing core and its probes), `Row.LowerOrder`, `Row.DerivLag` and
-`Row.Subseq`; this module holds the front ends.
+The degree tactics (`rr_row_natDegree`, `rr_row_ne_zero`, `rr_row_leadingCoeff_pos`) live in
+`RealRooted.Tactic.Recurrence.Degree`: degree laws of the recurrence shapes, general linear
+recurrences (`rr_linrec`), cancelling top terms (`rr_row_cancel`) and two-step products by
+parity.  The implementation of this module is split over `Row.SideGoals` (syntax and side
+goals), `Row.Core`, `Row.LowerOrder`, `Row.DerivLag`, `Row.Subseq` and `Row.PowerForm`; this
+module holds the front ends.
 -/
 
 open Lean Elab Tactic Meta Polynomial
