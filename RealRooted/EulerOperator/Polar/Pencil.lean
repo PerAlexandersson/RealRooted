@@ -32,14 +32,7 @@ theorem strictInterl_polarTheta_self {N : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial
   have hbase : StrictInterl q (theta q) := strictInterl_self_theta hqpf hshift
   have htheta_pf : IsPFPolynomial (theta q) := theta_preserves_pf hqpf
   have htheta_deg : (theta q).natDegree ≤ N := by
-    have hq0 : q ≠ 0 := by
-      intro hzero
-      rw [hzero] at hshift
-      simp at hshift
-    rw [theta, Polynomial.natDegree_mul Polynomial.X_ne_zero
-      (q.derivative_ne_zero.mpr (by lia)), q.natDegree_derivative]
-    simp only [Polynomial.natDegree_X]
-    lia
+    exact (natDegree_theta_le q).trans hqdeg
   have htransport :
       StrictInterl (reciprocalShift N (theta q)) (reciprocalShift N q) :=
     reciprocalShift_reverses_strictInterl hqpf htheta_pf hqdeg htheta_deg hbase

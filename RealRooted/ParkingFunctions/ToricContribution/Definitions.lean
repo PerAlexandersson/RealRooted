@@ -111,17 +111,14 @@ def jPolynomial (m ε : ℕ) : ℝ[X] :=
 theorem coeff_rPolynomial (m ε d k : ℕ) :
     (rPolynomial m ε d).coeff k =
       if k ≤ m then rCoeff m ε d k else 0 := by
-  simp only [rPolynomial, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (m + 1)) k]
-  simp
+  simpa only [rPolynomial, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial (rCoeff m ε d) (m + 1) k
 
 @[simp]
 theorem coeff_jPolynomial (m ε k : ℕ) :
     (jPolynomial m ε).coeff k =
       if k < m then jCoeff m ε k else 0 := by
-  simp only [jPolynomial, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range m) k]
-  simp
+  simpa only [jPolynomial] using Polynomial.coeff_sum_range_monomial (jCoeff m ε) m k
 
 @[simp]
 theorem rCoeff_zero (m ε d : ℕ) :
@@ -225,17 +222,13 @@ theorem natDegree_jPolynomial_le (m ε : ℕ) :
 theorem rPolynomial_eval_zero (m ε d : ℕ) :
     (rPolynomial m ε d).eval 0 = 1 := by
   rw [← coeff_zero_eq_eval_zero]
-  simp only [rPolynomial, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (m + 1)) 0]
-  simp
+  rw [coeff_rPolynomial, ite_eq_left (Nat.zero_le m), rCoeff_zero]
 
 @[simp]
 theorem jPolynomial_eval_zero (m ε : ℕ) (hm : 0 < m) :
     (jPolynomial m ε).eval 0 = 1 := by
   rw [← coeff_zero_eq_eval_zero]
-  simp only [jPolynomial, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range m) 0]
-  simp [hm]
+  rw [coeff_jPolynomial, ite_eq_left hm, jCoeff_zero]
 
 /-- The polynomial `z(1-z)` appearing in every Darboux operator. -/
 def intervalWeight : ℝ[X] :=
