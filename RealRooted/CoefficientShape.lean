@@ -3,6 +3,7 @@ import RealRooted.AissenSchoenbergWhitney
 import RealRooted.NewtonAux
 import Mathlib.Order.Preorder.Finite
 import Mathlib.RingTheory.Polynomial.Vieta
+import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 
 /-!
 # Coefficient shape consequences of real-rootedness
@@ -290,17 +291,6 @@ theorem hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff {p : ℝ[X]}
     HasLogConcaveCoeffs p :=
   hpf.logConcaveUpTo p.natDegree
 
-/-- Elementary symmetric functions of a nonnegative multiset are nonnegative. -/
-lemma esymm_nonneg_of_forall_nonneg {s : Multiset ℝ} (hs : ∀ x ∈ s, 0 ≤ x) (n : ℕ) :
-    0 ≤ s.esymm n := by
-  rw [Multiset.esymm]
-  apply Multiset.sum_nonneg
-  intro y hy
-  rw [Multiset.mem_map] at hy
-  obtain ⟨t, ht, rfl⟩ := hy
-  rw [Multiset.mem_powersetCard] at ht
-  exact Multiset.prod_nonneg (fun x hx => hs x (Multiset.mem_of_le ht.1 hx))
-
 /-- For a nonnegative multiset, positivity of `esymm a` propagates downwards. -/
 lemma esymm_pos_mono_of_forall_nonneg {s : Multiset ℝ} (hs : ∀ x ∈ s, 0 ≤ x)
     {a b : ℕ} (hb : b ≤ a) (ha : 0 < s.esymm a) :
@@ -405,7 +395,7 @@ theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ
     have hcoeff_i := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits hid
     have hei : 0 < (p.roots.map Neg.neg).esymm (p.natDegree - i) := by
       rcases lt_or_eq_of_le
-          (esymm_nonneg_of_forall_nonneg ht (p.natDegree - i)) with h | h <;> grind
+          (Multiset.esymm_nonneg_of_forall_nonneg ht (p.natDegree - i)) with h | h <;> grind
     have hb : p.natDegree - j ≤ p.natDegree - i := by lia
     have hej : 0 < (p.roots.map Neg.neg).esymm (p.natDegree - j) :=
       esymm_pos_mono_of_forall_nonneg ht hb hei

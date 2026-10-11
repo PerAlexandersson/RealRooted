@@ -10,6 +10,7 @@ import RealRooted.RectangularConvolution
 import RealRooted.RectangularConvolutionIdentity
 import RealRooted.Touchard
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Ring.Parity
 
 /-!
 # The Narayana Transformation
@@ -182,21 +183,6 @@ theorem natDegree_degreeSignFlip_le (n : ℕ) (p : ℝ[X]) :
   intro j hj
   exact coeff_degreeSignFlip_of_lt p hj
 
-private theorem neg_one_pow_mul_pow_eq_sub {n j : ℕ} (hj : j ≤ n) :
-    (-1 : ℝ) ^ n * (-1 : ℝ) ^ j = (-1 : ℝ) ^ (n - j) := by
-  have hpow : (-1 : ℝ) ^ n = (-1 : ℝ) ^ (n - j) * (-1 : ℝ) ^ j := by
-    nth_rw 1 [show n = n - j + j by lia]
-    rw [pow_add]
-  have hsq : (-1 : ℝ) ^ j * (-1 : ℝ) ^ j = 1 := by
-    rw [← pow_add]
-    have hEven : Even (j + j) := ⟨j, rfl⟩
-    rw [Even.neg_one_pow hEven]
-  calc
-    (-1 : ℝ) ^ n * (-1 : ℝ) ^ j =
-        ((-1 : ℝ) ^ (n - j) * (-1 : ℝ) ^ j) * (-1 : ℝ) ^ j := by rw [hpow]
-    _ = (-1 : ℝ) ^ (n - j) * ((-1 : ℝ) ^ j * (-1 : ℝ) ^ j) := by ring
-    _ = (-1 : ℝ) ^ (n - j) := by rw [hsq, mul_one]
-
 theorem degreeSignFlip_eq_C_mul_comp_neg_X
     (n : ℕ) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) :
     degreeSignFlip n p = C ((-1 : ℝ) ^ n) * p.comp (-X) := by
@@ -206,7 +192,7 @@ theorem degreeSignFlip_eq_C_mul_comp_neg_X
     calc
       (-1 : ℝ) ^ (n - j) * p.coeff j =
           ((-1 : ℝ) ^ n * (-1 : ℝ) ^ j) * p.coeff j := by
-        rw [neg_one_pow_mul_pow_eq_sub hj]
+        rw [_root_.neg_one_pow_mul_eq_neg_one_pow_sub hj]
       _ = (-1 : ℝ) ^ n * (p.coeff j * (-1 : ℝ) ^ j) := by ring
   · have hjlt : n < j := Nat.lt_of_not_ge hj
     rw [coeff_degreeSignFlip_of_lt p hjlt, coeff_C_mul, coeff_comp_neg_X]

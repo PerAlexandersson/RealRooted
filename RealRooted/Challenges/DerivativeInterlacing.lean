@@ -137,11 +137,8 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : f.natDegree �
   derivative_interlaces_of_natDegree_ne_zero hf hdeg
 
 /-- The derivative of a real-rooted polynomial is real-rooted. -/
-theorem splits_derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits := by
-  rcases eq_zero_or_splits_derivative (Or.inr hp) with h | h
-  · rw [h]
-    exact Splits.zero
-  · exact h
+theorem splits_derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits :=
+  hp.derivative
 
 /-- Differentiation preserves zero-aware interlacing (Rolle–Obreschkoff). -/
 theorem interl_derivative {f g : ℝ[X]} (h : Interl f g) :

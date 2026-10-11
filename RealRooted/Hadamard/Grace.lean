@@ -358,7 +358,7 @@ theorem splits_diagonalOperator_pred (n : Nat) (hn : 1 ≤ n) {q : ℝ[X]}
   refine (Polynomial.Splits.C (R := ℝ) _).mul ?_
   · have hrq : (reflect n q).Splits :=
       (DegreeDropReversal.splits_reflect_iff hq).mpr hsplit
-    have hder : (derivative (reflect n q)).Splits := splits_derivative hrq
+    have hder : (derivative (reflect n q)).Splits := Polynomial.Splits.derivative hrq
     refine DegreeDropReversal.splits_reflect_of_splits hder ?_
     rw [(reflect n q).natDegree_derivative]
     have := Polynomial.natDegree_reflect_le (N := n) (p := q)
@@ -407,7 +407,7 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
     · have hfX : f = X * f.divX := DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hf00
       have hf1pf : IsPFPolynomial f.divX := isPFPolynomial_of_X_mul (hfX ▸ hf)
       have hderiv_split : (C (n : ℝ)⁻¹ * derivative p).Splits :=
-        (Polynomial.Splits.C (R := ℝ) _).mul (splits_derivative hsplit)
+        (Polynomial.Splits.C (R := ℝ) _).mul (Polynomial.Splits.derivative hsplit)
       have hinner : (schurSzegoComp (n - 1) f.divX (C (n : ℝ)⁻¹ * derivative p)).Splits := by
         by_cases hz : schurSzegoComp (n - 1) f.divX (C (n : ℝ)⁻¹ * derivative p) = 0
         · rw [hz]; simp
@@ -429,7 +429,7 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
       have hderiv_pf : IsPFPolynomial (C (n : ℝ)⁻¹ * derivative f) :=
         (hf.derivative).const_mul (by positivity)
       have hderiv_split : (C (n : ℝ)⁻¹ * derivative f).Splits :=
-        (Polynomial.Splits.C (R := ℝ) _).mul (splits_derivative
+        (Polynomial.Splits.C (R := ℝ) _).mul (Polynomial.Splits.derivative
           (hf.eq_zero_or_splits.resolve_left hf0))
       have hinner : (schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p.divX).Splits := by
         by_cases hz : schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p.divX = 0
@@ -476,7 +476,7 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
       have hRf1_pf : IsPFPolynomial (reflect n f).divX :=
         isPFPolynomial_of_X_mul (hRfX ▸ hRf_pf)
       have hderiv_split : (C (n : ℝ)⁻¹ * derivative (reflect n p)).Splits :=
-        (Polynomial.Splits.C (R := ℝ) _).mul (splits_derivative hRp_split)
+        (Polynomial.Splits.C (R := ℝ) _).mul (Polynomial.Splits.derivative hRp_split)
       have hinner :
           (schurSzegoComp (n - 1) (reflect n f).divX
             (C (n : ℝ)⁻¹ * derivative (reflect n p))).Splits := by

@@ -444,15 +444,6 @@ theorem cubicDiscr_schurSzegoComp_nonneg_of_reflect_diagonalOperator_three
   rw [cubicDiscr_schurSzegoComp_eq_reflect_diagonalOperator_three hn hfdeg hpdeg]
   positivity
 
-/-- Iterated derivatives of a splitting polynomial are zero or split. -/
-theorem iterate_derivative_eq_zero_or_splits {p : ℝ[X]} (hsplit : p.Splits)
-    (n : ℕ) :
-    (derivative^[n]) p = 0 ∨ ((derivative^[n]) p).Splits := by
-  induction n with
-  | zero => exact Or.inr hsplit
-  | succ n ih =>
-      simpa [Function.iterate_succ_apply'] using eq_zero_or_splits_derivative ih
-
 /-- The iterated derivative of the degree-`n` reflection has degree at most
 three after `n - 3` derivatives. -/
 theorem natDegree_iterate_derivative_reflect_le_three
