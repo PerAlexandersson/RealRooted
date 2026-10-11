@@ -147,53 +147,50 @@ theorem weightedSum_cutTransformQWeights {m : ℕ}
     intro i
     by_cases hji : j < i <;> simp [hji]
 
+private theorem weightedList_snd_mem {m : ℕ} {A B : Fin m → ℝ[X]}
+    {w₁ w₂ : Fin m → ℝ} {ap : ℝ × ℝ[X]}
+    (hap : ap ∈ List.ofFn (fun i => (w₁ i, A i)) ++
+        List.ofFn (fun i => (w₂ i, B i))) :
+    ap.2 ∈ List.ofFn A ++ List.ofFn B := by
+  rcases List.mem_append.mp hap with hap | hap <;>
+    simp only [List.mem_ofFn] at hap
+  · rcases hap with ⟨i, rfl⟩; simp
+  · rcases hap with ⟨i, rfl⟩; simp
+
+private theorem weightedList_fst_nonneg {m : ℕ} {A B : Fin m → ℝ[X]}
+    {w₁ w₂ : Fin m → ℝ} {ap : ℝ × ℝ[X]}
+    (hw₁ : ∀ i, 0 ≤ w₁ i) (hw₂ : ∀ i, 0 ≤ w₂ i)
+    (hap : ap ∈ List.ofFn (fun i => (w₁ i, A i)) ++
+        List.ofFn (fun i => (w₂ i, B i))) :
+    0 ≤ ap.1 := by
+  rcases List.mem_append.mp hap with hap | hap <;>
+    simp only [List.mem_ofFn] at hap
+  · rcases hap with ⟨i, rfl⟩; exact hw₁ i
+  · rcases hap with ⟨i, rfl⟩; exact hw₂ i
+
 private theorem cutTransformPWeights_mem {m : ℕ}
     (P Q : Fin m → ℝ[X]) (j : Fin m) :
     ∀ ap ∈ cutTransformPWeights P Q j,
-      ap.2 ∈ List.ofFn P ++ List.ofFn Q := by
-  intro ap hap
-  rcases List.mem_append.mp hap with hap | hap
-  · simp only [List.mem_ofFn] at hap
-    rcases hap with ⟨i, rfl⟩
-    simp
-  · simp only [List.mem_ofFn] at hap
-    rcases hap with ⟨i, rfl⟩
-    simp
+      ap.2 ∈ List.ofFn P ++ List.ofFn Q :=
+  fun ap hap => weightedList_snd_mem (ap := ap) hap
 
 private theorem cutTransformQWeights_mem {m : ℕ}
     (P Q : Fin m → ℝ[X]) (j : Fin m) :
     ∀ ap ∈ cutTransformQWeights P Q j,
-      ap.2 ∈ List.ofFn (fun i => X * P i) ++ List.ofFn Q := by
-  intro ap hap
-  rcases List.mem_append.mp hap with hap | hap
-  · simp only [List.mem_ofFn] at hap
-    rcases hap with ⟨i, rfl⟩
-    simp
-  · simp only [List.mem_ofFn] at hap
-    rcases hap with ⟨i, rfl⟩
-    simp
+      ap.2 ∈ List.ofFn (fun i => X * P i) ++ List.ofFn Q :=
+  fun ap hap => weightedList_snd_mem (ap := ap) hap
 
 private theorem cutTransformPWeights_nonneg {m : ℕ}
     (P Q : Fin m → ℝ[X]) (j : Fin m) :
     ∀ ap ∈ cutTransformPWeights P Q j, 0 ≤ ap.1 := by
-  intro ap hap
-  rcases List.mem_append.mp hap with hap | hap <;>
-    simp only [List.mem_ofFn] at hap
-  · rcases hap with ⟨i, rfl⟩
-    split <;> norm_num
-  · rcases hap with ⟨i, rfl⟩
-    split <;> norm_num
+  exact fun ap hap => weightedList_fst_nonneg
+    (fun i => by split <;> norm_num) (fun i => by split <;> norm_num) hap
 
 private theorem cutTransformQWeights_nonneg {m : ℕ}
     (P Q : Fin m → ℝ[X]) (j : Fin m) :
     ∀ ap ∈ cutTransformQWeights P Q j, 0 ≤ ap.1 := by
-  intro ap hap
-  rcases List.mem_append.mp hap with hap | hap <;>
-    simp only [List.mem_ofFn] at hap
-  · rcases hap with ⟨i, rfl⟩
-    split <;> norm_num
-  · rcases hap with ⟨i, rfl⟩
-    split <;> norm_num
+  exact fun ap hap => weightedList_fst_nonneg
+    (fun i => by split <;> norm_num) (fun i => by split <;> norm_num) hap
 
 namespace OrderedCutCompatible
 
