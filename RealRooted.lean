@@ -1793,3 +1793,4 @@ import RealRooted.MultivariateStability.Substitution
 
 import RealRooted.Challenges.EndpointDerivative
 import RealRooted.Challenges.RootContinuity
+import RealRooted.Challenges.IteratedDerivativeShift
