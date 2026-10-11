@@ -328,7 +328,9 @@ import RealRooted.Challenges.OperatorPreservers
 import RealRooted.Challenges.ParkingFunctions
 import RealRooted.Challenges.PeakPolynomials
 import RealRooted.Challenges.PerronFrobenius
+import RealRooted.Challenges.ProductSequence
 import RealRooted.Challenges.RealStability
+import RealRooted.Challenges.ReciprocalShift
 import RealRooted.Challenges.RootAmplitude
 import RealRooted.Challenges.SchurCohn
 import RealRooted.Challenges.SeparablePermutations

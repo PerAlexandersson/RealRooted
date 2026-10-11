@@ -1695,6 +1695,8 @@ After merging the root-polynomial streamlining, these modules import both new li
 
 The root-amplitude and coefficient-dominance challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+The reciprocal-shift and product-sequence challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
