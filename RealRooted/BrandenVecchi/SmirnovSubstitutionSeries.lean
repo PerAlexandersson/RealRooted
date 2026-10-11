@@ -26,7 +26,7 @@ formal series for every letter weight and `t` for the descent variable. -/
 def smirnovSubstitutionFixed {m : ℕ} (t : A)
     (weight : Fin m → PowerSeries A) (k : ℕ) : PowerSeries A :=
   ∑ word ∈ smirnovWords m k,
-    PowerSeries.C (t ^ smirnovDescentNumber word) *
+    PowerSeries.C (t ^ (List.ofFn word).descentCount) *
       ∏ i, weight (word i)
 
 @[simp]
@@ -48,15 +48,15 @@ theorem smirnovSubstitutionFixed_eq_eval {m : ℕ} (t : A)
     (Polynomial.evalRingHom (PowerSeries.C t))
       (∑ word ∈ smirnovWords m k,
         C (smirnovWordWeight weight word) *
-          X ^ smirnovDescentNumber word)
+          X ^ (List.ofFn word).descentCount)
   simp_rw [map_sum]
   apply Finset.sum_congr rfl
   intro word _
-  change PowerSeries.C (t ^ smirnovDescentNumber word) *
+  change PowerSeries.C (t ^ (List.ofFn word).descentCount) *
       (∏ i, weight (word i)) =
     Polynomial.eval (PowerSeries.C t)
       (C (smirnovWordWeight weight word) *
-        X ^ smirnovDescentNumber word)
+        X ^ (List.ofFn word).descentCount)
   rw [eval_C_mul, eval_X_pow, smirnovWordWeight]
   simp only [map_pow]
   ring
@@ -181,7 +181,7 @@ theorem coeff_smirnovSubstitutionEndingFixed_eq_zero_of_lt {m : ℕ}
     change PowerSeries.coeff n
       (Polynomial.eval (PowerSeries.C t)
         (C (smirnovWordWeight weight (Fin.snoc word i)) *
-          X ^ smirnovDescentNumber (Fin.snoc word i))) = 0
+          X ^ (List.ofFn (Fin.snoc word i)).descentCount)) = 0
     rw [eval_C_mul, eval_X_pow]
     rw [← map_pow, PowerSeries.coeff_mul_C]
     rw [coeff_smirnovWordWeight_eq_zero_of_lt weight hweight
@@ -617,13 +617,6 @@ theorem smirnovWords_eq_signedSmirnovWords (q p k : ℕ) :
   ext word
   simp [isSmirnovWord_iff_listIsChain]
 
-/-- The tuple and list descent statistics agree on a Smirnov skeleton. -/
-theorem smirnovDescentNumber_eq_descentCount {q p k : ℕ}
-    (word : Fin k → SignedLetter q p) :
-    smirnovDescentNumber word =
-      (List.ofFn word).descentCount :=
-  rfl
-
 /-- One fixed skeleton length specializes exactly to the signed-run summand. -/
 theorem coeff_smirnovSubstitutionFixed_signedRunSeries
     {R : Type*} [CommRing R] {q p : ℕ}
@@ -641,8 +634,7 @@ theorem coeff_smirnovSubstitutionFixed_signedRunSeries
   apply Finset.sum_congr rfl
   intro skeleton hskeleton
   rw [PowerSeries.coeff_C_mul]
-  simp [smirnovDescentNumber_eq_descentCount,
-    signedTupleSkeletonRunSeries]
+  simp [signedTupleSkeletonRunSeries]
 
 /-- The locally finite substitution coefficient is exactly the coefficient
 defined by the signed-word run decomposition. -/

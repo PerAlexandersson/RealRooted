@@ -164,35 +164,12 @@ theorem smirnovWordWeight_eq_zero_of_exists {m n : ℕ}
     smirnovWordWeight weight word = 0 :=
   Finset.prod_eq_zero (Finset.mem_univ i) hi
 
-/-- Compatibility name for the descent number of a possibly empty word. -/
-abbrev smirnovDescentNumber {m : ℕ} :
-    {n : ℕ} → (Fin n → Fin m) → ℕ :=
-  fun word => (List.ofFn word).descentCount
-
-@[simp]
-theorem smirnovDescentNumber_zero {m : ℕ} (word : Fin 0 → Fin m) :
-    smirnovDescentNumber word = 0 := by
-  simp [List.descentCount]
-
-@[simp]
-theorem smirnovDescentNumber_one {m : ℕ} (word : Fin 1 → Fin m) :
-    smirnovDescentNumber word = 0 := by
-  simp [List.descentCount]
-
-@[simp]
-theorem smirnovDescentNumber_snoc {m n : ℕ}
-    (word : Fin (n + 1) → Fin m) (i : Fin m) :
-    smirnovDescentNumber (Fin.snoc word i) =
-      smirnovDescentNumber word +
-        if i < word (Fin.last n) then 1 else 0 :=
-  List.descentCount_ofFn_snoc word i
-
 /-- Literal weighted descent enumerator of length-`n` Smirnov words. -/
 def weightedSmirnovPolynomial {m : ℕ} (weight : Fin m → R)
     (n : ℕ) : R[X] :=
   ∑ word ∈ smirnovWords m n,
     C (smirnovWordWeight weight word) *
-      X ^ smirnovDescentNumber word
+      X ^ (List.ofFn word).descentCount
 
 @[simp]
 theorem weightedSmirnovPolynomial_zero {m : ℕ}
@@ -231,7 +208,7 @@ def weightedSmirnovEndingSummand {m n : ℕ}
   classical
   exact if IsSmirnovWord (n + 1) (Fin.snoc word i) then
       C (smirnovWordWeight weight (Fin.snoc word i)) *
-        X ^ smirnovDescentNumber (Fin.snoc word i)
+        X ^ (List.ofFn (Fin.snoc word i)).descentCount
     else 0
 
 def weightedSmirnovEnding {m : ℕ} (weight : Fin m → R)
@@ -276,7 +253,7 @@ theorem weightedSmirnovEndingSummand_snoc {m n : ℕ}
         (isSmirnovWord_snoc_iff _ _).mpr ⟨hword, by simpa using hji⟩
       rw [weightedSmirnovEndingSummand, ite_eq_left hfull,
         weightedSmirnovEndingSummand, ite_eq_left hword,
-        smirnovWordWeight_snoc, smirnovDescentNumber_snoc]
+        smirnovWordWeight_snoc, List.descentCount_ofFn_snoc]
       simp only [Fin.snoc_last]
       by_cases hij : i < j
       · rw [ite_eq_left hij, ite_eq_left hij, pow_succ]
@@ -372,7 +349,7 @@ theorem weightedSmirnovPolynomial_succ {m : ℕ}
   rw [show (∑ word : Fin (n + 1) → Fin m,
       if IsSmirnovWord (n + 1) word then
         C (smirnovWordWeight weight word) *
-          X ^ smirnovDescentNumber word
+          X ^ (List.ofFn word).descentCount
       else 0) =
       ∑ i : Fin m, ∑ word : Fin n → Fin m,
         weightedSmirnovEndingSummand weight word i by
@@ -383,12 +360,12 @@ theorem weightedSmirnovPolynomial_succ {m : ℕ}
         (fun pair : Fin m × (Fin n → Fin m) =>
           if IsSmirnovWord (n + 1) (Fin.snoc pair.2 pair.1) then
             C (smirnovWordWeight weight (Fin.snoc pair.2 pair.1)) *
-              X ^ smirnovDescentNumber (Fin.snoc pair.2 pair.1)
+              X ^ (List.ofFn (Fin.snoc pair.2 pair.1)).descentCount
           else 0)
         (fun word : Fin (n + 1) → Fin m =>
           if IsSmirnovWord (n + 1) word then
             C (smirnovWordWeight weight word) *
-              X ^ smirnovDescentNumber word
+              X ^ (List.ofFn word).descentCount
           else 0)
         (fun _ => rfl)]
   apply Fintype.sum_congr

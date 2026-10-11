@@ -740,7 +740,7 @@ theorem signedExpansionIndexSummand_compressedRunIndex
     (word : Fin n → SignedLetter q p) :
     signedExpansionIndexSummand weight (compressedRunIndex word) =
       C (signedWordWeight weight word) *
-        X ^ signedDescentNumber word *
+        X ^ (List.ofFn word).descentCount *
           (1 + X) ^ signedCollisionNumber word := by
   rw [signedWordSummand_eq_runSummand]
   exact (RunLengthData.runSummand_eq_expansionIndexSummand weight
