@@ -622,6 +622,19 @@ def A142071 : ℕ → ℝ[X]
 theorem A142071_interlaces (n : ℕ) : Interlaces (A142071 n) (A142071 (n + 1)) := by
   rr_row_interlaces
 
+/-! ### The `f`-polynomial transform
+
+The alternating-runs rows (A186370) are `fPolynomial n (Q n)` for the peak-type rows
+`Q (n + 1) = (t - 2t²) Q n' + (1 + n t) Q n`, whose degree grows by half a step
+(`Row.FTransform`). -/
+
+/-- Alternating runs (A186370). -/
+def A186370 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (X - X ^ 3) * (A186370 n).derivative + (1 + X + C (n : ℝ) * X ^ 2) * A186370 n
+
+theorem A186370_splits (n : ℕ) : (A186370 n).Splits := by rr_row_splits
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 /--
@@ -652,7 +665,7 @@ example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitF
 /--
 error: rr_row_splits: unknown route foo; the routes are closedForm, lowerOrder, subseq,
 linearFactors, splitFactors, twoStep, shiftedProduct, nextRow, prevRow, halfGrowth,
-degreePattern, reversed, parityProduct, lagFeedback
+degreePattern, reversed, parityProduct, lagFeedback, fTransform
 -/
 #guard_msgs (whitespace := normalized) in
 example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := foo)
