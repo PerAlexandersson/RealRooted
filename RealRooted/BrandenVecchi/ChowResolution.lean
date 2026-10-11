@@ -21,12 +21,8 @@ variable {R : Type*} [CommRing R]
 
 /-- The linear basis transform sending `X ^ n` to the Chow-derangement
 polynomial in row `n`. -/
-def chowDerangedTransform (A : LowerTriangularMatrix R) : R[X] →ₗ[R] R[X] where
-  toFun := basisTransform (chowDerangement A)
-  map_add' := basisTransform_add (chowDerangement A)
-  map_smul' a p := by
-    simpa [Polynomial.smul_eq_C_mul] using
-      basisTransform_smul (chowDerangement A) a p
+def chowDerangedTransform (A : LowerTriangularMatrix R) : R[X] →ₗ[R] R[X] :=
+  basisTransformₗ (chowDerangement A)
 
 @[simp]
 theorem chowDerangedTransform_X_pow (A : LowerTriangularMatrix R) (n : ℕ) :
@@ -36,9 +32,8 @@ theorem chowDerangedTransform_X_pow (A : LowerTriangularMatrix R) (n : ℕ) :
 @[simp]
 theorem chowDerangedTransform_C_mul (A : LowerTriangularMatrix R)
     (a : R) (p : R[X]) :
-    chowDerangedTransform A (C a * p) = C a * chowDerangedTransform A p := by
-  rw [← Polynomial.smul_eq_C_mul, LinearMap.map_smul,
-    Polynomial.smul_eq_C_mul]
+    chowDerangedTransform A (C a * p) = C a * chowDerangedTransform A p :=
+  Polynomial.linearMap_C_mul _ a p
 
 /-- Applying the Chow-deranged transform to a matrix row gives its Chow
 polynomial. -/

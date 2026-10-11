@@ -30,7 +30,7 @@ theorem a144438_insertion_derivative_at_root
     (h.eval r / p.derivative.eval r) / (ρ - r)
   let S₂ : ℝ := ∑ r ∈ p.roots.toFinset,
     (h.eval r / p.derivative.eval r) / (ρ - r) ^ 2
-  have hpartial := a144438_sum_companion_residue_div hp hpnd hpdeg hhdeg hpρ
+  have hpartial := eval_div_eq_sum_residue_div hp hpnd hpdeg hhdeg hpρ
   have hevalh : h.eval ρ = p.eval ρ * S₁ := by
     have := (div_eq_iff hpρ).mp hpartial
     simpa only [S₁, mul_comm] using this

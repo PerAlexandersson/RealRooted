@@ -292,7 +292,7 @@ lemma StrictInterl.of_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} {r : 
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
   have hfg' : StrictInterl f' g' :=
-    strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos
+    strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos
   exact (StrictInterl.comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
 end RealRooted

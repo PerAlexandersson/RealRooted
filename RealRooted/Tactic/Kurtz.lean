@@ -27,7 +27,7 @@ theorem kurtz_splits {p : ℝ[X]}
     (hpos : ∀ i ≤ p.natDegree, 0 < p.coeff i)
     (hineq : RealRooted.Kurtz.KurtzStrictInequalities p) :
     p.Splits :=
-  RealRooted.Kurtz.coefficientCriterion hdeg hpos hineq
+  RealRooted.Kurtz.coefficient_criterion hdeg hpos hineq
 
 theorem kurtz_ne_zero_and_splits {p : ℝ[X]}
     (hdeg : 2 ≤ p.natDegree)
@@ -134,7 +134,7 @@ macro_rules
         inequalities := $hineq:term) =>
       `(tactic|
         first
-          | exact RealRooted.Kurtz.coefficientCriterion
+          | exact RealRooted.Kurtz.coefficient_criterion
               $hdeg $hpos $hineq
           | exact RealRooted.Tactic.kurtz_ne_zero_and_splits
               $hdeg $hpos $hineq

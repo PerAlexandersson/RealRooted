@@ -96,14 +96,6 @@ theorem generalStep_eq_second_derivative (κ a b u v : ℝ) (p : ℝ[X]) :
     map_add, map_one, C_mul]
   ring
 
-/-- First algebraic identity for the general Euler step. -/
-theorem generalStep_eval_form (κ a b u v : ℝ) (p : ℝ[X]) :
-    generalStep κ a b u v p =
-      C κ * X ^ 2 * p.derivative.derivative +
-        X * (C (κ * (a + b + 1)) + C v * X) * p.derivative +
-        (C (κ * (a * b)) + C u * X) * p := by
-  exact generalStep_eq_second_derivative κ a b u v p
-
 /-- Intertwining identity with multiplication by `X`. -/
 theorem generalStep_X_mul (κ a b u v : ℝ) (p : ℝ[X]) :
     generalStep κ a b u v (X * p) =
@@ -1168,4 +1160,3 @@ theorem isNegativeSimple_generalStep_of_pos
 
 
 end RealRooted.EulerBidiagonal
-

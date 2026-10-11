@@ -218,7 +218,7 @@ theorem weightedDecoDiagonal_successor_residue_and_energy
       linarith
     have hhPartial : h.eval ρ / p.eval ρ =
         ∑ i, ω i / (ρ - r i) := by
-      have hpartial := a144438_sum_companion_residue_div hinv.splits hnodup
+      have hpartial := eval_div_eq_sum_residue_div hinv.splits hnodup
         (by simpa only [p, weightedDecoDiagonal_natDegree] using hn)
         (by
           simpa only [p, h, weightedDecoDiagonal_natDegree] using
