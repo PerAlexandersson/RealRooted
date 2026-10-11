@@ -496,29 +496,15 @@ private theorem coeff_networkResolvingPolynomial {R : Type*} [CommSemiring R]
     (weights : ℕ → ℕ → R) (n k j : ℕ)
     (hj : j ≤ n) :
     (networkResolvingPolynomial weights n k).coeff j = networkPathSumFrom weights n k j := by
-  unfold networkResolvingPolynomial
-  rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single j]
-  · simp
-  · intro i hi hij
-    rw [Polynomial.coeff_C_mul_X_pow]
-    split_ifs with h
-    · exact (hij h.symm).elim
-    · rfl
-  · simp [hj]
+  rw [networkResolvingPolynomial, Polynomial.finsetSum_coeff]
+  simp [hj]
 
 private theorem coeff_networkResolvingPolynomial_eq_zero {R : Type*} [CommSemiring R]
     (weights : ℕ → ℕ → R)
     (n k j : ℕ) (hj : n < j) :
     (networkResolvingPolynomial weights n k).coeff j = 0 := by
-  unfold networkResolvingPolynomial
-  rw [Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro i hi
-  rw [Polynomial.coeff_C_mul_X_pow]
-  split_ifs with h
-  · have hin : i ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hi)
-    exact (not_le_of_gt hj (by simpa [h] using hin)).elim
-  · rfl
+  rw [networkResolvingPolynomial, Polynomial.finsetSum_coeff]
+  simp [not_le_of_gt hj]
 
 /-- The literal path polynomials satisfy the Brändén--Saud Leite resolution
 recurrence. -/
@@ -680,16 +666,8 @@ private theorem coeff_networkResolvingPolynomial_top {R : Type*} [CommSemiring R
     (weights : ℕ → ℕ → R)
     {n k : ℕ} (hkn : k ≤ n) :
     (networkResolvingPolynomial weights n k).coeff n = 1 := by
-  unfold networkResolvingPolynomial
-  rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single n]
-  · simpa using networkPathSumFrom_top weights hkn
-  · intro j hj hjne
-    simp only [coeff_C_mul, coeff_X_pow]
-    split_ifs with h
-    · exact (hjne h.symm).elim
-    · simp
-  · intro hnot
-    exact (hnot (Finset.mem_range.mpr (Nat.lt_succ_self n))).elim
+  rw [coeff_networkResolvingPolynomial weights n k n le_rfl]
+  exact networkPathSumFrom_top weights hkn
 
 /-- Nonnegative triangular-network weights give a resolution of their path
 matrix. -/

@@ -54,7 +54,7 @@ theorem uniformPolynomial_eq_magicExpansion {r n : ℕ} (hr : 1 ≤ r) (hrn : r 
       DerangementTransform.magicExpansion (r - 1) (magicWeight r n) := by
   obtain ⟨d, rfl⟩ : ∃ d, r = d + 1 := ⟨r - 1, by lia⟩
   rw [Nat.add_sub_cancel]
-  unfold uniformPolynomial DerangementTransform.magicExpansion
+  unfold uniformPolynomial DerangementTransform.magicExpansion Polynomial.magicExpansion
   ext s
   simp only [finsetSum_coeff, coeff_C_mul, coeff_X_pow, coeff_X_pow_mul', mul_ite, mul_one,
     mul_zero]
@@ -158,7 +158,7 @@ theorem isPFPolynomial_chowUniform {r n : ℕ} (hr : 1 ≤ r) (hrn : r ≤ n) :
       (magicWeight (d + 1) n)).sum =
         DerangementTransform.transform (uniformPolynomial (d + 1) n) := by
     rw [hsum, uniformPolynomial_eq_magicExpansion hr hrn, Nat.add_sub_cancel,
-      DerangementTransform.magicExpansion, map_sum]
+      DerangementTransform.magicExpansion, Polynomial.magicExpansion, map_sum]
     simp [DerangementTransform.transform_C_mul]
   have := isPF_chowS_head hscaled
   rw [hP] at this

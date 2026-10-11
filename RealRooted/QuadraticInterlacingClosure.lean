@@ -502,7 +502,7 @@ theorem exists_hasDerivAt_quadraticInterlacingPencil_root
     · exact hparam.hasFDerivAt
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact ContinuousLinearMap.isInvertible_toSpanSingleton hregular
+    exact ContinuousLinearMap.toSpanSingleton_isInvertible hregular
   let ρ : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
   have hρbase : ρ a = r :=
     hcont.implicitFunction_apply_self (by simp) hAinv

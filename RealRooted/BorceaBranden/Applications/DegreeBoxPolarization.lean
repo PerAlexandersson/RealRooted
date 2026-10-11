@@ -390,16 +390,8 @@ theorem specializeLeft_sourceBlockPolarization
   intro k hk
   rw [map_mul, map_mul, MvPolynomial.aeval_C,
     MvPolynomial.algebraMap_eq, houtput, hsource]
-  have hbinom :
-      (_root_.RealRooted.binomialUnlift n p).coeff k =
-        p.coeff k / (n.choose k : ℂ) := by
-    unfold _root_.RealRooted.binomialUnlift
-    rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single k]
-    · simp only [Polynomial.coeff_monomial_same]
-    · intro j hj hjk
-      simp [Polynomial.coeff_monomial, hjk]
-    · intro hknot
-      exact (hknot hk).elim
+  have hbinom := _root_.RealRooted.coeff_binomialUnlift_of_le n p
+    (Nat.le_of_lt_succ (Finset.mem_range.mp hk))
   rw [hbinom, hpcoeff]
   simp only [div_eq_mul_inv, map_mul]
   ring

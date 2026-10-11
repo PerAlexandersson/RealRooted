@@ -327,7 +327,7 @@ theorem isPFPolynomial_refinedHodgePoincare {r n i : ℕ} (hr : 1 ≤ r) (hi : 1
   have hmagic : weightPolynomial r n i =
       DerangementTransform.magicExpansion (r - 1) (magicCoeff r n i) := by
     rw [weightPolynomial_eq hr hi hn, DerangementTransform.magicExpansion,
-      Nat.sub_add_cancel hr]
+      Polynomial.magicExpansion, Nat.sub_add_cancel hr]
   have hpf := DerangementTransform.transform_magicExpansion_isPF (d := r - 1)
     (c := magicCoeff r n i) (fun k _ => magicCoeff_nonneg r n i k)
   rw [← hmagic] at hpf
@@ -428,7 +428,8 @@ theorem isPFPolynomial_modifiedAugmentedHodgePoincare {r n i : ℕ} (hr : 1 ≤ 
     (hn : r + i ≤ n) : IsPFPolynomial (modifiedAugmentedHodgePoincare r n i) := by
   have hmagic : weightPolynomial r n i =
       EulerianTransform.magicExpansion (r - 1) (magicCoeff r n i) := by
-    rw [weightPolynomial_eq hr hi hn, EulerianTransform.magicExpansion, Nat.sub_add_cancel hr]
+    rw [weightPolynomial_eq hr hi hn, EulerianTransform.magicExpansion,
+      Polynomial.magicExpansion, Nat.sub_add_cancel hr]
   have hpf := EulerianTransform.transform_magicExpansion_isPF (d := r - 1)
     (c := magicCoeff r n i) (fun k _ => magicCoeff_nonneg r n i k)
   rw [← hmagic] at hpf

@@ -27,12 +27,8 @@ open RealRooted
 private theorem iteratedPDerivAt_smul {σ : Type*} (q : σ) (j : ℕ)
     (c : ℂ) (p : MvPolynomial σ ℂ) :
     iteratedPDerivAt q j (c • p) = c • iteratedPDerivAt q j p := by
-  induction j with
-  | zero => rfl
-  | succ j ih =>
-      rw [iteratedPDerivAt, ih, iteratedPDerivAt,
-        MvPolynomial.smul_eq_C_mul, MvPolynomial.pderiv_C_mul,
-        MvPolynomial.smul_eq_C_mul]
+  rw [← iteratedPDerivAt_eq_pow, ← iteratedPDerivAt_eq_pow]
+  exact ((MvPolynomial.pderiv q).toLinearMap ^ j).map_smul c p
 
 /-- A finite-order differential operator in the coordinate `q`. -/
 def finiteOrderWeylOperator {σ : Type*} (q : σ) (m : ℕ)

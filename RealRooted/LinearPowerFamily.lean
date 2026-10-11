@@ -118,29 +118,11 @@ private lemma linearFactor_ne_zero {a b : ℝ} (hb : b ≠ 0) :
   rw [hzero] at hdeg
   norm_num at hdeg
 
-private lemma scalarLinearFactorPow_natDegree {c a b : ℝ} (hc : c ≠ 0)
-    (hb : b ≠ 0) (n : Nat) :
-    (C c * (C a + C b * X) ^ n : ℝ[X]).natDegree = n := by
-  rw [natDegree_C_mul hc, natDegree_pow, linearFactor_natDegree hb, mul_one]
-
 private lemma fixedMulLinearFactorPow_natDegree {fixed : ℝ[X]} {a b : ℝ}
     (hfixed : fixed ≠ 0) (hb : b ≠ 0) (n : Nat) :
     (fixed * (C a + C b * X) ^ n : ℝ[X]).natDegree = fixed.natDegree + n := by
   rw [natDegree_mul hfixed (pow_ne_zero _ (linearFactor_ne_zero (a := a) hb)),
     natDegree_pow, linearFactor_natDegree hb, mul_one]
-
-/-- Consecutive interlacing for scalar multiples of successive powers of one
-positive-slope linear factor. -/
-theorem linearPowerScalarStep_interlaces {c d a b : ℝ} (hc : c ≠ 0)
-    (hd : d ≠ 0) (hb : 0 < b) (n : Nat) :
-    Interlaces
-      (C c * (C a + C b * X) ^ n)
-      (C d * (C a + C b * X) ^ (n + 1)) := by
-  have hscaled :=
-    ((interlaces_linear_pow a b hb n).toStrictInterl.C_mul_left hc).C_mul_right hd
-  exact hscaled.toInterlaces (by
-    rw [scalarLinearFactorPow_natDegree hc hb.ne' n,
-      scalarLinearFactorPow_natDegree hd hb.ne' (n + 1)])
 
 /-- Scalar multiple of `interlaces_linear_pow`; scaling by `C c` preserves roots. -/
 theorem interlaces_C_mul_linear_pow (c a b : ℝ) (hc : c ≠ 0) (hb : 0 < b)
@@ -459,41 +441,6 @@ theorem interlaces_linear_quadratic_of_roots_between {α r s c : ℝ} (hc : c �
     rfl
   · simp [ListInterlaces, hrα, hαs]
 
-/-- Common-factor variant: `(X - C r)^m * (a+bX)^n` interlaces its successor. -/
-theorem interlaces_X_sub_C_pow_mul_linear_pow (r : ℝ) (m : ℕ) (a b : ℝ)
-    (hb : 0 < b) (n : ℕ) :
-    Interlaces ((X - C r) ^ m * (C a + C b * X) ^ n)
-      ((X - C r) ^ m * (C a + C b * X) ^ (n + 1)) := by
-  have hstrictInterl := (interlaces_linear_pow a b hb n).toStrictInterl
-  have hmul :
-      ∀ j,
-        StrictInterl ((X - C r) ^ j * (C a + C b * X) ^ n)
-          ((X - C r) ^ j * (C a + C b * X) ^ (n + 1)) := by
-    intro j
-    induction j with
-    | zero =>
-        simpa using hstrictInterl
-    | succ j ihj =>
-        have hnext := ihj.mul_X_sub_C_both r
-        rw [show (X - C r) * ((X - C r) ^ j * (C a + C b * X) ^ n) =
-              (X - C r) ^ (j + 1) * (C a + C b * X) ^ n by ring,
-            show (X - C r) * ((X - C r) ^ j * (C a + C b * X) ^ (n + 1)) =
-              (X - C r) ^ (j + 1) * (C a + C b * X) ^ (n + 1) by ring] at hnext
-        exact hnext
-  have hstrictInterlm := hmul m
-  have hlin_deg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
-    compute_degree!
-    exact hb.ne'
-  have hlin_ne : (C a + C b * X : ℝ[X]) ≠ 0 := by
-    intro hzero
-    rw [hzero] at hlin_deg
-    simp at hlin_deg
-  have hdegree : ∀ k, ((X - C r) ^ m * (C a + C b * X) ^ k).natDegree = m + k := by
-    intro k
-    rw [natDegree_mul (pow_ne_zero _ (X_sub_C_ne_zero r)) (pow_ne_zero _ hlin_ne),
-      natDegree_pow, natDegree_X_sub_C, mul_one, natDegree_pow, hlin_deg, mul_one]
-  exact hstrictInterlm.toInterlaces (by rw [hdegree n, hdegree (n + 1)]; lia)
-
 /-- Consecutive interlacing for a common real-rooted factor times successive
 powers of one positive-slope linear factor. -/
 theorem commonFactorLinearPowerStep_interlaces {fixed : ℝ[X]} {a b : ℝ}
@@ -507,6 +454,15 @@ theorem commonFactorLinearPowerStep_interlaces {fixed : ℝ[X]} {a b : ℝ}
       fixedMulLinearFactorPow_natDegree hfixed.1 hb.ne' (n + 1)]
     lia)
 
+/-- Common-factor variant: `(X - C r)^m * (a+bX)^n` interlaces its successor. -/
+theorem interlaces_X_sub_C_pow_mul_linear_pow (r : ℝ) (m : ℕ) (a b : ℝ)
+    (hb : 0 < b) (n : ℕ) :
+    Interlaces ((X - C r) ^ m * (C a + C b * X) ^ n)
+      ((X - C r) ^ m * (C a + C b * X) ^ (n + 1)) :=
+  commonFactorLinearPowerStep_interlaces
+    ⟨pow_ne_zero _ (X_sub_C_ne_zero r),
+      (Polynomial.Splits.X_sub_C r).pow m⟩ hb n
+
 /-- Sequence wrapper for scalar multiples of a positive-slope linear-power
 closed form whose exponent increases by one at each step. -/
 theorem linearPowerScalarSequence_interlaces
@@ -518,7 +474,8 @@ theorem linearPowerScalarSequence_interlaces
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
   intro n
   rw [hclosed n, hclosed (n + 1), hexponent n]
-  exact linearPowerScalarStep_interlaces (hscalar n) (hscalar (n + 1)) hb (expn n)
+  exact interlaces_C_mul_linear_pow_succ
+    _ _ _ _ (hscalar n) (hscalar (n + 1)) hb (expn n)
 
 /-- Real-rootedness consequence of `linearPowerScalarSequence_interlaces`. -/
 theorem linearPowerScalarSequence_realRooted
@@ -545,7 +502,7 @@ theorem linearPowerExistsScalarSequence_interlaces
   rcases hclosed n with ⟨c, hc, hP⟩
   rcases hclosed (n + 1) with ⟨d, hd, hPsucc⟩
   rw [hP, hPsucc, hexponent n]
-  exact linearPowerScalarStep_interlaces hc hd hb (expn n)
+  exact interlaces_C_mul_linear_pow_succ _ _ _ _ hc hd hb (expn n)
 
 /-- Real-rootedness consequence of `linearPowerExistsScalarSequence_interlaces`. -/
 theorem linearPowerExistsScalarSequence_realRooted

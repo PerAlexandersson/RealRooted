@@ -217,81 +217,17 @@ private lemma xAddOne_xSq_add_fiveX_add_six_noCommon :
 
 private lemma xAddOne_xSq_add_fiveX_add_six_not_strictInterl :
     ¬ StrictInterl (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) := by
-  intro hstrictInterl
-  rcases hstrictInterl with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hss_card : (X + 1 : ℝ[X]).roots.card = 1 := by
-    simpa [xAddOne_natDegree] using card_roots_of_splits hf.2
-  have hrs_card : (((X + 2) * (X + 3)) : ℝ[X]).roots.card = 2 := by
-    simpa [xSq_add_fiveX_add_six_natDegree] using card_roots_of_splits hg.2
-  have hss_len : ss.length = 1 := by rw [← Multiset.coe_card, hss_eq, hss_card]
-  have hrs_len : rs.length = 2 := by rw [← Multiset.coe_card, hrs_eq, hrs_card]
-  cases ss with
-  | nil =>
-      simp at hss_len
-  | cons s ss' =>
-      cases ss' with
-      | nil =>
-          cases rs with
-          | nil =>
-              simp at hrs_len
-          | cons r₁ rs' =>
-              cases rs' with
-              | nil =>
-                  simp at hrs_len
-              | cons r₂ rs'' =>
-                  cases rs'' with
-                  | nil =>
-                      have hs_eq : s = -1 := by
-                        have hs_mem : (-1 : ℝ) ∈ (X + 1 : ℝ[X]).roots := by simp_all
-                        have hs_mem' :
-                            (-1 : ℝ) ∈ (([s] : List ℝ) : Multiset ℝ) := by
-                          lia
-                        have hs_mem'' : (-1 : ℝ) ∈ ([s] : List ℝ) :=
-                          Multiset.mem_coe.mp hs_mem'
-                        simp_all
-                      have hr_negThree_mem :
-                          (-3 : ℝ) ∈ (((X + 2) * (X + 3)) : ℝ[X]).roots := by
-                        simp_all
-                      have hr_negTwo_mem :
-                          (-2 : ℝ) ∈ (((X + 2) * (X + 3)) : ℝ[X]).roots := by
-                        simp_all
-                      have hr_negThree_mem' :
-                          (-3 : ℝ) ∈ (([r₁, r₂] : List ℝ) : Multiset ℝ) := by
-                        lia
-                      have hr_negTwo_mem' :
-                          (-2 : ℝ) ∈ (([r₁, r₂] : List ℝ) : Multiset ℝ) := by
-                        lia
-                      have hr1_or_hr2_negThree : r₁ = -3 ∨ r₂ = -3 := by
-                        have hr_negThree_mem'' : (-3 : ℝ) ∈ ([r₁, r₂] : List ℝ) :=
-                          Multiset.mem_coe.mp hr_negThree_mem'
-                        grind
-                      have hr1_or_hr2_negTwo : r₁ = -2 ∨ r₂ = -2 := by
-                        have hr_negTwo_mem'' : (-2 : ℝ) ∈ ([r₁, r₂] : List ℝ) :=
-                          Multiset.mem_coe.mp hr_negTwo_mem'
-                        grind
-                      have hr1_le_r2 : r₁ ≤ r₂ := by simp_all
-                      have hr1_eq : r₁ = -3 := by grind
-                      have hr2_eq : r₂ = -2 := by simp_all
-                      have hinter : ListInterlaces [s] [r₁, r₂] := by lia
-                      have : False := by simp [hs_eq, hr1_eq, hr2_eq, ListInterlaces] at hinter
-                      lia
-                  | cons r₃ rs''' =>
-                      simp at hrs_len
-      | cons s₂ ss'' =>
-          simp at hss_len
+  intro hstrict
+  have hcount :=
+    (succDegreeRootCountLowerOriented_of_strictInterl hstrict
+      (by simp [xSq_add_fiveX_add_six_natDegree]) (-2)).2
+  rw [xAddOne_roots, xSq_add_fiveX_add_six_roots] at hcount
+  norm_num [Multiset.filter_add, Multiset.filter_singleton] at hcount
 
 private lemma xAddOne_xAddTwo_linear_combo_eq {lam : ℝ} :
     (C lam * (X + 1) + (X + 2) : ℝ[X]) = X * C (lam + 1) + C (lam + 2) := by
-  ext n
-  cases n with
-  | zero =>
-      simp
-  | succ n =>
-      cases n with
-      | zero =>
-          norm_num [mul_add, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
-      | succ n =>
-          norm_num [mul_add, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
+  simp only [map_add, map_one, map_ofNat]
+  ring
 
 /-- The linear pair used in the counterexamples still satisfies the true
 all-combinations conclusion for a simpler reason: every combination remains
@@ -363,23 +299,8 @@ lemma not_forall_compatible_succDegree_negativeRightFamily_splits :
   have hp_eq :
       ((X + 1 : ℝ[X]) + C (-1 : ℝ) * (((X + 2) * (X + 3)) : ℝ[X])) =
         C (-1 : ℝ) * X ^ 2 + C (-4 : ℝ) * X + C (-5 : ℝ) := by
-    ext n
-    cases n with
-    | zero =>
-        norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm]
-    | succ n =>
-        cases n with
-        | zero =>
-            norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-              coeff_X, coeff_one]
-        | succ n =>
-            cases n with
-            | zero =>
-                norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
-            | succ n =>
-                norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
+    norm_num only [map_add, map_one, map_ofNat, map_neg]
+    ring
   have hdeg :
       ((X + 1 : ℝ[X]) + C (-1 : ℝ) * (((X + 2) * (X + 3)) : ℝ[X])).natDegree = 2 := by
     rw [hp_eq]
@@ -480,37 +401,23 @@ private lemma orientCex_posComboRealRooted :
 
 private lemma orientCex_not_strictInterl :
     ¬ (StrictInterl orientCexF orientCexG ∨ StrictInterl orientCexG orientCexF) := by
-  rintro (h | h)
-  · obtain ⟨-, -, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := h
-    rw [orientCexF_roots] at hss_eq
-    rw [orientCexG_roots] at hrs_eq
-    have hsseq : ss = [-1, 1] :=
-      List.eq_pair_of_pairwise_le_of_coe_eq (by norm_num) hss
-        (by rw [hss_eq]; exact Multiset.pair_comm 1 (-1))
-    have hrseq : rs = [-2, 2] :=
-      List.eq_pair_of_pairwise_le_of_coe_eq (by norm_num) hrs
-        (by rw [hrs_eq]; exact Multiset.pair_comm 2 (-2))
-    subst hsseq
-    subst hrseq
-    rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
-    · simp_all
-    · simp only [ListAlternates, ListInterlaces] at halt
-      simp_all
-  · obtain ⟨-, -, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := h
-    rw [orientCexG_roots] at hss_eq
-    rw [orientCexF_roots] at hrs_eq
-    have hsseq : ss = [-2, 2] :=
-      List.eq_pair_of_pairwise_le_of_coe_eq (by norm_num) hss
-        (by rw [hss_eq]; exact Multiset.pair_comm 2 (-2))
-    have hrseq : rs = [-1, 1] :=
-      List.eq_pair_of_pairwise_le_of_coe_eq (by norm_num) hrs
-        (by rw [hrs_eq]; exact Multiset.pair_comm 1 (-1))
-    subst hsseq
-    subst hrseq
-    rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
-    · simp_all
-    · simp only [ListAlternates, ListInterlaces] at halt
-      simp_all
+  rintro (hfg | hgf)
+  · have hcount :=
+      (sameDegreeRootCountOriented_of_strictInterl hfg
+        (by simp [orientCexF_natDegree, orientCexG_natDegree])
+        (-(3 / 2 : ℝ))).1
+    rw [orientCexF_roots, orientCexG_roots] at hcount
+    rw [show ({(2 : ℝ), -2} : Multiset ℝ) = {2} + {-2} by rfl,
+      show ({(1 : ℝ), -1} : Multiset ℝ) = {1} + {-1} by rfl] at hcount
+    norm_num [Multiset.filter_add, Multiset.filter_singleton] at hcount
+  · have hcount :=
+      (sameDegreeRootCountOriented_of_strictInterl hgf
+        (by simp [orientCexF_natDegree, orientCexG_natDegree])
+        (3 / 2 : ℝ)).1
+    rw [orientCexG_roots, orientCexF_roots] at hcount
+    rw [show ({(1 : ℝ), -1} : Multiset ℝ) = {1} + {-1} by rfl,
+      show ({(2 : ℝ), -2} : Multiset ℝ) = {2} + {-2} by rfl] at hcount
+    norm_num [Multiset.filter_add, Multiset.filter_singleton] at hcount
 
 /-- Positive-combination real-rootedness without common roots does not force
 either interlacing orientation, even in equal degree. -/

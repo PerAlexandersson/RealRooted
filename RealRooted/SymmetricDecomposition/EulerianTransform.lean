@@ -363,13 +363,13 @@ theorem row_reflectionInterlacing :
 
 /-- The degree-`d` magic-basis expansion with coefficients `c`. -/
 def magicExpansion (d : ℕ) (c : ℕ → ℝ) : ℝ[X] :=
-  ∑ k ∈ Finset.range (d + 1), C (c k) * (X ^ k * (1 + X) ^ (d - k))
+  Polynomial.magicExpansion d c
 
 /-- The Eulerian transformation of a magic-basis expansion is the corresponding combination
 of the image row. -/
 theorem transform_magicExpansion (d : ℕ) (c : ℕ → ℝ) :
     transform (magicExpansion d c) = ∑ k ∈ Finset.range (d + 1), C (c k) * basisImage d k := by
-  simp [magicExpansion, basisImage, map_sum]
+  simp [magicExpansion, Polynomial.magicExpansion, basisImage, map_sum]
 
 private def scaledRow (d : ℕ) (c : ℕ → ℝ) : List ℝ[X] :=
   (List.range (d + 1)).map fun k => C (c k) * basisImage d k
