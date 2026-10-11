@@ -1738,6 +1738,8 @@ The Poisson star modules (#1423) add two modules. The budgets of `Challenges.Bor
 
 The iterated-derivative-shift challenge page adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+Dedup leaf batch 3: shared helper imports The budgets of `RootCounting`, `RootCounting.Threshold`, `RootCounting.Threshold.Anchor`, `RootCounting.Threshold.DominanceFamily`, `RootCounting.Threshold.Signs` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
