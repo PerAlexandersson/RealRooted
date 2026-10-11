@@ -94,6 +94,19 @@ theorem map_universalWeightedSmirnovPolynomial {n m : ℕ}
     (BrandenVecchi.weightedSmirnovPolynomial_comp_equiv
       (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X e n)
 
+private theorem coeff_mapDomain_eq_of_map_rename_eq {m : ℕ}
+    (p : Polynomial (MvPolynomial (Fin m) ℤ)) (e : Equiv.Perm (Fin m))
+    (k : ℕ) (d : Fin m →₀ ℕ)
+    (hmap : p.map (MvPolynomial.rename e).toRingHom = p) :
+    (p.coeff k).coeff (Finsupp.mapDomain e d) = (p.coeff k).coeff d := by
+  have hmap' := congrArg (fun q : Polynomial (MvPolynomial (Fin m) ℤ) =>
+      q.coeff k) hmap
+  rw [Polynomial.coeff_map] at hmap'
+  change (MvPolynomial.rename e) (p.coeff k) = p.coeff k at hmap'
+  have hcoeff := congrArg (fun q => q.coeff (Finsupp.mapDomain e d)) hmap'
+  rw [MvPolynomial.coeff_rename_mapDomain e e.injective] at hcoeff
+  exact hcoeff.symm
+
 /-- Coefficients of the universal weighted Smirnov polynomial are invariant
 under simultaneous permutation of their exponent vector. -/
 theorem coeff_universalWeightedSmirnovPolynomial_mapDomain
@@ -101,18 +114,9 @@ theorem coeff_universalWeightedSmirnovPolynomial_mapDomain
     ((BrandenVecchi.weightedSmirnovPolynomial
           (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff (Finsupp.mapDomain e d) =
       ((BrandenVecchi.weightedSmirnovPolynomial
-          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff d := by
-  have hmap := congrArg (fun p : Polynomial (MvPolynomial (Fin m) ℤ) =>
-      p.coeff k) (map_universalWeightedSmirnovPolynomial (n := n) e)
-  rw [Polynomial.coeff_map] at hmap
-  change (MvPolynomial.rename e)
-      ((BrandenVecchi.weightedSmirnovPolynomial
-        (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) = _
-    at hmap
-  have hcoeff := congrArg
-    (fun p => p.coeff (Finsupp.mapDomain e d)) hmap
-  rw [MvPolynomial.coeff_rename_mapDomain e e.injective] at hcoeff
-  exact hcoeff.symm
+          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff d :=
+  coeff_mapDomain_eq_of_map_rename_eq _ e k d
+    (map_universalWeightedSmirnovPolynomial (n := n) e)
 
 /-- Fixed-content Smirnov descent polynomials depend only on the multiplicity
 type, not on the chosen alphabet labels. -/
@@ -240,18 +244,9 @@ theorem coeff_universalWeightedWordPolynomial_mapDomain
     ((BrandenVecchi.weightedWordPolynomial
           (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff (Finsupp.mapDomain e d) =
       ((BrandenVecchi.weightedWordPolynomial
-          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff d := by
-  have hmap := congrArg (fun p : Polynomial (MvPolynomial (Fin m) ℤ) =>
-      p.coeff k) (map_universalWeightedWordPolynomial (n := n) e)
-  rw [Polynomial.coeff_map] at hmap
-  change (MvPolynomial.rename e)
-      ((BrandenVecchi.weightedWordPolynomial
-        (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) = _
-    at hmap
-  have hcoeff := congrArg
-    (fun p => p.coeff (Finsupp.mapDomain e d)) hmap
-  rw [MvPolynomial.coeff_rename_mapDomain e e.injective] at hcoeff
-  exact hcoeff.symm
+          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff d :=
+  coeff_mapDomain_eq_of_map_rename_eq _ e k d
+    (map_universalWeightedWordPolynomial (n := n) e)
 
 /-- Fixed-content ordinary-word descent polynomials depend only on the
 multiplicity type, not on the chosen alphabet labels. -/

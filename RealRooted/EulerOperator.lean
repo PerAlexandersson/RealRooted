@@ -2,6 +2,7 @@ import RealRooted.Derivative
 import RealRooted.PFPolynomial
 import RealRooted.ObreschkoffConverse
 import RealRooted.OrderedRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 open Polynomial
 
@@ -28,6 +29,12 @@ bounded-degree polar-theta interlacing theorem is
 /-- Euler operator `theta = X d/dX`. -/
 def theta (p : ℝ[X]) : ℝ[X] :=
   X * p.derivative
+
+/-- The Euler operator cannot raise degree. -/
+theorem natDegree_theta_le (p : ℝ[X]) :
+    (theta p).natDegree ≤ p.natDegree := by
+  simpa [theta] using
+    Polynomial.natDegree_C_mul_add_affine_mul_derivative_le p 0 0 1
 
 /-- The operator `theta + 1`; equivalently, `p ↦ (X * p)'`. -/
 def thetaPlusOne (p : ℝ[X]) : ℝ[X] :=

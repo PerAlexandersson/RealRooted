@@ -37,7 +37,7 @@ open Lean Elab Tactic Meta Polynomial
 namespace RealRooted.Tactic
 
 /-- The kind of a goal about the rows of a sequence. -/
-private def linRecGoalKind? (tgt : Expr) : Option String :=
+def rowPropertyGoalKind? (tgt : Expr) : Option String :=
   match tgt.getAppFnArgs with
   | (``Eq, #[_, a, _]) =>
       if a.getAppFn.isConstOf ``Polynomial.natDegree then some "natDegree" else none
@@ -567,7 +567,7 @@ recurrence of any order with derivatives, whose degrees grow linearly or periodi
 (`D₀ + d * ⌊(n + e) / p⌋`, `p ≤ 4`) after dropping at most two rows (see `linRecCore`). -/
 elab (name := rrLinRec) "rr_linrec" : tactic => withMainContext do
   betaReduceGoal
-  let some kind := linRecGoalKind? (← instantiateMVars (← getMainTarget))
+  let some kind := rowPropertyGoalKind? (← instantiateMVars (← getMainTarget))
     | throwError "rr_linrec: the goal is not a statement about natDegree, ≠ 0 or leadingCoeff"
   linRecCore kind
 

@@ -28,23 +28,16 @@ noncomputable section
 
 namespace RealRooted
 
-private theorem natDegree_theta_le (p : ℝ[X]) : (theta p).natDegree ≤ p.natDegree := by
-  rcases eq_or_ne (derivative p) 0 with hd | hd
-  · simp [theta, hd]
-  · have hp : p.natDegree ≠ 0 := fun h => hd (by rw [eq_C_of_natDegree_eq_zero h]; simp)
-    rw [theta, natDegree_X_mul hd]
-    have := natDegree_derivative_lt hp
-    lia
-
 /-- The binary run transformation commutes with constant multiples. -/
 theorem binaryRunTransform_C_mul (n : ℕ) (a : ℝ) (p : ℝ[X]) :
     binaryRunTransform n (C a * p) = C a * binaryRunTransform n p := by
   rw [← smul_eq_C_mul, binaryRunTransform_smul]
 
 private theorem natDegree_C_mul_sub_C_mul_theta_le (a b : ℝ) (p : ℝ[X]) :
-    (C a * p - C b * theta p).natDegree ≤ p.natDegree :=
-  (natDegree_sub_le _ _).trans (max_le (natDegree_C_mul_le _ _)
-    ((natDegree_C_mul_le _ _).trans (natDegree_theta_le p)))
+    (C a * p - C b * theta p).natDegree ≤ p.natDegree := by
+  convert Polynomial.natDegree_C_mul_add_affine_mul_derivative_le p a 0 (-b) using 1
+  simp only [theta, map_zero, zero_add, map_neg, neg_mul, sub_eq_add_neg]
+  ring
 
 /-- A real polar comparison: for a PF polynomial `g` with nonzero constant term
 and `2 ≤ deg g`, `(N - 2Θ) g` precedes `g` whenever `2 deg g ≤ N`. -/

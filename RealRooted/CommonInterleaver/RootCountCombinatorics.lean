@@ -46,6 +46,12 @@ theorem card_roots_filter_gt_add_le_of_splits {p : ℝ[X]} (hp : p.Splits)
   rw [hcompl, ← Multiset.card_add, Multiset.filter_add_not,
     card_roots_of_splits hp]
 
+private theorem int_card_roots_filter_gt_add_le_of_splits {p : ℝ[X]} (hp : p.Splits)
+    (x : ℝ) :
+    ((p.roots.filter (x < ·)).card : ℤ) + (p.roots.filter (· ≤ x)).card =
+      p.natDegree := by
+  exact_mod_cast card_roots_filter_gt_add_le_of_splits hp x
+
 /-- At a fixed threshold, same-degree upper common-non-root bounds are
 equivalent to the lower common-non-root bounds. -/
 theorem sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
@@ -57,14 +63,8 @@ theorem sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
     (((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
         ((g.roots.filter (· ≤ x)).card : ℤ) -
           (f.roots.filter (· ≤ x)).card ≤ 1) := by
-  have hfpart := card_roots_filter_gt_add_le_of_splits hf x
-  have hgpart := card_roots_filter_gt_add_le_of_splits hg x
-  have hfpartZ :
-      ((f.roots.filter (x < ·)).card : ℤ) + (f.roots.filter (· ≤ x)).card =
-        f.natDegree := by exact_mod_cast hfpart
-  have hgpartZ :
-      ((g.roots.filter (x < ·)).card : ℤ) + (g.roots.filter (· ≤ x)).card =
-        g.natDegree := by exact_mod_cast hgpart
+  have hfpartZ := int_card_roots_filter_gt_add_le_of_splits hf x
+  have hgpartZ := int_card_roots_filter_gt_add_le_of_splits hg x
   have hdegZ : (g.natDegree : ℤ) = f.natDegree := by exact_mod_cast hdeg
   constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
 
@@ -84,14 +84,8 @@ theorem sameDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
     (((f.roots.filter (· ≤ x)).card : ℤ) ≤ (g.roots.filter (· ≤ x)).card ∧
         ((g.roots.filter (· ≤ x)).card : ℤ) ≤
           (f.roots.filter (· ≤ x)).card + 1) := by
-  have hfpart := card_roots_filter_gt_add_le_of_splits hf x
-  have hgpart := card_roots_filter_gt_add_le_of_splits hg x
-  have hfpartZ :
-      ((f.roots.filter (x < ·)).card : ℤ) + (f.roots.filter (· ≤ x)).card =
-        f.natDegree := by exact_mod_cast hfpart
-  have hgpartZ :
-      ((g.roots.filter (x < ·)).card : ℤ) + (g.roots.filter (· ≤ x)).card =
-        g.natDegree := by exact_mod_cast hgpart
+  have hfpartZ := int_card_roots_filter_gt_add_le_of_splits hf x
+  have hgpartZ := int_card_roots_filter_gt_add_le_of_splits hg x
   have hdegZ : (g.natDegree : ℤ) = f.natDegree := by exact_mod_cast hdeg
   constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
 
@@ -111,14 +105,8 @@ theorem succDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
     (((f.roots.filter (· ≤ x)).card : ℤ) ≤ (g.roots.filter (· ≤ x)).card ∧
         ((g.roots.filter (· ≤ x)).card : ℤ) ≤
           (f.roots.filter (· ≤ x)).card + 1) := by
-  have hfpart := card_roots_filter_gt_add_le_of_splits hf x
-  have hgpart := card_roots_filter_gt_add_le_of_splits hg x
-  have hfpartZ :
-      ((f.roots.filter (x < ·)).card : ℤ) + (f.roots.filter (· ≤ x)).card =
-        f.natDegree := by exact_mod_cast hfpart
-  have hgpartZ :
-      ((g.roots.filter (x < ·)).card : ℤ) + (g.roots.filter (· ≤ x)).card =
-        g.natDegree := by exact_mod_cast hgpart
+  have hfpartZ := int_card_roots_filter_gt_add_le_of_splits hf x
+  have hgpartZ := int_card_roots_filter_gt_add_le_of_splits hg x
   have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by exact_mod_cast hdeg
   constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
 
@@ -133,14 +121,8 @@ theorem succDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
     (((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
         ((g.roots.filter (· ≤ x)).card : ℤ) -
           (f.roots.filter (· ≤ x)).card ≤ 2) := by
-  have hfpart := card_roots_filter_gt_add_le_of_splits hf x
-  have hgpart := card_roots_filter_gt_add_le_of_splits hg x
-  have hfpartZ :
-      ((f.roots.filter (x < ·)).card : ℤ) + (f.roots.filter (· ≤ x)).card =
-        f.natDegree := by exact_mod_cast hfpart
-  have hgpartZ :
-      ((g.roots.filter (x < ·)).card : ℤ) + (g.roots.filter (· ≤ x)).card =
-        g.natDegree := by exact_mod_cast hgpart
+  have hfpartZ := int_card_roots_filter_gt_add_le_of_splits hf x
+  have hgpartZ := int_card_roots_filter_gt_add_le_of_splits hg x
   have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by exact_mod_cast hdeg
   constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
 
@@ -153,14 +135,8 @@ theorem succDegree_roots_gt_count_sub_eq_two_iff_roots_le_rev_sub_eq_three
         (g.roots.filter (x < ·)).card = 2) ↔
       (((g.roots.filter (· ≤ x)).card : ℤ) -
         (f.roots.filter (· ≤ x)).card = 3) := by
-  have hfpart := card_roots_filter_gt_add_le_of_splits hf x
-  have hgpart := card_roots_filter_gt_add_le_of_splits hg x
-  have hfpartZ :
-      ((f.roots.filter (x < ·)).card : ℤ) + (f.roots.filter (· ≤ x)).card =
-        f.natDegree := by exact_mod_cast hfpart
-  have hgpartZ :
-      ((g.roots.filter (x < ·)).card : ℤ) + (g.roots.filter (· ≤ x)).card =
-        g.natDegree := by exact_mod_cast hgpart
+  have hfpartZ := int_card_roots_filter_gt_add_le_of_splits hf x
+  have hgpartZ := int_card_roots_filter_gt_add_le_of_splits hg x
   have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by exact_mod_cast hdeg
   constructor <;> intro h <;> lia
 
@@ -173,14 +149,8 @@ theorem succDegree_rev_roots_gt_count_sub_eq_two_iff_roots_le_sub_eq_one
         (f.roots.filter (x < ·)).card = 2) ↔
       (((f.roots.filter (· ≤ x)).card : ℤ) -
         (g.roots.filter (· ≤ x)).card = 1) := by
-  have hfpart := card_roots_filter_gt_add_le_of_splits hf x
-  have hgpart := card_roots_filter_gt_add_le_of_splits hg x
-  have hfpartZ :
-      ((f.roots.filter (x < ·)).card : ℤ) + (f.roots.filter (· ≤ x)).card =
-        f.natDegree := by exact_mod_cast hfpart
-  have hgpartZ :
-      ((g.roots.filter (x < ·)).card : ℤ) + (g.roots.filter (· ≤ x)).card =
-        g.natDegree := by exact_mod_cast hgpart
+  have hfpartZ := int_card_roots_filter_gt_add_le_of_splits hf x
+  have hgpartZ := int_card_roots_filter_gt_add_le_of_splits hg x
   have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by exact_mod_cast hdeg
   constructor <;> intro h <;> lia
 

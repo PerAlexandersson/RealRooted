@@ -32,9 +32,8 @@ def reversedContribution (m ε d : ℕ) : ℝ[X] :=
 theorem coeff_reversedContribution (m ε d k : ℕ) :
     (reversedContribution m ε d).coeff k =
       if k ≤ m then reversedContributionCoeff m ε d k else 0 := by
-  simp only [reversedContribution, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (m + 1)) k]
-  simp
+  simpa only [reversedContribution, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial (reversedContributionCoeff m ε d) (m + 1) k
 
 @[simp]
 theorem reversedContributionCoeff_zero (m ε d : ℕ) :
@@ -290,9 +289,8 @@ def shiftedToricContribution (m ε d : ℕ) : ℝ[X] :=
 theorem coeff_shiftedToricContribution (m ε d k : ℕ) :
     (shiftedToricContribution m ε d).coeff k =
       if k ≤ m then shiftedToricContributionCoeff m ε d k else 0 := by
-  simp only [shiftedToricContribution, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (m + 1)) k]
-  simp
+  simpa only [shiftedToricContribution, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial (shiftedToricContributionCoeff m ε d) (m + 1) k
 
 theorem shiftedToricContribution_hasNonnegCoeffs (m ε d : ℕ) :
     HasNonnegCoeffs (shiftedToricContribution m ε d) := by

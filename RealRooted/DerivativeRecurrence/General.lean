@@ -418,23 +418,6 @@ private theorem rhs_stepD {k : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[X]} (n : 
       refine ⟨natDegree_add_le_of_degree_le h1 ih.1, ?_⟩
       rw [coeff_add, h2, ih.2, topCoeffD]
 
-/-- Regroup a sum over the summands by their lags `j < k`. -/
-private theorem sum_map_eq_sum_lagD {k : ℕ} (f : ℕ × ℕ × (ℕ → ℝ[X]) → ℝ) (g : ℕ → ℝ) :
-    ∀ terms : List (ℕ × ℕ × (ℕ → ℝ[X])), (∀ t ∈ terms, t.1 < k) →
-      (terms.map fun t => f t * g t.1).sum =
-        ∑ j ∈ Finset.range k, ((terms.filter fun t => t.1 = j).map f).sum * g j
-  | [], _ => by simp
-  | t :: ts, hlag => by
-      rw [List.map_cons, List.sum_cons,
-        sum_map_eq_sum_lagD f g ts (fun s hs => hlag s (by simp [hs]))]
-      have hj : t.1 ∈ Finset.range k := Finset.mem_range.mpr (hlag t (by simp))
-      simp only [List.filter_cons, decide_eq_true_eq]
-      rw [← Finset.add_sum_erase _ _ hj, ← Finset.add_sum_erase _ _ hj, ← add_assoc]
-      congr 1
-      · simp [add_mul]
-      · refine Finset.sum_congr rfl fun j hj' => ?_
-        simp [Ne.symm (Finset.ne_of_mem_erase hj')]
-
 /-- Degree bounds for every row and the scalar recurrence of the top coefficients, for an
 arbitrary degree law `D`. -/
 theorem natDegree_le_and_coeff_rec {k : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[X]}
@@ -460,7 +443,7 @@ theorem natDegree_le_and_coeff_rec {k : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[
   have hstep := rhs_stepD n (hD n) terms hlag (fun t ht => hA t ht n)
     fun j hj => hle (n + j)
   rw [hrec n, hstep.2]
-  exact sum_map_eq_sum_lagD (topCoeffD k D n) (fun j => (P (n + j)).coeff (D (n + j))) terms
+  exact sum_map_eq_sum_lag (topCoeffD k D n) (fun j => (P (n + j)).coeff (D (n + j))) terms
     hlag
 
 /-- A degree bound together with a nonvanishing coefficient at the bound gives the degree
