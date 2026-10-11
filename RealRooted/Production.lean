@@ -1375,6 +1375,7 @@ import RealRooted.RootCounting.Threshold.Sorted
 import RealRooted.RootMatchingSort
 import RealRooted.RootMultiplicityMatching
 import RealRooted.RootOrderBridge
+import RealRooted.RootPolynomial
 import RealRooted.RootSumBounds
 import RealRooted.RootVieta
 import RealRooted.RootVieta.Newton

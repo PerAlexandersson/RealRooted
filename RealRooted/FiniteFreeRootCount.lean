@@ -2,6 +2,7 @@ import RealRooted.FiniteFreeMultiplicative
 import RealRooted.Hadamard.Grace
 import RealRooted.LiuOppositeSigns.JensenRootCount
 import RealRooted.OperatorPreservesInterlacing
+import RealRooted.RootPolynomial
 
 /-!
 # Root-count contraction for finite free multiplication
@@ -218,35 +219,14 @@ private theorem schurSzegoComp_strictInterl_of_reflect_pf_factor
 
 /-! ## Ordered root lists -/
 
-/-- The monic polynomial with root multiset `s`. -/
-def rootPolynomial (s : Multiset ℝ) : ℝ[X] :=
-  (s.map fun r => X - C r).prod
-
-/-- The roots of `rootPolynomial s`, with multiplicity, are exactly `s`. -/
-@[simp] theorem roots_rootPolynomial (s : Multiset ℝ) :
-    (rootPolynomial s).roots = s :=
-  Polynomial.roots_multiset_prod_X_sub_C s
-
-/-- `rootPolynomial s` is monic. -/
-theorem rootPolynomial_monic (s : Multiset ℝ) : (rootPolynomial s).Monic :=
-  Polynomial.monic_multiset_prod_of_monic _ _ fun r _ => monic_X_sub_C r
-
-/-- `rootPolynomial s` splits over the reals. -/
-theorem rootPolynomial_splits (s : Multiset ℝ) : (rootPolynomial s).Splits := by
-  apply splits_of_card_roots
-  simp [rootPolynomial, Polynomial.natDegree_multiset_prod_X_sub_C_eq_card]
-
-/-- The degree of `rootPolynomial s` is the cardinality of `s`. -/
-@[simp] theorem natDegree_rootPolynomial (s : Multiset ℝ) :
-    (rootPolynomial s).natDegree = s.card := by
-  rw [rootPolynomial, Polynomial.natDegree_multiset_prod_X_sub_C_eq_card]
-
 private theorem strictInterl_linear_root_move {u v : ℝ} (huv : u ≤ v) :
     StrictInterl (X - C u) (X - C v) := by
   simpa [sub_eq_add_neg] using
     (StrictInterl.X_add_C_iff (a := -v) (b := -u)).mpr (by linarith)
 
-private theorem strictInterl_rootPolynomial_cons_move (s : Multiset ℝ) {u v : ℝ}
+/-- Replacing one entry of a real-root multiset by a larger entry gives the
+corresponding root-polynomial interlacing relation. -/
+theorem strictInterl_rootPolynomial_cons_move (s : Multiset ℝ) {u v : ℝ}
     (huv : u ≤ v) :
     StrictInterl (rootPolynomial (u ::ₘ s)) (rootPolynomial (v ::ₘ s)) := by
   have h := (strictInterl_linear_root_move huv).mul_common_factor
@@ -428,7 +408,7 @@ theorem RootwiseLE.rootCountAbove_le {p q : ℝ[X]} (hpq : RootwiseLE p q)
 
 /-- Coordinatewise root order is preserved by an operator satisfying the
 full-degree one-root-move hypothesis. -/
-private theorem rootwiseLE_map_rootPolynomial_of_forall₂
+theorem rootwiseLE_map_rootPolynomial_of_forall₂
     {d : ℕ} {T : ℝ[X] → ℝ[X]} (hT : PreservesFullDegreeRootMoves d T)
     {xs ys : List ℝ} (hxy : List.Forall₂ (· ≤ ·) xs ys)
     (fixed : Multiset ℝ) (htotal : xs.length + fixed.card = d) :
