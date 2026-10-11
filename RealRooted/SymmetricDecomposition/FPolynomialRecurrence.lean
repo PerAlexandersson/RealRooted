@@ -160,15 +160,13 @@ theorem eq_fPolynomial_of_derivRec_of_natDegree_zero {P Q a b : ℕ → ℝ[X]}
   exact eq_fPolynomial_of_derivRec ha hb hQ
     (natDegree_le_of_derivRec ha hb hQ h0deg) hP h0 n
 
-/-- The `f`-polynomial transform preserves splitting under the stated hypotheses. -/
+/-- Rows that are `f`-polynomial transforms of splitting rows split. -/
 theorem splits_of_eq_fPolynomial {P Q : ℕ → ℝ[X]}
     (hPQ : ∀ n, P n = fPolynomial n (Q n))
-    (hdeg : ∀ n, (Q n).natDegree ≤ n) (hne : ∀ n, Q n ≠ 0)
-    (hs : ∀ n, (Q n).Splits) (hnn : ∀ n, HasNonnegCoeffs (Q n)) (n : ℕ) :
+    (hdeg : ∀ n, (Q n).natDegree ≤ n) (hs : ∀ n, (Q n).Splits) (n : ℕ) :
     (P n).Splits := by
   rw [hPQ n]
-  exact (isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
-    (hdeg n) (hne n) (hs n) (hnn n)).2
+  exact splits_fPolynomial (hdeg n) (hs n)
 
 /-- The degree-two transform in coefficient form. -/
 theorem fPolynomial_two (p : ℝ[X]) :

@@ -35,6 +35,11 @@ module = "RealRooted.SymmetricDecomposition.FPolynomialRecurrence"
 label = "A constant initial row gives the transformed recurrence identity"
 
 [[theorems]]
+name = "RealRooted.splits_fPolynomial"
+module = "RealRooted.SymmetricDecomposition.FPolynomial"
+label = "The f-polynomial transform preserves splitting"
+
+[[theorems]]
 name = "RealRooted.splits_of_eq_fPolynomial"
 module = "RealRooted.SymmetricDecomposition.FPolynomialRecurrence"
 label = "Splitting transfers through the f-polynomial transform"
@@ -95,9 +100,11 @@ The degree lemma supplies the required bound from a constant initial row, so
 the recurrence identity can be applied directly to the usual recursively
 defined sequence.
 
-The transform also transfers the root properties needed in applications. If
-the rows $Q(n)$ are nonzero, split, and have nonnegative coefficients, then
-the corresponding rows $P(n)$ split. For a sequence with half-growth degrees
+The transform also transfers the root properties needed in applications. It is
+the substitution $X \mapsto X/(X+1)$ homogenized to degree $d$, so a root $r$ of
+$h$ becomes the root $r/(1-r)$, and the degree drops when $r = 1$. Hence
+$fPolynomial\ d\ h$ splits whenever $h$ splits, with no sign condition on
+the coefficients, and split rows $Q(n)$ give split rows $P(n)$. For a sequence with half-growth degrees
 \(\deg Q(j)=(j+1)/2\), nonnegative coefficients, split nonzero rows, and
 consecutive strict interlacing, the padding and peeling lemmas give
 

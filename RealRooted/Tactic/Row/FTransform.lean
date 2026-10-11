@@ -39,7 +39,7 @@ structure FTransData where
 
 /-- Read `Q (n + 1) = a n Q n' + b n Q n` off a first-order derivative recurrence
 `P (n + 1) = A n P n' + B n P n` with `P 0` constant, `X + 1 ∣ A n`; the transformed rows must
-have nonnegative coefficients and real roots on the computed range. -/
+have real roots on the computed range. -/
 def fTransform? (P : Name) : MetaM (Option FTransData) := do
   let some L ← linRec? P | return none
   unless L.offset == 1 && L.terms.all (fun (j, i, _) => j == 0 && i ≤ 1) &&
@@ -58,10 +58,10 @@ def fTransform? (P : Name) : MetaM (Option FTransData) := do
     unless Bt.isZero || Bt.natDegree ≤ 1 do return none
     as := as.push (QPoly.invF 2 At)
     bs := bs.push (QPoly.invF 1 Bt)
-  -- the transformed rows: nonnegative coefficients and real roots, the inputs of the transfer
+  -- the transformed rows must have real roots, the input of the transfer
   let mut q := r0
   for n in [0:10] do
-    unless q.coeffs.all (0 ≤ ·) && (q.natDegree == 0 || q.realRooted) do return none
+    unless q.natDegree == 0 || q.realRooted do return none
     q := as[n]! * q.derivative + bs[n]! * q
   let (some a, some b) := (fitXPoly? as, fitXPoly? bs) | return none
   return some { L, base := r0, a, b }
@@ -107,7 +107,6 @@ def fTransformSplitsGoal : TacticM Unit := do
     exact RealRooted.splits_of_eq_fPolynomial $link
       (RealRooted.natDegree_le_of_derivRec (fun $n:ident => by compute_degree)
         (fun $n:ident => by compute_degree) (fun $n:ident => by rw [$Q:ident]) (by simp [$Q:ident]))
-      (fun $n:ident => by rr_row_ne_zero) (fun $n:ident => by rr_row_splits)
-      (fun $n:ident => by rr_row_nonneg_coeffs) $t))
+      (fun $n:ident => by rr_row_splits) $t))
 
 end RealRooted.Tactic
