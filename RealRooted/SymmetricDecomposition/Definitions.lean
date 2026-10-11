@@ -79,13 +79,4 @@ lemma hasNonnegCoeffs_idTransform_iff {d : ℕ} {p : ℝ[X]} :
   · intro hp n
     simpa [idTransform, Polynomial.coeff_reflect] using hp (Polynomial.revAt d n)
 
-@[deprecated (since := "2026-10-05")]
-alias IdTransform := idTransform
-
-@[deprecated (since := "2026-10-05")]
-alias IdTransform_add := idTransform_add
-
-@[deprecated (since := "2026-10-05")]
-alias hasNonnegCoeffs_IdTransform_iff := hasNonnegCoeffs_idTransform_iff
-
 end RealRooted

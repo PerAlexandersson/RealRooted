@@ -711,16 +711,4 @@ theorem fPolynomialDecompositionCompatibility {d : â„•} {h a b aTilde bTilde : â
     (fPolynomial_natDegree_le d h) (isRdDecomposition_fPolynomial_of_isIdDecomposition hd hid)
   lia
 
-@[deprecated (since := "2026-10-05")]
-alias IdTransform_natDegree_le := idTransform_natDegree_le
-
-@[deprecated (since := "2026-10-05")]
-alias IdTransform_X_mul_succ := idTransform_X_mul_succ
-
-@[deprecated (since := "2026-10-05")]
-alias IdTransform_of_natDegree_le_pred := idTransform_of_natDegree_le_pred
-
-@[deprecated (since := "2026-10-05")]
-alias IdTransform_X_mul_of_natDegree_le_pred := idTransform_X_mul_of_natDegree_le_pred
-
 end RealRooted

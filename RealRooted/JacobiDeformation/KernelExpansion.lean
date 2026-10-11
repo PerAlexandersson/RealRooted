@@ -115,15 +115,6 @@ def appellKernelCoefficientMatrix (m : ℕ) (b c d : ℝ)
       jacobiBernsteinCoefficient m i j c d hc hd a *
       jacobiBernsteinCoefficient m i j c d hc hd e
 
-private theorem coefficient_mul_eval_truncated (m i j : ℕ) (b c d x : ℝ) :
-    appellKernelCoefficient m b c d i j * (jacobiBernstein i j).eval x =
-      appellKernelCoefficient m b c d i j *
-        (truncatedJacobiBernstein m i j).eval x := by
-  by_cases hij : i + j ≤ m
-  · rw [truncatedJacobiBernstein, ite_eq_left hij]
-  · rw [appellKernelCoefficient, ite_eq_right hij]
-    ring
-
 private theorem appellKernelSummand_eq_truncated
     (m i j : ℕ) (b c d r z : ℝ) :
     appellKernelCoefficient m b c d i j * z ^ i * (1 - z) ^ j *

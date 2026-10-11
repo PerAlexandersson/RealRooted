@@ -98,19 +98,6 @@ private theorem leanderOutputRegion_hasPosLeadingCoeff {n : ℕ}
     next => exact (leanderAffineFactor_hasPosLeadingCoeff ha hb hab).mul (hpos h)
     next => exact hpos h
 
-private theorem leanderOutputRegion_hasNonnegCoeffs {n : ℕ}
-    (f : Fin n → ℝ[X]) (i j : Fin n) {a b : ℝ}
-    (ha : 0 ≤ a) (hb : 0 ≤ b)
-    (hnn : ∀ h, HasNonnegCoeffs (f h)) (h : Fin n) :
-    HasNonnegCoeffs (leanderOutputRegion f i j a b h) := by
-  unfold leanderOutputRegion
-  split
-  next => exact (hnn h).X_mul
-  next =>
-    split
-    next => exact (leanderAffineFactor_hasNonnegCoeffs ha hb).mul (hnn h)
-    next => exact hnn h
-
 private theorem leanderOutputRegion_compatible_of_lt {n : ℕ}
     (f : Fin n → ℝ[X]) (i j : Fin n) {a b : ℝ}
     (ha : 0 ≤ a) (hb : 0 ≤ b)

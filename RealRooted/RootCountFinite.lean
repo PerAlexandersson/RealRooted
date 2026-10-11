@@ -82,13 +82,6 @@ private theorem threshold_lt_of_abs_sub_lt_of_threshold_lt
     (hclose : |q - r| < ε) :
     x < q := by grind
 
-/-- If `r` is separated from a threshold `x` by a margin and lies at
-or below `x`, then every point closer to `r` than the margin lies below `x`. -/
-private theorem lt_threshold_of_abs_sub_lt_of_le_threshold
-    {x r q ε : ℝ} (hrx : r ≤ x)
-    (hsep : ε ≤ |r - x|) (hclose : |q - r| < ε) :
-    q < x := by grind
-
 /-- If a submultiset consists only of elements satisfying a predicate, then
 its cardinality is bounded by the corresponding filtered count of the ambient
 multiset. -/

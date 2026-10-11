@@ -234,18 +234,6 @@ private theorem linear_quadratic_roots_of_remainder {a b p d β : ℝ}
   rw [hfe]
   exact hroot
 
-private lemma roots_eq_of_finset_roots {p : ℝ[X]} {s : Finset ℝ}
-    (hp : p ≠ 0) (hps : p.Splits) (hroot : ∀ x ∈ s, p.IsRoot x)
-    (hcard : p.natDegree = s.card) :
-    (s.1 : Multiset ℝ) = p.roots := by
-  have hsub : s.1 ≤ p.roots := by
-    rw [Multiset.le_iff_subset s.nodup]
-    intro x hx
-    exact (mem_roots hp).mpr (hroot x (by simpa using hx))
-  apply Multiset.eq_of_le_of_card_le hsub
-  rw [card_roots_of_splits hps, hcard]
-  simp
-
 private lemma roots_eq_of_list_roots {p : ℝ[X]} {xs : List ℝ}
     (hp : p ≠ 0) (hps : p.Splits) (hxs : xs.Nodup)
     (hroot : ∀ x ∈ xs, p.IsRoot x) (hcard : p.natDegree = xs.length) :

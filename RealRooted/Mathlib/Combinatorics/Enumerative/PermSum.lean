@@ -14,25 +14,6 @@ def addLeftEmbedding (m : ℕ) : ℕ ↪ ℕ :=
 def junctionDescent [LT α] (l₁ l₂ : List α) : Prop :=
   ∃ a b, l₁.getLast? = some a ∧ l₂.head? = some b ∧ b < a
 
-private theorem junctionDescent_iff [LinearOrder α] {l₁ l₂ : List α} :
-    junctionDescent l₁ l₂ ↔
-      ∃ h₁ : l₁ ≠ [], ∃ h₂ : l₂ ≠ [], l₂.head h₂ < l₁.getLast h₁ := by
-  constructor
-  · rintro ⟨a, b, ha, hb, hab⟩
-    have h₁ : l₁ ≠ [] := by
-      intro h
-      simp [h] at ha
-    have h₂ : l₂ ≠ [] := by
-      intro h
-      simp [h] at hb
-    refine ⟨h₁, h₂, ?_⟩
-    have ha' := Option.some.inj (ha.symm.trans (getLast?_eq_some_getLast h₁))
-    have hb' := Option.some.inj (hb.symm.trans (head?_eq_some_head h₂))
-    simpa only [ha', hb'] using hab
-  · rintro ⟨h₁, h₂, hab⟩
-    refine ⟨l₁.getLast h₁, l₂.head h₂, getLast?_eq_some_getLast h₁,
-      head?_eq_some_head h₂, hab⟩
-
 end List
 
 namespace Equiv.Perm

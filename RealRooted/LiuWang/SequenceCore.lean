@@ -466,23 +466,4 @@ end RealRooted.LiuWang
 
 namespace RealRooted
 
-@[deprecated (since := "2026-10-05")]
-alias isRealRooted_of_lw_nonpos_lag_sequence_den := LiuWang.isRealRooted_of_nonpos_lag_sequence_den
-
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_lw_negative_const_lag_sequence :=
-  LiuWang.strictInterl_negative_const_lag_sequence
-
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_lw_negative_square_lag_sequence :=
-  LiuWang.strictInterl_negative_square_lag_sequence
-
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_lw_negative_square_lag_sequence_unit :=
-  LiuWang.strictInterl_negative_square_lag_sequence_unit
-
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_lw_negative_square_lag_sequence_den_coeff :=
-  LiuWang.strictInterl_negative_square_lag_sequence_den_coeff
-
 end RealRooted

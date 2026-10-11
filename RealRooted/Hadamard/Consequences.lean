@@ -32,9 +32,6 @@ theorem garloffWagnerHadamardPFInterl_of_nonnegStrictInterl {f g p q : ℝ[X]}
   · simpa using interl_zero_right (hadamardProduct f p)
   exact hfg'.interl_hadamardProduct_of_isPFPolynomial hf hg hp hq hpq'
 
-@[deprecated (since := "2026-10-05")]
-alias hadamardProduct_preserves_pf_of_nonnegStrictInterl := IsPFPolynomial.hadamardProduct
-
 /-- Nonnegative-coefficient Schur--Pólya/Garloff--Wagner real-rootedness for
 coefficientwise Hadamard products (Garloff--Wagner, Theorem 4(a)).
 

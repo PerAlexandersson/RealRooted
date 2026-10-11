@@ -687,22 +687,7 @@ theorem isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
       hpdeg hsplit
   have hqdisc := diagonalOperator_discrim_nonneg_of_natDegree_two
     (hgamma 0) (hgamma 2) hlog hpdisc
-  have hqcoeff2 : (diagonalOperator gamma p).coeff 2 ≠ 0 := by
-    have hlc : (diagonalOperator gamma p).leadingCoeff ≠ 0 :=
-      leadingCoeff_ne_zero.mpr hzero
-    rwa [Polynomial.leadingCoeff, hqdeg] at hlc
-  have hqdisc' : 0 ≤ (diagonalOperator gamma p).coeff 1 ^ 2 -
-      4 * (diagonalOperator gamma p).coeff 2 * (diagonalOperator gamma p).coeff 0 := by
-    simpa [discrim] using hqdisc
-  obtain ⟨x, hx⟩ := exists_root_of_disc_nonneg
-    (a := (diagonalOperator gamma p).coeff 2)
-    (b := (diagonalOperator gamma p).coeff 1)
-    (c := (diagonalOperator gamma p).coeff 0) hqcoeff2 hqdisc'
-  have hroot : (diagonalOperator gamma p).IsRoot x := by
-    rw [Polynomial.IsRoot.def, Polynomial.eval_eq_sum_range, hqdeg]
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero]
-    grind
-  exact Or.inr (Polynomial.Splits.of_natDegree_eq_two hqdeg hroot)
+  exact Or.inr (splits_of_natDegree_eq_two_of_discrim_nonneg hqdeg hqdisc)
 
 /-- Degree-two finite multiplier sequences are classified by the PF Jensen
 polynomial condition. -/

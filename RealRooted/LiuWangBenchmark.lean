@@ -194,24 +194,6 @@ lemma liuWangPoly_nonnegCoeffs (d n : Nat) :
         positivity)
   · simp [coeff_liuWangPoly, hm]
 
-private lemma coeff_zero_liuWangPoly_succ_succ (d n : Nat) :
-    coeff (liuWangPoly d (n + 2)) 0 =
-      (((d : ℝ) - n) / (n + 1 : ℝ)) * coeff (liuWangPoly d (n + 1)) 0 := by
-  rw [coeff_zero_liuWangPoly, coeff_zero_liuWangPoly]
-  have hn1 : 0 < n + 1 := by lia
-  have hn2 : 0 < n + 2 := by lia
-  rw [ite_eq_left hn2, ite_eq_left hn1]
-  by_cases hnd : n ≤ d
-  · have hchoose :
-        ((Nat.choose d (n + 1) : ℕ) : ℝ) * (n + 1 : ℝ) =
-          ((Nat.choose d n : ℕ) : ℝ) * ((d - n : ℕ) : ℝ) :=
-      Nat.cast_choose_succ_right_eq (R := ℝ) d n
-    rw [Nat.cast_sub hnd] at hchoose
-    grind
-  · have hz_n : Nat.choose d n = 0 := Nat.choose_eq_zero_of_lt (lt_of_not_ge hnd)
-    have hz_succ : Nat.choose d (n + 1) = 0 := Nat.choose_eq_zero_of_lt (lt_of_not_ge (by lia))
-    simp [hz_n, hz_succ]
-
 lemma coeff_zero_liuWangPoly_pos (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1) :
     0 < coeff (liuWangPoly d n) 0 := by
   rw [coeff_zero_liuWangPoly]
@@ -622,79 +604,6 @@ lemma interlaces_liuWangRec_threshold_succ (d : Nat) :
       natDegree_liuWangRec d (d + 2) (by lia)]
     lia
   exact hStrictInterl.toInterlaces hdeg.symm
-
-private lemma strictInterl_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
-    (h : Interlaces g (X * f))
-    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
-    StrictInterl f g := by
-  obtain ⟨hXf, hg, _, rs_xf, ss_g, hrs_xf, hss_g, hrs_xf_eq, hss_g_eq, hint⟩ := h
-  have hf : (f ≠ 0 ∧ f.Splits) := by simp_all
-  set rs_f := f.roots.sort (· ≤ ·)
-  have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  have hrs_f_sorted : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
-    fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
-  have hrs_f0_sorted : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
-  have hrs_xf_is : rs_xf = rs_f ++ [(0 : ℝ)] := by
-    have hmultiset_eq : (↑rs_xf : Multiset ℝ) = ↑(rs_f ++ [(0 : ℝ)]) := by
-      rw [hrs_xf_eq, roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X,
-        ← hrs_f_eq, ← Multiset.coe_add]
-      simp [add_comm]
-    exact List.Perm.eq_of_pairwise' hrs_xf hrs_f0_sorted (Multiset.coe_eq_coe.mp hmultiset_eq)
-  rw [hrs_xf_is] at hint
-  have hlen : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by
-    have hss_len : ss_g.length = g.natDegree := by
-      rw [← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg.2]
-    have hrs_len : (rs_f ++ [(0 : ℝ)]).length = (X * f).natDegree := by
-      rw [← hrs_xf_is, ← Multiset.coe_card, hrs_xf_eq, card_roots_of_splits hXf.2]
-    lia
-  have hlen_eq : rs_f.length = ss_g.length := by simp_all
-  have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by grind
-  have halt0 : ListAlternates (rs_f ++ [(0 : ℝ)]) (ss_g ++ [(0 : ℝ)]) :=
-    listAlternates_append_zero ss_g (rs_f ++ [(0 : ℝ)]) hlen hint hrs_f0_nonpos
-  have halt : ListAlternates rs_f ss_g :=
-    listAlternates_of_append_zero_both rs_f ss_g hlen_eq halt0
-  exact
-    ⟨hf, hg, rs_f, ss_g, hrs_f_sorted, hss_g, hrs_f_eq, hss_g_eq,
-      Or.inr ⟨hlen_eq, halt⟩⟩
-
-private lemma strictInterl_threshold_divX (d : Nat) :
-    StrictInterl ((liuWangRec d (d + 2)) /ₘ X) (liuWangRec d (d + 1)) := by
-  let q : ℝ[X] := (liuWangRec d (d + 2)) /ₘ X
-  have hroot0 : (liuWangRec d (d + 2)).IsRoot 0 := by simp
-  have hmul : X * q = liuWangRec d (d + 2) := by
-    subst q
-    simpa using (mul_divByMonic_eq_iff_isRoot (p := liuWangRec d (d + 2)) (a := (0 : ℝ))).2 hroot0
-  have hInter : Interlaces (liuWangRec d (d + 1)) (X * q) := by
-    have hInter' := interlaces_liuWangRec_threshold d
-    lia
-  have hq_nonpos : ∀ r ∈ q.roots, r ≤ 0 := by
-    intro r hr
-    have hq_ne : q ≠ 0 := by simp_all
-    have hr_root_q : q.IsRoot r := (mem_roots hq_ne).mp hr
-    have hr_root_p : (liuWangRec d (d + 2)).IsRoot r := by
-      have hq0 : q.eval r = 0 := by simp_all
-      rw [Polynomial.IsRoot.def]
-      calc
-        (liuWangRec d (d + 2)).eval r = (X * q).eval r := by lia
-        _ = r * q.eval r := by simp
-        _ = 0 := by simp_all
-    exact roots_nonpos_liuWangRec_threshold d r hr_root_p
-  simpa [q] using strictInterl_of_interlaces_X_mul_of_roots_nonpos hInter hq_nonpos
-
-private lemma roots_neg_threshold_divX (d : Nat) :
-    ∀ r, (((liuWangRec d (d + 2)) /ₘ X)).IsRoot r → r < 0 := by
-  have hStrictInterl := strictInterl_threshold_divX d
-  have hdeg :
-      (((liuWangRec d (d + 2)) /ₘ X)).natDegree = (liuWangRec d (d + 1)).natDegree := by
-    rw [natDegree_divByMonic _ (monic_X : (X : ℝ[X]).Monic),
-      natDegree_liuWangRec d (d + 2) (by lia),
-      natDegree_liuWangRec d (d + 1) (by lia)]
-    simp
-  have hneg :
-      ∀ r, (liuWangRec d (d + 1)).IsRoot r → r < 0 :=
-    roots_neg_liuWangRec_of_lt_threshold d (d + 1) (by lia) (by lia)
-  exact roots_neg_of_strictInterl_sameDegree_of_roots_neg hStrictInterl hdeg hneg
 
 /-- The recurrence family is real-rooted throughout the strict range
 `1 ≤ n ≤ d + 1`, and also at the threshold step `n = d + 2`. -/

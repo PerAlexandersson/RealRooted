@@ -246,17 +246,6 @@ theorem isRealRooted_augChowUniform {r n : ℕ} (hr : 1 ≤ r) (hrn : r ≤ n) :
 
 /-! ## The derangement formula for the Chow polynomial -/
 
-private theorem reflect_derangement_of_le {j N : ℕ} (hj : j ≤ N) :
-    (DerangementTransform.polynomial j).reflect N =
-      DerangementTransform.polynomial j * X ^ (N - j) := by
-  have h : (DerangementTransform.polynomial j).reflect j =
-      DerangementTransform.polynomial j := by
-    cases j with
-    | zero => simp
-    | succ j => exact reflect_sturmDerangementsExc (j + 1)
-  have h2 := reflect_add_right_of_reflect (N - j) (DerangementTransform.natDegree_polynomial_le j) h
-  rwa [show j + (N - j) = N by lia] at h2
-
 /-- The deranged image of `g_{r,n}` is `∑_{k<r} C(n,k) d_k`. -/
 theorem transform_uniformPolynomial (r n : ℕ) :
     DerangementTransform.transform (uniformPolynomial r n) =
@@ -286,7 +275,9 @@ theorem chowUniform_eq {r n : ℕ} (hr : 1 ≤ r) :
       (DerangementTransform.polynomial k * X ^ (r - 1 - k)) := by
     rw [hP, reflect_finset_sum_C_mul]
     exact sum_congr rfl fun k hk => by
-      rw [reflect_derangement_of_le (by have := mem_range.mp hk; lia)]
+      rw [DerangementTransform.reflect_polynomial_of_le (by
+        have := mem_range.mp hk
+        lia)]
   have hS : chowS (r - 1) P = ∑ k ∈ range r, C ((n.choose k : ℕ) : ℝ) *
       (DerangementTransform.polynomial k * ∑ j ∈ range (r - 1 - k), X ^ j) := by
     apply (monic_X_sub_C (1 : ℝ)).isRegular.left

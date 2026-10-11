@@ -416,18 +416,6 @@ theorem finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
     have := four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp_of_pf
       hn hf hfdeg hpdeg hsplit
     linarith [this]
-  obtain ⟨x, hx⟩ := exists_root_of_disc_nonneg
-    (a := (schurSzegoComp n f p).coeff 2)
-    (b := (schurSzegoComp n f p).coeff 1)
-    (c := (schurSzegoComp n f p).coeff 0)
-    (by
-      have hlc : (schurSzegoComp n f p).leadingCoeff ≠ 0 :=
-        leadingCoeff_ne_zero.mpr hq0
-      rwa [Polynomial.leadingCoeff, hqdeg] at hlc)
-    hdisc
-  have hroot : (schurSzegoComp n f p).IsRoot x := by
-    rw [Polynomial.IsRoot.def, Polynomial.eval_eq_sum_range, hqdeg]
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero]
-    linear_combination hx
-  exact Or.inr (Polynomial.Splits.of_natDegree_eq_two hqdeg hroot)
+  exact Or.inr (splits_of_natDegree_eq_two_of_discrim_nonneg hqdeg (by
+    simpa [discrim] using hdisc))
 end RealRooted

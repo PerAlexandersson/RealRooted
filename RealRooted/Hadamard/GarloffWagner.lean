@@ -60,7 +60,4 @@ the conclusion is `Interl (f ⊙ p) (g ⊙ q)`.
 The proof is `StrictInterl.interl_hadamardProduct` in `RealRooted.GarloffWagner`.
 -/
 
-@[deprecated (since := "2026-10-05")]
-alias garloffWagnerHadamardNonnegInterl := StrictInterl.interl_hadamardProduct
-
 end RealRooted
