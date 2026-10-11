@@ -88,7 +88,6 @@ theorem descentMonomial_parkingWordEmbed {R : Type*} [Semiring R]
     {n : ℕ} (w : Fin (n + 1) → Fin (n + 1)) :
     (X : R[X]) ^ (List.ofFn (parkingWordEmbed w)).descentCount =
       X ^ (List.ofFn w).descentCount := by
-  change X ^ (List.ofFn (parkingWordEmbed w)).descentCount = X ^ (List.ofFn w).descentCount
   rw [descentCount_parkingWordEmbed]
 
 /-- The integral descent enumerator of tieless parking functions. -/

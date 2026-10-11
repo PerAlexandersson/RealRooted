@@ -255,6 +255,11 @@ lemma firstNonzero_mul_eval_pos_left {q : ℝ[X]} (hq : q ≠ 0) {c y : ℝ} (hy
   rw [key]
   exact mul_pos (mul_pos (Nat.cast_pos.mpr μ.factorial_pos) (pow_pos (sub_pos.mpr hyc) _)) hpos
 
+lemma lt_zero_iff_lt_zero_of_mul_pos {x y : ℝ} (h : 0 < x * y) : x < 0 ↔ y < 0 := by
+  rcases pos_and_pos_or_neg_and_neg_of_mul_pos h with ⟨hx, hy⟩ | ⟨hx, hy⟩
+  · exact ⟨fun h' => absurd h' hx.not_gt, fun h' => absurd h' hy.not_gt⟩
+  · exact ⟨fun _ => hy, fun _ => hx⟩
+
 /-! ### Root counts on intervals -/
 
 lemma rootsIoc_add_rootsIoc {f : ℝ[X]} {a c b : ℝ} (hac : a ≤ c) (hcb : c ≤ b) :
@@ -283,13 +288,17 @@ lemma rootsIoc_eq_rootMultiplicity {f : ℝ[X]} {a b : ℝ} (hab : a < b)
 
 /-! ### The local step -/
 
+lemma derivative_ne_zero_of_natDegree_ne_zero {p : ℝ[X]} (hp : p.natDegree ≠ 0) :
+    derivative p ≠ 0 :=
+  fun h => hp (derivative_eq_zero.mp h)
+
 /-- The Rolle-type step on an interval whose interior contains no root of `p` or `p'`. -/
 lemma exists_rootsIoc_derivative_add_crossTerm_of_forall {p : ℝ[X]} (hp : p.natDegree ≠ 0)
     {a b : ℝ} (hab : a < b)
     (hroots : ∀ z ∈ Ioo a b, p.eval z ≠ 0 ∧ (derivative p).eval z ≠ 0) :
     ∃ j, rootsIoc (derivative p) a b + crossTerm p a = crossTerm p b + rootsIoc p a b + 2 * j := by
   set q := derivative p with hqdef
-  have hq0 : q ≠ 0 := derivative_ne_zero.mpr hp
+  have hq0 : q ≠ 0 := derivative_ne_zero_of_natDegree_ne_zero hp
   have hp0 : p ≠ 0 := fun h => hp (by rw [h, natDegree_zero])
   rw [rootsIoc_eq_rootMultiplicity hab fun z hz => (hroots z hz).2,
     rootsIoc_eq_rootMultiplicity hab fun z hz => (hroots z hz).1]
@@ -316,7 +325,7 @@ lemma exists_rootsIoc_derivative_add_crossTerm_of_forall {p : ℝ[X]} (hp : p.na
         rcases hz.1.eq_or_lt with h | h
         · exact h ▸ hpa
         · exact (hroots z ⟨h, hz.2.trans_lt hyb⟩).1
-      exact if_congr (neg_iff_neg_of_mul_pos (by nlinarith [mul_pos h1 hA])) rfl rfl
+      exact if_congr (lt_zero_iff_lt_zero_of_mul_pos (by nlinarith [mul_pos h1 hA])) rfl rfl
   rw [hea]
   by_cases hpb : p.eval b = 0
   · -- `b` is a root of `p`
@@ -341,7 +350,7 @@ lemma exists_rootsIoc_derivative_add_crossTerm_of_forall {p : ℝ[X]} (hp : p.na
     · rw [hj, Even.neg_one_pow ⟨j, rfl⟩, one_mul] at hB
       have heb : crossTerm p b = if p.eval y * q.eval y < 0 then 1 else 0 := by
         rw [crossTerm]
-        exact if_congr (neg_iff_neg_of_mul_pos (by nlinarith [mul_pos h1 hB])) rfl rfl
+        exact if_congr (lt_zero_iff_lt_zero_of_mul_pos (by nlinarith [mul_pos h1 hB])) rfl rfl
       refine ⟨j, ?_⟩
       rw [heb, hj]
       lia
@@ -349,7 +358,7 @@ lemma exists_rootsIoc_derivative_add_crossTerm_of_forall {p : ℝ[X]} (hp : p.na
       have heb : crossTerm p b = if 0 < p.eval y * q.eval y then 1 else 0 := by
         rw [crossTerm]
         refine if_congr ?_ rfl rfl
-        rw [neg_iff_neg_of_mul_pos (y := -(p.eval y * q.eval y))
+        rw [lt_zero_iff_lt_zero_of_mul_pos (y := -(p.eval y * q.eval y))
           (by nlinarith [mul_pos h1 hB]), neg_lt_zero]
       by_cases hs : p.eval y * q.eval y < 0
       · refine ⟨j + 1, ?_⟩
@@ -369,7 +378,7 @@ lemma exists_rootsIoc_derivative_add_crossTerm {p : ℝ[X]} (hp : p.natDegree �
     ∃ j, rootsIoc (derivative p) a b + crossTerm p a = crossTerm p b + rootsIoc p a b + 2 * j := by
   have hpq : p * derivative p ≠ 0 :=
     mul_ne_zero (fun h => hp (by rw [h, natDegree_zero]))
-      (derivative_ne_zero.mpr hp)
+      (derivative_ne_zero_of_natDegree_ne_zero hp)
   let S : ℝ → ℝ → Finset ℝ := fun u v =>
     (p * derivative p).roots.toFinset.filter fun r => u < r ∧ r < v
   have hmem : ∀ u v r, r ∈ S u v ↔ (u < r ∧ r < v) ∧
@@ -435,7 +444,7 @@ theorem exists_budanFourierVar_eq {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ} (hab :
   | succ n ih =>
     have hp' : p.natDegree ≠ 0 := by rw [hn]; exact n.succ_ne_zero
     have hd : (derivative p).natDegree = n := by rw [natDegree_derivative, hn]; rfl
-    obtain ⟨k, hk⟩ := ih (derivative_ne_zero.mpr hp') hd
+    obtain ⟨k, hk⟩ := ih (derivative_ne_zero_of_natDegree_ne_zero hp') hd
     obtain ⟨j, hj⟩ := exists_rootsIoc_derivative_add_crossTerm hp' hab
     refine ⟨k + j, ?_⟩
     rw [budanFourierVar_eq_add_crossTerm hp', budanFourierVar_eq_add_crossTerm hp']

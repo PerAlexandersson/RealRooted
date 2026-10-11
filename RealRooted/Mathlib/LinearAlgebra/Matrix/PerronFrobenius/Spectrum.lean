@@ -129,7 +129,7 @@ LinearMap.charpoly_toMatrix (b : Basis ι R M) f : (Matrix.toMatrix b b f).charp
 LinearMap.minpoly_dvd_charpoly {K V} [Field K] [FiniteDimensional K V] (f : End K V).
 spectrum R a (for a : A in an R-algebra A).
 spectrum.mem_iff : μ ∈ spectrum R a ↔ ¬IsUnit (algebraMap R A μ - a).
-Matrix.spectrum_toLin' (A : Matrix n n ℝ).
+Matrix.spectrum_eq_spectrum_toLin' (A : Matrix n n ℝ).
 Module.End.hasEigenvalue_iff_mem_spectrum {f : End K V} {μ : K}.
 Matrix.mem_spectrum_iff_isRoot_charpoly (A : Matrix n n ℝ) (μ : ℝ).
 Module.End.HasEigenvalue (f : End R M) (μ : R) : Prop.
@@ -172,6 +172,12 @@ lemma stdSimplex_nonempty [Nonempty n] : (RealRooted.standardSimplex ℝ n).None
 ## Spectral Properties of Matrices
 -/
 
+/-- The spectrum of a matrix `A` is equal to the spectrum of its corresponding linear map
+`Matrix.toLin' A`. -/
+lemma spectrum_eq_spectrum_toLin' (A : Matrix n n ℝ) :
+    spectrum ℝ A = spectrum ℝ (Matrix.toLin' A) :=
+  Eq.symm (AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (Pi.basisFun ℝ n)) A)
+
 /-- The determinant of `μ • 1 - A` is the evaluation of the characteristic polynomial of `A` at
 `μ`. -/
 lemma det_smul_sub_eq_eval_charpoly (A : Matrix n n ℝ) (μ : ℝ) :
@@ -203,13 +209,19 @@ variable {R : Type*} [CommRing R] {n : Type*} [Fintype n] [DecidableEq n]
 /-- A real number `μ` is an eigenvalue of a matrix `A` if and only if `det(μ • 1 - A) = 0`. -/
 lemma hasEigenvalue_toLin'_iff_det_sub_eq_zero (A : Matrix n n ℝ) (μ : ℝ) :
     Module.End.HasEigenvalue (toLin' A) μ ↔ det (μ • 1 - A) = 0 := by
-  rw [Module.End.hasEigenvalue_iff_mem_spectrum, Matrix.spectrum_toLin',
+  rw [Module.End.hasEigenvalue_iff_mem_spectrum, ← spectrum_eq_spectrum_toLin',
     mem_spectrum_iff_isRoot_charpoly, Polynomial.IsRoot.def, det_smul_sub_eq_eval_charpoly]
 
 /-! ## Spectral Radius Theory for Matrices -/
 
 
 
+
+lemma vecMul_eq_mulVec_transpose {n : Type*} [Fintype n] (A : Matrix n n ℝ) (v : n → ℝ) :
+    v ᵥ* A = Aᵀ *ᵥ v := by
+  ext j
+  change v ⬝ᵥ (fun i => A i j) = (fun i => A i j) ⬝ᵥ v
+  rw [@dotProduct_comm]
 
 lemma Module.End.exists_eigenvector_of_mem_spectrum {K V : Type*}
   [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
@@ -228,7 +240,7 @@ characteristic polynomial. -/
 lemma isRoot_of_hasEigenvalue {A : Matrix n n ℝ} {μ : ℝ}
     (h_eig : Module.End.HasEigenvalue (toLin' A) μ) :
     (charpoly A).IsRoot μ := by
-  rw [← mem_spectrum_iff_isRoot_charpoly, Matrix.spectrum_toLin']
+  rw [← mem_spectrum_iff_isRoot_charpoly, spectrum_eq_spectrum_toLin']
   exact Module.End.hasEigenvalue_iff_mem_spectrum.mp h_eig
 
 /-- The spectrum of a matrix `A` is equal to the spectrum of its corresponding linear map

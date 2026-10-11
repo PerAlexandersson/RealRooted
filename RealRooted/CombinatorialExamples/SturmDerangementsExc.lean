@@ -55,7 +55,7 @@ lemma sturmDerangementsExc_succ_eq_X_mul_recurrenceCore (n : Nat) (hn : 2 ≤ n)
     sturmDerangementsExc (n + 1) = X * recurrenceCoreSturmDerangementsExc n := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hn
   simpa [recurrenceCoreSturmDerangementsExc, affineSturmDerangementsExc,
-    add_assoc, add_left_comm, add_comm, C_eq_natCast] using sturmDerangementsExc_recurrence k
+    add_assoc, add_left_comm, add_comm, ofNat_def] using sturmDerangementsExc_recurrence k
 
 /-- Every derangement excedance polynomial has `X` as a factor. In the original variable,
 this says every `P_n` is divisible by `t`. -/
@@ -88,7 +88,7 @@ lemma sturmDerangementsExc_four :
 
 lemma sturmDerangementsExc_five :
     sturmDerangementsExc 5 = X ^ 4 + 21 * X ^ 3 + 21 * X ^ 2 + X := by
-  have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := C_ofNat 2
+  have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := (ofNat_def 2).symm
   rw [sturmDerangementsExc_recurrence 2, sturmDerangementsExc_three, sturmDerangementsExc_four]
   simp only [Nat.cast_ofNat, derivative_X_pow_succ, map_add, map_one,
     derivative_mul, derivative_ofNat, zero_mul, Nat.cast_one, pow_one, zero_add, derivative_X]
@@ -101,7 +101,7 @@ lemma coeff_sturmDerangementsExc_succ (n m : Nat) :
       (m + 1 : ℝ) * coeff (sturmDerangementsExc (n + 2)) (m + 1) := by
   rw [sturmDerangementsExc_recurrence, coeff_X_mul]
   simp only [coeff_add, coeff_one_sub_X_mul_derivative]
-  rw [show ((n + 2 : ℝ[X])) = C (n + 2 : ℝ) by exact (C_eq_natCast (n + 2)).symm,
+  rw [show ((n + 2 : ℝ[X])) = C (n + 2 : ℝ) by simp [ofNat_def],
     coeff_C_mul, coeff_C_mul]
   ring
 

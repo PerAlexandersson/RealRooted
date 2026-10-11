@@ -181,7 +181,7 @@ theorem coeff_smirnovSubstitutionEndingFixed_eq_zero_of_lt {m : ℕ}
     change PowerSeries.coeff n
       (Polynomial.eval (PowerSeries.C t)
         (C (smirnovWordWeight weight (Fin.snoc word i)) *
-          X ^ (List.ofFn (Fin.snoc word i)).descentCount) = 0
+          X ^ (List.ofFn (Fin.snoc word i)).descentCount)) = 0
     rw [eval_C_mul, eval_X_pow]
     rw [← map_pow, PowerSeries.coeff_mul_C]
     rw [coeff_smirnovWordWeight_eq_zero_of_lt weight hweight
