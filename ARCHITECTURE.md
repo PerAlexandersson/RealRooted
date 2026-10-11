@@ -1714,6 +1714,8 @@ dedup4 batch B: the shims Mathlib/Algebra/Ring/Parity and Mathlib/Analysis/Calcu
 
 The PF preserver-closure module (#1420) adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+The coordinate PF multiplier module (#1427 step 1) adds one module. The budgets of `RealRooted`, `Production`, `Challenges.BorceaBranden` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
