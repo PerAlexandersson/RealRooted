@@ -1646,6 +1646,8 @@ import RealRooted.DerivativeRecurrence.EndpointWindow
 import RealRooted.MatrixInterlacing.Composition
 import RealRooted.MultiplierSequence.ProperPosition
 
+import RealRooted.Tactic.Row.ClosedFormInterlaces
+
 /-!
 # RealRooted production umbrella
 

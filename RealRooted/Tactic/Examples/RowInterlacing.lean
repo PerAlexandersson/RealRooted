@@ -635,6 +635,29 @@ def A186370 : ℕ → ℝ[X]
 
 theorem A186370_splits (n : ℕ) : (A186370 n).Splits := by rr_row_splits
 
+/-- Rows `X ^ n * R n` with `R n` quadratic, from an order-three recurrence with characteristic
+polynomial `(λ - X)³` (A106246): consecutive rows interlace by a division-remainder certificate. -/
+def A106246 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2 + X
+  | 2 => 1 + 4 * X + X ^ 2
+  | n + 3 => 3 * X * A106246 (n + 2) + (-3 * X ^ 2) * A106246 (n + 1) + X ^ 3 * A106246 n
+
+theorem A106246_interlaces (n : ℕ) : Interlaces (A106246 n) (A106246 (n + 1)) := by
+  rr_row_interlaces
+
+/-- An order-three recurrence with characteristic polynomial `(λ - (1 + X))³` and linear
+residuals (A124932). -/
+def A124932 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2 + 3 * X
+  | 2 => 3 + 9 * X + 6 * X ^ 2
+  | n + 3 => (3 + 3 * X) * A124932 (n + 2) + (-3 - 6 * X - 3 * X ^ 2) * A124932 (n + 1) +
+      (1 + 3 * X + 3 * X ^ 2 + X ^ 3) * A124932 n
+
+theorem A124932_interlaces (n : ℕ) : Interlaces (A124932 n) (A124932 (n + 1)) := by
+  rr_row_interlaces
+
 /-! ### Hinted calls of `rr_row_splits` -/
 
 /--
