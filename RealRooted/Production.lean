@@ -1655,6 +1655,8 @@ import RealRooted.Challenges.RootContinuity
 import RealRooted.BorceaBranden.Applications.PoissonStability
 import RealRooted.BorceaBranden.Applications.PoissonStar
 
+import RealRooted.Challenges.IteratedDerivativeShift
+
 /-!
 # RealRooted production umbrella
 
