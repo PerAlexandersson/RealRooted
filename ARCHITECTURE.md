@@ -1738,6 +1738,12 @@ The Poisson star modules (#1423) add two modules. The budgets of `Challenges.Bor
 
 The iterated-derivative-shift challenge page adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+Theory: Newton defects, PF degree drop, finite-memory defects The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+Theory: univariate Poisson star The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+Theory challenge pages The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
