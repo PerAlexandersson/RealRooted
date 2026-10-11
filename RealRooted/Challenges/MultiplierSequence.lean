@@ -8,6 +8,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
 import RealRooted.MultiplierSequence.Sign
+import RealRooted.MultiplierSequence.ProperPosition
 
 /-!
 # Multiplier sequence challenge entry point
@@ -147,6 +148,11 @@ label = "Bidiagonal PF preservers from a stable symbol"
 name = "RealRooted.BidiagonalJensenPencilCertificate.toPFPreserver"
 module = "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction"
 label = "Bidiagonal PF preservers from a Jensen-pencil certificate"
+
+[[theorems]]
+name = "RealRooted.IsMultiplierSequence.strictInterl_diagonalOperator_of_pos"
+module = "RealRooted.MultiplierSequence.ProperPosition"
+label = "Positive multiplier sequences preserve directed proper position"
 -->
 
 <!-- realrooted-catalog-content -->
