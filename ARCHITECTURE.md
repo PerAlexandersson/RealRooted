@@ -1724,6 +1724,8 @@ The finite-family Liu-Wang module (#1425) adds one module; the MaWangLiuWang pag
 
 Three new modules (#1426 MatrixInterlacing/Composition, #1429 DerivativeRecurrence/EndpointWindow, #1432 MultiplierSequence/ProperPosition) and their catalog imports. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+The closed-form interlacing route (Tactic/Row/ClosedFormInterlaces) adds one module under RowInterlacing. The budgets of `RealRooted`, `Production`, `Tactic.Examples`, `Tactic` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
