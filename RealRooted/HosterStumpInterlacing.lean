@@ -229,16 +229,21 @@ lemma weakQuadratic_not_sourceRealRooted : ¬IsSourceRealRooted weakQuadratic :=
   · exact weakQuadratic_not_splits hsplits
 
 lemma weakQuadratic_not_interl_self : ¬Interl weakQuadratic weakQuadratic := by
-  rintro (hzero | hzero | hstrictInterl)
-  · exact weakQuadratic_ne_zero hzero
-  · exact weakQuadratic_ne_zero hzero
-  · exact weakQuadratic_not_splits hstrictInterl.1.2
+  intro h
+  exact weakQuadratic_not_splits
+    (h.toStrictInterl_of_ne weakQuadratic_ne_zero weakQuadratic_ne_zero).1.2
 
 lemma weakQuadratic_not_interl_X_mul : ¬Interl weakQuadratic (X * weakQuadratic) := by
-  rintro (hzero | hzero | hstrictInterl)
-  · exact weakQuadratic_ne_zero hzero
-  · exact (mul_ne_zero X_ne_zero weakQuadratic_ne_zero) hzero
-  · exact weakQuadratic_not_splits hstrictInterl.1.2
+  intro h
+  exact weakQuadratic_not_splits
+    (h.toStrictInterl_of_ne weakQuadratic_ne_zero
+      (mul_ne_zero X_ne_zero weakQuadratic_ne_zero)).1.2
+
+private lemma not_isInterlacingSeq0Nonneg_of_eq_pair {out : List ℝ[X]} {p q : ℝ[X]}
+    (hout : out = [p, q]) (hpq : ¬Interl p q) : ¬IsInterlacingSeq0Nonneg out := by
+  intro h
+  rw [hout] at h
+  exact hpq (by simpa using isInterlacingSeq0_iff_pairwise.mp h.1)
 
 private lemma weakInput (fs : List ℝ[X])
     (hpair : fs.Pairwise Interl) (hmem : ∀ f ∈ fs, f = 0 ∨ f = weakQuadratic) :
@@ -258,14 +263,10 @@ theorem weak_lowerPartialSums_counterexample :
   · apply weakInput
     · simp [Interl]
     · simp
-  · intro h
-    have hp := isInterlacingSeq0_iff_pairwise.mp h.1
-    have hout : lowerPartialSums [weakQuadratic, 0] =
+  · have hout : lowerPartialSums [weakQuadratic, 0] =
         [weakQuadratic, weakQuadratic] := by
       simp [lowerPartialSums]
-    rw [hout] at hp
-    have hpair : Interl weakQuadratic weakQuadratic := by simpa using hp
-    exact weakQuadratic_not_interl_self hpair
+    exact not_isInterlacingSeq0Nonneg_of_eq_pair hout weakQuadratic_not_interl_self
 
 /-- Checked counterexample for the false weak upper-partial-sum interface. -/
 theorem weak_upperPartialSums_counterexample :
@@ -275,14 +276,10 @@ theorem weak_upperPartialSums_counterexample :
   · apply weakInput
     · simp [Interl]
     · simp
-  · intro h
-    have hp := isInterlacingSeq0_iff_pairwise.mp h.1
-    have hout : upperPartialSums [0, weakQuadratic] =
+  · have hout : upperPartialSums [0, weakQuadratic] =
         [weakQuadratic, weakQuadratic] := by
       simp [upperPartialSums, lowerPartialSums]
-    rw [hout] at hp
-    have hpair : Interl weakQuadratic weakQuadratic := by simpa using hp
-    exact weakQuadratic_not_interl_self hpair
+    exact not_isInterlacingSeq0Nonneg_of_eq_pair hout weakQuadratic_not_interl_self
 
 /-- Checked counterexample for the false weak moving-window interface. -/
 theorem weak_movingWindowSums_counterexample :
@@ -292,14 +289,10 @@ theorem weak_movingWindowSums_counterexample :
   · apply weakInput
     · simp [Interl]
     · simp
-  · intro h
-    have hp := isInterlacingSeq0_iff_pairwise.mp h.1
-    have hout : movingWindowSums 1 [0, weakQuadratic, 0] =
+  · have hout : movingWindowSums 1 [0, weakQuadratic, 0] =
         [weakQuadratic, weakQuadratic] := by
       norm_num [movingWindowSums, List.range_succ]
-    rw [hout] at hp
-    have hpair : Interl weakQuadratic weakQuadratic := by simpa using hp
-    exact weakQuadratic_not_interl_self hpair
+    exact not_isInterlacingSeq0Nonneg_of_eq_pair hout weakQuadratic_not_interl_self
 
 /-- Checked counterexample for the false weak shifted-split-sum interface. -/
 theorem weak_xShiftedSplitSums_counterexample :
@@ -307,14 +300,10 @@ theorem weak_xShiftedSplitSums_counterexample :
       ¬IsInterlacingSeq0Nonneg (xShiftedSplitSums [weakQuadratic]) := by
   constructor
   · apply weakInput <;> simp
-  · intro h
-    have hp := isInterlacingSeq0_iff_pairwise.mp h.1
-    have hout : xShiftedSplitSums [weakQuadratic] =
+  · have hout : xShiftedSplitSums [weakQuadratic] =
         [weakQuadratic, X * weakQuadratic] := by
       norm_num [xShiftedSplitSums, List.range_succ]
-    rw [hout] at hp
-    have hpair : Interl weakQuadratic (X * weakQuadratic) := by simpa using hp
-    exact weakQuadratic_not_interl_X_mul hpair
+    exact not_isInterlacingSeq0Nonneg_of_eq_pair hout weakQuadratic_not_interl_X_mul
 
 /-- A singleton is non-vacuous for the source predicate. -/
 theorem weakQuadratic_not_sourceInterlacingSeq :

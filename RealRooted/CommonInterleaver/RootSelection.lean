@@ -99,11 +99,7 @@ theorem C_mul {p : ℝ[X]} {r a : ℝ} (h : IsLargestRoot p r) (ha : a ≠ 0) :
 theorem of_C_mul {p : ℝ[X]} {r a : ℝ}
     (h : IsLargestRoot (C a * p) r) (ha : a ≠ 0) :
     IsLargestRoot p r := by
-  refine ⟨?_, ?_⟩
-  · simpa [Polynomial.IsRoot.def, ha] using h.isRoot
-  · intro s hs
-    apply h.roots_le s
-    simpa [Polynomial.roots_C_mul _ ha] using hs
+  simpa [← mul_assoc, ← Polynomial.C_mul, ha] using h.C_mul (inv_ne_zero ha)
 
 /-- Largest-root certificates are unique for a nonzero polynomial. -/
 theorem unique {p : ℝ[X]} {r s : ℝ} (hp : p ≠ 0)

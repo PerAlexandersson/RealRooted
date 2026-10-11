@@ -134,16 +134,6 @@ theorem hadamardProduct_sequence_nonneg_coeffs {P Q : Nat → ℝ[X]}
     ∀ i : Nat, HasNonnegCoeffs (hadamardProduct (P i) (Q i)) := fun i =>
   HasNonnegCoeffs.hadamardProduct (hPnonneg i) (hQnonneg i)
 
-theorem hadamardProduct_interl_of_nonneg_strictInterl {f g p q : ℝ[X]}
-    (hf : HasNonnegCoeffs f)
-    (hg : HasNonnegCoeffs g)
-    (hp : HasNonnegCoeffs p)
-    (hq : HasNonnegCoeffs q)
-    (hfg : StrictInterl f g)
-    (hpq : StrictInterl p q) :
-    Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  StrictInterl.interl_hadamardProduct hf hg hp hq hfg hpq
-
 theorem hadamardProduct_sequence_interl {F G P Q : Nat → ℝ[X]}
     (hF : ∀ i : Nat, HasNonnegCoeffs (F i))
     (hG : ∀ i : Nat, HasNonnegCoeffs (G i))
@@ -154,7 +144,7 @@ theorem hadamardProduct_sequence_interl {F G P Q : Nat → ℝ[X]}
     ∀ i : Nat,
       Interl (hadamardProduct (F i) (P i)) (hadamardProduct (G i) (Q i)) :=
   fun i =>
-    hadamardProduct_interl_of_nonneg_strictInterl
+    StrictInterl.interl_hadamardProduct
       (hF i) (hG i) (hP i) (hQ i) (hFG i) (hPQ i)
 
 syntax (name := rr_schur_szego_named)
@@ -491,7 +481,7 @@ macro_rules
         first_strictInterl := $hfg:term,
         second_strictInterl := $hpq:term) =>
       `(tactic|
-        exact RealRooted.Tactic.hadamardProduct_interl_of_nonneg_strictInterl
+        exact RealRooted.StrictInterl.interl_hadamardProduct
           $hf $hg $hp $hq $hfg $hpq)
   | `(tactic| rr_hadamard_pf_interl) =>
       `(tactic|
