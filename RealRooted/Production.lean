@@ -1633,6 +1633,7 @@ import RealRooted.Wronskian.Successor.Interlacing
 import RealRooted.Wronskian.Successor.Signs
 import RealRooted.Wronskian.Successor.Splits
 import RealRooted.Wronskian.WeakForward
+import RealRooted.PFPolynomial.PreserverClosure
 
 /-!
 # RealRooted production umbrella
