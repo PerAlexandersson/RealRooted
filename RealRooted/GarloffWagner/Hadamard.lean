@@ -262,4 +262,7 @@ theorem StrictInterl.interl_hadamardProduct {f g p q : ℝ[X]}
     (IsPFPolynomial.of_realRooted_nonneg hq hpq.2.1.2)
     hfg hpq
 
+@[deprecated StrictInterl.interl_hadamardProduct (since := "2026-10-07")]
+alias gwHadamardProductNonnegInterl := StrictInterl.interl_hadamardProduct
+
 end RealRooted
