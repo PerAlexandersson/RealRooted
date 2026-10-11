@@ -559,8 +559,7 @@ def cfiProof (cp : CFIPlan) : TacticM Unit := do
           rcases Nat.lt_or_ge rr_t $(rowNumLit bound) with rr_hlt | rr_hge
           · interval_cases rr_t <;>
               simp only [Nat.reduceAdd, Nat.zero_add, Nat.add_zero] <;> assumption
-          ·
-            have rr_hm : $(rowNumLit m0) ≤ rr_t - $(rowNumLit s) := by lia
+          · have rr_hm : $(rowNumLit m0) ≤ rr_t - $(rowNumLit s) := by lia
             have rr_hi := $hinter (rr_t - $(rowNumLit s)) rr_hm
             have rr_hs : $(rowNumLit s) ≤ rr_t := by lia
             have rr_hnat : rr_t - $(rowNumLit s) + $(rowNumLit s) = rr_t :=
@@ -577,8 +576,7 @@ def cfiProof (cp : CFIPlan) : TacticM Unit := do
           rcases Nat.lt_or_ge rr_t $(rowNumLit bound) with rr_hlt | rr_hge
           · interval_cases rr_t <;>
               simp_all only [Nat.reduceAdd, Nat.zero_add, Nat.add_zero] <;> assumption
-          ·
-            have rr_hm : $(rowNumLit m0) ≤ rr_t - $(rowNumLit s) := by lia
+          · have rr_hm : $(rowNumLit m0) ≤ rr_t - $(rowNumLit s) := by lia
             have rr_hi := $hinter (rr_t - $(rowNumLit s)) rr_hm
             have rr_hs : $(rowNumLit s) ≤ rr_t := by lia
             have rr_hnat : rr_t - $(rowNumLit s) + $(rowNumLit s) = rr_t :=

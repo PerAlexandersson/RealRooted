@@ -1714,6 +1714,8 @@ dedup4 batch B: the shims Mathlib/Algebra/Ring/Parity and Mathlib/Analysis/Calcu
 
 The PF preserver-closure module (#1420) adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+The closed-form interlacing route (Tactic/Row/ClosedFormInterlaces) adds one module under RowInterlacing. The budgets of `RealRooted`, `Production`, `Tactic.Examples`, `Tactic` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
