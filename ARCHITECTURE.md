@@ -1673,6 +1673,10 @@ the staging modules `ParkingFunction`, `Descent` and `GenPoly`.  The budgets of
 `Descents.Literal`, `Descents.DiaconisHicks` and `Descents.DescentChains` rise by three, to 5,
 10 and 9.
 
+Streamlining: `rootPolynomial` moves to the light module `RootPolynomial`, which the
+common-interleaver construction now uses instead of its own descending-root polynomial. The budgets
+of `Tactic.Examples`, `Challenges.Narayana`, `Tactic` rise by one.
+
 Run the architecture check with:
 
 ```bash
