@@ -144,10 +144,6 @@ private lemma xAddThree_hasNonnegCoeffs : HasNonnegCoeffs (X + 3 : ℝ[X]) := by
   change HasNonnegCoeffs (X + C (3 : ℝ) : ℝ[X])
   exact hasNonnegCoeffs_X_add_C (by norm_num)
 
-private lemma xAddThree_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 3 : ℝ[X]) := by
-  change HasPosLeadingCoeff (X + C (3 : ℝ) : ℝ[X])
-  exact hasPosLeadingCoeff_X_add_C (3 : ℝ)
-
 private lemma xAddThree_roots :
     (X + 3 : ℝ[X]).roots = {(-3 : ℝ)} := by
   change ((X + C (3 : ℝ) : ℝ[X]).roots = {(-3 : ℝ)})
@@ -156,10 +152,6 @@ private lemma xAddThree_roots :
 private lemma xAddFiveHalves_isRealRooted :
     ((X + C (5 / 2 : ℝ) : ℝ[X]) ≠ 0 ∧ (X + C (5 / 2 : ℝ) : ℝ[X]).Splits) := by
   simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-(5 / 2 : ℝ))
-
-private lemma xAddFiveHalves_roots :
-    (X + C (5 / 2 : ℝ) : ℝ[X]).roots = {(-(5 / 2 : ℝ))} := by
-  simp
 
 private lemma xSq_add_fiveX_add_six_isRealRooted :
     ((((X + 2) * (X + 3)) : ℝ[X]) ≠ 0 ∧ (((X + 2) * (X + 3)) : ℝ[X]).Splits) :=
@@ -301,23 +293,6 @@ private lemma xAddOne_xAddTwo_linear_combo_eq {lam : ℝ} :
       | succ n =>
           norm_num [mul_add, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
 
-private lemma xAddOne_xAddTwo_posComboRealRooted :
-    PosComboRealRooted (X + 1 : ℝ[X]) (X + 2) := by
-  refine PosComboRealRooted.of_add_left ?_
-  intro lam hlam
-  rw [xAddOne_xAddTwo_linear_combo_eq]
-  have hdeg : (X * C (lam + 1) + C (lam + 2) : ℝ[X]).natDegree = 1 := by
-    simpa [mul_comm] using
-      (Polynomial.natDegree_linear (a := lam + 1) (b := lam + 2)
-        (by grind : (lam + 1) ≠ 0))
-  exact isRealRooted_of_degree_one hdeg
-
-private lemma xAddOne_xAddTwo_noCommon :
-    ∀ r, (X + 1 : ℝ[X]).IsRoot r → ¬ (X + 2 : ℝ[X]).IsRoot r := by
-  intro r hroot1 hroot2
-  simp_all
-  linarith
-
 /-- The linear pair used in the counterexamples still satisfies the true
 all-combinations conclusion for a simpler reason: every combination remains
 linear. -/
@@ -328,99 +303,6 @@ lemma xAddOne_xAddTwo_allComboRealRooted :
     xAddTwo_hasPosLeadingCoeff
     (by simp)
     (by simp [xAddTwo_natDegree])
-
-private lemma xAddOne_xAddTwo_badAffineSlice_eq :
-    ((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]) =
-      X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) := by
-  ext n
-  cases n with
-  | zero =>
-      norm_num
-        [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
-  | succ n =>
-      cases n with
-      | zero =>
-          norm_num
-            [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
-      | succ n =>
-          cases n with
-          | zero =>
-              norm_num
-                [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
-          | succ n =>
-              norm_num
-                [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
-
-private lemma xAddOne_xAddTwo_badShiftedPair_eq :
-    (((X + 2) + X * (X + 1)) : ℝ[X]) =
-      X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) := by
-  ext n
-  cases n with
-  | zero =>
-      simp
-  | succ n =>
-      cases n with
-      | zero =>
-          norm_num
-            [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
-      | succ n =>
-          cases n with
-          | zero =>
-              norm_num
-                [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
-          | succ n =>
-              norm_num
-                [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
-
-private lemma xAddOne_xAddTwo_not_strictInterl :
-    ¬ StrictInterl (X + 1 : ℝ[X]) (X + 2) := by
-  intro hstrictInterl
-  rcases hstrictInterl with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hss_card : (X + 1 : ℝ[X]).roots.card = 1 := by
-    simpa [xAddOne_natDegree] using card_roots_of_splits hf.2
-  have hrs_card : (X + 2 : ℝ[X]).roots.card = 1 := by
-    simpa [xAddTwo_natDegree] using card_roots_of_splits hg.2
-  have hss_len : ss.length = 1 := by rw [← Multiset.coe_card, hss_eq, hss_card]
-  have hrs_len : rs.length = 1 := by rw [← Multiset.coe_card, hrs_eq, hrs_card]
-  cases ss with
-  | nil =>
-      simp at hss_len
-  | cons s ss' =>
-      cases ss' with
-      | nil =>
-          cases rs with
-          | nil =>
-              simp at hrs_len
-          | cons r rs' =>
-              cases rs' with
-              | nil =>
-                  have hs_mem : s ∈ (X + 1 : ℝ[X]).roots := by
-                    rw [← hss_eq]
-                    simp
-                  have hr_mem : r ∈ (X + 2 : ℝ[X]).roots := by
-                    rw [← hrs_eq]
-                    simp
-                  have hs_root : (X + 1 : ℝ[X]).IsRoot s :=
-                    (Polynomial.mem_roots hf.1).mp hs_mem
-                  have hr_root : (X + 2 : ℝ[X]).IsRoot r :=
-                    (Polynomial.mem_roots hg.1).mp hr_mem
-                  have hs_eq : s = -1 := by
-                    have hs_eval : s + 1 = 0 := by simp_all
-                    linarith
-                  have hr_eq : r = -2 := by
-                    have hr_eval : r + 2 = 0 := by simp_all
-                    linarith
-                  have hsame_alt : ListAlternates [s] [r] := by lia
-                  have hs_le_r : s ≤ r := by simpa [ListAlternates, ListInterlaces] using hsame_alt
-                  linarith
-              | cons r₂ rs'' =>
-                  simp at hrs_len
-      | cons s₂ ss'' =>
-          simp at hss_len
 
 /-- Fixed orientation fails for successor-degree pairs: the pair
 `X + 1, (X + 2)(X + 3)` satisfies the positive-combination/no-common hypotheses
@@ -659,8 +541,6 @@ the right of both roots of `g`, so `StrictInterl X g` fails. -/
 
 private lemma X_hasPosLeadingCoeff : HasPosLeadingCoeff (X : ℝ[X]) :=
   hasNonnegCoeffs_X.pos_leadingCoeff X_ne_zero
-
-private lemma X_roots : (X : ℝ[X]).roots = {(0 : ℝ)} := by simp
 
 private lemma X_coeff_zero : (X : ℝ[X]).coeff 0 = 0 := by simp
 
