@@ -496,9 +496,9 @@ macro_rules
   | `(tactic| rr_hadamard_pf_interl) =>
       `(tactic|
         first
-          | exact RealRooted.hadamardProduct_preserves_interl_right
+          | exact RealRooted.Interl.hadamardProduct_right
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
-          | exact RealRooted.hadamardProduct_preserves_interl_left
+          | exact RealRooted.Interl.hadamardProduct_left
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
           | exact RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
               rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term

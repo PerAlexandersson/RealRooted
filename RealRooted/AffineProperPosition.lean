@@ -194,7 +194,7 @@ theorem interl_affine_to_X_mul_affine
     (hu : 0 < u) (hU : 0 < U) (hcross : u * V ≤ U * v)
     (hv : 0 ≤ v) (hV : 0 ≤ V) :
     Interl (C U * X + C V) (X * (C u * X + C v)) :=
-  (strictInterl_to_strictInterl_mul_X_of_nonneg
+  (strictInterl_mul_X_of_strictInterl_of_nonneg
     (strictInterl_affine_linear_affine_linear_of_cross hu hU hcross)
     (hasNonnegCoeffs_affine_linear hu.le hv)
     (hasNonnegCoeffs_affine_linear hU.le hV)).toInterl

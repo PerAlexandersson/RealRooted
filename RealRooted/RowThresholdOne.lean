@@ -48,11 +48,6 @@ theorem isRealRooted_X_mul_affine {s v : ℝ} (hs : 0 < s) :
 
 /-! ### The six entry patterns -/
 
-private theorem case_XXXX {s t : ℝ} (hs : 0 < s) :
-    Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X + X) := by
-  rw [show (C s * X + C t) * X + X = X * (C s * X + C (t + 1)) by rw [C_add, C_1]; ring]
-  exact Interl.refl fun _ => (isRealRooted_X_mul_affine hs).2
-
 private theorem case_X1XX {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl ((C s * X + C t) * 1 + X) ((C s * X + C t) * X + X) := by
   rw [show (C s * X + C t) * 1 + X = C (s + 1) * X + C t by rw [C_add, C_1]; ring,
@@ -96,7 +91,7 @@ theorem has2x2_thresholdEntry_one {t₁ t₂ j₁ j₂ : ℕ}
       | (exfalso; lia)
       | with_reducible_and_instances
           first
-            | exact case_XXXX hs
+            | exact interl_affine_mul_X_add_X_self hs
             | exact case_X1XX hs ht0
             | exact case_X1X1 hs ht0
             | exact case_11XX hs

@@ -392,13 +392,6 @@ lemma strictInterl_self_X_mul_of_nonneg {f : ℝ[X]}
     StrictInterl f (X * f) :=
   strictInterl_mul_X_of_strictInterl_of_nonneg (StrictInterl.refl hf_ne hf_splits) hfnn hfnn
 
-/-- If `f` precedes `g`, then nonnegative coefficients transport the relation
-to `g` and `X * f`. -/
-lemma strictInterl_to_X_mul_of_nonneg {f g : ℝ[X]}
-    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    StrictInterl g (X * f) :=
-  strictInterl_mul_X_of_strictInterl_of_nonneg h hfnn hgnn
-
 /-- The reverse Wagner transport recovers `StrictInterl f g` from `StrictInterl g (X * f)`
 when both polynomials have nonnegative coefficients. -/
 lemma strictInterl_of_strictInterl_X_mul_of_nonneg {f g : ℝ[X]}

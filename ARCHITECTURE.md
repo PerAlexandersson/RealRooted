@@ -1687,6 +1687,12 @@ of `Tactic.Examples`, `Challenges.Narayana`, `Tactic` rise by one.
 
 After merging the reversal-shim streamlining, `Challenges.Narayana` imports both new light modules. The budgets of `Challenges.Narayana` rise by one.
 
+Streamlining: the shim `Mathlib.Algebra.Polynomial.Degree.Lemmas` holds `coeff_comp_neg_X` and
+`natDegree_comp_neg_X`, replacing three local copies. The budgets of `Tactic.Examples`,
+`Challenges.Narayana`, `Tactic` rise by one.
+
+After merging the root-polynomial streamlining, these modules import both new light modules. The budgets of `Tactic.Examples`, `Challenges.Narayana`, `Tactic` rise by one.
+
 Run the architecture check with:
 
 ```bash
