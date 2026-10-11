@@ -27,7 +27,6 @@ import RealRooted.Applications.BinderVecchi.UniformChow
 import RealRooted.Applications.BinderVecchi.UniformMatroid
 import RealRooted.Applications.EulerianVariations
 import RealRooted.Applications.EulerianVariations.CyclicPathDescents
-import RealRooted.Applications.EulerianVariations.PeakValues
 import RealRooted.Applications.EulerianVariations.TernaryRuns
 import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
 import RealRooted.Applications.OEIS.A132885
@@ -949,6 +948,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.BernsteinBasisTrans
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Chow
 import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative

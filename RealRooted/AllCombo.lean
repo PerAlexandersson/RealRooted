@@ -125,13 +125,6 @@ lemma allComboRealRooted_mul_common_factor
     AllComboRealRooted (d * f) (d * g) :=
   fun α β ↦ by simp [mul_left_comm, ← mul_add, hd, hall α β]
 
-lemma splits_derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits := by
-  by_cases hdeg0 : p.natDegree = 0
-  · simp_all [derivative_eq_zero.2]
-  by_cases hdeg1 : p.natDegree = 1
-  · exact .of_natDegree_eq_zero (by simp [hdeg1])
-  · exact (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).2.1.2
-
 lemma allComboRealRooted_derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted f.derivative g.derivative :=

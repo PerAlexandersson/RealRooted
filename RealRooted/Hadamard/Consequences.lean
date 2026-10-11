@@ -52,22 +52,14 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl {p q : ℝ[X
   have hpf : IsPFPolynomial (hadamardProduct p q) := hp.hadamardProduct hq
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
 
-/-- Fixed-right Hadamard multiplication preserves zero-aware interlacing
-inside the PF cone. -/
-theorem hadamardProduct_preserves_interl_right {f g p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
-    (hfg : Interl f g) :
-    Interl (hadamardProduct f p) (hadamardProduct g p) :=
-  garloffWagnerHadamardPFInterl_of_nonnegStrictInterl hf hg hp hp hfg hp.interl_self
-
 /-- Fixed-left Hadamard multiplication preserves zero-aware interlacing
 inside the PF cone. -/
-theorem hadamardProduct_preserves_interl_left {f p q : ℝ[X]}
+theorem Interl.hadamardProduct_left {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (hadamardProduct f p) (hadamardProduct f q) := by
   simpa [hadamardProduct_comm] using
-    hadamardProduct_preserves_interl_right hp hq hf hpq
+    Interl.hadamardProduct_right hp hq hf hpq
 
 theorem reciprocalShift_hadamardProduct (D : ℕ) (p q : ℝ[X]) :
     reciprocalShift D (hadamardProduct p q) =

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
 import Mathlib.Data.List.Sort
+import Mathlib.Data.Multiset.Basic
 
 /-!
 # Upper endpoints of sorted lists
@@ -37,5 +38,10 @@ lemma eq_filter_ne_append_replicate_count {l : List α} {a : α}
           grind
         grind
       · grind
+
+/-- A list sorted by `≤` with the root multiset `{a, b}`, `a ≤ b`, is `[a, b]`. -/
+theorem eq_pair_of_pairwise_le_of_coe_eq {β : Type*} [PartialOrder β] {a b : β} (hab : a ≤ b)
+    {l : List β} (hl : l.Pairwise (· ≤ ·)) (h : (l : Multiset β) = {a, b}) : l = [a, b] :=
+  Perm.eq_of_pairwise' hl (by simp [hab]) (Multiset.coe_eq_coe.mp (by rw [h]; rfl))
 
 end List

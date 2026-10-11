@@ -5,6 +5,7 @@ import RealRooted.ObreschkoffConverse.Forward
 import RealRooted.AllCombo
 import RealRooted.OperatorInterlacingUpgrade
 import RealRooted.FiniteFreeRootCount
+import RealRooted.Mathlib.Data.List.Sort.Endpoint
 
 /-!
 # Root-order preservation for monomial-chain operators
@@ -424,35 +425,6 @@ theorem rootwiseLE_monomialChain_component_bounds
   rw [hPpoly, rootPolynomial_replicate_neg a D] at hhi'
   exact ⟨hlo, hhi'⟩
 
-private lemma sorted_pair_eq {a b : ℝ} (hab : a < b) {l : List ℝ}
-    (hsorted : l.Pairwise (· ≤ ·)) (hcoe : (↑l : Multiset ℝ) = {a, b}) :
-    l = [a, b] := by
-  have hlen : l.length = 2 := by
-    have h := congrArg Multiset.card hcoe
-    simpa using h
-  obtain ⟨x, y, rfl⟩ := List.length_eq_two.mp hlen
-  have hxy : x ≤ y := (List.pairwise_cons.mp hsorted).1 y (by simp)
-  have hne : a ≠ b := ne_of_lt hab
-  have hxab : x = a ∨ x = b := by
-    have hx : x ∈ ({a, b} : Multiset ℝ) := by
-      rw [← hcoe]
-      simp
-    simp_all
-  have hyab : y = a ∨ y = b := by
-    have hy : y ∈ ({a, b} : Multiset ℝ) := by
-      rw [← hcoe]
-      simp
-    simp_all
-  rcases hxab with rfl | rfl <;> rcases hyab with rfl | rfl
-  · exfalso
-    have hcount := congrArg (Multiset.count b) hcoe
-    simp [Ne.symm hne] at hcount
-  · simp
-  · grind
-  · exfalso
-    have hcount := congrArg (Multiset.count a) hcoe
-    simp [hne] at hcount
-
 /-- The roots `(0,1)` and `(3,4)` are coordinatewise ordered but do not
 interlace, witnessing the warning needed for arbitrary output pairs. -/
 theorem not_strictInterl_separated_quadratics :
@@ -472,9 +444,9 @@ theorem not_strictInterl_separated_quadratics :
   have hss_eq' : (↑ss : Multiset ℝ) = {0, 1} := by simpa using hss_eq
   have hrs_eq' : (↑rs : Multiset ℝ) = {3, 4} := by simpa using hrs_eq
   have hsseq : ss = [0, 1] :=
-    sorted_pair_eq (by norm_num) hss hss_eq'
+    List.eq_pair_of_pairwise_le_of_coe_eq (by norm_num) hss hss_eq'
   have hrseq : rs = [3, 4] :=
-    sorted_pair_eq (by norm_num) hrs hrs_eq'
+    List.eq_pair_of_pairwise_le_of_coe_eq (by norm_num) hrs hrs_eq'
   subst hsseq
   subst hrseq
   rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩

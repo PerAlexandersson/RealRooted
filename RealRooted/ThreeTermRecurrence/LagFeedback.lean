@@ -54,7 +54,7 @@ theorem strictInterl_of_lagFeedback {P : ℕ → ℝ[X]} {p : ℕ} {α : ℝ} {c
             have hs := hI 0 (p - 1) (by lia) (by lia)
             exact StrictInterl.refl hs.2.1.1 hs.2.1.2
         have h2 : StrictInterl (P (n + (i + 1))) (X * P n) :=
-          strictInterl_to_strictInterl_mul_X_of_nonneg (by simpa using hI 0 (i + 1) (by lia) hi)
+          strictInterl_mul_X_of_strictInterl_of_nonneg (by simpa using hI 0 (i + 1) (by lia) hi)
             hNn hA
         have hf := h1.C_mul_right hα.ne'
         have hg := h2.C_mul_right (hc n).ne'

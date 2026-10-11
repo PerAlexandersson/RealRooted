@@ -28,7 +28,7 @@ part and the `X`-shifted partial sum, which is what lets the invariant
 propagate.
 
 The three ingredients are all already available: the degree shift
-`strictInterl_to_strictInterl_mul_X_of_nonneg`, the two-term right cone
+`strictInterl_mul_X_of_strictInterl_of_nonneg`, the two-term right cone
 `interl_add_left_of_common_right_of_nonneg`, and the positive-combination
 results `StrictInterl.nonneg_combo_left` / `StrictInterl.nonneg_combo_right`.
 -/
@@ -47,8 +47,8 @@ theorem partialSum_step
       ((C (1 : ℝ) * (A₁ + A₂) + C c * (X * S)) ≠ 0 ∧
         (C (1 : ℝ) * (A₁ + A₂) + C c * (X * S)).Splits) := by
   -- the degree shift on each plain term
-  have hA₁ : StrictInterl A₁ (X * S) := strictInterl_to_strictInterl_mul_X_of_nonneg h₁ hSnn h₁nn
-  have hA₂ : StrictInterl A₂ (X * S) := strictInterl_to_strictInterl_mul_X_of_nonneg h₂ hSnn h₂nn
+  have hA₁ : StrictInterl A₁ (X * S) := strictInterl_mul_X_of_strictInterl_of_nonneg h₁ hSnn h₁nn
+  have hA₂ : StrictInterl A₂ (X * S) := strictInterl_mul_X_of_strictInterl_of_nonneg h₂ hSnn h₂nn
   -- the two-term right cone
   have hcone0 : Interl (A₁ + A₂) (X * S) :=
     interl_add_left_of_common_right_of_nonneg hA₁.toInterl hA₂.toInterl h₁nn h₂nn
@@ -79,8 +79,8 @@ theorem partialSum_step_left
     (hSnn : HasNonnegCoeffs S) (h₁nn : HasNonnegCoeffs A₁) (h₂nn : HasNonnegCoeffs A₂)
     {c : ℝ} (hc : 0 < c) :
     StrictInterl (A₁ + A₂) (C (1 : ℝ) * (A₁ + A₂) + C c * (X * S)) := by
-  have hA₁ : StrictInterl A₁ (X * S) := strictInterl_to_strictInterl_mul_X_of_nonneg h₁ hSnn h₁nn
-  have hA₂ : StrictInterl A₂ (X * S) := strictInterl_to_strictInterl_mul_X_of_nonneg h₂ hSnn h₂nn
+  have hA₁ : StrictInterl A₁ (X * S) := strictInterl_mul_X_of_strictInterl_of_nonneg h₁ hSnn h₁nn
+  have hA₂ : StrictInterl A₂ (X * S) := strictInterl_mul_X_of_strictInterl_of_nonneg h₂ hSnn h₂nn
   have hcone0 : Interl (A₁ + A₂) (X * S) :=
     interl_add_left_of_common_right_of_nonneg hA₁.toInterl hA₂.toInterl h₁nn h₂nn
   have hA₁0 : A₁ ≠ 0 := hA₁.1.1
