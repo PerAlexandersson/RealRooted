@@ -329,6 +329,7 @@ import RealRooted.Challenges.ParkingFunctions
 import RealRooted.Challenges.PeakPolynomials
 import RealRooted.Challenges.PerronFrobenius
 import RealRooted.Challenges.RealStability
+import RealRooted.Challenges.RecurrenceRootWindows
 import RealRooted.Challenges.SchurCohn
 import RealRooted.Challenges.SeparablePermutations
 import RealRooted.Challenges.SmallInterlacingMatrices
