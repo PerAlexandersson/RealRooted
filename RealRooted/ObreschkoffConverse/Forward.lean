@@ -178,7 +178,7 @@ private theorem allComboRealRooted_of_strictInterl_succDegree
 /-- To prove the same-degree forward direction of Obreschkoff, it is enough to
 handle the no-common-roots case. Shared roots can be factored out recursively,
 and `AllComboRealRooted` is rebuilt using
-`allComboRealRooted_mul_common_factor`. This mirrors the converse reduction but
+`AllComboRealRooted.mul_common_factor`. This mirrors the converse reduction but
 keeps the orientation fixed. -/
 private theorem allComboRealRooted_of_strictInterl_sameDegree_of_no_common
     (hstep :
@@ -225,7 +225,7 @@ private theorem allComboRealRooted_of_strictInterl_sameDegree_of_no_common
       ih qf.natDegree hqf_deg_lt rfl hstrictInterl_q hqdeg
     have hmul :
         AllComboRealRooted ((X - C r) * qf) ((X - C r) * qg) :=
-      allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r).2 hqhall
+      hqhall.mul_common_factor (isRealRooted_X_sub_C r).2
     lia
 
 private lemma no_common_with_right_factor_quotient

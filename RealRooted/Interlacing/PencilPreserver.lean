@@ -226,12 +226,11 @@ theorem hasNegativeSimplePencilShapes_of_strictInterl
         _ = C (β⁻¹ * α) * f + C 1 * g := by
           rw [← C_mul, ← C_mul, inv_mul_cancel₀ hβ]
     have hall₀ : AllComboRealRooted f P₀ := by
-      apply allComboRealRooted_linear_recombination (f := f) (g := g)
+      apply hall.linear_recombination (f := f) (g := g)
         (p := f) (q := P₀)
         (a := 1) (b := 0) (c := β⁻¹ * α) (d := 1)
       · simp
       · exact hP₀_eq
-      · exact hall
     have hno₀ : ∀ r, ¬ (f.IsRoot r ∧ P₀.IsRoot r) := by
       intro r hr
       have hfr : f.IsRoot r := hr.1

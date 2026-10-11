@@ -135,7 +135,7 @@ theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
     rcases hor with heq | hsucc
     · exact heq
     · have hstrictInterlOr := strictInterl_of_allComboRealRooted hqNe hqSplits
-          hodd.ne_zero hstrictInterl.1.2 (allComboRealRooted_comm hall)
+          hodd.ne_zero hstrictInterl.1.2 (hall.comm)
           (Or.inl hsucc)
       have hqodd : StrictInterl q odd := by
         rcases hstrictInterlOr with hqodd | hoddq
