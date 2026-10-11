@@ -4,6 +4,7 @@ import RealRooted.Tactic.Row.PowerForm
 import RealRooted.Tactic.Row.ParityProduct
 import RealRooted.Tactic.Row.LagFeedback
 import RealRooted.Tactic.Row.Reverse
+import RealRooted.Tactic.Row.FTransform
 
 /-!
 # Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
@@ -263,7 +264,8 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
   [`closedForm, `lowerOrder, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
-    `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct, `lagFeedback]
+    `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct, `lagFeedback,
+    `fTransform]
 
 /-- `rr_row_splits`, returning the hints of the successful route. -/
 private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainContext do
@@ -543,7 +545,9 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
       (`halfGrowth, 2, "half growth after splitting off two rows", half 2),
       (`degreePattern, 0, "degrees growing by zero or one, with nonnegative coefficients",
         route `degreePattern viaDegreePattern),
-      (`reversed, 0, "the reversed rows", route `reversed (reverseRowGoal true))] do
+      (`reversed, 0, "the reversed rows", route `reversed (reverseRowGoal true)),
+      (`fTransform, 0, "the f-polynomial transform of the rows",
+        route `fTransform fTransformSplitsGoal)] do
     unless use r do continue
     -- `drop` counts the rows split off by the interlacing and half-growth routes
     if hints.drop.isSome && hints.drop != some k &&

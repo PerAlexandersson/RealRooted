@@ -1693,6 +1693,13 @@ Streamlining: the shim `Mathlib.Algebra.Polynomial.Degree.Lemmas` holds `coeff_c
 
 After merging the root-polynomial streamlining, these modules import both new light modules. The budgets of `Tactic.Examples`, `Challenges.Narayana`, `Tactic` rise by one.
 
+f-transform theory: new modules `SymmetricDecomposition.FPolynomialRecurrence` (the transform of a
+first-order derivative recurrence), `SymmetricDecomposition.FPolynomialSequence` (interlacing of
+transforms of half-growth sequences) and the route `Tactic.Row.FTransform`. The budgets of
+`RealRooted`, `Production`, `Tactic.Examples`, `Tactic` rise by two or three.
+
+The catalog page `Challenges.FPolynomialRecurrences` adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
