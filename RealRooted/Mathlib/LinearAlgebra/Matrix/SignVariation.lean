@@ -22,16 +22,6 @@ noncomputable section
 
 namespace SignType
 
-lemma sign_neg_real (x : ℝ) : SignType.sign (-x) = -SignType.sign x := by
-  by_cases hx0 : x = 0
-  · simp [hx0]
-  rcases lt_or_gt_of_ne hx0 with hx | hx
-  · have hneg : 0 < -x := by linarith
-    rw [sign_pos hneg, sign_neg hx]
-    simp
-  · have hneg : -x < 0 := by linarith
-    rw [sign_neg hneg, sign_pos hx]
-
 end SignType
 
 namespace List
@@ -293,7 +283,7 @@ lemma signVariations_neg (l : List ℝ) :
       _ = l.map (fun x => -SignType.sign x) := by
           apply List.map_congr_left
           intro x _
-          exact SignType.sign_neg_real x
+          exact Right.sign_neg x
       _ = signs.map Neg.neg := by simp [signs, List.map_map]
   rw [hmap]
   have hfilter : (signs.map Neg.neg).filter (· ≠ 0) =

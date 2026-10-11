@@ -10,6 +10,13 @@ that the roots of `q` are those of `p` with one copy of `r` removed, and that
 
 namespace Polynomial
 
+/-- The monic linear cofactor evaluates to the derivative at a root. -/
+theorem eval_divByMonic_at_root {K : Type*} [CommRing K] {f : K[X]} {r : K}
+    (hr : f.IsRoot r) :
+    (f /ₘ (X - C r)).eval r = f.derivative.eval r := by
+  nth_rw 2 [← mul_divByMonic_eq_iff_isRoot.mpr hr]
+  simp
+
 /-- Dividing out the linear factor at a root removes one copy of that root. -/
 theorem roots_divByMonic_X_sub_C {R : Type*} [CommRing R] [IsDomain R] [DecidableEq R]
     {p : R[X]} {r : R} (hr : p.IsRoot r) : (p /ₘ (X - C r)).roots = p.roots.erase r := by

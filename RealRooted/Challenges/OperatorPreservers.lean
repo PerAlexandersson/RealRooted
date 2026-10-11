@@ -1,6 +1,7 @@
 import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Polar.ProperPosition
 import RealRooted.OperatorPreservesInterlacing
+import RealRooted.PFPolynomial.PreserverClosure
 import RealRooted.ReciprocalShift.ProperPosition
 import RealRooted.Transforms.ReverseHermite.Preservation
 
@@ -62,6 +63,11 @@ label = "The reverse-Hermite transform preserves PF polynomials"
 name = "RealRooted.reverseHermiteTransform_preserves_interl"
 module = "RealRooted.Transforms.ReverseHermite.Preservation"
 label = "The reverse-Hermite transform preserves interlacing"
+
+[[theorems]]
+name = "RealRooted.isPFPolynomial_map_of_isNegativeSimple"
+module = "RealRooted.PFPolynomial.PreserverClosure"
+label = "Preserving simple negative-rooted inputs suffices for PF"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -88,11 +94,21 @@ either polynomial to be zero, except in the last statement.
 The reverse-Hermite transform preserves the cone of Pólya-frequency
 polynomials and preserves interlacing of PF pairs.
 
+To show that a linear operator preserves PF polynomials, it suffices to check
+inputs with simple, strictly negative roots and positive leading coefficient.
+Every PF polynomial $p$ of degree $d$ is the coefficientwise limit of
+$(1 + \varepsilon D)^d p$ as $\varepsilon \to 0^+$; these polynomials have simple
+negative roots, and the PF cone is closed under coefficientwise limits of
+bounded degree.
+
 ## References
 
 P. Brändén, [“On operators on polynomials preserving real-rootedness and the
 Neggers–Stanley conjecture,”](https://arxiv.org/abs/math/0303147) *Journal of
 Algebraic Combinatorics* 20 (2004), 119–130 (Theorem 8 in the arXiv version).
+The strict-to-weak transfer follows P. Brändén, [“On linear transformations
+preserving the Pólya frequency property,”](https://arxiv.org/abs/math/0403364)
+*Transactions of the American Mathematical Society* 358 (2006), Corollary 3.5.
 See also the
 [operator-preserver overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#operatorPreservesInterlacing).
 <!-- /realrooted-catalog-content -->

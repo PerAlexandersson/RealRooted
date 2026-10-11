@@ -257,7 +257,7 @@ lemma bddAbove (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     le_ratio (A := A) m h_xm_pos
   have h_ratio_le :
       (A *ᵥ x) m / x m ≤ Finset.univ.sup' Finset.univ_nonempty (fun k ↦ ∑ l, A k l) := by
-    rw [mulVec_apply, div_le_iff h_xm_pos]
+    rw [Matrix.mulVec_apply_eq_sum, div_le_iff h_xm_pos]
     refine le_trans (sum_mul_le_sum_mul_const_of_forall_le (fun j => A m j) x m
       (fun j => hA_nonneg m j) h_xm_max) ?_
     apply mul_le_mul_of_nonneg_right _ (le_of_lt h_xm_pos)
@@ -407,7 +407,7 @@ lemma le_of_max_le_row_sum
   have h_le_k := h_le_Bx k
   simp only [Pi.smul_apply, smul_eq_mul] at h_le_k
   have h_Bx_le : (B *ᵥ x) k ≤ r * x k := by
-    rw [mulVec_apply]
+    rw [Matrix.mulVec_apply_eq_sum]
     calc
       ∑ j, B k j * x j
           ≤ (∑ j, B k j) * x k :=
@@ -580,7 +580,7 @@ lemma collatzWielandtFn_of_ones_is_pos
     0 < collatzWielandtFn A (fun _ ↦ 1) := by
   let x_ones : n → ℝ := fun _ ↦ 1
   have h_supp_nonempty : ({i | 0 < x_ones i}.toFinset).Nonempty := by
-    rw [Set.toFinset_nonempty_iff]
+    rw [Set.toFinset_nonempty]
     obtain ⟨i⟩ := ‹Nonempty n›
     exact ⟨i, by simp [x_ones]⟩
   dsimp [collatzWielandtFn]
@@ -592,7 +592,7 @@ lemma collatzWielandtFn_of_ones_is_pos
       (Finset.univ.inf' (by rwa [← h_supp_ones]) fun i ↦ (A *ᵥ x_ones) i / x_ones i) := by
     congr
   rw [h_inf_eq]
-  apply Finset.inf'_pos Finset.univ_nonempty
+  apply (Finset.lt_inf'_iff Finset.univ_nonempty).mpr
   intro i _
   simpa [Matrix.mulVec, dotProduct, x_ones] using
     row_sum_pos_of_irreducible_nonneg hA_irred hA_nonneg i

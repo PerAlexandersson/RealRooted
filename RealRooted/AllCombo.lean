@@ -128,7 +128,7 @@ lemma allComboRealRooted_mul_common_factor
 lemma allComboRealRooted_derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted f.derivative g.derivative :=
-  fun α β ↦ by simpa using splits_derivative <| hall α β
+  fun α β ↦ by simpa using Polynomial.Splits.derivative <| hall α β
 
 lemma allComboRealRooted_iterate_derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :

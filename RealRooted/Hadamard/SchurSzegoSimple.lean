@@ -1,4 +1,5 @@
 import RealRooted.HermiteBiehler.Basic
+import Mathlib.Algebra.Polynomial.Eval.Degree
 import RealRooted.NewtonAux
 import RealRooted.Hadamard.SchurSzegoMultiplicity
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
@@ -348,7 +349,7 @@ private theorem splits_iterate_derivative_real {p : ℝ[X]} (hp : p.Splits) (k :
   | zero => simpa using hp
   | succ k ih =>
     rw [Function.iterate_succ_apply']
-    exact RealRooted.splits_derivative ih
+    exact Polynomial.Splits.derivative ih
 
 /-- Laguerre's inequality for products of linear factors. -/
 private theorem laguerre_prod (s : Multiset ℝ) (x : ℝ) :
@@ -1100,14 +1101,6 @@ private theorem derivative_ssc (N : ℕ) (f g : ℝ[X]) :
     field_simp
     linear_combination (f.coeff (j + 1) * g.coeff (j + 1)) * key'
 
-private theorem coeff_comp_C_mul_X' (Q : ℝ[X]) (a : ℝ) (k : ℕ) :
-    (Q.comp (C a * X)).coeff k = a ^ k * Q.coeff k := by
-  induction Q using Polynomial.induction_on' with
-  | add p q hp hq => simp [add_comp, hp, hq]; ring
-  | monomial i c =>
-    rw [monomial_comp, mul_pow, ← C_pow, ← mul_assoc, ← C_mul, coeff_C_mul_X_pow, coeff_monomial]
-    split_ifs with h1 h2 h2 <;> subst_vars <;> simp_all; ring
-
 private theorem natDegree_comp_C_mul_X_le (Q : ℝ[X]) (a : ℝ) : (Q.comp
     (C a * X)).natDegree ≤ Q.natDegree :=
   natDegree_comp_le.trans (by
@@ -1126,7 +1119,8 @@ private theorem coeff_Tr {n : ℕ} (r : ℝ) {Q : ℝ[X]} (hQ : Q.natDegree ≤ 
   unfold Tr
   rw [coeff_reflect]
   split_ifs with h
-  · rw [revAt_le h, coeff_comp_C_mul_X']
+  · rw [revAt_le h, Polynomial.comp_C_mul_X_coeff]
+    ring
   · change (Q.comp (C (-r) * X)).coeff (revAtFun n j) = 0
     rw [show revAtFun n j = j by
       unfold revAtFun
@@ -1612,8 +1606,8 @@ private theorem main_ssc : ∀ (n : ℕ) (P Q : ℝ[X]), P.natDegree = n → P.S
     by_cases hK3 : 2 < (ssc (N + 1) P Q).rootMultiplicity r
     · obtain ⟨a, b, ha, hb, -, -, hlt, hrab, hmult⟩ :=
         ih P.derivative Q.derivative (natDegree_derivative_eq' hP)
-          (RealRooted.splits_derivative hPs) (natDegree_derivative_eq' hQ)
-          (RealRooted.splits_derivative hQs)
+          (Polynomial.Splits.derivative hPs) (natDegree_derivative_eq' hQ)
+          (Polynomial.Splits.derivative hQs)
           (derivative_roots_neg hQ hQs hneg) r hr (by lia)
       have hm := rootMultiplicity_le_natDegree' P.derivative a
       have hl := rootMultiplicity_le_natDegree' Q.derivative b

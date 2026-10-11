@@ -102,11 +102,6 @@ private theorem even_degree (k : ℕ) :
         Nat.add_mul_div_left 1 k (by decide : 0 < 2)]
       simp
 
-private theorem odd_degree (k : ℕ) : (2 * k + 1) / 2 = k := by
-  rw [show 2 * k + 1 = 1 + 2 * k by lia,
-    Nat.add_mul_div_left 1 k (by decide : 0 < 2)]
-  simp
-
 private theorem dehomogenize_evenStep_eq_recurrence
     (n d : ℕ) (hn : 2 ≤ n) (hnd : n = 2 * d + 1)
     (Q : MvPolynomial (Option (Fin n)) ℂ)
@@ -228,7 +223,7 @@ theorem peakHomogeneousStable (n : ℕ) : PeakHomogeneousStable n := by
         · rw [unidentifyHomogeneous]
           have htarget : (2 * k + 1 + 1 - 1) / 2 = k := by
             rw [show 2 * k + 1 + 1 - 1 = 2 * k + 1 by lia,
-              odd_degree]
+              show (2 * k + 1) / 2 = k by lia]
           rw [htarget]
           exact (homogeneousEvenStep_isHomogeneous hhom').rename_isHomogeneous
         · apply MvUpperHalfPlaneStable.rename

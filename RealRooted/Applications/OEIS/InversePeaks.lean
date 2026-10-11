@@ -218,12 +218,6 @@ private theorem inversePeakEulerian_degree_step (n : ℕ) :
   rw [show n + 2 = (n + 1) + 1 by lia, Nat.succ_div]
   split_ifs <;> simp
 
-private theorem half_two_mul_add_one (j : ℕ) : (2 * j + 1) / 2 = j := by
-  lia
-
-private theorem half_two_mul_add_two (j : ℕ) : (2 * j + 2) / 2 = j + 1 := by
-  lia
-
 private theorem half_two_mul_add_three (j : ℕ) : (2 * j + 3) / 2 = j + 1 := by
   lia
 
@@ -301,7 +295,7 @@ theorem inversePeakEulerian_odd_alternates (j : ℕ) :
         ListAlternates ss rs := by
   apply (inversePeakEulerian_strictInterl (2 * j + 1)).exists_listAlternates_of_natDegree_eq
   rw [inversePeakEulerian_natDegree, inversePeakEulerian_natDegree,
-    half_two_mul_add_two, half_two_mul_add_three]
+    show (2 * j + 2) / 2 = j + 1 by lia, half_two_mul_add_three]
 
 /-- Even-indexed transitions are degree-rise strict interlacing steps. -/
 theorem inversePeakEulerian_even_interlaces (j : ℕ) :
@@ -309,6 +303,6 @@ theorem inversePeakEulerian_even_interlaces (j : ℕ) :
       (inversePeakEulerian (2 * j + 1)) := by
   apply inversePeakEulerian_interlaces_of_degree_succ
   rw [inversePeakEulerian_natDegree, inversePeakEulerian_natDegree,
-    half_two_mul_add_one, half_two_mul_add_two]
+    show (2 * j + 1) / 2 = j by lia, show (2 * j + 2) / 2 = j + 1 by lia]
 
 end RealRooted.Applications.OEIS

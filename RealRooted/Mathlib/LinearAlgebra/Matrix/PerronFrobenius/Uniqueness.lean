@@ -79,7 +79,7 @@ theorem uniqueness_of_positive_eigenvector (hA_prim : IsPrimitive A) (hr_pos : 0
     ∃ c : ℝ, 0 < c ∧ v = c • w := by
   let c := Finset.univ.inf' Finset.univ_nonempty (fun i => v i / w i)
   have hc_pos : 0 < c := by
-    apply Finset.inf'_pos Finset.univ_nonempty
+    apply (Finset.lt_inf'_iff Finset.univ_nonempty).mpr
     intro i _
     exact div_pos (hv_pos i) (hw_pos i)
   let z := v - c • w
@@ -98,7 +98,7 @@ theorem uniqueness_of_positive_eigenvector (hA_prim : IsPrimitive A) (hr_pos : 0
         Finset.exists_mem_eq_inf' Finset.univ_nonempty (fun i => v i / w i)
       use i₀
       simp only [z, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, sub_eq_zero]
-      exact eq_mul_of_eq_div (ne_of_gt (hw_pos i₀)) hi₀_eq_inf
+      exact (mul_inv_eq_iff_eq_mul₀ (ne_of_gt (hw_pos i₀))).mp hi₀_eq_inf.symm
     obtain ⟨i₀, hi₀_zero⟩ := hz_has_zero
     have h_contra :=
       eigenvector_no_zero_entries_of_primitive hA_prim hr_pos hz_eig hz_nonneg h_z_is_zero i₀

@@ -981,6 +981,8 @@ import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
 import RealRooted.Mathlib.Algebra.Polynomial.Sturm
 import RealRooted.Mathlib.Algebra.Polynomial.Taylor
 import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+import RealRooted.Mathlib.Algebra.Ring.Parity
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 import RealRooted.Mathlib.Analysis.Complex.ArgumentPrinciple
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
@@ -1633,6 +1635,8 @@ import RealRooted.Wronskian.Successor.Interlacing
 import RealRooted.Wronskian.Successor.Signs
 import RealRooted.Wronskian.Successor.Splits
 import RealRooted.Wronskian.WeakForward
+import RealRooted.PFPolynomial.PreserverClosure
+
 import RealRooted.Tactic.Row.ClosedFormInterlaces
 
 /-!

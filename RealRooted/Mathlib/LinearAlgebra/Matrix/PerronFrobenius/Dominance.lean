@@ -191,7 +191,7 @@ theorem perronRoot_transpose_eq
       hAT_irred (fun i j ↦ hA_irred.nonneg j i) hr'_pos hu_pos hu_eig_T
   have hu_eig_left : u ᵥ* A = r' • u := by
     have : Aᵀ *ᵥ u = r' • u := hu_eig_T
-    simpa [vecMul_eq_mulVec_transpose] using this
+    simpa only [← Matrix.mulVec_transpose] using this
   have hr_eq_r' : r = r' :=
     eigenvalue_eq_of_positive_right_left_eigenvectors hv_pos hu_pos hv_eig hu_eig_left
   calc
@@ -213,7 +213,7 @@ lemma exists_positive_left_perron_eigenvector
         eigenvalue_is_perron_root_of_positive_eigenvector
           hAT_irred (fun i j => hA_nonneg j i) hr_pos hu_pos hu_eig
       _ = perronRoot A := (perronRoot_transpose_eq A hA_irred).symm
-  exact ⟨u, hu_pos, by simpa [hr_eq, vecMul_eq_mulVec_transpose] using hu_eig⟩
+  exact ⟨u, hu_pos, by simpa only [hr_eq, ← Matrix.mulVec_transpose] using hu_eig⟩
 
 omit [Nonempty n] [DecidableEq n] in
 /-- A positive left Perron eigenvector annihilates `A *ᵥ y - r • y` in the dot product. -/

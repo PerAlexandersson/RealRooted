@@ -86,7 +86,7 @@ lemma exists_zero_to_pos_edge_of_irreducible [Finite n]
   obtain ⟨j, hj_T, i, hi_not_T, hAji_pos⟩ :=
     Irreducible.exists_edge_out (A := A) hA_irred T hT_nonempty hT_ne_univ
   exact ⟨j, i, by simpa [T] using hj_T,
-    pos_of_nonneg_of_not_mem_zero_set hv_nonneg (by simpa [T] using hi_not_T), hAji_pos⟩
+    lt_of_le_of_ne (hv_nonneg i) (fun a => hi_not_T (by simpa [T] using a.symm)), hAji_pos⟩
 
 omit [DecidableEq n] in
 lemma eigenvector_is_positive_of_irreducible_aux [Fintype n]
@@ -207,7 +207,7 @@ theorem uniqueness_of_positive_eigenvector_gen
   -- 1.  c := infᵢ (vᵢ / wᵢ)
   let c : ℝ := Finset.univ.inf' Finset.univ_nonempty (fun i : n => v i / w i)
   have hc_pos : 0 < c := by
-    apply Finset.inf'_pos Finset.univ_nonempty
+    apply (Finset.lt_inf'_iff Finset.univ_nonempty).mpr
     intro i _
     exact div_pos (hv_pos i) (hw_pos i)
   -- 2.  z := v − c•w  (still an eigenvector)
@@ -239,7 +239,7 @@ theorem uniqueness_of_positive_eigenvector_gen
     -- at the attaining index we must have `z i₀ = 0`, contradiction
     have hzi₀_zero : z i₀ = 0 := by
       have hv_eq : v i₀ = c * w i₀ :=
-        eq_mul_of_eq_div (ne_of_gt (hw_pos i₀)) h_inf_eq
+        (mul_inv_eq_iff_eq_mul₀ (ne_of_gt (hw_pos i₀))).mp h_inf_eq.symm
       simp only [Pi.sub_apply, hv_eq, Pi.smul_apply, smul_eq_mul, sub_self, z]
     have hlt := hz_pos i₀
     rw [hzi₀_zero] at hlt
@@ -271,14 +271,15 @@ lemma eigenvalue_le_of_positive_eigenvectors [Nonempty n]
     (hv_eig : A *ᵥ v = r • v) (hw_eig : A *ᵥ w = s • w) :
     s ≤ r := by
   let c : ℝ := Finset.univ.inf' Finset.univ_nonempty (fun i : n => v i / w i)
-  have hc_pos : 0 < c := Finset.inf'_pos Finset.univ_nonempty fun i _ =>
+  have hc_pos : 0 < c := (Finset.lt_inf'_iff Finset.univ_nonempty).mpr fun i _ =>
     div_pos (hv_pos i) (hw_pos i)
   obtain ⟨i₀, _, hc_eq⟩ := Finset.exists_mem_eq_inf' Finset.univ_nonempty
     (fun i : n => v i / w i)
   have hle : ∀ j, c * w j ≤ v j := fun j =>
     (le_div_iff₀ (hw_pos j)).mp (Finset.inf'_le _ (Finset.mem_univ j))
   have h_sum := mulVec_smul_le_mulVec_of_forall_smul_le i₀ (fun j => hA_nonneg i₀ j) c hle
-  have h_eq : v i₀ = c * w i₀ := eq_mul_of_eq_div (ne_of_gt <| hw_pos i₀) hc_eq
+  have h_eq : v i₀ = c * w i₀ :=
+    (mul_inv_eq_iff_eq_mul₀ (ne_of_gt <| hw_pos i₀)).mp hc_eq.symm
   have h_pos : 0 < c * w i₀ := mul_pos hc_pos (hw_pos i₀)
   apply le_of_mul_le_mul_right _ h_pos
   calc

@@ -1,6 +1,7 @@
 import RealRooted.DegreeDropReversal
 import RealRooted.Hadamard.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Ring.Parity
 
 /-!
 # Finite-free multiplicative convolution
@@ -29,17 +30,6 @@ def signedReciprocal (d : ℕ) (p : ℝ[X]) : ℝ[X] :=
 The global sign is essential in odd degree. -/
 def finiteFreeMultiplicativeConvolution (d : ℕ) (p q : ℝ[X]) : ℝ[X] :=
   C ((-1 : ℝ) ^ d) * (schurSzegoComp d p q).comp (-X)
-
-private theorem neg_one_pow_add_eq_sub {d j : ℕ} (hj : j ≤ d) :
-    (-1 : ℝ) ^ d * (-1 : ℝ) ^ j = (-1 : ℝ) ^ (d - j) := by
-  nth_rw 1 [← Nat.sub_add_cancel hj]
-  rw [pow_add, mul_assoc, ← mul_pow]
-  norm_num
-
-private theorem neg_one_pow_sq (k : ℕ) :
-    ((-1 : ℝ) ^ k) ^ 2 = 1 := by
-  rw [← pow_mul]
-  norm_num
 
 /-- Coefficients of signed reciprocal reversal, using Mathlib's involutive
 `revAt` index. -/
@@ -75,7 +65,7 @@ theorem coeff_finiteFreeMultiplicativeConvolution
             (p.coeff j * q.coeff j / (Nat.choose d j : ℝ)) := by ring
       _ = (-1 : ℝ) ^ (d - j) *
             (p.coeff j * q.coeff j / (Nat.choose d j : ℝ)) := by
-        rw [neg_one_pow_add_eq_sub hj]
+        rw [_root_.neg_one_pow_mul_eq_neg_one_pow_sub hj]
   · simp only [ite_eq_right hj]
     simp
 
@@ -237,7 +227,7 @@ theorem finiteElementaryCoeff_finiteFreeMultiplicativeConvolution
   rw [coeff_finiteFreeMultiplicativeConvolution,
     ite_eq_left (Nat.sub_le d k), Nat.sub_sub_self hk, Nat.choose_symm hk]
   let s : ℝ := (-1 : ℝ) ^ k
-  have hs : s * s = 1 := by simpa [pow_two] using neg_one_pow_sq k
+  have hs : s * s = 1 := by simpa [pow_two] using (_root_.neg_one_pow_sq k)
   have hchoose : (Nat.choose d k : ℝ) ≠ 0 :=
     Nat.cast_choose_ne_zero (R := ℝ) hk
   change
@@ -287,7 +277,7 @@ theorem signedReciprocal_schurSzegoComp
       coeff_signedReciprocal_of_le hj,
       coeff_signedReciprocal_of_le hj, Nat.choose_symm hj]
     let s : ℝ := (-1 : ℝ) ^ (d - j)
-    have hs : s * s = 1 := by simpa [pow_two] using neg_one_pow_sq (d - j)
+    have hs : s * s = 1 := by simpa [pow_two] using (_root_.neg_one_pow_sq (d - j))
     have hprod :
         (s * f.coeff (d - j)) * (s * g.coeff (d - j)) =
           f.coeff (d - j) * g.coeff (d - j) := by
@@ -321,7 +311,7 @@ theorem finiteFreeMultiplicativeConvolution_signedReciprocal_right
       coeff_signedReciprocal_of_le hj,
       coeff_schurSzegoComp_of_le hj, coeff_reflect, revAt_le hj]
     let s : ℝ := (-1 : ℝ) ^ (d - j)
-    have hs : s * s = 1 := by simpa [pow_two] using neg_one_pow_sq (d - j)
+    have hs : s * s = 1 := by simpa [pow_two] using (_root_.neg_one_pow_sq (d - j))
     change
       s * (P.coeff j * (s * p.coeff (d - j)) /
         (Nat.choose d j : ℝ)) =

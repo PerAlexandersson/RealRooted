@@ -47,7 +47,7 @@ theorem sum_powerset_neg_one_smul_upperZeta {α A : Type*}
       (-1 : ℤ) ^ D.card • upperZeta U F (S ∪ D)) = F S := by
   classical
   unfold upperZeta
-  simp_rw [Finset.sum_filter, smul_sum, smul_ite, smul_zero]
+  simp_rw [Finset.sum_filter, Finset.smul_sum, smul_ite, smul_zero]
   rw [Finset.sum_comm]
   have hinner (T : Finset α) (hTU : T ⊆ U) :
       (∑ D ∈ (U \ S).powerset,
