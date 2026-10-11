@@ -173,7 +173,7 @@ private theorem neg_coeff_one_eq_sum_roots_inv
       lia
     rw [hindex]
   have hroots :=
-    DegreeDropReversal.roots_reverse_eq_map_inv_of_splits_coeff_zero_ne
+    Polynomial.roots_reverse_eq_map_inv
       hp hzeroNe
   have hnext :=
     (DegreeDropReversal.splits_reverse hp).nextCoeff_eq_neg_sum_roots_mul_leadingCoeff

@@ -1673,6 +1673,14 @@ the staging modules `ParkingFunction`, `Descent` and `GenPoly`.  The budgets of
 `Descents.Literal`, `Descents.DiaconisHicks` and `Descents.DescentChains` rise by three, to 5,
 10 and 9.
 
+Streamlining: `DegreeDropReversal` uses the reversal-root lemmas of the shim
+`Mathlib.Algebra.Polynomial.Reverse` instead of its own copies, so it imports that shim. The
+budgets of `Challenges.Narayana`, `ProductSequence.Factors`, `ProductSequence.Core`,
+`ProductSequence.Lifts`, `ProductSequence.FactorFamilies`, `ProductSequence.ScalarFamilies`,
+`RootVieta.Newton`, `SequenceClosure`, `Tactic.Product.Syntax`, `Tactic.Product.Syntax.Basic`,
+`Tactic.Product.Syntax.EndpointPair`, `Tactic.Product.Syntax.Families`,
+`Tactic.Product.Syntax.Lifts` rise by one.
+
 Run the architecture check with:
 
 ```bash

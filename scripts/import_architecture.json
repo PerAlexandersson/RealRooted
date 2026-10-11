@@ -901,7 +901,7 @@
       "max_modules": 8
     },
     "RealRooted.Challenges.Narayana": {
-      "max_modules": 177
+      "max_modules": 178
     },
     "RealRooted.Tactic.Wagner": {
       "max_modules": 92
@@ -1282,22 +1282,22 @@
       "max_modules": 96
     },
     "RealRooted.ProductSequence.Factors": {
-      "max_modules": 15
-    },
-    "RealRooted.ProductSequence.Core": {
       "max_modules": 16
     },
-    "RealRooted.ProductSequence.Lifts": {
+    "RealRooted.ProductSequence.Core": {
       "max_modules": 17
+    },
+    "RealRooted.ProductSequence.Lifts": {
+      "max_modules": 18
     },
     "RealRooted.ProductSequence.EndpointPair": {
       "max_modules": 93
     },
     "RealRooted.ProductSequence.FactorFamilies": {
-      "max_modules": 17
+      "max_modules": 18
     },
     "RealRooted.ProductSequence.ScalarFamilies": {
-      "max_modules": 18
+      "max_modules": 19
     },
     "RealRooted.ProductOrientation": {
       "max_modules": 101
@@ -1399,7 +1399,7 @@
       "max_modules": 5
     },
     "RealRooted.RootVieta.Newton": {
-      "max_modules": 5
+      "max_modules": 6
     },
     "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous": {
       "max_modules": 1
@@ -1489,7 +1489,7 @@
       "max_modules": 457
    },
     "RealRooted.SequenceClosure": {
-      "max_modules": 12
+      "max_modules": 13
     },
     "RealRooted.SignEvaluation": {
       "max_modules": 11
@@ -1768,19 +1768,19 @@
       "max_modules": 110
     },
     "RealRooted.Tactic.Product.Syntax": {
-      "max_modules": 36
+      "max_modules": 37
     },
     "RealRooted.Tactic.Product.Syntax.Basic": {
-      "max_modules": 32
+      "max_modules": 33
     },
     "RealRooted.Tactic.Product.Syntax.EndpointPair": {
-      "max_modules": 32
+      "max_modules": 33
     },
     "RealRooted.Tactic.Product.Syntax.Families": {
-      "max_modules": 32
+      "max_modules": 33
     },
     "RealRooted.Tactic.Product.Syntax.Lifts": {
-      "max_modules": 32
+      "max_modules": 33
     }
   },
   "forbidden_imports": [

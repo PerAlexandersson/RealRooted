@@ -65,14 +65,14 @@ lemma interlaces_reverse_of_roots_neg {g f : ℝ[X]} (h : Interlaces g f)
     ⟨⟨hfne, hfs⟩, ⟨hgne, hgs⟩, hdeg, ⟨rs, ss, hrs, hss, hfr, hgsr, hlist⟩⟩
   have hf0 := coeff_zero_ne_of_roots_neg hfne hf
   have hg0 := coeff_zero_ne_of_roots_neg hgne hg
-  have hfr' := DegreeDropReversal.roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hfs hf0
-  have hgr' := DegreeDropReversal.roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hgs hg0
+  have hfr' := Polynomial.roots_reverse_eq_map_inv hfs hf0
+  have hgr' := Polynomial.roots_reverse_eq_map_inv hgs hg0
   have hfrs := DegreeDropReversal.splits_reverse hfs
   have hgrs := DegreeDropReversal.splits_reverse hgs
   have hnat : ∀ {p : ℝ[X]}, p.Splits → p.coeff 0 ≠ 0 → p.reverse.natDegree = p.natDegree := by
     intro p hp hp0
     rw [← card_roots_of_splits (DegreeDropReversal.splits_reverse hp),
-      DegreeDropReversal.roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp hp0,
+      Polynomial.roots_reverse_eq_map_inv hp hp0,
       Multiset.card_map, card_roots_of_splits hp]
   have hrslen : rs.length = f.natDegree := by
     rw [← card_roots_of_splits hfs, ← hfr, Multiset.coe_card]

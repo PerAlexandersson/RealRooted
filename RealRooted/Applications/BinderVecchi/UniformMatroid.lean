@@ -267,12 +267,6 @@ theorem weightPolynomial_eq {r n i : ℕ} (hr : 1 ≤ r) (hi : 1 ≤ i) (hn : r 
 
 /-! ## The deranged map and Theorem 1.4 -/
 
-private theorem natDegree_derangement_le (j : ℕ) :
-    (DerangementTransform.polynomial j).natDegree ≤ j := by
-  cases j with
-  | zero => simp
-  | succ j => exact natDegree_le_sturmDerangementsExc (j + 1)
-
 private theorem reflect_derangement (j : ℕ) :
     (DerangementTransform.polynomial j).reflect j = DerangementTransform.polynomial j := by
   cases j with
@@ -282,7 +276,7 @@ private theorem reflect_derangement (j : ℕ) :
 private theorem reflect_derangement_of_le {j r : ℕ} (hj : j ≤ r) :
     (DerangementTransform.polynomial j).reflect r =
       DerangementTransform.polynomial j * X ^ (r - j) := by
-  have h := reflect_add_right_of_reflect (r - j) (natDegree_derangement_le j)
+  have h := reflect_add_right_of_reflect (r - j) (DerangementTransform.natDegree_polynomial_le j)
     (reflect_derangement j)
   rwa [show j + (r - j) = r by lia] at h
 
@@ -300,7 +294,8 @@ private theorem natDegree_transform_weightPolynomial_le (r n i : ℕ) :
   rw [transform_weightPolynomial]
   refine natDegree_sum_le_of_forall_le _ _ fun j hj => ?_
   have hj' : j < r := mem_range.mp hj
-  exact (natDegree_C_mul_le _ _).trans ((natDegree_derangement_le j).trans (by lia))
+  exact (natDegree_C_mul_le _ _).trans
+    ((DerangementTransform.natDegree_polynomial_le j).trans (by lia))
 
 /-- The transform identity `\underline H = I_{r-1}(D g)`. -/
 theorem refinedHodgePoincare_eq_reflect (r n i : ℕ) :
@@ -376,15 +371,6 @@ private theorem reflect_eulerian (s : ℕ) :
     rw [reflect_add_right_of_reflect 1 (generalizedEulerian_natDegree 1 s).le
       (generalizedEulerian_one_reflect s), pow_one, mul_comm]
 
-private theorem natDegree_image_le (s : ℕ) : (EulerianTransform.image s).natDegree ≤ s := by
-  cases s with
-  | zero => simp [EulerianTransform.image]
-  | succ s =>
-    have h1 : (X : ℝ[X]).natDegree ≤ 1 := natDegree_X_le
-    have h2 := (generalizedEulerian_natDegree 1 s).le
-    rw [EulerianTransform.image]
-    exact natDegree_mul_le.trans (by lia)
-
 private theorem reflect_X_pow_mul_eulerian {s r : ℕ} (hs : s ≤ r) :
     (X ^ (r - s) * eulerian s).reflect r = EulerianTransform.image s := by
   have h := reflect_mul (X ^ (r - s)) (eulerian s) (F := r - s) (G := s) (natDegree_X_pow_le _)
@@ -422,7 +408,7 @@ private theorem natDegree_eulerianTransform_weightPolynomial_le (r n i : ℕ) :
   rw [transform_weightPolynomial_eulerian]
   refine natDegree_sum_le_of_forall_le _ _ fun s hs => ?_
   have hs' : s < r := mem_range.mp hs
-  exact (natDegree_C_mul_le _ _).trans ((natDegree_image_le s).trans hs'.le)
+  exact (natDegree_C_mul_le _ _).trans ((EulerianTransform.natDegree_image_le s).trans hs'.le)
 
 /-- The constant coefficient of the Eulerian image is the first weight. -/
 theorem coeff_zero_eulerianTransform_weightPolynomial (r n i : ℕ) (hr : 1 ≤ r) :
