@@ -1702,6 +1702,12 @@ transforms of half-growth sequences) and the route `Tactic.Row.FTransform`. The 
 
 The catalog page `Challenges.FPolynomialRecurrences` adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+The root-amplitude and coefficient-dominance challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The reciprocal-shift and product-sequence challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The Edrei-Thoma challenge page adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 The new module Interlacing/RemainderCertificate adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
 Run the architecture check with:
