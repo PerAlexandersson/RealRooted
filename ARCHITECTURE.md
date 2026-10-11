@@ -1714,6 +1714,10 @@ dedup4 batch B: the shims Mathlib/Algebra/Ring/Parity and Mathlib/Analysis/Calcu
 
 The PF preserver-closure module (#1420) adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+The Euler-bidiagonal preservation module (#1428) adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The Euler-bidiagonal preservation module (#1428) adds one module. The budgets of  rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash

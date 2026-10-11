@@ -2,6 +2,7 @@ import RealRooted.EulerOperator
 import RealRooted.EulerOperator.Polar.ProperPosition
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.PFPolynomial.PreserverClosure
+import RealRooted.EulerBidiagonal.Preservation
 import RealRooted.ReciprocalShift.ProperPosition
 import RealRooted.Transforms.ReverseHermite.Preservation
 
@@ -68,6 +69,16 @@ label = "The reverse-Hermite transform preserves interlacing"
 name = "RealRooted.isPFPolynomial_map_of_isNegativeSimple"
 module = "RealRooted.PFPolynomial.PreserverClosure"
 label = "Preserving simple negative-rooted inputs suffices for PF"
+
+[[theorems]]
+name = "RealRooted.isPFPolynomial_map_of_isNegativeSimple_of_natDegree_le"
+module = "RealRooted.PFPolynomial.PreserverClosure"
+label = "The degree-local version of the strict-to-weak transfer"
+
+[[theorems]]
+name = "RealRooted.IsPFPolynomial.eulerBidiagonal_step"
+module = "RealRooted.EulerBidiagonal.Preservation"
+label = "Euler bidiagonal steps preserve PF polynomials"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -99,7 +110,10 @@ inputs with simple, strictly negative roots and positive leading coefficient.
 Every PF polynomial $p$ of degree $d$ is the coefficientwise limit of
 $(1 + \varepsilon D)^d p$ as $\varepsilon \to 0^+$; these polynomials have simple
 negative roots, and the PF cone is closed under coefficientwise limits of
-bounded degree.
+bounded degree. The regularization keeps the degree, so the transfer also holds degree by
+degree: strict preservation up to degree $d$ gives PF preservation up to degree $d$. One
+consumer is the Euler bidiagonal step, which preserves PF polynomials for $a, b \ge 0$ with
+$ab > 0$.
 
 ## References
 
