@@ -1797,3 +1797,4 @@ import RealRooted.BorceaBranden.Applications.PoissonStability
 import RealRooted.BorceaBranden.Applications.PoissonStar
 
 import RealRooted.Challenges.IteratedDerivativeShift
+import RealRooted.Tactic.Examples.RowFixtures
