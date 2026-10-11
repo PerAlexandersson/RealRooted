@@ -6,6 +6,7 @@ import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.Data.Multiset.Sort
 import RealRooted.Derivative.Algebra
 import RealRooted.Derivative.Interlacing
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 open Polynomial Set
 
@@ -37,12 +38,8 @@ theorem iterate_derivative_eq_zero_or_splits {p : ℝ[X]} (hsplit : p.Splits)
   | succ n ih =>
       simpa [Function.iterate_succ_apply'] using eq_zero_or_splits_derivative ih
 
-/-- The derivative of a real-rooted polynomial is real-rooted (Rolle). -/
-theorem splits_derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits := by
-  rcases eq_zero_or_splits_derivative (Or.inr hp) with h | h
-  · rw [h]
-    exact Splits.zero
-  · exact h
+@[deprecated Polynomial.Splits.derivative (since := "2026-10-11")]
+alias splits_derivative := Polynomial.Splits.derivative
 
 /-- Strict real-rootedness is preserved by differentiation unless the
 derivative vanishes. -/

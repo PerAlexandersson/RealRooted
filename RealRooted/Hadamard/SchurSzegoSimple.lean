@@ -349,7 +349,7 @@ private theorem splits_iterate_derivative_real {p : ℝ[X]} (hp : p.Splits) (k :
   | zero => simpa using hp
   | succ k ih =>
     rw [Function.iterate_succ_apply']
-    exact RealRooted.splits_derivative ih
+    exact Polynomial.Splits.derivative ih
 
 /-- Laguerre's inequality for products of linear factors. -/
 private theorem laguerre_prod (s : Multiset ℝ) (x : ℝ) :
@@ -1606,8 +1606,8 @@ private theorem main_ssc : ∀ (n : ℕ) (P Q : ℝ[X]), P.natDegree = n → P.S
     by_cases hK3 : 2 < (ssc (N + 1) P Q).rootMultiplicity r
     · obtain ⟨a, b, ha, hb, -, -, hlt, hrab, hmult⟩ :=
         ih P.derivative Q.derivative (natDegree_derivative_eq' hP)
-          (RealRooted.splits_derivative hPs) (natDegree_derivative_eq' hQ)
-          (RealRooted.splits_derivative hQs)
+          (Polynomial.Splits.derivative hPs) (natDegree_derivative_eq' hQ)
+          (Polynomial.Splits.derivative hQs)
           (derivative_roots_neg hQ hQs hneg) r hr (by lia)
       have hm := rootMultiplicity_le_natDegree' P.derivative a
       have hl := rootMultiplicity_le_natDegree' Q.derivative b
