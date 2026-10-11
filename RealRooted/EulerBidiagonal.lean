@@ -756,20 +756,6 @@ private theorem isNegativeSimple_one : IsNegativeSimple (1 : ℝ[X]) := by
   · intro r hr
     exact absurd hr (by simp)
 
-private theorem isNegativeSimple_X_add_C {c : ℝ} (hc : 0 < c) :
-    IsNegativeSimple (X + C c) := by
-  refine ⟨X_add_C_ne_zero c, ?_, ?_, hasPosLeadingCoeff_X_add_C c, ?_⟩
-  · have h := (isRealRooted_X_sub_C (-c : ℝ)).2
-    have heq : X + C c = X - C (-c) := by simp
-    rw [heq]
-    exact h
-  · exact hasSimpleRoots_of_natDegree_le_one (X_add_C_ne_zero c) (by simp)
-  · intro r hr
-    rw [roots_X_add_C] at hr
-    have hroot : r = -c := by simpa using hr
-    rw [hroot]
-    exact neg_lt_zero.mpr hc
-
 /-- Consecutive Euler rows strictly interlace and have no common roots. -/
 theorem strictInterl_rows {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     (hab : 0 < a * b) :

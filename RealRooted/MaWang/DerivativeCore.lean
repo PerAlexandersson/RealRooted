@@ -62,7 +62,4 @@ theorem strictInterl_of_step {f u v : ℝ[X]} (hf : f.Splits)
   | inr hsucc =>
       exact strictInterl_of_step_succ hf hdegf hsucc hF_pos hf_pos hroot_sign
 
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_ma_wang_succ := strictInterl_of_step_succ
-
 end RealRooted.MaWangInternal

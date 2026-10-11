@@ -94,18 +94,6 @@ private theorem poissonWeylCoeffC_monomial {τ : Type*}
   classical
   rw [poissonWeylCoeffC, MvPolynomial.sum_monomial_eq (by simp)]
 
-private theorem poissonWeylCoeffC_add {τ : Type*}
-    (f g : MvPolynomial Bool ℂ) (j : ℕ) :
-    poissonWeylCoeffC (τ := τ) (f + g) j =
-      poissonWeylCoeffC f j + poissonWeylCoeffC g j := by
-  classical
-  unfold poissonWeylCoeffC
-  apply Finsupp.sum_add_index'
-  · intro d
-    simp
-  · intro d a b
-    simp only [map_add, mul_add]
-
 private theorem actionAlong_add_left {R σ : Type*} [CommSemiring R]
     (ι : Bool → σ) (f g : MvPolynomial Bool R)
     (P : MvPolynomial σ R) :

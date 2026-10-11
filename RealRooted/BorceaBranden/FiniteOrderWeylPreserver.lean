@@ -59,34 +59,6 @@ def finiteOrderWeylOperatorDegreeBox {σ : Type*} [Fintype σ]
     map_smul' := fun c p => by
       exact (finiteOrderWeylOperator q m Q).map_smul c p.1 }
 
-private theorem iteratedPDerivAt_monomial {σ : Type*}
-    (q : σ) (j : ℕ) (d : σ →₀ ℕ) (c : ℂ) :
-    iteratedPDerivAt q j (MvPolynomial.monomial d c) =
-      MvPolynomial.monomial (d - Finsupp.single q j)
-        (((d q).descFactorial j : ℂ) * c) := by
-  classical
-  induction j with
-  | zero =>
-      simp only [iteratedPDerivAt, Finsupp.single_zero,
-        Nat.descFactorial_zero, Nat.cast_one, one_mul]
-      have hzero : d - (0 : σ →₀ ℕ) = d := by
-        ext i
-        simp
-      rw [hzero]
-  | succ j ih =>
-      rw [iteratedPDerivAt, ih, MvPolynomial.pderiv_monomial]
-      have hsub : d - Finsupp.single q j - Finsupp.single q 1 =
-          d - Finsupp.single q (j + 1) := by
-        ext i
-        by_cases hi : i = q
-        · subst i
-          simp [Nat.sub_sub]
-        · simp [hi]
-      rw [hsub]
-      have hq : (d - Finsupp.single q j) q = d q - j := by simp
-      rw [hq, Nat.descFactorial_succ, Nat.cast_mul]
-      ring_nf
-
 private def iteratedPDerivAtDegreeBox {σ : Type*} [Fintype σ]
     (q : σ) (j : ℕ) (κ : σ → ℕ) :
     MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ where

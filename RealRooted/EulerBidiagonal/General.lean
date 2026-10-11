@@ -173,15 +173,6 @@ theorem comparisonDefect_neg_of_two_mul_u_ge (κ a b u v : ℝ) (hκ : 0 < κ) (
   dsimp [comparisonDefect]
   nlinarith [mul_nonpos_of_nonneg_of_nonpos hlin hσ]
 
-/-- The negative-simple general-step conclusion under a reusable map certificate. -/
-private theorem isNegativeSimple_generalStep_of_map_certificate
-    (κ a b u v : ℝ) (q : ℝ[X])
-    (hmap : MapsNegativeSimpleBySucc (generalStepLinearMap κ a b u v))
-    (hq : IsNegativeSimple q) :
-    IsNegativeSimple (generalStep κ a b u v q) ∧
-      (generalStep κ a b u v q).natDegree = q.natDegree + 1 := by
-  simpa only [generalStepLinearMap_apply] using hmap hq
-
 end RealRooted.EulerBidiagonal
 
 

@@ -1548,13 +1548,6 @@ private lemma Rpoly_coeff_succ (n k : ℕ) (hk1 : 1 ≤ k) (hkn : k < n) :
   field_simp
   linear_combination h
 
-private lemma Rpoly_coeff_one (n : ℕ) (hn : 1 ≤ n) :
-    (Rpoly n 1).coeff 1 = ((n : ℝ) + 3) / ((n : ℝ) + 1) := by
-  have : Rpoly n 1 = C (((n:ℝ) + 3) / ((n:ℝ) + 1)) * X - C (2 / ((n:ℝ) + 1)) := by
-    apply Polynomial.funext; intro x
-    rw [Rpoly_one_eval n hn]; simp; ring
-  rw [this]; simp
-
 end PartialSums
 
 section Gauss

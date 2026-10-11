@@ -187,8 +187,6 @@ private def binaryRunLM (n : ℕ) : ℝ[X] →ₗ[ℝ] ℝ[X] where
 private def thetaLM : ℝ[X] →ₗ[ℝ] ℝ[X] :=
   LinearMap.mulLeft ℝ X ∘ₗ derivative
 
-private theorem thetaLM_apply (p : ℝ[X]) : thetaLM p = theta p := rfl
-
 /-- The combination `J_n(Θp) + (1 - X) J_n(p)'` as a linear map. -/
 private def edgeLM (n : ℕ) : ℝ[X] →ₗ[ℝ] ℝ[X] :=
   binaryRunLM n ∘ₗ thetaLM +

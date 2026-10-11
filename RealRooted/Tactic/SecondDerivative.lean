@@ -750,8 +750,4 @@ theorem isRealRooted_of_mw_then_const_add_derivative_sequence
   MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence a hbase_zero hbase_one
     hpos ha hinner_pos hV_nonpos hrec hinner_deg_lo hinner_deg_hi
 
-@[deprecated (since := "2026-10-05")]
-alias isRealRooted_of_mw_then_const_add_derivative_plus_current_sequence :=
-  MaWang.isRealRooted_of_derivative_then_const_add_derivative_plus_current_sequence
-
 end RealRooted

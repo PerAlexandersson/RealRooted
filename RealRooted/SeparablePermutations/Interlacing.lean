@@ -33,12 +33,6 @@ open FactorialCompression
 
 /-! ### The gamma-polynomials -/
 
-private theorem gammaPolynomial_ne_zero {n : ℕ} (hn : 1 ≤ n) : gammaPolynomial n ≠ 0 := by
-  intro h
-  have := coeff_zero_gammaPolynomial_pos hn
-  rw [h] at this
-  simp at this
-
 /-- All roots of `Γ_n` are negative for `n ≥ 1`. -/
 theorem roots_gammaPolynomial_neg {n : ℕ} (hn : 1 ≤ n) :
     ∀ r ∈ (gammaPolynomial n).roots, r < 0 := by

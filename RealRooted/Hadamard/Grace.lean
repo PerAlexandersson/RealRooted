@@ -521,9 +521,6 @@ theorem finiteSchurSzegoComposition {n : ℕ} {f p : ℝ[X]}
   · simp [hp0, schurSzegoComp_zero_right]
   exact finiteSchurSzegoCompositionNonzero hf hf0 hfdeg hp0 hpdeg hsplit
 
-@[deprecated (since := "2026-10-05")]
-alias schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial := finiteSchurSzegoComposition
-
 /-- Fixed-degree Schur--Szegő composition of two PF polynomials is again PF.
 
 This is the zero-aware wrapper around `finiteSchurSzegoComposition`; coefficient

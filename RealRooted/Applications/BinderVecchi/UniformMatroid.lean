@@ -267,19 +267,6 @@ theorem weightPolynomial_eq {r n i : ℕ} (hr : 1 ≤ r) (hi : 1 ≤ i) (hn : r 
 
 /-! ## The deranged map and Theorem 1.4 -/
 
-private theorem reflect_derangement (j : ℕ) :
-    (DerangementTransform.polynomial j).reflect j = DerangementTransform.polynomial j := by
-  cases j with
-  | zero => simp
-  | succ j => exact reflect_sturmDerangementsExc (j + 1)
-
-private theorem reflect_derangement_of_le {j r : ℕ} (hj : j ≤ r) :
-    (DerangementTransform.polynomial j).reflect r =
-      DerangementTransform.polynomial j * X ^ (r - j) := by
-  have h := reflect_add_right_of_reflect (r - j) (DerangementTransform.natDegree_polynomial_le j)
-    (reflect_derangement j)
-  rwa [show j + (r - j) = r by lia] at h
-
 /-- The deranged map applied to `weightPolynomial`. -/
 theorem transform_weightPolynomial (r n i : ℕ) :
     DerangementTransform.transform (weightPolynomial r n i) =
@@ -303,7 +290,9 @@ theorem refinedHodgePoincare_eq_reflect (r n i : ℕ) :
       (DerangementTransform.transform (weightPolynomial r n i)).reflect (r - 1) := by
   rw [transform_weightPolynomial, reflect_finset_sum_C_mul]
   refine sum_congr rfl fun j hj => ?_
-  rw [reflect_derangement_of_le (by have := mem_range.mp hj; lia)]
+  rw [DerangementTransform.reflect_polynomial_of_le (by
+    have := mem_range.mp hj
+    lia)]
 
 /-- The constant coefficient of the deranged image is the first weight. -/
 theorem coeff_zero_transform_weightPolynomial (r n i : ℕ) (hr : 1 ≤ r) :

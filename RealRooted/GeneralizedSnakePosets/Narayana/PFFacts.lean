@@ -14,9 +14,6 @@ noncomputable section
 namespace RealRooted
 namespace GeneralizedSnakePosets
 
-@[deprecated (since := "2026-10-05")]
-alias interlaces_of_quadratic_cubic_root_lists := Interlaces.of_quadratic_cubic_root_lists
-
 /-- The `λ = ν = 0` specialization of the affine Narayana interlacing lemma for the concrete
 modified Narayana family.  This exposes the affine-Narayana target shape while using
 the checked consecutive interlacing theorem. -/

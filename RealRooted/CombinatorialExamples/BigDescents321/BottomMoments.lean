@@ -72,8 +72,6 @@ private theorem four_mul_partialV_kernelDisc :
 private theorem partialV_sV : partialV sV = 1 := by
   simp [partialV]
 
-private theorem partialV_sY : partialV sY = 0 := PowerSeries.mapDerivation_X _
-
 private theorem partialV_ofNat (n : ℕ) [n.AtLeastTwo] :
     partialV (no_index (OfNat.ofNat n : PowerSeries ℚ[X])) = 0 := by
   rw [← map_ofNat PowerSeries.C]

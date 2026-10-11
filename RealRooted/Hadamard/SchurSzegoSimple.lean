@@ -381,20 +381,6 @@ private theorem laguerre_prod (s : Multiset ℝ) (x : ℝ) :
     have : 0 < (G.eval x) ^ 2 := by positivity
     nlinarith [sq_nonneg (x - a)]
 
-/-- Laguerre's inequality for split real polynomials. -/
-private theorem laguerre_ineq {p : ℝ[X]} (hp : p.Splits) (x : ℝ) :
-    0 ≤ (p.derivative.eval x) ^ 2 - p.eval x * p.derivative.derivative.eval x := by
-  rw [hp.eq_prod_roots]
-  have := (laguerre_prod p.roots x).1
-  set F := (p.roots.map fun a => X - C a).prod
-  have e : ((C p.leadingCoeff * F).derivative.eval x) ^ 2 -
-      (C p.leadingCoeff * F).eval x * (C p.leadingCoeff * F).derivative.derivative.eval x =
-      p.leadingCoeff ^ 2 * ((F.derivative.eval x) ^ 2 - F.eval x *
-        F.derivative.derivative.eval x) := by
-    simp only [derivative_mul, derivative_C, zero_mul, zero_add, eval_mul, eval_C]
-    ring
-  rw [e]; positivity
-
 /-- If a split real polynomial of positive degree has `p'(x) = p''(x) = 0`, then `p(x) = 0`. -/
 private theorem eval_eq_zero_of_derivs {p : ℝ[X]} (hp : p.Splits) (hdeg : 0 < p.natDegree) {x : ℝ}
     (h1 : p.derivative.eval x = 0) (h2 : p.derivative.derivative.eval x = 0) :
@@ -547,8 +533,6 @@ private theorem apo_sum_left {ι : Type*} (n : ℕ) (s : Finset ι) (R : ι → 
   induction s using Finset.induction_on with
   | empty => simp [apo]
   | insert a s ha ih => rw [sum_insert ha, sum_insert ha, apo_add_left, ih]
-
-private theorem apo_zero_left (n : ℕ) (W : ℝ[X]) : apo n 0 W = 0 := by simp [apo]
 
 /-- Reflection invariance (no degree hypotheses are needed). -/
 private theorem apo_reflect (n : ℕ) (R W : ℝ[X]) :

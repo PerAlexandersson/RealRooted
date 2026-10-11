@@ -182,13 +182,6 @@ private lemma faceCount_union_disjoint {A B : Finset (Finset U)} (h : Disjoint A
   rw [Finset.card_union_of_disjoint]
   exact Finset.disjoint_filter_filter h
 
-private lemma fPolynomial_union_disjoint {A B : Finset (Finset U)} (h : Disjoint A B) (d : ℕ) :
-    fPolynomial d (A ∪ B) = fPolynomial d A + fPolynomial d B := by
-  classical
-  unfold fPolynomial
-  simp only [faceCount_union_disjoint h, Nat.cast_add, C_add, add_mul,
-    Finset.sum_add_distrib]
-
 private lemma hPolynomial_union_disjoint {A B : Finset (Finset U)} (h : Disjoint A B) (d : ℕ) :
     hPolynomial d (A ∪ B) = hPolynomial d A + hPolynomial d B := by
   classical
