@@ -1681,6 +1681,12 @@ budgets of `Challenges.Narayana`, `ProductSequence.Factors`, `ProductSequence.Co
 `Tactic.Product.Syntax.EndpointPair`, `Tactic.Product.Syntax.Families`,
 `Tactic.Product.Syntax.Lifts` rise by one.
 
+Streamlining: `rootPolynomial` moves to the light module `RootPolynomial`, which the
+common-interleaver construction now uses instead of its own descending-root polynomial. The budgets
+of `Tactic.Examples`, `Challenges.Narayana`, `Tactic` rise by one.
+
+After merging the reversal-shim streamlining, `Challenges.Narayana` imports both new light modules. The budgets of `Challenges.Narayana` rise by one.
+
 Run the architecture check with:
 
 ```bash

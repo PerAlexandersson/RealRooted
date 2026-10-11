@@ -120,22 +120,6 @@ theorem orderedRoot_sub_C_mul_of_interlaces
   intro i
   simpa [q] using hstrict.orderedRoot_le rfl hqdeg i
 
-/-- The local `StrictInterl` convention permits weak comparisons, hence shared
-and repeated roots, in the interlacing lists. -/
-private theorem strictInterl_linear_root_move {a b : ℝ} (hab : a ≤ b) :
-    StrictInterl (X - C a) (X - C b) := by
-  simpa [sub_eq_add_neg] using
-    (StrictInterl.X_add_C_iff (a := -b) (b := -a)).mpr (by linarith)
-
-/-- Replacing one entry of a real-root multiset by a larger entry gives the
-corresponding root-polynomial interlacing relation. -/
-theorem strictInterl_rootPolynomial_cons_move (s : Multiset ℝ) {a b : ℝ}
-    (hab : a ≤ b) :
-    StrictInterl (rootPolynomial (a ::ₘ s)) (rootPolynomial (b ::ₘ s)) := by
-  have h := (strictInterl_linear_root_move hab).mul_common_factor
-    (rootPolynomial_monic s).ne_zero (rootPolynomial_splits s)
-  simpa [rootPolynomial, mul_comm] using h
-
 /-- The preceding one-root move in list/index form. -/
 theorem strictInterl_rootPolynomial_list_set
     (r : List ℝ) (i : ℕ) (hi : i < r.length) {b : ℝ} (h : r[i] ≤ b) :
@@ -172,56 +156,6 @@ theorem hasNonnegCoeffs_rootPolynomial_of_nonpos
       apply ih
       intro r hr
       exact hs r (Multiset.mem_cons_of_mem hr)
-
-private theorem rootwiseLE_map_rootPolynomial_of_forall₂
-    {T : ℝ[X] → ℝ[X]} {D : ℕ}
-    (hTdegree : ∀ {p : ℝ[X]}, p.natDegree = D → (T p).natDegree = D)
-    (hTpres : ∀ {f g : ℝ[X]}, f.natDegree = D → g.natDegree = D →
-      StrictInterl f g → StrictInterl (T f) (T g))
-    {xs ys : List ℝ} (hxy : List.Forall₂ (· ≤ ·) xs ys)
-    (fixed : Multiset ℝ)
-    (htotal : xs.length + fixed.card = D) :
-    RootwiseLE
-      (T (rootPolynomial ((xs : Multiset ℝ) + fixed)))
-      (T (rootPolynomial ((ys : Multiset ℝ) + fixed))) := by
-  induction hxy generalizing fixed with
-  | nil => exact RootwiseLE.refl _
-  | cons hxy htail ih =>
-      rename_i u v as bs
-      let s : Multiset ℝ := (as : Multiset ℝ) + fixed
-      have hdegx : (rootPolynomial (u ::ₘ s)).natDegree = D := by
-        rw [natDegree_rootPolynomial]
-        simpa [s, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
-      have hdegy : (rootPolynomial (v ::ₘ s)).natDegree = D := by
-        rw [natDegree_rootPolynomial]
-        simpa [s, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
-      have hstrict :
-          StrictInterl (rootPolynomial (u ::ₘ s)) (rootPolynomial (v ::ₘ s)) :=
-        strictInterl_rootPolynomial_cons_move s hxy
-      have hTstrict := hTpres hdegx hdegy hstrict
-      have hstep :
-          RootwiseLE (T (rootPolynomial (u ::ₘ s)))
-            (T (rootPolynomial (v ::ₘ s))) :=
-        RootwiseLE.of_strictInterl_sameDegree hTstrict
-          ((hTdegree hdegx).trans (hTdegree hdegy).symm)
-      have htotal' : as.length + (v ::ₘ fixed).card = D := by
-        simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
-      have hrec := ih (fixed := v ::ₘ fixed) htotal'
-      have hx : (↑(u :: as) : Multiset ℝ) + fixed = u ::ₘ s := by
-        change (u ::ₘ (↑as : Multiset ℝ)) + fixed =
-          u ::ₘ ((↑as : Multiset ℝ) + fixed)
-        exact Multiset.cons_add u (↑as : Multiset ℝ) fixed
-      have hy : (↑(v :: bs) : Multiset ℝ) + fixed =
-          (↑bs : Multiset ℝ) + (v ::ₘ fixed) := by
-        change (v ::ₘ (↑bs : Multiset ℝ)) + fixed =
-          (↑bs : Multiset ℝ) + (v ::ₘ fixed)
-        ext z
-        by_cases hzy : z = v
-        · simp [Multiset.count_add, hzy, add_comm, add_left_comm, add_assoc]
-        · simp [Multiset.count_add, hzy, Ne.symm hzy, add_comm]
-      rw [hx, hy]
-      apply hstep.trans
-      simpa [s, add_comm, add_left_comm, add_assoc] using hrec
 
 private theorem rootwiseLE_monomial_forall₂
     {T : ℝ[X] → ℝ[X]} {D : ℕ}
@@ -396,9 +330,9 @@ private theorem rootwiseLE_bounds_from_preserver
     rw [hps_sort]
     simpa [rootPolynomial] using (hsplits.eq_prod_roots_of_monic hmonic).symm
   have hlo := rootwiseLE_map_rootPolynomial_of_forall₂
-    hT.1 hT.2 hlo_list 0 (by simp)
+    ⟨hT.1, hT.2⟩ hlo_list 0 (by simp)
   have hhi' := rootwiseLE_map_rootPolynomial_of_forall₂
-    hT.1 hT.2 hhi_list 0 (by simp [hps_len])
+    ⟨hT.1, hT.2⟩ hhi_list 0 (by simp [hps_len])
   simp only [Multiset.add_zero] at hlo hhi'
   rw [rootPolynomial_replicate_neg b D, hPpoly] at hlo
   rw [hPpoly, rootPolynomial_replicate_neg a D] at hhi'

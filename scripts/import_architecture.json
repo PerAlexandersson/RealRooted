@@ -22,7 +22,7 @@
       "max_modules": 1624
     },
     "RealRooted.Tactic.Examples": {
-      "max_modules": 698
+      "max_modules": 699
     },
     "RealRooted.ParkingFunctions.Descents.Words": {
       "max_modules": 137
@@ -901,7 +901,7 @@
       "max_modules": 8
     },
     "RealRooted.Challenges.Narayana": {
-      "max_modules": 178
+      "max_modules": 179
     },
     "RealRooted.Tactic.Wagner": {
       "max_modules": 92
@@ -1579,7 +1579,7 @@
       "max_modules": 104
     },
     "RealRooted.Tactic": {
-      "max_modules": 530
+      "max_modules": 531
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 182
