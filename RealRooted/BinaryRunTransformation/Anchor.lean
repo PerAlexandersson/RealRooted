@@ -342,7 +342,7 @@ theorem pathMatchingPolynomial_hasSimpleRoots (N : ℕ) :
       norm_num
     have hmap := evenPathReverse_roots_nodup d
     rw [← hreverse,
-      DegreeDropReversal.roots_reverse_eq_map_inv_of_splits_coeff_zero_ne
+      Polynomial.roots_reverse_eq_map_inv
         (pathMatchingPolynomial_splits (2 * d)) (by simp)] at hmap
     exact HasSimpleRoots.of_roots_nodup (pathMatchingPolynomial_ne_zero _)
       ((Multiset.nodup_map_iff_of_injective inv_injective).mp hmap)
@@ -357,7 +357,7 @@ theorem pathMatchingPolynomial_hasSimpleRoots (N : ℕ) :
       norm_num [Nat.add_div]
     have hmap := oddPathReverse_roots_nodup d
     rw [← hreverse,
-      DegreeDropReversal.roots_reverse_eq_map_inv_of_splits_coeff_zero_ne
+      Polynomial.roots_reverse_eq_map_inv
         (pathMatchingPolynomial_splits (2 * d + 1)) (by simp)] at hmap
     exact HasSimpleRoots.of_roots_nodup (pathMatchingPolynomial_ne_zero _)
       ((Multiset.nodup_map_iff_of_injective inv_injective).mp hmap)

@@ -1,6 +1,7 @@
 import Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Algebra.Polynomial.FieldDivision
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Reversal toolkit for degree-drop root-continuity
@@ -25,81 +26,12 @@ theorem splits_reverse_X_add_C (a : K) :
     (Polynomial.reverse_natDegree_le (X + C a)).trans <| by
       simp
 
-/-- Reversal of a nonzero monic linear factor, normalized as a nonzero scalar
-times another monic linear factor. -/
-theorem reverse_X_sub_C_eq (r : K) (hr : r ≠ 0) :
-    (X - C r : K[X]).reverse = C (-r) * (X - C r⁻¹) := by
-  ext n
-  rcases n with _ | _ | n <;>
-    simp [Polynomial.reverse, Polynomial.coeff_one, Polynomial.coeff_X,
-      Polynomial.coeff_C, hr]
-
-/-- Roots of the reverse of a nonzero monic linear factor. -/
-theorem roots_reverse_X_sub_C (r : K) (hr : r ≠ 0) :
-    (X - C r : K[X]).reverse.roots = {r⁻¹} := by
-  rw [reverse_X_sub_C_eq r hr, Polynomial.roots_C_mul]
-  · simp
-  · grind
-
-/-- A product of monic linear factors is nonzero. -/
-theorem prod_X_sub_C_ne_zero (s : Multiset K) :
-    (Multiset.map (fun r => (X - C r : K[X])) s).prod ≠ 0 := by
-  induction s using Multiset.induction with
-  | empty => simp
-  | cons r s ih =>
-      simp [ih, Polynomial.X_sub_C_ne_zero r]
-
-/-- Roots of the reverse of a product of nonzero monic linear factors. -/
-theorem roots_reverse_prod_X_sub_C (s : Multiset K) (hs : ∀ r ∈ s, r ≠ 0) :
-    ((Multiset.map (fun r => (X - C r : K[X])) s).prod).reverse.roots =
-      s.map (fun r => r⁻¹) := by
-  induction s using Multiset.induction with
-  | empty =>
-      simp [Polynomial.reverse]
-  | cons r s ih =>
-      have hr : r ≠ 0 := hs r (by simp)
-      have hs' : ∀ a ∈ s, a ≠ 0 := fun a ha => hs a (by simp [ha])
-      have ih' := ih hs'
-      rw [Multiset.map_cons, Multiset.prod_cons]
-      rw [Polynomial.reverse_mul_of_domain]
-      rw [Polynomial.roots_mul]
-      · rw [roots_reverse_X_sub_C r hr, ih']
-        simp
-      · have hleft : (X - C r : K[X]).reverse ≠ 0 := by
-          simpa [reverse_X_sub_C_eq r hr] using mul_ne_zero
-            (Polynomial.C_ne_zero.mpr (neg_ne_zero.mpr hr))
-            (Polynomial.X_sub_C_ne_zero r⁻¹)
-        have hright :
-            ((Multiset.map (fun r ↦ (X - C r : K[X])) s).prod).reverse ≠ 0 :=
-          fun hzero ↦ by
-          simp_all
-        simp_all
-
-/-- If `p` splits and has nonzero constant coefficient, the roots of
-`p.reverse` are exactly the inverses of the roots of `p`, with multiplicity. -/
-theorem roots_reverse_eq_map_inv_of_splits_coeff_zero_ne {p : K[X]}
-    (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) :
-    p.reverse.roots = p.roots.map (fun r ↦ r⁻¹) := by
-  have hp_ne : p ≠ 0 := fun hp_zero ↦ by
-    simp_all
-  have hlc : p.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hp_ne
-  have hroots_ne : ∀ r ∈ p.roots, r ≠ 0 := fun r hr hr_zero ↦ by
-    have hroot : p.IsRoot 0 := by simp_all
-    exact h0 (by
-      simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using hroot)
-  conv_lhs => rw [Polynomial.Splits.eq_prod_roots hp]
-  rw [Polynomial.reverse_mul_of_domain]
-  rw [Polynomial.reverse_C]
-  rw [Polynomial.roots_C_mul]
-  · exact roots_reverse_prod_X_sub_C p.roots hroots_ne
-  · simp_all
-
 /-- Predicate root-count transport across `reverse`: filtering roots of the
 reverse by `q` counts exactly the original roots whose inverse satisfies `q`. -/
 theorem card_filter_reverse_roots {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     (q : K → Prop) [DecidablePred q] :
     (p.reverse.roots.filter q).card = (p.roots.filter (fun r ↦ q r⁻¹)).card := by
-  rw [roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp h0]
+  rw [Polynomial.roots_reverse_eq_map_inv hp h0]
   rw [Multiset.filter_map, Multiset.card_map]
   simp
 
@@ -108,7 +40,7 @@ polynomial with nonzero constant coefficient.  This is the no-gap accounting
 fact: reversal neither creates nor destroys roots. -/
 theorem card_roots_reverse {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) :
     p.reverse.roots.card = p.roots.card := by
-  rw [roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp h0, Multiset.card_map]
+  rw [Polynomial.roots_reverse_eq_map_inv hp h0, Multiset.card_map]
 
 /-- A polynomial with nonzero constant coefficient has nonzero reversal. -/
 theorem reverse_ne_zero_of_coeff_zero_ne {p : K[X]} (h0 : p.coeff 0 ≠ 0) :
@@ -119,7 +51,7 @@ theorem reverse_ne_zero_of_coeff_zero_ne {p : K[X]} (h0 : p.coeff 0 ≠ 0) :
 the inverses of the roots of `p`. -/
 theorem mem_roots_reverse_iff {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     {x : K} : x ∈ p.reverse.roots ↔ ∃ r ∈ p.roots, r⁻¹ = x := by
-  rw [roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp h0, Multiset.mem_map]
+  rw [Polynomial.roots_reverse_eq_map_inv hp h0, Multiset.mem_map]
 
 /-- Every root of the reverse of a split polynomial with nonzero constant
 coefficient is itself nonzero: reversal never introduces a zero root, which is
@@ -137,7 +69,7 @@ refines `card_roots_reverse` to a per-point no-gap statement. -/
 theorem count_roots_reverse [DecidableEq K] {p : K[X]} (hp : p.Splits)
     (h0 : p.coeff 0 ≠ 0) {x : K} :
     p.reverse.roots.count x = p.roots.count x⁻¹ := by
-  rw [roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp h0]
+  rw [Polynomial.roots_reverse_eq_map_inv hp h0]
   rw [show x = (x⁻¹)⁻¹ from (inv_inv x).symm,
     Multiset.count_map_eq_count' _ _ inv_injective, inv_inv]
 

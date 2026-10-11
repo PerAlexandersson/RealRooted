@@ -79,13 +79,6 @@ theorem roots_fPolynomial_mem_Icc {d : ℕ} {p : ℝ[X]}
     have hr0 : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hp_splits hpnn r hr
     exact ⟨(neg_one_lt_transformedRoot hr0).le, transformedRoot_nonpos hr0⟩
 
-private theorem sum_map_range'_eq_finset_sum_Ico
-    (f : ℕ → ℝ[X]) (k q : ℕ) :
-    ((List.range' k (q - k)).map f).sum = ∑ j ∈ Finset.Ico k q, f j := by
-  rw [Finset.sum_Ico_eq_sum_range, List.range'_eq_map_range, List.map_map,
-    List.sum_map_range]
-  simp [Function.comp_apply]
-
 private theorem staircaseSum_range_map (f : ℕ → ℝ[X])
     {q k : ℕ} (hk : k ≤ q) :
     staircaseSum ((List.range q).map f) k =
@@ -93,10 +86,7 @@ private theorem staircaseSum_range_map (f : ℕ → ℝ[X])
   unfold staircaseSum
   rw [← List.map_take, List.take_range, min_eq_left hk,
     List.sum_map_range]
-  rw [← List.map_drop]
-  rw [show List.range q = List.range' 0 q from List.range_eq_range']
-  rw [List.drop_range']
-  simpa using sum_map_range'_eq_finset_sum_Ico f k q
+  rw [List.sum_drop_map_range_eq_sum_Ico]
 
 private theorem natDegree_staircaseSum_le {d : ℕ} {fs : List ℝ[X]}
     (hdeg : ∀ p ∈ fs, p.natDegree ≤ d) (k : ℕ) :
