@@ -100,7 +100,7 @@ theorem gammaU_strictInterl_gammaV (n : ℕ) (hn : 2 ≤ n) :
     · exact (hreverse.not_of_right_natDegree_lt_left (by lia)).elim
   · have hreverse : StrictInterl (gammaV n) (gammaU n) := by
       rcases strictInterl_of_allComboRealRooted hVne hVsplits hUne hUsplits
-          (allComboRealRooted_comm hall) (Or.inl hrevsucc) with hforward | hbackward
+          (hall.comm) (Or.inl hrevsucc) with hforward | hbackward
       · exact hforward
       · exact (hbackward.not_of_right_natDegree_lt_left (by lia)).elim
     have hVneg : ∀ r, (gammaV n).IsRoot r → r < 0 :=

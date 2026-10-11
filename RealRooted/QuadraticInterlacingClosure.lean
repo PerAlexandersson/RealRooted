@@ -2309,7 +2309,7 @@ theorem strictInterl_quadraticInterlacingRight_of_tangent
     rw [← wronskian_quadraticInterlacingTangent_pencil]
     exact hWQ x
   exact strictInterl_of_allComboRealRooted_of_wronskian_nonneg
-    hBpos hApos (allComboRealRooted_comm hallAB) hWB
+    hBpos hApos (hallAB.comm) hWB
 
 /-- A nonpositive upper-half-plane logarithmic ratio gives the full
 quadratic-closure conclusion.  This packages the Hermite--Biehler endpoint

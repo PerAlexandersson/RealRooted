@@ -377,7 +377,7 @@ private lemma strictInterl_right_pair_of_affine_family_high_degree_core
         hXf_rr hshift_deg hno_shift
     have hstrictInterl_or : StrictInterl f (g + X * f) ∨ StrictInterl (g + X * f) f :=
       strictInterl_of_allComboRealRooted hf_rr.1 hf_rr.2 hshift_rr.1 hshift_rr.2
-        (allComboRealRooted_comm hall_shift) (Or.inl hshift_deg.symm)
+        (hall_shift.comm) (Or.inl hshift_deg.symm)
     have hstrictInterl_f_shift : StrictInterl f (g + X * f) :=
       StrictInterl.forward_of_orientation_of_succDegree hshift_deg hstrictInterl_or
     exact
@@ -393,7 +393,7 @@ private lemma strictInterl_right_pair_of_affine_family_high_degree_core
         hf0 hg0 hfnn hgnn haff hXf_rr hsucc hno_fg_fun
     have hstrictInterl_or : StrictInterl f g ∨ StrictInterl g f :=
       strictInterl_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2
-        (allComboRealRooted_comm hall) (Or.inl hsucc.symm)
+        (hall.comm) (Or.inl hsucc.symm)
     have hstrictInterl_fg : StrictInterl f g :=
       StrictInterl.forward_of_orientation_of_succDegree hsucc hstrictInterl_or
     exact strictInterl_mul_X_of_strictInterl_of_nonneg hstrictInterl_fg hfnn hgnn

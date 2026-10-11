@@ -294,7 +294,7 @@ private theorem not_allComboRealRooted_const_left_of_natDegree_ge_two
       exact hasPosLeadingCoeff_neg (by grind)
     have hall_neg : AllComboRealRooted (C c) (-p) := by
       simpa using
-        (allComboRealRooted_C_mul_right (f := C c) (g := p) (c := (-1 : ℝ)) hall)
+        (hall.C_mul_right (c := (-1 : ℝ)))
     exact
       not_allComboRealRooted_const_left_of_natDegree_ge_two_of_pos
         hc hneg_rr.2 hneg_pos (by simp_all) hall_neg
@@ -315,7 +315,7 @@ private theorem not_degree_gap_ge_two_of_allComboRealRooted
   let fN : ℝ[X] := (derivative^[n]) f
   let gN : ℝ[X] := (derivative^[n]) g
   have hallN : AllComboRealRooted fN gN := by
-    simpa [n, fN, gN] using allComboRealRooted_iterate_derivative hall n
+    simpa [n, fN, gN] using hall.iterate_derivative n
   have hfN_deg : fN.natDegree = 0 := by
     dsimp [fN, n]
     simpa using natDegree_iterate_derivative_eq_sub hf0 (le_rfl : f.natDegree ≤ f.natDegree)
@@ -356,7 +356,7 @@ theorem natDegree_close_of_allComboRealRooted
   · by_contra hfg
     exact
       not_degree_gap_ge_two_of_allComboRealRooted
-        (f := g) (g := f) (allComboRealRooted_comm hall) hg0 hf0 (by lia)
+        (f := g) (g := f) (hall.comm) hg0 hf0 (by lia)
   · by_contra hgf
     exact not_degree_gap_ge_two_of_allComboRealRooted hall hf0 hg0 (by lia)
 
