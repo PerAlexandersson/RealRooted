@@ -212,7 +212,7 @@ def proveSign (name : Ident) (r : RatFun) (m0 : Nat) (m k : Term)
   let hnumSign ← if negative then `($orig < 0) else `(0 < $orig)
   let negNum : TSyntax `tactic ← if m0 > 0 then
     `(tactic| ring_nf <;> nlinarith [(show (0 : ℝ) < ($m : ℝ) from by
-          exact_mod_cast (show 0 < $m from by omega)),
+          exact_mod_cast (show 0 < $m from by lia)),
         pow_nonneg (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)) 2,
         pow_nonneg (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)) 3,
         pow_nonneg (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)) 4,
@@ -227,7 +227,7 @@ def proveSign (name : Ident) (r : RatFun) (m0 : Nat) (m k : Term)
         pow_nonneg (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)) 6])
   let mPos : TSyntax `tactic ← if m0 > 0 then
     `(tactic| have rr_hm_pos : (0 : ℝ) < ($m : ℝ) := by
-      exact_mod_cast (show 0 < $m from by omega))
+      exact_mod_cast (show 0 < $m from by lia))
   else
     `(tactic| skip)
   let shiftedPos : TSyntax `tactic ← `(tactic| (
@@ -400,7 +400,7 @@ def cfiProof (cp : CFIPlan) : TacticM Unit := do
       rr_poly_identity)
   let hmPos : TSyntax `tactic ← if m0 > 0 then
     `(tactic| have rr_hm_pos : (0 : ℝ) < ($m : ℝ) := by
-      exact_mod_cast (show 0 < $m from by omega))
+      exact_mod_cast (show 0 < $m from by lia))
   else
     `(tactic| skip)
   let certField : TSyntax `tactic ← if m0 > 0 then
