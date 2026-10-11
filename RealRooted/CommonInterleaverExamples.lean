@@ -18,9 +18,6 @@ def scaledLinearFamily : List ℝ[X] :=
 private lemma xAddOne_isRealRooted : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]).Splits) := by
   simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-1 : ℝ)
 
-private lemma xAddOne_hasNonnegCoeffs : HasNonnegCoeffs (X + 1 : ℝ[X]) :=
-  hasNonnegCoeffs_X_add_one
-
 private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) := by
   simpa using hasPosLeadingCoeff_X_add_C (1 : ℝ)
 
@@ -42,11 +39,11 @@ private lemma threeMul_xAddOne_hasPosLeadingCoeff :
 
 private lemma twoMul_xAddOne_hasNonnegCoeffs :
     HasNonnegCoeffs (C (2 : ℝ) * (X + 1)) :=
-  nonnegCoeffs_C_mul (by simp) xAddOne_hasNonnegCoeffs
+  nonnegCoeffs_C_mul (by simp) hasNonnegCoeffs_X_add_one
 
 private lemma threeMul_xAddOne_hasNonnegCoeffs :
     HasNonnegCoeffs (C (3 : ℝ) * (X + 1)) :=
-  nonnegCoeffs_C_mul (by simp) xAddOne_hasNonnegCoeffs
+  nonnegCoeffs_C_mul (by simp) hasNonnegCoeffs_X_add_one
 
 lemma scaledLinearFamily_isRealRooted :
     ∀ f ∈ scaledLinearFamily, (f ≠ 0 ∧ f.Splits) := by
@@ -71,7 +68,7 @@ lemma scaledLinearFamily_hasNonnegCoeffs :
   intro f hf
   simp only [scaledLinearFamily, List.mem_cons, List.not_mem_nil, or_false] at hf
   rcases hf with rfl | rfl | rfl
-  · exact xAddOne_hasNonnegCoeffs
+  · exact hasNonnegCoeffs_X_add_one
   · exact twoMul_xAddOne_hasNonnegCoeffs
   · exact threeMul_xAddOne_hasNonnegCoeffs
 
@@ -445,7 +442,7 @@ lemma not_forall_posCombo_succDegree_noCommon_strictInterl :
       (hsucc
         xAddOne_hasPosLeadingCoeff
         xSq_add_fiveX_add_six_hasPosLeadingCoeff
-        xAddOne_hasNonnegCoeffs
+        hasNonnegCoeffs_X_add_one
         xSq_add_fiveX_add_six_hasNonnegCoeffs
         xAddOne_xSq_add_fiveX_add_six_posComboRealRooted
         (by simp [xSq_add_fiveX_add_six_natDegree])
@@ -476,7 +473,7 @@ lemma not_forall_compatible_succDegree_negativeRightFamily_splits :
     hneg hcomp
       xAddOne_hasPosLeadingCoeff
       xSq_add_fiveX_add_six_hasPosLeadingCoeff
-      xAddOne_hasNonnegCoeffs
+      hasNonnegCoeffs_X_add_one
       xSq_add_fiveX_add_six_hasNonnegCoeffs
       (by simp [xSq_add_fiveX_add_six_natDegree])
       xAddOne_isRealRooted.2
@@ -660,14 +657,8 @@ successor-degree orientation problem does not help: take `f = X` and
 positive-combination condition, but `0`, the only root of `X`, lies strictly to
 the right of both roots of `g`, so `StrictInterl X g` fails. -/
 
-private lemma X_isRealRooted : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) :=
-  isRealRooted_X
-
-private lemma X_hasNonnegCoeffs : HasNonnegCoeffs (X : ℝ[X]) :=
-  hasNonnegCoeffs_X
-
 private lemma X_hasPosLeadingCoeff : HasPosLeadingCoeff (X : ℝ[X]) :=
-  X_hasNonnegCoeffs.pos_leadingCoeff X_ne_zero
+  hasNonnegCoeffs_X.pos_leadingCoeff X_ne_zero
 
 private lemma X_roots : (X : ℝ[X]).roots = {(0 : ℝ)} := by simp
 
@@ -680,7 +671,7 @@ private lemma xAddOne_xAddTwo_isRealRooted :
 
 private lemma xAddOne_xAddTwo_hasNonnegCoeffs :
     HasNonnegCoeffs (((X + 1) * (X + 2)) : ℝ[X]) :=
-  xAddOne_hasNonnegCoeffs.mul xAddTwo_hasNonnegCoeffs
+  hasNonnegCoeffs_X_add_one.mul xAddTwo_hasNonnegCoeffs
 
 private lemma xAddOne_xAddTwo_hasPosLeadingCoeff :
     HasPosLeadingCoeff (((X + 1) * (X + 2)) : ℝ[X]) :=
@@ -706,7 +697,7 @@ private lemma xAddThreeHalves_isRealRooted :
 private lemma xAddThreeHalves_strictInterl_X :
     StrictInterl (X + C (3 / 2 : ℝ) : ℝ[X]) (X : ℝ[X]) := by
   refine
-    ⟨xAddThreeHalves_isRealRooted, X_isRealRooted, [(-(3 / 2 : ℝ))], [(0 : ℝ)],
+    ⟨xAddThreeHalves_isRealRooted, isRealRooted_X, [(-(3 / 2 : ℝ))], [(0 : ℝ)],
       List.pairwise_singleton _ _, List.pairwise_singleton _ _, ?_, ?_, ?_⟩
   · simp
   · simp
@@ -765,10 +756,10 @@ lemma not_forall_posCombo_succDegree_noCommon_coeff_zero_strictInterl :
   fun hresid =>
     X_not_strictInterl_xAddOne_xAddTwo
       (hresid X_hasPosLeadingCoeff xAddOne_xAddTwo_hasPosLeadingCoeff
-        X_hasNonnegCoeffs xAddOne_xAddTwo_hasNonnegCoeffs
+        hasNonnegCoeffs_X xAddOne_xAddTwo_hasNonnegCoeffs
         X_xAddOne_xAddTwo_posComboRealRooted
         (by simp [xAddOne_xAddTwo_natDegree])
-        X_xAddOne_xAddTwo_noCommon X_isRealRooted.2 X_coeff_zero
+        X_xAddOne_xAddTwo_noCommon isRealRooted_X.2 X_coeff_zero
         xAddOne_xAddTwo_coeff_zero_ne)
 
 end CommonInterleaverExamples

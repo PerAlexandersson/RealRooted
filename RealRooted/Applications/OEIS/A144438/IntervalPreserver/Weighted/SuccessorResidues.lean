@@ -16,7 +16,7 @@ theorem weightedDeco_insertion_lag_at_root
     (p + C a * k).eval ρ =
       p.eval ρ * (1 + a * ∑ r ∈ p.roots.toFinset,
         (k.eval r / p.derivative.eval r) / (ρ - r)) := by
-  have hpartial := a144438_sum_companion_residue_div
+  have hpartial := eval_div_eq_sum_residue_div
     hp hpnd hpdeg hkdeg hpρ
   have hkEval :
       k.eval ρ = p.eval ρ * ∑ r ∈ p.roots.toFinset,

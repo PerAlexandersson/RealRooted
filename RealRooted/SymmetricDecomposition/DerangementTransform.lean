@@ -67,12 +67,8 @@ theorem polynomial_succ (j : ℕ) :
     ring
 
 /-- The linear deranged map, characterized by `X ^ n ↦ d n`. -/
-def transform : ℝ[X] →ₗ[ℝ] ℝ[X] where
-  toFun := Polynomial.basisTransform polynomial
-  map_add' := Polynomial.basisTransform_add polynomial
-  map_smul' a p := by
-    simpa [Polynomial.smul_eq_C_mul] using
-      Polynomial.basisTransform_smul polynomial a p
+def transform : ℝ[X] →ₗ[ℝ] ℝ[X] :=
+  Polynomial.basisTransformₗ polynomial
 
 /-- The deranged map sends `X ^ n` to `d_n`. -/
 @[simp]
@@ -82,9 +78,8 @@ theorem transform_X_pow (n : ℕ) : transform (X ^ n) = polynomial n := by
 /-- The deranged map commutes with constant multiples. -/
 @[simp]
 theorem transform_C_mul (a : ℝ) (p : ℝ[X]) :
-    transform (C a * p) = C a * transform p := by
-  rw [← Polynomial.smul_eq_C_mul, LinearMap.map_smul,
-    Polynomial.smul_eq_C_mul]
+    transform (C a * p) = C a * transform p :=
+  Polynomial.linearMap_C_mul _ a p
 
 /-- The operator identity `D (X p) = X (D ((1 + X) p') + (1 - X) (D p)')`. -/
 theorem transform_X_mul (p : ℝ[X]) :

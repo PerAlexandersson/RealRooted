@@ -32,11 +32,8 @@ def image : ℕ → ℝ[X]
   | n + 1 => X * generalizedEulerian 1 n
 
 /-- The Eulerian transformation `A°`, the linear map with `A°(X ^ n) = image n`. -/
-def transform : ℝ[X] →ₗ[ℝ] ℝ[X] where
-  toFun := Polynomial.basisTransform image
-  map_add' := Polynomial.basisTransform_add image
-  map_smul' a p := by
-    simpa [Polynomial.smul_eq_C_mul] using Polynomial.basisTransform_smul image a p
+def transform : ℝ[X] →ₗ[ℝ] ℝ[X] :=
+  Polynomial.basisTransformₗ image
 
 /-- `A°(X ^ n) = image n`. -/
 @[simp]
@@ -46,8 +43,8 @@ theorem transform_X_pow (n : ℕ) : transform (X ^ n) = image n := by
 /-- `A°` commutes with constant multiples. -/
 @[simp]
 theorem transform_C_mul (a : ℝ) (p : ℝ[X]) :
-    transform (C a * p) = C a * transform p := by
-  rw [← Polynomial.smul_eq_C_mul, LinearMap.map_smul, Polynomial.smul_eq_C_mul]
+    transform (C a * p) = C a * transform p :=
+  Polynomial.linearMap_C_mul _ a p
 
 /-- `A°(1) = 1`. -/
 @[simp]

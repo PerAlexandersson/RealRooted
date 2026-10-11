@@ -718,25 +718,6 @@ theorem hurwitzColumnZeroProductEvenColToeplitz_of_size_le_two
     exact mul_nonneg (ha.nonneg _ _) (hb.nonneg _ _)
   · exact det_hadamard_fin_two_nonneg hMa hMb
 
-/-! ### Hurwitz normal form for even-column Toeplitz minors
-
-The entrywise product of two Hurwitz matrices is again a Hurwitz matrix,
-namely the Hurwitz matrix of the pointwise product of the two coefficient
-sequences. -/
-
-/-- The Hurwitz matrix of the pointwise product of two coefficient sequences is
-the entrywise product of the two Hurwitz matrices. -/
-theorem hurwitz_mul_apply (a b : ℕ → ℝ) (i j : ℕ) :
-    hurwitz (fun k => a k * b k) i j = hurwitz a i j * hurwitz b i j := by
-  rcases Nat.even_or_odd i with ⟨m, hm⟩ | ⟨m, hm⟩
-  · subst hm
-    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, hurwitz_even_row_apply,
-      hurwitz_even_row_apply]
-    simp_all
-  · subst hm
-    rw [hurwitz_odd_row_apply, hurwitz_odd_row_apply, hurwitz_odd_row_apply]
-    simp_all
-
 /-- Pointwise even-column identity: the even-column entry of the Toeplitz matrix
 of the column-`0` product sequence equals the corresponding entry of the
 Hurwitz matrix of the pointwise product. -/

@@ -211,10 +211,6 @@ theorem interl_one_one : Interl (1 : ℝ[X]) 1 := by
 theorem interl_one_X : Interl (1 : ℝ[X]) X := by
   simpa using interl_C_affine_linear (c := 1) (u := 1) (v := 0) zero_lt_one
 
-theorem interl_one_affine {s t : ℝ} (hs : 0 < s) :
-    Interl (1 : ℝ[X]) (C s * X + C t) := by
-  simpa using interl_C_affine_linear (c := 1) (u := s) (v := t) hs
-
 theorem interl_one_affine_add_one {s t : ℝ} (hs : 0 < s) :
     Interl (1 : ℝ[X]) (C s * X + C t + 1) := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]

@@ -36,14 +36,4 @@ theorem a144438ResidueEnergy_nonneg {p h k : ℝ[X]}
     exact mul_pos (mul_pos (hw r hr') (neg_pos.mpr hrneg)) (by linarith)
   exact div_nonneg (sq_nonneg _) hden.le
 
-/-- The unweighted companion residue sum at a point outside the roots. -/
-theorem a144438_sum_companion_residue_div
-    {p h : ℝ[X]} (hp : p.Splits) (hpnd : p.roots.Nodup)
-    (hpdeg : 1 ≤ p.natDegree) (hhdeg : h.degree < p.natDegree)
-    {x : ℝ} (hpx : p.eval x ≠ 0) :
-    h.eval x / p.eval x =
-      ∑ r ∈ p.roots.toFinset,
-        (h.eval r / p.derivative.eval r) / (x - r) :=
-  eval_div_eq_sum_residue_div hp hpnd hpdeg hhdeg hpx
-
 end RealRooted.Applications.OEIS
