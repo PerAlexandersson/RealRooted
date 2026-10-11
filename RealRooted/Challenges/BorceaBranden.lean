@@ -1,3 +1,5 @@
+import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 import RealRooted.BorceaBranden.FiniteSymbolClassification
 import RealRooted.BorceaBranden.UnivariateFiniteSymbol
@@ -41,6 +43,16 @@ label = "Classification of stability preservers on a degree box"
 name = "RealRooted.BorceaBranden.finiteSymbol_preservesRealRootedUpTo"
 module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
 label = "Finite-symbol theorem: a stable symbol gives a real-rootedness preserver"
+
+[[theorems]]
+name = "RealRooted.BorceaBranden.coordinateDiagonalOperator_preserves_stability"
+module = "RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier"
+label = "Coordinate PF multipliers preserve multivariate stability"
+
+[[theorems]]
+name = "RealRooted.BorceaBranden.finiteOrderWeylOperator_preserves_stability"
+module = "RealRooted.BorceaBranden.FiniteOrderWeylPreserver"
+label = "A stable signed Weyl symbol gives a stability preserver of any degree"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -49,6 +61,18 @@ label = "Finite-symbol theorem: a stable symbol gives a real-rootedness preserve
 A linear operator on a finite multidegree box preserves stability precisely in
 the rank-one or stable-symbol cases. The real univariate theorem gives the
 corresponding positive-symbol criterion for bounded-degree polynomials.
+
+Applied in one coordinate, the finite-symbol theorem tensorizes multiplier sequences. Let
+$\gamma$ act diagonally on the exponent of one variable $x_q$. If the Jensen polynomial
+$\sum_{k \le d} \binom{d}{k} \gamma(k) t^k$ is a PF polynomial, then this operator maps every
+stable polynomial of degree at most $d$ in $x_q$ to a stable polynomial or to zero. The other
+variables are unrestricted. In particular, every PF multiplier sequence, and every falling
+factorial $k \mapsto n^{\underline{k}}$, acts stably in a single coordinate.
+
+Combining the falling-factorial multiplier with the finite-symbol theorem on each degree box
+gives the finite-order Weyl-symbol theorem: if $T = \sum_{j \le m} Q_j(x) \partial_q^j$ has a
+stable signed symbol $\sum_j Q_j(x) (-w)^j$, then $T$ maps every stable polynomial, of any
+degree, to a stable polynomial or to zero.
 
 ## References
 

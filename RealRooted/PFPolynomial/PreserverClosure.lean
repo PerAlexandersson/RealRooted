@@ -89,36 +89,44 @@ theorem tendsto_coeff_linearMap_apply_of_coeff_tendsto
         exact Polynomial.finsetSum_coeff (Finset.range (d + 1)) f j]
   exact hsum
 
-/-- A linear operator that sends every negative-simple polynomial to a
-Pólya-frequency polynomial also sends every Pólya-frequency polynomial to one.
+/-- A negative-simple polynomial is Pólya-frequency. -/
+theorem IsNegativeSimple.isPFPolynomial {p : ℝ[X]}
+    (hp : IsNegativeSimple p) : IsPFPolynomial p := by
+  have hnn : HasNonnegCoeffs p :=
+    ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hp.2.1).2
+      ⟨hp.2.2.2.1, fun r hr => (hp.2.2.2.2 r hr).le⟩).1
+  exact IsPFPolynomial.of_realRooted_nonneg hnn hp.2.1
 
-The name records the strict-input predicate used by the hypothesis and the
-closure argument used in the conclusion. -/
-theorem isPFPolynomial_map_of_isNegativeSimple
-    (T : ℝ[X] →ₗ[ℝ] ℝ[X])
-    (hT : ∀ {q : ℝ[X]}, IsNegativeSimple q → IsPFPolynomial (T q)) {p : ℝ[X]}
-    (hp : IsPFPolynomial p) : IsPFPolynomial (T p) := by
+/-- A linear map preserving negative-simple polynomials through a fixed degree
+also preserves Pólya-frequency polynomials through that degree. -/
+theorem isPFPolynomial_map_of_isNegativeSimple_of_natDegree_le
+    (T : ℝ[X] →ₗ[ℝ] ℝ[X]) {d : ℕ}
+    (hT : ∀ {q : ℝ[X]}, IsNegativeSimple q ->
+      q.natDegree ≤ d -> IsPFPolynomial (T q))
+    {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hpdeg : p.natDegree ≤ d) :
+    IsPFPolynomial (T p) := by
   by_cases hp₀ : p = 0
   · simpa [hp₀] using IsPFPolynomial.zero
   have hp_splits : p.Splits := hp.ne_zero_and_splits hp₀ |>.2
-  let d : ℕ := p.natDegree
+  let n : ℕ := p.natDegree
   let eps : ℕ → ℝ := fun n => 1 / (n + 1 : ℝ)
-  let q : ℕ → ℝ[X] := fun n => iterateTDeriv (-(eps n)) d p
+  let q : ℕ → ℝ[X] := fun k => iterateTDeriv (-(eps k)) n p
   have heps_pos (n : ℕ) : 0 < eps n := by
     dsimp [eps]
     positivity
   have hq_negative (n : ℕ) : IsNegativeSimple (q n) := by
     have hq_nonneg : HasNonnegCoeffs (q n) := by
       dsimp [q]
-      exact hp.hasNonnegCoeffs.iterateTDeriv_neg (heps_pos n).le d
+      exact hp.hasNonnegCoeffs.iterateTDeriv_neg (heps_pos n).le _
     have hq_ne : q n ≠ 0 := by
       dsimp [q]
       exact iterateTDeriv_ne_zero hp₀
     have hq_splits : (q n).Splits := by
       dsimp [q]
-      exact splits_iterateTDeriv_all hp_splits d
+      exact splits_iterateTDeriv_all hp_splits _
     have hq_simple : HasSimpleRoots (q n) := by
-      dsimp [q, d]
+      dsimp [q]
       exact hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
         (heps_pos n) hp₀ hp_splits le_rfl
     have hq_pos : HasPosLeadingCoeff (q n) := by
@@ -126,7 +134,7 @@ theorem isPFPolynomial_map_of_isNegativeSimple
       exact hasPosLeadingCoeff_iterateTDeriv.mpr
         (hp.hasNonnegCoeffs.pos_leadingCoeff hp₀)
     have hq_coeff_zero : 0 < (q n).coeff 0 := by
-      dsimp [q, d]
+      dsimp [q]
       exact coeff_zero_iterateTDeriv_neg_pos_of_natDegree_le
         (heps_pos n) hp.hasNonnegCoeffs hp₀ le_rfl
     refine ⟨hq_ne, hq_splits, hq_simple, hq_pos, ?_⟩
@@ -143,7 +151,7 @@ theorem isPFPolynomial_map_of_isNegativeSimple
     exact lt_of_le_of_ne hr_nonpos hr_ne
   have hq_degree : ∀ n, (q n).natDegree ≤ d := by
     intro n
-    simp [q, d]
+    simpa [q] using hpdeg
   have hneg_eps : Tendsto (fun n => -(eps n)) atTop (𝓝 0) := by
     have heps : Tendsto eps atTop (𝓝 0) := by
       simpa [eps, one_div] using
@@ -154,8 +162,17 @@ theorem isPFPolynomial_map_of_isNegativeSimple
     intro i
     dsimp [q]
     simpa [Function.comp_def, iterateTDeriv_zero_eps] using
-      (continuousAt_coeff_iterateTDeriv_zero d p i).tendsto.comp hneg_eps
-  apply IsPFPolynomial.of_coeff_tendsto (fun n => hT (hq_negative n))
+      (continuousAt_coeff_iterateTDeriv_zero n p i).tendsto.comp hneg_eps
+  apply IsPFPolynomial.of_coeff_tendsto (fun n => hT (hq_negative n) (hq_degree n))
   exact tendsto_coeff_linearMap_apply_of_coeff_tendsto T hq_degree hq_coeff
+
+/-- A linear operator preserving every negative-simple polynomial preserves
+every Pólya-frequency polynomial. -/
+theorem isPFPolynomial_map_of_isNegativeSimple
+    (T : ℝ[X] →ₗ[ℝ] ℝ[X])
+    (hT : ∀ {q : ℝ[X]}, IsNegativeSimple q → IsPFPolynomial (T q)) {p : ℝ[X]}
+    (hp : IsPFPolynomial p) : IsPFPolynomial (T p) := by
+  exact isPFPolynomial_map_of_isNegativeSimple_of_natDegree_le T
+    (fun hq _ => hT hq) hp le_rfl
 
 end RealRooted

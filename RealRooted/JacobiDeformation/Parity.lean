@@ -26,9 +26,6 @@ namespace RealRooted.JacobiDeformation
 
 /-! ## Factorial forms of the parity summands -/
 
-private theorem cast_factorial_ne_zero (n : ℕ) : (n.factorial : ℝ) ≠ 0 := by
-  positivity
-
 /-- The half-integer rising factorial gives the even factorial. -/
 theorem risingFactorial_one_half_mul_factorial_mul_four_pow (j : ℕ) :
     risingFactorial (1 / 2 : ℝ) j * (j.factorial : ℝ) * 4 ^ j =
@@ -104,7 +101,7 @@ theorem summand_even_factorial {m i j k : ℕ} (hijk : i + j + k = m) :
       unfold summand
       rw [hsub, hparameter, risingFactorial_one_eq_factorial]
       norm_num [div_pow]
-      field_simp [cast_factorial_ne_zero, hhalf_ne, hfour_ne]
+      field_simp [Nat.factorial_ne_zero, hhalf_ne, hfour_ne]
     _ = ((2 * m - k).factorial : ℝ) /
           ((k.factorial : ℝ) * (i.factorial : ℝ) ^ 2 * ((2 * j).factorial : ℝ)) := by
       rw [hbase, hhalf, htop]
@@ -139,7 +136,7 @@ theorem summand_odd_factorial {m i j k : ℕ} (hijk : i + j + k = m) :
       rw [hsub, hparameter, risingFactorial_one_eq_factorial,
         Nat.factorial_succ]
       norm_num [div_pow]
-      field_simp [cast_factorial_ne_zero, hthree_ne, hfour_ne]
+      field_simp [Nat.factorial_ne_zero, hthree_ne, hfour_ne]
     _ = ((2 * m + 1 - k).factorial : ℝ) /
           ((k.factorial : ℝ) * (i.factorial : ℝ) ^ 2 *
             ((2 * j + 1).factorial : ℝ)) := by
@@ -156,7 +153,7 @@ private theorem factorial_div_eq_choose_mul_factorial_div {n k : ℕ} (hkn : k �
       ((n - k).factorial : ℝ) = (n.factorial : ℝ) := by
     exact_mod_cast congrArg (fun a : ℕ => (a : ℝ)) hchoose'
   rw [← hchoose]
-  field_simp [cast_factorial_ne_zero, hd]
+  field_simp [Nat.factorial_ne_zero, hd]
 
 private theorem even_summand_factorization {m k i j : ℕ} (hk : k ≤ m)
     (hij : i + j = m - k) :

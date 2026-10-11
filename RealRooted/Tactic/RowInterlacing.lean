@@ -1,6 +1,7 @@
 import RealRooted.Tactic.Row.DerivLag
 import RealRooted.Tactic.Row.Subseq
 import RealRooted.Tactic.Row.PowerForm
+import RealRooted.Tactic.Row.ClosedFormInterlaces
 import RealRooted.Tactic.Row.ParityProduct
 import RealRooted.Tactic.Row.LagFeedback
 import RealRooted.Tactic.Row.Reverse
@@ -24,7 +25,9 @@ route that the probe rules out fails without elaborating anything.
    `threeTerm_rec_of_remainder` (`Row.LowerOrder`); or rows `s m * t m`, `s (m + 1) * t m` of
    two three-term sequences: `eq_parityProduct_of_rec3` (`Row.ParityProduct`).
 3. Multipliers `α j n · q ^ (k - j)` for one linear `q`, `k ≤ 3`: the power form,
-   `interlaces_of_forall_eq_C_mul_pow`, possibly after the first two rows (`Row.PowerForm`).
+   `interlaces_of_forall_eq_C_mul_pow`, possibly after the first two rows (`Row.PowerForm`);
+   or closed-form rows `q ^ (D₀ + m) · R m` with `deg R m ≤ 2`, certified by a division
+   remainder (`Interlaces.pow_mul_of_quadratic_remainder`, `Row.ClosedFormInterlaces`).
 4. The interlacing core (`Row.Core`):
    * products `P (n + 1) = L n * P n`: `productSequence_interlaces`;
    * two-step products `P (n + 2) = q * P n`: `twoStepProduct_interlaces`;
@@ -105,6 +108,8 @@ private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := 
   -- by an exact probe, before the more expensive core
   if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
     if ← rowSucceeds powerFormRoute then return (#[], hints)
+    -- closed-form rows `q ^ (D₀ + m) · R m` with a division-remainder certificate
+    if ← rowSucceeds CFI.closedFormInterlacesGoal then return (#[], hints)
   match ← rowAttempt (rowInterlacesCore hints) with
   | .ok res => return res
   | .error e =>
