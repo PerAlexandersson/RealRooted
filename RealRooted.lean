@@ -1804,3 +1804,4 @@ import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
 import RealRooted.Challenges.FiniteMemoryDefect
 import RealRooted.Challenges.NewtonDefectRoots
 import RealRooted.Challenges.ProperPositionPF
+import RealRooted.Challenges.UnivariatePoissonStar

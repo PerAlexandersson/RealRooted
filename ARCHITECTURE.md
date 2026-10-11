@@ -1744,6 +1744,8 @@ Theory: univariate Poisson star The budgets of `RealRooted`, `Production` rise t
 
 Theory challenge pages The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+Poisson star page The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
