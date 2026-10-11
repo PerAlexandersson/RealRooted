@@ -32,4 +32,15 @@ theorem one_sub_sum_le_prod_one_sub {R : Type*} [CommRing R] [LinearOrder R]
       rw [Multiset.sum_cons, Multiset.map_cons, Multiset.prod_cons]
       nlinarith
 
+/-- Elementary symmetric functions of a nonnegative real multiset are nonnegative. -/
+theorem esymm_nonneg_of_forall_nonneg {s : Multiset ℝ} (hs : ∀ x ∈ s, 0 ≤ x) (n : ℕ) :
+    0 ≤ s.esymm n := by
+  rw [Multiset.esymm]
+  apply Multiset.sum_nonneg
+  intro y hy
+  rw [Multiset.mem_map] at hy
+  obtain ⟨t, ht, rfl⟩ := hy
+  rw [Multiset.mem_powersetCard] at ht
+  exact Multiset.prod_nonneg (fun x hx => hs x (Multiset.mem_of_le ht.1 hx))
+
 end Multiset

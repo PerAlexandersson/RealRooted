@@ -1,4 +1,5 @@
 import RealRooted.BinaryRunTransformation.CrossLength
+import Mathlib.Algebra.Polynomial.Eval.Degree
 import RealRooted.MultiplierSequence.Infinite
 import RealRooted.MultiplierSequence.InvPochhammer
 import RealRooted.Transforms.ReverseHermite.Preservation
@@ -213,16 +214,6 @@ theorem completeMatchingCount_polar (n m : ℕ) :
   · rw [completeMatchingCount_eq_zero h, completeMatchingCount_eq_zero (by lia)]
     ring
 
-private theorem coeff_comp_C_mul_X (p : ℝ[X]) (a : ℝ) (n : ℕ) :
-    (p.comp (C a * X)).coeff n = a ^ n * p.coeff n := by
-  rw [comp, eval₂_eq_sum_range, finsetSum_coeff]
-  simp only [mul_pow, ← C_pow, coeff_C_mul, coeff_X_pow, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq, Finset.mem_range]
-  split_ifs with h
-  · ring
-  · rw [coeff_eq_zero_of_natDegree_lt (by lia)]
-    ring
-
 /-! ### The weighted inputs `G_n^γ` -/
 
 /-- The multiplier-weighted Motzkin input
@@ -232,7 +223,7 @@ def motzkinWeightedInput (γ : ℕ → ℝ) (n : ℕ) : ℝ[X] :=
 
 theorem coeff_motzkinWeightedInput (γ : ℕ → ℝ) (n m : ℕ) :
     (motzkinWeightedInput γ n).coeff m = γ m * 2 ^ m * completeMatchingCount n m := by
-  rw [motzkinWeightedInput, coeff_diagonalOperator, coeff_comp_C_mul_X,
+  rw [motzkinWeightedInput, coeff_diagonalOperator, Polynomial.comp_C_mul_X_coeff,
     coeff_completeMatchingPolynomial]
   ring
 
