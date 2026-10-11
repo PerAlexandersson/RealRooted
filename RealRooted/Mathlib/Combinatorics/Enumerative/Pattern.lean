@@ -394,7 +394,8 @@ def reverse {n : ℕ} (σ : Perm (Fin n)) : Perm (Fin n) := Fin.revPerm.trans σ
 /-- Complement the values in the one-line word of a permutation. -/
 def complement {n : ℕ} (σ : Perm (Fin n)) : Perm (Fin n) := σ.trans Fin.revPerm
 
-private theorem ofFn_reverse {n : ℕ} (σ : Perm (Fin n)) :
+/-- The one-line word of a reversed permutation is the reversed word. -/
+theorem ofFn_reverse {n : ℕ} (σ : Perm (Fin n)) :
     List.ofFn (reverse σ) = (List.ofFn σ).reverse := by
   change List.ofFn (fun i : Fin n => σ i.rev) = (List.ofFn σ).reverse
   apply List.ext_get

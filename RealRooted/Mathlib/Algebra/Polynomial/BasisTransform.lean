@@ -63,6 +63,21 @@ theorem basisTransform_smul (B : ℕ → R[X]) (a : R) (p : R[X]) :
   · simp [Polynomial.sum_def, Finset.mul_sum, mul_assoc]
   · simp
 
+/-- `basisTransform B` as an `R`-linear map. -/
+def basisTransformₗ (B : ℕ → R[X]) : R[X] →ₗ[R] R[X] where
+  toFun := basisTransform B
+  map_add' := basisTransform_add B
+  map_smul' a p := by simpa [smul_eq_C_mul] using basisTransform_smul B a p
+
+@[simp] theorem basisTransformₗ_apply (B : ℕ → R[X]) (p : R[X]) :
+    basisTransformₗ B p = basisTransform B p :=
+  rfl
+
+/-- An `R`-linear map on `R[X]` commutes with multiplication by constants. -/
+theorem linearMap_C_mul (f : R[X] →ₗ[R] R[X]) (a : R) (p : R[X]) :
+    f (C a * p) = C a * f p := by
+  rw [← smul_eq_C_mul, LinearMap.map_smul, smul_eq_C_mul]
+
 /-- A basis transform distributes over a finite polynomial sum. -/
 theorem basisTransform_finset_sum {ι : Type*} (B : ℕ → R[X])
     (s : Finset ι) (f : ι → R[X]) :

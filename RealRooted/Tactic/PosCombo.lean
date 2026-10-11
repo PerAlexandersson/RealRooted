@@ -806,7 +806,7 @@ macro_rules
         nonzero := $hne:term,
         tnn := $htnn:term) =>
       `(tactic|
-        exact RealRooted.PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil_tnn $hne $htnn)
+        exact RealRooted.PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil $hne $htnn)
   | `(tactic|
       rr_pos_combo_family_pair_right using
         pos_combo := $hfg:term,

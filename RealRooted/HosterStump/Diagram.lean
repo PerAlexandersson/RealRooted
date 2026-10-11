@@ -154,10 +154,6 @@ private lemma e1_bot1 : bot 2 (Finset.range 1) 1 = X := by
 private lemma e1_bot2 : bot 2 (Finset.range 1) 2 = X := by
   simp [bot, refined]
 
-private lemma interl_zero_left (f : ℝ[X]) : Interl 0 f := Or.inl rfl
-
-private lemma interl_zero_right (f : ℝ[X]) : Interl f 0 := Or.inr (Or.inl rfl)
-
 private lemma interl_one_one : Interl (1 : ℝ[X]) 1 := Interl.refl fun _ => by simp
 
 private lemma interl_X_X : Interl (X : ℝ[X]) X := Interl.refl fun _ => isRealRooted_X.2

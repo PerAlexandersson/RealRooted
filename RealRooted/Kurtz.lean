@@ -474,13 +474,5 @@ theorem coefficient_criterion {p : ℝ[X]}
     p.Splits :=
   splits_of_card_roots (coefficient_criterion_card_roots hdeg hpos hineq)
 
-/-- The Hutchinson--Kurtz coefficient criterion. -/
-theorem coefficientCriterion {p : ℝ[X]}
-    (hdeg : 2 ≤ p.natDegree)
-    (hpos : PositiveCoeffsUpToDegree p)
-    (hineq : KurtzStrictInequalities p) :
-    p.Splits :=
-  coefficient_criterion hdeg hpos hineq
-
 end Kurtz
 end RealRooted

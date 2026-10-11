@@ -60,10 +60,6 @@ theorem StrictInterl.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
     rw [← hss_eq, ← hrs_eq, hlist]
   rw [hf.2.eq_prod_roots, hg.2.eq_prod_roots, hlc, hroots]
 
-@[deprecated StrictInterl.eval_mul_eval_derivative_nonneg (since := "2026-10-06")]
-alias StrictInterl.eval_mul_derivative_nonneg_of_right_root :=
-  StrictInterl.eval_mul_eval_derivative_nonneg
-
 /-- At a root of the right polynomial in a positive-leading coprime
 strictly interlacing pair, the left value and right derivative have strictly the
 same sign. -/
