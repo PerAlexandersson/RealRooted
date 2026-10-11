@@ -21,8 +21,6 @@ open Filter Set Finset Matrix Topology Convex
 Small results on the standard simplex, topology, matrices, and finsets shared by `MCMC.PF`.
 Prefer Mathlib statements when they already exist; this file keeps only what downstream modules use.
 
-Includes `eq_mul_of_eq_div` (solve `a = c * b` from `c = a / b`) and `mul_div_mul_eq_div` (cancel a
-common nonzero factor in a field fraction).
 -/
 
 /-!
@@ -139,13 +137,6 @@ lemma Finset.inf'_eq_ciInf {α β} [ConditionallyCompleteLinearOrder β] {s : Fi
   ext x
   simp [Set.mem_image, Set.mem_range]
 
-/-- A finset `s` is disjoint from its right complement. -/
-@[simp]
-lemma Finset.disjoint_compl_right {n : Type*} [Fintype n] [DecidableEq n] {s : Finset n} :
-    Disjoint s (univ \ s) := by
-  rw [@Finset.disjoint_iff_inter_eq_empty]
-  rw [@inter_sdiff_self]
-
 variable {n : Type*}
 
 /-- A non-negative, non-zero vector must have a positive component. -/
@@ -171,56 +162,16 @@ lemma exists_pos_maximal_of_nonneg_ne_zero [Finite n] [Nonempty n] {v : n → �
     rw [← hi_max]
     exact Finset.le_sup' v (Finset.mem_univ j)
 
-/-- A set is nonempty if and only if its finite conversion is nonempty. -/
-lemma Set.toFinset_nonempty_iff {α : Type*} (s : Set α) [Finite s] [Fintype s] :
-    s.toFinset.Nonempty ↔ s.Nonempty := by
-  constructor
-  · intro h
-    obtain ⟨x, hx⟩ := h
-    exact ⟨x, Set.mem_toFinset.mp hx⟩
-  · intro h
-    obtain ⟨x, hx⟩ := h
-    exact ⟨x, Set.mem_toFinset.mpr hx⟩
-
 /-- Division inequality: a / b ≤ c ↔ a ≤ c * b when b > 0. -/
 lemma div_le_iff {a b c : ℝ} (hb : 0 < b) : a / b ≤ c ↔ a ≤ c * b := by
   rw [@le_iff_le_iff_lt_iff_lt]
   exact lt_div_iff₀ hb
-
-lemma Finset.inf'_pos {α : Type*} {s : Finset α} (hs : s.Nonempty)
-    {f : α → ℝ} (h_pos : ∀ a ∈ s, 0 < f a) :
-    0 < s.inf' hs f := by
-  obtain ⟨b, hb_mem, h_fb_is_inf⟩ := s.exists_mem_eq_inf' hs f
-  have h_fb_pos : 0 < f b := h_pos b hb_mem
-  rw [h_fb_is_inf]
-  exact h_fb_pos
 
 section ConditionallyCompleteLinearOrder
 
 variable {α : Type*} [ConditionallyCompleteLinearOrder α]
 
 end ConditionallyCompleteLinearOrder
-
-/--
-The definition of the `i`-th component of a matrix-vector product.
-This is standard in Mathlib and often available via `simp`.
--/
-lemma mulVec_apply {n : Type*} [Fintype n] {A : Matrix n n ℝ} {v : n → ℝ} (i : n) :
-  (A *ᵥ v) i = ∑ j, A i j * v j :=
-rfl
-
-/-- If `c = a / b` with `b ≠ 0`, then `a = c * b`. -/
-lemma eq_mul_of_eq_div {a b c : ℝ} (hb : b ≠ 0) (h : c = a / b) : a = c * b := by
-  rw [h, div_mul_cancel₀ a hb]
-
-/-- Cancel a common nonzero factor from numerator and denominator in a field. -/
-lemma mul_div_mul_eq_div {R : Type*} [Field R] {a b c : R} (hc : c ≠ 0) (hb : b ≠ 0) :
-    (c * a) / (c * b) = a / b := by
-  field_simp [hc, hb]
-
-lemma smul_sum (α : Type*) [Fintype α] (r : ℝ) (f : α → ℝ) :
-    r • (∑ i, f i) = ∑ i, r • f i := by
-  simp only [smul_eq_mul, Finset.mul_sum]
 
 lemma ones_norm_mem_simplex [Fintype n] [Nonempty n] :
   (fun _ => (Fintype.card n : ℝ)⁻¹) ∈ RealRooted.standardSimplex ℝ n := by
