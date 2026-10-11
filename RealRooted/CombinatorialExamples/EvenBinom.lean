@@ -53,7 +53,7 @@ theorem evenBinomAuxReal_identity (n : ℕ) :
   ext m
   change (C (2 : ℝ) * evenBinomAuxReal n).coeff m = _
   rw [coeff_add, coeff_C_mul, Polynomial.coeff_one_add_X_pow,
-    coeff_one_sub_X_pow]
+    Polynomial.coeff_one_sub_X_pow]
   rcases Nat.even_or_odd m with hm | hm
   · rcases hm with ⟨k, rfl⟩
     rw [show k + k = 2 * k by lia]

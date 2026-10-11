@@ -1,4 +1,5 @@
 import RealRooted.HosterStump.PosetBasic
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # The `h`-vector determines the `f`-vector
@@ -14,30 +15,11 @@ noncomputable section
 
 namespace RealRooted.HosterStump
 
-/-- The coefficient of `X ^ m` in `(1 - X) ^ N` is `(-1) ^ m * C(N, m)`. -/
-private lemma coeff_one_sub_X_pow (N m : ℕ) :
-    ((1 - X : ℝ[X]) ^ N).coeff m = (-1 : ℝ) ^ m * (N.choose m : ℝ) := by
-  have e : (1 - X : ℝ[X]) = -X + 1 := by ring
-  rw [e, add_pow, finsetSum_coeff]
-  have h : ∀ i ∈ range (N + 1), ((-X : ℝ[X]) ^ i * 1 ^ (N - i) * (N.choose i : ℝ[X])).coeff m =
-      if m = i then (-1 : ℝ) ^ i * (N.choose i : ℝ) else 0 := by
-    intro i _
-    have : (-X : ℝ[X]) ^ i * 1 ^ (N - i) * (N.choose i : ℝ[X]) =
-        C ((-1 : ℝ) ^ i * (N.choose i : ℝ)) * X ^ i := by
-      rw [neg_pow, one_pow, mul_one, C_mul, C_pow, C_neg, C_1, map_natCast]
-      ring
-    rw [this, coeff_C_mul_X_pow]
-  rw [sum_congr rfl h, sum_ite_eq]
-  split_ifs with hm
-  · rfl
-  · rw [Nat.choose_eq_zero_of_lt (by simp only [mem_range] at hm; lia)]
-    simp only [Nat.cast_zero, mul_zero]
-
 /-- The coefficient of `X ^ k` in `X ^ j * (1 - X) ^ N`. -/
 private lemma coeff_X_pow_mul_one_sub_X_pow (j N k : ℕ) :
     (X ^ j * (1 - X : ℝ[X]) ^ N).coeff k =
       if j ≤ k then (-1 : ℝ) ^ (k - j) * (N.choose (k - j) : ℝ) else 0 := by
-  rw [coeff_X_pow_mul', coeff_one_sub_X_pow]
+  rw [coeff_X_pow_mul', Polynomial.coeff_one_sub_X_pow]
 
 /-- Substituting `X ↦ X / (1 + X)` (homogenized) undoes `X ^ j * (1 - X) ^ (n - j)`. -/
 private lemma sum_coeff_X_pow_mul_one_sub_X_pow (n j : ℕ) (hj : j ≤ n) :

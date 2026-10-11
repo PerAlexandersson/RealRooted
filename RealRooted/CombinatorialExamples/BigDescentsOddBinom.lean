@@ -1,4 +1,5 @@
 import RealRooted.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Analysis.Complex.Trigonometric
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
@@ -16,23 +17,9 @@ noncomputable def oddBinomAuxReal (n : ℕ) : ℝ[X] :=
   ∑ k ∈ Finset.range ((n + 1) / 2),
     C ((Nat.choose n (2 * k + 1) : ℝ)) * X ^ (2 * k)
 
-lemma coeff_one_sub_X_pow (n k : ℕ) :
-    (((1 : ℝ[X]) - X) ^ n).coeff k =
-      (-1 : ℝ) ^ k * (n.choose k : ℝ) := by
-  rw [show (1 : ℝ[X]) - X = -(X + C (-1 : ℝ)) by
-    grind]
-  rw [neg_pow]
-  rw [show ((-1 : ℝ[X]) ^ n) = C ((-1 : ℝ) ^ n) by simp]
-  rw [coeff_C_mul]
-  rw [Polynomial.coeff_X_add_C_pow]
-  by_cases hk : k ≤ n
-  · have hsign : (-1 : ℝ) ^ n * (-1 : ℝ) ^ (n - k) = (-1 : ℝ) ^ k := by
-      nth_rw 1 [← Nat.add_sub_of_le hk]
-      rw [pow_add, mul_assoc, ← pow_add]
-      simp
-    grind
-  · have hchoose : n.choose k = 0 := Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge hk)
-    simp [hchoose]
+/-- The coefficient of `X ^ k` in `(1 - X) ^ n` is the signed binomial coefficient. -/
+@[deprecated Polynomial.coeff_one_sub_X_pow (since := "2026-10-11")]
+alias coeff_one_sub_X_pow := Polynomial.coeff_one_sub_X_pow
 
 lemma coeff_oddBinomAuxReal_even (n k : ℕ) :
     (oddBinomAuxReal n).coeff (2 * k) =
@@ -64,7 +51,7 @@ theorem oddBinomAuxReal_identity (n : ℕ) :
       change (C (2 : ℝ) * (X * oddBinomAuxReal n)).coeff (d + 1) = _
       rw [coeff_C_mul, coeff_X_mul]
       rw [Polynomial.coeff_one_add_X_pow]
-      rw [coeff_one_sub_X_pow]
+      rw [Polynomial.coeff_one_sub_X_pow]
       -- Target:
       --   2 * (oddBinomAuxReal n).coeff d
       --     = ↑(n.choose (d + 1))
