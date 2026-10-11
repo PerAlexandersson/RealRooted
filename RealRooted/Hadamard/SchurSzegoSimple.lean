@@ -342,21 +342,13 @@ open Polynomial
 
 namespace SchurSzegoAristotle
 
-/-- The derivative of a split real polynomial splits (Rolle). -/
-private theorem splits_derivative_real {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits := by
-  rw [splits_iff_card_roots] at hp ⊢
-  have h1 := card_roots_le_derivative p
-  have h2 : (derivative p).roots.card ≤ (derivative p).natDegree := card_roots' _
-  have h3 : (derivative p).natDegree ≤ p.natDegree - 1 := natDegree_derivative_le p
-  lia
-
 private theorem splits_iterate_derivative_real {p : ℝ[X]} (hp : p.Splits) (k : ℕ) :
     (derivative^[k] p).Splits := by
   induction k with
   | zero => simpa using hp
   | succ k ih =>
     rw [Function.iterate_succ_apply']
-    exact splits_derivative_real ih
+    exact RealRooted.splits_derivative ih
 
 /-- Laguerre's inequality for products of linear factors. -/
 private theorem laguerre_prod (s : Multiset ℝ) (x : ℝ) :
@@ -1619,8 +1611,9 @@ private theorem main_ssc : ∀ (n : ℕ) (P Q : ℝ[X]), P.natDegree = n → P.S
     have hrm1 := rootMultiplicity_ssc_derivative N P Q hroot
     by_cases hK3 : 2 < (ssc (N + 1) P Q).rootMultiplicity r
     · obtain ⟨a, b, ha, hb, -, -, hlt, hrab, hmult⟩ :=
-        ih P.derivative Q.derivative (natDegree_derivative_eq' hP) (splits_derivative_real hPs)
-          (natDegree_derivative_eq' hQ) (splits_derivative_real hQs)
+        ih P.derivative Q.derivative (natDegree_derivative_eq' hP)
+          (RealRooted.splits_derivative hPs) (natDegree_derivative_eq' hQ)
+          (RealRooted.splits_derivative hQs)
           (derivative_roots_neg hQ hQs hneg) r hr (by lia)
       have hm := rootMultiplicity_le_natDegree' P.derivative a
       have hl := rootMultiplicity_le_natDegree' Q.derivative b

@@ -9,6 +9,7 @@ import RealRooted.QuadraticRoot
 import RealRooted.RectangularConvolution
 import RealRooted.RectangularConvolutionIdentity
 import RealRooted.Touchard
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # The Narayana Transformation
@@ -195,10 +196,6 @@ private theorem neg_one_pow_mul_pow_eq_sub {n j : ℕ} (hj : j ≤ n) :
         ((-1 : ℝ) ^ (n - j) * (-1 : ℝ) ^ j) * (-1 : ℝ) ^ j := by rw [hpow]
     _ = (-1 : ℝ) ^ (n - j) * ((-1 : ℝ) ^ j * (-1 : ℝ) ^ j) := by ring
     _ = (-1 : ℝ) ^ (n - j) := by rw [hsq, mul_one]
-
-theorem coeff_comp_neg_X (p : ℝ[X]) (j : ℕ) :
-    (p.comp (-X)).coeff j = p.coeff j * (-1 : ℝ) ^ j := by
-  simpa using Polynomial.comp_C_mul_X_coeff (p := p) (r := (-1 : ℝ)) (n := j)
 
 theorem degreeSignFlip_eq_C_mul_comp_neg_X
     (n : ℕ) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) :

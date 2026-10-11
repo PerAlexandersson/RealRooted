@@ -1,5 +1,6 @@
 import RealRooted.Hadamard.Grace
 import RealRooted.Hadamard.SchurSzegoMultiplicity
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Sign counts for the finite Schur–Szegő composition
@@ -28,13 +29,6 @@ open Polynomial
 namespace RealRooted
 
 /-! ### Generic polynomial facts -/
-
-private theorem coeff_comp_neg_X (p : ℝ[X]) (k : ℕ) :
-    (p.comp (-X)).coeff k = (-1) ^ k * p.coeff k := by
-  rw [show (-X : ℝ[X]) = C (-1) * X by simp, comp_C_mul_X_coeff, mul_comm]
-
-private theorem natDegree_comp_neg_X (p : ℝ[X]) : (p.comp (-X)).natDegree = p.natDegree := by
-  rw [natDegree_comp, natDegree_neg, natDegree_X, mul_one]
 
 private theorem eraseLead_comp_neg_X (p : ℝ[X]) :
     (p.comp (-X)).eraseLead = p.eraseLead.comp (-X) := by

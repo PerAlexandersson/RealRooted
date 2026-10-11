@@ -67,7 +67,7 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
     HasNonnegCoeffs.pos_leadingCoeff hevennn fun hevenZero =>
       heven0 (by simp [hevenZero])
   have hoddXred : StrictInterl odd (X * red) :=
-    strictInterl_to_X_mul_of_nonneg hstrictInterl hrednn hoddnn
+    strictInterl_mul_X_of_strictInterl_of_nonneg hstrictInterl hrednn hoddnn
   have hscaled : StrictInterl (Polynomial.C c * odd) (X * red) :=
     hoddXred.C_mul_left hc.ne'
   have hsum : StrictInterl (Polynomial.C c * odd)
