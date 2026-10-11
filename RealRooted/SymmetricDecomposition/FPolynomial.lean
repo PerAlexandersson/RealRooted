@@ -531,7 +531,8 @@ theorem splits_fPolynomial {d : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ d) (h
   | succ d ih =>
       by_cases hpd : p.natDegree ≤ d
       · rw [fPolynomial_succ_of_natDegree_le hpd]
-        exact (by simpa using Splits.X_add_C (1 : ℝ)).mul (ih hpd hp)
+        refine Splits.mul ?_ (ih hpd hp)
+        simpa using Splits.X_add_C (1 : ℝ)
       by_cases hp0 : p = 0
       · simp [hp0]
       have hcard : 0 < p.roots.card := by
