@@ -226,9 +226,11 @@ private lemma sameOrderType_123 {n : ℕ} {a b c : Fin n} :
     intro i j
     fin_cases i <;> fin_cases j <;> simp_all <;> lia
 
-private lemma contains_p132_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    σ.ContainsPattern p132 ↔
-      ∃ i j k : Fin n, i < j ∧ j < k ∧ σ i < σ k ∧ σ k < σ j := by
+private lemma contains_pattern_length_three_iff {n : ℕ} (σ : Equiv.Perm (Fin n))
+    (τ : Equiv.Perm (Fin 3)) (R : Fin n → Fin n → Fin n → Prop)
+    (hR : ∀ a b c, ([a, b, c] : List (Fin n)).SameOrderType (List.ofFn τ) ↔ R a b c) :
+    σ.ContainsPattern τ ↔
+      ∃ i j k : Fin n, i < j ∧ j < k ∧ R (σ i) (σ j) (σ k) := by
   rw [Equiv.Perm.containsPattern_iff]
   constructor
   · rintro ⟨s, hs, hst⟩
@@ -263,10 +265,10 @@ private lemma contains_p132_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
         _ = σ k := by
           simp only [List.get_ofFn]
           congr 1
-    have hst' := (sameOrderType_132 (a := a) (b := b) (c := c)).mp hst
+    have hst' := (hR a b c).mp hst
     refine ⟨i, j, k, hij, hjk, ?_⟩
     simpa [ha, hb, hc] using hst'
-  · rintro ⟨i, j, k, hij, hjk, hik, hkj⟩
+  · rintro ⟨i, j, k, hij, hjk, hRijk⟩
     refine ⟨[σ i, σ j, σ k], ?_, ?_⟩
     · let e₀ : Fin 3 → Fin (List.ofFn σ).length := fun x =>
           Fin.cast List.length_ofFn.symm (![i, j, k] x)
@@ -284,61 +286,19 @@ private lemma contains_p132_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
           simp only [List.length_cons, List.length_nil] at x ⊢
           fin_cases x <;> simp [e₀, e₀']⟩
       exact hsub
-    · exact (sameOrderType_132 (a := σ i) (b := σ j) (c := σ k)).mpr ⟨hik, hkj⟩
+    · exact (hR (σ i) (σ j) (σ k)).mpr hRijk
+
+private lemma contains_p132_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
+    σ.ContainsPattern p132 ↔
+      ∃ i j k : Fin n, i < j ∧ j < k ∧ σ i < σ k ∧ σ k < σ j :=
+  contains_pattern_length_three_iff σ p132 (fun a b c => a < c ∧ c < b)
+    (fun _ _ _ => sameOrderType_132)
 
 private lemma contains_p123_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
     σ.ContainsPattern p123 ↔
-      ∃ i j k : Fin n, i < j ∧ j < k ∧ σ i < σ j ∧ σ j < σ k := by
-  rw [Equiv.Perm.containsPattern_iff]
-  constructor
-  · rintro ⟨s, hs, hst⟩
-    have hlen : s.length = 3 := by
-      rw [List.sameOrderType_length hst, List.length_ofFn]
-    obtain ⟨a, b, c, rfl⟩ := List.length_eq_three.mp hlen
-    obtain ⟨e, he⟩ := List.sublist_iff_exists_fin_orderEmbedding_get_eq.mp hs
-    let i : Fin n := Fin.cast List.length_ofFn (e ⟨0, by simp⟩)
-    let j : Fin n := Fin.cast List.length_ofFn (e ⟨1, by simp⟩)
-    let k : Fin n := Fin.cast List.length_ofFn (e ⟨2, by simp⟩)
-    have hij : i < j := by
-      have h := e.lt_iff_lt.mpr (by decide : (0 : Fin 3) < 1)
-      exact_mod_cast h
-    have hjk : j < k := by
-      have h := e.lt_iff_lt.mpr (by decide : (1 : Fin 3) < 2)
-      exact_mod_cast h
-    have ha : a = σ i := by
-      calc
-        a = (List.ofFn σ).get (e ⟨0, by simp⟩) := he ⟨0, by simp⟩
-        _ = σ i := by simp only [List.get_ofFn]; congr 1
-    have hb : b = σ j := by
-      calc
-        b = (List.ofFn σ).get (e ⟨1, by simp⟩) := he ⟨1, by simp⟩
-        _ = σ j := by simp only [List.get_ofFn]; congr 1
-    have hc : c = σ k := by
-      calc
-        c = (List.ofFn σ).get (e ⟨2, by simp⟩) := he ⟨2, by simp⟩
-        _ = σ k := by simp only [List.get_ofFn]; congr 1
-    have hst' := (sameOrderType_123 (a := a) (b := b) (c := c)).mp hst
-    refine ⟨i, j, k, hij, hjk, ?_⟩
-    simpa [ha, hb, hc] using hst'
-  · rintro ⟨i, j, k, hij, hjk, hik, hkj⟩
-    refine ⟨[σ i, σ j, σ k], ?_, ?_⟩
-    · let e₀ : Fin 3 → Fin (List.ofFn σ).length := fun x =>
-          Fin.cast List.length_ofFn.symm (![i, j, k] x)
-      let e₀' : Fin 3 ↪o Fin (List.ofFn σ).length :=
-        OrderEmbedding.ofStrictMono e₀ (by
-          rw [Fin.strictMono_iff_lt_succ]
-          intro x
-          fin_cases x
-          · exact hij
-          · exact hjk)
-      have hsub : List.Sublist ([σ i, σ j, σ k] : List (Fin n)) (List.ofFn σ) := by
-        apply List.sublist_iff_exists_fin_orderEmbedding_get_eq.mpr
-        refine ⟨e₀', by
-          intro x
-          simp only [List.length_cons, List.length_nil] at x ⊢
-          fin_cases x <;> simp [e₀, e₀']⟩
-      exact hsub
-    · exact (sameOrderType_123 (a := σ i) (b := σ j) (c := σ k)).mpr ⟨hik, hkj⟩
+      ∃ i j k : Fin n, i < j ∧ j < k ∧ σ i < σ j ∧ σ j < σ k :=
+  contains_pattern_length_three_iff σ p123 (fun a b c => a < b ∧ b < c)
+    (fun _ _ _ => sameOrderType_123)
 
 /-- Canonical pattern containment and the direct 132 avoidance predicate agree. -/
 theorem avoids_p132_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
