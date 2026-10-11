@@ -246,12 +246,6 @@ theorem isRealRooted_augChowUniform {r n : ℕ} (hr : 1 ≤ r) (hrn : r ≤ n) :
 
 /-! ## The derangement formula for the Chow polynomial -/
 
-private theorem natDegree_derangement_le (j : ℕ) :
-    (DerangementTransform.polynomial j).natDegree ≤ j := by
-  cases j with
-  | zero => simp
-  | succ j => exact natDegree_le_sturmDerangementsExc (j + 1)
-
 private theorem reflect_derangement_of_le {j N : ℕ} (hj : j ≤ N) :
     (DerangementTransform.polynomial j).reflect N =
       DerangementTransform.polynomial j * X ^ (N - j) := by
@@ -260,7 +254,7 @@ private theorem reflect_derangement_of_le {j N : ℕ} (hj : j ≤ N) :
     cases j with
     | zero => simp
     | succ j => exact reflect_sturmDerangementsExc (j + 1)
-  have h2 := reflect_add_right_of_reflect (N - j) (natDegree_derangement_le j) h
+  have h2 := reflect_add_right_of_reflect (N - j) (DerangementTransform.natDegree_polynomial_le j) h
   rwa [show j + (N - j) = N by lia] at h2
 
 /-- The deranged image of `g_{r,n}` is `∑_{k<r} C(n,k) d_k`. -/
@@ -286,7 +280,8 @@ theorem chowUniform_eq {r n : ℕ} (hr : 1 ≤ r) :
     rw [hP]
     refine natDegree_sum_le_of_forall_le _ _ fun k hk => ?_
     have := mem_range.mp hk
-    exact (natDegree_C_mul_le _ _).trans ((natDegree_derangement_le k).trans (by lia))
+    exact (natDegree_C_mul_le _ _).trans
+      ((DerangementTransform.natDegree_polynomial_le k).trans (by lia))
   have hrefl : P.reflect (r - 1) = ∑ k ∈ range r, C ((n.choose k : ℕ) : ℝ) *
       (DerangementTransform.polynomial k * X ^ (r - 1 - k)) := by
     rw [hP, reflect_finset_sum_C_mul]
@@ -331,15 +326,6 @@ private theorem reflect_image {s r : ℕ} (hs : s ≤ r) :
     reflect_eulerian, one_mul] at h
   rw [← h, reflect_reflect]
 
-private theorem natDegree_image_le' (s : ℕ) : (EulerianTransform.image s).natDegree ≤ s := by
-  cases s with
-  | zero => simp [EulerianTransform.image]
-  | succ s =>
-    have h1 : (X : ℝ[X]).natDegree ≤ 1 := natDegree_X_le
-    have h2 := (generalizedEulerian_natDegree 1 s).le
-    rw [EulerianTransform.image]
-    exact natDegree_mul_le.trans (by lia)
-
 /-- The Eulerian image of `g_{r,n}` is `1 + ∑_{1 ≤ s < r} C(n,s) X A_s`. -/
 theorem transform_eulerian_uniformPolynomial (r n : ℕ) :
     EulerianTransform.transform (uniformPolynomial r n) =
@@ -362,7 +348,7 @@ theorem augChowUniform_mul_sub_one (r n : ℕ) :
     rw [hQ]
     refine natDegree_sum_le_of_forall_le _ _ fun s hs => ?_
     have := mem_range.mp hs
-    exact (natDegree_C_mul_le _ _).trans ((natDegree_image_le' s).trans (by lia))
+    exact (natDegree_C_mul_le _ _).trans ((EulerianTransform.natDegree_image_le s).trans (by lia))
   have hrefl : Q.reflect r = ∑ s ∈ range r, C ((n.choose s : ℕ) : ℝ) *
       (X ^ (r - s) * BinderVecchi.eulerian s) := by
     rw [hQ, reflect_finset_sum_C_mul]

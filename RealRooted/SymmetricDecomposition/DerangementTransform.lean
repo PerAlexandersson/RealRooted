@@ -38,6 +38,12 @@ theorem polynomial_one : polynomial 1 = 0 := rfl
 theorem polynomial_two : polynomial 2 = X := by
   simp [polynomial]
 
+/-- `d_j` has degree at most `j`. -/
+theorem natDegree_polynomial_le (j : ℕ) : (polynomial j).natDegree ≤ j := by
+  cases j with
+  | zero => simp
+  | succ j => exact natDegree_le_sturmDerangementsExc (j + 1)
+
 /-- The recurrence for the derangement excedance polynomials. -/
 theorem polynomial_recurrence (n : ℕ) :
     polynomial (n + 3) =

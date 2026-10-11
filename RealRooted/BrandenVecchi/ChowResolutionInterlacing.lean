@@ -35,21 +35,6 @@ private def weightedResolvedChowRow {A : LowerTriangularMatrix ℝ}
   (List.range (n + 1)).map fun j =>
     C (resolution.lambda n j) * resolvedChowDerangement resolution n j
 
-private theorem sum_map_range'_eq_finset_sum_Ico
-    (f : ℕ → ℝ[X]) (k q : ℕ) :
-    ((List.range' k (q - k)).map f).sum = ∑ j ∈ Finset.Ico k q, f j := by
-  rw [Finset.sum_Ico_eq_sum_range, List.range'_eq_map_range, List.map_map,
-    List.sum_map_range]
-  simp [Function.comp_apply]
-
-private theorem sum_drop_map_range_eq_finset_sum_Ico
-    (f : ℕ → ℝ[X]) (k q : ℕ) :
-    (((List.range q).map f).drop k).sum = ∑ j ∈ Finset.Ico k q, f j := by
-  rw [← List.map_drop]
-  rw [show List.range q = List.range' 0 q from List.range_eq_range']
-  rw [List.drop_range']
-  simpa using sum_map_range'_eq_finset_sum_Ico f k q
-
 private theorem weightedResolvedChowRow_sum
     {A : LowerTriangularMatrix ℝ}
     (resolution : BrandenLeite.Resolution A) (n : ℕ) :
@@ -65,7 +50,7 @@ private theorem weightedResolvedChowRow_drop_sum
       ∑ j ∈ Finset.Ico k (n + 1),
         C (resolution.lambda n j) *
           resolvedChowDerangement resolution n j :=
-  sum_drop_map_range_eq_finset_sum_Ico _ k (n + 1)
+  List.sum_drop_map_range_eq_sum_Ico _ k (n + 1)
 
 private theorem chowRowTransform_weightedResolvedChowRow
     {A : LowerTriangularMatrix ℝ}

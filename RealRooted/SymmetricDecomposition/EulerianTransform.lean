@@ -275,12 +275,16 @@ theorem sum_basisImage (n : ℕ) :
   rw [h]
   ring
 
-private theorem natDegree_image_succ_le (n : ℕ) : (image (n + 1)).natDegree ≤ n + 1 := by
-  rw [image]
-  refine natDegree_mul_le.trans ?_
-  have h1 : (X : ℝ[X]).natDegree ≤ 1 := natDegree_X_le
-  rw [(generalizedEulerian_natDegree 1 n)]
-  lia
+/-- The `s`-th image of the Eulerian transform has degree at most `s`. -/
+theorem natDegree_image_le (s : ℕ) : (image s).natDegree ≤ s := by
+  cases s with
+  | zero => simp [image]
+  | succ n =>
+    rw [image]
+    refine natDegree_mul_le.trans ?_
+    have h1 : (X : ℝ[X]).natDegree ≤ 1 := natDegree_X_le
+    rw [(generalizedEulerian_natDegree 1 n)]
+    lia
 
 private theorem reflect_image_succ (n : ℕ) : (image (n + 1)).reflect (n + 1) =
     generalizedEulerian 1 n := by
@@ -297,7 +301,7 @@ theorem chowS_sum_basisImage (n : ℕ) :
   rw [sum_basisImage]
   have hdeg : (binomial (n + 1) - image (n + 1)).natDegree ≤ n + 1 :=
     (natDegree_sub_le _ _).trans
-      (max_le (natDegree_binomial_le_and_reflect (n + 1)).1.1 (natDegree_image_succ_le n))
+      (max_le (natDegree_binomial_le_and_reflect (n + 1)).1.1 (natDegree_image_le (n + 1)))
   apply (monic_X_sub_C (1 : ℝ)).isRegular.left
   change (X - 1) * _ = (X - 1) * _
   rw [X_sub_one_mul_chowS _ _ hdeg, reflect_sub, (natDegree_binomial_le_and_reflect (n + 1)).1.2,
@@ -305,16 +309,6 @@ theorem chowS_sum_basisImage (n : ℕ) :
   rw [image]
   ring
 
-private theorem sum_map_range'_eq_finset_sum_Ico (f : ℕ → ℝ[X]) (k q : ℕ) :
-    ((List.range' k (q - k)).map f).sum = ∑ j ∈ Finset.Ico k q, f j := by
-  rw [Finset.sum_Ico_eq_sum_range, List.range'_eq_map_range, List.map_map, List.sum_map_range]
-  simp [Function.comp_apply]
-
-private theorem sum_drop_map_range_eq_finset_sum_Ico (f : ℕ → ℝ[X]) (k q : ℕ) :
-    (((List.range q).map f).drop k).sum = ∑ j ∈ Finset.Ico k q, f j := by
-  rw [← List.map_drop, show List.range q = List.range' 0 q from List.range_eq_range',
-    List.drop_range']
-  simpa using sum_map_range'_eq_finset_sum_Ico f k q
 
 /-- The next row is the Chow staircase transform of the previous one, with bound `n + 1`. -/
 theorem row_succ (n : ℕ) :
@@ -328,7 +322,7 @@ theorem row_succ (n : ℕ) :
     have hsum : (row n).sum = ∑ j ∈ Finset.range (n + 1), basisImage n j := by
       rw [row, List.sum_map_range]
     have hdrop : ((row n).drop k).sum = ∑ j ∈ Finset.Ico k (n + 1), basisImage n j := by
-      exact sum_drop_map_range_eq_finset_sum_Ico _ k (n + 1)
+      exact List.sum_drop_map_range_eq_sum_Ico _ k (n + 1)
     rw [hsum, hdrop, chowS_sum_basisImage]
     rw [show (row (n + 1)).get ⟨k, hkl⟩ = basisImage (n + 1) k by simp [row],
       basisImage_succ hk, image]

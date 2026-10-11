@@ -193,4 +193,18 @@ theorem roots_reverse_eq_filter_map_inv {p : K[X]}
   rw [Polynomial.reverse_mul_of_domain, Polynomial.reverse_C,
     Polynomial.roots_C_mul _ hlead, roots_reverse_prod_X_sub_C]
 
+/-- If `p` splits over a field and `p 0 ≠ 0`, the roots of `p.reverse` are the inverses of the
+roots of `p`, retaining multiplicity. -/
+theorem roots_reverse_eq_map_inv {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) :
+    p.reverse.roots = p.roots.map (·⁻¹) := by
+  have hp0 : p ≠ 0 := fun h => h0 (by simp [h])
+  rw [roots_reverse_eq_filter_map_inv hp0 hp, Multiset.filter_eq_self.mpr]
+  rintro r hr rfl
+  exact h0 (by simpa [coeff_zero_eq_eval_zero] using isRoot_of_mem_roots hr)
+
+/-- A product of monic linear factors over a field is nonzero. -/
+theorem multiset_prod_X_sub_C_ne_zero (s : Multiset K) :
+    (s.map fun r => (X - C r : K[X])).prod ≠ 0 :=
+  (monic_multiset_prod_of_monic _ _ fun r _ => monic_X_sub_C r).ne_zero
+
 end Polynomial
