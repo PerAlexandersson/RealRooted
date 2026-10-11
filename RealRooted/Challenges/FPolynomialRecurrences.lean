@@ -40,6 +40,21 @@ module = "RealRooted.SymmetricDecomposition.FPolynomial"
 label = "The f-polynomial transform preserves splitting"
 
 [[theorems]]
+name = "RealRooted.roots_fPolynomial_natDegree_eq_map"
+module = "RealRooted.SymmetricDecomposition.FPolynomial"
+label = "The roots move by r ↦ r / (1 - r)"
+
+[[theorems]]
+name = "RealRooted.StrictInterl.fPolynomial_natDegree_of_roots_lt_one"
+module = "RealRooted.SymmetricDecomposition.FPolynomial"
+label = "Interlacing is preserved for roots below one"
+
+[[theorems]]
+name = "RealRooted.StrictInterl.fPolynomial_natDegree_of_one_lt_roots"
+module = "RealRooted.SymmetricDecomposition.FPolynomial"
+label = "Interlacing is preserved for roots above one"
+
+[[theorems]]
 name = "RealRooted.splits_of_eq_fPolynomial"
 module = "RealRooted.SymmetricDecomposition.FPolynomialRecurrence"
 label = "Splitting transfers through the f-polynomial transform"
@@ -104,7 +119,11 @@ The transform also transfers the root properties needed in applications. It is
 the substitution $X \mapsto X/(X+1)$ homogenized to degree $d$, so a root $r$ of
 $h$ becomes the root $r/(1-r)$, and the degree drops when $r = 1$. Hence
 $fPolynomial\ d\ h$ splits whenever $h$ splits, with no sign condition on
-the coefficients, and split rows $Q(n)$ give split rows $P(n)$. For a
+the coefficients, and split rows $Q(n)$ give split rows $P(n)$. When $h$ has no
+root at $1$, the roots of $fPolynomial\ (\deg h)\ h$ are exactly the images
+$r/(1-r)$. This map is increasing on $(-\infty, 1)$ and on $(1, \infty)$, so
+strict interlacing transfers whenever all roots of both polynomials lie on one
+side of $1$. For a
 sequence with half-growth degrees \(\deg Q(j)=(j+1)/2\), nonnegative
 coefficients, split nonzero rows, and
 consecutive strict interlacing, the padding and peeling lemmas give
