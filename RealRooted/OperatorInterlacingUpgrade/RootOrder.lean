@@ -298,7 +298,9 @@ private theorem rootPolynomial_replicate_neg
       rw [hC]
       ring
 
-private theorem rootwiseLE_bounds_from_preserver
+/-- Endpoint bounds for any degree-preserving operator that preserves every
+strictly interlacing pair. -/
+theorem PreservesFullDegreeRootMoves.rootwiseLE_bounds
     {T : ℝ[X] → ℝ[X]} {D : ℕ} {p : ℝ[X]} {a b : ℝ}
     (hT : PreservesFullDegreeRootMoves D T)
     (hmonic : p.Monic) (hsplits : p.Splits) (hdeg : p.natDegree = D)
@@ -338,18 +340,6 @@ private theorem rootwiseLE_bounds_from_preserver
   rw [rootPolynomial_replicate_neg b D, hPpoly] at hlo
   rw [hPpoly, rootPolynomial_replicate_neg a D] at hhi'
   exact ⟨hlo, hhi'⟩
-
-/-- Endpoint bounds for any degree-preserving operator that preserves every
-strictly interlacing pair. -/
-theorem PreservesFullDegreeRootMoves.rootwiseLE_bounds
-    {T : ℝ[X] → ℝ[X]} {D : ℕ} {p : ℝ[X]} {a b : ℝ}
-    (hT : PreservesFullDegreeRootMoves D T)
-    (hmonic : p.Monic) (hsplits : p.Splits) (hdeg : p.natDegree = D)
-    (hlo : ∀ r ∈ p.roots, -b ≤ r)
-    (hhi : ∀ r ∈ p.roots, r ≤ -a) :
-    RootwiseLE (T ((X + C b) ^ D)) (T p) ∧
-      RootwiseLE (T p) (T ((X + C a) ^ D)) :=
-  rootwiseLE_bounds_from_preserver hT hmonic hsplits hdeg hlo hhi
 
 /-- Endpoint bounds for a monomial-chain operator on a nonpositive root box.
 The lower endpoint assumption `0 ≤ a` supplies nonnegative coefficients at every

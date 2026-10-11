@@ -20,7 +20,13 @@ noncomputable section
 
 namespace RealRooted.LiuWang
 
-private theorem strictInterl_mul_add_sum_mul_of_eval_nonpos_core
+/-- The finite-family Liu--Wang criterion with positive leading coefficients.
+
+Every member of the finite family is below `f`; the coefficient of each member
+is nonpositive at the roots of `f`; and the resulting polynomial has the same
+positive leading orientation and one of the two allowed degrees.
+-/
+theorem strictInterl_mul_add_sum_mul_of_eval_nonpos_of_pos
     {ι : Type*} {f a : ℝ[X]} {s : Finset ι} {b g : ι → ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hf : f.Splits)
     (hg : ∀ i ∈ s, StrictInterl (g i) f)
@@ -139,39 +145,6 @@ private theorem strictInterl_mul_add_sum_mul_of_eval_nonpos_core
       rw [hdf, hF_factor] at hrestore
       exact hrestore
 
-/-! ## Sign normalization -/
-
-private theorem strictInterl_mul_add_sum_mul_of_eval_nonpos_pos_f
-    {ι : Type*} {f a : ℝ[X]} {s : Finset ι} {b g : ι → ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hf : f.Splits)
-    (hg : ∀ i ∈ s, StrictInterl (g i) f)
-    (hg_pos : ∀ i ∈ s, HasPosLeadingCoeff (g i))
-    (hb : ∀ i ∈ s, ∀ r, f.IsRoot r → (b i).eval r ≤ 0)
-    (hF_pos : HasPosLeadingCoeff (a * f + ∑ i ∈ s, b i * g i))
-    (hdeg_lo : f.natDegree ≤ (a * f + ∑ i ∈ s, b i * g i).natDegree)
-    (hdeg_hi : (a * f + ∑ i ∈ s, b i * g i).natDegree ≤ f.natDegree + 1) :
-    StrictInterl f (a * f + ∑ i ∈ s, b i * g i) :=
-  strictInterl_mul_add_sum_mul_of_eval_nonpos_core hf_pos hf hg hg_pos hb hF_pos hdeg_lo hdeg_hi
-
-/-- The finite-family Liu--Wang criterion with positive leading coefficients.
-
-Every member of the finite family is below `f`; the coefficient of each member
-is nonpositive at the roots of `f`; and the resulting polynomial has the same
-positive leading orientation and one of the two allowed degrees.
--/
-theorem strictInterl_mul_add_sum_mul_of_eval_nonpos_of_pos
-    {ι : Type*} {f a : ℝ[X]} {s : Finset ι} {b g : ι → ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hf : f.Splits)
-    (hg : ∀ i ∈ s, StrictInterl (g i) f)
-    (hg_pos : ∀ i ∈ s, HasPosLeadingCoeff (g i))
-    (hb : ∀ i ∈ s, ∀ r, f.IsRoot r → (b i).eval r ≤ 0)
-    (hF_pos : HasPosLeadingCoeff (a * f + ∑ i ∈ s, b i * g i))
-    (hdeg_lo : f.natDegree ≤ (a * f + ∑ i ∈ s, b i * g i).natDegree)
-    (hdeg_hi : (a * f + ∑ i ∈ s, b i * g i).natDegree ≤ f.natDegree + 1) :
-    StrictInterl f (a * f + ∑ i ∈ s, b i * g i) :=
-  strictInterl_mul_add_sum_mul_of_eval_nonpos_pos_f
-    hf_pos hf hg hg_pos hb hF_pos hdeg_lo hdeg_hi
-
 /-- The finite-family Liu--Wang criterion, allowing either sign for the
 leading coefficient of `f`.
 
@@ -198,13 +171,13 @@ theorem strictInterl_mul_add_sum_mul_of_eval_nonpos
         (-a) * (-f) + ∑ i ∈ s, b i * g i := by
       ring
     rw [hF_eq] at hF_pos hdeg_lo hdeg_hi ⊢
-    have h := strictInterl_mul_add_sum_mul_of_eval_nonpos_pos_f hnf_pos
+    have h := strictInterl_mul_add_sum_mul_of_eval_nonpos_of_pos hnf_pos
       (by simpa using hf) hng hg_pos
       (fun i hi r hr ↦ hb i hi r (by simpa using hr)) hF_pos
       (by simpa [natDegree_neg] using hdeg_lo)
       (by simpa [natDegree_neg] using hdeg_hi)
     simpa using h.C_mul_left (a := (-1 : ℝ)) (by norm_num)
-  · exact strictInterl_mul_add_sum_mul_of_eval_nonpos_pos_f
+  · exact strictInterl_mul_add_sum_mul_of_eval_nonpos_of_pos
       (by simpa [HasPosLeadingCoeff] using hpos) hf hg hg_pos hb hF_pos hdeg_lo hdeg_hi
 
 /-- The finite-family Liu--Wang criterion for a common nonzero leading sign.

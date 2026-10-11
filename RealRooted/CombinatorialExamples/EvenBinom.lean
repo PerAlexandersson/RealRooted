@@ -125,11 +125,9 @@ lemma one_sub_I_mul_tan_eq (theta : ℝ) (hcos : Real.cos theta ≠ 0) :
     (1 : ℂ) - Complex.I * (Real.tan theta : ℂ) =
       ((Real.cos theta : ℂ) - (Real.sin theta : ℂ) * Complex.I) /
         (Real.cos theta : ℂ) := by
-  rw [Real.tan_eq_sin_div_cos]
-  rw [Complex.ofReal_div]
-  have hcosC : (Real.cos theta : ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.mpr hcos
-  grind
+  simpa only [Real.cos_neg, Real.sin_neg, Real.tan_neg, Complex.ofReal_neg, neg_mul, mul_neg,
+    sub_eq_add_neg] using one_add_I_mul_tan_eq (-theta) (by
+      simpa only [Real.cos_neg] using hcos)
 
 lemma evenBinomPolyReal_eval_neg_tan_sq_mul_cos_pow
     (n : ℕ) (theta : ℝ) (hcos : Real.cos theta ≠ 0) :
