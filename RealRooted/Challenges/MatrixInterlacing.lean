@@ -1,4 +1,5 @@
 import RealRooted.MatrixInterlacing
+import RealRooted.MatrixInterlacing.Composition
 
 /-!
 # Matrix interlacing challenge entry point
@@ -47,6 +48,11 @@ label = "Strict form: the strict condition preserves strict interlacing sequence
 [[theorems]]
 name = "RealRooted.Challenges.MatrixInterlacing.preserves_interlacing_sequences_zeroAware"
 label = "Strict input, zero-aware output"
+
+[[theorems]]
+name = "RealRooted.matPolyMul_preservesInterlacingSeq0"
+module = "RealRooted.MatrixInterlacing.Composition"
+label = "Products of interlacing-preserving matrices preserve interlacing"
 -->
 
 <!-- realrooted-catalog-content -->

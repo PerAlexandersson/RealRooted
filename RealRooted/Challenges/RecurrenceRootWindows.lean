@@ -3,6 +3,7 @@ import RealRooted.ThreeTermRecurrence.LagFeedback
 import RealRooted.ThreeTermRecurrence.ParityProduct
 import RealRooted.Interlacing.Reversal
 import RealRooted.Interlacing.RemainderCertificate
+import RealRooted.DerivativeRecurrence.EndpointWindow
 
 /-!
 # Recurrence root windows and interlacing
@@ -118,6 +119,11 @@ label = "Power-factor rows from a quadratic remainder certificate"
 name = "RealRooted.Interlaces.pow_mul_of_linear_remainder"
 module = "RealRooted.Interlacing.RemainderCertificate"
 label = "Power-factor rows from a linear remainder certificate"
+
+[[theorems]]
+name = "RealRooted.derivRec_interlaces_of_endpoint_windows"
+module = "RealRooted.DerivativeRecurrence.EndpointWindow"
+label = "Root windows from endpoint signs only"
 -->
 
 <!-- realrooted-catalog-content -->
