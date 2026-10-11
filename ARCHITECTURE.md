@@ -1714,6 +1714,8 @@ dedup4 batch B: the shims Mathlib/Algebra/Ring/Parity and Mathlib/Analysis/Calcu
 
 The PF preserver-closure module (#1420) adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+Three new modules (#1426 MatrixInterlacing/Composition, #1429 DerivativeRecurrence/EndpointWindow, #1432 MultiplierSequence/ProperPosition) and their catalog imports. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
