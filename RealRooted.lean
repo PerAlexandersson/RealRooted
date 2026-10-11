@@ -275,10 +275,12 @@ import RealRooted.Challenges.CauchyInterlacing
 import RealRooted.Challenges.ChordalClawFreeAcyclicSinks
 import RealRooted.Challenges.ChudnovskySeymour
 import RealRooted.Challenges.ClawFreeOrientationSinks
+import RealRooted.Challenges.CoefficientDominance
 import RealRooted.Challenges.CommonInterleaver
 import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.DerivativeInterlacing
 import RealRooted.Challenges.Descartes
+import RealRooted.Challenges.EdreiThoma
 import RealRooted.Challenges.EnestromKakeya
 import RealRooted.Challenges.EulerBidiagonal
 import RealRooted.Challenges.Eulerian
@@ -328,8 +330,12 @@ import RealRooted.Challenges.OperatorPreservers
 import RealRooted.Challenges.ParkingFunctions
 import RealRooted.Challenges.PeakPolynomials
 import RealRooted.Challenges.PerronFrobenius
+import RealRooted.Challenges.ProductSequence
 import RealRooted.Challenges.RealStability
 import RealRooted.Challenges.RecurrenceRootWindows
+
+import RealRooted.Challenges.ReciprocalShift
+import RealRooted.Challenges.RootAmplitude
 import RealRooted.Challenges.SchurCohn
 import RealRooted.Challenges.SeparablePermutations
 import RealRooted.Challenges.SmallInterlacingMatrices
@@ -767,6 +773,7 @@ import RealRooted.Interlacing.Multiplicity
 import RealRooted.Interlacing.NegativeRoots
 import RealRooted.Interlacing.OuterDifference
 import RealRooted.Interlacing.PencilPreserver
+import RealRooted.Interlacing.RemainderCertificate
 import RealRooted.Interlacing.Residue
 import RealRooted.Interlacing.ResidueCriterion
 import RealRooted.Interlacing.ResidueEulerStep
