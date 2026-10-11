@@ -135,17 +135,20 @@ theorem natDegree_le_of_derivRec {Q a b : ℕ → ℝ[X]} (ha : ∀ n, (a n).nat
       by_cases hn : n = 0
       · subst n
         rw [hQ 0]
-        have hder : (Q 0).derivative = 0 := derivative_eq_zero_of_natDegree_eq_zero h0
+        have hder : (Q 0).derivative = 0 := Polynomial.derivative_eq_zero.mpr h0
         rw [hder, mul_zero, zero_add]
-        exact natDegree_mul_le.trans (by rw [hb 0, h0]; lia)
+        have hb0 := hb 0
+        exact natDegree_mul_le.trans (by lia)
       · rw [hQ n]
         apply natDegree_add_le_of_degree_le
         · apply natDegree_mul_le.trans
           have hder : (Q n).derivative.natDegree ≤ n - 1 := by
             rw [Polynomial.natDegree_derivative]
             exact Nat.sub_le_sub_right ih 1
+          have han := ha n
           lia
         · apply natDegree_mul_le.trans
+          have hbn := hb n
           lia
 
 /-- The recurrence-transform identity assuming only a constant initial row. -/

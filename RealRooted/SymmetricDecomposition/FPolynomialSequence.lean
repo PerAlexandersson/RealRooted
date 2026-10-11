@@ -88,8 +88,7 @@ lemma StrictInterl.of_mul_X_sub_C_left_of_roots_gt
     lia
   have hshape' : sf.length + 1 = rs.length := by
     rw [hss_is'] at hlen_eq
-    simp at hlen_eq ⊢
-    exact hlen_eq
+    simpa using hlen_eq
   have hrs_nonempty : rs ≠ [] := by
     intro hz
     have hlen_zero : ss.length = 0 := by simpa [hz] using hlen_eq
