@@ -1697,6 +1697,8 @@ The root-amplitude and coefficient-dominance challenge pages add two modules. Th
 
 The reciprocal-shift and product-sequence challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+The Edrei-Thoma challenge page adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash

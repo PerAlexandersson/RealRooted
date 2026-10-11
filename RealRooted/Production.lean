@@ -280,6 +280,7 @@ import RealRooted.Challenges.CommonInterleaver
 import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.DerivativeInterlacing
 import RealRooted.Challenges.Descartes
+import RealRooted.Challenges.EdreiThoma
 import RealRooted.Challenges.EnestromKakeya
 import RealRooted.Challenges.EulerBidiagonal
 import RealRooted.Challenges.Eulerian
