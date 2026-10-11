@@ -1,4 +1,5 @@
 import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 import RealRooted.BorceaBranden.FiniteSymbolClassification
 import RealRooted.BorceaBranden.UnivariateFiniteSymbol
@@ -47,6 +48,11 @@ label = "Finite-symbol theorem: a stable symbol gives a real-rootedness preserve
 name = "RealRooted.BorceaBranden.coordinateDiagonalOperator_preserves_stability"
 module = "RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier"
 label = "Coordinate PF multipliers preserve multivariate stability"
+
+[[theorems]]
+name = "RealRooted.BorceaBranden.finiteOrderWeylOperator_preserves_stability"
+module = "RealRooted.BorceaBranden.FiniteOrderWeylPreserver"
+label = "A stable signed Weyl symbol gives a stability preserver of any degree"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -62,6 +68,11 @@ $\sum_{k \le d} \binom{d}{k} \gamma(k) t^k$ is a PF polynomial, then this operat
 stable polynomial of degree at most $d$ in $x_q$ to a stable polynomial or to zero. The other
 variables are unrestricted. In particular, every PF multiplier sequence, and every falling
 factorial $k \mapsto n^{\underline{k}}$, acts stably in a single coordinate.
+
+Combining the falling-factorial multiplier with the finite-symbol theorem on each degree box
+gives the finite-order Weyl-symbol theorem: if $T = \sum_{j \le m} Q_j(x) \partial_q^j$ has a
+stable signed symbol $\sum_j Q_j(x) (-w)^j$, then $T$ maps every stable polynomial, of any
+degree, to a stable polynomial or to zero.
 
 ## References
 
