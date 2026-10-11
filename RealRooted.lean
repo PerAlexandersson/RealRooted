@@ -1776,6 +1776,8 @@ import RealRooted.Wronskian.Successor.Signs
 import RealRooted.Wronskian.Successor.Splits
 import RealRooted.Wronskian.WeakForward
 import RealRooted.PFPolynomial.PreserverClosure
+import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+
 import RealRooted.EulerBidiagonal.Preservation
 
 import RealRooted.LiuWang.FiniteFamily
