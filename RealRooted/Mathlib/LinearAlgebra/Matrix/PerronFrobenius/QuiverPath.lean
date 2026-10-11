@@ -32,8 +32,8 @@ reasoning about paths in a `Quiver` (directed graph). The key concepts and resul
     - `path_decomposition_first_edge`, `path_decomposition_last_edge`: decompose a path at the first
       or last edge.
     - `exists_decomp_at_length`: split a path so the first component has a specified length.
-    - `exists_decomp_of_mem_vertices`, `exists_decomp_of_mem_vertices_prop`: split at an arbitrary
-      visited vertex, with a proposition version.
+    - `exists_eq_comp_of_mem_vertices`, `exists_decomp_of_mem_vertices_prop`: split at an
+      arbitrary visited vertex, with a proposition version.
     - `split_at_vertex`: decompose a path precisely at the position of a chosen vertex.
 
 ## 3. Boundary and Crossing Edges
@@ -224,24 +224,6 @@ variable {α : Type*} [DecidableEq α]
 def List.toPath {a b : V} (e : a ⟶ b) : Path a b :=
   Path.nil.cons e
 
-/-- The head of the vertices list is the start vertex. -/
-@[simp]
-lemma vertices_head_eq_start {a b : V} (p : Path a b) :
-    p.vertices.head (vertices_ne_nil p) = a := by
-  induction p with
-  | nil => simp only [vertices_nil, List.head_cons]
-  | cons p' _ ih =>
-    simp only [vertices_cons, List.concat_eq_append]
-    have : p'.vertices ≠ [] := vertices_ne_nil p'
-    simp only [List.head_append_of_ne_nil this]
-    exact ih
-
-/-- The last element of the vertices list is the end vertex. -/
-@[simp]
-lemma vertices_getLast_eq_end {a b : V} (p : Path a b) :
-  p.vertices.getLast (vertices_ne_nil p) = b :=
-  vertices_getLast p (vertices_ne_nil p)
-
 variable {V : Type*} [Quiver V]
 
 lemma end_prefix_eq_get_vertices {a b c : V} (p₁ : Path a c) (p₂ : Path c b) :
@@ -252,7 +234,7 @@ lemma end_prefix_eq_get_vertices {a b c : V} (p₁ : Path a c) (p₂ : Path c b)
     Nat.lt_one_iff, pos_of_gt, or_true]⟩ := by
   simp only [List.get_eq_getElem, vertices_comp, List.length_dropLast, vertices_length,
     add_tsub_cancel_right, le_refl, List.getElem_append_right, tsub_self, List.getElem_zero,
-    vertices_head_eq_start]
+    vertices_head_eq]
 
 end Quiver.Path
 
@@ -368,41 +350,6 @@ theorem exists_decomp_at_length {a b : V} (p : Path a b) {n : ℕ} (hn : n ≤ p
         refine ⟨c, p'.cons e, Path.nil, ?_, ?_⟩
         · simp only [cons_eq_comp_toPath, comp_nil]
         · simp only [cons_eq_comp_toPath, length_comp, length_toPath, Nat.succ_eq_add_one]
-
-theorem exists_decomp_of_mem_vertices {a b v : V} (p : Path a b)
-  (h : v ∈ p.vertices) : ∃ (p₁ : Path a v) (p₂ : Path v b), p = p₁.comp p₂ := by
-  obtain ⟨l₁, l₂, hv⟩ := List.exists_mem_split h
-  have h_len : l₁.length ≤ p.length := by
-    have : p.vertices.length = p.length + 1 := vertices_length p
-    have : l₁.length < p.vertices.length := by
-      rw [hv, List.length_append, List.length_cons]
-      lia
-    lia
-  obtain ⟨c, p₁, p₂, hp, hl⟩ := exists_decomp_at_length p h_len
-  suffices hvc : v = c by
-    subst hvc
-    exact ⟨p₁, p₂, hp⟩
-  have h_verts : p.vertices = p₁.vertices.dropLast ++ p₂.vertices := by
-    rw [hp, vertices_comp]
-  have h_l1_len : l₁.length = p₁.vertices.dropLast.length := by
-    have : p₁.vertices.length = p₁.length + 1 := vertices_length p₁
-    simp only [List.length_dropLast, this, hl, add_tsub_cancel_right]
-  have h_l1_eq : l₁ = p₁.vertices.dropLast := by
-    have : l₁ ++ v :: l₂ = p₁.vertices.dropLast ++ p₂.vertices := by
-      rw [← hv, h_verts]
-    exact List.append_inj_left this h_l1_len
-  have h_v_l2 : v :: l₂ = p₂.vertices := by
-    have : l₁ ++ v :: l₂ = p₁.vertices.dropLast ++ p₂.vertices := by
-      rw [← hv, h_verts]
-    rw [h_l1_eq] at this
-    exact List.append_cancel_left this
-  have : p₂.vertices.head? = some c := by
-    cases p₂ with
-    | nil => simp only [vertices_nil, List.head?_cons]
-    | cons _ _ => exact vertices_head? _
-  rw [← h_v_l2] at this
-  simp only [List.head?_cons, Option.some.injEq] at this
-  exact this
 
 /-
 /- Equality of paths implies equality of their start and end vertices. -/
@@ -650,7 +597,7 @@ theorem isStrictlySimple_of_shortest
       linarith
     exact (List.count_pos_iff).1 (lt_of_lt_of_le Nat.zero_lt_one this)
   obtain ⟨q, c, h_p1_split⟩ :=
-    exists_decomp_of_mem_vertices p₁
+    exists_eq_comp_of_mem_vertices p₁
       (List.mem_of_mem_dropLast hv_in_p1_dropLast)
   have hc_pos : c.length > 0 := by
     by_cases h_len_zero : c.length = 0
@@ -676,7 +623,7 @@ theorem isStrictlySimple_of_shortest
               List.prefix_append _ _
             exact dropLast_prefix q.vertices
           have h_eq : List.idxOf v q.vertices = List.idxOf v q.vertices.dropLast :=
-            idxOf_eq_idxOf_of_isPrefix h_prefix h_mem
+            (List.IsPrefix.idxOf_eq_of_mem h_prefix h_mem).symm
           simpa [i, h_eq] using h_lt
         rw [List.length_dropLast, vertices_length] at h_idx_lt_dropLast_len
         exact h_idx_lt_dropLast_len
@@ -684,7 +631,7 @@ theorem isStrictlySimple_of_shortest
         split_at_vertex q i hi_verts
       have h_split_v_eq_v : split_v = v := by
         rw [h_v_eq]
-        exact List.get_idxOf_of_mem (List.mem_of_mem_dropLast h_mem)
+        exact List.idxOf_get (List.idxOf_lt_length_of_mem (List.mem_of_mem_dropLast h_mem))
       subst h_split_v_eq_v
       let shorter_path := shorter_q.comp p₂
       have h_shorter_total : shorter_path.length < p.length := by
