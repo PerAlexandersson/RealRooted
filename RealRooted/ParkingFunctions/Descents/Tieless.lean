@@ -86,7 +86,7 @@ theorem mem_tielessParkingFunctions_iff_embed {n : ℕ}
 /-- The embedding preserves the descent monomial of a nonempty word. -/
 theorem descentMonomial_parkingWordEmbed {R : Type*} [Semiring R]
     {n : ℕ} (w : Fin (n + 1) → Fin (n + 1)) :
-    (X : R[X]) ^ BrandenVecchi.smirnovDescentNumber (parkingWordEmbed w) =
+    (X : R[X]) ^ (List.ofFn (parkingWordEmbed w)).descentCount =
       X ^ (List.ofFn w).descentCount := by
   change X ^ (List.ofFn (parkingWordEmbed w)).descentCount = X ^ (List.ofFn w).descentCount
   rw [descentCount_parkingWordEmbed]

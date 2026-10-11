@@ -286,12 +286,6 @@ def signedCollisionNumber {q p : ℕ} :
   | 0, _ => 0
   | _ + 1, w => (collisionSet w).card
 
-/-- Number of descents in a finite signed word, including the empty word. -/
-def signedDescentNumber {q p : ℕ} :
-    {n : ℕ} → (Fin n → SignedLetter q p) → ℕ
-  | 0, _ => 0
-  | _ + 1, w => (List.ofFn w).descentCount
-
 @[simp]
 theorem signedCollisionNumber_zero {q p : ℕ}
     (w : Fin 0 → SignedLetter q p) : signedCollisionNumber w = 0 := rfl
@@ -302,24 +296,9 @@ theorem signedCollisionNumber_succ {q p n : ℕ}
     signedCollisionNumber w = (collisionSet w).card := rfl
 
 @[simp]
-theorem signedDescentNumber_zero {q p : ℕ}
-    (w : Fin 0 → SignedLetter q p) : signedDescentNumber w = 0 := rfl
-
-@[simp]
-theorem signedDescentNumber_succ {q p n : ℕ}
-    (w : Fin (n + 1) → SignedLetter q p) :
-    signedDescentNumber w =
-      (List.ofFn w).descentCount := rfl
-
-@[simp]
 theorem signedCollisionNumber_one {q p : ℕ}
     (w : Fin 1 → SignedLetter q p) : signedCollisionNumber w = 0 := by
   simp [collisionSet]
-
-@[simp]
-theorem signedDescentNumber_one {q p : ℕ}
-    (w : Fin 1 → SignedLetter q p) : signedDescentNumber w = 0 := by
-  simp [List.descentCount]
 
 /-- Appending a letter increments the collision number exactly when it agrees
 with the old final letter. -/
@@ -341,14 +320,6 @@ theorem signedCollisionNumber_snoc {q p n : ℕ}
   · rw [ite_eq_right h]
     simp [h]
 
-/-- Appending a letter increments the descent number exactly when the new
-letter is smaller than the old final letter. -/
-theorem signedDescentNumber_snoc {q p n : ℕ}
-    (w : Fin (n + 1) → SignedLetter q p) (x : SignedLetter q p) :
-    signedDescentNumber (Fin.snoc w x) =
-      signedDescentNumber w + if x < w (Fin.last n) then 1 else 0 := by
-  simpa only [signedDescentNumber_succ] using List.descentCount_ofFn_snoc w x
-
 theorem signedCollisionNumber_le {q p n : ℕ}
     (w : Fin n → SignedLetter q p) : signedCollisionNumber w ≤ n - 1 := by
   cases n with
@@ -356,13 +327,6 @@ theorem signedCollisionNumber_le {q p n : ℕ}
   | succ n =>
       change (collisionSet w).card ≤ n
       simpa using Finset.card_le_card (Finset.subset_univ (collisionSet w))
-
-theorem signedDescentNumber_le {q p n : ℕ}
-    (w : Fin n → SignedLetter q p) : signedDescentNumber w ≤ n - 1 := by
-  cases n with
-  | zero => simp
-  | succ n =>
-      simpa using List.descentCount_ofFn_le w
 
 /-- Every collision in an admissible signed word occurs at a negative letter. -/
 theorem IsSignedWord.isNegative_of_mem_collisionSet {q p n : ℕ}
