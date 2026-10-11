@@ -1,4 +1,5 @@
 import RealRooted.LiebSokalOperator
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Differential operators on disjoint variable blocks
@@ -13,32 +14,6 @@ namespace RealRooted
 
 noncomputable section
 
-private theorem pderiv_comm
-    {R sigma : Type*} [CommSemiring R] (i j : sigma)
-    (P : MvPolynomial sigma R) :
-    MvPolynomial.pderiv i (MvPolynomial.pderiv j P) =
-      MvPolynomial.pderiv j (MvPolynomial.pderiv i P) := by
-  classical
-  induction P using MvPolynomial.induction_on' with
-  | monomial d c =>
-      simp only [MvPolynomial.pderiv_monomial]
-      by_cases hij : i = j
-      · subst j
-        rfl
-      · have hji : j ≠ i := Ne.symm hij
-        have hsub :
-            (d - Finsupp.single j 1) - Finsupp.single i 1 =
-              (d - Finsupp.single i 1) - Finsupp.single j 1 := by
-          ext k
-          by_cases hki : k = i <;> by_cases hkj : k = j <;>
-            simp_all
-        rw [hsub]
-        congr 1
-        simp [hij, hji]
-        ring
-  | add P Q hP hQ =>
-      simp only [map_add, hP, hQ]
-
 private theorem pderiv_iteratedPDerivAt_comm
     {R sigma : Type*} [CommSemiring R] (i j : sigma) (n : ℕ)
     (P : MvPolynomial sigma R) :
@@ -48,7 +23,7 @@ private theorem pderiv_iteratedPDerivAt_comm
   | zero => rfl
   | succ n ih =>
       simp only [iteratedPDerivAt]
-      rw [pderiv_comm, ih]
+      rw [MvPolynomial.pderiv_comm, ih]
 
 private theorem iteratedPDerivAt_comm
     {R sigma : Type*} [CommSemiring R] (i j : sigma) (m n : ℕ)

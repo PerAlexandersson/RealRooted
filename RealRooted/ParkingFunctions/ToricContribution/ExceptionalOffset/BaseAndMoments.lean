@@ -1,6 +1,7 @@
 import RealRooted.Jacobi.Orthogonality.Integral
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import RealRooted.Mathlib.Algebra.Ring.Parity
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
@@ -45,9 +46,8 @@ def exceptionalEulerInverse (m ε : ℕ) (γ : ℝ) : ℝ[X] :=
 theorem coeff_exceptionalBasePolynomial (m ε k : ℕ) :
     (exceptionalBasePolynomial m ε).coeff k =
       if k ≤ m then exceptionalBaseCoeff m ε k else 0 := by
-  simp only [exceptionalBasePolynomial, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (m + 1)) k]
-  simp
+  simpa only [exceptionalBasePolynomial, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial (exceptionalBaseCoeff m ε) (m + 1) k
 
 @[simp]
 theorem coeff_exceptionalEulerInverse (m ε k : ℕ) (γ : ℝ) :
@@ -55,9 +55,9 @@ theorem coeff_exceptionalEulerInverse (m ε k : ℕ) (γ : ℝ) :
       if k ≤ m then
         exceptionalBaseCoeff m ε k * γ / (γ + k)
       else 0 := by
-  simp only [exceptionalEulerInverse, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (m + 1)) k]
-  simp
+  simpa only [exceptionalEulerInverse, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial
+      (fun i => exceptionalBaseCoeff m ε i * γ / (γ + i)) (m + 1) k
 
 @[simp]
 theorem exceptionalBaseCoeff_zero (m ε : ℕ) :
