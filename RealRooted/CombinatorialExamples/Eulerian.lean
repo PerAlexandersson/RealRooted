@@ -38,7 +38,7 @@ lemma eulerianTilde_recurrence (n : Nat) :
 
 lemma eulerianTilde_one : eulerianTilde 1 = X + X ^ 2 := by
   rw [eulerianTilde_recurrence 0]
-  have htwo : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) := C_ofNat 2
+  have htwo : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) := (ofNat_def 2).symm
   simp only [CharP.cast_eq_zero, zero_add, eulerianTilde_zero, derivative_X, mul_one]
   grind
 

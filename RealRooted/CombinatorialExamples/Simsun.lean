@@ -51,8 +51,8 @@ lemma simsun_three : simsun 3 = 1 + C (4 : ℝ) * X := by
     _ = 1 + X + C (2 : ℝ) * X + C (2 : ℝ) * X * X + (X - C (2 : ℝ) * X * X) := by ring
     _ = 1 + X + C (2 : ℝ) * X + X := by ring
     _ = 1 + X * C (4 : ℝ) := by
-          have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := C_ofNat 2
-          have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := C_ofNat 4
+          have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := (ofNat_def 2).symm
+          have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := (ofNat_def 4).symm
           grind
     _ = 1 + C (4 : ℝ) * X := by simp
 

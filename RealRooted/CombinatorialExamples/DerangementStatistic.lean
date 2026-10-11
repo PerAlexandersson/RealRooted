@@ -418,7 +418,7 @@ theorem derangementExcGenPoly_eq_polynomial :
           DerangementTransform.polynomial_recurrence]
         rw [ih (n + 1) (by lia), ih (n + 2) (by lia)]
         have hc : C (n + 2 : ℝ) = (n + 2 : ℝ[X]) := by
-          exact C_eq_natCast (n + 2)
+          simp [ofNat_def]
         rw [hc]
 
 /-- The derangement excedance generating polynomial is real-rooted for `n ≥ 2`. -/
