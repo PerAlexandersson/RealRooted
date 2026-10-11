@@ -1710,6 +1710,8 @@ The Edrei-Thoma challenge page adds one module. The budgets of `RealRooted`, `Pr
 
 The new module Interlacing/RemainderCertificate adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+The PF preserver-closure module (#1420) adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
