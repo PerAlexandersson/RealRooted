@@ -519,6 +519,38 @@ private lemma isRealRooted_transformed_linear {r : ℝ} (hr : r ≤ 0) :
   exact isRealRooted_C_mul (isRealRooted_X_sub_C (r / (1 - r))).1
     (isRealRooted_X_sub_C (r / (1 - r))).2 h1r_ne
 
+/-- The `f`-polynomial transform preserves splitting with no sign condition on the
+coefficients: it is the substitution `X ↦ X / (X + 1)` homogenized to degree `d`, so a root
+`r` of `p` becomes a root `r / (1 - r)`, or lowers the degree when `r = 1`. -/
+theorem splits_fPolynomial {d : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ d) (hp : p.Splits) :
+    (fPolynomial d p).Splits := by
+  induction d generalizing p with
+  | zero =>
+      rw [Polynomial.eq_C_of_natDegree_le_zero hpdeg]
+      simp [fPolynomial]
+  | succ d ih =>
+      by_cases hpd : p.natDegree ≤ d
+      · rw [fPolynomial_succ_of_natDegree_le hpd]
+        refine Splits.mul ?_ (ih hpd hp)
+        simpa using Splits.X_add_C (1 : ℝ)
+      by_cases hp0 : p = 0
+      · simp [hp0]
+      have hcard : 0 < p.roots.card := by
+        rw [card_roots_of_splits hp]
+        lia
+      obtain ⟨r, hr⟩ := Multiset.card_pos_iff_exists_mem.mp hcard
+      obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr ((mem_roots hp0).mp hr)
+      have hq0 : q ≠ 0 := by
+        rintro rfl
+        simp_all
+      have hqdeg : q.natDegree ≤ d := by
+        have h := congrArg natDegree hq
+        rw [natDegree_mul (X_sub_C_ne_zero r) hq0, natDegree_X_sub_C] at h
+        lia
+      rw [hq, fPolynomial_X_sub_C_mul_succ d r hqdeg]
+      exact (Splits.of_natDegree_le_one (by compute_degree)).mul
+        (ih hqdeg (hp.of_dvd hp0 ⟨X - C r, by rw [hq, mul_comm]⟩))
+
 /-- The Brändén--Solus `f`-polynomial transform preserves real-rootedness on
 nonnegative-coefficient inputs of degree at most `d`. -/
 theorem isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs

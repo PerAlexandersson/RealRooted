@@ -275,14 +275,17 @@ import RealRooted.Challenges.CauchyInterlacing
 import RealRooted.Challenges.ChordalClawFreeAcyclicSinks
 import RealRooted.Challenges.ChudnovskySeymour
 import RealRooted.Challenges.ClawFreeOrientationSinks
+import RealRooted.Challenges.CoefficientDominance
 import RealRooted.Challenges.CommonInterleaver
 import RealRooted.Challenges.DecoEulerian
 import RealRooted.Challenges.DerivativeInterlacing
 import RealRooted.Challenges.Descartes
+import RealRooted.Challenges.EdreiThoma
 import RealRooted.Challenges.EnestromKakeya
 import RealRooted.Challenges.EulerBidiagonal
 import RealRooted.Challenges.Eulerian
 import RealRooted.Challenges.EulerianVariations
+import RealRooted.Challenges.FPolynomialRecurrences
 import RealRooted.Challenges.FactorialCompression
 import RealRooted.Challenges.Favard
 import RealRooted.Challenges.FiniteFreeConvolutions
@@ -327,8 +330,12 @@ import RealRooted.Challenges.OperatorPreservers
 import RealRooted.Challenges.ParkingFunctions
 import RealRooted.Challenges.PeakPolynomials
 import RealRooted.Challenges.PerronFrobenius
+import RealRooted.Challenges.ProductSequence
 import RealRooted.Challenges.RealStability
 import RealRooted.Challenges.RecurrenceRootWindows
+
+import RealRooted.Challenges.ReciprocalShift
+import RealRooted.Challenges.RootAmplitude
 import RealRooted.Challenges.SchurCohn
 import RealRooted.Challenges.SeparablePermutations
 import RealRooted.Challenges.SmallInterlacingMatrices
@@ -1420,6 +1427,8 @@ import RealRooted.SymmetricDecomposition.DerangementTransform
 import RealRooted.SymmetricDecomposition.EulerianTransform
 import RealRooted.SymmetricDecomposition.FPolynomial
 import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
+import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
+import RealRooted.SymmetricDecomposition.FPolynomialSequence
 import RealRooted.SymmetricDecomposition.Theorem26
 import RealRooted.Tactic
 import RealRooted.Tactic.AffineDerivative
@@ -1536,6 +1545,7 @@ import RealRooted.Tactic.RootCount.LowDegreeSyntax
 import RealRooted.Tactic.RootCount.SequenceCore
 import RealRooted.Tactic.Row.Core
 import RealRooted.Tactic.Row.DerivLag
+import RealRooted.Tactic.Row.FTransform
 import RealRooted.Tactic.Row.LagFeedback
 import RealRooted.Tactic.Row.LowerOrder
 import RealRooted.Tactic.Row.ParityProduct
