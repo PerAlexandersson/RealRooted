@@ -90,22 +90,23 @@ def fTransformSplitsGoal : TacticM Unit := do
     | (simp only [RealRooted.fPolynomial_two, RealRooted.fPolynomial_one, Polynomial.coeff_add,
         Polynomial.coeff_C_mul, Polynomial.coeff_C_mul_X_pow, Polynomial.coeff_C_mul_X,
         Polynomial.coeff_C, Polynomial.coeff_X_pow, Polynomial.coeff_X]
-       norm_num
+       norm_num [map_ofNat]
        ring)
     | rr_cf_identity)
   withMainContext do
   evalTactic (← `(tactic|
     have $link:ident := RealRooted.eq_fPolynomial_of_derivRec_of_natDegree_zero
       (P := $Pi) (Q := $Q) (a := fun $n:ident : ℕ => $aT) (b := fun $n:ident : ℕ => $bT)
-      (fun $n:ident => by compute_degree) (fun $n:ident => by compute_degree)
-      (fun $n:ident => by rw [$Q:ident])
-      (fun $n:ident => by rw [$eqn:ident $n:ident]; $identity:tactic)
-      (by simp [$Pi:ident, $Q:ident, RealRooted.fPolynomial])
-      (by simp [$Q:ident])))
+      (ha := fun $n:ident => by compute_degree) (hb := fun $n:ident => by compute_degree)
+      (hQ := fun $n:ident => by rw [$Q:ident])
+      (h0deg := by simp [$Q:ident])
+      (hP := fun $n:ident => by rw [$eqn:ident $n:ident]; $identity:tactic)
+      (h0 := by simp [$Pi:ident, $Q:ident, RealRooted.fPolynomial, map_ofNat])))
   withMainContext do
   evalTactic (← `(tactic|
     exact RealRooted.splits_of_eq_fPolynomial $link
-      (RealRooted.natDegree_le_of_derivRec (fun $n:ident => by compute_degree)
+      (RealRooted.natDegree_le_of_derivRec (Q := $Q) (a := fun $n:ident : ℕ => $aT)
+        (b := fun $n:ident : ℕ => $bT) (fun $n:ident => by compute_degree)
         (fun $n:ident => by compute_degree) (fun $n:ident => by rw [$Q:ident]) (by simp [$Q:ident]))
       (fun $n:ident => by rr_row_splits) $t))
 
