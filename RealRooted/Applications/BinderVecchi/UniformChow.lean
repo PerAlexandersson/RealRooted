@@ -304,26 +304,12 @@ theorem chowUniform_eq {r n : ℕ} (hr : 1 ≤ r) :
 
 /-! ## The reflection identity for the augmented Chow polynomial -/
 
-private theorem natDegree_eulerian_le (s : ℕ) : (BinderVecchi.eulerian s).natDegree ≤ s := by
-  cases s with
-  | zero => simp [BinderVecchi.eulerian]
-  | succ s => exact (generalizedEulerian_natDegree 1 s).le.trans (Nat.le_succ s)
-
-private theorem reflect_eulerian (s : ℕ) :
-    (BinderVecchi.eulerian s).reflect s = EulerianTransform.image s := by
-  cases s with
-  | zero => simp [BinderVecchi.eulerian, EulerianTransform.image]
-  | succ s =>
-    simp only [BinderVecchi.eulerian, EulerianTransform.image]
-    rw [reflect_add_right_of_reflect 1 (generalizedEulerian_natDegree 1 s).le
-      (generalizedEulerian_one_reflect s), pow_one, mul_comm]
-
 private theorem reflect_image {s r : ℕ} (hs : s ≤ r) :
     (EulerianTransform.image s).reflect r = X ^ (r - s) * BinderVecchi.eulerian s := by
   have h := reflect_mul (X ^ (r - s)) (BinderVecchi.eulerian s) (F := r - s) (G := s)
-    (natDegree_X_pow_le _) (natDegree_eulerian_le s)
+    (natDegree_X_pow_le _) (BinderVecchi.natDegree_eulerian_le s)
   rw [show r - s + s = r by lia, reflect_monomial, revAt_le le_rfl, Nat.sub_self, pow_zero,
-    reflect_eulerian, one_mul] at h
+    BinderVecchi.reflect_eulerian, one_mul] at h
   rw [← h, reflect_reflect]
 
 /-- The Eulerian image of `g_{r,n}` is `1 + ∑_{1 ≤ s < r} C(n,s) X A_s`. -/

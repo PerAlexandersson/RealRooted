@@ -218,21 +218,6 @@ private theorem commonPhaseRestriction_eq_realAffineLineRestriction
     simp
   · rfl
 
-private theorem eval_realDetPencil
-    (A : Matrix (Fin n) (Fin n) ℝ)
-    (B : Sum (Fin 1) (Fin m) → Matrix (Fin n) (Fin n) ℝ)
-    (z : Sum (Fin 1) (Fin m) → ℝ) :
-    MvPolynomial.eval z (realDetPencil A B) =
-      (A + ∑ k, z k • B k).det := by
-  unfold realDetPencil
-  erw [RingHom.map_det]
-  congr 1
-  apply Matrix.ext
-  intro i j
-  change MvPolynomial.eval z
-      (MvPolynomial.C (A i j) + ∑ k, MvPolynomial.X k * MvPolynomial.C (B k i j)) = _
-  simp [Matrix.add_apply, Matrix.sum_apply, Matrix.smul_apply]
-
 private theorem pencil_ne_zero
     (As : Fin m → Matrix (Fin n) (Fin n) ℝ) : pencil As ≠ 0 := by
   intro hzero
@@ -304,7 +289,7 @@ private theorem mixedCharacteristic_natDegree_eq
       | Sum.inl _ => (1 : ℝ)
       | Sum.inr _ => 0) (pencil As) = 1
     rw [show pencil As = realDetPencil 0 (pencilMatrices As) by rfl]
-    rw [eval_realDetPencil]
+    rw [RealRooted.eval_realDetPencil]
     simp [pencilMatrices]
   by_cases hn : n = 0
   · have hQeq : Q = H := by
