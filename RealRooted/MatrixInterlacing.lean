@@ -248,7 +248,7 @@ theorem hasAffineProperty_of_isAffineAdmissible
       | with_reducible exact interl_zero_right _
       | with_reducible exact interl_one_one
       | with_reducible exact interl_one_X
-      | with_reducible exact interl_one_affine hs
+      | with_reducible exact interl_one_affine_linear hs
       | with_reducible exact interl_one_affine_add_one hs
       | with_reducible exact interl_one_affine_add_X hs
       | with_reducible exact interl_X_X

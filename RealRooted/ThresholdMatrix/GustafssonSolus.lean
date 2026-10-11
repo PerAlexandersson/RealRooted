@@ -19,12 +19,6 @@ namespace GustafssonSolus
 
 /-! ### Finite-entry shape helpers -/
 
-private lemma interl_gs_X_X : Interl (X : ℝ[X]) X :=
-  Interl.refl fun _ => isRealRooted_X.2
-
-private lemma interl_gs_one_one : Interl (1 : ℝ[X]) 1 := by
-  simpa using interl_C_C (1 : ℝ) (1 : ℝ)
-
 private def GS2x2EntryShape (a b c d : ℝ[X]) : Prop :=
   Threshold2x2EntryTuple a b c d 0 0 0 0 ∨
   Threshold2x2EntryTuple a b c d 0 0 X X ∨
@@ -53,7 +47,7 @@ private lemma GS2x2EntryShape.has2x2 {a b c d : ℝ[X]}
     h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h <;>
     rcases h with ⟨rfl, rfl, rfl, rfl⟩
   · simpa using interl_zero_zero
-  · simpa using interl_gs_X_X
+  · simpa using interl_X_X
   · simpa using (interl_zero_right (C s * X + C t + 1 : ℝ[X]))
   · simpa using interl_affine_X hs ht
   · simpa using interl_affine_add_one_X hs ht

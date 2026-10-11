@@ -213,12 +213,10 @@ theorem strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos {f g : ℝ
     · intro r hr
       exact hg_nonpos r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
 
-theorem strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
-    (h : StrictInterl g (X * f))
-    (hdeg : f.natDegree = g.natDegree)
-    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
-    StrictInterl f g :=
-  strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos h hdeg hf_nonpos
+@[deprecated strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos
+  (since := "2026-10-11")]
+alias strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos :=
+  strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos
 
 /-- Wagner (3): if all roots of `f` and `g` are nonpositive, then `f`
 interlaces `g` if and only if `g` interlaces `X * f`.

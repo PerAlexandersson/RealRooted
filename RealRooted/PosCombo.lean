@@ -551,20 +551,6 @@ theorem of_aissenSchoenbergWhitney_right_pencil
   exact ⟨mul_ne_zero (by grind) (hne hz),
     .mul (.C _) <| (aissenSchoenbergWhitneyForward (hpf hz)).1⟩
 
-/--
-TNN-named version of `of_aissenSchoenbergWhitney_right_pencil`.
-
-This is convenient for LGV proofs, whose output is usually Toeplitz total
-nonnegativity rather than the PF alias.
--/
-theorem of_aissenSchoenbergWhitney_right_pencil_tnn
-    {f g : ℝ[X]}
-    (hne : ∀ {z : ℝ}, 0 ≤ z → f + C z * g ≠ 0)
-    (htnn : ∀ {z : ℝ}, 0 ≤ z → IsPolyaFreqSeq (f + C z * g).coeff) :
-    PosComboRealRooted f g :=
-  PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil hne
-    (fun {z} hz => htnn (z := z) hz)
-
 /-- Any two positive combinations from the same one-parameter family again form
 an Obreschkoff-compatible pair. -/
 lemma family_pair_right {f g : ℝ[X]} (h : PosComboRealRooted f g)

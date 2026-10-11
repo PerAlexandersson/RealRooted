@@ -138,16 +138,6 @@ theorem mem_peakSet {n : ℕ} {σ : Equiv.Perm (Fin n)} {j : Fin n} :
         rw [hk_eq] at hright
         simpa using hright
 
-private theorem ofFn_reverse {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    List.ofFn (reverse σ) = (List.ofFn σ).reverse := by
-  apply List.ext_getElem
-  · simp [reverse]
-  · intro i hi₁ hi₂
-    simp only [reverse, coe_trans, List.getElem_ofFn, Function.comp_apply, Fin.revPerm_apply,
-      List.getElem_reverse, List.length_ofFn, EmbeddingLike.apply_eq_iff_eq]
-    apply Fin.ext
-    simp [Fin.rev, Nat.sub_sub, Nat.add_comm]
-
 private theorem ofFn_complement {n : ℕ} (σ : Equiv.Perm (Fin n)) :
     List.ofFn (complement σ) = (List.ofFn σ).map Fin.rev := by
   have hrev : (Fin.revPerm : Fin n → Fin n) = Fin.rev := by

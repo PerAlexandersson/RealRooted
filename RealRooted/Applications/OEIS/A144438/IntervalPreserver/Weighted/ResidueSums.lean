@@ -34,7 +34,7 @@ theorem weightedDecoDiagonalLag_residue_sum_eq_kappa
           (weightedDecoDiagonal w n a).derivative.eval r) / (1 - r) =
       weightedDecoKappa w n a := by
   have hpOne := weightedDecoDiagonal_eval_one_pos hw (n := n) ha
-  have hsum := a144438_sum_companion_residue_div hsplits hnodup
+  have hsum := eval_div_eq_sum_residue_div hsplits hnodup
     (by rw [weightedDecoDiagonal_natDegree]; exact hn) (by
       rw [weightedDecoDiagonal_natDegree]
       exact weightedDecoDiagonalLag_degree_lt w hn a) hpOne.ne'
@@ -50,7 +50,7 @@ theorem weightedDecoDiagonalCompanion_residue_sum_eq
           (weightedDecoDiagonal w n a).derivative.eval r) / (1 - r) =
       (n : ℝ) - weightedDecoEta w n a + w * weightedDecoKappa w n a := by
   have hpOne := weightedDecoDiagonal_eval_one_pos hw (n := n) ha
-  have hsum := a144438_sum_companion_residue_div hsplits hnodup
+  have hsum := eval_div_eq_sum_residue_div hsplits hnodup
     (by rw [weightedDecoDiagonal_natDegree]; exact hn) (by
       rw [weightedDecoDiagonal_natDegree]
       exact weightedDecoDiagonalCompanion_degree_lt w hn a) hpOne.ne'
