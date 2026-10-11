@@ -1793,3 +1793,5 @@ import RealRooted.MultivariateStability.Substitution
 
 import RealRooted.Challenges.EndpointDerivative
 import RealRooted.Challenges.RootContinuity
+import RealRooted.BorceaBranden.Applications.PoissonStability
+import RealRooted.BorceaBranden.Applications.PoissonStar
