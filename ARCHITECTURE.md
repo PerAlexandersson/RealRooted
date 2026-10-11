@@ -1708,6 +1708,8 @@ The reciprocal-shift and product-sequence challenge pages add two modules. The b
 
 The Edrei-Thoma challenge page adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+The new module Interlacing/RemainderCertificate adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
