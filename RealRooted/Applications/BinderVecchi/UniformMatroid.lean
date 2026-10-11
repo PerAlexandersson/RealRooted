@@ -357,12 +357,14 @@ theorem isRealRooted_refinedHodgePoincare {r n i : ℕ} (hr : 1 ≤ r) (hi : 1 �
 
 /-! ## The Eulerian transformation and Theorem 1.6 -/
 
-private theorem natDegree_eulerian_le (s : ℕ) : (eulerian s).natDegree ≤ s := by
+/-- The Eulerian polynomial has degree at most its index. -/
+theorem natDegree_eulerian_le (s : ℕ) : (eulerian s).natDegree ≤ s := by
   cases s with
   | zero => simp [eulerian]
   | succ s => exact (generalizedEulerian_natDegree 1 s).le.trans (Nat.le_succ s)
 
-private theorem reflect_eulerian (s : ℕ) :
+/-- Reflecting the Eulerian polynomial gives its Eulerian-transform image. -/
+theorem reflect_eulerian (s : ℕ) :
     (eulerian s).reflect s = EulerianTransform.image s := by
   cases s with
   | zero => simp [eulerian, EulerianTransform.image]

@@ -138,16 +138,6 @@ theorem mem_peakSet {n : ℕ} {σ : Equiv.Perm (Fin n)} {j : Fin n} :
         rw [hk_eq] at hright
         simpa using hright
 
-private theorem ofFn_complement {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    List.ofFn (complement σ) = (List.ofFn σ).map Fin.rev := by
-  have hrev : (Fin.revPerm : Fin n → Fin n) = Fin.rev := by
-    funext i
-    exact Fin.revPerm_apply i
-  rw [complement]
-  change List.ofFn (Fin.revPerm ∘ σ) = _
-  rw [hrev]
-  exact List.ofFn_comp' σ (Fin.rev : Fin n → Fin n)
-
 /-- Reversal transforms permutation descents using the word reversal formula. -/
 theorem descentSet_reverse {n : ℕ} (σ : Equiv.Perm (Fin n)) :
     (reverse σ).descentSet =
