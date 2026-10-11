@@ -1,6 +1,7 @@
 import Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 import Mathlib.Algebra.Order.BigOperators.Group.Multiset
 import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.Linarith
 
 /-!
@@ -36,7 +37,7 @@ theorem one_sub_sum_le_prod_one_sub {R : Type*} [CommRing R] [LinearOrder R]
 /-- Elementary symmetric functions of a nonnegative real multiset are nonnegative. -/
 theorem esymm_nonneg_of_forall_nonneg {s : Multiset ℝ} (hs : ∀ x ∈ s, 0 ≤ x) (n : ℕ) :
     0 ≤ s.esymm n := by
-  rw [Multiset.esymm]
+  unfold Multiset.esymm
   apply Multiset.sum_nonneg
   intro y hy
   rw [Multiset.mem_map] at hy
