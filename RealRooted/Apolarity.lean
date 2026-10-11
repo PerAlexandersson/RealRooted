@@ -1,4 +1,4 @@
-import Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Ring.Parity
 import Mathlib.Analysis.Complex.Polynomial.Basic
@@ -455,9 +455,9 @@ def coApolarPoint {R : Type*} [CommRing R] (n : Nat) (z : R) : R[X] :=
 theorem coeff_binomialLift {R : Type*} [CommRing R] (n : Nat) (f : R[X]) (k : Nat) :
     (binomialLift n f).coeff k =
       if k ≤ n then (Nat.choose n k : R) * f.coeff k else 0 := by
-  simp only [binomialLift, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (n + 1)) k]
-  simp
+  simpa only [binomialLift, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial
+      (fun i => (Nat.choose n i : R) * f.coeff i) (n + 1) k
 
 theorem natDegree_binomialLift_le {R : Type*} [CommRing R] (n : Nat) (f : R[X]) :
     (binomialLift n f).natDegree ≤ n := by
@@ -1138,9 +1138,9 @@ theorem coeff_apolarTwist {R : Type*} [CommRing R]
       if j ≤ n then
         (-1 : R) ^ (n - j) * g.coeff (n - j) * z ^ (n - j)
       else 0 := by
-  simp only [apolarTwist, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (n + 1)) j]
-  simp [Finset.mem_range]
+  simpa only [apolarTwist, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial
+      (fun i => (-1 : R) ^ (n - i) * g.coeff (n - i) * z ^ (n - i)) (n + 1) j
 
 theorem natDegree_apolarTwist_le {R : Type*} [CommRing R]
     (n : Nat) (z : R) (g : R[X]) :

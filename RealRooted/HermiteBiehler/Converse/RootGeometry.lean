@@ -134,53 +134,21 @@ lemma no_upper_root_left_of_stable {f g : ℝ[X]}
     {z : ℂ} (hz : 0 < z.im) (hroot : (complexify f).eval z = 0) : False :=
   no_upper_root_left_of_stable_of_ne_zero hstab hf.ne_zero hz hroot
 
+lemma no_upper_root_right_of_stable_of_ne_zero {f g : ℝ[X]}
+    (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
+    (hg : g ≠ 0)
+    {z : ℂ} (hz : 0 < z.im) (hroot : (complexify g).eval z = 0) : False := by
+  have hstab' : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (-g) f) := by
+    rw [← C_I_mul_hermiteBiehlerPolynomial]
+    exact hstab.C_mul (by simp)
+  apply no_upper_root_left_of_stable_of_ne_zero hstab' (neg_ne_zero.mpr hg) hz
+  simpa only [complexify, Polynomial.map_neg, Polynomial.eval_neg, neg_eq_zero] using hroot
+
 lemma no_upper_root_right_of_stable {f g : ℝ[X]}
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g))
     (hg : HasPosLeadingCoeff g)
-    {z : ℂ} (hz : 0 < z.im) (hroot : (complexify g).eval z = 0) : False := by
-  set h := hermiteBiehlerPolynomial f g with hh
-  have hzim : z.im ≠ 0 := hz.ne'
-  have : (complexify f).eval z ≠ 0 := fun hf₀ ↦
-    no_common_nonreal_root_of_stable hstab hzim hf₀ hroot
-  have : h.eval z = (complexify f).eval z := by simp [*]
-  have hhz : h.eval z ≠ 0 := by simp [*]
-  have hne : h ≠ 0 := fun h_zero ↦ hhz (by rw [h_zero, eval_zero])
-  have : h.eval ((starRingEnd ℂ) z) =
-      (starRingEnd ℂ) ((complexify f).eval z) := by
-    rw [hh, eval_hermiteBiehlerPolynomial, eval_complexify_conj, eval_complexify_conj,
-      hroot, map_zero, mul_zero, add_zero]
-  have heq : ‖h.eval ((starRingEnd ℂ) z)‖ = ‖h.eval z‖ := by simp_all
-  have hroots : ∀ w ∈ h.roots, w.im = 0 :=
-    roots_real_of_stable_norm_eq hne hstab hz heq
-  set P : ℂ[X] := (h.roots.map fun r ↦ X - C r).prod with hP
-  have hfac : h = C h.leadingCoeff * P := (IsAlgClosed.splits (k := ℂ) h).eq_prod_roots
-  have hevalh : h.eval z = h.leadingCoeff * P.eval z := by
-    conv_lhs => rw [hfac]
-    simp
-  have hevalhc : (h.map (starRingEnd ℂ)).eval z =
-      (starRingEnd ℂ) h.leadingCoeff * P.eval z := by
-    rw [map_conj_of_roots_real hroots, eval_mul, eval_C]
-  have hdiff : h - h.map (starRingEnd ℂ) = 2 * C Complex.I * complexify g := by
-    rw [hh, hermiteBiehler_map_conj, hermiteBiehlerPolynomial]
-    ring
-  have hzero : (h.leadingCoeff - (starRingEnd ℂ) h.leadingCoeff) * P.eval z = 0 := by
-    have hev := congrArg (fun q : ℂ[X] ↦ q.eval z) hdiff
-    simp only [eval_sub, eval_mul, eval_ofNat, eval_C] at hev
-    rw [hroot, mul_zero, hevalh, hevalhc] at hev
-    rw [sub_mul]
-    exact hev
-  have hPz : P.eval z ≠ 0 := by
-    intro hP₀
-    apply hhz
-    rw [hevalh, hP₀, mul_zero]
-  have hlceq : (starRingEnd ℂ) h.leadingCoeff = h.leadingCoeff := by
-    rcases mul_eq_zero.mp hzero with hc | hc
-    · exact (sub_eq_zero.mp hc).symm
-    · exact absurd hc hPz
-  have hmapself := map_conj_self_of_roots_real hlceq hroots
-  rw [hh] at hmapself
-  have hg₀ : g = 0 := g_eq_zero_of_hermiteBiehler_map_conj_self hmapself
-  simp_all
+    {z : ℂ} (hz : 0 < z.im) (hroot : (complexify g).eval z = 0) : False :=
+  no_upper_root_right_of_stable_of_ne_zero hstab hg.ne_zero hz hroot
 
 theorem splits_of_stable {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)

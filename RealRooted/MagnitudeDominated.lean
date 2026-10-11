@@ -15,16 +15,12 @@ noncomputable section
 
 namespace RealRooted
 
-/-- Magnitude-dominated lag interlacing criterion in the successor-degree case. -/
-theorem strictInterl_of_magnitude_dominated_succ
+private lemma eval_mul_neg_of_magnitude_dominated
     {f g₁ g₂ a b₁ b₂ : ℝ[X]}
-    (hg₁f : Interlaces g₁ f) (hg₁_pos : HasPosLeadingCoeff g₁)
-    (hF_pos : HasPosLeadingCoeff (a * f + b₁ * g₁ + b₂ * g₂))
-    (hdeg : (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree + 1)
     (hcert : ∀ r, f.IsRoot r →
       b₁.eval r * (g₁.eval r) ^ 2 + b₂.eval r * (g₂.eval r * g₁.eval r) < 0) :
-    StrictInterl f (a * f + b₁ * g₁ + b₂ * g₂) := by
-  refine strictInterl_of_interlaces_eval_mul_neg_succ hg₁f hg₁_pos hF_pos hdeg ?_
+    ∀ r, f.IsRoot r →
+      (a * f + b₁ * g₁ + b₂ * g₂).eval r * g₁.eval r < 0 := by
   intro r hr
   have hf0 : f.eval r = 0 := hr
   have hcert_r := hcert r hr
@@ -36,6 +32,18 @@ theorem strictInterl_of_magnitude_dominated_succ
           ring
     _ < 0 := hcert_r
 
+/-- Magnitude-dominated lag interlacing criterion in the successor-degree case. -/
+theorem strictInterl_of_magnitude_dominated_succ
+    {f g₁ g₂ a b₁ b₂ : ℝ[X]}
+    (hg₁f : Interlaces g₁ f) (hg₁_pos : HasPosLeadingCoeff g₁)
+    (hF_pos : HasPosLeadingCoeff (a * f + b₁ * g₁ + b₂ * g₂))
+    (hdeg : (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree + 1)
+    (hcert : ∀ r, f.IsRoot r →
+      b₁.eval r * (g₁.eval r) ^ 2 + b₂.eval r * (g₂.eval r * g₁.eval r) < 0) :
+    StrictInterl f (a * f + b₁ * g₁ + b₂ * g₂) := by
+  refine strictInterl_of_interlaces_eval_mul_neg_succ hg₁f hg₁_pos hF_pos hdeg ?_
+  exact eval_mul_neg_of_magnitude_dominated hcert
+
 /-- Magnitude-dominated lag interlacing criterion in the same-degree case. -/
 theorem strictInterl_of_magnitude_dominated_same
     {f g₁ g₂ a b₁ b₂ : ℝ[X]}
@@ -46,16 +54,7 @@ theorem strictInterl_of_magnitude_dominated_same
       b₁.eval r * (g₁.eval r) ^ 2 + b₂.eval r * (g₂.eval r * g₁.eval r) < 0) :
     StrictInterl f (a * f + b₁ * g₁ + b₂ * g₂) := by
   refine strictInterl_of_interlaces_eval_mul_neg_same hg₁f hg₁_pos hF_pos hdeg ?_
-  intro r hr
-  have hf0 : f.eval r = 0 := hr
-  have hcert_r := hcert r hr
-  calc
-    (a * f + b₁ * g₁ + b₂ * g₂).eval r * g₁.eval r
-        = b₁.eval r * (g₁.eval r) ^ 2 +
-            b₂.eval r * (g₂.eval r * g₁.eval r) := by
-          simp only [Polynomial.eval_add, Polynomial.eval_mul, hf0]
-          ring
-    _ < 0 := hcert_r
+  exact eval_mul_neg_of_magnitude_dominated hcert
 
 /-- Degree-bounded magnitude-dominated criterion. -/
 theorem strictInterl_of_magnitude_dominated

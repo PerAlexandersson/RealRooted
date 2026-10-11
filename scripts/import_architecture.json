@@ -22,7 +22,7 @@
       "max_modules": 1660
     },
     "RealRooted.Tactic.Examples": {
-      "max_modules": 708
+      "max_modules": 709
     },
     "RealRooted.ParkingFunctions.Descents.Words": {
       "max_modules": 137
@@ -127,22 +127,22 @@
       "max_modules": 138
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product": {
-      "max_modules": 52
+      "max_modules": 53
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability": {
-      "max_modules": 58
+      "max_modules": 59
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput": {
-      "max_modules": 50
+      "max_modules": 51
     },
     "RealRooted.Basic.Coefficients.Multivariate": {
       "max_modules": 7
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous": {
-      "max_modules": 44
+      "max_modules": 45
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary": {
-      "max_modules": 43
+      "max_modules": 44
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution": {
       "max_modules": 6
@@ -151,10 +151,10 @@
       "max_modules": 1
     },
     "RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction": {
-      "max_modules": 39
+      "max_modules": 40
     },
     "RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative": {
-      "max_modules": 34
+      "max_modules": 35
     },
     "RealRooted.PolynomialValueEulerNumerator.PF": {
       "max_modules": 98
@@ -184,7 +184,7 @@
       "max_modules": 167
     },
     "RealRooted.Challenges.Hadamard": {
-      "max_modules": 267
+      "max_modules": 268
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
       "max_modules": 17
@@ -625,7 +625,7 @@
       "max_modules": 202
    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
-      "max_modules": 45
+      "max_modules": 46
    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
       "max_modules": 194
@@ -634,16 +634,16 @@
       "max_modules": 12
     },
     "RealRooted.BorceaBranden.FiniteSymbolClassification": {
-      "max_modules": 41
+      "max_modules": 42
     },
     "RealRooted.BorceaBranden.Applications.UnivariateSymbol": {
       "max_modules": 21
     },
     "RealRooted.BorceaBranden.Applications.ComplexClassification": {
-      "max_modules": 42
+      "max_modules": 43
     },
     "RealRooted.Challenges.BorceaBranden": {
-      "max_modules": 169
+      "max_modules": 170
     },
     "RealRooted.Derivative": {
       "max_modules": 16
@@ -901,7 +901,7 @@
       "max_modules": 8
     },
     "RealRooted.Challenges.Narayana": {
-      "max_modules": 182
+      "max_modules": 183
     },
     "RealRooted.Tactic.Wagner": {
       "max_modules": 92
@@ -1579,7 +1579,7 @@
       "max_modules": 104
     },
     "RealRooted.Tactic": {
-      "max_modules": 540
+      "max_modules": 542
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 182

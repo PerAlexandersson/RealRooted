@@ -1,4 +1,5 @@
 import RealRooted.GeneralizedEulerian
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import Mathlib.Analysis.Calculus.SmoothSeries
 import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.RingTheory.PowerSeries.Derivative
@@ -135,39 +136,6 @@ theorem eulerianPowerSumSeries_mul_one_sub_X_pow : ∀ k : ℕ,
         ((PowerSeries.C (k : ℝ) + 2) * PowerSeries.X) * ih -
           ((1 - PowerSeries.X) ^ (k + 3)) * hstep
 
-private theorem coeff_one_sub_X_pow (n m : ℕ) :
-    PowerSeries.coeff m ((1 - PowerSeries.X : PowerSeries ℝ) ^ n) =
-      (-1 : ℝ) ^ m * (n.choose m : ℝ) := by
-  have h : (1 - PowerSeries.X : PowerSeries ℝ) = (-PowerSeries.X) + 1 := by ring
-  rw [h, add_pow, map_sum]
-  have hterm : ∀ i ∈ Finset.range (n + 1),
-      PowerSeries.coeff m ((-PowerSeries.X : PowerSeries ℝ) ^ i * 1 ^ (n - i) *
-          (n.choose i : PowerSeries ℝ)) =
-        if i = m then (-1 : ℝ) ^ m * (n.choose m : ℝ) else 0 := by
-    intro i _
-    have hpow : ((-PowerSeries.X : PowerSeries ℝ)) ^ i =
-        (PowerSeries.C ((-1 : ℝ) ^ i)) * PowerSeries.X ^ i := by
-      rw [neg_pow]
-      congr 1
-      rw [map_pow]
-      simp
-    rw [hpow, one_pow, mul_one]
-    rw [show (n.choose i : PowerSeries ℝ) = PowerSeries.C ((n.choose i : ℝ)) by simp]
-    rw [mul_comm (PowerSeries.C ((-1 : ℝ) ^ i) * PowerSeries.X ^ i),
-      ← mul_assoc, ← map_mul, PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow]
-    by_cases hi : i = m
-    · subst hi; simp [mul_comm]
-    · simp [hi, Ne.symm hi]
-  rw [Finset.sum_congr rfl hterm]
-  by_cases hm : m ≤ n
-  · rw [Finset.sum_ite_eq' (Finset.range (n + 1)) m]
-    simp [Nat.lt_succ_of_le hm]
-  · have hz : (n.choose m : ℝ) = 0 := by
-      rw [Nat.choose_eq_zero_of_lt (by lia)]
-      simp
-    rw [Finset.sum_ite_eq' (Finset.range (n + 1)) m]
-    simp [hz, hm]
-
 /-- **Explicit coefficients of the Eulerian polynomials.**  The formal
 counterpart of `A(n, j) = sum_i (-1)^i C(n+1, i) (j+1-i)^n`. -/
 theorem coeff_generalizedEulerian_one_eq_sum (k j : ℕ) :
@@ -179,7 +147,11 @@ theorem coeff_generalizedEulerian_one_eq_sum (k j : ℕ) :
     Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk, Polynomial.coeff_coe] at h
   rw [← h]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [coeff_eulerianPowerSumSeries, coeff_one_sub_X_pow]
+  rw [coeff_eulerianPowerSumSeries]
+  have hcoe : (1 - PowerSeries.X : PowerSeries ℝ) ^ (k + 2) =
+      (↑((1 - Polynomial.X : ℝ[X]) ^ (k + 2)) : PowerSeries ℝ) := by
+    simp
+  rw [hcoe, Polynomial.coeff_coe, Polynomial.coeff_one_sub_X_pow]
 
 end Formal
 

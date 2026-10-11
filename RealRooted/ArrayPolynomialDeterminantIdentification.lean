@@ -1,5 +1,6 @@
 import RealRooted.ArrayPolynomialDeterminantRecurrence
 import RealRooted.ArrayPolynomialSchur
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 open Matrix
 open Polynomial
@@ -20,6 +21,17 @@ factors. -/
 def scaledLowerShiftFin (N : ℕ) (d : Fin (N + 1) → ℝ) :
     Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
   Matrix.of fun i j => if i.val = j.val + 1 then d i / d j else 0
+
+lemma scaledLowerShiftFin_apply_succ (N r : ℕ)
+    (d : Fin (N + 1) → ℝ) (hr : r + 1 < N + 1)
+    (j : Fin (N + 1)) :
+    scaledLowerShiftFin N d ⟨r + 1, hr⟩ j =
+      if r = j.val then d ⟨r + 1, hr⟩ / d ⟨r, by lia⟩ else 0 := by
+  by_cases h : r = j.val
+  · have hj : j = (⟨r, by lia⟩ : Fin (N + 1)) := Fin.ext h.symm
+    rw [hj]
+    simp [scaledLowerShiftFin]
+  · simp [scaledLowerShiftFin, h]
 
 lemma scaledLowerShiftFin_mul_scaledLowerFin (N : ℕ)
     (d : Fin (N + 1) → ℝ) (hd : ∀ i, d i ≠ 0) :
@@ -188,21 +200,15 @@ lemma scaledLowerShiftFin_arrayUScale_apply_succ (N r : ℕ)
     (hr : r + 1 < N + 1) (j : Fin (N + 1)) :
     scaledLowerShiftFin N arrayUScale ⟨r + 1, hr⟩ j =
       if r = j.val then arrayUWeight (r + 2) else 0 := by
-  by_cases h : r = j.val
-  · have hj : j = (⟨r, by lia⟩ : Fin (N + 1)) := Fin.ext h.symm
-    rw [hj]
-    simp [scaledLowerShiftFin, arrayUScale_succ_div N r hr]
-  · simp [scaledLowerShiftFin, h]
+  simpa only [arrayUScale_succ_div N r hr] using
+    scaledLowerShiftFin_apply_succ N r arrayUScale hr j
 
 lemma scaledLowerShiftFin_arrayVScale_apply_succ (N r : ℕ)
     (hr : r + 1 < N + 1) (j : Fin (N + 1)) :
     scaledLowerShiftFin N arrayVScale ⟨r + 1, hr⟩ j =
       if r = j.val then arrayVWeight (r + 2) else 0 := by
-  by_cases h : r = j.val
-  · have hj : j = (⟨r, by lia⟩ : Fin (N + 1)) := Fin.ext h.symm
-    rw [hj]
-    simp [scaledLowerShiftFin, arrayVScale_succ_div N r hr]
-  · simp [scaledLowerShiftFin, h]
+  simpa only [arrayVScale_succ_div N r hr] using
+    scaledLowerShiftFin_apply_succ N r arrayVScale hr j
 
 lemma arrayBandBaseFin_apply (N : ℕ) (i j : Fin (N + 1)) :
     arrayBandBaseFin N i j =
@@ -378,10 +384,8 @@ def arrayNormalizedCoefficientPolynomial (n : ℕ) : ℝ[X] :=
 @[simp] theorem coeff_arrayNormalizedCoefficientPolynomial (n k : ℕ) :
     (arrayNormalizedCoefficientPolynomial n).coeff k =
       if k ≤ n then dNorm n k else 0 := by
-  simp only [arrayNormalizedCoefficientPolynomial, Polynomial.finsetSum_coeff,
-    Polynomial.coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (n + 1)) k]
-  simp
+  simpa only [arrayNormalizedCoefficientPolynomial, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial (dNorm n) (n + 1) k
 
 lemma coeff_C_mul_X_pow_mul (a : ℝ) (r k : ℕ) (p : ℝ[X]) :
     (Polynomial.C a * Polynomial.X ^ r * p).coeff k =
