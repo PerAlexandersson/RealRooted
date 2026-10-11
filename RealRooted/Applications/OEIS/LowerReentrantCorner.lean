@@ -318,15 +318,6 @@ theorem lowerReentrantCorner_hasSimpleRoots (n : ℕ) :
   ((lowerReentrantCorner_strictInterl n).hasSimpleRoots_of_no_common_root fun r hr =>
     lowerReentrantCorner_noCommonRoot n r hr.2 hr.1).1
 
-private theorem half_two_mul (j : ℕ) : (2 * j) / 2 = j := by
-  lia
-
-private theorem half_two_mul_add_one (j : ℕ) : (2 * j + 1) / 2 = j := by
-  lia
-
-private theorem half_two_mul_add_two (j : ℕ) : (2 * j + 2) / 2 = j + 1 := by
-  lia
-
 /-- Even-indexed transitions are same-degree interlacing steps.  The
 `ListAlternates ss rs` orientation records that the earlier row owns the
 leftmost root and the later row owns the rightmost root. -/
@@ -338,7 +329,7 @@ theorem lowerReentrantCorner_even_alternates (j : ℕ) :
         ListAlternates ss rs := by
   apply (lowerReentrantCorner_strictInterl (2 * j)).exists_listAlternates_of_natDegree_eq
   rw [lowerReentrantCorner_natDegree, lowerReentrantCorner_natDegree,
-    half_two_mul, half_two_mul_add_one]
+    show (2 * j) / 2 = j by lia, show (2 * j + 1) / 2 = j by lia]
 
 /-- Odd-indexed transitions are degree-rise strict interlacing steps. -/
 theorem lowerReentrantCorner_odd_interlaces (j : ℕ) :
@@ -346,6 +337,6 @@ theorem lowerReentrantCorner_odd_interlaces (j : ℕ) :
       (lowerReentrantCorner (2 * j + 2)) := by
   apply (lowerReentrantCorner_strictInterl (2 * j + 1)).toInterlaces
   rw [lowerReentrantCorner_natDegree, lowerReentrantCorner_natDegree,
-    half_two_mul_add_one, half_two_mul_add_two]
+    show (2 * j + 1) / 2 = j by lia, show (2 * j + 2) / 2 = j + 1 by lia]
 
 end RealRooted.Applications.OEIS

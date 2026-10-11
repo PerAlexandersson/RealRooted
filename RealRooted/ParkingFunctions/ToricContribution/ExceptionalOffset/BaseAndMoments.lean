@@ -1,6 +1,7 @@
 import RealRooted.Jacobi.Orthogonality.Integral
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
+import RealRooted.Mathlib.Algebra.Ring.Parity
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
@@ -572,12 +573,6 @@ private theorem prod_range_neg_add_eq_realRisingFactorial
   rw [Finset.prod_neg, Finset.card_range,
     prod_range_add_eq_realRisingFactorial]
 
-/-- The square of a real parity sign is one. -/
-theorem exceptional_neg_one_pow_sq_real (k : ℕ) :
-    ((-1 : ℝ) ^ k) ^ 2 = 1 := by
-  rw [← pow_mul]
-  norm_num
-
 /-- Closed product form of the numerator predicted by the terminating
 Saalschütz evaluation. -/
 def exceptionalEndpointClosedNumerator (m ε : ℕ) : ℝ[X] :=
@@ -731,9 +726,9 @@ private theorem exceptionalEndpointNumerator_eval_neg_nat
   field_simp [hcr.ne', hcm.ne', hfactorialR.ne', hfactorialSub.ne']
   ring_nf at hshift hratio ⊢
   have hsignR : (-1 : ℝ) ^ (r * 2) = 1 := by
-    rw [pow_mul, exceptional_neg_one_pow_sq_real]
+    rw [pow_mul, _root_.neg_one_pow_sq]
   have hsignM : (-1 : ℝ) ^ (m * 2) = 1 := by
-    rw [pow_mul, exceptional_neg_one_pow_sq_real]
+    rw [pow_mul, _root_.neg_one_pow_sq]
   rw [hsignR, hsignM, mul_one] at ⊢
   nlinarith [hratio]
 
@@ -881,7 +876,7 @@ theorem negOnePow_mul_exceptionalEulerInverse_eval_one_pos
       linarith
     linarith
   have hsignSq : ((-1 : ℝ) ^ m) ^ 2 = 1 :=
-    exceptional_neg_one_pow_sq_real m
+    _root_.neg_one_pow_sq m
   have hrearrange :
       (-1 : ℝ) ^ m *
           (((-1 : ℝ) ^ m * (m.factorial : ℝ) /

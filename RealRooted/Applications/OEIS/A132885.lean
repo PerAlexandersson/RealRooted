@@ -35,12 +35,6 @@ namespace RealRooted.Applications.OEIS.A132885
 
 open JacobiDeformation
 
-private theorem half_two_mul (m : ℕ) : (2 * m) / 2 = m := by
-  lia
-
-private theorem half_two_mul_add_one (m : ℕ) : (2 * m + 1) / 2 = m := by
-  lia
-
 /-- The row polynomial `∑_k C(n - k, k) T(n - 2k) X ^ k` of OEIS A132885. -/
 def polynomial (n : ℕ) : ℝ[X] :=
   ∑ k ∈ Finset.range (n / 2 + 1),
@@ -65,7 +59,7 @@ theorem polynomial_even (m : ℕ) :
   ext k
   rw [coeff_polynomial,
     JacobiDeformation.coeff_polynomial_even_centralTrinomial]
-  rw [half_two_mul]
+  rw [show (2 * m) / 2 = m by lia]
   by_cases hk : k ≤ m
   · rw [ite_eq_left hk]
   · rw [ite_eq_right hk, Nat.choose_eq_zero_of_lt (by lia)]
@@ -79,7 +73,7 @@ theorem polynomial_odd (m : ℕ) :
   ext k
   rw [coeff_polynomial, coeff_C_mul,
     JacobiDeformation.coeff_polynomial_odd_centralTrinomial]
-  rw [half_two_mul_add_one]
+  rw [show (2 * m + 1) / 2 = m by lia]
   by_cases hk : k ≤ m
   · rw [ite_eq_left hk]
   · rw [ite_eq_right hk, Nat.choose_eq_zero_of_lt (by lia)]
@@ -90,10 +84,10 @@ theorem natDegree_polynomial (n : ℕ) :
     (polynomial n).natDegree = n / 2 := by
   obtain ⟨m, rfl | rfl⟩ := Nat.even_or_odd' n
   · rw [polynomial_even, JacobiDeformation.natDegree_polynomial]
-    exact half_two_mul m |>.symm
+    exact (by lia)
   · rw [polynomial_odd, Polynomial.natDegree_C_mul (by positivity),
       JacobiDeformation.natDegree_polynomial]
-    exact half_two_mul_add_one m |>.symm
+    exact (by lia)
 
 /-- The constant boundary rows are both one. -/
 theorem polynomial_zero : polynomial 0 = 1 := by
