@@ -2673,7 +2673,7 @@ private theorem det_tridiagonal_first_rec {R : Type*} [CommRing R] {N : ℕ}
     Fin.sum_univ_succ]
   simp_rw [hcol]
   simp only [Nat.succ_eq_add_one, Fin.coe_ofNat_eq_mod, Nat.zero_mod,
-    Std.le_refl, List.Nat.eq_of_le_zero, pow_zero, one_mul,
+    Std.le_refl, Nat.eq_zero_of_le_zero, pow_zero, one_mul,
     Fin.succAbove_zero, Fin.succ_zero_eq_one, Nat.one_mod, pow_one,
     neg_mul, Fin.val_succ, mul_zero, zero_mul, Finset.sum_const_zero,
     add_zero, Matrix.submatrix_submatrix]

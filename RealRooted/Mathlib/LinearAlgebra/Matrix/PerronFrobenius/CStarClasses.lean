@@ -79,16 +79,13 @@ as a real number embedded in the complex plane. -/
 lemma star_mul_self (z : ℂ) : z * star z = ↑(‖z‖ ^ 2) := by
   simpa [Matrix.star_eq_conjTranspose, normSq_eq_norm_sq] using mul_conj z
 
-@[simp] lemma re_ofReal (r : ℝ) : (r : ℂ).re = r :=
-rfl
-
 /-- The square of the norm of a sum is the sum of the real parts of the products of each term
 with the conjugate of the sum. -/
 lemma norm_sq_eq_sum_re_mul_star {u : ℂ} {v : ι → ℂ} {s : Finset ι}
   (h_eq : u = ∑ i ∈ s, v i) :
   ‖u‖ ^ 2 = ∑ i ∈ s, re (v i * star u) := by
   calc
-    ‖u‖ ^ 2 = re (u * star u) := by rw [star_mul_self, re_ofReal]
+    ‖u‖ ^ 2 = re (u * star u) := by rw [star_mul_self, ofReal_re]
     _ = re ((∑ i ∈ s, v i) * star u) := by rw [h_eq]
     _ = re (∑ i ∈ s, (v i * star u)) := by rw [sum_mul]
     _ = ∑ i ∈ s, re (v i * star u) := by rw [re_sum]
