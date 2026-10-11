@@ -104,8 +104,9 @@ The transform also transfers the root properties needed in applications. It is
 the substitution $X \mapsto X/(X+1)$ homogenized to degree $d$, so a root $r$ of
 $h$ becomes the root $r/(1-r)$, and the degree drops when $r = 1$. Hence
 $fPolynomial\ d\ h$ splits whenever $h$ splits, with no sign condition on
-the coefficients, and split rows $Q(n)$ give split rows $P(n)$. For a sequence with half-growth degrees
-\(\deg Q(j)=(j+1)/2\), nonnegative coefficients, split nonzero rows, and
+the coefficients, and split rows $Q(n)$ give split rows $P(n)$. For a
+sequence with half-growth degrees \(\deg Q(j)=(j+1)/2\), nonnegative
+coefficients, split nonzero rows, and
 consecutive strict interlacing, the padding and peeling lemmas give
 
 \[
