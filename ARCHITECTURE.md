@@ -1728,6 +1728,10 @@ The closed-form interlacing route (Tactic/Row/ClosedFormInterlaces) adds one mod
 
 Finite-order Weyl preserver (#1427 Theorem B) and the stability substitution shim add two modules. The budgets of `RealRooted`, `Production`, `Challenges.BorceaBranden` rise to the new closure sizes.
 
+The endpoint-derivative and root-continuity challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+Merged with main: the two new challenge pages and the finite-order Weyl modules together. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash

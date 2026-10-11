@@ -1790,3 +1790,6 @@ import RealRooted.MultiplierSequence.ProperPosition
 import RealRooted.Tactic.Row.ClosedFormInterlaces
 import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
 import RealRooted.MultivariateStability.Substitution
+
+import RealRooted.Challenges.EndpointDerivative
+import RealRooted.Challenges.RootContinuity
