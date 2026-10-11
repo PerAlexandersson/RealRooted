@@ -41,9 +41,8 @@ def eulerTransformedPolynomial (m ε d : ℕ) : ℝ[X] :=
 theorem coeff_eulerTransformedPolynomial (m ε d k : ℕ) :
     (eulerTransformedPolynomial m ε d).coeff k =
       if k ≤ m then eulerTransformedCoeff m ε d k else 0 := by
-  simp only [eulerTransformedPolynomial, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (m + 1)) k]
-  simp
+  simpa only [eulerTransformedPolynomial, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial (eulerTransformedCoeff m ε d) (m + 1) k
 
 @[simp]
 theorem eulerTransformedCoeff_zero (m ε d : ℕ) :

@@ -193,27 +193,6 @@ theorem hasPosLeadingCoeff_neg_sign_mul_hurwitzRotatedOddPart {p : ℝ[X]}
     mul_one]
   exact hp
 
-namespace IsUpperHalfPlaneStable
-
-/-- Multiplication by a nonzero constant preserves upper-half-plane stability. -/
-theorem C_mul {p : ℂ[X]} (hp : IsUpperHalfPlaneStable p)
-    {c : ℂ} (hc : c ≠ 0) :
-    IsUpperHalfPlaneStable (C c * p) := by
-  intro z hz
-  simp only [eval_mul, eval_C]
-  exact mul_ne_zero hc (hp z hz)
-
-end IsUpperHalfPlaneStable
-
-/-- Multiplication by `i` swaps the two Hermite--Biehler parts and negates the
-new real part. -/
-theorem C_I_mul_hermiteBiehlerPolynomial (f g : ℝ[X]) :
-    C Complex.I * hermiteBiehlerPolynomial f g =
-      hermiteBiehlerPolynomial (-g) f := by
-  simp only [hermiteBiehlerPolynomial, complexify, Polynomial.map_neg]
-  rw [mul_add, ← mul_assoc, ← C_mul, Complex.I_mul_I]
-  simp [add_comm]
-
 /-- Scaling both real parts scales their Hermite--Biehler polynomial by the
 same real constant. -/
 theorem hermiteBiehlerPolynomial_C_mul (a : ℝ) (f g : ℝ[X]) :

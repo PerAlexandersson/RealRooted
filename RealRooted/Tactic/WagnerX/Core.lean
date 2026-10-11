@@ -2,6 +2,7 @@ import RealRooted.PosCombo
 import RealRooted.AffineFamily
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.Lookup
+import RealRooted.WagnerX.ProperPosition
 
 /-!
 # Wagner `X`-shift core
@@ -23,8 +24,7 @@ theorem strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg {f : ℝ[X]}
     (hdeg : 2 ≤ f.natDegree)
     (hfnn : HasNonnegCoeffs f) :
     StrictInterl (X * f.derivative) (X * f) :=
-  StrictInterl.mul_X_both_of_nonneg
-    (derivative_interlaces_of_natDegree_ne_zero hf (by lia)).toStrictInterl hfnn.derivative hfnn
+  strictInterl_X_derivative_X_self_of_splits_nonneg hf hdeg hfnn
 
 /-- Wagner derivative-gap-lag step.
 

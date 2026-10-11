@@ -206,17 +206,6 @@ private def cancelStep (p : Nat) (grow : Array Bool) : TacticM Unit := do
       cancelRun "hstep (next)" g₄ (evalTactic (← `(tactic| ($coeff:tactic <;> $fin:tactic))))
   setGoals []
 
-/-- The kind of a goal about the rows of a sequence. -/
-private def cancelGoalKind? (tgt : Expr) : Option String :=
-  match tgt.getAppFnArgs with
-  | (``Eq, #[_, a, _]) =>
-      if a.getAppFn.isConstOf ``Polynomial.natDegree then some "natDegree" else none
-  | (``Ne, _) => some "ne_zero"
-  | (``LT.lt, #[_, _, _, b]) =>
-      if b.getAppFn.isConstOf ``Polynomial.leadingCoeff then some "leadingCoeff_pos" else none
-  | (``And, _) => some "natDegree_leadingCoeff_pos"
-  | _ => none
-
 /-- The core of `rr_row_cancel` for a goal of the given kind (`"natDegree"`, `"ne_zero"`,
 `"leadingCoeff_pos"` or `"natDegree_leadingCoeff_pos"`, the kinds of the `rr_row_*` tactics). -/
 def cancelCore (kind : String) : TacticM Unit := withMainContext do
@@ -272,7 +261,7 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
 elab_rules : tactic
   | `(tactic| rr_row_cancel) => withMainContext do
   betaReduceGoal
-  let some kind := cancelGoalKind? (← instantiateMVars (← getMainTarget))
+  let some kind := rowPropertyGoalKind? (← instantiateMVars (← getMainTarget))
     | throwError "rr_row_cancel: the goal is not a statement about natDegree, ≠ 0 or leadingCoeff"
   cancelCore kind
 
