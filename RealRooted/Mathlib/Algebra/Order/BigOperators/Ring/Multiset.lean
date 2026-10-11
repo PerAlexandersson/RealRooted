@@ -1,5 +1,6 @@
 import Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 import Mathlib.Algebra.Order.BigOperators.Group.Multiset
+import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 import Mathlib.Tactic.Linarith
 
 /-!
