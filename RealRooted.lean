@@ -285,6 +285,7 @@ import RealRooted.Challenges.EnestromKakeya
 import RealRooted.Challenges.EulerBidiagonal
 import RealRooted.Challenges.Eulerian
 import RealRooted.Challenges.EulerianVariations
+import RealRooted.Challenges.FPolynomialRecurrences
 import RealRooted.Challenges.FactorialCompression
 import RealRooted.Challenges.Favard
 import RealRooted.Challenges.FiniteFreeConvolutions
@@ -1427,6 +1428,8 @@ import RealRooted.SymmetricDecomposition.DerangementTransform
 import RealRooted.SymmetricDecomposition.EulerianTransform
 import RealRooted.SymmetricDecomposition.FPolynomial
 import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
+import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
+import RealRooted.SymmetricDecomposition.FPolynomialSequence
 import RealRooted.SymmetricDecomposition.Theorem26
 import RealRooted.Tactic
 import RealRooted.Tactic.AffineDerivative
@@ -1682,6 +1685,7 @@ import RealRooted.Tactic.RootCount.LowDegreeSyntax
 import RealRooted.Tactic.RootCount.SequenceCore
 import RealRooted.Tactic.Row.Core
 import RealRooted.Tactic.Row.DerivLag
+import RealRooted.Tactic.Row.FTransform
 import RealRooted.Tactic.Row.LagFeedback
 import RealRooted.Tactic.Row.LowerOrder
 import RealRooted.Tactic.Row.ParityProduct
