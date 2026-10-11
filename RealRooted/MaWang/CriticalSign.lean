@@ -9,7 +9,11 @@ both with positive leading coefficient, strictly interlace as soon as
 `g * h'` is negative at every root of `h`.  The sign condition also forces
 both polynomials to have simple roots and no common root.  This packages the
 successor-degree Sturm step of `strictInterl_of_interlaces_eval_mul_neg_succ`
-for callers that supply only the strict critical signs.
+for callers that supply only the strict critical signs, and
+`strictInterl_of_eval_mul_derivative_neg` gives the same conclusion when `g` has the same degree
+as `h` or the successor degree (Liu–Wang, *A unified approach to polynomial sequences with only
+real zeros*, Theorem 2.1; Ma–Wang, *q-Eulerian polynomials and polynomials with only real
+zeros*, Theorem 2).
 -/
 
 open Polynomial
@@ -77,5 +81,88 @@ theorem strictInterl_package_of_eval_mul_derivative_neg_succ
       have hsimp := hstrict.hasSimpleRoots_of_no_common_root hno_common
       exact ⟨hstrict, hinter, hstrict.2.1.2, hsimp.1, hsimp.2,
         fun r hr hgr => hno_common r ⟨hr, hgr⟩⟩
+
+/-- Strict critical signs imply strict interlacing in the same-or-successor
+degree range.  The positive leading coefficients fix the orientation, and
+the strict sign hypothesis is `F(r) * f'(r) < 0` at every root of `f`. -/
+theorem strictInterl_of_eval_mul_derivative_neg
+    {f F : ℝ[X]}
+    (hf : f.Splits)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hdegf : f.natDegree ≠ 0)
+    (hdeg_lo : f.natDegree ≤ F.natDegree)
+    (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
+    (hsign : ∀ r, f.IsRoot r →
+      F.eval r * f.derivative.eval r < 0) :
+    StrictInterl f F := by
+  have hder : Interlaces f.derivative f :=
+    interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos (by lia)
+  have hder_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative hdegf
+  have hcases : F.natDegree = f.natDegree ∨
+      F.natDegree = f.natDegree + 1 := by
+    lia
+  rcases hcases with hsame | hsucc
+  · exact strictInterl_of_interlaces_eval_mul_neg_same hder hder_pos hF_pos hsame hsign
+  · exact strictInterl_of_interlaces_eval_mul_neg_succ hder hder_pos hF_pos hsucc hsign
+
+/-- A positive weighted critical sign gives strict interlacing when all roots
+of `f` are nonpositive.  At a root `r`, the strict product excludes `r = 0`,
+so `0 < F(r) * (r * f'(r))` is exactly the unweighted negative critical sign.
+-/
+theorem strictInterl_of_eval_mul_derivative_neg_of_roots_nonpos
+    {f F : ℝ[X]}
+    (hf : f.Splits)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hdegf : f.natDegree ≠ 0)
+    (hdeg_lo : f.natDegree ≤ F.natDegree)
+    (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
+    (hroots : ∀ r, f.IsRoot r → r ≤ 0)
+    (hsignX : ∀ r, f.IsRoot r →
+      0 < F.eval r * (r * f.derivative.eval r)) :
+    StrictInterl f F := by
+  apply strictInterl_of_eval_mul_derivative_neg hf hf_pos hF_pos hdegf hdeg_lo hdeg_hi
+  intro r hr
+  have hr_nonpos : r ≤ 0 := hroots r hr
+  have hr_neg : r < 0 := by
+    by_contra hr_not_neg
+    have hr_nonneg : 0 ≤ r := le_of_not_gt hr_not_neg
+    have hr_zero : r = 0 := le_antisymm hr_nonpos hr_nonneg
+    subst r
+    have hzero := hsignX 0 hr
+    simp at hzero
+  have hweighted : 0 < r * (F.eval r * f.derivative.eval r) := by
+    calc
+      0 < F.eval r * (r * f.derivative.eval r) := hsignX r hr
+      _ = r * (F.eval r * f.derivative.eval r) := by ring
+  by_contra hnot
+  have hnonneg : 0 ≤ F.eval r * f.derivative.eval r := le_of_not_gt hnot
+  have hnonpos : r * (F.eval r * f.derivative.eval r) ≤ 0 :=
+    mul_nonpos_of_nonpos_of_nonneg hr_neg.le hnonneg
+  exact (not_lt_of_ge hnonpos) hweighted
+
+/- Same-degree regression: `X + 1` strictly interlaces `X - 1`, although the right polynomial
+has a negative value at zero, so no endpoint sign belongs among the hypotheses. -/
+example : StrictInterl (X + C (1 : ℝ)) (X - C (1 : ℝ)) := by
+  have hf_splits : (X + C (1 : ℝ)).Splits := Polynomial.Splits.X_add_C _
+  have hf_pos : HasPosLeadingCoeff (X + C (1 : ℝ)) :=
+    hasPosLeadingCoeff_of_monic (monic_X_add_C _)
+  have hF_pos : HasPosLeadingCoeff (X - C (1 : ℝ)) :=
+    hasPosLeadingCoeff_of_monic (monic_X_sub_C _)
+  have hf_degree : (X + C (1 : ℝ)).natDegree = 1 := by simp
+  have hF_degree : (X - C (1 : ℝ)).natDegree = 1 := by
+    simpa [sub_eq_add_neg] using
+      (Polynomial.natDegree_X_add_C (x := (-1 : ℝ)))
+  apply strictInterl_of_eval_mul_derivative_neg hf_splits hf_pos hF_pos (by simp)
+  · rw [hf_degree, hF_degree]
+  · rw [hf_degree, hF_degree]
+    simp
+  intro r hr
+  rw [Polynomial.IsRoot.def] at hr
+  simp only [eval_add, eval_X, eval_C] at hr
+  have hr_eq : r = -1 := by linarith
+  subst r
+  norm_num [derivative_add, derivative_X, derivative_C]
 
 end RealRooted
